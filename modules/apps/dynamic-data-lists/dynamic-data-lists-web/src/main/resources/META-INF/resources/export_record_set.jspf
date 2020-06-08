@@ -50,8 +50,10 @@ boolean showCSVWarning = StringUtil.equals("enabled-with-warning", csvExport);
 </div>
 
 <aui:script>
+	var DynamicDataLists = {};
+
 	Liferay.provide(
-		window,
+		DynamicDataLists,
 		'<portlet:namespace />exportRecordSet',
 		function (url) {
 			var A = AUI();
@@ -122,6 +124,8 @@ boolean showCSVWarning = StringUtil.equals("enabled-with-warning", csvExport);
 				title: '<%= UnicodeLanguageUtil.get(request, "export") %>',
 			});
 		},
-		['aui-alert', 'liferay-util-window']
+		[]
 	);
+
+	Liferay.DynamicDataLists = DynamicDataLists;
 </aui:script>
