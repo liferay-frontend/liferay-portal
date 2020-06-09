@@ -81,12 +81,10 @@ boolean hasViewPermission = ddlDisplayContext.isAdminPortlet() && DDLRecordSetPe
 		</liferay-portlet:resourceURL>
 
 		<%
-		StringBundler sb = new StringBundler(6);
+		StringBundler sb = new StringBundler(4);
 
 		sb.append("javascript:");
-		sb.append("Liferay.DynamicDataLists['");
-		sb.append(renderResponse.getNamespace());
-		sb.append("exportRecordSet']('");
+		sb.append("Liferay.DynamicDataLists.exportRecordSet('");
 		sb.append(exportRecordSetURL);
 		sb.append("');");
 		%>
