@@ -96,11 +96,10 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 									>
 
 										<%
-										StringBundler sb = new StringBundler(7);
+										StringBundler sb = new StringBundler(6);
 
 										sb.append("javascript:");
-										sb.append(renderResponse.getNamespace());
-										sb.append("selectRecordSet('");
+										sb.append("Liferay.DynamicDataLists.selectRecordSet('");
 										sb.append(recordSet.getRecordSetId());
 										sb.append("','");
 										sb.append(HtmlUtil.escapeJS(recordSet.getName(locale)));
@@ -259,10 +258,8 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 </aui:script>
 
 <aui:script>
-	Liferay.provide(
-		window,
-		'<portlet:namespace />selectRecordSet',
-		function (recordSetId, recordSetName) {
+	var DynamicDataLists = {
+		selectRecordSet: function (recordSetId, recordSetName) {
 			var A = AUI();
 
 			document.<portlet:namespace />fm.<portlet:namespace />recordSetId.value = recordSetId;
@@ -278,8 +275,9 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 			);
 			displayRecordSetId.addClass('modified');
 		},
-		['aui-base']
-	);
+	};
+
+	Liferay.DynamicDataLists = DynamicDataLists;
 </aui:script>
 
 <%!
