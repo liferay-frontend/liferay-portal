@@ -37,10 +37,21 @@ const getDefaultAlertContainer = () => {
 	return container;
 };
 
+function AlertContainer({children, hasWrapper = true}) {
+	if (hasWrapper) {
+		return <ClayAlert.ToastContainer>{children}</ClayAlert.ToastContainer>;
+	}
+
+	return children;
+}
+
 /**
  * Function that implements the Toast pattern, which allows to present feedback
  * to user actions as a toast message in the lower left corner of the page
  *
+ * @param {number} autoClose Flag to indicate alert should automatically call `onClose`.
+ * @param {HTMLElement} container A container to be used to the Alert being positioned relatively.
+ * @param {string} containerId A containerId of the element to be opened relatively.
  * @param {string} message The message to show in the toast notification
  * @param {string} title The title associated with the message
  * @param {string} displayType The displayType of notification to show. It can be one of the
@@ -50,6 +61,8 @@ const getDefaultAlertContainer = () => {
  */
 
 function openToast({
+	autoClose = TOAST_AUTO_CLOSE_INTERVAL,
+	container,
 	containerId,
 	message = '',
 	renderData = DEFAULT_RENDER_DATA,
@@ -58,17 +71,19 @@ function openToast({
 	type = 'success',
 	variant,
 }) {
-	const container =
-		document.getElementById(containerId) || getDefaultAlertContainer();
+	const componentContainer =
+		container ||
+		document.getElementById(containerId) ||
+		getDefaultAlertContainer();
 
-	unmountComponentAtNode(container);
+	unmountComponentAtNode(componentContainer);
 
-	const onClose = () => unmountComponentAtNode(container);
+	const onClose = () => unmountComponentAtNode(componentContainer);
 
 	render(
-		<ClayAlert.ToastContainer>
+		<AlertContainer hasWrapper={!containerId}>
 			<ClayAlert
-				autoClose={TOAST_AUTO_CLOSE_INTERVAL}
+				autoClose={autoClose}
 				displayType={type}
 				onClose={onClose}
 				title={title}
@@ -77,9 +92,9 @@ function openToast({
 			>
 				{message}
 			</ClayAlert>
-		</ClayAlert.ToastContainer>,
+		</AlertContainer>,
 		renderData,
-		container
+		componentContainer
 	);
 }
 
