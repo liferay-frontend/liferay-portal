@@ -96,10 +96,11 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 									>
 
 										<%
-										StringBundler sb = new StringBundler(6);
+										StringBundler sb = new StringBundler(7);
 
 										sb.append("javascript:");
-										sb.append("Liferay.DynamicDataLists.selectRecordSet('");
+										sb.append(renderResponse.getNamespace());
+										sb.append("selectRecordSet('");
 										sb.append(recordSet.getRecordSetId());
 										sb.append("','");
 										sb.append(HtmlUtil.escapeJS(recordSet.getName(locale)));
@@ -258,26 +259,25 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 </aui:script>
 
 <aui:script>
-	var DynamicDataLists = {
-		selectRecordSet: function (recordSetId, recordSetName) {
-			var A = AUI();
+	window['<portlet:namespace />selectRecordSet'] = function (
+		recordSetId,
+		recordSetName
+	) {
+		var A = AUI();
 
-			document.<portlet:namespace />fm.<portlet:namespace />recordSetId.value = recordSetId;
+		document.<portlet:namespace />fm.<portlet:namespace />recordSetId.value = recordSetId;
 
-			A.one('.displaying-record-set-id-holder').show();
-			A.one('.displaying-help-message-holder').hide();
+		A.one('.displaying-record-set-id-holder').show();
+		A.one('.displaying-help-message-holder').hide();
 
-			var displayRecordSetId = A.one('.displaying-record-set-id');
+		var displayRecordSetId = A.one('.displaying-record-set-id');
 
-			displayRecordSetId.set(
-				'innerHTML',
-				recordSetName + ' (<liferay-ui:message key="modified" />)'
-			);
-			displayRecordSetId.addClass('modified');
-		},
+		displayRecordSetId.set(
+			'innerHTML',
+			recordSetName + ' (<liferay-ui:message key="modified" />)'
+		);
+		displayRecordSetId.addClass('modified');
 	};
-
-	Liferay.DynamicDataLists = DynamicDataLists;
 </aui:script>
 
 <%!
