@@ -15,6 +15,7 @@
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput, ClaySelect} from '@clayui/form';
+import ClayLayout from '@clayui/layout';
 import ClayModal, {useModal} from '@clayui/modal';
 import GraphiQL from 'graphiql';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -155,10 +156,11 @@ const APIGUI = () => {
 
 	return (
 		<div className="api-gui-root">
-			<div className="container container-fluid">
+			<ClayLayout.ContainerFluid>
 				{showHeaders && (
 					<ClayModal observer={observer} size="lg" status="info">
 						<ClayModal.Header>{'Headers'}</ClayModal.Header>
+
 						<ClayModal.Body>
 							<h1>
 								Add, edit, and remove headers in your request.
@@ -178,6 +180,7 @@ const APIGUI = () => {
 											value={header.key}
 										/>
 									</div>
+
 									<div className="form-group-item">
 										<input
 											className="form-control"
@@ -190,6 +193,7 @@ const APIGUI = () => {
 											value={header.value}
 										/>
 									</div>
+
 									<ClayButton
 										className="btn btn-warning"
 										displayType={'secondary'}
@@ -204,6 +208,7 @@ const APIGUI = () => {
 								</div>
 							))}
 						</ClayModal.Body>
+
 						<ClayModal.Footer
 							first={
 								<ClayButton.Group spaced>
@@ -237,9 +242,9 @@ const APIGUI = () => {
 					</ClayModal>
 				)}
 
-				<div className="row">
-					<div
-						className="col col-push-3"
+				<ClayLayout.Row>
+					<ClayLayout.Col
+						className="col-push-3"
 						style={{textAlign: 'right'}}
 					>
 						<button
@@ -267,8 +272,8 @@ const APIGUI = () => {
 						>
 							{showGraphQL ? 'Hide GraphQL' : 'Show GraphQL'}
 						</button>
-					</div>
-				</div>
+					</ClayLayout.Col>
+				</ClayLayout.Row>
 
 				{showSwagger && !showGraphQL && (
 					<SwaggerUI
@@ -285,14 +290,19 @@ const APIGUI = () => {
 						).get('category')}/v1.0/openapi.json`}
 					/>
 				)}
+
 				{showGraphQL && !showSwagger && (
-					<div className="row vh-100">
+					<ClayLayout.Row className="vh-100">
 						<GraphiQL fetcher={graphQLFetcher} />
-					</div>
+					</ClayLayout.Row>
 				)}
+
 				{!showGraphQL && !showSwagger && (
-					<div className="row">
-						<div className="border col col-md-5 overflow-auto p-0 vh-100">
+					<ClayLayout.Row>
+						<ClayLayout.Col
+							className="border overflow-auto p-0 vh-100"
+							md="5"
+						>
 							<ClayForm.Group className="pt-3 px-3">
 								<label
 									className="d-flex justify-content-between"
@@ -314,6 +324,7 @@ const APIGUI = () => {
 										</button>
 									)}
 								</label>
+
 								<ClaySelect
 									aria-label="Select API Category"
 									onChange={(e) => {
@@ -342,6 +353,7 @@ const APIGUI = () => {
 								>
 									Description
 								</label>
+
 								<p>{info && info.description}</p>
 							</ClayForm.Group>
 
@@ -380,9 +392,12 @@ const APIGUI = () => {
 									/>
 								)}
 							</div>
-						</div>
+						</ClayLayout.Col>
 
-						<div className="border col col-md-7 overflow-auto p-3 vh-100">
+						<ClayLayout.Col
+							className="border overflow-auto p-3 vh-100"
+							md="7"
+						>
 							{paths && path && method && !showSchemas && (
 								<APIDisplay />
 							)}
@@ -404,10 +419,10 @@ const APIGUI = () => {
 									schemas={schemas}
 								/>
 							)}
-						</div>
-					</div>
+						</ClayLayout.Col>
+					</ClayLayout.Row>
 				)}
-			</div>
+			</ClayLayout.ContainerFluid>
 		</div>
 	);
 };
