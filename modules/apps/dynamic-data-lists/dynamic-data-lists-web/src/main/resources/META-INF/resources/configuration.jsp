@@ -263,20 +263,26 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 		recordSetId,
 		recordSetName
 	) {
-		var A = AUI();
-
 		document.<portlet:namespace />fm.<portlet:namespace />recordSetId.value = recordSetId;
 
-		A.one('.displaying-record-set-id-holder').show();
-		A.one('.displaying-help-message-holder').hide();
-
-		var displayRecordSetId = A.one('.displaying-record-set-id');
-
-		displayRecordSetId.set(
-			'innerHTML',
-			recordSetName + ' (<liferay-ui:message key="modified" />)'
+		var displayingRecordSetIdHolder = document.querySelector(
+			'.displaying-record-set-id-holder'
 		);
-		displayRecordSetId.addClass('modified');
+		displayingRecordSetIdHolder.removeAttribute('hidden');
+		displayingRecordSetIdHolder.style.display = '';
+
+		var displayingHelpMessageHolder = document.querySelector(
+			'.displaying-help-message-holder'
+		);
+		displayingHelpMessageHolder.setAttribute('hidden', 'hidden');
+		displayingHelpMessageHolder.style.display = 'none';
+
+		var displayRecordSetId = document.querySelector(
+			'.displaying-record-set-id'
+		);
+		displayRecordSetId.innerHTML =
+			recordSetName + ' (<liferay-ui:message key="modified" />)';
+		displayRecordSetId.classList.add('modified');
 	};
 </aui:script>
 
