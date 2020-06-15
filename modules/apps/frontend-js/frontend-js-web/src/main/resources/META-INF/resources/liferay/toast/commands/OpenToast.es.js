@@ -42,7 +42,7 @@ function AlertContainer({children, hasWrapper = true}) {
 		return <ClayAlert.ToastContainer>{children}</ClayAlert.ToastContainer>;
 	}
 
-	return children;
+	return <>children</>;
 }
 
 /**
