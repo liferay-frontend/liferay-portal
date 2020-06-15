@@ -380,78 +380,76 @@ renderResponse.setTitle(headerTitle);
 		}
 	}
 
-	Liferay.provide(
-		window,
-		'<portlet:namespace />selectFileEntryType',
-		function (fileEntryTypeId, fileEntryTypeName) {
-			var A = AUI();
+	window['<portlet:namespace />selectFileEntryType'] = function (
+		fileEntryTypeId,
+		fileEntryTypeName
+	) {
+		var A = AUI();
 
-			var searchContainer = Liferay.SearchContainer.get(
-				'<portlet:namespace />dlFileEntryTypesSearchContainer'
-			);
+		var searchContainer = Liferay.SearchContainer.get(
+			'<portlet:namespace />dlFileEntryTypesSearchContainer'
+		);
 
-			var fileEntryTypeLink =
-				'<a class="modify-link" data-rowId="' +
+		var fileEntryTypeLink =
+			'<a class="modify-link" data-rowId="' +
+			fileEntryTypeId +
+			'" href="javascript:;"><%= UnicodeFormatter.toString(removeFileEntryTypeIcon) %></a>';
+
+		<c:choose>
+			<c:when test="<%= workflowEnabled %>">
+				var restrictionTypeWorkflow = A.one(
+					'#<portlet:namespace />restrictionTypeWorkflow'
+				);
+
+				restrictionTypeWorkflow.hide();
+
+				var workflowDefinitions =
+					'<%= UnicodeFormatter.toString(workflowDefinitionsBuffer) %>';
+
+				workflowDefinitions = workflowDefinitions.replace(
+					/LIFERAY_WORKFLOW_DEFINITION_FILE_ENTRY_TYPE/g,
+					'workflowDefinition' + fileEntryTypeId
+				);
+
+				<portlet:namespace />documentTypesChanged = true;
+
+				searchContainer.addRow(
+					[fileEntryTypeName, workflowDefinitions, fileEntryTypeLink],
+					fileEntryTypeId
+				);
+			</c:when>
+			<c:otherwise>
+				searchContainer.addRow(
+					[fileEntryTypeName, fileEntryTypeLink],
+					fileEntryTypeId
+				);
+			</c:otherwise>
+		</c:choose>
+
+		searchContainer.updateDataStore();
+
+		var select = A.one('#<portlet:namespace />defaultFileEntryTypeId');
+
+		var selectContainer = A.one(
+			'#<portlet:namespace />restrictionTypeDefinedDiv .default-document-type'
+		);
+
+		selectContainer.show();
+
+		var option = A.Node.create(
+			'<option id="<portlet:namespace />defaultFileEntryTypeId-' +
 				fileEntryTypeId +
-				'" href="javascript:;"><%= UnicodeFormatter.toString(removeFileEntryTypeIcon) %></a>';
+				'" value="' +
+				fileEntryTypeId +
+				'">' +
+				fileEntryTypeName +
+				'</option>'
+		);
 
-			<c:choose>
-				<c:when test="<%= workflowEnabled %>">
-					var restrictionTypeWorkflow = A.one(
-						'#<portlet:namespace />restrictionTypeWorkflow'
-					);
+		select.show();
 
-					restrictionTypeWorkflow.hide();
-
-					var workflowDefinitions =
-						'<%= UnicodeFormatter.toString(workflowDefinitionsBuffer) %>';
-
-					workflowDefinitions = workflowDefinitions.replace(
-						/LIFERAY_WORKFLOW_DEFINITION_FILE_ENTRY_TYPE/g,
-						'workflowDefinition' + fileEntryTypeId
-					);
-
-					<portlet:namespace />documentTypesChanged = true;
-
-					searchContainer.addRow(
-						[fileEntryTypeName, workflowDefinitions, fileEntryTypeLink],
-						fileEntryTypeId
-					);
-				</c:when>
-				<c:otherwise>
-					searchContainer.addRow(
-						[fileEntryTypeName, fileEntryTypeLink],
-						fileEntryTypeId
-					);
-				</c:otherwise>
-			</c:choose>
-
-			searchContainer.updateDataStore();
-
-			var select = A.one('#<portlet:namespace />defaultFileEntryTypeId');
-
-			var selectContainer = A.one(
-				'#<portlet:namespace />restrictionTypeDefinedDiv .default-document-type'
-			);
-
-			selectContainer.show();
-
-			var option = A.Node.create(
-				'<option id="<portlet:namespace />defaultFileEntryTypeId-' +
-					fileEntryTypeId +
-					'" value="' +
-					fileEntryTypeId +
-					'">' +
-					fileEntryTypeName +
-					'</option>'
-			);
-
-			select.show();
-
-			select.append(option);
-		},
-		['liferay-search-container']
-	);
+		select.append(option);
+	};
 
 	Liferay.Util.toggleRadio('<portlet:namespace />restrictionTypeInherit', '', [
 		'<portlet:namespace />restrictionTypeDefinedDiv',
