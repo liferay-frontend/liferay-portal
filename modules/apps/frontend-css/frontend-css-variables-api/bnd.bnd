@@ -1,4 +1,6 @@
 Bundle-Name: Liferay Frontend CSS Variables API
 Bundle-SymbolicName: com.liferay.frontend.css.variables.api
 Bundle-Version: 1.0.0
-Export-Package: com.liferay.frontend.css.variables
+Export-Package:\
+	com.liferay.frontend.css.variables,\
+	com.liferay.frontend.css.variables.theme
