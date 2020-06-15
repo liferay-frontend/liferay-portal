@@ -61,7 +61,7 @@ public class CSSVariableDescriptionImpl implements CSSVariableDescription {
 
 	private String _getLanguageCountryKey(Locale locale) {
 		if (Validator.isNull(locale.getCountry())) {
-			return null;
+			return locale.getLanguage();
 		}
 
 		return locale.getLanguage() + StringPool.UNDERLINE +

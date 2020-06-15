@@ -1,0 +1,14 @@
+{
+	"variables": {
+		"background": {
+			"label": "Background Color",
+			"type": "color"
+		},
+		"font": {
+			"label": {
+				"": "Font",
+				"es": "Tipo de letra"
+			}
+		}
+	}
+}
