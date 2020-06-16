@@ -330,10 +330,10 @@ renderResponse.setTitle(headerTitle);
 	</c:if>
 </liferay-util:buffer>
 
-<aui:script>
+<aui:script use="liferay-search-container">
 	var <portlet:namespace />documentTypesChanged = false;
 
-	function <portlet:namespace />openFileEntryTypeSelector() {
+	window['<portlet:namespace />openFileEntryTypeSelector'] = function () {
 		var searchContainer = Liferay.SearchContainer.get(
 			'<portlet:namespace />dlFileEntryTypesSearchContainer'
 		);
@@ -361,9 +361,9 @@ renderResponse.setTitle(headerTitle);
 			url:
 				'<portlet:renderURL windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="mvcPath" value="/document_library/select_restricted_file_entry_type.jsp" /><portlet:param name="includeBasicFileEntryType" value="<%= Boolean.TRUE.toString() %>" /></portlet:renderURL>',
 		});
-	}
+	};
 
-	function <portlet:namespace />savePage() {
+	window['<portlet:namespace />savePage'] = function () {
 		var message =
 			'<%= UnicodeLanguageUtil.get(request, workflowEnabled ? "change-document-types-and-workflow-message" : "change-document-types-message") %>';
 
@@ -378,7 +378,7 @@ renderResponse.setTitle(headerTitle);
 		if (submit) {
 			submitForm(document.<portlet:namespace />fm);
 		}
-	}
+	};
 
 	window['<portlet:namespace />selectFileEntryType'] = function (
 		fileEntryTypeId,
