@@ -268,12 +268,14 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 		var displayingRecordSetIdHolder = document.querySelector(
 			'.displaying-record-set-id-holder'
 		);
+		displayingRecordSetIdHolder.classList.remove('hide');
 		displayingRecordSetIdHolder.removeAttribute('hidden');
 		displayingRecordSetIdHolder.style.display = '';
 
 		var displayingHelpMessageHolder = document.querySelector(
 			'.displaying-help-message-holder'
 		);
+		displayingHelpMessageHolder.classList.add('hide');
 		displayingHelpMessageHolder.setAttribute('hidden', 'hidden');
 		displayingHelpMessageHolder.style.display = 'none';
 
