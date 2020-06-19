@@ -87,7 +87,11 @@ function openToast({
 				autoClose={TOAST_AUTO_CLOSE_INTERVAL}
 				displayType={type}
 				onClick={(event) => onClick({event, onClose})}
-				onClose={onClose}
+				onClose={(event) => {
+					onClose(event);
+
+					Liferay.fire('toastClosed', {...event, renderData});
+				}}
 				title={
 					<Text allowHTML={titleType === TYPES.HTML} string={title} />
 				}

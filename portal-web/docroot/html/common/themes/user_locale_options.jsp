@@ -28,8 +28,6 @@ String currentURL = PortalUtil.getCurrentURL(request);
 
 	<div dir="<%= LanguageUtil.get(userLocale, "lang.dir") %>">
 		<div class="d-block">
-			<button aria-label="<%= LanguageUtil.get(request, "close") %>" class="close" id="ignoreUserLocaleOptions" type="button">&times;</button>
-
 			<%= LanguageUtil.format(userLocale, "this-page-is-displayed-in-x", locale.getDisplayName(userLocale)) %>
 		</div>
 
@@ -47,14 +45,11 @@ String currentURL = PortalUtil.getCurrentURL(request);
 	</div>
 
 	<aui:script use="aui-base,liferay-store">
-		var ignoreUserLocaleOptionsNode = A.one('#ignoreUserLocaleOptions');
-
-		ignoreUserLocaleOptionsNode.on(
-			'click',
-			function() {
+		Liferay.once('toastClosed', function (event) {
+			if (event.renderData && event.renderData.jspPath === '/html/common/themes/user_locale_options.jsp') {
 				Liferay.Util.Session.set('ignoreUserLocaleOptions', true);
 				Liferay.Util.Session.set('useHttpSession', true);
 			}
-		);
+		});
 	</aui:script>
 </c:if>

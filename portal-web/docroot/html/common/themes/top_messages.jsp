@@ -50,7 +50,8 @@ if (Validator.isNotNull(jspPath) || Validator.isNotNull(message)) {
 			message: '<%= HtmlUtil.escapeJS(alertMessage) %>',
 			messageType: 'html',
 			renderData: {
-				portletId: <%= portletId %>
+				portletId: '<%= portletId %>',
+				jspPath: '<%= jspPath %>',
 			},
 			title: null,
 			toastProps: {
