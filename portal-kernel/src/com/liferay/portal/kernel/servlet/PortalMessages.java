@@ -50,7 +50,6 @@ public class PortalMessages {
 
 	public static final String KEY_TIMEOUT = "timeout";
 
-
 	public static void add(
 		HttpServletRequest httpServletRequest, Class<?> clazz) {
 
