@@ -40,6 +40,8 @@ public class PortalMessages {
 
 	public static final String KEY_CSS_CLASS = "cssClass";
 
+	public static final String KEY_DISPLAY_TYPE = "displayType";
+
 	public static final String KEY_JSP_PATH = "jspPath";
 
 	public static final String KEY_MESSAGE = "message";
@@ -47,6 +49,7 @@ public class PortalMessages {
 	public static final String KEY_PORTLET_ID = "portletId";
 
 	public static final String KEY_TIMEOUT = "timeout";
+
 
 	public static void add(
 		HttpServletRequest httpServletRequest, Class<?> clazz) {

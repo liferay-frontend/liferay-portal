@@ -28,6 +28,7 @@ String message = (String)PortalMessages.get(request, PortalMessages.KEY_MESSAGE)
 
 if (Validator.isNotNull(jspPath) || Validator.isNotNull(message)) {
 	String cssClass = GetterUtil.getString(PortalMessages.get(request, PortalMessages.KEY_CSS_CLASS), "alert-info");
+	String displayType = GetterUtil.getString(PortalMessages.get(request, PortalMessages.KEY_DISPLAY_TYPE), "success");
 	String portletId = (String)PortalMessages.get(request, PortalMessages.KEY_PORTLET_ID);
 	int timeout = GetterUtil.getInteger(PortalMessages.get(request, PortalMessages.KEY_TIMEOUT), 10000);
 %>
@@ -57,8 +58,8 @@ if (Validator.isNotNull(jspPath) || Validator.isNotNull(message)) {
 			toastProps: {
 				autoClose: <%= timeout %>,
 				className: '<%= cssClass %>',
-				style: {top: 0},
-			}
+			},
+			type: '<%= displayType %>'
 		});
 	</aui:script>
 

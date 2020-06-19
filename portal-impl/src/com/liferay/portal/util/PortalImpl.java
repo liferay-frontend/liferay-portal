@@ -848,6 +848,7 @@ public class PortalImpl implements Portal {
 
 		PortalMessages.add(
 			httpServletRequest, PortalMessages.KEY_ANIMATION, false);
+		PortalMessages.add(httpServletRequest, PortalMessages.KEY_DISPLAY_TYPE, "info");
 		PortalMessages.add(
 			httpServletRequest, PortalMessages.KEY_JSP_PATH,
 			"/html/common/themes/user_locale_options.jsp");
