@@ -56,7 +56,7 @@ if (Validator.isNotNull(jspPath) || Validator.isNotNull(message)) {
 			},
 			title: null,
 			toastProps: {
-				autoClose: <%= timeout %>,
+				autoClose: <%= timeout %> !== -1 ? <%= timeout %> : null,
 				className: '<%= cssClass %>',
 			},
 			type: '<%= displayType %>'
