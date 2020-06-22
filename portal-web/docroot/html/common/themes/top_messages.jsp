@@ -27,8 +27,8 @@ String jspPath = (String)PortalMessages.get(request, PortalMessages.KEY_JSP_PATH
 String message = (String)PortalMessages.get(request, PortalMessages.KEY_MESSAGE);
 
 if (Validator.isNotNull(jspPath) || Validator.isNotNull(message)) {
-	String cssClass = GetterUtil.getString(PortalMessages.get(request, PortalMessages.KEY_CSS_CLASS), "alert-info");
-	String displayType = GetterUtil.getString(PortalMessages.get(request, PortalMessages.KEY_DISPLAY_TYPE), "success");
+	String cssClass = GetterUtil.getString(PortalMessages.get(request, PortalMessages.KEY_CSS_CLASS), "");
+	String displayType = GetterUtil.getString(PortalMessages.get(request, PortalMessages.KEY_DISPLAY_TYPE), "info");
 	String portletId = (String)PortalMessages.get(request, PortalMessages.KEY_PORTLET_ID);
 	int timeout = GetterUtil.getInteger(PortalMessages.get(request, PortalMessages.KEY_TIMEOUT), 10000);
 %>
