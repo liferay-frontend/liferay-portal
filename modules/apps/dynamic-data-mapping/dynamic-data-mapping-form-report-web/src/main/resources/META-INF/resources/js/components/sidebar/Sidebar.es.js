@@ -14,6 +14,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React, {useContext} from 'react';
 
@@ -57,7 +58,7 @@ export default () => {
 			<div className="open sidebar-container">
 				<div className="sidebar sidebar-light">
 					<nav className="component-tbar tbar">
-						<div className="container-fluid">
+						<ClayLayout.ContainerFluid>
 							<ul className="tbar-nav">
 								<li className="tbar-item">
 									<div className="icon">
@@ -92,7 +93,7 @@ export default () => {
 									</ClayButton>
 								</li>
 							</ul>
-						</div>
+						</ClayLayout.ContainerFluid>
 					</nav>
 
 					<div className="sidebar-body">
