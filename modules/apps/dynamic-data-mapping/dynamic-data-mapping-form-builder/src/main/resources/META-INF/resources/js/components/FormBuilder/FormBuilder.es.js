@@ -12,6 +12,7 @@
  * details.
  */
 
+import ClayLayout from '@clayui/layout';
 import {PagesVisitor, compose} from 'dynamic-data-mapping-form-renderer';
 import FormRenderer from 'dynamic-data-mapping-form-renderer/js/components/FormRenderer/FormRenderer.es';
 import Component from 'metal-jsx';
@@ -89,7 +90,7 @@ class FormBuilderBase extends Component {
 
 		return (
 			<div class="ddm-form-builder-wrapper">
-				<div class="container ddm-form-builder">
+				<ClayLayout.Container className="ddm-form-builder">
 					<FormRenderer
 						activePage={activePage}
 						allowNestedFields={allowNestedFields}
@@ -104,7 +105,7 @@ class FormBuilderBase extends Component {
 						successPageSettings={successPageSettings}
 						view={view}
 					/>
-				</div>
+				</ClayLayout.Container>
 			</div>
 		);
 	}
