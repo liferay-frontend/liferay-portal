@@ -384,8 +384,6 @@ renderResponse.setTitle(headerTitle);
 		fileEntryTypeId,
 		fileEntryTypeName
 	) {
-		var A = AUI();
-
 		var searchContainer = Liferay.SearchContainer.get(
 			'<portlet:namespace />dlFileEntryTypesSearchContainer'
 		);
@@ -397,11 +395,13 @@ renderResponse.setTitle(headerTitle);
 
 		<c:choose>
 			<c:when test="<%= workflowEnabled %>">
-				var restrictionTypeWorkflow = A.one(
-					'#<portlet:namespace />restrictionTypeWorkflow'
+				var restrictionTypeWorkflow = document.getElementById(
+					'<portlet:namespace />restrictionTypeWorkflow'
 				);
 
-				restrictionTypeWorkflow.hide();
+				restrictionTypeWorkflow.classList.add('hide');
+				restrictionTypeWorkflow.setAttribute('hidden', 'hidden');
+				restrictionTypeWorkflow.style.display = 'none';
 
 				var workflowDefinitions =
 					'<%= UnicodeFormatter.toString(workflowDefinitionsBuffer) %>';
@@ -428,27 +428,31 @@ renderResponse.setTitle(headerTitle);
 
 		searchContainer.updateDataStore();
 
-		var select = A.one('#<portlet:namespace />defaultFileEntryTypeId');
+		var select = document.getElementById(
+			'<portlet:namespace />defaultFileEntryTypeId'
+		);
 
-		var selectContainer = A.one(
+		var selectContainer = document.querySelector(
 			'#<portlet:namespace />restrictionTypeDefinedDiv .default-document-type'
 		);
 
-		selectContainer.show();
+		selectContainer.classList.remove('hide');
+		selectContainer.removeAttribute('hidden');
+		selectContainer.style.display = '';
 
-		var option = A.Node.create(
-			'<option id="<portlet:namespace />defaultFileEntryTypeId-' +
-				fileEntryTypeId +
-				'" value="' +
-				fileEntryTypeId +
-				'">' +
-				fileEntryTypeName +
-				'</option>'
+		var option = document.createElement('option');
+		option.setAttribute(
+			'id',
+			'<portlet:namespace />defaultFileEntryTypeId-' + fileEntryTypeId
 		);
+		option.setAttribute('value', fileEntryTypeId);
+		option.text = fileEntryTypeName;
 
-		select.show();
+		select.classList.remove('hide');
+		select.removeAttribute('hidden');
+		select.style.display = '';
 
-		select.append(option);
+		select.appendChild(option);
 	};
 
 	Liferay.Util.toggleRadio('<portlet:namespace />restrictionTypeInherit', '', [
@@ -486,34 +490,42 @@ renderResponse.setTitle(headerTitle);
 
 			searchContainer.deleteRow(tr, link.getAttribute('data-rowId'));
 
-			A.one(
-				'#<portlet:namespace />defaultFileEntryTypeId-' +
+			var option = document.getElementById(
+				'<portlet:namespace />defaultFileEntryTypeId-' +
 					link.getAttribute('data-rowId')
-			).remove();
+			);
+
+			option.parentElement.removeChild(option);
 
 			<portlet:namespace />documentTypesChanged = true;
 
-			var select = A.one(
-				'#<%= liferayPortletResponse.getNamespace() + "workflowDefinition" + DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_ALL %>'
+			var select = document.getElementById(
+				'<%= liferayPortletResponse.getNamespace() + "workflowDefinition" + DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_ALL %>'
 			);
 
-			var selectContainer = A.one(
-				'#<portlet:namespace />restrictionTypeWorkflow'
+			var selectContainer = document.getElementById(
+				'<portlet:namespace />restrictionTypeWorkflow'
 			);
 
-			var fileEntryTypesCount = select.get('children').size();
+			var fileEntryTypesCount = select.children.length;
 
 			if (fileEntryTypesCount == 0) {
-				selectContainer.hide();
+				selectContainer.classList.add('hide');
+				selectContainer.setAttribute('hidden', 'hidden');
+				selectContainer.style.display = 'none';
 
-				var restrictionTypeWorkflow = A.one(
-					'#<portlet:namespace />restrictionTypeWorkflow'
+				var restrictionTypeWorkflow = document.getElementById(
+					'<portlet:namespace />restrictionTypeWorkflow'
 				);
 
-				restrictionTypeWorkflow.show();
+				restrictionTypeWorkflow.classList.remove('hide');
+				restrictionTypeWorkflow.removeAttribute('hidden');
+				restrictionTypeWorkflow.style.display = '';
 			}
 			else {
-				selectContainer.show();
+				selectContainer.classList.remove('hide');
+				selectContainer.removeAttribute('hidden');
+				selectContainer.style.display = '';
 			}
 		},
 		'.modify-link'
