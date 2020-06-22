@@ -472,9 +472,7 @@ renderResponse.setTitle(headerTitle);
 			'<portlet:namespace />restrictionTypeDefinedDiv'
 		);
 	</c:if>
-</aui:script>
 
-<aui:script use="liferay-search-container">
 	var searchContainer = Liferay.SearchContainer.get(
 		'<portlet:namespace />dlFileEntryTypesSearchContainer'
 	);
