@@ -12,6 +12,7 @@
  * details.
  */
 
+import ClayLayout from '@clayui/layout';
 import ClayTabs from '@clayui/tabs';
 import React from 'react';
 
@@ -22,7 +23,7 @@ export const Tabs = ({activePage, pages}) => {
 
 	return (
 		<nav className="component-tbar ddm-form-tabs mb-3 tbar">
-			<div className="container-fluid pr-0">
+			<ClayLayout.ContainerFluid className="pr-0">
 				<ClayTabs>
 					{pages.map((page, index) => (
 						<ClayTabs.Item
@@ -42,7 +43,7 @@ export const Tabs = ({activePage, pages}) => {
 						</ClayTabs.Item>
 					))}
 				</ClayTabs>
-			</div>
+			</ClayLayout.ContainerFluid>
 		</nav>
 	);
 };

@@ -14,6 +14,7 @@
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
+import ClayLayout from '@clayui/layout';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import React from 'react';
 
@@ -65,13 +66,16 @@ export const Container = ({children, page, pageIndex, pages}) => {
 	return (
 		<ClayTooltipProvider>
 			<div className="page">
-				<div className="fade sheet show tab-pane" role="tabpanel">
+				<ClayLayout.Sheet
+					className="fade show tab-pane"
+					role="tabpanel"
+				>
 					<div className="form-builder-layout">
 						<h5 className="pagination">{page.pagination}</h5>
 
 						{children}
 					</div>
-				</div>
+				</ClayLayout.Sheet>
 
 				<div className="ddm-paginated-builder-reorder">
 					<ClayButtonWithIcon
@@ -180,9 +184,9 @@ export const Page = ({
 		{Header}
 
 		{empty && editable ? (
-			<div className="row">
-				<div
-					className="col col-ddm col-empty col-md-12 last-col lfr-initial-col mb-4 mt-5"
+			<ClayLayout.Row>
+				<ClayLayout.Col
+					className="col-ddm col-empty last-col lfr-initial-col mb-4 mt-5"
 					data-ddm-field-column="0"
 					data-ddm-field-page={pageIndex}
 					data-ddm-field-row="0"
@@ -194,8 +198,8 @@ export const Page = ({
 							)}
 						</p>
 					</div>
-				</div>
-			</div>
+				</ClayLayout.Col>
+			</ClayLayout.Row>
 		) : (
 			children
 		)}
