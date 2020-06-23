@@ -31,7 +31,7 @@ import java.io.InputStream;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
 
@@ -44,7 +44,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class ThemeCSSVariableDescriptionsServiceTrackerCustomizer
 	implements ServiceTrackerCustomizer
-		<ServletContext, Map<String, CSSVariableDescription>> {
+		<ServletContext, AtomicReference<Map<String, CSSVariableDescription>>> {
 
 	public ThemeCSSVariableDescriptionsServiceTrackerCustomizer(
 		BundleContext bundleContext, JSONFactory jsonFactory) {
@@ -54,21 +54,21 @@ public class ThemeCSSVariableDescriptionsServiceTrackerCustomizer
 	}
 
 	@Override
-	public Map<String, CSSVariableDescription> addingService(
+	public AtomicReference<Map<String, CSSVariableDescription>> addingService(
 		ServiceReference<ServletContext> serviceReference) {
 
-		Map<String, CSSVariableDescription> cssVariablesDescriptions =
-			new ConcurrentHashMap<>();
+		AtomicReference<Map<String, CSSVariableDescription>> atomicReference =
+			new AtomicReference<>();
 
-		modifiedService(serviceReference, cssVariablesDescriptions);
+		modifiedService(serviceReference, atomicReference);
 
-		return cssVariablesDescriptions;
+		return atomicReference;
 	}
 
 	@Override
 	public void modifiedService(
 		ServiceReference<ServletContext> serviceReference,
-		Map<String, CSSVariableDescription> cssVariablesDescriptions) {
+		AtomicReference<Map<String, CSSVariableDescription>> atomicReference) {
 
 		ServletContext servletContext = _bundleContext.getService(
 			serviceReference);
@@ -77,12 +77,8 @@ public class ThemeCSSVariableDescriptionsServiceTrackerCustomizer
 			String fileName = _getCSSVariableDescriptionsFileName(
 				servletContext);
 
-			Map<String, CSSVariableDescription> cssVariableDescriptions =
-				_getCSSVariableDescriptions(servletContext, fileName);
-
-			cssVariablesDescriptions.clear();
-
-			cssVariablesDescriptions.putAll(cssVariableDescriptions);
+			atomicReference.set(
+				_getCSSVariableDescriptions(servletContext, fileName));
 		}
 		catch (JSONException jsonException) {
 			_log.error(
@@ -98,7 +94,7 @@ public class ThemeCSSVariableDescriptionsServiceTrackerCustomizer
 	@Override
 	public void removedService(
 		ServiceReference<ServletContext> serviceReference,
-		Map<String, CSSVariableDescription> cssVariableDescriptions) {
+		AtomicReference<Map<String, CSSVariableDescription>> atomicReference) {
 	}
 
 	private Map<String, CSSVariableDescription> _getCSSVariableDescriptions(

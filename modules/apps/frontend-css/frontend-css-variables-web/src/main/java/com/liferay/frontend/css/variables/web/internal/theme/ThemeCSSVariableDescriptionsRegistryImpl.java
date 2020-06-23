@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.model.Theme;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
 
@@ -44,7 +45,10 @@ public class ThemeCSSVariableDescriptionsRegistryImpl
 	public Map<String, CSSVariableDescription> getCSSVariableDescriptions(
 		Theme theme) {
 
-		return _serviceTrackerMap.getService(theme.getServletContextName());
+		AtomicReference<Map<String, CSSVariableDescription>> atomicReference =
+			_serviceTrackerMap.getService(theme.getServletContextName());
+
+		return atomicReference.get();
 	}
 
 	@Activate
@@ -67,7 +71,8 @@ public class ThemeCSSVariableDescriptionsRegistryImpl
 	@Reference
 	private JSONFactory _jsonFactory;
 
-	private ServiceTrackerMap<String, Map<String, CSSVariableDescription>>
-		_serviceTrackerMap;
+	private ServiceTrackerMap
+		<String, AtomicReference<Map<String, CSSVariableDescription>>>
+			_serviceTrackerMap;
 
 }
