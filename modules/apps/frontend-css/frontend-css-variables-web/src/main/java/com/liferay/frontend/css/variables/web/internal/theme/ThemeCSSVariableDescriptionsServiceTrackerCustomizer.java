@@ -124,7 +124,7 @@ public class ThemeCSSVariableDescriptionsServiceTrackerCustomizer
 				name,
 				new CSSVariableDescriptionImpl(
 					_getCSSVariableType(cssVariableDefinitionJSONObject),
-					_getLabelsMap(cssVariableDefinitionJSONObject, name)));
+					name));
 		}
 
 		return cssVariableDescriptions;
@@ -174,33 +174,6 @@ public class ThemeCSSVariableDescriptionsServiceTrackerCustomizer
 		}
 
 		return CSSVariableType.STRING;
-	}
-
-	private Map<String, String> _getLabelsMap(
-		JSONObject cssVariableDefinitionJSONObject, String defaultLabel) {
-
-		Map<String, String> labelsMap = new HashMap<>();
-
-		JSONObject labelsMapJSONObject =
-			cssVariableDefinitionJSONObject.getJSONObject("label");
-
-		if (labelsMapJSONObject != null) {
-			for (String localeKey : labelsMapJSONObject.keySet()) {
-				labelsMap.put(
-					localeKey, labelsMapJSONObject.getString(localeKey));
-			}
-		}
-		else {
-			String label = cssVariableDefinitionJSONObject.getString("label");
-
-			if (label == null) {
-				label = defaultLabel;
-			}
-
-			labelsMap.put(StringPool.BLANK, label);
-		}
-
-		return labelsMap;
 	}
 
 	private JSONObject _parseJSONObject(

@@ -16,11 +16,6 @@ package com.liferay.frontend.css.variables.web.internal;
 
 import com.liferay.frontend.css.variables.CSSVariableDescription;
 import com.liferay.frontend.css.variables.CSSVariableType;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * @author Iván Zaera Avellón
@@ -28,14 +23,10 @@ import java.util.Map;
 public class CSSVariableDescriptionImpl implements CSSVariableDescription {
 
 	public CSSVariableDescriptionImpl(
-		CSSVariableType cssVariableType, Map<String, String> labelsMap) {
+		CSSVariableType cssVariableType, String name) {
 
 		_cssVariableType = cssVariableType;
-		_labelsMap = labelsMap;
-	}
-
-	public void addLabel(String localeKey, String label) {
-		_labelsMap.put(localeKey, label);
+		_name = name;
 	}
 
 	@Override
@@ -43,32 +34,12 @@ public class CSSVariableDescriptionImpl implements CSSVariableDescription {
 		return _cssVariableType;
 	}
 
-	public String getLabel(Locale locale) {
-		String languageCountryKey = _getLanguageCountryKey(locale);
-
-		if ((languageCountryKey != null) &&
-			_labelsMap.containsKey(languageCountryKey)) {
-
-			return _labelsMap.get(languageCountryKey);
-		}
-
-		if (_labelsMap.containsKey(locale.getLanguage())) {
-			return _labelsMap.get(locale.getLanguage());
-		}
-
-		return _labelsMap.get(StringPool.BLANK);
-	}
-
-	private String _getLanguageCountryKey(Locale locale) {
-		if (Validator.isNull(locale.getCountry())) {
-			return locale.getLanguage();
-		}
-
-		return locale.getLanguage() + StringPool.UNDERLINE +
-			locale.getCountry();
+	@Override
+	public String getName() {
+		return _name;
 	}
 
 	private final CSSVariableType _cssVariableType;
-	private final Map<String, String> _labelsMap;
+	private final String _name;
 
 }
