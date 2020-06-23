@@ -17,14 +17,12 @@ package com.liferay.frontend.css.variables.web.internal.theme;
 import com.liferay.frontend.css.variables.CSSVariableDescription;
 import com.liferay.frontend.css.variables.CSSVariableType;
 import com.liferay.portal.json.JSONFactoryImpl;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 
 import java.net.URL;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-
-import javax.servlet.ServletContext;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,23 +30,21 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Iván Zaera Avellón
  */
-public class ThemeCSSVariableDescriptionsServiceTrackerCustomizerTest {
+public class ThemeBundleInspectorTest {
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorThrowsWhenNotAThemeBundle() {
+		Bundle bundle = Mockito.mock(Bundle.class);
+
+		new ThemeBundleInspector(bundle, new JSONFactoryImpl());
+	}
 
 	@Test
-	public void testModifiedService() {
-		ThemeCSSVariableDescriptionsServiceTrackerCustomizer
-			themeCSSVariableDescriptionsServiceTrackerCustomizer =
-				new ThemeCSSVariableDescriptionsServiceTrackerCustomizer(
-					new JSONFactoryImpl());
-
-		ServiceReference<ServletContext> serviceReference = Mockito.mock(
-			ServiceReference.class);
-
+	public void testGetCSSVariableDescriptions() throws JSONException {
 		Bundle bundle = Mockito.mock(Bundle.class);
 
 		Mockito.when(
@@ -75,20 +71,11 @@ public class ThemeCSSVariableDescriptionsServiceTrackerCustomizerTest {
 			"A theme"
 		);
 
-		Mockito.when(
-			serviceReference.getBundle()
-		).thenReturn(
-			bundle
-		);
-
-		AtomicReference<Map<String, CSSVariableDescription>> atomicReference =
-			new AtomicReference<>();
-
-		themeCSSVariableDescriptionsServiceTrackerCustomizer.modifiedService(
-			serviceReference, atomicReference);
+		ThemeBundleInspector themeBundleInspector = new ThemeBundleInspector(
+			bundle, new JSONFactoryImpl());
 
 		Map<String, CSSVariableDescription> cssVariableDescriptions =
-			atomicReference.get();
+			themeBundleInspector.getCSSVariableDescriptions();
 
 		Assert.assertEquals(
 			cssVariableDescriptions.toString(), 2,
@@ -111,10 +98,31 @@ public class ThemeCSSVariableDescriptionsServiceTrackerCustomizerTest {
 			cssVariableDescription.getCSSVariableType());
 	}
 
+	@Test
+	public void testGetSymbolicName() {
+		Bundle bundle = Mockito.mock(Bundle.class);
+
+		Mockito.when(
+			bundle.getResource("WEB-INF/liferay-look-and-feel.xml")
+		).thenReturn(
+			_liferayLookAndFeelXmlURL
+		);
+
+		Mockito.when(
+			bundle.getSymbolicName()
+		).thenReturn(
+			"A theme"
+		);
+
+		ThemeBundleInspector themeBundleInspector = new ThemeBundleInspector(
+			bundle, new JSONFactoryImpl());
+
+		Assert.assertEquals("A theme", themeBundleInspector.getSymbolicName());
+	}
+
 	private static final URL _liferayLookAndFeelXmlURL =
 		ThemeBundleInspectorTest.class.getResource("liferay-look-and-feel.xml");
 	private static final URL _tokensJsonURL =
-		ThemeCSSVariableDescriptionsServiceTrackerCustomizerTest.class.
-			getResource("tokens.json");
+		ThemeBundleInspectorTest.class.getResource("tokens.json");
 
 }

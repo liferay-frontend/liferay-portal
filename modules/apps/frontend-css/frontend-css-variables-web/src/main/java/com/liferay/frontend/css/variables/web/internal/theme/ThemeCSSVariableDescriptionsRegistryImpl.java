@@ -58,7 +58,7 @@ public class ThemeCSSVariableDescriptionsRegistryImpl
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, ServletContext.class, "osgi.web.symbolicname",
 			new ThemeCSSVariableDescriptionsServiceTrackerCustomizer(
-				_bundleContext, _jsonFactory));
+				_jsonFactory));
 	}
 
 	@Deactivate
