@@ -23,8 +23,8 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,37 +74,21 @@ public class ThemeCSSVariableDescriptionsServiceTrackerCustomizer
 			serviceReference);
 
 		try {
-			InputStream is = servletContext.getResourceAsStream(
-				"/WEB-INF/css-variables.json");
+			String fileName = _getCSSVariableDescriptionsFileName(
+				servletContext);
 
-			if (is == null) {
-				return;
-			}
+			Map<String, CSSVariableDescription> cssVariableDescriptions =
+				_getCSSVariableDescriptions(servletContext, fileName);
 
-			try {
-				cssVariablesDescriptions.clear();
+			cssVariablesDescriptions.clear();
 
-				cssVariablesDescriptions.putAll(_parse(StringUtil.read(is)));
-			}
-			catch (IllegalArgumentException illegalArgumentException) {
-				_log.error(
-					StringBundler.concat(
-						"Unable to parse css-variables.json of servlet ",
-						"context ", servletContext.getServletContextName()),
-					illegalArgumentException);
-			}
-			catch (IOException ioException) {
-				_log.error(
-					"Unable to read css-variables.json of servlet context" +
-						servletContext.getServletContextName(),
-					ioException);
-			}
-			catch (JSONException jsonException) {
-				_log.error(
-					"Unable to parse css-variables.json of servlet context" +
-						servletContext.getServletContextName(),
-					jsonException);
-			}
+			cssVariablesDescriptions.putAll(cssVariableDescriptions);
+		}
+		catch (JSONException jsonException) {
+			_log.error(
+				"Unable to read css-variables.json of servlet context" +
+					servletContext.getServletContextName(),
+				jsonException);
 		}
 		finally {
 			_bundleContext.ungetService(serviceReference);
@@ -115,6 +99,75 @@ public class ThemeCSSVariableDescriptionsServiceTrackerCustomizer
 	public void removedService(
 		ServiceReference<ServletContext> serviceReference,
 		Map<String, CSSVariableDescription> cssVariableDescriptions) {
+	}
+
+	private Map<String, CSSVariableDescription> _getCSSVariableDescriptions(
+			ServletContext servletContext, String fileName)
+		throws JSONException {
+
+		JSONObject jsonObject = _parseJSONObject(servletContext, fileName);
+
+		if (jsonObject == null) {
+			return null;
+		}
+
+		JSONObject variablesJSONObject = jsonObject.getJSONObject("variables");
+
+		if (variablesJSONObject == null) {
+			throw new JSONException("Unable to read variables field");
+		}
+
+		Map<String, CSSVariableDescription> cssVariableDescriptions =
+			new HashMap<>();
+
+		for (String name : variablesJSONObject.keySet()) {
+			JSONObject cssVariableDefinitionJSONObject =
+				variablesJSONObject.getJSONObject(name);
+
+			cssVariableDescriptions.put(
+				name,
+				new CSSVariableDescriptionImpl(
+					_getCSSVariableType(cssVariableDefinitionJSONObject),
+					_getLabelsMap(cssVariableDefinitionJSONObject, name)));
+		}
+
+		return cssVariableDescriptions;
+	}
+
+	private String _getCSSVariableDescriptionsFileName(
+			ServletContext servletContext)
+		throws JSONException {
+
+		try (InputStream is = servletContext.getResourceAsStream(
+				"/package.json")) {
+
+			if (is == null) {
+				return null;
+			}
+
+			JSONObject packageJSONObject = _jsonFactory.createJSONObject(
+				StringUtil.read(is));
+
+			String cssVariablesPath = StringPool.BLANK;
+
+			JSONObject liferayThemeJSONObject = packageJSONObject.getJSONObject(
+				"liferayTheme");
+
+			if (liferayThemeJSONObject != null) {
+				cssVariablesPath = liferayThemeJSONObject.getString(
+					"cssVariablesPath");
+			}
+
+			if (Validator.isNull(cssVariablesPath)) {
+				cssVariablesPath = "/WEB-INF/css-variables.json";
+			}
+
+			return cssVariablesPath;
+		}
+		catch (IOException ioException) {
+			throw new JSONException(
+				"Unable to parse package.json", ioException);
+		}
 	}
 
 	private CSSVariableType _getCSSVariableType(JSONObject jsonObject) {
@@ -154,33 +207,20 @@ public class ThemeCSSVariableDescriptionsServiceTrackerCustomizer
 		return labelsMap;
 	}
 
-	private Map<String, CSSVariableDescription> _parse(String json)
+	private JSONObject _parseJSONObject(
+			ServletContext servletContext, String fileName)
 		throws JSONException {
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(json);
+		try (InputStream is = servletContext.getResourceAsStream(fileName)) {
+			if (is == null) {
+				return null;
+			}
 
-		JSONObject variablesJSONObject = jsonObject.getJSONObject("variables");
-
-		if (variablesJSONObject == null) {
-			throw new IllegalArgumentException(
-				"Unable to read variables field");
+			return _jsonFactory.createJSONObject(StringUtil.read(is));
 		}
-
-		Map<String, CSSVariableDescription> cssVariableDescriptions =
-			new HashMap<>();
-
-		for (String name : variablesJSONObject.keySet()) {
-			JSONObject cssVariableDefinitionJSONObject =
-				variablesJSONObject.getJSONObject(name);
-
-			cssVariableDescriptions.put(
-				name,
-				new CSSVariableDescriptionImpl(
-					_getCSSVariableType(cssVariableDefinitionJSONObject),
-					_getLabelsMap(cssVariableDefinitionJSONObject, name)));
+		catch (IOException ioException) {
+			throw new JSONException("Unable to parse " + fileName, ioException);
 		}
-
-		return cssVariableDescriptions;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
