@@ -332,72 +332,122 @@ String successMessageKey = KaleoDesignerPortletKeys.KALEO_DESIGNER + "requestPro
 								</div>
 
 								<aui:script>
-									window['<portlet:namespace />afterTabViewChange'] = function (event) {
-										var tabContentNode = event.newVal.get('boundingBox');
+									Liferay.provide(
+										window,
+										'<portlet:namespace />afterTabViewChange',
+										function (event) {
+											var tabContentNode = event.newVal.get('boundingBox');
 
-										var kaleoDesigner = <portlet:namespace />kaleoDesigner;
+											var kaleoDesigner = <portlet:namespace />kaleoDesigner;
 
-										if (tabContentNode === kaleoDesigner.viewNode && kaleoDesigner.editor) {
-											setTimeout(function () {
-												kaleoDesigner.set('definition', kaleoDesigner.editor.get('value'));
-											}, 0);
-										}
-									};
+											if (tabContentNode === kaleoDesigner.viewNode && kaleoDesigner.editor) {
+												setTimeout(function () {
+													kaleoDesigner.set(
+														'definition',
+														kaleoDesigner.editor.get('value')
+													);
+												}, 0);
+											}
+										},
+										['aui-base']
+									);
 
-									window['<portlet:namespace />publishKaleoDefinitionVersion'] = function () {
-										<portlet:namespace />updateContent();
+									Liferay.provide(
+										window,
+										'<portlet:namespace />publishKaleoDefinitionVersion',
+										function () {
+											<portlet:namespace />updateContent();
 
-										<portlet:namespace />updateTitle();
+											<portlet:namespace />updateTitle();
 
-										<portlet:namespace />updateAction(
-											'<portlet:actionURL name="publishKaleoDefinitionVersion" />'
-										);
-
-										submitForm(document.<portlet:namespace />fm);
-									};
-
-									window['<portlet:namespace />saveKaleoDefinitionVersion'] = function () {
-										<portlet:namespace />updateContent();
-
-										<portlet:namespace />updateTitle();
-
-										<portlet:namespace />updateAction(
-											'<portlet:actionURL name="saveKaleoDefinitionVersion" />'
-										);
-
-										submitForm(document.<portlet:namespace />fm);
-									};
-
-									window['<portlet:namespace />updateAction'] = function (action) {
-										var form = document.<portlet:namespace />fm;
-
-										form.setAttribute('action', action);
-									};
-
-									window['<portlet:namespace />updateContent'] = function () {
-										var content = document.getElementById('<portlet:namespace />content');
-
-										var activeTab = <portlet:namespace />kaleoDesigner.contentTabView.getActiveTab();
-
-										if (activeTab === <portlet:namespace />kaleoDesigner.sourceNode) {
-											content.value = <portlet:namespace />kaleoDesigner.editor.get('value');
-										}
-										else {
-											content.value = <portlet:namespace />kaleoDesigner.getContent();
-										}
-									};
-
-									window['<portlet:namespace />updateTitle'] = function () {
-										var titleComponent = Liferay.component('<portlet:namespace />title');
-
-										var titlePlaceholderInput = titleComponent.get('inputPlaceholder');
-
-										if (!titlePlaceholderInput.val()) {
-											titlePlaceholderInput.val(
-												'<liferay-ui:message key="untitled-workflow" />'
+											<portlet:namespace />updateAction(
+												'<portlet:actionURL name="publishKaleoDefinitionVersion" />'
 											);
-										}
-									};
+
+											submitForm(document.<portlet:namespace />fm);
+										},
+										['aui-base']
+									);
+
+									Liferay.provide(
+										window,
+										'<portlet:namespace />saveKaleoDefinitionVersion',
+										function () {
+											<portlet:namespace />updateContent();
+
+											<portlet:namespace />updateTitle();
+
+											<portlet:namespace />updateAction(
+												'<portlet:actionURL name="saveKaleoDefinitionVersion" />'
+											);
+
+											submitForm(document.<portlet:namespace />fm);
+										},
+										['aui-base']
+									);
+
+									Liferay.provide(
+										window,
+										'<portlet:namespace />updateAction',
+										function (action) {
+											var A = AUI();
+
+											var form = A.one(document.<portlet:namespace />fm);
+
+											form.attr('action', action);
+										},
+										['aui-base']
+									);
+
+									Liferay.provide(
+										window,
+										'<portlet:namespace />updateContent',
+										function () {
+											var A = AUI();
+
+											var content = A.one('#<portlet:namespace />content');
+
+											var activeTab = <portlet:namespace />kaleoDesigner.contentTabView.getActiveTab();
+
+											if (activeTab === <portlet:namespace />kaleoDesigner.sourceNode) {
+												content.val(<portlet:namespace />kaleoDesigner.editor.get('value'));
+											}
+											else {
+												content.val(<portlet:namespace />kaleoDesigner.getContent());
+											}
+										},
+										['aui-base']
+									);
+
+									Liferay.provide(
+										window,
+										'<portlet:namespace />updateTitle',
+										function () {
+											var titleComponent = Liferay.component('<portlet:namespace />title');
+
+											var titlePlaceholderInput = titleComponent.get('inputPlaceholder');
+
+											if (!titlePlaceholderInput.val()) {
+												titlePlaceholderInput.val(
+													'<liferay-ui:message key="untitled-workflow" />'
+												);
+											}
+										},
+										['aui-base']
+									);
+
+									Liferay.provide(
+										window,
+										'<portlet:namespace />closeKaleoDialog',
+										function () {
+											var dialog = Liferay.Util.getWindow();
+
+											if (dialog) {
+												dialog.destroy();
+											}
+										},
+										['aui-base']
+									);
 
 									<%
 									String saveCallback = ParamUtil.getString(request, "saveCallback");
@@ -661,6 +711,44 @@ String successMessageKey = KaleoDesignerPortletKeys.KALEO_DESIGNER + "requestPro
 											}
 										</c:when>
 									</c:choose>
+
+									var dialog = Liferay.Util.getWindow();
+
+									if (dialog && !dialog._dialogAction) {
+										dialog._dialogAction = function (event) {
+											if (!event.newVal) {
+
+												<%
+												boolean refreshOpenerOnClose = ParamUtil.getBoolean(request, "refreshOpenerOnClose");
+												%>
+
+												<c:if test="<%= Validator.isNotNull(portletResourceNamespace) && refreshOpenerOnClose %>">
+
+													<%
+													String openerWindowName = ParamUtil.getString(request, "openerWindowName");
+													%>
+
+													var openerWindow = Liferay.Util.getTop();
+
+													<c:if test="<%= Validator.isNotNull(openerWindowName) %>">
+														var openerDialog = Liferay.Util.getWindow(
+															'<%= HtmlUtil.escapeJS(openerWindowName) %>'
+														);
+
+														openerWindow = openerDialog.iframe.node
+															.get('contentWindow')
+															.getDOM();
+													</c:if>
+
+													openerWindow.Liferay.Portlet.refresh(
+														'#p_p_id<%= HtmlUtil.escapeJS(portletResourceNamespace) %>'
+													);
+												</c:if>
+											}
+										};
+
+										dialog.on('visibleChange', dialog._dialogAction);
+									}
 								</aui:script>
 							</aui:fieldset>
 						</aui:fieldset-group>

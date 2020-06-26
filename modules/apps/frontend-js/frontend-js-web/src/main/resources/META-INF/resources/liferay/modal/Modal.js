@@ -418,7 +418,7 @@ class Iframe extends React.Component {
 		this.delegateHandler = dom.delegate(
 			iframeWindow.document,
 			'click',
-			'.btn-cancel,.lfr-hide-dialog',
+			'.btn-cancel',
 			() => this.props.processClose()
 		);
 
