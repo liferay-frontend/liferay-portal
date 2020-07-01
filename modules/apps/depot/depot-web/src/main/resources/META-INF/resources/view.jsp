@@ -85,8 +85,8 @@ DepotAdminManagementToolbarDisplayContext depotAdminManagementToolbarDisplayCont
 
 							<liferay-ui:search-container-column-text>
 								<clay:dropdown-actions
-									defaultEventHandler="<%= DepotAdminWebKeys.DEPOT_ENTRY_DROPDOWN_DEFAULT_EVENT_HANDLER %>"
 									dropdownItems="<%= depotAdminDisplayContext.getActionDropdownItems(depotEntry) %>"
+									propsTransformer="js/DepotEntryDropdownPropsTransformer"
 								/>
 							</liferay-ui:search-container-column-text>
 						</c:when>
@@ -113,8 +113,8 @@ DepotAdminManagementToolbarDisplayContext depotAdminManagementToolbarDisplayCont
 
 							<liferay-ui:search-container-column-text>
 								<clay:dropdown-actions
-									defaultEventHandler="<%= DepotAdminWebKeys.DEPOT_ENTRY_DROPDOWN_DEFAULT_EVENT_HANDLER %>"
 									dropdownItems="<%= depotAdminDisplayContext.getActionDropdownItems(depotEntry) %>"
+									propsTransformer="js/DepotEntryDropdownPropsTransformer"
 								/>
 							</liferay-ui:search-container-column-text>
 						</c:otherwise>
@@ -130,11 +130,6 @@ DepotAdminManagementToolbarDisplayContext depotAdminManagementToolbarDisplayCont
 		</aui:form>
 	</div>
 </clay:container-fluid>
-
-<liferay-frontend:component
-	componentId="<%= DepotAdminWebKeys.DEPOT_ENTRY_DROPDOWN_DEFAULT_EVENT_HANDLER %>"
-	module="js/DepotEntryDropdownDefaultEventHandler.es"
-/>
 
 <liferay-frontend:component
 	componentId="<%= depotAdminManagementToolbarDisplayContext.getDefaultEventHandler() %>"

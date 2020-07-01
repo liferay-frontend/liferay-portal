@@ -46,6 +46,10 @@ public class DepotAdminWebKeys {
 
 	public static final String DEPOT_ENTRY = "DEPOT_ENTRY";
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
+	 */
+	@Deprecated
 	public static final String DEPOT_ENTRY_DROPDOWN_DEFAULT_EVENT_HANDLER =
 		"DEPOT_ENTRY_DROPDOWN_DEFAULT_EVENT_HANDLER";
 

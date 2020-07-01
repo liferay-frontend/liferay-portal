@@ -12,37 +12,44 @@
  * details.
  */
 
-import {DefaultEventHandler} from 'frontend-js-web';
+import {openModal} from 'frontend-js-web';
 
 import confirmDepotEntryDeletion from './confirmDepotEntryDeletion.es';
 
-class DepotEntryDropdownDefaultEventHandler extends DefaultEventHandler {
+const ACTIONS = {
 	deleteDepotEntry(itemData) {
 		if (confirmDepotEntryDeletion()) {
 			submitForm(document.hrefFm, itemData.deleteDepotEntryURL);
 		}
-	}
-
+	},
 	permissionsDepotEntry(itemData) {
-		this._openWindow(
-			Liferay.Language.get('permissions'),
-			itemData.permissionsDepotEntryURL
-		);
-	}
-
-	_openWindow(label, url) {
-		Liferay.Util.openWindow({
-			dialog: {
-				destroyOnHide: true,
-				modal: true,
-			},
+		openModal({
 			dialogIframe: {
 				bodyCssClass: 'dialog-with-footer',
 			},
-			title: Liferay.Language.get(label),
-			uri: url,
+			size: 'full-screen',
+			title: Liferay.Language.get('permissions'),
+			url: itemData.permissionsDepotEntryURL,
 		});
-	}
-}
+	},
+};
 
-export default DepotEntryDropdownDefaultEventHandler;
+export default function propsTransformer({items, ...otherProps}) {
+	return {
+		...otherProps,
+		items: items.map((item) => {
+			return {
+				...item,
+				onClick(event) {
+					const action = item.data?.action;
+
+					if (action) {
+						event.preventDefault();
+
+						ACTIONS[action](item.data);
+					}
+				},
+			};
+		}),
+	};
+}
