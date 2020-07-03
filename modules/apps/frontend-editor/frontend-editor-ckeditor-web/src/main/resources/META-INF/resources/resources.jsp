@@ -35,6 +35,34 @@ String inlineEditSaveURL = GetterUtil.getString((String)request.getAttribute(CKE
 	long javaScriptLastModified = PortalWebResourcesUtil.getLastModified(PortalWebResourceConstants.RESOURCE_TYPE_EDITOR_CKEDITOR);
 	%>
 
+	<script data-senna-track="temporary" type="text/javascript">
+		window.CKEDITOR_GETURL = function (resource) {
+			var languageParameter = '&languageId=' + themeDisplay.getLanguageId();
+
+			// If this is not a full or absolute path.
+
+			if (resource.indexOf(':/') == -1 && resource.indexOf('/') !== 0) {
+				resource = this.basePath + resource;
+			}
+
+			// Add the timestamp, except for directories.
+
+			if (
+				this.timestamp &&
+				resource.charAt(resource.length - 1) != '/' &&
+				!/[&?]t=/.test(resource)
+			) {
+				resource +=
+					(resource.indexOf('?') >= 0 ? '&' : '?') +
+					't=' +
+					this.timestamp +
+					languageParameter;
+			}
+
+			return resource;
+		};
+	</script>
+
 	<script data-senna-track="temporary" src="<%= HtmlUtil.escapeAttribute(PortalUtil.getStaticResourceURL(request, themeDisplay.getCDNHost() + PortalWebResourcesUtil.getContextPath(PortalWebResourceConstants.RESOURCE_TYPE_EDITOR_CKEDITOR) + "/ckeditor/ckeditor.js", javaScriptLastModified)) %>" type="text/javascript"></script>
 
 	<c:if test="<%= inlineEdit && Validator.isNotNull(inlineEditSaveURL) %>">
