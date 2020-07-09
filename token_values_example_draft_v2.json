@@ -1,0 +1,32 @@
+{
+	"tokenValues": [
+		{
+			"name": "linkColor",
+			"value": "Salmon"
+		},
+		{
+			"name": "jerseyType",
+			"value": "Away"
+		},
+		{
+			"name": "linkTextUnderline",
+			"value": false
+		},
+		{
+			"name": "linkHoverColor",
+			"value": "#0B53F0"
+		},
+		{
+			"name": "linkHoverTextUnderline",
+			"value": true
+		},
+		{
+			"name": "gridNumberOfColumns",
+			"value": 3
+		},
+		{
+			"name": "gridGutterWidth",
+			"value": "30px"
+		}
+	]
+}
