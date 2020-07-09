@@ -1,0 +1,44 @@
+{
+	"$id": "http://example.com/root.json",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"additionalProperties": false,
+	"definitions": {
+		"TokenValue" : {
+			"additionalProperties": false,
+			"properties": {
+				"name": {
+					"title": "Name of the Token",
+					"type": "string"
+				},
+				"value": {
+					"title": "The Value of the Token",
+					"type": [
+						"boolean",
+						"integer",
+						"number",
+						"string"
+					]
+				}
+			},
+			"required": [
+				"name",
+				"value"
+			],
+			"type": "object"
+		}
+	},
+	"properties": {
+		"tokenValues": {
+			"items": {
+				"$ref": "#/definitions/TokenValue"
+			},
+			"title": "Token Values",
+			"type": "array"
+		}
+	},
+	"required": [
+		"tokensValues"
+	],
+	"title": "The Design Token Values Schema",
+	"type": "object"
+}
