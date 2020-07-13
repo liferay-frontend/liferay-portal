@@ -17,67 +17,6 @@
 					"title": "The Language Key of the Token Label",
 					"type": "string"
 				},
-				"mappings": {
-					"items": {
-						"additionalProperties": false,
-						"not": {
-							"type": "null"
-						},
-						"properties": {
-							"name" : {
-								"enum": [
-									"CSSVariable",
-									"CSSStyleTemplate"
-								],
-								"title" : "The Name of the Mapping",
-								"type" : "string"
-							},
-							"outputKey": {
-								"title": "The Output Key of the Mapping for the Token",
-								"type": "string"
-							},
-							"outputValues": {
-								"items": {
-									"additionalProperties": false,
-									"not": {
-										"type": "null"
-									},
-									"properties": {
-										"tokenValue": {
-											"title": "The Valid Token Value",
-											"type": [
-												"boolean",
-												"integer",
-												"number",
-												"string"
-											]
-										},
-										"mappedValue": {
-											"title": "The Mapped value for the corresponding Token Valid Value",
-											"type": "string"
-										}
-									},
-									"required": [
-										"value"
-									],
-									"title": "Valid Value",
-									"type": "object"
-								},
-								"minItems": 1,
-								"title": "The Output Values for the defined Valid Values",
-								"type": "array"
-							}
-						},
-						"required": [
-							"name",
-							"outputKey"
-						],
-						"type": "object"
-					},
-					"minItems": 1,
-					"title": "The Mappings of the Token",
-					"type": "array"
-				},
 				"name": {
 					"title": "Name of the Token",
 					"type": "string"
