@@ -56,7 +56,7 @@ public class CKEditorClassicEditor implements Editor, EditorRenderer {
 
 	@Override
 	public String getResourcesJspPath() {
-		return null;
+		return "/resources.jsp";
 	}
 
 	@Override
