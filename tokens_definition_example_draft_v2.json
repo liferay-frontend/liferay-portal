@@ -21,22 +21,6 @@
 	],
 	"tokens": [
 		{
-			"mappings" : [
-				{
-					"name": "CSSVariable",
-					"outputKey": "$link-color",
-					"outputValues": [
-						{
-							"tokenValue": "Red",
-							"mappedValue": "#FF0000"
-						},
-						{
-							"tokenValue": "Salmon",
-							"mappedValue": "#FA8072"
-						}
-					]
-				}
-			],
 			"editorType": "ColorPicker",
 			"label": "link-color",
 			"name": "linkColor",
@@ -56,26 +40,6 @@
 		},
 		{
 			"label": "jersey-type",
-			"mappings" : [
-				{
-					"name": "CSSStyleTemplate",
-					"outputKey": ".jersey-type",
-					"outputValues": [
-						{
-							"tokenValue": "Home",
-							"mappedValue": "color: #552583; background-color: #fdba21; border-color: #ffffff;"
-						},
-						{
-							"tokenValue": "Away",
-							"mappedValue": "color: #fdba21; background-color: #552583; border-color: #ffffff;"
-						},
-						{
-							"tokenValue": "Third",
-							"mappedValue": "color: #552583; background-color: #ffffff; border-color: #fdba21;"
-						}
-					]
-				}
-			],
 			"name": "jerseyType",
 			"tokenCategoryName": "colors",
 			"tokenSetName": "colorCombinations",
@@ -97,22 +61,6 @@
 		},
 		{
 			"label": "text-underline",
-			"mappings" : [
-				{
-					"name": "CSSVariable",
-					"outputKey": "$link-text-decoration",
-					"outputValues": [
-						{
-							"tokenValue": false,
-							"mappedValue": "none"
-						},
-						{
-							"tokenValue": true,
-							"mappedValue": "underline"
-						}
-					]
-				}
-			],
 			"name": "linkTextUnderline",
 			"tokenCategoryName": "general",
 			"tokenSetName": "links",
@@ -121,12 +69,6 @@
 		{
 			"editorType": "ColorPicker",
 			"label": "link-hover-color",
-			"mappings" : [
-				{
-					"name": "CSSVariable",
-					"outputKey": "$link-hover-color"
-				}
-			],
 			"name": "linkHoverColor",
 			"tokenCategoryName": "general",
 			"tokenSetName": "links",
@@ -134,22 +76,6 @@
 		},
 		{
 			"label": "text-underline",
-			"mappings" : [
-				{
-					"name": "CSSVariable",
-					"outputKey": "$link-hover-text-decoration",
-					"outputValues": [
-						{
-							"tokenValue": false,
-							"mappedValue": "none"
-						},
-						{
-							"tokenValue": true,
-							"mappedValue": "underline"
-						}
-					]
-				}
-			],
 			"name": "linkHoverTextUnderline",
 			"tokenCategoryName": "general",
 			"tokenSetName": "links",
@@ -157,22 +83,6 @@
 		},
 		{
 			"label": "number-of-columns",
-			"mappings" : [
-				{
-					"name": "CSSVariable",
-					"outputKey": "$grid-columns",
-					"outputValues": [
-						{
-							"tokenValue": 1,
-							"mappedValue": "1"
-						},
-						{
-							"tokenValue": 3,
-							"mappedValue": "3"
-						}
-					]
-				}
-			],
 			"name": "gridNumberOfColumns",
 			"tokenCategoryName": "layout",
 			"tokenSetName": "grid",
@@ -190,12 +100,6 @@
 		},
 		{
 			"label": "gutter",
-			"mappings" : [
-				{
-					"name": "CSSVariable",
-					"outputKey": "grid-gutter-width"
-				}
-			],
 			"name": "gridGutterWidth",
 			"tokenCategoryName": "layout",
 			"tokenSetName": "grid",
