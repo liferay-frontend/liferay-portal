@@ -52,7 +52,7 @@
 			],
 			"tokenCategoryName":  "general",
 			"tokenSetName": "links",
-			"type": "Color"
+			"type": "String"
 		},
 		{
 			"label": "jersey-type",
