@@ -14,7 +14,8 @@
 
 import {useEventListener} from 'frontend-js-react-web';
 import {isPhone, isTablet} from 'frontend-js-web';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import PropTypes from 'prop-types';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {Editor} from './Editor';
 
@@ -32,21 +33,22 @@ const getToolbarSet = (toolbarSet) => {
 const ClassicEditor = ({
 	contents = '',
 	cssClass,
-	editorConfig = {},
+	editorConfig,
 	initialToolbarSet,
 	name,
 	onChangeMethodName,
+	title,
 }) => {
 	const editorRef = useRef();
 
 	const [toolbarSet, setToolbarSet] = useState(initialToolbarSet);
 
-	const config = useMemo(() => {
+	const getConfig = () => {
 		return {
 			toolbar: toolbarSet,
 			...editorConfig,
 		};
-	}, [editorConfig, toolbarSet]);
+	};
 
 	const getHTML = useCallback(() => {
 		let data = contents;
@@ -65,6 +67,10 @@ const ClassicEditor = ({
 	}, [contents]);
 
 	const onChangeCallback = () => {
+		if (!onChangeMethodName) {
+			return;
+		}
+
 		const editor = editorRef.current.editor;
 
 		if (editor.checkDirty()) {
@@ -96,9 +102,12 @@ const ClassicEditor = ({
 
 	return (
 		<div className={cssClass} id={`${name}Container`}>
+			<label className="control-label" htmlFor={name}>
+				{title}
+			</label>
 			<Editor
 				className="lfr-editable"
-				config={config}
+				config={getConfig()}
 				data={contents}
 				key={toolbarSet}
 				onBeforeLoad={(CKEDITOR) => {
@@ -115,6 +124,16 @@ const ClassicEditor = ({
 			/>
 		</div>
 	);
+};
+
+ClassicEditor.propTypes = {
+	contents: PropTypes.string,
+	cssClass: PropTypes.string,
+	editorConfig: PropTypes.object,
+	initialToolbarSet: PropTypes.string,
+	name: PropTypes.string,
+	onChangeMethodName: PropTypes.string,
+	title: PropTypes.string,
 };
 
 export default ClassicEditor;
