@@ -12,10 +12,9 @@
  * details.
  */
 
+import {render} from 'frontend-js-react-web';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-import BridgeComponent from './utils/BridgeComponent';
 import Sidebar from './components/Sidebar';
 
 export default function propsTransformer({
@@ -23,27 +22,37 @@ export default function propsTransformer({
 	sidebarContainerSelector,
 	...otherProps
 }) {
+	const sidebarRef = React.createRef();
+
 	const actions = {
 		showInfo() {
 			showSidebar();
-		}
-	}
+		},
+	};
 
 	const hideSidebar = () => {
-		sidebarRef.setState({open: false})
+		sidebarRef.current.close();
+	};
+
+	const setSidebarRef = (element) => {
+		sidebarRef.current = element;
 	};
 
 	const showSidebar = () => {
-		sidebarRef.setState({open: true})
+		if (!sidebarRef.current) {
+			render(
+				Sidebar,
+				{
+					onClose: hideSidebar,
+					ref: setSidebarRef,
+				},
+				document.querySelector(sidebarContainerSelector)
+			);
+		}
+		else {
+			sidebarRef.current.open();
+		}
 	};
-
-	const sidebarRef = ReactDOM.render(
-		<BridgeComponent 
-			bridgedComponent={Sidebar}
-			onClose={hideSidebar}
-		/>,
-		document.querySelector(sidebarContainerSelector)
-	);
 
 	return {
 		...otherProps,

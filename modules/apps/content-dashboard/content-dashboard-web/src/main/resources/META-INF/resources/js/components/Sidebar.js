@@ -11,21 +11,42 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-import {ClayButtonWithIcon} from '@clayui/button';
 
-import React from 'react';
+import {ClayButtonWithIcon} from '@clayui/button';
 import classNames from 'classnames';
+import React, {useEffect, useImperativeHandle, useState} from 'react';
 
 const noop = () => {};
 
-export default function Sidebar({
-	onClose = noop,
-	open
-}) {
+export default React.forwardRef(({onClose = noop, open = true}, ref) => {
+	const [isOpen, setIsOpen] = useState(false);
+
+	// Wait until the component is rendered to show it so animation happens
+
+	useEffect(() => {
+		if (open !== false) {
+			setTimeout(() => setIsOpen(true), 100);
+		}
+		else {
+			setIsOpen(false);
+		}
+	}, [open]);
+
+	useImperativeHandle(ref, () => ({
+		close: () => {
+			setIsOpen(false);
+		},
+		open: () => {
+			setIsOpen(true);
+		},
+	}));
+
 	return (
-		<div className={classNames('sidebar-wrapper', {
-			'open': open
-		})}>
+		<div
+			className={classNames('sidebar-wrapper', {
+				open: isOpen,
+			})}
+		>
 			<div className="sidebar sidebar-light">
 				<div className="sidebar-header">
 					<div className="autofit-row sidebar-section">
@@ -36,23 +57,22 @@ export default function Sidebar({
 								</span>
 							</div>
 
-							<p className="component-subtitle">Basic Web Content</p>
+							<p className="component-subtitle">
+								Basic Web Content
+							</p>
 						</div>
 
 						<div className="autofit-col">
 							<ClayButtonWithIcon
-								onClick={onClose} 
+								onClick={onClose}
 								symbol="times"
 							/>
 						</div>
 					</div>
 				</div>
 
-				<div className="sidebar-body">
-
-					Hello there!
-				</div>
+				<div className="sidebar-body">Hello there!</div>
 			</div>
 		</div>
 	);
-}
+});

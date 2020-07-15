@@ -43,7 +43,7 @@
 	opacity: 1;
 }
 
-/* Sidebar */
+// Sidebar
 .sidebar-wrapper {
 	height: 100%;
 	width: 0;
@@ -53,6 +53,7 @@
 	}
 }
 
-.sidebar-wrapper, .dashboard-content {
-	transition: .5s;
+.sidebar-wrapper,
+.dashboard-content {
+	transition: 0.5s;
 }
