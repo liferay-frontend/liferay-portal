@@ -13,15 +13,54 @@
  */
 
 import CKEditor from 'ckeditor4-react';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
-const BASEPATH = '/o/frontend-editor-ckeditor-web/ckeditor/';
+const CKEDITOR_BASEPATH = '/o/frontend-editor-ckeditor-web/ckeditor/';
+const CKEDITOR_PATH = `${CKEDITOR_BASEPATH}ckeditor.js`;
 
 const Editor = React.forwardRef((props, ref) => {
-	return <CKEditor ref={ref} {...props} />;
+	const [initialized, setInitialized] = useState(!!window.CKEDITOR);
+
+	useEffect(() => {
+		let script;
+
+		const destroyGlobalCkEditor = () => {
+			if (
+				window.CKEDITOR &&
+				Object.keys(window.CKEDITOR.instances).length === 0
+			) {
+				window.CKEDITOR = undefined;
+
+				Liferay.detach('beforeScreenFlip', destroyGlobalCkEditor);
+			}
+		};
+
+		if (!initialized) {
+			script = document.createElement('script');
+
+			script.setAttribute('data-senna-track', 'temporary');
+			script.src = CKEDITOR_PATH;
+
+			script.onload = () => {
+				setInitialized(true);
+			};
+
+			document.head.appendChild(script);
+
+			Liferay.on('beforeScreenFlip', destroyGlobalCkEditor);
+		}
+
+		return () => {
+			if (script) {
+				document.head.removeChild(script);
+			}
+		};
+	}, [initialized]);
+
+	return initialized && <CKEditor ref={ref} {...props} />;
 });
 
-CKEditor.editorUrl = `${BASEPATH}ckeditor.js`;
-window.CKEDITOR_BASEPATH = BASEPATH;
+CKEditor.editorUrl = CKEDITOR_PATH;
+window.CKEDITOR_BASEPATH = CKEDITOR_BASEPATH;
 
 export {Editor};
