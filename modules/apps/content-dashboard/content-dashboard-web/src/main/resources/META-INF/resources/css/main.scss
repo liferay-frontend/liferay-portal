@@ -42,3 +42,22 @@
 	box-shadow: 0 1px 15px -2px rgba(0, 0, 0, 0.2);
 	opacity: 1;
 }
+
+.sidebar-container {
+	flex-basis: 320px;
+	position: absolute;
+	bottom: 0;
+	flex-grow: 0;
+	flex-shrink: 0;
+	right: -320px;
+	top: -20px;
+	width: 320px;
+	
+	&.in {
+		right: 0;
+	}
+}
+
+.sidebar-container, .dashboard-content {
+	transition: .5s;
+}
