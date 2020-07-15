@@ -43,21 +43,16 @@
 	opacity: 1;
 }
 
-.sidebar-container {
-	flex-basis: 320px;
-	position: absolute;
-	bottom: 0;
-	flex-grow: 0;
-	flex-shrink: 0;
-	right: -320px;
-	top: -20px;
-	width: 320px;
-	
-	&.in {
-		right: 0;
+/* Sidebar */
+.sidebar-wrapper {
+	height: 100%;
+	width: 0;
+
+	&.open {
+		width: 320px;
 	}
 }
 
-.sidebar-container, .dashboard-content {
+.sidebar-wrapper, .dashboard-content {
 	transition: .5s;
 }

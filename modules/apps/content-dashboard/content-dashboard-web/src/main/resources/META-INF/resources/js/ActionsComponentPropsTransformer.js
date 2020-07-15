@@ -12,60 +12,39 @@
  * details.
  */
 
-const ACTIONS = {
-	showInfo() {
-		showSidebar();
-	}
-};
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const getComputedWidth = element => {
-	const computedStyle = window.getComputedStyle(element, null);
-
-	const computedWidth = parseFloat(computedStyle.width.replace("px","")) -
-		(parseFloat(computedStyle.paddingLeft.replace("px","")) * 2) -
-		(parseFloat(computedStyle.paddingRight.replace("px","")) * 2);
-
-	return computedWidth;
-};
-
-const showSidebar = () => {
-	const sidebarContainer = document.querySelector('.sidebar-container');
-	const dashboardContents = document.querySelectorAll('.dashboard-content');
-	
-	if(sidebarContainer.classList.contains('in')) {
-		dashboardContents.forEach(element => {
-			element.style.width = '100%';
-	  	});
-  
-	  	sidebarContainer.classList.remove('in');
-	  }
-	  else {
-		const windowWidth = window.outerWidth;
-		const sidebarContainerWidth = sidebarContainer.offsetWidth;
-
-		dashboardContents.forEach(element => {
-			const dashboardContentContainerWidth = 
-				getComputedWidth(element.parentElement);
-		
-			const newDashboardContentContainerWidth = 
-				dashboardContentContainerWidth - 
-				(sidebarContainerWidth -
-					((windowWidth - dashboardContentContainerWidth) / 2)
-				);
-		
-			element.style.width = `${dashboardContentContainerWidth}px`;
-			element.offsetWidth = element.offsetWidth;
-			element.style.width = `${newDashboardContentContainerWidth}px`;
-		});
-
-		sidebarContainer.classList.add('in');
-	}
-};
+import BridgeComponent from './utils/BridgeComponent';
+import Sidebar from './components/Sidebar';
 
 export default function propsTransformer({
 	items,
+	sidebarContainerSelector,
 	...otherProps
 }) {
+	const actions = {
+		showInfo() {
+			showSidebar();
+		}
+	}
+
+	const hideSidebar = () => {
+		sidebarRef.setState({open: false})
+	};
+
+	const showSidebar = () => {
+		sidebarRef.setState({open: true})
+	};
+
+	const sidebarRef = ReactDOM.render(
+		<BridgeComponent 
+			bridgedComponent={Sidebar}
+			onClose={hideSidebar}
+		/>,
+		document.querySelector(sidebarContainerSelector)
+	);
+
 	return {
 		...otherProps,
 		items: items.map((item) => {
@@ -77,7 +56,7 @@ export default function propsTransformer({
 					if (action) {
 						event.preventDefault();
 
-						ACTIONS[action]();
+						actions[action](sidebarRef);
 					}
 				},
 			};

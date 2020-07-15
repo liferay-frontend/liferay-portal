@@ -39,10 +39,13 @@ page import="com.liferay.content.dashboard.web.internal.item.ContentDashboardIte
 page import="com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemType" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
+page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.StringUtil" %>
 
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.List" %><%@
+page import="java.util.Map" %>
+
 
 <liferay-frontend:defineObjects />
 
