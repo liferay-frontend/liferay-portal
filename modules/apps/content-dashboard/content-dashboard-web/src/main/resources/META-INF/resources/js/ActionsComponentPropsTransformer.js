@@ -15,14 +15,14 @@
 import {render} from 'frontend-js-react-web';
 import React from 'react';
 
-import Sidebar from './components/Sidebar';
+import SidebarPanel from './SidebarPanel';
 
 export default function propsTransformer({
 	items,
 	sidebarContainerSelector,
 	...otherProps
 }) {
-	const sidebarRef = React.createRef();
+	const sidebarRefPanel = React.createRef();
 
 	const actions = {
 		showInfo() {
@@ -31,26 +31,26 @@ export default function propsTransformer({
 	};
 
 	const hideSidebar = () => {
-		sidebarRef.current.close();
+		sidebarRefPanel.current.close();
 	};
 
-	const setSidebarRef = (element) => {
-		sidebarRef.current = element;
+	const setSidebarPanelRef = (element) => {
+		sidebarRefPanel.current = element;
 	};
 
 	const showSidebar = () => {
-		if (!sidebarRef.current) {
+		if (!sidebarRefPanel.current) {
 			render(
-				Sidebar,
+				SidebarPanel,
 				{
 					onClose: hideSidebar,
-					ref: setSidebarRef,
+					ref: setSidebarPanelRef,
 				},
 				document.querySelector(sidebarContainerSelector)
 			);
 		}
 		else {
-			sidebarRef.current.open();
+			sidebarRefPanel.current.open();
 		}
 	};
 
@@ -65,7 +65,10 @@ export default function propsTransformer({
 					if (action) {
 						event.preventDefault();
 
-						actions[action](sidebarRef);
+						actions[action](
+							item.data?.fetchURL,
+							item.data?.resourcePrimKey
+						);
 					}
 				},
 			};

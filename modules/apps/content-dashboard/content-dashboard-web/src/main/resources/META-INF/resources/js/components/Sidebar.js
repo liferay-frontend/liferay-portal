@@ -14,12 +14,55 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import classNames from 'classnames';
-import React, {useEffect, useImperativeHandle, useState} from 'react';
+import React, {
+	Children,
+	cloneElement,
+	isValidElement,
+	useEffect,
+	useState,
+} from 'react';
 
 const noop = () => {};
 
-export default React.forwardRef(({onClose = noop, open = true}, ref) => {
+const SidebarBody = ({children}) => {
+	return <div className="sidebar-body">{children}</div>;
+};
+
+const SidebarHeader = ({children, onClose, subtitle, title}) => {
+	return (
+		<div className="sidebar-header">
+			<div className="autofit-row sidebar-section">
+				<div className="autofit-col autofit-col-expand">
+					<div className="component-title">
+						<span className="text-truncate-inline">{title}</span>
+					</div>
+
+					<p className="component-subtitle">{subtitle}</p>
+
+					{children}
+				</div>
+
+				<div className="autofit-col">
+					<ClayButtonWithIcon onClick={onClose} symbol="times" />
+				</div>
+			</div>
+		</div>
+	);
+};
+
+const Sidebar = ({children, onClose = noop, open = true}) => {
 	const [isOpen, setIsOpen] = useState(false);
+
+	const childrenWithProps = Children.map(children, (child) => {
+
+		// Checking isValidElement is the safe way and avoids a TS error too.
+
+		if (isValidElement(child)) {
+			return cloneElement(child, {onClose});
+		}
+
+		return child;
+	});
 
 	// Wait until the component is rendered to show it so animation happens
 
@@ -32,47 +75,18 @@ export default React.forwardRef(({onClose = noop, open = true}, ref) => {
 		}
 	}, [open]);
 
-	useImperativeHandle(ref, () => ({
-		close: () => {
-			setIsOpen(false);
-		},
-		open: () => {
-			setIsOpen(true);
-		},
-	}));
-
 	return (
 		<div
 			className={classNames('sidebar-wrapper', {
 				open: isOpen,
 			})}
 		>
-			<div className="sidebar sidebar-light">
-				<div className="sidebar-header">
-					<div className="autofit-row sidebar-section">
-						<div className="autofit-col autofit-col-expand">
-							<div className="component-title">
-								<span className="text-truncate-inline">
-									Web Content Name
-								</span>
-							</div>
-
-							<p className="component-subtitle">
-								Basic Web Content
-							</p>
-						</div>
-
-						<div className="autofit-col">
-							<ClayButtonWithIcon
-								onClick={onClose}
-								symbol="times"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<div className="sidebar-body">Hello there!</div>
-			</div>
+			<div className="sidebar sidebar-light">{childrenWithProps}</div>
 		</div>
 	);
-});
+};
+
+Sidebar.Body = SidebarBody;
+Sidebar.Header = SidebarHeader;
+
+export default Sidebar;
