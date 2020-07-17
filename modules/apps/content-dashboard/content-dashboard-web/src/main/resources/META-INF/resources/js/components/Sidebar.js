@@ -43,7 +43,11 @@ const SidebarHeader = ({children, onClose, subtitle, title}) => {
 				</div>
 
 				<div className="autofit-col">
-					<ClayButtonWithIcon onClick={onClose} symbol="times" />
+					<ClayButtonWithIcon
+						displayType="unstyled"
+						onClick={onClose}
+						symbol="times"
+					/>
 				</div>
 			</div>
 		</div>

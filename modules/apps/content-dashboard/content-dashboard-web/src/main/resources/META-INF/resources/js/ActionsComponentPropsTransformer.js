@@ -25,8 +25,8 @@ export default function propsTransformer({
 	const sidebarRefPanel = React.createRef();
 
 	const actions = {
-		showInfo() {
-			showSidebar();
+		showInfo(fetchURL) {
+			showSidebar(fetchURL);
 		},
 	};
 
@@ -38,11 +38,12 @@ export default function propsTransformer({
 		sidebarRefPanel.current = element;
 	};
 
-	const showSidebar = () => {
+	const showSidebar = (fetchURL) => {
 		if (!sidebarRefPanel.current) {
 			render(
 				SidebarPanel,
 				{
+					fetchURL,
 					onClose: hideSidebar,
 					ref: setSidebarPanelRef,
 				},
@@ -50,7 +51,7 @@ export default function propsTransformer({
 			);
 		}
 		else {
-			sidebarRefPanel.current.open();
+			sidebarRefPanel.current.open(fetchURL);
 		}
 	};
 
@@ -65,10 +66,7 @@ export default function propsTransformer({
 					if (action) {
 						event.preventDefault();
 
-						actions[action](
-							item.data?.fetchURL,
-							item.data?.resourcePrimKey
-						);
+						actions[action](item.href);
 					}
 				},
 			};
