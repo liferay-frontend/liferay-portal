@@ -50,6 +50,10 @@ public class JournalArticleContentDashboardItemFactory
 			_journalArticleLocalService.getLatestArticle(
 				classPK, WorkflowConstants.STATUS_ANY, false);
 
+		JournalArticle latestApprovedJournalArticle =
+			_journalArticleLocalService.fetchLatestArticle(
+				classPK, WorkflowConstants.STATUS_APPROVED);
+
 		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
 			JournalArticle.class.getName(),
 			journalArticle.getResourcePrimKey());
@@ -74,7 +78,8 @@ public class JournalArticleContentDashboardItemFactory
 			_groupLocalService.fetchGroup(journalArticle.getGroupId()),
 			_infoEditURLProviderTracker.getInfoEditURLProvider(
 				JournalArticle.class.getName()),
-			journalArticle, _language, _modelResourcePermission);
+			journalArticle, _language, latestApprovedJournalArticle,
+			_modelResourcePermission);
 	}
 
 	@Reference

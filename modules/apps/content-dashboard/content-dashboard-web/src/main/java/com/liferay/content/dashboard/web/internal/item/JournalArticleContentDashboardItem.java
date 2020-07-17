@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +56,7 @@ public class JournalArticleContentDashboardItem
 		ContentDashboardItemType<DDMStructure> contentDashboardItemType,
 		Group group, InfoEditURLProvider<JournalArticle> infoEditURLProvider,
 		JournalArticle journalArticle, Language language,
+		JournalArticle latestApprovedJournalArticle,
 		ModelResourcePermission<JournalArticle> modelResourcePermission) {
 
 		if (ListUtil.isEmpty(assetCategories)) {
@@ -73,6 +73,7 @@ public class JournalArticleContentDashboardItem
 		_infoEditURLProvider = infoEditURLProvider;
 		_journalArticle = journalArticle;
 		_language = language;
+		_latestApprovedJournalArticle = latestApprovedJournalArticle;
 		_modelResourcePermission = modelResourcePermission;
 	}
 
@@ -145,35 +146,6 @@ public class JournalArticleContentDashboardItem
 	}
 
 	@Override
-	public List<Status> getStatuses(Locale locale) {
-		List<Status> statuses = new ArrayList<>();
-
-		statuses.add(
-			new Status(
-				_language.get(
-					locale,
-					WorkflowConstants.getStatusLabel(
-						_journalArticle.getStatus())),
-				WorkflowConstants.getStatusStyle(_journalArticle.getStatus())));
-
-		if (_journalArticle.hasApprovedVersion() &&
-			!_journalArticle.isApproved()) {
-
-			statuses.add(
-				0,
-				new Status(
-					_language.get(
-						locale,
-						WorkflowConstants.getStatusLabel(
-							WorkflowConstants.STATUS_APPROVED)),
-					WorkflowConstants.getStatusStyle(
-						WorkflowConstants.STATUS_APPROVED)));
-		}
-
-		return Collections.unmodifiableList(statuses);
-	}
-
-	@Override
 	public String getTitle(Locale locale) {
 		return _journalArticle.getTitle(locale);
 	}
@@ -186,6 +158,20 @@ public class JournalArticleContentDashboardItem
 	@Override
 	public String getUserName() {
 		return _journalArticle.getUserName();
+	}
+
+	@Override
+	public List<Version> getVersions(Locale locale) {
+		return Stream.of(
+			_toVersionOptional(_latestApprovedJournalArticle, locale),
+			_toVersionOptional(_journalArticle, locale)
+		).filter(
+			Optional::isPresent
+		).map(
+			Optional::get
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	@Override
@@ -251,6 +237,22 @@ public class JournalArticleContentDashboardItem
 		return true;
 	}
 
+	private Optional<Version> _toVersionOptional(
+		JournalArticle journalArticle, Locale locale) {
+
+		return Optional.ofNullable(
+			journalArticle
+		).map(
+			curJournalArticle -> new Version(
+				_language.get(
+					locale,
+					WorkflowConstants.getStatusLabel(
+						curJournalArticle.getStatus())),
+				WorkflowConstants.getStatusStyle(curJournalArticle.getStatus()),
+				curJournalArticle.getVersion())
+		);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		JournalArticleContentDashboardItem.class);
 
@@ -262,6 +264,7 @@ public class JournalArticleContentDashboardItem
 	private final InfoEditURLProvider<JournalArticle> _infoEditURLProvider;
 	private final JournalArticle _journalArticle;
 	private final Language _language;
+	private final JournalArticle _latestApprovedJournalArticle;
 	private final ModelResourcePermission<JournalArticle>
 		_modelResourcePermission;
 
