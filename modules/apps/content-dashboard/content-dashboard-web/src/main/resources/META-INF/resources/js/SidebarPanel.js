@@ -60,11 +60,13 @@ const SidebarPanel = React.forwardRef(({fetchURL, onClose = noop}, ref) => {
 	};
 
 	return (
-		<Sidebar onClose={onClose} open={isOpen}>
+		<Sidebar
+			onClose={onCloseHandle}
+			open={isOpen}
+		>
 			{resourceData ? (
 				<>
 					<Sidebar.Header
-						onClose={onCloseHandle}
 						subtitle={resourceData.subType}
 						title={resourceData.title}
 					>

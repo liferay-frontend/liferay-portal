@@ -15,12 +15,12 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import classNames from 'classnames';
 import React, {
-	Children,
-	cloneElement,
-	isValidElement,
 	useEffect,
 	useState,
+	useContext,
 } from 'react';
+
+const SidebarContext = React.createContext();
 
 const noop = () => {};
 
@@ -28,7 +28,9 @@ const SidebarBody = ({children}) => {
 	return <div className="sidebar-body">{children}</div>;
 };
 
-const SidebarHeader = ({children, onClose, subtitle, title}) => {
+const SidebarHeader = ({children, subtitle, title}) => {
+	const {onClose} = useContext(SidebarContext);
+
 	return (
 		<div className="sidebar-header">
 			<div className="autofit-row sidebar-section">
@@ -57,17 +59,6 @@ const SidebarHeader = ({children, onClose, subtitle, title}) => {
 const Sidebar = ({children, onClose = noop, open = true}) => {
 	const [isOpen, setIsOpen] = useState(false);
 
-	const childrenWithProps = Children.map(children, (child) => {
-
-		// Checking isValidElement is the safe way and avoids a TS error too.
-
-		if (isValidElement(child)) {
-			return cloneElement(child, {onClose});
-		}
-
-		return child;
-	});
-
 	// Wait until the component is rendered to show it so animation happens
 
 	useEffect(() => {
@@ -85,7 +76,11 @@ const Sidebar = ({children, onClose = noop, open = true}) => {
 				open: isOpen,
 			})}
 		>
-			<div className="sidebar sidebar-light">{childrenWithProps}</div>
+			<div className="sidebar sidebar-light">
+				<SidebarContext.Provider value={{onClose}}>
+					{children}
+				</SidebarContext.Provider>
+			</div>
 		</div>
 	);
 };
