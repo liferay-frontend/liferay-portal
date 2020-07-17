@@ -72,7 +72,8 @@ public class JournalArticleContentDashboardItemFactory
 		DDMStructure ddmStructure = journalArticle.getDDMStructure();
 
 		return new JournalArticleContentDashboardItem(
-			assetEntry.getCategories(), _assetDisplayPageFriendlyURLProvider,
+			assetEntry.getCategories(), assetEntry.getTags(),
+			_assetDisplayPageFriendlyURLProvider,
 			contentDashboardItemTypeFactory.create(
 				ddmStructure.getStructureId()),
 			_groupLocalService.fetchGroup(journalArticle.getGroupId()),

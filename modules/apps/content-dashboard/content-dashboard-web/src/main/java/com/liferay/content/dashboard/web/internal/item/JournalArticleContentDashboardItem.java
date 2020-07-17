@@ -16,6 +16,7 @@ package com.liferay.content.dashboard.web.internal.item;
 
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemType;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.info.display.url.provider.InfoEditURLProvider;
@@ -29,15 +30,19 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,7 +56,7 @@ public class JournalArticleContentDashboardItem
 	implements ContentDashboardItem<JournalArticle> {
 
 	public JournalArticleContentDashboardItem(
-		List<AssetCategory> assetCategories,
+		List<AssetCategory> assetCategories, List<AssetTag> assetTags,
 		AssetDisplayPageFriendlyURLProvider assetDisplayPageFriendlyURLProvider,
 		ContentDashboardItemType<DDMStructure> contentDashboardItemType,
 		Group group, InfoEditURLProvider<JournalArticle> infoEditURLProvider,
@@ -66,6 +71,13 @@ public class JournalArticleContentDashboardItem
 			_assetCategories = Collections.unmodifiableList(assetCategories);
 		}
 
+		if (ListUtil.isEmpty(assetTags)) {
+			_assetTags = Collections.emptyList();
+		}
+		else {
+			_assetTags = Collections.unmodifiableList(assetTags);
+		}
+
 		_assetDisplayPageFriendlyURLProvider =
 			assetDisplayPageFriendlyURLProvider;
 		_contentDashboardItemType = contentDashboardItemType;
@@ -75,6 +87,11 @@ public class JournalArticleContentDashboardItem
 		_language = language;
 		_latestApprovedJournalArticle = latestApprovedJournalArticle;
 		_modelResourcePermission = modelResourcePermission;
+	}
+
+	@Override
+	public List<AssetCategory> getAssetCategories() {
+		return _assetCategories;
 	}
 
 	@Override
@@ -90,8 +107,29 @@ public class JournalArticleContentDashboardItem
 	}
 
 	@Override
+	public List<AssetTag> getAssetTags() {
+		return _assetTags;
+	}
+
+	@Override
+	public String getClassName() {
+		return JournalArticle.class.getName();
+	}
+
+	@Override
+	public Long getClassPK() {
+		return _journalArticle.getResourcePrimKey();
+	}
+
+	@Override
 	public ContentDashboardItemType getContentDashboardItemType() {
 		return _contentDashboardItemType;
+	}
+
+	@Override
+	public Locale getDefaultLocale() {
+		return LocaleUtil.fromLanguageId(
+			_journalArticle.getDefaultLanguageId());
 	}
 
 	@Override
@@ -113,6 +151,34 @@ public class JournalArticleContentDashboardItem
 	@Override
 	public Date getExpirationDate() {
 		return _journalArticle.getExpirationDate();
+	}
+
+	@Override
+	public Map<String, Object> getData(Locale locale) {
+		return HashMapBuilder.<String, Object>put(
+			_language.get(locale, "display-date"),
+			_journalArticle.getDisplayDate()
+		).put(
+			_language.get(locale, "expiration-date"),
+			_journalArticle.getExpirationDate()
+		).put(
+			_language.get(locale, "review-date"),
+			_journalArticle.getReviewDate()
+		).build();
+	}
+
+	@Override
+	public Map<String, Object> getInfoMap(Locale locale) {
+		return HashMapBuilder.<String, Object>put(
+			_language.get(locale, "display-date"),
+			_journalArticle.getDisplayDate()
+		).put(
+			_language.get(locale, "expiration-date"),
+			_journalArticle.getExpirationDate()
+		).put(
+			_language.get(locale, "review-date"),
+			_journalArticle.getReviewDate()
+		).build();
 	}
 
 	@Override
@@ -176,34 +242,27 @@ public class JournalArticleContentDashboardItem
 
 	@Override
 	public String getViewURL(HttpServletRequest httpServletRequest) {
-		try {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
-			ThemeDisplay clonedThemeDisplay =
-				(ThemeDisplay)themeDisplay.clone();
+		return _getViewURL(httpServletRequest, themeDisplay.getLocale());
+	}
 
-			clonedThemeDisplay.setScopeGroupId(_journalArticle.getGroupId());
+	@Override
+	public Map<Locale, String> getViewURLs(
+		HttpServletRequest httpServletRequest) {
 
-			return Optional.ofNullable(
-				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
-					JournalArticle.class.getName(),
-					_journalArticle.getResourcePrimKey(), clonedThemeDisplay)
-			).orElse(
-				StringPool.BLANK
-			);
-		}
-		catch (CloneNotSupportedException cloneNotSupportedException) {
-			_log.error(cloneNotSupportedException, cloneNotSupportedException);
-
-			return StringPool.BLANK;
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException, portalException);
-
-			return StringPool.BLANK;
-		}
+		return Stream.of(
+			_journalArticle.getAvailableLanguageIds()
+		).map(
+			LocaleUtil::fromLanguageId
+		).map(
+			locale -> new AbstractMap.SimpleEntry<>(
+				locale, _getViewURL(httpServletRequest, locale))
+		).collect(
+			Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)
+		);
 	}
 
 	@Override
@@ -237,6 +296,40 @@ public class JournalArticleContentDashboardItem
 		return true;
 	}
 
+	private String _getViewURL(
+		HttpServletRequest httpServletRequest, Locale locale) {
+
+		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			ThemeDisplay clonedThemeDisplay =
+				(ThemeDisplay)themeDisplay.clone();
+
+			clonedThemeDisplay.setLocale(locale);
+			clonedThemeDisplay.setScopeGroupId(_journalArticle.getGroupId());
+
+			return Optional.ofNullable(
+				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+					JournalArticle.class.getName(),
+					_journalArticle.getResourcePrimKey(), clonedThemeDisplay)
+			).orElse(
+				StringPool.BLANK
+			);
+		}
+		catch (CloneNotSupportedException cloneNotSupportedException) {
+			_log.error(cloneNotSupportedException, cloneNotSupportedException);
+
+			return StringPool.BLANK;
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException, portalException);
+
+			return StringPool.BLANK;
+		}
+	}
+
 	private Optional<Version> _toVersionOptional(
 		JournalArticle journalArticle, Locale locale) {
 
@@ -259,6 +352,7 @@ public class JournalArticleContentDashboardItem
 	private final List<AssetCategory> _assetCategories;
 	private final AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
+	private final List<AssetTag> _assetTags;
 	private final ContentDashboardItemType _contentDashboardItemType;
 	private final Group _group;
 	private final InfoEditURLProvider<JournalArticle> _infoEditURLProvider;
