@@ -14,11 +14,7 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import classNames from 'classnames';
-import React, {
-	useEffect,
-	useState,
-	useContext,
-} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 const SidebarContext = React.createContext();
 
