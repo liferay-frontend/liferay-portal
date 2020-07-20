@@ -2,712 +2,675 @@
 	"tokenCategories": [
 		{
 			"label": "Color System",
-			"name": "colorSystem"
+			"name": "colorSystem",
+			"tokenSets": [
+				{
+					"label": "Grays",
+					"name": "grays",
+					"tokens": [
+						{
+							"editorType": "ColorPicker",
+							"label": "white",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "white"
+								}
+							],
+							"name": "whiteColor",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "gray-100",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "gray-100"
+								}
+							],
+							"name": "gray100Color",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "gray-200",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "gray-200"
+								}
+							],
+							"name": "gray200Color",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "gray-300",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "gray-300"
+								}
+							],
+							"name": "gray300Color",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "gray-400",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "gray-400"
+								}
+							],
+							"name": "gray400Color",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "gray-500",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "gray-500"
+								}
+							],
+							"name": "gray500Color",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "gray-600",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "gray-600"
+								}
+							],
+							"name": "gray600Color",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "gray-700",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "gray-700"
+								}
+							],
+							"name": "gray700Color",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "gray-800",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "gray-800"
+								}
+							],
+							"name": "gray800Color",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "gray-900",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "gray-900"
+								}
+							],
+							"name": "gray900Color",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "black",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "black"
+								}
+							],
+							"name": "blackColor",
+							"type": "String"
+						}
+					]
+				},
+				{
+					"label": "Theme Colors",
+					"name": "themeColors",
+					"tokens": [
+						{
+							"editorType": "ColorPicker",
+							"label": "primary",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "primary"
+								}
+							],
+							"name": "primaryColor",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "secondary",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "secondary"
+								}
+							],
+							"name": "secondaryColor",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "success",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "success"
+								}
+							],
+							"name": "successColor",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "info",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "info"
+								}
+							],
+							"name": "infoColor",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "warning",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "warning"
+								}
+							],
+							"name": "warningColor",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "danger",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "danger"
+								}
+							],
+							"name": "dangerColor",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "dark",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "dark"
+								}
+							],
+							"name": "darkColor",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "light",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "light"
+								}
+							],
+							"name": "lightColor",
+							"type": "String"
+						}
+					]
+				}
+			]
 		},
 		{
 			"label": "Spacing",
-			"name": "spacing"
+			"name": "spacing",
+			"tokens": [
+				{
+					"label": "spacer",
+					"mappings": [
+						{
+							"type": "cssVariable",
+							"value": "spacer"
+						}
+					],
+					"name": "spacer",
+					"type": "Float"
+				}
+			]
 		},
 		{
 			"label": "Global",
-			"name": "global"
+			"name": "global",
+			"tokenSets": [
+				{
+					"label": "Body",
+					"name": "body",
+					"tokens": [
+						{
+							"editorType": "ColorPicker",
+							"label": "body-bg",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "body-bg"
+								}
+							],
+							"name": "bodyBgColor",
+							"type": "String"
+						},
+						{
+							"editorType": "ColorPicker",
+							"label": "body-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "body-color"
+								}
+							],
+							"name": "bodyColor",
+							"type": "String"
+						}
+					]
+				},
+				{
+					"label": "Borders",
+					"name": "borders",
+					"tokens": [
+						{
+							"label": "border-radius",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "border-radius"
+								}
+							],
+							"name": "borderRadius",
+							"type": "Float"
+						},
+						{
+							"label": "border-radius-sm",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "border-radius-sm"
+								}
+							],
+							"name": "borderRadiusSm",
+							"type": "Float"
+						},
+						{
+							"label": "border-radius-lg",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "border-radius-lg"
+								}
+							],
+							"name": "borderRadiusLg",
+							"type": "Float"
+						},
+						{
+							"label": "border-radius-circle",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "border-radius-circle"
+								}
+							],
+							"name": "borderRadiusCircle",
+							"type": "Float"
+						},
+						{
+							"label": "rounded-pill",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "rounded-pill"
+								}
+							],
+							"name": "roundedPill",
+							"type": "Float"
+						}
+					]
+				},
+				{
+					"label": "Box Shadows",
+					"name": "boxShadows",
+					"tokens": [
+						{
+							"label": "box-shadow",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "box-shadow"
+								}
+							],
+							"name": "boxShadow",
+							"type": "String"
+						},
+						{
+							"label": "box-shadow-sm",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "box-shadow-sm"
+								}
+							],
+							"name": "boxShadowSm",
+							"type": "String"
+						},
+						{
+							"label": "box-shadow-lg",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "box-shadow-lg"
+								}
+							],
+							"name": "boxShadowLg",
+							"type": "String"
+						}
+					]
+				}
+			]
 		},
 		{
 			"label": "Layout",
-			"name": "layout"
+			"name": "layout",
+			"tokenSets": [
+				{
+					"label": "Grid Containers",
+					"name": "gridContainers",
+					"tokens": [
+						{
+							"label": "container-max",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "container-max"
+								}
+							],
+							"name": "containerMax",
+							"type": "Float"
+						}
+					]
+				}
+			]
 		},
 		{
 			"label": "Typography",
-			"name": "typography"
-		}
-	],
-	"tokenSets": [
-		{
-			"label": "Grays",
-			"name": "grays"
-		},
-		{
-			"label": "Theme Colors",
-			"name": "themeColors"
-		},
-		{
-			"label": "Body",
-			"name": "body"
-		},
-		{
-			"label": "Borders",
-			"name": "borders"
-		},
-		{
-			"label": "Box Shadows",
-			"name": "boxShadows"
-		},
-		{
-			"label": "Grid Containers",
-			"name": "gridContainers"
-		},
-		{
-			"label": "Font Family",
-			"name": "fontFamily"
-		},
-		{
-			"label": "Font Size",
-			"name": "fontSize"
-		},
-		{
-			"label": "Font Weight",
-			"name": "fontWeight"
-		},
-		{
-			"label": "Headings",
-			"name": "headings"
-		}
-	],
-	"tokens": [
-		{
-			"editorType": "ColorPicker",
-			"label": "white",
-			"mappings": [
+			"name": "typography",
+			"tokenSets": [
 				{
-					"type": "cssVariable",
-					"value": "white"
-				}
-			],
-			"name": "whiteColor",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "gray-100",
-			"mappings": [
+					"label": "Font Family",
+					"name": "fontFamily",
+					"tokens": [
+						{
+							"label": "font-family-sans-serif",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-family-sans-serif"
+								}
+							],
+							"name": "fontFamilySansSerif",
+							"type": "String"
+						},
+						{
+							"label": "font-family-monospace",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-family-monospace"
+								}
+							],
+							"name": "fontFamilyMonospace",
+							"type": "String"
+						},
+						{
+							"label": "font-family-base",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-family-base"
+								}
+							],
+							"name": "fontFamilyBase",
+							"type": "String"
+						}
+					]
+				},
 				{
-					"type": "cssVariable",
-					"value": "gray-100"
-				}
-			],
-			"name": "gray100Color",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "gray-200",
-			"mappings": [
+					"label": "Font Size",
+					"name": "fontSize",
+					"tokens": [
+						{
+							"label": "font-size-sm",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-size-sm"
+								}
+							],
+							"name": "fontSizeSm",
+							"type": "Float"
+						},
+						{
+							"label": "font-size-base",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-size-base"
+								}
+							],
+							"name": "fontSizeBase",
+							"type": "Float"
+						},
+						{
+							"label": "font-size-lg",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-size-lg"
+								}
+							],
+							"name": "fontSizeLg",
+							"type": "Float"
+						},
+						{
+							"label": "font-size-sm",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-size-sm"
+								}
+							],
+							"name": "fontSizeSm",
+							"type": "Float"
+						},
+						{
+							"label": "font-size-base",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-size-base"
+								}
+							],
+							"name": "fontSizeBase",
+							"type": "Float"
+						},
+						{
+							"label": "font-size-lg",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-size-lg"
+								}
+							],
+							"name": "fontSizeLg",
+							"type": "Float"
+						}
+					]
+				},
 				{
-					"type": "cssVariable",
-					"value": "gray-200"
-				}
-			],
-			"name": "gray200Color",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "gray-300",
-			"mappings": [
+					"label": "Font Weight",
+					"name": "fontWeight",
+					"tokens": [
+						{
+							"label": "font-weight-lighter",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-weight-lighter"
+								}
+							],
+							"name": "fontWeightLighter",
+							"type": "String"
+						},
+						{
+							"label": "font-weight-light",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-weight-light"
+								}
+							],
+							"name": "fontWeightLight",
+							"type": "String"
+						},
+						{
+							"label": "font-weight-normal",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-weight-normal"
+								}
+							],
+							"name": "fontWeightNormal",
+							"type": "String"
+						},
+						{
+							"label": "font-weight-bold",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-weight-bold"
+								}
+							],
+							"name": "fontWeightBold",
+							"type": "String"
+						},
+						{
+							"label": "font-weight-bolder",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "font-weight-bolder"
+								}
+							],
+							"name": "fontWeightBolder",
+							"type": "String"
+						}
+					]
+				},
 				{
-					"type": "cssVariable",
-					"value": "gray-300"
+					"label": "Headings",
+					"name": "headings",
+					"tokens": [
+						{
+							"label": "h1-font-size",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "h1-font-size"
+								}
+							],
+							"name": "h1FontSize",
+							"type": "Float"
+						},
+						{
+							"label": "h2-font-size",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "h2-font-size"
+								}
+							],
+							"name": "h2FontSize",
+							"type": "Float"
+						},
+						{
+							"label": "h3-font-size",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "h3-font-size"
+								}
+							],
+							"name": "h3FontSize",
+							"type": "Float"
+						},
+						{
+							"label": "h4-font-size",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "h4-font-size"
+								}
+							],
+							"name": "h4FontSize",
+							"type": "Float"
+						},
+						{
+							"label": "h5-font-size",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "h5-font-size"
+								}
+							],
+							"name": "h5FontSize",
+							"type": "Float"
+						},
+						{
+							"label": "h6-font-size",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "h6-font-size"
+								}
+							],
+							"name": "h6FontSize",
+							"type": "Float"
+						}
+					]
 				}
-			],
-			"name": "gray300Color",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "gray-400",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "gray-400"
-				}
-			],
-			"name": "gray400Color",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "gray-500",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "gray-500"
-				}
-			],
-			"name": "gray500Color",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "gray-600",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "gray-600"
-				}
-			],
-			"name": "gray600Color",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "gray-700",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "gray-700"
-				}
-			],
-			"name": "gray700Color",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "gray-800",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "gray-800"
-				}
-			],
-			"name": "gray800Color",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "gray-900",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "gray-900"
-				}
-			],
-			"name": "gray900Color",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "black",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "black"
-				}
-			],
-			"name": "blackColor",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "grays",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "primary",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "primary"
-				}
-			],
-			"name": "primaryColor",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "themeColors",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "secondary",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "secondary"
-				}
-			],
-			"name": "secondaryColor",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "themeColors",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "success",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "success"
-				}
-			],
-			"name": "successColor",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "themeColors",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "info",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "info"
-				}
-			],
-			"name": "infoColor",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "themeColors",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "warning",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "warning"
-				}
-			],
-			"name": "warningColor",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "themeColors",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "danger",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "danger"
-				}
-			],
-			"name": "dangerColor",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "themeColors",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "dark",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "dark"
-				}
-			],
-			"name": "darkColor",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "themeColors",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "light",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "light"
-				}
-			],
-			"name": "lightColor",
-			"tokenCategoryName": "colorSystem",
-			"tokenSetName": "themeColors",
-			"type": "String"
-		},
-		{
-			"label": "spacer",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "spacer"
-				}
-			],
-			"name": "spacer",
-			"tokenCategoryName": "spacing",
-			"tokenSetName": "",
-			"type": "Float"
-		},
-		{
-			"label": "container-max",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "container-max"
-				}
-			],
-			"name": "containerMax",
-			"tokenCategoryName": "layout",
-			"tokenSetName": "gridContainers",
-			"type": "Float"
-		},
-		{
-			"label": "border-radius",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "border-radius"
-				}
-			],
-			"name": "borderRadius",
-			"tokenCategoryName": "borders",
-			"tokenSetName": "",
-			"type": "Float"
-		},
-		{
-			"label": "border-radius-sm",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "border-radius-sm"
-				}
-			],
-			"name": "borderRadiusSm",
-			"tokenCategoryName": "borders",
-			"tokenSetName": "",
-			"type": "Float"
-		},
-		{
-			"label": "border-radius-lg",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "border-radius-lg"
-				}
-			],
-			"name": "borderRadiusLg",
-			"tokenCategoryName": "borders",
-			"tokenSetName": "",
-			"type": "Float"
-		},
-		{
-			"label": "border-radius-circle",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "border-radius-circle"
-				}
-			],
-			"name": "borderRadiusCircle",
-			"tokenCategoryName": "borders",
-			"tokenSetName": "",
-			"type": "Float"
-		},
-		{
-			"label": "rounded-pill",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "rounded-pill"
-				}
-			],
-			"name": "roundedPill",
-			"tokenCategoryName": "borders",
-			"tokenSetName": "",
-			"type": "Float"
-		},
-		{
-			"label": "box-shadow",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "box-shadow"
-				}
-			],
-			"name": "boxShadow",
-			"tokenCategoryName": "boxShadows",
-			"tokenSetName": "",
-			"type": "String"
-		},
-		{
-			"label": "box-shadow-sm",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "box-shadow-sm"
-				}
-			],
-			"name": "boxShadowSm",
-			"tokenCategoryName": "boxShadows",
-			"tokenSetName": "",
-			"type": "String"
-		},
-		{
-			"label": "box-shadow-lg",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "box-shadow-lg"
-				}
-			],
-			"name": "boxShadowLg",
-			"tokenCategoryName": "boxShadows",
-			"tokenSetName": "",
-			"type": "String"
-		},
-		{
-			"label": "font-family-sans-serif",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-family-sans-serif"
-				}
-			],
-			"name": "fontFamilySansSerif",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontFamily",
-			"type": "String"
-		},
-		{
-			"label": "font-family-monospace",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-family-monospace"
-				}
-			],
-			"name": "fontFamilyMonospace",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontFamily",
-			"type": "String"
-		},
-		{
-			"label": "font-family-base",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-family-base"
-				}
-			],
-			"name": "fontFamilyBase",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontFamily",
-			"type": "String"
-		},
-		{
-			"label": "font-size-sm",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-size-sm"
-				}
-			],
-			"name": "fontSizeSm",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontSize",
-			"type": "Float"
-		},
-		{
-			"label": "font-size-base",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-size-base"
-				}
-			],
-			"name": "fontSizeBase",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontSize",
-			"type": "Float"
-		},
-		{
-			"label": "font-size-lg",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-size-lg"
-				}
-			],
-			"name": "fontSizeLg",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontSize",
-			"type": "Float"
-		},
-		{
-			"label": "font-weight-lighter",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-weight-lighter"
-				}
-			],
-			"name": "fontWeightLighter",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontWeight",
-			"type": "String"
-		},
-		{
-			"label": "font-weight-light",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-weight-light"
-				}
-			],
-			"name": "fontWeightLight",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontWeight",
-			"type": "String"
-		},
-		{
-			"label": "font-weight-normal",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-weight-normal"
-				}
-			],
-			"name": "fontWeightNormal",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontWeight",
-			"type": "String"
-		},
-		{
-			"label": "font-weight-bold",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-weight-bold"
-				}
-			],
-			"name": "fontWeightBold",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontWeight",
-			"type": "String"
-		},
-		{
-			"label": "font-weight-bolder",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "font-weight-bolder"
-				}
-			],
-			"name": "fontWeightBolder",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "fontWeight",
-			"type": "String"
-		},
-		{
-			"label": "h1-font-size",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "h1-font-size"
-				}
-			],
-			"name": "h1FontSize",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "headings",
-			"type": "Float"
-		},
-		{
-			"label": "h2-font-size",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "h2-font-size"
-				}
-			],
-			"name": "h2FontSize",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "headings",
-			"type": "Float"
-		},
-		{
-			"label": "h3-font-size",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "h3-font-size"
-				}
-			],
-			"name": "h3FontSize",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "headings",
-			"type": "Float"
-		},
-		{
-			"label": "h4-font-size",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "h4-font-size"
-				}
-			],
-			"name": "h4FontSize",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "headings",
-			"type": "Float"
-		},
-		{
-			"label": "h5-font-size",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "h5-font-size"
-				}
-			],
-			"name": "h5FontSize",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "headings",
-			"type": "Float"
-		},
-		{
-			"label": "h6-font-size",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "h6-font-size"
-				}
-			],
-			"name": "h6FontSize",
-			"tokenCategoryName": "typography",
-			"tokenSetName": "headings",
-			"type": "Float"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "body-bg",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "body-bg"
-				}
-			],
-			"name": "bodyBgColor",
-			"tokenCategoryName": "global",
-			"tokenSetName": "body",
-			"type": "String"
-		},
-		{
-			"editorType": "ColorPicker",
-			"label": "body-color",
-			"mappings": [
-				{
-					"type": "cssVariable",
-					"value": "body-color"
-				}
-			],
-			"name": "bodyColor",
-			"tokenCategoryName": "global",
-			"tokenSetName": "body",
-			"type": "String"
+			]
 		}
 	]
 }
