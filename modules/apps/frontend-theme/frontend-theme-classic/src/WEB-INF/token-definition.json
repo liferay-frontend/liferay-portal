@@ -249,17 +249,21 @@
 		{
 			"label": "Spacing",
 			"name": "spacing",
-			"tokens": [
+			"tokenSets": [
 				{
-					"label": "spacer",
-					"mappings": [
+					"tokens": [
 						{
-							"type": "cssVariable",
-							"value": "spacer"
+							"label": "spacer",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "spacer"
+								}
+							],
+							"name": "spacer",
+							"type": "Number"
 						}
-					],
-					"name": "spacer",
-					"type": "Number"
+					]
 				}
 			]
 		},
