@@ -44,6 +44,10 @@
 			}
 		}
 
+		&.cke_editable:after {
+			display: none;
+		}
+
 		a {
 			cursor: auto;
 		}
