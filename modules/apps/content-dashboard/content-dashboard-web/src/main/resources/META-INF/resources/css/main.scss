@@ -48,6 +48,36 @@
 }
 
 // Sidebar
+
+.has-control-menu .sidebar {
+	height: calc(100% - 56px);
+	top: 56px;
+}
+
+.sidebar {
+	height: 100%;
+	position: fixed;
+	right: -320px;
+	width: 320px;
+	z-index: 999; // Dropdowns are 1000
+}
+
+.sidebar-open {
+	.sidebar {
+		right: 0;
+	}
+
+	.sidebar-wrapper {
+		padding-right: 320px;
+	}
+}
+
+.sidebar-wrapper,
+.sidebar {
+	transition: 0.5s;
+}
+
+/*
 .sidebar-wrapper {
 	height: 100%;
 	width: 0;
@@ -76,3 +106,4 @@
 		}
 	}
 }
+*/

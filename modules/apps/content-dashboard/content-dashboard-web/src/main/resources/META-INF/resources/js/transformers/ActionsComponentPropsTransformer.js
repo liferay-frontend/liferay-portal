@@ -37,6 +37,10 @@ export default function propsTransformer({
 		const sidebarPanel = _getSidebarPanel();
 
 		if (!sidebarPanel) {
+			let container = document.querySelector('body');
+			const newContainer = document.createElement('div');
+			container = container.appendChild(newContainer);
+
 			render(
 				SidebarPanel,
 				{
@@ -44,7 +48,7 @@ export default function propsTransformer({
 					ref: _setSidebarPanel,
 					viewComponent: View,
 				},
-				document.querySelector(sidebarContainerSelector)
+				newContainer
 			);
 		}
 		else {

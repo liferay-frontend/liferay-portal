@@ -71,17 +71,19 @@ const Sidebar = ({children, onClose = noop, open = true}) => {
 		}
 	}, [delay, open]);
 
+	useEffect(() => {
+		const body = document.querySelector('body');
+
+		isOpen
+			? body.classList.add(`sidebar-open`)
+			: body.classList.remove(`sidebar-open`);
+	}, [isOpen]);
+
 	return (
-		<div
-			className={classNames('sidebar-wrapper', {
-				open: isOpen,
-			})}
-		>
-			<div className="sidebar sidebar-light sidebar-sm">
-				<SidebarContext.Provider value={{onClose}}>
-					{children}
-				</SidebarContext.Provider>
-			</div>
+		<div className={`sidebar sidebar-light sidebar-sm`}>
+			<SidebarContext.Provider value={{onClose}}>
+				{children}
+			</SidebarContext.Provider>
 		</div>
 	);
 };
