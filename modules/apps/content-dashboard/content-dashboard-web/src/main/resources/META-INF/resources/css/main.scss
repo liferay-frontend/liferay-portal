@@ -51,30 +51,35 @@
 
 // Sidebar
 
+$sidebarWidth: 320px;
+
 .has-control-menu .sidebar {
-	height: calc(100% - 56px);
 	top: 56px;
 }
 
 .sidebar {
-	height: 100%;
+	bottom: 0;
 	position: fixed;
-	right: -320px;
-	width: 320px;
+	left: 100%;
+	width: $sidebarWidth;
 	z-index: $zindex-dropdown - 1;
 }
 
 .sidebar-open {
 	.sidebar {
-		right: 0;
+		transform: translateX(-100%);
+		will-change: transform;
 	}
 
 	.sidebar-wrapper {
-		padding-right: 320px;
+		padding-right: $sidebarWidth;
 	}
 }
 
-.sidebar-wrapper,
+.sidebar-wrapper {
+	transition: padding-right 0.5s ease;
+}
+
 .sidebar {
-	transition: 0.5s;
+	transition: transform 0.5s ease;
 }
