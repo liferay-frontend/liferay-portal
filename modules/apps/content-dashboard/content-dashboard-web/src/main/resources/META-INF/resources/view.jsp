@@ -33,7 +33,7 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 				</h2>
 
 				<div class="audit-graph">
-					<div class="inline-item my-5 p-5 w-100">
+					<div class="inline-item c-my-5 c-p-5 w-100">
 						<span aria-hidden="true" class="loading-animation"></span>
 					</div>
 
