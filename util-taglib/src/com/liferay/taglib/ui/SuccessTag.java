@@ -87,6 +87,10 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 		return _message;
 	}
 
+	public String getMessageType() {
+		return _messageType;
+	}
+
 	public String getTargetNode() {
 		return _targetNode;
 	}
@@ -106,6 +110,8 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 	@Override
 	public int processEndTag() throws Exception {
 		String message = _message;
+
+		String messageType = _messageType;
 
 		String bodyContentString = null;
 
@@ -132,6 +138,8 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 		}
 
 		Map<String, String> values = HashMapBuilder.put(
+			"messageType", messageType
+		).put(
 			"title", LanguageUtil.get(resourceBundle, "success-colon")
 		).build();
 
@@ -172,6 +180,10 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 		_message = message;
 	}
 
+	public void setMessageType(String messageType) {
+		_messageType = messageType;
+	}
+
 	public void setTargetNode(String targetNode) {
 		_targetNode = targetNode;
 	}
@@ -192,6 +204,7 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 		_hasMessage = false;
 		_key = null;
 		_message = null;
+		_messageType = "text";
 		_targetNode = null;
 		_timeout = 5000;
 		_translateMessage = true;
@@ -230,6 +243,7 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 	private boolean _hasMessage;
 	private String _key;
 	private String _message;
+	private String _messageType = "text";
 	private String _targetNode;
 	private int _timeout = 5000;
 	private boolean _translateMessage = true;
