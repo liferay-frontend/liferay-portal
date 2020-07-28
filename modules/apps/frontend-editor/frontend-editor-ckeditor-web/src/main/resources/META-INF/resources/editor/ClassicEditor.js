@@ -35,8 +35,10 @@ const ClassicEditor = ({
 	editorConfig,
 	initialToolbarSet,
 	name,
+	onChange,
 	onChangeMethodName,
 	title,
+	...otherProps
 }) => {
 	const editorRef = useRef();
 
@@ -66,14 +68,19 @@ const ClassicEditor = ({
 	}, [contents]);
 
 	const onChangeCallback = () => {
-		if (!onChangeMethodName) {
+		if (!onChangeMethodName && !onChange) {
 			return;
 		}
 
 		const editor = editorRef.current.editor;
 
 		if (editor.checkDirty()) {
-			window[onChangeMethodName](getHTML());
+			if (onChangeMethodName) {
+				window[onChangeMethodName](getHTML());
+			}
+			else {
+				onChange(getHTML());
+			}
 
 			editor.resetDirty();
 		}
@@ -100,9 +107,11 @@ const ClassicEditor = ({
 
 	return (
 		<div id={`${name}Container`}>
-			<label className="control-label" htmlFor={name}>
-				{title}
-			</label>
+			{title && (
+				<label className="control-label" htmlFor={name}>
+					{title}
+				</label>
+			)}
 			<Editor
 				className="lfr-editable"
 				config={getConfig()}
@@ -121,6 +130,7 @@ const ClassicEditor = ({
 				}}
 				onChange={onChangeCallback}
 				ref={editorRef}
+				{...otherProps}
 			/>
 		</div>
 	);
@@ -131,6 +141,7 @@ ClassicEditor.propTypes = {
 	editorConfig: PropTypes.object,
 	initialToolbarSet: PropTypes.string,
 	name: PropTypes.string,
+	onChange: PropTypes.func,
 	onChangeMethodName: PropTypes.string,
 	title: PropTypes.string,
 };
