@@ -3886,7 +3886,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<description>Defines the type of the message to be rendered when not using <![CDATA[<code>embed</code>]]> variation.Possible values are <![CDATA[<code>"html"</code>]]> and <![CDATA[<code>"text"</code>]]>. The default value is <![CDATA[<code>"text"</code>]]>.</description>
+			<description>Defines the type of the message to be rendered when not using <![CDATA[<code>embed</code>]]> variation. Possible values are <![CDATA[<code>"html"</code>]]> and <![CDATA[<code>"text"</code>]]>. The default value is <![CDATA[<code>"text"</code>]]>.</description>
 			<name>messageType</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
