@@ -306,7 +306,7 @@ const AppsPanel = ({
 			<div className="applications-menu-bg applications-menu-border-top applications-menu-content">
 				<ClayLayout.ContainerFluid>
 					<ClayLayout.Row>
-						<ClayLayout.Col md="8">
+						<ClayLayout.Col lg="9" md="8">
 							<ClayTabs.Content activeIndex={activeTab}>
 								{categories.map(({childCategories}, index) => (
 									<ClayTabs.TabPane
@@ -374,7 +374,11 @@ const AppsPanel = ({
 							</ClayTabs.Content>
 						</ClayLayout.Col>
 
-						<ClayLayout.Col className="c-pl-md-2 c-px-0" md="4">
+						<ClayLayout.Col
+							className="c-pl-md-2 c-px-0"
+							lg="3"
+							md="4"
+						>
 							<div className="applications-menu-sites c-p-3 c-px-md-4">
 								<h2 className="applications-menu-sites-label c-mt-2 c-mt-md-0">
 									Sites
@@ -430,7 +434,7 @@ const AppsPanel = ({
 			<div className="applications-menu-bg applications-menu-footer">
 				<ClayLayout.ContainerFluid>
 					<ClayLayout.Row>
-						<ClayLayout.Col md="8">
+						<ClayLayout.Col lg="9" md="8">
 							<ClayLayout.ContentRow
 								className="applications-menu-border-top c-py-3"
 								verticalAlign="center"
@@ -469,6 +473,7 @@ const AppsPanel = ({
 
 						<ClayLayout.Col
 							className="c-pl-md-2 c-px-0 d-md-block d-none"
+							lg="3"
 							md="4"
 						>
 							<div className="applications-menu-sites"></div>
