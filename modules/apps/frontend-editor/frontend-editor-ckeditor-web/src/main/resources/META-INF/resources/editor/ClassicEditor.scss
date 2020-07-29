@@ -1,0 +1,7 @@
+.classic-editor.hide-toolbar-labels {
+	.cke_button__label,
+	.cke_button__source_label,
+	.cke_button__sourcedialog_label {
+		display: none;
+	}
+}

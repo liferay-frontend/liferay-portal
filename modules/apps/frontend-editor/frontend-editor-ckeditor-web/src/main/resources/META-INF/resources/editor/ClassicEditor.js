@@ -12,11 +12,13 @@
  * details.
  */
 
+import classNames from 'classnames';
 import {useEventListener} from 'frontend-js-react-web';
 import {debounce, isPhone, isTablet} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
+import './ClassicEditor.scss';
 import {Editor} from './Editor';
 
 const getToolbarSet = (toolbarSet) => {
@@ -39,8 +41,10 @@ const ClassicEditor = ({
 	title,
 }) => {
 	const editorRef = useRef();
+	const labeledToolbarsWidth = useRef();
 
 	const [toolbarSet, setToolbarSet] = useState(initialToolbarSet);
+	const [toolbarLabelsVisible, setToolbarLabelsVisible] = useState(true);
 
 	const getConfig = () => {
 		return {
@@ -64,6 +68,29 @@ const ClassicEditor = ({
 
 		return data;
 	}, [contents]);
+
+	const getToolbarsWidth = () => {
+		const container = editorRef.current.editor.container.$;
+
+		const toolbars = Array.from(container.querySelectorAll('.cke_toolbar'));
+
+		return toolbars.reduce((acc, toolbar) => acc + toolbar.offsetWidth, 0);
+	};
+
+	const isToolbarOverflowing = () => {
+		const toolbarsContainer = editorRef.current.editor.container.$.querySelector(
+			'.cke_top'
+		);
+
+		let toolbarsContainerWidth = Infinity;
+
+		if (toolbarsContainer) {
+			toolbarsContainerWidth =
+				parseInt(getComputedStyle(toolbarsContainer).width, 10) || 0;
+		}
+
+		return labeledToolbarsWidth.current >= toolbarsContainerWidth;
+	};
 
 	const onChangeCallback = () => {
 		if (!onChangeMethodName) {
@@ -94,17 +121,23 @@ const ClassicEditor = ({
 
 	const onResize = debounce(() => {
 		setToolbarSet(getToolbarSet(initialToolbarSet));
+
+		setToolbarLabelsVisible(!isToolbarOverflowing());
 	}, 200);
 
 	useEventListener('resize', onResize, true, window);
 
 	return (
-		<div id={`${name}Container`}>
+		<div
+			className={classNames('classic-editor', {
+				'hide-toolbar-labels': !toolbarLabelsVisible,
+			})}
+			id={`${name}Container`}
+		>
 			<label className="control-label" htmlFor={name}>
 				{title}
 			</label>
 			<Editor
-				className="lfr-editable"
 				config={getConfig()}
 				onBeforeLoad={(CKEDITOR) => {
 					CKEDITOR.disableAutoInline = true;
@@ -116,6 +149,10 @@ const ClassicEditor = ({
 
 						editor.on('instanceReady', () => {
 							editor.setData(contents);
+
+							labeledToolbarsWidth.current = getToolbarsWidth();
+
+							setToolbarLabelsVisible(!isToolbarOverflowing());
 						});
 					});
 				}}
