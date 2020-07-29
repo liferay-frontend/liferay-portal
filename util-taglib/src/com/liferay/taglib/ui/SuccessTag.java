@@ -111,8 +111,6 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 	public int processEndTag() throws Exception {
 		String message = _message;
 
-		String messageType = _messageType;
-
 		String bodyContentString = null;
 
 		Object bodyContent = getBodyContentWrapper();
@@ -138,7 +136,7 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 		}
 
 		Map<String, String> values = HashMapBuilder.put(
-			"messageType", messageType
+			"messageType", _messageType
 		).put(
 			"title", LanguageUtil.get(resourceBundle, "success-colon")
 		).build();
