@@ -146,4 +146,5 @@ ClassicEditor.propTypes = {
 	title: PropTypes.string,
 };
 
+export {ClassicEditor};
 export default ClassicEditor;
