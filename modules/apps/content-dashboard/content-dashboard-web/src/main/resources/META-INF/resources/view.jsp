@@ -62,6 +62,7 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 
 				<div class="sheet-section">
 					<liferay-ui:search-container
+						cssClass="table-hover"
 						id="content"
 						searchContainer="<%= contentDashboardAdminDisplayContext.getSearchContainer() %>"
 					>
@@ -192,6 +193,9 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 
 							<liferay-ui:search-container-column-text>
 								<clay:dropdown-actions
+									additionalProps='<%= HashMapBuilder.<String, Object>put(
+										"data-row-id", contentDashboardItem.getClassPK()
+									).build() %>'
 									dropdownItems="<%= contentDashboardAdminDisplayContext.getDropdownItems(contentDashboardItem) %>"
 									propsTransformer="js/transformers/ActionsComponentPropsTransformer"
 								/>

@@ -19,19 +19,45 @@ import SidebarPanelInfoView from '../components/SidebarPanelInfoView';
 import SidebarPanelMetricsView from '../components/SidebarPanelMetricsView';
 
 const actions = {
-	showInfo(fetchURL, portletNamespace) {
-		showSidebar({View: SidebarPanelInfoView, fetchURL, portletNamespace});
+	showInfo({fetchURL, portletNamespace, rowId}) {
+		selectRow(portletNamespace, rowId);
+		showSidebar({
+			View: SidebarPanelInfoView,
+			fetchURL,
+			portletNamespace,
+			rowId,
+		});
 	},
-	showMetrics(fetchURL, portletNamespace) {
+	showMetrics({fetchURL, portletNamespace, rowId}) {
+		selectRow(portletNamespace, rowId);
 		showSidebar({
 			View: SidebarPanelMetricsView,
 			fetchURL,
 			portletNamespace,
+			rowId,
 		});
 	},
 };
 
-const showSidebar = ({View, fetchURL, portletNamespace}) => {
+const getRow = (portletNamespace, rowId) =>
+	document
+		.querySelector(
+			`[data-searchcontainerid="${portletNamespace}content"] [data-row-id="${rowId}"]`
+		)
+		.closest('tr');
+
+const selectRow = (portletNamespace, rowId) => {
+	const activeRows = document.querySelectorAll(
+		`[data-searchcontainerid="${portletNamespace}content"] tr.active`
+	);
+
+	activeRows.forEach((row) => row.classList.remove('active'));
+
+	const currentRow = getRow(portletNamespace, rowId);
+	currentRow.classList.add('active');
+};
+
+const showSidebar = ({View, fetchURL, portletNamespace, rowId}) => {
 	const id = `${portletNamespace}sidebar`;
 
 	const sidebarPanel = Liferay.component(id);
@@ -45,6 +71,12 @@ const showSidebar = ({View, fetchURL, portletNamespace}) => {
 			SidebarPanel,
 			{
 				fetchURL,
+				onClose: () => {
+					Liferay.component(id).close();
+
+					const row = getRow(portletNamespace, rowId);
+					row.classList.remove('active');
+				},
 				ref: (element) => {
 					Liferay.component(id, element);
 				},
@@ -74,7 +106,11 @@ export default function propsTransformer({
 					if (action) {
 						event.preventDefault();
 
-						actions[action](item.data.fetchURL, portletNamespace);
+						actions[action]({
+							fetchURL: item.data.fetchURL,
+							portletNamespace,
+							rowId: otherProps['data-row-id'],
+						});
 					}
 				},
 			};
