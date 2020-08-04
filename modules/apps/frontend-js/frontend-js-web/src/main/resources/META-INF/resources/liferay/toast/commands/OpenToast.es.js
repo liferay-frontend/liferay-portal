@@ -39,7 +39,7 @@ const TPL_ALERT_CONTAINER = `
 
 const Text = ({allowHTML, string = null}) => {
 	if (allowHTML) {
-		return <div dangerouslySetInnerHTML={{__html: string}} />;
+		return <span dangerouslySetInnerHTML={{__html: string}} />;
 	}
 
 	return string;
