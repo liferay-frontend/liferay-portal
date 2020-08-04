@@ -99,6 +99,16 @@ if (inlineEdit && Validator.isNotNull(inlineEditSaveURL)) {
 
 	modules += ",inline-editor-ckeditor";
 }
+
+String uploadURL = StringPool.BLANK;
+
+if (editorOptions != null) {
+	uploadURL = editorOptions.getUploadURL();
+
+	if ((data != null) && Validator.isNotNull(uploadURL)) {
+		modules += ",liferay-editor-image-uploader";
+	}
+}
 %>
 
 <liferay-util:buffer
@@ -624,10 +634,15 @@ name = HtmlUtil.escapeJS(name);
 
 		ckEditor.on('drop', function (event) {
 			var data = event.data.dataTransfer.getData('text/html');
-			var fragment = CKEDITOR.htmlParser.fragment.fromHtml(data);
-			var name = fragment.children[0].name;
-			if (name) {
-				return this.pasteFilter.check(name);
+
+			if (data) {
+				var fragment = CKEDITOR.htmlParser.fragment.fromHtml(data);
+
+				var name = fragment.children[0].name;
+
+				if (name) {
+					return this.pasteFilter.check(name);
+				}
 			}
 		});
 
@@ -683,6 +698,11 @@ name = HtmlUtil.escapeJS(name);
 				}
 			});
 		}
+
+		new Liferay.EditorImageUploader({
+			editorName: '<%= name %>',
+			uploadUrl: '<%= uploadURL %>',
+		});
 	};
 
 	<%

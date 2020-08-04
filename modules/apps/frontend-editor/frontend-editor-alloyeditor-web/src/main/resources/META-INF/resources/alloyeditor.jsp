@@ -244,17 +244,6 @@ name = HtmlUtil.escapeJS(name);
 
 		var plugins = [];
 
-		<c:if test="<%= Validator.isNotNull(data) && Validator.isNotNull(uploadURL) %>">
-			plugins.push({
-				cfg: {
-					uploadItemReturnType:
-						'<%= editorOptions.getUploadItemReturnType() %>',
-					uploadUrl: '<%= uploadURL %>',
-				},
-				fn: A.Plugin.LiferayEditorImageUploader,
-			});
-		</c:if>
-
 		<c:if test="<%= showSource %>">
 			plugins.push(A.Plugin.LiferayAlloyEditorSource);
 		</c:if>
@@ -301,6 +290,12 @@ name = HtmlUtil.escapeJS(name);
 
 			this.selectRanges([range]);
 		};
+
+		new Liferay.EditorImageUploader({
+			editorName: '<%= name %>',
+			uploadItemReturnType: '<%= editorOptions.getUploadItemReturnType() %>',
+			uploadUrl: '<%= uploadURL %>',
+		});
 
 		<liferay-util:dynamic-include key='<%= "com.liferay.frontend.editor.alloyeditor.web#" + editorName + "#onEditorCreate" %>' />
 
