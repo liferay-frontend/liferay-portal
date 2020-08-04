@@ -208,6 +208,15 @@
 						path: 'dynamic_select.js',
 						requires: ['aui-base'],
 					},
+					'liferay-editor-image-uploader': {
+						path: 'editor_image_uploader.js',
+						requires: [
+							'aui-alert',
+							'aui-base',
+							'aui-progressbar',
+							'uploader',
+						],
+					},
 					'liferay-form': {
 						path: 'form.js',
 						requires: ['aui-base', 'aui-form-validator'],

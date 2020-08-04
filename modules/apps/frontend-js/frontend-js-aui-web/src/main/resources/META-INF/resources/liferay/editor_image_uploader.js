@@ -19,11 +19,7 @@ AUI.add(
 
 		var CSS_UPLOADING_IMAGE = 'uploading-image';
 
-		var NAME = 'editorimageupload';
-
 		var STR_BLANK = '';
-
-		var STR_HOST = 'host';
 
 		var TPL_IMAGE_CONTAINER =
 			'<div class="uploading-image-container"></div>';
@@ -32,6 +28,11 @@ AUI.add(
 
 		var EditorImageUploader = A.Component.create({
 			ATTRS: {
+				editorName: {
+					validator: Lang.isString,
+					value: STR_BLANK,
+				},
+
 				strings: {
 					validator: Lang.isObject,
 					value: {
@@ -57,11 +58,9 @@ AUI.add(
 				},
 			},
 
-			EXTENDS: A.Plugin.Base,
+			NAME: 'editorimageupload',
 
-			NAME,
-
-			NS: NAME,
+			NS: 'editorimageupload',
 
 			prototype: {
 				_createProgressBar(image) {
@@ -128,6 +127,8 @@ AUI.add(
 
 					image.addClass(CSS_UPLOADING_IMAGE);
 
+					instance._tempImage = image;
+
 					var uploader = eventData.uploader;
 
 					if (uploader) {
@@ -170,9 +171,7 @@ AUI.add(
 					var data = JSON.parse(event.data);
 
 					if (data.success) {
-						var image = A.one(instance._editor.element.$).one(
-							'[data-random-id="' + data.file.randomId + '"]'
-						);
+						var image = instance._tempImage;
 
 						if (image) {
 							image.removeAttribute('data-random-id');
@@ -215,8 +214,6 @@ AUI.add(
 				_onUploadError(event) {
 					var instance = this;
 
-					event.target.cancelUpload();
-
 					instance._removeTempImage(event);
 				},
 
@@ -234,24 +231,21 @@ AUI.add(
 					}
 				},
 
-				_removeTempImage(imageData) {
+				_removeTempImage() {
 					var instance = this;
 
-					if (imageData && imageData.randomId) {
-						var imageId = imageData.randomId;
+					var image = instance._tempImage;
 
-						var image = A.one(instance._editor.element.$).one(
-							'[data-random-id="' + imageId + '"]'
-						);
-
+					if (image) {
 						image.ancestor().remove();
 					}
 
 					var strings = instance.get('strings');
 
-					var alert = instance._getAlert();
-
-					alert.set('bodyContent', strings.uploadingFileError).show();
+					Liferay.Util.openToast({
+						message: strings.uploadingFileError,
+						type: 'danger',
+					});
 				},
 
 				_uploadImage(file, randomId) {
@@ -288,9 +282,7 @@ AUI.add(
 				initializer() {
 					var instance = this;
 
-					var host = instance.get(STR_HOST);
-
-					var editor = host.getNativeEditor();
+					var editor = CKEDITOR.instances[instance.get('editorName')];
 
 					editor.on('imageAdd', instance._onImageAdd, instance);
 
@@ -319,8 +311,7 @@ AUI.add(
 			},
 		});
 
-		A.Plugin.LiferayBlogsUploader = EditorImageUploader;
-		A.Plugin.LiferayEditorImageUploader = EditorImageUploader;
+		Liferay.EditorImageUploader = EditorImageUploader;
 	},
 	'',
 	{
