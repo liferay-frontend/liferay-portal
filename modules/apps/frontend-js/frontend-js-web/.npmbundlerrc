@@ -12,6 +12,7 @@
 		"**/liferay/workflow.js",
 		"**/loader/config.js",
 		"**/misc/swfobject.js",
-		"**/misc/xp_progress.js"
+		"**/misc/xp_progress.js",
+		"**/misc/svg4everybody.es.js"
 	]
 }
