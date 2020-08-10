@@ -30,6 +30,8 @@
 
 	var AutoCompleteCKEditor = function () {};
 
+	var BR_TAG = 'BR';
+
 	AutoCompleteCKEditor.ATTRS = {
 		editor: {
 			validator: Lang.isObject,
@@ -378,6 +380,8 @@
 
 			var nextElement = newElement.getNext();
 
+			var node;
+
 			if (nextElement) {
 				var containerAscendant = instance._getContainerAscendant(
 					prevTriggerPosition.container
@@ -388,11 +392,11 @@
 					nextElement
 				);
 
-				var node = updateWalker.next();
+				node = updateWalker.next();
 
 				var removeNodes = [];
 
-				while (node) {
+				while (node && node.$ && node.$.nodeName !== BR_TAG) {
 					var nodeText = node.getText();
 
 					var spaceIndex = nodeText.indexOf(STR_SPACE);
@@ -414,7 +418,10 @@
 				nextElement = newElement.getNext();
 			}
 
-			if (!nextElement) {
+			if (
+				!nextElement ||
+				(node && node.$ && node.$.nodeName === BR_TAG)
+			) {
 				nextElement = new CKEDITOR.dom.element('span');
 
 				nextElement.appendText(STR_SPACE);
@@ -432,12 +439,15 @@
 
 			var editor = instance.get(STR_EDITOR);
 
-			var caretRange = editor.createRange();
+			if (node && node.$ && node.$.nodeName !== BR_TAG) {
+				var caretRange = editor.createRange();
 
-			caretRange.setStart(node, caretIndex);
-			caretRange.setEnd(node, caretIndex);
+				caretRange.setStart(node, caretIndex);
+				caretRange.setEnd(node, caretIndex);
 
-			editor.getSelection().selectRanges([caretRange]);
+				editor.getSelection().selectRanges([caretRange]);
+			}
+
 			editor.focus();
 		},
 
