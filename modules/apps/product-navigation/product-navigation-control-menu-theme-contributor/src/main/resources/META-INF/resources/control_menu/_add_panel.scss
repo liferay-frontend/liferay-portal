@@ -16,6 +16,12 @@
 	width: $admin-panel-width;
 }
 
+.lfr-product-menu-panel.sidenav-fixed.sidenav-menu-slider {
+	@include media-breakpoint-down(xs) {
+		top: 3rem;
+	}
+}
+
 .lfr-admin-panel {
 	&.sidenav-menu-slider {
 		z-index: $admin-panel-zindex;
