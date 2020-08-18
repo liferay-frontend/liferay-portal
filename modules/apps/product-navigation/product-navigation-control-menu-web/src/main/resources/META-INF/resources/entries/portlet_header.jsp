@@ -48,5 +48,43 @@ String portletTitle = (String)request.getAttribute(ProductNavigationControlMenuW
 
 	<div>
 		<span class="control-menu-level-1-heading inline-item inline-item-before text-truncate" data-qa-id="headerTitle"><%= HtmlUtil.escape(portletTitle) %></span>
+
+		<c:if test="<%= panelApps.size() > 1 %>">
+			<clay:icon
+				symbol="caret-double-l"
+			/>
+		</c:if>
 	</div>
+
+	<c:if test="<%= panelApps.size() > 1 %>">
+
+		<%
+		List<Map<String, String>> apps = new ArrayList<>();
+
+		for (PanelApp panelApp : panelApps) {
+			Portlet portlet = PortletLocalServiceUtil.getPortletById(themeDisplay.getCompanyId(), panelApp.getPortletId());
+
+			apps.add(
+				HashMapBuilder.<String, String>put(
+					"href", String.valueOf(panelApp.getPortletURL(request))
+				).put(
+					"label", PortalUtil.getPortletTitle(portlet, locale)
+				).build()
+			);
+		}
+		%>
+
+		<react:component
+			module="js/PortletHeader"
+			props='<%=
+				HashMapBuilder.<String, Object>put(
+					"apps", apps
+				).put(
+					"category", curPanelCategory.getLabel(locale)
+				).put(
+					"title", HtmlUtil.escape(portletTitle)
+				).build()
+			%>'
+		/>
+	</c:if>
 </li>
