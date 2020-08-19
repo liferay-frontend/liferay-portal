@@ -43,14 +43,14 @@ export default function Diff({diff, onClose, version}) {
 				</ClayCard.Row>
 			)}
 
-			<ClayCard.Row className="card-row-padded diff-container">
+			<ClayCard.Row className="diff-container p-3">
 				<div
 					className="taglib-diff-html"
 					dangerouslySetInnerHTML={{__html: diff}}
 				/>
 			</ClayCard.Row>
 
-			<ClayCard.Row className="card-row-padded taglib-diff-html">
+			<ClayCard.Row className="taglib-diff-html p-3">
 				<span className="diff-html-added legend-item">
 					{Liferay.Language.get('added')}
 				</span>
