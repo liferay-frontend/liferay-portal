@@ -17,37 +17,18 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String portletId = portletDisplay.getRootPortletId();
+PortletHeaderDisplayContext portletHeaderDisplayContext = new PortletHeaderDisplayContext(request);
 
-PanelAppRegistry panelAppRegistry = (PanelAppRegistry)request.getAttribute(ApplicationListWebKeys.PANEL_APP_REGISTRY);
-PanelCategoryRegistry panelCategoryRegistry = (PanelCategoryRegistry)request.getAttribute(ApplicationListWebKeys.PANEL_CATEGORY_REGISTRY);
+PanelCategory curPanelCategory = portletHeaderDisplayContext.getCurPanelCategory();
 
-PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(panelAppRegistry, panelCategoryRegistry);
-
-String rootPanelCategoryKey = panelCategoryHelper.containsPortlet(portletId, "applications_menu.applications") ? "applications_menu.applications" : "control_panel";
-
-List<PanelCategory> panelCategories = panelCategoryRegistry.getChildPanelCategories(rootPanelCategoryKey);
-
-PanelCategory curPanelCategory = null;
-
-for (PanelCategory panelCategory : panelCategories) {
-	curPanelCategory = panelCategory;
-
-	if (panelCategoryHelper.containsPortlet(portletId, panelCategory.getKey())) {
-		break;
-	}
-}
-
-List<PanelApp> panelApps = panelCategoryHelper.getAllPanelApps(curPanelCategory.getKey());
-
-String portletTitle = (String)request.getAttribute(ProductNavigationControlMenuWebKeys.PORTLET_TITLE);
+List<PanelApp> panelApps = portletHeaderDisplayContext.getPanelApps();
 %>
 
 <li class="control-menu-nav-item control-menu-nav-item-content d-inline">
 	<span class="small"><%= curPanelCategory.getLabel(locale) %></span>
 
 	<div>
-		<span class="control-menu-level-1-heading inline-item inline-item-before text-truncate" data-qa-id="headerTitle"><%= HtmlUtil.escape(portletTitle) %></span>
+		<span class="control-menu-level-1-heading inline-item inline-item-before text-truncate" data-qa-id="headerTitle"><%= HtmlUtil.escape(portletHeaderDisplayContext.getPortletTitle()) %></span>
 
 		<c:if test="<%= panelApps.size() > 1 %>">
 			<clay:icon
@@ -57,34 +38,9 @@ String portletTitle = (String)request.getAttribute(ProductNavigationControlMenuW
 	</div>
 
 	<c:if test="<%= panelApps.size() > 1 %>">
-
-		<%
-		List<Map<String, String>> apps = new ArrayList<>();
-
-		for (PanelApp panelApp : panelApps) {
-			Portlet portlet = PortletLocalServiceUtil.getPortletById(themeDisplay.getCompanyId(), panelApp.getPortletId());
-
-			apps.add(
-				HashMapBuilder.<String, String>put(
-					"href", String.valueOf(panelApp.getPortletURL(request))
-				).put(
-					"label", PortalUtil.getPortletTitle(portlet, locale)
-				).build()
-			);
-		}
-		%>
-
 		<react:component
 			module="js/PortletHeader"
-			props='<%=
-				HashMapBuilder.<String, Object>put(
-					"apps", apps
-				).put(
-					"category", curPanelCategory.getLabel(locale)
-				).put(
-					"title", HtmlUtil.escape(portletTitle)
-				).build()
-			%>'
+			props="<%= portletHeaderDisplayContext.getProps() %>"
 		/>
 	</c:if>
 </li>
