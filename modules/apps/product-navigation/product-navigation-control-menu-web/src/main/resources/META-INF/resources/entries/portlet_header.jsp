@@ -17,30 +17,9 @@
 <%@ include file="/init.jsp" %>
 
 <%
-PortletHeaderDisplayContext portletHeaderDisplayContext = new PortletHeaderDisplayContext(request);
-
-PanelCategory curPanelCategory = portletHeaderDisplayContext.getCurPanelCategory();
-
-List<PanelApp> panelApps = portletHeaderDisplayContext.getPanelApps();
+String portletTitle = (String)request.getAttribute(ProductNavigationControlMenuWebKeys.PORTLET_TITLE);
 %>
 
-<li class="control-menu-nav-item control-menu-nav-item-content d-inline">
-	<span class="small"><%= curPanelCategory.getLabel(locale) %></span>
-
-	<div>
-		<span class="control-menu-level-1-heading inline-item inline-item-before text-truncate" data-qa-id="headerTitle"><%= HtmlUtil.escape(portletHeaderDisplayContext.getPortletTitle()) %></span>
-
-		<c:if test="<%= panelApps.size() > 1 %>">
-			<clay:icon
-				symbol="caret-double-l"
-			/>
-		</c:if>
-	</div>
-
-	<c:if test="<%= panelApps.size() > 1 %>">
-		<react:component
-			module="js/PortletHeader"
-			props="<%= portletHeaderDisplayContext.getProps() %>"
-		/>
-	</c:if>
+<li class="control-menu-nav-item control-menu-nav-item-content">
+	<span class="control-menu-level-1-heading text-truncate" data-qa-id="headerTitle"><%= HtmlUtil.escape(portletTitle) %></span>
 </li>

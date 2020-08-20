@@ -47,8 +47,9 @@ page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.util.PropsValues" %><%@
 page import="com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuPortletKeys" %><%@
+page import="com.liferay.product.navigation.control.menu.web.internal.constants.ProductNavigationControlMenuWebKeys" %><%@
 page import="com.liferay.product.navigation.control.menu.web.internal.display.context.AddContentPanelDisplayContext" %><%@
-page import="com.liferay.product.navigation.control.menu.web.internal.display.context.PortletHeaderDisplayContext" %><%@
+page import="com.liferay.product.navigation.control.menu.web.internal.display.context.ProductsMenuAppHeaderDisplayContext" %><%@
 page import="com.liferay.taglib.aui.AUIUtil" %>
 
 <%@ page import="java.util.HashMap" %><%@

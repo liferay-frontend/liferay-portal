@@ -41,9 +41,11 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Eudaldo Alonso
  */
-public class PortletHeaderDisplayContext {
+public class ProductsMenuAppHeaderDisplayContext {
 
-	public PortletHeaderDisplayContext(HttpServletRequest httpServletRequest) {
+	public ProductsMenuAppHeaderDisplayContext(
+		HttpServletRequest httpServletRequest) {
+
 		_httpServletRequest = httpServletRequest;
 
 		_panelAppRegistry = (PanelAppRegistry)_httpServletRequest.getAttribute(
@@ -92,7 +94,10 @@ public class PortletHeaderDisplayContext {
 
 		String rootPanelCategoryKey = PanelCategoryKeys.CONTROL_PANEL;
 
-		if (_panelCategoryHelper.isApplicationsMenuApp(getPortletId())) {
+
+		if (_panelCategoryHelper.containsPortlet(
+			getPortletId(), PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS)) {
+
 			rootPanelCategoryKey =
 				PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS;
 		}

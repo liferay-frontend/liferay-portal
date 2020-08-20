@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Julio Camarero
+ * @author Chema Balsas
  */
 @Component(
 	immediate = true,
@@ -53,13 +53,13 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = ProductNavigationControlMenuEntry.class
 )
-public class PortletHeaderProductNavigationControlMenuEntry
+public class ProductsMenuAppHeaderProductNavigationControlMenuEntry
 	extends BaseJSPProductNavigationControlMenuEntry
 	implements ProductNavigationControlMenuEntry {
 
 	@Override
 	public String getIconJspPath() {
-		return "/entries/portlet_header.jsp";
+		return "/entries/products_menu_app_header.jsp";
 	}
 
 	@Override
@@ -95,8 +95,8 @@ public class PortletHeaderProductNavigationControlMenuEntry
 			return false;
 		}
 
-		if (_isEnableApplicationsMenu(themeDisplay.getCompanyId()) &&
-			_isApplicationsMenuApp(themeDisplay)) {
+		if (!_isEnableApplicationsMenu(themeDisplay.getCompanyId()) ||
+			!_isApplicationsMenuApp(themeDisplay)) {
 
 			return false;
 		}
@@ -167,7 +167,7 @@ public class PortletHeaderProductNavigationControlMenuEntry
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		PortletHeaderProductNavigationControlMenuEntry.class);
+		ProductsMenuAppHeaderProductNavigationControlMenuEntry.class);
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
