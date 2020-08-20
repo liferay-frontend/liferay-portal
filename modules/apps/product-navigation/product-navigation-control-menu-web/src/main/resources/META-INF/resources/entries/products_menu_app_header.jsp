@@ -24,11 +24,11 @@ PanelCategory curPanelCategory = productsMenuAppHeaderDisplayContext.getCurPanel
 List<PanelApp> panelApps = productsMenuAppHeaderDisplayContext.getPanelApps();
 %>
 
-<li class="control-menu-nav-item control-menu-nav-item-content d-inline">
-	<span class="small"><%= curPanelCategory.getLabel(locale) %></span>
+<li class="control-menu-nav-item control-menu-nav-item-content">
+	<div class="control-menu-level-3-heading"><%= curPanelCategory.getLabel(locale) %></div>
 
-	<div>
-		<span class="control-menu-level-1-heading inline-item inline-item-before text-truncate" data-qa-id="headerTitle"><%= HtmlUtil.escape(productsMenuAppHeaderDisplayContext.getPortletTitle()) %></span>
+	<div class="control-menu-level-1-heading">
+		<span class="inline-item inline-item-before text-truncate" data-qa-id="headerTitle"><%= HtmlUtil.escape(productsMenuAppHeaderDisplayContext.getPortletTitle()) %></span>
 
 		<c:if test="<%= panelApps.size() > 1 %>">
 			<clay:icon
