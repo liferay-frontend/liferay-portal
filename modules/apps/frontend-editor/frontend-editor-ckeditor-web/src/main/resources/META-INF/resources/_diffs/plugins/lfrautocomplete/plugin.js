@@ -13,7 +13,7 @@
  */
 
 (function () {
-	CKEDITOR.plugins.add('autocomplete', {
+	CKEDITOR.plugins.add('lfrautocomplete', {
 		init(editor) {
 			var instance = this;
 
