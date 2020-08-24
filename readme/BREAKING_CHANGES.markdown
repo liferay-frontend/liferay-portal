@@ -917,3 +917,34 @@ Update the path to reference `clay` instead of `lexicon`
 This change was made to unify references to the icon spritemap.
 
 ---------------------------------------
+
+### Renamed CKEditor autocomplete plugin
+- **Date:** 2020-Aug-24
+- **JIRA Ticket:** [LPS-118804](https://issues.liferay.com/browse/LPS-118804)
+
+### What changed?
+
+The custom CKEditor `autocomplete` plugin that was bundled with DXP has been
+renamed to `lfrautocomplete`.
+
+### Who is affected
+
+This affects those developers that have custom autocomplete configurations other
+than the ones deployed by default.
+
+### How should I update my code?
+
+In your `*EditorConfigContributor`, replace the `autocomplete` string used in the
+`extraPlugins` configuration object with `lfrautocomplete`.
+
+Alternatively, you can adjust the configuration to make use of the official
+[CKEditor's autocomplete](https://ckeditor.com/docs/ckeditor4/latest/features/autocomplete.html)
+support.
+
+#### Why was this change made?
+
+This change was made to switch from a custom implementation of autocomplete to
+one that's fully supported and integrated by the vendor itself, improving the
+quality of the offering and reducing its maintenance costs.
+
+---------------------------------------
