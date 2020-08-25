@@ -100,11 +100,11 @@ public class WikiCreoleAutoCompleteEditorConfigContributor
 		String extraPlugins = jsonObject.getString("extraPlugins");
 
 		if (Validator.isNotNull(extraPlugins)) {
-			extraPlugins += ",autocomplete";
+			extraPlugins += ",lfrautocomplete";
 		}
 		else {
 			extraPlugins =
-				"autocomplete,ae_placeholder,ae_selectionregion,ae_uicore";
+				"lfrautocomplete,ae_placeholder,ae_selectionregion,ae_uicore";
 		}
 
 		jsonObject.put("extraPlugins", extraPlugins);

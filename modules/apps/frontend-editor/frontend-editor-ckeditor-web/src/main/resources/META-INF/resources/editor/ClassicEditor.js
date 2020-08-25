@@ -21,7 +21,7 @@ import {Editor} from './Editor';
 
 const ClassicEditor = ({
 	contents = '',
-	editorConfig,
+	initialEditorConfig,
 	initialToolbarSet = 'simple',
 	name,
 	onChange,
@@ -31,14 +31,8 @@ const ClassicEditor = ({
 }) => {
 	const editorRef = useRef();
 
+	const [editorConfig, setEditorConfig] = useState(initialEditorConfig);
 	const [toolbarSet, setToolbarSet] = useState(initialToolbarSet);
-
-	const getConfig = () => {
-		return {
-			toolbar: toolbarSet,
-			...editorConfig,
-		};
-	};
 
 	const getHTML = useCallback(() => {
 		let data = contents;
@@ -55,6 +49,54 @@ const ClassicEditor = ({
 
 		return data;
 	}, [contents]);
+
+	const initAutocomplete = (editor) => {
+		const autocompleteConfig = editorConfig.autocomplete;
+
+		let autocomplete = new CKEDITOR.plugins.autocomplete(editor, {
+			textTestCallback: (range) => {
+				if (!range.collapsed) {
+					return null;
+				}
+
+				return CKEDITOR.plugins.textMatch.match(range, (text, offset) => {
+					const match = text.slice(0, offset)
+						.match(new RegExp(`${autocompleteConfig.term}+([A-z])+$`));
+	
+					if (!match) {
+						return null;
+					}
+	
+					return {
+						start: match.index,
+						end: offset
+					};
+				});
+			},
+			dataCallback: (matchInfo, callback) => {
+				const RESULTS = [{
+					id: 1,
+					name: 'address',
+					title: 'Address',
+					mention: 'Address',
+					description: 'Customer Support correspondence address.'
+				}];
+
+				var data = RESULTS.filter(function(item) {
+					var itemName = '@' + item.name;
+					return itemName.indexOf(matchInfo.query.toLowerCase()) == 0;
+				});
+
+				callback(data);
+			},
+			itemTemplate: `<li data-id="{id}">${autocompleteConfig.tplResults}</li>`,
+			outputTemplate: autocompleteConfig.tplReplace
+		});
+
+		autocomplete.getHtmlToInsert = function(item) {
+			return this.outputTemplate.output(item);
+		}
+	};
 
 	const onChangeCallback = () => {
 		if (!onChangeMethodName && !onChange) {
@@ -74,6 +116,20 @@ const ClassicEditor = ({
 			editor.resetDirty();
 		}
 	};
+
+	useEffect(() => {
+		const newEditorConfig = {
+			toolbar: toolbarSet,
+			...initialEditorConfig
+		};
+
+		if (initialEditorConfig.extraPlugins.includes('autocomplete') 
+			&& !initialEditorConfig.extraPlugins.includes('textmatch')) {
+			newEditorConfig.extraPlugins += ',textmatch';
+		}
+
+		setEditorConfig(newEditorConfig);
+	}, [initialEditorConfig, toolbarSet]);
 
 	useEffect(() => {
 		setToolbarSet(initialToolbarSet);
@@ -103,7 +159,7 @@ const ClassicEditor = ({
 			)}
 			<Editor
 				className="lfr-editable"
-				config={getConfig()}
+				config={editorConfig}
 				onBeforeLoad={(CKEDITOR) => {
 					CKEDITOR.disableAutoInline = true;
 					CKEDITOR.dtd.$removeEmpty.i = 0;
@@ -138,6 +194,10 @@ const ClassicEditor = ({
 
 						editor.on('instanceReady', () => {
 							editor.setData(contents);
+
+							if (editorConfig.autocomplete) {
+								initAutocomplete(editor);
+							}				
 						});
 					});
 				}}

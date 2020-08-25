@@ -40,7 +40,7 @@ public class BaseMentionsEditorConfigContributor
 		JSONObject jsonObject, Map<String, Object> inputEditorTaglibAttributes,
 		ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
-
+/*
 		JSONObject autoCompleteConfigJSONObject = JSONUtil.put(
 			"requestTemplate", "query={query}");
 
@@ -82,6 +82,30 @@ public class BaseMentionsEditorConfigContributor
 
 		autoCompleteConfigJSONObject.put(
 			"trigger", JSONUtil.put(triggerJSONObject));
+
+		jsonObject.put("autocomplete", autoCompleteConfigJSONObject);
+*/
+
+		JSONObject autoCompleteConfigJSONObject = JSONUtil.put(
+			"requestTemplate", "query={query}")
+		.put("term", "@")
+		.put("tplReplace", "{mention}")
+		.put(
+			"regExp",
+			"(?:\\strigger|^trigger)(" +
+				MentionsMatcherUtil.getScreenNameRegularExpression() + ")")
+		.put(
+			"tplResults",
+			StringBundler.concat(
+				"<div class=\"p-1 autofit-row autofit-row-center\">",
+				"<div class=\"autofit-col inline-item-before\">{portraitHTML}",
+				"</div><div class=\"autofit-col autofit-col-expand\">",
+				"<strong class=\"text-truncate\">{fullName}</strong>",
+				"<div class=\"autofit-col-expand\">",
+				"<small class=\"text-truncate\">@{screenName}</small></div></div>",
+				"</div>"
+			)
+		);
 
 		jsonObject.put("autocomplete", autoCompleteConfigJSONObject);
 

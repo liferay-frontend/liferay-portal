@@ -37,7 +37,7 @@ if (editorData != null) {
 Map<String, Object> props = HashMapBuilder.<String, Object>put(
 	"contents", contents
 ).put(
-	"editorConfig", editorConfigJSONObject
+	"initialEditorConfig", editorConfigJSONObject
 ).put(
 	"initialToolbarSet", toolbarSet
 ).put(
