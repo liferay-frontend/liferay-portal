@@ -354,9 +354,15 @@ const ApplicationsMenu = ({
 	useEventListener(
 		'keydown',
 		(event) => {
-			event.preventDefault();
+			const isCMDPressed = event.metaKey || event.ctrlKey;
 
-			if (event.metaKey && event.shiftKey && event.key === 'm') {
+			if (
+				isCMDPressed &&
+				event.shiftKey &&
+				event.key.toLowerCase() === 'm'
+			) {
+				event.preventDefault();
+
 				if (!visible) {
 					fetchCategories();
 				}
