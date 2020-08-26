@@ -354,7 +354,9 @@ const ApplicationsMenu = ({
 	useEventListener(
 		'keydown',
 		(event) => {
-			const isCMDPressed = event.metaKey || event.ctrlKey;
+			const isCMDPressed = Liferay.Browser.isMac()
+				? event.metaKey
+				: event.ctrlKey;
 
 			if (
 				isCMDPressed &&
