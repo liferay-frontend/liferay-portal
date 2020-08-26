@@ -22,6 +22,7 @@ import '../css/ApplicationsMenu.scss';
 import ClayLabel from '@clayui/label';
 import ClaySticker from '@clayui/sticker';
 import ClayTabs from '@clayui/tabs';
+import {useEventListener} from 'frontend-js-react-web';
 import {fetch, navigate, openSelectionModal} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useRef, useState} from 'react';
@@ -349,6 +350,22 @@ const ApplicationsMenu = ({
 	const {observer, onClose} = useModal({
 		onClose: () => setVisible(false),
 	});
+
+	useEventListener(
+		'keydown',
+		(event) => {
+			event.preventDefault();
+
+			if (event.metaKey && event.shiftKey && event.key === 'm') {
+				if (!visible) {
+					fetchCategories();
+				}
+				setVisible(!visible);
+			}
+		},
+		true,
+		window
+	);
 
 	const fetchCategoriesPromiseRef = useRef();
 
