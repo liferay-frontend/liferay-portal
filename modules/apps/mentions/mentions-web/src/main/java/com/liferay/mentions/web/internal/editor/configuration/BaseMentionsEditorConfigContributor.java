@@ -40,61 +40,29 @@ public class BaseMentionsEditorConfigContributor
 		JSONObject jsonObject, Map<String, Object> inputEditorTaglibAttributes,
 		ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
-/*
-		JSONObject autoCompleteConfigJSONObject = JSONUtil.put(
-			"requestTemplate", "query={query}");
-
-		JSONObject triggerJSONObject = JSONUtil.put(
-			"regExp",
-			"(?:\\strigger|^trigger)(" +
-				MentionsMatcherUtil.getScreenNameRegularExpression() + ")"
-		).put(
-			"resultFilters", "function(query, results) {return results;}"
-		).put(
-			"resultTextLocator", "screenName"
-		);
 
 		PortletURL portletURL = getPortletURL(
 			themeDisplay, requestBackedPortletURLFactory);
 
-		String source =
-			portletURL.toString() + "&" +
-				PortalUtil.getPortletNamespace(MentionsPortletKeys.MENTIONS);
-
-		triggerJSONObject.put(
-			"source", source
-		).put(
-			"term", "@"
-		).put(
-			"tplReplace", "{mention}"
-		);
-
-		String tplResults = StringBundler.concat(
-			"<div class=\"p-1 autofit-row autofit-row-center\">",
-			"<div class=\"autofit-col inline-item-before\">{portraitHTML}",
-			"</div><div class=\"autofit-col autofit-col-expand\">",
-			"<strong class=\"text-truncate\">{fullName}</strong>",
-			"<div class=\"autofit-col-expand\">",
-			"<small class=\"text-truncate\">@{screenName}</small></div></div>",
-			"</div>");
-
-		triggerJSONObject.put("tplResults", tplResults);
-
-		autoCompleteConfigJSONObject.put(
-			"trigger", JSONUtil.put(triggerJSONObject));
-
-		jsonObject.put("autocomplete", autoCompleteConfigJSONObject);
-*/
-
 		JSONObject autoCompleteConfigJSONObject = JSONUtil.put(
-			"requestTemplate", "query={query}")
-		.put("term", "@")
-		.put("tplReplace", "{mention}")
-		.put(
 			"regExp",
-			"(?:\\strigger|^trigger)(" +
-				MentionsMatcherUtil.getScreenNameRegularExpression() + ")")
-		.put(
+			"(?:\\s@|^@)(" +
+				MentionsMatcherUtil.getScreenNameRegularExpression() + ")"
+		).put(
+			"requestTemplate",
+			"query={query}"
+		).put(
+			"resultFilters", "function(query, results) {return results;}"
+		).put(
+			"resultTextLocator", "screenName"
+		).put(
+			"source",
+			portletURL.toString() + "&" +
+				PortalUtil.getPortletNamespace(MentionsPortletKeys.MENTIONS)
+		).put(
+			"tplReplace",
+			"{mention}"
+		).put(
 			"tplResults",
 			StringBundler.concat(
 				"<div class=\"p-1 autofit-row autofit-row-center\">",

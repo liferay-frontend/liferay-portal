@@ -13,7 +13,7 @@
  */
 
 import {useEventListener} from 'frontend-js-react-web';
-import {debounce} from 'frontend-js-web';
+import {debounce, fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
@@ -53,7 +53,7 @@ const ClassicEditor = ({
 	const initAutocomplete = (editor) => {
 		const autocompleteConfig = editorConfig.autocomplete;
 
-		let autocomplete = new CKEDITOR.plugins.autocomplete(editor, {
+		const autocomplete = new CKEDITOR.plugins.autocomplete(editor, {
 			textTestCallback: (range) => {
 				if (!range.collapsed) {
 					return null;
@@ -61,7 +61,7 @@ const ClassicEditor = ({
 
 				return CKEDITOR.plugins.textMatch.match(range, (text, offset) => {
 					const match = text.slice(0, offset)
-						.match(new RegExp(`${autocompleteConfig.term}+([A-z])+$`));
+						.match(new RegExp(autocompleteConfig.regExp));
 	
 					if (!match) {
 						return null;
@@ -74,20 +74,27 @@ const ClassicEditor = ({
 				});
 			},
 			dataCallback: (matchInfo, callback) => {
-				const RESULTS = [{
-					id: 1,
-					name: 'address',
-					title: 'Address',
-					mention: 'Address',
-					description: 'Customer Support correspondence address.'
-				}];
+				const requestTemplate = 
+					autocompleteConfig.requestTemplate.replace('{query}', matchInfo.query);
 
-				var data = RESULTS.filter(function(item) {
-					var itemName = '@' + item.name;
-					return itemName.indexOf(matchInfo.query.toLowerCase()) == 0;
+				fetch(`${autocompleteConfig.source}?${requestTemplate}`,{
+					method: 'GET'
+				})
+				.then(response => response.json())
+				.then(response => {
+					response = response.map((item, i) => {
+						// This is needed because Autocomplete needs the root
+						// element of the itemTemplate to have an unique data-id
+						if (!item.id) {
+							item.id = i
+						}
+
+						return item;
+					});
+
+					callback(response)
 				});
 
-				callback(data);
 			},
 			itemTemplate: `<li data-id="{id}">${autocompleteConfig.tplResults}</li>`,
 			outputTemplate: autocompleteConfig.tplReplace
