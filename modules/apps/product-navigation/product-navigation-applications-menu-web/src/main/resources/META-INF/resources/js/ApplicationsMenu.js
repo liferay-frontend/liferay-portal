@@ -366,6 +366,7 @@ const ApplicationsMenu = ({
 				if (!visible) {
 					fetchCategories();
 				}
+
 				setVisible(!visible);
 			}
 		},
