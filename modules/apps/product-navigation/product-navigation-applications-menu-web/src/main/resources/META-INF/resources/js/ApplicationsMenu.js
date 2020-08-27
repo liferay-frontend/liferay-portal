@@ -13,18 +13,17 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import ClayModal, {useModal} from '@clayui/modal';
-import classNames from 'classnames';
-
-import '../css/ApplicationsMenu.scss';
-
-import ClayLabel from '@clayui/label';
 import ClaySticker from '@clayui/sticker';
 import ClayTabs from '@clayui/tabs';
+import classNames from 'classnames';
 import {fetch, navigate, openSelectionModal} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useRef, useState} from 'react';
+
+import '../css/ApplicationsMenu.scss';
 
 const Environment = ({children, name}) => {
 	return (
