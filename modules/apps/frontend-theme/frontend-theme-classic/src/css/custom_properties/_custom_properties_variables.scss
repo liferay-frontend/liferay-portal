@@ -1,7 +1,7 @@
 // Spacers map copy
 
-$spacers-cp: ();
-$spacers-cp: map-deep-merge(
+$custom-properties-spacers: ();
+$custom-properties-spacers: map-merge(
 	(
 		0: var(--spacer-0),
 		1: var(--spacer-1),
@@ -15,13 +15,13 @@ $spacers-cp: map-deep-merge(
 		9: var(--spacer-9),
 		10: var(--spacer-10),
 	),
-	$spacers-cp
+	$custom-properties-spacers
 );
 
 // Theme colors
 
-$theme-colors-cp: ();
-$theme-colors-cp: map-deep-merge(
+$custom-properties-theme-colors: ();
+$custom-properties-theme-colors: map-merge(
 	(
 		danger: var(--danger),
 		dark: var(--dark),
@@ -34,7 +34,7 @@ $theme-colors-cp: map-deep-merge(
 		success: var(--success),
 		warning: var(--warning),
 	),
-	$theme-colors-cp
+	$custom-properties-theme-colors
 );
 
 :root {
@@ -82,20 +82,6 @@ $theme-colors-cp: map-deep-merge(
 	@each $key, $value in $theme-colors {
 		--#{$key}: #{$value};
 	}
-
-	--danger-l1: #{$danger-l1};
-	--danger-l2: #{$danger-l2};
-	--info-l1: #{$info-l1};
-	--info-l2: #{$info-l2};
-	--primary-d1: #{$primary-d1};
-	--primary-l1: #{$primary-l1};
-	--primary-l3: #{$primary-l3};
-	--secondary-d1: var(--gray-800);
-	--success-d1: #{$success-d1};
-	--success-l1: #{$success-l1};
-	--success-l2: #{$success-l2};
-	--warning-l1: #{$warning-l1};
-	--warning-l2: #{$warning-l2};
 
 	// Container max
 
