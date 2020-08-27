@@ -45,7 +45,7 @@ if (fixedHeader) {
 }
 %>
 
-<div class="table-responsive">
+<div class="c-mb-3 table-responsive">
 	<table class="<%= searchResultCssClass %>">
 		<c:if test="<%= Validator.isNotNull(summary) %>">
 			<caption class="sr-only"><%= summary %></caption>
