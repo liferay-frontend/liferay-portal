@@ -102,6 +102,14 @@ The name value specifies the name of the entity.
 >
 
 <!--
+The variable-name value specifies the generated variable name of the name. If
+none is specified, one will be generated from the name.
+-->
+<!ATTLIST entity
+	variable-name CDATA #IMPLIED
+>
+
+<!--
 The plural-name value specifies the plural form of the name. If none is
 specified, one will be generated from the name.
 -->

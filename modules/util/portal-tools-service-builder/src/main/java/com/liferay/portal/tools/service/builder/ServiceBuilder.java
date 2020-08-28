@@ -5933,6 +5933,7 @@ public class ServiceBuilder {
 	private Entity _parseEntity(Element entityElement) throws Exception {
 		String entityName = entityElement.attributeValue("name");
 		String humanName = entityElement.attributeValue("human-name");
+		String variableName = entityElement.attributeValue("variable-name");
 		String pluralName = entityElement.attributeValue("plural-name");
 
 		String tableName = entityElement.attributeValue("table");
@@ -6672,10 +6673,10 @@ public class ServiceBuilder {
 
 		Entity entity = new Entity(
 			this, _packagePath, _apiPackagePath, _portletShortName, entityName,
-			pluralName, humanName, tableName, alias, uuid, uuidAccessor,
-			externalReferenceCode, localService, remoteService, persistence,
-			persistenceClassName, finderClassName, dataSource, sessionFactory,
-			txManager, cacheEnabled, changeTrackingEnabled,
+			variableName, pluralName, humanName, tableName, alias, uuid,
+			uuidAccessor, externalReferenceCode, localService, remoteService,
+			persistence, persistenceClassName, finderClassName, dataSource,
+			sessionFactory, txManager, cacheEnabled, changeTrackingEnabled,
 			dynamicUpdateEnabled, jsonEnabled, mvccEnabled, trashEnabled,
 			uadApplicationName, uadAutoDelete, uadOutputPath, uadPackagePath,
 			deprecated, pkEntityColumns, regularEntityColumns,
