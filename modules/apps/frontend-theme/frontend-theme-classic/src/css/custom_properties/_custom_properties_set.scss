@@ -28,6 +28,22 @@
 	}
 }
 
+.bg-gray-dark {
+	background-color: var(--gray-800);
+}
+
+.bg-lighter {
+	background-color: var(--gray-100);
+}
+
+.text-gray-dark {
+	color: var(--gray-800);
+}
+
+.text-lighter {
+	color: var(--gray-100);
+}
+
 // Blockquotes
 
 .blockquote {
@@ -52,7 +68,7 @@ body {
 
 .btn:not(.btn-link) {
 	position: relative;
-	z-index: 1;
+	z-index: 0;
 
 	&::after {
 		background-color: black;

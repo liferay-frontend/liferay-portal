@@ -25,10 +25,8 @@ $custom-properties-theme-colors: map-merge(
 	(
 		danger: var(--danger),
 		dark: var(--dark),
-		gray-dark: var(--gray-800),
 		info: var(--info),
 		light: var(--light),
-		lighter: var(--gray-100),
 		primary: var(--primary),
 		secondary: var(--secondary),
 		success: var(--success),
