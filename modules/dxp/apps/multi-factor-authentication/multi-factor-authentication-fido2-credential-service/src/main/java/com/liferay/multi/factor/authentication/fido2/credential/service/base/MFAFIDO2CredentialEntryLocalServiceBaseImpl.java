@@ -79,18 +79,18 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was added
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public MFAFIDO2CredentialEntry addMFAFIDO2CredentialEntry(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		mfafido2CredentialEntry.setNew(true);
+		mfaFIDO2CredentialEntry.setNew(true);
 
-		return mfafido2CredentialEntryPersistence.update(
-			mfafido2CredentialEntry);
+		return mfaFIDO2CredentialEntryPersistence.update(
+			mfaFIDO2CredentialEntry);
 	}
 
 	/**
@@ -104,7 +104,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	public MFAFIDO2CredentialEntry createMFAFIDO2CredentialEntry(
 		long mfaFIDO2CredentialEntryId) {
 
-		return mfafido2CredentialEntryPersistence.create(
+		return mfaFIDO2CredentialEntryPersistence.create(
 			mfaFIDO2CredentialEntryId);
 	}
 
@@ -125,7 +125,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 			long mfaFIDO2CredentialEntryId)
 		throws PortalException {
 
-		return mfafido2CredentialEntryPersistence.remove(
+		return mfaFIDO2CredentialEntryPersistence.remove(
 			mfaFIDO2CredentialEntryId);
 	}
 
@@ -136,21 +136,21 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was removed
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public MFAFIDO2CredentialEntry deleteMFAFIDO2CredentialEntry(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		return mfafido2CredentialEntryPersistence.remove(
-			mfafido2CredentialEntry);
+		return mfaFIDO2CredentialEntryPersistence.remove(
+			mfaFIDO2CredentialEntry);
 	}
 
 	@Override
 	public <T> T dslQuery(DSLQuery dslQuery) {
-		return mfafido2CredentialEntryPersistence.dslQuery(dslQuery);
+		return mfaFIDO2CredentialEntryPersistence.dslQuery(dslQuery);
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	 */
 	@Override
 	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery) {
-		return mfafido2CredentialEntryPersistence.findWithDynamicQuery(
+		return mfaFIDO2CredentialEntryPersistence.findWithDynamicQuery(
 			dynamicQuery);
 	}
 
@@ -189,7 +189,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	public <T> List<T> dynamicQuery(
 		DynamicQuery dynamicQuery, int start, int end) {
 
-		return mfafido2CredentialEntryPersistence.findWithDynamicQuery(
+		return mfaFIDO2CredentialEntryPersistence.findWithDynamicQuery(
 			dynamicQuery, start, end);
 	}
 
@@ -211,7 +211,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 		DynamicQuery dynamicQuery, int start, int end,
 		OrderByComparator<T> orderByComparator) {
 
-		return mfafido2CredentialEntryPersistence.findWithDynamicQuery(
+		return mfaFIDO2CredentialEntryPersistence.findWithDynamicQuery(
 			dynamicQuery, start, end, orderByComparator);
 	}
 
@@ -223,7 +223,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
-		return mfafido2CredentialEntryPersistence.countWithDynamicQuery(
+		return mfaFIDO2CredentialEntryPersistence.countWithDynamicQuery(
 			dynamicQuery);
 	}
 
@@ -238,7 +238,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	public long dynamicQueryCount(
 		DynamicQuery dynamicQuery, Projection projection) {
 
-		return mfafido2CredentialEntryPersistence.countWithDynamicQuery(
+		return mfaFIDO2CredentialEntryPersistence.countWithDynamicQuery(
 			dynamicQuery, projection);
 	}
 
@@ -246,7 +246,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	public MFAFIDO2CredentialEntry fetchMFAFIDO2CredentialEntry(
 		long mfaFIDO2CredentialEntryId) {
 
-		return mfafido2CredentialEntryPersistence.fetchByPrimaryKey(
+		return mfaFIDO2CredentialEntryPersistence.fetchByPrimaryKey(
 			mfaFIDO2CredentialEntryId);
 	}
 
@@ -262,7 +262,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 			long mfaFIDO2CredentialEntryId)
 		throws PortalException {
 
-		return mfafido2CredentialEntryPersistence.findByPrimaryKey(
+		return mfaFIDO2CredentialEntryPersistence.findByPrimaryKey(
 			mfaFIDO2CredentialEntryId);
 	}
 
@@ -272,7 +272,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 			new DefaultActionableDynamicQuery();
 
 		actionableDynamicQuery.setBaseLocalService(
-			mfafido2CredentialEntryLocalService);
+			mfaFIDO2CredentialEntryLocalService);
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 		actionableDynamicQuery.setModelClass(MFAFIDO2CredentialEntry.class);
 
@@ -290,7 +290,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 			new IndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setBaseLocalService(
-			mfafido2CredentialEntryLocalService);
+			mfaFIDO2CredentialEntryLocalService);
 		indexableActionableDynamicQuery.setClassLoader(getClassLoader());
 		indexableActionableDynamicQuery.setModelClass(
 			MFAFIDO2CredentialEntry.class);
@@ -305,7 +305,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 		ActionableDynamicQuery actionableDynamicQuery) {
 
 		actionableDynamicQuery.setBaseLocalService(
-			mfafido2CredentialEntryLocalService);
+			mfaFIDO2CredentialEntryLocalService);
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 		actionableDynamicQuery.setModelClass(MFAFIDO2CredentialEntry.class);
 
@@ -316,10 +316,11 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	/**
 	 * @throws PortalException
 	 */
+	@Override
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException {
 
-		return mfafido2CredentialEntryPersistence.create(
+		return mfaFIDO2CredentialEntryPersistence.create(
 			((Long)primaryKeyObj).longValue());
 	}
 
@@ -330,13 +331,14 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
 
-		return mfafido2CredentialEntryLocalService.
+		return mfaFIDO2CredentialEntryLocalService.
 			deleteMFAFIDO2CredentialEntry(
 				(MFAFIDO2CredentialEntry)persistedModel);
 	}
 
+	@Override
 	public BasePersistence<MFAFIDO2CredentialEntry> getBasePersistence() {
-		return mfafido2CredentialEntryPersistence;
+		return mfaFIDO2CredentialEntryPersistence;
 	}
 
 	/**
@@ -346,7 +348,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException {
 
-		return mfafido2CredentialEntryPersistence.findByPrimaryKey(
+		return mfaFIDO2CredentialEntryPersistence.findByPrimaryKey(
 			primaryKeyObj);
 	}
 
@@ -365,7 +367,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	public List<MFAFIDO2CredentialEntry> getMFAFIDO2CredentialEntries(
 		int start, int end) {
 
-		return mfafido2CredentialEntryPersistence.findAll(start, end);
+		return mfaFIDO2CredentialEntryPersistence.findAll(start, end);
 	}
 
 	/**
@@ -375,7 +377,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	 */
 	@Override
 	public int getMFAFIDO2CredentialEntriesCount() {
-		return mfafido2CredentialEntryPersistence.countAll();
+		return mfaFIDO2CredentialEntryPersistence.countAll();
 	}
 
 	/**
@@ -385,16 +387,16 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was updated
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public MFAFIDO2CredentialEntry updateMFAFIDO2CredentialEntry(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		return mfafido2CredentialEntryPersistence.update(
-			mfafido2CredentialEntry);
+		return mfaFIDO2CredentialEntryPersistence.update(
+			mfaFIDO2CredentialEntry);
 	}
 
 	@Override
@@ -407,7 +409,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 
 	@Override
 	public void setAopProxy(Object aopProxy) {
-		mfafido2CredentialEntryLocalService =
+		mfaFIDO2CredentialEntryLocalService =
 			(MFAFIDO2CredentialEntryLocalService)aopProxy;
 	}
 
@@ -437,7 +439,7 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	protected void runSQL(String sql) {
 		try {
 			DataSource dataSource =
-				mfafido2CredentialEntryPersistence.getDataSource();
+				mfaFIDO2CredentialEntryPersistence.getDataSource();
 
 			DB db = DBManagerUtil.getDB();
 
@@ -455,11 +457,11 @@ public abstract class MFAFIDO2CredentialEntryLocalServiceBaseImpl
 	}
 
 	protected MFAFIDO2CredentialEntryLocalService
-		mfafido2CredentialEntryLocalService;
+		mfaFIDO2CredentialEntryLocalService;
 
 	@Reference
 	protected MFAFIDO2CredentialEntryPersistence
-		mfafido2CredentialEntryPersistence;
+		mfaFIDO2CredentialEntryPersistence;
 
 	@Reference
 	protected com.liferay.counter.kernel.service.CounterLocalService

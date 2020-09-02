@@ -55,16 +55,16 @@ public class MFAFIDO2CredentialEntryLocalServiceUtil {
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was added
 	 */
 	public static
 		com.liferay.multi.factor.authentication.fido2.credential.model.
 			MFAFIDO2CredentialEntry addMFAFIDO2CredentialEntry(
 				com.liferay.multi.factor.authentication.fido2.credential.model.
-					MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+					MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		return getService().addMFAFIDO2CredentialEntry(mfafido2CredentialEntry);
+		return getService().addMFAFIDO2CredentialEntry(mfaFIDO2CredentialEntry);
 	}
 
 	/**
@@ -120,17 +120,17 @@ public class MFAFIDO2CredentialEntryLocalServiceUtil {
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was removed
 	 */
 	public static
 		com.liferay.multi.factor.authentication.fido2.credential.model.
 			MFAFIDO2CredentialEntry deleteMFAFIDO2CredentialEntry(
 				com.liferay.multi.factor.authentication.fido2.credential.model.
-					MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+					MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
 		return getService().deleteMFAFIDO2CredentialEntry(
-			mfafido2CredentialEntry);
+			mfaFIDO2CredentialEntry);
 	}
 
 	/**
@@ -354,17 +354,17 @@ public class MFAFIDO2CredentialEntryLocalServiceUtil {
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was updated
 	 */
 	public static
 		com.liferay.multi.factor.authentication.fido2.credential.model.
 			MFAFIDO2CredentialEntry updateMFAFIDO2CredentialEntry(
 				com.liferay.multi.factor.authentication.fido2.credential.model.
-					MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+					MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
 		return getService().updateMFAFIDO2CredentialEntry(
-			mfafido2CredentialEntry);
+			mfaFIDO2CredentialEntry);
 	}
 
 	public static MFAFIDO2CredentialEntryLocalService getService() {

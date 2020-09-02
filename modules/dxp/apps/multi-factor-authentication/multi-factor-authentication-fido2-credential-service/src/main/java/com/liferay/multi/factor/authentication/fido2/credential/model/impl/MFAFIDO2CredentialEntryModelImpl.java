@@ -728,35 +728,35 @@ public class MFAFIDO2CredentialEntryModelImpl
 
 	@Override
 	public Object clone() {
-		MFAFIDO2CredentialEntryImpl mfafido2CredentialEntryImpl =
+		MFAFIDO2CredentialEntryImpl mfaFIDO2CredentialEntryImpl =
 			new MFAFIDO2CredentialEntryImpl();
 
-		mfafido2CredentialEntryImpl.setMvccVersion(getMvccVersion());
-		mfafido2CredentialEntryImpl.setMfaFIDO2CredentialEntryId(
+		mfaFIDO2CredentialEntryImpl.setMvccVersion(getMvccVersion());
+		mfaFIDO2CredentialEntryImpl.setMfaFIDO2CredentialEntryId(
 			getMfaFIDO2CredentialEntryId());
-		mfafido2CredentialEntryImpl.setCompanyId(getCompanyId());
-		mfafido2CredentialEntryImpl.setUserId(getUserId());
-		mfafido2CredentialEntryImpl.setUserName(getUserName());
-		mfafido2CredentialEntryImpl.setCreateDate(getCreateDate());
-		mfafido2CredentialEntryImpl.setModifiedDate(getModifiedDate());
-		mfafido2CredentialEntryImpl.setCredentialId(getCredentialId());
-		mfafido2CredentialEntryImpl.setCredentialType(getCredentialType());
-		mfafido2CredentialEntryImpl.setPublicKeyCose(getPublicKeyCose());
-		mfafido2CredentialEntryImpl.setSignatureCount(getSignatureCount());
-		mfafido2CredentialEntryImpl.setFailedAttempts(getFailedAttempts());
-		mfafido2CredentialEntryImpl.setLastFailDate(getLastFailDate());
-		mfafido2CredentialEntryImpl.setLastFailIP(getLastFailIP());
-		mfafido2CredentialEntryImpl.setLastSuccessDate(getLastSuccessDate());
-		mfafido2CredentialEntryImpl.setLastSuccessIP(getLastSuccessIP());
+		mfaFIDO2CredentialEntryImpl.setCompanyId(getCompanyId());
+		mfaFIDO2CredentialEntryImpl.setUserId(getUserId());
+		mfaFIDO2CredentialEntryImpl.setUserName(getUserName());
+		mfaFIDO2CredentialEntryImpl.setCreateDate(getCreateDate());
+		mfaFIDO2CredentialEntryImpl.setModifiedDate(getModifiedDate());
+		mfaFIDO2CredentialEntryImpl.setCredentialId(getCredentialId());
+		mfaFIDO2CredentialEntryImpl.setCredentialType(getCredentialType());
+		mfaFIDO2CredentialEntryImpl.setPublicKeyCose(getPublicKeyCose());
+		mfaFIDO2CredentialEntryImpl.setSignatureCount(getSignatureCount());
+		mfaFIDO2CredentialEntryImpl.setFailedAttempts(getFailedAttempts());
+		mfaFIDO2CredentialEntryImpl.setLastFailDate(getLastFailDate());
+		mfaFIDO2CredentialEntryImpl.setLastFailIP(getLastFailIP());
+		mfaFIDO2CredentialEntryImpl.setLastSuccessDate(getLastSuccessDate());
+		mfaFIDO2CredentialEntryImpl.setLastSuccessIP(getLastSuccessIP());
 
-		mfafido2CredentialEntryImpl.resetOriginalValues();
+		mfaFIDO2CredentialEntryImpl.resetOriginalValues();
 
-		return mfafido2CredentialEntryImpl;
+		return mfaFIDO2CredentialEntryImpl;
 	}
 
 	@Override
-	public int compareTo(MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
-		long primaryKey = mfafido2CredentialEntry.getPrimaryKey();
+	public int compareTo(MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
+		long primaryKey = mfaFIDO2CredentialEntry.getPrimaryKey();
 
 		if (getPrimaryKey() < primaryKey) {
 			return -1;
@@ -779,10 +779,10 @@ public class MFAFIDO2CredentialEntryModelImpl
 			return false;
 		}
 
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry =
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry =
 			(MFAFIDO2CredentialEntry)object;
 
-		long primaryKey = mfafido2CredentialEntry.getPrimaryKey();
+		long primaryKey = mfaFIDO2CredentialEntry.getPrimaryKey();
 
 		if (getPrimaryKey() == primaryKey) {
 			return true;
@@ -826,104 +826,104 @@ public class MFAFIDO2CredentialEntryModelImpl
 
 	@Override
 	public CacheModel<MFAFIDO2CredentialEntry> toCacheModel() {
-		MFAFIDO2CredentialEntryCacheModel mfafido2CredentialEntryCacheModel =
+		MFAFIDO2CredentialEntryCacheModel mfaFIDO2CredentialEntryCacheModel =
 			new MFAFIDO2CredentialEntryCacheModel();
 
-		mfafido2CredentialEntryCacheModel.mvccVersion = getMvccVersion();
+		mfaFIDO2CredentialEntryCacheModel.mvccVersion = getMvccVersion();
 
-		mfafido2CredentialEntryCacheModel.mfaFIDO2CredentialEntryId =
+		mfaFIDO2CredentialEntryCacheModel.mfaFIDO2CredentialEntryId =
 			getMfaFIDO2CredentialEntryId();
 
-		mfafido2CredentialEntryCacheModel.companyId = getCompanyId();
+		mfaFIDO2CredentialEntryCacheModel.companyId = getCompanyId();
 
-		mfafido2CredentialEntryCacheModel.userId = getUserId();
+		mfaFIDO2CredentialEntryCacheModel.userId = getUserId();
 
-		mfafido2CredentialEntryCacheModel.userName = getUserName();
+		mfaFIDO2CredentialEntryCacheModel.userName = getUserName();
 
-		String userName = mfafido2CredentialEntryCacheModel.userName;
+		String userName = mfaFIDO2CredentialEntryCacheModel.userName;
 
 		if ((userName != null) && (userName.length() == 0)) {
-			mfafido2CredentialEntryCacheModel.userName = null;
+			mfaFIDO2CredentialEntryCacheModel.userName = null;
 		}
 
 		Date createDate = getCreateDate();
 
 		if (createDate != null) {
-			mfafido2CredentialEntryCacheModel.createDate = createDate.getTime();
+			mfaFIDO2CredentialEntryCacheModel.createDate = createDate.getTime();
 		}
 		else {
-			mfafido2CredentialEntryCacheModel.createDate = Long.MIN_VALUE;
+			mfaFIDO2CredentialEntryCacheModel.createDate = Long.MIN_VALUE;
 		}
 
 		Date modifiedDate = getModifiedDate();
 
 		if (modifiedDate != null) {
-			mfafido2CredentialEntryCacheModel.modifiedDate =
+			mfaFIDO2CredentialEntryCacheModel.modifiedDate =
 				modifiedDate.getTime();
 		}
 		else {
-			mfafido2CredentialEntryCacheModel.modifiedDate = Long.MIN_VALUE;
+			mfaFIDO2CredentialEntryCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
-		mfafido2CredentialEntryCacheModel.credentialId = getCredentialId();
+		mfaFIDO2CredentialEntryCacheModel.credentialId = getCredentialId();
 
-		String credentialId = mfafido2CredentialEntryCacheModel.credentialId;
+		String credentialId = mfaFIDO2CredentialEntryCacheModel.credentialId;
 
 		if ((credentialId != null) && (credentialId.length() == 0)) {
-			mfafido2CredentialEntryCacheModel.credentialId = null;
+			mfaFIDO2CredentialEntryCacheModel.credentialId = null;
 		}
 
-		mfafido2CredentialEntryCacheModel.credentialType = getCredentialType();
+		mfaFIDO2CredentialEntryCacheModel.credentialType = getCredentialType();
 
-		mfafido2CredentialEntryCacheModel.publicKeyCose = getPublicKeyCose();
+		mfaFIDO2CredentialEntryCacheModel.publicKeyCose = getPublicKeyCose();
 
-		String publicKeyCose = mfafido2CredentialEntryCacheModel.publicKeyCose;
+		String publicKeyCose = mfaFIDO2CredentialEntryCacheModel.publicKeyCose;
 
 		if ((publicKeyCose != null) && (publicKeyCose.length() == 0)) {
-			mfafido2CredentialEntryCacheModel.publicKeyCose = null;
+			mfaFIDO2CredentialEntryCacheModel.publicKeyCose = null;
 		}
 
-		mfafido2CredentialEntryCacheModel.signatureCount = getSignatureCount();
+		mfaFIDO2CredentialEntryCacheModel.signatureCount = getSignatureCount();
 
-		mfafido2CredentialEntryCacheModel.failedAttempts = getFailedAttempts();
+		mfaFIDO2CredentialEntryCacheModel.failedAttempts = getFailedAttempts();
 
 		Date lastFailDate = getLastFailDate();
 
 		if (lastFailDate != null) {
-			mfafido2CredentialEntryCacheModel.lastFailDate =
+			mfaFIDO2CredentialEntryCacheModel.lastFailDate =
 				lastFailDate.getTime();
 		}
 		else {
-			mfafido2CredentialEntryCacheModel.lastFailDate = Long.MIN_VALUE;
+			mfaFIDO2CredentialEntryCacheModel.lastFailDate = Long.MIN_VALUE;
 		}
 
-		mfafido2CredentialEntryCacheModel.lastFailIP = getLastFailIP();
+		mfaFIDO2CredentialEntryCacheModel.lastFailIP = getLastFailIP();
 
-		String lastFailIP = mfafido2CredentialEntryCacheModel.lastFailIP;
+		String lastFailIP = mfaFIDO2CredentialEntryCacheModel.lastFailIP;
 
 		if ((lastFailIP != null) && (lastFailIP.length() == 0)) {
-			mfafido2CredentialEntryCacheModel.lastFailIP = null;
+			mfaFIDO2CredentialEntryCacheModel.lastFailIP = null;
 		}
 
 		Date lastSuccessDate = getLastSuccessDate();
 
 		if (lastSuccessDate != null) {
-			mfafido2CredentialEntryCacheModel.lastSuccessDate =
+			mfaFIDO2CredentialEntryCacheModel.lastSuccessDate =
 				lastSuccessDate.getTime();
 		}
 		else {
-			mfafido2CredentialEntryCacheModel.lastSuccessDate = Long.MIN_VALUE;
+			mfaFIDO2CredentialEntryCacheModel.lastSuccessDate = Long.MIN_VALUE;
 		}
 
-		mfafido2CredentialEntryCacheModel.lastSuccessIP = getLastSuccessIP();
+		mfaFIDO2CredentialEntryCacheModel.lastSuccessIP = getLastSuccessIP();
 
-		String lastSuccessIP = mfafido2CredentialEntryCacheModel.lastSuccessIP;
+		String lastSuccessIP = mfaFIDO2CredentialEntryCacheModel.lastSuccessIP;
 
 		if ((lastSuccessIP != null) && (lastSuccessIP.length() == 0)) {
-			mfafido2CredentialEntryCacheModel.lastSuccessIP = null;
+			mfaFIDO2CredentialEntryCacheModel.lastSuccessIP = null;
 		}
 
-		return mfafido2CredentialEntryCacheModel;
+		return mfaFIDO2CredentialEntryCacheModel;
 	}
 
 	@Override

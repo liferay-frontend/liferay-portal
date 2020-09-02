@@ -73,12 +73,12 @@ public interface MFAFIDO2CredentialEntryLocalService
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was added
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public MFAFIDO2CredentialEntry addMFAFIDO2CredentialEntry(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry);
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry);
 
 	/**
 	 * Creates a new mfafido2 credential entry with the primary key. Does not add the mfafido2 credential entry to the database.
@@ -119,12 +119,12 @@ public interface MFAFIDO2CredentialEntryLocalService
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was removed
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public MFAFIDO2CredentialEntry deleteMFAFIDO2CredentialEntry(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry);
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry);
 
 	/**
 	 * @throws PortalException
@@ -281,11 +281,11 @@ public interface MFAFIDO2CredentialEntryLocalService
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was updated
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public MFAFIDO2CredentialEntry updateMFAFIDO2CredentialEntry(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry);
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry);
 
 }

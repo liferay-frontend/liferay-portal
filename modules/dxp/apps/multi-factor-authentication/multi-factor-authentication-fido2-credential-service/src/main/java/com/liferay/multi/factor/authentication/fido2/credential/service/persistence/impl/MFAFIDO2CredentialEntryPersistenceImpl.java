@@ -110,9 +110,9 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	public MFAFIDO2CredentialEntry findByUserId(long userId)
 		throws NoSuchMFAFIDO2CredentialEntryException {
 
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry = fetchByUserId(userId);
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry = fetchByUserId(userId);
 
-		if (mfafido2CredentialEntry == null) {
+		if (mfaFIDO2CredentialEntry == null) {
 			StringBundler sb = new StringBundler(4);
 
 			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
@@ -129,7 +129,7 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 			throw new NoSuchMFAFIDO2CredentialEntryException(sb.toString());
 		}
 
-		return mfafido2CredentialEntry;
+		return mfaFIDO2CredentialEntry;
 	}
 
 	/**
@@ -168,10 +168,10 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 		}
 
 		if (result instanceof MFAFIDO2CredentialEntry) {
-			MFAFIDO2CredentialEntry mfafido2CredentialEntry =
+			MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry =
 				(MFAFIDO2CredentialEntry)result;
 
-			if (userId != mfafido2CredentialEntry.getUserId()) {
+			if (userId != mfaFIDO2CredentialEntry.getUserId()) {
 				result = null;
 			}
 		}
@@ -205,12 +205,12 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 					}
 				}
 				else {
-					MFAFIDO2CredentialEntry mfafido2CredentialEntry = list.get(
+					MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry = list.get(
 						0);
 
-					result = mfafido2CredentialEntry;
+					result = mfaFIDO2CredentialEntry;
 
-					cacheResult(mfafido2CredentialEntry);
+					cacheResult(mfaFIDO2CredentialEntry);
 				}
 			}
 			catch (Exception exception) {
@@ -239,9 +239,9 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	public MFAFIDO2CredentialEntry removeByUserId(long userId)
 		throws NoSuchMFAFIDO2CredentialEntryException {
 
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry = findByUserId(userId);
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry = findByUserId(userId);
 
-		return remove(mfafido2CredentialEntry);
+		return remove(mfaFIDO2CredentialEntry);
 	}
 
 	/**
@@ -310,10 +310,10 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	public MFAFIDO2CredentialEntry findByCredentialId(String credentialId)
 		throws NoSuchMFAFIDO2CredentialEntryException {
 
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry = fetchByCredentialId(
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry = fetchByCredentialId(
 			credentialId);
 
-		if (mfafido2CredentialEntry == null) {
+		if (mfaFIDO2CredentialEntry == null) {
 			StringBundler sb = new StringBundler(4);
 
 			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
@@ -330,7 +330,7 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 			throw new NoSuchMFAFIDO2CredentialEntryException(sb.toString());
 		}
 
-		return mfafido2CredentialEntry;
+		return mfaFIDO2CredentialEntry;
 	}
 
 	/**
@@ -371,11 +371,11 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 		}
 
 		if (result instanceof MFAFIDO2CredentialEntry) {
-			MFAFIDO2CredentialEntry mfafido2CredentialEntry =
+			MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry =
 				(MFAFIDO2CredentialEntry)result;
 
 			if (!Objects.equals(
-					credentialId, mfafido2CredentialEntry.getCredentialId())) {
+					credentialId, mfaFIDO2CredentialEntry.getCredentialId())) {
 
 				result = null;
 			}
@@ -421,12 +421,12 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 					}
 				}
 				else {
-					MFAFIDO2CredentialEntry mfafido2CredentialEntry = list.get(
+					MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry = list.get(
 						0);
 
-					result = mfafido2CredentialEntry;
+					result = mfaFIDO2CredentialEntry;
 
-					cacheResult(mfafido2CredentialEntry);
+					cacheResult(mfaFIDO2CredentialEntry);
 				}
 			}
 			catch (Exception exception) {
@@ -455,10 +455,10 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	public MFAFIDO2CredentialEntry removeByCredentialId(String credentialId)
 		throws NoSuchMFAFIDO2CredentialEntryException {
 
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry = findByCredentialId(
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry = findByCredentialId(
 			credentialId);
 
-		return remove(mfafido2CredentialEntry);
+		return remove(mfaFIDO2CredentialEntry);
 	}
 
 	/**
@@ -541,23 +541,23 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	/**
 	 * Caches the mfafido2 credential entry in the entity cache if it is enabled.
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 */
 	@Override
-	public void cacheResult(MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+	public void cacheResult(MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 		entityCache.putResult(
 			MFAFIDO2CredentialEntryImpl.class,
-			mfafido2CredentialEntry.getPrimaryKey(), mfafido2CredentialEntry);
+			mfaFIDO2CredentialEntry.getPrimaryKey(), mfaFIDO2CredentialEntry);
 
 		finderCache.putResult(
 			_finderPathFetchByUserId,
-			new Object[] {mfafido2CredentialEntry.getUserId()},
-			mfafido2CredentialEntry);
+			new Object[] {mfaFIDO2CredentialEntry.getUserId()},
+			mfaFIDO2CredentialEntry);
 
 		finderCache.putResult(
 			_finderPathFetchByCredentialId,
-			new Object[] {mfafido2CredentialEntry.getCredentialId()},
-			mfafido2CredentialEntry);
+			new Object[] {mfaFIDO2CredentialEntry.getCredentialId()},
+			mfaFIDO2CredentialEntry);
 	}
 
 	/**
@@ -569,14 +569,14 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	public void cacheResult(
 		List<MFAFIDO2CredentialEntry> mfafido2CredentialEntries) {
 
-		for (MFAFIDO2CredentialEntry mfafido2CredentialEntry :
+		for (MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry :
 				mfafido2CredentialEntries) {
 
 			if (entityCache.getResult(
 					MFAFIDO2CredentialEntryImpl.class,
-					mfafido2CredentialEntry.getPrimaryKey()) == null) {
+					mfaFIDO2CredentialEntry.getPrimaryKey()) == null) {
 
-				cacheResult(mfafido2CredentialEntry);
+				cacheResult(mfaFIDO2CredentialEntry);
 			}
 		}
 	}
@@ -605,20 +605,20 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	 * </p>
 	 */
 	@Override
-	public void clearCache(MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+	public void clearCache(MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 		entityCache.removeResult(
-			MFAFIDO2CredentialEntryImpl.class, mfafido2CredentialEntry);
+			MFAFIDO2CredentialEntryImpl.class, mfaFIDO2CredentialEntry);
 	}
 
 	@Override
 	public void clearCache(
 		List<MFAFIDO2CredentialEntry> mfafido2CredentialEntries) {
 
-		for (MFAFIDO2CredentialEntry mfafido2CredentialEntry :
+		for (MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry :
 				mfafido2CredentialEntries) {
 
 			entityCache.removeResult(
-				MFAFIDO2CredentialEntryImpl.class, mfafido2CredentialEntry);
+				MFAFIDO2CredentialEntryImpl.class, mfaFIDO2CredentialEntry);
 		}
 	}
 
@@ -635,27 +635,27 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	}
 
 	protected void cacheUniqueFindersCache(
-		MFAFIDO2CredentialEntryModelImpl mfafido2CredentialEntryModelImpl) {
+		MFAFIDO2CredentialEntryModelImpl mfaFIDO2CredentialEntryModelImpl) {
 
 		Object[] args = new Object[] {
-			mfafido2CredentialEntryModelImpl.getUserId()
+			mfaFIDO2CredentialEntryModelImpl.getUserId()
 		};
 
 		finderCache.putResult(
 			_finderPathCountByUserId, args, Long.valueOf(1), false);
 		finderCache.putResult(
-			_finderPathFetchByUserId, args, mfafido2CredentialEntryModelImpl,
+			_finderPathFetchByUserId, args, mfaFIDO2CredentialEntryModelImpl,
 			false);
 
 		args = new Object[] {
-			mfafido2CredentialEntryModelImpl.getCredentialId()
+			mfaFIDO2CredentialEntryModelImpl.getCredentialId()
 		};
 
 		finderCache.putResult(
 			_finderPathCountByCredentialId, args, Long.valueOf(1), false);
 		finderCache.putResult(
 			_finderPathFetchByCredentialId, args,
-			mfafido2CredentialEntryModelImpl, false);
+			mfaFIDO2CredentialEntryModelImpl, false);
 	}
 
 	/**
@@ -666,15 +666,15 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	 */
 	@Override
 	public MFAFIDO2CredentialEntry create(long mfaFIDO2CredentialEntryId) {
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry =
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry =
 			new MFAFIDO2CredentialEntryImpl();
 
-		mfafido2CredentialEntry.setNew(true);
-		mfafido2CredentialEntry.setPrimaryKey(mfaFIDO2CredentialEntryId);
+		mfaFIDO2CredentialEntry.setNew(true);
+		mfaFIDO2CredentialEntry.setPrimaryKey(mfaFIDO2CredentialEntryId);
 
-		mfafido2CredentialEntry.setCompanyId(CompanyThreadLocal.getCompanyId());
+		mfaFIDO2CredentialEntry.setCompanyId(CompanyThreadLocal.getCompanyId());
 
-		return mfafido2CredentialEntry;
+		return mfaFIDO2CredentialEntry;
 	}
 
 	/**
@@ -707,11 +707,11 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 		try {
 			session = openSession();
 
-			MFAFIDO2CredentialEntry mfafido2CredentialEntry =
+			MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry =
 				(MFAFIDO2CredentialEntry)session.get(
 					MFAFIDO2CredentialEntryImpl.class, primaryKey);
 
-			if (mfafido2CredentialEntry == null) {
+			if (mfaFIDO2CredentialEntry == null) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 				}
@@ -720,7 +720,7 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 					_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
-			return remove(mfafido2CredentialEntry);
+			return remove(mfaFIDO2CredentialEntry);
 		}
 		catch (NoSuchMFAFIDO2CredentialEntryException noSuchEntityException) {
 			throw noSuchEntityException;
@@ -735,21 +735,21 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 
 	@Override
 	protected MFAFIDO2CredentialEntry removeImpl(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
 		Session session = null;
 
 		try {
 			session = openSession();
 
-			if (!session.contains(mfafido2CredentialEntry)) {
-				mfafido2CredentialEntry = (MFAFIDO2CredentialEntry)session.get(
+			if (!session.contains(mfaFIDO2CredentialEntry)) {
+				mfaFIDO2CredentialEntry = (MFAFIDO2CredentialEntry)session.get(
 					MFAFIDO2CredentialEntryImpl.class,
-					mfafido2CredentialEntry.getPrimaryKeyObj());
+					mfaFIDO2CredentialEntry.getPrimaryKeyObj());
 			}
 
-			if (mfafido2CredentialEntry != null) {
-				session.delete(mfafido2CredentialEntry);
+			if (mfaFIDO2CredentialEntry != null) {
+				session.delete(mfaFIDO2CredentialEntry);
 			}
 		}
 		catch (Exception exception) {
@@ -759,62 +759,62 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 			closeSession(session);
 		}
 
-		if (mfafido2CredentialEntry != null) {
-			clearCache(mfafido2CredentialEntry);
+		if (mfaFIDO2CredentialEntry != null) {
+			clearCache(mfaFIDO2CredentialEntry);
 		}
 
-		return mfafido2CredentialEntry;
+		return mfaFIDO2CredentialEntry;
 	}
 
 	@Override
 	public MFAFIDO2CredentialEntry updateImpl(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		boolean isNew = mfafido2CredentialEntry.isNew();
+		boolean isNew = mfaFIDO2CredentialEntry.isNew();
 
-		if (!(mfafido2CredentialEntry instanceof
+		if (!(mfaFIDO2CredentialEntry instanceof
 				MFAFIDO2CredentialEntryModelImpl)) {
 
 			InvocationHandler invocationHandler = null;
 
-			if (ProxyUtil.isProxyClass(mfafido2CredentialEntry.getClass())) {
+			if (ProxyUtil.isProxyClass(mfaFIDO2CredentialEntry.getClass())) {
 				invocationHandler = ProxyUtil.getInvocationHandler(
-					mfafido2CredentialEntry);
+					mfaFIDO2CredentialEntry);
 
 				throw new IllegalArgumentException(
-					"Implement ModelWrapper in mfafido2CredentialEntry proxy " +
+					"Implement ModelWrapper in mfaFIDO2CredentialEntry proxy " +
 						invocationHandler.getClass());
 			}
 
 			throw new IllegalArgumentException(
 				"Implement ModelWrapper in custom MFAFIDO2CredentialEntry implementation " +
-					mfafido2CredentialEntry.getClass());
+					mfaFIDO2CredentialEntry.getClass());
 		}
 
-		MFAFIDO2CredentialEntryModelImpl mfafido2CredentialEntryModelImpl =
-			(MFAFIDO2CredentialEntryModelImpl)mfafido2CredentialEntry;
+		MFAFIDO2CredentialEntryModelImpl mfaFIDO2CredentialEntryModelImpl =
+			(MFAFIDO2CredentialEntryModelImpl)mfaFIDO2CredentialEntry;
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
 		Date now = new Date();
 
-		if (isNew && (mfafido2CredentialEntry.getCreateDate() == null)) {
+		if (isNew && (mfaFIDO2CredentialEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				mfafido2CredentialEntry.setCreateDate(now);
+				mfaFIDO2CredentialEntry.setCreateDate(now);
 			}
 			else {
-				mfafido2CredentialEntry.setCreateDate(
+				mfaFIDO2CredentialEntry.setCreateDate(
 					serviceContext.getCreateDate(now));
 			}
 		}
 
-		if (!mfafido2CredentialEntryModelImpl.hasSetModifiedDate()) {
+		if (!mfaFIDO2CredentialEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				mfafido2CredentialEntry.setModifiedDate(now);
+				mfaFIDO2CredentialEntry.setModifiedDate(now);
 			}
 			else {
-				mfafido2CredentialEntry.setModifiedDate(
+				mfaFIDO2CredentialEntry.setModifiedDate(
 					serviceContext.getModifiedDate(now));
 			}
 		}
@@ -825,12 +825,12 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 			session = openSession();
 
 			if (isNew) {
-				session.save(mfafido2CredentialEntry);
+				session.save(mfaFIDO2CredentialEntry);
 			}
 			else {
-				mfafido2CredentialEntry =
+				mfaFIDO2CredentialEntry =
 					(MFAFIDO2CredentialEntry)session.merge(
-						mfafido2CredentialEntry);
+						mfaFIDO2CredentialEntry);
 			}
 		}
 		catch (Exception exception) {
@@ -841,18 +841,18 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 		}
 
 		entityCache.putResult(
-			MFAFIDO2CredentialEntryImpl.class, mfafido2CredentialEntryModelImpl,
+			MFAFIDO2CredentialEntryImpl.class, mfaFIDO2CredentialEntryModelImpl,
 			false, true);
 
-		cacheUniqueFindersCache(mfafido2CredentialEntryModelImpl);
+		cacheUniqueFindersCache(mfaFIDO2CredentialEntryModelImpl);
 
 		if (isNew) {
-			mfafido2CredentialEntry.setNew(false);
+			mfaFIDO2CredentialEntry.setNew(false);
 		}
 
-		mfafido2CredentialEntry.resetOriginalValues();
+		mfaFIDO2CredentialEntry.resetOriginalValues();
 
-		return mfafido2CredentialEntry;
+		return mfaFIDO2CredentialEntry;
 	}
 
 	/**
@@ -866,10 +866,10 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	public MFAFIDO2CredentialEntry findByPrimaryKey(Serializable primaryKey)
 		throws NoSuchMFAFIDO2CredentialEntryException {
 
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry = fetchByPrimaryKey(
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry = fetchByPrimaryKey(
 			primaryKey);
 
-		if (mfafido2CredentialEntry == null) {
+		if (mfaFIDO2CredentialEntry == null) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
@@ -878,7 +878,7 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 				_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 		}
 
-		return mfafido2CredentialEntry;
+		return mfaFIDO2CredentialEntry;
 	}
 
 	/**
@@ -1052,8 +1052,8 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	 */
 	@Override
 	public void removeAll() {
-		for (MFAFIDO2CredentialEntry mfafido2CredentialEntry : findAll()) {
-			remove(mfafido2CredentialEntry);
+		for (MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry : findAll()) {
+			remove(mfaFIDO2CredentialEntry);
 		}
 	}
 
@@ -1278,15 +1278,15 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 				return null;
 			}
 
-			MFAFIDO2CredentialEntryModelImpl mfafido2CredentialEntryModelImpl =
+			MFAFIDO2CredentialEntryModelImpl mfaFIDO2CredentialEntryModelImpl =
 				(MFAFIDO2CredentialEntryModelImpl)baseModel;
 
 			long columnBitmask =
-				mfafido2CredentialEntryModelImpl.getColumnBitmask();
+				mfaFIDO2CredentialEntryModelImpl.getColumnBitmask();
 
 			if (!checkColumn || (columnBitmask == 0)) {
 				return _getValue(
-					mfafido2CredentialEntryModelImpl, columnNames, original);
+					mfaFIDO2CredentialEntryModelImpl, columnNames, original);
 			}
 
 			Long finderPathColumnBitmask = _finderPathColumnBitmasksCache.get(
@@ -1297,7 +1297,7 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 
 				for (String columnName : columnNames) {
 					finderPathColumnBitmask |=
-						mfafido2CredentialEntryModelImpl.getColumnBitmask(
+						mfaFIDO2CredentialEntryModelImpl.getColumnBitmask(
 							columnName);
 				}
 
@@ -1307,14 +1307,14 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 
 			if ((columnBitmask & finderPathColumnBitmask) != 0) {
 				return _getValue(
-					mfafido2CredentialEntryModelImpl, columnNames, original);
+					mfaFIDO2CredentialEntryModelImpl, columnNames, original);
 			}
 
 			return null;
 		}
 
 		private Object[] _getValue(
-			MFAFIDO2CredentialEntryModelImpl mfafido2CredentialEntryModelImpl,
+			MFAFIDO2CredentialEntryModelImpl mfaFIDO2CredentialEntryModelImpl,
 			String[] columnNames, boolean original) {
 
 			Object[] arguments = new Object[columnNames.length];
@@ -1324,12 +1324,12 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 
 				if (original) {
 					arguments[i] =
-						mfafido2CredentialEntryModelImpl.getColumnOriginalValue(
+						mfaFIDO2CredentialEntryModelImpl.getColumnOriginalValue(
 							columnName);
 				}
 				else {
 					arguments[i] =
-						mfafido2CredentialEntryModelImpl.getColumnValue(
+						mfaFIDO2CredentialEntryModelImpl.getColumnValue(
 							columnName);
 				}
 			}

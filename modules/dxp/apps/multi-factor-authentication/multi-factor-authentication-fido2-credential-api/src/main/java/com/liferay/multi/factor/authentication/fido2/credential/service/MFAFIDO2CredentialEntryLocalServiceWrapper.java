@@ -29,10 +29,10 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 
 	public MFAFIDO2CredentialEntryLocalServiceWrapper(
 		MFAFIDO2CredentialEntryLocalService
-			mfafido2CredentialEntryLocalService) {
+			mfaFIDO2CredentialEntryLocalService) {
 
-		_mfafido2CredentialEntryLocalService =
-			mfafido2CredentialEntryLocalService;
+		_mfaFIDO2CredentialEntryLocalService =
+			mfaFIDO2CredentialEntryLocalService;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 				String publicKeyCose)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _mfafido2CredentialEntryLocalService.addMFAFIDO2CredentialEntry(
+		return _mfaFIDO2CredentialEntryLocalService.addMFAFIDO2CredentialEntry(
 			userId, credentialId, credentialType, publicKeyCose);
 	}
 
@@ -53,17 +53,17 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was added
 	 */
 	@Override
 	public com.liferay.multi.factor.authentication.fido2.credential.model.
 		MFAFIDO2CredentialEntry addMFAFIDO2CredentialEntry(
 			com.liferay.multi.factor.authentication.fido2.credential.model.
-				MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+				MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		return _mfafido2CredentialEntryLocalService.addMFAFIDO2CredentialEntry(
-			mfafido2CredentialEntry);
+		return _mfaFIDO2CredentialEntryLocalService.addMFAFIDO2CredentialEntry(
+			mfaFIDO2CredentialEntry);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 		MFAFIDO2CredentialEntry createMFAFIDO2CredentialEntry(
 			long mfaFIDO2CredentialEntryId) {
 
-		return _mfafido2CredentialEntryLocalService.
+		return _mfaFIDO2CredentialEntryLocalService.
 			createMFAFIDO2CredentialEntry(mfaFIDO2CredentialEntryId);
 	}
 
@@ -89,7 +89,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 			java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _mfafido2CredentialEntryLocalService.createPersistedModel(
+		return _mfaFIDO2CredentialEntryLocalService.createPersistedModel(
 			primaryKeyObj);
 	}
 
@@ -110,7 +110,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 				long mfaFIDO2CredentialEntryId)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _mfafido2CredentialEntryLocalService.
+		return _mfaFIDO2CredentialEntryLocalService.
 			deleteMFAFIDO2CredentialEntry(mfaFIDO2CredentialEntryId);
 	}
 
@@ -121,17 +121,17 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was removed
 	 */
 	@Override
 	public com.liferay.multi.factor.authentication.fido2.credential.model.
 		MFAFIDO2CredentialEntry deleteMFAFIDO2CredentialEntry(
 			com.liferay.multi.factor.authentication.fido2.credential.model.
-				MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+				MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		return _mfafido2CredentialEntryLocalService.
-			deleteMFAFIDO2CredentialEntry(mfafido2CredentialEntry);
+		return _mfaFIDO2CredentialEntryLocalService.
+			deleteMFAFIDO2CredentialEntry(mfaFIDO2CredentialEntry);
 	}
 
 	/**
@@ -142,18 +142,18 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 			com.liferay.portal.kernel.model.PersistedModel persistedModel)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _mfafido2CredentialEntryLocalService.deletePersistedModel(
+		return _mfaFIDO2CredentialEntryLocalService.deletePersistedModel(
 			persistedModel);
 	}
 
 	@Override
 	public <T> T dslQuery(com.liferay.petra.sql.dsl.query.DSLQuery dslQuery) {
-		return _mfafido2CredentialEntryLocalService.dslQuery(dslQuery);
+		return _mfaFIDO2CredentialEntryLocalService.dslQuery(dslQuery);
 	}
 
 	@Override
 	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
-		return _mfafido2CredentialEntryLocalService.dynamicQuery();
+		return _mfaFIDO2CredentialEntryLocalService.dynamicQuery();
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 	public <T> java.util.List<T> dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery) {
 
-		return _mfafido2CredentialEntryLocalService.dynamicQuery(dynamicQuery);
+		return _mfaFIDO2CredentialEntryLocalService.dynamicQuery(dynamicQuery);
 	}
 
 	/**
@@ -186,7 +186,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
 		int end) {
 
-		return _mfafido2CredentialEntryLocalService.dynamicQuery(
+		return _mfaFIDO2CredentialEntryLocalService.dynamicQuery(
 			dynamicQuery, start, end);
 	}
 
@@ -209,7 +209,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 		int end,
 		com.liferay.portal.kernel.util.OrderByComparator<T> orderByComparator) {
 
-		return _mfafido2CredentialEntryLocalService.dynamicQuery(
+		return _mfaFIDO2CredentialEntryLocalService.dynamicQuery(
 			dynamicQuery, start, end, orderByComparator);
 	}
 
@@ -223,7 +223,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 	public long dynamicQueryCount(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery) {
 
-		return _mfafido2CredentialEntryLocalService.dynamicQueryCount(
+		return _mfaFIDO2CredentialEntryLocalService.dynamicQueryCount(
 			dynamicQuery);
 	}
 
@@ -239,7 +239,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
 		com.liferay.portal.kernel.dao.orm.Projection projection) {
 
-		return _mfafido2CredentialEntryLocalService.dynamicQueryCount(
+		return _mfaFIDO2CredentialEntryLocalService.dynamicQueryCount(
 			dynamicQuery, projection);
 	}
 
@@ -248,7 +248,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 		MFAFIDO2CredentialEntry fetchMFAFIDO2CredentialEntry(
 			long mfaFIDO2CredentialEntryId) {
 
-		return _mfafido2CredentialEntryLocalService.
+		return _mfaFIDO2CredentialEntryLocalService.
 			fetchMFAFIDO2CredentialEntry(mfaFIDO2CredentialEntryId);
 	}
 
@@ -257,7 +257,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 		MFAFIDO2CredentialEntry fetchMFAFIDO2CredentialEntryByCredentialId(
 			String credentialId) {
 
-		return _mfafido2CredentialEntryLocalService.
+		return _mfaFIDO2CredentialEntryLocalService.
 			fetchMFAFIDO2CredentialEntryByCredentialId(credentialId);
 	}
 
@@ -266,7 +266,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 		MFAFIDO2CredentialEntry fetchMFAFIDO2CredentialEntryByUserId(
 			long userId) {
 
-		return _mfafido2CredentialEntryLocalService.
+		return _mfaFIDO2CredentialEntryLocalService.
 			fetchMFAFIDO2CredentialEntryByUserId(userId);
 	}
 
@@ -274,14 +274,14 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
-		return _mfafido2CredentialEntryLocalService.getActionableDynamicQuery();
+		return _mfaFIDO2CredentialEntryLocalService.getActionableDynamicQuery();
 	}
 
 	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
-		return _mfafido2CredentialEntryLocalService.
+		return _mfaFIDO2CredentialEntryLocalService.
 			getIndexableActionableDynamicQuery();
 	}
 
@@ -302,7 +302,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 			MFAFIDO2CredentialEntry> getMFAFIDO2CredentialEntries(
 				int start, int end) {
 
-		return _mfafido2CredentialEntryLocalService.
+		return _mfaFIDO2CredentialEntryLocalService.
 			getMFAFIDO2CredentialEntries(start, end);
 	}
 
@@ -313,7 +313,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 	 */
 	@Override
 	public int getMFAFIDO2CredentialEntriesCount() {
-		return _mfafido2CredentialEntryLocalService.
+		return _mfaFIDO2CredentialEntryLocalService.
 			getMFAFIDO2CredentialEntriesCount();
 	}
 
@@ -330,7 +330,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 				long mfaFIDO2CredentialEntryId)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _mfafido2CredentialEntryLocalService.getMFAFIDO2CredentialEntry(
+		return _mfaFIDO2CredentialEntryLocalService.getMFAFIDO2CredentialEntry(
 			mfaFIDO2CredentialEntryId);
 	}
 
@@ -341,7 +341,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 	 */
 	@Override
 	public String getOSGiServiceIdentifier() {
-		return _mfafido2CredentialEntryLocalService.getOSGiServiceIdentifier();
+		return _mfaFIDO2CredentialEntryLocalService.getOSGiServiceIdentifier();
 	}
 
 	/**
@@ -352,7 +352,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 			java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _mfafido2CredentialEntryLocalService.getPersistedModel(
+		return _mfaFIDO2CredentialEntryLocalService.getPersistedModel(
 			primaryKeyObj);
 	}
 
@@ -362,7 +362,7 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 				long userId, String ip, long signatureCount)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _mfafido2CredentialEntryLocalService.updateAttempts(
+		return _mfaFIDO2CredentialEntryLocalService.updateAttempts(
 			userId, ip, signatureCount);
 	}
 
@@ -373,34 +373,34 @@ public class MFAFIDO2CredentialEntryLocalServiceWrapper
 	 * <strong>Important:</strong> Inspect MFAFIDO2CredentialEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
 	 * </p>
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 * @return the mfafido2 credential entry that was updated
 	 */
 	@Override
 	public com.liferay.multi.factor.authentication.fido2.credential.model.
 		MFAFIDO2CredentialEntry updateMFAFIDO2CredentialEntry(
 			com.liferay.multi.factor.authentication.fido2.credential.model.
-				MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+				MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		return _mfafido2CredentialEntryLocalService.
-			updateMFAFIDO2CredentialEntry(mfafido2CredentialEntry);
+		return _mfaFIDO2CredentialEntryLocalService.
+			updateMFAFIDO2CredentialEntry(mfaFIDO2CredentialEntry);
 	}
 
 	@Override
 	public MFAFIDO2CredentialEntryLocalService getWrappedService() {
-		return _mfafido2CredentialEntryLocalService;
+		return _mfaFIDO2CredentialEntryLocalService;
 	}
 
 	@Override
 	public void setWrappedService(
 		MFAFIDO2CredentialEntryLocalService
-			mfafido2CredentialEntryLocalService) {
+			mfaFIDO2CredentialEntryLocalService) {
 
-		_mfafido2CredentialEntryLocalService =
-			mfafido2CredentialEntryLocalService;
+		_mfaFIDO2CredentialEntryLocalService =
+			mfaFIDO2CredentialEntryLocalService;
 	}
 
 	private MFAFIDO2CredentialEntryLocalService
-		_mfafido2CredentialEntryLocalService;
+		_mfaFIDO2CredentialEntryLocalService;
 
 }

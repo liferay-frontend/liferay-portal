@@ -35,9 +35,9 @@ public class MFAFIDO2CredentialEntryWrapper
 	implements MFAFIDO2CredentialEntry, ModelWrapper<MFAFIDO2CredentialEntry> {
 
 	public MFAFIDO2CredentialEntryWrapper(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		super(mfafido2CredentialEntry);
+		super(mfaFIDO2CredentialEntry);
 	}
 
 	@Override
@@ -532,9 +532,9 @@ public class MFAFIDO2CredentialEntryWrapper
 
 	@Override
 	protected MFAFIDO2CredentialEntryWrapper wrap(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		return new MFAFIDO2CredentialEntryWrapper(mfafido2CredentialEntry);
+		return new MFAFIDO2CredentialEntryWrapper(mfaFIDO2CredentialEntry);
 	}
 
 }

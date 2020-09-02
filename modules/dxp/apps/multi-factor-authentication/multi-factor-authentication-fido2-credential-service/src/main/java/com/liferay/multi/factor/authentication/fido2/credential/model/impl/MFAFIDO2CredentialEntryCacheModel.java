@@ -46,12 +46,12 @@ public class MFAFIDO2CredentialEntryCacheModel
 			return false;
 		}
 
-		MFAFIDO2CredentialEntryCacheModel mfafido2CredentialEntryCacheModel =
+		MFAFIDO2CredentialEntryCacheModel mfaFIDO2CredentialEntryCacheModel =
 			(MFAFIDO2CredentialEntryCacheModel)object;
 
 		if ((mfaFIDO2CredentialEntryId ==
-				mfafido2CredentialEntryCacheModel.mfaFIDO2CredentialEntryId) &&
-			(mvccVersion == mfafido2CredentialEntryCacheModel.mvccVersion)) {
+				mfaFIDO2CredentialEntryCacheModel.mfaFIDO2CredentialEntryId) &&
+			(mvccVersion == mfaFIDO2CredentialEntryCacheModel.mvccVersion)) {
 
 			return true;
 		}
@@ -119,87 +119,87 @@ public class MFAFIDO2CredentialEntryCacheModel
 
 	@Override
 	public MFAFIDO2CredentialEntry toEntityModel() {
-		MFAFIDO2CredentialEntryImpl mfafido2CredentialEntryImpl =
+		MFAFIDO2CredentialEntryImpl mfaFIDO2CredentialEntryImpl =
 			new MFAFIDO2CredentialEntryImpl();
 
-		mfafido2CredentialEntryImpl.setMvccVersion(mvccVersion);
-		mfafido2CredentialEntryImpl.setMfaFIDO2CredentialEntryId(
+		mfaFIDO2CredentialEntryImpl.setMvccVersion(mvccVersion);
+		mfaFIDO2CredentialEntryImpl.setMfaFIDO2CredentialEntryId(
 			mfaFIDO2CredentialEntryId);
-		mfafido2CredentialEntryImpl.setCompanyId(companyId);
-		mfafido2CredentialEntryImpl.setUserId(userId);
+		mfaFIDO2CredentialEntryImpl.setCompanyId(companyId);
+		mfaFIDO2CredentialEntryImpl.setUserId(userId);
 
 		if (userName == null) {
-			mfafido2CredentialEntryImpl.setUserName("");
+			mfaFIDO2CredentialEntryImpl.setUserName("");
 		}
 		else {
-			mfafido2CredentialEntryImpl.setUserName(userName);
+			mfaFIDO2CredentialEntryImpl.setUserName(userName);
 		}
 
 		if (createDate == Long.MIN_VALUE) {
-			mfafido2CredentialEntryImpl.setCreateDate(null);
+			mfaFIDO2CredentialEntryImpl.setCreateDate(null);
 		}
 		else {
-			mfafido2CredentialEntryImpl.setCreateDate(new Date(createDate));
+			mfaFIDO2CredentialEntryImpl.setCreateDate(new Date(createDate));
 		}
 
 		if (modifiedDate == Long.MIN_VALUE) {
-			mfafido2CredentialEntryImpl.setModifiedDate(null);
+			mfaFIDO2CredentialEntryImpl.setModifiedDate(null);
 		}
 		else {
-			mfafido2CredentialEntryImpl.setModifiedDate(new Date(modifiedDate));
+			mfaFIDO2CredentialEntryImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
 		if (credentialId == null) {
-			mfafido2CredentialEntryImpl.setCredentialId("");
+			mfaFIDO2CredentialEntryImpl.setCredentialId("");
 		}
 		else {
-			mfafido2CredentialEntryImpl.setCredentialId(credentialId);
+			mfaFIDO2CredentialEntryImpl.setCredentialId(credentialId);
 		}
 
-		mfafido2CredentialEntryImpl.setCredentialType(credentialType);
+		mfaFIDO2CredentialEntryImpl.setCredentialType(credentialType);
 
 		if (publicKeyCose == null) {
-			mfafido2CredentialEntryImpl.setPublicKeyCose("");
+			mfaFIDO2CredentialEntryImpl.setPublicKeyCose("");
 		}
 		else {
-			mfafido2CredentialEntryImpl.setPublicKeyCose(publicKeyCose);
+			mfaFIDO2CredentialEntryImpl.setPublicKeyCose(publicKeyCose);
 		}
 
-		mfafido2CredentialEntryImpl.setSignatureCount(signatureCount);
-		mfafido2CredentialEntryImpl.setFailedAttempts(failedAttempts);
+		mfaFIDO2CredentialEntryImpl.setSignatureCount(signatureCount);
+		mfaFIDO2CredentialEntryImpl.setFailedAttempts(failedAttempts);
 
 		if (lastFailDate == Long.MIN_VALUE) {
-			mfafido2CredentialEntryImpl.setLastFailDate(null);
+			mfaFIDO2CredentialEntryImpl.setLastFailDate(null);
 		}
 		else {
-			mfafido2CredentialEntryImpl.setLastFailDate(new Date(lastFailDate));
+			mfaFIDO2CredentialEntryImpl.setLastFailDate(new Date(lastFailDate));
 		}
 
 		if (lastFailIP == null) {
-			mfafido2CredentialEntryImpl.setLastFailIP("");
+			mfaFIDO2CredentialEntryImpl.setLastFailIP("");
 		}
 		else {
-			mfafido2CredentialEntryImpl.setLastFailIP(lastFailIP);
+			mfaFIDO2CredentialEntryImpl.setLastFailIP(lastFailIP);
 		}
 
 		if (lastSuccessDate == Long.MIN_VALUE) {
-			mfafido2CredentialEntryImpl.setLastSuccessDate(null);
+			mfaFIDO2CredentialEntryImpl.setLastSuccessDate(null);
 		}
 		else {
-			mfafido2CredentialEntryImpl.setLastSuccessDate(
+			mfaFIDO2CredentialEntryImpl.setLastSuccessDate(
 				new Date(lastSuccessDate));
 		}
 
 		if (lastSuccessIP == null) {
-			mfafido2CredentialEntryImpl.setLastSuccessIP("");
+			mfaFIDO2CredentialEntryImpl.setLastSuccessIP("");
 		}
 		else {
-			mfafido2CredentialEntryImpl.setLastSuccessIP(lastSuccessIP);
+			mfaFIDO2CredentialEntryImpl.setLastSuccessIP(lastSuccessIP);
 		}
 
-		mfafido2CredentialEntryImpl.resetOriginalValues();
+		mfaFIDO2CredentialEntryImpl.resetOriginalValues();
 
-		return mfafido2CredentialEntryImpl;
+		return mfaFIDO2CredentialEntryImpl;
 	}
 
 	@Override

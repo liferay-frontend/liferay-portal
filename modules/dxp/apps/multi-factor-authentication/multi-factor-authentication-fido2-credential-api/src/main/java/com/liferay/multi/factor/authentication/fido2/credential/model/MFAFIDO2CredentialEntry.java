@@ -45,9 +45,9 @@ public interface MFAFIDO2CredentialEntry
 
 				@Override
 				public Long get(
-					MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+					MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-					return mfafido2CredentialEntry.
+					return mfaFIDO2CredentialEntry.
 						getMfaFIDO2CredentialEntryId();
 				}
 

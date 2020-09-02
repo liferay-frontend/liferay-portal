@@ -59,9 +59,9 @@ public class MFAFIDO2CredentialEntryUtil {
 	 * @see com.liferay.portal.kernel.service.persistence.BasePersistence#clearCache(com.liferay.portal.kernel.model.BaseModel)
 	 */
 	public static void clearCache(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		getPersistence().clearCache(mfafido2CredentialEntry);
+		getPersistence().clearCache(mfaFIDO2CredentialEntry);
 	}
 
 	/**
@@ -113,19 +113,19 @@ public class MFAFIDO2CredentialEntryUtil {
 	 * @see com.liferay.portal.kernel.service.persistence.BasePersistence#update(com.liferay.portal.kernel.model.BaseModel)
 	 */
 	public static MFAFIDO2CredentialEntry update(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		return getPersistence().update(mfafido2CredentialEntry);
+		return getPersistence().update(mfaFIDO2CredentialEntry);
 	}
 
 	/**
 	 * @see com.liferay.portal.kernel.service.persistence.BasePersistence#update(com.liferay.portal.kernel.model.BaseModel, ServiceContext)
 	 */
 	public static MFAFIDO2CredentialEntry update(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry,
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry,
 		ServiceContext serviceContext) {
 
-		return getPersistence().update(mfafido2CredentialEntry, serviceContext);
+		return getPersistence().update(mfaFIDO2CredentialEntry, serviceContext);
 	}
 
 	/**
@@ -256,12 +256,12 @@ public class MFAFIDO2CredentialEntryUtil {
 	/**
 	 * Caches the mfafido2 credential entry in the entity cache if it is enabled.
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 */
 	public static void cacheResult(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		getPersistence().cacheResult(mfafido2CredentialEntry);
+		getPersistence().cacheResult(mfaFIDO2CredentialEntry);
 	}
 
 	/**
@@ -302,9 +302,9 @@ public class MFAFIDO2CredentialEntryUtil {
 	}
 
 	public static MFAFIDO2CredentialEntry updateImpl(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry) {
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry) {
 
-		return getPersistence().updateImpl(mfafido2CredentialEntry);
+		return getPersistence().updateImpl(mfaFIDO2CredentialEntry);
 	}
 
 	/**

@@ -134,9 +134,9 @@ public interface MFAFIDO2CredentialEntryPersistence
 	/**
 	 * Caches the mfafido2 credential entry in the entity cache if it is enabled.
 	 *
-	 * @param mfafido2CredentialEntry the mfafido2 credential entry
+	 * @param mfaFIDO2CredentialEntry the mfafido2 credential entry
 	 */
-	public void cacheResult(MFAFIDO2CredentialEntry mfafido2CredentialEntry);
+	public void cacheResult(MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry);
 
 	/**
 	 * Caches the mfafido2 credential entries in the entity cache if it is enabled.
@@ -165,7 +165,7 @@ public interface MFAFIDO2CredentialEntryPersistence
 		throws NoSuchMFAFIDO2CredentialEntryException;
 
 	public MFAFIDO2CredentialEntry updateImpl(
-		MFAFIDO2CredentialEntry mfafido2CredentialEntry);
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry);
 
 	/**
 	 * Returns the mfafido2 credential entry with the primary key or throws a <code>NoSuchMFAFIDO2CredentialEntryException</code> if it could not be found.
