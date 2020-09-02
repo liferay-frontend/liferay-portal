@@ -18,65 +18,24 @@
 
 <%
 String assertionReqest = (String)request.getAttribute("assertionReqest");
+
+Map<String, Object> additionalProps = HashMapBuilder.<String, Object>put(
+	"assertionReqest", assertionReqest
+).build();
 %>
 
 <div id="<portlet:namespace/>messageContainer"></div>
 
-<aui:button id="startAuthentication" value="start" />
+<clay:button
+	additionalProps="<%= additionalProps %>"
+	displayType="secondary"
+	id='<%= liferayPortletResponse.getNamespace() + "startAuthentication" %>'
+	label="start"
+	propsTransformer="js/AuthenticationTransformer"
+/>
 
 <aui:input name="responseJSON" showRequiredLabel="yes" type="hidden" />
 
 <aui:button-row>
 	<aui:button type="submit" value="submit" />
 </aui:button-row>
-
-<aui:script use="aui-base">
-	Liferay.Loader.require(
-		'<%=npmResolvedPackageName%>/js/yubico-webauthn/webauthn',
-		function (webauthn) {
-			A.one('#<portlet:namespace />startAuthentication').on(
-				'click',
-				function (event) {
-					var assertionRequest = JSON.parse('<%=assertionReqest %>');
-					webauthn
-						.getAssertion(
-							assertionRequest.publicKeyCredentialRequestOptions
-						)
-						.then(
-							function (value) {
-								var responseJSONInput = A.one(
-									'#<portlet:namespace />responseJSON'
-								);
-
-								var publicKeyCredentialObject = webauthn.responseToObject(
-									value
-								);
-
-								if (
-									publicKeyCredentialObject.response.userHandle !=
-										null &&
-									publicKeyCredentialObject.response
-										.userHandle === ''
-								) {
-									delete publicKeyCredentialObject.response
-										.userHandle;
-								}
-
-								responseJSONInput._node.value = JSON.stringify(
-									publicKeyCredentialObject
-								);
-							},
-							function (reason) {
-								var messageContainer = A.one(
-									'#<portlet:namespace />messageContainer'
-								);
-								messageContainer.html(
-									'<span class="alert alert-danger"><liferay-ui:message key="your-authenticator-was-unable-to-verify-your-credential" /></span>'
-								);
-							}
-						);
-				}
-			);
-		}
-	);
-</aui:script>
