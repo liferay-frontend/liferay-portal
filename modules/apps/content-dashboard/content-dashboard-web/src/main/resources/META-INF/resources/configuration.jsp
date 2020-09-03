@@ -29,6 +29,7 @@ ContentDashboardAdminConfigurationDisplayContext contentDashboardAdminConfigurat
 
 <liferay-frontend:edit-form
 	action="<%= configurationActionURL %>"
+	fluid="<%= true %>"
 	method="post"
 	name="fm"
 	onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveConfiguration();" %>'
@@ -43,19 +44,19 @@ ContentDashboardAdminConfigurationDisplayContext contentDashboardAdminConfigurat
 		<liferay-frontend:fieldset-group>
 			<liferay-frontend:fieldset>
 				<aui:field-wrapper>
-					<p class="sheet-text">
-						<liferay-ui:message key="select-vocabularies-description" />
-					</p>
+					<span aria-hidden="true" class="loading-animation loading-animation-sm"></span>
 
-					<liferay-ui:input-move-boxes
-						leftBoxName="availableAssetVocabularyNames"
-						leftList="<%= contentDashboardAdminConfigurationDisplayContext.getAvailableVocabularyNames() %>"
-						leftTitle="available"
-						rightBoxMaxItems="<%= 2 %>"
-						rightBoxName="currentAssetVocabularyNames"
-						rightList="<%= contentDashboardAdminConfigurationDisplayContext.getCurrentVocabularyNames() %>"
-						rightReorder="<%= Boolean.TRUE.toString() %>"
-						rightTitle="in-use"
+					<react:component
+						module="js/SelectVocabularies"
+						props='<%=
+							HashMapBuilder.<String, Object>put(
+								"availableVocabularyNames", contentDashboardAdminConfigurationDisplayContext.getAvailableVocabularyNames()
+							).put(
+								"currentVocabularyNames", contentDashboardAdminConfigurationDisplayContext.getCurrentVocabularyNames()
+							).put(
+								"namespace", liferayPortletResponse.getNamespace()
+							).build()
+						%>'
 					/>
 				</aui:field-wrapper>
 			</liferay-frontend:fieldset>
