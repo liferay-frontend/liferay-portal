@@ -32,7 +32,7 @@ export default function RegistrationTransformer({
 						`${portletNamespace}responseJSON`
 					);
 
-					const publicKeyCredentials = webauthn.responseToObject(
+					const publicKeyCredentials = webauthn.credentialToObject(
 						value
 					);
 

@@ -18,18 +18,17 @@
 
 <%
 String pkccOptions = (String)request.getAttribute("pkccOptions");
-
-Map<String, Object> additionalProps = HashMapBuilder.<String, Object>put(
-	"pkccOptions", pkccOptions
-).build();
 %>
 
 <div id="<portlet:namespace/>messageContainer"></div>
 
 <clay:button
-	additionalProps="<%= additionalProps %>"
+	additionalProps='<%=
+		HashMapBuilder.<String, Object>put(
+			"pkccOptions", pkccOptions
+		).build()
+	%>'
 	displayType="secondary"
-	id='<%= liferayPortletResponse.getNamespace() + "startRegistration" %>'
 	label="start"
 	propsTransformer="js/RegistrationTransformer"
 />

@@ -17,19 +17,18 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String assertionReqest = (String)request.getAttribute("assertionReqest");
-
-Map<String, Object> additionalProps = HashMapBuilder.<String, Object>put(
-	"assertionReqest", assertionReqest
-).build();
+String assertionRequest = (String)request.getAttribute("assertionRequest");
 %>
 
 <div id="<portlet:namespace/>messageContainer"></div>
 
 <clay:button
-	additionalProps="<%= additionalProps %>"
+	additionalProps='<%=
+		HashMapBuilder.<String, Object>put(
+			"assertionRequest", assertionRequest
+		).build()
+	%>'
 	displayType="secondary"
-	id='<%= liferayPortletResponse.getNamespace() + "startAuthentication" %>'
 	label="start"
 	propsTransformer="js/AuthenticationTransformer"
 />
