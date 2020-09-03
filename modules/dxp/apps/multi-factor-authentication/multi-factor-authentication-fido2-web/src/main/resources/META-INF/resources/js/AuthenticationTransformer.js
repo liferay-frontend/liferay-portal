@@ -21,6 +21,9 @@ export default function AuthenticationTransformer({
 		onClick() {
 			let {assertionRequest} = additionalProps;
 
+			const button = this.document.activeElement;
+			const form = button.form;
+
 			if (!assertionRequest) {
 				return;
 			}
@@ -44,6 +47,8 @@ export default function AuthenticationTransformer({
 					);
 
 					responseInput.value = JSON.stringify(publicKey);
+
+					form.submit();
 				})
 				.catch(() => {
 					const messageContainer = document.getElementById(

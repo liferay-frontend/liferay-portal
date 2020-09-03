@@ -22,19 +22,16 @@ String pkccOptions = (String)request.getAttribute("pkccOptions");
 
 <div id="<portlet:namespace/>messageContainer"></div>
 
-<clay:button
-	additionalProps='<%=
-		HashMapBuilder.<String, Object>put(
-			"pkccOptions", pkccOptions
-		).build()
-	%>'
-	displayType="secondary"
-	label="start"
-	propsTransformer="js/RegistrationTransformer"
-/>
+<aui:button-row>
+	<clay:button
+		additionalProps='<%=
+			HashMapBuilder.<String, Object>put(
+				"pkccOptions", pkccOptions
+			).build()
+		%>'
+		label="start"
+		propsTransformer="js/RegistrationTransformer"
+	/>
+</aui:button-row>
 
 <aui:input name="responseJSON" showRequiredLabel="yes" type="hidden" />
-
-<aui:button-row>
-	<aui:button type="submit" value="submit" />
-</aui:button-row>

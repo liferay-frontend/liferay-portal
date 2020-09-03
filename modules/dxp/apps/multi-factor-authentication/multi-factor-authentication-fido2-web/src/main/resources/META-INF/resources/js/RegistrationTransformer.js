@@ -21,6 +21,9 @@ export default function RegistrationTransformer({
 		onClick() {
 			const {pkccOptions} = additionalProps;
 
+			const button = this.document.activeElement;
+			const form = button.form;
+
 			if (!pkccOptions) {
 				return;
 			}
@@ -37,6 +40,8 @@ export default function RegistrationTransformer({
 					);
 
 					responseInput.value = JSON.stringify(publicKeyCredentials);
+
+					form.submit();
 				})
 				.catch(() => {
 					const messageContainer = document.getElementById(

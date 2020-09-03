@@ -22,19 +22,16 @@ String assertionRequest = (String)request.getAttribute("assertionRequest");
 
 <div id="<portlet:namespace/>messageContainer"></div>
 
-<clay:button
-	additionalProps='<%=
-		HashMapBuilder.<String, Object>put(
-			"assertionRequest", assertionRequest
-		).build()
-	%>'
-	displayType="secondary"
-	label="start"
-	propsTransformer="js/AuthenticationTransformer"
-/>
+<aui:button-row>
+	<clay:button
+		additionalProps='<%=
+			HashMapBuilder.<String, Object>put(
+				"assertionRequest", assertionRequest
+			).build()
+		%>'
+		label="start"
+		propsTransformer="js/AuthenticationTransformer"
+	/>
+</aui:button-row>
 
 <aui:input name="responseJSON" showRequiredLabel="yes" type="hidden" />
-
-<aui:button-row>
-	<aui:button type="submit" value="submit" />
-</aui:button-row>
