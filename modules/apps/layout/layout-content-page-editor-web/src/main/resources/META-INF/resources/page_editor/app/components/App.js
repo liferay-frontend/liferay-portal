@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import React, {useEffect} from 'react';
 
 import useAutoExtendSession from '../../core/hooks/useAutoExtendSession';
+import useIE11Compatibility from '../../core/useIE11Compatibility';
 import {StyleBookContextProvider} from '../../plugins/page-design-options/hooks/useStyleBook';
 import {INIT} from '../actions/types';
 import {config} from '../config/index';
@@ -35,6 +36,7 @@ export default function App({state}) {
 	const initialState = reducer(state, {type: INIT});
 
 	useAutoExtendSession();
+	useIE11Compatibility();
 
 	return (
 		<StoreContextProvider initialState={initialState} reducer={reducer}>
