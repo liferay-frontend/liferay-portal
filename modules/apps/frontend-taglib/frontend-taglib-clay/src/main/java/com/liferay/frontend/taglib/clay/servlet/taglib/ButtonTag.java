@@ -255,6 +255,11 @@ public class ButtonTag extends BaseContainerTag {
 	}
 
 	@Override
+	protected String getHydratedModuleName() {
+		return "frontend-taglib-clay/Button";
+	}
+
+	@Override
 	protected Map<String, Object> prepareProps(Map<String, Object> props) {
 		props.put("block", _block);
 		props.put("borderless", _borderless);

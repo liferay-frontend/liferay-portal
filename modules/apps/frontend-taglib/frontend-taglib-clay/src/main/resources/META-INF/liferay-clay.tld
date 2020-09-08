@@ -299,6 +299,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>propsTransformer</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<description>Deprecated as of 7.3.0, replaced by the attribute <![CDATA[<code>small</code>]]>.</description>
 			<name>size</name>
 			<required>false</required>
