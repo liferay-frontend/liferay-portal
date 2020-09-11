@@ -1,0 +1,9 @@
+apiDir: "../remote-app-rest-api/src/main/java"
+apiPackagePath: "com.liferay.remote.app.rest"
+application:
+    baseURI: "/remote-app"
+    className: "RemoteAppRESTApplication"
+    name: "Liferay.Remote.App.REST"
+author: "Bruno Basto"
+clientDir: "../remote-app-rest-client/src/main/java"
+testDir: "../remote-app-rest-test/src/testIntegration/java"

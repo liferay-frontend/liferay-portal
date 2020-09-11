@@ -1,0 +1,166 @@
+components:
+    schemas:
+        RemoteAppEntry:
+            description:
+                https://www.schema.org/RemoteAppEntry
+            properties:
+                companyId:
+                    format: int64
+                    type: integer
+                dateCreated:
+                    format: date-time
+                    type: string
+                dateModified:
+                    format: date-time
+                    type: string
+                id:
+                    format: int64
+                    type: integer
+                name:
+                    additionalProperties:
+                        type: object
+                    type: object
+                url:
+                    type: string
+                userId:
+                    format: int64
+                    type: integer
+            type: object
+info:
+    description:
+        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
+        'com.liferay.remote.app.rest.client', and version '1.0.0'."
+    license:
+        name: "Apache 2.0"
+        url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+    title: "Remote App"
+    version: v1.0
+openapi: 3.0.1
+paths:
+    "/remote-app-entries":
+        get:
+            operationId: getRemoteAppEntriesPage
+            parameters:
+                - in: query
+                  name: keywords
+                  schema:
+                      type: string
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                - in: query
+                  name: pageSize
+                  schema:
+                      type: integer
+                - in: query
+                  name: sort
+                  required: false
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/RemoteAppEntry"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/RemoteAppEntry"
+                                type: array
+                    description:
+                        ""
+            tags: ["RemoteAppEntry"]
+        post:
+            operationId: postRemoteAppEntry
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/RemoteAppEntry"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/RemoteAppEntry"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/RemoteAppEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/RemoteAppEntry"
+                    description:
+                        ""
+            tags: ["RemoteAppEntry"]
+    "/remote-app-entries/{remoteAppEntryId}":
+        delete:
+            operationId: deleteRemoteAppEntry
+            parameters:
+                - in: path
+                  name: remoteAppEntryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["RemoteAppEntry"]
+        get:
+            operationId: getRemoteAppEntry
+            parameters:
+                - in: path
+                  name: remoteAppEntryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/RemoteAppEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/RemoteAppEntry"
+                    description:
+                        ""
+            tags: ["RemoteAppEntry"]
+        put:
+            operationId: putRemoteAppEntry
+            parameters:
+                - in: path
+                  name: remoteAppEntryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/RemoteAppEntry"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/RemoteAppEntry"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/RemoteAppEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/RemoteAppEntry"
+                    description:
+                        ""
+            tags: ["RemoteAppEntry"]
