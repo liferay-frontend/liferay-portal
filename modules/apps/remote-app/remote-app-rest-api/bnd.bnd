@@ -1,0 +1,10 @@
+Bundle-Name: Liferay Remote App REST API
+Bundle-SymbolicName: com.liferay.remote.app.rest.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.remote.app.rest.dto.v1_0,\
+	com.liferay.remote.app.rest.resource.v1_0
+Import-Package:\
+	!jodd.typeconverter,\
+	\
+	*
