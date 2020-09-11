@@ -42,8 +42,11 @@ public class RemoteAppEntryTableClayDataSetDisplayView
 			_clayTableSchemaBuilderFactory.create();
 
 		_addClayTableSchemaField(
-			clayTableSchemaBuilder, "name", "name", "actionLink");
+			clayTableSchemaBuilder, "name.LANG", "name", "actionLink", true);
 		_addClayTableSchemaField(clayTableSchemaBuilder, "url", "url");
+		_addClayTableSchemaField(
+			clayTableSchemaBuilder, "dateModified", "modified-date", "date",
+			true);
 
 		return clayTableSchemaBuilder.build();
 	}
@@ -53,12 +56,12 @@ public class RemoteAppEntryTableClayDataSetDisplayView
 		String label) {
 
 		_addClayTableSchemaField(
-			clayTableSchemaBuilder, fieldName, label, null);
+			clayTableSchemaBuilder, fieldName, label, null, false);
 	}
 
 	private void _addClayTableSchemaField(
 		ClayTableSchemaBuilder clayTableSchemaBuilder, String fieldName,
-		String label, String contentRenderer) {
+		String label, String contentRenderer, boolean sortable) {
 
 		ClayTableSchemaField clayTableSchemaField =
 			clayTableSchemaBuilder.addClayTableSchemaField(fieldName, label);
@@ -66,6 +69,8 @@ public class RemoteAppEntryTableClayDataSetDisplayView
 		if (contentRenderer != null) {
 			clayTableSchemaField.setContentRenderer(contentRenderer);
 		}
+
+		clayTableSchemaField.setSortable(sortable);
 	}
 
 	@Reference

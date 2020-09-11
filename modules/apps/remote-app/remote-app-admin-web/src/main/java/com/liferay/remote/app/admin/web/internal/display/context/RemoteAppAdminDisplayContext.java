@@ -14,12 +14,17 @@
 
 package com.liferay.remote.app.admin.web.internal.display.context;
 
+import com.liferay.frontend.taglib.clay.data.set.servlet.taglib.util.ClayDataSetActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.remote.app.service.RemoteAppEntryLocalService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
@@ -59,6 +64,25 @@ public class RemoteAppAdminDisplayContext {
 
 	public PortletURL getCurrentPortletURL() {
 		return PortletURLUtil.getCurrent(_renderRequest, _renderResponse);
+	}
+
+	public List<ClayDataSetActionDropdownItem>
+			getRemoteAppEntriesClayDataSetActionDropdownItems()
+		throws PortalException {
+
+		List<ClayDataSetActionDropdownItem> clayDataSetActionDropdownItems =
+			new ArrayList<>();
+
+		HttpServletRequest httpServletRequest =
+			PortalUtil.getHttpServletRequest(_renderRequest);
+
+		clayDataSetActionDropdownItems.add(
+			new ClayDataSetActionDropdownItem(
+				null, "trash", "remove",
+				LanguageUtil.get(httpServletRequest, "remove"), "delete",
+				"delete", "headless"));
+
+		return clayDataSetActionDropdownItems;
 	}
 
 	private HttpServletRequest _getHttpServletRequest() {

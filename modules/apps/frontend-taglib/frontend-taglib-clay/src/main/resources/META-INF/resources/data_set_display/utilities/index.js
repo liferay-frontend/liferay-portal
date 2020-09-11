@@ -191,6 +191,7 @@ export function loadData(
 	url.searchParams.append('pageSize', delta);
 
 	if (searchParam) {
+		url.searchParams.append('keywords', searchParam);
 		url.searchParams.append('search', searchParam);
 	}
 
