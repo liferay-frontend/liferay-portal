@@ -23,6 +23,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import './Modal.scss';
 import navigate from '../util/navigate.es';
+import createPortletURL from '../util/portlet_url/create_portlet_url.es';
 
 const openModal = (props) => {
 	if (
@@ -111,6 +112,7 @@ const openSelectionModal = ({
 	multiple = false,
 	onClose,
 	onSelect,
+	p_p_id,
 	selectEventName,
 	selectedData,
 	size,
@@ -195,7 +197,12 @@ const openSelectionModal = ({
 		},
 		size,
 		title,
-		url,
+		url: createPortletURL(url, {
+			multipleSelection: multiple,
+			p_p_id:
+				p_p_id ||
+				'com_liferay_item_selector_web_portlet_ItemSelectorPortlet',
+		}),
 		zIndex,
 	});
 };
