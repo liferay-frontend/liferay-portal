@@ -114,34 +114,26 @@ const ClassicEditor = ({
 							? CKEDITOR.dialog._.currentZIndex + 10
 							: Liferay.zIndex.WINDOW + 10;
 					};
-
-					CKEDITOR.on('instanceCreated', ({editor}) => {
-						editor.name = name;
-
-						editor.on('drop', (event) => {
-							var data = event.data.dataTransfer.getData(
-								'text/html'
-							);
-
-							if (data) {
-								var fragment = CKEDITOR.htmlParser.fragment.fromHtml(
-									data
-								);
-
-								var name = fragment.children[0].name;
-
-								if (name) {
-									return editor.pasteFilter.check(name);
-								}
-							}
-						});
-
-						editor.on('instanceReady', () => {
-							editor.setData(contents);
-						});
-					});
 				}}
 				onChange={onChangeCallback}
+				onDrop={(event) => {
+					const data = event.data.dataTransfer.getData('text/html');
+
+					if (data) {
+						const fragment = CKEDITOR.htmlParser.fragment.fromHtml(
+							data
+						);
+
+						const name = fragment.children[0].name;
+
+						if (name) {
+							return event.editor.pasteFilter.check(name);
+						}
+					}
+				}}
+				onInstanceReady={({editor}) => {
+					editor.setData(contents);
+				}}
 				ref={editorRef}
 				{...otherProps}
 			/>

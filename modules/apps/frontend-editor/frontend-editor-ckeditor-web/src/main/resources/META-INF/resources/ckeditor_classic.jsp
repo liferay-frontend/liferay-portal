@@ -33,8 +33,11 @@ JSONObject editorConfigJSONObject = null;
 if (editorData != null) {
 	editorConfigJSONObject = (JSONObject)editorData.get("editorConfig");
 }
+
+name = HtmlUtil.escapeAttribute(name);
 %>
 
+<textarea id="<%= name %>" name="<%= name %>" style="display: none;"></textarea>
 <div>
 	<react:component
 		module="editor/ClassicEditor"
