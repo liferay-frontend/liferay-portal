@@ -104,6 +104,12 @@
 			if (!hasErrors) {
 				var action = event.action || form.attr('action');
 
+				if (action === 'javascript:;') {
+					event.preventDefault();
+
+					return;
+				}
+
 				var singleSubmit = event.singleSubmit;
 
 				var inputs = form.all(
