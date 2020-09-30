@@ -110,56 +110,14 @@ String displayStyle = blogImagesManagementToolbarDisplayContext.getDisplayStyle(
 	</aui:form>
 </clay:container-fluid>
 
-<aui:script>
-	var deleteImages = function () {
-		if (
-			confirm(
-				'<liferay-ui:message key="are-you-sure-you-want-to-delete-the-selected-images" />'
-			)
-		) {
-			var form = document.getElementById('<portlet:namespace />fm');
-
-			if (form) {
-				var cmd = form.querySelector(
-					'#<portlet:namespace /><%= Constants.CMD %>'
-				);
-
-				if (cmd) {
-					cmd.setAttribute('value', '<%= Constants.DELETE %>');
-				}
-
-				var deleteFileEntryIds = form.querySelector(
-					'#<portlet:namespace />deleteFileEntryIds'
-				);
-
-				if (deleteFileEntryIds) {
-					deleteFileEntryIds.setAttribute(
-						'value',
-						Liferay.Util.listCheckedExcept(
-							form,
-							'<portlet:namespace />allRowIds'
-						)
-					);
-				}
-
-				submitForm(form);
-			}
-		}
-	};
-
-	var ACTIONS = {
-		deleteImages: deleteImages,
-	};
-
-	Liferay.componentReady('blogImagesManagementToolbar').then(function (
-		managementToolbar
-	) {
-		managementToolbar.on('actionItemClicked', function (event) {
-			var itemData = event.data.item.data;
-
-			if (itemData && itemData.action && ACTIONS[itemData.action]) {
-				ACTIONS[itemData.action]();
-			}
-		});
-	});
-</aui:script>
+<liferay-frontend:component
+	componentId="<portlet:namespace />BlogImagesManagementToolbarHandler"
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"constantsCMD", Constants.CMD
+		).put(
+			"constantsDELETE", Constants.DELETE
+		).build()
+	%>'
+	module="blogs_admin/js/BlogImagesManagementToolbarHandler.es"
+/>
