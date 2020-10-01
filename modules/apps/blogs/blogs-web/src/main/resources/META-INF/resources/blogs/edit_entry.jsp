@@ -52,6 +52,41 @@ portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
 
 renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourceBundle, entry) : LanguageUtil.get(request, "new-blog-entry"));
+
+Map<String, Object> constants = HashMapBuilder.<String, Object>put(
+	"ACTION_PUBLISH", WorkflowConstants.ACTION_PUBLISH
+).put(
+	"ACTION_SAVE_DRAFT", WorkflowConstants.ACTION_SAVE_DRAFT
+).put(
+	"ADD", Constants.ADD
+).put(
+	"CMD", Constants.CMD
+).put(
+	"STATUS_DRAFT", WorkflowConstants.STATUS_DRAFT
+).put(
+	"UPDATE", Constants.UPDATE
+).build();
+
+Map<String, Object> context = HashMapBuilder.<String, Object>put(
+	"constants", constants
+).put(
+	"customAbstract", Constants.DELETE
+).put(
+	"descriptionLength", PropsValues.BLOGS_PAGE_ABSTRACT_LENGTH
+).put(
+	"rootPortletId", portletDisplay.getRootPortletId()
+).build();
+
+if (entry != null) {
+	context.put("content", UnicodeFormatter.toString(content));
+	context.put("customDescription", Constants.DELETE);
+	context.put("description", UnicodeFormatter.toString(description));
+	context.put("pending", entry.isPending());
+	context.put("status", entry.getStatus());
+	context.put("subtitle", UnicodeFormatter.toString(subtitle));
+	context.put("title", UnicodeFormatter.toString(title));
+	context.put("userId", entry.getUserId());
+}
 %>
 
 <portlet:actionURL name="/blogs/edit_entry" var="editEntryURL" />
@@ -449,48 +484,17 @@ renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourc
 	</c:if>
 </aui:script>
 
-<aui:script use="liferay-blogs">
-	var blogs = Liferay.component(
-		'<portlet:namespace />Blogs',
-		new Liferay.Blogs({
-			constants: {
-				ACTION_PUBLISH: '<%= WorkflowConstants.ACTION_PUBLISH %>',
-				ACTION_SAVE_DRAFT: '<%= WorkflowConstants.ACTION_SAVE_DRAFT %>',
-				ADD: '<%= Constants.ADD %>',
-				CMD: '<%= Constants.CMD %>',
-				STATUS_DRAFT: '<%= WorkflowConstants.STATUS_DRAFT %>',
-				UPDATE: '<%= Constants.UPDATE %>',
-			},
-			descriptionLength: '<%= PropsValues.BLOGS_PAGE_ABSTRACT_LENGTH %>',
-			editEntryURL: '<%= editEntryURL %>',
-
-			<c:if test="<%= entry != null %>">
-				entry: {
-					content: '<%= UnicodeFormatter.toString(content) %>',
-					customDescription: <%= customAbstract %>,
-					description: '<%= UnicodeFormatter.toString(description) %>',
-					pending: <%= entry.isPending() %>,
-					status: '<%= entry.getStatus() %>',
-					subtitle: '<%= UnicodeFormatter.toString(subtitle) %>',
-					title: '<%= UnicodeFormatter.toString(title) %>',
-					userId: '<%= entry.getUserId() %>',
-				},
-			</c:if>
-
-			namespace: '<portlet:namespace />',
-		})
-	);
-
-	var clearSaveDraftHandle = function (event) {
-		if (event.portletId === '<%= portletDisplay.getRootPortletId() %>') {
-			blogs.destroy();
-
-			Liferay.detach('destroyPortlet', clearSaveDraftHandle);
-		}
-	};
-
-	Liferay.on('destroyPortlet', clearSaveDraftHandle);
-</aui:script>
+<liferay-frontend:component
+	componentId="<portlet:namespace />Blogs"
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"context", context
+		).put(
+			"editEntryURL", editEntryURL
+		).build()
+	%>'
+	module="blogs/js/blogs_main.es"
+/>
 
 <%
 if (entry != null) {
