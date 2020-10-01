@@ -26,6 +26,11 @@ if (organizationId > 0) {
 
 	organizationName = organization.getName();
 }
+
+PortletURL selectOrganizationURL = PortletProviderUtil.getPortletURL(request, Organization.class.getName(), PortletProvider.Action.BROWSE);
+
+selectOrganizationURL.setParameter("tabs1", "organizations");
+selectOrganizationURL.setWindowState(LiferayWindowState.POP_UP);
 %>
 
 <liferay-portlet:actionURL portletConfiguration="<%= true %>" var="configurationActionURL" />
@@ -61,10 +66,17 @@ if (organizationId > 0) {
 					<aui:button name="removeOrganizationButton" onClick="<%= taglibRemoveFolder %>" value="remove" />
 				</div>
 
-				<aui:script sandbox="<%= true %>">
-					var <portlet:namespace />selectOrganizationButton = document.getElementById(
-						'<portlet:namespace />selectOrganizationButton'
-					);
+				<liferay-frontend:component
+					componentId="<portlet:namespace />selectOrganization"
+					context='<%=
+						HashMapBuilder.<String, Object>put(
+							"title", LanguageUtil.format(locale, "select-x", "organization")
+						).put(
+							"url", selectOrganizationURL.toString()
+						).build()
+					%>'
+					module="blogs_aggregator/js/SelectOrganization.es"
+				/>
 
 				<liferay-frontend:component
 					componentId="<portlet:namespace />handleSelectionMethod"
