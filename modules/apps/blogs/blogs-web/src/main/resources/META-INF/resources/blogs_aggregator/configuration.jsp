@@ -66,93 +66,10 @@ if (organizationId > 0) {
 						'<portlet:namespace />selectOrganizationButton'
 					);
 
-					<portlet:namespace />selectOrganizationButton.addEventListener(
-						'click',
-						function (event) {
-							Liferay.Util.openSelectionModal({
-								onSelect: function (event) {
-									var form = document.getElementById('<portlet:namespace />fm');
-
-									if (form) {
-										var organizationId = form.querySelector(
-											'#<portlet:namespace />organizationId'
-										);
-
-										if (organizationId) {
-											organizationId.setAttribute('value', event.entityid);
-										}
-
-										var organizationName = form.querySelector(
-											'#<portlet:namespace />organizationName'
-										);
-
-										if (organizationName) {
-											organizationName.setAttribute(
-												'value',
-												event.entityname
-											);
-										}
-									}
-
-									Liferay.Util.toggleDisabled(
-										'#<portlet:namespace />removeOrganizationButton',
-										false
-									);
-								},
-
-								<%
-								String portletId = PortletProviderUtil.getPortletId(User.class.getName(), PortletProvider.Action.VIEW);
-								%>
-
-								selectEventName:
-									'<%= PortalUtil.getPortletNamespace(portletId) %>selectOrganization',
-
-								title:
-									'<liferay-ui:message arguments="organization" key="select-x" />',
-
-								<%
-								PortletURL selectOrganizationURL = PortletProviderUtil.getPortletURL(request, Organization.class.getName(), PortletProvider.Action.BROWSE);
-
-								selectOrganizationURL.setParameter("tabs1", "organizations");
-								selectOrganizationURL.setWindowState(LiferayWindowState.POP_UP);
-								%>
-
-								url: '<%= selectOrganizationURL.toString() %>',
-							});
-						}
-					);
-				</aui:script>
-
-				<aui:script require="metal-dom/src/dom">
-					var dom = metalDomSrcDom.default;
-
-					var <portlet:namespace />selectionMethod = document.getElementById(
-						'<portlet:namespace />selectionMethod'
-					);
-
-					if (<portlet:namespace />selectionMethod) {
-						<portlet:namespace />selectionMethod.addEventListener('change', function (
-							event
-						) {
-							var usersSelectionOptions = document.getElementById(
-								'<portlet:namespace />usersSelectionOptions'
-							);
-
-							if (usersSelectionOptions) {
-								var showUsersSelectionOptions = !(
-									<portlet:namespace />selectionMethod.val() === 'users'
-								);
-
-								if (showUsersSelectionOptions) {
-									dom.addClasses(usersSelectionOptions, 'hide');
-								}
-								else {
-									dom.removeClasses(usersSelectionOptions, 'hide');
-								}
-							}
-						});
-					}
-				</aui:script>
+				<liferay-frontend:component
+					componentId="<portlet:namespace />handleSelectionMethod"
+					module="blogs_aggregator/js/handleSelectionMethod.es"
+				/>
 
 				<aui:select name="preferences--displayStyle--" value="<%= displayStyle %>">
 					<aui:option label="body-and-image" />
