@@ -71,6 +71,13 @@ Role role = usersDisplayContext.getRole();
 				id="users"
 				searchContainer="<%= usersDisplayContext.getUserSearchContainer() %>"
 			>
+
+				<%
+				SearchContainerDisplayContext searchContainerDisplayContext = new SearchContainerDisplayContext(request, liferayPortletRequest, liferayPortletResponse, searchContainer);
+
+				String displayStyle = searchContainerDisplayContext.getDisplayStyle("icon");
+				%>
+
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.User"
 					escapedModel="<%= true %>"
@@ -80,8 +87,6 @@ Role role = usersDisplayContext.getRole();
 				>
 
 					<%
-					String displayStyle = usersDisplayContext.getDisplayStyle();
-
 					boolean selectUsers = false;
 
 					Map<String, Object> rowData = HashMapBuilder.<String, Object>put(
@@ -95,7 +100,7 @@ Role role = usersDisplayContext.getRole();
 				</liferay-ui:search-container-row>
 
 				<liferay-ui:search-iterator
-					displayStyle="<%= usersDisplayContext.getDisplayStyle() %>"
+					displayStyle="<%= displayStyle %>"
 					markupView="lexicon"
 				/>
 			</liferay-ui:search-container>

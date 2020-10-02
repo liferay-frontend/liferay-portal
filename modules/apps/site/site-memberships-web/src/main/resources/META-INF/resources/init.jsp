@@ -104,6 +104,7 @@ page import="com.liferay.site.memberships.web.internal.servlet.taglib.util.Organ
 page import="com.liferay.site.memberships.web.internal.servlet.taglib.util.UserActionDropdownItemsProvider" %><%@
 page import="com.liferay.site.memberships.web.internal.util.GroupUtil" %><%@
 page import="com.liferay.sites.kernel.util.SitesUtil" %><%@
+page import="com.liferay.taglib.ui.display.context.SearchContainerDisplayContext" %><%@
 page import="com.liferay.taglib.util.LexiconUtil" %><%@
 page import="com.liferay.users.admin.kernel.util.UsersAdmin" %>
 

@@ -50,6 +50,13 @@ Role role = userGroupsDisplayContext.getRole();
 		id="userGroups"
 		searchContainer="<%= userGroupsDisplayContext.getUserGroupSearchContainer() %>"
 	>
+
+		<%
+		SearchContainerDisplayContext searchContainerDisplayContext = new SearchContainerDisplayContext(request, liferayPortletRequest, liferayPortletResponse, searchContainer);
+
+		String displayStyle = searchContainerDisplayContext.getDisplayStyle("list");
+		%>
+
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.UserGroup"
 			escapedModel="<%= true %>"
@@ -58,8 +65,6 @@ Role role = userGroupsDisplayContext.getRole();
 		>
 
 			<%
-			String displayStyle = userGroupsDisplayContext.getDisplayStyle();
-
 			boolean selectUserGroup = false;
 			%>
 
@@ -67,7 +72,7 @@ Role role = userGroupsDisplayContext.getRole();
 		</liferay-ui:search-container-row>
 
 		<liferay-ui:search-iterator
-			displayStyle="<%= userGroupsDisplayContext.getDisplayStyle() %>"
+			displayStyle="<%= displayStyle %>"
 			markupView="lexicon"
 		/>
 	</liferay-ui:search-container>

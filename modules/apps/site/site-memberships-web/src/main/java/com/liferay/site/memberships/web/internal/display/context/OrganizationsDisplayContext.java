@@ -54,17 +54,6 @@ public class OrganizationsDisplayContext {
 		_renderResponse = renderResponse;
 	}
 
-	public String getDisplayStyle() {
-		if (Validator.isNotNull(_displayStyle)) {
-			return _displayStyle;
-		}
-
-		_displayStyle = ParamUtil.getString(
-			_httpServletRequest, "displayStyle", "list");
-
-		return _displayStyle;
-	}
-
 	public long getGroupId() {
 		if (_groupId != null) {
 			return _groupId;
@@ -184,12 +173,6 @@ public class OrganizationsDisplayContext {
 		portletURL.setParameter("redirect", themeDisplay.getURLCurrent());
 		portletURL.setParameter("groupId", String.valueOf(getGroupId()));
 
-		String displayStyle = getDisplayStyle();
-
-		if (Validator.isNotNull(displayStyle)) {
-			portletURL.setParameter("displayStyle", displayStyle);
-		}
-
 		String keywords = getKeywords();
 
 		if (Validator.isNotNull(keywords)) {
@@ -211,7 +194,6 @@ public class OrganizationsDisplayContext {
 		return portletURL;
 	}
 
-	private String _displayStyle;
 	private Long _groupId;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;

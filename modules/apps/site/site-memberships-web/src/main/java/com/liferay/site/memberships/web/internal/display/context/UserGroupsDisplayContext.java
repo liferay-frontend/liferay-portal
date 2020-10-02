@@ -56,17 +56,6 @@ public class UserGroupsDisplayContext {
 		_renderResponse = renderResponse;
 	}
 
-	public String getDisplayStyle() {
-		if (Validator.isNotNull(_displayStyle)) {
-			return _displayStyle;
-		}
-
-		_displayStyle = ParamUtil.getString(
-			_httpServletRequest, "displayStyle", "list");
-
-		return _displayStyle;
-	}
-
 	public long getGroupId() {
 		if (_groupId != null) {
 			return _groupId;
@@ -141,12 +130,6 @@ public class UserGroupsDisplayContext {
 
 		if (role != null) {
 			portletURL.setParameter("roleId", String.valueOf(role.getRoleId()));
-		}
-
-		String displayStyle = getDisplayStyle();
-
-		if (Validator.isNotNull(displayStyle)) {
-			portletURL.setParameter("displayStyle", displayStyle);
 		}
 
 		String keywords = getKeywords();
@@ -252,7 +235,6 @@ public class UserGroupsDisplayContext {
 		return _userGroupSearch;
 	}
 
-	private String _displayStyle;
 	private Long _groupId;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;

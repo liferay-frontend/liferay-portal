@@ -63,6 +63,13 @@ OrganizationsManagementToolbarDisplayContext organizationsManagementToolbarDispl
 				id="organizations"
 				searchContainer="<%= organizationsDisplayContext.getOrganizationSearchContainer() %>"
 			>
+
+				<%
+				SearchContainerDisplayContext searchContainerDisplayContext = new SearchContainerDisplayContext(request, liferayPortletRequest, liferayPortletResponse, searchContainer);
+
+				String displayStyle = searchContainerDisplayContext.getDisplayStyle("list");
+				%>
+
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.Organization"
 					escapedModel="<%= true %>"
@@ -71,8 +78,6 @@ OrganizationsManagementToolbarDisplayContext organizationsManagementToolbarDispl
 				>
 
 					<%
-					String displayStyle = organizationsDisplayContext.getDisplayStyle();
-
 					boolean selectOrganizations = false;
 					%>
 
@@ -80,7 +85,7 @@ OrganizationsManagementToolbarDisplayContext organizationsManagementToolbarDispl
 				</liferay-ui:search-container-row>
 
 				<liferay-ui:search-iterator
-					displayStyle="<%= organizationsDisplayContext.getDisplayStyle() %>"
+					displayStyle="<%= displayStyle %>"
 					markupView="lexicon"
 				/>
 			</liferay-ui:search-container>
