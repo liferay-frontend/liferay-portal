@@ -16,6 +16,8 @@ import {ClayIconSpriteContext} from '@clayui/icon';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import A11y from './A11y.es';
+
 let counter = 0;
 
 /**
@@ -71,7 +73,9 @@ export default function render(renderable, renderData, container) {
 		// eslint-disable-next-line @liferay/portal/no-react-dom-render
 		ReactDOM.render(
 			<ClayIconSpriteContext.Provider value={spritemap}>
-				{Component ? <Component {...renderData} /> : renderable}
+				<A11y enable={process.env.NODE_ENV === 'development'}>
+					{Component ? <Component {...renderData} /> : renderable}
+				</A11y>
 			</ClayIconSpriteContext.Provider>,
 			container
 		);

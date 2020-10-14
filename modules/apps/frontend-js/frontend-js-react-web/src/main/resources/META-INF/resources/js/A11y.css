@@ -1,0 +1,33 @@
+.a11y-overlay {
+    cursor: pointer;
+    z-index: 999;
+    background: rgba(255, 91, 91, 0.2);
+    border-radius: 4px;
+    border: 1px solid rgb(255, 91, 91);
+    position: absolute;
+}
+
+.a11y-icon {
+    height: 28px;
+    width: 28px;
+}
+
+.a11y-help {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 18px;
+}
+
+.a11y-list {
+    list-style-type: none;
+    padding-left: 51px;
+    padding-top: 10px;
+}
+
+.a11y-list li {
+    margin-bottom: 5px;
+}
+
+.popover.popover-a11y {
+    max-width: 27.5rem;
+}
