@@ -1,8 +1,9 @@
 {
 	"dependencies": {
+		"@clayui/button": "3.5.0",
 		"@clayui/icon": "3.1.0",
 		"@clayui/popover": "3.5.0",
-		"@clayui/button": "3.5.0",
+		"@reach/observe-rect": "^1.2.0",
 		"axe-core": "^4.0.2",
 		"classnames": "2.2.6",
 		"formik": "2.1.4",

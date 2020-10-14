@@ -15,6 +15,7 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayPopover from '@clayui/popover';
+import observeRect from '@reach/observe-rect';
 import axe from 'axe-core';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
@@ -61,21 +62,34 @@ function Alert({alerts, target}) {
 			return;
 		}
 
+		const setOverlayBounds = (bounds) => {
+			if (bounds.x > 0 || bounds.y > 0) {
+				const borderRadius = window
+					.getComputedStyle(node, null)
+					.getPropertyValue('border-radius');
+
+				setBounds({
+					'border-radius': borderRadius,
+					height: bounds.height,
+					left: bounds.left,
+					top: bounds.top,
+					width: bounds.width,
+				});
+			}
+		};
+
+		const {observe, unobserve} = observeRect(node, (targetRect) => {
+			setOverlayBounds(targetRect);
+		});
+
 		const bounds = node.getBoundingClientRect();
+		setOverlayBounds(bounds);
 
-		if (bounds.x > 0 || bounds.y > 0) {
-			const borderRadius = window
-				.getComputedStyle(node, null)
-				.getPropertyValue('border-radius');
+		observe();
 
-			setBounds({
-				'border-radius': borderRadius,
-				height: bounds.height,
-				left: bounds.left,
-				top: bounds.top,
-				width: bounds.width,
-			});
-		}
+		return () => {
+			unobserve();
+		};
 	}, [target, alerts]);
 
 	return (

@@ -4,7 +4,7 @@
     background: rgba(255, 91, 91, 0.2);
     border-radius: 4px;
     border: 1px solid rgb(255, 91, 91);
-    position: absolute;
+    position: fixed;
 }
 
 .a11y-icon {
