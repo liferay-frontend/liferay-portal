@@ -17,8 +17,10 @@ import ClayIcon from '@clayui/icon';
 import ClayPopover from '@clayui/popover';
 import observeRect from '@reach/observe-rect';
 import axe from 'axe-core';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
+
+import useEventListener from './hooks/useEventListener.es';
 
 import './A11y.css';
 
@@ -69,7 +71,7 @@ function Alert({alerts, target}) {
 					.getPropertyValue('border-radius');
 
 				setBounds({
-					'border-radius': borderRadius,
+					borderRadius,
 					height: bounds.height,
 					left: bounds.left,
 					top: bounds.top,
@@ -83,13 +85,12 @@ function Alert({alerts, target}) {
 		});
 
 		const bounds = node.getBoundingClientRect();
+
 		setOverlayBounds(bounds);
 
 		observe();
 
-		return () => {
-			unobserve();
-		};
+		return unobserve;
 	}, [target, alerts]);
 
 	return (
@@ -246,19 +247,16 @@ export default function A11y({children, enable = true}) {
 		};
 	}, [disabled]);
 
-	useEffect(() => {
-		const handler = (event) => {
+	const handlerKeydownEvent = useCallback(
+		(event) => {
 			if (event.ctrlKey && event.key === 'd' && enable) {
 				setDisabled(!disabled);
 			}
-		};
+		},
+		[disabled, enable]
+	);
 
-		document.addEventListener('keydown', handler);
-
-		return () => {
-			document.removeEventListener('keydown', handler);
-		};
-	}, [disabled, enable]);
+	useEventListener('keydown', handlerKeydownEvent, false, document);
 
 	return (
 		<>
