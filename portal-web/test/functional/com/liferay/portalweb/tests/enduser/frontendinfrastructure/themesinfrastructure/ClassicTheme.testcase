@@ -93,4 +93,69 @@ definition {
 		Smoke.viewWelcomePage();
 	}
 
+	@priority = "5"
+	test PublishLookAndFeelSettingsFromStagedToLive {
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+		SitePages.addPublicPage(pageName = "Classic Theme Page");
+
+		Staging.openStagingAdmin(siteURLKey = "guest");
+
+		var siteName = TestCase.getSiteName(siteName = "${siteName}");
+
+		Staging.activateStagingCP(siteName = "${siteName}");
+
+		Navigator.openStagingSiteURL(defaultSite = "true");
+
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+		SitePages.gotoPageMenuItem(
+			menuItem = "Configure",
+			pageName = "Classic Theme Page");
+
+		Navigator.gotoNavTab(navTab = "Look and Feel");
+
+		Theme.configureLookAndFeelSpecificLook();
+
+		Theme.configureLookAndFeelShowHeaderSearch(showHeaderSearch = "false");
+
+		var cssText = '''body, #wrapper{background-color:#42f4c5;}''';
+
+		Theme.configureLookAndFeelCustomCSS(cssText = "${cssText}");
+
+		PortletEntry.save();
+
+		Navigator.gotoPage(pageName = "Classic Theme Page");
+
+		AssertElementPresent(locator1 = "Search#EMBEDDED_SEARCH_BAR");
+
+		AssertCssValue(
+			locator1 = "Home#SITE_WRAPPER",
+			locator2 = "background-color",
+			value1 = "rgba(255, 255, 255, 1)");
+
+		takeScreenshot();
+
+		Navigator.openStagingSiteURL(defaultSite = "true");
+
+		Staging.gotoPublishToLive();
+
+		Staging.publishToLive();
+
+		Navigator.gotoPage(pageName = "Classic Theme Page");
+
+		AssertElementNotPresent(locator1 = "Search#EMBEDDED_SEARCH_BAR");
+
+		AssertCssValue(
+			locator1 = "Home#SITE_WRAPPER",
+			locator2 = "background-color",
+			value1 = "rgba(66, 244, 197, 1)");
+
+		takeScreenshot();
+	}
+
 }
