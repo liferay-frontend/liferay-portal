@@ -38,6 +38,10 @@ public class StickerTag extends BaseContainerTag {
 		return super.doStartTag();
 	}
 
+	public String getContent() {
+		return _content;
+	}
+
 	public String getDisplayType() {
 		return _displayType;
 	}
@@ -89,6 +93,10 @@ public class StickerTag extends BaseContainerTag {
 	@Deprecated
 	public String getStyle() {
 		return getDisplayType();
+	}
+
+	public void setContent(String content) {
+		_content = content;
 	}
 
 	public void setDisplayType(String displayType) {
@@ -148,6 +156,7 @@ public class StickerTag extends BaseContainerTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_content = null;
 		_displayType = null;
 		_icon = null;
 		_inline = false;
@@ -209,6 +218,12 @@ public class StickerTag extends BaseContainerTag {
 
 		jspWriter.write("\">");
 
+		if (Validator.isNotNull(_content)) {
+			jspWriter.write(_content);
+
+			return SKIP_BODY;
+		}
+
 		if (Validator.isNotNull(_icon)) {
 			IconTag iconTag = new IconTag();
 
@@ -224,6 +239,7 @@ public class StickerTag extends BaseContainerTag {
 
 	private static final String _ATTRIBUTE_NAMESPACE = "clay:sticker:";
 
+	private String _content;
 	private String _displayType;
 	private String _icon;
 	private boolean _inline;
