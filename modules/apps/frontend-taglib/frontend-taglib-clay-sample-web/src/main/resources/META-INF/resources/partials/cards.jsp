@@ -320,10 +320,23 @@
 <clay:row>
 	<clay:col
 		id="image-card-block"
-		md="6"
+		md="4"
 	>
-		<clay:user-card-v2
+		<clay:user-card
+			name="User Name"
+			subtitle="Latest Action"
+			userColorClass="info"
+		/>
+	</clay:col>
+
+	<clay:col
+		id="image-card-block"
+		md="4"
+	>
+		<clay:user-card
 			actionDropdownItems="<%= cardsDisplayContext.getActionDropdownItems() %>"
+			icon="picture"
+			labels="<%= cardsDisplayContext.getLabelItems() %>"
 			name="User Name"
 			subtitle="Latest Action"
 			userColorClass="danger"
@@ -332,17 +345,182 @@
 
 	<clay:col
 		id="image-card-icon-block"
-		md="6"
+		md="4"
 	>
-		<clay:user-card-v2
+		<clay:user-card
 			actionDropdownItems="<%= cardsDisplayContext.getActionDropdownItems() %>"
 			disabled="<%= true %>"
 			imageAlt="thumbnail"
 			imageSrc="https://images.unsplash.com/photo-1502290822284-9538ef1f1291"
+			labels="<%= cardsDisplayContext.getLabelItems() %>"
 			name="User name"
+			subtitle="Latest Action"
+		/>
+	</clay:col>
+</clay:row>
+
+<h4>Selectable User Cards</h4>
+
+<clay:row>
+	<clay:col
+		id="image-card-block"
+		md="4"
+	>
+		<clay:user-card
+			disabled="<%= true %>"
+			name="User Name"
 			selectable="<%= true %>"
 			selected="<%= true %>"
 			subtitle="Latest Action"
+			userColorClass="info"
+		/>
+	</clay:col>
+
+	<clay:col
+		id="image-card-block"
+		md="4"
+	>
+		<clay:user-card
+			actionDropdownItems="<%= cardsDisplayContext.getActionDropdownItems() %>"
+			icon="picture"
+			labels="<%= cardsDisplayContext.getLabelItems() %>"
+			name="User Name"
+			selectable="<%= true %>"
+			subtitle="Latest Action"
+			userColorClass="danger"
+		/>
+	</clay:col>
+
+	<clay:col
+		id="image-card-icon-block"
+		md="4"
+	>
+		<clay:user-card
+			actionDropdownItems="<%= cardsDisplayContext.getActionDropdownItems() %>"
+			imageAlt="thumbnail"
+			imageSrc="https://images.unsplash.com/photo-1502290822284-9538ef1f1291"
+			labels="<%= cardsDisplayContext.getLabelItems() %>"
+			name="User name"
+			selectable="<%= true %>"
+			subtitle="Latest Action"
+		/>
+	</clay:col>
+</clay:row>
+
+<h4>User Cards using Display Context</h4>
+
+<clay:row>
+	<clay:col
+		id="image-card-block"
+		md="4"
+	>
+
+		<%
+		UserCardsDisplayContext userCardsDisplayContext = new UserCardsDisplayContext();
+
+		userCardsDisplayContext.setDisabled(true);
+		userCardsDisplayContext.setUserColorClass("info");
+		%>
+
+		<clay:user-card
+			userCard="<%= userCardsDisplayContext %>"
+		/>
+	</clay:col>
+
+	<clay:col
+		id="image-card-block"
+		md="4"
+	>
+
+		<%
+		UserCardsDisplayContext userCardsDisplayContext = new UserCardsDisplayContext();
+
+		userCardsDisplayContext.setActionDropdownItems(cardsDisplayContext.getActionDropdownItems());
+		userCardsDisplayContext.setIcon("picture");
+		userCardsDisplayContext.setLabels(cardsDisplayContext.getLabelItems());
+		%>
+
+		<clay:user-card
+			userCard="<%= userCardsDisplayContext %>"
+		/>
+	</clay:col>
+
+	<clay:col
+		id="image-card-icon-block"
+		md="4"
+	>
+
+		<%
+		UserCardsDisplayContext userCardsDisplayContext = new UserCardsDisplayContext();
+
+		userCardsDisplayContext.setActionDropdownItems(cardsDisplayContext.getActionDropdownItems());
+		userCardsDisplayContext.setImageSrc("https://images.unsplash.com/photo-1502290822284-9538ef1f1291");
+		userCardsDisplayContext.setLabels(cardsDisplayContext.getLabelItems());
+		%>
+
+		<clay:user-card
+			userCard="<%= userCardsDisplayContext %>"
+		/>
+	</clay:col>
+</clay:row>
+
+<h4>Selectable User Cards using Display Context</h4>
+
+<clay:row>
+	<clay:col
+		id="image-card-block"
+		md="4"
+	>
+
+		<%
+		UserCardsDisplayContext userCardsDisplayContext = new UserCardsDisplayContext();
+
+		userCardsDisplayContext.setDisabled(true);
+		userCardsDisplayContext.setSelectable(true);
+		userCardsDisplayContext.setUserColorClass("info");
+		%>
+
+		<clay:user-card
+			userCard="<%= userCardsDisplayContext %>"
+		/>
+	</clay:col>
+
+	<clay:col
+		id="image-card-block"
+		md="4"
+	>
+
+		<%
+		UserCardsDisplayContext userCardsDisplayContext = new UserCardsDisplayContext();
+
+		userCardsDisplayContext.setActionDropdownItems(cardsDisplayContext.getActionDropdownItems());
+		userCardsDisplayContext.setIcon("picture");
+		userCardsDisplayContext.setLabels(cardsDisplayContext.getLabelItems());
+		userCardsDisplayContext.setSelectable(true);
+		%>
+
+		<clay:user-card
+			userCard="<%= userCardsDisplayContext %>"
+		/>
+	</clay:col>
+
+	<clay:col
+		id="image-card-icon-block"
+		md="4"
+	>
+
+		<%
+		UserCardsDisplayContext userCardsDisplayContext = new UserCardsDisplayContext();
+
+		userCardsDisplayContext.setActionDropdownItems(cardsDisplayContext.getActionDropdownItems());
+		userCardsDisplayContext.setImageSrc("https://images.unsplash.com/photo-1502290822284-9538ef1f1291");
+		userCardsDisplayContext.setLabels(cardsDisplayContext.getLabelItems());
+		userCardsDisplayContext.setSelectable(true);
+		userCardsDisplayContext.setSelected(true);
+		%>
+
+		<clay:user-card
+			userCard="<%= userCardsDisplayContext %>"
 		/>
 	</clay:col>
 </clay:row>
