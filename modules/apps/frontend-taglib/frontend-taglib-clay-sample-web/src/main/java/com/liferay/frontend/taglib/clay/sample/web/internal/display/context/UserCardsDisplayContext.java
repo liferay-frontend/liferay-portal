@@ -67,7 +67,7 @@ public class UserCardsDisplayContext implements UserCard {
 
 	public String getName() {
 		return _name;
-    };
+	}
 
 	public String getSubtitle() {
 		return _subtitle;
