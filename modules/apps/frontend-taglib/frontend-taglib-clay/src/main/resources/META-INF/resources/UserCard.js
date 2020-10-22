@@ -54,23 +54,15 @@ export default function UserCard({
 				value: inputValue,
 			}}
 			className={cssClass}
-			labels={labels?.map(
-				({
-					data,
-					label,
-					/* eslint-disable no-unused-vars */
-					style,
-					...rest
-				}) => {
-					const dataAttributes = getDataAttributes(data);
+			labels={labels?.map(({data, label, style: _style, ...rest}) => {
+				const dataAttributes = getDataAttributes(data);
 
-					return {
-						value: label,
-						...dataAttributes,
-						...rest,
-					};
-				}
-			)}
+				return {
+					value: label,
+					...dataAttributes,
+					...rest,
+				};
+			})}
 			onSelectChange={
 				selectable && onSelectChange ? onSelectChange : null
 			}
