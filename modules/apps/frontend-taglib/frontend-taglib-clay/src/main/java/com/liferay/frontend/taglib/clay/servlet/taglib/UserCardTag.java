@@ -19,10 +19,8 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.soy.UserCard;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
 import java.util.Map;
@@ -54,7 +52,13 @@ public class UserCardTag extends BaseContainerTag {
 	@Override
 	public String getCssClass() {
 		if ((super.getCssClass() == null) && (_userCard != null)) {
-			return _userCard.getCssClass();
+			if (_userCard.getCssClass() != null) {
+				return _userCard.getCssClass();
+			}
+
+			if (_userCard.getElementClasses() != null) {
+				return _userCard.getElementClasses();
+			}
 		}
 
 		return super.getCssClass();
