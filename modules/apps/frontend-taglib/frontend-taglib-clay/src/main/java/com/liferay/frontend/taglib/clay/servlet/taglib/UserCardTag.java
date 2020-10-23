@@ -40,13 +40,6 @@ public class UserCardTag extends BaseContainerTag {
 	public int doStartTag() throws JspException {
 		setAttributeNamespace(_ATTRIBUTE_NAMESPACE);
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		String pathThemeImages = themeDisplay.getPathThemeImages();
-
-		_spritemap = pathThemeImages.concat("/clay/icons.svg");
-
 		return super.doStartTag();
 	}
 
@@ -363,7 +356,6 @@ public class UserCardTag extends BaseContainerTag {
 		props.put("name", getName());
 		props.put("selectable", getSelectable());
 		props.put("selected", getSelected());
-		props.put("spritemap", getSpritemap());
 		props.put("userDisplayType", getUserColorClass());
 
 		return super.prepareProps(props);
