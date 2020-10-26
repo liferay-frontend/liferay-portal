@@ -13,7 +13,7 @@
  */
 
 import {ClayCardWithUser} from '@clayui/card';
-import React from 'react';
+import React, {useState} from 'react';
 
 const getDataAttributes = (data) => {
 	return data
@@ -33,12 +33,14 @@ export default function UserCard({
 	inputValue,
 	labels = [],
 	locale: _locale,
-	onSelectChange = () => {},
 	portletId: _portletId,
 	portletNamespace: _portletNamespace,
+	selected: initialSelected,
 	selectable,
 	...otherProps
 }) {
+	const [selected, setSelected] = useState(initialSelected);
+
 	return (
 		<ClayCardWithUser
 			actions={actions?.map(({data, ...rest}) => {
@@ -64,8 +66,9 @@ export default function UserCard({
 				};
 			})}
 			onSelectChange={
-				selectable && onSelectChange ? onSelectChange : null
+				selectable ? () => { setSelected(!selected) } : null
 			}
+			selected={selected}
 			{...otherProps}
 		/>
 	);
