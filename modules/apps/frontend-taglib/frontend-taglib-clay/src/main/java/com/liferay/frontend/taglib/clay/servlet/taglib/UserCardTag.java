@@ -89,18 +89,6 @@ public class UserCardTag extends BaseContainerTag {
 		return super.getDefaultEventHandler();
 	}
 
-	public Boolean getDisabled() {
-		if (_disabled == null) {
-			if (_userCard != null) {
-				return _userCard.isDisabled();
-			}
-
-			return false;
-		}
-
-		return _disabled;
-	}
-
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #getCssClass()}
 	 */
@@ -195,30 +183,6 @@ public class UserCardTag extends BaseContainerTag {
 		return _name;
 	}
 
-	public Boolean getSelectable() {
-		if (_selectable == null) {
-			if (_userCard != null) {
-				return _userCard.isSelectable();
-			}
-
-			return true;
-		}
-
-		return _selectable;
-	}
-
-	public Boolean getSelected() {
-		if (_selected == null) {
-			if (_userCard != null) {
-				return _userCard.isSelected();
-			}
-
-			return false;
-		}
-
-		return _selected;
-	}
-
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
 	 */
@@ -249,6 +213,42 @@ public class UserCardTag extends BaseContainerTag {
 		}
 
 		return _userColorClass;
+	}
+
+	public Boolean isDisabled() {
+		if (_disabled == null) {
+			if (_userCard != null) {
+				return _userCard.isDisabled();
+			}
+
+			return false;
+		}
+
+		return _disabled;
+	}
+
+	public Boolean isSelectable() {
+		if (_selectable == null) {
+			if (_userCard != null) {
+				return _userCard.isSelectable();
+			}
+
+			return true;
+		}
+
+		return _selectable;
+	}
+
+	public Boolean isSelected() {
+		if (_selected == null) {
+			if (_userCard != null) {
+				return _userCard.isSelected();
+			}
+
+			return false;
+		}
+
+		return _selected;
 	}
 
 	public void setActionDropdownItems(List<DropdownItem> actionDropdownItems) {
@@ -359,7 +359,7 @@ public class UserCardTag extends BaseContainerTag {
 	protected Map<String, Object> prepareProps(Map<String, Object> props) {
 		props.put("actions", getActionDropdownItems());
 		props.put("description", getSubtitle());
-		props.put("disabled", getDisabled());
+		props.put("disabled", isDisabled());
 		props.put("href", getHref());
 		props.put("id", getId());
 		props.put("inputName", getInputName());
@@ -369,8 +369,8 @@ public class UserCardTag extends BaseContainerTag {
 		props.put("userSymbol", getIcon());
 		props.put("labels", getLabels());
 		props.put("name", getName());
-		props.put("selectable", getSelectable());
-		props.put("selected", getSelected());
+		props.put("selectable", isSelectable());
+		props.put("selected", isSelected());
 		props.put("userDisplayType", getUserColorClass());
 
 		return super.prepareProps(props);
@@ -378,7 +378,7 @@ public class UserCardTag extends BaseContainerTag {
 
 	@Override
 	protected String processCssClasses(Set<String> cssClasses) {
-		Boolean selectable = getSelectable();
+		Boolean selectable = isSelectable();
 
 		if ((selectable == null) || !selectable) {
 			cssClasses.add("card");
@@ -402,8 +402,8 @@ public class UserCardTag extends BaseContainerTag {
 		jspWriter.write("<div class=\"card\"><div class=\"aspect-ratio ");
 		jspWriter.write("card-item-first\">");
 
-		Boolean disabled = getDisabled();
-		Boolean selectable = getSelectable();
+		Boolean disabled = isDisabled();
+		Boolean selectable = isSelectable();
 
 		if ((selectable != null) && selectable) {
 			jspWriter.write("<div class=\"custom-control custom-checkbox\">");
@@ -425,7 +425,7 @@ public class UserCardTag extends BaseContainerTag {
 				jspWriter.write("name=\"" + inputValue + "\" ");
 			}
 
-			Boolean selected = getSelected();
+			Boolean selected = isSelected();
 
 			if ((selected != null) && selected) {
 				jspWriter.write("checked=\"checked\" ");
