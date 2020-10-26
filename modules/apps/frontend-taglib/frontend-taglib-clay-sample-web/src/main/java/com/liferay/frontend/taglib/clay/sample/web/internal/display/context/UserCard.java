@@ -14,7 +14,6 @@
 
 package com.liferay.frontend.taglib.clay.sample.web.internal.display.context;
 
-import com.liferay.frontend.taglib.clay.servlet.taglib.soy.UserCard;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 
@@ -23,7 +22,8 @@ import java.util.List;
 /**
  * @author Carlos Lancha
  */
-public class UserCardsDisplayContext implements UserCard {
+public class UserCard
+	implements com.liferay.frontend.taglib.clay.servlet.taglib.soy.UserCard {
 
 	public List<DropdownItem> getActionDropdownItems() {
 		return _actionDropdownItems;
@@ -155,7 +155,7 @@ public class UserCardsDisplayContext implements UserCard {
 
 	private List<DropdownItem> _actionDropdownItems;
 	private String _cssClass = "custom-css-class";
-	private boolean _disabled = false;
+	private boolean _disabled;
 	private String _href = "user-card-href";
 	private String _icon;
 	private String _id = "userCardId";
@@ -166,7 +166,7 @@ public class UserCardsDisplayContext implements UserCard {
 	private List<LabelItem> _labels;
 	private String _name = "User Name";
 	private boolean _selectable = true;
-	private boolean _selected = false;
+	private boolean _selected;
 	private String _subtitle = "Latest Action";
 	private String _userColorClass = "danger";
 
