@@ -324,6 +324,7 @@
 	>
 		<clay:user-card
 			name="User Name"
+			selectable="<%= false %>"
 			subtitle="Latest Action"
 			userColorClass="info"
 		/>
@@ -338,6 +339,7 @@
 			icon="picture"
 			labels="<%= cardsDisplayContext.getLabelItems() %>"
 			name="User Name"
+			selectable="<%= false %>"
 			subtitle="Latest Action"
 			userColorClass="danger"
 		/>
@@ -354,6 +356,7 @@
 			imageSrc="https://images.unsplash.com/photo-1502290822284-9538ef1f1291"
 			labels="<%= cardsDisplayContext.getLabelItems() %>"
 			name="User name"
+			selectable="<%= false %>"
 			subtitle="Latest Action"
 		/>
 	</clay:col>
@@ -369,7 +372,6 @@
 		<clay:user-card
 			disabled="<%= true %>"
 			name="User Name"
-			selectable="<%= true %>"
 			selected="<%= true %>"
 			subtitle="Latest Action"
 			userColorClass="info"
@@ -385,7 +387,6 @@
 			icon="picture"
 			labels="<%= cardsDisplayContext.getLabelItems() %>"
 			name="User Name"
-			selectable="<%= true %>"
 			subtitle="Latest Action"
 			userColorClass="danger"
 		/>
@@ -401,7 +402,6 @@
 			imageSrc="https://images.unsplash.com/photo-1502290822284-9538ef1f1291"
 			labels="<%= cardsDisplayContext.getLabelItems() %>"
 			name="User name"
-			selectable="<%= true %>"
 			subtitle="Latest Action"
 		/>
 	</clay:col>
@@ -419,6 +419,7 @@
 		UserCardsDisplayContext userCardsDisplayContext = new UserCardsDisplayContext();
 
 		userCardsDisplayContext.setDisabled(true);
+		userCardsDisplayContext.setSelectable(false);
 		userCardsDisplayContext.setUserColorClass("info");
 		%>
 
@@ -438,6 +439,7 @@
 		userCardsDisplayContext.setActionDropdownItems(cardsDisplayContext.getActionDropdownItems());
 		userCardsDisplayContext.setIcon("picture");
 		userCardsDisplayContext.setLabels(cardsDisplayContext.getLabelItems());
+		userCardsDisplayContext.setSelectable(false);
 		%>
 
 		<clay:user-card
@@ -456,6 +458,7 @@
 		userCardsDisplayContext.setActionDropdownItems(cardsDisplayContext.getActionDropdownItems());
 		userCardsDisplayContext.setImageSrc("https://images.unsplash.com/photo-1502290822284-9538ef1f1291");
 		userCardsDisplayContext.setLabels(cardsDisplayContext.getLabelItems());
+		userCardsDisplayContext.setSelectable(false);
 		%>
 
 		<clay:user-card

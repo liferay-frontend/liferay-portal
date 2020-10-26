@@ -155,7 +155,7 @@ public class UserCardsDisplayContext implements UserCard {
 
 	private List<DropdownItem> _actionDropdownItems;
 	private String _cssClass = "custom-css-class";
-	private boolean _disabled;
+	private boolean _disabled = false;
 	private String _href = "user-card-href";
 	private String _icon;
 	private String _id = "userCardId";
@@ -165,8 +165,8 @@ public class UserCardsDisplayContext implements UserCard {
 	private String _inputValue = "user-card-input-value";
 	private List<LabelItem> _labels;
 	private String _name = "User Name";
-	private boolean _selectable;
-	private boolean _selected;
+	private boolean _selectable = true;
+	private boolean _selected = false;
 	private String _subtitle = "Latest Action";
 	private String _userColorClass = "danger";
 
