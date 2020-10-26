@@ -409,21 +409,7 @@ public class UserCardTag extends BaseContainerTag {
 			jspWriter.write("<div class=\"custom-control custom-checkbox\">");
 			jspWriter.write("<label><input ");
 
-			if ((disabled != null) && disabled) {
-				jspWriter.write("disabled=\"disabled\" ");
-			}
-
-			String inputName = getInputName();
-
-			if (Validator.isNotNull(inputName)) {
-				jspWriter.write("name=\"" + inputName + "\" ");
-			}
-
-			String inputValue = getInputValue();
-
-			if (Validator.isNotNull(inputValue)) {
-				jspWriter.write("name=\"" + inputValue + "\" ");
-			}
+			jspWriter.write("class=\"custom-control-input\"");
 
 			Boolean selected = isSelected();
 
@@ -431,7 +417,28 @@ public class UserCardTag extends BaseContainerTag {
 				jspWriter.write("checked=\"checked\" ");
 			}
 
-			jspWriter.write("class=\"custom-control-input\" type=\"checkbox\"");
+			if ((disabled != null) && disabled) {
+				jspWriter.write("disabled=\"disabled\" ");
+			}
+
+			String inputName = getInputName();
+
+			if (Validator.isNotNull(inputName)) {
+				jspWriter.write("name=\"");
+				jspWriter.write(inputName)
+				jspWriter.write("\" ");
+			}
+
+			jspWriter.write("type=\"checkbox\" ");
+
+			String inputValue = getInputValue();
+
+			if (Validator.isNotNull(inputValue)) {
+				jspWriter.write("value=\"")
+				jspWriter.write(inputValue);
+				jspWriter.write("\"");
+			}
+
 			jspWriter.write("><span class=\"custom-control-label\"></span>");
 		}
 
