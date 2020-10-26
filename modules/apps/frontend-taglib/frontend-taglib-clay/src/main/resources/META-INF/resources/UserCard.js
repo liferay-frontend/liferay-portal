@@ -66,7 +66,11 @@ export default function UserCard({
 				};
 			})}
 			onSelectChange={
-				selectable ? () => { setSelected(!selected) } : null
+				selectable
+					? () => {
+							setSelected(!selected);
+					  }
+					: null
 			}
 			selected={selected}
 			{...otherProps}

@@ -18,7 +18,6 @@ import com.liferay.frontend.taglib.clay.internal.servlet.taglib.BaseContainerTag
 import com.liferay.frontend.taglib.clay.servlet.taglib.soy.UserCard;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -95,9 +94,8 @@ public class UserCardTag extends BaseContainerTag {
 			if (_userCard != null) {
 				return _userCard.isDisabled();
 			}
-			else {
-				return false;
-			}
+
+			return false;
 		}
 
 		return _disabled;
@@ -202,9 +200,8 @@ public class UserCardTag extends BaseContainerTag {
 			if (_userCard != null) {
 				return _userCard.isSelectable();
 			}
-			else {
-				return true;
-			}
+
+			return true;
 		}
 
 		return _selectable;
@@ -215,9 +212,8 @@ public class UserCardTag extends BaseContainerTag {
 			if (_userCard != null) {
 				return _userCard.isSelected();
 			}
-			else {
-				return false;
-			}
+
+			return false;
 		}
 
 		return _selected;
