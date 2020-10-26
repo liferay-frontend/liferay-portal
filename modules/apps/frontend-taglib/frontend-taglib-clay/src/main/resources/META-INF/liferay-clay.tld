@@ -3075,6 +3075,18 @@
 		</attribute>
 		<attribute>
 			<description></description>
+			<name>imageAlt</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>imageSrc</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description></description>
 			<name>inline</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

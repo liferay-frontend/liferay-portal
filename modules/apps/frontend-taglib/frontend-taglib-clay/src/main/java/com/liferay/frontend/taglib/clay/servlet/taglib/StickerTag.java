@@ -38,16 +38,20 @@ public class StickerTag extends BaseContainerTag {
 		return super.doStartTag();
 	}
 
-	public String getContent() {
-		return _content;
-	}
-
 	public String getDisplayType() {
 		return _displayType;
 	}
 
 	public String getIcon() {
 		return _icon;
+	}
+
+	public String getImageAlt() {
+		return _imageAlt;
+	}
+
+	public String getImageSrc() {
+		return _imageSrc;
 	}
 
 	public boolean getInline() {
@@ -95,16 +99,20 @@ public class StickerTag extends BaseContainerTag {
 		return getDisplayType();
 	}
 
-	public void setContent(String content) {
-		_content = content;
-	}
-
 	public void setDisplayType(String displayType) {
 		_displayType = displayType;
 	}
 
 	public void setIcon(String icon) {
 		_icon = icon;
+	}
+
+	public void setImageAlt(String imageAlt) {
+		_imageAlt = imageAlt;
+	}
+
+	public void setImageSrc(String imageSrc) {
+		_imageSrc = imageSrc;
 	}
 
 	public void setInline(boolean inline) {
@@ -156,9 +164,10 @@ public class StickerTag extends BaseContainerTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
-		_content = null;
 		_displayType = null;
 		_icon = null;
+		_imageAlt = null;
+		_imageSrc = null;
 		_inline = false;
 		_label = null;
 		_outside = false;
@@ -218,12 +227,6 @@ public class StickerTag extends BaseContainerTag {
 
 		jspWriter.write("\">");
 
-		if (Validator.isNotNull(_content)) {
-			jspWriter.write(_content);
-
-			return SKIP_BODY;
-		}
-
 		if (Validator.isNotNull(_icon)) {
 			IconTag iconTag = new IconTag();
 
@@ -233,15 +236,25 @@ public class StickerTag extends BaseContainerTag {
 
 			return SKIP_BODY;
 		}
+		else if (Validator.isNotNull(_imageSrc)) {
+			jspWriter.write("<img alt=\"");
+			jspWriter.write(_imageAlt);
+			jspWriter.write("\" class=\"sticker-img\" src=\"");
+			jspWriter.write(_imageSrc);
+			jspWriter.write("\" />");
+
+			return SKIP_BODY;
+		}
 
 		return EVAL_BODY_INCLUDE;
 	}
 
 	private static final String _ATTRIBUTE_NAMESPACE = "clay:sticker:";
 
-	private String _content;
 	private String _displayType;
 	private String _icon;
+	private String _imageAlt;
+	private String _imageSrc;
 	private boolean _inline;
 	private String _label;
 	private boolean _outside;

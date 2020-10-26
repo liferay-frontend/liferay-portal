@@ -438,11 +438,8 @@ public class UserCardTag extends BaseContainerTag {
 		String imageSrc = getImageSrc();
 
 		if (Validator.isNotNull(imageSrc)) {
-			stickerTag.setContent(
-				StringBundler.concat(
-					"<img alt=\"", getImageAlt(),
-					"\" class=\"aspect-ratio-item-fluid\" src=\"", imageSrc,
-					"\" />"));
+			stickerTag.setImageAlt(getImageAlt());
+			stickerTag.setImageSrc(imageSrc);
 		}
 		else {
 			String icon = getIcon();
