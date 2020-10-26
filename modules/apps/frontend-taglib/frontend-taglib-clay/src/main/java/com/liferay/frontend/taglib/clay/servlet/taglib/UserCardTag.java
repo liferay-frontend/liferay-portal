@@ -91,8 +91,13 @@ public class UserCardTag extends BaseContainerTag {
 	}
 
 	public Boolean getDisabled() {
-		if ((_disabled == null) && (_userCard != null)) {
-			return _userCard.isDisabled();
+		if (_disabled == null) {
+			if (_userCard != null) {
+				return _userCard.isDisabled();
+			}
+			else {
+				return false;
+			}
 		}
 
 		return _disabled;
@@ -193,16 +198,26 @@ public class UserCardTag extends BaseContainerTag {
 	}
 
 	public Boolean getSelectable() {
-		if ((_selectable == null) && (_userCard != null)) {
-			return _userCard.isSelectable();
+		if (_selectable == null) {
+			if (_userCard != null) {
+				return _userCard.isSelectable();
+			}
+			else {
+				return true;
+			}
 		}
 
 		return _selectable;
 	}
 
 	public Boolean getSelected() {
-		if ((_selected == null) && (_userCard != null)) {
-			return _userCard.isSelected();
+		if (_selected == null) {
+			if (_userCard != null) {
+				return _userCard.isSelected();
+			}
+			else {
+				return false;
+			}
 		}
 
 		return _selected;
