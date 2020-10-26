@@ -403,16 +403,15 @@ public class UserCardTag extends BaseContainerTag {
 
 		JspWriter jspWriter = pageContext.getOut();
 
-		jspWriter.write("<div class=\"card\">");
-		jspWriter.write("<div class=\"aspect-ratio card-item-first\">");
+		jspWriter.write("<div class=\"card\"><div class=\"aspect-ratio ");
+		jspWriter.write("card-item-first\">");
 
 		Boolean disabled = getDisabled();
 		Boolean selectable = getSelectable();
 
 		if ((selectable != null) && selectable) {
 			jspWriter.write("<div class=\"custom-control custom-checkbox\">");
-			jspWriter.write("<label>");
-			jspWriter.write("<input ");
+			jspWriter.write("<label><input ");
 
 			if ((disabled != null) && disabled) {
 				jspWriter.write("disabled=\"disabled\" ");
@@ -436,9 +435,8 @@ public class UserCardTag extends BaseContainerTag {
 				jspWriter.write("checked=\"checked\" ");
 			}
 
-			jspWriter.write("class=\"custom-control-input\" ");
-			jspWriter.write("type=\"checkbox\">");
-			jspWriter.write("<span class=\"custom-control-label\"></span>");
+			jspWriter.write("class=\"custom-control-input\" type=\"checkbox\"");
+			jspWriter.write("><span class=\"custom-control-label\"></span>");
 		}
 
 		jspWriter.write("<div class=\"aspect-ratio-item-center-middle ");
@@ -472,17 +470,13 @@ public class UserCardTag extends BaseContainerTag {
 		jspWriter.write("</div>");
 
 		if ((selectable != null) && selectable) {
-			jspWriter.write("</label>");
-			jspWriter.write("</div>");
+			jspWriter.write("</label></div>");
 		}
 
-		jspWriter.write("</div>");
-
-		jspWriter.write("<div class=\"card-body\">");
-		jspWriter.write("<div class=\"card-row\">");
-		jspWriter.write("<div class=\"autofit-col autofit-col-expand\">");
-		jspWriter.write("<p class=\"card-title\">");
-		jspWriter.write("<span class=\"text-truncate-inline\">");
+		jspWriter.write("</div><div class=\"card-body\"><div ");
+		jspWriter.write("class=\"card-row\"><div class=\"autofit-col ");
+		jspWriter.write("autofit-col-expand\"><p class=\"card-title\"><span ");
+		jspWriter.write("class=\"text-truncate-inline\">");
 
 		String href = getHref();
 		String name = getName();
@@ -500,15 +494,11 @@ public class UserCardTag extends BaseContainerTag {
 			jspWriter.write("</span>");
 		}
 
-		jspWriter.write("</span>");
-		jspWriter.write("</p>");
-		jspWriter.write("<p class=\"card-subtitle\">");
-		jspWriter.write("<span class=\"text-truncate-inline\">");
-		jspWriter.write("<span class=\"text-truncate\">");
+		jspWriter.write("</span></p><p class=\"card-subtitle\"><span class=\"");
+		jspWriter.write("text-truncate-inline\"><span class=\"text-truncate\"");
+		jspWriter.write(">");
 		jspWriter.write(getSubtitle());
-		jspWriter.write("</span>");
-		jspWriter.write("</span>");
-		jspWriter.write("</p>");
+		jspWriter.write("</span></span></p>");
 
 		List<LabelItem> labels = getLabels();
 
@@ -547,9 +537,9 @@ public class UserCardTag extends BaseContainerTag {
 		jspWriter.write("</div>");
 
 		if (!ListUtil.isEmpty(getActionDropdownItems())) {
-			jspWriter.write("<div class=\"autofit-col\">");
-			jspWriter.write("<div class=\"dropdown\">");
-			jspWriter.write("<div class=\"dropdown-toggle component-action\">");
+			jspWriter.write("<div class=\"autofit-col\"><div class=\"dropdown");
+			jspWriter.write("\"><div class=\"dropdown-toggle component-action");
+			jspWriter.write("\">");
 
 			IconTag iconTag = new IconTag();
 
@@ -557,14 +547,10 @@ public class UserCardTag extends BaseContainerTag {
 
 			iconTag.doTag(pageContext);
 
-			jspWriter.write("</div>");
-			jspWriter.write("</div>");
-			jspWriter.write("</div>");
+			jspWriter.write("</div></div></div>");
 		}
 
-		jspWriter.write("</div>");
-		jspWriter.write("</div>");
-		jspWriter.write("</div>");
+		jspWriter.write("</div></div></div>");
 
 		return SKIP_BODY;
 	}
