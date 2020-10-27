@@ -380,7 +380,7 @@ public class UserCardTag extends BaseContainerTag {
 				jspWriter.write("\"");
 			}
 
-			jspWriter.write("><span class=\"custom-control-label\"></span>");
+			jspWriter.write("/><span class=\"custom-control-label\"></span>");
 		}
 
 		jspWriter.write("<div class=\"aspect-ratio-item-center-middle ");
