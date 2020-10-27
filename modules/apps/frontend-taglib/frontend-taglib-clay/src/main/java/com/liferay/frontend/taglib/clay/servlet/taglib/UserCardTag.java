@@ -355,11 +355,11 @@ public class UserCardTag extends BaseContainerTag {
 			Boolean selected = isSelected();
 
 			if ((selected != null) && selected) {
-				jspWriter.write("checked=\"checked\" ");
+				jspWriter.write("checked ");
 			}
 
 			if ((disabled != null) && disabled) {
-				jspWriter.write("disabled=\"disabled\" ");
+				jspWriter.write("disabled ");
 			}
 
 			String inputName = getInputName();
