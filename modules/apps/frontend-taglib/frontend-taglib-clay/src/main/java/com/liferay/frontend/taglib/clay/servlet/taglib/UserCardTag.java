@@ -63,53 +63,6 @@ public class UserCardTag extends BaseContainerTag {
 		return super.getCssClass();
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public Map<String, String> getData() {
-		if ((super.getData() == null) && (_userCard != null)) {
-			return _userCard.getData();
-		}
-
-		return super.getData();
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public String getDefaultEventHandler() {
-		if ((super.getDefaultEventHandler() == null) && (_userCard != null)) {
-			return _userCard.getDefaultEventHandler();
-		}
-
-		return super.getDefaultEventHandler();
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #getCssClass()}
-	 */
-	@Deprecated
-	@Override
-	public String getElementClasses() {
-		if ((super.getCssClass() == null) && (_userCard != null)) {
-			return _userCard.getElementClasses();
-		}
-
-		return super.getCssClass();
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
-	 */
-	@Deprecated
-	public String getGroupName() {
-		return _groupName;
-	}
-
 	public String getHref() {
 		if ((_href == null) && (_userCard != null)) {
 			return _userCard.getHref();
@@ -181,18 +134,6 @@ public class UserCardTag extends BaseContainerTag {
 		}
 
 		return _name;
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
-	 */
-	@Deprecated
-	public String getSpritemap() {
-		if ((_spritemap == null) && (_userCard != null)) {
-			return _userCard.getSpritemap();
-		}
-
-		return _spritemap;
 	}
 
 	public String getSubtitle() {
