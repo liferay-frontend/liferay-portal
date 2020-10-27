@@ -366,7 +366,7 @@ public class UserCardTag extends BaseContainerTag {
 
 			if (Validator.isNotNull(inputName)) {
 				jspWriter.write("name=\"");
-				jspWriter.write(inputName)
+				jspWriter.write(inputName);
 				jspWriter.write("\" ");
 			}
 
@@ -375,7 +375,7 @@ public class UserCardTag extends BaseContainerTag {
 			String inputValue = getInputValue();
 
 			if (Validator.isNotNull(inputValue)) {
-				jspWriter.write("value=\"")
+				jspWriter.write("value=\"");
 				jspWriter.write(inputValue);
 				jspWriter.write("\"");
 			}
