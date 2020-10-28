@@ -95,7 +95,7 @@ public class ToggleControlsProductNavigationControlMenuEntry
 
 	@Override
 	public String getLinkCssClass(HttpServletRequest httpServletRequest) {
-		return "d-block toggle-controls";
+		return "toggle-controls";
 	}
 
 	@Override

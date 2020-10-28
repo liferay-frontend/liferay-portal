@@ -476,7 +476,7 @@ const ApplicationsMenu = ({
 
 			<ClayButtonWithIcon
 				aria-label={Liferay.Language.get('open-menu')}
-				className="dropdown-toggle lfr-portal-tooltip"
+				className="control-menu-icon dropdown-toggle lfr-portal-tooltip"
 				data-qa-id="applicationsMenu"
 				displayType="unstyled"
 				onClick={handleTriggerButtonClick}
