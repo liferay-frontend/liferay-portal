@@ -15,7 +15,6 @@
 'use strict';
 
 import {async} from 'metal';
-import {match} from 'metal-dom';
 import {utils, version} from 'senna';
 import globals from 'senna/lib/globals/globals';
 
@@ -94,7 +93,7 @@ const initSPA = function () {
 			const url = formElement.action;
 
 			if (
-				match(formElement, formSelector) &&
+				formElement.matches(formSelector) &&
 				app.canNavigate(url) &&
 				formElement.method !== 'get' &&
 				!app.isInPortletBlacklist(formElement)
@@ -106,7 +105,7 @@ const initSPA = function () {
 				const buttonSelector =
 					'button:not([type]),button[type=submit],input[type=submit]';
 
-				if (match(globals.document.activeElement, buttonSelector)) {
+				if (globals.document.activeElement.matches(buttonSelector)) {
 					globals.capturedFormButtonElement =
 						globals.document.activeElement;
 				}
