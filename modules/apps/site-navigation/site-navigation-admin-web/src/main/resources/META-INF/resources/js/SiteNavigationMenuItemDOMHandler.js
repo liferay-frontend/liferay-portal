@@ -14,7 +14,6 @@
 
 import {
 	addClasses,
-	closest,
 	contains,
 	hasClass,
 	next,
@@ -54,7 +53,7 @@ const getChildren = function (menuItem) {
  * @return {HTMLElement|null}
  */
 const getFromContentElement = function (menuItemContent) {
-	return closest(menuItemContent, `.${MENU_ITEM_CLASSNAME}`);
+	return menuItemContent.closest(`.${MENU_ITEM_CLASSNAME}`);
 };
 
 /**

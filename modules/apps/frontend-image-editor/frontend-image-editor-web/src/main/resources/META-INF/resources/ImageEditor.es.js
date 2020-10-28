@@ -17,7 +17,6 @@ import './ImageEditorLoading.es';
 import 'clay-dropdown';
 import {PortletBase} from 'frontend-js-web';
 import {async, core} from 'metal';
-import dom from 'metal-dom';
 import Soy from 'metal-soy';
 
 import templates from './ImageEditor.soy';
@@ -451,7 +450,7 @@ class ImageEditor extends PortletBase {
 
 		const canvas = this.getImageEditorCanvas();
 
-		const boundingBox = dom.closest(this.element, '.portlet-layout');
+		const boundingBox = this.element.closest('.portlet-layout');
 		const availableWidth = boundingBox.offsetWidth;
 
 		let dialogFooterHeight = 0;

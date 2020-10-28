@@ -386,7 +386,7 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 						'active'
 					);
 					dom.addClasses(
-						dom.closest(event.delegateTarget, '.form-check-card'),
+						event.delegateTarget.closest('.form-check-card'),
 						'active'
 					);
 				</c:when>
@@ -395,10 +395,7 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 						document.querySelectorAll('.articles.active'),
 						'active'
 					);
-					dom.addClasses(
-						dom.closest(event.delegateTarget, '.articles'),
-						'active'
-					);
+					dom.addClasses(event.delegateTarget.closest('.articles'), 'active');
 				</c:otherwise>
 			</c:choose>
 

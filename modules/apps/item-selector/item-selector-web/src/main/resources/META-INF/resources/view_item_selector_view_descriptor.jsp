@@ -226,7 +226,7 @@ SearchContainer<Object> searchContainer = itemSelectorViewDescriptorRendererDisp
 						'active'
 					);
 					dom.addClasses(
-						dom.closest(event.delegateTarget, '.form-check-card'),
+						event.delegateTarget.closest('.form-check-card'),
 						'active'
 					);
 

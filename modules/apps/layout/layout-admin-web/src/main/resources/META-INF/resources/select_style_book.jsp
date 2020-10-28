@@ -69,7 +69,7 @@ List<StyleBookEntry> styleBookEntries = selectLayoutPageTemplateEntryDisplayCont
 				'active'
 			);
 			dom.addClasses(
-				dom.closest(event.delegateTarget, '.form-check-card'),
+				event.delegateTarget.closest('.form-check-card'),
 				'active'
 			);
 
