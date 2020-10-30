@@ -17,25 +17,27 @@
 <%@ include file="/panel_category/init.jsp" %>
 
 <c:if test="<%= !panelApps.isEmpty() && showHeader %>">
-	<a aria-expanded="<%= active %>" class="<%= headerActive ? "active" : "" %> collapse-icon collapse-icon-middle <%= active ? StringPool.BLANK : "collapsed" %> list-group-heading panel-header" data-qa-id="appGroup" data-toggle="liferay-collapse" href="#<%= id %>">
-		<c:if test="<%= !panelCategory.includeHeader(request, PipingServletResponse.createPipingServletResponse(pageContext)) %>">
-			<%= panelCategory.getLabel(themeDisplay.getLocale()) %>
+	<a aria-expanded="<%= active %>" class="<%= headerActive ? "active" : "" %> collapse-icon <%= active ? StringPool.BLANK : "collapsed" %> lfr-application-list-panel-category" data-qa-id="appGroup" data-toggle="liferay-collapse" href="#<%= id %>">
+		<span class="c-inner" tabindex="-1">
+			<c:if test="<%= !panelCategory.includeHeader(request, PipingServletResponse.createPipingServletResponse(pageContext)) %>">
+				<%= panelCategory.getLabel(themeDisplay.getLocale()) %>
 
-			<c:if test="<%= notificationsCount > 0 %>">
-				<clay:badge
-					cssClass="float-right panel-notifications-count"
-					data-qa-id="notificationsCount"
-					displayType="danger"
-					label="<%= String.valueOf(notificationsCount) %>"
-				/>
+				<c:if test="<%= notificationsCount > 0 %>">
+					<clay:badge
+						cssClass="float-right panel-notifications-count"
+						data-qa-id="notificationsCount"
+						displayType="danger"
+						label="<%= String.valueOf(notificationsCount) %>"
+					/>
+				</c:if>
 			</c:if>
-		</c:if>
 
-		<aui:icon cssClass="collapse-icon-closed" image="angle-right" markupView="lexicon" />
+			<aui:icon cssClass="collapse-icon-closed" image="angle-right" markupView="lexicon" />
 
-		<aui:icon cssClass="collapse-icon-open" image="angle-down" markupView="lexicon" />
+			<aui:icon cssClass="collapse-icon-open" image="angle-down" markupView="lexicon" />
+		</span>
 	</a>
 
-	<div class="collapse <%= active ? "show" : StringPool.BLANK %>" id="<%= id %>">
-		<div class="list-group-item">
+	<div class="collapse lfr-application-list-panel-category-body <%= active ? "show" : StringPool.BLANK %>" id="<%= id %>">
+		<div class="lfr-application-list-panel-category-body-content">
 </c:if>

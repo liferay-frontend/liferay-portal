@@ -22,7 +22,7 @@ PanelCategory panelCategory = (PanelCategory)request.getAttribute("liferay-appli
 %>
 
 <c:if test="<%= !childPanelCategories.isEmpty() %>">
-	<div class="list-group">
+	<div class="lfr-application-list-panel">
 
 		<%
 		for (PanelCategory childPanelCategory : childPanelCategories) {
@@ -46,8 +46,8 @@ PanelCategory panelCategory = (PanelCategory)request.getAttribute("liferay-appli
 	%>
 
 		<c:if test="<%= panelApp.isShow(permissionChecker, themeDisplay.getScopeGroup()) %>">
-			<div class="list-group">
-				<div class="list-group-heading panel-app-root panel-header <%= Objects.equals(themeDisplay.getPpid(), panelApp.getPortletId()) ? "active" : StringPool.BLANK %>">
+			<div class="lfr-application-list-panel">
+				<div class="lfr-application-list-panel-category panel-app-root <%= Objects.equals(themeDisplay.getPpid(), panelApp.getPortletId()) ? "active" : StringPool.BLANK %>">
 					<liferay-application-list:panel-app
 						panelApp="<%= panelApp %>"
 					/>
