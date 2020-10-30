@@ -13,7 +13,6 @@
  */
 
 import core from 'metal';
-import dom from 'metal-dom';
 import Surface from 'senna/lib/surface/Surface';
 
 /**
@@ -31,7 +30,7 @@ class LiferaySurface extends Surface {
 
 	addContent(screenId, content) {
 		if (core.isString(content)) {
-			content = dom.buildFragment(content);
+			content = document.createRange().createContextualFragment(content);
 		}
 
 		Liferay.DOMTaskRunner.runTasks(content);

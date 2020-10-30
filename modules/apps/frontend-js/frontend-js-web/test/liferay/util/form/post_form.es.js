@@ -14,8 +14,6 @@
 
 'use strict';
 
-import dom from 'metal-dom';
-
 import getFormElement from '../../../../src/main/resources/META-INF/resources/liferay/util/form/get_form_element.es';
 import postForm from '../../../../src/main/resources/META-INF/resources/liferay/util/form/post_form.es';
 
@@ -29,7 +27,9 @@ describe('Liferay.Util.postForm', () => {
 	});
 
 	it('does nothing if the form parameter is not a form node', () => {
-		const fragment = dom.buildFragment('<div />');
+		const fragment = document
+			.createRange()
+			.createContextualFragment('<div />');
 
 		postForm(undefined);
 		postForm(fragment.firstElementChild);
@@ -38,7 +38,9 @@ describe('Liferay.Util.postForm', () => {
 	});
 
 	it('submits form even if options parameter is not set', () => {
-		const fragment = dom.buildFragment('<form />');
+		const fragment = document
+			.createRange()
+			.createContextualFragment('<form />');
 
 		const form = fragment.firstElementChild;
 
@@ -48,7 +50,9 @@ describe('Liferay.Util.postForm', () => {
 	});
 
 	it('does nothing if the url optional parameter is not a string', () => {
-		const fragment = dom.buildFragment('<form />');
+		const fragment = document
+			.createRange()
+			.createContextualFragment('<form />');
 
 		const form = fragment.firstElementChild;
 
@@ -59,7 +63,9 @@ describe('Liferay.Util.postForm', () => {
 	});
 
 	it('does nothing if the data optional parameter is not an object', () => {
-		const fragment = dom.buildFragment('<form />');
+		const fragment = document
+			.createRange()
+			.createContextualFragment('<form />');
 
 		const form = fragment.firstElementChild;
 
@@ -70,7 +76,7 @@ describe('Liferay.Util.postForm', () => {
 	});
 
 	it('sets given element values in data parameter, and submit form to a given url', () => {
-		const fragment = dom.buildFragment(`
+		const fragment = document.createRange().createContextualFragment(`
 					<form data-fm-namespace="_com_liferay_test_portlet_" id="fm">
 						<input name="_com_liferay_test_portlet_foo" type="text" value="abc">
 						<input name="_com_liferay_test_portlet_bar" type="text" value="123">

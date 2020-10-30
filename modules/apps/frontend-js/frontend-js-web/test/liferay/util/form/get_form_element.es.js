@@ -14,13 +14,13 @@
 
 'use strict';
 
-import dom from 'metal-dom';
-
 import getFormElement from '../../../../src/main/resources/META-INF/resources/liferay/util/form/get_form_element.es';
 
 describe('Liferay.Util.getFormElement', () => {
 	it('returns null if the form parameter is not a form node', () => {
-		const fragment = dom.buildFragment('<div />');
+		const fragment = document
+			.createRange()
+			.createContextualFragment('<div />');
 
 		const form = fragment.firstElementChild;
 
@@ -29,7 +29,9 @@ describe('Liferay.Util.getFormElement', () => {
 	});
 
 	it('returns null if the elementName parameter is not a string', () => {
-		const fragment = dom.buildFragment('<form />');
+		const fragment = document
+			.createRange()
+			.createContextualFragment('<form />');
 
 		const form = fragment.firstElementChild;
 
@@ -38,7 +40,7 @@ describe('Liferay.Util.getFormElement', () => {
 	});
 
 	it('returns null if the element does not exist withing the form', () => {
-		const fragment = dom.buildFragment(`
+		const fragment = document.createRange().createContextualFragment(`
 					<form data-fm-namespace="_com_liferay_test_portlet_" id="fm">
 						<input name="_com_liferay_test_portlet_foo" type="text" value="abc">
 					</form>
@@ -50,7 +52,7 @@ describe('Liferay.Util.getFormElement', () => {
 	});
 
 	it('returns element value if the element does exist withing the form', () => {
-		const fragment = dom.buildFragment(`
+		const fragment = document.createRange().createContextualFragment(`
 					<form data-fm-namespace="_com_liferay_test_portlet_" id="fm">
 						<input name="_com_liferay_test_portlet_foo" type="text" value="abc">
 					</form>

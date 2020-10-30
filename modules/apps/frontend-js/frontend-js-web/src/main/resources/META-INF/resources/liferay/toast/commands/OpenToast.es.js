@@ -14,7 +14,6 @@
 
 import ClayAlert from '@clayui/alert';
 import {render} from 'frontend-js-react-web';
-import {buildFragment} from 'metal-dom';
 import React from 'react';
 import {unmountComponentAtNode} from 'react-dom';
 
@@ -55,9 +54,9 @@ const getRootElement = ({container, containerId}) => {
 	let alertFixed = document.getElementById(DEFAULT_ALERT_CONTAINER_ID);
 
 	if (!alertFixed) {
-		alertFixed = buildFragment(TPL_ALERT_CONTAINER).querySelector(
-			'.alert-container.container'
-		);
+		alertFixed = document
+			.createRange()
+			.createContextualFragment(TPL_ALERT_CONTAINER).firstChild;
 
 		alertFixed = document.body.appendChild(alertFixed);
 	}
