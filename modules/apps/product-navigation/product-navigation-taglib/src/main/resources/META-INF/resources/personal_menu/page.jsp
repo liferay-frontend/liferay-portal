@@ -42,16 +42,8 @@ if (size != null) {
 		max-height: none;
 	}
 
-	.dropdown-menu-personal-menu .dropdown-item-indicator {
-		padding-right: 0.5rem;
-	}
-
-	div.personal-menu-dropdown .btn {
+	.personal-menu-dropdown .dropdown-toggle {
 		border-radius: 5000px;
-	}
-
-	div.personal-menu-dropdown .dropdown-item {
-		color: #6B6C7E;
 	}
 </style>
 
@@ -62,20 +54,22 @@ if (size != null) {
 		</c:when>
 		<c:otherwise>
 			<button aria-expanded="true" aria-haspopup="true" class="btn btn-unstyled dropdown-toggle" id="<%= namespace %>personal_menu_dropdown_toggle" ref="triggerButton" type="button">
-				<span class="<%= userStickerCssClasses %>">
-					<liferay-ui:user-portrait
-						cssClass="sticker-user-icon"
-						size="<%= size %>"
-						user="<%= user2 %>"
-					/>
+				<span class="c-inner" tabindex="-1">
+					<span class="<%= userStickerCssClasses %>">
+						<liferay-ui:user-portrait
+							cssClass="sticker-user-icon"
+							size="<%= size %>"
+							user="<%= user2 %>"
+						/>
 
-					<c:if test="<%= themeDisplay.isImpersonated() %>">
-						<span class="<%= impersonateStickerCssClasses %> sticker-bottom-right sticker-circle sticker-outside sticker-user-icon" id="impersonate-user-sticker">
-							<span class="sticker-overlay">
-								<aui:icon id="impersonate-user-icon" image="user" markupView="lexicon" />
+						<c:if test="<%= themeDisplay.isImpersonated() %>">
+							<span class="<%= impersonateStickerCssClasses %> sticker-bottom-right sticker-circle sticker-outside sticker-user-icon" id="impersonate-user-sticker">
+								<span class="sticker-overlay">
+									<aui:icon id="impersonate-user-icon" image="user" markupView="lexicon" />
+								</span>
 							</span>
-						</span>
-					</c:if>
+						</c:if>
+					</span>
 				</span>
 			</button>
 		</c:otherwise>
