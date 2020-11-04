@@ -14,11 +14,13 @@
  */
 --%>
 
-<span class="collapse-icon" data-qa-id="productMenuSiteAdministrationPanelCategory">
+<div class="lfr-site-admin-header-no-collapse" data-qa-id="productMenuSiteAdministrationPanelCategory">
 	<clay:content-row
 		verticalAlign="center"
 	>
-		<clay:content-col>
+		<clay:content-col
+			cssClass="lfr-site-admin-logo-col"
+		>
 			<c:choose>
 				<c:when test="<%= Validator.isNotNull(siteAdministrationPanelCategoryDisplayContext.getLogoURL()) %>">
 					<div class="aspect-ratio-bg-cover sticker" style="background-image: url(<%= siteAdministrationPanelCategoryDisplayContext.getLogoURL() %>);"></div>
@@ -33,7 +35,7 @@
 		</clay:content-col>
 
 		<clay:content-col
-			cssClass="mr-4"
+			cssClass="lfr-site-admin-title-col"
 			expand="<%= true %>"
 		>
 			<div class="depot-type">
@@ -51,7 +53,7 @@
 
 		<c:if test="<%= siteAdministrationPanelCategoryDisplayContext.isShowSiteSelector() %>">
 			<clay:content-col
-				cssClass="autofit-col-end"
+				cssClass="lfr-site-admin-sites-col"
 			>
 				<%@ include file="/sites/site_administration_header_icon_sites.jspf" %>
 			</clay:content-col>
@@ -59,7 +61,7 @@
 
 		<c:if test="<%= siteAdministrationPanelCategoryDisplayContext.getNotificationsCount() > 0 %>">
 			<clay:content-col
-				cssClass="autofit-col-end"
+				cssClass="lfr-site-admin-notifications-col"
 			>
 				<clay:sticker
 					cssClass="mr-0 panel-notifications-count"
@@ -72,9 +74,9 @@
 		</c:if>
 
 		<clay:content-col
-			cssClass="autofit-col-end"
+			cssClass="lfr-site-admin-close-col"
 		>
-			<aui:icon cssClass="d-inline-block d-md-none icon-monospaced sidenav-close" image="times" markupView="lexicon" url="javascript:;" />
+			<aui:icon cssClass="close d-md-none icon-monospaced sidenav-close" image="times" markupView="lexicon" url="javascript:;" />
 		</clay:content-col>
 	</clay:content-row>
-</span>
+</div>

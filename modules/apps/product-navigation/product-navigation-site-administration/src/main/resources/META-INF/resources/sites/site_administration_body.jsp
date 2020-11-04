@@ -25,86 +25,80 @@ Group group = siteAdministrationPanelCategoryDisplayContext.getGroup();
 %>
 
 <c:if test="<%= siteAdministrationPanelCategoryDisplayContext.getGroup() != null %>">
-	<clay:row
-		cssClass="navigation-link-container"
-	>
-		<clay:col
-			md="12"
-		>
-			<c:if test="<%= siteAdministrationPanelCategoryDisplayContext.isShowStagingInfo() %>">
+	<div class="navigation-link-container">
+		<c:if test="<%= siteAdministrationPanelCategoryDisplayContext.isShowStagingInfo() %>">
+
+			<%
+			Map<String, Object> data = HashMapBuilder.<String, Object>put(
+				"qa-id", "staging"
+			).build();
+			%>
+
+			<div class="float-right staging-links">
+				<span class="<%= Validator.isNull(siteAdministrationPanelCategoryDisplayContext.getStagingGroupURL()) ? "active" : StringPool.BLANK %>">
+					<aui:a data="<%= data %>" href="<%= siteAdministrationPanelCategoryDisplayContext.getStagingGroupURL() %>" label="staging" />
+				</span>
+				<span class="links-separator"> |</span>
 
 				<%
-				Map<String, Object> data = HashMapBuilder.<String, Object>put(
-					"qa-id", "staging"
-				).build();
+				data.put("qa-id", "live");
+
+				try {
+					String liveGroupURL = siteAdministrationPanelCategoryDisplayContext.getLiveGroupURL();
 				%>
 
-				<div class="float-right staging-links">
-					<span class="<%= Validator.isNull(siteAdministrationPanelCategoryDisplayContext.getStagingGroupURL()) ? "active" : StringPool.BLANK %>">
-						<aui:a data="<%= data %>" href="<%= siteAdministrationPanelCategoryDisplayContext.getStagingGroupURL() %>" label="staging" />
+					<span class="<%= Validator.isNull(liveGroupURL) ? "active" : StringPool.BLANK %>">
+						<aui:a data="<%= data %>" href="<%= liveGroupURL %>" label="<%= siteAdministrationPanelCategoryDisplayContext.getLiveGroupLabel() %>" />
 					</span>
-					<span class="links-separator"> |</span>
 
-					<%
-					data.put("qa-id", "live");
-
-					try {
-						String liveGroupURL = siteAdministrationPanelCategoryDisplayContext.getLiveGroupURL();
-					%>
-
-						<span class="<%= Validator.isNull(liveGroupURL) ? "active" : StringPool.BLANK %>">
-							<aui:a data="<%= data %>" href="<%= liveGroupURL %>" label="<%= siteAdministrationPanelCategoryDisplayContext.getLiveGroupLabel() %>" />
-						</span>
-
-					<%
+				<%
+				}
+				catch (RemoteExportException | SystemException e) {
+					if (e instanceof SystemException) {
+						_log.error(e, e);
 					}
-					catch (RemoteExportException | SystemException e) {
-						if (e instanceof SystemException) {
-							_log.error(e, e);
-						}
-					%>
+				%>
 
-						<aui:a data="<%= data %>" href="" id="remoteLiveLink" label="<%= siteAdministrationPanelCategoryDisplayContext.getLiveGroupLabel() %>" />
+					<aui:a data="<%= data %>" href="" id="remoteLiveLink" label="<%= siteAdministrationPanelCategoryDisplayContext.getLiveGroupLabel() %>" />
 
-						<aui:script use="aui-tooltip">
-							new A.Tooltip({
-								bodyContent: Liferay.Language.get(
-									'the-connection-to-the-remote-live-site-cannot-be-established-due-to-a-network-problem'
-								),
-								position: 'right',
-								trigger: A.one('#<portlet:namespace />remoteLiveLink'),
-								visible: false,
-								zIndex: Liferay.zIndex.TOOLTIP,
-							}).render();
-						</aui:script>
+					<aui:script use="aui-tooltip">
+						new A.Tooltip({
+							bodyContent: Liferay.Language.get(
+								'the-connection-to-the-remote-live-site-cannot-be-established-due-to-a-network-problem'
+							),
+							position: 'right',
+							trigger: A.one('#<portlet:namespace />remoteLiveLink'),
+							visible: false,
+							zIndex: Liferay.zIndex.TOOLTIP,
+						}).render();
+					</aui:script>
 
-					<%
-					}
-					%>
+				<%
+				}
+				%>
 
-				</div>
-			</c:if>
+			</div>
+		</c:if>
 
-			<c:if test="<%= siteAdministrationPanelCategoryDisplayContext.isDisplaySiteLink() %>">
-				<clay:link
-					cssClass='<%= "list-group-heading navigation-link panel-header-link" + (siteAdministrationPanelCategoryDisplayContext.isFirstLayout() ? " first-layout" : "") %>'
-					href="<%= siteAdministrationPanelCategoryDisplayContext.getGroupURL() %>"
-					icon="home"
-					label="home"
-				/>
-			</c:if>
+		<c:if test="<%= siteAdministrationPanelCategoryDisplayContext.isDisplaySiteLink() %>">
+			<clay:link
+				cssClass='<%= "product-menu-link" + (siteAdministrationPanelCategoryDisplayContext.isFirstLayout() ? " first-layout" : "") %>'
+				href="<%= siteAdministrationPanelCategoryDisplayContext.getGroupURL() %>"
+				icon="home"
+				label="home"
+			/>
+		</c:if>
 
-			<c:if test="<%= !group.isDepot() && !group.isCompany() %>">
-				<clay:button
-					cssClass="list-group-heading navigation-link panel-header-link"
-					displayType="unstyled"
-					icon="pages-tree"
-					id='<%= liferayPortletResponse.getNamespace() + "pagesTreeSidenavToggleId" %>'
-					label='<%= LanguageUtil.get(resourceBundle, "page-tree") %>'
-				/>
-			</c:if>
-		</clay:col>
-	</clay:row>
+		<c:if test="<%= !group.isDepot() && !group.isCompany() %>">
+			<clay:button
+				cssClass="product-menu-link"
+				displayType="unstyled"
+				icon="pages-tree"
+				id='<%= liferayPortletResponse.getNamespace() + "pagesTreeSidenavToggleId" %>'
+				label='<%= LanguageUtil.get(resourceBundle, "page-tree") %>'
+			/>
+		</c:if>
+	</div>
 
 	<c:if test="<%= siteAdministrationPanelCategoryDisplayContext.isShowSiteAdministration() %>">
 		<liferay-application-list:panel-category-body
