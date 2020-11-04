@@ -28,7 +28,9 @@ ApplicationsMenuInstanceConfiguration applicationsMenuInstanceConfiguration = Co
 		<div class="sidebar-header">
 			<h1 class="sr-only"><liferay-ui:message key="product-admin-menu" /></h1>
 
-			<clay:content-row>
+			<clay:content-row
+				cssClass="autofit-padded-no-gutters"
+			>
 				<clay:content-col
 					expand="<%= true %>"
 				>
@@ -42,7 +44,7 @@ ApplicationsMenuInstanceConfiguration applicationsMenuInstanceConfiguration = Co
 				</clay:content-col>
 
 				<clay:content-col>
-					<aui:icon cssClass="d-inline-block d-md-none icon-monospaced sidenav-close" image="times" markupView="lexicon" url="javascript:;" />
+					<aui:icon cssClass="d-md-none close sidenav-close" image="times" markupView="lexicon" url="javascript:;" />
 				</clay:content-col>
 			</clay:content-row>
 		</div>

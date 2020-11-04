@@ -45,25 +45,27 @@ function PageTypeSelector(props) {
 	}, [props.addLayoutURL]);
 
 	return (
-		<div className="align-items-center d-flex page-type-selector">
-			<div>
-				<select
-					className="form-control form-control-sm"
-					defaultValue={
-						props.privateLayout ? 'private-pages' : 'public-pages'
-					}
-					onChange={handleOnChange}
-				>
-					<option value="public-pages">
-						{Liferay.Language.get('public-pages')}
-					</option>
-					<option value="private-pages">
-						{Liferay.Language.get('private-pages')}
-					</option>
-				</select>
+		<div className="autofit-row page-type-selector">
+			<div className="autofit-col autofit-col-expand">
+				<div className="autofit-section">
+					<select
+						className="form-control form-control-sm"
+						defaultValue={
+							props.privateLayout ? 'private-pages' : 'public-pages'
+						}
+						onChange={handleOnChange}
+					>
+						<option value="public-pages">
+							{Liferay.Language.get('public-pages')}
+						</option>
+						<option value="private-pages">
+							{Liferay.Language.get('private-pages')}
+						</option>
+					</select>
+				</div>
 			</div>
 
-			<div className="flex-fill flex-grow-1 text-right">
+			<div className="autofit-col">
 				{props.showAddIcon && (
 					<ClayDropDown
 						active={active}
@@ -71,10 +73,14 @@ function PageTypeSelector(props) {
 						trigger={
 							<ClayButton
 								aria-haspopup="true"
-								className="dropdown-toggle"
+								className="pages-tree-link"
+								monospaced
 								displayType="unstyled"
+								small
 							>
-								<ClayIcon symbol="plus" />
+								<span className="c-inner" tabindex="-1">
+									<ClayIcon symbol="plus" />
+								</span>
 							</ClayButton>
 						}
 					>
@@ -113,17 +119,16 @@ function PageTypeSelector(props) {
 					</ClayDropDown>
 				)}
 			</div>
-			<div className="autofit-col ml-2">
+			<div className="autofit-col">
 				{props.configureLayoutSetURL && (
 					<ClayLink
-						borderless
-						className="configure-link"
+						className="btn btn-monospaced btn-sm configure-link pages-tree-link"
 						displayType="unstyled"
 						href={props.configureLayoutSetURL}
-						monospaced
-						outline
 					>
-						<ClayIcon symbol="cog" />
+						<span className="c-inner" tabindex="-1">
+							<ClayIcon symbol="cog" />
+						</span>
 					</ClayLink>
 				)}
 			</div>

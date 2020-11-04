@@ -133,12 +133,16 @@ function LayoutFinder(props) {
 	return (
 		<div className="layout-finder">
 			<button
-				className={`back-to-menu btn btn-sm btn-unstyled mb-3 pr-3`}
+				className={`back-to-menu btn btn-sm pages-tree-link`}
 				onClick={handleOnClick}
 			>
-				<ClayIcon className={`icon-monospaced`} symbol="angle-left" />
+				<span className="c-inner" tabIndex="-1">
+					<span className="inline-item inline-item-before">
+						<ClayIcon symbol="angle-left" />
+					</span>
 
-				{`${Liferay.Language.get('back-to-menu')} `}
+					{`${Liferay.Language.get('back-to-menu')} `}
+				</span>
 			</button>
 			<form onSubmit={handleFormSubmit} role="search">
 				<label
@@ -163,7 +167,7 @@ function LayoutFinder(props) {
 
 			{totalCount > 0 && (
 				<>
-					<nav className="mt-2">
+					<nav>
 						{layouts.map(
 							(layout, layoutIndex) =>
 								layoutIndex < MAX_ITEMS_TO_SHOW && (
@@ -175,7 +179,7 @@ function LayoutFinder(props) {
 														{layout.path.map(
 															(layoutPath) => (
 																<li
-																	className="breadcrumb-item text-secondary"
+																	className="breadcrumb-item"
 																	key={
 																		layoutPath
 																	}
@@ -196,11 +200,13 @@ function LayoutFinder(props) {
 												key={layout.name}
 											>
 												<a
-													className="d-block font-weight-bold mb-2 text-break"
+													className="breadcrumb-link"
 													href={layout.url}
 													key={layout.url}
 												>
-													{layout.name}
+													<span className="breadcrumb-text-truncate" tabIndex="-1">
+														{layout.name}
+													</span>
 												</a>
 											</li>
 										</ol>

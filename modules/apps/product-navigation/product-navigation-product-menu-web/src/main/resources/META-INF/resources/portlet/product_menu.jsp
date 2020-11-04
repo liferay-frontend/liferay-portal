@@ -17,7 +17,7 @@
 <%@ include file="/portlet/init.jsp" %>
 
 <c:if test="<%= productMenuDisplayContext.isShowProductMenu() %>">
-	<div aria-multiselectable="true" class="panel-group" data-qa-id="productMenuBody" id="<portlet:namespace />Accordion" role="tablist">
+	<div aria-multiselectable="true" class="product-menu-panel-group" data-qa-id="productMenuBody" id="<portlet:namespace />Accordion" role="tablist">
 
 		<%
 		List<PanelCategory> childPanelCategories = productMenuDisplayContext.getChildPanelCategories();
@@ -32,28 +32,28 @@
 				for (PanelCategory childPanelCategory : childPanelCategories) {
 				%>
 
-					<div class="panel panel-secondary">
-						<div class="panel-header panel-heading" id="<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Heading" role="tab">
-							<div class="panel-title">
-								<c:if test="<%= !childPanelCategory.includeHeader(request, PipingServletResponse.createPipingServletResponse(pageContext)) %>">
+					<div class="product-menu-panel">
+						<div class="product-menu-panel-header" id="<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Heading" role="tab">
+							<c:if test="<%= !childPanelCategory.includeHeader(request, PipingServletResponse.createPipingServletResponse(pageContext)) %>">
 
-									<%
-									Class<?> childPanelCategoryClass = childPanelCategory.getClass();
-									%>
+								<%
+								Class<?> childPanelCategoryClass = childPanelCategory.getClass();
+								%>
 
-									<a aria-controls="<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Collapse" aria-expanded="<%= Objects.equals(childPanelCategory.getKey(), productMenuDisplayContext.getRootPanelCategoryKey()) %>" class="collapse-icon collapse-icon-middle panel-toggler panel-header-link <%= Objects.equals(childPanelCategory.getKey(), productMenuDisplayContext.getRootPanelCategoryKey()) ? StringPool.BLANK : "collapsed" %>" data-parent="#<portlet:namespace />Accordion" data-qa-id="productMenu<%= childPanelCategoryClass.getSimpleName() %>" data-toggle="liferay-collapse" href="#<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Collapse" role="button">
+								<a aria-controls="<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Collapse" aria-expanded="<%= Objects.equals(childPanelCategory.getKey(), productMenuDisplayContext.getRootPanelCategoryKey()) %>" class="collapse-icon product-menu-link <%= Objects.equals(childPanelCategory.getKey(), productMenuDisplayContext.getRootPanelCategoryKey()) ? StringPool.BLANK : "collapsed" %>" data-parent="#<portlet:namespace />Accordion" data-qa-id="productMenu<%= childPanelCategoryClass.getSimpleName() %>" data-toggle="liferay-collapse" href="#<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Collapse" role="button">
+									<span class="c-inner" tabindex="-1">
 										<%@ include file="/portlet/product_menu_title.jspf" %>
 
 										<aui:icon cssClass="collapse-icon-closed" image="angle-right" markupView="lexicon" />
 
 										<aui:icon cssClass="collapse-icon-open" image="angle-down" markupView="lexicon" />
-									</a>
-								</c:if>
-							</div>
+									</span>
+								</a>
+							</c:if>
 						</div>
 
-						<div aria-expanded="<%= Objects.equals(childPanelCategory.getKey(), productMenuDisplayContext.getRootPanelCategoryKey()) %>" aria-labelledby="<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Heading" class="collapse panel-collapse <%= Objects.equals(childPanelCategory.getKey(), productMenuDisplayContext.getRootPanelCategoryKey()) ? "show" : StringPool.BLANK %>" data-parent="#<portlet:namespace />Accordion" id="<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Collapse" role="tabpanel">
-							<div class="panel-body">
+						<div aria-expanded="<%= Objects.equals(childPanelCategory.getKey(), productMenuDisplayContext.getRootPanelCategoryKey()) %>" aria-labelledby="<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Heading" class="collapse product-menu-panel-collapse <%= Objects.equals(childPanelCategory.getKey(), productMenuDisplayContext.getRootPanelCategoryKey()) ? "show" : StringPool.BLANK %>" data-parent="#<portlet:namespace />Accordion" id="<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Collapse" role="tabpanel">
+							<div class="product-menu-panel-body">
 								<liferay-application-list:panel-content
 									panelCategory="<%= childPanelCategory %>"
 								/>
@@ -72,23 +72,21 @@
 				PanelCategory childPanelCategory = childPanelCategories.get(0);
 				%>
 
-				<div class="panel panel-secondary">
-					<div class="panel-header panel-heading" id="<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Heading" role="tab">
-						<div class="panel-title">
-							<c:if test="<%= !childPanelCategory.includeHeader(request, PipingServletResponse.createPipingServletResponse(pageContext)) %>">
+				<div class="lfr-product-menu-sidebar sidenav-menu">
+					<div class="sidebar-header" id="<portlet:namespace /><%= AUIUtil.normalizeId(childPanelCategory.getKey()) %>Heading" role="tab">
+						<c:if test="<%= !childPanelCategory.includeHeader(request, PipingServletResponse.createPipingServletResponse(pageContext)) %>">
 
-								<%
-								Class<?> childPanelCategoryClass = childPanelCategory.getClass();
-								%>
+							<%
+							Class<?> childPanelCategoryClass = childPanelCategory.getClass();
+							%>
 
-								<span data-qa-id="productMenu<%= childPanelCategoryClass.getSimpleName() %>">
-									<%@ include file="/portlet/product_menu_title.jspf" %>
-								</span>
-							</c:if>
-						</div>
+							<span data-qa-id="productMenu<%= childPanelCategoryClass.getSimpleName() %>">
+								<%@ include file="/portlet/product_menu_title.jspf" %>
+							</span>
+						</c:if>
 					</div>
 
-					<div class="panel-body">
+					<div class="sidebar-body">
 						<liferay-application-list:panel-content
 							panelCategory="<%= childPanelCategory %>"
 						/>

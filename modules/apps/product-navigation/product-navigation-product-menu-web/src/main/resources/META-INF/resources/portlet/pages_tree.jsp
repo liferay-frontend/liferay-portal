@@ -42,40 +42,48 @@ LayoutsTreeDisplayContext layoutsTreeDisplayContext = new LayoutsTreeDisplayCont
 	>
 		<clay:content-row
 			containerElement="span"
+			noGutters="true"
+			verticalAlign="center"
 		>
 			<clay:content-col
 				containerElement="span"
-				cssClass="mr-2 list-icon {type}-layout"
+				cssClass="list-icon {type}-layout"
 			>
 				<aui:icon image="list" markupView="lexicon" />
 			</clay:content-col>
 
 			<clay:content-col
 				containerElement="span"
-				cssClass="mr-2 page-icon {type}-layout"
+				cssClass="page-icon {type}-layout"
 			>
 				<aui:icon image="page" markupView="lexicon" />
 			</clay:content-col>
 
 			<clay:content-col
 				containerElement="span"
+				expand="<%= true %>"
 			>
-				<a class="{cssClass}" data-regular-url="{regularURL}" data-url="{url}" data-uuid="{uuid}" href="{url}" id="{id}" title="{title}">
-					{label}
-				</a>
+				<span class="autofit-section">
+					<a class="{cssClass}" data-regular-url="{regularURL}" data-url="{url}" data-uuid="{uuid}" href="{url}" id="{id}" title="{title}">
+						<span class="c-inner" tabindex="-1">
+							{label}
+						</span>
+					</a>
+				</span>
 			</clay:content-col>
 
 			<clay:content-col
 				containerElement="span"
 				cssClass="pages-tree-dropdown"
-				expand="<%= true %>"
 			>
-				<span class="d-sm-block dropdown text-right">
-					<button class="btn btn-unstyled dropdown-toggle ml-1 taglib-icon" data-toggle="liferay-dropdown">
-						<aui:icon image="ellipsis-v" markupView="lexicon" />
+				<span class="dropdown">
+					<button class="btn btn-monospaced-sm dropdown-toggle taglib-icon" data-toggle="liferay-dropdown">
+						<span class="c-inner" tabindex="-1">
+							<aui:icon image="ellipsis-v" markupView="lexicon" />
 
-						<span class="sr-only">
-							<liferay-ui:message key="options" />
+							<span class="sr-only">
+								<liferay-ui:message key="options" />
+							</span>
 						</span>
 					</button>
 
@@ -179,8 +187,8 @@ LayoutsTreeDisplayContext layoutsTreeDisplayContext = new LayoutsTreeDisplayCont
 		treeId="pagesTree"
 	/>
 
-	<div class="pages-administration-link">
-		<aui:a cssClass="ml-2" href="<%= layoutsTreeDisplayContext.getAdministrationPortletURL() %>"><%= LanguageUtil.get(request, "go-to-pages-administration") %></aui:a>
+	<div class="pages-administration">
+		<aui:a cssClass="pages-administration-link" href="<%= layoutsTreeDisplayContext.getAdministrationPortletURL() %>"><span class="c-inner" tabindex="-1"><%= LanguageUtil.get(request, "go-to-pages-administration") %></span></aui:a>
 	</div>
 </div>
 
