@@ -15,6 +15,7 @@
 import {ClayCardWithHorizontal} from '@clayui/card';
 import React, {useState} from 'react';
 
+import './HorizontalCard.scss';
 import getDataAttributes from './get_data_attributes';
 
 export default function HorizontalCard({

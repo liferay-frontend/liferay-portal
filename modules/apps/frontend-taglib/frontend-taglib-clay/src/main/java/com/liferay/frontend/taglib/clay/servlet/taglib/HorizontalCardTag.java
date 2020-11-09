@@ -296,6 +296,9 @@ public class HorizontalCardTag extends BaseContainerTag {
 
 		JspWriter jspWriter = pageContext.getOut();
 
+		jspWriter.write("<style>.card > .card.card-horizontal {border-width:");
+		jspWriter.write(" 0; margin-bottom: 0;}</style>");
+
 		if (isSelectable()) {
 			jspWriter.write("<div class=\"custom-control custom-checkbox\">");
 			jspWriter.write("<label><input");
