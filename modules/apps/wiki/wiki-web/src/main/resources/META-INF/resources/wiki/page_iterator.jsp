@@ -268,7 +268,7 @@ for (int i = 0; i < pages.size(); i++) {
 />
 
 <c:if test='<%= navigation.equals("history") %>'>
-	<aui:script require="metal-dom/src/dom as dom">
+	<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 		function <portlet:namespace />initRowsChecked() {
 			var rowIdsNodes = document.querySelectorAll(
 				'input[name=<portlet:namespace />rowIds]'
@@ -359,12 +359,16 @@ for (int i = 0; i < pages.size(); i++) {
 		);
 
 		if (searchContainer) {
-			dom.delegate(
+			var delegate = delegateModule.default;
+
+			delegate(
 				searchContainer,
 				'click',
 				'input[name=<portlet:namespace />rowIds]',
 				function (event) {
-					<portlet:namespace />updateRowsChecked(event.delegateTarget);
+					var delegateTarget = event.target.closest('input[name=<portlet:namespace />rowIds]');
+
+					<portlet:namespace />updateRowsChecked(delegateTarget);
 				}
 			);
 		}

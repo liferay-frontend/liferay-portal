@@ -64,12 +64,14 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 	</clay:row>
 </clay:container-fluid>
 
-<aui:script require="metal-dom/src/all/dom as dom">
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 	var layoutPageTemplateEntries = document.getElementById(
 		'<portlet:namespace />layoutPageTemplateEntries'
 	);
 
-	var addLayoutActionOptionQueryClickHandler = dom.delegate(
+	var delegate = delegateModule.default;
+
+	var addLayoutActionOptionQueryClickHandler = delegate(
 		layoutPageTemplateEntries,
 		'click',
 		'.add-layout-action-option',
@@ -79,13 +81,14 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 				id: '<portlet:namespace />addLayoutDialog',
 				size: 'md',
 				title: '<liferay-ui:message key="add-collection-page" />',
-				url: event.delegateTarget.dataset.addLayoutUrl,
+				url: event.target.closest('.add-layout-action-option').dataset
+					.addLayoutUrl,
 			});
 		}
 	);
 
 	function handleDestroyPortlet() {
-		addLayoutActionOptionQueryClickHandler.removeListener();
+		addLayoutActionOptionQueryClickHandler.dispose();
 
 		Liferay.detach('destroyPortlet', handleDestroyPortlet);
 	}

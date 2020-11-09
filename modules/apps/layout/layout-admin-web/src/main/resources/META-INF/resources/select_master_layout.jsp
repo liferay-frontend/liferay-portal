@@ -44,8 +44,10 @@ List<LayoutPageTemplateEntry> masterLayoutPageTemplateEntries = selectLayoutPage
 	</ul>
 </aui:form>
 
-<aui:script require="metal-dom/src/dom as dom">
-	var delegateHandler = dom.delegate(
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
+	var delegate = delegateModule.default;
+
+	var delegateHandler = delegate(
 		document.body,
 		'click',
 		'.select-master-layout-option',
@@ -58,23 +60,25 @@ List<LayoutPageTemplateEntry> masterLayoutPageTemplateEntries = selectLayoutPage
 				});
 			}
 
-			var newSelectedCard = event.delegateTarget.closest('.form-check-card');
+			var newSelectedCard = event.target.closest('.form-check-card');
 
 			if (newSelectedCard) {
 				newSelectedCard.classList.add('active');
 			}
 
+			var delegateTarget = event.target.closest('.select-master-layout-option');
+
 			Liferay.Util.getOpener().Liferay.fire(
 				'<%= HtmlUtil.escape(eventName) %>',
 				{
-					data: event.delegateTarget.dataset,
+					data: delegateTarget.dataset,
 				}
 			);
 		}
 	);
 
 	var onDestroyPortlet = function () {
-		delegateHandler.removeListener();
+		delegateHandler.dipose();
 
 		Liferay.detach('destroyPortlet', onDestroyPortlet);
 	};

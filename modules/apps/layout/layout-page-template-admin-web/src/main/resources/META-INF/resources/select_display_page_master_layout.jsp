@@ -54,18 +54,21 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 <%
 StringBundler sb = new StringBundler(3);
 
-sb.append("metal-dom/src/all/dom as dom, ");
+sb.append("metal-dom/src/all/dom as dom,frontend-js-web/liferay/delegate/delegate.es as delegateModule, ");
 sb.append(npmResolvedPackageName);
 sb.append("/js/modal/openDisplayPageModal.es as openDisplayPageModal");
 %>
 
 <aui:script require="<%= sb.toString() %>" sandbox="<%= true %>">
-	var addDisplayPageClickHandler = dom.delegate(
+	var delegate = delegateModule.default;
+
+	var addDisplayPageClickHandler = delegate(
 		document.body,
 		'click',
 		'.add-master-page-action-option',
 		function (event) {
-			var data = event.delegateTarget.dataset;
+			var data = event.target.closest('.add-master-page-action-option')
+				.dataset;
 
 			event.preventDefault();
 
@@ -83,7 +86,7 @@ sb.append("/js/modal/openDisplayPageModal.es as openDisplayPageModal");
 	);
 
 	function handleDestroyPortlet() {
-		addDisplayPageClickHandler.removeListener();
+		addDisplayPageClickHandler.dispose();
 
 		Liferay.detach('destroyPortlet', handleDestroyPortlet);
 	}

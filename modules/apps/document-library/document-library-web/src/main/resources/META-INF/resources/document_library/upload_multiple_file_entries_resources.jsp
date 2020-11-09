@@ -216,16 +216,18 @@ else {
 					}
 					%>
 
-					<aui:script position="inline" require="metal-dom/src/all/dom as dom,frontend-js-web/liferay/util/run_scripts_in_element.es as runScriptsInElement">
+					<aui:script position="inline" require="frontend-js-web/liferay/delegate/delegate.es as delegateModule,frontend-js-web/liferay/util/run_scripts_in_element.es as runScriptsInElement">
 						var documentTypeMenuList = document.querySelector(
 							'#<portlet:namespace />documentTypeSelector .lfr-menu-list'
 						);
 
+						var delegate = delegateModule.default;
+
 						if (documentTypeMenuList) {
-							dom.delegate(documentTypeMenuList, 'click', 'li a', function (event) {
+							delegate(documentTypeMenuList, 'click', 'li a', function (event) {
 								event.preventDefault();
 
-								Liferay.Util.fetch(event.delegateTarget.getAttribute('href'))
+								Liferay.Util.fetch(event.target.closest('li a').getAttribute('href'))
 									.then(function (response) {
 										return response.text();
 									})

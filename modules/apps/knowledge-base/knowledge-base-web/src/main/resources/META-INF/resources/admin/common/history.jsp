@@ -183,7 +183,7 @@ if (portletTitleBasedNavigation) {
 	</liferay-ui:search-container>
 </aui:fieldset>
 
-<aui:script require="metal-dom/src/dom as dom">
+<aui:script require="metal-dom/src/dom as dom,frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 	var compareVersionsButton = document.getElementById(
 		'<portlet:namespace />compare'
 	);
@@ -249,12 +249,14 @@ if (portletTitleBasedNavigation) {
 
 	<portlet:namespace />initRowsChecked();
 
-	dom.delegate(
+	var delegate = delegateModule.default;
+
+	delegate(
 		document.body,
 		'click',
 		'input[name=<portlet:namespace />rowIds]',
 		function (event) {
-			<portlet:namespace />updateRowsChecked(event.delegateTarget);
+			<portlet:namespace />updateRowsChecked(event.target.closest('input[name=<portlet:namespace />rowIds]'));
 		}
 	);
 </aui:script>
