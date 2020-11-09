@@ -60,13 +60,16 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 	</div>
 </clay:container-fluid>
 
-<aui:script require="metal-dom/src/all/dom as dom,frontend-js-web/liferay/modal/commands/OpenSimpleInputModal.es as openSimpleInputModal" sandbox="<%= true %>">
-	var addPageTemplateClickHandler = dom.delegate(
+<aui:script require="frontend-js-web/liferay/modal/commands/OpenSimpleInputModal.es as openSimpleInputModal,frontend-js-web/liferay/delegate/delegate.es as delegateModule" sandbox="<%= true %>">
+	var delegate = delegateModule.default;
+
+	var addPageTemplateClickHandler = delegate(
 		document.body,
 		'click',
 		'.add-master-page-action-option',
 		function (event) {
-			var data = event.delegateTarget.dataset;
+			var data = event.target.closest('.add-master-page-action-option')
+				.dataset;
 
 			event.preventDefault();
 
@@ -84,7 +87,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 	);
 
 	function handleDestroyPortlet() {
-		addPageTemplateClickHandler.removeListener();
+		addPageTemplateClickHandler.dispose();
 
 		Liferay.detach('destroyPortlet', handleDestroyPortlet);
 	}

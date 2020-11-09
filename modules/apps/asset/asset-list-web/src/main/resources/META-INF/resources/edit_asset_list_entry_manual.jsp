@@ -211,15 +211,17 @@ AssetListEntry assetListEntry = assetListDisplayContext.getAssetListEntry();
 	</c:otherwise>
 </c:choose>
 
-<aui:script require="metal-dom/src/dom as dom">
-	var delegateHandler = dom.delegate(
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
+	var delegate = delegateModule.default;
+
+	var delegateHandler = delegate(
 		document.body,
 		'click',
 		'.asset-selector a',
 		function (event) {
 			event.preventDefault();
 
-			var delegateTarget = event.delegateTarget;
+			var target = event.target.closest('.asset-selector a');
 
 			Liferay.Util.openSelectionModal({
 				customSelectEvent: true,
@@ -242,14 +244,14 @@ AssetListEntry assetListEntry = assetListDisplayContext.getAssetListEntry();
 					}
 				},
 				selectEventName: '<portlet:namespace />selectAsset',
-				title: delegateTarget.dataset.title,
-				url: delegateTarget.dataset.href,
+				title: target.dataset.title,
+				url: target.dataset.href,
 			});
 		}
 	);
 
 	var onDestroyPortlet = function () {
-		delegateHandler.removeListener();
+		delegateHandler.dispose();
 
 		Liferay.detach('destroyPortlet', onDestroyPortlet);
 	};
