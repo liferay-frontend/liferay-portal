@@ -53,8 +53,10 @@ AssetDisplayPagesItemSelectorViewDisplayContext assetDisplayPagesItemSelectorVie
 	</liferay-ui:search-container>
 </aui:form>
 
-<aui:script require="metal-dom/src/all/dom as dom">
-	var selectFragmentEntryHandler = dom.delegate(
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
+	var delegate = delegateModule.default;
+
+	var selectFragmentEntryHandler = delegate(
 		document.querySelector('#<portlet:namespace />fm'),
 		'click',
 		'.layout-page-template-entry',
@@ -67,7 +69,7 @@ AssetDisplayPagesItemSelectorViewDisplayContext assetDisplayPagesItemSelectorVie
 				});
 			}
 
-			var newSelectedCard = event.delegateTarget.closest('.form-check-card');
+			var newSelectedCard = event.target.closest('.form-check-card');
 
 			if (newSelectedCard) {
 				newSelectedCard.classList.add('active');
@@ -76,14 +78,14 @@ AssetDisplayPagesItemSelectorViewDisplayContext assetDisplayPagesItemSelectorVie
 			Liferay.Util.getOpener().Liferay.fire(
 				'<%= assetDisplayPagesItemSelectorViewDisplayContext.getItemSelectedEventName() %>',
 				{
-					data: event.delegateTarget.dataset,
+					data: event.target.closest('.layout-page-template-entry').dataset,
 				}
 			);
 		}
 	);
 
 	function removeListener() {
-		selectFragmentEntryHandler.removeListener();
+		selectFragmentEntryHandler.dispose();
 
 		Liferay.detach('destroyPortlet', removeListener);
 	}

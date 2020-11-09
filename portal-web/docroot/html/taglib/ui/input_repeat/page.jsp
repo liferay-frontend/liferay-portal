@@ -192,18 +192,22 @@ int yearlyMonth1 = ParamUtil.getInteger(request, "yearlyMonth1", Calendar.JANUAR
 	</aui:col>
 </aui:fieldset>
 
-<aui:script require="metal-dom/src/dom as dom">
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 	var tables = document.querySelectorAll('#<portlet:namespace />recurrenceTypeDailyTable, #<portlet:namespace />recurrenceTypeMonthlyTable, #<portlet:namespace />recurrenceTypeNeverTable, #<portlet:namespace />recurrenceTypeWeeklyTable, #<portlet:namespace />recurrenceTypeYearlyTable');
 
 	var eventsContainer = document.getElementById('<portlet:namespace />eventsContainer');
 
+	var delegate = delegateModule.default;
+
 	if (eventsContainer) {
-		dom.delegate(
+		delegate(
 			eventsContainer,
 			'change',
 			'.field',
 			function(event) {
-				var tableId = event.delegateTarget.id + 'Table';
+				var delegateTarget = event.target.closest('.field');
+
+				var tableId = delegateTarget.id + 'Table';
 
 				Array.prototype.forEach.call(
 					tables,

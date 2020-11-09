@@ -373,8 +373,8 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 	</liferay-ui:search-container>
 </clay:container-fluid>
 
-<aui:script require="metal-dom/src/all/dom as dom" sandbox="<%= true %>">
-	var selectArticleHandler = dom.delegate(
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule" sandbox="<%= true %>">
+	var selectArticleHandler = delegate(
 		document.querySelector('#<portlet:namespace />articlesContainer'),
 		'click',
 		'.articles',
@@ -384,7 +384,8 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 					var activeFormCheckCards = document.querySelectorAll(
 						'.form-check-card.active'
 					);
-					var formCheckCard = event.delegateTarget.closest('.form-check-card');
+
+					var formCheckCard = event.target.closest('.form-check-card');
 
 					if (activeFormCheckCards.length) {
 						activeFormCheckCards.forEach(function (card) {
@@ -398,7 +399,7 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 				</c:when>
 				<c:otherwise>
 					var activeArticles = document.querySelectorAll('.articles.active');
-					var articles = event.delegateTarget.closest('.articles');
+					var articles = event.target.closest('.articles');
 
 					if (activeArticles.length) {
 						activeArticles.forEach(function (article) {
@@ -412,13 +413,15 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 				</c:otherwise>
 			</c:choose>
 
+			var delegateTarget = event.target.closest('.articles');
+
 			Liferay.Util.getOpener().Liferay.fire(
 				'<%= journalArticleItemSelectorViewDisplayContext.getItemSelectedEventName() %>',
 				{
 					data: {
 						returnType:
 							'<%= InfoItemItemSelectorReturnType.class.getName() %>',
-						value: event.delegateTarget.dataset.value,
+						value: delegateTarget.dataset.value,
 					},
 				}
 			);
@@ -426,7 +429,7 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 	);
 
 	Liferay.on('destroyPortlet', function removeListener() {
-		selectArticleHandler.removeListener();
+		selectArticleHandler.dispose();
 
 		Liferay.detach('destroyPortlet', removeListener);
 	});

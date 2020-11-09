@@ -157,13 +157,15 @@ RedirectManagementToolbarDisplayContext redirectManagementToolbarDisplayContext 
 	module="js/RedirectManagementToolbarDefaultEventHandler.es"
 />
 
-<aui:script require="metal-dom/src/all/dom as dom">
-	dom.delegate(
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
+	var delegate = delegateModule.default;
+
+	delegate(
 		document.querySelector('#<portlet:namespace />fm'),
 		'click',
 		'.icon-shortcut',
 		function (event) {
-			var delegateTarget = event.delegateTarget;
+			var delegateTarget = event.target.closest('.icon-shortcut');
 
 			var destinationURL = delegateTarget.dataset.href;
 

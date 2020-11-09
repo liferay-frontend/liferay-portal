@@ -77,13 +77,15 @@ int totalItems = ddmFormReportDisplayContext.getTotalItems();
 	</div>
 </div>
 
-<aui:script require="metal-dom/src/dom as dom">
-	dom.delegate(
+<aui:script require="metal-dom/src/dom as dom,frontend-js-web/liferay/delegate/delegate.es as delegateModule">
+	var delegate = delegateModule.default;
+
+	delegate(
 		document.querySelector('.portlet-ddm-form-report-tabs'),
 		'click',
 		'li',
 		function (event) {
-			var navItem = event.delegateTarget.closest('.nav-item');
+			var navItem = dom.closest(event.target, '.nav-item');
 			var navItemIndex = Number(navItem.dataset.navItemIndex);
 			var navLink = navItem.querySelector('.nav-link');
 
