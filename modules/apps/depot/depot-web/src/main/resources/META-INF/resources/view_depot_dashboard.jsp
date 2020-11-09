@@ -55,7 +55,7 @@ boolean panelsShown = false;
 								/>
 							</c:when>
 							<c:otherwise>
-								<clay:horizontal-card-v2
+								<clay:horizontal-card
 									horizontalCard="<%= depotAdminViewDepotDashboardDisplayContext.getDepotDashboardApplicationHorizontalCard(panelApp, locale) %>"
 								/>
 							</c:otherwise>
