@@ -82,7 +82,9 @@ AssetEntryUsagesDisplayContext assetEntryUsagesDisplayContext = new AssetEntryUs
 			'click',
 			'.preview-asset-entry-usage',
 			function (event) {
-				var delegateTarget = event.target.closest('.preview-asset-entry-usage');
+				var delegateTarget = event.target.closest(
+					'.preview-asset-entry-usage'
+				);
 
 				Liferay.Util.openModal({
 					iframeBodyCssClass: 'article-preview',

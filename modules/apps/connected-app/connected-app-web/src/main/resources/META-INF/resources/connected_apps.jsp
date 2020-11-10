@@ -97,7 +97,10 @@
 		'click',
 		'[data-key]',
 		function (event) {
-			connectedAppKeyInput.setAttribute('value', event.target.closest('[data-key]').dataset.key);
+			connectedAppKeyInput.setAttribute(
+				'value',
+				event.target.closest('[data-key]').dataset.key
+			);
 		}
 	);
 </aui:script>

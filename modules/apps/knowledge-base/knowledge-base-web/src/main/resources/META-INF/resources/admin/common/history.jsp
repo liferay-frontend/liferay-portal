@@ -256,7 +256,9 @@ if (portletTitleBasedNavigation) {
 		'click',
 		'input[name=<portlet:namespace />rowIds]',
 		function (event) {
-			<portlet:namespace />updateRowsChecked(event.target.closest('input[name=<portlet:namespace />rowIds]'));
+			<portlet:namespace />updateRowsChecked(
+				event.target.closest('input[name=<portlet:namespace />rowIds]')
+			);
 		}
 	);
 </aui:script>

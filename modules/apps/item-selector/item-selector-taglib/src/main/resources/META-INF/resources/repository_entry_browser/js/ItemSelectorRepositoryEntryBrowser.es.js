@@ -116,7 +116,9 @@ class ItemSelectorRepositoryEntryBrowser extends PortletBase {
 	_bindEvents() {
 		this._eventHandler.add(
 			delegate(this.rootNode, 'click', '.item-preview', (event) =>
-				this._onItemSelected(event.target.closest('.item-preview').dataset)
+				this._onItemSelected(
+					event.target.closest('.item-preview').dataset
+				)
 			)
 		);
 

@@ -497,7 +497,9 @@ List<AssetRendererFactory<?>> classTypesAssetRendererFactories = (List<AssetRend
 		'click',
 		'.asset-subtypefields-wrapper-enable label',
 		function (event) {
-			var delegateTarget = event.target.closest('.asset-subtypefields-wrapper-enable label');
+			var delegateTarget = event.target.closest(
+				'.asset-subtypefields-wrapper-enable label'
+			);
 
 			var subtypeFieldsFilterEnabledInput = delegateTarget.querySelector(
 				'input'
@@ -535,9 +537,7 @@ List<AssetRendererFactory<?>> classTypesAssetRendererFactories = (List<AssetRend
 		'<portlet:namespace />ddmStructureDisplayFieldValue'
 	);
 
-	delegate(sourcePanel, 'click', '.asset-subtypefields-popup', function (
-		event
-	) {
+	delegate(sourcePanel, 'click', '.asset-subtypefields-popup', function (event) {
 		var delegateTarget = event.target.closest('.asset-subtypefields-popup');
 
 		var btn = delegateTarget.querySelector('.btn');

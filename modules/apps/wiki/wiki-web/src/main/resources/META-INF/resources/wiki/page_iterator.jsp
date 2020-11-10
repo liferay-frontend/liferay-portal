@@ -366,7 +366,9 @@ for (int i = 0; i < pages.size(); i++) {
 				'click',
 				'input[name=<portlet:namespace />rowIds]',
 				function (event) {
-					var delegateTarget = event.target.closest('input[name=<portlet:namespace />rowIds]');
+					var delegateTarget = event.target.closest(
+						'input[name=<portlet:namespace />rowIds]'
+					);
 
 					<portlet:namespace />updateRowsChecked(delegateTarget);
 				}

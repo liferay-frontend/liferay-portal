@@ -60,9 +60,7 @@
 
 	var delegate = delegateModule.default;
 
-	delegate(articlePreview, 'click', '.web-content-selector', function (
-		event
-	) {
+	delegate(articlePreview, 'click', '.web-content-selector', function (event) {
 		event.preventDefault();
 
 		Liferay.Util.openSelectionModal({
