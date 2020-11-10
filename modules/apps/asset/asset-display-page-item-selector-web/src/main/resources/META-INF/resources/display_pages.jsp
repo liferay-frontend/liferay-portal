@@ -78,7 +78,8 @@ AssetDisplayPagesItemSelectorViewDisplayContext assetDisplayPagesItemSelectorVie
 			Liferay.Util.getOpener().Liferay.fire(
 				'<%= assetDisplayPagesItemSelectorViewDisplayContext.getItemSelectedEventName() %>',
 				{
-					data: event.target.closest('.layout-page-template-entry').dataset,
+					data: event.target.closest('.layout-page-template-entry')
+						.dataset,
 				}
 			);
 		}

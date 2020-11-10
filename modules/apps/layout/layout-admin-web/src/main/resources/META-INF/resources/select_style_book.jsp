@@ -80,7 +80,9 @@ List<StyleBookEntry> styleBookEntries = selectLayoutPageTemplateEntryDisplayCont
 				newSelectedCard.classList.add('active');
 			}
 
-			var delegateTarget = event.target.closest('.select-master-layout-option')
+			var delegateTarget = event.target.closest(
+				'.select-master-layout-option'
+			);
 
 			Liferay.Util.getOpener().Liferay.fire(
 				'<%= HtmlUtil.escape(eventName) %>',

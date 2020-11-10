@@ -111,9 +111,9 @@ JournalViewMoreMenuItemsDisplayContext journalViewMoreMenuItemsDisplayContext = 
 		Util.getOpener().Liferay.fire(
 			'<%= HtmlUtil.escapeJS(journalViewMoreMenuItemsDisplayContext.getEventName()) %>',
 			{
-				ddmStructureKey: event.target.closest('.selector-button').getAttribute(
-					'data-ddmStructureKey'
-				),
+				ddmStructureKey: event.target
+					.closest('.selector-button')
+					.getAttribute('data-ddmStructureKey'),
 			}
 		);
 	});
