@@ -1,11 +1,21 @@
-<div class="closed lfr-admin-panel lfr-product-menu-panel lfr-simulation-panel sidenav-fixed sidenav-menu-slider sidenav-right" id="${portletNamespace}simulationPanelId">
+<div class="cadmin closed lfr-admin-panel lfr-product-menu-panel lfr-simulation-panel sidenav-fixed sidenav-menu-slider sidenav-right" id="${portletNamespace}simulationPanelId">
 	<div class="product-menu sidebar sidebar-inverse sidenav-menu">
 		<div class="sidebar-header">
 			<h1 class="sr-only">${simulationPanel}</h1>
 
-			<span>${sidebarMessage}</span>
+			<div class="autofit-padded-no-gutters autofit-row autofit-row-center">
+				<div class="autofit-col autofit-col-expand">
+					<div class="autofit-section">
+						<span class="product-menu-title">${sidebarMessage}</span>
+					</div>
+				</div>
 
-			${sidebarIcon}
+				<div class="autofit-col">
+					<div class="autofit-section">
+						${sidebarIcon}
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="sidebar-body"></div>

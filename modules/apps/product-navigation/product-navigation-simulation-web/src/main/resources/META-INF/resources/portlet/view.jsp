@@ -25,27 +25,27 @@ PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(panelAppRegist
 %>
 
 <div class="simulation-menu" data-qa-id="simulationMenuBody" id="<portlet:namespace />simulationPanelContainer">
-	<div aria-multiselectable="true" class="panel-group" role="tablist">
+	<div aria-multiselectable="true" class="product-menu-panel-group" role="tablist">
 
 		<%
 		for (PanelApp panelApp : panelCategoryHelper.getAllPanelApps(panelCategory.getKey())) {
 		%>
 
-			<div class="panel panel-secondary">
-				<div class="panel-header panel-heading" id="<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Header" role="tab">
-					<div class="panel-title">
-						<div aria-controls="<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Collapse" aria-expanded="<%= true %>" class="collapse-icon collapse-icon-middle panel-toggler" data-toggle="liferay-collapse" href="#<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Collapse" role="button">
+			<div class="product-menu-panel">
+				<div class="product-menu-panel-header" id="<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Header" role="tab">
+					<a aria-controls="<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Collapse" aria-expanded="<%= true %>" class="collapse-icon collapse-icon-middle product-menu-link" data-toggle="liferay-collapse" href="#<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Collapse" role="button">
+						<span class="c-inner" tabindex="-1">
 							<span class="category-name text-truncate"><%= panelApp.getLabel(locale) %></span>
 
 							<aui:icon cssClass="collapse-icon-closed" image="angle-right" markupView="lexicon" />
 
 							<aui:icon cssClass="collapse-icon-open" image="angle-down" markupView="lexicon" />
-						</div>
-					</div>
+						</span>
+					</a>
 				</div>
 
-				<div aria-expanded="<%= true %>" aria-labelledby="<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Header" class="collapse panel-collapse show" id="<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Collapse" role="tabpanel">
-					<div class="simulation-app-panel-body">
+				<div aria-expanded="<%= true %>" aria-labelledby="<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Header" class="collapse product-menu-panel-collapse show" id="<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Collapse" role="tabpanel">
+					<div class="product-menu-panel-body">
 						<liferay-application-list:panel-app
 							panelApp="<%= panelApp %>"
 						/>

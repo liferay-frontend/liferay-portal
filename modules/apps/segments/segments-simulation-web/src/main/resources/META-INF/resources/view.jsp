@@ -20,38 +20,33 @@
 SegmentsSimulationDisplayContext segmentsSimulationDisplayContext = new SegmentsSimulationDisplayContext(request, renderResponse);
 %>
 
-<clay:container-fluid
-	cssClass="segments-simulation"
-	id='<%= liferayPortletResponse.getNamespace() + "segmentsSimulationContainer" %>'
->
+<div class="segments-simulation" id='<%= liferayPortletResponse.getNamespace() + "segmentsSimulationContainer" %>'>
 	<c:choose>
 		<c:when test="<%= segmentsSimulationDisplayContext.isShowEmptyMessage() %>">
-			<p class="mb-4 mt-1 small">
+			<p class="segments-simulation-message">
 				<liferay-ui:message key="no-segments-have-been-added-yet" />
 			</p>
 		</c:when>
 		<c:otherwise>
 			<aui:form method="post" name="segmentsSimulationFm">
-				<ul class="list-unstyled">
+				<ul class="list-unstyled simulated-segment-group">
 
 					<%
 					for (SegmentsEntry segmentsEntry : segmentsSimulationDisplayContext.getSegmentsEntries()) {
 					%>
 
-						<li class="bg-transparent list-group-item list-group-item-flex">
-							<span>
-								<div class="custom-checkbox">
-									<label class="position-relative text-light">
-										<input class="custom-control-input simulated-segment" name="<%= segmentsSimulationDisplayContext.getPortletNamespace() + "segmentsEntryId" %>" type="checkbox" value="<%= String.valueOf(segmentsEntry.getSegmentsEntryId()) %>" />
+						<li class="simulated-segment-item">
+							<div class="custom-control custom-checkbox">
+								<label>
+									<input class="custom-control-input simulated-segment" name="<%= segmentsSimulationDisplayContext.getPortletNamespace() + "segmentsEntryId" %>" type="checkbox" value="<%= String.valueOf(segmentsEntry.getSegmentsEntryId()) %>" />
 
-										<span class="custom-control-label">
-											<span class="custom-control-label-text">
-												<liferay-ui:message key="<%= HtmlUtil.escape(segmentsEntry.getName(locale)) %>" />
-											</span>
+									<span class="custom-control-label">
+										<span class="custom-control-label-text">
+											<liferay-ui:message key="<%= HtmlUtil.escape(segmentsEntry.getName(locale)) %>" />
 										</span>
-									</label>
-								</div>
-							</span>
+									</span>
+								</label>
+							</div>
 						</li>
 
 					<%
@@ -72,4 +67,4 @@ SegmentsSimulationDisplayContext segmentsSimulationDisplayContext = new Segments
 			</aui:script>
 		</c:otherwise>
 	</c:choose>
-</clay:container-fluid>
+</div>

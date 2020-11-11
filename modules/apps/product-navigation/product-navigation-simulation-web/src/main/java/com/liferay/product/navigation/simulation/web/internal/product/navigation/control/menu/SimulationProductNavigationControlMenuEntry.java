@@ -235,7 +235,7 @@ public class SimulationProductNavigationControlMenuEntry
 
 			IconTag iconTag = new IconTag();
 
-			iconTag.setCssClass("icon-monospaced sidenav-close");
+			iconTag.setCssClass("close icon-monospaced sidenav-close");
 			iconTag.setImage("times");
 			iconTag.setMarkupView("lexicon");
 			iconTag.setUrl("javascript:;");
