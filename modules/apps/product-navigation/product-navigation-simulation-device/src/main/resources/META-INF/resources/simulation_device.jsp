@@ -17,57 +17,73 @@
 <%@ include file="/init.jsp" %>
 
 <div id="<portlet:namespace />simulationDeviceContainer">
-	<div class="list-group-panel">
-		<clay:container-fluid
-			cssClass="devices"
-		>
-			<clay:row
-				cssClass="default-devices"
-			>
-				<button class="btn btn-unstyled col-4 d-lg-block d-none lfr-device-item selected text-center" data-device="desktop" type="button">
-					<aui:icon cssClass="icon icon-monospaced" image="desktop" markupView="lexicon" />
+	<div class="devices">
+		<ul class="default-devices">
+			<li class="default-devices-item">
+				<button class="btn btn-monospaced lfr-device-item selected" data-device="desktop" type="button">
+					<span class="c-inner" tabindex="-1">
+						<aui:icon cssClass="icon sticker sticker-lg" image="desktop" markupView="lexicon" />
 
-					<small><%= LanguageUtil.get(resourceBundle, "desktop") %></small>
+						<small><%= LanguageUtil.get(resourceBundle, "desktop") %></small>
+					</span>
 				</button>
+			</li>
 
-				<button class="btn btn-unstyled col-4 d-lg-block d-none lfr-device-item text-center" data-device="tablet" type="button">
-					<aui:icon cssClass="icon icon-monospaced" image="tablet-portrait" markupView="lexicon" />
+			<li class="default-devices-item">
+				<button class="btn btn-monospaced lfr-device-item" data-device="tablet" type="button">
+					<span class="c-inner" tabindex="-1">
+						<aui:icon cssClass="icon sticker sticker-lg" image="tablet-portrait" markupView="lexicon" />
 
-					<aui:icon cssClass="hide icon icon-monospaced icon-rotate" image="tablet-landscape" markupView="lexicon" />
+						<aui:icon cssClass="hide icon icon-rotate sticker sticker-lg" image="tablet-landscape" markupView="lexicon" />
 
-					<small><%= LanguageUtil.get(resourceBundle, "tablet") %></small>
+						<small><%= LanguageUtil.get(resourceBundle, "tablet") %></small>
+					</span>
 				</button>
+			</li>
 
-				<button class="btn btn-unstyled col-4 lfr-device-item text-center" data-device="smartphone" type="button">
-					<aui:icon cssClass="icon icon-monospaced" image="mobile-portrait" markupView="lexicon" />
+			<li class="d-block default-devices-item">
+				<button class="btn btn-monospaced lfr-device-item" data-device="smartphone" type="button">
+					<span class="c-inner" tabindex="-1">
+						<aui:icon cssClass="icon sticker sticker-lg" image="mobile-portrait" markupView="lexicon" />
 
-					<aui:icon cssClass="hide icon icon-monospaced icon-rotate" image="mobile-landscape" markupView="lexicon" />
+						<aui:icon cssClass="hide icon icon-rotate sticker sticker-lg" image="mobile-landscape" markupView="lexicon" />
 
-					<small><%= LanguageUtil.get(resourceBundle, "mobile") %></small>
+						<small><%= LanguageUtil.get(resourceBundle, "mobile") %></small>
+					</span>
 				</button>
+			</li>
 
-				<button class="btn btn-unstyled col-4 d-lg-block d-none lfr-device-item text-center" data-device="autosize" type="button">
-					<aui:icon cssClass="icon icon-monospaced" image="autosize" markupView="lexicon" />
+			<li class="default-devices-item">
+				<button class="btn btn-monospaced lfr-device-item" data-device="autosize" type="button">
+					<span class="c-inner" tabindex="-1">
+						<aui:icon cssClass="icon sticker sticker-lg" image="autosize" markupView="lexicon" />
 
-					<small><%= LanguageUtil.get(resourceBundle, "autosize") %></small>
+						<small><%= LanguageUtil.get(resourceBundle, "autosize") %></small>
+					</span>
 				</button>
+			</li>
 
-				<button class="btn btn-unstyled col-4 d-lg-block d-none lfr-device-item text-center" data-device="custom" type="button">
-					<aui:icon cssClass="icon icon-monospaced" image="custom-size" markupView="lexicon" />
+			<li class="default-devices-item">
+				<button class="btn btn-monospaced lfr-device-item" data-device="custom" type="button">
+					<span class="c-inner" tabindex="-1">
+						<aui:icon cssClass="icon sticker sticker-lg" image="custom-size" markupView="lexicon" />
 
-					<small><liferay-ui:message key="custom" /></small>
+						<small><liferay-ui:message key="custom" /></small>
+					</span>
 				</button>
-			</clay:row>
+			</li>
+		</ul>
 
-			<clay:row
-				cssClass="custom-devices d-lg-flex d-none hide"
-				id='<%= liferayPortletResponse.getNamespace() + "customDeviceContainer" %>'
-			>
-				<aui:input cssClass="input-sm" inlineField="<%= true %>" label='<%= LanguageUtil.get(request, "height") + " (px):" %>' name="height" size="4" value="600" wrapperCssClass="col-6" />
+		<div class="custom-devices" hidden id='<%= liferayPortletResponse.getNamespace() + "customDeviceContainer" %>'>
+			<div class="custom-devices-item">
+				<aui:input cssClass="form-control-sm" inlineField="<%= true %>" label='<%= LanguageUtil.get(request, "width") + " (px):" %>' name="width" size="4" value="600" wrappedField="<%= true %>" />
+			</div>
 
-				<aui:input cssClass="input-sm" inlineField="<%= true %>" label='<%= LanguageUtil.get(request, "width") + " (px):" %>' name="width" size="4" value="600" wrapperCssClass="col-6" />
-			</clay:row>
-		</clay:container-fluid>
+			<div class="custom-devices-item">
+				<aui:input cssClass="form-control-sm" inlineField="<%= true %>" label='<%= LanguageUtil.get(request, "height") + " (px):" %>' name="height" size="4" value="600" wrappedField="<%= true %>" />
+
+			</div>
+		</div>
 	</div>
 </div>
 
