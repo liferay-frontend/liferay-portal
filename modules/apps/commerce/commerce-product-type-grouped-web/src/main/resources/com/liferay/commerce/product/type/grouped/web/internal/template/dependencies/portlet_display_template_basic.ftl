@@ -9,7 +9,7 @@
 		<div class="product-detail-header">
 			<div class="col-lg-6 col-md-7">
 				<div class="row">
-					<div class="col-lg-2 col-md-3 col-xs-2">
+					<div class="col-lg-2 col-md-3 col-2">
 						<div id="<@portlet.namespace />thumbs-container">
 							<#assign images = groupedCPTypeDisplayContext.getImages() />
 
