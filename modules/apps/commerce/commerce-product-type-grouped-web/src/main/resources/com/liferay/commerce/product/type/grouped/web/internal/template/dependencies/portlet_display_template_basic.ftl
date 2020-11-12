@@ -18,7 +18,7 @@
 									<#assign url = groupedCPTypeDisplayContext.getImageURL(curImage.getFileEntry(), themeDisplay) />
 
 									<div class="card thumb" data-url="${url}">
-										<img class="center-block img-responsive" src="${url}">
+										<img class="center-block img-fluid" src="${url}">
 									</div>
 								</#list>
 							</#if>
@@ -29,7 +29,7 @@
 						<#assign cpAttachmentFileEntry = groupedCPTypeDisplayContext.getDefaultImage() />
 
 						<#if cpAttachmentFileEntry??>
-							<img class="center-block img-responsive" id="<@portlet.namespace />full-image" src="${groupedCPTypeDisplayContext.getImageURL(cpAttachmentFileEntry.getFileEntry(), themeDisplay)}">
+							<img class="center-block img-fluid" id="<@portlet.namespace />full-image" src="${groupedCPTypeDisplayContext.getImageURL(cpAttachmentFileEntry.getFileEntry(), themeDisplay)}">
 						</#if>
 					</div>
 				</div>
@@ -75,7 +75,7 @@
 
 								<div class="row">
 									<div class="col-md-4">
-										<img class="img-responsive" src="${curCPDefinition.getDefaultImageThumbnailSrc()}">
+										<img class="img-fluid" src="${curCPDefinition.getDefaultImageThumbnailSrc()}">
 									</div>
 
 									<div class="col-md-8">

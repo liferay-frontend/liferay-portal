@@ -41,7 +41,7 @@ String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortlet
 							%>
 
 								<div class="card thumb" data-url="<%= cpMedia.getUrl() %>">
-									<img class="center-block img-responsive" src="<%= cpMedia.getUrl() %>" />
+									<img class="center-block img-fluid" src="<%= cpMedia.getUrl() %>" />
 								</div>
 
 							<%
@@ -53,7 +53,7 @@ String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortlet
 
 					<div class="col-lg-10 col-md-9 col-10 full-image">
 						<c:if test="<%= Validator.isNotNull(cpCatalogEntry.getDefaultImageFileUrl()) %>">
-							<img class="center-block img-responsive" id="<portlet:namespace />full-image" src="<%= cpCatalogEntry.getDefaultImageFileUrl() %>" />
+							<img class="center-block img-fluid" id="<portlet:namespace />full-image" src="<%= cpCatalogEntry.getDefaultImageFileUrl() %>" />
 						</c:if>
 					</div>
 				</div>

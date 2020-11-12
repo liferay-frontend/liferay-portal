@@ -18,7 +18,7 @@
 									<#assign url = simpleCPTypeDisplayContext.getImageURL(curImage.getFileEntry(), themeDisplay) />
 
 									<div class="card thumb" data-url="${url}">
-										<img class="center-block img-responsive" src="${url}">
+										<img class="center-block img-fluid" src="${url}">
 									</div>
 								</#list>
 							</#if>
@@ -29,7 +29,7 @@
 						<#assign cpAttachmentFileEntry = simpleCPTypeDisplayContext.getDefaultImage() />
 
 						<#if cpAttachmentFileEntry??>
-							<img class="center-block img-responsive" id="<@portlet.namespace />full-image" src="${simpleCPTypeDisplayContext.getImageURL(cpAttachmentFileEntry.getFileEntry(), themeDisplay)}">
+							<img class="center-block img-fluid" id="<@portlet.namespace />full-image" src="${simpleCPTypeDisplayContext.getImageURL(cpAttachmentFileEntry.getFileEntry(), themeDisplay)}">
 						</#if>
 					</div>
 				</div>
