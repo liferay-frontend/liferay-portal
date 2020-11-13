@@ -92,7 +92,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-site-template"));
 		);
 
 		function handleDestroyPortlet() {
-			addSiteActionOptionQueryClickHandler.removeListener();
+			addSiteActionOptionQueryClickHandler.dispose();
 
 			Liferay.detach('destroyPortlet', handleDestroyPortlet);
 		}
