@@ -9,7 +9,7 @@
 		<div class="product-detail-header">
 			<div class="col-lg-6 col-md-7">
 				<div class="row">
-					<div class="col-lg-2 col-md-3 col-xs-2">
+					<div class="col-2 col-lg-2 col-md-3">
 						<#assign images = virtualCPTypeDisplayContext.getImages() />
 
 						<#if images?has_content>
@@ -23,7 +23,7 @@
 						</#if>
 					</div>
 
-					<div class="col-lg-10 col-md-9 col-xs-10 full-image">
+					<div class="col-10 col-lg-10 col-md-9 full-image">
 						<#assign cpAttachmentFileEntry = virtualCPTypeDisplayContext.getDefaultImage() />
 
 						<#if cpAttachmentFileEntry??>
