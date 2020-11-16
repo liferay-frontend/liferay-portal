@@ -39,13 +39,13 @@ export default function EditModeSelector() {
 			active={active}
 			alignmentPosition={Align.BottomLeft}
 			className="mr-3"
+			menuElementAttrs={{className: 'cadmin'}}
 			onActiveChange={setActive}
 			trigger={
 				<ClayButton
-					className="form-control-select page-editor__edit-mode-selector text-left"
+					className="form-control-select form-control-sm page-editor__edit-mode-selector"
 					disabled={!canSwitchEditMode}
 					displayType="secondary"
-					small
 					type="button"
 				>
 					<span>{editMode}</span>

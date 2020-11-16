@@ -184,7 +184,7 @@ export default function Sidebar() {
 	return createPortal(
 		<ClayTooltipProvider>
 			<div
-				className="page-editor__sidebar page-editor__theme-adapter-forms"
+				className="cadmin page-editor__sidebar page-editor__theme-adapter-forms"
 				ref={dropClearRef}
 			>
 				<div
@@ -230,14 +230,16 @@ export default function Sidebar() {
 							return (
 								<ClayButtonWithIcon
 									aria-pressed={active}
+									borderless={true}
 									className={classNames({active})}
 									data-tooltip-align="left"
-									displayType="unstyled"
+									displayType="secondary"
 									id={`${sidebarId}${panel.sidebarPanelId}`}
 									key={panel.sidebarPanelId}
 									onClick={() => handleClick(panel)}
 									onFocus={prefetch}
 									onMouseEnter={prefetch}
+									outline={true}
 									small={true}
 									symbol={icon}
 									title={label}

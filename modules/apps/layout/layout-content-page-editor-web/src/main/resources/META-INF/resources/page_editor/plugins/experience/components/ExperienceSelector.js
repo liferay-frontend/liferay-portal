@@ -291,13 +291,12 @@ const ExperienceSelector = ({
 	return (
 		<>
 			<ClayButton
-				className="form-control-select pr-4 text-left text-truncate"
+				className="form-control-select form-control-sm"
 				displayType="secondary"
 				id={selectId}
 				onBlur={handleDropdownButtonBlur}
 				onClick={handleDropdownButtonClick}
 				ref={buttonRef}
-				small
 				type="button"
 			>
 				<ClayLayout.ContentRow verticalAlign="center">
@@ -317,7 +316,7 @@ const ExperienceSelector = ({
 			{open &&
 				createPortal(
 					<div
-						className="dropdown-menu p-4 page-editor__toolbar-experience__dropdown-menu toggled"
+						className="cadmin dropdown-menu p-4 page-editor__toolbar-experience__dropdown-menu toggled"
 						onBlur={handleDropdownBlur}
 						onFocus={handleDropdownFocus}
 						style={{
