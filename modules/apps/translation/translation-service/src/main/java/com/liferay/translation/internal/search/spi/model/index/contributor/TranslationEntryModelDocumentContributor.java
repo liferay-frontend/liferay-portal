@@ -38,6 +38,7 @@ public class TranslationEntryModelDocumentContributor
 		document.addText(Field.CONTENT, translationEntry.getContent());
 		document.addDate(
 			Field.MODIFIED_DATE, translationEntry.getModifiedDate());
+		document.addKeyword(Field.STATUS, translationEntry.getStatus());
 	}
 
 }
