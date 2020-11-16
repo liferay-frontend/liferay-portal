@@ -52,7 +52,7 @@ ViewDisplayContext viewDisplayContext = (ViewDisplayContext)request.getAttribute
 
 				<liferay-ui:search-container-column-text
 					name="language"
-					property="languageId"
+					value="<%= viewDisplayContext.getLanguageLabel(translationEntry) %>"
 				/>
 
 				<liferay-ui:search-container-column-status
