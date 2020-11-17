@@ -1,307 +1,1567 @@
-.affix,
-.control-menu-container {
-	position: sticky;
-	top: 0;
-	z-index: $control-menu-zindex;
-}
+// Control Menu
 
-.control-menu-icon {
-	display: inline-block;
-}
+html#{$cadmin-selector} {
+	body.product-menu-open .cadmin {
+		.toast-animation {
+			.pm {
+				border-left-width: 6px;
+				height: 18px;
+				left: 4px;
+				top: -1px;
+			}
 
-a.control-menu-icon,
-.control-menu-icon .dropdown-toggle {
-	border-radius: 4px;
-	transition: box-shadow 0.15s ease-in-out;
+			.cn {
+				border-left-width: 9px;
+				width: 19px;
+			}
+		}
+	}
 
-	&:focus {
-		box-shadow: $control-menu-focus-box-shadow;
-		outline: 0;
+	.cadmin {
+		&.affix,
+		&.control-menu-container {
+			position: sticky;
+			top: 0;
+			z-index: $control-menu-zindex;
+		}
+
+		.sidenav-transition {
+			.affix,
+			.control-menu-container {
+				@include transition($control-menu-css-transition);
+			}
+		}
+
+		.control-menu-nav {
+			align-items: center;
+			display: flex;
+			list-style: none;
+			margin-bottom: 0;
+			padding-left: 0;
+		}
+
+		.control-menu-nav-item-content {
+			display: flex;
+			flex-basis: 0;
+			flex-grow: 1;
+			flex-shrink: 1;
+			min-width: 48px;
+			width: 0;
+
+			.clamp-container {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				top: 50%;
+				transform: translateY(-50%);
+				white-space: nowrap;
+			}
+
+			span.text-muted {
+				font-size: 0.875rem;
+			}
+		}
+
+		.control-menu-nav-item-field {
+			flex: 0 1 auto;
+		}
+
+		.control-menu-icon .icon-monospaced,
+		.icon-monospaced > span {
+			align-items: inherit;
+			display: inherit;
+			height: inherit;
+			justify-content: inherit;
+			width: inherit;
+		}
+
+		.control-menu-level-1 {
+			border-bottom: 1px solid transparent;
+			padding-bottom: 11px;
+			padding-top: 12px;
+
+			@include media-breakpoint-down(xs) {
+				padding-bottom: 7px;
+				padding-top: 8px;
+
+				> .container-fluid {
+					padding-left: 8px;
+					padding-right: 8px;
+				}
+			}
+
+			.control-menu-nav-item {
+				margin-left: 4px;
+				margin-right: 4px;
+			}
+
+			.control-menu-nav-item-separator:not(:first-child):before {
+				background-color: $gray-600;
+				content: '';
+				display: inline-block;
+				height: 16px;
+				margin-left: 4px;
+				margin-right: 16px;
+				position: relative;
+				top: 1px;
+				vertical-align: middle;
+				width: 1px;
+			}
+
+			.control-menu-icon,
+			.portlet-options > .icon-monospaced {
+				@extend %cadmin-btn !optional;
+				@extend %cadmin-btn-monospaced-sm !optional;
+				@extend %cadmin-btn-monospaced-borderless !optional;
+			}
+
+			.user-avatar-link .badge {
+				align-items: center;
+				display: flex;
+				justify-content: center;
+				left: -6px;
+				margin: 0;
+				max-width: none;
+				min-height: 15px;
+				min-width: 15px;
+				padding: 0;
+				right: auto;
+				top: -6px;
+
+				.badge-item {
+					align-items: inherit;
+					display: inherit;
+					justify-content: inherit;
+					min-width: 0;
+				}
+			}
+		}
+
+		.toast-animation {
+			display: inline-block;
+			height: 18px;
+			margin: 1px 0 0;
+			position: relative;
+			width: 20px;
+
+			.pm {
+				border-left: 1px solid $cadmin-gray-500;
+				border-radius: 1px;
+				height: 16px;
+				left: 0;
+				position: absolute;
+				top: 0;
+
+				@include transition(all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1));
+			}
+
+			.cn {
+				border: 1px solid $cadmin-gray-500;
+				border-radius: 1px;
+				content: '';
+				height: 18px;
+				position: absolute;
+				right: 0;
+				top: -1px;
+				width: 15px;
+
+				@include transition(all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1));
+
+			}
+		}
+
+		.product-menu-toggle:focus,
+		.product-menu-toggle:hover {
+			.pm {
+				border-left: 1px solid $white;
+			}
+
+			.cn {
+				border: 1px solid $white;
+			}
+		}
+
+		.simulation-icon {
+			@include media-breakpoint-down(xs) {
+				display: none;
+			}
+		}
+
+		.control-menu-level-1-heading {
+			font-weight: $cadmin-font-weight-semi-bold;
+		}
+
+		.control-menu-level-1-dark {
+			background-color: $control-menu-level-1-bg;
+			color: $cadmin-white;
+
+			.control-menu-icon,
+			.portlet-options > .icon-monospaced {
+				@extend %cadmin-btn-dark !optional;
+			}
+		}
+
+		.control-menu-level-1-light {
+			background-color: $control-menu-level-1-light-bg;
+			border-color: $cadmin-gray-200;
+			color: $control-menu-level-1-light-color;
+
+			.control-menu-icon,
+			.portlet-options > .icon-monospaced {
+				@extend %cadmin-btn-secondary !optional;
+			}
+
+			.toast-animation {
+				.cn,
+				.pm {
+					border-color: $control-menu-level-1-light-color;
+				}
+			}
+
+			.product-menu-toggle:focus,
+			.product-menu-toggle:hover {
+				.cn,
+				.pm {
+					border-color: $control-menu-level-1-light-link-hover-color;
+				}
+			}
+		}
+
+		.tools-control-group {
+			flex-grow: 1;
+		}
+
+		// TODO: How do I view layout-admin-web/src/main/resources/META-INF/resources/dynamic_include/customization_settings.jsp?
+
+		.control-menu-level-2 {
+			background-color: $control-menu-level-2-bg;
+			border-bottom: 1px solid $secondary-l3;
+			color: $control-menu-level-2-color;
+			padding-bottom: 7px;
+			padding-top: 6px;
+
+			a,
+			a:focus,
+			a:hover {
+				color: $control-menu-level-2-link-color;
+			}
+
+			.container-fluid-max-xl {
+				padding-left: 20px;
+			}
+
+			.text-info {
+				font-size: 0.875rem;
+			}
+
+			.toggle-switch-bar .toggle-switch-handle {
+				font-size: 0.875rem;
+				text-transform: none;
+			}
+
+			.control-menu-label {
+				@include media-breakpoint-up(sm) {
+					color: $control-menu-level-2-label-color;
+				}
+			}
+
+			@include media-breakpoint-down(sm) {
+				bottom: 0;
+				display: none;
+				left: 0;
+				position: fixed;
+				right: 0;
+				top: 0;
+				z-index: 1;
+			}
+
+			&.open {
+				@include media-breakpoint-down(sm) {
+					display: block;
+					overflow: auto;
+				}
+			}
+		}
+
+		.control-menu-level-2-heading {
+			font-size: 18px;
+			font-weight: 500;
+			padding: 20px 0;
+			text-align: center;
+
+			button.close {
+				color: $control-menu-level-2-color;
+				opacity: 1;
+			}
+		}
+
+		.control-menu-level-2-nav {
+			display: flex;
+			flex-wrap: nowrap;
+			justify-content: space-between;
+
+			@include media-breakpoint-down(sm) {
+				> .control-menu-nav-item {
+					margin-bottom: 55px;
+				}
+
+				.control-menu-nav-item,
+				.dropdown {
+					width: 100%;
+				}
+			}
+		}
 	}
 }
 
-.control-menu-level-1 {
-	> .container-fluid {
-		padding: 8px;
+// Product Menu
 
+$product-menu-focus-box-shadow: 0 0 0 2px #fff, 0 0 0 4px #80acff !default;
+
+$product-menu-body-bg: #272833 !default;
+
+$product-menu-header-bg: #272833 !default;
+$product-menu-header-border: #393a4a !default;
+$product-menu-header-color: #d5d6e1 !default;
+$product-menu-header-link-color: #fff !default;
+$product-menu-header-link-hover-color: $product-menu-header-link-color !default;
+
+$product-menu-list-group-heading-border: transparent !default;
+$product-menu-list-group-heading-border-width: 0 !default;
+
+$product-menu-list-group-heading-active-bg: $dark-l1 !default;
+
+$product-menu-list-group-heading-collapsed-border: transparent !default;
+$product-menu-list-group-heading-collapsed-border-width: 0 !default;
+
+$product-menu-list-group-heading-color: $light-d2 !default;
+
+$product-menu-list-group-item-bg: transparent !default;
+$product-menu-list-group-item-border-width: 0 !default;
+
+$product-menu-nav-link-active-color: #fff !default;
+$product-menu-nav-link-color: #eeeffa !default;
+
+$product-menu-panel-title-color: #fff !default;
+
+$product-menu-header-desktop-height: 56px;
+$product-menu-header-height: 48px;
+$product-menu-width: 320px !default;
+$product-menu-zindex: 990 !default;
+
+html#{$cadmin-selector} {
+	#wrapper .cadmin.control-menu-container {
+		padding-left: 0;
+	}
+
+	body.sidenav-transition #wrapper,
+	body.sidenav-transition .cadmin.control-menu-container {
 		@include media-breakpoint-up(sm) {
-			padding: 12px;
+			@include transition(padding 0.5s ease);
 		}
 	}
 
-	.personal-menu-dropdown .dropdown-toggle {
-		margin-bottom: -2px;
-		margin-top: -2px;
-		padding: 2px;
-	}
-
-	a:not(.dropdown-item),
-	button:not(.btn-link):not(.dropdown-item):not(.nav-link) {
-		&:focus,
-		&:hover {
-			text-decoration: none;
-		}
-	}
-}
-
-.control-menu-level-1-heading {
-	font-size: 1rem;
-	font-weight: 600;
-}
-
-.control-menu-level-1-dark {
-	background-color: $control-menu-level-1-bg;
-	color: $control-menu-level-1-color;
-
-	a:not(.dropdown-item),
-	button:not(.btn-link):not(.dropdown-item):not(.nav-link) {
-		color: $control-menu-level-1-link-color;
-
-		&:focus,
-		&:hover {
-			background-color: $control-menu-level-1-link-background-color;
-			color: $control-menu-level-1-link-hover-color;
-		}
-	}
-
-	.control-menu-level-1-heading {
-		color: $white;
-	}
-}
-
-.control-menu-level-1-light {
-	background-color: $control-menu-level-1-light-bg;
-	border-bottom: $control-menu-level-1-light-border;
-	color: $control-menu-level-1-light-color;
-
-	a:not(.dropdown-item),
-	button:not(.btn-link):not(.dropdown-item):not(.nav-link) {
-		color: $control-menu-level-1-light-link-color;
-		&:focus,
-		&:hover {
-			background-color: $control-menu-level-1-light-link-background-color;
-			color: $control-menu-level-1-light-link-hover-color;
-		}
-	}
-
-	> .container-fluid {
-		padding-bottom: $control-menu-level-1-padding - 1px;
-
+	body.open #wrapper,
+	body.open .cadmin.control-menu-container {
 		@include media-breakpoint-up(sm) {
-			padding-bottom: $control-menu-level-1-padding-desktop - 1px;
+			padding-left: $product-menu-width;
 		}
 	}
 
-	.control-menu-level-1-heading {
-		color: $gray-900;
-	}
+	.cadmin.lfr-product-menu-panel.sidenav-menu-slider {
+		z-index: $product-menu-zindex;
 
-	.toast-animation {
-		.cn,
-		.pm {
-			border-color: $control-menu-level-1-light-color;
+		&.open,
+		.sidenav-menu {
+			width: $product-menu-width;
 		}
 	}
 
-	.product-menu-toggle:focus,
-	.product-menu-toggle:hover {
-		.cn,
-		.pm {
-			border-color: $control-menu-level-1-light-link-hover-color;
+	.cadmin {
+		.product-menu {
+			background-color: $cadmin-gray-900;
+			color: $cadmin-white;
+			font-size: 14px;
+
+			a,
+			.btn {
+				@extend %cadmin-nav-link-dark !optional;
+			}
+
+			p {
+				color: inherit;
+				font-size: inherit;
+			}
+
+			label {
+				color: $cadmin-gray-500;
+				font-size: 12px;
+			}
+
+			.custom-control-label-text {
+				color: $cadmin-white;
+			}
+
+			.form-control {
+				@extend %cadmin-form-control-dark !optional;
+			}
+
+			.nav-item {
+				@extend %cadmin-container-reset !optional;
+			}
+
+			.nav-item.active {
+				&::before {
+					background-color: #FFF;
+					bottom: 0;
+					content: '';
+					display: block;
+					left: -16px;
+					position: absolute;
+					top: 0;
+					width: 4px;
+
+					@include media-breakpoint-up(sm) {
+						left: -24px;
+					}
+				}
+
+				.nav-link {
+					font-weight: $font-weight-bold;
+				}
+			}
+
+			// Product Menu Sidebar
+
+			> .portlet-boundary {
+				height: 100%;
+			}
+
+			.lfr-product-menu-sidebar {
+				@extend %cadmin-sidebar !optional;
+			}
+
+			// Product Menu Header
+
+			.sidebar-header {
+				@extend %cadmin-container-reset !optional;
+				@extend %cadmin-sidebar-header !optional;
+
+				color: inherit;
+				font-size: inherit;
+				line-height: 1.25;
+				padding: 12px 8px 12px 8px;
+
+				@include media-breakpoint-up(sm) {
+					padding-left: 24px;
+				}
+
+				.product-menu-title {
+					font-size: 16px;
+				}
+			}
+
+			.close {
+				@extend %cadmin-close !optional;
+			}
+
+			.company-logo {
+				margin-right: 16px;
+				height: 32px;
+				width: 32px;
+			}
+
+			.company-name {
+				display: inline-block;
+				vertical-align: middle;
+			}
+
+			// Product Menu Header 2
+
+			.depot-type {
+				font-size: 12px;
+				text-transform: uppercase;
+			}
+
+			.site-name {
+				font-weight: $cadmin-font-weight-semi-bold;
+			}
+
+			.icon-sites {
+				margin-top: -16px;
+				position: absolute;
+				right: 40px;
+				top: 50%;
+				z-index: 1;
+			}
+
+			// Product Menu Body
+
+			.sidebar-body {
+				@extend %cadmin-container-reset !optional;
+				@extend %cadmin-sidebar-body !optional;
+
+				color: inherit;
+				font-size: inherit;
+				position: static;
+			}
+		}
+
+		// Product Menu Panels
+
+		.product-menu-panel {
+			border-top: 1px solid $cadmin-gray-800;
+
+			&:first-child {
+				border-top-width: 0;
+			}
+		}
+
+		.product-menu-panel-header {
+			position: relative;
+
+			.product-menu-link {
+				font-weight: $cadmin-font-weight-bold;
+				line-height: 1.25;
+				padding-bottom: 18px;
+				padding-top: 18px;
+
+				&.collapsed {
+					font-weight: $cadmin-font-weight-semi-bold;
+				}
+
+				.collapse-icon-closed,
+				.collapse-icon-open {
+					top: calc(18px + (((1em * 1.25) - 1em) / 2));
+				}
+
+				.c-inner {
+					margin-bottom: -18px;
+					margin-top: -18px;
+				}
+			}
+
+			.site-administration-toggler {
+				padding-bottom: 11px;
+				padding-top: 11px;
+
+				.c-inner {
+					margin-bottom: -11px;
+					margin-top: -11px;
+				}
+			}
+		}
+
+		.product-menu-link {
+			@extend %cadmin-nav-link !optional;
+
+			overflow: hidden;
+			position: relative;
+
+			&.btn {
+				width: 100%;
+			}
+		}
+
+		.product-menu-link,
+		.lfr-application-list-panel-category {
+			padding-left: 16px;
+
+			@include media-breakpoint-up(sm) {
+				padding-left: 24px;
+			}
+
+			.c-inner {
+				margin-left: -16px;
+
+				@include media-breakpoint-up(sm) {
+					margin-left: -24px;
+				}
+			}
+		}
+
+		.navigation-link-container {
+			.product-menu-link {
+				font-size: 12px;
+				padding-bottom: 6px;
+				padding-top: 6px;
+			}
+		}
+
+		.lfr-application-list-panel-category {
+			@extend %cadmin-nav-link !optional;
+			@extend %cadmin-nav-link-dark !optional;
+
+			background-color: $cadmin-dark-l1;
+			border-radius: 0;
+			display: block;
+			font-weight: $cadmin-font-weight-semi-bold;
+			position: relative;
+
+			&.collapsed {
+				background-color: transparent;
+				font-weight: $cadmin-font-weight-normal;
+			}
+		}
+
+		.lfr-application-list-panel-category-body {
+			padding: 8px 8px 8px 16px;
+
+			@include media-breakpoint-up(sm) {
+				padding-left: 24px;
+			}
+
+			&.collapsing,
+			&.show {
+				background-color: $cadmin-dark-l1;
+			}
+
+			.nav-link {
+				@extend %cadmin-nav-link-dark !optional;
+			}
+		}
+
+		// Product Menu Staging
+
+		.staging-links {
+			color: $product-menu-nav-link-color;
+
+			a {
+				color: inherit;
+				font-size: inherit;
+
+				&:hover {
+					color: $cadmin-white;
+				}
+			}
+
+			.active {
+				color: $cadmin-white;
+				font-weight: $cadmin-font-weight-semi-bold;
+			}
+
+			.links-separator {
+				padding-left: 5px;
+				padding-right: 5px;
+			}
+		}
+	}
+
+	// Product Menu New Applications Menu Layout
+
+	.cadmin .product-menu {
+		.lfr-applications-menu {
+			.lfr-site-admin-logo-col {
+				margin-right: 16px;
+			}
+
+			.icon-sites {
+				position: static;
+				margin-top: 0;
+			}
+		}
+	}
+
+	// Product Menu Tree View
+
+	$product-menu-item-fixed-width: $product-menu-width;
+	$product-menu-pages-administration-link-height: 72px;
+
+	.cadmin .product-menu .pages-tree {
+		display: flex;
+		flex-direction: column;
+		font-size: 14px;
+		height: 100%;
+		overflow: auto;
+
+		.layout-tree,
+		.pages-administration-link {
+			border-radius: 1px;
+		}
+
+		.layout-tree,
+		.pages-administration-link,
+		.pages-tree-link {
+			color: $cadmin-gray-500;
+			font-size: inherit;
+		}
+
+		.layout-tree:hover,
+		.pages-administration-link:hover,
+		.pages-tree-link:hover,
+		.tree-node-content:hover .layout-tree {
+			color: $cadmin-white;
+		}
+
+		.layout-tree:focus,
+		.pages-administration-link:focus,
+		.pages-tree-link:focus,
+		.tree-node-content:focus .layout-tree {
+			box-shadow: $cadmin-component-focus-box-shadow;
+			outline: 0;
+		}
+
+		// Header
+
+		.layout-finder {
+			padding: 14px 16px 20px;
+		}
+
+		.back-to-menu {
+			margin-bottom: 16px;
+			padding-left: 0;
+			padding-right: 2px;
+
+			.c-inner {
+				margin-left: 0;
+				margin-right: -2px;
+			}
+		}
+
+		// Page Type Section
+
+		.page-type-selector {
+			border-top: 1px solid $cadmin-gray-800;
+			padding: 16px 6px 16px 16px;
+
+			select.form-control {
+				display: inline-block;
+				max-width: 100%;
+				width: auto;
+			}
+		}
+
+		.breadcrumb {
+			margin-bottom: 8px;
+			margin-top: 8px;
+			padding-bottom: 0;
+			padding-top: 0;
+		}
+
+		.breadcrumb-link {
+			font-weight: $cadmin-font-weight-bold;
+
+			&:hover {
+				text-decoration: none;
+			}
+
+			&:focus {
+				color: $cadmin-gray-500;
+			}
+		}
+
+		.breadcrumb-text-truncate {
+			max-width: 272px;
+		}
+
+		// Tree Node Section
+
+		[id$='_layoutsTree'] {
+			flex-direction: column;
+			display: flex;
+			flex-grow: 1;
+		}
+
+		.tree-view {
+			flex-grow: 1;
+			margin-bottom: 16px;
+			overflow: visible;
+
+			.tree-label {
+				color: $cadmin-gray-500;
+				display: inline-block;
+				flex-grow: 1;
+				margin-left: 8px;
+				padding-right: 8px;
+
+				.layout-tree:active {
+					pointer-events: none;
+				}
+
+				.dropdown-toggle {
+					height: 24px;
+					visibility: hidden;
+					width: 24px;
+
+					.c-inner > span {
+						align-items: inherit;
+						display: inherit;
+						height: inherit;
+						justify-content: inherit;
+						width: inherit;
+					}
+				}
+			}
+
+			.tree-node-selected {
+				.layout-tree {
+					color: $cadmin-white;
+					font-weight: 600;
+				}
+			}
+
+			.tree-label:hover .dropdown-toggle,
+			.tree-node-selected .dropdown-toggle {
+				visibility: visible;
+			}
+
+			.child-page-action-option {
+				margin-bottom: 0;
+
+				&.type-false {
+					display: none;
+				}
+			}
+
+			.view-collection-items-action-option {
+				display: none;
+
+				&.collection {
+					display: block;
+				}
+			}
+
+			.list-icon:not(.collection-layout) {
+				display: none;
+			}
+
+			.page-icon.collection-layout {
+				display: none;
+			}
+
+			.tree-container {
+				border-left: 1px solid $cadmin-gray-800;
+				margin-left: 6px;
+				padding-left: 14px;
+
+				.autofit-padded-no-gutters {
+					margin-left: -4px;
+					margin-right: -4px;
+
+					> .autofit-col {
+						padding: 4px;
+					}
+				}
+
+				.tree-node .tree-node-content {
+					align-items: center;
+					display: flex;
+					cursor: pointer;
+
+					&.tree-drag-insert-above {
+						border-top: none;
+
+						.autofit-row {
+							box-shadow: 0 -2px 0 0 $primary-l1;
+						}
+					}
+
+					&.tree-drag-insert-below {
+						border-bottom: none;
+
+						.autofit-row {
+							box-shadow: 0 2px 0 0 $primary-l1;
+						}
+					}
+
+					&.tree-drag-insert-append .tree-label {
+						background: transparent;
+						border: none;
+
+						.autofit-row {
+							border-radius: 4px;
+							box-shadow: 0 0 0 2px $primary-l1;
+						}
+					}
+				}
+			}
+
+			.tree-node {
+				margin-bottom: 0;
+
+				.tree-hitarea {
+					@extend %cadmin-btn !optional;
+					@extend %cadmin-btn-monospaced !optional;
+
+					background-color: $cadmin-gray-800;
+					border: 1px solid $cadmin-gray-800;
+					border-radius: 2px;
+					color: $cadmin-white;
+					font-size: 6px;
+					height: 10px;
+					left: 2px;
+					margin-right: 0;
+					position: relative;
+					top: -2px;
+					width: 10px;
+
+					+ span {
+						display: none;
+					}
+				}
+			}
+
+			.tree-node-paginator {
+				color: $cadmin-white;
+			}
+		}
+
+		.tree-drag-helper {
+			.tree-drag-helper-content {
+				background: $cadmin-primary-l1;
+				border-radius: 4px;
+				border-width: 0;
+				box-shadow: none;
+
+				.layout-tree {
+					color: $cadmin-white;
+					display: inline-block;
+					font-size: 12px;
+					font-weight: bold;
+					max-width: 16ch;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+
+				.autofit-col {
+					display: none;
+				}
+
+				.autofit-col:first-child {
+					display: block;
+				}
+			}
+		}
+
+		.pages-administration {
+			align-items: center;
+			background-color: $cadmin-gray-900;
+			border-top: 1px solid $cadmin-gray-800;
+			bottom: 0;
+			display: flex;
+			height: $product-menu-pages-administration-link-height;
+			overflow: hidden;
+			padding-left: 24px;
+			padding-right: 16px;
+
+			.pages-administration-link {
+				display: inline-block;
+				font-size: inherit;
+				line-height: 1.1;
+				max-width: 100%;
+				overflow-wrap: break-word;
+			}
 		}
 	}
 }
 
-.control-menu-level-1-nav {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
+// _simulation_panel.scss
 
-	@include media-breakpoint-up(sm) {
-		flex-wrap: nowrap;
-	}
-
-	> li > .control-menu-nav > .control-menu-nav-item {
-		margin-left: 4px;
-		margin-right: 4px;
-	}
-
-	> .control-menu-nav-item {
-		align-self: center;
-	}
-}
-
-.control-menu-level-2 {
-	background-color: $control-menu-level-2-bg;
-	border-bottom: 1px solid $secondary-l3;
-	color: $control-menu-level-2-color;
-	padding-bottom: 7px;
-	padding-top: 6px;
-
-	a,
-	a:focus,
-	a:hover {
-		color: $control-menu-level-2-link-color;
-	}
-
-	.container-fluid-max-xl {
-		padding-left: 20px;
-	}
-
-	.text-info {
-		font-size: 0.875rem;
-	}
-
-	.toggle-switch-bar .toggle-switch-handle {
-		font-size: 0.875rem;
-		text-transform: none;
-	}
-
-	.control-menu-label {
-		@include media-breakpoint-up(sm) {
-			color: $control-menu-level-2-label-color;
+html#{$cadmin-selector} {
+	.lfr-has-simulation-panel.open-admin-panel {
+		#wrapper {
+			visibility: hidden;
 		}
 	}
 
-	@include media-breakpoint-down(sm) {
-		bottom: 0;
+	.cadmin {
+		&.lfr-simulation-panel {
+			&.open-admin-panel.sidenav-menu-slider {
+				visibility: visible;
+				width: 320px;
+			}
+
+			.custom-devices {
+				background-color: $cadmin-gray-800;
+				border-radius: 4px;
+				display: flex;
+				flex-wrap: wrap;
+				margin: 0 10px 20px;
+				padding: 8px 6px 16px;
+
+				@media (max-width: 991px) {
+					display: none;
+				}
+
+				.custom-devices-item {
+					padding: 0 6px;
+					width: 50%;
+				}
+			}
+
+			.default-devices {
+				display: flex;
+				flex-wrap: wrap;
+				list-style: none;
+				margin: 0 0 12px;
+				padding: 0;
+
+				.default-devices-item {
+					margin-bottom: 8px;
+					margin-top: 8px;
+					text-align: center;
+					width: 33.33333%;
+
+					@media (max-width: 991px) {
+						display: none;
+					}
+				}
+
+				.lfr-device-item {
+					color: $cadmin-gray-500;
+					height: 68px;
+					margin-bottom: 12px;
+					width: 68px;
+
+					&.selected {
+						color: $cadmin-white;
+
+						.sticker {
+							background-color: $cadmin-gray-800;
+						}
+					}
+				}
+
+				.sticker {
+					color: inherit;
+				}
+
+				small {
+					color: inherit;
+					margin-top: 4px;
+				}
+			}
+
+			.segments-simulation {
+				list-style: none;
+				margin: 0;
+				padding: 8px 16px 24px 16px;
+
+				@media (min-width: 576px) {
+					padding-left: 24px;
+				}
+			}
+
+			.simulated-segment-item {
+				padding: 8px 0;
+			}
+		}
+	}
+}
+
+.lfr-device {
+	box-sizing: content-box;
+
+	.modal-header {
+		display: none;
+	}
+
+	&.autosize {
+		border-width: 0;
+	}
+
+	.lfr-device-size-status {
+		position: absolute;
+		width: 100%;
+
+		.lfr-device-size-status-content {
+			display: inline-block;
+			font-size: 11px;
+			height: 22px;
+			margin-left: 10px;
+			margin-right: 10px;
+			padding: 4px;
+		}
+
+		&.b,
+		&.bl,
+		&.br {
+			bottom: 10px;
+		}
+
+		&.t,
+		&.tl,
+		&.tr {
+			top: 10px;
+		}
+
+		&.b,
+		&.t {
+			text-align: center;
+		}
+
+		&.r,
+		&.br,
+		&.tr {
+			text-align: right;
+		}
+
+		&.l,
+		&.bl,
+		&.tl {
+			text-align: left;
+		}
+
+		&.r,
+		&.l {
+			margin-top: -15px;
+			top: 50%;
+		}
+	}
+
+	&:after {
+		bottom: 10px;
+		content: '';
+		display: none;
+		height: 30px;
+		left: 0;
+		margin: 0 auto;
+		position: absolute;
+		right: 0;
+		width: 30px;
+	}
+
+	&:before {
+		content: '';
 		display: none;
 		left: 0;
-		position: fixed;
+		margin: 0 auto;
+		position: absolute;
 		right: 0;
-		top: 0;
-		z-index: 1;
+		top: 20px;
 	}
 
-	&.open {
-		@include media-breakpoint-down(sm) {
+	&.rotated {
+		&:after {
+			bottom: 0;
+			left: 10px;
+			margin: auto;
+			right: auto;
+			top: 0;
+		}
+
+		&:before {
+			bottom: 0;
+			left: auto;
+			margin: auto;
+			right: 20px;
+			top: 0;
+		}
+	}
+
+	&.smartphone,
+	&.tablet {
+		&:after,
+		&:before {
 			display: block;
-			overflow: auto;
+		}
+	}
+
+	&.smartphone {
+		padding: 50px 10px;
+
+		&.rotated {
+			padding: 10px 50px;
+
+			&:before {
+				height: 50px;
+				width: 5px;
+			}
+		}
+
+		&:before {
+			height: 5px;
+			width: 50px;
+		}
+	}
+
+	&.tablet {
+		padding: 50px 20px;
+
+		&.rotated {
+			padding: 20px 50px;
+
+			&:before {
+				height: 10px;
+				width: 10px;
+			}
+		}
+
+		&:before {
+			height: 10px;
+			width: 10px;
 		}
 	}
 }
 
-.control-menu-level-2-heading {
-	font-size: 18px;
-	font-weight: 500;
-	padding: 20px 0;
-	text-align: center;
+.lfr-simulation-device {
+	bottom: 0;
+	display: none;
+	left: 0;
+	overflow: auto;
+	position: fixed;
+	right: 320px;
+	top: 68px;
+	z-index: 500;
 
-	button.close {
-		color: $control-menu-level-2-color;
-		opacity: 1;
+	.modal-content {
+		border-width: 0;
 	}
-}
 
-.control-menu-level-2-nav {
-	display: flex;
-	flex-wrap: nowrap;
-	justify-content: space-between;
+	.modal-dialog {
+		position: absolute;
 
-	@include media-breakpoint-down(sm) {
-		> .control-menu-nav-item {
-			margin-bottom: 55px;
-		}
-
-		.control-menu-nav-item,
-		.dropdown {
-			width: 100%;
+		&.autosize {
+			margin-top: 68px;
+			position: fixed;
 		}
 	}
 }
 
-.control-menu-nav {
-	align-items: center;
-	display: flex;
-	font-size: 16px;
-	list-style: none;
-	margin-bottom: 0;
-	padding-left: 0;
-}
+.lfr-has-simulation-panel {
+	overflow: auto;
 
-.control-menu-nav-item {
-	display: inline-flex;
-}
-
-.control-menu-nav-item-content {
-	display: flex;
-	flex-basis: 0;
-	flex-grow: 1;
-	flex-shrink: 1;
-	min-width: 48px;
-	width: 0;
-
-	.clamp-container {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		top: 50%;
-		transform: translateY(-50%);
-		white-space: nowrap;
+	.lfr-configurator-visibility {
+		display: none;
 	}
 
-	span.text-muted {
-		font-size: 0.875rem;
+	.lfr-simulation-device {
+		display: block;
 	}
 }
 
-.control-menu-nav-item-separator:not(:first-child):before {
-	background-color: $gray-600;
-	content: '';
-	height: 16px;
-	margin-right: 16px;
-	position: relative;
-	top: 9px;
-	width: 1px;
-}
+// _simulation_device.scss
 
-.control-menu-nav-item-field {
-	flex: 0 1 auto;
-}
+.lfr-simulation-device {
+	background-color: rgba(255, 255, 255, 0.95);
+	top: 56px;
 
-.sidenav-transition {
-	.affix,
-	.control-menu-container {
-		@include transition($control-menu-css-transition);
+	.lfr-device-size-status-content {
+		border-radius: 3px;
+		box-shadow: 0 0 1px #fff;
+		opacity: 0.9;
 	}
-}
 
-%control-menu-icon-monospaced {
-	height: 32px;
-	line-height: 32px;
-	text-align: center;
-	width: 32px;
-}
-
-.tools-control-group {
-	flex: 1;
-	flex-wrap: wrap;
-
-	> .control-menu-nav {
-		flex-wrap: nowrap;
-		justify-content: center;
-
-		@include media-breakpoint-up(md) {
-			flex-wrap: wrap;
+	.lfr-device {
+		&:after,
+		&:before {
+			box-shadow: #111 0 1px 0;
 		}
 
-		> li > .lfr-portal-tooltip > .control-menu-icon {
-			@extend %control-menu-icon-monospaced;
+		&:after {
+			border-radius: 15px;
+		}
+
+		&.rotated {
+			&:after,
+			&:before {
+				box-shadow: #111 -1px 1px 0;
+			}
+		}
+
+		&.smartphone,
+		&.tablet {
+			border-radius: 25px;
+		}
+
+		&.tablet {
+			&:before {
+				border-radius: 5px;
+			}
 		}
 	}
 
-	.taglib-icon-help {
-		margin-top: 1px;
-		min-width: 32px;
-		text-align: center;
+	.modal-dialog {
+		max-width: none;
+
+		.modal-content {
+			border-radius: 0;
+		}
 	}
 }
 
-.user-control-group {
-	> .control-menu-nav > li > .control-menu-icon {
-		@extend %control-menu-icon-monospaced;
+.lfr-device {
+	.lfr-device-size-status {
+		.lfr-device-size-status-content {
+			background-color: #000;
+			color: #fff;
+		}
 	}
 
-	.portlet-options {
-		margin-right: -1px;
+	&:after,
+	&:before {
+		background: #666;
+	}
+
+	&.smartphone,
+	&.tablet {
+		background: #333;
+	}
+}
+
+// layout-content-page-editor-web
+
+html#{$cadmin-selector} {
+	.cadmin {
+		&.page-editor__sidebar {
+			.nav-underline {
+				font-size: 12px;
+				margin-bottom: 12px;
+				position: relative;
+
+				&::after {
+					background-color: $cadmin-gray-300;
+					bottom: 0;
+					content: '';
+					display: block;
+					height: 1px;
+					left: 0;
+					position: absolute;
+					right: 0;
+					z-index: -1;
+				}
+
+				.nav-item,
+				.nav-link {
+					font-size: inherit;
+				}
+			}
+		}
+
+		.page-editor__toolbar {
+			.page-editor__theme-adapter-buttons {
+				display: flex;
+			}
+
+			.btn-secondary[aria-pressed='true'] {
+				background-color: $cadmin-gray-200;
+			}
+		}
+
+		.page-editor__sidebar__buttons {
+			.btn-monospaced {
+				margin-bottom: 4px;
+			}
+		}
+
+		.page-editor__sidebar__content {
+			.page-editor__sidebar__panel-header {
+				font-size: 14px;
+				padding-left: 16px;
+				padding-right: 16px;
+				padding-top: 8px;
+				margin-bottom: 24px;
+				margin-top: 16px;
+			}
+		}
+
+		&.dropdown-menu {
+			&.toggled {
+				display: block;
+			}
+
+			.page-editor__translation__label-wrapper {
+				width: auto;
+
+				.page-editor__translation__label {
+					margin: 0;
+				}
+			}
+
+			.label.default {
+				@extend %cadmin-label-info !optional;
+			}
+
+			.label.translating,
+			.label.untranslated {
+				@extend %cadmin-label-warning !optional;
+			}
+
+			.label.translated {
+				@extend %cadmin-label-success !optional;
+			}
+		}
+
+		&.page-editor__toolbar-experience__dropdown-menu {
+			left: 0;
+			max-width: 100vw;
+			position: absolute;
+			top: 0;
+			width: 808px;
+			z-index: $cadmin-zindex-modal + 1;
+
+			li.dropdown-menu__experience {
+				cursor: pointer;
+
+				&.dropdown-menu__experience--active,
+				&:focus {
+					background-color: $cadmin-primary-l3;
+					border: 1px solid $cadmin-primary-l1;
+				}
+			}
+		}
+
+		&.page-editor__translation {
+			min-width: 0;
+			max-width: none;
+			width: 300px;
+		}
+
+		.page-editor__sidebar__fragments-widgets-panel__tab-content {
+			.page-editor__collapse > .btn.collapse-icon {
+				color: $cadmin-gray-600;
+				font-size: 11px;
+				font-weight: $cadmin-font-weight-semi-bold;
+				line-height: 1.15;
+				margin-bottom: 4px;
+				padding: 10px 12px 10px 0;
+				text-transform: uppercase;
+
+				> .c-inner {
+					margin: -10px -12px -10px 0;
+					width: auto;
+				}
+
+				.collapse-icon-closed,
+				.collapse-icon-open {
+					font-size: 12px;
+					right: 0;
+					top: calc(10px + (((12px * 1.15) - 1em) / 2));
+				}
+			}
+		}
+
+		.page-editor__sidebar__page-design-options__tabs + .tab-content {
+			.card {
+				cursor: pointer;
+			}
+
+			.page-editor__sidebar__design-options__tab-card--active .card {
+				box-shadow: 0 0 0 2px $cadmin-primary-l1;
+				cursor: default;
+			}
+		}
+	}
+}
+
+// Toasts
+
+html#{$cadmin-selector} #ToastAlertContainer {
+	.alert {
+		@extend %cadmin-container-reset !optional;
+		@extend %cadmin-alert !optional;
+
+		.close {
+			@extend %cadmin-alert-close !optional;
+		}
+
+		.lead {
+			@extend %cadmin-alert-lead !optional;
+		}
+
+		.alert-link,
+		.alert-link.btn-unstyled {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-alert-link !optional;
+		}
+
+		.alert-indicator {
+			@extend %cadmin-alert-indicator !optional;
+
+			+ .lead {
+				margin-bottom: 0;
+				margin-left: map-get($cadmin-alert-lead, margin-right);
+				margin-right: map-get($cadmin-alert-lead, margin-right);
+				margin-top: 0;
+			}
+		}
+	}
+
+	.alert-dismissible {
+		@extend %cadmin-alert-dismissible !optional;
+	}
+
+	&.alert-notifications-fixed {
+		@extend %cadmin-alert-notifications-fixed !optional;
+	}
+
+	&.alert-notifications .alert {
+		@extend %cadmin-alert-notification !optional;
+	}
+
+	.alert-autofit-row.autofit-row {
+		@extend %cadmin-alert-autofit-row !optional;
+	}
+
+	.alert-success {
+		@extend %cadmin-alert-success !optional;
+	}
+
+	.alert-info {
+		@extend %cadmin-alert-info !optional;
+	}
+
+	.alert-warning {
+		@extend %cadmin-alert-warning !optional;
+	}
+
+	.alert-danger {
+		@extend %cadmin-alert-danger !optional;
+	}
+}
+
+// Tooltips
+
+html#{$cadmin-selector} #tooltipContainer {
+	.tooltip {
+		@extend %cadmin-tooltip !optional;
+	}
+
+	.clay-tooltip-bottom {
+		@extend %cadmin-tooltip-bottom !optional;
+	}
+
+	.clay-tooltip-bottom-left {
+		@extend %cadmin-tooltip-bottom-left !optional;
+	}
+
+	.clay-tooltip-bottom-right {
+		@extend %cadmin-tooltip-bottom-right !optional;
+	}
+
+	.clay-tooltip-left {
+		@extend %cadmin-tooltip-left !optional;
+	}
+
+	.clay-tooltip-left-bottom {
+		@extend %cadmin-tooltip-left-bottom !optional;
+	}
+
+	.clay-tooltip-left-top {
+		@extend %cadmin-tooltip-left-top !optional;
+	}
+
+	.clay-tooltip-right {
+		@extend %cadmin-tooltip-right !optional;
+	}
+
+	.clay-tooltip-right-bottom {
+		@extend %cadmin-tooltip-right-bottom !optional;
+	}
+
+	.clay-tooltip-right-top {
+		@extend %cadmin-tooltip-right-top !optional;
+	}
+
+	.clay-tooltip-top {
+		@extend %cadmin-tooltip-top !optional;
+	}
+
+	.clay-tooltip-top-left {
+		@extend %cadmin-tooltip-top-left !optional;
+	}
+
+	.clay-tooltip-top-right {
+		@extend %cadmin-tooltip-top-right !optional;
 	}
 }

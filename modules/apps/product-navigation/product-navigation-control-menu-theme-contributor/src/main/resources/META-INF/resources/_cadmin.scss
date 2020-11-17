@@ -1,0 +1,1077 @@
+html#{$cadmin-selector} {
+	.cadmin {
+		@extend %cadmin-container-reset !optional;
+
+		h1, h2, h3, h4, h5, h6,
+		.h1, .h2, .h3, .h4, .h5, .h6,
+		&.h1, &.h2, &.h3, &.h4, &.h5, &.h6 {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-pseudo-reset !optional;
+			@extend %cadmin-h !optional;
+		}
+
+		h1, .h1, &.h1 {
+			@extend %cadmin-h1 !optional;
+		}
+
+		h2, .h2, &.h2 {
+			@extend %cadmin-h2 !optional;
+		}
+
+		h3, .h3, &.h3 {
+			@extend %cadmin-h3 !optional;
+		}
+
+		h4, .h4, &.h4 {
+			@extend %cadmin-h4 !optional;
+		}
+
+		h5, .h5, &.h5 {
+			@extend %cadmin-h5 !optional;
+		}
+
+		h6, .h6, &.h6 {
+			@extend %cadmin-h6 !optional;
+		}
+
+		a {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-pseudo-reset !optional;
+
+			@extend %cadmin-link !optional;
+		}
+
+		button {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-pseudo-reset !optional;
+		}
+
+		p, .p {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-p !optional;
+		}
+
+		small, .small {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-small !optional;
+		}
+
+		// Icon
+
+		.lexicon-icon {
+			@extend %cadmin-lexicon-icon !optional;
+		}
+
+		a.collapse-icon,
+		button.collapse-icon {
+			@include clay-css($cadmin-collapse-icon);
+
+			.c-inner {
+				margin-left: math-sign(map-get($cadmin-collapse-icon, padding-left));
+				margin-right: math-sign(map-get($cadmin-collapse-icon, padding-right));
+			}
+		}
+
+		.collapse-icon-closed,
+		.collapse-icon-open {
+			.lexicon-icon {
+				display: block;
+			}
+		}
+
+		.collapse-icon {
+			.collapse-icon-closed,
+			.collapse-icon-open {
+				@include clay-css($cadmin-collapse-icon-closed-and-open);
+
+				.lexicon-icon {
+					margin-top: 0;
+				}
+			}
+
+			.collapse-icon-closed {
+				display: none;
+			}
+
+			.collapse-icon-open {
+				display: inline-block;
+			}
+		}
+
+		.collapsed {
+			.collapse-icon-closed {
+				display: inline-block;
+			}
+
+			.collapse-icon-open {
+				display: none;
+			}
+		}
+
+		.collapse-icon.collapse-icon-middle:not(#__) {
+			.collapse-icon-closed,
+			.collapse-icon-open {
+				margin-top: 0;
+				top: 50%;
+
+				-ms-transform: translateY(-50%);
+				transform: translateY(-50%);
+			}
+		}
+
+		// Button
+
+		.btn {
+			@extend %cadmin-btn !optional;
+		}
+
+		.btn-sm {
+			@extend %cadmin-btn-sm !optional;
+		}
+
+		.btn-monospaced {
+			@extend %cadmin-btn-monospaced !optional;
+		}
+
+		.btn-monospaced.btn-sm,
+		.btn-monospaced-sm {
+			@extend %cadmin-btn-monospaced-sm !optional;
+		}
+
+		.btn-block {
+			@extend %cadmin-btn-block !optional;
+		}
+
+		.btn-primary {
+			@extend %cadmin-btn-primary !optional;
+		}
+
+		.btn-secondary {
+			@extend %cadmin-btn-secondary !optional;
+		}
+
+		.btn-dark {
+			@extend %cadmin-btn-dark !optional;
+		}
+
+		.btn-outline-primary {
+			@extend %cadmin-btn-outline-primary !optional;
+		}
+
+		.btn-outline-secondary {
+			@extend %cadmin-btn-outline-secondary !optional;
+		}
+
+		.btn-borderless,
+		.btn-outline-borderless {
+			@extend %cadmin-btn-borderless !optional;
+		}
+
+		.btn-monospaced.btn-borderless,
+		.btn-monospaced.btn-outline-borderless {
+			@extend %cadmin-btn-monospaced-borderless !optional;
+		}
+
+		.btn-unstyled {
+			@extend %cadmin-btn-unstyled !optional;
+		}
+
+		// Button Group
+
+		.btn-group {
+			@extend %cadmin-btn-group !optional;
+
+			> .btn:not(:first-child),
+			> .btn-group:not(:first-child) {
+				margin-left: math-sign(map-get($cadmin-btn, border-width));
+			}
+
+			> .btn:not(:last-child):not(.dropdown-toggle),
+			> .btn-group:not(:last-child) > .btn {
+				border-bottom-right-radius: 0;
+				border-top-right-radius: 0;
+			}
+
+			> .btn:not(:first-child),
+			> .btn-group:not(:first-child) > .btn {
+				border-bottom-left-radius: 0;
+				border-top-left-radius: 0;
+			}
+		}
+
+		.btn-group-vertical {
+			@extend %cadmin-btn-group-vertical !optional;
+
+			> .btn,
+			> .btn-group {
+				width: 100%;
+			}
+
+			> .btn:not(:first-child),
+			> .btn-group:not(:first-child) {
+				margin-top: math-sign(map-get($cadmin-btn, border-width));
+			}
+
+			> .btn:not(:last-child):not(.dropdown-toggle),
+			> .btn-group:not(:last-child) > .btn {
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+
+			> .btn:not(:first-child),
+			> .btn-group:not(:first-child) > .btn {
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+			}
+
+			> .btn-monospaced {
+				width: map-get($cadmin-btn-monospaced, width);
+
+				&.btn-sm {
+					@extend %cadmin-btn-monospaced-sm !optional;
+				}
+			}
+		}
+
+		.btn-group-nowrap {
+			@extend %cadmin-btn-group-nowrap !optional;
+		}
+
+		.btn-group-item {
+			@extend %cadmin-btn-group-item !optional;
+		}
+
+		.btn-group-item:last-child,
+		.btn-group-item-last {
+			@extend %cadmin-btn-group-item-last !optional;
+		}
+
+		// Alert
+
+		.alert {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-alert !optional;
+
+			.close {
+				@extend %cadmin-alert-close !optional;
+			}
+
+			.lead {
+				@extend %cadmin-alert-lead !optional;
+			}
+
+			.alert-link,
+			.alert-link.btn-unstyled {
+				@extend %cadmin-alert-link !optional;
+			}
+
+			.alert-indicator {
+				@extend %cadmin-alert-indicator !optional;
+
+				+ .lead {
+					margin-bottom: 0;
+					margin-left: map-get($cadmin-alert-lead, margin-right);
+					margin-right: map-get($cadmin-alert-lead, margin-right);
+					margin-top: 0;
+				}
+			}
+		}
+
+		.alert-dismissible {
+			@extend %cadmin-alert-dismissible !optional;
+		}
+
+		.alert-notifications-fixed {
+			@extend %cadmin-alert-notifications-fixed !optional;
+		}
+
+		.alert-notifications .alert {
+			@extend %cadmin-alert-notification !optional;
+		}
+
+		.alert-autofit-row.autofit-row {
+			@extend %cadmin-alert-autofit-row !optional;
+		}
+
+		.alert-success {
+			@extend %cadmin-alert-success !optional;
+		}
+
+		.alert-info {
+			@extend %cadmin-alert-info !optional;
+		}
+
+		.alert-warning {
+			@extend %cadmin-alert-warning !optional;
+		}
+
+		.alert-danger {
+			@extend %cadmin-alert-danger !optional;
+		}
+
+		// Label
+
+		.label {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-label !optional;
+		}
+
+		.label-lg {
+			@extend %cadmin-label-lg !optional;
+		}
+
+		.label-primary {
+			@extend %cadmin-label-primary !optional;
+		}
+
+		.label-secondary {
+			@extend %cadmin-label-secondary !optional;
+		}
+
+		.label-success {
+			@extend %cadmin-label-success !optional;
+		}
+
+		.label-info {
+			@extend %cadmin-label-info !optional;
+		}
+
+		.label-warning {
+			@extend %cadmin-label-warning !optional;
+		}
+
+		.label-danger {
+			@extend %cadmin-label-danger !optional;
+		}
+
+		// Forms
+
+		label,
+		.form-control-label-text {
+			@extend %cadmin-form-control-label !optional;
+		}
+
+		.form-control-label {
+			display: inline;
+			margin-bottom: 0;
+		}
+
+		fieldset[disabled] label,
+		fieldset[disabled] .form-control-label .form-control-label-text,
+		.form-control-label.disabled .form-control-label-text {
+			$disabled: map-get($cadmin-form-control-label, disabled);
+
+			@include clay-css($disabled);
+		}
+
+		.form-control {
+			@extend %cadmin-form-control !optional;
+		}
+
+		select.form-control,
+		.form-control-select {
+			@extend %cadmin-select-form-control !optional;
+		}
+
+		select.form-control-dark {
+			@extend %cadmin-form-control-dark !optional;
+		}
+
+		textarea.form-control,
+		textarea.form-control-plaintext,
+		.form-control.form-control-textarea {
+			@extend %cadmin-textarea-form-control !optional;
+		}
+
+		.form-control-sm,
+		select.form-control.form-control-sm,
+		.form-control-select.form-control-sm {
+			@extend %cadmin-form-control-sm !optional;
+		}
+
+		select.form-control.form-control-sm,
+		.form-control-select.form-control-sm {
+			@extend %cadmin-select-form-control-sm !optional;
+		}
+
+		.form-control-dark {
+			@extend %cadmin-form-control-dark !optional;
+		}
+
+		.form-group {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-form-group !optional;
+		}
+
+		// Custom Forms
+
+		.custom-control {
+			@extend %cadmin-custom-control !optional;
+		}
+
+		.custom-control-label {
+			@extend %cadmin-custom-control-label !optional;
+		}
+
+		.custom-control-label-text {
+			@extend %custom-control-label-text !optional;
+
+			small,
+			.small {
+				@extend %custom-control-label-text-small !optional;
+			}
+		}
+
+		.custom-control-input {
+			@extend %custom-control-input !optional;
+		}
+
+		// Custom Checkbox
+
+		.custom-checkbox .custom-control-input {
+			~ .custom-control-label {
+				@extend %cadmin-custom-checkbox !optional;
+			}
+		}
+
+		// Custom Checkbox Focus
+
+		.custom-checkbox .custom-control-input {
+			&:focus ~ .custom-control-label {
+				@extend %cadmin-custom-checkbox-focus !optional;
+			}
+		}
+
+		// Custom Checkbox Active
+
+		.custom-checkbox .custom-control-input {
+			&:active ~ .custom-control-label {
+				@extend %cadmin-custom-checkbox-active !optional;
+			}
+		}
+
+		// Custom Checkbox Disabled
+
+		.custom-checkbox .custom-control-input {
+			&[disabled],
+			&:disabled {
+				cursor: map-get($cadmin-custom-checkbox-disabled, cursor);
+
+				~ .custom-control-label {
+					@extend %cadmin-custom-control-label-disabled !optional;
+					@extend %cadmin-custom-checkbox-disabled !optional;
+				}
+			}
+		}
+
+		// Custom Checkbox Checked
+
+		.custom-checkbox .custom-control-input {
+			&:checked ~ .custom-control-label {
+				@extend %cadmin-custom-checkbox-checked !optional;
+			}
+		}
+
+		// Custom Checkbox Checked Active
+
+		.custom-checkbox .custom-control-input {
+			&:checked:active ~ .custom-control-label {
+				@extend %cadmin-custom-checkbox-checked-active !optional;
+			}
+		}
+
+		// Custom Checkbox Checked Disabled
+
+		.custom-checkbox .custom-control-input {
+			&:checked:disabled {
+				~ .custom-control-label {
+					@extend %cadmin-custom-checkbox-checked-disabled !optional;
+				}
+			}
+		}
+
+		// Custom Checkbox Indeterminate
+
+		.custom-checkbox .custom-control-input {
+			&:indeterminate {
+				~ .custom-control-label {
+					@extend %cadmin-custom-checkbox-indeterminate !optional;
+				}
+			}
+		}
+
+		// Custom Checkbox Indeterminate Disabled
+
+		.custom-checkbox .custom-control-input {
+			&:indeterminate:disabled ~ .custom-control-label {
+				@extend %cadmin-custom-checkbox-indeterminate-disabled !optional;
+			}
+		}
+
+		// Custom Radio
+
+		.custom-radio .custom-control-input {
+			~ .custom-control-label {
+				@extend %cadmin-custom-radio !optional;
+			}
+		}
+
+		// Custom Radio Focus
+
+		.custom-radio .custom-control-input {
+			&:focus ~ .custom-control-label {
+				@extend %cadmin-custom-radio-focus !optional;
+			}
+		}
+
+		// Custom Radio Disabled
+
+		.custom-radio .custom-control-input {
+			&[disabled],
+			&:disabled {
+				~ .custom-control-label {
+					@extend %cadmin-custom-control-label-disabled !optional;
+					@extend %cadmin-custom-radio-disabled !optional;
+				}
+			}
+		}
+
+		// Custom Radio Checked
+
+		.custom-radio .custom-control-input {
+			&:checked ~ .custom-control-label {
+				@extend %cadmin-custom-radio-checked !optional;
+			}
+		}
+
+		// Custom Radio Checked Disabled
+
+		.custom-radio .custom-control-input {
+			&:checked[disabled],
+			&:checked:disabled {
+				~ .custom-control-label {
+					@extend %cadmin-custom-radio-checked-disabled !optional;
+				}
+			}
+		}
+
+		// Custom Control Inline
+
+		.custom-control-inline {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-custom-control-inline !optional;
+
+			+ .cadmin-custom-control-inline {
+				@extend %cadmin-plus-custom-control-inline !optional;
+			}
+		}
+
+		// Nav
+
+		.nav {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-nav !optional;
+		}
+
+		.nav-stacked {
+			@extend %cadmin-nav-stacked !optional;
+		}
+
+		.nav-item {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-nav-item !optional;
+		}
+
+		.nav-link {
+			@extend %cadmin-nav-link !optional;
+		}
+
+		.nav-dark {
+			.nav-link {
+				@extend %cadmin-nav-link-dark !optional;
+			}
+		}
+
+		.nav-light {
+			.nav-link {
+				@extend %cadmin-nav-link-light !optional;
+			}
+		}
+
+		// Nav Underline
+
+		.nav-underline {
+			@extend %cadmin-nav-underline !optional;
+
+			.nav-link {
+				@extend %cadmin-nav-underline-nav-link !optional;
+			}
+		}
+
+		// Badge
+
+		.badge {
+			@extend %cadmin-badge !optional;
+		}
+
+		// Sticker
+
+		.sticker {
+			@extend %cadmin-sticker !optional;
+		}
+
+		.sticker-lg {
+			@extend %cadmin-sticker-lg !optional;
+		}
+
+		// Breadcrumb
+
+		.breadcrumb {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-breadcrumb !optional;
+
+			.breadcrumb-item {
+				@extend %cadmin-container-reset !optional;
+				@extend %cadmin-spacing-reset !optional;
+				@extend %cadmin-breadcrumb-item !optional;
+			}
+
+			.breadcrumb-link {
+				@extend %cadmin-breadcrumb-link !optional;
+			}
+
+			.breadcrumb-text-truncate {
+				@extend %cadmin-breadcrumb-text-truncate !optional;
+			}
+		}
+
+		// Card
+
+		.card {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-card !optional;
+		}
+
+		.card-body {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-card-body !optional;
+		}
+
+		.card-title {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-card-title !optional;
+		}
+
+		.card-subtitle {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-card-subtitle !optional;
+		}
+
+		.card-row {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-card-row !optional;
+		}
+
+		.card-item-first {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-card-item-first !optional;
+		}
+
+		.card-item-last {
+			@extend %cadmin-container-reset !optional;
+			@extend %cadmin-spacing-reset !optional;
+			@extend %cadmin-card-item-last !optional;
+		}
+
+		// Dropdown
+
+		.dropdown-toggle {
+			@extend %cadmin-dropdown-toggle !optional;
+		}
+
+		.dropdown-menu,
+		&.dropdown-menu {
+			@extend %cadmin-dropdown-menu !optional;
+
+			&.show {
+				display: block;
+			}
+
+			> .list-unstyled {
+				@extend %cadmin-dropdown-menu-list-unstyled !optional;
+			}
+
+			.dropdown-header {
+				@extend %cadmin-dropdown-header !optional;
+			}
+
+			.dropdown-subheader {
+				@extend %cadmin-dropdown-subheader !optional;
+			}
+
+			.dropdown-caption {
+				@extend %cadmin-dropdown-caption !optional;
+			}
+
+			.dropdown-item {
+				@extend %cadmin-dropdown-item !optional;
+			}
+
+			.dropdown-footer {
+				@extend %cadmin-dropdown-footer !optional;
+			}
+
+			.dropdown-divider {
+				@extend %cadmin-dropdown-divider !optional;
+			}
+
+			&.dropdown-menu-indicator-start {
+				.dropdown-item-indicator-text-start {
+					padding-left: 0;
+				}
+
+				$_pl: map-get($cadmin-dropdown-item, padding-left) + 32px;
+
+				.dropdown-header,
+				.dropdown-subheader,
+				.dropdown-caption,
+				.dropdown-item {
+					padding-left: $_pl;
+				}
+
+				.dropdown-item {
+					.c-inner {
+						margin-left: math-sign($_pl);
+					}
+				}
+			}
+
+			.dropdown-item-indicator-start {
+				@extend %cadmin-dropdown-item-indicator-start !optional;
+			}
+
+			.dropdown-item-indicator-text-start {
+				@extend %cadmin-dropdown-item-indicator-text-start !optional;
+			}
+
+			&.dropdown-menu-indicator-end {
+				.dropdown-item-indicator-text-end {
+					padding-right: 0;
+				}
+
+				.dropdown-item {
+					$_pr: map-get($cadmin-dropdown-item, padding-right) + 32px;
+
+					padding-right: $_pr;
+
+
+					.c-inner {
+						margin-right: math-sign($_pr);
+					}
+				}
+			}
+
+			.dropdown-item-indicator-end {
+				@extend %cadmin-dropdown-item-indicator-end !optional;
+			}
+
+			.dropdown-item-indicator-text-end {
+				@extend %cadmin-dropdown-item-indicator-text-end !optional;
+			}
+		}
+
+		// Tooltip
+
+		.tooltip {
+			@extend %cadmin-tooltip !optional;
+		}
+
+		.clay-tooltip-bottom {
+			@extend %cadmin-tooltip-bottom !optional;
+		}
+
+		.clay-tooltip-bottom-left {
+			@extend %cadmin-tooltip-bottom-left !optional;
+		}
+
+		.clay-tooltip-bottom-right {
+			@extend %cadmin-tooltip-bottom-right !optional;
+		}
+
+		.clay-tooltip-left {
+			@extend %cadmin-tooltip-left !optional;
+		}
+
+		.clay-tooltip-left-bottom {
+			@extend %cadmin-tooltip-left-bottom !optional;
+		}
+
+		.clay-tooltip-left-top {
+			@extend %cadmin-tooltip-left-top !optional;
+		}
+
+		.clay-tooltip-right {
+			@extend %cadmin-tooltip-right !optional;
+		}
+
+		.clay-tooltip-right-bottom {
+			@extend %cadmin-tooltip-right-bottom !optional;
+		}
+
+		.clay-tooltip-right-top {
+			@extend %cadmin-tooltip-right-top !optional;
+		}
+
+		.clay-tooltip-top {
+			@extend %cadmin-tooltip-top !optional;
+		}
+
+		.clay-tooltip-top-left {
+			@extend %cadmin-tooltip-top-left !optional;
+		}
+
+		.clay-tooltip-top-right {
+			@extend %cadmin-tooltip-top-right !optional;
+		}
+
+		// Utilities
+
+		.aspect-ratio {
+			@extend %cadmin-aspect-ratio !optional;
+		}
+
+		.aspect-ratio-item {
+			@extend %cadmin-aspect-ratio-item !optional;
+		}
+
+		.aspect-ratio-item-fluid {
+			@extend %cadmin-aspect-ratio-item-fluid !optional;
+		}
+
+		.aspect-ratio-item-vertical-fluid {
+			@extend %cadmin-aspect-ratio-item-vertical-fluid !optional;
+		}
+
+		.aspect-ratio-item-flush {
+			@extend %cadmin-aspect-ratio-item-flush !optional;
+		}
+
+		// Center Middle
+
+		%cadmin-aspect-ratio-item-center-middle {
+			@include clay-position(center-middle);
+		}
+
+		.aspect-ratio-item-center-middle {
+			@extend %cadmin-aspect-ratio-item-center-middle !optional;
+		}
+
+		// 3 to 2
+
+		.aspect-ratio-3-to-2 {
+			@extend %cadmin-aspect-ratio-3-to-2 !optional;
+		}
+
+		// 4 to 3
+
+		.aspect-ratio-4-to-3 {
+			@extend %cadmin-aspect-ratio-4-to-3 !optional;
+		}
+
+		// 8 to 5
+
+		.aspect-ratio-8-to-5 {
+			@extend %cadmin-aspect-ratio-8-to-5 !optional;
+		}
+
+		// 16 to 9
+
+		.aspect-ratio-16-to-9 {
+			@extend %cadmin-aspect-ratio-16-to-9 !optional;
+		}
+
+		// Autofit
+
+		.autofit-padded {
+			@extend %cadmin-autofit-padded !optional;
+		}
+
+		.autofit-padded-no-gutters-x {
+			@extend %cadmin-autofit-padded-no-gutters-x !optional;
+		}
+
+		.autofit-padded-no-gutters-y {
+			@extend %cadmin-autofit-padded-no-gutters-y !optional;
+		}
+
+		.autofit-padded-no-gutters {
+			@extend %cadmin-autofit-padded-no-gutters !optional;
+		}
+
+		.autofit-col {
+			@extend %cadmin-autofit-col !optional;
+		}
+
+		.autofit-col-expand {
+			@extend %cadmin-autofit-col-expand !optional;
+		}
+
+		.close {
+			@extend %cadmin-close !optional;
+		}
+
+		.inline-item {
+			@extend %cadmin-inline-item !optional;
+		}
+
+		.inline-item-before {
+			@extend %cadmin-inline-item-before !optional;
+		}
+
+		.inline-item-middle {
+			@extend %cadmin-inline-item-middle !optional;
+		}
+
+		.inline-item-after {
+			@extend %cadmin-inline-item-after !optional;
+		}
+
+		.border {
+			border: $cadmin-border-width $cadmin-border-style $cadmin-gray-300 !important;
+		}
+
+		.border-top {
+			border-top: $cadmin-border-width $cadmin-border-style $cadmin-gray-300 !important;
+		}
+
+		.border-right {
+			border-right: $cadmin-border-width $cadmin-border-style $cadmin-gray-300 !important;
+		}
+
+		.border-bottom {
+			border-bottom: $cadmin-border-width $cadmin-border-style $cadmin-gray-300 !important;
+		}
+
+		.border-left {
+			border-left: $cadmin-border-width $cadmin-border-style $cadmin-gray-300 !important;
+		}
+
+		.border-0 {
+			border: 0 !important;
+		}
+
+		.border-top-0 {
+			border-top: 0 !important;
+		}
+
+		.border-right-0 {
+			border-right: 0 !important;
+		}
+
+		.border-bottom-0 {
+			border-bottom: 0 !important;
+		}
+
+		.border-left-0 {
+			border-left: 0 !important;
+		}
+
+		@each $prop, $abbrev in (margin: m, padding: p) {
+			@each $size, $length in $cadmin-spacers {
+				.#{$abbrev}-#{$size} {
+					#{$prop}: $length !important;
+				}
+
+				.#{$abbrev}t-#{$size},
+				.#{$abbrev}y-#{$size} {
+					#{$prop}-top: $length !important;
+				}
+
+				.#{$abbrev}r-#{$size},
+				.#{$abbrev}x-#{$size} {
+					#{$prop}-right: $length !important;
+				}
+
+				.#{$abbrev}b-#{$size},
+				.#{$abbrev}y-#{$size} {
+					#{$prop}-bottom: $length !important;
+				}
+
+				.#{$abbrev}l-#{$size},
+				.#{$abbrev}x-#{$size} {
+					#{$prop}-left: $length !important;
+				}
+			}
+		}
+
+		.m-auto {
+			margin: auto !important;
+		}
+
+		.mt-auto,
+		.my-auto {
+			margin-top: auto !important;
+		}
+
+		.mr-auto,
+		.mx-auto {
+			margin-right: auto !important;
+		}
+
+		.mb-auto,
+		.my-auto {
+			margin-bottom: auto !important;
+		}
+
+		.ml-auto,
+		.mx-auto {
+			margin-left: auto !important;
+		}
+
+		.font-weight-lighter {
+			font-weight: $cadmin-font-weight-lighter !important;
+		}
+
+		.font-weight-light {
+			font-weight: $cadmin-font-weight-light !important;
+		}
+
+		.font-weight-normal {
+			font-weight: $cadmin-font-weight-normal !important;
+		}
+
+		.font-weight-semi-bold {
+			font-weight: $cadmin-font-weight-semi-bold !important;
+		}
+
+		.font-weight-bold {
+			font-weight: $cadmin-font-weight-bold !important;
+		}
+
+		.font-weight-bolder {
+			font-weight: $cadmin-font-weight-bolder !important;
+		}
+
+		.text-white {
+			color: $cadmin-white !important;
+		}
+	}
+}

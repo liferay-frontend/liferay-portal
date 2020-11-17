@@ -1,0 +1,2234 @@
+// The keyword `clay-unset` allows unsetting a css value so it doesn't get output in the final css file.
+
+$clay-unset: clay-unset !default;
+
+// An alias for `$clay-unset`
+
+$c-unset: $clay-unset !default;
+
+$clay-unset-placeholder: clay-unset-placeholder !default;
+
+$enable-rounded: true !default;
+$enable-shadows: true !default;
+$enable-scaling-components: false !default;
+$enable-c-inner: true !default;
+$scaling-breakpoint-down: sm !default;
+
+// The selector `html:not(#___)` is an `element` and an `id`. We can increase
+// the specificity by any number of id's by appending `:not(#another-id)`.
+
+$cadmin-selector: ':not(#__):not(#___)' !default;
+
+// Z-Index
+
+$cadmin-zindex-alert-notifications: 5000 !default;
+$cadmin-zindex-dropdown: 1000 !default;
+$cadmin-zindex-sticky: 1020 !default;
+$cadmin-zindex-fixed: 1030 !default;
+$cadmin-zindex-modal-backdrop: 1040 !default;
+$cadmin-zindex-modal: 1050 !default;
+$cadmin-zindex-popover: 1060 !default;
+$cadmin-zindex-tooltip: 1070 !default;
+
+// Spacing
+
+$cadmin-spacer: 16px !default;
+$cadmin-spacers: () !default;
+$cadmin-spacers: map-deep-merge(
+	(
+		0: 0,
+		1: (
+			$cadmin-spacer * 0.25,
+		),
+		2: (
+			$cadmin-spacer * 0.5,
+		),
+		3: (
+			$cadmin-spacer * 1,
+		),
+		4: (
+			$cadmin-spacer * 1.5,
+		),
+		5: (
+			$cadmin-spacer * 3,
+		),
+		6: (
+			$cadmin-spacer * 4.5,
+		),
+		7: (
+			$cadmin-spacer * 6,
+		),
+		8: (
+			$cadmin-spacer * 7.5,
+		),
+		9: (
+			$cadmin-spacer * 9,
+		),
+		10: (
+			$cadmin-spacer * 10,
+		),
+	),
+	$cadmin-spacers
+);
+
+// Breakpoints
+
+$cadmin-grid-breakpoints: () !default;
+$cadmin-grid-breakpoints: map-merge((
+	xs: 0,
+	sm: 576px,
+	md: 768px,
+	lg: 992px,
+	xl: 1280px,
+), $cadmin-grid-breakpoints);
+
+// Colors
+
+$cadmin-white: #fff !default;
+$cadmin-gray-100: #f7f8f9 !default;
+$cadmin-gray-200: #f1f2f5 !default;
+$cadmin-gray-300: #e7e7ed !default;
+$cadmin-gray-400: #cdced9 !default;
+$cadmin-gray-500: #a7a9bc !default;
+$cadmin-gray-600: #6b6c7e !default;
+$cadmin-gray-700: #495057 !default;
+$cadmin-gray-800: #393a4a !default;
+$cadmin-gray-900: #272833 !default;
+$cadmin-black: #000 !default;
+
+$cadmin-blue: #4b9fff !default;
+$cadmin-indigo: #7785ff !default;
+$cadmin-purple: #af78ff !default;
+$cadmin-pink: #ff73c3 !default;
+$cadmin-red: #ff5f5f !default;
+$cadmin-orange: #ffb46e !default;
+$cadmin-yellow: #ffd76e !default;
+$cadmin-green: #9be169 !default;
+$cadmin-teal: #50d2a0 !default;
+$cadmin-cyan: #5fc8ff !default;
+
+$cadmin-primary: #0b5fff !default;
+$cadmin-primary-d1: darken($cadmin-primary, 5.1) !default;
+$cadmin-primary-d2: darken($cadmin-primary, 10) !default;
+$cadmin-primary-l1: lighten($cadmin-primary, 22.94) !default;
+$cadmin-primary-l2: lighten($cadmin-primary, 32.94) !default;
+$cadmin-primary-l3: lighten($cadmin-primary, 44.9) !default;
+
+$cadmin-secondary: $cadmin-gray-600 !default;
+$cadmin-secondary-d1: darken(saturate($cadmin-secondary, 4.82), 20) !default;
+$cadmin-secondary-d2: darken(saturate($cadmin-secondary, 5.36), 23.92) !default;
+$cadmin-secondary-l1: lighten(
+	saturate(adjust-hue($cadmin-secondary, -3), 5.39),
+	23.92
+) !default;
+$cadmin-secondary-l2: lighten(
+	saturate(adjust-hue($cadmin-secondary, -2), 5.48),
+	37.06
+) !default;
+$cadmin-secondary-l3: lighten(
+	saturate(adjust-hue($cadmin-secondary, 3), 6.13),
+	46.08
+) !default;
+
+$cadmin-info: #2e5aac !default;
+$cadmin-info-d1: darken($cadmin-info, 5) !default;
+$cadmin-info-d2: darken($cadmin-info, 10) !default;
+$cadmin-info-l1: lighten(saturate($cadmin-info, 0.59), 28.04) !default;
+$cadmin-info-l2: lighten(desaturate($cadmin-info, 3.25), 52.94) !default;
+
+$cadmin-success: #287d3c !default;
+$cadmin-success-d1: darken($cadmin-success, 5) !default;
+$cadmin-success-d2: darken($cadmin-success, 10) !default;
+$cadmin-success-l1: lighten(desaturate($cadmin-success, 0.14), 24.95) !default;
+$cadmin-success-l2: lighten(desaturate($cadmin-success, 1.52), 62.94) !default;
+
+$cadmin-warning: #b95000 !default;
+$cadmin-warning-d1: darken($cadmin-warning, 5.1) !default;
+$cadmin-warning-d2: darken($cadmin-warning, 10) !default;
+$cadmin-warning-l1: lighten($cadmin-warning, 24.9) !default;
+$cadmin-warning-l2: lighten($cadmin-warning, 60) !default;
+
+$cadmin-danger: #da1414 !default;
+$cadmin-danger-d1: darken($cadmin-danger, 5) !default;
+$cadmin-danger-d2: darken($cadmin-danger, 10) !default;
+$cadmin-danger-l1: lighten(desaturate($cadmin-danger, 0.25), 28.04) !default;
+$cadmin-danger-l2: lighten(saturate($cadmin-danger, 5.04), 50) !default;
+
+$cadmin-light: $cadmin-gray-200 !default;
+$cadmin-light-d1: darken($cadmin-light, 5.1) !default;
+$cadmin-light-d2: darken($cadmin-light, 10) !default;
+$cadmin-light-l1: lighten(desaturate(adjust-hue($cadmin-light, -15), 2.38), 1.96) !default;
+$cadmin-light-l2: lighten(desaturate(adjust-hue($cadmin-light, -225), 16.67), 4.71) !default;
+
+$cadmin-dark: $cadmin-gray-900 !default;
+$cadmin-dark-d1: darken($cadmin-dark, 5.1) !default;
+$cadmin-dark-d2: darken($cadmin-dark, 10) !default;
+$cadmin-dark-l1: lighten(saturate($cadmin-dark, 0.18), 4.12) !default;
+$cadmin-dark-l2: lighten(desaturate($cadmin-dark, 0.36), 8.04) !default;
+
+$cadmin-component-active-bg: $cadmin-primary !default;
+$cadmin-component-active-color: $cadmin-white !default;
+
+$cadmin-component-focus-box-shadow: 0 0 0 2px $cadmin-white#{','} 0 0 0 4px $cadmin-primary-l1 !default;
+$cadmin-component-focus-inset-box-shadow: inset 0 0 0 2px $cadmin-primary-l1#{','} inset 0
+	0 0 4px $cadmin-white !default;
+
+$cadmin-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
+$cadmin-font-family-sans-serif: system-ui, -apple-system, BlinkMacSystemFont,
+	'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Arial,
+	sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !default;
+$cadmin-font-family-serif: Georgia, 'Times New Roman', Times, serif !default;
+
+$cadmin-font-size: 16px !default;
+
+$cadmin-font-weight-lighter: lighter !default;
+$cadmin-font-weight-light: 300 !default;
+$cadmin-font-weight-normal: 400 !default;
+$cadmin-font-weight-semi-bold: 600 !default;
+$cadmin-font-weight-bold: 700 !default;
+$cadmin-font-weight-bolder: 900 !default;
+
+$cadmin-line-height: 1.5 !default;
+
+// Border
+
+$cadmin-border-color: $cadmin-gray-300 !default;
+$cadmin-border-style: solid !default;
+$cadmin-border-width: 1px !default;
+
+// A Sass placeholder that prevents inherited properties from bleeding into a
+// component.
+
+$cadmin-container-reset: () !default;
+$cadmin-container-reset: map-merge((
+	-moz-osx-font-smoothing: grayscale,
+	-webkit-font-smoothing: antialiased,
+	background-color: transparent,
+	background-image: none,
+	border-width: 0,
+	color: $cadmin-gray-900,
+	font-family: $cadmin-font-family-sans-serif,
+	font-size: $cadmin-font-size,
+	font-style: normal,
+	font-variant: normal,
+	font-weight: $cadmin-font-weight-normal,
+	letter-spacing: normal,
+	line-height: $cadmin-line-height,
+	text-align: left,
+	text-decoration: none,
+	text-indent: 0,
+	text-shadow: none,
+	text-transform: none,
+	visibility: visible,
+	white-space: normal,
+	word-break: normal,
+	word-spacing: normal,
+	word-wrap: normal,
+), $cadmin-container-reset);
+
+$cadmin-spacing-reset: () !default;
+$cadmin-spacing-reset: map-merge((
+	height: auto,
+	margin: 0,
+	max-height: none,
+	max-width: none,
+	min-height: 0,
+	min-width: 0,
+	padding: 0,
+	width: auto,
+), $cadmin-spacing-reset);
+
+$cadmin-h: () !default;
+$cadmin-h: map-merge((
+	display: block,
+	font-weight: $cadmin-font-weight-bold,
+	line-height: 1.2,
+	margin: 0 0 8px 0,
+	padding: 0,
+), $cadmin-h);
+
+$cadmin-h1: () !default;
+$cadmin-h1: map-merge((
+	font-size: 26px,
+), $cadmin-h1);
+
+$cadmin-h2: () !default;
+$cadmin-h2: map-merge((
+	font-size: 22px,
+), $cadmin-h2);
+
+$cadmin-h3: () !default;
+$cadmin-h3: map-merge((
+	font-size: 19px,
+), $cadmin-h3);
+
+$cadmin-h4: () !default;
+$cadmin-h4: map-merge((
+	font-size: 16px,
+), $cadmin-h4);
+
+$cadmin-h5: () !default;
+$cadmin-h5: map-merge((
+	font-size: 14px,
+), $cadmin-h5);
+
+$cadmin-h6: () !default;
+$cadmin-h6: map-merge((
+	font-size: 13px,
+), $cadmin-h6);
+
+$cadmin-link: () !default;
+$cadmin-link: map-deep-merge((
+	border-radius: 0,
+	color: $cadmin-primary,
+	cursor: pointer,
+	display: inline,
+	font-size: inherit,
+	margin: 0,
+	padding: 0,
+	text-decoration: none,
+	hover: (
+		color: $cadmin-primary-d2,
+		text-decoration: underline,
+	),
+), $cadmin-link);
+
+$cadmin-p: () !default;
+$cadmin-p: map-merge((
+	display: block,
+	margin: 0 0 16px 0,
+	padding: 0,
+), $cadmin-p);
+
+$cadmin-small: () !default;
+$cadmin-small: map-merge((
+	display: inline,
+	font-size: 80%,
+	margin: 0,
+	padding: 0,
+), $cadmin-small);
+
+// Icons
+
+$cadmin-lexicon-icon: () !default;
+$cadmin-lexicon-icon: map-merge((
+	display: inline-block,
+	fill: currentColor,
+	height: 1em,
+	margin-top: -3px,
+	vertical-align: middle,
+	width: 1em,
+), $cadmin-lexicon-icon);
+
+$cadmin-collapse-icon: () !default;
+$cadmin-collapse-icon: map-merge((
+	display: block,
+	padding-right: 45px,
+	position: relative,
+	width: 100%,
+), $cadmin-collapse-icon);
+
+$cadmin-collapse-icon-closed-and-open: () !default;
+$cadmin-collapse-icon-closed-and-open: map-merge((
+	bottom: auto,
+	font-size: inherit,
+	left: auto,
+	right: 15px,
+	top: calc(0px + (((1em * #{$cadmin-line-height}) - 1em) / 2)),
+), $cadmin-collapse-icon-closed-and-open);
+
+$cadmin-btn: () !default;
+$cadmin-btn: map-deep-merge((
+	background-image: none,
+	border-color: transparent,
+	border-radius: 4px,
+	border-style: solid,
+	border-width: 1px,
+	color: $cadmin-gray-900,
+	cursor: pointer,
+	display: inline-block,
+	font-weight: $cadmin-font-weight-semi-bold,
+	padding-bottom: 7px,
+	padding-left: 12px,
+	padding-right: 12px,
+	padding-top: 7px,
+	text-align: center,
+	text-decoration: none,
+	transition: color .15s ease-in-out#{','} background-color .15s ease-in-out#{','} border-color .15s ease-in-out#{','} box-shadow .15s ease-in-out,
+	user-select: none,
+	vertical-align: middle,
+	hover: (
+		text-decoration: none,
+	),
+	focus: (
+		box-shadow: $cadmin-component-focus-box-shadow,
+		outline: 0,
+	),
+	active-focus: (
+		box-shadow: $c-unset,
+	),
+	disabled: (
+		box-shadow: none,
+		cursor: not-allowed,
+		opacity: 0.4,
+	),
+	disabled-active: (
+		pointer-events: none,
+	),
+	inline-item: (
+		font-size: $cadmin-font-size,
+		margin-bottom: -2px,
+		margin-top: -2px,
+	),
+), $cadmin-btn);
+
+$cadmin-btn-sm: () !default;
+$cadmin-btn-sm: map-deep-merge((
+	border-radius: 3px,
+	font-size: 14px,
+	line-height: 1.15,
+	padding-bottom: 7px,
+	padding-left: 12px,
+	padding-right: 12px,
+	padding-top: 7px,
+), $cadmin-btn-sm);
+
+$cadmin-btn-monospaced: () !default;
+$cadmin-btn-monospaced: map-deep-merge((
+	align-items: center,
+	display: inline-flex,
+	flex-direction: column,
+	height: 40px,
+	justify-content: center,
+	line-height: 1,
+	overflow-wrap: break-word,
+	overflow: hidden,
+	padding-bottom: 0,
+	padding-left: 0,
+	padding-right: 0,
+	padding-top: 0,
+	text-align: center,
+	white-space: normal,
+	width: 40px,
+	lexicon-icon: (
+		margin-top: 0,
+	),
+	c-inner: (
+		display: inherit,
+		height: inherit,
+		margin: -1px,
+		width: inherit,
+	),
+	section: (
+		font-size: 0.6875em,
+		margin-bottom: -2px,
+		margin-top: 1px,
+	),
+), $cadmin-btn-monospaced);
+
+$cadmin-btn-monospaced-sm: () !default;
+$cadmin-btn-monospaced-sm: map-merge((
+	align-items: center,
+	display: inline-flex,
+	flex-direction: column,
+	height: 32px,
+	justify-content: center,
+	line-height: 1,
+	overflow-wrap: break-word,
+	overflow: hidden,
+	padding-bottom: 0,
+	padding-left: 0,
+	padding-right: 0,
+	padding-top: 0,
+	width: 32px,
+	text-align: center,
+	white-space: normal,
+	lexicon-icon: (
+		margin-top: 0,
+	),
+	c-inner: (
+		display: inherit,
+		height: inherit,
+		margin: -1px,
+		width: inherit,
+	),
+	inline-item: (
+		font-size: $cadmin-font-size,
+	),
+	section: (
+		font-size: 0.6875em,
+		margin-bottom: -2px,
+		margin-top: 1px,
+	),
+), $cadmin-btn-monospaced-sm);
+
+$cadmin-btn-block: () !default;
+$cadmin-btn-block: map-deep-merge((
+	display: block,
+	width: 100%,
+), $cadmin-btn-block);
+
+$cadmin-btn-block-margin-top: 8px !default;
+
+$cadmin-btn-primary: () !default;
+$cadmin-btn-primary: map-deep-merge((
+	background-color: $cadmin-primary,
+	background-image: none,
+	border-color: transparent,
+	color: $cadmin-white,
+	hover: (
+		background-color: $cadmin-primary-d1,
+		border-color: transparent,
+		background-image: none,
+		color: $cadmin-white,
+	),
+	focus: (
+		background-color: $cadmin-primary-d1,
+		background-image: none,
+	),
+	active: (
+		background-color: $cadmin-primary-d2,
+		border-color: transparent,
+	),
+	disabled: (
+		background-color: $cadmin-primary,
+	),
+), $cadmin-btn-primary);
+
+$cadmin-btn-secondary: () !default;
+$cadmin-btn-secondary: map-deep-merge((
+	background-color: $cadmin-white,
+	border-color: $cadmin-secondary-l2,
+	color: $cadmin-secondary,
+	hover: (
+		background-color: $cadmin-gray-100,
+		border-color: $cadmin-secondary-l2,
+		color: $cadmin-gray-900,
+	),
+	focus: (
+		background-color: $cadmin-gray-100,
+		border-color: $cadmin-secondary-l2,
+		color: $cadmin-gray-900,
+	),
+	active: (
+		background-color: $cadmin-gray-200,
+	),
+	disabled: (
+		background-color: $cadmin-white,
+		border-color: $cadmin-secondary-l2,
+		color: $cadmin-secondary,
+	),
+), $cadmin-btn-secondary);
+
+$cadmin-btn-dark: () !default;
+$cadmin-btn-dark: map-deep-merge((
+	background-color: transparent,
+	border-color: transparent,
+	color: $cadmin-gray-400,
+	hover: (
+		background-color: rgba($cadmin-white, 0.03),
+		border-color: transparent,
+		color: $cadmin-white,
+	),
+	focus: (
+		background-color: rgba($cadmin-white, 0.03),
+		border-color: transparent,
+		color: $cadmin-white,
+	),
+	disabled: (
+		background-color: transparent,
+		border-color: transparent,
+		color: $cadmin-gray-400,
+	),
+), $cadmin-btn-dark);
+
+$cadmin-btn-outline-primary: () !default;
+$cadmin-btn-outline-primary: map-deep-merge((
+	background-color: transparent,
+	border-color: $cadmin-primary,
+	color: $cadmin-primary,
+	hover: (
+		background-color: $cadmin-primary-l3,
+		color: $cadmin-primary,
+		border-color: $cadmin-primary,
+	),
+	focus: (
+		background-color: $cadmin-primary-l3,
+		color: $cadmin-primary,
+	),
+	active: (
+		background-color: lighten(desaturate($cadmin-primary, 42.05), 41.76),
+		color: $cadmin-primary,
+	),
+	disabled: (
+		background-color: transparent,
+		border-color: $cadmin-primary,
+		color: $cadmin-primary,
+	),
+), $cadmin-btn-outline-primary);
+
+$cadmin-btn-outline-secondary: () !default;
+$cadmin-btn-outline-secondary: map-deep-merge((
+	background-color: transparent,
+	border-color: $cadmin-secondary-l2,
+	color: $cadmin-secondary,
+	hover: (
+		background-color: rgba($cadmin-gray-900, 0.03),
+		border-color: transparent,
+		color: $cadmin-secondary,
+	),
+	focus: (
+		background-color: rgba($cadmin-gray-900, 0.03),
+		border-color: transparent,
+		color: $cadmin-secondary,
+	),
+	active: (
+		background-color: rgba($cadmin-gray-900, 0.06),
+		border-color: transparent,
+		color: $cadmin-gray-900,
+	),
+	disabled: (
+		background-color: transparent,
+		border-color: $cadmin-secondary-l2,
+		color: $cadmin-secondary,
+	),
+), $cadmin-btn-outline-secondary);
+
+// Button Group
+
+$cadmin-btn-group: () !default;
+$cadmin-btn-group: map-merge((
+	display: inline-flex,
+	flex-wrap: wrap,
+	position: relative,
+	vertical-align: middle,
+), $cadmin-btn-group);
+
+$cadmin-btn-group-btn: () !default;
+$cadmin-btn-group-btn: map-deep-merge((
+	position: relative,
+	hover: (
+		z-index: 1,
+	),
+	focus: (
+		z-index: 3,
+	),
+	active: (
+		z-index: 2,
+	),
+	active-class: (
+		z-index: 2,
+	),
+), $cadmin-btn-group-btn);
+
+$cadmin-btn-group-vertical: () !default;
+$cadmin-btn-group-vertical: map-merge((
+	align-items: flex-start,
+	display: flex,
+	flex-direction: column,
+	justify-content: center,
+	position: relative,
+), $cadmin-btn-group-vertical);
+
+$cadmin-btn-group-nowrap: () !default;
+$cadmin-btn-group-nowrap: map-merge((
+	flex-wrap: nowrap,
+), $cadmin-btn-group-nowrap);
+
+$cadmin-btn-group-item: () !default;
+$cadmin-btn-group-item: map-merge((
+	align-items: center,
+	display: inline-flex,
+	margin-right: 16px,
+), $cadmin-btn-group-item);
+
+// Alert
+
+$cadmin-alert: () !default;
+$cadmin-alert: map-merge((
+	background-image: none,
+	border-color: transparent,
+	border-radius: clay-enable-rounded(4px),
+	border-style: solid,
+	border-width: 1px,
+	display: block,
+	font-size: 14px,
+	height: auto,
+	margin: 0 0 16px 0,
+	max-height: none,
+	max-width: none,
+	min-height: 0,
+	min-width: 0,
+	overflow-wrap: break-word,
+	padding: 16.5px 16px,
+	position: relative,
+	width: auto,
+), $cadmin-alert);
+
+$cadmin-alert-close: () !default;
+$cadmin-alert-close: map-deep-merge((
+	bottom: auto,
+	color: inherit,
+	font-size: 14px,
+	height: 32px,
+	left: auto,
+	opacity: 1,
+	padding-bottom: 0,
+	padding-left: 0,
+	padding-right: 0,
+	padding-top: 0,
+	position: absolute,
+	right: 8px,
+	top: 12px,
+	width: 32px,
+	hover: (
+		color: inherit,
+	),
+	disabled: (
+		color: inherit,
+	),
+), $cadmin-alert-close);
+
+$cadmin-alert-lead: () !default;
+$cadmin-alert-lead: map-merge((
+	color: inherit,
+	font-size: inherit,
+	font-weight: $cadmin-font-weight-semi-bold,
+	margin-bottom: 0,
+	margin-left: 0,
+	margin-right: 5px,
+	margin-top: 0,
+	padding: 0,
+), $cadmin-alert-lead);
+
+$cadmin-alert-link: () !default;
+$cadmin-alert-link: map-deep-merge((
+	color: $cadmin-primary,
+	font-size: inherit,
+	font-weight: $cadmin-font-weight-semi-bold,
+	text-decoration: underline,
+	hover: (
+		color: $cadmin-primary-d2,
+		text-decoration: none,
+	),
+), $cadmin-alert-link);
+
+$cadmin-alert-indicator: () !default;
+$cadmin-alert-indicator: map-merge((
+	font-size: inherit,
+), $cadmin-alert-indicator);
+
+$cadmin-alert-dismissible: () !default;
+$cadmin-alert-dismissible: map-merge((
+	padding-right: 40px,
+), $cadmin-alert-dismissible);
+
+$cadmin-alert-notifications-fixed: () !default;
+$cadmin-alert-notifications-fixed: map-merge((
+	bottom: 20px,
+	left: 20px,
+	margin-bottom: -16px,
+	right: auto,
+	position: fixed,
+	top: auto,
+	z-index: $cadmin-zindex-alert-notifications,
+), $cadmin-alert-notifications-fixed);
+
+$cadmin-alert-notification: () !default;
+$cadmin-alert-notification: map-merge((
+	box-shadow: 0 0.5rem 2rem -0.25rem rgba(0, 0, 0, 0.3),
+	margin-bottom: 16px,
+	max-width: 360px,
+	padding-bottom: 16px,
+	padding-top: 16px,
+), $cadmin-alert-notification);
+
+$cadmin-alert-autofit-row: () !default;
+$cadmin-alert-autofit-row: map-deep-merge((
+	margin-left: -4px,
+	margin-right: -4px,
+	autofit-col: (
+		padding-left: 4px,
+		padding-right: 4px,
+	),
+), $cadmin-alert-autofit-row);
+
+$cadmin-alert-success: () !default;
+$cadmin-alert-success: map-merge((
+	background-color: $cadmin-success-l2,
+	border-color: $cadmin-success-l1,
+	color: $cadmin-success,
+), $cadmin-alert-success);
+
+$cadmin-alert-info: () !default;
+$cadmin-alert-info: map-merge((
+	background-color: $cadmin-info-l2,
+	border-color: $cadmin-info-l1,
+	color: $cadmin-info,
+), $cadmin-alert-info);
+
+$cadmin-alert-warning: () !default;
+$cadmin-alert-warning: map-merge((
+	background-color: $cadmin-warning-l2,
+	border-color: $cadmin-warning-l1,
+	color: $cadmin-warning,
+), $cadmin-alert-warning);
+
+$cadmin-alert-danger: () !default;
+$cadmin-alert-danger: map-merge((
+	background-color: $cadmin-danger-l2,
+	border-color: $cadmin-danger-l1,
+	color: $cadmin-danger,
+), $cadmin-alert-danger);
+
+// Label
+
+$cadmin-label: () !default;
+$cadmin-label: map-merge((
+	background-color: $cadmin-white,
+	border-color: $cadmin-gray-900,
+	border-radius: clay-enable-rounded(2px),
+	border-style: solid,
+	border-width: 1px,
+	display: inline-flex,
+	font-size: 10px,
+	font-weight: $cadmin-font-weight-semi-bold,
+	height: auto,
+	line-height: 1,
+	margin: 2px 4px 2px 0,
+	max-height: none,
+	max-width: 100%,
+	min-height: 0,
+	min-width: 0,
+	overflow-wrap: break-word,
+	padding-bottom: 2px,
+	padding-left: 4px,
+	padding-right: 4px,
+	padding-top: 2px,
+	text-transform: uppercase,
+	white-space: inherit,
+	outline: 0,
+	transition: box-shadow 0.15s ease-in-out,
+	width: auto,
+), $cadmin-label);
+
+$cadmin-label-lg: () !default;
+$cadmin-label-lg: map-merge((
+	border-width: 1px,
+	font-size: 14px,
+	height: auto,
+	min-height: 24px,
+	padding-bottom: 5px,
+	padding-left: 8px,
+	padding-right: 8px,
+	padding-top: 5px,
+	text-transform: none,
+), $cadmin-label-lg);
+
+$cadmin-label-primary: () !default;
+$cadmin-label-primary: map-merge((
+	border-color: $cadmin-primary-l1,
+	color: $cadmin-primary,
+), $cadmin-label-primary);
+
+$cadmin-label-secondary: () !default;
+$cadmin-label-secondary: map-merge((
+	border-color: $cadmin-secondary-l2,
+	color: $cadmin-secondary,
+), $cadmin-label-secondary);
+
+$cadmin-label-success: () !default;
+$cadmin-label-success: map-merge((
+	border-color: $cadmin-success-d2,
+	color: $cadmin-success,
+), $cadmin-label-success);
+
+$cadmin-label-info: () !default;
+$cadmin-label-info: map-merge((
+	border-color: $cadmin-info,
+	color: $cadmin-info-d2,
+), $cadmin-label-info);
+
+$cadmin-label-warning: () !default;
+$cadmin-label-warning: map-merge((
+	border-color: $cadmin-warning-d2,
+	color: $cadmin-warning,
+), $cadmin-label-warning);
+
+$cadmin-label-danger: () !default;
+$cadmin-label-danger: map-merge((
+	border-color: $cadmin-danger,
+	color: $cadmin-danger-d2,
+), $cadmin-label-danger);
+
+// Nav
+
+$cadmin-nav-link: () !default;
+$cadmin-nav-link: map-deep-merge((
+	border-radius: 0,
+	color: $cadmin-primary,
+	cursor: pointer,
+	display: block,
+	font-size: 14px,
+	height: auto,
+	margin: 0,
+	max-height: none,
+	max-width: none,
+	min-height: 0,
+	min-width: 0,
+	outline: 0,
+	overflow-wrap: break-word,
+	padding-bottom: 10px,
+	padding-left: 16px,
+	padding-right: 16px,
+	padding-top: 10px,
+	text-decoration: none,
+	transition: box-shadow .15s ease-in-out,
+	width: auto,
+	hover: (
+		color: $cadmin-primary-d2,
+		text-decoration: none,
+	),
+	focus: (
+		box-shadow: $cadmin-component-focus-inset-box-shadow,
+	),
+	active-class: (
+		font-weight: $cadmin-font-weight-semi-bold,
+	),
+	disabled: (
+		background-color: transparent,
+		box-shadow: none,
+		color: rgba($cadmin-primary, 0.3),
+		cursor: not-allowed,
+	),
+), $cadmin-nav-link);
+
+$cadmin-nav-link-dark: () !default;
+$cadmin-nav-link-dark: map-deep-merge((
+	color: #eeeffa,
+	text-decoration: none,
+	hover: (
+		color: $cadmin-white,
+		text-decoration: none,
+	),
+	active-class: (
+		color: $cadmin-white,
+		font-weight: $cadmin-font-weight-semi-bold,
+	),
+	disabled: (
+		background-color: transparent,
+		color: rgba(255, 255, 255, 0.3),
+	),
+), $cadmin-nav-link-dark);
+
+$cadmin-nav-link-light: () !default;
+$cadmin-nav-link-light: map-deep-merge((
+	color: $cadmin-secondary,
+	hover: (
+		background-color: rgba(39, 40, 51, 0.03),
+		color: $cadmin-gray-900,
+	),
+	active-class: (
+		color: $cadmin-gray-900,
+	),
+	disabled: (
+		background-color: transparent,
+		color: $cadmin-secondary-l1,
+	),
+), $cadmin-nav-link-light);
+
+// Nav Underline
+
+$cadmin-nav-underline: () !default;
+$cadmin-nav-underline: map-merge((
+	font-size: 14px,
+), $cadmin-nav-underline);
+
+$cadmin-nav-underline-nav-link: () !default;
+$cadmin-nav-underline-nav-link: map-deep-merge((
+	border-radius: 1px,
+	color: $cadmin-gray-600,
+	font-weight: $cadmin-font-weight-semi-bold,
+	line-height: 1,
+	padding-bottom: 9px,
+	padding-left: 16px,
+	padding-right: 16px,
+	padding-top: 9px,
+	transition: box-shadow 0.15s ease-in-out,
+	focus: (
+		box-shadow: $cadmin-component-focus-box-shadow,
+		outline: 0,
+	),
+	active: (
+		color: $cadmin-gray-900,
+	),
+	active-class-after: (
+		background-color: $cadmin-primary-l1,
+		bottom: 0,
+		content: '',
+		display: block,
+		position: absolute,
+		left: 0,
+		right: 0,
+		top: auto,
+		width: auto,
+	),
+	disabled: (
+		box-shadow: none,
+		color: $cadmin-gray-500,
+	),
+), $cadmin-nav-underline-nav-link);
+
+// Forms
+
+$cadmin-form-control-label: () !default;
+$cadmin-form-control-label: map-merge((
+	color: $cadmin-gray-900,
+	display: inline-block,
+	font-size: 14px,
+	font-weight: $cadmin-font-weight-semi-bold,
+	height: auto,
+	margin-bottom: 4px,
+	max-height: none,
+	max-width: 100%,
+	min-height: 0,
+	min-width: 0,
+	word-wrap: break-word,
+	width: auto,
+	disabled: (
+		color: $cadmin-gray-500,
+		cursor: not-allowed,
+	),
+	for: (
+		cursor: pointer,
+	),
+	reference-mark: (
+		color: $cadmin-warning,
+		display: inline-block,
+		font-size: 6px,
+		position: relative,
+		vertical-align: super,
+	),
+), $cadmin-form-control-label);
+
+$cadmin-form-control: () !default;
+$cadmin-form-control: map-deep-merge((
+	background-color: $cadmin-gray-200,
+	border-color: $cadmin-gray-300,
+	border-radius: 4px,
+	border-style: solid,
+
+	border-bottom-width: 1px,
+	border-left-width: 1px,
+	border-right-width: 1px,
+	border-top-width: 1px,
+	box-shadow: none,
+	color: $cadmin-gray-900,
+	display: block,
+	font-size: 16px,
+	font-weight: $cadmin-font-weight-normal,
+	height: 40px,
+	margin: 0,
+	max-height: none,
+	max-width: none,
+	min-height: 0,
+	min-width: 0,
+	padding-bottom: 7px,
+	padding-left: 16px,
+	padding-right: 16px,
+	padding-top: 7px,
+	transition: border-color 0.15s ease-in-out#{','} box-shadow 0.15s ease-in-out,
+	width: 100%,
+	focus: (
+		background-color: $cadmin-primary-l3,
+		border-color: $cadmin-primary-l1,
+		box-shadow: $cadmin-component-focus-box-shadow,
+		color: $cadmin-gray-900,
+		outline: 0,
+	),
+	disabled: (
+		background-color: $cadmin-gray-200,
+		border-color: $cadmin-gray-200,
+		cursor: not-allowed,
+		color: $cadmin-gray-500,
+
+		// `opacity: 1;` iOS fix for unreadable disabled content;
+		// see https://github.com/twbs/bootstrap/issues/11655.
+
+		opacity: 1,
+	),
+), $cadmin-form-control);
+
+$input-color: $cadmin-gray-900 !default;
+
+$cadmin-select-form-control: () !default;
+$cadmin-select-form-control: map-deep-merge((
+	background-image: clay-icon(caret-double-l, $cadmin-gray-600),
+	background-position: right 0.5em center,
+	background-repeat: no-repeat,
+	background-size: 1.5em auto,
+	color: $cadmin-gray-900,
+	cursor: pointer,
+	font-size: 16px,
+	font-weight: $cadmin-font-weight-normal,
+	padding-right: 32px,
+	text-align: left,
+	focus: (
+		background-image: clay-icon(caret-double-l, $cadmin-gray-600),
+	),
+	disabled: (
+		background-image: clay-icon(caret-double-l, $cadmin-gray-500),
+	),
+	disabled-option: (
+		cursor: not-allowed,
+	),
+	option: (
+		cursor: pointer,
+	),
+), $cadmin-select-form-control);
+
+$cadmin-textarea-form-control: () !default;
+$cadmin-textarea-form-control: map-deep-merge((
+	height: 100px,
+	resize: auto,
+), $cadmin-textarea-form-control);
+
+$cadmin-form-control-sm: () !default;
+$cadmin-form-control-sm: map-deep-merge((
+	border-radius: 4px,
+	font-size: 14px,
+	height: 32px,
+	line-height: 1.5,
+	padding: 4px 12px,
+), $cadmin-form-control-sm);
+
+$cadmin-select-form-control-sm: () !default;
+$cadmin-select-form-control-sm: map-deep-merge((
+	color: $clay-unset,
+	padding-right: 32px,
+), $cadmin-select-form-control-sm);
+
+$cadmin-form-control-dark: () !default;
+$cadmin-form-control-dark: map-deep-merge((
+	background-color: $cadmin-gray-900,
+	border-color: $cadmin-gray-800,
+	color: $cadmin-gray-500,
+	focus: (
+		background-color: $cadmin-gray-900,
+		color: $cadmin-gray-500,
+	),
+), $cadmin-form-control-dark);
+
+$cadmin-form-group: () !default;
+$cadmin-form-group: map-merge((
+	margin-bottom: 24px,
+	position: relative,
+), $cadmin-form-group);
+
+// Custom Control
+
+$cadmin-custom-control: () !default;
+$cadmin-custom-control: map-merge(
+	(
+		display: block,
+		line-height: 1,
+		margin-bottom: 16px,
+		min-height: 20px,
+		position: relative,
+		text-align: left,
+	),
+	$cadmin-custom-control
+);
+
+$cadmin-custom-control-label: () !default;
+$cadmin-custom-control-label: map-merge(
+	(
+		color: inherit,
+		cursor: pointer,
+		font-size: 14px,
+		font-weight: $cadmin-font-weight-normal,
+		line-height: map-get($cadmin-custom-control, min-height),
+		margin-bottom: 0,
+		position: static,
+		vertical-align: top,
+	),
+	$cadmin-custom-control-label
+);
+
+$cadmin-custom-control-label-disabled: () !default;
+$cadmin-custom-control-label-disabled: map-merge((
+	color: $cadmin-gray-500,
+	cursor: not-allowed,
+), $cadmin-custom-control-label-disabled);
+
+$cadmin-custom-control-label-text: () !default;
+$cadmin-custom-control-label-text: map-merge(
+	(
+		color: inherit,
+		cursor: inherit,
+		font-size: inherit,
+		padding: 0 0 0 8px,
+	),
+	$cadmin-custom-control-label-text
+);
+
+$cadmin-custom-control-label-text-small: () !default;
+$cadmin-custom-control-label-text-small: map-merge(
+	(
+		font-size: 16px,
+	),
+	$cadmin-custom-control-label-text-small
+);
+
+$cadmin-custom-control-input: () !default;
+$cadmin-custom-control-input: map-merge((
+	cursor: pointer,
+	height: 16px,
+	left: 0,
+	opacity: 0,
+	position: absolute,
+	top: 4px,
+	width: 16px,
+	z-index: 1,
+), $cadmin-custom-control-input);
+
+// Custom Checkbox
+
+$cadmin-custom-checkbox: () !default;
+$cadmin-custom-checkbox: map-merge((
+	background-color: $cadmin-white,
+	border-color: $cadmin-gray-400,
+	border-style: solid,
+	border-width: 1px,
+	box-shadow: none,
+	content: '',
+	display: block,
+	float: left,
+	font-size: 16px,
+	height: 16px,
+	left: 0,
+	max-height: none,
+	max-width: none,
+	min-height: 0,
+	min-width: 0,
+	position: relative,
+	top: 2px,
+	transition: background-color 0.15s ease-in-out#{','} border-color 0.15s ease-in-out#{','} box-shadow 0.15s ease-in-out,
+	width: 16px,
+), $cadmin-custom-checkbox);
+
+$cadmin-custom-checkbox-indicator: () !default;
+$cadmin-custom-checkbox-indicator: map-merge((
+	background-repeat: no-repeat,
+	background-position: 50%,
+	background-size: 50% 50%,
+	content: '',
+	display: block,
+	height: 16px,
+	left: 0,
+	position: absolute,
+	top: 2px,
+	width: 16px,
+), $cadmin-custom-checkbox-indicator);
+
+// Custom Checkbox Focus
+
+$cadmin-custom-checkbox-focus: () !default;
+$cadmin-custom-checkbox-focus: map-merge((
+	box-shadow: clay-enable-shadows($cadmin-component-focus-box-shadow),
+), $cadmin-custom-checkbox-focus);
+
+$cadmin-custom-checkbox-indicator-focus: () !default;
+
+// Custom Checkbox Active
+
+$cadmin-custom-checkbox-active: () !default;
+$cadmin-custom-checkbox-active: map-merge((
+	background-color: $cadmin-white,
+	border-color: $cadmin-gray-400,
+), $cadmin-custom-checkbox-active);
+
+$cadmin-custom-checkbox-indicator-active: () !default;
+
+// Custom Checkbox Disabled
+
+$cadmin-custom-checkbox-disabled: () !default;
+$cadmin-custom-checkbox-disabled: map-merge((
+	background-color: $cadmin-gray-200,
+	border-color: $cadmin-gray-200,
+	color: $cadmin-gray-500,
+	cursor: not-allowed,
+), $cadmin-custom-checkbox-disabled);
+
+$cadmin-custom-checkbox-indicator-disabled: () !default;
+
+// Checkbox Checked
+
+$cadmin-custom-checkbox-checked: () !default;
+$cadmin-custom-checkbox-checked: map-merge((
+	background-color: $cadmin-component-active-bg,
+	border-color: $cadmin-component-active-bg,
+), $cadmin-custom-checkbox-checked);
+
+$cadmin-custom-checkbox-indicator-checked: () !default;
+$cadmin-custom-checkbox-indicator-checked: map-merge((
+	background-image: clay-icon(check-small, $cadmin-white),
+	background-size: 100%,
+), $cadmin-custom-checkbox-indicator-checked);
+
+// Custom Checkbox Checked Active
+
+$cadmin-custom-checkbox-checked-active: () !default;
+
+$cadmin-custom-checkbox-indicator-checked-active: () !default;
+
+// Custom Checkbox Checked Disabled
+
+$cadmin-custom-checkbox-checked-disabled: () !default;
+$cadmin-custom-checkbox-checked-disabled: map-merge((
+	background-color: lighten($cadmin-component-active-bg, 32.94),
+	border-color: lighten($cadmin-component-active-bg, 32.94),
+), $cadmin-custom-checkbox-checked-disabled);
+
+$cadmin-custom-checkbox-indicator-checked-disabled: () !default;
+
+// Custom Checkbox Indeterminate
+
+$cadmin-custom-checkbox-indeterminate: () !default;
+$cadmin-custom-checkbox-indeterminate: map-merge((
+	background-color: $cadmin-component-active-bg,
+	border-color: $cadmin-component-active-bg,
+), $cadmin-custom-checkbox-indeterminate);
+
+$cadmin-custom-checkbox-indicator-indeterminate: () !default;
+$cadmin-custom-checkbox-indicator-indeterminate: map-merge((
+	background-image: clay-svg-url('<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><path stroke="#fff" d="M0 2h4"/></svg>'),
+	background-size: 51%,
+), $cadmin-custom-checkbox-indicator-indeterminate);
+
+// Custom Checkbox Indeterminate Disabled
+
+$cadmin-custom-checkbox-indeterminate-disabled: () !default;
+$cadmin-custom-checkbox-indeterminate-disabled: map-merge((
+	background-color: lighten($cadmin-component-active-bg, 32.94),
+	border-color: lighten($cadmin-component-active-bg, 32.94),
+), $cadmin-custom-checkbox-indeterminate-disabled);
+
+$cadmin-custom-checkbox-indicator-indeterminate-disabled: () !default;
+
+// Custom Radio
+
+$cadmin-custom-radio: () !default;
+$cadmin-custom-radio: map-merge((
+	background-color: $cadmin-white,
+	border-color: $cadmin-gray-400,
+	border-style: solid,
+	border-width: 1px,
+	box-shadow: none,
+	content: '',
+	display: block,
+	float: left,
+	font-size: 16px,
+	height: 16px,
+	left: 0,
+	position: relative,
+	top: 2px,
+	transition: background-color 0.15s ease-in-out#{','} border-color 0.15s ease-in-out#{','} box-shadow 0.15s ease-in-out,
+	width: 16px,
+), $cadmin-custom-radio);
+
+$cadmin-custom-radio-indicator: () !default;
+$cadmin-custom-radio-indicator: map-merge((
+	background-repeat: no-repeat,
+	background-position: 50%,
+	background-size: 50% 50%,
+	content: '',
+	display: block,
+	height: 16px,
+	left: 0,
+	position: absolute,
+	top: 2px,
+	width: 16px,
+), $cadmin-custom-radio-indicator);
+
+// Custom Radio Focus
+
+$cadmin-custom-radio-focus: () !default;
+$cadmin-custom-radio-focus: map-merge((
+	box-shadow: clay-enable-shadows($cadmin-component-focus-box-shadow),
+), $cadmin-custom-radio-focus);
+
+$cadmin-custom-radio-indicator-focus: () !default;
+
+// Custom Radio Disabled
+
+$cadmin-custom-radio-disabled: () !default;
+$cadmin-custom-radio-disabled: map-merge((
+	background-color: $cadmin-gray-200,
+	border-color: $cadmin-gray-200,
+), $cadmin-custom-radio-disabled);
+
+$cadmin-custom-radio-indicator-disabled: () !default;
+
+// Custom Radio Checked
+
+$cadmin-custom-radio-checked: () !default;
+$cadmin-custom-radio-checked: map-merge((
+	background-color: $cadmin-component-active-bg,
+	border-color: $cadmin-component-active-bg,
+), $cadmin-custom-radio-checked);
+
+$cadmin-custom-radio-indicator-checked: () !default;
+$cadmin-custom-radio-indicator-checked: map-merge((
+	background-image: clay-icon(circle, $cadmin-white),
+	background-size: 50%,
+), $cadmin-custom-radio-indicator-checked);
+
+// Custom Radio Checked Disabled
+
+$cadmin-custom-radio-checked-disabled: () !default;
+$cadmin-custom-radio-checked-disabled: map-merge((
+	background-color: lighten($cadmin-component-active-bg, 32.94),
+	border-color: lighten($cadmin-component-active-bg, 32.94),
+), $cadmin-custom-radio-checked-disabled);
+
+$cadmin-custom-radio-indicator-checked-disabled: () !default;
+
+// Custom Control Inline
+
+$cadmin-custom-control-inline: () !default;
+$cadmin-custom-control-inline: map-merge((
+	display: inline-flex,
+	vertical-align: middle,
+), $cadmin-custom-control-inline);
+
+$cadmin-plus-custom-control-inline: () !default;
+$cadmin-plus-custom-control-inline: map-merge((
+	margin-left: 16px,
+), $cadmin-plus-custom-control-inline);
+
+// Badge
+
+$cadmin-badge: () !default;
+$cadmin-badge: map-merge((
+	border-color: transparent,
+	border-radius: 5000px,
+	border-style: solid,
+	border-width: 1px,
+	display: inline-flex,
+	font-size: 10px,
+	font-weight: $cadmin-font-weight-semi-bold,
+	line-height: 1.1,
+	margin-bottom: 2px,
+	margin-right: 4px,
+	margin-top: 2px,
+	max-width: 100%,
+	overflow-wrap: break-word,
+	padding: 1.5px 4px,
+	text-align: center,
+	transition: color 0.15s ease-in-out#{','} background-color 0.15s ease-in-out#{','} border-color 0.15s ease-in-out#{','} box-shadow 0.15s ease-in-out,
+), $cadmin-badge);
+
+// Sticker
+
+$cadmin-sticker: () !default;
+$cadmin-sticker: map-merge((
+	align-items: center,
+	border-width: 0,
+	display: inline-flex,
+	font-size: $cadmin-font-size,
+	font-weight: $cadmin-font-weight-bold,
+	height: 32px,
+	justify-content: center,
+	line-height: 32px,
+	position: relative,
+	text-align: center,
+	vertical-align: middle,
+	width: 32px,
+), $cadmin-sticker);
+
+$cadmin-sticker-lg: () !default;
+$cadmin-sticker-lg: map-deep-merge(
+	(
+		font-size: 20px,
+		size: 40px,
+	),
+	$cadmin-sticker-lg
+);
+
+// Breadcrumb
+
+$cadmin-breadcrumb: () !default;
+$cadmin-breadcrumb: map-merge((
+	background-color: transparent,
+	border-radius: clay-enable-rounded(0),
+	display: flex,
+	flex-wrap: wrap,
+	font-size: 14px,
+	list-style: none,
+	margin-bottom: 16px,
+	padding: 12px 2px,
+), $cadmin-breadcrumb);
+
+$cadmin-breadcrumb-item: () !default;
+$cadmin-breadcrumb-item: map-merge((
+	bottom: auto,
+	color: $cadmin-gray-600,
+	font-size: inherit,
+	left: auto,
+	margin: 0 0.5em 0 0,
+	padding: 0,
+	position: relative,
+	right: auto,
+	top: auto,
+), $cadmin-breadcrumb-item);
+
+$cadmin-plus-breadcrumb-item: () !default;
+$cadmin-plus-breadcrumb-item: map-merge((
+	padding-left: 1em,
+), $cadmin-plus-breadcrumb-item);
+
+$cadmin-plus-breadcrumb-item-before: () !default;
+$cadmin-plus-breadcrumb-item-before: map-merge((
+	background-color: transparent,
+	background-image: clay-icon(angle-right, $cadmin-gray-600),
+	background-repeat: no-repeat,
+	background-size: 100%,
+	color: $cadmin-gray-600,
+	content: '',
+	display: block,
+	height: 0.75em,
+	left: 0,
+	margin: -0.375em 0 0 0,
+	padding: 0,
+	position: absolute,
+	top: 50%,
+	width: 0.75em,
+), $cadmin-plus-breadcrumb-item-before);
+
+$cadmin-breadcrumb-link: () !default;
+$cadmin-breadcrumb-link: map-deep-merge(
+	(
+		align-items: center,
+		border-radius: 1px,
+		color: $cadmin-gray-600,
+		display: flex,
+		font-size: inherit,
+		min-height: calc(1em * 1.5),
+		text-decoration: none,
+		transition: box-shadow 0.15s ease-in-out,
+		hover: (
+			color: $cadmin-gray-600,
+			text-decoration: underline,
+		),
+		focus: (
+			color: $cadmin-gray-600,
+			box-shadow: $cadmin-component-focus-box-shadow,
+			outline: 0,
+		),
+		active-class: (
+			color: $cadmin-gray-900,
+			pointer-events: none,
+		),
+		lexicon-icon: (
+			margin-left: 2px,
+			margin-top: 2.5px,
+		),
+	),
+	$cadmin-breadcrumb-link
+);
+
+$cadmin-breadcrumb-text-truncate: () !default;
+$cadmin-breadcrumb-text-truncate: map-merge((
+	display: inline-block,
+	max-width: 286px,
+	overflow: hidden,
+	text-decoration: inherit,
+	text-overflow: ellipsis,
+	text-transform: inherit,
+	white-space: nowrap,
+	vertical-align: bottom,
+), $cadmin-breadcrumb-text-truncate);
+
+// Card
+
+$cadmin-card: () !default;
+$cadmin-card: map-merge((
+	background-color: $cadmin-white,
+	border-color: rgba($cadmin-black, 0.125),
+	border-radius: clay-enable-rounded(4px),
+	border-style: solid,
+	border-width: 0,
+	box-shadow: clay-enable-shadows(0 1px 3px -1px rgba(0, 0, 0, 0.6)),
+	display: block,
+	margin-bottom: 24px,
+), $cadmin-card);
+
+$cadmin-card-body: () !default;
+$cadmin-card-body: map-merge((
+	flex: 1 1 auto,
+	min-height: 1px,
+	padding-bottom: 16px,
+	padding-left: 16px,
+	padding-right: 16px,
+	padding-top: 16px,
+), $cadmin-card-body);
+
+$cadmin-card-title: () !default;
+$cadmin-card-title: map-merge((
+	color: $cadmin-gray-900,
+	font-size: 14px,
+	font-weight: $cadmin-font-weight-semi-bold,
+	line-height: $cadmin-line-height,
+), $cadmin-card-title);
+
+$cadmin-card-subtitle: () !default;
+$cadmin-card-subtitle: map-merge((
+	color: $cadmin-gray-600,
+	font-size: 14px,
+	font-weight: $cadmin-font-weight-normal,
+), $cadmin-card-subtitle);
+
+$cadmin-card-row: () !default;
+$cadmin-card-row: map-merge((
+	display: flex,
+	width: 100%,
+	autofit-col: (
+		justify-content: center,
+		padding-left: 0,
+		padding-right: 0,
+	),
+), $cadmin-card-row);
+
+$cadmin-card-item-first: () !default;
+$cadmin-card-item-first: map-merge((
+	border-top-left-radius: clay-enable-rounded(4px),
+	border-top-right-radius: clay-enable-rounded(4px),
+	width: 100%,
+), $cadmin-card-item-first);
+
+$cadmin-card-item-last: () !default;
+$cadmin-card-item-last: map-merge((
+	border-bottom-left-radius: clay-enable-rounded(4px),
+	border-bottom-right-radius: clay-enable-rounded(4px),
+	width: 100%,
+), $cadmin-card-item-last);
+
+// Dropdown
+
+$cadmin-dropdown-toggle: () !default;
+$cadmin-dropdown-toggle: map-deep-merge((
+	white-space: nowrap,
+), $cadmin-dropdown-toggle);
+
+$cadmin-dropdown-menu: () !default;
+$cadmin-dropdown-menu: map-deep-merge((
+	background-clip: padding-box,
+	background-color: $cadmin-white,
+	border-color: transparent,
+	border-radius: clay-enable-rounded(4px),
+	border-style: solid,
+	border-width: 0,
+	box-shadow: clay-enable-shadows(0 1px 5px -1px rgba(0, 0, 0, 0.3)),
+	color: $cadmin-gray-900,
+	display: none,
+	font-size: 14px,
+	left: 0,
+	list-style: none,
+	margin: 5px 0 0,
+	max-height: 500px,
+	max-width: 240px,
+	min-height: 40px,
+	min-width: 240px,
+	overflow: auto,
+
+	// Firefox clips overflowing content and doesn't respect `padding-bottom` on `.dropdown-menu`
+
+	padding: 6px 0 0,
+	position: absolute,
+	text-align: left,
+	top: 100%,
+	z-index: $cadmin-zindex-dropdown,
+), $cadmin-dropdown-menu);
+
+$cadmin-dropdown-menu-list-unstyled: () !default;
+$cadmin-dropdown-menu-list-unstyled: map-merge((
+	margin-bottom: 0,
+), $cadmin-dropdown-menu-list-unstyled);
+
+$cadmin-dropdown-header: () !default;
+$cadmin-dropdown-header: map-merge((
+	color: $cadmin-gray-900,
+	display: block,
+	font-size: 14px,
+	margin-top: 10px,
+	padding-bottom: 8px,
+	padding-left: 20px,
+	padding-right: 20px,
+	padding-top: 8px,
+	position: relative,
+	word-wrap: break-word,
+), $cadmin-dropdown-header);
+
+$cadmin-dropdown-subheader: () !default;
+$cadmin-dropdown-subheader: map-merge((
+	color: $cadmin-gray-900,
+	font-size: 12px,
+	font-weight: $cadmin-font-weight-semi-bold,
+	margin-bottom: 0,
+	margin-left: 0,
+	margin-right: 0,
+	margin-top: 10px,
+	overflow-wrap: break-word,
+	padding-bottom: 8px,
+	padding-left: 20px,
+	padding-right: 20px,
+	padding-top: 8px,
+	text-transform: uppercase,
+	white-space: normal,
+), $cadmin-dropdown-subheader);
+
+$cadmin-dropdown-caption: () !default;
+$cadmin-dropdown-caption: map-merge((
+	color: $cadmin-gray-600,
+	font-size: 14px,
+	margin: 0,
+	overflow-wrap: break-word,
+	padding: 8px 20px,
+	white-space: normal,
+), $cadmin-dropdown-caption);
+
+$cadmin-dropdown-item: () !default;
+$cadmin-dropdown-item: map-deep-merge((
+	background-color: transparent,
+	border-radius: 0,
+	border-width: 0,
+	clear: both,
+	color: $cadmin-gray-600,
+	cursor: pointer,
+	display: block,
+	font-size: inherit,
+	font-weight: $cadmin-font-weight-normal,
+	overflow: hidden,
+	padding-bottom: 8px,
+	padding-left: 20px,
+	padding-right: 20px,
+	padding-top: 8px,
+	position: relative,
+	text-align: inherit,
+	transition: none,
+	white-space: normal,
+	width: 100%,
+	word-wrap: break-word,
+	hover: (
+		background-color: lighten($cadmin-component-active-bg, 44.9),
+		color: $cadmin-gray-900,
+		text-decoration: none,
+	),
+	focus: (
+		background-color: lighten($cadmin-component-active-bg, 44.9),
+		box-shadow: $cadmin-component-focus-inset-box-shadow,
+		color: $cadmin-gray-900,
+		outline: 0,
+		text-decoration: none,
+	),
+	active: (
+		background-color: lighten($cadmin-component-active-bg, 44.9),
+		color: $cadmin-gray-900,
+		text-decoration: none,
+	),
+	active-class: (
+		font-weight: $cadmin-font-weight-semi-bold,
+		pointer-events: none,
+	),
+	active-class-c-kbd-inline: (
+		color: $cadmin-gray-900,
+	),
+	disabled: (
+		background-color: transparent,
+		box-shadow: none,
+		color: $cadmin-gray-500,
+		cursor: not-allowed,
+		opacity: 1,
+		outline: 0,
+	),
+	disabled-active: (
+		pointer-events: none,
+	),
+), $cadmin-dropdown-item);
+
+$cadmin-dropdown-footer: () !default;
+$cadmin-dropdown-footer: map-merge((
+	box-shadow: -1px -2px 3px -3px rgba(0, 0, 0, 0.5),
+	padding: 8px 20px 0,
+	position: relative,
+), $cadmin-dropdown-footer);
+
+$cadmin-dropdown-divider: () !default;
+$cadmin-dropdown-divider: map-merge((
+	border-color: $cadmin-gray-300,
+	border-style: solid,
+	border-width: 1px 0 0 0,
+	height: 0,
+	margin: 8px 0,
+	overflow: hidden,
+), $cadmin-dropdown-divider);
+
+$cadmin-dropdown-item-indicator-start: () !default;
+$cadmin-dropdown-item-indicator-start: map-deep-merge((
+	align-items: center,
+	color: inherit,
+	display: inline-flex,
+	height: 16px,
+	justify-content: center,
+	left: 20px,
+	position: absolute,
+	right: auto,
+	top: calc(8px - ((16px - (1em * 1.5)) / 2)),
+	width: 16px,
+	lexicon-icon: (
+		margin-top: 0,
+	),
+), $cadmin-dropdown-item-indicator-start);
+
+$cadmin-dropdown-item-indicator-text-start: () !default;
+$cadmin-dropdown-item-indicator-text-start: map-deep-merge((
+	color: inherit,
+	display: block,
+	padding-left: 32px,
+	text-decoration: inherit,
+	width: 100%,
+	hover: (
+		color: inherit,
+		text-decoration: inherit,
+	),
+	focus: (
+		color: inherit,
+		text-decoration: inherit,
+	),
+), $cadmin-dropdown-item-indicator-text-start);
+
+$cadmin-dropdown-item-indicator-end: () !default;
+$cadmin-dropdown-item-indicator-end: map-deep-merge(
+	(
+		align-items: center,
+		color: inherit,
+		display: inline-flex,
+		height: 16px,
+		justify-content: center,
+		left: auto,
+		position: absolute,
+		right: 20px,
+		top: calc(8px - ((16px - (1em * 1.5)) / 2)),
+		width: 16px,
+		lexicon-icon: (
+			margin-top: 0,
+		),
+	),
+	$cadmin-dropdown-item-indicator-end
+);
+
+$cadmin-dropdown-item-indicator-text-end: () !default;
+$cadmin-dropdown-item-indicator-text-end: map-deep-merge(
+	(
+		color: inherit,
+		display: block,
+		padding-right: 32px,
+		text-decoration: inherit,
+		width: 100%,
+		hover: (
+			color: inherit,
+			text-decoration: inherit,
+		),
+		focus: (
+			color: inherit,
+			text-decoration: inherit,
+		),
+	),
+	$cadmin-dropdown-item-indicator-text-end
+);
+
+// Sidebar
+
+$cadmin-sidebar: () !default;
+$cadmin-sidebar: map-merge((
+	display: flex,
+	flex-direction: column,
+	height: 100%,
+	margin: 0,
+	overflow: auto,
+	padding: 0,
+), $cadmin-sidebar);
+
+$cadmin-sidebar-header: () !default;
+$cadmin-sidebar-header: map-merge((
+	flex-shrink: 0,
+	margin: 0,
+	padding: 0,
+), $cadmin-sidebar-header);
+
+$cadmin-sidebar-body: () !default;
+$cadmin-sidebar-body: map-merge((
+	flex-grow: 1,
+	margin: 0,
+	overflow: auto,
+	padding: 0,
+), $cadmin-sidebar-body);
+
+$cadmin-sidebar-footer: () !default;
+$cadmin-sidebar-footer: map-merge((
+	flex-shrink: 0,
+	margin: 0,
+	padding: 0,
+), $cadmin-sidebar-footer);
+
+// Tooltip
+
+$cadmin-tooltip-arrow-color: $cadmin-gray-900 !default;
+$cadmin-tooltip-arrow-height: 6.4px !default;
+$cadmin-tooltip-arrow-offset: 8px !default;
+$cadmin-tooltip-arrow-width: 12.8px !default;
+
+$cadmin-tooltip: () !default;
+$cadmin-tooltip: map-deep-merge((
+	display: block,
+	font-family: $cadmin-font-family-sans-serif,
+	font-size: 14px,
+	font-style: normal,
+	font-weight: $cadmin-font-weight-normal,
+	height: auto,
+	letter-spacing: normal,
+	line-break: auto,
+	line-height: 1.5,
+	margin: 0,
+	max-height: none,
+	max-width: none,
+	min-height: 0,
+	min-width: 0,
+	opacity: 0,
+	overflow-wrap: break-word,
+	padding: 0,
+	position: absolute,
+	text-align: left,
+	text-decoration: none,
+	text-shadow: none,
+	text-transform: none,
+	white-space: normal,
+	width: auto,
+	word-break: normal,
+	word-spacing: normal,
+	z-index: $cadmin-zindex-tooltip,
+	show: (
+		opacity: 1,
+	),
+	tooltip-inner: (
+		background-color: $cadmin-gray-900,
+		border-radius: clay-enable-rounded(4px),
+		box-shadow: clay-enable-shadows(0 1px 4px 0px rgba(0, 0, 0, 0.4)),
+		color: $cadmin-white,
+		height: auto,
+		margin: 0,
+		max-height: none,
+		max-width: 230px,
+		min-height: 0,
+		min-width: 0,
+		padding: 12px,
+		text-align: center,
+		white-space: pre-line,
+		width: auto,
+	),
+	arrow: (
+		display: block,
+		height: $cadmin-tooltip-arrow-height,
+		position: absolute,
+		width: $cadmin-tooltip-arrow-width,
+	),
+	arrow-before: (
+		border-color: transparent,
+		border-style: solid,
+		content: '',
+		position: absolute,
+	),
+), $cadmin-tooltip);
+
+// Tooltip Bottom
+
+$cadmin-tooltip-bottom: () !default;
+$cadmin-tooltip-bottom: map-deep-merge((
+	padding-top: $cadmin-tooltip-arrow-height,
+	arrow: (
+		left: 50%,
+		margin-left: math-sign($cadmin-tooltip-arrow-width / 2),
+		top: 0,
+	),
+	arrow-before: (
+		border-bottom-color: $cadmin-tooltip-arrow-color,
+		border-bottom-width: $cadmin-tooltip-arrow-height,
+		border-left-width: $cadmin-tooltip-arrow-width / 2,
+		border-right-width: $cadmin-tooltip-arrow-width / 2,
+		border-top-width: 0,
+		bottom: 0,
+	),
+), $cadmin-tooltip-bottom);
+
+$cadmin-tooltip-bottom-left: () !default;
+$cadmin-tooltip-bottom-left: map-deep-merge((
+	padding-top: $cadmin-tooltip-arrow-height,
+	arrow: (
+		left: $cadmin-tooltip-arrow-offset,
+		top: 0,
+	),
+	arrow-before: (
+		border-bottom-color: $cadmin-tooltip-arrow-color,
+		border-bottom-width: $cadmin-tooltip-arrow-height,
+		border-left-width: $cadmin-tooltip-arrow-width / 2,
+		border-right-width: $cadmin-tooltip-arrow-width / 2,
+		border-top-width: 0,
+		bottom: 0,
+	),
+), $cadmin-tooltip-bottom-left);
+
+$cadmin-tooltip-bottom-right: () !default;
+$cadmin-tooltip-bottom-right: map-deep-merge((
+	padding-top: $cadmin-tooltip-arrow-height,
+	arrow: (
+		right: $cadmin-tooltip-arrow-offset,
+		top: 0,
+	),
+	arrow-before: (
+		border-bottom-color: $cadmin-tooltip-arrow-color,
+		border-bottom-width: $cadmin-tooltip-arrow-height,
+		border-left-width: $cadmin-tooltip-arrow-width / 2,
+		border-right-width: $cadmin-tooltip-arrow-width / 2,
+		border-top-width: 0,
+		bottom: 0,
+	),
+), $cadmin-tooltip-bottom-right);
+
+// Tooltip Left
+
+$cadmin-tooltip-left: () !default;
+$cadmin-tooltip-left: map-deep-merge((
+	padding-right: $cadmin-tooltip-arrow-height,
+	arrow: (
+		height: $cadmin-tooltip-arrow-width,
+		margin-top: math-sign($cadmin-tooltip-arrow-width / 2),
+		right: 0,
+		top: 50%,
+		width: $cadmin-tooltip-arrow-height,
+	),
+	arrow-before: (
+		border-bottom-width: $cadmin-tooltip-arrow-width / 2,
+		border-left-color: $cadmin-tooltip-arrow-color,
+		border-left-width: $cadmin-tooltip-arrow-height,
+		border-right-width: 0,
+		border-top-width: $cadmin-tooltip-arrow-width / 2,
+		left: 0,
+	),
+), $cadmin-tooltip-left);
+
+$cadmin-tooltip-left-bottom: () !default;
+$cadmin-tooltip-left-bottom: map-deep-merge((
+	padding-right: $cadmin-tooltip-arrow-height,
+	arrow: (
+		bottom: $cadmin-tooltip-arrow-offset,
+		height: $cadmin-tooltip-arrow-width,
+		right: 0,
+		width: $cadmin-tooltip-arrow-height,
+	),
+	arrow-before: (
+		border-bottom-width: $cadmin-tooltip-arrow-width / 2,
+		border-left-color: $cadmin-tooltip-arrow-color,
+		border-left-width: $cadmin-tooltip-arrow-height,
+		border-right-width: 0,
+		border-top-width: $cadmin-tooltip-arrow-width / 2,
+		left: 0,
+	),
+), $cadmin-tooltip-left-bottom);
+
+$cadmin-tooltip-left-top: () !default;
+$cadmin-tooltip-left-top: map-deep-merge((
+	padding-right: $cadmin-tooltip-arrow-height,
+	arrow:(
+		height: $cadmin-tooltip-arrow-width,
+		right: 0,
+		top: $cadmin-tooltip-arrow-offset,
+		width: $cadmin-tooltip-arrow-height,
+	),
+	arrow-before:(
+		border-left-color: $cadmin-tooltip-arrow-color,
+		border-top-width: $cadmin-tooltip-arrow-width / 2,
+		border-right-width: 0,
+		border-bottom-width: $cadmin-tooltip-arrow-width / 2,
+		border-left-width: $cadmin-tooltip-arrow-height,
+		left: 0,
+	),
+), $cadmin-tooltip-left-top);
+
+// Tooltip Right
+
+$cadmin-tooltip-right: () !default;
+$cadmin-tooltip-right: map-deep-merge((
+	padding-left: $cadmin-tooltip-arrow-height,
+	arrow: (
+		height: $cadmin-tooltip-arrow-width,
+		left: 0,
+		margin-top: math-sign($cadmin-tooltip-arrow-width / 2),
+		top: 50%,
+		width: $cadmin-tooltip-arrow-height,
+	),
+	arrow-before: (
+		border-bottom-width: $cadmin-tooltip-arrow-width / 2,
+		border-left-width: 0,
+		border-right-color: $cadmin-tooltip-arrow-color,
+		border-right-width: $cadmin-tooltip-arrow-height,
+		border-top-width: $cadmin-tooltip-arrow-width / 2,
+		right: 0,
+	),
+), $cadmin-tooltip-right);
+
+$cadmin-tooltip-right-bottom: () !default;
+$cadmin-tooltip-right-bottom: map-deep-merge((
+	padding-left: $cadmin-tooltip-arrow-height,
+	arrow: (
+		bottom: $cadmin-tooltip-arrow-offset,
+		height: $cadmin-tooltip-arrow-width,
+		left: 0,
+		width: $cadmin-tooltip-arrow-height,
+	),
+	arrow-before: (
+		border-bottom-width: $cadmin-tooltip-arrow-width / 2,
+		border-left-width: 0,
+		border-right-color: $cadmin-tooltip-arrow-color,
+		border-right-width: $cadmin-tooltip-arrow-height,
+		border-top-width: $cadmin-tooltip-arrow-width / 2,
+		right: 0,
+	),
+), $cadmin-tooltip-right-bottom);
+
+$cadmin-tooltip-right-top: () !default;
+$cadmin-tooltip-right-top: map-deep-merge((
+	padding-left: $cadmin-tooltip-arrow-height,
+	arrow: (
+		height: $cadmin-tooltip-arrow-width,
+		left: 0,
+		top: $cadmin-tooltip-arrow-offset,
+		width: $cadmin-tooltip-arrow-height,
+	),
+	arrow-before: (
+		border-bottom-width: $cadmin-tooltip-arrow-width / 2,
+		border-left-width: 0,
+		border-right-color: $cadmin-tooltip-arrow-color,
+		border-right-width: $cadmin-tooltip-arrow-height,
+		border-top-width: $cadmin-tooltip-arrow-width / 2,
+		right: 0,
+	),
+), $cadmin-tooltip-right-top);
+
+// Tooltip Top
+
+$cadmin-tooltip-top: () !default;
+$cadmin-tooltip-top: map-deep-merge((
+	padding-bottom: $cadmin-tooltip-arrow-height,
+	arrow: (
+		bottom: 0,
+		left: 50%,
+		margin-left: math-sign($cadmin-tooltip-arrow-width / 2),
+	),
+	arrow-before: (
+		border-bottom-width: 0,
+		border-left-width: $cadmin-tooltip-arrow-width / 2,
+		border-right-width: $cadmin-tooltip-arrow-width / 2,
+		border-top-color: $cadmin-tooltip-arrow-color,
+		border-top-width: $cadmin-tooltip-arrow-height,
+		top: 0,
+	),
+), $cadmin-tooltip-top);
+
+$cadmin-tooltip-top-left: () !default;
+$cadmin-tooltip-top-left: map-deep-merge((
+	padding-bottom: $cadmin-tooltip-arrow-height,
+	arrow: (
+		bottom: 0,
+		left: $cadmin-tooltip-arrow-offset,
+	),
+	arrow-before: (
+		border-bottom-width: 0,
+		border-left-width: $cadmin-tooltip-arrow-width / 2,
+		border-right-width: $cadmin-tooltip-arrow-width / 2,
+		border-top-color: $cadmin-tooltip-arrow-color,
+		border-top-width: $cadmin-tooltip-arrow-height,
+		top: 0,
+	),
+), $cadmin-tooltip-top-left);
+
+$cadmin-tooltip-top-right: () !default;
+$cadmin-tooltip-top-right: map-deep-merge((
+	padding-bottom: $cadmin-tooltip-arrow-height,
+	arrow: (
+		bottom: 0,
+		right: $cadmin-tooltip-arrow-offset,
+	),
+	arrow-before: (
+		border-bottom-width: 0,
+		border-left-width: $cadmin-tooltip-arrow-width / 2,
+		border-right-width: $cadmin-tooltip-arrow-width / 2,
+		border-top-color: $cadmin-tooltip-arrow-color,
+		border-top-width: $cadmin-tooltip-arrow-height,
+		top: 0,
+	),
+), $cadmin-tooltip-top-right);
+
+// Utilities
+
+$cadmin-aspect-ratio: () !default;
+$cadmin-aspect-ratio: map-merge((
+	display: block,
+	overflow: hidden,
+	padding-bottom: 100%,
+	position: relative,
+), $cadmin-aspect-ratio);
+
+$cadmin-aspect-ratio-item: () !default;
+$cadmin-aspect-ratio-item: map-merge((
+	left: 0,
+	overflow-wrap: break-word,
+	position: absolute,
+), $cadmin-aspect-ratio-item);
+
+$cadmin-aspect-ratio-item-fluid: () !default;
+$cadmin-aspect-ratio-item-fluid: map-merge((
+	max-width: 100%,
+	overflow-wrap: break-word,
+	position: absolute,
+), $cadmin-aspect-ratio-item-fluid);
+
+$cadmin-aspect-ratio-item-vertical-fluid: () !default;
+$cadmin-aspect-ratio-item-vertical-fluid: map-merge((
+	max-height: 100%,
+	overflow-wrap: break-word,
+	position: absolute,
+), $cadmin-aspect-ratio-item-vertical-fluid);
+
+$cadmin-aspect-ratio-item-flush: () !default;
+$cadmin-aspect-ratio-item-flush: map-merge((
+	max-width: none,
+	position: absolute,
+	width: 100.6%,
+), $cadmin-aspect-ratio-item-flush);
+
+$cadmin-close: () !default;
+$cadmin-close: map-deep-merge((
+	align-items: center,
+	border-radius: 4px,
+	display: inline-flex,
+	height: 32px,
+	justify-content: center,
+	margin: 0,
+	max-height: none,
+	max-width: none,
+	min-height: 0,
+	min-width: 0,
+	padding: 0,
+	width: 32px,
+), $cadmin-close);

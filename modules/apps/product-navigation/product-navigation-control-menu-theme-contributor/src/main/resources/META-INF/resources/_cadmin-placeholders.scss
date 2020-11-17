@@ -1,0 +1,1072 @@
+%cadmin-container-reset {
+	@include clay-css($cadmin-container-reset);
+}
+
+%cadmin-spacing-reset {
+	@include clay-css($cadmin-spacing-reset);
+}
+
+%cadmin-pseudo-reset {
+	&::before {
+		content: normal;
+	}
+
+	&::after {
+		content: normal;
+	}
+}
+
+%cadmin-container-fluid {
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 12px;
+	padding-right: 12px;
+	width: 100%;
+}
+
+%cadmin-h {
+	@include clay-css($cadmin-h);
+}
+
+%cadmin-h1 {
+	@include clay-css($cadmin-h1);
+}
+
+%cadmin-h2 {
+	@include clay-css($cadmin-h2);
+}
+
+%cadmin-h3 {
+	@include clay-css($cadmin-h3);
+}
+
+%cadmin-h4 {
+	@include clay-css($cadmin-h4);
+}
+
+%cadmin-h5 {
+	@include clay-css($cadmin-h5);
+}
+
+%cadmin-h6 {
+	@include clay-css($cadmin-h6);
+}
+
+%cadmin-link {
+	@include clay-link($cadmin-link);
+}
+
+%cadmin-p {
+	@include clay-css($cadmin-p);
+}
+
+%cadmin-small {
+	@include clay-css($cadmin-small);
+}
+
+// Icon
+
+%cadmin-lexicon-icon {
+	@include clay-css($cadmin-lexicon-icon);
+}
+
+// Button
+
+%cadmin-btn {
+	@include clay-button-variant($cadmin-btn);
+
+	&.collapse-icon {
+		.collapse-icon-closed,
+		.collapse-icon-open {
+			$_lh: map-get($cadmin-btn, line-height);
+			$_pt: map-get($cadmin-btn, padding-top);
+
+			top: calc(#{$_pt} + (((1em * #{$_lh)}) - 1em) / 2));
+		}
+	}
+}
+
+// TODO: Duplicate BTN styles below easier to extend
+
+%cadmin-btn-sm {
+	@include clay-button-variant($cadmin-btn-sm);
+
+	&.collapse-icon {
+		.collapse-icon-closed,
+		.collapse-icon-open {
+			$_lh: map-get($cadmin-btn-sm, line-height);
+			$_pt: map-get($cadmin-btn-sm, padding-top);
+
+			top: calc(#{$_pt} + (((1em * #{$_lh)}) - 1em) / 2));
+		}
+	}
+}
+
+// TODO: Duplicate BTN styles below easier to extend
+
+%cadmin-btn-monospaced {
+	@include clay-button-variant($cadmin-btn-monospaced);
+}
+
+// TODO: Duplicate BTN styles below easier to extend
+
+%cadmin-btn-monospaced-sm {
+	@include clay-button-variant($cadmin-btn-monospaced-sm);
+}
+
+%cadmin-btn-block {
+	@include clay-button-variant($cadmin-btn-block);
+
+	+ .btn-block {
+		margin-top: $cadmin-btn-block-margin-top;
+	}
+}
+
+%cadmin-btn-primary {
+	@include clay-button-variant($cadmin-btn-primary);
+}
+
+%cadmin-btn-secondary {
+	@include clay-button-variant($cadmin-btn-secondary);
+}
+
+%cadmin-btn-dark {
+	@include clay-button-variant($cadmin-btn-dark);
+}
+
+%cadmin-btn-outline-primary {
+	@include clay-button-variant($cadmin-btn-outline-primary);
+}
+
+%cadmin-btn-outline-secondary {
+	@include clay-button-variant($cadmin-btn-outline-secondary);
+}
+
+%cadmin-btn-borderless {
+	border-width: 0;
+	padding-bottom: 7.5px;
+	padding-top: 7.5px;
+}
+
+%cadmin-btn-monospaced-borderless {
+	border-width: 0;
+}
+
+%cadmin-btn-unstyled {
+	background-color: rgba(0, 0, 0, 0.001);
+	border-width: 0;
+	color: inherit;
+	cursor: pointer;
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+	max-width: 100%;
+	padding: 0;
+	text-align: left;
+	text-decoration: none;
+	text-indent: 0;
+	text-shadow: none;
+	text-transform: inherit;
+	vertical-align: baseline;
+
+	.c-inner {
+		margin: 0;
+	}
+}
+
+// Button Group
+
+%cadmin-btn-group {
+	@include clay-css($cadmin-btn-group);
+
+	> .btn {
+		@include clay-button-variant($cadmin-btn-group-btn);
+	}
+}
+
+%cadmin-btn-group-vertical {
+	@include clay-css($cadmin-btn-group-vertical);
+}
+
+%cadmin-btn-group-nowrap {
+	@include clay-css($cadmin-btn-group-nowrap);
+}
+
+%cadmin-btn-group-item {
+	@include clay-css($cadmin-btn-group-item);
+}
+
+%cadmin-btn-group-item-last {
+	margin-right: 0;
+}
+
+// Alert
+
+%cadmin-alert {
+	@include clay-css($cadmin-alert);
+}
+
+%cadmin-alert-close {
+	@include clay-button-variant($cadmin-alert-close);
+}
+
+%cadmin-alert-lead {
+	@include clay-css($cadmin-alert-lead);
+}
+
+%cadmin-alert-link {
+	@include clay-button-variant($cadmin-alert-link);
+}
+
+%cadmin-alert-indicator {
+	@include clay-css($cadmin-alert-indicator);
+}
+
+%cadmin-alert-dismissible {
+	@include clay-css($cadmin-alert-dismissible);
+}
+
+%cadmin-alert-notifications-fixed {
+	@include clay-css($cadmin-alert-notifications-fixed);
+}
+
+%cadmin-alert-notification {
+	@include clay-css($cadmin-alert-notification);
+}
+
+%cadmin-alert-autofit-row {
+	@include clay-autofit-row($cadmin-alert-autofit-row);
+}
+
+%cadmin-alert-success {
+	@include clay-css($cadmin-alert-success);
+}
+
+%cadmin-alert-info {
+	@include clay-css($cadmin-alert-info);
+}
+
+%cadmin-alert-warning {
+	@include clay-css($cadmin-alert-warning);
+}
+
+%cadmin-alert-danger {
+	@include clay-css($cadmin-alert-danger);
+}
+
+// Label
+
+%cadmin-label {
+	@include clay-css($cadmin-label);
+}
+
+%cadmin-label-lg {
+	@include clay-css($cadmin-label-lg);
+}
+
+%cadmin-label-primary {
+	@include clay-css($cadmin-label-primary);
+}
+
+%cadmin-label-secondary {
+	@include clay-css($cadmin-label-secondary);
+}
+
+%cadmin-label-success {
+	@include clay-css($cadmin-label-success);
+}
+
+%cadmin-label-info {
+	@include clay-css($cadmin-label-info);
+}
+
+%cadmin-label-warning {
+	@include clay-css($cadmin-label-warning);
+}
+
+%cadmin-label-danger {
+	@include clay-css($cadmin-label-danger);
+}
+
+// Nav
+
+%cadmin-nav {
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 14px;
+	height: auto;
+	list-style: none;
+	margin: 0;
+	max-height: none;
+	max-width: none;
+	min-height: 0;
+	min-width: 0;
+	padding: 0;
+	width: auto;
+}
+
+%cadmin-nav-stacked {
+	flex-direction: column;
+}
+
+%cadmin-nav-item {
+	position: relative;
+}
+
+%cadmin-nav-link {
+	@include clay-link($cadmin-nav-link);
+
+	.collapse-icon {
+		.collapse-icon-closed,
+		.collapse-icon-open {
+			$_lh: map-get($cadmin-nav-link, line-height);
+			$_pt: map-get($cadmin-nav-link, padding-top);
+
+			top: calc(#{$_pt} + (((1em * #{$_lh)}) - 1em) / 2));
+		}
+	}
+}
+
+%cadmin-nav-link-light {
+	@include clay-link($cadmin-nav-link-light);
+}
+
+%cadmin-nav-link-dark {
+	@include clay-link($cadmin-nav-link-dark);
+}
+
+// Nav Underline
+
+%cadmin-nav-underline {
+	@include clay-css($cadmin-nav-underline);
+}
+
+%cadmin-nav-underline-nav-link {
+	@include clay-button-variant($cadmin-nav-underline-nav-link);
+}
+
+// Forms
+
+%cadmin-form-control-label {
+	@include clay-css($cadmin-form-control-label);
+
+	&[for] {
+		@include clay-css(map-get($cadmin-form-control-label, for));
+	}
+
+	&.disabled {
+		$disabled: map-get($cadmin-form-control-label, disabled);
+
+		@include clay-css($disabled);
+	}
+
+	+ .form-text {
+		margin-bottom: map-get($cadmin-form-control-label, margin-bottom);
+		margin-top: 0;
+	}
+
+	.reference-mark {
+		@include clay-css(map-get($cadmin-form-control-label, reference-mark));
+	}
+}
+
+%cadmin-form-control {
+	@include clay-form-control-variant($cadmin-form-control);
+	// Removes inner shadow on inputs in iOS. Bootstrap 4 uses
+	// `background-clip: padding-box` to remove it but causes 1px clipping issue
+	// in Chrome in connected input-groups when background on input is any other
+	// color than white. This also unstyles the `select.form-control` element.
+
+	&:not([type='range']) {
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+
+	// IE10+
+	// `::-ms-clear` disable clear button at the edge of an `<input type="text">`
+	// `::-ms-reveal` disable password reveal button on `<input type="password">`
+
+	&::-ms-clear,
+	&::-ms-reveal {
+		display: none;
+		height: 0;
+		width: 0;
+	}
+}
+
+%cadmin-select-form-control {
+	@include clay-select-variant($cadmin-select-form-control);
+
+	// Unstyle the caret on `<select>`s in IE10+.
+
+	&::-ms-expand {
+		background-color: transparent;
+		border: 0;
+	}
+
+	// Remove dotted outline from select box in FF
+
+	&:-moz-focusring {
+		color: transparent;
+		text-shadow: 0 0 0 $cadmin-gray-900;
+	}
+
+	// Suppress the nested default white text on blue background highlight given to
+	// the selected option text when the (still closed) <select> receives focus
+	// in IE and (under certain conditions) Edge, as it looks bad and cannot be made to
+	// match the appearance of the native widget.
+	// See https://github.com/twbs/bootstrap/issues/19398.
+
+	&:focus::-ms-value {
+		background-color: transparent;
+		color: inherit;
+	}
+}
+
+%cadmin-textarea-form-control {
+	@include clay-form-control-variant($cadmin-textarea-form-control);
+}
+
+%cadmin-form-control-sm {
+	@include clay-form-control-variant($cadmin-form-control-sm);
+}
+
+%cadmin-select-form-control-sm {
+	@include clay-select-variant($cadmin-select-form-control-sm);
+}
+
+%cadmin-form-control-dark {
+	@include clay-form-control-variant($cadmin-form-control-dark);
+}
+
+%cadmin-form-group {
+	@include clay-css($cadmin-form-group);
+}
+
+// Custom Control
+
+%cadmin-custom-control {
+	@include clay-css($cadmin-custom-control);
+
+	&:only-child {
+		margin-bottom: 0;
+	}
+
+	label {
+		display: inline;
+		margin-bottom: 0;
+	}
+}
+
+%cadmin-custom-control-label {
+	@include clay-css($cadmin-custom-control-label);
+}
+
+%cadmin-custom-control-label-disabled {
+	@include clay-css($cadmin-custom-control-label-disabled);
+}
+
+%custom-control-label-text {
+	@include clay-css($cadmin-custom-control-label-text);
+}
+
+%custom-control-label-text-small {
+	@include clay-css($cadmin-custom-control-label-text-small);
+}
+
+%cadmin-custom-control-input {
+	@include clay-css($cadmin-custom-control-input);
+}
+
+// The Checkbox
+
+%cadmin-custom-checkbox {
+	&::before {
+		@include clay-css($cadmin-custom-checkbox);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-checkbox-indicator);
+	}
+}
+
+%cadmin-custom-checkbox-focus {
+	&::before {
+		@include clay-css($cadmin-custom-checkbox-focus);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-checkbox-indicator-focus);
+	}
+}
+
+%cadmin-custom-checkbox-active {
+	&::before {
+		@include clay-css($cadmin-custom-checkbox-active);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-checkbox-indicator-active);
+	}
+}
+
+%cadmin-custom-checkbox-disabled {
+	&::before {
+		@include clay-css($cadmin-custom-checkbox-disabled);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-checkbox-indicator-disabled);
+	}
+}
+
+%cadmin-custom-checkbox-checked {
+	&::before {
+		@include clay-css($cadmin-custom-checkbox-checked);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-checkbox-indicator-checked);
+	}
+}
+
+%cadmin-custom-checkbox-checked-active {
+	&::before {
+		@include clay-css($cadmin-custom-checkbox-checked-active);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-checkbox-indicator-checked-active);
+	}
+}
+
+%cadmin-custom-checkbox-checked-disabled {
+	&::before {
+		@include clay-css($cadmin-custom-checkbox-checked-disabled);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-checkbox-indicator-checked-disabled);
+	}
+}
+
+%cadmin-custom-checkbox-indeterminate {
+	&::before {
+		@include clay-css($cadmin-custom-checkbox-indeterminate);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-checkbox-indicator-indeterminate);
+	}
+}
+
+%cadmin-custom-checkbox-indeterminate-disabled {
+	&::before {
+		@include clay-css($cadmin-custom-checkbox-indeterminate-disabled);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-checkbox-indicator-indeterminate-disabled);
+	}
+}
+
+// Custom Radio
+
+%cadmin-custom-radio {
+	&::before {
+		@include clay-css($cadmin-custom-radio);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-radio-indicator);
+	}
+}
+
+// Custom Radio Focus
+
+%cadmin-custom-radio-focus {
+	&::before {
+		@include clay-css($cadmin-custom-radio-focus);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-radio-indicator-focus);
+	}
+}
+
+// Custom Radio Disabled
+
+%cadmin-custom-radio-disabled {
+	&::before {
+		@include clay-css($cadmin-custom-radio-disabled);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-radio-indicator-disabled);
+	}
+}
+
+// Custom Radio Checked
+
+%cadmin-custom-radio-checked {
+	&::before {
+		@include clay-css($cadmin-custom-radio-checked);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-radio-indicator-checked);
+	}
+}
+
+// Custom Radio Checked Disabled
+
+%cadmin-custom-radio-checked-disabled {
+	&::before {
+		@include clay-css($cadmin-custom-radio-checked-disabled);
+	}
+
+	&::after {
+		@include clay-css($cadmin-custom-radio-indicator-checked-disabled);
+	}
+}
+
+// Custom Control Inline
+
+%cadmin-custom-control-inline {
+	@include clay-css($cadmin-custom-control-inline);
+}
+
+%cadmin-plus-custom-control-inline {
+	@include clay-css($cadmin-plus-custom-control-inline);
+}
+
+// Badge
+
+%cadmin-badge {
+	@include clay-css($cadmin-badge);
+}
+
+// Sticker
+
+%cadmin-sticker {
+	@include clay-css($cadmin-sticker);
+
+	> .inline-item {
+		justify-content: center;
+	}
+
+	> .inline-item .lexicon-icon,
+	.lexicon-icon {
+		margin-top: 0;
+	}
+
+	&.rounded .sticker-overlay {
+		border-radius: 4px;
+	}
+
+	&.rounded-circle .sticker-overlay {
+		border-radius: 5000px;
+	}
+
+	&.rounded-0 .sticker-overlay {
+		border-radius: 0;
+	}
+}
+
+%cadmin-sticker-lg {
+	@include clay-sticker-size($cadmin-sticker-lg);
+}
+
+// Breadcrumb
+
+%cadmin-breadcrumb {
+	@include clay-css($cadmin-breadcrumb);
+}
+
+%cadmin-breadcrumb-item {
+	@include clay-css($cadmin-breadcrumb-item);
+
+	&.active .breadcrumb-link {
+		$active-class: map-get($cadmin-breadcrumb-link, active-class);
+
+		@include clay-css($active-class);
+	}
+
+	+ .breadcrumb-item {
+		@include clay-css($cadmin-plus-breadcrumb-item);
+
+		&::before {
+			@include clay-css($cadmin-plus-breadcrumb-item-before);
+		}
+	}
+}
+
+%cadmin-breadcrumb-link {
+	@include clay-link($cadmin-breadcrumb-link);
+}
+
+%cadmin-breadcrumb-text-truncate {
+	@include clay-css($cadmin-breadcrumb-text-truncate);
+}
+
+// Card
+
+%cadmin-card {
+	@include clay-css($cadmin-card);
+}
+
+%cadmin-card-body {
+	@include clay-css($cadmin-card-body);
+}
+
+%cadmin-card-title {
+	@include clay-css($cadmin-card-title);
+}
+
+%cadmin-card-subtitle {
+	@include clay-css($cadmin-card-subtitle);
+}
+
+%cadmin-card-row {
+	@include clay-autofit-row($cadmin-card-row);
+
+	.autofit-col-expand {
+		min-width: 25px;
+	}
+
+	.autofit-col-gutters {
+		padding-left: 10px;
+		padding-right: 10px;
+
+		.card-divider {
+			margin-left: -10px;
+			margin-right: -10px;
+		}
+	}
+}
+
+%cadmin-card-item-first {
+	@include clay-css($cadmin-card-item-first);
+}
+
+%cadmin-card-item-last {
+	@include clay-css($cadmin-card-item-last);
+}
+
+// Dropdown
+
+%cadmin-dropdown-toggle {
+	@include clay-button-variant($cadmin-dropdown-toggle);
+}
+
+%cadmin-dropdown-menu {
+	@include clay-dropdown-menu-variant($cadmin-dropdown-menu);
+
+	&::after {
+		content: '';
+		display: block;
+		padding: map-get($cadmin-dropdown-menu, padding);
+	}
+}
+
+%cadmin-dropdown-menu-list-unstyled {
+	> .list-unstyled {
+		@include clay-css($cadmin-dropdown-menu-list-unstyled);
+	}
+}
+
+%cadmin-dropdown-header {
+	@include clay-css($cadmin-dropdown-header);
+
+	&:first-child {
+		margin-top: 0;
+	}
+}
+
+%cadmin-dropdown-subheader {
+	@include clay-css($cadmin-dropdown-subheader);
+
+	&:first-child {
+		margin-top: 0;
+	}
+}
+
+%cadmin-dropdown-caption {
+	@include clay-css($cadmin-dropdown-caption);
+}
+
+%cadmin-dropdown-item {
+	@include clay-dropdown-item-variant($cadmin-dropdown-item);
+}
+
+%cadmin-dropdown-footer {
+	@include clay-css($cadmin-dropdown-footer);
+}
+
+%cadmin-dropdown-divider {
+	@include clay-css($cadmin-dropdown-divider);
+}
+
+%cadmin-dropdown-item-indicator-start {
+	@include clay-link($cadmin-dropdown-item-indicator-start);
+}
+
+%cadmin-dropdown-item-indicator-text-start {
+	@include clay-link($cadmin-dropdown-item-indicator-text-start);
+}
+
+%cadmin-dropdown-item-indicator-end {
+	@include clay-link($cadmin-dropdown-item-indicator-end);
+}
+
+%cadmin-dropdown-item-indicator-text-end {
+	@include clay-link($cadmin-dropdown-item-indicator-text-end);
+}
+
+// Sidebar
+
+%cadmin-sidebar {
+	@include clay-css($cadmin-sidebar);
+
+	-webkit-overflow-scrolling: touch;
+}
+
+%cadmin-sidebar-header {
+	@include clay-css($cadmin-sidebar-header);
+}
+
+%cadmin-sidebar-body {
+	@include clay-css($cadmin-sidebar-body);
+
+	-webkit-overflow-scrolling: touch;
+}
+
+%cadmin-sidebar-footer {
+	@include clay-css($cadmin-sidebar-footer);
+}
+
+// Tooltip
+
+@mixin cadmin-tooltip-variant($map) {
+	$_base: setter($map, ());
+	$_arrow: setter(map-get($map, arrow), ());
+	$_arrow-before: setter(map-get($map, arrow-before), ());
+	$_show: setter(map-get($map, show), ());
+	$_tooltip-arrow: setter(map-get($map, tooltip-arrow), ());
+	$_tooltip-inner: setter(map-get($map, tooltip-inner), ());
+
+	@include clay-css($_base);
+
+	&.show {
+		@include clay-css($_show);
+	}
+
+	.tooltip-inner {
+		@include clay-css($_tooltip-inner)
+	}
+
+	.arrow {
+		@include clay-css($_arrow);
+
+		&::before {
+			@include clay-css($_arrow-before);
+		}
+	}
+
+	.tooltip-arrow {
+		@include clay-css($_tooltip-arrow);
+	}
+}
+
+%cadmin-tooltip {
+	@include cadmin-tooltip-variant($cadmin-tooltip);
+}
+
+%cadmin-tooltip-bottom {
+	@include cadmin-tooltip-variant($cadmin-tooltip-bottom);
+}
+
+%cadmin-tooltip-bottom-left {
+	@include cadmin-tooltip-variant($cadmin-tooltip-bottom-left);
+}
+
+%cadmin-tooltip-bottom-right {
+	@include cadmin-tooltip-variant($cadmin-tooltip-bottom-right);
+}
+
+// Tooltip Left
+
+%cadmin-tooltip-left {
+	@include cadmin-tooltip-variant($cadmin-tooltip-left);
+}
+
+%cadmin-tooltip-left-bottom {
+	@include cadmin-tooltip-variant($cadmin-tooltip-left-bottom);
+}
+
+%cadmin-tooltip-left-top {
+	@include cadmin-tooltip-variant($cadmin-tooltip-left-top);
+}
+
+// Tooltip Right
+
+%cadmin-tooltip-right {
+	@include cadmin-tooltip-variant($cadmin-tooltip-right);
+}
+
+%cadmin-tooltip-right-bottom {
+	@include cadmin-tooltip-variant($cadmin-tooltip-right-bottom);
+}
+
+%cadmin-tooltip-right-top {
+	@include cadmin-tooltip-variant($cadmin-tooltip-right-top);
+}
+
+// Tooltip Top
+
+%cadmin-tooltip-top {
+	@include cadmin-tooltip-variant($cadmin-tooltip-top);
+}
+
+%cadmin-tooltip-top-left {
+	@include cadmin-tooltip-variant($cadmin-tooltip-top-left);
+}
+
+%cadmin-tooltip-top-right {
+	@include cadmin-tooltip-variant($cadmin-tooltip-top-right);
+}
+
+// Utilities
+
+%cadmin-aspect-ratio {
+	@include clay-css($cadmin-aspect-ratio);
+}
+
+%cadmin-aspect-ratio-item {
+	@include clay-css($cadmin-aspect-ratio-item);
+}
+
+%cadmin-aspect-ratio-item-fluid {
+	@include clay-css($cadmin-aspect-ratio-item-fluid);
+}
+
+%cadmin-aspect-ratio-item-vertical-fluid {
+	@include clay-css($cadmin-aspect-ratio-item-vertical-fluid);
+}
+
+%cadmin-aspect-ratio-item-flush {
+	@include clay-css($cadmin-aspect-ratio-item-flush);
+}
+
+// 3 to 2
+
+%cadmin-aspect-ratio-3-to-2 {
+	@include clay-aspect-ratio(3, 2);
+}
+
+// 4 to 3
+
+%cadmin-aspect-ratio-4-to-3 {
+	@include clay-aspect-ratio(4, 3);
+}
+
+// 8 to 5
+
+%cadmin-aspect-ratio-8-to-5 {
+	@include clay-aspect-ratio(8, 5);
+}
+
+// 16 to 9
+
+%cadmin-aspect-ratio-16-to-9 {
+	@include clay-aspect-ratio(16, 9);
+}
+
+// Autofit
+
+%cadmin-autofit-padded {
+	> .autofit-col {
+		padding: 4px 8px;
+	}
+}
+
+%cadmin-autofit-padded-no-gutters-x {
+	margin-left: -8px;
+	margin-right: -8px;
+	width: auto;
+
+	> .autofit-col {
+		padding: 4px 8px;
+	}
+}
+
+%cadmin-autofit-padded-no-gutters-y {
+	margin-bottom: -4px;
+	margin-top: -4px;
+	width: auto;
+
+	> .autofit-col {
+		padding: 4px 8px
+	}
+}
+
+%cadmin-autofit-padded-no-gutters {
+	margin: -4px -8px;
+	width: auto;
+
+	> .autofit-col {
+		padding: 4px 8px;
+	}
+}
+
+%cadmin-autofit-col {
+	display: flex;
+	flex-direction: column;
+	flex-shrink: 0;
+	min-height: 0;
+	position: relative;
+}
+
+%cadmin-autofit-col-expand {
+	flex-grow: 1;
+	flex-shrink: 1;
+	min-width: 50px;
+	word-wrap: break-word;
+}
+
+%cadmin-close {
+	@include clay-close($cadmin-close);
+}
+
+%cadmin-inline-item {
+	align-items: center;
+	display: inline-flex;
+	vertical-align: middle;
+
+	.inline-item {
+		display: inline;
+	}
+
+	.lexicon-icon {
+		margin-top: -3px;
+	}
+}
+
+%cadmin-inline-item-before {
+	margin-right: 8px;
+}
+
+%cadmin-inline-item-middle {
+	margin-left: 8px;
+	margin-right: 8px;
+
+	+ .inline-item-middle {
+		margin-left: 0;
+	}
+}
+
+%cadmin-inline-item-after {
+	margin-left: 8px;
+	margin-right: 0;
+}
