@@ -127,7 +127,7 @@ AUI.add(
 
 		var TPL_INFO_TAB_BODY =
 			'<div class="{className} fade show tab-pane" id="{tabId}">{content}</div>';
-s
+
 		var TPL_INFO_TAB_BODY_CONTENT =
 			'<dt class="{dtClassName}">{dt}</dt><dd class="{ddClassName}">{dd}</dd>';
 
