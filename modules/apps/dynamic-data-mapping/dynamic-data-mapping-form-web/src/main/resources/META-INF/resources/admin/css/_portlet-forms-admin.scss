@@ -5,6 +5,9 @@
 			max-width: 300px;
 			position: relative;
 		}
+		.autofit-row > .autofit-col:first-child {
+			width: 100%;
+		}
 	}
 }
 
