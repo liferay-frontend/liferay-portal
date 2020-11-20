@@ -225,7 +225,7 @@ for (long groupId : groupIds) {
 	}
 </script>
 
-<aui:script require="metal-dom/src/dom as dom">
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 	function selectAssets(assetEntryList) {
 		var assetClassName = '';
 		var assetEntryIds = [];
@@ -246,14 +246,16 @@ for (long groupId : groupIds) {
 		});
 	}
 
-	var delegateHandler = dom.delegate(
+	var delegate = delegateModule.default;
+
+	var delegateHandler = delegate(
 		document.body,
 		'click',
 		'.asset-selector a',
 		function (event) {
 			event.preventDefault();
 
-			var delegateTarget = event.delegateTarget;
+			var delegateTarget = event.target.closest('.asset-selector a');
 
 			Liferay.Util.openSelectionModal({
 				multiple: true,

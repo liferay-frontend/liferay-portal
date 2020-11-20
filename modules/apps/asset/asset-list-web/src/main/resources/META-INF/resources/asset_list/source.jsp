@@ -245,7 +245,7 @@ List<AssetRendererFactory<?>> classTypesAssetRendererFactories = new ArrayList<>
 	</liferay-frontend:fieldset>
 </liferay-frontend:fieldset-group>
 
-<aui:script require="metal-dom/src/dom as dom">
+<aui:script require="metal-dom/src/dom as dom,frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 	var Util = Liferay.Util;
 
 	var MAP_DDM_STRUCTURES = {};
@@ -542,14 +542,16 @@ List<AssetRendererFactory<?>> classTypesAssetRendererFactories = new ArrayList<>
 		});
 	}
 
-	dom.delegate(
+	var delegate = delegateModule.default;
+
+	delegate(
 		sourcePanel,
 		'click',
 		'.asset-subtypefields-wrapper-enable label',
 		function (event) {
-			var subtypeFieldsFilterEnabledInput = event.delegateTarget.querySelector(
-				'input'
-			);
+			var subtypeFieldsFilterEnabledInput = event.target
+				.closest('.asset-subtypefields-wrapper-enable label')
+				.querySelector('input');
 
 			var assetSubtypefieldsPopupButtons = document.querySelectorAll(
 				'.asset-subtypefields-popup .btn'
@@ -583,12 +585,10 @@ List<AssetRendererFactory<?>> classTypesAssetRendererFactories = new ArrayList<>
 		'<portlet:namespace />ddmStructureDisplayFieldValue'
 	);
 
-	dom.delegate(sourcePanel, 'click', '.asset-subtypefields-popup', function (
-		event
-	) {
-		var delegateTarget = event.delegateTarget;
+	delegate(sourcePanel, 'click', '.asset-subtypefields-popup', function (event) {
+		var target = event.target.closest('.asset-subtypefields-popup');
 
-		var btn = delegateTarget.querySelector('.btn');
+		var btn = target.querySelector('.btn');
 
 		var url = btn.dataset.href;
 
@@ -610,7 +610,7 @@ List<AssetRendererFactory<?>> classTypesAssetRendererFactories = new ArrayList<>
 
 		Util.openSelectionModal({
 			customSelectEvent: true,
-			id: '<portlet:namespace />selectDDMStructure' + delegateTarget.id,
+			id: '<portlet:namespace />selectDDMStructure' + target.id,
 			onSelect: function (selectedItem) {
 				setDDMFields(
 					selectedItem.className,
