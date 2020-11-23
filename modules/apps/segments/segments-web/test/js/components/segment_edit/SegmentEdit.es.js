@@ -44,7 +44,17 @@ const CONTRIBUTORS = [
 	{
 		conjunctionId: 'and',
 		conjunctionInputId: 'conjunction-input-1',
-		initialQuery: "(value eq 'value')",
+		initialQuery: {
+			conjunctionName: 'and',
+			groupId: 'group_01',
+			items: [
+				{
+					operatorName: 'eq',
+					propertyName: 'value',
+					value: 'value',
+				},
+			],
+		},
 		inputId: 'input-id-for-backend-form',
 		propertyKey: 'first-test-values-group',
 	},
@@ -151,7 +161,7 @@ describe('SegmentEdit', () => {
 		);
 
 		expect(getByTestId(CONTRIBUTORS[0].inputId).value).toBe(
-			CONTRIBUTORS[0].initialQuery
+			"(value eq 'value')"
 		);
 
 		expect(asFragment()).toMatchSnapshot();
