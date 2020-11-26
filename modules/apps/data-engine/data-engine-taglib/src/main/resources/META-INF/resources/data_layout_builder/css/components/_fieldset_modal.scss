@@ -5,7 +5,11 @@ body.has-control-menu .fieldset-modal {
 
 	.multi-panel-sidebar {
 		position: absolute;
-		top: 0;
+
+		&,
+		&.menu-indicator-enabled {
+			top: 0 !important;
+		}
 
 		.field-type .dropdown-action {
 			display: none;
