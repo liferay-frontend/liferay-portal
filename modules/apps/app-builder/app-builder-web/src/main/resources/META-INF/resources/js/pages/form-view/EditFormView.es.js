@@ -62,7 +62,7 @@ const EditFormView = (props) => {
 
 	if (document.querySelector('.change-tracking-indicator')) {
 		WrapperComponent = ({children}) => (
-			<div className="publications-enabled">{children}</div>
+			<div className="menu-indicator-enabled">{children}</div>
 		);
 	}
 
