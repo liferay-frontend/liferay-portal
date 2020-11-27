@@ -12,14 +12,11 @@
  * details.
  */
 
-import {runScriptsInElement} from 'frontend-js-web';
-import CancellablePromise from 'metal-promise';
-import Uri from 'metal-uri';
+import {buildFragment, runScriptsInElement} from 'frontend-js-web';
 
 import globals from '../globals/globals';
 import Surface from '../surface/Surface';
 import {
-	buildFragment,
 	clearNodeAttributes,
 	copyNodeAttributes,
 	getUid,
@@ -188,7 +185,7 @@ class HtmlScreen extends RequestScreen {
 
 	/**
 	 * Allows a screen to evaluate the favicon style before the screen becomes visible.
-	 * @return {CancellablePromise}
+	 * @return {Promise}
 	 */
 	evaluateFavicon_() {
 		const resourcesInVirtual = this.virtualQuerySelectorAll_(
@@ -198,7 +195,7 @@ class HtmlScreen extends RequestScreen {
 			HtmlScreen.selectors.favicon
 		);
 
-		return new CancellablePromise((resolve) => {
+		return new Promise((resolve) => {
 			resourcesInDocument.forEach((element) => element.remove());
 			this.runFaviconInElement_(resourcesInVirtual).then(() => resolve());
 		});
@@ -215,7 +212,7 @@ class HtmlScreen extends RequestScreen {
 	 *     resources to track.
 	 * @param {!function} opt_appendResourceFn Optional function used to
 	 *     evaluate fragment containing resources.
-	 * @return {CancellablePromise} Deferred that waits resources evaluation to
+	 * @return {Promise} Deferred that waits resources evaluation to
 	 *     complete.
 	 * @private
 	 */
@@ -256,7 +253,7 @@ class HtmlScreen extends RequestScreen {
 			}
 		});
 
-		return new CancellablePromise((resolve) => {
+		return new Promise((resolve) => {
 			evaluatorFn(
 				frag,
 				() => {
@@ -346,27 +343,13 @@ class HtmlScreen extends RequestScreen {
 	}
 
 	/**
-	 * Creates a new element from given, copies attributes, mutates href to be
-	 * unique to prevent caching and more than one load/error event from firing.
-	 */
-	replaceStyleAndMakeUnique_(style) {
-		if (style.href) {
-			var newStyle = globals.document.createElement(style.tagName);
-			style.href = new Uri(style.href).makeUnique().toString();
-			copyNodeAttributes(style, newStyle);
-			style.parentNode.replaceChild(newStyle, style);
-			style.disabled = true;
-		}
-	}
-
-	/**
 	 * Adds the favicon elements to the document.
 	 * @param {!Array<Element>} elements
 	 * @private
-	 * @return {CancellablePromise}
+	 * @return {Promise}
 	 */
 	runFaviconInElement_(elements) {
-		return new CancellablePromise((resolve) => {
+		return new Promise((resolve) => {
 			elements.forEach((element) => {
 				element.href = element.href + '?q=' + Math.random();
 

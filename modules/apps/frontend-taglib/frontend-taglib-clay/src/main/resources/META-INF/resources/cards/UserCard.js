@@ -18,7 +18,7 @@ import React, {useState} from 'react';
 import getDataAttributes from './get_data_attributes';
 
 export default function UserCard({
-	actions = [],
+	actions,
 	additionalProps: _additionalProps,
 	componentId: _componentId,
 	cssClass,
@@ -27,8 +27,8 @@ export default function UserCard({
 	locale: _locale,
 	portletId: _portletId,
 	portletNamespace: _portletNamespace,
-	selected: initialSelected,
 	selectable,
+	selected: initialSelected,
 	symbol,
 	...otherProps
 }) {

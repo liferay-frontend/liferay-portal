@@ -29,6 +29,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>TABLE_ENTRY_INFO</td>
+	<td>//tr[@data-qa-id='row'][contains(.,'${key_tableEntry}')]//td[contains(@class,'${key_columnName}-column')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TABLE_ENTRY_TITLE</td>
 	<td>//tr[@data-qa-id='row'][contains(.,'${key_tableEntry}')]//td[contains(@class,'title')]</td>
 	<td></td>
@@ -66,6 +71,11 @@
 <tr>
 	<td>TABLE_HEADER</td>
 	<td>//th[contains(.,'${key_tableHeader}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TABLE_ROW</td>
+	<td>xpath=(//tr[@data-qa-id='row'])[${index}]</td>
 	<td></td>
 </tr>
 </tbody>

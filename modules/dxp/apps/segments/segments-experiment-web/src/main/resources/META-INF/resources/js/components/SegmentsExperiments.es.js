@@ -192,21 +192,22 @@ function SegmentsExperiments({
 											),
 										}}
 									/>
-
-									<div className="mt-3">
-										<ClayButton
-											className="btn-success"
-											onClick={() =>
-												_handlePublishVariant(
-													winnerVariant.segmentsExperienceId
-												)
-											}
-										>
-											{Liferay.Language.get(
-												'publish-winner'
-											)}
-										</ClayButton>
-									</div>
+									<ClayAlert.Footer>
+										<ClayButton.Group>
+											<ClayButton
+												alert
+												onClick={() =>
+													_handlePublishVariant(
+														winnerVariant.segmentsExperienceId
+													)
+												}
+											>
+												{Liferay.Language.get(
+													'publish-winner'
+												)}
+											</ClayButton>
+										</ClayButton.Group>
+									</ClayAlert.Footer>
 								</ClayAlert>
 							)}
 

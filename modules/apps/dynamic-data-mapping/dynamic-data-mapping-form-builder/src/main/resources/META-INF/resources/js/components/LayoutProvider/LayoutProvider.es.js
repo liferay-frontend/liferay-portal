@@ -138,7 +138,10 @@ class LayoutProvider extends Component {
 			const settingsContext = {
 				...focusedField.settingsContext,
 				pages: this.getLocalizedPages(
-					focusedField.settingsContext.pages
+					focusedField.settingsContext.pages,
+					this.getSettingsContextLocalizationMap(
+						focusedField.fieldName
+					)
 				),
 			};
 
@@ -156,12 +159,17 @@ class LayoutProvider extends Component {
 		return focusedField;
 	}
 
-	getLocalizedPages(pages) {
+	getLocalizedPages(pages, settingsContextLocalizationMap) {
 		const {defaultLanguageId, editingLanguageId} = this.props;
 		const settingsVisitor = new PagesVisitor(pages);
 
 		return settingsVisitor.mapFields((field) =>
-			localizeField(field, defaultLanguageId, editingLanguageId)
+			localizeField(
+				field,
+				defaultLanguageId,
+				editingLanguageId,
+				settingsContextLocalizationMap
+			)
 		);
 	}
 
@@ -181,7 +189,10 @@ class LayoutProvider extends Component {
 					...settingsContext,
 					availableLanguageIds,
 					defaultLanguageId,
-					pages: this.getLocalizedPages(settingsContext.pages),
+					pages: this.getLocalizedPages(
+						settingsContext.pages,
+						this.getSettingsContextLocalizationMap(field.fieldName)
+					),
 				};
 
 				const newField = {
@@ -292,6 +303,12 @@ class LayoutProvider extends Component {
 		return rules;
 	}
 
+	getSettingsContextLocalizationMap(fieldName) {
+		const {localizationMap} = this.props;
+
+		return localizationMap[fieldName]?.settingsContextLocalizationMap;
+	}
+
 	render() {
 		const {
 			allowSuccessPage,
@@ -388,7 +405,56 @@ class LayoutProvider extends Component {
 	}
 
 	_handleFieldAdded(event) {
-		this.setState(handleFieldAdded(this.props, this.state, event));
+		const {defaultLanguageId, editingLanguageId} = this.props;
+		const {availableLanguageIds = [editingLanguageId]} = this.props;
+
+		const newState = handleFieldAdded(this.props, this.state, event);
+
+		const {focusedField} = newState;
+
+		let {pages} = newState;
+
+		const visitor = new PagesVisitor(pages);
+
+		pages = visitor.mapFields(
+			(field) => {
+				const {settingsContext} = field;
+
+				const newSettingsContext = {
+					...settingsContext,
+					availableLanguageIds,
+					defaultLanguageId,
+					pages: this.getLocalizedPages(
+						settingsContext.pages,
+						this.getSettingsContextLocalizationMap(field.fieldName)
+					),
+				};
+
+				const newField = {
+					...field,
+					...getFieldProperties(
+						newSettingsContext,
+						defaultLanguageId,
+						editingLanguageId
+					),
+					settingsContext: newSettingsContext,
+				};
+
+				if (field.name === focusedField.name) {
+					focusedField.settingsContext = newSettingsContext;
+				}
+
+				return newField;
+			},
+			true,
+			true
+		);
+
+		this.setState({
+			...newState,
+			focusedField,
+			pages,
+		});
 	}
 
 	_handleFieldHovered(fieldHovered) {
@@ -898,6 +964,14 @@ LayoutProvider.PROPS = {
 		enabled: Config.bool(),
 		title: Config.object(),
 	}),
+
+	/**
+	 * @default undefined
+	 * @instance
+	 * @memberof LayoutProvider
+	 * @type {!object}
+	 */
+	localizationMap: Config.object().value({}),
 
 	/**
 	 * @default undefined

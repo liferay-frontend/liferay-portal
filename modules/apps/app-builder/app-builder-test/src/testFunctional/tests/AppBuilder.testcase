@@ -3168,7 +3168,7 @@ definition {
 		AppBuilderAdmin.switchTab(tabName = "Apps");
 
 		AppBuilderAdmin.validateEmptyListMessage(
-			description = "Select the form and table view you want and deploy your app as a widget, standalone or place it in the product menu.",
+			description = "Select the form and table view you want and deploy your app as a widget, standalone, or place it in the product menu.",
 			title = "There are no apps yet.");
 
 		AppBuilderAdmin.assertNewButtonIsVisible(buttonValue = "New App");

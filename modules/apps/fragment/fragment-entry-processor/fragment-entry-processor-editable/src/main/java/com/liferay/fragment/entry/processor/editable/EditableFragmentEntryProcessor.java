@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -271,14 +272,24 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 				editableValueJSONObject.getJSONObject("config"),
 				mappedValueConfigJSONObject);
 
+			JSONObject localizedJSONObject = configJSONObject.getJSONObject(
+				LocaleUtil.toLanguageId(
+					fragmentEntryProcessorContext.getLocale()));
+
+			String mapperType = configJSONObject.getString(
+				"mapperType", element.attr("type"));
+
+			if ((localizedJSONObject != null) &&
+				(localizedJSONObject.length() > 0)) {
+
+				configJSONObject = localizedJSONObject;
+			}
+
 			editableElementParser.replace(element, value, configJSONObject);
 
 			if (!Objects.equals(
 					fragmentEntryProcessorContext.getMode(),
 					FragmentEntryLinkConstants.EDIT)) {
-
-				String mapperType = configJSONObject.getString(
-					"mapperType", element.attr("type"));
 
 				if (Validator.isNull(mapperType)) {
 					mapperType = element.attr("data-lfr-editable-type");

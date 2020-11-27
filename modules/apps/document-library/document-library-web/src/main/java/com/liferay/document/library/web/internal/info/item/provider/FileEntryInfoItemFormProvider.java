@@ -138,26 +138,35 @@ public class FileEntryInfoItemFormProvider
 			return null;
 		}
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.fetchStructure(
+		DDMStructure ddmStructure = _ddmStructureLocalService.fetchDDMStructure(
+			dlFileEntryType.getDataDefinitionId());
+
+		if (ddmStructure != null) {
+			return ddmStructure;
+		}
+
+		ddmStructure = _ddmStructureLocalService.fetchStructure(
 			dlFileEntryType.getGroupId(),
 			_portal.getClassNameId(DLFileEntryMetadata.class),
 			DLUtil.getDDMStructureKey(dlFileEntryType));
 
-		if (ddmStructure == null) {
-			ddmStructure = _ddmStructureLocalService.fetchStructure(
-				dlFileEntryType.getGroupId(),
-				_portal.getClassNameId(DLFileEntryMetadata.class),
-				DLUtil.getDeprecatedDDMStructureKey(dlFileEntryType));
+		if (ddmStructure != null) {
+			return ddmStructure;
 		}
 
-		if (ddmStructure == null) {
-			ddmStructure = _ddmStructureLocalService.fetchStructure(
-				dlFileEntryType.getGroupId(),
-				_portal.getClassNameId(DLFileEntryMetadata.class),
-				dlFileEntryType.getFileEntryTypeKey());
+		ddmStructure = _ddmStructureLocalService.fetchStructure(
+			dlFileEntryType.getGroupId(),
+			_portal.getClassNameId(DLFileEntryMetadata.class),
+			DLUtil.getDeprecatedDDMStructureKey(dlFileEntryType));
+
+		if (ddmStructure != null) {
+			return ddmStructure;
 		}
 
-		return ddmStructure;
+		return _ddmStructureLocalService.fetchStructure(
+			dlFileEntryType.getGroupId(),
+			_portal.getClassNameId(DLFileEntryMetadata.class),
+			dlFileEntryType.getFileEntryTypeKey());
 	}
 
 	private InfoFieldSet _getBasicInformationFieldSet() {

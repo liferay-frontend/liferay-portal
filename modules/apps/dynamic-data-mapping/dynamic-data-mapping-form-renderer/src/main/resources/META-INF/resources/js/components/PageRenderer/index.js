@@ -12,10 +12,12 @@
  * details.
  */
 
+import ClayIcon from '@clayui/icon';
 import core from 'metal';
 import React from 'react';
 
 import {PageProvider} from '../../hooks/usePage.es';
+import {PagesVisitor} from '../../util/visitors.es';
 import * as DefaultVariant from './DefaultVariant.es';
 import * as EditablePageHeader from './EditablePageHeader.es';
 import {Layout} from './Layout.es';
@@ -52,6 +54,9 @@ const PAGE_HEADER_TYPES = {
 const PAGE_HEADER_COMPONENT_TYPE = {
 	[PAGE_HEADER_TYPES.EDITABLE]: EditablePageHeader.PageHeader,
 };
+
+const DDM_FORM_PORTLET_NAMESPACE =
+	'_com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormPortlet_';
 
 const isEmptyPage = ({rows}) => {
 	let empty = false;
@@ -161,6 +166,7 @@ const Renderer = ({
 	pageIndex = 0,
 	pages,
 	paginationMode,
+	portletNamespace,
 	readOnly,
 	showSubmitButton,
 	strings,
@@ -183,6 +189,19 @@ const Renderer = ({
 	const Header =
 		PAGE_HEADER_COMPONENT_TYPE[page.headerRenderer] ||
 		Components.PageHeader;
+
+	let hasFieldRequired = false;
+
+	const visitor = new PagesVisitor([pages[activePage]]);
+
+	visitor.mapFields((field) => {
+		if (field.required) {
+			hasFieldRequired = true;
+		}
+	});
+
+	const isDDMFormPortletNamespace =
+		DDM_FORM_PORTLET_NAMESPACE === portletNamespace;
 
 	return (
 		<Components.Container
@@ -215,6 +234,14 @@ const Renderer = ({
 				page={page}
 				pageIndex={pageIndex}
 			>
+				{hasFieldRequired && isDDMFormPortletNamespace && (
+					<p aria-hidden="true" className="text-secondary">
+						<span className="c-mr-1 reference-mark">
+							<ClayIcon symbol="asterisk" />
+						</span>
+						{Liferay.Language.get('indicates-required-fields')}
+					</p>
+				)}
 				<Layout
 					components={Components}
 					editable={editable}

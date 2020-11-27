@@ -57,7 +57,7 @@ RedirectManagementToolbarDisplayContext redirectManagementToolbarDisplayContext 
 			</div>
 		</c:if>
 
-		<aui:form action="<%= redirectSearchContainer.getIteratorURL() %>" cssClass="container-fluid-1280" name="fm">
+		<aui:form action="<%= redirectSearchContainer.getIteratorURL() %>" cssClass="container-fluid container-fluid-max-xl" name="fm">
 			<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 
 			<liferay-ui:search-container
@@ -83,11 +83,11 @@ RedirectManagementToolbarDisplayContext redirectManagementToolbarDisplayContext 
 					>
 
 						<%
-						String sourceURL = RedirectUtil.getGroupBaseURL(themeDisplay) + StringPool.SLASH + redirectEntry.getSourceURL();
+						String sourceURL = HtmlUtil.escape(RedirectUtil.getGroupBaseURL(themeDisplay) + StringPool.SLASH + redirectEntry.getSourceURL());
 						%>
 
-						<span data-title="<%= sourceURL %>">
-							<%= HtmlUtil.escape(sourceURL) %>
+						<span data-title="<%= HtmlUtil.escapeAttribute(sourceURL) %>">
+							<%= sourceURL %>
 						</span>
 					</liferay-ui:search-container-column-text>
 
@@ -100,7 +100,7 @@ RedirectManagementToolbarDisplayContext redirectManagementToolbarDisplayContext 
 						String destinationURL = HtmlUtil.escape(redirectEntry.getDestinationURL());
 						%>
 
-						<span data-title="<%= destinationURL %>">
+						<span data-title="<%= HtmlUtil.escapeAttribute(destinationURL) %>">
 							<%= destinationURL %>
 						</span>
 					</liferay-ui:search-container-column-text>

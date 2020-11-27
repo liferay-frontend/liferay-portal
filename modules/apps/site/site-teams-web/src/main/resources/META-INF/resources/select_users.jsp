@@ -24,7 +24,7 @@ SelectUsersDisplayContext selectUsersDisplayContext = new SelectUsersDisplayCont
 	displayContext="<%= new SelectUsersManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, selectUsersDisplayContext) %>"
 />
 
-<aui:form cssClass="container-fluid-1280 portlet-site-teams-select-users" name="selectUserFm">
+<aui:form cssClass="container-fluid container-fluid-max-xl portlet-site-teams-select-users" name="selectUserFm">
 	<liferay-ui:search-container
 		id="users"
 		searchContainer="<%= selectUsersDisplayContext.getUserSearchContainer() %>"
@@ -45,7 +45,7 @@ SelectUsersDisplayContext selectUsersDisplayContext = new SelectUsersDisplayCont
 					%>
 
 					<liferay-ui:search-container-column-text>
-						<clay:user-card-v2
+						<clay:user-card
 							userCard="<%= new SelectUserUserCard(user2, renderRequest, searchContainer.getRowChecker()) %>"
 							userColorClass='<%= "user-icon " + LexiconUtil.getUserColorCssClass(user2) %>'
 						/>

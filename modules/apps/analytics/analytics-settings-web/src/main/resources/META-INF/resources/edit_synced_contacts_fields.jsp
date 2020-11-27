@@ -192,18 +192,20 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "
 			</liferay-ui:section>
 		</liferay-ui:tabs>
 
-		<aui:button-row>
-			<aui:button type="submit" value="save" />
+		<div class="text-right">
+			<aui:button-row>
+				<c:choose>
+					<c:when test="<%= includeSyncContactsFields %>">
+						<aui:button href="" onClick='<%= liferayPortletResponse.getNamespace() + "showConfirmationModal(this);" %>' value="cancel" />
+					</c:when>
+					<c:otherwise>
+						<aui:button href="<%= redirect %>" type="cancel" value="cancel" />
+					</c:otherwise>
+				</c:choose>
 
-			<c:choose>
-				<c:when test="<%= includeSyncContactsFields %>">
-					<aui:button href="" onClick='<%= liferayPortletResponse.getNamespace() + "showConfirmationModal(this);" %>' value="cancel" />
-				</c:when>
-				<c:otherwise>
-					<aui:button href="<%= redirect %>" type="cancel" value="cancel" />
-				</c:otherwise>
-			</c:choose>
-		</aui:button-row>
+				<aui:button type="submit" value="save" />
+			</aui:button-row>
+		</div>
 	</aui:form>
 </clay:sheet>
 

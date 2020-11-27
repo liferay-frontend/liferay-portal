@@ -704,7 +704,7 @@ public class DDMStructureStagedModelDataHandler
 
 			DEDataDefinitionFieldLink deDataDefinitionFieldLink =
 				(DEDataDefinitionFieldLink)
-					portletDataContext.getZipEntryAsObject(path);
+					portletDataContext.getZipEntryAsObject(element, path);
 
 			StagedModelDataHandlerUtil.importStagedModel(
 				portletDataContext, deDataDefinitionFieldLink);

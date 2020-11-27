@@ -32,6 +32,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Html;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -76,6 +78,14 @@ public class ImageEditableElementParser implements EditableElementParser {
 			JSONObject fieldValueJSONObject = (JSONObject)fieldValue;
 
 			alt = fieldValueJSONObject.getString("alt");
+
+			if (Validator.isNotNull(alt) && JSONUtil.isValid(alt)) {
+				JSONObject altJSONObject = fieldValueJSONObject.getJSONObject(
+					"alt");
+
+				alt = altJSONObject.getString(LocaleUtil.toLanguageId(locale));
+			}
+
 			fileEntryId = fieldValueJSONObject.getLong("fileEntryId");
 		}
 		else if (fieldValue instanceof WebImage) {
@@ -88,7 +98,7 @@ public class ImageEditableElementParser implements EditableElementParser {
 				InfoLocalizedValue<String> infoLocalizedValue =
 					altInfoLocalizedValueOptional.get();
 
-				alt = infoLocalizedValue.getValue();
+				alt = infoLocalizedValue.getValue(locale);
 			}
 
 			fileEntryId = webImage.getFileEntryId();
@@ -208,6 +218,14 @@ public class ImageEditableElementParser implements EditableElementParser {
 		}
 
 		String alt = configJSONObject.getString("alt");
+
+		if (Validator.isNotNull(alt) && JSONUtil.isValid(alt)) {
+			JSONObject altJSONObject = configJSONObject.getJSONObject("alt");
+
+			Locale locale = LocaleThreadLocal.getThemeDisplayLocale();
+
+			alt = altJSONObject.getString(LocaleUtil.toLanguageId(locale));
+		}
 
 		if (Validator.isNotNull(alt)) {
 			replaceableElement.attr(

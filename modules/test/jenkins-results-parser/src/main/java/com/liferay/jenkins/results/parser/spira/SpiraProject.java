@@ -213,6 +213,32 @@ public class SpiraProject extends BaseSpiraArtifact {
 		return spiraReleases;
 	}
 
+	public SpiraTestCaseComponent getSpiraTestCaseComponentByID(
+		int componentID) {
+
+		List<SpiraTestCaseComponent> spiraTestCaseComponents =
+			SpiraTestCaseComponent.getSpiraTestCaseComponents(
+				this,
+				new SearchQuery.SearchParameter(
+					SpiraTestCaseComponent.KEY_ID, componentID));
+
+		if (spiraTestCaseComponents.size() > 1) {
+			throw new RuntimeException(
+				"Duplicate test case component ID " + componentID);
+		}
+
+		if (spiraTestCaseComponents.isEmpty()) {
+			throw new RuntimeException(
+				"Missing test case component ID " + componentID);
+		}
+
+		return spiraTestCaseComponents.get(0);
+	}
+
+	public List<SpiraTestCaseComponent> getSpiraTestCaseComponents() {
+		return SpiraTestCaseComponent.getSpiraTestCaseComponents(this);
+	}
+
 	public SpiraTestCaseFolder getSpiraTestCaseFolderByID(
 		int testCaseFolderID) {
 
@@ -333,6 +359,44 @@ public class SpiraProject extends BaseSpiraArtifact {
 		SpiraTestCaseProductVersion spiraTestCaseProductVersion) {
 
 		return getSpiraTestCaseObjects(35000, spiraTestCaseProductVersion);
+	}
+
+	public SpiraTestCasePriority getSpiraTestCasePriorityByID(int priorityID) {
+		List<SpiraTestCasePriority> spiraTestCasePriorities =
+			SpiraTestCasePriority.getSpiraTestCasePriorities(
+				this,
+				new SearchQuery.SearchParameter(
+					SpiraTestCasePriority.KEY_ID, priorityID));
+
+		if (spiraTestCasePriorities.size() > 1) {
+			throw new RuntimeException(
+				"Duplicate test case priority ID " + priorityID);
+		}
+
+		if (spiraTestCasePriorities.isEmpty()) {
+			throw new RuntimeException(
+				"Missing test case priority ID " + priorityID);
+		}
+
+		return spiraTestCasePriorities.get(0);
+	}
+
+	public SpiraTestCasePriority getSpiraTestCasePriorityByScore(int score) {
+		List<SpiraTestCasePriority> spiraTestCasePriorities =
+			SpiraTestCasePriority.getSpiraTestCasePriorities(
+				this, new SearchQuery.SearchParameter("Score", score));
+
+		if (spiraTestCasePriorities.size() > 1) {
+			throw new RuntimeException(
+				"Duplicate test case priority score " + score);
+		}
+
+		if (spiraTestCasePriorities.isEmpty()) {
+			throw new RuntimeException(
+				"Missing test case priority score " + score);
+		}
+
+		return spiraTestCasePriorities.get(0);
 	}
 
 	public SpiraTestCaseType getSpiraTestCaseTypeByID(int testCaseTypeID) {

@@ -14,8 +14,9 @@
 
 package com.liferay.document.library.external.video.internal.portlet.action;
 
+import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.external.video.DLExternalVideo;
-import com.liferay.document.library.external.video.internal.constants.DLExternalVideoPortletKeys;
+import com.liferay.document.library.external.video.internal.constants.DLExternalVideoConstants;
 import com.liferay.document.library.external.video.resolver.DLExternalVideoResolver;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -36,7 +37,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"javax.portlet.name=" + DLExternalVideoPortletKeys.DL_EXTERNAL_VIDEO,
+		"javax.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY,
+		"javax.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY_ADMIN,
 		"mvc.command.name=/document_library_external_video/get_dl_external_video_fields"
 	},
 	service = MVCResourceCommand.class
@@ -56,18 +58,20 @@ public class GetDLExternalVideoFieldsMVCResourceCommand
 			JSONPortletResponseUtil.writeJSON(
 				resourceRequest, resourceResponse,
 				JSONUtil.put(
-					"DESCRIPTION",
+					DLExternalVideoConstants.DDM_FIELD_NAME_DESCRIPTION,
 					GetterUtil.getString(dlExternalVideo.getDescription())
 				).put(
-					"HTML",
+					DLExternalVideoConstants.DDM_FIELD_NAME_HTML,
 					GetterUtil.getString(dlExternalVideo.getEmbeddableHTML())
 				).put(
-					"ICON_URL",
-					GetterUtil.getString(dlExternalVideo.getIconURL())
+					DLExternalVideoConstants.DDM_FIELD_NAME_THUMBNAIL_URL,
+					GetterUtil.getString(dlExternalVideo.getThumbnailURL())
 				).put(
-					"TITLE", GetterUtil.getString(dlExternalVideo.getTitle())
+					DLExternalVideoConstants.DDM_FIELD_NAME_TITLE,
+					GetterUtil.getString(dlExternalVideo.getTitle())
 				).put(
-					"URL", GetterUtil.getString(dlExternalVideo.getURL())
+					DLExternalVideoConstants.DDM_FIELD_NAME_URL,
+					GetterUtil.getString(dlExternalVideo.getURL())
 				));
 		}
 	}

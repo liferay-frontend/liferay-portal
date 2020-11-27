@@ -50,37 +50,37 @@ public class SiteVerticalCard implements VerticalCard {
 	}
 
 	@Override
-	public Map<String, String> getData() {
-		if (!_siteBrowserDisplayContext.isShowLink(_group)) {
-			return null;
-		}
-
-		try {
-			return HashMapBuilder.put(
-				"entityid", String.valueOf(_group.getGroupId())
-			).put(
-				"entityname",
-				_group.getDescriptiveName(_themeDisplay.getLocale())
-			).put(
-				"grouptarget", _siteBrowserDisplayContext.getTarget()
-			).put(
-				"grouptype",
-				LanguageUtil.get(_httpServletRequest, _group.getTypeLabel())
-			).put(
-				"url", _group.getDisplayURL(_themeDisplay)
-			).build();
-		}
-		catch (Exception exception) {
+	public String getCssClass() {
+		if (_siteBrowserDisplayContext.isShowLink(_group)) {
+			return "card-interactive card-interactive-secondary " +
+				"selector-button";
 		}
 
 		return null;
 	}
 
 	@Override
-	public String getElementClasses() {
-		if (_siteBrowserDisplayContext.isShowLink(_group)) {
-			return "card-interactive card-interactive-secondary " +
-				"selector-button";
+	public Map<String, String> getDynamicAttributes() {
+		if (!_siteBrowserDisplayContext.isShowLink(_group)) {
+			return null;
+		}
+
+		try {
+			return HashMapBuilder.put(
+				"data-entityid", String.valueOf(_group.getGroupId())
+			).put(
+				"data-entityname",
+				_group.getDescriptiveName(_themeDisplay.getLocale())
+			).put(
+				"data-grouptarget", _siteBrowserDisplayContext.getTarget()
+			).put(
+				"data-grouptype",
+				LanguageUtil.get(_httpServletRequest, _group.getTypeLabel())
+			).put(
+				"data-url", _group.getDisplayURL(_themeDisplay)
+			).build();
+		}
+		catch (Exception exception) {
 		}
 
 		return null;

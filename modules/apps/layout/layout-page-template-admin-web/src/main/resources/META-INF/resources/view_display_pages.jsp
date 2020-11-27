@@ -39,7 +39,7 @@ DisplayPageManagementToolbarDisplayContext displayPageManagementToolbarDisplayCo
 	<portlet:param name="redirect" value="<%= currentURL %>" />
 </portlet:actionURL>
 
-<aui:form action="<%= deleteDisplayPageURL %>" cssClass="container-fluid-1280" name="fm">
+<aui:form action="<%= deleteDisplayPageURL %>" cssClass="container-fluid container-fluid-max-xl" name="fm">
 	<liferay-ui:error key="<%= RequiredLayoutPageTemplateEntryException.class.getName() %>" message="you-cannot-delete-display-page-templates-that-are-used-by-one-or-more-items.-please-view-the-usages-and-try-to-unassign-them" />
 
 	<liferay-ui:success key="displayPageTemplateDeleted" message='<%= GetterUtil.getString(MultiSessionMessages.get(renderRequest, "displayPageTemplateDeleted")) %>' />
@@ -64,7 +64,8 @@ DisplayPageManagementToolbarDisplayContext displayPageManagementToolbarDisplayCo
 			%>
 
 			<liferay-ui:search-container-column-text>
-				<clay:vertical-card-v2
+				<clay:vertical-card
+					propsTransformer="js/propsTransformers/DisplayPageDropdownPropsTransformer"
 					verticalCard="<%= new DisplayPageVerticalCard(layoutPageTemplateEntry, renderRequest, renderResponse, searchContainer.getRowChecker()) %>"
 				/>
 			</liferay-ui:search-container-column-text>
@@ -85,11 +86,6 @@ DisplayPageManagementToolbarDisplayContext displayPageManagementToolbarDisplayCo
 	<aui:input name="layoutPageTemplateEntryId" type="hidden" />
 	<aui:input name="fileEntryId" type="hidden" />
 </aui:form>
-
-<liferay-frontend:component
-	componentId="<%= LayoutPageTemplateAdminWebKeys.DISPLAY_PAGE_DROPDOWN_DEFAULT_EVENT_HANDLER %>"
-	module="js/DisplayPageDropdownDefaultEventHandler.es"
-/>
 
 <liferay-frontend:component
 	componentId="<%= displayPageManagementToolbarDisplayContext.getDefaultEventHandler() %>"

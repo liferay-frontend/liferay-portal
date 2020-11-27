@@ -12,7 +12,7 @@
  * details.
  */
 
-import {dom} from 'metal-dom';
+import {buildFragment} from 'frontend-js-web';
 
 import AutoSave from '../../../src/main/resources/META-INF/resources/admin/js/util/AutoSave.es';
 
@@ -21,13 +21,17 @@ const AUTOSAVE_INTERVAL = 2;
 const URL = '/sample/autosave';
 
 const createForm = () => {
-	dom.enterDocument('<form id="mockForm"></form>');
+	const frag = buildFragment('<form id="mockForm"></form>');
+
+	document.body.appendChild(frag);
 
 	return document.querySelector('#mockForm');
 };
 
 const createInput = (id) => {
-	dom.enterDocument(`<input id="${id}" value="0" />`);
+	const frag = buildFragment(`<input id="${id}" value="0" />`);
+
+	document.body.appendChild(frag);
 
 	return document.querySelector(`#${id}`);
 };

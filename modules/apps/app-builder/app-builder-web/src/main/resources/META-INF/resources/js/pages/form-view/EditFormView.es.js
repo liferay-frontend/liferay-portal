@@ -49,7 +49,6 @@ const EditFormView = (props) => {
 		dataLayoutId,
 		newCustomObject,
 		popUpWindow,
-		showTranslationManager,
 	} = parseProps(props);
 	const {basePortletURL} = useContext(AppContext);
 
@@ -63,7 +62,7 @@ const EditFormView = (props) => {
 
 	if (document.querySelector('.change-tracking-indicator')) {
 		WrapperComponent = ({children}) => (
-			<div className="publications-enabled">{children}</div>
+			<div className="menu-indicator-enabled">{children}</div>
 		);
 	}
 
@@ -79,7 +78,6 @@ const EditFormView = (props) => {
 					<FormViewUpperToolbar
 						newCustomObject={newCustomObject}
 						popUpWindow={popUpWindow}
-						showTranslationManager={showTranslationManager}
 					/>
 
 					{createPortal(

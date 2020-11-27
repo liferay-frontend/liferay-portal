@@ -49,9 +49,14 @@ public class SelectSiteInitializerVerticalCard implements VerticalCard {
 	}
 
 	@Override
-	public Map<String, String> getData() {
+	public String getCssClass() {
+		return "add-site-action-card mb-0";
+	}
+
+	@Override
+	public Map<String, String> getDynamicAttributes() {
 		return HashMapBuilder.put(
-			"add-site-url",
+			"data-add-site-url",
 			() -> {
 				PortletURL addSiteURL = _renderResponse.createActionURL();
 
@@ -75,7 +80,7 @@ public class SelectSiteInitializerVerticalCard implements VerticalCard {
 				return addSiteURL.toString();
 			}
 		).put(
-			"checkbox-field-name",
+			"data-checkbox-field-name",
 			() -> {
 				if (Objects.equals(
 						_siteInitializerItem.getType(),
@@ -87,15 +92,9 @@ public class SelectSiteInitializerVerticalCard implements VerticalCard {
 				return StringPool.BLANK;
 			}
 		).put(
-			"layout-set-prototype-id",
+			"data-layout-set-prototype-id",
 			String.valueOf(_siteInitializerItem.getLayoutSetPrototypeId())
 		).build();
-	}
-
-	@Override
-	public String getElementClasses() {
-		return "add-site-action-option card-interactive " +
-			"card-interactive-secondary";
 	}
 
 	@Override

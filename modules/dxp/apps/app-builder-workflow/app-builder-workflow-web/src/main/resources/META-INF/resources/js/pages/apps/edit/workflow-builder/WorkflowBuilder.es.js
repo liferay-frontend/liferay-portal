@@ -12,7 +12,12 @@
 import EditAppContext from 'app-builder-web/js/pages/apps/edit/EditAppContext.es';
 import React, {useContext} from 'react';
 
-import {ADD_STEP, REMOVE_STEP, UPDATE_STEP_INDEX} from '../configReducer.es';
+import {
+	ADD_STEP,
+	REMOVE_STEP,
+	REMOVE_STEP_EMPTY_FORM_VIEWS,
+	UPDATE_STEP_INDEX,
+} from '../configReducer.es';
 import WorkflowStep from './WorkflowStep.es';
 
 export default function WorkflowBuilder() {
@@ -34,6 +39,13 @@ export default function WorkflowBuilder() {
 
 	const onClickStep = (index) => {
 		if (index !== stepIndex) {
+			if (steps[stepIndex].initial === undefined) {
+				dispatchConfig({
+					stepIndex,
+					type: REMOVE_STEP_EMPTY_FORM_VIEWS,
+				});
+			}
+
 			dispatchConfig({stepIndex: index, type: UPDATE_STEP_INDEX});
 		}
 	};

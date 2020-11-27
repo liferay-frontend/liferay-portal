@@ -13,12 +13,14 @@
  */
 
 import {ClayCardWithInfo} from '@clayui/card';
+import ClayIcon from '@clayui/icon';
+import ClaySticker from '@clayui/sticker';
 import React, {useMemo, useState} from 'react';
 
 import getDataAttributes from './get_data_attributes';
 
 export default function VerticalCard({
-	actions = [],
+	actions,
 	additionalProps: _additionalProps,
 	componentId: _componentId,
 	cssClass,
@@ -51,26 +53,36 @@ export default function VerticalCard({
 }) {
 	const [selected, setSelected] = useState(initialSelected);
 
-	const stickerProps = useMemo(
-		() => ({
+	const stickerProps = useMemo(() => {
+		const stickerProps = {
+			children: stickerLabel,
 			className: stickerCssClass,
-			content: stickerLabel,
 			displayType: stickerStyle,
-			imageAlt: stickerImageAlt,
-			imageSrc: stickerImageSrc,
 			shape: stickerShape,
-			symbol: stickerIcon,
-		}),
-		[
-			stickerCssClass,
-			stickerIcon,
-			stickerImageAlt,
-			stickerImageSrc,
-			stickerLabel,
-			stickerShape,
-			stickerStyle,
-		]
-	);
+		};
+
+		if (stickerIcon) {
+			stickerProps.children = <ClayIcon symbol={stickerIcon} />;
+		}
+		else if (stickerImageSrc) {
+			stickerProps.children = (
+				<ClaySticker.Image
+					alt={stickerImageAlt}
+					src={stickerImageSrc}
+				/>
+			);
+		}
+
+		return stickerProps;
+	}, [
+		stickerCssClass,
+		stickerIcon,
+		stickerImageAlt,
+		stickerImageSrc,
+		stickerLabel,
+		stickerShape,
+		stickerStyle,
+	]);
 
 	return (
 		<ClayCardWithInfo

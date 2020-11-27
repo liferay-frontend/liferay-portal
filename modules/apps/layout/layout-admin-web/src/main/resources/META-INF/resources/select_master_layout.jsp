@@ -24,7 +24,7 @@ SelectLayoutPageTemplateEntryDisplayContext selectLayoutPageTemplateEntryDisplay
 List<LayoutPageTemplateEntry> masterLayoutPageTemplateEntries = selectLayoutPageTemplateEntryDisplayContext.getMasterLayoutPageTemplateEntries();
 %>
 
-<aui:form cssClass="container-fluid-1280 mt-3" name="fm">
+<aui:form cssClass="container-fluid container-fluid-max-xl mt-3" name="fm">
 	<ul class="card-page card-page-equal-height">
 
 		<%
@@ -32,7 +32,7 @@ List<LayoutPageTemplateEntry> masterLayoutPageTemplateEntries = selectLayoutPage
 		%>
 
 			<li class="card-page-item col-md-3 col-sm-6 form-check-card">
-				<clay:vertical-card-v2
+				<clay:vertical-card
 					verticalCard="<%= new SelectMasterLayoutVerticalCard(masterLayoutPageTemplateEntry, renderRequest) %>"
 				/>
 			</li>
@@ -44,8 +44,10 @@ List<LayoutPageTemplateEntry> masterLayoutPageTemplateEntries = selectLayoutPage
 	</ul>
 </aui:form>
 
-<aui:script require="metal-dom/src/dom as dom">
-	var delegateHandler = dom.delegate(
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
+	var delegate = delegateModule.default;
+
+	var delegateHandler = delegate(
 		document.body,
 		'click',
 		'.select-master-layout-option',
@@ -74,7 +76,7 @@ List<LayoutPageTemplateEntry> masterLayoutPageTemplateEntries = selectLayoutPage
 	);
 
 	var onDestroyPortlet = function () {
-		delegateHandler.removeListener();
+		delegateHandler.dipose();
 
 		Liferay.detach('destroyPortlet', onDestroyPortlet);
 	};

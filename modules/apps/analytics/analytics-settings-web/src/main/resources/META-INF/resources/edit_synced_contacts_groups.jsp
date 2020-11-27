@@ -117,9 +117,11 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "
 			/>
 		</liferay-ui:search-container>
 
-		<aui:button-row>
-			<aui:button type="submit" value='<%= includeSyncContactsFields ? "save-and-next" : "save" %>' />
-			<aui:button href="<%= redirect %>" type="cancel" value="cancel" />
-		</aui:button-row>
+		<div class="text-right">
+			<aui:button-row>
+				<aui:button href="<%= redirect %>" type="cancel" value="cancel" />
+				<aui:button type="submit" value='<%= includeSyncContactsFields ? "save-and-next" : "save" %>' />
+			</aui:button-row>
+		</div>
 	</aui:form>
 </clay:sheet>

@@ -59,7 +59,21 @@ const NoObjectEmptyState = () => (
 	</div>
 );
 
-const SelectFormView = (props) => {
+const OpenButton = (props) => (
+	<ClayTooltipProvider>
+		<Button
+			className="ml-2 px-2 tap-ahead-icon-wrapper"
+			data-tooltip-align="bottom-right"
+			data-tooltip-delay="0"
+			displayType="secondary"
+			symbol="tap-ahead"
+			title={Liferay.Language.get('open')}
+			{...props}
+		/>
+	</ClayTooltipProvider>
+);
+
+const SelectFormView = ({openButtonProps, ...props}) => {
 	props = {
 		...props,
 		emptyResultMessage: Liferay.Language.get(
@@ -76,10 +90,16 @@ const SelectFormView = (props) => {
 		},
 	};
 
-	return <SelectDropdown {...props} />;
+	return (
+		<div className="d-flex">
+			<SelectDropdown {...props} />
+
+			<OpenButton {...openButtonProps} />
+		</div>
+	);
 };
 
-const SelectTableView = (props) => {
+const SelectTableView = ({openButtonProps, ...props}) => {
 	props = {
 		...props,
 		emptyResultMessage: Liferay.Language.get(
@@ -96,7 +116,13 @@ const SelectTableView = (props) => {
 		},
 	};
 
-	return <SelectDropdown {...props} />;
+	return (
+		<div className="d-flex">
+			<SelectDropdown {...props} />
+
+			<OpenButton {...openButtonProps} />
+		</div>
+	);
 };
 
 export default function DataAndViewsTab({
@@ -201,7 +227,8 @@ export default function DataAndViewsTab({
 	const openFormViewModal = (
 		dataDefinitionId,
 		defaultLanguageId,
-		selectFormView
+		selectFormView,
+		dataLayoutId
 	) => {
 		const event = window.top?.Liferay.once(
 			'newFormViewCreated',
@@ -234,9 +261,12 @@ export default function DataAndViewsTab({
 
 		openModal({
 			onClose: () => event?.detach(),
-			title: Liferay.Language.get('new-form-view'),
+			title: dataLayoutId
+				? Liferay.Language.get('edit-form-view')
+				: Liferay.Language.get('new-form-view'),
 			url: Liferay.Util.PortletURL.createRenderURL(objectsPortletURL, {
 				dataDefinitionId,
+				dataLayoutId,
 				mvcRenderCommandName: '/app_builder/edit_form_view',
 				newCustomObject: true,
 				p_p_state: 'pop_up',
@@ -244,7 +274,11 @@ export default function DataAndViewsTab({
 		});
 	};
 
-	const openTableViewModal = (dataDefinitionId, defaultLanguageId) => {
+	const openTableViewModal = (
+		dataDefinitionId,
+		defaultLanguageId,
+		dataListViewId
+	) => {
 		const event = window.top?.Liferay.once(
 			'newTableViewCreated',
 			({newTableView}) => {
@@ -278,10 +312,14 @@ export default function DataAndViewsTab({
 
 		openModal({
 			onClose: () => event?.detach(),
-			title: Liferay.Language.get('new-table-view'),
+			title: dataListViewId
+				? Liferay.Language.get('edit-table-view')
+				: Liferay.Language.get('new-table-view'),
 			url: `${Liferay.Util.PortletURL.createRenderURL(objectsPortletURL, {
 				p_p_state: 'pop_up',
-			})}#/custom-object/${dataDefinitionId}/table-views/add`,
+			})}#/custom-object/${dataDefinitionId}/table-views/${
+				dataListViewId ?? 'add'
+			}`,
 		});
 	};
 
@@ -404,6 +442,16 @@ export default function DataAndViewsTab({
 									onSelect={(formView) =>
 										updateStepFormView(formView, index)
 									}
+									openButtonProps={{
+										disabled: !name,
+										onClick: () =>
+											openFormViewModal(
+												dataObject.id,
+												dataObject.defaultLanguageId,
+												updateFormView,
+												dataLayoutId
+											),
+									}}
 									selectedValue={name}
 								/>
 
@@ -512,6 +560,16 @@ export default function DataAndViewsTab({
 								isLoading={fetching}
 								items={formViews}
 								onSelect={updateFormView}
+								openButtonProps={{
+									disabled: !formView.name,
+									onClick: () =>
+										openFormViewModal(
+											dataObject.id,
+											dataObject.defaultLanguageId,
+											updateFormView,
+											formView.id
+										),
+								}}
 								selectedValue={formView.name}
 							/>
 
@@ -541,6 +599,15 @@ export default function DataAndViewsTab({
 								isLoading={fetching}
 								items={tableViews}
 								onSelect={updateTableView}
+								openButtonProps={{
+									disabled: !tableView.name,
+									onClick: () =>
+										openTableViewModal(
+											dataObject.id,
+											dataObject.defaultLanguageId,
+											tableView.id
+										),
+								}}
 								selectedValue={tableView.name}
 							/>
 						</div>

@@ -39,7 +39,11 @@ public class VerticalCardTag extends BaseCardTag {
 		setAttributeNamespace(_ATTRIBUTE_NAMESPACE);
 
 		if (getIcon() == null) {
-			setIcon("document-default");
+			setIcon("documents-and-media");
+		}
+
+		if (getStickerIcon() == null) {
+			setStickerIcon("document-default");
 		}
 
 		return super.doStartTag();
@@ -458,6 +462,12 @@ public class VerticalCardTag extends BaseCardTag {
 
 		StickerTag stickerTag = new StickerTag();
 
+		String stickerCssClass = getStickerCssClass();
+
+		if (Validator.isNotNull(stickerCssClass)) {
+			stickerTag.setCssClass(stickerCssClass);
+		}
+
 		String stickerIcon = getStickerIcon();
 		String stickerImageSrc = getStickerImageSrc();
 		String stickerLabel = getStickerLabel();
@@ -482,9 +492,6 @@ public class VerticalCardTag extends BaseCardTag {
 
 		if (Validator.isNotNull(stickerStyle)) {
 			stickerTag.setDisplayType(stickerStyle);
-		}
-		else {
-			stickerTag.setDisplayType("primary");
 		}
 
 		stickerTag.setPosition("bottom-left");

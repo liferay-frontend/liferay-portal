@@ -33,10 +33,10 @@ StyleBookEntry layoutStyleBookEntry = DefaultStyleBookEntryUtil.getDefaultStyleB
 List<StyleBookEntry> styleBookEntries = selectLayoutPageTemplateEntryDisplayContext.getStyleBookEntries();
 %>
 
-<aui:form cssClass="container-fluid-1280 mt-3" name="fm">
+<aui:form cssClass="container-fluid container-fluid-max-xl mt-3" name="fm">
 	<ul class="card-page card-page-equal-height">
 		<li class="card-page-item col-md-3 col-sm-6 form-check-card">
-			<clay:vertical-card-v2
+			<clay:vertical-card
 				verticalCard="<%= new DefaultStylebookLayoutVerticalCard(defaultStyleBookLabel, layoutStyleBookEntry, renderRequest) %>"
 			/>
 		</li>
@@ -46,7 +46,7 @@ List<StyleBookEntry> styleBookEntries = selectLayoutPageTemplateEntryDisplayCont
 		%>
 
 			<li class="card-page-item col-md-3 col-sm-6 form-check-card">
-				<clay:vertical-card-v2
+				<clay:vertical-card
 					verticalCard="<%= new SelectStylebookLayoutVerticalCard(styleBookEntry, renderRequest) %>"
 				/>
 			</li>
@@ -58,8 +58,10 @@ List<StyleBookEntry> styleBookEntries = selectLayoutPageTemplateEntryDisplayCont
 	</ul>
 </aui:form>
 
-<aui:script require="metal-dom/src/dom as dom">
-	var delegateHandler = dom.delegate(
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
+	var delegate = delegateModule.default;
+
+	var delegateHandler = delegate(
 		document.body,
 		'click',
 		'.select-master-layout-option',
@@ -88,7 +90,7 @@ List<StyleBookEntry> styleBookEntries = selectLayoutPageTemplateEntryDisplayCont
 	);
 
 	var onDestroyPortlet = function () {
-		delegateHandler.removeListener();
+		delegateHandler.dispose();
 
 		Liferay.detach('destroyPortlet', onDestroyPortlet);
 	};

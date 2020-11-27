@@ -1,0 +1,8 @@
+body.has-edit-mode-menu .component-dropdown .dropdown-menu.keep-open {
+	display: block;
+}
+
+.component-dropdown .dropdown-menu {
+	overflow: visible;
+	z-index: 976;
+}

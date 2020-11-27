@@ -17,6 +17,7 @@ import dom from 'metal-dom';
 import {EventHandler} from 'metal-events';
 
 import PortletBase from './PortletBase.es';
+import {delegate} from './delegate/delegate.es';
 
 /**
  * Appends list item elements to dropdown menus with inline-scrollers on scroll
@@ -42,7 +43,7 @@ class DynamicInlineScroll extends PortletBase {
 		rootNode = rootNode || document;
 
 		this.eventHandler_.add(
-			dom.delegate(
+			delegate(
 				rootNode,
 				'scroll',
 				'ul.pagination ul.inline-scroller',
@@ -57,7 +58,7 @@ class DynamicInlineScroll extends PortletBase {
 	detached() {
 		super.detached();
 
-		this.eventHandler_.removeAllListeners();
+		this.eventHandler_.dispose();
 	}
 
 	/**
@@ -70,8 +71,7 @@ class DynamicInlineScroll extends PortletBase {
 	addListItem_(listElement, pageIndex) {
 		const listItem = document.createElement('li');
 
-		dom.append(
-			listItem,
+		listItem.append(
 			`<a href="${this.getHREF_(pageIndex)}">${pageIndex}</a>`
 		);
 

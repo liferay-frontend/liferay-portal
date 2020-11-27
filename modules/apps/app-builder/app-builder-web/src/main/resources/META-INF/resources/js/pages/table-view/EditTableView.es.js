@@ -24,7 +24,7 @@ import DragLayer from '../../components/drag-and-drop/DragLayer.es';
 import {Loading} from '../../components/loading/Loading.es';
 import UpperToolbar from '../../components/upper-toolbar/UpperToolbar.es';
 import {errorToast, successToast} from '../../utils/toast.es';
-import {getValidName} from '../../utils/utils.es';
+import {normalizeNames} from '../../utils/utils.es';
 import DropZone from './DropZone.es';
 import EditTableViewContext, {
 	ADD_DATA_LIST_VIEW_FIELD,
@@ -41,7 +41,7 @@ import {
 } from './utils.es';
 
 const EditTableView = withRouter(({history}) => {
-	const {popUpWindow, showTranslationManager} = useContext(AppContext);
+	const {popUpWindow} = useContext(AppContext);
 	const [{dataDefinition, dataListView}, dispatch] = useContext(
 		EditTableViewContext
 	);
@@ -108,14 +108,15 @@ const EditTableView = withRouter(({history}) => {
 				dataListView.name[editingLanguageId];
 		}
 
-		dataListView.name[defaultLanguageId] = getValidName(
-			Liferay.Language.get('untitled-table-view'),
-			dataListView.name[defaultLanguageId]
-		);
-
 		setLoading(true);
 
-		saveTableView(dataDefinition, dataListView)
+		saveTableView(dataDefinition, {
+			...dataListView,
+			name: normalizeNames(
+				dataListView.name,
+				Liferay.Language.get('untitled-table-view')
+			),
+		})
 			.then(onSuccess)
 			.catch((error) => {
 				onError(error);
@@ -157,7 +158,9 @@ const EditTableView = withRouter(({history}) => {
 			</ClayButton>
 
 			<ClayButton
-				disabled={isLoading || !dataListView.name[editingLanguageId]}
+				disabled={
+					isLoading || !dataListView.name[editingLanguageId]?.trim()
+				}
 				onClick={onSave}
 			>
 				{Liferay.Language.get('save')}
@@ -190,25 +193,23 @@ const EditTableView = withRouter(({history}) => {
 					}}
 				>
 					<UpperToolbar>
-						{showTranslationManager && (
-							<UpperToolbar.Group>
-								<TranslationManager
-									availableLanguageIds={dataDefinition.availableLanguageIds.reduce(
-										(languages, languageId) => ({
-											...languages,
-											[languageId]: languageId,
-										}),
-										{}
-									)}
-									defaultLanguageId={defaultLanguageId}
-									editingLanguageId={editingLanguageId}
-									onEditingLanguageIdChange={
-										onEditingLanguageIdChange
-									}
-									translatedLanguageIds={dataListView.name}
-								/>
-							</UpperToolbar.Group>
-						)}
+						<UpperToolbar.Group>
+							<TranslationManager
+								availableLanguageIds={dataDefinition.availableLanguageIds.reduce(
+									(languages, languageId) => ({
+										...languages,
+										[languageId]: languageId,
+									}),
+									{}
+								)}
+								defaultLanguageId={defaultLanguageId}
+								editingLanguageId={editingLanguageId}
+								onEditingLanguageIdChange={
+									onEditingLanguageIdChange
+								}
+								translatedLanguageIds={dataListView.name}
+							/>
+						</UpperToolbar.Group>
 
 						<UpperToolbar.Input
 							onChange={onTableViewNameChange}

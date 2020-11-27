@@ -49,18 +49,26 @@ export const TARGET_OPTIONS = {
 };
 
 export default function LinkField({field, onValueSelect, value}) {
-	const [nextValue, setNextValue] = useState(value || {});
-	const [nextHref, setNextHref] = useState(nextValue.href);
-	const [openNewTab, setOpenNewTab] = useState(value.target === '_blank');
+	const [nextValue, setNextValue] = useState({});
+	const [nextHref, setNextHref] = useState('');
+	const [openNewTab, setOpenNewTab] = useState('');
 
 	const [mappedHrefPreview, setMappedHrefPreview] = useState(null);
 	const languageId = useSelector(selectLanguageId);
 
-	const [source, setSource] = useState(
-		isMapped(value)
-			? SOURCE_OPTIONS.fromContentField.value
-			: SOURCE_OPTIONS.manual.value
-	);
+	const [source, setSource] = useState(SOURCE_OPTIONS.manual.value);
+
+	useEffect(() => {
+		setNextValue(value);
+		setNextHref(value.href);
+		setOpenNewTab(value.target === '_blank');
+
+		setSource(
+			isMapped(value) || source === SOURCE_OPTIONS.fromContentField.value
+				? SOURCE_OPTIONS.fromContentField.value
+				: SOURCE_OPTIONS.manual.value
+		);
+	}, [source, value]);
 
 	const hrefInputId = useId();
 	const hrefPreviewInputId = useId();

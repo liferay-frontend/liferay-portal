@@ -13,7 +13,6 @@
  */
 
 import {DefaultEventHandler, openSelectionModal} from 'frontend-js-web';
-import dom from 'metal-dom';
 
 class EditTeamAssignmentsUserGroupsManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	selectUserGroup(itemData) {
@@ -26,7 +25,7 @@ class EditTeamAssignmentsUserGroupsManagementToolbarDefaultEventHandler extends 
 					);
 
 					selectedItem.forEach((item) => {
-						dom.append(addTeamUserGroupsFm, item);
+						addTeamUserGroupsFm.append(item);
 					});
 
 					submitForm(addTeamUserGroupsFm);

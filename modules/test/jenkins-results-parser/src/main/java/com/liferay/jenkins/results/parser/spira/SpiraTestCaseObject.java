@@ -226,6 +226,42 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 		return _parentSpiraTestCaseFolder;
 	}
 
+	public List<SpiraTestCaseComponent> getSpiraTestCaseComponents() {
+		JSONArray componentIDJSONArray = jsonObject.optJSONArray(
+			"ComponentIds");
+
+		if (componentIDJSONArray == JSONObject.NULL) {
+			return new ArrayList<>();
+		}
+
+		SpiraProject spiraProject = getSpiraProject();
+
+		List<SpiraTestCaseComponent> spiraTestCaseComponents =
+			new ArrayList<>();
+
+		for (int i = 0; i < componentIDJSONArray.length(); i++) {
+			spiraTestCaseComponents.add(
+				spiraProject.getSpiraTestCaseComponentByID(
+					componentIDJSONArray.getInt(i)));
+		}
+
+		return spiraTestCaseComponents;
+	}
+
+	public SpiraTestCasePriority getSpiraTestCasePriority() {
+		Integer testCasePriorityId = jsonObject.optInt("TestCasePriorityId");
+
+		if ((testCasePriorityId <= 0) ||
+			(testCasePriorityId == JSONObject.NULL)) {
+
+			return null;
+		}
+
+		SpiraProject spiraProject = getSpiraProject();
+
+		return spiraProject.getSpiraTestCasePriorityByID(testCasePriorityId);
+	}
+
 	public SpiraTestCaseProductVersion getSpiraTestCaseProductVersion() {
 		if (_spiraTestCaseProductVersion != null) {
 			return _spiraTestCaseProductVersion;
@@ -342,17 +378,6 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 			return;
 		}
 
-		String urlPath = "projects/{project_id}/test-cases";
-
-		Map<String, String> urlPathReplacements = new HashMap<>();
-
-		SpiraProject spiraProject = getSpiraProject();
-
-		urlPathReplacements.put(
-			"project_id", String.valueOf(spiraProject.getID()));
-
-		JSONObject requestJSONObject = toJSONObject();
-
 		JSONArray customPropertiesJSONArray = new JSONArray();
 
 		for (SpiraCustomPropertyValue spiraCustomPropertyValue :
@@ -362,26 +387,108 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 				spiraCustomPropertyValue.getCustomPropertyJSONObject());
 		}
 
-		requestJSONObject.remove("CustomProperties");
+		JSONObject jsonObject = new JSONObject();
 
-		requestJSONObject.put("CustomProperties", customPropertiesJSONArray);
+		jsonObject.put("CustomProperties", customPropertiesJSONArray);
 
-		try {
-			SpiraRestAPIUtil.request(
-				urlPath, null, urlPathReplacements, HttpRequestMethod.PUT,
-				requestJSONObject.toString());
+		_updateJSONObject(jsonObject);
+	}
 
-			urlPathReplacements.put("test_case_id", String.valueOf(getID()));
+	public void updateSpiraTestCaseComponents(
+		List<SpiraTestCaseComponent> spiraTestCaseComponents) {
 
-			jsonObject = SpiraRestAPIUtil.requestJSONObject(
-				"projects/{project_id}/test-cases/{test_case_id}", null,
-				urlPathReplacements, HttpRequestMethod.GET, null);
-
-			jsonObject.put("Path", getPath());
+		if (spiraTestCaseComponents != null) {
+			updateSpiraTestCaseComponents(
+				spiraTestCaseComponents.toArray(new SpiraTestCaseComponent[0]));
 		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
+	}
+
+	public void updateSpiraTestCaseComponents(
+		SpiraTestCaseComponent... spiraTestCaseComponents) {
+
+		if (spiraTestCaseComponents == null) {
+			return;
 		}
+
+		boolean updated = false;
+
+		List<SpiraTestCaseComponent> currentSpiraTestCaseComponents =
+			getSpiraTestCaseComponents();
+
+		if (spiraTestCaseComponents.length !=
+				currentSpiraTestCaseComponents.size()) {
+
+			updated = true;
+		}
+
+		for (SpiraTestCaseComponent spiraTestCaseComponent :
+				spiraTestCaseComponents) {
+
+			if (updated) {
+				break;
+			}
+
+			boolean found = false;
+
+			for (SpiraTestCaseComponent currentSpiraTestCaseComponent :
+					currentSpiraTestCaseComponents) {
+
+				if (currentSpiraTestCaseComponent.equals(
+						spiraTestCaseComponent)) {
+
+					found = true;
+
+					break;
+				}
+			}
+
+			if (!found) {
+				updated = true;
+
+				break;
+			}
+		}
+
+		if (!updated) {
+			return;
+		}
+
+		JSONObject jsonObject = new JSONObject();
+
+		JSONArray componentIDsJSONArray = new JSONArray();
+
+		for (SpiraTestCaseComponent spiraTestCaseComponent :
+				spiraTestCaseComponents) {
+
+			componentIDsJSONArray.put(spiraTestCaseComponent.getID());
+		}
+
+		jsonObject.put("ComponentIds", componentIDsJSONArray);
+
+		_updateJSONObject(jsonObject);
+	}
+
+	public void updateSpiraTestCasePriority(
+		SpiraTestCasePriority spiraTestCasePriority) {
+
+		if (spiraTestCasePriority == null) {
+			return;
+		}
+
+		SpiraTestCasePriority currentSpiraTestCasePriority =
+			getSpiraTestCasePriority();
+
+		if ((currentSpiraTestCasePriority != null) &&
+			currentSpiraTestCasePriority.equals(spiraTestCasePriority)) {
+
+			return;
+		}
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put("TestCasePriorityId", spiraTestCasePriority.getID());
+
+		_updateJSONObject(jsonObject);
 	}
 
 	public static enum Status {
@@ -565,6 +672,70 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 		super(jsonObject);
 
 		cacheSpiraArtifact(SpiraTestCaseObject.class, this);
+	}
+
+	private void _refreshJSONObject() {
+		Map<String, String> urlPathReplacements = new HashMap<>();
+
+		SpiraProject spiraProject = getSpiraProject();
+
+		urlPathReplacements.put(
+			"project_id", String.valueOf(spiraProject.getID()));
+
+		urlPathReplacements.put("test_case_id", String.valueOf(getID()));
+
+		try {
+			jsonObject = SpiraRestAPIUtil.requestJSONObject(
+				"projects/{project_id}/test-cases/{test_case_id}", null,
+				urlPathReplacements, HttpRequestMethod.GET, null);
+
+			jsonObject.put("Path", getPath());
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+	}
+
+	private void _updateJSONObject(JSONObject jsonObject) {
+		SpiraProject spiraProject = getSpiraProject();
+
+		Map<String, String> urlPathReplacements = new HashMap<>();
+
+		urlPathReplacements.put(
+			"project_id", String.valueOf(spiraProject.getID()));
+
+		int updateRetryCount = 0;
+
+		while (true) {
+			JSONObject requestJSONObject = toJSONObject();
+
+			for (String key : jsonObject.keySet()) {
+				if (requestJSONObject.has(key)) {
+					requestJSONObject.remove(key);
+				}
+
+				requestJSONObject.put(key, jsonObject.get(key));
+			}
+
+			try {
+				SpiraRestAPIUtil.request(
+					"projects/{project_id}/test-cases", null,
+					urlPathReplacements, HttpRequestMethod.PUT,
+					requestJSONObject.toString());
+
+				return;
+			}
+			catch (IOException ioException) {
+				if (updateRetryCount >= 2) {
+					throw new RuntimeException(ioException);
+				}
+
+				updateRetryCount++;
+			}
+			finally {
+				_refreshJSONObject();
+			}
+		}
 	}
 
 	private static final String _CUSTOM_FIELD_EXECUTION_TYPE_KEY =

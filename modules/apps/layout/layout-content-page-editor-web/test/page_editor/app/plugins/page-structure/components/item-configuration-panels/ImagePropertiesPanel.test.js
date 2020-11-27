@@ -220,7 +220,10 @@ describe('TextField', () => {
 						{
 							'e-1': expect.objectContaining({
 								config: {
-									alt: 'Random description',
+									alt: {
+										en: '',
+										es: 'Random description',
+									},
 									imageTitle: 'Editable Image Title',
 								},
 							}),

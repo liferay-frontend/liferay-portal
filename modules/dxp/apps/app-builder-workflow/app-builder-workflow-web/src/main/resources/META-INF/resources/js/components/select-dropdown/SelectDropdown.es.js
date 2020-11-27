@@ -28,6 +28,7 @@ export default function SelectDropdown({
 	return (
 		<>
 			<DropDownWithSearch
+				className="w-100"
 				isEmpty={items.length === 0}
 				label={label}
 				trigger={

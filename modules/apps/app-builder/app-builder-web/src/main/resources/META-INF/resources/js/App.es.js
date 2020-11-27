@@ -57,7 +57,7 @@ export default (props) => (
 				<Router>
 					<div
 						className={classNames('custom-object-app', {
-							'publications-enabled': document.querySelector(
+							'menu-indicator-enabled': document.querySelector(
 								'.change-tracking-indicator'
 							),
 						})}

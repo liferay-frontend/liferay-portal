@@ -13,7 +13,6 @@
  */
 
 import {DefaultEventHandler, openSelectionModal} from 'frontend-js-web';
-import dom from 'metal-dom';
 
 class EditTeamAssignmentsUsersManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	selectUser(itemData) {
@@ -24,7 +23,7 @@ class EditTeamAssignmentsUsersManagementToolbarDefaultEventHandler extends Defau
 					const addTeamUsersFm = this.one('#addTeamUsersFm');
 
 					selectedItem.forEach((item) => {
-						dom.append(addTeamUsersFm, item);
+						addTeamUsersFm.append(item);
 					});
 
 					submitForm(addTeamUsersFm);

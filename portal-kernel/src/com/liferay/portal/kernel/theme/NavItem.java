@@ -53,11 +53,9 @@ import javax.servlet.http.HttpServletRequest;
 public class NavItem implements Serializable {
 
 	public static List<NavItem> fromLayouts(
-			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay,
-			Map<String, Object> contextObjects)
+			HttpServletRequest httpServletRequest, List<Layout> parentLayouts,
+			ThemeDisplay themeDisplay, Map<String, Object> contextObjects)
 		throws PortalException {
-
-		List<Layout> parentLayouts = themeDisplay.getLayouts();
 
 		if (parentLayouts == null) {
 			return Collections.emptyList();
@@ -100,6 +98,16 @@ public class NavItem implements Serializable {
 		}
 
 		return navItems;
+	}
+
+	public static List<NavItem> fromLayouts(
+			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay,
+			Map<String, Object> contextObjects)
+		throws PortalException {
+
+		return fromLayouts(
+			httpServletRequest, themeDisplay.getLayouts(), themeDisplay,
+			contextObjects);
 	}
 
 	public NavItem(

@@ -102,7 +102,7 @@ definition {
 
 		DataEngine.addField(
 			fieldFieldLabel = "Text",
-			fieldType = "Text");
+			fieldName = "Text");
 
 		WebContentStructures.saveCP(structureName = "WC Structure Name");
 
@@ -338,6 +338,8 @@ definition {
 			fieldFieldLabel = "Web Content",
 			fieldName = "Web Content");
 
+		var fieldName = selenium.getAttribute("//div[@class='ddm-field' and contains(.,'Web Content')]@data-field-name");
+
 		WebContentStructures.saveCP(structureName = "WC Structure Name");
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
@@ -352,8 +354,7 @@ definition {
 			templateFieldNames = "Web Content",
 			templateName = "WC Template Name");
 
-		var templateWebConetntScript = selenium.getAttribute("//span[contains(@class,'palette-item') and contains(.,'Web Content')]@data-content");
-		var templateScript = '''${templateWebConetntScript} <a>${webContentData.title}</a>''';
+		var templateScript = '''<#assign webContentData = jsonFactoryUtil.createJSONObject(${fieldName}.getData()) /> <a>${webContentData.title}</a>''';
 
 		WebContentTemplates.inputScript(templateScript = "${templateScript}");
 
@@ -368,8 +369,8 @@ definition {
 			fieldName = "WebContent",
 			structureName = "WC Structure Name",
 			templateName = "WC Template Name",
-			webContentSelectWCFile = "WC Depot WebContent",
-			webContentTitle = "WC WebContent Title");
+			webContentTitle = "WC WebContent Title",
+			webContentWebContent = "WC Depot WebContent");
 
 		PortletEntry.publish();
 
@@ -874,8 +875,7 @@ definition {
 				structureDescription = "WC Structure Description",
 				structureName = "WC Structure Name${i}");
 
-			DynamicDataMapping.addField(
-				field = "Text",
+			DataEngine.addField(
 				fieldFieldLabel = "Text",
 				fieldName = "Text");
 

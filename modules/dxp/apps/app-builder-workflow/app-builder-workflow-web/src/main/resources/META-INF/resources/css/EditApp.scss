@@ -274,6 +274,10 @@ $navbarHeight: 120px;
 	padding: 1rem 1rem 0;
 }
 
+.tap-ahead-icon-wrapper .lexicon-icon-tap-ahead {
+	transform: scaleX(-1);
+}
+
 .tooltip-icon:hover {
 	fill: #6b6c7e;
 }

@@ -579,20 +579,21 @@ definition {
 				var webContentLinkToPageFieldLabel = "Link to Page";
 			}
 
-			var key_pageName = "${webContentLinkToPage}";
-
 			AssertClick(
 				key_fieldFieldLabel = "${webContentLinkToPageFieldLabel}",
 				locator1 = "WCEditWebContent#SELECT_BUTTON",
 				value1 = "Select");
 
-			while (IsElementNotPresent(locator1 = "WC#LINK_TO_PAGE_SELECT_PAGE_RADIO")) {
-				Click(locator1 = "WC#LINK_TO_PAGE_NEXT_PAGE");
-			}
+			SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
-			Click(locator1 = "WC#LINK_TO_PAGE_SELECT_PAGE_RADIO");
+			Portlet.expandTree();
 
-			ClickNoError(locator1 = "Button#SELECT");
+			AssertClick.assertPartialTextClickAt(
+				key_nodeName = "${webContentLinkToPage}",
+				locator1 = "Treeview#NODE_UNSELECTED",
+				value1 = "${webContentLinkToPage}");
+
+			SelectFrameTop();
 		}
 
 		if (isSet(webContentMultipleSelection)) {
@@ -600,7 +601,7 @@ definition {
 				var webContentMultipleSelectionFieldLabel = "Multiple Selection";
 			}
 
-			Check(
+			Check.checkNotVisible(
 				key_fieldFieldLabel = "${webContentMultipleSelectionFieldLabel}",
 				key_optionValue = "${webContentMultipleSelection}",
 				locator1 = "WCEditWebContent#SELECTION_OPTION");
@@ -637,12 +638,13 @@ definition {
 
 				Type.typeCodeMirrorEditorNoError(
 					locator1 = "CKEditor#BODY_FIELD_SOURCE_ON",
-					value1 = "${content}");
+					value1 = "${webContentRichText}");
 			}
-
-			CKEditor.addContentInWebContent(
-				content = "${webContentRichText}",
-				fieldLabel = "${webContentRichTextFieldLabel}");
+			else {
+				CKEditor.addContentInWebContent(
+					content = "${webContentRichText}",
+					fieldLabel = "${webContentRichTextFieldLabel}");
+			}
 		}
 
 		if (isSet(webContentSelectFromList)) {
@@ -650,10 +652,11 @@ definition {
 				var webContentSelectFromListFieldLabel = "Select from List";
 			}
 
-			Select(
+			Click(
 				key_fieldFieldLabel = "${webContentSelectFromListFieldLabel}",
-				locator1 = "DDMField#SELECT_FROM_LIST",
-				value1 = "${webContentSelectFromList}");
+				locator1 = "WCEditWebContent#SELECT_FIELD_TRIGGER");
+
+			DropdownMenuItem.click(menuItem = "${webContentSelectFromList}");
 		}
 
 		if (isSet(webContentSingleSelection)) {
@@ -661,7 +664,7 @@ definition {
 				var webContentSingleSelectionFieldLabel = "Single Selection";
 			}
 
-			Check(
+			Check.checkNotVisible(
 				key_fieldFieldLabel = "${webContentSingleSelectionFieldLabel}",
 				key_optionValue = "${webContentSingleSelection}",
 				locator1 = "WCEditWebContent#SELECTION_OPTION");
@@ -2058,6 +2061,20 @@ definition {
 			locator1 = "TextInput#TITLE",
 			locator2 = "direction",
 			value1 = "rtl");
+	}
+
+	macro viewSelectedDisplayPageTemplateCP {
+		Panel.expandPanel(panel = "Display Page Template");
+
+		AssertSelectedLabel(
+			locator1 = "WCEditWebContent#DISPLAY_PAGE_SELECT",
+			value1 = "${displayPageTemplateType}");
+
+		if (isSet(displayPageTemplateName)) {
+			AssertTextEquals(
+				locator1 = "WCEditWebContent#DISPLAY_PAGE_DEFAULT_SELECTION",
+				value1 = "${displayPageTemplateName}");
+		}
 	}
 
 	macro viewSelectedTemplateCP {

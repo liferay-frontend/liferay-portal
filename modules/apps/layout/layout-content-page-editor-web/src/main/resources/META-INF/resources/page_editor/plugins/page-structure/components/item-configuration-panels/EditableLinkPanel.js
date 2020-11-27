@@ -12,11 +12,12 @@
  * details.
  */
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import LinkField from '../../../../app/components/fragment-configuration-fields/LinkField';
 import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/constants/editableFragmentEntryProcessor';
 import {EDITABLE_TYPES} from '../../../../app/config/constants/editableTypes';
+import {config} from '../../../../app/config/index';
 import selectEditableValue from '../../../../app/selectors/selectEditableValue';
 import selectEditableValues from '../../../../app/selectors/selectEditableValues';
 import selectSegmentsExperienceId from '../../../../app/selectors/selectSegmentsExperienceId';
@@ -31,6 +32,7 @@ import {getEditableItemPropTypes} from '../../../../prop-types/index';
 
 export default function EditableLinkPanel({item}) {
 	const dispatch = useDispatch();
+	const languageId = useSelector((state) => state.languageId);
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
 	const editableValues = useSelectorCallback(
@@ -58,8 +60,23 @@ export default function EditableLinkPanel({item}) {
 		deepEqual
 	);
 
+	const [linkValue, setLinkValue] = useState({});
+
+	useEffect(
+		() =>
+			setLinkValue(
+				editableValue.config[languageId] ||
+					editableValue.config[config.defaultLanguageId] ||
+					editableValue.config
+			),
+		[editableValue.config, languageId]
+	);
+
 	const handleValueSelect = (_, nextConfig) => {
-		const config = {...nextConfig};
+		const config = {
+			...editableValue.config,
+			[languageId]: nextConfig,
+		};
 
 		if (
 			Object.keys(nextConfig).length > 0 &&
@@ -88,7 +105,7 @@ export default function EditableLinkPanel({item}) {
 		<LinkField
 			field={{name: 'link'}}
 			onValueSelect={handleValueSelect}
-			value={editableValue.config}
+			value={linkValue}
 		/>
 	);
 }

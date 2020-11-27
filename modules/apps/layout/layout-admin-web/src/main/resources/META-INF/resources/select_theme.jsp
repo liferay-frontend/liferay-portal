@@ -35,7 +35,7 @@ SelectThemeDisplayContext selectThemeDisplayContext = new SelectThemeDisplayCont
 	</div>
 </c:if>
 
-<aui:form cssClass="container-fluid-1280" name="selectThemeFm">
+<aui:form cssClass="container-fluid container-fluid-max-xl" name="selectThemeFm">
 	<liferay-ui:search-container
 		id="themes"
 		searchContainer="<%= selectThemeDisplayContext.getThemesSearchContainer() %>"
@@ -90,7 +90,7 @@ SelectThemeDisplayContext selectThemeDisplayContext = new SelectThemeDisplayCont
 					%>
 
 					<liferay-ui:search-container-column-text>
-						<clay:vertical-card-v2
+						<clay:vertical-card
 							verticalCard="<%= new SelectThemeVerticalCard(theme, renderRequest) %>"
 						/>
 					</liferay-ui:search-container-column-text>

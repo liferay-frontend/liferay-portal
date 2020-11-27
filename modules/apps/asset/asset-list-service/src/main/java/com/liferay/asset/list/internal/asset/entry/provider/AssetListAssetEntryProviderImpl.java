@@ -126,6 +126,23 @@ public class AssetListAssetEntryProviderImpl
 
 	@Override
 	public List<AssetEntry> getAssetEntries(
+		AssetListEntry assetListEntry, long[] segmentsEntryIds,
+		long[] assetCategoryIds, String userId, int start, int end) {
+
+		if (Objects.equals(
+				assetListEntry.getType(),
+				AssetListEntryTypeConstants.TYPE_MANUAL)) {
+
+			return _getManualAssetEntries(
+				assetListEntry, segmentsEntryIds, assetCategoryIds, start, end);
+		}
+
+		return _getDynamicAssetEntries(
+			assetListEntry, segmentsEntryIds, userId, start, end);
+	}
+
+	@Override
+	public List<AssetEntry> getAssetEntries(
 		AssetListEntry assetListEntry, long[] segmentsEntryIds, String userId) {
 
 		return getAssetEntries(
@@ -138,16 +155,8 @@ public class AssetListAssetEntryProviderImpl
 		AssetListEntry assetListEntry, long[] segmentsEntryIds, String userId,
 		int start, int end) {
 
-		if (Objects.equals(
-				assetListEntry.getType(),
-				AssetListEntryTypeConstants.TYPE_MANUAL)) {
-
-			return _getManualAssetEntries(
-				assetListEntry, segmentsEntryIds, start, end);
-		}
-
-		return _getDynamicAssetEntries(
-			assetListEntry, segmentsEntryIds, userId, start, end);
+		return getAssetEntries(
+			assetListEntry, segmentsEntryIds, new long[0], userId, start, end);
 	}
 
 	@Override
@@ -168,7 +177,8 @@ public class AssetListAssetEntryProviderImpl
 
 	@Override
 	public int getAssetEntriesCount(
-		AssetListEntry assetListEntry, long[] segmentsEntryIds, String userId) {
+		AssetListEntry assetListEntry, long[] segmentsEntryIds,
+		long[] assetCategoryIds, String userId) {
 
 		if (Objects.equals(
 				assetListEntry.getType(),
@@ -177,12 +187,23 @@ public class AssetListAssetEntryProviderImpl
 			return _assetListEntryAssetEntryRelLocalService.
 				getAssetListEntryAssetEntryRelsCount(
 					assetListEntry.getAssetListEntryId(),
-					_getFirstSegmentsEntryId(assetListEntry, segmentsEntryIds),
-					true);
+					new long[] {
+						_getFirstSegmentsEntryId(
+							assetListEntry, segmentsEntryIds)
+					},
+					assetCategoryIds);
 		}
 
 		return _assetEntryLocalService.getEntriesCount(
 			getAssetEntryQuery(assetListEntry, segmentsEntryIds, userId));
+	}
+
+	@Override
+	public int getAssetEntriesCount(
+		AssetListEntry assetListEntry, long[] segmentsEntryIds, String userId) {
+
+		return getAssetEntriesCount(
+			assetListEntry, segmentsEntryIds, new long[0], userId);
 	}
 
 	@Override
@@ -686,8 +707,8 @@ public class AssetListAssetEntryProviderImpl
 	}
 
 	private List<AssetEntry> _getManualAssetEntries(
-		AssetListEntry assetListEntry, long[] segmentsEntryId, int start,
-		int end) {
+		AssetListEntry assetListEntry, long[] segmentsEntryId,
+		long[] assetCategoryIds, int start, int end) {
 
 		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels;
 
@@ -696,17 +717,19 @@ public class AssetListAssetEntryProviderImpl
 				_assetListEntryAssetEntryRelLocalService.
 					getAssetListEntryAssetEntryRels(
 						assetListEntry.getAssetListEntryId(),
-						_getCombinedSegmentsEntryIds(segmentsEntryId), start,
-						end);
+						_getCombinedSegmentsEntryIds(segmentsEntryId),
+						assetCategoryIds, start, end);
 		}
 		else {
 			assetListEntryAssetEntryRels =
 				_assetListEntryAssetEntryRelLocalService.
 					getAssetListEntryAssetEntryRels(
 						assetListEntry.getAssetListEntryId(),
-						_getFirstSegmentsEntryId(
-							assetListEntry, segmentsEntryId),
-						start, end);
+						new long[] {
+							_getFirstSegmentsEntryId(
+								assetListEntry, segmentsEntryId)
+						},
+						assetCategoryIds, start, end);
 		}
 
 		Stream<AssetListEntryAssetEntryRel> stream =

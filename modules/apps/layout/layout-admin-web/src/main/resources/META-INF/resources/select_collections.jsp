@@ -37,7 +37,7 @@ SelectLayoutCollectionDisplayContext selectLayoutCollectionDisplayContext = (Sel
 			%>
 
 			<liferay-ui:search-container-column-text>
-				<clay:vertical-card-v2
+				<clay:vertical-card
 					verticalCard="<%= new CollectionsVerticalCard(assetListEntry, selectLayoutCollectionDisplayContext.getSelGroupId(), renderRequest, renderResponse) %>"
 				/>
 			</liferay-ui:search-container-column-text>
@@ -50,10 +50,12 @@ SelectLayoutCollectionDisplayContext selectLayoutCollectionDisplayContext = (Sel
 	</liferay-ui:search-container>
 </div>
 
-<aui:script require="metal-dom/src/all/dom as dom">
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 	var collections = document.getElementById('<portlet:namespace />collections');
 
-	var addCollectionActionOptionQueryClickHandler = dom.delegate(
+	var delegate = delegateModule.default;
+
+	var addCollectionActionOptionQueryClickHandler = delegate(
 		collections,
 		'click',
 		'.select-collection-action-option',
@@ -61,7 +63,7 @@ SelectLayoutCollectionDisplayContext selectLayoutCollectionDisplayContext = (Sel
 	);
 
 	function handleDestroyPortlet() {
-		addCollectionActionOptionQueryClickHandler.removeListener();
+		addCollectionActionOptionQueryClickHandler.dispose();
 
 		Liferay.detach('destroyPortlet', handleDestroyPortlet);
 	}

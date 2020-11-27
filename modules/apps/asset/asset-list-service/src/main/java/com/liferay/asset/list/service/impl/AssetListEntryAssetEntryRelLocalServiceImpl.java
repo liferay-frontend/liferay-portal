@@ -14,13 +14,17 @@
 
 package com.liferay.asset.list.service.impl;
 
+import com.liferay.asset.entry.rel.model.AssetEntryAssetCategoryRelTable;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.list.exception.AssetListEntryAssetEntryRelPostionException;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
+import com.liferay.asset.list.model.AssetListEntryAssetEntryRelTable;
 import com.liferay.asset.list.service.base.AssetListEntryAssetEntryRelLocalServiceBaseImpl;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -30,6 +34,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -181,6 +186,44 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 	}
 
 	@Override
+	public List<AssetListEntryAssetEntryRel> getAssetListEntryAssetEntryRels(
+		long assetListEntryId, long[] segmentsEntryIds, long[] assetCategoryIds,
+		int start, int end) {
+
+		if (ArrayUtil.isEmpty(assetCategoryIds)) {
+			return getAssetListEntryAssetEntryRels(
+				assetListEntryId, segmentsEntryIds, start, end);
+		}
+
+		DSLQuery dslQuery = DSLQueryFactoryUtil.select(
+			AssetListEntryAssetEntryRelTable.INSTANCE
+		).from(
+			AssetListEntryAssetEntryRelTable.INSTANCE
+		).innerJoinON(
+			AssetEntryAssetCategoryRelTable.INSTANCE,
+			AssetListEntryAssetEntryRelTable.INSTANCE.assetEntryId.eq(
+				AssetEntryAssetCategoryRelTable.INSTANCE.assetEntryId)
+		).where(
+			AssetEntryAssetCategoryRelTable.INSTANCE.assetCategoryId.in(
+				ArrayUtil.toArray(assetCategoryIds)
+			).and(
+				AssetListEntryAssetEntryRelTable.INSTANCE.assetListEntryId.eq(
+					assetListEntryId)
+			).and(
+				AssetListEntryAssetEntryRelTable.INSTANCE.segmentsEntryId.in(
+					ArrayUtil.toArray(segmentsEntryIds))
+			)
+		).limit(
+			start, end
+		);
+
+		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels =
+			assetListEntryAssetEntryRelPersistence.dslQuery(dslQuery);
+
+		return _getAssetListEntryAssetEntryRels(assetListEntryAssetEntryRels);
+	}
+
+	@Override
 	public int getAssetListEntryAssetEntryRelsCount(long assetListEntryId) {
 		return assetListEntryAssetEntryRelPersistence.countByAssetListEntryId(
 			assetListEntryId);
@@ -208,6 +251,40 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 
 		return assetListEntryAssetEntryRelPersistence.countByA_S(
 			assetListEntryId, segmentsEntryIds);
+	}
+
+	@Override
+	public int getAssetListEntryAssetEntryRelsCount(
+		long assetListEntryId, long[] segmentsEntryIds,
+		long[] assetCategoryIds) {
+
+		if (ArrayUtil.isEmpty(assetCategoryIds)) {
+			return assetListEntryAssetEntryRelPersistence.countByA_S(
+				assetListEntryId, segmentsEntryIds);
+		}
+
+		DSLQuery dslQuery = DSLQueryFactoryUtil.count(
+		).from(
+			AssetListEntryAssetEntryRelTable.INSTANCE
+		).innerJoinON(
+			AssetEntryAssetCategoryRelTable.INSTANCE,
+			AssetListEntryAssetEntryRelTable.INSTANCE.assetEntryId.eq(
+				AssetEntryAssetCategoryRelTable.INSTANCE.assetEntryId)
+		).where(
+			AssetEntryAssetCategoryRelTable.INSTANCE.assetCategoryId.in(
+				ArrayUtil.toArray(assetCategoryIds)
+			).and(
+				AssetListEntryAssetEntryRelTable.INSTANCE.assetListEntryId.eq(
+					assetListEntryId)
+			).and(
+				AssetListEntryAssetEntryRelTable.INSTANCE.segmentsEntryId.in(
+					ArrayUtil.toArray(segmentsEntryIds))
+			)
+		);
+
+		Long count = assetListEntryAssetEntryRelPersistence.dslQuery(dslQuery);
+
+		return count.intValue();
 	}
 
 	@Override

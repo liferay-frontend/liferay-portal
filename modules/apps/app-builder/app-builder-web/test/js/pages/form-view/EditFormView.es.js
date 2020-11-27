@@ -262,7 +262,7 @@ describe('EditFormView', () => {
 			jest.runAllTimers();
 		});
 
-		expect(container.querySelector('.publications-enabled')).toBeTruthy();
+		expect(container.querySelector('.menu-indicator-enabled')).toBeTruthy();
 
 		expect(queryByText('new-form-view')).toBeTruthy();
 
@@ -320,7 +320,7 @@ describe('EditFormView', () => {
 		expect(dataLayoutBuilderProps.dispatchAction.mock.calls.length).toBe(1);
 		expect(dataLayoutVisitorSpy.mock.calls.length).toBe(1);
 
-		expect(container.querySelector('.publications-enabled')).toBeFalsy();
+		expect(container.querySelector('.menu-indicator-enabled')).toBeFalsy();
 
 		const [, deleteButton] = container.querySelectorAll(
 			'.field-type-remove-icon button'

@@ -25,7 +25,7 @@ portletDisplay.setURLBack(selectSiteInitializerDisplayContext.getBackURL());
 renderResponse.setTitle(LanguageUtil.get(request, "select-site-template"));
 %>
 
-<aui:form cssClass="container-fluid-1280" name="fm">
+<aui:form cssClass="container-fluid container-fluid-max-xl" name="fm">
 	<liferay-ui:search-container
 		searchContainer="<%= selectSiteInitializerDisplayContext.getSearchContainer() %>"
 	>
@@ -41,8 +41,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-site-template"));
 
 			<liferay-ui:search-container-column-text>
 				<button class="add-site-action-button btn btn-unstyled mb-4 w-100" type="button">
-					<clay:vertical-card-v2
-						elementClasses="add-site-action-card mb-0"
+					<clay:vertical-card
 						verticalCard="<%= new SelectSiteInitializerVerticalCard(siteInitializerItem, renderRequest, renderResponse) %>"
 					/>
 				</button>

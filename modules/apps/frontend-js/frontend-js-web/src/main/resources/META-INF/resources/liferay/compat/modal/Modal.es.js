@@ -18,6 +18,7 @@ import dom from 'metal-dom';
 import {EventHandler} from 'metal-events';
 import Soy from 'metal-soy';
 
+import buildFragment from '../../util/build_fragment';
 import templates from './Modal.soy';
 
 const KEY_CODE_ESC = 27;
@@ -111,12 +112,11 @@ class Modal extends Component {
 		const willShowOverlay = overlay && this.visible;
 
 		if (willShowOverlay) {
-			dom.enterDocument(this.overlayElement);
-
-			return;
+			document.body.append(this.overlayElement);
 		}
-
-		this.overlayElement.remove();
+		else {
+			this.overlayElement.remove();
+		}
 	}
 
 	/**
@@ -237,7 +237,7 @@ class Modal extends Component {
 	 */
 
 	_valueOverlayElementFn() {
-		return dom.buildFragment('<div class="modal-backdrop fade show"></div>')
+		return buildFragment('<div class="modal-backdrop fade show"></div>')
 			.firstChild;
 	}
 }

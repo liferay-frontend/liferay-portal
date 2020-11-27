@@ -17,7 +17,6 @@ import {
 	addParams,
 	openSelectionModal,
 } from 'frontend-js-web';
-import dom from 'metal-dom';
 
 class UserGroupsManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	deleteSelectedUserGroups() {
@@ -59,7 +58,7 @@ class UserGroupsManagementToolbarDefaultEventHandler extends DefaultEventHandler
 					const fm = this.one('#fm');
 
 					selectedItem.forEach((item) => {
-						dom.append(fm, item);
+						fm.append(item);
 					});
 
 					submitForm(fm, itemData.editUserGroupsRolesURL);
@@ -82,7 +81,7 @@ class UserGroupsManagementToolbarDefaultEventHandler extends DefaultEventHandler
 					);
 
 					selectedItem.forEach((item) => {
-						dom.append(addGroupUserGroupsFm, item);
+						addGroupUserGroupsFm.append(item);
 					});
 
 					submitForm(addGroupUserGroupsFm);

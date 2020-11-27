@@ -100,13 +100,20 @@ export const normalizeSettingsContextPages = (
 	defaultLanguageId,
 	editingLanguageId,
 	fieldType,
-	generatedFieldName
+	generatedFieldName,
+	settingsContextLocalizationMap = {}
 ) => {
 	const visitor = new PagesVisitor(pages);
 
 	return visitor.mapFields(
 		(field) => {
 			const {fieldName} = field;
+
+			if (field.localizable) {
+				settingsContextLocalizationMap[fieldName] = {
+					[editingLanguageId]: {edited: false},
+				};
+			}
 
 			if (fieldName === 'fieldReference' || fieldName === 'name') {
 				field = {
@@ -171,6 +178,7 @@ export const createField = (props, event) => {
 		defaultLanguageId,
 		editingLanguageId,
 		fieldNameGenerator,
+		localizationMap = {},
 		spritemap,
 	} = props;
 	const {
@@ -197,6 +205,8 @@ export const createField = (props, event) => {
 		}
 	}
 
+	localizationMap[newFieldName] = {settingsContextLocalizationMap: {}};
+
 	const newField = {
 		...fieldType,
 		fieldName: newFieldName,
@@ -209,7 +219,8 @@ export const createField = (props, event) => {
 				defaultLanguageId,
 				editingLanguageId,
 				fieldType,
-				newFieldName
+				newFieldName,
+				localizationMap[newFieldName].settingsContextLocalizationMap
 			),
 			type: fieldType.name,
 		},
@@ -281,17 +292,45 @@ export const isFieldSetChild = (pages, fieldName) => {
 	return !!getParentFieldSet(pages, fieldName);
 };
 
-export const localizeField = (field, defaultLanguageId, editingLanguageId) => {
+export const localizeField = (
+	field,
+	defaultLanguageId,
+	editingLanguageId,
+	localizationMap
+) => {
 	let value = field.value;
 
-	if (field.dataType === 'json' && typeof value === 'object') {
+	if (
+		field.dataType === 'json' &&
+		field.fieldName !== 'rows' &&
+		typeof value === 'object'
+	) {
 		value = JSON.stringify(value);
 	}
 
 	if (field.localizable && field.localizedValue) {
+		let edited = false;
+
+		if (localizationMap && localizationMap[field.fieldName]) {
+			if (
+				localizationMap[field.fieldName][editingLanguageId] ===
+				undefined
+			) {
+				localizationMap[field.fieldName][editingLanguageId] = {
+					edited: false,
+				};
+			}
+
+			edited =
+				localizationMap[field.fieldName]?.[editingLanguageId].edited;
+		}
+		else {
+			edited = true;
+		}
+
 		let localizedValue = field.localizedValue[editingLanguageId];
 
-		if (localizedValue === undefined) {
+		if (localizedValue === undefined || !edited) {
 			localizedValue = field.localizedValue[defaultLanguageId];
 		}
 
@@ -299,14 +338,36 @@ export const localizeField = (field, defaultLanguageId, editingLanguageId) => {
 			value = localizedValue;
 		}
 	}
-	else if (
-		field.dataType === 'ddm-options' &&
-		value[editingLanguageId] === undefined
-	) {
-		value = {
-			...value,
-			[editingLanguageId]: value[defaultLanguageId],
-		};
+	else if (field.dataType === 'ddm-options') {
+		if (value[editingLanguageId] === undefined) {
+			value = {
+				...value,
+				[editingLanguageId]: [
+					...value[defaultLanguageId].map((option) => {
+						return {...option, edited: false};
+					}),
+				],
+			};
+		}
+		else {
+			value = {
+				...value,
+				[editingLanguageId]: [
+					...value[editingLanguageId].map((option) => {
+						if (option.edited) {
+							return option;
+						}
+
+						const {label} = value[defaultLanguageId].find(
+							(defaultOption) =>
+								defaultOption.value === option.value
+						);
+
+						return {...option, edited: false, label};
+					}),
+				],
+			};
+		}
 	}
 
 	return {

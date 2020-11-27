@@ -65,7 +65,23 @@ public class GradlePluginsDefaultsUtil {
 		RepositoryHandler repositoryHandler = project.getRepositories();
 
 		if (!Boolean.getBoolean("maven.local.ignore")) {
-			repositoryHandler.mavenLocal();
+			repositoryHandler.mavenLocal(
+				new Action<MavenArtifactRepository>() {
+
+					@Override
+					public void execute(
+						MavenArtifactRepository mavenArtifactRepository) {
+
+						MavenArtifactRepository.MetadataSources
+							metadataSources =
+								mavenArtifactRepository.getMetadataSources();
+
+						metadataSources.mavenPom();
+
+						metadataSources.artifact();
+					}
+
+				});
 
 			File tmpMavenRepositoryDir = null;
 

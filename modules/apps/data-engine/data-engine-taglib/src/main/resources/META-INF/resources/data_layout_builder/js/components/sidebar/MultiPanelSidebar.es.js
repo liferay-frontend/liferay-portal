@@ -27,6 +27,11 @@ import usePlugins from '../../hooks/usePlugins.es';
 
 const {Suspense, useCallback, useContext, useEffect} = React;
 
+const CLASSNAME_INDICATORS = [
+	'.change-tracking-indicator',
+	'.staging-indicator',
+];
+
 /**
  * Failure to preload is a non-critical failure, so we'll use this to swallow
  * rejected promises silently.
@@ -195,8 +200,8 @@ export default function MultiPanelSidebar({
 					'multi-panel-sidebar',
 					`multi-panel-sidebar-${variant}`,
 					{
-						'publications-enabled': document.querySelector(
-							'.change-tracking-indicator'
+						'menu-indicator-enabled': document.querySelector(
+							CLASSNAME_INDICATORS.join(',')
 						),
 					}
 				)}
