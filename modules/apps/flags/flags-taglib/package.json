@@ -7,7 +7,6 @@
 		"clay-button": "2.21.4",
 		"clay-icon": "2.21.4",
 		"frontend-js-web": "*",
-		"metal-dom": "2.16.8",
 		"metal-soy": "2.16.8",
 		"metal-state": "2.16.8",
 		"prop-types": "15.7.2",
