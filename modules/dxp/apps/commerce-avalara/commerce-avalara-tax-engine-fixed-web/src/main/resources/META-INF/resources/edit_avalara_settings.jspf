@@ -26,4 +26,4 @@
 
 <aui:input id="avalara-company-code" label="company-code" name="companyCode" value="<%= commerceTaxAvalaraTypeConfiguration.companyCode() %>" />
 
-<aui:input id="avalara-disabled-document-recording" label="disable-document-recording" name="disabledDocumentRecording" type="toggle-switch" value="<%= commerceTaxAvalaraTypeConfiguration.disabledDocumentRecording() %>" />
+<aui:input id="avalara-disabled-document-recording" inlineLabel="right" label="disable-document-recording" labelCssClass="simple-toggle-switch" name="disabledDocumentRecording" type="toggle-switch" value="<%= commerceTaxAvalaraTypeConfiguration.disabledDocumentRecording() %>" />

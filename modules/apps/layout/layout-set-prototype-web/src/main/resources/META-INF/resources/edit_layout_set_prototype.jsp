@@ -87,9 +87,9 @@ request.setAttribute("edit_layout_set_prototype.jsp-redirect", currentURL);
 
 				<aui:input name="description" placeholder="description" />
 
-				<aui:input name="active" type="toggle-switch" value="<%= layoutSetPrototype.isActive() %>" />
+				<aui:input inlineLabel="right" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" value="<%= layoutSetPrototype.isActive() %>" />
 
-				<aui:input helpMessage="allow-site-administrators-to-modify-pages-associated-with-this-site-template-help" label="allow-site-administrators-to-modify-pages-associated-with-this-site-template" name="layoutsUpdateable" type="toggle-switch" value="<%= layoutsUpdateable %>" />
+				<aui:input helpMessage="allow-site-administrators-to-modify-pages-associated-with-this-site-template-help" inlineLabel="right" label="allow-site-administrators-to-modify-pages-associated-with-this-site-template" labelCssClass="simple-toggle-switch" name="layoutsUpdateable" type="toggle-switch" value="<%= layoutsUpdateable %>" />
 
 				<%
 				Set<String> servletContextNames = CustomJspRegistryUtil.getServletContextNames();
