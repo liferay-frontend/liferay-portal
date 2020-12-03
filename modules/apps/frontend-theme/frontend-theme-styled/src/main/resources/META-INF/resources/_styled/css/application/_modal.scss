@@ -28,6 +28,14 @@
 	}
 }
 
+.modal-footer .btn-toolbar {
+	margin-left: auto;
+}
+
+.modal-content {
+	max-width: none;
+}
+
 .modal-dialog {
 	&.modal-dialog-sm {
 		max-width: $modal-md;
