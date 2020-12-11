@@ -33,4 +33,76 @@ definition {
 		AssertVisible.assertVisibleNoSPAWait(locator1 = "//html[contains(@class,'lfr-spa-loading')]");
 	}
 
+	@description = "Validate user can configure SPA timeout notification"
+	@priority = "4"
+	test ConfigureSPANotificationTimeout {
+		property test.name.skip.portal.instance = "SPA#AssertLoadingBar";
+
+		var appName = "Liferay Frontend JS SPA Web";
+		var warningMessage = "It looks like this is taking longer than expected.";
+
+		task ("Configure User Notification Timeout to 1 second") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "System Settings");
+
+			SystemSettings.gotoConfiguration(
+				configurationCategory = "Infrastructure",
+				configurationName = "Frontend SPA Infrastructure",
+				configurationScope = "System Scope");
+
+			Type(
+				key_text = "User Notification Timeout",
+				locator1 = "TextInput#ANY",
+				value1 = "1000");
+
+			SystemSettings.saveConfiguration();
+
+			Refresh();
+		}
+
+		task ("Validate time out warning with 1 second script") {
+			ServerAdministration.openServerAdmin();
+
+			var script = '''
+				sleep(1000);
+				out.println("Timeout notification warning triggered");
+			''';
+
+			ServerAdministration.executeScriptNoAlert(
+				language = "Groovy",
+				script = "${script}");
+
+			Alert.viewWarningSpecificNoSPARefresh(warningMessage = "${warningMessage}");
+
+			AssertTextEquals(
+				locator1 = "ServerAdministrationScript#OUTPUT_FIELD",
+				value1 = "Timeout notification warning triggered");
+
+			WaitForElementNotPresent(
+				key_warningMessage = "${warningMessage}",
+				locator1 = "Message#WARNING_SPECIFIC");
+		}
+
+		task ("Validate no time out warning with 0.2 second script") {
+			var script = '''
+				sleep(200);
+				out.println("No timeout notification warning");
+			''';
+
+			ServerAdministration.executeScriptNoAlert(
+				language = "Groovy",
+				script = "${script}");
+
+			AssertElementNotPresent.assertElementNotPresentNoSPARefresh(
+				key_warningMessage = "${warningMessage}",
+				locator1 = "Message#WARNING_SPECIFIC");
+
+			AssertTextEquals(
+				locator1 = "ServerAdministrationScript#OUTPUT_FIELD",
+				value1 = "No timeout notification warning");
+		}
+	}
+
 }

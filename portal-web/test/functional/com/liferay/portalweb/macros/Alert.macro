@@ -101,4 +101,10 @@ definition {
 			locator1 = "Message#WARNING_SPECIFIC");
 	}
 
+	macro viewWarningSpecificNoSPARefresh {
+		AssertElementPresent.assertElementPresentNoSPARefresh(
+			key_warningMessage = "${warningMessage}",
+			locator1 = "Message#WARNING_SPECIFIC");
+	}
+
 }

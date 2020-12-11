@@ -151,6 +151,22 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
+	macro executeScriptNoAlert {
+		Navigator.gotoNavItem(navItem = "Script");
+
+		Select(
+			locator1 = "ServerAdministrationScript#LANGUAGE_SELECT",
+			value1 = "${language}");
+
+		Type(
+			locator1 = "ServerAdministrationScript#SCRIPT_TEXT",
+			value1 = "${script}");
+
+		AssertClick(
+			locator1 = "ServerAdministrationScript#EXECUTE_BUTTON",
+			value1 = "Execute");
+	}
+
 	macro executeServerResourcesActions {
 		Navigator.gotoNavItem(navItem = "Resources");
 
