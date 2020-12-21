@@ -132,29 +132,6 @@ PortletURL portletURL = renderResponse.createRenderURL();
 	</div>
 </aui:form>
 
-<aui:script require="commerce-frontend-js/utilities/debounce as debounce, commerce-frontend-js/utilities/slugify as slugify">
-	var form = document.getElementById('<portlet:namespace />fm');
-
-	var keyInput = form.querySelector('#<portlet:namespace />key');
-	var nameInput = form.querySelector('#<portlet:namespace />name');
-
-	var handleOnNameInput = function (event) {
-	keyInput.value = slugify.default(nameInput.value);
-	};
-
-	nameInput.addEventListener('input', debounce.default(handleOnNameInput, 200));
-
-	document
-	.getElementById('<portlet:namespace />publishButton')
-	.addEventListener('click', function (e) {
-	e.preventDefault();
-
-	var form = document.getElementById('<portlet:namespace />fm');
-
-	if (!form) {
-	throw new Error('Form with id: <portlet:namespace />fm not found!');
-	}
-
-	submitForm(form);
-	});
-</aui:script>
+<liferay-frontend:component
+	componentId='<%= liferayPortletResponse.getNamespace() + "productOptions" %>'
+	module="js/ProductOptions"/>
