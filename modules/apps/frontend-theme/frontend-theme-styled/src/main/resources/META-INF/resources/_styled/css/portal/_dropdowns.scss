@@ -1,3 +1,14 @@
+.caret {
+	border-left: 0.3em solid transparent;
+	border-right: 0.3em solid transparent;
+	border-top: 0.3em dashed;
+	display: inline-block;
+	height: 0;
+	margin-left: 2px;
+	vertical-align: middle;
+	width: 0;
+}
+
 .dropdown.open > .dropdown-menu,
 .overlay-content .open > .dropdown-menu {
 	display: block;
