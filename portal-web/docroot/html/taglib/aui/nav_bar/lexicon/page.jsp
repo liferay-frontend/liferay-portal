@@ -27,7 +27,9 @@
 						<span class="page-name"><%= LanguageUtil.get(resourceBundle, selectedItemName) %></span>
 
 						<c:if test="<%= navItemCount.getValue() > 1 %>">
-							<span class="caret"></span>
+							<svg class="lexicon-icon lexicon-icon-caret-bottom" focusable="false" role="presentation">
+								<use xlink:href="<%= themeDisplay.getPathThemeImages() %>/clay/icons.svg#caret-bottom" />
+							</svg>
 						</c:if>
 					</button>
 				</div>

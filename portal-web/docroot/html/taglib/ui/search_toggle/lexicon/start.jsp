@@ -37,7 +37,9 @@ boolean advancedSearch = displayTerms.isAdvancedSearch();
 		</button>
 
 		<button class="btn btn-secondary toggle-advanced" id="<%= id %>toggleAdvanced" type="button">
-			<span class="caret"></span>
+			<svg class="lexicon-icon lexicon-icon-caret-bottom" focusable="false" role="presentation">
+				<use xlink:href="<%= themeDisplay.getPathThemeImages() %>/clay/icons.svg#caret-bottom" />
+			</svg>
 		</button>
 	</div>
 </div>
