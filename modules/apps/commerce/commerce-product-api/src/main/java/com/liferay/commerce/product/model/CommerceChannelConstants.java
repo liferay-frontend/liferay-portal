@@ -15,8 +15,11 @@
 package com.liferay.commerce.product.model;
 
 /**
- * @author Alec Sloan
+ * @author     Alec Sloan
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ *             com.liferay.commerce.product.constants.CommerceChannelConstants}
  */
+@Deprecated
 public class CommerceChannelConstants {
 
 	public static final String CHANNEL_TYPE_SITE = "site";

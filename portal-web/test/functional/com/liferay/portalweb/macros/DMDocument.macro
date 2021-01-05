@@ -64,10 +64,26 @@ definition {
 				vocabularyName = "${vocabularyName}");
 		}
 
-		PortletEntry.inputTitle(title = "${dmDocumentTitle}");
+		if (isSet(useCurrentTitle)) {
+			echo("Use the title automatically added after uploading a file.");
+		}
+		else {
+			PortletEntry.inputTitle(title = "${dmDocumentTitle}");
+		}
 
 		if (isSet(dmDocumentDescription)) {
 			PortletEntry.inputDescription(description = "${dmDocumentDescription}");
+		}
+
+		if (isSet(dateValue)) {
+			if (!(isSet(dateFieldLabel))) {
+				var dateFieldLabel = "Date";
+			}
+
+			Type(
+				key_fieldFieldLabel = "${dateFieldLabel}",
+				locator1 = "WCEditWebContent#DATE_INPUT",
+				value1 = "${dateValue}");
 		}
 
 		if (isSet(dmDocumentFileName)) {
@@ -77,10 +93,10 @@ definition {
 		}
 
 		if (isSet(documentsAndMediaField)) {
-			var key_fieldName = "DocumentsandMedia";
+			var key_fieldFieldLabel = "Upload";
 
 			AssertClick(
-				locator1 = "Button#SELECT_CONTENT",
+				locator1 = "WCEditWebContent#SELECT_BUTTON",
 				value1 = "Select");
 
 			SelectFrame(locator1 = "IFrame#MODAL_BODY");
@@ -92,19 +108,19 @@ definition {
 		}
 
 		if (isSet(textField)) {
-			var key_fieldName = "Text";
+			var key_fieldLabel = "Text";
 
 			Type(
-				locator1 = "TextInput#DDM",
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
 				value1 = "${textField}");
 		}
 
-		if (isSet(numberField)) {
-			var key_fieldName = "Number";
+		if (isSet(numericField)) {
+			var key_fieldName = "Numeric";
 
 			Type(
-				locator1 = "TextInput#DDM",
-				value1 = "${numberField}");
+				locator1 = "TextInput#NUMERIC",
+				value1 = "${numericField}");
 		}
 
 		if (isSet(validationError)) {
@@ -175,16 +191,27 @@ definition {
 			var key_fieldName = "Text";
 
 			Type(
-				locator1 = "TextInput#DDM",
+				locator1 = "TextInput#TEXT_SPECIFIC",
 				value1 = "${textField}");
 		}
 
-		if (isSet(numberField)) {
-			var key_fieldName = "Number";
+		if (isSet(numericField)) {
+			var key_fieldName = "Numeric";
 
 			Type(
-				locator1 = "TextInput#DDM",
-				value1 = "${numberField}");
+				locator1 = "TextInput#NUMERIC",
+				value1 = "${numericField}");
+		}
+
+		if (isSet(dateValue)) {
+			if (!(isSet(dateFieldLabel))) {
+				var dateFieldLabel = "Date";
+			}
+
+			Type(
+				key_fieldFieldLabel = "${dateFieldLabel}",
+				locator1 = "WCEditWebContent#DATE_INPUT",
+				value1 = "${dateValue}");
 		}
 
 		if (isSet(booleanField)) {
@@ -197,8 +224,8 @@ definition {
 
 		if (isSet(webcontentField)) {
 			AssertClick(
-				key_fieldName = "WebContent",
-				locator1 = "Button#SELECT_CONTENT",
+				key_fieldFieldLabel = "Web Content",
+				locator1 = "WCEditWebContent#SELECT_BUTTON",
 				value1 = "Select");
 
 			SelectFrame(locator1 = "IFrame#MODAL_BODY");
@@ -331,7 +358,8 @@ definition {
 		DMDocument.editDocument(
 			dmDocumentDescription = "${dmDocumentDescription}",
 			dmDocumentFile = "${dmDocumentFile}",
-			dmDocumentTitle = "${dmDocumentTitle}");
+			dmDocumentTitle = "${dmDocumentTitle}",
+			useCurrentTitle = "${useCurrentTitle}");
 
 		if (isSet(categoryName)) {
 			var key_categoryName = "${categoryName}";
@@ -473,6 +501,19 @@ definition {
 		var key_dmDocumentTitle = "${dmDocumentTitle}";
 
 		DMDocument.viewCardTitle(dmDocumentTitle = "${dmDocumentTitle}");
+	}
+
+	macro assertFileNameFromTempFolder {
+		var documentFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "${downloadedFileName}");
+
+		echo("## downloadedFileName: ${documentFileName}");
+
+		if ("${downloadedFileName}" == "${documentFileName}") {
+			echo("This is a correct file name.");
+		}
+		else {
+			fail("FAIL!");
+		}
 	}
 
 	macro cancelCheckoutCP {
@@ -845,6 +886,12 @@ definition {
 		if (!(contains("${dmDocumentDescriptionEdit}", "{dmDocumentDescriptionEdit}"))) {
 			PortletEntry.inputDescription(description = "${dmDocumentDescriptionEdit}");
 		}
+
+		if (!(contains("${dmDocumentFileNameEdit}", "{dmDocumentFileNameEdit}"))) {
+			PortletEntry.inputText(
+				fieldLabel = "File Name",
+				text = "${dmDocumentFileNameEdit}");
+		}
 	}
 
 	macro editCmdPG {
@@ -875,6 +922,28 @@ definition {
 			Type(
 				locator1 = "TextInput#TITLE",
 				value1 = "${dmDocumentTitleEdit}");
+
+			if (isSet(checkFileNameText)) {
+				var fileNameText = selenium.getElementValue("//div[label[contains(.,'File Name')]]//input[@type='text']");
+
+				if ("${dmDocumentTitleEdit}" == "${fileNameText}") {
+					fail("FAIL!");
+				}
+			}
+		}
+
+		if (!(contains("${dmDocumentFileNameEdit}", "{dmDocumentFileNameEdit}"))) {
+			PortletEntry.inputText(
+				fieldLabel = "File Name",
+				text = "${dmDocumentFileNameEdit}");
+
+			if (isSet(checkTitleText)) {
+				var titleText = selenium.getElementValue("TextInput#TITLE");
+
+				if ("${dmDocumentFileNameEdit}" == "${titleText}") {
+					fail("FAIL!");
+				}
+			}
 		}
 
 		if (!(contains("${dmDocumentDescriptionEdit}", "{dmDocumentDescriptionEdit}"))) {
@@ -913,6 +982,7 @@ definition {
 		DMDocument.editCmd(
 			dmDocumentDescriptionEdit = "${dmDocumentDescriptionEdit}",
 			dmDocumentFileEdit = "${dmDocumentFileEdit}",
+			dmDocumentFileNameEdit = "${dmDocumentFileNameEdit}",
 			dmDocumentTitleEdit = "${dmDocumentTitleEdit}");
 
 		if (isSet(versioning)) {
@@ -965,7 +1035,12 @@ definition {
 			locator1 = "TextInput#FILE",
 			value1 = "${dmDocumentFile}");
 
-		PortletEntry.inputTitle(title = "${dmDocumentTitle}");
+		if (isSet(useCurrentTitle)) {
+			echo("Use the title automatically added after uploading a file.");
+		}
+		else {
+			PortletEntry.inputTitle(title = "${dmDocumentTitle}");
+		}
 
 		if (isSet(dmDocumentDescription)) {
 			PortletEntry.inputDescription(description = "${dmDocumentDescription}");
@@ -1153,7 +1228,7 @@ definition {
 	macro linkImage {
 		ItemSelector.gotoItemSelectorViaAlloyEditor();
 
-		ItemSelector.addFromURL(
+		ItemSelector.addImageFromURL(
 			imageSourceURL = "${dmDocumentURL}",
 			navTab = "${navTab}");
 
@@ -1661,6 +1736,12 @@ definition {
 		if (isSet(locationFieldName)) {
 			DMDocument.viewLocation(dmFolderName = "${dmFolderName}");
 		}
+
+		if (isSet(dmDocumentFileName)) {
+			AssertTextEquals(
+				locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_FILE_NAME",
+				value1 = "${dmDocumentFileName}");
+		}
 	}
 
 	macro viewCPStatus {
@@ -1894,25 +1975,35 @@ definition {
 		}
 
 		if (isSet(textContent)) {
-			var key_textContent = "${textContent}";
+			if (!(isSet(textFieldLabel))) {
+				var textFieldLabel = "Text";
+			}
 
-			AssertTextEquals.assertPartialText(
-				locator1 = "DocumentsAndMediaDocument#METADATA_PANEL_TEXT",
+			AssertTextEquals.assertValue(
+				key_fieldFieldLabel = "${textFieldLabel}",
+				locator1 = "DocumentsAndMediaDocument#METADATA_PANEL_TEXT_INPUT",
 				value1 = "${textContent}");
 		}
 
-		if (isSet(numberValue)) {
-			var key_numberValue = "${numberValue}";
+		if (isSet(numericValue)) {
+			if (!(isSet(numericFieldLabel))) {
+				var numericFieldLabel = "Numeric";
+			}
 
-			AssertTextEquals.assertPartialText(
-				locator1 = "DocumentsAndMediaDocument#METADATA_PANEL_NUMBER",
-				value1 = "${numberValue}");
+			AssertTextEquals.assertValue(
+				key_fieldFieldLabel = "${numericFieldLabel}",
+				locator1 = "DocumentsAndMediaDocument#METADATA_PANEL_TEXT_INPUT",
+				value1 = "${numericValue}");
 		}
 
 		if (isSet(dateValue)) {
-			var key_dateValue = "${dateValue}";
+			if (!(isSet(dateFieldLabel))) {
+				var dateFieldLabel = "Date";
+			}
 
-			AssertTextEquals.assertPartialText(
+			AssertAttributeValue(
+				attribute1 = "value",
+				key_fieldFieldLabel = "${dateFieldLabel}",
 				locator1 = "DocumentsAndMediaDocument#METADATA_PANEL_DATE",
 				value1 = "${dateValue}");
 		}
@@ -1943,12 +2034,28 @@ definition {
 		if (isSet(dmDocumentVersionNumber)) {
 			DMDocument.viewDocumentVersionNumberCmdPG(dmDocumentVersionNumber = "${dmDocumentVersionNumber}");
 		}
+
+		if (isSet(dmDocumentFileName)) {
+			AssertTextEquals(
+				locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_FILE_NAME",
+				value1 = "${dmDocumentFileName}");
+		}
 	}
 
 	macro viewIconLockedCP {
 		var key_dmDocumentTitle = "${dmDocumentTitle}";
 
 		AssertVisible(locator1 = "DocumentsAndMedia#ICON_DOCUMENT_ICON_LOCKED");
+	}
+
+	macro viewInternalVideoPreview {
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#EMBEDDED_VIDEO_IFRAME");
+
+		AssertVisible(
+			key_videoName = "${videoName}",
+			locator1 = "DocumentsAndMediaDocument#VIDEO_PREVIEW");
+
+		SelectFrame.selectFrameTop();
 	}
 
 	macro viewLocation {
@@ -2104,6 +2211,12 @@ definition {
 
 		if (isSet(locationFieldName)) {
 			DMDocument.viewLocation(dmFolderName = "${dmFolderName}");
+		}
+
+		if (isSet(dmDocumentFileName)) {
+			AssertTextEquals(
+				locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_FILE_NAME",
+				value1 = "${dmDocumentFileName}");
 		}
 	}
 
@@ -2311,7 +2424,7 @@ definition {
 
 		SelectFrameTop();
 
-		var key_dmDocumentTitle = "Document_1.jpeg";
+		var key_dmDocumentTitle = "Document_1";
 
 		Check(locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_CHECKBOX");
 
@@ -2349,7 +2462,7 @@ definition {
 
 		AssertElementNotPresent(locator1 = "Portlet#ICON_PLUS_SIGN");
 
-		var key_dmDocumentTitle = "Document_1.jpeg";
+		var key_dmDocumentTitle = "Document_1";
 
 		Click(locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_VERTICAL_ELLIPSIS");
 

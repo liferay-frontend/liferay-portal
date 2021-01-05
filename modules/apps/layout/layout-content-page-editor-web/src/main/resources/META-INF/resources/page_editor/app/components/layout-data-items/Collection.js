@@ -16,6 +16,8 @@ import ClayLayout from '@clayui/layout';
 import React, {useEffect, useMemo, useState} from 'react';
 
 import {COLUMN_SIZE_MODULE_PER_ROW_SIZES} from '../../config/constants/columnSizes';
+import selectLanguageId from '../../selectors/selectLanguageId';
+import selectSegmentsExperienceId from '../../selectors/selectSegmentsExperienceId';
 import CollectionService from '../../services/CollectionService';
 import {useDispatch, useSelector} from '../../store/index';
 import {CollectionItemContextProvider} from '../CollectionItemContext';
@@ -142,12 +144,8 @@ const Collection = React.forwardRef(({children, item}, ref) => {
 	const collectionConfig = item.config;
 
 	const dispatch = useDispatch();
-
-	const languageId = useSelector((state) => state.languageId);
-
-	const segmentsExperienceId = useSelector(
-		(state) => state.segmentsExperienceId
-	);
+	const languageId = useSelector(selectLanguageId);
+	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
 	const [collection, setCollection] = useState(DEFAULT_COLLECTION);
 

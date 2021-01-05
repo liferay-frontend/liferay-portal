@@ -112,6 +112,10 @@
 			<category name="Bug Prevention" />
 			<description name="Checks for correct use of property `Liferay-Enterprise-App`." />
 		</check>
+		<check name="BNDLiferayRelengBundleCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks if `.lfrbuild-release-src` file exists for DXP module with `Liferay-Releng-Bundle: true`" />
+		</check>
 		<check name="BNDLiferayRelengCategoryCheck">
 			<category name="Bug Prevention" />
 			<description name="Validates `Liferay-Releng-Category` properties" />
@@ -1283,6 +1287,16 @@
 		<check name="PropertiesVerifyPropertiesCheck">
 			<category name="Bug Prevention" />
 			<description name="Finds usage of legacy properties in `portal.properties` or `system.properties`." />
+		</check>
+	</source-processor>
+	<source-processor name="PythonSourceProcessor">
+		<check name="PythonStylingCheck">
+			<category name="Styling" />
+			<description name="Applies rules to enforce consisteny in code style." />
+		</check>
+		<check name="PythonWhitespaceCheck">
+			<category name="Styling" />
+			<description name="Finds missing and unnecessary whitespace." />
 		</check>
 	</source-processor>
 	<source-processor name="SHSourceProcessor">

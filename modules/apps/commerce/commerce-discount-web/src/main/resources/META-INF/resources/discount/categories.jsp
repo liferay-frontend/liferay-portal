@@ -20,7 +20,7 @@
 CommerceDiscountRelDisplayContext commerceDiscountRelDisplayContext = (CommerceDiscountRelDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 %>
 
-<portlet:actionURL name="editCommerceDiscountRel" var="editCommerceDiscountRelActionURL" />
+<portlet:actionURL name="/commerce_discount/edit_commerce_discount_rel" var="editCommerceDiscountRelActionURL" />
 
 <aui:form action="<%= editCommerceDiscountRelActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ADD %>" />

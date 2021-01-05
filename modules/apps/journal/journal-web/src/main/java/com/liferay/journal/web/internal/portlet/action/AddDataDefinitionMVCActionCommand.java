@@ -14,6 +14,7 @@
 
 package com.liferay.journal.web.internal.portlet.action;
 
+import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.resource.exception.DataDefinitionValidationException;
@@ -23,8 +24,12 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionC
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.Locale;
+import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -64,8 +69,8 @@ public class AddDataDefinitionMVCActionCommand
 							portletException.getCause();
 
 				SessionErrors.add(
-					actionRequest,
-					dataDefinitionValidationException.getClass());
+					actionRequest, dataDefinitionValidationException.getClass(),
+					dataDefinitionValidationException);
 			}
 			else {
 				throw portletException;
@@ -83,30 +88,33 @@ public class AddDataDefinitionMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		long groupId = ParamUtil.getLong(actionRequest, "groupId");
-
 		DataDefinitionResource dataDefinitionResource =
 			DataDefinitionResource.builder(
 			).user(
 				themeDisplay.getUser()
 			).build();
 
+		long groupId = ParamUtil.getLong(actionRequest, "groupId");
+
+		String dataDefinitionSring = ParamUtil.getString(
+			actionRequest, "dataDefinition");
+
 		DataDefinition dataDefinition = DataDefinition.toDTO(
-			ParamUtil.getString(actionRequest, "dataDefinition"));
+			dataDefinitionSring);
 
-		dataDefinition.setDefaultDataLayout(
-			DataLayout.toDTO(ParamUtil.getString(actionRequest, "dataLayout")));
+		String structureKey = ParamUtil.getString(
+			actionRequest, "structureKey");
+		String dataLayout = ParamUtil.getString(actionRequest, "dataLayout");
+		Map<Locale, String> descriptionMap =
+			LocalizationUtil.getLocalizationMap(actionRequest, "description");
 
-		try {
-			dataDefinitionResource.postSiteDataDefinitionByContentType(
-				groupId, "journal", dataDefinition);
-		}
-		catch (DataDefinitionValidationException
-					dataDefinitionValidationException) {
+		dataDefinition.setDataDefinitionKey(structureKey);
+		dataDefinition.setDefaultDataLayout(DataLayout.toDTO(dataLayout));
+		dataDefinition.setDescription(
+			LocalizedValueUtil.toStringObjectMap(descriptionMap));
 
-			SessionErrors.add(
-				actionRequest, dataDefinitionValidationException.getClass());
-		}
+		dataDefinitionResource.postSiteDataDefinitionByContentType(
+			groupId, "journal", dataDefinition);
 	}
 
 }

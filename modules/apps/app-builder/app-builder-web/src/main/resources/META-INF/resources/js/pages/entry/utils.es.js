@@ -83,7 +83,7 @@ export function navigateToEditPage(basePortletURL, params = {}) {
 	Liferay.Util.navigate(
 		Liferay.Util.PortletURL.createRenderURL(basePortletURL, {
 			dataRecordId: 0,
-			mvcPath: '/edit_entry.jsp',
+			mvcPath: '/edit_app_entry.jsp',
 			...params,
 		})
 	);

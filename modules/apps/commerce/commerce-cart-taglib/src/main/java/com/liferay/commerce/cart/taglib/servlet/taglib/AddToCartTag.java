@@ -139,7 +139,8 @@ public class AddToCartTag extends ComponentRendererTag {
 			PortletRequest.ACTION_PHASE);
 
 		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "addCommerceOrderItem");
+			ActionRequest.ACTION_NAME,
+			"/commerce_cart_content/add_commerce_order_item");
 
 		return portletURL.toString();
 	}

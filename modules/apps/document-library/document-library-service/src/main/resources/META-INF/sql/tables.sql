@@ -9,3 +9,10 @@ create table DLFileVersionPreview (
 	previewStatus INTEGER,
 	primary key (dlFileVersionPreviewId, ctCollectionId)
 );
+
+create table DLStorageQuota (
+	mvccVersion LONG default 0 not null,
+	dlStorageQuotaId LONG not null primary key,
+	companyId LONG,
+	storageSize LONG
+);

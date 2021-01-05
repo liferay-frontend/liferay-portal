@@ -65,7 +65,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommerceAccountPortletKeys.COMMERCE_ACCOUNT,
-		"mvc.command.name=editCommerceAccount"
+		"mvc.command.name=/commerce_account/edit_commerce_account"
 	},
 	service = MVCActionCommand.class
 )
@@ -184,7 +184,6 @@ public class EditCommerceAccountMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest, "commerceAccountId");
 
 		String name = ParamUtil.getString(actionRequest, "name");
-		boolean deleteLogo = ParamUtil.getBoolean(actionRequest, "deleteLogo");
 		String email = ParamUtil.getString(actionRequest, "email");
 		String taxId = ParamUtil.getString(actionRequest, "taxId");
 		boolean active = ParamUtil.getBoolean(actionRequest, "active");
@@ -211,6 +210,8 @@ public class EditCommerceAccountMVCActionCommand extends BaseMVCActionCommand {
 		CommerceAccount commerceAccount;
 
 		if (commerceAccountId > 0) {
+			boolean deleteLogo = ParamUtil.getBoolean(
+				actionRequest, "deleteLogo");
 			long defaultBillingAddressId = ParamUtil.getLong(
 				actionRequest, "defaultBillingAddressId");
 			long defaultShippingAddressId = ParamUtil.getLong(

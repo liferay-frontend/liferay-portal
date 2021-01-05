@@ -131,6 +131,8 @@ definition {
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
 
+		Pause(locator1 = "3000");
+
 		Navigator.gotoSpecificURLPage(
 			pageName = "Web Content Page",
 			url = "http://www.able.com:8080");
@@ -168,6 +170,8 @@ definition {
 			webContentTitle = "WC WebContent Title Edit");
 
 		Button.clickPublish();
+
+		Pause(locator1 = "3000");
 
 		Navigator.gotoSpecificURLPage(
 			pageName = "Web Content Page",
@@ -424,7 +428,7 @@ definition {
 
 	@priority = "5"
 	test AssetPublisherFilterAndOrderByFieldType {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property testray.component.names = "Training";
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
@@ -437,12 +441,19 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		for (var structureFieldName : list "Boolean,Date,Decimal,Documents and Media,HTML,Image,Integer,Link to Page,Number,Radio,Select,Text,Text Box") {
-			DynamicDataMapping.addField(
-				field = "${structureFieldName}",
-				fieldFieldLabel = "${structureFieldName}",
-				fieldName = StringUtil.replace("${structureFieldName}", " ", ""));
-		}
+		DataEngine.addFields(fieldNameList = "Text,Select from List,Single Selection,Date,Numeric,Rich Text,Image");
+
+		DataEngine.addField(
+			fieldFieldLabel = "Text Box",
+			fieldLocation = "8",
+			fieldName = "Text",
+			fieldType = "Multiple Lines");
+
+		DataEngine.addField(
+			fieldFieldLabel = "Decimal",
+			fieldLocation = "9",
+			fieldName = "Numeric",
+			numericType = "Decimal");
 
 		WebContentStructures.saveCP(structureName = "WC Structure Name");
 
@@ -453,8 +464,7 @@ definition {
 		WebContentTemplates.addCP(
 			structureName = "WC Structure Name",
 			templateDescription = "WC Template Description",
-			templateFieldNames = "Boolean,Date,Decimal,Documents and Media,HTML,Image,Integer,Link to Page,Number,Radio,Select,Text,Text Box",
-			templateFile = "simple_all_fields_template.txt",
+			templateFieldNames = "Text,Select from List,Single Selection,Date,Numeric,Rich Text,Image,Text Box,Decimal",
 			templateName = "WC Template Name");
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
@@ -464,8 +474,7 @@ definition {
 		WebContent.addWithStructureCP(
 			structureName = "WC Structure Name",
 			templateName = "WC Template Name",
-			webContentInteger = "4",
-			webContentNumber = "123",
+			webContentNumeric = "345",
 			webContentTitle = "Web Content1 Title");
 
 		PortletEntry.publish();
@@ -480,10 +489,7 @@ definition {
 
 		WebContent.addCP(webContentTitle = "Netz Inhalt1 Titel");
 
-		Type(
-			key_fieldName = "Integer",
-			locator1 = "TextInput#DDM",
-			value1 = "3");
+		WebContent.addWithStructureCP(webContentNumeric = "3");
 
 		PortletEntry.publish();
 
@@ -494,8 +500,7 @@ definition {
 		WebContent.addWithStructureCP(
 			structureName = "WC Structure Name",
 			templateName = "WC Template Name",
-			webContentInteger = "1",
-			webContentNumber = "345",
+			webContentNumeric = "123",
 			webContentTitle = "Web Content2 Title");
 
 		PortletEntry.publish();
@@ -510,10 +515,7 @@ definition {
 
 		WebContent.addCP(webContentTitle = "Netz Inhalt2 Titel");
 
-		Type(
-			key_fieldName = "Integer",
-			locator1 = "TextInput#DDM",
-			value1 = "8");
+		WebContent.addWithStructureCP(webContentNumeric = "8");
 
 		PortletEntry.publish();
 
@@ -524,8 +526,7 @@ definition {
 		WebContent.addWithStructureCP(
 			structureName = "WC Structure Name",
 			templateName = "WC Template Name",
-			webContentInteger = "5",
-			webContentNumber = "567",
+			webContentNumeric = "567",
 			webContentTitle = "Web Content3 Title");
 
 		PortletEntry.publish();
@@ -540,10 +541,7 @@ definition {
 
 		WebContent.addCP(webContentTitle = "Netz Inhalt3 Titel");
 
-		Type(
-			key_fieldName = "Integer",
-			locator1 = "TextInput#DDM",
-			value1 = "5");
+		WebContent.addWithStructureCP(webContentNumeric = "5");
 
 		PortletEntry.publish();
 
@@ -563,9 +561,18 @@ definition {
 			pageName = "Asset Publisher Page",
 			siteName = "Test Site Name");
 
+		AssetPublisherPortlet.viewFilterAndFieldsPG(
+			assetSubtype = "WC Structure Name",
+			assetSubtypeFields = "Text,Select from List,Single Selection,Date,Numeric,Rich Text,Image,Text Box,Decimal",
+			selectedAsset = "Web Content Article");
+
+		Navigator.gotoSitePage(
+			pageName = "Asset Publisher Page",
+			siteName = "Test Site Name");
+
 		AssetPublisherPortlet.configureFilterByFieldPG(
 			assetSubtype = "WC Structure Name",
-			fieldFilter = "Integer",
+			fieldFilter = "Numeric",
 			fieldValue = "",
 			selectedAsset = "Web Content Article");
 
@@ -574,7 +581,7 @@ definition {
 			siteName = "Test Site Name");
 
 		AssetPublisherPortlet.configureAssetDisplayOrderPG(
-			fieldNameOrder = "Integer",
+			fieldNameOrder = "Numeric",
 			sortOrder = "Ascending");
 
 		Navigator.gotoSitePage(
@@ -621,8 +628,7 @@ definition {
 			structureDescription = "WC Structure1 Description",
 			structureName = "WC Structure1 Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -699,8 +705,10 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
 
-		for (var structureFieldName : list "Boolean,Date,Decimal,Documents and Media,HTML,Image,Integer,Link to Page,Number,Radio,Select,Text,Text Box") {
-			DynamicDataMapping.editFieldIndexable(fieldFieldLabel = "${structureFieldName}");
+		for (var fieldFieldLabel : list "Text,Select from List,Single Selection,Date,Numeric,Rich Text,Image,Text Box,Decimal") {
+			DataEngine.editFieldSearchable(
+				fieldFieldLabel = "${fieldFieldLabel}",
+				searchableType = "Disable");
 		}
 
 		WebContentStructures.saveCP();
@@ -711,7 +719,6 @@ definition {
 
 		AssetPublisherPortlet.viewFilterAndFieldsPG(
 			assetSubtype = "WC Structure Name",
-			assetSubtypeFields = "Date,Meeting Name,Time,Location,Product,Version,Areas of Interest,Competitors,Prospect Name",
 			noneIndexable = "true",
 			selectedAsset = "Web Content Article");
 	}

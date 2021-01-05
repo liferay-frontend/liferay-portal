@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * @author Pedro Queiroz
@@ -46,22 +45,21 @@ public class GridDDMFormFieldContextHelper {
 		}
 
 		for (String optionValue : _ddmFormFieldOptions.getOptionsValues()) {
-			Map<String, String> optionMap = HashMapBuilder.put(
-				"label",
-				() -> {
-					LocalizedValue optionLabel =
-						_ddmFormFieldOptions.getOptionLabels(optionValue);
+			options.add(
+				HashMapBuilder.put(
+					"label",
+					() -> {
+						LocalizedValue optionLabel =
+							_ddmFormFieldOptions.getOptionLabels(optionValue);
 
-					return optionLabel.getString(_locale);
-				}
-			).put(
-				"reference",
-				_ddmFormFieldOptions.getOptionReference(optionValue)
-			).put(
-				"value", optionValue
-			).build();
-
-			options.add(optionMap);
+						return optionLabel.getString(_locale);
+					}
+				).put(
+					"reference",
+					_ddmFormFieldOptions.getOptionReference(optionValue)
+				).put(
+					"value", optionValue
+				).build());
 		}
 
 		return options;

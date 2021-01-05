@@ -96,9 +96,6 @@ public class EditCommerceTaxMethodMVCActionCommand
 			ActionRequest actionRequest)
 		throws PortalException {
 
-		long commerceChannelId = ParamUtil.getLong(
-			actionRequest, "commerceChannelId");
-
 		long commerceTaxMethodId = ParamUtil.getLong(
 			actionRequest, "commerceTaxMethodId");
 
@@ -107,17 +104,21 @@ public class EditCommerceTaxMethodMVCActionCommand
 		Map<Locale, String> descriptionMap =
 			LocalizationUtil.getLocalizationMap(
 				actionRequest, "descriptionMapAsXML");
-		String commerceTaxMethodEngineKey = ParamUtil.getString(
-			actionRequest, "commerceTaxMethodEngineKey");
 		boolean percentage = ParamUtil.getBoolean(actionRequest, "percentage");
 		boolean active = ParamUtil.getBoolean(actionRequest, "active");
-
-		CommerceChannel commerceChannel =
-			_commerceChannelService.getCommerceChannel(commerceChannelId);
 
 		CommerceTaxMethod commerceTaxMethod = null;
 
 		if (commerceTaxMethodId <= 0) {
+			long commerceChannelId = ParamUtil.getLong(
+				actionRequest, "commerceChannelId");
+
+			CommerceChannel commerceChannel =
+				_commerceChannelService.getCommerceChannel(commerceChannelId);
+
+			String commerceTaxMethodEngineKey = ParamUtil.getString(
+				actionRequest, "commerceTaxMethodEngineKey");
+
 			commerceTaxMethod = _commerceTaxMethodService.addCommerceTaxMethod(
 				_portal.getUserId(actionRequest), commerceChannel.getGroupId(),
 				nameMap, descriptionMap, commerceTaxMethodEngineKey, percentage,

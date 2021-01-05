@@ -30,8 +30,8 @@ import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.saml.opensaml.integration.internal.BaseSamlTestCase;
+import com.liferay.saml.opensaml.integration.internal.metadata.MetadataManager;
 import com.liferay.saml.opensaml.integration.internal.util.SamlUtil;
-import com.liferay.saml.opensaml.integration.metadata.MetadataManager;
 
 import java.util.ArrayList;
 import java.util.List;

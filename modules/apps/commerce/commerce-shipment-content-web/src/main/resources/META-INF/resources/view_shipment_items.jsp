@@ -206,7 +206,7 @@ if (commerceAddress != null) {
 	</div>
 </div>
 
-<liferay-portlet:actionURL name="editCommerceOrderItem" var="editCommerceOrderItemURL" />
+<liferay-portlet:actionURL name="/commerce_open_order_content/edit_commerce_order_item" var="editCommerceOrderItemURL" />
 
 <liferay-ui:search-container
 	cssClass="shipment-details-table"
@@ -225,24 +225,24 @@ if (commerceAddress != null) {
 		%>
 
 		<liferay-ui:search-container-column-text
-			cssClass="table-cell-content"
+			cssClass="table-cell-expand"
 			name="sku"
 			value="<%= (commerceOrderItem == null) ? StringPool.BLANK : HtmlUtil.escape(commerceOrderItem.getSku()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
-			cssClass="table-cell-content"
+			cssClass="table-cell-expand"
 			name="name"
 			value="<%= (commerceOrderItem == null) ? StringPool.BLANK : commerceOrderItem.getName(languageId) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
-			cssClass="table-cell-content"
+			cssClass="table-cell-expand"
 			property="quantity"
 		/>
 
 		<liferay-ui:search-container-column-text
-			cssClass="table-cell-content"
+			cssClass="table-cell-expand"
 		>
 
 			<%

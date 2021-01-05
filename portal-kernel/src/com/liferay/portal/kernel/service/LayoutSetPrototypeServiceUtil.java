@@ -40,6 +40,19 @@ public class LayoutSetPrototypeServiceUtil {
 				java.util.Map<java.util.Locale, String> nameMap,
 				java.util.Map<java.util.Locale, String> descriptionMap,
 				boolean active, boolean layoutsUpdateable,
+				boolean readyForPropagation, ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().addLayoutSetPrototype(
+			nameMap, descriptionMap, active, layoutsUpdateable,
+			readyForPropagation, serviceContext);
+	}
+
+	public static com.liferay.portal.kernel.model.LayoutSetPrototype
+			addLayoutSetPrototype(
+				java.util.Map<java.util.Locale, String> nameMap,
+				java.util.Map<java.util.Locale, String> descriptionMap,
+				boolean active, boolean layoutsUpdateable,
 				ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -85,6 +98,20 @@ public class LayoutSetPrototypeServiceUtil {
 			throws com.liferay.portal.kernel.exception.PortalException {
 
 		return getService().search(companyId, active, orderByComparator);
+	}
+
+	public static com.liferay.portal.kernel.model.LayoutSetPrototype
+			updateLayoutSetPrototype(
+				long layoutSetPrototypeId,
+				java.util.Map<java.util.Locale, String> nameMap,
+				java.util.Map<java.util.Locale, String> descriptionMap,
+				boolean active, boolean layoutsUpdateable,
+				boolean readyForPropagation, ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().updateLayoutSetPrototype(
+			layoutSetPrototypeId, nameMap, descriptionMap, active,
+			layoutsUpdateable, readyForPropagation, serviceContext);
 	}
 
 	public static com.liferay.portal.kernel.model.LayoutSetPrototype

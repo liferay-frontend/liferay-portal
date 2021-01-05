@@ -40,7 +40,7 @@ CommerceAccountGroupAdminDisplayContext commerceAccountGroupAdminDisplayContext 
 
 			<c:if test="<%= commerceAccountGroupAdminDisplayContext.hasPermission(CommerceAccountActionKeys.ADD_ACCOUNT) %>">
 				<portlet:renderURL var="addCommerceAccountGroupURL">
-					<portlet:param name="mvcRenderCommandName" value="editCommerceAccountGroup" />
+					<portlet:param name="mvcRenderCommandName" value="/commerce_account_group_admin/edit_commerce_account_group" />
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 				</portlet:renderURL>
 
@@ -79,8 +79,8 @@ CommerceAccountGroupAdminDisplayContext commerceAccountGroupAdminDisplayContext 
 		</liferay-frontend:management-bar-action-buttons>
 	</liferay-frontend:management-bar>
 
-	<div class="container-fluid-1280">
-		<portlet:actionURL name="editCommerceAccountGroup" var="editCommerceAccountGroupActionURL" />
+	<div class="container-fluid container-fluid-max-xl">
+		<portlet:actionURL name="/commerce_account_group_admin/edit_commerce_account_group" var="editCommerceAccountGroupActionURL" />
 
 		<aui:form action="<%= editCommerceAccountGroupActionURL %>" method="post" name="fm">
 			<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.DELETE %>" />
@@ -97,19 +97,19 @@ CommerceAccountGroupAdminDisplayContext commerceAccountGroupAdminDisplayContext 
 					modelVar="commerceAccountGroup"
 				>
 					<portlet:renderURL var="rowURL">
-						<portlet:param name="mvcRenderCommandName" value="editCommerceAccountGroup" />
+						<portlet:param name="mvcRenderCommandName" value="/commerce_account_group_admin/edit_commerce_account_group" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 						<portlet:param name="commerceAccountGroupId" value="<%= String.valueOf(commerceAccountGroup.getCommerceAccountGroupId()) %>" />
 					</portlet:renderURL>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						property="name"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						property="system"
 					/>
 

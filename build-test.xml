@@ -308,6 +308,11 @@ jdbc.default.url=${database.url}
 jdbc.default.username=${database.username}
 jdbc.default.password=${database.password}
 
+jdbc.counter.driverClassName=${database.driver}
+jdbc.counter.url=${database.url}
+jdbc.counter.username=${database.username}
+jdbc.counter.password=${database.password}
+
 // HikariCP
 
 jdbc.default.connectionTimeout=600000
@@ -825,7 +830,35 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 				src="${tstamp.value}.zip"
 			/>
 
-			<xmlproperty file="${tstamp.value}-dir/fixpack_documentation.xml" />
+			<if>
+				<available file="${tstamp.value}-dir/fixpack_documentation.xml" />
+				<then>
+					<xmlproperty file="${tstamp.value}-dir/fixpack_documentation.xml" />
+				</then>
+				<elseif>
+					<available file="${tstamp.value}-dir/fixpack_documentation.json" />
+					<then>
+						<local name="json.content" />
+
+						<loadfile
+							property="json.content"
+							srcFile="${tstamp.value}-dir/fixpack_documentation.json"
+						/>
+
+						<script language="javascript">
+							var json = project.getProperty("json.content");
+
+							var fixpackDocumentation = JSON.parse(json);
+
+							var patchRequirements = fixpackDocumentation["patch"]["requirements"];
+
+							if (patchRequirements != null) {
+								project.setProperty("patch.requirements", patchRequirements);
+							}
+						</script>
+					</then>
+				</elseif>
+			</if>
 
 			<antelope:stringutil property="patch.requirements" string="${patch.requirements}">
 				<antelope:replace regex="!" replacement="" />
@@ -984,16 +1017,6 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 					import com.liferay.jenkins.results.parser.test.clazz.group.SegmentTestClassGroup;
 					import com.liferay.jenkins.results.parser.test.clazz.group.TestClassGroupFactory;
 
-					public BatchTestClassGroup.BuildProfile getBatchBuildProfile() {
-						String buildProfile = project.getProperty("build.profile");
-
-						if ((buildProfile != null) && buildProfile.equals("dxp")) {
-							return BatchTestClassGroup.BuildProfile.DXP;
-						}
-
-						return BatchTestClassGroup.BuildProfile.PORTAL;
-					}
-
 					public String getBranchName() {
 						String branchName = project.getProperty("env.TEST_PORTAL_BRANCH_NAME");
 
@@ -1004,7 +1027,7 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 						return branchName;
 					}
 
-					public Job.BuildProfile getJobBuildProfile() {
+					public Job.BuildProfile getBuildProfile() {
 						String buildProfile = project.getProperty("build.profile");
 
 						if ((buildProfile != null) && buildProfile.equals("dxp")) {
@@ -1062,9 +1085,9 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 						return topLevelJobName;
 					}
 
-					Job job = JobFactory.newJob(getTopLevelJobName(), getTestSuite(), getBranchName(), getRepositoryName(), getJobBuildProfile());
+					Job job = JobFactory.newJob(getTopLevelJobName(), getTestSuite(), getBranchName(), getRepositoryName(), getBuildProfile());
 
-					BatchTestClassGroup batchTestClassGroup = TestClassGroupFactory.newBatchTestClassGroup(project.getProperty("test.batch.name"), getBatchBuildProfile(), job);
+					BatchTestClassGroup batchTestClassGroup = TestClassGroupFactory.newBatchTestClassGroup(project.getProperty("test.batch.name"), job);
 
 					if (job.isSegmentEnabled()) {
 						SegmentTestClassGroup segmentTestClassGroup = batchTestClassGroup.getSegmentTestClassGroup(getSegmentID());
@@ -1498,9 +1521,14 @@ war.path=${app.server.portal.dir}/</echo>
 			<get-patch-requirements patch.file.zip.url="@{patch.file.zip.url}" />
 
 			<if>
-				<not>
-					<equals arg1="${patch.requirements}" arg2="" />
-				</not>
+				<and>
+					<not>
+						<equals arg1="${patch.requirements}" arg2="" />
+					</not>
+					<not>
+						<contains string="${patch.requirements}" substring="base-" />
+					</not>
+				</and>
 				<then>
 					<local name="patch.build.version" />
 					<local name="patch.portal.version" />
@@ -2512,6 +2540,12 @@ jdbc.default.password=${database.password}</echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="prepare-portal-template-freemarker-osgi-configuration">
+		<sequential>
+			<echo file="${liferay.home}/osgi/configs/com.liferay.portal.template.freemarker.configuration.FreeMarkerEngineConfiguration.config">asyncRenderTimeout=L"7200000"${line.separator}loopCountThreshold=I"2147483647"</echo>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="prepare-safari-driver">
 		<sequential>
 			<if>
@@ -3177,18 +3211,20 @@ ${tomcat-gc-log}
 					import com.liferay.jenkins.results.parser.test.clazz.group.NPMTestBatchTestClassGroup;
 					import com.liferay.jenkins.results.parser.test.clazz.group.TestClassGroupFactory;
 
-					try {
-						Job job = JobFactory.newJob(project.getProperty("top.level.job.name"));
-
-						BatchTestClassGroup.BuildProfile buildProfile = BatchTestClassGroup.BuildProfile.PORTAL;
-
+					public Job.BuildProfile getBuildProfile() {
 						String testPortalBuildProfile = project.getProperty("build.profile");
 
 						if ((testPortalBuildProfile != null) && testPortalBuildProfile.equals("dxp")) {
-							buildProfile = BatchTestClassGroup.BuildProfile.DXP;
+							return Job.BuildProfile.DXP;
 						}
 
-						BatchTestClassGroup batchTestClassGroup = TestClassGroupFactory.newBatchTestClassGroup(project.getProperty("test.batch.name"), buildProfile, job);
+						return Job.BuildProfile.PORTAL;
+					}
+
+					try {
+						Job job = JobFactory.newJob(project.getProperty("top.level.job.name"), null, null, null, getBuildProfile());
+
+						BatchTestClassGroup batchTestClassGroup = TestClassGroupFactory.newBatchTestClassGroup(project.getProperty("test.batch.name"), job);
 
 						if (batchTestClassGroup instanceof JUnitBatchTestClassGroup ||
 							batchTestClassGroup instanceof NPMTestBatchTestClassGroup) {
@@ -6769,15 +6805,13 @@ go</echo>
 
 				<ant dir="portal-kernel" target="install-portal-snapshot" />
 
-				<mirrors-get
-					dest="${app.server.parent.dir}/osgi/modules/com.liferay.analytics.demo.data.creator.api.jar"
-					src="${baseline.jar.url}/com/liferay/com.liferay.analytics.demo.data.creator.api/${analytics.cloud.faro.data.creator.api}/com.liferay.analytics.demo.data.creator.api-${analytics.cloud.faro.data.creator.api}.jar"
-				/>
+				<gradle-execute dir="modules/apps/analytics/analytics-demo-data-creator-api" task="deploy">
+					<arg value="clean" />
+				</gradle-execute>
 
-				<mirrors-get
-					dest="${app.server.parent.dir}/osgi/modules/com.liferay.analytics.demo.data.creator.impl.jar"
-					src="${baseline.jar.url}/com/liferay/com.liferay.analytics.demo.data.creator.impl/${analytics.cloud.faro.data.creator.impl}/com.liferay.analytics.demo.data.creator.impl-${analytics.cloud.faro.data.creator.impl}.jar"
-				/>
+				<gradle-execute dir="modules/apps/analytics/analytics-demo-data-creator-impl" task="deploy">
+					<arg value="clean" />
+				</gradle-execute>
 
 				<property location="${analytics.cloud.faro.data.csv}" name="analytics.cloud.faro.data.csv.file.path" />
 
@@ -8643,6 +8677,8 @@ osb.lcs.portlet.oauth.consumer.secret=${osb.lcs.portlet.oauth.consumer.secret}</
 		<prepare-portal-elasticsearch-osgi-configuration />
 
 		<prepare-portal-search-osgi-configuration/>
+
+		<prepare-portal-template-freemarker-osgi-configuration />
 	</target>
 
 	<target name="prepare-patching-tool">
@@ -10156,6 +10192,15 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 		</if>
 
 		<if>
+			<isset property="google.api.key.4" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					google.api.key.4=${google.api.key.4}
+				</echo>
+			</then>
+		</if>
+
+		<if>
 			<isset property="google.client.id.1" />
 			<then>
 				<echo append="true" file="${test.ext.properties.file}">
@@ -10183,6 +10228,15 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 		</if>
 
 		<if>
+			<isset property="google.client.id.4" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					google.client.id.4=${google.client.id.4}
+				</echo>
+			</then>
+		</if>
+
+		<if>
 			<isset property="google.client.secret.1" />
 			<then>
 				<echo append="true" file="${test.ext.properties.file}">
@@ -10205,6 +10259,15 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			<then>
 				<echo append="true" file="${test.ext.properties.file}">
 					google.client.secret.3=${google.client.secret.3}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="google.client.secret.4" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					google.client.secret.4=${google.client.secret.4}
 				</echo>
 			</then>
 		</if>

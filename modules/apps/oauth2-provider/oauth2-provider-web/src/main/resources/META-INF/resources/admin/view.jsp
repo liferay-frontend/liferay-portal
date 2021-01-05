@@ -65,7 +65,7 @@ String displayStyle = oAuth2ApplicationsManagementToolbarDisplayContext.getDispl
 				modelVar="oAuth2Application"
 			>
 				<portlet:renderURL var="editURL">
-					<portlet:param name="mvcRenderCommandName" value="/oauth2_provider/update_o_auth2_application" />
+					<portlet:param name="mvcRenderCommandName" value="/oauth2_provider/update_oauth2_application" />
 					<portlet:param name="oAuth2ApplicationId" value="<%= String.valueOf(oAuth2Application.getOAuth2ApplicationId()) %>" />
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 				</portlet:renderURL>
@@ -165,7 +165,7 @@ String displayStyle = oAuth2ApplicationsManagementToolbarDisplayContext.getDispl
 					),
 				},
 				url:
-					'<portlet:actionURL name="/oauth2_provider/delete_o_auth2_applications" />',
+					'<portlet:actionURL name="/oauth2_provider/delete_oauth2_applications" />',
 			});
 		}
 	}

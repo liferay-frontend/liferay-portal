@@ -206,16 +206,14 @@ public class EditCPAttachmentFileEntryMVCActionCommand
 				serviceContext);
 		}
 		else {
-			long classNameId = _portal.getClassNameId(CPDefinition.class);
-
 			_cpAttachmentFileEntryService.addCPAttachmentFileEntry(
 				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
-				classNameId, cpDefinitionId, fileEntryId, displayDateMonth,
-				displayDateDay, displayDateYear, displayDateHour,
-				displayDateMinute, expirationDateMonth, expirationDateDay,
-				expirationDateYear, expirationDateHour, expirationDateMinute,
-				neverExpire, titleMap, ddmFormValues, priority, type,
-				serviceContext);
+				_portal.getClassNameId(CPDefinition.class), cpDefinitionId,
+				fileEntryId, displayDateMonth, displayDateDay, displayDateYear,
+				displayDateHour, displayDateMinute, expirationDateMonth,
+				expirationDateDay, expirationDateYear, expirationDateHour,
+				expirationDateMinute, neverExpire, titleMap, ddmFormValues,
+				priority, type, serviceContext);
 		}
 	}
 

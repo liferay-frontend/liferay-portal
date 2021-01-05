@@ -16,6 +16,7 @@ package com.liferay.commerce.inventory.web.internal.frontend;
 
 import com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity;
 import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityService;
+import com.liferay.commerce.inventory.web.internal.frontend.constants.CommerceInventoryDataSetConstants;
 import com.liferay.commerce.inventory.web.internal.model.BookedQuantity;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;

@@ -27,7 +27,7 @@ import com.liferay.sharing.security.permission.SharingPermission;
 import com.liferay.sharing.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.sharing.taglib.internal.servlet.SharingJavaScriptFactoryUtil;
 import com.liferay.sharing.taglib.internal.servlet.SharingPermissionUtil;
-import com.liferay.sharing.taglib.util.CollaboratorsUtil;
+import com.liferay.sharing.taglib.internal.util.CollaboratorsUtil;
 
 import java.util.HashMap;
 import java.util.Map;

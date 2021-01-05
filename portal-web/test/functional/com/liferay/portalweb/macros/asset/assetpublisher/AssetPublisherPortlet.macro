@@ -323,19 +323,21 @@ definition {
 
 		SelectFrame(locator1 = "IFrame#SELECT_STRUCTURE_FIELD");
 
-		var key_fieldName = "${fieldFilter}";
-
 		if (isSet(fieldFilter)) {
-			Check(locator1 = "APConfigurationFilterbyfield#FIELD_FILTER_RADIO_BUTTON");
+			Check(
+				key_fieldName = "${fieldFilter}",
+				locator1 = "APConfigurationFilterbyfield#FIELD_FILTER_RADIO_BUTTON");
 		}
 
 		if (isSet(fieldValue)) {
 			Type(
-				locator1 = "TextInput#FIELD_FILTER_INPUT",
+				key_fieldFieldLabel = "${fieldFilter}",
+				locator1 = "WCEditWebContent#TEXT_INPUT",
 				value1 = "${fieldValue}");
 		}
 
 		AssertClick(
+			key_fieldName = "${fieldFilter}",
 			locator1 = "Button#FIELD_FILTER_APPLY",
 			value1 = "Apply");
 
@@ -382,9 +384,17 @@ definition {
 
 			Navigator.gotoNavTab(navTab = "Asset Libraries");
 
-			SiteSelector.selectSite(site = "${depotName}");
+			if (isSet(noConnectedDepot)) {
+				AssertTextEquals(
+					locator1 = "Message#EMPTY_INFO",
+					value1 = "No asset libraries were found.");
+			}
 
-			SelectFrame(locator1 = "IFrame#MODAL_BODY");
+			else {
+				SiteSelector.selectSite(site = "${depotName}");
+
+				SelectFrame(locator1 = "IFrame#MODAL_BODY");
+			}
 		}
 
 		if (isSet(assetTitle)) {
@@ -891,13 +901,26 @@ definition {
 
 		AssetPublisherPortlet.clickAssetTitle(assetTitle = "${assetTitle}");
 
-		AssertTextEquals.assertPartialText(
-			locator1 = "AP#ASSET_ABSTRACT_TITLE",
-			value1 = "${assetTitle}");
+		if ("${assetType}" == "Web Content Folder") {
+			AssertTextEquals.assertPartialText(
+				key_position = "1",
+				locator1 = "AP#ASSET_ABSTRACT_DETAIL_WEB_CONTENT_FOLDER_CONTENT",
+				value1 = "${assetSubfolderDetails}");
 
-		AssertTextEquals.assertPartialText(
-			locator1 = "AP#ASSET_ABSTRACT_DETAIL_CONTENT",
-			value1 = "${assetContent}");
+			AssertTextEquals.assertPartialText(
+				key_position = "2",
+				locator1 = "AP#ASSET_ABSTRACT_DETAIL_WEB_CONTENT_FOLDER_CONTENT",
+				value1 = "${assetArticleDetails}");
+		}
+		else {
+			AssertTextEquals.assertPartialText(
+				locator1 = "AP#ASSET_ABSTRACT_TITLE",
+				value1 = "${assetTitle}");
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "AP#ASSET_ABSTRACT_DETAIL_CONTENT",
+				value1 = "${assetContent}");
+		}
 	}
 
 	macro viewAssetMetadataPG {
@@ -1248,7 +1271,7 @@ definition {
 			for (var assetSubtypeField : list "${assetSubtypeFields}") {
 				var key_fieldName = "${assetSubtypeField}";
 
-				AssertTextEquals.assertPartialText(
+				AssertTextEquals(
 					locator1 = "APConfigurationFilterbyfield#FIELD_FILTER_FIELD_NAME",
 					value1 = "${assetSubtypeField}");
 			}

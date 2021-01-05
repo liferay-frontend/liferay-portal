@@ -97,11 +97,11 @@ public class ByAddressCommerceTaxEngine implements CommerceTaxEngine {
 		BigDecimal rate = BigDecimal.valueOf(
 			commerceTaxFixedRateAddressRel.getRate());
 
-		BigDecimal amount = commerceTaxCalculateRequest.getPrice();
-
 		BigDecimal taxValue = rate;
 
 		if (commerceTaxCalculateRequest.isPercentage()) {
+			BigDecimal amount = commerceTaxCalculateRequest.getPrice();
+
 			taxValue = amount.multiply(rate);
 
 			BigDecimal denominator = _ONE_HUNDRED;
@@ -119,17 +119,13 @@ public class ByAddressCommerceTaxEngine implements CommerceTaxEngine {
 
 	@Override
 	public String getDescription(Locale locale) {
-		ResourceBundle resourceBundle = _getResourceBundle(locale);
-
 		return LanguageUtil.get(
-			resourceBundle, "by-address-tax-rate-description");
+			_getResourceBundle(locale), "by-address-tax-rate-description");
 	}
 
 	@Override
 	public String getName(Locale locale) {
-		ResourceBundle resourceBundle = _getResourceBundle(locale);
-
-		return LanguageUtil.get(resourceBundle, KEY);
+		return LanguageUtil.get(_getResourceBundle(locale), KEY);
 	}
 
 	protected boolean isTaxAppliedToShippingAddress(long groupId) {

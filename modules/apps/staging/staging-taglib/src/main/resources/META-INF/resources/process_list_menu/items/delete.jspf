@@ -14,8 +14,16 @@
  */
 --%>
 
+<%
+String mvcCommandName = "/export_import/delete_layout_import_background_tasks";
+
+if (portletName.equals(StagingProcessesPortletKeys.STAGING_PROCESSES)) {
+	mvcCommandName = "/staging_processes/delete_background_tasks";
+}
+%>
+
 <c:if test="<%= !backgroundTask.isInProgress() %>">
-	<portlet:actionURL name="/staging_processes/delete_background_tasks" var="deleteBackgroundTaskURL">
+	<portlet:actionURL name="<%= mvcCommandName %>" var="deleteBackgroundTaskURL">
 		<portlet:param name="redirect" value="<%= currentURL.toString() %>" />
 		<portlet:param name="deleteBackgroundTaskIds" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
 	</portlet:actionURL>

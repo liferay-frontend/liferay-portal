@@ -415,10 +415,10 @@ public class CommercePaymentEngineImpl implements CommercePaymentEngine {
 		_commerceOrderPaymentLocalService.addCommerceOrderPayment(
 			commerceOrderId, paymentStatus, result);
 
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
 		if (paymentStatus == CommerceOrderConstants.PAYMENT_STATUS_PAID) {
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
 			commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
 				commerceOrder, CommerceOrderConstants.ORDER_STATUS_PENDING,
 				permissionChecker.getUserId());

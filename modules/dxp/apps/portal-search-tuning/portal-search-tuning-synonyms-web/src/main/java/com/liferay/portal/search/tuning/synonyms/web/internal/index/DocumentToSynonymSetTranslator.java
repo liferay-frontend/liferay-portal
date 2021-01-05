@@ -27,7 +27,7 @@ public interface DocumentToSynonymSetTranslator {
 
 	public SynonymSet translate(Document document, String id);
 
-	public SynonymSet translate(SearchHit searHit);
+	public SynonymSet translate(SearchHit searchHit);
 
 	public List<SynonymSet> translateAll(List<SearchHit> searchHits);
 

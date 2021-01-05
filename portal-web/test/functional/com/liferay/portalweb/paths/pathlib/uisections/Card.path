@@ -14,13 +14,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>CARD_ITEM</td>
-	<td>xpath=(//li[contains(@class,'asset-item')])[${key_index}]//*[contains(@class,'card-title')][contains(.,'${key_card}')]</td>
+	<td>CARD_LINK</td>
+	<td>//div[contains(@data-analytics-asset-title,'${key_card}')]//a[contains(@class,'card-link')]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>CARD_LINK</td>
-	<td>//div[contains(@data-analytics-asset-title,'${key_card}')]//a[contains(@class,'card-link')]</td>
+	<td>CARD_PAGE_ITEM</td>
+	<td>xpath=(//li[contains(@class,'card-page-item')])[${key_index}]//*[contains(@class,'card-title')][contains(.,'${key_card}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -35,7 +35,7 @@
 </tr>
 <tr>
 	<td>CARD_SUBTITLE</td>
-	<td>//div[contains(@class,'card')][contains(.,'${key_card}')]//div[contains(@class,'card-subtitle')]</td>
+	<td>//div[contains(@class,'card')][contains(.,'${key_card}')]//*[contains(@class,'card-subtitle')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -50,7 +50,7 @@
 </tr>
 <tr>
 	<td>CARD_ELLIPSIS</td>
-	<td>//div[contains(@class,'card')][contains(.,'${key_card}')]//button[contains(@class,'dropdown-toggle')]</td>
+	<td>//div[contains(@class,'card')][contains(.,'${key_card}')]//*[contains(@class,'dropdown-toggle')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -60,7 +60,7 @@
 </tr>
 <tr>
 	<td>CARD_STICKER</td>
-	<td>//div[contains(@class,'card')][contains(.,'${key_card}')]//span[contains(@class,'sticker')]</td>
+	<td>//div[contains(@class,'card')][contains(.,'${key_card}')]//span[contains(@class,'sticker-overlay')]//*[name()='svg'][contains(@class,'lexicon-icon-${key_icon}')]</td>
 	<td></td>
 </tr>
 <tr>

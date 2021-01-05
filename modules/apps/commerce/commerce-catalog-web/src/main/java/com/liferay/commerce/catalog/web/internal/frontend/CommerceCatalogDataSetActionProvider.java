@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.catalog.web.internal.frontend;
 
+import com.liferay.commerce.catalog.web.internal.frontend.constants.CommerceCatalogDataSetConstants;
 import com.liferay.commerce.catalog.web.internal.model.Catalog;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -108,7 +109,8 @@ public class CommerceCatalogDataSetActionProvider
 			PortletRequest.ACTION_PHASE);
 
 		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCommerceCatalog");
+			ActionRequest.ACTION_NAME,
+			"/commerce_catalogs/edit_commerce_catalog");
 		portletURL.setParameter(Constants.CMD, Constants.DELETE);
 
 		String redirect = ParamUtil.getString(
@@ -129,7 +131,8 @@ public class CommerceCatalogDataSetActionProvider
 			httpServletRequest, CPPortletKeys.COMMERCE_CATALOGS,
 			PortletRequest.RENDER_PHASE);
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceCatalog");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_catalogs/edit_commerce_catalog");
 
 		String redirect = ParamUtil.getString(
 			httpServletRequest, "currentUrl",

@@ -165,13 +165,13 @@ public class CPAttachmentFileEntryCreator {
 			expirationDateHour += 12;
 		}
 
-		long classNameId = _portal.getClassNameId(classedModel.getModelClass());
 		long classPK = GetterUtil.getLong(classedModel.getPrimaryKeyObj());
 
 		return _cpAttachmentFileEntryLocalService.addCPAttachmentFileEntry(
-			serviceContext.getUserId(), fileEntry.getGroupId(), classNameId,
-			classPK, fileEntry.getFileEntryId(), displayDateMonth,
-			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			serviceContext.getUserId(), fileEntry.getGroupId(),
+			_portal.getClassNameId(classedModel.getModelClass()), classPK,
+			fileEntry.getFileEntryId(), displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
 			expirationDateMonth, expirationDateDay, expirationDateYear,
 			expirationDateHour, expirationDateMinute, true, titleMap, null,
 			priority, type, _friendlyURLNormalizer.normalize(fileName),

@@ -19,7 +19,7 @@
 	</route>
 	<route>
 		<pattern>/banned-users</pattern>
-		<implicit-parameter name="mvcRenderCommandName">/message_boards/view_banned_users</implicit-parameter>
+		<implicit-parameter name="mvcRenderCommandName">/message_boards_admin/view_banned_users</implicit-parameter>
 		<implicit-parameter name="p_p_state">normal</implicit-parameter>
 	</route>
 	<route>
@@ -73,7 +73,7 @@
 	</route>
 	<route>
 		<pattern>/banned-users/{p_p_state}</pattern>
-		<implicit-parameter name="mvcRenderCommandName">/message_boards/view_banned_users</implicit-parameter>
+		<implicit-parameter name="mvcRenderCommandName">/message_boards_admin/view_banned_users</implicit-parameter>
 	</route>
 	<route>
 		<pattern>/message-boards-home/{p_p_state}</pattern>

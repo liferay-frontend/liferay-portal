@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoaderUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.servlet.PipingServletResponse;
@@ -101,6 +102,11 @@ public class FragmentRendererControllerImpl
 		FragmentRenderer fragmentRenderer = _getFragmentRenderer(
 			fragmentEntryLink);
 
+		Locale currentLocale = LocaleThreadLocal.getThemeDisplayLocale();
+
+		LocaleThreadLocal.setThemeDisplayLocale(
+			fragmentRendererContext.getLocale());
+
 		try {
 			fragmentRenderer.render(
 				fragmentRendererContext, httpServletRequest,
@@ -129,6 +135,9 @@ public class FragmentRendererControllerImpl
 
 			return _getFragmentEntryContentExceptionMessage(
 				exception, httpServletRequest);
+		}
+		finally {
+			LocaleThreadLocal.setThemeDisplayLocale(currentLocale);
 		}
 
 		if (Objects.equals(

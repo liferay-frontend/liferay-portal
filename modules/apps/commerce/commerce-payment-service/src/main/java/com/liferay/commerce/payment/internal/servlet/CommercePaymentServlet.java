@@ -47,7 +47,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -73,10 +72,9 @@ public class CommercePaymentServlet extends HttpServlet {
 		throws IOException, ServletException {
 
 		try {
-			HttpSession httpSession = httpServletRequest.getSession();
-
 			if (PortalSessionThreadLocal.getHttpSession() == null) {
-				PortalSessionThreadLocal.setHttpSession(httpSession);
+				PortalSessionThreadLocal.setHttpSession(
+					httpServletRequest.getSession());
 			}
 
 			CommerceOrder commerceOrder =

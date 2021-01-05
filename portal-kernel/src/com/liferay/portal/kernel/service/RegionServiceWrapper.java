@@ -30,11 +30,33 @@ public class RegionServiceWrapper
 
 	@Override
 	public com.liferay.portal.kernel.model.Region addRegion(
+			long countryId, boolean active, java.lang.String name,
+			double position, java.lang.String regionCode,
+			ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _regionService.addRegion(
+			countryId, active, name, position, regionCode, serviceContext);
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x)
+	 */
+	@Deprecated
+	@Override
+	public com.liferay.portal.kernel.model.Region addRegion(
 			long countryId, java.lang.String regionCode, java.lang.String name,
 			boolean active)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _regionService.addRegion(countryId, regionCode, name, active);
+	}
+
+	@Override
+	public void deleteRegion(long regionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_regionService.deleteRegion(regionId);
 	}
 
 	@Override
@@ -98,6 +120,62 @@ public class RegionServiceWrapper
 		long countryId, boolean active) {
 
 		return _regionService.getRegions(countryId, active);
+	}
+
+	@Override
+	public java.util.List<com.liferay.portal.kernel.model.Region> getRegions(
+		long countryId, boolean active, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<com.liferay.portal.kernel.model.Region> orderByComparator) {
+
+		return _regionService.getRegions(
+			countryId, active, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<com.liferay.portal.kernel.model.Region> getRegions(
+		long countryId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<com.liferay.portal.kernel.model.Region> orderByComparator) {
+
+		return _regionService.getRegions(
+			countryId, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<com.liferay.portal.kernel.model.Region> getRegions(
+			long companyId, java.lang.String a2, boolean active)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _regionService.getRegions(companyId, a2, active);
+	}
+
+	@Override
+	public int getRegionsCount(long countryId) {
+		return _regionService.getRegionsCount(countryId);
+	}
+
+	@Override
+	public int getRegionsCount(long countryId, boolean active) {
+		return _regionService.getRegionsCount(countryId, active);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.model.Region updateActive(
+			long regionId, boolean active)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _regionService.updateActive(regionId, active);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.model.Region updateRegion(
+			long regionId, boolean active, java.lang.String name,
+			double position, java.lang.String regionCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _regionService.updateRegion(
+			regionId, active, name, position, regionCode);
 	}
 
 	@Override

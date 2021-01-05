@@ -49,7 +49,7 @@ GroupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHel
 		<liferay-util:include page="/import/navigation.jsp" servletContext="<%= application %>" />
 
 		<liferay-util:include page="/toolbar.jsp" servletContext="<%= application %>">
-			<liferay-util:param name="mvcRenderCommandName" value="importLayoutsView" />
+			<liferay-util:param name="mvcRenderCommandName" value="/export_import/import_layouts_view" />
 			<liferay-util:param name="groupId" value="<%= String.valueOf(groupDisplayContextHelper.getGroupId()) %>" />
 			<liferay-util:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
 			<liferay-util:param name="displayStyle" value="<%= displayStyle %>" />
@@ -72,7 +72,7 @@ GroupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHel
 </c:choose>
 
 <aui:script use="liferay-export-import-export-import">
-	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="importLayouts" var="importProcessesURL">
+	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/export_import/import_layouts" var="importProcessesURL">
 		<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.IMPORT %>" />
 		<portlet:param name="<%= SearchContainer.DEFAULT_CUR_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_CUR_PARAM) %>" />
 		<portlet:param name="<%= SearchContainer.DEFAULT_DELTA_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_DELTA_PARAM) %>" />

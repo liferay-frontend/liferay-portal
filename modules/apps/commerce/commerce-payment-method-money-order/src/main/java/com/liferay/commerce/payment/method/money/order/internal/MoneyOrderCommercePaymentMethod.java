@@ -63,9 +63,7 @@ public class MoneyOrderCommercePaymentMethod implements CommercePaymentMethod {
 
 	@Override
 	public String getName(Locale locale) {
-		ResourceBundle resourceBundle = _getResourceBundle(locale);
-
-		return LanguageUtil.get(resourceBundle, KEY);
+		return LanguageUtil.get(_getResourceBundle(locale), KEY);
 	}
 
 	@Override

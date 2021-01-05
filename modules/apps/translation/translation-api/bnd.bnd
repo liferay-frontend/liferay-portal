@@ -2,6 +2,7 @@ Bundle-Name: Liferay Translation API
 Bundle-SymbolicName: com.liferay.translation.api
 Bundle-Version: 5.0.0
 Export-Package:\
+	com.liferay.translation.constants,\
 	com.liferay.translation.exception,\
 	com.liferay.translation.exporter,\
 	com.liferay.translation.importer,\

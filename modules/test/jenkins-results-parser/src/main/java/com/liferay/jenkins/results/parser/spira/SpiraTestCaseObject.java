@@ -14,12 +14,15 @@
 
 package com.liferay.jenkins.results.parser.spira;
 
+import com.google.common.collect.Lists;
+
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil.HttpRequestMethod;
 
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,51 +43,115 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 		clearCachedSpiraArtifacts(SpiraTestCaseObject.class);
 	}
 
-	public static SpiraTestCaseObject createSpiraTestCaseObject(
-		SpiraProject spiraProject, String testCaseName, String testCaseFilePath,
-		SpiraTestCaseType spiraTestCaseType) {
+	public static SpiraTestCaseObject createSpiraTestCaseObjectByPath(
+		SpiraProject spiraProject, String testCasePath,
+		SpiraTestCaseType spiraTestCaseType,
+		List<SpiraCustomPropertyValue> spiraCustomPropertyValues) {
 
-		return _createSpiraTestCaseObject(
-			spiraProject, testCaseName, testCaseFilePath, spiraTestCaseType,
-			null, true);
-	}
+		List<SpiraTestCaseObject> spiraTestCaseObjects =
+			_getSpiraTestCaseObjects(
+				spiraProject, testCasePath, spiraTestCaseType,
+				spiraCustomPropertyValues);
 
-	public static SpiraTestCaseObject createSpiraTestCaseObject(
-		SpiraProject spiraProject, String testCaseName, String testCaseFilePath,
-		SpiraTestCaseType spiraTestCaseType, Integer parentTestCaseFolderID) {
+		if (!spiraTestCaseObjects.isEmpty()) {
+			SpiraTestCaseObject targetSpiraTestCaseObject = null;
 
-		return _createSpiraTestCaseObject(
-			spiraProject, testCaseName, testCaseFilePath, spiraTestCaseType,
-			parentTestCaseFolderID, true);
+			for (SpiraTestCaseObject spiraTestCaseObject :
+					spiraTestCaseObjects) {
+
+				if (targetSpiraTestCaseObject == null) {
+					targetSpiraTestCaseObject = spiraTestCaseObject;
+				}
+
+				if (targetSpiraTestCaseObject.getID() >
+						spiraTestCaseObject.getID()) {
+
+					targetSpiraTestCaseObject = spiraTestCaseObject;
+				}
+			}
+
+			return targetSpiraTestCaseObject;
+		}
+
+		String urlPath = "projects/{project_id}/test-cases";
+
+		Map<String, String> urlPathReplacements = new HashMap<>();
+
+		urlPathReplacements.put(
+			"project_id", String.valueOf(spiraProject.getID()));
+
+		JSONObject requestJSONObject = new JSONObject();
+
+		requestJSONObject.put(
+			"Name", StringEscapeUtils.unescapeJava(getPathName(testCasePath)));
+		requestJSONObject.put("TestCaseStatusId", Status.DRAFT.getID());
+
+		SpiraTestCaseFolder parentSpiraTestCaseFolder = null;
+
+		String parentTestCaseFolderPath = getParentPath(testCasePath);
+
+		if ((parentTestCaseFolderPath != null) &&
+			!parentTestCaseFolderPath.isEmpty()) {
+
+			parentSpiraTestCaseFolder =
+				SpiraTestCaseFolder.createSpiraTestCaseFolderByPath(
+					spiraProject, parentTestCaseFolderPath);
+		}
+
+		if (parentSpiraTestCaseFolder != null) {
+			requestJSONObject.put(
+				SpiraTestCaseFolder.KEY_ID, parentSpiraTestCaseFolder.getID());
+		}
+
+		if (spiraTestCaseType != null) {
+			requestJSONObject.put("TestCaseTypeId", spiraTestCaseType.getID());
+		}
+
+		JSONArray customPropertiesJSONArray = new JSONArray();
+
+		for (SpiraCustomPropertyValue spiraCustomPropertyValue :
+				spiraCustomPropertyValues) {
+
+			customPropertiesJSONArray.put(
+				spiraCustomPropertyValue.getCustomPropertyJSONObject());
+		}
+
+		requestJSONObject.put("CustomProperties", customPropertiesJSONArray);
+
+		try {
+			JSONObject responseJSONObject = SpiraRestAPIUtil.requestJSONObject(
+				urlPath, null, urlPathReplacements, HttpRequestMethod.POST,
+				requestJSONObject.toString());
+
+			return spiraProject.getSpiraTestCaseObjectByID(
+				responseJSONObject.getInt(KEY_ID));
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
 	}
 
 	public static SpiraTestCaseObject createSpiraTestCaseObjectByPath(
 		SpiraProject spiraProject, String testCasePath, String testCaseFilePath,
 		SpiraTestCaseType spiraTestCaseType) {
 
-		List<SpiraTestCaseObject> spiraTestCaseObjects =
-			spiraProject.getSpiraTestCaseObjectsByPath(testCasePath);
+		List<SpiraCustomPropertyValue> spiraCustomPropertyValues =
+			new ArrayList<>();
 
-		if (!spiraTestCaseObjects.isEmpty()) {
-			return spiraTestCaseObjects.get(0);
+		if ((testCaseFilePath != null) && !testCaseFilePath.isEmpty()) {
+			SpiraCustomProperty filePathSpiraCustomProperty =
+				SpiraCustomProperty.createSpiraCustomProperty(
+					spiraProject, SpiraTestCaseObject.class,
+					_CUSTOM_FIELD_FILE_PATH_KEY, SpiraCustomProperty.Type.TEXT);
+
+			spiraCustomPropertyValues.add(
+				SpiraCustomPropertyValue.createSpiraCustomPropertyValue(
+					filePathSpiraCustomProperty, testCaseFilePath));
 		}
 
-		String testCaseName = getPathName(testCasePath);
-		String parentTestCaseFolderPath = getParentPath(testCasePath);
-
-		if (parentTestCaseFolderPath.isEmpty()) {
-			return createSpiraTestCaseObject(
-				spiraProject, testCaseName, testCaseFilePath,
-				spiraTestCaseType);
-		}
-
-		SpiraTestCaseFolder parentSpiraTestCaseFolder =
-			SpiraTestCaseFolder.createSpiraTestCaseFolderByPath(
-				spiraProject, parentTestCaseFolderPath);
-
-		return _createSpiraTestCaseObject(
-			spiraProject, testCaseName, testCaseFilePath, spiraTestCaseType,
-			parentSpiraTestCaseFolder.getID(), false);
+		return createSpiraTestCaseObjectByPath(
+			spiraProject, testCasePath, spiraTestCaseType,
+			spiraCustomPropertyValues);
 	}
 
 	public static void deleteSpiraTestCaseObjectByID(
@@ -122,7 +189,9 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 		SpiraProject spiraProject, String testCasePath) {
 
 		List<SpiraTestCaseObject> spiraTestCaseObjects =
-			spiraProject.getSpiraTestCaseObjectsByPath(testCasePath);
+			getSpiraTestCaseObjects(
+				spiraProject,
+				new SearchQuery.SearchParameter("Path", testCasePath));
 
 		for (SpiraTestCaseObject spiraTestCaseObject : spiraTestCaseObjects) {
 			deleteSpiraTestCaseObjectByID(
@@ -131,24 +200,11 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 	}
 
 	public String getFilePath() {
-		SpiraCustomProperty spiraCustomProperty =
-			SpiraCustomProperty.createSpiraCustomProperty(
-				getSpiraProject(), SpiraTestCaseObject.class,
-				_CUSTOM_FIELD_FILE_PATH_KEY, SpiraCustomProperty.Type.TEXT);
+		SpiraCustomPropertyValue spiraCustomPropertyValue =
+			getSpiraCustomPropertyValue(_CUSTOM_FIELD_FILE_PATH_KEY);
 
-		JSONArray customPropertiesJSONArray = jsonObject.getJSONArray(
-			"CustomProperties");
-
-		for (int i = 0; i < customPropertiesJSONArray.length(); i++) {
-			JSONObject customPropertyJSONObject =
-				customPropertiesJSONArray.getJSONObject(i);
-
-			int propertyNumber = customPropertyJSONObject.getInt(
-				"PropertyNumber");
-
-			if (propertyNumber == spiraCustomProperty.getPropertyNumber()) {
-				return customPropertyJSONObject.optString("StringValue");
-			}
+		if (spiraCustomPropertyValue != null) {
+			return spiraCustomPropertyValue.getValueString();
 		}
 
 		return null;
@@ -177,10 +233,70 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 		return _parentSpiraTestCaseFolder;
 	}
 
+	public List<SpiraTestCaseComponent> getSpiraTestCaseComponents() {
+		JSONArray componentIDJSONArray = jsonObject.optJSONArray(
+			"ComponentIds");
+
+		if (componentIDJSONArray == JSONObject.NULL) {
+			return new ArrayList<>();
+		}
+
+		SpiraProject spiraProject = getSpiraProject();
+
+		List<SpiraTestCaseComponent> spiraTestCaseComponents =
+			new ArrayList<>();
+
+		for (int i = 0; i < componentIDJSONArray.length(); i++) {
+			spiraTestCaseComponents.add(
+				spiraProject.getSpiraTestCaseComponentByID(
+					componentIDJSONArray.getInt(i)));
+		}
+
+		return spiraTestCaseComponents;
+	}
+
+	public SpiraTestCasePriority getSpiraTestCasePriority() {
+		Integer testCasePriorityId = jsonObject.optInt("TestCasePriorityId");
+
+		if ((testCasePriorityId <= 0) ||
+			(testCasePriorityId == JSONObject.NULL)) {
+
+			return null;
+		}
+
+		SpiraProject spiraProject = getSpiraProject();
+
+		return spiraProject.getSpiraTestCasePriorityByID(testCasePriorityId);
+	}
+
+	public SpiraTestCaseProductVersion getSpiraTestCaseProductVersion() {
+		if (_spiraTestCaseProductVersion != null) {
+			return _spiraTestCaseProductVersion;
+		}
+
+		SpiraCustomPropertyValue spiraCustomPropertyValue =
+			getSpiraCustomPropertyValue(
+				SpiraTestCaseProductVersion.CUSTOM_PROPERTY_NAME);
+
+		if (spiraCustomPropertyValue == null) {
+			return null;
+		}
+
+		if (spiraCustomPropertyValue instanceof SpiraTestCaseProductVersion) {
+			_spiraTestCaseProductVersion =
+				(SpiraTestCaseProductVersion)spiraCustomPropertyValue;
+
+			return _spiraTestCaseProductVersion;
+		}
+
+		return null;
+	}
+
 	public SpiraTestCaseRun getSpiraTestCaseRunByID(int testCaseRunID) {
 		List<SpiraTestCaseRun> spiraTestCaseRuns =
 			SpiraTestCaseRun.getSpiraTestCaseRuns(
-				getSpiraProject(), this,
+				SpiraTestCaseRun.NUMBER_OF_ROWS_MAX_DEFAULT, getSpiraProject(),
+				this,
 				new SearchQuery.SearchParameter(
 					SpiraTestCaseRun.KEY_ID, testCaseRunID));
 
@@ -198,7 +314,9 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 	}
 
 	public List<SpiraTestCaseRun> getSpiraTestCaseRuns() {
-		return SpiraTestCaseRun.getSpiraTestCaseRuns(getSpiraProject(), this);
+		return SpiraTestCaseRun.getSpiraTestCaseRuns(
+			SpiraTestCaseRun.NUMBER_OF_ROWS_MAX_DEFAULT, getSpiraProject(),
+			this);
 	}
 
 	public SpiraTestCaseType getSpiraTestCaseType() {
@@ -215,6 +333,221 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 		return JenkinsResultsParserUtil.combine(
 			SPIRA_BASE_URL, String.valueOf(spiraProject.getID()), "/TestCase/",
 			String.valueOf(getID()), ".aspx");
+	}
+
+	public void mergeSpiraTestCaseObject(
+		SpiraTestCaseObject spiraTestCaseObject) {
+
+		SpiraProject spiraProject = getSpiraProject();
+
+		Map<String, String> urlPathReplacements = new HashMap<>();
+
+		urlPathReplacements.put(
+			"project_id", String.valueOf(spiraProject.getID()));
+
+		for (List<SpiraTestCaseRun> spiraTestCaseRuns :
+				Lists.partition(
+					spiraTestCaseObject.getSpiraTestCaseRuns(), 25)) {
+
+			JSONArray requestJSONArray = new JSONArray();
+
+			for (SpiraTestCaseRun spiraTestCaseRun : spiraTestCaseRuns) {
+				JSONObject requestJSONObject =
+					spiraTestCaseRun.getAutomatedJSONObject();
+
+				requestJSONObject.put(SpiraTestCaseObject.KEY_ID, getID());
+
+				requestJSONArray.put(requestJSONObject);
+			}
+
+			try {
+				SpiraRestAPIUtil.request(
+					"projects/{project_id}/test-runs/record-multiple", null,
+					urlPathReplacements, HttpRequestMethod.POST,
+					requestJSONArray.toString());
+			}
+			catch (IOException ioException) {
+				throw new RuntimeException(ioException);
+			}
+
+			SpiraTestCaseRun.deleteSpiraTestCaseRuns(spiraTestCaseRuns);
+		}
+
+		deleteSpiraTestCaseObjectByID(
+			spiraProject, spiraTestCaseObject.getID());
+	}
+
+	public void updateSpiraCustomPropertyValues(
+		List<SpiraCustomPropertyValue> spiraCustomPropertyValues) {
+
+		List<SpiraCustomPropertyValue> updatedSpiraCustomPropertyValues =
+			new ArrayList<>();
+
+		boolean updated = false;
+
+		for (SpiraCustomPropertyValue currentSpiraCustomPropertyValue :
+				getSpiraCustomPropertyValues()) {
+
+			SpiraCustomPropertyValue newSpiraCustomPropertyValue = null;
+
+			String currentSpiraCustomPropertyName =
+				currentSpiraCustomPropertyValue.getName();
+
+			for (SpiraCustomPropertyValue spiraCustomPropertyValue :
+					spiraCustomPropertyValues) {
+
+				if (!currentSpiraCustomPropertyName.equals(
+						spiraCustomPropertyValue.getName())) {
+
+					continue;
+				}
+
+				if (currentSpiraCustomPropertyValue.equals(
+						spiraCustomPropertyValue)) {
+
+					break;
+				}
+
+				newSpiraCustomPropertyValue = spiraCustomPropertyValue;
+
+				break;
+			}
+
+			if (newSpiraCustomPropertyValue != null) {
+				updated = true;
+
+				updatedSpiraCustomPropertyValues.add(
+					newSpiraCustomPropertyValue);
+
+				continue;
+			}
+
+			updatedSpiraCustomPropertyValues.add(
+				currentSpiraCustomPropertyValue);
+		}
+
+		if (!updated) {
+			return;
+		}
+
+		JSONArray customPropertiesJSONArray = new JSONArray();
+
+		for (SpiraCustomPropertyValue spiraCustomPropertyValue :
+				updatedSpiraCustomPropertyValues) {
+
+			customPropertiesJSONArray.put(
+				spiraCustomPropertyValue.getCustomPropertyJSONObject());
+		}
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put("CustomProperties", customPropertiesJSONArray);
+
+		_updateJSONObject(jsonObject);
+	}
+
+	public void updateSpiraCustomPropertyValues(
+		SpiraCustomPropertyValue... spiraCustomPropertyValues) {
+
+		updateSpiraCustomPropertyValues(
+			Arrays.asList(spiraCustomPropertyValues));
+	}
+
+	public void updateSpiraTestCaseComponents(
+		List<SpiraTestCaseComponent> spiraTestCaseComponents) {
+
+		if (spiraTestCaseComponents != null) {
+			updateSpiraTestCaseComponents(
+				spiraTestCaseComponents.toArray(new SpiraTestCaseComponent[0]));
+		}
+	}
+
+	public void updateSpiraTestCaseComponents(
+		SpiraTestCaseComponent... spiraTestCaseComponents) {
+
+		if (spiraTestCaseComponents == null) {
+			return;
+		}
+
+		boolean updated = false;
+
+		List<SpiraTestCaseComponent> currentSpiraTestCaseComponents =
+			getSpiraTestCaseComponents();
+
+		if (spiraTestCaseComponents.length !=
+				currentSpiraTestCaseComponents.size()) {
+
+			updated = true;
+		}
+
+		for (SpiraTestCaseComponent spiraTestCaseComponent :
+				spiraTestCaseComponents) {
+
+			if (updated) {
+				break;
+			}
+
+			boolean found = false;
+
+			for (SpiraTestCaseComponent currentSpiraTestCaseComponent :
+					currentSpiraTestCaseComponents) {
+
+				if (currentSpiraTestCaseComponent.equals(
+						spiraTestCaseComponent)) {
+
+					found = true;
+
+					break;
+				}
+			}
+
+			if (!found) {
+				updated = true;
+
+				break;
+			}
+		}
+
+		if (!updated) {
+			return;
+		}
+
+		JSONObject jsonObject = new JSONObject();
+
+		JSONArray componentIDsJSONArray = new JSONArray();
+
+		for (SpiraTestCaseComponent spiraTestCaseComponent :
+				spiraTestCaseComponents) {
+
+			componentIDsJSONArray.put(spiraTestCaseComponent.getID());
+		}
+
+		jsonObject.put("ComponentIds", componentIDsJSONArray);
+
+		_updateJSONObject(jsonObject);
+	}
+
+	public void updateSpiraTestCasePriority(
+		SpiraTestCasePriority spiraTestCasePriority) {
+
+		if (spiraTestCasePriority == null) {
+			return;
+		}
+
+		SpiraTestCasePriority currentSpiraTestCasePriority =
+			getSpiraTestCasePriority();
+
+		if ((currentSpiraTestCasePriority != null) &&
+			currentSpiraTestCasePriority.equals(spiraTestCasePriority)) {
+
+			return;
+		}
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put("TestCasePriorityId", spiraTestCasePriority.getID());
+
+		_updateJSONObject(jsonObject);
 	}
 
 	public static enum Status {
@@ -236,6 +569,7 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 
 	protected static List<SpiraTestCaseObject> getSpiraTestCaseObjects(
 		final SpiraProject spiraProject, final long numberOfRows,
+		boolean checkCache,
 		final SearchQuery.SearchParameter... searchParameters) {
 
 		return getSpiraArtifacts(
@@ -257,14 +591,15 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 				}
 
 			},
-			searchParameters);
+			checkCache, searchParameters);
 	}
 
 	protected static List<SpiraTestCaseObject> getSpiraTestCaseObjects(
 		final SpiraProject spiraProject,
 		final SearchQuery.SearchParameter... searchParameters) {
 
-		return getSpiraTestCaseObjects(spiraProject, 35000, searchParameters);
+		return getSpiraTestCaseObjects(
+			spiraProject, 35000, true, searchParameters);
 	}
 
 	@Override
@@ -278,120 +613,48 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 
 	protected static final String KEY_ID = "TestCaseId";
 
-	private static SpiraTestCaseObject _createSpiraTestCaseObject(
-		SpiraProject spiraProject, String testCaseName, String testCaseFilePath,
-		SpiraTestCaseType spiraTestCaseType, Integer parentTestCaseFolderID,
-		boolean checkCache) {
+	private static List<SpiraTestCaseObject> _getSpiraTestCaseObjects(
+		SpiraProject spiraProject, String testCasePath,
+		SpiraTestCaseType spiraTestCaseType,
+		List<SpiraCustomPropertyValue> spiraCustomPropertyValues) {
 
-		SpiraCustomProperty filePathSpiraCustomProperty =
-			SpiraCustomProperty.createSpiraCustomProperty(
-				spiraProject, SpiraTestCaseObject.class,
-				_CUSTOM_FIELD_FILE_PATH_KEY, SpiraCustomProperty.Type.TEXT);
+		List<SearchQuery.SearchParameter> searchParameters = new ArrayList<>();
 
-		if (checkCache) {
-			List<SearchQuery.SearchParameter> searchParameterList =
-				new ArrayList<>();
+		searchParameters.add(
+			new SearchQuery.SearchParameter("Path", testCasePath));
 
-			searchParameterList.add(
-				new SearchQuery.SearchParameter("Name", testCaseName));
+		String parentTestCaseFolderPath = getParentPath(testCasePath);
 
-			if ((parentTestCaseFolderID != null) &&
-				(parentTestCaseFolderID != 0)) {
+		if ((parentTestCaseFolderPath != null) &&
+			!parentTestCaseFolderPath.isEmpty()) {
 
-				searchParameterList.add(
-					new SearchQuery.SearchParameter(
-						"TestCaseFolderId", parentTestCaseFolderID));
-			}
+			SpiraTestCaseFolder parentSpiraTestCaseFolder =
+				SpiraTestCaseFolder.createSpiraTestCaseFolderByPath(
+					spiraProject, parentTestCaseFolderPath);
 
-			if ((testCaseFilePath != null) && !testCaseFilePath.isEmpty()) {
-				SpiraCustomPropertyValue spiraCustomPropertyValue =
-					SpiraCustomPropertyValue.createSpiraCustomPropertyValue(
-						filePathSpiraCustomProperty, testCaseFilePath);
-
-				searchParameterList.add(
-					new SearchQuery.SearchParameter(spiraCustomPropertyValue));
-			}
-
-			List<SpiraTestCaseObject> spiraTestCaseObjects =
-				getSpiraTestCaseObjects(
-					spiraProject,
-					searchParameterList.toArray(
-						new SearchQuery.SearchParameter[0]));
-
-			if (!spiraTestCaseObjects.isEmpty()) {
-				return spiraTestCaseObjects.get(0);
-			}
-		}
-
-		String urlPath = "projects/{project_id}/test-cases";
-
-		Map<String, String> urlPathReplacements = new HashMap<>();
-
-		urlPathReplacements.put(
-			"project_id", String.valueOf(spiraProject.getID()));
-
-		JSONObject requestJSONObject = new JSONObject();
-
-		requestJSONObject.put(
-			"Name", StringEscapeUtils.unescapeJava(testCaseName));
-		requestJSONObject.put("TestCaseStatusId", Status.DRAFT.getID());
-
-		if ((parentTestCaseFolderID != null) && (parentTestCaseFolderID != 0)) {
-			requestJSONObject.put(
-				SpiraTestCaseFolder.KEY_ID, parentTestCaseFolderID);
+			searchParameters.add(
+				new SearchQuery.SearchParameter(
+					"TestCaseFolderId", parentSpiraTestCaseFolder.getID()));
 		}
 
 		if (spiraTestCaseType != null) {
-			requestJSONObject.put("TestCaseTypeId", spiraTestCaseType.getID());
+			searchParameters.add(
+				new SearchQuery.SearchParameter(
+					"TestCaseTypeId", spiraTestCaseType.getID()));
 		}
 
-		JSONArray customPropertiesJSONArray = new JSONArray();
+		if (spiraCustomPropertyValues != null) {
+			for (SpiraCustomPropertyValue spiraCustomPropertyValue :
+					spiraCustomPropertyValues) {
 
-		if ((testCaseFilePath != null) && !testCaseFilePath.isEmpty()) {
-			JSONObject filePathJSONObject = new JSONObject();
-
-			filePathJSONObject.put(
-				"PropertyNumber",
-				filePathSpiraCustomProperty.getPropertyNumber());
-			filePathJSONObject.put("StringValue", testCaseFilePath);
-
-			customPropertiesJSONArray.put(filePathJSONObject);
+				searchParameters.add(
+					new SearchQuery.SearchParameter(spiraCustomPropertyValue));
+			}
 		}
 
-		SpiraCustomProperty executionTypeSpiraCustomProperty =
-			SpiraCustomProperty.createSpiraCustomProperty(
-				spiraProject, SpiraTestCaseObject.class,
-				_CUSTOM_FIELD_EXECUTION_TYPE_KEY,
-				SpiraCustomProperty.Type.LIST);
-
-		JSONObject executionTypeJSONObject = new JSONObject();
-
-		executionTypeJSONObject.put(
-			"PropertyNumber",
-			executionTypeSpiraCustomProperty.getPropertyNumber());
-
-		SpiraCustomPropertyValue spiraCustomPropertyValue =
-			SpiraCustomPropertyValue.createSpiraCustomPropertyValue(
-				executionTypeSpiraCustomProperty, "Automatic");
-
-		executionTypeJSONObject.put(
-			"IntegerValue", spiraCustomPropertyValue.getID());
-
-		customPropertiesJSONArray.put(executionTypeJSONObject);
-
-		requestJSONObject.put("CustomProperties", customPropertiesJSONArray);
-
-		try {
-			JSONObject responseJSONObject = SpiraRestAPIUtil.requestJSONObject(
-				urlPath, null, urlPathReplacements, HttpRequestMethod.POST,
-				requestJSONObject.toString());
-
-			return spiraProject.getSpiraTestCaseObjectByID(
-				responseJSONObject.getInt(KEY_ID));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+		return getSpiraTestCaseObjects(
+			spiraProject,
+			searchParameters.toArray(new SearchQuery.SearchParameter[0]));
 	}
 
 	private static List<JSONObject> _requestSpiraTestCases(
@@ -410,7 +673,17 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 
 		JSONArray requestJSONArray = new JSONArray();
 
+		List<String> searchParameterNames = new ArrayList<>();
+
 		for (SearchQuery.SearchParameter searchParameter : searchParameters) {
+			String searchParameterName = searchParameter.getName();
+
+			if (searchParameterNames.contains(searchParameterName)) {
+				continue;
+			}
+
+			searchParameterNames.add(searchParameterName);
+
 			requestJSONArray.put(searchParameter.toFilterJSONObject());
 		}
 
@@ -439,11 +712,73 @@ public class SpiraTestCaseObject extends PathSpiraArtifact {
 		cacheSpiraArtifact(SpiraTestCaseObject.class, this);
 	}
 
-	private static final String _CUSTOM_FIELD_EXECUTION_TYPE_KEY =
-		"Execution Type";
+	private void _refreshJSONObject() {
+		Map<String, String> urlPathReplacements = new HashMap<>();
+
+		SpiraProject spiraProject = getSpiraProject();
+
+		urlPathReplacements.put(
+			"project_id", String.valueOf(spiraProject.getID()));
+
+		urlPathReplacements.put("test_case_id", String.valueOf(getID()));
+
+		try {
+			jsonObject = SpiraRestAPIUtil.requestJSONObject(
+				"projects/{project_id}/test-cases/{test_case_id}", null,
+				urlPathReplacements, HttpRequestMethod.GET, null);
+
+			jsonObject.put("Path", getPath());
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+	}
+
+	private void _updateJSONObject(JSONObject jsonObject) {
+		SpiraProject spiraProject = getSpiraProject();
+
+		Map<String, String> urlPathReplacements = new HashMap<>();
+
+		urlPathReplacements.put(
+			"project_id", String.valueOf(spiraProject.getID()));
+
+		int updateRetryCount = 0;
+
+		while (true) {
+			JSONObject requestJSONObject = toJSONObject();
+
+			for (String key : jsonObject.keySet()) {
+				if (requestJSONObject.has(key)) {
+					requestJSONObject.remove(key);
+				}
+
+				requestJSONObject.put(key, jsonObject.get(key));
+			}
+
+			try {
+				SpiraRestAPIUtil.request(
+					"projects/{project_id}/test-cases", null,
+					urlPathReplacements, HttpRequestMethod.PUT,
+					requestJSONObject.toString());
+
+				return;
+			}
+			catch (IOException ioException) {
+				if (updateRetryCount >= 2) {
+					throw new RuntimeException(ioException);
+				}
+
+				updateRetryCount++;
+			}
+			finally {
+				_refreshJSONObject();
+			}
+		}
+	}
 
 	private static final String _CUSTOM_FIELD_FILE_PATH_KEY = "File Path";
 
 	private SpiraTestCaseFolder _parentSpiraTestCaseFolder;
+	private SpiraTestCaseProductVersion _spiraTestCaseProductVersion;
 
 }

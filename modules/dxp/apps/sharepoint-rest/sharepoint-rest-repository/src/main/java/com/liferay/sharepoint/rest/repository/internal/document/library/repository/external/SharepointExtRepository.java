@@ -29,6 +29,7 @@ import com.liferay.document.library.repository.external.ExtRepositoryObjectType;
 import com.liferay.document.library.repository.external.ExtRepositorySearchResult;
 import com.liferay.document.library.repository.external.search.ExtRepositoryQueryMapper;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
@@ -42,6 +43,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.sharepoint.rest.repository.internal.configuration.SharepointRepositoryConfiguration;
@@ -225,7 +227,8 @@ public class SharepointExtRepository implements ExtRepository {
 
 			return getExtRepositoryObject(
 				extRepositoryObjectType,
-				newExtRepositoryFolderKey + StringPool.SLASH + newTitle);
+				_getExtRepositoryObjectKey(
+					newExtRepositoryFolderKey, newTitle));
 		}
 		catch (UnirestException unirestException) {
 			throw new PortalException(unirestException);
@@ -319,11 +322,10 @@ public class SharepointExtRepository implements ExtRepository {
 			String url = _sharepointURLHelper.getFileVersionsURL(
 				extRepositoryFileEntry);
 
-			JSONObject jsonObject = _getJSONObject(url);
-
 			return _sharepointServerResponseConverter.
 				getExtRepositoryFileVersions(
-					(SharepointFileEntry)extRepositoryFileEntry, jsonObject);
+					(SharepointFileEntry)extRepositoryFileEntry,
+					_getJSONObject(url));
 		}
 		catch (UnirestException unirestException) {
 			throw new PortalException(unirestException);
@@ -348,10 +350,8 @@ public class SharepointExtRepository implements ExtRepository {
 			String url = _sharepointURLHelper.getObjectURL(
 				extRepositoryObjectType, extRepositoryObjectKey);
 
-			JSONObject jsonObject = _getJSONObject(url);
-
 			return _sharepointServerResponseConverter.getExtRepositoryObject(
-				extRepositoryObjectType, jsonObject);
+				extRepositoryObjectType, _getJSONObject(url));
 		}
 		catch (UnirestException unirestException) {
 			throw new PortalException(unirestException);
@@ -439,10 +439,8 @@ public class SharepointExtRepository implements ExtRepository {
 			String url = _sharepointURLHelper.getObjectsCountURL(
 				extRepositoryObjectType, extRepositoryFolderKey);
 
-			JSONObject jsonObject = _getJSONObject(url);
-
 			return _sharepointServerResponseConverter.
-				getExtRepositoryObjectsCount(jsonObject);
+				getExtRepositoryObjectsCount(_getJSONObject(url));
 		}
 		catch (JSONException | UnirestException exception) {
 			throw new PortalException(exception);
@@ -586,7 +584,8 @@ public class SharepointExtRepository implements ExtRepository {
 
 			return getExtRepositoryObject(
 				extRepositoryObjectType,
-				newExtRepositoryFolderKey + StringPool.SLASH + newTitle);
+				_getExtRepositoryObjectKey(
+					newExtRepositoryFolderKey, newTitle));
 		}
 		catch (UnirestException unirestException) {
 			throw new PortalException(unirestException);
@@ -609,10 +608,8 @@ public class SharepointExtRepository implements ExtRepository {
 				kqlQuery.toString(), searchContext.getStart(),
 				searchContext.getEnd());
 
-			JSONObject jsonObject = _getJSONObject(url);
-
 			return (List)_sharepointServerResponseConverter.getSearchResults(
-				jsonObject);
+				_getJSONObject(url));
 		}
 		catch (UnirestException unirestException) {
 			throw new PortalException(unirestException);
@@ -730,10 +727,8 @@ public class SharepointExtRepository implements ExtRepository {
 
 		String url = _sharepointURLHelper.getFilesURL(extRepositoryFolderKey);
 
-		JSONObject jsonObject = _getJSONObject(url);
-
 		return _sharepointServerResponseConverter.getExtRepositoryFileEntries(
-			jsonObject);
+			_getJSONObject(url));
 	}
 
 	private <T extends ExtRepositoryObject> List<T> _getExtRepositoryFolders(
@@ -742,10 +737,24 @@ public class SharepointExtRepository implements ExtRepository {
 
 		String url = _sharepointURLHelper.getFoldersURL(extRepositoryFolderKey);
 
-		JSONObject jsonObject = _getJSONObject(url);
-
 		return _sharepointServerResponseConverter.getExtRepositoryFolders(
-			jsonObject);
+			_getJSONObject(url));
+	}
+
+	private String _getExtRepositoryObjectKey(
+		String extRepositoryFolderKey, String title) {
+
+		StringBundler sb = new StringBundler(4);
+
+		if (!StringUtil.startsWith(extRepositoryFolderKey, StringPool.SLASH)) {
+			sb.append(StringPool.SLASH);
+		}
+
+		sb.append(extRepositoryFolderKey);
+		sb.append(StringPool.SLASH);
+		sb.append(title);
+
+		return sb.toString();
 	}
 
 	private InputStream _getInputStream(SharepointModel sharepointModel)

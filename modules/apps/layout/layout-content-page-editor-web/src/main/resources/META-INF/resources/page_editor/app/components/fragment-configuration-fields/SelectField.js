@@ -14,7 +14,7 @@
 
 import ClayForm, {ClaySelectWithOption} from '@clayui/form';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {useStyleBook} from '../../../plugins/page-design-options/hooks/useStyleBook';
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
@@ -46,6 +46,10 @@ export const SelectField = ({disabled, field, onValueSelect, value}) => {
 			value: option.frontendTokenName,
 		};
 	};
+
+	useEffect(() => {
+		setNextValue((prevValue) => value || prevValue);
+	}, [value]);
 
 	return (
 		<ClayForm.Group small>

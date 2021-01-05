@@ -36,6 +36,7 @@ if ((classPK > 0) && (structureClassNameId == classNameId)) {
 
 <clay:management-toolbar-v2
 	clearResultsURL="<%= ddmDisplayContext.getClearResultsURL() %>"
+	componentId="ddmTemplateManagementToolbar"
 	creationMenu="<%= ddmDisplayContext.getTemplateCreationMenu() %>"
 	disabled="<%= ddmDisplayContext.isDisabledManagementBar(DDMWebKeys.DYNAMIC_DATA_MAPPING_TEMPLATE) %>"
 	filterDropdownItems="<%= ddmDisplayContext.getFilterItemsDropdownItems() %>"
@@ -64,7 +65,7 @@ if ((classPK > 0) && (structureClassNameId == classNameId)) {
 				/>
 
 				<liferay-ui:search-container-column-text
-					cssClass="table-cell-content"
+					cssClass="table-cell-expand"
 					name="name"
 				>
 					<c:choose>
@@ -96,7 +97,7 @@ if ((classPK > 0) && (structureClassNameId == classNameId)) {
 				</liferay-ui:search-container-column-text>
 
 				<liferay-ui:search-container-column-jsp
-					cssClass="table-cell-content"
+					cssClass="table-cell-expand"
 					name="description"
 					path="/template_description.jsp"
 				/>
@@ -115,9 +116,11 @@ if ((classPK > 0) && (structureClassNameId == classNameId)) {
 </aui:form>
 
 <aui:script>
-	Liferay.Util.focusFormField(
-		document.<portlet:namespace />searchForm.<portlet:namespace />keywords
-	);
+	Liferay.componentReady('ddmTemplateManagementToolbar').then(function () {
+		Liferay.Util.focusFormField(
+			document.<portlet:namespace />searchForm.<portlet:namespace />keywords
+		);
+	});
 </aui:script>
 
 <aui:script>

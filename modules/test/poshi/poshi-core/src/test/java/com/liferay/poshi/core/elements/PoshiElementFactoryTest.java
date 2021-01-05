@@ -289,10 +289,8 @@ public class PoshiElementFactoryTest {
 	}
 
 	private PoshiElement _getPoshiElement(String fileName) throws Exception {
-		File file = _getFile(fileName);
-
 		return (PoshiElement)PoshiNodeFactory.newPoshiNodeFromFile(
-			FileUtil.getURL(file));
+			FileUtil.getURL(_getFile(fileName)));
 	}
 
 	private static final String _BASE_DIR =

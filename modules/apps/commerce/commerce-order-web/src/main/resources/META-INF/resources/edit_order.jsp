@@ -43,7 +43,7 @@ else {
 %>
 
 <liferay-portlet:renderURL var="editCommerceOrderExternalReferenceCodeURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-	<portlet:param name="mvcRenderCommandName" value="editCommerceOrderExternalReferenceCode" />
+	<portlet:param name="mvcRenderCommandName" value="/commerce_order/edit_commerce_order_external_reference_code" />
 	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderEditDisplayContext.getCommerceOrderId()) %>" />
 </liferay-portlet:renderURL>
 

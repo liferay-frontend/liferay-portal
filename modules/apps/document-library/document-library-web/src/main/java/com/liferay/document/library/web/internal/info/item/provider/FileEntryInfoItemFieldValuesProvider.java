@@ -25,6 +25,7 @@ import com.liferay.dynamic.data.mapping.info.item.provider.DDMFormValuesInfoFiel
 import com.liferay.expando.info.item.provider.ExpandoInfoItemFieldSetProvider;
 import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.field.InfoFieldValue;
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.field.reader.InfoItemFieldReaderFieldSetProvider;
@@ -171,7 +172,10 @@ public class FileEntryInfoItemFieldValuesProvider
 					_dlURLHelper.getDownloadURL(
 						fileEntry, fileEntry.getFileVersion(), null,
 						StringPool.BLANK),
-					fileEntry.getFileEntryId());
+					new InfoItemReference(
+						FileEntry.class.getName(),
+						new ClassPKInfoItemIdentifier(
+							fileEntry.getFileEntryId())));
 
 				fileURLWebImage.setAlt(fileEntry.getTitle());
 
@@ -233,7 +237,9 @@ public class FileEntryInfoItemFieldValuesProvider
 
 			WebImage imagePreviewURLWebImage = new WebImage(
 				_dlURLHelper.getImagePreviewURL(fileEntry, null),
-				fileEntry.getFileEntryId());
+				new InfoItemReference(
+					FileEntry.class.getName(),
+					new ClassPKInfoItemIdentifier(fileEntry.getFileEntryId())));
 
 			imagePreviewURLWebImage.setAlt(fileEntry.getTitle());
 

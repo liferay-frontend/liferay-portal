@@ -177,6 +177,11 @@ public class BlogsEntryImageVerticalCard implements VerticalCard {
 	}
 
 	@Override
+	public Boolean isFlushHorizontal() {
+		return true;
+	}
+
+	@Override
 	public boolean isSelected() {
 		return _rowChecker.isChecked(_fileEntry);
 	}

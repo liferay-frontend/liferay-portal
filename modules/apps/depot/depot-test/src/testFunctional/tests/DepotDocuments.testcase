@@ -18,6 +18,10 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
+			Site.tearDownCP();
+
+			Depot.tearDownCP();
+
 			DMDocument.tearDownCP();
 
 			DMFolder.tearDownCP();
@@ -63,9 +67,11 @@ definition {
 
 		DMNavigator.gotoMetadataSets();
 
-		DMMetadataSet.add(
-			dmMetadataSetFieldNames = "Text",
-			metadataSetName = "DM Metadata Set Name");
+		DMMetadataSet.addTitle(metadataSetName = "DM Metadata Set Name");
+
+		DataEngine.addField(
+			fieldFieldLabel = "Text",
+			fieldName = "Text");
 
 		DDLDataDefinition.save();
 
@@ -73,7 +79,7 @@ definition {
 
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeFieldNames = "Number",
+			dmDocumentTypeFieldNames = "Numeric",
 			dmDocumentTypeName = "DM Document Type Name",
 			metadataSetName = "DM Metadata Set Name");
 
@@ -84,7 +90,7 @@ definition {
 			dmDocumentFile = "Document_1.doc",
 			dmDocumentTitle = "DM Document Title",
 			dmDocumentTypeName = "DM Document Type Name",
-			numberField = "1234",
+			numericField = "1234",
 			textField = "Text");
 
 		LexiconEntry.changeDisplayStyle(displayStyle = "list");
@@ -92,7 +98,7 @@ definition {
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
 
 		DMDocument.viewDocumentTypePG(
-			numberValue = "1234",
+			numericValue = "1234",
 			textContent = "Text");
 	}
 

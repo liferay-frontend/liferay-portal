@@ -37,7 +37,7 @@ public class ClassLoaderProxy {
 	public ClassLoaderProxy(
 		Object object, String className, ClassLoader classLoader) {
 
-		_obj = object;
+		_object = object;
 		_className = className;
 		_classLoader = classLoader;
 	}
@@ -110,7 +110,7 @@ public class ClassLoaderProxy {
 
 	private Object _invoke(MethodHandler methodHandler) throws Exception {
 		try {
-			return methodHandler.invoke(_obj);
+			return methodHandler.invoke(_object);
 		}
 		catch (NoSuchMethodException noSuchMethodException) {
 			MethodKey methodKey = methodHandler.getMethodKey();
@@ -145,7 +145,7 @@ public class ClassLoaderProxy {
 				}
 
 				if (correctParams) {
-					return method.invoke(_obj, methodHandler.getArguments());
+					return method.invoke(_object, methodHandler.getArguments());
 				}
 			}
 
@@ -158,6 +158,6 @@ public class ClassLoaderProxy {
 
 	private final ClassLoader _classLoader;
 	private final String _className;
-	private final Object _obj;
+	private final Object _object;
 
 }

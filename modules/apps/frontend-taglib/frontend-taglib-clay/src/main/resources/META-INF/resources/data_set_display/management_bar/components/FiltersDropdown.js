@@ -15,19 +15,22 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import Icon from '@clayui/icon';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 
-import {useAppState} from './Context';
+import FiltersContext from './filters/FiltersContext';
 import {Filter} from './filters/index';
 
 function FiltersDropdown() {
+	const filtersState = useContext(FiltersContext);
 	const [active, setActive] = useState(false);
 	const [query, setQuery] = useState('');
-	const {actions, state} = useAppState();
-	const [visibleFilters, setVisibleFilter] = useState(
-		state.filters.filter((filter) => !filter.invisible)
+
+	const [visibleFilters] = useState(
+		filtersState.filters.filter((filter) => !filter.invisible)
 	);
+
 	const [activeFilterId, setActiveFilterId] = useState(null);
+
 	const activeFilter = useMemo(() => {
 		return (
 			activeFilterId &&
@@ -35,26 +38,7 @@ function FiltersDropdown() {
 		);
 	}, [visibleFilters, activeFilterId]);
 
-	useEffect(() => {
-		const results = state.filters.filter((filter) => {
-			if (
-				filter.invisible ||
-				(query &&
-					!(
-						filter.id.toLowerCase().includes(query) ||
-						filter.label.toLowerCase().includes(query)
-					))
-			) {
-				return false;
-			}
-
-			return true;
-		});
-
-		setVisibleFilter(results);
-	}, [state.filters, query]);
-
-	return state.filters.length ? (
+	return filtersState.filters.length ? (
 		<ClayDropDown
 			active={active}
 			className="filters-dropdown"
@@ -67,11 +51,10 @@ function FiltersDropdown() {
 					<span className="navbar-text-truncate">
 						{Liferay.Language.get('filter')}
 					</span>
-					{active ? (
-						<Icon className="ml-2" symbol="caret-top" />
-					) : (
-						<Icon className="ml-2" symbol="caret-bottom" />
-					)}
+					<Icon
+						className="ml-2"
+						symbol={active ? 'caret-top' : 'caret-bottom'}
+					/>
 				</button>
 			}
 		>
@@ -87,7 +70,10 @@ function FiltersDropdown() {
 						/>
 						{activeFilter.label}
 					</li>
-					<Filter {...{...activeFilter, actions}} />
+					<Filter
+						{...activeFilter}
+						updateFilterState={filtersState.updateFilterState}
+					/>
 				</>
 			) : (
 				<ClayDropDown.Group header={Liferay.Language.get('filters')}>

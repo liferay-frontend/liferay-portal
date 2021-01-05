@@ -203,7 +203,9 @@ public class CommerceAccountUserClayDataSetDataSetDisplayView
 			httpServletRequest, CommerceAccount.class.getName(),
 			PortletProvider.Action.VIEW);
 
-		viewURL.setParameter("mvcRenderCommandName", "viewCommerceAccountUser");
+		viewURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_account/view_commerce_account_user");
 
 		long commerceAccountId = ParamUtil.getLong(
 			httpServletRequest, "commerceAccountId");

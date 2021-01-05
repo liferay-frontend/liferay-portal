@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -252,16 +253,11 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 			getDiscountCategoryClayDataSetActionDropdownItems()
 		throws PortalException {
 
-		List<ClayDataSetActionDropdownItem> clayDataSetActionDropdownItems =
-			new ArrayList<>();
-
-		clayDataSetActionDropdownItems.add(
+		return ListUtil.fromArray(
 			new ClayDataSetActionDropdownItem(
 				null, "trash", "delete",
 				LanguageUtil.get(httpServletRequest, "delete"), "delete",
 				"delete", "headless"));
-
-		return clayDataSetActionDropdownItems;
 	}
 
 	public List<ClayDataSetActionDropdownItem>
@@ -275,7 +271,9 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 			httpServletRequest, CommerceDiscount.class.getName(),
 			PortletProvider.Action.MANAGE);
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceDiscount");
+		portletURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_discount/edit_commerce_discount");
 		portletURL.setParameter(
 			"redirect", commercePricingRequestHelper.getCurrentURL());
 		portletURL.setParameter("commerceDiscountId", "{id}");
@@ -404,7 +402,8 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 			PortletProvider.Action.EDIT);
 
 		portletURL.setParameter(
-			"mvcRenderCommandName", "editCommerceDiscountRule");
+			"mvcRenderCommandName",
+			"/commerce_discount/edit_commerce_discount_rule");
 		portletURL.setParameter(
 			"redirect", commercePricingRequestHelper.getCurrentURL());
 		portletURL.setParameter("commerceDiscountRuleId", "{id}");
@@ -436,7 +435,8 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 			PortletRequest.ACTION_PHASE);
 
 		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCommerceDiscount");
+			ActionRequest.ACTION_NAME,
+			"/commerce_discount/edit_commerce_discount");
 		portletURL.setParameter(Constants.CMD, Constants.UPDATE);
 		portletURL.setParameter(
 			"commerceDiscountId",
@@ -452,7 +452,9 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 			CommercePricingPortletKeys.COMMERCE_DISCOUNT,
 			PortletRequest.RENDER_PHASE);
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceDiscount");
+		portletURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_discount/edit_commerce_discount");
 
 		return portletURL;
 	}
@@ -484,7 +486,8 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 		ActionURL actionURL = renderResponse.createActionURL();
 
 		actionURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCommerceDiscount");
+			ActionRequest.ACTION_NAME,
+			"/commerce_discount/edit_commerce_discount");
 
 		HeaderActionModel saveAsDraftHeaderActionModel = new HeaderActionModel(
 			null, liferayPortletResponse.getNamespace() + "fm",

@@ -71,7 +71,7 @@ String treeId = "layoutsExportTree" + liveGroupId + privateLayout;
 
 PortletURL portletURL = renderResponse.createRenderURL();
 
-portletURL.setParameter("mvcRenderCommandName", "viewExportConfigurations");
+portletURL.setParameter("mvcRenderCommandName", "/export_import/view_export_configurations");
 portletURL.setParameter("groupId", String.valueOf(groupId));
 portletURL.setParameter("liveGroupId", String.valueOf(liveGroupId));
 portletURL.setParameter("privateLayout", String.valueOf(privateLayout));
@@ -83,8 +83,8 @@ renderResponse.setTitle((exportImportConfiguration == null) ? LanguageUtil.get(r
 %>
 
 <clay:container-fluid>
-	<portlet:actionURL name="editExportConfiguration" var="updateExportConfigurationURL">
-		<portlet:param name="mvcRenderCommandName" value="editExportConfiguration" />
+	<portlet:actionURL name="/export_import/edit_export_configuration" var="updateExportConfigurationURL">
+		<portlet:param name="mvcRenderCommandName" value="/export_import/edit_export_configuration" />
 	</portlet:actionURL>
 
 	<aui:form action='<%= updateExportConfigurationURL + "&etag=0&strip=0" %>' cssClass="lfr-export-dialog" method="post" name="fm1">

@@ -44,6 +44,7 @@ public class Organization {
 
 	public Organization(String[] errorMessages) {
 		_errorMessages = errorMessages;
+
 		_success = false;
 	}
 

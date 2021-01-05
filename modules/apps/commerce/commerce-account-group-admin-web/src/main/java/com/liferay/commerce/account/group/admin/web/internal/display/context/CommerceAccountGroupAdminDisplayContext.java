@@ -183,7 +183,8 @@ public class CommerceAccountGroupAdminDisplayContext {
 
 		if (commerceAccountGroupId > 0) {
 			portletURL.setParameter(
-				"mvcRenderCommandName", "editCommerceAccountGroup");
+				"mvcRenderCommandName",
+				"/commerce_account_group_admin/edit_commerce_account_group");
 			portletURL.setParameter(
 				"commerceAccountGroupId",
 				String.valueOf(commerceAccountGroupId));

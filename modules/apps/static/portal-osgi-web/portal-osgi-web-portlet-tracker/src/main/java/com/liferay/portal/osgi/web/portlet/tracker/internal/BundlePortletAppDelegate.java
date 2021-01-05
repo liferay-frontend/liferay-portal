@@ -40,6 +40,7 @@ public class BundlePortletAppDelegate {
 		Portlet portalPortletModel, ServletContext servletContext) {
 
 		_servletContext = servletContext;
+
 		_portletApp = portalPortletModel.getPortletApp();
 	}
 

@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 	property = {
 		"javax.portlet.name=" + ReportsEngineConsolePortletKeys.DISPLAY_REPORTS,
 		"javax.portlet.name=" + ReportsEngineConsolePortletKeys.REPORTS_ADMIN,
-		"mvc.command.name=deliverReport"
+		"mvc.command.name=/reports_admin/deliver_report"
 	},
 	service = MVCActionCommand.class
 )

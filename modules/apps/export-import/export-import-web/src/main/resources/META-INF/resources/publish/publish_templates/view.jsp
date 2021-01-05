@@ -25,7 +25,7 @@ boolean privateLayout = ParamUtil.getBoolean(request, "privateLayout");
 %>
 
 <liferay-portlet:renderURL varImpl="portletURL">
-	<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
+	<portlet:param name="mvcRenderCommandName" value="/export_import/publish_layouts" />
 	<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.PUBLISH %>" />
 	<portlet:param name="publishConfigurationButtons" value="saved" />
 	<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
@@ -44,12 +44,14 @@ exportImportConfigurationSearchContainer.setOrderByComparator(new ExportImportCo
 exportImportConfigurationSearchContainer.setOrderByType("asc");
 
 List<ExportImportConfiguration> exportImportConfigurations = ExportImportConfigurationLocalServiceUtil.getExportImportConfigurations(company.getCompanyId(), groupId, keywords, exportImportConfigurationType, exportImportConfigurationSearchContainer.getStart(), exportImportConfigurationSearchContainer.getEnd(), exportImportConfigurationSearchContainer.getOrderByComparator());
+
 int exportImportConfigurationsCount = ExportImportConfigurationLocalServiceUtil.getExportImportConfigurationsCount(company.getCompanyId(), groupId, keywords, exportImportConfigurationType);
 
 exportImportConfigurationSearchContainer.setResults(exportImportConfigurations);
 exportImportConfigurationSearchContainer.setTotal(exportImportConfigurationsCount);
 
 PortletURL clearResultsURL = PortletURLUtil.clone(currentURLObj, renderResponse);
+
 clearResultsURL.setParameter("keywords", StringPool.BLANK);
 %>
 
@@ -60,7 +62,7 @@ clearResultsURL.setParameter("keywords", StringPool.BLANK);
 		</div>
 
 		<liferay-portlet:renderURL varImpl="searchURL">
-			<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
+			<portlet:param name="mvcRenderCommandName" value="/export_import/publish_layouts" />
 			<portlet:param name="publishConfigurationButtons" value="saved" />
 		</liferay-portlet:renderURL>
 
@@ -93,7 +95,7 @@ clearResultsURL.setParameter("keywords", StringPool.BLANK);
 					</liferay-ui:search-container-column-text>
 
 					<liferay-portlet:renderURL varImpl="rowURL">
-						<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
+						<portlet:param name="mvcRenderCommandName" value="/export_import/publish_layouts" />
 						<portlet:param name="<%= Constants.CMD %>" value="<%= localPublishing ? Constants.PUBLISH_TO_LIVE : Constants.PUBLISH_TO_REMOTE %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 						<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />

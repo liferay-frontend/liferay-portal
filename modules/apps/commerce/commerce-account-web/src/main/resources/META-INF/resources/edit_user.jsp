@@ -20,6 +20,7 @@
 CommerceAccountDisplayContext commerceAccountDisplayContext = (CommerceAccountDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 CommerceAccount commerceAccount = commerceAccountDisplayContext.getCurrentCommerceAccount();
+
 User selectedUser = commerceAccountDisplayContext.getSelectedUser();
 
 PasswordPolicy passwordPolicy = selectedUser.getPasswordPolicy();
@@ -42,7 +43,7 @@ else {
 boolean canEditUser = (selectedUser.getUserId() == user.getUserId()) || commerceAccountDisplayContext.hasCommerceAccountModelPermissions(commerceAccount.getCommerceAccountId(), CommerceAccountActionKeys.MANAGE_MEMBERS);
 %>
 
-<portlet:actionURL name="editCommerceAccountUser" var="editCommerceAccountUserActionURL" />
+<portlet:actionURL name="/commerce_account/edit_commerce_account_user" var="editCommerceAccountUserActionURL" />
 
 <div class="account-management">
 	<aui:form action="<%= editCommerceAccountUserActionURL %>" method="post" name="fm">
@@ -247,9 +248,11 @@ boolean canEditUser = (selectedUser.getUserId() == user.getUserId()) || commerce
 
 							<%
 							UserPasswordException.MustNotBeChangedYet upe = (UserPasswordException.MustNotBeChangedYet)errorException;
+
+							Format dateFormat = FastDateFormatFactoryUtil.getDateTime(FastDateFormatConstants.SHORT, FastDateFormatConstants.LONG, locale, TimeZone.getTimeZone(upe.timeZoneId));
 							%>
 
-							<liferay-ui:message arguments="<%= String.valueOf(upe.changeableDate) %>" key="you-cannot-change-your-password-yet" translateArguments="<%= false %>" />
+							<liferay-ui:message arguments="<%= dateFormat.format(upe.changeableDate) %>" key="you-cannot-change-your-password-yet" translateArguments="<%= false %>" />
 						</liferay-ui:error>
 
 						<liferay-ui:error exception="<%= UserPasswordException.MustNotBeEqualToCurrent.class %>" message="your-new-password-cannot-be-the-same-as-your-old-password-please-enter-a-different-password" />

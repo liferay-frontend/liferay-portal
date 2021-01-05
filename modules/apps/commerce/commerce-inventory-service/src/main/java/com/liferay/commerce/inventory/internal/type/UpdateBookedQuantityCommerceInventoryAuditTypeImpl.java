@@ -16,7 +16,7 @@ package com.liferay.commerce.inventory.internal.type;
 
 import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditType;
-import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeConstants;
+import com.liferay.commerce.inventory.type.constants.CommerceInventoryAuditTypeConstants;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -54,6 +54,11 @@ public class UpdateBookedQuantityCommerceInventoryAuditTypeImpl
 				user.getFullName(),
 				jsonObject.get(CommerceInventoryAuditTypeConstants.ORDER_ID)
 			});
+	}
+
+	@Override
+	public String formatQuantity(int quantity, Locale locale) {
+		return LanguageUtil.format(locale, "set-to-x", quantity);
 	}
 
 	@Override

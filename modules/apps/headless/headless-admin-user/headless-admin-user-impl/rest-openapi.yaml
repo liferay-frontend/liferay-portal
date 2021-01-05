@@ -1932,8 +1932,8 @@ paths:
         patch:
             # @review
             description:
-                Updates the user account with information sent in the request body. Only the provided fields
-                are updated.
+                Updates the user account with information sent in the request body. Only the provided fields are
+                updated.
             operationId: patchUserAccount
             parameters:
                 - in: path

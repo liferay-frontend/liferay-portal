@@ -138,15 +138,19 @@ public class AccountEntryPersistenceTest {
 
 		newAccountEntry.setModifiedDate(RandomTestUtil.nextDate());
 
-		newAccountEntry.setParentAccountEntryId(RandomTestUtil.nextLong());
+		newAccountEntry.setDefaultBillingAddressId(RandomTestUtil.nextLong());
 
-		newAccountEntry.setName(RandomTestUtil.randomString());
+		newAccountEntry.setDefaultShippingAddressId(RandomTestUtil.nextLong());
+
+		newAccountEntry.setParentAccountEntryId(RandomTestUtil.nextLong());
 
 		newAccountEntry.setDescription(RandomTestUtil.randomString());
 
 		newAccountEntry.setDomains(RandomTestUtil.randomString());
 
 		newAccountEntry.setLogoId(RandomTestUtil.nextLong());
+
+		newAccountEntry.setName(RandomTestUtil.randomString());
 
 		newAccountEntry.setTaxIdNumber(RandomTestUtil.randomString());
 
@@ -182,10 +186,14 @@ public class AccountEntryPersistenceTest {
 			Time.getShortTimestamp(existingAccountEntry.getModifiedDate()),
 			Time.getShortTimestamp(newAccountEntry.getModifiedDate()));
 		Assert.assertEquals(
+			existingAccountEntry.getDefaultBillingAddressId(),
+			newAccountEntry.getDefaultBillingAddressId());
+		Assert.assertEquals(
+			existingAccountEntry.getDefaultShippingAddressId(),
+			newAccountEntry.getDefaultShippingAddressId());
+		Assert.assertEquals(
 			existingAccountEntry.getParentAccountEntryId(),
 			newAccountEntry.getParentAccountEntryId());
-		Assert.assertEquals(
-			existingAccountEntry.getName(), newAccountEntry.getName());
 		Assert.assertEquals(
 			existingAccountEntry.getDescription(),
 			newAccountEntry.getDescription());
@@ -193,6 +201,8 @@ public class AccountEntryPersistenceTest {
 			existingAccountEntry.getDomains(), newAccountEntry.getDomains());
 		Assert.assertEquals(
 			existingAccountEntry.getLogoId(), newAccountEntry.getLogoId());
+		Assert.assertEquals(
+			existingAccountEntry.getName(), newAccountEntry.getName());
 		Assert.assertEquals(
 			existingAccountEntry.getTaxIdNumber(),
 			newAccountEntry.getTaxIdNumber());
@@ -254,8 +264,9 @@ public class AccountEntryPersistenceTest {
 			"AccountEntry", "mvccVersion", true, "externalReferenceCode", true,
 			"accountEntryId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true,
-			"parentAccountEntryId", true, "name", true, "description", true,
-			"domains", true, "logoId", true, "taxIdNumber", true, "type", true,
+			"defaultBillingAddressId", true, "defaultShippingAddressId", true,
+			"parentAccountEntryId", true, "description", true, "domains", true,
+			"logoId", true, "name", true, "taxIdNumber", true, "type", true,
 			"status", true);
 	}
 
@@ -554,15 +565,19 @@ public class AccountEntryPersistenceTest {
 
 		accountEntry.setModifiedDate(RandomTestUtil.nextDate());
 
-		accountEntry.setParentAccountEntryId(RandomTestUtil.nextLong());
+		accountEntry.setDefaultBillingAddressId(RandomTestUtil.nextLong());
 
-		accountEntry.setName(RandomTestUtil.randomString());
+		accountEntry.setDefaultShippingAddressId(RandomTestUtil.nextLong());
+
+		accountEntry.setParentAccountEntryId(RandomTestUtil.nextLong());
 
 		accountEntry.setDescription(RandomTestUtil.randomString());
 
 		accountEntry.setDomains(RandomTestUtil.randomString());
 
 		accountEntry.setLogoId(RandomTestUtil.nextLong());
+
+		accountEntry.setName(RandomTestUtil.randomString());
 
 		accountEntry.setTaxIdNumber(RandomTestUtil.randomString());
 

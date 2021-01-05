@@ -45,7 +45,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_ADDRESS_CONTENT,
-		"mvc.command.name=editCommerceAddress"
+		"mvc.command.name=/commerce_address_content/edit_commerce_address"
 	},
 	service = MVCActionCommand.class
 )
@@ -113,9 +113,6 @@ public class EditCommerceAddressMVCActionCommand extends BaseMVCActionCommand {
 		long commerceAddressId = ParamUtil.getLong(
 			actionRequest, "commerceAddressId");
 
-		long commerceAccountId = ParamUtil.getLong(
-			actionRequest, "commerceAccountId");
-
 		String name = ParamUtil.getString(actionRequest, "name");
 		String description = ParamUtil.getString(actionRequest, "description");
 		String street1 = ParamUtil.getString(actionRequest, "street1");
@@ -137,6 +134,9 @@ public class EditCommerceAddressMVCActionCommand extends BaseMVCActionCommand {
 			CommerceAddress.class.getName(), actionRequest);
 
 		if (commerceAddressId <= 0) {
+			long commerceAccountId = ParamUtil.getLong(
+				actionRequest, "commerceAccountId");
+
 			_commerceAddressService.addCommerceAddress(
 				CommerceAccount.class.getName(), commerceAccountId, name,
 				description, street1, street2, street3, city, zip,

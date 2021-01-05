@@ -42,7 +42,7 @@ CommerceAccount commerceAccount = commerceAccountDisplayContext.getCurrentCommer
 		componentId="addOrganizationsModal"
 	/>
 
-	<portlet:actionURL name="editCommerceAccountOrganizationRel" var="editCommerceAccountOrganizationRelActionURL" />
+	<portlet:actionURL name="/commerce_account/edit_commerce_account_organization_rel" var="editCommerceAccountOrganizationRelActionURL" />
 
 	<aui:form action="<%= editCommerceAccountOrganizationRelActionURL %>" method="post" name="commerceAccountOrganizationRelFm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ASSIGN %>" />

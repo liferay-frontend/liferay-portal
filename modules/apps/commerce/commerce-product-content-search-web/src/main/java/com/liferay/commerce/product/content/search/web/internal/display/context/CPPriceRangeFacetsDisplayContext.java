@@ -96,13 +96,14 @@ public class CPPriceRangeFacetsDisplayContext {
 		String formattedRangeLow = _commercePriceFormatter.format(
 			commerceCurrency, new BigDecimal(priceRange[0]),
 			_themeDisplay.getLocale());
-		String formattedRangeHigh = _commercePriceFormatter.format(
-			commerceCurrency, new BigDecimal(priceRange[1]),
-			_themeDisplay.getLocale());
 
 		if (Double.valueOf(priceRange[1]) == Double.MAX_VALUE) {
 			return formattedRangeLow + StringPool.PLUS;
 		}
+
+		String formattedRangeHigh = _commercePriceFormatter.format(
+			commerceCurrency, new BigDecimal(priceRange[1]),
+			_themeDisplay.getLocale());
 
 		return StringBundler.concat(
 			formattedRangeLow, " - ", formattedRangeHigh);

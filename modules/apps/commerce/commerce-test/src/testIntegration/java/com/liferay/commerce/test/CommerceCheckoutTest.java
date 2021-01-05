@@ -372,10 +372,8 @@ public class CommerceCheckoutTest {
 
 			BigDecimal price = commercePriceEntry.getPrice();
 
-			int quantity = commerceOrderItem.getQuantity();
-
 			BigDecimal totalItemPrice = price.multiply(
-				BigDecimal.valueOf(quantity));
+				BigDecimal.valueOf(commerceOrderItem.getQuantity()));
 
 			expectedSubtotal = expectedSubtotal.add(totalItemPrice);
 		}

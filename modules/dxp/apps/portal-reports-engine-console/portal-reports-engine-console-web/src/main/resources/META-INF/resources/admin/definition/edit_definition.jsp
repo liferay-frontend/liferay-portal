@@ -54,11 +54,11 @@ else {
 
 <div class="report-message"></div>
 
-<portlet:actionURL name="editDefinition" var="actionURL">
+<portlet:actionURL name="/reports_admin/edit_definition" var="actionURL">
 	<portlet:param name="mvcPath" value="/admin/definition/edit_definition.jsp" />
 </portlet:actionURL>
 
-<aui:form action="<%= actionURL %>" cssClass="container-fluid-1280" enctype="multipart/form-data" method="post" name="fm">
+<aui:form action="<%= actionURL %>" cssClass="container-fluid container-fluid-max-xl" enctype="multipart/form-data" method="post" name="fm">
 	<liferay-ui:error exception="<%= DefinitionFileException.InvalidDefinitionFile.class %>" message="please-enter-a-valid-file" />
 	<liferay-ui:error exception="<%= DefinitionNameException.class %>" message="please-enter-a-valid-name" />
 
@@ -238,7 +238,7 @@ else {
 		) {
 			submitForm(
 				document.<portlet:namespace />fm,
-				'<portlet:actionURL name="deleteDefinition"><portlet:param name="redirect" value="<%= definitionsURL %>" /></portlet:actionURL>'
+				'<portlet:actionURL name="/reports_admin/delete_definition"><portlet:param name="redirect" value="<%= definitionsURL %>" /></portlet:actionURL>'
 			);
 		}
 	}

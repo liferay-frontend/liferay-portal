@@ -30,7 +30,7 @@ Source source = (Source)row.getObject();
 	showWhenSingleIcon="<%= true %>"
 >
 	<c:if test="<%= SourcePermissionChecker.contains(permissionChecker, source, ActionKeys.VIEW) %>">
-		<portlet:actionURL name="testDataSource" var="testConnectionURL">
+		<portlet:actionURL name="/reports_admin/test_data_source" var="testConnectionURL">
 			<portlet:param name="tabs1" value="sources" />
 			<portlet:param name="sourceId" value="<%= String.valueOf(source.getSourceId()) %>" />
 		</portlet:actionURL>
@@ -71,7 +71,7 @@ Source source = (Source)row.getObject();
 	</c:if>
 
 	<c:if test="<%= SourcePermissionChecker.contains(permissionChecker, source, ActionKeys.DELETE) %>">
-		<portlet:actionURL name="deleteDataSource" var="deleteURL">
+		<portlet:actionURL name="/reports_admin/delete_data_source" var="deleteURL">
 			<portlet:param name="tabs1" value="sources" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="sourceId" value="<%= String.valueOf(source.getSourceId()) %>" />

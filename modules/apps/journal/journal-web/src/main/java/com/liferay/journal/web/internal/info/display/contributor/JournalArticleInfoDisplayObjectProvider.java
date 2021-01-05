@@ -38,6 +38,7 @@ public class JournalArticleInfoDisplayObjectProvider
 		throws PortalException {
 
 		_article = article;
+
 		_assetEntry = _getAssetEntry(article);
 	}
 

@@ -14,6 +14,8 @@
 
 package com.liferay.source.formatter.checkstyle.checks;
 
+import antlr.CommonHiddenStreamToken;
+
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -164,6 +166,7 @@ public class MissingEmptyLineCheck extends BaseCheck {
 			nextSiblingDetailAST = nextSiblingDetailAST.getNextSibling();
 
 			if ((nextSiblingDetailAST == null) ||
+				_hasPrecedingPlaceholder(nextSiblingDetailAST) ||
 				((nextSiblingDetailAST.getType() != TokenTypes.EXPR) &&
 				 (nextSiblingDetailAST.getType() != TokenTypes.VARIABLE_DEF))) {
 
@@ -391,7 +394,9 @@ public class MissingEmptyLineCheck extends BaseCheck {
 		}
 
 		for (DetailAST identDetailAST : identDetailASTList) {
-			if (variableName.equals(identDetailAST.getText())) {
+			if (!isMethodNameDetailAST(identDetailAST) &&
+				variableName.equals(identDetailAST.getText())) {
+
 				return true;
 			}
 		}
@@ -448,9 +453,15 @@ public class MissingEmptyLineCheck extends BaseCheck {
 				continue;
 			}
 
-			if (allowDividingEmptyLine ||
-				(nextStartLineNumber == (endLineNumber + 1))) {
+			if (nextStartLineNumber == (endLineNumber + 1)) {
+				return nextSiblingDetailAST;
+			}
 
+			if (_hasPrecedingPlaceholder(nextSiblingDetailAST)) {
+				return null;
+			}
+
+			if (allowDividingEmptyLine) {
 				return nextSiblingDetailAST;
 			}
 
@@ -496,6 +507,28 @@ public class MissingEmptyLineCheck extends BaseCheck {
 		}
 
 		return null;
+	}
+
+	private boolean _hasPrecedingPlaceholder(DetailAST detailAST) {
+		CommonHiddenStreamToken commonHiddenStreamToken = getHiddenBefore(
+			detailAST);
+
+		if (commonHiddenStreamToken == null) {
+			DetailAST previousSiblingDetailAST = detailAST.getPreviousSibling();
+
+			if (previousSiblingDetailAST != null) {
+				commonHiddenStreamToken = getHiddenAfter(
+					previousSiblingDetailAST);
+			}
+		}
+
+		if (commonHiddenStreamToken == null) {
+			return false;
+		}
+
+		String text = commonHiddenStreamToken.getText();
+
+		return text.contains("PLACEHOLDER");
 	}
 
 	private boolean _hasPrecedingVariableDef(

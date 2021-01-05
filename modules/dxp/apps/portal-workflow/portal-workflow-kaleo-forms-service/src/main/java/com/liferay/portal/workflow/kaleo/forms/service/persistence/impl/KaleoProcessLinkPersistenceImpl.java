@@ -1489,15 +1489,6 @@ public class KaleoProcessLinkPersistenceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		KaleoProcessLinkPersistenceImpl.class);
 
-	static {
-		try {
-			Class.forName(KaleoFormsPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;

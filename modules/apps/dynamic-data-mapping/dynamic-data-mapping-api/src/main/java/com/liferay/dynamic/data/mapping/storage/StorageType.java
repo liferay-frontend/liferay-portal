@@ -22,9 +22,19 @@ import java.util.Objects;
  */
 public enum StorageType {
 
+	DEFAULT("default"),
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced with {@link #DEFAULT}
+	 */
+	@Deprecated
 	JSON("json");
 
 	public static StorageType parse(String value) {
+		if (Objects.equals(DEFAULT.getValue(), value)) {
+			return DEFAULT;
+		}
+
 		if (Objects.equals(JSON.getValue(), value)) {
 			return JSON;
 		}

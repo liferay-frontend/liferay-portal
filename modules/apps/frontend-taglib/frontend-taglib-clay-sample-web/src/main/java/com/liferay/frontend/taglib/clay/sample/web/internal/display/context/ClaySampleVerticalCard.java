@@ -30,6 +30,7 @@ import java.util.Map;
  */
 public class ClaySampleVerticalCard implements VerticalCard {
 
+	@Override
 	public List<DropdownItem> getActionDropdownItems() {
 		if (_actionDropdownItems != null) {
 			return _actionDropdownItems;
@@ -76,6 +77,7 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return _actionDropdownItems;
 	}
 
+	@Override
 	public String getCssClass() {
 		if (_cssClass != null) {
 			return _cssClass;
@@ -84,6 +86,16 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "custom-vertical-card-css-class";
 	}
 
+	@Override
+	public Map<String, String> getDynamicAttributes() {
+		return HashMapBuilder.put(
+			"data-id", getId()
+		).put(
+			"data-type", "vertical-card"
+		).build();
+	}
+
+	@Override
 	public String getHref() {
 		if (_href != null) {
 			return _href;
@@ -92,6 +104,7 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "#vertical-card-href";
 	}
 
+	@Override
 	public String getIcon() {
 		if (_icon != null) {
 			return _icon;
@@ -100,6 +113,7 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "list";
 	}
 
+	@Override
 	public String getId() {
 		if (_id != null) {
 			return _id;
@@ -110,14 +124,17 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "verticalCardId" + _currentIdNumber;
 	}
 
+	@Override
 	public String getImageAlt() {
 		return _imageAlt;
 	}
 
+	@Override
 	public String getImageSrc() {
 		return _imageSrc;
 	}
 
+	@Override
 	public String getInputName() {
 		if (_inputName != null) {
 			return _inputName;
@@ -126,6 +143,7 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "vertical-card-input-name";
 	}
 
+	@Override
 	public String getInputValue() {
 		if (_inputValue != null) {
 			return _inputValue;
@@ -134,6 +152,7 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "vertical-card-input-value";
 	}
 
+	@Override
 	public List<LabelItem> getLabels() {
 		if (_labels != null) {
 			return _labels;
@@ -157,34 +176,27 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		).build();
 	}
 
-	public Map<String, String> getLabelStylesMap() {
-		if (_labelStylesMap != null) {
-			return _labelStylesMap;
-		}
-
-		_labelStylesMap = HashMapBuilder.put(
-			"Pending", "info"
-		).build();
-
-		return _labelStylesMap;
-	}
-
+	@Override
 	public String getStickerCssClass() {
 		return _stickerCssClass;
 	}
 
+	@Override
 	public String getStickerIcon() {
 		return _stickerIcon;
 	}
 
+	@Override
 	public String getStickerImageAlt() {
 		return _stickerImageAlt;
 	}
 
+	@Override
 	public String getStickerImageSrc() {
 		return _stickerImageSrc;
 	}
 
+	@Override
 	public String getStickerLabel() {
 		if (_stickerLabel != null) {
 			return _stickerLabel;
@@ -193,6 +205,7 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "JPG";
 	}
 
+	@Override
 	public String getStickerShape() {
 		if (_stickerShape != null) {
 			return _stickerShape;
@@ -201,6 +214,7 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "circle";
 	}
 
+	@Override
 	public String getStickerStyle() {
 		if (_stickerStyle != null) {
 		}
@@ -208,6 +222,7 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "warning";
 	}
 
+	@Override
 	public String getSubtitle() {
 		if (_subtitle != null) {
 			return _subtitle;
@@ -216,6 +231,7 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "Card Action";
 	}
 
+	@Override
 	public String getTitle() {
 		if (_title != null) {
 			return _title;
@@ -224,14 +240,17 @@ public class ClaySampleVerticalCard implements VerticalCard {
 		return "Vertical Card";
 	}
 
+	@Override
 	public boolean isDisabled() {
 		return _disabled;
 	}
 
+	@Override
 	public boolean isSelectable() {
 		return _selectable;
 	}
 
+	@Override
 	public boolean isSelected() {
 		return _selected;
 	}
@@ -278,10 +297,6 @@ public class ClaySampleVerticalCard implements VerticalCard {
 
 	public void setLabels(List<LabelItem> labels) {
 		_labels = labels;
-	}
-
-	public void setLabelStylesMap(Map<String, String> labelStylesMap) {
-		_labelStylesMap = labelStylesMap;
 	}
 
 	public void setSelectable(boolean selectable) {
@@ -340,7 +355,6 @@ public class ClaySampleVerticalCard implements VerticalCard {
 	private String _inputName;
 	private String _inputValue;
 	private List<LabelItem> _labels;
-	private Map<String, String> _labelStylesMap;
 	private boolean _selectable = true;
 	private boolean _selected;
 	private String _stickerCssClass;

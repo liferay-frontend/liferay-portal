@@ -1,0 +1,28 @@
+.form-rule-builder-timeline {
+	// Autofill
+
+	.action-rule-data-provider {
+		p {
+			display: inline-block;
+		}
+
+		.data-provider-label-container {
+			margin-bottom: 15px;
+		}
+
+		.data-provider-parameter {
+			margin-right: 10px;
+		}
+
+		.data-provider-parameter-container {
+			background-color: #f8f8f8;
+			border-top: 1px solid #dce0e3;
+			margin-top: 15px;
+			padding: 20px 55px;
+		}
+
+		.no-padding {
+			padding: 0;
+		}
+	}
+}

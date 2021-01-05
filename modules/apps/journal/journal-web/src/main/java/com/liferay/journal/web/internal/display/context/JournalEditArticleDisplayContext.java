@@ -14,6 +14,7 @@
 
 package com.liferay.journal.web.internal.display.context;
 
+import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
@@ -57,7 +58,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -142,13 +145,17 @@ public class JournalEditArticleDisplayContext {
 			() -> {
 				Map<String, Object> strings = new HashMap<>();
 
-				for (Locale availableLocale : getAvailableLocales()) {
+				Set<Locale> locales = new HashSet<>(getAvailableLocales());
+
+				locales.add(
+					LocaleUtil.fromLanguageId(getDefaultArticleLanguageId()));
+
+				for (Locale locale : locales) {
 					strings.put(
-						LocaleUtil.toLanguageId(availableLocale),
+						LocaleUtil.toLanguageId(locale),
 						StringBundler.concat(
-							availableLocale.getDisplayLanguage(),
-							StringPool.SPACE, StringPool.OPEN_PARENTHESIS,
-							availableLocale.getCountry(),
+							locale.getDisplayLanguage(), StringPool.SPACE,
+							StringPool.OPEN_PARENTHESIS, locale.getCountry(),
 							StringPool.CLOSE_PARENTHESIS));
 				}
 
@@ -180,10 +187,14 @@ public class JournalEditArticleDisplayContext {
 	}
 
 	public Map<String, Object> getComponentContext() {
+		String defaultArticleLanguageId = getDefaultArticleLanguageId();
+
 		return HashMapBuilder.<String, Object>put(
+			"availableLocales", Arrays.asList(defaultArticleLanguageId)
+		).put(
 			"contentTitle", "titleMapAsXML"
 		).put(
-			"defaultLanguageId", getDefaultArticleLanguageId()
+			"defaultLanguageId", defaultArticleLanguageId
 		).build();
 	}
 
@@ -195,7 +206,11 @@ public class JournalEditArticleDisplayContext {
 		}
 
 		if (_article == null) {
-			return _ddmFormValues;
+			DDMFormValuesFactory ddmFormValuesFactory =
+				_getDDMFormValuesFactory();
+
+			return ddmFormValuesFactory.create(
+				_httpServletRequest, ddmStructure.getDDMForm());
 		}
 
 		String content = _article.getContent();
@@ -341,6 +356,10 @@ public class JournalEditArticleDisplayContext {
 	}
 
 	public String getDefaultArticleLanguageId() {
+		if (_defaultArticleLanguageId != null) {
+			return _defaultArticleLanguageId;
+		}
+
 		Locale siteDefaultLocale = null;
 
 		try {
@@ -353,11 +372,15 @@ public class JournalEditArticleDisplayContext {
 		}
 
 		if (_article == null) {
-			return LocaleUtil.toLanguageId(siteDefaultLocale);
+			_defaultArticleLanguageId = LocaleUtil.toLanguageId(
+				siteDefaultLocale);
+		}
+		else {
+			_defaultArticleLanguageId = LocalizationUtil.getDefaultLanguageId(
+				_article.getContent(), siteDefaultLocale);
 		}
 
-		return LocalizationUtil.getDefaultLanguageId(
-			_article.getContent(), siteDefaultLocale);
+		return _defaultArticleLanguageId;
 	}
 
 	public String getEditArticleURL() {
@@ -633,6 +656,11 @@ public class JournalEditArticleDisplayContext {
 		return false;
 	}
 
+	private DDMFormValuesFactory _getDDMFormValuesFactory() {
+		return (DDMFormValuesFactory)_httpServletRequest.getAttribute(
+			DDMFormValuesFactory.class.getName());
+	}
+
 	private long _getInheritedWorkflowDDMStructuresFolderId()
 		throws PortalException {
 
@@ -785,6 +813,7 @@ public class JournalEditArticleDisplayContext {
 	private String _ddmStructureKey;
 	private DDMTemplate _ddmTemplate;
 	private String _ddmTemplateKey;
+	private String _defaultArticleLanguageId;
 	private String _defaultLanguageId;
 	private Long _folderId;
 	private Long _groupId;

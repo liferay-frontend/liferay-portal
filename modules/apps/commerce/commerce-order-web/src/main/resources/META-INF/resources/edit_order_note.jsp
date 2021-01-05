@@ -28,11 +28,11 @@ portletDisplay.setURLBack(redirect);
 renderResponse.setTitle(LanguageUtil.get(request, "edit-note"));
 %>
 
-<portlet:actionURL name="editCommerceOrderNote" var="editCommerceOrderNoteActionURL">
-	<portlet:param name="mvcRenderCommandName" value="editCommerceOrderNote" />
+<portlet:actionURL name="/commerce_order/edit_commerce_order_note" var="editCommerceOrderNoteActionURL">
+	<portlet:param name="mvcRenderCommandName" value="/commerce_order/edit_commerce_order_note" />
 </portlet:actionURL>
 
-<aui:form action="<%= editCommerceOrderNoteActionURL %>" cssClass="container-fluid-1280" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCommerceOrderNote();" %>'>
+<aui:form action="<%= editCommerceOrderNoteActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCommerceOrderNote();" %>'>
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceOrderNote == null) ? Constants.ADD : Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="commerceOrderNoteId" type="hidden" value="<%= String.valueOf(commerceOrderNote.getCommerceOrderNoteId()) %>" />

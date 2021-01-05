@@ -68,13 +68,8 @@
 				</liferay-ui:search-container-column-text>
 			</c:when>
 			<c:when test='<%= Objects.equals(journalDisplayContext.getDisplayStyle(), "icon") %>'>
-
-				<%
-				row.setCssClass("entry-card lfr-asset-item");
-				%>
-
 				<liferay-ui:search-container-column-text>
-					<clay:vertical-card-v2
+					<clay:vertical-card
 						verticalCard="<%= new JournalArticleVersionVerticalCard(articleVersion, renderRequest, renderResponse, searchContainer.getRowChecker(), assetDisplayPageFriendlyURLProvider, trashHelper) %>"
 					/>
 				</liferay-ui:search-container-column-text>
@@ -86,7 +81,7 @@
 				/>
 
 				<liferay-ui:search-container-column-text
-					cssClass="table-cell-content"
+					cssClass="table-cell-expand"
 					name="title"
 					value="<%= HtmlUtil.escape(articleVersion.getTitle(locale)) %>"
 				/>

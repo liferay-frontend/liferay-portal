@@ -112,7 +112,8 @@ public class SiteActionDropdownItemsProvider {
 
 		PortletURL activateSiteURL = _liferayPortletResponse.createActionURL();
 
-		activateSiteURL.setParameter(ActionRequest.ACTION_NAME, "activate");
+		activateSiteURL.setParameter(
+			ActionRequest.ACTION_NAME, "/site_admin/activate_group");
 
 		activateSiteURL.setParameter("redirect", _getRedirect());
 		activateSiteURL.setParameter(
@@ -146,7 +147,8 @@ public class SiteActionDropdownItemsProvider {
 		PortletURL deactivateSiteURL =
 			_liferayPortletResponse.createActionURL();
 
-		deactivateSiteURL.setParameter(ActionRequest.ACTION_NAME, "deactivate");
+		deactivateSiteURL.setParameter(
+			ActionRequest.ACTION_NAME, "/site_admin/deactivate_group");
 
 		deactivateSiteURL.setParameter("redirect", _getRedirect());
 		deactivateSiteURL.setParameter(
@@ -166,7 +168,8 @@ public class SiteActionDropdownItemsProvider {
 
 		PortletURL deleteSiteURL = _liferayPortletResponse.createActionURL();
 
-		deleteSiteURL.setParameter(ActionRequest.ACTION_NAME, "deleteGroups");
+		deleteSiteURL.setParameter(
+			ActionRequest.ACTION_NAME, "/site_admin/delete_groups");
 
 		deleteSiteURL.setParameter("redirect", _getRedirect());
 		deleteSiteURL.setParameter(
@@ -186,7 +189,7 @@ public class SiteActionDropdownItemsProvider {
 		PortletURL leaveSiteURL = _liferayPortletResponse.createActionURL();
 
 		leaveSiteURL.setParameter(
-			ActionRequest.ACTION_NAME, "editGroupAssignments");
+			ActionRequest.ACTION_NAME, "/site_admin/edit_group_assignments");
 
 		leaveSiteURL.setParameter("redirect", _getRedirect());
 		leaveSiteURL.setParameter(

@@ -60,6 +60,27 @@ definition {
 			userEmailAddress = "userea@liferay.com",
 			userPassword = "test");
 
+		JSONWebcontent.addFolder(
+			folderName = "WC GDPR Folder",
+			groupName = "Guest",
+			userEmailAddress = "userea@liferay.com",
+			userPassword = "test");
+
+		JSONWebcontent.addWebContent(
+			content = "This is a WC Content for GDPR Anonymize testing.",
+			folderName = "WC GDPR Folder",
+			groupName = "Guest",
+			title = "GDPR Anonymize Article in Folder",
+			userEmailAddress = "userea@liferay.com",
+			userPassword = "test");
+
+		JSONWebcontent.addWebContent(
+			content = "This is a WC Content for GDPR Anonymize testing.",
+			groupName = "Guest",
+			title = "GDPR Anonymize Article",
+			userEmailAddress = "userea@liferay.com",
+			userPassword = "test");
+
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 
 		DMDocument.addCP(
@@ -110,6 +131,22 @@ definition {
 		BlogsEntry.viewEntryAuthorCP(
 			entryAuthorFullName = "Anonymous Anonymous",
 			entryTitle = "Blogs Entry Title");
+
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
+
+		for (var entryTitle : list "WC GDPR Folder,GDPR Anonymize Article") {
+			WebContent.viewEntryListAuthor(
+				author = "Anonymous Anonymous",
+				entryTitle = "${entryTitle}");
+		}
+
+		WebContentFolder.gotoCP(
+			folderName = "WC GDPR Folder",
+			webContentTitle = "WC GDPR Folder");
+
+		WebContent.viewEntryListAuthor(
+			author = "Anonymous Anonymous",
+			entryTitle = "GDPR Anonymize Article in Folder");
 
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 
@@ -421,7 +458,7 @@ definition {
 
 		GDPR.editEntryCP(
 			applications = "Documents and Media",
-			rowEntry = "DM Document Title");
+			rowEntry = "Document_1.txt");
 
 		DMDocument.editCmd(
 			dmDocumentDescriptionEdit = "Edit DM Document Description",
@@ -435,8 +472,8 @@ definition {
 			locator1 = "DataErasure#HEADER");
 
 		GDPR.viewEntryRowInApplicationCP(
-			tableEntry = "Edit DM Document Title",
-			tableEntryPartialTextList = "Edit DM Document Title,Edit DM Document Description");
+			tableEntry = "Document_1.txt",
+			tableEntryPartialTextList = "Document_1.txt,Edit DM Document Description");
 	}
 
 	@priority = "4"
@@ -503,6 +540,27 @@ definition {
 			userEmailAddress = "userea@liferay.com",
 			userPassword = "test");
 
+		JSONWebcontent.addFolder(
+			folderName = "WC GDPR Export Folder",
+			groupName = "Guest",
+			userEmailAddress = "userea@liferay.com",
+			userPassword = "test");
+
+		JSONWebcontent.addWebContent(
+			content = "This is a WC Content for GDPR Export testing.",
+			folderName = "WC GDPR Export Folder",
+			groupName = "Guest",
+			title = "GDPR Export Article in Folder",
+			userEmailAddress = "userea@liferay.com",
+			userPassword = "test");
+
+		JSONWebcontent.addWebContent(
+			content = "This is a WC Content for GDPR Export testing.",
+			groupName = "Guest",
+			title = "GDPR Export Article",
+			userEmailAddress = "userea@liferay.com",
+			userPassword = "test");
+
 		Navigator.openURL();
 
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
@@ -545,13 +603,15 @@ definition {
 			userLastName = "userln");
 
 		GDPR.addExportProcessCP(
-			applications = "Wiki,Message Boards,Contacts Center,Blogs,Announcements,Documents and Media",
+			applications = "Web Content,Wiki,Message Boards,Contacts Center,Blogs,Announcements,Documents and Media",
 			userFirstName = "userfn",
 			userLastName = "userln");
 
-		GDPR.downloadExportedPersonalData(applications = "Wiki,Message Boards,Contacts Center,Blogs,Announcements,Documents and Media");
+		GDPR.downloadExportedPersonalData(applications = "Web Content,Wiki,Message Boards,Contacts Center,Blogs,Announcements,Documents and Media");
 
 		AssertConsoleTextNotPresent(value1 = "java.lang.NullPointerException");
+
+		AssertConsoleTextNotPresent(value1 = "com.liferay.portal.kernel.exception.SystemException");
 	}
 
 }

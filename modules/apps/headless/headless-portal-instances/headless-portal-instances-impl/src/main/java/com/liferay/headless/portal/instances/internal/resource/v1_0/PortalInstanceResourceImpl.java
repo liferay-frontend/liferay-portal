@@ -16,19 +16,19 @@ package com.liferay.headless.portal.instances.internal.resource.v1_0;
 
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceResource;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.instances.initializer.PortalInstanceInitializer;
 import com.liferay.portal.instances.initializer.PortalInstanceInitializerRegistry;
 import com.liferay.portal.instances.service.PortalInstancesLocalService;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.ServletContext;
 
 import javax.validation.ValidationException;
 
@@ -51,6 +51,8 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 			portalInstanceId);
 
 		_companyLocalService.deleteCompany(company.getCompanyId());
+
+		_portalInstancesLocalService.synchronizePortalInstances();
 	}
 
 	@Override
@@ -125,14 +127,12 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 			0, true);
 
 		_portalInstancesLocalService.initializePortalInstance(
-			ServletContextPool.get(StringPool.BLANK), company.getWebId());
+			_servletContext, company.getWebId());
 
 		_portalInstancesLocalService.synchronizePortalInstances();
 
 		if (portalInstanceInitializer != null) {
-			portalInstanceInitializer.initialize(
-				company.getWebId(), company.getVirtualHostname(),
-				company.getMx());
+			portalInstanceInitializer.initialize(company.getCompanyId());
 		}
 
 		return _toPortalInstance(company);
@@ -183,5 +183,10 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 
 	@Reference
 	private PortalInstancesLocalService _portalInstancesLocalService;
+
+	@Reference(
+		target = "(&(original.bean=true)(bean.id=javax.servlet.ServletContext))"
+	)
+	private ServletContext _servletContext;
 
 }

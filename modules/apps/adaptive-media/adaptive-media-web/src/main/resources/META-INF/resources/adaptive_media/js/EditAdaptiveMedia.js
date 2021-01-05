@@ -29,6 +29,7 @@ import React, {useCallback, useState} from 'react';
 import {HelpMessage, Input, RequiredMark} from './form/Components';
 import {alphanumeric, required, validate} from './form/validations';
 
+const getRandomUuid = () => Math.floor(Math.random() * 10000);
 const scrollToTop = () => window.scrollTo({behavior: 'smooth', top: 0});
 
 const VALID_INPUT_KEYS = new Set([
@@ -65,7 +66,6 @@ const EditAdaptiveMedia = ({
 	redirect,
 }) => {
 	const [automaticId, setAutomaticId] = useState(automaticUuid);
-	const [addHighResolution, setAddHighResolution] = useState(false);
 	const [errorMessage, setErrorMessage] = useState(null);
 
 	const nameId = `${namespace}name`;
@@ -82,14 +82,14 @@ const EditAdaptiveMedia = ({
 	if (amImageConfigurationEntry) {
 		const properties = amImageConfigurationEntry.properties;
 
-		const currrentMaxWidth = properties['max-width'];
-		const currrentMaxHeight = properties['max-height'];
+		const currentMaxWidth = properties['max-width'];
+		const currentMaxHeight = properties['max-height'];
 
-		if (currrentMaxWidth !== 0) {
-			maxWidth = currrentMaxWidth;
+		if (currentMaxWidth != 0) {
+			maxWidth = currentMaxWidth;
 		}
-		if (currrentMaxHeight !== 0) {
-			maxHeight = currrentMaxHeight;
+		if (currentMaxHeight != 0) {
+			maxHeight = currentMaxHeight;
 		}
 	}
 
@@ -98,7 +98,7 @@ const EditAdaptiveMedia = ({
 			[descriptionId]: amImageConfigurationEntry
 				? amImageConfigurationEntry.description
 				: '',
-			[highResolutionId]: addHighResolution,
+			[highResolutionId]: false,
 			[maxHeightId]: maxHeight,
 			[maxWidthId]: maxWidth,
 			[nameId]: amImageConfigurationEntry
@@ -147,12 +147,15 @@ const EditAdaptiveMedia = ({
 				values
 			);
 
-			if (!values[maxWidthId] && !values[maxHeightId]) {
+			if (values[maxWidthId] === 0 && values[maxHeightId] === 0) {
+				errorsList[maxWidthId] = Liferay.Language.get(
+					'please-enter-a-max-width-or-max-height-value-larger-than-0'
+				);
+			}
+			else if (!values[maxWidthId] && !values[maxHeightId]) {
 				errorsList[maxWidthId] = Liferay.Language.get(
 					'at-least-one-value-is-required'
 				);
-
-				errorsList[maxHeightId] = true;
 			}
 
 			return errorsList;
@@ -178,7 +181,11 @@ const EditAdaptiveMedia = ({
 		const nameValue = event.target.value;
 
 		if (automaticId) {
-			setFieldValue(newUuidId, normalizeFriendlyURL(nameValue), false);
+			setFieldValue(
+				newUuidId,
+				normalizeFriendlyURL(nameValue) || getRandomUuid(),
+				false
+			);
 		}
 
 		setFieldValue(nameId, nameValue);
@@ -251,7 +258,7 @@ const EditAdaptiveMedia = ({
 								errors[maxWidthId]
 							}
 							label={Liferay.Language.get('max-width-px')}
-							min="1"
+							min="0"
 							name={maxWidthId}
 							onBlur={handleBlur}
 							onChange={handleChange}
@@ -266,10 +273,10 @@ const EditAdaptiveMedia = ({
 							error={
 								touched[maxWidthId] &&
 								touched[maxHeightId] &&
-								errors[maxHeightId]
+								Boolean(errors[maxWidthId])
 							}
 							label={Liferay.Language.get('max-height-px')}
-							min="1"
+							min="0"
 							name={maxHeightId}
 							onBlur={handleBlur}
 							onChange={handleChange}
@@ -282,15 +289,17 @@ const EditAdaptiveMedia = ({
 
 				{!amImageConfigurationEntry && (
 					<ClayCheckbox
-						checked={addHighResolution}
+						checked={values[highResolutionId]}
 						id={highResolutionId}
 						label={Liferay.Language.get(
 							'add-a-resolution-for-high-density-displays'
 						)}
 						name={highResolutionId}
-						onChange={() => {
-							setAddHighResolution(!addHighResolution);
-							setFieldValue(highResolutionId, !addHighResolution);
+						onChange={(event) => {
+							setFieldValue(
+								highResolutionId,
+								event.target.checked
+							);
 						}}
 					/>
 				)}

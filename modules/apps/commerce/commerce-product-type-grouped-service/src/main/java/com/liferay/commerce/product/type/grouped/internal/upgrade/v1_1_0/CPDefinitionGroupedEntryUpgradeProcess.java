@@ -48,9 +48,7 @@ public class CPDefinitionGroupedEntryUpgradeProcess extends UpgradeProcess {
 			while (rs.next()) {
 				long entryCPDefinitionId = rs.getLong("entryCPDefinitionId");
 
-				long cProductId = _getCProductId(entryCPDefinitionId);
-
-				ps.setLong(1, cProductId);
+				ps.setLong(1, _getCProductId(entryCPDefinitionId));
 
 				ps.setLong(2, entryCPDefinitionId);
 

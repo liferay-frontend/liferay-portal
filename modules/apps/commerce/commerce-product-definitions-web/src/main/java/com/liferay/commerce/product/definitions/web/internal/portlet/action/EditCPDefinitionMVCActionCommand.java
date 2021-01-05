@@ -20,6 +20,7 @@ import com.liferay.commerce.account.model.CommerceAccountGroupRel;
 import com.liferay.commerce.account.service.CommerceAccountGroupRelService;
 import com.liferay.commerce.exception.NoSuchCPDefinitionInventoryException;
 import com.liferay.commerce.model.CPDefinitionInventory;
+import com.liferay.commerce.product.constants.CPInstanceConstants;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.CPDefinitionExpirationDateException;
 import com.liferay.commerce.product.exception.CPDefinitionMetaDescriptionException;
@@ -29,12 +30,11 @@ import com.liferay.commerce.product.exception.CPDefinitionNameDefaultLanguageExc
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
 import com.liferay.commerce.product.model.CPDefinition;
-import com.liferay.commerce.product.model.CPInstanceConstants;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.commerce.product.service.CommerceChannelRelService;
-import com.liferay.commerce.product.servlet.taglib.ui.CPDefinitionScreenNavigationConstants;
+import com.liferay.commerce.product.servlet.taglib.ui.constants.CPDefinitionScreenNavigationConstants;
 import com.liferay.commerce.service.CPDAvailabilityEstimateService;
 import com.liferay.commerce.service.CPDefinitionInventoryService;
 import com.liferay.friendly.url.exception.FriendlyURLLengthException;
@@ -273,8 +273,6 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 		long cpDefinitionId = ParamUtil.getLong(
 			actionRequest, "cpDefinitionId");
 
-		long commerceCatalogGroupId = ParamUtil.getLong(
-			actionRequest, "commerceCatalogGroupId");
 		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
 			actionRequest, "nameMapAsXML");
 		Map<Locale, String> shortDescriptionMap =
@@ -283,8 +281,6 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 		Map<Locale, String> descriptionMap =
 			LocalizationUtil.getLocalizationMap(
 				actionRequest, "descriptionMapAsXML");
-		String productTypeName = ParamUtil.getString(
-			actionRequest, "productTypeName");
 		Map<Locale, String> urlTitleMap = LocalizationUtil.getLocalizationMap(
 			actionRequest, "urlTitleMapAsXML");
 		Map<Locale, String> metaTitleMap = LocalizationUtil.getLocalizationMap(
@@ -340,6 +336,9 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 		CPDefinition cpDefinition = null;
 
 		if (cpDefinitionId <= 0) {
+			long commerceCatalogGroupId = ParamUtil.getLong(
+				actionRequest, "commerceCatalogGroupId");
+
 			CommerceCatalog commerceCatalog =
 				_commerceCatalogService.fetchCommerceCatalogByGroupId(
 					commerceCatalogGroupId);
@@ -354,6 +353,9 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			if (Validator.isNull(nameMap.get(defaultLocale))) {
 				throw new CPDefinitionNameDefaultLanguageException();
 			}
+
+			String productTypeName = ParamUtil.getString(
+				actionRequest, "productTypeName");
 
 			// Add commerce product definition
 

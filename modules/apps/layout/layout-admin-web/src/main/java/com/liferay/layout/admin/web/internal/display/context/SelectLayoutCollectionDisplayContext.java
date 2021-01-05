@@ -26,6 +26,8 @@ import com.liferay.info.list.provider.InfoListProvider;
 import com.liferay.info.list.provider.InfoListProviderTracker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -247,8 +249,30 @@ public class SelectLayoutCollectionDisplayContext {
 
 		return ListUtil.filter(
 			infoListProviders,
-			infoListProvider -> infoListProvider.isAvailable(
-				defaultInfoListProviderContext));
+			infoListProvider -> {
+				try {
+					String label = infoListProvider.getLabel(
+						_themeDisplay.getLocale());
+
+					if (Validator.isNotNull(label) &&
+						infoListProvider.isAvailable(
+							defaultInfoListProviderContext)) {
+
+						return true;
+					}
+
+					return false;
+				}
+				catch (Exception exception) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to get info list provider label",
+							exception);
+					}
+
+					return false;
+				}
+			});
 	}
 
 	private String _getKeywords() {
@@ -311,6 +335,9 @@ public class SelectLayoutCollectionDisplayContext {
 
 		return false;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		SelectLayoutCollectionDisplayContext.class);
 
 	private final GroupDisplayContextHelper _groupDisplayContextHelper;
 	private final HttpServletRequest _httpServletRequest;

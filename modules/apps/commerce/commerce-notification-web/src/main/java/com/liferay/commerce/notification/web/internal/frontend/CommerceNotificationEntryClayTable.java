@@ -116,7 +116,8 @@ public class CommerceNotificationEntryClayTable
 			_portal.getCurrentURL(httpServletRequest));
 
 		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCommerceNotificationQueueEntry");
+			ActionRequest.ACTION_NAME,
+			"/commerce_channels/edit_commerce_notification_queue_entry");
 		portletURL.setParameter(Constants.CMD, "resend");
 		portletURL.setParameter("redirect", redirect);
 		portletURL.setParameter(

@@ -11,6 +11,7 @@ Export-Package:\
 	com.liferay.dynamic.data.mapping.data.provider.settings,\
 	com.liferay.dynamic.data.mapping.exception,\
 	com.liferay.dynamic.data.mapping.expression,\
+	com.liferay.dynamic.data.mapping.expression.constants,\
 	com.liferay.dynamic.data.mapping.expression.model,\
 	com.liferay.dynamic.data.mapping.form.builder.context,\
 	com.liferay.dynamic.data.mapping.form.builder.rule,\

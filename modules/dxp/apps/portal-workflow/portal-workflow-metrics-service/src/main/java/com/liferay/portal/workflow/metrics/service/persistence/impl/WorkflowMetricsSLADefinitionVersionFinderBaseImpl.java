@@ -93,13 +93,4 @@ public abstract class WorkflowMetricsSLADefinitionVersionFinderBaseImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		WorkflowMetricsSLADefinitionVersionFinderBaseImpl.class);
 
-	static {
-		try {
-			Class.forName(WorkflowMetricsPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 }

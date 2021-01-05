@@ -135,9 +135,8 @@ public class LiveUsers {
 	}
 
 	public static void joinGroup(long companyId, long groupId, long[] userIds) {
-		Map<Long, Set<Long>> liveUsers = _getLiveUsers(companyId);
-
-		Set<Long> groupUsers = _getGroupUsers(liveUsers, groupId);
+		Set<Long> groupUsers = _getGroupUsers(
+			_getLiveUsers(companyId), groupId);
 
 		for (long userId : userIds) {
 			if (_getUserTrackers(companyId, userId) != null) {
@@ -147,9 +146,8 @@ public class LiveUsers {
 	}
 
 	public static void leaveGroup(long companyId, long groupId, long userId) {
-		Map<Long, Set<Long>> liveUsers = _getLiveUsers(companyId);
-
-		Set<Long> groupUsers = _getGroupUsers(liveUsers, groupId);
+		Set<Long> groupUsers = _getGroupUsers(
+			_getLiveUsers(companyId), groupId);
 
 		groupUsers.remove(userId);
 	}
@@ -157,9 +155,8 @@ public class LiveUsers {
 	public static void leaveGroup(
 		long companyId, long groupId, long[] userIds) {
 
-		Map<Long, Set<Long>> liveUsers = _getLiveUsers(companyId);
-
-		Set<Long> groupUsers = _getGroupUsers(liveUsers, groupId);
+		Set<Long> groupUsers = _getGroupUsers(
+			_getLiveUsers(companyId), groupId);
 
 		for (long userId : userIds) {
 			groupUsers.remove(userId);

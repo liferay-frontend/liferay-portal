@@ -36,7 +36,8 @@ import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.saml.constants.SamlWebKeys;
-import com.liferay.saml.opensaml.integration.SamlBinding;
+import com.liferay.saml.opensaml.integration.internal.binding.SamlBinding;
+import com.liferay.saml.opensaml.integration.internal.metadata.MetadataManager;
 import com.liferay.saml.opensaml.integration.internal.resolver.AttributePublisherImpl;
 import com.liferay.saml.opensaml.integration.internal.resolver.AttributeResolverRegistry;
 import com.liferay.saml.opensaml.integration.internal.resolver.AttributeResolverSAMLContextImpl;
@@ -47,7 +48,6 @@ import com.liferay.saml.opensaml.integration.internal.resolver.SubjectAssertionC
 import com.liferay.saml.opensaml.integration.internal.resolver.UserResolverSAMLContextImpl;
 import com.liferay.saml.opensaml.integration.internal.util.OpenSamlUtil;
 import com.liferay.saml.opensaml.integration.internal.util.SamlUtil;
-import com.liferay.saml.opensaml.integration.metadata.MetadataManager;
 import com.liferay.saml.opensaml.integration.resolver.AttributeResolver;
 import com.liferay.saml.opensaml.integration.resolver.NameIdResolver;
 import com.liferay.saml.opensaml.integration.resolver.UserResolver;

@@ -45,7 +45,7 @@ CommerceAccount commerceAccount = commerceOrderContentDisplayContext.getCommerce
 		style="stacked"
 	/>
 
-	<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderURL" />
+	<portlet:actionURL name="/commerce_open_order_content/edit_commerce_order" var="editCommerceOrderURL" />
 
 	<div class="commerce-cta is-visible">
 		<c:if test="<%= commerceOrderContentDisplayContext.hasPermission(CommerceOrderActionKeys.ADD_COMMERCE_ORDER) %>">

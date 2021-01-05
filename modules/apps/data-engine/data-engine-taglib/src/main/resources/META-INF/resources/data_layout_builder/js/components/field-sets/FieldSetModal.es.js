@@ -15,19 +15,20 @@
 import ClayButton from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 
 import App from '../../App.es';
 import AppContext from '../../AppContext.es';
 import {
 	UPDATE_CONFIG,
 	UPDATE_EDITING_DATA_DEFINITION_ID,
+	UPDATE_EDITING_LANGUAGE_ID,
 } from '../../actions.es';
 import {
 	containsField,
 	isDataLayoutEmpty,
 } from '../../utils/dataLayoutVisitor.es';
-import ModalWithEventPrevented from '../modal/ModalWithEventPrevented.es';
+import TranslationManager from '../translation-manager/TranslationManager.es';
 import useCreateFieldSet from './actions/useCreateFieldSet.es';
 import usePropagateFieldSet from './actions/usePropagateFieldSet.es';
 import useSaveFieldSet from './actions/useSaveFieldSet.es';
@@ -46,18 +47,71 @@ const ModalContent = ({
 		state: {},
 	});
 	const [dataLayoutIsEmpty, setDataLayoutIsEmpty] = useState(true);
+	const [editingLanguageId, setEditingLanguageId] = useState(
+		defaultLanguageId
+	);
 	const [name, setName] = useState({});
+
+	const {contentType} = appProps;
 	const {
 		dataLayoutBuilder,
 		dispatch,
-		state: {dataLayout},
+		state: {dataDefinition, dataLayout},
 	} = childrenContext;
 
-	const {contentType} = appProps;
+	const actionProps = {
+		availableLanguageIds: dataDefinition?.availableLanguageIds,
+		childrenContext,
+		defaultLanguageId,
+		fieldSet,
+	};
 
-	const availableLanguageIds = [
-		...new Set([...Object.keys(name), defaultLanguageId]),
-	];
+	const createFieldSet = useCreateFieldSet(actionProps);
+	const saveFieldSet = useSaveFieldSet(actionProps);
+	const propagateFieldSet = usePropagateFieldSet();
+
+	const onSave = () => {
+		const hasRemovedField = () => {
+			const fieldNames = fieldSet.dataDefinitionFields.map(
+				({name}) => name
+			);
+
+			const [prevLayoutFields, currentLayoutFields] = [
+				fieldSet.defaultDataLayout.dataLayoutPages,
+				dataLayout.dataLayoutPages,
+			].map((layout) =>
+				fieldNames.filter((field) => containsField(layout, field))
+			);
+
+			return !!prevLayoutFields.filter(
+				(field) => !currentLayoutFields.includes(field)
+			).length;
+		};
+
+		if (fieldSet) {
+			propagateFieldSet({
+				fieldSet,
+				modal: {
+					actionMessage: Liferay.Language.get('propagate'),
+					fieldSetMessage: Liferay.Language.get(
+						'do-you-want-to-propagate-the-changes-to-other-objects-views-using-this-fieldset'
+					),
+					headerMessage: Liferay.Language.get('propagate-changes'),
+					...(hasRemovedField() && {
+						warningMessage: Liferay.Language.get(
+							'the-changes-include-the-deletion-of-fields-and-may-erase-the-data-collected-permanently'
+						),
+					}),
+				},
+				onPropagate: () => saveFieldSet(name),
+			})
+				.then(onClose)
+				.catch(onClose);
+		}
+		else {
+			createFieldSet(name).then(onClose).catch(onClose);
+		}
+	};
 
 	const changeZIndex = (zIndex) => {
 		document
@@ -66,6 +120,31 @@ const ModalContent = ({
 				container.style.zIndex = zIndex;
 			});
 	};
+
+	const onEditingLanguageIdChange = useCallback(
+		(editingLanguageId) => {
+			setEditingLanguageId(editingLanguageId);
+
+			dispatch({
+				payload: editingLanguageId,
+				type: UPDATE_EDITING_LANGUAGE_ID,
+			});
+		},
+		[dispatch]
+	);
+
+	useEffect(() => {
+		onEditingLanguageIdChange(defaultLanguageId);
+	}, [defaultLanguageId, onEditingLanguageIdChange]);
+
+	useEffect(() => {
+		if (dataLayoutBuilder) {
+			dataLayoutBuilder.onEditingLanguageIdChange({
+				defaultLanguageId,
+				editingLanguageId,
+			});
+		}
+	}, [dataLayoutBuilder, defaultLanguageId, editingLanguageId]);
 
 	useEffect(() => {
 		if (fieldSet) {
@@ -116,60 +195,6 @@ const ModalContent = ({
 		}
 	}, [dispatch, editingDataDefinition]);
 
-	const actionProps = {
-		availableLanguageIds,
-		childrenContext,
-		editingDataDefinition,
-		fieldSet,
-	};
-
-	const createFieldSet = useCreateFieldSet(actionProps);
-	const saveFieldSet = useSaveFieldSet(actionProps);
-	const propagateFieldSet = usePropagateFieldSet();
-
-	const onSave = () => {
-		const hasRemovedField = () => {
-			const fieldNames = fieldSet.dataDefinitionFields.map(
-				({name}) => name
-			);
-
-			const [prevLayoutFields, actualLayoutFields] = [
-				fieldSet.defaultDataLayout.dataLayoutPages,
-				dataLayout.dataLayoutPages,
-			].map((layout) =>
-				fieldNames.filter((field) => containsField(layout, field))
-			);
-
-			return !!prevLayoutFields.filter(
-				(field) => !actualLayoutFields.includes(field)
-			).length;
-		};
-
-		if (fieldSet) {
-			propagateFieldSet({
-				fieldSet,
-				modal: {
-					actionMessage: Liferay.Language.get('propagate'),
-					fieldSetMessage: Liferay.Language.get(
-						'do-you-want-to-propagate-the-changes-to-other-objects-views-using-this-fieldset'
-					),
-					headerMessage: Liferay.Language.get('propagate-changes'),
-					...(hasRemovedField() && {
-						warningMessage: Liferay.Language.get(
-							'the-changes-include-the-deletion-of-fields-and-may-erase-the-data-collected-permanently'
-						),
-					}),
-				},
-				onPropagate: () => saveFieldSet(name),
-			})
-				.then(onClose)
-				.catch(onClose);
-		}
-		else {
-			createFieldSet(name).then(onClose).catch(onClose);
-		}
-	};
-
 	return (
 		<>
 			<ClayModal.Header>
@@ -178,6 +203,12 @@ const ModalContent = ({
 					: Liferay.Language.get('create-new-fieldset')}
 			</ClayModal.Header>
 			<ClayModal.Header withTitle={false}>
+				<TranslationManager
+					defaultLanguageId={defaultLanguageId}
+					editingLanguageId={editingLanguageId}
+					onEditingLanguageIdChange={onEditingLanguageIdChange}
+					translatedLanguageIds={name}
+				/>
 				<ClayInput.Group className="pl-4 pr-4">
 					<ClayInput.GroupItem>
 						<ClayInput
@@ -187,13 +218,13 @@ const ModalContent = ({
 							autoFocus
 							className="form-control-inline"
 							onChange={({target: {value}}) =>
-								setName({...name, [defaultLanguageId]: value})
+								setName({...name, [editingLanguageId]: value})
 							}
 							placeholder={Liferay.Language.get(
 								'untitled-fieldset'
 							)}
 							type="text"
-							value={name[defaultLanguageId]}
+							value={name[editingLanguageId] || ''}
 						/>
 					</ClayInput.GroupItem>
 				</ClayInput.Group>
@@ -216,7 +247,7 @@ const ModalContent = ({
 						</ClayButton>
 						<ClayButton
 							disabled={
-								!name[defaultLanguageId] || dataLayoutIsEmpty
+								!name[editingLanguageId] || dataLayoutIsEmpty
 							}
 							onClick={onSave}
 						>
@@ -229,7 +260,7 @@ const ModalContent = ({
 	);
 };
 
-const FieldSetModal = ({isVisible, onClose: onCloseFn, ...props}) => {
+export default ({isVisible, onClose: onCloseFn, ...props}) => {
 	const {observer, onClose} = useModal({
 		onClose: onCloseFn,
 	});
@@ -248,9 +279,3 @@ const FieldSetModal = ({isVisible, onClose: onCloseFn, ...props}) => {
 		</ClayModal>
 	);
 };
-
-export default (props) => (
-	<ModalWithEventPrevented>
-		<FieldSetModal {...props} />
-	</ModalWithEventPrevented>
-);

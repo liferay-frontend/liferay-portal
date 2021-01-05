@@ -47,32 +47,27 @@ User membershipRequestUser = UserLocalServiceUtil.fetchUserById(membershipReques
 		</liferay-ui:search-container-column-text>
 	</c:when>
 	<c:when test='<%= displayStyle.equals("icon") %>'>
-
-		<%
-		row.setCssClass("entry-card lfr-asset-item");
-		%>
-
 		<liferay-ui:search-container-column-text>
-			<clay:user-card-v2
+			<clay:user-card
 				userCard="<%= new ViewMembershipRequestsPendingUserCard(membershipRequest, membershipRequestUser, renderRequest, renderResponse) %>"
 			/>
 		</liferay-ui:search-container-column-text>
 	</c:when>
 	<c:when test='<%= displayStyle.equals("list") %>'>
 		<liferay-ui:search-container-column-text
-			cssClass="table-cell-content"
+			cssClass="table-cell-expand"
 			name="user"
 			value="<%= HtmlUtil.escape(membershipRequestUser.getFullName()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
-			cssClass="table-cell-content"
+			cssClass="table-cell-expand"
 			name="user-comments"
 			value="<%= HtmlUtil.escape(membershipRequest.getComments()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
-			cssClass="table-cell-content"
+			cssClass="table-cell-expand"
 			name="email-address"
 			value="<%= membershipRequestUser.getEmailAddress() %>"
 		/>

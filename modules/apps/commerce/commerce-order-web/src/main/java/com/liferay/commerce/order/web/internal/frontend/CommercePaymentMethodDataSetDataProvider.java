@@ -16,6 +16,7 @@ package com.liferay.commerce.order.web.internal.frontend;
 
 import com.liferay.commerce.frontend.model.ImageField;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.order.web.internal.frontend.constants.CommerceOrderDataSetConstants;
 import com.liferay.commerce.order.web.internal.model.PaymentMethod;
 import com.liferay.commerce.payment.engine.CommercePaymentEngine;
 import com.liferay.commerce.payment.method.CommercePaymentMethod;

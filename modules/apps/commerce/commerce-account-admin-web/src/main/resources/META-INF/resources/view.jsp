@@ -40,7 +40,7 @@ CommerceAccountAdminDisplayContext commerceAccountAdminDisplayContext = (Commerc
 
 			<c:if test="<%= commerceAccountAdminDisplayContext.hasPermission(CommerceAccountActionKeys.ADD_ACCOUNT) %>">
 				<portlet:renderURL var="addCommerceAccountURL">
-					<portlet:param name="mvcRenderCommandName" value="editCommerceAccount" />
+					<portlet:param name="mvcRenderCommandName" value="/commerce_account_admin/edit_commerce_account" />
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 				</portlet:renderURL>
 
@@ -97,10 +97,10 @@ CommerceAccountAdminDisplayContext commerceAccountAdminDisplayContext = (Commerc
 		</liferay-frontend:management-bar-action-buttons>
 	</liferay-frontend:management-bar>
 
-	<div class="container-fluid-1280">
+	<div class="container-fluid container-fluid-max-xl">
 		<liferay-ui:error exception="<%= CommerceAccountOrdersException.class %>" message="accounts-with-orders-cannot-be-deleted" />
 
-		<portlet:actionURL name="editCommerceAccount" var="editCommerceAccountActionURL" />
+		<portlet:actionURL name="/commerce_account_admin/edit_commerce_account" var="editCommerceAccountActionURL" />
 
 		<aui:form action="<%= editCommerceAccountActionURL %>" method="post" name="fm">
 			<aui:input name="<%= Constants.CMD %>" type="hidden" value="setActive" />
@@ -118,7 +118,7 @@ CommerceAccountAdminDisplayContext commerceAccountAdminDisplayContext = (Commerc
 					modelVar="commerceAccount"
 				>
 					<portlet:renderURL var="rowURL">
-						<portlet:param name="mvcRenderCommandName" value="editCommerceAccount" />
+						<portlet:param name="mvcRenderCommandName" value="/commerce_account_admin/edit_commerce_account" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 						<portlet:param name="commerceAccountId" value="<%= String.valueOf(commerceAccount.getCommerceAccountId()) %>" />
 					</portlet:renderURL>
@@ -134,20 +134,20 @@ CommerceAccountAdminDisplayContext commerceAccountAdminDisplayContext = (Commerc
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						title="name"
 						value="<%= HtmlUtil.escape(commerceAccount.getName()) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="active"
 						value='<%= LanguageUtil.get(request, commerceAccount.isActive() ? "yes" : "no") %>'
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="type"
 						value="<%= LanguageUtil.get(request, CommerceAccountConstants.getAccountTypeLabel(commerceAccount.getType())) %>"
 					/>

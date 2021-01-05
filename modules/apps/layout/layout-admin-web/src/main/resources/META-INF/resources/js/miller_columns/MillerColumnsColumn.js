@@ -14,11 +14,32 @@
 
 import ClayLayout from '@clayui/layout';
 import classNames from 'classnames';
+import {throttle} from 'frontend-js-web';
 import React, {useEffect, useRef} from 'react';
 import {useDrop} from 'react-dnd';
 
 import MillerColumnsItem from './MillerColumnsItem';
 import {ACCEPTING_TYPES} from './constants';
+
+const AUTOSCROLL_DELAY = 20;
+const AUTOSCROLL_DISTANCE = 20;
+const AUTOSCROLL_RANGE_LENGTH = 20;
+
+const scroll = (columnsContainer, monitor) => {
+	const clientOffset = monitor.getClientOffset();
+	const containerRect = columnsContainer.current.getBoundingClientRect();
+
+	const hoverClientX = containerRect.right - clientOffset?.x;
+
+	if (hoverClientX < AUTOSCROLL_RANGE_LENGTH) {
+		columnsContainer.current.scrollLeft += AUTOSCROLL_DISTANCE;
+	}
+	else if (hoverClientX > containerRect.width - AUTOSCROLL_RANGE_LENGTH) {
+		columnsContainer.current.scrollLeft -= AUTOSCROLL_DISTANCE;
+	}
+};
+
+const throttledScroll = throttle(scroll, AUTOSCROLL_DELAY);
 
 const isValidTarget = (sources, parent) =>
 	!sources.some(
@@ -37,6 +58,7 @@ const isValidTarget = (sources, parent) =>
 const MillerColumnsColumn = ({
 	actionHandlers,
 	columnItems = [],
+	columnsContainer,
 	items,
 	namespace,
 	onItemDrop,
@@ -60,6 +82,11 @@ const MillerColumnsColumn = ({
 		drop(source) {
 			if (canDrop) {
 				onItemDrop(source.items, parent.id, columnItems.length);
+			}
+		},
+		hover(source, monitor) {
+			if (Liferay.Browser.isSafari() && !Liferay.Browser.isChrome()) {
+				throttledScroll(columnsContainer, monitor);
 			}
 		},
 	});

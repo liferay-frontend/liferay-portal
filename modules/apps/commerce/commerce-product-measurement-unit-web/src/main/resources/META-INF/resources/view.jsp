@@ -76,7 +76,7 @@ CPMeasurementUnitsDisplayContext cpMeasurementUnitsDisplayContext = (CPMeasureme
 		</liferay-frontend:management-bar-action-buttons>
 	</liferay-frontend:management-bar>
 
-	<div class="container-fluid-1280">
+	<div class="container-fluid container-fluid-max-xl">
 		<portlet:actionURL name="editCPMeasurementUnit" var="editCPMeasurementUnitActionURL" />
 
 		<aui:form action="<%= editCPMeasurementUnitActionURL %>" method="post" name="fm">
@@ -104,7 +104,7 @@ CPMeasurementUnitsDisplayContext cpMeasurementUnitsDisplayContext = (CPMeasureme
 					%>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						name="name"
 						value="<%= HtmlUtil.escape(cpMeasurementUnit.getName(locale)) %>"
@@ -116,7 +116,7 @@ CPMeasurementUnitsDisplayContext cpMeasurementUnitsDisplayContext = (CPMeasureme
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="ratio-to-primary"
 						property="rate"
 					/>

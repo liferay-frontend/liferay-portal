@@ -68,6 +68,10 @@ public class NavigationMenuTag extends IncludeTag {
 		return _expandedLevels;
 	}
 
+	public NavigationMenuMode getNavigationMenuMode() {
+		return _navigationMenuMode;
+	}
+
 	public String getRootItemId() {
 		return _rootItemId;
 	}
@@ -120,8 +124,8 @@ public class NavigationMenuTag extends IncludeTag {
 				branchNavItems = getBranchNavItems(request);
 
 				navItems = NavItemUtil.getNavItems(
-					request, _rootItemType, _rootItemLevel, _rootItemId,
-					branchNavItems);
+					_navigationMenuMode, request, _rootItemType, _rootItemLevel,
+					_rootItemId, branchNavItems);
 			}
 		}
 		catch (Exception exception) {
@@ -170,6 +174,10 @@ public class NavigationMenuTag extends IncludeTag {
 		_expandedLevels = expandedLevels;
 	}
 
+	public void setNavigationMenuMode(NavigationMenuMode navigationMenuMode) {
+		_navigationMenuMode = navigationMenuMode;
+	}
+
 	@Override
 	public void setPageContext(PageContext pageContext) {
 		super.setPageContext(pageContext);
@@ -205,6 +213,7 @@ public class NavigationMenuTag extends IncludeTag {
 		_ddmTemplateKey = null;
 		_displayDepth = 0;
 		_expandedLevels = "auto";
+		_navigationMenuMode = NavigationMenuMode.DEFAULT;
 		_preview = false;
 		_rootItemId = null;
 		_rootItemLevel = 1;
@@ -373,6 +382,7 @@ public class NavigationMenuTag extends IncludeTag {
 	private String _ddmTemplateKey;
 	private int _displayDepth;
 	private String _expandedLevels = "auto";
+	private NavigationMenuMode _navigationMenuMode = NavigationMenuMode.DEFAULT;
 	private boolean _preview;
 	private String _rootItemId;
 	private int _rootItemLevel = 1;

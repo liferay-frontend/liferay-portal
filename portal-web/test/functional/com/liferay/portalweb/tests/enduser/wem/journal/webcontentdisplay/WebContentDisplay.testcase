@@ -81,7 +81,7 @@ definition {
 
 		WebContentNavigator.gotoAddCP();
 
-		WebContent.addViaCKEditor(
+		WebContent.addCP(
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
 
@@ -113,6 +113,8 @@ definition {
 		WebContent.addDraftPGViaWCD(
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
+
+		VerifyElementPresent(locator1 = "Message#SUCCESS");
 
 		Navigator.gotoSitePage(
 			pageName = "Web Content Display Page",
@@ -242,6 +244,9 @@ definition {
 			locator1 = "ControlMenuAddPanel#ASSET_ENTRY");
 	}
 
+	// Ignore for LPS-123072
+
+	@ignore = "true"
 	@priority = "4"
 	test AddVideoViaWebContent {
 		property custom.properties = "xuggler.enabled=true";
@@ -416,6 +421,10 @@ definition {
 	}
 
 	@description = "This is a use case for LPS-70386."
+
+	// Ignore for LPS-123122
+
+	@ignore = "true"
 	@priority = "5"
 	test AddWebContentWithPortletURL {
 		property portal.acceptance = "true";
@@ -463,8 +472,8 @@ definition {
 	test AddWithStructure {
 		property app.server.types = "jboss,tcserver,tomcat,weblogic,websphere,wildfly";
 		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver,sybase";
-		property environment.acceptance = "true";
-		property portal.acceptance = "true";
+		property environment.acceptance = "false";
+		property portal.acceptance = "false";
 		property testray.component.names = "Web Content Display,Training";
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
@@ -473,43 +482,53 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
-		DynamicDataMapping.addField(
-			field = "Text Box",
+		DataEngine.addField(
 			fieldFieldLabel = "Text Box",
-			fieldName = "TextBox");
+			fieldLocation = "2",
+			fieldName = "Text",
+			fieldType = "Multiple Lines");
 
 		WebContentStructures.saveCP(structureName = "WC Structure Name");
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
-		NavItem.gotoTemplates();
-
-		WebContentTemplates.addCP(
-			structureName = "WC Structure Name",
-			templateFile = "wc_template.ftl",
-			templateName = "WC Template Name");
-
 		Navigator.gotoSitePage(
 			pageName = "Web Content Display Page",
 			siteName = "Test Site Name");
 
+		var content = '''Hello World
+Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
+
 		WebContent.addStructuredPGViaWCD(
-			structureFieldName = "Text",
+			fieldLabelList = "Text,Text Box",
 			structureName = "WC Structure Name",
-			templateName = "WC Template Name",
-			textBoxFieldName = "TextBox",
-			webContentText = "WC WebContent Text",
-			webContentTextBox = "WC WebContent TextBox",
+			text = "WC WebContent Text",
+			textBox = "${content}",
 			webContentTitle = "WC WebContent Title");
 
-		AssertElementPresent(locator1 = "//div[contains(@class,journal-content-article)]//h1[contains(@class,'text')][contains(.,'WC WebContent Text')]");
+		AssertElementPresent(locator1 = "//div[contains(@class,journal-content-article)]//dt[normalize-space(text())='Text']/following-sibling::dd[normalize-space(text())='WC WebContent Text']");
 
-		AssertElementPresent(locator1 = "//div[contains(@class,journal-content-article)]//h2[contains(@class,'text-box')][contains(.,'WC WebContent TextBox')]");
+		var actual = selenium.getHtmlNodeText("//div[contains(@class,journal-content-article)]//dt[normalize-space(text())='Text Box']/following-sibling::dd");
+
+		TestUtils.assertEquals(
+			actual = "${actual}",
+			expected = "${content}");
+
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+		WebContent.viewWithStructureCP(
+			webContentText = "WC WebContent Text",
+			webContentTitle = "WC WebContent Title");
+
+		WebContent.viewWithStructureCP(
+			fieldType = "Multiple Lines",
+			predefinedValue = "true",
+			webContentText = "${content}",
+			webContentTextFieldLabel = "Text Box");
 	}
 
 	@priority = "4"
@@ -681,7 +700,7 @@ definition {
 			webContentContent = "世界您好 Content",
 			webContentTitle = "世界您好 Title");
 
-		Button.clickPublish();
+		PortletEntry.publish();
 
 		Navigator.gotoSitePage(
 			pageName = "Web Content Display Page",
@@ -1109,7 +1128,7 @@ definition {
 			webContentContent = "世界您好 Content",
 			webContentTitle = "世界您好 Title");
 
-		Button.clickPublish();
+		PortletEntry.publish();
 
 		Navigator.gotoSitePage(
 			pageName = "Web Content Display Page",

@@ -13,6 +13,7 @@
  */
 
 import {ClayIconSpriteContext} from '@clayui/icon';
+import ClayLayout from '@clayui/layout';
 import {
 	EVENT_TYPES,
 	FormProvider,
@@ -21,34 +22,92 @@ import {
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import AppContext from '../../../AppContext.es';
-import {EDIT_CUSTOM_OBJECT_FIELD} from '../../../actions.es';
 import DataLayoutBuilderContext from '../../../data-layout-builder/DataLayoutBuilderContext.es';
 import {getFilteredSettingsContext} from '../../../utils/settingsForm.es';
 
-export default function () {
+function getSettingsContext(
+	hasFocusedCustomObjectField,
+	focusedCustomObjectField,
+	focusedField
+) {
+	if (hasFocusedCustomObjectField(focusedCustomObjectField)) {
+		return focusedCustomObjectField.settingsContext;
+	}
+
+	return focusedField.settingsContext;
+}
+
+/**
+ * This component will override the Column from Form Renderer and will
+ * check if field to be rendered has a custom field.
+ * If the field has a custom field, render it instead of children.
+ * @param {customFields} Object
+ *
+ * You can override fields passing as parameter the customFields:
+ * const customFields = {
+ *     required: (props) => <NewRequiredComponent {...props} />
+ * }
+ */
+const getColumn = ({customFields = {}, ...otherProps}) => ({
+	children,
+	column,
+	index,
+}) => {
+	if (column.fields.length === 0) {
+		return null;
+	}
+
+	return (
+		<ClayLayout.Col key={index} md={column.size}>
+			{column.fields.map((field, index) => {
+				const {fieldName} = field;
+				const CustomField = customFields[fieldName];
+
+				if (CustomField) {
+					return (
+						<div
+							className="ddm-field"
+							data-field-name={fieldName}
+							key={index}
+						>
+							<CustomField {...otherProps} field={field}>
+								{children}
+							</CustomField>
+						</div>
+					);
+				}
+
+				return children({field, index});
+			})}
+		</ClayLayout.Col>
+	);
+};
+
+export default function ({
+	config,
+	customFields,
+	dataRules,
+	defaultLanguageId,
+	dispatchEvent,
+	editingLanguageId,
+	focusedCustomObjectField,
+	focusedField,
+	hasFocusedCustomObjectField,
+}) {
+	const [activePage, setActivePage] = useState(0);
+	const [dataLayoutBuilder] = useContext(DataLayoutBuilderContext);
 	const spritemap = useContext(ClayIconSpriteContext);
 
-	const [dataLayoutBuilder] = useContext(DataLayoutBuilderContext);
-	const [
-		{
-			config,
-			dataLayout: {dataRules},
-			editingLanguageId,
-			focusedCustomObjectField,
-			focusedField,
-		},
-		dispatch,
-	] = useContext(AppContext);
-	const [activePage, setActivePage] = useState(0);
+	const Column = useMemo(
+		() => getColumn({AppContext, customFields, dataLayoutBuilder}),
+		[customFields, dataLayoutBuilder]
+	);
 
-	const {
-		settingsContext: customObjectFieldSettingsContext,
-	} = focusedCustomObjectField;
-	const {settingsContext: fieldSettingsContext} = focusedField;
-	const hasFocusedCustomObjectField = !!customObjectFieldSettingsContext;
-	const settingsContext = hasFocusedCustomObjectField
-		? customObjectFieldSettingsContext
-		: fieldSettingsContext;
+	const settingsContext = getSettingsContext(
+		hasFocusedCustomObjectField,
+		focusedCustomObjectField,
+		focusedField
+	);
 
 	const filteredSettingsContext = useMemo(
 		() =>
@@ -59,15 +118,6 @@ export default function () {
 			}),
 		[config, editingLanguageId, settingsContext]
 	);
-
-	const dispatchEvent = (type, payload) => {
-		if (hasFocusedCustomObjectField && type === 'fieldEdited') {
-			dispatch({payload, type: EDIT_CUSTOM_OBJECT_FIELD});
-		}
-		else if (!hasFocusedCustomObjectField) {
-			dataLayoutBuilder.dispatch(type, payload);
-		}
-	};
 
 	useEffect(() => {
 		if (activePage > filteredSettingsContext.pages.length - 1) {
@@ -108,12 +158,13 @@ export default function () {
 					...filteredSettingsContext,
 					activePage,
 					builderRules: dataRules,
+					defaultLanguageId,
 					editable: true,
 					editingLanguageId,
 					spritemap,
 				}}
 			>
-				{(props) => <Pages {...props} />}
+				{(props) => <Pages {...props} overrides={{Column}} />}
 			</FormProvider>
 		</form>
 	);

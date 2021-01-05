@@ -209,12 +209,13 @@ public class CommerceShipmentDisplayContext
 
 		CommerceShipment commerceShipment = getCommerceShipment();
 
-		int[] shipmentStatuses = CommerceShipmentConstants.SHIPMENT_STATUSES;
-
 		int currentShipmentStatus = commerceShipment.getStatus();
 
 		if (currentShipmentStatus !=
 				CommerceShipmentConstants.SHIPMENT_STATUS_DELIVERED) {
+
+			int[] shipmentStatuses =
+				CommerceShipmentConstants.SHIPMENT_STATUSES;
 
 			int[] availableShipmentStatuses = new int[0];
 

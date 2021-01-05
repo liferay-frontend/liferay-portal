@@ -89,10 +89,10 @@ public class CPCompareContentDisplayContext {
 			commerceAccountId = commerceAccount.getCommerceAccountId();
 		}
 
-		HttpServletRequest originalHttpServletRequest =
-			PortalUtil.getOriginalServletRequest(httpServletRequest);
-
 		if (hasCommerceChannel()) {
+			HttpServletRequest originalHttpServletRequest =
+				PortalUtil.getOriginalServletRequest(httpServletRequest);
+
 			_cpDefinitionIds = CPCompareHelperUtil.getCPDefinitionIds(
 				commerceContext.getCommerceChannelGroupId(), commerceAccountId,
 				originalHttpServletRequest.getSession());

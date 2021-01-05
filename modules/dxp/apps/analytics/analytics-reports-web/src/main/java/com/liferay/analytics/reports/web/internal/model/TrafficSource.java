@@ -43,14 +43,16 @@ public class TrafficSource {
 
 		_countrySearchKeywordsList = countrySearchKeywordsList;
 		_name = name;
-		_error = false;
 		_trafficAmount = trafficAmount;
 		_trafficShare = trafficShare;
+
+		_error = false;
 	}
 
 	public TrafficSource(String name) {
-		_countrySearchKeywordsList = Collections.emptyList();
 		_name = name;
+
+		_countrySearchKeywordsList = Collections.emptyList();
 		_error = true;
 		_trafficAmount = 0;
 		_trafficShare = 0;

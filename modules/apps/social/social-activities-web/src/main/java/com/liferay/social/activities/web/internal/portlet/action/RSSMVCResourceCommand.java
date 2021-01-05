@@ -65,7 +65,7 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + SocialActivitiesPortletKeys.SOCIAL_ACTIVITIES,
-		"mvc.command.name=rss"
+		"mvc.command.name=/social_activities/rss"
 	},
 	service = MVCResourceCommand.class
 )
@@ -146,7 +146,7 @@ public class RSSMVCResourceCommand extends BaseRSSMVCResourceCommand {
 		ResourceURL rssURL = liferayPortletResponse.createResourceURL();
 
 		rssURL.setParameter("feedTitle", title);
-		rssURL.setResourceID("rss");
+		rssURL.setResourceID("/social_activities/rss");
 
 		selfSyndLink.setHref(rssURL.toString());
 

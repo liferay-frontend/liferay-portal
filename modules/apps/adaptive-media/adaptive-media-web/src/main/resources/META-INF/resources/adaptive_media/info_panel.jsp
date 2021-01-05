@@ -33,30 +33,40 @@ if (ListUtil.isNotEmpty(selectedAMImageConfigurationEntries)) {
 <div class="sidebar-header">
 	<c:choose>
 		<c:when test="<%= selectedConfigurationEntriesSize == 1 %>">
-			<ul class="sidebar-actions">
+			<div class="autofit-row sidebar-section">
+				<div class="autofit-col autofit-col-expand">
+					<h4 class="component-title">
+						<%= HtmlUtil.escape(amImageConfigurationEntry.getName()) %>
+					</h4>
 
-				<%
-				request.setAttribute("info_panel.jsp-amImageConfigurationEntry", amImageConfigurationEntry);
-				%>
+					<h5 class="component-subtitle">
+						<liferay-ui:message key="image-resolution" />
+					</h5>
+				</div>
 
-				<li>
+				<div class="autofit-col">
+
+					<%
+					request.setAttribute("info_panel.jsp-amImageConfigurationEntry", amImageConfigurationEntry);
+					%>
+
 					<liferay-util:include page="/adaptive_media/image_configuration_entry_action.jsp" servletContext="<%= application %>" />
-				</li>
-			</ul>
-
-			<h4 class="sidebar-title">
-				<%= HtmlUtil.escape(amImageConfigurationEntry.getName()) %>
-			</h4>
-
-			<h5 class="sidebar-subtitle">
-				<liferay-ui:message key="image-resolution" />
-			</h5>
+				</div>
+			</div>
 		</c:when>
 		<c:when test="<%= selectedConfigurationEntriesSize > 1 %>">
-			<h4 class="sidebar-title"><liferay-ui:message arguments="<%= selectedConfigurationEntriesSize %>" key="x-items-are-selected" /></h4>
+			<div class="autofit-row sidebar-section">
+				<div class="autofit-col autofit-col-expand">
+					<h4 class="component-title"><liferay-ui:message arguments="<%= selectedConfigurationEntriesSize %>" key="x-items-are-selected" /></h4>
+				</div>
+			</div>
 		</c:when>
 		<c:otherwise>
-			<h4 class="sidebar-title"><liferay-ui:message key="adaptive-media" /></h4>
+			<div class="autofit-row sidebar-section">
+				<div class="autofit-col autofit-col-expand">
+					<h4 class="component-title"><liferay-ui:message key="adaptive-media" /></h4>
+				</div>
+			</div>
 		</c:otherwise>
 	</c:choose>
 </div>
@@ -69,7 +79,7 @@ if (ListUtil.isNotEmpty(selectedAMImageConfigurationEntries)) {
 >
 	<liferay-ui:section>
 		<div class="sidebar-body">
-			<dl class="sidebar-block">
+			<dl class="sidebar-dl sidebar-section">
 				<c:choose>
 					<c:when test="<%= selectedConfigurationEntriesSize == 1 %>">
 						<dt class="sidebar-dt">

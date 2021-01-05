@@ -70,9 +70,7 @@ public class PermissionsPortletConfigurationIcon
 			WebKeys.THEME_DISPLAY);
 
 		try {
-			long roleId = _getRoleId(portletRequest);
-
-			Role role = _roleService.fetchRole(roleId);
+			Role role = _roleService.fetchRole(_getRoleId(portletRequest));
 
 			int[] roleTypes = {role.getType()};
 

@@ -435,9 +435,7 @@ public class JavadocBuilder {
 		String[] lines, Map<String, Element> fieldElementsMap,
 		JavaField javaField) {
 
-		String fieldKey = _getFieldKey(javaField);
-
-		Element fieldElement = fieldElementsMap.get(fieldKey);
+		Element fieldElement = fieldElementsMap.get(_getFieldKey(javaField));
 
 		if (fieldElement == null) {
 			return null;
@@ -482,9 +480,8 @@ public class JavadocBuilder {
 		String[] lines, Map<String, Element> methodElementsMap,
 		JavaMethod javaMethod) {
 
-		String methodKey = _getMethodKey(javaMethod);
-
-		Element methodElement = methodElementsMap.get(methodKey);
+		Element methodElement = methodElementsMap.get(
+			_getMethodKey(javaMethod));
 
 		if (methodElement == null) {
 			return null;
@@ -758,9 +755,7 @@ public class JavadocBuilder {
 			}
 		}
 
-		JavaClass javaClass = _getJavaClass(fileName);
-
-		String newContent = _getJavadocXml(javaClass);
+		String newContent = _getJavadocXml(_getJavaClass(fileName));
 
 		if ((oldContent == null) || !oldContent.equals(newContent)) {
 			_fileImpl.write(file, newContent.getBytes());
@@ -802,9 +797,7 @@ public class JavadocBuilder {
 		List<Element> methodElements = rootElement.elements("method");
 
 		for (Element methodElement : methodElements) {
-			String methodKey = _getMethodKey(methodElement);
-
-			methodElementsMap.put(methodKey, methodElement);
+			methodElementsMap.put(_getMethodKey(methodElement), methodElement);
 		}
 
 		JavaMethod[] javaMethods = javaClass.getMethods();
@@ -824,9 +817,7 @@ public class JavadocBuilder {
 		List<Element> fieldElements = rootElement.elements("field");
 
 		for (Element fieldElement : fieldElements) {
-			String fieldKey = _getFieldKey(fieldElement);
-
-			fieldElementsMap.put(fieldKey, fieldElement);
+			fieldElementsMap.put(_getFieldKey(fieldElement), fieldElement);
 		}
 
 		JavaField[] javaFields = javaClass.getFields();

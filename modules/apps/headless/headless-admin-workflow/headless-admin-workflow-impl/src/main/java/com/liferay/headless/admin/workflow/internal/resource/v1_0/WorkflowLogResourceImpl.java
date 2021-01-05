@@ -18,10 +18,13 @@ import com.liferay.headless.admin.workflow.dto.v1_0.Role;
 import com.liferay.headless.admin.workflow.dto.v1_0.WorkflowLog;
 import com.liferay.headless.admin.workflow.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.workflow.internal.dto.v1_0.util.RoleUtil;
+import com.liferay.headless.admin.workflow.internal.dto.v1_0.util.WorkflowLogUtil;
 import com.liferay.headless.admin.workflow.resource.v1_0.WorkflowLogResource;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowLogManager;
 import com.liferay.portal.kernel.workflow.comparator.WorkflowComparatorFactoryUtil;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -128,7 +131,7 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 	}
 
 	private Role _toRole(long roleId) throws Exception {
-		com.liferay.portal.kernel.model.Role role = _roleLocalService.getRole(
+		com.liferay.portal.kernel.model.Role role = _roleLocalService.fetchRole(
 			roleId);
 
 		if (role == null) {
@@ -150,8 +153,16 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 				auditPerson = CreatorUtil.toCreator(
 					_portal,
 					_userLocalService.fetchUser(workflowLog.getAuditUserId()));
-				commentLog = workflowLog.getComment();
+				commentLog = _language.get(
+					ResourceBundleUtil.getBundle(
+						"content.Language",
+						contextAcceptLanguage.getPreferredLocale(), getClass()),
+					workflowLog.getComment());
 				dateCreated = workflowLog.getCreateDate();
+				description = WorkflowLogUtil.getDescription(
+					_language, contextAcceptLanguage.getPreferredLocale(),
+					_portal, _roleLocalService::fetchRole,
+					_userLocalService::fetchUser, workflowLog);
 				id = workflowLog.getWorkflowLogId();
 				person = CreatorUtil.toCreator(
 					_portal,
@@ -193,6 +204,9 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 
 	@Reference
 	private KaleoWorkflowModelConverter _kaleoWorkflowModelConverter;
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private Portal _portal;

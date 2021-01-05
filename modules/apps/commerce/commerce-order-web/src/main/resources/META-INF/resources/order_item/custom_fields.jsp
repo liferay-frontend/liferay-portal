@@ -23,7 +23,7 @@ CommerceOrderEditDisplayContext commerceOrderEditDisplayContext = (CommerceOrder
 CommerceOrderItem commerceOrderItem = commerceOrderEditDisplayContext.getCommerceOrderItem();
 %>
 
-<liferay-portlet:actionURL name="editCommerceOrderItem" var="editCommerceOrderItemActionURL" />
+<liferay-portlet:actionURL name="/commerce_order/edit_commerce_order_item" var="editCommerceOrderItemActionURL" />
 
 <commerce-ui:panel
 	title='<%= LanguageUtil.get(request, "custom-fields") %>'

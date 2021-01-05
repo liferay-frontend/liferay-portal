@@ -46,15 +46,21 @@ definition {
 
 			Click(locator1 = "AlloyEditor#CONTENT_ADD_MENUBAR_VIDEO");
 
-			Type(
-				locator1 = "AlloyEditor#TEXT_FORMATTING_LINK_INPUT",
-				value1 = "${embedVideo}");
+			if ("${navTab}" == "Documents and Media") {
+				ItemSelector.addVideoFromDM(
+					depotName = "${depotName}",
+					navTab = "${navTab}",
+					videoShortcutTitle = "${videoShortcutTitle}");
 
-			Click(locator1 = "AlloyEditor#TEXT_FORMATTING_LINK_INPUT_CONFIRM");
+				Pause(locator1 = "5000");
 
-			AssertTextEquals.assertPartialText(
-				locator1 = "BlogsEntry#VIDEO_EMBED_HELP_MESSAGE",
-				value1 = "Video playback is disabled during edit mode");
+				DMDocument.viewInternalVideoPreview(videoName = "${videoName}");
+			}
+			else {
+				ItemSelector.addVideoFromURL(
+					navTab = "${navTab}",
+					videoSourceURL = "${embedVideo}");
+			}
 		}
 	}
 
@@ -82,6 +88,8 @@ definition {
 	}
 
 	macro addRelatedAsset {
+		Panel.expandPanel(panel = "Related Assets");
+
 		AssertClick(
 			locator1 = "AssetRelatedAssets#RELATED_ASSETS_SELECT",
 			value1 = "Select");
@@ -96,19 +104,60 @@ definition {
 
 		SelectFrame(locator1 = "AssetRelatedAssets#SELECT_ASSET_IFRAME");
 
-		AssertClick(
-			locator1 = "AssetRelatedAssets#ASSET_TABLE_CHOOSE",
-			value1 = "${assetTitle}");
+		if (isSet(depotName)) {
+			AssertClick(
+				key_breadcrumbName = "Sites and Libraries",
+				locator1 = "Breadcrumb#BREADCRUMB_ENTRY",
+				value1 = "Sites and Libraries");
+
+			AssertClick(
+				key_groupTab = "Asset Library",
+				locator1 = "ItemSelector#NAVIGATION_GROUP_TAB",
+				value1 = "Asset Library");
+
+			LexiconCard.clickCard(card = "${depotName}");
+		}
+
+		Click(
+			key_assetTitle = "${assetTitle}",
+			locator1 = "AssetRelatedAssets#ASSET_TABLE_CHECKBOX");
 
 		SelectFrame(value1 = "relative=top");
+
+		Button.clickDone();
 	}
 
 	macro addSmallImage {
-		Click(locator1 = "Button#SELECT_FILE_SMALL_IMAGE");
+		if (isSet(browseImage)) {
+			Click(locator1 = "BlogsEntry#SMALL_IMAGE_BROWSE_IMAGE");
+		}
+		else {
+			Click(locator1 = "Button#SELECT_FILE_SMALL_IMAGE");
+		}
 
-		ItemSelector.uploadFile(
-			navTab = "${navTab}",
-			uploadFileName = "${uploadFileName}");
+		if ("${navTab}" == "Documents and Media") {
+			if (isSet(depotName)) {
+				ItemSelector.selectRepositoryImage(
+					depotName = "${depotName}",
+					imageFileName = "${imageFileName}",
+					navTab = "${navTab}");
+			}
+			else if (isSet(currentSiteImage)) {
+				ItemSelector.selectDMImage(
+					imageFileName = "${imageFileName}",
+					navTab = "${navTab}");
+			}
+			else {
+				ItemSelector.uploadFile(
+					navTab = "${navTab}",
+					uploadFileName = "${uploadFileName}");
+			}
+		}
+		else {
+			ItemSelector.uploadFile(
+				navTab = "${navTab}",
+				uploadFileName = "${uploadFileName}");
+		}
 	}
 
 	macro addSubtitle {
@@ -713,9 +762,14 @@ definition {
 		}
 
 		if (isSet(embedVideo)) {
-			AssertElementPresent(
-				key_service = "youtube",
-				locator1 = "BlogsEntry#CONTENT_VIDEO");
+			if ("${internalVideo}" == "true") {
+				DMDocument.viewInternalVideoPreview(videoName = "${videoName}");
+			}
+			else {
+				AssertElementPresent(
+					key_service = "youtube",
+					locator1 = "BlogsEntry#CONTENT_VIDEO");
+			}
 		}
 
 		if (isSet(entryContent)) {
@@ -1080,7 +1134,11 @@ definition {
 		}
 
 		else {
-			AssertElementPresent(locator1 = "Comments#COMMENT_FIELD");
+			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
+
+			AssertElementPresent(locator1 = "CKEditor#BODY");
+
+			SelectFrame(value1 = "relative=top");
 		}
 
 		var key_entryTitle = "${entryTitle}";

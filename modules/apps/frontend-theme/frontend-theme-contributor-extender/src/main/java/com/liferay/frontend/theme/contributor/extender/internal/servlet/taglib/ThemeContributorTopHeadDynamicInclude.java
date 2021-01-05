@@ -14,7 +14,7 @@
 
 package com.liferay.frontend.theme.contributor.extender.internal.servlet.taglib;
 
-import com.liferay.frontend.theme.contributor.extender.BundleWebResources;
+import com.liferay.frontend.theme.contributor.extender.internal.BundleWebResources;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.servlet.PortalWebResourceConstants;

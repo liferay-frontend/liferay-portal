@@ -22,13 +22,14 @@ CommerceAccountDisplayContext commerceAccountDisplayContext = (CommerceAccountDi
 CommerceAccount commerceAccount = commerceAccountDisplayContext.getCurrentCommerceAccount();
 CommerceAddress billingAddress = commerceAccountDisplayContext.getDefaultBillingCommerceAddress();
 CommerceAddress shippingAddress = commerceAccountDisplayContext.getDefaultShippingCommerceAddress();
+
 PortletURL portletURL = commerceAccountDisplayContext.getPortletURL();
 
-portletURL.setParameter("mvcRenderCommandName", "viewCommerceAccount");
+portletURL.setParameter("mvcRenderCommandName", "/commerce_account/view_commerce_account");
 %>
 
 <portlet:renderURL var="editCommerceAccountURL">
-	<portlet:param name="mvcRenderCommandName" value="editCommerceAccount" />
+	<portlet:param name="mvcRenderCommandName" value="/commerce_account/edit_commerce_account" />
 	<portlet:param name="commerceAccountId" value="<%= String.valueOf(commerceAccount.getCommerceAccountId()) %>" />
 	<portlet:param name='<%= PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "backURL" %>' value="<%= portletURL.toString() %>" />
 </portlet:renderURL>

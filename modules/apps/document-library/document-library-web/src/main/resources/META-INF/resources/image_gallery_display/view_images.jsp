@@ -42,6 +42,7 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 
 				boolean hasAudio = AudioProcessorUtil.hasAudio(fileVersion);
 				boolean hasImages = ImageProcessorUtil.hasImages(fileVersion);
+
 				boolean hasPDFImages = PDFProcessorUtil.hasImages(fileVersion);
 				boolean hasVideo = VideoProcessorUtil.hasVideo(fileVersion);
 
@@ -92,8 +93,6 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 				if (Validator.isNotNull(fileEntry.getDescription())) {
 					title += " - " + fileEntry.getDescription();
 				}
-
-				row.setCssClass("lfr-asset-item");
 				%>
 
 				<liferay-ui:search-container-column-text>
@@ -133,7 +132,7 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 				</portlet:renderURL>
 
 				<%
-				row.setCssClass("lfr-asset-folder");
+				row.setCssClass("card-page-item card-page-item-directory");
 				%>
 
 				<liferay-ui:search-container-column-text>

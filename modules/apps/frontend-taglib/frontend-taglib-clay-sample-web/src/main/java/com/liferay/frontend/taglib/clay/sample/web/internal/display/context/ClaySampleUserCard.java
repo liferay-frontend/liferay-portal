@@ -17,9 +17,6 @@ package com.liferay.frontend.taglib.clay.sample.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.soy.UserCard;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
-import com.liferay.portal.kernel.security.RandomUtil;
 
 import java.util.List;
 
@@ -28,6 +25,7 @@ import java.util.List;
  */
 public class ClaySampleUserCard implements UserCard {
 
+	@Override
 	public List<DropdownItem> getActionDropdownItems() {
 		if (_actionDropdownItems != null) {
 			return _actionDropdownItems;
@@ -46,6 +44,7 @@ public class ClaySampleUserCard implements UserCard {
 		).build();
 	}
 
+	@Override
 	public String getCssClass() {
 		if (_cssClass != null) {
 			return _cssClass;
@@ -54,6 +53,7 @@ public class ClaySampleUserCard implements UserCard {
 		return "custom-css-class";
 	}
 
+	@Override
 	public String getHref() {
 		if (_href != null) {
 			return _href;
@@ -62,10 +62,12 @@ public class ClaySampleUserCard implements UserCard {
 		return "#user-card-href";
 	}
 
+	@Override
 	public String getIcon() {
 		return _icon;
 	}
 
+	@Override
 	public String getId() {
 		if (_id != null) {
 			return _id;
@@ -76,6 +78,7 @@ public class ClaySampleUserCard implements UserCard {
 		return "userCardId" + _currentIdNumber;
 	}
 
+	@Override
 	public String getImageAlt() {
 		if (_imageAlt != null) {
 			return _imageAlt;
@@ -84,10 +87,12 @@ public class ClaySampleUserCard implements UserCard {
 		return "User Card Image Alt Text";
 	}
 
+	@Override
 	public String getImageSrc() {
 		return _imageSrc;
 	}
 
+	@Override
 	public String getInputName() {
 		if (_inputName != null) {
 			return _inputName;
@@ -96,6 +101,7 @@ public class ClaySampleUserCard implements UserCard {
 		return "user-card-input-name";
 	}
 
+	@Override
 	public String getInputValue() {
 		if (_inputValue != null) {
 			return _inputValue;
@@ -104,29 +110,7 @@ public class ClaySampleUserCard implements UserCard {
 		return "user-card-input-value";
 	}
 
-	public List<LabelItem> getLabels() {
-		if (_labels != null) {
-			return _labels;
-		}
-
-		int numItems = 1 + RandomUtil.nextInt(3);
-
-		return LabelItemListBuilder.add(
-			labelItem -> {
-				labelItem.setLabel("Approved");
-				labelItem.setStyle("success");
-			}
-		).add(
-			() -> numItems > 1, labelItem -> labelItem.setLabel("Pending")
-		).add(
-			() -> numItems > 2,
-			labelItem -> {
-				labelItem.setLabel("Canceled");
-				labelItem.setStyle("danger");
-			}
-		).build();
-	}
-
+	@Override
 	public String getName() {
 		if (_name != null) {
 			return _name;
@@ -135,6 +119,7 @@ public class ClaySampleUserCard implements UserCard {
 		return "User Name";
 	}
 
+	@Override
 	public String getSubtitle() {
 		if (_subtitle != null) {
 			return _subtitle;
@@ -143,6 +128,7 @@ public class ClaySampleUserCard implements UserCard {
 		return "Latest Action";
 	}
 
+	@Override
 	public String getUserColorClass() {
 		if (_userColorClass != null) {
 			return _userColorClass;
@@ -151,14 +137,17 @@ public class ClaySampleUserCard implements UserCard {
 		return "info";
 	}
 
+	@Override
 	public boolean isDisabled() {
 		return _disabled;
 	}
 
+	@Override
 	public boolean isSelectable() {
 		return _selectable;
 	}
 
+	@Override
 	public boolean isSelected() {
 		return _selected;
 	}
@@ -203,10 +192,6 @@ public class ClaySampleUserCard implements UserCard {
 		_inputValue = inputValue;
 	}
 
-	public void setLabels(List<LabelItem> labels) {
-		_labels = labels;
-	}
-
 	public void setName(String name) {
 		_name = name;
 	}
@@ -238,7 +223,6 @@ public class ClaySampleUserCard implements UserCard {
 	private String _imageSrc;
 	private String _inputName;
 	private String _inputValue;
-	private List<LabelItem> _labels;
 	private String _name;
 	private boolean _selectable = true;
 	private boolean _selected;

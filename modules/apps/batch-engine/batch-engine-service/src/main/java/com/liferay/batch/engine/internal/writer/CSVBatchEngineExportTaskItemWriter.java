@@ -45,6 +45,7 @@ public class CSVBatchEngineExportTaskItemWriter
 		}
 
 		_delimiter = delimiter;
+
 		_columnValuesExtractor = new ColumnValuesExtractor(
 			fieldMap, fieldNames);
 

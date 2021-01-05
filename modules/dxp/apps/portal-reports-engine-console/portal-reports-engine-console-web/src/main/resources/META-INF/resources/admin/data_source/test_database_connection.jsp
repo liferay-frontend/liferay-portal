@@ -20,6 +20,7 @@
 String driverClassName = ParamUtil.getString(request, "driverClassName");
 String driverUrl = ParamUtil.getString(request, "driverUrl");
 String driverUserName = ParamUtil.getString(request, "driverUserName");
+
 String driverPassword = ParamUtil.getString(request, "driverPassword");
 
 if (Validator.isNull(driverPassword)) {

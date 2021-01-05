@@ -44,7 +44,7 @@ String itemSelectedEventName = simpleSiteItemSelectorViewDisplayContext.getItemS
 	</liferay-frontend:management-bar-buttons>
 </liferay-frontend:management-bar>
 
-<div class="container-fluid-1280" id="<portlet:namespace />siteSelectorWrapper">
+<div class="container-fluid container-fluid-max-xl" id="<portlet:namespace />siteSelectorWrapper">
 	<liferay-ui:search-container
 		id="sites"
 		searchContainer="<%= simpleSiteItemSelectorViewDisplayContext.getSearchContainer() %>"
@@ -55,13 +55,13 @@ String itemSelectedEventName = simpleSiteItemSelectorViewDisplayContext.getItemS
 			modelVar="group"
 		>
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="name"
 				value="<%= HtmlUtil.escape(group.getName(locale)) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="channel"
 				value="<%= HtmlUtil.escape(simpleSiteItemSelectorViewDisplayContext.getChannelUsingSite(group.getGroupId())) %>"
 			/>
@@ -76,7 +76,7 @@ String itemSelectedEventName = simpleSiteItemSelectorViewDisplayContext.getItemS
 			%>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 			>
 				<c:choose>
 					<c:when test="<%= simpleSiteItemSelectorViewDisplayContext.isSiteAvailable(group.getGroupId()) %>">

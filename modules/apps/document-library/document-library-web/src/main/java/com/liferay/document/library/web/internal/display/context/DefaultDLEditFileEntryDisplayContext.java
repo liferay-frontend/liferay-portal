@@ -236,10 +236,11 @@ public class DefaultDLEditFileEntryDisplayContext
 		StorageEngine storageEngine) {
 
 		try {
-			_dlRequestHelper = new DLRequestHelper(httpServletRequest);
 			_dlValidator = dlValidator;
 			_fileEntry = fileEntry;
 			_storageEngine = storageEngine;
+
+			_dlRequestHelper = new DLRequestHelper(httpServletRequest);
 
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(

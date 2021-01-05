@@ -52,9 +52,10 @@ public class DLViewFileEntryMetadataSetsManagementToolbarDisplayContext
 			httpServletRequest, liferayPortletRequest, liferayPortletResponse,
 			dlViewFileEntryMetadataSetsDisplayContext.getStructureSearch());
 
-		_dlRequestHelper = new DLRequestHelper(httpServletRequest);
 		_dlViewFileEntryMetadataSetsDisplayContext =
 			dlViewFileEntryMetadataSetsDisplayContext;
+
+		_dlRequestHelper = new DLRequestHelper(httpServletRequest);
 	}
 
 	@Override

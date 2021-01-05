@@ -247,11 +247,10 @@ function MappingSelector({fieldType, mappedItem, onMappingSelect}) {
 				infoItem.classPK === mappedItem.classPK
 		);
 
-		setSelectedItem((selectedItem) => ({
+		setSelectedItem({
 			...infoItem,
 			...mappedItem,
-			...selectedItem,
-		}));
+		});
 	}, [mappedItem, mappedInfoItems, setSelectedItem]);
 
 	useEffect(() => {

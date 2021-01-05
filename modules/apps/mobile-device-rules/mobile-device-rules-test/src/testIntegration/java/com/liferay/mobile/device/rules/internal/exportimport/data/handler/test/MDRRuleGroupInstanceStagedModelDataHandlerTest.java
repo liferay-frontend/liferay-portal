@@ -19,17 +19,15 @@ import com.liferay.exportimport.test.util.lar.BaseStagedModelDataHandlerTestCase
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.mobile.device.rules.model.MDRRuleGroup;
 import com.liferay.mobile.device.rules.model.MDRRuleGroupInstance;
-import com.liferay.mobile.device.rules.service.MDRRuleGroupInstanceLocalServiceUtil;
-import com.liferay.mobile.device.rules.service.MDRRuleGroupLocalServiceUtil;
+import com.liferay.mobile.device.rules.service.MDRRuleGroupInstanceLocalService;
+import com.liferay.mobile.device.rules.service.MDRRuleGroupLocalService;
 import com.liferay.mobile.device.rules.util.test.MDRTestUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.StagedModel;
-import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.HashMap;
@@ -59,18 +57,7 @@ public class MDRRuleGroupInstanceStagedModelDataHandlerTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		layout = LayoutTestUtil.addLayout(stagingGroup);
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setUuid(layout.getUuid());
-
-		LayoutLocalServiceUtil.addLayout(
-			TestPropsValues.getUserId(), liveGroup.getGroupId(),
-			layout.isPrivateLayout(), layout.getParentLayoutId(),
-			layout.getName(), layout.getTitle(), layout.getDescription(),
-			layout.getType(), layout.isHidden(), layout.getFriendlyURL(),
-			serviceContext);
+		_layout = LayoutTestUtil.addLayout(stagingGroup);
 	}
 
 	@Override
@@ -101,7 +88,7 @@ public class MDRRuleGroupInstanceStagedModelDataHandlerTest
 		MDRRuleGroup ruleGroup = (MDRRuleGroup)dependentStagedModels.get(0);
 
 		return MDRTestUtil.addRuleGroupInstance(
-			group.getGroupId(), Layout.class.getName(), layout.getPlid(),
+			group.getGroupId(), Layout.class.getName(), _layout.getPlid(),
 			ruleGroup.getRuleGroupId());
 	}
 
@@ -109,7 +96,7 @@ public class MDRRuleGroupInstanceStagedModelDataHandlerTest
 	protected StagedModel getStagedModel(String uuid, Group group)
 		throws PortalException {
 
-		return MDRRuleGroupInstanceLocalServiceUtil.
+		return _mdrRuleGroupInstanceLocalService.
 			getMDRRuleGroupInstanceByUuidAndGroupId(uuid, group.getGroupId());
 	}
 
@@ -132,7 +119,7 @@ public class MDRRuleGroupInstanceStagedModelDataHandlerTest
 
 		MDRRuleGroup ruleGroup = (MDRRuleGroup)dependentStagedModels.get(0);
 
-		MDRRuleGroupLocalServiceUtil.getMDRRuleGroupByUuidAndGroupId(
+		_mdrRuleGroupLocalService.getMDRRuleGroupByUuidAndGroupId(
 			ruleGroup.getUuid(), group.getGroupId());
 	}
 
@@ -153,6 +140,12 @@ public class MDRRuleGroupInstanceStagedModelDataHandlerTest
 			importedRuleGroupInstance.getPriority());
 	}
 
-	protected Layout layout;
+	private Layout _layout;
+
+	@Inject
+	private MDRRuleGroupInstanceLocalService _mdrRuleGroupInstanceLocalService;
+
+	@Inject
+	private MDRRuleGroupLocalService _mdrRuleGroupLocalService;
 
 }

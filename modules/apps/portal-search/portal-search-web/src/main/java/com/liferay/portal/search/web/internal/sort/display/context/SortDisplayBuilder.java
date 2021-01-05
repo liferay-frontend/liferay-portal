@@ -14,6 +14,7 @@
 
 package com.liferay.portal.search.web.internal.sort.display.context;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
@@ -61,14 +62,19 @@ public class SortDisplayBuilder {
 	public SortDisplayContext build() {
 		SortDisplayContext sortDisplayContext = new SortDisplayContext();
 
+		List<SortTermDisplayContext> sortTermDisplayContexts =
+			buildTermDisplayContexts();
+
+		sortDisplayContext.setAnySelected(
+			isAnySelected(sortTermDisplayContexts));
+
 		sortDisplayContext.setDisplayStyleGroupId(getDisplayStyleGroupId());
-		sortDisplayContext.setSortPortletInstanceConfiguration(
-			_sortPortletInstanceConfiguration);
 		sortDisplayContext.setParameterName(_parameterName);
 		sortDisplayContext.setParameterValue(getParameterValue());
 		sortDisplayContext.setRenderNothing(isRenderNothing());
-		sortDisplayContext.setSortTermDisplayContexts(
-			buildTermDisplayContexts());
+		sortDisplayContext.setSortPortletInstanceConfiguration(
+			_sortPortletInstanceConfiguration);
+		sortDisplayContext.setSortTermDisplayContexts(sortTermDisplayContexts);
 
 		return sortDisplayContext;
 	}
@@ -108,7 +114,16 @@ public class SortDisplayBuilder {
 			_language.get(
 				_portal.getHttpServletRequest(_renderRequest), label));
 		sortTermDisplayContext.setField(field);
-		sortTermDisplayContext.setSelected(_selectedFields.contains(field));
+
+		boolean selected = false;
+
+		if (_selectedFields.contains(field) ||
+			(field.equals(StringPool.BLANK) && _selectedFields.isEmpty())) {
+
+			selected = true;
+		}
+
+		sortTermDisplayContext.setSelected(selected);
 
 		return sortTermDisplayContext;
 	}
@@ -149,6 +164,20 @@ public class SortDisplayBuilder {
 		}
 
 		return null;
+	}
+
+	protected boolean isAnySelected(
+		List<SortTermDisplayContext> sortTermDisplayContexts) {
+
+		for (SortTermDisplayContext sortTermDisplayContext :
+				sortTermDisplayContexts) {
+
+			if (sortTermDisplayContext.isSelected()) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	protected boolean isRenderNothing() {

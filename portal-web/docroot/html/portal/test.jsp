@@ -40,6 +40,7 @@ request.setAttribute("users", users);
 Class<?> clazz = request.getClass();
 
 System.out.println(clazz.getName());
+
 System.out.println("request.getRemoteUser() " + request.getRemoteUser());
 
 PortalServiceUtil.testGetUserId();

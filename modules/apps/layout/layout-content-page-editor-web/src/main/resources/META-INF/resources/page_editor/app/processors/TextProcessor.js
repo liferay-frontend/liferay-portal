@@ -12,14 +12,20 @@
  * details.
  */
 
+import {config} from '../config/index';
 import getAlloyEditorProcessor from './getAlloyEditorProcessor';
 import {getLinkableEditableEditorWrapper} from './getLinkableEditableEditorWrapper';
 
 export default getAlloyEditorProcessor(
 	'text',
 	getLinkableEditableEditorWrapper,
-	(element, value, config = {}) => {
-		if (config.href) {
+	(element, value, editableConfig = {}, languageId) => {
+		const link =
+			editableConfig[languageId] ||
+			editableConfig[config.defaultLanguageId] ||
+			editableConfig;
+
+		if (link.href) {
 			let anchor =
 				element instanceof HTMLAnchorElement
 					? element
@@ -29,8 +35,8 @@ export default getAlloyEditorProcessor(
 				anchor = document.createElement('a');
 			}
 
-			anchor.href = config.href;
-			anchor.target = config.target || '';
+			anchor.href = link.href;
+			anchor.target = link.target || '';
 			anchor.innerHTML = value;
 
 			if (!element.contains(anchor)) {

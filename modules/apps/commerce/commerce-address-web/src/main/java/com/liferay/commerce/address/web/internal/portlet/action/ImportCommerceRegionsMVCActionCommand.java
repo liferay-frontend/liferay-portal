@@ -48,7 +48,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_COUNTRY,
-		"mvc.command.name=importCommerceRegions"
+		"mvc.command.name=/commerce_country/import_commerce_regions"
 	},
 	service = MVCActionCommand.class
 )

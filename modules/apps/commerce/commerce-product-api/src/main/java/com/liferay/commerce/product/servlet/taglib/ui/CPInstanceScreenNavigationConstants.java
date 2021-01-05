@@ -15,8 +15,11 @@
 package com.liferay.commerce.product.servlet.taglib.ui;
 
 /**
- * @author Alessio Antonio Rendina
+ * @author     Alessio Antonio Rendina
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ *             com.liferay.commerce.product.servlet.taglib.ui.constants.CPInstanceScreenNavigationConstants}
  */
+@Deprecated
 public class CPInstanceScreenNavigationConstants {
 
 	public static final String CATEGORY_KEY_DETAILS = "details";

@@ -1,0 +1,200 @@
+@component-name = "portal-user-management-and-portal-configuration"
+definition {
+
+	property portal.release = "false";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Accounts";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			Accounts.tearDownCP();
+		}
+	}
+
+	@priority = "4"
+	test AssignAccount {
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Accounts");
+
+		Accounts.addCP(
+			accountDescription = "This is an Account added for Account Group.",
+			accountName = "Account for Account Group");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Account Groups");
+
+		AccountGroups.addCP(
+			accountGroupDescription = "This is an Account Group.",
+			accountGroupName = "Test Account Group");
+
+		Navigator.gotoBack();
+
+		LexiconEntry.gotoEntry(rowEntry = "Test Account Group");
+
+		AccountGroups.viewDefault(tabName = "Accounts");
+
+		AccountGroups.addAssignee(
+			accountGroupName = "Test Account Group",
+			assigneeNames = "Account for Account Group",
+			assigneeType = "Accounts");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Account Groups");
+
+		LexiconEntry.gotoEntry(rowEntry = "Test Account Group");
+
+		AccountGroups.viewAssignee(assigneeName = "Account for Account Group");
+	}
+
+	@priority = "4"
+	test DeleteAccountGroup {
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Account Groups");
+
+		AccountGroups.addCP(
+			accountGroupDescription = "This is an Account Group to make search field works.",
+			accountGroupName = "Search AG");
+
+		Navigator.gotoBack();
+
+		AccountGroups.addCP(
+			accountGroupDescription = "This is an Account Group for delete testing.",
+			accountGroupName = "Delete AG");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Account Groups");
+
+		LexiconEntry.viewEntryName(rowEntry = "Delete AG");
+
+		LexiconEntry.delete(rowEntry = "Delete AG");
+
+		Search.searchCP(searchTerm = "Delete AG");
+
+		AccountGroups.viewDefault(tabName = "Account Groups");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Account Groups");
+
+		Search.searchCP(searchTerm = "Delete AG");
+
+		AccountGroups.viewDefault(tabName = "Account Groups");
+	}
+
+	@priority = "4"
+	test RemoveAccount {
+		for (var accountNumber : list "1,2,3") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Accounts",
+				panel = "Applications",
+				portlet = "Accounts");
+
+			Accounts.addCP(
+				accountDescription = "Accounts Name ${accountNumber} Description",
+				accountName = "Delete Accounts ${accountNumber} from AG");
+		}
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Account Groups");
+
+		AccountGroups.addCP(
+			accountGroupDescription = "This is an Account Group to test remove account.",
+			accountGroupName = "Remove Account AG");
+
+		Navigator.gotoBack();
+
+		LexiconEntry.gotoEntry(rowEntry = "Remove Account AG");
+
+		AccountGroups.addAssignee(
+			accountGroupName = "Remove Account AG",
+			assigneeAll = "All",
+			assigneeNames = "Delete Accounts 1 from AG,Delete Accounts 2 from AG,Delete Accounts 3 from AG",
+			assigneeType = "Accounts");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Account Groups");
+
+		LexiconEntry.gotoEntry(rowEntry = "Remove Account AG");
+
+		AccountGroups.removeAccount(accountGroupName = "Delete Accounts 1 from AG");
+
+		LexiconEntry.viewNoEntry(rowEntry = "Delete Accounts 1 from AG");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Account Groups");
+
+		LexiconEntry.gotoEntry(rowEntry = "Remove Account AG");
+
+		AccountGroups.removeAccount(
+			accountGroupName = "Delete Accounts 2 from AG",
+			removeType = "Toolbar Remove Icon");
+
+		LexiconEntry.viewNoEntry(rowEntry = "Delete Accounts 2 from AG");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Account Groups");
+
+		LexiconEntry.gotoEntry(rowEntry = "Remove Account AG");
+
+		AccountGroups.removeAccount(
+			accountGroupName = "Delete Accounts 3 from AG",
+			removeType = "Management Toolbar");
+
+		LexiconEntry.viewNoEntry(rowEntry = "Delete Accounts 3 from AG");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Account Groups");
+
+		LexiconEntry.gotoEntry(rowEntry = "Remove Account AG");
+
+		AccountGroups.viewDefault(tabName = "Accounts");
+
+		ManagementBar.setFilterAndOrder(filterBy = "Inactive");
+
+		for (var accountNumber : list "1,2,3") {
+			LexiconEntry.viewNoEntry(rowEntry = "Delete Accounts ${accountNumber} from AG");
+		}
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Applications",
+			portlet = "Accounts");
+
+		for (var rowEntry : list "Delete Accounts 1 from AG,Delete Accounts 2 from AG,Delete Accounts 3 from AG") {
+			LexiconEntry.viewEntryName(rowEntry = "${rowEntry}");
+		}
+	}
+
+}

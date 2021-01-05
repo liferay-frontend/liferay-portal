@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
@@ -56,6 +57,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.InactiveRequestHandler;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.template.TemplateManager;
+import com.liferay.portal.kernel.upgrade.ReleaseManager;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpUtil;
@@ -331,6 +333,17 @@ public class MainServlet extends HttpServlet {
 			_log.error(exception, exception);
 		}
 
+		for (Portlet portlet : portlets) {
+			try {
+				ResourceActionsUtil.populatePortletResource(
+					portlet, MainServlet.class.getClassLoader(),
+					PropsValues.RESOURCE_ACTIONS_CONFIGS);
+			}
+			catch (Exception exception) {
+				_log.error(exception, exception);
+			}
+		}
+
 		try {
 			_initLayoutTemplates(pluginPackage);
 		}
@@ -441,6 +454,21 @@ public class MainServlet extends HttpServlet {
 		StartupHelperUtil.setStartupFinished(true);
 
 		_registerPortalInitialized();
+
+		if ((_releaseManager != null) && _log.isWarnEnabled()) {
+			String message = _releaseManager.getStatusMessage(true);
+
+			if (Validator.isNotNull(message)) {
+				_log.warn(message);
+			}
+			else if (_log.isInfoEnabled()) {
+				message = _releaseManager.getStatusMessage(false);
+
+				if (Validator.isNotNull(message)) {
+					_log.info(message);
+				}
+			}
+		}
 
 		ThreadLocalCacheManager.clearAll(Lifecycle.REQUEST);
 	}
@@ -1332,6 +1360,9 @@ public class MainServlet extends HttpServlet {
 		ServiceProxyFactory.newServiceTrackedInstance(
 			InactiveRequestHandler.class, MainServlet.class,
 			"_inactiveRequestHandler", false);
+	private static volatile ReleaseManager _releaseManager =
+		ServiceProxyFactory.newServiceTrackedInstance(
+			ReleaseManager.class, MainServlet.class, "_releaseManager", false);
 
 	private ServiceRegistration<ModuleServiceLifecycle>
 		_licenseInstallModuleServiceLifecycleServiceRegistration;

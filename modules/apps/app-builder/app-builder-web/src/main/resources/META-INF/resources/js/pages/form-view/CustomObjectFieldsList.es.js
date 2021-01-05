@@ -79,18 +79,18 @@ const getFieldTypes = ({
 			fieldType,
 			label,
 			name,
+			required,
 			nestedDataDefinitionFields = [],
 			repeatable,
 			showLabel,
 		},
 		nested
 	) => {
-		const {ddmStructureId} = customProperties;
-
 		if (fieldType === 'section') {
 			return;
 		}
 
+		const {ddmStructureId} = customProperties;
 		const fieldTypeSettings = fieldTypes.find(({name}) => {
 			return name === fieldType;
 		});
@@ -147,6 +147,7 @@ const getFieldTypes = ({
 			nestedDataDefinitionFields: nestedDataDefinitionFields.map(
 				(nestedField) => setDefinitionField(nestedField, true)
 			),
+			required,
 		};
 
 		if (nested) {

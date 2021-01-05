@@ -19,11 +19,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
-import {useAppState} from './Context';
 import {Filter} from './filters/index';
 
 function FilterResume(props) {
-	const {actions} = useAppState();
 	const [open, setOpen] = useState(false);
 
 	const label = (
@@ -36,7 +34,7 @@ function FilterResume(props) {
 			closeButtonProps={{
 				className: 'filter-resume-close',
 				disabled: props.disabled,
-				onClick: () => actions.updateFilterState(props.id),
+				onClick: () => props.updateFilterState(props.id),
 			}}
 			role="button"
 		>
@@ -60,7 +58,7 @@ function FilterResume(props) {
 			trigger={label}
 		>
 			<li className="dropdown-subheader">{props.label}</li>
-			<Filter actions={actions} {...props} />
+			<Filter {...props} />
 		</ClayDropDown>
 	);
 

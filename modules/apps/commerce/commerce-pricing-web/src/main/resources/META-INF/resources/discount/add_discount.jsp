@@ -22,13 +22,13 @@ CommerceDiscountDisplayContext commerceDiscountDisplayContext = (CommerceDiscoun
 PortletURL editDiscountPortletURL = commerceDiscountDisplayContext.getEditCommerceDiscountRenderURL();
 %>
 
-<portlet:actionURL name="editCommerceDiscount" var="editCommerceDiscountActionURL" />
+<portlet:actionURL name="/commerce_discount/edit_commerce_discount" var="editCommerceDiscountActionURL" />
 
 <commerce-ui:modal-content
 	title='<%= LanguageUtil.get(request, "add-discount") %>'
 >
 	<div class="col-12 lfr-form-content">
-		<aui:form cssClass="container-fluid-1280" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "apiSubmit(this.form);" %>' useNamespace="<%= false %>">
+		<aui:form cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "apiSubmit(this.form);" %>' useNamespace="<%= false %>">
 			<aui:input bean="<%= commerceDiscountDisplayContext.getCommerceDiscount() %>" label="name" model="<%= CommerceDiscount.class %>" name="title" required="<%= true %>" />
 
 			<aui:select label="type" name="commerceDiscountType" required="<%= true %>">

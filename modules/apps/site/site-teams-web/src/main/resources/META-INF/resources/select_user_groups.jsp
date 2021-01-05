@@ -24,7 +24,7 @@ SelectUserGroupsDisplayContext selectUserGroupsDisplayContext = new SelectUserGr
 	displayContext="<%= new SelectUserGroupsManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, selectUserGroupsDisplayContext) %>"
 />
 
-<aui:form cssClass="container-fluid-1280" name="selectUserGroupFm">
+<aui:form cssClass="container-fluid container-fluid-max-xl" name="selectUserGroupFm">
 	<liferay-ui:search-container
 		id="userGroups"
 		searchContainer="<%= selectUserGroupsDisplayContext.getUserGroupSearchContainer() %>"
@@ -68,14 +68,14 @@ SelectUserGroupsDisplayContext selectUserGroupsDisplayContext = new SelectUserGr
 				</c:when>
 				<c:otherwise>
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="name"
 						orderable="<%= true %>"
 						property="name"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="description"
 						orderable="<%= true %>"
 						property="description"

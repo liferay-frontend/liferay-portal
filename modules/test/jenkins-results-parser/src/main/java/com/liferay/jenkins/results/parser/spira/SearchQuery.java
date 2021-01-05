@@ -29,6 +29,35 @@ import org.json.JSONObject;
  */
 public class SearchQuery<T extends SpiraArtifact> {
 
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof SearchQuery)) {
+			return false;
+		}
+
+		SearchQuery searchQuery = (SearchQuery)object;
+
+		return matches(searchQuery.getSearchParameters());
+	}
+
+	public SearchParameter[] getSearchParameters() {
+		return _searchParameters;
+	}
+
+	public boolean matches(SearchParameter[] searchParameters) {
+		JSONArray jsonArray = new JSONArray();
+
+		for (SearchParameter searchParameter : searchParameters) {
+			jsonArray.put(searchParameter.toJSONObject());
+		}
+
+		if (jsonArray.similar(toJSONArray())) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public static class SearchParameter {
 
 		public SearchParameter(
@@ -49,19 +78,19 @@ public class SearchQuery<T extends SpiraArtifact> {
 
 		@Override
 		public boolean equals(Object object) {
-			if (object instanceof SearchParameter) {
-				SearchParameter otherSearchParameter = (SearchParameter)object;
-
-				if (_name.equals(otherSearchParameter.getName()) &&
-					_value.equals(otherSearchParameter.getValue())) {
-
-					return true;
-				}
-
+			if (!(object instanceof SearchParameter)) {
 				return false;
 			}
 
-			return super.equals(object);
+			SearchParameter searchParameter = (SearchParameter)object;
+
+			JSONObject jsonObject = searchParameter.toJSONObject();
+
+			if (jsonObject.similar(toJSONObject())) {
+				return true;
+			}
+
+			return false;
 		}
 
 		public String getName() {
@@ -84,13 +113,24 @@ public class SearchQuery<T extends SpiraArtifact> {
 				SpiraCustomPropertyValue spiraCustomPropertyValue =
 					(SpiraCustomPropertyValue)_value;
 
+				int propertyNumber =
+					spiraCustomPropertyValue.getPropertyNumber();
+
 				JSONArray customPropertiesJSONArray = jsonObject.getJSONArray(
 					"CustomProperties");
 
 				for (int i = 0; i < customPropertiesJSONArray.length(); i++) {
-					if (_matchesCustomProperty(
-							customPropertiesJSONArray.getJSONObject(i),
-							spiraCustomPropertyValue)) {
+					JSONObject customPropertyJSONObject =
+						customPropertiesJSONArray.getJSONObject(i);
+
+					if (propertyNumber != customPropertyJSONObject.getInt(
+							"PropertyNumber")) {
+
+						continue;
+					}
+
+					if (spiraCustomPropertyValue.matchesJSONObject(
+							customPropertyJSONObject)) {
 
 						return true;
 					}
@@ -107,95 +147,59 @@ public class SearchQuery<T extends SpiraArtifact> {
 		}
 
 		public JSONObject toFilterJSONObject() {
-			JSONObject filterJSONObject = new JSONObject();
+			if ((_value instanceof String) && _name.equals("Path")) {
+				String stringValue = (String)_value;
 
-			filterJSONObject.put("PropertyName", _name);
+				String[] stringValues = stringValue.split("(?<!\\\\)/");
 
+				stringValue = stringValues[stringValues.length - 1];
+
+				stringValue = stringValue.replaceAll("\\[", "[[]");
+
+				JSONObject filterJSONObject = new JSONObject();
+
+				filterJSONObject.put("PropertyName", "Name");
+				filterJSONObject.put("StringValue", stringValue);
+
+				return filterJSONObject;
+			}
+
+			return toJSONObject();
+		}
+
+		public JSONObject toJSONObject() {
 			if (_value instanceof Integer) {
 				Integer intValue = (Integer)_value;
 
-				filterJSONObject.put("IntValue", intValue);
+				JSONObject jsonObject = new JSONObject();
+
+				jsonObject.put("IntValue", intValue);
+				jsonObject.put("PropertyName", _name);
+
+				return jsonObject;
 			}
-			else if (_value instanceof SpiraCustomPropertyValue) {
+
+			if (_value instanceof SpiraCustomPropertyValue) {
 				SpiraCustomPropertyValue spiraCustomPropertyValue =
 					(SpiraCustomPropertyValue)_value;
 
-				SpiraCustomProperty spiraCustomProperty =
-					spiraCustomPropertyValue.getSpiraCustomProperty();
-
-				if (spiraCustomProperty.getType() ==
-						SpiraCustomProperty.Type.TEXT) {
-
-					filterJSONObject.put(
-						"StringValue", spiraCustomPropertyValue.getName());
-				}
-				else {
-					filterJSONObject.put(
-						"IntValue", spiraCustomPropertyValue.getID());
-				}
+				return spiraCustomPropertyValue.getFilterJSONObject();
 			}
-			else if (_value instanceof String) {
+
+			if (_value instanceof String) {
+				JSONObject jsonObject = new JSONObject();
+
 				String stringValue = (String)_value;
 
 				stringValue = stringValue.replaceAll("\\[", "[[]");
 
-				filterJSONObject.put("StringValue", stringValue);
-			}
-			else {
-				throw new RuntimeException("Invalid value type");
-			}
+				jsonObject.put("PropertyName", _name);
+				jsonObject.put("StringValue", stringValue);
 
-			return filterJSONObject;
-		}
-
-		private boolean _matchesCustomProperty(
-			JSONObject jsonObject,
-			SpiraCustomPropertyValue spiraCustomPropertyValue) {
-
-			SpiraCustomProperty spiraCustomProperty =
-				spiraCustomPropertyValue.getSpiraCustomProperty();
-
-			SpiraCustomProperty.Type type = spiraCustomProperty.getType();
-
-			if (type == SpiraCustomProperty.Type.LIST) {
-				if (spiraCustomPropertyValue.getID() == jsonObject.optInt(
-						"IntegerValue")) {
-
-					return true;
-				}
-
-				return false;
+				return jsonObject;
 			}
 
-			if (type == SpiraCustomProperty.Type.MULTILIST) {
-				JSONArray jsonArray = jsonObject.optJSONArray(
-					"IntegerListValue");
-
-				if (jsonArray == null) {
-					return false;
-				}
-
-				for (int i = 0; i < jsonArray.length(); i++) {
-					if (jsonArray.getInt(i) ==
-							spiraCustomPropertyValue.getID()) {
-
-						return true;
-					}
-				}
-			}
-
-			if (type == SpiraCustomProperty.Type.TEXT) {
-				String stringValue = jsonObject.optString("StringValue");
-
-				if (stringValue.contains(spiraCustomPropertyValue.getName())) {
-					return true;
-				}
-
-				return false;
-			}
-
-			throw new UnsupportedOperationException(
-				"Invalid custom property type " + type);
+			throw new RuntimeException("Invalid value type");
 		}
 
 		private final String _name;
@@ -227,15 +231,7 @@ public class SearchQuery<T extends SpiraArtifact> {
 
 		synchronized (cachedSearchQueries) {
 			for (SearchQuery<?> cachedSearchQuery : cachedSearchQueries) {
-				JSONArray filterJSONArray = new JSONArray();
-
-				for (SearchParameter searchParameter : searchParameters) {
-					filterJSONArray.put(searchParameter.toFilterJSONObject());
-				}
-
-				if (filterJSONArray.similar(
-						cachedSearchQuery.toFilterJSONArray())) {
-
+				if (cachedSearchQuery.matches(searchParameters)) {
 					return cachedSearchQuery;
 				}
 			}
@@ -314,6 +310,16 @@ public class SearchQuery<T extends SpiraArtifact> {
 		}
 
 		return filterJSONArray;
+	}
+
+	protected JSONArray toJSONArray() {
+		JSONArray jsonArray = new JSONArray();
+
+		for (SearchParameter searchParameter : _searchParameters) {
+			jsonArray.put(searchParameter.toJSONObject());
+		}
+
+		return jsonArray;
 	}
 
 	private static List<SearchQuery<?>> _getCachedSearchQueries(

@@ -17,14 +17,19 @@ package com.liferay.commerce.inventory.type;
 import java.util.Locale;
 import java.util.Map;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Alessio Antonio Rendina
  * @author Luca Pellizzon
  */
+@ProviderType
 public interface CommerceInventoryAuditType {
 
 	public String formatLog(long userId, String context, Locale locale)
 		throws Exception;
+
+	public String formatQuantity(int quantity, Locale locale);
 
 	public String getLog(Map<String, String> context);
 

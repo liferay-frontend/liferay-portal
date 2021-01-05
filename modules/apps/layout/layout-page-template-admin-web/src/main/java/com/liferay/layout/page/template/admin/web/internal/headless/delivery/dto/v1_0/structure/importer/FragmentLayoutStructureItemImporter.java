@@ -323,6 +323,25 @@ public class FragmentLayoutStructureItemImporter
 			jsonObject.put("alt", value);
 		}
 
+		Map<String, Object> localizedDescriptionMap =
+			(Map<String, Object>)descriptionMap.get("value_i18n");
+
+		if (localizedDescriptionMap == null) {
+			return jsonObject;
+		}
+
+		JSONObject localizedDescriptionJSONObject =
+			JSONFactoryUtil.createJSONObject();
+
+		for (Map.Entry<String, Object> entry :
+				localizedDescriptionMap.entrySet()) {
+
+			localizedDescriptionJSONObject.put(
+				entry.getKey(), entry.getValue());
+		}
+
+		jsonObject.put("alt", localizedDescriptionJSONObject);
+
 		return jsonObject;
 	}
 
@@ -335,8 +354,57 @@ public class FragmentLayoutStructureItemImporter
 			return jsonObject;
 		}
 
-		Map<String, Object> hrefMap = (Map<String, Object>)fragmentLinkMap.get(
-			"href");
+		Map<String, Object> valueI18nMap =
+			(Map<String, Object>)fragmentLinkMap.get("value_i18n");
+
+		if (valueI18nMap != null) {
+			for (Map.Entry<String, Object> entry : valueI18nMap.entrySet()) {
+				Map<String, Object> fragmentLinkValueMap =
+					(Map<String, Object>)entry.getValue();
+
+				jsonObject.put(
+					entry.getKey(),
+					_createFragmentLinkValueConfigJSONObject(
+						fragmentLinkValueMap));
+			}
+		}
+
+		Map<String, Object> valueMap = (Map<String, Object>)fragmentLinkMap.get(
+			"value");
+
+		try {
+			if (valueMap != null) {
+				jsonObject = JSONUtil.merge(
+					jsonObject,
+					_createFragmentLinkValueConfigJSONObject(valueMap));
+			}
+
+			jsonObject = JSONUtil.merge(
+				jsonObject,
+				_createFragmentLinkValueConfigJSONObject(fragmentLinkMap));
+		}
+		catch (JSONException jsonException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(jsonException, jsonException);
+			}
+		}
+
+		jsonObject.put("mapperType", "link");
+
+		return jsonObject;
+	}
+
+	private JSONObject _createFragmentLinkValueConfigJSONObject(
+		Map<String, Object> fragmentLinkValueMap) {
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		if (fragmentLinkValueMap == null) {
+			return jsonObject;
+		}
+
+		Map<String, Object> hrefMap =
+			(Map<String, Object>)fragmentLinkValueMap.get("href");
 
 		if (hrefMap == null) {
 			return jsonObject;
@@ -350,7 +418,7 @@ public class FragmentLayoutStructureItemImporter
 				"defaultValue");
 		}
 
-		String target = (String)fragmentLinkMap.get("target");
+		String target = (String)fragmentLinkValueMap.get("target");
 
 		if (target != null) {
 			if (Objects.equals(target, FragmentLink.Target.PARENT.getValue()) ||

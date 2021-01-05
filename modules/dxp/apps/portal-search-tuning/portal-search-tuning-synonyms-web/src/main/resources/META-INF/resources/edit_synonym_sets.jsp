@@ -35,7 +35,7 @@ portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(editSynonymSetsDisplayContext.getBackURL());
 %>
 
-<portlet:actionURL name="editSynonymSet" var="editSynonymSetURL">
+<portlet:actionURL name="/synonyms/edit_synonym_sets" var="editSynonymSetURL">
 	<portlet:param name="mvcPath" value="/view_synonym_sets.jsp" />
 </portlet:actionURL>
 

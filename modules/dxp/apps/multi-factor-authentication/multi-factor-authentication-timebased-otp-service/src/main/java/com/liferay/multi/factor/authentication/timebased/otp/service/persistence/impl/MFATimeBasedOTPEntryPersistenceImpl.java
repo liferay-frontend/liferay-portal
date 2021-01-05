@@ -946,15 +946,6 @@ public class MFATimeBasedOTPEntryPersistenceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		MFATimeBasedOTPEntryPersistenceImpl.class);
 
-	static {
-		try {
-			Class.forName(MFATimeBasedOTPPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;

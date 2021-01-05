@@ -18,7 +18,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.CaptureHandler;
 import com.liferay.portal.kernel.test.JDKLoggerTestUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.rule.NewEnv;
+import com.liferay.portal.kernel.test.rule.NewEnvTestRule;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -32,6 +35,7 @@ import java.util.logging.LogRecord;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -40,8 +44,10 @@ import org.junit.Test;
 public class TypedPropertiesTest {
 
 	@ClassRule
-	public static final CodeCoverageAssertor coverageAssertor =
-		CodeCoverageAssertor.INSTANCE;
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			CodeCoverageAssertor.INSTANCE, NewEnvTestRule.INSTANCE);
 
 	@Test
 	public void testKeySet() throws IOException {
@@ -258,6 +264,26 @@ public class TypedPropertiesTest {
 
 			_assertSave(typedProperties, StringPool.BLANK);
 		}
+	}
+
+	@NewEnv(type = NewEnv.Type.JVM)
+	@NewEnv.Environment(variables = "LIFERAY_FOO_ENV_VALUE=ENV_TEST_VALUE")
+	@Test
+	public void testLoadEnvVariable() throws IOException {
+		TypedProperties typedProperties = new TypedProperties();
+
+		typedProperties.load(
+			new StringReader("testKey=\"${LIFERAY_FOO_ENV_VALUE}\""));
+
+		Assert.assertEquals("ENV_TEST_VALUE", typedProperties.get("testKey"));
+	}
+
+	@Test
+	public void testLoadNonexistentEnvVariable() throws IOException {
+		TypedProperties typedProperties = _createTypedProperties(
+			"testKey=\"${LIFERAY_FOO_ENV_VALUE}\"");
+
+		Assert.assertNull(typedProperties.get("LIFERAY_FOO_ENV_VALUE"));
 	}
 
 	@Test

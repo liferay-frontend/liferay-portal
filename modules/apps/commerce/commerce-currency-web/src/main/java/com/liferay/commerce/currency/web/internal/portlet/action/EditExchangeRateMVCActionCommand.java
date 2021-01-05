@@ -54,7 +54,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommerceCurrencyPortletKeys.COMMERCE_CURRENCY,
-		"mvc.command.name=editExchangeRate"
+		"mvc.command.name=/commerce_currency/edit_exchange_rate"
 	},
 	service = MVCActionCommand.class
 )
@@ -94,7 +94,8 @@ public class EditExchangeRateMVCActionCommand extends BaseMVCActionCommand {
 				SessionErrors.add(actionRequest, exception.getClass());
 
 				actionResponse.setRenderParameter(
-					"mvcRenderCommandName", "editCommerceCurrency");
+					"mvcRenderCommandName",
+					"/commerce_currency/edit_commerce_currency");
 			}
 			else {
 				throw exception;

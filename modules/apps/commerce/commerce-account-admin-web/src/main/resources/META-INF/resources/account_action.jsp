@@ -33,7 +33,7 @@ CommerceAccount commerceAccount = (CommerceAccount)row.getObject();
 >
 	<c:if test="<%= commerceAccountAdminDisplayContext.hasPermission(commerceAccount.getCommerceAccountId(), ActionKeys.UPDATE) %>">
 		<portlet:renderURL var="editURL">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceAccount" />
+			<portlet:param name="mvcRenderCommandName" value="/commerce_account_admin/edit_commerce_account" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceAccountId" value="<%= String.valueOf(commerceAccount.getCommerceAccountId()) %>" />
 		</portlet:renderURL>
@@ -43,7 +43,7 @@ CommerceAccount commerceAccount = (CommerceAccount)row.getObject();
 			url="<%= editURL %>"
 		/>
 
-		<portlet:actionURL name="editCommerceAccount" var="setActiveURL">
+		<portlet:actionURL name="/commerce_account_admin/edit_commerce_account" var="setActiveURL">
 			<portlet:param name="<%= Constants.CMD %>" value="setActive" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceAccountId" value="<%= String.valueOf(commerceAccount.getCommerceAccountId()) %>" />
@@ -57,7 +57,7 @@ CommerceAccount commerceAccount = (CommerceAccount)row.getObject();
 	</c:if>
 
 	<c:if test="<%= commerceAccountAdminDisplayContext.hasPermission(commerceAccount.getCommerceAccountId(), ActionKeys.DELETE) %>">
-		<portlet:actionURL name="editCommerceAccount" var="deleteURL">
+		<portlet:actionURL name="/commerce_account_admin/edit_commerce_account" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceAccountId" value="<%= String.valueOf(commerceAccount.getCommerceAccountId()) %>" />

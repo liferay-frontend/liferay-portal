@@ -42,6 +42,7 @@ public class SortField implements Serializable {
 
 		_entityField = entityField;
 		_asc = asc;
+
 		_fieldName = entityField.getName();
 	}
 
@@ -55,6 +56,7 @@ public class SortField implements Serializable {
 	public SortField(String fieldName, boolean asc) {
 		_fieldName = fieldName;
 		_asc = asc;
+
 		_entityField = null;
 	}
 

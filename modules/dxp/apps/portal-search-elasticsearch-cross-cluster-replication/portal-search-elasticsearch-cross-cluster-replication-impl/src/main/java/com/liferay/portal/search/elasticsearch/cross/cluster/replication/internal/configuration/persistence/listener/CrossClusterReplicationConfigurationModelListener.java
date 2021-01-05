@@ -284,9 +284,8 @@ public class CrossClusterReplicationConfigurationModelListener
 
 	private String _getMessage(String key, Object... arguments) {
 		try {
-			ResourceBundle resourceBundle = _getResourceBundle();
-
-			return ResourceBundleUtil.getString(resourceBundle, key, arguments);
+			return ResourceBundleUtil.getString(
+				_getResourceBundle(), key, arguments);
 		}
 		catch (Exception exception) {
 			return null;

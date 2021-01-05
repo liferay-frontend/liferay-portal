@@ -21,17 +21,21 @@ GroupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHel
 
 liveGroup = groupDisplayContextHelper.getLiveGroup();
 liveGroupId = groupDisplayContextHelper.getLiveGroupId();
+
 UnicodeProperties liveGroupTypeSettings = liveGroup.getTypeSettingsProperties();
 
 LayoutSet privateLayoutSet = LayoutSetLocalServiceUtil.getLayoutSet(liveGroup.getGroupId(), true);
 LayoutSet publicLayoutSet = LayoutSetLocalServiceUtil.getLayoutSet(liveGroup.getGroupId(), false);
 
 boolean liveGroupRemoteStaging = liveGroup.hasRemoteStagingGroup() && PropsValues.STAGING_LIVE_GROUP_REMOTE_STAGING_ENABLED;
+
 boolean stagedLocally = liveGroup.isStaged() && !liveGroup.isStagedRemotely();
+
 boolean stagedRemotely = liveGroup.isStaged() && !stagedLocally;
 
 if (stagedLocally) {
 	stagingGroup = liveGroup.getStagingGroup();
+
 	stagingGroupId = stagingGroup.getGroupId();
 }
 
@@ -98,7 +102,7 @@ BackgroundTask lastCompletedInitialPublicationBackgroundTask = BackgroundTaskMan
 							</div>
 						</clay:sheet-footer>
 
-						<aui:script require="metal-dom/src/dom as dom">
+						<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 							var pwcWarning = document.getElementById('<portlet:namespace />pwcWarning');
 							var remoteStagingOptions = document.getElementById(
 								'<portlet:namespace />remoteStagingOptions'
@@ -116,8 +120,10 @@ BackgroundTask lastCompletedInitialPublicationBackgroundTask = BackgroundTaskMan
 								remoteStagingOptions &&
 								trashWarning
 							) {
-								dom.delegate(stagingTypes, 'click', 'input', function (event) {
-									var value = event.delegateTarget.value;
+								var delegate = delegateModule.default;
+
+								delegate(stagingTypes, 'click', 'input', function (event) {
+									var value = event.target.closest('input').value;
 
 									if (value != '<%= StagingConstants.TYPE_LOCAL_STAGING %>') {
 										pwcWarning.classList.add('hide');

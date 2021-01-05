@@ -126,13 +126,13 @@ AUI.add(
 			'</span></a>';
 
 		var TPL_INFO_TAB_BODY =
-			'<div class="{className} fade in tab-pane" id="{tabId}">{content}</div>';
+			'<div class="{className} fade show tab-pane" id="{tabId}">{content}</div>';
 
 		var TPL_INFO_TAB_BODY_CONTENT =
 			'<dt class="{dtClassName}">{dt}</dt><dd class="{ddClassName}">{dd}</dd>';
 
 		var TPL_INFO_TAB_TITLE =
-			'<li><a aria-expanded="false" class="{className}" data-toggle="liferay-tab" href="#{tabId}">{tabTitle}</a></li>';
+			'<li class="nav-item"><a aria-expanded="false" class="nav-link {className}" data-toggle="liferay-tab" href="#{tabId}">{tabTitle}</a></li>';
 
 		var LiferayItemViewer = A.Component.create({
 			ATTRS: {
@@ -654,7 +654,7 @@ AUI.add(
 
 				TPL_SIDENAV:
 					'<div class="closed image-viewer-sidenav sidenav-fixed sidenav-menu-slider sidenav-right">' +
-					'<div class="image-viewer-sidenav-menu sidebar sidebar-default sidenav-menu">' +
+					'<div class="image-viewer-sidenav-menu sidebar sidebar-light sidenav-menu">' +
 					'<div class="sidebar-header">' +
 					'<a class="' +
 					CSS_ICON_MONOSPACED +
@@ -662,7 +662,7 @@ AUI.add(
 					Liferay.Util.getLexiconIconTpl('times') +
 					'</a>' +
 					'<h4 class="image-viewer-sidenav-header">' +
-					'<ul class="nav nav-tabs nav-tabs-default"></ul>' +
+					'<ul class="nav nav-tabs"></ul>' +
 					'</h4>' +
 					'</div>' +
 					'<div class="image-viewer-sidenav-body sidebar-body">' +

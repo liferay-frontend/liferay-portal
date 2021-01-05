@@ -39,6 +39,7 @@ public class DDMStructureContentDashboardItemType
 
 		_ddmStructure = ddmStructure;
 		_group = group;
+
 		_infoItemReference = new InfoItemReference(
 			DDMStructure.class.getName(), _ddmStructure.getStructureId());
 	}

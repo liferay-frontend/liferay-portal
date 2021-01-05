@@ -91,9 +91,11 @@ public class FragmentEntryLinkStagedModelDataHandler
 		String html = fragmentEntryLink.getHtml();
 
 		if (Validator.isNotNull(html)) {
-			_dlReferencesExportImportContentProcessor.
-				replaceExportContentReferences(
-					portletDataContext, fragmentEntryLink, html, true, false);
+			html =
+				_dlReferencesExportImportContentProcessor.
+					replaceExportContentReferences(
+						portletDataContext, fragmentEntryLink, html, true,
+						false);
 		}
 
 		fragmentEntryLink.setHtml(html);
@@ -101,10 +103,11 @@ public class FragmentEntryLinkStagedModelDataHandler
 		String editableValues = fragmentEntryLink.getEditableValues();
 
 		if (Validator.isNotNull(editableValues)) {
-			_fragmentEntryLinkExportImportContentProcessor.
-				replaceExportContentReferences(
-					portletDataContext, fragmentEntryLink, editableValues, true,
-					false);
+			editableValues =
+				_fragmentEntryLinkExportImportContentProcessor.
+					replaceExportContentReferences(
+						portletDataContext, fragmentEntryLink, editableValues,
+						true, false);
 		}
 
 		fragmentEntryLink.setEditableValues(editableValues);

@@ -243,15 +243,15 @@ public class CommerceDiscountCalculationV2Impl
 			return null;
 		}
 
-		CommerceDiscount commerceDiscount =
-			commerceDiscountLocalService.getCommerceDiscount(
-				commerceDiscountId);
-
 		BigDecimal discountAmount = BigDecimal.ZERO;
 
 		if (usePercentage) {
 			discountAmount = commercePrice.multiply(commerceDiscountValue);
 			discountAmount = discountAmount.divide(_ONE_HUNDRED);
+
+			CommerceDiscount commerceDiscount =
+				commerceDiscountLocalService.getCommerceDiscount(
+					commerceDiscountId);
 
 			BigDecimal maximumDiscountAmount =
 				commerceDiscount.getMaximumDiscountAmount();

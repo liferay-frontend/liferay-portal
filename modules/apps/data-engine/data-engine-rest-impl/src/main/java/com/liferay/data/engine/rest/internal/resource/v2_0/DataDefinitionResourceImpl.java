@@ -46,7 +46,6 @@ import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
-import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.exception.RequiredStructureException;
 import com.liferay.dynamic.data.mapping.form.builder.rule.DDMFormRuleDeserializer;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
@@ -73,6 +72,7 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.spi.converter.SPIDDMFormRuleConverter;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.storage.StorageType;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
 import com.liferay.dynamic.data.mapping.util.DDMFormLayoutFactory;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureCreateDateComparator;
@@ -102,7 +102,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -123,12 +122,9 @@ import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
-import java.sql.Types;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -315,13 +311,19 @@ public class DataDefinitionResourceImpl
 			Long siteId, String contentType, String dataDefinitionKey)
 		throws Exception {
 
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			siteId,
+			_dataDefinitionContentTypeTracker.getClassNameId(contentType),
+			dataDefinitionKey);
+
+		_dataDefinitionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			ddmStructure.getStructureId(), ActionKeys.VIEW);
+
 		return DataDefinitionUtil.toDataDefinition(
 			_dataDefinitionContentTypeTracker, _ddmFormFieldTypeServicesTracker,
-			_ddmStructureLocalService.getStructure(
-				siteId,
-				_dataDefinitionContentTypeTracker.getClassNameId(contentType),
-				dataDefinitionKey),
-			_ddmStructureLayoutLocalService, _spiDDMFormRuleConverter);
+			ddmStructure, _ddmStructureLayoutLocalService,
+			_spiDDMFormRuleConverter);
 	}
 
 	@Override
@@ -336,72 +338,6 @@ public class DataDefinitionResourceImpl
 				LanguageUtil.format(
 					contextAcceptLanguage.getPreferredLocale(),
 					"page-size-is-greater-than-x", 250));
-		}
-
-		if (Objects.equals(contentType, "native-object") &&
-			Validator.isNull(keywords)) {
-
-			for (DataEngineNativeObject dataEngineNativeObject :
-					_dataEngineNativeObjectTracker.
-						getDataEngineNativeObjects()) {
-
-				DataDefinition dataDefinition = null;
-
-				try {
-					dataDefinition =
-						getSiteDataDefinitionByContentTypeByDataDefinitionKey(
-							siteId, "native-object",
-							dataEngineNativeObject.getClassName());
-				}
-				catch (Exception exception) {
-					if (!(exception instanceof NoSuchStructureException) &&
-						!(exception.getCause() instanceof
-							NoSuchStructureException)) {
-
-						throw exception;
-					}
-
-					dataDefinition = new DataDefinition() {
-						{
-							availableLanguageIds = new String[] {
-								contextAcceptLanguage.getPreferredLanguageId()
-							};
-							dataDefinitionKey =
-								dataEngineNativeObject.getClassName();
-							storageType = "json";
-						}
-					};
-				}
-
-				dataDefinition.setDataDefinitionFields(
-					_toDataDefinitionFields(
-						Optional.ofNullable(
-							dataDefinition.getDataDefinitionFields()
-						).orElse(
-							new DataDefinitionField[0]
-						),
-						dataEngineNativeObject.
-							getDataEngineNativeObjectFields()));
-				dataDefinition.setName(
-					HashMapBuilder.<String, Object>putAll(
-						Optional.ofNullable(
-							dataDefinition.getName()
-						).orElse(
-							new HashMap<>()
-						)
-					).put(
-						contextAcceptLanguage.getPreferredLanguageId(),
-						dataEngineNativeObject.getName()
-					).build());
-
-				if (Validator.isNull(dataDefinition.getId())) {
-					postDataDefinitionByContentType(
-						"native-object", dataDefinition);
-				}
-				else {
-					putDataDefinition(dataDefinition.getId(), dataDefinition);
-				}
-			}
 		}
 
 		if (ArrayUtil.isEmpty(sorts)) {
@@ -502,7 +438,9 @@ public class DataDefinitionResourceImpl
 			LocalizedValueUtil.toLocaleStringMap(
 				dataDefinition.getDescription()),
 			ddmFormSerializerSerializeResponse.getContent(),
-			GetterUtil.getString(dataDefinition.getStorageType(), "json"),
+			GetterUtil.getString(
+				dataDefinition.getStorageType(),
+				StorageType.DEFAULT.getValue()),
 			new ServiceContext());
 
 		_addDataDefinitionFieldLinks(
@@ -669,11 +607,6 @@ public class DataDefinitionResourceImpl
 								dataDefinitionField1),
 							DataDefinitionField.class));
 				}
-
-				_normalize(
-					existingDataDefinition.getAvailableLanguageIds(),
-					nestedDataDefinitionFields,
-					dataDefinition.getDefaultLanguageId());
 
 				dataDefinitionField.setNestedDataDefinitionFields(
 					nestedDataDefinitionFields);
@@ -962,35 +895,6 @@ public class DataDefinitionResourceImpl
 		);
 	}
 
-	private String _getFieldType(String customType, int sqlType) {
-		if (ArrayUtil.contains(_BASIC_FIELD_TYPES, customType)) {
-			return customType;
-		}
-
-		String type = "text";
-
-		if (sqlType == Types.ARRAY) {
-			type = "select";
-		}
-		else if (sqlType == Types.BOOLEAN) {
-			type = "radio";
-		}
-		else if ((sqlType == Types.BIGINT) || (sqlType == Types.DECIMAL) ||
-				 (sqlType == Types.DOUBLE) || (sqlType == Types.FLOAT) ||
-				 (sqlType == Types.INTEGER) || (sqlType == Types.NUMERIC) ||
-				 (sqlType == Types.TINYINT)) {
-
-			type = "numeric";
-		}
-		else if ((sqlType == Types.DATE) || (sqlType == Types.TIME) ||
-				 (sqlType == Types.TIMESTAMP)) {
-
-			type = "date";
-		}
-
-		return type;
-	}
-
 	private JSONObject _getFieldTypeMetadataJSONObject(
 		String ddmFormFieldName, ResourceBundle resourceBundle) {
 
@@ -1118,66 +1022,6 @@ public class DataDefinitionResourceImpl
 			ResourceBundleUtil.getBundle(
 				"content.Language", locale, ddmFormFieldType.getClass()),
 			_portal.getResourceBundle(locale));
-	}
-
-	private void _normalize(
-		String[] availableLanguageIds,
-		DataDefinitionField[] dataDefinitionFields, String defaultLanguageId) {
-
-		for (DataDefinitionField dataDefinitionField : dataDefinitionFields) {
-			Map<String, Object> customProperties =
-				dataDefinitionField.getCustomProperties();
-
-			if (MapUtil.isNotEmpty(customProperties)) {
-				_normalize(
-					availableLanguageIds, defaultLanguageId,
-					(Map)customProperties.get("options"));
-				_normalize(
-					availableLanguageIds, defaultLanguageId,
-					(Map)customProperties.get("placeholder"));
-				_normalize(
-					availableLanguageIds, defaultLanguageId,
-					(Map)customProperties.get("tooltip"));
-			}
-
-			_normalize(
-				availableLanguageIds, defaultLanguageId,
-				dataDefinitionField.getDefaultValue());
-			_normalize(
-				availableLanguageIds, defaultLanguageId,
-				dataDefinitionField.getLabel());
-
-			if (ArrayUtil.isNotEmpty(
-					dataDefinitionField.getNestedDataDefinitionFields())) {
-
-				_normalize(
-					availableLanguageIds,
-					dataDefinitionField.getNestedDataDefinitionFields(),
-					defaultLanguageId);
-			}
-
-			_normalize(
-				availableLanguageIds, defaultLanguageId,
-				dataDefinitionField.getTip());
-		}
-	}
-
-	private void _normalize(
-		String[] availableLanguageIds, String defaultLanguageId,
-		Map<String, Object> map) {
-
-		if (MapUtil.isEmpty(map)) {
-			return;
-		}
-
-		for (String languageId : availableLanguageIds) {
-			map.putIfAbsent(languageId, map.get(defaultLanguageId));
-		}
-
-		Set<Map.Entry<String, Object>> entries = map.entrySet();
-
-		entries.removeIf(
-			entry -> !ArrayUtil.contains(availableLanguageIds, entry.getKey()));
 	}
 
 	private void _removeFieldsFromDataLayout(
@@ -1361,91 +1205,6 @@ public class DataDefinitionResourceImpl
 			_dataDefinitionContentTypeTracker, _ddmFormFieldTypeServicesTracker,
 			ddmStructure, _ddmStructureLayoutLocalService,
 			_spiDDMFormRuleConverter);
-	}
-
-	private DataDefinitionField[] _toDataDefinitionFields(
-			DataDefinitionField[] dataDefinitionFields,
-			List<DataEngineNativeObjectField> dataEngineNativeObjectFields)
-		throws Exception {
-
-		if (ListUtil.isEmpty(dataEngineNativeObjectFields)) {
-			return new DataDefinitionField[0];
-		}
-
-		List<DataDefinitionField> list = new ArrayList<>();
-
-		for (DataEngineNativeObjectField dataEngineNativeObjectField :
-				dataEngineNativeObjectFields) {
-
-			Column<?, ?> column = dataEngineNativeObjectField.getColumn();
-
-			DataDefinitionField dataDefinitionField = Stream.of(
-				dataDefinitionFields
-			).filter(
-				field -> Objects.equals(column.getName(), field.getName())
-			).findFirst(
-			).orElse(
-				new DataDefinitionField() {
-					{
-						customProperties = HashMapBuilder.<String, Object>put(
-							"fieldNamespace", StringPool.BLANK
-						).put(
-							"nativeField", true
-						).build();
-						defaultValue = HashMapBuilder.<String, Object>put(
-							contextAcceptLanguage.getPreferredLanguageId(),
-							StringPool.BLANK
-						).build();
-						label = HashMapBuilder.<String, Object>put(
-							contextAcceptLanguage.getPreferredLanguageId(),
-							GetterUtil.getString(
-								dataEngineNativeObjectField.getCustomName(),
-								column.getName())
-						).build();
-						localizable = true;
-						name = column.getName();
-						tip = HashMapBuilder.<String, Object>put(
-							contextAcceptLanguage.getPreferredLanguageId(),
-							StringPool.BLANK
-						).build();
-					}
-				}
-			);
-
-			dataDefinitionField.setFieldType(
-				_getFieldType(
-					dataEngineNativeObjectField.getCustomType(),
-					column.getSQLType()));
-			dataDefinitionField.setRequired(!column.isNullAllowed());
-
-			if (Objects.equals(
-					dataDefinitionField.getFieldType(), "checkbox_multiple") ||
-				Objects.equals(dataDefinitionField.getFieldType(), "radio") ||
-				Objects.equals(dataDefinitionField.getFieldType(), "select")) {
-
-				Map<String, Object> customProperties =
-					dataDefinitionField.getCustomProperties();
-
-				if (MapUtil.isEmpty((Map)customProperties.get("options"))) {
-					customProperties.put(
-						"options",
-						HashMapBuilder.<String, Object>put(
-							contextAcceptLanguage.getPreferredLanguageId(),
-							new String[] {
-								JSONUtil.put(
-									"label", "Option"
-								).put(
-									"value", "option"
-								).toJSONString()
-							}
-						).build());
-				}
-			}
-
-			list.add(dataDefinitionField);
-		}
-
-		return list.toArray(new DataDefinitionField[0]);
 	}
 
 	private DataDefinitionValidationException
@@ -1734,6 +1493,15 @@ public class DataDefinitionResourceImpl
 				return;
 			}
 
+			if ((ddmFormValidationException instanceof
+					DDMFormValidationException.
+						MustSetValidAvailableLocalesForProperty) &&
+				dataDefinitionContentType.
+					allowInvalidAvailableLocalesForProperty()) {
+
+				return;
+			}
+
 			throw _toDataDefinitionValidationException(
 				ddmFormValidationException);
 		}
@@ -1753,10 +1521,6 @@ public class DataDefinitionResourceImpl
 			_checkRemovedDataEngineNativeObjectFields(dataDefinition);
 		}
 	}
-
-	private static final String[] _BASIC_FIELD_TYPES = {
-		"checkbox_multiple", "date", "numeric", "radio", "select", "text"
-	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DataDefinitionResourceImpl.class);

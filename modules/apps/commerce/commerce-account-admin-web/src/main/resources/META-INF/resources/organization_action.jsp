@@ -39,7 +39,7 @@ CommerceAccountOrganizationRel commerceAccountOrganizationRel = (CommerceAccount
 	</c:if>
 
 	<c:if test="<%= commerceAccountOrganizationRelAdminDisplayContext.hasPermission(commerceAccountOrganizationRel.getCommerceAccountId(), ActionKeys.DELETE) %>">
-		<portlet:actionURL name="editCommerceAccountOrganizationRel" var="deleteURL">
+		<portlet:actionURL name="/commerce_account_admin/edit_commerce_account_organization_rel" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceAccountId" value="<%= String.valueOf(commerceAccountOrganizationRel.getCommerceAccountId()) %>" />

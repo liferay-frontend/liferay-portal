@@ -124,9 +124,7 @@ public class CPDefinitionGroupedEntriesDisplayContext
 	}
 
 	public String getLabel(Locale locale, String key) {
-		ResourceBundle resourceBundle = _getResourceBundle(locale);
-
-		return ResourceBundleUtil.getString(resourceBundle, key);
+		return ResourceBundleUtil.getString(_getResourceBundle(locale), key);
 	}
 
 	@Override

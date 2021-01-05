@@ -71,8 +71,21 @@ public class SiteParamConverterProvider
 			return siteId;
 		}
 
-		throw new NotFoundException(
-			"Unable to get a valid site with ID " + parameter);
+		StringBuilder sb = new StringBuilder(4);
+
+		sb.append("Unable to get a valid ");
+
+		if (multivaluedMap.containsKey("assetLibraryId")) {
+			sb.append("asset library");
+		}
+		else {
+			sb.append("site");
+		}
+
+		sb.append(" with ID ");
+		sb.append(parameter);
+
+		throw new NotFoundException(sb.toString());
 	}
 
 	@Override

@@ -17,6 +17,7 @@ package com.liferay.commerce.tax.engine.fixed.web.internal.frontend;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.tax.engine.fixed.web.internal.frontend.constants.CommerceTaxRateSettingDataSetConstants;
 import com.liferay.commerce.tax.engine.fixed.web.internal.model.TaxRateSetting;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.frontend.taglib.clay.data.set.ClayDataSetActionProvider;

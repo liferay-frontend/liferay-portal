@@ -42,12 +42,11 @@ import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.document.library.kernel.service.DLTrashService;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.kernel.util.DLValidator;
-import com.liferay.document.library.web.internal.configuration.FFDocumentLibraryDDMEditorConfigurationUtil;
 import com.liferay.document.library.web.internal.exception.FileNameExtensionException;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
 import com.liferay.dynamic.data.mapping.exception.StorageFieldRequiredException;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
-import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.kernel.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
@@ -433,8 +432,8 @@ public class EditFileEntryMVCActionCommand extends BaseMVCActionCommand {
 
 			FileEntry fileEntry = _dlAppService.addFileEntry(
 				repositoryId, folderId, uniqueFileName, mimeType,
-				uniqueFileName, description, changeLog, inputStream, size,
-				serviceContext);
+				FileUtil.stripExtension(uniqueFileName), description, changeLog,
+				inputStream, size, serviceContext);
 
 			_assetDisplayPageEntryFormProcessor.process(
 				FileEntry.class.getName(), fileEntry.getFileEntryId(),
@@ -960,12 +959,6 @@ public class EditFileEntryMVCActionCommand extends BaseMVCActionCommand {
 	private void _setUpDDMFormValues(ServiceContext serviceContext)
 		throws PortalException {
 
-		if (!FFDocumentLibraryDDMEditorConfigurationUtil.
-				useDataEngineEditor()) {
-
-			return;
-		}
-
 		long fileEntryTypeId = ParamUtil.getLong(
 			serviceContext, "fileEntryTypeId", -1);
 
@@ -976,9 +969,7 @@ public class EditFileEntryMVCActionCommand extends BaseMVCActionCommand {
 		DLFileEntryType dlFileEntryType =
 			_dlFileEntryTypeLocalService.getDLFileEntryType(fileEntryTypeId);
 
-		for (com.liferay.dynamic.data.mapping.kernel.DDMStructure ddmStructure :
-				dlFileEntryType.getDDMStructures()) {
-
+		for (DDMStructure ddmStructure : dlFileEntryType.getDDMStructures()) {
 			String className =
 				com.liferay.dynamic.data.mapping.kernel.DDMFormValues.class.
 					getName();
@@ -1053,6 +1044,9 @@ public class EditFileEntryMVCActionCommand extends BaseMVCActionCommand {
 				}
 			}
 
+			contentType = ParamUtil.getString(
+				uploadPortletRequest, "contentType", contentType);
+
 			if (cmd.equals(Constants.ADD) ||
 				cmd.equals(Constants.ADD_DYNAMIC) || (size > 0)) {
 
@@ -1100,12 +1094,12 @@ public class EditFileEntryMVCActionCommand extends BaseMVCActionCommand {
 				// Add file entry
 
 				String uniqueFileName = DLUtil.getUniqueFileName(
-					themeDisplay.getScopeGroupId(), folderId, title);
+					themeDisplay.getScopeGroupId(), folderId, sourceFileName);
 
 				fileEntry = _dlAppService.addFileEntry(
 					repositoryId, folderId, uniqueFileName, contentType,
-					uniqueFileName, description, changeLog, inputStream, size,
-					serviceContext);
+					FileUtil.stripExtension(uniqueFileName), description,
+					changeLog, inputStream, size, serviceContext);
 
 				JSONObject jsonObject = JSONUtil.put(
 					"fileEntryId", fileEntry.getFileEntryId());
@@ -1160,14 +1154,12 @@ public class EditFileEntryMVCActionCommand extends BaseMVCActionCommand {
 		if (Validator.isNotNull(extension)) {
 			if (Validator.isNull(sourceFileName)) {
 				throw new FileNameExtensionException(
-					"A file entry already exists with file name " +
-						sourceFileName);
+					"The file name cannot be empty or without extension");
 			}
 
 			if (Validator.isNull(FileUtil.getExtension(sourceFileName))) {
 				throw new FileNameExtensionException(
-					"A file entry already exists with file name " +
-						sourceFileName);
+					"The file name cannot be empty or without extension");
 			}
 		}
 	}

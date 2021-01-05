@@ -26,7 +26,10 @@ import com.liferay.asset.publisher.web.internal.helper.AssetPublisherWebHelper;
 import com.liferay.asset.publisher.web.internal.helper.AssetRSSHelper;
 import com.liferay.asset.publisher.web.internal.util.AssetPublisherCustomizerRegistry;
 import com.liferay.asset.util.AssetHelper;
+import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.Field;
 import com.liferay.dynamic.data.mapping.storage.Fields;
 import com.liferay.dynamic.data.mapping.util.DDMUtil;
@@ -52,6 +55,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.segments.SegmentsEntryRetriever;
+import com.liferay.segments.context.RequestContextMapper;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -160,14 +165,8 @@ public class AssetPublisherPortlet extends MVCPortlet {
 				return;
 			}
 
-			DDMStructure ddmStructure = field.getDDMStructure();
-
-			String type = ddmStructure.getFieldType(fieldName);
-
-			Serializable displayValue = DDMUtil.getDisplayFieldValue(
-				themeDisplay, fieldValue, type);
-
-			jsonObject.put("displayValue", String.valueOf(displayValue));
+			jsonObject.put(
+				"displayValue", _getDisplayFieldValue(field, themeDisplay));
 
 			if (fieldValue instanceof Boolean) {
 				jsonObject.put("value", (Boolean)fieldValue);
@@ -240,7 +239,8 @@ public class AssetPublisherPortlet extends MVCPortlet {
 					assetPublisherHelper, assetPublisherWebConfiguration,
 					assetPublisherWebHelper, infoListProviderTracker,
 					itemSelector, resourceRequest, resourceResponse,
-					resourceRequest.getPreferences());
+					resourceRequest.getPreferences(), requestContextMapper,
+					segmentsEntryRetriever);
 
 			resourceRequest.setAttribute(
 				AssetPublisherWebKeys.ASSET_PUBLISHER_DISPLAY_CONTEXT,
@@ -338,7 +338,8 @@ public class AssetPublisherPortlet extends MVCPortlet {
 					assetPublisherHelper, assetPublisherWebConfiguration,
 					assetPublisherWebHelper, infoListProviderTracker,
 					itemSelector, renderRequest, renderResponse,
-					renderRequest.getPreferences());
+					renderRequest.getPreferences(), requestContextMapper,
+					segmentsEntryRetriever);
 
 			renderRequest.setAttribute(
 				AssetPublisherWebKeys.ASSET_PUBLISHER_DISPLAY_CONTEXT,
@@ -414,6 +415,38 @@ public class AssetPublisherPortlet extends MVCPortlet {
 		target = "(&(release.bundle.symbolic.name=com.liferay.asset.publisher.web)(&(release.schema.version>=1.0.0)(!(release.schema.version>=2.0.0))))"
 	)
 	protected Release release;
+
+	@Reference
+	protected RequestContextMapper requestContextMapper;
+
+	@Reference
+	protected SegmentsEntryRetriever segmentsEntryRetriever;
+
+	private String _getDisplayFieldValue(Field field, ThemeDisplay themeDisplay)
+		throws Exception {
+
+		String fieldValue = String.valueOf(
+			DDMUtil.getDisplayFieldValue(
+				themeDisplay, field.getValue(themeDisplay.getLocale(), 0),
+				field.getType()));
+
+		DDMStructure ddmStructure = field.getDDMStructure();
+
+		DDMFormField ddmFormField = ddmStructure.getDDMFormField(
+			field.getName());
+
+		DDMFormFieldOptions ddmFormFieldOptions =
+			ddmFormField.getDDMFormFieldOptions();
+
+		LocalizedValue localizedValue = ddmFormFieldOptions.getOptionLabels(
+			String.valueOf(fieldValue));
+
+		if (localizedValue != null) {
+			return localizedValue.getString(themeDisplay.getLocale());
+		}
+
+		return fieldValue;
+	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AssetPublisherPortlet.class);

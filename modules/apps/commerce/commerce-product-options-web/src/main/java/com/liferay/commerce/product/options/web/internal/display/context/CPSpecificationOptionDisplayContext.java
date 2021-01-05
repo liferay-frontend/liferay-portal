@@ -75,15 +75,15 @@ public class CPSpecificationOptionDisplayContext
 			CPSpecificationOption cpSpecificationOption)
 		throws PortalException {
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		CPOptionCategory cpOptionCategory =
 			_cpOptionCategoryService.fetchCPOptionCategory(
 				cpSpecificationOption.getCPOptionCategoryId());
 
 		if (cpOptionCategory != null) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			return cpOptionCategory.getTitle(themeDisplay.getLocale());
 		}
 

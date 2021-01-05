@@ -24,6 +24,7 @@ WikiPortletInstanceConfiguration wikiPortletInstanceConfiguration = wikiRequestH
 boolean followRedirect = ParamUtil.getBoolean(request, "followRedirect", true);
 
 WikiNode node = (WikiNode)request.getAttribute(WikiWebKeys.WIKI_NODE);
+
 WikiPage wikiPage = (WikiPage)request.getAttribute(WikiWebKeys.WIKI_PAGE);
 
 WikiPage originalPage = null;
@@ -140,7 +141,7 @@ if (portletTitleBasedNavigation) {
 	</liferay-frontend:info-bar>
 </c:if>
 
-<div <%= portletTitleBasedNavigation ? "class=\"closed container-fluid-1280 sidenav-container sidenav-right\" id=\"" + liferayPortletResponse.getNamespace() + "infoPanelId\"" : StringPool.BLANK %>>
+<div <%= portletTitleBasedNavigation ? "class=\"closed container-fluid container-fluid-max-xl sidenav-container sidenav-right\" id=\"" + liferayPortletResponse.getNamespace() + "infoPanelId\"" : StringPool.BLANK %>>
 	<c:if test="<%= portletTitleBasedNavigation %>">
 		<liferay-frontend:sidebar-panel>
 			<liferay-util:include page="/wiki_admin/page_info_panel.jsp" servletContext="<%= application %>" />
@@ -416,6 +417,7 @@ if (portletTitleBasedNavigation) {
 						description = StringUtil.shorten(description, 200);
 
 						PortalUtil.setPageDescription(description, request);
+
 						PortalUtil.setPageKeywords(assetHelper.getAssetKeywords(WikiPage.class.getName(), wikiPage.getResourcePrimKey()), request);
 					}
 

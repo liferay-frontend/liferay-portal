@@ -38,6 +38,7 @@ definition {
 	@priority = "4"
 	test Add20Forms {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#Add20Forms";
 
 		Navigator.openURL();
@@ -71,6 +72,7 @@ definition {
 	@priority = "4"
 	test Add30Fields {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#Add30Fields";
 
 		Navigator.openURL();
@@ -101,6 +103,7 @@ definition {
 	@priority = "5"
 	test AddElementSetsWithTranslation {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#AddElementSetsWithTranslation";
 		property testray.component.names = "Training";
 
@@ -378,7 +381,8 @@ definition {
 
 	@priority = "5"
 	test AddFormInGlobal {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#AddFormInGlobal";
 		property testray.component.names = "Training";
 
@@ -467,6 +471,7 @@ definition {
 	@priority = "3"
 	test AddFormToUserSiteAndViewNoDuplicates {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#AddFormToUserSiteAndViewNoDuplicates";
 
 		Navigator.openURL();
@@ -587,6 +592,7 @@ definition {
 	@priority = "4"
 	test AddFormWithDuplicateTextFields {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#AddFormWithDuplicateTextFields";
 
 		Navigator.openURL();
@@ -631,6 +637,7 @@ definition {
 	@priority = "5"
 	test AddFormWithSpanishAsDefaultPortalLanguage {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#AddFormWithSpanishAsDefaultPortalLanguage";
 
 		Navigator.openURL();
@@ -729,6 +736,7 @@ definition {
 	@priority = "4"
 	test ChangeFieldType {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ChangeFieldType";
 
 		Navigator.openURL();
@@ -1068,7 +1076,8 @@ definition {
 	@description = "This is a use case for LPS-68418."
 	@priority = "3"
 	test ConfigureAutosave {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ConfigureAutosave";
 
 		Navigator.openURL();
@@ -1191,6 +1200,7 @@ definition {
 	@priority = "3"
 	test CreateUntitledForm {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#CreateUntitledForm";
 
 		Navigator.openURL();
@@ -1222,6 +1232,7 @@ definition {
 	@priority = "4"
 	test DeleteDateFieldAndViewEntries {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#DeleteDateFieldAndViewEntries";
 
 		Navigator.openURL();
@@ -1332,6 +1343,7 @@ definition {
 	@priority = "5"
 	test DeletePages {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#DeletePages";
 
 		Navigator.openURL();
@@ -1389,6 +1401,7 @@ definition {
 	@priority = "4"
 	test DeleteSelectFromListOptionAndViewEntries {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#DeleteSelectFromListOptionAndViewEntries";
 
 		Navigator.openURL();
@@ -1490,6 +1503,8 @@ definition {
 	@description = "This is a use case for LPS-68362."
 	@priority = "3"
 	test DeleteSelectFromListOptionValue {
+		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#DeleteSelectFromListOptionValue";
 
 		Navigator.openURL();
@@ -1551,6 +1566,7 @@ definition {
 	@priority = "4"
 	test EditAllFormFieldNames {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#EditAllFormFieldNames";
 
 		Navigator.openURL();
@@ -1666,7 +1682,8 @@ definition {
 	@description = "This is a use case for LPS-50757."
 	@priority = "4"
 	test EditAllFormFieldsTypesUsedBySystemSettings {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#EditAllFormFieldsTypesUsedBySystemSettings";
 
 		Navigator.openURL();
@@ -1855,6 +1872,8 @@ definition {
 	@description = "This is a use case for LPS-59749"
 	@priority = "3"
 	test EditFormsConfigurationViaSystemSettings {
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#EditFormsConfigurationViaSystemSettings";
 
 		Navigator.openURL();
@@ -1918,6 +1937,7 @@ definition {
 	@priority = "2"
 	test EditFormWithUpdatedSiteAndUserLocale {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#EditFormWithUpdatedSiteAndUserLocale";
 
 		Navigator.openURL();
@@ -1997,7 +2017,8 @@ definition {
 	@description = "This is a use case for LPS-78697."
 	@priority = "4"
 	test EditTranslatedGridField {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#EditTranslatedGridField";
 
 		Navigator.openURL();
@@ -2139,6 +2160,7 @@ definition {
 	@priority = "5"
 	test NavigateToCorrectForm {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#NavigateToCorrectForm";
 
 		Navigator.openURL();
@@ -2230,7 +2252,8 @@ definition {
 	test PreviewAndPublishForm {
 		property app.server.types = "jboss,tcserver,tomcat,weblogic,websphere,wildfly";
 		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver,sybase";
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 
 		Navigator.openURL();
 
@@ -2323,6 +2346,7 @@ definition {
 	@priority = "3"
 	test ReorderFieldOptions {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ReorderFieldOptions";
 
 		Navigator.openURL();
@@ -2393,6 +2417,7 @@ definition {
 	@priority = "4"
 	test SearchFormRecordMultipleEntries {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SearchFormRecordMultipleEntries";
 
 		var fieldValueList = "testEntry1,exampleText,sampleAnswer";
@@ -2496,6 +2521,7 @@ definition {
 	@priority = "4"
 	test SelectAndRemoveMultipleOptionsInSelectFromListField {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SelectAndRemoveMultipleOptionsInSelectFromListField";
 
 		Navigator.openURL();
@@ -2572,7 +2598,8 @@ definition {
 
 	@priority = "5"
 	test SubmitFormAfterEditingFields {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormAfterEditingFields";
 		property testray.component.names = "Training";
 
@@ -2952,6 +2979,7 @@ definition {
 	@priority = "4"
 	test SubmitFormAndViewEmailNotification {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormAndViewEmailNotification";
 		property test.smtp.server.enabled = "true";
 
@@ -3040,7 +3068,8 @@ definition {
 	@priority = "5"
 	test SubmitFormContainingCaptchaAndViewTextFieldValue {
 		property captcha.enabled = "true";
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormContainingCaptchaAndViewTextFieldValue";
 
 		Navigator.openURL();
@@ -3137,6 +3166,7 @@ definition {
 	@priority = "5"
 	test SubmitFormWithAllFieldTypesAndThreePages {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormWithAllFieldTypesAndThreePages";
 		property testray.component.names = "Training";
 
@@ -3476,6 +3506,7 @@ definition {
 	@priority = "5"
 	test SubmitFormWithCustomTextContainingValidation {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormWithCustomTextContainingValidation";
 
 		Navigator.openURL();
@@ -3566,7 +3597,8 @@ definition {
 
 	@priority = "4"
 	test SubmitFormWithMultipleFieldsAndViewEntriesViaDescriptiveDisplay {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormWithMultipleFieldsAndViewEntriesViaDescriptiveDisplay";
 
 		Navigator.openURL();
@@ -3752,6 +3784,7 @@ definition {
 	@priority = "4"
 	test SubmitFormWithRequiredCheckboxField {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormWithRequiredCheckboxField";
 
 		Navigator.openURL();
@@ -3934,6 +3967,8 @@ definition {
 	@description = "This is a use case for LPS-59997."
 	@priority = "3"
 	test SubmitFormWithRequiredMultiLineTextField {
+		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormWithRequiredMultiLineTextField";
 
 		Navigator.openURL();
@@ -4017,6 +4052,8 @@ definition {
 
 	@priority = "4"
 	test SubmitFormWithRequiredRadioField {
+		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormWithRequiredRadioField";
 
 		Navigator.openURL();
@@ -4109,6 +4146,7 @@ definition {
 	@priority = "5"
 	test SubmitFormWithRequiredRepeatingTextField {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormWithRequiredRepeatingTextField";
 
 		Navigator.openURL();
@@ -4189,6 +4227,7 @@ definition {
 	@priority = "5"
 	test SubmitFormWithRequiredTextField {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormWithRequiredTextField";
 		property testray.component.names = "Training";
 
@@ -4271,6 +4310,7 @@ definition {
 	@priority = "4"
 	test SubmitFormWithSwitcherCheckboxField {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormWithSwitcherCheckboxField";
 
 		Navigator.openURL();
@@ -4364,7 +4404,8 @@ definition {
 
 	@priority = "4"
 	test SubmitFormWithUploadField {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitFormWithUploadField";
 
 		Navigator.openURL();
@@ -4435,10 +4476,82 @@ definition {
 			uploadFileName = "Document_1.jpg");
 	}
 
+	@priority = "4"
+	test SubmitFormWithUploadFieldAsGuestUser {
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
+		property test.name.skip.portal.instance = "Forms#SubmitFormWithUploadFieldAsGuestUser";
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName();
+
+		Form.editDescription();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Upload");
+
+		var uploadFieldName = FormFields.getFieldName();
+
+		Form.editFieldLabelMetal(fieldValue = "Upload Field");
+
+		FormFields.enableSwitcher(fieldName = "Allow Guest Users to Send Files");
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishCopyURLLink();
+
+		var publishedFormPublicURL = Form.getPublishedFormPublicURL(
+			publishedFormPublicURL = "${publishedFormPublicURL}"
+		);
+
+		User.logoutPG();
+
+		Navigator.openSpecificURL(url = "${publishedFormPublicURL}");
+
+		FormPortlet.waitFormRenderer(text = "Submit");
+
+		FormFields.viewUploadFieldAsGuest(
+			fieldLabel = "Upload Field",
+			fieldName = "${uploadFieldName}");
+
+		UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
+			key_fieldName = "${uploadFieldName}",
+			locator1 = "FormFields#UPLOAD_FIELD",
+			value1 = "Document -_.jpg");
+
+		FormPortlet.submitSuccessfully();
+
+		User.loginUserPG(
+			password = "test",
+			userEmailAddress = "test@liferay.com");
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoViewEntries();
+
+		FormsAdminNavigator.gotoView();
+
+		FormsAdmin.viewUploadFile(
+			fieldLabel = "Upload Field",
+			fieldName = "${uploadFieldName}",
+			uploadFileName = "Document -_.jpg");
+	}
+
 	@description = "This is a use case for LPS-73322."
 	@priority = "4"
 	test SubmitWithRequiredDateField {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#SubmitWithRequiredDateField";
 
 		Navigator.openURL();
@@ -4527,6 +4640,7 @@ definition {
 	@priority = "3"
 	test ViewBlankLabelWhenAddingNewField {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ViewBlankLabelWhenAddingNewField";
 
 		Navigator.openURL();
@@ -4564,6 +4678,7 @@ definition {
 	@priority = "3"
 	test ViewConfirmationWhenLeavingFormWithoutSaving {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ViewConfirmationWhenLeavingFormWithoutSaving";
 
 		Navigator.openURL();
@@ -4599,6 +4714,7 @@ definition {
 	@priority = "4"
 	test ViewDefaultFieldNamesWithPunctuationCharacters {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ViewDefaultFieldNamesWithPunctuationCharacters";
 
 		Navigator.openURL();
@@ -4662,6 +4778,7 @@ definition {
 	@priority = "4"
 	test ViewFieldValidationIsNotBypassedWhenNextButtonIsHitTwice {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ViewFieldValidationIsNotBypassedWhenNextButtonIsHitTwice";
 
 		Navigator.openURL();
@@ -4749,6 +4866,7 @@ definition {
 	@priority = "3"
 	test ViewFormWithMultipleSelectionFieldAsASwitcherAndHideLabel {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ViewFormWithMultipleSelectionFieldAsASwitcherAndHideLabel";
 
 		Navigator.openURL();
@@ -4826,6 +4944,7 @@ definition {
 	@priority = "4"
 	test ViewRepeatableTextFieldLabel {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ViewRepeatableTextFieldLabel";
 
 		Navigator.openURL();
@@ -4889,6 +5008,7 @@ definition {
 	@priority = "3"
 	test ViewSaveNotification {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ViewSaveNotification";
 
 		Navigator.openURL();
@@ -4922,6 +5042,7 @@ definition {
 	@priority = "5"
 	test ViewSuccessPage {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Forms#ViewSuccessPage";
 		property testray.component.names = "Training";
 

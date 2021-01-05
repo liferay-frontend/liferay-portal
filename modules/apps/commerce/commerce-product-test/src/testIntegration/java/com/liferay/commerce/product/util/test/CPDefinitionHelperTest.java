@@ -122,9 +122,9 @@ public class CPDefinitionHelperTest {
 		long[] cpDefinitionIds = new long[_CP_INSTANCES_COUNT / 2];
 
 		for (CPInstance cpInstance : cpInstances) {
-			CPDefinition cpDefinition = cpInstance.getCPDefinition();
-
 			if ((counter % 2) == 0) {
+				CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
 				cpDefinitionIds[position] = cpDefinition.getCPDefinitionId();
 
 				position++;

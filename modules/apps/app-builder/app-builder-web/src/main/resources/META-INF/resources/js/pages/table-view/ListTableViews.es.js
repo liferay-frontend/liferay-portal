@@ -31,7 +31,7 @@ const COLUMNS = [
 	{
 		key: 'dateCreated',
 		sortable: true,
-		value: Liferay.Language.get('create-date'),
+		value: Liferay.Language.get('created-date'),
 	},
 	{
 		asc: false,

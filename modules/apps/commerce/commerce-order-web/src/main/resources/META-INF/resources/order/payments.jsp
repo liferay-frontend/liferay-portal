@@ -25,7 +25,7 @@ CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder()
 <div class="row">
 	<div class="col-md-6 d-flex">
 		<liferay-portlet:renderURL var="editOrderPaymentMethodURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceOrderPaymentMethod" />
+			<portlet:param name="mvcRenderCommandName" value="/commerce_order/edit_commerce_order_payment_method" />
 			<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderEditDisplayContext.getCommerceOrderId()) %>" />
 		</liferay-portlet:renderURL>
 
@@ -76,7 +76,7 @@ CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder()
 
 	<div class="col-md-6 d-flex">
 		<liferay-portlet:renderURL var="editOrderPaymentStatusURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceOrderPaymentStatus" />
+			<portlet:param name="mvcRenderCommandName" value="/commerce_order/edit_commerce_order_payment_status" />
 			<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderEditDisplayContext.getCommerceOrderId()) %>" />
 		</liferay-portlet:renderURL>
 

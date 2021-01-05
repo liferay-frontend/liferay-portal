@@ -63,12 +63,15 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 		return _ddmFormRenderer.render(
 			ddmForm, ddmStructureLayout.getDDMFormLayout(),
 			_toDDMFormRenderingContext(
-				dataLayoutId, dataLayoutRendererContext, ddmForm));
+				dataLayoutId, dataLayoutRendererContext, ddmForm,
+				ddmStructure.getGroupId()));
 	}
 
 	private DDMFormRenderingContext _toDDMFormRenderingContext(
-		Long dataLayoutId, DataLayoutRendererContext dataLayoutRendererContext,
-		DDMForm ddmForm) {
+			Long dataLayoutId,
+			DataLayoutRendererContext dataLayoutRendererContext,
+			DDMForm ddmForm, long groupId)
+		throws Exception {
 
 		DDMFormRenderingContext ddmFormRenderingContext =
 			new DDMFormRenderingContext();
@@ -80,6 +83,7 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 				dataLayoutRendererContext.getDataRecordValues(), ddmForm,
 				null));
 		ddmFormRenderingContext.setDDMStructureLayoutId(dataLayoutId);
+		ddmFormRenderingContext.setGroupId(groupId);
 		ddmFormRenderingContext.setHttpServletRequest(
 			dataLayoutRendererContext.getHttpServletRequest());
 		ddmFormRenderingContext.setHttpServletResponse(
@@ -92,8 +96,7 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 			StringPool.BLANK);
 
 		if (Validator.isNull(languageId)) {
-			locale = _portal.getLocale(
-				dataLayoutRendererContext.getHttpServletRequest());
+			locale = _portal.getSiteDefaultLocale(groupId);
 		}
 		else {
 			locale = LocaleUtil.fromLanguageId(languageId);

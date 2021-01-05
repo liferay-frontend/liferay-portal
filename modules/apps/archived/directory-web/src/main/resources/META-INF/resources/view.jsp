@@ -27,6 +27,7 @@ pageContext.setAttribute("portletURL", portletURL);
 String portletURLString = portletURL.toString();
 
 request.setAttribute("view.jsp-portletURL", portletURL);
+
 request.setAttribute("view.jsp-portletURLString", portletURLString);
 %>
 

@@ -52,7 +52,7 @@ JournalArticle article = journalDisplayContext.getArticle();
 		PortletURL portletURL = journalHistoryDisplayContext.getPortletURL();
 		%>
 
-		<aui:form action="<%= portletURL.toString() %>" cssClass="container-fluid-1280" method="post" name="fm">
+		<aui:form action="<%= portletURL.toString() %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 			<aui:input name="referringPortletResource" type="hidden" value="<%= journalHistoryDisplayContext.getReferringPortletResource() %>" />
 			<aui:input name="groupId" type="hidden" value="<%= String.valueOf(article.getGroupId()) %>" />
 
@@ -113,13 +113,8 @@ JournalArticle article = journalDisplayContext.getArticle();
 							</liferay-ui:search-container-column-text>
 						</c:when>
 						<c:when test='<%= Objects.equals(journalHistoryDisplayContext.getDisplayStyle(), "icon") %>'>
-
-							<%
-							row.setCssClass("entry-card lfr-asset-item");
-							%>
-
 							<liferay-ui:search-container-column-text>
-								<clay:vertical-card-v2
+								<clay:vertical-card
 									verticalCard="<%= new JournalArticleHistoryVerticalCard(articleVersion, renderRequest, renderResponse, searchContainer.getRowChecker(), assetDisplayPageFriendlyURLProvider, trashHelper) %>"
 								/>
 							</liferay-ui:search-container-column-text>

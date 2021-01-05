@@ -38,15 +38,15 @@ export function isLink(target, onClick) {
 export function handleAction(
 	{
 		event,
-		itemId = '',
+		itemId,
 		method,
-		onClick = '',
-		setLoading = () => {},
-		size = '',
-		target = '',
-		title = '',
+		onClick,
+		setLoading,
+		size,
 		successMessage,
-		url = '',
+		target,
+		title,
+		url,
 	},
 	{executeAsyncItemAction, highlightItems, openModal, openSidePanel}
 ) {
@@ -112,9 +112,11 @@ function ActionItem({
 	handleAction,
 	href,
 	icon,
+	itemId,
 	label,
 	method,
 	onClick,
+	setLoading,
 	size,
 	target,
 	title,
@@ -127,8 +129,10 @@ function ActionItem({
 		handleAction(
 			{
 				event,
+				itemId,
 				method,
 				onClick,
+				setLoading,
 				size: size || 'lg',
 				successMessage: data?.successMessage,
 				target,
@@ -280,8 +284,10 @@ function ActionsDropdownRenderer({actions, itemData, itemId}) {
 					closeMenu={() => setActive(false)}
 					handleAction={handleAction}
 					href={item.href && formatActionURL(item.href, itemData)}
+					itemId={itemId}
 					key={i}
 					method={item.method ?? item.data?.method}
+					setLoading={setLoading}
 				/>
 			);
 		});

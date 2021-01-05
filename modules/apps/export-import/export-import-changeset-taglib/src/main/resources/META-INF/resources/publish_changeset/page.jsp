@@ -21,8 +21,8 @@
 	<%
 	PortletURL portletURL = PortletURLFactoryUtil.create(request, ChangesetPortletKeys.CHANGESET, PortletRequest.ACTION_PHASE);
 
-	portletURL.setParameter(ActionRequest.ACTION_NAME, "exportImportChangeset");
-	portletURL.setParameter("mvcRenderCommandName", "exportImportChangeset");
+	portletURL.setParameter(ActionRequest.ACTION_NAME, "/export_import_changeset/export_import_changeset");
+	portletURL.setParameter("mvcRenderCommandName", "/export_import_changeset/export_import_changeset");
 	portletURL.setParameter("cmd", ChangesetConstants.PUBLISH_CHANGESET);
 	portletURL.setParameter("backURL", currentURL);
 	portletURL.setParameter("groupId", String.valueOf(changesetGroupId));

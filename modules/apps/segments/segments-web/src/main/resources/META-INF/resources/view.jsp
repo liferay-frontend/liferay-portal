@@ -45,7 +45,7 @@ request.setAttribute("view.jsp-eventName", eventName);
 	<portlet:param name="redirect" value="<%= currentURL %>" />
 </portlet:actionURL>
 
-<aui:form action="<%= deleteSegmentsEntryURL %>" cssClass="container-fluid-1280" method="post" name="fmSegmentsEntries">
+<aui:form action="<%= deleteSegmentsEntryURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fmSegmentsEntries">
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 
 	<liferay-ui:error exception="<%= RequiredSegmentsEntryException.MustNotDeleteSegmentsEntryReferencedBySegmentsExperiences.class %>" message="the-segment-cannot-be-deleted-because-it-is-required-by-one-or-more-experiences" />
@@ -171,12 +171,14 @@ request.setAttribute("view.jsp-eventName", eventName);
 	<aui:input name="siteRoleIds" type="hidden" />
 </aui:form>
 
-<aui:script require="metal-dom/src/all/dom as dom">
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 	var form = document.getElementById(
 		'<portlet:namespace />updateSegmentsEntrySiteRolesFm'
 	);
 
-	dom.delegate(document, 'click', '.assign-site-roles-link', function (event) {
+	var delegate = delegateModule.default;
+
+	delegate(document, 'click', '.assign-site-roles-link', function (event) {
 		var link = event.target.closest('.assign-site-roles-link');
 
 		var itemSelectorURL = link.dataset.itemselectorurl;

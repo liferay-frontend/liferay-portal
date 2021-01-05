@@ -135,18 +135,10 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 		long cpDefinitionOptionValueRelId = ParamUtil.getLong(
 			actionRequest, "cpDefinitionOptionValueRelId");
 
-		long cpDefinitionOptionRelId = ParamUtil.getLong(
-			actionRequest, "cpDefinitionOptionRelId");
 		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
 			actionRequest, "name");
 		double priority = ParamUtil.getDouble(actionRequest, "priority");
 		String key = ParamUtil.getString(actionRequest, "key");
-		long cpInstanceId = ParamUtil.getLong(actionRequest, "cpInstanceId");
-		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
-		boolean preselected = ParamUtil.getBoolean(
-			actionRequest, "preselected");
-		BigDecimal price = (BigDecimal)ParamUtil.getNumber(
-			actionRequest, "price", BigDecimal.ZERO);
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			CPDefinitionOptionValueRel.class.getName(), actionRequest);
@@ -155,6 +147,9 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 
 			// Add commerce product definition option value rel
 
+			long cpDefinitionOptionRelId = ParamUtil.getLong(
+				actionRequest, "cpDefinitionOptionRelId");
+
 			return _cpDefinitionOptionValueRelService.
 				addCPDefinitionOptionValueRel(
 					cpDefinitionOptionRelId, nameMap, priority, key,
@@ -162,6 +157,13 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 		}
 
 		// Update commerce product definition option value rel
+
+		long cpInstanceId = ParamUtil.getLong(actionRequest, "cpInstanceId");
+		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
+		boolean preselected = ParamUtil.getBoolean(
+			actionRequest, "preselected");
+		BigDecimal price = (BigDecimal)ParamUtil.getNumber(
+			actionRequest, "price", BigDecimal.ZERO);
 
 		return _cpDefinitionOptionValueRelService.
 			updateCPDefinitionOptionValueRel(

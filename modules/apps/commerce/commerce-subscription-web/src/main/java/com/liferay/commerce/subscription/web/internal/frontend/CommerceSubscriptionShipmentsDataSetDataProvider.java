@@ -26,6 +26,7 @@ import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceShipmentItemService;
 import com.liferay.commerce.service.CommerceShipmentService;
 import com.liferay.commerce.service.CommerceSubscriptionEntryLocalService;
+import com.liferay.commerce.subscription.web.internal.frontend.constants.CommerceSubscriptionDataSetConstants;
 import com.liferay.commerce.subscription.web.internal.model.Label;
 import com.liferay.commerce.subscription.web.internal.model.Link;
 import com.liferay.commerce.subscription.web.internal.model.Shipment;
@@ -166,7 +167,9 @@ public class CommerceSubscriptionShipmentsDataSetDataProvider
 			httpServletRequest, CommerceOrder.class.getName(),
 			PortletProvider.Action.MANAGE);
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceOrder");
+		portletURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_open_order_content/edit_commerce_order");
 		portletURL.setParameter(
 			"redirect", _portal.getCurrentURL(httpServletRequest));
 		portletURL.setParameter(

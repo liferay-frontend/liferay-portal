@@ -20,6 +20,7 @@ import {AppContext} from '../../../AppContext.es';
 import Button from '../../../components/button/Button.es';
 import {addItem, updateItem} from '../../../utils/client.es';
 import {errorToast, successToast} from '../../../utils/toast.es';
+import {normalizeNames} from '../../../utils/utils.es';
 import EditAppContext from './EditAppContext.es';
 
 export default withRouter(
@@ -49,8 +50,6 @@ export default withRouter(
 			name,
 		} = app;
 
-		const appName = name[editingLanguageId];
-
 		const getStandaloneLink = (appId) => {
 			const isStandalone = appDeployments.some(
 				(deployment) => deployment.type === 'standalone'
@@ -75,23 +74,6 @@ export default withRouter(
 			setDeploying(false);
 		};
 
-		const normalizeAppName = (names) => {
-			const name = {};
-
-			if (!names[defaultLanguageId]) {
-				names[defaultLanguageId] = names[editingLanguageId];
-			}
-
-			Object.keys(names).forEach((key) => {
-				const value = names[key];
-				if (value) {
-					name[key] = value;
-				}
-			});
-
-			return name;
-		};
-
 		const onError = (error) => {
 			const {title = ''} = error;
 			errorToast(`${title}.`);
@@ -105,9 +87,17 @@ export default withRouter(
 		const onDeploy = () => {
 			setDeploying(true);
 
+			if (!name[defaultLanguageId]) {
+				name[defaultLanguageId] = name[editingLanguageId];
+			}
+
 			const data = {
 				...app,
-				name: normalizeAppName(app.name),
+				name: normalizeNames({
+					allowEmptyKeys: false,
+					defaultName: Liferay.Language.get('untitled-app'),
+					localizableValue: name,
+				}),
 			};
 
 			if (appId) {
@@ -168,7 +158,7 @@ export default withRouter(
 							<Button
 								disabled={
 									appDeployments.length === 0 ||
-									!appName ||
+									!name[editingLanguageId]?.trim() ||
 									isDeploying
 								}
 								displayType="primary"

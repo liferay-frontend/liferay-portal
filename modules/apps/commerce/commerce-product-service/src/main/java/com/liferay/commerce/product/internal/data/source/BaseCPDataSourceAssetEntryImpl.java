@@ -79,10 +79,9 @@ public abstract class BaseCPDataSourceAssetEntryImpl implements CPDataSource {
 
 		searchContext.setKeywords(StringPool.STAR);
 
-		CPQuery cpQuery = getCPQuery(cpCatalogEntry.getCPDefinitionId());
-
 		return cpDefinitionHelper.search(
-			groupId, searchContext, cpQuery, start, end);
+			groupId, searchContext,
+			getCPQuery(cpCatalogEntry.getCPDefinitionId()), start, end);
 	}
 
 	protected abstract CPQuery getCPQuery(long cpDefinitionId)

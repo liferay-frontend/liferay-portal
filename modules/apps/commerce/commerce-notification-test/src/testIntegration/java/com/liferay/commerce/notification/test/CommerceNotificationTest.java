@@ -27,7 +27,7 @@ import com.liferay.commerce.notification.model.CommerceNotificationTemplate;
 import com.liferay.commerce.notification.service.CommerceNotificationQueueEntryLocalService;
 import com.liferay.commerce.notification.test.util.CommerceNotificationTestUtil;
 import com.liferay.commerce.notification.util.CommerceNotificationHelper;
-import com.liferay.commerce.product.model.CommerceChannelConstants;
+import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.petra.string.StringPool;

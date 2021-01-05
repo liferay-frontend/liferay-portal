@@ -30,7 +30,7 @@ if (Validator.isNull(redirect)) {
 
 PortletURL searchURL = renderResponse.createRenderURL();
 
-searchURL.setParameter("mvcRenderCommandName", "/configuration_admin/search");
+searchURL.setParameter("mvcRenderCommandName", "/configuration_admin/search_results");
 searchURL.setParameter("redirect", redirect);
 
 portletDisplay.setShowBackIcon(true);
@@ -65,14 +65,14 @@ renderResponse.setTitle(LanguageUtil.get(request, "search-results"));
 			modelVar="configurationEntry"
 		>
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="name"
 			>
 				<aui:a href="<%= configurationEntry.getEditURL(renderRequest, renderResponse) %>"><strong><%= configurationEntry.getName() %></strong></aui:a>
 			</liferay-ui:search-container-column-text>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="category"
 			>
 
@@ -101,7 +101,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "search-results"));
 			</liferay-ui:search-container-column-text>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="scope"
 			>
 				<c:choose>

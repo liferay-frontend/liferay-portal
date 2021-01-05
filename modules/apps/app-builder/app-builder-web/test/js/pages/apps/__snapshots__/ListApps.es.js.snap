@@ -205,7 +205,7 @@ exports[`ListApps renders 1`] = `
               <th
                 class="table-cell-expand-smaller text-left"
               >
-                create-date
+                created-date
               </th>
               <th
                 class="table-cell-expand-smaller text-left"

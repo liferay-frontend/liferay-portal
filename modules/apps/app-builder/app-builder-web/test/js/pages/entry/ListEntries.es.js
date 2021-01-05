@@ -85,7 +85,7 @@ describe('ListEntries', () => {
 			backURL: 'http://localhost/#/',
 			dataRecordId: 0,
 			languageId: undefined,
-			mvcPath: '/edit_entry.jsp',
+			mvcPath: '/edit_app_entry.jsp',
 		});
 	});
 

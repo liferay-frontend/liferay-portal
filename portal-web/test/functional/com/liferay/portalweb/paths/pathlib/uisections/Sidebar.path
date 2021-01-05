@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>Sidebar</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Sidebar</td></tr>
+</thead>
+<tbody>
+<tr>
+    <td>ADD_FIELD_TARGET</td>
+    <td>//div[contains(@class,'col-empty')]/div[contains(@class,'target')]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>ADD_FIELD_NESTED_TARGET</td>
+    <td>//div[contains(@class,'ddm-drag')]//div[@data-field-name='${key_fieldName}']</td>
+    <td></td>
+</tr>
+<tr>
+    <td>ADD_FIELD_NAME</td>
+    <td>//div[contains(@class,'field-type')]//span[normalize-space(text())='${key_fieldName}']</td>
+    <td></td>
+</tr>
+<tr>
+    <td>ADD_FIELD_POSITION</td>
+    <td>xpath=(//div[contains(@class,'col-empty')]/div[contains(@class,'target')])[${key_fieldLocation}]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>BACK</td>
+    <td>//button[*[name()='svg'][contains(@class,'lexicon-icon-angle-left')]]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>DDM_ANY</td>
+    <td>//div[contains(@class,'sidebar')]//label[contains(.,'${key_text}')]//following-sibling::input</td>
+    <td></td>
+</tr>
+<tr>
+    <td>DDM_LABEL</td>
+    <td>//div[contains(@class,'sidebar')]//label[contains(.,'Label')]//following-sibling::input</td>
+    <td></td>
+</tr>
+<tr>
+	<td>FORM_BUILDER</td>
+	<td>//div[contains(@class,'form-builder-layout')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ACTIVE_TAB</td>
+	<td>//div[contains(@class,'sidebar')]//*[@*='${key_tabName}'][contains(@aria-pressed,'true')]</td>
+	<td></td>
+</tr>
+<tr>
+    <td>OPTION_INPUT</td>
+    <td>xpath=(//label[normalize-space(text())='${key_optionFieldLabel}']//following-sibling::div[contains(@class,'options-container')]//div[contains(@class,'ddm-option-entry')]//input[contains(@class,'ddm-field-text')])[${index}]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>OPTION_INPUT_WITHOUT_LABEL</td>
+    <td>xpath=(//div[contains(@class,'ddm-option-entry')]//input[contains(@class,'ddm-field-text')])[${index}]</td>
+    <td></td>
+</tr>
+<tr>
+	<td>TAB</td>
+	<td>//div[contains(@class,'sidebar')]//*[@*='${key_tabName}']</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

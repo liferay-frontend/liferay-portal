@@ -85,13 +85,4 @@ public abstract class KaleoProcessFinderBaseImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		KaleoProcessFinderBaseImpl.class);
 
-	static {
-		try {
-			Class.forName(KaleoFormsPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 }

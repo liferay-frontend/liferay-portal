@@ -39,9 +39,7 @@ const JournalArticleSelector = ({
 		onChange('');
 	};
 
-	const handleFieldChanged = (event) => {
-		const selectedItem = event.selectedItem;
-
+	const handleFieldChanged = (selectedItem) => {
 		if (selectedItem && selectedItem.value) {
 			setArticle(JSON.parse(selectedItem.value));
 			onChange(selectedItem.value);
@@ -103,6 +101,10 @@ const JournalArticleSelector = ({
 					</ClayInput.GroupItem>
 				)}
 			</ClayInput.Group>
+
+			{article.message && (
+				<div className="form-feedback-item">{article.message}</div>
+			)}
 		</ClayForm.Group>
 	);
 };

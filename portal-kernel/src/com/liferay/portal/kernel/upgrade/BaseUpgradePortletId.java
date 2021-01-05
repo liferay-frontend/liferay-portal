@@ -17,15 +17,19 @@ package com.liferay.portal.kernel.upgrade;
 import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
 import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
-import com.liferay.portal.kernel.dao.db.DBTypeToSQLMap;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.model.PortletPreferenceValue;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -222,23 +226,6 @@ public abstract class BaseUpgradePortletId extends UpgradeProcess {
 				"update PortletPreferences set portletId = '", newRootPortletId,
 				"' where portletId = '", oldRootPortletId, "'"));
 
-		DBTypeToSQLMap cssDBTypeToSQLMap = new DBTypeToSQLMap(
-			StringBundler.concat(
-				"update PortletPreferences set preferences = replace(",
-				"preferences, '#portlet_", oldRootPortletId, "', '#portlet_",
-				newRootPortletId, "') where portletId = '", newRootPortletId,
-				"'"));
-
-		cssDBTypeToSQLMap.add(
-			DBType.SYBASE,
-			StringBundler.concat(
-				"update PortletPreferences set preferences = replace(",
-				"CAST_TEXT(preferences), '#portlet_", oldRootPortletId,
-				"', '#portlet_", newRootPortletId, "') where portletId = '",
-				newRootPortletId, "'"));
-
-		runSQL(cssDBTypeToSQLMap);
-
 		if (!newRootPortletId.contains("_INSTANCE_")) {
 			runSQL(
 				StringBundler.concat(
@@ -246,24 +233,6 @@ public abstract class BaseUpgradePortletId extends UpgradeProcess {
 					"portletId, '", oldRootPortletId, "_INSTANCE_', '",
 					newRootPortletId, "_INSTANCE_') where portletId like '",
 					oldRootPortletId, "_INSTANCE_%'"));
-
-			DBTypeToSQLMap instanceCSSDBTypeToSQLMap = new DBTypeToSQLMap(
-				StringBundler.concat(
-					"update PortletPreferences set preferences = replace(",
-					"preferences, '#portlet_", oldRootPortletId, "_INSTANCE_',",
-					"'#portlet_", newRootPortletId, "_INSTANCE_') where ",
-					"portletId like '", newRootPortletId, "_INSTANCE_%'"));
-
-			instanceCSSDBTypeToSQLMap.add(
-				DBType.SYBASE,
-				StringBundler.concat(
-					"update PortletPreferences set preferences = replace(",
-					"CAST_TEXT(preferences), '#portlet_", oldRootPortletId,
-					"_INSTANCE_','#portlet_", newRootPortletId,
-					"_INSTANCE_') where portletId like '", newRootPortletId,
-					"_INSTANCE_%'"));
-
-			runSQL(instanceCSSDBTypeToSQLMap);
 		}
 
 		runSQL(
@@ -273,22 +242,107 @@ public abstract class BaseUpgradePortletId extends UpgradeProcess {
 				"_USER_') where portletId like '", oldRootPortletId,
 				"_USER_%'"));
 
-		DBTypeToSQLMap userCSSDBTypeToSQLMap = new DBTypeToSQLMap(
-			StringBundler.concat(
-				"update PortletPreferences set preferences = replace(",
-				"preferences, '#portlet_", oldRootPortletId, "_USER_', ",
-				"'#portlet_", newRootPortletId, "_USER_') where portletId ",
-				"like '", newRootPortletId, "_USER_%'"));
+		if (hasColumn("PortletPreferences", "preferences")) {
+			DB db = DBManagerUtil.getDB();
 
-		userCSSDBTypeToSQLMap.add(
-			DBType.SYBASE,
-			StringBundler.concat(
-				"update PortletPreferences set preferences = replace(",
-				"CAST_TEXT(preferences), '#portlet_", oldRootPortletId,
-				"_USER_', '#portlet_", newRootPortletId, "_USER_') where ",
-				"portletId like '", newRootPortletId, "_USER_%'"));
+			DBType dbType = db.getDBType();
 
-		runSQL(userCSSDBTypeToSQLMap);
+			String preferencesExpression = "preferences";
+
+			if (dbType == DBType.SYBASE) {
+				preferencesExpression = "CAST_TEXT(preferences)";
+			}
+
+			runSQL(
+				StringBundler.concat(
+					"update PortletPreferences set preferences = replace(",
+					preferencesExpression, ", '#portlet_", oldRootPortletId,
+					"', '#portlet_", newRootPortletId, "') where portletId = '",
+					newRootPortletId, "'"));
+
+			if (!newRootPortletId.contains("_INSTANCE_")) {
+				runSQL(
+					StringBundler.concat(
+						"update PortletPreferences set preferences = replace(",
+						preferencesExpression, ", '#portlet_", oldRootPortletId,
+						"_INSTANCE_', '#portlet_", newRootPortletId,
+						"_INSTANCE_') where portletId like '", newRootPortletId,
+						"_INSTANCE_%'"));
+			}
+
+			runSQL(
+				StringBundler.concat(
+					"update PortletPreferences set preferences = replace(",
+					preferencesExpression, ", '#portlet_", oldRootPortletId,
+					"_USER_', '#portlet_", newRootPortletId,
+					"_USER_') where portletId like '", newRootPortletId,
+					"_USER_%'"));
+		}
+		else {
+			int smallValueMaxLength = ModelHintsUtil.getMaxLength(
+				PortletPreferenceValue.class.getName(), "smallValue");
+
+			String selectSQL = StringBundler.concat(
+				"select PortletPreferenceValue.portletPreferenceValueId, ",
+				"PortletPreferenceValue.largeValue, ",
+				"PortletPreferenceValue.smallValue from ",
+				"PortletPreferenceValue inner join PortletPreferences on ",
+				"PortletPreferences.portletPreferencesId = ",
+				"PortletPreferenceValue.portletPreferencesId where ",
+				"PortletPreferences.portletId = '", newRootPortletId,
+				"' or PortletPreferences.portletId like '", newRootPortletId,
+				"_INSTANCE_%' or PortletPreferences.portletId like '",
+				newRootPortletId,
+				"_USER_%' and PortletPreferenceValue.name = 'portletSetupCss'");
+
+			String updateSQL =
+				"update PortletPreferenceValue set largeValue = ?, " +
+					"smallValue = ? where portletPreferenceValueId = ?";
+
+			try (PreparedStatement selectPreparedStatement =
+					connection.prepareStatement(selectSQL);
+				PreparedStatement updatePreparedStatement =
+					AutoBatchPreparedStatementUtil.autoBatch(
+						connection.prepareStatement(updateSQL));
+				ResultSet resultSet = selectPreparedStatement.executeQuery()) {
+
+				while (resultSet.next()) {
+					String value = resultSet.getString("smallValue");
+
+					if (Validator.isBlank(value)) {
+						value = resultSet.getString("largeValue");
+					}
+
+					String newValue = StringUtil.replace(
+						value, "#portlet_" + oldRootPortletId,
+						"#portlet_" + newRootPortletId);
+
+					if (Objects.equals(value, newValue)) {
+						continue;
+					}
+
+					String largeValue = null;
+					String smallValue = null;
+
+					if (newValue.length() > smallValueMaxLength) {
+						largeValue = value;
+					}
+					else {
+						smallValue = value;
+					}
+
+					updatePreparedStatement.setString(1, largeValue);
+					updatePreparedStatement.setString(2, smallValue);
+
+					updatePreparedStatement.setLong(
+						3, resultSet.getLong("portletPreferenceValueId"));
+
+					updatePreparedStatement.addBatch();
+				}
+
+				updatePreparedStatement.executeBatch();
+			}
+		}
 	}
 
 	protected void updateLayout(long plid, String typeSettings)

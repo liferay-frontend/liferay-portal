@@ -33,7 +33,7 @@ const ListItems = ({defaultLanguageId, itemId, items, onChange}) => {
 						{Liferay.Language.get('name')}
 					</Cell>
 					<Cell headingCell>
-						{Liferay.Language.get('create-date')}
+						{Liferay.Language.get('created-date')}
 					</Cell>
 					<Cell headingCell>
 						{Liferay.Language.get('modified-date')}

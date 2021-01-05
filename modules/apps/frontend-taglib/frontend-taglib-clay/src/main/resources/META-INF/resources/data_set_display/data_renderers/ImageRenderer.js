@@ -19,53 +19,31 @@ import React from 'react';
 import {getValueFromItem} from '../utilities/index';
 
 function ImageRenderer(props) {
+	const imageProps =
+		typeof props.value === 'string'
+			? {
+					alt:
+						props.options.label ||
+						(props.options.labelKey
+							? getValueFromItem(
+									props.itemData,
+									props.options.labelKey
+							  )
+							: Liferay.Language.get('thumbnail')),
+					src: props.value,
+			  }
+			: {
+					alt: props.value.alt,
+					src: props.value.src,
+			  };
+
 	return (
-		<div className="row">
-			<div className="col-auto">
-				{typeof props.value === 'string' ? (
-					<ClaySticker
-						shape={props.options.shape || 'rounded'}
-						size={props.options.size || 'xl'}
-					>
-						<div className="sticker-overlay">
-							<img
-								alt={
-									props.options.label ||
-									(props.options.labelKey
-										? getValueFromItem(
-												props.itemData,
-												props.options.labelKey
-										  )
-										: Liferay.Language.get('thumbnail'))
-								}
-								className="sticker-img"
-								src={props.value}
-							/>
-						</div>
-					</ClaySticker>
-				) : (
-					<ClaySticker
-						shape={
-							props.options.shape ||
-							props.value.shape ||
-							'rounded'
-						}
-						size={props.options.size || props.value.size || 'xl'}
-					>
-						<div className="sticker-overlay">
-							<img
-								alt={
-									props.value.alt ||
-									Liferay.Language.get('thumbnail')
-								}
-								className="sticker-img"
-								src={props.value.src}
-							/>
-						</div>
-					</ClaySticker>
-				)}
-			</div>
-		</div>
+		<ClaySticker
+			shape={props.options.shape || 'rounded'}
+			size={props.options.size || 'xl'}
+		>
+			<img className="sticker-img" {...imageProps} />
+		</ClaySticker>
 	);
 }
 

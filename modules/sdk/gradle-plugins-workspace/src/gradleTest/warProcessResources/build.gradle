@@ -1,0 +1,14 @@
+task runGradleTest
+
+runGradleTest {
+	dependsOn ":war-mvc-portlet:war"
+
+	doLast {
+		Set<File> files = zipTree(project(":war-mvc-portlet").war.archiveFile).asFileTree.matching {
+			include "**/*.scss"
+			include "**/.sass-cache/*.css"
+		}.files
+
+		assert files.size() == 0
+	}
+}

@@ -71,7 +71,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "applications"));
 
 <portlet:actionURL name="editCommerceApplicationBrand" var="editCommerceApplicationBrandActionURL" />
 
-<div class="container-fluid-1280" id="<portlet:namespace />commerceApplicationBrandContainer">
+<div class="container-fluid container-fluid-max-xl" id="<portlet:namespace />commerceApplicationBrandContainer">
 	<aui:form action="<%= editCommerceApplicationBrandActionURL %>" method="post" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.DELETE %>" />
 		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
@@ -97,7 +97,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "applications"));
 				%>
 
 				<liferay-ui:search-container-column-text
-					cssClass="important table-cell-content"
+					cssClass="important table-cell-expand"
 					href="<%= rowURL %>"
 					property="name"
 				/>
@@ -143,8 +143,10 @@ renderResponse.setTitle(LanguageUtil.get(request, "applications"));
 		<portlet:param name="redirect" value="<%= currentURL %>" />
 	</portlet:actionURL>
 
-	<aui:script require="metal-dom/src/all/dom as dom,frontend-js-web/liferay/modal/commands/OpenSimpleInputModal.es as modalCommands">
-		var handleAddApplicationBrandButtonClick = dom.delegate(
+	<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule,frontend-js-web/liferay/modal/commands/OpenSimpleInputModal.es as modalCommands">
+		var delegate = delegateModule.default;
+
+		var handleAddApplicationBrandButtonClick = delegate(
 			document.body,
 			'click',
 			'#<portlet:namespace />addApplicationBrandButton',
@@ -163,7 +165,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "applications"));
 		);
 
 		function handleDestroyPortlet() {
-			handleAddApplicationBrandButtonClick.removeListener();
+			handleAddApplicationBrandButtonClick.dispose();
 
 			Liferay.detach('destroyPortlet', handleDestroyPortlet);
 		}

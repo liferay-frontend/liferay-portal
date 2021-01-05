@@ -23,9 +23,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -183,47 +185,49 @@ public class EditWorkspaceConnectionMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		if (_disconnectDataSource(
-				themeDisplay.getCompanyId(), configurationProperties)) {
+		long companyId = themeDisplay.getCompanyId();
 
-			configurationProperties.remove("token");
-
-			clearConfiguration(themeDisplay.getCompanyId());
-		}
-	}
-
-	private boolean _disconnectDataSource(
-			long companyId, Dictionary<String, Object> configurationProperties)
-		throws Exception {
+		String dataSourceId = null;
+		String liferayAnalyticsFaroBackendURL = null;
 
 		if (!AnalyticsSettingsUtil.isAnalyticsEnabled(companyId)) {
-			return false;
+			if (Validator.isNotNull(
+					GetterUtil.getString(
+						configurationProperties.get("token"), null))) {
+
+				dataSourceId = GetterUtil.getString(
+					configurationProperties.get("osbAsahDataSourceId"), null);
+				liferayAnalyticsFaroBackendURL = GetterUtil.getString(
+					configurationProperties.get(
+						"liferayAnalyticsFaroBackendURL"),
+					null);
+			}
+		}
+		else {
+			dataSourceId = AnalyticsSettingsUtil.getAsahFaroBackendDataSourceId(
+				companyId);
 		}
 
-		HttpResponse httpResponse = AnalyticsSettingsUtil.doPost(
-			null, companyId,
-			String.format(
-				"api/1.0/data-sources/%s/disconnect",
-				AnalyticsSettingsUtil.getAsahFaroBackendDataSourceId(
-					companyId)));
+		try {
+			HttpResponse httpResponse = AnalyticsSettingsUtil.doPost(
+				liferayAnalyticsFaroBackendURL, null, companyId,
+				String.format(
+					"api/1.0/data-sources/%s/disconnect", dataSourceId));
 
-		StatusLine statusLine = httpResponse.getStatusLine();
+			StatusLine statusLine = httpResponse.getStatusLine();
 
-		if (statusLine.getStatusCode() == HttpStatus.SC_FORBIDDEN) {
-			checkResponse(companyId, httpResponse);
-
-			configurationProperties.remove("token");
-
-			return false;
+			if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
+				SessionErrors.add(
+					actionRequest, "unableToNotifyAnalyticsCloud");
+			}
+		}
+		catch (Exception exception) {
+			SessionErrors.add(actionRequest, "unableToNotifyAnalyticsCloud");
 		}
 
-		if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
-			_log.error("Unable to disconnect data source");
+		configurationProperties.remove("token");
 
-			throw new PortalException("Unable to disconnect data source");
-		}
-
-		return true;
+		clearConfiguration(companyId);
 	}
 
 	private void _updateCompanyPreferences(

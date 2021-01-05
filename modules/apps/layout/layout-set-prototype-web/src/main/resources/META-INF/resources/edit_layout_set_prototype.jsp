@@ -50,6 +50,7 @@ if (layoutSetPrototype == null) {
 }
 
 boolean layoutsUpdateable = GetterUtil.getBoolean(layoutSetPrototype.getSettingsProperty("layoutsUpdateable"), true);
+boolean readyForPropagation = GetterUtil.getBoolean(layoutSetPrototype.getSettingsProperty("readyForPropagation"), true);
 
 Group group = themeDisplay.getSiteGroup();
 
@@ -87,9 +88,11 @@ request.setAttribute("edit_layout_set_prototype.jsp-redirect", currentURL);
 
 				<aui:input name="description" placeholder="description" />
 
-				<aui:input name="active" type="toggle-switch" value="<%= layoutSetPrototype.isActive() %>" />
+				<aui:input helpMessage="active-help" inlineLabel="right" label="active" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" value="<%= layoutSetPrototype.isActive() %>" />
 
-				<aui:input helpMessage="allow-site-administrators-to-modify-pages-associated-with-this-site-template-help" label="allow-site-administrators-to-modify-pages-associated-with-this-site-template" name="layoutsUpdateable" type="toggle-switch" value="<%= layoutsUpdateable %>" />
+				<aui:input helpMessage="allow-site-administrators-to-modify-pages-associated-with-this-site-template-help" inlineLabel="right" label="allow-site-administrators-to-modify-pages-associated-with-this-site-template" labelCssClass="simple-toggle-switch" name="layoutsUpdateable" type="toggle-switch" value="<%= layoutsUpdateable %>" />
+
+				<aui:input helpMessage="ready-for-propagation-help" label="ready-for-propagation" name="readyForPropagation" type="toggle-switch" value="<%= readyForPropagation %>" />
 
 				<%
 				Set<String> servletContextNames = CustomJspRegistryUtil.getServletContextNames();

@@ -22,6 +22,7 @@ import com.liferay.portal.search.internal.filter.range.RangeTermQueryValue;
 import com.liferay.portal.search.internal.filter.range.RangeTermQueryValueParser;
 import com.liferay.portal.search.internal.util.SearchStringUtil;
 import com.liferay.portal.search.query.BooleanQuery;
+import com.liferay.portal.search.query.NestedQuery;
 import com.liferay.portal.search.query.Queries;
 import com.liferay.portal.search.query.Query;
 import com.liferay.portal.search.query.SimpleStringQuery;
@@ -205,6 +206,10 @@ public class ComplexQueryBuilderImpl implements ComplexQueryBuilder {
 					value, SearchStringUtil.splitAndUnquote(field));
 			}
 
+			if (Objects.equals(type, "nested")) {
+				return _queries.nested(field, _queries.booleanQuery());
+			}
+
 			if (Objects.equals(type, "prefix")) {
 				if (Validator.isBlank(value)) {
 					return null;
@@ -303,6 +308,12 @@ public class ComplexQueryBuilderImpl implements ComplexQueryBuilder {
 
 				if (complexQueryPart != null) {
 					Query query = hydrate(complexQueryPart);
+
+					if (query instanceof NestedQuery) {
+						NestedQuery nestedQuery = (NestedQuery)query;
+
+						query = nestedQuery.getQuery();
+					}
 
 					if (query instanceof BooleanQuery) {
 						return (BooleanQuery)query;

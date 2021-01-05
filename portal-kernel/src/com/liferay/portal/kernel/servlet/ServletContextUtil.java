@@ -186,9 +186,7 @@ public class ServletContextUtil {
 
 		for (String path : paths) {
 			if (path.endsWith(_EXT_CLASS)) {
-				String className = _getClassName(rootPath, path);
-
-				classNames.add(className);
+				classNames.add(_getClassName(rootPath, path));
 			}
 			else if (path.endsWith(_EXT_JAR)) {
 				try (JarInputStream jarFile = new JarInputStream(

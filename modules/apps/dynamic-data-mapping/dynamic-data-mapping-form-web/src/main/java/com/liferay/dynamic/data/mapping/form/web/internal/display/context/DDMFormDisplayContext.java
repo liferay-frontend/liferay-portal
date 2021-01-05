@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.form.web.internal.configuration.DDMFormWebConfiguration;
+import com.liferay.dynamic.data.mapping.form.web.internal.display.context.util.DDMFormGuestUploadFieldUtil;
 import com.liferay.dynamic.data.mapping.form.web.internal.display.context.util.DDMFormInstanceStagingUtil;
 import com.liferay.dynamic.data.mapping.form.web.internal.security.permission.resource.DDMFormInstancePermission;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
@@ -63,6 +64,7 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
+import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -78,6 +80,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -184,9 +188,33 @@ public class DDMFormDisplayContext {
 			return StringPool.BLANK;
 		}
 
+		boolean maximumSubmissionLimitReached =
+			DDMFormGuestUploadFieldUtil.isMaximumSubmissionLimitReached(
+				ddmFormInstance,
+				PortalUtil.getHttpServletRequest(_renderRequest),
+				_ddmFormWebConfiguration.
+					maximumSubmissionsForGuestUploadFields());
 		boolean requireCaptcha = isCaptchaRequired(ddmFormInstance);
 
 		DDMForm ddmForm = getDDMForm(ddmFormInstance, requireCaptcha);
+
+		Map<String, DDMFormField> ddmFormFieldsMap =
+			ddmForm.getDDMFormFieldsMap(true);
+
+		for (DDMFormField ddmFormField : ddmFormFieldsMap.values()) {
+			if (Objects.equals(ddmFormField.getType(), "document_library")) {
+				ddmFormField.setProperty(
+					"maximumSubmissionLimitReached",
+					maximumSubmissionLimitReached);
+
+				if (ddmFormField.isRepeatable()) {
+					ddmFormField.setProperty(
+						"maximumRepetitions",
+						_ddmFormWebConfiguration.
+							maximumRepetitionsForUploadFields());
+				}
+			}
+		}
 
 		DDMFormLayout ddmFormLayout = getDDMFormLayout(
 			ddmFormInstance, requireCaptcha);
@@ -508,6 +536,18 @@ public class DDMFormDisplayContext {
 				themeDisplay.getPermissionChecker(), getFormInstanceId(),
 				ActionKeys.UPDATE)) {
 
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isRememberMe() {
+		String rememberMe = CookieKeys.getCookie(
+			PortalUtil.getHttpServletRequest(_renderRequest),
+			CookieKeys.REMEMBER_ME);
+
+		if ((rememberMe != null) && rememberMe.equals("true")) {
 			return true;
 		}
 

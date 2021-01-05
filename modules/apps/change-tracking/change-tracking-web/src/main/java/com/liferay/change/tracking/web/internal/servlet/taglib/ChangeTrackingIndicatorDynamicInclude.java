@@ -22,6 +22,7 @@ import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.change.tracking.web.internal.constants.CTPortletKeys;
+import com.liferay.change.tracking.web.internal.util.PublicationsPortletURLUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -58,7 +59,6 @@ import java.util.ResourceBundle;
 import javax.portlet.ActionRequest;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
-import javax.portlet.WindowStateException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -207,12 +207,8 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 		selectURL.setParameter(
 			"mvcPath", "/publications/select_publication.jsp");
 
-		try {
-			selectURL.setWindowState(LiferayWindowState.POP_UP);
-		}
-		catch (WindowStateException windowStateException) {
-			ReflectionUtil.throwException(windowStateException);
-		}
+		PublicationsPortletURLUtil.setWindowState(
+			selectURL, LiferayWindowState.POP_UP);
 
 		Map<String, Object> data = HashMapBuilder.<String, Object>put(
 			"checkoutURL", checkoutURL.toString()
@@ -309,11 +305,11 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 		addURL.setParameter(
 			"mvcRenderCommandName", "/change_tracking/add_ct_collection");
 
-		PortletURL backURL = _portal.getControlPanelPortletURL(
+		PortletURL redirectURL = _portal.getControlPanelPortletURL(
 			httpServletRequest, themeDisplay.getScopeGroup(),
 			CTPortletKeys.PUBLICATIONS, 0, 0, PortletRequest.RENDER_PHASE);
 
-		addURL.setParameter("redirect", backURL.toString());
+		addURL.setParameter("redirect", redirectURL.toString());
 
 		jsonArray.put(
 			JSONUtil.put(
@@ -331,7 +327,6 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 
 			reviewURL.setParameter(
 				"mvcRenderCommandName", "/change_tracking/view_changes");
-			reviewURL.setParameter("backURL", backURL.toString());
 			reviewURL.setParameter(
 				"ctCollectionId", String.valueOf(ctCollectionId));
 

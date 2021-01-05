@@ -247,7 +247,7 @@ renderResponse.setTitle((exportImportConfiguration == null) ? LanguageUtil.get(r
 </aui:script>
 
 <aui:script use="liferay-staging-processes-export-import">
-	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="publishLayouts" var="publishProcessesURL">
+	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/staging_processes/publish_layouts" var="publishProcessesURL">
 		<portlet:param name="<%= Constants.CMD %>" value="<%= cmd %>" />
 		<portlet:param name="<%= SearchContainer.DEFAULT_CUR_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_CUR_PARAM) %>" />
 		<portlet:param name="<%= SearchContainer.DEFAULT_DELTA_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_DELTA_PARAM) %>" />

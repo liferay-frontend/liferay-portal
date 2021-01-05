@@ -18,6 +18,7 @@
 
 <%
 String subscriptionTitle = ParamUtil.getString(request, "subscriptionTitle");
+
 long userId = ParamUtil.getLong(request, "userId");
 
 User unsubscribedUser = UserLocalServiceUtil.getUser(userId);

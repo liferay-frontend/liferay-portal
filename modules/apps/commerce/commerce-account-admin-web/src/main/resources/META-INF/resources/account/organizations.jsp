@@ -38,7 +38,7 @@ PortletURL portletURL = commerceAccountOrganizationRelAdminDisplayContext.getPor
 				selectedDisplayStyle="list"
 			/>
 
-			<portlet:actionURL name="editCommerceAccountOrganizationRel" var="addCommerceAccountOrganizationRelURL" />
+			<portlet:actionURL name="/commerce_account_admin/edit_commerce_account_organization_rel" var="addCommerceAccountOrganizationRelURL" />
 
 			<aui:form action="<%= addCommerceAccountOrganizationRelURL %>" cssClass="hide" name="addCommerceAccountOrganizationRelFm">
 				<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ADD_MULTIPLE %>" />
@@ -74,7 +74,7 @@ PortletURL portletURL = commerceAccountOrganizationRelAdminDisplayContext.getPor
 		</liferay-frontend:management-bar-action-buttons>
 	</liferay-frontend:management-bar>
 
-	<div class="container-fluid-1280">
+	<div class="container-fluid container-fluid-max-xl">
 		<aui:form action="<%= portletURL.toString() %>" method="post" name="fm">
 			<aui:input name="<%= Constants.CMD %>" type="hidden" />
 			<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
@@ -98,13 +98,13 @@ PortletURL portletURL = commerceAccountOrganizationRelAdminDisplayContext.getPor
 					%>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="id"
 						value="<%= String.valueOf(accountOrganization.getUserId()) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= commerceAccountOrganizationRelAdminDisplayContext.getEditOrganizationURL(accountOrganization.getUserId()) %>"
 						name="name"
 						value="<%= HtmlUtil.escape(accountOrganization.getName()) %>"
@@ -144,7 +144,7 @@ PortletURL portletURL = commerceAccountOrganizationRelAdminDisplayContext.getPor
 
 				submitForm(
 					form,
-					'<portlet:actionURL name="editCommerceAccountOrganizationRel" />'
+					'<portlet:actionURL name="/commerce_account_admin/edit_commerce_account_organization_rel" />'
 				);
 			}
 		}

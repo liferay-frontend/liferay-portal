@@ -171,7 +171,7 @@ renderResponse.setTitle(headerTitle);
 	</div>
 </clay:container-fluid>
 
-<aui:script require="metal-dom/src/dom as dom">
+<aui:script sandbox="<%= true %>">
 	var settingsParametersContainer = document.getElementById(
 		'<portlet:namespace />settingsParameters'
 	);
@@ -186,7 +186,7 @@ renderResponse.setTitle(headerTitle);
 			);
 
 			if (settingsParametersElement) {
-				dom.append(settingsSupported, settingsParametersElement);
+				settingsSupported.append(settingsParametersElement);
 			}
 
 			var className = select.value;
@@ -200,7 +200,7 @@ renderResponse.setTitle(headerTitle);
 			);
 
 			if (repositoryParameters) {
-				dom.append(settingsParametersContainer, repositoryParameters);
+				settingsParametersContainer.append(repositoryParameters);
 			}
 		}
 	}

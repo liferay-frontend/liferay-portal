@@ -3,6 +3,20 @@ $appBuilderTableViewTransitionTime: 0.5s;
 $tableViewMaskBaseline: 24px;
 $tableViewMaskZIndex: 52;
 
+.app-builder-popup {
+	background: #f1f2f5;
+	height: 100%;
+
+	.app-builder-table-view {
+		&__sidebar {
+			.default,
+			.secondary {
+				top: 0;
+			}
+		}
+	}
+}
+
 .table-view-mask {
 	background: $whiteColor200;
 	content: '';
@@ -95,6 +109,7 @@ $tableViewMaskZIndex: 52;
 	}
 
 	.data-layout-builder-sidebar {
+		background-color: $whiteColor;
 		z-index: $tableViewMaskZIndex + 1;
 		@media (max-width: 576px) {
 			top: 112px;
@@ -297,7 +312,7 @@ $tableViewMaskZIndex: 52;
 	}
 }
 
-.publications-enabled .app-builder-table-view {
+.menu-indicator-enabled .app-builder-table-view {
 	&__sidebar {
 		.default,
 		.secondary {

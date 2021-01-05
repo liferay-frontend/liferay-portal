@@ -27,13 +27,13 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -107,25 +107,13 @@ public class GroupDisplayContext {
 
 		groupSearch.setResults(groups);
 
-		if (StringUtil.equalsIgnoreCase(
-				_mvcRenderCommandName,
-				"/analytics_settings/edit_synced_sites")) {
+		_fetchChannelNames(groups);
 
-			groupSearch.setRowChecker(
-				new GroupChecker(
-					_renderResponse, null,
-					SetUtil.fromArray(_analyticsConfiguration.syncedGroupIds()),
-					_mvcRenderCommandName));
-		}
-		else {
-			_fetchChannelNames(groups);
-
-			groupSearch.setRowChecker(
-				new GroupChecker(
-					_renderResponse,
-					ParamUtil.getString(_renderRequest, "channelId"),
-					_getDisabledGroupIds(), _mvcRenderCommandName));
-		}
+		groupSearch.setRowChecker(
+			new GroupChecker(
+				_renderResponse,
+				ParamUtil.getString(_renderRequest, "channelId"),
+				_getDisabledGroupIds(), _mvcRenderCommandName));
 
 		int total = GroupServiceUtil.searchCount(
 			_getCompanyId(), _getClassNameIds(), _getKeywords(),
@@ -225,7 +213,10 @@ public class GroupDisplayContext {
 			return _classNameIds;
 		}
 
-		_classNameIds = new long[] {PortalUtil.getClassNameId(Group.class)};
+		_classNameIds = new long[] {
+			PortalUtil.getClassNameId(Group.class),
+			PortalUtil.getClassNameId(Organization.class)
+		};
 
 		return _classNameIds;
 	}

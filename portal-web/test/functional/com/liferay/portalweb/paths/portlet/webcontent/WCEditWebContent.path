@@ -9,13 +9,13 @@
 </thead>
 <tbody>
 <tr>
-	<td>ARTICLE_ID</td>
-	<td>//table[contains(@data-searchcontainerid,'articleVersions')]//td[contains(@class,'lfr-id-column')]</td>
+	<td>ANY_TEXT_INPUT</td>
+	<td>xpath=(//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::input)[${index}]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>AUDIO_BUTTON</td>
-	<td>//a[contains(@title,'Audio')]</td>
+	<td>ARTICLE_ID</td>
+	<td>//table[contains(@data-searchcontainerid,'articleVersions')]//td[contains(@class,'lfr-id-column')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -24,8 +24,33 @@
 	<td></td>
 </tr>
 <tr>
+	<td>COLOR_PICKER</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']/following-sibling::div[contains(@class,'color-picker')]//button[contains(@class,'clay-color-btn')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>CONTENT_CONTAINER</td>
 	<td>//div[contains(@class,'container-view')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DATE_INPUT</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div[contains(@class,'date-picker')]//input[@type='text']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENTRY_LIST_AUTHOR</td>
+	<td>//li[contains(.,'${key_entryTitle}')]//span[contains(.,'${key_entryAuthor}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIELD_REQUIRED_ALERT</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']/following-sibling::span[contains(@class,'form-feedback-group')]//div[contains(@class,'form-feedback-item')] | //legend[normalize-space(text())='${key_fieldFieldLabel}']/following-sibling::span[contains(@class,'form-feedback-group')]//div[contains(@class,'form-feedback-item')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>IMAGE_PICKER_PREVIEW</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div[contains(@class,'image-picker-preview')]//img[contains(@src,'${key_image}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -49,13 +74,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>SELECT_ANY</td>
-	<td>//button[contains(@id,'${key_filedName}')]/span[contains(.,'Select')]</td>
+	<td>IMAGE_DESCRPTION</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']/following-sibling::div[contains(@class,'form-group')]//input[contains(@name,'description')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_BUTTON</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div[contains(@class,'form')]//button[normalize-space()='Select']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>SELECT_FEATURED_IMAGE_TYPE</td>
 	<td>//div[contains(@class,'input-select-wrapper')]/select[contains(@id,'smallImageSource')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_FIELD_TRIGGER</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div[contains(@class,'select-field')]//div[contains(@class,'select-field-trigger')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -84,8 +119,18 @@
 	<td></td>
 </tr>
 <tr>
-	<td>TEXT_INPUT_FIELD</td>
-	<td>//div[label[normalize-space(text())='${key_fieldLabel}']]//input[@type='text']</td>
+	<td>SELECTION_OPTION</td>
+	<td>//legend[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div//input//following-sibling::span[normalize-space()='${key_optionValue}']//preceding-sibling::input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SOURCE_BUTTON</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div//a[contains(@class,'cke_button') and contains(@class,'source')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TEXT_INPUT</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::input</td>
 	<td></td>
 </tr>
 <tr>
@@ -173,7 +218,19 @@
 <!--IMAGE_FIELD-->
 <tr>
 	<td>IMAGE_FIELD_SELECT</td>
-	<td>//div[contains(@id, JournalPortlet_Image)]//div[contains(@class, 'button-holder')]//span[contains(text(), 'Select')]</td>
+	<td>//label[contains(.,'Image')]/..//button[contains(.,'Select')]</td>
+	<td></td>
+</tr>
+<!--LINK TO PAGE_FIELD-->
+<tr>
+	<td>LINK_TO_PAGE_SELECT</td>
+	<td>//label[contains(.,'Link to Page')]/..//button[contains(.,'Select')]</td>
+	<td></td>
+</tr>
+<!--WC_FIELD-->
+<tr>
+	<td>WC_FIELD_SELECT</td>
+	<td>//label[contains(.,'Web Content')]/..//button[contains(.,'Select')]</td>
 	<td></td>
 </tr>
 </tbody>

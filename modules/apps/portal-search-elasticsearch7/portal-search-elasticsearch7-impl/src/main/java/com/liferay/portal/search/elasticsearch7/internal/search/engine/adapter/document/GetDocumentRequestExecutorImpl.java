@@ -41,8 +41,9 @@ public class GetDocumentRequestExecutorImpl
 
 	@Override
 	public GetDocumentResponse execute(GetDocumentRequest getDocumentRequest) {
-		GetRequest getRequest = _bulkableDocumentRequestTranslator.translate(
-			getDocumentRequest);
+		GetRequest getRequest =
+			_elasticsearchBulkableDocumentRequestTranslator.translate(
+				getDocumentRequest);
 
 		GetResponse getResponse = getGetResponse(
 			getRequest, getDocumentRequest);
@@ -89,9 +90,10 @@ public class GetDocumentRequestExecutorImpl
 	@Reference(target = "(search.engine.impl=Elasticsearch)", unbind = "-")
 	protected void setBulkableDocumentRequestTranslator(
 		ElasticsearchBulkableDocumentRequestTranslator
-			eulkableDocumentRequestTranslator) {
+			elasticsearchBulkableDocumentRequestTranslator) {
 
-		_bulkableDocumentRequestTranslator = eulkableDocumentRequestTranslator;
+		_elasticsearchBulkableDocumentRequestTranslator =
+			elasticsearchBulkableDocumentRequestTranslator;
 	}
 
 	@Reference(unbind = "-")
@@ -113,9 +115,9 @@ public class GetDocumentRequestExecutorImpl
 		_geoBuilders = geoBuilders;
 	}
 
-	private ElasticsearchBulkableDocumentRequestTranslator
-		_bulkableDocumentRequestTranslator;
 	private DocumentBuilderFactory _documentBuilderFactory;
+	private ElasticsearchBulkableDocumentRequestTranslator
+		_elasticsearchBulkableDocumentRequestTranslator;
 	private ElasticsearchClientResolver _elasticsearchClientResolver;
 	private GeoBuilders _geoBuilders;
 

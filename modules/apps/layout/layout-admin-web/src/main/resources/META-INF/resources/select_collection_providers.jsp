@@ -33,11 +33,11 @@ SelectLayoutCollectionDisplayContext selectLayoutCollectionDisplayContext = (Sel
 		>
 
 			<%
-			row.setCssClass("entry-card entry-display-style lfr-asset-item " + row.getCssClass());
+			row.setCssClass("card-page-item card-page-item-asset entry-display-style " + row.getCssClass());
 			%>
 
 			<liferay-ui:search-container-column-text>
-				<clay:vertical-card-v2
+				<clay:vertical-card
 					verticalCard="<%= new CollectionProvidersVerticalCard(selectLayoutCollectionDisplayContext.getSelGroupId(), infoListProvider, renderRequest, renderResponse) %>"
 				/>
 			</liferay-ui:search-container-column-text>

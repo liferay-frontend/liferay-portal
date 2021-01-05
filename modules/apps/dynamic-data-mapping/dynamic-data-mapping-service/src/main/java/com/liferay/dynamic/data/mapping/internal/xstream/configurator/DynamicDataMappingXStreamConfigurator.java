@@ -61,6 +61,15 @@ public class DynamicDataMappingXStreamConfigurator
 		};
 
 		_xStreamTypes = new XStreamType[] {
+			new XStreamType(
+				com.liferay.dynamic.data.mapping.model.DDMFormField.class),
+			new XStreamType(
+				com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions.
+					class),
+			new XStreamType(
+				com.liferay.dynamic.data.mapping.model.LocalizedValue.class),
+			new XStreamType(
+				com.liferay.dynamic.data.mapping.storage.DDMFormValues.class),
 			new XStreamType(DDMFormField.class),
 			new XStreamType(DDMFormFieldOptions.class),
 			new XStreamType(DDMFormValues.class),

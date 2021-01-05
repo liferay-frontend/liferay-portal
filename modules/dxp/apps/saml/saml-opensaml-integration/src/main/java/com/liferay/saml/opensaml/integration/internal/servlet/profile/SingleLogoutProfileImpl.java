@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.HttpMethods;
@@ -31,10 +32,10 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.saml.constants.SamlWebKeys;
-import com.liferay.saml.opensaml.integration.SamlBinding;
+import com.liferay.saml.opensaml.integration.internal.binding.SamlBinding;
+import com.liferay.saml.opensaml.integration.internal.metadata.MetadataManager;
 import com.liferay.saml.opensaml.integration.internal.util.OpenSamlUtil;
 import com.liferay.saml.opensaml.integration.internal.util.SamlUtil;
-import com.liferay.saml.opensaml.integration.metadata.MetadataManager;
 import com.liferay.saml.persistence.model.SamlIdpSpSession;
 import com.liferay.saml.persistence.model.SamlIdpSsoSession;
 import com.liferay.saml.persistence.model.SamlSpSession;
@@ -126,6 +127,12 @@ public class SingleLogoutProfileImpl
 			SamlSpSession samlSpSession = getSamlSpSession(httpServletRequest);
 
 			if (samlSpSession == null) {
+				return false;
+			}
+
+			User user = _userLocalService.getUser(samlSpSession.getUserId());
+
+			if (!user.isSetupComplete()) {
 				return false;
 			}
 

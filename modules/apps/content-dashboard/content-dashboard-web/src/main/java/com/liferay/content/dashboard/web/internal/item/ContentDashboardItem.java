@@ -52,6 +52,9 @@ public interface ContentDashboardItem<T> {
 
 	public Map<String, Object> getData(Locale locale);
 
+	public ContentDashboardItemAction getDefaultContentDashboardItemAction(
+		HttpServletRequest httpServletRequest);
+
 	public Locale getDefaultLocale();
 
 	public Object getDisplayFieldValue(String fieldName, Locale locale);
@@ -65,6 +68,8 @@ public interface ContentDashboardItem<T> {
 	public String getTitle(Locale locale);
 
 	public long getUserId();
+
+	public String getUserName();
 
 	public List<Version> getVersions(Locale locale);
 

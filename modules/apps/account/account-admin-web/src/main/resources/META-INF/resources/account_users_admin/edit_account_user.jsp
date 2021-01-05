@@ -38,6 +38,7 @@ portletURL.setParameter("mvcPath", "/account_users_admin/edit_account_user.jsp")
 
 <%
 String screenNavigationCategoryKey = ParamUtil.getString(request, "screenNavigationCategoryKey", AccountScreenNavigationEntryConstants.CATEGORY_KEY_GENERAL);
+
 String screenNavigationEntryKey = ParamUtil.getString(request, "screenNavigationEntryKey");
 
 if (Validator.isNull(screenNavigationEntryKey)) {

@@ -81,7 +81,6 @@ public class FriendlyURLEntryUpgradeProcess extends UpgradeProcess {
 				Group group = _groupLocalService.getCompanyGroup(companyId);
 				String languageId = rs.getString("languageId");
 				boolean main = rs.getBoolean("main");
-				String uuid = rs.getString("uuid_");
 
 				long friendlyURLEntryId = _getFriendlyURLEntryId(
 					classNameId, classPK);
@@ -90,7 +89,11 @@ public class FriendlyURLEntryUpgradeProcess extends UpgradeProcess {
 					friendlyURLEntryId = increment();
 
 					ps1.setLong(1, 0);
+
+					String uuid = rs.getString("uuid_");
+
 					ps1.setString(2, uuid);
+
 					ps1.setString(3, languageId);
 					ps1.setLong(4, friendlyURLEntryId);
 					ps1.setLong(5, group.getGroupId());

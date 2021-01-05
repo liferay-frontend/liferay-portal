@@ -180,6 +180,12 @@ public class SessionMessages {
 	}
 
 	public static boolean contains(
+		HttpServletRequest httpServletRequest, Class<?>[] classes) {
+
+		return contains(_getPortalSession(httpServletRequest), classes);
+	}
+
+	public static boolean contains(
 		HttpServletRequest httpServletRequest, String key) {
 
 		return contains(_getPortalSession(httpServletRequest), key);
@@ -187,6 +193,16 @@ public class SessionMessages {
 
 	public static boolean contains(HttpSession session, Class<?> clazz) {
 		return contains(session, clazz.getName());
+	}
+
+	public static boolean contains(HttpSession session, Class<?>[] classes) {
+		for (Class<?> clazz : classes) {
+			if (contains(session, clazz.getName())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public static boolean contains(HttpSession session, String key) {
@@ -203,6 +219,18 @@ public class SessionMessages {
 		PortletRequest portletRequest, Class<?> clazz) {
 
 		return contains(portletRequest, clazz.getName());
+	}
+
+	public static boolean contains(
+		PortletRequest portletRequest, Class<?>[] classes) {
+
+		for (Class<?> clazz : classes) {
+			if (contains(portletRequest, clazz.getName())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public static boolean contains(PortletRequest portletRequest, String key) {
@@ -355,6 +383,19 @@ public class SessionMessages {
 		while (iterator.hasNext()) {
 			System.out.println(iterator.next());
 		}
+	}
+
+	public static void remove(
+		HttpServletRequest httpServletRequest, Class<?> clazz) {
+
+		Map<String, Object> map = _getMap(
+			_getPortalSession(httpServletRequest), _CLASS_NAME, true);
+
+		if (map == null) {
+			return;
+		}
+
+		map.remove(clazz.getName());
 	}
 
 	public static int size(HttpServletRequest httpServletRequest) {

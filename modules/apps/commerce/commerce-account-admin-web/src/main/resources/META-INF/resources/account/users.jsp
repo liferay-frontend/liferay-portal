@@ -38,7 +38,7 @@ PortletURL portletURL = commerceAccountUserRelAdminDisplayContext.getPortletURL(
 				selectedDisplayStyle="list"
 			/>
 
-			<portlet:actionURL name="editCommerceAccountUserRel" var="addCommerceAccountUserRelURL" />
+			<portlet:actionURL name="/commerce_account_admin/edit_commerce_account_user_rel" var="addCommerceAccountUserRelURL" />
 
 			<aui:form action="<%= addCommerceAccountUserRelURL %>" cssClass="hide" name="addCommerceAccountUserRelFm">
 				<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ADD_MULTIPLE %>" />
@@ -74,7 +74,7 @@ PortletURL portletURL = commerceAccountUserRelAdminDisplayContext.getPortletURL(
 		</liferay-frontend:management-bar-action-buttons>
 	</liferay-frontend:management-bar>
 
-	<div class="container-fluid-1280">
+	<div class="container-fluid container-fluid-max-xl">
 		<aui:form action="<%= portletURL.toString() %>" method="post" name="fm">
 			<aui:input name="<%= Constants.CMD %>" type="hidden" />
 			<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
@@ -102,20 +102,20 @@ PortletURL portletURL = commerceAccountUserRelAdminDisplayContext.getPortletURL(
 					%>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="id"
 						value="<%= String.valueOf(accountUser.getUserId()) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= commerceAccountUserRelAdminDisplayContext.getEditUserURL(accountUser.getUserId()) %>"
 						name="name"
 						value="<%= HtmlUtil.escape(accountUser.getFullName()) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="roles"
 						value="<%= commerceAccountUserRelAdminDisplayContext.getUserRoles(commerceAccountUserRel) %>"
 					/>
@@ -154,7 +154,7 @@ PortletURL portletURL = commerceAccountUserRelAdminDisplayContext.getPortletURL(
 
 				submitForm(
 					form,
-					'<portlet:actionURL name="editCommerceAccountUserRel" />'
+					'<portlet:actionURL name="/commerce_account_admin/edit_commerce_account_user_rel" />'
 				);
 			}
 		}

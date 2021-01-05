@@ -14,16 +14,23 @@
 
 import React from 'react';
 
+import {DEFAULT_LABELS} from './util/labels';
+
 const MiniCartContext = React.createContext({
-	AJAX: {},
+	CartResource: {},
+	CartViews: {},
 	actionURLs: {},
 	cartState: {},
 	closeCart: () => {},
 	displayDiscountLevels: false,
+	displayTotalItemsQuantity: false,
 	isOpen: false,
 	isUpdating: false,
+	labels: DEFAULT_LABELS,
 	setIsUpdating: () => {},
 	spritemap: '',
+	summaryDataMapper: () => {},
+	toggleable: true,
 	updateCartModel: () => {},
 	updateCartState: () => {},
 });

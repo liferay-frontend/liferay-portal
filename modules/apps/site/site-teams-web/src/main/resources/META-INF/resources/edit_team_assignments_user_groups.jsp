@@ -33,7 +33,7 @@ EditSiteTeamAssignmentsUserGroupsManagementToolbarDisplayContext editSiteTeamAss
 
 <portlet:actionURL name="deleteTeamUserGroups" var="deleteTeamUserGroupsURL" />
 
-<aui:form action="<%= deleteTeamUserGroupsURL %>" cssClass="container-fluid-1280" method="post" name="fm">
+<aui:form action="<%= deleteTeamUserGroupsURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 	<aui:input name="tabs1" type="hidden" value="<%= editSiteTeamAssignmentsUserGroupsDisplayContext.getTabs1() %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="teamId" type="hidden" value="<%= String.valueOf(editSiteTeamAssignmentsUserGroupsDisplayContext.getTeamId()) %>" />
@@ -85,14 +85,14 @@ EditSiteTeamAssignmentsUserGroupsManagementToolbarDisplayContext editSiteTeamAss
 				</c:when>
 				<c:otherwise>
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="name"
 						orderable="<%= true %>"
 						property="name"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="description"
 						orderable="<%= true %>"
 						property="description"

@@ -38,6 +38,7 @@ public class Element {
 		_parentElement = parentElement;
 		_name = name;
 		_text = _formatText(text);
+
 		_elementStack = parentElement._elementStack;
 		_sb = parentElement._sb;
 
@@ -60,6 +61,7 @@ public class Element {
 		_name = name;
 
 		_text = _formatText(text);
+
 		_elementStack = new LinkedList<>();
 
 		_sb = new StringBundler();

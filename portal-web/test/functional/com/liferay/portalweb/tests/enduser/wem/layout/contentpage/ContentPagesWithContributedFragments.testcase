@@ -1353,8 +1353,7 @@ definition {
 				structureDescription = "WC Structure Description",
 				structureName = "WC Structure Name");
 
-			DynamicDataMapping.addField(
-				field = "Image",
+			DataEngine.addField(
 				fieldFieldLabel = "Image",
 				fieldName = "Image");
 
@@ -1367,6 +1366,7 @@ definition {
 			WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
 
 			WebContent.addWithStructureCP(
+				navTab = "Web Content Images",
 				structureName = "WC Structure Name",
 				webContentImage = "Document_1.jpg",
 				webContentTitle = "Web Content Title");
@@ -1424,7 +1424,7 @@ definition {
 			AssertVisible(
 				id = "image-square",
 				key_image = "Document_1.jpg",
-				key_imageDescription = "Responsive Image",
+				key_imageDescription = "",
 				locator1 = "Fragment#CONTRIBUTED_FRAGMENT_EDITABLE_FIELD_IMAGE_PROPERTIES");
 		}
 
@@ -1438,7 +1438,7 @@ definition {
 			AssertVisible(
 				id = "image-square",
 				key_image = "Document_1.jpg",
-				key_imageDescription = "Responsive Image",
+				key_imageDescription = "",
 				locator1 = "Fragment#CONTRIBUTED_FRAGMENT_EDITABLE_FIELD_IMAGE_PROPERTIES");
 		}
 	}
@@ -1556,6 +1556,11 @@ definition {
 			PageEditor.addFragment(
 				collectionName = "imported",
 				fragmentName = "Documents and Media");
+
+			AssertElementPresent(
+				key_fragmentName = "Documents and Media",
+				key_messageIfo = "The selected content will be shown here.",
+				locator1 = "Fragment#MESSAGE_INFO");
 		}
 
 		task ("Open select popup") {
@@ -1624,8 +1629,7 @@ definition {
 				structureKey = "STRUCTURE-TEXT",
 				structureName = "WC Structure Name");
 
-			DynamicDataMapping.addField(
-				field = "Text",
+			DataEngine.addField(
 				fieldFieldLabel = "Text",
 				fieldName = "Text");
 
@@ -1675,6 +1679,11 @@ definition {
 			PageEditor.addFragment(
 				collectionName = "imported",
 				fragmentName = "Web Content With Text");
+
+			AssertElementPresent(
+				key_fragmentName = "Web Content With Text",
+				key_messageIfo = "The selected content will be shown here.",
+				locator1 = "Fragment#MESSAGE_INFO");
 		}
 
 		task ("Open select popup") {
@@ -1746,6 +1755,11 @@ definition {
 			PageEditor.addFragment(
 				collectionName = "imported",
 				fragmentName = "Web Content");
+
+			AssertElementPresent(
+				key_fragmentName = "Web Content",
+				key_messageIfo = "The selected content will be shown here.",
+				locator1 = "Fragment#MESSAGE_INFO");
 		}
 
 		task ("Open select popup") {
@@ -3781,7 +3795,7 @@ definition {
 	@priority = "5"
 	test ViewWebContentWithCustomTemplateViaContentDisplayInCollectionDisplay {
 		property osgi.app.includes = "bookmarks,document-library-google-docs";
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
@@ -3791,8 +3805,7 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 

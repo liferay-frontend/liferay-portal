@@ -51,6 +51,7 @@ public class URLTemplateResource implements TemplateResource {
 
 		_templateId = templateId;
 		_templateURL = templateURL;
+
 		_templateURLExternalForm = templateURL.toExternalForm();
 	}
 

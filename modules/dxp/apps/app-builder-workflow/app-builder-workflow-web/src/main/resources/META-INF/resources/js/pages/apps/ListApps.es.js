@@ -80,7 +80,8 @@ export default ({scope, ...props}) => {
 			if (confirmed) {
 				fetch(
 					createResourceURL(baseResourceURL, {
-						p_p_resource_id: '/app_builder/delete_workflow_app',
+						p_p_resource_id:
+							'/app_builder_workflow/delete_app_builder_app',
 					}),
 					{
 						body: new URLSearchParams(

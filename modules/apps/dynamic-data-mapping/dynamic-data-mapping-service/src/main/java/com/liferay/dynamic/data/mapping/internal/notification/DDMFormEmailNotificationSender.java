@@ -59,7 +59,6 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.template.soy.data.SoyDataFactory;
 import com.liferay.portal.util.PrefsPropsUtil;
 
 import java.io.Writer;
@@ -136,7 +135,7 @@ public class DDMFormEmailNotificationSender {
 		throws PortalException {
 
 		Template template = TemplateManagerUtil.getTemplate(
-			TemplateConstants.LANG_TYPE_SOY,
+			TemplateConstants.LANG_TYPE_FTL,
 			getTemplateResource(_TEMPLATE_PATH), false);
 
 		populateParameters(
@@ -282,7 +281,7 @@ public class DDMFormEmailNotificationSender {
 		Map<String, Object> fieldMap = new HashMap<>();
 
 		fieldMap.put("label", labelString);
-		fieldMap.put("value", _soyDataFactory.createSoyRawData(sb.toString()));
+		fieldMap.put("value", sb.toString());
 
 		return fieldMap;
 	}
@@ -501,8 +500,6 @@ public class DDMFormEmailNotificationSender {
 	protected String render(Template template) throws TemplateException {
 		Writer writer = new UnsyncStringWriter();
 
-		template.put(TemplateConstants.NAMESPACE, _NAMESPACE);
-
 		template.processTemplate(writer);
 
 		return writer.toString();
@@ -540,10 +537,8 @@ public class DDMFormEmailNotificationSender {
 		_userLocalService = userLocalService;
 	}
 
-	private static final String _NAMESPACE = "form.form_entry";
-
 	private static final String _TEMPLATE_PATH =
-		"/META-INF/resources/notification/form_entry_add_body.soy";
+		"/META-INF/resources/notification/form_entry_add_body.ftl";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMFormEmailNotificationSender.class);
@@ -557,9 +552,6 @@ public class DDMFormEmailNotificationSender {
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private SoyDataFactory _soyDataFactory;
 
 	private UserLocalService _userLocalService;
 

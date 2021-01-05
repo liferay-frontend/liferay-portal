@@ -60,6 +60,10 @@ public class InfoItemReference {
 		return _className;
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public long getClassPK() {
 		if (_infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
 			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =

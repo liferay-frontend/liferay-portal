@@ -47,7 +47,7 @@ CommerceRegionsDisplayContext commerceRegionsDisplayContext = (CommerceRegionsDi
 			/>
 
 			<portlet:renderURL var="addCommerceRegionURL">
-				<portlet:param name="mvcRenderCommandName" value="editCommerceRegion" />
+				<portlet:param name="mvcRenderCommandName" value="/commerce_country/edit_commerce_region" />
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 				<portlet:param name="commerceCountryId" value="<%= String.valueOf(commerceRegionsDisplayContext.getCommerceCountryId()) %>" />
 			</portlet:renderURL>
@@ -71,8 +71,8 @@ CommerceRegionsDisplayContext commerceRegionsDisplayContext = (CommerceRegionsDi
 		</liferay-frontend:management-bar-action-buttons>
 	</liferay-frontend:management-bar>
 
-	<div class="container-fluid-1280">
-		<portlet:actionURL name="editCommerceRegion" var="editCommerceRegionActionURL" />
+	<div class="container-fluid container-fluid-max-xl">
+		<portlet:actionURL name="/commerce_country/edit_commerce_region" var="editCommerceRegionActionURL" />
 
 		<aui:form action="<%= editCommerceRegionActionURL %>" method="post" name="fm">
 			<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.DELETE %>" />
@@ -92,25 +92,25 @@ CommerceRegionsDisplayContext commerceRegionsDisplayContext = (CommerceRegionsDi
 					<%
 					PortletURL rowURL = renderResponse.createRenderURL();
 
-					rowURL.setParameter("mvcRenderCommandName", "editCommerceRegion");
+					rowURL.setParameter("mvcRenderCommandName", "/commerce_country/edit_commerce_region");
 					rowURL.setParameter("redirect", currentURL);
 					rowURL.setParameter("commerceCountryId", String.valueOf(commerceRegion.getCommerceCountryId()));
 					rowURL.setParameter("commerceRegionId", String.valueOf(commerceRegion.getCommerceRegionId()));
 					%>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						property="name"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						property="code"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="active"
 					>
 						<c:choose>
@@ -132,7 +132,7 @@ CommerceRegionsDisplayContext commerceRegionsDisplayContext = (CommerceRegionsDi
 					</liferay-ui:search-container-column-text>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						property="priority"
 					/>
 

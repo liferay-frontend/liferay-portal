@@ -91,7 +91,7 @@ MarkdownStylingCheck | .markdown or .md | Applies rules to enforce consisteny in
 MarkdownWhitespaceCheck | .markdown or .md | Finds missing and unnecessary whitespace in `.markdown` files. |
 MethodCallsOrderCheck | .java, .jsp, .jspf, .tag, .tpl or .vm | Sorts method calls for certain object (for example, `put` calls in `java.util.HashMap`). |
 [MethodParamPadCheck](https://checkstyle.sourceforge.io/config_whitespace.html#MethodParamPad) | .java, .jsp, .jspf, .tag, .tpl or .vm | Checks the padding between the identifier of a method definition, constructor definition, method call, or constructor invocation; and the left parenthesis of the parameter list. |
-[MissingEmptyLineCheck](checks/missing_empty_line_check.markdown#missingemptylinecheck) | .java | Checks for missing line breaks around variable declarations. |
+[MissingEmptyLineCheck](checks/missing_empty_line_check.markdown#missingemptylinecheck) | .java, .jsp, .jspf, .tag, .tpl or .vm | Checks for missing line breaks around variable declarations. |
 MissingParenthesesCheck | .java, .jsp, .jspf, .tag, .tpl or .vm | Finds missing parentheses in conditional statement. |
 [ModifierOrderCheck](https://checkstyle.sourceforge.io/config_modifier.html#ModifierOrder) | .java, .jsp, .jspf, .tag, .tpl or .vm | Checks that the order of modifiers conforms to the suggestions in the Java Language specification, § 8.1.1, 8.3.1, 8.4.3 and 9.4. |
 [MultipleVariableDeclarationsCheck](https://checkstyle.sourceforge.io/config_coding.html#MultipleVariableDeclarations) | .java, .jsp, .jspf, .tag, .tpl or .vm | Checks that each variable declaration is in its own statement and on its own line. |
@@ -123,6 +123,8 @@ PropertiesLongLinesCheck | .prettierignore or .properties | Finds lines that are
 PropertiesMultiLineValuesOrderCheck | .prettierignore or .properties | Verifies that property with multiple values is not on a single line. |
 PropertiesStylingCheck | .prettierignore or .properties | Applies rules to enforce consisteny in code style. |
 PropertiesWhitespaceCheck | .prettierignore or .properties | Finds missing and unnecessary whitespace in `.properties` files. |
+PythonStylingCheck | | Applies rules to enforce consisteny in code style. |
+PythonWhitespaceCheck | | Finds missing and unnecessary whitespace. |
 SQLEmptyLinesCheck | .sql | Finds missing and unnecessary empty lines. |
 SQLStylingCheck | .sql | Applies rules to enforce consisteny in code style. |
 SemiColonCheck | .java, .jsp, .jspf, .tag, .tpl or .vm | Finds cases of unnecessary semicolon. |

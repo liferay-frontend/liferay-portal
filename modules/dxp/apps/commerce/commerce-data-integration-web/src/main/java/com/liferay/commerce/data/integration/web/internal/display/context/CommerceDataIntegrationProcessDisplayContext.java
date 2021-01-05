@@ -54,6 +54,7 @@ public class CommerceDataIntegrationProcessDisplayContext {
 		_commerceDataIntegrationProcessService =
 			commerceDataIntegrationProcessService;
 		_processTypeRegistry = processTypeRegistry;
+
 		_commerceDataIntegrationProcessTriggerHelper =
 			commerceDataIntegrationProcessScheduledTaskHelper;
 

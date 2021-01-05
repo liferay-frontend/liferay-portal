@@ -43,9 +43,11 @@ definition {
 
 		DMNavigator.gotoMetadataSets();
 
-		DMMetadataSet.add(
-			dmMetadataSetFieldNames = "Text Box",
-			metadataSetName = "DM Metadata Set Name");
+		DMMetadataSet.addTitle(metadataSetName = "DM Metadata Set Name");
+
+		DataEngine.addField(
+			fieldFieldLabel = "Text",
+			fieldName = "Text");
 
 		DDLDataDefinition.save();
 
@@ -55,7 +57,7 @@ definition {
 
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeFieldNames = "Text Box",
+			dmDocumentTypeFieldNames = "Text",
 			dmDocumentTypeName = "DM Document Type Name",
 			metadataSetName = "DM Metadata Set Name");
 
@@ -154,9 +156,11 @@ definition {
 
 		DMNavigator.gotoMetadataSets();
 
-		DMMetadataSet.add(
-			dmMetadataSetFieldNames = "Boolean",
-			metadataSetName = "Document Metadata Set Name");
+		DMMetadataSet.addTitle(metadataSetName = "Document Metadata Set Name");
+
+		DataEngine.addField(
+			fieldFieldLabel = "Numeric",
+			fieldName = "Numeric");
 
 		DDLDataDefinition.save();
 
@@ -185,10 +189,12 @@ definition {
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 
 		DMDocument.addCP(
+			dateValue = "01/01/2022",
 			dmDocumentDescription = "DM Document Type Contract Description",
 			dmDocumentFile = "Document_1.doc",
 			dmDocumentTitle = "DM Document Type Contract Title",
-			dmDocumentTypeName = "DM Document Type Name");
+			dmDocumentTypeName = "DM Document Type Name",
+			numericField = "123");
 
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 
@@ -748,6 +754,8 @@ definition {
 
 		Pause(locator1 = "30000");
 
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#EXTERNAL_VIDEO_IFRAME");
+
 		var videoGenerationTimeCounter = "0";
 		var videoGenerationTimeMaxWaitTime = "6";
 
@@ -762,6 +770,8 @@ definition {
 		}
 
 		var videoPreviewThumbnailLink = selenium.getAttribute("//video@poster");
+
+		SelectFrameTop();
 
 		Navigator.openSpecificURL(url = "${videoPreviewThumbnailLink}");
 
@@ -1016,7 +1026,7 @@ definition {
 
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "Images",
-			dmDocumentTypeFieldNames = "Text Box,Date",
+			dmDocumentTypeFieldNames = "Text,Date",
 			dmDocumentTypeName = "Photos");
 
 		ApplicationsMenu.gotoPortlet(
@@ -1173,8 +1183,9 @@ definition {
 		DMNavigator.gotoDocumentType();
 
 		DMDocumentType.edit(
-			dmDocumentTypeFieldNames = "Radio",
-			dmDocumentTypeName = "Photos");
+			dmDocumentTypeFieldNames = "Image",
+			dmDocumentTypeName = "Photos",
+			rowNum = "2");
 
 		User.logoutPG();
 
@@ -1390,9 +1401,9 @@ definition {
 
 		Refresh();
 
-		DMDocument.viewPG(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title");
+		LexiconEntry.changeDisplayStyle(displayStyle = "cards");
+
+		DMDocument.viewCardTitle(dmDocumentTitle = "DM Document Title");
 	}
 
 	@priority = "5"

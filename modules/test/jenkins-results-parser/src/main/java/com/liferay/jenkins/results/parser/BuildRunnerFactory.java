@@ -53,6 +53,11 @@ public class BuildRunnerFactory {
 			}
 		}
 
+		if (jobName.startsWith("test-results-consistency-report-controller")) {
+			buildRunner = new TestResultsConsistencyReportControllerBuildRunner(
+				(BaseBuildData)buildData);
+		}
+
 		if (buildRunner == null) {
 			throw new RuntimeException("Invalid build data " + buildData);
 		}

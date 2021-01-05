@@ -12,10 +12,8 @@
  * details.
  */
 
-(function (A, Liferay) {
+(function (A) {
 	A.use('aui-base-lang');
-
-	var AArray = A.Array;
 
 	var Lang = A.Lang;
 
@@ -1127,31 +1125,23 @@
 				};
 			}
 
-			var eventHandles = [
-				iframeBody.delegate('submit', detachEventHandles, 'form'),
+			var cancelEventHandler = iframeBody.delegate(
+				EVENT_CLICK,
+				(event) => {
+					dialog.set(
+						'visible',
+						false,
+						event.currentTarget.hasClass('lfr-hide-dialog')
+							? SRC_HIDE_LINK
+							: null
+					);
 
-				iframeBody.delegate(
-					EVENT_CLICK,
-					(event) => {
-						dialog.set(
-							'visible',
-							false,
-							event.currentTarget.hasClass('lfr-hide-dialog')
-								? SRC_HIDE_LINK
-								: null
-						);
+					cancelEventHandler.detach();
 
-						detachEventHandles();
-					},
-					'.btn-cancel,.lfr-hide-dialog'
-				),
-			];
-
-			function detachEventHandles() {
-				AArray.invoke(eventHandles, 'detach');
-
-				iframeDocument.purge(true);
-			}
+					iframeDocument.purge(true);
+				},
+				'.btn-cancel,.lfr-hide-dialog'
+			);
 
 			Liferay.fire('modalIframeLoaded', {
 				src: event.dialog.iframe.node.getAttribute('src'),
@@ -1532,29 +1522,30 @@
 					'.lfr-search-container-wrapper .selector-button'
 				);
 
-				A.each(selectorButtons, (item) => {
-					var assetEntryId =
-						item.attr('data-entityid') ||
-						item.attr('data-entityname');
+				if (selectedData) {
+					A.each(selectorButtons, (item) => {
+						var assetEntryId =
+							item.attr('data-entityid') ||
+							item.attr('data-entityname');
 
-					var assetGroupId = item.attr('data-groupid');
+						var assetGroupId = item.attr('data-groupid');
 
-					if (assetGroupId) {
-						assetEntryId = assetGroupId + '-' + assetEntryId;
-					}
+						if (assetGroupId) {
+							assetEntryId = assetGroupId + '-' + assetEntryId;
+						}
 
-					var disabled =
-						selectedData && selectedData.includes(assetEntryId);
+						var disabled = selectedData.includes(assetEntryId);
 
-					if (disabled) {
-						item.attr('data-prevent-selection', true);
-					}
-					else {
-						item.removeAttribute('data-prevent-selection');
-					}
+						if (disabled) {
+							item.attr('data-prevent-selection', true);
+						}
+						else {
+							item.removeAttribute('data-prevent-selection');
+						}
 
-					Util.toggleDisabled(item, disabled);
-				});
+						Util.toggleDisabled(item, disabled);
+					});
+				}
 			};
 
 			if (dialog) {
@@ -1721,4 +1712,4 @@
 		TOOLTIP: 10000,
 		WINDOW: 1200,
 	};
-})(AUI(), Liferay);
+})(AUI());

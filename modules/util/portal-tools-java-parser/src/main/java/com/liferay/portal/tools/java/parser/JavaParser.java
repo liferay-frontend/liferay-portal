@@ -407,10 +407,9 @@ public class JavaParser {
 
 		Position startPosition = DetailASTUtil.getStartPosition(detailAST);
 
-		String expectedIndent = _getExpectedIndent(detailAST, fileContents);
-
 		String javaTermContent = javaTerm.toString(
-			expectedIndent, StringPool.BLANK, maxLineLength);
+			_getExpectedIndent(detailAST, fileContents), StringPool.BLANK,
+			maxLineLength);
 
 		if (javaTermContent.contains(
 				"\n" + JavaClassCall.NESTED_CODE_BLOCK + "\n") ||

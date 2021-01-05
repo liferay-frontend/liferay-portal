@@ -14,12 +14,12 @@
 
 package com.liferay.commerce.order.content.web.internal.frontend;
 
+import com.liferay.commerce.order.content.web.internal.frontend.constants.CommerceOrderDataSetConstants;
 import com.liferay.frontend.taglib.clay.data.set.ClayDataSetDisplayView;
 import com.liferay.frontend.taglib.clay.data.set.view.table.BaseTableClayDataSetDisplayView;
 import com.liferay.frontend.taglib.clay.data.set.view.table.ClayTableSchema;
 import com.liferay.frontend.taglib.clay.data.set.view.table.ClayTableSchemaBuilder;
 import com.liferay.frontend.taglib.clay.data.set.view.table.ClayTableSchemaBuilderFactory;
-import com.liferay.frontend.taglib.clay.data.set.view.table.ClayTableSchemaField;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -46,11 +46,10 @@ public class CommercePlacedOrderItemClayTableDataSetDisplayView
 
 		clayTableSchemaBuilder.addClayTableSchemaField("sku", "sku");
 
-		ClayTableSchemaField priceField =
-			clayTableSchemaBuilder.addClayTableSchemaField(
-				"price", "list-price");
+		clayTableSchemaBuilder.addClayTableSchemaField("price", "list-price");
 
-		priceField.setContentRenderer("commerceTablePrice");
+		clayTableSchemaBuilder.addClayTableSchemaField(
+			"promoPrice", "sale-price");
 
 		clayTableSchemaBuilder.addClayTableSchemaField("discount", "discount");
 

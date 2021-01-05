@@ -74,6 +74,8 @@ public interface SearchRequest {
 
 	public List<Class<?>> getModelIndexerClasses();
 
+	public List<String> getModelIndexerClassNames();
+
 	public String getPaginationStartParameterName();
 
 	public Map<String, PipelineAggregation> getPipelineAggregationsMap();

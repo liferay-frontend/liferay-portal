@@ -76,13 +76,6 @@ public class ProductFriendlyURLResolver implements FriendlyURLResolver {
 			Map<String, Object> requestContext)
 		throws PortalException {
 
-		HttpServletRequest httpServletRequest =
-			(HttpServletRequest)requestContext.get("request");
-
-		Locale locale = _portal.getLocale(httpServletRequest);
-
-		String languageId = LanguageUtil.getLanguageId(locale);
-
 		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
 
 		long classNameId = _portal.getClassNameId(CProduct.class);
@@ -100,6 +93,11 @@ public class ProductFriendlyURLResolver implements FriendlyURLResolver {
 
 		CProduct cProduct = _cProductLocalService.getCProduct(
 			friendlyURLEntry.getClassPK());
+
+		HttpServletRequest httpServletRequest =
+			(HttpServletRequest)requestContext.get("request");
+
+		Locale locale = _portal.getLocale(httpServletRequest);
 
 		CPCatalogEntry cpCatalogEntry = _cpDefinitionHelper.getCPCatalogEntry(
 			_getCommerceAccountId(groupId, httpServletRequest), groupId,
@@ -132,6 +130,8 @@ public class ProductFriendlyURLResolver implements FriendlyURLResolver {
 			layoutActualURL =
 				layoutActualURL + StringPool.QUESTION + queryString;
 		}
+
+		String languageId = LanguageUtil.getLanguageId(locale);
 
 		String description = cpCatalogEntry.getMetaDescription(languageId);
 
@@ -177,26 +177,25 @@ public class ProductFriendlyURLResolver implements FriendlyURLResolver {
 			Map<String, Object> requestContext)
 		throws PortalException {
 
-		HttpServletRequest httpServletRequest =
-			(HttpServletRequest)requestContext.get("request");
-
-		String languageId = LanguageUtil.getLanguageId(
-			_portal.getLocale(httpServletRequest));
-
 		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
 
 		String urlTitle = friendlyURL.substring(
 			CPConstants.SEPARATOR_PRODUCT_URL.length());
 
-		long classNameId = _portal.getClassNameId(CProduct.class);
-
 		FriendlyURLEntry friendlyURLEntry =
 			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
-				companyGroup.getGroupId(), classNameId, urlTitle);
+				companyGroup.getGroupId(),
+				_portal.getClassNameId(CProduct.class), urlTitle);
 
 		if (friendlyURLEntry == null) {
 			return null;
 		}
+
+		HttpServletRequest httpServletRequest =
+			(HttpServletRequest)requestContext.get("request");
+
+		String languageId = LanguageUtil.getLanguageId(
+			_portal.getLocale(httpServletRequest));
 
 		if (Validator.isBlank(friendlyURLEntry.getUrlTitle(languageId))) {
 			return null;

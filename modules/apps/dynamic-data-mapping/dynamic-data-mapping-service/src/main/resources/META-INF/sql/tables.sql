@@ -44,6 +44,36 @@ create table DDMDataProviderInstanceLink (
 	primary key (dataProviderInstanceLinkId, ctCollectionId)
 );
 
+create table DDMField (
+	mvccVersion LONG default 0 not null,
+	ctCollectionId LONG default 0 not null,
+	fieldId LONG not null,
+	companyId LONG,
+	parentFieldId LONG,
+	storageId LONG,
+	structureVersionId LONG,
+	fieldName VARCHAR(255) null,
+	fieldType VARCHAR(255) null,
+	instanceId VARCHAR(75) null,
+	localizable BOOLEAN,
+	priority INTEGER,
+	primary key (fieldId, ctCollectionId)
+);
+
+create table DDMFieldAttribute (
+	mvccVersion LONG default 0 not null,
+	ctCollectionId LONG default 0 not null,
+	fieldAttributeId LONG not null,
+	companyId LONG,
+	fieldId LONG,
+	storageId LONG,
+	attributeName VARCHAR(255) null,
+	languageId VARCHAR(75) null,
+	largeAttributeValue TEXT null,
+	smallAttributeValue VARCHAR(255) null,
+	primary key (fieldAttributeId, ctCollectionId)
+);
+
 create table DDMFormInstance (
 	mvccVersion LONG default 0 not null,
 	ctCollectionId LONG default 0 not null,
@@ -83,6 +113,7 @@ create table DDMFormInstanceRecord (
 	formInstanceVersion VARCHAR(75) null,
 	storageId LONG,
 	version VARCHAR(75) null,
+	ipAddress VARCHAR(75) null,
 	lastPublishDate DATE null,
 	primary key (formInstanceRecordId, ctCollectionId)
 );

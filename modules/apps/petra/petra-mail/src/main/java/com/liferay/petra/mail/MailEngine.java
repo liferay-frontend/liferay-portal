@@ -80,9 +80,7 @@ public class MailEngine {
 	}
 
 	public static Session getSession(Account account) {
-		Properties properties = _getProperties(account);
-
-		Session session = Session.getInstance(properties);
+		Session session = Session.getInstance(_getProperties(account));
 
 		if (_log.isDebugEnabled()) {
 			session.setDebug(true);

@@ -41,9 +41,9 @@ PortletURL editCommerceChannelRenderURL = commerceChannelDisplayContext.getEditC
 	submitButtonLabel='<%= LanguageUtil.get(request, "add") %>'
 	title='<%= LanguageUtil.get(request, "add-channel") %>'
 >
-	<portlet:actionURL name="editCommerceChannel" var="editCommerceChannelActionURL" />
+	<portlet:actionURL name="/commerce_channels/edit_commerce_channel" var="editCommerceChannelActionURL" />
 
-	<aui:form cssClass="container-fluid-1280" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "apiSubmit(this.form);" %>' useNamespace="<%= false %>">
+	<aui:form cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "apiSubmit(this.form);" %>' useNamespace="<%= false %>">
 		<div class="lfr-form-content">
 			<aui:model-context bean="<%= commerceChannel %>" model="<%= CommerceChannel.class %>" />
 

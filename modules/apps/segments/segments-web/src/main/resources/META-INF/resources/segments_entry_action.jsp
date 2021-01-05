@@ -17,9 +17,10 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String eventName = (String)request.getAttribute("view.jsp-eventName");
+SegmentsDisplayContext segmentsDisplayContext = (SegmentsDisplayContext)request.getAttribute(SegmentsWebKeys.SEGMENTS_DISPLAY_CONTEXT);
 String[] excludedRoleNames = (String[])request.getAttribute(SegmentsWebKeys.EXCLUDED_ROLE_NAMES);
 ResultRow row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
+String eventName = (String)request.getAttribute("view.jsp-eventName");
 
 SegmentsEntry segmentsEntry = (SegmentsEntry)row.getObject();
 %>
@@ -48,6 +49,7 @@ SegmentsEntry segmentsEntry = (SegmentsEntry)row.getObject();
 		<portlet:renderURL var="previewMembersURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 			<portlet:param name="mvcRenderCommandName" value="/segments/preview_segments_entry_users" />
 			<portlet:param name="segmentsEntryId" value="<%= String.valueOf(segmentsEntry.getSegmentsEntryId()) %>" />
+			<portlet:param name="clearSessionCriteria" value="<%= Boolean.TRUE.toString() %>" />
 		</portlet:renderURL>
 
 		<liferay-ui:icon
@@ -76,6 +78,7 @@ SegmentsEntry segmentsEntry = (SegmentsEntry)row.getObject();
 		%>
 
 		<liferay-ui:icon
+			cssClass='<%= segmentsDisplayContext.isRoleSegmentationEnabled() ? "" : "action disabled" %>'
 			data='<%=
 				HashMapBuilder.<String, Object>put(
 					"itemSelectorURL", itemSelectorURL.toString()

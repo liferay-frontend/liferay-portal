@@ -36,6 +36,7 @@ public class SerialBackgroundTaskExecutor
 		super(backgroundTaskExecutor);
 
 		_lockManager = lockManager;
+
 		_backgroundTaskLockHelper = new BackgroundTaskLockHelper(lockManager);
 	}
 

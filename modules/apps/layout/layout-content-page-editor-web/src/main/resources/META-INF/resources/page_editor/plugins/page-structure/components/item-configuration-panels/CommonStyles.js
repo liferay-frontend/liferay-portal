@@ -67,6 +67,7 @@ export const CommonStyles = ({commonStylesValues, item}) => {
 						item={item}
 						key={index}
 						label={fieldSet.label}
+						languageId={config.defaultLanguageId}
 						onValueSelect={onCommonStylesValueSelect}
 						values={commonStylesValues}
 					/>

@@ -24,11 +24,13 @@ public class OrderList {
 	public OrderList(List<Order> orders, int count) {
 		_orders = orders;
 		_count = count;
+
 		_success = true;
 	}
 
 	public OrderList(String[] errorMessages) {
 		_errorMessages = errorMessages;
+
 		_success = false;
 	}
 

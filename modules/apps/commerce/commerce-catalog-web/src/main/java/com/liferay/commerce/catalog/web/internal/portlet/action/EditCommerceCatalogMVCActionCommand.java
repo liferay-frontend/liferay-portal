@@ -63,7 +63,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.COMMERCE_CATALOGS,
-		"mvc.command.name=editCommerceCatalog"
+		"mvc.command.name=/commerce_catalogs/edit_commerce_catalog"
 	},
 	service = MVCActionCommand.class
 )
@@ -151,12 +151,12 @@ public class EditCommerceCatalogMVCActionCommand extends BaseMVCActionCommand {
 		String catalogDefaultLanguageId = ParamUtil.getString(
 			actionRequest, "catalogDefaultLanguageId");
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CommerceCatalog.class.getName(), actionRequest);
-
 		CommerceCatalog commerceCatalog = null;
 
 		if (commerceCatalogId <= 0) {
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				CommerceCatalog.class.getName(), actionRequest);
+
 			commerceCatalog = _commerceCatalogService.addCommerceCatalog(
 				name, commerceCurrencyCode, catalogDefaultLanguageId, null,
 				serviceContext);

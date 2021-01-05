@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -88,7 +89,11 @@ public class GetFragmentEntryLinkMVCResourceCommand
 				(ThemeDisplay)resourceRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
 
-			defaultFragmentRendererContext.setLocale(themeDisplay.getLocale());
+			String languageId = ParamUtil.getString(
+				resourceRequest, "languageId", themeDisplay.getLanguageId());
+
+			defaultFragmentRendererContext.setLocale(
+				LocaleUtil.fromLanguageId(languageId));
 
 			defaultFragmentRendererContext.setMode(
 				FragmentEntryLinkConstants.EDIT);
@@ -114,14 +119,15 @@ public class GetFragmentEntryLinkMVCResourceCommand
 			if (Validator.isNotNull(collectionItemClassName) &&
 				(collectionItemClassPK > 0)) {
 
+				InfoItemIdentifier infoItemIdentifier =
+					new ClassPKInfoItemIdentifier(collectionItemClassPK);
+
 				InfoItemObjectProvider<Object> infoItemObjectProvider =
 					_infoItemServiceTracker.getFirstInfoItemService(
-						InfoItemObjectProvider.class, collectionItemClassName);
+						InfoItemObjectProvider.class, collectionItemClassName,
+						infoItemIdentifier.getInfoItemServiceFilter());
 
 				if (infoItemObjectProvider != null) {
-					InfoItemIdentifier infoItemIdentifier =
-						new ClassPKInfoItemIdentifier(collectionItemClassPK);
-
 					Object infoItemObject = infoItemObjectProvider.getInfoItem(
 						infoItemIdentifier);
 

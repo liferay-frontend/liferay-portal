@@ -29,7 +29,11 @@
 }
 
 .modal-dialog {
-	@include media-breakpoint-up(sm) {
+	&:not(.dialog-iframe-modal):not(.modal-full-screen) {
+		position: relative;
+	}
+
+	&.dialog-iframe-modal {
 		max-width: none;
 	}
 

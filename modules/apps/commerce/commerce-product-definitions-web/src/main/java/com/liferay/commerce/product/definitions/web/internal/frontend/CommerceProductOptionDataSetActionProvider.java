@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.product.definitions.web.internal.frontend;
 
+import com.liferay.commerce.product.definitions.web.internal.frontend.constants.CommerceProductDataSetConstants;
 import com.liferay.commerce.product.definitions.web.internal.model.ProductOption;
 import com.liferay.commerce.product.definitions.web.internal.security.permission.resource.CommerceCatalogPermission;
 import com.liferay.commerce.product.model.CPDefinition;

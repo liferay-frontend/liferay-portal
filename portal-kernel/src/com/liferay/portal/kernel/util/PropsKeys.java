@@ -658,6 +658,24 @@ public interface PropsKeys {
 	public static final String CUSTOM_SQL_FUNCTION_ISNULL =
 		"custom.sql.function.isnull";
 
+	public static final String DATA_LIMIT_MAX_DL_STORAGE_SIZE =
+		"data.limit.max.dl.storage.size";
+
+	public static final String DATA_LIMIT_MAX_ORGANIZATION_COUNT =
+		"data.limit.max.organization.count";
+
+	public static final String DATA_LIMIT_MAX_ROLE_COUNT =
+		"data.limit.max.role.count";
+
+	public static final String DATA_LIMIT_MAX_SITE_COUNT =
+		"data.limit.max.site.count";
+
+	public static final String DATA_LIMIT_MAX_TEAM_COUNT =
+		"data.limit.max.team.count";
+
+	public static final String DATA_LIMIT_MAX_USER_COUNT =
+		"data.limit.max.user.count";
+
 	public static final String DATABASE_IN_MAX_PARAMETERS =
 		"database.in.max.parameters";
 
@@ -2650,6 +2668,9 @@ public interface PropsKeys {
 	public static final String RECENT_CONTENT_MAX_DISPLAY_ITEMS =
 		"recent.content.max.display.items";
 
+	public static final String RECENT_GROUPS_MAX_ELEMENTS =
+		"recent.groups.max.elements";
+
 	public static final String REDIRECT_URL_DOMAINS_ALLOWED =
 		"redirect.url.domains.allowed";
 
@@ -2682,6 +2703,9 @@ public interface PropsKeys {
 
 	public static final String RESOURCE_ACTIONS_READ_PORTLET_RESOURCES =
 		"resource.actions.read.portlet.resources";
+
+	public static final String RESOURCE_ACTIONS_STRICT_MODE_ENABLED =
+		"resource.actions.strict.mode.enabled";
 
 	public static final String RESOURCE_REPOSITORIES_ROOT =
 		"resource.repositories.root";

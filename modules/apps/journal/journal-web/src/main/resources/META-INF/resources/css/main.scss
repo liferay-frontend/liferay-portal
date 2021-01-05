@@ -1,11 +1,14 @@
 @import 'atlas-variables';
 
+@import '../ddm_template_editor/components/App';
+
 $toolbarDesktopHeight: 4rem;
 $toolbarHeight: 6.875rem;
 $toolbarZIndex: 971;
 
 $controlMenuHeight: 56px;
 $sidebarHeaderHeight: 104px;
+$sidebarWidth: 398px;
 
 $portletLayoutMargin: 35px;
 
@@ -202,6 +205,14 @@ $productMenuWidth: 320px;
 						border-radius: 0;
 					}
 				}
+			}
+
+			.contextual-sidebar-mr {
+				margin-right: $sidebarWidth;
+			}
+
+			.contextual-sidebar-mr-n {
+				margin-right: -$sidebarWidth;
 			}
 
 			.sidebar-body {

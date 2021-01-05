@@ -1532,15 +1532,6 @@ public class SharepointOAuth2TokenEntryPersistenceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		SharepointOAuth2TokenEntryPersistenceImpl.class);
 
-	static {
-		try {
-			Class.forName(SharepointOAuthPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;

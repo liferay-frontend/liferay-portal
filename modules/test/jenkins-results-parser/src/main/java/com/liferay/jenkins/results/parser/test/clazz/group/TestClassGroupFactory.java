@@ -29,17 +29,28 @@ public class TestClassGroupFactory {
 	public static AxisTestClassGroup newAxisTestClassGroup(
 		BatchTestClassGroup batchTestClassGroup) {
 
+		if (batchTestClassGroup instanceof CucumberBatchTestClassGroup) {
+			return new CucumberAxisTestClassGroup(
+				(CucumberBatchTestClassGroup)batchTestClassGroup);
+		}
+
 		if (batchTestClassGroup instanceof FunctionalBatchTestClassGroup) {
 			return new FunctionalAxisTestClassGroup(
 				(FunctionalBatchTestClassGroup)batchTestClassGroup);
+		}
+
+		if (batchTestClassGroup instanceof JUnitBatchTestClassGroup) {
+			return new JUnitAxisTestClassGroup(
+				(JUnitBatchTestClassGroup)batchTestClassGroup);
 		}
 
 		return new AxisTestClassGroup(batchTestClassGroup);
 	}
 
 	public static BatchTestClassGroup newBatchTestClassGroup(
-		String batchName, BatchTestClassGroup.BuildProfile buildProfile,
-		Job job) {
+		String batchName, Job job) {
+
+		Job.BuildProfile buildProfile = job.getBuildProfile();
 
 		String key = JenkinsResultsParserUtil.combine(
 			batchName, "_", buildProfile.toString(), "_", job.getJobName());
@@ -53,11 +64,15 @@ public class TestClassGroupFactory {
 		if (job instanceof PortalTestClassJob) {
 			PortalTestClassJob portalTestClassJob = (PortalTestClassJob)job;
 
-			if (batchName.contains("functional-") ||
-				batchName.contains("subrepository-functional-")) {
+			if (batchName.contains("cucumber-")) {
+				batchTestClassGroup = new CucumberBatchTestClassGroup(
+					batchName, portalTestClassJob);
+			}
+			else if (batchName.contains("functional-") ||
+					 batchName.contains("subrepository-functional-")) {
 
 				batchTestClassGroup = new FunctionalBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("integration-") ||
 					 batchName.startsWith("junit-test-") ||
@@ -66,47 +81,47 @@ public class TestClassGroupFactory {
 					 batchName.startsWith("unit-")) {
 
 				batchTestClassGroup = new JUnitBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("modules-compile-")) {
 				batchTestClassGroup = new ModulesCompileBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("modules-integration-") ||
 					 batchName.startsWith("modules-unit-")) {
 
 				batchTestClassGroup = new ModulesJUnitBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("modules-semantic-versioning-")) {
 				batchTestClassGroup = new ModulesSemVerBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("plugins-compile-")) {
 				batchTestClassGroup = new PluginsBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("js-test-") ||
 					 batchName.startsWith("portal-frontend-js-")) {
 
 				batchTestClassGroup = new NPMTestBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("rest-builder-")) {
 				batchTestClassGroup = new RESTBuilderBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("service-builder-")) {
 				batchTestClassGroup = new ServiceBuilderBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("tck-")) {
 				batchTestClassGroup = new TCKJunitBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 			else {
 				batchTestClassGroup = new DefaultBatchTestClassGroup(
-					batchName, buildProfile, portalTestClassJob);
+					batchName, portalTestClassJob);
 			}
 		}
 

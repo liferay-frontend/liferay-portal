@@ -156,9 +156,11 @@ Map<String, ThemeSetting> configurableSettings = selTheme.getConfigurableSetting
 
 	for (Map.Entry<String, ThemeSetting> entry : configurableSettings.entrySet()) {
 		String name = LanguageUtil.get(selThemeResourceBundle, entry.getKey());
+
 		ThemeSetting themeSetting = entry.getValue();
 
 		String type = GetterUtil.getString(themeSetting.getType(), "text");
+
 		String value = StringPool.BLANK;
 
 		if (useDefaultThemeSettings) {
@@ -178,7 +180,7 @@ Map<String, ThemeSetting> configurableSettings = selTheme.getConfigurableSetting
 
 		<c:choose>
 			<c:when test='<%= type.equals("checkbox") %>'>
-				<aui:input label="<%= HtmlUtil.escape(name) %>" name="<%= propertyName %>" type="toggle-switch" value="<%= value %>" />
+				<aui:input inlineLabel="right" label="<%= HtmlUtil.escape(name) %>" labelCssClass="simple-toggle-switch" name="<%= propertyName %>" type="toggle-switch" value="<%= value %>" />
 			</c:when>
 			<c:when test='<%= type.equals("text") || type.equals("textarea") %>'>
 				<aui:input label="<%= HtmlUtil.escape(name) %>" name="<%= propertyName %>" type="<%= type %>" value="<%= value %>" />

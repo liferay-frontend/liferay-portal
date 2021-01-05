@@ -15,9 +15,9 @@
 package com.liferay.commerce.product.measurement.unit.web.internal.display.context;
 
 import com.liferay.commerce.product.constants.CPActionKeys;
+import com.liferay.commerce.product.constants.CPMeasurementUnitConstants;
 import com.liferay.commerce.product.measurement.unit.web.internal.util.CPMeasurementUnitUtil;
 import com.liferay.commerce.product.model.CPMeasurementUnit;
-import com.liferay.commerce.product.model.CPMeasurementUnitConstants;
 import com.liferay.commerce.product.service.CPMeasurementUnitService;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;

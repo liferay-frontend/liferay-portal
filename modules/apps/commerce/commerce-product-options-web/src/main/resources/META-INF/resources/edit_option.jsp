@@ -26,7 +26,7 @@ long cpOptionId = cpOptionDisplayContext.getCPOptionId();
 
 <portlet:actionURL name="editProductOption" var="editProductOptionActionURL" />
 
-<aui:form action="<%= editProductOptionActionURL %>" cssClass="container-fluid-1280" method="post" name="fm">
+<aui:form action="<%= editProductOptionActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (cpOption == null) ? Constants.ADD : Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="cpOptionId" type="hidden" value="<%= String.valueOf(cpOptionId) %>" />
@@ -65,11 +65,11 @@ long cpOptionId = cpOptionDisplayContext.getCPOptionId();
 
 			</aui:select>
 
-			<aui:input checked="<%= (cpOption == null) ? false : cpOption.isFacetable() %>" label="use-in-faceted-navigation" name="facetable" type="toggle-switch" />
+			<aui:input checked="<%= (cpOption == null) ? false : cpOption.isFacetable() %>" inlineLabel="right" label="use-in-faceted-navigation" labelCssClass="simple-toggle-switch" name="facetable" type="toggle-switch" />
 
-			<aui:input checked="<%= (cpOption == null) ? false : cpOption.getRequired() %>" name="required" type="toggle-switch" />
+			<aui:input checked="<%= (cpOption == null) ? false : cpOption.getRequired() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="required" type="toggle-switch" />
 
-			<aui:input checked="<%= (cpOption == null) ? false : cpOption.isSkuContributor() %>" name="skuContributor" type="toggle-switch" />
+			<aui:input checked="<%= (cpOption == null) ? false : cpOption.isSkuContributor() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="skuContributor" type="toggle-switch" />
 
 			<aui:input helpMessage="key-help" name="key" />
 		</aui:fieldset>

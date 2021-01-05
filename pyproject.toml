@@ -1,0 +1,6 @@
+[tool.black]
+exclude = '''
+(
+    portal-impl/src/com/liferay/portal/deploy/dependencies/wsadmin.py
+)
+'''

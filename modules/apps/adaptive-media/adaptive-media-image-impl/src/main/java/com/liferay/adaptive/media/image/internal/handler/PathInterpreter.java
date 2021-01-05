@@ -55,39 +55,38 @@ public class PathInterpreter {
 
 			long fileEntryId = Long.valueOf(matcher.group(1));
 
-			FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
-
-			long fileVersionId = _getFileVersionId(matcher);
-
-			FileVersion fileVersion = _getFileVersion(fileEntry, fileVersionId);
-
-			String configurationEntryUUID = _getConfigurationEntryUUID(matcher);
+			FileVersion fileVersion = _getFileVersion(
+				_dlAppService.getFileEntry(fileEntryId),
+				_getFileVersionId(matcher));
 
 			Optional<AMImageConfigurationEntry>
 				amImageConfigurationEntryOptional =
 					_amImageConfigurationHelper.getAMImageConfigurationEntry(
-						fileVersion.getCompanyId(), configurationEntryUUID);
+						fileVersion.getCompanyId(),
+						_getConfigurationEntryUUID(matcher));
 
-			Map<String, String> properties =
-				amImageConfigurationEntryOptional.map(
-					amImageConfigurationEntry -> {
-						Map<String, String> curProperties =
-							amImageConfigurationEntry.getProperties();
+			return Optional.of(
+				Tuple.of(
+					fileVersion,
+					amImageConfigurationEntryOptional.map(
+						amImageConfigurationEntry -> {
+							Map<String, String> curProperties =
+								amImageConfigurationEntry.getProperties();
 
-						AMAttribute<?, String> configurationUuidAMAttribute =
-							AMAttribute.getConfigurationUuidAMAttribute();
+							AMAttribute<?, String>
+								configurationUuidAMAttribute =
+									AMAttribute.
+										getConfigurationUuidAMAttribute();
 
-						curProperties.put(
-							configurationUuidAMAttribute.getName(),
-							amImageConfigurationEntry.getUUID());
+							curProperties.put(
+								configurationUuidAMAttribute.getName(),
+								amImageConfigurationEntry.getUUID());
 
-						return curProperties;
-					}
-				).orElse(
-					new HashMap<>()
-				);
-
-			return Optional.of(Tuple.of(fileVersion, properties));
+							return curProperties;
+						}
+					).orElse(
+						new HashMap<>()
+					)));
 		}
 		catch (PortalException portalException) {
 			throw new AMRuntimeException(portalException);

@@ -132,7 +132,7 @@ renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourc
 					<aui:input name="coverImageCaption" type="hidden" />
 
 					<clay:col
-						cssClass="col-md-offset-2"
+						cssClass="mx-md-auto"
 						md="8"
 					>
 						<div class="cover-image-caption <%= (coverImageFileEntryId == 0) ? "invisible" : "" %>">
@@ -149,7 +149,7 @@ renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourc
 					</clay:col>
 
 					<clay:col
-						cssClass="col-md-offset-2"
+						cssClass="mx-md-auto"
 						md="8"
 					>
 						<div class="entry-title form-group">
@@ -158,7 +158,7 @@ renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourc
 							int titleMaxLength = ModelHintsUtil.getMaxLength(BlogsEntry.class.getName(), "title");
 							%>
 
-							<aui:input autoSize="<%= true %>" cssClass="form-control-edit form-control-edit-title form-control-unstyled" label="" maxlength="<%= String.valueOf(titleMaxLength) %>" name="title" onChange='<%= liferayPortletResponse.getNamespace() + "onChangeTitle(event.target.value)" %>' placeholder='<%= LanguageUtil.get(request, "title") + StringPool.BLANK + " *" %>' required="<%= true %>" showRequiredLabel="<%= true %>" type="textarea" value="<%= HtmlUtil.escape(title) %>" />
+							<aui:input autoSize="<%= true %>" cssClass="form-control-edit form-control-edit-title form-control-unstyled" label="" maxlength="<%= String.valueOf(titleMaxLength) %>" name="title" placeholder='<%= LanguageUtil.get(request, "title") + StringPool.BLANK + " *" %>' required="<%= true %>" showRequiredLabel="<%= true %>" type="textarea" value="<%= HtmlUtil.escape(title) %>" />
 						</div>
 
 						<div class="entry-subtitle">
@@ -170,7 +170,7 @@ renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourc
 								contents="<%= content %>"
 								editorName='<%= PropsUtil.get("editor.wysiwyg.portal-web.docroot.html.portlet.blogs.edit_entry.jsp") %>'
 								name="contentEditor"
-								onChangeMethod="onChangeEditor"
+								onChangeMethod="onChangeContentEditor"
 								placeholder="content"
 								required="<%= true %>"
 							>
@@ -258,7 +258,7 @@ renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourc
 						</div>
 
 						<div class="entry-description form-group">
-							<aui:input disabled="<%= !customAbstract %>" label="description" name="description" onChange='<%= liferayPortletResponse.getNamespace() + "setCustomDescription(this.value);" %>' type="text" value="<%= description %>">
+							<aui:input disabled="<%= !customAbstract %>" label="description" name="description" type="text" value="<%= description %>">
 								<aui:validator name="required" />
 							</aui:input>
 						</div>
@@ -290,7 +290,7 @@ renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourc
 					<aui:input label="display-date" name="displayDate" />
 
 					<c:if test="<%= (entry != null) && blogsGroupServiceSettings.isEmailEntryUpdatedEnabled() %>">
-						<aui:input helpMessage="comments-regarding-the-blog-entry-update" label="send-email-entry-updated" name="sendEmailEntryUpdated" type="toggle-switch" value='<%= ParamUtil.getBoolean(request, "sendEmailEntryUpdated") %>' />
+						<aui:input helpMessage="comments-regarding-the-blog-entry-update" inlineLabel="right" label="send-email-entry-updated" labelCssClass="simple-toggle-switch" name="sendEmailEntryUpdated" type="toggle-switch" value='<%= ParamUtil.getBoolean(request, "sendEmailEntryUpdated") %>' />
 
 						<div id="<portlet:namespace />emailEntryUpdatedCommentWrapper">
 							<aui:input label="" name="emailEntryUpdatedComment" type="textarea" value='<%= ParamUtil.getString(request, "emailEntryUpdatedComment") %>' />
@@ -298,11 +298,11 @@ renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourc
 					</c:if>
 
 					<c:if test="<%= PropsValues.BLOGS_PINGBACK_ENABLED %>">
-						<aui:input helpMessage='<%= LanguageUtil.get(resourceBundle, "a-pingback-is-a-comment-that-is-created-when-you-link-to-another-blog-post-where-pingbacks-are-enabled") + " " + LanguageUtil.get(resourceBundle, "to-allow-pingbacks,-please-also-ensure-the-entry's-guest-view-permission-is-enabled") %>' label="allow-pingbacks" name="allowPingbacks" type="toggle-switch" value="<%= allowPingbacks %>" />
+						<aui:input helpMessage='<%= LanguageUtil.get(resourceBundle, "a-pingback-is-a-comment-that-is-created-when-you-link-to-another-blog-post-where-pingbacks-are-enabled") + " " + LanguageUtil.get(resourceBundle, "to-allow-pingbacks,-please-also-ensure-the-entry's-guest-view-permission-is-enabled") %>' inlineLabel="right" label="allow-pingbacks" labelCssClass="simple-toggle-switch" name="allowPingbacks" type="toggle-switch" value="<%= allowPingbacks %>" />
 					</c:if>
 
 					<c:if test="<%= PropsValues.BLOGS_TRACKBACK_ENABLED %>">
-						<aui:input helpMessage="to-allow-trackbacks,-please-also-ensure-the-entry's-guest-view-permission-is-enabled" label="allow-trackbacks" name="allowTrackbacks" type="toggle-switch" value="<%= allowTrackbacks %>" />
+						<aui:input helpMessage="to-allow-trackbacks,-please-also-ensure-the-entry's-guest-view-permission-is-enabled" inlineLabel="right" label="allow-trackbacks" labelCssClass="simple-toggle-switch" name="allowTrackbacks" type="toggle-switch" value="<%= allowTrackbacks %>" />
 
 						<aui:input label="trackbacks-to-send" name="trackbacks" />
 
@@ -412,81 +412,58 @@ renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourc
 	<portlet:param name="ajax" value="<%= Boolean.TRUE.toString() %>" />
 </portlet:actionURL>
 
-<aui:script>
-	function <portlet:namespace />onChangeEditor(html) {
-		var blogs = Liferay.component('<portlet:namespace />Blogs');
+<%
+Map<String, Object> taglibContext = HashMapBuilder.<String, Object>put(
+	"constants",
+	HashMapBuilder.<String, Object>put(
+		"ACTION_PUBLISH", WorkflowConstants.ACTION_PUBLISH
+	).put(
+		"ACTION_SAVE_DRAFT", WorkflowConstants.ACTION_SAVE_DRAFT
+	).put(
+		"ADD", Constants.ADD
+	).put(
+		"CMD", Constants.CMD
+	).put(
+		"STATUS_DRAFT", WorkflowConstants.STATUS_DRAFT
+	).put(
+		"UPDATE", Constants.UPDATE
+	).build()
+).put(
+	"descriptionLength", PropsValues.BLOGS_PAGE_ABSTRACT_LENGTH
+).put(
+	"editEntryURL", editEntryURL
+).put(
+	"emailEntryUpdatedEnabled", (entry != null) && blogsGroupServiceSettings.isEmailEntryUpdatedEnabled()
+).build();
 
-		if (blogs) {
-			blogs.setDescription(html);
-		}
-	}
+if (entry != null) {
+	taglibContext.put(
+		"entry",
+		HashMapBuilder.<String, Object>put(
+			"content", UnicodeFormatter.toString(content)
+		).put(
+			"customDescription", customAbstract
+		).put(
+			"description", UnicodeFormatter.toString(description)
+		).put(
+			"pending", entry.isPending()
+		).put(
+			"status", entry.getStatus()
+		).put(
+			"subtitle", UnicodeFormatter.toString(subtitle)
+		).put(
+			"title", UnicodeFormatter.toString(title)
+		).put(
+			"userId", entry.getUserId()
+		).build());
+}
+%>
 
-	function <portlet:namespace />onChangeTitle(title) {
-		var blogs = Liferay.component('<portlet:namespace />Blogs');
-
-		if (blogs) {
-			blogs.updateFriendlyURL(title);
-		}
-	}
-
-	function <portlet:namespace />setCustomDescription(text) {
-		var blogs = Liferay.component('<portlet:namespace />Blogs');
-
-		if (blogs) {
-			blogs.setCustomDescription(text);
-		}
-	}
-
-	<c:if test="<%= (entry != null) && blogsGroupServiceSettings.isEmailEntryUpdatedEnabled() %>">
-		Liferay.Util.toggleBoxes(
-			'<portlet:namespace />sendEmailEntryUpdated',
-			'<portlet:namespace />emailEntryUpdatedCommentWrapper'
-		);
-	</c:if>
-</aui:script>
-
-<aui:script use="liferay-blogs">
-	var blogs = Liferay.component(
-		'<portlet:namespace />Blogs',
-		new Liferay.Blogs({
-			constants: {
-				ACTION_PUBLISH: '<%= WorkflowConstants.ACTION_PUBLISH %>',
-				ACTION_SAVE_DRAFT: '<%= WorkflowConstants.ACTION_SAVE_DRAFT %>',
-				ADD: '<%= Constants.ADD %>',
-				CMD: '<%= Constants.CMD %>',
-				STATUS_DRAFT: '<%= WorkflowConstants.STATUS_DRAFT %>',
-				UPDATE: '<%= Constants.UPDATE %>',
-			},
-			descriptionLength: '<%= PropsValues.BLOGS_PAGE_ABSTRACT_LENGTH %>',
-			editEntryURL: '<%= editEntryURL %>',
-
-			<c:if test="<%= entry != null %>">
-				entry: {
-					content: '<%= UnicodeFormatter.toString(content) %>',
-					customDescription: <%= customAbstract %>,
-					description: '<%= UnicodeFormatter.toString(description) %>',
-					pending: <%= entry.isPending() %>,
-					status: '<%= entry.getStatus() %>',
-					subtitle: '<%= UnicodeFormatter.toString(subtitle) %>',
-					title: '<%= UnicodeFormatter.toString(title) %>',
-					userId: '<%= entry.getUserId() %>',
-				},
-			</c:if>
-
-			namespace: '<portlet:namespace />',
-		})
-	);
-
-	var clearSaveDraftHandle = function (event) {
-		if (event.portletId === '<%= portletDisplay.getRootPortletId() %>') {
-			blogs.destroy();
-
-			Liferay.detach('destroyPortlet', clearSaveDraftHandle);
-		}
-	};
-
-	Liferay.on('destroyPortlet', clearSaveDraftHandle);
-</aui:script>
+<liferay-frontend:component
+	context="<%= taglibContext %>"
+	module="blogs/js/blogs"
+	servletContext="<%= application %>"
+/>
 
 <%
 if (entry != null) {
@@ -496,6 +473,7 @@ if (entry != null) {
 	portletURL.setParameter("entryId", String.valueOf(entry.getEntryId()));
 
 	PortalUtil.addPortletBreadcrumbEntry(request, BlogsEntryUtil.getDisplayTitle(resourceBundle, entry), portletURL.toString());
+
 	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "edit"), currentURL);
 }
 else {

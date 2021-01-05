@@ -25,6 +25,7 @@ import {LAYOUT_DATA_ITEM_TYPES} from '../config/constants/layoutDataItemTypes';
 import {config} from '../config/index';
 import selectCanUpdateItemConfiguration from '../selectors/selectCanUpdateItemConfiguration';
 import selectCanUpdatePageStructure from '../selectors/selectCanUpdatePageStructure';
+import selectSegmentsExperienceId from '../selectors/selectSegmentsExperienceId';
 import {useDispatch, useSelector} from '../store/index';
 import moveItem from '../thunks/moveItem';
 import {TARGET_POSITION} from '../utils/dragAndDrop/constants/targetPosition';
@@ -104,9 +105,7 @@ function TopperContent({
 }) {
 	const canUpdatePageStructure = useSelector(selectCanUpdatePageStructure);
 	const dispatch = useDispatch();
-	const segmentsExperienceId = useSelector(
-		(state) => state.segmentsExperienceId
-	);
+	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const hoverItem = useHoverItem();
 	const fragmentEntryLinks = useSelector((state) => state.fragmentEntryLinks);
 

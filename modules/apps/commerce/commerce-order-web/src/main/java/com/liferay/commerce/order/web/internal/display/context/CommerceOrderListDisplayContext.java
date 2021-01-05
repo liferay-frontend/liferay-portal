@@ -66,7 +66,8 @@ public class CommerceOrderListDisplayContext {
 			_commerceOrderRequestHelper.getRequest(),
 			CommerceOrder.class.getName(), PortletProvider.Action.MANAGE);
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceOrder");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_order/edit_commerce_order");
 		portletURL.setParameter("commerceOrderId", "{id}");
 
 		clayDataSetActionDropdownItems.add(

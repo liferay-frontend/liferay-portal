@@ -24,7 +24,7 @@ CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder()
 Date requestedDeliveryDate = commerceOrder.getRequestedDeliveryDate();
 %>
 
-<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderRequesedDeliveryDateActionURL" />
+<portlet:actionURL name="/commerce_order/edit_commerce_order" var="editCommerceOrderRequesedDeliveryDateActionURL" />
 
 <commerce-ui:modal-content>
 	<aui:form action="<%= editCommerceOrderRequesedDeliveryDateActionURL %>" method="post" name="fm">

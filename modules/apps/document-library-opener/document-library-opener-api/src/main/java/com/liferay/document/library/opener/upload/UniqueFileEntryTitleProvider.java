@@ -26,7 +26,16 @@ public interface UniqueFileEntryTitleProvider {
 	public String provide(long groupId, long folderId, Locale locale)
 		throws PortalException;
 
-	public String provide(long groupId, long folderId, String fileName)
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #provide(long
+	 *             groupId, long folderId, String extension, String title)}
+	 */
+	@Deprecated
+	public String provide(long groupId, long folderId, String title)
+		throws PortalException;
+
+	public String provide(
+			long groupId, long folderId, String extension, String title)
 		throws PortalException;
 
 }

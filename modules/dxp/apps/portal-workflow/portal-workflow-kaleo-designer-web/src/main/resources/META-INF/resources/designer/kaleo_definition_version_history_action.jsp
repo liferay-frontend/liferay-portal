@@ -34,7 +34,7 @@ KaleoDefinitionVersion kaleoDefinitionVersion = (KaleoDefinitionVersion)row.getO
 	<portlet:param name="<%= WorkflowWebKeys.WORKFLOW_JSP_STATE %>" value="<%= WorkflowWebKeys.WORKFLOW_PREVIEW_BEFORE_RESTORE_STATE %>" />
 </portlet:renderURL>
 
-<liferay-portlet:actionURL name="revertKaleoDefinitionVersion" var="revertURL">
+<liferay-portlet:actionURL name="/kaleo_designer/revert_kaleo_definition_version" var="revertURL">
 	<portlet:param name="redirect" value="<%= redirect %>" />
 	<portlet:param name="name" value="<%= kaleoDefinitionVersion.getName() %>" />
 	<portlet:param name="draftVersion" value="<%= kaleoDefinitionVersion.getVersion() %>" />

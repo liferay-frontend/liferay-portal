@@ -177,16 +177,19 @@
 		}
 	}
 
-	.lfr-discussion-editor {
+	.lfr-discussion-reply-container {
 		.button-holder.dialog-footer {
 			bottom: 0;
 			display: block;
 			left: unset;
 			padding: 10px 0;
-			position: relative;
 
 			.btn {
 				margin-left: 0;
+			}
+
+			.btn-cancel {
+				margin-left: 1rem;
 			}
 		}
 	}
@@ -196,6 +199,7 @@
 	}
 
 	.portlet-body .panel {
+		margin-top: 1rem;
 		padding: 1rem;
 	}
 
@@ -468,27 +472,34 @@
 	}
 }
 
-.scheduler-base-hd .scheduler-base-views {
-	align-items: start;
+.scheduler-base-hd {
+	&.row {
+		justify-content: space-between;
+		margin: 0;
+	}
 
-	button {
-		border-color: #cdced9;
-		border-right: 1px;
-		color: #6b6c7e;
-		margin-left: 0 !important;
+	.scheduler-base-views {
+		align-items: start;
 
-		&:hover,
-		&:focus,
-		&:hover,
-		&.active {
-			background-color: #f1f2f5;
-			color: inherit;
-		}
+		button {
+			border-color: #cdced9;
+			border-right: 1px;
+			color: #6b6c7e;
+			margin-left: 0 !important;
 
-		&.btn:last-of-type {
-			border-bottom-right-radius: 4px;
-			border-right: solid 1px #cdced9;
-			border-top-right-radius: 4px;
+			&:hover,
+			&:focus,
+			&:hover,
+			&.active {
+				background-color: #f1f2f5;
+				color: inherit;
+			}
+
+			&.btn:last-of-type {
+				border-bottom-right-radius: 4px;
+				border-right: solid 1px #cdced9;
+				border-top-right-radius: 4px;
+			}
 		}
 	}
 }

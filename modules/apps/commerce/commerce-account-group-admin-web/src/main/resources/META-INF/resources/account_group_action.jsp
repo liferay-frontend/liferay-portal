@@ -33,7 +33,7 @@ CommerceAccountGroup commerceAccountGroup = (CommerceAccountGroup)row.getObject(
 >
 	<c:if test="<%= commerceAccountGroupAdminDisplayContext.hasPermission(commerceAccountGroup.getCommerceAccountGroupId(), ActionKeys.UPDATE) %>">
 		<portlet:renderURL var="editURL">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceAccountGroup" />
+			<portlet:param name="mvcRenderCommandName" value="/commerce_account_group_admin/edit_commerce_account_group" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceAccountGroupId" value="<%= String.valueOf(commerceAccountGroup.getCommerceAccountGroupId()) %>" />
 		</portlet:renderURL>
@@ -45,7 +45,7 @@ CommerceAccountGroup commerceAccountGroup = (CommerceAccountGroup)row.getObject(
 	</c:if>
 
 	<c:if test="<%= commerceAccountGroupAdminDisplayContext.hasPermission(commerceAccountGroup.getCommerceAccountGroupId(), ActionKeys.DELETE) && !commerceAccountGroup.isSystem() %>">
-		<portlet:actionURL name="editCommerceAccountGroup" var="deleteURL">
+		<portlet:actionURL name="/commerce_account_group_admin/edit_commerce_account_group" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceAccountGroupId" value="<%= String.valueOf(commerceAccountGroup.getCommerceAccountGroupId()) %>" />

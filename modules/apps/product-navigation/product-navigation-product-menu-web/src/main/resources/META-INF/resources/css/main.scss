@@ -304,11 +304,7 @@ $product-menu-pages-administration-link-height: 72px;
 		padding: 0;
 		position: absolute;
 		right: 0;
-		top: 55px;
-
-		@include media-breakpoint-up(sm) {
-			top: 64px;
-		}
+		top: 0;
 
 		@include media-breakpoint-down(xs) {
 			overflow: visible;
@@ -343,16 +339,6 @@ $product-menu-pages-administration-link-height: 72px;
 
 	small {
 		display: block;
-	}
-
-	.list-group {
-		> .collapse,
-		> .collapsing {
-			> .list-group-item > .tabular-list-group {
-				margin-bottom: -10px;
-				margin-top: -10px;
-			}
-		}
 	}
 
 	.list-group-heading {
@@ -396,11 +382,6 @@ $product-menu-pages-administration-link-height: 72px;
 		.selectable-site {
 			color: #333;
 			height: auto;
-		}
-
-		.list-group-item-content,
-		.list-group-item-field {
-			vertical-align: middle;
 		}
 
 		.site-link {

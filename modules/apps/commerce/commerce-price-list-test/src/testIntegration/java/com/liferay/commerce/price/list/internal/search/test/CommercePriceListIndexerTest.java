@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -122,14 +121,12 @@ public class CommercePriceListIndexerTest {
 			_company.getCompanyId(), _group.getGroupId(),
 			defaultUser.getUserId(), commerceCurrency.getCode());
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
-
 		_commercePriceListLocalService.addCommercePriceList(
 			commerceCatalog.getGroupId(), _user.getUserId(),
 			commerceCurrency.getCommerceCurrencyId(),
 			RandomTestUtil.randomString(), 0, 1, 1, 2018, 3, 4, 0, 0, 0, 0, 0,
-			true, serviceContext);
+			true,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		List<CommercePriceList> commercePriceLists =
 			_commercePriceListLocalService.getCommercePriceLists(

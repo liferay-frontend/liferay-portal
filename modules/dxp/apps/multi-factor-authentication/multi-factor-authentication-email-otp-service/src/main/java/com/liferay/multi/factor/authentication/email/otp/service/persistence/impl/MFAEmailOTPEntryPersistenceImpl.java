@@ -922,15 +922,6 @@ public class MFAEmailOTPEntryPersistenceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		MFAEmailOTPEntryPersistenceImpl.class);
 
-	static {
-		try {
-			Class.forName(MFAEmailOTPPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;

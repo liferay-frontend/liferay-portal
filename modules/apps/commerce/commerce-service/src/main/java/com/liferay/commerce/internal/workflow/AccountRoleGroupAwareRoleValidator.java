@@ -34,6 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 public class AccountRoleGroupAwareRoleValidator
 	implements GroupAwareRoleValidator {
 
+	@Override
 	public boolean isValidGroup(Group group, Role role) throws PortalException {
 		if ((group != null) && _isAccount(group) &&
 			(role.getType() == RoleConstants.TYPE_SITE)) {

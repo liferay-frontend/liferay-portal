@@ -12,17 +12,21 @@
  * details.
  */
 
+import ClayIcon from '@clayui/icon';
 import core from 'metal';
 import React from 'react';
 
 import {PageProvider} from '../../hooks/usePage.es';
+import {PagesVisitor} from '../../util/visitors.es';
 import * as DefaultVariant from './DefaultVariant.es';
 import * as EditablePageHeader from './EditablePageHeader.es';
+import * as EditorVariant from './EditorVariant.es';
 import {Layout} from './Layout.es';
 import * as MultiPages from './MultiPagesVariant.es';
 import * as Paginated from './PaginatedVariant.es';
 import * as SuccessPage from './SuccessVariant.es';
 import * as Tabbed from './TabbedVariant.es';
+import {VariantsProvider} from './VariantsContext.es';
 import * as Wizard from './WizardVariant.es';
 
 const LAYOUT_TYPES = {
@@ -52,6 +56,9 @@ const PAGE_HEADER_TYPES = {
 const PAGE_HEADER_COMPONENT_TYPE = {
 	[PAGE_HEADER_TYPES.EDITABLE]: EditablePageHeader.PageHeader,
 };
+
+const DDM_FORM_PORTLET_NAMESPACE =
+	'_com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormPortlet_';
 
 const isEmptyPage = ({rows}) => {
 	let empty = false;
@@ -161,6 +168,7 @@ const Renderer = ({
 	pageIndex = 0,
 	pages,
 	paginationMode,
+	portletNamespace,
 	readOnly,
 	showSubmitButton,
 	strings,
@@ -174,8 +182,11 @@ const Renderer = ({
 	const variant = getVariant({page, pages, paginationMode, view, viewMode});
 	const variantComponents = LAYOUT_COMPONENTS_TYPES[variant] || {};
 
+	const formBuilderVariant = editable ? EditorVariant : {};
+
 	const Components = {
 		...DefaultVariant,
+		...formBuilderVariant,
 		...variantComponents,
 		...overrides,
 	};
@@ -184,44 +195,69 @@ const Renderer = ({
 		PAGE_HEADER_COMPONENT_TYPE[page.headerRenderer] ||
 		Components.PageHeader;
 
+	let hasFieldRequired = false;
+
+	if (pages?.[activePage]) {
+		const visitor = new PagesVisitor([pages[activePage]]);
+
+		visitor.mapFields((field) => {
+			if (field.required) {
+				hasFieldRequired = true;
+			}
+		});
+	}
+
+	const isDDMFormPortletNamespace =
+		DDM_FORM_PORTLET_NAMESPACE === portletNamespace;
+
 	return (
-		<Components.Container
-			activePage={activePage}
-			editable={editable}
-			empty={empty}
-			page={page}
-			pageIndex={pageIndex}
-			pages={pages}
-			readOnly={readOnly}
-			showSubmitButton={showSubmitButton}
-			strings={strings}
-			submitLabel={submitLabel}
-		>
-			<Components.Page
+		<VariantsProvider components={Components}>
+			<Components.Container
 				activePage={activePage}
 				editable={editable}
 				empty={empty}
-				forceAriaUpdate={forceAriaUpdate}
-				header={
-					variant === LAYOUT_TYPES.SINGLE_PAGE ? null : (
-						<Header
-							description={page.description}
-							placeholder={page.placeholder}
-							title={page.title}
-						/>
-					)
-				}
-				invalidFormMessage={invalidFormMessage}
 				page={page}
 				pageIndex={pageIndex}
+				pages={pages}
+				readOnly={readOnly}
+				showSubmitButton={showSubmitButton}
+				strings={strings}
+				submitLabel={submitLabel}
 			>
-				<Layout
-					components={Components}
+				<Components.Page
+					activePage={activePage}
 					editable={editable}
-					rows={page.rows}
-				/>
-			</Components.Page>
-		</Components.Container>
+					empty={empty}
+					forceAriaUpdate={forceAriaUpdate}
+					header={
+						variant === LAYOUT_TYPES.SINGLE_PAGE ? null : (
+							<Header
+								description={page.description}
+								placeholder={page.placeholder}
+								title={page.title}
+							/>
+						)
+					}
+					invalidFormMessage={invalidFormMessage}
+					page={page}
+					pageIndex={pageIndex}
+				>
+					{hasFieldRequired && isDDMFormPortletNamespace && (
+						<p aria-hidden="true" className="text-secondary">
+							<span className="c-mr-1 reference-mark">
+								<ClayIcon symbol="asterisk" />
+							</span>
+							{Liferay.Language.get('indicates-required-fields')}
+						</p>
+					)}
+					<Layout
+						components={Components}
+						editable={editable}
+						rows={page.rows}
+					/>
+				</Components.Page>
+			</Components.Container>
+		</VariantsProvider>
 	);
 };
 

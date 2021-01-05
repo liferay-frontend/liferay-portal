@@ -24,7 +24,7 @@ CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder()
 long commerceOrderId = commerceOrder.getCommerceOrderId();
 %>
 
-<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderPaymentMethodActionURL" />
+<portlet:actionURL name="/commerce_order/edit_commerce_order" var="editCommerceOrderPaymentMethodActionURL" />
 
 <commerce-ui:modal-content
 	contentCssClasses="p-0"

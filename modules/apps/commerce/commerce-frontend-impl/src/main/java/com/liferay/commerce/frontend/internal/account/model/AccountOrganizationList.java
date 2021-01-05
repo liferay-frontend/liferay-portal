@@ -26,11 +26,13 @@ public class AccountOrganizationList {
 
 		_organizations = organizations;
 		_count = count;
+
 		_success = true;
 	}
 
 	public AccountOrganizationList(String[] errorMessages) {
 		_errorMessages = errorMessages;
+
 		_success = false;
 	}
 

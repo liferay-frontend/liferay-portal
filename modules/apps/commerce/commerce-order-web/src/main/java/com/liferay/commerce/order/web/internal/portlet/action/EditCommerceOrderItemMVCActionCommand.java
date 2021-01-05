@@ -55,7 +55,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
-		"mvc.command.name=editCommerceOrderItem"
+		"mvc.command.name=/commerce_order/edit_commerce_order_item"
 	},
 	service = MVCActionCommand.class
 )
@@ -175,9 +175,6 @@ public class EditCommerceOrderItemMVCActionCommand
 			actionRequest, "commerceOrderItemId");
 		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CommerceOrderItem.class.getName(), actionRequest);
-
 		CommerceOrderItem commerceOrderItem =
 			_commerceOrderItemService.getCommerceOrderItem(commerceOrderItemId);
 
@@ -187,6 +184,9 @@ public class EditCommerceOrderItemMVCActionCommand
 			CommerceContext commerceContext =
 				(CommerceContext)actionRequest.getAttribute(
 					CommerceWebKeys.COMMERCE_CONTEXT);
+
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				CommerceOrderItem.class.getName(), actionRequest);
 
 			commerceOrderItem =
 				_commerceOrderItemService.updateCommerceOrderItem(

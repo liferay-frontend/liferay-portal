@@ -41,12 +41,12 @@ import com.liferay.commerce.media.CommerceCatalogDefaultImage;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
+import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.importer.CPFileImporter;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.model.CommerceChannelConstants;
 import com.liferay.commerce.product.service.CPDefinitionLinkLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPMeasurementUnitLocalService;
@@ -347,9 +347,8 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 	}
 
 	protected void createRoles(ServiceContext serviceContext) throws Exception {
-		JSONArray jsonArray = _getJSONArray("roles.json");
-
-		_cpFileImporter.createRoles(jsonArray, serviceContext);
+		_cpFileImporter.createRoles(
+			_getJSONArray("roles.json"), serviceContext);
 
 		updateUserRole(serviceContext);
 	}
@@ -586,10 +585,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 		Company company = _companyLocalService.getCompany(
 			serviceContext.getCompanyId());
 
-		JSONArray jsonArray = _getJSONArray("categories.json");
-
 		_assetCategoriesImporter.importAssetCategories(
-			jsonArray, group.getName(serviceContext.getLocale()),
+			_getJSONArray("categories.json"),
+			group.getName(serviceContext.getLocale()),
 			_speedwellDependencyResolver.getImageClassLoader(),
 			_speedwellDependencyResolver.getImageDependencyPath(),
 			company.getGroupId(), serviceContext.getUserId(), true);
@@ -626,10 +624,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing Blogs Entries...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("blogs.json");
-
 		_blogsImporter.importBlogsEntries(
-			jsonArray, _speedwellDependencyResolver.getImageClassLoader(),
+			_getJSONArray("blogs.json"),
+			_speedwellDependencyResolver.getImageClassLoader(),
 			_speedwellDependencyResolver.getImageDependencyPath(),
 			serviceContext.getScopeGroupId(), serviceContext.getUserId());
 
@@ -645,10 +642,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing Commerce Accounts...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("accounts.json");
-
 		_commerceAccountsImporter.importCommerceAccounts(
-			jsonArray, _speedwellDependencyResolver.getImageClassLoader(),
+			_getJSONArray("accounts.json"),
+			_speedwellDependencyResolver.getImageClassLoader(),
 			_speedwellDependencyResolver.getDependenciesPath(),
 			serviceContext.getScopeGroupId(), serviceContext.getUserId());
 
@@ -664,10 +660,8 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing Commerce Discounts...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("discounts.json");
-
 		_commerceDiscountsImporter.importCommerceDiscounts(
-			jsonArray, serviceContext.getScopeGroupId(),
+			_getJSONArray("discounts.json"), serviceContext.getScopeGroupId(),
 			serviceContext.getUserId());
 
 		if (_log.isInfoEnabled()) {
@@ -679,12 +673,10 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		JSONArray jsonArray = _getJSONArray("warehouses.json");
-
 		return _commerceInventoryWarehousesImporter.
 			importCommerceInventoryWarehouses(
-				jsonArray, serviceContext.getScopeGroupId(),
-				serviceContext.getUserId());
+				_getJSONArray("warehouses.json"),
+				serviceContext.getScopeGroupId(), serviceContext.getUserId());
 	}
 
 	private void _importCommerceOrganizations(ServiceContext serviceContext)
@@ -694,11 +686,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing Organizations...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("organizations.json");
-
 		_organizationImporter.importOrganizations(
-			jsonArray, serviceContext.getScopeGroupId(),
-			serviceContext.getUserId());
+			_getJSONArray("organizations.json"),
+			serviceContext.getScopeGroupId(), serviceContext.getUserId());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Organizations successfully imported");
@@ -713,10 +703,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing Commerce Price Entries...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("price-entries.json");
-
 		_commercePriceEntriesImporter.importCommercePriceEntries(
-			jsonArray, catalogGroupId, serviceContext.getUserId());
+			_getJSONArray("price-entries.json"), catalogGroupId,
+			serviceContext.getUserId());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce Price Entries successfully imported");
@@ -731,11 +720,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing Commerce Price Lists...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("price-lists.json");
-
 		_commercePriceListsImporter.importCommercePriceLists(
-			catalogGroupId, jsonArray, serviceContext.getScopeGroupId(),
-			serviceContext.getUserId());
+			catalogGroupId, _getJSONArray("price-lists.json"),
+			serviceContext.getScopeGroupId(), serviceContext.getUserId());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce Price Lists successfully imported");
@@ -749,10 +736,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing Commerce Users...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("users.json");
-
 		_commerceUsersImporter.importCommerceUsers(
-			jsonArray, _speedwellDependencyResolver.getImageClassLoader(),
+			_getJSONArray("users.json"),
+			_speedwellDependencyResolver.getImageClassLoader(),
 			_speedwellDependencyResolver.getImageDependencyPath(),
 			serviceContext.getScopeGroupId(), serviceContext.getUserId());
 
@@ -792,10 +778,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing Commerce Product Option Categories...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("option-categories.json");
-
 		_cpOptionCategoriesImporter.importCPOptionCategories(
-			jsonArray, catalogGroupId, serviceContext.getUserId());
+			_getJSONArray("option-categories.json"), catalogGroupId,
+			serviceContext.getUserId());
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
@@ -807,10 +792,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			long catalogGroupId, ServiceContext serviceContext)
 		throws Exception {
 
-		JSONArray jsonArray = _getJSONArray("options.json");
-
 		return _cpOptionsImporter.importCPOptions(
-			jsonArray, catalogGroupId, serviceContext.getUserId());
+			_getJSONArray("options.json"), catalogGroupId,
+			serviceContext.getUserId());
 	}
 
 	private void _importCPSpecificationOptions(
@@ -821,10 +805,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing Commerce Product Specification Options...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("specification-options.json");
-
 		_cpSpecificationOptionsImporter.importCPSpecificationOptions(
-			jsonArray, catalogGroupId, serviceContext.getUserId());
+			_getJSONArray("specification-options.json"), catalogGroupId,
+			serviceContext.getUserId());
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
@@ -839,10 +822,8 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing DDM Forms...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("forms.json");
-
 		_ddmFormImporter.importDDMForms(
-			jsonArray, serviceContext.getScopeGroupId(),
+			_getJSONArray("forms.json"), serviceContext.getScopeGroupId(),
 			serviceContext.getUserId());
 
 		if (_log.isInfoEnabled()) {
@@ -857,10 +838,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing DL File Entries...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("dl-file-entries.json");
-
 		_dlImporter.importDocuments(
-			jsonArray, _speedwellDependencyResolver.getDocumentsClassLoader(),
+			_getJSONArray("dl-file-entries.json"),
+			_speedwellDependencyResolver.getDocumentsClassLoader(),
 			_speedwellDependencyResolver.getDocumentsDependencyPath(),
 			serviceContext.getScopeGroupId(), serviceContext.getUserId());
 
@@ -876,10 +856,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing Journal Articles...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("journal-articles.json");
-
 		_journalArticleImporter.importJournalArticles(
-			jsonArray, _speedwellDependencyResolver.getDocumentsClassLoader(),
+			_getJSONArray("journal-articles.json"),
+			_speedwellDependencyResolver.getDocumentsClassLoader(),
 			_speedwellDependencyResolver.getDependenciesPath() +
 				"journal_articles/",
 			serviceContext.getScopeGroupId(), serviceContext.getUserId());
@@ -896,10 +875,8 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			_log.info("Importing KB Articles...");
 		}
 
-		JSONArray jsonArray = _getJSONArray("kb-articles.json");
-
 		_kbArticleImporter.importKBArticles(
-			jsonArray, serviceContext.getScopeGroupId(),
+			_getJSONArray("kb-articles.json"), serviceContext.getScopeGroupId(),
 			serviceContext.getUserId());
 
 		if (_log.isInfoEnabled()) {
@@ -970,9 +947,7 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 				cpDefinition);
 		}
 
-		JSONArray jsonArray = _getJSONArray("products.json");
-
-		_importRelatedProducts(jsonArray, serviceContext);
+		_importRelatedProducts(_getJSONArray("products.json"), serviceContext);
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Related Products successfully imported");

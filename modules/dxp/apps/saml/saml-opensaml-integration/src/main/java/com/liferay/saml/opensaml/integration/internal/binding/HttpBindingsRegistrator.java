@@ -14,7 +14,6 @@
 
 package com.liferay.saml.opensaml.integration.internal.binding;
 
-import com.liferay.saml.opensaml.integration.SamlBinding;
 import com.liferay.saml.opensaml.integration.internal.velocity.VelocityEngineFactory;
 
 import java.util.Hashtable;

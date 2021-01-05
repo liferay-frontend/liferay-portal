@@ -103,10 +103,8 @@ public class RemoteGitBranchTest extends GitRefTest {
 	}
 
 	private RemoteGitBranch _getRemoteGitBranch() {
-		RemoteGitRepository remoteGitRepository = _getRemoteGitRepository();
-
 		RemoteGitRef remoteGitRef = GitBranchFactory.newRemoteGitRef(
-			remoteGitRepository, NAME_REF, SHA_REF, "heads");
+			_getRemoteGitRepository(), NAME_REF, SHA_REF, "heads");
 
 		if (!(remoteGitRef instanceof RemoteGitBranch)) {
 			throw new RuntimeException("");

@@ -54,9 +54,9 @@ definition {
 		Panel.expandPanel(panel = "Categorization");
 
 		AssertTextEquals(
-			key_tagName = "alice",
+			key_tagName = "adventures",
 			locator1 = "AssetCategorization#TAG",
-			value1 = "alice");
+			value1 = "adventures");
 	}
 
 	macro addContentPage {
@@ -523,8 +523,7 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -858,10 +857,9 @@ definition {
 
 			PortletEntry.inputTitle(title = "Webcontent Title Edit");
 
-			Type.typeCKEditorWaitForCKEditor(
-				key_fieldLabel = "content",
-				locator1 = "CKEditor#BODY_FIELD_WEB_CONTENT_ARTICLE",
-				value1 = "Webcontent Content Edit");
+			CKEditor.addContentInWebContent(
+				content = "Webcontent Content Edit",
+				fieldLabel = "content");
 
 			Button.clickPublish();
 
@@ -1518,11 +1516,20 @@ definition {
 
 		UserNavigator.gotoContact();
 
+		var testName = TestCase.getTestName();
+
+		if (contains("${testName}", "72")) {
+			var postalCode = "91765";
+		}
+		else {
+			var postalCode = "91789";
+		}
+
 		User.viewAddress(
 			addressType = "Business",
 			city = "Walnut",
 			country = "United States",
-			postalCode = "91789",
+			postalCode = "${postalCode}",
 			region = "California",
 			street1 = "1220 Brea Canyon Rd");
 
@@ -1540,18 +1547,23 @@ definition {
 
 		User.viewContactInformation(
 			searchContainerType = "websitesSearchContainer",
-			url = "https://www.google.com/",
-			websiteType = "Other");
+			url = "https://www.google.com/");
 
 		User.viewContactInformation(skype = "orgusersnskype");
 
 		UserNavigator.gotoPreferences();
 
-		for (var announcementType : list "General,News,Test") {
-			var key_announcementType = "${announcementType}";
-			var key_notificationType = "Email";
+		var testName = TestCase.getTestName();
 
-			AssertChecked(locator1 = "UsersAndOrganizationsEditUser#ALERTS_AND_ANNOUNCEMENTS_DELIVERY_CHECKBOX");
+		// Ignore these steps for 73 due to LPS-121271
+
+		if (!(contains("${testName}", "73"))) {
+			for (var announcementType : list "General,News,Test") {
+				AssertChecked(
+					key_announcementType = "${announcementType}",
+					key_notificationType = "Email",
+					locator1 = "UsersAndOrganizationsEditUser#ALERTS_AND_ANNOUNCEMENTS_DELIVERY_CHECKBOX");
+			}
 		}
 
 		Navigator.gotoNavNested(navNested = "Display Settings");
@@ -1946,7 +1958,7 @@ definition {
 				imageSize = "0");
 
 			AssertElementPresent(
-				key_borderRadius = "0.375rem",
+				key_borderRadius = "lg",
 				key_fragmentName = "card",
 				locator1 = "Fragment#FRAGMENT_CONFIGURATION_BORDER_RADIUS_IN_VIEW_MODE");
 
@@ -1973,7 +1985,7 @@ definition {
 
 			AssertElementPresent(
 				key_fragmentName = "heading",
-				key_textColor = "#287D3C",
+				key_textColor = "success",
 				locator1 = "Fragment#FRAGMENT_CONFIGURATION_TEXT_COLOR_IN_VIEW_MODE");
 
 			AssertElementPresent(
@@ -2013,7 +2025,7 @@ definition {
 		task ("Assert styles of Paragraph in view mode") {
 			AssertElementPresent(
 				key_fragmentName = "paragraph",
-				key_textColor = "#B95000",
+				key_textColor = "warning",
 				locator1 = "Fragment#FRAGMENT_CONFIGURATION_TEXT_COLOR_IN_VIEW_MODE");
 
 			AssertElementPresent(
@@ -2090,7 +2102,7 @@ definition {
 				marginBottom = "1");
 
 			AssertElementPresent(
-				key_borderRadius = "0.375rem",
+				key_borderRadius = "lg",
 				key_fragmentName = "card",
 				locator1 = "Fragment#FRAGMENT_CONFIGURATION_BORDER_RADIUS_IN_VIEW_MODE");
 
@@ -2106,7 +2118,7 @@ definition {
 
 			AssertElementPresent(
 				key_fragmentName = "heading",
-				key_textColor = "rgb(40, 125, 60)",
+				key_textColor = "success",
 				locator1 = "Fragment#FRAGMENT_CONFIGURATION_TEXT_COLOR_IN_VIEW_MODE");
 		}
 
@@ -2128,7 +2140,7 @@ definition {
 		task ("Assert styles of Paragraph in edit mode") {
 			AssertElementPresent(
 				key_fragmentName = "paragraph",
-				key_textColor = "rgb(185, 80, 0)",
+				key_textColor = "warning",
 				locator1 = "Fragment#FRAGMENT_CONFIGURATION_TEXT_COLOR_IN_VIEW_MODE");
 
 			PageEditor.viewFragmentStyle(
@@ -3211,29 +3223,103 @@ definition {
 			portlet = "Web Content",
 			site = "${siteName}");
 
-		WebContentAdmin.viewEntryWorkflowStatus(
-			entry = "Web Content Title",
-			workflowStatus = "Approved");
+		for (var fieldName : list "Boolean,Date,Decimal,Documents and Media,HTML,Image,Integer,Link to Page,Number,Radio,Select,Separator,Text,Text Box") {
+			WebContentAdmin.viewEntryWorkflowStatus(
+				entry = "${fieldName} Web Content",
+				workflowStatus = "Approved");
+		}
 
 		WebContent.viewWithStructureCP(
-			webContentBoolean = "true",
+			webContentMultipleSelection = "Boolean",
+			webContentMultipleSelectionFieldLabel = "Boolean",
+			webContentTitle = "Boolean Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
 			webContentDate = "10/10/2020",
-			webContentDecimal = "0.5",
-			webContentDocumentsAndMedia = "Document Title",
-			webContentDocumentsAndMediaFieldName = "Documents_and_Media",
-			webContentHTML = "This is a HTML field",
-			webContentImage = "Document_1.jpg",
-			webContentInteger = "9",
+			webContentTitle = "Date Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
+			webContentNumeric = "0.5",
+			webContentNumericFieldLabel = "Decimal",
+			webContentTitle = "Decimal Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
+			webContentTitle = "Documents and Media Web Content",
+			webContentUpload = "Document Title",
+			webContentUploadFieldLabel = "Documents and Media");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
+			webContentRichText = "This is a HTML field",
+			webContentRichTextFieldLabel = "HTML",
+			webContentTitle = "HTML Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
+			webContentNumeric = "9",
+			webContentNumericFieldLabel = "Integer",
+			webContentTitle = "Integer Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
 			webContentLinkToPage = "Welcome",
-			webContentLinkToPageFieldName = "Link_to_Page",
-			webContentNumber = "-1",
-			webContentRadio = "option 1",
-			webContentSelect = "option 2",
+			webContentTitle = "Link to Page Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
+			webContentNumeric = "-1",
+			webContentNumericFieldLabel = "Number",
+			webContentTitle = "Number Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
+			webContentSingleSelection = "option 1",
+			webContentSingleSelectionFieldLabel = "Radio",
+			webContentTitle = "Radio Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
+			webContentSelectFromList = "option 2",
+			webContentSelectFromListFieldLabel = "Select",
+			webContentTitle = "Select Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
 			webContentSeparator = "true",
+			webContentTitle = "Separator Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
 			webContentText = "This is a Text field",
-			webContentTextBox = "This is a Text Box field",
-			webContentTextBoxFieldName = "Text_Box",
-			webContentTitle = "Web Content Title");
+			webContentTitle = "Text Web Content");
+
+		Navigator.gotoBack();
+
+		WebContent.viewWithStructureCP(
+			fieldType = "Multiple Lines",
+			webContentText = "This is a Text Box field",
+			webContentTextFieldLabel = "Text Box",
+			webContentTitle = "Text Box Web Content");
+
+		Navigator.gotoBack();
+
+		WebContentUpgrade.viewWithStructureCP(
+			webContentImage = "Document_1.jpg",
+			webContentTitle = "Image Web Content");
 	}
 
 	macro viewWebContentWithPredefinedValueInWebContentField {
@@ -3252,8 +3338,7 @@ definition {
 
 		WebContent.viewWithStructureCP(
 			webContentTitle = "Web Content With Predefined Value",
-			webContentWebContent = "Web Content Title",
-			webContentWebContentFieldName = "WebContent");
+			webContentWebContent = "Web Content Title");
 	}
 
 	macro viewWebContextsCORS {

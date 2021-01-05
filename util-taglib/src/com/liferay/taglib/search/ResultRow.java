@@ -64,7 +64,7 @@ public class ResultRow
 		String cssClass, String state) {
 
 		_rowId = rowId;
-		_obj = object;
+		_object = object;
 		_primaryKey = primaryKey;
 		_pos = pos;
 		_bold = bold;
@@ -519,7 +519,7 @@ public class ResultRow
 
 	@Override
 	public Object getObject() {
-		return _obj;
+		return _object;
 	}
 
 	@Override
@@ -598,7 +598,7 @@ public class ResultRow
 
 	@Override
 	public void setObject(Object object) {
-		_obj = object;
+		_object = object;
 	}
 
 	@Override
@@ -640,7 +640,7 @@ public class ResultRow
 	private String _className;
 	private String _cssClass;
 	private Map<String, Object> _data;
-	private Object _obj;
+	private Object _object;
 	private Map<String, Object> _params;
 	private final int _pos;
 	private String _primaryKey;

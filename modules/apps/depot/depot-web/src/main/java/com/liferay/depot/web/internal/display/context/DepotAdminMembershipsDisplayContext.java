@@ -74,9 +74,7 @@ public class DepotAdminMembershipsDisplayContext {
 	public List<Group> getDepotGroups(int start, int end)
 		throws PortalException {
 
-		List<Group> depotGroups = _getDepotGroups();
-
-		return ListUtil.subList(depotGroups, start, end);
+		return ListUtil.subList(_getDepotGroups(), start, end);
 	}
 
 	public int getDepotGroupsCount() throws PortalException {

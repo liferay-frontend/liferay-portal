@@ -14,14 +14,16 @@
 
 import AJAX from '../../../utilities/AJAX/index';
 
-const PRICE_ENTRIES_PATH = '/price-entries';
-
-const PRICE_LISTS_PATH = '/price-lists';
-
 const VERSION = 'v2.0';
 
-function resolvePath(basePath = '', priceListId = '', priceEntryId = '') {
-	return `${basePath}${VERSION}${PRICE_LISTS_PATH}/${priceListId}/${PRICE_ENTRIES_PATH}/${priceEntryId}`;
+function resolvePath(basePath, priceListId, priceEntryId) {
+	let path = `${basePath}${VERSION}/price-lists/${priceListId}/price-entries`;
+
+	if (priceEntryId) {
+		path += `/${priceEntryId}`;
+	}
+
+	return path;
 }
 
 export default (basePath) => ({

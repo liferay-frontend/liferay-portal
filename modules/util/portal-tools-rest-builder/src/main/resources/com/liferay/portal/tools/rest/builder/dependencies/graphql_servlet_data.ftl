@@ -1,5 +1,9 @@
 package ${configYAML.apiPackagePath}.internal.graphql.servlet.${escapedVersion};
 
+<#list allExternalSchemas?keys as schemaName>
+	import ${configYAML.apiPackagePath}.resource.${escapedVersion}.${schemaName}Resource;
+</#list>
+
 <#list freeMarkerTool.getSchemas(openAPIYAML)?keys as schemaName>
 	import ${configYAML.apiPackagePath}.resource.${escapedVersion}.${schemaName}Resource;
 </#list>

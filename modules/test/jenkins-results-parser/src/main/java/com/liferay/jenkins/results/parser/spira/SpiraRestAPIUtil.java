@@ -225,11 +225,12 @@ public class SpiraRestAPIUtil {
 
 			String responseData = null;
 
+			urlPath = _applyURLPathReplacements(urlPath, urlPathReplacements);
+
 			try {
 				responseData = JenkinsResultsParserUtil.toString(
 					JenkinsResultsParserUtil.combine(
-						spiraRestAPIURL,
-						_applyURLPathReplacements(urlPath, urlPathReplacements),
+						spiraRestAPIURL, urlPath,
 						_toURLParametersString(urlParameters)),
 					false, 0, httpRequestMethod, requestData, 0,
 					_MILLIS_TIMEOUT_DEFAULT, null);

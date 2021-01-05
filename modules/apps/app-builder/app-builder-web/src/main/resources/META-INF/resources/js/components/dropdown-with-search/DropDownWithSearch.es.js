@@ -83,7 +83,9 @@ const DropDownWithSearch = ({
 				<div className="align-items-center d-flex">
 					<Search disabled={isEmpty} />
 
-					{addButton}
+					{addButton && (
+						<div onClick={() => setActive(false)}>{addButton}</div>
+					)}
 				</div>
 
 				{isLoading && <LoadingState {...loadingProps} />}

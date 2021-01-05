@@ -131,19 +131,19 @@ public class JournalArticleSearchTest extends BaseSearchTestCase {
 
 		serviceContext.setCompanyId(TestPropsValues.getCompanyId());
 
-		PortalPreferences portalPreferenceces =
+		PortalPreferences portalPreferences =
 			PortletPreferencesFactoryUtil.getPortalPreferences(
 				TestPropsValues.getUserId(), true);
 
 		_originalPortalPreferencesXML = PortletPreferencesFactoryUtil.toXML(
-			portalPreferenceces);
+			portalPreferences);
 
-		portalPreferenceces.setValue("", "articleCommentsEnabled", "true");
+		portalPreferences.setValue("", "articleCommentsEnabled", "true");
 
 		PortalPreferencesLocalServiceUtil.updatePreferences(
 			TestPropsValues.getCompanyId(),
 			PortletKeys.PREFS_OWNER_TYPE_COMPANY,
-			PortletPreferencesFactoryUtil.toXML(portalPreferenceces));
+			PortletPreferencesFactoryUtil.toXML(portalPreferences));
 
 		_journalServiceConfiguration =
 			ConfigurationProviderUtil.getCompanyConfiguration(

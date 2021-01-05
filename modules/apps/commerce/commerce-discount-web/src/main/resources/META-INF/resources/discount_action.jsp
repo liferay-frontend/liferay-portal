@@ -33,7 +33,7 @@ CommerceDiscount commerceDiscount = (CommerceDiscount)row.getObject();
 >
 	<c:if test="<%= commerceDiscountDisplayContext.hasPermission(commerceDiscount.getCommerceDiscountId(), ActionKeys.UPDATE) %>">
 		<portlet:renderURL var="editURL">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceDiscount" />
+			<portlet:param name="mvcRenderCommandName" value="/commerce_discount/edit_commerce_discount" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceDiscountId" value="<%= String.valueOf(commerceDiscount.getCommerceDiscountId()) %>" />
 		</portlet:renderURL>
@@ -45,7 +45,7 @@ CommerceDiscount commerceDiscount = (CommerceDiscount)row.getObject();
 	</c:if>
 
 	<c:if test="<%= commerceDiscountDisplayContext.hasPermission(commerceDiscount.getCommerceDiscountId(), ActionKeys.DELETE) %>">
-		<portlet:actionURL name="editCommerceDiscount" var="deleteURL">
+		<portlet:actionURL name="/commerce_discount/edit_commerce_discount" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceDiscountId" value="<%= String.valueOf(commerceDiscount.getCommerceDiscountId()) %>" />

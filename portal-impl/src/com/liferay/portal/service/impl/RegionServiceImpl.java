@@ -16,16 +16,15 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.RegionCodeException;
-import com.liferay.portal.kernel.exception.RegionNameException;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.impl.RegionModelImpl;
 import com.liferay.portal.service.base.RegionServiceBaseImpl;
 
@@ -39,7 +38,8 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 
 	@Override
 	public Region addRegion(
-			long countryId, String regionCode, String name, boolean active)
+			long countryId, boolean active, String name, double position,
+			String regionCode, ServiceContext serviceContext)
 		throws PortalException {
 
 		if (!getPermissionChecker().isOmniadmin()) {
@@ -47,26 +47,40 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 				getPermissionChecker());
 		}
 
-		countryPersistence.findByPrimaryKey(countryId);
+		return regionLocalService.addRegion(
+			countryId, active, name, position, regionCode, serviceContext);
+	}
 
-		if (Validator.isNull(regionCode)) {
-			throw new RegionCodeException();
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x)
+	 */
+	@Deprecated
+	@Override
+	public Region addRegion(
+			long countryId, String regionCode, String name, boolean active)
+		throws PortalException {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		serviceContext.setCompanyId(permissionChecker.getCompanyId());
+		serviceContext.setUserId(permissionChecker.getUserId());
+
+		return addRegion(
+			countryId, active, name, 0, regionCode, serviceContext);
+	}
+
+	@Override
+	public void deleteRegion(long regionId) throws PortalException {
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin()) {
+			throw new PrincipalException.MustBeOmniadmin(
+				getPermissionChecker());
 		}
 
-		if (Validator.isNull(name)) {
-			throw new RegionNameException();
-		}
-
-		long regionId = counterLocalService.increment();
-
-		Region region = regionPersistence.create(regionId);
-
-		region.setCountryId(countryId);
-		region.setRegionCode(regionCode);
-		region.setName(name);
-		region.setActive(active);
-
-		return regionPersistence.update(region);
+		regionLocalService.deleteRegion(regionId);
 	}
 
 	@Override
@@ -114,6 +128,65 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 		return regionPersistence.findByC_A(
 			countryId, active, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 			_getOrderByComparator(countryId));
+	}
+
+	@Override
+	public List<Region> getRegions(
+		long countryId, boolean active, int start, int end,
+		OrderByComparator<Region> orderByComparator) {
+
+		return regionLocalService.getRegions(
+			countryId, active, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<Region> getRegions(
+		long countryId, int start, int end,
+		OrderByComparator<Region> orderByComparator) {
+
+		return regionLocalService.getRegions(
+			countryId, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<Region> getRegions(long companyId, String a2, boolean active)
+		throws PortalException {
+
+		return regionLocalService.getRegions(companyId, a2, active);
+	}
+
+	@Override
+	public int getRegionsCount(long countryId) {
+		return regionLocalService.getRegionsCount(countryId);
+	}
+
+	@Override
+	public int getRegionsCount(long countryId, boolean active) {
+		return regionLocalService.getRegionsCount(countryId, active);
+	}
+
+	@Override
+	public Region updateActive(long regionId, boolean active)
+		throws PortalException {
+
+		return regionLocalService.updateActive(regionId, active);
+	}
+
+	@Override
+	public Region updateRegion(
+			long regionId, boolean active, String name, double position,
+			String regionCode)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin()) {
+			throw new PrincipalException.MustBeOmniadmin(
+				getPermissionChecker());
+		}
+
+		return regionLocalService.updateRegion(
+			regionId, active, name, position, regionCode);
 	}
 
 	private OrderByComparator<Region> _getOrderByComparator(long countryId) {

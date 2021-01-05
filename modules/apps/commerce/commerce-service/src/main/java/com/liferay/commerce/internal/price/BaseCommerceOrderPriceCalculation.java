@@ -279,12 +279,13 @@ public abstract class BaseCommerceOrderPriceCalculation
 			CommerceOrder commerceOrder)
 		throws PortalException {
 
-		CommerceCurrency commerceCurrency = commerceOrder.getCommerceCurrency();
-
-		RoundingMode roundingMode = RoundingMode.valueOf(
-			commerceCurrency.getRoundingMode());
-
 		if (discountsTargetNetPrice) {
+			CommerceCurrency commerceCurrency =
+				commerceOrder.getCommerceCurrency();
+
+			RoundingMode roundingMode = RoundingMode.valueOf(
+				commerceCurrency.getRoundingMode());
+
 			commerceOrderPriceImpl.setShippingDiscountValueWithTaxAmount(
 				CommercePriceConverterUtil.getConvertedCommerceDiscountValue(
 					orderShippingCommerceDiscountValue, shippingWithTaxAmount,
@@ -590,7 +591,13 @@ public abstract class BaseCommerceOrderPriceCalculation
 		CommerceCurrency commerceCurrency,
 		CommerceOrderItemPrice commerceOrderItemPrice, BigDecimal promoPrice) {
 
-		if (!_greaterThanZero(promoPrice)) {
+		CommerceMoney unitPriceCommerceMoney =
+			commerceOrderItemPrice.getUnitPrice();
+
+		if (!_greaterThanZero(promoPrice) ||
+			CommerceBigDecimalUtil.gt(
+				promoPrice, unitPriceCommerceMoney.getPrice())) {
+
 			return;
 		}
 

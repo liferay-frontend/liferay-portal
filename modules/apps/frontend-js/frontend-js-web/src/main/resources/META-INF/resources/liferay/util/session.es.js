@@ -38,13 +38,18 @@ function getSessionClickURL() {
 /**
  * Gets the Store utility fetch value for given key
  * @param {String} key string for fetch request
+ * @param {Object} options (currently only useHttpSession, defaulting to false)
  * @return {Promise}
  * @review
  */
-export function getSessionValue(key) {
+export function getSessionValue(key, options = {}) {
 	const formData = getSessionClickFormData('get');
 
 	formData.append('key', key);
+
+	if (options.useHttpSession) {
+		formData.append('useHttpSession', true);
+	}
 
 	return fetch(getSessionClickURL(), {
 		body: formData,
@@ -66,10 +71,11 @@ export function getSessionValue(key) {
  * Sets the Store utility fetch value
  * @param {String} key of the formData
  * @param {Object|String} value of the key for the formData
+ * @param {Object} options (currently only useHttpSession, defaulting to false)
  * @return {Promise}
  * @review
  */
-export function setSessionValue(key, value) {
+export function setSessionValue(key, value, options = {}) {
 	const formData = getSessionClickFormData('set');
 
 	if (value && typeof value === 'object') {
@@ -77,6 +83,10 @@ export function setSessionValue(key, value) {
 	}
 
 	formData.append(key, value);
+
+	if (options.useHttpSession) {
+		formData.append('useHttpSession', true);
+	}
 
 	return fetch(getSessionClickURL(), {
 		body: formData,

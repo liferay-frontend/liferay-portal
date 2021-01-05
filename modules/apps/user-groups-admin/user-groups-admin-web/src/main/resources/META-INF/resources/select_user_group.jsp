@@ -38,7 +38,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "user-groups"));
 	viewTypeItems="<%= selectUserGroupManagementToolbarDisplayContext.getViewTypeItems() %>"
 />
 
-<aui:form action="<%= portletURL.toString() %>" cssClass="container-fluid-1280" method="post" name="selectUserGroupFm">
+<aui:form action="<%= portletURL.toString() %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="selectUserGroupFm">
 	<liferay-ui:search-container
 		searchContainer="<%= userGroupSearch %>"
 	>
@@ -49,13 +49,13 @@ renderResponse.setTitle(LanguageUtil.get(request, "user-groups"));
 			modelVar="userGroup"
 		>
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="name"
 				value="<%= HtmlUtil.escape(userGroup.getName()) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="description"
 				value="<%= HtmlUtil.escape(userGroup.getDescription()) %>"
 			/>

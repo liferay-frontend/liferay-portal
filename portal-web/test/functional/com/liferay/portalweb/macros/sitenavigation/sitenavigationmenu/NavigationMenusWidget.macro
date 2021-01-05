@@ -5,6 +5,8 @@ definition {
 
 		Click.pauseClickAt(locator1 = "Button#SELECT");
 
+		Pause(locator1 = "5000");
+
 		SelectFrame.selectSecondFrame(locator1 = "IFrame#MODAL_BODY");
 
 		Click(
@@ -29,6 +31,8 @@ definition {
 	}
 
 	macro gotoNavigationMenuWidgetConfig {
+		WaitForElementPresent(locator1 = "//script[contains(@src,'/o/frontend-js-aui-web/liferay/menu_toggle.js')]");
+
 		Portlet.gotoPortletOptions(
 			portletName = "Navigation Menu",
 			portletOption = "Configuration");
@@ -42,14 +46,24 @@ definition {
 
 			MouseOver(
 				key_pageName = "${pageName}",
-				locator1 = "Home#PAGE");
+				locator1 = "NavigationMenusWidget#CHILD_TOGGLE");
+
+			while (IsElementNotPresent(key_pageName = "${pageName}", locator1 = "NavigationMenusWidget#OPEN_DROPDOWN_MENU")) {
+				Pause(locator1 = "3000");
+
+				MouseOver(
+					key_pageName = "${pageName}",
+					locator1 = "NavigationMenusWidget#CHILD_TOGGLE");
+			}
 
 			Click(
 				key_itemName = "${itemName}",
 				locator1 = "NavigationMenusWidget#DROPDOWN_MENU_ITEM");
 		}
 		else if ("${type}" == "List") {
-			NavItem.click(navItem = "${itemName}");
+			Click(
+				key_itemName = "${itemName}",
+				locator1 = "NavigationMenusWidget#LIST_MENU_ANY_ITEM");
 		}
 	}
 

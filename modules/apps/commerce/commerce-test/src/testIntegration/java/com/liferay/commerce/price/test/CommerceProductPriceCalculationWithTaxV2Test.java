@@ -308,8 +308,6 @@ public class CommerceProductPriceCalculationWithTaxV2Test {
 		CommerceMoney promoPriceCommerceMoney =
 			commerceProductPrice.getUnitPromoPrice();
 
-		BigDecimal promoPrice = promoPriceCommerceMoney.getPrice();
-
 		CommerceMoney promoPriceWithTaxAmountCommerceMoney =
 			commerceProductPrice.getUnitPromoPriceWithTaxAmount();
 
@@ -320,6 +318,8 @@ public class CommerceProductPriceCalculationWithTaxV2Test {
 		if (!promoPriceCommerceMoney.isEmpty()) {
 			BigDecimal promoPriceWithTaxAmount =
 				promoPriceWithTaxAmountCommerceMoney.getPrice();
+
+			BigDecimal promoPrice = promoPriceCommerceMoney.getPrice();
 
 			BigDecimal expectedPromoPrice =
 				CommerceTaxTestUtil.getPriceWithTaxAmount(

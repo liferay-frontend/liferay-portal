@@ -43,7 +43,7 @@ definition {
 	}
 
 	macro gotoDisplayPage {
-		LexiconCard.clickCardTitle(card = "${displayPageName}");
+		LexiconCard.clickCardTitleLink(card = "${displayPageName}");
 
 		PageEditor.assertFragmentSidebarLoaded();
 	}
@@ -81,9 +81,9 @@ definition {
 			displayPageName = "${displayPageName}",
 			item = "Mark As Default");
 
-		AssertVisible(
-			key_card = "${displayPageName}",
-			locator1 = "Card#CARD_STICKER");
+		LexiconCard.viewCardSticker(
+			card = "${displayPageName}",
+			icon = "check-circle");
 	}
 
 	macro openDisplayPagesAdmin {

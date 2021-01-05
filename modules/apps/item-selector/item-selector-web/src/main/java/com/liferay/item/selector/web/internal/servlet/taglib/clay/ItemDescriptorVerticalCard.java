@@ -35,13 +35,7 @@ public class ItemDescriptorVerticalCard extends BaseVerticalCard {
 	}
 
 	@Override
-	public String getAspectRatioCssClasses() {
-		return "aspect-ratio-item-center-middle " +
-			"aspect-ratio-item-vertical-fluid";
-	}
-
-	@Override
-	public String getElementClasses() {
+	public String getCssClass() {
 		return "card-interactive card-interactive-secondary";
 	}
 
@@ -68,6 +62,11 @@ public class ItemDescriptorVerticalCard extends BaseVerticalCard {
 	@Override
 	public String getTitle() {
 		return _itemDescriptor.getTitle(themeDisplay.getLocale());
+	}
+
+	@Override
+	public Boolean isFlushHorizontal() {
+		return true;
 	}
 
 	private final ItemSelectorViewDescriptor.ItemDescriptor _itemDescriptor;

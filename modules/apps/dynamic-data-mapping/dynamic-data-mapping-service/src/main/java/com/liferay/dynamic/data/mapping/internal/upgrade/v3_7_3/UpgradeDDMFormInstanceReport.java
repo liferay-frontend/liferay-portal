@@ -37,7 +37,8 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.upgrade.UpgradeException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -70,16 +71,25 @@ public class UpgradeDDMFormInstanceReport extends UpgradeProcess {
 	protected void doUpgrade() throws Exception {
 		runSQL("delete from DDMFormInstanceReport;");
 
-		StringBundler sb1 = new StringBundler(12);
+		StringBundler sb1 = new StringBundler(21);
 
 		sb1.append("select DDMContent.data_, ");
-		sb1.append("DDMFormInstanceRecord.formInstanceRecordId from ");
-		sb1.append("DDMContent inner join DDMFormInstanceRecordVersion on ");
+		sb1.append("DDMFormInstanceRecord.formInstanceRecordId, ");
+		sb1.append("DDMStructureVersion.definition from DDMContent inner ");
+		sb1.append("join DDMFormInstanceRecordVersion on ");
 		sb1.append("DDMContent.contentId = ");
 		sb1.append("DDMFormInstanceRecordVersion.storageId inner join ");
 		sb1.append("DDMFormInstanceRecord on ");
 		sb1.append("DDMFormInstanceRecord.formInstanceRecordId = ");
-		sb1.append("DDMFormInstanceRecordVersion.formInstanceRecordId where ");
+		sb1.append("DDMFormInstanceRecordVersion.formInstanceRecordId inner ");
+		sb1.append("join DDMFormInstanceVersion on ");
+		sb1.append("DDMFormInstanceVersion.formInstanceId = ");
+		sb1.append("DDMFormInstanceRecordVersion.formInstanceId and ");
+		sb1.append("DDMFormInstanceVersion.version = ");
+		sb1.append("DDMFormInstanceRecordVersion.formInstanceVersion inner ");
+		sb1.append("join DDMStructureVersion on ");
+		sb1.append("DDMStructureVersion.structureVersionId = ");
+		sb1.append("DDMFormInstanceVersion.structureVersionId where ");
 		sb1.append("DDMFormInstanceRecord.version = ");
 		sb1.append("DDMFormInstanceRecordVersion.version and ");
 		sb1.append("DDMFormInstanceRecord.formInstanceId = ? and ");
@@ -92,17 +102,13 @@ public class UpgradeDDMFormInstanceReport extends UpgradeProcess {
 		sb2.append("formInstanceId, data_) values (?, ?, ?, ?, ?, ?, ?)");
 
 		try (PreparedStatement ps1 = connection.prepareStatement(
-				"select formInstanceId, groupId, companyId, createDate, " +
-					"structureId from DDMFormInstance")) {
+				"select formInstanceId, groupId, companyId, createDate from " +
+					"DDMFormInstance")) {
 
 			ResultSet rs1 = ps1.executeQuery();
 
 			while (rs1.next()) {
 				long formInstanceId = rs1.getLong("formInstanceId");
-
-				long structureId = rs1.getLong("structureId");
-
-				DDMForm ddmForm = _getDDMForm(structureId);
 
 				JSONObject dataJSONObject = _jsonFactory.createJSONObject();
 
@@ -115,17 +121,14 @@ public class UpgradeDDMFormInstanceReport extends UpgradeProcess {
 					ResultSet rs2 = ps2.executeQuery();
 
 					while (rs2.next()) {
-						String data = rs2.getString("data_");
-
-						long formInstanceRecordId = rs2.getLong(
-							"formInstanceRecordId");
-
-						DDMFormValues ddmFormValues = _getDDMFormValues(
-							data, ddmForm);
-
 						dataJSONObject = _processDDMFormValues(
-							dataJSONObject, ddmFormValues,
-							formInstanceRecordId);
+							dataJSONObject,
+							_getDDMFormValues(
+								rs2.getString("data_"),
+								DDMFormDeserializeUtil.deserialize(
+									_ddmFormDeserializer,
+									rs2.getString("definition"))),
+							rs2.getLong("formInstanceRecordId"));
 
 						dataJSONObject.put(
 							"totalItems",
@@ -157,25 +160,6 @@ public class UpgradeDDMFormInstanceReport extends UpgradeProcess {
 		}
 	}
 
-	private DDMForm _getDDMForm(long structureId) throws Exception {
-		try (PreparedStatement ps = connection.prepareStatement(
-				"select definition from DDMStructure where structureId = ?")) {
-
-			ps.setLong(1, structureId);
-
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
-					return DDMFormDeserializeUtil.deserialize(
-						_ddmFormDeserializer, rs.getString("definition"));
-				}
-			}
-
-			throw new UpgradeException(
-				"Unable to find dynamic data mapping structure with ID " +
-					structureId);
-		}
-	}
-
 	private DDMFormValues _getDDMFormValues(String data, DDMForm ddmForm)
 		throws Exception {
 
@@ -200,6 +184,10 @@ public class UpgradeDDMFormInstanceReport extends UpgradeProcess {
 			ddmFormFieldValue.setName(jsonObject.getString("name"));
 
 			DDMFormField ddmFormField = ddmFormFieldValue.getDDMFormField();
+
+			if (ddmFormField == null) {
+				continue;
+			}
 
 			Value value = null;
 
@@ -237,7 +225,7 @@ public class UpgradeDDMFormInstanceReport extends UpgradeProcess {
 	private JSONObject _processDDMFormValues(
 			JSONObject dataJSONObject, DDMFormValues ddmFormValues,
 			long formInstanceRecordId)
-		throws Exception, JSONException {
+		throws Exception {
 
 		for (DDMFormFieldValue ddmFormFieldValue :
 				ddmFormValues.getDDMFormFieldValues()) {
@@ -262,22 +250,32 @@ public class UpgradeDDMFormInstanceReport extends UpgradeProcess {
 					);
 				}
 
-				JSONObject processedFieldJSONObject =
-					ddmFormFieldTypeReportProcessor.process(
-						ddmFormFieldValue,
-						_jsonFactory.createJSONObject(
-							fieldJSONObject.toJSONString()),
-						formInstanceRecordId,
-						DDMFormInstanceReportConstants.
-							EVENT_ADD_RECORD_VERSION);
+				try {
+					JSONObject processedFieldJSONObject =
+						ddmFormFieldTypeReportProcessor.process(
+							ddmFormFieldValue,
+							_jsonFactory.createJSONObject(
+								fieldJSONObject.toJSONString()),
+							formInstanceRecordId,
+							DDMFormInstanceReportConstants.
+								EVENT_ADD_RECORD_VERSION);
 
-				dataJSONObject.put(
-					ddmFormFieldValueName, processedFieldJSONObject);
+					dataJSONObject.put(
+						ddmFormFieldValueName, processedFieldJSONObject);
+				}
+				catch (JSONException jsonException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(jsonException, jsonException);
+					}
+				}
 			}
 		}
 
 		return dataJSONObject;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradeDDMFormInstanceReport.class);
 
 	private final DDMFormDeserializer _ddmFormDeserializer;
 	private DDMFormFieldTypeReportProcessorTracker

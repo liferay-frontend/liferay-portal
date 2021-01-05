@@ -113,6 +113,7 @@ public class UnsyncBufferedInputStreamTest {
 		read = unsyncBufferedInputStream.read(buffer);
 
 		Assert.assertEquals(5, read);
+
 		Assert.assertEquals(-1, unsyncBufferedInputStream.read(buffer));
 
 		// Mark and EOF

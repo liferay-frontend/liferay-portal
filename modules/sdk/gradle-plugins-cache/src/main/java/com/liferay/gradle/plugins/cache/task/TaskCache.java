@@ -43,12 +43,13 @@ import org.gradle.api.tasks.util.PatternSet;
 public class TaskCache implements PatternFilterable {
 
 	public TaskCache(String name, Project project) {
+		_name = name;
+		_project = project;
+
 		_baseDir = project.getProjectDir();
 		_cacheDir = project.file(".cache/" + name);
 		_disabled = GradleUtil.getProperty(
 			project, name + "CacheDisabled", false);
-		_name = name;
-		_project = project;
 	}
 
 	@Override

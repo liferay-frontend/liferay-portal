@@ -15,6 +15,7 @@
 package com.liferay.dynamic.data.mapping.internal.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -29,7 +30,7 @@ public class ExpressionParameterValueExtractorTest {
 	public void testExtractParameterValues() {
 		_assertParameterValueArray(
 			_extractParameterValues("equals(Country, \"US\")"),
-			Arrays.asList("Country", "\"US\""));
+			Collections.singletonList("Country"));
 
 		_assertParameterValueArray(
 			_extractParameterValues("equals(sum(1,1), 2)"),

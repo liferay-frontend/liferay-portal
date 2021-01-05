@@ -18,6 +18,7 @@ import com.liferay.commerce.account.model.CommerceAccountGroup;
 import com.liferay.commerce.account.model.CommerceAccountGroupRel;
 import com.liferay.commerce.account.service.CommerceAccountGroupRelService;
 import com.liferay.commerce.account.service.CommerceAccountGroupService;
+import com.liferay.commerce.catalog.web.internal.frontend.constants.CommerceCatalogDataSetConstants;
 import com.liferay.commerce.catalog.web.internal.model.AccountGroup;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.frontend.taglib.clay.data.Filter;

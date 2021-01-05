@@ -14,7 +14,7 @@
 
 package com.liferay.document.library.repository.search.internal;
 
-import com.liferay.document.library.repository.search.util.KeywordsUtil;
+import com.liferay.document.library.repository.search.internal.util.KeywordsUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;

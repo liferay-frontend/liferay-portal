@@ -22,7 +22,14 @@ function getOdataString(value, key) {
 	return `${key} eq ${value}`;
 }
 
-function NumberFilter({actions, id, inputText, max, min, value: valueProp}) {
+function NumberFilter({
+	id,
+	inputText,
+	max,
+	min,
+	updateFilterState,
+	value: valueProp,
+}) {
 	const [value, setValue] = useState(valueProp);
 
 	return (
@@ -59,11 +66,11 @@ function NumberFilter({actions, id, inputText, max, min, value: valueProp}) {
 				<ClayButton
 					disabled={Number(value) === valueProp}
 					onClick={() =>
-						actions.updateFilterState(
+						updateFilterState(
 							id,
 							Number(value),
 							value,
-							getOdataString(Number(value, id))
+							getOdataString(Number(value), id)
 						)
 					}
 					small
@@ -78,13 +85,11 @@ function NumberFilter({actions, id, inputText, max, min, value: valueProp}) {
 }
 
 NumberFilter.propTypes = {
-	actions: PropTypes.shape({
-		updateFilterState: PropTypes.func.isRequired,
-	}),
 	id: PropTypes.string.isRequired,
 	inputText: PropTypes.string,
 	max: PropTypes.number,
 	min: PropTypes.number,
+	updateFilterState: PropTypes.func.isRequired,
 	value: PropTypes.number,
 };
 

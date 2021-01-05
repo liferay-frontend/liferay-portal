@@ -196,6 +196,62 @@ public class DataLayoutRenderingContext implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean readOnly;
 
+	@Schema
+	public Long getScopeGroupId() {
+		return scopeGroupId;
+	}
+
+	public void setScopeGroupId(Long scopeGroupId) {
+		this.scopeGroupId = scopeGroupId;
+	}
+
+	@JsonIgnore
+	public void setScopeGroupId(
+		UnsafeSupplier<Long, Exception> scopeGroupIdUnsafeSupplier) {
+
+		try {
+			scopeGroupId = scopeGroupIdUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Long scopeGroupId;
+
+	@Schema
+	public Long getSiteGroupId() {
+		return siteGroupId;
+	}
+
+	public void setSiteGroupId(Long siteGroupId) {
+		this.siteGroupId = siteGroupId;
+	}
+
+	@JsonIgnore
+	public void setSiteGroupId(
+		UnsafeSupplier<Long, Exception> siteGroupIdUnsafeSupplier) {
+
+		try {
+			siteGroupId = siteGroupIdUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Long siteGroupId;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -285,6 +341,26 @@ public class DataLayoutRenderingContext implements Serializable {
 			sb.append("\"readOnly\": ");
 
 			sb.append(readOnly);
+		}
+
+		if (scopeGroupId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scopeGroupId\": ");
+
+			sb.append(scopeGroupId);
+		}
+
+		if (siteGroupId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"siteGroupId\": ");
+
+			sb.append(siteGroupId);
 		}
 
 		sb.append("}");

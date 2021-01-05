@@ -15,8 +15,11 @@
 package com.liferay.commerce.product.model;
 
 /**
- * @author Andrea Di Giorgi
+ * @author     Andrea Di Giorgi
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ *             com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants}
  */
+@Deprecated
 public class CPAttachmentFileEntryConstants {
 
 	public static final int TYPE_IMAGE = 0;

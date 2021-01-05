@@ -24,6 +24,7 @@ MBMessage message = messageDisplay.getMessage();
 long categoryId = message.getCategoryId();
 long threadId = message.getThreadId();
 long parentMessageId = message.getMessageId();
+
 String subject = ParamUtil.getString(request, "subject");
 double priority = message.getPriority();
 

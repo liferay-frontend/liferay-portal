@@ -125,7 +125,7 @@ ruleGroupSearch.setResults(mdrRuleGroups);
 	<portlet:param name="mvcRenderCommandName" value="/mobile_device_rules/edit_rule_group" />
 </portlet:actionURL>
 
-<aui:form action="<%= editRuleGroupURL %>" cssClass="container-fluid-1280" method="post" name="fm">
+<aui:form action="<%= editRuleGroupURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.DELETE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="ruleGroupIds" type="hidden" />
@@ -192,11 +192,6 @@ ruleGroupSearch.setResults(mdrRuleGroups);
 					/>
 				</c:when>
 				<c:when test='<%= displayStyle.equals("icon") %>'>
-
-					<%
-					row.setCssClass("entry-card lfr-asset-item");
-					%>
-
 					<liferay-ui:search-container-column-text>
 						<liferay-frontend:icon-vertical-card
 							actionJsp="/rule_group_actions.jsp"

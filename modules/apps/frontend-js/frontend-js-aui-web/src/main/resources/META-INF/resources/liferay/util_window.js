@@ -57,6 +57,13 @@ AUI.add(
 					value: 0.95,
 				},
 
+				toolbarCssClass: {
+					value: {
+						footer: 'ml-auto',
+						header: 'order-1',
+					},
+				},
+
 				toolbars: {
 					valueFn() {
 						var instance = this;

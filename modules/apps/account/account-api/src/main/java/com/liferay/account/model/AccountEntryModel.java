@@ -202,6 +202,34 @@ public interface AccountEntryModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the default billing address ID of this account entry.
+	 *
+	 * @return the default billing address ID of this account entry
+	 */
+	public long getDefaultBillingAddressId();
+
+	/**
+	 * Sets the default billing address ID of this account entry.
+	 *
+	 * @param defaultBillingAddressId the default billing address ID of this account entry
+	 */
+	public void setDefaultBillingAddressId(long defaultBillingAddressId);
+
+	/**
+	 * Returns the default shipping address ID of this account entry.
+	 *
+	 * @return the default shipping address ID of this account entry
+	 */
+	public long getDefaultShippingAddressId();
+
+	/**
+	 * Sets the default shipping address ID of this account entry.
+	 *
+	 * @param defaultShippingAddressId the default shipping address ID of this account entry
+	 */
+	public void setDefaultShippingAddressId(long defaultShippingAddressId);
+
+	/**
 	 * Returns the parent account entry ID of this account entry.
 	 *
 	 * @return the parent account entry ID of this account entry
@@ -214,21 +242,6 @@ public interface AccountEntryModel
 	 * @param parentAccountEntryId the parent account entry ID of this account entry
 	 */
 	public void setParentAccountEntryId(long parentAccountEntryId);
-
-	/**
-	 * Returns the name of this account entry.
-	 *
-	 * @return the name of this account entry
-	 */
-	@AutoEscape
-	public String getName();
-
-	/**
-	 * Sets the name of this account entry.
-	 *
-	 * @param name the name of this account entry
-	 */
-	public void setName(String name);
 
 	/**
 	 * Returns the description of this account entry.
@@ -273,6 +286,21 @@ public interface AccountEntryModel
 	 * @param logoId the logo ID of this account entry
 	 */
 	public void setLogoId(long logoId);
+
+	/**
+	 * Returns the name of this account entry.
+	 *
+	 * @return the name of this account entry
+	 */
+	@AutoEscape
+	public String getName();
+
+	/**
+	 * Sets the name of this account entry.
+	 *
+	 * @param name the name of this account entry
+	 */
+	public void setName(String name);
 
 	/**
 	 * Returns the tax ID number of this account entry.

@@ -947,6 +947,29 @@ public abstract class OrganizationLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the country local service.
+	 *
+	 * @return the country local service
+	 */
+	public com.liferay.portal.kernel.service.CountryLocalService
+		getCountryLocalService() {
+
+		return countryLocalService;
+	}
+
+	/**
+	 * Sets the country local service.
+	 *
+	 * @param countryLocalService the country local service
+	 */
+	public void setCountryLocalService(
+		com.liferay.portal.kernel.service.CountryLocalService
+			countryLocalService) {
+
+		this.countryLocalService = countryLocalService;
+	}
+
+	/**
 	 * Returns the country persistence.
 	 *
 	 * @return the country persistence
@@ -1420,6 +1443,29 @@ public abstract class OrganizationLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the region local service.
+	 *
+	 * @return the region local service
+	 */
+	public com.liferay.portal.kernel.service.RegionLocalService
+		getRegionLocalService() {
+
+		return regionLocalService;
+	}
+
+	/**
+	 * Sets the region local service.
+	 *
+	 * @param regionLocalService the region local service
+	 */
+	public void setRegionLocalService(
+		com.liferay.portal.kernel.service.RegionLocalService
+			regionLocalService) {
+
+		this.regionLocalService = regionLocalService;
+	}
+
+	/**
 	 * Returns the region persistence.
 	 *
 	 * @return the region persistence
@@ -1781,6 +1827,12 @@ public abstract class OrganizationLocalServiceBaseImpl
 	@BeanReference(type = CompanyPersistence.class)
 	protected CompanyPersistence companyPersistence;
 
+	@BeanReference(
+		type = com.liferay.portal.kernel.service.CountryLocalService.class
+	)
+	protected com.liferay.portal.kernel.service.CountryLocalService
+		countryLocalService;
+
 	@BeanReference(type = CountryPersistence.class)
 	protected CountryPersistence countryPersistence;
 
@@ -1876,6 +1928,12 @@ public abstract class OrganizationLocalServiceBaseImpl
 
 	@BeanReference(type = PhonePersistence.class)
 	protected PhonePersistence phonePersistence;
+
+	@BeanReference(
+		type = com.liferay.portal.kernel.service.RegionLocalService.class
+	)
+	protected com.liferay.portal.kernel.service.RegionLocalService
+		regionLocalService;
 
 	@BeanReference(type = RegionPersistence.class)
 	protected RegionPersistence regionPersistence;

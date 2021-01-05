@@ -647,11 +647,12 @@ public class ServiceBuilder {
 					"The package-path attribute is required");
 			}
 
-			_apiPackagePath = GetterUtil.getString(
-				rootElement.attributeValue("api-package-path"), packagePath);
 			_databaseNameMaxLength = GetterUtil.getInteger(
 				rootElement.attributeValue("database-name-max-length"),
 				databaseNameMaxLength);
+
+			_apiPackagePath = GetterUtil.getString(
+				rootElement.attributeValue("api-package-path"), packagePath);
 			_oldServiceOutputPath =
 				_apiDirName + "/" + StringUtil.replace(packagePath, '.', '/');
 			_outputPath =
@@ -2372,50 +2373,52 @@ public class ServiceBuilder {
 					String sqlType = getSqlType(
 						name, entityColumn.getName(), entityColumn.getType());
 
-					Map<String, String> column = HashMapBuilder.put(
-						"dbName", entityColumn.getDBName()
-					).put(
-						"flag",
-						() -> {
-							if (entityColumn.isPrimary()) {
-								return "FLAG_PRIMARY";
+					columns.add(
+						HashMapBuilder.put(
+							"dbName", entityColumn.getDBName()
+						).put(
+							"flag",
+							() -> {
+								if (entityColumn.isPrimary()) {
+									return "FLAG_PRIMARY";
+								}
+
+								if (changeTrackingEnabled &&
+									Objects.equals(
+										entityColumn.getName(),
+										"ctCollectionId")) {
+
+									return "FLAG_PRIMARY";
+								}
+
+								if (Objects.equals(
+										entityColumn.getName(),
+										"mvccVersion")) {
+
+									return "FLAG_NULLITY";
+								}
+
+								return "FLAG_DEFAULT";
 							}
+						).put(
+							"javaType",
+							() -> {
+								if (entityColumn.isPrimitiveType()) {
+									return getPrimitiveObj(
+										entityColumn.getType());
+								}
 
-							if (changeTrackingEnabled &&
-								Objects.equals(
-									entityColumn.getName(), "ctCollectionId")) {
+								if (Objects.equals("CLOB", sqlType)) {
+									return "Clob";
+								}
 
-								return "FLAG_PRIMARY";
+								return entityColumn.getGenericizedType();
 							}
-
-							if (Objects.equals(
-									entityColumn.getName(), "mvccVersion")) {
-
-								return "FLAG_NULLITY";
-							}
-
-							return "FLAG_DEFAULT";
-						}
-					).put(
-						"javaType",
-						() -> {
-							if (entityColumn.isPrimitiveType()) {
-								return getPrimitiveObj(entityColumn.getType());
-							}
-
-							if (Objects.equals("CLOB", sqlType)) {
-								return "Clob";
-							}
-
-							return entityColumn.getGenericizedType();
-						}
-					).put(
-						"name", entityColumn.getName()
-					).put(
-						"sqlType", sqlType
-					).build();
-
-					columns.add(column);
+						).put(
+							"name", entityColumn.getName()
+						).put(
+							"sqlType", sqlType
+						).build());
 				}
 
 				return columns;
@@ -2636,9 +2639,7 @@ public class ServiceBuilder {
 		Map<String, JavaMethod> methods = new LinkedHashMap<>();
 
 		for (JavaMethod method : _getMethods(modelImplJavaClass)) {
-			String methodSignature = _getMethodSignature(method, false);
-
-			methods.put(methodSignature, method);
+			methods.put(_getMethodSignature(method, false), method);
 		}
 
 		Set<Map.Entry<String, JavaMethod>> entrySet = methods.entrySet();
@@ -2662,9 +2663,7 @@ public class ServiceBuilder {
 				_serviceOutputPath, "/model/", entity.getName(), "Model.java"));
 
 		for (JavaMethod method : _getMethods(modelJavaClass)) {
-			String methodSignature = _getMethodSignature(method, false);
-
-			methods.remove(methodSignature);
+			methods.remove(_getMethodSignature(method, false));
 		}
 
 		Map<String, Object> context = _getContext();
@@ -3293,12 +3292,7 @@ public class ServiceBuilder {
 				_testOutputPath, "/service/persistence/test/", entity.getName(),
 				"PersistenceTest.java"));
 
-		if (entity.isDeprecated() || !entity.hasPersistence()) {
-			System.out.println("Removing " + file);
-
-			file.delete();
-		}
-		else {
+		if (entity.hasPersistence() && !entity.isDeprecated()) {
 			Map<String, Object> context = _getContext();
 
 			context.put("entity", entity);
@@ -3313,6 +3307,11 @@ public class ServiceBuilder {
 			String content = _processTemplate(_tplPersistenceTest, context);
 
 			_write(file, content, _modifiedFileNames);
+		}
+		else if (file.exists()) {
+			System.out.println("Removing " + file);
+
+			file.delete();
 		}
 
 		file = new File(
@@ -3727,9 +3726,8 @@ public class ServiceBuilder {
 			return;
 		}
 
-		Map<String, Object> context = _getContext();
-
-		String content = _processTemplate(_tplServletContextUtil, context);
+		String content = _processTemplate(
+			_tplServletContextUtil, _getContext());
 
 		File file = new File(
 			_serviceOutputPath + "/service/ServletContextUtil.java");

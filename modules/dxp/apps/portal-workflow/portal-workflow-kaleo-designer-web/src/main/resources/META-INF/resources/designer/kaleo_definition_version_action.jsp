@@ -30,7 +30,7 @@ String duplicateTitle = kaleoDesignerDisplayContext.getDuplicateTitle(kaleoDefin
 String kaleoNamespace = PortalUtil.getPortletNamespace(KaleoDesignerPortletKeys.KALEO_DESIGNER);
 %>
 
-<liferay-portlet:actionURL name="duplicateWorkflowDefinition" portletName="<%= KaleoDesignerPortletKeys.KALEO_DESIGNER %>" var="duplicateWorkflowDefinition">
+<liferay-portlet:actionURL name="/kaleo_designer/duplicate_workflow_definition" portletName="<%= KaleoDesignerPortletKeys.KALEO_DESIGNER %>" var="duplicateWorkflowDefinition">
 	<portlet:param name="mvcPath" value="/designer/edit_kaleo_definition_version.jsp" />
 	<portlet:param name="redirect" value="<%= currentURL %>" />
 </liferay-portlet:actionURL>
@@ -98,7 +98,7 @@ String kaleoNamespace = PortalUtil.getPortletNamespace(KaleoDesignerPortletKeys.
 	<c:choose>
 		<c:when test="<%= (kaleoDefinition != null) && kaleoDefinition.isActive() %>">
 			<c:if test="<%= KaleoDefinitionVersionPermission.contains(permissionChecker, kaleoDefinitionVersion, ActionKeys.UPDATE) %>">
-				<liferay-portlet:actionURL name="unpublishKaleoDefinitionVersion" portletName="<%= KaleoDesignerPortletKeys.CONTROL_PANEL_WORKFLOW %>" var="unpublishURL">
+				<liferay-portlet:actionURL name="/kaleo_designer/unpublish_kaleo_definition_version" portletName="<%= KaleoDesignerPortletKeys.CONTROL_PANEL_WORKFLOW %>" var="unpublishURL">
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 					<portlet:param name="name" value="<%= kaleoDefinitionVersion.getName() %>" />
 					<portlet:param name="version" value="<%= String.valueOf(kaleoDefinition.getVersion()) %>" />

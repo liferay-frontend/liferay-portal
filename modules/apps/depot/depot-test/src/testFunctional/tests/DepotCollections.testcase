@@ -22,6 +22,10 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
+			Site.tearDownCP();
+
+			Depot.tearDownCP();
+
 			User.logoutPG();
 		}
 	}
@@ -40,7 +44,7 @@ definition {
 
 			DMDocumentType.add(
 				dmDocumentTypeDescription = "DM Document Type Description",
-				dmDocumentTypeFieldNames = "Text Box",
+				dmDocumentTypeFieldNames = "Text",
 				dmDocumentTypeName = "DM Document Type Name ${i}");
 		}
 
@@ -329,7 +333,7 @@ definition {
 
 		Click(
 			key_card = "Test Depot Name",
-			locator1 = "Card#CARD_TITLE");
+			locator1 = "Card#CARD_TITLE_LINK");
 
 		AssertTextEquals(
 			locator1 = "Message#INFO",
@@ -357,8 +361,7 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -409,7 +412,7 @@ definition {
 
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeFieldNames = "Text Box",
+			dmDocumentTypeFieldNames = "Text",
 			dmDocumentTypeName = "DM Document Type Name");
 
 		DepotNavigator.openDepotAdmin();
@@ -1024,8 +1027,7 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 

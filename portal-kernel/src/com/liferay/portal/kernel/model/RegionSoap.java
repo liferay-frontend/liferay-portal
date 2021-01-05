@@ -17,6 +17,7 @@ package com.liferay.portal.kernel.model;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,11 +34,19 @@ public class RegionSoap implements Serializable {
 		RegionSoap soapModel = new RegionSoap();
 
 		soapModel.setMvccVersion(model.getMvccVersion());
+		soapModel.setUuid(model.getUuid());
 		soapModel.setRegionId(model.getRegionId());
+		soapModel.setCompanyId(model.getCompanyId());
+		soapModel.setUserId(model.getUserId());
+		soapModel.setUserName(model.getUserName());
+		soapModel.setCreateDate(model.getCreateDate());
+		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setCountryId(model.getCountryId());
-		soapModel.setRegionCode(model.getRegionCode());
-		soapModel.setName(model.getName());
 		soapModel.setActive(model.isActive());
+		soapModel.setName(model.getName());
+		soapModel.setPosition(model.getPosition());
+		soapModel.setRegionCode(model.getRegionCode());
+		soapModel.setLastPublishDate(model.getLastPublishDate());
 
 		return soapModel;
 	}
@@ -98,6 +107,14 @@ public class RegionSoap implements Serializable {
 		_mvccVersion = mvccVersion;
 	}
 
+	public String getUuid() {
+		return _uuid;
+	}
+
+	public void setUuid(String uuid) {
+		_uuid = uuid;
+	}
+
 	public long getRegionId() {
 		return _regionId;
 	}
@@ -106,28 +123,52 @@ public class RegionSoap implements Serializable {
 		_regionId = regionId;
 	}
 
+	public long getCompanyId() {
+		return _companyId;
+	}
+
+	public void setCompanyId(long companyId) {
+		_companyId = companyId;
+	}
+
+	public long getUserId() {
+		return _userId;
+	}
+
+	public void setUserId(long userId) {
+		_userId = userId;
+	}
+
+	public String getUserName() {
+		return _userName;
+	}
+
+	public void setUserName(String userName) {
+		_userName = userName;
+	}
+
+	public Date getCreateDate() {
+		return _createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		_createDate = createDate;
+	}
+
+	public Date getModifiedDate() {
+		return _modifiedDate;
+	}
+
+	public void setModifiedDate(Date modifiedDate) {
+		_modifiedDate = modifiedDate;
+	}
+
 	public long getCountryId() {
 		return _countryId;
 	}
 
 	public void setCountryId(long countryId) {
 		_countryId = countryId;
-	}
-
-	public String getRegionCode() {
-		return _regionCode;
-	}
-
-	public void setRegionCode(String regionCode) {
-		_regionCode = regionCode;
-	}
-
-	public String getName() {
-		return _name;
-	}
-
-	public void setName(String name) {
-		_name = name;
 	}
 
 	public boolean getActive() {
@@ -142,11 +183,51 @@ public class RegionSoap implements Serializable {
 		_active = active;
 	}
 
+	public String getName() {
+		return _name;
+	}
+
+	public void setName(String name) {
+		_name = name;
+	}
+
+	public double getPosition() {
+		return _position;
+	}
+
+	public void setPosition(double position) {
+		_position = position;
+	}
+
+	public String getRegionCode() {
+		return _regionCode;
+	}
+
+	public void setRegionCode(String regionCode) {
+		_regionCode = regionCode;
+	}
+
+	public Date getLastPublishDate() {
+		return _lastPublishDate;
+	}
+
+	public void setLastPublishDate(Date lastPublishDate) {
+		_lastPublishDate = lastPublishDate;
+	}
+
 	private long _mvccVersion;
+	private String _uuid;
 	private long _regionId;
+	private long _companyId;
+	private long _userId;
+	private String _userName;
+	private Date _createDate;
+	private Date _modifiedDate;
 	private long _countryId;
-	private String _regionCode;
-	private String _name;
 	private boolean _active;
+	private String _name;
+	private double _position;
+	private String _regionCode;
+	private Date _lastPublishDate;
 
 }

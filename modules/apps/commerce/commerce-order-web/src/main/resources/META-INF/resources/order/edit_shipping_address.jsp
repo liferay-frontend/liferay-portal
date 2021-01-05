@@ -33,7 +33,7 @@ long commerceCountryId = BeanParamUtil.getLong(shippingAddress, request, "commer
 long commerceRegionId = BeanParamUtil.getLong(shippingAddress, request, "commerceRegionId");
 %>
 
-<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderShippingAddressActionURL" />
+<portlet:actionURL name="/commerce_order/edit_commerce_order" var="editCommerceOrderShippingAddressActionURL" />
 
 <commerce-ui:modal-content
 	title='<%= (shippingAddress == null) ? LanguageUtil.get(request, "add-shipping-address") : LanguageUtil.get(request, "edit-shipping-address") %>'

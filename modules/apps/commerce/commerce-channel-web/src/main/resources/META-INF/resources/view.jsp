@@ -20,18 +20,14 @@
 CommerceChannelDisplayContext commerceChannelDisplayContext = (CommerceChannelDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 %>
 
-<div class="row">
-	<div class="col-12">
-		<clay:data-set-display
-			contextParams="<%= new HashMap<>() %>"
-			creationMenu="<%= commerceChannelDisplayContext.getCreationMenu() %>"
-			dataProviderKey="<%= CommerceChannelClayTable.NAME %>"
-			id="<%= CommerceChannelClayTable.NAME %>"
-			itemsPerPage="<%= 10 %>"
-			namespace="<%= liferayPortletResponse.getNamespace() %>"
-			pageNumber="<%= 1 %>"
-			portletURL="<%= commerceChannelDisplayContext.getPortletURL() %>"
-			style="fluid"
-		/>
-	</div>
-</div>
+<clay:data-set-display
+	contextParams="<%= new HashMap<>() %>"
+	creationMenu="<%= commerceChannelDisplayContext.getCreationMenu() %>"
+	dataProviderKey="<%= CommerceChannelClayTable.NAME %>"
+	id="<%= CommerceChannelClayTable.NAME %>"
+	itemsPerPage="<%= 10 %>"
+	namespace="<%= liferayPortletResponse.getNamespace() %>"
+	pageNumber="<%= 1 %>"
+	portletURL="<%= commerceChannelDisplayContext.getPortletURL() %>"
+	style="fluid"
+/>

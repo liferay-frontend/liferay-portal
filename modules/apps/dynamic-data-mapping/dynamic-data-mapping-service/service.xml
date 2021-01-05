@@ -3,7 +3,7 @@
 
 <service-builder auto-import-default-references="false" auto-namespace-tables="false" change-tracking-enabled="true" dependency-injector="ds" mvcc-enabled="true" package-path="com.liferay.dynamic.data.mapping">
 	<namespace>DDM</namespace>
-	<entity local-service="true" name="DDMContent" remote-service="false" uuid="true">
+	<entity deprecated="true" local-service="true" name="DDMContent" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -109,6 +109,88 @@
 			<finder-column name="structureId" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="DDMField" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="fieldId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="parentFieldId" type="long" />
+		<column name="storageId" type="long" />
+		<column name="structureVersionId" type="long" />
+		<column name="fieldName" type="String" />
+		<column name="fieldType" type="String" />
+		<column name="instanceId" type="String" />
+		<column name="localizable" type="boolean" />
+		<column name="priority" type="int" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="priority" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="StorageId" return-type="Collection">
+			<finder-column name="storageId" />
+		</finder>
+		<finder name="StructureVersionId" return-type="Collection">
+			<finder-column name="structureVersionId" />
+		</finder>
+		<finder name="C_F" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="fieldType" />
+		</finder>
+		<finder name="S_I" return-type="DDMField" unique="true">
+			<finder-column name="storageId" />
+			<finder-column name="instanceId" />
+		</finder>
+	</entity>
+	<entity local-service="false" name="DDMFieldAttribute" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="fieldAttributeId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="fieldId" type="long" />
+		<column name="storageId" type="long" />
+		<column name="attributeName" type="String" />
+		<column name="languageId" type="String" />
+		<column name="largeAttributeValue" type="String" />
+		<column name="smallAttributeValue" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="StorageId" return-type="Collection">
+			<finder-column name="storageId" />
+		</finder>
+		<finder name="S_L" return-type="Collection">
+			<finder-column name="storageId" />
+			<finder-column name="languageId" />
+		</finder>
+		<finder name="AN_SAV" return-type="Collection">
+			<finder-column name="attributeName" />
+			<finder-column name="smallAttributeValue" />
+		</finder>
+		<finder name="F_AN_L" return-type="DDMFieldAttribute" unique="true">
+			<finder-column name="fieldId" />
+			<finder-column name="attributeName" />
+			<finder-column name="languageId" />
+		</finder>
+	</entity>
 	<entity local-service="true" name="DDMFormInstance" remote-service="true" uuid="true">
 
 		<!-- PK fields -->
@@ -178,6 +260,7 @@
 		<column name="formInstanceVersion" type="String" />
 		<column name="storageId" type="long" />
 		<column name="version" type="String" uad-nonanonymizable="true" />
+		<column name="ipAddress" type="String" />
 		<column name="lastPublishDate" type="Date" />
 
 		<!-- Finder methods -->

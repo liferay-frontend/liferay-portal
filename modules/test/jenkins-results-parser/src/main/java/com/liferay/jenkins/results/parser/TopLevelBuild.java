@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -273,12 +274,52 @@ public abstract class TopLevelBuild extends BaseBuild {
 		return displayName;
 	}
 
+	public AxisBuild getDownstreamAxisBuild(String axisName) {
+		AxisBuild targetAxisBuild = _downstreamAxisBuilds.get(axisName);
+
+		if (targetAxisBuild != null) {
+			return targetAxisBuild;
+		}
+
+		for (AxisBuild axisBuild : getDownstreamAxisBuilds()) {
+			if (axisName.equals(axisBuild.getAxisName())) {
+				return axisBuild;
+			}
+		}
+
+		return null;
+	}
+
 	public List<AxisBuild> getDownstreamAxisBuilds() {
+		if (_downstreamAxisBuildsPopulated &&
+			!_downstreamAxisBuilds.isEmpty()) {
+
+			List<AxisBuild> downstreamAxisBuilds = new ArrayList<>(
+				_downstreamAxisBuilds.values());
+
+			Collections.sort(
+				downstreamAxisBuilds,
+				new BaseBuild.BuildDisplayNameComparator());
+
+			return downstreamAxisBuilds;
+		}
+
 		List<AxisBuild> downstreamAxisBuilds = new ArrayList<>();
 
 		for (BatchBuild downstreamBatchBuild : getDownstreamBatchBuilds()) {
 			downstreamAxisBuilds.addAll(
 				downstreamBatchBuild.getDownstreamAxisBuilds());
+		}
+
+		synchronized (_downstreamAxisBuilds) {
+			if (isCompleted() && !_downstreamAxisBuildsPopulated) {
+				for (AxisBuild downstreamAxisBuild : downstreamAxisBuilds) {
+					_downstreamAxisBuilds.put(
+						downstreamAxisBuild.getAxisName(), downstreamAxisBuild);
+				}
+
+				_downstreamAxisBuildsPopulated = true;
+			}
 		}
 
 		Collections.sort(
@@ -287,7 +328,36 @@ public abstract class TopLevelBuild extends BaseBuild {
 		return downstreamAxisBuilds;
 	}
 
+	public BatchBuild getDownstreamBatchBuild(String jobVariant) {
+		BatchBuild targetBatchBuild = _downstreamBatchBuilds.get(jobVariant);
+
+		if (targetBatchBuild != null) {
+			return targetBatchBuild;
+		}
+
+		for (BatchBuild batchBuild : getDownstreamBatchBuilds()) {
+			if (jobVariant.equals(batchBuild.getJobVariant())) {
+				return batchBuild;
+			}
+		}
+
+		return null;
+	}
+
 	public List<BatchBuild> getDownstreamBatchBuilds() {
+		if (_downstreamBatchBuildsPopulated &&
+			!_downstreamBatchBuilds.isEmpty()) {
+
+			List<BatchBuild> downstreamBatchBuilds = new ArrayList<>(
+				_downstreamBatchBuilds.values());
+
+			Collections.sort(
+				downstreamBatchBuilds,
+				new BaseBuild.BuildDisplayNameComparator());
+
+			return downstreamBatchBuilds;
+		}
+
 		List<BatchBuild> downstreamBatchBuilds = new ArrayList<>();
 
 		List<Build> downstreamBuilds = getDownstreamBuilds(null);
@@ -298,6 +368,18 @@ public abstract class TopLevelBuild extends BaseBuild {
 			}
 
 			downstreamBatchBuilds.add((BatchBuild)downstreamBuild);
+		}
+
+		synchronized (_downstreamBatchBuilds) {
+			if (isCompleted() && !_downstreamBatchBuildsPopulated) {
+				for (BatchBuild downstreamBatchBuild : downstreamBatchBuilds) {
+					_downstreamBatchBuilds.put(
+						downstreamBatchBuild.getJobVariant(),
+						downstreamBatchBuild);
+				}
+
+				_downstreamBatchBuildsPopulated = true;
+			}
 		}
 
 		Collections.sort(
@@ -1677,6 +1759,12 @@ public abstract class TopLevelBuild extends BaseBuild {
 
 	private boolean _compareToUpstream;
 	private Build _controllerBuild;
+	private final Map<String, AxisBuild> _downstreamAxisBuilds =
+		new ConcurrentHashMap<>();
+	private boolean _downstreamAxisBuildsPopulated;
+	private final Map<String, BatchBuild> _downstreamBatchBuilds =
+		new ConcurrentHashMap<>();
+	private boolean _downstreamBatchBuildsPopulated;
 	private long _lastDownstreamBuildsListingTimestamp = -1L;
 	private String _metricsHostName;
 	private int _metricsHostPort;

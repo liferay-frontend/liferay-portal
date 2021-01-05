@@ -37,7 +37,7 @@ const props = {
 			order: 1,
 		},
 	],
-	spritemap: './assets/icons.svg',
+	spritemap: './assets/clay/icons.svg',
 };
 
 launcher('dropdownId', 'dropdown-root-id', props);

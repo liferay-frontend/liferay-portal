@@ -137,7 +137,7 @@ public class MBNavigationDisplayContext {
 		PortletURL bannedUsersURL = _renderResponse.createRenderURL();
 
 		bannedUsersURL.setParameter(
-			"mvcRenderCommandName", "/message_boards/view_banned_users");
+			"mvcRenderCommandName", "/message_boards_admin/view_banned_users");
 
 		return bannedUsersURL;
 	}
@@ -202,7 +202,9 @@ public class MBNavigationDisplayContext {
 	}
 
 	private boolean _isViewBannedUsersNavigationItemActive() {
-		if (_mvcRenderCommandName.equals("/message_boards/view_banned_users")) {
+		if (_mvcRenderCommandName.equals(
+				"/message_boards_admin/view_banned_users")) {
+
 			return true;
 		}
 

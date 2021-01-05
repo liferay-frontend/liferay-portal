@@ -20,7 +20,11 @@
 SelectSiteNavigationMenuDisplayContext selectSiteNavigationMenuDisplayContext = (SelectSiteNavigationMenuDisplayContext)request.getAttribute(SiteNavigationItemSelectorWebKeys.SELECT_SITE_NAVIGATION_ITEM_SELECTOR_DISPLAY_CONTEXT);
 %>
 
-<div class="container-fluid-1280 p-4" id="<portlet:namespace />siteNavigationMenuLevelSelector">
+<div class="container-fluid container-fluid-max-xl p-4" id="<portlet:namespace />siteNavigationMenuLevelSelector">
+	<div class="alert alert-info">
+		<liferay-ui:message key="select-the-page-level-of-the-navigation-menu-to-be-displayed" />
+	</div>
+
 	<div class="align-items-center d-flex justify-content-between">
 		<liferay-site-navigation:breadcrumb
 			breadcrumbEntries="<%= selectSiteNavigationMenuDisplayContext.getBreadcrumbEntries() %>"
@@ -29,10 +33,12 @@ SelectSiteNavigationMenuDisplayContext selectSiteNavigationMenuDisplayContext = 
 		<clay:button
 			cssClass="site-navigation-menu-selector"
 			data-parent-site-navigation-menu-item-id="<%= selectSiteNavigationMenuDisplayContext.getParentSiteNavigationMenuItemId() %>"
+			data-private-layout="<%= selectSiteNavigationMenuDisplayContext.isPrivateLayout() %>"
 			data-site-navigation-menu-id="<%= selectSiteNavigationMenuDisplayContext.getSiteNavigationMenuId() %>"
 			data-title="<%= selectSiteNavigationMenuDisplayContext.getCurrentLevelTitle() %>"
 			displayType="primary"
-			label='<%= LanguageUtil.get(resourceBundle, "select-level") %>'
+			label='<%= LanguageUtil.get(resourceBundle, "select-this-level") %>'
+			small="<%= true %>"
 		/>
 	</div>
 
@@ -49,9 +55,10 @@ SelectSiteNavigationMenuDisplayContext selectSiteNavigationMenuDisplayContext = 
 				cssClass="table-title"
 				name="name"
 			>
-				<clay:icon
-					cssClass="mr-2"
-					symbol="page"
+				<clay:sticker
+					cssClass="bg-light mr-3"
+					displayType="light"
+					icon="page"
 				/>
 
 				<a href="<%= siteNavigationMenuEntry.getURL() %>">

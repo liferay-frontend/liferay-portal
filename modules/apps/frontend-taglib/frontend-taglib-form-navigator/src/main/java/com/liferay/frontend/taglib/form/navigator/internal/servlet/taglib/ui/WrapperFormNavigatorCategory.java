@@ -30,14 +30,17 @@ public class WrapperFormNavigatorCategory implements FormNavigatorCategory {
 		_formNavigatorCategory = formNavigatorCategory;
 	}
 
+	@Override
 	public String getFormNavigatorId() {
 		return _formNavigatorCategory.getFormNavigatorId();
 	}
 
+	@Override
 	public String getKey() {
 		return _formNavigatorCategory.getKey();
 	}
 
+	@Override
 	public String getLabel(Locale locale) {
 		return _formNavigatorCategory.getLabel(locale);
 	}

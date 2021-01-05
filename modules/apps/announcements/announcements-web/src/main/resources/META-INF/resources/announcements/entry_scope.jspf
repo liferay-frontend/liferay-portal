@@ -25,34 +25,40 @@ if (entryClassName.equals(Group.class.getName())) {
 	Group group = GroupLocalServiceUtil.getGroup(entryClassPK);
 
 	scopeName = group.getDescriptiveName(locale);
+
 	scopeClassName = "site";
 }
 else if (entryClassName.equals(Organization.class.getName())) {
 	Organization organization = OrganizationLocalServiceUtil.getOrganization(entryClassPK);
 
 	scopeName = organization.getName();
+
 	scopeClassName = "organization";
 }
 else if (entryClassName.equals(Role.class.getName())) {
 	Role role = RoleLocalServiceUtil.getRole(entryClassPK);
 
 	scopeName = role.getTitle(locale);
+
 	scopeClassName = "role";
 }
 else if (entryClassName.equals(User.class.getName())) {
 	User curUser = UserLocalServiceUtil.getUser(entryClassPK);
 
 	scopeName = curUser.getFullName();
+
 	scopeClassName = "personal";
 }
 else if (entryClassName.equals(UserGroup.class.getName())) {
 	UserGroup userGroup = UserGroupLocalServiceUtil.getUserGroup(entryClassPK);
 
 	scopeName = userGroup.getName();
+
 	scopeClassName = "user-group";
 }
 else {
 	scopeName = LanguageUtil.get(request, "general");
+
 	scopeClassName = scopeName;
 }
 

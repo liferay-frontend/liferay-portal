@@ -60,10 +60,10 @@ public class DisplayPortlet extends AdminPortlet {
 		String actionName = ParamUtil.getString(
 			actionRequest, ActionRequest.ACTION_NAME);
 
-		if (!actionName.equals("archiveRequest") &&
-			!actionName.equals("deleteReport") &&
-			!actionName.equals("deliverReport") &&
-			!actionName.equals("unscheduleReportRequest")) {
+		if (!actionName.equals("/reports_admin/archive_request") &&
+			!actionName.equals("/reports_admin/delete_report") &&
+			!actionName.equals("/reports_admin/deliver_report") &&
+			!actionName.equals("/reports_admin/unschedule_report_request")) {
 
 			return false;
 		}

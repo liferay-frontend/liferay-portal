@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
+import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -54,9 +55,11 @@ import org.osgi.service.component.annotations.ServiceScope;
 @Component(
 	enabled = false,
 	properties = "OSGI-INF/liferay/rest/v1_0/account-address.properties",
-	scope = ServiceScope.PROTOTYPE, service = AccountAddressResource.class
+	scope = ServiceScope.PROTOTYPE,
+	service = {AccountAddressResource.class, NestedFieldSupport.class}
 )
-public class AccountAddressResourceImpl extends BaseAccountAddressResourceImpl {
+public class AccountAddressResourceImpl
+	extends BaseAccountAddressResourceImpl implements NestedFieldSupport {
 
 	@Override
 	public Response deleteAccountAddress(Long id) throws Exception {
@@ -92,10 +95,8 @@ public class AccountAddressResourceImpl extends BaseAccountAddressResourceImpl {
 
 	@Override
 	public AccountAddress getAccountAddress(Long id) throws Exception {
-		CommerceAddress commerceAddress =
-			_commerceAddressService.getCommerceAddress(id);
-
-		return _toAccountAddress(commerceAddress);
+		return _toAccountAddress(
+			_commerceAddressService.getCommerceAddress(id));
 	}
 
 	@Override

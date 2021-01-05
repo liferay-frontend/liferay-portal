@@ -26,7 +26,7 @@ String displayStyle = siteNavigationMenuItemSelectorViewDisplayContext.getDispla
 	displayContext="<%= new SiteNavigationMenuItemSelectorViewManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, siteNavigationMenuItemSelectorViewDisplayContext) %>"
 />
 
-<aui:form action="<%= siteNavigationMenuItemSelectorViewDisplayContext.getPortletURL() %>" cssClass="container-fluid-1280" name="selectSiteNavigationMenuFm">
+<aui:form action="<%= siteNavigationMenuItemSelectorViewDisplayContext.getPortletURL() %>" cssClass="container-fluid container-fluid-max-xl" name="selectSiteNavigationMenuFm">
 	<liferay-ui:search-container
 		searchContainer="<%= siteNavigationMenuItemSelectorViewDisplayContext.getSearchContainer() %>"
 	>
@@ -81,7 +81,7 @@ String displayStyle = siteNavigationMenuItemSelectorViewDisplayContext.getDispla
 				</c:when>
 				<c:otherwise>
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="title"
 					>
 						<aui:a cssClass="selector-button" data="<%= data %>" href="javascript:;">
@@ -108,10 +108,3 @@ String displayStyle = siteNavigationMenuItemSelectorViewDisplayContext.getDispla
 		/>
 	</liferay-ui:search-container>
 </aui:form>
-
-<aui:script use="aui-base">
-	Liferay.Util.selectEntityHandler(
-		'#<portlet:namespace />selectSiteNavigationMenuFm',
-		'<%= HtmlUtil.escapeJS(siteNavigationMenuItemSelectorViewDisplayContext.getItemSelectedEventName()) %>'
-	);
-</aui:script>

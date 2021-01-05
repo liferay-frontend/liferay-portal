@@ -57,7 +57,7 @@ RedirectManagementToolbarDisplayContext redirectManagementToolbarDisplayContext 
 			</div>
 		</c:if>
 
-		<aui:form action="<%= redirectSearchContainer.getIteratorURL() %>" cssClass="container-fluid-1280" name="fm">
+		<aui:form action="<%= redirectSearchContainer.getIteratorURL() %>" cssClass="container-fluid container-fluid-max-xl" name="fm">
 			<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 
 			<liferay-ui:search-container
@@ -78,21 +78,21 @@ RedirectManagementToolbarDisplayContext redirectManagementToolbarDisplayContext 
 					%>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="source-url"
 					>
 
 						<%
-						String sourceURL = RedirectUtil.getGroupBaseURL(themeDisplay) + StringPool.SLASH + redirectEntry.getSourceURL();
+						String sourceURL = HtmlUtil.escape(RedirectUtil.getGroupBaseURL(themeDisplay) + StringPool.SLASH + redirectEntry.getSourceURL());
 						%>
 
-						<span data-title="<%= sourceURL %>">
-							<%= HtmlUtil.escape(sourceURL) %>
+						<span data-title="<%= HtmlUtil.escapeAttribute(sourceURL) %>">
+							<%= sourceURL %>
 						</span>
 					</liferay-ui:search-container-column-text>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="destination-url"
 					>
 
@@ -100,7 +100,7 @@ RedirectManagementToolbarDisplayContext redirectManagementToolbarDisplayContext 
 						String destinationURL = HtmlUtil.escape(redirectEntry.getDestinationURL());
 						%>
 
-						<span data-title="<%= destinationURL %>">
+						<span data-title="<%= HtmlUtil.escapeAttribute(destinationURL) %>">
 							<%= destinationURL %>
 						</span>
 					</liferay-ui:search-container-column-text>
@@ -157,8 +157,10 @@ RedirectManagementToolbarDisplayContext redirectManagementToolbarDisplayContext 
 	module="js/RedirectManagementToolbarDefaultEventHandler.es"
 />
 
-<aui:script require="metal-dom/src/all/dom as dom">
-	dom.delegate(
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
+	var delegate = delegateModule.default;
+
+	delegate(
 		document.querySelector('#<portlet:namespace />fm'),
 		'click',
 		'.icon-shortcut',

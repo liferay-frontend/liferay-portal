@@ -69,14 +69,14 @@ public abstract class BaseCommerceProductPriceCalculation
 			long cpDefinitionId, CommerceContext commerceContext)
 		throws PortalException {
 
-		BigDecimal cpDefinitionMinimumPrice = BigDecimal.ZERO;
-
 		CommerceMoney commerceMoney = getUnitMinPrice(
 			cpDefinitionId, 1, commerceContext);
 
 		if (commerceMoney.isEmpty()) {
 			return commerceMoney;
 		}
+
+		BigDecimal cpDefinitionMinimumPrice = BigDecimal.ZERO;
 
 		cpDefinitionMinimumPrice = cpDefinitionMinimumPrice.add(
 			commerceMoney.getPrice());
@@ -352,9 +352,6 @@ public abstract class BaseCommerceProductPriceCalculation
 			commerceMoneyFactory.create(
 				commerceContext.getCommerceCurrency(), unitPriceWithTaxAmount));
 
-		CommerceCurrency commerceCurrency =
-			commerceContext.getCommerceCurrency();
-
 		int quantity = commerceProductPriceImpl.getQuantity();
 
 		if (activePrice == null) {
@@ -364,6 +361,9 @@ public abstract class BaseCommerceProductPriceCalculation
 		activePrice = activePrice.multiply(BigDecimal.valueOf(quantity));
 
 		if (discountsTargetNetPrice) {
+			CommerceCurrency commerceCurrency =
+				commerceContext.getCommerceCurrency();
+
 			commerceProductPriceImpl.setCommerceDiscountValueWithTaxAmount(
 				CommercePriceConverterUtil.getConvertedCommerceDiscountValue(
 					commerceDiscountValue, activePrice, finalPriceWithTaxAmount,

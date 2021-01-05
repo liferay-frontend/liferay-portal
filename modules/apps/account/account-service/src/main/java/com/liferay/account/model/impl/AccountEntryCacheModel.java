@@ -77,7 +77,7 @@ public class AccountEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -95,16 +95,20 @@ public class AccountEntryCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", defaultBillingAddressId=");
+		sb.append(defaultBillingAddressId);
+		sb.append(", defaultShippingAddressId=");
+		sb.append(defaultShippingAddressId);
 		sb.append(", parentAccountEntryId=");
 		sb.append(parentAccountEntryId);
-		sb.append(", name=");
-		sb.append(name);
 		sb.append(", description=");
 		sb.append(description);
 		sb.append(", domains=");
 		sb.append(domains);
 		sb.append(", logoId=");
 		sb.append(logoId);
+		sb.append(", name=");
+		sb.append(name);
 		sb.append(", taxIdNumber=");
 		sb.append(taxIdNumber);
 		sb.append(", type=");
@@ -154,14 +158,9 @@ public class AccountEntryCacheModel
 			accountEntryImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
+		accountEntryImpl.setDefaultBillingAddressId(defaultBillingAddressId);
+		accountEntryImpl.setDefaultShippingAddressId(defaultShippingAddressId);
 		accountEntryImpl.setParentAccountEntryId(parentAccountEntryId);
-
-		if (name == null) {
-			accountEntryImpl.setName("");
-		}
-		else {
-			accountEntryImpl.setName(name);
-		}
 
 		if (description == null) {
 			accountEntryImpl.setDescription("");
@@ -178,6 +177,13 @@ public class AccountEntryCacheModel
 		}
 
 		accountEntryImpl.setLogoId(logoId);
+
+		if (name == null) {
+			accountEntryImpl.setName("");
+		}
+		else {
+			accountEntryImpl.setName(name);
+		}
 
 		if (taxIdNumber == null) {
 			accountEntryImpl.setTaxIdNumber("");
@@ -214,12 +220,16 @@ public class AccountEntryCacheModel
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
+		defaultBillingAddressId = objectInput.readLong();
+
+		defaultShippingAddressId = objectInput.readLong();
+
 		parentAccountEntryId = objectInput.readLong();
-		name = objectInput.readUTF();
 		description = objectInput.readUTF();
 		domains = objectInput.readUTF();
 
 		logoId = objectInput.readLong();
+		name = objectInput.readUTF();
 		taxIdNumber = objectInput.readUTF();
 		type = objectInput.readUTF();
 
@@ -253,14 +263,11 @@ public class AccountEntryCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
-		objectOutput.writeLong(parentAccountEntryId);
+		objectOutput.writeLong(defaultBillingAddressId);
 
-		if (name == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(name);
-		}
+		objectOutput.writeLong(defaultShippingAddressId);
+
+		objectOutput.writeLong(parentAccountEntryId);
 
 		if (description == null) {
 			objectOutput.writeUTF("");
@@ -277,6 +284,13 @@ public class AccountEntryCacheModel
 		}
 
 		objectOutput.writeLong(logoId);
+
+		if (name == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(name);
+		}
 
 		if (taxIdNumber == null) {
 			objectOutput.writeUTF("");
@@ -303,11 +317,13 @@ public class AccountEntryCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public long defaultBillingAddressId;
+	public long defaultShippingAddressId;
 	public long parentAccountEntryId;
-	public String name;
 	public String description;
 	public String domains;
 	public long logoId;
+	public String name;
 	public String taxIdNumber;
 	public String type;
 	public int status;

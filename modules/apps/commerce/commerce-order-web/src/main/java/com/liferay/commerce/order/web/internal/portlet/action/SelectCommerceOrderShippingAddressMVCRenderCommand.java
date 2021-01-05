@@ -45,7 +45,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
-		"mvc.command.name=selectCommerceOrderShippingAddress"
+		"mvc.command.name=/commerce_order/select_commerce_order_shipping_address"
 	},
 	service = MVCRenderCommand.class
 )

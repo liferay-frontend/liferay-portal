@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ExportImportPortletKeys.IMPORT,
-		"mvc.command.name=importLayoutsView"
+		"mvc.command.name=/export_import/import_layouts_view"
 	},
 	service = MVCRenderCommand.class
 )

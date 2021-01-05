@@ -36,6 +36,16 @@ public class DDMFormWebConfigurationTest {
 			"enabled-with-warning", ddmFormWebConfiguration.csvExport());
 		Assert.assertEquals(
 			"list", ddmFormWebConfiguration.defaultDisplayView());
+		Assert.assertEquals(
+			"doc, docx, jpeg, jpg, pdf, png, ppt, pptx, tiff, txt, xls, xlsx",
+			ddmFormWebConfiguration.guestUploadFileExtensions());
+		Assert.assertEquals(
+			25, ddmFormWebConfiguration.guestUploadMaximumFileSize());
+		Assert.assertEquals(
+			5, ddmFormWebConfiguration.maximumRepetitionsForUploadFields());
+		Assert.assertEquals(
+			5,
+			ddmFormWebConfiguration.maximumSubmissionsForGuestUploadFields());
 	}
 
 }

@@ -25,10 +25,10 @@ import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
 import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseLocalService;
+import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.model.CommerceChannelConstants;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalServiceUtil;
@@ -437,9 +437,6 @@ public class CommerceInventoryEngineTest {
 				addCommerceInventoryWarehouseWithExternalReferenceCode(
 					_user.getGroupId(), name);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_user.getGroupId());
-
 		_commerceInventoryWarehouseLocalService.addCommerceInventoryWarehouse(
 			commerceInventoryWarehouse.getExternalReferenceCode(),
 			commerceInventoryWarehouse.getName(),
@@ -453,7 +450,8 @@ public class CommerceInventoryEngineTest {
 			commerceInventoryWarehouse.getCommerceRegionCode(),
 			commerceInventoryWarehouse.getCountryTwoLettersISOCode(),
 			commerceInventoryWarehouse.getLatitude(),
-			commerceInventoryWarehouse.getLongitude(), serviceContext);
+			commerceInventoryWarehouse.getLongitude(),
+			ServiceContextTestUtil.getServiceContext(_user.getGroupId()));
 	}
 
 	@Test

@@ -19,11 +19,13 @@ import {StyleBookContextProvider} from '../../plugins/page-design-options/hooks/
 import {INIT} from '../actions/types';
 import {config} from '../config/index';
 import {reducer} from '../reducers/index';
+import selectLanguageId from '../selectors/selectLanguageId';
 import {StoreContextProvider, useSelector} from '../store/index';
 import {DragAndDropContextProvider} from '../utils/dragAndDrop/useDragAndDrop';
 import {CollectionActiveItemContextProvider} from './CollectionActiveItemContext';
 import {ControlsProvider} from './Controls';
 import DragPreview from './DragPreview';
+import {GlobalContextProvider} from './GlobalContext';
 import LayoutViewport from './LayoutViewport';
 import ShortcutManager from './ShortcutManager';
 import Sidebar from './Sidebar';
@@ -57,12 +59,15 @@ export default function App({state}) {
 					<DragAndDropContextProvider>
 						<DragPreview />
 						<Toolbar />
-						<LayoutViewport />
 						<ShortcutManager />
 
-						<StyleBookContextProvider>
-							<Sidebar />
-						</StyleBookContextProvider>
+						<GlobalContextProvider>
+							<LayoutViewport />
+
+							<StyleBookContextProvider>
+								<Sidebar />
+							</StyleBookContextProvider>
+						</GlobalContextProvider>
 					</DragAndDropContextProvider>
 				</CollectionActiveItemContextProvider>
 			</ControlsProvider>
@@ -75,7 +80,7 @@ App.propTypes = {
 };
 
 const LanguageDirection = () => {
-	const languageId = useSelector((state) => state.languageId);
+	const languageId = useSelector(selectLanguageId);
 
 	useEffect(() => {
 		const currentLanguageDirection = config.languageDirection[languageId];

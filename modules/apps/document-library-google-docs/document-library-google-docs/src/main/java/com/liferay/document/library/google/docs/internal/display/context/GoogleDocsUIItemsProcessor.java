@@ -99,7 +99,7 @@ public class GoogleDocsUIItemsProcessor {
 			"content.Language", themeDisplay.getLocale(), getClass());
 
 		String message = LanguageUtil.get(
-			resourceBundle, "edit-in-google-docs");
+			resourceBundle, "edit-in-google-drive");
 
 		urlUIItem.setLabel(message);
 
@@ -129,6 +129,7 @@ public class GoogleDocsUIItemsProcessor {
 		_removeUIItem(uiItems, DLUIItemKeys.CHECKOUT);
 		_removeUIItem(uiItems, DLUIItemKeys.DOWNLOAD);
 		_removeUIItem(uiItems, DLUIItemKeys.OPEN_IN_MS_OFFICE);
+		_removeUIItem(uiItems, "#edit-in-google-drive");
 	}
 
 	private final GoogleDocsMetadataHelper _googleDocsMetadataHelper;

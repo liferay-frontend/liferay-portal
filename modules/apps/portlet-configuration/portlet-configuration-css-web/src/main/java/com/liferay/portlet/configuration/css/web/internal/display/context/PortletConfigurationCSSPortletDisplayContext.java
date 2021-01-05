@@ -75,6 +75,7 @@ public class PortletConfigurationCSSPortletDisplayContext {
 			portletSetup);
 
 		_renderRequest = renderRequest;
+
 		_portletResource = portletResource;
 		_portletSetup = portletSetup;
 		_portletSetupJSONObject = portletSetupJSONObject;

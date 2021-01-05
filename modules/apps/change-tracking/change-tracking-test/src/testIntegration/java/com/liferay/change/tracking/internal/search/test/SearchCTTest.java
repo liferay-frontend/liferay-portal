@@ -76,7 +76,6 @@ public class SearchCTTest {
 		_ctCollection = _ctCollectionLocalService.addCTCollection(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 			SearchCTTest.class.getName(), SearchCTTest.class.getName());
-
 		_group = GroupTestUtil.addGroup();
 	}
 

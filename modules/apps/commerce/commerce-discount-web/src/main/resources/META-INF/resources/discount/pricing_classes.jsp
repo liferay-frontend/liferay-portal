@@ -35,7 +35,7 @@ SearchContainer<CommerceDiscountRel> commercePricingClassCommerceDiscountRelSear
 			selectedDisplayStyle="list"
 		/>
 
-		<portlet:actionURL name="editCommerceDiscountRel" var="addCommerceDiscountRelURL" />
+		<portlet:actionURL name="/commerce_discount/edit_commerce_discount_rel" var="addCommerceDiscountRelURL" />
 
 		<aui:form action="<%= addCommerceDiscountRelURL %>" cssClass="hide" name="addCommerceDiscountRelFm">
 			<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ADD %>" />
@@ -74,8 +74,8 @@ SearchContainer<CommerceDiscountRel> commercePricingClassCommerceDiscountRelSear
 	</liferay-frontend:management-bar-action-buttons>
 </liferay-frontend:management-bar>
 
-<div class="container-fluid-1280">
-	<portlet:actionURL name="editCommerceDiscountRel" var="editCommerceDiscountRelActionURL" />
+<div class="container-fluid container-fluid-max-xl">
+	<portlet:actionURL name="/commerce_discount/edit_commerce_discount_rel" var="editCommerceDiscountRelActionURL" />
 
 	<aui:form action="<%= editCommerceDiscountRelActionURL %>" method="post" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.DELETE %>" />
@@ -97,7 +97,7 @@ SearchContainer<CommerceDiscountRel> commercePricingClassCommerceDiscountRelSear
 				%>
 
 				<liferay-ui:search-container-column-text
-					cssClass="table-cell-content"
+					cssClass="table-cell-expand"
 					name="name"
 					value="<%= HtmlUtil.escape((commercePricingClass == null) ? StringPool.BLANK : commercePricingClass.getTitle(themeDisplay.getLanguageId())) %>"
 				/>

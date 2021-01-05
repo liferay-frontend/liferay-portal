@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"javax.portlet.name=" + AppBuilderPortletKeys.APPS,
-		"mvc.command.name=/app_builder/add_workflow_app"
+		"mvc.command.name=/app_builder_workflow/add_app_builder_app"
 	},
 	service = MVCResourceCommand.class
 )

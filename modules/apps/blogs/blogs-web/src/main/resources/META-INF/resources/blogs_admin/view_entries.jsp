@@ -23,6 +23,7 @@ String assetTagName = ParamUtil.getString(request, "tag");
 BlogEntriesDisplayContext blogEntriesDisplayContext = (BlogEntriesDisplayContext)request.getAttribute(BlogsWebKeys.BLOG_ENTRIES_DISPLAY_CONTEXT);
 
 String displayStyle = blogEntriesDisplayContext.getDisplayStyle();
+
 SearchContainer<BlogsEntry> entriesSearchContainer = blogEntriesDisplayContext.getSearchContainer();
 
 PortletURL portletURL = entriesSearchContainer.getIteratorURL();

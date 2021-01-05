@@ -101,10 +101,8 @@ public class UpgradeUrlSubject extends UpgradeProcess {
 				long messageId = rs.getLong(1);
 				String subject = rs.getString(2);
 
-				String urlSubject = _getUrlSubject(messageId, subject);
-
 				String uniqueUrlSubject = _findUniqueUrlSubject(
-					connection, urlSubject);
+					connection, _getUrlSubject(messageId, subject));
 
 				ps2.setString(1, uniqueUrlSubject);
 

@@ -32,7 +32,7 @@ CommerceAccountUserRel commerceAccountUserRel = (CommerceAccountUserRel)row.getO
 	showWhenSingleIcon="<%= true %>"
 >
 	<c:if test="<%= commerceAccountUserRelAdminDisplayContext.hasPermission(commerceAccountUserRel.getCommerceAccountId(), ActionKeys.DELETE) %>">
-		<portlet:actionURL name="editCommerceAccountUserRel" var="deleteURL">
+		<portlet:actionURL name="/commerce_account_admin/edit_commerce_account_user_rel" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceAccountId" value="<%= String.valueOf(commerceAccountUserRel.getCommerceAccountId()) %>" />

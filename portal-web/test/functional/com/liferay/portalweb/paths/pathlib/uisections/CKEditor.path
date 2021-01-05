@@ -9,8 +9,8 @@
 </thead>
 <tbody>
 <tr>
-	<td>ANY_BODY_FIELD_WEB_CONTENT_ARTICLE</td>
-	<td>xpath=(//label[contains(.,'${key_fieldLabel}')]//following-sibling::div//div[contains(@id,'cke')][contains(@id,'Editor')])[${index}]</td>
+	<td>ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE</td>
+	<td>xpath=(//label[contains(.,'${key_fieldLabel}')]//following-sibling::div//div[contains(@id,'cke')]/iframe)[${index}]</td>
 	<td></td>
 </tr>
 <tr>
@@ -41,11 +41,6 @@
 <tr>
 	<td>BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE</td>
 	<td>//label[contains(.,'${key_fieldLabel}')]//following-sibling::div//div[contains(@id,'cke')]/iframe</td>
-	<td></td>
-</tr>
-<tr>
-	<td>BODY_FIELD_WEB_CONTENT_ARTICLE</td>
-	<td>//label[contains(.,'${key_fieldLabel}')]//following-sibling::div//div[contains(@id,'cke')][contains(@id,'Editor')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -85,6 +80,11 @@
 	<td></td>
 </tr>
 <!--TOOLBAR-->
+<tr>
+	<td>TOOLBAR_AUDIO_BUTTON</td>
+	<td>//a[contains(@class,'cke_button') and contains(@class,'audio')]</td>
+	<td></td>
+</tr>
 <tr>
 	<td>TOOLBAR_IMAGE_BUTTON</td>
 	<td>//a[contains(@class,'cke_button') and contains(@class,'image')]</td>
@@ -140,7 +140,7 @@
 <!--CONTENT_VIDEO_LINK-->
 <tr>
 	<td>CONTENT_VIDEO_IMAGE</td>
-	<td>//span[contains(@class,'videoembed_icon')]</td>
+	<td>//span[contains(@class,'videoselector_icon')]</td>
 	<td></td>
 </tr>
 <tr>

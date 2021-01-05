@@ -157,7 +157,7 @@ public class LayoutPrototypeActionDropdownItemsProvider {
 				PortletRequest.RENDER_PHASE);
 
 		exportLayoutPrototypeURL.setParameter(
-			"mvcRenderCommandName", "exportLayouts");
+			"mvcRenderCommandName", "/export_import/export_layouts");
 		exportLayoutPrototypeURL.setParameter(Constants.CMD, Constants.EXPORT);
 		exportLayoutPrototypeURL.setParameter(
 			"groupId", String.valueOf(_layoutPrototype.getGroupId()));
@@ -190,7 +190,7 @@ public class LayoutPrototypeActionDropdownItemsProvider {
 				PortletRequest.RENDER_PHASE);
 
 		importLayoutPrototypeURL.setParameter(
-			"mvcRenderCommandName", "importLayouts");
+			"mvcRenderCommandName", "/export_import/import_layouts");
 		importLayoutPrototypeURL.setParameter(Constants.CMD, Constants.IMPORT);
 		importLayoutPrototypeURL.setParameter(
 			"groupId", String.valueOf(_layoutPrototype.getGroupId()));

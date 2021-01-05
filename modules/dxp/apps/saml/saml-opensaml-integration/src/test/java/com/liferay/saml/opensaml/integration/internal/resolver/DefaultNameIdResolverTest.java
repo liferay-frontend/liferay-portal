@@ -19,8 +19,8 @@ import com.liferay.portal.kernel.bean.BeanProperties;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.saml.opensaml.integration.internal.BaseSamlTestCase;
+import com.liferay.saml.opensaml.integration.internal.metadata.MetadataManager;
 import com.liferay.saml.opensaml.integration.internal.util.OpenSamlUtil;
-import com.liferay.saml.opensaml.integration.metadata.MetadataManager;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -28,7 +28,7 @@ CommerceCurrency commerceCurrency = commerceOrder.getCommerceCurrency();
 Date requestedDeliveryDate = commerceOrderItem.getRequestedDeliveryDate();
 %>
 
-<portlet:actionURL name="editCommerceOrderItem" var="editCommerceOrderItemActionURL" />
+<portlet:actionURL name="/commerce_order/edit_commerce_order_item" var="editCommerceOrderItemActionURL" />
 
 <commerce-ui:panel
 	title='<%= LanguageUtil.get(request, "detail") %>'

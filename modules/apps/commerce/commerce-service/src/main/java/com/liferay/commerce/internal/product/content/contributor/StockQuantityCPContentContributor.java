@@ -84,11 +84,11 @@ public class StockQuantityCPContentContributor implements CPContentContributor {
 		boolean displayStockQuantity =
 			cpDefinitionInventoryEngine.isDisplayStockQuantity(cpInstance);
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		if (displayStockQuantity) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			jsonObject.put(
 				CPContentContributorConstants.STOCK_QUANTITY_NAME,
 				LanguageUtil.format(

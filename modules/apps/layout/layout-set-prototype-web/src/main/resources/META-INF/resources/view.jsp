@@ -40,7 +40,7 @@
 	<portlet:param name="redirect" value="<%= currentURL %>" />
 </portlet:actionURL>
 
-<aui:form action="<%= deleteLayoutSetPrototypesURL %>" cssClass="container-fluid-1280" name="fm">
+<aui:form action="<%= deleteLayoutSetPrototypesURL %>" cssClass="container-fluid container-fluid-max-xl" name="fm">
 	<liferay-ui:search-container
 		searchContainer="<%= layoutSetPrototypeDisplayContext.getSearchContainer() %>"
 	>
@@ -102,11 +102,6 @@
 					/>
 				</c:when>
 				<c:when test="<%= layoutSetPrototypeDisplayContext.isIconView() %>">
-
-					<%
-					row.setCssClass("entry-card lfr-asset-item");
-					%>
-
 					<liferay-ui:search-container-column-text>
 						<liferay-frontend:icon-vertical-card
 							actionJsp="/layout_set_prototype_action.jsp"

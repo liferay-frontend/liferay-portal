@@ -228,9 +228,7 @@ public class CommerceShippingHelperTest {
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
 	private void _addAvailability(CPInstance cpInstance) throws Exception {
-		BigDecimal price = BigDecimal.valueOf(RandomTestUtil.randomDouble());
-
-		cpInstance.setPrice(price);
+		cpInstance.setPrice(BigDecimal.valueOf(RandomTestUtil.randomDouble()));
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			cpInstance.getUserId(), _commerceInventoryWarehouse,

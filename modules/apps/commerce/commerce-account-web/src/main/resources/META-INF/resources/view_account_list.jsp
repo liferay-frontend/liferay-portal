@@ -41,7 +41,7 @@ request.setAttribute("view.jsp-filterPerAccount", false);
 		<aui:button cssClass="btn-lg js-invite-user" onClick='<%= liferayPortletResponse.getNamespace() + "openAddAccountModal();" %>' primary="<%= true %>" value="add-account" />
 	</div>
 
-	<portlet:actionURL name="editCommerceAccount" var="editCommerceAccountActionURL" />
+	<portlet:actionURL name="/commerce_account/edit_commerce_account" var="editCommerceAccountActionURL" />
 
 	<aui:form action="<%= editCommerceAccountActionURL %>" method="post" name="commerceAccountFm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ADD %>" />

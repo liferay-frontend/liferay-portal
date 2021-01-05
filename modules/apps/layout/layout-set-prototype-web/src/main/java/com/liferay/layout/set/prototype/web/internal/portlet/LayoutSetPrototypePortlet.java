@@ -78,38 +78,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class LayoutSetPrototypePortlet extends MVCPortlet {
 
-	public void activateDeactivateLayoutSetPrototype(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws Exception {
-
-		long layoutSetPrototypeId = ParamUtil.getLong(
-			actionRequest, "layoutSetPrototypeId");
-
-		LayoutSetPrototype layoutSetPrototype =
-			layoutSetPrototypeService.fetchLayoutSetPrototype(
-				layoutSetPrototypeId);
-
-		if (layoutSetPrototype == null) {
-			return;
-		}
-
-		boolean active = ParamUtil.getBoolean(actionRequest, "active");
-
-		UnicodeProperties settingsUnicodeProperties =
-			layoutSetPrototype.getSettingsProperties();
-
-		boolean layoutsUpdateable = GetterUtil.getBoolean(
-			settingsUnicodeProperties.getProperty("layoutsUpdateable"));
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			actionRequest);
-
-		layoutSetPrototypeService.updateLayoutSetPrototype(
-			layoutSetPrototypeId, layoutSetPrototype.getNameMap(),
-			layoutSetPrototype.getDescriptionMap(), active, layoutsUpdateable,
-			serviceContext);
-	}
-
 	public void changeDisplayStyle(
 		ActionRequest actionRequest, ActionResponse actionResponse) {
 
@@ -176,6 +144,8 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 		boolean active = ParamUtil.getBoolean(actionRequest, "active");
 		boolean layoutsUpdateable = ParamUtil.getBoolean(
 			actionRequest, "layoutsUpdateable");
+		boolean readyForPropagation = ParamUtil.getBoolean(
+			actionRequest, "readyForPropagation");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
@@ -189,7 +159,7 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 			layoutSetPrototype =
 				layoutSetPrototypeService.addLayoutSetPrototype(
 					nameMap, descriptionMap, active, layoutsUpdateable,
-					serviceContext);
+					readyForPropagation, serviceContext);
 		}
 		else {
 
@@ -198,7 +168,7 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 			layoutSetPrototype =
 				layoutSetPrototypeService.updateLayoutSetPrototype(
 					layoutSetPrototypeId, nameMap, descriptionMap, active,
-					layoutsUpdateable, serviceContext);
+					layoutsUpdateable, readyForPropagation, serviceContext);
 		}
 
 		// Custom JSPs
@@ -215,6 +185,45 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 		layoutSetPrototypeService.updateLayoutSetPrototype(
 			layoutSetPrototype.getLayoutSetPrototypeId(),
 			settingsUnicodeProperties.toString());
+	}
+
+	public void updateLayoutSetPrototypeAction(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		long layoutSetPrototypeId = ParamUtil.getLong(
+			actionRequest, "layoutSetPrototypeId");
+
+		LayoutSetPrototype layoutSetPrototype =
+			layoutSetPrototypeService.fetchLayoutSetPrototype(
+				layoutSetPrototypeId);
+
+		if (layoutSetPrototype == null) {
+			return;
+		}
+
+		boolean active = ParamUtil.getBoolean(
+			actionRequest, "active", layoutSetPrototype.isActive());
+
+		UnicodeProperties settingsUnicodeProperties =
+			layoutSetPrototype.getSettingsProperties();
+
+		boolean layoutsUpdateable = GetterUtil.getBoolean(
+			settingsUnicodeProperties.getProperty("layoutsUpdateable"));
+
+		boolean readyForPropagation = GetterUtil.getBoolean(
+			settingsUnicodeProperties.getProperty("readyForPropagation"));
+
+		readyForPropagation = ParamUtil.getBoolean(
+			actionRequest, "readyForPropagation", readyForPropagation);
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			actionRequest);
+
+		layoutSetPrototypeService.updateLayoutSetPrototype(
+			layoutSetPrototypeId, layoutSetPrototype.getNameMap(),
+			layoutSetPrototype.getDescriptionMap(), active, layoutsUpdateable,
+			readyForPropagation, serviceContext);
 	}
 
 	@Override

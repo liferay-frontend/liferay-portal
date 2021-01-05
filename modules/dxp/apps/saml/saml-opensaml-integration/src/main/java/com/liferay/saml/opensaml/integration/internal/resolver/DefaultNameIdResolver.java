@@ -18,7 +18,7 @@ import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.saml.opensaml.integration.metadata.MetadataManager;
+import com.liferay.saml.opensaml.integration.internal.metadata.MetadataManager;
 import com.liferay.saml.opensaml.integration.resolver.NameIdResolver;
 
 import org.osgi.service.component.annotations.Component;

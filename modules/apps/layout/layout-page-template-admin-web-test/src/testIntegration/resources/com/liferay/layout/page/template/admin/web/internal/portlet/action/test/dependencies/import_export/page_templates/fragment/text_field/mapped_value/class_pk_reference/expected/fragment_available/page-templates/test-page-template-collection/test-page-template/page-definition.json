@@ -12,6 +12,10 @@
 						{
 							"id": "element-text",
 							"value": {
+								"fragmentLink": {
+									"value_i18n": {
+									}
+								},
 								"text": {
 									"mapping": {
 										"fieldKey": "ddmTemplate_BASIC_WEB_CONTENT",

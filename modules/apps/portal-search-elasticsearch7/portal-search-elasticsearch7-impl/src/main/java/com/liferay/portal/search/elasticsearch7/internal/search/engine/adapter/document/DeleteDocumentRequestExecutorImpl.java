@@ -41,7 +41,8 @@ public class DeleteDocumentRequestExecutorImpl
 		DeleteDocumentRequest deleteDocumentRequest) {
 
 		DeleteRequest deleteRequest =
-			_bulkableDocumentRequestTranslator.translate(deleteDocumentRequest);
+			_elasticsearchBulkableDocumentRequestTranslator.translate(
+				deleteDocumentRequest);
 
 		DeleteResponse deleteResponse = getDeleteResponse(
 			deleteRequest, deleteDocumentRequest);
@@ -72,9 +73,10 @@ public class DeleteDocumentRequestExecutorImpl
 	@Reference(target = "(search.engine.impl=Elasticsearch)", unbind = "-")
 	protected void setBulkableDocumentRequestTranslator(
 		ElasticsearchBulkableDocumentRequestTranslator
-			eulkableDocumentRequestTranslator) {
+			elasticsearchBulkableDocumentRequestTranslator) {
 
-		_bulkableDocumentRequestTranslator = eulkableDocumentRequestTranslator;
+		_elasticsearchBulkableDocumentRequestTranslator =
+			elasticsearchBulkableDocumentRequestTranslator;
 	}
 
 	@Reference(unbind = "-")
@@ -85,7 +87,7 @@ public class DeleteDocumentRequestExecutorImpl
 	}
 
 	private ElasticsearchBulkableDocumentRequestTranslator
-		_bulkableDocumentRequestTranslator;
+		_elasticsearchBulkableDocumentRequestTranslator;
 	private ElasticsearchClientResolver _elasticsearchClientResolver;
 
 }

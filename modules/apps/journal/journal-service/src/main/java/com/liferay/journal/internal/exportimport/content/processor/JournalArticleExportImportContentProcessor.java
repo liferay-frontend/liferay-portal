@@ -279,9 +279,7 @@ public class JournalArticleExportImportContentProcessor
 		}
 
 		for (Field field : fields) {
-			if (!Objects.equals(
-					field.getType(), DDMFormFieldType.JOURNAL_ARTICLE)) {
-
+			if (!Objects.equals(field.getType(), "journal_article")) {
 				continue;
 			}
 
@@ -379,7 +377,8 @@ public class JournalArticleExportImportContentProcessor
 			}
 		}
 
-		return _journalConverter.getContent(ddmStructure, fields);
+		return _journalConverter.getContent(
+			ddmStructure, fields, ddmStructure.getGroupId());
 	}
 
 	protected String replaceImportJournalArticleReferences(
@@ -388,9 +387,7 @@ public class JournalArticleExportImportContentProcessor
 		throws Exception {
 
 		for (Field field : fields) {
-			if (!Objects.equals(
-					field.getType(), DDMFormFieldType.JOURNAL_ARTICLE)) {
-
+			if (!Objects.equals(field.getType(), "journal_article")) {
 				continue;
 			}
 
@@ -453,7 +450,8 @@ public class JournalArticleExportImportContentProcessor
 			}
 		}
 
-		return _journalConverter.getContent(ddmStructure, fields);
+		return _journalConverter.getContent(
+			ddmStructure, fields, ddmStructure.getGroupId());
 	}
 
 	protected void validateJournalArticleReferences(String content)
@@ -465,7 +463,8 @@ public class JournalArticleExportImportContentProcessor
 			Document document = SAXReaderUtil.read(content);
 
 			XPath xPath = SAXReaderUtil.createXPath(
-				"//dynamic-element[@type='ddm-journal-article']");
+				"//dynamic-element[@type='" + DDMFormFieldType.JOURNAL_ARTICLE +
+					"']");
 
 			List<Node> ddmJournalArticleNodes = xPath.selectNodes(document);
 

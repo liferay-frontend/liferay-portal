@@ -26,7 +26,6 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLinkLocalService;
 import com.liferay.dynamic.data.mapping.util.DefaultDDMStructureHelper;
 import com.liferay.journal.internal.upgrade.util.JournalArticleImageUpgradeHelper;
-import com.liferay.journal.internal.upgrade.v0_0_2.UpgradeClassNames;
 import com.liferay.journal.internal.upgrade.v0_0_3.UpgradeJournalArticleType;
 import com.liferay.journal.internal.upgrade.v0_0_4.UpgradeSchema;
 import com.liferay.journal.internal.upgrade.v0_0_5.UpgradeCompanyId;
@@ -75,6 +74,8 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.PortletPreferenceValueLocalService;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
@@ -105,7 +106,7 @@ public class JournalServiceUpgrade implements UpgradeStepRegistrator {
 
 	@Override
 	public void register(Registry registry) {
-		registry.register("0.0.1", "0.0.2", new UpgradeClassNames());
+		registry.register("0.0.1", "0.0.2", new DummyUpgradeStep());
 
 		registry.register(
 			"0.0.2", "0.0.3",
@@ -127,7 +128,9 @@ public class JournalServiceUpgrade implements UpgradeStepRegistrator {
 				_resourceLocalService, _userLocalService),
 			new UpgradeJournalArticles(
 				_assetCategoryLocalService, _ddmStructureLocalService,
-				_groupLocalService, _layoutLocalService),
+				_groupLocalService, _layoutLocalService,
+				_portletPreferenceValueLocalService,
+				_portletPreferencesLocalService),
 			new UpgradeJournalDisplayPreferences(),
 			new UpgradeLastPublishDate(),
 			new UpgradePortletSettings(_settingsFactory),
@@ -355,6 +358,13 @@ public class JournalServiceUpgrade implements UpgradeStepRegistrator {
 
 	@Reference
 	private PortletFileRepository _portletFileRepository;
+
+	@Reference
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
+
+	@Reference
+	private PortletPreferenceValueLocalService
+		_portletPreferenceValueLocalService;
 
 	@Reference
 	private PrefsPropsToConfigurationUpgradeHelper

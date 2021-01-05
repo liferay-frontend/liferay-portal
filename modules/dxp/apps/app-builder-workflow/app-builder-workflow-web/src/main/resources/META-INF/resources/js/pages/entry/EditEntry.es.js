@@ -37,6 +37,7 @@ import useDDMForms, {
 import useDataLayouts from '../../hooks/useDataLayouts.es';
 import useDataRecordApps from '../../hooks/useDataRecordApps.es';
 import ReassignEntryModal from './ReassignEntryModal.es';
+import {METRIC_INDEXES_KEY, refreshIndex} from './actions.es';
 
 const WorkflowInfoPortal = ({children}) => {
 	const portalElementId = 'workflowInfoBar';
@@ -113,41 +114,57 @@ export default function EditEntry({
 		)
 	);
 
-	const doFetch = useCallback(() => {
-		setLoading(true);
+	const doFetch = useCallback(
+		(refreshIndexes) => {
+			setLoading(true);
 
-		if (appWorkflowDefinitionId) {
-			if (isEdit) {
-				getItem(
-					`/o/portal-workflow-metrics/v1.0/processes/${appWorkflowDefinitionId}/instances`,
-					{classPKs: [dataRecordId]}
-				).then(({items}) => {
-					setLoading(false);
+			if (appWorkflowDefinitionId) {
+				if (isEdit) {
+					const getWorkflowInfo = () => {
+						getItem(
+							`/o/portal-workflow-metrics/v1.0/processes/${appWorkflowDefinitionId}/instances`,
+							{classPKs: [dataRecordId]}
+						).then(({items}) => {
+							setLoading(false);
 
-					if (items.length) {
-						const {id, ...instance} = items.pop();
+							if (items.length) {
+								const {id, ...instance} = items.pop();
 
-						const [assignee] = instance.assignees || [];
+								const [assignee] = instance.assignees || [];
 
-						const assignedToUser =
-							Number(themeDisplay.getUserId()) === assignee?.id;
+								const assignedToUser =
+									Number(themeDisplay.getUserId()) ===
+									assignee?.id;
 
-						setWorkflowInfo({
-							...instance,
-							appVersion,
-							canReassign: assignedToUser || assignee?.reviewer,
-							instanceId: id,
-							tasks: appWorkflowTasks,
+								setWorkflowInfo({
+									...instance,
+									appVersion,
+									canReassign:
+										assignedToUser || assignee?.reviewer,
+									instanceId: id,
+									tasks: appWorkflowTasks,
+								});
+							}
 						});
+					};
+
+					if (refreshIndexes) {
+						refreshIndex(METRIC_INDEXES_KEY)
+							.then(getWorkflowInfo)
+							.catch(getWorkflowInfo);
 					}
-				});
+					else {
+						getWorkflowInfo();
+					}
+				}
+				else {
+					setLoading(false);
+				}
 			}
-			else {
-				setLoading(false);
-			}
-		}
+		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [appWorkflowDefinitionId, dataRecordId, isEdit]);
+		[appWorkflowDefinitionId, dataRecordId, isEdit]
+	);
 
 	const onCancel = useCallback(() => {
 		if (redirect) {
@@ -174,7 +191,9 @@ export default function EditEntry({
 				dataRecordId,
 			};
 
-			const resource = `${isEdit ? 'update' : 'add'}_data_record`;
+			const resource = `${
+				isEdit ? 'app_builder_workflow/update' : 'app_builder/add'
+			}_data_record`;
 
 			if (workflowInfo) {
 				const {
@@ -197,7 +216,7 @@ export default function EditEntry({
 
 			fetch(
 				createResourceURL(baseResourceURL, {
-					p_p_resource_id: `/app_builder/${resource}`,
+					p_p_resource_id: `/${resource}`,
 				}),
 				{
 					body: new URLSearchParams(
@@ -212,7 +231,10 @@ export default function EditEntry({
 							? Liferay.Language.get('an-entry-was-updated')
 							: Liferay.Language.get('an-entry-was-added')
 					);
-					onCancel();
+
+					refreshIndex(METRIC_INDEXES_KEY)
+						.then(onCancel)
+						.catch(onCancel);
 				})
 				.catch(() => {
 					errorToast();
@@ -348,6 +370,7 @@ export default function EditEntry({
 					<WorkflowInfoPortal>
 						<div className="d-flex justify-content-center mt-4">
 							<WorkflowInfoBar
+								className="bar-sm"
 								{...workflowInfo}
 								hideColumns={['step']}
 							/>

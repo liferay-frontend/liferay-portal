@@ -132,6 +132,8 @@ public class CTCollectionPersistenceTest {
 
 		newCTCollection.setModifiedDate(RandomTestUtil.nextDate());
 
+		newCTCollection.setSchemaVersionId(RandomTestUtil.nextLong());
+
 		newCTCollection.setName(RandomTestUtil.randomString());
 
 		newCTCollection.setDescription(RandomTestUtil.randomString());
@@ -165,6 +167,9 @@ public class CTCollectionPersistenceTest {
 			Time.getShortTimestamp(existingCTCollection.getModifiedDate()),
 			Time.getShortTimestamp(newCTCollection.getModifiedDate()));
 		Assert.assertEquals(
+			existingCTCollection.getSchemaVersionId(),
+			newCTCollection.getSchemaVersionId());
+		Assert.assertEquals(
 			existingCTCollection.getName(), newCTCollection.getName());
 		Assert.assertEquals(
 			existingCTCollection.getDescription(),
@@ -187,11 +192,24 @@ public class CTCollectionPersistenceTest {
 	}
 
 	@Test
+	public void testCountBySchemaVersionId() throws Exception {
+		_persistence.countBySchemaVersionId(RandomTestUtil.nextLong());
+
+		_persistence.countBySchemaVersionId(0L);
+	}
+
+	@Test
 	public void testCountByC_S() throws Exception {
 		_persistence.countByC_S(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
 
 		_persistence.countByC_S(0L, 0);
+	}
+
+	@Test
+	public void testCountByC_SArrayable() throws Exception {
+		_persistence.countByC_S(
+			RandomTestUtil.nextLong(), new int[] {RandomTestUtil.nextInt(), 0});
 	}
 
 	@Test
@@ -221,8 +239,9 @@ public class CTCollectionPersistenceTest {
 		return OrderByComparatorFactoryUtil.create(
 			"CTCollection", "mvccVersion", true, "ctCollectionId", true,
 			"companyId", true, "userId", true, "createDate", true,
-			"modifiedDate", true, "name", true, "description", true, "status",
-			true, "statusByUserId", true, "statusDate", true);
+			"modifiedDate", true, "schemaVersionId", true, "name", true,
+			"description", true, "status", true, "statusByUserId", true,
+			"statusDate", true);
 	}
 
 	@Test
@@ -452,6 +471,8 @@ public class CTCollectionPersistenceTest {
 		ctCollection.setCreateDate(RandomTestUtil.nextDate());
 
 		ctCollection.setModifiedDate(RandomTestUtil.nextDate());
+
+		ctCollection.setSchemaVersionId(RandomTestUtil.nextLong());
 
 		ctCollection.setName(RandomTestUtil.randomString());
 

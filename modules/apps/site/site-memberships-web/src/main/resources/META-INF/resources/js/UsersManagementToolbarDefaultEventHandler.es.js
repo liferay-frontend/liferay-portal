@@ -18,7 +18,6 @@ import {
 	getPortletId,
 	openSelectionModal,
 } from 'frontend-js-web';
-import dom from 'metal-dom';
 
 class UsersManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	deleteSelectedUsers() {
@@ -60,7 +59,7 @@ class UsersManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 					const fm = this.one('#fm');
 
 					selectedItem.forEach((item) => {
-						dom.append(fm, item);
+						fm.append(item);
 					});
 
 					submitForm(fm, itemData.editUsersRolesURL);
@@ -81,7 +80,7 @@ class UsersManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 					const addGroupUsersFm = this.one('#addGroupUsersFm');
 
 					selectedItem.forEach((item) => {
-						dom.append(addGroupUsersFm, item);
+						addGroupUsersFm.append(item);
 					});
 
 					submitForm(addGroupUsersFm);

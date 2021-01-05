@@ -718,8 +718,6 @@ public class CommerceProductPriceCalculationV2Impl
 				commerceMoneyFactory.create(commerceCurrency, commercePrice));
 		}
 
-		int totalTierCounter = 0;
-
 		List<CommerceTierPriceEntry> commerceTierPriceEntries =
 			_commerceTierPriceEntryLocalService.findCommerceTierPriceEntries(
 				commercePriceEntry.getCommercePriceEntryId(), quantity);
@@ -732,6 +730,8 @@ public class CommerceProductPriceCalculationV2Impl
 
 		CommerceTierPriceEntry commerceTierPriceEntry1 =
 			commerceTierPriceEntries.get(0);
+
+		int totalTierCounter = 0;
 
 		int tierCounter =
 			commerceTierPriceEntry1.getMinQuantity() - totalTierCounter - 1;
@@ -809,9 +809,6 @@ public class CommerceProductPriceCalculationV2Impl
 			String commercePriceListType)
 		throws PortalException {
 
-		CPInstance cpInstance = cpInstanceLocalService.getCPInstance(
-			cpInstanceId);
-
 		CommerceAccount commerceAccount = commerceContext.getCommerceAccount();
 
 		long commerceAccountId = 0;
@@ -826,6 +823,9 @@ public class CommerceProductPriceCalculationV2Impl
 		if (commercePriceListDiscovery == null) {
 			return null;
 		}
+
+		CPInstance cpInstance = cpInstanceLocalService.getCPInstance(
+			cpInstanceId);
 
 		return commercePriceListDiscovery.getCommercePriceList(
 			cpInstance.getGroupId(), commerceAccountId,

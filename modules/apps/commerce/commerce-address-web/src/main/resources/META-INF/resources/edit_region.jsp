@@ -35,9 +35,9 @@ else {
 }
 %>
 
-<portlet:actionURL name="editCommerceRegion" var="editCommerceRegionActionURL" />
+<portlet:actionURL name="/commerce_country/edit_commerce_region" var="editCommerceRegionActionURL" />
 
-<aui:form action="<%= editCommerceRegionActionURL %>" cssClass="container-fluid-1280" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCommerceRegion();" %>'>
+<aui:form action="<%= editCommerceRegionActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCommerceRegion();" %>'>
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceRegion == null) ? Constants.ADD : Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="commerceCountryId" type="hidden" value="<%= String.valueOf(commerceCountryId) %>" />
@@ -56,7 +56,7 @@ else {
 
 				<aui:input name="priority" />
 
-				<aui:input checked="<%= (commerceRegion == null) ? false : commerceRegion.isActive() %>" name="active" type="toggle-switch" />
+				<aui:input checked="<%= (commerceRegion == null) ? false : commerceRegion.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" />
 			</aui:fieldset>
 		</aui:fieldset-group>
 	</div>

@@ -29,12 +29,12 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 	"userId", String.valueOf(selectedUser.getUserId())
 ).build();
 
-portletURL.setParameter("mvcRenderCommandName", "viewCommerceAccountUser");
+portletURL.setParameter("mvcRenderCommandName", "/commerce_account/view_commerce_account_user");
 portletURL.setParameter("userId", String.valueOf(selectedUser.getUserId()));
 %>
 
 <portlet:renderURL var="editCommerceAccountURL">
-	<portlet:param name="mvcRenderCommandName" value="editCommerceAccountUser" />
+	<portlet:param name="mvcRenderCommandName" value="/commerce_account/edit_commerce_account_user" />
 	<portlet:param name="commerceAccountId" value="<%= (commerceAccount != null) ? String.valueOf(commerceAccount.getCommerceAccountId()) : StringPool.BLANK %>" />
 	<portlet:param name="userId" value="<%= String.valueOf(selectedUser.getUserId()) %>" />
 	<portlet:param name='<%= PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "backURL" %>' value="<%= portletURL.toString() %>" />
@@ -89,7 +89,7 @@ portletURL.setParameter("userId", String.valueOf(selectedUser.getUserId()));
 		/>
 	</div>
 
-	<portlet:actionURL name="editCommerceAccountUser" var="editCommerceAccountUserURL" />
+	<portlet:actionURL name="/commerce_account/edit_commerce_account_user" var="editCommerceAccountUserURL" />
 
 	<aui:form action="<%= editCommerceAccountUserURL %>" method="post" name="editCommerceAccountUserFm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="EDIT_ROLES" />

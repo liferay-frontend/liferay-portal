@@ -65,6 +65,12 @@ String eventName = ParamUtil.getString(request, "eventName", liferayPortletRespo
 
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-expand-small table-cell-minw-150"
+				name="job-title"
+				property="jobTitle"
+			/>
+
+			<liferay-ui:search-container-column-text
+				cssClass="table-cell-expand-small table-cell-minw-150"
 				name="account-roles"
 				value="<%= accountUserDisplay.getAccountRoleNamesString(accountEntryId, locale) %>"
 			/>

@@ -42,7 +42,7 @@ if (modifierType.equals(CommercePriceModifierConstants.MODIFIER_TYPE_PERCENTAGE)
 
 <portlet:actionURL name="editCommercePriceModifier" var="editCommercePriceModifierActionURL" />
 
-<aui:form action="<%= editCommercePriceModifierActionURL %>" cssClass="container-fluid-1280" method="post" name="fm">
+<aui:form action="<%= editCommercePriceModifierActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="commercePriceListId" type="hidden" value="<%= commercePriceListDisplayContext.getCommercePriceListId() %>" />
@@ -90,7 +90,7 @@ if (modifierType.equals(CommercePriceModifierConstants.MODIFIER_TYPE_PERCENTAGE)
 
 		<aui:input name="priority" />
 
-		<aui:input checked="<%= commercePriceModifier.isActive() %>" name="active" type="toggle-switch" />
+		<aui:input checked="<%= commercePriceModifier.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" />
 	</commerce-ui:panel>
 
 	<commerce-ui:panel

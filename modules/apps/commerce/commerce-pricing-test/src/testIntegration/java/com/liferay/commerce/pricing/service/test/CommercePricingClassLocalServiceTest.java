@@ -145,21 +145,21 @@ public class CommercePricingClassLocalServiceTest {
 			"The count of pricing classes shall increase to 1"
 		);
 
-		int commercePricingClassCount =
+		int commercePricingClassesCount =
 			_commercePricingClassLocalService.getCommercePricingClassesCount(
 				_user.getCompanyId());
 
-		Assert.assertEquals(0, commercePricingClassCount);
+		Assert.assertEquals(0, commercePricingClassesCount);
 
 		_commercePricingClassLocalService.addCommercePricingClass(
 			_user.getUserId(), RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(), _serviceContext);
 
-		commercePricingClassCount =
+		commercePricingClassesCount =
 			_commercePricingClassLocalService.getCommercePricingClassesCount(
 				_user.getCompanyId());
 
-		Assert.assertEquals(1, commercePricingClassCount);
+		Assert.assertEquals(1, commercePricingClassesCount);
 	}
 
 	@Test(expected = CommercePricingClassTitleException.class)

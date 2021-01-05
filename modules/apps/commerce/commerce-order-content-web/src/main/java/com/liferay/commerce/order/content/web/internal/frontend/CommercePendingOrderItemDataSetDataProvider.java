@@ -19,6 +19,7 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.order.CommerceOrderValidatorRegistry;
 import com.liferay.commerce.order.CommerceOrderValidatorResult;
+import com.liferay.commerce.order.content.web.internal.frontend.constants.CommerceOrderDataSetConstants;
 import com.liferay.commerce.order.content.web.internal.model.OrderItem;
 import com.liferay.commerce.price.CommerceOrderItemPrice;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
@@ -310,11 +311,11 @@ public class CommercePendingOrderItemDataSetDataProvider
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 
-		List<OrderItem> orderItems = new ArrayList<>();
-
 		if (commerceOrderItems.isEmpty()) {
 			return Collections.emptyList();
 		}
+
+		List<OrderItem> orderItems = new ArrayList<>();
 
 		Locale locale = _portal.getLocale(httpServletRequest);
 

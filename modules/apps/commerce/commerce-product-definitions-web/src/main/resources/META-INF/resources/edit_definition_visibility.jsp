@@ -20,6 +20,7 @@
 CPDefinitionsDisplayContext cpDefinitionsDisplayContext = (CPDefinitionsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 CPDefinition cpDefinition = cpDefinitionsDisplayContext.getCPDefinition();
+
 long cpDefinitionId = cpDefinitionsDisplayContext.getCPDefinitionId();
 
 Map<String, String> contextParams = HashMapBuilder.<String, String>put(

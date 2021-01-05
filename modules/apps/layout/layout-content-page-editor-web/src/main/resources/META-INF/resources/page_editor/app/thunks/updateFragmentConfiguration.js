@@ -19,6 +19,7 @@ import FragmentService from '../services/FragmentService';
 export default function updateFragmentConfiguration({
 	configurationValues,
 	fragmentEntryLink,
+	languageId,
 }) {
 	const {editableValues, fragmentEntryLinkId} = fragmentEntryLink;
 
@@ -31,6 +32,7 @@ export default function updateFragmentConfiguration({
 		return FragmentService.updateConfigurationValues({
 			configurationValues: nextEditableValues,
 			fragmentEntryLinkId,
+			languageId,
 			onNetworkStatus: dispatch,
 		}).then(({fragmentEntryLink, layoutData}) => {
 			dispatch(

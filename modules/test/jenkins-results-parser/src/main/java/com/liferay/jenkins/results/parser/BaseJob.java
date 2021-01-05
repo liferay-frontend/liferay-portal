@@ -14,6 +14,7 @@
 
 package com.liferay.jenkins.results.parser;
 
+import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.FunctionalBatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.FunctionalSegmentTestClassGroup;
@@ -24,12 +25,15 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -40,6 +44,20 @@ import org.json.JSONObject;
  * @author Michael Hashimoto
  */
 public abstract class BaseJob implements Job {
+
+	@Override
+	public List<AxisTestClassGroup> getAxisTestClassGroups() {
+		List<AxisTestClassGroup> axisTestClassGroups = new ArrayList<>();
+
+		for (BatchTestClassGroup batchTestClassGroup :
+				getBatchTestClassGroups()) {
+
+			axisTestClassGroups.addAll(
+				batchTestClassGroup.getAxisTestClassGroups());
+		}
+
+		return axisTestClassGroups;
+	}
 
 	@Override
 	public Set<String> getBatchNames() {
@@ -76,7 +94,7 @@ public abstract class BaseJob implements Job {
 
 	@Override
 	public BuildProfile getBuildProfile() {
-		return BuildProfile.PORTAL;
+		return _buildProfile;
 	}
 
 	@Override
@@ -269,32 +287,82 @@ public abstract class BaseJob implements Job {
 		}
 	}
 
-	protected BaseJob(String jobName) {
+	protected BaseJob(String jobName, BuildProfile buildProfile) {
 		_jobName = jobName;
+		_buildProfile = buildProfile;
 	}
 
 	protected List<BatchTestClassGroup> getBatchTestClassGroups(
 		Set<String> rawBatchNames) {
 
+		if (_batchTestClassGroups != null) {
+			return _batchTestClassGroups;
+		}
+
 		if ((rawBatchNames == null) || rawBatchNames.isEmpty()) {
 			return new ArrayList<>();
 		}
 
-		List<BatchTestClassGroup> batchTestClassGroups = new ArrayList<>();
+		List<Callable<BatchTestClassGroup>> callables = new ArrayList<>();
 
-		for (String batchName : rawBatchNames) {
-			BatchTestClassGroup batchTestClassGroup =
-				TestClassGroupFactory.newBatchTestClassGroup(
-					batchName, _getBatchBuildProfile(), this);
+		final Job job = this;
 
-			if (batchTestClassGroup.getAxisCount() <= 0) {
-				continue;
-			}
+		for (final String batchName : rawBatchNames) {
+			callables.add(
+				new Callable<BatchTestClassGroup>() {
 
-			batchTestClassGroups.add(batchTestClassGroup);
+					@Override
+					public BatchTestClassGroup call() throws Exception {
+						for (int i = 0; i < _pauseRetryCount; i++) {
+							try {
+								return _call();
+							}
+							catch (Exception exception) {
+								System.out.println(
+									JenkinsResultsParserUtil.combine(
+										"Retry creating a test class group in ",
+										String.valueOf(
+											_pauseRetryDuration / 1000),
+										" seconds."));
+
+								JenkinsResultsParserUtil.sleep(
+									_pauseRetryDuration);
+							}
+						}
+
+						return _call();
+					}
+
+					private BatchTestClassGroup _call() throws Exception {
+						BatchTestClassGroup batchTestClassGroup =
+							TestClassGroupFactory.newBatchTestClassGroup(
+								batchName, job);
+
+						if (batchTestClassGroup.getAxisCount() <= 0) {
+							return null;
+						}
+
+						return batchTestClassGroup;
+					}
+
+					private final Integer _pauseRetryCount = 2;
+					private final Integer _pauseRetryDuration = 5000;
+
+				});
 		}
 
-		return batchTestClassGroups;
+		ThreadPoolExecutor threadPoolExecutor =
+			JenkinsResultsParserUtil.getNewThreadPoolExecutor(
+				callables.size(), true);
+
+		ParallelExecutor<BatchTestClassGroup> parallelExecutor =
+			new ParallelExecutor<>(callables, threadPoolExecutor);
+
+		_batchTestClassGroups = parallelExecutor.execute();
+
+		_batchTestClassGroups.removeAll(Collections.singleton(null));
+
+		return _batchTestClassGroups;
 	}
 
 	protected Set<String> getFilteredBatchNames(Set<String> rawBatchNames) {
@@ -401,19 +469,8 @@ public abstract class BaseJob implements Job {
 
 	protected final List<File> jobPropertiesFiles = new ArrayList<>();
 
-	private BatchTestClassGroup.BuildProfile _getBatchBuildProfile() {
-		BuildProfile buildProfile = getBuildProfile();
-
-		if (buildProfile == null) {
-			buildProfile = BuildProfile.PORTAL;
-		}
-
-		String buildProfileString = buildProfile.toString();
-
-		return BatchTestClassGroup.BuildProfile.valueOf(
-			buildProfileString.toUpperCase());
-	}
-
+	private List<BatchTestClassGroup> _batchTestClassGroups;
+	private final BuildProfile _buildProfile;
 	private final String _jobName;
 	private final Properties _jobProperties = new Properties();
 

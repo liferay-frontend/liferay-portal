@@ -13,8 +13,9 @@ import {cleanup, render} from '@testing-library/react';
 import React from 'react';
 
 import Navigation from '../../../src/main/resources/META-INF/resources/js/components/Navigation';
+import {ChartStateContextProvider} from '../../../src/main/resources/META-INF/resources/js/context/ChartStateContext';
 import ConnectionContext from '../../../src/main/resources/META-INF/resources/js/context/ConnectionContext';
-import {StoreContextProvider} from '../../../src/main/resources/META-INF/resources/js/context/store';
+import {StoreContextProvider} from '../../../src/main/resources/META-INF/resources/js/context/StoreContext';
 
 import '@testing-library/jest-dom/extend-expect';
 
@@ -52,6 +53,8 @@ const mockViewURLs = [
 	},
 ];
 
+const noop = () => {};
+
 describe('Navigation', () => {
 	beforeEach(() => {
 		fetch.mockResponse(JSON.stringify({}));
@@ -85,20 +88,24 @@ describe('Navigation', () => {
 					validAnalyticsConnection: false,
 				}}
 			>
-				<Navigation
-					author={testProps.author}
-					canonicalURL={testProps.canonicalURL}
-					endpoints={mockEndpoints}
-					languageTag={testProps.languageTag}
-					onSelectedLanguageClick={() => {}}
-					page={testProps.page}
-					pagePublishDate={testProps.pagePublishDate}
-					pageTitle={testProps.pageTitle}
+				<ChartStateContextProvider
+					publishDate={testProps.pagePublishDate}
 					timeRange={testProps.timeRange}
 					timeSpanKey={testProps.timeSpanKey}
-					timeSpanOptions={mockTimeSpanOptions}
-					viewURLs={mockViewURLs}
-				/>
+				>
+					<Navigation
+						author={testProps.author}
+						canonicalURL={testProps.canonicalURL}
+						endpoints={mockEndpoints}
+						languageTag={testProps.languageTag}
+						onSelectedLanguageClick={noop}
+						page={testProps.page}
+						pagePublishDate={testProps.pagePublishDate}
+						pageTitle={testProps.pageTitle}
+						timeSpanOptions={mockTimeSpanOptions}
+						viewURLs={mockViewURLs}
+					/>
+				</ChartStateContextProvider>
 			</ConnectionContext.Provider>
 		);
 
@@ -124,20 +131,24 @@ describe('Navigation', () => {
 
 		const {getByText} = render(
 			<StoreContextProvider value={{warning: true}}>
-				<Navigation
-					author={testProps.author}
-					canonicalURL={testProps.canonicalURL}
-					endpoints={mockEndpoints}
-					languageTag={testProps.languageTag}
-					onSelectedLanguageClick={() => {}}
-					page={testProps.page}
-					pagePublishDate={testProps.pagePublishDate}
-					pageTitle={testProps.pageTitle}
+				<ChartStateContextProvider
+					publishDate={testProps.publishDate}
 					timeRange={testProps.timeRange}
 					timeSpanKey={testProps.timeSpanKey}
-					timeSpanOptions={mockTimeSpanOptions}
-					viewURLs={mockViewURLs}
-				/>
+				>
+					<Navigation
+						author={testProps.author}
+						canonicalURL={testProps.canonicalURL}
+						endpoints={mockEndpoints}
+						languageTag={testProps.languageTag}
+						onSelectedLanguageClick={noop}
+						page={testProps.page}
+						pagePublishDate={testProps.pagePublishDate}
+						pageTitle={testProps.pageTitle}
+						timeSpanOptions={mockTimeSpanOptions}
+						viewURLs={mockViewURLs}
+					/>
+				</ChartStateContextProvider>
 			</StoreContextProvider>
 		);
 
@@ -165,20 +176,24 @@ describe('Navigation', () => {
 
 		const {getByText} = render(
 			<StoreContextProvider value={{publishedToday: true}}>
-				<Navigation
-					author={testProps.author}
-					canonicalURL={testProps.canonicalURL}
-					endpoints={mockEndpoints}
-					languageTag={testProps.languageTag}
-					onSelectedLanguageClick={() => {}}
-					page={testProps.page}
-					pagePublishDate={testProps.pagePublishDate}
-					pageTitle={testProps.pageTitle}
+				<ChartStateContextProvider
+					publishDate={testProps.pagePublishDate}
 					timeRange={testProps.timeRange}
 					timeSpanKey={testProps.timeSpanKey}
-					timeSpanOptions={mockTimeSpanOptions}
-					viewURLs={mockViewURLs}
-				/>
+				>
+					<Navigation
+						author={testProps.author}
+						canonicalURL={testProps.canonicalURL}
+						endpoints={mockEndpoints}
+						languageTag={testProps.languageTag}
+						onSelectedLanguageClick={noop}
+						page={testProps.page}
+						pagePublishDate={testProps.pagePublishDate}
+						pageTitle={testProps.pageTitle}
+						timeSpanOptions={mockTimeSpanOptions}
+						viewURLs={mockViewURLs}
+					/>
+				</ChartStateContextProvider>
 			</StoreContextProvider>
 		);
 

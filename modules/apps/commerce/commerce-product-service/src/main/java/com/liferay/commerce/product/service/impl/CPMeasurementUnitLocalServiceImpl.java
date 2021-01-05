@@ -14,9 +14,9 @@
 
 package com.liferay.commerce.product.service.impl;
 
+import com.liferay.commerce.product.constants.CPMeasurementUnitConstants;
 import com.liferay.commerce.product.exception.CPMeasurementUnitKeyException;
 import com.liferay.commerce.product.model.CPMeasurementUnit;
-import com.liferay.commerce.product.model.CPMeasurementUnitConstants;
 import com.liferay.commerce.product.service.base.CPMeasurementUnitLocalServiceBaseImpl;
 import com.liferay.commerce.product.util.comparator.CPMeasurementUnitPriorityComparator;
 import com.liferay.portal.kernel.exception.PortalException;

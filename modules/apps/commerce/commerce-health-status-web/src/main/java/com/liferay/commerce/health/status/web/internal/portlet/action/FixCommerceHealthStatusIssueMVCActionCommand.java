@@ -46,7 +46,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_HEALTH_CHECK,
-		"mvc.command.name=fixCommerceHealthStatusIssue"
+		"mvc.command.name=/commerce_health_check/fix_commerce_health_status_issue"
 	},
 	service = MVCActionCommand.class
 )

@@ -13,12 +13,15 @@
  */
 
 import {ClayCardWithInfo} from '@clayui/card';
+import ClayIcon from '@clayui/icon';
+import ClaySticker from '@clayui/sticker';
 import React, {useMemo, useState} from 'react';
 
 import getDataAttributes from './get_data_attributes';
 
 export default function VerticalCard({
-	actions = [],
+	actions,
+	additionalProps: _additionalProps,
 	componentId: _componentId,
 	cssClass,
 	description,
@@ -32,12 +35,12 @@ export default function VerticalCard({
 	inputName = '',
 	inputValue = '',
 	labels = [],
-	labelStylesMap: _labelStylesMap,
 	locale: _locale,
 	portletId: _portletId,
 	portletNamespace: _portletNamespace,
 	selectable,
 	selected: initialSelected,
+	showSticker,
 	stickerCssClass,
 	stickerIcon,
 	stickerImageAlt,
@@ -51,26 +54,36 @@ export default function VerticalCard({
 }) {
 	const [selected, setSelected] = useState(initialSelected);
 
-	const stickerProps = useMemo(
-		() => ({
+	const stickerProps = useMemo(() => {
+		const stickerProps = {
+			children: stickerLabel,
 			className: stickerCssClass,
-			content: stickerLabel,
 			displayType: stickerStyle,
-			imageAlt: stickerImageAlt,
-			imageSrc: stickerImageSrc,
 			shape: stickerShape,
-			symbol: stickerIcon,
-		}),
-		[
-			stickerCssClass,
-			stickerIcon,
-			stickerImageAlt,
-			stickerImageSrc,
-			stickerLabel,
-			stickerShape,
-			stickerStyle,
-		]
-	);
+		};
+
+		if (stickerImageSrc) {
+			stickerProps.children = (
+				<ClaySticker.Image
+					alt={stickerImageAlt}
+					src={stickerImageSrc}
+				/>
+			);
+		}
+		else if (stickerIcon) {
+			stickerProps.children = <ClayIcon symbol={stickerIcon} />;
+		}
+
+		return stickerProps;
+	}, [
+		stickerCssClass,
+		stickerIcon,
+		stickerImageAlt,
+		stickerImageSrc,
+		stickerLabel,
+		stickerShape,
+		stickerStyle,
+	]);
 
 	return (
 		<ClayCardWithInfo
@@ -120,7 +133,7 @@ export default function VerticalCard({
 			}
 			selectable={selectable}
 			selected={selected}
-			stickerProps={stickerProps}
+			stickerProps={showSticker ? stickerProps : null}
 			symbol={symbol}
 			title={title}
 			{...otherProps}

@@ -18,7 +18,6 @@ import com.liferay.commerce.inventory.exception.MVCCException;
 import com.liferay.commerce.inventory.model.CommerceInventoryReplenishmentItem;
 import com.liferay.commerce.inventory.service.base.CommerceInventoryReplenishmentItemLocalServiceBaseImpl;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
@@ -86,9 +85,7 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 		DynamicQuery dynamicQuery =
 			commerceInventoryReplenishmentItemLocalService.dynamicQuery();
 
-		Projection projection = ProjectionFactoryUtil.sum("quantity");
-
-		dynamicQuery.setProjection(projection);
+		dynamicQuery.setProjection(ProjectionFactoryUtil.sum("quantity"));
 
 		Property commerceInventoryWarehouseIdProperty =
 			PropertyFactoryUtil.forName("commerceInventoryWarehouseId");

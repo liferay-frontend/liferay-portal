@@ -68,8 +68,6 @@ public class SpiraAutomationHost extends BaseSpiraArtifact {
 
 		JSONArray customPropertiesJSONArray = new JSONArray();
 
-		JSONObject jenkinsMasterJSONObject = new JSONObject();
-
 		JenkinsMaster jenkinsMaster = jenkinsNode.getJenkinsMaster();
 
 		SpiraCustomProperty jenkinsMasterSpiraCustomProperty =
@@ -81,14 +79,9 @@ public class SpiraAutomationHost extends BaseSpiraArtifact {
 			SpiraCustomPropertyValue.createSpiraCustomPropertyValue(
 				jenkinsMasterSpiraCustomProperty, jenkinsMaster.getName());
 
-		jenkinsMasterJSONObject.put(
-			"IntegerValue", jenkinsMasterSpiraCustomPropertyValue.getID());
-
-		jenkinsMasterJSONObject.put(
-			"PropertyNumber",
-			jenkinsMasterSpiraCustomProperty.getPropertyNumber());
-
-		customPropertiesJSONArray.put(jenkinsMasterJSONObject);
+		customPropertiesJSONArray.put(
+			jenkinsMasterSpiraCustomPropertyValue.
+				getCustomPropertyJSONObject());
 
 		requestJSONObject.put("CustomProperties", customPropertiesJSONArray);
 
@@ -125,8 +118,7 @@ public class SpiraAutomationHost extends BaseSpiraArtifact {
 
 				@Override
 				public List<JSONObject> get() {
-					return _requestSpiraAutomationHosts(
-						spiraProject, searchParameters);
+					return _requestSpiraAutomationHosts(spiraProject);
 				}
 
 			},
@@ -148,8 +140,7 @@ public class SpiraAutomationHost extends BaseSpiraArtifact {
 	protected static final String KEY_ID = "AutomationHostId";
 
 	private static List<JSONObject> _requestSpiraAutomationHosts(
-		SpiraProject spiraProject,
-		SearchQuery.SearchParameter... searchParameters) {
+		SpiraProject spiraProject) {
 
 		List<JSONObject> spiraTestCaseTypes = new ArrayList<>();
 
@@ -166,10 +157,6 @@ public class SpiraAutomationHost extends BaseSpiraArtifact {
 		urlParameters.put("starting_row", "0");
 
 		JSONArray requestJSONArray = new JSONArray();
-
-		for (SearchQuery.SearchParameter searchParameter : searchParameters) {
-			requestJSONArray.put(searchParameter.toFilterJSONObject());
-		}
 
 		try {
 			JSONArray responseJSONArray = SpiraRestAPIUtil.requestJSONArray(
@@ -197,6 +184,8 @@ public class SpiraAutomationHost extends BaseSpiraArtifact {
 
 	private SpiraAutomationHost(JSONObject jsonObject) {
 		super(jsonObject);
+
+		cacheSpiraArtifact(SpiraAutomationHost.class, this);
 	}
 
 }

@@ -47,7 +47,7 @@ CommerceCurrenciesDisplayContext commerceCurrenciesDisplayContext = (CommerceCur
 			/>
 
 			<portlet:renderURL var="addCommerceCurrencyURL">
-				<portlet:param name="mvcRenderCommandName" value="editCommerceCurrency" />
+				<portlet:param name="mvcRenderCommandName" value="/commerce_currency/edit_commerce_currency" />
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 			</portlet:renderURL>
 
@@ -76,8 +76,8 @@ CommerceCurrenciesDisplayContext commerceCurrenciesDisplayContext = (CommerceCur
 		</liferay-frontend:management-bar-action-buttons>
 	</liferay-frontend:management-bar>
 
-	<div class="container-fluid-1280">
-		<portlet:actionURL name="editCommerceCurrency" var="editCommerceCurrencyActionURL" />
+	<div class="container-fluid container-fluid-max-xl">
+		<portlet:actionURL name="/commerce_currency/edit_commerce_currency" var="editCommerceCurrencyActionURL" />
 
 		<aui:form action="<%= editCommerceCurrencyActionURL %>" method="post" name="fm">
 			<aui:input name="<%= Constants.CMD %>" type="hidden" />
@@ -98,20 +98,20 @@ CommerceCurrenciesDisplayContext commerceCurrenciesDisplayContext = (CommerceCur
 					<%
 					PortletURL rowURL = renderResponse.createRenderURL();
 
-					rowURL.setParameter("mvcRenderCommandName", "editCommerceCurrency");
+					rowURL.setParameter("mvcRenderCommandName", "/commerce_currency/edit_commerce_currency");
 					rowURL.setParameter("redirect", currentURL);
 					rowURL.setParameter("commerceCurrencyId", String.valueOf(commerceCurrency.getCommerceCurrencyId()));
 					%>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						name="name"
 						value="<%= HtmlUtil.escape(commerceCurrency.getName(locale)) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="code"
 						value="<%= HtmlUtil.escape(commerceCurrency.getCode()) %>"
 					/>

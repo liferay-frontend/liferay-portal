@@ -35,6 +35,7 @@ else {
 PortletURL portletURL = PortletURLUtil.getCurrent(renderRequest, renderResponse);
 
 request.setAttribute("search.jsp-portletURL", portletURL);
+
 request.setAttribute("search.jsp-returnToFullPageURL", portletDisplay.getURLBack());
 %>
 

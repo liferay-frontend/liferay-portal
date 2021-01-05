@@ -45,7 +45,7 @@ Map<String, String[]> parameterMap = (Map<String, String[]>)settingsMap.get("par
 
 PortletURL advancedPublishURL = renderResponse.createRenderURL();
 
-advancedPublishURL.setParameter("mvcRenderCommandName", "publishLayouts");
+advancedPublishURL.setParameter("mvcRenderCommandName", "/export_import/publish_layouts");
 advancedPublishURL.setParameter(Constants.CMD, cmd);
 advancedPublishURL.setParameter("tabs1", privateLayout ? "private-pages" : "public-pages");
 advancedPublishURL.setParameter("groupId", String.valueOf(groupDisplayContextHelper.getGroupId()));
@@ -60,14 +60,14 @@ advancedPublishURL.setParameter("privateLayout", String.valueOf(privateLayout));
 	<clay:link
 		displayType="link"
 		href="<%= advancedPublishURL.toString() %>"
-		label="switch-to-advanced-publication"
+		label="switch-to-advanced-publish-process"
 		small="<%= true %>"
 		type="button"
 	/>
 </clay:container-fluid>
 
-<portlet:actionURL name="editPublishConfiguration" var="confirmedActionURL">
-	<portlet:param name="mvcRenderCommandName" value="editPublishConfigurationSimple" />
+<portlet:actionURL name="/export_import/edit_publish_configuration" var="confirmedActionURL">
+	<portlet:param name="mvcRenderCommandName" value="/export_import/edit_publish_configuration_simple" />
 	<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />
 	<portlet:param name="quickPublish" value="<%= Boolean.TRUE.toString() %>" />
 </portlet:actionURL>
@@ -108,7 +108,7 @@ advancedPublishURL.setParameter("privateLayout", String.valueOf(privateLayout));
 						<aui:input maxlength='<%= ModelHintsUtil.getMaxLength(ExportImportConfiguration.class.getName(), "name") %>' name="name" placeholder="process-name-placeholder" />
 					</aui:fieldset>
 
-					<aui:fieldset collapsible="<%= true %>" cssClass="options-group" label="changes-since-last-publication" markupView="lexicon">
+					<aui:fieldset collapsible="<%= true %>" cssClass="options-group" label="changes-since-last-publish-process" markupView="lexicon">
 						<li class="options portlet-list-simple">
 							<ul class="portlet-list">
 
@@ -237,7 +237,7 @@ advancedPublishURL.setParameter("privateLayout", String.valueOf(privateLayout));
 				</aui:fieldset-group>
 
 				<span class="publish-simple-help-text">
-					<liferay-ui:message key="simple-publication-help" />
+					<liferay-ui:message key="simple-publish-process-help" />
 				</span>
 			</ul>
 		</clay:container-fluid>

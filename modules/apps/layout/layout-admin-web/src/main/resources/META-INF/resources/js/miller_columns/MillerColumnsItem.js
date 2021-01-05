@@ -142,6 +142,7 @@ const MillerColumnsItem = ({
 	items,
 	actionHandlers = {},
 	namespace,
+	onDragEnd,
 	onItemDrop = noop,
 	onItemStayHover = noop,
 	rtl,
@@ -201,6 +202,7 @@ const MillerColumnsItem = ({
 		collect: (monitor) => ({
 			isDragging: !!monitor.isDragging(),
 		}),
+		end: onDragEnd,
 		isDragging: (monitor) => {
 			const movedItems = monitor.getItem().items;
 

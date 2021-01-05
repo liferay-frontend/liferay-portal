@@ -143,9 +143,7 @@ public class JsonHelperImpl implements JsonHelper {
 
 			JSONObject arrayEntryJSONObject = _jsonFactory.createJSONObject();
 
-			String key = keyValuesEntry.getKey();
-
-			arrayEntryJSONObject.put("key", key);
+			arrayEntryJSONObject.put("key", keyValuesEntry.getKey());
 
 			JSONArray valuesJSONArray = _jsonFactory.createJSONArray();
 

@@ -33,7 +33,7 @@ CommerceInventoryWarehouse commerceInventoryWarehouse = (CommerceInventoryWareho
 >
 	<c:if test="<%= commerceInventoryWarehousesDisplayContext.hasManageCommerceInventoryWarehousePermission() %>">
 		<portlet:renderURL var="editURL">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceInventoryWarehouse" />
+			<portlet:param name="mvcRenderCommandName" value="/commerce_inventory_warehouse/edit_commerce_inventory_warehouse" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceInventoryWarehouseId" value="<%= String.valueOf(commerceInventoryWarehouse.getCommerceInventoryWarehouseId()) %>" />
 		</portlet:renderURL>
@@ -43,7 +43,7 @@ CommerceInventoryWarehouse commerceInventoryWarehouse = (CommerceInventoryWareho
 			url="<%= editURL %>"
 		/>
 
-		<portlet:actionURL name="editCommerceInventoryWarehouse" var="geolocateURL">
+		<portlet:actionURL name="/commerce_inventory_warehouse/edit_commerce_inventory_warehouse" var="geolocateURL">
 			<portlet:param name="<%= Constants.CMD %>" value="geolocate" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceInventoryWarehouseId" value="<%= String.valueOf(commerceInventoryWarehouse.getCommerceInventoryWarehouseId()) %>" />
@@ -54,7 +54,7 @@ CommerceInventoryWarehouse commerceInventoryWarehouse = (CommerceInventoryWareho
 			url="<%= geolocateURL %>"
 		/>
 
-		<portlet:actionURL name="editCommerceInventoryWarehouse" var="setActiveURL">
+		<portlet:actionURL name="/commerce_inventory_warehouse/edit_commerce_inventory_warehouse" var="setActiveURL">
 			<portlet:param name="<%= Constants.CMD %>" value="setActive" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceInventoryWarehouseId" value="<%= String.valueOf(commerceInventoryWarehouse.getCommerceInventoryWarehouseId()) %>" />
@@ -66,7 +66,7 @@ CommerceInventoryWarehouse commerceInventoryWarehouse = (CommerceInventoryWareho
 			url="<%= setActiveURL %>"
 		/>
 
-		<portlet:actionURL name="editCommerceInventoryWarehouse" var="deleteURL">
+		<portlet:actionURL name="/commerce_inventory_warehouse/edit_commerce_inventory_warehouse" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceInventoryWarehouseId" value="<%= String.valueOf(commerceInventoryWarehouse.getCommerceInventoryWarehouseId()) %>" />

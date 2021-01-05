@@ -75,11 +75,9 @@ public class UADExportBackgroundTaskManagerUtil {
 	public static List<BackgroundTask> getBackgroundTasks(
 		long groupId, long userId) {
 
-		DynamicQuery dynamicQuery = _getDynamicQuery(groupId, userId);
-
 		List<com.liferay.portal.background.task.model.BackgroundTask>
 			backgroundTaskModels = BackgroundTaskLocalServiceUtil.dynamicQuery(
-				dynamicQuery);
+				_getDynamicQuery(groupId, userId));
 
 		return _translate(backgroundTaskModels);
 	}
@@ -100,10 +98,8 @@ public class UADExportBackgroundTaskManagerUtil {
 	}
 
 	public static int getBackgroundTasksCount(long groupId, long userId) {
-		DynamicQuery dynamicQuery = _getDynamicQuery(groupId, userId);
-
 		return (int)BackgroundTaskLocalServiceUtil.dynamicQueryCount(
-			dynamicQuery);
+			_getDynamicQuery(groupId, userId));
 	}
 
 	public static int getBackgroundTasksCount(

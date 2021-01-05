@@ -52,27 +52,27 @@
 <!--REPORTS_DETAIL -->
 <tr>
 	<td>REPORTS_DETAIL_RESOURCE_NAME</td>
-	<td>//span[(@class='control-label') and contains (.,'Resource Name')]/..</td>
+	<td>//span[contains(@class,'control-label') and contains (.,'Resource Name')]/parent::div[contains(@class,'ddm-field-group')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>REPORTS_DETAIL_RESOURCE_ACTION</td>
-	<td>//span[(@class='control-label') and contains (.,'Resource Action')]/..</td>
+	<td>//span[contains(@class,'control-label') and contains (.,'Resource Action')]/parent::div[contains(@class,'ddm-field-group')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>REPORTS_DETAIL_USER_NAME</td>
-	<td>//span[(@class='control-label') and contains (.,'User Name')]/..</td>
+	<td>//span[contains(@class,'control-label') and contains (.,'User Name')]/parent::div[contains(@class,'ddm-field-group')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>REPORTS_DETAIL_CLIENT_IP</td>
-	<td>//span[(@class='control-label') and contains (.,'Client IP')]/..</td>
+	<td>//span[contains(@class,'control-label') and contains (.,'Client IP')]/parent::div[contains(@class,'ddm-field-group')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>REPORTS_DETAIL_ADDITIONAL_INFORMATION</td>
-	<td>//span[(@class='control-label') and contains (.,'Additional Information')]/..</td>
+	<td>//span[contains(@class,'control-label') and contains (.,'Additional Information')]/parent::div[contains(@class,'ddm-field-group')]</td>
 	<td></td>
 </tr>
 <tr>

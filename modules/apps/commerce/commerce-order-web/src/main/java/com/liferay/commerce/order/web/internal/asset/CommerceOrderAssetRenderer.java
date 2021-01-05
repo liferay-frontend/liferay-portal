@@ -18,8 +18,8 @@ import com.liferay.asset.kernel.model.BaseJSPAssetRenderer;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.web.internal.security.permission.resource.CommerceOrderPermission;
+import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.model.CommerceChannelConstants;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -133,14 +133,15 @@ public class CommerceOrderAssetRenderer
 			liferayPortletRequest, group, CommerceOrder.class.getName(),
 			PortletProvider.Action.VIEW);
 
-		String orderRenderCommand = "viewCommerceOrderDetails";
+		String orderRenderCommand =
+			"/commerce_order_content/view_commerce_order_details";
 
 		if (_commerceOrder.isOpen()) {
 			portletURL = PortletProviderUtil.getPortletURL(
 				liferayPortletRequest, group, CommerceOrder.class.getName(),
 				PortletProvider.Action.EDIT);
 
-			orderRenderCommand = "editCommerceOrder";
+			orderRenderCommand = "/commerce_order/edit_commerce_order";
 		}
 
 		portletURL.setParameter("mvcRenderCommandName", orderRenderCommand);

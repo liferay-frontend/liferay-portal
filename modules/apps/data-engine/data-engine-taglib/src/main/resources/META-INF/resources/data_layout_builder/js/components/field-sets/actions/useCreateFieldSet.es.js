@@ -18,9 +18,10 @@ import AppContext from '../../../AppContext.es';
 import {UPDATE_FIELDSETS} from '../../../actions.es';
 import DataLayoutBuilderContext from '../../../data-layout-builder/DataLayoutBuilderContext.es';
 import {addItem} from '../../../utils/client.es';
+import {normalizeDataDefinition} from '../../../utils/normalizers.es';
 import {errorToast, successToast} from '../../../utils/toast.es';
 
-export default ({availableLanguageIds, childrenContext}) => {
+export default ({availableLanguageIds, childrenContext, defaultLanguageId}) => {
 	const [{fieldSets}, dispatch] = useContext(AppContext);
 	const {state: childrenState} = childrenContext;
 	const [dataLayoutBuilder] = useContext(DataLayoutBuilderContext);
@@ -32,14 +33,19 @@ export default ({availableLanguageIds, childrenContext}) => {
 			dataLayout: {dataLayoutPages},
 		} = childrenState;
 
-		const fieldSet = {
+		const normalizedDataDefinition = normalizeDataDefinition({
 			availableLanguageIds,
 			dataDefinitionFields,
+			name,
+		});
+
+		const fieldSet = {
+			...normalizedDataDefinition,
 			defaultDataLayout: {
 				dataLayoutPages,
 				name,
 			},
-			name,
+			defaultLanguageId,
 		};
 
 		return addItem(

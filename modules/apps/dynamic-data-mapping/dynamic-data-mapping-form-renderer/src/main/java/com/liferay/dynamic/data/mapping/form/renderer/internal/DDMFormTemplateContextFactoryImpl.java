@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -70,6 +71,18 @@ public class DDMFormTemplateContextFactoryImpl
 			DDMForm ddmForm, DDMFormLayout ddmFormLayout,
 			DDMFormRenderingContext ddmFormRenderingContext)
 		throws PortalException {
+
+		Map<String, DDMFormField> ddmFormFieldsMap =
+			ddmForm.getDDMFormFieldsMap(true);
+
+		for (DDMFormField ddmFormLayoutDDMFormField :
+				ddmFormLayout.getDDMFormFields()) {
+
+			DDMFormField ddmFormField = ddmFormFieldsMap.get(
+				ddmFormLayoutDDMFormField.getName());
+
+			ddmFormField.setRequired(ddmFormLayoutDDMFormField.isRequired());
+		}
 
 		return doCreate(ddmForm, ddmFormLayout, ddmFormRenderingContext);
 	}
@@ -137,6 +150,12 @@ public class DDMFormTemplateContextFactoryImpl
 		templateContext.put(
 			"ddmStructureLayoutId",
 			ddmFormRenderingContext.getDDMStructureLayoutId());
+		templateContext.put(
+			"defaultLanguageId",
+			LanguageUtil.getLanguageId(ddmForm.getDefaultLocale()));
+		templateContext.put(
+			"defaultSiteLanguageId",
+			LanguageUtil.getLanguageId(LocaleUtil.getSiteDefault()));
 		templateContext.put(
 			"editingLanguageId", LanguageUtil.getLanguageId(locale));
 		templateContext.put(

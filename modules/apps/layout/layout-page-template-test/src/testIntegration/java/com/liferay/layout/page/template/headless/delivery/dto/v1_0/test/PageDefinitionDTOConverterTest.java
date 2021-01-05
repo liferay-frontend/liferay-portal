@@ -31,6 +31,7 @@ import com.liferay.headless.delivery.dto.v1_0.FragmentFieldText;
 import com.liferay.headless.delivery.dto.v1_0.FragmentImage;
 import com.liferay.headless.delivery.dto.v1_0.FragmentInlineValue;
 import com.liferay.headless.delivery.dto.v1_0.FragmentLink;
+import com.liferay.headless.delivery.dto.v1_0.FragmentLinkValue;
 import com.liferay.headless.delivery.dto.v1_0.PageColumnDefinition;
 import com.liferay.headless.delivery.dto.v1_0.PageDefinition;
 import com.liferay.headless.delivery.dto.v1_0.PageDropZoneDefinition;
@@ -750,11 +751,13 @@ public class PageDefinitionDTOConverterTest {
 
 		FragmentLink fragmentLink = fragmentFieldText.getFragmentLink();
 
+		FragmentLinkValue fragmentLinkValue = fragmentLink.getValue();
+
 		Assert.assertEquals(
-			FragmentLink.Target.BLANK, fragmentLink.getTarget());
+			FragmentLinkValue.Target.BLANK, fragmentLinkValue.getTarget());
 
 		FragmentInlineValue hrefFragmentInlineValue =
-			(FragmentInlineValue)fragmentLink.getHref();
+			(FragmentInlineValue)fragmentLinkValue.getHref();
 
 		Assert.assertEquals(
 			"http://www.myexample.com", hrefFragmentInlineValue.getValue());

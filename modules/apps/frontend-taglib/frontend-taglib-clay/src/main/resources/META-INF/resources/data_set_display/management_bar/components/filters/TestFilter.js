@@ -22,7 +22,7 @@ function getOdataString() {
 	return `test ne 4`;
 }
 
-function TestFilter({actions, id, inputText, value: valueProp}) {
+function TestFilter({id, inputText, updateFilterState, value: valueProp}) {
 	const [value, setValue] = useState(valueProp);
 
 	return (
@@ -52,7 +52,7 @@ function TestFilter({actions, id, inputText, value: valueProp}) {
 					<ClayButton
 						disabled={value === valueProp}
 						onClick={() =>
-							actions.updateFilterState(
+							updateFilterState(
 								id,
 								value,
 								value,
@@ -72,11 +72,9 @@ function TestFilter({actions, id, inputText, value: valueProp}) {
 }
 
 TestFilter.propTypes = {
-	actions: PropTypes.shape({
-		updateFilterState: PropTypes.func.isRequired,
-	}),
 	id: PropTypes.string.isRequired,
 	inputText: PropTypes.string,
+	updateFilterState: PropTypes.func.isRequired,
 	value: PropTypes.string,
 };
 

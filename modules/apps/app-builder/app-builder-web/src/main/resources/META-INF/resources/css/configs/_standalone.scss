@@ -6,9 +6,11 @@
 	.app-builder-standalone-content {
 		margin-top: -7rem;
 		padding-bottom: 2rem;
+		padding-top: 20px;
 
 		&.edit-entry {
 			max-width: $containerMaxWidth;
+			padding-top: 14px;
 		}
 
 		.app-builder-root {

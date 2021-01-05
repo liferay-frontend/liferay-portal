@@ -152,9 +152,8 @@ public class TLDUtil {
 					continue;
 				}
 
-				String fileName = _getFileName(schemaLocation);
-
-				File curDefinitionFile = _portalDefinitions.get(fileName);
+				File curDefinitionFile = _portalDefinitions.get(
+					_getFileName(schemaLocation));
 
 				if (curDefinitionFile == null) {
 					continue;
@@ -186,9 +185,8 @@ public class TLDUtil {
 					continue;
 				}
 
-				String fileName = _getFileName(schemaLocation);
-
-				File curDefinitionFile = _portalDefinitions.get(fileName);
+				File curDefinitionFile = _portalDefinitions.get(
+					_getFileName(schemaLocation));
 
 				if (curDefinitionFile == null) {
 					continue;

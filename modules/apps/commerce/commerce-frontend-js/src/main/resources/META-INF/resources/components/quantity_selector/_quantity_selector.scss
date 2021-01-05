@@ -1,11 +1,15 @@
 .quantity-selector {
+	margin: 0 auto;
+	.quantitySelect {
+		width: 7rem;
+	}
 	.simple {
 		&.input-group {
 			flex-wrap: nowrap;
 		}
 
-		input {
-			min-width: 75px;
+		.quantity-selector-input {
+			margin: 0 auto;
 		}
 	}
 }

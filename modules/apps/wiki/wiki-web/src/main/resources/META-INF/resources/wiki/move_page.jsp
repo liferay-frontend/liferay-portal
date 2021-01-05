@@ -20,9 +20,11 @@
 String redirect = ParamUtil.getString(request, "redirect");
 
 WikiNode node = (WikiNode)request.getAttribute(WikiWebKeys.WIKI_NODE);
+
 WikiPage wikiPage = (WikiPage)request.getAttribute(WikiWebKeys.WIKI_PAGE);
 
 String title = wikiPage.getTitle();
+
 String newTitle = ParamUtil.get(request, "newTitle", StringPool.BLANK);
 %>
 

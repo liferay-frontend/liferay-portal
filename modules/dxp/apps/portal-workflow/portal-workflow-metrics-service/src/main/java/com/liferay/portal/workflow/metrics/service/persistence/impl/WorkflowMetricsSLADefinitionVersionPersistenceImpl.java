@@ -3235,15 +3235,6 @@ public class WorkflowMetricsSLADefinitionVersionPersistenceImpl
 			"workflowMetricsSLADefinitionId"
 		});
 
-	static {
-		try {
-			Class.forName(WorkflowMetricsPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;

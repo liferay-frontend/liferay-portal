@@ -165,6 +165,7 @@ public class DLOpenerGoogleDriveDLViewFileVersionDisplayContext
 
 		URLMenuItem urlMenuItem = new URLMenuItem();
 
+		urlMenuItem.setKey("#edit-in-google-drive");
 		urlMenuItem.setLabel(LanguageUtil.get(_resourceBundle, _getLabelKey()));
 		urlMenuItem.setMethod(HttpMethods.POST);
 		urlMenuItem.setURL(_getActionURL(cmd));

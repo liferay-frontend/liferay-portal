@@ -186,8 +186,8 @@ if (commerceOrder != null) {
 </div>
 
 <div class="commerce-cta is-visible">
-	<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderActionURL">
-		<portlet:param name="mvcRenderCommandName" value="viewCommerceOrderDetails" />
+	<portlet:actionURL name="/commerce_open_order_content/edit_commerce_order" var="editCommerceOrderActionURL">
+		<portlet:param name="mvcRenderCommandName" value="/commerce_order_content/view_commerce_order_details" />
 	</portlet:actionURL>
 
 	<aui:form action="<%= editCommerceOrderActionURL %>" method="post" name="fm">

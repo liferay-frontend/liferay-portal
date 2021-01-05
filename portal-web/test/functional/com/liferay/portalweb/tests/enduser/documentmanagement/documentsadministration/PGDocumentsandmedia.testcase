@@ -199,7 +199,7 @@ definition {
 
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "DM Document Type 1 Description",
-			dmDocumentTypeFieldNames = "Text Box",
+			dmDocumentTypeFieldNames = "Text",
 			dmDocumentTypeName = "DM Document Type 1 Name");
 
 		ProductMenu.gotoPortlet(
@@ -216,7 +216,7 @@ definition {
 
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "DM Document Type 2 Description",
-			dmDocumentTypeFieldNames = "Text Box",
+			dmDocumentTypeFieldNames = "Text",
 			dmDocumentTypeName = "DM Document Type 2 Name");
 
 		ProductMenu.gotoPortlet(
@@ -233,7 +233,7 @@ definition {
 
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "DM Document Type 3 Description",
-			dmDocumentTypeFieldNames = "Text Box",
+			dmDocumentTypeFieldNames = "Text",
 			dmDocumentTypeName = "DM Document Type 3 Name");
 
 		ProductMenu.gotoPortlet(
@@ -550,7 +550,7 @@ definition {
 		DMDocument.addMultiplePG(dmDocumentFileList = "Document_1.doc,Document_2.docx");
 
 		for (var tagName : list "tagone,tagtwo,tagthree") {
-			var key_dmDocumentTitle = "Document_1.doc";
+			var key_dmDocumentTitle = "Document_1";
 
 			Check(locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_CHECKBOX");
 
@@ -558,7 +558,7 @@ definition {
 
 			DMDocument.editTags(tagName = "${tagName}");
 
-			DMNavigator.gotoDocumentPG(dmDocumentTitle = "Document_1.doc");
+			DMNavigator.gotoDocumentPG(dmDocumentTitle = "Document_1");
 
 			DMDocument.viewTag(tagName = "${tagName}");
 
@@ -567,7 +567,7 @@ definition {
 
 		LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
-		var key_dmDocumentTitle = "Document_2.docx";
+		var key_dmDocumentTitle = "Document_2";
 
 		Check(locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_CHECKBOX");
 
@@ -600,14 +600,14 @@ definition {
 
 		Alert.viewSuccessMessageText(successMessage = "Changes saved.");
 
-		DMNavigator.gotoDocumentPG(dmDocumentTitle = "Document_2.docx");
+		DMNavigator.gotoDocumentPG(dmDocumentTitle = "Document_2");
 
 		DMDocument.viewTag(tagName = "tagtwo");
 	}
 
 	@priority = "5"
 	test DeleteDocumentInFolder {
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "true";
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
@@ -638,7 +638,7 @@ definition {
 
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeFieldNames = "Text Box",
+			dmDocumentTypeFieldNames = "Text",
 			dmDocumentTypeName = "DM Document Type Name");
 
 		ProductMenu.gotoPortlet(
@@ -782,10 +782,9 @@ definition {
 			configurationName = "Google Drive",
 			configurationScope = "Virtual Instance Scope");
 
-		var googlePropertiesSet = MathUtil.randomNumber("3");
-		var googleClientID = PropsUtil.get("google.client.id.${googlePropertiesSet}");
-		var googleClientSecret = PropsUtil.get("google.client.secret.${googlePropertiesSet}");
-		var googlePickerAPIKey = PropsUtil.get("google.api.key.${googlePropertiesSet}");
+		var googleClientID = PropsUtil.get("google.client.id.4");
+		var googleClientSecret = PropsUtil.get("google.client.secret.4");
+		var googlePickerAPIKey = PropsUtil.get("google.api.key.4");
 
 		PortalSettings.configureGoogleDrive(
 			googleClientID = "${googleClientID}",
@@ -799,33 +798,51 @@ definition {
 		MenuItem.click(menuItem = "Google Drive Shortcut");
 
 		GoogleDrive.gotoDrive(
-			userEmailAddress = PropsUtil.get("email.address.3"),
-			userPassword = PropsUtil.get("email.password.3"),
+			userEmailAddress = PropsUtil.get("email.address.4"),
+			userPassword = PropsUtil.get("email.password.4"),
 			windowTitle = "New Google Drive Shortcut - ${siteName}");
 
-		GoogleDrive.selectDocument(googleDocName = "liferay.txt");
+		GoogleDrive.selectDocument(
+			googleDocName = "liferay.txt",
+			googleDocTitle = "liferay");
 
 		PortletEntry.publish();
 
-		DMDocument.viewPG(dmDocumentTitle = "liferay.txt");
+		DMDocument.viewPG(dmDocumentTitle = "liferay");
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		DMDocument.deletePG(dmDocumentTitle = "liferay.txt");
+		DMDocument.deletePG(dmDocumentTitle = "liferay");
 	}
 
 	@priority = "5"
 	test EditDocument {
-		JSONDocument.addFile(
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.addPG(
 			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest");
+			dmDocumentFile = "Document_1.doc",
+			useCurrentTitle = "true");
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		DMDocument.editPG(
-			dmDocumentTitle = "DM Document Title",
+		DMDocument.editCmdPG(
+			checkFileNameText = "true",
+			checkTitleText = "true",
+			dmDocumentDescriptionEdit = "DM Document Description Edit",
+			dmDocumentFileNameEdit = "DM Document File Name Edit.doc",
+			dmDocumentTitle = "Document_1",
 			dmDocumentTitleEdit = "DM Document Title Edit");
+
+		PortletEntry.publish();
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.viewPG(
+			dmDocumentDescription = "DM Document Description Edit",
+			dmDocumentFileName = "DM Document File Name Edit.doc",
+			dmDocumentTitle = "DM Document Title Edit",
+			dmDocumentVersionNumber = "1.1");
 	}
 
 	@priority = "5"
@@ -840,7 +857,7 @@ definition {
 
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeFieldNames = "Text Box",
+			dmDocumentTypeFieldNames = "Text",
 			dmDocumentTypeName = "DM Document Type Name");
 
 		ProductMenu.gotoPortlet(
@@ -1109,10 +1126,9 @@ definition {
 			configurationName = "Google Drive",
 			configurationScope = "Virtual Instance Scope");
 
-		var googlePropertiesSet = MathUtil.randomNumber("3");
-		var googleClientID = PropsUtil.get("google.client.id.${googlePropertiesSet}");
-		var googleClientSecret = PropsUtil.get("google.client.secret.${googlePropertiesSet}");
-		var googlePickerAPIKey = PropsUtil.get("google.api.key.${googlePropertiesSet}");
+		var googleClientID = PropsUtil.get("google.client.id.4");
+		var googleClientSecret = PropsUtil.get("google.client.secret.4");
+		var googlePickerAPIKey = PropsUtil.get("google.api.key.4");
 
 		PortalSettings.configureGoogleDrive(
 			googleClientID = "${googleClientID}",
@@ -1126,11 +1142,13 @@ definition {
 		MenuItem.click(menuItem = "Google Drive Shortcut");
 
 		GoogleDrive.gotoDrive(
-			userEmailAddress = PropsUtil.get("email.address.3"),
-			userPassword = PropsUtil.get("email.password.3"),
+			userEmailAddress = PropsUtil.get("email.address.4"),
+			userPassword = PropsUtil.get("email.password.4"),
 			windowTitle = "New Google Drive Shortcut - ${siteName}");
 
-		GoogleDrive.selectDocument(googleDocName = "liferay.txt");
+		GoogleDrive.selectDocument(
+			googleDocName = "liferay.txt",
+			googleDocTitle = "liferay");
 
 		PortletEntry.publish();
 
@@ -1142,12 +1160,12 @@ definition {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMDocument.moveToFolderPG(
-			dmDocumentTitle = "liferay.txt",
+			dmDocumentTitle = "liferay",
 			dmFolderName = "DM Folder Name");
 
 		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
 
-		DMDocument.viewPG(dmDocumentTitle = "liferay.txt");
+		DMDocument.viewPG(dmDocumentTitle = "liferay");
 	}
 
 	@priority = "5"

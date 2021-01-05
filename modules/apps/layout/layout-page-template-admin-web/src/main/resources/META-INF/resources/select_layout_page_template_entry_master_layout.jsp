@@ -37,7 +37,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 %>
 
 <clay:container-fluid
-	cssClass="mt-4"
+	cssClass="container-view"
 >
 	<div class="lfr-search-container-wrapper">
 		<ul class="card-page card-page-equal-height">
@@ -46,9 +46,28 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 			for (LayoutPageTemplateEntry masterLayoutPageTemplateEntry : masterLayoutPageTemplateEntries) {
 			%>
 
-				<li class="card-page-item col-md-4 col-sm-6">
-					<clay:vertical-card-v2
-						verticalCard="<%= new SelectLayoutPageTemplateEntryMasterLayoutVerticalCard(masterLayoutPageTemplateEntry, renderRequest, renderResponse) %>"
+				<li class="card-page-item card-page-item-asset">
+
+					<%
+					SelectLayoutPageTemplateEntryMasterLayoutVerticalCard selectLayoutPageTemplateEntryMasterLayoutVerticalCard = new SelectLayoutPageTemplateEntryMasterLayoutVerticalCard(masterLayoutPageTemplateEntry, renderRequest, renderResponse);
+					%>
+
+					<clay:vertical-card
+						additionalProps='<%=
+							HashMapBuilder.<String, Object>put(
+								"addLayoutPageTemplateEntryUrl", selectLayoutPageTemplateEntryMasterLayoutVerticalCard.getAddLayoutPageTemplateEntryURL()
+							).put(
+								"dialogTitle", LanguageUtil.get(request, "add-page-template")
+							).put(
+								"mainFieldLabel", LanguageUtil.get(request, "name")
+							).put(
+								"mainFieldName", "name"
+							).put(
+								"mainFieldPlaceholder", LanguageUtil.get(request, "name")
+							).build()
+						%>'
+						propsTransformer="js/propsTransformers/SelectLayoutPageTemplateEntryMasterLayoutVerticalCardPropsTransformer"
+						verticalCard="<%= selectLayoutPageTemplateEntryMasterLayoutVerticalCard %>"
 					/>
 				</li>
 
@@ -59,35 +78,3 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 		</ul>
 	</div>
 </clay:container-fluid>
-
-<aui:script require="metal-dom/src/all/dom as dom,frontend-js-web/liferay/modal/commands/OpenSimpleInputModal.es as openSimpleInputModal" sandbox="<%= true %>">
-	var addPageTemplateClickHandler = dom.delegate(
-		document.body,
-		'click',
-		'.add-master-page-action-option',
-		function (event) {
-			var data = event.delegateTarget.dataset;
-
-			event.preventDefault();
-
-			openSimpleInputModal.default({
-				dialogTitle: '<liferay-ui:message key="add-page-template" />',
-				formSubmitURL: data.addLayoutPageTemplateEntryUrl,
-				mainFieldLabel: '<liferay-ui:message key="name" />',
-				mainFieldName: 'name',
-				mainFieldPlaceholder: '<liferay-ui:message key="name" />',
-				namespace: '<portlet:namespace />',
-				spritemap:
-					'<%= themeDisplay.getPathThemeImages() %>/clay/icons.svg',
-			});
-		}
-	);
-
-	function handleDestroyPortlet() {
-		addPageTemplateClickHandler.removeListener();
-
-		Liferay.detach('destroyPortlet', handleDestroyPortlet);
-	}
-
-	Liferay.on('destroyPortlet', handleDestroyPortlet);
-</aui:script>

@@ -136,6 +136,8 @@ definition {
 		}
 
 		task ("Select Blogs Entry in Asset Publisher") {
+			WaitForLiferayEvent.initializeLiferayEventLog();
+
 			AssetPublisherPortlet.configureManualAssetSelectionPG(
 				assetTitle = "Blogs Entry Title",
 				assetType = "Blogs Entry");
@@ -213,9 +215,9 @@ definition {
 		}
 
 		task ("Assert can edit editable field of Image fragment") {
-			Click(locator1 = "//div[contains(@class,'component-image')]/img[@data-lfr-editable-id='image-square']");
+			Click(locator1 = "//div[contains(@class,'component-image')]//img[@data-lfr-editable-id='image-square']");
 
-			DoubleClick(locator1 = "//div[contains(@class,'component-image')]/img[@data-lfr-editable-id='image-square']");
+			DoubleClick(locator1 = "//div[contains(@class,'component-image')]//img[@data-lfr-editable-id='image-square']");
 
 			ItemSelector.selectDMImage(
 				imageFileName = "Document Title",
@@ -239,10 +241,9 @@ definition {
 				if ("${title}" == "Web Content Title") {
 					WebContent.addCP(webContentTitle = "Web Content Title Edit");
 
-					Type.typeCKEditorWaitForCKEditor(
-						key_fieldLabel = "content",
-						locator1 = "CKEditor#BODY_FIELD_WEB_CONTENT_ARTICLE",
-						value1 = "Web Content Content Edit");
+					CKEditor.addContentInWebContent(
+						content = "Web Content Content Edit",
+						fieldLabel = "content");
 
 					PortletEntry.publish();
 				}

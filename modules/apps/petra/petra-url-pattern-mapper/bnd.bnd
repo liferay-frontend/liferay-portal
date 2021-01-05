@@ -1,4 +1,0 @@
-Bundle-Name: Liferay Petra URL Pattern Mapper
-Bundle-SymbolicName: com.liferay.petra.url.pattern.mapper
-Bundle-Version: 3.0.0
-Export-Package: com.liferay.petra.url.pattern.mapper

@@ -18,13 +18,13 @@ import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.info.field.converter.DDMFormFieldInfoFieldConverter;
 import com.liferay.dynamic.data.mapping.info.item.provider.DDMStructureInfoItemFieldSetProvider;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -68,8 +68,7 @@ public class DDMStructureInfoItemFieldSetProviderImpl
 					for (DDMFormField ddmFormField :
 							ddmStructure.getDDMFormFields(false)) {
 
-						if (Validator.isNotNull(ddmFormField.getIndexType()) &&
-							ArrayUtil.contains(
+						if (ArrayUtil.contains(
 								_SELECTABLE_DDM_STRUCTURE_FIELDS,
 								ddmFormField.getType())) {
 
@@ -95,9 +94,12 @@ public class DDMStructureInfoItemFieldSetProviderImpl
 	}
 
 	private static final String[] _SELECTABLE_DDM_STRUCTURE_FIELDS = {
-		"checkbox", "ddm-date", "ddm-decimal", "ddm-image", "ddm-integer",
-		"ddm-number", "ddm-text-html", "radio", "rich_text", "select", "text",
-		"textarea"
+		DDMFormFieldType.CHECKBOX, DDMFormFieldType.DATE,
+		DDMFormFieldType.DECIMAL, DDMFormFieldType.IMAGE,
+		DDMFormFieldType.INTEGER, DDMFormFieldType.NUMBER,
+		DDMFormFieldType.TEXT_HTML, DDMFormFieldType.RADIO,
+		DDMFormFieldType.SELECT, DDMFormFieldType.TEXT,
+		DDMFormFieldType.TEXT_AREA, "image", "numeric", "rich_text"
 	};
 
 	@Reference

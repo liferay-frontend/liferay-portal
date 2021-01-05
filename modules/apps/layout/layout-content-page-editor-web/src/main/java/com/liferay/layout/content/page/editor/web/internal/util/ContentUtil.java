@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -45,7 +46,10 @@ import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -57,6 +61,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.portlet.PortletRequest;
@@ -103,15 +109,19 @@ public class ContentUtil {
 	}
 
 	public static JSONArray getPageContentsJSONArray(
-		long plid, HttpServletRequest httpServletRequest) {
+			long plid, HttpServletRequest httpServletRequest)
+		throws PortalException {
 
 		JSONArray mappedContentsJSONArray = JSONFactoryUtil.createJSONArray();
+
+		long fragmentEntryLinkClassNameId = PortalUtil.getClassNameId(
+			FragmentEntryLink.class);
+		LayoutStructure layoutStructure = null;
+		Set<String> uniqueLayoutClassedModelUsageKeys = new HashSet<>();
 
 		List<LayoutClassedModelUsage> layoutClassedModelUsages =
 			LayoutClassedModelUsageLocalServiceUtil.
 				getLayoutClassedModelUsagesByPlid(plid);
-
-		Set<String> uniqueLayoutClassedModelUsageKeys = new HashSet<>();
 
 		for (LayoutClassedModelUsage layoutClassedModelUsage :
 				layoutClassedModelUsages) {
@@ -121,6 +131,42 @@ public class ContentUtil {
 						layoutClassedModelUsage))) {
 
 				continue;
+			}
+
+			if (layoutClassedModelUsage.getContainerType() ==
+					fragmentEntryLinkClassNameId) {
+
+				FragmentEntryLink fragmentEntryLink =
+					FragmentEntryLinkLocalServiceUtil.fetchFragmentEntryLink(
+						GetterUtil.getLong(
+							layoutClassedModelUsage.getContainerKey()));
+
+				if (fragmentEntryLink == null) {
+					LayoutClassedModelUsageLocalServiceUtil.
+						deleteLayoutClassedModelUsage(layoutClassedModelUsage);
+
+					continue;
+				}
+
+				if (layoutStructure == null) {
+					layoutStructure = LayoutStructureUtil.getLayoutStructure(
+						fragmentEntryLink.getGroupId(),
+						fragmentEntryLink.getPlid(),
+						fragmentEntryLink.getSegmentsExperienceId());
+				}
+
+				LayoutStructureItem layoutStructureItem =
+					layoutStructure.getLayoutStructureItemByFragmentEntryLinkId(
+						fragmentEntryLink.getFragmentEntryLinkId());
+
+				if (ListUtil.exists(
+						layoutStructure.getDeletedLayoutStructureItems(),
+						deletedLayoutStructureItem -> Objects.equals(
+							deletedLayoutStructureItem.getItemId(),
+							layoutStructureItem.getItemId()))) {
+
+					continue;
+				}
 			}
 
 			try {
@@ -287,6 +333,10 @@ public class ContentUtil {
 						layoutDisplayPageObjectProviders.add(
 							layoutDisplayPageObjectProvider);
 					}
+
+					layoutDisplayPageObjectProviders.addAll(
+						_getLocalizedLayoutDisplayPageObjectProviders(
+							configJSONObject, mappedClassPKs));
 				}
 
 				JSONObject itemSelectorJSONObject =
@@ -432,6 +482,10 @@ public class ContentUtil {
 					layoutDisplayPageObjectProviders.add(
 						layoutDisplayPageObjectProvider);
 				}
+
+				layoutDisplayPageObjectProviders.addAll(
+					_getLocalizedLayoutDisplayPageObjectProviders(
+						linkJSONObject, mappedClassPKs));
 			}
 		}
 
@@ -449,6 +503,39 @@ public class ContentUtil {
 
 		return _getLayoutMappedLayoutDisplayPageObjectProviders(
 			layoutStructure, mappedClassPKs);
+	}
+
+	private static Set<LayoutDisplayPageObjectProvider<?>>
+		_getLocalizedLayoutDisplayPageObjectProviders(
+			JSONObject jsonObject, Set<Long> mappedClassPKs) {
+
+		Set<LayoutDisplayPageObjectProvider<?>>
+			layoutDisplayPageObjectProviders = new HashSet<>();
+
+		Set<Locale> locales = LanguageUtil.getAvailableLocales();
+
+		for (Locale locale : locales) {
+			JSONObject localizableJSONObject = jsonObject.getJSONObject(
+				LocaleUtil.toLanguageId(locale));
+
+			if ((localizableJSONObject == null) ||
+				(localizableJSONObject.length() == 0)) {
+
+				continue;
+			}
+
+			LayoutDisplayPageObjectProvider<?>
+				localizedLayoutDisplayPageObjectProvider =
+					_getLayoutDisplayPageObjectProvider(
+						localizableJSONObject, mappedClassPKs);
+
+			if (localizedLayoutDisplayPageObjectProvider != null) {
+				layoutDisplayPageObjectProviders.add(
+					localizedLayoutDisplayPageObjectProvider);
+			}
+		}
+
+		return layoutDisplayPageObjectProviders;
 	}
 
 	private static JSONObject _getPageContentJSONObject(

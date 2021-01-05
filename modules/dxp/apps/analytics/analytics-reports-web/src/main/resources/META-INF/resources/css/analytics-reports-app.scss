@@ -51,13 +51,18 @@
 		}
 	}
 
-	.list-group-keywords-list {
+	.list-group-keywords-list,
+	.list-group-pages-list {
 		li {
 			border-width: 0;
 		}
 
 		li > div.autofit-col {
 			padding-left: 0;
+		}
+
+		.dim {
+			opacity: 0.4;
 		}
 	}
 
@@ -71,10 +76,6 @@
 	.pie-chart-wrapper {
 		display: flex;
 		justify-content: space-between;
-
-		.pie-chart-wrapper--legend--title {
-			font-weight: 600;
-		}
 
 		.pie-chart-wrapper--legend {
 			list-style: none;

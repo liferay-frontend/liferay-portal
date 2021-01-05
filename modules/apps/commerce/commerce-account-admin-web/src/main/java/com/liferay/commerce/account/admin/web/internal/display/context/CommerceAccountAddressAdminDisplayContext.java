@@ -158,7 +158,8 @@ public class CommerceAccountAddressAdminDisplayContext
 
 		portletURL.setParameter(Constants.CMD, Constants.DELETE);
 		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCommerceAddress");
+			ActionRequest.ACTION_NAME,
+			"/commerce_account_admin/edit_commerce_address");
 		portletURL.setParameter(
 			"redirect", commerceAccountAdminRequestHelper.getCurrentURL());
 		portletURL.setParameter(
@@ -175,7 +176,9 @@ public class CommerceAccountAddressAdminDisplayContext
 
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceAddress");
+		portletURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_account_admin/edit_commerce_address");
 		portletURL.setParameter(
 			"redirect", commerceAccountAdminRequestHelper.getCurrentURL());
 		portletURL.setParameter(
@@ -190,7 +193,9 @@ public class CommerceAccountAddressAdminDisplayContext
 	public PortletURL getPortletURL() {
 		PortletURL portletURL = super.getPortletURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceAccount");
+		portletURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_account_admin/edit_commerce_account");
 
 		return portletURL;
 	}

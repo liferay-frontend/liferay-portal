@@ -619,6 +619,26 @@ public class PropsValues {
 	public static final String CUSTOM_SQL_FUNCTION_ISNULL = PropsUtil.get(
 		PropsKeys.CUSTOM_SQL_FUNCTION_ISNULL);
 
+	public static final long DATA_LIMIT_MAX_DL_STORAGE_SIZE =
+		GetterUtil.getLong(
+			PropsUtil.get(PropsKeys.DATA_LIMIT_MAX_DL_STORAGE_SIZE));
+
+	public static final long DATA_LIMIT_MAX_ORGANIZATION_COUNT =
+		GetterUtil.getLong(
+			PropsUtil.get(PropsKeys.DATA_LIMIT_MAX_ORGANIZATION_COUNT));
+
+	public static final long DATA_LIMIT_MAX_ROLE_COUNT = GetterUtil.getLong(
+		PropsUtil.get(PropsKeys.DATA_LIMIT_MAX_ROLE_COUNT));
+
+	public static final long DATA_LIMIT_MAX_SITE_COUNT = GetterUtil.getLong(
+		PropsUtil.get(PropsKeys.DATA_LIMIT_MAX_SITE_COUNT));
+
+	public static final long DATA_LIMIT_MAX_TEAM_COUNT = GetterUtil.getLong(
+		PropsUtil.get(PropsKeys.DATA_LIMIT_MAX_TEAM_COUNT));
+
+	public static final long DATA_LIMIT_MAX_USER_COUNT = GetterUtil.getLong(
+		PropsUtil.get(PropsKeys.DATA_LIMIT_MAX_USER_COUNT));
+
 	public static final int DATABASE_IN_MAX_PARAMETERS = GetterUtil.getInteger(
 		PropsUtil.get(PropsKeys.DATABASE_IN_MAX_PARAMETERS));
 
@@ -2391,6 +2411,9 @@ public class PropsValues {
 		GetterUtil.getInteger(
 			PropsUtil.get(PropsKeys.RECENT_CONTENT_MAX_DISPLAY_ITEMS));
 
+	public static final int RECENT_GROUPS_MAX_ELEMENTS = GetterUtil.getInteger(
+		PropsUtil.get(PropsKeys.RECENT_GROUPS_MAX_ELEMENTS));
+
 	public static final String[] REDIRECT_URL_DOMAINS_ALLOWED =
 		PropsUtil.getArray(PropsKeys.REDIRECT_URL_DOMAINS_ALLOWED);
 
@@ -2419,6 +2442,10 @@ public class PropsValues {
 	public static final boolean RESOURCE_ACTIONS_READ_PORTLET_RESOURCES =
 		GetterUtil.getBoolean(
 			PropsUtil.get(PropsKeys.RESOURCE_ACTIONS_READ_PORTLET_RESOURCES));
+
+	public static final boolean RESOURCE_ACTIONS_STRICT_MODE_ENABLED =
+		GetterUtil.getBoolean(
+			PropsUtil.get(PropsKeys.RESOURCE_ACTIONS_STRICT_MODE_ENABLED));
 
 	public static final String RESOURCE_REPOSITORIES_ROOT = PropsUtil.get(
 		PropsKeys.RESOURCE_REPOSITORIES_ROOT);

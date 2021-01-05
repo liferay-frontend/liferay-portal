@@ -49,22 +49,35 @@ if (ListUtil.isEmpty(folders) && ListUtil.isEmpty(fileEntries) && ListUtil.isEmp
 		%>
 
 		<div class="sidebar-header">
-			<ul class="sidebar-actions">
-				<li>
-					<liferay-util:include page="/document_library/subscribe.jsp" servletContext="<%= application %>" />
-				</li>
-				<li>
-					<liferay-util:include page="/document_library/folder_action.jsp" servletContext="<%= application %>" />
-				</li>
-			</ul>
+			<div class="autofit-row sidebar-section">
+				<div class="autofit-col autofit-col-expand">
+					<h1 class="component-title">
+						<%= (folder != null) ? HtmlUtil.escape(folder.getName()) : LanguageUtil.get(request, "home") %>
+					</h1>
 
-			<h1 class="sidebar-title">
-				<%= (folder != null) ? HtmlUtil.escape(folder.getName()) : LanguageUtil.get(request, "home") %>
-			</h1>
+					<h2 class="component-subtitle">
+						<liferay-ui:message key="folder" />
+					</h2>
+				</div>
 
-			<h2 class="sidebar-subtitle">
-				<liferay-ui:message key="folder" />
-			</h2>
+				<div class="autofit-col">
+					<ul class="autofit-padded-no-gutters autofit-row">
+						<li class="autofit-col">
+							<liferay-util:include page="/document_library/subscribe.jsp" servletContext="<%= application %>" />
+						</li>
+
+						<%
+						FolderActionDisplayContext folderActionDisplayContext = new FolderActionDisplayContext(dlTrashHelper, request, liferayPortletResponse);
+						%>
+
+						<c:if test="<%= folderActionDisplayContext.isShowActions() %>">
+							<li class="autofit-col">
+								<liferay-util:include page="/document_library/folder_action.jsp" servletContext="<%= application %>" />
+							</li>
+						</c:if>
+					</ul>
+				</div>
+			</div>
 		</div>
 
 		<div class="sidebar-body">
@@ -74,7 +87,7 @@ if (ListUtil.isEmpty(folders) && ListUtil.isEmpty(fileEntries) && ListUtil.isEmp
 				refresh="<%= false %>"
 			>
 				<liferay-ui:section>
-					<dl class="sidebar-block">
+					<dl class="sidebar-dl sidebar-section">
 						<dt class="sidebar-dt">
 							<liferay-ui:message key="num-of-items" />
 						</dt>
@@ -139,19 +152,25 @@ if (ListUtil.isEmpty(folders) && ListUtil.isEmpty(fileEntries) && ListUtil.isEmp
 		%>
 
 		<div class="sidebar-header">
-			<ul class="sidebar-actions">
-				<li>
-					<liferay-util:include page="/document_library/file_entry_action.jsp" servletContext="<%= application %>" />
-				</li>
-			</ul>
+			<div class="autofit-row sidebar-section">
+				<div class="autofit-col autofit-col-expand">
+					<h1 class="component-title">
+						<%= HtmlUtil.escape(fileShortcut.getToTitle()) %>
+					</h1>
 
-			<h1 class="sidebar-title">
-				<%= HtmlUtil.escape(fileShortcut.getToTitle()) %>
-			</h1>
+					<h2 class="component-subtitle">
+						<liferay-ui:message key="shortcut" />
+					</h2>
+				</div>
 
-			<h2 class="sidebar-subtitle">
-				<liferay-ui:message key="shortcut" />
-			</h2>
+				<div class="autofit-col">
+					<ul class="autofit-padded-no-gutters autofit-row">
+						<li class="autofit-col">
+							<liferay-util:include page="/document_library/file_entry_action.jsp" servletContext="<%= application %>" />
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 
 		<div class="sidebar-body">
@@ -166,7 +185,7 @@ if (ListUtil.isEmpty(folders) && ListUtil.isEmpty(fileEntries) && ListUtil.isEmp
 					FileEntry fileEntry = DLAppServiceUtil.getFileEntry(fileShortcut.getToFileEntryId());
 					%>
 
-					<dl class="sidebar-block">
+					<dl class="sidebar-dl sidebar-section">
 						<dt class="sidebar-dt">
 							<liferay-ui:message key="description" />
 						</dt>
@@ -254,9 +273,13 @@ if (ListUtil.isEmpty(folders) && ListUtil.isEmpty(fileEntries) && ListUtil.isEmp
 	</c:when>
 	<c:otherwise>
 		<div class="sidebar-header">
-			<h1 class="sidebar-title">
-				<liferay-ui:message key="selection" />
-			</h1>
+			<div class="autofit-row sidebar-section">
+				<div class="autofit-col autofit-col-expand">
+					<h1 class="component-title">
+						<liferay-ui:message key="selection" />
+					</h1>
+				</div>
+			</div>
 		</div>
 
 		<div class="sidebar-body">

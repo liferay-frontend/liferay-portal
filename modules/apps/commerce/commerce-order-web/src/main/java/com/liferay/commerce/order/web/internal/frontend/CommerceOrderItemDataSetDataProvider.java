@@ -19,6 +19,7 @@ import com.liferay.commerce.frontend.model.ImageField;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.model.CommerceSubscriptionEntry;
+import com.liferay.commerce.order.web.internal.frontend.constants.CommerceOrderDataSetConstants;
 import com.liferay.commerce.order.web.internal.model.OrderItem;
 import com.liferay.commerce.price.CommerceOrderItemPrice;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
@@ -170,11 +171,11 @@ public class CommerceOrderItemDataSetDataProvider
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 
-		List<OrderItem> orderItems = new ArrayList<>();
-
 		if (commerceOrderItems.isEmpty()) {
 			return Collections.emptyList();
 		}
+
+		List<OrderItem> orderItems = new ArrayList<>();
 
 		for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
 			ThemeDisplay themeDisplay =

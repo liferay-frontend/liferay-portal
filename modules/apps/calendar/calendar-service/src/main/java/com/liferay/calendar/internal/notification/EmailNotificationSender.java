@@ -25,6 +25,8 @@ import com.liferay.calendar.notification.NotificationUtil;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 
+import java.io.File;
+
 import javax.mail.internet.InternetAddress;
 
 import org.osgi.service.component.annotations.Component;
@@ -66,28 +68,27 @@ public class EmailNotificationSender implements NotificationSender {
 			notificationTemplateContext.setToName(
 				notificationRecipient.getName());
 
-			String subject = NotificationTemplateRenderer.render(
-				notificationTemplateContext, NotificationField.SUBJECT,
-				NotificationTemplateRenderer.MODE_PLAIN);
-			String body = NotificationTemplateRenderer.render(
-				notificationTemplateContext, NotificationField.BODY,
-				NotificationTemplateRenderer.MODE_HTML);
-
-			sendNotification(
+			_sendNotification(
 				notificationTemplateContext.getFromAddress(),
 				notificationTemplateContext.getFromName(),
-				notificationRecipient, subject, body);
+				(File)notificationTemplateContext.getAttribute("icsFile"),
+				NotificationTemplateRenderer.render(
+					notificationTemplateContext, NotificationField.BODY,
+					NotificationTemplateRenderer.MODE_HTML),
+				notificationRecipient,
+				NotificationTemplateRenderer.render(
+					notificationTemplateContext, NotificationField.SUBJECT,
+					NotificationTemplateRenderer.MODE_PLAIN));
 		}
 		catch (Exception exception) {
 			throw new NotificationSenderException(exception);
 		}
 	}
 
-	@Override
-	public void sendNotification(
-			String fromAddress, String fromName,
-			NotificationRecipient notificationRecipient, String subject,
-			String notificationMessage)
+	private void _sendNotification(
+			String fromAddress, String fromName, File icsFile,
+			String notificationMessage,
+			NotificationRecipient notificationRecipient, String subject)
 		throws NotificationSenderException {
 
 		try {
@@ -103,6 +104,10 @@ public class EmailNotificationSender implements NotificationSender {
 				notificationRecipient.getEmailAddress());
 
 			mailMessage.setTo(toInternetAddress);
+
+			if (icsFile != null) {
+				mailMessage.addFileAttachment(icsFile, "invite.ics");
+			}
 
 			_mailService.sendEmail(mailMessage);
 		}

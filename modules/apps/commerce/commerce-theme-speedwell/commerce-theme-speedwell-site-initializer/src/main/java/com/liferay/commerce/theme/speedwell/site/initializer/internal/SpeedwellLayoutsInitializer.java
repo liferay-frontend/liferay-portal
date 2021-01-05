@@ -39,9 +39,8 @@ public class SpeedwellLayoutsInitializer {
 	private void _createLayouts(ServiceContext serviceContext)
 		throws Exception {
 
-		String json = _speedwellDependencyResolver.getJSON("layouts.json");
-
-		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
+		JSONArray jsonArray = _jsonFactory.createJSONArray(
+			_speedwellDependencyResolver.getJSON("layouts.json"));
 
 		_cpFileImporter.createLayouts(
 			jsonArray, _speedwellDependencyResolver.getImageClassLoader(),

@@ -1,0 +1,342 @@
+@component-name = "portal-user-management-and-portal-configuration"
+definition {
+
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Virtual Instances";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			PortalInstances.tearDownCP();
+
+			Page.tearDownCP();
+		}
+	}
+
+	@priority = "5"
+	test AddPortalInstance {
+		property test.name.skip.portal.instance = "PortalconfigurationUsecase#AddPortalInstance";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "System",
+			panel = "Control Panel",
+			portlet = "Virtual Instances");
+
+		PortalInstances.addCP(
+			mailDomain = "www.able.com",
+			virtualHost = "www.able.com",
+			webId = "www.able.com");
+
+		PortalInstances.viewCP(virtualHost = "www.able.com");
+	}
+
+	@priority = "5"
+	test DeletePortalInstance {
+		property test.name.skip.portal.instance = "PortalconfigurationUsecase#DeletePortalInstance";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "System",
+			panel = "Control Panel",
+			portlet = "Virtual Instances");
+
+		PortalInstances.addCP(
+			mailDomain = "www.able.com",
+			virtualHost = "www.able.com",
+			webId = "www.able.com");
+
+		PortalInstances.deleteCP(virtualHost = "www.able.com");
+	}
+
+	@priority = "4"
+	test PermissionCheckPortalInstances {
+		property test.name.skip.portal.instance = "PortalconfigurationUsecase#PermissionCheckPortalInstances";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "System",
+			panel = "Control Panel",
+			portlet = "Virtual Instances");
+
+		PortalInstances.addCP(
+			mailDomain = "www.able.com",
+			virtualHost = "www.able.com",
+			webId = "www.able.com");
+
+		PortalInstances.addCP(
+			mailDomain = "www.baker.com",
+			virtualHost = "www.baker.com",
+			webId = "www.baker.com");
+
+		User.firstLoginPG(
+			password = "test",
+			userEmailAddress = "test@www.able.com",
+			virtualHostsURL = "http://www.able.com:8080");
+
+		Navigator.openSpecificURL(url = "http://www.able.com:8080");
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Documents and Media");
+
+		DMDocument.addCP(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentFile = "Document_1.doc",
+			dmDocumentTitle = "DM Document Title");
+
+		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
+
+		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
+
+		var documentURL = selenium.getLocation();
+		var otherInstanceAccessAttempt = StringUtil.replace("${documentURL}", "able", "baker");
+
+		User.firstLoginPG(
+			password = "test",
+			userEmailAddress = "test@www.baker.com",
+			virtualHostsURL = "http://www.baker.com:8080");
+
+		Navigator.openSpecificURL(url = "${otherInstanceAccessAttempt}");
+
+		Alert.viewRequestFailedToComplete();
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "Message#ERROR_1",
+			value1 = "You do not have the required permissions.");
+	}
+
+	@priority = "5"
+	test ViewDeactivatedPortalInstance {
+		property test.name.skip.portal.instance = "PortalconfigurationUsecase#ViewDeactivatedPortalInstance";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "System Settings");
+
+		SystemSettings.gotoConfiguration(
+			configurationCategory = "Infrastructure",
+			configurationName = "Inactive Request Handler",
+			configurationScope = "System Scope");
+
+		FormFields.enableCheckbox(fieldName = "Show Inactive Request Message");
+
+		SystemSettings.saveConfiguration();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "System",
+			panel = "Control Panel",
+			portlet = "Virtual Instances");
+
+		PortalInstances.addCP(
+			mailDomain = "www.able.com",
+			virtualHost = "www.able.com",
+			webId = "www.able.com");
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+		SitePages.addPublicPage(pageName = "Blogs Page");
+
+		Navigator.gotoPage(pageName = "Blogs Page");
+
+		Portlet.addPG(portletName = "Blogs");
+
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+		SitePages.addPublicPage(pageName = "Wiki Page");
+
+		Navigator.gotoPage(pageName = "Wiki Page");
+
+		Portlet.addPG(portletName = "Wiki");
+
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+		SitePages.addPublicPage(pageName = "Language Page");
+
+		Navigator.gotoPage(pageName = "Language Page");
+
+		Portlet.addPG(portletName = "Language Selector");
+
+		User.logoutPG();
+
+		User.firstLoginPG(
+			password = "test",
+			userEmailAddress = "test@www.able.com",
+			virtualHostsURL = "http://www.able.com:8080");
+
+		Page.viewNoPG(pageName = "Blogs Page");
+
+		Page.viewNoPG(pageName = "Wiki Page");
+
+		Page.viewNoPG(pageName = "Language Page");
+
+		Navigator.openSpecificURL(url = "http://www.able.com:8080");
+
+		// Assert the Home page is a content page in the new virtual instance
+
+		AssertVisible(locator1 = "Icon#EDIT_PENCIL");
+
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+		SitePages.addPublicPage(pageName = "Web Content Page");
+
+		Navigator.gotoSpecificURLPage(
+			pageName = "Web Content Page",
+			url = "http://www.able.com:8080");
+
+		Portlet.addPG(portletName = "Web Content Display");
+
+		Navigator.gotoSpecificURLPage(
+			pageName = "Web Content Page",
+			url = "http://www.able.com:8080");
+
+		Portlet.addPG(portletName = "Hello World");
+
+		User.logoutPG();
+
+		User.loginPG();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "System",
+			panel = "Control Panel",
+			portlet = "Virtual Instances");
+
+		PortalInstances.deactivatePortalInstance(virtualHost = "www.able.com");
+
+		Navigator.openSpecificURL(url = "http://www.able.com:8080");
+
+		Page.viewInactiveRequestMessage(resource = "instance");
+	}
+
+	@ignore = "true"
+	@priority = "4"
+	test ViewVirtualHostPrivateSitePage {
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com,www.charlie.com";
+		property test.name.skip.portal.instance = "PortalconfigurationUsecase#ViewVirtualHostPrivateSitePage";
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Instance Configuration",
+			configurationName = "General",
+			configurationScope = "Virtual Instance Scope");
+
+		PortalSettings.editVirtualHostCP(virtualHostName = "www.able.com");
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Configuration",
+			portlet = "Site Settings");
+
+		Site.addVirtualHostsURLCP(
+			publicPageVirtualHostURL = "www.baker.com",
+			publicVirtualHosts = "${publicPageVirtualHostURL}");
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Configuration",
+			portlet = "Site Settings");
+
+		Site.addVirtualHostsURLCP(
+			privatePageVirtualHostURL = "www.charlie.com",
+			privateVirtualHosts = "${privatePageVirtualHostURL}");
+
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+		SitePages.addPublicPage(pageName = "Public Page");
+
+		SitePages.addPrivatePage(pageName = "Private Page");
+
+		Navigator.openSpecificURL(url = "http://www.charlie.com:8080");
+
+		AssertElementPresent(
+			key_pageName = "Home",
+			locator1 = "Home#PAGE");
+
+		User.loginPG(
+			password = "test",
+			specificURL = "http://www.charlie.com:8080/group/guest",
+			userEmailAddress = "test@liferay.com");
+
+		AssertTextEquals(
+			key_pageName = "Private Page",
+			locator1 = "Home#PAGE",
+			value1 = "Private Page");
+
+		User.logoutPG();
+
+		User.loginUserPG(
+			password = "test",
+			userEmailAddress = "test@liferay.com");
+	}
+
+	@priority = "4"
+	test ViewVirtualInstanceInheritsSystemSettings {
+		property test.name.skip.portal.instance = "PortalconfigurationUsecase#ViewVirtualInstanceInheritsSystemSettings";
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Users",
+			configurationName = "Personal Menu",
+			configurationScope = "Virtual Instance Scope");
+
+		PortalSettings.viewToggleSwitchNotChecked(portalSetting = "Show in Control Menu");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "System Settings");
+
+		SystemSettings.gotoConfiguration(
+			configurationCategory = "Users",
+			configurationName = "Personal Menu",
+			configurationScope = "Virtual Instance Scope");
+
+		PortalSettings.editConfigurationUsersPersonalMenuShowInControlMenu(toggleSwitchLabel = "Show in Control Menu");
+
+		Navigator.openURL();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "System",
+			panel = "Control Panel",
+			portlet = "Virtual Instances");
+
+		PortalInstances.addCP(
+			mailDomain = "www.able.com",
+			virtualHost = "www.able.com",
+			webId = "www.able.com");
+
+		User.firstLoginPG(
+			password = "test",
+			userEmailAddress = "test@www.able.com",
+			virtualHostsURL = "http://www.able.com:8080");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Users",
+			configurationName = "Personal Menu",
+			configurationScope = "Virtual Instance Scope");
+
+		PortalSettings.viewToggleSwitchChecked(portalSetting = "Show in Control Menu");
+	}
+
+}

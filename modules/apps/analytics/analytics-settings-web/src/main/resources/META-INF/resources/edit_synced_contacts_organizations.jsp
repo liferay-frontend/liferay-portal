@@ -20,33 +20,17 @@
 PortletURL portletURL = renderResponse.createRenderURL();
 
 portletURL.setParameter("mvcRenderCommandName", "/configuration_admin/view_configuration_screen");
-
-boolean includeSyncContactsFields = ParamUtil.getBoolean(request, "includeSyncContactsFields");
-
-if (includeSyncContactsFields) {
-	portletURL.setParameter("configurationScreenKey", "2-synced-contact-data");
-}
-else {
-	portletURL.setParameter("configurationScreenKey", "2-synced-contacts");
-}
+portletURL.setParameter("configurationScreenKey", "2-synced-contact-data");
 
 String redirect = ParamUtil.getString(request, "redirect", portletURL.toString());
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(ParamUtil.getString(request, "backURL", redirect));
 
-if (includeSyncContactsFields) {
-	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "select-contact-data"), portletURL.toString());
-	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "select-contacts"), redirect);
-}
-else {
-	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "select-contacts"), portletURL.toString());
-}
-
+PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "select-contact-data"), portletURL.toString());
+PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "select-contacts"), redirect);
 PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "sync-by-organizations"), currentURL);
 %>
-
-<portlet:actionURL name="/analytics_settings/edit_synced_contacts" var="editSyncedContactsURL" />
 
 <portlet:renderURL var="editSyncedContactsFieldsURL">
 	<portlet:param name="mvcRenderCommandName" value="/analytics_settings/edit_synced_contacts_fields" />
@@ -88,10 +72,9 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "
 		displayContext="<%= new OrganizationManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, organizationDisplayContext) %>"
 	/>
 
-	<aui:form action="<%= includeSyncContactsFields ? editSyncedContactsFieldsURL : editSyncedContactsURL %>" method="post" name="fm">
+	<aui:form action="<%= editSyncedContactsFieldsURL %>" method="post" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="update_synced_organizations" />
-		<aui:input name="redirect" type="hidden" value="<%= includeSyncContactsFields ? currentURL : redirect %>" />
-		<aui:input name="includeSyncContactsFields" type="hidden" value="<%= String.valueOf(includeSyncContactsFields) %>" />
+		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 
 		<liferay-ui:search-container
 			id="selectOrganizations"
@@ -117,9 +100,11 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "
 			/>
 		</liferay-ui:search-container>
 
-		<aui:button-row>
-			<aui:button type="submit" value='<%= includeSyncContactsFields ? "save-and-next" : "save" %>' />
-			<aui:button href="<%= redirect %>" type="cancel" value="cancel" />
-		</aui:button-row>
+		<div class="text-right">
+			<aui:button-row>
+				<aui:button href="<%= redirect %>" type="cancel" value="cancel" />
+				<aui:button type="submit" value="save-and-next" />
+			</aui:button-row>
+		</div>
 	</aui:form>
 </clay:sheet>

@@ -30,6 +30,7 @@ public class FragmentCollectionContributorNameComparator
 
 	public FragmentCollectionContributorNameComparator(Locale locale) {
 		_locale = locale;
+
 		_ascending = true;
 	}
 

@@ -209,6 +209,7 @@ AssetHelper assetHelper = (AssetHelper)request.getAttribute(AssetWebKeys.ASSET_H
 String currentLanguageId = LanguageUtil.getLanguageId(request);
 
 Locale currentLocale = LocaleUtil.fromLanguageId(currentLanguageId);
+
 Locale defaultLocale = themeDisplay.getSiteDefaultLocale();
 
 String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);

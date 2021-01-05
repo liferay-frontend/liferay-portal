@@ -175,7 +175,7 @@ $navbarHeight: 120px;
 
 .button-info {
 	color: #6b6c7e;
-	word-break: break-all;
+	word-break: break-word;
 }
 
 .circle-icon {
@@ -244,6 +244,10 @@ $navbarHeight: 120px;
 	margin-top: 0.25rem;
 }
 
+.dropdown-button-title {
+	max-width: 200px;
+}
+
 .outline-text {
 	background-color: white;
 	font-size: 12px;
@@ -272,6 +276,10 @@ $navbarHeight: 120px;
 	box-sizing: border-box;
 	margin-top: 1rem;
 	padding: 1rem 1rem 0;
+}
+
+.tap-ahead-icon-wrapper .lexicon-icon-tap-ahead {
+	transform: scaleX(-1);
 }
 
 .tooltip-icon:hover {

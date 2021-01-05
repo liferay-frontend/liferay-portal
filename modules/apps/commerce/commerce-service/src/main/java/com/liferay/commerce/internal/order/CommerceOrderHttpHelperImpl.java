@@ -162,7 +162,8 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 
 			if (commerceOrder != null) {
 				portletURL.setParameter(
-					"mvcRenderCommandName", "viewCommerceOrderDetails");
+					"mvcRenderCommandName",
+					"/commerce_order_content/view_commerce_order_details");
 				portletURL.setParameter(
 					"commerceOrderUuid",
 					String.valueOf(commerceOrder.getUuid()));
@@ -190,7 +191,8 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 
 			if (commerceOrder != null) {
 				portletURL.setParameter(
-					"mvcRenderCommandName", "editCommerceOrder");
+					"mvcRenderCommandName",
+					"/commerce_open_order_content/edit_commerce_order");
 				portletURL.setParameter(
 					"commerceOrderUuid",
 					String.valueOf(commerceOrder.getUuid()));
@@ -343,10 +345,6 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 			HttpServletRequest httpServletRequest, CommerceOrder commerceOrder)
 		throws PortalException {
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		commerceOrder = _commerceOrderLocalService.recalculatePrice(
 			commerceOrder.getCommerceOrderId(),
 			_getCommerceContext(httpServletRequest));
@@ -357,6 +355,10 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 		if (permissionChecker.isSignedIn()) {
 			return;
 		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		_setGuestCommerceOrder(
 			commerceOrder, httpServletRequest, themeDisplay.getResponse());

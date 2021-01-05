@@ -12,7 +12,7 @@
  * details.
  */
 
-const getLocalizedValue = (defaultLanguageId, localizedValues) => {
+export const getLocalizedValue = (defaultLanguageId, localizedValues) => {
 	const languageId = themeDisplay.getLanguageId();
 
 	if (localizedValues[languageId]) {
@@ -22,7 +22,7 @@ const getLocalizedValue = (defaultLanguageId, localizedValues) => {
 	return localizedValues[defaultLanguageId];
 };
 
-const sub = (langKey, args) => {
+const replaceString = (langKey, args) => {
 	const SPLIT_REGEX = /({\d+})/g;
 
 	const keyArray = langKey
@@ -43,11 +43,21 @@ const sub = (langKey, args) => {
 		}
 	}
 
-	return keyArray.join('');
+	return keyArray;
 };
 
-export {getLocalizedValue};
+export const sub = (langKey, args) => replaceString(langKey, args).join('');
 
-export default {
-	sub,
+export const subComp = (langKey, args) => replaceString(langKey, args);
+
+export const getPluralMessage = (
+	singular,
+	plural,
+	count = 0,
+	toString,
+	subArray
+) => {
+	const message = count > 1 ? plural : singular;
+
+	return sub(message, subArray || [count.toLocaleString()], toString);
 };

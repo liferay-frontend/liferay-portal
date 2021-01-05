@@ -34,6 +34,10 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
+			Site.tearDownCP();
+
+			Depot.tearDownCP();
+
 			DMDocument.tearDownCP();
 
 			DMFolder.tearDownCP();
@@ -47,9 +51,9 @@ definition {
 	test AssertNotifications {
 		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
 
-		DMDocument.addMultipleCP(dmDocumentFileList = "Document_1.doc,Document_1.png,Document_1.odt");
+		DMDocument.addMultipleCP(dmDocumentFileList = "Document_1.doc,Document_2.png,Document_3.odt");
 
-		DepotNavigator.gotoShare(dmDocumentTitle = "Document_1.doc");
+		DepotNavigator.gotoShare(dmDocumentTitle = "Document_1");
 
 		Asset.share(
 			noAutocomplete = "true",
@@ -62,10 +66,10 @@ definition {
 		LexiconEntry.changeDisplayStyle(displayStyle = "Cards");
 
 		AssertVisible(
-			key_dmDocumentTitle = "Document_1.doc",
+			key_dmDocumentTitle = "Document_1",
 			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_SHARED");
 
-		DepotNavigator.gotoShare(dmDocumentTitle = "Document_1.png");
+		DepotNavigator.gotoShare(dmDocumentTitle = "Document_2");
 
 		Asset.share(
 			sharingPermissions = "Update",
@@ -77,10 +81,10 @@ definition {
 		LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
 		AssertVisible(
-			key_dmDocumentTitle = "Document_1.png",
+			key_dmDocumentTitle = "Document_2",
 			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_SHARED");
 
-		DepotNavigator.gotoShare(dmDocumentTitle = "Document_1.odt");
+		DepotNavigator.gotoShare(dmDocumentTitle = "Document_3");
 
 		Asset.share(
 			sharingPermissions = "Comment",
@@ -92,7 +96,7 @@ definition {
 		LexiconEntry.changeDisplayStyle(displayStyle = "table");
 
 		AssertVisible(
-			key_dmDocumentTitle = "Document_1.odt",
+			key_dmDocumentTitle = "Document_3",
 			locator1 = "DocumentsAndMedia#TABLE_DOCUMENT_SHARED");
 
 		User.logoutPG();
@@ -107,14 +111,14 @@ definition {
 
 		Notifications.viewNewSharedContent(
 			contentSharingPermission = "viewing",
-			contentTitle = "Document_1.doc",
+			contentTitle = "Document_1",
 			ownerName = "Test Test");
 
 		Notifications.gotoNotifications();
 
 		Notifications.viewNewSharedContent(
 			contentSharingPermission = "updating",
-			contentTitle = "Document_1.png",
+			contentTitle = "Document_2",
 			openNotification = "true",
 			ownerName = "Test Test");
 
@@ -128,7 +132,7 @@ definition {
 
 		Notifications.viewNewSharedContent(
 			contentSharingPermission = "commenting",
-			contentTitle = "Document_1.odt",
+			contentTitle = "Document_3",
 			ownerName = "Test Test");
 	}
 
@@ -224,7 +228,11 @@ definition {
 			openNotification = "true",
 			ownerName = "Test Test");
 
-		AssertElementPresent(locator1 = "Comments#COMMENT_FIELD");
+		SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
+
+		AssertElementPresent(locator1 = "CKEditor#BODY");
+
+		SelectFrame(value1 = "relative=top");
 
 		AssertElementNotPresent(locator1 = "Button#EDIT");
 

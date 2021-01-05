@@ -44,13 +44,13 @@ public class LoginPostAction extends Action {
 		HttpServletResponse httpServletResponse) {
 
 		try {
-			String domain = CookieKeys.getDomain(httpServletRequest);
-
 			Cookie[] cookies = httpServletRequest.getCookies();
 
 			if (cookies == null) {
 				return;
 			}
+
+			String domain = CookieKeys.getDomain(httpServletRequest);
 
 			for (Cookie cookie : cookies) {
 				String name = cookie.getName();

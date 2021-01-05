@@ -50,9 +50,6 @@ public class CommercePaymentMethodGroupRelUpgradeProcess
 			PreparedStatement ps = null;
 
 			while (rs.next()) {
-				long cPaymentMethodGroupRelId = rs.getLong(
-					"CPaymentMethodGroupRelId");
-
 				long groupId = rs.getLong("groupId");
 
 				long channelGroupId = _getCommerceChannelGroupIdBySiteGroupId(
@@ -61,6 +58,9 @@ public class CommercePaymentMethodGroupRelUpgradeProcess
 				if (channelGroupId == 0) {
 					continue;
 				}
+
+				long cPaymentMethodGroupRelId = rs.getLong(
+					"CPaymentMethodGroupRelId");
 
 				ps = connection.prepareStatement(
 					"update CommercePaymentMethodGroupRel set groupId = ? " +

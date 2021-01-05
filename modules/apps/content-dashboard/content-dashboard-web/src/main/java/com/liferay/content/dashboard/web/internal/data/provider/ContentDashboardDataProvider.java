@@ -22,20 +22,29 @@ import com.liferay.content.dashboard.web.internal.model.AssetVocabularyMetric;
 import com.liferay.content.dashboard.web.internal.search.request.ContentDashboardSearchContextBuilder;
 import com.liferay.content.dashboard.web.internal.searcher.ContentDashboardSearchRequestBuilderFactory;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.aggregation.bucket.Bucket;
+import com.liferay.portal.search.aggregation.bucket.FilterAggregation;
+import com.liferay.portal.search.aggregation.bucket.FilterAggregationResult;
 import com.liferay.portal.search.aggregation.bucket.IncludeExcludeClause;
 import com.liferay.portal.search.aggregation.bucket.TermsAggregation;
 import com.liferay.portal.search.aggregation.bucket.TermsAggregationResult;
+import com.liferay.portal.search.query.BooleanQuery;
+import com.liferay.portal.search.query.Queries;
+import com.liferay.portal.search.query.TermsQuery;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,10 +60,13 @@ public class ContentDashboardDataProvider {
 			contentDashboardSearchContextBuilder,
 		ContentDashboardSearchRequestBuilderFactory
 			contentDashboardSearchRequestBuilderFactory,
-		Locale locale, Searcher searcher) {
+		Locale locale, Queries queries, ResourceBundle resourceBundle,
+		Searcher searcher) {
 
 		_aggregations = aggregations;
 		_locale = locale;
+		_queries = queries;
+		_resourceBundle = resourceBundle;
 		_searcher = searcher;
 
 		_searchRequestBuilder =
@@ -90,6 +102,17 @@ public class ContentDashboardDataProvider {
 				entry -> entry.getTitle(locale)));
 	}
 
+	private String _getAssetVocabularyField(AssetVocabulary assetVocabulary) {
+		if ((assetVocabulary != null) &&
+			(assetVocabulary.getVisibilityType() ==
+				AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL)) {
+
+			return Field.ASSET_INTERNAL_CATEGORY_IDS;
+		}
+
+		return Field.ASSET_CATEGORY_IDS;
+	}
+
 	private AssetVocabularyMetric _getAssetVocabularyMetric(
 		AssetVocabulary assetVocabulary) {
 
@@ -100,7 +123,9 @@ public class ContentDashboardDataProvider {
 			assetCategoryTitlesMap, assetVocabulary,
 			_getBuckets(
 				_getTermsAggregation(
-					assetVocabulary, assetCategoryTitlesMap.keySet())));
+					assetVocabulary, assetCategoryTitlesMap.keySet(),
+					"categories"),
+				"categories"));
 	}
 
 	private AssetVocabularyMetric _getAssetVocabularyMetric(
@@ -112,24 +137,46 @@ public class ContentDashboardDataProvider {
 		Map<String, String> childAssetCategoryTitlesMap =
 			_getAssetCategoryTitlesMap(childAssetVocabulary, _locale);
 
-		TermsAggregation termsAggregation = _getTermsAggregation(
-			assetVocabulary, assetCategoryTitlesMap.keySet());
+		FilterAggregation childFilterAggregation = _aggregations.filter(
+			"childNoneCategory",
+			_getFilterBooleanQuery(
+				childAssetCategoryTitlesMap.keySet(),
+				_getAssetVocabularyField(childAssetVocabulary),
+				assetCategoryTitlesMap.keySet(),
+				_getAssetVocabularyField(assetVocabulary)));
 
-		termsAggregation.addChildAggregation(
+		childFilterAggregation.addChildAggregation(
 			_getTermsAggregation(
-				childAssetVocabulary, childAssetCategoryTitlesMap.keySet()));
+				assetVocabulary, assetCategoryTitlesMap.keySet(),
+				"childCategories"));
 
-		return new AssetVocabularyMetric(
-			String.valueOf(assetVocabulary.getVocabularyId()),
-			assetVocabulary.getTitle(_locale),
-			_toAssetCategoryMetrics(
-				assetCategoryTitlesMap, _getBuckets(termsAggregation),
-				childAssetCategoryTitlesMap, childAssetVocabulary));
-	}
+		TermsAggregation childTermsAggregation = _getTermsAggregation(
+			childAssetVocabulary, childAssetCategoryTitlesMap.keySet(),
+			"childCategories");
 
-	private Collection<Bucket> _getBuckets(TermsAggregation termsAggregation) {
+		FilterAggregation filterAggregation = _aggregations.filter(
+			"noneCategory",
+			_getFilterBooleanQuery(
+				assetCategoryTitlesMap.keySet(),
+				_getAssetVocabularyField(assetVocabulary),
+				childAssetCategoryTitlesMap.keySet(),
+				_getAssetVocabularyField(childAssetVocabulary)));
+
+		filterAggregation.addChildAggregation(childTermsAggregation);
+
+		TermsAggregation termsAggregation = _getTermsAggregation(
+			assetVocabulary, assetCategoryTitlesMap.keySet(), "categories");
+
+		termsAggregation.addChildAggregation(childTermsAggregation);
+
 		SearchResponse searchResponse = _searcher.search(
 			_searchRequestBuilder.addAggregation(
+				childFilterAggregation
+			).addAggregation(
+				childTermsAggregation
+			).addAggregation(
+				filterAggregation
+			).addAggregation(
 				termsAggregation
 			).size(
 				0
@@ -139,25 +186,135 @@ public class ContentDashboardDataProvider {
 			(TermsAggregationResult)searchResponse.getAggregationResult(
 				"categories");
 
+		Collection<Bucket> buckets = termsAggregationResult.getBuckets();
+
+		if (buckets.isEmpty()) {
+			termsAggregationResult =
+				(TermsAggregationResult)searchResponse.getAggregationResult(
+					"childCategories");
+
+			return _toAssetVocabularyMetric(
+				childAssetCategoryTitlesMap, childAssetVocabulary,
+				termsAggregationResult.getBuckets());
+		}
+
+		List<AssetCategoryMetric> assetCategoryMetrics =
+			_toAssetCategoryMetrics(
+				assetCategoryTitlesMap, buckets, childAssetCategoryTitlesMap,
+				childAssetVocabulary,
+				_getChildNoneAssetCategoryMetricCounts(
+					(FilterAggregationResult)
+						searchResponse.getAggregationResult(
+							"childNoneCategory")),
+				"childCategories");
+
+		FilterAggregationResult filterAggregationResult =
+			(FilterAggregationResult)searchResponse.getAggregationResult(
+				"noneCategory");
+
+		if (filterAggregationResult.getDocCount() > 0) {
+			assetCategoryMetrics.add(
+				_getNoneAssetCategoryMetric(
+					assetVocabulary, childAssetVocabulary,
+					childAssetCategoryTitlesMap, filterAggregationResult));
+		}
+
+		return new AssetVocabularyMetric(
+			String.valueOf(assetVocabulary.getVocabularyId()),
+			assetVocabulary.getTitle(_locale), assetCategoryMetrics);
+	}
+
+	private Collection<Bucket> _getBuckets(
+		TermsAggregation termsAggregation, String termsAggregationName) {
+
+		SearchResponse searchResponse = _searcher.search(
+			_searchRequestBuilder.addAggregation(
+				termsAggregation
+			).size(
+				0
+			).build());
+
+		TermsAggregationResult termsAggregationResult =
+			(TermsAggregationResult)searchResponse.getAggregationResult(
+				termsAggregationName);
+
 		return termsAggregationResult.getBuckets();
 	}
 
+	private Map<String, Long> _getChildNoneAssetCategoryMetricCounts(
+		FilterAggregationResult filterAggregationResult) {
+
+		if (filterAggregationResult.getDocCount() == 0) {
+			return Collections.emptyMap();
+		}
+
+		TermsAggregationResult termsAggregationResult =
+			(TermsAggregationResult)
+				filterAggregationResult.getChildAggregationResult(
+					"childCategories");
+
+		Collection<Bucket> buckets = termsAggregationResult.getBuckets();
+
+		Stream<Bucket> stream = buckets.stream();
+
+		return stream.collect(
+			Collectors.toMap(Bucket::getKey, Bucket::getDocCount));
+	}
+
+	private BooleanQuery _getFilterBooleanQuery(
+		Set<String> mustNotAssetCategoryIds, String mustNotAssetVocabularyField,
+		Set<String> shouldAssetCategoryIds, String shouldAssetVocabularyField) {
+
+		BooleanQuery booleanQuery = _queries.booleanQuery();
+
+		TermsQuery mustNotTermsQuery = _queries.terms(
+			mustNotAssetVocabularyField);
+
+		mustNotTermsQuery.addValues(
+			(Object[])ArrayUtil.toStringArray(mustNotAssetCategoryIds));
+
+		booleanQuery.addMustNotQueryClauses(mustNotTermsQuery);
+
+		TermsQuery shouldTermsQuery = _queries.terms(
+			shouldAssetVocabularyField);
+
+		shouldTermsQuery.addValues(
+			(Object[])ArrayUtil.toStringArray(shouldAssetCategoryIds));
+
+		booleanQuery.addShouldQueryClauses(shouldTermsQuery);
+
+		booleanQuery.setMinimumShouldMatch(1);
+
+		return booleanQuery;
+	}
+
+	private AssetCategoryMetric _getNoneAssetCategoryMetric(
+		AssetVocabulary assetVocabulary, AssetVocabulary childAssetVocabulary,
+		Map<String, String> childAssetCategoryTitlesMap,
+		FilterAggregationResult filterAggregationResult) {
+
+		TermsAggregationResult termsAggregationResult =
+			(TermsAggregationResult)
+				filterAggregationResult.getChildAggregationResult(
+					"childCategories");
+
+		return new AssetCategoryMetric(
+			_toAssetVocabularyMetric(
+				childAssetCategoryTitlesMap, childAssetVocabulary,
+				termsAggregationResult.getBuckets()),
+			"none",
+			ResourceBundleUtil.getString(
+				_resourceBundle, "no-x-category",
+				assetVocabulary.getTitle(_locale)),
+			filterAggregationResult.getDocCount());
+	}
+
 	private TermsAggregation _getTermsAggregation(
-		AssetVocabulary assetVocabulary, Set<String> assetCategoryIds) {
+		AssetVocabulary assetVocabulary, Set<String> assetCategoryIds,
+		String termsAggregationName) {
 
-		TermsAggregation termsAggregation = null;
-
-		if ((assetVocabulary != null) &&
-			(assetVocabulary.getVisibilityType() ==
-				AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL)) {
-
-			termsAggregation = _aggregations.terms(
-				"categories", Field.ASSET_INTERNAL_CATEGORY_IDS);
-		}
-		else {
-			termsAggregation = _aggregations.terms(
-				"categories", Field.ASSET_CATEGORY_IDS);
-		}
+		TermsAggregation termsAggregation = _aggregations.terms(
+			termsAggregationName, _getAssetVocabularyField(assetVocabulary));
 
 		termsAggregation.setIncludeExcludeClause(
 			new IncludeExcludeClauseImpl(
@@ -169,7 +326,9 @@ public class ContentDashboardDataProvider {
 	private List<AssetCategoryMetric> _toAssetCategoryMetrics(
 		Map<String, String> assetCategoryTitlesMap, Collection<Bucket> buckets,
 		Map<String, String> childAssetCategoryTitlesMap,
-		AssetVocabulary childAssetVocabulary) {
+		AssetVocabulary childAssetVocabulary,
+		Map<String, Long> childNoneAssetCategoryMetricCounts,
+		String termsAggregationName) {
 
 		Stream<Bucket> stream = buckets.stream();
 
@@ -177,12 +336,14 @@ public class ContentDashboardDataProvider {
 			bucket -> {
 				TermsAggregationResult termsAggregationResult =
 					(TermsAggregationResult)bucket.getChildAggregationResult(
-						"categories");
+						termsAggregationName);
 
 				return new AssetCategoryMetric(
 					_toAssetVocabularyMetric(
 						childAssetCategoryTitlesMap, childAssetVocabulary,
-						termsAggregationResult.getBuckets()),
+						termsAggregationResult.getBuckets(),
+						childNoneAssetCategoryMetricCounts.get(
+							bucket.getKey())),
 					bucket.getKey(),
 					assetCategoryTitlesMap.get(bucket.getKey()),
 					bucket.getDocCount());
@@ -211,8 +372,40 @@ public class ContentDashboardDataProvider {
 			));
 	}
 
+	private AssetVocabularyMetric _toAssetVocabularyMetric(
+		Map<String, String> assetCategoryTitlesMap,
+		AssetVocabulary assetVocabulary, Collection<Bucket> buckets,
+		Long noneAssetCategoryMetricCount) {
+
+		Stream<Bucket> stream = buckets.stream();
+
+		List<AssetCategoryMetric> assetCategoryMetrics = stream.map(
+			bucket -> new AssetCategoryMetric(
+				bucket.getKey(), assetCategoryTitlesMap.get(bucket.getKey()),
+				bucket.getDocCount())
+		).collect(
+			Collectors.toList()
+		);
+
+		if (noneAssetCategoryMetricCount != null) {
+			assetCategoryMetrics.add(
+				new AssetCategoryMetric(
+					"none",
+					ResourceBundleUtil.getString(
+						_resourceBundle, "no-x-category",
+						assetVocabulary.getTitle(_locale)),
+					noneAssetCategoryMetricCount));
+		}
+
+		return new AssetVocabularyMetric(
+			String.valueOf(assetVocabulary.getVocabularyId()),
+			assetVocabulary.getTitle(_locale), assetCategoryMetrics);
+	}
+
 	private final Aggregations _aggregations;
 	private final Locale _locale;
+	private final Queries _queries;
+	private final ResourceBundle _resourceBundle;
 	private final Searcher _searcher;
 	private final SearchRequestBuilder _searchRequestBuilder;
 

@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.sharing.configuration.SharingConfiguration;
 import com.liferay.sharing.configuration.SharingConfigurationFactory;
 import com.liferay.sharing.constants.SharingPortletKeys;
-import com.liferay.sharing.taglib.util.CollaboratorsUtil;
+import com.liferay.sharing.taglib.internal.util.CollaboratorsUtil;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;

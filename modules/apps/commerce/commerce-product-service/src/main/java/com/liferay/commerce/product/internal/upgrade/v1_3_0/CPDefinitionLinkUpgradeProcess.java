@@ -51,9 +51,7 @@ public class CPDefinitionLinkUpgradeProcess
 			while (rs.next()) {
 				long cpDefinitionId2 = rs.getLong("CPDefinitionId2");
 
-				long cProductId = _getCProductId(cpDefinitionId2);
-
-				ps.setLong(1, cProductId);
+				ps.setLong(1, _getCProductId(cpDefinitionId2));
 
 				ps.setLong(2, cpDefinitionId2);
 

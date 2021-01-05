@@ -14,10 +14,12 @@ import PropTypes from 'prop-types';
 import React, {useCallback, useContext, useState} from 'react';
 
 import ConnectionContext from '../context/ConnectionContext';
-import {StoreContext} from '../context/store';
+import {StoreContext} from '../context/StoreContext';
 import APIService from '../utils/APIService';
 import Detail from './Detail';
 import Main from './Main';
+
+const noop = () => {};
 
 export default function Navigation({
 	author,
@@ -25,12 +27,10 @@ export default function Navigation({
 	endpoints,
 	languageTag,
 	namespace,
-	onSelectedLanguageClick = () => {},
+	onSelectedLanguageClick = noop,
 	page,
 	pagePublishDate,
 	pageTitle,
-	timeSpanKey,
-	timeRange,
 	timeSpanOptions,
 	viewURLs,
 }) {
@@ -80,7 +80,7 @@ export default function Navigation({
 
 		setCurrentPage({
 			data: trafficSource,
-			view: 'traffic-source-detail',
+			view: trafficSource.name,
 		});
 	};
 
@@ -148,8 +148,6 @@ export default function Navigation({
 						onTrafficSourceClick={handleTrafficSourceClick}
 						pagePublishDate={pagePublishDate}
 						pageTitle={pageTitle}
-						timeRange={timeRange}
-						timeSpanKey={timeSpanKey}
 						timeSpanOptions={timeSpanOptions}
 						totalReadsDataProvider={handleTotalReads}
 						totalViewsDataProvider={handleTotalViews}
@@ -159,17 +157,17 @@ export default function Navigation({
 				</div>
 			)}
 
-			{currentPage.view === 'traffic-source-detail' &&
-				currentPage.data.countryKeywords.length > 0 && (
-					<Detail
-						currentPage={currentPage}
-						languageTag={languageTag}
-						onCurrentPageChange={handleCurrentPage}
-						onTrafficSourceNameChange={handleTrafficSourceName}
-						trafficShareDataProvider={handleTrafficShare}
-						trafficVolumeDataProvider={handleTrafficVolume}
-					/>
-				)}
+			{currentPage.view !== 'main' && (
+				<Detail
+					currentPage={currentPage}
+					languageTag={languageTag}
+					onCurrentPageChange={handleCurrentPage}
+					onTrafficSourceNameChange={handleTrafficSourceName}
+					timeSpanOptions={timeSpanOptions}
+					trafficShareDataProvider={handleTrafficShare}
+					trafficVolumeDataProvider={handleTrafficVolume}
+				/>
+			)}
 		</>
 	);
 }
@@ -188,8 +186,6 @@ Navigation.proptypes = {
 	).isRequired,
 	pagePublishDate: PropTypes.string.isRequired,
 	pageTitle: PropTypes.string.isRequired,
-	timeRange: PropTypes.object.isRequired,
-	timeSpanKey: PropTypes.string.isRequired,
 	timeSpanOptions: PropTypes.arrayOf(
 		PropTypes.shape({
 			key: PropTypes.string.isRequired,

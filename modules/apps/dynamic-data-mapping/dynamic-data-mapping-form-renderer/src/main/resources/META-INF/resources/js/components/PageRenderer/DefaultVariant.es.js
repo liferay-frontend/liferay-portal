@@ -14,10 +14,7 @@
 
 import ClayLayout from '@clayui/layout';
 import classnames from 'classnames';
-import React, {useContext} from 'react';
-
-import {DND_ORIGIN_TYPE, useDrop} from '../../hooks/useDrop.es';
-import {ParentFieldContext} from '../Field/ParentFieldContext.es';
+import React, {forwardRef} from 'react';
 
 export const Container = ({
 	activePage,
@@ -40,175 +37,101 @@ export const Container = ({
 	</div>
 );
 
-export const Column = ({
-	activePage,
-	allowNestedFields,
-	children,
-	column,
-	editable,
-	index,
-	pageIndex,
-	rowIndex,
-}) => {
-	const parentField = useContext(ParentFieldContext);
-	const {drop, overTarget} = useDrop({
-		columnIndex: index,
-		fieldName: column.fields[0]?.fieldName,
-		origin: DND_ORIGIN_TYPE.FIELD,
-		pageIndex,
-		parentField,
-		rowIndex,
-	});
+Container.displayName = 'DefaultVariant.Container';
 
-	if (column.fields.length === 0 && editable && activePage === pageIndex) {
-		return (
-			<Placeholder
-				columnIndex={index}
-				pageIndex={pageIndex}
-				rowIndex={rowIndex}
-				size={column.size}
-			/>
-		);
-	}
+export const Column = forwardRef(
+	(
+		{
+			children,
+			className,
+			column,
+			index,
+			onClick,
+			onMouseLeave,
+			onMouseOver,
+			pageIndex,
+			rowIndex,
+		},
+		ref
+	) => {
+		const addr = {
+			'data-ddm-field-column': index,
+			'data-ddm-field-page': pageIndex,
+			'data-ddm-field-row': rowIndex,
+		};
 
-	const addr = {
-		'data-ddm-field-column': index,
-		'data-ddm-field-page': pageIndex,
-		'data-ddm-field-row': rowIndex,
-	};
-
-	const renderFields = () => {
 		const firstField = column.fields[0];
-		const rootParentField = parentField.root ?? firstField;
 		const isFieldSetOrGroup = firstField.type === 'fieldset';
 		const isFieldSet = isFieldSetOrGroup && firstField.ddmStructureId;
 
 		return (
-			<div
-				className={classnames('ddm-field-container ddm-target h-100', {
-					'active-drop-child':
-						isFieldSetOrGroup &&
-						overTarget &&
-						!rootParentField.ddmStructureId,
-					'ddm-fieldset': isFieldSet,
-					'fields-group': isFieldSetOrGroup,
-					selected: firstField.selected,
-					'target-over targetOver':
-						!rootParentField.ddmStructureId && overTarget,
-				})}
-				data-field-name={firstField.fieldName}
+			<ClayLayout.Col
+				{...addr}
+				className="col-ddm"
+				key={index}
+				md={column.size}
+				onClick={onClick}
+				onMouseLeave={onMouseLeave}
+				onMouseOver={onMouseOver}
+				ref={ref}
 			>
-				<div
-					className={classnames(
-						'ddm-resize-handle ddm-resize-handle-left',
-						{hide: !(firstField.hovered || firstField.selected)}
-					)}
-					{...addr}
-				/>
-
-				<div
-					className={classnames('ddm-drag', {
-						'py-0': isFieldSetOrGroup,
-					})}
-					ref={
-						allowNestedFields && !rootParentField.ddmStructureId
-							? drop
-							: undefined
-					}
-				>
-					{column.fields.map((field, index) =>
-						children({field, index})
-					)}
-				</div>
-
-				<div
-					className={classnames(
-						'ddm-resize-handle ddm-resize-handle-right',
-						{hide: !(firstField.hovered || firstField.selected)}
-					)}
-					{...addr}
-				/>
-			</div>
+				{column.fields.length > 0 && (
+					<div
+						className={classnames(
+							'ddm-field-container ddm-target h-100',
+							{
+								'ddm-fieldset': isFieldSet,
+								'fields-group': isFieldSetOrGroup,
+							},
+							className
+						)}
+						data-field-name={firstField.fieldName}
+					>
+						{column.fields.map((field, index) =>
+							typeof children === 'function'
+								? children({field, index})
+								: children
+						)}
+					</div>
+				)}
+			</ClayLayout.Col>
 		);
-	};
+	}
+);
 
-	return (
-		<ClayLayout.Col
-			{...addr}
-			className={`col-ddm`}
-			key={index}
-			md={column.size}
-		>
-			{column.fields.length > 0 && renderFields()}
-		</ClayLayout.Col>
-	);
-};
+Column.displayName = 'DefaultVariant.Column';
 
 export const Page = ({
 	activePage,
 	children,
-	editable,
-	empty,
 	forceAriaUpdate,
 	header: Header,
 	invalidFormMessage,
 	pageIndex,
-}) => {
-	const {canDrop, drop, overTarget} = useDrop({
-		columnIndex: 0,
-		origin: DND_ORIGIN_TYPE.EMPTY,
-		pageIndex,
-		rowIndex: 0,
-	});
+}) => (
+	<div
+		className="active ddm-form-page lfr-ddm-form-page"
+		data-ddm-page={pageIndex}
+	>
+		{invalidFormMessage && (
+			<span
+				aria-atomic="true"
+				aria-hidden="false"
+				aria-live="polite"
+				hidden
+			>
+				{invalidFormMessage}
+				<span aria-hidden="true">{forceAriaUpdate}</span>
+			</span>
+		)}
 
-	return (
-		<div
-			className="active ddm-form-page lfr-ddm-form-page"
-			data-ddm-page={pageIndex}
-		>
-			{invalidFormMessage && (
-				<span
-					aria-atomic="true"
-					aria-hidden="false"
-					aria-live="polite"
-					hidden
-				>
-					{invalidFormMessage}
-					<span aria-hidden="true">{forceAriaUpdate}</span>
-				</span>
-			)}
+		{activePage === pageIndex && Header}
 
-			{activePage === pageIndex && Header}
+		{children}
+	</div>
+);
 
-			{empty && editable && activePage === pageIndex ? (
-				<ClayLayout.Row>
-					<ClayLayout.Col
-						className="col-ddm col-empty last-col lfr-initial-col mb-4 mt-5"
-						data-ddm-field-column="0"
-						data-ddm-field-page={pageIndex}
-						data-ddm-field-row="0"
-					>
-						<div
-							className={classnames('ddm-empty-page ddm-target', {
-								'target-droppable': canDrop,
-								'target-over targetOver': overTarget,
-							})}
-							ref={drop}
-						>
-							<p className="ddm-empty-page-message">
-								{Liferay.Language.get(
-									'drag-fields-from-the-sidebar-to-compose-your-form'
-								)}
-							</p>
-						</div>
-					</ClayLayout.Col>
-				</ClayLayout.Row>
-			) : (
-				children
-			)}
-		</div>
-	);
-};
+Page.displayName = 'DefaultVariant.Page';
 
 /* eslint-disable react/jsx-fragments */
 export const PageHeader = ({description, title}) => (
@@ -220,46 +143,7 @@ export const PageHeader = ({description, title}) => (
 	</React.Fragment>
 );
 
-export const Placeholder = ({
-	columnIndex,
-	isRow,
-	pageIndex,
-	rowIndex,
-	size,
-}) => {
-	const parentField = useContext(ParentFieldContext);
-	const {drop, overTarget} = useDrop({
-		columnIndex: columnIndex ?? 0,
-		origin: DND_ORIGIN_TYPE.EMPTY,
-		pageIndex,
-		parentField,
-		rowIndex,
-	});
-
-	const Content = (
-		<ClayLayout.Col
-			className={`col col-ddm col-empty`}
-			data-ddm-field-column={columnIndex}
-			data-ddm-field-page={pageIndex}
-			data-ddm-field-row={rowIndex}
-			md={size}
-		>
-			<div
-				className={classnames('ddm-target', {
-					'target-over targetOver':
-						overTarget && !parentField.root?.ddmStructureId,
-				})}
-				ref={!parentField.root?.ddmStructureId ? drop : undefined}
-			/>
-		</ClayLayout.Col>
-	);
-
-	if (isRow) {
-		return <div className="placeholder row">{Content}</div>;
-	}
-
-	return Content;
-};
+PageHeader.displayName = 'DefaultVariant.PageHeader';
 
 export const Row = ({children, index, row}) => (
 	<div className="position-relative row" key={index}>
@@ -267,32 +151,16 @@ export const Row = ({children, index, row}) => (
 	</div>
 );
 
-export const Rows = ({activePage, children, editable, pageIndex, rows}) => {
+Row.displayName = 'DefaultVariant.Row';
+
+export const Rows = ({children, rows}) => {
 	if (!rows) {
 		return null;
 	}
 
 	return rows.map((row, index) => (
-		<div key={index}>
-			{index === 0 && editable && activePage === pageIndex && (
-				<Placeholder
-					isRow
-					pageIndex={pageIndex}
-					rowIndex={0}
-					size={12}
-				/>
-			)}
-
-			{children({index, row})}
-
-			{editable && activePage === pageIndex && (
-				<Placeholder
-					isRow
-					pageIndex={pageIndex}
-					rowIndex={index + 1}
-					size={12}
-				/>
-			)}
-		</div>
+		<div key={index}>{children({index, row})}</div>
 	));
 };
+
+Rows.displayName = 'DefaultVariant.Rows';

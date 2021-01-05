@@ -58,10 +58,10 @@ public class LiferayPortletURLPrivilegedAction {
 		_portletPreferences = portletPreferences;
 		_portletRequest = portletRequest;
 		_portletResponseImpl = portletResponseImpl;
-
-		_httpServletRequest = null;
 		_requestPlid = requestPlid;
 		_constructors = constructors;
+
+		_httpServletRequest = null;
 	}
 
 	public LiferayPortletURLPrivilegedAction(

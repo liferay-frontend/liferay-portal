@@ -479,11 +479,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>PLUS_IE</td>
-	<td>//a[contains(@class,'nav-btn-monospaced')] | //button[contains(@class,'nav-btn-monospaced')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>POST</td>
 	<td>//div[@class='button-holder']/button[contains(@id,'MicroblogsPortlet') and not (contains(@class,'disabled'))]/span[contains(.,'Post')]</td>
 	<td></td>
@@ -565,7 +560,7 @@
 </tr>
 <tr>
 	<td>RESET_CHANGES</td>
-	<td>//button[contains(.,'Reset Changes')]</td>
+	<td>//a[contains(@class,'btn')][contains(.,'Reset Changes')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -654,6 +649,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SELECT_FIELD_LAST</td>
+	<td>xpath=(//*[contains(@class,'btn btn-secondary') and contains(text(),'Select')])[last()]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SELECT_FILE</td>
 	<td>//button[contains(.,'Select File')] | //label[contains(.,'Select File')]</td>
 	<td></td>
@@ -680,7 +680,7 @@
 </tr>
 <tr>
 	<td>TRANSLATIONS_LOCALIZATION</td>
-	<td>//div[contains(@class,'dropdown')]//button[contains(@class,'dropdown-toggle')]//span[*[name()='svg'][contains(@class,'lexicon-icon-${key_currentLocale}')]]</td>
+	<td>//div[contains(@class,'dropdown')]//button[contains(@class,'dropdown-toggle')]//*[name()='svg'][contains(@class,'lexicon-icon-${key_currentLocale}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -821,6 +821,11 @@
 <tr>
 	<td>WEB_CONTENT_CHOOSE</td>
 	<td>//tr[contains(.,'${key_webContentTitle}')]/td//button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>YOUTUBE_PLAY</td>
+	<td>//button[contains(@class,'ytp-large-play-button')]</td>
 	<td></td>
 </tr>
 </tbody>

@@ -70,7 +70,7 @@ String displayStyle = userItemSelectorViewDisplayContext.getDisplayStyle();
 				<c:when test='<%= displayStyle.equals("icon") %>'>
 
 					<%
-					row.setCssClass("entry-card lfr-asset-item selectable");
+					row.setCssClass("card-page-item card-page-item-asset selectable");
 					%>
 
 					<liferay-ui:search-container-column-text>
@@ -81,13 +81,13 @@ String displayStyle = userItemSelectorViewDisplayContext.getDisplayStyle();
 				</c:when>
 				<c:otherwise>
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content table-title"
+						cssClass="table-cell-expand table-title"
 						name="name"
 						value="<%= HtmlUtil.escape(user.getFullName()) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="screen-name"
 						property="screenName"
 					/>

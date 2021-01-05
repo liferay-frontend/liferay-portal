@@ -54,18 +54,19 @@ public class CollectionsVerticalCard extends BaseVerticalCard {
 
 		_assetListEntry = assetListEntry;
 		_groupId = groupId;
-		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
 		_renderResponse = renderResponse;
+
+		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
 	}
 
 	@Override
-	public String getAspectRatioCssClasses() {
-		return "aspect-ratio-item-center-middle " +
-			"aspect-ratio-item-vertical-fluid";
+	public String getCssClass() {
+		return "select-collection-action-option card-interactive " +
+			"card-interactive-secondary";
 	}
 
 	@Override
-	public Map<String, String> getData() {
+	public Map<String, String> getDynamicAttributes() {
 		Map<String, String> data = new HashMap<>();
 
 		try {
@@ -104,7 +105,7 @@ public class CollectionsVerticalCard extends BaseVerticalCard {
 				InfoListItemSelectorReturnType.class.getName());
 
 			data.put(
-				"select-layout-master-layout-url",
+				"data-select-layout-master-layout-url",
 				selectLayoutMasterLayoutURL.toString());
 		}
 		catch (Exception exception) {
@@ -114,12 +115,6 @@ public class CollectionsVerticalCard extends BaseVerticalCard {
 		}
 
 		return data;
-	}
-
-	@Override
-	public String getElementClasses() {
-		return "select-collection-action-option card-interactive " +
-			"card-interactive-secondary";
 	}
 
 	@Override
@@ -159,6 +154,11 @@ public class CollectionsVerticalCard extends BaseVerticalCard {
 		catch (PortalException portalException) {
 			return ReflectionUtil.throwException(portalException);
 		}
+	}
+
+	@Override
+	public Boolean isFlushHorizontal() {
+		return true;
 	}
 
 	private String _getAssetEntrySubtypeSubtypeLabel() {

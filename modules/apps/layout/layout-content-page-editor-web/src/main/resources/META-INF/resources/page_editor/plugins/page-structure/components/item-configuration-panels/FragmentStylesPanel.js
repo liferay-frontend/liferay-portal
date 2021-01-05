@@ -20,6 +20,7 @@ import {FRAGMENT_CONFIGURATION_ROLES} from '../../../../app/config/constants/fra
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/constants/freemarkerFragmentEntryProcessor';
 import {VIEWPORT_SIZES} from '../../../../app/config/constants/viewportSizes';
 import {config} from '../../../../app/config/index';
+import selectLanguageId from '../../../../app/selectors/selectLanguageId';
 import selectSegmentsExperienceId from '../../../../app/selectors/selectSegmentsExperienceId';
 import {
 	useDispatch,
@@ -41,6 +42,8 @@ export const FragmentStylesPanel = ({item}) => {
 		(state) => state.fragmentEntryLinks[item.config.fragmentEntryLinkId],
 		[item.config.fragmentEntryLinkId]
 	);
+
+	const languageId = useSelector(selectLanguageId);
 
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const selectedViewportSize = useSelector(
@@ -66,11 +69,12 @@ export const FragmentStylesPanel = ({item}) => {
 				updateFragmentConfiguration({
 					configurationValues: nextConfigurationValues,
 					fragmentEntryLink,
+					languageId,
 					segmentsExperienceId,
 				})
 			);
 		},
-		[dispatch, fragmentEntryLink, segmentsExperienceId]
+		[dispatch, fragmentEntryLink, languageId, segmentsExperienceId]
 	);
 
 	return (
@@ -116,6 +120,7 @@ const CustomStyles = ({fragmentEntryLink, onValueSelect}) => {
 						fields={fieldSet.fields}
 						key={index}
 						label={fieldSet.label}
+						languageId={config.defaultLanguageId}
 						onValueSelect={onValueSelect}
 						values={getConfigurationValues(fragmentEntryLink)}
 					/>

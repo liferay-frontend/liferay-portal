@@ -64,7 +64,7 @@ MDRActionDisplayContext mdrActionDisplayContext = new MDRActionDisplayContext(re
 PortletURL portletURL = mdrActionDisplayContext.getPortletURL();
 %>
 
-<aui:form action="<%= deleteURL.toString() %>" cssClass="container-fluid-1280" method="post" name="fm">
+<aui:form action="<%= deleteURL.toString() %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.DELETE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= portletURL.toString() %>" />
 
@@ -131,11 +131,6 @@ PortletURL portletURL = mdrActionDisplayContext.getPortletURL();
 					/>
 				</c:when>
 				<c:when test='<%= Objects.equals(mdrActionDisplayContext.getDisplayStyle(), "icon") %>'>
-
-					<%
-					row.setCssClass("entry-card lfr-asset-item");
-					%>
-
 					<liferay-ui:search-container-column-text>
 						<liferay-frontend:icon-vertical-card
 							actionJsp="/action_actions.jsp"

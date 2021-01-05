@@ -20,6 +20,7 @@
 OrderSummaryCheckoutStepDisplayContext orderSummaryCheckoutStepDisplayContext = (OrderSummaryCheckoutStepDisplayContext)request.getAttribute(CommerceCheckoutWebKeys.COMMERCE_CHECKOUT_STEP_DISPLAY_CONTEXT);
 
 CommerceOrder commerceOrder = orderSummaryCheckoutStepDisplayContext.getCommerceOrder();
+
 CommerceOrderPrice commerceOrderPrice = orderSummaryCheckoutStepDisplayContext.getCommerceOrderPrice();
 
 CommerceDiscountValue shippingDiscountValue = commerceOrderPrice.getShippingDiscountValue();

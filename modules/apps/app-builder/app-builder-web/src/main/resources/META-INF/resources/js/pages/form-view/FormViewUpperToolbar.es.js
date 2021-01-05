@@ -14,24 +14,20 @@
 
 import ClayButton from '@clayui/button';
 import {
+	DataDefinitionUtils,
 	DataLayoutBuilderActions,
 	DataLayoutVisitor,
 	TranslationManager,
-	saveDataDefinition,
 } from 'data-engine-taglib';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 
 import {AppContext} from '../../AppContext.es';
 import UpperToolbar from '../../components/upper-toolbar/UpperToolbar.es';
 import {errorToast, successToast} from '../../utils/toast.es';
-import {getValidName} from '../../utils/utils.es';
+import {normalizeNames} from '../../utils/utils.es';
 import FormViewContext from './FormViewContext.es';
 
-export default function FormViewUpperToolbar({
-	newCustomObject,
-	popUpWindow,
-	showTranslationManager,
-}) {
+export default function FormViewUpperToolbar({newCustomObject, popUpWindow}) {
 	const [defaultLanguageId, setDefaultLanguageId] = useState('');
 	const [editingLanguageId, setEditingLanguageId] = useState('');
 	const [isLoading, setLoading] = useState(false);
@@ -88,11 +84,16 @@ export default function FormViewUpperToolbar({
 	};
 
 	const onCancel = () => {
-		if (newCustomObject) {
-			Liferay.Util.navigate(basePortletURL);
+		if (popUpWindow) {
+			window.top?.Liferay.fire('closeModal');
 		}
 		else {
-			Liferay.Util.navigate(listUrl);
+			if (newCustomObject) {
+				Liferay.Util.navigate(basePortletURL);
+			}
+			else {
+				Liferay.Util.navigate(listUrl);
+			}
 		}
 	};
 
@@ -127,14 +128,18 @@ export default function FormViewUpperToolbar({
 				dataLayout.name[editingLanguageId];
 		}
 
-		dataLayout.name[defaultLanguageId] = getValidName(
-			Liferay.Language.get('untitled-form-view'),
-			dataLayout.name[defaultLanguageId]
-		);
-
 		setLoading(true);
 
-		saveDataDefinition(state)
+		DataDefinitionUtils.saveDataDefinition({
+			...state,
+			dataLayout: {
+				...dataLayout,
+				name: normalizeNames({
+					defaultName: Liferay.Language.get('untitled-form-view'),
+					localizableValue: dataLayout.name,
+				}),
+			},
+		})
 			.then(onSuccess)
 			.catch((error) => {
 				onError(error);
@@ -156,7 +161,7 @@ export default function FormViewUpperToolbar({
 				className="m-0"
 				disabled={
 					isLoading ||
-					!dataLayout.name[editingLanguageId] ||
+					!dataLayout.name[editingLanguageId]?.trim() ||
 					DataLayoutVisitor.isDataLayoutEmpty(
 						dataLayout.dataLayoutPages
 					)
@@ -171,30 +176,27 @@ export default function FormViewUpperToolbar({
 	return (
 		<>
 			<UpperToolbar>
-				{showTranslationManager && (
-					<UpperToolbar.Group>
-						<TranslationManager
-							defaultLanguageId={defaultLanguageId}
-							editingLanguageId={editingLanguageId}
-							onEditingLanguageIdChange={
-								onEditingLanguageIdChange
-							}
-							translatedLanguageIds={{
-								...dataLayout.name,
-								...initialAvailableLanguageIds.reduce(
-									(acc, cur) => {
-										acc[cur] = cur;
+				<UpperToolbar.Group>
+					<TranslationManager
+						defaultLanguageId={defaultLanguageId}
+						editingLanguageId={editingLanguageId}
+						onEditingLanguageIdChange={onEditingLanguageIdChange}
+						translatedLanguageIds={{
+							...dataLayout.name,
+							...initialAvailableLanguageIds.reduce(
+								(acc, cur) => {
+									acc[cur] = cur;
 
-										return acc;
-									},
-									{}
-								),
-							}}
-						/>
-					</UpperToolbar.Group>
-				)}
+									return acc;
+								},
+								{}
+							),
+						}}
+					/>
+				</UpperToolbar.Group>
 
 				<UpperToolbar.Input
+					autoFocus
 					onChange={onDataLayoutNameChange}
 					onKeyDown={onKeyDown}
 					placeholder={Liferay.Language.get('untitled-form-view')}

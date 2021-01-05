@@ -100,10 +100,8 @@ public class GradleExportedPackageDependenciesCheck extends BaseFileCheck {
 				sb.append("\n");
 			}
 			else {
-				String dependencyVersion = _getDependencyVersion(line);
-
 				if (_isValidBundleSymbolicName(
-						dependencyName, dependencyVersion)) {
+						dependencyName, _getDependencyVersion(line))) {
 
 					sb.append(line);
 					sb.append("\n");

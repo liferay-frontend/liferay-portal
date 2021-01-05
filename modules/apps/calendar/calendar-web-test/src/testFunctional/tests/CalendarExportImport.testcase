@@ -78,10 +78,9 @@ definition {
 		CalendarEvent.view(eventTitle = "Event For Export");
 	}
 
-	@priority = "5"
+	@ignore = "true"
+	@priority = "4"
 	test ImportCalendarAndViewEventComment {
-		property portal.upstream = "quarantine";
-
 		var siteName = TestCase.getSiteName(siteName = "${siteName}");
 
 		Calendar.enableComments(

@@ -24,7 +24,7 @@ SelectUsersDisplayContext selectUsersDisplayContext = new SelectUsersDisplayCont
 	displayContext="<%= new SelectUsersManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, selectUsersDisplayContext) %>"
 />
 
-<aui:form cssClass="container-fluid-1280 portlet-site-teams-select-users" name="selectUserFm">
+<aui:form cssClass="container-fluid container-fluid-max-xl portlet-site-teams-select-users" name="selectUserFm">
 	<liferay-ui:search-container
 		id="users"
 		searchContainer="<%= selectUsersDisplayContext.getUserSearchContainer() %>"
@@ -41,13 +41,13 @@ SelectUsersDisplayContext selectUsersDisplayContext = new SelectUsersDisplayCont
 				<c:when test='<%= Objects.equals(selectUsersDisplayContext.getDisplayStyle(), "icon") %>'>
 
 					<%
-					row.setCssClass("entry-card lfr-asset-item selectable");
+					row.setCssClass("card-page-item card-page-item-asset selectable");
 					%>
 
 					<liferay-ui:search-container-column-text>
-						<clay:user-card-v2
+						<clay:user-card
 							userCard="<%= new SelectUserUserCard(user2, renderRequest, searchContainer.getRowChecker()) %>"
-							userColorClass='<%= "user-icon " + LexiconUtil.getUserColorCssClass(user2) %>'
+							userColorClass='<%= "sticker-user-icon " + LexiconUtil.getUserColorCssClass(user2) %>'
 						/>
 					</liferay-ui:search-container-column-text>
 				</c:when>
@@ -70,13 +70,13 @@ SelectUsersDisplayContext selectUsersDisplayContext = new SelectUsersDisplayCont
 				</c:when>
 				<c:otherwise>
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="name"
 						property="fullName"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="screen-name"
 						property="screenName"
 					/>

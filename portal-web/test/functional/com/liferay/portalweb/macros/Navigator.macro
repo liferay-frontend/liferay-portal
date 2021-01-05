@@ -101,9 +101,11 @@ definition {
 	macro gotoNavTab {
 		var key_tab = "${navTab}";
 
-		AssertClick.assertPartialTextClickAt(
-			locator1 = "NavTab#TAB_LINK",
-			value1 = "${navTab}");
+		if (IsElementNotPresent(locator1 = "NavTab#ACTIVE_TAB_LINK")) {
+			AssertClick.assertPartialTextClickAt(
+				locator1 = "NavTab#TAB_LINK",
+				value1 = "${navTab}");
+		}
 
 		AssertElementPresent(locator1 = "NavTab#ACTIVE_TAB_LINK");
 
@@ -152,6 +154,14 @@ definition {
 			siteNameURL = "${siteName}");
 
 		Navigator._gotoPage(pageName = "${pageName}");
+	}
+
+	macro gotoSidebarTab {
+		var key_tabName = "${tabName}";
+
+		Click.clickNoMouseOver(locator1 = "Sidebar#TAB");
+
+		AssertElementPresent(locator1 = "Sidebar#ACTIVE_TAB");
 	}
 
 	macro gotoSitePage {

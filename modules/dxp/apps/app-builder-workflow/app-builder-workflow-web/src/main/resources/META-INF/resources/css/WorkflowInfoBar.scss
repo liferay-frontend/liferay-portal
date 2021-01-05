@@ -13,4 +13,10 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
+
+	&.bar-sm {
+		.info-item {
+			max-width: 40%;
+		}
+	}
 }

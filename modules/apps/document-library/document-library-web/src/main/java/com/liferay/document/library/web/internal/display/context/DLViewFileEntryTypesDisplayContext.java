@@ -16,7 +16,6 @@ package com.liferay.document.library.web.internal.display.context;
 
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeServiceUtil;
-import com.liferay.document.library.web.internal.configuration.FFDocumentLibraryDDMEditorConfigurationUtil;
 import com.liferay.document.library.web.internal.security.permission.resource.DLPermission;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
@@ -65,26 +64,11 @@ public class DLViewFileEntryTypesDisplayContext {
 
 			return CreationMenuBuilder.addPrimaryDropdownItem(
 				dropdownItem -> {
-					PortletURL creationURL = renderResponse.createRenderURL();
-
-					String mvcRenderCommandName =
-						"/document_library/edit_file_entry_type";
-
-					if (useDataEngineEditor()) {
-						mvcRenderCommandName =
-							"/document_library" +
-								"/edit_file_entry_type_data_definition";
-					}
-
-					creationURL.setParameter(
-						"mvcRenderCommandName", mvcRenderCommandName);
-
-					creationURL.setParameter(
-						"redirect",
+					dropdownItem.setHref(
+						renderResponse.createRenderURL(),
+						"mvcRenderCommandName",
+						"/document_library/edit_file_entry_type", "redirect",
 						PortalUtil.getCurrentURL(_httpServletRequest));
-
-					dropdownItem.setHref(creationURL.toString());
-
 					dropdownItem.setLabel(
 						LanguageUtil.get(_httpServletRequest, "new"));
 				}
@@ -147,11 +131,6 @@ public class DLViewFileEntryTypesDisplayContext {
 		SearchContainer<DLFileEntryType> searchContainer = getSearchContainer();
 
 		return searchContainer.getTotal();
-	}
-
-	public boolean useDataEngineEditor() {
-		return FFDocumentLibraryDDMEditorConfigurationUtil.
-			useDataEngineEditor();
 	}
 
 	protected PortletURL getPortletURL() {

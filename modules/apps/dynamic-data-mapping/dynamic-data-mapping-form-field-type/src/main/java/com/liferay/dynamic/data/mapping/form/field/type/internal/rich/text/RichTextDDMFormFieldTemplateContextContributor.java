@@ -18,9 +18,17 @@ import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTemplateCont
 import com.liferay.dynamic.data.mapping.form.field.type.internal.util.DDMFormFieldTypeUtil;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.editor.configuration.EditorConfiguration;
+import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactoryUtil;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -52,7 +60,32 @@ public class RichTextDDMFormFieldTemplateContextContributor
 			"value",
 			DDMFormFieldTypeUtil.getPropertyValue(
 				ddmFormFieldRenderingContext, "value")
+		).putAll(
+			_getData(ddmFormFieldRenderingContext, ddmFormField.getType())
 		).build();
+	}
+
+	private Map<String, Object> _getData(
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext,
+		String ddmFormFieldType) {
+
+		HttpServletRequest httpServletRequest =
+			ddmFormFieldRenderingContext.getHttpServletRequest();
+
+		EditorConfiguration editorConfiguration =
+			EditorConfigurationFactoryUtil.getEditorConfiguration(
+				StringPool.BLANK, ddmFormFieldType, "ckeditor_classic",
+				HashMapBuilder.<String, Object>put(
+					"liferay-ui:input-editor:allowBrowseDocuments", true
+				).put(
+					"liferay-ui:input-editor:name",
+					ddmFormFieldRenderingContext.getName()
+				).build(),
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY),
+				RequestBackedPortletURLFactoryUtil.create(httpServletRequest));
+
+		return editorConfiguration.getData();
 	}
 
 }

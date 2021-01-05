@@ -18,6 +18,7 @@
 
 <%
 int groupLevel = GetterUtil.getInteger(request.getAttribute("view.jsp-groupLevel"));
+
 long parentGroupId = GetterUtil.getLong(request.getAttribute("view.jsp-parentGroupId"));
 
 List<Group> childGroups = GroupLocalServiceUtil.getGroups(themeDisplay.getCompanyId(), parentGroupId, true, QueryUtil.ALL_POS, QueryUtil.ALL_POS);

@@ -216,6 +216,8 @@ AUI.add(
 
 				var container = instance.get('container');
 
+				var dataType = instance.get('dataType');
+
 				var templateResourceParameters = {
 					doAsGroupId: instance.get('doAsGroupId'),
 					fieldName: instance.get('name'),
@@ -231,6 +233,10 @@ AUI.add(
 					portletNamespace: instance.get('portletNamespace'),
 					readOnly: instance.get('readOnly'),
 				};
+
+				if (dataType && dataType === 'html') {
+					delete templateResourceParameters.doAsGroupId;
+				}
 
 				var templateResourceURL = Liferay.Util.PortletURL.createResourceURL(
 					themeDisplay.getLayoutURL(),
@@ -1140,10 +1146,6 @@ AUI.add(
 					var fields = instance.get('fields');
 
 					if (dataType || fields.length) {
-						instance.updateLocalizationMap(
-							instance.get('displayLocale')
-						);
-
 						fieldJSON.value = instance.get('localizationMap');
 
 						if (instance.get('localizable')) {
@@ -4073,6 +4075,22 @@ AUI.add(
 					instance.updateDDMFormInputValue();
 				},
 
+				_updateNestedLocalizationMaps(fields) {
+					var instance = this;
+
+					fields.forEach((field) => {
+						var nestedFields = field.get('fields');
+
+						field.updateLocalizationMap(field.get('displayLocale'));
+
+						if (nestedFields.length) {
+							instance._updateNestedLocalizationMaps(
+								nestedFields
+							);
+						}
+					});
+				},
+
 				_valueFormNode() {
 					var instance = this;
 
@@ -4517,6 +4535,10 @@ AUI.add(
 					var instance = this;
 
 					instance.toJSON();
+
+					var fields = instance.get('fields');
+
+					instance._updateNestedLocalizationMaps(fields);
 
 					instance.fillEmptyLocales(
 						instance,

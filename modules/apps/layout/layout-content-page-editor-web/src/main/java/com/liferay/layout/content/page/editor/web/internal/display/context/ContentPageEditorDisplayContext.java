@@ -14,6 +14,8 @@
 
 package com.liferay.layout.content.page.editor.web.internal.display.context;
 
+import com.liferay.asset.categories.item.selector.AssetCategoryTreeNodeItemSelectorReturnType;
+import com.liferay.asset.categories.item.selector.criterion.AssetCategoryTreeNodeItemSelectorCriterion;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
@@ -219,6 +221,7 @@ public class ContentPageEditorDisplayContext {
 		_itemSelector = itemSelector;
 		_pageEditorConfiguration = pageEditorConfiguration;
 		_renderResponse = renderResponse;
+
 		_resourceBundleLoader =
 			ResourceBundleLoaderUtil.
 				getResourceBundleLoaderByBundleSymbolicName(
@@ -265,6 +268,9 @@ public class ContentPageEditorDisplayContext {
 				"addPortletURL",
 				getFragmentEntryActionURL(
 					"/layout_content_page_editor/add_portlet")
+			).put(
+				"assetCategoryTreeNodeItemSelectorURL",
+				_getAssetCategoryTreeNodeItemSelectorURL()
 			).put(
 				"autoExtendSessionEnabled",
 				_pageEditorConfiguration.autoExtendSessionEnabled()
@@ -773,6 +779,21 @@ public class ContentPageEditorDisplayContext {
 	protected final InfoItemServiceTracker infoItemServiceTracker;
 	protected final PortletRequest portletRequest;
 	protected final ThemeDisplay themeDisplay;
+
+	private String _getAssetCategoryTreeNodeItemSelectorURL() {
+		ItemSelectorCriterion itemSelectorCriterion =
+			new AssetCategoryTreeNodeItemSelectorCriterion();
+
+		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+			new AssetCategoryTreeNodeItemSelectorReturnType());
+
+		PortletURL itemSelectorURL = _itemSelector.getItemSelectorURL(
+			RequestBackedPortletURLFactoryUtil.create(httpServletRequest),
+			_renderResponse.getNamespace() + "selectAssetCategoryTreeNode",
+			itemSelectorCriterion);
+
+		return itemSelectorURL.toString();
+	}
 
 	private Map<String, Object> _getAvailableLanguages() {
 		Map<String, Object> availableLanguages = new HashMap<>();
@@ -1743,12 +1764,10 @@ public class ContentPageEditorDisplayContext {
 	private JSONObject _getMasterLayoutJSONObject() {
 		Layout layout = themeDisplay.getLayout();
 
-		LayoutStructure masterLayoutStructure = _getMasterLayoutStructure();
-
 		return JSONUtil.put(
 			"masterLayoutData",
 			Optional.ofNullable(
-				masterLayoutStructure
+				_getMasterLayoutStructure()
 			).map(
 				LayoutStructure::toJSONObject
 			).orElse(

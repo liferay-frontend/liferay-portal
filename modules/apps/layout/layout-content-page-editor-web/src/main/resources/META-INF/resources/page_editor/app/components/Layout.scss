@@ -277,4 +277,8 @@ $emptyItemMinHeight: 180px;
 		cursor: pointer;
 		display: block;
 	}
+
+	.portlet-borderless .portlet-content {
+		padding: 0;
+	}
 }

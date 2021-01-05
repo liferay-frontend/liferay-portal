@@ -105,6 +105,27 @@
 	<td>//div[contains(@class,'palette-section') and contains(.,'Data List Record Fields')]/div[2]//span[contains(.,'Text')]</td>
 	<td></td>
 </tr>
+<!--WEB_CONTENT-->
+<tr>
+	<td>CODE_MIRROR_EDITOR</td>
+	<td>//div[contains(@class,'CodeMirrorEditor')]//div[contains(@class,'CodeMirror cm-s-default')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CODE_MIRROR_EDITOR_CONTENT</td>
+	<td>//div[contains(@class,'CodeMirrorEditor')]//div[contains(@class,'CodeMirror-code')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WEB_CONTENT_SCRIPT_FILE_FIELD</td>
+	<td>//div[contains(@class,'input-text-wrapper')]/input[contains(@id,'Script')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WEB_CONTENT_SCRIPT_VARIABLE</td>
+	<td>//div[contains(@class,'ButtonList')][button[span[normalize-space(text())='${key_panelTitle}']]]//button[normalize-space(text())='${key_variableName}']</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>

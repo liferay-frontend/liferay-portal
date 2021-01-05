@@ -94,9 +94,6 @@ public class CommerceDiscountRuleCPDefinitionDataSetDataProvider
 			HttpServletRequest httpServletRequest, Filter filter)
 		throws Exception {
 
-		List<DiscountRuleCPDefinition> discountRuleCPDefinitions =
-			new ArrayList<>();
-
 		long commerceDiscountRuleId = ParamUtil.getLong(
 			httpServletRequest, "commerceDiscountRuleId");
 
@@ -113,13 +110,14 @@ public class CommerceDiscountRuleCPDefinitionDataSetDataProvider
 			return Collections.emptyList();
 		}
 
+		List<DiscountRuleCPDefinition> discountRuleCPDefinitions =
+			new ArrayList<>();
+
 		Locale locale = _portal.getLocale(httpServletRequest);
 
 		String languageId = LanguageUtil.getLanguageId(locale);
 
-		String keywords = filter.getKeywords();
-
-		String keywordsLowerCase = StringUtil.toLowerCase(keywords);
+		String keywordsLowerCase = StringUtil.toLowerCase(filter.getKeywords());
 
 		for (long cpDefinitionId : cpDefinitionIds) {
 			CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(

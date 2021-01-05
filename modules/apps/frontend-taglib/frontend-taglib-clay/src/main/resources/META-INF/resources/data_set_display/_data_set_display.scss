@@ -179,43 +179,39 @@
 }
 
 .tooltip-table {
-	background: transparent;
-	border: none;
-	border-collapse: collapse;
+	color: white;
 	font-weight: 600;
 	width: 100%;
 
 	td {
-		background-color: transparent !important;
 		border: none;
-		padding-bottom: map-get($spacers, 1) / 2 !important;
-		padding-top: map-get($spacers, 1) / 2 !important;
 
 		&:first-child {
 			color: darken(white, 10%);
-			padding-left: 0 !important;
+			text-align: left;
 		}
 
 		&:last-child {
-			color: white;
-			padding-right: 0 !important;
+			text-align: right;
 		}
 	}
 
-	tr:last-child td {
-		color: white;
-		font-size: 1rem;
-		padding-top: map-get($spacers, 2) !important;
+	tr.with-divider td {
+		padding-top: map-get($spacers, 2);
 		position: relative;
 
 		&::after {
-			border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
 			content: '';
 			left: 0;
 			position: absolute;
 			right: 0;
 			top: map-get($spacers, 1);
 		}
+	}
+
+	tr.highlighted td {
+		font-size: 1rem;
 
 		&:last-child {
 			color: $error-l1;

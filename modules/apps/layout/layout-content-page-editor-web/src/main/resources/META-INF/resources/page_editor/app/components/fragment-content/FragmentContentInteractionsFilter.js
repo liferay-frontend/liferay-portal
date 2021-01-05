@@ -22,6 +22,7 @@ import {VIEWPORT_SIZES} from '../../config/constants/viewportSizes';
 import {config} from '../../config/index';
 import selectCanUpdateEditables from '../../selectors/selectCanUpdateEditables';
 import selectCanUpdatePageStructure from '../../selectors/selectCanUpdatePageStructure';
+import selectLanguageId from '../../selectors/selectLanguageId';
 import {useSelector, useSelectorCallback} from '../../store/index';
 import canActivateEditable from '../../utils/canActivateEditable';
 import {deepEqual} from '../../utils/checkDeepEqual';
@@ -64,7 +65,7 @@ function FragmentContentInteractionsFilter({
 	const hoveredItemType = useHoveredItemType();
 	const isActive = useIsActive();
 	const isHovered = useIsHovered();
-	const languageId = useSelector((state) => state.languageId);
+	const languageId = useSelector(selectLanguageId);
 	const selectItem = useSelectItem();
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize

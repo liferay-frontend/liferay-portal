@@ -15,8 +15,11 @@
 package com.liferay.commerce.product.model;
 
 /**
- * @author Andrea Di Giorgi
+ * @author     Andrea Di Giorgi
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ *             com.liferay.commerce.product.constants.CPInstanceConstants}
  */
+@Deprecated
 public class CPInstanceConstants {
 
 	public static final String DEFAULT_SKU = "default";

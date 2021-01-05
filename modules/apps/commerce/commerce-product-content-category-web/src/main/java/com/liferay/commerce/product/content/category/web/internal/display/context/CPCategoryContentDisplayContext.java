@@ -17,9 +17,9 @@ package com.liferay.commerce.product.content.category.web.internal.display.conte
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.commerce.media.CommerceMediaResolver;
+import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.content.category.web.internal.configuration.CPCategoryContentPortletInstanceConfiguration;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
-import com.liferay.commerce.product.model.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
@@ -87,11 +87,10 @@ public class CPCategoryContentDisplayContext {
 			return null;
 		}
 
-		long classNameId = _portal.getClassNameId(AssetCategory.class);
-
 		List<CPAttachmentFileEntry> cpAttachmentFileEntries =
 			_cpAttachmentFileEntryService.getCPAttachmentFileEntries(
-				classNameId, assetCategory.getCategoryId(),
+				_portal.getClassNameId(AssetCategory.class),
+				assetCategory.getCategoryId(),
 				CPAttachmentFileEntryConstants.TYPE_IMAGE,
 				WorkflowConstants.STATUS_APPROVED, 0, 1);
 

@@ -167,7 +167,9 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 		DefaultASTNodeListener defaultASTNodeListener =
 			new DefaultASTNodeListener();
 
-		String sql = dslQuery.toSQL(defaultASTNodeListener);
+		StringBundler sb = new StringBundler();
+
+		dslQuery.toSQL(sb::append, defaultASTNodeListener);
 
 		String[] tableNames = defaultASTNodeListener.getTableNames();
 
@@ -195,16 +197,14 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 		ProjectionType projectionType = _getProjectionType(
 			tableNames, select.getExpressions());
 
-		List<Object> scalarValues = defaultASTNodeListener.getScalarValues();
-
 		FinderCache finderCache = getFinderCache();
 
 		FinderPath finderPath = new FinderPath(
 			FinderPath.encodeDSLQueryCacheName(tableNames), "dslQuery",
-			_getClassNames(scalarValues), new String[0],
+			sb.getStrings(), new String[0],
 			projectionType == ProjectionType.MODELS);
 
-		Object[] arguments = _getArguments(scalarValues);
+		Object[] arguments = _getArguments(defaultASTNodeListener);
 
 		Object cacheResult = finderCache.getResult(finderPath, arguments);
 
@@ -218,7 +218,10 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 			session = openSession();
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(
-				sql, true, tableNames);
+				sb.toString(), true, tableNames);
+
+			List<Object> scalarValues =
+				defaultASTNodeListener.getScalarValues();
 
 			if (!scalarValues.isEmpty()) {
 				QueryPos queryPos = QueryPos.getInstance(sqlQuery);
@@ -949,10 +952,12 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 	@Deprecated
 	protected boolean finderCacheEnabled = true;
 
-	private Object[] _getArguments(List<Object> objects) {
+	private Object[] _getArguments(
+		DefaultASTNodeListener defaultASTNodeListener) {
+
 		List<Object> arguments = new ArrayList<>();
 
-		for (Object object : objects) {
+		for (Object object : defaultASTNodeListener.getScalarValues()) {
 			if (object instanceof Date) {
 				Date date = (Date)object;
 
@@ -963,23 +968,15 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 			}
 		}
 
+		int start = defaultASTNodeListener.getStart();
+		int end = defaultASTNodeListener.getEnd();
+
+		if ((start != QueryUtil.ALL_POS) || (end != QueryUtil.ALL_POS)) {
+			arguments.add(start);
+			arguments.add(end);
+		}
+
 		return arguments.toArray(new Object[0]);
-	}
-
-	private String[] _getClassNames(List<Object> objects) {
-		if ((objects == null) || objects.isEmpty()) {
-			return new String[0];
-		}
-
-		List<String> types = new ArrayList<>();
-
-		for (Object object : objects) {
-			Class<?> clazz = object.getClass();
-
-			types.add(clazz.getName());
-		}
-
-		return types.toArray(new String[0]);
 	}
 
 	private ProjectionType _getProjectionType(

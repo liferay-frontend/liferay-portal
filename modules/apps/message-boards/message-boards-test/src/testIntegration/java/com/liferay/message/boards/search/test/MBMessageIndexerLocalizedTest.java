@@ -164,9 +164,7 @@ public class MBMessageIndexerLocalizedTest {
 
 	private Document _search(String searchTerm, Locale locale) {
 		try {
-			SearchContext searchContext = _getSearchContext(searchTerm, locale);
-
-			Hits hits = _indexer.search(searchContext);
+			Hits hits = _indexer.search(_getSearchContext(searchTerm, locale));
 
 			return _getSingleDocument(searchTerm, hits);
 		}

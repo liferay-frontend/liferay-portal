@@ -15,6 +15,7 @@
 import {DataLayoutBuilderActions} from 'data-engine-taglib';
 import React, {useContext, useEffect} from 'react';
 
+import customFields from '../../utils/formRendererCustomFields.es';
 import DataLayoutBuilderContext from './DataLayoutBuilderInstanceContext.es';
 import FormViewContext from './FormViewContext.es';
 import useDeleteDefinitionField from './useDeleteDefinitionField.es';
@@ -69,14 +70,13 @@ export default ({children, dataLayoutBuilder}) => {
 				onDeleteDefinitionField(event);
 			},
 			label: Liferay.Language.get('delete-from-object'),
-			style: 'danger',
 		};
 
 		let fieldActions = [
 			duplicateAction,
+			removeAction,
 			{
-				...removeAction,
-				separator: true,
+				type: 'divider',
 			},
 			deleteFromObjectAction,
 		];
@@ -93,7 +93,9 @@ export default ({children, dataLayoutBuilder}) => {
 				{
 					action: ({fieldName}) => saveAsFieldset(fieldName),
 					label: Liferay.Language.get('save-as-fieldset'),
-					separator: true,
+				},
+				{
+					type: 'divider',
 				},
 				deleteFromObjectAction,
 			];
@@ -119,6 +121,13 @@ export default ({children, dataLayoutBuilder}) => {
 		onDeleteDefinitionField,
 		saveAsFieldset,
 	]);
+
+	useEffect(() => {
+		dispatch({
+			payload: customFields,
+			type: DataLayoutBuilderActions.SET_FORM_RENDERER_CUSTOM_FIELDS,
+		});
+	}, [dispatch]);
 
 	return (
 		<DataLayoutBuilderContext.Provider

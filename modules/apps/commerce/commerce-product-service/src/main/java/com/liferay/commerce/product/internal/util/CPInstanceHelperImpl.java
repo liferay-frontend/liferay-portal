@@ -18,12 +18,12 @@ import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.commerce.media.CommerceMediaResolver;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPSku;
+import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.exception.CPDefinitionIgnoreSKUCombinationsException;
 import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
 import com.liferay.commerce.product.internal.catalog.CPSkuImpl;
 import com.liferay.commerce.product.internal.util.comparator.CPDefinitionOptionRelComparator;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
-import com.liferay.commerce.product.model.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -49,7 +49,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.Portal;
@@ -154,12 +153,9 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 			int start, int end)
 		throws Exception {
 
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
 		_commerceProductViewPermission.check(
-			permissionChecker, commerceAccountId, commerceChannelGroupId,
-			cpDefinitionId);
+			PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
+			commerceChannelGroupId, cpDefinitionId);
 
 		return _cpAttachmentFileEntryLocalService.getCPAttachmentFileEntries(
 			cpDefinitionId, serializedDDMFormValues, type, start, end);
@@ -169,10 +165,6 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 	public Map<CPDefinitionOptionRel, List<CPDefinitionOptionValueRel>>
 		getCPDefinitionOptionRelsMap(
 			long cpDefinitionId, boolean skuContributor, boolean publicStore) {
-
-		Map<CPDefinitionOptionRel, List<CPDefinitionOptionValueRel>>
-			cpDefinitionOptionRelsMap = new TreeMap<>(
-				new CPDefinitionOptionRelComparator());
 
 		List<CPDefinitionOptionRel> cpDefinitionOptionRels;
 
@@ -190,6 +182,10 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 		if (cpDefinitionOptionRels.isEmpty()) {
 			return Collections.emptyMap();
 		}
+
+		Map<CPDefinitionOptionRel, List<CPDefinitionOptionValueRel>>
+			cpDefinitionOptionRelsMap = new TreeMap<>(
+				new CPDefinitionOptionRelComparator());
 
 		for (CPDefinitionOptionRel cpDefinitionOptionRel :
 				cpDefinitionOptionRels) {
@@ -559,10 +555,11 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 			if (cpInstanceCPInstanceOptionValueHits.containsKey(
 					cpInstanceOptionValueRel.getCPInstanceId())) {
 
+				int value = cpInstanceCPInstanceOptionValueHits.get(
+					cpInstanceOptionValueRel.getCPInstanceId());
+
 				cpInstanceCPInstanceOptionValueHits.put(
-					cpInstanceOptionValueRel.getCPInstanceId(),
-					cpInstanceCPInstanceOptionValueHits.get(
-						cpInstanceOptionValueRel.getCPInstanceId()) + 1);
+					cpInstanceOptionValueRel.getCPInstanceId(), value + 1);
 
 				continue;
 			}

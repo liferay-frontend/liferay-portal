@@ -24,7 +24,7 @@ String returnToFullPageURL = ParamUtil.getString(request, "returnToFullPageURL")
 
 PortletURL portletURL = renderResponse.createRenderURL();
 
-portletURL.setParameter("mvcRenderCommandName", "exportImport");
+portletURL.setParameter("mvcRenderCommandName", "/export_import/export_import");
 portletURL.setParameter("redirect", redirect);
 portletURL.setParameter("returnToFullPageURL", returnToFullPageURL);
 portletURL.setParameter("portletResource", portletResource);

@@ -23,6 +23,7 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeServiceUtil;
+import com.liferay.document.library.web.internal.icon.provider.DLFileEntryTypeIconProviderUtil;
 import com.liferay.document.library.web.internal.security.permission.resource.DLFolderPermission;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -59,11 +60,9 @@ public class MenuItemProvider {
 		Folder folder, ThemeDisplay themeDisplay,
 		PortletRequest portletRequest) {
 
-		long folderId = _getFolderId(folder);
-
 		if (!_hasPermission(
 				themeDisplay.getPermissionChecker(),
-				themeDisplay.getScopeGroupId(), folderId,
+				themeDisplay.getScopeGroupId(), _getFolderId(folder),
 				ActionKeys.ADD_DOCUMENT)) {
 
 			return Collections.emptyList();
@@ -349,6 +348,9 @@ public class MenuItemProvider {
 
 		URLMenuItem urlMenuItem = new URLMenuItem();
 
+		urlMenuItem.setIcon(
+			DLFileEntryTypeIconProviderUtil.getIcon(fileEntryType));
+
 		String label = LanguageUtil.get(
 			PortalUtil.getHttpServletRequest(portletRequest),
 			fileEntryType.getUnambiguousName(
@@ -367,6 +369,11 @@ public class MenuItemProvider {
 		portletURL.setParameter(Constants.CMD, Constants.ADD);
 		portletURL.setParameter(
 			"redirect", PortalUtil.getCurrentURL(portletRequest));
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		portletURL.setParameter("portletResource", portletDisplay.getId());
+
 		portletURL.setParameter(
 			"repositoryId",
 			String.valueOf(_getRepositoryId(folder, themeDisplay)));

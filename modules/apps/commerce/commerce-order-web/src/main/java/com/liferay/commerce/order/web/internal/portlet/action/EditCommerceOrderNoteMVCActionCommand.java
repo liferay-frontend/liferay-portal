@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
-		"mvc.command.name=editCommerceOrderNote"
+		"mvc.command.name=/commerce_order/edit_commerce_order_note"
 	},
 	service = MVCActionCommand.class
 )
@@ -97,15 +97,16 @@ public class EditCommerceOrderNoteMVCActionCommand
 		long commerceOrderNoteId = ParamUtil.getLong(
 			actionRequest, "commerceOrderNoteId");
 
-		long commerceOrderId = ParamUtil.getLong(
-			actionRequest, "commerceOrderId");
 		String content = ParamUtil.getString(actionRequest, "content");
 		boolean restricted = ParamUtil.getBoolean(actionRequest, "restricted");
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CommerceOrderNote.class.getName(), actionRequest);
-
 		if (commerceOrderNoteId <= 0) {
+			long commerceOrderId = ParamUtil.getLong(
+				actionRequest, "commerceOrderId");
+
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				CommerceOrderNote.class.getName(), actionRequest);
+
 			_commerceOrderNoteService.addCommerceOrderNote(
 				commerceOrderId, content, restricted, serviceContext);
 		}

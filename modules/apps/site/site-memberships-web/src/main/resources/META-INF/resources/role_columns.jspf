@@ -16,13 +16,8 @@
 
 <c:choose>
 	<c:when test='<%= displayStyle.equals("icon") %>'>
-
-		<%
-		row.setCssClass("entry-card lfr-asset-item");
-		%>
-
 		<liferay-ui:search-container-column-text>
-			<clay:vertical-card-v2
+			<clay:vertical-card
 				verticalCard="<%= new RoleVerticalCard(role, renderRequest, searchContainer.getRowChecker()) %>"
 			/>
 		</liferay-ui:search-container-column-text>

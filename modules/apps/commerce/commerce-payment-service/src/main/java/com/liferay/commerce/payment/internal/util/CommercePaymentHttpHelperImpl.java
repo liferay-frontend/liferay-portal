@@ -80,10 +80,8 @@ public class CommercePaymentHttpHelperImpl
 					commerceOrder.getCommerceOrderId(), ActionKeys.VIEW);
 			}
 
-			PermissionChecker permissionChecker =
-				PermissionCheckerFactoryUtil.create(defaultUser);
-
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(defaultUser));
 		}
 		else {
 			PermissionChecker permissionChecker =

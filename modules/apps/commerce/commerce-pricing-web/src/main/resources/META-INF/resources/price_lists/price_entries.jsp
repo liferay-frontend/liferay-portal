@@ -54,9 +54,11 @@ if (CommercePriceListConstants.TYPE_PROMOTION.equals(commercePriceEntryDisplayCo
 
 					return CommercePriceEntriesResource.addPriceEntry(id, priceEntryData)
 						.then(function () {
-							Liferay.fire(events.UPDATE_DATASET_DISPLAY, {
-								id: '<%= datasetId %>',
-							});
+							setTimeout(function () {
+								Liferay.fire(events.UPDATE_DATASET_DISPLAY, {
+									id: '<%= datasetId %>',
+								});
+							}, 500);
 						})
 						.catch(function (error) {
 							return Promise.reject(error);

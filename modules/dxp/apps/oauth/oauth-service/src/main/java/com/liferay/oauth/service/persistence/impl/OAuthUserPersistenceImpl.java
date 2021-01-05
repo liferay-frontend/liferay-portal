@@ -2989,15 +2989,6 @@ public class OAuthUserPersistenceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		OAuthUserPersistenceImpl.class);
 
-	static {
-		try {
-			Class.forName(OAuthPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;

@@ -48,10 +48,10 @@ public class CompareProductTag extends IncludeTag {
 			CommerceAccount commerceAccount =
 				commerceContext.getCommerceAccount();
 
-			HttpServletRequest originalHttpServletRequest =
-				PortalUtil.getOriginalServletRequest(request);
-
 			if (commerceAccount != null) {
+				HttpServletRequest originalHttpServletRequest =
+					PortalUtil.getOriginalServletRequest(request);
+
 				_cpDefinitionIds = CPCompareHelperUtil.getCPDefinitionIds(
 					commerceContext.getCommerceChannelGroupId(),
 					commerceAccount.getCommerceAccountId(),

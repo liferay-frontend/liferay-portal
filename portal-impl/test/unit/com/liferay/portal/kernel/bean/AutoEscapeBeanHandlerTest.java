@@ -57,6 +57,7 @@ public class AutoEscapeBeanHandlerTest {
 
 		public BeanImpl(String attribute) {
 			_attribute = attribute;
+
 			_unescapedAttribute = attribute;
 		}
 

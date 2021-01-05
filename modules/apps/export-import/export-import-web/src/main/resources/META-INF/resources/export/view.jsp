@@ -52,7 +52,7 @@ String searchContainerId = "exportLayoutProcesses";
 		<liferay-util:include page="/export/navigation.jsp" servletContext="<%= application %>" />
 
 		<liferay-util:include page="/toolbar.jsp" servletContext="<%= application %>">
-			<liferay-util:param name="mvcRenderCommandName" value="exportLayoutsView" />
+			<liferay-util:param name="mvcRenderCommandName" value="/export_import/export_layouts_view" />
 			<liferay-util:param name="groupId" value="<%= String.valueOf(liveGroupId) %>" />
 			<liferay-util:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
 			<liferay-util:param name="displayStyle" value="<%= displayStyle %>" />
@@ -75,7 +75,7 @@ String searchContainerId = "exportLayoutProcesses";
 </c:choose>
 
 <aui:script use="liferay-export-import-export-import">
-	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="exportLayouts" var="exportProcessesURL">
+	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/export_import/export_layouts" var="exportProcessesURL">
 		<portlet:param name="<%= SearchContainer.DEFAULT_CUR_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_CUR_PARAM) %>" />
 		<portlet:param name="<%= SearchContainer.DEFAULT_DELTA_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_DELTA_PARAM) %>" />
 		<portlet:param name="groupId" value="<%= String.valueOf(liveGroupId) %>" />

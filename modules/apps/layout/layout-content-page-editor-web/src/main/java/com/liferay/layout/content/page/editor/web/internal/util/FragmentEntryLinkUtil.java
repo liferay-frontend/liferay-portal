@@ -41,6 +41,8 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -159,7 +161,12 @@ public class FragmentEntryLinkUtil {
 			DefaultFragmentRendererContext defaultFragmentRendererContext =
 				new DefaultFragmentRendererContext(fragmentEntryLink);
 
-			defaultFragmentRendererContext.setLocale(themeDisplay.getLocale());
+			String languageId = ParamUtil.getString(
+				portletRequest, "languageId", themeDisplay.getLanguageId());
+
+			defaultFragmentRendererContext.setLocale(
+				LocaleUtil.fromLanguageId(languageId));
+
 			defaultFragmentRendererContext.setMode(
 				FragmentEntryLinkConstants.EDIT);
 			defaultFragmentRendererContext.setSegmentsExperienceIds(

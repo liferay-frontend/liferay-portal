@@ -14,7 +14,7 @@
 
 import ClayTooltip from '@clayui/tooltip';
 import {render, useTimeout} from 'frontend-js-react-web';
-import dom from 'metal-dom';
+import {delegate} from 'frontend-js-web';
 import {Align} from 'metal-position';
 import React, {
 	useEffect,
@@ -58,14 +58,14 @@ const SELECTOR_TRIGGER = `
 `;
 
 const TRIGGER_HIDE_EVENTS = [
-	'mouseleave',
+	'mouseout',
 	'mouseup',
 	'MSPointerUp',
 	'pointerup',
 	'touchend',
 ];
 const TRIGGER_SHOW_EVENTS = [
-	'mouseenter',
+	'mouseover',
 	'mouseup',
 	'MSPointerDown',
 	'pointerdown',
@@ -155,38 +155,36 @@ const TooltipProvider = () => {
 
 	useEffect(() => {
 		const TRIGGER_SHOW_HANDLES = TRIGGER_SHOW_EVENTS.map((eventName) => {
-			return dom.delegate(
+			return delegate(
 				document.body,
 				eventName,
 				SELECTOR_TRIGGER,
-				(event) =>
-					dispatch({target: event.delegateTarget, type: 'show'})
-			);
-		});
+				(event) => {
+					saveTitle(event.delegateTarget);
 
-		const TRIGGER_HIDE_HANDLES = TRIGGER_HIDE_EVENTS.map((eventName) => {
-			return dom.delegate(
-				document.body,
-				eventName,
-				SELECTOR_TRIGGER,
-				() => {
-					dispatch({type: 'hide'});
-
-					restoreTitle(state.target);
+					dispatch({target: event.delegateTarget, type: 'show'});
 				}
 			);
 		});
 
-		const TOOLTIP_ENTER = dom.delegate(
+		const TRIGGER_HIDE_HANDLES = TRIGGER_HIDE_EVENTS.map((eventName) => {
+			return delegate(document.body, eventName, SELECTOR_TRIGGER, () => {
+				dispatch({type: 'hide'});
+
+				restoreTitle(state.target);
+			});
+		});
+
+		const TOOLTIP_ENTER = delegate(
 			document.body,
-			'mouseenter',
+			'mouseover',
 			SELECTOR_TOOLTIP,
 			() => dispatch({target: state.target, type: 'show'})
 		);
 
-		const TOOLTIP_LEAVE = dom.delegate(
+		const TOOLTIP_LEAVE = delegate(
 			document.body,
-			'mouseleave',
+			'mouseout',
 			SELECTOR_TOOLTIP,
 			() => dispatch({type: 'hide'})
 		);
@@ -210,8 +208,6 @@ const TooltipProvider = () => {
 					Align.BottomCenter
 				)
 			);
-
-			saveTitle(state.target);
 		}
 	}, [state.target]);
 

@@ -54,6 +54,7 @@ public class MySitesItemSelectorViewDisplayContext
 			itemSelectedEventName, portletURL);
 
 		_groupSearchProvider = groupSearchProvider;
+
 		_portletRequest = getPortletRequest();
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);

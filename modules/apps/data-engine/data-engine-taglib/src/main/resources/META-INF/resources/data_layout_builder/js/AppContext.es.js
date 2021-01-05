@@ -23,11 +23,12 @@ import {
 	DELETE_DATA_LAYOUT_FIELD,
 	DELETE_DATA_LAYOUT_RULE,
 	EDIT_CUSTOM_OBJECT_FIELD,
-	SWITCH_SIDEBAR_PANEL,
+	SET_FORM_RENDERER_CUSTOM_FIELDS,
 	UPDATE_APP_PROPS,
 	UPDATE_CONFIG,
 	UPDATE_DATA_DEFINITION,
 	UPDATE_DATA_LAYOUT,
+	UPDATE_DATA_LAYOUT_FIELDS,
 	UPDATE_DATA_LAYOUT_NAME,
 	UPDATE_DATA_LAYOUT_RULE,
 	UPDATE_EDITING_DATA_DEFINITION_ID,
@@ -42,6 +43,7 @@ import {
 } from './actions.es';
 import {getDataDefinitionField} from './utils/dataDefinition.es';
 import * as DataLayoutVisitor from './utils/dataLayoutVisitor.es';
+import {normalizeRule} from './utils/normalizers.es';
 
 const AppContext = createContext();
 
@@ -64,6 +66,7 @@ const initialState = {
 	},
 	dataDefinitionId: 0,
 	dataLayout: {
+		dataLayoutFields: {},
 		dataLayoutPages: [],
 		dataRules: [],
 		name: {},
@@ -170,7 +173,7 @@ const setDataDefinitionFields = (
 	dataLayout
 ) => {
 	const {dataDefinitionFields} = dataDefinition;
-	const {dataLayoutPages} = dataLayout;
+	const {dataLayoutFields, dataLayoutPages} = dataLayout;
 
 	const {pages} = dataLayoutBuilder.getStore();
 	const visitor = new PagesVisitor(pages);
@@ -179,6 +182,14 @@ const setDataDefinitionFields = (
 
 	visitor.mapFields((field) => {
 		const definitionField = dataLayoutBuilder.getDataDefinitionField(field);
+		const dataLayoutField = dataLayoutFields[definitionField.name];
+
+		// If the field is required at the form view level,
+		// it cannot be required at the object level
+
+		if (dataLayoutField && dataLayoutField.required) {
+			definitionField.required = false;
+		}
 
 		newFields.push(definitionField);
 	});
@@ -240,7 +251,7 @@ const createReducer = (dataLayoutBuilder) => {
 					dataLayout: {dataRules},
 				} = state;
 
-				dataRule = DataLayoutVisitor.normalizeRule(dataRule);
+				dataRule = normalizeRule(dataRule);
 
 				return {
 					...state,
@@ -333,13 +344,10 @@ const createReducer = (dataLayoutBuilder) => {
 					},
 				};
 			}
-			case SWITCH_SIDEBAR_PANEL: {
-				const {sidebarOpen, sidebarPanelId} = action.payload;
-
+			case SET_FORM_RENDERER_CUSTOM_FIELDS: {
 				return {
 					...state,
-					sidebarOpen,
-					sidebarPanelId,
+					customFields: action.payload,
 				};
 			}
 			case UPDATE_APP_PROPS: {
@@ -375,6 +383,17 @@ const createReducer = (dataLayoutBuilder) => {
 					},
 				};
 			}
+			case UPDATE_DATA_LAYOUT_FIELDS: {
+				const {dataLayoutFields} = action.payload;
+
+				return {
+					...state,
+					dataLayout: {
+						...state.dataLayout,
+						dataLayoutFields,
+					},
+				};
+			}
 			case UPDATE_DATA_LAYOUT_NAME: {
 				const {name} = action.payload;
 
@@ -387,20 +406,18 @@ const createReducer = (dataLayoutBuilder) => {
 				};
 			}
 			case UPDATE_DATA_LAYOUT_RULE: {
-				let {dataRule} = action.payload;
+				const {dataRule, loc} = action.payload;
 				const {
 					dataLayout: {dataRules},
 				} = state;
-
-				dataRule = DataLayoutVisitor.normalizeRule(dataRule);
 
 				return {
 					...state,
 					dataLayout: {
 						...state.dataLayout,
 						dataRules: dataRules.map((rule, index) => {
-							if (index === dataRule.ruleEditedIndex) {
-								return dataRule;
+							if (index === loc) {
+								return normalizeRule(dataRule);
 							}
 
 							return rule;

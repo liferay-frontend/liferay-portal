@@ -80,6 +80,7 @@ Format timeFormat = FastDateFormatFactoryUtil.getSimpleDateFormat("HH:mm", local
 
 							cal.set(Calendar.HOUR_OF_DAY, curOpen / 100);
 							cal.set(Calendar.MINUTE, curOpen % 100);
+
 							cal.set(Calendar.SECOND, 0);
 							cal.set(Calendar.MILLISECOND, 0);
 						%>
@@ -104,6 +105,7 @@ Format timeFormat = FastDateFormatFactoryUtil.getSimpleDateFormat("HH:mm", local
 
 							cal.set(Calendar.HOUR_OF_DAY, curClose / 100);
 							cal.set(Calendar.MINUTE, curClose % 100);
+
 							cal.set(Calendar.SECOND, 0);
 							cal.set(Calendar.MILLISECOND, 0);
 						%>

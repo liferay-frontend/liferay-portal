@@ -122,37 +122,37 @@ public class LinkedHashMapBuilderTest {
 		_testUnsafeSupplierValue(false, 2);
 		_testUnsafeSupplierValue(true, 3);
 
-		Map<String, Integer> map1 = new LinkedHashMap<>();
+		Map<String, Integer> map = new LinkedHashMap<>();
 
 		String s1 = "Hello World";
 
 		String[] array1 = StringUtil.split(s1, ' ');
 
-		map1.put(s1, array1.length);
+		map.put(s1, array1.length);
 
 		String s2 = "Hello World Hello World";
 
 		String[] array2 = StringUtil.split(s2, ' ');
 
-		map1.put(s2, array2.length);
+		map.put(s2, array2.length);
 
-		Map<String, Integer> map2 = LinkedHashMapBuilder.put(
-			s1,
-			() -> {
-				String[] array = StringUtil.split(s1, ' ');
+		Assert.assertEquals(
+			map,
+			LinkedHashMapBuilder.put(
+				s1,
+				() -> {
+					String[] array = StringUtil.split(s1, ' ');
 
-				return array.length;
-			}
-		).put(
-			s2,
-			() -> {
-				String[] array = StringUtil.split(s2, ' ');
+					return array.length;
+				}
+			).put(
+				s2,
+				() -> {
+					String[] array = StringUtil.split(s2, ' ');
 
-				return array.length;
-			}
-		).build();
-
-		Assert.assertEquals(map1, map2);
+					return array.length;
+				}
+			).build());
 	}
 
 	private <K, V> void _assertContainsAll(Map<K, V> map1, Map<K, V> map2) {

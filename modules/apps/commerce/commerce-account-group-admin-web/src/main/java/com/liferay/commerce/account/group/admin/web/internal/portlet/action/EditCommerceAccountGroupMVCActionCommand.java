@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommerceAccountPortletKeys.COMMERCE_ACCOUNT_GROUP_ADMIN,
-		"mvc.command.name=editCommerceAccountGroup"
+		"mvc.command.name=/commerce_account_group_admin/edit_commerce_account_group"
 	},
 	service = MVCActionCommand.class
 )
@@ -109,7 +109,9 @@ public class EditCommerceAccountGroupMVCActionCommand
 				SessionErrors.add(actionRequest, exception.getClass());
 
 				actionResponse.setRenderParameter(
-					"mvcRenderCommandName", "editCommerceAccountGroup");
+					"mvcRenderCommandName",
+					"/commerce_account_group_admin" +
+						"/edit_commerce_account_group");
 			}
 			else if (exception instanceof NoSuchAccountGroupException ||
 					 exception instanceof PrincipalException) {
@@ -135,7 +137,8 @@ public class EditCommerceAccountGroupMVCActionCommand
 
 		if (commerceAccountGroup != null) {
 			portletURL.setParameter(
-				"mvcRenderCommandName", "editCommerceAccountGroup");
+				"mvcRenderCommandName",
+				"/commerce_account_group_admin/edit_commerce_account_group");
 			portletURL.setParameter(
 				"commerceAccountGroupId",
 				String.valueOf(
@@ -162,9 +165,6 @@ public class EditCommerceAccountGroupMVCActionCommand
 			actionRequest, "commerceAccountGroupId");
 
 		String name = ParamUtil.getString(actionRequest, "name");
-		int type = ParamUtil.getInteger(
-			actionRequest, "type",
-			CommerceAccountConstants.ACCOUNT_GROUP_TYPE_STATIC);
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			CommerceAccountGroup.class.getName(), actionRequest);
@@ -172,6 +172,10 @@ public class EditCommerceAccountGroupMVCActionCommand
 		CommerceAccountGroup commerceAccountGroup = null;
 
 		if (commerceAccountGroupId <= 0) {
+			int type = ParamUtil.getInteger(
+				actionRequest, "type",
+				CommerceAccountConstants.ACCOUNT_GROUP_TYPE_STATIC);
+
 			commerceAccountGroup =
 				_commerceAccountGroupService.addCommerceAccountGroup(
 					_portal.getCompanyId(actionRequest), name, type, null,

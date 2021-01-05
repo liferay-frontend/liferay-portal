@@ -28,6 +28,7 @@ public class AccountList {
 
 	public AccountList(String[] errorMessages) {
 		_errorMessages = errorMessages;
+
 		_success = false;
 	}
 

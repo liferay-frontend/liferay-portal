@@ -24,6 +24,7 @@ KBArticle kbArticle = (KBArticle)request.getAttribute(KBWebKeys.KNOWLEDGE_BASE_K
 
 	<%
 	long[] groupIds = KBArticleAssetEntriesUtil.getGroupIds(company.getGroup(), kbArticle);
+
 	long[] assetTagIds = KBArticleAssetEntriesUtil.getAssetTagIds(groupIds, kbArticle);
 	%>
 

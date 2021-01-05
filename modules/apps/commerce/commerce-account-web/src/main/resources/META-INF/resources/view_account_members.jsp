@@ -50,7 +50,7 @@ portletURL.setParameter(PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "backUR
 		componentId="userInvitationModal"
 	/>
 
-	<portlet:actionURL name="inviteUser" var="inviteUserActionURL" />
+	<portlet:actionURL name="/commerce_account/invite_user" var="inviteUserActionURL" />
 
 	<aui:form action="<%= inviteUserActionURL %>" method="post" name="inviteUserFm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ASSIGN %>" />

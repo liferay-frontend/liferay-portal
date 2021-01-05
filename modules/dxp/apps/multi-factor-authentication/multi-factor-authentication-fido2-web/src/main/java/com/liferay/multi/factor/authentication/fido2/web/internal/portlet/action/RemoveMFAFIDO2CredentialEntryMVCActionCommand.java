@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 	property = {
 		"javax.portlet.name=" + UsersAdminPortletKeys.MY_ACCOUNT,
 		"javax.portlet.name=" + UsersAdminPortletKeys.USERS_ADMIN,
-		"mvc.command.name=/multi-factor-authentication-fido2/remove_mfa_fido2_credential_entry"
+		"mvc.command.name=/multi_factor_authentication_fido2/remove_mfa_fido2_credential_entry"
 	},
 	service = MVCActionCommand.class
 )

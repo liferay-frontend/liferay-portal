@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.COMMERCE_CHANNELS,
-		"mvc.command.name=editCommercePunchOutConfiguration"
+		"mvc.command.name=/commerce_channels/edit_commerce_punch_out_configuration"
 	},
 	service = MVCActionCommand.class
 )

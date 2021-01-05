@@ -119,7 +119,9 @@ public class CommerceVirtualOrderItemEditDisplayContext {
 
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceOrder");
+		portletURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_open_order_content/edit_commerce_order");
 		portletURL.setParameter(
 			"commerceOrderId", String.valueOf(getCommerceOrderId()));
 		portletURL.setParameter("screenNavigationCategoryKey", "items");

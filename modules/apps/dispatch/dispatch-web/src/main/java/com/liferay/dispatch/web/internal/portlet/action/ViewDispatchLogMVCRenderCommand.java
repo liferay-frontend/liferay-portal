@@ -51,7 +51,7 @@ public class ViewDispatchLogMVCRenderCommand implements MVCRenderCommand {
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT, dispatchLogDisplayContext);
 
-		return "/dispatch_log_details.jsp";
+		return "/view_dispatch_log.jsp";
 	}
 
 	@Reference

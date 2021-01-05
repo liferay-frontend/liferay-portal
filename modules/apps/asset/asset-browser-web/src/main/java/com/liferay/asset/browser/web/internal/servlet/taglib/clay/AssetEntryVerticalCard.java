@@ -58,7 +58,19 @@ public class AssetEntryVerticalCard implements VerticalCard {
 	}
 
 	@Override
-	public Map<String, String> getData() {
+	public String getCssClass() {
+		if (_assetEntry.getEntryId() !=
+				_assetBrowserDisplayContext.getRefererAssetEntryId()) {
+
+			return "card-interactive card-interactive-secondary " +
+				"selector-button";
+		}
+
+		return StringPool.BLANK;
+	}
+
+	@Override
+	public Map<String, String> getDynamicAttributes() {
 		if (_assetBrowserDisplayContext.isMultipleSelection()) {
 			return null;
 		}
@@ -70,20 +82,22 @@ public class AssetEntryVerticalCard implements VerticalCard {
 		}
 
 		Map<String, String> data = HashMapBuilder.put(
-			"assetclassname", _assetEntry.getClassName()
+			"data-assetclassname", _assetEntry.getClassName()
 		).put(
-			"assetclassnameid", String.valueOf(_assetEntry.getClassNameId())
+			"data-assetclassnameid",
+			String.valueOf(_assetEntry.getClassNameId())
 		).put(
-			"assetclasspk", String.valueOf(_assetEntry.getClassPK())
+			"data-assetclasspk", String.valueOf(_assetEntry.getClassPK())
 		).put(
-			"assettitle", _assetRenderer.getTitle(_themeDisplay.getLocale())
+			"data-assettitle",
+			_assetRenderer.getTitle(_themeDisplay.getLocale())
 		).put(
-			"assettype",
+			"data-assettype",
 			_assetRendererFactory.getTypeName(
 				_themeDisplay.getLocale(),
 				_assetBrowserDisplayContext.getSubtypeSelectionId())
 		).put(
-			"entityid", String.valueOf(_assetEntry.getEntryId())
+			"data-entityid", String.valueOf(_assetEntry.getEntryId())
 		).build();
 
 		Group group = GroupLocalServiceUtil.fetchGroup(
@@ -92,7 +106,7 @@ public class AssetEntryVerticalCard implements VerticalCard {
 		if (group != null) {
 			try {
 				data.put(
-					"groupdescriptivename",
+					"data-groupdescriptivename",
 					group.getDescriptiveName(_themeDisplay.getLocale()));
 			}
 			catch (Exception exception) {
@@ -100,18 +114,6 @@ public class AssetEntryVerticalCard implements VerticalCard {
 		}
 
 		return data;
-	}
-
-	@Override
-	public String getElementClasses() {
-		if (_assetEntry.getEntryId() !=
-				_assetBrowserDisplayContext.getRefererAssetEntryId()) {
-
-			return "card-interactive card-interactive-secondary " +
-				"selector-button";
-		}
-
-		return StringPool.BLANK;
 	}
 
 	@Override

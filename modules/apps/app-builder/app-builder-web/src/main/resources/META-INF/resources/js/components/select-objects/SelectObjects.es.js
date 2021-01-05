@@ -12,7 +12,7 @@
  * details.
  */
 
-import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import {ClayTooltipProvider} from '@clayui/tooltip';
@@ -20,6 +20,7 @@ import React, {useEffect, useState} from 'react';
 
 import {getItem} from '../../utils/client.es';
 import {getLocalizedValue} from '../../utils/lang.es';
+import Button from '../button/Button.es';
 import DropDownWithSearch from '../dropdown-with-search/DropDownWithSearch.es';
 import NewCustomObjectModal from './NewCustomObjectModal.es';
 
@@ -146,13 +147,12 @@ export default function SelectObjects({
 				{...state}
 				addButton={
 					<ClayTooltipProvider>
-						<ClayButtonWithIcon
-							className="mr-2"
-							data-tooltip-align="bottom"
+						<Button
+							className="btn btn-monospaced btn-secondary mr-2 nav-btn nav-btn-monospaced"
+							data-tooltip-align="bottom-right"
 							data-tooltip-delay="0"
 							displayType="secondary"
 							onClick={() => setModalVisible(true)}
-							small
 							symbol="plus"
 							title={Liferay.Language.get('new-custom-object')}
 						/>

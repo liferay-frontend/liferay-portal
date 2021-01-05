@@ -201,7 +201,11 @@ export default function fragmentEntryLinksReducer(
 		case UPDATE_FRAGMENT_ENTRY_LINK_CONFIGURATION:
 			return {
 				...fragmentEntryLinks,
-				[action.fragmentEntryLinkId]: action.fragmentEntryLink,
+				[action.fragmentEntryLinkId]: {
+					...fragmentEntryLinks[action.fragmentEntryLinkId],
+					content: action.fragmentEntryLink.content,
+					editableValues: action.fragmentEntryLink.editableValues,
+				},
 			};
 
 		case UPDATE_FRAGMENT_ENTRY_LINK_CONTENT: {

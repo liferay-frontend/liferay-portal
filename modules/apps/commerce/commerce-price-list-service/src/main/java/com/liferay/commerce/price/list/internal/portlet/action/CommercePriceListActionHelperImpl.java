@@ -41,6 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 public class CommercePriceListActionHelperImpl
 	implements CommercePriceListActionHelper {
 
+	@Override
 	public List<CommercePriceEntry> getCommercePriceEntries(
 			PortletRequest portletRequest)
 		throws PortalException {
@@ -63,6 +64,7 @@ public class CommercePriceListActionHelperImpl
 		return commercePriceEntries;
 	}
 
+	@Override
 	public CommercePriceEntry getCommercePriceEntry(RenderRequest renderRequest)
 		throws PortalException {
 
@@ -92,6 +94,7 @@ public class CommercePriceListActionHelperImpl
 		return commercePriceEntry;
 	}
 
+	@Override
 	public CommercePriceList getCommercePriceList(PortletRequest portletRequest)
 		throws PortalException {
 
@@ -121,6 +124,7 @@ public class CommercePriceListActionHelperImpl
 		return commercePriceList;
 	}
 
+	@Override
 	public List<CommercePriceList> getCommercePriceLists(
 			PortletRequest portletRequest)
 		throws PortalException {
@@ -143,6 +147,7 @@ public class CommercePriceListActionHelperImpl
 		return commercePriceLists;
 	}
 
+	@Override
 	public List<CommerceTierPriceEntry> getCommerceTierPriceEntries(
 			PortletRequest portletRequest)
 		throws PortalException {
@@ -166,6 +171,7 @@ public class CommercePriceListActionHelperImpl
 		return commerceTierPriceEntries;
 	}
 
+	@Override
 	public CommerceTierPriceEntry getCommerceTierPriceEntry(
 			RenderRequest renderRequest)
 		throws PortalException {

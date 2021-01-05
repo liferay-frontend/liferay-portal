@@ -56,7 +56,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommerceDiscountPortletKeys.COMMERCE_DISCOUNT,
-		"mvc.command.name=editCommerceDiscountRel"
+		"mvc.command.name=/commerce_discount/edit_commerce_discount_rel"
 	},
 	service = MVCActionCommand.class
 )

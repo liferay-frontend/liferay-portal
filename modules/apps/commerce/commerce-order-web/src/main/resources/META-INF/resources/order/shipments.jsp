@@ -21,7 +21,7 @@ CommerceOrderEditDisplayContext commerceOrderEditDisplayContext = (CommerceOrder
 %>
 
 <liferay-portlet:renderURL var="editCommerceShipmentURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-	<portlet:param name="mvcRenderCommandName" value="editCommerceShipment" />
+	<portlet:param name="mvcRenderCommandName" value="/commerce_order/edit_commerce_shipment" />
 	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderEditDisplayContext.getCommerceOrderId()) %>" />
 </liferay-portlet:renderURL>
 

@@ -1,10 +1,11 @@
 .side-panel {
 	background-color: #f1f2f5;
 	bottom: 0;
-	box-shadow: -10px 20px 30px rgba(39, 40, 51, 0.15);
+	box-shadow: 0 0 0 rgba(39, 40, 51, 0.15);
 	position: fixed;
 	right: 0;
 	top: 0;
+	transform: translateX(100%);
 	transition: transform ease 500ms, box-shadow ease 500ms, width ease 500ms;
 	width: 70%;
 	will-change: transform, box-shadow, opacity, width;
@@ -33,13 +34,13 @@
 		transition: all ease 200ms;
 	}
 
-	&.is-hidden {
-		box-shadow: 0 0 0 rgba(39, 40, 51, 0.15);
-		transform: translateX(100%);
-	}
-
 	&.is-loading iframe {
 		display: none;
+	}
+
+	&.is-visible {
+		box-shadow: -10px 20px 30px rgba(39, 40, 51, 0.15);
+		transform: translateX(0);
 	}
 
 	&.side-panel-xs {
@@ -68,6 +69,14 @@
 
 	.nav {
 		border-bottom: 1px solid #dddee7;
+	}
+
+	.rtl & {
+		transform: translateX(-100%);
+
+		&.is-visible {
+			transform: translateX(0);
+		}
 	}
 
 	.side-menu {

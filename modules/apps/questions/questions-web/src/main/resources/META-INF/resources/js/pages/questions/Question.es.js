@@ -433,7 +433,6 @@ export default withRouter(
 								</div>
 
 								{question &&
-									!question.locked &&
 									question.actions &&
 									question.actions['reply-to-thread'] && (
 										<div className="c-mt-5">
@@ -450,10 +449,29 @@ export default withRouter(
 													</label>
 
 													<div className="c-mt-2">
+														{question.locked && (
+															<div className="question-locked-text">
+																<span>
+																	<ClayIcon symbol="lock" />
+																</span>
+																{Liferay.Language.get(
+																	'this-question-is-closed-new-answers-and-comments-are-disabled'
+																)}
+															</div>
+														)}
 														<QuestionsEditor
 															contents={
 																articleBody
 															}
+															cssClass={
+																question.locked
+																	? 'question-locked'
+																	: ''
+															}
+															editorConfig={{
+																readOnly:
+																	question.locked,
+															}}
 															onChange={(
 																event
 															) => {
@@ -476,27 +494,29 @@ export default withRouter(
 												</ClayForm.Group>
 											</ClayForm>
 
-											<ClayButton
-												disabled={
-													!articleBody ||
-													stripHTML(articleBody)
-														.length < 15
-												}
-												displayType="primary"
-												onClick={() => {
-													createAnswer({
-														variables: {
-															articleBody,
-															messageBoardThreadId:
-																question.id,
-														},
-													});
-												}}
-											>
-												{Liferay.Language.get(
-													'post-answer'
-												)}
-											</ClayButton>
+											{!question.locked && (
+												<ClayButton
+													disabled={
+														!articleBody ||
+														stripHTML(articleBody)
+															.length < 15
+													}
+													displayType="primary"
+													onClick={() => {
+														createAnswer({
+															variables: {
+																articleBody,
+																messageBoardThreadId:
+																	question.id,
+															},
+														});
+													}}
+												>
+													{Liferay.Language.get(
+														'post-answer'
+													)}
+												</ClayButton>
+											)}
 										</div>
 									)}
 							</div>

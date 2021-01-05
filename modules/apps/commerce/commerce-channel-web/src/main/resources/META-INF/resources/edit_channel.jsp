@@ -34,7 +34,7 @@ else {
 %>
 
 <liferay-portlet:renderURL var="editCommerceChannelExternalReferenceCodeURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-	<portlet:param name="mvcRenderCommandName" value="editCommerceChannelExternalReferenceCode" />
+	<portlet:param name="mvcRenderCommandName" value="/commerce_channels/edit_commerce_channel_external_reference_code" />
 	<portlet:param name="commerceChannelId" value="<%= String.valueOf(commerceChannel.getCommerceChannelId()) %>" />
 </liferay-portlet:renderURL>
 

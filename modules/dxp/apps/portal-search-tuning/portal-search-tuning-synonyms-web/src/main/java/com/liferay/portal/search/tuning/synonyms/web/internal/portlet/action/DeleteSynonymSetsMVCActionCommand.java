@@ -45,7 +45,7 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + SynonymsPortletKeys.SYNONYMS,
-		"mvc.command.name=deleteSynonymSet"
+		"mvc.command.name=/synonyms/delete_synonym_sets"
 	},
 	service = MVCActionCommand.class
 )

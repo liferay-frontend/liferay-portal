@@ -55,6 +55,7 @@ if (Validator.isNull(id)) {
 }
 
 int start = (cur - 1) * delta;
+
 int end = cur * delta;
 
 if (end > total) {

@@ -559,6 +559,7 @@ definition {
 
 	@priority = "5"
 	test PublishPrivatePage {
+		property portal.acceptance = "true";
 		property testray.component.names = "Training";
 
 		Navigator.openSiteURL(siteName = "Site Name");
@@ -590,6 +591,8 @@ definition {
 		Navigator.gotoPrivateStagedSitePage(
 			pageName = "Private Staging Page",
 			siteName = "Site Name");
+
+		Staging.markAsReadyForPublication();
 
 		Staging.gotoPublishToLive();
 
@@ -641,7 +644,7 @@ definition {
 
 		ItemSelector.gotoItemSelectorViaCKEditor();
 
-		ItemSelector.addFromURL(
+		ItemSelector.addImageFromURL(
 			imageSourceURL = "${dmDocumentURL}",
 			navTab = "URL");
 

@@ -50,9 +50,6 @@ public class CommerceNotificationTemplateGroupIdUpgradeProcess
 			PreparedStatement ps = null;
 
 			while (rs.next()) {
-				long commerceNotificationTemplateId = rs.getLong(
-					"commerceNotificationTemplateId");
-
 				long groupId = rs.getLong("groupId");
 
 				long channelGroupId = _getCommerceChannelGroupIdBySiteGroupId(
@@ -61,6 +58,9 @@ public class CommerceNotificationTemplateGroupIdUpgradeProcess
 				if (channelGroupId == 0) {
 					continue;
 				}
+
+				long commerceNotificationTemplateId = rs.getLong(
+					"commerceNotificationTemplateId");
 
 				ps = connection.prepareStatement(
 					"update CommerceNotificationTemplate set groupId = ? " +

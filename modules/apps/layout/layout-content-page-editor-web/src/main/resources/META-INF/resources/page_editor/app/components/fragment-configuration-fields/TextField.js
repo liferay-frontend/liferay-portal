@@ -14,21 +14,18 @@
 
 import ClayForm, {ClayInput} from '@clayui/form';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
 
 export const TextField = ({field, onValueSelect, value}) => {
 	const [errorMessage, setErrorMessage] = useState('');
 
-	const initialValue =
-		value === undefined
-			? field.defaultValue === undefined
-				? ''
-				: field.defaultValue
-			: value;
+	const [nextValue, setNextValue] = useState(value);
 
-	const [nextValue, setNextValue] = useState(initialValue);
+	useEffect(() => {
+		setNextValue(value);
+	}, [value]);
 
 	const {additionalProps = {}, type = 'text'} = parseTypeOptions(
 		field.typeOptions
@@ -44,7 +41,7 @@ export const TextField = ({field, onValueSelect, value}) => {
 					if (event.target.checkValidity()) {
 						setErrorMessage('');
 
-						if (nextValue !== initialValue) {
+						if (nextValue !== value) {
 							onValueSelect(field.name, nextValue);
 						}
 					}
@@ -72,7 +69,7 @@ export const TextField = ({field, onValueSelect, value}) => {
 				}
 				sizing="sm"
 				type={type}
-				value={nextValue}
+				value={nextValue || ''}
 				{...additionalProps}
 			/>
 

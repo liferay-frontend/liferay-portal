@@ -294,6 +294,122 @@ definition {
 		AssertTextNotPresent(value1 = "The requested resource could not be found.");
 	}
 
+	@description = "This ensures that the document file can be downloaded through the document file name."
+	@priority = "5"
+	test DownloadDocumentThroughFileName {
+		var portalURL = PropsUtil.get("portal.url");
+		var siteID = JSONGroupAPI._getGroupIdByName(groupName = "Guest", site = "true");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.addMultipleCP(dmDocumentFileList = "Document_1.mp4,Document_2.mp3,Document_3.doc");
+
+		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteID}/0/Document_1.mp4");
+
+		DownloadTempFile();
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+
+		DMDocument.assertFileNameFromTempFolder(downloadedFileName = "Document_1.mp4");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.editCP(
+			dmDocumentTitle = "Document_2",
+			dmDocumentTitleEdit = "Document_2Edit");
+
+		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteID}/0/Document_2.mp3");
+
+		DownloadTempFile();
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+
+		DMDocument.assertFileNameFromTempFolder(downloadedFileName = "Document_2.mp3");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.editCP(
+			dmDocumentFileName = "Document_3.doc",
+			dmDocumentFileNameEdit = "Document_3Edit.doc",
+			dmDocumentTitle = "Document_3");
+
+		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteID}/0/Document_3Edit.doc");
+
+		DownloadTempFile();
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+
+		DMDocument.assertFileNameFromTempFolder(downloadedFileName = "Document_3Edit.doc");
+	}
+
+	@description = "This ensures that the document file can be downloaded through the document title."
+	@priority = "5"
+	test DownloadDocumentThroughTitle {
+		var portalURL = PropsUtil.get("portal.url");
+		var siteID = JSONGroupAPI._getGroupIdByName(groupName = "Guest", site = "true");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.addMultipleCP(dmDocumentFileList = "Document_1.doc,Document_2.ppt,Document_3.txt");
+
+		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteID}/0/Document_1");
+
+		DownloadTempFile();
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+
+		DMDocument.assertFileNameFromTempFolder(downloadedFileName = "Document_1.doc");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.editCP(
+			dmDocumentTitle = "Document_2",
+			dmDocumentTitleEdit = "Document_2Edit");
+
+		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteID}/0/Document_2Edit");
+
+		DownloadTempFile();
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+
+		DMDocument.assertFileNameFromTempFolder(downloadedFileName = "Document_2.ppt");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.editCP(
+			dmDocumentFileName = "Document_3.txt",
+			dmDocumentFileNameEdit = "Document_3Edit.txt",
+			dmDocumentTitle = "Document_3");
+
+		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteID}/0/Document_3");
+
+		DownloadTempFile();
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+
+		DMDocument.assertFileNameFromTempFolder(downloadedFileName = "Document_3Edit.txt");
+	}
+
+	@description = "This ensures that the document file name will be applied to the downloaded file name."
+	@priority = "5"
+	test DownloadDocumentWithCustomFileName {
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.addCP(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentFile = "Document_1.txt",
+			dmDocumentFileName = "document_1_Edit.jpg",
+			dmDocumentTitle = "DM Document Title");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.downloadCP(dmDocumentTitle = "DM Document Title");
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+
+		DMDocument.assertFileNameFromTempFolder(downloadedFileName = "document_1_Edit.jpg");
+	}
+
 	@description = "This test edits the title and description of a document. It asserts minor version increment because only its metadata was updated."
 	@priority = "5"
 	test EditDocument {
@@ -312,18 +428,22 @@ definition {
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
 
 		DMDocument.viewCP(
+			dmDocumentFileName = "Document_1.txt",
 			dmDocumentSize = "259 B",
 			dmDocumentTitle = "DM Document Title");
 
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 
 		DMDocument.editCP(
-			dmDocumentDescription = "DM Document Description1",
+			dmDocumentDescription = "DM Document Description",
 			dmDocumentDescriptionEdit = "DM Document Description Edit",
+			dmDocumentFileName = "Document_1.txt",
+			dmDocumentFileNameEdit = "Document_1_Edit.txt",
 			dmDocumentTitle = "DM Document Title",
 			dmDocumentTitleEdit = "DM Document Title Edit");
 
 		DMDocument.viewEditCP(
+			dmDocumentFileName = "Document_1_Edit.txt",
 			dmDocumentTitleEdit = "DM Document Title Edit",
 			dmDocumentVersionNumber = "1.1");
 	}
@@ -619,6 +739,52 @@ definition {
 			dmFolderName = "DM Folder Name");
 	}
 
+	@description = "This ensures that the document file can be accessed through the original URL."
+	@priority = "5"
+	test PreviewDocumentThroughURL {
+		var portalURL = PropsUtil.get("portal.url");
+		var siteID = JSONGroupAPI._getGroupIdByName(groupName = "Guest", site = "true");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.addMultipleCP(dmDocumentFileList = "Document_1.jpg,Document_2.pdf,Document_3.png");
+
+		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteID}/0/Document_1");
+
+		var key_imageSourceURL = "${portalURL}/documents/${siteID}/0/Document_1";
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+
+		AssertElementPresent.pauseAssertVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_VIEWPORT_PREVIEW");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.editCP(
+			dmDocumentTitle = "Document_2",
+			dmDocumentTitleEdit = "Document_2Edit");
+
+		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteID}/0/Document_2.pdf");
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+
+		AssertHTMLSourceTextPresent(value1 = "application/pdf");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.editCP(
+			dmDocumentFileName = "Document_3.png",
+			dmDocumentFileNameEdit = "Document_3Edit.png",
+			dmDocumentTitle = "Document_3");
+
+		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteID}/0/Document_3");
+
+		var key_imageSourceURL = "${portalURL}/documents/${siteID}/0/Document_3";
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+
+		AssertElementPresent.pauseAssertVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_VIEWPORT_PREVIEW");
+	}
+
 	@description = "This is a test for LPS-91751. It ensures that a user cannot preview a file with size that exceeds the preview limit."
 	@priority = "4"
 	test PreviewFileThatExceedsLimit {
@@ -726,7 +892,6 @@ definition {
 
 	@description = "This ensures that the SVG file can be previewed."
 	@priority = "5"
-
 	test PreviewSVG {
 		property portal.acceptance = "true";
 
@@ -767,7 +932,7 @@ definition {
 	test SelectAllAndDelete {
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 
-		DMDocument.addMultipleCP(dmDocumentFileList = "Document_1.doc,Document_2.jpg,Document_3.xls,Document_4.txt,Document_1.txt,Document_2.xls,Document_3.jpg,Document_4.jpg,Document_1.xls,Document_2.doc");
+		DMDocument.addMultipleCP(dmDocumentFileList = "Document_1.doc,Document_2.jpg,Document_3.xls,Document_4.txt,Commerce_Black.jpg,Commerce_Blue.jpg,Commerce_White.jpg,Spaceport.jpg,analytics-cloud-hero-image.png,marketplace_icon.png");
 
 		Pagination.changePagination(itemsPerPage = "4");
 
@@ -784,6 +949,34 @@ definition {
 		Alert.viewSuccessMessage();
 
 		DMDocument.viewDefaultCP();
+	}
+
+	@description = "This ensures that the document title can be displayed correctly in the different views."
+	@priority = "5"
+	test ViewDocumentInDifferentViews {
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.addMultipleCP(dmDocumentFileList = "Document_2.docx,Document_3.docx");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "cards");
+
+		LexiconCard.viewCardTitle(card = "Document_2");
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "table");
+
+		LexiconTable.viewTableEntryTitle(tableEntry = "Document_2");
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		LexiconList.viewListEntryTitleLink(listEntry = "Document_2");
+
+		DMNavigator.gotoDocumentCP(dmDocumentTitle = "Document_2");
+
+		DMDocument.viewCP(
+			dmDocumentFileName = "Document_2.docx",
+			dmDocumentTitle = "Document_2");
 	}
 
 }

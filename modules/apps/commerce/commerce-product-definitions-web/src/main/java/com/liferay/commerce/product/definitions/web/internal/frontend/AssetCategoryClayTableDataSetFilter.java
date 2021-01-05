@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.product.definitions.web.internal.frontend;
 
+import com.liferay.commerce.product.definitions.web.internal.frontend.constants.CommerceProductDataSetConstants;
 import com.liferay.frontend.taglib.clay.data.set.filter.BaseAutocompleteClayDataSetFilter;
 import com.liferay.frontend.taglib.clay.data.set.filter.ClayDataSetFilter;
 

@@ -178,11 +178,11 @@ public class CommerceUsersImporter {
 
 		long creatorUserId = serviceContext.getUserId();
 
-		boolean autoPassword = Validator.isNull(password);
-
 		boolean autoScreenName = Validator.isNull(screenName);
 
 		if (user == null) {
+			boolean autoPassword = Validator.isNull(password);
+
 			user = _userLocalService.addUser(
 				creatorUserId, companyId, autoPassword, password, password,
 				autoScreenName, screenName, emailAddress, facebookId, openId,
@@ -399,14 +399,14 @@ public class CommerceUsersImporter {
 
 		String externalSystemType = jsonObject.getString("externalSystemType");
 
-		String exteralSsystemDescription = jsonObject.getString(
-			"externalSystemDescription", "");
-
 		if (Validator.isNotNull(externalUserId) &&
 			Validator.isNotNull(externalSystemType)) {
 
+			String externalSystemDescription = jsonObject.getString(
+				"externalSystemDescription", "");
+
 			_userIdMapperLocalService.updateUserIdMapper(
-				user.getUserId(), externalSystemType, exteralSsystemDescription,
+				user.getUserId(), externalSystemType, externalSystemDescription,
 				externalUserId);
 		}
 

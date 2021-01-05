@@ -73,6 +73,11 @@ $infoPanelSidebarDDColor: $secondary-l1;
 			height: calc(100% - 7rem);
 			text-align: left;
 
+			.sidebar-header,
+			.sidebar-body {
+				min-width: $sidenav-width;
+			}
+
 			.nav-link.active {
 				color: $white;
 			}
@@ -82,11 +87,14 @@ $infoPanelSidebarDDColor: $secondary-l1;
 			}
 		}
 
-		&:not(.open) img {
-			left: 50%;
-			position: absolute;
-			top: 50%;
-			transform: translate(-50%, -50%);
+		&:not(.open) {
+			img,
+			.video-preview {
+				left: 50%;
+				position: absolute;
+				top: 50%;
+				transform: translate(-50%, -50%);
+			}
 		}
 	}
 

@@ -45,6 +45,12 @@ ViewAccountGroupsManagementToolbarDisplayContext viewAccountGroupsManagementTool
 					<portlet:param name="screenNavigationCategoryKey" value="<%= AccountScreenNavigationEntryConstants.CATEGORY_KEY_ACCOUNTS %>" />
 				</portlet:renderURL>
 
+				<%
+				if (accountGroupDisplay.isDefaultAccountGroup()) {
+					rowURL = null;
+				}
+				%>
+
 				<liferay-ui:search-container-column-text
 					cssClass="table-cell-expand table-title"
 					href="<%= rowURL %>"
@@ -63,7 +69,7 @@ ViewAccountGroupsManagementToolbarDisplayContext viewAccountGroupsManagementTool
 					cssClass="table-cell-expand"
 					href="<%= rowURL %>"
 					name="accounts"
-					value="<%= String.valueOf(accountGroupDisplay.getAccountEntriesCount()) %>"
+					value="<%= accountGroupDisplay.getAccountEntriesCount() %>"
 				/>
 
 				<liferay-ui:search-container-column-jsp

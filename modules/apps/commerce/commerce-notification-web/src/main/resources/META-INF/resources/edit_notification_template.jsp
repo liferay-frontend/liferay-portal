@@ -27,6 +27,7 @@ String from = BeanParamUtil.getString(commerceNotificationTemplate, renderReques
 String fromName = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "fromName");
 String cc = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "cc");
 String bcc = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "bcc");
+
 String type = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "type");
 
 CommerceNotificationType commerceNotificationType = commerceNotificationTemplatesDisplayContext.getCommerceNotificationType(type);
@@ -47,7 +48,7 @@ if (commerceNotificationTemplate != null) {
 <commerce-ui:side-panel-content
 	title="<%= title %>"
 >
-	<portlet:actionURL name="editCommerceNotificationTemplate" var="editCommerceNotificationTemplateActionURL" />
+	<portlet:actionURL name="/commerce_channels/edit_commerce_notification_template" var="editCommerceNotificationTemplateActionURL" />
 
 	<aui:form action="<%= editCommerceNotificationTemplateActionURL %>" method="post" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceNotificationTemplate == null) ? Constants.ADD : Constants.UPDATE %>" />

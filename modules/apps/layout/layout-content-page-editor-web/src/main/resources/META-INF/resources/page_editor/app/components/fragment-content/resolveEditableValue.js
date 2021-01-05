@@ -45,23 +45,29 @@ export default function (
 
 	let configPromise;
 
-	if (editableIsMappedToInfoItem(editableValue.config)) {
+	const editableConfig = editableValue.config
+		? editableValue.config[languageId] ||
+		  editableValue.config[config.defaultLanguageId] ||
+		  editableValue.config
+		: editableValue.config;
+
+	if (editableIsMappedToInfoItem(editableConfig)) {
 		configPromise = getFieldValue({
-			classNameId: editableValue.config.classNameId,
-			classPK: editableValue.config.classPK,
-			collectionFieldId: editableValue.config.collectionFieldId,
-			fieldId: editableValue.config.fieldId,
+			classNameId: editableConfig.classNameId,
+			classPK: editableConfig.classPK,
+			collectionFieldId: editableConfig.collectionFieldId,
+			fieldId: editableConfig.fieldId,
 			languageId,
 		})
 			.then((href) => {
-				return {...editableValue.config, href};
+				return {...editableConfig, href};
 			})
 			.catch(() => {
-				return {...editableValue.config};
+				return {...editableConfig};
 			});
 	}
 	else {
-		configPromise = Promise.resolve(editableValue.config);
+		configPromise = Promise.resolve(editableConfig);
 	}
 
 	return Promise.all([valuePromise, configPromise]);

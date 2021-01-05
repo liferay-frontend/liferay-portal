@@ -15,6 +15,7 @@
 package com.liferay.commerce.product.content.web.internal.util;
 
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
+import com.liferay.commerce.product.constants.CPMeasurementUnitConstants;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.content.util.CPCompareContentHelper;
 import com.liferay.commerce.product.content.web.internal.configuration.CPCompareContentMiniPortletInstanceConfiguration;
@@ -25,7 +26,6 @@ import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.model.CPMeasurementUnit;
-import com.liferay.commerce.product.model.CPMeasurementUnitConstants;
 import com.liferay.commerce.product.model.CPOptionCategory;
 import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;

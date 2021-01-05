@@ -62,9 +62,7 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 
 	@Override
 	public String getCommerceShippingOptionLabel(String name, Locale locale) {
-		ResourceBundle resourceBundle = _getResourceBundle(locale);
-
-		return ResourceBundleUtil.getString(resourceBundle, name);
+		return ResourceBundleUtil.getString(_getResourceBundle(locale), name);
 	}
 
 	@Override
@@ -91,16 +89,13 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 
 	@Override
 	public String getDescription(Locale locale) {
-		ResourceBundle resourceBundle = _getResourceBundle(locale);
-
-		return LanguageUtil.get(resourceBundle, "by-weight-description");
+		return LanguageUtil.get(
+			_getResourceBundle(locale), "by-weight-description");
 	}
 
 	@Override
 	public String getName(Locale locale) {
-		ResourceBundle resourceBundle = _getResourceBundle(locale);
-
-		return LanguageUtil.get(resourceBundle, "variable-rate");
+		return LanguageUtil.get(_getResourceBundle(locale), "variable-rate");
 	}
 
 	private List<CommerceShippingFixedOption> _getCommerceShippingFixedOptions(

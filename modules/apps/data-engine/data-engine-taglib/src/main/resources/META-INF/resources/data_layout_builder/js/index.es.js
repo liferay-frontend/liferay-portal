@@ -18,6 +18,7 @@ import DataLayoutBuilderContextProvider from './AppContextProvider.es';
 import * as DataLayoutBuilderActions from './actions.es';
 import FieldType from './components/field-types/FieldType.es';
 import FieldTypeList from './components/field-types/FieldTypeList.es';
+import FormsRuleBuilder from './components/rule-builder/FormsRuleBuilder.es';
 import SearchInput, {
 	SearchInputWithForm,
 } from './components/search-input/SearchInput.es';
@@ -29,13 +30,13 @@ import * as DragTypes from './drag-and-drop/dragTypes.es';
 import withDragAndDropContext from './drag-and-drop/withDragAndDropContext.es';
 import * as DataDefinitionUtils from './utils/dataDefinition.es';
 import * as DataLayoutVisitor from './utils/dataLayoutVisitor.es';
-import saveDataDefinition from './utils/saveDataDefinition.es';
 
 export {
 	DataDefinitionUtils,
 	DataLayoutBuilder,
 	DataLayoutBuilderActions,
 	DataLayoutBuilderContext,
+	FormsRuleBuilder,
 	DataLayoutBuilderContextProvider,
 	DataLayoutVisitor,
 	DragLayer,
@@ -43,7 +44,6 @@ export {
 	FieldType,
 	FieldTypeList,
 	SearchInput,
-	saveDataDefinition,
 	SearchInputWithForm,
 	Sidebar,
 	TranslationManager,

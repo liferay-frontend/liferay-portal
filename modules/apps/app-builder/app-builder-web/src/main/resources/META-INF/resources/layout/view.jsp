@@ -23,7 +23,7 @@ String editEntryCssClass = "";
 
 String mvcPath = ParamUtil.getString(request, PortalUtil.getPortletNamespace(portletName) + "mvcPath");
 
-if (mvcPath.startsWith("/edit_entry.jsp")) {
+if (mvcPath.startsWith("/edit_app_entry.jsp")) {
 	editEntryCssClass = "edit-entry";
 }
 %>

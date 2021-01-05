@@ -108,7 +108,7 @@ public class AppBuilderAppWorkflowHandler
 				GetterUtil.getLong(serviceContext.getAttribute("plid")),
 				PortletRequest.RENDER_PHASE);
 
-			portletURL.setParameter("mvcPath", "/edit_entry.jsp");
+			portletURL.setParameter("mvcPath", "/edit_app_entry.jsp");
 			portletURL.setParameter(
 				"dataRecordId", String.valueOf(ddlRecordId));
 			portletURL.setWindowState(WindowState.MAXIMIZED);

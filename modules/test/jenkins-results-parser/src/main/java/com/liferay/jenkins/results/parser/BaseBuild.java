@@ -707,9 +707,24 @@ public abstract class BaseBuild implements Build {
 			repositoryName = topLevelBuild.getBaseGitRepositoryName();
 		}
 
+		Map<String, String> buildParameters = topLevelBuild.getParameters();
+
+		String buildProfile = buildParameters.get("TEST_PORTAL_BUILD_PROFILE");
+
+		if ((buildProfile == null) || !buildProfile.equals("dxp")) {
+			buildProfile = "portal";
+		}
+
+		String branchName = topLevelBuild.getBranchName();
+
+		if (branchName.startsWith("ee-")) {
+			buildProfile = "portal";
+		}
+
 		_job = JobFactory.newJob(
 			topLevelJobName, topLevelBuild.getTestSuiteName(),
-			topLevelBuild.getBranchName(), repositoryName);
+			topLevelBuild.getBranchName(), repositoryName,
+			Job.BuildProfile.valueOf(buildProfile.toUpperCase()));
 
 		return _job;
 	}
@@ -1176,6 +1191,12 @@ public abstract class BaseBuild implements Build {
 	}
 
 	public List<TestResult> getTestResults(
+		Build build, JSONArray suitesJSONArray) {
+
+		return getTestResults(build, suitesJSONArray, null);
+	}
+
+	public List<TestResult> getTestResults(
 		Build build, JSONArray suitesJSONArray, String testStatus) {
 
 		List<TestResult> testResults = new ArrayList<>();
@@ -1403,10 +1424,23 @@ public abstract class BaseBuild implements Build {
 		return !_status.equals(_previousStatus);
 	}
 
+	@Override
 	public boolean isCompareToUpstream() {
 		TopLevelBuild topLevelBuild = getTopLevelBuild();
 
 		return topLevelBuild.isCompareToUpstream();
+	}
+
+	@Override
+	public boolean isCompleted() {
+		String result = getResult();
+		String status = getStatus();
+
+		if ((result == null) || (status == null)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override

@@ -1,4 +1,8 @@
-apply plugin: "com.liferay.gulp"
+buildCSS {
+	imports = [
+		new File(npmInstall.nodeModulesDir, "@clayui/css/src/scss")
+	]
+}
 
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
@@ -9,7 +13,6 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-spi")
-	compileOnly project(":apps:portal-template:portal-template-soy-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-reflect")

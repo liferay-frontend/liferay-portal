@@ -57,6 +57,7 @@ public class OrganizationSearchFixture {
 		OrganizationLocalService organizationLocalService) {
 
 		_organizationLocalService = organizationLocalService;
+
 		_assetTagLocalService = AssetTagLocalServiceUtil.getService();
 	}
 

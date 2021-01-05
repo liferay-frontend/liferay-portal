@@ -105,7 +105,7 @@ public class DefaultSocialActivitiesDisplayContext
 		rssURL.setParameter(
 			"max",
 			String.valueOf(_socialActivitiesRequestHelper.getRSSDelta()));
-		rssURL.setResourceID("rss");
+		rssURL.setResourceID("/social_activities/rss");
 
 		return rssURL;
 	}

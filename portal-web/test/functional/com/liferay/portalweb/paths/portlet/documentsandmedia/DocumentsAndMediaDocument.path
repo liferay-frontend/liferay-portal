@@ -41,6 +41,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>DOCUMENT_INFO_FILE_NAME</td>
+	<td>//p[contains(@class,'component-subtitle')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DOCUMENT_INFO_LOCATION</td>
 	<td>//dd[contains(@class,'sidebar-dd')]//a[contains(.,'${key_dmFolderName}')]</td>
 	<td></td>
@@ -187,6 +192,12 @@
 	<td></td>
 	<td></td>
 </tr>
+<!--DOCUMENT_VIEWPORT-->
+<tr>
+	<td>DOCUMENT_VIEWPORT_PREVIEW</td>
+	<td>//img[contains(@src,'${key_imageSourceURL}')]</td>
+	<td></td>
+</tr>
 <!--MARKETING-->
 <tr>
 	<td>MARKETING_SELECT</td>
@@ -237,12 +248,7 @@
 </tr>
 <tr>
 	<td>METADATA_PANEL_DATE</td>
-	<td>//div[@class='lfr-ddm-container']/div[contains(.,'${key_dateValue}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>METADATA_PANEL_NUMBER</td>
-	<td>//div[@class='lfr-ddm-container']/div[contains(.,'${key_numberValue}')]</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div[contains(@class,'date-picker')]//input[@type='text']</td>
 	<td></td>
 </tr>
 <tr>
@@ -256,8 +262,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>METADATA_PANEL_TEXT</td>
-	<td>//div[@class='lfr-ddm-container']/div[contains(.,'${key_textContent}')]</td>
+	<td>METADATA_PANEL_TEXT_INPUT</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::input</td>
 	<td></td>
 </tr>
 <tr>
@@ -269,6 +275,17 @@
 <tr>
 	<td>VIDEO_GENERATION_THUMBNAIL_RESOLUTION</td>
 	<td>//head/title[contains(.,'${key_videoGenerationThumbnailResolution}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>VIDEO_PREVIEW</td>
+	<td>//video[contains(@poster,'${key_videoName}')]</td>
+	<td></td>
+</tr>
+<!--VIDEO_SHORTCUT-->
+<tr>
+	<td>VIDEO_SHORTCUT_PREVIEW</td>
+	<td>//iframe[contains(@src,'${key_videoShortcutPreview}')]</td>
 	<td></td>
 </tr>
 </tbody>

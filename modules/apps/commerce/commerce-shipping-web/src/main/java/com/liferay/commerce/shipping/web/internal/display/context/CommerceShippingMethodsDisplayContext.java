@@ -50,6 +50,7 @@ public class CommerceShippingMethodsDisplayContext {
 		_commerceShippingFixedOptionService =
 			commerceShippingFixedOptionService;
 		_commerceShippingMethodService = commerceShippingMethodService;
+
 		_commerceShippingMethodRequestHelper =
 			new CommerceShippingMethodRequestHelper(httpServletRequest);
 	}

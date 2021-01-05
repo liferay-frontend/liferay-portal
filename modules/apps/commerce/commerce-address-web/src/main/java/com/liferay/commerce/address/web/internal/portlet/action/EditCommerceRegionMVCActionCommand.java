@@ -44,7 +44,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_COUNTRY,
-		"mvc.command.name=editCommerceRegion"
+		"mvc.command.name=/commerce_country/edit_commerce_region"
 	},
 	service = MVCActionCommand.class
 )
@@ -105,7 +105,8 @@ public class EditCommerceRegionMVCActionCommand extends BaseMVCActionCommand {
 				SessionErrors.add(actionRequest, exception.getClass());
 
 				actionResponse.setRenderParameter(
-					"mvcRenderCommandName", "editCommerceCountry");
+					"mvcRenderCommandName",
+					"/commerce_country/edit_commerce_country");
 			}
 			else {
 				throw exception;
@@ -127,9 +128,6 @@ public class EditCommerceRegionMVCActionCommand extends BaseMVCActionCommand {
 	protected CommerceRegion updateCommerceRegion(ActionRequest actionRequest)
 		throws Exception {
 
-		long commerceCountryId = ParamUtil.getLong(
-			actionRequest, "commerceCountryId");
-
 		long commerceRegionId = ParamUtil.getLong(
 			actionRequest, "commerceRegionId");
 
@@ -144,6 +142,9 @@ public class EditCommerceRegionMVCActionCommand extends BaseMVCActionCommand {
 		CommerceRegion commerceRegion = null;
 
 		if (commerceRegionId <= 0) {
+			long commerceCountryId = ParamUtil.getLong(
+				actionRequest, "commerceCountryId");
+
 			commerceRegion = _commerceRegionService.addCommerceRegion(
 				commerceCountryId, name, code, priority, active,
 				serviceContext);

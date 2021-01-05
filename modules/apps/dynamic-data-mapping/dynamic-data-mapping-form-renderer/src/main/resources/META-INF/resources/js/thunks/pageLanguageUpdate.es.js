@@ -26,6 +26,7 @@ const formatDataRecord = (languageId, pages, preserveValue) => {
 		fieldName,
 		localizable,
 		localizedValue,
+		localizedValueEdited,
 		repeatable,
 		type,
 		value,
@@ -42,25 +43,47 @@ const formatDataRecord = (languageId, pages, preserveValue) => {
 		}
 
 		if (localizable) {
+			const edited =
+				!!localizedValue[languageId] ||
+				(localizedValueEdited && localizedValueEdited[languageId]);
+
 			if (!dataRecordValues[fieldName]) {
 				if (preserveValue) {
 					dataRecordValues[fieldName] = {
 						...localizedValue,
-						[languageId]: [],
+						[languageId]: value,
 					};
 				}
-				else {
+				else if (!repeatable && edited) {
 					dataRecordValues[fieldName] = {
 						[languageId]: [],
 						...localizedValue,
 					};
 				}
+				else if (repeatable) {
+					Object.keys(localizedValue).forEach((key) => {
+						dataRecordValues[fieldName] = {
+							...dataRecordValues[fieldName],
+							[key]: [],
+							[languageId]: [],
+						};
+					});
+				}
 			}
 
 			if (repeatable) {
-				dataRecordValues[fieldName][languageId].push(_value);
+				Object.keys(localizedValue).forEach((key) => {
+					if (edited && key === languageId) {
+						dataRecordValues[fieldName][key].push(_value);
+					}
+					else {
+						dataRecordValues[fieldName][key].push(
+							localizedValue[key]
+						);
+					}
+				});
 			}
-			else {
+			else if (edited) {
 				dataRecordValues[fieldName] = {
 					...localizedValue,
 					[languageId]: _value,
@@ -117,6 +140,16 @@ const getDataRecordValues = ({
 	return newDataRecordValues;
 };
 
+const getLocalizedValueEdited = (fieldName, pages) => {
+	const visitor = new PagesVisitor(pages);
+
+	const {localizedValueEdited} = visitor.findField(
+		(field) => field.fieldName === fieldName
+	);
+
+	return {localizedValueEdited};
+};
+
 export default function pageLanguageUpdate({
 	ddmStructureLayoutId,
 	nextEditingLanguageId,
@@ -144,6 +177,8 @@ export default function pageLanguageUpdate({
 					namespace: portletNamespace,
 					pathThemeImages: themeDisplay.getPathThemeImages(),
 					readOnly,
+					scopeGroupId: themeDisplay.getScopeGroupId(),
+					siteGroupId: themeDisplay.getSiteGroupId(),
 				}),
 				headers: {
 					'Accept-Language': nextEditingLanguageId.replace('_', '-'),
@@ -153,36 +188,54 @@ export default function pageLanguageUpdate({
 			}
 		)
 			.then((response) => response.json())
-			.then(({pages}) => {
-				const visitor = new PagesVisitor(pages);
+			.then((response) => {
+				let previousField;
+				let repeatableIndex = 0;
+
+				const visitor = new PagesVisitor(response.pages);
 				const newPages = visitor.mapFields(
-					(field, index) => {
+					(field) => {
+						if (
+							(previousField &&
+								previousField.repeatable &&
+								previousField.fieldName !== field.fieldName) ||
+							!field.repeatable
+						) {
+							repeatableIndex = 0;
+						}
+
 						if (!field.localizedValue) {
 							field.localizedValue = {};
 						}
 
-						if (field.repeatable) {
+						const fieldRecordValue =
+							newDataRecordValues[field.fieldName];
+
+						if (field.repeatable && fieldRecordValue) {
 							let values = {};
-							Object.keys(
-								newDataRecordValues[field.fieldName]
-							).forEach((key) => {
+							Object.keys(fieldRecordValue).forEach((key) => {
 								values = {
 									...values,
 									[key]:
-										newDataRecordValues[field.fieldName][
-											key
-										][index],
+										fieldRecordValue[key][repeatableIndex],
 								};
 							});
 							field.localizedValue = values;
+
+							repeatableIndex++;
 						}
-						else if (newDataRecordValues[field.fieldName]) {
+						else if (fieldRecordValue) {
 							field.localizedValue = {
-								...newDataRecordValues[field.fieldName],
+								...fieldRecordValue,
 							};
 						}
 
-						return field;
+						previousField = field;
+
+						return {
+							...field,
+							...getLocalizedValueEdited(field.fieldName, pages),
+						};
 					},
 					true,
 					true

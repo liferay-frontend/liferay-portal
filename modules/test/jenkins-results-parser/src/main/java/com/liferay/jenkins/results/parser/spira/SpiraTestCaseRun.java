@@ -17,17 +17,20 @@ package com.liferay.jenkins.results.parser.spira;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil.HttpRequestMethod;
 import com.liferay.jenkins.results.parser.ParallelExecutor;
+import com.liferay.jenkins.results.parser.spira.result.SpiraTestResult;
 
 import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -39,8 +42,35 @@ import org.json.JSONObject;
  */
 public class SpiraTestCaseRun extends BaseSpiraArtifact {
 
+	public static final int NUMBER_OF_ROWS_MAX_DEFAULT = 1000;
+
 	public static void clearCachedSpiraTestCaseRuns() {
 		clearCachedSpiraArtifacts(SpiraTestCaseRun.class);
+	}
+
+	public static void deleteSpiraTestCaseRuns(
+		List<SpiraTestCaseRun> spiraTestCaseRuns) {
+
+		for (SpiraTestCaseRun spiraTestCaseRun : spiraTestCaseRuns) {
+			Map<String, String> urlPathReplacements = new HashMap<>();
+
+			SpiraProject spiraProject = spiraTestCaseRun.getSpiraProject();
+
+			urlPathReplacements.put(
+				"project_id", String.valueOf(spiraProject.getID()));
+
+			urlPathReplacements.put(
+				"test_run_id", String.valueOf(spiraTestCaseRun.getID()));
+
+			try {
+				SpiraRestAPIUtil.request(
+					"projects/{project_id}/test-runs/{test_run_id}", null,
+					urlPathReplacements, HttpRequestMethod.DELETE, null);
+			}
+			catch (IOException ioException) {
+				throw new RuntimeException(ioException);
+			}
+		}
 	}
 
 	public static List<SpiraTestCaseRun> recordSpiraTestCaseRuns(
@@ -94,8 +124,7 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 			requestJSONObject.put("RunnerStackTrace", result.getDescription());
 			requestJSONObject.put(
 				"RunnerTestName", spiraTestCaseObject.getName());
-			requestJSONObject.put(
-				"StartDate", PathSpiraArtifact.toDateString(calendar));
+			requestJSONObject.put("StartDate", toDateString(calendar));
 			requestJSONObject.put(
 				"TestRunFormatId", result.getRunnerFormatID());
 
@@ -121,35 +150,7 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 			requestJSONArray.put(requestJSONObject);
 		}
 
-		String urlPath = "projects/{project_id}/test-runs/record-multiple";
-
-		Map<String, String> urlPathReplacements = new HashMap<>();
-
-		urlPathReplacements.put(
-			"project_id", String.valueOf(spiraProject.getID()));
-
-		try {
-			JSONArray responseJSONArray = SpiraRestAPIUtil.requestJSONArray(
-				urlPath, null, urlPathReplacements, HttpRequestMethod.POST,
-				requestJSONArray.toString());
-
-			List<SpiraTestCaseRun> spiraTestCaseRuns = new ArrayList<>();
-
-			for (int i = 0; i < responseJSONArray.length(); i++) {
-				JSONObject responseJSONObject = responseJSONArray.getJSONObject(
-					i);
-
-				responseJSONObject.put(
-					SpiraProject.KEY_ID, spiraProject.getID());
-
-				spiraTestCaseRuns.add(new SpiraTestCaseRun(responseJSONObject));
-			}
-
-			return spiraTestCaseRuns;
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+		return _recordSpiraTestCaseRuns(spiraProject, requestJSONArray);
 	}
 
 	public static List<SpiraTestCaseRun> recordSpiraTestCaseRuns(
@@ -251,6 +252,107 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 		return spiraTestCaseRuns;
 	}
 
+	public static List<SpiraTestCaseRun> recordSpiraTestCaseRuns(
+		SpiraProject spiraProject, SpiraTestResult... spiraTestResults) {
+
+		List<Callable<JSONObject>> callableList = new ArrayList<>();
+
+		for (final SpiraTestResult spiraTestResult : spiraTestResults) {
+			callableList.add(
+				new Callable<JSONObject>() {
+
+					@Override
+					public JSONObject call() {
+						long start = System.currentTimeMillis();
+
+						JSONObject requestJSONObject =
+							spiraTestResult.getRequestJSONObject();
+
+						SpiraTestCaseObject spiraTestCaseObject =
+							spiraTestResult.getSpiraTestCaseObject();
+
+						System.out.println(
+							JenkinsResultsParserUtil.combine(
+								spiraTestCaseObject.getPath(), " ",
+								spiraTestCaseObject.getURL(), " in ",
+								JenkinsResultsParserUtil.toDurationString(
+									System.currentTimeMillis() - start)));
+
+						return requestJSONObject;
+					}
+
+				});
+		}
+
+		if (callableList.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		JSONArray requestJSONArray = new JSONArray();
+
+		Callable<JSONObject> callable = callableList.get(0);
+
+		try {
+			requestJSONArray.put(callable.call());
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+
+		if (callableList.size() > 1) {
+			List<Callable<JSONObject>> callableSubList = callableList.subList(
+				1, callableList.size());
+
+			ThreadPoolExecutor threadPoolExecutor =
+				JenkinsResultsParserUtil.getNewThreadPoolExecutor(
+					callableSubList.size(), true);
+
+			ParallelExecutor<JSONObject> parallelExecutor =
+				new ParallelExecutor<>(callableSubList, threadPoolExecutor);
+
+			for (JSONObject requestJSONObject : parallelExecutor.execute()) {
+				requestJSONArray.put(requestJSONObject);
+			}
+		}
+
+		return _recordSpiraTestCaseRuns(spiraProject, requestJSONArray);
+	}
+
+	public JSONObject getAutomatedJSONObject() {
+		if (_automatedJSONObject != null) {
+			return _automatedJSONObject;
+		}
+
+		Map<String, String> urlPathReplacements = new HashMap<>();
+
+		SpiraProject spiraProject = getSpiraProject();
+
+		urlPathReplacements.put(
+			"project_id", String.valueOf(spiraProject.getID()));
+
+		urlPathReplacements.put("test_run_id", String.valueOf(getID()));
+
+		try {
+			_automatedJSONObject = SpiraRestAPIUtil.requestJSONObject(
+				"projects/{project_id}/test-runs/{test_run_id}/automated", null,
+				urlPathReplacements, HttpRequestMethod.GET, null);
+
+			return _automatedJSONObject;
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+	}
+
+	@Override
+	public String getName() {
+		if (jsonObject.has("Name")) {
+			return jsonObject.getString("Name");
+		}
+
+		return jsonObject.getString("RunnerTestName");
+	}
+
 	@Override
 	public String getURL() {
 		SpiraProject spiraProject = getSpiraProject();
@@ -271,10 +373,11 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 			_spiraTestCaseObject = spiraTestCaseObject;
 			_spiraAutomationHost = spiraAutomationHost;
 			_runnerFormat = runnerFormat;
-			_description = runnerStackTrace;
 			_duration = duration;
 			_status = status;
 			_spiraCustomPropertyValues = spiraCustomPropertyValues;
+
+			_description = runnerStackTrace;
 		}
 
 		public Result(
@@ -286,10 +389,11 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 			_spiraTestCaseObjectSupplier = spiraTestCaseObjectSupplier;
 			_spiraAutomationHost = spiraAutomationHost;
 			_runnerFormat = runnerFormat;
-			_description = runnerStackTrace;
 			_duration = duration;
 			_status = status;
 			_spiraCustomPropertyValues = spiraCustomPropertyValues;
+
+			_description = runnerStackTrace;
 		}
 
 		public JSONArray getCustomPropertyValuesJSONArray() {
@@ -302,92 +406,23 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 			for (SpiraCustomPropertyValue spiraCustomPropertyValue :
 					_spiraCustomPropertyValues) {
 
-				SpiraCustomProperty spiraCustomProperty =
-					spiraCustomPropertyValue.getSpiraCustomProperty();
+				if (spiraCustomPropertyValue instanceof
+						MultiListSpiraCustomPropertyValue) {
 
-				JSONObject customListValueJSONObject = null;
+					_putMultiListSpiraCustomPropertyValue(
+						customPropertyValuesJSONArray,
+						(MultiListSpiraCustomPropertyValue)
+							spiraCustomPropertyValue);
 
-				int spiraCustomPropertyNumber =
-					spiraCustomProperty.getPropertyNumber();
-
-				for (int i = 0; i < customPropertyValuesJSONArray.length();
-					 i++) {
-
-					JSONObject jsonObject =
-						customPropertyValuesJSONArray.getJSONObject(i);
-
-					int propertyNumber = jsonObject.optInt(
-						"PropertyNumber", -1);
-
-					if (propertyNumber == -1) {
-						continue;
-					}
-
-					if (propertyNumber != spiraCustomPropertyNumber) {
-						continue;
-					}
-
-					customListValueJSONObject = jsonObject;
-
-					break;
+					continue;
 				}
 
-				if (customListValueJSONObject == null) {
-					customListValueJSONObject = new JSONObject();
-
-					customListValueJSONObject.put(
-						"PropertyNumber", spiraCustomPropertyNumber);
-
-					customPropertyValuesJSONArray.put(
-						customListValueJSONObject);
-				}
-
-				SpiraCustomProperty.Type type = spiraCustomProperty.getType();
-
-				if ((type == SpiraCustomProperty.Type.LIST) ||
-					(type == SpiraCustomProperty.Type.MULTILIST)) {
-
-					SpiraCustomList spiraCustomList =
-						SpiraCustomList.createSpiraCustomListByName(
-							getSpiraProject(), SpiraTestCaseRun.class,
-							spiraCustomProperty.getName());
-
-					SpiraCustomListValue spiraCustomListValue =
-						SpiraCustomListValue.createSpiraCustomListValue(
-							getSpiraProject(), spiraCustomList,
-							spiraCustomPropertyValue.getName());
-
-					if (type == SpiraCustomProperty.Type.LIST) {
-						customListValueJSONObject.put(
-							"IntegerValue", spiraCustomListValue.getID());
-					}
-					else {
-						JSONArray integerListValueJSONArray =
-							customListValueJSONObject.optJSONArray(
-								"IntegerListValue");
-
-						if (integerListValueJSONArray == null) {
-							integerListValueJSONArray = new JSONArray();
-
-							customListValueJSONObject.put(
-								"IntegerListValue", integerListValueJSONArray);
-						}
-
-						integerListValueJSONArray.put(
-							spiraCustomListValue.getID());
-					}
-				}
-				else if (type == SpiraCustomProperty.Type.TEXT) {
-					customListValueJSONObject.put(
-						"StringValue", spiraCustomPropertyValue.getName());
-				}
-				else {
-					throw new RuntimeException(
-						"Unsupported custom property " + type);
-				}
+				customPropertyValuesJSONArray.put(
+					spiraCustomPropertyValue.getCustomPropertyJSONObject());
 			}
 
 			customPropertyValuesJSONArray.put(_getDurationJSONObject());
+			customPropertyValuesJSONArray.put(_getDurationStringJSONObject());
 
 			return customPropertyValuesJSONArray;
 		}
@@ -433,22 +468,92 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 		}
 
 		private JSONObject _getDurationJSONObject() {
-			JSONObject durationJSONObject = new JSONObject();
-
 			SpiraCustomProperty spiraCustomProperty =
 				SpiraCustomProperty.createSpiraCustomProperty(
 					getSpiraProject(), SpiraTestCaseRun.class, "Duration",
 					SpiraCustomProperty.Type.INTEGER);
 
-			durationJSONObject.put("IntegerValue", _duration);
-			durationJSONObject.put(
-				"PropertyNumber", spiraCustomProperty.getPropertyNumber());
+			Integer duration = _duration.intValue();
 
-			return durationJSONObject;
+			if (_duration > Integer.MAX_VALUE) {
+				duration = Integer.MAX_VALUE;
+			}
+
+			SpiraCustomPropertyValue spiraCustomPropertyValue =
+				SpiraCustomPropertyValue.createSpiraCustomPropertyValue(
+					spiraCustomProperty, String.valueOf(duration));
+
+			return spiraCustomPropertyValue.getCustomPropertyJSONObject();
+		}
+
+		private JSONObject _getDurationStringJSONObject() {
+			SpiraCustomProperty spiraCustomProperty =
+				SpiraCustomProperty.createSpiraCustomProperty(
+					getSpiraProject(), SpiraTestCaseRun.class,
+					"Duration String", SpiraCustomProperty.Type.TEXT);
+
+			SpiraCustomPropertyValue spiraCustomPropertyValue =
+				SpiraCustomPropertyValue.createSpiraCustomPropertyValue(
+					spiraCustomProperty,
+					JenkinsResultsParserUtil.toDurationString(_duration));
+
+			return spiraCustomPropertyValue.getCustomPropertyJSONObject();
+		}
+
+		private void _putMultiListSpiraCustomPropertyValue(
+			JSONArray customPropertyValuesJSONArray,
+			MultiListSpiraCustomPropertyValue
+				multiListSpiraCustomPropertyValue) {
+
+			JSONObject customPropertyValueJSONObject = null;
+
+			int propertyNumber =
+				multiListSpiraCustomPropertyValue.getPropertyNumber();
+
+			for (int i = 0; i < customPropertyValuesJSONArray.length(); i++) {
+				JSONObject jsonObject =
+					customPropertyValuesJSONArray.getJSONObject(i);
+
+				if (propertyNumber != jsonObject.optInt("PropertyNumber")) {
+					continue;
+				}
+
+				customPropertyValueJSONObject = jsonObject;
+
+				break;
+			}
+
+			if (customPropertyValueJSONObject == null) {
+				customPropertyValueJSONObject = new JSONObject();
+
+				customPropertyValueJSONObject.put(
+					"PropertyNumber", propertyNumber);
+
+				customPropertyValuesJSONArray.put(
+					customPropertyValueJSONObject);
+			}
+
+			JSONArray integerListValueJSONArray =
+				customPropertyValueJSONObject.optJSONArray("IntegerListValue");
+
+			if ((integerListValueJSONArray == null) ||
+				(integerListValueJSONArray == JSONObject.NULL)) {
+
+				integerListValueJSONArray = new JSONArray();
+			}
+
+			for (SpiraCustomListValue spiraCustomListValue :
+					multiListSpiraCustomPropertyValue.getValue()) {
+
+				integerListValueJSONArray.put(spiraCustomListValue.getID());
+			}
+
+			customPropertyValueJSONObject.put(
+				"IntegerListValue", integerListValueJSONArray);
 		}
 
 		private final String _description;
-		private final long _duration;
+		private final Long _duration;
 		private final RunnerFormat _runnerFormat;
 		private final SpiraAutomationHost _spiraAutomationHost;
 		private final List<SpiraCustomPropertyValue> _spiraCustomPropertyValues;
@@ -480,6 +585,17 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 		BLOCKED(5), CAUTION(6), FAILED(1), NOT_APPLICABLE(4), NOT_RUN(3),
 		PASSED(2);
 
+		public static String getStatusName(int statusID) {
+			for (Status status : values()) {
+				if (statusID == status.getID()) {
+					return status.name();
+				}
+			}
+
+			throw new IllegalArgumentException(
+				"No enum is defined for status ID: " + statusID);
+		}
+
 		public Integer getID() {
 			return _id;
 		}
@@ -493,9 +609,28 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 	}
 
 	protected static List<SpiraTestCaseRun> getSpiraTestCaseRuns(
-		final SpiraProject spiraProject,
+		final int numberOfRows, final SpiraProject spiraProject,
+		final SearchQuery.SearchParameter... searchParameters) {
+
+		return getSpiraTestCaseRuns(
+			numberOfRows, spiraProject, null, searchParameters);
+	}
+
+	protected static List<SpiraTestCaseRun> getSpiraTestCaseRuns(
+		final int numberOfRows, final SpiraProject spiraProject,
 		final SpiraTestCaseObject spiraTestCase,
 		final SearchQuery.SearchParameter... searchParameters) {
+
+		List<SearchQuery.SearchParameter> searchParameterList =
+			new ArrayList<>();
+
+		Collections.addAll(searchParameterList, searchParameters);
+
+		if (spiraTestCase != null) {
+			searchParameterList.add(
+				new SearchQuery.SearchParameter(
+					SpiraTestCaseObject.KEY_ID, spiraTestCase.getID()));
+		}
 
 		return getSpiraArtifacts(
 			SpiraTestCaseRun.class,
@@ -504,7 +639,8 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 				@Override
 				public List<JSONObject> get() {
 					return _requestSpiraTestCaseRuns(
-						spiraProject, spiraTestCase, searchParameters);
+						numberOfRows, spiraProject, spiraTestCase,
+						searchParameters);
 				}
 
 			},
@@ -512,11 +648,11 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 
 				@Override
 				public SpiraTestCaseRun apply(JSONObject jsonObject) {
-					return new SpiraTestCaseRun(jsonObject);
+					return new SpiraTestCaseRun(spiraProject, jsonObject);
 				}
 
 			},
-			searchParameters);
+			searchParameterList.toArray(new SearchQuery.SearchParameter[0]));
 	}
 
 	protected static final Integer ARTIFACT_TYPE_ID = 5;
@@ -525,13 +661,43 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 
 	protected static final String KEY_ID = "TestRunId";
 
+	private static List<SpiraTestCaseRun> _recordSpiraTestCaseRuns(
+		SpiraProject spiraProject, JSONArray requestJSONArray) {
+
+		Map<String, String> urlPathReplacements = new HashMap<>();
+
+		urlPathReplacements.put(
+			"project_id", String.valueOf(spiraProject.getID()));
+
+		try {
+			JSONArray responseJSONArray = SpiraRestAPIUtil.requestJSONArray(
+				"projects/{project_id}/test-runs/record-multiple", null,
+				urlPathReplacements, HttpRequestMethod.POST,
+				requestJSONArray.toString());
+
+			List<SpiraTestCaseRun> spiraTestCaseRuns = new ArrayList<>();
+
+			for (int i = 0; i < responseJSONArray.length(); i++) {
+				spiraTestCaseRuns.add(
+					new SpiraTestCaseRun(
+						spiraProject, responseJSONArray.getJSONObject(i)));
+			}
+
+			return spiraTestCaseRuns;
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+	}
+
 	private static List<JSONObject> _requestSpiraTestCaseRuns(
-		SpiraProject spiraProject, SpiraTestCaseObject spiraTestCase,
+		int numberOfRows, SpiraProject spiraProject,
+		SpiraTestCaseObject spiraTestCase,
 		SearchQuery.SearchParameter... searchParameters) {
 
 		Map<String, String> urlParameters = new HashMap<>();
 
-		urlParameters.put("number_of_rows", String.valueOf(1000));
+		urlParameters.put("number_of_rows", String.valueOf(numberOfRows));
 		urlParameters.put("sort_direction", "DESC");
 		urlParameters.put("sort_field", KEY_ID);
 		urlParameters.put("starting_row", String.valueOf(1));
@@ -540,8 +706,11 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 
 		urlPathReplacements.put(
 			"project_id", String.valueOf(spiraProject.getID()));
-		urlPathReplacements.put(
-			"test_case_id", String.valueOf(spiraTestCase.getID()));
+
+		if (spiraTestCase != null) {
+			urlPathReplacements.put(
+				"test_case_id", String.valueOf(spiraTestCase.getID()));
+		}
 
 		JSONArray requestJSONArray = new JSONArray();
 
@@ -550,11 +719,17 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 		}
 
 		try {
+			String baseRequestURL = "projects/{project_id}/test-runs/search";
+
+			if (spiraTestCase != null) {
+				baseRequestURL =
+					"projects/{project_id}/test-cases/{test_case_id}" +
+						"/test-runs/search";
+			}
+
 			JSONArray responseJSONArray = SpiraRestAPIUtil.requestJSONArray(
-				"projects/{project_id}/test-cases/{test_case_id}/test-runs" +
-					"/search",
-				urlParameters, urlPathReplacements, HttpRequestMethod.POST,
-				requestJSONArray.toString());
+				baseRequestURL, urlParameters, urlPathReplacements,
+				HttpRequestMethod.POST, requestJSONArray.toString());
 
 			List<JSONObject> spiraTestCaseRuns = new ArrayList<>();
 
@@ -575,11 +750,15 @@ public class SpiraTestCaseRun extends BaseSpiraArtifact {
 		}
 	}
 
-	private SpiraTestCaseRun(JSONObject jsonObject) {
+	private SpiraTestCaseRun(SpiraProject spiraProject, JSONObject jsonObject) {
 		super(jsonObject);
+
+		jsonObject.put(spiraProject.getKeyID(), spiraProject.getID());
 
 		cacheSpiraArtifact(SpiraTestCaseRun.class, this);
 	}
+
+	private JSONObject _automatedJSONObject;
 
 	private abstract static class IndexedCallable<T> implements Callable<T> {
 

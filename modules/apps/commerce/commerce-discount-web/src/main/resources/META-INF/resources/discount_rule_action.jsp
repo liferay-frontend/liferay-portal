@@ -33,7 +33,7 @@ CommerceDiscountRule commerceDiscountRule = (CommerceDiscountRule)row.getObject(
 >
 	<c:if test="<%= commerceDiscountRuleDisplayContext.hasPermission(commerceDiscountRule.getCommerceDiscountId(), ActionKeys.UPDATE) %>">
 		<portlet:renderURL var="editURL">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceDiscountRule" />
+			<portlet:param name="mvcRenderCommandName" value="/commerce_discount/edit_commerce_discount_rule" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceDiscountId" value="<%= String.valueOf(commerceDiscountRule.getCommerceDiscountId()) %>" />
 			<portlet:param name="commerceDiscountRuleId" value="<%= String.valueOf(commerceDiscountRule.getCommerceDiscountRuleId()) %>" />
@@ -44,7 +44,7 @@ CommerceDiscountRule commerceDiscountRule = (CommerceDiscountRule)row.getObject(
 			url="<%= editURL %>"
 		/>
 
-		<portlet:actionURL name="editCommerceDiscountRule" var="deleteURL">
+		<portlet:actionURL name="/commerce_discount/edit_commerce_discount_rule" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceDiscountRuleId" value="<%= String.valueOf(commerceDiscountRule.getCommerceDiscountRuleId()) %>" />

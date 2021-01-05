@@ -16,13 +16,13 @@ package com.liferay.commerce.currency.service.impl;
 
 import com.liferay.commerce.currency.configuration.CommerceCurrencyConfiguration;
 import com.liferay.commerce.currency.configuration.RoundingTypeConfiguration;
+import com.liferay.commerce.currency.constants.CommerceCurrencyConstants;
 import com.liferay.commerce.currency.constants.CommerceCurrencyExchangeRateConstants;
 import com.liferay.commerce.currency.constants.RoundingTypeConstants;
 import com.liferay.commerce.currency.exception.CommerceCurrencyCodeException;
 import com.liferay.commerce.currency.exception.CommerceCurrencyNameException;
 import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
-import com.liferay.commerce.currency.model.CommerceCurrencyConstants;
 import com.liferay.commerce.currency.service.base.CommerceCurrencyLocalServiceBaseImpl;
 import com.liferay.commerce.currency.util.ExchangeRateProvider;
 import com.liferay.commerce.currency.util.ExchangeRateProviderRegistry;
@@ -82,11 +82,6 @@ public class CommerceCurrencyLocalServiceImpl
 
 		validate(0, user.getCompanyId(), code, nameMap, primary);
 
-		RoundingTypeConfiguration roundingTypeConfiguration =
-			_configurationProvider.getConfiguration(
-				RoundingTypeConfiguration.class,
-				new SystemSettingsLocator(RoundingTypeConstants.SERVICE_NAME));
-
 		if (formatPatternMap.isEmpty()) {
 			formatPatternMap.put(
 				user.getLocale(),
@@ -94,6 +89,12 @@ public class CommerceCurrencyLocalServiceImpl
 		}
 
 		if (Validator.isNull(roundingMode)) {
+			RoundingTypeConfiguration roundingTypeConfiguration =
+				_configurationProvider.getConfiguration(
+					RoundingTypeConfiguration.class,
+					new SystemSettingsLocator(
+						RoundingTypeConstants.SERVICE_NAME));
+
 			RoundingMode roundingModeEnum =
 				roundingTypeConfiguration.roundingMode();
 
@@ -314,11 +315,6 @@ public class CommerceCurrencyLocalServiceImpl
 			commerceCurrency.getCommerceCurrencyId(),
 			serviceContext.getCompanyId(), code, nameMap, primary);
 
-		RoundingTypeConfiguration roundingTypeConfiguration =
-			_configurationProvider.getConfiguration(
-				RoundingTypeConfiguration.class,
-				new SystemSettingsLocator(RoundingTypeConstants.SERVICE_NAME));
-
 		if (formatPatternMap.isEmpty()) {
 			formatPatternMap.put(
 				serviceContext.getLocale(),
@@ -326,6 +322,12 @@ public class CommerceCurrencyLocalServiceImpl
 		}
 
 		if (Validator.isNull(roundingMode)) {
+			RoundingTypeConfiguration roundingTypeConfiguration =
+				_configurationProvider.getConfiguration(
+					RoundingTypeConfiguration.class,
+					new SystemSettingsLocator(
+						RoundingTypeConstants.SERVICE_NAME));
+
 			RoundingMode roundingModeEnum =
 				roundingTypeConfiguration.roundingMode();
 

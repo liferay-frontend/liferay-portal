@@ -42,8 +42,8 @@ import com.liferay.commerce.model.CommerceShipment;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.order.status.CommerceOrderStatus;
 import com.liferay.commerce.payment.test.util.TestCommercePaymentMethod;
+import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.model.CommerceChannelConstants;
 import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemLocalService;
@@ -56,7 +56,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -114,10 +113,8 @@ public class CommerceOrderEngineTest {
 
 		PrincipalThreadLocal.setName(_user.getUserId());
 
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(_user);
-
-		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
 
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			_group.getCompanyId());
@@ -433,10 +430,8 @@ public class CommerceOrderEngineTest {
 
 			PrincipalThreadLocal.setName(nonadminUser.getUserId());
 
-			PermissionChecker permissionChecker =
-				PermissionCheckerFactoryUtil.create(nonadminUser);
-
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(nonadminUser));
 
 			_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
 				_commerceOrder, nonadminUser.getUserId());

@@ -59,6 +59,7 @@ LayoutsTreeDisplayContext layoutsTreeDisplayContext = new LayoutsTreeDisplayCont
 
 			<clay:content-col
 				containerElement="span"
+				cssClass="table-cell-content"
 			>
 				<a class="{cssClass}" data-regular-url="{regularURL}" data-url="{url}" data-uuid="{uuid}" href="{url}" id="{id}" title="{title}">
 					{label}
@@ -189,10 +190,12 @@ LayoutsTreeDisplayContext layoutsTreeDisplayContext = new LayoutsTreeDisplayCont
 	module="js/PagesTreeEventHandler.es"
 />
 
-<aui:script require="metal-dom/src/all/dom as dom">
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 	var layoutsTree = document.getElementById('<portlet:namespace />layoutsTree');
 
-	var viewCollectionItemsActionOptionQueryClickHandler = dom.delegate(
+	var delegate = delegateModule.default;
+
+	var viewCollectionItemsActionOptionQueryClickHandler = delegate(
 		layoutsTree,
 		'click',
 		'.view-collection-items-action-option.collection',
@@ -213,7 +216,7 @@ LayoutsTreeDisplayContext layoutsTreeDisplayContext = new LayoutsTreeDisplayCont
 			'<%= ProductNavigationProductMenuWebKeys.PAGES_TREE_EVENT_HANDLER %>'
 		);
 
-		viewCollectionItemsActionOptionQueryClickHandler.removeListener();
+		viewCollectionItemsActionOptionQueryClickHandler.dispose();
 
 		Liferay.detach('destroyPortlet', handleDestroyPortlet);
 	}

@@ -254,6 +254,14 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
+		if (site && (PropsValues.DATA_LIMIT_MAX_SITE_COUNT > 0) &&
+			(groupPersistence.countByC_S(user.getCompanyId(), site) >=
+				PropsValues.DATA_LIMIT_MAX_SITE_COUNT)) {
+
+			throw new PortalException(
+				"Unable to exceed maximum number of allowed sites");
+		}
+
 		className = GetterUtil.getString(className);
 
 		long classNameId = classNameLocalService.getClassNameId(className);
@@ -967,7 +975,10 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 			// Expando
 
-			expandoRowLocalService.deleteRows(group.getGroupId());
+			expandoRowLocalService.deleteRows(
+				group.getCompanyId(),
+				classNameLocalService.getClassNameId(Group.class.getName()),
+				group.getGroupId());
 
 			// Social
 

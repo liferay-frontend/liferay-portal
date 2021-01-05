@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SortedArrayList;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -59,7 +60,9 @@ import java.math.BigDecimal;
 
 import java.text.Format;
 
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -300,7 +303,7 @@ public class DDMIndexerImpl implements DDMIndexer {
 
 					String type = field.getType();
 
-					if (type.equals(DDMImpl.TYPE_SELECT)) {
+					if (type.equals(DDMFormFieldType.SELECT)) {
 						JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
 							valueString);
 
@@ -312,7 +315,7 @@ public class DDMIndexerImpl implements DDMIndexer {
 						sb.append(StringPool.SPACE);
 					}
 					else {
-						if (type.equals(DDMImpl.TYPE_DDM_TEXT_HTML)) {
+						if (type.equals(DDMFormFieldType.TEXT_HTML)) {
 							valueString = HtmlUtil.extractText(valueString);
 						}
 
@@ -489,7 +492,7 @@ public class DDMIndexerImpl implements DDMIndexer {
 				document.addGeoLocation(
 					name.concat("_geolocation"), latitude, longitude);
 			}
-			else if (type.equals(DDMImpl.TYPE_SELECT)) {
+			else if (type.equals(DDMFormFieldType.SELECT)) {
 				document.addKeyword(
 					_getSortableFieldName(name),
 					ArrayUtil.toStringArray(
@@ -500,7 +503,7 @@ public class DDMIndexerImpl implements DDMIndexer {
 						JSONFactoryUtil.createJSONArray(valueString)));
 			}
 			else {
-				if (type.equals(DDMImpl.TYPE_DDM_TEXT_HTML)) {
+				if (type.equals(DDMFormFieldType.TEXT_HTML)) {
 					valueString = HtmlUtil.extractText(valueString);
 					sortableValueString = HtmlUtil.extractText(
 						sortableValueString);
@@ -523,6 +526,14 @@ public class DDMIndexerImpl implements DDMIndexer {
 			String indexType, Locale locale, String name, Serializable value)
 		throws PortalException {
 
+		com.liferay.portal.kernel.search.Field ddmField =
+			new com.liferay.portal.kernel.search.Field(StringPool.BLANK);
+
+		List<com.liferay.portal.kernel.search.Field> sortedFields =
+			new SortedArrayList<>(
+				Comparator.comparing(
+					com.liferay.portal.kernel.search.Field::getName));
+
 		Document document = new DocumentImpl();
 
 		String valueFieldName = getValueFieldName(indexType, locale);
@@ -531,22 +542,19 @@ public class DDMIndexerImpl implements DDMIndexer {
 			document, ddmStructureField, indexType, valueFieldName,
 			_getSortableValue(ddmFormField, locale, value), value);
 
-		Map<String, com.liferay.portal.kernel.search.Field> fields =
+		Map<String, com.liferay.portal.kernel.search.Field> documentFields =
 			document.getFields();
 
-		com.liferay.portal.kernel.search.Field ddmField =
-			new com.liferay.portal.kernel.search.Field("");
+		sortedFields.addAll(documentFields.values());
 
-		ddmField.addField(
+		sortedFields.add(
 			new com.liferay.portal.kernel.search.Field(DDM_FIELD_NAME, name));
 
-		ddmField.addField(
+		sortedFields.add(
 			new com.liferay.portal.kernel.search.Field(
 				DDM_VALUE_FIELD_NAME, valueFieldName));
 
-		for (com.liferay.portal.kernel.search.Field field : fields.values()) {
-			ddmField.addField(field);
-		}
+		sortedFields.forEach(ddmField::addField);
 
 		return ddmField;
 	}

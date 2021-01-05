@@ -17,6 +17,8 @@ import React, {useCallback} from 'react';
 
 import {FRAGMENT_CONFIGURATION_ROLES} from '../../../../app/config/constants/fragmentConfigurationRoles';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/constants/freemarkerFragmentEntryProcessor';
+import {config} from '../../../../app/config/index';
+import selectLanguageId from '../../../../app/selectors/selectLanguageId';
 import selectSegmentsExperienceId from '../../../../app/selectors/selectSegmentsExperienceId';
 import {
 	useDispatch,
@@ -35,6 +37,7 @@ export const FragmentGeneralPanel = ({item}) => {
 		[item.config.fragmentEntryLinkId]
 	);
 
+	const languageId = useSelector(selectLanguageId);
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
 	const fieldSets = fragmentEntryLink.configuration?.fieldSets.filter(
@@ -52,15 +55,32 @@ export const FragmentGeneralPanel = ({item}) => {
 				fragmentEntryLink
 			);
 
+			const localizable =
+				fieldSets?.some((fieldSet) =>
+					fieldSet.fields.some(
+						(field) => field.name === name && field.localizable
+					)
+				) ?? false;
+
+			const currentValue = configurationValues[name];
+
 			const nextConfigurationValues = {
 				...configurationValues,
-				[name]: value,
+				[name]: localizable
+					? {
+							...(typeof currentValue === 'object'
+								? currentValue
+								: {[config.defaultLanguageId]: currentValue}),
+							[languageId]: value,
+					  }
+					: value,
 			};
 
 			dispatch(
 				updateFragmentConfiguration({
 					configurationValues: nextConfigurationValues,
 					fragmentEntryLink,
+					languageId,
 					segmentsExperienceId,
 				})
 			);
@@ -68,7 +88,9 @@ export const FragmentGeneralPanel = ({item}) => {
 		[
 			defaultConfigurationValues,
 			dispatch,
+			fieldSets,
 			fragmentEntryLink,
+			languageId,
 			segmentsExperienceId,
 		]
 	);
@@ -81,6 +103,7 @@ export const FragmentGeneralPanel = ({item}) => {
 						fields={fieldSet.fields}
 						key={index}
 						label={fieldSet.label}
+						languageId={languageId}
 						onValueSelect={onValueSelect}
 						values={getConfigurationValues(
 							defaultConfigurationValues,

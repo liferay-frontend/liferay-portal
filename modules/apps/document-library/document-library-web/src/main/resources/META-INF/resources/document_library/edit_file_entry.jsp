@@ -302,6 +302,7 @@ renderResponse.setTitle(headerTitle);
 
 											<liferay-portlet:renderURL var="selectFolderURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 												<portlet:param name="mvcRenderCommandName" value="/document_library/select_folder" />
+												<portlet:param name="folderId" value="<%= String.valueOf(folderId) %>" />
 											</liferay-portlet:renderURL>
 
 											url: '<%= selectFolderURL.toString() %>',
@@ -316,7 +317,7 @@ renderResponse.setTitle(headerTitle);
 
 					<aui:input label="title" name="title" />
 
-					<aui:input label="file-name" name="fileName" />
+					<aui:input label="file-name" name="fileName" required="<%= (fileVersion != null) && Validator.isNotNull(fileVersion.getExtension()) %>" type='<%= dlEditFileEntryDisplayContext.isFileNameVisible() ? "text" : "hidden" %>' />
 
 					<c:if test="<%= (folder == null) || folder.isSupportsMetadata() %>">
 						<aui:input name="description" />
@@ -383,39 +384,22 @@ renderResponse.setTitle(headerTitle);
 											<div class="hide">
 										</c:if>
 
-										<c:choose>
-											<c:when test="<%= FFDocumentLibraryDDMEditorConfigurationUtil.useDataEngineEditor() %>">
+										<%
+										DDMFormValuesToMapConverter ddmFormValuesToMapConverter = (DDMFormValuesToMapConverter)request.getAttribute(DDMFormValuesToMapConverter.class.getName());
+										%>
 
-												<%
-												DDMFormValuesToMapConverter ddmFormValuesToMapConverter = (DDMFormValuesToMapConverter)request.getAttribute(DDMFormValuesToMapConverter.class.getName());
-												%>
+										<liferay-data-engine:data-layout-renderer
+											containerId='<%= liferayPortletResponse.getNamespace() + "dataEngineLayoutRenderer" + ddmStructure.getStructureId() %>'
+											dataDefinitionId="<%= ddmStructure.getStructureId() %>"
+											dataRecordValues="<%= ddmFormValuesToMapConverter.convert(ddmFormValues, DDMStructureLocalServiceUtil.getStructure(ddmStructure.getStructureId())) %>"
+											namespace="<%= liferayPortletResponse.getNamespace() + ddmStructure.getStructureId() %>"
+										/>
 
-												<liferay-data-engine:data-layout-renderer
-													containerId='<%= liferayPortletResponse.getNamespace() + "dataEngineLayoutRenderer" + ddmStructure.getStructureId() %>'
-													dataDefinitionId="<%= ddmStructure.getStructureId() %>"
-													dataRecordValues="<%= ddmFormValuesToMapConverter.convert(ddmFormValues, DDMStructureLocalServiceUtil.getStructure(ddmStructure.getStructureId())) %>"
-													namespace="<%= liferayPortletResponse.getNamespace() + ddmStructure.getStructureId() %>"
-												/>
-
-												<liferay-frontend:component
-													componentId='<%= liferayPortletResponse.getNamespace() + "dataEngineLayoutRendererLanguageProxy" %>'
-													module="document_library/js/dataEngineLayoutRendererLanguageProxy.es"
-													servletContext="<%= application %>"
-												/>
-											</c:when>
-											<c:otherwise>
-												<liferay-ddm:html
-													classNameId="<%= PortalUtil.getClassNameId(com.liferay.dynamic.data.mapping.model.DDMStructure.class) %>"
-													classPK="<%= ddmStructure.getPrimaryKey() %>"
-													ddmFormValues="<%= ddmFormValues %>"
-													defaultEditLocale="<%= LocaleUtil.fromLanguageId(defaultLanguageId) %>"
-													fieldsNamespace="<%= String.valueOf(ddmStructure.getPrimaryKey()) %>"
-													groupId="<%= (fileEntry != null) ? fileEntry.getGroupId() : 0 %>"
-													localizable="<%= localizable %>"
-													requestedLocale="<%= locale %>"
-												/>
-											</c:otherwise>
-										</c:choose>
+										<liferay-frontend:component
+											componentId='<%= liferayPortletResponse.getNamespace() + "dataEngineLayoutRendererLanguageProxy" %>'
+											module="document_library/js/dataEngineLayoutRendererLanguageProxy.es"
+											servletContext="<%= application %>"
+										/>
 
 										<c:if test="<%= !dlEditFileEntryDisplayContext.isDDMStructureVisible(ddmStructure) %>">
 											</div>
@@ -438,7 +422,7 @@ renderResponse.setTitle(headerTitle);
 				<c:choose>
 					<c:when test="<%= (fileEntry != null) && !checkedOut && dlAdminDisplayContext.isVersioningStrategyOverridable() %>">
 						<aui:fieldset collapsed="<%= true %>" collapsible="<%= true %>" label="versioning">
-							<aui:input label="customize-the-version-number-increment-and-describe-my-changes" name="updateVersionDetails" type="toggle-switch" value="<%= updateVersionDetails %>" />
+							<aui:input inlineLabel="right" label="customize-the-version-number-increment-and-describe-my-changes" labelCssClass="simple-toggle-switch" name="updateVersionDetails" type="toggle-switch" value="<%= updateVersionDetails %>" />
 
 							<div class="<%= updateVersionDetails ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />versionDetails">
 								<aui:input checked="<%= dlVersionNumberIncrease == DLVersionNumberIncrease.MAJOR %>" label="major-version" name="versionIncrease" type="radio" value="<%= DLVersionNumberIncrease.MAJOR %>" />

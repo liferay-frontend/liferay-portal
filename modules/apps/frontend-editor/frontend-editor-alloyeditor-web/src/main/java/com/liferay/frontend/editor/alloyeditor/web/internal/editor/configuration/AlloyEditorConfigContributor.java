@@ -65,10 +65,10 @@ public class AlloyEditorConfigContributor
 		String extraPlugins = jsonObject.getString("extraPlugins");
 
 		if (Validator.isNotNull(extraPlugins)) {
-			extraPlugins += ",itemselector,media,embedurl";
+			extraPlugins += ",itemselector,media,videoembed";
 		}
 		else {
-			extraPlugins = "itemselector,media,embedurl";
+			extraPlugins = "itemselector,media,videoembed";
 		}
 
 		jsonObject.put(
@@ -175,7 +175,7 @@ public class AlloyEditorConfigContributor
 
 	protected JSONObject getToolbarsAddJSONObject() {
 		return JSONUtil.put(
-			"buttons", toJSONArray("['image', 'embedVideo', 'table', 'hline']")
+			"buttons", toJSONArray("['image', 'video', 'table', 'hline']")
 		).put(
 			"tabIndex", 2
 		);

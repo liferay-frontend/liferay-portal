@@ -108,10 +108,9 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Link to Page",
+		DataEngine.addField(
 			fieldFieldLabel = "Link to Page",
-			fieldName = "LinkToPage");
+			fieldName = "Link to Page");
 
 		WebContentStructures.saveCP(structureName = "WC Structure Name");
 
@@ -130,10 +129,9 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
 
 		WebContent.addWithStructureCP(
-			linkedPageName = "Second Test Page",
-			linkFieldName = "LinkToPage",
 			structureName = "WC Structure Name",
 			templateName = "WC Template Name",
+			webContentLinkToPage = "Second Test Page",
 			webContentTitle = "WC WebContent Title 2");
 
 		PortletEntry.publish();
@@ -396,6 +394,8 @@ definition {
 
 	@priority = "5"
 	test ContentCannotBeCreatedOnLive {
+		property portal.acceptance = "true";
+
 		Navigator.openSiteURL(siteName = "Site Name");
 
 		ProductMenu.gotoPortlet(
@@ -456,6 +456,7 @@ definition {
 
 	@priority = "4"
 	test EditPublishTemplate {
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "StagingUsecase#EditPublishTemplate";
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
@@ -749,6 +750,7 @@ definition {
 
 	@priority = "5"
 	test PublishPortlet {
+		property portal.acceptance = "true";
 		property testray.component.names = "Training";
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-staging");
@@ -913,6 +915,8 @@ definition {
 
 		Button.clickPublish();
 
+		VerifyElementPresent(locator1 = "Message#SUCCESS");
+
 		Navigator.gotoStagedSitePage(
 			pageName = "Second Page",
 			siteName = "Site Name");
@@ -944,6 +948,8 @@ definition {
 	@description = "This is a use case for LPS-84418 and LPS-117578."
 	@priority = "5"
 	test PublishWithImpossibleDateRange {
+		property portal.acceptance = "true";
+
 		Navigator.openStagingSiteURL(siteName = "Site Name");
 
 		Staging.addRepeatEvent(
@@ -1201,10 +1207,9 @@ definition {
 			structureDescription = "Structure Description",
 			structureName = "Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Web Content",
+		DataEngine.addField(
 			fieldFieldLabel = "Web Content",
-			fieldName = "WebContent");
+			fieldName = "Web Content");
 
 		WebContentStructures.saveCP(structureName = "Structure Name");
 
@@ -1222,9 +1227,8 @@ definition {
 
 		WebContent.addWithStructureCP(
 			description = "WC WebContent 1 Description",
-			fieldName = "WebContent",
-			webContentSelectWCFile = "WC WebContent Title",
-			webContentTitle = "WC WebContent 1 Title");
+			webContentTitle = "WC WebContent 1 Title",
+			webContentWebContent = "WC WebContent Title");
 
 		PortletEntry.publish();
 
@@ -1306,7 +1310,8 @@ definition {
 
 	@priority = "5"
 	test TrashEntryReferencePublishing {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "StagingUsecase#TrashEntryReferencePublishing";
 		property testray.component.names = "Training";
 

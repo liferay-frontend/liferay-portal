@@ -23,16 +23,18 @@ import com.liferay.commerce.account.service.CommerceAccountOrganizationRelLocalS
 import com.liferay.commerce.account.service.CommerceAccountUserRelLocalService;
 import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.commerce.constants.CommerceAddressConstants;
+import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.exception.CommerceOrderAccountLimitException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceCountry;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceRegion;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
+import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.model.CommerceChannelConstants;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceCountryLocalService;
@@ -74,8 +76,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import org.frutilla.FrutillaRule;
 
@@ -136,7 +136,10 @@ public class CommerceOrderTest {
 	}
 
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception {
+		_commerceOrderLocalService.deleteCommerceOrders(
+			_commerceChannel.getGroupId());
+
 		CentralizedThreadLocal.clearShortLivedThreadLocals();
 	}
 
@@ -841,6 +844,74 @@ public class CommerceOrderTest {
 		_commerceAddressLocalService.deleteCommerceAddress(commerceAddress);
 	}
 
+	@Test
+	public void testValidateAccountOrdersLimit() throws Exception {
+		frutillaRule.scenario(
+			"Try to add 3 orders with account cart number limit set to 3"
+		).given(
+			"A B2B Site"
+		).and(
+			"A Group"
+		).and(
+			"A User"
+		).when(
+			"I try to get pending orders by channelGroupId and the accountId"
+		).then(
+			"I should have only 2 order"
+		);
+
+		Settings settings = _settingsFactory.getSettings(
+			new GroupServiceSettingsLocator(
+				_commerceChannel.getGroupId(),
+				CommerceConstants.ORDER_FIELDS_SERVICE_NAME));
+
+		ModifiableSettings modifiableSettings =
+			settings.getModifiableSettings();
+
+		modifiableSettings.setValue("accountCartMaxAllowed", "2");
+
+		modifiableSettings.store();
+
+		CommerceAccount commerceAccount =
+			_commerceAccountLocalService.addBusinessCommerceAccount(
+				"Test Business Account", 0, null, null, true, null,
+				new long[] {_user.getUserId()},
+				new String[] {_user.getEmailAddress()}, _serviceContext);
+
+		long commerceChannelGroupId = _commerceChannel.getGroupId();
+
+		_commerceOrderLocalService.addCommerceOrder(
+			_user.getUserId(), commerceChannelGroupId,
+			commerceAccount.getCommerceAccountId(),
+			_commerceCurrency.getCommerceCurrencyId());
+
+		_commerceOrderLocalService.addCommerceOrder(
+			_user.getUserId(), commerceChannelGroupId,
+			commerceAccount.getCommerceAccountId(),
+			_commerceCurrency.getCommerceCurrencyId());
+
+		try {
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), commerceChannelGroupId,
+				commerceAccount.getCommerceAccountId(),
+				_commerceCurrency.getCommerceCurrencyId());
+		}
+		catch (CommerceOrderAccountLimitException
+					commerceOrderAccountLimitException) {
+
+			Assert.assertNotNull(commerceOrderAccountLimitException);
+		}
+
+		int pendingCommerceOrdersCount =
+			_commerceOrderService.getPendingCommerceOrdersCount(
+				commerceChannelGroupId, commerceAccount.getCommerceAccountId(),
+				StringPool.BLANK);
+
+		Assert.assertEquals(2, pendingCommerceOrdersCount);
+
+		_commerceAccounts.add(commerceAccount);
+	}
+
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
@@ -879,13 +950,12 @@ public class CommerceOrderTest {
 	}
 
 	private Role _addSalesAgentRole() throws Exception {
-		Map<Locale, String> titleMap = HashMapBuilder.put(
-			_serviceContext.getLocale(), "Sales Agent"
-		).build();
-
 		Role role = _roleLocalService.addRole(
-			_user.getUserId(), null, 0, "Sales Agent", titleMap, null, 1, null,
-			_serviceContext);
+			_user.getUserId(), null, 0, "Sales Agent",
+			HashMapBuilder.put(
+				_serviceContext.getLocale(), "Sales Agent"
+			).build(),
+			null, 1, null, _serviceContext);
 
 		_resourcePermissionLocalService.addResourcePermission(
 			_serviceContext.getCompanyId(), "90", 1,
@@ -945,6 +1015,9 @@ public class CommerceOrderTest {
 	@Inject
 	private CommerceAccountOrganizationRelLocalService
 		_commerceAccountOrganizationRelLocalService;
+
+	@DeleteAfterTestRun
+	private final List<CommerceAccount> _commerceAccounts = new ArrayList<>();
 
 	@Inject
 	private CommerceAccountUserRelLocalService

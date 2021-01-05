@@ -22,8 +22,6 @@ import Component from 'metal-jsx';
 import {Config} from 'metal-state';
 
 import {pageStructure} from '../../util/config.es';
-import withActionableFields from './withActionableFields.es';
-import withClickableFields from './withClickableFields.es';
 import withEditablePageHeader from './withEditablePageHeader.es';
 import withMoveableFields from './withMoveableFields.es';
 import withMultiplePages from './withMultiplePages.es';
@@ -83,19 +81,21 @@ class FormBuilderBase extends Component {
 	}
 
 	render() {
-		const {props} = this;
 		const {
 			activePage,
 			allowNestedFields,
 			dnd,
 			editingLanguageId,
+			fieldActions,
+			fieldTypes,
+			focusedField,
 			pages,
 			paginationMode,
 			portletNamespace,
 			spritemap,
 			successPageSettings,
 			view,
-		} = props;
+		} = this.props;
 
 		return (
 			<div class="ddm-form-builder-wrapper">
@@ -106,6 +106,9 @@ class FormBuilderBase extends Component {
 						dnd={dnd}
 						editable={true}
 						editingLanguageId={editingLanguageId}
+						fieldActions={fieldActions}
+						fieldTypesMetadata={fieldTypes}
+						focusedField={focusedField}
 						pages={this.preparePagesForRender(pages)}
 						paginationMode={paginationMode}
 						portletNamespace={portletNamespace}
@@ -215,8 +218,6 @@ FormBuilderBase.PROPS = {
 };
 
 export default compose(
-	withActionableFields,
-	withClickableFields,
 	withEditablePageHeader,
 	withMoveableFields,
 	withMultiplePages,

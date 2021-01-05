@@ -12,7 +12,7 @@
  * details.
  */
 
-import dom from 'metal-dom';
+import {delegate} from 'frontend-js-web';
 
 const CssClass = {
 	ACTIVE: 'active',
@@ -36,7 +36,7 @@ class TabsProvider {
 
 		this._setTransitionEndEvent();
 
-		dom.delegate(
+		delegate(
 			document.body,
 			'click',
 			Selector.TRIGGER,
@@ -68,13 +68,17 @@ class TabsProvider {
 
 		this._transitioning = true;
 
-		dom.once(panel, this._transitionEndEvent, () => {
-			panel.classList.remove(CssClass.ACTIVE);
+		panel.addEventListener(
+			this._transitionEndEvent,
+			() => {
+				panel.classList.remove(CssClass.ACTIVE);
 
-			this._transitioning = false;
+				this._transitioning = false;
 
-			Liferay.fire(this.EVENT_HIDDEN, {panel, trigger});
-		});
+				Liferay.fire(this.EVENT_HIDDEN, {panel, trigger});
+			},
+			{once: true}
+		);
 	};
 
 	show = ({panel, trigger}) => {

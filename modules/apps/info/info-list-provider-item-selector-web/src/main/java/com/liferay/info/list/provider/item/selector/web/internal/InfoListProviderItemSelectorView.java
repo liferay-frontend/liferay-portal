@@ -27,6 +27,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -103,6 +105,9 @@ public class InfoListProviderItemSelectorView
 				(HttpServletRequest)servletRequest,
 				infoListProviderItemSelectorCriterion, portletURL));
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		InfoListProviderItemSelectorView.class);
 
 	private static final List<ItemSelectorReturnType>
 		_supportedItemSelectorReturnTypes = Collections.singletonList(
@@ -246,8 +251,30 @@ public class InfoListProviderItemSelectorView
 
 			infoListProviders = ListUtil.filter(
 				infoListProviders,
-				infoListProvider -> infoListProvider.isAvailable(
-					defaultInfoListProviderContext));
+				infoListProvider -> {
+					try {
+						String label = infoListProvider.getLabel(
+							themeDisplay.getLocale());
+
+						if (Validator.isNotNull(label) &&
+							infoListProvider.isAvailable(
+								defaultInfoListProviderContext)) {
+
+							return true;
+						}
+
+						return false;
+					}
+					catch (Exception exception) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"Unable to get info list provider label",
+								exception);
+						}
+
+						return false;
+					}
+				});
 
 			searchContainer.setResults(
 				ListUtil.subList(

@@ -660,6 +660,8 @@ definition {
 			resourceCheckList = "everything.read.userprofile",
 			resourcePanels = "Portal Services");
 
+		Refresh();
+
 		OAuth2.viewScopes(
 			applicationName = "OAuth Application",
 			resourceCheckedList = "everything.read.userprofile",
@@ -668,6 +670,8 @@ definition {
 		OAuth2.editScopes(
 			applicationName = "OAuth Application",
 			checkGlobalScope = "Everything");
+
+		Refresh();
 
 		OAuth2.viewScopes(
 			applicationName = "OAuth Application",
@@ -681,6 +685,8 @@ definition {
 			uncheckAllResourceScopes = "true",
 			uncheckGlobalScope = "Everything");
 
+		Refresh();
+
 		OAuth2.viewScopes(
 			allResourceScopesUnchecked = "true",
 			applicationName = "OAuth Application",
@@ -692,6 +698,8 @@ definition {
 			checkGlobalScopesViaModal = "Everything",
 			modalLinkScope = "example-scope-1",
 			resourcePanels = "Sample QA app");
+
+		Refresh();
 
 		OAuth2.viewScopes(
 			applicationName = "OAuth Application",
@@ -793,6 +801,8 @@ definition {
 			applicationName = "Test Expired Application",
 			resourceCheckList = "liferay-json-web-services.everything.read.userprofile",
 			resourcePanels = "Portal Services");
+
+		Refresh();
 
 		LexiconEntry.gotoEntryMenuItem(
 			menuItem = "Edit",

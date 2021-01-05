@@ -1,0 +1,17 @@
+def main():
+    s = "1\
+    2"
+	print(s)
+
+	s = '''a
+    b
+    c'''
+	print(s)
+
+	s = '''A
+    B
+    C'''
+	print(s)
+
+if __name__ == "__main__":
+	main()

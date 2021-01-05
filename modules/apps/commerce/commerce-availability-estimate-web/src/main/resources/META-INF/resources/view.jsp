@@ -47,7 +47,7 @@ CommerceAvailabilityEstimateDisplayContext commerceAvailabilityEstimateDisplayCo
 			/>
 
 			<portlet:renderURL var="addCommerceAvailabilityEstimateURL">
-				<portlet:param name="mvcRenderCommandName" value="editCommerceAvailabilityEstimate" />
+				<portlet:param name="mvcRenderCommandName" value="/commerce_availability_estimate/edit_commerce_availability_estimate" />
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 			</portlet:renderURL>
 
@@ -70,8 +70,8 @@ CommerceAvailabilityEstimateDisplayContext commerceAvailabilityEstimateDisplayCo
 		</liferay-frontend:management-bar-action-buttons>
 	</liferay-frontend:management-bar>
 
-	<div class="container-fluid-1280">
-		<portlet:actionURL name="editCommerceAvailabilityEstimate" var="editCommerceAvailabilityEstimateActionURL" />
+	<div class="container-fluid container-fluid-max-xl">
+		<portlet:actionURL name="/commerce_availability_estimate/edit_commerce_availability_estimate" var="editCommerceAvailabilityEstimateActionURL" />
 
 		<aui:form action="<%= editCommerceAvailabilityEstimateActionURL %>" method="post" name="fm">
 			<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.DELETE %>" />
@@ -91,25 +91,25 @@ CommerceAvailabilityEstimateDisplayContext commerceAvailabilityEstimateDisplayCo
 					<%
 					PortletURL rowURL = renderResponse.createRenderURL();
 
-					rowURL.setParameter("mvcRenderCommandName", "editCommerceAvailabilityEstimate");
+					rowURL.setParameter("mvcRenderCommandName", "/commerce_availability_estimate/edit_commerce_availability_estimate");
 					rowURL.setParameter("redirect", currentURL);
 					rowURL.setParameter("commerceAvailabilityEstimateId", String.valueOf(commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId()));
 					%>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						name="title"
 						value="<%= HtmlUtil.escape(commerceAvailabilityEstimate.getTitle(languageId)) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						property="priority"
 					/>
 
 					<liferay-ui:search-container-column-date
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="modified-date"
 						property="modifiedDate"
 					/>

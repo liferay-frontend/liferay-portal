@@ -73,33 +73,32 @@ public class JournalPortletDataHandlerTest
 
 		CompanyThreadLocal.setCompanyId(TestPropsValues.getCompanyId());
 
-		PortalPreferences portalPreferenceces =
+		PortalPreferences portalPreferences =
 			PortletPreferencesFactoryUtil.getPortalPreferences(
 				TestPropsValues.getUserId(), true);
 
 		_originalPortalPreferencesXML = PortletPreferencesFactoryUtil.toXML(
-			portalPreferenceces);
+			portalPreferences);
 
-		portalPreferenceces.setValue(
-			"", "publishToLiveByDefaultEnabled", "true");
-		portalPreferenceces.setValue(
+		portalPreferences.setValue("", "publishToLiveByDefaultEnabled", "true");
+		portalPreferences.setValue(
 			"", "versionHistoryByDefaultEnabled", "true");
-		portalPreferenceces.setValue("", "articleCommentsEnabled", "true");
-		portalPreferenceces.setValue(
+		portalPreferences.setValue("", "articleCommentsEnabled", "true");
+		portalPreferences.setValue(
 			"", "expireAllArticleVersionsEnabled", "true");
-		portalPreferenceces.setValue("", "folderIconCheckCountEnabled", "true");
-		portalPreferenceces.setValue(
+		portalPreferences.setValue("", "folderIconCheckCountEnabled", "true");
+		portalPreferences.setValue(
 			"", "indexAllArticleVersionsEnabled", "true");
-		portalPreferenceces.setValue(
+		portalPreferences.setValue(
 			"", "databaseContentKeywordSearchEnabled", "true");
-		portalPreferenceces.setValue("", "journalArticleStorageType", "json");
-		portalPreferenceces.setValue(
+		portalPreferences.setValue("", "journalArticleStorageType", "json");
+		portalPreferences.setValue(
 			"", "journalArticlePageBreakToken", "@page_break@");
 
 		PortalPreferencesLocalServiceUtil.updatePreferences(
 			TestPropsValues.getCompanyId(),
 			PortletKeys.PREFS_OWNER_TYPE_COMPANY,
-			PortletPreferencesFactoryUtil.toXML(portalPreferenceces));
+			PortletPreferencesFactoryUtil.toXML(portalPreferences));
 	}
 
 	@After

@@ -30,7 +30,7 @@ function getOdataString(value, key, exclude) {
 		typeof value === 'string' ? `'${value}'` : value
 	}`;
 }
-function RadioFilter({actions, id, items, value: valueProp}) {
+function RadioFilter({id, items, updateFilterState, value: valueProp}) {
 	const [itemValue, setItemValue] = useState(
 		valueProp && valueProp.itemValue
 	);
@@ -89,7 +89,7 @@ function RadioFilter({actions, id, items, value: valueProp}) {
 					disabled={submitDisabled}
 					onClick={() =>
 						actionType !== 'delete'
-							? actions.updateFilterState(
+							? updateFilterState(
 									id,
 									{
 										exclude,
@@ -98,7 +98,7 @@ function RadioFilter({actions, id, items, value: valueProp}) {
 									formatValue(itemValue, items, exclude),
 									getOdataString(itemValue, id, exclude)
 							  )
-							: actions.updateFilterState(id)
+							: updateFilterState(id)
 					}
 					small
 				>
@@ -112,9 +112,6 @@ function RadioFilter({actions, id, items, value: valueProp}) {
 }
 
 RadioFilter.propTypes = {
-	actions: PropTypes.shape({
-		updateFilterState: PropTypes.func.isRequired,
-	}),
 	id: PropTypes.string.isRequired,
 	items: PropTypes.arrayOf(
 		PropTypes.shape({
@@ -122,6 +119,7 @@ RadioFilter.propTypes = {
 			value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		})
 	),
+	updateFilterState: PropTypes.func.isRequired,
 	value: PropTypes.shape({
 		exclude: PropTypes.bool,
 		itemValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

@@ -31,6 +31,7 @@ public class Keywords {
 		}
 
 		_keywords = keywords;
+
 		_luceneSyntax = luceneSyntax;
 	}
 

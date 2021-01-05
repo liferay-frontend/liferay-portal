@@ -46,7 +46,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_AVAILABILITY_ESTIMATE,
-		"mvc.command.name=editCommerceAvailabilityEstimate"
+		"mvc.command.name=/commerce_availability_estimate/edit_commerce_availability_estimate"
 	},
 	service = MVCActionCommand.class
 )

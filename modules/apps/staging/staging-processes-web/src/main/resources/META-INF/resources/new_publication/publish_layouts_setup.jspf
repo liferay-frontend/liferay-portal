@@ -132,19 +132,19 @@ if (group.isStaged() && group.isStagedRemotely()) {
 
 PortletURL portletURL = renderResponse.createActionURL();
 
-portletURL.setParameter(ActionRequest.ACTION_NAME, "publishLayouts");
-portletURL.setParameter("mvcRenderCommandName", "publishLayouts");
+portletURL.setParameter(ActionRequest.ACTION_NAME, "/staging_processes/publish_layouts");
+portletURL.setParameter("mvcRenderCommandName", "/staging_processes/publish_layouts");
 portletURL.setParameter("stagingGroupId", String.valueOf(stagingGroupId));
 
 PortletURL renderURL = renderResponse.createRenderURL();
 
-renderURL.setParameter("mvcRenderCommandName", "publishLayouts");
+renderURL.setParameter("mvcRenderCommandName", "/staging_processes/publish_layouts");
 renderURL.setParameter("groupId", String.valueOf(stagingGroupId));
 renderURL.setParameter("layoutSetBranchId", String.valueOf(layoutSetBranchId));
 renderURL.setParameter("layoutSetBranchName", layoutSetBranchName);
 renderURL.setParameter("privateLayout", String.valueOf(privateLayout));
 
-renderResponse.setTitle(!configuredPublish ? LanguageUtil.get(request, "new-publication") : LanguageUtil.format(request, "new-publication-based-on-x", exportImportConfiguration.getName(), false));
+renderResponse.setTitle(!configuredPublish ? LanguageUtil.get(request, "new-publish-process") : LanguageUtil.format(request, "new-publish-process-based-on-x", exportImportConfiguration.getName(), false));
 
 response.setHeader("Ajax-ID", request.getHeader("Ajax-ID"));
 %>

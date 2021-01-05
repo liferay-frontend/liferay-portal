@@ -30,11 +30,13 @@ public class Order {
 		_lastEdit = lastEdit;
 		_status = status;
 		_addOrderLink = addOrderLink;
+
 		_success = true;
 	}
 
 	public Order(String[] errorMessages) {
 		_errorMessages = errorMessages;
+
 		_success = false;
 	}
 

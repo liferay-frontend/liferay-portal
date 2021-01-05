@@ -60,8 +60,9 @@ public class SearchRequestBuilderImpl implements SearchRequestBuilder {
 		SearchContext searchContext) {
 
 		_searchRequestBuilderFactory = searchRequestBuilderFactory;
-		_facetContext = new FacetContextImpl(searchContext);
 		_searchContext = searchContext;
+
+		_facetContext = new FacetContextImpl(searchContext);
 	}
 
 	public SearchRequestBuilderImpl(
@@ -381,6 +382,15 @@ public class SearchRequestBuilderImpl implements SearchRequestBuilder {
 		withSearchRequestImpl(
 			searchRequestImpl -> searchRequestImpl.setModelIndexerClasses(
 				classes));
+
+		return this;
+	}
+
+	@Override
+	public SearchRequestBuilder modelIndexerClassNames(String... classNames) {
+		withSearchRequestImpl(
+			searchRequestImpl -> searchRequestImpl.setModelIndexerClassNames(
+				classNames));
 
 		return this;
 	}

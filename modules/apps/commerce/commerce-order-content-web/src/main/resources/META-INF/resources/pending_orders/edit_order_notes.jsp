@@ -25,8 +25,8 @@ boolean manageNotesPermission = commerceOrderContentDisplayContext.hasModelPermi
 boolean manageRestrictedNotesPermission = commerceOrderContentDisplayContext.hasModelPermission(commerceOrder, CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES);
 %>
 
-<portlet:actionURL name="editCommerceOrderNote" var="editCommerceOrderNoteURL">
-	<portlet:param name="mvcRenderCommandName" value="editCommerceOrderNotes" />
+<portlet:actionURL name="/commerce_open_order_content/edit_commerce_order_note" var="editCommerceOrderNoteURL">
+	<portlet:param name="mvcRenderCommandName" value="/commerce_open_order_content/edit_commerce_order_notes" />
 </portlet:actionURL>
 
 <div class="b2b-portlet-content-header">
@@ -55,7 +55,7 @@ boolean manageRestrictedNotesPermission = commerceOrderContentDisplayContext.has
 				<div class="commerce-panel__content">
 					<div class="lfr-discussion-details">
 						<liferay-ui:user-portrait
-							cssClass="user-icon-lg"
+							cssClass="sticker-lg"
 							user="<%= user %>"
 						/>
 					</div>
@@ -90,7 +90,7 @@ boolean manageRestrictedNotesPermission = commerceOrderContentDisplayContext.has
 							<div class="card-col-content">
 								<div class="lfr-discussion-details">
 									<liferay-ui:user-portrait
-										cssClass="user-icon-lg"
+										cssClass="sticker-lg"
 										userId="<%= commerceOrderNote.getUserId() %>"
 										userName="<%= commerceOrderNote.getUserName() %>"
 									/>
@@ -147,7 +147,7 @@ boolean manageRestrictedNotesPermission = commerceOrderContentDisplayContext.has
 									showWhenSingleIcon="<%= true %>"
 								>
 									<portlet:renderURL var="editURL">
-										<portlet:param name="mvcRenderCommandName" value="editCommerceOrderNote" />
+										<portlet:param name="mvcRenderCommandName" value="/commerce_open_order_content/edit_commerce_order_note" />
 										<portlet:param name="redirect" value="<%= currentURL %>" />
 										<portlet:param name="commerceOrderNoteId" value="<%= String.valueOf(commerceOrderNote.getCommerceOrderNoteId()) %>" />
 									</portlet:renderURL>
@@ -157,7 +157,7 @@ boolean manageRestrictedNotesPermission = commerceOrderContentDisplayContext.has
 										url="<%= editURL %>"
 									/>
 
-									<portlet:actionURL name="editCommerceOrderNote" var="deleteURL">
+									<portlet:actionURL name="/commerce_open_order_content/edit_commerce_order_note" var="deleteURL">
 										<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 										<portlet:param name="redirect" value="<%= currentURL %>" />
 										<portlet:param name="commerceOrderNoteId" value="<%= String.valueOf(commerceOrderNote.getCommerceOrderNoteId()) %>" />

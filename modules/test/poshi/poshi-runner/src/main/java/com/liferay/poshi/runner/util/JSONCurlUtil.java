@@ -17,6 +17,7 @@ package com.liferay.poshi.runner.util;
 import com.liferay.poshi.core.util.OSDetector;
 import com.liferay.poshi.core.util.StringUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -138,7 +139,8 @@ public class JSONCurlUtil {
 			sb.append(" ");
 			sb.append(_requestURL);
 
-			Process process = ExecUtil.executeCommands(sb.toString());
+			Process process = ExecUtil.executeCommands(
+				true, new File("."), 1000 * 60 * 15, sb.toString());
 
 			InputStream inputStream = process.getInputStream();
 

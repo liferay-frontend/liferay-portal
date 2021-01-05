@@ -40,7 +40,7 @@ String taglibOnChange = "Liferay.Util.toggleDisabled('#" + liferayPortletRespons
 	<aui:validator name="required" />
 </aui:input>
 
-<div class="form-group input-text-wrapper text-default">
+<div class="form-group input-text-wrapper mb-2 text-default">
 	<div class="d-inline-block" id="<portlet:namespace />layoutItemRemove" role="button">
 		<aui:icon cssClass="icon-monospaced" image="times-circle" markupView="lexicon" />
 	</div>
@@ -63,7 +63,13 @@ String taglibOnChange = "Liferay.Util.toggleDisabled('#" + liferayPortletRespons
 	</aui:input>
 </div>
 
-<aui:button name="chooseLayout" value="choose" />
+<clay:button
+	cssClass="mb-4"
+	displayType="secondary"
+	id='<%= liferayPortletResponse.getNamespace() + "chooseLayout" %>'
+	label='<%= LanguageUtil.get(resourceBundle, "choose") %>'
+	small="<%= true %>"
+/>
 
 <%
 String eventName = liferayPortletResponse.getNamespace() + "selectLayout";
@@ -81,41 +87,15 @@ if (selLayout != null) {
 }
 %>
 
-<aui:script use="aui-base,node-event-simulate">
-	var groupId = A.one('#<portlet:namespace />groupId');
-	var layoutItemRemove = A.one('#<portlet:namespace />layoutItemRemove');
-	var layoutNameInput = A.one('#<portlet:namespace />layoutNameInput');
-	var layoutUuid = A.one('#<portlet:namespace />layoutUuid');
-	var privateLayout = A.one('#<portlet:namespace />privateLayout');
-
-	A.one('#<portlet:namespace />chooseLayout').on('click', function (event) {
-		Liferay.Util.openSelectionModal({
-			onSelect: function (selectedItem) {
-				if (selectedItem) {
-					groupId.val(selectedItem.groupId);
-
-					layoutUuid.val(selectedItem.id);
-
-					privateLayout.val(selectedItem.privateLayout);
-
-					layoutNameInput.html(selectedItem.name);
-					layoutNameInput.simulate('change');
-
-					layoutItemRemove.removeClass('hide');
-				}
-			},
-			multiple: true,
-			selectEventName: '<%= eventName %>',
-			title: '<liferay-ui:message key="select-layout" />',
-			url: '<%= itemSelectorURL.toString() %>',
-		});
-	});
-
-	layoutItemRemove.on('click', function (event) {
-		layoutNameInput.html('<liferay-ui:message key="none" />');
-
-		layoutUuid.val('');
-
-		layoutItemRemove.addClass('hide');
-	});
-</aui:script>
+<liferay-frontend:component
+	componentId='<%= liferayPortletResponse.getNamespace() + "editLayout" %>'
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"eventName", eventName
+		).put(
+			"itemSelectorURL", itemSelectorURL.toString()
+		).build()
+	%>'
+	module="js/EditLayout"
+	servletContext="<%= application %>"
+/>

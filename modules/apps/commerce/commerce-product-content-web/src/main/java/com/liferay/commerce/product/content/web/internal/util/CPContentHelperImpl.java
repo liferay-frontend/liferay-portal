@@ -23,6 +23,7 @@ import com.liferay.commerce.media.CommerceMediaResolver;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPMedia;
 import com.liferay.commerce.product.catalog.CPSku;
+import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.constants.CPContentContributorConstants;
 import com.liferay.commerce.product.constants.CPOptionCategoryConstants;
 import com.liferay.commerce.product.constants.CPWebKeys;
@@ -31,7 +32,6 @@ import com.liferay.commerce.product.content.render.CPContentRendererRegistry;
 import com.liferay.commerce.product.content.util.CPContentHelper;
 import com.liferay.commerce.product.ddm.DDMHelper;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
-import com.liferay.commerce.product.model.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -144,11 +144,9 @@ public class CPContentHelperImpl implements CPContentHelper {
 
 		List<CPMedia> cpMedias = new ArrayList<>();
 
-		long classNameId = _portal.getClassNameId(CPDefinition.class);
-
 		List<CPAttachmentFileEntry> cpAttachmentFileEntries =
 			_cpAttachmentFileEntryLocalService.getCPAttachmentFileEntries(
-				classNameId, cpDefinitionId,
+				_portal.getClassNameId(CPDefinition.class), cpDefinitionId,
 				CPAttachmentFileEntryConstants.TYPE_OTHER,
 				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS);
@@ -333,11 +331,9 @@ public class CPContentHelperImpl implements CPContentHelper {
 
 		List<CPMedia> cpMedias = new ArrayList<>();
 
-		long classNameId = _portal.getClassNameId(CPDefinition.class);
-
 		List<CPAttachmentFileEntry> cpAttachmentFileEntries =
 			_cpAttachmentFileEntryLocalService.getCPAttachmentFileEntries(
-				classNameId, cpDefinitionId,
+				_portal.getClassNameId(CPDefinition.class), cpDefinitionId,
 				CPAttachmentFileEntryConstants.TYPE_IMAGE,
 				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS);
@@ -358,6 +354,9 @@ public class CPContentHelperImpl implements CPContentHelper {
 
 			if (fileEntry != null) {
 				cpMedias.add(new CPMediaImpl(fileEntry, themeDisplay));
+			}
+			else {
+				cpMedias.add(new CPMediaImpl(themeDisplay.getCompanyGroupId()));
 			}
 		}
 

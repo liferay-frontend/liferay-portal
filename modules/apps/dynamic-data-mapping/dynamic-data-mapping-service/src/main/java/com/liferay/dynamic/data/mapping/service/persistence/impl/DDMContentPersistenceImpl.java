@@ -83,9 +83,11 @@ import org.osgi.service.component.annotations.Reference;
  * </p>
  *
  * @author Brian Wing Shun Chan
+ * @deprecated
  * @generated
  */
 @Component(service = {DDMContentPersistence.class, BasePersistence.class})
+@Deprecated
 public class DDMContentPersistenceImpl
 	extends BasePersistenceImpl<DDMContent> implements DDMContentPersistence {
 
@@ -3450,15 +3452,6 @@ public class DDMContentPersistenceImpl
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "data"});
-
-	static {
-		try {
-			Class.forName(DDMPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
 
 	@Override
 	protected FinderCache getFinderCache() {

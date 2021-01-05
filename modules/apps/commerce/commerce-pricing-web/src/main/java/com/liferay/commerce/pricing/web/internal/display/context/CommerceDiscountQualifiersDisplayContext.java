@@ -32,9 +32,9 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.portlet.PortletURL;
@@ -83,7 +83,9 @@ public class CommerceDiscountQualifiersDisplayContext
 			httpServletRequest, CommerceAccount.class.getName(),
 			PortletProvider.Action.EDIT);
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceAccount");
+		portletURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_account_admin/edit_commerce_account");
 		portletURL.setParameter(
 			"redirect", commercePricingRequestHelper.getCurrentURL());
 		portletURL.setParameter("commerceAccountId", "{account.id}");
@@ -96,16 +98,11 @@ public class CommerceDiscountQualifiersDisplayContext
 			getAccountGroupClayDataSetActionDropdownItems()
 		throws PortalException {
 
-		List<ClayDataSetActionDropdownItem> clayDataSetActionDropdownItems =
-			new ArrayList<>();
-
-		clayDataSetActionDropdownItems.add(
+		return ListUtil.fromArray(
 			new ClayDataSetActionDropdownItem(
 				null, "trash", "remove",
 				LanguageUtil.get(httpServletRequest, "remove"), "delete",
 				"delete", "headless"));
-
-		return clayDataSetActionDropdownItems;
 	}
 
 	public String getActiveAccountEligibility() throws PortalException {
@@ -132,11 +129,9 @@ public class CommerceDiscountQualifiersDisplayContext
 	}
 
 	public String getActiveChannelEligibility() throws PortalException {
-		long commerceDiscountId = getCommerceDiscountId();
-
 		long commerceChannelRelsCount =
 			_commerceChannelRelService.getCommerceChannelRelsCount(
-				CommerceDiscount.class.getName(), commerceDiscountId);
+				CommerceDiscount.class.getName(), getCommerceDiscountId());
 
 		if (commerceChannelRelsCount > 0) {
 			return "channels";
@@ -164,7 +159,8 @@ public class CommerceDiscountQualifiersDisplayContext
 			httpServletRequest, CommerceChannel.class.getName(),
 			PortletProvider.Action.MANAGE);
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceChannel");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_channels/edit_commerce_channel");
 		portletURL.setParameter(
 			"redirect", commercePricingRequestHelper.getCurrentURL());
 		portletURL.setParameter("commerceChannelId", "{channel.id}");

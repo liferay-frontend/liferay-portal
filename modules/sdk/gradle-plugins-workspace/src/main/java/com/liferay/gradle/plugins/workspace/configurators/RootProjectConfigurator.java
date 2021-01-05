@@ -42,6 +42,7 @@ import com.liferay.gradle.util.Validator;
 import com.liferay.gradle.util.copy.StripPathSegmentsAction;
 
 import de.undercouch.gradle.tasks.download.Download;
+import de.undercouch.gradle.tasks.download.Verify;
 
 import groovy.lang.Closure;
 
@@ -138,6 +139,8 @@ public class RootProjectConfigurator implements Plugin<Project> {
 
 	public static final String INIT_BUNDLE_TASK_NAME = "initBundle";
 
+	public static final String LIFERAY_CONFIGS_DIR_NAME = "configs";
+
 	public static final String LOGS_DOCKER_CONTAINER_TASK_NAME =
 		"logsDockerContainer";
 
@@ -154,6 +157,8 @@ public class RootProjectConfigurator implements Plugin<Project> {
 
 	public static final String STOP_DOCKER_CONTAINER_TASK_NAME =
 		"stopDockerContainer";
+
+	public static final String VERIFY_BUNDLE_TASK_NAME = "verifyBundle";
 
 	/**
 	 * @deprecated As of 1.4.0, replaced by {@link
@@ -206,6 +211,9 @@ public class RootProjectConfigurator implements Plugin<Project> {
 		Download downloadBundleTask = _addTaskDownloadBundle(
 			project, workspaceExtension);
 
+		Verify verifyBundleTask = _addTaskVerifyBundle(
+			project, downloadBundleTask, workspaceExtension);
+
 		Copy distBundleTask = _addTaskDistBundle(
 			project, downloadBundleTask, workspaceExtension,
 			providedModulesConfiguration);
@@ -226,7 +234,7 @@ public class RootProjectConfigurator implements Plugin<Project> {
 			workspaceExtension);
 
 		_addTaskInitBundle(
-			project, downloadBundleTask, workspaceExtension,
+			project, downloadBundleTask, verifyBundleTask, workspaceExtension,
 			bundleSupportConfiguration, providedModulesConfiguration);
 
 		_addDockerTasks(
@@ -474,18 +482,20 @@ public class RootProjectConfigurator implements Plugin<Project> {
 		File deployDir = new File(dockerDir, "deploy");
 		File workDir = new File(dockerDir, "work");
 
+		String deployPath = deployDir.getAbsolutePath();
 		String dockerPath = dockerDir.getAbsolutePath();
-
 		String workPath = workDir.getAbsolutePath();
 
 		if (OSDetector.isWindows()) {
 			String prefix = FilenameUtils.getPrefix(dockerPath);
 
 			if (prefix.contains(":")) {
+				deployPath = '/' + deployPath.replace(":", "");
 				dockerPath = '/' + dockerPath.replace(":", "");
 				workPath = '/' + workPath.replace(":", "");
 			}
 
+			deployPath = deployPath.replace('\\', '/');
 			dockerPath = dockerPath.replace('\\', '/');
 			workPath = workPath.replace('\\', '/');
 		}
@@ -495,7 +505,7 @@ public class RootProjectConfigurator implements Plugin<Project> {
 
 		MapProperty<String, String> binds = hostConfig.getBinds();
 
-		binds.put(deployDir.getAbsolutePath(), "/mnt/liferay/deploy");
+		binds.put(deployPath, "/mnt/liferay/deploy");
 		binds.put(workPath, "/opt/liferay/work");
 
 		dockerCreateContainer.setDescription(
@@ -562,7 +572,7 @@ public class RootProjectConfigurator implements Plugin<Project> {
 		dockerfile.instruction(
 			"COPY --chown=liferay:liferay scripts /mnt/liferay/scripts");
 		dockerfile.instruction(
-			"COPY --chown=liferay:liferay " + _LIFERAY_CONFIGS_DIR_NAME +
+			"COPY --chown=liferay:liferay " + LIFERAY_CONFIGS_DIR_NAME +
 				" /home/liferay/configs");
 		dockerfile.instruction(
 			"COPY --chown=liferay:liferay " + _LIFERAY_IMAGE_SETUP_SCRIPT +
@@ -787,7 +797,7 @@ public class RootProjectConfigurator implements Plugin<Project> {
 							@SuppressWarnings("unused")
 							public void doCall(CopySpec copySpec) {
 								copySpec.into(
-									_LIFERAY_CONFIGS_DIR_NAME + "/" +
+									LIFERAY_CONFIGS_DIR_NAME + "/" +
 										configDir.getName());
 							}
 
@@ -809,7 +819,7 @@ public class RootProjectConfigurator implements Plugin<Project> {
 					@SuppressWarnings("unused")
 					public void doCall(CopySpec copySpec) {
 						copySpec.exclude(commonConfigDirNames);
-						copySpec.into(_LIFERAY_CONFIGS_DIR_NAME);
+						copySpec.into(LIFERAY_CONFIGS_DIR_NAME);
 					}
 
 				});
@@ -927,7 +937,7 @@ public class RootProjectConfigurator implements Plugin<Project> {
 	}
 
 	private InitBundleTask _addTaskInitBundle(
-		Project project, Download downloadBundleTask,
+		Project project, Download downloadBundleTask, Verify verifyBundleTask,
 		final WorkspaceExtension workspaceExtension,
 		Configuration configurationBundleSupport,
 		Configuration configurationOsgiModules) {
@@ -935,7 +945,7 @@ public class RootProjectConfigurator implements Plugin<Project> {
 		InitBundleTask initBundleTask = GradleUtil.addTask(
 			project, INIT_BUNDLE_TASK_NAME, InitBundleTask.class);
 
-		initBundleTask.dependsOn(downloadBundleTask);
+		initBundleTask.dependsOn(downloadBundleTask, verifyBundleTask);
 
 		initBundleTask.setClasspath(configurationBundleSupport);
 		initBundleTask.setConfigEnvironment(
@@ -1133,6 +1143,43 @@ public class RootProjectConfigurator implements Plugin<Project> {
 			});
 
 		return dockerStopContainer;
+	}
+
+	private Verify _addTaskVerifyBundle(
+		Project project, Download downloadBundleTask,
+		WorkspaceExtension workspaceExtension) {
+
+		Verify verifyBundleTask = GradleUtil.addTask(
+			project, VERIFY_BUNDLE_TASK_NAME, Verify.class);
+
+		verifyBundleTask.algorithm("MD5");
+		verifyBundleTask.dependsOn(downloadBundleTask);
+		verifyBundleTask.setDescription(
+			"Verifies the Liferay bundle zip file.");
+
+		project.afterEvaluate(
+			new Action<Project>() {
+
+				@Override
+				public void execute(Project p) {
+					String checksum = workspaceExtension.getBundleChecksumMD5();
+
+					if (checksum == null) {
+						verifyBundleTask.setEnabled(false);
+					}
+
+					verifyBundleTask.checksum(checksum);
+
+					TaskOutputs taskOutputs = downloadBundleTask.getOutputs();
+
+					FileCollection fileCollection = taskOutputs.getFiles();
+
+					verifyBundleTask.src(fileCollection.getSingleFile());
+				}
+
+			});
+
+		return verifyBundleTask;
 	}
 
 	private void _configureNpmProject(Project project) {
@@ -1425,8 +1472,6 @@ public class RootProjectConfigurator implements Plugin<Project> {
 	}
 
 	private static final boolean _DEFAULT_REPOSITORY_ENABLED = true;
-
-	private static final String _LIFERAY_CONFIGS_DIR_NAME = "configs";
 
 	private static final String _LIFERAY_IMAGE_SETUP_SCRIPT =
 		"100_liferay_image_setup.sh";

@@ -150,6 +150,33 @@ export const normalizeSettingsContextPages = (
 				};
 			}
 
+			if (field.dataType === 'ddm-options') {
+				field = {
+					...field,
+					value: {
+						...field.value,
+						[editingLanguageId]:
+							field.value[editingLanguageId] ??
+							field.value[defaultLanguageId],
+					},
+				};
+			}
+
+			if (field.localizable) {
+				const {localizedValue} = field;
+				const availableLocales = Object.keys(localizedValue);
+
+				availableLocales.forEach((availableLocale) => {
+					if (
+						availableLocale !== defaultLanguageId &&
+						availableLocale !== editingLanguageId &&
+						localizedValue[availableLocale] === ''
+					) {
+						delete localizedValue[availableLocale];
+					}
+				});
+			}
+
 			const newInstanceId = generateInstanceId(8);
 
 			return {
@@ -284,8 +311,20 @@ export const isFieldSetChild = (pages, fieldName) => {
 export const localizeField = (field, defaultLanguageId, editingLanguageId) => {
 	let value = field.value;
 
-	if (field.dataType === 'json' && typeof value === 'object') {
+	if (
+		field.dataType === 'json' &&
+		field.fieldName !== 'rows' &&
+		typeof value === 'object'
+	) {
 		value = JSON.stringify(value);
+	}
+
+	if (
+		field.dataType === 'json' &&
+		field.fieldName === 'rows' &&
+		typeof value === 'string'
+	) {
+		value = JSON.parse(value);
 	}
 
 	if (field.localizable && field.localizedValue) {
@@ -299,14 +338,35 @@ export const localizeField = (field, defaultLanguageId, editingLanguageId) => {
 			value = localizedValue;
 		}
 	}
-	else if (
-		field.dataType === 'ddm-options' &&
-		value[editingLanguageId] === undefined
-	) {
-		value = {
-			...value,
-			[editingLanguageId]: value[defaultLanguageId],
-		};
+	else if (field.dataType === 'ddm-options') {
+		if (value[editingLanguageId] === undefined) {
+			value = {
+				...value,
+				[editingLanguageId]:
+					value[defaultLanguageId]?.map((option) => {
+						return {...option, edited: false};
+					}) ?? [],
+			};
+		}
+		else {
+			value = {
+				...value,
+				[editingLanguageId]: [
+					...value[editingLanguageId].map((option) => {
+						if (option.edited) {
+							return option;
+						}
+
+						const {label} = value[defaultLanguageId].find(
+							(defaultOption) =>
+								defaultOption.value === option.value
+						);
+
+						return {...option, edited: false, label};
+					}),
+				],
+			};
+		}
 	}
 
 	return {

@@ -19,6 +19,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import setFragmentEditables from '../../actions/setFragmentEditables';
 import selectCanConfigureWidgets from '../../selectors/selectCanConfigureWidgets';
+import selectLanguageId from '../../selectors/selectLanguageId';
 import selectSegmentsExperienceId from '../../selectors/selectSegmentsExperienceId';
 import {useDispatch, useSelector, useSelectorCallback} from '../../store/index';
 import {getFrontendTokenValue} from '../../utils/getFrontendTokenValue';
@@ -84,7 +85,7 @@ const FragmentContent = ({
 		[fragmentEntryLinkId]
 	);
 
-	const languageId = useSelector((state) => state.languageId);
+	const languageId = useSelector(selectLanguageId);
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
@@ -92,6 +93,7 @@ const FragmentContent = ({
 
 	const defaultContent = useGetContent(
 		fragmentEntryLink,
+		languageId,
 		segmentsExperienceId
 	);
 	const [content, setContent] = useState(defaultContent);
@@ -136,7 +138,8 @@ const FragmentContent = ({
 						editable.processor.render(
 							editable.element,
 							value,
-							editableConfig
+							editableConfig,
+							languageId
 						);
 
 						editable.element.classList.add('page-editor__editable');
@@ -154,12 +157,15 @@ const FragmentContent = ({
 		};
 	}, [
 		defaultContent,
+		dispatch,
 		editableValues,
+		fragmentEntryLink,
 		fragmentEntryLinkId,
 		getFieldValue,
 		isMounted,
 		isProcessorEnabled,
 		languageId,
+		segmentsExperienceId,
 	]);
 
 	const responsiveConfig = getResponsiveConfig(

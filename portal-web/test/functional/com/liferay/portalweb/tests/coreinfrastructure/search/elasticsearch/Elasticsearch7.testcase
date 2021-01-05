@@ -131,10 +131,13 @@ definition {
 			panel = "Control Panel",
 			portlet = "Search");
 
+		var clientVersion = Elasticsearch.getClientVersion();
+		var serverVersion = Elasticsearch.getServerVersion();
+
 		SearchAdministration.assertEngineVendorAndVersions(
-			clientVersion = "7.9.0",
+			clientVersion = "${clientVersion}",
 			engineVendor = "Elasticsearch",
-			serverVersion = "7.9.0");
+			serverVersion = "${serverVersion}");
 
 		Navigator.gotoNavItem(navItem = "Field Mappings");
 
@@ -345,35 +348,6 @@ definition {
 		SearchResultPortlet.viewSearchResultNotPresent(
 			searchAssetTitle = "WC WebContent Title",
 			searchAssetType = "Web Content Article");
-	}
-
-	@ignore = "true"
-	@priority = "3"
-	test AssertSystemSettingsPropogateToModule {
-
-		// Ignoring test until LPS-65459 is resolved
-
-		property test.name.skip.portal.instance = "Elasticsearch7#AssertSystemSettingsPropogateToModule";
-
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Search",
-			configurationName = "Elasticsearch 7",
-			configurationScope = "System Scope");
-
-		SystemSettings.editTextAreaSetting(
-			settingName = "Cluster Name",
-			settingValue = "LiferayElasticsearchCluster1");
-
-		SystemSettings.saveConfiguration();
-
-		Navigator.openSpecificURL(url = "http://localhost:9200");
-
-		Elasticsearch.viewClusterStatus(clusterStatus = "&quot;cluster_name&quot; : &quot;LiferayElasticsearchCluster1&quot;");
 	}
 
 	@priority = "5"
@@ -633,10 +607,13 @@ definition {
 			panel = "Control Panel",
 			portlet = "Search");
 
+		var clientVersion = Elasticsearch.getClientVersion();
+		var serverVersion = Elasticsearch.getServerVersion();
+
 		SearchAdministration.assertEngineVendorAndVersions(
-			clientVersion = "7.9.0",
+			clientVersion = "${clientVersion}",
 			engineVendor = "Elasticsearch",
-			serverVersion = "7.9.0");
+			serverVersion = "${serverVersion}");
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "SearchAdmin#CONNECTION_ID",
@@ -658,6 +635,69 @@ definition {
 
 		SearchResultPortlet.viewSearchResults(
 			searchAssetTitle = "WC WebContent Title",
+			searchAssetType = "Web Content Article");
+	}
+
+	@description = "This is a use case for LPS-57894."
+	@priority = "3"
+	test UpdateSystemSettingsWithoutPortalRestart {
+		property test.name.skip.portal.instance = "Elasticsearch7#UpdateSystemSettingsWithoutPortalRestart";
+
+		JSONWebcontent.addWebContent(
+			content = "WC Content",
+			groupName = "Guest",
+			title = "apple");
+
+		Navigator.openURL();
+
+		SearchPortlets.searchEmbedded(searchTerm = "apple");
+
+		SearchResultPortlet.viewSearchResults(
+			searchAssetTitle = "apple",
+			searchAssetType = "Web Content Article");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "System Settings");
+
+		SystemSettings.gotoConfiguration(
+			configurationCategory = "Search",
+			configurationName = "Elasticsearch 7",
+			configurationScope = "System Scope");
+
+		FormFields.editTextMultiline(
+			fieldName = "clusterName",
+			fieldValue = "LiferayElasticsearchCluster1");
+
+		SystemSettings.saveConfiguration();
+
+		Pause(locator1 = "10000");
+
+		AssertConsoleTextPresent(value1 = "Stopping sidecar Elasticsearch");
+
+		Navigator.openSpecificURL(url = "http://localhost:9201");
+
+		Elasticsearch.viewClusterStatus(clusterStatus = "&quot;cluster_name&quot; : &quot;LiferayElasticsearchCluster1&quot;");
+
+		Navigator.openURL();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Search");
+
+		AssertTextEquals.assertPartialText(
+			key_connectionID = "__SIDECAR__",
+			locator1 = "SearchAdmin#CLUSTER_NAME",
+			value1 = "LiferayElasticsearchCluster1");
+
+		Navigator.openURL();
+
+		SearchPortlets.searchEmbedded(searchTerm = "apple");
+
+		SearchResultPortlet.viewSearchResults(
+			searchAssetTitle = "apple",
 			searchAssetType = "Web Content Article");
 	}
 

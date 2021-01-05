@@ -62,7 +62,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_COUNTRY,
-		"mvc.command.name=editCommerceCountry"
+		"mvc.command.name=/commerce_country/edit_commerce_country"
 	},
 	service = MVCActionCommand.class
 )
@@ -144,7 +144,8 @@ public class EditCommerceCountryMVCActionCommand extends BaseMVCActionCommand {
 				SessionErrors.add(actionRequest, throwable.getClass());
 
 				actionResponse.setRenderParameter(
-					"mvcRenderCommandName", "editCommerceCountry");
+					"mvcRenderCommandName",
+					"/commerce_country/edit_commerce_country");
 			}
 			else {
 				_log.error(throwable, throwable);
@@ -164,7 +165,8 @@ public class EditCommerceCountryMVCActionCommand extends BaseMVCActionCommand {
 
 		if (commerceCountry != null) {
 			portletURL.setParameter(
-				"mvcRenderCommandName", "editCommerceCountry");
+				"mvcRenderCommandName",
+				"/commerce_country/edit_commerce_country");
 			portletURL.setParameter(
 				"commerceCountryId",
 				String.valueOf(commerceCountry.getCommerceCountryId()));

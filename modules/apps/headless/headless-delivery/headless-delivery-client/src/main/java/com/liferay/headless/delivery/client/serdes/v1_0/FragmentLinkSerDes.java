@@ -83,6 +83,26 @@ public class FragmentLinkSerDes {
 			sb.append("\"");
 		}
 
+		if (fragmentLink.getValue() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"value\": ");
+
+			sb.append(String.valueOf(fragmentLink.getValue()));
+		}
+
+		if (fragmentLink.getValue_i18n() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"value_i18n\": ");
+
+			sb.append(_toJSON(fragmentLink.getValue_i18n()));
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -116,6 +136,20 @@ public class FragmentLinkSerDes {
 			map.put("target", String.valueOf(fragmentLink.getTarget()));
 		}
 
+		if (fragmentLink.getValue() == null) {
+			map.put("value", null);
+		}
+		else {
+			map.put("value", String.valueOf(fragmentLink.getValue()));
+		}
+
+		if (fragmentLink.getValue_i18n() == null) {
+			map.put("value_i18n", null);
+		}
+		else {
+			map.put("value_i18n", String.valueOf(fragmentLink.getValue_i18n()));
+		}
+
 		return map;
 	}
 
@@ -146,6 +180,20 @@ public class FragmentLinkSerDes {
 				if (jsonParserFieldValue != null) {
 					fragmentLink.setTarget(
 						FragmentLink.Target.create(
+							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "value")) {
+				if (jsonParserFieldValue != null) {
+					fragmentLink.setValue(
+						FragmentLinkValueSerDes.toDTO(
+							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "value_i18n")) {
+				if (jsonParserFieldValue != null) {
+					fragmentLink.setValue_i18n(
+						(Map)FragmentLinkSerDes.toMap(
 							(String)jsonParserFieldValue));
 				}
 			}

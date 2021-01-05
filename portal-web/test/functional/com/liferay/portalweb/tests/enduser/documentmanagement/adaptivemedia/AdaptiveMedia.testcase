@@ -226,7 +226,7 @@ definition {
 		AdaptiveMedia.addImageResolution(
 			description = "Image Resolution Width",
 			imageName = "testResolutionWidth",
-			maxHeight = "",
+			maxHeight = "0",
 			maxWidth = "1000");
 
 		AdaptiveMedia.viewImageResolutionTableEntry(
@@ -238,7 +238,7 @@ definition {
 			description = "Image Resolution Height",
 			imageName = "testResolutionHeight",
 			maxHeight = "1000",
-			maxWidth = "");
+			maxWidth = "0");
 
 		AdaptiveMedia.viewImageResolutionTableEntry(
 			imageName = "testResolutionHeight",
@@ -491,9 +491,9 @@ definition {
 		AdaptiveMedia.editImageResolution(
 			imageName = "testResolution",
 			imageNameEdit = "testResolutionEdit",
-			maxHeightEdit = "",
-			maxWidthEdit = "",
-			noDimensions = "true");
+			maxHeightEdit = "0",
+			maxWidthEdit = "0",
+			zero = "true");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
@@ -552,7 +552,7 @@ definition {
 		AdaptiveMedia.editImageResolution(
 			imageName = "testResolutionWidth",
 			imageNameEdit = "testResolutionWidthEdit",
-			maxHeightEdit = "");
+			maxHeightEdit = "0");
 
 		AdaptiveMedia.viewImageResolutionTableEntry(
 			imageName = "testResolutionWidthEdit",
@@ -567,7 +567,7 @@ definition {
 		AdaptiveMedia.editImageResolution(
 			imageName = "testResolutionHeight",
 			imageNameEdit = "testResolutionHeightEdit",
-			maxWidthEdit = "");
+			maxWidthEdit = "0");
 
 		AdaptiveMedia.viewImageResolutionTableEntry(
 			imageName = "testResolutionHeightEdit",

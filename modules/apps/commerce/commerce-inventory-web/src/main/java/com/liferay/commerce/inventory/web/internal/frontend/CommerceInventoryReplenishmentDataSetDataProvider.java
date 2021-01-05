@@ -17,6 +17,7 @@ package com.liferay.commerce.inventory.web.internal.frontend;
 import com.liferay.commerce.inventory.model.CommerceInventoryReplenishmentItem;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.service.CommerceInventoryReplenishmentItemService;
+import com.liferay.commerce.inventory.web.internal.frontend.constants.CommerceInventoryDataSetConstants;
 import com.liferay.commerce.inventory.web.internal.model.Replenishment;
 import com.liferay.frontend.taglib.clay.data.Filter;
 import com.liferay.frontend.taglib.clay.data.Pagination;

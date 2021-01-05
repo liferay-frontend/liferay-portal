@@ -231,9 +231,7 @@ public class FileUtil {
 	}
 
 	public static Path getJarPath() throws URISyntaxException {
-		URI jarURI = _getJarURI();
-
-		return Paths.get(jarURI);
+		return Paths.get(_getJarURI());
 	}
 
 	public static String getManifestProperty(File file, String name)
@@ -368,9 +366,7 @@ public class FileUtil {
 	}
 
 	private static FileSystem _getJarFileSystem() throws Exception {
-		URI jarURI = _getJarURI();
-
-		Path jarPath = Paths.get(jarURI);
+		Path jarPath = Paths.get(_getJarURI());
 
 		return FileSystems.newFileSystem(jarPath, null);
 	}

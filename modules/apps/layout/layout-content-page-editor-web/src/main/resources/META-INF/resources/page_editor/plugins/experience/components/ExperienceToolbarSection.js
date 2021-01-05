@@ -16,6 +16,7 @@ import React, {useEffect, useMemo} from 'react';
 
 import togglePermissions from '../../../app/actions/togglePermission';
 import {config} from '../../../app/config/index';
+import selectSegmentsExperienceId from '../../../app/selectors/selectSegmentsExperienceId';
 import {useDispatch, useSelector} from '../../../app/store/index';
 import ExperienceSelector from './ExperienceSelector';
 
@@ -26,10 +27,7 @@ export default function ExperienceToolbarSection({selectId}) {
 		(state) => state.availableSegmentsExperiences
 	);
 	const dispatch = useDispatch();
-
-	const segmentsExperienceId = useSelector(
-		(state) => state.segmentsExperienceId
-	);
+	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
 	const experiences = useMemo(
 		() =>

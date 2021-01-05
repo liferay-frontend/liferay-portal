@@ -33,7 +33,7 @@ EditSiteTeamAssignmentsUsersManagementToolbarDisplayContext editSiteTeamAssignme
 
 <portlet:actionURL name="deleteTeamUsers" var="deleteTeamUsersURL" />
 
-<aui:form action="<%= deleteTeamUsersURL %>" cssClass="container-fluid-1280 portlet-site-teams-users" method="post" name="fm">
+<aui:form action="<%= deleteTeamUsersURL %>" cssClass="container-fluid container-fluid-max-xl portlet-site-teams-users" method="post" name="fm">
 	<aui:input name="tabs1" type="hidden" value="<%= editSiteTeamAssignmentsUsersDisplayContext.getTabs1() %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="teamId" type="hidden" value="<%= String.valueOf(editSiteTeamAssignmentsUsersDisplayContext.getTeamId()) %>" />
@@ -54,13 +54,13 @@ EditSiteTeamAssignmentsUsersManagementToolbarDisplayContext editSiteTeamAssignme
 				<c:when test='<%= Objects.equals(editSiteTeamAssignmentsUsersDisplayContext.getDisplayStyle(), "icon") %>'>
 
 					<%
-					row.setCssClass("entry-card lfr-asset-item selectable");
+					row.setCssClass("card-page-item card-page-item-asset selectable");
 					%>
 
 					<liferay-ui:search-container-column-text>
-						<clay:user-card-v2
+						<clay:user-card
 							userCard="<%= new UserUserCard(user2, editSiteTeamAssignmentsUsersDisplayContext.getTeamId(), renderRequest, renderResponse, searchContainer.getRowChecker()) %>"
-							userColorClass='<%= "user-icon " + LexiconUtil.getUserColorCssClass(user2) %>'
+							userColorClass='<%= "sticker-user-icon " + LexiconUtil.getUserColorCssClass(user2) %>'
 						/>
 					</liferay-ui:search-container-column-text>
 				</c:when>
@@ -95,13 +95,13 @@ EditSiteTeamAssignmentsUsersManagementToolbarDisplayContext editSiteTeamAssignme
 				</c:when>
 				<c:otherwise>
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="name"
 						property="fullName"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="screen-name"
 						property="screenName"
 					/>

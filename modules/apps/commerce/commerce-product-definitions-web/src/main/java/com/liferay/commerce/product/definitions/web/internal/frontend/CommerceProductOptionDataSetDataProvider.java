@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.product.definitions.web.internal.frontend;
 
+import com.liferay.commerce.product.definitions.web.internal.frontend.constants.CommerceProductDataSetConstants;
 import com.liferay.commerce.product.definitions.web.internal.model.ProductOption;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
@@ -175,10 +176,10 @@ public class CommerceProductOptionDataSetDataProvider
 			ddmFormFieldTypeProperties, "ddm.form.field.type.label");
 
 		try {
-			ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-				"content.Language", locale, ddmFormFieldType.getClass());
-
 			if (Validator.isNotNull(label)) {
+				ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
+					"content.Language", locale, ddmFormFieldType.getClass());
+
 				return LanguageUtil.get(resourceBundle, label);
 			}
 		}

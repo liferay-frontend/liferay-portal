@@ -34,6 +34,7 @@ public class UnsyncByteArrayInputStream extends InputStream {
 
 	public UnsyncByteArrayInputStream(byte[] buffer, int offset, int length) {
 		_buffer = buffer;
+
 		_index = offset;
 		_markIndex = offset;
 

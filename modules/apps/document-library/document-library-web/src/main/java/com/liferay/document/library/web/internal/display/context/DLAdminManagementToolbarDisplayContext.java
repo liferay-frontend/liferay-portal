@@ -562,11 +562,8 @@ public class DLAdminManagementToolbarDisplayContext
 		}
 
 		sortingURL.setParameter("folderId", String.valueOf(folderId));
-
-		long fileEntryTypeId = _getFileEntryTypeId();
-
 		sortingURL.setParameter(
-			"fileEntryTypeId", String.valueOf(fileEntryTypeId));
+			"fileEntryTypeId", String.valueOf(_getFileEntryTypeId()));
 
 		return sortingURL;
 	}

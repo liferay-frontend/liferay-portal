@@ -19,6 +19,7 @@ import com.liferay.commerce.inventory.model.CommerceInventoryAudit;
 import com.liferay.commerce.inventory.service.CommerceInventoryAuditService;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditType;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeRegistry;
+import com.liferay.commerce.inventory.web.internal.frontend.constants.CommerceInventoryDataSetConstants;
 import com.liferay.frontend.taglib.clay.data.Filter;
 import com.liferay.frontend.taglib.clay.data.Pagination;
 import com.liferay.frontend.taglib.clay.data.set.provider.ClayDataSetDataProvider;
@@ -36,6 +37,7 @@ import java.text.Format;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -88,23 +90,25 @@ public class CommerceInventoryAuditDataSetDataProvider
 						getCommerceInventoryAuditType(
 							commerceInventoryAudit.getLogType());
 
+				Locale locale = _portal.getLocale(httpServletRequest);
+
 				titleSB.append(
 					commerceInventoryAuditType.formatLog(
 						commerceInventoryAudit.getUserId(),
-						commerceInventoryAudit.getLogTypeSettings(),
-						_portal.getLocale(httpServletRequest)));
+						commerceInventoryAudit.getLogTypeSettings(), locale));
+
+				timelineModels.add(
+					new TimelineModel(
+						commerceInventoryAudit.getCommerceInventoryAuditId(),
+						dateTimeFormat.format(
+							commerceInventoryAudit.getCreateDate()),
+						commerceInventoryAuditType.formatQuantity(
+							commerceInventoryAudit.getQuantity(), locale),
+						titleSB.toString()));
 			}
 			catch (Exception exception) {
 				throw new PortalException(exception.getMessage(), exception);
 			}
-
-			timelineModels.add(
-				new TimelineModel(
-					commerceInventoryAudit.getCommerceInventoryAuditId(),
-					dateTimeFormat.format(
-						commerceInventoryAudit.getCreateDate()),
-					String.valueOf(commerceInventoryAudit.getQuantity()),
-					titleSB.toString()));
 		}
 
 		return timelineModels;

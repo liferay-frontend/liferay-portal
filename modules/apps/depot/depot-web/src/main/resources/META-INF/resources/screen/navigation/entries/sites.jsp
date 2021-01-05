@@ -92,14 +92,14 @@ List<DepotEntryGroupRel> depotEntryGroupRels = depotAdminSitesDisplayContext.get
 			modelVar="depotEntryGroupRel"
 		>
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="name"
 			>
 				<%= HtmlUtil.escape(depotAdminSitesDisplayContext.getSiteName(depotEntryGroupRel)) %>
 			</liferay-ui:search-container-column-text>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				helpMessage="shows-the-asset-library-content-in-search-results"
 				name="searchable-content"
 			>
@@ -107,7 +107,7 @@ List<DepotEntryGroupRel> depotEntryGroupRels = depotAdminSitesDisplayContext.get
 			</liferay-ui:search-container-column-text>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				helpMessage="makes-the-asset-library-web-content-structures-and-document-types-available-in-the-site"
 				name="structures-and-types"
 			>
@@ -134,7 +134,7 @@ List<DepotEntryGroupRel> depotEntryGroupRels = depotAdminSitesDisplayContext.get
 		/>
 	</liferay-ui:search-container>
 
-	<aui:script require="metal-dom/src/all/dom as dom">
+	<aui:script sandbox="<%= true %>">
 		var addConnectedSiteButton = document.querySelector(
 			'#<portlet:namespace />addConnectedSiteButton'
 		);
@@ -142,6 +142,8 @@ List<DepotEntryGroupRel> depotEntryGroupRels = depotAdminSitesDisplayContext.get
 		if (addConnectedSiteButton) {
 			addConnectedSiteButton.addEventListener('click', function (event) {
 				Liferay.Util.openSelectionModal({
+					customSelectEvent: true,
+					id: '<portlet:namespace />selectSite',
 					onSelect: function (event) {
 						var toGroupIdInput = document.querySelector(
 							'#<portlet:namespace />toGroupId'

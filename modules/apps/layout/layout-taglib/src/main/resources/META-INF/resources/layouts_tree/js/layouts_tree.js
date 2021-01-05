@@ -137,7 +137,7 @@ AUI.add(
 			_createNodeLink(data, template) {
 				var instance = this;
 
-				var className = 'layout-tree ';
+				var className = 'layout-tree text-truncate ';
 
 				data.cssClass = data.cssClass
 					? className + data.cssClass
@@ -159,7 +159,7 @@ AUI.add(
 					  )
 					: STR_EMPTY;
 
-				data.title = data.title ? data.title : STR_EMPTY;
+				data.title = data.title ? data.title : data.name;
 
 				data.url = data.url
 					? Liferay.Util.escapeHTML(data.url)
@@ -268,7 +268,7 @@ AUI.add(
 				if (node.layoutRevisionId) {
 					if (!node.layoutRevisionHead) {
 						title = Liferay.Language.get(
-							'there-is-not-a-version-of-this-page-marked-as-ready-for-publication'
+							'there-is-not-a-version-of-this-page-marked-as-ready-for-publish-process'
 						);
 					}
 					else if (node.layoutBranchName) {
@@ -279,7 +279,7 @@ AUI.add(
 						name += Lang.sub(' [{layoutBranchName}]', node);
 
 						title = Liferay.Language.get(
-							'this-is-the-page-variation-that-is-marked-as-ready-for-publication'
+							'this-is-the-page-variation-that-is-marked-as-ready-for-publish-process'
 						);
 					}
 

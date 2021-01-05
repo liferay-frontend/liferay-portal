@@ -32,12 +32,12 @@ portletDisplay.setURLBack(backURL);
 renderResponse.setTitle((source != null) ? LanguageUtil.format(request, "edit-x", source.getName(locale), false) : LanguageUtil.get(request, "new-data-source"));
 %>
 
-<portlet:actionURL name="editDataSource" var="actionURL">
+<portlet:actionURL name="/reports_admin/edit_data_source" var="actionURL">
 	<portlet:param name="mvcPath" value="/admin/data_source/edit_data_source.jsp" />
 	<portlet:param name="redirect" value="<%= searchSourcesURL %>" />
 </portlet:actionURL>
 
-<aui:form action="<%= actionURL %>" cssClass="container-fluid-1280" method="post" name="fm">
+<aui:form action="<%= actionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 	<liferay-ui:error exception="<%= SourceDriverClassNameException.class %>" message="please-enter-a-valid-data-source-driver" />
 	<liferay-ui:error exception="<%= SourceJDBCConnectionException.class %>" message="could-not-connect-to-the-database.-please-verify-that-the-settings-are-correct" />
 	<liferay-ui:error exception="<%= SourceTypeException.class %>" message="please-enter-a-valid-data-source-type" />

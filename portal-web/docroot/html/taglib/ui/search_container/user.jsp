@@ -20,6 +20,7 @@
 String cssClass = GetterUtil.getString(request.getAttribute("liferay-ui:search-container-column-user:cssClass"));
 Date date = GetterUtil.getDate(request.getAttribute("liferay-ui:search-container-column-user:date"), DateFormatFactoryUtil.getDate(locale), null);
 boolean showDetails = GetterUtil.getBoolean(request.getAttribute("liferay-ui:search-container-column-user:showDetails"));
+
 long userId = GetterUtil.getLong(request.getAttribute("liferay-ui:search-container-column-user:userId"));
 
 User user2 = UserLocalServiceUtil.fetchUser(userId);

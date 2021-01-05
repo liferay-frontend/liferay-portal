@@ -24,7 +24,7 @@ CommerceDiscountRule commerceDiscountRule = commerceDiscountRuleDisplayContext.g
 String type = BeanParamUtil.getString(commerceDiscountRule, request, "type");
 %>
 
-<portlet:actionURL name="editCommerceDiscountRule" var="editCommerceDiscountRuleActionURL" />
+<portlet:actionURL name="/commerce_discount/edit_commerce_discount_rule" var="editCommerceDiscountRuleActionURL" />
 
 <commerce-ui:side-panel-content
 	title='<%= LanguageUtil.get(request, "edit-rule") %>'

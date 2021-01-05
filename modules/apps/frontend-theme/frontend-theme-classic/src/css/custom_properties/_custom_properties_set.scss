@@ -56,14 +56,12 @@ body,
 // Buttons
 
 @each $key, $map in $custom-properties-button-maps {
-	.btn-#{$key} {
-		&:not(.dropdown-item) {
-			@include clay-button-variant($map);
-		}
+	.btn-#{$key}#{$custom-properties-button-not-classes} {
+		@include clay-button-variant($map);
 	}
 }
 
-.btn-outline-borderless:not(.dropdown-item) {
+.btn-outline-borderless#{$custom-properties-button-not-classes} {
 	border-color: transparent;
 
 	&:hover,

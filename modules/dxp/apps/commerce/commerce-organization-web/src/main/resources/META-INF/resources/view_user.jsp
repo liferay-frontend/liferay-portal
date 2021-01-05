@@ -20,6 +20,7 @@
 CommerceOrganizationDisplayContext commerceOrganizationDisplayContext = (CommerceOrganizationDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 User selectedUser = commerceOrganizationDisplayContext.getSelectedUser();
+
 PortletURL portletURL = commerceOrganizationDisplayContext.getPortletURL();
 
 portletURL.setParameter("mvcRenderCommandName", "viewCommerceOrganizationUser");

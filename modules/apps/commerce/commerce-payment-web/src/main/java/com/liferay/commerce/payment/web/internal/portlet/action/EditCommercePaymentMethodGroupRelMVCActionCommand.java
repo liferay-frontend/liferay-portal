@@ -54,7 +54,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.COMMERCE_PAYMENT_METHODS,
-		"mvc.command.name=editCommercePaymentMethodGroupRel"
+		"mvc.command.name=/commerce_payment_methods/edit_commerce_payment_method_group_rel"
 	},
 	service = MVCActionCommand.class
 )
@@ -108,7 +108,8 @@ public class EditCommercePaymentMethodGroupRelMVCActionCommand
 
 				actionResponse.setRenderParameter(
 					"mvcRenderCommandName",
-					"editCommercePaymentMethodGroupRel");
+					"/commerce_payment_methods" +
+						"/edit_commerce_payment_method_group_rel");
 			}
 			else {
 				throw exception;
@@ -159,19 +160,21 @@ public class EditCommercePaymentMethodGroupRelMVCActionCommand
 			LocalizationUtil.getLocalizationMap(
 				actionRequest, "descriptionMapAsXML");
 		File imageFile = uploadPortletRequest.getFile("imageFile");
-		String commercePaymentMethodEngineKey = ParamUtil.getString(
-			actionRequest, "commercePaymentMethodEngineKey");
 		double priority = ParamUtil.getDouble(actionRequest, "priority");
 		boolean active = ParamUtil.getBoolean(actionRequest, "active");
-		long commerceChannelId = ParamUtil.getLong(
-			actionRequest, "commerceChannelId");
 
 		long commercePaymentMethodGroupRelId = ParamUtil.getLong(
 			actionRequest, "commercePaymentMethodGroupRelId");
 
 		if (commercePaymentMethodGroupRelId <= 0) {
+			long commerceChannelId = ParamUtil.getLong(
+				actionRequest, "commerceChannelId");
+
 			CommerceChannel commerceChannel =
 				_commerceChannelService.getCommerceChannel(commerceChannelId);
+
+			String commercePaymentMethodEngineKey = ParamUtil.getString(
+				actionRequest, "commercePaymentMethodEngineKey");
 
 			commercePaymentMethodGroupRel =
 				_commercePaymentMethodGroupRelService.

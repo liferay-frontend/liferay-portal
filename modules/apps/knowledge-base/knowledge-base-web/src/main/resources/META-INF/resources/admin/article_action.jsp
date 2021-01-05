@@ -65,7 +65,7 @@ else {
 		/>
 	</c:if>
 
-	<c:if test="<%= kbArticle.isRoot() && KBArticlePermission.contains(permissionChecker, kbArticle, KBActionKeys.PERMISSIONS) %>">
+	<c:if test="<%= KBArticlePermission.contains(permissionChecker, kbArticle, KBActionKeys.PERMISSIONS) %>">
 		<liferay-security:permissionsURL
 			modelResource="<%= KBArticle.class.getName() %>"
 			modelResourceDescription="<%= kbArticle.getTitle() %>"

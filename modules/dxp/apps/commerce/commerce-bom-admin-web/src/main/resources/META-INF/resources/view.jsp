@@ -19,7 +19,7 @@
 <%
 CommerceBOMAdminDisplayContext commerceBOMAdminDisplayContext = (CommerceBOMAdminDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
-renderResponse.setTitle(LanguageUtil.get(request, "bill-of-materials"));
+renderResponse.setTitle(LanguageUtil.get(request, "shop-by-diagram"));
 %>
 
 <liferay-frontend:management-bar
@@ -83,7 +83,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "bill-of-materials"));
 
 <portlet:actionURL name="editCommerceBOMDefintion" var="editCommerceBOMDefintionActionURL" />
 
-<div class="container-fluid-1280" id="<portlet:namespace />commerceBOMDefinitionContainer">
+<div class="container-fluid container-fluid-max-xl" id="<portlet:namespace />commerceBOMDefinitionContainer">
 
 	<%
 	commerceBOMAdminDisplayContext.addPortletBreadcrumbEntries();
@@ -133,7 +133,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "bill-of-materials"));
 					%>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						name="name"
 						value="<%= commerceBOMDefinition.getName() %>"
@@ -153,7 +153,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "bill-of-materials"));
 					%>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						name="name"
 						value="<%= commerceBOMFolder.getName() %>"
@@ -182,7 +182,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "bill-of-materials"));
 		<portlet:param name="parentCommerceBOMFolderId" value="<%= String.valueOf(commerceBOMAdminDisplayContext.getCommerceBOMFolderId()) %>" />
 	</portlet:actionURL>
 
-	<aui:script require="metal-dom/src/all/dom as dom,frontend-js-web/liferay/modal/commands/OpenSimpleInputModal.es as modalCommands">
+	<aui:script require="frontend-js-web/liferay/modal/commands/OpenSimpleInputModal.es as modalCommands">
 		function handleAddBOMFolderButtonClick(event) {
 			event.preventDefault();
 

@@ -37,29 +37,20 @@ boolean panelsShown = false;
 	%>
 
 		<c:if test="<%= !panelApps.isEmpty() %>">
-			<div class="spliter-spaced splitter">
+			<div class="card-section-header">
 				<%= panelCategory.getLabel(locale) %>
 			</div>
 
-			<ul class="display-style-icon list-unstyled row">
+			<ul class="card-page card-page-equal-height">
 
 				<%
 				for (PanelApp panelApp : panelApps) {
 				%>
 
-					<li class="entry-card entry-display-style lfr-asset-item">
-						<c:choose>
-							<c:when test="<%= depotAdminViewDepotDashboardDisplayContext.isPrimaryPanelCategory(panelCategory) %>">
-								<clay:vertical-card-v2
-									verticalCard="<%= depotAdminViewDepotDashboardDisplayContext.getDepotDashboardApplicationVerticalCard(panelApp, locale) %>"
-								/>
-							</c:when>
-							<c:otherwise>
-								<clay:horizontal-card-v2
-									horizontalCard="<%= depotAdminViewDepotDashboardDisplayContext.getDepotDashboardApplicationHorizontalCard(panelApp, locale) %>"
-								/>
-							</c:otherwise>
-						</c:choose>
+					<li class="card-page-item card-page-item-asset entry-display-style">
+						<clay:navigation-card
+							navigationCard="<%= depotAdminViewDepotDashboardDisplayContext.getDepotDashboardApplicationNavigationCard(panelApp, locale, !depotAdminViewDepotDashboardDisplayContext.isPrimaryPanelCategory(panelCategory)) %>"
+						/>
 					</li>
 
 				<%

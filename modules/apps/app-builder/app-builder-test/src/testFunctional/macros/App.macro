@@ -9,6 +9,8 @@ definition {
 
 		App.selectTableView(tableViewName = "${tableViewName}");
 
+		Button.clickNext();
+
 		AppBuilderAdmin.setName(title = "${appTitle}");
 
 		App.toggleDeploy(deployOption = "${deployOption}");
@@ -26,6 +28,18 @@ definition {
 		App.clickDeploy();
 
 		VerifyElementPresent(locator1 = "Message#SUCCESS_DISMISSIBLE");
+	}
+
+	macro assertWorkflowColumnPresent {
+		AssertElementPresent(
+			key_workflowColumnName = "${workflowColumnName}",
+			locator1 = "AppBuilder#WORKFLOW_COLUMN");
+	}
+
+	macro assertWorkflowSelected {
+		AssertElementPresent(
+			key_itemName = "${workflowName}",
+			locator1 = "AppBuilder#ITEM_ON_THE_TABLE_SELECTED");
 	}
 
 	macro clickDeploy {
@@ -75,6 +89,10 @@ definition {
 		Click(locator1 = "AppBuilder#PRODUCT_MENU_SITE_DROPDOWN");
 	}
 
+	macro refreshWorkflowList {
+		Click(locator1 = "AppBuilder#REFRESH_WORKFLOW_BUTTON");
+	}
+
 	macro saveApp {
 		AppBuilderAdmin.save();
 	}
@@ -106,6 +124,12 @@ definition {
 			locator1 = "AppBuilder#ITEM_ON_THE_TABLE_CLICK");
 
 		Button.clickNext();
+	}
+
+	macro selectWorkflow {
+		Click(
+			key_itemName = "${workflowName}",
+			locator1 = "AppBuilder#ITEM_ON_THE_TABLE_CLICK");
 
 		Button.clickNext();
 	}
@@ -117,11 +141,9 @@ definition {
 	}
 
 	macro toggleUndeploy {
-		Button.clickNext();
-
-		Button.clickNext();
-
-		Button.clickNext();
+		for (var number : list "1,2,3") {
+			Button.clickNext();
+		}
 
 		Uncheck.uncheckToggleSwitch(
 			key_deployOption = "${deployOption}",

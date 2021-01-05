@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -224,10 +223,12 @@ public class ProductGroupResourceImpl
 				}
 
 				if (cProduct == null) {
+					String productExternalReferenceCode =
+						productGroupProduct.getProductExternalReferenceCode();
+
 					throw new NoSuchCProductException(
 						"Unable to find Product with externalReferenceCode: " +
-							productGroupProduct.
-								getProductExternalReferenceCode());
+							productExternalReferenceCode);
 				}
 
 				CommercePricingClassCPDefinitionRel
@@ -258,16 +259,13 @@ public class ProductGroupResourceImpl
 			ProductGroup productGroup)
 		throws Exception {
 
-		ServiceContext serviceContext =
-			_serviceContextHelper.getServiceContext();
-
 		commercePricingClass =
 			_commercePricingClassService.updateCommercePricingClass(
 				commercePricingClass.getCommercePricingClassId(),
 				commercePricingClass.getUserId(),
 				LanguageUtils.getLocalizedMap(productGroup.getTitle()),
 				LanguageUtils.getLocalizedMap(productGroup.getDescription()),
-				serviceContext);
+				_serviceContextHelper.getServiceContext());
 
 		// Expando
 
@@ -287,15 +285,13 @@ public class ProductGroupResourceImpl
 	private CommercePricingClass _upsertProductGroup(ProductGroup productGroup)
 		throws Exception {
 
-		ServiceContext serviceContext =
-			_serviceContextHelper.getServiceContext();
-
 		CommercePricingClass commercePricingClass =
 			_commercePricingClassService.upsertCommercePricingClass(
 				0L, contextUser.getUserId(),
 				LanguageUtils.getLocalizedMap(productGroup.getTitle()),
 				LanguageUtils.getLocalizedMap(productGroup.getDescription()),
-				productGroup.getExternalReferenceCode(), serviceContext);
+				productGroup.getExternalReferenceCode(),
+				_serviceContextHelper.getServiceContext());
 
 		// Update nested resources
 

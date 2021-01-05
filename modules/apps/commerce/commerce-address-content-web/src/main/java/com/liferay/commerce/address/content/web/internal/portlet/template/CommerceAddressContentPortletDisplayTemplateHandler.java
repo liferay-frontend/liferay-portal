@@ -89,14 +89,14 @@ public class CommerceAddressContentPortletDisplayTemplateHandler
 
 		templateVariableGroup.empty();
 
-		templateVariableGroup.addVariable(
-			"commerce-address-display-context",
-			CommerceAddressDisplayContext.class,
-			"commerceAddressDisplayContext");
 		templateVariableGroup.addCollectionVariable(
 			"commerce-addresses", List.class,
 			PortletDisplayTemplateConstants.ENTRIES, "commerce-address",
 			CommerceAddress.class, "curCommerceAddress", "CommerceAddressId");
+		templateVariableGroup.addVariable(
+			"commerce-address-display-context",
+			CommerceAddressDisplayContext.class,
+			"commerceAddressDisplayContext");
 
 		TemplateVariableGroup commerceAddressServicesTemplateVariableGroup =
 			new TemplateVariableGroup(

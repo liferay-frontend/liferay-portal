@@ -16,6 +16,7 @@ import {
 	FormSupport,
 	PagesVisitor,
 	RulesVisitor,
+	generateInstanceId,
 	generateName,
 	getRepeatedIndex,
 } from 'dynamic-data-mapping-form-renderer';
@@ -25,11 +26,7 @@ import {Config} from 'metal-state';
 
 import RulesSupport from '../../components/RuleBuilder/RulesSupport.es';
 import {pageStructure, ruleStructure} from '../../util/config.es';
-import {
-	generateInstanceId,
-	getFieldProperties,
-	localizeField,
-} from '../../util/fieldSupport.es';
+import {getFieldProperties, localizeField} from '../../util/fieldSupport.es';
 import {setLocalizedValue} from '../../util/i18n.es';
 import handleColumnResized from './handlers/columnResizedHandler.es';
 import handleElementSetAdded from './handlers/elementSetAddedHandler.es';
@@ -168,7 +165,6 @@ class LayoutProvider extends Component {
 	getPages() {
 		const {defaultLanguageId, editingLanguageId} = this.props;
 		const {availableLanguageIds = [editingLanguageId]} = this.props;
-		const {fieldHovered, focusedField} = this.state;
 		let {pages} = this.state;
 
 		const visitor = new PagesVisitor(pages);
@@ -190,12 +186,10 @@ class LayoutProvider extends Component {
 						defaultLanguageId,
 						editingLanguageId
 					),
-					hovered: fieldHovered.fieldName === field.fieldName,
 					name: generateName(field.name, {
 						instanceId: field.instanceId || generateInstanceId(),
 						repeatedIndex: getRepeatedIndex(field.name),
 					}),
-					selected: focusedField.fieldName === field.fieldName,
 					settingsContext: newSettingsContext,
 				};
 
@@ -388,7 +382,53 @@ class LayoutProvider extends Component {
 	}
 
 	_handleFieldAdded(event) {
-		this.setState(handleFieldAdded(this.props, this.state, event));
+		const {defaultLanguageId, editingLanguageId} = this.props;
+		const {availableLanguageIds = [editingLanguageId]} = this.props;
+
+		const newState = handleFieldAdded(this.props, this.state, event);
+
+		const {focusedField} = newState;
+
+		let {pages} = newState;
+
+		const visitor = new PagesVisitor(pages);
+
+		pages = visitor.mapFields(
+			(field) => {
+				const {settingsContext} = field;
+
+				const newSettingsContext = {
+					...settingsContext,
+					availableLanguageIds,
+					defaultLanguageId,
+					pages: this.getLocalizedPages(settingsContext.pages),
+				};
+
+				const newField = {
+					...field,
+					...getFieldProperties(
+						newSettingsContext,
+						defaultLanguageId,
+						editingLanguageId
+					),
+					settingsContext: newSettingsContext,
+				};
+
+				if (field.name === focusedField.name) {
+					focusedField.settingsContext = newSettingsContext;
+				}
+
+				return newField;
+			},
+			true,
+			true
+		);
+
+		this.setState({
+			...newState,
+			focusedField,
+			pages,
+		});
 	}
 
 	_handleFieldHovered(fieldHovered) {
@@ -442,7 +482,10 @@ class LayoutProvider extends Component {
 	_handleFieldDeleted(event) {
 		const {rules} = this.state;
 
-		if (rules && RulesSupport.findRuleByFieldName(event.fieldName, rules)) {
+		if (
+			rules &&
+			RulesSupport.findRuleByFieldName(event.fieldName, null, rules)
+		) {
 			openModal({
 				bodyHTML: Liferay.Language.get(
 					'a-rule-is-applied-to-this-field'

@@ -105,13 +105,13 @@ function getOdataString(selectedItems, key, selectionType, exclude) {
 	return null;
 }
 function AutocompleteFilter({
-	actions,
 	apiURL,
 	id,
 	inputPlaceholder,
 	itemKey,
 	itemLabel: itemLabelProp,
 	selectionType,
+	updateFilterState,
 	value: valueProp,
 }) {
 	const [query, setQuery] = useState('');
@@ -358,7 +358,7 @@ function AutocompleteFilter({
 					disabled={submitDisabled}
 					onClick={() =>
 						actionType !== 'delete'
-							? actions.updateFilterState(
+							? updateFilterState(
 									id,
 									{
 										exclude,
@@ -372,7 +372,7 @@ function AutocompleteFilter({
 										exclude
 									)
 							  )
-							: actions.updateFilterState(id)
+							: updateFilterState(id)
 					}
 					small
 				>
@@ -388,9 +388,6 @@ function AutocompleteFilter({
 }
 
 AutocompleteFilter.propTypes = {
-	actions: PropTypes.shape({
-		updateFilterState: PropTypes.func.isRequired,
-	}),
 	apiURL: PropTypes.string.isRequired,
 	id: PropTypes.string.isRequired,
 	inputPlaceholder: PropTypes.string,
@@ -398,6 +395,7 @@ AutocompleteFilter.propTypes = {
 	itemLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.array])
 		.isRequired,
 	selectionType: PropTypes.oneOf(['single', 'multiple']).isRequired,
+	updateFilterState: PropTypes.func.isRequired,
 	value: PropTypes.shape({
 		exclude: PropTypes.bool,
 		items: PropTypes.arrayOf(

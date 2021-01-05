@@ -98,10 +98,8 @@ public class CalendarBookingIterator implements Iterator<CalendarBooking> {
 			jCalendar.get(Calendar.SECOND), jCalendar.get(Calendar.MILLISECOND),
 			_getTimeZone(_calendarBooking));
 
-		TimeZone timeZone = _getTimeZone(_calendarBooking);
-
 		int shift = JCalendarUtil.getDSTShift(
-			jCalendar, startTimeJCalendar, timeZone);
+			jCalendar, startTimeJCalendar, _getTimeZone(_calendarBooking));
 
 		startTimeJCalendar.add(Calendar.MILLISECOND, shift);
 

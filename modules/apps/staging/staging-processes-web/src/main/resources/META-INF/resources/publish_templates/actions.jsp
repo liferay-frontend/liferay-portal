@@ -39,7 +39,7 @@ if (exportImportConfiguration.getType() == ExportImportConfigurationConstants.TY
 	showWhenSingleIcon="<%= true %>"
 >
 	<portlet:renderURL var="newPublishProcessURL">
-		<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
+		<portlet:param name="mvcRenderCommandName" value="/staging_processes/publish_layouts" />
 		<portlet:param name="<%= Constants.CMD %>" value="<%= localPublishing ? Constants.PUBLISH_TO_LIVE : Constants.PUBLISH_TO_REMOTE %>" />
 		<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />
 	</portlet:renderURL>

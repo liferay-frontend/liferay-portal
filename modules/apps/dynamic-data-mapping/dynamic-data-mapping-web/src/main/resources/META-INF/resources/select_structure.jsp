@@ -28,6 +28,7 @@ SearchContainer<DDMStructure> structureSearch = ddmDisplayContext.getStructureSe
 
 <clay:management-toolbar-v2
 	clearResultsURL="<%= ddmDisplayContext.getClearResultsURL() %>"
+	componentId="ddmStructureManagementToolbar"
 	creationMenu="<%= ddmDisplayContext.getSelectStructureCreationMenu() %>"
 	disabled="<%= ddmDisplayContext.isDisabledManagementBar(DDMWebKeys.DYNAMIC_DATA_MAPPING_STRUCTURE) %>"
 	filterDropdownItems="<%= ddmDisplayContext.getFilterItemsDropdownItems() %>"
@@ -41,7 +42,7 @@ SearchContainer<DDMStructure> structureSearch = ddmDisplayContext.getStructureSe
 	sortingURL="<%= ddmDisplayContext.getSortingURL() %>"
 />
 
-<aui:form action="<%= ddmDisplayContext.getSelectStructureSearchActionURL() %>" cssClass="container-fluid-1280" method="post" name="selectStructureFm">
+<aui:form action="<%= ddmDisplayContext.getSelectStructureSearchActionURL() %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="selectStructureFm">
 	<liferay-ui:search-container
 		searchContainer="<%= structureSearch %>"
 	>
@@ -56,7 +57,7 @@ SearchContainer<DDMStructure> structureSearch = ddmDisplayContext.getStructureSe
 			/>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="name"
 			>
 				<c:choose>
@@ -86,7 +87,7 @@ SearchContainer<DDMStructure> structureSearch = ddmDisplayContext.getStructureSe
 			</liferay-ui:search-container-column-text>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="description"
 				truncate="<%= true %>"
 				value="<%= HtmlUtil.escape(structure.getDescription(locale)) %>"
@@ -106,9 +107,13 @@ SearchContainer<DDMStructure> structureSearch = ddmDisplayContext.getStructureSe
 </aui:form>
 
 <aui:script>
-	Liferay.Util.focusFormField(
-		document.<portlet:namespace />searchForm.<portlet:namespace />keywords
-	);
+	Liferay.componentReady('ddmStructureManagementToolbar').then(function (
+		managementToolbar
+	) {
+		Liferay.Util.focusFormField(
+			document.<portlet:namespace />searchForm.<portlet:namespace />keywords
+		);
+	});
 
 	Liferay.Util.selectEntityHandler(
 		'#<portlet:namespace />selectStructureFm',

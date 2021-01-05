@@ -389,6 +389,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>NUMERIC</td>
+	<td>//label[contains(.,'Numeric')]/following-sibling::input[1]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>OPEN_GRAPH_CUSTOM_TITLE</td>
 	<td>//div[input[contains(@id,'openGraphTitle')]]//input[@type='text']</td>
 	<td></td>
@@ -500,7 +505,7 @@
 </tr>
 <tr>
 	<td>SELECTOR_INPUT</td>
-	<td>//input[contains(@id,'${key_fieldName}')][contains(@readonly,'readonly')]</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']/following-sibling::div//div[contains(@class,'input-group')]//input[contains(@type,'text')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -584,13 +589,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>SPECIFIC_FIELD_REQUIRED_ALERT</td>
-	<td>//div[@data-fieldname='${key_fieldName}']//div[@class='required']</td>
+	<td>STREET_1</td>
+	<td>//div[label[contains(.,'Street 1')]]//input[@type='text']</td>
 	<td></td>
 </tr>
 <tr>
-	<td>STREET_1</td>
-	<td>//div[label[contains(.,'Street 1')]]//input[@type='text']</td>
+	<td>STREET_N</td>
+	<td>//div[label[contains(.,'Street ${key_streetNumber}')]]//input[@type='text']</td>
 	<td></td>
 </tr>
 <tr>
@@ -609,6 +614,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>TEXT_SPECIFIC</td>
+	<td>//label[contains(.,'Text')]/following-sibling::input[1]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TITLE</td>
 	<td>//input[contains(@id,'title')]</td>
 	<td></td>
@@ -620,7 +630,7 @@
 </tr>
 <tr>
 	<td>TRANSLATIONS_TARGET_FIELD</td>
-	<td>//input[contains(@id,'${key_fieldName}') and (not(contains(@readonly,'true')))]</td>
+	<td>//div[contains(@class,'form-group') and contains(.,'${key_fieldName}')]//input[not(contains(@readonly,'true'))]</td>
 	<td></td>
 </tr>
 <tr>
@@ -641,6 +651,11 @@
 <tr>
 	<td>URL_REQUIRED</td>
 	<td>//div[contains(@id,'urlHelper')]/div[contains(@role,'alert')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>VIDEO_URL</td>
+	<td>//input[contains(@id,'VideoExternalShortcutURL')]</td>
 	<td></td>
 </tr>
 <tr>

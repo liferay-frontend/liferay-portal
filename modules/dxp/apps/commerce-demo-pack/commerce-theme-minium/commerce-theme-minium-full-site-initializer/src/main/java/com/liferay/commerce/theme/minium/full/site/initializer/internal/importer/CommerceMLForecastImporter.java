@@ -124,11 +124,10 @@ public class CommerceMLForecastImporter {
 			JSONObject jsonObject, ServiceContext serviceContext)
 		throws PortalException {
 
-		Date currentDate = _getCurrentDate(jsonObject.getString("period"));
-
 		AssetCategoryCommerceMLForecast assetCategoryCommerceMLForecast =
 			_setFields(
-				serviceContext.getCompanyId(), currentDate,
+				serviceContext.getCompanyId(),
+				_getCurrentDate(jsonObject.getString("period")),
 				_assetCategoryCommerceMLForecastManager.create(), jsonObject);
 
 		Company company = _companyLocalService.getCompany(
@@ -194,11 +193,10 @@ public class CommerceMLForecastImporter {
 			JSONObject jsonObject, ServiceContext serviceContext)
 		throws PortalException {
 
-		Date currentDate = _getCurrentDate(jsonObject.getString("period"));
-
 		CommerceAccountCommerceMLForecast commerceAccountCommerceMLForecast =
 			_setFields(
-				serviceContext.getCompanyId(), currentDate,
+				serviceContext.getCompanyId(),
+				_getCurrentDate(jsonObject.getString("period")),
 				_commerceAccountCommerceMLForecastManager.create(), jsonObject);
 
 		String accountName = jsonObject.getString("account");

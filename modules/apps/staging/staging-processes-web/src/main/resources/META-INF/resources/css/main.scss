@@ -116,10 +116,6 @@
 }
 
 .lfr-export-dialog {
-	.portlet-data-section .flex-container {
-		margin-bottom: 1em;
-	}
-
 	.portlet-data-section,
 	.portlet-type-data-section {
 		.control-label {
@@ -189,20 +185,6 @@
 .lfr-tree-loading-icon {
 	margin: 0 auto;
 	padding-top: 5px;
-}
-
-.list-group-item-content h6.background-task-status-row {
-	display: inline;
-	margin-right: 1%;
-
-	a {
-		color: #65b6f0;
-	}
-
-	a:hover {
-		color: #65b6f0;
-		text-decoration: none;
-	}
 }
 
 .pages-selector {

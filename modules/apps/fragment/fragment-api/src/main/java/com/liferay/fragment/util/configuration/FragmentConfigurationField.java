@@ -43,9 +43,26 @@ public class FragmentConfigurationField {
 		_name = fieldJSONObject.getString("name");
 		_dataType = fieldJSONObject.getString("dataType");
 		_defaultValue = fieldJSONObject.getString("defaultValue");
+		_localizable = fieldJSONObject.getBoolean("localizable");
 		_type = fieldJSONObject.getString("type");
 	}
 
+	public FragmentConfigurationField(
+		String name, String dataType, String defaultValue, boolean localizable,
+		String type) {
+
+		_name = name;
+		_dataType = dataType;
+		_defaultValue = defaultValue;
+		_localizable = localizable;
+		_type = type;
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 * #FragmentConfigurationField(String, String, String, boolean, String)}
+	 */
+	@Deprecated
 	public FragmentConfigurationField(
 		String name, String dataType, String defaultValue, String type) {
 
@@ -53,6 +70,8 @@ public class FragmentConfigurationField {
 		_dataType = dataType;
 		_defaultValue = defaultValue;
 		_type = type;
+
+		_localizable = false;
 	}
 
 	public String getDataType() {
@@ -81,6 +100,10 @@ public class FragmentConfigurationField {
 
 	public String getType() {
 		return _type;
+	}
+
+	public boolean isLocalizable() {
+		return _localizable;
 	}
 
 	private String _getColorPaletteDefaultValue() {
@@ -167,6 +190,7 @@ public class FragmentConfigurationField {
 
 	private final String _dataType;
 	private final String _defaultValue;
+	private final boolean _localizable;
 	private final String _name;
 	private final String _type;
 

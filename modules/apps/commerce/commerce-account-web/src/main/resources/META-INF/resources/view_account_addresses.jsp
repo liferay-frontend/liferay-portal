@@ -30,7 +30,7 @@ PortletURL portletURL = currentURLObj;
 portletURL.setParameter(PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "backURL", backURL);
 %>
 
-<portlet:actionURL name="editCommerceAddress" var="editCommerceAddressActionURL" />
+<portlet:actionURL name="/commerce_account/edit_commerce_address" var="editCommerceAddressActionURL" />
 
 <clay:data-set-display
 	contextParams="<%= contextParams %>"
@@ -52,7 +52,7 @@ portletURL.setParameter(PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "backUR
 		componentId="addressModal"
 	/>
 
-	<portlet:actionURL name="editCommerceAddress" var="editCommerceAddressActionURL" />
+	<portlet:actionURL name="/commerce_account/edit_commerce_address" var="editCommerceAddressActionURL" />
 
 	<aui:form action="<%= editCommerceAddressActionURL %>" method="post" name="addressFm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ADD %>" />

@@ -45,6 +45,7 @@ public class MBFixture {
 
 	public MBFixture(Group group) throws PortalException {
 		_group = group;
+
 		_user = TestPropsValues.getUser();
 	}
 

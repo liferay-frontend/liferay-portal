@@ -40,11 +40,10 @@
 	.portlet-configuration-body-content,
 	.process-list,
 	.roles-selector-body {
-		> .container-fluid-1280,
+		> .container-fluid-max-xl,
 		.container-view {
 			padding-top: 20px;
 
-			> .nav-tabs-default,
 			.nav-tabs-underline {
 				margin-left: -$grid-gutter-width / 2;
 				margin-right: -$grid-gutter-width / 2;
@@ -52,7 +51,7 @@
 			}
 		}
 
-		> .lfr-nav + .container-fluid-1280 {
+		> .lfr-nav + .container-fluid-max-xl {
 			padding-top: 0;
 		}
 	}
@@ -78,12 +77,6 @@
 		@include media-breakpoint-up(sm) {
 			height: calc(100% - #{$dialog-desktop-navbar-height});
 		}
-	}
-
-	.navigation-bar > .container-fluid {
-		margin-left: 24px;
-		margin-right: 24px;
-		padding: 0;
 	}
 
 	.panel-group .panel {

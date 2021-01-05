@@ -19,9 +19,9 @@
 <liferay-staging:defineObjects />
 
 <%
-String tabs3 = ParamUtil.getString(request, "tabs3", "new-publication-process");
+String tabs3 = ParamUtil.getString(request, "tabs3", "new-publish-process");
 
-boolean newPublication = tabs3.equals("new-publication-process");
+boolean newPublication = tabs3.equals("new-publish-process");
 
 String defaultRange = ExportImportDateUtil.RANGE_ALL;
 String javascriptOnSubmitFunction = "event.halt(); " + liferayPortletResponse.getNamespace();
@@ -37,13 +37,13 @@ else {
 }
 %>
 
-<portlet:actionURL name="publishPortlet" var="publishPortletURL">
-	<portlet:param name="mvcRenderCommandName" value="publishPortlet" />
+<portlet:actionURL name="/export_import/publish_portlet" var="publishPortletURL">
+	<portlet:param name="mvcRenderCommandName" value="/export_import/publish_portlet" />
 	<portlet:param name="tabs3" value="<%= tabs3 %>" />
 </portlet:actionURL>
 
 <liferay-portlet:renderURL var="redirectURL">
-	<portlet:param name="mvcRenderCommandName" value="publishPortlet" />
+	<portlet:param name="mvcRenderCommandName" value="/export_import/publish_portlet" />
 	<portlet:param name="tabs3" value="current-and-previous" />
 	<portlet:param name="portletResource" value="<%= portletResource %>" />
 </liferay-portlet:renderURL>
@@ -167,26 +167,26 @@ else {
 						<ul class="lfr-tree list-unstyled select-options">
 							<li class="tree-item">
 								<div id="<portlet:namespace />range">
-									<div class="flex-container">
-										<div class="flex-item-center range-options">
+									<div class="align-items-center d-flex flex-wrap">
+										<div class="range-options">
 											<aui:input checked="<%= !newPublication %>" data-name='<%= LanguageUtil.get(request, "all") %>' id="rangeAll" label="all" name="range" type="radio" value="all" />
 										</div>
 
 										<c:if test="<%= newPublication %>">
-											<div class="flex-item-center range-options">
+											<div class="range-options">
 												<aui:input checked="<%= true %>" data-name='<%= LanguageUtil.get(request, "from-last-publish-date") %>' id="rangeLastPublish" label="from-last-publish-date" name="range" type="radio" value="fromLastPublishDate" />
 											</div>
 										</c:if>
 
-										<div class="flex-item-center range-options">
+										<div class="range-options">
 											<aui:input data-name='<%= LanguageUtil.get(request, "date-range") %>' helpMessage="export-date-range-help" id="rangeDateRange" label="date-range" name="range" type="radio" value="dateRange" />
 										</div>
 
-										<div class="flex-item-center range-options">
+										<div class="range-options">
 											<aui:input id="rangeLast" label='<%= LanguageUtil.get(request, "last") + StringPool.TRIPLE_PERIOD %>' name="range" type="radio" value="last" />
 										</div>
 
-										<div class="flex-item-center range-options">
+										<div class="range-options">
 											<liferay-ui:icon
 												icon="reload"
 												markupView="lexicon"
@@ -216,7 +216,7 @@ else {
 									%>
 
 									<ul class="date-range-options hide list-unstyled" id="<portlet:namespace />startEndDate">
-										<li class="flex-container">
+										<li class="d-flex flex-wrap">
 											<aui:fieldset label="start-date">
 												<liferay-ui:input-date
 													cssClass="form-group form-group-inline"

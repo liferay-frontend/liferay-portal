@@ -16,6 +16,7 @@ package com.liferay.commerce.order.web.internal.frontend;
 
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.order.web.internal.frontend.constants.CommerceOrderDataSetConstants;
 import com.liferay.commerce.order.web.internal.model.OrderItem;
 import com.liferay.commerce.order.web.internal.security.permission.resource.CommerceOrderPermission;
 import com.liferay.frontend.taglib.clay.data.set.ClayDataSetActionProvider;
@@ -108,7 +109,8 @@ public class CommerceOrderItemClayDataSetActionProvider
 			_portal.getCurrentURL(httpServletRequest));
 
 		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCommerceOrderItem");
+			ActionRequest.ACTION_NAME,
+			"/commerce_order/edit_commerce_order_item");
 		portletURL.setParameter(Constants.CMD, Constants.DELETE);
 		portletURL.setParameter("redirect", redirect);
 		portletURL.setParameter(
@@ -126,7 +128,7 @@ public class CommerceOrderItemClayDataSetActionProvider
 			PortletProvider.Action.MANAGE);
 
 		portletURL.setParameter(
-			"mvcRenderCommandName", "editCommerceOrderItem");
+			"mvcRenderCommandName", "/commerce_order/edit_commerce_order_item");
 		portletURL.setParameter(
 			"redirect", _portal.getCurrentURL(httpServletRequest));
 

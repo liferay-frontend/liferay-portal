@@ -376,6 +376,7 @@ if (portletTitleBasedNavigation) {
 
 							try {
 								String priorityName = priority[0];
+
 								double priorityValue = GetterUtil.getDouble(priority[2]);
 
 								if (priorityValue > 0) {
@@ -466,4 +467,5 @@ MBEditMessageDisplayContext mbEditMessageDisplayContext = new MBEditMessageDispl
 <liferay-frontend:component
 	context="<%= mbEditMessageDisplayContext.getMBPortletComponentContext() %>"
 	module="message_boards/js/MBPortlet.es"
+	servletContext="<%= application %>"
 />

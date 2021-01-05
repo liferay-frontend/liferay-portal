@@ -15,6 +15,7 @@
 package com.liferay.document.library.webdav.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.webdav.methods.Method;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -98,7 +99,9 @@ public class WebDAVLitmusCopyMoveTest extends BaseWebDAVTestCase {
 		for (int i = 0; i < 10; i++) {
 			assertCode(
 				HttpServletResponse.SC_CREATED,
-				servicePut("ccsrc/foo." + i, _TEST_CONTENT.getBytes()));
+				servicePut(
+					StringBundler.concat("ccsrc/foo", i, ".", i),
+					_TEST_CONTENT.getBytes()));
 		}
 
 		assertCode(
@@ -123,7 +126,7 @@ public class WebDAVLitmusCopyMoveTest extends BaseWebDAVTestCase {
 		for (int i = 0; i < 10; i++) {
 			assertCode(
 				HttpServletResponse.SC_NO_CONTENT,
-				serviceDelete("ccdest/foo." + i));
+				serviceDelete("ccdest/foo" + i));
 		}
 
 		assertCode(
@@ -184,7 +187,9 @@ public class WebDAVLitmusCopyMoveTest extends BaseWebDAVTestCase {
 		for (int i = 0; i < 10; i++) {
 			assertCode(
 				HttpServletResponse.SC_CREATED,
-				servicePut("mvsrc/foo." + i, _TEST_CONTENT.getBytes()));
+				servicePut(
+					StringBundler.concat("mvsrc/foo", i, ".", i),
+					_TEST_CONTENT.getBytes()));
 		}
 
 		assertCode(
@@ -216,7 +221,7 @@ public class WebDAVLitmusCopyMoveTest extends BaseWebDAVTestCase {
 		for (int i = 0; i < 10; i++) {
 			assertCode(
 				HttpServletResponse.SC_NO_CONTENT,
-				serviceDelete("mvdest/foo." + i));
+				serviceDelete("mvdest/foo" + i));
 		}
 
 		assertCode(

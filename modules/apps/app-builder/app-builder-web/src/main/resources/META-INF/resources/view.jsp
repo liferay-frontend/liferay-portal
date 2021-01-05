@@ -39,11 +39,11 @@
 			).put(
 				"pathFriendlyURLPublic", PortalUtil.getPathFriendlyURLPublic()
 			).put(
+				"popUpWindow", LiferayWindowState.isPopUp(request)
+			).put(
 				"scope", AppBuilderAppConstants.SCOPE_STANDARD
 			).put(
 				"showNativeObjectsTab", request.getAttribute(AppBuilderWebKeys.SHOW_NATIVE_OBJECTS_TAB)
-			).put(
-				"showTranslationManager", request.getAttribute(AppBuilderWebKeys.SHOW_TRANSLATION_MANAGER)
 			).put(
 				"workflowProcessBuilderPortletURL", String.valueOf(workflowProcessBuilderPortletURL)
 			).build()

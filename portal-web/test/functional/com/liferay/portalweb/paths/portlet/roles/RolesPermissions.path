@@ -158,7 +158,12 @@
 <!--CONTROL_PANEL_SITES_SITES_GENERAL_PERMISSIONS-->
 <tr>
 	<td>CONTROL_PANEL_SITES_SITES_GENERAL_PERMISSIONS_ACCESS_IN_CONTROL_PANEL_CHECKBOX</td>
-	<td>//input[contains(@value,'ACCESS_IN_CONTROL_PANEL')]</td>
+	<td>//input[contains(@value,'SiteAdminPortletACCESS_IN_CONTROL_PANEL')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONTROL_PANEL_SITES_SITES_GENERAL_PERMISSIONS_VIEW_CHECKBOX</td>
+	<td>//input[contains(@value,'SiteAdminPortletVIEW')]</td>
 	<td></td>
 </tr>
 <tr>

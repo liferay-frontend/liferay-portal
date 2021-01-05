@@ -131,7 +131,7 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 				<aui:input label="enable-ratings-for-comments" name="preferences--enableCommentRatings--" type="checkbox" value="<%= dlPortletInstanceSettings.isEnableCommentRatings() %>" />
 			</liferay-frontend:fieldset>
 
-			<aui:script require="metal-dom/src/dom as dom">
+			<aui:script sandbox="<%= true %>">
 				var selectFolderButton = document.getElementById(
 					'<portlet:namespace />selectFolderButton'
 				);
@@ -179,9 +179,12 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 
 						if (currentColumnsElement) {
 							if (showActionsInput.checked) {
-								dom.append(
-									currentColumnsElement,
-									'<option value="action"><%= UnicodeLanguageUtil.get(request, "action") %></option>'
+								currentColumnsElement.appendChild(
+									document
+										.createRange()
+										.createContextualFragment(
+											'<option value="action"><%= UnicodeLanguageUtil.get(request, "action") %></option>'
+										)
 								);
 							}
 							else {

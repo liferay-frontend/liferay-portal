@@ -141,6 +141,48 @@ public class DataLayoutRenderingContext implements Cloneable, Serializable {
 
 	protected Boolean readOnly;
 
+	public Long getScopeGroupId() {
+		return scopeGroupId;
+	}
+
+	public void setScopeGroupId(Long scopeGroupId) {
+		this.scopeGroupId = scopeGroupId;
+	}
+
+	public void setScopeGroupId(
+		UnsafeSupplier<Long, Exception> scopeGroupIdUnsafeSupplier) {
+
+		try {
+			scopeGroupId = scopeGroupIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long scopeGroupId;
+
+	public Long getSiteGroupId() {
+		return siteGroupId;
+	}
+
+	public void setSiteGroupId(Long siteGroupId) {
+		this.siteGroupId = siteGroupId;
+	}
+
+	public void setSiteGroupId(
+		UnsafeSupplier<Long, Exception> siteGroupIdUnsafeSupplier) {
+
+		try {
+			siteGroupId = siteGroupIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long siteGroupId;
+
 	@Override
 	public DataLayoutRenderingContext clone()
 		throws CloneNotSupportedException {

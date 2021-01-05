@@ -1,0 +1,2269 @@
+@component-name = "portal-user-management-and-portal-configuration"
+definition {
+
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Users and Organizations";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "test@liferay.com",
+				userLoginFullName = "Test Test");
+
+			JSONUser.tearDownNonAdminUsers();
+
+			Role.tearDownCP();
+
+			Site.tearDownCP();
+
+			Suborganization.tearDownCP();
+
+			Organization.tearDownCP();
+		}
+	}
+
+	@description = "This is a use case for LPS-119168."
+	@priority = "5"
+	test AddUser {
+		property testray.component.names = "Training";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		Alert.viewSuccessMessage();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.viewCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		AssertConsoleTextNotPresent(value1 = "java.lang.NullPointerException");
+	}
+
+	@description = "This is a use case for LPS-95340."
+	@priority = "5"
+	test AddUserAfterPublishContentPageWithAP {
+		JSONGroup.addGroup(groupName = "Test Site Name");
+
+		SitePages.openPagesAdmin(siteURLKey = "test-site-name");
+
+		ContentPages.addPage(pageName = "Test Content Page Name");
+
+		PageEditor.addWidget(portletName = "Asset Publisher");
+
+		PageEditor.clickPublish();
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-content-page-name");
+
+		Alert.viewInfoMessageSpecific(infoMessage = "There are no results.");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		AssertConsoleTextNotPresent(value1 = "FileNotFoundException");
+	}
+
+	@description = "This is a use case for LPS-102425."
+	@priority = "4"
+	test AddUserEmailAddressApostrophe {
+		JSONUser.addUser(
+			userEmailAddress = "user1@liferay.com",
+			userFirstName = "user1",
+			userLastName = "user1",
+			userScreenName = "user1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "user1@liferay.com",
+			userScreenName = "user1");
+
+		JSONRole.assignRoleToUser(
+			roleTitle = "Administrator",
+			userEmailAddress = "user1@liferay.com");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "user1@liferay.com",
+			userLoginFullName = "user1 user1");
+
+		JSONLayout.addPublicLayout(
+			groupName = "Guest",
+			layoutName = "Message Boards Page");
+
+		JSONLayout.addWidgetToPublicLayout(
+			column = "1",
+			groupName = "Guest",
+			layoutName = "Message Boards Page",
+			widgetName = "Message Boards");
+
+		PermissionsInline.gotoMessageBoardsPG(pageName = "Message Boards Page");
+
+		Role.definePermissionPG(
+			permissionDefinitionKey = "INLINE_PERMISSIONS_ADD_MESSAGE_CHECKBOX",
+			roleTitle = "User");
+
+		Navigator.openURL();
+
+		JSONUser.addUser(
+			userEmailAddress = "user%27ea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "user'ea@liferay.com",
+			userScreenName = "usersn");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "user'ea@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		Navigator.openURL();
+
+		Navigator.gotoAccountSettings();
+
+		MyAccount.view();
+
+		Navigator.openURL();
+
+		Navigator.gotoPage(pageName = "Message Boards Page");
+
+		MessageboardsThread.addPG(
+			threadBody = "MB Thread Message Body as User",
+			threadSubject = "MB Thread Message Subject as User");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "user1@liferay.com",
+			userLoginFullName = "user1 user1");
+
+		JSONRole.assignRoleToUser(
+			roleTitle = "Administrator",
+			userEmailAddress = "user%27ea@liferay.com");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "user'ea@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		Navigator.gotoPage(pageName = "Message Boards Page");
+
+		MessageboardsThread.addPG(
+			threadBody = "MB Thread Message Body as Admin",
+			threadSubject = "MB Thread Message Subject as Admin");
+
+		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
+
+		Blogs.addEntry(
+			entryContent = "Blogs Entry Content as Admin",
+			entryTitle = "Blogs Entry Title as Admin");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "test test");
+	}
+
+	@priority = "4"
+	test AddUserEmailAddressAt {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@@liferay.com",
+			userEmailAddressVariation = "Invalid",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		Navigator.gotoBack();
+
+		User.viewCP(
+			userEmailAddress = "userea@@liferay.com",
+			userEmailAddressVariation = "At",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressBackSlash {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea\@liferay.com",
+			userEmailAddressVariation = "Invalid",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressBackTick {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea`@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressCaret {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea^@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressCloseBracket {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea]@liferay.com",
+			userEmailAddressVariation = "Invalid",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressCloseCurlyBrace {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea}@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressCloseParenthesis {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea)@liferay.com",
+			userEmailAddressVariation = "Invalid",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressColon {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea:@liferay.com",
+			userEmailAddressVariation = "Invalid",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressDash {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea-@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressEqual {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea=@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.viewCP(
+			userEmailAddress = "userea=@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressGreaterThan {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea&gt;@liferay.com",
+			userEmailAddressVariation = "Invalid",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressMinus {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea-@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressNull {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "",
+			userEmailAddressVariation = "Null",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressOpenBracket {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea[@liferay.com",
+			userEmailAddressVariation = "Invalid",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressOpenCurlyBrace {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea{@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressOpenParenthesis {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea(@liferay.com",
+			userEmailAddressVariation = "Invalid",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "4"
+	test AddUserEmailAddressPeriod {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea.@liferay.com",
+			userEmailAddressVariation = "Invalid",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		Navigator.gotoBack();
+
+		User.viewCP(
+			userEmailAddress = "userea.@liferay.com",
+			userEmailAddressVariation = "Period",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressRoot {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "root@liferay.com",
+			userEmailAddressVariation = "Root",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressSemicolon {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea;@liferay.com",
+			userEmailAddressVariation = "Invalid",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "3"
+	test AddUserEmailAddressUnderline {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea_@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.viewCP(
+			userEmailAddress = "userea_@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "4"
+	test AddUsers {
+		var count = "1";
+
+		while ("${count}" != "4") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Users",
+				panel = "Control Panel",
+				portlet = "Users and Organizations");
+
+			User.addCP(
+				userEmailAddress = "userea${count}@liferay.com",
+				userFirstName = "userfn${count}",
+				userLastName = "userln${count}",
+				userScreenName = "usersn${count}");
+
+			var count = ${count} + 1;
+		}
+
+		var count = "1";
+
+		while ("${count}" != "4") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Users",
+				panel = "Control Panel",
+				portlet = "Users and Organizations");
+
+			User.viewCP(
+				userEmailAddress = "userea${count}@liferay.com",
+				userFirstName = "userfn${count}",
+				userLastName = "userln${count}",
+				userScreenName = "usersn${count}");
+
+			var count = ${count} + 1;
+		}
+	}
+
+	@priority = "3"
+	test AddUserScreenNameInvalid {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "!@#$",
+			userScreenNameVariation = "Invalid");
+
+		Navigator.gotoBack();
+
+		User.viewCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "!@#$",
+			userScreenNameVariation = "Invalid");
+	}
+
+	@priority = "3"
+	test AddUserScreenNameNumber {
+		property custom.properties = "users.screen.name.allow.numeric=true";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "11111");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.viewCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "11111");
+	}
+
+	@priority = "4"
+	test AddUserSpecialCharacters {
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "&lt;userfn&gt;",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.viewCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "&lt;userfn&gt;",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "userea@liferay.com",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.assignRegularRoleCP(
+			roleTitle = "Administrator",
+			userScreenName = "usersn");
+
+		User.logoutPG();
+
+		User.loginUserPG(
+			password = "test",
+			userEmailAddress = "userea@liferay.com");
+
+		UserBar.gotoDropdownItem(dropdownItem = "My Profile");
+
+		AssertTextEquals(
+			locator1 = "Home#SITE_NAME",
+			value1 = "<userfn> userln");
+	}
+
+	@priority = "4"
+	test AssignUserGroupToUser {
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUserGroup.addUserGroup(
+			userGroupDescription = "UG UserGroup Name Description",
+			userGroupName = "UG UserGroup Name");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		User.assignUserGroupCP(userGroupName = "UG UserGroup Name");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		User.viewUserInfomationUserGroupsCP(userGroupName = "UG UserGroup Name");
+	}
+
+	@priority = "4"
+	test CannotViewSiteSettingsInUserPersonalSite {
+		Navigator.gotoPersonalSite();
+
+		ProductMenuHelper.openProductMenu();
+
+		ProductMenuHelper.expandCategory(category = "Configuration");
+
+		AssertElementNotPresent(
+			key_portlet = "Site Settings",
+			locator1 = "ProductMenu#PORTLET");
+	}
+
+	@priority = "4"
+	test ChangeUserPassword {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "userea@liferay.com",
+			userScreenName = "usersn");
+
+		User.logoutPG();
+
+		User.loginUserPG(userEmailAddress = "userea@liferay.com");
+
+		Navigator.openURL();
+
+		Navigator.gotoAccountSettings();
+
+		User.changePasswordCP(userEmailAddress = "userea@liferay.com");
+	}
+
+	@priority = "4"
+	test ChangeUserPasswordInvalid {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "userea@liferay.com",
+			userScreenName = "usersn");
+
+		User.logoutPG();
+
+		User.loginUserPG(userEmailAddress = "userea@liferay.com");
+
+		Navigator.openURL();
+
+		Navigator.gotoAccountSettings();
+
+		User.changePasswordCP(
+			userEmailAddress = "userea@liferay.com",
+			userPassword = "Invalid");
+	}
+
+	@priority = "5"
+	test DeleteUser {
+		property portal.acceptance = "true";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.deactivateCP(
+			deactivateType = "Actions",
+			userFirstName = "userfn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.searchCP(searchTerm = "usersn");
+
+		User.viewNoUsersFoundCP();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.deleteCP(userFirstName = "userfn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		Click(locator1 = "Dropdown#FILTER_AND_ORDER");
+
+		MenuItem.click(menuItem = "Inactive");
+
+		User.searchCP(searchTerm = "usersn");
+
+		User.viewNoUsersFoundCP();
+	}
+
+	@description = "This is a use case for LPS-121271."
+	@priority = "3"
+	test EditAlertsandAnnouncementsDelivery {
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		User.editUserAlertsAndAnnouncementsDeliveryCP(
+			checkbox = "Enable",
+			deliveryOptions = "General,Test");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		UserNavigator.gotoAlertsAndAnnouncementsDelivery();
+
+		AssertChecked(
+			key_tableEntry = "General",
+			locator1 = "LexiconTable#TABLE_ENTRY_CHECKBOX");
+
+		AssertChecked(
+			key_tableEntry = "Test",
+			locator1 = "LexiconTable#TABLE_ENTRY_CHECKBOX");
+
+		AssertNotChecked(
+			key_tableEntry = "News",
+			locator1 = "LexiconTable#TABLE_ENTRY_CHECKBOX");
+	}
+
+	@priority = "4"
+	test EditUserAdditionalEmailAddresses {
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		UserNavigator.gotoContact();
+
+		Navigator.gotoNavNested(navNested = "Contact Information");
+
+		User.addContactInformation(
+			address = "additional1@liferay.com",
+			contactType = "add-email-address-link");
+
+		User.viewContactInformation(
+			address = "additional1@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "additional1@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.addContactInformation(
+			address = "additional2@liferay.com",
+			contactType = "add-email-address-link",
+			makePrimary = "true");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "additional2@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.addContactInformation(
+			address = "additional3@liferay.com",
+			contactType = "add-email-address-link");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "additional1@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "additional2@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "additional3@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		UserNavigator.gotoEdit(rowEntry = "additional2@liferay.com");
+
+		User.editPrimary(makePrimary = "false");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "additional2@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "additional3@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.makePrimary(rowEntry = "additional2@liferay.com");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "additional1@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "additional2@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "additional3@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.removeContactInformation(rowEntry = "additional3@liferay.com");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "additional2@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+
+		User.removeContactInformation(rowEntry = "additional2@liferay.com");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "additional1@liferay.com",
+			searchContainerType = "emailAddressesSearchContainer");
+	}
+
+	@priority = "4"
+	test EditUserAddresses {
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		UserNavigator.gotoContact();
+
+		User.addContactInformation(
+			city = "Diamond Bar",
+			contactType = "add-address-link",
+			country = "United States",
+			postalCode = "91765",
+			region = "California",
+			street1 = "1400 Montefino Ave");
+
+		User.viewAddress(
+			city = "Diamond Bar",
+			country = "United States",
+			postalCode = "91765",
+			region = "California",
+			street1 = "1400 Montefino Ave");
+
+		User.viewIsPrimary(primaryValue = "1400 Montefino Ave");
+
+		User.addContactInformation(
+			city = "Chicago",
+			contactType = "add-address-link",
+			makePrimary = "true",
+			postalCode = "60606",
+			street1 = "205 West Wacker Dr");
+
+		User.viewIsPrimary(primaryValue = "205 West Wacker Dr");
+
+		User.addContactInformation(
+			city = "Raleigh",
+			contactType = "add-address-link",
+			postalCode = "27607",
+			street1 = "4000 Westchase Blvd");
+
+		User.viewNotPrimary(primaryValue = "1400 Montefino Ave");
+
+		User.viewIsPrimary(primaryValue = "205 West Wacker Dr");
+
+		User.viewNotPrimary(primaryValue = "4000 Westchase Blvd");
+
+		UserNavigator.gotoEdit(rowEntry = "205 West Wacker Dr");
+
+		User.editPrimary(makePrimary = "false");
+
+		User.viewNotPrimary(primaryValue = "205 West Wacker Dr");
+
+		User.viewIsPrimary(primaryValue = "4000 Westchase Blvd");
+
+		User.makePrimary(rowEntry = "205 West Wacker Dr");
+
+		User.viewNotPrimary(primaryValue = "1400 Montefino Ave");
+
+		User.viewIsPrimary(primaryValue = "205 West Wacker Dr");
+
+		User.viewNotPrimary(primaryValue = "4000 Westchase Blvd");
+
+		User.removeContactInformation(rowEntry = "4000 Westchase Blvd");
+
+		User.viewIsPrimary(primaryValue = "205 West Wacker Dr");
+
+		User.removeContactInformation(rowEntry = "205 West Wacker Dr");
+
+		User.viewIsPrimary(primaryValue = "1400 Montefino Ave");
+	}
+
+	@priority = "3"
+	test EditUserDisplaySettings {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editUserDisplaySettingsCP(
+			displaySettingsGreeting = "Welcome Selenium01!",
+			userScreenName = "usersn");
+	}
+
+	@priority = "4"
+	test EditUserPhoneNumbers {
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		UserNavigator.gotoContact();
+
+		Navigator.gotoNavNested(navNested = "Contact Information");
+
+		User.addContactInformation(
+			contactType = "add-phone-number-link",
+			extension = "111",
+			number = "1111111111");
+
+		User.viewContactInformation(
+			extension = "111",
+			number = "1111111111",
+			searchContainerType = "phonesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "1111111111",
+			searchContainerType = "phonesSearchContainer");
+
+		User.addContactInformation(
+			contactType = "add-phone-number-link",
+			makePrimary = "true",
+			number = "2222222222");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "2222222222",
+			searchContainerType = "phonesSearchContainer");
+
+		User.addContactInformation(
+			contactType = "add-phone-number-link",
+			number = "3333333333");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "1111111111",
+			searchContainerType = "phonesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "2222222222",
+			searchContainerType = "phonesSearchContainer");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "3333333333",
+			searchContainerType = "phonesSearchContainer");
+
+		UserNavigator.gotoEdit(rowEntry = "2222222222");
+
+		User.editPrimary(makePrimary = "false");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "2222222222",
+			searchContainerType = "phonesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "3333333333",
+			searchContainerType = "phonesSearchContainer");
+
+		User.makePrimary(rowEntry = "2222222222");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "1111111111",
+			searchContainerType = "phonesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "2222222222",
+			searchContainerType = "phonesSearchContainer");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "3333333333",
+			searchContainerType = "phonesSearchContainer");
+
+		User.removeContactInformation(rowEntry = "3333333333");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "2222222222",
+			searchContainerType = "phonesSearchContainer");
+
+		User.removeContactInformation(rowEntry = "2222222222");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "1111111111",
+			searchContainerType = "phonesSearchContainer");
+	}
+
+	@priority = "5"
+	test EditUserSite {
+		property app.server.types = "jboss,tcserver,tomcat,weblogic,websphere,wildfly";
+		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver,sybase";
+		property environment.acceptance = "true";
+		property portal.acceptance = "true";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Sites",
+			panel = "Control Panel",
+			portlet = "Sites");
+
+		Site.addBlankCP(siteName = "Site Name");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editUserSiteCP(
+			siteName = "Site Name",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.gotoEditCP(userScreenName = "usersn");
+
+		User.viewUserInfomationSitesCP(siteName = "Site Name");
+	}
+
+	@priority = "4"
+	test EditUserWebsites {
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		UserNavigator.gotoContact();
+
+		Navigator.gotoNavNested(navNested = "Contact Information");
+
+		User.addContactInformation(
+			contactType = "add-website-link",
+			url = "http://www.liferay1.com");
+
+		User.viewContactInformation(
+			searchContainerType = "websitesSearchContainer",
+			url = "http://www.liferay1.com");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "http://www.liferay1.com",
+			searchContainerType = "websitesSearchContainer");
+
+		User.addContactInformation(
+			contactType = "add-website-link",
+			makePrimary = "true",
+			url = "http://www.liferay2.com");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "http://www.liferay2.com",
+			searchContainerType = "websitesSearchContainer");
+
+		User.addContactInformation(
+			contactType = "add-website-link",
+			url = "http://www.liferay3.com");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "http://www.liferay1.com",
+			searchContainerType = "websitesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "http://www.liferay2.com",
+			searchContainerType = "websitesSearchContainer");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "http://www.liferay3.com",
+			searchContainerType = "websitesSearchContainer");
+
+		UserNavigator.gotoEdit(rowEntry = "http://www.liferay2.com");
+
+		User.editPrimary(makePrimary = "false");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "http://www.liferay2.com",
+			searchContainerType = "websitesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "http://www.liferay3.com",
+			searchContainerType = "websitesSearchContainer");
+
+		User.makePrimary(rowEntry = "http://www.liferay2.com");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "http://www.liferay1.com",
+			searchContainerType = "websitesSearchContainer");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "http://www.liferay2.com",
+			searchContainerType = "websitesSearchContainer");
+
+		User.viewNotPrimary(
+			contactInfoPrimaryValue = "http://www.liferay3.com",
+			searchContainerType = "websitesSearchContainer");
+
+		User.removeContactInformation(rowEntry = "http://www.liferay3.com");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "http://www.liferay2.com",
+			searchContainerType = "websitesSearchContainer");
+
+		User.removeContactInformation(rowEntry = "http://www.liferay2.com");
+
+		User.viewIsPrimary(
+			contactInfoPrimaryValue = "http://www.liferay1.com",
+			searchContainerType = "websitesSearchContainer");
+	}
+
+	@priority = "4"
+	test ErrorAddUserScreenNameNumberSiteId {
+		property custom.properties = "users.screen.name.allow.numeric=false";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Sites",
+			panel = "Control Panel",
+			portlet = "Sites");
+
+		Site.addBlankCP(siteName = "Site Name");
+
+		ProductMenu.gotoPortlet(
+			category = "Configuration",
+			portlet = "Site Settings");
+
+		var siteID = "siteID";
+
+		Copy(
+			locator1 = "SitesEditSite#SITE_ID",
+			value1 = "siteID");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addScreenNameNumberSiteIdCP(
+			siteID = "${siteID}",
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "${SiteID}");
+	}
+
+	@priority = "4"
+	test ImpersonatingAdministratorandOwner {
+		property test.name.skip.portal.instance = "UsersandorganizationsUsecase#ImpersonatingAdministratorandOwner";
+
+		var siteName = TestCase.getSiteName(siteName = "${siteName}");
+
+		JSONRole.addRegularRole(roleTitle = "Impersonating Role Name");
+
+		Permissions.definePermissionViaJSONAPI(
+			resourceAction = "VIEW_CONTROL_PANEL",
+			resourceName = "90",
+			roleTitle = "Impersonating Role Name");
+
+		Permissions.definePermissionViaJSONAPI(
+			resourceAction = "ACCESS_IN_CONTROL_PANEL",
+			resourceName = "com_liferay_users_admin_web_portlet_UsersAdminPortlet",
+			roleTitle = "Impersonating Role Name");
+
+		Permissions.definePermissionViaJSONAPI(
+			resourceAction = "VIEW",
+			resourceName = "com_liferay_users_admin_web_portlet_UsersAdminPortlet",
+			roleTitle = "Impersonating Role Name");
+
+		Permissions.definePermissionViaJSONAPI(
+			resourceAction = "VIEW",
+			resourceName = "com.liferay.portal.kernel.model.User",
+			roleTitle = "Impersonating Role Name");
+
+		Permissions.definePermissionViaJSONAPI(
+			resourceAction = "IMPERSONATE",
+			resourceName = "com.liferay.portal.kernel.model.User",
+			roleTitle = "Impersonating Role Name");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea1@liferay.com",
+			userFirstName = "userfn1",
+			userLastName = "userln1",
+			userScreenName = "usersn1");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea2@liferay.com",
+			userFirstName = "userfn2",
+			userLastName = "userln2",
+			userScreenName = "usersn2");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea3@liferay.com",
+			userFirstName = "userfn3",
+			userLastName = "userln3",
+			userScreenName = "usersn3");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "userea1@liferay.com",
+			userScreenName = "usersn1");
+
+		JSONRole.assignRoleToUser(
+			roleTitle = "Impersonating Role Name",
+			userEmailAddress = "userea1@liferay.com");
+
+		JSONRole.assignRoleToUser(
+			roleTitle = "Administrator",
+			userEmailAddress = "userea3@liferay.com");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "userea2@liferay.com",
+			userScreenName = "usersn2");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "userea3@liferay.com",
+			userScreenName = "usersn3");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea1@liferay.com",
+			userLoginFullName = "userfn1 userln1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.impersonateCP(
+			siteName = "${siteName}",
+			userScreenName = "usersn2");
+
+		Close.closeWindow(locator1 = "title=Welcome - ${siteName}");
+
+		SelectWindow(locator1 = "title=Users and Organizations - ${siteName}");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.attemptImpersonateCP(
+			notAdmin = "true",
+			siteName = "${siteName}",
+			userScreenName = "usersn3");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.attemptImpersonateCP(
+			notAdmin = "true",
+			siteName = "${siteName}",
+			userScreenName = "test");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "Test Test");
+
+		JSONRole.assignRoleToUser(
+			roleTitle = "Administrator",
+			userEmailAddress = "userea1@liferay.com");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea1@liferay.com",
+			userLoginFullName = "userfn1 userln1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.impersonateCP(
+			siteName = "${siteName}",
+			userScreenName = "usersn2");
+
+		Close.closeWindow(locator1 = "title=Welcome - ${siteName}");
+
+		SelectWindow(locator1 = "title=Users and Organizations - ${siteName}");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.impersonateCP(
+			siteName = "${siteName}",
+			userScreenName = "usersn3");
+
+		Close.closeWindow(locator1 = "title=Welcome - ${siteName}");
+
+		SelectWindow(locator1 = "title=Users and Organizations - ${siteName}");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.impersonateCP(
+			siteName = "${siteName}",
+			userScreenName = "test");
+
+		Close.closeWindow(locator1 = "title=Welcome - ${siteName}");
+
+		SelectWindow(locator1 = "title=Users and Organizations - ${siteName}");
+	}
+
+	@priority = "4"
+	test LoginUser {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "userea@liferay.com",
+			userScreenName = "usersn");
+
+		User.logoutPG();
+
+		User.loginUserPG(userEmailAddress = "userea@liferay.com");
+
+		User.logoutUserPG();
+
+		User.loginPG(
+			password = "test",
+			userEmailAddress = "test@liferay.com");
+	}
+
+	@description = "This is a use case for LPS-121270."
+	@priority = "4"
+	test LoginUserWithProfileSite {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
+		SiteTemplates.addCP(siteTemplateName = "New Site Template");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "userea@liferay.com");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addPersonalSiteCP(
+			personalSite = "Public",
+			siteTemplateName = "New Site Template",
+			userScreenName = "usersn");
+
+		User.logoutPG();
+
+		User.loginPG(
+			password = "test",
+			userEmailAddress = "userea@liferay.com");
+
+		AssertConsoleTextNotPresent(value1 = "DuplicateFriendlyURLEntryException");
+	}
+
+	@priority = "4"
+	test LogoutUserViaURL {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
+		var portalURL = PropsUtil.get("portal.url");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "userea@liferay.com");
+
+		User.logoutPG();
+
+		User.loginPG(
+			password = "test",
+			userEmailAddress = "userea@liferay.com");
+
+		Navigator.openSpecificURL(url = "${portalURL}/c/portal/logout");
+
+		User.viewLoggedOutPG();
+	}
+
+	@priority = "4"
+	test SearchUser {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.basicSearchCP(
+			userBasicSearch = "Basic",
+			userEmailAddress = "userea@liferay.com",
+			userName = "userfn userln",
+			userScreenName = "usersn");
+
+		Search.clearSearchResult();
+	}
+
+	@priority = "4"
+	test SearchUserFullName {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.basicSearchCP(
+			userBasicSearch = "Full Name",
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userName = "userfn userln",
+			userScreenName = "usersn");
+	}
+
+	@priority = "4"
+	test SearchUserQuotes {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea1@liferay.com",
+			userFirstName = "userfn1",
+			userLastName = "userln1",
+			userScreenName = "usersn1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea2@liferay.com",
+			userFirstName = "userfn2",
+			userLastName = "userln2",
+			userScreenName = "usersn2");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		var key_userScreenName = "usersn1";
+
+		AssertTextEquals(
+			locator1 = "UsersAndOrganizations#USER_TABLE_NAME",
+			value1 = "userfn1 userln1");
+
+		AssertTextEquals(
+			locator1 = "UsersAndOrganizations#USER_TABLE_SCREEN_NAME",
+			value1 = "usersn1");
+
+		var key_userScreenName = "usersn2";
+
+		AssertTextEquals(
+			locator1 = "UsersAndOrganizations#USER_TABLE_NAME",
+			value1 = "userfn2 userln2");
+
+		AssertTextEquals(
+			locator1 = "UsersAndOrganizations#USER_TABLE_SCREEN_NAME",
+			value1 = "usersn2");
+
+		User.basicSearchCP(
+			userBasicSearch = "Quotes",
+			userEmailAddress = "userea1@liferay.com",
+			userName = "userfn1 userln1",
+			userScreenName = "usersn1");
+
+		var key_userScreenName = "usersn2";
+
+		AssertElementNotPresent(locator1 = "UsersAndOrganizations#USER_TABLE_NAME");
+
+		AssertElementNotPresent(locator1 = "UsersAndOrganizations#USER_TABLE_SCREEN_NAME");
+	}
+
+	@description = "This is a use case for LPS-104643."
+	@priority = "3"
+	test UpdateExistUserEmailAddressByScript {
+		property test.name.skip.portal.instance = "UsersandorganizationsUsecase#UpdateExistUserEmailAddressByScript";
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ServerAdministration.openServerAdmin();
+
+		var script = TestCase.getFileContent(fileName = "updateUser.groovy");
+
+		ServerAdministration.executeScript(
+			language = "Groovy",
+			script = "${script}");
+
+		var companyId = JSONCompany.getCompanyId();
+		var userId = JSONUserSetter.setUserId(userEmailAddress = "test@liferay.com");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "ServerAdministrationScript#OUTPUT_FIELD",
+			value1 = "exception.UserEmailAddressException$MustNotBeDuplicate: User ${userId} cannot be created or updated because a user with company ${companyId} and email address userea@liferay.com is already in use");
+	}
+
+	@description = "This is a use case for LPS-120825."
+	@priority = "4"
+	test UpdateUserInformation {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "test");
+
+		User.editUserInformation(
+			userEmailAddressEdit = "testadmin@liferay.com",
+			userScreenNameEdit = "testscreen");
+
+		User.viewUserInfomation(
+			userEmailAddress = "testadmin@liferay.com",
+			userFirstName = "Test",
+			userLastName = "Test",
+			userScreenName = "testscreen");
+	}
+
+	@priority = "4"
+	test ValidateRegExPasswordPolicyCP {
+		JSONUser.addUser(
+			userEmailAddress = "test1@liferay.com",
+			userFirstName = "test1",
+			userLastName = "test1",
+			userScreenName = "test1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Security",
+			panel = "Control Panel",
+			portlet = "Password Policies");
+
+		PasswordPolicies.enableSyntaxChecking(
+			allowDictionaryWords = "false",
+			passwordPolicyName = "Default Password Policy");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Security",
+			panel = "Control Panel",
+			portlet = "Password Policies");
+
+		PasswordPolicies.editSyntaxChecking(
+			minimumAlphaNumeric = "0",
+			minimumLength = "0",
+			minimumLowerCase = "0",
+			minimumNumbers = "0",
+			minimumSymbols = "0",
+			minimumUpperCase = "0",
+			passwordPolicyName = "Default Password Policy",
+			regularExpression = "(?=.{4})(?:[a-zA-Z]*)");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordInvalidCP(
+			newPassword = "NO1else",
+			regex = "(?=.{4})(?:[a-zA-Z]*)",
+			userEmailAddress = "test1@liferay.com",
+			userScreenName = "test1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			newPassword = "tryingHARD",
+			resetPassword = "tryingHARDER",
+			syntaxCheckingEnabled = "true",
+			userEmailAddress = "test1@liferay.com",
+			userScreenName = "test1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Security",
+			panel = "Control Panel",
+			portlet = "Password Policies");
+
+		PasswordPolicies.editSyntaxChecking(
+			passwordPolicyName = "Default Password Policy",
+			regularExpression = "(?=.{6})(?:[a-zA-Z0-9]*)");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			newPassword = "abcABC",
+			resetPassword = "abcdABCD",
+			syntaxCheckingEnabled = "true",
+			userEmailAddress = "test1@liferay.com",
+			userScreenName = "test1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			newPassword = "123ABC",
+			resetPassword = "1234ABCD",
+			syntaxCheckingEnabled = "true",
+			userEmailAddress = "test1@liferay.com",
+			userScreenName = "test1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordInvalidCP(
+			newPassword = "1-2-3ABC",
+			regex = "(?=.{6})(?:[a-zA-Z0-9]*)",
+			userEmailAddress = "test1@liferay.com",
+			userScreenName = "test1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Security",
+			panel = "Control Panel",
+			portlet = "Password Policies");
+
+		PasswordPolicies.editSyntaxChecking(
+			minimumNumbers = "2",
+			passwordPolicyName = "Default Password Policy");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordInvalidCP(
+			minimumNumbers = "2",
+			newPassword = "abcABC",
+			userEmailAddress = "test1@liferay.com",
+			userScreenName = "test1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordInvalidCP(
+			newPassword = "12AB",
+			regex = "(?=.{6})(?:[a-zA-Z0-9]*)",
+			userEmailAddress = "test1@liferay.com",
+			userScreenName = "test1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			newPassword = "12ABcd",
+			resetPassword = "123ABcd",
+			syntaxCheckingEnabled = "true",
+			userEmailAddress = "test1@liferay.com",
+			userScreenName = "test1");
+	}
+
+	@description = "This is a use case for LPS-111656"
+	@priority = "3"
+	test ViewCategoryAssociatedToUser {
+		JSONCategory.addVocabulary(
+			groupName = "Global",
+			title = "Vocabulary Name 1");
+
+		JSONCategory.addCategory(
+			groupName = "Global",
+			title = "Category Name 1",
+			vocabularyName = "Vocabulary Name 1");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editCategorizationCP(
+			categoryName = "Category Name 1",
+			userScreenName = "usersn",
+			vocabularyName = "Vocabulary Name 1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		UserNavigator.gotoMemberships();
+
+		PortletEntry.save();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		AssetCategorization.viewCategory(categoryName = "Category Name 1");
+
+		AssetCategorization.viewVocabulary(vocabularyName = "Vocabulary Name 1");
+	}
+
+	@description = "This is a use case for LPS-85534"
+	@priority = "4"
+	test ViewEmailWithPasswordSetupLinkSendToNewUser {
+		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property test.smtp.server.enabled = "true";
+
+		var portalURL = PropsUtil.get("portal.url");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Email",
+			configurationName = "Email Sender",
+			configurationScope = "Virtual Instance Scope");
+
+		PortalSettings.configureEmailSender(
+			emailAddress = "test@liferay.com",
+			emailSenderName = "Joe Bloggs");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		MockMock.viewMail(
+			asset = "${portalURL}: Your New Account",
+			content = "Your can setup your password here: ${portalURL}/c/portal/update_password?",
+			recipient = "userfn userln",
+			sender = "Joe Bloggs",
+			subject = "${portalURL}: Your New Account");
+	}
+
+	@priority = "4"
+	test ViewInvalidLoginForDeactivatedUserViaActionsMenu {
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "userea@liferay.com",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.deactivateCP(
+			deactivateType = "Actions",
+			userFirstName = "userfn");
+
+		User.logoutPG();
+
+		User.loginUserInvalidPG(
+			password = "test",
+			userEmailAddress = "userea@liferay.com");
+
+		User.loginUserPG();
+	}
+
+	@priority = "5"
+	test ViewLoginForActivatedUser {
+		property portal.acceptance = "true";
+		property testray.component.names = "Training";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.editPasswordCP(
+			userEmailAddress = "userea@liferay.com",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.deactivateCP(
+			deactivateType = "Actions",
+			userFirstName = "userfn");
+
+		User.activateCP(
+			userName = "userfn userln",
+			userScreenName = "usersn");
+
+		User.logoutPG();
+
+		User.loginUserPG(
+			password = "test",
+			userEmailAddress = "userea@liferay.com");
+
+		UserBar.gotoDropdown();
+
+		UserBar.viewFullName(userName = "userfn userln");
+
+		User.logoutPG();
+
+		User.loginUserPG();
+	}
+
+	@priority = "4"
+	test ViewLoginForDeactivatedUserViaDeactivateButton {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
+		var portalURL = PropsUtil.get("portal.url");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "userea@liferay.com");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.deactivateCP(userFirstName = "userfn");
+
+		User.logoutPG();
+
+		User.loginUserInvalidPG(
+			password = "test",
+			userEmailAddress = "userea@liferay.com");
+
+		User.loginPG(
+			password = "test",
+			userEmailAddress = "test@liferay.com");
+	}
+
+	@priority = "3"
+	test ViewPageRenderedProperlyAfterBeYourselfAgain {
+		var siteName = TestCase.getSiteName(siteName = "${siteName}");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.impersonateCP(
+			siteName = "${siteName}",
+			userScreenName = "usersn");
+
+		AssertClick(
+			key_dropdownItem = "My Profile",
+			locator1 = "UserBar#USER_AVATAR_DROPDOWN_ITEM",
+			value1 = "My Profile");
+
+		SearchPortlets.viewUserResultDetails(
+			pageName = "My Profile",
+			userName = "userfn userln");
+
+		UserBar.gotoDropdownItem(dropdownItem = "Be yourself again.");
+
+		SearchPortlets.viewUserResultDetails(
+			pageName = "My Profile",
+			userName = "Test Test");
+	}
+
+	@priority = "4"
+	test ViewUpdateUserViaJSONWS {
+		property test.name.skip.portal.instance = "CPUsersandorganizations#ViewUpdateUserViaJSONWS";
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Search");
+
+		SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		var userId = JSONUserSetter.setUserId(userEmailAddress = "test@liferay.com");
+
+		Api.apiJsonwsUserView();
+
+		Api.editJsonwsUserView(
+			userBirthdayDay = "24",
+			userBirthdayMonth = "10",
+			userBirthdayYear = "1984",
+			userEmailAddress = "test1@liferay.com",
+			userFacebookId = "0",
+			userFirstName = "test1",
+			userId = "${userId}",
+			userLastName = "test1",
+			userPrefixId = "0",
+			userRoleTitles = "Administrator,Power User",
+			userScreenName = "test1",
+			userSuffixId = "0");
+
+		Navigator.openURL();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.viewCP(
+			userBirthday = "11/24/1984",
+			userEmailAddress = "test1@liferay.com",
+			userFirstName = "test1",
+			userID = "${userId}",
+			userLastName = "test1",
+			userScreenName = "test1");
+	}
+
+	@priority = "4"
+	test ViewUserFormPersistence {
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		UserNavigator.gotoContact();
+
+		Navigator.gotoNavNested(navNested = "Contact Information");
+
+		User.addContactInformation(
+			contactType = "add-phone-number-link",
+			extension = "111",
+			number = "1111111111");
+
+		User.addContactInformation(skype = "skype12345");
+
+		User.viewContactInformation(
+			number = "1111111111",
+			searchContainerType = "phonesSearchContainer");
+
+		User.viewContactInformation(skype = "skype12345");
+
+		User.removeContactInformation(rowEntry = "1111111111");
+
+		User.viewContactInformation(skype = "skype12345");
+	}
+
+}

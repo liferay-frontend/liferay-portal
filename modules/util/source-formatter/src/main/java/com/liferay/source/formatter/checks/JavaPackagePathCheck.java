@@ -321,8 +321,11 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 			String[] array = StringUtil.split(
 				expectedPackagePathDataEntry, CharPool.COLON);
 
+			String expectedPackagePath = array[1];
+
 			if ((array.length == 2) && className.matches(array[0]) &&
-				!packageName.endsWith("." + array[1])) {
+				!packageName.endsWith("." + expectedPackagePath) &&
+				!packageName.contains("." + expectedPackagePath + ".")) {
 
 				addMessage(
 					fileName,

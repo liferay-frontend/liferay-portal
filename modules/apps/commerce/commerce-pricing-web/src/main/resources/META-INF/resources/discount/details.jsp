@@ -44,7 +44,7 @@ if (usePercentage) {
 boolean hasPermission = commerceDiscountDisplayContext.hasPermission(ActionKeys.UPDATE);
 %>
 
-<portlet:actionURL name="editCommerceDiscount" var="editCommerceDiscountActionURL" />
+<portlet:actionURL name="/commerce_discount/edit_commerce_discount" var="editCommerceDiscountActionURL" />
 
 <aui:form action="<%= editCommerceDiscountActionURL %>" cssClass="pt-4" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceDiscount == null) ? Constants.ADD : Constants.UPDATE %>" />

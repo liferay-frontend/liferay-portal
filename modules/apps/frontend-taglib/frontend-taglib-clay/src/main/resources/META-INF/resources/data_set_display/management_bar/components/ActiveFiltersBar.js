@@ -14,29 +14,29 @@
 
 import ClayButton from '@clayui/button';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useContext} from 'react';
 
-import {useAppState} from './Context';
 import FilterResume from './FilterResume';
+import FiltersContext from './filters/FiltersContext';
 
 function ActiveFiltersBar({disabled}) {
-	const {actions, state} = useAppState();
+	const filtersState = useContext(FiltersContext);
 
-	const filtersActive = state.filters.reduce(
+	const activeFilters = filtersState.filters.reduce(
 		(acc, filter) =>
 			filter.value && !filter.invisible ? acc.concat(filter.id) : acc,
 		[]
 	);
 
-	return filtersActive.length ? (
+	return activeFilters.length ? (
 		<div className="management-bar management-bar-light navbar navbar-expand-md">
 			<div className="container-fluid container-fluid-max-xl">
 				<nav className="mb-0 py-3 subnav-tbar subnav-tbar-light subnav-tbar-primary w-100">
 					<ul className="tbar-nav">
 						<li className="p-0 tbar-item tbar-item-expand">
 							<div className="tbar-section">
-								{filtersActive.map((id) => {
-									const filter = state.filters.reduce(
+								{activeFilters.map((id) => {
+									const filter = filtersState.filters.reduce(
 										(found, filter) =>
 											found ||
 											(filter.id === id ? filter : null),
@@ -54,6 +54,9 @@ function ActiveFiltersBar({disabled}) {
 											disabled={disabled}
 											key={filter.id}
 											{...filter}
+											updateFilterState={
+												filtersState.updateFilterState
+											}
 										/>
 									);
 								})}
@@ -64,7 +67,7 @@ function ActiveFiltersBar({disabled}) {
 								<ClayButton
 									disabled={disabled}
 									displayType="unstyled"
-									onClick={actions.resetFiltersValue}
+									onClick={filtersState.resetFiltersValue}
 								>
 									{Liferay.Language.get('reset-filters')}
 								</ClayButton>

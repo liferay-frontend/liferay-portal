@@ -34,13 +34,13 @@ definition {
 
 	@priority = "4"
 	test AddOrganizationRegRole {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
 		Permissions.setUpRegRoleLoginUserCP(
 			roleTitle = "Regrole Name",
 			userEmailAddress = "userea@liferay.com",
 			userFirstName = "userfn",
 			userLastName = "userln",
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test",
 			userScreenName = "usersn");
 
 		Permissions.definePermissionViaJSONAPI(
@@ -111,18 +111,24 @@ definition {
 			panel = "Control Panel",
 			portlet = "Users and Organizations");
 
+		UsersAndOrganizationsNavigator.gotoOrganizations();
+
 		AssertElementNotPresent(locator1 = "UsersAndOrganizations#ADD");
+
+		AssertTextEquals(
+			locator1 = "Message#INFO",
+			value1 = "Info:You do not belong to an organization and are not allowed to view other organizations.");
 	}
 
 	@priority = "4"
 	test AddUserRegRole {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
 		Permissions.setUpRegRoleLoginUserCP(
 			roleTitle = "Regrole Name",
 			userEmailAddress = "userea@liferay.com",
 			userFirstName = "userfn",
 			userLastName = "userln",
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test",
 			userScreenName = "usersn");
 
 		Permissions.definePermissionViaJSONAPI(
@@ -162,6 +168,19 @@ definition {
 			userLoginFullName = "userfn userln");
 
 		JSONUser.addUser(
+			creatorEmailAddress = "userea@liferay.com",
+			creatorPassword = "test",
+			userEmailAddress = "userea1@liferay.com",
+			userFirstName = "userfn1",
+			userLastName = "userln1",
+			userScreenName = "usersn1");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.viewCP(
 			userEmailAddress = "userea1@liferay.com",
 			userFirstName = "userfn1",
 			userLastName = "userln1",
@@ -180,6 +199,8 @@ definition {
 			category = "Users",
 			panel = "Control Panel",
 			portlet = "Users and Organizations");
+
+		AssertElementNotPresent(locator1 = "UsersAndOrganizations#ADD");
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 

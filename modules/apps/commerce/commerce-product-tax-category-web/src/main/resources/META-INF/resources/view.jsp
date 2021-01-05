@@ -70,7 +70,7 @@ CPTaxCategoryDisplayContext cpTaxCategoryDisplayContext = (CPTaxCategoryDisplayC
 		</liferay-frontend:management-bar-action-buttons>
 	</liferay-frontend:management-bar>
 
-	<div class="container-fluid-1280">
+	<div class="container-fluid container-fluid-max-xl">
 		<portlet:actionURL name="editCPTaxCategory" var="editCPTaxCategoryActionURL" />
 
 		<aui:form action="<%= editCPTaxCategoryActionURL %>" method="post" name="fm">
@@ -97,20 +97,20 @@ CPTaxCategoryDisplayContext cpTaxCategoryDisplayContext = (CPTaxCategoryDisplayC
 					%>
 
 					<liferay-ui:search-container-column-text
-						cssClass="important table-cell-content"
+						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						name="name"
 						value="<%= HtmlUtil.escape(cpTaxCategory.getName(languageId)) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="description"
 						value="<%= HtmlUtil.escape(cpTaxCategory.getDescription(languageId)) %>"
 					/>
 
 					<liferay-ui:search-container-column-date
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="create-date"
 						property="createDate"
 					/>

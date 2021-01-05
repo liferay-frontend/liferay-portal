@@ -38,7 +38,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "process-details"));
 </clay:container-fluid>
 
 <aui:script use="liferay-export-import-export-import">
-	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="exportImport" var="exportImportProcessURL">
+	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/export_import/export_import" var="exportImportProcessURL">
 		<portlet:param name="<%= Constants.CMD %>" value="export_import" />
 		<portlet:param name="backgroundTaskId" value="<%= String.valueOf(backgroundTaskId) %>" />
 	</liferay-portlet:resourceURL>

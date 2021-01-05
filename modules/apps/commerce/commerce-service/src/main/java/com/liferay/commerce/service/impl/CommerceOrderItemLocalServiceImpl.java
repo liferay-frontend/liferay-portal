@@ -32,7 +32,7 @@ import com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
 import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
-import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeConstants;
+import com.liferay.commerce.inventory.type.constants.CommerceInventoryAuditTypeConstants;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.order.CommerceOrderValidatorRegistry;
@@ -91,7 +91,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1155,12 +1154,9 @@ public class CommerceOrderItemLocalServiceImpl
 		expandoRowLocalService.deleteRows(
 			commerceOrderItem.getCommerceOrderItemId());
 
-		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
-
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
-		updateWorkflow(commerceOrder, serviceContext);
+		updateWorkflow(
+			commerceOrderItem.getCommerceOrder(),
+			ServiceContextThreadLocal.getServiceContext());
 
 		return commerceOrderItem;
 	}
@@ -1481,20 +1477,21 @@ public class CommerceOrderItemLocalServiceImpl
 					fetchCommerceInventoryBookedQuantity(bookedQuantityId);
 
 			if (commerceInventoryBookedQuantity != null) {
-				Map<String, String> context = HashMapBuilder.put(
-					CommerceInventoryAuditTypeConstants.ORDER_ID,
-					String.valueOf(commerceOrderItem.getCommerceOrderId())
-				).put(
-					CommerceInventoryAuditTypeConstants.ORDER_ITEM_ID,
-					String.valueOf(commerceOrderItem.getCommerceOrderItemId())
-				).build();
-
 				_commerceInventoryBookedQuantityLocalService.
 					updateCommerceInventoryBookedQuantity(
 						userId,
 						commerceInventoryBookedQuantity.
 							getCommerceInventoryBookedQuantityId(),
-						quantity, context,
+						quantity,
+						HashMapBuilder.put(
+							CommerceInventoryAuditTypeConstants.ORDER_ID,
+							String.valueOf(
+								commerceOrderItem.getCommerceOrderId())
+						).put(
+							CommerceInventoryAuditTypeConstants.ORDER_ITEM_ID,
+							String.valueOf(
+								commerceOrderItem.getCommerceOrderItemId())
+						).build(),
 						commerceInventoryBookedQuantity.getMvccVersion());
 			}
 		}

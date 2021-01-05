@@ -61,6 +61,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class PunchOut2GoReturnServiceImpl implements PunchOutReturnService {
 
+	@Override
 	public String returnToPunchOutVendor(
 			CommerceOrder commerceOrder, String url)
 		throws Exception {

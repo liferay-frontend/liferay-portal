@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + CurrencyConverterPortletKeys.CURRENCY_CONVERTER,
-		"mvc.command.name=/currenty_converter/edit_preferences"
+		"mvc.command.name=/currency_converter/edit_preferences"
 	},
 	service = MVCActionCommand.class
 )

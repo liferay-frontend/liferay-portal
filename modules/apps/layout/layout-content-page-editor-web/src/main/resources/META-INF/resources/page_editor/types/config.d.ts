@@ -15,6 +15,7 @@
 import {LayoutTypes} from './LayoutTypes';
 
 export interface Config {
+	adaptiveMediaEnabled: boolean;
 	addFragmentCompositionURL: string;
 	addFragmentEntryLinkCommentURL: string;
 	addFragmentEntryLinkURL: string;
@@ -22,6 +23,8 @@ export interface Config {
 	addItemURL: string;
 	addPortletURL: string;
 	addSegmentsExperienceURL: string;
+
+	assetCategoryTreeNodeItemSelectorURL: string;
 
 	autoExtendSessionEnabled: boolean;
 

@@ -43,11 +43,13 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.search.aggregation.Aggregations;
+import com.liferay.portal.search.query.Queries;
 import com.liferay.portal.search.searcher.Searcher;
 
 import java.io.IOException;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
@@ -93,13 +95,18 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
+		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
+			_portal.getLocale(renderRequest), getClass());
+
 		ContentDashboardDataProvider contentDashboardDataProvider =
 			new ContentDashboardDataProvider(
 				_aggregations,
 				new ContentDashboardSearchContextBuilder(
 					_portal.getHttpServletRequest(renderRequest)),
 				_contentDashboardSearchRequestBuilderFactory,
-				_portal.getLocale(renderRequest), _searcher);
+				_portal.getLocale(renderRequest), _queries, resourceBundle,
+				_searcher);
+
 		LiferayPortletRequest liferayPortletRequest =
 			_portal.getLiferayPortletRequest(renderRequest);
 		LiferayPortletResponse liferayPortletResponse =
@@ -137,9 +144,7 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 						_portal.getLocale(liferayPortletRequest),
 						LanguageConstants.KEY_DIR),
 					liferayPortletRequest, liferayPortletResponse, _portal,
-					ResourceBundleUtil.getBundle(
-						_portal.getLocale(renderRequest), getClass()),
-					searchContainer);
+					resourceBundle, searchContainer);
 
 		renderRequest.setAttribute(
 			ContentDashboardWebKeys.CONTENT_DASHBOARD_ADMIN_DISPLAY_CONTEXT,
@@ -200,6 +205,9 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private Queries _queries;
 
 	@Reference
 	private Searcher _searcher;

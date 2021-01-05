@@ -15,7 +15,7 @@
 package com.liferay.commerce.address.web.internal.display.context;
 
 import com.liferay.commerce.address.web.internal.portlet.action.ActionHelper;
-import com.liferay.commerce.address.web.internal.servlet.taglib.ui.CommerceCountryScreenNavigationConstants;
+import com.liferay.commerce.address.web.internal.servlet.taglib.ui.constants.CommerceCountryScreenNavigationConstants;
 import com.liferay.commerce.model.CommerceRegion;
 import com.liferay.commerce.service.CommerceRegionService;
 import com.liferay.commerce.util.CommerceUtil;
@@ -69,7 +69,8 @@ public class CommerceRegionsDisplayContext
 	public PortletURL getPortletURL() throws PortalException {
 		PortletURL portletURL = super.getPortletURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceCountry");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_country/edit_commerce_country");
 		portletURL.setParameter(
 			"screenNavigationCategoryKey", getScreenNavigationCategoryKey());
 

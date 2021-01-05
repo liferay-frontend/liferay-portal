@@ -146,10 +146,10 @@ public class CommerceAccountGroupIndexer
 						getDocument(commerceAccountGroup));
 				}
 				catch (PortalException portalException) {
-					long commerceAccountGroupId =
-						commerceAccountGroup.getCommerceAccountGroupId();
-
 					if (_log.isWarnEnabled()) {
+						long commerceAccountGroupId =
+							commerceAccountGroup.getCommerceAccountGroupId();
+
 						_log.warn(
 							"Unable to index commerce account group " +
 								commerceAccountGroupId,

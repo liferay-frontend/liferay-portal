@@ -531,9 +531,7 @@ public class Serializer {
 
 		@Override
 		public void write(byte[] bytes, int offset, int length) {
-			byte[] buffer = _getBuffer(length);
-
-			System.arraycopy(bytes, offset, buffer, _index, length);
+			System.arraycopy(bytes, offset, _getBuffer(length), _index, length);
 
 			_index += length;
 		}

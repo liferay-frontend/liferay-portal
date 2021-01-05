@@ -21,6 +21,7 @@ List<ScopeDisplay> scopeDisplays = (List<ScopeDisplay>)request.getAttribute(UADW
 int totalReviewableUADEntitiesCount = (int)request.getAttribute(UADWebKeys.TOTAL_UAD_ENTITIES_COUNT);
 List<UADApplicationSummaryDisplay> uadApplicationSummaryDisplays = (List<UADApplicationSummaryDisplay>)request.getAttribute(UADWebKeys.UAD_APPLICATION_SUMMARY_DISPLAY_LIST);
 List<UADDisplay<?>> uadDisplays = (List<UADDisplay<?>>)request.getAttribute(UADWebKeys.APPLICATION_UAD_DISPLAYS);
+
 ViewUADEntitiesDisplay viewUADEntitiesDisplay = (ViewUADEntitiesDisplay)request.getAttribute(UADWebKeys.VIEW_UAD_ENTITIES_DISPLAY);
 
 long[] groupIds = viewUADEntitiesDisplay.getGroupIds();
@@ -226,15 +227,15 @@ renderResponse.setTitle(StringBundler.concat(selectedUser.getFullName(), " - ", 
 	<portlet:param name="scope" value="<%= scope %>" />
 </portlet:renderURL>
 
-<aui:script require="metal-dom/src/dom as dom">
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 	var baseURL = '<%= reviewUADDataURL %>';
 
 	var clickListeners = [];
 
+	var delegate = delegateModule.default;
+
 	var registerClickHandler = function (element, clickHandlerFn) {
-		clickListeners.push(
-			dom.delegate(element, 'click', 'input', clickHandlerFn)
-		);
+		clickListeners.push(delegate(element, 'click', 'input', clickHandlerFn));
 	};
 
 	registerClickHandler(<portlet:namespace />applicationPanelBody, function (
@@ -276,7 +277,7 @@ renderResponse.setTitle(StringBundler.concat(selectedUser.getFullName(), " - ", 
 
 	function handleDestroyPortlet() {
 		for (var i = 0; i < clickListeners.length; i++) {
-			clickListeners[i].removeListener();
+			clickListeners[i].dispose();
 		}
 
 		Liferay.detach('destroyPortlet', handleDestroyPortlet);

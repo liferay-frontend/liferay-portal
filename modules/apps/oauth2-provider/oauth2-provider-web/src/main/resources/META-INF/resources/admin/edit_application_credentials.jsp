@@ -25,8 +25,8 @@ String clientId = (oAuth2Application == null) ? "" : oAuth2Application.getClient
 String clientSecret = (oAuth2Application == null) ? "" : oAuth2Application.getClientSecret();
 %>
 
-<portlet:actionURL name="/oauth2_provider/update_o_auth2_application" var="updateOAuth2ApplicationURL">
-	<portlet:param name="mvcRenderCommandName" value="/oauth2_provider/update_o_auth2_application" />
+<portlet:actionURL name="/oauth2_provider/update_oauth2_application" var="updateOAuth2ApplicationURL">
+	<portlet:param name="mvcRenderCommandName" value="/oauth2_provider/update_oauth2_application" />
 	<portlet:param name="oAuth2ApplicationId" value='<%= (oAuth2Application == null) ? "" : String.valueOf(oAuth2Application.getOAuth2ApplicationId()) %>' />
 	<portlet:param name="backURL" value="<%= redirect %>" />
 </portlet:actionURL>

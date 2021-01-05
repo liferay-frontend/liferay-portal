@@ -48,7 +48,7 @@ else {
 
 <c:if test="<%= commerceOrderNotesCount > 0 %>">
 	<portlet:renderURL var="viewCommerceOrderNotesURL">
-		<portlet:param name="mvcRenderCommandName" value="viewCommerceOrderNotes" />
+		<portlet:param name="mvcRenderCommandName" value="/commerce_order_content/view_commerce_order_notes" />
 		<portlet:param name="redirect" value="<%= currentURL %>" />
 		<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 	</portlet:renderURL>

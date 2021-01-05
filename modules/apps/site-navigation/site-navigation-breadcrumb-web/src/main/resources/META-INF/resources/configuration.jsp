@@ -129,7 +129,7 @@
 
 	if (checkBoxes) {
 		checkBoxes.addEventListener('change', function (event) {
-			if (event.target.classList.contains('toggle-switch')) {
+			if (event.target.classList.contains('toggle-switch-check')) {
 				var target = event.target;
 
 				data[target.dataset.key] = target.checked;

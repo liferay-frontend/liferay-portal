@@ -355,7 +355,7 @@ public interface LiferaySelenium {
 
 	public void mouseUpAt(String locator, String coordString);
 
-	public boolean ocularImageValidation(String locator) throws Exception;
+	public void ocularAssertElementImage(String locator) throws Exception;
 
 	public void open(String url) throws Exception;
 
@@ -467,6 +467,8 @@ public interface LiferaySelenium {
 	public void stop();
 
 	public void stopLogger();
+
+	public void tripleClick(String locator);
 
 	public void type(String locator, String value) throws Exception;
 

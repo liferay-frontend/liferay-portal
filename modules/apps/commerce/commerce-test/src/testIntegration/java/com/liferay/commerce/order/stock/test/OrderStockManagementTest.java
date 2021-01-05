@@ -24,7 +24,6 @@ import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
-import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
@@ -125,9 +124,8 @@ public class OrderStockManagementTest {
 
 		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
 
-		CPDefinition cpDefinition = cpInstance.getCPDefinition();
-
-		CommerceTestUtil.updateBackOrderCPDefinitionInventory(cpDefinition);
+		CommerceTestUtil.updateBackOrderCPDefinitionInventory(
+			cpInstance.getCPDefinition());
 
 		int orderedQuantity = 4;
 

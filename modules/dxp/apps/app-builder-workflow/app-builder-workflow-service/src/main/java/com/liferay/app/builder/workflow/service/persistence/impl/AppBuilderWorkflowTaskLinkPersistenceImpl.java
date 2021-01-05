@@ -2919,16 +2919,6 @@ public class AppBuilderWorkflowTaskLinkPersistenceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		AppBuilderWorkflowTaskLinkPersistenceImpl.class);
 
-	static {
-		try {
-			Class.forName(
-				AppBuilderWorkflowPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;

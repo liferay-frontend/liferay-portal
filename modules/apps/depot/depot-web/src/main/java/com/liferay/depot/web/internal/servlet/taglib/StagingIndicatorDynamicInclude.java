@@ -217,7 +217,7 @@ public class StagingIndicatorDynamicInclude extends BaseDynamicInclude {
 			PortletRequest.RENDER_PHASE);
 
 		liferayPortletURL.setParameter(
-			"mvcRenderCommandName", "publishLayoutsSimple");
+			"mvcRenderCommandName", "/export_import/publish_layouts_simple");
 
 		String cmd = Constants.PUBLISH_TO_LIVE;
 

@@ -21,8 +21,8 @@ import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.model.CTEntryTable;
 import com.liferay.change.tracking.service.CTEntryLocalService;
+import com.liferay.change.tracking.service.CTSchemaVersionLocalService;
 import com.liferay.change.tracking.web.internal.configuration.CTConfiguration;
-import com.liferay.change.tracking.web.internal.constants.CTWebKeys;
 import com.liferay.change.tracking.web.internal.display.BasePersistenceRegistry;
 import com.liferay.change.tracking.web.internal.display.CTClosureUtil;
 import com.liferay.change.tracking.web.internal.display.CTDisplayRendererRegistry;
@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -78,7 +77,6 @@ import java.util.Queue;
 import java.util.Set;
 
 import javax.portlet.ActionRequest;
-import javax.portlet.PortletSession;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -99,6 +97,7 @@ public class ViewChangesDisplayContext {
 		CTConfiguration ctConfiguration,
 		CTDisplayRendererRegistry ctDisplayRendererRegistry,
 		CTEntryLocalService ctEntryLocalService,
+		CTSchemaVersionLocalService ctSchemaVersionLocalService,
 		GroupLocalService groupLocalService, Language language, Portal portal,
 		PublishScheduler publishScheduler, RenderRequest renderRequest,
 		RenderResponse renderResponse, UserLocalService userLocalService) {
@@ -110,6 +109,7 @@ public class ViewChangesDisplayContext {
 		_ctConfiguration = ctConfiguration;
 		_ctDisplayRendererRegistry = ctDisplayRendererRegistry;
 		_ctEntryLocalService = ctEntryLocalService;
+		_ctSchemaVersionLocalService = ctSchemaVersionLocalService;
 		_groupLocalService = groupLocalService;
 		_language = language;
 		_portal = portal;
@@ -135,13 +135,18 @@ public class ViewChangesDisplayContext {
 	}
 
 	public String getBackURL() {
-		String backURL = ParamUtil.getString(_renderRequest, "backURL");
-
-		if (Validator.isNotNull(backURL)) {
-			return backURL;
-		}
-
 		PortletURL portletURL = _renderResponse.createRenderURL();
+
+		if (_ctCollection.getStatus() == WorkflowConstants.STATUS_APPROVED) {
+			portletURL.setParameter(
+				"mvcRenderCommandName", "/change_tracking/view_history");
+		}
+		else if (_ctCollection.getStatus() ==
+					WorkflowConstants.STATUS_SCHEDULED) {
+
+			portletURL.setParameter(
+				"mvcRenderCommandName", "/change_tracking/view_scheduled");
+		}
 
 		return portletURL.toString();
 	}
@@ -290,12 +295,8 @@ public class ViewChangesDisplayContext {
 
 				discardURL.setParameter(
 					"mvcRenderCommandName", "/change_tracking/view_discard");
-
-				PortletURL redirect = PortletURLUtil.getCurrent(
-					_renderRequest, _renderResponse);
-
-				discardURL.setParameter("redirect", redirect.toString());
-
+				discardURL.setParameter(
+					"redirect", _themeDisplay.getURLCurrent());
 				discardURL.setParameter(
 					"ctCollectionId",
 					String.valueOf(_ctCollection.getCtCollectionId()));
@@ -303,19 +304,28 @@ public class ViewChangesDisplayContext {
 				return discardURL.toString();
 			}
 		).put(
+			"expired",
+			_ctCollection.getStatus() == WorkflowConstants.STATUS_EXPIRED
+		).put(
 			"models",
 			() -> {
 				JSONObject modelsJSONObject =
 					JSONFactoryUtil.createJSONObject();
 
 				for (ModelInfo modelInfo : modelInfoMap.values()) {
-					modelsJSONObject.put(
-						String.valueOf(modelInfo._modelKey),
-						modelInfo._jsonObject);
+					if (modelInfo._jsonObject != null) {
+						modelsJSONObject.put(
+							String.valueOf(modelInfo._modelKey),
+							modelInfo._jsonObject);
+					}
 				}
 
 				return modelsJSONObject;
 			}
+		).put(
+			"namespace", _renderResponse.getNamespace()
+		).put(
+			"pathParam", ParamUtil.getString(_renderRequest, "path")
 		).put(
 			"renderCTEntryURL",
 			() -> {
@@ -357,31 +367,8 @@ public class ViewChangesDisplayContext {
 				return rootDisplayClassesJSONArray;
 			}
 		).put(
-			"saveSessionStateURL",
-			() -> {
-				ResourceURL saveSessionStateURL =
-					_renderResponse.createResourceURL();
-
-				saveSessionStateURL.setResourceID(
-					"/change_tracking/save_session_state");
-
-				return saveSessionStateURL.toString();
-			}
-		).put(
-			"sessionState",
-			() -> {
-				PortletSession portletSession =
-					_renderRequest.getPortletSession();
-
-				String sessionState = (String)portletSession.getAttribute(
-					CTWebKeys.VIEW_CHANGES_SESSION_STATE);
-
-				if (sessionState == null) {
-					return null;
-				}
-
-				return JSONFactoryUtil.createJSONObject(sessionState);
-			}
+			"showHideableParam",
+			ParamUtil.getBoolean(_renderRequest, "showHideable")
 		).put(
 			"siteNames",
 			() -> {
@@ -389,6 +376,10 @@ public class ViewChangesDisplayContext {
 					JSONFactoryUtil.createJSONObject();
 
 				for (ModelInfo modelInfo : modelInfoMap.values()) {
+					if (modelInfo._jsonObject == null) {
+						continue;
+					}
+
 					long groupId = modelInfo._jsonObject.getLong("groupId");
 
 					String groupIdString = String.valueOf(groupId);
@@ -464,29 +455,17 @@ public class ViewChangesDisplayContext {
 		return StringPool.BLANK;
 	}
 
-	public String getStatusLabel(int status) {
-		if (status == WorkflowConstants.STATUS_APPROVED) {
-			return "published";
-		}
-		else if (status == WorkflowConstants.STATUS_DRAFT) {
-			return "in-progress";
-		}
-		else if (status == WorkflowConstants.STATUS_DENIED) {
-			return "failed";
-		}
-		else if (status == WorkflowConstants.STATUS_SCHEDULED) {
-			return "scheduled";
-		}
-
-		return StringPool.BLANK;
-	}
-
 	public boolean hasChanges() {
 		return _hasChanges;
 	}
 
+	public boolean isExpired(CTCollection ctCollection) {
+		return !_ctSchemaVersionLocalService.isLatestCTSchemaVersion(
+			ctCollection.getSchemaVersionId());
+	}
+
 	private JSONObject _getContextViewJSONObject(
-		CTClosure ctClosure, Map<ModelInfoKey, ModelInfo> entryMap,
+		CTClosure ctClosure, Map<ModelInfoKey, ModelInfo> modelInfoMap,
 		Set<Long> rootClassNameIds, JSONObject defaultContextViewJSONObject) {
 
 		if (ctClosure == null) {
@@ -508,6 +487,10 @@ public class ViewChangesDisplayContext {
 		ParentModel parentModel = null;
 
 		while ((parentModel = queue.poll()) != null) {
+			if (parentModel._jsonObject == null) {
+				continue;
+			}
+
 			JSONArray childrenJSONArray = JSONFactoryUtil.createJSONArray();
 
 			for (Map.Entry<Long, List<Long>> entry :
@@ -516,7 +499,7 @@ public class ViewChangesDisplayContext {
 				long modelClassNameId = entry.getKey();
 
 				for (long modelClassPK : entry.getValue()) {
-					ModelInfo modelInfo = entryMap.get(
+					ModelInfo modelInfo = modelInfoMap.get(
 						new ModelInfoKey(modelClassNameId, modelClassPK));
 
 					int modelKey = modelInfo._modelKey;
@@ -587,6 +570,10 @@ public class ViewChangesDisplayContext {
 			if (_ctCollection.getCtCollectionId() != _activeCTCollectionId) {
 				jsonArray.put(
 					JSONUtil.put(
+						"disabled",
+						_ctCollection.getStatus() ==
+							WorkflowConstants.STATUS_EXPIRED
+					).put(
 						"href",
 						PublicationsPortletURLUtil.getHref(
 							_renderResponse.createActionURL(),
@@ -726,6 +713,18 @@ public class ViewChangesDisplayContext {
 
 				T model = baseModelMap.get(classPK);
 
+				if (model == null) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							StringBundler.concat(
+								"Missing model from production: {classPK=",
+								classPK, ", modelClassNameId=",
+								modelClassNameId, "}"));
+					}
+
+					continue;
+				}
+
 				modelInfo._jsonObject = JSONUtil.put(
 					"hideable",
 					_ctDisplayRendererRegistry.isHideable(
@@ -778,6 +777,23 @@ public class ViewChangesDisplayContext {
 
 				T model = _ctDisplayRendererRegistry.fetchCTModel(
 					ctCollectionId, ctSQLMode, modelClassNameId, classPK);
+
+				if (model == null) {
+					if ((ctEntry.getChangeType() !=
+							CTConstants.CT_CHANGE_TYPE_DELETION) &&
+						_log.isWarnEnabled()) {
+
+						_log.warn(
+							StringBundler.concat(
+								"Missing model from ", _ctCollection.getName(),
+								": {ctCollectionId=",
+								_ctCollection.getCtCollectionId(), ", classPK=",
+								classPK, ", modelClassNameId=",
+								modelClassNameId, "}"));
+					}
+
+					continue;
+				}
 
 				Date modifiedDate = ctEntry.getModifiedDate();
 
@@ -884,7 +900,9 @@ public class ViewChangesDisplayContext {
 				ModelInfo modelInfo = modelInfoMap.get(
 					new ModelInfoKey(classNameId, classPK));
 
-				modelInfo._jsonObject.put("groupId", groupId);
+				if (modelInfo._jsonObject != null) {
+					modelInfo._jsonObject.put("groupId", groupId);
+				}
 
 				Map<Long, ? extends Collection<Long>> childPKsMap =
 					ctClosure.getChildPKsMap(classNameId, classPK);
@@ -906,6 +924,7 @@ public class ViewChangesDisplayContext {
 	private final CTConfiguration _ctConfiguration;
 	private final CTDisplayRendererRegistry _ctDisplayRendererRegistry;
 	private final CTEntryLocalService _ctEntryLocalService;
+	private final CTSchemaVersionLocalService _ctSchemaVersionLocalService;
 	private final GroupLocalService _groupLocalService;
 	private final boolean _hasChanges;
 	private final HttpServletRequest _httpServletRequest;

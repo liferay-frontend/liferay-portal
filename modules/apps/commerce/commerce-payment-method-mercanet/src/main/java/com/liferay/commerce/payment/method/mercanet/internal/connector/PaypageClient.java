@@ -68,8 +68,8 @@ public class PaypageClient {
 		}
 
 		_environment = environment;
-		_keyVersion = keyVersion;
 		_merchantId = merchantId;
+		_keyVersion = keyVersion;
 		_secretKey = secretKey;
 	}
 

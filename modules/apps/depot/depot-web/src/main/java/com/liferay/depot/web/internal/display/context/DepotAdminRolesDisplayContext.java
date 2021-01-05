@@ -131,9 +131,7 @@ public class DepotAdminRolesDisplayContext {
 	public List<UserGroupRole> getUserGroupRoles(int start, int end)
 		throws PortalException {
 
-		List<UserGroupRole> userGroupRoles = _getUserGroupRoles();
-
-		return ListUtil.subList(userGroupRoles, start, end);
+		return ListUtil.subList(_getUserGroupRoles(), start, end);
 	}
 
 	public int getUserGroupRolesCount() throws PortalException {

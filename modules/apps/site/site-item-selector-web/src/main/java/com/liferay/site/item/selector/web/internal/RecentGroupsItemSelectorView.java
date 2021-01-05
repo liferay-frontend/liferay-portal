@@ -91,21 +91,21 @@ public class RecentGroupsItemSelectorView
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
-		_recentGroupItemSelectorViewRender.renderHTML(
+		_recentGroupItemSelectorViewRenderer.renderHTML(
 			servletRequest, servletResponse, groupItemSelectorCriterion,
 			portletURL, itemSelectedEventName, search);
 	}
 
 	@Activate
 	protected void activate() {
-		_recentGroupItemSelectorViewRender =
+		_recentGroupItemSelectorViewRenderer =
 			new RecentGroupItemSelectorViewRenderer(
 				_groupURLProvider, _recentGroupManager, _servletContext);
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_recentGroupItemSelectorViewRender = null;
+		_recentGroupItemSelectorViewRenderer = null;
 	}
 
 	private static final List<ItemSelectorReturnType>
@@ -122,7 +122,7 @@ public class RecentGroupsItemSelectorView
 	private Portal _portal;
 
 	private RecentGroupItemSelectorViewRenderer
-		_recentGroupItemSelectorViewRender;
+		_recentGroupItemSelectorViewRenderer;
 
 	@Reference
 	private RecentGroupManager _recentGroupManager;

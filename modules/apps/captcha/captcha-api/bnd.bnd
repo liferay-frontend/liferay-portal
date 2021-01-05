@@ -5,5 +5,6 @@ Export-Package:\
 	com.liferay.captcha.configuration,\
 	com.liferay.captcha.recaptcha,\
 	com.liferay.captcha.simplecaptcha,\
+	com.liferay.captcha.simplecaptcha.gimpy,\
 	com.liferay.captcha.util
 -dsannotations-options: inherit

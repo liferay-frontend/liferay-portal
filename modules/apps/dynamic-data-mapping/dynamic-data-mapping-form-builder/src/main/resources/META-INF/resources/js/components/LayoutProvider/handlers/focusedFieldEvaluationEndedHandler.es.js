@@ -14,6 +14,7 @@
 
 import {PagesVisitor} from 'dynamic-data-mapping-form-renderer';
 
+import RulesSupport from '../../RuleBuilder/RulesSupport.es';
 import {getField} from '../util/fields.es';
 import handleFieldEdited from './fieldEditedHandler.es';
 
@@ -43,25 +44,44 @@ const handleFocusedFieldEvaluationEnded = (
 		return state;
 	}
 
-	state = {
+	const {pages} = state;
+
+	const visitor = new PagesVisitor(pages);
+
+	let newState = {
 		...state,
 		focusedField: {
 			...focusedField,
 			instanceId: instanceId || focusedField.instanceId,
 			settingsContext,
 		},
+		pages: visitor.mapFields((field) => {
+			if (field.fieldName !== fieldName.value) {
+				return field;
+			}
+
+			return {
+				...field,
+				settingsContext,
+			};
+		}),
 	};
 
-	const visitor = new PagesVisitor(settingsContext.pages);
+	const settingsContextVisitor = new PagesVisitor(settingsContext.pages);
 
-	visitor.mapFields(({fieldName, value}) => {
-		state = handleFieldEdited(props, state, {
+	settingsContextVisitor.mapFields(({fieldName, value}) => {
+		newState = handleFieldEdited(props, newState, {
 			propertyName: fieldName,
 			propertyValue: value,
 		});
 	});
 
-	return state;
+	return {
+		...newState,
+		rules: changedFieldType
+			? RulesSupport.formatRules(newState.pages, state.rules)
+			: state.rules,
+	};
 };
 
 export default handleFocusedFieldEvaluationEnded;

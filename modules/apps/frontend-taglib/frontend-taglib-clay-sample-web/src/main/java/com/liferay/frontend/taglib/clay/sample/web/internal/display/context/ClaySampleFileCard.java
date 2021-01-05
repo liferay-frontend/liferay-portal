@@ -20,16 +20,15 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuil
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
 import com.liferay.portal.kernel.security.RandomUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Julien Castelain
  */
 public class ClaySampleFileCard implements FileCard {
 
+	@Override
 	public List<DropdownItem> getActionDropdownItems() {
 		if (_actionDropdownItems != null) {
 			return _actionDropdownItems;
@@ -76,6 +75,7 @@ public class ClaySampleFileCard implements FileCard {
 		return _actionDropdownItems;
 	}
 
+	@Override
 	public String getCssClass() {
 		if (_cssClass != null) {
 			return _cssClass;
@@ -84,6 +84,7 @@ public class ClaySampleFileCard implements FileCard {
 		return "custom-file-card-css-class";
 	}
 
+	@Override
 	public String getHref() {
 		if (_href != null) {
 			return _href;
@@ -92,14 +93,16 @@ public class ClaySampleFileCard implements FileCard {
 		return "#file-card-href";
 	}
 
+	@Override
 	public String getIcon() {
 		if (_icon != null) {
 			return _icon;
 		}
 
-		return "documents-and-media";
+		return "document-default";
 	}
 
+	@Override
 	public String getId() {
 		if (_id != null) {
 			return _id;
@@ -110,6 +113,7 @@ public class ClaySampleFileCard implements FileCard {
 		return "fileCardId" + _currentIdNumber;
 	}
 
+	@Override
 	public String getInputName() {
 		if (_inputName != null) {
 			return _inputName;
@@ -118,6 +122,7 @@ public class ClaySampleFileCard implements FileCard {
 		return "file-card-input-name";
 	}
 
+	@Override
 	public String getInputValue() {
 		if (_inputValue != null) {
 			return _inputValue;
@@ -126,6 +131,7 @@ public class ClaySampleFileCard implements FileCard {
 		return "file-card-input-value";
 	}
 
+	@Override
 	public List<LabelItem> getLabels() {
 		if (_labels != null) {
 			return _labels;
@@ -149,34 +155,27 @@ public class ClaySampleFileCard implements FileCard {
 		).build();
 	}
 
-	public Map<String, String> getLabelStylesMap() {
-		if (_labelStylesMap != null) {
-			return _labelStylesMap;
-		}
-
-		_labelStylesMap = HashMapBuilder.put(
-			"Approved", "info"
-		).build();
-
-		return _labelStylesMap;
-	}
-
+	@Override
 	public String getStickerCssClass() {
 		return _stickerCssClass;
 	}
 
+	@Override
 	public String getStickerIcon() {
 		return _stickerIcon;
 	}
 
+	@Override
 	public String getStickerImageAlt() {
 		return _stickerImageAlt;
 	}
 
+	@Override
 	public String getStickerImageSrc() {
 		return _stickerImageSrc;
 	}
 
+	@Override
 	public String getStickerLabel() {
 		if (_stickerLabel != null) {
 			return _stickerLabel;
@@ -185,6 +184,7 @@ public class ClaySampleFileCard implements FileCard {
 		return "DOC";
 	}
 
+	@Override
 	public String getStickerShape() {
 		if (_stickerShape != null) {
 			return _stickerShape;
@@ -193,6 +193,7 @@ public class ClaySampleFileCard implements FileCard {
 		return "";
 	}
 
+	@Override
 	public String getStickerStyle() {
 		if (_stickerStyle != null) {
 		}
@@ -200,6 +201,7 @@ public class ClaySampleFileCard implements FileCard {
 		return "info";
 	}
 
+	@Override
 	public String getSubtitle() {
 		if (_subtitle != null) {
 			return _subtitle;
@@ -208,6 +210,7 @@ public class ClaySampleFileCard implements FileCard {
 		return "File Action";
 	}
 
+	@Override
 	public String getTitle() {
 		if (_title != null) {
 			return _title;
@@ -216,14 +219,17 @@ public class ClaySampleFileCard implements FileCard {
 		return "File Card";
 	}
 
+	@Override
 	public boolean isDisabled() {
 		return _disabled;
 	}
 
+	@Override
 	public boolean isSelectable() {
 		return _selectable;
 	}
 
+	@Override
 	public boolean isSelected() {
 		return _selected;
 	}
@@ -262,10 +268,6 @@ public class ClaySampleFileCard implements FileCard {
 
 	public void setLabels(List<LabelItem> labels) {
 		_labels = labels;
-	}
-
-	public void setLabelStylesMap(Map<String, String> labelStylesMap) {
-		_labelStylesMap = labelStylesMap;
 	}
 
 	public void setSelectable(boolean selectable) {
@@ -322,7 +324,6 @@ public class ClaySampleFileCard implements FileCard {
 	private String _inputName;
 	private String _inputValue;
 	private List<LabelItem> _labels;
-	private Map<String, String> _labelStylesMap;
 	private boolean _selectable = true;
 	private boolean _selected;
 	private String _stickerCssClass;

@@ -162,7 +162,7 @@ public class RankingPortletDisplayBuilder {
 			dropdownItem -> {
 				dropdownItem.setHref(
 					_renderResponse.createRenderURL(), "mvcRenderCommandName",
-					"addResultsRankingEntry", "redirect",
+					"/result_rankings/add_results_rankings", "redirect",
 					PortalUtil.getCurrentURL(_httpServletRequest));
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "new-ranking"));

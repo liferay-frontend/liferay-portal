@@ -21,7 +21,7 @@ CommerceHealthStatusDisplayContext commerceHealthStatusDisplayContext = (Commerc
 %>
 
 <c:if test="<%= commerceHealthStatusDisplayContext.hasManageCommerceHealthStatusPermission() %>">
-	<div class="container-fluid-1280 pt-4">
+	<div class="container-fluid container-fluid-max-xl pt-4">
 		<liferay-ui:search-container
 			id="commerceHealthStatuses"
 			searchContainer="<%= commerceHealthStatusDisplayContext.getSearchContainer() %>"
@@ -31,19 +31,19 @@ CommerceHealthStatusDisplayContext commerceHealthStatusDisplayContext = (Commerc
 				modelVar="commerceHealthStatus"
 			>
 				<liferay-ui:search-container-column-text
-					cssClass="table-cell-content"
+					cssClass="table-cell-expand"
 					name="name"
 					value="<%= commerceHealthStatus.getName(locale) %>"
 				/>
 
 				<liferay-ui:search-container-column-text
-					cssClass="table-cell-content"
+					cssClass="table-cell-expand"
 					name="description"
 					value="<%= commerceHealthStatus.getDescription(locale) %>"
 				/>
 
 				<liferay-ui:search-container-column-text
-					cssClass="table-cell-content"
+					cssClass="table-cell-expand"
 					name="status"
 				>
 

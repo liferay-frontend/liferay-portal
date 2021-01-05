@@ -44,6 +44,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMFormRule;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.security.permission.DDMPermissionSupport;
@@ -216,9 +217,16 @@ public class DDMStructureLocalServiceImpl
 		// Structure layout
 
 		if (ddmFormLayout != null) {
-			_ddmStructureLayoutLocalService.addStructureLayout(
-				userId, groupId, structureVersion.getStructureVersionId(),
-				ddmFormLayout, serviceContext);
+			DDMStructureLayout structureLayout =
+				_ddmStructureLayoutLocalService.addStructureLayout(
+					userId, groupId, structureVersion.getStructureVersionId(),
+					ddmFormLayout, serviceContext);
+
+			structureLayout.setClassNameId(structure.getClassNameId());
+			structureLayout.setStructureLayoutKey(structure.getStructureKey());
+
+			_ddmStructureLayoutLocalService.updateDDMStructureLayout(
+				structureLayout);
 		}
 
 		// Data provider instance links
@@ -2034,15 +2042,17 @@ public class DDMStructureLocalServiceImpl
 	}
 
 	private long[] _getAncestorSiteAndDepotGroupIds(long groupId) {
+		DepotEntryLocalService depotEntryLocalService = _depotEntryLocalService;
+
 		try {
-			if (_depotEntryLocalService == null) {
+			if (depotEntryLocalService == null) {
 				return _portal.getAncestorSiteGroupIds(groupId);
 			}
 
 			return ArrayUtil.append(
 				_portal.getAncestorSiteGroupIds(groupId),
 				ListUtil.toLongArray(
-					_depotEntryLocalService.getGroupConnectedDepotEntries(
+					depotEntryLocalService.getGroupConnectedDepotEntries(
 						groupId, true, QueryUtil.ALL_POS, QueryUtil.ALL_POS),
 					DepotEntry::getGroupId));
 		}
@@ -2099,7 +2109,7 @@ public class DDMStructureLocalServiceImpl
 		cardinality = ReferenceCardinality.OPTIONAL,
 		policyOption = ReferencePolicyOption.GREEDY
 	)
-	private DepotEntryLocalService _depotEntryLocalService;
+	private volatile DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference(target = "(ddm.form.deserializer.type=json)")
 	private DDMFormDeserializer _jsonDDMFormDeserializer;

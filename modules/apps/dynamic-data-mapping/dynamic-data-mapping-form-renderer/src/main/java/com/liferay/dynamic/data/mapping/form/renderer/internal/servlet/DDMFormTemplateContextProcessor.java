@@ -102,6 +102,10 @@ public class DDMFormTemplateContextProcessor {
 
 		DDMFormField ddmFormField = new DDMFormField(name, type);
 
+		setDDMFormFieldAllowGuestUsers(
+			jsonObject.getBoolean("allowGuestUsers"), ddmFormField);
+		setDDMFormFieldAlphabeticalOrder(
+			jsonObject.getBoolean("alphabeticalOrder"), ddmFormField);
 		setDDMFormFieldCollapsible(
 			jsonObject.getBoolean("collapsible"), ddmFormField);
 		setDDMFormFieldDataProviderSettings(
@@ -113,10 +117,17 @@ public class DDMFormTemplateContextProcessor {
 			jsonObject.getString("fieldName"), ddmFormField);
 		setDDMFormFieldFieldReference(
 			jsonObject.getString("fieldReference"), ddmFormField);
+		setDDMFormFieldGuestUploadURL(
+			jsonObject.getString("guestUploadURL"), ddmFormField);
 		setDDMFormFieldInline(jsonObject.getBoolean("inline"), ddmFormField);
 		setDDMFormFieldLabel(jsonObject.getString("label"), ddmFormField);
 		setDDMFormFieldLocalizable(
 			jsonObject.getBoolean("localizable", false), ddmFormField);
+		setDDMFormFieldMaximumRepetitions(
+			jsonObject.getInt("maximumRepetitions"), ddmFormField);
+		setDDMFormFieldMaximumSubmissionLimitReached(
+			jsonObject.getBoolean("maximumSubmissionLimitReached"),
+			ddmFormField);
 		setDDMFormFieldMultiple(
 			jsonObject.getBoolean("multiple"), ddmFormField);
 		setDDMFormFieldOptions(
@@ -136,7 +147,7 @@ public class DDMFormTemplateContextProcessor {
 			jsonObject.getBoolean("required", false), ddmFormField);
 		setDDMFormFieldShowAsSwitcher(
 			jsonObject.getBoolean("showAsSwitcher"), ddmFormField);
-		setDDMFormFieldText(jsonObject.getJSONObject("text"), ddmFormField);
+		setDDMFormFieldText(jsonObject.getString("text"), ddmFormField);
 		setDDMFormFieldTooltip(jsonObject.getString("tooltip"), ddmFormField);
 		setDDMFormFieldValid(
 			jsonObject.getBoolean("valid", true), ddmFormField);
@@ -242,6 +253,18 @@ public class DDMFormTemplateContextProcessor {
 		_ddmForm.setDefaultLocale(_locale);
 	}
 
+	protected void setDDMFormFieldAllowGuestUsers(
+		boolean allowGuestUsers, DDMFormField ddmFormField) {
+
+		ddmFormField.setProperty("allowGuestUsers", allowGuestUsers);
+	}
+
+	protected void setDDMFormFieldAlphabeticalOrder(
+		boolean alphabeticalOrder, DDMFormField ddmFormField) {
+
+		ddmFormField.setProperty("alphabeticalOrder", alphabeticalOrder);
+	}
+
 	protected void setDDMFormFieldCollapsible(
 		boolean collapsible, DDMFormField ddmFormField) {
 
@@ -276,6 +299,13 @@ public class DDMFormTemplateContextProcessor {
 		ddmFormField.setFieldReference(GetterUtil.getString(fieldReference));
 	}
 
+	protected void setDDMFormFieldGuestUploadURL(
+		String guestUploadURL, DDMFormField ddmFormField) {
+
+		ddmFormField.setProperty(
+			"guestUploadURL", GetterUtil.getString(guestUploadURL));
+	}
+
 	protected void setDDMFormFieldInline(
 		boolean inline, DDMFormField ddmFormField) {
 
@@ -292,6 +322,19 @@ public class DDMFormTemplateContextProcessor {
 		boolean localizable, DDMFormField ddmFormField) {
 
 		ddmFormField.setLocalizable(localizable);
+	}
+
+	protected void setDDMFormFieldMaximumRepetitions(
+		int maximumRepetitions, DDMFormField ddmFormField) {
+
+		ddmFormField.setProperty("maximumRepetitions", maximumRepetitions);
+	}
+
+	protected void setDDMFormFieldMaximumSubmissionLimitReached(
+		boolean maximumSubmissionLimitReached, DDMFormField ddmFormField) {
+
+		ddmFormField.setProperty(
+			"maximumSubmissionLimitReached", maximumSubmissionLimitReached);
 	}
 
 	protected void setDDMFormFieldMultiple(
@@ -427,15 +470,9 @@ public class DDMFormTemplateContextProcessor {
 		ddmFormField.setProperty("showAsSwitcher", showAsSwitcher);
 	}
 
-	protected void setDDMFormFieldText(
-		JSONObject jsonObject, DDMFormField ddmFormField) {
-
-		if (jsonObject == null) {
-			return;
-		}
-
+	protected void setDDMFormFieldText(String text, DDMFormField ddmFormField) {
 		ddmFormField.setProperty(
-			"text", getLocalizedValue(jsonObject.getString("content")));
+			"text", getLocalizedValue(GetterUtil.getString(text)));
 	}
 
 	protected void setDDMFormFieldTooltip(

@@ -30,6 +30,7 @@ public class Order {
 		_orderStatus = orderStatus;
 		_status = status;
 		_amount = amount;
+
 		_title = String.valueOf(orderId);
 	}
 

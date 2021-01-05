@@ -41,10 +41,11 @@ public class JavaConstructorParametersCheck extends BaseJavaTermCheck {
 
 		if (!parameters.isEmpty()) {
 			_checkConstructorParameterOrder(fileName, javaTerm, parameters);
-		}
 
-		if (parameters.size() > 1) {
-			return _fixIncorrectEmptyLines(javaTerm.getContent(), parameters);
+			String content = _sortAssignCalls(
+				javaTerm.getContent(), parameters);
+
+			return _fixIncorrectEmptyLines(content, parameters);
 		}
 
 		return javaTerm.getContent();
@@ -140,6 +141,26 @@ public class JavaConstructorParametersCheck extends BaseJavaTermCheck {
 		return content;
 	}
 
+	private int _getIndex(
+		String name, String value, List<JavaParameter> parameters) {
+
+		for (int i = 0; i < parameters.size(); i++) {
+			JavaParameter parameter = parameters.get(i);
+
+			String parameterName = parameter.getParameterName();
+
+			if (name.equals(parameterName)) {
+				if (value.matches("(?s).*\\W" + parameterName + "\\W.*")) {
+					return i;
+				}
+
+				return parameters.size();
+			}
+		}
+
+		return parameters.size();
+	}
+
 	private int _getOccurenceCount(String content, String name) {
 		int count = 0;
 
@@ -153,5 +174,62 @@ public class JavaConstructorParametersCheck extends BaseJavaTermCheck {
 
 		return count;
 	}
+
+	private String _sortAssignCalls(
+		String content, List<JavaParameter> parameters) {
+
+		String firstFollowingStatement = null;
+
+		Matcher assignCallMatcher = _assignCallPattern.matcher(content);
+
+		while (assignCallMatcher.find()) {
+			Pattern nextCallPattern = Pattern.compile(
+				"^\t+" + assignCallMatcher.group(1) + "(\\w+) (=[^;]+;)\\n");
+
+			String followingCode = content.substring(assignCallMatcher.end());
+
+			Matcher nextCallMatcher = nextCallPattern.matcher(followingCode);
+
+			if (!nextCallMatcher.find()) {
+				continue;
+			}
+
+			int index1 = _getIndex(
+				assignCallMatcher.group(2), assignCallMatcher.group(3),
+				parameters);
+			int index2 = _getIndex(
+				nextCallMatcher.group(1), nextCallMatcher.group(2), parameters);
+
+			if (index1 > index2) {
+				String assignment1 = StringUtil.trim(assignCallMatcher.group());
+				String assignment2 = StringUtil.trim(nextCallMatcher.group());
+
+				content = StringUtil.replaceFirst(
+					content, assignment2, assignment1,
+					assignCallMatcher.start());
+
+				content = StringUtil.replaceFirst(
+					content, assignment1, assignment2,
+					assignCallMatcher.start());
+
+				return _sortAssignCalls(content, parameters);
+			}
+
+			if ((index1 != index2) && (index2 == parameters.size())) {
+				firstFollowingStatement = nextCallMatcher.group();
+			}
+		}
+
+		if (firstFollowingStatement != null) {
+			return StringUtil.replaceFirst(
+				content, firstFollowingStatement,
+				"\n" + firstFollowingStatement);
+		}
+
+		return content;
+	}
+
+	private static final Pattern _assignCallPattern = Pattern.compile(
+		"\t(_|this\\.)(\\w+) (=[^;]+;)\n");
 
 }

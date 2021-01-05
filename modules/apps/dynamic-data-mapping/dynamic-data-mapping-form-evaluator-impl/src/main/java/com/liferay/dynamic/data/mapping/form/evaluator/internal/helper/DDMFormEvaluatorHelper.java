@@ -42,6 +42,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormRule;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -136,7 +137,11 @@ public class DDMFormEvaluatorHelper {
 		stream.filter(
 			DDMFormRule::isEnabled
 		).forEach(
-			this::evaluateDDMFormRule
+			rule -> {
+				evaluateDDMFormRule(rule);
+
+				_resetInvisibleFieldValue();
+			}
 		);
 
 		verifyFieldsMarkedAsRequired();
@@ -427,6 +432,13 @@ public class DDMFormEvaluatorHelper {
 		}
 
 		return false;
+	}
+
+	protected boolean isFieldNative(
+		DDMFormEvaluatorFieldContextKey ddmFormFieldContextKey) {
+
+		return getBooleanPropertyValue(
+			ddmFormFieldContextKey, "nativeField", true);
 	}
 
 	protected boolean isFieldReadOnly(
@@ -725,6 +737,19 @@ public class DDMFormEvaluatorHelper {
 		).forEach(
 			this::_localizeDDMFormFieldValue
 		);
+	}
+
+	private void _resetInvisibleFieldValue() {
+		_ddmFormFieldsPropertyChanges.forEach(
+			(ddmFormFieldContextKey, ddmFormFieldProperties) -> {
+				if (_ddmFormEvaluatorEvaluateRequest.isViewMode() &&
+					_ddmFormEvaluatorEvaluateRequest.isEditingFieldValue() &&
+					!isFieldNative(ddmFormFieldContextKey) &&
+					!isFieldVisible(ddmFormFieldContextKey)) {
+
+					ddmFormFieldProperties.put("value", StringPool.BLANK);
+				}
+			});
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

@@ -3,19 +3,23 @@ definition {
 	macro addCP {
 		LexiconEntry.gotoAdd();
 
-		AssertVisible(locator1 = "DDMEditStructure#FORM_BUILDER");
+		AssertVisible(locator1 = "Sidebar#FORM_BUILDER");
 
 		WebContentStructures.addName(structureName = "${structureName}");
 
 		if (isSet(structureKey)) {
+			if (IsElementNotPresent(locator1 = "Sidebar#ACTIVE_TAB", key_tabName = "Properties")) {
+				Navigator.gotoSidebarTab(tabName = "Properties");
+			}
 			PortletEntry.inputStructureKeyTextInput(structureKey = "${structureKey}");
 		}
 
 		if (isSet(structureDescription)) {
+			if (IsElementNotPresent(locator1 = "Sidebar#ACTIVE_TAB", key_tabName = "Properties")) {
+				Navigator.gotoSidebarTab(tabName = "Properties");
+			}
 			PortletEntry.inputDescriptionTextInput(description = "${structureDescription}");
 		}
-
-		SelectFrame(value1 = "relative=top");
 	}
 
 	macro addFavoriteStructure {
@@ -56,24 +60,6 @@ definition {
 		Button.clickSave();
 
 		AssertElementPresent(locator1 = "TextInput#REQUIRED_ALERT");
-
-		SelectFrame(value1 = "relative=top");
-	}
-
-	macro addSubstructure {
-		AssertClick(
-			locator1 = "Button#SELECT",
-			value1 = "Select");
-
-		SelectFrame(value1 = "relative=top");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		var key_ddlDataDefinitionName = "${parentStructureName}";
-
-		AssertClickNoError(
-			locator1 = "DDMSelectStructure#DDM_STRUCTURE_TABLE_NAME_LINK",
-			value1 = "${parentStructureName}");
 
 		SelectFrame(value1 = "relative=top");
 	}
@@ -125,52 +111,10 @@ definition {
 		}
 	}
 
-	macro editSubstructureDefaultValuesCP {
-		var key_ddlDataDefinitionName = "${substructureName}";
-
-		Search.searchCP(searchTerm = "${substructureName}");
-
+	macro editStructureDefaultValuesCP {
 		LexiconEntry.gotoEntryMenuItem(
 			menuItem = "Edit Default Values",
-			rowEntry = "${substructureName}");
-
-		for (var structureFieldName : list "${editSubstructureFieldNames}") {
-			var key_fieldDefaultValue = "${structureFieldName}";
-			var structureFieldName = StringUtil.replace("${structureFieldName}", " ", "");
-
-			Type(
-				locator1 = "DDMField#DDM_INPUT",
-				value1 = "Edited ${structureFieldName} Field");
-		}
-
-		Button.clickSave();
-
-		if (isSet(depotName)) {
-			DepotNavigator.openDepotWebContentAdmin(depotName = "${depotName}");
-		}
-		else {
-			ProductMenu.gotoPortlet(
-				category = "Content &amp; Data",
-				portlet = "Web Content");
-		}
-
-		Navigator.gotoNavItem(navItem = "Structures");
-
-		Search.searchCP(searchTerm = "${substructureName}");
-
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Edit Default Values",
-			rowEntry = "${substructureName}");
-
-		for (var structureFieldName : list "${editSubstructureFieldNames}") {
-			var key_fieldDefaultValue = "${structureFieldName}";
-
-			AssertTextEquals(
-				locator1 = "DDMField#DDM_INPUT",
-				value1 = "Edited ${structureFieldName} Field");
-		}
-
-		SelectFrameTop();
+			rowEntry = "${structureName}");
 	}
 
 	macro openWebContentStructuresAdmin {

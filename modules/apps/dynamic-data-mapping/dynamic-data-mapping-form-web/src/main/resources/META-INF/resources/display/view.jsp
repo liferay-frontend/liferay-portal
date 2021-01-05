@@ -17,8 +17,6 @@
 <%@ include file="/display/init.jsp" %>
 
 <%
-String redirect = ParamUtil.getString(request, "redirect", currentURL);
-
 long formInstanceId = ddmFormDisplayContext.getFormInstanceId();
 %>
 
@@ -92,7 +90,7 @@ long formInstanceId = ddmFormDisplayContext.getFormInstanceId();
 						%>
 
 						<c:if test="<%= Validator.isNull(redirectURL) %>">
-							<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+							<aui:input name="redirect" type="hidden" value='<%= ParamUtil.getString(request, "redirect", currentURL) %>' />
 						</c:if>
 
 						<aui:input name="groupId" type="hidden" value="<%= formInstance.getGroupId() %>" />
@@ -299,8 +297,12 @@ long formInstanceId = ddmFormDisplayContext.getFormInstanceId();
 						</c:choose>
 					}
 
+					<c:if test="<%= ddmFormDisplayContext.isRememberMe() %>">
+						var rememberMe = true;
+					</c:if>
+
 					<portlet:namespace />sessionIntervalId = setInterval(function () {
-						if (Liferay.Session) {
+						if (Liferay.Session || rememberMe) {
 							clearInterval(<portlet:namespace />sessionIntervalId);
 
 							<portlet:namespace />form = Liferay.component(

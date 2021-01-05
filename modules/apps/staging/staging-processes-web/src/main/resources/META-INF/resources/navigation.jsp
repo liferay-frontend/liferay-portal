@@ -19,7 +19,7 @@
 <%
 String tabs1 = ParamUtil.getString(request, "tabs1", "processes");
 
-String displayStyle = ParamUtil.getString(request, "displayStyle", "descriptive");
+String displayStyle = stagingProcessesWebToolbarDisplayContext.getDisplayStyle();
 String navigation = ParamUtil.getString(request, "navigation", "all");
 
 String orderByCol = ParamUtil.getString(request, "orderByCol");
@@ -59,7 +59,7 @@ String searchContainerId = "publishLayoutProcesses";
 </c:choose>
 
 <aui:script use="liferay-staging-processes-export-import">
-	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="publishLayouts" var="publishProcessesURL">
+	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/staging_processes/publish_layouts" var="publishProcessesURL">
 		<portlet:param name="<%= SearchContainer.DEFAULT_CUR_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_CUR_PARAM) %>" />
 		<portlet:param name="<%= SearchContainer.DEFAULT_DELTA_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_DELTA_PARAM) %>" />
 		<portlet:param name="tabs1" value="<%= tabs1 %>" />

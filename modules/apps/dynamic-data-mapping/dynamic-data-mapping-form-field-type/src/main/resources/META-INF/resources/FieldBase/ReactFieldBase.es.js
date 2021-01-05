@@ -68,18 +68,14 @@ const FieldProperties = ({required, tooltip}) => {
 	return (
 		<>
 			{required && (
-				<span className="reference-mark">
+				<span className="ddm-label-required reference-mark">
 					<ClayIcon symbol="asterisk" />
 				</span>
 			)}
 
 			{tooltip && (
 				<span className="ddm-tooltip">
-					<ClayIcon
-						data-tooltip-align="right"
-						symbol="question-circle-full"
-						title={tooltip}
-					/>
+					<ClayIcon symbol="question-circle-full" title={tooltip} />
 				</span>
 			)}
 		</>
@@ -95,6 +91,7 @@ function FieldBase({
 	name,
 	nestedFields,
 	onClick,
+	overMaximumRepetitionsLimit = false,
 	readOnly,
 	repeatable,
 	required,
@@ -158,8 +155,7 @@ function FieldBase({
 	}
 
 	if (text) {
-		fieldDetails +=
-			(typeof text === 'object' ? text.content : text) + '<br>';
+		fieldDetails += text + '<br>';
 	}
 
 	if (hasError) {
@@ -203,7 +199,12 @@ function FieldBase({
 						)}
 
 						<ClayButton
-							className="ddm-form-field-repeatable-add-button p-0"
+							className={classNames(
+								'ddm-form-field-repeatable-add-button p-0',
+								{
+									hide: overMaximumRepetitionsLimit,
+								}
+							)}
 							disabled={readOnly}
 							onClick={() =>
 								dispatch({

@@ -76,9 +76,8 @@ public class TierPriceUtil {
 			return new DateConfig(CalendarFactoryUtil.getCalendar(timeZone));
 		}
 
-		long time = date.getTime();
-
-		Calendar calendar = CalendarFactoryUtil.getCalendar(time, timeZone);
+		Calendar calendar = CalendarFactoryUtil.getCalendar(
+			date.getTime(), timeZone);
 
 		return new DateConfig(calendar);
 	}
@@ -95,9 +94,8 @@ public class TierPriceUtil {
 			return new DateConfig(expirationCalendar);
 		}
 
-		long time = date.getTime();
-
-		Calendar calendar = CalendarFactoryUtil.getCalendar(time, timeZone);
+		Calendar calendar = CalendarFactoryUtil.getCalendar(
+			date.getTime(), timeZone);
 
 		return new DateConfig(calendar);
 	}

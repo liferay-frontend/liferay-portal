@@ -25,7 +25,7 @@ copyGradleTestDependencies {
 dependencies {
 	compile group: "com.github.jk1", name: "gradle-license-report", version: "1.8"
 	compile group: "com.gradle.publish", name: "plugin-publish-plugin", version: "0.11.0"
-	compile group: "com.liferay", name: "com.liferay.gradle.plugins", version: "11.0.78"
+	compile group: "com.liferay", name: "com.liferay.gradle.plugins", version: "13.0.6"
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.app.javadoc.builder", version: "1.2.4"
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.baseline", version: "6.0.3"
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.cache", version: "1.0.18"
@@ -39,7 +39,7 @@ dependencies {
 	compile group: "com.netflix.nebula", name: "gradle-extra-configurations-plugin", version: "3.1.0"
 	compile group: "gradle.plugin.com.github.spotbugs.snom", name: "spotbugs-gradle-plugin", version: "4.0.0"
 	compile group: "org.apache.aries.jmx", name: "org.apache.aries.jmx.api", version: "1.1.0"
-	compile group: "org.springframework.boot", name: "spring-boot-gradle-plugin", version: "1.5.7.RELEASE"
+	compile group: "org.springframework.boot", name: "spring-boot-gradle-plugin", version: "2.4.1"
 
 	compileOnly fileTree(builtBy: [rootProject.tasks.getByName("extractGradleApi" + gradleVersion.replace(".", ""))], dir: new File(rootProject.buildDir, "gradle-${gradleVersion}"))
 

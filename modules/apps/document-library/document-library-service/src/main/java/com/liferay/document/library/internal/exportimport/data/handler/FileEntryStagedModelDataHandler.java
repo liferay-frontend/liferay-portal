@@ -464,7 +464,7 @@ public class FileEntryStagedModelDataHandler
 				return;
 			}
 
-			importMetaData(
+			boolean updateFileEntry = importMetaData(
 				portletDataContext, fileEntryElement, fileEntry,
 				serviceContext);
 
@@ -523,7 +523,6 @@ public class FileEntryStagedModelDataHandler
 					boolean indexEnabled = serviceContext.isIndexingEnabled();
 
 					boolean deleteFileEntry = false;
-					boolean updateFileEntry = false;
 
 					if (!Objects.equals(
 							fileVersionUuid,
@@ -739,6 +738,8 @@ public class FileEntryStagedModelDataHandler
 
 		structureFields.addAttribute("ddm-form-values-path", ddmFormValuesPath);
 
+		structureFields.addAttribute(
+			"structureKey", ddmStructure.getStructureKey());
 		structureFields.addAttribute("structureUuid", ddmStructure.getUuid());
 
 		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues =
@@ -812,7 +813,7 @@ public class FileEntryStagedModelDataHandler
 		return new String[] {AssetDisplayPageEntry.class.getName()};
 	}
 
-	protected void importMetaData(
+	protected boolean importMetaData(
 			PortletDataContext portletDataContext, Element fileEntryElement,
 			FileEntry fileEntry, ServiceContext serviceContext)
 		throws Exception {
@@ -836,11 +837,13 @@ public class FileEntryStagedModelDataHandler
 		if (existingDLFileEntryType == null) {
 			serviceContext.setAttribute("fileEntryTypeId", -1);
 
-			return;
+			return false;
 		}
 
 		serviceContext.setAttribute(
 			"fileEntryTypeId", existingDLFileEntryType.getFileEntryTypeId());
+
+		boolean updateFileEntry = false;
 
 		List<DDMStructure> ddmStructures =
 			existingDLFileEntryType.getDDMStructures();
@@ -853,6 +856,14 @@ public class FileEntryStagedModelDataHandler
 						ddmStructure.getUuid(), "']"));
 
 			if (structureFieldsElement == null) {
+				structureFieldsElement =
+					(Element)fileEntryElement.selectSingleNode(
+						StringBundler.concat(
+							"structure-fields[@structureKey='",
+							ddmStructure.getStructureKey(), "']"));
+			}
+
+			if (structureFieldsElement == null) {
 				continue;
 			}
 
@@ -863,7 +874,11 @@ public class FileEntryStagedModelDataHandler
 				DDMFormValues.class.getName() + StringPool.POUND +
 					ddmStructure.getStructureId(),
 				ddmFormValues);
+
+			updateFileEntry = true;
 		}
+
+		return updateFileEntry;
 	}
 
 	@Override

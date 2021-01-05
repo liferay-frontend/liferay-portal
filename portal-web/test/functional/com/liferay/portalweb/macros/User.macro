@@ -2070,6 +2070,12 @@ definition {
 		SelectWindow.selectWindowTopNoSPARefresh();
 
 		if (IsElementPresent.pauseIsElementPresent(locator1 = "TextInput#EMAIL_ADDRESS")) {
+			if (IsElementPresent(locator1 = "Button#SUBMIT")) {
+				Click(locator1 = "Button#SUBMIT");
+
+				Pause(locator1 = "30000");
+			}
+
 			SelectWindow.selectWindowNoSPARefresh(locator1 = "title=Terms of Use");
 
 			if (IsElementPresent.pauseIsElementPresent(
@@ -2857,6 +2863,12 @@ definition {
 			AssertTextEquals(
 				locator1 = "UsersAndOrganizationsEditUser#DETAILS_JOB_TITLE_FIELD",
 				value1 = "${userJobTitle}");
+		}
+
+		if (isSet(userID)) {
+			AssertTextEquals(
+				locator1 = "UsersAndOrganizationsEditUser#DETAILS_SCREEN_NAME_FIELD",
+				value1 = "${userID}");
 		}
 	}
 

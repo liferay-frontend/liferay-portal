@@ -24,8 +24,10 @@ ViewDisplayContext viewDisplayContext = (ViewDisplayContext)request.getAttribute
 	displayContext="<%= viewDisplayContext.getTranslationEntryManagementToolbarDisplayContext() %>"
 />
 
-<clay:container-fluid>
-	<aui:form action="<%= viewDisplayContext.getActionURL() %>" cssClass="container-fluid-1280" name="fm">
+<clay:container-fluid
+	cssClass="main-content-body"
+>
+	<aui:form action="<%= viewDisplayContext.getActionURL() %>" cssClass="container-fluid container-fluid-max-xl" name="fm">
 		<liferay-ui:search-container
 			id="searchContainer"
 			searchContainer="<%= viewDisplayContext.getSearchContainer() %>"
@@ -51,15 +53,14 @@ ViewDisplayContext viewDisplayContext = (ViewDisplayContext)request.getAttribute
 				/>
 
 				<liferay-ui:search-container-column-text
-					cssClass="table-cell-expand"
-					name="type"
-					value="<%= viewDisplayContext.getModelName(translationEntry) %>"
-				/>
-
-				<liferay-ui:search-container-column-text
 					name="language"
-					property="languageId"
-				/>
+				>
+					<clay:icon
+						symbol="<%= viewDisplayContext.getLanguageIcon(translationEntry) %>"
+					/>
+
+					<%= viewDisplayContext.getLanguageLabel(translationEntry) %>
+				</liferay-ui:search-container-column-text>
 
 				<liferay-ui:search-container-column-status
 					cssClass="table-cell-expand-smallest"

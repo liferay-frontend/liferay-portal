@@ -17,6 +17,7 @@ package com.liferay.commerce.inventory.web.internal.frontend;
 import static com.liferay.portal.kernel.security.permission.PermissionThreadLocal.getPermissionChecker;
 
 import com.liferay.commerce.inventory.constants.CommerceInventoryActionKeys;
+import com.liferay.commerce.inventory.web.internal.frontend.constants.CommerceInventoryDataSetConstants;
 import com.liferay.commerce.inventory.web.internal.model.Warehouse;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.frontend.taglib.clay.data.set.ClayDataSetActionProvider;
@@ -108,7 +109,8 @@ public class CommerceInventoryWarehouseClayDataSetActionProvider
 			_portal.getCurrentURL(httpServletRequest));
 
 		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCommerceInventoryWarehouseItem");
+			ActionRequest.ACTION_NAME,
+			"/commerce_inventory/edit_commerce_inventory_warehouse_item");
 		portletURL.setParameter(Constants.CMD, Constants.DELETE);
 		portletURL.setParameter("redirect", redirect);
 		portletURL.setParameter(
@@ -133,7 +135,8 @@ public class CommerceInventoryWarehouseClayDataSetActionProvider
 			themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
 
 		portletURL.setParameter(
-			"mvcRenderCommandName", "editCommerceInventoryWarehouseItem");
+			"mvcRenderCommandName",
+			"/commerce_inventory/edit_commerce_inventory_warehouse_item");
 		portletURL.setParameter("redirect", themeDisplay.getURLCurrent());
 		portletURL.setParameter(
 			"commerceInventoryWarehouseItemId",

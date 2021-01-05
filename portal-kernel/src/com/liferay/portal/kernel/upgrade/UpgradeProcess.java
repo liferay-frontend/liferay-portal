@@ -245,6 +245,7 @@ public abstract class UpgradeProcess
 		@Deprecated
 		public AlterTableAddColumn(String columnName) {
 			_columnName = columnName;
+
 			_columnType = StringPool.BLANK;
 		}
 

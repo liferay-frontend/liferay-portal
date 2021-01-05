@@ -47,37 +47,37 @@ public class SiteVerticalCard implements VerticalCard {
 	}
 
 	@Override
-	public Map<String, String> getData() {
-		Map<String, String> data = new HashMap<>();
-
-		try {
-			data.put(
-				"groupdescriptivename",
-				_group.getDescriptiveName(_themeDisplay.getLocale()));
-			data.put("groupid", String.valueOf(_group.getGroupId()));
-			data.put(
-				"groupscopelabel",
-				LanguageUtil.get(
-					_httpServletRequest, _group.getScopeLabel(_themeDisplay)));
-			data.put(
-				"grouptype",
-				LanguageUtil.get(_httpServletRequest, _group.getTypeLabel()));
-			data.put("url", _group.getDisplayURL(_themeDisplay));
-			data.put("uuid", _group.getUuid());
-		}
-		catch (Exception exception) {
-		}
-
-		return data;
-	}
-
-	@Override
-	public String getElementClasses() {
+	public String getCssClass() {
 		if (ArrayUtil.contains(_selectedGroupIds, _group.getGroupId())) {
 			return "text-muted";
 		}
 
 		return "card-interactive card-interactive-secondary selector-button";
+	}
+
+	@Override
+	public Map<String, String> getDynamicAttributes() {
+		Map<String, String> data = new HashMap<>();
+
+		try {
+			data.put(
+				"data-groupdescriptivename",
+				_group.getDescriptiveName(_themeDisplay.getLocale()));
+			data.put("data-groupid", String.valueOf(_group.getGroupId()));
+			data.put(
+				"data-groupscopelabel",
+				LanguageUtil.get(
+					_httpServletRequest, _group.getScopeLabel(_themeDisplay)));
+			data.put(
+				"data-grouptype",
+				LanguageUtil.get(_httpServletRequest, _group.getTypeLabel()));
+			data.put("data-url", _group.getDisplayURL(_themeDisplay));
+			data.put("data-uuid", _group.getUuid());
+		}
+		catch (Exception exception) {
+		}
+
+		return data;
 	}
 
 	@Override

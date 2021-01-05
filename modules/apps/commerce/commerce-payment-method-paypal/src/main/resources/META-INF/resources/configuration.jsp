@@ -20,7 +20,7 @@
 PayPalGroupServiceConfiguration payPalGroupServiceConfiguration = (PayPalGroupServiceConfiguration)request.getAttribute(PayPalGroupServiceConfiguration.class.getName());
 %>
 
-<portlet:actionURL name="editPayPalCommercePaymentMethodConfiguration" var="editCommercePaymentMethodActionURL" />
+<portlet:actionURL name="/commerce_payment_methods/edit_paypal_commerce_payment_method_configuration" var="editCommercePaymentMethodActionURL" />
 
 <aui:form action="<%= editCommercePaymentMethodActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />

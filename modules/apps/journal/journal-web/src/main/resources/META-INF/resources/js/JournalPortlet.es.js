@@ -12,9 +12,7 @@
  * details.
  */
 
-import PortletBase from 'frontend-js-web/liferay/PortletBase.es';
-import {delegate, on} from 'metal-dom';
-import {EventHandler} from 'metal-events';
+import {PortletBase, delegate} from 'frontend-js-web';
 import {Config} from 'metal-state';
 
 import {LocaleChangedHandler} from './LocaleChangedHandler.es';
@@ -39,37 +37,32 @@ class JournalPortlet extends PortletBase {
 	attached() {
 		const buttonRow = this.one(BUTTON_ROW_CLASS);
 
-		this._eventHandler.add(
-			delegate(
-				buttonRow,
-				'click',
-				'button',
-				this._updateAction.bind(this)
-			)
+		this._buttonClickUpdateAction = delegate(
+			buttonRow,
+			'click',
+			'button',
+			this._updateAction
 		);
 
 		const form = this._getInputByName(this.ns('fm1'));
 
-		this._eventHandler.add(
-			on(form, 'submit', this._onFormSubmit.bind(this))
-		);
+		form.addEventListener('submit', this._onFormSubmit);
 
 		const resetValuesButton = this._getInputByName(
 			this.ns('resetValuesButton')
 		);
 
 		if (resetValuesButton) {
-			this._eventHandler.add(
-				on(
-					resetValuesButton,
-					'click',
-					this._resetValuesDDMStructure.bind(this)
-				)
+			resetValuesButton.addEventListener(
+				'click',
+				this._resetValuesDDMStructure
 			);
 		}
 
 		this._localeChangedHandler = new LocaleChangedHandler({
+			callback: this._onLocaleChanged,
 			contentTitle: this.contentTitle,
+			context: this,
 			defaultLanguageId: this.defaultLanguageId,
 			namespace: this.namespace,
 		});
@@ -83,14 +76,50 @@ class JournalPortlet extends PortletBase {
 	 * @inheritDoc
 	 */
 	created() {
-		this._eventHandler = new EventHandler();
+		this._onContextualSidebarButtonClick = this._onContextualSidebarButtonClick.bind(
+			this
+		);
+		this._onFormSubmit = this._onFormSubmit.bind(this);
+		this._resetValuesDDMStructure = this._resetValuesDDMStructure.bind(
+			this
+		);
+		this._updateAction = this._updateAction.bind(this);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	detached() {
-		this._eventHandler.removeAllListeners();
+		this._buttonClickUpdateAction.dispose();
+
+		const form = this._getInputByName(this.ns('fm1'));
+
+		if (form) {
+			form.removeEventListener('submit', this._onFormSubmit);
+		}
+
+		const resetValuesButton = this._getInputByName(
+			this.ns('resetValuesButton')
+		);
+
+		if (resetValuesButton) {
+			resetValuesButton.removeEventListener(
+				'click',
+				this._resetValuesDDMStructure
+			);
+		}
+
+		const contextualSidebarButton = document.getElementById(
+			this.ns('contextualSidebarButton')
+		);
+
+		if (contextualSidebarButton) {
+			contextualSidebarButton.removeEventListener(
+				'click',
+				this._onContextualSidebarButtonClick
+			);
+		}
+
 		this._localeChangedHandler.detachLocaleChangedEventListener();
 	}
 
@@ -124,6 +153,38 @@ class JournalPortlet extends PortletBase {
 		return document.getElementById(this.ns(name));
 	}
 
+	_getInputLocalizedValues(field) {
+		const inputLocalized = Liferay.component(this.ns(field));
+		const localizedValues = {};
+
+		if (inputLocalized) {
+			const translatedLanguages = inputLocalized
+				.get('translatedLanguages')
+				.values();
+
+			translatedLanguages.forEach((languageId) => {
+				localizedValues[languageId] = inputLocalized.getValue(
+					languageId
+				);
+			});
+		}
+
+		return JSON.stringify(localizedValues);
+	}
+
+	/**
+	 * @private
+	 */
+	_onContextualSidebarButtonClick() {
+		const contextualSidebarContainer = document.getElementById(
+			this.ns('contextualSidebarContainer')
+		);
+
+		if (contextualSidebarContainer) {
+			contextualSidebarContainer.classList.toggle(SIDEBAR_VISIBLE_CLASS);
+		}
+	}
+
 	/**
 	 * @private
 	 */
@@ -135,6 +196,15 @@ class JournalPortlet extends PortletBase {
 		const actionName = actionInput.value;
 
 		this._saveArticle(actionName);
+	}
+
+	/**
+	 * @private
+	 */
+	_onLocaleChanged({availableLocales}, languageId) {
+		if (!availableLocales.includes(languageId)) {
+			availableLocales.push(languageId);
+		}
 	}
 
 	/**
@@ -174,8 +244,8 @@ class JournalPortlet extends PortletBase {
 
 			if (classNameId > 0) {
 				actionName = articleId
-					? '/journal/update_ddm_structure_default_values'
-					: '/journal/add_ddm_structure_default_values';
+					? '/journal/update_data_engine_default_values'
+					: '/journal/add_data_engine_default_values';
 			}
 			else {
 				actionName = articleId
@@ -186,6 +256,8 @@ class JournalPortlet extends PortletBase {
 
 		this._setActionName(actionName);
 
+		this._setAvailableLocales(this.availableLocales);
+
 		if (!articleId) {
 			const articleIdInput = this._getInputByName('articleId');
 
@@ -193,6 +265,10 @@ class JournalPortlet extends PortletBase {
 
 			articleIdInput.value = newArticleIdInput.value;
 		}
+
+		const titleValueInput = this._getInputByName(this.ns('titleValue'));
+
+		titleValueInput.value = this._getInputLocalizedValues('titleMapAsXML');
 
 		const form = this._getInputByName(this.ns('fm1'));
 
@@ -212,6 +288,14 @@ class JournalPortlet extends PortletBase {
 		actionInput.value = actionName;
 	}
 
+	_setAvailableLocales(availableLocales) {
+		const availableLocalesInput = this._getInputByName(
+			this.ns('availableLocales')
+		);
+
+		availableLocalesInput.value = availableLocales;
+	}
+
 	/**
 	 * @private
 	 */
@@ -219,6 +303,7 @@ class JournalPortlet extends PortletBase {
 		const contextualSidebarButton = document.getElementById(
 			this.ns('contextualSidebarButton')
 		);
+
 		const contextualSidebarContainer = document.getElementById(
 			this.ns('contextualSidebarContainer')
 		);
@@ -231,12 +316,9 @@ class JournalPortlet extends PortletBase {
 		}
 
 		if (contextualSidebarButton) {
-			this._eventHandler.add(
-				on(contextualSidebarButton, 'click', () => {
-					contextualSidebarContainer.classList.toggle(
-						SIDEBAR_VISIBLE_CLASS
-					);
-				})
+			contextualSidebarButton.addEventListener(
+				'click',
+				this._onContextualSidebarButtonClick
 			);
 		}
 	}
@@ -259,6 +341,7 @@ class JournalPortlet extends PortletBase {
 
 JournalPortlet.STATE = {
 	_selectedLanguageId: Config.internal().string(),
+	availableLocales: Config.array(),
 	contentTitle: Config.string(),
 	defaultLanguageId: Config.string(),
 };

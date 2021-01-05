@@ -104,22 +104,22 @@ public class TextDDMFormFieldTemplateContextContributor
 				ddmFormField, ddmFormFieldRenderingContext);
 
 		for (String optionValue : ddmFormFieldOptions.getOptionsValues()) {
-			Map<String, String> optionMap = HashMapBuilder.put(
-				"label",
-				() -> {
-					LocalizedValue optionLabel =
-						ddmFormFieldOptions.getOptionLabels(optionValue);
+			options.add(
+				HashMapBuilder.put(
+					"label",
+					() -> {
+						LocalizedValue optionLabel =
+							ddmFormFieldOptions.getOptionLabels(optionValue);
 
-					return optionLabel.getString(
-						ddmFormFieldRenderingContext.getLocale());
-				}
-			).put(
-				"reference", ddmFormFieldOptions.getOptionReference(optionValue)
-			).put(
-				"value", optionValue
-			).build();
-
-			options.add(optionMap);
+						return optionLabel.getString(
+							ddmFormFieldRenderingContext.getLocale());
+					}
+				).put(
+					"reference",
+					ddmFormFieldOptions.getOptionReference(optionValue)
+				).put(
+					"value", optionValue
+				).build());
 		}
 
 		return options;
@@ -170,7 +170,7 @@ public class TextDDMFormFieldTemplateContextContributor
 			ddmFormFieldRenderingContext.getProperty("value"));
 
 		if (ddmFormFieldRenderingContext.isViewMode()) {
-			value = HtmlUtil.extractText(value);
+			value = HtmlUtil.escape(value);
 		}
 
 		return value;

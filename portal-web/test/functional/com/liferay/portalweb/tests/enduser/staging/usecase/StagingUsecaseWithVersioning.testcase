@@ -625,7 +625,7 @@ definition {
 	test StagingPublishLast {
 		property app.server.types = "jboss,tcserver,tomcat,weblogic,websphere,wildfly";
 		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver,sybase";
-		property environment.acceptance = "true";
+		property environment.acceptance = "quarantine";
 
 		Navigator.openSiteURL(siteName = "Site Name");
 
@@ -718,6 +718,8 @@ definition {
 
 	@priority = "5"
 	test StagingSiteVariationIncompletePage {
+		property portal.acceptance = "true";
+
 		Staging.addSitePagesVariationPG(sitePagesVariationName = "Site Pages Variation Name");
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");

@@ -103,6 +103,8 @@ public class ElasticsearchSortFieldTranslator
 					GeoPoint[]::new
 				));
 
+		geoDistanceSortBuilder.order(translate(geoDistanceSort.getSortOrder()));
+
 		if (geoDistanceSort.getDistanceUnit() != null) {
 			geoDistanceSortBuilder.unit(
 				_distanceUnitTranslator.translate(
@@ -131,7 +133,10 @@ public class ElasticsearchSortFieldTranslator
 
 	@Override
 	public SortBuilder<?> visit(ScoreSort scoreSort) {
-		return SortBuilders.scoreSort();
+		return SortBuilders.scoreSort(
+		).order(
+			translate(scoreSort.getSortOrder())
+		);
 	}
 
 	@Override
@@ -158,6 +163,8 @@ public class ElasticsearchSortFieldTranslator
 		if (scriptSort.getSortMode() != null) {
 			scriptSortBuilder.sortMode(translate(scriptSort.getSortMode()));
 		}
+
+		scriptSortBuilder.order(translate(scriptSort.getSortOrder()));
 
 		return scriptSortBuilder;
 	}

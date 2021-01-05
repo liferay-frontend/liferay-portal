@@ -14,7 +14,7 @@
 
 package com.liferay.commerce.product.internal.osgi.commands;
 
-import com.liferay.commerce.product.model.CPInstanceConstants;
+import com.liferay.commerce.product.constants.CPInstanceConstants;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;

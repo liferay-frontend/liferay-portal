@@ -39,16 +39,29 @@ export function stopImmediatePropagation(event) {
 /**
  * Returns all targetable elements within `element`
  *
- * Currently, that means all visible "a" and "button" elements which
- * have an "id".
+ * Currently, that means all visible "a", "button" and "input[type=submit]"
+ * elements which have an "id".
  */
-export function getTargetableElements(element) {
-	const elements = element.querySelectorAll('a, button');
+export function getTargetableElements(element, selectedTarget) {
 
-	// As first cut, only deal with items that have an id.
+	// Allowed targetable elements with id
+
+	const selector = ['a[id]', 'button[id]', 'input[type=submit][id]'];
+
+	// Other targetable element already selected
+
+	if (selectedTarget) {
+		selector.push(`#${selectedTarget}`);
+	}
+
+	// Look for links, buttons or inputs with type submit
+
+	const elements = element.querySelectorAll(selector.join());
+
+	// As first cut, only deal with visible items
 
 	return Array.from(elements).filter((element) => {
-		return element.id && _isVisible(element);
+		return _isVisible(element);
 	});
 }
 

@@ -49,9 +49,6 @@ public class CommerceShippingMethodUpgradeProcess
 			PreparedStatement ps = null;
 
 			while (rs.next()) {
-				long commerceShippingMethodId = rs.getLong(
-					"commerceShippingMethodId");
-
 				long groupId = rs.getLong("groupId");
 
 				long channelGroupId = _getCommerceChannelGroupIdBySiteGroupId(
@@ -60,6 +57,9 @@ public class CommerceShippingMethodUpgradeProcess
 				if (channelGroupId == 0) {
 					continue;
 				}
+
+				long commerceShippingMethodId = rs.getLong(
+					"commerceShippingMethodId");
 
 				ps = connection.prepareStatement(
 					"update CommerceShippingMethod set groupId = ? where " +

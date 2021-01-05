@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.COMMERCE_CATALOGS,
-		"mvc.command.name=uploadCommerceMediaDefaultImage"
+		"mvc.command.name=/commerce_catalogs/upload_commerce_media_default_image"
 	},
 	service = MVCActionCommand.class
 )

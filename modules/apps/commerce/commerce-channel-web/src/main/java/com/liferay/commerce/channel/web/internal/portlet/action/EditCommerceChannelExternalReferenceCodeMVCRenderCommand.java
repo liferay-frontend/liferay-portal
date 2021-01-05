@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Component;
 	enabled = false,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.COMMERCE_CHANNELS,
-		"mvc.command.name=editCommerceChannelExternalReferenceCode"
+		"mvc.command.name=/commerce_channels/edit_commerce_channel_external_reference_code"
 	},
 	service = MVCRenderCommand.class
 )

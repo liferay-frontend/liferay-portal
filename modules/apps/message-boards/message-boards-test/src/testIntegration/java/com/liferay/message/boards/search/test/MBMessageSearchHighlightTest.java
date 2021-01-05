@@ -134,9 +134,7 @@ public class MBMessageSearchHighlightTest {
 
 	private Document _search(String searchTerm) {
 		try {
-			SearchContext searchContext = _getSearchContext(searchTerm);
-
-			Hits hits = _indexer.search(searchContext);
+			Hits hits = _indexer.search(_getSearchContext(searchTerm));
 
 			return _getSingleDocument(searchTerm, hits);
 		}

@@ -58,16 +58,16 @@ public class CommercePriceListUpgradeProcess
 				"CommercePriceList";
 
 		try (Statement s = connection.createStatement();
-			ResultSet r = s.executeQuery(selectCommercePriceListSQL)) {
+			ResultSet rs = s.executeQuery(selectCommercePriceListSQL)) {
 
-			while (r.next()) {
-				long companyId = r.getLong("companyId");
+			while (rs.next()) {
+				long companyId = rs.getLong("companyId");
 
-				long groupId = r.getLong("groupId");
+				long groupId = rs.getLong("groupId");
 
-				long userId = r.getLong("userId");
+				long userId = rs.getLong("userId");
 
-				long commercePriceListId = r.getLong("commercePriceListId");
+				long commercePriceListId = rs.getLong("commercePriceListId");
 
 				_resourceLocalService.addModelResources(
 					companyId, groupId, userId,

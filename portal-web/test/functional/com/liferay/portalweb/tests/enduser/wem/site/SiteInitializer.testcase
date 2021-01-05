@@ -26,6 +26,8 @@ definition {
 	@description = "This is a test case for LPS-120773. Check the initial stuffs included in the site initializer."
 	@priority = "5"
 	test ViewInitialStuffs {
+		property portal.acceptance = "true";
+
 		task ("Add a new site based on Raylife") {
 			ApplicationsMenu.gotoPortlet(
 				category = "Sites",
@@ -44,7 +46,9 @@ definition {
 
 			LexiconCard.viewCardThumbnail(card = "Raylife");
 
-			LexiconCard.viewMarkAsDefault(card = "Raylife");
+			LexiconCard.viewCardSticker(
+				card = "Raylife",
+				icon = "check-circle");
 		}
 
 		task ("View the Raylife fragment collection") {
@@ -88,7 +92,9 @@ definition {
 				MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
 			}
 
-			LexiconCard.viewMarkAsDefault(card = "Blank");
+			LexiconCard.viewCardSticker(
+				card = "Blank",
+				icon = "check-circle");
 		}
 
 		task ("View the Raylife display page templates") {
@@ -99,7 +105,9 @@ definition {
 
 				LexiconCard.viewCardThumbnail(card = "${displayPageName}");
 
-				LexiconCard.viewMarkAsDefault(card = "${displayPageName}");
+				LexiconCard.viewCardSticker(
+					card = "${displayPageName}",
+					icon = "check-circle");
 
 				DisplayPageTemplatesAdmin.gotoDisplayPage(displayPageName = "${displayPageName}");
 

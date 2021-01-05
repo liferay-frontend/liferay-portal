@@ -105,16 +105,13 @@ public class FedExCommerceShippingEngine implements CommerceShippingEngine {
 
 	@Override
 	public String getDescription(Locale locale) {
-		ResourceBundle resourceBundle = _getResourceBundle(locale);
-
-		return LanguageUtil.get(resourceBundle, "fedex-description");
+		return LanguageUtil.get(
+			_getResourceBundle(locale), "fedex-description");
 	}
 
 	@Override
 	public String getName(Locale locale) {
-		ResourceBundle resourceBundle = _getResourceBundle(locale);
-
-		return LanguageUtil.get(resourceBundle, "fedex");
+		return LanguageUtil.get(_getResourceBundle(locale), "fedex");
 	}
 
 	private long _getCommerceShippingMethodId(CommerceOrder commerceOrder) {

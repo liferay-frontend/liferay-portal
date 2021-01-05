@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ExportImportPortletKeys.EXPORT_IMPORT,
-		"mvc.command.name=publishPortlet"
+		"mvc.command.name=/export_import/publish_portlet"
 	},
 	service = MVCRenderCommand.class
 )

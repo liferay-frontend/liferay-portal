@@ -69,15 +69,16 @@ public class DDMFormValuesToPropertiesConverter {
 		JSONFactory jsonFactory, Locale locale,
 		LocationVariableResolver locationVariableResolver) {
 
-		DDMForm ddmForm = ddmFormValues.getDDMForm();
-
 		_configurationModel = configurationModel;
-		_defaultLocale = ddmForm.getDefaultLocale();
 		_jsonFactory = jsonFactory;
 		_locale = locale;
 		_locationVariableResolver = locationVariableResolver;
 
+		DDMForm ddmForm = ddmFormValues.getDDMForm();
+
+		_defaultLocale = ddmForm.getDefaultLocale();
 		_ddmFormFieldsMap = ddmForm.getDDMFormFieldsMap(false);
+
 		_ddmFormFieldValuesMap = ddmFormValues.getDDMFormFieldValuesMap();
 	}
 

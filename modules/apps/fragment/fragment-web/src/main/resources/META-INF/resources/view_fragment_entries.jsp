@@ -38,8 +38,6 @@ FragmentManagementToolbarDisplayContext fragmentManagementToolbarDisplayContext 
 		>
 
 			<%
-			row.setCssClass("card-page-item-asset " + row.getCssClass());
-
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", fragmentDisplayContext.getAvailableActions(object)
@@ -51,12 +49,12 @@ FragmentManagementToolbarDisplayContext fragmentManagementToolbarDisplayContext 
 			<liferay-ui:search-container-column-text>
 				<c:choose>
 					<c:when test="<%= object instanceof FragmentComposition %>">
-						<clay:vertical-card-v2
+						<clay:vertical-card
 							verticalCard="<%= fragmentEntryVerticalCardFactory.getVerticalCard((FragmentComposition)object, renderRequest, renderResponse, searchContainer.getRowChecker(), fragmentDisplayContext.getFragmentType()) %>"
 						/>
 					</c:when>
 					<c:otherwise>
-						<clay:vertical-card-v2
+						<clay:vertical-card
 							verticalCard="<%= fragmentEntryVerticalCardFactory.getVerticalCard((FragmentEntry)object, renderRequest, renderResponse, searchContainer.getRowChecker(), fragmentDisplayContext.getFragmentType()) %>"
 						/>
 					</c:otherwise>
@@ -67,7 +65,6 @@ FragmentManagementToolbarDisplayContext fragmentManagementToolbarDisplayContext 
 		<liferay-ui:search-iterator
 			displayStyle="icon"
 			markupView="lexicon"
-			searchResultCssClass="card-page"
 		/>
 	</liferay-ui:search-container>
 </aui:form>

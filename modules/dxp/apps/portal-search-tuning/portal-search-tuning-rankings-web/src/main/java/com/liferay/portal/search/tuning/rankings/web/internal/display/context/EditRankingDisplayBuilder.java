@@ -103,7 +103,7 @@ public class EditRankingDisplayBuilder {
 			"companyId", String.valueOf(_themeDisplay.getCompanyId()));
 		resourceURL.setParameter(Constants.CMD, "getHiddenResultsJSONObject");
 		resourceURL.setParameter("resultsRankingUid", _getResultsRankingUid());
-		resourceURL.setResourceID("/portal_search_tuning_rankings/get_results");
+		resourceURL.setResourceID("/result_rankings/get_results");
 
 		return resourceURL.toString();
 	}
@@ -160,7 +160,7 @@ public class EditRankingDisplayBuilder {
 		resourceURL.setParameter(
 			"companyId", String.valueOf(_themeDisplay.getCompanyId()));
 		resourceURL.setParameter(Constants.CMD, "getSearchResultsJSONObject");
-		resourceURL.setResourceID("/portal_search_tuning_rankings/get_results");
+		resourceURL.setResourceID("/result_rankings/get_results");
 
 		return resourceURL.toString();
 	}
@@ -168,8 +168,7 @@ public class EditRankingDisplayBuilder {
 	private String _getValidateResultRankingsResourceURL() {
 		ResourceURL resourceURL = _renderResponse.createResourceURL();
 
-		resourceURL.setResourceID(
-			"/portal_search_tuning_rankings/validate_ranking");
+		resourceURL.setResourceID("/result_rankings/validate_ranking");
 
 		return resourceURL.toString();
 	}
@@ -181,7 +180,7 @@ public class EditRankingDisplayBuilder {
 			"companyId", String.valueOf(_themeDisplay.getCompanyId()));
 		resourceURL.setParameter(Constants.CMD, "getVisibleResultsJSONObject");
 		resourceURL.setParameter("resultsRankingUid", _getResultsRankingUid());
-		resourceURL.setResourceID("/portal_search_tuning_rankings/get_results");
+		resourceURL.setResourceID("/result_rankings/get_results");
 
 		return resourceURL.toString();
 	}

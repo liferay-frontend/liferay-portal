@@ -24,9 +24,9 @@ long commerceCountryId = commerceCountriesDisplayContext.getCommerceCountryId();
 CommerceRegionsStarter commerceRegionsStarter = commerceCountriesDisplayContext.getCommerceRegionsStarter();
 %>
 
-<portlet:actionURL name="editCommerceCountry" var="editCommerceCountryActionURL" />
+<portlet:actionURL name="/commerce_country/edit_commerce_country" var="editCommerceCountryActionURL" />
 
-<aui:form action="<%= editCommerceCountryActionURL %>" cssClass="container-fluid-1280" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCommerceCountry();" %>'>
+<aui:form action="<%= editCommerceCountryActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCommerceCountry();" %>'>
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceCountry == null) ? Constants.ADD : Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="backURL" type="hidden" value="<%= redirect %>" />
@@ -44,9 +44,9 @@ CommerceRegionsStarter commerceRegionsStarter = commerceCountriesDisplayContext.
 			<aui:fieldset>
 				<aui:input autoFocus="<%= true %>" name="name" />
 
-				<aui:input checked="<%= (commerceCountry == null) ? false : commerceCountry.getBillingAllowed() %>" name="billingAllowed" type="toggle-switch" />
+				<aui:input checked="<%= (commerceCountry == null) ? false : commerceCountry.getBillingAllowed() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="billingAllowed" type="toggle-switch" />
 
-				<aui:input checked="<%= (commerceCountry == null) ? false : commerceCountry.getShippingAllowed() %>" name="shippingAllowed" type="toggle-switch" />
+				<aui:input checked="<%= (commerceCountry == null) ? false : commerceCountry.getShippingAllowed() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="shippingAllowed" type="toggle-switch" />
 
 				<aui:input label="two-letter-iso-code" name="twoLettersISOCode" />
 
@@ -54,11 +54,11 @@ CommerceRegionsStarter commerceRegionsStarter = commerceCountriesDisplayContext.
 
 				<aui:input name="numericISOCode" />
 
-				<aui:input checked="<%= (commerceCountry == null) ? false : commerceCountry.getSubjectToVAT() %>" name="subjectToVAT" type="toggle-switch" />
+				<aui:input checked="<%= (commerceCountry == null) ? false : commerceCountry.getSubjectToVAT() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="subjectToVAT" type="toggle-switch" />
 
 				<aui:input name="priority" />
 
-				<aui:input checked="<%= (commerceCountry == null) ? false : commerceCountry.isActive() %>" name="active" type="toggle-switch" />
+				<aui:input checked="<%= (commerceCountry == null) ? false : commerceCountry.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" />
 
 				<c:if test="<%= commerceRegionsStarter != null %>">
 					<aui:input name="key" type="hidden" value="<%= commerceRegionsStarter.getKey() %>" />
@@ -94,7 +94,7 @@ CommerceRegionsStarter commerceRegionsStarter = commerceCountriesDisplayContext.
 				this.attr('disabled', true);
 
 				A.io.request(
-					'<liferay-portlet:actionURL name="importCommerceRegions" portletName="<%= portletDisplay.getPortletName() %>" />',
+					'<liferay-portlet:actionURL name="/commerce_country/import_commerce_regions" portletName="<%= portletDisplay.getPortletName() %>" />',
 					{
 						data: data,
 						on: {

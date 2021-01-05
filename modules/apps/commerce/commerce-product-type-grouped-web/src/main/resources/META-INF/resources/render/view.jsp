@@ -35,7 +35,7 @@ String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortlet
 		<div class="product-detail-header">
 			<div class="col-lg-6 col-md-7">
 				<div class="row">
-					<div class="col-lg-2 col-md-3 col-xs-2">
+					<div class="col-2 col-lg-2 col-md-3">
 						<div id="<portlet:namespace />thumbs-container">
 
 							<%
@@ -44,7 +44,7 @@ String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortlet
 							%>
 
 								<div class="card thumb" data-url="<%= thumbnailUrl %>">
-									<img class="center-block img-responsive" src="<%= thumbnailUrl %>" />
+									<img class="center-block img-fluid" src="<%= thumbnailUrl %>" />
 								</div>
 
 							<%
@@ -54,9 +54,9 @@ String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortlet
 						</div>
 					</div>
 
-					<div class="col-lg-10 col-md-9 col-xs-10 full-image">
+					<div class="col-10 col-lg-10 col-md-9 full-image">
 						<c:if test="<%= Validator.isNotNull(cpCatalogEntry.getDefaultImageFileUrl()) %>">
-							<img class="center-block img-responsive" id="<portlet:namespace />full-image" src="<%= cpCatalogEntry.getDefaultImageFileUrl() %>" />
+							<img class="center-block img-fluid" id="<portlet:namespace />full-image" src="<%= cpCatalogEntry.getDefaultImageFileUrl() %>" />
 						</c:if>
 					</div>
 				</div>
@@ -131,7 +131,7 @@ String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortlet
 
 				<div class="row">
 					<div class="col-md-4">
-						<img class="img-responsive" src="<%= cProductCPDefinition.getDefaultImageThumbnailSrc() %>" />
+						<img class="img-fluid" src="<%= cProductCPDefinition.getDefaultImageThumbnailSrc() %>" />
 					</div>
 
 					<div class="col-md-8">
@@ -162,23 +162,23 @@ String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortlet
 		<div class="product-detail-body">
 			<div class="nav-tabs-centered">
 				<ul class="nav nav-tabs" role="tablist">
-					<li class="active" role="presentation">
-						<a aria-controls="<portlet:namespace />description" aria-expanded="true" data-toggle="tab" href="#<portlet:namespace />description" role="tab">
+					<li class="nav-item" role="presentation">
+						<a aria-controls="<portlet:namespace />description" aria-expanded="true" class="active nav-link" data-toggle="tab" href="#<portlet:namespace />description" role="tab">
 							<%= LanguageUtil.get(resourceBundle, "description") %>
 						</a>
 					</li>
 
 					<c:if test="<%= cpContentHelper.hasCPDefinitionSpecificationOptionValues(cpDefinitionId) %>">
-						<li role="presentation">
-							<a aria-controls="<portlet:namespace />specification" aria-expanded="false" data-toggle="tab" href="#<portlet:namespace />specification" role="tab">
+						<li class="nav-item" role="presentation">
+							<a aria-controls="<portlet:namespace />specification" aria-expanded="false" class="nav-link" data-toggle="tab" href="#<portlet:namespace />specification" role="tab">
 								<%= LanguageUtil.get(resourceBundle, "specifications") %>
 							</a>
 						</li>
 					</c:if>
 
 					<c:if test="<%= !attachmentCPMedias.isEmpty() %>">
-						<li role="presentation">
-							<a aria-controls="<portlet:namespace />attachments" aria-expanded="false" data-toggle="tab" href="#<portlet:namespace />attachments" role="tab">
+						<li class="nav-item" role="presentation">
+							<a aria-controls="<portlet:namespace />attachments" aria-expanded="false" class="nav-link" data-toggle="tab" href="#<portlet:namespace />attachments" role="tab">
 								<%= LanguageUtil.get(resourceBundle, "attachments") %>
 							</a>
 						</li>

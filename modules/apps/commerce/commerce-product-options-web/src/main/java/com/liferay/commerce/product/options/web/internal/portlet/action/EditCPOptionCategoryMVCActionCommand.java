@@ -129,14 +129,14 @@ public class EditCPOptionCategoryMVCActionCommand extends BaseMVCActionCommand {
 		double priority = ParamUtil.getDouble(actionRequest, "priority");
 		String key = ParamUtil.getString(actionRequest, "key");
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CPOptionCategory.class.getName(), actionRequest);
-
 		CPOptionCategory cpOptionCategory = null;
 
 		if (cpOptionCategoryId <= 0) {
 
 			// Add commerce product option category
+
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				CPOptionCategory.class.getName(), actionRequest);
 
 			cpOptionCategory = _cpOptionCategoryService.addCPOptionCategory(
 				titleMap, descriptionMap, priority, key, serviceContext);

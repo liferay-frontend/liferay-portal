@@ -115,9 +115,7 @@ public class AuthorizeNetCommercePaymentMethod
 
 	@Override
 	public String getName(Locale locale) {
-		ResourceBundle resourceBundle = _getResourceBundle(locale);
-
-		return LanguageUtil.get(resourceBundle, KEY);
+		return LanguageUtil.get(_getResourceBundle(locale), KEY);
 	}
 
 	@Override
@@ -178,11 +176,8 @@ public class AuthorizeNetCommercePaymentMethod
 		GetHostedPaymentPageRequest getHostedPaymentPageRequest =
 			new GetHostedPaymentPageRequest();
 
-		TransactionRequestType transactionRequestType =
-			_getTransactionRequestType(commerceOrder);
-
 		getHostedPaymentPageRequest.setTransactionRequest(
-			transactionRequestType);
+			_getTransactionRequestType(commerceOrder));
 
 		ArrayOfSetting arrayOfSetting = _getArrayOfSetting(
 			commerceOrder.getGroupId(),
@@ -415,10 +410,8 @@ public class AuthorizeNetCommercePaymentMethod
 		TransactionRequestType transactionRequestType =
 			new TransactionRequestType();
 
-		String transactionType =
-			TransactionTypeEnum.AUTH_CAPTURE_TRANSACTION.value();
-
-		transactionRequestType.setTransactionType(transactionType);
+		transactionRequestType.setTransactionType(
+			TransactionTypeEnum.AUTH_CAPTURE_TRANSACTION.value());
 
 		BigDecimal amount = commerceOrder.getTotal();
 

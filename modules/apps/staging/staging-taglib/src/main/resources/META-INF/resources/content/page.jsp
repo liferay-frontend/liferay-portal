@@ -32,13 +32,13 @@
 								<ul class="list-unstyled">
 									<li class="tree-item">
 										<aui:fieldset cssClass="portlet-data-section" label="date-range">
-											<div class="flex-container">
+											<div class="align-items-center c-mb-3 d-flex flex-wrap">
 
 												<%
 												String selectedRange = MapUtil.getString(parameterMap, "range", defaultRange);
 												%>
 
-												<div class="flex-item-center range-options">
+												<div class="range-options">
 													<liferay-staging:radio
 														checked="<%= selectedRange.equals(ExportImportDateUtil.RANGE_ALL) %>"
 														disabled="<%= disableInputs %>"
@@ -50,7 +50,7 @@
 												</div>
 
 												<c:if test="<%= !type.equals(Constants.EXPORT) %>">
-													<div class="flex-item-center range-options">
+													<div class="range-options">
 														<liferay-staging:radio
 															checked="<%= selectedRange.equals(ExportImportDateUtil.RANGE_FROM_LAST_PUBLISH_DATE) %>"
 															disabled="<%= disableInputs %>"
@@ -62,7 +62,7 @@
 													</div>
 												</c:if>
 
-												<div class="flex-item-center range-options">
+												<div class="range-options">
 													<liferay-staging:radio
 														checked="<%= selectedRange.equals(ExportImportDateUtil.RANGE_DATE_RANGE) %>"
 														disabled="<%= disableInputs %>"
@@ -74,7 +74,7 @@
 													/>
 												</div>
 
-												<div class="flex-item-center range-options">
+												<div class="range-options">
 													<liferay-staging:radio
 														checked="<%= selectedRange.equals(ExportImportDateUtil.RANGE_LAST) %>"
 														disabled="<%= disableInputs %>"
@@ -85,7 +85,7 @@
 													/>
 												</div>
 
-												<div class="flex-item-center range-options <%= disableInputs ? "hide" : StringPool.BLANK %>">
+												<div class="range-options <%= disableInputs ? "hide" : StringPool.BLANK %>">
 													<clay:icon
 														symbol="reload"
 													/>
@@ -114,7 +114,7 @@
 											%>
 
 											<ul class="date-range-options hide list-unstyled" id="<portlet:namespace />startEndDate">
-												<li class="flex-container">
+												<li class="d-flex flex-wrap">
 													<liferay-ui:input-date
 														cssClass="form-group form-group-inline"
 														dayParam="startDateDay"

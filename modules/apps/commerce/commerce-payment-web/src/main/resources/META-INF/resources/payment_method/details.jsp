@@ -22,7 +22,7 @@ CommercePaymentMethodGroupRelsDisplayContext commercePaymentMethodsDisplayContex
 CommercePaymentMethodGroupRel commercePaymentMethodGroupRel = commercePaymentMethodsDisplayContext.getCommercePaymentMethodGroupRel();
 %>
 
-<portlet:actionURL name="editCommercePaymentMethodGroupRel" var="commercePaymentMethodGroupRelActionURL" />
+<portlet:actionURL name="/commerce_payment_methods/edit_commerce_payment_method_group_rel" var="commercePaymentMethodGroupRelActionURL" />
 
 <aui:form action="<%= commercePaymentMethodGroupRelActionURL %>" enctype="multipart/form-data" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commercePaymentMethodGroupRel != null) ? Constants.ADD : Constants.UPDATE %>" />

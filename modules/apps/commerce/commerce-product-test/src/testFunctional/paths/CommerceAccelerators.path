@@ -25,7 +25,7 @@
 </tr>
 <tr>
 	<td>ACCOUNT_SELECTOR_DROPDOWN</td>
-	<td>//button[@data-onclick='toggleAccountSelector']</td>
+	<td>//button[contains(@class,'commerce-account-selector-button')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -94,8 +94,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>PRODUCT_DETAILS_PRICE_VALUE</td>
+	<td>PRODUCT_DETAILS_DISCOUNT</td>
+	<td>//h2[contains(@class,'commerce-price')]//span[contains(@class,'price-value-discount')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_DETAILS_LIST_PRICE</td>
 	<td>//h2[contains(@class,'commerce-price')]//span[contains(@class,'price-value')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_DETAILS_LIST_PRICE_INACTIVE</td>
+	<td>//h2[contains(@class,'commerce-price')]//span[contains(@class,'price-value-inactive')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_DETAILS_NET_PRICE</td>
+	<td>//h2[contains(@class,'commerce-price')]//span[contains(@class,'price-value-final')]</td>
 	<td></td>
 </tr>
 <tr>

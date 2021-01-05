@@ -51,6 +51,8 @@ import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutNameCompa
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidator;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException;
+import com.liferay.portal.events.ServicePreAction;
+import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -61,6 +63,8 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
@@ -68,6 +72,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -78,6 +83,8 @@ import com.liferay.portal.vulcan.util.TransformUtil;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import javax.validation.ValidationException;
 
@@ -220,6 +227,8 @@ public class DataLayoutResourceImpl
 			Long dataLayoutId,
 			DataLayoutRenderingContext dataLayoutRenderingContext)
 		throws Exception {
+
+		_initThemeDisplay(dataLayoutRenderingContext);
 
 		DDMStructureLayout ddmStructureLayout =
 			_ddmStructureLayoutLocalService.getDDMStructureLayout(dataLayoutId);
@@ -473,6 +482,34 @@ public class DataLayoutResourceImpl
 
 		return documentContext.read(
 			"$[\"pages\"][*][\"rows\"][*][\"columns\"][*][\"fieldNames\"][*]");
+	}
+
+	private void _initThemeDisplay(
+			DataLayoutRenderingContext dataLayoutRenderingContext)
+		throws Exception {
+
+		ServicePreAction servicePreAction = new ServicePreAction();
+
+		HttpServletResponse httpServletResponse =
+			new DummyHttpServletResponse();
+
+		servicePreAction.servicePre(
+			contextHttpServletRequest, httpServletResponse, false);
+
+		ThemeServicePreAction themeServicePreAction =
+			new ThemeServicePreAction();
+
+		themeServicePreAction.run(
+			contextHttpServletRequest, httpServletResponse);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)contextHttpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		themeDisplay.setScopeGroupId(
+			dataLayoutRenderingContext.getScopeGroupId());
+		themeDisplay.setSiteGroupId(
+			dataLayoutRenderingContext.getSiteGroupId());
 	}
 
 	private DataLayoutValidationException _toDataLayoutValidationException(

@@ -19,9 +19,10 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
-import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileEntryMetadataLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUtil;
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLFileEntryMetadataLocalService;
+import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.dynamic.data.mapping.kernel.DDMForm;
 import com.liferay.dynamic.data.mapping.kernel.DDMFormField;
 import com.liferay.dynamic.data.mapping.kernel.DDMFormFieldOptions;
@@ -52,6 +53,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Tuple;
 import com.liferay.portal.kernel.webdav.WebDAVUtil;
 import com.liferay.portal.kernel.webdav.methods.Method;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsValues;
 
@@ -101,6 +103,268 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 	}
 
 	@Test
+	public void testChangeFileNameChangeWebDavDocumentFileName()
+		throws Exception {
+
+		FileEntry fileEntry = null;
+
+		try {
+			lock(HttpServletResponse.SC_OK, _TEST_FILE_NAME);
+
+			assertCode(
+				HttpServletResponse.SC_CREATED,
+				servicePut(
+					_TEST_FILE_NAME, _testFileBytes, getLock(_TEST_FILE_NAME)));
+
+			unlock(_TEST_FILE_NAME);
+
+			Folder folder = _dlAppLocalService.getFolder(
+				TestPropsValues.getGroupId(),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, getFolderName());
+
+			fileEntry = _dlAppLocalService.getFileEntry(
+				TestPropsValues.getGroupId(), folder.getFolderId(),
+				_TEST_FILE_TITLE);
+
+			long fileEntryId = fileEntry.getFileEntryId();
+
+			_dlAppLocalService.updateFileEntry(
+				TestPropsValues.getUserId(), fileEntryId, _TEST_FILE_NAME_2,
+				ContentTypes.APPLICATION_TEXT, _TEST_FILE_TITLE,
+				StringPool.BLANK, StringPool.BLANK,
+				DLVersionNumberIncrease.MAJOR, _testFileBytes,
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId()));
+
+			servicePut(_TEST_FILE_NAME_2, _testDeltaBytes);
+
+			fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+
+			Assert.assertEquals(_TEST_FILE_TITLE, fileEntry.getTitle());
+			Assert.assertEquals(_TEST_FILE_NAME_2, fileEntry.getFileName());
+
+			assertCode(
+				HttpServletResponse.SC_NOT_FOUND, serviceGet(_TEST_FILE_NAME));
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_NAME_2));
+			assertCode(HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_TITLE));
+		}
+		finally {
+			if (fileEntry != null) {
+				_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
+			}
+		}
+	}
+
+	@Test
+	public void testChangeFileNameOSOnlyChangeFileName() throws Exception {
+		FileEntry fileEntry = null;
+
+		try {
+			assertCode(
+				HttpServletResponse.SC_CREATED,
+				servicePut(
+					_TEST_FILE_NAME_2, _testFileBytes,
+					getLock(_TEST_FILE_NAME_2)));
+
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_NAME_2));
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_TITLE_2));
+
+			Folder folder = _dlAppLocalService.getFolder(
+				TestPropsValues.getGroupId(),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, getFolderName());
+
+			fileEntry = _dlAppLocalService.getFileEntry(
+				TestPropsValues.getGroupId(), folder.getFolderId(),
+				_TEST_FILE_TITLE_2);
+
+			Assert.assertEquals(_TEST_FILE_TITLE_2, fileEntry.getTitle());
+			Assert.assertEquals(_TEST_FILE_NAME_2, fileEntry.getFileName());
+
+			assertCode(
+				HttpServletResponse.SC_CREATED,
+				serviceCopyOrMove(
+					Method.MOVE, _TEST_FILE_NAME_2, _TEST_FILE_NAME_2_MOD));
+
+			assertCode(
+				HttpServletResponse.SC_NOT_FOUND,
+				serviceGet(_TEST_FILE_NAME_2));
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_NAME_2_MOD));
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_TITLE_2));
+
+			fileEntry = _dlAppLocalService.getFileEntry(
+				TestPropsValues.getGroupId(), folder.getFolderId(),
+				_TEST_FILE_TITLE_2);
+
+			Assert.assertEquals(_TEST_FILE_TITLE_2, fileEntry.getTitle());
+			Assert.assertEquals(_TEST_FILE_NAME_2_MOD, fileEntry.getFileName());
+		}
+		finally {
+			if (fileEntry != null) {
+				_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
+			}
+		}
+	}
+
+	@Test
+	public void testChangeTitleFromRepositoryDoNotChangeFileName()
+		throws Exception {
+
+		FileEntry fileEntry = null;
+
+		try {
+			Folder folder = _dlAppLocalService.getFolder(
+				TestPropsValues.getGroupId(),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, getFolderName());
+
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId());
+
+			fileEntry = _dlAppLocalService.addFileEntry(
+				TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
+				folder.getFolderId(), _TEST_FILE_NAME_2,
+				ContentTypes.APPLICATION_TEXT, _TEST_FILE_TITLE_2,
+				StringPool.BLANK, StringPool.BLANK, _testFileBytes,
+				serviceContext);
+
+			lock(HttpServletResponse.SC_OK, _TEST_FILE_NAME_2);
+
+			assertCode(
+				HttpServletResponse.SC_CREATED,
+				servicePut(
+					_TEST_FILE_NAME_2, _testFileBytes,
+					getLock(_TEST_FILE_NAME_2)));
+
+			unlock(_TEST_FILE_NAME_2);
+
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_NAME_2));
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_TITLE_2));
+
+			long fileEntryId = fileEntry.getFileEntryId();
+
+			_dlAppLocalService.updateFileEntry(
+				TestPropsValues.getUserId(), fileEntryId, _TEST_FILE_NAME_2,
+				ContentTypes.APPLICATION_TEXT, _TEST_FILE_TITLE_2_MOD,
+				StringPool.BLANK, StringPool.BLANK,
+				DLVersionNumberIncrease.MAJOR, _testFileBytes, serviceContext);
+
+			fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+
+			Assert.assertEquals(_TEST_FILE_TITLE_2_MOD, fileEntry.getTitle());
+			Assert.assertEquals(_TEST_FILE_NAME_2, fileEntry.getFileName());
+
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_NAME_2));
+			assertCode(
+				HttpServletResponse.SC_NOT_FOUND,
+				serviceGet(_TEST_FILE_TITLE_2));
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_TITLE_2_MOD));
+		}
+		finally {
+			if (fileEntry != null) {
+				_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
+			}
+		}
+	}
+
+	@Test
+	public void testChangeTitleFromWebDavDoNotChangeFileName()
+		throws Exception {
+
+		FileEntry fileEntry = null;
+
+		try {
+			assertCode(
+				HttpServletResponse.SC_CREATED,
+				servicePut(
+					_TEST_FILE_NAME_2, _testFileBytes,
+					getLock(_TEST_FILE_NAME_2)));
+
+			Folder folder = _dlAppLocalService.getFolder(
+				TestPropsValues.getGroupId(),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, getFolderName());
+
+			fileEntry = _dlAppLocalService.getFileEntry(
+				TestPropsValues.getGroupId(), folder.getFolderId(),
+				_TEST_FILE_TITLE_2);
+
+			long fileEntryId = fileEntry.getFileEntryId();
+
+			_dlAppLocalService.updateFileEntry(
+				TestPropsValues.getUserId(), fileEntryId, _TEST_FILE_NAME_2,
+				ContentTypes.APPLICATION_TEXT, _TEST_FILE_TITLE_2_MOD,
+				StringPool.BLANK, StringPool.BLANK,
+				DLVersionNumberIncrease.MAJOR, _testFileBytes,
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId()));
+
+			servicePut(_TEST_FILE_NAME_2, _testDeltaBytes);
+
+			fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+
+			Assert.assertEquals(_TEST_FILE_TITLE_2_MOD, fileEntry.getTitle());
+			Assert.assertEquals(_TEST_FILE_NAME_2, fileEntry.getFileName());
+
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_NAME_2));
+			assertCode(
+				HttpServletResponse.SC_NOT_FOUND,
+				serviceGet(_TEST_FILE_TITLE_2));
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_TITLE_2_MOD));
+		}
+		finally {
+			if (fileEntry != null) {
+				_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
+			}
+		}
+	}
+
+	@Test
+	public void testFileNameWithExtensionAndTitleWithoutExtension()
+		throws Exception {
+
+		FileEntry fileEntry = null;
+
+		try {
+			assertCode(
+				HttpServletResponse.SC_CREATED,
+				servicePut(
+					_TEST_FILE_NAME_2, _testFileBytes,
+					getLock(_TEST_FILE_NAME_2)));
+
+			Folder folder = _dlAppLocalService.getFolder(
+				TestPropsValues.getGroupId(),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, getFolderName());
+
+			fileEntry = _dlAppLocalService.getFileEntry(
+				TestPropsValues.getGroupId(), folder.getFolderId(),
+				_TEST_FILE_TITLE_2);
+
+			Assert.assertEquals(_TEST_FILE_TITLE_2, fileEntry.getTitle());
+			Assert.assertEquals(_TEST_FILE_NAME_2, fileEntry.getFileName());
+
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_NAME_2));
+			assertCode(
+				HttpServletResponse.SC_OK, serviceGet(_TEST_FILE_TITLE_2));
+		}
+		finally {
+			if (fileEntry != null) {
+				_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
+			}
+		}
+	}
+
+	@Test
 	public void testGetFileWithEscapedCharactersInFileName() throws Exception {
 		FileEntry fileEntry = null;
 
@@ -108,11 +372,11 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 			Group group = GroupLocalServiceUtil.getFriendlyURLGroup(
 				PortalUtil.getDefaultCompanyId(), getGroupFriendlyURL());
 
-			Folder folder = DLAppLocalServiceUtil.getFolder(
+			Folder folder = _dlAppLocalService.getFolder(
 				group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 				getFolderName());
 
-			fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			fileEntry = _dlAppLocalService.addFileEntry(
 				TestPropsValues.getUserId(), group.getGroupId(),
 				folder.getFolderId(), _TEST_FILE_NAME_ILLEGAL_CHARACTERS,
 				ContentTypes.APPLICATION_MSWORD,
@@ -126,8 +390,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 		}
 		finally {
 			if (fileEntry != null) {
-				DLAppLocalServiceUtil.deleteFileEntry(
-					fileEntry.getFileEntryId());
+				_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
 			}
 		}
 	}
@@ -353,26 +616,26 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 			}
 
 			assertCode(HttpServletResponse.SC_NOT_FOUND, servicePropFind(dest));
-			assertCode(HttpServletResponse.SC_NOT_FOUND, servicePropFind(dest));
 
 			if (i == 0) {
 				assertCode(
 					HttpServletResponse.SC_CREATED,
-					serviceCopyOrMove(Method.MOVE, orig, dest, getLock(orig)));
+					serviceCopyOrMove(
+						Method.MOVE, orig, _TEST_FILE_TITLE, getLock(orig)));
 
 				moveLock(orig, dest);
 			}
 		}
 
 		for (int i = 0; i < 2; i++) {
-			lock(HttpServletResponse.SC_OK, _TEST_FILE_NAME);
+			lock(HttpServletResponse.SC_OK, _TEST_FILE_TITLE);
 
-			tuple = serviceGet(_TEST_FILE_NAME);
+			tuple = serviceGet(_TEST_FILE_TITLE);
 
 			assertCode(HttpServletResponse.SC_OK, tuple);
 			Assert.assertArrayEquals(_testDeltaBytes, getResponseBody(tuple));
 
-			unlock(_TEST_FILE_NAME);
+			unlock(_TEST_FILE_TITLE);
 		}
 
 		lock(HttpServletResponse.SC_CREATED, _TEST_META_NAME);
@@ -416,7 +679,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 			Group group = GroupLocalServiceUtil.getFriendlyURLGroup(
 				PortalUtil.getDefaultCompanyId(), getGroupFriendlyURL());
 
-			Folder folder = DLAppLocalServiceUtil.getFolder(
+			Folder folder = _dlAppLocalService.getFolder(
 				TestPropsValues.getGroupId(),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, getFolderName());
 
@@ -427,7 +690,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 					TestPropsValues.getGroupId());
 
 			DLFileEntryType dlFileEntryType =
-				DLFileEntryTypeLocalServiceUtil.addFileEntryType(
+				_dlFileEntryTypeLocalService.addFileEntryType(
 					TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
@@ -443,7 +706,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 					ddmStructure.getStructureId(),
 				expectedDDDMFormValues);
 
-			fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			fileEntry = _dlAppLocalService.addFileEntry(
 				TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
 				folder.getFolderId(), _TEST_FILE_NAME_2,
 				ContentTypes.APPLICATION_TEXT, _TEST_FILE_NAME_2,
@@ -452,7 +715,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 
 			servicePut(_TEST_FILE_NAME_2, _testDeltaBytes);
 
-			FileEntry finalFileEntry = DLAppLocalServiceUtil.getFileEntry(
+			FileEntry finalFileEntry = _dlAppLocalService.getFileEntry(
 				fileEntry.getFileEntryId());
 
 			DLFileEntry finalDLFileEntryModel =
@@ -474,7 +737,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 				FileVersion fileVersion = finalFileEntry.getLatestFileVersion();
 
 				DLFileEntryMetadata fileEntryMetadata =
-					DLFileEntryMetadataLocalServiceUtil.getFileEntryMetadata(
+					_dlFileEntryMetadataLocalService.getFileEntryMetadata(
 						structure.getStructureId(),
 						fileVersion.getFileVersionId());
 
@@ -488,8 +751,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 		}
 		finally {
 			if (fileEntry != null) {
-				DLAppLocalServiceUtil.deleteFileEntry(
-					fileEntry.getFileEntryId());
+				_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
 			}
 		}
 	}
@@ -504,7 +766,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 			Group group = GroupLocalServiceUtil.getFriendlyURLGroup(
 				PortalUtil.getDefaultCompanyId(), getGroupFriendlyURL());
 
-			Folder folder = DLAppLocalServiceUtil.getFolder(
+			Folder folder = _dlAppLocalService.getFolder(
 				TestPropsValues.getGroupId(),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, getFolderName());
 
@@ -515,7 +777,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 					TestPropsValues.getGroupId());
 
 			DLFileEntryType initialDLFileEntryType =
-				DLFileEntryTypeLocalServiceUtil.addFileEntryType(
+				_dlFileEntryTypeLocalService.addFileEntryType(
 					TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
@@ -531,7 +793,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 					ddmStructure.getStructureId(),
 				expectedDDDMFormValues);
 
-			fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			fileEntry = _dlAppLocalService.addFileEntry(
 				TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
 				folder.getFolderId(), _TEST_FILE_NAME_2,
 				ContentTypes.APPLICATION_TEXT, _TEST_FILE_NAME_2,
@@ -540,7 +802,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 
 			servicePut(_TEST_FILE_NAME_2, _testDeltaBytes);
 
-			FileEntry finalFileEntry = DLAppLocalServiceUtil.getFileEntry(
+			FileEntry finalFileEntry = _dlAppLocalService.getFileEntry(
 				fileEntry.getFileEntryId());
 
 			DLFileEntry finalDLFileEntryModel =
@@ -558,8 +820,7 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 		}
 		finally {
 			if (fileEntry != null) {
-				DLAppLocalServiceUtil.deleteFileEntry(
-					fileEntry.getFileEntryId());
+				_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
 			}
 		}
 	}
@@ -692,11 +953,19 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 
 	private static final String _TEST_FILE_NAME_2 = "Test2.docx";
 
+	private static final String _TEST_FILE_NAME_2_MOD = "Test2Mod.docx";
+
 	private static final String _TEST_FILE_NAME_ILLEGAL_CHARACTERS =
 		"Test/0.docx";
 
 	private static final String _TEST_FILE_NAME_ILLEGAL_CHARACTERS_ESCAPED =
 		"Test" + PropsValues.DL_WEBDAV_SUBSTITUTION_CHAR + "0.docx";
+
+	private static final String _TEST_FILE_TITLE = "Test";
+
+	private static final String _TEST_FILE_TITLE_2 = "Test2";
+
+	private static final String _TEST_FILE_TITLE_2_MOD = "Test2Mod";
 
 	private static final String _TEST_META_NAME = "._Test.docx";
 
@@ -706,6 +975,15 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 	private static byte[] _testDeltaBytes;
 	private static byte[] _testFileBytes;
 	private static byte[] _testMetaBytes;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
+	private DLFileEntryMetadataLocalService _dlFileEntryMetadataLocalService;
+
+	@Inject
+	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;
 
 	private final Map<String, String> _lockMap = new HashMap<>();
 

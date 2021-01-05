@@ -23,9 +23,9 @@ CommerceAccountGroup commerceAccountGroup = commerceAccountGroupAdminDisplayCont
 long commerceAccountGroupId = commerceAccountGroupAdminDisplayContext.getCommerceAccountGroupId();
 %>
 
-<portlet:actionURL name="editCommerceAccountGroup" var="editCommerceAccountGroupActionURL" />
+<portlet:actionURL name="/commerce_account_group_admin/edit_commerce_account_group" var="editCommerceAccountGroupActionURL" />
 
-<aui:form action="<%= editCommerceAccountGroupActionURL %>" cssClass="container-fluid-1280" method="post" name="fm">
+<aui:form action="<%= editCommerceAccountGroupActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceAccountGroup == null) ? Constants.ADD : Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="backURL" type="hidden" value="<%= backURL %>" />

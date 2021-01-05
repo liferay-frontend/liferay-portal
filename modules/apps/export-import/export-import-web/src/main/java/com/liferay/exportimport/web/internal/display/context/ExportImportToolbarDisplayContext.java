@@ -84,7 +84,9 @@ public class ExportImportToolbarDisplayContext {
 				String label;
 				String mvcPath;
 
-				if (mvcRenderCommandName.equals("exportLayoutsView")) {
+				if (mvcRenderCommandName.equals(
+						"/export_import/export_layouts_view")) {
+
 					cmd = Constants.EXPORT;
 					label = "custom-export";
 					mvcPath = "/export/new_export/export_layouts.jsp";

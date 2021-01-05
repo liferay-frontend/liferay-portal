@@ -68,6 +68,7 @@ import com.liferay.portal.kernel.search.facet.faceted.searcher.FacetedSearcher;
 import com.liferay.portal.kernel.search.facet.faceted.searcher.FacetedSearcherManagerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.EmailAddressValidator;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -350,11 +351,9 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 					companyId);
 		}
 
-		Long currentCompanyId = CompanyThreadLocal.getCompanyId();
 		boolean deleteInProcess = CompanyThreadLocal.isDeleteInProcess();
 
 		try {
-			CompanyThreadLocal.setCompanyId(companyId);
 			CompanyThreadLocal.setDeleteInProcess(true);
 
 			return doDeleteCompany(companyId);
@@ -367,7 +366,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			throw portalException;
 		}
 		finally {
-			CompanyThreadLocal.setCompanyId(currentCompanyId);
 			CompanyThreadLocal.setDeleteInProcess(deleteInProcess);
 		}
 	}
@@ -1256,20 +1254,31 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		// User
 
-		ActionableDynamicQuery userActionableDynamicQuery =
-			userLocalService.getActionableDynamicQuery();
+		User defaultUser = userLocalService.getDefaultUser(companyId);
 
-		userActionableDynamicQuery.setCompanyId(companyId);
-		userActionableDynamicQuery.setPerformActionMethod(
-			(User user) -> {
-				if (!user.isDefaultUser()) {
-					userLocalService.deleteUser(user.getUserId());
-				}
-			});
+		String name = PrincipalThreadLocal.getName();
 
-		userActionableDynamicQuery.performActions();
+		try {
+			PrincipalThreadLocal.setName(defaultUser.getUserId());
 
-		userLocalService.deleteUser(userLocalService.getDefaultUser(companyId));
+			ActionableDynamicQuery userActionableDynamicQuery =
+				userLocalService.getActionableDynamicQuery();
+
+			userActionableDynamicQuery.setCompanyId(companyId);
+			userActionableDynamicQuery.setPerformActionMethod(
+				(User user) -> {
+					if (!user.isDefaultUser()) {
+						userLocalService.deleteUser(user.getUserId());
+					}
+				});
+
+			userActionableDynamicQuery.performActions();
+		}
+		finally {
+			PrincipalThreadLocal.setName(name);
+		}
+
+		userLocalService.deleteUser(defaultUser);
 
 		// Role
 

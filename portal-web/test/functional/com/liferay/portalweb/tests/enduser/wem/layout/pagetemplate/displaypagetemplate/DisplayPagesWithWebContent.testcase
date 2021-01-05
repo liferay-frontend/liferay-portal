@@ -289,15 +289,10 @@ definition {
 		}
 
 		task ("Add a web content article") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addCP(
-				webContentContent = "Webcontent Content",
-				webContentTitle = "Webcontent Title");
-
-			PortletEntry.publish();
+			JSONWebcontent.addWebContent(
+				content = "Webcontent Content",
+				groupName = "Test Site Name",
+				title = "Webcontent Title");
 		}
 
 		task ("View the web content article through its friendly URL") {
@@ -371,14 +366,9 @@ definition {
 		}
 
 		task ("Edit the web content article") {
-			Click(locator1 = "TextInput#TITLE");
-
-			PortletEntry.inputTitle(title = "Webcontent Title Edit");
-
-			Type.typeCKEditorWaitForCKEditor(
-				key_fieldLabel = "content",
-				locator1 = "CKEditor#BODY_FIELD_WEB_CONTENT_ARTICLE",
-				value1 = "Webcontent Content Edit");
+			WebContent.addCP(
+				webContentContent = "Webcontent Content Edit",
+				webContentTitle = "Webcontent Title Edit");
 
 			Button.clickPublish();
 		}
@@ -520,15 +510,10 @@ definition {
 		}
 
 		task ("Add a web content article") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addCP(
-				webContentContent = "Webcontent Content",
-				webContentTitle = "Webcontent Title");
-
-			PortletEntry.publish();
+			JSONWebcontent.addWebContent(
+				content = "Webcontent Content",
+				groupName = "Test Site Name",
+				title = "Webcontent Title");
 		}
 
 		task ("Preview the web content article") {
@@ -600,26 +585,6 @@ definition {
 				content = "Webcontent Content",
 				groupName = "Test Site Name",
 				title = "Webcontent Title");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoEditCP(webContentTitle = "Webcontent Title");
-		}
-
-		task ("Assert the display page is selected by default") {
-			Panel.expandPanel(panel = "Display Page Template");
-
-			AssertSelectedLabel(
-				locator1 = "WCEditWebContent#DISPLAY_PAGE_SELECT",
-				value1 = "Default Display Page Template");
-
-			AssertTextEquals(
-				locator1 = "WCEditWebContent#DISPLAY_PAGE_DEFAULT_SELECTION",
-				value1 = "Display Page Name");
-		}
-
-		task ("Publish the web content article") {
-			PortletEntry.publish();
 		}
 
 		task ("Logout of portal") {
@@ -681,26 +646,6 @@ definition {
 				content = "Webcontent Content",
 				groupName = "Test Site Name",
 				title = "Webcontent Title");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoEditCP(webContentTitle = "Webcontent Title");
-		}
-
-		task ("Assert the display page is selected by default") {
-			Panel.expandPanel(panel = "Display Page Template");
-
-			AssertSelectedLabel(
-				locator1 = "WCEditWebContent#DISPLAY_PAGE_SELECT",
-				value1 = "Default Display Page Template");
-
-			AssertTextEquals(
-				locator1 = "WCEditWebContent#DISPLAY_PAGE_DEFAULT_SELECTION",
-				value1 = "Display Page Name");
-		}
-
-		task ("Publish the web content article") {
-			PortletEntry.publish();
 		}
 
 		task ("View the web content article through its friendly URL") {
@@ -966,14 +911,13 @@ definition {
 		}
 
 		task ("Add a web content article that has no display page selected") {
-			JSONWebcontent.addWebContent(
-				content = "Webcontent Content",
-				groupName = "Test Site Name",
-				title = "Webcontent Title");
-
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
-			WebContentNavigator.gotoEditCP(webContentTitle = "Webcontent Title");
+			WebContentNavigator.gotoAddCP();
+
+			WebContent.addCP(
+				webContentContent = "Webcontent Content",
+				webContentTitle = "Webcontent Title");
 
 			Panel.expandPanel(panel = "Display Page Template");
 

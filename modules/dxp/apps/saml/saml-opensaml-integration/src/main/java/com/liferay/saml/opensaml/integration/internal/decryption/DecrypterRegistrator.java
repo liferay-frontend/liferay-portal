@@ -15,7 +15,7 @@
 package com.liferay.saml.opensaml.integration.internal.decryption;
 
 import com.liferay.portal.kernel.util.HashMapDictionary;
-import com.liferay.saml.opensaml.integration.metadata.MetadataManager;
+import com.liferay.saml.opensaml.integration.internal.metadata.MetadataManager;
 import com.liferay.saml.runtime.SamlException;
 import com.liferay.saml.runtime.configuration.SamlProviderConfigurationHelper;
 

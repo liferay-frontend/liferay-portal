@@ -102,10 +102,8 @@ public class RemoteGitRefTest extends GitRefTest {
 	}
 
 	private RemoteGitRef _getRemoteGitRef() {
-		RemoteGitRepository remoteGitRepository = _getRemoteGitRepository();
-
 		return GitBranchFactory.newRemoteGitRef(
-			remoteGitRepository, NAME_REF, SHA_REF, "tag");
+			_getRemoteGitRepository(), NAME_REF, SHA_REF, "tag");
 	}
 
 	private RemoteGitRepository _getRemoteGitRepository() {

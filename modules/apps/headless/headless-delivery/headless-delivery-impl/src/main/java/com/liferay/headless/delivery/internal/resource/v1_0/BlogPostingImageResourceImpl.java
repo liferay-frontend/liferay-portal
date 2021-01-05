@@ -73,9 +73,7 @@ public class BlogPostingImageResourceImpl
 	public BlogPostingImage getBlogPostingImage(Long blogPostingImageId)
 		throws Exception {
 
-		FileEntry fileEntry = _getFileEntry(blogPostingImageId);
-
-		return _toBlogPostingImage(fileEntry);
+		return _toBlogPostingImage(_getFileEntry(blogPostingImageId));
 	}
 
 	@Override

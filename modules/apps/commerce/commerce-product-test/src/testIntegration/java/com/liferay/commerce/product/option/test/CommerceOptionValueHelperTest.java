@@ -32,7 +32,6 @@ import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -248,10 +247,9 @@ public class CommerceOptionValueHelperTest {
 	}
 
 	private void _setupPermissionChecker() throws Exception {
-		User user = UserLocalServiceUtil.getUser(_commerceCatalog.getUserId());
-
 		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(user));
+			PermissionCheckerFactoryUtil.create(
+				UserLocalServiceUtil.getUser(_commerceCatalog.getUserId())));
 	}
 
 	private void _testToCommerceOptionValues(

@@ -24,7 +24,7 @@ SelectRolesDisplayContext selectRolesDisplayContext = new SelectRolesDisplayCont
 	displayContext="<%= new SelectRolesManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, selectRolesDisplayContext) %>"
 />
 
-<aui:form cssClass="container-fluid-1280 portlet-site-memberships-assign-roles" name="fm">
+<aui:form cssClass="container-fluid container-fluid-max-xl portlet-site-memberships-assign-roles" name="fm">
 	<liferay-ui:search-container
 		id="roles"
 		searchContainer="<%= selectRolesDisplayContext.getRoleSearchSearchContainer() %>"
@@ -44,13 +44,8 @@ SelectRolesDisplayContext selectRolesDisplayContext = new SelectRolesDisplayCont
 
 			<c:choose>
 				<c:when test='<%= Objects.equals(selectRolesDisplayContext.getDisplayStyle(), "icon") %>'>
-
-					<%
-					row.setCssClass("entry-card lfr-asset-item");
-					%>
-
 					<liferay-ui:search-container-column-text>
-						<clay:vertical-card-v2
+						<clay:vertical-card
 							verticalCard="<%= new SelectRoleVerticalCard(role, renderRequest) %>"
 						/>
 					</liferay-ui:search-container-column-text>
@@ -76,7 +71,7 @@ SelectRolesDisplayContext selectRolesDisplayContext = new SelectRolesDisplayCont
 				</c:when>
 				<c:when test='<%= Objects.equals(selectRolesDisplayContext.getDisplayStyle(), "list") %>'>
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="title"
 						truncate="<%= true %>"
 					>
@@ -86,7 +81,7 @@ SelectRolesDisplayContext selectRolesDisplayContext = new SelectRolesDisplayCont
 					</liferay-ui:search-container-column-text>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="description"
 						value="<%= HtmlUtil.escape(role.getDescription(locale)) %>"
 					/>

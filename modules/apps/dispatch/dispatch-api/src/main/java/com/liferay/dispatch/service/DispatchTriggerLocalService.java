@@ -215,6 +215,9 @@ public interface DispatchTriggerLocalService
 	public DispatchTrigger fetchDispatchTrigger(long companyId, String name);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Date fetchPreviousFireDate(long dispatchTriggerId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -227,6 +230,10 @@ public interface DispatchTriggerLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DispatchTrigger getDispatchTrigger(long dispatchTriggerId)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DispatchTrigger> getDispatchTriggers(
+		boolean active, DispatchTaskClusterMode dispatchTaskClusterMode);
 
 	/**
 	 * Returns a range of all the dispatch triggers.

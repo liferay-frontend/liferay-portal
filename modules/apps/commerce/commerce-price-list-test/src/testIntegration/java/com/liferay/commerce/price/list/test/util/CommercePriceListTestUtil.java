@@ -144,13 +144,10 @@ public class CommercePriceListTestUtil {
 		CommercePriceList commercePriceList = addCommercePriceList(
 			groupId, false, type, 1.0);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId);
-
 		CommercePriceListAccountRelLocalServiceUtil.
 			addCommercePriceListAccountRel(
 				commercePriceList.getCommercePriceListId(), commerceAccountId,
-				0, serviceContext);
+				0, ServiceContextTestUtil.getServiceContext(groupId));
 
 		return commercePriceList;
 	}
@@ -163,13 +160,10 @@ public class CommercePriceListTestUtil {
 			CommercePriceListLocalServiceUtil.getCommercePriceList(
 				commercePriceListId);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId);
-
 		CommercePriceListAccountRelLocalServiceUtil.
 			addCommercePriceListAccountRel(
 				commercePriceList.getCommercePriceListId(), commerceAccountId,
-				0, serviceContext);
+				0, ServiceContextTestUtil.getServiceContext(groupId));
 
 		return commercePriceList;
 	}
@@ -181,13 +175,10 @@ public class CommercePriceListTestUtil {
 		CommercePriceList commercePriceList = addCommercePriceList(
 			groupId, false, type, 1.0);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId);
-
 		CommercePriceListChannelRelLocalServiceUtil.
 			addCommercePriceListChannelRel(
 				commercePriceList.getCommercePriceListId(), commerceChannelId,
-				0, serviceContext);
+				0, ServiceContextTestUtil.getServiceContext(groupId));
 
 		return commercePriceList;
 	}
@@ -200,13 +191,10 @@ public class CommercePriceListTestUtil {
 			CommercePriceListLocalServiceUtil.getCommercePriceList(
 				commercePriceListId);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId);
-
 		CommercePriceListChannelRelLocalServiceUtil.
 			addCommercePriceListChannelRel(
 				commercePriceList.getCommercePriceListId(), commerceChannelId,
-				0, serviceContext);
+				0, ServiceContextTestUtil.getServiceContext(groupId));
 
 		return commercePriceList;
 	}

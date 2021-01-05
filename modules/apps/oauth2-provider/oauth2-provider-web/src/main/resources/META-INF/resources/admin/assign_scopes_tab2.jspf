@@ -99,6 +99,7 @@
 						AssignableScopes subtractAssignableScopes = assignableScopes.subtract(newAssignableScopes);
 
 						unchangedAssignableScopes = subtractAssignableScopes.subtract(removedAssignableScopes);
+
 						assignableScopes = assignableScopes.add(assignedAssignableScopes);
 					}
 

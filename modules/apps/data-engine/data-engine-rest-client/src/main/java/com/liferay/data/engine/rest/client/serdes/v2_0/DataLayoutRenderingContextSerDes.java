@@ -122,6 +122,26 @@ public class DataLayoutRenderingContextSerDes {
 			sb.append(dataLayoutRenderingContext.getReadOnly());
 		}
 
+		if (dataLayoutRenderingContext.getScopeGroupId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scopeGroupId\": ");
+
+			sb.append(dataLayoutRenderingContext.getScopeGroupId());
+		}
+
+		if (dataLayoutRenderingContext.getSiteGroupId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"siteGroupId\": ");
+
+			sb.append(dataLayoutRenderingContext.getSiteGroupId());
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -191,6 +211,24 @@ public class DataLayoutRenderingContextSerDes {
 				String.valueOf(dataLayoutRenderingContext.getReadOnly()));
 		}
 
+		if (dataLayoutRenderingContext.getScopeGroupId() == null) {
+			map.put("scopeGroupId", null);
+		}
+		else {
+			map.put(
+				"scopeGroupId",
+				String.valueOf(dataLayoutRenderingContext.getScopeGroupId()));
+		}
+
+		if (dataLayoutRenderingContext.getSiteGroupId() == null) {
+			map.put("siteGroupId", null);
+		}
+		else {
+			map.put(
+				"siteGroupId",
+				String.valueOf(dataLayoutRenderingContext.getSiteGroupId()));
+		}
+
 		return map;
 	}
 
@@ -241,6 +279,18 @@ public class DataLayoutRenderingContextSerDes {
 				if (jsonParserFieldValue != null) {
 					dataLayoutRenderingContext.setReadOnly(
 						(Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "scopeGroupId")) {
+				if (jsonParserFieldValue != null) {
+					dataLayoutRenderingContext.setScopeGroupId(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "siteGroupId")) {
+				if (jsonParserFieldValue != null) {
+					dataLayoutRenderingContext.setSiteGroupId(
+						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (jsonParserFieldName.equals("status")) {

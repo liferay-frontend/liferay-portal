@@ -26,6 +26,7 @@ IGRequestHelper igRequestHelper = new IGRequestHelper(request);
 DLPortletInstanceSettings dlPortletInstanceSettings = igRequestHelper.getDLPortletInstanceSettings();
 
 long rootFolderId = dlPortletInstanceSettings.getRootFolderId();
+
 String rootFolderName = StringPool.BLANK;
 
 if (rootFolderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) {

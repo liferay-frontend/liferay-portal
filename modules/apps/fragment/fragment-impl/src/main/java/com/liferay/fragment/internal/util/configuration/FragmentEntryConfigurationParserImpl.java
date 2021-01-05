@@ -30,10 +30,12 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -42,6 +44,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -76,9 +79,23 @@ public class FragmentEntryConfigurationParserImpl
 		return defaultValuesJSONObject;
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 * #getConfigurationJSONObject(String, String, Locale)}
+	 */
+	@Deprecated
 	@Override
 	public JSONObject getConfigurationJSONObject(
 			String configuration, String editableValues)
+		throws JSONException {
+
+		return getConfigurationJSONObject(
+			configuration, editableValues, LocaleUtil.getMostRelevantLocale());
+	}
+
+	@Override
+	public JSONObject getConfigurationJSONObject(
+			String configuration, String editableValues, Locale locale)
 		throws JSONException {
 
 		JSONObject configurationDefaultValuesJSONObject =
@@ -116,7 +133,7 @@ public class FragmentEntryConfigurationParserImpl
 			configurationDefaultValuesJSONObject.put(
 				name,
 				getFieldValue(
-					configurationField,
+					configurationField, locale,
 					configurationValuesJSONObject.getString(name)));
 		}
 
@@ -197,10 +214,32 @@ public class FragmentEntryConfigurationParserImpl
 
 	@Override
 	public Object getFieldValue(
-		FragmentConfigurationField fragmentConfigurationField, String value) {
+		FragmentConfigurationField fragmentConfigurationField, Locale locale,
+		String value) {
 
-		value = GetterUtil.getString(
-			value, fragmentConfigurationField.getDefaultValue());
+		value = GetterUtil.getString(value);
+
+		if (fragmentConfigurationField.isLocalizable() &&
+			JSONUtil.isValid(value)) {
+
+			try {
+				JSONObject valueJSONObject = JSONFactoryUtil.createJSONObject(
+					value);
+
+				value = valueJSONObject.getString(
+					LocaleUtil.toLanguageId(locale),
+					valueJSONObject.getString(
+						LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault()),
+						fragmentConfigurationField.getDefaultValue()));
+			}
+			catch (JSONException jsonException) {
+				_log.error(
+					"Unable to parse configuration value JSON", jsonException);
+			}
+		}
+		else if (Validator.isNull(value)) {
+			value = fragmentConfigurationField.getDefaultValue();
+		}
 
 		if (StringUtil.equalsIgnoreCase(
 				fragmentConfigurationField.getType(), "checkbox")) {
@@ -247,20 +286,23 @@ public class FragmentEntryConfigurationParserImpl
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 * #getFieldValue(String, String, Locale, String)}
 	 */
 	@Deprecated
 	@Override
 	public Object getFieldValue(
-		String configuration, String editableValues,
-		long[] segmentsExperienceIds, String name) {
+		FragmentConfigurationField fragmentConfigurationField, String value) {
 
-		return getFieldValue(configuration, editableValues, name);
+		return getFieldValue(
+			fragmentConfigurationField, LocaleUtil.getMostRelevantLocale(),
+			value);
 	}
 
 	@Override
 	public Object getFieldValue(
-		String configuration, String editableValues, String name) {
+		String configuration, String editableValues, Locale locale,
+		String name) {
 
 		JSONObject editableValuesJSONObject = null;
 
@@ -290,10 +332,38 @@ public class FragmentEntryConfigurationParserImpl
 				continue;
 			}
 
-			return configurationValuesJSONObject.get(name);
+			return getFieldValue(
+				fragmentConfigurationField, locale,
+				configurationValuesJSONObject.getString(name));
 		}
 
 		return null;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
+	 */
+	@Deprecated
+	@Override
+	public Object getFieldValue(
+		String configuration, String editableValues,
+		long[] segmentsExperienceIds, String name) {
+
+		return getFieldValue(configuration, editableValues, name);
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 * #getFieldValue(String, String, Locale, String)}
+	 */
+	@Deprecated
+	@Override
+	public Object getFieldValue(
+		String configuration, String editableValues, String name) {
+
+		return getFieldValue(
+			configuration, editableValues, LocaleUtil.getMostRelevantLocale(),
+			name);
 	}
 
 	@Override
@@ -472,6 +542,10 @@ public class FragmentEntryConfigurationParserImpl
 		try {
 			JSONObject configurationValueJSONObject =
 				JSONFactoryUtil.createJSONObject(value);
+
+			if (configurationValueJSONObject.length() == 0) {
+				return null;
+			}
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 				JSONFactoryUtil.looseSerialize(

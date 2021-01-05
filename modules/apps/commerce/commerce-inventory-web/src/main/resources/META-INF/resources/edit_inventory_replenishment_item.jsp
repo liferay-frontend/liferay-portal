@@ -24,7 +24,7 @@ CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem = commerce
 
 <liferay-ui:error exception="<%= MVCCException.class %>" message="this-item-is-no-longer-valid-please-try-again" />
 
-<portlet:actionURL name="editCommerceInventoryReplenishmentItem" var="editCommerceInventoryReplenishmentItemActionURL" />
+<portlet:actionURL name="/commerce_inventory/edit_commerce_inventory_replenishment_item" var="editCommerceInventoryReplenishmentItemActionURL" />
 
 <c:choose>
 	<c:when test="<%= commerceInventoryReplenishmentItem == null %>">

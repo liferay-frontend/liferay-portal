@@ -88,13 +88,15 @@ definition {
 		}
 
 		if (isSet(parentSiteName)) {
+			WaitForLiferayEvent.initializeLiferayEventLog();
+
 			AssertClick(
 				locator1 = "Button#SELECT",
 				value1 = "Select");
 
 			var key_parentSiteName = "${parentSiteName}";
 
-			SelectFrame.selectFrameNoLoading(locator1 = "SitesSelectSite#SELECT_SITE_IFRAME");
+			SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
 			Search.searchCP(searchTerm = "${parentSiteName}");
 
@@ -353,6 +355,8 @@ definition {
 	macro assignUserAsMemberCP {
 		var key_cardText = "${userScreenName}";
 
+		WaitForLiferayEvent.initializeLiferayEventLog();
+
 		LexiconEntry.gotoAdd();
 
 		AssertVisible(locator1 = "Button#DONE");
@@ -460,44 +464,79 @@ definition {
 	}
 
 	macro configureCurrentLanguagesCP {
-		if (IsNotVisible(locator1 = "SiteSettingsDisplaySettings#DEFINE_DEFAULT_AND_AVAILABLE_SITE_LANGUAGES_RADIO")) {
-			if (isSet(localizedLanguageTab)) {
+		if (isSet(localizedLanguageTab)) {
+			if (IsElementNotPresent(key_tab = "${localizedLanguageTab}", locator1 = "NavTab#ACTIVE_TAB_LINK")) {
 				Navigator.gotoNavTab(navTab = "${localizedLanguageTab}");
 			}
-			else {
+		}
+		else {
+			if (IsElementNotPresent(key_tab = "Languages", locator1 = "NavTab#ACTIVE_TAB_LINK")) {
 				Navigator.gotoNavTab(navTab = "Languages");
 			}
 		}
 
-		Check(locator1 = "SiteSettingsDisplaySettings#DEFINE_DEFAULT_AND_AVAILABLE_SITE_LANGUAGES_RADIO");
+		Check.checkNotVisible(
+			index = "2",
+			locator1 = "SiteSettingsDisplaySettings#LANGUAGES_RADIO");
 
 		if (isSet(currentSiteLanguages)) {
-			while (IsElementPresent(locator1 = "LanguageConfiguration#LANGUAGES_CURRENT_SELECT")) {
-				Click(locator1 = "LanguageConfiguration#LANGUAGES_CURRENT_SELECT");
-
-				Click(locator1 = "SiteSettingsDisplaySettings#MOVE_CURRENT_TO_AVAILABLE_BUTTON");
-			}
-
-			for (var currentSiteLanguage : list "${currentSiteLanguages}") {
-				var currentSiteLanguage = "${currentSiteLanguage}";
-
-				Select(
-					locator1 = "LanguageConfiguration#LANGUAGES_AVAILABLE",
-					value1 = "${currentSiteLanguage}");
+			while (IsElementPresent(index = "1", key_position = "right", locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION")) {
+				Click(
+					index = "1",
+					key_position = "right",
+					locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION");
 
 				Click(locator1 = "SiteSettingsDisplaySettings#MOVE_AVAILABLE_TO_CURRENT_BUTTON");
-
-				AssertTextEquals.assertPartialText(
-					locator1 = "LanguageConfiguration#LANGUAGES_CURRENT",
-					value1 = "${currentSiteLanguage}");
 			}
-		}
 
-		if (isSet(defaultSiteLanguage)) {
 			var defaultSiteLanguage = "${defaultSiteLanguage}";
 
 			Select(
-				locator1 = "Select#DEFAULT_LANGUAGE",
+				locator1 = "SiteSettingsDisplaySettings#DEFAULT_LANGUAGE_SELECT_FIELD",
+				value1 = "${defaultSiteLanguage}");
+
+			while (IsElementPresent(index = "2", key_position = "left", locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION")) {
+				var currentSiteLanguage = selenium.getText("//div[contains(@class,'listbox-left')]//select/option");
+
+				if ("${currentSiteLanguage}" == "${defaultSiteLanguage}") {
+					Click(
+						index = "2",
+						key_position = "left",
+						locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION");
+
+					Click(locator1 = "SiteSettingsDisplaySettings#MOVE_CURRENT_TO_AVAILABLE_BUTTON");
+				}
+				else {
+					Click(
+						index = "1",
+						key_position = "left",
+						locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION");
+
+					Click(locator1 = "SiteSettingsDisplaySettings#MOVE_CURRENT_TO_AVAILABLE_BUTTON");
+				}
+			}
+
+			for (var currentSiteLanguage : list "${currentSiteLanguages}") {
+				if ("${currentSiteLanguage}" != "${defaultSiteLanguage}") {
+					DoubleClick(
+						key_optionValue = "${currentSiteLanguage}",
+						key_position = "right",
+						locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_SPECIFIC_OPTION");
+
+					Click(locator1 = "SiteSettingsDisplaySettings#MOVE_AVAILABLE_TO_CURRENT_BUTTON");
+
+					AssertTextEquals.assertPartialText(
+						key_position = "left",
+						locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_FIELD",
+						value1 = "${currentSiteLanguage}");
+				}
+			}
+		}
+		else if (isSet(defaultSiteLanguage)) {
+			var defaultSiteLanguage = "${defaultSiteLanguage}";
+
+			Select(
+				locator1 = "SiteSettingsDisplaySettings#DEFAULT_LANGUAGE_SELECT_FIELD",
 				value1 = "${defaultSiteLanguage}");
 		}
 
@@ -1155,42 +1194,6 @@ definition {
 		AssertVisible(
 			key_tableEntry = "${siteName}",
 			locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
-	}
-
-	macro viewCurrentLanguagesCP {
-		var key_displaySettings = "${displaySettings}";
-
-		if (IsNotVisible(locator1 = "SiteSettingsDisplaySettings#DEFINE_DEFAULT_AND_AVAILABLE_SITE_LANGUAGES_RADIO")) {
-			Navigator.gotoNavTab(navTab = "Languages");
-		}
-
-		Check(
-			locator1 = "SiteSettingsDisplaySettings#DEFINE_DEFAULT_AND_AVAILABLE_SITE_LANGUAGES_RADIO",
-			value1 = "Display Settings");
-
-		for (var currentSiteLanguage : list "${currentSiteLanguages}") {
-			var currentSiteLanguage = "${currentSiteLanguage}";
-
-			AssertTextEquals.assertPartialText(
-				locator1 = "LanguageConfiguration#LANGUAGES_CURRENT",
-				value1 = "${currentSiteLanguage}");
-		}
-
-		for (var availableSiteLanguage : list "${availableSiteLanguages}") {
-			var availableSiteLanguage = "${availableSiteLanguage}";
-
-			AssertTextEquals.assertPartialText(
-				locator1 = "LanguageConfiguration#LANGUAGES_AVAILABLE",
-				value1 = "${availableSiteLanguage}");
-		}
-
-		if (isSet(defaultSiteLanguage)) {
-			var defaultSiteLanguage = "${defaultSiteLanguage}";
-
-			Select(
-				locator1 = "Select#DEFAULT_LANGUAGE",
-				value1 = "${defaultSiteLanguage}");
-		}
 	}
 
 	macro viewCustomSiteLogoInDifferentViews {

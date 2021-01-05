@@ -35,10 +35,158 @@ definition {
 		}
 	}
 
+	@description = "This is a use case for LPS-80771."
+	@priority = "5"
+	test ChangeFieldTypeThatBelongsToARule {
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName();
+
+		Form.addTextField(fieldPositionNumber = "1");
+
+		var fieldNameTextField = FormFields.getFieldName();
+
+		Form.editFieldLabelMetal(fieldValue = "Text Field");
+
+		Form.closeSidebar();
+
+		Form.addTextField(fieldPositionNumber = "2");
+
+		Form.editFieldLabelMetal(fieldValue = "Text Field 2");
+
+		Form.closeSidebar();
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text Field",
+			conditionFieldValue = "test",
+			conditionOperator = "Is equal to",
+			conditionRowNumber = "1",
+			conditionValueType = "Value");
+
+		FormRules.configureActionOptions(
+			action = "Require",
+			actionRowNumber = "1",
+			actionTarget = "Text Field 2");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		Form.save();
+
+		FormsAdminNavigator.gotoEditField(fieldName = "${fieldNameTextField}");
+
+		Form.changeFieldTypeModalConfirmation(selectOption = "Select from List");
+
+		FormFields.viewTextLabel(
+			fieldLabel = "Text Field",
+			fieldName = "${fieldNameTextField}");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.viewBrokenRule(ruleNumber = "1");
+	}
+
+	@description = "This is a use case for LPS-80771."
+	@priority = "5"
+	test ChangeFieldTypeThatBelongsToCalculatorExpression {
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		var fieldNameNumericField = FormFields.getFieldName();
+
+		Form.editFieldLabelMetal(fieldValue = "Numeric Field");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "2",
+			fieldType = "Numeric");
+
+		Form.editFieldLabelMetal(fieldValue = "Numeric Field 2");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "3",
+			fieldType = "Numeric");
+
+		Form.editFieldLabelMetal(fieldValue = "Total");
+
+		Form.closeSidebar();
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.selectConditionField(
+			conditionField = "Numeric Field",
+			conditionRowNumber = "1");
+
+		FormRules.selectConditionOperator(
+			conditionOperator = "Is not empty",
+			conditionRowNumber = "1");
+
+		FormRules.selectAction(
+			action = "Calculate",
+			actionRowNumber = "1");
+
+		FormRules.selectActionTarget(
+			actionRowNumber = "1",
+			actionTarget = "Total");
+
+		FormRules.selectCalculateField(calculateFieldOption = "Numeric Field");
+
+		FormRules.chooseCalculateOperator(calculateOperator = "*");
+
+		FormRules.selectCalculateField(calculateFieldOption = "Numeric Field 2");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		Form.save();
+
+		FormsAdminNavigator.gotoEditField(fieldName = "${fieldNameNumericField}");
+
+		Form.changeFieldTypeModalConfirmation(selectOption = "Select from List");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.viewBrokenRule(ruleNumber = "1");
+	}
+
 	@description = "This is a use case for LPS-70446."
 	@priority = "5"
 	test ConfigureAutofillRule {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#ConfigureAutofillRule";
 
@@ -159,7 +307,8 @@ definition {
 	@description = "This is a use case for LPS-71592."
 	@priority = "5"
 	test ConfigureCalculateRule {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#ConfigureCalculateRule";
 
 		var portalURL = PropsUtil.get("portal.url");
@@ -220,7 +369,9 @@ definition {
 			action = "Calculate",
 			actionRowNumber = "1");
 
-		FormRules.selectCalculateResultField(calculateResultField = "Total");
+		FormRules.selectActionTarget(
+			actionRowNumber = "1",
+			actionTarget = "Total");
 
 		FormRules.selectCalculateField(calculateFieldOption = "Value");
 
@@ -269,9 +420,99 @@ definition {
 			fieldValue = "50");
 	}
 
+	@description = "This is a use case for LPS-122103."
+	@priority = "5"
+	test ConfigureCalculateRuleExpression {
+		property portal.acceptance = "true";
+		property portal.upstream = "true";
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		var fieldNameQuantity = FormFields.getFieldName();
+
+		Form.editFieldLabelMetal(fieldValue = "Quantity");
+
+		Form.gotoAdvancedTab();
+
+		Form.editFieldReferenceMetal(fieldValue = "QuantityReference");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "2",
+			fieldType = "Numeric");
+
+		var fieldNameValue = FormFields.getFieldName();
+
+		Form.editFieldLabelMetal(fieldValue = "Value");
+
+		Form.gotoAdvancedTab();
+
+		Form.editFieldReferenceMetal(fieldValue = "ValueReference");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "3",
+			fieldType = "Numeric");
+
+		var fieldNameTotal = FormFields.getFieldName();
+
+		Form.editFieldLabelMetal(fieldValue = "Total");
+
+		Form.gotoAdvancedTab();
+
+		Form.editFieldReferenceMetal(fieldValue = "TotalReference");
+
+		Form.closeSidebar();
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.selectConditionField(
+			conditionField = "Quantity",
+			conditionRowNumber = "1");
+
+		FormRules.selectConditionOperator(
+			conditionOperator = "Is not empty",
+			conditionRowNumber = "1");
+
+		FormRules.selectAction(
+			action = "Calculate",
+			actionRowNumber = "1");
+
+		FormRules.selectActionTarget(
+			actionRowNumber = "1",
+			actionTarget = "Total");
+
+		FormRules.selectCalculateFieldByFieldReference(calculateFieldOption = "ValueReference");
+
+		FormRules.chooseCalculateOperator(calculateOperator = "*");
+
+		FormRules.selectCalculateFieldByFieldReference(calculateFieldOption = "QuantityReference");
+
+		FormRules.viewCalculatorExpression(calculatorExpression = "Value*Quantity");
+
+		FormRules.save();
+	}
+
 	@priority = "5"
 	test ConfigureRequireRule {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#ConfigureRequireRule";
 
 		var portalURL = PropsUtil.get("portal.url");
@@ -361,6 +602,8 @@ definition {
 
 	@priority = "5"
 	test ConfigureShowRuleUsingAndCondition {
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#ConfigureShowRuleUsingAndCondition";
 
 		var portalURL = PropsUtil.get("portal.url");
@@ -483,7 +726,8 @@ definition {
 
 	@priority = "4"
 	test ConfigureUserBelongsToRule {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#ConfigureUserBelongsToRule";
 
 		Navigator.openURL();
@@ -655,7 +899,7 @@ definition {
 	@description = "This is a use case for LPS-119818."
 	@priority = "5"
 	test DeleteFieldThatBelongsToARule {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
 		property portal.upstream = "true";
 
 		Navigator.openURL();
@@ -716,7 +960,8 @@ definition {
 	@description = "This is a use case for LPS-79095."
 	@priority = "5"
 	test EditRule {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#EditRule";
 
 		Navigator.openURL();
@@ -797,7 +1042,8 @@ definition {
 	@description = "This is a use case for LPS-71399."
 	@priority = "4"
 	test UseIsNotEmptyRuleToShowField {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#UseIsNotEmptyRuleToShowField";
 
 		Navigator.openURL();
@@ -898,7 +1144,8 @@ definition {
 	@description = "This is a use case for LPS-73332."
 	@priority = "2"
 	test ViewExistingFormRuleIsNotCopiedToNewForm {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "true";
 
 		Navigator.openURL();
 
@@ -958,7 +1205,8 @@ definition {
 	@description = "This is a use case for LPS-71466."
 	@priority = "2"
 	test ViewPredefinedValueCanBeUsedToRequireAnotherField {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#ViewPredefinedValueCanBeUsedToRequireAnotherField";
 
 		Navigator.openURL();
@@ -1050,6 +1298,7 @@ definition {
 	@priority = "2"
 	test ViewPreviousFormRuleIsCopiedToNewDuplicatedForm {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#ViewPreviousFormRuleIsCopiedToNewDuplicatedForm";
 
 		Navigator.openURL();
@@ -1121,6 +1370,7 @@ definition {
 	@priority = "2"
 	test ViewRuleConditionOperatorFieldOptions {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#ViewRuleConditionOperatorFieldOptions";
 
 		Navigator.openURL();
@@ -1156,6 +1406,7 @@ definition {
 	@priority = "3"
 	test ViewShowRuleActivationAfterInputtingUnrelatedField {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormRules#ViewShowRuleActivationAfterInputtingUnrelatedField";
 
 		Navigator.openURL();

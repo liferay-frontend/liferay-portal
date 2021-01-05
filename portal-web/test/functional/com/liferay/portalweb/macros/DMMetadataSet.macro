@@ -1,6 +1,24 @@
 definition {
 
-	macro add {
+	macro addMultipleFields {
+		DMMetadataSet.gotoFieldsTab();
+
+		for (var fieldType : list "${fieldType}") {
+			var key_fieldType = "${fieldType}";
+
+			DoubleClick(locator1 = "DocumentsAndMediaMetadataSets#ADD_FIELD_TYPE");
+
+			AssertElementPresent(locator1 = "DocumentsAndMediaMetadataSets#SIDEBAR_ACTIVE_BASIC_TAB");
+
+			DMMetadataSet.editFieldLabel(fieldType = "${fieldType}");
+
+			DMMetadataSet.gotoBack();
+		}
+
+		DDLDataDefinition.save();
+	}
+
+	macro addTitle {
 		LexiconEntry.gotoAdd();
 
 		var key_headerTitle = "New Metadata Set";
@@ -10,60 +28,6 @@ definition {
 			value1 = "New Metadata Set");
 
 		PortletEntry.inputName(name = "${metadataSetName}");
-
-		for (var dmMetadataSetFieldName : list "${dmMetadataSetFieldNames}") {
-			DMMetadataSet.addField(
-				field = "${dmMetadataSetFieldName}",
-				fieldFieldLabel = "${dmMetadataSetFieldName}",
-				fieldName = StringUtil.replace("${dmMetadataSetFieldName}", " ", ""));
-		}
-	}
-
-	macro addField {
-		var key_field = "${field}";
-
-		DragAndDrop(
-			locator1 = "DDMEditStructure#FIELDS_FIELD",
-			locator2 = "DDMEditStructure#FORM_BUILDER",
-			value1 = "${field}");
-
-		var key_fieldFieldLabel = "${field}";
-
-		Click(locator1 = "DDMEditStructure#FORM_FIELD");
-
-		DoubleClick(locator1 = "DDMEditStructure#SETTINGS_FIELD_LABEL");
-
-		Type(
-			locator1 = "DDMEditStructure#SETTINGS_CELL_EDITOR_FIELD",
-			value1 = "${fieldFieldLabel}");
-
-		AssertClick(
-			locator1 = "DDMEditStructure#SETTINGS_CELL_EDITOR_SAVE_BUTTON",
-			value1 = "Save");
-
-		AssertTextEquals(
-			locator1 = "DDMEditStructure#SETTINGS_FIELD_LABEL",
-			value1 = "${fieldFieldLabel}");
-
-		DoubleClick(locator1 = "DDMEditStructure#SETTINGS_NAME");
-
-		Type(
-			locator1 = "DDMEditStructure#SETTINGS_CELL_EDITOR_FIELD",
-			value1 = "${fieldName}");
-
-		AssertClick(
-			locator1 = "DDMEditStructure#SETTINGS_CELL_EDITOR_SAVE_BUTTON",
-			value1 = "Save");
-
-		AssertTextEquals(
-			locator1 = "DDMEditStructure#SETTINGS_NAME",
-			value1 = "${fieldName}");
-
-		AssertClick(
-			locator1 = "DDMEditStructure#FIELDS_LINK",
-			value1 = "Fields");
-
-		Click(locator1 = "TextInput#NAME");
 	}
 
 	macro delete {
@@ -89,6 +53,47 @@ definition {
 				locator1 = "DocumentsAndMediaMetadataSets#METADATA_SETS_NAME",
 				value1 = "${metadataSetName}");
 		}
+	}
+
+	macro editFieldLabel {
+		Pause(locator1 = "1000");
+
+		Type(
+			key_fieldName = "label",
+			locator1 = "FormFields#TEXT_FIELD",
+			value1 = "${fieldType}");
+
+		if (!(isSet(fieldName))) {
+			var fieldName = StringUtil.replace("${fieldType}", " ", "");
+		}
+
+		DMMetadataSet.gotoAdvancedTab();
+
+		AssertTextEquals(
+			locator1 = "FormFields#FIELD_NAME_EDIT",
+			value1 = "${fieldName}");
+
+		DMMetadataSet.gotoBasicTab();
+
+		AssertTextEquals(
+			locator1 = "DocumentsAndMediaMetadataSets#FIELD_LABEL",
+			value1 = "${fieldType}");
+	}
+
+	macro gotoAdvancedTab {
+		Click(locator1 = "DocumentsAndMediaMetadataSets#SIDEBAR_ADVANCED_TAB");
+	}
+
+	macro gotoBack {
+		Click.pauseClickAt(locator1 = "DocumentsAndMediaMetadataSets#SIDEBAR_BACK");
+	}
+
+	macro gotoBasicTab {
+		Click(locator1 = "DocumentsAndMediaMetadataSets#SIDEBAR_BASIC_TAB");
+	}
+
+	macro gotoFieldsTab {
+		Click(locator1 = "DocumentsAndMediaMetadataSets#SIDEBAR_FIELDS_TAB");
 	}
 
 	macro selectMetadataSetsFrame {

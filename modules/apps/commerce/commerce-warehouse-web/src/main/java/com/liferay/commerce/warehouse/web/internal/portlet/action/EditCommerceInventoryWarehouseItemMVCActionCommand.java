@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS,
-		"mvc.command.name=editCommerceInventoryWarehouseItem"
+		"mvc.command.name=/cp_definitions/edit_commerce_inventory_warehouse_item"
 	},
 	service = MVCActionCommand.class
 )
@@ -84,11 +84,12 @@ public class EditCommerceInventoryWarehouseItemMVCActionCommand
 			actionRequest, "commerceInventoryWarehouseItemId");
 		String sku = ParamUtil.getString(actionRequest, "sku");
 		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
-		long mvccVersion = ParamUtil.getLong(actionRequest, "mvccVersion");
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem = null;
 
 		if (commerceInventoryWarehouseItemId > 0) {
+			long mvccVersion = ParamUtil.getLong(actionRequest, "mvccVersion");
+
 			commerceInventoryWarehouseItem =
 				_commerceInventoryWarehouseItemService.
 					updateCommerceInventoryWarehouseItem(

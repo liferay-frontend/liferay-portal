@@ -4529,6 +4529,7 @@ public class DDMFormInstanceRecordPersistenceImpl
 		ctStrictColumnNames.add("formInstanceVersion");
 		ctStrictColumnNames.add("storageId");
 		ctStrictColumnNames.add("version");
+		ctStrictColumnNames.add("ipAddress");
 		ctStrictColumnNames.add("lastPublishDate");
 
 		_ctColumnNamesMap.put(
@@ -4761,15 +4762,6 @@ public class DDMFormInstanceRecordPersistenceImpl
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
-
-	static {
-		try {
-			Class.forName(DDMPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
 
 	@Override
 	protected FinderCache getFinderCache() {

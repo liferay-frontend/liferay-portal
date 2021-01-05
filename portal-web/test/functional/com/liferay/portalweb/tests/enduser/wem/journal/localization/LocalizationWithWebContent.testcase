@@ -135,14 +135,9 @@ definition {
 
 			WebContentStructures.addCP(structureName = "WC Structure Name");
 
-			DynamicDataMapping.addField(
-				field = "Text",
+			DataEngine.addField(
 				fieldFieldLabel = "Text",
 				fieldName = "Text");
-		}
-
-		task ("Add the Spanish (Spain) translation to structure") {
-			Form.addTranslation(localizedLanguage = "Spanish (Spain)");
 
 			WebContentStructures.saveCP(structureName = "WC Structure Name");
 		}
@@ -159,8 +154,8 @@ definition {
 
 		task ("Type content in Text field under en-US") {
 			Type(
-				key_fieldName = "Text",
-				locator1 = "TextInput#DDM",
+				key_fieldFieldLabel = "Text",
+				locator1 = "WCEditWebContent#TEXT_INPUT",
 				value1 = "This is a Text field");
 		}
 
@@ -168,8 +163,8 @@ definition {
 			PortletEntry.changeLocale(locale = "es-ES");
 
 			Type(
-				key_fieldName = "Text",
-				locator1 = "TextInput#DDM",
+				key_fieldFieldLabel = "Text",
+				locator1 = "WCEditWebContent#TEXT_INPUT",
 				value1 = "Este es un campo de texto");
 
 			PortletEntry.publish();
@@ -182,16 +177,16 @@ definition {
 
 			AssertAttributeValue(
 				attribute1 = "value",
-				key_fieldName = "Text",
-				locator1 = "TextInput#DDM",
+				key_fieldFieldLabel = "Text",
+				locator1 = "WCEditWebContent#TEXT_INPUT",
 				value1 = "This is a Text field");
 
 			PortletEntry.changeLocale(locale = "es-ES");
 
 			AssertAttributeValue(
 				attribute1 = "value",
-				key_fieldName = "Text",
-				locator1 = "TextInput#DDM",
+				key_fieldFieldLabel = "Text",
+				locator1 = "WCEditWebContent#TEXT_INPUT",
 				value1 = "Este es un campo de texto");
 		}
 	}
@@ -348,14 +343,9 @@ definition {
 
 			WebContentStructures.addCP(structureName = "WC Structure Name");
 
-			DynamicDataMapping.addField(
-				field = "Text",
+			DataEngine.addField(
 				fieldFieldLabel = "Text",
 				fieldName = "Text");
-		}
-
-		task ("Add the Spanish (Spain) translation to structure") {
-			Form.addTranslation(localizedLanguage = "Spanish (Spain)");
 
 			WebContentStructures.saveCP(structureName = "WC Structure Name");
 		}
@@ -368,15 +358,15 @@ definition {
 			AssertVisible(locator1 = "WCEditWebContent#SIDEBAR");
 
 			Type(
-				key_fieldName = "Text",
-				locator1 = "TextInput#DDM",
+				key_fieldFieldLabel = "Text",
+				locator1 = "WCEditWebContent#TEXT_INPUT",
 				value1 = "This is a Text field");
 
 			PortletEntry.changeLocale(locale = "es-ES");
 
 			Type(
-				key_fieldName = "Text",
-				locator1 = "TextInput#DDM",
+				key_fieldFieldLabel = "Text",
+				locator1 = "WCEditWebContent#TEXT_INPUT",
 				value1 = "Este es un campo de texto");
 
 			WebContentStructures.saveCP(structureName = "WC Structure Name");
@@ -393,16 +383,16 @@ definition {
 
 			AssertAttributeValue(
 				attribute1 = "value",
-				key_fieldName = "Text",
-				locator1 = "TextInput#DDM",
+				key_fieldFieldLabel = "Text",
+				locator1 = "WCEditWebContent#TEXT_INPUT",
 				value1 = "This is a Text field");
 
 			PortletEntry.changeLocale(locale = "es-ES");
 
 			AssertAttributeValue(
 				attribute1 = "value",
-				key_fieldName = "Text",
-				locator1 = "TextInput#DDM",
+				key_fieldFieldLabel = "Text",
+				locator1 = "WCEditWebContent#TEXT_INPUT",
 				value1 = "Este es un campo de texto");
 		}
 	}

@@ -22,7 +22,7 @@ CommerceOrderEditDisplayContext commerceOrderEditDisplayContext = (CommerceOrder
 CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder();
 %>
 
-<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderBillingAddressActionURL" />
+<portlet:actionURL name="/commerce_order/edit_commerce_order" var="editCommerceOrderBillingAddressActionURL" />
 
 <commerce-ui:modal-content
 	contentCssClasses="p-0"
@@ -39,7 +39,7 @@ CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder()
 					"commerceOrderId", String.valueOf(commerceOrder.getCommerceOrderId())
 				).build()
 			%>'
-			creationMenu='<%= commerceOrderEditDisplayContext.getCommerceAddressCreationMenu("editCommerceOrderBillingAddress") %>'
+			creationMenu='<%= commerceOrderEditDisplayContext.getCommerceAddressCreationMenu("/commerce_order/edit_commerce_order_billing_address") %>'
 			dataProviderKey="<%= CommerceOrderDataSetConstants.COMMERCE_DATA_SET_KEY_BILLING_ADDRESSES %>"
 			formId="fm"
 			id="<%= CommerceOrderDataSetConstants.COMMERCE_DATA_SET_KEY_BILLING_ADDRESSES %>"

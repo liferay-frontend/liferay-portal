@@ -34,6 +34,7 @@ import org.osgi.service.component.annotations.Component;
 public class PunchOutSessionContributorImpl
 	implements PunchOutSessionContributor {
 
+	@Override
 	public HashMap<String, Object> getPunchOutSessionAttributes(
 		PunchOutContext punchOutContext) {
 

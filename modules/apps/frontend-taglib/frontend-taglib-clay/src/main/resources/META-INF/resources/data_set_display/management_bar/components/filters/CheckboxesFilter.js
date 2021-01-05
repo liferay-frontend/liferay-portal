@@ -53,7 +53,7 @@ function getOdataString(values, key, exclude = false) {
 
 	return null;
 }
-function CheckboxesFilter({actions, id, items, value: valueProp}) {
+function CheckboxesFilter({id, items, updateFilterState, value: valueProp}) {
 	const [itemsValues, setItemsValues] = useState(
 		(valueProp && valueProp.itemsValues) || []
 	);
@@ -147,7 +147,7 @@ function CheckboxesFilter({actions, id, items, value: valueProp}) {
 					disabled={submitDisabled}
 					onClick={() =>
 						actionType !== 'delete'
-							? actions.updateFilterState(
+							? updateFilterState(
 									id,
 									{
 										exclude,
@@ -156,7 +156,7 @@ function CheckboxesFilter({actions, id, items, value: valueProp}) {
 									formatValue(itemsValues, items, exclude),
 									getOdataString(itemsValues, id, exclude)
 							  )
-							: actions.updateFilterState(id)
+							: updateFilterState(id)
 					}
 					small
 				>
@@ -172,9 +172,6 @@ function CheckboxesFilter({actions, id, items, value: valueProp}) {
 }
 
 CheckboxesFilter.propTypes = {
-	actions: PropTypes.shape({
-		updateFilterState: PropTypes.func.isRequired,
-	}),
 	id: PropTypes.string.isRequired,
 	items: PropTypes.arrayOf(
 		PropTypes.shape({
@@ -182,6 +179,7 @@ CheckboxesFilter.propTypes = {
 			value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		})
 	),
+	updateFilterState: PropTypes.func.isRequired,
 	value: PropTypes.shape({
 		exclude: PropTypes.bool,
 		itemsValues: PropTypes.arrayOf(

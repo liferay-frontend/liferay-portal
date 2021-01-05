@@ -12,9 +12,7 @@
  * details.
  */
 
-import {PortletBase, openSelectionModal} from 'frontend-js-web';
-import * as dom from 'metal-dom';
-import {EventHandler} from 'metal-events';
+import {PortletBase, delegate, openSelectionModal} from 'frontend-js-web';
 import {Config} from 'metal-state';
 
 class PersonAccountEntryEventHandler extends PortletBase {
@@ -22,29 +20,26 @@ class PersonAccountEntryEventHandler extends PortletBase {
 	/**
 	 * @inheritDoc
 	 */
-	created() {
-		this.eventHandler_ = new EventHandler();
+	attached() {
+		this.selectUserButton.addEventListener(
+			'click',
+			this._handleSelectUserButtonClicked
+		);
+
+		this._removeUserButtonHandle = delegate(
+			this.container,
+			'click',
+			this.removeUserLinkSelector,
+			this._handleRemoveUserButtonClicked.bind(this)
+		);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	attached() {
-		this.eventHandler_.add(
-			dom.on(
-				this.selectUserButton,
-				'click',
-				this._handleSelectUserButtonClicked.bind(this)
-			)
-		);
-
-		this.eventHandler_.add(
-			dom.delegate(
-				this.container,
-				'click',
-				this.removeUserLinkSelector,
-				this._handleRemoveUserButtonClicked.bind(this)
-			)
+	created() {
+		this._handleSelectUserButtonClicked = this._handleSelectUserButtonClicked.bind(
+			this
 		);
 	}
 
@@ -53,7 +48,13 @@ class PersonAccountEntryEventHandler extends PortletBase {
 	 */
 	detached() {
 		super.detached();
-		this.eventHandler_.removeAllListeners();
+
+		this.selectUserButton.removeEventListener(
+			'click',
+			this._handleSelectUserButtonClicked
+		);
+
+		this._removeUserButtonHandle.dispose();
 	}
 
 	_handleOnSelect(selectedItemData) {

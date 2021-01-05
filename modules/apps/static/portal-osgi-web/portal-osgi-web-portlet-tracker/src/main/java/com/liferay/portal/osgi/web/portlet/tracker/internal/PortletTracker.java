@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.ResourceActionsException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -45,7 +46,6 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletInstanceFactory;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
-import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -68,6 +68,7 @@ import com.liferay.portal.model.impl.PublicRenderParameterImpl;
 import com.liferay.portal.osgi.web.servlet.context.helper.ServletContextHelperFactory;
 import com.liferay.portal.osgi.web.servlet.context.helper.ServletContextHelperRegistration;
 import com.liferay.portal.service.impl.ResourcePermissionLocalServiceImpl.IndividualPortletResourcePermissionProvider;
+import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.WebAppPool;
 import com.liferay.portlet.PortletBagFactory;
 import com.liferay.portlet.PortletContextBag;
@@ -374,9 +375,11 @@ public class PortletTracker
 
 			portletBagFactory.create(portletModel, portlet, true);
 
-			deployPortlet(
-				serviceReference, portletModel,
-				_companyLocalService.getCompanies());
+			_resourceActions.populatePortletResource(
+				portletModel, bundleClassLoader,
+				serviceRegistrations.getSources());
+
+			deployPortlet(serviceReference, portletModel);
 
 			portletModel.setReady(true);
 
@@ -1256,8 +1259,7 @@ public class PortletTracker
 
 	protected void deployPortlet(
 			ServiceReference<Portlet> serviceReference,
-			com.liferay.portal.kernel.model.Portlet portletModel,
-			List<Company> companies)
+			com.liferay.portal.kernel.model.Portlet portletModel)
 		throws PortalException {
 
 		List<String> categoryNames = StringPlus.asList(
@@ -1267,17 +1269,8 @@ public class PortletTracker
 			categoryNames.add("category.undefined");
 		}
 
-		String[] categoryNamesArray = ArrayUtil.toStringArray(categoryNames);
-
-		for (Company company : companies) {
-			com.liferay.portal.kernel.model.Portlet companyPortletModel =
-				(com.liferay.portal.kernel.model.Portlet)portletModel.clone();
-
-			companyPortletModel.setCompanyId(company.getCompanyId());
-
-			_portletLocalService.deployRemotePortlet(
-				companyPortletModel, categoryNamesArray, false);
-		}
+		_portletLocalService.deployRemotePortlet(
+			portletModel, ArrayUtil.toStringArray(categoryNames), false);
 	}
 
 	protected Object get(
@@ -1318,23 +1311,6 @@ public class PortletTracker
 		}
 
 		return serviceRegistrations;
-	}
-
-	protected void readResourceActions(
-		Configuration configuration, ClassLoader classLoader) {
-
-		Properties properties = configuration.getProperties();
-
-		try {
-			ResourceActionsUtil.read(
-				classLoader,
-				StringUtil.split(
-					properties.getProperty(
-						PropsKeys.RESOURCE_ACTIONS_CONFIGS)));
-		}
-		catch (Exception exception) {
-			_log.error(exception, exception);
-		}
 	}
 
 	@Reference(unbind = "-")
@@ -1509,6 +1485,10 @@ public class PortletTracker
 			_serviceReferences.add(serviceReference);
 		}
 
+		public synchronized String[] getSources() {
+			return _sources;
+		}
+
 		public synchronized void removeServiceReference(
 			ServiceReference<Portlet> serviceReference) {
 
@@ -1540,7 +1520,23 @@ public class PortletTracker
 					ConfigurationFactoryUtil.getConfiguration(
 						classLoader, "portlet");
 
-				readResourceActions(configuration, classLoader);
+				Properties properties = configuration.getProperties();
+
+				_sources = StringUtil.split(
+					properties.getProperty(PropsKeys.RESOURCE_ACTIONS_CONFIGS));
+
+				if (!PropsValues.RESOURCE_ACTIONS_STRICT_MODE_ENABLED) {
+					try {
+						_resourceActions.populateModelResources(
+							classLoader, _sources);
+					}
+					catch (ResourceActionsException resourceActionsException) {
+						_log.error(
+							"Unable to read resource actions config in " +
+								PropsKeys.RESOURCE_ACTIONS_CONFIGS,
+							resourceActionsException);
+					}
+				}
 			}
 		}
 
@@ -1556,6 +1552,7 @@ public class PortletTracker
 		private PortletApp _portletApp;
 		private final List<ServiceReference<Portlet>> _serviceReferences =
 			new ArrayList<>();
+		private String[] _sources;
 
 	}
 

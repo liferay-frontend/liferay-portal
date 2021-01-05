@@ -22,7 +22,7 @@ CommerceOrderEditDisplayContext commerceOrderEditDisplayContext = (CommerceOrder
 long commerceOrderId = commerceOrderEditDisplayContext.getCommerceOrderId();
 %>
 
-<liferay-portlet:actionURL name="editCommerceOrder" var="editCommerceOrderURL" />
+<liferay-portlet:actionURL name="/commerce_order/edit_commerce_order" var="editCommerceOrderURL" />
 
 <aui:fieldset-group markupView="lexicon">
 	<aui:form action="<%= editCommerceOrderURL %>" method="post" name="orderCustomFieldFm">

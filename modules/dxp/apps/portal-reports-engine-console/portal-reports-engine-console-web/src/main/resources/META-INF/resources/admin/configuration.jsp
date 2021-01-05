@@ -18,6 +18,7 @@
 
 <%
 boolean enabled = true;
+
 String emailFromName = ParamUtil.getString(request, "preferences--emailFromName--", reportsGroupServiceEmailConfiguration.emailFromName());
 String emailFromAddress = ParamUtil.getString(request, "preferences--emailFromAddress--", reportsGroupServiceEmailConfiguration.emailFromAddress());
 

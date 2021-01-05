@@ -24,6 +24,7 @@ const ConfigurationFieldPropTypes = {
 	]),
 	description: PropTypes.string,
 	label: PropTypes.string,
+	localizable: PropTypes.bool,
 	name: PropTypes.string.isRequired,
 	type: PropTypes.string,
 };

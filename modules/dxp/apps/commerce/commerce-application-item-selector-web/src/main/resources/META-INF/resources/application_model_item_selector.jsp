@@ -51,7 +51,7 @@ PortletURL portletURL = commerceApplicationModelItemSelectorViewDisplayContext.g
 	</liferay-frontend:management-bar-filters>
 </liferay-frontend:management-bar>
 
-<div class="container-fluid-1280" id="<portlet:namespace />commerceApplicationModelSelectorWrapper">
+<div class="container-fluid container-fluid-max-xl" id="<portlet:namespace />commerceApplicationModelSelectorWrapper">
 	<liferay-ui:search-container
 		id="commerceApplicationModels"
 		searchContainer="<%= commerceApplicationModelItemSelectorViewDisplayContext.getSearchContainer() %>"
@@ -73,13 +73,13 @@ PortletURL portletURL = commerceApplicationModelItemSelectorViewDisplayContext.g
 			%>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="id"
 				property="commerceApplicationModelId"
 			/>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				property="name"
 			/>
 		</liferay-ui:search-container-row>

@@ -18,7 +18,12 @@ import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsPort
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
 import com.liferay.analytics.reports.web.internal.info.display.contributor.util.LayoutDisplayPageProviderUtil;
 import com.liferay.analytics.reports.web.internal.layout.seo.CanonicalURLProvider;
-import com.liferay.analytics.reports.web.internal.model.TrafficSource;
+import com.liferay.analytics.reports.web.internal.model.DirectTrafficChannelImpl;
+import com.liferay.analytics.reports.web.internal.model.OrganicTrafficChannelImpl;
+import com.liferay.analytics.reports.web.internal.model.PaidTrafficChannelImpl;
+import com.liferay.analytics.reports.web.internal.model.ReferralTrafficChannelImpl;
+import com.liferay.analytics.reports.web.internal.model.SocialTrafficChannelImpl;
+import com.liferay.analytics.reports.web.internal.model.TrafficChannel;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
 import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
@@ -41,7 +46,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -135,22 +139,20 @@ public class GetTrafficSourcesMVCResourceCommand
 		}
 	}
 
-	private List<TrafficSource> _getTrafficSources(
+	private List<TrafficChannel> _getTrafficChannels(
 		AnalyticsReportsDataProvider analyticsReportsDataProvider,
 		String canonicalURL, long companyId) {
 
-		Map<String, TrafficSource> emptyMap = HashMapBuilder.put(
-			"direct", new TrafficSource(Collections.emptyList(), "direct", 0, 0)
+		Map<String, TrafficChannel> emptyMap = HashMapBuilder.put(
+			"direct", (TrafficChannel)new DirectTrafficChannelImpl(false)
 		).put(
-			"organic",
-			new TrafficSource(Collections.emptyList(), "organic", 0, 0)
+			"organic", new OrganicTrafficChannelImpl(false)
 		).put(
-			"paid", new TrafficSource(Collections.emptyList(), "paid", 0, 0)
+			"paid", new PaidTrafficChannelImpl(false)
 		).put(
-			"referral",
-			new TrafficSource(Collections.emptyList(), "referral", 0, 0)
+			"referral", new ReferralTrafficChannelImpl(false)
 		).put(
-			"social", new TrafficSource(Collections.emptyList(), "social", 0, 0)
+			"social", new SocialTrafficChannelImpl(false)
 		).build();
 
 		if (!analyticsReportsDataProvider.isValidAnalyticsConnection(
@@ -160,24 +162,26 @@ public class GetTrafficSourcesMVCResourceCommand
 		}
 
 		try {
-			Map<String, TrafficSource> trafficSources =
-				analyticsReportsDataProvider.getTrafficSources(
+			Map<String, TrafficChannel> trafficChannels =
+				analyticsReportsDataProvider.getTrafficChannels(
 					companyId, canonicalURL);
 
 			emptyMap.forEach(
-				(name, trafficSource) -> trafficSources.merge(
-					name, trafficSource,
-					(trafficSource1, trafficSource2) -> trafficSource1));
+				(name, trafficChannel) -> trafficChannels.merge(
+					name, trafficChannel,
+					(trafficChannel1, trafficChannel2) -> trafficChannel1));
 
-			return new ArrayList<>(trafficSources.values());
+			return new ArrayList<>(trafficChannels.values());
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException, portalException);
 
 			return Arrays.asList(
-				new TrafficSource("direct"), new TrafficSource("organic"),
-				new TrafficSource("paid"), new TrafficSource("referral"),
-				new TrafficSource("social"));
+				new DirectTrafficChannelImpl(true),
+				new OrganicTrafficChannelImpl(true),
+				new PaidTrafficChannelImpl(true),
+				new ReferralTrafficChannelImpl(true),
+				new SocialTrafficChannelImpl(true));
 		}
 	}
 
@@ -186,55 +190,20 @@ public class GetTrafficSourcesMVCResourceCommand
 		long companyId, String canonicalURL, Locale locale,
 		ResourceBundle resourceBundle) {
 
-		Map<String, String> helpMessageMap = HashMapBuilder.put(
-			"direct",
-			ResourceBundleUtil.getString(
-				resourceBundle,
-				"this-is-the-number-of-page-views-generated-by-people-" +
-					"arriving-directly-to-your-page")
-		).put(
-			"organic",
-			ResourceBundleUtil.getString(
-				resourceBundle,
-				"this-is-the-number-of-page-views-generated-by-people-coming-" +
-					"from-a-search-engine")
-		).put(
-			"paid",
-			ResourceBundleUtil.getString(
-				resourceBundle,
-				"this-is-the-number-of-page-views-generated-by-people-that-" +
-					"find-your-page-through-google-adwords")
-		).put(
-			"referral",
-			ResourceBundleUtil.getString(
-				resourceBundle,
-				"this-is-the-number-of-page-views-generated-by-people-coming-" +
-					"to-your-page-from-other-sites-which-are-not-search-" +
-						"engine-pages-or-social-sites")
-		).put(
-			"social",
-			ResourceBundleUtil.getString(
-				resourceBundle,
-				"this-is-the-number-of-page-views-generated-by-people-coming-" +
-					"to-your-page-from-social-sites")
-		).build();
-
-		List<TrafficSource> trafficSources = _getTrafficSources(
+		List<TrafficChannel> trafficChannels = _getTrafficChannels(
 			analyticsReportsDataProvider, canonicalURL, companyId);
 
-		Stream<TrafficSource> stream = trafficSources.stream();
+		Stream<TrafficChannel> stream = trafficChannels.stream();
 
-		Comparator<TrafficSource> comparator = Comparator.comparing(
-			TrafficSource::getTrafficShare);
+		Comparator<TrafficChannel> comparator = Comparator.comparing(
+			TrafficChannel::getTrafficShare);
 
 		return JSONUtil.putAll(
 			stream.sorted(
 				comparator.reversed()
 			).map(
-				trafficSource -> trafficSource.toJSONObject(
-					helpMessageMap.get(trafficSource.getName()), locale,
-					ResourceBundleUtil.getString(
-						resourceBundle, trafficSource.getName()))
+				trafficChannel -> trafficChannel.toJSONObject(
+					locale, resourceBundle)
 			).toArray());
 	}
 

@@ -54,6 +54,11 @@ module.exports = [
 		page: 'mini-cart.html',
 	},
 	{
+		entry: 'QuantitySelector',
+		name: 'Quantity Selector',
+		page: 'quantity-selector.html',
+	},
+	{
 		entry: 'SidePanel',
 		name: 'Side panel',
 		page: 'side-panel.html',

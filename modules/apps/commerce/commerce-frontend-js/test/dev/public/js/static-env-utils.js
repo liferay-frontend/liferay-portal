@@ -51,3 +51,5 @@ window.Liferay = {
 		'Content-Type': 'application/json',
 	}),
 };
+
+window.themeDisplay = window.Liferay.ThemeDisplay;

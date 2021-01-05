@@ -12,6 +12,7 @@
  * details.
  */
 
+import ClayButton from '@clayui/button';
 import classNames from 'classnames';
 import {TranslationManager} from 'data-engine-taglib';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
@@ -23,7 +24,7 @@ import DragLayer from '../../components/drag-and-drop/DragLayer.es';
 import {Loading} from '../../components/loading/Loading.es';
 import UpperToolbar from '../../components/upper-toolbar/UpperToolbar.es';
 import {errorToast, successToast} from '../../utils/toast.es';
-import {getValidName} from '../../utils/utils.es';
+import {normalizeNames} from '../../utils/utils.es';
 import DropZone from './DropZone.es';
 import EditTableViewContext, {
 	ADD_DATA_LIST_VIEW_FIELD,
@@ -40,7 +41,7 @@ import {
 } from './utils.es';
 
 const EditTableView = withRouter(({history}) => {
-	const {showTranslationManager} = useContext(AppContext);
+	const {popUpWindow} = useContext(AppContext);
 	const [{dataDefinition, dataListView}, dispatch] = useContext(
 		EditTableViewContext
 	);
@@ -73,12 +74,32 @@ const EditTableView = withRouter(({history}) => {
 		errorToast(title);
 	};
 
-	const onSuccess = () => {
-		successToast(
-			Liferay.Language.get('the-table-view-was-saved-successfully')
-		);
+	const onCancel = () => {
+		if (popUpWindow) {
+			window.top?.Liferay.fire('closeModal');
+		}
+		else {
+			history.goBack();
+		}
+	};
 
-		history.goBack();
+	const onSuccess = (newTableView) => {
+		if (popUpWindow) {
+			const tLiferay = window.top?.Liferay;
+
+			tLiferay.fire('newTableViewCreated', {
+				newTableView,
+			});
+
+			tLiferay.fire('closeModal');
+		}
+		else {
+			successToast(
+				Liferay.Language.get('the-table-view-was-saved-successfully')
+			);
+
+			history.goBack();
+		}
 	};
 
 	const onSave = () => {
@@ -87,14 +108,15 @@ const EditTableView = withRouter(({history}) => {
 				dataListView.name[editingLanguageId];
 		}
 
-		dataListView.name[defaultLanguageId] = getValidName(
-			Liferay.Language.get('untitled-table-view'),
-			dataListView.name[defaultLanguageId]
-		);
-
 		setLoading(true);
 
-		saveTableView(dataDefinition, dataListView)
+		saveTableView(dataDefinition, {
+			...dataListView,
+			name: normalizeNames({
+				defaultName: Liferay.Language.get('untitled-table-view'),
+				localizableValue: dataListView.name,
+			}),
+		})
 			.then(onSuccess)
 			.catch((error) => {
 				onError(error);
@@ -129,8 +151,30 @@ const EditTableView = withRouter(({history}) => {
 		return null;
 	}
 
+	const actionButtons = (
+		<ClayButton.Group spaced>
+			<ClayButton displayType="secondary" onClick={onCancel}>
+				{Liferay.Language.get('cancel')}
+			</ClayButton>
+
+			<ClayButton
+				disabled={
+					isLoading || !dataListView.name[editingLanguageId]?.trim()
+				}
+				onClick={onSave}
+			>
+				{Liferay.Language.get('save')}
+			</ClayButton>
+		</ClayButton.Group>
+	);
+
 	return (
-		<div className="app-builder-table-view">
+		<div
+			className={classNames(
+				'app-builder-table-view',
+				popUpWindow && 'app-builder-popup'
+			)}
+		>
 			<ControlMenu
 				backURL="../"
 				title={getTableViewTitle(dataListView)}
@@ -143,31 +187,32 @@ const EditTableView = withRouter(({history}) => {
 					onSubmit={(event) => {
 						event.preventDefault();
 
-						if (!isLoading) {
+						if (
+							!isLoading &&
+							dataListView.name[editingLanguageId]?.trim()
+						) {
 							onSave();
 						}
 					}}
 				>
 					<UpperToolbar>
-						{showTranslationManager && (
-							<UpperToolbar.Group>
-								<TranslationManager
-									availableLanguageIds={dataDefinition.availableLanguageIds.reduce(
-										(languages, languageId) => ({
-											...languages,
-											[languageId]: languageId,
-										}),
-										{}
-									)}
-									defaultLanguageId={defaultLanguageId}
-									editingLanguageId={editingLanguageId}
-									onEditingLanguageIdChange={
-										onEditingLanguageIdChange
-									}
-									translatedLanguageIds={dataListView.name}
-								/>
-							</UpperToolbar.Group>
-						)}
+						<UpperToolbar.Group>
+							<TranslationManager
+								availableLanguageIds={dataDefinition.availableLanguageIds.reduce(
+									(languages, languageId) => ({
+										...languages,
+										[languageId]: languageId,
+									}),
+									{}
+								)}
+								defaultLanguageId={defaultLanguageId}
+								editingLanguageId={editingLanguageId}
+								onEditingLanguageIdChange={
+									onEditingLanguageIdChange
+								}
+								translatedLanguageIds={dataListView.name}
+							/>
+						</UpperToolbar.Group>
 
 						<UpperToolbar.Input
 							onChange={onTableViewNameChange}
@@ -177,24 +222,11 @@ const EditTableView = withRouter(({history}) => {
 							value={dataListView.name[editingLanguageId] || ''}
 						/>
 
-						<UpperToolbar.Group>
-							<UpperToolbar.Button
-								displayType="secondary"
-								onClick={() => history.goBack()}
-							>
-								{Liferay.Language.get('cancel')}
-							</UpperToolbar.Button>
-
-							<UpperToolbar.Button
-								disabled={
-									isLoading ||
-									!dataListView.name[editingLanguageId]
-								}
-								onClick={onSave}
-							>
-								{Liferay.Language.get('save')}
-							</UpperToolbar.Button>
-						</UpperToolbar.Group>
+						{!popUpWindow && (
+							<UpperToolbar.Group>
+								{actionButtons}
+							</UpperToolbar.Group>
+						)}
 					</UpperToolbar>
 				</form>
 
@@ -222,6 +254,9 @@ const EditTableView = withRouter(({history}) => {
 						/>
 					</div>
 				</div>
+				{popUpWindow && (
+					<div className="dialog-footer">{actionButtons}</div>
+				)}
 			</Loading>
 		</div>
 	);

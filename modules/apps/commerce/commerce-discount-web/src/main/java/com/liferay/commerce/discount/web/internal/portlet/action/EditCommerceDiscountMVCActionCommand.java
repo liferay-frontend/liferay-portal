@@ -60,7 +60,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommerceDiscountPortletKeys.COMMERCE_DISCOUNT,
-		"mvc.command.name=editCommerceDiscount"
+		"mvc.command.name=/commerce_discount/edit_commerce_discount"
 	},
 	service = MVCActionCommand.class
 )
@@ -123,7 +123,8 @@ public class EditCommerceDiscountMVCActionCommand extends BaseMVCActionCommand {
 				SessionErrors.add(actionRequest, throwable.getClass());
 
 				actionResponse.setRenderParameter(
-					"mvcRenderCommandName", "editCommerceDiscount");
+					"mvcRenderCommandName",
+					"/commerce_discount/edit_commerce_discount");
 			}
 			else if (throwable instanceof NoSuchDiscountException ||
 					 throwable instanceof PrincipalException) {
@@ -147,7 +148,8 @@ public class EditCommerceDiscountMVCActionCommand extends BaseMVCActionCommand {
 
 		if (commerceDiscount != null) {
 			portletURL.setParameter(
-				"mvcRenderCommandName", "editCommerceDiscount");
+				"mvcRenderCommandName",
+				"/commerce_discount/edit_commerce_discount");
 			portletURL.setParameter(
 				"commerceDiscountId",
 				String.valueOf(commerceDiscount.getCommerceDiscountId()));

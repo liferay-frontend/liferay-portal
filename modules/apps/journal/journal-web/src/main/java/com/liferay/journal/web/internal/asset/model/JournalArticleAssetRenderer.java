@@ -326,7 +326,7 @@ public class JournalArticleAssetRenderer
 		liferayPortletURL.setParameter(
 			"groupId", String.valueOf(_article.getGroupId()));
 		liferayPortletURL.setParameter("articleId", _article.getArticleId());
-		liferayPortletURL.setResourceID("exportArticle");
+		liferayPortletURL.setResourceID("/journal/export_article");
 
 		return liferayPortletURL;
 	}
@@ -421,10 +421,16 @@ public class JournalArticleAssetRenderer
 		if (_assetDisplayPageFriendlyURLProvider != null) {
 			String friendlyURL =
 				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
-					getClassName(), getClassPK(), themeDisplay);
+					getClassName(), _article.getResourcePrimKey(),
+					themeDisplay);
 
 			if (Validator.isNotNull(friendlyURL)) {
-				return friendlyURL + StringPool.SLASH + _article.getId();
+				if (!_article.isApproved()) {
+					friendlyURL =
+						friendlyURL + StringPool.SLASH + _article.getId();
+				}
+
+				return friendlyURL;
 			}
 		}
 
@@ -438,8 +444,11 @@ public class JournalArticleAssetRenderer
 		sb.append(groupFriendlyURL);
 		sb.append(JournalArticleConstants.CANONICAL_URL_SEPARATOR);
 		sb.append(_article.getUrlTitle(themeDisplay.getLocale()));
-		sb.append(StringPool.SLASH);
-		sb.append(_article.getId());
+
+		if (!_article.isApproved()) {
+			sb.append(StringPool.SLASH);
+			sb.append(_article.getId());
+		}
 
 		return PortalUtil.addPreservedParameters(themeDisplay, sb.toString());
 	}
@@ -648,7 +657,7 @@ public class JournalArticleAssetRenderer
 			getAssetRendererFactory();
 
 		AssetEntry assetEntry = assetRendererFactory.getAssetEntry(
-			JournalArticle.class.getName(), getClassPK());
+			JournalArticle.class.getName(), article.getResourcePrimKey());
 
 		boolean hasDisplayPage = AssetDisplayPageUtil.hasAssetDisplayPage(
 			groupId, assetEntry);

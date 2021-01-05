@@ -28,7 +28,7 @@
 	displayContext="<%= new SiteMySitesManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, siteMySitesDisplayContext) %>"
 />
 
-<aui:form action="<%= siteMySitesDisplayContext.getPortletURL() %>" cssClass="container-fluid-1280" method="get" name="fm">
+<aui:form action="<%= siteMySitesDisplayContext.getPortletURL() %>" cssClass="container-fluid container-fluid-max-xl" method="get" name="fm">
 	<liferay-ui:search-container
 		searchContainer="<%= siteMySitesDisplayContext.getGroupSearchContainer() %>"
 	>
@@ -119,13 +119,8 @@
 					</c:if>
 				</c:when>
 				<c:when test='<%= Objects.equals(siteMySitesDisplayContext.getDisplayStyle(), "icon") %>'>
-
-					<%
-					row.setCssClass("entry-card lfr-asset-item");
-					%>
-
 					<liferay-ui:search-container-column-text>
-						<clay:vertical-card-v2
+						<clay:vertical-card
 							verticalCard="<%= new SiteVerticalCard(group, renderRequest, renderResponse, siteMySitesDisplayContext.getTabs1(), siteMySitesDisplayContext.getGroupUsersCounts(group.getGroupId())) %>"
 						/>
 					</liferay-ui:search-container-column-text>

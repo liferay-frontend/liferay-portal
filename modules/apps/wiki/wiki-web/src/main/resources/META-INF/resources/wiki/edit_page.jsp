@@ -21,6 +21,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 WikiEngineRenderer wikiEngineRenderer = (WikiEngineRenderer)request.getAttribute(WikiWebKeys.WIKI_ENGINE_RENDERER);
 WikiNode node = (WikiNode)request.getAttribute(WikiWebKeys.WIKI_NODE);
+
 WikiPage wikiPage = (WikiPage)request.getAttribute(WikiWebKeys.WIKI_PAGE);
 
 long nodeId = BeanParamUtil.getLong(wikiPage, request, "nodeId");
@@ -131,7 +132,7 @@ if (portletTitleBasedNavigation) {
 	<portlet:param name="mvcRenderCommandName" value="/wiki/edit_page" />
 </portlet:renderURL>
 
-<div <%= portletTitleBasedNavigation ? "class=\"container-fluid-1280\"" : StringPool.BLANK %> id='<%= liferayPortletResponse.getNamespace() + "wikiEditPageContainer" %>'>
+<div <%= portletTitleBasedNavigation ? "class=\"container-fluid container-fluid-max-xl\"" : StringPool.BLANK %> id='<%= liferayPortletResponse.getNamespace() + "wikiEditPageContainer" %>'>
 	<aui:form action="<%= editPageActionURL %>" method="post" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" />
 		<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
@@ -424,6 +425,7 @@ if ((wikiPage != null) && !wikiPage.isNew()) {
 	PortletURL viewPageURL = wikiURLHelper.getViewPageURL(node, title);
 
 	PortalUtil.addPortletBreadcrumbEntry(request, wikiPage.getTitle(), viewPageURL.toString());
+
 	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "edit"), currentURL);
 }
 else {

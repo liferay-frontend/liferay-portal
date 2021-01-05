@@ -34,13 +34,18 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassedModel;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.site.navigation.model.SiteNavigationMenu;
+import com.liferay.site.navigation.model.SiteNavigationMenuItem;
+import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
 
@@ -91,29 +96,15 @@ public class FragmentEntryLinkExportImportContentProcessor
 					portletDataContext, stagedModel, content,
 					exportReferencedContent, escapeContent);
 
-		JSONObject editableProcessorJSONObject =
-			editableValuesJSONObject.getJSONObject(
-				_KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+		editableValuesJSONObject = JSONFactoryUtil.createJSONObject(content);
 
-		if ((editableProcessorJSONObject == null) ||
-			(editableProcessorJSONObject.length() <= 0)) {
+		_replaceEditableExportContentReferences(
+			editableValuesJSONObject, exportReferencedContent,
+			portletDataContext, stagedModel);
 
-			return content;
-		}
-
-		Iterator<String> editableKeysIterator =
-			editableProcessorJSONObject.keys();
-
-		while (editableKeysIterator.hasNext()) {
-			String editableKey = editableKeysIterator.next();
-
-			JSONObject editableJSONObject =
-				editableProcessorJSONObject.getJSONObject(editableKey);
-
-			_replaceMappedFieldExportContentReferences(
-				portletDataContext, stagedModel, editableJSONObject,
-				exportReferencedContent);
-		}
+		_replaceConfigurationExportContentReferences(
+			editableValuesJSONObject, exportReferencedContent,
+			portletDataContext, stagedModel);
 
 		return editableValuesJSONObject.toString();
 	}
@@ -142,6 +133,134 @@ public class FragmentEntryLinkExportImportContentProcessor
 				replaceImportContentReferences(
 					portletDataContext, stagedModel, content);
 
+		editableValuesJSONObject = JSONFactoryUtil.createJSONObject(content);
+
+		_replaceEditableImportContentReferences(
+			editableValuesJSONObject, portletDataContext);
+
+		_replaceConfigurationImportContentReferences(
+			editableValuesJSONObject, portletDataContext);
+
+		return editableValuesJSONObject.toString();
+	}
+
+	@Override
+	public void validateContentReferences(long groupId, String content)
+		throws PortalException {
+	}
+
+	private void _exportSiteNavigationMenu(
+			JSONObject configurationValueJSONObject,
+			boolean exportReferencedContent,
+			PortletDataContext portletDataContext,
+			StagedModel referrerStagedModel)
+		throws Exception {
+
+		long siteNavigationMenuId = configurationValueJSONObject.getLong(
+			"siteNavigationMenuId");
+
+		StagedModel stagedModel = null;
+
+		if (siteNavigationMenuId > 0) {
+			stagedModel =
+				_siteNavigationMenuLocalService.fetchSiteNavigationMenu(
+					siteNavigationMenuId);
+		}
+		else {
+			stagedModel = _layoutLocalService.fetchLayout(
+				configurationValueJSONObject.getLong(
+					"parentSiteNavigationMenuItemId"));
+		}
+
+		if (stagedModel == null) {
+			return;
+		}
+
+		if (exportReferencedContent) {
+			StagedModelDataHandlerUtil.exportReferenceStagedModel(
+				portletDataContext, referrerStagedModel, stagedModel,
+				PortletDataContext.REFERENCE_TYPE_DEPENDENCY);
+		}
+		else {
+			Element entityElement = portletDataContext.getExportDataElement(
+				referrerStagedModel);
+
+			portletDataContext.addReferenceElement(
+				referrerStagedModel, entityElement, stagedModel,
+				PortletDataContext.REFERENCE_TYPE_DEPENDENCY, true);
+		}
+	}
+
+	private void _replaceConfigurationExportContentReferences(
+			JSONObject editableValuesJSONObject,
+			boolean exportReferencedContent,
+			PortletDataContext portletDataContext, StagedModel stagedModel)
+		throws Exception {
+
+		JSONObject configurationValuesJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				_KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+
+		if (configurationValuesJSONObject == null) {
+			return;
+		}
+
+		Iterator<String> configurationValuesIterator =
+			configurationValuesJSONObject.keys();
+
+		while (configurationValuesIterator.hasNext()) {
+			String configurationValueKey = configurationValuesIterator.next();
+
+			JSONObject configurationValueJSONObject =
+				configurationValuesJSONObject.getJSONObject(
+					configurationValueKey);
+
+			if ((configurationValueJSONObject != null) &&
+				configurationValueJSONObject.has("siteNavigationMenuId")) {
+
+				_exportSiteNavigationMenu(
+					configurationValueJSONObject, exportReferencedContent,
+					portletDataContext, stagedModel);
+			}
+		}
+	}
+
+	private void _replaceConfigurationImportContentReferences(
+		JSONObject editableValuesJSONObject,
+		PortletDataContext portletDataContext) {
+
+		JSONObject editableProcessorJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				_KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+
+		if (editableProcessorJSONObject == null) {
+			return;
+		}
+
+		Iterator<String> editableKeysIterator =
+			editableProcessorJSONObject.keys();
+
+		while (editableKeysIterator.hasNext()) {
+			String editableKey = editableKeysIterator.next();
+
+			JSONObject configurationValueJSONObject =
+				editableProcessorJSONObject.getJSONObject(editableKey);
+
+			if ((configurationValueJSONObject != null) &&
+				configurationValueJSONObject.has("siteNavigationMenuId")) {
+
+				_replaceSiteNavigationMenuIds(
+					configurationValueJSONObject, portletDataContext);
+			}
+		}
+	}
+
+	private void _replaceEditableExportContentReferences(
+			JSONObject editableValuesJSONObject,
+			boolean exportReferencedContent,
+			PortletDataContext portletDataContext, StagedModel stagedModel)
+		throws Exception {
+
 		JSONObject editableProcessorJSONObject =
 			editableValuesJSONObject.getJSONObject(
 				_KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
@@ -149,7 +268,36 @@ public class FragmentEntryLinkExportImportContentProcessor
 		if ((editableProcessorJSONObject == null) ||
 			(editableProcessorJSONObject.length() <= 0)) {
 
-			return content;
+			return;
+		}
+
+		Iterator<String> editableKeysIterator =
+			editableProcessorJSONObject.keys();
+
+		while (editableKeysIterator.hasNext()) {
+			String editableKey = editableKeysIterator.next();
+
+			JSONObject editableJSONObject =
+				editableProcessorJSONObject.getJSONObject(editableKey);
+
+			_replaceMappedFieldExportContentReferences(
+				portletDataContext, stagedModel, editableJSONObject,
+				exportReferencedContent);
+		}
+	}
+
+	private void _replaceEditableImportContentReferences(
+		JSONObject editableValuesJSONObject,
+		PortletDataContext portletDataContext) {
+
+		JSONObject editableProcessorJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				_KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+		if ((editableProcessorJSONObject == null) ||
+			(editableProcessorJSONObject.length() <= 0)) {
+
+			return;
 		}
 
 		Iterator<String> editableKeysIterator =
@@ -164,13 +312,6 @@ public class FragmentEntryLinkExportImportContentProcessor
 			_replaceMappedFieldImportContentReferences(
 				portletDataContext, editableJSONObject);
 		}
-
-		return editableValuesJSONObject.toString();
-	}
-
-	@Override
-	public void validateContentReferences(long groupId, String content)
-		throws PortalException {
 	}
 
 	private void _replaceMappedFieldExportContentReferences(
@@ -361,11 +502,57 @@ public class FragmentEntryLinkExportImportContentProcessor
 		editableJSONObject.put("classPK", classPK);
 	}
 
+	private void _replaceSiteNavigationMenuIds(
+		JSONObject configurationValueJSONObject,
+		PortletDataContext portletDataContext) {
+
+		long siteNavigationMenuId = configurationValueJSONObject.getLong(
+			"siteNavigationMenuId");
+
+		long parentSiteNavigationMenuItemId =
+			configurationValueJSONObject.getLong(
+				"parentSiteNavigationMenuItemId");
+
+		if (siteNavigationMenuId == 0) {
+			Map<Long, Long> layoutNewPrimaryKeys =
+				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
+					Layout.class.getName());
+
+			configurationValueJSONObject.put(
+				"parentSiteNavigationMenuItemId",
+				layoutNewPrimaryKeys.getOrDefault(
+					parentSiteNavigationMenuItemId, 0L));
+		}
+		else {
+			Map<Long, Long> siteNavigationMenuNewPrimaryKeys =
+				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
+					SiteNavigationMenu.class.getName());
+
+			configurationValueJSONObject.put(
+				"siteNavigationMenuId",
+				siteNavigationMenuNewPrimaryKeys.getOrDefault(
+					siteNavigationMenuId, 0L));
+
+			Map<Long, Long> siteNavigationMenuItemNewPrimaryKeys =
+				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
+					SiteNavigationMenuItem.class.getName());
+
+			configurationValueJSONObject.put(
+				"parentSiteNavigationMenuItemId",
+				siteNavigationMenuItemNewPrimaryKeys.getOrDefault(
+					parentSiteNavigationMenuItemId, 0L));
+		}
+	}
+
 	private static final String _DDM_TEMPLATE = "ddmTemplate_";
 
 	private static final String _KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR =
 		"com.liferay.fragment.entry.processor.editable." +
 			"EditableFragmentEntryProcessor";
+
+	private static final String _KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR =
+		"com.liferay.fragment.entry.processor.freemarker." +
+			"FreeMarkerFragmentEntryProcessor";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FragmentEntryLinkExportImportContentProcessor.class);
@@ -380,11 +567,17 @@ public class FragmentEntryLinkExportImportContentProcessor
 	private ExportImportContentProcessor<String>
 		_dlReferencesExportImportContentProcessor;
 
+	@Reference
+	private LayoutLocalService _layoutLocalService;
+
 	@Reference(target = "(content.processor.type=LayoutReferences)")
 	private ExportImportContentProcessor<String>
 		_layoutReferencesExportImportContentProcessor;
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SiteNavigationMenuLocalService _siteNavigationMenuLocalService;
 
 }

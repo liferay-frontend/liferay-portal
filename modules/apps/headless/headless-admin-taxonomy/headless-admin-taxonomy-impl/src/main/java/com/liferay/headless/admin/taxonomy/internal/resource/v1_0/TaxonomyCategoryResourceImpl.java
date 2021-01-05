@@ -87,9 +87,8 @@ public class TaxonomyCategoryResourceImpl
 	public void deleteTaxonomyCategory(String taxonomyCategoryId)
 		throws Exception {
 
-		long assetCategoryId = _getAssetCategoryId(taxonomyCategoryId);
-
-		_assetCategoryService.deleteCategory(assetCategoryId);
+		_assetCategoryService.deleteCategory(
+			_getAssetCategoryId(taxonomyCategoryId));
 	}
 
 	@Override

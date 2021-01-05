@@ -46,8 +46,7 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -126,12 +125,6 @@ definition {
 			webContentTitle = "WC Subfolder Name");
 
 		WebContent.viewApprovedStatus(webContentTitle = "WC WebContent Title");
-
-		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
-
-		WebContent.viewCP(
-			webContentText = "WC WebContent Text",
-			webContentTitle = "WC WebContent Title");
 	}
 
 }

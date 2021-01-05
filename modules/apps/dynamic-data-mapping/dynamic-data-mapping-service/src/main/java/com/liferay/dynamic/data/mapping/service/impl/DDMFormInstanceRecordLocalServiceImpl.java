@@ -85,6 +85,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -134,6 +136,13 @@ public class DDMFormInstanceRecordLocalServiceImpl
 		ddmFormInstanceRecord.setFormInstanceVersion(
 			ddmFormInstance.getVersion());
 		ddmFormInstanceRecord.setVersion(_VERSION_DEFAULT);
+
+		HttpServletRequest httpServletRequest = serviceContext.getRequest();
+
+		if (httpServletRequest != null) {
+			ddmFormInstanceRecord.setIpAddress(
+				httpServletRequest.getRemoteAddr());
+		}
 
 		ddmFormInstanceRecord = ddmFormInstanceRecordPersistence.update(
 			ddmFormInstanceRecord);
@@ -260,14 +269,11 @@ public class DDMFormInstanceRecordLocalServiceImpl
 
 		DDMStorageAdapter ddmStorageAdapter = getDDMStorageAdapter(storageType);
 
-		DDMStorageAdapterGetRequest.Builder builder =
-			DDMStorageAdapterGetRequest.Builder.newBuilder(storageId, ddmForm);
-
-		DDMStorageAdapterGetRequest ddmStorageAdapterGetRequest =
-			builder.build();
-
 		DDMStorageAdapterGetResponse ddmStorageAdapterGetResponse =
-			ddmStorageAdapter.get(ddmStorageAdapterGetRequest);
+			ddmStorageAdapter.get(
+				DDMStorageAdapterGetRequest.Builder.newBuilder(
+					storageId, ddmForm
+				).build());
 
 		return ddmStorageAdapterGetResponse.getDDMFormValues();
 	}
@@ -282,7 +288,7 @@ public class DDMFormInstanceRecordLocalServiceImpl
 		throws StorageException {
 
 		return getDDMFormValues(
-			ddmForm, storageId, StorageType.JSON.toString());
+			ddmForm, storageId, StorageType.DEFAULT.toString());
 	}
 
 	@Override
@@ -636,18 +642,6 @@ public class DDMFormInstanceRecordLocalServiceImpl
 
 		validate(ddmFormValues, serviceContext);
 
-		DDMStorageAdapterSaveRequest.Builder builder =
-			DDMStorageAdapterSaveRequest.Builder.newBuilder(
-				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
-				ddmFormValues);
-
-		DDMStorageAdapterSaveRequest ddmStorageAdapterSaveRequest =
-			builder.withUuid(
-				serviceContext.getUuid()
-			).withClassName(
-				DDMStorageLink.class.getName()
-			).build();
-
 		DDMFormInstance ddmFormInstance =
 			ddmFormInstancePersistence.findByPrimaryKey(ddmFormInstanceId);
 
@@ -655,7 +649,17 @@ public class DDMFormInstanceRecordLocalServiceImpl
 			ddmFormInstance.getStorageType());
 
 		DDMStorageAdapterSaveResponse ddmStorageAdapterSaveResponse =
-			ddmStorageAdapter.save(ddmStorageAdapterSaveRequest);
+			ddmStorageAdapter.save(
+				DDMStorageAdapterSaveRequest.Builder.newBuilder(
+					serviceContext.getUserId(),
+					serviceContext.getScopeGroupId(), ddmFormValues
+				).withStructureId(
+					ddmFormInstance.getStructureId()
+				).withUuid(
+					serviceContext.getUuid()
+				).withClassName(
+					DDMStorageLink.class.getName()
+				).build());
 
 		long primaryKey = ddmStorageAdapterSaveResponse.getPrimaryKey();
 
@@ -676,13 +680,10 @@ public class DDMFormInstanceRecordLocalServiceImpl
 
 		DDMStorageAdapter ddmStorageAdapter = getDDMStorageAdapter(storageType);
 
-		DDMStorageAdapterDeleteRequest.Builder builder =
-			DDMStorageAdapterDeleteRequest.Builder.newBuilder(storageId);
-
-		DDMStorageAdapterDeleteRequest ddmStorageAdapterDeleteRequest =
-			builder.build();
-
-		ddmStorageAdapter.delete(ddmStorageAdapterDeleteRequest);
+		ddmStorageAdapter.delete(
+			DDMStorageAdapterDeleteRequest.Builder.newBuilder(
+				storageId
+			).build());
 	}
 
 	protected void deleteWorkflowInstanceLink(
@@ -700,7 +701,7 @@ public class DDMFormInstanceRecordLocalServiceImpl
 
 	protected DDMStorageAdapter getDDMStorageAdapter(String type) {
 		return _ddmStorageAdapterTracker.getDDMStorageAdapter(
-			GetterUtil.getString(type, StorageType.JSON.toString()));
+			GetterUtil.getString(type, StorageType.DEFAULT.toString()));
 	}
 
 	protected List<DDMFormInstanceRecord> getFormInstanceRecords(Hits hits)
@@ -898,23 +899,21 @@ public class DDMFormInstanceRecordLocalServiceImpl
 
 		validate(ddmFormValues, serviceContext);
 
-		DDMStorageAdapterSaveRequest.Builder builder =
-			DDMStorageAdapterSaveRequest.Builder.newBuilder(
-				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
-				ddmFormValues);
-
-		DDMStorageAdapterSaveRequest ddmStorageAdapterSaveRequest =
-			builder.withPrimaryKey(
-				ddmFormInstanceRecordVersion.getStorageId()
-			).build();
-
 		DDMFormInstance ddmFormInstance =
 			ddmFormInstanceRecordVersion.getFormInstance();
 
 		DDMStorageAdapter ddmStorageAdapter = getDDMStorageAdapter(
 			ddmFormInstance.getStorageType());
 
-		ddmStorageAdapter.save(ddmStorageAdapterSaveRequest);
+		ddmStorageAdapter.save(
+			DDMStorageAdapterSaveRequest.Builder.newBuilder(
+				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
+				ddmFormValues
+			).withStructureId(
+				ddmFormInstance.getStructureId()
+			).withPrimaryKey(
+				ddmFormInstanceRecordVersion.getStorageId()
+			).build());
 	}
 
 	protected void updateFormInstanceRecordVersion(

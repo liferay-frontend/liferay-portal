@@ -20,7 +20,7 @@
 String redirect = ParamUtil.getString(request, "redirect");
 %>
 
-<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="exportImport" var="importPortletURL">
+<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/export_import/export_import" var="importPortletURL">
 	<portlet:param name="p_p_isolated" value="<%= Boolean.TRUE.toString() %>" />
 	<portlet:param name="redirect" value="<%= redirect %>" />
 	<portlet:param name="portletResource" value="<%= portletResource %>" />
@@ -61,7 +61,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 			decimalSeparator: '<%= decimalFormatSymbols.getDecimalSeparator() %>',
 
 			deleteFile:
-				'<liferay-portlet:actionURL doAsUserId="<%= user.getUserId() %>" name="exportImport"><portlet:param name="mvcRenderCommandName" value="exportImport" /><portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE_TEMP %>" /><portlet:param name="redirect" value="<%= redirect %>" /><portlet:param name="portletResource" value="<%= portletResource %>" /></liferay-portlet:actionURL>&ticketKey=<%= ticket.getKey() %><liferay-ui:input-permissions-params modelName="<%= Group.class.getName() %>" />',
+				'<liferay-portlet:actionURL doAsUserId="<%= user.getUserId() %>" name="/export_import/export_import"><portlet:param name="mvcRenderCommandName" value="/export_import/export_import" /><portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE_TEMP %>" /><portlet:param name="redirect" value="<%= redirect %>" /><portlet:param name="portletResource" value="<%= portletResource %>" /></liferay-portlet:actionURL>&ticketKey=<%= ticket.getKey() %><liferay-ui:input-permissions-params modelName="<%= Group.class.getName() %>" />',
 
 			<%
 			DLConfiguration dlConfiguration = ConfigurationProviderUtil.getSystemConfiguration(DLConfiguration.class);
@@ -94,7 +94,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 				},
 			},
 			uploadFile:
-				'<liferay-portlet:actionURL doAsUserId="<%= user.getUserId() %>" name="exportImport"><portlet:param name="mvcRenderCommandName" value="exportImport" /><portlet:param name="<%= Constants.CMD %>" value="<%= Constants.ADD_TEMP %>" /><portlet:param name="redirect" value="<%= redirect %>" /><portlet:param name="plid" value="<%= String.valueOf(plid) %>" /> <portlet:param name="groupId" value="<%= String.valueOf(themeDisplay.getScopeGroupId()) %>" /><portlet:param name="portletResource" value="<%= portletResource %>" /></liferay-portlet:actionURL>&ticketKey=<%= ticket.getKey() %><liferay-ui:input-permissions-params modelName="<%= Group.class.getName() %>" />',
+				'<liferay-portlet:actionURL doAsUserId="<%= user.getUserId() %>" name="/export_import/export_import"><portlet:param name="mvcRenderCommandName" value="/export_import/export_import" /><portlet:param name="<%= Constants.CMD %>" value="<%= Constants.ADD_TEMP %>" /><portlet:param name="redirect" value="<%= redirect %>" /><portlet:param name="plid" value="<%= String.valueOf(plid) %>" /> <portlet:param name="groupId" value="<%= String.valueOf(themeDisplay.getScopeGroupId()) %>" /><portlet:param name="portletResource" value="<%= portletResource %>" /></liferay-portlet:actionURL>&ticketKey=<%= ticket.getKey() %><liferay-ui:input-permissions-params modelName="<%= Group.class.getName() %>" />',
 		});
 
 		liferayUpload._uploader.on('alluploadscomplete', function (event) {
@@ -123,7 +123,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 	</aui:script>
 </aui:form>
 
-<aui:script require="metal-dom/src/all/dom as dom">
+<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element.es as runScriptsInElement">
 	var continueButton = document.getElementById(
 		'<portlet:namespace />continueButton'
 	);
@@ -144,7 +144,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 				.then(function (response) {
 					exportImportOptions.innerHTML = response;
 
-					dom.globalEval.runScriptsInElement(exportImportOptions);
+					runScriptsInElement.default(exportImportOptions);
 				});
 		});
 	}

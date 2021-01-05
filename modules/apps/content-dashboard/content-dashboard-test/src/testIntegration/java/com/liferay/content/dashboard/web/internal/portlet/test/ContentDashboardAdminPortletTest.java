@@ -59,6 +59,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -169,15 +170,12 @@ public class ContentDashboardAdminPortletTest {
 				},
 				new String[0], new long[0], null);
 
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				_getMockLiferayPortletRenderRequest();
-
 			Assert.assertEquals(
 				String.format(
 					"Content per %s and %s",
 					assetVocabulary.getTitle(LocaleUtil.US),
 					childAssetVocabulary.getTitle(LocaleUtil.US)),
-				_getAuditGraphTitle(mockLiferayPortletRenderRequest));
+				_getAuditGraphTitle(_getMockLiferayPortletRenderRequest()));
 		}
 		finally {
 			_assetCategoryLocalService.deleteAssetCategory(assetCategory);
@@ -191,11 +189,9 @@ public class ContentDashboardAdminPortletTest {
 
 		JournalTestUtil.addArticle(_user.getUserId(), _group.getGroupId(), 0);
 
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest();
-
 		Assert.assertEquals(
-			"Content", _getAuditGraphTitle(mockLiferayPortletRenderRequest));
+			"Content",
+			_getAuditGraphTitle(_getMockLiferayPortletRenderRequest()));
 	}
 
 	@Test
@@ -225,13 +221,10 @@ public class ContentDashboardAdminPortletTest {
 				new long[] {assetCategory.getCategoryId()}, new String[0],
 				new long[0], null);
 
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				_getMockLiferayPortletRenderRequest();
-
 			Assert.assertEquals(
 				String.format(
 					"Content per %s", assetVocabulary.getTitle(LocaleUtil.US)),
-				_getAuditGraphTitle(mockLiferayPortletRenderRequest));
+				_getAuditGraphTitle(_getMockLiferayPortletRenderRequest()));
 		}
 		finally {
 			_assetCategoryLocalService.deleteAssetCategory(assetCategory);
@@ -240,10 +233,8 @@ public class ContentDashboardAdminPortletTest {
 
 	@Test
 	public void testGetContextWithLtrLanguageDirection() throws Exception {
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest();
-
-		Map<String, Object> data = _getData(mockLiferayPortletRenderRequest);
+		Map<String, Object> data = _getData(
+			_getMockLiferayPortletRenderRequest());
 
 		Map<String, Object> context = (Map<String, Object>)data.get("context");
 
@@ -329,11 +320,8 @@ public class ContentDashboardAdminPortletTest {
 				},
 				new String[0], new long[0], null);
 
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				_getMockLiferayPortletRenderRequest();
-
 			Map<String, Object> data = _getData(
-				mockLiferayPortletRenderRequest);
+				_getMockLiferayPortletRenderRequest());
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -380,6 +368,274 @@ public class ContentDashboardAdminPortletTest {
 	}
 
 	@Test
+	public void testGetPropsWithChildNoneAssetCategory() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_company.getCompanyId(), _company.getGroupId(),
+				_user.getUserId());
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "audience");
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			_user.getUserId(), _company.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			serviceContext);
+
+		AssetVocabulary childAssetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "stage");
+
+		AssetCategory childAssetCategory =
+			_assetCategoryLocalService.addCategory(
+				_user.getUserId(), _company.getGroupId(),
+				RandomTestUtil.randomString(),
+				childAssetVocabulary.getVocabularyId(), serviceContext);
+
+		try {
+			JournalArticle journalArticle1 = JournalTestUtil.addArticle(
+				_user.getUserId(), _group.getGroupId(), 0);
+
+			_journalArticleLocalService.updateAsset(
+				_user.getUserId(), journalArticle1,
+				new long[] {assetCategory.getCategoryId()}, new String[0],
+				new long[0], null);
+
+			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
+				_user.getUserId(), _group.getGroupId(), 0);
+
+			_journalArticleLocalService.updateAsset(
+				_user.getUserId(), journalArticle2,
+				new long[] {
+					assetCategory.getCategoryId(),
+					childAssetCategory.getCategoryId()
+				},
+				new String[0], new long[0], null);
+
+			Map<String, Object> data = _getData(
+				_getMockLiferayPortletRenderRequest());
+
+			Map<String, Object> props = (Map<String, Object>)data.get("props");
+
+			Assert.assertNotNull(props);
+
+			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
+				"vocabularies");
+
+			Assert.assertEquals(
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"categories",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"key",
+								String.valueOf(
+									childAssetCategory.getCategoryId())
+							).put(
+								"name",
+								childAssetCategory.getTitle(LocaleUtil.US)
+							).put(
+								"value", 1L
+							).put(
+								"vocabularyName",
+								childAssetVocabulary.getTitle(LocaleUtil.US)
+							),
+							JSONUtil.put(
+								"key", "none"
+							).put(
+								"name", "No Stage Category"
+							).put(
+								"value", 1L
+							).put(
+								"vocabularyName",
+								childAssetVocabulary.getTitle(LocaleUtil.US)
+							))
+					).put(
+						"key", String.valueOf(assetCategory.getCategoryId())
+					).put(
+						"name", assetCategory.getTitle(LocaleUtil.US)
+					).put(
+						"value", 2L
+					).put(
+						"vocabularyName",
+						assetVocabulary.getTitle(LocaleUtil.US)
+					)
+				).toString(),
+				vocabulariesJSONArray.toString());
+		}
+		finally {
+			_assetCategoryLocalService.deleteAssetCategory(assetCategory);
+			_assetCategoryLocalService.deleteAssetCategory(childAssetCategory);
+		}
+	}
+
+	@Test
+	public void testGetPropsWithChildNoneAssetCategoryAndNoneAssetCategory()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_company.getCompanyId(), _company.getGroupId(),
+				_user.getUserId());
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "audience");
+
+		AssetCategory assetCategory1 = _assetCategoryLocalService.addCategory(
+			_user.getUserId(), _company.getGroupId(), "A1",
+			assetVocabulary.getVocabularyId(), serviceContext);
+
+		AssetCategory assetCategory2 = _assetCategoryLocalService.addCategory(
+			_user.getUserId(), _company.getGroupId(), "A2",
+			assetVocabulary.getVocabularyId(), serviceContext);
+
+		AssetVocabulary childAssetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "stage");
+
+		AssetCategory childAssetCategory =
+			_assetCategoryLocalService.addCategory(
+				_user.getUserId(), _company.getGroupId(), "S1",
+				childAssetVocabulary.getVocabularyId(), serviceContext);
+
+		try {
+			JournalArticle journalArticle1 = JournalTestUtil.addArticle(
+				_user.getUserId(), _group.getGroupId(), 0);
+
+			_journalArticleLocalService.updateAsset(
+				_user.getUserId(), journalArticle1,
+				new long[] {
+					assetCategory1.getCategoryId(),
+					childAssetCategory.getCategoryId()
+				},
+				new String[0], new long[0], null);
+
+			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
+				_user.getUserId(), _group.getGroupId(), 0);
+
+			_journalArticleLocalService.updateAsset(
+				_user.getUserId(), journalArticle2,
+				new long[] {
+					assetCategory1.getCategoryId(),
+					assetCategory2.getCategoryId()
+				},
+				new String[0], new long[0], null);
+
+			JournalArticle journalArticle3 = JournalTestUtil.addArticle(
+				_user.getUserId(), _group.getGroupId(), 0);
+
+			_journalArticleLocalService.updateAsset(
+				_user.getUserId(), journalArticle3,
+				new long[] {childAssetCategory.getCategoryId()}, new String[0],
+				new long[0], null);
+
+			Map<String, Object> data = _getData(
+				_getMockLiferayPortletRenderRequest());
+
+			Map<String, Object> props = (Map<String, Object>)data.get("props");
+
+			Assert.assertNotNull(props);
+
+			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
+				"vocabularies");
+
+			Assert.assertEquals(
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"categories",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"key",
+								String.valueOf(
+									childAssetCategory.getCategoryId())
+							).put(
+								"name", "S1"
+							).put(
+								"value", 1L
+							).put(
+								"vocabularyName",
+								childAssetVocabulary.getTitle(LocaleUtil.US)
+							),
+							JSONUtil.put(
+								"key", "none"
+							).put(
+								"name", "No Stage Category"
+							).put(
+								"value", 1L
+							).put(
+								"vocabularyName",
+								childAssetVocabulary.getTitle(LocaleUtil.US)
+							))
+					).put(
+						"key", String.valueOf(assetCategory1.getCategoryId())
+					).put(
+						"name", "A1"
+					).put(
+						"value", 2L
+					).put(
+						"vocabularyName",
+						assetVocabulary.getTitle(LocaleUtil.US)
+					),
+					JSONUtil.put(
+						"categories",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"key", "none"
+							).put(
+								"name", "No Stage Category"
+							).put(
+								"value", 1L
+							).put(
+								"vocabularyName",
+								childAssetVocabulary.getTitle(LocaleUtil.US)
+							))
+					).put(
+						"key", String.valueOf(assetCategory2.getCategoryId())
+					).put(
+						"name", "A2"
+					).put(
+						"value", 1L
+					).put(
+						"vocabularyName",
+						assetVocabulary.getTitle(LocaleUtil.US)
+					),
+					JSONUtil.put(
+						"categories",
+						JSONUtil.put(
+							JSONUtil.put(
+								"key",
+								String.valueOf(
+									childAssetCategory.getCategoryId())
+							).put(
+								"name", "S1"
+							).put(
+								"value", 1L
+							).put(
+								"vocabularyName",
+								childAssetVocabulary.getTitle(LocaleUtil.US)
+							))
+					).put(
+						"key", "none"
+					).put(
+						"name", "No Audience Category"
+					).put(
+						"value", 1L
+					).put(
+						"vocabularyName",
+						assetVocabulary.getTitle(LocaleUtil.US)
+					)
+				).toString(),
+				vocabulariesJSONArray.toString());
+		}
+		finally {
+			_assetCategoryLocalService.deleteAssetCategory(assetCategory1);
+			_assetCategoryLocalService.deleteAssetCategory(childAssetCategory);
+		}
+	}
+
+	@Test
 	public void testGetPropsWithMissingCategorizedJournalArticle()
 		throws Exception {
 
@@ -411,11 +667,8 @@ public class ContentDashboardAdminPortletTest {
 			JournalTestUtil.addArticle(
 				_user.getUserId(), _group.getGroupId(), 0);
 
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				_getMockLiferayPortletRenderRequest();
-
 			Map<String, Object> data = _getData(
-				mockLiferayPortletRenderRequest);
+				_getMockLiferayPortletRenderRequest());
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -471,11 +724,8 @@ public class ContentDashboardAdminPortletTest {
 				new long[] {childAssetCategory.getCategoryId()}, new String[0],
 				new long[0], null);
 
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				_getMockLiferayPortletRenderRequest();
-
 			Map<String, Object> data = _getData(
-				mockLiferayPortletRenderRequest);
+				_getMockLiferayPortletRenderRequest());
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -485,7 +735,19 @@ public class ContentDashboardAdminPortletTest {
 				"vocabularies");
 
 			Assert.assertEquals(
-				String.valueOf(JSONFactoryUtil.createJSONArray()),
+				JSONUtil.put(
+					JSONUtil.put(
+						"key",
+						String.valueOf(childAssetCategory.getCategoryId())
+					).put(
+						"name", childAssetCategory.getTitle(LocaleUtil.US)
+					).put(
+						"value", 1L
+					).put(
+						"vocabularyName",
+						childAssetVocabulary.getTitle(LocaleUtil.US)
+					)
+				).toString(),
 				vocabulariesJSONArray.toString());
 		}
 		finally {
@@ -500,10 +762,8 @@ public class ContentDashboardAdminPortletTest {
 
 		JournalTestUtil.addArticle(_user.getUserId(), _group.getGroupId(), 0);
 
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest();
-
-		Map<String, Object> data = _getData(mockLiferayPortletRenderRequest);
+		Map<String, Object> data = _getData(
+			_getMockLiferayPortletRenderRequest());
 
 		Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -541,11 +801,8 @@ public class ContentDashboardAdminPortletTest {
 				new long[] {assetCategory.getCategoryId()}, new String[0],
 				new long[0], null);
 
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				_getMockLiferayPortletRenderRequest();
-
 			Map<String, Object> data = _getData(
-				mockLiferayPortletRenderRequest);
+				_getMockLiferayPortletRenderRequest());
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -571,6 +828,126 @@ public class ContentDashboardAdminPortletTest {
 		}
 		finally {
 			_assetCategoryLocalService.deleteAssetCategory(assetCategory);
+		}
+	}
+
+	@Test
+	public void testGetPropsWithNoneAssetCategory() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_company.getCompanyId(), _company.getGroupId(),
+				_user.getUserId());
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "audience");
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			_user.getUserId(), _company.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			serviceContext);
+
+		AssetVocabulary childAssetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "stage");
+
+		AssetCategory childAssetCategory =
+			_assetCategoryLocalService.addCategory(
+				_user.getUserId(), _company.getGroupId(),
+				RandomTestUtil.randomString(),
+				childAssetVocabulary.getVocabularyId(), serviceContext);
+
+		try {
+			JournalArticle journalArticle1 = JournalTestUtil.addArticle(
+				_user.getUserId(), _group.getGroupId(), 0);
+
+			_journalArticleLocalService.updateAsset(
+				_user.getUserId(), journalArticle1,
+				new long[] {
+					assetCategory.getCategoryId(),
+					childAssetCategory.getCategoryId()
+				},
+				new String[0], new long[0], null);
+
+			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
+				_user.getUserId(), _group.getGroupId(), 0);
+
+			_journalArticleLocalService.updateAsset(
+				_user.getUserId(), journalArticle2,
+				new long[] {childAssetCategory.getCategoryId()}, new String[0],
+				new long[0], null);
+
+			Map<String, Object> data = _getData(
+				_getMockLiferayPortletRenderRequest());
+
+			Map<String, Object> props = (Map<String, Object>)data.get("props");
+
+			Assert.assertNotNull(props);
+
+			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
+				"vocabularies");
+
+			Assert.assertEquals(
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"categories",
+						JSONUtil.put(
+							JSONUtil.put(
+								"key",
+								String.valueOf(
+									childAssetCategory.getCategoryId())
+							).put(
+								"name",
+								childAssetCategory.getTitle(LocaleUtil.US)
+							).put(
+								"value", 1L
+							).put(
+								"vocabularyName",
+								childAssetVocabulary.getTitle(LocaleUtil.US)
+							))
+					).put(
+						"key", String.valueOf(assetCategory.getCategoryId())
+					).put(
+						"name", assetCategory.getTitle(LocaleUtil.US)
+					).put(
+						"value", 1L
+					).put(
+						"vocabularyName",
+						assetVocabulary.getTitle(LocaleUtil.US)
+					)
+				).put(
+					JSONUtil.put(
+						"categories",
+						JSONUtil.put(
+							JSONUtil.put(
+								"key",
+								String.valueOf(
+									childAssetCategory.getCategoryId())
+							).put(
+								"name",
+								childAssetCategory.getTitle(LocaleUtil.US)
+							).put(
+								"value", 1L
+							).put(
+								"vocabularyName",
+								childAssetVocabulary.getTitle(LocaleUtil.US)
+							))
+					).put(
+						"key", "none"
+					).put(
+						"name", "No Audience Category"
+					).put(
+						"value", 1L
+					).put(
+						"vocabularyName",
+						assetVocabulary.getTitle(LocaleUtil.US)
+					)
+				).toString(),
+				vocabulariesJSONArray.toString());
+		}
+		finally {
+			_assetCategoryLocalService.deleteAssetCategory(assetCategory);
+			_assetCategoryLocalService.deleteAssetCategory(childAssetCategory);
 		}
 	}
 
@@ -849,11 +1226,8 @@ public class ContentDashboardAdminPortletTest {
 		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
 			_user.getUserId(), _group.getGroupId(), 0);
 
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest();
-
 		SearchContainer<Object> searchContainer = _getSearchContainer(
-			mockLiferayPortletRenderRequest);
+			_getMockLiferayPortletRenderRequest());
 
 		Assert.assertEquals(2, searchContainer.getTotal());
 
@@ -866,6 +1240,54 @@ public class ContentDashboardAdminPortletTest {
 				LocaleUtil.US));
 		Assert.assertEquals(
 			journalArticle1.getTitle(LocaleUtil.US),
+			ReflectionTestUtil.invoke(
+				results.get(1), "getTitle", new Class<?>[] {Locale.class},
+				LocaleUtil.US));
+	}
+
+	@Test
+	public void testGetSearchContainerWithDefaultOrderForTitle()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId());
+
+		serviceContext.setCommand(Constants.ADD);
+		serviceContext.setLayoutFullURL("http://localhost");
+
+		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
+			_group.getGroupId(), 0,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, "title1",
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			LocaleUtil.getSiteDefault(), false, false, serviceContext);
+
+		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
+			_group.getGroupId(), 0,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, "title2",
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			LocaleUtil.getSiteDefault(), false, false, serviceContext);
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest();
+
+		mockLiferayPortletRenderRequest.addParameter(
+			SearchContainer.DEFAULT_ORDER_BY_COL_PARAM, "title");
+
+		SearchContainer<Object> searchContainer = _getSearchContainer(
+			mockLiferayPortletRenderRequest);
+
+		Assert.assertEquals(2, searchContainer.getTotal());
+
+		List<Object> results = searchContainer.getResults();
+
+		Assert.assertEquals(
+			journalArticle1.getTitle(LocaleUtil.US),
+			ReflectionTestUtil.invoke(
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
+				LocaleUtil.US));
+		Assert.assertEquals(
+			journalArticle2.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
 				results.get(1), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
@@ -986,11 +1408,8 @@ public class ContentDashboardAdminPortletTest {
 				_user.getUserId(), _group.getGroupId(), 0);
 		}
 
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest();
-
 		SearchContainer<Object> searchContainer = _getSearchContainer(
-			mockLiferayPortletRenderRequest);
+			_getMockLiferayPortletRenderRequest());
 
 		Assert.assertEquals(
 			SearchContainer.DEFAULT_DELTA + 1, searchContainer.getTotal());
@@ -1188,11 +1607,8 @@ public class ContentDashboardAdminPortletTest {
 				journalArticle, RandomTestUtil.randomString(),
 				journalArticle.getContent(), true, false, serviceContext);
 
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				_getMockLiferayPortletRenderRequest();
-
 			SearchContainer<Object> searchContainer = _getSearchContainer(
-				mockLiferayPortletRenderRequest);
+				_getMockLiferayPortletRenderRequest());
 
 			Assert.assertEquals(1, searchContainer.getTotal());
 

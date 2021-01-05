@@ -31,7 +31,7 @@ String target = ParamUtil.getString(request, "target", groupItemSelectorCriterio
 	displayContext="<%= new SitesItemSelectorViewManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, siteItemSelectorViewDisplayContext) %>"
 />
 
-<aui:form action="<%= siteItemSelectorViewDisplayContext.getPortletURL() %>" cssClass="container-fluid-1280" method="post" name="selectGroupFm">
+<aui:form action="<%= siteItemSelectorViewDisplayContext.getPortletURL() %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="selectGroupFm">
 	<c:if test="<%= siteItemSelectorViewDisplayContext.isShowChildSitesLink() %>">
 		<div id="breadcrumb">
 			<liferay-ui:breadcrumb
@@ -138,7 +138,7 @@ String target = ParamUtil.getString(request, "target", groupItemSelectorCriterio
 				<c:when test='<%= displayStyle.equals("icon") %>'>
 
 					<%
-					row.setCssClass("entry-card lfr-asset-item " + row.getCssClass());
+					row.setCssClass("card-page-item card-page-item-directory " + row.getCssClass());
 
 					Map<String, Object> linkData = HashMapBuilder.<String, Object>put(
 						"prevent-selection", true

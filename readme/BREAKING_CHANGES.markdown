@@ -250,3 +250,193 @@ This change was made to make the logic for display pages more consistent with
 the overall concept of display pages.
 
 ---------------------------------------
+
+### Previously unused and deprecated JSP tags are no longer available
+- **Date:** 2020-Nov-24
+- **JIRA Ticket:** [LPS-112476](https://issues.liferay.com/browse/LPS-112476)
+
+#### What changed?
+
+A series of deprecated and unused JSP tags have been removed and are no longer
+available. This list includes:
+
+- clay:table
+- liferay-ui:alert
+- liferay-ui:input-scheduler
+- liferay-ui:organization-search-container-results
+- liferay-ui:organization-search-form
+- liferay-ui:ratings
+- liferay-ui:search-speed
+- liferay-ui:table-iterator
+- liferay-ui:toggle-area
+- liferay-ui:toggle
+- liferay-ui:user-search-container-results
+- liferay-ui:user-search-
+
+#### Who is affected?
+
+Everyone still using one of the removed tags
+
+#### How should I update my code?
+
+Use the new tags for those where replacements were previously avaialable. In
+many cases, there's no direct replacement for these tags, so if you still need
+to use them, you could make a copy of the old implementation and serve it
+directly from your project.
+
+#### Why was this change made?
+
+This change was made to remove legacy code that was previously signaled for
+removal in an attempt to clarify the default JSP component offering and focus
+on providing a smaller but higher quality set of compoentns.
+
+---------------------------------------
+### The CSS class .container-fluid-1280 has been replaced with .container-fluid.container-fluid-max-xl
+- **Date:** 2020-Nov-24
+- **JIRA Ticket:** [LPS-123894](https://issues.liferay.com/browse/LPS-123894)
+
+#### What changed?
+
+The CSS class `.container-fluid-1280` has been replaced with `.container-fluid.container-fluid-max-xl` and the compatibility layer that had its style has been removed from Portal.
+
+#### Who is affected?
+
+All the container elements that had the CSS class `.container-fluid-1280`
+
+#### How should I update my code?
+
+The first recommendation is to use the updated CSS classes from Clay `.container-fluid.container-fluid-max-xl` instead of `.container-fluid-1280`. The second one is to use ClayLayout [Components](https://clayui.com/docs/components/layout.html) & [Taglibs](https://clayui.com/docs/get-started/using-clay-in-jsps.html#clay-sidebar)
+
+#### Why was this change made?
+
+This change was made to remove deprecated legacy code from Portal and improve the code consistency and performance
+
+---------------------------------------
+
+### Runtime minification of CSS and JS resources is now disabled by default
+- **Date:** 2020-Nov-27
+- **JIRA Ticket:** [LPS-123550](https://issues.liferay.com/browse/LPS-123550)
+
+#### What changed?
+
+The `minifier.enable` setting in `portal.properties` now defaults to
+`false`. Instead of performing run-time minification of CSS and JS
+resources, we prepare pre-minified resources at build-time. There should
+be no user-visible changes in page styles or logic.
+
+#### Who is affected?
+
+Anybody who relies on specific implementation details of the run-time minifier
+(usually the Google Closure Compiler).
+
+#### How should I update my code?
+
+If you wish to maintain the run-time minification behavior, you can set
+`minifier.enable` back to `true` in `portal.properties`.
+
+#### Why was this change made?
+
+By moving minification of frontend resources from run-time to build-time
+we reduce server load and gain access to the latest minification
+technologies available within the frontend ecosystem.
+
+---------------------------------------
+
+### SoyPortlet is no longer available
+- **Date:** 2020-Dec-9
+- **JIRA Ticket:** [LPS-122955](https://issues.liferay.com/browse/LPS-122955)
+
+#### What changed?
+
+The class `SoyPortlet` used to implement Portlet whose views are backed by
+Closure Templates (Soy) has been removed and is no longer available.
+
+#### Who is affected?
+
+Anyone using `SoyPortlet` as a base for their portlet developments.
+
+#### How should I update my code?
+
+We heavily recommend re-writing your Soy portlets using either a well
+established architecture such as `MVCPortlet` using JSPs or a particular frontend
+framework of your choice.
+
+As a temporary measure, you could alternatively copy all the necessary removed
+classes into you own. However, support for Soy templates is likely to be removed
+in this version as well so doing this might require a lot of work.
+
+#### Why was this change made?
+
+This is done as a way to simplify our frontend technical offering and better
+focus on proven technologies with high demand in the market.
+
+A further exploration and analysis of the different frontend options available
+can be found in [The State of Frontend Infrastructure](https://liferay.dev/blogs/-/blogs/the-state-of-frontend-infrastructure) including a rationale on why we're moving
+away from Soy:
+
+> Liferay has invested several years into Soy believing it was the holy grail.
+> We believed the ability to compile Closure templates would provide us the
+> performance of JSP with the reusable components of other JavaScript
+> frameworks. While it came close to achieving some of those goals, we never
+> hit the performance we wanted and more importantly, it always felt like we
+> were the only people using this technology.
+
+---------------------------------------
+
+### Server-side Closure Templates (Soy) Support has been removed
+- **Date:** 2020-Dec-14
+- **JIRA Ticket:** [LPS-122956](https://issues.liferay.com/browse/LPS-122956)
+
+#### What changed?
+
+The following modules and the classes they exported to allow Soy rendering
+server-side have been removed:
+- `portal-template-soy-api`
+- `portal-template-soy-impl`
+- `portal-template-soy-context-contributor`
+
+To simplify the migration, the following modules remain available in a deprecated
+deprecated fashion providing only client-side initialization of previous Soy
+components:
+- `portal-template-soy-renderer-api`
+- `portal-template-soy-renderer-impl`
+
+#### Who is affected?
+
+Anyone directly using removed classes like `SoyContext`, `SoyHTMLData`... or
+declaring `TemplateContextContributor` using `LANG_TYPE_SOY` as the value for
+the `lang.type` attribute.
+
+Developers using our Soy `ComponentRenderer` to initialize Soy components.
+
+#### How should I update my code?
+
+There is no replacement for the removed Soy support. If you fall under the first
+scenario, we recommend switching to a different supported template language and
+rewrite your templates and components.
+
+If you're using `ComponentRenderer`, the only difference should be that your
+components no longer produce markup server-side. If this is important to you, a
+temporary workaround has been added. You can manually generate a version of the
+markup you want to render server-side and pass it as a `__placeholder__` property
+in your `context` parameter. Keep in mind that `ComponentRenderer` is deprecated
+and will go away in the future, so we kindly recommend that you rewrite your
+component using a different technology.
+
+#### Why was this change made?
+
+This is done as a way to simplify our frontend technical offering and better
+focus on proven technologies with high demand in the market.
+
+A further exploration and analysis of the different frontend options available
+can be found in [The State of Frontend Infrastructure](https://liferay.dev/blogs/-/blogs/the-state-of-frontend-infrastructure) including a rationale on why we're moving
+away from Soy:
+
+> Liferay has invested several years into Soy believing it was the holy grail.
+> We believed the ability to compile Closure templates would provide us the
+> performance of JSP with the reusable components of other JavaScript
+> frameworks. While it came close to achieving some of those goals, we never
+> hit the performance we wanted and more importantly, it always felt like we
+> were the only people using this technology.
+
+---------------------------------------

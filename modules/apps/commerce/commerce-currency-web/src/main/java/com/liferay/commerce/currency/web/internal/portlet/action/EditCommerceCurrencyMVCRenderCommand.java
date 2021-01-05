@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
 	enabled = false,
 	property = {
 		"javax.portlet.name=" + CommerceCurrencyPortletKeys.COMMERCE_CURRENCY,
-		"mvc.command.name=editCommerceCurrency"
+		"mvc.command.name=/commerce_currency/edit_commerce_currency"
 	},
 	service = MVCRenderCommand.class
 )

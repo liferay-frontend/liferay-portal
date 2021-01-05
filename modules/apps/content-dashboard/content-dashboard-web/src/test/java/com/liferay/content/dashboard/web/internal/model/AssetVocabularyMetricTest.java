@@ -90,6 +90,40 @@ public class AssetVocabularyMetricTest {
 	}
 
 	@Test
+	public void testGetVocabularyNamesWithEmptyFirstAssetCategoryMetricAndNonemptySecondAssetCategoryMetric() {
+		AssetVocabularyMetric childAssetVocabularyMetric1 =
+			new AssetVocabularyMetric(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				Collections.emptyList());
+
+		AssetVocabularyMetric childAssetVocabularyMetric2 =
+			new AssetVocabularyMetric(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				Collections.singletonList(
+					new AssetCategoryMetric(
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomLong())));
+
+		AssetVocabularyMetric assetVocabularyMetric = new AssetVocabularyMetric(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			Arrays.asList(
+				new AssetCategoryMetric(
+					childAssetVocabularyMetric1, RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(), RandomTestUtil.randomLong()),
+				new AssetCategoryMetric(
+					childAssetVocabularyMetric2, RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomLong())));
+
+		Assert.assertEquals(
+			Arrays.asList(
+				assetVocabularyMetric.getName(),
+				childAssetVocabularyMetric2.getName()),
+			assetVocabularyMetric.getVocabularyNames());
+	}
+
+	@Test
 	public void testToJSONArray() {
 		AssetCategoryMetric assetCategoryMetric1 = new AssetCategoryMetric(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),

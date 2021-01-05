@@ -308,6 +308,8 @@ definition {
 	@description = "This is a use case for LPS-66229."
 	@priority = "3"
 	test AddRecordWithBlankDocumentsAndMediaField {
+		property portal.upstream = "quarantine";
+
 		Navigator.openURL();
 
 		ProductMenu.gotoPortlet(
@@ -353,6 +355,8 @@ definition {
 	@description = "This is a use case for LPS-66229."
 	@priority = "3"
 	test AddRecordWithBlankLinkToPageField {
+		property portal.upstream = "quarantine";
+
 		Navigator.openURL();
 
 		ProductMenu.gotoPortlet(
@@ -398,6 +402,8 @@ definition {
 	@description = "This is a use case for LPS-66229."
 	@priority = "3"
 	test AddRecordWithBlankWebContentField {
+		property portal.acceptance = "quarantine";
+
 		Navigator.openURL();
 
 		ProductMenu.gotoPortlet(
@@ -443,6 +449,8 @@ definition {
 	@description = "This is a use case for LPS-66439."
 	@priority = "5"
 	test AddRecordWithPopulatedWebContentField {
+		property portal.acceptance = "quarantine";
+
 		Navigator.openURL();
 
 		ProductMenu.gotoPortlet(
@@ -1798,7 +1806,6 @@ definition {
 	@description = "This is a use case for LPS-59154 and LPS-62523."
 	@priority = "3"
 	test EditDefaultLanguageAndPublishRecord {
-		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "DynamicdatalistUsecase#EditDefaultLanguageAndPublishRecord";
 
 		Navigator.openURL();

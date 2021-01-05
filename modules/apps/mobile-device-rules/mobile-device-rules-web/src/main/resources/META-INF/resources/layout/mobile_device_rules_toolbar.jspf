@@ -142,7 +142,7 @@
 					'<%= UnicodeLanguageUtil.get(resourceBundle, "rule-priorities") %>',
 
 				<liferay-portlet:renderURL portletName="<%= MDRPortletKeys.MOBILE_DEVICE_RULES %>" varImpl="managePrioritiesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-					<portlet:param name="mvcRenderCommandName" value="/mobile_device_rules/edit_rule_group_instance" />
+					<portlet:param name="mvcRenderCommandName" value="/mobile_device_rules/edit_rule_group_instance_priorities" />
 					<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
 					<portlet:param name="className" value="<%= className %>" />
 					<portlet:param name="classPK" value="<%= String.valueOf(classPK) %>" />

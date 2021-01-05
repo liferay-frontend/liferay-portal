@@ -327,10 +327,10 @@ public class CommerceAccountUserRelLocalServiceImpl
 			long commerceAccountId, long userId, long[] roleIds)
 		throws PortalException {
 
-		Group group = commerceAccountLocalService.getCommerceAccountGroup(
-			commerceAccountId);
-
 		if (roleIds != null) {
+			Group group = commerceAccountLocalService.getCommerceAccountGroup(
+				commerceAccountId);
+
 			userGroupRoleLocalService.addUserGroupRoles(
 				userId, group.getGroupId(), roleIds);
 		}

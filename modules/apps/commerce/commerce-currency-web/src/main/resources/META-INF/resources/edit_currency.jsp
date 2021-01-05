@@ -36,9 +36,9 @@ if (Validator.isNotNull(backURL)) {
 }
 %>
 
-<portlet:actionURL name="editCommerceCurrency" var="editCommerceCurrencyActionURL" />
+<portlet:actionURL name="/commerce_currency/edit_commerce_currency" var="editCommerceCurrencyActionURL" />
 
-<aui:form action="<%= editCommerceCurrencyActionURL %>" cssClass="container-fluid-1280" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCommerceCurrency();" %>'>
+<aui:form action="<%= editCommerceCurrencyActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCommerceCurrency();" %>'>
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceCurrency == null) ? Constants.ADD : Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="commerceCurrencyId" type="hidden" value="<%= (commerceCurrency == null) ? 0 : commerceCurrency.getCommerceCurrencyId() %>" />
@@ -82,7 +82,7 @@ if (Validator.isNotNull(backURL)) {
 
 				</aui:select>
 
-				<aui:input bean="<%= commerceCurrency %>" model="<%= CommerceCurrency.class %>" name="primary" type="toggle-switch" value="<%= primary %>" />
+				<aui:input bean="<%= commerceCurrency %>" inlineLabel="right" labelCssClass="simple-toggle-switch" model="<%= CommerceCurrency.class %>" name="primary" type="toggle-switch" value="<%= primary %>" />
 
 				<%
 				String taglibLabel = "exchange-rate";
@@ -100,7 +100,7 @@ if (Validator.isNotNull(backURL)) {
 
 				<aui:input bean="<%= commerceCurrency %>" model="<%= CommerceCurrency.class %>" name="priority" />
 
-				<aui:input bean="<%= commerceCurrency %>" checked="<%= (commerceCurrency == null) ? false : commerceCurrency.isActive() %>" model="<%= CommerceCurrency.class %>" name="active" type="toggle-switch" />
+				<aui:input bean="<%= commerceCurrency %>" checked="<%= (commerceCurrency == null) ? false : commerceCurrency.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" model="<%= CommerceCurrency.class %>" name="active" type="toggle-switch" />
 			</aui:fieldset>
 		</aui:fieldset-group>
 	</div>

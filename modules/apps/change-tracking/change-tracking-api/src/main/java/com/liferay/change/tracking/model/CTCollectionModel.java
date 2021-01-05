@@ -161,6 +161,20 @@ public interface CTCollectionModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the schema version ID of this ct collection.
+	 *
+	 * @return the schema version ID of this ct collection
+	 */
+	public long getSchemaVersionId();
+
+	/**
+	 * Sets the schema version ID of this ct collection.
+	 *
+	 * @param schemaVersionId the schema version ID of this ct collection
+	 */
+	public void setSchemaVersionId(long schemaVersionId);
+
+	/**
 	 * Returns the name of this ct collection.
 	 *
 	 * @return the name of this ct collection

@@ -88,23 +88,25 @@ public class CompanyPortletRatingsDefinitionDisplayContext {
 
 			String className = entry.getKey();
 
-			Map<String, RatingsType> ratingsTypeMap = HashMapBuilder.put(
-				className,
-				() -> {
-					String propertyKey =
-						RatingsDataTransformerUtil.getPropertyKey(className);
+			_companyRatingsTypeMaps.put(
+				portletId,
+				HashMapBuilder.put(
+					className,
+					() -> {
+						String propertyKey =
+							RatingsDataTransformerUtil.getPropertyKey(
+								className);
 
-					RatingsType ratingsType =
-						portletRatingsDefinitionValues.getDefaultRatingsType();
+						RatingsType ratingsType =
+							portletRatingsDefinitionValues.
+								getDefaultRatingsType();
 
-					return RatingsType.parse(
-						PrefsParamUtil.getString(
-							companyPortletPreferences, httpServletRequest,
-							propertyKey, ratingsType.getValue()));
-				}
-			).build();
-
-			_companyRatingsTypeMaps.put(portletId, ratingsTypeMap);
+						return RatingsType.parse(
+							PrefsParamUtil.getString(
+								companyPortletPreferences, httpServletRequest,
+								propertyKey, ratingsType.getValue()));
+					}
+				).build());
 		}
 	}
 

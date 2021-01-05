@@ -73,7 +73,7 @@ if (portletTitleBasedNavigation) {
 	/>
 </c:if>
 
-<div <%= portletTitleBasedNavigation ? "class=\"container-fluid-1280\"" : StringPool.BLANK %>>
+<div <%= portletTitleBasedNavigation ? "class=\"container-fluid container-fluid-max-xl\"" : StringPool.BLANK %>>
 	<liferay-portlet:actionURL name="updateKBArticle" var="updateKBArticleURL" />
 
 	<aui:form action="<%= updateKBArticleURL %>" method="post" name="fm">
@@ -248,7 +248,7 @@ if (portletTitleBasedNavigation) {
 				</aui:fieldset>
 
 				<c:if test="<%= kbArticle == null %>">
-					<aui:fieldset collapsed="<%= true %>" collapsible="<%= true %>" cssClass='<%= (parentResourcePrimKey != KBFolderConstants.DEFAULT_PARENT_FOLDER_ID) ? "hide" : StringPool.BLANK %>' label="permissions">
+					<aui:fieldset collapsed="<%= true %>" collapsible="<%= true %>" label="permissions">
 						<liferay-ui:input-permissions
 							modelName="<%= KBArticle.class.getName() %>"
 						/>

@@ -24,12 +24,14 @@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
 taglib uri="http://liferay.com/tld/security" prefix="liferay-security" %><%@
+taglib uri="http://liferay.com/tld/text-localizer" prefix="liferay-text-localizer" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %><%@
 taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.account.admin.web.internal.constants.AccountScreenNavigationEntryConstants" %><%@
 page import="com.liferay.account.admin.web.internal.constants.AccountWebKeys" %><%@
+page import="com.liferay.account.admin.web.internal.dao.search.AccountEntryAddressDisplaySearchContainerFactory" %><%@
 page import="com.liferay.account.admin.web.internal.dao.search.AccountEntryDisplaySearchContainerFactory" %><%@
 page import="com.liferay.account.admin.web.internal.dao.search.AccountGroupAccountEntryRowChecker" %><%@
 page import="com.liferay.account.admin.web.internal.dao.search.AccountGroupDisplaySearchContainerFactory" %><%@
@@ -42,12 +44,15 @@ page import="com.liferay.account.admin.web.internal.display.AccountEntryDisplay"
 page import="com.liferay.account.admin.web.internal.display.AccountGroupDisplay" %><%@
 page import="com.liferay.account.admin.web.internal.display.AccountRoleDisplay" %><%@
 page import="com.liferay.account.admin.web.internal.display.AccountUserDisplay" %><%@
+page import="com.liferay.account.admin.web.internal.display.AddressDisplay" %><%@
 page import="com.liferay.account.admin.web.internal.display.context.AccountUsersAdminManagementToolbarDisplayContext" %><%@
 page import="com.liferay.account.admin.web.internal.display.context.SelectAccountEntriesManagementToolbarDisplayContext" %><%@
+page import="com.liferay.account.admin.web.internal.display.context.SelectAccountEntryAddressManagementToolbarDisplayContext" %><%@
 page import="com.liferay.account.admin.web.internal.display.context.SelectAccountEntryManagementToolbarDisplayContext" %><%@
 page import="com.liferay.account.admin.web.internal.display.context.SelectAccountOrganizationsManagementToolbarDisplayContext" %><%@
 page import="com.liferay.account.admin.web.internal.display.context.SelectAccountUsersManagementToolbarDisplayContext" %><%@
 page import="com.liferay.account.admin.web.internal.display.context.ViewAccountEntriesManagementToolbarDisplayContext" %><%@
+page import="com.liferay.account.admin.web.internal.display.context.ViewAccountEntryAddressesManagementToolbarDisplayContext" %><%@
 page import="com.liferay.account.admin.web.internal.display.context.ViewAccountGroupAccountEntriesManagementToolbarDisplayContext" %><%@
 page import="com.liferay.account.admin.web.internal.display.context.ViewAccountGroupsManagementToolbarDisplayContext" %><%@
 page import="com.liferay.account.admin.web.internal.display.context.ViewAccountOrganizationsManagementToolbarDisplayContext" %><%@
@@ -73,7 +78,9 @@ page import="com.liferay.portal.kernel.exception.RoleNameException" %><%@
 page import="com.liferay.portal.kernel.exception.UserEmailAddressException" %><%@
 page import="com.liferay.portal.kernel.exception.UserScreenNameException" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
+page import="com.liferay.portal.kernel.model.Address" %><%@
 page import="com.liferay.portal.kernel.model.Group" %><%@
+page import="com.liferay.portal.kernel.model.ListTypeConstants" %><%@
 page import="com.liferay.portal.kernel.model.ModelHintsUtil" %><%@
 page import="com.liferay.portal.kernel.model.Organization" %><%@
 page import="com.liferay.portal.kernel.model.Role" %><%@
@@ -81,6 +88,7 @@ page import="com.liferay.portal.kernel.model.User" %><%@
 page import="com.liferay.portal.kernel.model.role.RoleConstants" %><%@
 page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %><%@
 page import="com.liferay.portal.kernel.security.permission.ActionKeys" %><%@
+page import="com.liferay.portal.kernel.service.AddressLocalServiceUtil" %><%@
 page import="com.liferay.portal.kernel.service.permission.UserPermissionUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@

@@ -46,7 +46,11 @@ public class BuildFactory {
 				return new CucumberAxisBuild(url, (BatchBuild)parentBuild);
 			}
 
-			if ((jobVariant != null) && jobVariant.contains("functional")) {
+			if ((jobVariant != null) &&
+				(jobVariant.contains("functional") ||
+				 jobVariant.contains("test-portal-environment") ||
+				 jobVariant.contains("test-portal-fixpack-environment"))) {
+
 				return new PoshiAxisBuild(url, (BatchBuild)parentBuild);
 			}
 
@@ -123,6 +127,11 @@ public class BuildFactory {
 
 		if (jobName.equals("test-plugins-marketplaceapp")) {
 			return new MarketplaceAppPluginsTopLevelBuild(
+				url, (TopLevelBuild)parentBuild);
+		}
+
+		if (jobName.equals("test-portal-app-release")) {
+			return new PortalAppReleaseTopLevelBuild(
 				url, (TopLevelBuild)parentBuild);
 		}
 

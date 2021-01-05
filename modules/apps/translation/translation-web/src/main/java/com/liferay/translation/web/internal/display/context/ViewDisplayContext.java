@@ -19,6 +19,7 @@ import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -26,6 +27,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.search.BooleanClause;
+import com.liferay.portal.kernel.search.BooleanClauseFactoryUtil;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -33,20 +38,26 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchContextFactory;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.filter.TermsFilter;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.translation.model.TranslationEntry;
 import com.liferay.translation.service.TranslationEntryLocalService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionURL;
@@ -153,9 +164,14 @@ public class ViewDisplayContext {
 		return "translationManagementToolbarDefaultEventHandler";
 	}
 
-	public String getModelName(TranslationEntry translationEntry) {
-		return ResourceActionsUtil.getModelResource(
-			_themeDisplay.getLocale(), translationEntry.getClassName());
+	public String getLanguageIcon(TranslationEntry translationEntry) {
+		return StringUtil.lowerCase(getLanguageLabel(translationEntry));
+	}
+
+	public String getLanguageLabel(TranslationEntry translationEntry) {
+		return StringUtil.replace(
+			translationEntry.getLanguageId(), CharPool.UNDERLINE,
+			CharPool.DASH);
 	}
 
 	public SearchContainer<TranslationEntry> getSearchContainer()
@@ -169,6 +185,16 @@ public class ViewDisplayContext {
 			_liferayPortletRequest, _liferayPortletResponse.createRenderURL(),
 			null, "no-entries-were-found");
 
+		String orderByCol = ParamUtil.getString(
+			_httpServletRequest, "orderByCol", "title");
+
+		_searchContainer.setOrderByCol(orderByCol);
+
+		String orderByType = ParamUtil.getString(
+			_httpServletRequest, "orderByType", "asc");
+
+		_searchContainer.setOrderByType(orderByType);
+
 		_searchContainer.setRowChecker(
 			new EmptyOnClickRowChecker(_liferayPortletResponse));
 
@@ -176,10 +202,12 @@ public class ViewDisplayContext {
 			_httpServletRequest);
 
 		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setBooleanClauses(_getBooleanClauses());
 		searchContext.setCompanyId(_themeDisplay.getCompanyId());
 		searchContext.setEnd(_searchContainer.getEnd());
 		searchContext.setKeywords(
 			ParamUtil.getString(_httpServletRequest, "keywords"));
+		searchContext.setSorts(_getSorts());
 		searchContext.setStart(_searchContainer.getStart());
 		searchContext.setUserId(_themeDisplay.getUserId());
 
@@ -238,6 +266,9 @@ public class ViewDisplayContext {
 			"classNameId", String.valueOf(translationEntry.getClassNameId()));
 		translatePortletURL.setParameter(
 			"classPK", String.valueOf(translationEntry.getClassPK()));
+		translatePortletURL.setParameter(
+			"targetLanguageId",
+			String.valueOf(translationEntry.getLanguageId()));
 
 		return translatePortletURL;
 	}
@@ -250,6 +281,65 @@ public class ViewDisplayContext {
 			getDefaultEventHandler(), _httpServletRequest,
 			_liferayPortletRequest, _liferayPortletResponse,
 			getSearchContainer());
+	}
+
+	private BooleanClause[] _getBooleanClauses() {
+		long status = ParamUtil.getLong(
+			_httpServletRequest, "status", WorkflowConstants.STATUS_ANY);
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return null;
+		}
+
+		BooleanQuery booleanQuery = new BooleanQueryImpl();
+
+		BooleanFilter booleanFilter = new BooleanFilter();
+
+		TermsFilter termsFilter = new TermsFilter(Field.STATUS);
+
+		termsFilter.addValue(String.valueOf(status));
+
+		booleanFilter.add(termsFilter, BooleanClauseOccur.MUST);
+
+		booleanQuery.setPreBooleanFilter(booleanFilter);
+
+		return new BooleanClause[] {
+			BooleanClauseFactoryUtil.create(
+				booleanQuery, BooleanClauseOccur.MUST.getName())
+		};
+	}
+
+	private Sort[] _getSorts() {
+		boolean reverse = false;
+
+		if (Objects.equals(_searchContainer.getOrderByType(), "desc")) {
+			reverse = true;
+		}
+
+		if (Objects.equals(_searchContainer.getOrderByCol(), "modified-date")) {
+			return new Sort[] {
+				new Sort(
+					Field.getSortableFieldName(Field.MODIFIED_DATE),
+					Sort.LONG_TYPE, reverse)
+			};
+		}
+		else if (Objects.equals(_searchContainer.getOrderByCol(), "status")) {
+			return new Sort[] {
+				new Sort(
+					Field.getSortableFieldName(Field.STATUS), Sort.INT_TYPE,
+					reverse)
+			};
+		}
+		else if (Objects.equals(_searchContainer.getOrderByCol(), "title")) {
+			return new Sort[] {
+				new Sort(
+					Field.getSortableFieldName(Field.TITLE), Sort.STRING_TYPE,
+					reverse)
+			};
+		}
+		else {
+			return null;
+		}
 	}
 
 	private final HttpServletRequest _httpServletRequest;

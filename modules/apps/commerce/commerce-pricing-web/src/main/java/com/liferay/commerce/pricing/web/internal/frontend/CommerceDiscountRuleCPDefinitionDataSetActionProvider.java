@@ -104,7 +104,8 @@ public class CommerceDiscountRuleCPDefinitionDataSetActionProvider
 		}
 
 		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCommerceDiscountRule");
+			ActionRequest.ACTION_NAME,
+			"/commerce_discount/edit_commerce_discount_rule");
 		portletURL.setParameter(Constants.CMD, Constants.DELETE);
 
 		String redirect = ParamUtil.getString(

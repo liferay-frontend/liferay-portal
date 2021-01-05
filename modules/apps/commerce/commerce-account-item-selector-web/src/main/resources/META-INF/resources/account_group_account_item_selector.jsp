@@ -57,7 +57,7 @@ PortletURL portletURL = commerceAccountGroupAccountItemSelectorViewDisplayContex
 	</liferay-frontend:management-bar-filters>
 </liferay-frontend:management-bar>
 
-<div class="container-fluid-1280" id="<portlet:namespace />commerceAccountSelectorWrapper">
+<div class="container-fluid container-fluid-max-xl" id="<portlet:namespace />commerceAccountSelectorWrapper">
 	<liferay-ui:search-container
 		id="commerceAccounts"
 		searchContainer="<%= commerceAccountGroupAccountItemSelectorViewDisplayContext.getSearchContainer() %>"
@@ -79,12 +79,12 @@ PortletURL portletURL = commerceAccountGroupAccountItemSelectorViewDisplayContex
 			%>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				property="name"
 			/>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				property="active"
 			/>
 		</liferay-ui:search-container-row>

@@ -30,7 +30,7 @@
 </tr>
 <tr>
 	<td>CUSTOMIZED_PAGE_INFO</td>
-	<td>//div[contains(@class,'layout')]/span[contains(@class,'message-info')]</td>
+	<td>//div[contains(@class,'popover')]//p[contains(@class,'message-info')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -194,6 +194,21 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ERROR_INVALID_FACEBOOK_VIDEO</td>
+	<td>//div[contains(@class,'pluginSkinLight')]//div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_INVALID_VIMEO_VIDEO</td>
+	<td>//div[contains(@id,'sun')]//p</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_INVALID_YOUTUBE_VIDEO</td>
+	<td>//div[contains(@class,'ytp-error-content-wrap')]//span</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ERROR_PUBLISH_UNSUCCESSFUL_EXTENSION</td>
 	<td>//div[contains(@class,'alert-danger') and contains(.,'The source file does not have the same extension as the original file')]</td>
 	<td></td>
@@ -231,6 +246,11 @@
 <tr>
 	<td>INFO</td>
 	<td>//div[contains(@class,'alert alert-info') and not(contains(@class,'hide'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INFO_EXTERNAL_VIDEO_PREVIEW</td>
+	<td>//div[contains(@class,'video-preview-placeholder-text')]</td>
 	<td></td>
 </tr>
 <tr>

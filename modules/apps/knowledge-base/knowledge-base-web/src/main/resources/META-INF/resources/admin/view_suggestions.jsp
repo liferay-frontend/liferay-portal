@@ -56,6 +56,7 @@ kbCommentsSearchContainer.setRowChecker(new KBCommentsChecker(liferayPortletRequ
 KBSuggestionListManagementToolbarDisplayContext kbSuggestionListManagementToolbarDisplayContext = new KBSuggestionListManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, kbCommentsSearchContainer);
 
 request.setAttribute("view_suggestions.jsp-kbSuggestionListManagementToolbarDisplayContext", kbSuggestionListManagementToolbarDisplayContext);
+
 request.setAttribute("view_suggestions.jsp-resultRowSplitter", kbCommentResultRowSplitter);
 request.setAttribute("view_suggestions.jsp-searchContainer", kbCommentsSearchContainer);
 %>

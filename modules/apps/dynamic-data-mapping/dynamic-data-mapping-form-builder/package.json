@@ -1,14 +1,9 @@
 {
 	"dependencies": {
 		"classnames": "2.2.6",
-		"clay-alert": "2.21.4",
-		"clay-checkbox": "2.21.4",
-		"clay-dropdown": "2.21.4",
-		"clay-icon": "2.21.4",
-		"clay-management-toolbar": "2.21.4",
-		"clay-modal": "2.21.4",
-		"clay-radio": "2.21.4",
-		"metal-dom": "2.16.8",
+		"clay-dropdown": "2.22.0",
+		"clay-icon": "2.22.0",
+		"clay-modal": "2.22.0",
 		"metal-drag-drop": "3.3.1",
 		"metal-events": "2.16.8",
 		"metal-jsx": "2.16.8",
@@ -37,9 +32,7 @@
 			"FormRenderer",
 			"LayoutProvider/handlers/fieldSetAddedHandler",
 			"LayoutProvider/util",
-			"PageRenderer",
-			"RuleBuilder/RuleBuilder",
-			"RuleEditor"
+			"PageRenderer"
 		]
 	},
 	"main": "js/index.es.js",

@@ -9,7 +9,7 @@
 		<div class="product-detail-header">
 			<div class="col-lg-6 col-md-7">
 				<div class="row">
-					<div class="col-lg-2 col-md-3 col-xs-2">
+					<div class="col-2 col-lg-2 col-md-3">
 						<#assign images = virtualCPTypeDisplayContext.getImages() />
 
 						<#if images?has_content>
@@ -17,17 +17,17 @@
 								<#assign url = virtualCPTypeDisplayContext.getImageURL(curImage.getFileEntry(), themeDisplay) />
 
 								<div class="card thumb" data-url="${url}">
-									<img class="center-block img-responsive" src="${url}">
+									<img class="center-block img-fluid" src="${url}">
 								</div>
 							</#list>
 						</#if>
 					</div>
 
-					<div class="col-lg-10 col-md-9 col-xs-10 full-image">
+					<div class="col-10 col-lg-10 col-md-9 full-image">
 						<#assign cpAttachmentFileEntry = virtualCPTypeDisplayContext.getDefaultImage() />
 
 						<#if cpAttachmentFileEntry??>
-							<img class="center-block img-responsive" id="<@portlet.namespace />full-image" src="${virtualCPTypeDisplayContext.getImageURL(cpAttachmentFileEntry.getFileEntry(), themeDisplay)}">
+							<img class="center-block img-fluid" id="<@portlet.namespace />full-image" src="${virtualCPTypeDisplayContext.getImageURL(cpAttachmentFileEntry.getFileEntry(), themeDisplay)}">
 						</#if>
 					</div>
 				</div>
@@ -102,23 +102,23 @@
 		<div class="product-detail-body">
 			<div class="nav-tabs-centered">
 				<ul class="nav nav-tabs" role="tablist">
-					<li class="active" role="presentation">
-						<a aria-controls="<@portlet.namespace />description" aria-expanded="true" data-toggle="tab" href="#<@portlet.namespace />description" role="tab">
+					<li class="nav-item" role="presentation">
+						<a aria-controls="<@portlet.namespace />description" aria-expanded="true" class="nav-link" data-toggle="tab" href="#<@portlet.namespace />description" role="tab">
 							${languageUtil.get(resourceBundle, "description")}
 						</a>
 					</li>
 
 					<#if virtualCPTypeDisplayContext.hasCPDefinitionSpecificationOptionValues()>
-						<li role="presentation">
-							<a aria-controls="<@portlet.namespace />specification" aria-expanded="false" data-toggle="tab" href="#<@portlet.namespace />specification" role="tab">
+						<li class="nav-item" role="presentation">
+							<a aria-controls="<@portlet.namespace />specification" aria-expanded="false" class="nav-link" data-toggle="tab" href="#<@portlet.namespace />specification" role="tab">
 								${languageUtil.get(resourceBundle, "specification-options")}
 							</a>
 						</li>
 					</#if>
 
 					<#if cpAttachmentFileEntries?has_content>
-						<li role="presentation">
-							<a aria-controls="<@portlet.namespace />attachments" aria-expanded="false" data-toggle="tab" href="#<@portlet.namespace />attachments" role="tab">
+						<li class="nav-item" role="presentation">
+							<a aria-controls="<@portlet.namespace />attachments" aria-expanded="false" class="nav-link" data-toggle="tab" href="#<@portlet.namespace />attachments" role="tab">
 								${languageUtil.get(resourceBundle, "attachments")}
 							</a>
 						</li>

@@ -1,5 +1,9 @@
 package ${configYAML.apiPackagePath}.internal.graphql.query.${escapedVersion};
 
+<#list allExternalSchemas?keys as schemaName>
+	import ${configYAML.apiPackagePath}.resource.${escapedVersion}.${schemaName}Resource;
+</#list>
+
 <#list allSchemas?keys as schemaName>
 	import ${configYAML.apiPackagePath}.dto.${escapedVersion}.${schemaName};
 	import ${configYAML.apiPackagePath}.resource.${escapedVersion}.${schemaName}Resource;
@@ -168,7 +172,13 @@ public class Query {
 			</#if>
 
 			@GraphQLField
-			protected java.util.Collection<${schemaName}> items;
+			protected java.util.Collection<
+					<#if !stringUtil.startsWith(javaDataTypeMap[schemaName], configYAML.apiPackagePath)>
+						${javaDataTypeMap[schemaName]}
+					<#else>
+						${schemaName}
+					</#if>
+				> items;
 
 			@GraphQLField
 			protected long lastPage;

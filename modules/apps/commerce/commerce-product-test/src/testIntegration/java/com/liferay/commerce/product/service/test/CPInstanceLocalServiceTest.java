@@ -15,12 +15,11 @@
 package com.liferay.commerce.product.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.product.constants.CPInstanceConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
-import com.liferay.commerce.product.model.CPInstanceConstants;
-import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
@@ -125,9 +124,8 @@ public class CPInstanceLocalServiceTest {
 			CPDefinitionOptionRelLocalServiceUtil.getCPDefinitionOptionRel(
 				randomCPDefinitionOptionValueRel.getCPDefinitionOptionRelId());
 
-		CPOption cpOption = cpDefinitionOptionRel.getCPOption();
-
-		CPOptionValue cpOptionValue = CPTestUtil.addCPOptionValue(cpOption);
+		CPOptionValue cpOptionValue = CPTestUtil.addCPOptionValue(
+			cpDefinitionOptionRel.getCPOption());
 
 		CPDefinitionOptionValueRel newCPDefinitionOptionValueRel =
 			CPDefinitionOptionValueRelLocalServiceUtil.

@@ -49,11 +49,11 @@ public class CalendarUpgradeTestUtil {
 
 		return registry.callService(
 			upgradeClassName,
-			(UpgradeStepRegistrator upgradeStepRegistror) -> {
+			(UpgradeStepRegistrator upgradeStepRegistrator) -> {
 				SearchRegistry searchRegistry = new SearchRegistry(
 					upgradeStepClassName);
 
-				upgradeStepRegistror.register(searchRegistry);
+				upgradeStepRegistrator.register(searchRegistry);
 
 				return searchRegistry.getUpgradeStep();
 			});

@@ -53,8 +53,9 @@ public class BaselineTask extends DefaultTask implements VerificationTask {
 
 	@Inject
 	public BaselineTask(WorkerExecutor workerExecutor) {
-		_logFileName = "baseline/" + getName() + ".log";
 		_workerExecutor = workerExecutor;
+
+		_logFileName = "baseline/" + getName() + ".log";
 	}
 
 	@TaskAction

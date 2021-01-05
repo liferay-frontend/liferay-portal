@@ -86,6 +86,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 						Group siteGroup = themeDisplay.getSiteGroup();
 
 						boolean canSubscribe = !stagingGroupHelper.isLocalStagingGroup(siteGroup) && !stagingGroupHelper.isRemoteStagingGroup(siteGroup) && themeDisplay.isSignedIn() && discussionPermission.hasSubscribePermission(company.getCompanyId(), siteGroup.getGroupId(), discussionTaglibHelper.getClassName(), discussionTaglibHelper.getClassPK());
+
 						boolean subscribed = SubscriptionLocalServiceUtil.isSubscribed(company.getCompanyId(), user.getUserId(), discussionTaglibHelper.getSubscriptionClassName(), discussionTaglibHelper.getClassPK());
 
 						String subscriptionOnClick = randomNamespace + "subscribeToComments(" + !subscribed + ");";
@@ -145,7 +146,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 												<liferay-editor:editor
 													configKey="commentEditor"
 													contents=""
-													editorName='<%= PropsUtil.get("editor.wysiwyg.portal-web.docroot.html.taglib.ui.discussion.jsp") %>'
+													editorName="ckeditor"
 													name="postReplyBody0"
 													onChangeMethod="0ReplyOnChange"
 													placeholder="type-your-comment-here"
@@ -248,7 +249,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 		loginURL.setWindowState(LiferayWindowState.POP_UP);
 		%>
 
-		<aui:script require="metal-dom/src/all/dom as domAll">
+		<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element.es as runScriptsInElement">
 			var Util = Liferay.Util;
 
 			window['<%= namespace + randomNamespace %>0ReplyOnChange'] = function (html) {
@@ -480,7 +481,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 							if (editorWrapper) {
 								editorWrapper.innerHTML = response;
 
-								domAll.globalEval.runScriptsInElement(editorWrapper);
+								runScriptsInElement.default(editorWrapper);
 							}
 
 							Util.toggleDisabled(
@@ -647,7 +648,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 									newCommentsContainer
 								);
 
-								domAll.globalEval.runScriptsInElement(newCommentsContainer);
+								runScriptsInElement.default(newCommentsContainer);
 							}
 						})
 						.catch(function () {

@@ -45,6 +45,7 @@ public class JournalArticleItemSelectorVerticalCard implements VerticalCard {
 		JournalArticle article, RenderRequest renderRequest) {
 
 		_article = article;
+
 		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
 
 		_themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
@@ -52,7 +53,7 @@ public class JournalArticleItemSelectorVerticalCard implements VerticalCard {
 	}
 
 	@Override
-	public String getElementClasses() {
+	public String getCssClass() {
 		return "card-interactive card-interactive-secondary";
 	}
 

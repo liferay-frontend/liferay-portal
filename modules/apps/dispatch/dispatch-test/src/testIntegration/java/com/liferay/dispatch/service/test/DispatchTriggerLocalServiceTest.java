@@ -100,6 +100,26 @@ public class DispatchTriggerLocalServiceTest {
 	}
 
 	@Test
+	public void testFetchPreviousFireDate() throws Exception {
+		Company company = CompanyTestUtil.addCompany();
+
+		User user = UserTestUtil.addUser(company);
+
+		DispatchTrigger expectedDispatchTrigger =
+			DispatchTriggerTestUtil.randomDispatchTrigger(user, 1);
+
+		DispatchTrigger dispatchTrigger = _addDispatchTrigger(
+			expectedDispatchTrigger);
+
+		Assert.assertNull(
+			_dispatchTriggerLocalService.fetchPreviousFireDate(Long.MIN_VALUE));
+
+		Assert.assertNull(
+			_dispatchTriggerLocalService.fetchPreviousFireDate(
+				dispatchTrigger.getDispatchTriggerId()));
+	}
+
+	@Test
 	public void testGetUserDispatchTriggers() throws Exception {
 		int userCount = RandomTestUtil.randomInt(4, 10);
 
@@ -162,7 +182,8 @@ public class DispatchTriggerLocalServiceTest {
 			expectedDispatchTrigger, 1);
 
 		DispatchTaskClusterMode dispatchTaskClusterMode =
-			DispatchTaskClusterMode.NOT_APPLICABLE;
+			DispatchTaskClusterMode.valueOf(
+				expectedDispatchTrigger.getTaskClusterMode());
 
 		try {
 			dispatchTrigger =
@@ -236,6 +257,35 @@ public class DispatchTriggerLocalServiceTest {
 			DispatchTriggerNameException.class, exceptionClass);
 	}
 
+	@Test
+	public void testUpdateDispatchTriggerWhenMultiplePortalInstancesPresent()
+		throws Exception {
+
+		Company company1 = CompanyTestUtil.addCompany();
+
+		User user1 = UserTestUtil.addUser(company1);
+
+		DispatchTrigger dispatchTrigger1 = _addDispatchTrigger(
+			DispatchTriggerTestUtil.randomDispatchTrigger(user1, 1));
+
+		Company company2 = CompanyTestUtil.addCompany();
+
+		User user2 = UserTestUtil.addUser(company2);
+
+		DispatchTrigger dispatchTrigger2 = _addDispatchTrigger(
+			DispatchTriggerTestUtil.randomDispatchTrigger(user2, 1));
+
+		Assert.assertEquals(
+			dispatchTrigger1.getName(), dispatchTrigger2.getName());
+
+		dispatchTrigger2 = _dispatchTriggerLocalService.updateDispatchTrigger(
+			dispatchTrigger2.getDispatchTriggerId(), dispatchTrigger1.getName(),
+			dispatchTrigger1.getTaskSettingsUnicodeProperties());
+
+		Assert.assertEquals(
+			dispatchTrigger1.getName(), dispatchTrigger2.getName());
+	}
+
 	private DispatchTrigger _addDispatchTrigger(DispatchTrigger dispatchTrigger)
 		throws Exception {
 
@@ -256,6 +306,9 @@ public class DispatchTriggerLocalServiceTest {
 			expectedDispatchTrigger.getCronExpression(),
 			actualDispatchTrigger.getCronExpression());
 		Assert.assertNotNull(actualDispatchTrigger.getStartDate());
+		Assert.assertEquals(
+			expectedDispatchTrigger.getTaskClusterMode(),
+			actualDispatchTrigger.getTaskClusterMode());
 	}
 
 	private void _basicAssertEquals(

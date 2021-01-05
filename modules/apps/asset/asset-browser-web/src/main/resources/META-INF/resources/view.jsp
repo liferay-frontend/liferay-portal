@@ -20,7 +20,7 @@
 	displayContext="<%= new AssetBrowserManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, assetBrowserDisplayContext) %>"
 />
 
-<aui:form action="<%= assetBrowserDisplayContext.getPortletURL() %>" cssClass="container-fluid-1280" method="post" name="selectAssetFm">
+<aui:form action="<%= assetBrowserDisplayContext.getPortletURL() %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="selectAssetFm">
 	<c:if test="<%= assetBrowserDisplayContext.isShowBreadcrumb() %>">
 		<liferay-site-navigation:breadcrumb
 			breadcrumbEntries="<%= assetBrowserDisplayContext.getPortletBreadcrumbEntries() %>"
@@ -134,13 +134,8 @@
 							</liferay-ui:search-container-column-text>
 						</c:when>
 						<c:when test='<%= Objects.equals(assetBrowserDisplayContext.getDisplayStyle(), "icon") %>'>
-
-							<%
-							row.setCssClass("entry-card lfr-asset-item");
-							%>
-
 							<liferay-ui:search-container-column-text>
-								<clay:vertical-card-v2
+								<clay:vertical-card
 									verticalCard="<%= new AssetEntryVerticalCard(assetEntry, renderRequest, assetBrowserDisplayContext) %>"
 								/>
 							</liferay-ui:search-container-column-text>
@@ -272,8 +267,10 @@
 		</aui:script>
 	</c:when>
 	<c:otherwise>
-		<aui:script require="metal-dom/src/all/dom as dom">
-			var delegateHandler = dom.delegate(
+		<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
+			var delegate = delegateModule.default;
+
+			var delegateHandler = delegate(
 				document.querySelector('#<portlet:namespace />selectAssetFm'),
 				'click',
 				'.selector-button',
@@ -290,7 +287,7 @@
 			);
 
 			var onDestroyPortlet = function () {
-				delegateHandler.removeListener();
+				delegateHandler.dispose();
 
 				Liferay.detach('destroyPortlet', onDestroyPortlet);
 			};

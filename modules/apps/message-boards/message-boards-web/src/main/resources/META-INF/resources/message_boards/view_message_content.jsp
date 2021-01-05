@@ -299,7 +299,7 @@ if (portletTitleBasedNavigation) {
 	</c:if>
 </div>
 
-<aui:script require="metal-dom/src/all/dom as dom">
+<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element.es as runScriptsInElement">
 	var moreMessagesButton = document.getElementById(
 		'<portlet:namespace />moreMessages'
 	);
@@ -338,18 +338,20 @@ if (portletTitleBasedNavigation) {
 					);
 
 					if (messageContainer) {
-						dom.append(messageContainer, response);
-
-						dom.globalEval.runScriptsInElement(
-							messageContainer.parentElement
+						messageContainer.appendChild(
+							document
+								.createRange()
+								.createContextualFragment(response)
 						);
+
+						runScriptsInElement.default(messageContainer.parentElement);
 
 						var replyContainer = document.querySelector(
 							'#<portlet:namespace />messageContainer > .reply-container'
 						);
 
 						if (replyContainer) {
-							dom.append(messageContainer, replyContainer);
+							messageContainer.append(replyContainer);
 						}
 					}
 				});

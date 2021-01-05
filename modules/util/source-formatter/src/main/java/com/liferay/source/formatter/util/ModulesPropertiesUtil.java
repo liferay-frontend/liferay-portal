@@ -211,7 +211,7 @@ public class ModulesPropertiesUtil {
 	private static final String[] _SKIP_DIR_NAMES = {
 		".git", ".gradle", ".idea", ".m2", ".settings", "bin", "build",
 		"classes", "dependencies", "node_modules", "node_modules_cache",
-		"private", "sdk", "sql", "src", "test", "test-classes", "test-coverage",
+		"private", "sdk", "sql", "src", "test-classes", "test-coverage",
 		"test-results", "tmp"
 	};
 

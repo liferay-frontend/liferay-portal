@@ -57,7 +57,7 @@ Entry entry = (Entry)row.getObject();
 				<portlet:param name="tabs1" value="reports" />
 			</portlet:renderURL>
 
-			<portlet:actionURL name="unscheduleReportRequest" var="unscheduleURL">
+			<portlet:actionURL name="/reports_admin/unschedule_report_request" var="unscheduleURL">
 				<portlet:param name="redirect" value="<%= searchRequestURL %>" />
 				<portlet:param name="entryId" value="<%= String.valueOf(entry.getEntryId()) %>" />
 			</portlet:actionURL>
@@ -76,7 +76,7 @@ Entry entry = (Entry)row.getObject();
 			<portlet:param name="tabs1" value="reports" />
 		</portlet:renderURL>
 
-		<portlet:actionURL name="archiveRequest" var="deleteURL">
+		<portlet:actionURL name="/reports_admin/archive_request" var="deleteURL">
 			<portlet:param name="redirect" value="<%= searchRequestURL %>" />
 			<portlet:param name="entryId" value="<%= String.valueOf(entry.getEntryId()) %>" />
 		</portlet:actionURL>

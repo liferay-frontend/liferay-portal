@@ -44,7 +44,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -121,6 +123,11 @@ public class AxisBuild extends BaseBuild {
 		catch (MalformedURLException malformedURLException) {
 			return null;
 		}
+	}
+
+	public String getAxisName() {
+		return JenkinsResultsParserUtil.combine(
+			getJobVariant(), "/", getAxisNumber());
 	}
 
 	public String getAxisNumber() {
@@ -417,12 +424,73 @@ public class AxisBuild extends BaseBuild {
 		return startTime;
 	}
 
+	public TestClassResult getTestClassResult(String testClassName) {
+		if (!isCompleted()) {
+			return null;
+		}
+
+		if (_testClassResultsPopulated && !_testClassResults.isEmpty()) {
+			TestClassResult targetTestClassResult = _testClassResults.get(
+				testClassName);
+
+			if (targetTestClassResult != null) {
+				return targetTestClassResult;
+			}
+		}
+
+		synchronized (_testClassResults) {
+			if (!_testClassResultsPopulated) {
+				for (TestClassResult testClassResult : getTestClassResults()) {
+					_testClassResults.put(
+						testClassResult.getClassName(), testClassResult);
+				}
+
+				_testClassResultsPopulated = true;
+			}
+		}
+
+		return _testClassResults.get(testClassName);
+	}
+
+	public TestResult getTestResult(String testName) {
+		TestResult targetTestResult = _testResults.get(testName);
+
+		if (targetTestResult != null) {
+			return targetTestResult;
+		}
+
+		for (TestResult testResult : getTestResults(null)) {
+			if (testName.equals(testResult.getTestName())) {
+				return testResult;
+			}
+		}
+
+		return null;
+	}
+
 	@Override
 	public List<TestResult> getTestResults(String testStatus) {
-		String status = getStatus();
-
-		if (!status.equals("completed")) {
+		if (!isCompleted()) {
 			return Collections.emptyList();
+		}
+
+		if (_testResultsPopulated && !_testResults.isEmpty()) {
+			List<TestResult> availableTestResults = new ArrayList<>(
+				_testResults.values());
+
+			if (!availableTestResults.isEmpty()) {
+				List<TestResult> testResults = new ArrayList<>();
+
+				for (TestResult testResult : availableTestResults) {
+					if ((testStatus == null) ||
+						testStatus.equals(testResult.getStatus())) {
+
+						testResults.add(testResult);
+					}
+				}
+
+				return testResults;
+			}
 		}
 
 		JSONObject testReportJSONObject = getTestReportJSONObject(true);
@@ -434,8 +502,22 @@ public class AxisBuild extends BaseBuild {
 			return Collections.emptyList();
 		}
 
-		return getTestResults(
-			this, testReportJSONObject.getJSONArray("suites"), testStatus);
+		synchronized (_testResults) {
+			for (TestResult testResult :
+					getTestResults(
+						this, testReportJSONObject.getJSONArray("suites"))) {
+
+				_testResults.put(testResult.getTestName(), testResult);
+			}
+
+			_testResultsPopulated = true;
+		}
+
+		if (_testResults.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		return getTestResults(testStatus);
 	}
 
 	@Override
@@ -648,5 +730,12 @@ public class AxisBuild extends BaseBuild {
 		"\\s*\\[echo\\] startTime: (?<startTime>[^\\n]+)");
 	private static final Pattern _axisVariablePattern = Pattern.compile(
 		"AXIS_VARIABLE=(?<axisNumber>[^,]+),.*");
+
+	private final Map<String, TestClassResult> _testClassResults =
+		new ConcurrentHashMap<>();
+	private boolean _testClassResultsPopulated;
+	private final Map<String, TestResult> _testResults =
+		new ConcurrentHashMap<>();
+	private boolean _testResultsPopulated;
 
 }

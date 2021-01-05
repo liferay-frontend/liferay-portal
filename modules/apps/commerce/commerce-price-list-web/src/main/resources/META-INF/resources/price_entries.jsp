@@ -100,7 +100,7 @@ PortletURL portletURL = commercePriceEntryDisplayContext.getPortletURL();
 	</liferay-frontend:management-bar>
 
 	<div id="<portlet:namespace />priceEntriesContainer">
-		<div class="closed container-fluid-1280 sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
+		<div class="closed container-fluid container-fluid-max-xl sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
 			<c:if test="<%= commercePriceEntryDisplayContext.isShowInfoPanel() %>">
 				<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="commercePriceEntryInfoPanel" var="sidebarPanelURL" />
 
@@ -133,7 +133,7 @@ PortletURL portletURL = commercePriceEntryDisplayContext.getPortletURL();
 								modelVar="commercePriceEntry"
 							>
 								<liferay-ui:search-container-column-text
-									cssClass="table-cell-content"
+									cssClass="table-cell-expand"
 									name="id"
 									value="<%= String.valueOf(commercePriceEntry.getCommercePriceEntryId()) %>"
 								/>
@@ -151,26 +151,26 @@ PortletURL portletURL = commercePriceEntryDisplayContext.getPortletURL();
 								%>
 
 								<liferay-ui:search-container-column-text
-									cssClass="important table-cell-content"
+									cssClass="important table-cell-expand"
 									href="<%= rowURL %>"
 									name="product-name"
 									value="<%= HtmlUtil.escape(cpDefinition.getName(languageId)) %>"
 								/>
 
 								<liferay-ui:search-container-column-text
-									cssClass="table-cell-content"
+									cssClass="table-cell-expand"
 									name="sku"
 									value="<%= HtmlUtil.escape(cpInstance.getSku()) %>"
 								/>
 
 								<liferay-ui:search-container-column-text
-									cssClass="table-cell-content"
+									cssClass="table-cell-expand"
 									name="price"
 									value="<%= HtmlUtil.escape(commercePriceEntryDisplayContext.getCommercePriceEntryPrice(commercePriceEntry)) %>"
 								/>
 
 								<liferay-ui:search-container-column-date
-									cssClass="table-cell-content"
+									cssClass="table-cell-expand"
 									name="create-date"
 									property="createDate"
 								/>

@@ -79,7 +79,8 @@ public class CommerceInventoryDisplayContext {
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
 		portletURL.setParameter(
-			"mvcRenderCommandName", "editCommerceInventoryWarehouse");
+			"mvcRenderCommandName",
+			"/commerce_inventory/edit_commerce_inventory_warehouse");
 		portletURL.setParameter("sku", _sku);
 
 		portletURL.setWindowState(LiferayWindowState.POP_UP);
@@ -148,11 +149,10 @@ public class CommerceInventoryDisplayContext {
 	public List<CommerceInventoryWarehouse> getCommerceInventoryWarehouses()
 		throws PrincipalException {
 
-		long companyId = _cpRequestHelper.getCompanyId();
-
 		return _commerceInventoryWarehouseService.
 			getCommerceInventoryWarehouses(
-				companyId, true, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+				_cpRequestHelper.getCompanyId(), true, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
 	}
 
 	public String getCreateInventoryItemActionURL() throws Exception {
@@ -162,7 +162,8 @@ public class CommerceInventoryDisplayContext {
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
 		portletURL.setParameter(
-			"mvcRenderCommandName", "addCommerceInventoryWarehouseItem");
+			"mvcRenderCommandName",
+			"/commerce_inventory/add_commerce_inventory_item");
 
 		portletURL.setWindowState(LiferayWindowState.POP_UP);
 
@@ -176,7 +177,8 @@ public class CommerceInventoryDisplayContext {
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
 		portletURL.setParameter(
-			"mvcRenderCommandName", "editCommerceInventoryReplenishmentItem");
+			"mvcRenderCommandName",
+			"/commerce_inventory/edit_commerce_inventory_replenishment_item");
 		portletURL.setParameter("sku", _sku);
 
 		portletURL.setWindowState(LiferayWindowState.POP_UP);
@@ -279,7 +281,8 @@ public class CommerceInventoryDisplayContext {
 
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "transferQuantities");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_inventory/transfer_quantities");
 		portletURL.setParameter("sku", _sku);
 
 		portletURL.setWindowState(LiferayWindowState.POP_UP);
@@ -294,7 +297,8 @@ public class CommerceInventoryDisplayContext {
 		PortletURL portletURL = liferayPortletResponse.createActionURL();
 
 		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCommerceInventoryItem");
+			ActionRequest.ACTION_NAME,
+			"/commerce_inventory/edit_commerce_inventory_item");
 		portletURL.setParameter(Constants.CMD, "transition");
 		portletURL.setParameter("sku", _sku);
 		portletURL.setParameter("redirect", _cpRequestHelper.getCurrentURL());

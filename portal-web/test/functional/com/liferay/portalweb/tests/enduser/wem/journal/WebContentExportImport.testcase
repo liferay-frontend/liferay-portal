@@ -63,16 +63,15 @@ definition {
 
 		WebContentStructures.addCP(structureName = "Content List");
 
-		DynamicDataMapping.addField(
-			field = "Web Content",
+		DataEngine.addField(
 			fieldFieldLabel = "Web Content",
-			fieldName = "contents");
+			fieldName = "Web Content");
 
-		DynamicDataMapping.editFieldTip(
+		DataEngine.editFieldTip(
 			fieldFieldLabel = "Web Content",
-			fieldTip = "Choose as many content pieces as you would like to feature.");
+			fieldHelp = "Choose as many content pieces as you would like to feature.");
 
-		DynamicDataMapping.editFieldRepeatable(fieldFieldLabel = "Web Content");
+		DataEngine.editFieldRepeatable(fieldFieldLabel = "Web Content");
 
 		WebContentStructures.saveCP(structureName = "Content List");
 
@@ -106,249 +105,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-82492."
-	@priority = "5"
-	test AddWebContentFromImportedStructureAndTemplate {
-		property portal.acceptance = "true";
-		property testray.component.names = "Training";
-
-		JSONGroup.addGroup(groupName = "Site Name 2");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(
-			structureDescription = "3 Columns with Images Description",
-			structureName = "3 Columns with Images");
-
-		DynamicDataMapping.addField(
-			field = "Text Box",
-			fieldFieldLabel = "Heading",
-			fieldName = "ColumnHeading");
-
-		for (var position : list "Left,Middle,Right") {
-			DynamicDataMapping.addField(
-				field = "Image",
-				fieldFieldLabel = "${position} Image",
-				fieldName = "${position}Image");
-
-			DynamicDataMapping.addField(
-				field = "Text Box",
-				fieldFieldLabel = "${position} Subheading",
-				fieldName = "${position}Subheading");
-
-			DynamicDataMapping.addField(
-				field = "Text Box",
-				fieldFieldLabel = "${position} Content",
-				fieldName = "${position}content");
-		}
-
-		WebContentStructures.saveCP();
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(
-			structureDescription = "Footer Content Description",
-			structureName = "Footer Content");
-
-		DynamicDataMapping.addField(
-			field = "Image",
-			fieldFieldLabel = "Main Image",
-			fieldName = "FooterMainImage");
-
-		DynamicDataMapping.addField(
-			field = "Text Box",
-			fieldFieldLabel = "Heading",
-			fieldName = "FooterHeading");
-
-		DynamicDataMapping.addField(
-			field = "Text Box",
-			fieldFieldLabel = "Text",
-			fieldName = "FooterText");
-
-		DynamicDataMapping.addField(
-			field = "Image",
-			fieldFieldLabel = "Background Image",
-			fieldName = "FooterBgImage");
-
-		WebContentStructures.saveCP();
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(
-			structureDescription = "1 Column Banner Description",
-			structureName = "1 Column Banner");
-
-		DynamicDataMapping.addField(
-			field = "Text Box",
-			fieldFieldLabel = "Title",
-			fieldName = "BannerTitle");
-
-		DynamicDataMapping.addField(
-			field = "Text Box",
-			fieldFieldLabel = "Heading",
-			fieldName = "BannerHeading");
-
-		DynamicDataMapping.addField(
-			field = "Text Box",
-			fieldFieldLabel = "Content",
-			fieldName = "BannerContent");
-
-		DynamicDataMapping.addField(
-			field = "Image",
-			fieldFieldLabel = "Banner Image",
-			fieldName = "BannerImage");
-
-		WebContentStructures.saveCP();
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(
-			structureDescription = "News Description",
-			structureName = "News");
-
-		DynamicDataMapping.addField(
-			field = "Image",
-			fieldFieldLabel = "Cover Image",
-			fieldName = "NewsCoverImage");
-
-		DynamicDataMapping.addField(
-			field = "Text Box",
-			fieldFieldLabel = "Content",
-			fieldName = "NewsContent");
-
-		WebContentStructures.saveCP();
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(
-			structureDescription = "Events Description",
-			structureName = "Events");
-
-		DynamicDataMapping.addField(
-			field = "Image",
-			fieldFieldLabel = "Cover Image",
-			fieldName = "EventCoverImage");
-
-		DynamicDataMapping.addField(
-			field = "Text",
-			fieldFieldLabel = "Headline",
-			fieldName = "EventHeadline");
-
-		DynamicDataMapping.addField(
-			field = "Date",
-			fieldFieldLabel = "EventDate",
-			fieldName = "EventDate");
-
-		DynamicDataMapping.addField(
-			field = "Text Box",
-			fieldFieldLabel = "Lead Text",
-			fieldName = "EventLeadText");
-
-		WebContentStructures.saveCP();
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		LAR.exportPortlet(larFileName = "frontPage-structures.lar");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		NavItem.gotoTemplates();
-
-		WebContentTemplates.addCP(
-			structureName = "3 Columns with Images",
-			templateDescription = "3 Columns with Images Template Description",
-			templateFile = "3-columns-with-images-template.txt",
-			templateName = "3 Columns with Images Template");
-
-		WebContentTemplates.addCP(
-			structureName = "Footer Content",
-			templateDescription = "Footer Content Template Description",
-			templateFile = "footer-content-template.txt",
-			templateName = "Footer Content Template");
-
-		WebContentTemplates.addCP(
-			structureName = "1 Column Banner",
-			templateDescription = "1 Column Banner Template Description",
-			templateFile = "1-column-banner-template.txt",
-			templateName = "1 Column Banner Template");
-
-		WebContentTemplates.addCP(
-			structureName = "News",
-			templateDescription = "News Description",
-			templateFile = "news-template.txt",
-			templateName = "News");
-
-		WebContentTemplates.addCP(
-			structureName = "Events",
-			templateDescription = "Events Description",
-			templateFile = "events-template.txt",
-			templateName = "Events");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		LAR.exportPortlet(larFileName = "space-templates.lar");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-		LAR.importPortlet(larFileName = "frontPage-structures.lar");
-
-		Refresh();
-
-		NavItem.gotoStructures();
-
-		for (var structureName : list "3 Columns with Images,Footer Content,1 Column Banner") {
-			WebContentStructures.viewCP(structureName = "${structureName}");
-		}
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-		LAR.importPortlet(larFileName = "space-templates.lar");
-
-		for (var templateName : list "3 Columns with Images Template,Footer Content Template,1 Column Banner Template,News,Events") {
-			Navigator.gotoNavItem(navItem = "Templates");
-
-			WebContentTemplates.viewCP(
-				templateDescription = "${templateName} Description",
-				templateName = "${templateName}");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-		}
-
-		WebContentNavigator.gotoAddWithStructureCP(structureName = "1 Column Banner");
-
-		WebContent.addWithStructureCP(
-			description = "The Structured Banner for the S.P.A.C.E. FrontPage",
-			fieldName = "BannerTitle",
-			fieldName2 = "BannerHeading",
-			webContentImage = "Spaceport.jpg",
-			webContentTextBox = "Space Program Academy of Continuing Education",
-			webContentTextBox2 = "Dare to dream out of this world",
-			webContentTitle = "S.P.A.C.E. Banner");
-
-		PortletEntry.publish();
-
-		WebContent.viewTitle(webContentTitle = "S.P.A.C.E. Banner");
-
-		WebContent.viewWithStructureCP(
-			description = "The Structured Banner for the S.P.A.C.E. FrontPage",
-			fieldName = "BannerTitle",
-			fieldName2 = "BannerHeading",
-			webContentImage = "Spaceport.jpg",
-			webContentTextBox = "Space Program Academy of Continuing Education",
-			webContentTextBox2 = "Dare to dream out of this world",
-			webContentTitle = "S.P.A.C.E. Banner");
-	}
-
 	@priority = "4"
 	test ExportLARWithNestedWebContent {
 		property testray.component.names = "Web Content Administration";
@@ -361,15 +117,14 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
-		DynamicDataMapping.addFieldNested(
-			field = "Web Content",
+		DataEngine.addFieldNested(
 			fieldFieldLabel = "Web Content",
-			fieldName = "webContent");
+			fieldName = "Web Content",
+			targetFieldLabel = "Text");
 
 		WebContentStructures.saveCP(structureName = "WC Structure Name");
 
@@ -399,15 +154,11 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
 
 		WebContent.addWithStructureCP(
-			fieldName = "webContent",
 			structureName = "WC Structure Name",
 			templateName = "WC Template Name",
-			webContentSelectWCFile = "Basic WebContent Title",
-			webContentTitle = "WC WebContent Title");
-
-		FormFields.editText(
-			fieldName = "Text",
-			fieldValue = "WC WebContent Text");
+			webContentText = "WC WebContent Text",
+			webContentTitle = "WC WebContent Title",
+			webContentWebContent = "Basic WebContent Title");
 
 		PortletEntry.publish();
 
@@ -429,10 +180,9 @@ definition {
 			structureDescription = "Structure Description",
 			structureName = "Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
-			fieldName = "TestName");
+			fieldName = "Text");
 
 		WebContentStructures.saveCP(structureName = "Structure Name");
 
@@ -457,12 +207,11 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "Structure Name");
 
-		DynamicDataMapping.deleteField(fieldFieldLabel = "Text");
+		DataEngine.deleteField(fieldFieldLabel = "Text");
 
-		DynamicDataMapping.addField(
-			field = "Web Content",
+		DataEngine.addField(
 			fieldFieldLabel = "Web Content",
-			fieldName = "TestName");
+			fieldName = "Web Content");
 
 		WebContentStructures.saveCP(structureName = "Structure Name");
 
@@ -476,7 +225,9 @@ definition {
 		property portal.acceptance = "true";
 		property testray.component.names = "Training";
 
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+		JSONGroup.addGroup(groupName = "Site Name 2");
+
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
 
 		NavItem.gotoStructures();
 
@@ -484,31 +235,30 @@ definition {
 			structureDescription = "3 Column with Images Description",
 			structureName = "3 Column with Images");
 
-		DynamicDataMapping.addField(
-			field = "Text Box",
+		DataEngine.addField(
 			fieldFieldLabel = "Title",
-			fieldName = "title");
+			fieldName = "Text",
+			fieldType = "Multiple Lines");
 
 		for (var count : list "1,2,3") {
-			DynamicDataMapping.addField(
-				field = "Image",
+			DataEngine.addField(
 				fieldFieldLabel = "Image ${count}",
-				fieldName = "image${count}");
+				fieldName = "Image");
 
-			DynamicDataMapping.addField(
-				field = "Text Box",
-				fieldFieldLabel = "Heading ${count}1",
-				fieldName = "heading${count}");
+			DataEngine.addField(
+				fieldFieldLabel = "Heading ${count}",
+				fieldName = "Text",
+				fieldType = "Multiple Lines");
 
-			DynamicDataMapping.addField(
-				field = "Text Box",
+			DataEngine.addField(
 				fieldFieldLabel = "Content ${count}",
-				fieldName = "content${count}");
+				fieldName = "Text",
+				fieldType = "Multiple Lines");
 		}
 
 		WebContentStructures.saveCP();
 
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
 
 		NavItem.gotoTemplates();
 
@@ -519,7 +269,7 @@ definition {
 			templateFile = "Frontpage 3 Column with Images Template.txt",
 			templateName = "Frontpage 3 Column with Images Template");
 
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
 
 		LAR.exportPortlet(larFileName = "structure-templates.lar");
 
@@ -532,20 +282,42 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "3 Column with Images");
 
 		WebContent.addWithStructureCP(
-			fieldName = "title",
-			webContentTextBox = "Green Waste",
-			webContentTextBoxList = "Mowed Lawns,Mulched Branches,Compost Bin",
+			fieldType = "Multiple Lines",
+			webContentText = "Green Waste",
+			webContentTextFieldLabel = "Title",
 			webContentTitle = "Agricultural Science Front Page");
+
+		var count = "1";
+
+		for (var webContentText : list "Mowed Lawns,Mulched Branches,Compost Bin") {
+			WebContent.addWithStructureCP(
+				fieldType = "Multiple Lines",
+				webContentText = "${webContentText}",
+				webContentTextFieldLabel = "Heading ${count}");
+
+			var count = ${count} + 1;
+		}
 
 		PortletEntry.publish();
 
 		WebContent.viewTitle(webContentTitle = "Agricultural Science Front Page");
 
 		WebContent.viewWithStructureCP(
-			fieldName = "title",
-			webContentTextBox = "Green Waste",
-			webContentTextBoxList = "Mowed Lawns,Mulched Branches,Compost Bin",
+			fieldType = "Multiple Lines",
+			webContentText = "Green Waste",
+			webContentTextFieldLabel = "Title",
 			webContentTitle = "Agricultural Science Front Page");
+
+		var count = "1";
+
+		for (var webContentText : list "Mowed Lawns,Mulched Branches,Compost Bin") {
+			AssertTextEquals(
+				key_fieldFieldLabel = "Heading ${count}",
+				locator1 = "DDMField#MULTIPLE_LINES",
+				value1 = "${webContentText}");
+
+			var count = ${count} + 1;
+		}
 	}
 
 	@priority = "4"
@@ -560,8 +332,7 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -619,7 +390,7 @@ definition {
 
 		LexiconEntry.gotoEntry(rowEntry = "WC Structure Name");
 
-		DynamicDataMapping.viewField(
+		DataEngine.viewField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -648,10 +419,9 @@ definition {
 			structureDescription = "Test Structure Description",
 			structureName = "Test Structure");
 
-		DynamicDataMapping.addField(
-			field = "Link to Page",
+		DataEngine.addField(
 			fieldFieldLabel = "Link to Page",
-			fieldName = "LinkToPage");
+			fieldName = "Link to Page");
 
 		WebContentStructures.saveCP(structureName = "Test Structure");
 
@@ -669,10 +439,9 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "Test Structure");
 
 		WebContent.addWithStructureCP(
-			linkedPageName = "Test Page",
-			linkFieldName = "LinkToPage",
 			structureName = "Test Structure",
 			templateName = "Test Template",
+			webContentLinkToPage = "Test Page",
 			webContentTitle = "WC Title");
 
 		PortletEntry.publish();
@@ -737,15 +506,14 @@ definition {
 			structureDescription = "News Description",
 			structureName = "News");
 
-		DynamicDataMapping.addField(
-			field = "Image",
+		DataEngine.addField(
 			fieldFieldLabel = "Cover Image",
-			fieldName = "NewsCoverImage");
+			fieldName = "Image");
 
-		DynamicDataMapping.addField(
-			field = "Text Box",
+		DataEngine.addField(
 			fieldFieldLabel = "Content",
-			fieldName = "NewsContent");
+			fieldName = "Text",
+			fieldType = "Multiple Lines");
 
 		WebContentStructures.saveCP();
 
@@ -757,57 +525,34 @@ definition {
 			structureDescription = "Events Description",
 			structureName = "Events");
 
-		DynamicDataMapping.addField(
-			field = "Image",
+		DataEngine.addField(
 			fieldFieldLabel = "Cover Image",
-			fieldName = "EventCoverImage");
+			fieldName = "Image");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Headline",
-			fieldName = "EventHeadline");
+			fieldName = "Text");
 
-		DynamicDataMapping.addField(
-			field = "Date",
+		DataEngine.addField(
 			fieldFieldLabel = "EventDate",
-			fieldName = "EventDate");
+			fieldName = "Date");
 
-		DynamicDataMapping.addField(
-			field = "Text Box",
-			fieldFieldLabel = "Lead Text",
-			fieldName = "EventLeadText");
+		DataEngine.addField(
+			fieldFieldLabel = "LeadText",
+			fieldName = "Text",
+			fieldType = "Multiple Lines");
 
 		WebContentStructures.saveCP();
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		NavItem.gotoTemplates();
-
-		WebContentTemplates.addCP(
-			structureName = "News",
-			templateDescription = "News Template Description",
-			templateFile = "news-template.txt",
-			templateName = "News");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		NavItem.gotoTemplates();
-
-		WebContentTemplates.addCP(
-			structureName = "Events",
-			templateDescription = "Events Template Description",
-			templateFile = "events-template.txt",
-			templateName = "Events");
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
 
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "News");
 
 		WebContent.addWithStructureCP(
-			fieldName = "Content",
+			fieldType = "Multiple Lines",
 			structureName = "News",
-			templateName = "News",
-			webContentTextBox = "As the 96th anniversary of Apollo 11’s historic landing on the moon approaches, Dr. Peter Vance and Dr. Alessandro Mancelli of the Astronautics Department discuss the profound impact the vision of Apollo 11 and NASA had on both the world and on the foundation of The Space Program itself.",
+			webContentText = "As the 96th anniversary of Apollo 11’s historic landing on the moon approaches, Dr. Peter Vance and Dr. Alessandro Mancelli of the Astronautics Department discuss the profound impact the vision of Apollo 11 and NASA had on both the world and on the foundation of The Space Program itself.",
+			webContentTextFieldLabel = "Content",
 			webContentTitle = "When It All Began...");
 
 		PortletEntry.publish();
@@ -817,10 +562,10 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "News");
 
 		WebContent.addWithStructureCP(
-			fieldName = "Content",
+			fieldType = "Multiple Lines",
 			structureName = "News",
-			templateName = "News",
-			webContentTextBox = "A new study shows a correlation between the mathematics of music and planetary rings. “It’s possible,” says lead researcher Dr. Agatha Saylor, “that this evidence could help us understand some of space’s greatest mysteries.”",
+			webContentText = "A new study shows a correlation between the mathematics of music and planetary rings. “It’s possible,” says lead researcher Dr. Agatha Saylor, “that this evidence could help us understand some of space’s greatest mysteries.”",
+			webContentTextFieldLabel = "Content",
 			webContentTitle = "Stravinksy in Space?");
 
 		PortletEntry.publish();
@@ -830,10 +575,10 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "News");
 
 		WebContent.addWithStructureCP(
-			fieldName = "Content",
+			fieldType = "Multiple Lines",
 			structureName = "News",
-			templateName = "News",
-			webContentTextBox = "Omar Qasim, ’68, dishes on what it was like to grow up as the son of an astronaut, how a Chemistry class saved his life, and the one weird thing he does to keep himself focused.",
+			webContentText = "Omar Qasim, ’68, dishes on what it was like to grow up as the son of an astronaut, how a Chemistry class saved his life, and the one weird thing he does to keep himself focused.",
+			webContentTextFieldLabel = "Content",
 			webContentTitle = "Student Spotlight");
 
 		PortletEntry.publish();
@@ -843,12 +588,12 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "Events");
 
 		WebContent.addWithStructureCP(
-			fieldName = "LeadText",
-			key_fieldName = "EventDate",
+			fieldType = "Multiple Lines",
 			structureName = "Events",
-			templateName = "Events",
 			webContentDate = "05/12/2065",
-			webContentTextBox = "S.P.A.C.E. Board of Governors member Antony Carelli and president Dr. Asmund Grey will hold a press conference Tuesday, July 9th to address recent security questions and put to rest faculty hiring rumors.",
+			webContentDateFieldLabel = "EventDate",
+			webContentText = "S.P.A.C.E. Board of Governors member Antony Carelli and president Dr. Asmund Grey will hold a press conference Tuesday, July 9th to address recent security questions and put to rest faculty hiring rumors.",
+			webContentTextFieldLabel = "LeadText",
 			webContentTitle = "Upcoming Press Conference");
 
 		PortletEntry.publish();
@@ -858,12 +603,12 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "Events");
 
 		WebContent.addWithStructureCP(
-			fieldName = "LeadText",
-			key_fieldName = "EventDate",
+			fieldType = "Multiple Lines",
 			structureName = "Events",
-			templateName = "Events",
 			webContentDate = "05/31/2065",
-			webContentTextBox = "Attention, incoming students: New Student Orientation begins at 2:00 P.M. Monday, August 17th in the Carelli Auditorium on South Campus. Please check your emails for more information.",
+			webContentDateFieldLabel = "EventDate",
+			webContentText = "Attention, incoming students: New Student Orientation begins at 2:00 P.M. Monday, August 17th in the Carelli Auditorium on South Campus. Please check your emails for more information.",
+			webContentTextFieldLabel = "LeadText",
 			webContentTitle = "New Student Orientation");
 
 		PortletEntry.publish();
@@ -873,12 +618,12 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "Events");
 
 		WebContent.addWithStructureCP(
-			fieldName = "LeadText",
-			key_fieldName = "EventDate",
+			fieldType = "Multiple Lines",
 			structureName = "Events",
-			templateName = "Events",
 			webContentDate = "05/31/2065",
-			webContentTextBox = "Dr. Josiah Andrews, retired former director of ISRI, will be speaking in Allen Hall as part of our Special Speakers lineup. At 7:00 P.M. from Wednesday, August 26-Friday, August 28, Dr. Andrews will discuss the current landscape of planet-discovering technology.",
+			webContentDateFieldLabel = "EventDate",
+			webContentText = "Dr. Josiah Andrews, retired former director of ISRI, will be speaking in Allen Hall as part of our Special Speakers lineup. At 7:00 P.M. from Wednesday, August 26-Friday, August 28, Dr. Andrews will discuss the current landscape of planet-discovering technology.",
+			webContentTextFieldLabel = "LeadText",
 			webContentTitle = "Fall Special Speaker Series");
 
 		PortletEntry.publish();
@@ -948,20 +693,19 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
-		DynamicDataMapping.editFieldPredefinedValue(
-			field = "Text",
-			fieldFieldLabel = "Text",
-			fieldName = "Text",
-			fieldPredefinedValue = "(Enter Text Here)");
-
-		DynamicDataMapping.editFieldRequired(fieldFieldLabel = "Text");
+		DataEngine.editFieldRequired(fieldFieldLabel = "Text");
 
 		WebContentStructures.saveCP(structureName = "WC Structure Name");
+
+		WebContentStructures.editStructureDefaultValuesCP(structureName = "WC Structure Name");
+
+		WebContent.addWithStructureCP(webContentText = "(Enter Text Here)");
+
+		PortletEntry.save();
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
@@ -1017,9 +761,9 @@ definition {
 
 		Button.clickPublish();
 
-		AssertTextEquals.assertPartialText(
-			key_fieldName = "Text",
-			locator1 = "TextInput#SPECIFIC_FIELD_REQUIRED_ALERT",
+		AssertTextEquals(
+			key_fieldFieldLabel = "Text",
+			locator1 = "WCEditWebContent#FIELD_REQUIRED_ALERT",
 			value1 = "This field is required.");
 	}
 

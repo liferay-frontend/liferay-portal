@@ -16,6 +16,7 @@ package com.liferay.commerce.order.web.internal.frontend;
 
 import com.liferay.commerce.order.status.CommerceOrderStatus;
 import com.liferay.commerce.order.status.CommerceOrderStatusRegistry;
+import com.liferay.commerce.order.web.internal.frontend.constants.CommerceOrderDataSetConstants;
 import com.liferay.frontend.taglib.clay.data.set.filter.BaseCheckBoxClayDataSetFilter;
 import com.liferay.frontend.taglib.clay.data.set.filter.CheckBoxClayDataSetFilterItem;
 import com.liferay.frontend.taglib.clay.data.set.filter.ClayDataSetFilter;

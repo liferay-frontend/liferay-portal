@@ -38,7 +38,7 @@ List<ExportImportConfiguration> exportImportConfigurations = ExportImportConfigu
 		%>
 
 			<portlet:renderURL var="addNewProcessURL">
-				<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
+				<portlet:param name="mvcRenderCommandName" value="/staging_processes/publish_layouts" />
 				<portlet:param name="<%= Constants.CMD %>" value="<%= localPublishing ? Constants.PUBLISH_TO_LIVE : Constants.PUBLISH_TO_REMOTE %>" />
 				<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />
 				<portlet:param name="groupId" value="<%= String.valueOf(stagingGroupId) %>" />
@@ -54,14 +54,14 @@ List<ExportImportConfiguration> exportImportConfigurations = ExportImportConfigu
 		%>
 
 		<portlet:renderURL var="addNewCustomProcessURL">
-			<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
+			<portlet:param name="mvcRenderCommandName" value="/staging_processes/publish_layouts" />
 			<portlet:param name="<%= Constants.CMD %>" value="<%= localPublishing ? Constants.PUBLISH_TO_LIVE : Constants.PUBLISH_TO_REMOTE %>" />
 			<portlet:param name="groupId" value="<%= String.valueOf(stagingGroupId) %>" />
 			<portlet:param name="privateLayout" value="<%= Boolean.FALSE.toString() %>" />
 		</portlet:renderURL>
 
 		<liferay-frontend:add-menu-item
-			title='<%= LanguageUtil.get(request, "custom-publication") %>'
+			title='<%= LanguageUtil.get(request, "custom-publish-process") %>'
 			url="<%= addNewCustomProcessURL %>"
 		/>
 	</liferay-frontend:add-menu>

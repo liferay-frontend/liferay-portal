@@ -14,7 +14,7 @@
  */
 --%>
 
-<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderURL" />
+<portlet:actionURL name="/commerce_open_order_content/edit_commerce_order" var="editCommerceOrderURL" />
 
 <aui:form action="<%= editCommerceOrderURL %>" method="post" name="transitionFm">
 	<aui:input id="transitionCommerceOrderId" name="commerceOrderId" type="hidden" value="" />

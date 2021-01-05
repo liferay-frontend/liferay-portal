@@ -1,12 +1,10 @@
-// ---------- Regular sizes ----------
-
-$animation: cubic-bezier(0.25, 0.1, 0.25, 1);
-$sidebarMainWidth: 326px;
-$sidebarMiniWidth: 72px;
-
 // Animations
 
 $defaultTransitionDuration: 0.5s;
+
+// Height for the sidebar when display setting is enabled
+
+$displaySettingsHeight: 48px;
 
 // Layout
 
@@ -16,6 +14,12 @@ $managementBarHeight: 64px;
 $multiPanelSidebarButtonWidth: 40px;
 $multiPanelSidebarContentWidth: 340px;
 $toolbarHeight: 64px;
+
+// ---------- Regular sizes ----------
+
+$animation: cubic-bezier(0.25, 0.1, 0.25, 1);
+$sidebarMainWidth: 326px;
+$sidebarMiniWidth: 72px;
 
 // z-indexes, ordered numerically.
 

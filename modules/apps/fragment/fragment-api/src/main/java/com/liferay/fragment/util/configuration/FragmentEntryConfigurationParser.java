@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONObject;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -32,8 +33,17 @@ public interface FragmentEntryConfigurationParser {
 	public JSONObject getConfigurationDefaultValuesJSONObject(
 		String configuration);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 * #getConfigurationJSONObject(String, String, Locale)}
+	 */
+	@Deprecated
 	public JSONObject getConfigurationJSONObject(
 			String configuration, String editableValues)
+		throws JSONException;
+
+	public JSONObject getConfigurationJSONObject(
+			String configuration, String editableValues, Locale locale)
 		throws JSONException;
 
 	/**
@@ -59,7 +69,20 @@ public interface FragmentEntryConfigurationParser {
 		long[] segmentsExperienceIds);
 
 	public Object getFieldValue(
+		FragmentConfigurationField fragmentConfigurationField, Locale locale,
+		String value);
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 * #getFieldValue(FragmentConfigurationField, Locale, String)}
+	 */
+	@Deprecated
+	public Object getFieldValue(
 		FragmentConfigurationField fragmentConfigurationField, String value);
+
+	public Object getFieldValue(
+		String configuration, String editableValues, Locale locale,
+		String name);
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -69,6 +92,11 @@ public interface FragmentEntryConfigurationParser {
 		String configuration, String editableValues,
 		long[] segmentsExperienceIds, String name);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 * #getFieldValue(String, String, Locale, String)}
+	 */
+	@Deprecated
 	public Object getFieldValue(
 		String configuration, String editableValues, String name);
 

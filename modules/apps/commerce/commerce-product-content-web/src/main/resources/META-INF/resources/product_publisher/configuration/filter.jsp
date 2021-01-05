@@ -30,6 +30,7 @@ CPPublisherConfigurationDisplayContext cpPublisherConfigurationDisplayContext = 
 
 		<%
 		dqre = (DuplicateQueryRuleException)errorException;
+
 		String name = dqre.getName();
 		%>
 

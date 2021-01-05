@@ -20,7 +20,7 @@ import React, {useContext, useEffect, useState} from 'react';
 
 import AutocompleteMultiSelect from '../../../../components/autocomplete/AutocompleteMultiSelect.es';
 import ButtonInfo from '../../../../components/button-info/ButtonInfo.es';
-import {UPDATE_STEP} from '../configReducer.es';
+import {REMOVE_STEP_EMPTY_FORM_VIEWS, UPDATE_STEP} from '../configReducer.es';
 import ActionsTab from './ActionsTab.es';
 import DataAndViewsTab from './DataAndViewsTab.es';
 
@@ -101,6 +101,14 @@ export default function EditAppSidebar() {
 										: '',
 							},
 					  ],
+			onClickBack: () => {
+				if (stepIndex > 0) {
+					dispatchConfig({
+						stepIndex,
+						type: REMOVE_STEP_EMPTY_FORM_VIEWS,
+					});
+				}
+			},
 			show: stepIndex !== steps.length - 1,
 			title: Liferay.Language.get('data-and-views'),
 		},
@@ -134,6 +142,11 @@ export default function EditAppSidebar() {
 		});
 	};
 
+	const onClick = () => {
+		setCurrentTab(null);
+		currentTab.onClickBack?.();
+	};
+
 	useEffect(() => {
 		setCurrentTab(null);
 	}, [currentStep]);
@@ -149,7 +162,7 @@ export default function EditAppSidebar() {
 					<div className="tab-title">
 						<ClayButton
 							displayType="secondary"
-							onClick={() => setCurrentTab(null)}
+							onClick={onClick}
 							small
 						>
 							<span className="icon-monospaced">

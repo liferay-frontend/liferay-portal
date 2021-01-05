@@ -46,6 +46,18 @@
 					"if": {
 						"properties": {
 							"type": {
+								"const": "colorPicker"
+							}
+						}
+					},
+					"then": {
+						"$ref": "#/definitions/fieldColorPicker"
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"type": {
 								"const": "collectionSelector"
 							}
 						}
@@ -91,7 +103,7 @@
 					"type": "string"
 				},
 				"defaultValue": {
-					"title": "The Defaultvalue Schema",
+					"title": "The DefaultValue Schema",
 					"type": [
 						"boolean",
 						"object",
@@ -108,6 +120,11 @@
 					"title": "The Label Schema",
 					"type": "string"
 				},
+				"localizable": {
+					"default": false,
+					"title": "The Localizable Schema",
+					"type": "boolean"
+				},
 				"name": {
 					"minLength": 1,
 					"pattern": "^[A-Za-z0-9]+$",
@@ -116,8 +133,10 @@
 				},
 				"type": {
 					"enum": [
+						"categoryTreeNodeSelector",
 						"checkbox",
 						"colorPalette",
+						"colorPicker",
 						"collectionSelector",
 						"itemSelector",
 						"navigationMenuSelector",
@@ -211,6 +230,14 @@
 							"title": "The DefaultValue Schema"
 						}
 					]
+				}
+			}
+		},
+		"fieldColorPicker": {
+			"properties": {
+				"defaultValue": {
+					"title": "The DefaultValue schema",
+					"type": "string"
 				}
 			}
 		},

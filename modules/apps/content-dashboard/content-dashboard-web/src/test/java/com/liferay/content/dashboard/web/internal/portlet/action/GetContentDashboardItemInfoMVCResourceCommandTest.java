@@ -247,6 +247,14 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			}
 
 			@Override
+			public ContentDashboardItemAction
+				getDefaultContentDashboardItemAction(
+					HttpServletRequest httpServletRequest) {
+
+				return null;
+			}
+
+			@Override
 			public Locale getDefaultLocale() {
 				return LocaleUtil.US;
 			}
@@ -285,6 +293,11 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			@Override
 			public long getUserId() {
 				return 0;
+			}
+
+			@Override
+			public String getUserName() {
+				return RandomTestUtil.randomString();
 			}
 
 			@Override

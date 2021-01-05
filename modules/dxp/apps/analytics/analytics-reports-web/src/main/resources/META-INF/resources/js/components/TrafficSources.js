@@ -17,7 +17,7 @@ import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Cell, Pie, PieChart, Tooltip} from 'recharts';
 
 import ConnectionContext from '../context/ConnectionContext';
-import {StoreContext, useWarning} from '../context/store';
+import {StoreContext, useWarning} from '../context/StoreContext';
 import {numberFormat} from '../utils/numberFormat';
 import EmptyPieChart from './EmptyPieChart';
 import Hint from './Hint';
@@ -118,6 +118,12 @@ export default function TrafficSources({
 					<table>
 						<tbody>
 							{trafficSources.map((entry) => {
+								const hasDetails =
+									entry?.countryKeywords ||
+									(entry?.referringPages &&
+										entry?.referringDomains) ||
+									entry?.referringSocialMedia;
+
 								return (
 									<tr key={entry.name}>
 										<td
@@ -139,7 +145,7 @@ export default function TrafficSources({
 											></span>
 										</td>
 										<td
-											className="c-py-1 pie-chart-wrapper--legend--title text-secondary"
+											className="c-py-1 text-secondary"
 											onMouseOut={handleLegendMouseLeave}
 											onMouseOver={() =>
 												handleLegendMouseEnter(
@@ -147,11 +153,9 @@ export default function TrafficSources({
 												)
 											}
 										>
-											{entry.value > 0 &&
-											entry.countryKeywords !==
-												undefined ? (
+											{entry.value > 0 && hasDetails ? (
 												<ClayButton
-													className="font-weight-semi-bold px-0 py-1 text-primary"
+													className="px-0 py-1 text-primary"
 													displayType="link"
 													onClick={() =>
 														onTrafficSourceClick(
@@ -173,7 +177,7 @@ export default function TrafficSources({
 												title={entry.title}
 											/>
 										</td>
-										<td className="font-weight-bold">
+										<td className="font-weight-semi-bold">
 											{entry.value !== undefined &&
 											!publishedToday
 												? numberFormat(

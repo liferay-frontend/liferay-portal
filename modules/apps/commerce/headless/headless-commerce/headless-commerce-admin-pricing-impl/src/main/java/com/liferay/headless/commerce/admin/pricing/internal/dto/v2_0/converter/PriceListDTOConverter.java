@@ -29,7 +29,6 @@ import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
@@ -65,10 +64,8 @@ public class PriceListDTOConverter
 		String priceListStatusLabel = WorkflowConstants.getStatusLabel(
 			commercePriceList.getStatus());
 
-		Locale locale = dtoConverterContext.getLocale();
-
 		ResourceBundle resourceBundle = LanguageResources.getResourceBundle(
-			locale);
+			dtoConverterContext.getLocale());
 
 		String priceListStatusLabelI18n = LanguageUtil.get(
 			resourceBundle,

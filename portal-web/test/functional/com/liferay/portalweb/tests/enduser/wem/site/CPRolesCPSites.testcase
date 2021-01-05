@@ -35,15 +35,13 @@ definition {
 
 	@priority = "4"
 	test AddSiteRegRole {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
 		Permissions.setUpRegRoleLoginUserCP(
-			page = "Public Pages",
-			portletName = "Sites",
 			roleTitle = "Regrole Name",
 			userEmailAddress = "userea@liferay.com",
 			userFirstName = "userfn",
 			userLastName = "userln",
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test",
 			userScreenName = "usersn");
 
 		Permissions.definePermissionViaJSONAPI(
@@ -460,18 +458,16 @@ definition {
 
 	@priority = "4"
 	test ViewSiteManagePagesRegRole {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property test.name.skip.portal.instance = "CPRolesCPSites#ViewSiteManagePagesRegRole";
 
 		var siteName = TestCase.getSiteName(siteName = "${siteName}");
 
 		Permissions.setUpRegRoleLoginUserCP(
-			portletName = "Sites",
 			roleTitle = "Regrole Name",
 			userEmailAddress = "userea@liferay.com",
 			userFirstName = "userfn",
 			userLastName = "userln",
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test",
 			userScreenName = "usersn");
 
 		ApplicationsMenu.gotoPortlet(

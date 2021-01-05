@@ -245,6 +245,7 @@ export default {
 	 * @param {string} options.collectionItemClassName Class name id of the collection item
 	 * @param {string} options.collectionItemClassPK Class PK of the collection item
 	 * @param {string} options.fragmentEntryLinkId Id of the fragmentEntryLink
+	 * @param {string} options.languageId Language id
 	 * @param {function} options.onNetworkStatus
 	 * @param {string} options.segmentsExperienceId Experience id
 	 */
@@ -252,6 +253,7 @@ export default {
 		collectionItemClassName,
 		collectionItemClassPK,
 		fragmentEntryLinkId,
+		languageId,
 		onNetworkStatus,
 		segmentsExperienceId,
 	}) {
@@ -262,6 +264,7 @@ export default {
 					collectionItemClassName,
 					collectionItemClassPK,
 					fragmentEntryLinkId,
+					languageId,
 					segmentsExperienceId,
 				},
 			},
@@ -274,11 +277,13 @@ export default {
 	 * @param {object} options
 	 * @param {string} options.configurationValues New configurationValues
 	 * @param {string} options.fragmentEntryLinkId Id of the fragmentEntryLink
+	 * @param {string} options.languageId Language id
 	 * @param {function} options.onNetworkStatus
 	 */
 	updateConfigurationValues({
 		configurationValues,
 		fragmentEntryLinkId,
+		languageId,
 		onNetworkStatus,
 	}) {
 		return serviceFetch(
@@ -287,6 +292,7 @@ export default {
 				body: {
 					editableValues: JSON.stringify(configurationValues),
 					fragmentEntryLinkId,
+					languageId,
 				},
 			},
 			onNetworkStatus,
@@ -304,6 +310,7 @@ export default {
 	updateEditableValues({
 		editableValues,
 		fragmentEntryLinkId,
+		languageId,
 		onNetworkStatus,
 	}) {
 		return serviceFetch(
@@ -312,6 +319,7 @@ export default {
 				body: {
 					editableValues: JSON.stringify(editableValues),
 					fragmentEntryLinkId,
+					languageId,
 				},
 			},
 			onNetworkStatus,

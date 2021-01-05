@@ -129,6 +129,10 @@ components:
                 dataDefinitionId:
                     format: int64
                     type: integer
+                dataLayoutFields:
+                    additionalProperties:
+                        type: object
+                    type: object
                 dataLayoutKey:
                     type: string
                 dataLayoutPages:
@@ -207,6 +211,12 @@ components:
                     type: string
                 readOnly:
                     type: boolean
+                scopeGroupId:
+                    format: int64
+                    type: integer
+                siteGroupId:
+                    format: int64
+                    type: integer
             type: object
         DataLayoutRow:
             properties:

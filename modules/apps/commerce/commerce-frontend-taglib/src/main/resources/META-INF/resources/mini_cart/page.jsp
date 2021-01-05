@@ -19,13 +19,54 @@
 <div class="cart-root" id="<%= miniCartId %>"></div>
 
 <aui:script require="commerce-frontend-js/components/mini_cart/entry as Cart">
-	Cart.default('<%= miniCartId %>', '<%= miniCartId %>', {
+	var initialProps = {
 		cartActionURLs: {
 			checkoutURL: '<%= checkoutURL %>',
 			orderDetailURL: '<%= orderDetailURL %>',
 		},
 		displayDiscountLevels: <%= displayDiscountLevels %>,
+		displayTotalItemsQuantity: <%= displayTotalItemsQuantity %>,
+		itemsQuantity: <%= itemsQuantity %>,
 		orderId: <%= orderId %>,
 		spritemap: '<%= spritemap %>',
-	});
+		toggleable: <%= toggleable %>,
+	};
+
+	<%
+	if (!cartViews.isEmpty()) {
+	%>
+
+		initialProps.cartViews = {};
+
+		<%
+		for (Map.Entry<String, String> cartView : cartViews.entrySet()) {
+		%>
+
+			initialProps.cartViews['<%= cartView.getKey() %>'] = {
+				contentRendererModuleUrl: '<%= cartView.getValue() %>',
+			};
+
+	<%
+		}
+	}
+	%>
+
+	<%
+	if (!labels.isEmpty()) {
+	%>
+
+		initialProps.labels = {};
+
+		<%
+		for (Map.Entry<String, String> label : labels.entrySet()) {
+		%>
+
+			initialProps.labels['<%= label.getKey() %>'] = '<%= label.getValue() %>';
+
+	<%
+		}
+	}
+	%>
+
+	Cart.default('<%= miniCartId %>', '<%= miniCartId %>', initialProps);
 </aui:script>

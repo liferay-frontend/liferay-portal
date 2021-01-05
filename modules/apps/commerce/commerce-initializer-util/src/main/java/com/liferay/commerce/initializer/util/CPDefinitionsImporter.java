@@ -28,8 +28,8 @@ import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLoca
 import com.liferay.commerce.model.CPDAvailabilityEstimate;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.model.CommerceAvailabilityEstimate;
+import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.exception.NoSuchSkuContributorCPDefinitionOptionRelException;
-import com.liferay.commerce.product.model.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -263,13 +263,13 @@ public class CPDefinitionsImporter {
 		throws Exception {
 
 		for (int i = 0; i < commerceInventoryWarehouseIds.length; i++) {
-			long commerceInventoryWarehouseId =
-				commerceInventoryWarehouseIds[i];
-
 			int quantity = skuJSONObject.getInt(
 				"Warehouse" + String.valueOf(i + 1));
 
 			if (quantity > 0) {
+				long commerceInventoryWarehouseId =
+					commerceInventoryWarehouseIds[i];
+
 				_commerceInventoryWarehouseItemLocalService.
 					upsertCommerceInventoryWarehouseItem(
 						serviceContext.getUserId(),
@@ -478,9 +478,9 @@ public class CPDefinitionsImporter {
 
 		JSONArray skusJSONArray = jsonObject.getJSONArray("Skus");
 
-		Calendar calendar = Calendar.getInstance();
-
 		if (skusJSONArray != null) {
+			Calendar calendar = Calendar.getInstance();
+
 			for (int i = 0; i < skusJSONArray.length(); i++) {
 				JSONObject skuJSONObject = skusJSONArray.getJSONObject(i);
 

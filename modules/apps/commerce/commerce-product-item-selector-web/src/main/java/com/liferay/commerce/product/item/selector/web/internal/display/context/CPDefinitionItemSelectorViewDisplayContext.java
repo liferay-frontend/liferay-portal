@@ -127,12 +127,9 @@ public class CPDefinitionItemSelectorViewDisplayContext
 				WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(),
 				searchContainer.getEnd(), sort);
 
-		int total = cpDefinitionBaseModelSearchResult.getLength();
-		List<CPDefinition> results =
-			cpDefinitionBaseModelSearchResult.getBaseModels();
-
-		searchContainer.setTotal(total);
-		searchContainer.setResults(results);
+		searchContainer.setTotal(cpDefinitionBaseModelSearchResult.getLength());
+		searchContainer.setResults(
+			cpDefinitionBaseModelSearchResult.getBaseModels());
 
 		return searchContainer;
 	}

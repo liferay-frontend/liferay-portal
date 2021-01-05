@@ -139,11 +139,12 @@ public class DLImporter {
 
 		DLFileEntry dlFileEntry = null;
 
-		String description = jsonObject.getString("description");
 		String fileName = jsonObject.getString("fileName");
-		String title = jsonObject.getString("title");
 
 		if (Validator.isNotNull(fileName)) {
+			String description = jsonObject.getString("description");
+			String title = jsonObject.getString("title");
+
 			Repository repository = _repositoryLocalService.fetchRepository(
 				dlFolder.getRepositoryId());
 

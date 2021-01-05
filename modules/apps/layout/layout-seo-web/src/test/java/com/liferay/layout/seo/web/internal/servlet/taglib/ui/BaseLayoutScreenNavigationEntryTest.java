@@ -16,6 +16,7 @@ package com.liferay.layout.seo.web.internal.servlet.taglib.ui;
 
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.seo.web.internal.frontend.taglib.servlet.taglib.BaseLayoutScreenNavigationEntry;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutPrototype;

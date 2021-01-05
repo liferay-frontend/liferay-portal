@@ -20,7 +20,7 @@
 CommerceInventoryDisplayContext commerceInventoryDisplayContext = (CommerceInventoryDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 %>
 
-<portlet:actionURL name="transferQuantities" var="transferQuantitiesActionURL" />
+<portlet:actionURL name="/commerce_inventory/transfer_quantities" var="transferQuantitiesActionURL" />
 
 <commerce-ui:modal-content
 	title='<%= LanguageUtil.get(request, "create-a-transfer") %>'

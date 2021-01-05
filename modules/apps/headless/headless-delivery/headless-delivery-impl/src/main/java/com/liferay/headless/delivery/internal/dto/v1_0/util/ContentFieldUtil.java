@@ -30,6 +30,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleService;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -92,7 +93,7 @@ public class ContentFieldUtil {
 				label_i18n = LocalizedMapUtil.getI18nMap(
 					dtoConverterContext.isAcceptAllLanguages(),
 					localizedValue.getValues());
-				name = ddmFormField.getName();
+				name = ddmFormField.getFieldReference();
 				nestedContentFields = TransformUtil.transformToArray(
 					ddmFormFieldValue.getNestedDDMFormFieldValues(),
 					value -> toContentField(
@@ -213,7 +214,17 @@ public class ContentFieldUtil {
 							dlAppService.getFileEntry(fileEntryId),
 							uriInfoOptional);
 
-						image.setDescription(jsonObject.getString("alt"));
+						String alt = jsonObject.getString("alt");
+
+						if (Validator.isNotNull(alt) && JSONUtil.isValid(alt)) {
+							JSONObject altJSONObject = jsonObject.getJSONObject(
+								"alt");
+
+							alt = altJSONObject.getString(
+								LocaleUtil.toLanguageId(locale));
+						}
+
+						image.setDescription(alt);
 					}
 				};
 			}

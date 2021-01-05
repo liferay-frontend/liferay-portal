@@ -195,6 +195,14 @@ public abstract class BaseDBProcess implements DBProcess {
 		return dbInspector.hasColumnType(tableName, columnName, columnType);
 	}
 
+	protected boolean hasIndex(String tableName, String indexName)
+		throws Exception {
+
+		DBInspector dbInspector = new DBInspector(connection);
+
+		return dbInspector.hasIndex(tableName, indexName);
+	}
+
 	protected boolean hasRows(Connection connection, String tableName) {
 		DBInspector dbInspector = new DBInspector(connection);
 

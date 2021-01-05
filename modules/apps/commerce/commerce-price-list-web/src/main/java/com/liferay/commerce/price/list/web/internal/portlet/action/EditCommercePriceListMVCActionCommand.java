@@ -161,8 +161,6 @@ public class EditCommercePriceListMVCActionCommand
 		long commercePriceListId = ParamUtil.getLong(
 			actionRequest, "commercePriceListId");
 
-		long commerceCatalogGroupId = ParamUtil.getLong(
-			actionRequest, "commerceCatalogGroupId");
 		long commerceCurrencyId = ParamUtil.getLong(
 			actionRequest, "commerceCurrencyId");
 		boolean netPrice = ParamUtil.getBoolean(actionRequest, "netPrice");
@@ -215,6 +213,9 @@ public class EditCommercePriceListMVCActionCommand
 		CommercePriceList commercePriceList;
 
 		if (commercePriceListId <= 0) {
+			long commerceCatalogGroupId = ParamUtil.getLong(
+				actionRequest, "commerceCatalogGroupId");
+
 			commercePriceList = _commercePriceListService.addCommercePriceList(
 				commerceCatalogGroupId, serviceContext.getUserId(),
 				commerceCurrencyId, netPrice, parentCommercePriceListId, name,

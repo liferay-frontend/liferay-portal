@@ -33,11 +33,11 @@ import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.price.list.test.util.CommercePriceEntryTestUtil;
 import com.liferay.commerce.product.CommerceProductTestUtil;
 import com.liferay.commerce.product.constants.CPConstants;
+import com.liferay.commerce.product.constants.CPInstanceConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
-import com.liferay.commerce.product.model.CPInstanceConstants;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -707,9 +707,10 @@ public class CommerceOrderItemLocalServiceTest {
 			commerceOrder.getCommerceOrderItems();
 
 		CommerceOrderItem commerceOrderItem1 = commerceOrderItems.get(0);
-		CommerceOrderItem commerceOrderItem2 = commerceOrderItems.get(1);
 
 		if (commerceOrderItem1.getParentCommerceOrderItemId() == 0) {
+			CommerceOrderItem commerceOrderItem2 = commerceOrderItems.get(1);
+
 			_assertDeleteOrderItem(commerceOrderItem2);
 		}
 		else {

@@ -41,7 +41,8 @@ public class UpdateDocumentRequestExecutorImpl
 		UpdateDocumentRequest updateDocumentRequest) {
 
 		UpdateRequest updateRequest =
-			_bulkableDocumentRequestTranslator.translate(updateDocumentRequest);
+			_elasticsearchBulkableDocumentRequestTranslator.translate(
+				updateDocumentRequest);
 
 		UpdateResponse updateResponse = getUpdateResponse(
 			updateRequest, updateDocumentRequest);
@@ -72,9 +73,10 @@ public class UpdateDocumentRequestExecutorImpl
 	@Reference(target = "(search.engine.impl=Elasticsearch)", unbind = "-")
 	protected void setBulkableDocumentRequestTranslator(
 		ElasticsearchBulkableDocumentRequestTranslator
-			eulkableDocumentRequestTranslator) {
+			elasticsearchBulkableDocumentRequestTranslator) {
 
-		_bulkableDocumentRequestTranslator = eulkableDocumentRequestTranslator;
+		_elasticsearchBulkableDocumentRequestTranslator =
+			elasticsearchBulkableDocumentRequestTranslator;
 	}
 
 	@Reference(unbind = "-")
@@ -85,7 +87,7 @@ public class UpdateDocumentRequestExecutorImpl
 	}
 
 	private ElasticsearchBulkableDocumentRequestTranslator
-		_bulkableDocumentRequestTranslator;
+		_elasticsearchBulkableDocumentRequestTranslator;
 	private ElasticsearchClientResolver _elasticsearchClientResolver;
 
 }

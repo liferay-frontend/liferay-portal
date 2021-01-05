@@ -122,8 +122,6 @@ public class EditCommercePriceModifierMVCActionCommand
 			long commercePriceModifierId, ActionRequest actionRequest)
 		throws Exception {
 
-		long commercePriceListGroupId = ParamUtil.getLong(
-			actionRequest, "commercePriceListGroupId");
 		String title = ParamUtil.getString(actionRequest, "title");
 		String target = ParamUtil.getString(actionRequest, "target");
 		long commercePriceListId = ParamUtil.getLong(
@@ -181,6 +179,9 @@ public class EditCommercePriceModifierMVCActionCommand
 			CommercePriceModifier.class.getName(), actionRequest);
 
 		if (commercePriceModifierId > 0) {
+			long commercePriceListGroupId = ParamUtil.getLong(
+				actionRequest, "commercePriceListGroupId");
+
 			return _commercePriceModifierService.updateCommercePriceModifier(
 				commercePriceModifierId, commercePriceListGroupId, title,
 				target, commercePriceListId, modifierType, modifierAmount,

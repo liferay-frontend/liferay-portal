@@ -288,11 +288,8 @@ public class EditCPInstanceMVCActionCommand extends BaseMVCActionCommand {
 			cpInstance.getCPInstanceId(), price, promoPrice, cost,
 			serviceContext);
 
-		String commercePricingConfigurationKey =
-			_getCommercePricingConfigurationKey();
-
 		if (Objects.equals(
-				commercePricingConfigurationKey,
+				_getCommercePricingConfigurationKey(),
 				CommercePricingConstants.VERSION_2_0)) {
 
 			_updateCommercePriceEntry(

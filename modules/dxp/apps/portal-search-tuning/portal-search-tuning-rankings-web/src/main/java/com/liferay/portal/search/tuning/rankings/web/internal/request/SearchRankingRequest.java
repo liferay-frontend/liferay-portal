@@ -52,9 +52,10 @@ public class SearchRankingRequest {
 		_queries = queries;
 		_rankingIndexName = rankingIndexName;
 		_sorts = sorts;
-		_searchContext = SearchContextFactory.getInstance(httpServletRequest);
 		_searchContainer = searchContainer;
 		_searchEngineAdapter = searchEngineAdapter;
+
+		_searchContext = SearchContextFactory.getInstance(httpServletRequest);
 	}
 
 	public SearchRankingResponse search() {

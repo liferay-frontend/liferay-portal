@@ -31,6 +31,7 @@ List<MFAFIDO2CredentialEntry> mfaIDO2CredentialEntries = MFAFIDO2CredentialEntry
 						"pkccOptions", request.getAttribute(MFAFIDO2WebKeys.MFA_FIDO2_PKCC_OPTIONS)
 					).build()
 				%>'
+				displayType="primary"
 				label="register-a-fido2-authenticator"
 				propsTransformer="js/RegistrationTransformer"
 			/>
@@ -41,9 +42,13 @@ List<MFAFIDO2CredentialEntry> mfaIDO2CredentialEntries = MFAFIDO2CredentialEntry
 
 		<aui:input name="removeExistingSetup" type="hidden" value="<%= true %>" />
 
-		<button class="btn btn-danger" type="submit">
-			<liferay-ui:message key="remove-all-registered-fido2-authenticators" />
-		</button>
+		<aui:button-row>
+			<clay:button
+				displayType="danger"
+				label="remove-all-registered-fido2-authenticators"
+				type="submit"
+			/>
+		</aui:button-row>
 	</c:otherwise>
 </c:choose>
 
@@ -62,19 +67,19 @@ List<MFAFIDO2CredentialEntry> mfaIDO2CredentialEntries = MFAFIDO2CredentialEntry
 		modelVar="mfaFIDO2CredentialEntry"
 	>
 		<liferay-ui:search-container-column-text
-			cssClass="table-cell-content"
+			cssClass="table-cell-expand"
 			name="authenticator-id"
 			value="<%= String.valueOf(mfaFIDO2CredentialEntry.getPrimaryKey()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
-			cssClass="table-cell-content"
+			cssClass="table-cell-expand"
 			name="registered-date"
 			value="<%= String.valueOf(mfaFIDO2CredentialEntry.getCreateDate()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text>
-			<portlet:actionURL name="/multi-factor-authentication-fido2/remove_mfa_fido2_credential_entry" var="removeMFAFIDO2CredentialEntryURL">
+			<portlet:actionURL name="/multi_factor_authentication_fido2/remove_mfa_fido2_credential_entry" var="removeMFAFIDO2CredentialEntryURL">
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 				<portlet:param name="mfaFIDO2CredentialEntryId" value="<%= String.valueOf(mfaFIDO2CredentialEntry.getPrimaryKey()) %>" />
 				<portlet:param name="setupMFACheckerServiceId" value="<%= String.valueOf(request.getAttribute(MFAFIDO2WebKeys.SETUP_MFA_CHECKER_SERVICE_ID)) %>" />

@@ -72,7 +72,7 @@ String displayStyle = ParamUtil.getString(request, "displayStyle");
 
 PortletURL portletURL = renderResponse.createRenderURL();
 
-portletURL.setParameter("mvcRenderCommandName", "exportLayoutsView");
+portletURL.setParameter("mvcRenderCommandName", "/export_import/export_layouts_view");
 portletURL.setParameter("groupId", String.valueOf(groupId));
 portletURL.setParameter("liveGroupId", String.valueOf(liveGroupId));
 portletURL.setParameter("privateLayout", String.valueOf(privateLayout));
@@ -89,8 +89,8 @@ renderResponse.setTitle(!configuredExport ? LanguageUtil.get(request, "new-custo
 %>
 
 <clay:container-fluid>
-	<portlet:actionURL name="editExportConfiguration" var="restoreTrashEntriesURL">
-		<portlet:param name="mvcRenderCommandName" value="exportLayouts" />
+	<portlet:actionURL name="/export_import/edit_export_configuration" var="restoreTrashEntriesURL">
+		<portlet:param name="mvcRenderCommandName" value="/export_import/export_layouts" />
 		<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.RESTORE %>" />
 	</portlet:actionURL>
 
@@ -108,8 +108,8 @@ renderResponse.setTitle(!configuredExport ? LanguageUtil.get(request, "new-custo
 		</liferay-util:include>
 	</div>
 
-	<portlet:actionURL name="exportLayouts" var="exportPagesURL">
-		<portlet:param name="mvcRenderCommandName" value="exportLayouts" />
+	<portlet:actionURL name="/export_import/export_layouts" var="exportPagesURL">
+		<portlet:param name="mvcRenderCommandName" value="/export_import/export_layouts" />
 		<portlet:param name="exportLAR" value="<%= Boolean.TRUE.toString() %>" />
 	</portlet:actionURL>
 

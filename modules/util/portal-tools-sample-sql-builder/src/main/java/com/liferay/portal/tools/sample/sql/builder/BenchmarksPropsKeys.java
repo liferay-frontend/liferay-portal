@@ -127,6 +127,9 @@ public interface BenchmarksPropsKeys {
 
 	public static final String SCRIPT = "sample.sql.script";
 
+	public static final String SEARCH_BAR_ENABLED =
+		"sample.sql.search.bar.enabled";
+
 	public static final String VIRTUAL_HOST_NAME =
 		"sample.sql.virtual.hostname";
 

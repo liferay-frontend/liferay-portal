@@ -37,7 +37,7 @@
 
 <script>
 	<portlet:renderURL var="scheduledEventsURL">
-		<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
+		<portlet:param name="mvcRenderCommandName" value="/export_import/publish_layouts" />
 		<portlet:param name="closeRedirect" value="<%= closeRedirect %>" />
 		<portlet:param name="groupId" value="<%= String.valueOf(stagingGroupId) %>" />
 		<portlet:param name="layoutSetBranchId" value="<%= String.valueOf(layoutSetBranchId) %>" />

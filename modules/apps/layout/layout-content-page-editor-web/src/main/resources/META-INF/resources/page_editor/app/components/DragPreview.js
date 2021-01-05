@@ -19,6 +19,7 @@ import {useDragLayer} from 'react-dnd';
 
 import {ITEM_ACTIVATION_ORIGINS} from '../config/constants/itemActivationOrigins';
 import {config} from '../config/index';
+import selectLanguageId from '../selectors/selectLanguageId';
 import {useSelector} from '../store/index';
 
 const getItemStyles = (currentOffset, ref, rtl) => {
@@ -45,7 +46,7 @@ const getItemStyles = (currentOffset, ref, rtl) => {
 export default function DragPreview() {
 	const ref = useRef();
 
-	const languageId = useSelector((state) => state.languageId);
+	const languageId = useSelector(selectLanguageId);
 
 	const {currentOffset, isDragging, item} = useDragLayer((monitor) => ({
 		currentOffset: monitor.getClientOffset(),

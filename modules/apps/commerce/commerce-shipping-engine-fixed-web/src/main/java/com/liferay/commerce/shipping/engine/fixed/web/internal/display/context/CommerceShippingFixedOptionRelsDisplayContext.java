@@ -23,6 +23,7 @@ import com.liferay.commerce.model.CommerceRegion;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.product.model.CPMeasurementUnit;
 import com.liferay.commerce.product.service.CPMeasurementUnitLocalService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceCountryService;
 import com.liferay.commerce.service.CommerceRegionService;
 import com.liferay.commerce.service.CommerceShippingMethodService;
@@ -31,7 +32,7 @@ import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOpt
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOptionRel;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionRelService;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionService;
-import com.liferay.commerce.shipping.engine.fixed.web.internal.servlet.taglib.ui.CommerceShippingMethodFixedOptionSettingsScreenNavigationEntry;
+import com.liferay.commerce.shipping.engine.fixed.web.internal.frontend.taglib.servlet.taglib.CommerceShippingMethodFixedOptionSettingsScreenNavigationCategory;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.petra.string.StringPool;
@@ -58,6 +59,7 @@ public class CommerceShippingFixedOptionRelsDisplayContext
 	extends BaseCommerceShippingFixedOptionDisplayContext {
 
 	public CommerceShippingFixedOptionRelsDisplayContext(
+		CommerceChannelLocalService commerceChannelLocalService,
 		CommerceCountryService commerceCountryService,
 		CommerceCurrencyLocalService commerceCurrencyLocalService,
 		CommerceRegionService commerceRegionService,
@@ -71,8 +73,8 @@ public class CommerceShippingFixedOptionRelsDisplayContext
 		RenderResponse renderResponse) {
 
 		super(
-			commerceCurrencyLocalService, commerceShippingMethodService,
-			renderRequest, renderResponse);
+			commerceChannelLocalService, commerceCurrencyLocalService,
+			commerceShippingMethodService, renderRequest, renderResponse);
 
 		_commerceCountryService = commerceCountryService;
 		_commerceRegionService = commerceRegionService;
@@ -229,8 +231,7 @@ public class CommerceShippingFixedOptionRelsDisplayContext
 
 	@Override
 	public String getScreenNavigationCategoryKey() {
-		return CommerceShippingMethodFixedOptionSettingsScreenNavigationEntry.
-			CATEGORY_KEY;
+		return CommerceShippingMethodFixedOptionSettingsScreenNavigationCategory.CATEGORY_KEY;
 	}
 
 	public boolean isVisible() throws PortalException {

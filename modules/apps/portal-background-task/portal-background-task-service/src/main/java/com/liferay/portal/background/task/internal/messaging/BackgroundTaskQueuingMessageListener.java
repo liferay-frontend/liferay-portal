@@ -34,6 +34,7 @@ public class BackgroundTaskQueuingMessageListener extends BaseMessageListener {
 		BackgroundTaskManager backgroundTaskManager, LockManager lockManager) {
 
 		_backgroundTaskManager = backgroundTaskManager;
+
 		_backgroundTaskLockHelper = new BackgroundTaskLockHelper(lockManager);
 	}
 

@@ -249,9 +249,8 @@ public class SPDXBuilder {
 			for (Node fileNameNode : fileNameNodes) {
 				Element libraryElement = fileNameNode.getParent();
 
-				String key = _getKey("portal", libraryElement);
-
-				libraryElementMap.put(key, libraryElement);
+				libraryElementMap.put(
+					_getKey("portal", libraryElement), libraryElement);
 			}
 		}
 
@@ -279,9 +278,8 @@ public class SPDXBuilder {
 				packageElement, licenseOverrideProperties);
 
 			for (Element libraryElement : libraryElements) {
-				String key = _getKey("spdx", libraryElement);
-
-				libraryElementMap.put(key, libraryElement);
+				libraryElementMap.put(
+					_getKey("spdx", libraryElement), libraryElement);
 			}
 		}
 

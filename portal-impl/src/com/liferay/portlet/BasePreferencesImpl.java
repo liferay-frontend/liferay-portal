@@ -15,6 +15,7 @@
 package com.liferay.portlet;
 
 import com.liferay.petra.xml.XMLUtil;
+import com.liferay.portal.kernel.model.PortletConstants;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.xml.simple.Element;
 
@@ -78,6 +79,14 @@ public abstract class BasePreferencesImpl implements Serializable {
 
 	public int getOwnerType() {
 		return _ownerType;
+	}
+
+	public Map<String, Preference> getPreferences() {
+		if (_modifiedPreferences != null) {
+			return _modifiedPreferences;
+		}
+
+		return _originalPreferences;
 	}
 
 	public String getValue(String key, String def) {
@@ -269,14 +278,6 @@ public abstract class BasePreferencesImpl implements Serializable {
 		return _originalXML;
 	}
 
-	protected Map<String, Preference> getPreferences() {
-		if (_modifiedPreferences != null) {
-			return _modifiedPreferences;
-		}
-
-		return _originalPreferences;
-	}
-
 	protected String getXMLSafeValue(String value) {
 		if (value == null) {
 			return _NULL_VALUE;
@@ -329,6 +330,10 @@ public abstract class BasePreferencesImpl implements Serializable {
 		}
 
 		Map<String, Preference> preferences = getPreferences();
+
+		if ((preferences == null) || preferences.isEmpty()) {
+			return PortletConstants.DEFAULT_PREFERENCES;
+		}
 
 		Element portletPreferencesElement = new Element(
 			"portlet-preferences", false);

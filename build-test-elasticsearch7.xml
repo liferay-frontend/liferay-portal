@@ -3,6 +3,25 @@
 <project basedir="." name="portal-test-elasticsearch" xmlns:antelope="antlib:ise.antelope.tasks">
 	<import file="build-test.xml" />
 
+	<macrodef name="configure-elasticsearch-pki-realm-settings">
+		<sequential>
+			<echo append="true" file="${elasticsearch.dir}-1/config/elasticsearch.yml">${line.separator}xpack.security.http.ssl.client_authentication: required
+xpack.security.transport.ssl.client_authentication: required
+xpack:
+  security:
+    authc:
+      realms:
+        pki:
+          pki1:
+            order: 0</echo>
+
+			<echo append="true" file="${elasticsearch.dir}-1/config/role_mapping.yml">${line.separator}superuser:
+  - "CN=liferay.com,OU=Search,DC=liferay,DC=com"
+kibana_system:
+  - "CN=liferay.com,OU=Search,DC=liferay,DC=com"</echo>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="configure-elasticsearch-properties">
 		<sequential>
 			<echo append="true" file="${elasticsearch.dir}/config/elasticsearch.yml">${line.separator}bootstrap.system_call_filter: false
@@ -11,16 +30,32 @@ xpack.ml.enabled: false</echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="configure-elasticsearch-x-pack-pki-security-properties">
+		<sequential>
+			<echo append="true" file="${elasticsearch.dir}/config/elasticsearch.yml">${line.separator}xpack.security.enabled: true
+xpack.security.http.ssl.certificate: certs/elastic-certificates.crt
+xpack.security.http.ssl.certificate_authorities : [ "certs/ca.crt" ]
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.key: certs/elastic-certificates.key
+xpack.security.http.ssl.verification_mode: certificate
+xpack.security.transport.ssl.certificate: certs/elastic-certificates.crt
+xpack.security.transport.ssl.certificate_authorities : [ "certs/ca.crt" ]
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.key: certs/elastic-certificates.key
+xpack.security.transport.ssl.verification_mode: certificate</echo>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="configure-elasticsearch-x-pack-security-properties">
 		<sequential>
 			<echo append="true" file="${elasticsearch.dir}/config/elasticsearch.yml">${line.separator}xpack.security.enabled: true
 xpack.security.http.ssl.enabled: true
-xpack.security.http.ssl.keystore.path: certs/localhost.p12
-xpack.security.http.ssl.truststore.path: certs/localhost.p12
-xpack.security.transport.ssl.certificate: certs/localhost/localhost.crt
-xpack.security.transport.ssl.certificate_authorities: [ "certs/ca/ca.crt" ]
+xpack.security.http.ssl.keystore.path: certs/elastic-certificates.p12
+xpack.security.http.ssl.truststore.path: certs/elastic-certificates.p12
+xpack.security.transport.ssl.certificate: certs/elastic-certificates.crt
+xpack.security.transport.ssl.certificate_authorities: [ "certs/ca.crt" ]
 xpack.security.transport.ssl.enabled: true
-xpack.security.transport.ssl.key: certs/localhost/localhost.key
+xpack.security.transport.ssl.key: certs/elastic-certificates.key
 xpack.security.transport.ssl.verification_mode: certificate</echo>
 		</sequential>
 	</macrodef>
@@ -77,14 +112,38 @@ server.rewriteBasePath: false</echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="configure-kibana-x-pack-pki-security-properties">
+		<sequential>
+			<echo append="true" file="${elastic.kibana.dir}/config/kibana.yml">${line.separator}
+elasticsearch.ssl.certificateAuthorities: [ "${elasticsearch.dir}-1/config/certs/ca.crt" ]
+elasticsearch.ssl.certificate: ${elasticsearch.dir}-1/config/certs/elastic-certificates.crt
+elasticsearch.ssl.key: ${elasticsearch.dir}-1/config/certs/elastic-certificates.key
+elasticsearch.ssl.verificationMode: certificate
+server.ssl.certificateAuthorities: [ "${elasticsearch.dir}-1/config/certs/ca.crt" ]
+server.ssl.certificate: ${elasticsearch.dir}-1/config/certs/elastic-certificates.crt
+server.ssl.enabled: true
+server.ssl.key: ${elasticsearch.dir}-1/config/certs/elastic-certificates.key
+xpack.security.encryptionKey: "xsomethingxatxleastx32xcharactersx"
+xpack.security.sessionTimeout: 600000
+elasticsearch.ssl.alwaysPresentCertificate: true</echo>
+
+			<replace
+				file="${elastic.kibana.dir}/config/kibana.yml"
+			>
+				<replacetoken><![CDATA[elasticsearch.hosts: "http://localhost:9200"]]></replacetoken>
+				<replacevalue><![CDATA[elasticsearch.hosts: "https://localhost:9200"]]></replacevalue>
+			</replace>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="configure-kibana-x-pack-security-properties">
 		<sequential>
 			<echo append="true" file="${elastic.kibana.dir}/config/kibana.yml">${line.separator}elasticsearch.password: "${elastic.xpack.elastic.user.password}"
-elasticsearch.ssl.certificateAuthorities: [ "${elasticsearch.dir}-1/config/certs/ca/ca.crt" ]
+elasticsearch.ssl.certificateAuthorities: [ "${elasticsearch.dir}-1/config/certs/ca.crt" ]
 elasticsearch.username: "elastic"
-server.ssl.certificate: ${elasticsearch.dir}-1/config/certs/localhost/localhost.crt
+server.ssl.certificate: ${elasticsearch.dir}-1/config/certs/elastic-certificates.crt
 server.ssl.enabled: true
-server.ssl.key: ${elasticsearch.dir}-1/config/certs/localhost/localhost.key
+server.ssl.key: ${elasticsearch.dir}-1/config/certs/elastic-certificates.key
 xpack.security.encryptionKey: "xsomethingxatxleastx32xcharactersx"
 xpack.security.sessionTimeout: 600000</echo>
 
@@ -137,9 +196,37 @@ httpSSLEnabled="true"
 networkHostAddresses=["https://localhost:9200"]
 password="${osgi.config.elastic.user.password}"
 truststorePassword="liferay"
-truststorePath="${elasticsearch.dir}-1/config/certs/localhost.p12"
+truststorePath="${elasticsearch.dir}-1/config/certs/elastic-certificates.p12"
 truststoreType="pkcs12"
 username="elastic"</echo>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="configure-portal-x-pack-pki-osgi-properties">
+		<sequential>
+			<echo append="true" file="${liferay.home}/osgi/configs/com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config">${line.separator}remoteClusterConnectionId="xpack"</echo>
+
+			<propertyregex
+				defaultValue="${elastic.xpack.elastic.user.password}"
+				input="${elastic.xpack.elastic.user.password}"
+				override="true"
+				property="osgi.config.elastic.user.password"
+				regexp="="
+				replace="\\\\="
+			/>
+
+			<echo append="true" file="${liferay.home}/osgi/configs/com.liferay.portal.search.elasticsearch.monitoring.web.internal.configuration.MonitoringConfiguration.config">kibanaPassword="${osgi.config.elastic.user.password}"
+kibanaURL="https://localhost:5601"
+proxyServletLogEnable="true"</echo>
+
+			<echo append="true" file="${liferay.home}/osgi/configs/com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConnectionConfiguration-remote.config">active="true"
+authenticationEnabled="false"
+connectionId="xpack"
+httpSSLEnabled="true"
+networkHostAddresses=["https://localhost:9200"]
+truststorePassword="liferay"
+truststorePath="${elasticsearch.dir}-1/config/certs/elastic-certificates.p12"
+truststoreType="pkcs12"</echo>
 		</sequential>
 	</macrodef>
 
@@ -150,12 +237,12 @@ username="elastic"</echo>
 				<then>
 					<exec dir="${elasticsearch.dir}/bin" executable="/bin/bash">
 						<arg value="-c" />
-						<arg value="./elasticsearch-certutil cert --ca-cert ${elasticsearch.dir}/config/certs/ca/ca.crt --ca-key ${elasticsearch.dir}/config/certs/ca/ca.key --pass liferay --ip 127.0.0.1 --dns localhost --name localhost --out ${elasticsearch.dir}/config/certs/localhost.p12" />
+						<arg value="./elasticsearch-certutil cert --ca-cert ${elasticsearch.dir}/config/certs/ca.crt --ca-key ${elasticsearch.dir}/config/certs/ca.key --pass liferay --ip 127.0.0.1 --dns localhost --name &quot;CN=liferay.com,OU=Search,DC=liferay,DC=com&quot; --out ${elasticsearch.dir}/config/certs/elastic-certificates.p12" />
 					</exec>
 
 					<exec dir="${elasticsearch.dir}/bin" executable="/bin/bash">
 						<arg value="-c" />
-						<arg value="keytool -importkeystore -deststorepass liferay -destkeystore ${elasticsearch.dir}/config/certs/localhost.jks -srckeystore ${elasticsearch.dir}/config/certs/localhost.p12 -srcstoretype PKCS12 -srcstorepass liferay" />
+						<arg value="keytool -importkeystore -deststorepass liferay -destkeystore ${elasticsearch.dir}/config/certs/elastic-certificates.jks -srckeystore ${elasticsearch.dir}/config/certs/elastic-certificates.p12 -srcstoretype PKCS12 -srcstorepass liferay" />
 					</exec>
 
 					<exec dir="${elasticsearch.dir}/bin" executable="/bin/bash">
@@ -178,26 +265,26 @@ username="elastic"</echo>
 					<then>
 						<exec dir="${elasticsearch.dir}/bin" executable="cmd">
 							<arg value="/c" />
-							<arg value="elasticsearch-certutil cert --ca-cert ${elasticsearch.dir}/config/certs/ca/ca.crt --ca-key ${elasticsearch.dir}/config/certs/ca/ca.key --pass liferay --ip 127.0.0.1 --dns localhost --name localhost --out ${elasticsearch.dir}/config/certs/localhost.p12" />
+							<arg value="elasticsearch-certutil cert --ca-cert ${elasticsearch.dir}/config/certs/ca.crt --ca-key ${elasticsearch.dir}/config/certs/ca.key --pass liferay --ip 127.0.0.1 --dns localhost --name &quot;CN=liferay.com,OU=Search,DC=liferay,DC=com&quot; --out ${elasticsearch.dir}/config/certs/elastic-certificates.p12" />
 						</exec>
 
 						<exec dir="${elasticsearch.dir}/bin" executable="cmd">
 							<arg value="/c" />
-							<arg value="keytool -importkeystore -deststorepass liferay -destkeystore ${elasticsearch.dir}/config/certs/localhost.jks -srckeystore ${elasticsearch.dir}/config/certs/localhost.p12 -srcstoretype PKCS12 -srcstorepass liferay" />
+							<arg value="keytool -importkeystore -deststorepass liferay -destkeystore ${elasticsearch.dir}/config/certs/elastic-certificates.jks -srckeystore ${elasticsearch.dir}/config/certs/elastic-certificates.p12 -srcstoretype PKCS12 -srcstorepass liferay" />
 						</exec>
 
 						<exec dir="${elasticsearch.dir}/bin" executable="cmd">
-							<arg value="-c" />
+							<arg value="/c" />
 							<arg value="elasticsearch-keystore create" />
 						</exec>
 
 						<exec dir="${elasticsearch.dir}/bin" executable="cmd" inputstring="liferay&#x0A;">
-							<arg value="-c" />
+							<arg value="/c" />
 							<arg value="elasticsearch-keystore add xpack.security.http.ssl.keystore.secure_password" />
 						</exec>
 
 						<exec dir="${elasticsearch.dir}/bin" executable="cmd" inputstring="liferay&#x0A;">
-							<arg value="-c" />
+							<arg value="/c" />
 							<arg value="elasticsearch-keystore add xpack.security.http.ssl.truststore.secure_password" />
 						</exec>
 					</then>
@@ -208,10 +295,10 @@ username="elastic"</echo>
 				<equals arg1="${app.server.type}" arg2="tomcat" />
 				<then>
 					<echo append="true" file="${app.server.tomcat.dir}/bin/setenv.bat">
-${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${elasticsearch.dir}-1/config/certs/localhost.jks -Djavax.net.ssl.trustStorePassword=liferay"</echo>
+${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${elasticsearch.dir}-1/config/certs/elastic-certificates.jks -Djavax.net.ssl.trustStorePassword=liferay"</echo>
 
 					<echo append="true" file="${app.server.tomcat.dir}/bin/setenv.sh">
-${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${elasticsearch.dir}-1/config/certs/localhost.jks -Djavax.net.ssl.trustStorePassword=liferay"</echo>
+${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${elasticsearch.dir}-1/config/certs/elastic-certificates.jks -Djavax.net.ssl.trustStorePassword=liferay"</echo>
 				</then>
 				<else>
 					<echo>Set setenv.bat and setenv.sh manually before attempting to connect with portal.</echo>
@@ -227,7 +314,7 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 				<then>
 					<exec dir="${elasticsearch.dir}/bin" executable="/bin/bash">
 						<arg value="-c" />
-						<arg value="./elasticsearch-certutil ca --pem --ca-dn CN=localhost --out ${elasticsearch.dir}/bin/elastic-stack-ca.zip" />
+						<arg value="./elasticsearch-certutil ca --pem --out ${elasticsearch.dir}/bin/elastic-stack-ca.zip" />
 					</exec>
 				</then>
 				<elseif>
@@ -235,7 +322,7 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 					<then>
 						<exec dir="${elasticsearch.dir}/bin" executable="cmd">
 							<arg value="/c" />
-							<arg value="elasticsearch-certutil ca --pem --ca-dn CN=localhost --out ${elasticsearch.dir}/bin/elastic-stack-ca.zip" />
+							<arg value="elasticsearch-certutil ca --pem --out ${elasticsearch.dir}/bin/elastic-stack-ca.zip" />
 						</exec>
 					</then>
 				</elseif>
@@ -251,7 +338,7 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 				<then>
 					<exec dir="${elasticsearch.dir}/bin" executable="/bin/bash">
 						<arg value="-c" />
-						<arg value="./elasticsearch-certutil cert --ca-cert ${elasticsearch.dir}/bin/ca/ca.crt --ca-key ${elasticsearch.dir}/bin/ca/ca.key --pem --ip 127.0.0.1 --dns localhost --name localhost --out ${elasticsearch.dir}/bin/certificate-bundle.zip" />
+						<arg value="./elasticsearch-certutil cert --ca-cert ${elasticsearch.dir}/bin/ca/ca.crt --ca-key ${elasticsearch.dir}/bin/ca/ca.key --pem --ip 127.0.0.1 --dns localhost --name &quot;CN=liferay.com,OU=Search,DC=liferay,DC=com&quot; --out ${elasticsearch.dir}/bin/elastic-certificates.zip" />
 					</exec>
 				</then>
 				<elseif>
@@ -259,7 +346,7 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 					<then>
 						<exec dir="${elasticsearch.dir}/bin" executable="cmd">
 							<arg value="/c" />
-							<arg value="elasticsearch-certutil cert --ca-cert ${elasticsearch.dir}/bin/ca/ca.crt --ca-key ${elasticsearch.dir}/bin/ca/ca.key --pem --ip 127.0.0.1 --dns localhost --name localhost --out ${elasticsearch.dir}/bin/certificate-bundle.zip" />
+							<arg value="elasticsearch-certutil cert --ca-cert ${elasticsearch.dir}/bin/ca/ca.crt --ca-key ${elasticsearch.dir}/bin/ca/ca.key --pem --ip 127.0.0.1 --dns localhost --name &quot;CN=liferay.com,OU=Search,DC=liferay,DC=com&quot; --out ${elasticsearch.dir}/bin/elastic-certificates.zip" />
 						</exec>
 					</then>
 				</elseif>
@@ -267,21 +354,33 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 
 			<unzip
 				dest="${elasticsearch.dir}/bin"
-				src="${elasticsearch.dir}/bin/certificate-bundle.zip"
+				src="${elasticsearch.dir}/bin/elastic-certificates.zip"
 			/>
 
 			<move
-				file="${elasticsearch.dir}/bin/ca"
 				todir="${elasticsearch.dir}/config/certs"
-			/>
+			>
+				<fileset
+					dir="${elasticsearch.dir}/bin/CN=liferay.com,OU=Search,DC=liferay,DC=com"
+				/>
+				<mapper
+					from="CN=liferay.com,OU=Search,DC=liferay,DC=com.*"
+					to="elastic-certificates.*"
+					type="glob"
+				/>
+			</move>
 
 			<move
-				file="${elasticsearch.dir}/bin/localhost"
 				todir="${elasticsearch.dir}/config/certs"
-			/>
+			>
+				<fileset
+					dir="${elasticsearch.dir}/bin/ca"
+				/>
+			</move>
 
 			<delete file="${elasticsearch.dir}/bin/elastic-stack-ca.zip" />
-			<delete file="${elasticsearch.dir}/bin/certificate-bundle.zip" />
+			<delete file="${elasticsearch.dir}/bin/elastic-certificates.zip" />
+			<delete dir="${elasticsearch.dir}/bin/CN=liferay.com,OU=Search,DC=liferay,DC=com" />
 		</sequential>
 	</macrodef>
 
@@ -1065,13 +1164,22 @@ xpack.monitoring.collection.enabled: true</echo>
 		<configure-elasticsearch-properties />
 
 		<get-testcase-property property.name="elastic.xpack.enabled" />
+		<get-testcase-property property.name="remote.elasticsearch.pki.authentication.enabled" />
 
 		<if>
 			<equals arg1="${elastic.xpack.enabled}" arg2="true" />
 			<then>
 				<generate-x-pack-security-certificates />
 
-				<configure-elasticsearch-x-pack-security-properties />
+				<if>
+					<equals arg1="${remote.elasticsearch.pki.authentication.enabled}" arg2="true" />
+					<then>
+						<configure-elasticsearch-x-pack-pki-security-properties />
+					</then>
+					<else>
+						<configure-elasticsearch-x-pack-security-properties />
+					</else>
+				</if>
 
 				<configure-portal-x-pack-security-truststore />
 			</then>
@@ -1123,7 +1231,25 @@ xpack.monitoring.collection.enabled: true</echo>
 
 				<start-x-pack-trial />
 
-				<configure-portal-x-pack-osgi-properties />
+				<if>
+					<equals arg1="${remote.elasticsearch.pki.authentication.enabled}" arg2="true" />
+					<then>
+						<sleep seconds="10" />
+
+						<antcall target="stop-elasticsearch" />
+
+						<configure-elasticsearch-pki-realm-settings />
+
+						<antcall target="start-elasticsearch-node" />
+
+						<sleep seconds="10" />
+
+						<configure-portal-x-pack-pki-osgi-properties />
+					</then>
+					<else>
+						<configure-portal-x-pack-osgi-properties />
+					</else>
+				</if>
 
 				<antcall target="start-kibana" />
 
@@ -1241,12 +1367,22 @@ xpack.monitoring.collection.enabled: true</echo>
 
 		<get-testcase-property property.name="elastic.xpack.enabled" />
 
+		<get-testcase-property property.name="remote.elasticsearch.pki.authentication.enabled" />
+
 		<if>
 			<equals arg1="${elastic.xpack.enabled}" arg2="true" />
 			<then>
 				<configure-kibana-properties />
 
-				<configure-kibana-x-pack-security-properties />
+				<if>
+					<equals arg1="${remote.elasticsearch.pki.authentication.enabled}" arg2="true" />
+					<then>
+						<configure-kibana-x-pack-pki-security-properties />
+					</then>
+					<else>
+						<configure-kibana-x-pack-security-properties />
+					</else>
+				</if>
 			</then>
 		</if>
 
@@ -1330,10 +1466,12 @@ xpack.monitoring.collection.enabled: true</echo>
 			<print-file file.name="${elasticsearch.dir}-${elasticsearch.node.number}/logs/LiferayElasticsearchCluster.log" />
 		</antelope:repeat>
 
-		<get-testcase-property property.name="elastic.xpack.enabled" />
+		<condition property="kibana.running">
+			<socket port="5601" server="localhost" />
+		</condition>
 
 		<if>
-			<equals arg1="${elastic.xpack.enabled}" arg2="true" />
+			<equals arg1="${kibana.running}" arg2="true" />
 			<then>
 				<print-file file.name="${elastic.kibana.dir}/bin/kibana.log" />
 

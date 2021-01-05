@@ -21,11 +21,12 @@ import DataSetDisplayContext from '../../DataSetDisplayContext';
 import ActionsDropdownRenderer from '../../data_renderers/ActionsDropdownRenderer';
 import CheckboxRenderer from '../../data_renderers/CheckboxRenderer';
 import CommentRenderer from '../../data_renderers/CommentRenderer';
+import DefaultRenderer from '../../data_renderers/DefaultRenderer';
 import RadioRenderer from '../../data_renderers/RadioRenderer';
 import {
 	getDataRendererById,
 	getDataRendererByURL,
-} from '../../data_renderers/index';
+} from '../../utilities/dataRenderers';
 import {getValueFromItem} from '../../utilities/index';
 import ViewsContext from '../ViewsContext';
 import TableHeadRow from './TableHeadRow';
@@ -39,12 +40,21 @@ function CustomTableCell({
 	value,
 	view,
 }) {
+	let dataRenderer = DefaultRenderer;
+
+	if (view.contentRenderer) {
+		dataRenderer = getDataRendererById(view.contentRenderer);
+	}
+
+	if (view.contentRendererModuleURL) {
+		dataRenderer = null;
+	}
+
 	const [currentView, updateCurrentView] = useState({
 		...view,
-		Component: view.contentRendererModuleURL
-			? null
-			: getDataRendererById(view.contentRenderer),
+		Component: dataRenderer,
 	});
+
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {

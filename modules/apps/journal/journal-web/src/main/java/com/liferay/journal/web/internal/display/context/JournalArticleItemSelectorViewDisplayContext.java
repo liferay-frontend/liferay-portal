@@ -283,8 +283,12 @@ public class JournalArticleItemSelectorViewDisplayContext {
 			return _articleSearchContainer;
 		}
 
+		PortletURL portletURL = getPortletURL();
+
+		portletURL.setParameter("folderId", String.valueOf(_getFolderId()));
+
 		SearchContainer<Object> articleAndFolderSearchContainer =
-			new SearchContainer<>(_portletRequest, getPortletURL(), null, null);
+			new SearchContainer<>(_portletRequest, portletURL, null, null);
 
 		articleAndFolderSearchContainer.setOrderByCol(_getOrderByCol());
 		articleAndFolderSearchContainer.setOrderByType(_getOrderByType());

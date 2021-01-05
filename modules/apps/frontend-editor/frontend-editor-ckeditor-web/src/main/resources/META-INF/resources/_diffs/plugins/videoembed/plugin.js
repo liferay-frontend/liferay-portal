@@ -16,7 +16,7 @@ if (!CKEDITOR.plugins.get('videoembed')) {
 	const REGEX_HTTP = /^https?/;
 
 	CKEDITOR.DEFAULT_LFR_EMBED_WIDGET_TPL =
-		'<div data-embed-url="{url}" class="embed-responsive embed-responsive-16by9">{content}<div class="embed-help-message">{helpMessageIcon}<span> {helpMessage}</span></div></div><br>';
+		'<div data-embed-url="{url}" class="embed-responsive embed-responsive-16by9"><div data-embed-id="{url}">{content}</div><div class="embed-help-message">{helpMessageIcon}<span> {helpMessage}</span></div></div><br>';
 
 	/**
 	 * Enum for supported embed alignments
@@ -470,6 +470,23 @@ if (!CKEDITOR.plugins.get('videoembed')) {
 			});
 		},
 
+		getValidProvider(editor, url, type) {
+			const validProvider = this._getProviders(editor)
+				.filter((provider) => {
+					return type ? provider.type === type : true;
+				})
+				.find((provider) => {
+					const scheme = provider.urlSchemes.find((scheme) =>
+						scheme.test(url)
+					);
+					if (scheme) {
+						return provider;
+					}
+				});
+
+			return validProvider;
+		},
+
 		init(editor) {
 			const instance = this;
 
@@ -680,27 +697,21 @@ if (!CKEDITOR.plugins.get('videoembed')) {
 			let content;
 
 			if (REGEX_HTTP.test(url)) {
-				const validProvider = this._getProviders(editor)
-					.filter((provider) => {
-						return type ? provider.type === type : true;
-					})
-					.some((provider) => {
-						const scheme = provider.urlSchemes.find((scheme) =>
-							scheme.test(url)
-						);
+				const provider = this.getValidProvider(editor, url, type);
 
-						if (scheme) {
-							const embedId = scheme.exec(url)[1];
+				if (provider) {
+					const schemeProvider = provider.urlSchemes.find((scheme) =>
+						scheme.test(url)
+					);
 
-							content = provider.tpl.output({
-								embedId,
-							});
-						}
+					if (schemeProvider) {
+						const embedId = schemeProvider.exec(url)[1];
 
-						return scheme;
-					});
+						content = provider.tpl.output({
+							embedId,
+						});
+					}
 
-				if (validProvider) {
 					editor._selectEmbedWidget = url;
 
 					const embedContent = this._generateEmbedContent(
@@ -726,6 +737,12 @@ if (!CKEDITOR.plugins.get('videoembed')) {
 					Liferay.Language.get('enter-a-valid-url')
 				);
 			}
+		},
+
+		onOkVideoHtml(editor, html, url) {
+			const embedContent = this._generateEmbedContent(editor, url, html);
+
+			editor.insertHtml(embedContent);
 		},
 
 		requires: 'widget',

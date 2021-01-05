@@ -13,7 +13,6 @@
  */
 
 import {DefaultEventHandler, openSelectionModal} from 'frontend-js-web';
-import dom from 'metal-dom';
 
 class OrganizationsManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	deleteSelectedOrganizations() {
@@ -37,7 +36,7 @@ class OrganizationsManagementToolbarDefaultEventHandler extends DefaultEventHand
 					);
 
 					selectedItem.forEach((item) => {
-						dom.append(addGroupOrganizationsFm, item);
+						addGroupOrganizationsFm.append(item);
 					});
 
 					submitForm(addGroupOrganizationsFm);

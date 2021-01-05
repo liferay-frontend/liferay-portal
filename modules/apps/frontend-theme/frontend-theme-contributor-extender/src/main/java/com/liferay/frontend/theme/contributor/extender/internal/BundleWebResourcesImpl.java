@@ -14,8 +14,6 @@
 
 package com.liferay.frontend.theme.contributor.extender.internal;
 
-import com.liferay.frontend.theme.contributor.extender.BundleWebResources;
-
 import java.util.Collection;
 
 /**

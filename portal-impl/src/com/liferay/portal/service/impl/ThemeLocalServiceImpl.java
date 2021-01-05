@@ -178,7 +178,7 @@ public class ThemeLocalServiceImpl extends ThemeLocalServiceBaseImpl {
 
 		List<Theme> themes = getThemes(companyId);
 
-		themes = PluginUtil.restrictPlugins(themes, companyId, userId);
+		themes = PluginUtil.restrictPlugins(themes, companyId, groupId, userId);
 
 		Iterator<Theme> iterator = themes.iterator();
 
@@ -269,9 +269,7 @@ public class ThemeLocalServiceImpl extends ThemeLocalServiceBaseImpl {
 
 	@Override
 	public List<Theme> getThemes(long companyId) {
-		Map<String, Theme> themes = _getThemes(companyId);
-
-		List<Theme> themesList = ListUtil.fromMapValues(themes);
+		List<Theme> themesList = ListUtil.fromMapValues(_getThemes(companyId));
 
 		return ListUtil.sort(themesList);
 	}

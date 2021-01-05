@@ -34,7 +34,7 @@ CommerceOrganizationDisplayContext commerceOrganizationDisplayContext = (Commerc
 </div>
 
 <c:if test="<%= OrganizationPermissionUtil.contains(permissionChecker, commerceOrganizationDisplayContext.getOrganizationId(), ActionKeys.UPDATE) %>">
-	<portlet:actionURL name="editCommerceAccountOrganizationRel" var="editCommerceAccountOrganizationRelActionURL" />
+	<portlet:actionURL name="/commerce_account_admin/edit_commerce_account_organization_rel" var="editCommerceAccountOrganizationRelActionURL" />
 
 	<aui:form action="<%= editCommerceAccountOrganizationRelActionURL %>" method="post" name="commerceAccountOrganizationRelFm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" />

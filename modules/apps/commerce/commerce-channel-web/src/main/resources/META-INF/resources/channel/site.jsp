@@ -47,7 +47,7 @@ if (commerceChannel != null) {
 	/>
 </liferay-util:buffer>
 
-<portlet:actionURL name="editCommerceChannel" var="editCommerceChannelActionURL" />
+<portlet:actionURL name="/commerce_channels/edit_commerce_channel" var="editCommerceChannelActionURL" />
 
 <aui:form action="<%= editCommerceChannelActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="selectSite" />
@@ -86,7 +86,7 @@ if (commerceChannel != null) {
 						modelVar="group"
 					>
 						<liferay-ui:search-container-column-text
-							cssClass="table-cell-content"
+							cssClass="table-cell-expand"
 							value="<%= HtmlUtil.escape(group.getName(locale)) %>"
 						/>
 

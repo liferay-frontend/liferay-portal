@@ -84,6 +84,10 @@ public class PoshiContext {
 		"**/*.prose", "**/*.testcase"
 	};
 
+	public static void addPoshiPropertyNames(Set<String> poshiPropertyNames) {
+		_poshiPropertyNames.addAll(poshiPropertyNames);
+	}
+
 	public static void clear() {
 		_commandElements.clear();
 		_commandSummaries.clear();
@@ -95,6 +99,7 @@ public class PoshiContext {
 		_overrideClassNames.clear();
 		_pathExtensions.clear();
 		_pathLocators.clear();
+		_poshiPropertyNames.clear();
 		_rootElements.clear();
 		_rootVarElements.clear();
 		_seleniumParameterCounts.clear();
@@ -298,6 +303,32 @@ public class PoshiContext {
 		return _rootElements.get("path#" + namespace + "." + className);
 	}
 
+	public static List<String> getPoshiPropertyNames() {
+		List<String> poshiPropertyNames = new ArrayList<>(_poshiPropertyNames);
+
+		poshiPropertyNames.add("ignored");
+		poshiPropertyNames.add("known-issues");
+		poshiPropertyNames.add("priority");
+		poshiPropertyNames.add("test.run.environment");
+
+		return poshiPropertyNames;
+	}
+
+	public static List<String> getRequiredPoshiPropertyNames() {
+		List<String> requiredPoshiPropertyNames = new ArrayList<>();
+
+		String testCaseRequiredPropertyNames =
+			PropsValues.TEST_CASE_REQUIRED_PROPERTY_NAMES;
+
+		if (Validator.isNotNull(testCaseRequiredPropertyNames)) {
+			Collections.addAll(
+				requiredPoshiPropertyNames,
+				StringUtil.split(testCaseRequiredPropertyNames));
+		}
+
+		return requiredPoshiPropertyNames;
+	}
+
 	public static List<Element> getRootVarElements(
 		String classType, String className, String namespace) {
 
@@ -482,9 +513,6 @@ public class PoshiContext {
 
 		Properties properties = new Properties();
 
-		List<String> poshiPropertyNames =
-			PoshiProperties.getPoshiPropertiesNames();
-
 		List<Element> rootPropertyElements = rootElement.elements("property");
 
 		for (Element propertyElement : rootPropertyElements) {
@@ -492,10 +520,6 @@ public class PoshiContext {
 			String propertyValue = propertyElement.attributeValue("value");
 
 			properties.setProperty(propertyName, propertyValue);
-
-			if (!poshiPropertyNames.contains(propertyName)) {
-				poshiPropertyNames.add(propertyName);
-			}
 		}
 
 		List<Element> commandPropertyElements = commandElement.elements(
@@ -506,10 +530,6 @@ public class PoshiContext {
 			String propertyValue = propertyElement.attributeValue("value");
 
 			properties.setProperty(propertyName, propertyValue);
-
-			if (!poshiPropertyNames.contains(propertyName)) {
-				poshiPropertyNames.add(propertyName);
-			}
 		}
 
 		if (Validator.isNotNull(
@@ -860,6 +880,9 @@ public class PoshiContext {
 					_namespacedClassCommandNamePropertiesMap.put(
 						baseNamespacedClassCommandName, overriddenProperties);
 
+					_poshiPropertyNames.addAll(
+						overrideProperties.stringPropertyNames());
+
 					if (Validator.isNotNull(
 							overrideCommandElement.attributeValue(
 								"description"))) {
@@ -964,9 +987,8 @@ public class PoshiContext {
 		throws Exception {
 
 		for (String baseDirName : baseDirNames) {
-			List<URL> poshiURLs = _getPoshiURLs(includes, baseDirName);
-
-			_storeRootElements(poshiURLs, _DEFAULT_NAMESPACE);
+			_storeRootElements(
+				_getPoshiURLs(includes, baseDirName), _DEFAULT_NAMESPACE);
 		}
 	}
 
@@ -1215,6 +1237,9 @@ public class PoshiContext {
 
 					_namespacedClassCommandNamePropertiesMap.put(
 						namespace + "." + classCommandName, properties);
+
+					_poshiPropertyNames.addAll(
+						properties.stringPropertyNames());
 
 					if (Validator.isNotNull(
 							commandElement.attributeValue("description"))) {
@@ -1518,6 +1543,8 @@ public class PoshiContext {
 		Collections.synchronizedMap(new HashMap<>());
 	private static final Map<String, String> _pathLocators =
 		Collections.synchronizedMap(new HashMap<>());
+	private static final Set<String> _poshiPropertyNames =
+		Collections.synchronizedSet(new HashSet<>());
 	private static final Pattern _poshiResourceJarNamePattern = Pattern.compile(
 		"jar:.*\\/(?<namespace>\\w+)\\-(?<branchName>\\w+" +
 			"([\\-\\.]\\w+)*)\\-.*?\\.jar.*");

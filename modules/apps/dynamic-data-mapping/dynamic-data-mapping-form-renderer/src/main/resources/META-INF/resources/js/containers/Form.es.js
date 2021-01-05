@@ -14,7 +14,6 @@
 
 import '../../css/main.scss';
 
-import dom from 'metal-dom';
 import Soy from 'metal-soy';
 import React, {
 	useCallback,
@@ -174,10 +173,10 @@ const Form = React.forwardRef(
 		useEffect(() => {
 			let onHandle;
 
-			let submitHandle;
+			const container = containerRef.current;
 
-			if (containerRef.current) {
-				const form = getFormNode(containerRef.current);
+			if (container) {
+				const form = getFormNode(container);
 
 				if (form) {
 					onHandle = Liferay.on(
@@ -190,7 +189,7 @@ const Form = React.forwardRef(
 						this
 					);
 
-					submitHandle = dom.on(form, 'submit', handleFormSubmitted);
+					form.addEventListener('submit', handleFormSubmitted);
 				}
 			}
 
@@ -199,8 +198,12 @@ const Form = React.forwardRef(
 					onHandle.detach();
 				}
 
-				if (submitHandle) {
-					submitHandle.removeListener();
+				if (container) {
+					const form = getFormNode(container);
+
+					if (form) {
+						form.removeEventListener('submit', handleFormSubmitted);
+					}
 				}
 			};
 		}, [containerRef, handleFormSubmitted]);

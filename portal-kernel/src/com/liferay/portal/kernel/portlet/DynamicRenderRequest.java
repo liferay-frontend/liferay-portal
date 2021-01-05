@@ -54,8 +54,9 @@ public class DynamicRenderRequest extends RenderRequestWrapper {
 
 		super(renderRequest);
 
-		_params = new HashMap<>();
 		_inherit = inherit;
+
+		_params = new HashMap<>();
 
 		if (params != null) {
 			_params.putAll(params);

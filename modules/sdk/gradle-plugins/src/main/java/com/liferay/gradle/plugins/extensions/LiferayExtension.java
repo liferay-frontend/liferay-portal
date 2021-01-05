@@ -133,9 +133,7 @@ public class LiferayExtension {
 	public void defaultDependencyNotation(
 		String group, String name, Object version) {
 
-		String dependencyNotation = _getDependencyNotation(group, name);
-
-		_defaultVersions.put(dependencyNotation, version);
+		_defaultVersions.put(_getDependencyNotation(group, name), version);
 	}
 
 	public AppServer getAppServer() {

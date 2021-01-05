@@ -17,6 +17,7 @@ package com.liferay.commerce.price.list.web.internal.frontend;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceEntryService;
+import com.liferay.commerce.price.list.web.internal.frontend.constants.CommercePriceListDataSetConstants;
 import com.liferay.commerce.price.list.web.internal.model.InstancePriceEntry;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.model.CPDefinition;

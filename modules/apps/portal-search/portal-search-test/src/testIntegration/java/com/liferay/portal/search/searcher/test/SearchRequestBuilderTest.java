@@ -15,8 +15,10 @@
 package com.liferay.portal.search.searcher.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -227,6 +229,45 @@ public class SearchRequestBuilderTest {
 			"[firstname1 lastname2, firstname2 lastname3, firstname3 " +
 				"lastname1]",
 			"userName", "name", fieldSort);
+	}
+
+	@Test
+	public void testModelIndexerClassNames() throws Exception {
+		_addUser("epsilon", "epsilon", "lambda1");
+		_addUser("theta", "theta", "lambda2");
+		_addUser("kappa", "kappa", "lambda3");
+
+		String queryString = "lambda";
+
+		SearchRequestBuilder searchRequestBuilder =
+			_searchRequestBuilderFactory.builder(
+			).companyId(
+				_group.getCompanyId()
+			).fields(
+				StringPool.STAR
+			).groupIds(
+				_group.getGroupId()
+			).modelIndexerClassNames(
+				User.class.getCanonicalName()
+			).queryString(
+				queryString
+			);
+
+		_assertSearch(
+			"[epsilon lambda1, theta lambda2, kappa lambda3]", "userName",
+			searchRequestBuilder);
+
+		searchRequestBuilder.modelIndexerClassNames(
+			User.class.getCanonicalName(), UserGroup.class.getCanonicalName());
+
+		_assertSearch(
+			"[epsilon lambda1, theta lambda2, kappa lambda3]", "userName",
+			searchRequestBuilder);
+
+		searchRequestBuilder.modelIndexerClassNames(
+			UserGroup.class.getCanonicalName());
+
+		_assertSearch("[]", "userName", searchRequestBuilder);
 	}
 
 	@Rule

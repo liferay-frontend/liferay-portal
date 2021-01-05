@@ -83,7 +83,7 @@ Definition definition = (Definition)row.getObject();
 	</c:if>
 
 	<c:if test="<%= DefinitionPermissionChecker.contains(permissionChecker, definition, ActionKeys.DELETE) %>">
-		<portlet:actionURL name="deleteDefinition" var="deleteURL">
+		<portlet:actionURL name="/reports_admin/delete_definition" var="deleteURL">
 			<portlet:param name="tabs1" value="definitions" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="definitionId" value="<%= String.valueOf(definition.getDefinitionId()) %>" />

@@ -61,6 +61,7 @@ public class AopInvocationHandler implements InvocationHandler {
 
 		_target = target;
 		_chainableMethodAdvices = chainableMethodAdvices;
+
 		_transactionInterceptor = new TransactionInterceptor(
 			transactionHandler);
 	}

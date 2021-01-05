@@ -120,20 +120,20 @@ public class JournalArticleServiceTest {
 
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
-		PortalPreferences portalPreferenceces =
+		PortalPreferences portalPreferences =
 			PortletPreferencesFactoryUtil.getPortalPreferences(
 				TestPropsValues.getUserId(), true);
 
 		_originalPortalPreferencesXML = PortletPreferencesFactoryUtil.toXML(
-			portalPreferenceces);
+			portalPreferences);
 
-		portalPreferenceces.setValue(
+		portalPreferences.setValue(
 			"", "expireAllArticleVersionsEnabled", "true");
 
 		PortalPreferencesLocalServiceUtil.updatePreferences(
 			TestPropsValues.getCompanyId(),
 			PortletKeys.PREFS_OWNER_TYPE_COMPANY,
-			PortletPreferencesFactoryUtil.toXML(portalPreferenceces));
+			PortletPreferencesFactoryUtil.toXML(portalPreferences));
 	}
 
 	@After

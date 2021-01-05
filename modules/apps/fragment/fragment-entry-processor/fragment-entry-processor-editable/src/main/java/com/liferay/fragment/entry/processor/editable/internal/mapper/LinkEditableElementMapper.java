@@ -21,6 +21,7 @@ import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -46,6 +47,15 @@ public class LinkEditableElementMapper implements EditableElementMapper {
 			Element element, JSONObject configJSONObject,
 			FragmentEntryProcessorContext fragmentEntryProcessorContext)
 		throws PortalException {
+
+		JSONObject localizedJSONObject = configJSONObject.getJSONObject(
+			LocaleUtil.toLanguageId(fragmentEntryProcessorContext.getLocale()));
+
+		if ((localizedJSONObject != null) &&
+			(localizedJSONObject.length() > 0)) {
+
+			configJSONObject = localizedJSONObject;
+		}
 
 		String href = configJSONObject.getString("href");
 

@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -67,6 +69,12 @@ public class SwapContentDashboardConfigurationMVCActionCommand
 			_log.error(exception, exception);
 
 			SessionErrors.add(actionRequest, exception.getClass());
+		}
+
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
+
+		if (Validator.isNotNull(redirect)) {
+			sendRedirect(actionRequest, actionResponse, redirect);
 		}
 	}
 

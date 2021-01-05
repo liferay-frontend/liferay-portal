@@ -75,7 +75,7 @@ DLViewDisplayContext dlViewDisplayContext = new DLViewDisplayContext(dlAdminDisp
 			boolean portletTitleBasedNavigation = GetterUtil.getBoolean(portletConfig.getInitParameter("portlet-title-based-navigation"));
 			%>
 
-			<div class="closed <%= portletTitleBasedNavigation ? "container-fluid-1280" : StringPool.BLANK %> sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
+			<div class="closed <%= portletTitleBasedNavigation ? "container-fluid container-fluid-max-xl" : StringPool.BLANK %> sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
 				<liferay-frontend:sidebar-panel
 					resourceURL="<%= dlViewDisplayContext.getSidebarPanelURL() %>"
 					searchContainerId="entries"
@@ -150,15 +150,17 @@ DLViewDisplayContext dlViewDisplayContext = new DLViewDisplayContext(dlAdminDisp
 								</liferay-frontend:vertical-card>
 
 								<li class="display-descriptive entry-display-style list-group-item">
-									<div class="list-group-item-field"></div>
+									<div class="autofit-col"></div>
 
-									<div class="list-group-item-field">
-										<div class="click-selector user-icon user-icon-square user-icon-xl">
-											<img alt="thumbnail" class="img-responsive img-rounded" src="<%= thumbnailSrc %>" />
+									<div class="autofit-col">
+										<div class="click-selector sticker sticker-user-icon sticker-xl">
+											<div class="sticker-overlay">
+												<img alt="thumbnail" class="sticker-img" src="<%= thumbnailSrc %>" />
+											</div>
 										</div>
 									</div>
 
-									<div class="list-group-item-content">
+									<div class="autofit-col autofit-col-expand">
 										<h5 class="text-default">
 											<liferay-ui:message arguments="<%= HtmlUtil.escape(user.getFullName()) %>" key="right-now-by-x" />
 										</h5>
@@ -170,7 +172,7 @@ DLViewDisplayContext dlViewDisplayContext = new DLViewDisplayContext(dlAdminDisp
 										</h4>
 									</div>
 
-									<div class="list-group-item-field"></div>
+									<div class="autofit-col"></div>
 								</li>
 							</div>
 						</div>
@@ -251,7 +253,7 @@ DLViewDisplayContext dlViewDisplayContext = new DLViewDisplayContext(dlAdminDisp
 					uploadable: <%= dlViewDisplayContext.isUploadable() %>,
 					uploadURL: '<%= dlViewDisplayContext.getUploadURL() %>',
 					viewFileEntryTypeURL:
-						'<%= dlViewDisplayContext.getViewFileEntryURL() %>',
+						'<%= dlViewDisplayContext.getViewFileEntryTypeURL() %>',
 					viewFileEntryURL: '<%= dlViewDisplayContext.getViewFileEntryURL() %>',
 				}),
 				{

@@ -1,5 +1,9 @@
 package ${configYAML.apiPackagePath}.internal.graphql.mutation.${escapedVersion};
 
+<#list allExternalSchemas?keys as schemaName>
+	import ${configYAML.apiPackagePath}.resource.${escapedVersion}.${schemaName}Resource;
+</#list>
+
 <#list allSchemas?keys as schemaName>
 	import ${configYAML.apiPackagePath}.dto.${escapedVersion}.${schemaName};
 	import ${configYAML.apiPackagePath}.resource.${escapedVersion}.${schemaName}Resource;

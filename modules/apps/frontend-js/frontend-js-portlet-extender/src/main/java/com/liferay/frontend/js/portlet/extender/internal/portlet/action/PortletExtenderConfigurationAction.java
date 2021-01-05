@@ -149,27 +149,27 @@ public class PortletExtenderConfigurationAction
 
 			String ddmFormFieldType = ddmFormField.getType();
 
-			String[] values = stream.map(
-				ddmFormFieldValue -> {
-					Value value = ddmFormFieldValue.getValue();
+			setPreference(
+				actionRequest, entry.getKey(),
+				stream.map(
+					ddmFormFieldValue -> {
+						Value value = ddmFormFieldValue.getValue();
 
-					String stringValue = value.getString(
-						value.getDefaultLocale());
+						String stringValue = value.getString(
+							value.getDefaultLocale());
 
-					if (ddmFormFieldType.equals(DDMFormFieldType.SELECT)) {
-						stringValue = StringUtil.removeSubstring(
-							stringValue, "[\"");
-						stringValue = StringUtil.removeSubstring(
-							stringValue, "\"]");
+						if (ddmFormFieldType.equals(DDMFormFieldType.SELECT)) {
+							stringValue = StringUtil.removeSubstring(
+								stringValue, "[\"");
+							stringValue = StringUtil.removeSubstring(
+								stringValue, "\"]");
+						}
+
+						return stringValue;
 					}
-
-					return stringValue;
-				}
-			).toArray(
-				String[]::new
-			);
-
-			setPreference(actionRequest, entry.getKey(), values);
+				).toArray(
+					String[]::new
+				));
 		}
 
 		super.processAction(portletConfig, actionRequest, actionResponse);

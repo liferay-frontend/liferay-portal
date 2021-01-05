@@ -24,7 +24,7 @@ AssetDisplayPagesItemSelectorViewDisplayContext assetDisplayPagesItemSelectorVie
 	displayContext="<%= new AssetDisplayPagesItemSelectorViewManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, assetDisplayPagesItemSelectorViewDisplayContext) %>"
 />
 
-<aui:form cssClass="container-fluid-1280" name="fm">
+<aui:form cssClass="container-fluid container-fluid-max-xl container-view" name="fm">
 	<liferay-ui:search-container
 		id="displayPages"
 		searchContainer="<%= assetDisplayPagesItemSelectorViewDisplayContext.getAssetDisplayPageSearchContainer() %>"
@@ -34,15 +34,12 @@ AssetDisplayPagesItemSelectorViewDisplayContext assetDisplayPagesItemSelectorVie
 			keyProperty="layoutPageTemplateEntryId"
 			modelVar="layoutPageTemplateEntry"
 		>
-
-			<%
-			row.setCssClass("entry-card form-check-card lfr-asset-item " + row.getCssClass());
-			%>
-
 			<liferay-ui:search-container-column-text>
-				<clay:vertical-card-v2
-					verticalCard="<%= new LayoutPageTemplateEntryVerticalCard(layoutPageTemplateEntry, renderRequest) %>"
-				/>
+				<div class="form-check form-check-card">
+					<clay:vertical-card
+						verticalCard="<%= new LayoutPageTemplateEntryVerticalCard(layoutPageTemplateEntry, renderRequest) %>"
+					/>
+				</div>
 			</liferay-ui:search-container-column-text>
 		</liferay-ui:search-container-row>
 
@@ -53,8 +50,10 @@ AssetDisplayPagesItemSelectorViewDisplayContext assetDisplayPagesItemSelectorVie
 	</liferay-ui:search-container>
 </aui:form>
 
-<aui:script require="metal-dom/src/all/dom as dom">
-	var selectFragmentEntryHandler = dom.delegate(
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
+	var delegate = delegateModule.default;
+
+	var selectFragmentEntryHandler = delegate(
 		document.querySelector('#<portlet:namespace />fm'),
 		'click',
 		'.layout-page-template-entry',
@@ -83,7 +82,7 @@ AssetDisplayPagesItemSelectorViewDisplayContext assetDisplayPagesItemSelectorVie
 	);
 
 	function removeListener() {
-		selectFragmentEntryHandler.removeListener();
+		selectFragmentEntryHandler.dispose();
 
 		Liferay.detach('destroyPortlet', removeListener);
 	}

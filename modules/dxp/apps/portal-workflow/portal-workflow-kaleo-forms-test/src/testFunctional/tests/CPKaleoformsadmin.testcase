@@ -164,8 +164,9 @@ definition {
 		KaleoFormsAdmin.viewProcess(kfProcessName = "Kaleo Forms Process");
 	}
 
-	@priority = "3"
+	@priority = "5"
 	test DeactivateAndActivateWorkflowDefinition {
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CPKaleoformsadmin#DeactivateAndActivateWorkflowDefinition";
 
 		Navigator.openURL();
@@ -222,8 +223,9 @@ definition {
 		KaleoFormsAdmin.viewNoUnpublishedWorkflowDefinitions();
 	}
 
-	@priority = "4"
+	@priority = "5"
 	test DeactivateAndDeleteWorkflowDefinition {
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CPKaleoformsadmin#DeactivateAndDeleteWorkflowDefinition";
 
 		Navigator.openURL();
@@ -1575,7 +1577,6 @@ definition {
 
 	@priority = "5"
 	test EditSingleApproverWorkflowViaSourceTabViaAddProcess {
-		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "CPKaleoformsadmin#EditSingleApproverWorkflowViaSourceTabViaAddProcess";
 
 		Navigator.openURL();
@@ -2553,10 +2554,9 @@ definition {
 		KaleoFormsAdmin.saveFieldSet();
 	}
 
+	@ignore = "true"
 	@priority = "3"
 	test ViewFieldSetParentDefinitionIframeTitle {
-		property portal.upstream = "quarantine";
-
 		Navigator.openURL();
 
 		ProductMenu.gotoPortlet(

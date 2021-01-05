@@ -53,7 +53,7 @@ renderResponse.setTitle((sapEntry == null) ? LanguageUtil.get(request, "new-serv
 	<portlet:param name="mvcPath" value="/edit_entry.jsp" />
 </portlet:actionURL>
 
-<aui:form action="<%= updateSAPEntryURL %>" cssClass="container-fluid-1280">
+<aui:form action="<%= updateSAPEntryURL %>" cssClass="container-fluid container-fluid-max-xl">
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="sapEntryId" type="hidden" value="<%= sapEntryId %>" />
 
@@ -80,9 +80,9 @@ renderResponse.setTitle((sapEntry == null) ? LanguageUtil.get(request, "new-serv
 				</aui:validator>
 			</aui:input>
 
-			<aui:input name="enabled" type="toggle-switch" value="<%= (sapEntry != null) ? sapEntry.isEnabled() : false %>" />
+			<aui:input inlineLabel="right" labelCssClass="simple-toggle-switch" name="enabled" type="toggle-switch" value="<%= (sapEntry != null) ? sapEntry.isEnabled() : false %>" />
 
-			<aui:input disabled="<%= systemSAPEntry %>" helpMessage="default-sap-entry-help" label="default" name="defaultSAPEntry" type="toggle-switch" value="<%= (sapEntry != null) ? sapEntry.isDefaultSAPEntry() : false %>" />
+			<aui:input disabled="<%= systemSAPEntry %>" helpMessage="default-sap-entry-help" inlineLabel="right" label="default" labelCssClass="simple-toggle-switch" name="defaultSAPEntry" type="toggle-switch" value="<%= (sapEntry != null) ? sapEntry.isDefaultSAPEntry() : false %>" />
 
 			<aui:input name="title" required="<%= true %>" />
 
@@ -139,12 +139,14 @@ renderResponse.setTitle((sapEntry == null) ? LanguageUtil.get(request, "new-serv
 	</aui:button-row>
 </aui:form>
 
-<aui:script require="metal-dom/src/dom as dom">
+<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
 	var alternatingElements = document.querySelectorAll(
 		'#<portlet:namespace />advancedMode, #<portlet:namespace />friendlyMode, #<portlet:namespace />allowedServiceSignatures, #<portlet:namespace />allowedServiceSignaturesFriendlyContentBox'
 	);
 
-	dom.delegate(
+	var delegate = delegateModule.default;
+
+	delegate(
 		document.<portlet:namespace />fm,
 		'click',
 		'#<portlet:namespace />advancedMode, #<portlet:namespace />friendlyMode',

@@ -24,18 +24,27 @@ import {getFieldLocalizedValue} from '../util/fields.es';
 import {
 	getSettingsContextProperty,
 	updateField,
+	updateFieldLabel,
 	updateSettingsContextInstanceId,
 	updateSettingsContextProperty,
 } from '../util/settingsContext.es';
 
-export const getLabel = (originalField, editingLanguageId) => {
-	return sub(Liferay.Language.get('copy-of-x'), [
-		getFieldLocalizedValue(
-			originalField.settingsContext.pages,
-			'label',
-			editingLanguageId
-		),
-	]);
+export const getLabel = (
+	originalField,
+	defaultLanguageId,
+	editingLanguageId
+) => {
+	const labelFieldLocalizedValue = getFieldLocalizedValue(
+		originalField.settingsContext.pages,
+		'label',
+		editingLanguageId
+	);
+
+	if (!labelFieldLocalizedValue) {
+		return;
+	}
+
+	return sub(Liferay.Language.get('copy-of-x'), [labelFieldLocalizedValue]);
 };
 
 export const getValidation = (originalField) => {
@@ -48,7 +57,12 @@ export const getValidation = (originalField) => {
 };
 
 export const createDuplicatedField = (originalField, props, blacklist = []) => {
-	const {editingLanguageId, fieldNameGenerator} = props;
+	const {
+		availableLanguageIds,
+		defaultLanguageId,
+		fieldNameGenerator,
+		generateFieldNameUsingFieldLabel,
+	} = props;
 	const newFieldName = fieldNameGenerator(
 		getDefaultFieldName(),
 		null,
@@ -71,9 +85,24 @@ export const createDuplicatedField = (originalField, props, blacklist = []) => {
 
 	duplicatedField.instanceId = generateInstanceId(8);
 
-	const label = getLabel(originalField, editingLanguageId);
+	availableLanguageIds.forEach((availableLanguageId) => {
+		const label = getLabel(
+			originalField,
+			defaultLanguageId,
+			availableLanguageId
+		);
 
-	duplicatedField = updateField(props, duplicatedField, 'label', label);
+		if (label) {
+			duplicatedField = updateFieldLabel(
+				defaultLanguageId,
+				availableLanguageId,
+				fieldNameGenerator,
+				duplicatedField,
+				generateFieldNameUsingFieldLabel,
+				label
+			);
+		}
+	});
 
 	if (duplicatedField.nestedFields?.length > 0) {
 		duplicatedField.nestedFields = duplicatedField.nestedFields.map(

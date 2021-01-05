@@ -55,7 +55,7 @@ public class SummaryFixture<T> {
 	public SummaryFixture(
 		Class<T> clazz, Group group, Locale defaultLocale, User user) {
 
-		_class = clazz;
+		_clazz = clazz;
 		_group = group;
 		_defaultLocale = defaultLocale;
 		_user = user;
@@ -74,7 +74,7 @@ public class SummaryFixture<T> {
 		throws Exception {
 
 		Assert.assertEquals(
-			_class.getName(), document.get(Field.ENTRY_CLASS_NAME));
+			_clazz.getName(), document.get(Field.ENTRY_CLASS_NAME));
 
 		Summary summary = getSummary(document, locale);
 
@@ -165,7 +165,7 @@ public class SummaryFixture<T> {
 		return themeDisplay;
 	}
 
-	private final Class<T> _class;
+	private final Class<T> _clazz;
 	private final Locale _defaultLocale;
 	private final Group _group;
 	private final Indexer<T> _indexer;

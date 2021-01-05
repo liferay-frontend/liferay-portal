@@ -183,31 +183,12 @@ definition {
 	}
 
 	macro editText {
-		var browserType = PropsUtil.get("browser.type");
+		Pause(locator1 = "1000");
 
-		if ("${browserType}" == "internetexplorer") {
-			Type(
-				key_fieldName = "${fieldName}",
-				locator1 = "FormFields#TEXT_FIELD",
-				value1 = "");
-
-			KeyPress(
-				key_fieldName = "${fieldName}",
-				locator1 = "FormFields#TEXT_FIELD",
-				value1 = "${fieldValue}");
-
-			Pause(locator1 = "5000");
-
-			takeScreenshot();
-		}
-		else {
-			Pause(locator1 = "1000");
-
-			Type(
-				key_fieldName = "${fieldName}",
-				locator1 = "FormFields#TEXT_FIELD",
-				value1 = "${fieldValue}");
-		}
+		Type(
+			key_fieldName = "${fieldName}",
+			locator1 = "FormFields#TEXT_FIELD",
+			value1 = "${fieldValue}");
 	}
 
 	macro editTextAlt {
@@ -756,6 +737,19 @@ definition {
 		AssertElementNotPresent(locator1 = "Icon#ASTERISK");
 	}
 
+	macro viewRichTextValue {
+		SelectFrame.selectFrameNoLoading(
+			key_fieldLabel = "Rich Text",
+			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
+
+		AssertTextEquals(
+			key_fieldName = "${fieldName}",
+			locator1 = "CKEditor#BODY",
+			value1 = "${fieldValue}");
+
+		SelectFrame(value1 = "relative=top");
+	}
+
 	macro viewSelectLabel {
 		AssertTextEquals.assertText(
 			key_fieldName = "${fieldName}",
@@ -905,6 +899,17 @@ definition {
 		var key_fieldName = "${fieldName}";
 
 		AssertElementPresent.assertVisible(locator1 = "FormFields#UPLOAD_FIELD");
+	}
+
+	macro viewUploadFieldAsGuest {
+		FormFields.viewUploadLabel(
+			fieldLabel = "${fieldLabel}",
+			fieldName = "${fieldName}");
+
+		var key_fieldLabel = "${fieldLabel}";
+		var key_fieldName = "${fieldName}";
+
+		AssertElementPresent(locator1 = "FormFields#UPLOAD_FIELD_GUEST");
 	}
 
 	macro viewUploadLabel {

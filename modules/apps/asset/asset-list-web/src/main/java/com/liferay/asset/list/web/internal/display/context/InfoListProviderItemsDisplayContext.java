@@ -67,12 +67,10 @@ public class InfoListProviderItemsDisplayContext {
 			return _infoItemFieldValuesProvider;
 		}
 
-		InfoListProvider<?> infoListProvider = _getInfoListProvider();
-
 		_infoItemFieldValuesProvider =
 			_infoItemServiceTracker.getFirstInfoItemService(
 				InfoItemFieldValuesProvider.class,
-				GenericUtil.getGenericClassName(infoListProvider));
+				GenericUtil.getGenericClassName(_getInfoListProvider()));
 
 		return _infoItemFieldValuesProvider;
 	}
@@ -86,9 +84,7 @@ public class InfoListProviderItemsDisplayContext {
 			className = PortalUtil.getClassName(assetEntry.getClassNameId());
 		}
 		else {
-			InfoListProvider<?> infoListProvider = _getInfoListProvider();
-
-			className = GenericUtil.getGenericClassName(infoListProvider);
+			className = GenericUtil.getGenericClassName(_getInfoListProvider());
 		}
 
 		return ResourceActionsUtil.getModelResource(
@@ -100,10 +96,8 @@ public class InfoListProviderItemsDisplayContext {
 			return _infoListProviderClassName;
 		}
 
-		InfoListProvider<?> infoListProvider = _getInfoListProvider();
-
 		_infoListProviderClassName = GenericUtil.getGenericClassName(
-			infoListProvider);
+			_getInfoListProvider());
 
 		return _infoListProviderClassName;
 	}
@@ -148,10 +142,8 @@ public class InfoListProviderItemsDisplayContext {
 			return _infoListProvider;
 		}
 
-		String infoListProviderKey = _getInfoListProviderKey();
-
 		_infoListProvider = _infoItemServiceTracker.getInfoItemService(
-			InfoListProvider.class, infoListProviderKey);
+			InfoListProvider.class, _getInfoListProviderKey());
 
 		return _infoListProvider;
 	}

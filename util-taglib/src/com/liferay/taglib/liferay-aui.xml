@@ -667,6 +667,18 @@
 				<outputType>java.lang.Object</outputType>
 			</attribute>
 			<attribute>
+				<description>The SVG icon markup to use in toggle-switch.</description>
+				<name>buttonIconOff</name>
+				<inputType>java.lang.String</inputType>
+				<outputType>java.lang.String</outputType>
+			</attribute>
+			<attribute>
+				<description>The SVG icon markup to use in toggle-switch.</description>
+				<name>buttonIconOn</name>
+				<inputType>java.lang.String</inputType>
+				<outputType>java.lang.String</outputType>
+			</attribute>
+			<attribute>
 				<description>Whether to reload the page when the value of the input changes. The default value is <![CDATA[<code>false</code>]]>.</description>
 				<name>changesContext</name>
 				<inputType>boolean</inputType>
@@ -757,6 +769,18 @@
 				<defaultValue>input-group-addon</defaultValue>
 			</attribute>
 			<attribute>
+				<description>The SVG icon markup to use in toggle-switch.</description>
+				<name>iconOff</name>
+				<inputType>java.lang.String</inputType>
+				<outputType>java.lang.String</outputType>
+			</attribute>
+			<attribute>
+				<description>The SVG icon markup to use in toggle-switch.</description>
+				<name>iconOn</name>
+				<inputType>java.lang.String</inputType>
+				<outputType>java.lang.String</outputType>
+			</attribute>
+			<attribute>
 				<description>An ID for the component instance.</description>
 				<name>id</name>
 				<inputType>java.lang.String</inputType>
@@ -783,6 +807,12 @@
 			<attribute>
 				<description>A label for the input component. If not assigned a value, the label is automatically taken from the <![CDATA[<code>name</code>]]> attribute's value.</description>
 				<name>label</name>
+				<inputType>java.lang.String</inputType>
+				<outputType>java.lang.String</outputType>
+			</attribute>
+			<attribute>
+				<description>A CSS class for styling the label.</description>
+				<name>labelCssClass</name>
 				<inputType>java.lang.String</inputType>
 				<outputType>java.lang.String</outputType>
 			</attribute>

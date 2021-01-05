@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -70,6 +71,8 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import org.hamcrest.CoreMatchers;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -396,6 +399,62 @@ public class FragmentEntryProcessorFreemarkerTest {
 				).build()));
 
 		Assert.assertEquals(expectedProcessedHTML, actualProcessedHTML);
+	}
+
+	@Test
+	public void testProcessFragmentEntryLinkHTMLWithConfigurationLocalizable()
+		throws Exception {
+
+		FragmentEntry fragmentEntry = _addFragmentEntry(
+			"fragment_entry_with_configuration_localizable.html",
+			"configuration_localizable.json");
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
+
+		fragmentEntryLink.setHtml(fragmentEntry.getHtml());
+		fragmentEntryLink.setConfiguration(fragmentEntry.getConfiguration());
+		fragmentEntryLink.setEditableValues(
+			_getJsonFileAsString(
+				"fragment_entry_link_editable_values_with_configuration_" +
+					"localizable.json"));
+
+		DefaultFragmentEntryProcessorContext
+			defaultFragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					_getMockHttpServletRequest(), new MockHttpServletResponse(),
+					Constants.VIEW, LocaleUtil.fromLanguageId("en_US"));
+
+		String actualProcessedHTML = _getProcessedHTML(
+			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+				fragmentEntryLink, defaultFragmentEntryProcessorContext));
+
+		Assert.assertThat(
+			actualProcessedHTML, CoreMatchers.containsString("Style - dark"));
+
+		defaultFragmentEntryProcessorContext =
+			new DefaultFragmentEntryProcessorContext(
+				_getMockHttpServletRequest(), new MockHttpServletResponse(),
+				Constants.VIEW, LocaleUtil.fromLanguageId("es_ES"));
+
+		actualProcessedHTML = _getProcessedHTML(
+			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+				fragmentEntryLink, defaultFragmentEntryProcessorContext));
+
+		Assert.assertThat(
+			actualProcessedHTML, CoreMatchers.containsString("Style - light"));
+
+		defaultFragmentEntryProcessorContext =
+			new DefaultFragmentEntryProcessorContext(
+				_getMockHttpServletRequest(), new MockHttpServletResponse(),
+				Constants.VIEW, LocaleUtil.fromLanguageId("fr_FR"));
+
+		actualProcessedHTML = _getProcessedHTML(
+			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+				fragmentEntryLink, defaultFragmentEntryProcessorContext));
+
+		Assert.assertThat(
+			actualProcessedHTML, CoreMatchers.containsString("Style - dark"));
 	}
 
 	@Test

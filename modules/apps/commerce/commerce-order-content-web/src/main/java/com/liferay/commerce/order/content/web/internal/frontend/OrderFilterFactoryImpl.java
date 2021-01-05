@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.order.content.web.internal.frontend;
 
+import com.liferay.commerce.order.content.web.internal.frontend.constants.CommerceOrderDataSetConstants;
 import com.liferay.frontend.taglib.clay.data.Filter;
 import com.liferay.frontend.taglib.clay.data.FilterFactory;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -51,9 +52,8 @@ public class OrderFilterFactoryImpl implements FilterFactory {
 
 		orderFilterImpl.setCommerceOrderId(commerceOrderId);
 
-		String keywords = ParamUtil.getString(httpServletRequest, "search");
-
-		orderFilterImpl.setKeywords(keywords);
+		orderFilterImpl.setKeywords(
+			ParamUtil.getString(httpServletRequest, "search"));
 
 		return orderFilterImpl;
 	}

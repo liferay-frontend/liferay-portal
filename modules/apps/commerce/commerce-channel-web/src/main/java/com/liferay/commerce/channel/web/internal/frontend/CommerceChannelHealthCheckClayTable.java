@@ -105,7 +105,7 @@ public class CommerceChannelHealthCheckClayTable
 
 				portletURL.setParameter(
 					ActionRequest.ACTION_NAME,
-					"editCommerceChannelHealthStatus");
+					"/commerce_channels/edit_commerce_channel_health_status");
 				portletURL.setParameter("redirect", redirect);
 				portletURL.setParameter(
 					"commerceChannelHealthStatusKey", healthCheck.getKey());

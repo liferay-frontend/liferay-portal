@@ -14,6 +14,9 @@
 
 package com.liferay.info.type;
 
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.InfoItemIdentifier;
+import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -32,10 +35,10 @@ public class WebImage {
 		_url = url;
 	}
 
-	public WebImage(String url, long fileEntryId) {
+	public WebImage(String url, InfoItemReference infoItemReference) {
 		this(url);
 
-		_fileEntryId = fileEntryId;
+		_infoItemReference = infoItemReference;
 	}
 
 	public String getAlt() {
@@ -52,8 +55,8 @@ public class WebImage {
 		return Optional.ofNullable(_altInfoLocalizedValue);
 	}
 
-	public long getFileEntryId() {
-		return _fileEntryId;
+	public InfoItemReference getInfoItemReference() {
+		return _infoItemReference;
 	}
 
 	public String getUrl() {
@@ -85,8 +88,19 @@ public class WebImage {
 			jsonObject.put("alt", _altInfoLocalizedValue.getValue(locale));
 		}
 
-		if (_fileEntryId > 0) {
-			jsonObject.put("fileEntryId", _fileEntryId);
+		if (_infoItemReference != null) {
+			jsonObject.put("className", _infoItemReference.getClassName());
+
+			InfoItemIdentifier infoItemIdentifier =
+				_infoItemReference.getInfoItemIdentifier();
+
+			if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
+				ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+					(ClassPKInfoItemIdentifier)infoItemIdentifier;
+
+				jsonObject.put(
+					"classPK", classPKInfoItemIdentifier.getClassPK());
+			}
 		}
 
 		return jsonObject;
@@ -98,7 +112,7 @@ public class WebImage {
 	}
 
 	private InfoLocalizedValue<String> _altInfoLocalizedValue;
-	private long _fileEntryId;
+	private InfoItemReference _infoItemReference;
 	private final String _url;
 
 }

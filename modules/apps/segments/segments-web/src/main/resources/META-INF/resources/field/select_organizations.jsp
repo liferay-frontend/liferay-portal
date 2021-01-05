@@ -24,7 +24,7 @@ SelectOrganizationsDisplayContext selectOrganizationsDisplayContext = (SelectOrg
 	displayContext="<%= (SelectOrganizationsManagementToolbarDisplayContext)request.getAttribute(SegmentsWebKeys.SEGMENTS_SELECT_ORGANIZATION_MANAGEMENT_TOOLBAL_DISPLAY_CONTEXT) %>"
 />
 
-<aui:form cssClass="container-fluid-1280" name="fm">
+<aui:form cssClass="container-fluid container-fluid-max-xl" name="fm">
 	<liferay-ui:search-container
 		id="<%= selectOrganizationsDisplayContext.getSearchContainerId() %>"
 		searchContainer="<%= selectOrganizationsDisplayContext.getOrganizationSearchContainer() %>"
@@ -46,20 +46,20 @@ SelectOrganizationsDisplayContext selectOrganizationsDisplayContext = (SelectOrg
 			%>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content table-title"
+				cssClass="table-cell-expand table-title"
 				name="name"
 				orderable="<%= true %>"
 				property="name"
 			/>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="parent-organization"
 				value="<%= HtmlUtil.escape(organization.getParentOrganizationName()) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="type"
 				orderable="<%= true %>"
 				value="<%= LanguageUtil.get(request, organization.getType()) %>"

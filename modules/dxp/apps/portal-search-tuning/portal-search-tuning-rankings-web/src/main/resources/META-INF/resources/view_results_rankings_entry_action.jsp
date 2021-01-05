@@ -45,7 +45,7 @@ RankingEntryDisplayContext rankingEntryDisplayContext = (RankingEntryDisplayCont
 	showWhenSingleIcon="<%= true %>"
 >
 	<portlet:renderURL var="editURL">
-		<portlet:param name="mvcRenderCommandName" value="editResultsRankingEntry" />
+		<portlet:param name="mvcRenderCommandName" value="/result_rankings/edit_results_rankings" />
 		<portlet:param name="redirect" value="<%= currentURL %>" />
 		<portlet:param name="resultsRankingUid" value="<%= rankingEntryDisplayContext.getUid() %>" />
 		<portlet:param name="aliases" value="<%= rankingEntryDisplayContext.getAliases() %>" />
@@ -59,7 +59,7 @@ RankingEntryDisplayContext rankingEntryDisplayContext = (RankingEntryDisplayCont
 		url="<%= editURL %>"
 	/>
 
-	<portlet:actionURL name="/portal_search_tuning_rankings/edit_ranking" var="deactivateURL">
+	<portlet:actionURL name="/result_rankings/edit_ranking" var="deactivateURL">
 		<portlet:param name="<%= Constants.CMD %>" value="<%= rankingEntryDisplayContext.getInactive() ? ResultRankingsConstants.ACTIVATE : ResultRankingsConstants.DEACTIVATE %>" />
 		<portlet:param name="redirect" value="<%= currentURL %>" />
 		<portlet:param name="resultsRankingUid" value="<%= rankingEntryDisplayContext.getUid() %>" />
@@ -70,7 +70,7 @@ RankingEntryDisplayContext rankingEntryDisplayContext = (RankingEntryDisplayCont
 		url="<%= deactivateURL %>"
 	/>
 
-	<portlet:actionURL name="/portal_search_tuning_rankings/edit_ranking" var="deleteURL">
+	<portlet:actionURL name="/result_rankings/edit_ranking" var="deleteURL">
 		<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 		<portlet:param name="redirect" value="<%= currentURL %>" />
 		<portlet:param name="resultsRankingUid" value="<%= rankingEntryDisplayContext.getUid() %>" />

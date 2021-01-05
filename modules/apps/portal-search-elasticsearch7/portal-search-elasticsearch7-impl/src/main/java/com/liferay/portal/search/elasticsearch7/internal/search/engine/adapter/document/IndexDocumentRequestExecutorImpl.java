@@ -41,7 +41,8 @@ public class IndexDocumentRequestExecutorImpl
 		IndexDocumentRequest indexDocumentRequest) {
 
 		IndexRequest indexRequest =
-			_bulkableDocumentRequestTranslator.translate(indexDocumentRequest);
+			_elasticsearchBulkableDocumentRequestTranslator.translate(
+				indexDocumentRequest);
 
 		IndexResponse indexResponse = getIndexResponse(
 			indexRequest, indexDocumentRequest);
@@ -72,9 +73,10 @@ public class IndexDocumentRequestExecutorImpl
 	@Reference(target = "(search.engine.impl=Elasticsearch)", unbind = "-")
 	protected void setBulkableDocumentRequestTranslator(
 		ElasticsearchBulkableDocumentRequestTranslator
-			eulkableDocumentRequestTranslator) {
+			elasticsearchBulkableDocumentRequestTranslator) {
 
-		_bulkableDocumentRequestTranslator = eulkableDocumentRequestTranslator;
+		_elasticsearchBulkableDocumentRequestTranslator =
+			elasticsearchBulkableDocumentRequestTranslator;
 	}
 
 	@Reference(unbind = "-")
@@ -85,7 +87,7 @@ public class IndexDocumentRequestExecutorImpl
 	}
 
 	private ElasticsearchBulkableDocumentRequestTranslator
-		_bulkableDocumentRequestTranslator;
+		_elasticsearchBulkableDocumentRequestTranslator;
 	private ElasticsearchClientResolver _elasticsearchClientResolver;
 
 }

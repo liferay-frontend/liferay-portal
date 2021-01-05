@@ -112,10 +112,8 @@ public class LocalGitBranchTest extends GitRefTest {
 	}
 
 	private LocalGitBranch _getLocalGitBranch() {
-		LocalGitRepository localGitRepository = _getLocalGitRepository();
-
 		return GitBranchFactory.newLocalGitBranch(
-			localGitRepository, NAME_REF, SHA_REF);
+			_getLocalGitRepository(), NAME_REF, SHA_REF);
 	}
 
 	private LocalGitRepository _getLocalGitRepository() {

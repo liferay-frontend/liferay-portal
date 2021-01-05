@@ -259,9 +259,26 @@
 	}
 }
 
+.full-width-content {
+	&,
+	> * {
+		width: 100%;
+	}
+}
+
 .portal-popup,
 .info-bar-container {
 	background: #fff;
+}
+
+.info-bar-container .management-bar-header-right {
+	float: right;
+	margin-right: 0;
+	position: relative;
+
+	> a {
+		padding: 0;
+	}
 }
 
 .info-bar-container .info-bar-default .btn-secondary.sidenav-transition {

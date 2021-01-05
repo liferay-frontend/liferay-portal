@@ -20,9 +20,10 @@
 CommerceDiscountDisplayContext commerceDiscountDisplayContext = (CommerceDiscountDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 CommerceDiscount commerceDiscount = commerceDiscountDisplayContext.getCommerceDiscount();
+
 PortletURL portletURL = commerceDiscountDisplayContext.getPortletURL();
 
-portletURL.setParameter("mvcRenderCommandName", "editCommerceDiscount");
+portletURL.setParameter("mvcRenderCommandName", "/commerce_discount/edit_commerce_discount");
 
 String title = LanguageUtil.get(request, "add-discount");
 

@@ -15,6 +15,11 @@
 package com.liferay.portal.template.freemarker.internal;
 
 import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
+import com.liferay.petra.concurrent.NoticeableExecutorService;
+import com.liferay.petra.concurrent.NoticeableFuture;
+import com.liferay.petra.concurrent.ThreadPoolHandlerAdapter;
+import com.liferay.petra.executor.PortalExecutorConfig;
+import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.lang.ClassLoaderPool;
 import com.liferay.petra.memory.FinalizeManager;
 import com.liferay.petra.reflect.ReflectionUtil;
@@ -23,6 +28,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.SingleVMPool;
+import com.liferay.portal.kernel.cache.thread.local.Lifecycle;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.JSPSupportServlet;
@@ -32,6 +39,7 @@ import com.liferay.portal.kernel.template.TemplateException;
 import com.liferay.portal.kernel.template.TemplateManager;
 import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.kernel.template.TemplateResourceLoader;
+import com.liferay.portal.kernel.util.NamedThreadFactory;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.template.BaseTemplateManager;
@@ -53,13 +61,16 @@ import freemarker.ext.servlet.ServletContextHashModel;
 
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
+import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -73,7 +84,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import javax.servlet.GenericServlet;
@@ -84,6 +101,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
@@ -91,7 +109,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
@@ -291,6 +308,11 @@ public class FreeMarkerManager extends BaseTemplateManager {
 				_configuration, templateResourceLoader, portalCache);
 
 			field.set(_configuration, templateCache);
+
+			_configuration.setSharedVariable(
+				"loop-count-threshold",
+				new SimpleNumber(
+					_freeMarkerEngineConfiguration.loopCountThreshold()));
 		}
 		catch (Exception exception) {
 			throw new TemplateException(
@@ -356,7 +378,6 @@ public class FreeMarkerManager extends BaseTemplateManager {
 	}
 
 	@Activate
-	@Modified
 	protected void activate(ComponentContext componentContext) {
 		_freeMarkerEngineConfiguration = ConfigurableUtil.createConfigurable(
 			FreeMarkerEngineConfiguration.class,
@@ -374,6 +395,30 @@ public class FreeMarkerManager extends BaseTemplateManager {
 		_bundleTracker.open();
 
 		WriterFactoryUtil.setWriterFactory(new UnsyncStringWriterFactory());
+
+		if (_freeMarkerEngineConfiguration.asyncRenderTimeout() > 0) {
+			_serviceRegistration = bundleContext.registerService(
+				PortalExecutorConfig.class,
+				new PortalExecutorConfig(
+					FreeMarkerManager.class.getName(), 1,
+					_freeMarkerEngineConfiguration.
+						asyncRenderThreadPoolMaxSize(),
+					60, TimeUnit.SECONDS,
+					_freeMarkerEngineConfiguration.
+						asyncRenderThreadPoolMaxQueueSize(),
+					new NamedThreadFactory(
+						FreeMarkerManager.class.getName(), Thread.NORM_PRIORITY,
+						null),
+					new ThreadPoolExecutor.AbortPolicy(),
+					new ThreadPoolHandlerAdapter()),
+				null);
+
+			_noticeableExecutorService =
+				_portalExecutorManager.getPortalExecutor(
+					FreeMarkerManager.class.getName());
+
+			_timeoutTemplateCounters = new ConcurrentHashMap<>();
+		}
 	}
 
 	protected void addTaglibSupport(
@@ -419,6 +464,14 @@ public class FreeMarkerManager extends BaseTemplateManager {
 	@Deactivate
 	protected void deactivate() {
 		_bundleTracker.close();
+
+		if (_freeMarkerEngineConfiguration.asyncRenderTimeout() > 0) {
+			_noticeableExecutorService.shutdownNow();
+
+			_timeoutTemplateCounters.clear();
+
+			_serviceRegistration.unregister();
+		}
 	}
 
 	@Override
@@ -498,6 +551,87 @@ public class FreeMarkerManager extends BaseTemplateManager {
 		return false;
 	}
 
+	protected void render(
+			String templateId, Writer writer, boolean restricted,
+			Callable<Void> callable)
+		throws Exception {
+
+		long timeout = _freeMarkerEngineConfiguration.asyncRenderTimeout();
+
+		if ((timeout <= 0) || !restricted) {
+			callable.call();
+
+			return;
+		}
+
+		AtomicInteger timeoutCounter = _timeoutTemplateCounters.computeIfAbsent(
+			templateId, key -> new AtomicInteger(0));
+
+		if (timeoutCounter.get() >=
+				_freeMarkerEngineConfiguration.asyncRenderTimeoutThreshold()) {
+
+			throw new IllegalStateException(
+				StringBundler.concat(
+					"Skip processing FreeMarker template ", templateId,
+					" since it has timed out ",
+					_freeMarkerEngineConfiguration.
+						asyncRenderTimeoutThreshold(),
+					" times"));
+		}
+
+		Thread currentThread = Thread.currentThread();
+
+		ClassLoader contextClassLoader = currentThread.getContextClassLoader();
+
+		Object threadLocals = ThreadLocalUtil._cloneThreadLocals(currentThread);
+
+		NoticeableFuture<?> noticeableFuture =
+			_noticeableExecutorService.submit(
+				(Callable<Void>)() -> {
+					Thread thread = Thread.currentThread();
+
+					thread.setContextClassLoader(contextClassLoader);
+
+					try {
+						ThreadLocalUtil._setThreadLocals(thread, threadLocals);
+
+						callable.call();
+					}
+					finally {
+						ThreadLocalCacheManager.clearAll(Lifecycle.REQUEST);
+
+						ThreadLocalUtil._setThreadLocals(thread, null);
+					}
+
+					return null;
+				});
+
+		try {
+			noticeableFuture.get(timeout, TimeUnit.MILLISECONDS);
+		}
+		catch (ExecutionException executionException) {
+			Throwable throwable = executionException.getCause();
+
+			if (throwable instanceof Exception) {
+				throw (Exception)throwable;
+			}
+
+			throw new Exception(throwable);
+		}
+		catch (TimeoutException timeoutException) {
+			timeoutCounter.incrementAndGet();
+
+			String errorMessage = StringBundler.concat(
+				"FreeMarker template ", templateId, " processing timeout");
+
+			writer.write(errorMessage);
+
+			_log.error(errorMessage, timeoutException);
+
+			ThreadLocalUtil._clearThreadLocals(threadLocals);
+		}
+	}
+
 	@Reference(unbind = "-")
 	protected void setSingleVMPool(SingleVMPool singleVMPool) {
 		_singleVMPool = singleVMPool;
@@ -548,19 +682,107 @@ public class FreeMarkerManager extends BaseTemplateManager {
 	private Configuration _configuration;
 	private BeansWrapper _defaultBeanWrapper;
 	private volatile FreeMarkerBundleClassloader _freeMarkerBundleClassloader;
-	private volatile FreeMarkerEngineConfiguration
-		_freeMarkerEngineConfiguration;
+	private FreeMarkerEngineConfiguration _freeMarkerEngineConfiguration;
 
 	@Reference
 	private FreeMarkerTemplateResourceCache _freeMarkerTemplateResourceCache;
 
+	private NoticeableExecutorService _noticeableExecutorService;
+
+	@Reference
+	private PortalExecutorManager _portalExecutorManager;
+
 	private BeansWrapper _restrictedBeanWrapper;
+	private ServiceRegistration<PortalExecutorConfig> _serviceRegistration;
 	private SingleVMPool _singleVMPool;
 	private final Map<String, String> _taglibMappings =
 		new ConcurrentHashMap<>();
 	private TemplateClassResolver _templateClassResolver;
 	private final Map<String, TemplateModel> _templateModels =
 		new ConcurrentHashMap<>();
+	private Map<String, AtomicInteger> _timeoutTemplateCounters;
+
+	private static class ThreadLocalUtil {
+
+		private static void _clearThreadLocals(Object threadLocals)
+			throws Exception {
+
+			_sizeField.set(threadLocals, 0);
+			_tableField.set(threadLocals, Array.newInstance(_ENTRY_CLASS, 0));
+			_thresholdField.set(threadLocals, 0);
+		}
+
+		private static Object _cloneThreadLocals(Thread thread)
+			throws Exception {
+
+			Object threadLocals = _threadLocalsField.get(thread);
+
+			Object table = _tableField.get(threadLocals);
+
+			int length = Array.getLength(table);
+
+			try {
+				_tableField.set(
+					threadLocals, Array.newInstance(_ENTRY_CLASS, length));
+
+				Object clonedThreadLocals = _createInheritedMapMethod.invoke(
+					null, threadLocals);
+
+				System.arraycopy(
+					table, 0, _tableField.get(clonedThreadLocals), 0, length);
+
+				_sizeField.set(
+					clonedThreadLocals, _sizeField.get(threadLocals));
+
+				return clonedThreadLocals;
+			}
+			finally {
+				_tableField.set(threadLocals, table);
+			}
+		}
+
+		private static void _setThreadLocals(Thread thread, Object threadLocals)
+			throws Exception {
+
+			_threadLocalsField.set(thread, threadLocals);
+		}
+
+		private static final Class<?> _ENTRY_CLASS;
+
+		private static final Method _createInheritedMapMethod;
+		private static final Field _sizeField;
+		private static final Field _tableField;
+		private static final Field _threadLocalsField;
+		private static final Field _thresholdField;
+
+		static {
+			try {
+				_threadLocalsField = ReflectionUtil.getDeclaredField(
+					Thread.class, "threadLocals");
+
+				Class<?> threadLocalMapClass = _threadLocalsField.getType();
+
+				_createInheritedMapMethod = ReflectionUtil.getDeclaredMethod(
+					ThreadLocal.class, "createInheritedMap",
+					threadLocalMapClass);
+
+				_sizeField = ReflectionUtil.getDeclaredField(
+					threadLocalMapClass, "size");
+				_tableField = ReflectionUtil.getDeclaredField(
+					threadLocalMapClass, "table");
+				_thresholdField = ReflectionUtil.getDeclaredField(
+					threadLocalMapClass, "threshold");
+
+				Class<?> tableFieldType = _tableField.getType();
+
+				_ENTRY_CLASS = tableFieldType.getComponentType();
+			}
+			catch (Exception exception) {
+				throw new ExceptionInInitializerError(exception);
+			}
+		}
+
+	}
 
 	private class ServletContextInvocationHandler implements InvocationHandler {
 

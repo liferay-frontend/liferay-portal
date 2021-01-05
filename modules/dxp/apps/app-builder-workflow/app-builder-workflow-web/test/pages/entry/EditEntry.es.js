@@ -98,6 +98,7 @@ const mockGetItem = jest
 jest.mock('app-builder-web/js/utils/client.es', () => ({
 	addItem: () => mockAddItem(),
 	getItem: () => mockGetItem(),
+	request: jest.fn().mockResolvedValue(),
 }));
 
 jest.mock('app-builder-web/js/utils/toast.es', () => ({
@@ -233,7 +234,7 @@ describe('EditEntry', () => {
 		});
 
 		expect(mockFetch).toHaveBeenCalledWith(
-			`${context.baseResourceURL}?p_p_resource_id=/app_builder/update_data_record`,
+			`${context.baseResourceURL}?p_p_resource_id=/app_builder_workflow/update_data_record`,
 			{
 				body: {
 					appBuilderAppId: 1,

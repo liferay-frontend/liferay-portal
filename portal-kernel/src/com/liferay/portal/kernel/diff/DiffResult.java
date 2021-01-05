@@ -39,8 +39,9 @@ public class DiffResult {
 	public static final String TARGET = "TARGET";
 
 	public DiffResult(int linePos, List<String> changedLines) {
-		_lineNumber = linePos + 1;
 		_changedLines = changedLines;
+
+		_lineNumber = linePos + 1;
 	}
 
 	public DiffResult(int linePos, String changedLine) {

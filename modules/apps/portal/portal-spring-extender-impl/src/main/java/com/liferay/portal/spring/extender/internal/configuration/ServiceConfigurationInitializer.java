@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.extender.internal.loader.ModuleResourceLoader;
+import com.liferay.portal.util.PropsValues;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -52,10 +53,10 @@ public class ServiceConfigurationInitializer {
 		_classLoader = classLoader;
 		_portletConfiguration = portletConfiguration;
 		_serviceConfiguration = serviceConfiguration;
-
-		_serviceComponentConfiguration = new ModuleResourceLoader(bundle);
 		_resourceActions = resourceActions;
 		_serviceComponentLocalService = serviceComponentLocalService;
+
+		_serviceComponentConfiguration = new ModuleResourceLoader(bundle);
 	}
 
 	public void stop() {
@@ -126,26 +127,18 @@ public class ServiceConfigurationInitializer {
 
 	private void _readResourceActions() {
 		try {
-			String portlets = _portletConfiguration.get(
-				"service.configurator.portlet.ids");
+			String[] sources = StringUtil.split(
+				_portletConfiguration.get(PropsKeys.RESOURCE_ACTIONS_CONFIGS));
 
-			if (Validator.isNull(portlets)) {
-				_resourceActions.readAndCheck(
-					_classLoader,
-					StringUtil.split(
-						_portletConfiguration.get(
-							PropsKeys.RESOURCE_ACTIONS_CONFIGS)));
-			}
-			else {
-				_resourceActions.read(
-					_classLoader,
-					StringUtil.split(
-						_portletConfiguration.get(
-							PropsKeys.RESOURCE_ACTIONS_CONFIGS)));
+			_resourceActions.populateModelResources(_classLoader, sources);
 
-				for (String portletId : StringUtil.split(portlets)) {
-					_resourceActions.check(portletId);
-				}
+			String bundleSymbolicName = _bundle.getSymbolicName();
+
+			if (!PropsValues.RESOURCE_ACTIONS_STRICT_MODE_ENABLED ||
+				bundleSymbolicName.contains("commerce")) {
+
+				_resourceActions.populatePortletResources(
+					_classLoader, sources);
 			}
 		}
 		catch (Exception exception) {

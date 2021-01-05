@@ -69,12 +69,11 @@ public class CommercePricingClassDataSetDataProvider
 			DateFormat.MEDIUM, DateFormat.MEDIUM, themeDisplay.getLocale(),
 			themeDisplay.getTimeZone());
 
-		long companyId = themeDisplay.getCompanyId();
-
 		List<CommercePricingClass> commercePricingClasses =
 			_getCommercePricingClasses(
-				companyId, filter.getKeywords(), pagination.getStartPosition(),
-				pagination.getEndPosition(), sort);
+				themeDisplay.getCompanyId(), filter.getKeywords(),
+				pagination.getStartPosition(), pagination.getEndPosition(),
+				sort);
 
 		for (CommercePricingClass commercePricingClass :
 				commercePricingClasses) {

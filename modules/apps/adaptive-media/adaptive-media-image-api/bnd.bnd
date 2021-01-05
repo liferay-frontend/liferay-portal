@@ -8,6 +8,7 @@ Export-Package:\
 	com.liferay.adaptive.media.image.exception,\
 	com.liferay.adaptive.media.image.finder,\
 	com.liferay.adaptive.media.image.html,\
+	com.liferay.adaptive.media.image.html.constants,\
 	com.liferay.adaptive.media.image.media.query,\
 	com.liferay.adaptive.media.image.mime.type,\
 	com.liferay.adaptive.media.image.model,\

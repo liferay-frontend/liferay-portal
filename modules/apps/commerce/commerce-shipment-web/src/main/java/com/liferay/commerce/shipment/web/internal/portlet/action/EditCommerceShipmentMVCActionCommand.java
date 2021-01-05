@@ -140,6 +140,9 @@ public class EditCommerceShipmentMVCActionCommand extends BaseMVCActionCommand {
 			else if (cmd.equals(Constants.UPDATE)) {
 				updateCommerceShipment(actionRequest);
 			}
+			else if (cmd.equals("address")) {
+				updateAddress(actionRequest);
+			}
 			else if (cmd.equals("addShipmentItems")) {
 				addCommerceShipmentItems(actionRequest);
 			}
@@ -224,60 +227,62 @@ public class EditCommerceShipmentMVCActionCommand extends BaseMVCActionCommand {
 		long commerceShipmentId = ParamUtil.getLong(
 			actionRequest, "commerceShipmentId");
 
-		String name = ParamUtil.getString(actionRequest, "name");
-		String description = ParamUtil.getString(actionRequest, "description");
-		String street1 = ParamUtil.getString(actionRequest, "street1");
-		String street2 = ParamUtil.getString(actionRequest, "street2");
-		String street3 = ParamUtil.getString(actionRequest, "street3");
-		String city = ParamUtil.getString(actionRequest, "city");
-		String zip = ParamUtil.getString(actionRequest, "zip");
-		long commerceRegionId = ParamUtil.getLong(
-			actionRequest, "commerceRegionId");
-		long commerceCountryId = ParamUtil.getLong(
-			actionRequest, "commerceCountryId");
-		String phoneNumber = ParamUtil.getString(actionRequest, "phoneNumber");
-		String carrier = ParamUtil.getString(actionRequest, "carrier");
-		String trackingNumber = ParamUtil.getString(
-			actionRequest, "trackingNumber");
-		int status = ParamUtil.getInteger(actionRequest, "status");
-
-		int shippingDateMonth = ParamUtil.getInteger(
-			actionRequest, "shippingDateMonth");
-		int shippingDateDay = ParamUtil.getInteger(
-			actionRequest, "shippingDateDay");
-		int shippingDateYear = ParamUtil.getInteger(
-			actionRequest, "shippingDateYear");
-		int shippingDateHour = ParamUtil.getInteger(
-			actionRequest, "shippingDateHour");
-		int shippingDateMinute = ParamUtil.getInteger(
-			actionRequest, "shippingDateMinute");
-		int shippingDateAmPm = ParamUtil.getInteger(
-			actionRequest, "shippingDateAmPm");
-
-		if (shippingDateAmPm == Calendar.PM) {
-			shippingDateHour += 12;
-		}
-
-		int expectedDateMonth = ParamUtil.getInteger(
-			actionRequest, "expectedDateMonth");
-		int expectedDateDay = ParamUtil.getInteger(
-			actionRequest, "expectedDateDay");
-		int expectedDateYear = ParamUtil.getInteger(
-			actionRequest, "expectedDateYear");
-		int expectedDateHour = ParamUtil.getInteger(
-			actionRequest, "expectedDateHour");
-		int expectedDateMinute = ParamUtil.getInteger(
-			actionRequest, "expectedDateMinute");
-		int expectedDateAmPm = ParamUtil.getInteger(
-			actionRequest, "expectedDateAmPm");
-
-		if (expectedDateAmPm == Calendar.PM) {
-			expectedDateHour += 12;
-		}
-
 		CommerceShipment commerceShipment = null;
 
 		if (commerceShipmentId > 0) {
+			String name = ParamUtil.getString(actionRequest, "name");
+			String description = ParamUtil.getString(
+				actionRequest, "description");
+			String street1 = ParamUtil.getString(actionRequest, "street1");
+			String street2 = ParamUtil.getString(actionRequest, "street2");
+			String street3 = ParamUtil.getString(actionRequest, "street3");
+			String city = ParamUtil.getString(actionRequest, "city");
+			String zip = ParamUtil.getString(actionRequest, "zip");
+			long commerceRegionId = ParamUtil.getLong(
+				actionRequest, "commerceRegionId");
+			long commerceCountryId = ParamUtil.getLong(
+				actionRequest, "commerceCountryId");
+			String phoneNumber = ParamUtil.getString(
+				actionRequest, "phoneNumber");
+			String carrier = ParamUtil.getString(actionRequest, "carrier");
+			String trackingNumber = ParamUtil.getString(
+				actionRequest, "trackingNumber");
+			int status = ParamUtil.getInteger(actionRequest, "status");
+
+			int shippingDateMonth = ParamUtil.getInteger(
+				actionRequest, "shippingDateMonth");
+			int shippingDateDay = ParamUtil.getInteger(
+				actionRequest, "shippingDateDay");
+			int shippingDateYear = ParamUtil.getInteger(
+				actionRequest, "shippingDateYear");
+			int shippingDateHour = ParamUtil.getInteger(
+				actionRequest, "shippingDateHour");
+			int shippingDateMinute = ParamUtil.getInteger(
+				actionRequest, "shippingDateMinute");
+			int shippingDateAmPm = ParamUtil.getInteger(
+				actionRequest, "shippingDateAmPm");
+
+			if (shippingDateAmPm == Calendar.PM) {
+				shippingDateHour += 12;
+			}
+
+			int expectedDateMonth = ParamUtil.getInteger(
+				actionRequest, "expectedDateMonth");
+			int expectedDateDay = ParamUtil.getInteger(
+				actionRequest, "expectedDateDay");
+			int expectedDateYear = ParamUtil.getInteger(
+				actionRequest, "expectedDateYear");
+			int expectedDateHour = ParamUtil.getInteger(
+				actionRequest, "expectedDateHour");
+			int expectedDateMinute = ParamUtil.getInteger(
+				actionRequest, "expectedDateMinute");
+			int expectedDateAmPm = ParamUtil.getInteger(
+				actionRequest, "expectedDateAmPm");
+
+			if (expectedDateAmPm == Calendar.PM) {
+				expectedDateHour += 12;
+			}
+
 			commerceShipment = _commerceShipmentService.updateCommerceShipment(
 				commerceShipmentId, name, description, street1, street2,
 				street3, city, zip, commerceRegionId, commerceCountryId,

@@ -277,14 +277,36 @@ create table Counter (
 
 create table Country (
 	mvccVersion LONG default 0 not null,
+	uuid_ VARCHAR(75) null,
+	defaultLanguageId VARCHAR(75) null,
 	countryId LONG not null primary key,
-	name VARCHAR(75) null,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
 	a2 VARCHAR(75) null,
 	a3 VARCHAR(75) null,
-	number_ VARCHAR(75) null,
+	active_ BOOLEAN,
+	billingAllowed BOOLEAN,
+	groupFilterEnabled BOOLEAN,
 	idd_ VARCHAR(75) null,
+	name VARCHAR(75) null,
+	number_ VARCHAR(75) null,
+	position DOUBLE,
+	shippingAllowed BOOLEAN,
+	subjectToVAT BOOLEAN,
 	zipRequired BOOLEAN,
-	active_ BOOLEAN
+	lastPublishDate DATE null
+);
+
+create table CountryLocalization (
+	mvccVersion LONG default 0 not null,
+	countryLocalizationId LONG not null primary key,
+	companyId LONG,
+	countryId LONG,
+	languageId VARCHAR(75) null,
+	title VARCHAR(75) null
 );
 
 create table DLFileEntry (
@@ -972,6 +994,20 @@ create table PortletItem (
 	classNameId LONG
 );
 
+create table PortletPreferenceValue (
+	mvccVersion LONG default 0 not null,
+	ctCollectionId LONG default 0 not null,
+	portletPreferenceValueId LONG not null,
+	companyId LONG,
+	portletPreferencesId LONG,
+	index_ INTEGER,
+	largeValue TEXT null,
+	name VARCHAR(255) null,
+	readOnly BOOLEAN,
+	smallValue VARCHAR(255) null,
+	primary key (portletPreferenceValueId, ctCollectionId)
+);
+
 create table PortletPreferences (
 	mvccVersion LONG default 0 not null,
 	ctCollectionId LONG default 0 not null,
@@ -981,7 +1017,6 @@ create table PortletPreferences (
 	ownerType INTEGER,
 	plid LONG,
 	portletId VARCHAR(200) null,
-	preferences TEXT null,
 	primary key (portletPreferencesId, ctCollectionId)
 );
 
@@ -1050,11 +1085,19 @@ create table RecentLayoutSetBranch (
 
 create table Region (
 	mvccVersion LONG default 0 not null,
+	uuid_ VARCHAR(75) null,
 	regionId LONG not null primary key,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
 	countryId LONG,
-	regionCode VARCHAR(75) null,
+	active_ BOOLEAN,
 	name VARCHAR(75) null,
-	active_ BOOLEAN
+	position DOUBLE,
+	regionCode VARCHAR(75) null,
+	lastPublishDate DATE null
 );
 
 create table Release_ (

@@ -37,7 +37,7 @@ LayoutPrototypeManagementToolbarDisplayContext layoutPrototypeManagementToolbarD
 	<portlet:param name="redirect" value="<%= currentURL %>" />
 </portlet:actionURL>
 
-<aui:form action="<%= deleteLayoutPrototypesURL %>" cssClass="container-fluid-1280" name="fm">
+<aui:form action="<%= deleteLayoutPrototypesURL %>" cssClass="container-fluid container-fluid-max-xl" name="fm">
 	<liferay-ui:error embed="<%= false %>" exception="<%= RequiredLayoutPrototypeException.class %>" message="you-cannot-delete-page-templates-that-are-used-by-a-page" />
 
 	<liferay-ui:search-container
@@ -54,8 +54,6 @@ LayoutPrototypeManagementToolbarDisplayContext layoutPrototypeManagementToolbarD
 			<%
 			LayoutPrototype layoutPrototype = LayoutPrototypeServiceUtil.getLayoutPrototype(layoutPageTemplateEntry.getLayoutPrototypeId());
 
-			row.setCssClass("entry-card lfr-asset-item");
-
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", layoutPrototypeManagementToolbarDisplayContext.getAvailableActions(layoutPrototype)
@@ -63,7 +61,8 @@ LayoutPrototypeManagementToolbarDisplayContext layoutPrototypeManagementToolbarD
 			%>
 
 			<liferay-ui:search-container-column-text>
-				<clay:vertical-card-v2
+				<clay:vertical-card
+					propsTransformer="js/propsTransformers/LayoutPrototypeDropdownPropsTransformer"
 					verticalCard="<%= new LayoutPrototypeVerticalCard(layoutPrototype, renderRequest, renderResponse, searchContainer.getRowChecker()) %>"
 				/>
 			</liferay-ui:search-container-column-text>
@@ -75,11 +74,6 @@ LayoutPrototypeManagementToolbarDisplayContext layoutPrototypeManagementToolbarD
 		/>
 	</liferay-ui:search-container>
 </aui:form>
-
-<liferay-frontend:component
-	componentId="<%= LayoutPageTemplateAdminWebKeys.LAYOUT_PROTOTYPE_DROPDOWN_DEFAULT_EVENT_HANDLER %>"
-	module="js/LayoutPrototypeDropdownDefaultEventHandler.es"
-/>
 
 <liferay-frontend:component
 	componentId="<%= layoutPrototypeManagementToolbarDisplayContext.getDefaultEventHandler() %>"

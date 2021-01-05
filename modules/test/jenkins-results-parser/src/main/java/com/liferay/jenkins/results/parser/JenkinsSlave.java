@@ -170,6 +170,7 @@ public class JenkinsSlave implements JenkinsNode<JenkinsSlave> {
 		JenkinsMaster jenkinsMaster, JSONObject jenkinsSlaveJSONObject) {
 
 		_jenkinsMaster = jenkinsMaster;
+
 		_name = jenkinsSlaveJSONObject.getString("displayName");
 
 		update(jenkinsSlaveJSONObject);

@@ -61,19 +61,23 @@
 						"id": "link",
 						"value": {
 							"fragmentLink": {
-								"href": {
-									"defaultFragmentInlineValue": {
-										"value": "${MAPPED_LINK_DEFAULT_VALUE}"
-									},
-									"mapping": {
-										"fieldKey": "title",
-										"itemReference": {
-											"className": "${MAPPED_LINK_CLASS_NAME}",
-											"classPK": "${MAPPED_LINK_CLASS_PK}"
+								"value": {
+									"href": {
+										"defaultFragmentInlineValue": {
+											"value": "${MAPPED_LINK_DEFAULT_VALUE}"
+										},
+										"mapping": {
+											"fieldKey": "title",
+											"itemReference": {
+												"className": "${MAPPED_LINK_CLASS_NAME}",
+												"classPK": "${MAPPED_LINK_CLASS_PK}"
+											}
 										}
-									}
+									},
+									"target": "Self"
 								},
-								"target": "Self"
+								"value_i18n": {
+								}
 							},
 							"text": {
 								"defaultFragmentInlineValue": {

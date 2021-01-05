@@ -14,8 +14,10 @@
 
 package com.liferay.gradle.plugins.workspace.configurators;
 
-import com.liferay.gradle.plugins.LiferayExtPlugin;
-import com.liferay.gradle.plugins.LiferayOSGiExtPlugin;
+import com.liferay.gradle.plugins.LiferayBasePlugin;
+import com.liferay.gradle.plugins.extensions.LiferayExtension;
+import com.liferay.gradle.plugins.workspace.LiferayExtPlugin;
+import com.liferay.gradle.plugins.workspace.LiferayOSGiExtPlugin;
 import com.liferay.gradle.plugins.workspace.WorkspaceExtension;
 import com.liferay.gradle.plugins.workspace.WorkspacePlugin;
 import com.liferay.gradle.plugins.workspace.internal.util.GradleUtil;
@@ -33,13 +35,16 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.CopySourceSpec;
+import org.gradle.api.file.CopySpec;
 import org.gradle.api.initialization.Settings;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.JavaPlugin;
@@ -49,6 +54,7 @@ import org.gradle.api.tasks.Copy;
 /**
  * @author David Truong
  * @author Andrea Di Giorgi
+ * @author Gregory Amerson
  */
 public class ExtProjectConfigurator extends BaseProjectConfigurator {
 
@@ -94,6 +100,20 @@ public class ExtProjectConfigurator extends BaseProjectConfigurator {
 		_configureRootTaskDistBundle(project, extPlugin);
 
 		configureLiferay(project, workspaceExtension);
+
+		Object dockerDeploySourcePath = null;
+
+		if (extPlugin) {
+			dockerDeploySourcePath = GradleUtil.getTask(
+				project, WarPlugin.WAR_TASK_NAME);
+		}
+		else {
+			dockerDeploySourcePath = GradleUtil.getTask(
+				project, JavaPlugin.JAR_TASK_NAME);
+		}
+
+		_addTaskDockerDeploy(
+			project, dockerDeploySourcePath, workspaceExtension);
 	}
 
 	@Override
@@ -139,6 +159,84 @@ public class ExtProjectConfigurator extends BaseProjectConfigurator {
 
 	protected static final String NAME = "ext";
 
+	private void _addTaskDockerDeploy(
+		Project project, Object sourcePath,
+		WorkspaceExtension workspaceExtension) {
+
+		Task rootDockerDeployTask = GradleUtil.getTask(
+			project.getRootProject(),
+			RootProjectConfigurator.DOCKER_DEPLOY_TASK_NAME);
+
+		Copy dockerDeploy = GradleUtil.addTask(
+			project, RootProjectConfigurator.DOCKER_DEPLOY_TASK_NAME,
+			Copy.class);
+
+		dockerDeploy.dependsOn(rootDockerDeployTask);
+
+		File configsDir = workspaceExtension.getConfigsDir();
+
+		if (configsDir.exists()) {
+			List<String> commonConfigDirNames = Arrays.asList(
+				"common", "docker");
+
+			File[] configDirs = configsDir.listFiles(
+				(dir, name) -> {
+					File file = new File(dir, name);
+
+					if (!file.isDirectory()) {
+						return false;
+					}
+
+					if (commonConfigDirNames.contains(name)) {
+						return false;
+					}
+
+					return true;
+				});
+
+			if ((configDirs != null) && (configDirs.length > 0)) {
+				dockerDeploy.into(workspaceExtension.getDockerDir());
+
+				for (File configDir : configDirs) {
+					dockerDeploy.into(
+						RootProjectConfigurator.LIFERAY_CONFIGS_DIR_NAME + "/" +
+							configDir.getName() + "/osgi/marketplace/override",
+						copySpec -> {
+							Closure<Void> copySpecClosure = new Closure<Void>(
+								project) {
+
+								@SuppressWarnings("unused")
+								public void doCall(CopySpec copySpec) {
+									copySpec.rename(
+										_getDeployedFileNameClosure(
+											project, sourcePath));
+								}
+
+							};
+
+							copySpec.from(sourcePath, copySpecClosure);
+						});
+				}
+			}
+		}
+
+		dockerDeploy.setDescription(
+			"Assembles the project and deploys it to the Liferay Docker " +
+				"container.");
+		dockerDeploy.setGroup(RootProjectConfigurator.DOCKER_GROUP);
+
+		Task deployTask = GradleUtil.getTask(
+			project, LiferayBasePlugin.DEPLOY_TASK_NAME);
+
+		deployTask.finalizedBy(dockerDeploy);
+
+		Task buildDockerImageTask = GradleUtil.getTask(
+			project.getRootProject(),
+			RootProjectConfigurator.BUILD_DOCKER_IMAGE_TASK_NAME);
+
+		buildDockerImageTask.dependsOn(deployTask);
+	}
+
 	private void _applyPlugins(Project project, boolean extPlugin) {
 		if (extPlugin) {
 			GradleUtil.applyPlugin(project, LiferayExtPlugin.class);
@@ -180,6 +278,24 @@ public class ExtProjectConfigurator extends BaseProjectConfigurator {
 				}
 
 			});
+	}
+
+	private Closure<String> _getDeployedFileNameClosure(
+		Project project, Object sourcePath) {
+
+		return new Closure<String>(project) {
+
+			public String doCall(String fileName) {
+				LiferayExtension liferayExtension = GradleUtil.getExtension(
+					project, LiferayExtension.class);
+
+				Closure<String> closure =
+					liferayExtension.getDeployedFileNameClosure();
+
+				return closure.call(sourcePath);
+			}
+
+		};
 	}
 
 	private boolean _isExtPlugin(Project project) {

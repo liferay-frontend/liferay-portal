@@ -33,7 +33,7 @@ CommerceRegion commerceRegion = (CommerceRegion)row.getObject();
 >
 	<c:if test="<%= commerceRegionsDisplayContext.hasPermission(CommerceActionKeys.MANAGE_COMMERCE_COUNTRIES) %>">
 		<portlet:renderURL var="editURL">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceRegion" />
+			<portlet:param name="mvcRenderCommandName" value="/commerce_country/edit_commerce_region" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="backURL" value="<%= backURL %>" />
 			<portlet:param name="commerceCountryId" value="<%= String.valueOf(commerceRegion.getCommerceCountryId()) %>" />
@@ -45,7 +45,7 @@ CommerceRegion commerceRegion = (CommerceRegion)row.getObject();
 			url="<%= editURL %>"
 		/>
 
-		<portlet:actionURL name="editCommerceRegion" var="setActiveURL">
+		<portlet:actionURL name="/commerce_country/edit_commerce_region" var="setActiveURL">
 			<portlet:param name="<%= Constants.CMD %>" value="setActive" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceRegionId" value="<%= String.valueOf(commerceRegion.getCommerceRegionId()) %>" />
@@ -57,7 +57,7 @@ CommerceRegion commerceRegion = (CommerceRegion)row.getObject();
 			url="<%= setActiveURL %>"
 		/>
 
-		<portlet:actionURL name="editCommerceRegion" var="deleteURL">
+		<portlet:actionURL name="/commerce_country/edit_commerce_region" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="backURL" value="<%= backURL %>" />

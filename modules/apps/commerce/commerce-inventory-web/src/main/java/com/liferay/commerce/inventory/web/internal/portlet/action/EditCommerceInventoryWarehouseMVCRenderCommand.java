@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Component;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.COMMERCE_INVENTORY,
-		"mvc.command.name=editCommerceInventoryWarehouse"
+		"mvc.command.name=/commerce_inventory/edit_commerce_inventory_warehouse"
 	},
 	service = MVCRenderCommand.class
 )

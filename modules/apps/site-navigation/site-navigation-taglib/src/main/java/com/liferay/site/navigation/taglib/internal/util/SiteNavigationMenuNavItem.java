@@ -42,14 +42,13 @@ public class SiteNavigationMenuNavItem extends NavItem {
 
 		super(httpServletRequest, themeDisplay, themeDisplay.getLayout(), null);
 
-		SiteNavigationMenuItemType siteNavigationMenuItemType =
-			ServletContextUtil.getSiteNavigationMenuItemType(
-				siteNavigationMenuItem.getType());
-
 		_httpServletRequest = httpServletRequest;
 		_themeDisplay = themeDisplay;
 		_siteNavigationMenuItem = siteNavigationMenuItem;
-		_siteNavigationMenuItemType = siteNavigationMenuItemType;
+
+		_siteNavigationMenuItemType =
+			ServletContextUtil.getSiteNavigationMenuItemType(
+				siteNavigationMenuItem.getType());
 	}
 
 	@Override

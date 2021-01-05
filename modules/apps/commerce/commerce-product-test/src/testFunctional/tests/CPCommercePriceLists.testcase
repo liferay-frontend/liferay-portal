@@ -160,6 +160,7 @@ definition {
 
 	test AssertPriceListCanBeAssociatedWithAccountAndAccountGroup {
 		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceListCanBeAssociatedWithAccountAndAccountGroup";
 
 		CommerceNavigator.gotoPortlet(
@@ -190,6 +191,8 @@ definition {
 			accountsEntryName = "Test Account 2",
 			user = "Test Test");
 
+		Navigator.openURL();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
 			panel = "Commerce",
@@ -208,11 +211,15 @@ definition {
 
 		CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
 
-		CommerceEntry.setEntryEligibility(accountsEligibility = "Test Account 1,Test Account 2");
+		CommerceEntry.setEntryEligibility(
+			accountsEligibility = "Test Account 1,Test Account 2",
+			unpublish = "true");
 
 		CommerceEntry.viewEntryEligibility(accountsEligibility = "Test Account 1,Test Account 2");
 
-		CommerceEntry.setEntryEligibility(accountGroupsEligibility = "Test Account Group 1,Test Account Group 2");
+		CommerceEntry.setEntryEligibility(
+			accountGroupsEligibility = "Test Account Group 1,Test Account Group 2",
+			unpublish = "true");
 
 		CommerceEntry.viewEntryEligibility(accountGroupsEligibility = "Test Account Group 1,Test Account Group 2");
 
@@ -294,16 +301,6 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
-		AssertElementPresent.assertVisible(
-			key_fieldFieldLabel = "Name",
-			locator1 = "Icon#ASTERISK_DATE_FIELD");
-
-		AssertElementPresent.assertVisible(
-			key_fieldFieldLabel = "Currency",
-			locator1 = "Icon#ASTERISK_DATE_FIELD");
-
-		Pause(locator1 = "3000");
 
 		Select(
 			key_fieldLabel = "Catalog",
@@ -409,7 +406,7 @@ definition {
 		CommerceAcceleratorsInitializer.viewMiniumSelectedAccount(selectedAccount = "Commerce Account 1");
 
 		AssertTextEquals.assertPartialText(
-			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_PRICE_VALUE",
+			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
 			value1 = "45.00");
 
 		CommerceAcceleratorsInitializer.selectAccountFromAccountSelector(accountName = "Commerce Account 2");
@@ -417,7 +414,7 @@ definition {
 		Refresh();
 
 		AssertTextEquals.assertPartialText(
-			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_PRICE_VALUE",
+			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
 			value1 = "45.00");
 
 		CommerceAcceleratorsInitializer.selectAccountFromAccountSelector(accountName = "Commerce Account 3");
@@ -425,7 +422,7 @@ definition {
 		Refresh();
 
 		AssertTextEquals.assertPartialText(
-			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_PRICE_VALUE",
+			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
 			value1 = "50.00");
 	}
 

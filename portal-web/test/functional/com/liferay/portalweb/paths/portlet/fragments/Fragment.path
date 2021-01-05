@@ -64,6 +64,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>FRAGMENT_LINK</td>
+	<td>//a[contains(@href,'${key_URL}')]${key_append}</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FRAGMENT_SECTION_BACKGROUND_IMAGE</td>
 	<td>//section[contains(@id,'content')]//div[contains(@style,'${key_imageName}')]</td>
 	<td></td>
@@ -158,6 +163,22 @@
 <tr>
 	<td>VIDEO_WIDTH</td>
 	<td>//div[contains(@class,'video')][contains(@style,'width: ${key_width}')]</td>
+	<td></td>
+</tr>
+<!--DROPDOWN_FRAGMENT-->
+<tr>
+	<td>DROPDOWN_FRAGMENT_MENU_CONTENT</td>
+	<td>//div[contains(@class,'dropdown-fragment-menu')]${key_element}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DROPDOWN_FRAGMENT_MENU_WIDTH</td>
+	<td>//div[contains(@class,'dropdown-fragment-menu')][contains(@style,'width: ${key_panelWidth}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DROPDOWN_FRAGMENT_TOGGLE</td>
+	<td>//button[contains(@class,'dropdown-fragment-toggle')]</td>
 	<td></td>
 </tr>
 <!--FRAGMENT_CONFIGURAION-->
@@ -269,10 +290,26 @@
 </tr>
 <tr>
 	<td>FRAGMENT_CONFIGURATION_TEXT_COLOR_IN_VIEW_MODE</td>
-	<td>//*[contains(@class,'${key_fragmentName}')]/parent::div/parent::div[contains(@style,'color: ${key_textColor}')]</td>
+	<td>//*[contains(@class,'${key_fragmentName}')]/parent::div/parent::div[contains(@style,'color: ${key_textColor}')] | //*[contains(@class,'${key_fragmentName}')]/parent::div/parent::div[contains(@class,'text-${key_textColor}')]</td>
 	<td></td>
 </tr>
 <!--FRAGMENT_EDITABLE_FIELD-->
+<tr>
+	<td>AVAILABLE_ADAPTIVE_MEDIA</td>
+	<td>//div[contains(@class,'page-editor__topper__bar') and contains(.,'${key_fragmentName}')]//following-sibling::div[contains(@class,'page-editor__topper__content')]//*[contains(@data-lfr-editable-id,'${id}')]/preceding-sibling::source[contains(@srcset,'${key_adaptiveMediaName}')]
+	</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BACKGROUND_IMAGE_EDITABLE_FIELD</td>
+	<td>//div[contains(@class,'page-editor__topper__bar') and contains(.,'${key_fragmentName}')]//following-sibling::div[contains(@class,'page-editor__topper__content')]//div[contains(@data-lfr-background-image-id,'${id}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BACKGROUND_IMAGE_EDITABLE_FIELD_IMAGE_PROPERTIES</td>
+	<td>//div[contains(@data-lfr-background-image-id,'${id}')][contains(@style,'${key_image}')]</td>
+	<td></td>
+</tr>
 <tr>
 	<td>CONTRIBUTED_FRAGMENT_EDITABLE_FIELD</td>
 	<td>//div[contains(@class,'page-editor__topper__bar') and contains(.,'${key_fragmentName}')]//following-sibling::div[contains(@class,'page-editor__topper__content')]//*[contains(@data-lfr-editable-id,'${id}')]</td>

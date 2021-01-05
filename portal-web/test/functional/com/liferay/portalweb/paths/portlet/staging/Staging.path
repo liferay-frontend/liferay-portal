@@ -107,6 +107,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>STAGING_PUBLICATION_PERMISSION</td>
+	<td>//span[contains(@class,'label-text') and contains(.,'Publish Permissions')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td></td>
 	<td></td>
 	<td></td>
@@ -120,6 +125,11 @@
 <tr>
 	<td>LIVE_DROP_DOWN_BUTTON</td>
 	<td>//a[contains(@class,'staging-link') and contains(@class,'dropdown-toggle')]/span[contains(.,'Live')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>STAGING_BUTTON</td>
+	<td>//a[contains(@value,'staging')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -280,7 +290,7 @@
 <!--STAGING_MENU-->
 <tr>
 	<td>STAGING_MENU_READY_FOR_PUBLICATION</td>
-	<td>//span[@class='toggle-switch-handle' and @data-label-on='Ready for Publication']</td>
+	<td>//span[@class='toggle-switch-handle' and @data-label-on='Ready for Publish Process']</td>
 	<td></td>
 </tr>
 <tr>

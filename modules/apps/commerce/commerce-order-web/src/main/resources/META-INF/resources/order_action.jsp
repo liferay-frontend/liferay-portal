@@ -32,7 +32,7 @@ CommerceOrder commerceOrder = (CommerceOrder)row.getObject();
 	<c:choose>
 		<c:when test="<%= CommerceOrderPermission.contains(permissionChecker, commerceOrder, ActionKeys.UPDATE) %>">
 			<portlet:renderURL var="editURL">
-				<portlet:param name="mvcRenderCommandName" value="editCommerceOrder" />
+				<portlet:param name="mvcRenderCommandName" value="/commerce_order/edit_commerce_order" />
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 				<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 			</portlet:renderURL>
@@ -44,7 +44,7 @@ CommerceOrder commerceOrder = (CommerceOrder)row.getObject();
 		</c:when>
 		<c:otherwise>
 			<portlet:renderURL var="viewCommerceOrderDetailURL">
-				<portlet:param name="mvcRenderCommandName" value="viewCommerceOrderDetails" />
+				<portlet:param name="mvcRenderCommandName" value="/commerce_order_content/view_commerce_order_details" />
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 				<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 			</portlet:renderURL>
@@ -57,7 +57,7 @@ CommerceOrder commerceOrder = (CommerceOrder)row.getObject();
 	</c:choose>
 
 	<c:if test="<%= CommerceOrderPermission.contains(permissionChecker, commerceOrder, ActionKeys.DELETE) %>">
-		<portlet:actionURL name="editCommerceOrder" var="deleteURL">
+		<portlet:actionURL name="/commerce_order/edit_commerce_order" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />

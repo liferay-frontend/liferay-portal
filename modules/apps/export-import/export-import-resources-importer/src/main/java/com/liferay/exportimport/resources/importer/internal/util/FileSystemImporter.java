@@ -99,9 +99,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.kernel.xml.Attribute;
-import com.liferay.portal.kernel.xml.Document;
-import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReader;
 import com.liferay.portal.search.index.IndexStatusManager;
 import com.liferay.portlet.display.template.PortletDisplayTemplate;
@@ -418,7 +415,7 @@ public class FileSystemImporter extends BaseImporter {
 					DDMStructureConstants.DEFAULT_PARENT_STRUCTURE_ID,
 					portal.getClassNameId(DDLRecordSet.class), getKey(fileName),
 					getMap(name), null, ddmForm, ddmFormLayout,
-					StorageType.JSON.toString(),
+					StorageType.DEFAULT.toString(),
 					DDMStructureConstants.TYPE_DEFAULT, serviceContext);
 			}
 			else {
@@ -505,10 +502,6 @@ public class FileSystemImporter extends BaseImporter {
 		DDMForm ddmForm = null;
 
 		if (language.equals(TemplateConstants.LANG_TYPE_XML)) {
-			if (isJournalStructureXSD(content)) {
-				content = journalConverter.getDDMXSD(content);
-			}
-
 			ddmxml.validateXML(content);
 
 			ddmForm = deserializeXSD(content);
@@ -1102,7 +1095,7 @@ public class FileSystemImporter extends BaseImporter {
 					parentLayoutId, nameMap, titleMap,
 					layout.getDescriptionMap(), layout.getKeywordsMap(),
 					layout.getRobotsMap(), type, hidden, friendlyURLMap,
-					layout.getIconImage(), null, serviceContext);
+					layout.getIconImage(), null, 0, 0, serviceContext);
 			}
 
 			if (Validator.isNotNull(themeId) ||
@@ -1686,21 +1679,6 @@ public class FileSystemImporter extends BaseImporter {
 				}
 			}
 		}
-	}
-
-	protected boolean isJournalStructureXSD(String xsd) throws Exception {
-		Document document = saxReader.read(xsd);
-
-		Element rootElement = document.getRootElement();
-
-		Attribute availableLocalesAttribute = rootElement.attribute(
-			"available-locales");
-
-		if (availableLocalesAttribute == null) {
-			return true;
-		}
-
-		return false;
 	}
 
 	protected File[] listFiles(File dir) {

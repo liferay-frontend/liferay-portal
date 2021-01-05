@@ -91,7 +91,7 @@ CheckoutDisplayContext checkoutDisplayContext = (CheckoutDisplayContext)request.
 
 						</ul>
 
-						<portlet:actionURL name="saveStep" var="saveStepURL" />
+						<portlet:actionURL name="/commerce_checkout/save_step" var="saveStepURL" />
 
 						<aui:form action="<%= saveStepURL %>" data-senna-off="<%= checkoutDisplayContext.isSennaDisabled() %>" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCheckoutStep();" %>'>
 							<aui:input name="checkoutStepName" type="hidden" value="<%= currentCheckoutStepName %>" />

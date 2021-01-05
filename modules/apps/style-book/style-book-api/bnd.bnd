@@ -2,6 +2,7 @@ Bundle-Name: Liferay Style Book API
 Bundle-SymbolicName: com.liferay.style.book.api
 Bundle-Version: 2.0.0
 Export-Package:\
+	com.liferay.style.book.constants,\
 	com.liferay.style.book.exception,\
 	com.liferay.style.book.model,\
 	com.liferay.style.book.service,\

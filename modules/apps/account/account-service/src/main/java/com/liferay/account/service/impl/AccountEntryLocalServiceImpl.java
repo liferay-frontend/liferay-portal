@@ -19,9 +19,20 @@ import com.liferay.account.exception.AccountEntryDomainsException;
 import com.liferay.account.exception.AccountEntryNameException;
 import com.liferay.account.exception.AccountEntryTypeException;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.model.AccountEntryOrganizationRelTable;
+import com.liferay.account.model.AccountEntryTable;
+import com.liferay.account.model.AccountEntryUserRelTable;
+import com.liferay.account.model.impl.AccountEntryImpl;
 import com.liferay.account.service.base.AccountEntryLocalServiceBaseImpl;
+import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.sql.dsl.query.FromStep;
+import com.liferay.petra.sql.dsl.query.GroupByStep;
+import com.liferay.petra.sql.dsl.query.JoinStep;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
@@ -29,8 +40,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserTable;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -63,6 +76,8 @@ import com.liferay.users.admin.kernel.file.uploads.UserFileUploadsSettings;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.stream.Stream;
 
 import org.apache.commons.validator.routines.DomainValidator;
 
@@ -304,6 +319,79 @@ public class AccountEntryLocalServiceImpl
 	}
 
 	@Override
+	public AccountEntry getGuestAccountEntry(long companyId)
+		throws PortalException {
+
+		User defaultUser = userLocalService.getDefaultUser(companyId);
+
+		AccountEntryImpl accountEntryImpl = new AccountEntryImpl();
+
+		accountEntryImpl.setAccountEntryId(
+			AccountConstants.ACCOUNT_ENTRY_ID_GUEST);
+		accountEntryImpl.setCompanyId(defaultUser.getCompanyId());
+		accountEntryImpl.setUserId(defaultUser.getUserId());
+		accountEntryImpl.setUserName(defaultUser.getFullName());
+		accountEntryImpl.setParentAccountEntryId(
+			AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT);
+		accountEntryImpl.setName(defaultUser.getFullName());
+		accountEntryImpl.setType(AccountConstants.ACCOUNT_ENTRY_TYPE_GUEST);
+		accountEntryImpl.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+		return accountEntryImpl;
+	}
+
+	@Override
+	public List<AccountEntry> getUserAccountEntries(
+			long userId, Long parentAccountEntryId, String keywords,
+			String[] types, int start, int end)
+		throws PortalException {
+
+		return getUserAccountEntries(
+			userId, parentAccountEntryId, keywords, types,
+			WorkflowConstants.STATUS_ANY, start, end);
+	}
+
+	@Override
+	public List<AccountEntry> getUserAccountEntries(
+			long userId, Long parentAccountEntryId, String keywords,
+			String[] types, Integer status, int start, int end)
+		throws PortalException {
+
+		return dslQuery(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.selectDistinct(AccountEntryTable.INSTANCE),
+				userId, parentAccountEntryId, keywords, types, status
+			).limit(
+				start, end
+			));
+	}
+
+	@Override
+	public int getUserAccountEntriesCount(
+			long userId, Long parentAccountEntryId, String keywords,
+			String[] types)
+		throws PortalException {
+
+		return getUserAccountEntriesCount(
+			userId, parentAccountEntryId, keywords, types,
+			WorkflowConstants.STATUS_ANY);
+	}
+
+	@Override
+	public int getUserAccountEntriesCount(
+			long userId, Long parentAccountEntryId, String keywords,
+			String[] types, Integer status)
+		throws PortalException {
+
+		return dslQuery(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.countDistinct(
+					AccountEntryTable.INSTANCE.accountEntryId.as(
+						"COUNT_VALUE")),
+				userId, parentAccountEntryId, keywords, types, status));
+	}
+
+	@Override
 	public BaseModelSearchResult<AccountEntry> search(
 		long companyId, String keywords, LinkedHashMap<String, Object> params,
 		int cur, int delta, String orderByField, boolean reverse) {
@@ -422,6 +510,125 @@ public class AccountEntryLocalServiceImpl
 		accountEntry.setStatus(status);
 
 		return updateAccountEntry(accountEntry);
+	}
+
+	private GroupByStep _getGroupByStep(
+			FromStep fromStep, long userId, Long parentAccountId,
+			String keywords, String[] types, Integer status)
+		throws PortalException {
+
+		JoinStep joinStep = fromStep.from(
+			UserTable.INSTANCE
+		).leftJoinOn(
+			AccountEntryUserRelTable.INSTANCE,
+			AccountEntryUserRelTable.INSTANCE.accountUserId.eq(
+				UserTable.INSTANCE.userId)
+		);
+
+		Long[] organizationIds = _getOrganizationIds(userId);
+
+		if (ArrayUtil.isNotEmpty(organizationIds)) {
+			joinStep = joinStep.leftJoinOn(
+				AccountEntryOrganizationRelTable.INSTANCE,
+				AccountEntryOrganizationRelTable.INSTANCE.organizationId.in(
+					organizationIds));
+		}
+
+		Predicate accountEntryPredicate =
+			AccountEntryTable.INSTANCE.accountEntryId.eq(
+				AccountEntryUserRelTable.INSTANCE.accountEntryId
+			).or(
+				AccountEntryTable.INSTANCE.userId.eq(userId)
+			);
+
+		if (ArrayUtil.isNotEmpty(organizationIds)) {
+			accountEntryPredicate = accountEntryPredicate.or(
+				AccountEntryTable.INSTANCE.accountEntryId.eq(
+					AccountEntryOrganizationRelTable.INSTANCE.accountEntryId));
+		}
+
+		joinStep = joinStep.leftJoinOn(
+			AccountEntryTable.INSTANCE, accountEntryPredicate);
+
+		return joinStep.where(
+			() -> {
+				Predicate predicate = UserTable.INSTANCE.userId.eq(userId);
+
+				if (parentAccountId != null) {
+					predicate = predicate.and(
+						AccountEntryTable.INSTANCE.parentAccountEntryId.eq(
+							parentAccountId));
+				}
+
+				if (Validator.isNotNull(keywords)) {
+					String[] terms = _customSQL.keywords(keywords, true);
+
+					Predicate keywordsPredicate = null;
+
+					for (String term : terms) {
+						Predicate termPredicate = DSLFunctionFactoryUtil.lower(
+							AccountEntryTable.INSTANCE.name
+						).like(
+							term
+						);
+
+						if (keywordsPredicate == null) {
+							keywordsPredicate = termPredicate;
+						}
+						else {
+							keywordsPredicate = keywordsPredicate.or(
+								termPredicate);
+						}
+					}
+
+					if (keywordsPredicate != null) {
+						predicate = predicate.and(
+							keywordsPredicate.withParentheses());
+					}
+				}
+
+				if (types != null) {
+					predicate = predicate.and(
+						AccountEntryTable.INSTANCE.type.in(types));
+				}
+
+				if ((status != null) &&
+					(status != WorkflowConstants.STATUS_ANY)) {
+
+					predicate = predicate.and(
+						AccountEntryTable.INSTANCE.status.eq(status));
+				}
+
+				return predicate;
+			});
+	}
+
+	private Long[] _getOrganizationIds(long userId) throws PortalException {
+		List<Organization> organizations =
+			organizationLocalService.getUserOrganizations(userId);
+
+		ListIterator<Organization> listIterator = organizations.listIterator();
+
+		while (listIterator.hasNext()) {
+			Organization organization = listIterator.next();
+
+			for (Organization curOrganization :
+					organizationLocalService.getOrganizations(
+						organization.getCompanyId(),
+						organization.getTreePath() + "%")) {
+
+				listIterator.add(curOrganization);
+			}
+		}
+
+		Stream<Organization> stream = organizations.stream();
+
+		return stream.map(
+			Organization::getOrganizationId
+		).distinct(
+		).toArray(
+			Long[]::new
+		);
 	}
 
 	private SearchRequest _getSearchRequest(
@@ -589,6 +796,9 @@ public class AccountEntryLocalServiceImpl
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private CustomSQL _customSQL;
 
 	@Reference
 	private Portal _portal;

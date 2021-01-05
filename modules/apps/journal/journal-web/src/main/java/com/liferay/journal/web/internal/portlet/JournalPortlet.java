@@ -23,6 +23,7 @@ import com.liferay.dynamic.data.mapping.configuration.DDMWebConfiguration;
 import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.exception.NoSuchTemplateException;
 import com.liferay.dynamic.data.mapping.exception.StorageFieldRequiredException;
+import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.util.DDMFormValuesToMapConverter;
 import com.liferay.dynamic.data.mapping.util.DDMTemplateHelper;
 import com.liferay.exportimport.kernel.exception.ExportImportContentValidationException;
@@ -56,7 +57,6 @@ import com.liferay.journal.exception.NoSuchFeedException;
 import com.liferay.journal.exception.NoSuchFolderException;
 import com.liferay.journal.util.JournalContent;
 import com.liferay.journal.util.JournalConverter;
-import com.liferay.journal.web.internal.configuration.JournalDDMEditorConfiguration;
 import com.liferay.journal.web.internal.configuration.JournalWebConfiguration;
 import com.liferay.journal.web.internal.helper.JournalDDMTemplateHelper;
 import com.liferay.journal.web.internal.portlet.action.ActionUtil;
@@ -98,7 +98,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	configurationPid = {
 		"com.liferay.dynamic.data.mapping.configuration.DDMWebConfiguration",
-		"com.liferay.journal.web.internal.configuration.JournalDDMEditorConfiguration",
 		"com.liferay.journal.web.internal.configuration.JournalWebConfiguration"
 	},
 	configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true,
@@ -159,13 +158,12 @@ public class JournalPortlet extends MVCPortlet {
 		}
 
 		renderRequest.setAttribute(
+			DDMFormValuesFactory.class.getName(), _ddmFormValuesFactory);
+		renderRequest.setAttribute(
 			DDMFormValuesToMapConverter.class.getName(),
 			_ddmFormValuesToMapConverter);
 		renderRequest.setAttribute(
 			DDMWebConfiguration.class.getName(), _ddmWebConfiguration);
-		renderRequest.setAttribute(
-			JournalDDMEditorConfiguration.class.getName(),
-			_journalDDMEditorConfiguration);
 		renderRequest.setAttribute(
 			JournalFileUploadsConfiguration.class.getName(),
 			_journalFileUploadsConfiguration);
@@ -192,9 +190,6 @@ public class JournalPortlet extends MVCPortlet {
 		resourceRequest.setAttribute(
 			DDMTemplateHelper.class.getName(), _ddmTemplateHelper);
 		resourceRequest.setAttribute(
-			JournalDDMEditorConfiguration.class.getName(),
-			_journalDDMEditorConfiguration);
-		resourceRequest.setAttribute(
 			JournalWebConfiguration.class.getName(), _journalWebConfiguration);
 		resourceRequest.setAttribute(
 			TranslationURLProvider.class.getName(), _translationURLProvider);
@@ -208,8 +203,6 @@ public class JournalPortlet extends MVCPortlet {
 	protected void activate(Map<String, Object> properties) {
 		_ddmWebConfiguration = ConfigurableUtil.createConfigurable(
 			DDMWebConfiguration.class, properties);
-		_journalDDMEditorConfiguration = ConfigurableUtil.createConfigurable(
-			JournalDDMEditorConfiguration.class, properties);
 		_journalFileUploadsConfiguration = ConfigurableUtil.createConfigurable(
 			JournalFileUploadsConfiguration.class, properties);
 		_journalWebConfiguration = ConfigurableUtil.createConfigurable(
@@ -234,7 +227,12 @@ public class JournalPortlet extends MVCPortlet {
 			}
 		}
 		catch (Exception exception) {
-			_log.error(exception.getMessage());
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception, exception);
+			}
+			else {
+				_log.error(exception.getMessage());
+			}
 
 			SessionErrors.add(renderRequest, exception.getClass());
 		}
@@ -318,6 +316,9 @@ public class JournalPortlet extends MVCPortlet {
 		_assetDisplayPageFriendlyURLProvider;
 
 	@Reference
+	private DDMFormValuesFactory _ddmFormValuesFactory;
+
+	@Reference
 	private DDMFormValuesToMapConverter _ddmFormValuesToMapConverter;
 
 	@Reference
@@ -333,9 +334,6 @@ public class JournalPortlet extends MVCPortlet {
 
 	@Reference
 	private JournalConverter _journalConverter;
-
-	private volatile JournalDDMEditorConfiguration
-		_journalDDMEditorConfiguration;
 
 	@Reference
 	private JournalDDMTemplateHelper _journalDDMTemplateHelper;

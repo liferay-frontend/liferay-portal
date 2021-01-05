@@ -302,6 +302,7 @@ public class MoreLikeThisQueryImpl
 		public DocumentIdentifierImpl(String index, String id) {
 			_index = index;
 			_id = id;
+
 			_type = null;
 		}
 

@@ -24,8 +24,8 @@ long commerceOrderId = commerceOrderEditDisplayContext.getCommerceOrderId();
 Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
 %>
 
-<portlet:actionURL name="editCommerceOrderNote" var="editCommerceOrderNoteURL">
-	<portlet:param name="mvcRenderCommandName" value="editCommerceOrder" />
+<portlet:actionURL name="/commerce_order/edit_commerce_order_note" var="editCommerceOrderNoteURL">
+	<portlet:param name="mvcRenderCommandName" value="/commerce_order/edit_commerce_order" />
 	<portlet:param name="screenNavigationCategoryKey" value="<%= CommerceOrderScreenNavigationConstants.CATEGORY_KEY_COMMERCE_ORDER_NOTES %>" />
 </portlet:actionURL>
 
@@ -51,7 +51,7 @@ Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZo
 						<div class="row">
 							<div class="col-auto">
 								<liferay-ui:user-portrait
-									cssClass="user-icon-lg"
+									cssClass="sticker-lg"
 									userId="<%= commerceOrderNote.getUserId() %>"
 									userName="<%= commerceOrderNote.getUserName() %>"
 								/>
@@ -109,7 +109,7 @@ Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZo
 									triggerCssClass="btn btn-unstyled component-action text-secondary"
 								>
 									<portlet:renderURL var="editURL">
-										<portlet:param name="mvcRenderCommandName" value="editCommerceOrderNote" />
+										<portlet:param name="mvcRenderCommandName" value="/commerce_order/edit_commerce_order_note" />
 										<portlet:param name="redirect" value="<%= currentURL %>" />
 										<portlet:param name="commerceOrderNoteId" value="<%= String.valueOf(commerceOrderNote.getCommerceOrderNoteId()) %>" />
 									</portlet:renderURL>
@@ -119,7 +119,7 @@ Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZo
 										url="<%= editURL %>"
 									/>
 
-									<portlet:actionURL name="editCommerceOrderNote" var="deleteURL">
+									<portlet:actionURL name="/commerce_order/edit_commerce_order_note" var="deleteURL">
 										<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 										<portlet:param name="redirect" value="<%= currentURL %>" />
 										<portlet:param name="commerceOrderNoteId" value="<%= String.valueOf(commerceOrderNote.getCommerceOrderNoteId()) %>" />
@@ -146,7 +146,7 @@ Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZo
 					<div class="panel-body px-0 py-4">
 						<div class="lfr-discussion-details">
 							<liferay-ui:user-portrait
-								cssClass="user-icon-lg"
+								cssClass="sticker-lg"
 								user="<%= user %>"
 							/>
 						</div>

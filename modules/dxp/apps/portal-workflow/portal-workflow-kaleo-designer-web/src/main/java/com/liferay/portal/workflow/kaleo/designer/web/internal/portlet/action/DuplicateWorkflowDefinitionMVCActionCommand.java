@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + KaleoDesignerPortletKeys.KALEO_DESIGNER,
-		"mvc.command.name=duplicateWorkflowDefinition"
+		"mvc.command.name=/kaleo_designer/duplicate_workflow_definition"
 	},
 	service = MVCActionCommand.class
 )

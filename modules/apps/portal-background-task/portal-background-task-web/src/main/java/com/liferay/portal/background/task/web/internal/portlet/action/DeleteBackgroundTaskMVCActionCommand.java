@@ -36,7 +36,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"javax.portlet.name=*", "mvc.command.name=deleteBackgroundTask"
+		"javax.portlet.name=*",
+		"mvc.command.name=/portal_background_task/delete_background_task"
 	},
 	service = MVCActionCommand.class
 )

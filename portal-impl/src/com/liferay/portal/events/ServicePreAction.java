@@ -1669,7 +1669,8 @@ public class ServicePreAction extends Action {
 						PortletRequest.RENDER_PHASE);
 
 					publishToLiveURL.setParameter(
-						"mvcRenderCommandName", "publishLayouts");
+						"mvcRenderCommandName",
+						"/export_import/publish_layouts");
 
 					if (layout.isPrivateLayout()) {
 						publishToLiveURL.setParameter("tabs1", "private-pages");

@@ -28,6 +28,7 @@ public class UserList {
 
 	public UserList(String[] errorMessages) {
 		_errorMessages = errorMessages;
+
 		_success = false;
 	}
 

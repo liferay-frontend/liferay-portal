@@ -15,7 +15,7 @@
 package com.liferay.commerce.product.internal.channel;
 
 import com.liferay.commerce.product.channel.CommerceChannelType;
-import com.liferay.commerce.product.model.CommerceChannelConstants;
+import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;

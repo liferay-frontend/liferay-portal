@@ -122,8 +122,8 @@ public class CommerceNotificationTemplateClayTable
 
 				dropdownItem.setHref(
 					portletURL, "mvcRenderCommandName",
-					"editCommerceNotificationTemplate", "commerceChannelId",
-					String.valueOf(commerceChannelId),
+					"/commerce_channels/edit_commerce_notification_template",
+					"commerceChannelId", String.valueOf(commerceChannelId),
 					"commerceNotificationTemplateId",
 					String.valueOf(
 						notificationTemplate.getNotificationTemplateId()));
@@ -144,7 +144,7 @@ public class CommerceNotificationTemplateClayTable
 
 				deletePortletURL.setParameter(
 					ActionRequest.ACTION_NAME,
-					"editCommerceNotificationTemplate");
+					"/commerce_channels/edit_commerce_notification_template");
 				deletePortletURL.setParameter(Constants.CMD, Constants.DELETE);
 				deletePortletURL.setParameter("redirect", redirect);
 				deletePortletURL.setParameter(

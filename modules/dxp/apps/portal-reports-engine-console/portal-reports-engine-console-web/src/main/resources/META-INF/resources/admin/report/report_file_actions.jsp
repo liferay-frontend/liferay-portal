@@ -54,7 +54,7 @@ String fileName = (String)row.getObject();
 	/>
 
 	<c:if test="<%= EntryPermissionChecker.contains(permissionChecker, entry.getEntryId(), ActionKeys.DELETE) %>">
-		<portlet:actionURL name="deleteReport" var="deleteReportURL">
+		<portlet:actionURL name="/reports_admin/delete_report" var="deleteReportURL">
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="entryId" value="<%= String.valueOf(entry.getEntryId()) %>" />
 			<portlet:param name="fileName" value="<%= fileName %>" />

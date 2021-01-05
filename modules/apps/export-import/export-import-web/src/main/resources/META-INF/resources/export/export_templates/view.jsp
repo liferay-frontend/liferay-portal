@@ -40,14 +40,14 @@ if (liveGroup == null) {
 <liferay-util:include page="/export/export_templates/navigation.jsp" servletContext="<%= application %>" />
 
 <liferay-portlet:renderURL varImpl="portletURL">
-	<portlet:param name="mvcRenderCommandName" value="viewExportConfigurations" />
+	<portlet:param name="mvcRenderCommandName" value="/export_import/view_export_configurations" />
 	<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
 	<portlet:param name="liveGroupId" value="<%= String.valueOf(liveGroupId) %>" />
 	<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
 </liferay-portlet:renderURL>
 
-<portlet:actionURL name="editExportConfiguration" var="restoreTrashEntriesURL">
-	<portlet:param name="mvcRenderCommandName" value="viewExportConfigurations" />
+<portlet:actionURL name="/export_import/edit_export_configuration" var="restoreTrashEntriesURL">
+	<portlet:param name="mvcRenderCommandName" value="/export_import/view_export_configurations" />
 	<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.RESTORE %>" />
 </portlet:actionURL>
 
@@ -90,7 +90,7 @@ ExportTemplatesToolbarDisplayContext exportTemplatesToolbarDisplayContext = new 
 				</liferay-ui:search-container-column-text>
 
 				<liferay-portlet:renderURL varImpl="rowURL">
-					<portlet:param name="mvcRenderCommandName" value="editExportConfiguration" />
+					<portlet:param name="mvcRenderCommandName" value="/export_import/edit_export_configuration" />
 					<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.UPDATE %>" />
 					<portlet:param name="redirect" value="<%= searchContainer.getIteratorURL().toString() %>" />
 					<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />
@@ -100,14 +100,14 @@ ExportTemplatesToolbarDisplayContext exportTemplatesToolbarDisplayContext = new 
 				</liferay-portlet:renderURL>
 
 				<liferay-ui:search-container-column-text
-					cssClass="table-cell-content"
+					cssClass="table-cell-expand"
 					href="<%= rowURL %>"
 					name="title"
 					value="<%= HtmlUtil.escape(exportImportConfiguration.getName()) %>"
 				/>
 
 				<liferay-ui:search-container-column-text
-					cssClass="table-cell-content"
+					cssClass="table-cell-expand"
 					name="description"
 					value="<%= HtmlUtil.escape(exportImportConfiguration.getDescription()) %>"
 				/>

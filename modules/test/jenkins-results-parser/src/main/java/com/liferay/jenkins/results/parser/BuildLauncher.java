@@ -33,9 +33,8 @@ public class BuildLauncher {
 		System.out.println("## " + buildCommand);
 		System.out.println("##");
 
-		BuildData buildData = _getBuildData(args);
-
-		BuildRunner buildRunner = BuildRunnerFactory.newBuildRunner(buildData);
+		BuildRunner buildRunner = BuildRunnerFactory.newBuildRunner(
+			_getBuildData(args));
 
 		if (buildCommand.equals(_COMMAND_RUN)) {
 			buildRunner.run();

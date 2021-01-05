@@ -2,7 +2,7 @@
 definition {
 
 	property portal.release = "true";
-	property portal.upstream = "quarantine";
+	property portal.upstream = "true";
 	property testray.main.component.name = "Commerce";
 
 	setUp {
@@ -20,26 +20,85 @@ definition {
 		else {
 			Navigator.openURL();
 
-			CommerceNavigator.gotoPortlet(
-				category = "Pricing",
-				portlet = "Discounts");
+			CommerceConfiguration.commerceAdminTearDown();
 
-			if (IsElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER")) {
-				CommerceEntry.deleteCommerceEntry();
-			}
-
-			CommerceNavigator.gotoPortlet(
-				category = "Store Management",
-				portlet = "Channels");
-
-			if (IsElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER")) {
-				CommerceEntry.deleteCommerceEntry();
-			}
+			CommerceConfiguration.commerceInitializersTearDown();
 		}
+	}
+
+	test AssertDiscountIsAppliedToChannel {
+		property portal.acceptance = "true";
+
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			siteName = "Minium 2",
+			siteTemplateName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Channels");
+
+		AssertElementPresent(
+			key_entryName = "Minium Portal",
+			locator1 = "CommerceNavigation#ENTRY_NAME");
+
+		AssertElementPresent(
+			key_entryName = "Minium 2 Portal",
+			locator1 = "CommerceNavigation#ENTRY_NAME");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Discounts");
+
+		Click(locator1 = "Button#PLUS");
+
+		CommerceEntry.addNewDiscountsEntry(
+			channelsEligibility = "Minium Portal",
+			discountAmount = "25",
+			discountName = "Test Discount",
+			discountTarget = "Products",
+			discountType = "Percentage");
+
+		CommerceRelations.assignSingleRelationToProductsEntry(
+			entryName = "U-Joint",
+			title = "Add Products");
+
+		Button.clickPublish();
+
+		CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
+
+		CommerceEntry.setEntryEligibility(channelsEligibility = "Minium Portal");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
+
+		CommerceAcceleratorsInitializer.viewDiscountedProductDetailsPage(
+			discountPercentage = "25.00",
+			productDiscountedPrice = "18.00",
+			productListPrice = "24.00");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-2");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
+
+		AssertElementNotPresent(locator1 = "CommerceAccelerators#PRODUCT_DETAILS_DISCOUNT");
+
+		AssertElementNotPresent(locator1 = "CommerceAccelerators#PRODUCT_DETAILS_NET_PRICE");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
+			value1 = "24.00");
 	}
 
 	test CreateNewDiscount {
 		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "CPCommerceDiscounts#CreateNewDiscount";
 
 		CommerceNavigator.gotoPortlet(
@@ -61,12 +120,15 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewDiscountsEntry(
-			channelsEligibility = "Test Channel",
 			discountAmount = "15",
 			discountName = "Test Discount",
 			discountTarget = "Products",
 			discountType = "Percentage",
 			maximumDiscountAmount = "10");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
+
+		CommerceEntry.setEntryEligibility(channelsEligibility = "Test Channel");
 
 		AssertElementPresent(locator1 = "Message#SUCCESS");
 

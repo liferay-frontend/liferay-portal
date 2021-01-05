@@ -21,11 +21,13 @@ public class Coupon {
 
 	public Coupon(String couponCode) {
 		_couponCode = couponCode;
+
 		_success = true;
 	}
 
 	public Coupon(String[] errorMessages) {
 		_errorMessages = errorMessages;
+
 		_success = false;
 	}
 

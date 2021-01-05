@@ -28,34 +28,46 @@ long assetClassPK = DLAssetHelperUtil.getAssetClassPK(fileEntry, fileVersion);
 %>
 
 <div class="sidebar-header">
-	<c:if test="<%= !hideActions %>">
-		<ul class="sidebar-header-actions">
-			<li>
-				<liferay-util:include page="/document_library/file_entry_action.jsp" servletContext="<%= application %>" />
-			</li>
-		</ul>
-	</c:if>
+	<clay:content-row
+		cssClass="sidebar-section"
+	>
+		<clay:content-col
+			expand="<%= true %>"
+		>
+			<clay:content-section>
+				<h1 class="component-title">
+					<%= HtmlUtil.escape(fileVersion.getTitle()) %>
+				</h1>
 
-	<h1 class="sidebar-title">
-		<%= HtmlUtil.escape(fileVersion.getTitle()) %>
-	</h1>
+				<c:if test="<%= !Objects.equals(fileVersion.getTitle(), fileVersion.getFileName()) %>">
+					<p class="component-subtitle">
+						<%= HtmlUtil.escape(fileVersion.getFileName()) %>
+					</p>
+				</c:if>
 
-	<c:if test="<%= !Objects.equals(fileVersion.getTitle(), fileVersion.getFileName()) %>">
-		<h3 class="sidebar-title">
-			<%= HtmlUtil.escape(fileVersion.getFileName()) %>
-		</h3>
-	</c:if>
+				<c:if test="<%= dlViewFileVersionDisplayContext.isVersionInfoVisible() %>">
+					<clay:label
+						displayType="info"
+						label='<%= LanguageUtil.get(request, "version") + StringPool.SPACE + fileVersion.getVersion() %>'
+					/>
+				</c:if>
 
-	<c:if test="<%= dlViewFileVersionDisplayContext.isVersionInfoVisible() %>">
-		<clay:label
-			displayType="info"
-			label='<%= LanguageUtil.get(request, "version") + StringPool.SPACE + fileVersion.getVersion() %>'
-		/>
-	</c:if>
+				<aui:model-context bean="<%= fileVersion %>" model="<%= DLFileVersion.class %>" />
 
-	<aui:model-context bean="<%= fileVersion %>" model="<%= DLFileVersion.class %>" />
+				<aui:workflow-status model="<%= DLFileEntry.class %>" showIcon="<%= false %>" showLabel="<%= false %>" status="<%= fileVersion.getStatus() %>" />
+			</clay:content-section>
+		</clay:content-col>
 
-	<aui:workflow-status model="<%= DLFileEntry.class %>" showIcon="<%= false %>" showLabel="<%= false %>" status="<%= fileVersion.getStatus() %>" />
+		<c:if test="<%= !hideActions %>">
+			<clay:content-col>
+				<ul class="autofit-padded-no-gutters autofit-row">
+					<li class="autofit-col">
+						<liferay-util:include page="/document_library/file_entry_action.jsp" servletContext="<%= application %>" />
+					</li>
+				</ul>
+			</clay:content-col>
+		</c:if>
+	</clay:content-row>
 </div>
 
 <div class="sidebar-body">
@@ -89,16 +101,15 @@ long assetClassPK = DLAssetHelperUtil.getAssetClassPK(fileEntry, fileVersion);
 				name="com.liferay.document.library.web#/document_library/info_panel_file_entry.jsp#fileEntryOwner"
 			>
 				<clay:content-row
-					cssClass="sidebar-panel widget-metadata"
+					cssClass="sidebar-section widget-metadata"
+					noGutters="true"
 				>
 
 					<%
 					User owner = UserLocalServiceUtil.fetchUser(fileEntry.getUserId());
 					%>
 
-					<clay:content-col
-						cssClass="inline-item-before"
-					>
+					<clay:content-col>
 						<liferay-ui:user-portrait
 							user="<%= owner %>"
 						/>
@@ -107,28 +118,22 @@ long assetClassPK = DLAssetHelperUtil.getAssetClassPK(fileEntry, fileVersion);
 					<clay:content-col
 						expand="<%= true %>"
 					>
-						<clay:content-row>
-							<clay:content-col
-								expand="<%= true %>"
-							>
-								<div class="component-title h4 username">
-									<c:if test="<%= owner != null %>">
-										<a href="<%= owner.isDefaultUser() ? StringPool.BLANK : owner.getDisplayURL(themeDisplay) %>"><%= HtmlUtil.escape(owner.getFullName()) %></a>
-									</c:if>
-								</div>
+						<div class="component-title username">
+							<c:if test="<%= owner != null %>">
+								<a href="<%= owner.isDefaultUser() ? StringPool.BLANK : owner.getDisplayURL(themeDisplay) %>"><%= HtmlUtil.escape(owner.getFullName()) %></a>
+							</c:if>
+						</div>
 
-								<small class="text-muted">
-									<liferay-ui:message key="owner" />
-								</small>
-							</clay:content-col>
-						</clay:content-row>
+						<div class="component-subtitle">
+							<liferay-ui:message key="owner" />
+						</div>
 					</clay:content-col>
 				</clay:content-row>
 			</liferay-dynamic-section:dynamic-section>
 
 			<c:if test="<%= dlViewFileVersionDisplayContext.isDownloadLinkVisible() || dlViewFileVersionDisplayContext.isSharingLinkVisible() %>">
 				<div class="sidebar-section">
-					<div class="btn-group sidebar-panel">
+					<div class="btn-group">
 						<c:if test="<%= dlViewFileVersionDisplayContext.isDownloadLinkVisible() %>">
 							<c:choose>
 								<c:when test="<%= PropsValues.DL_FILE_ENTRY_CONVERSIONS_ENABLED && DocumentConversionUtil.isEnabled() %>">
@@ -222,36 +227,76 @@ long assetClassPK = DLAssetHelperUtil.getAssetClassPK(fileEntry, fileVersion);
 							</div>
 						</c:if>
 					</div>
+				</div>
 
-					<div class="sidebar-panel">
+				<div class="sidebar-section">
+
+					<%
+					boolean isLatestVersion = fileVersion.equals(fileEntry.getLatestFileVersion());
+
+					String urlLabel = null;
+
+					if (isLatestVersion) {
+						urlLabel = LanguageUtil.get(resourceBundle, "latest-version-url");
+					}
+					else {
+						urlLabel = LanguageUtil.format(request, "version-x-url", fileVersion.getVersion());
+					}
+
+					String urlInputId = liferayPortletResponse.getNamespace() + "urlInput";
+					%>
+
+					<div class="form-group">
+						<label for="<%= urlInputId %>"><%= urlLabel %></label>
+
+						<div class="input-group input-group-sm">
+							<div class="input-group-item input-group-prepend">
+								<input class="form-control" id="<%= urlInputId %>" value="<%= DLURLHelperUtil.getPreviewURL(fileEntry, fileVersion, themeDisplay, StringPool.BLANK, !isLatestVersion, true) %>" />
+							</div>
+
+							<span class="input-group-append input-group-item input-group-item-shrink">
+								<clay:button
+									cssClass="dm-infopanel-copy-clipboard lfr-portal-tooltip"
+									data-clipboard-target='<%= "#" + urlInputId %>'
+									displayType="secondary"
+									icon="paste"
+									title="copy-link"
+								/>
+							</span>
+						</div>
+					</div>
+
+					<c:if test="<%= portletDisplay.isWebDAVEnabled() && fileEntry.isSupportsSocial() && isLatestVersion %>">
 
 						<%
-						boolean isLatestVersion = fileVersion.equals(fileEntry.getLatestFileVersion());
+						String webDavHelpMessage = null;
 
-						String urlLabel = null;
-
-						if (isLatestVersion) {
-							urlLabel = LanguageUtil.get(resourceBundle, "latest-version-url");
+						if (BrowserSnifferUtil.isWindows(request)) {
+							webDavHelpMessage = LanguageUtil.format(request, "webdav-windows-help", new Object[] {"https://support.microsoft.com/en-us/kb/892211", "https://help.liferay.com/hc/en-us/articles/360028720352-Desktop-Access-to-Documents-and-Media"}, false);
 						}
 						else {
-							urlLabel = LanguageUtil.format(request, "version-x-url", fileVersion.getVersion());
+							webDavHelpMessage = LanguageUtil.format(request, "webdav-help", "https://help.liferay.com/hc/en-us/articles/360028720352-Desktop-Access-to-Documents-and-Media", false);
 						}
 
-						String urlInputId = liferayPortletResponse.getNamespace() + "urlInput";
+						String webDavURLInputId = liferayPortletResponse.getNamespace() + "webDavURLInput";
 						%>
 
 						<div class="form-group">
-							<label for="<%= urlInputId %>"><%= urlLabel %></label>
+							<label for="<%= webDavURLInputId %>">
+								<liferay-ui:message key='<%= TextFormatter.format("webDavURL", TextFormatter.K) %>' />
+
+								<liferay-ui:icon-help message="<%= webDavHelpMessage %>" />
+							</label>
 
 							<div class="input-group input-group-sm">
 								<div class="input-group-item input-group-prepend">
-									<input class="form-control" id="<%= urlInputId %>" value="<%= DLURLHelperUtil.getPreviewURL(fileEntry, fileVersion, themeDisplay, StringPool.BLANK, !isLatestVersion, true) %>" />
+									<input class="form-control" id="<%= webDavURLInputId %>" value="<%= DLURLHelperUtil.getWebDavURL(themeDisplay, fileEntry.getFolder(), fileEntry) %>" />
 								</div>
 
 								<span class="input-group-append input-group-item input-group-item-shrink">
 									<clay:button
 										cssClass="dm-infopanel-copy-clipboard lfr-portal-tooltip"
-										data-clipboard-target='<%= "#" + urlInputId %>'
+										data-clipboard-target='<%= "#" + webDavURLInputId %>'
 										displayType="secondary"
 										icon="paste"
 										title="copy-link"
@@ -259,47 +304,7 @@ long assetClassPK = DLAssetHelperUtil.getAssetClassPK(fileEntry, fileVersion);
 								</span>
 							</div>
 						</div>
-
-						<c:if test="<%= portletDisplay.isWebDAVEnabled() && fileEntry.isSupportsSocial() && isLatestVersion %>">
-
-							<%
-							String webDavHelpMessage = null;
-
-							if (BrowserSnifferUtil.isWindows(request)) {
-								webDavHelpMessage = LanguageUtil.format(request, "webdav-windows-help", new Object[] {"https://support.microsoft.com/en-us/kb/892211", "https://help.liferay.com/hc/en-us/articles/360028720352-Desktop-Access-to-Documents-and-Media"}, false);
-							}
-							else {
-								webDavHelpMessage = LanguageUtil.format(request, "webdav-help", "https://help.liferay.com/hc/en-us/articles/360028720352-Desktop-Access-to-Documents-and-Media", false);
-							}
-
-							String webDavURLInputId = liferayPortletResponse.getNamespace() + "webDavURLInput";
-							%>
-
-							<div class="form-group">
-								<label for="<%= webDavURLInputId %>">
-									<liferay-ui:message key='<%= TextFormatter.format("webDavURL", TextFormatter.K) %>' />
-
-									<liferay-ui:icon-help message="<%= webDavHelpMessage %>" />
-								</label>
-
-								<div class="input-group input-group-sm">
-									<div class="input-group-item input-group-prepend">
-										<input class="form-control" id="<%= webDavURLInputId %>" value="<%= DLURLHelperUtil.getWebDavURL(themeDisplay, fileEntry.getFolder(), fileEntry) %>" />
-									</div>
-
-									<span class="input-group-append input-group-item input-group-item-shrink">
-										<clay:button
-											cssClass="dm-infopanel-copy-clipboard lfr-portal-tooltip"
-											data-clipboard-target='<%= "#" + webDavURLInputId %>'
-											displayType="secondary"
-											icon="paste"
-											title="copy-link"
-										/>
-									</span>
-								</div>
-							</div>
-						</c:if>
-					</div>
+					</c:if>
 				</div>
 			</c:if>
 
@@ -433,18 +438,14 @@ long assetClassPK = DLAssetHelperUtil.getAssetClassPK(fileEntry, fileVersion);
 						for (DDMStructure ddmStructure : ddmStructures) {
 							DDMFormValues ddmFormValues = null;
 
-							List<DDMFormFieldValue> ddmFormFieldValues = new ArrayList<DDMFormFieldValue>();
-
 							try {
 								ddmFormValues = dlViewFileVersionDisplayContext.getDDMFormValues(ddmStructure);
-
-								ddmFormFieldValues = ddmFormValues.getDDMFormFieldValues();
 							}
 							catch (Exception e) {
 							}
 					%>
 
-							<c:if test="<%= !ddmFormFieldValues.isEmpty() %>">
+							<c:if test="<%= ddmFormValues != null %>">
 								<liferay-ui:panel
 									collapsible="<%= true %>"
 									cssClass="metadata"
@@ -455,15 +456,12 @@ long assetClassPK = DLAssetHelperUtil.getAssetClassPK(fileEntry, fileVersion);
 									persistState="<%= true %>"
 									title="<%= HtmlUtil.escape(ddmStructure.getName(locale)) %>"
 								>
-									<liferay-ddm:html
-										classNameId="<%= PortalUtil.getClassNameId(com.liferay.dynamic.data.mapping.model.DDMStructure.class) %>"
-										classPK="<%= ddmStructure.getPrimaryKey() %>"
-										ddmFormValues="<%= ddmFormValues %>"
-										fieldsNamespace="<%= String.valueOf(ddmStructure.getPrimaryKey()) %>"
-										groupId="<%= fileVersion.getGroupId() %>"
+									<liferay-data-engine:data-layout-renderer
+										containerId='<%= liferayPortletResponse.getNamespace() + "dataEngineLayoutRenderer" + ddmStructure.getStructureId() %>'
+										dataDefinitionId="<%= ddmStructure.getStructureId() %>"
+										dataRecordValues="<%= DataRecordValuesUtil.getDataRecordValues(ddmFormValues, ddmStructure) %>"
+										namespace="<%= liferayPortletResponse.getNamespace() + ddmStructure.getStructureId() %>"
 										readOnly="<%= true %>"
-										requestedLocale="<%= locale %>"
-										showEmptyFieldLabel="<%= false %>"
 									/>
 								</liferay-ui:panel>
 							</c:if>

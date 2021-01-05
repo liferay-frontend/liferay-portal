@@ -15,8 +15,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
-const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
-const StyleExtHtmlWebpackPlugin = require('style-ext-html-webpack-plugin');
 const buildName = 'headless-discovery-web-min.js';
 
 const config = {
@@ -44,7 +42,7 @@ const config = {
 	},
 	output: {
 		filename: buildName,
-		path: path.resolve('src/main/resources/META-INF/resources/dist'),
+		path: path.resolve('./build/node/packageRunBuild/resources/'),
 		publicPath: '',
 	},
 	plugins: [
@@ -58,10 +56,6 @@ const config = {
 			inject: true,
 			template: './src/index.html',
 		}),
-		new ScriptExtHtmlWebpackPlugin({
-			inline: /\.js$/,
-		}),
-		new StyleExtHtmlWebpackPlugin(),
 	],
 };
 

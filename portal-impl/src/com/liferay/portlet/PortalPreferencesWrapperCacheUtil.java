@@ -28,26 +28,22 @@ public class PortalPreferencesWrapperCacheUtil {
 		PortalPreferencesWrapperCacheUtil.class.getName();
 
 	public static PortalPreferencesWrapper get(long ownerId, int ownerType) {
-		String cacheKey = _getCacheKey(ownerId, ownerType);
-
-		return _portalPreferencesWrapperPortalCache.get(cacheKey);
+		return _portalPreferencesWrapperPortalCache.get(
+			_getCacheKey(ownerId, ownerType));
 	}
 
 	public static void put(
 		long ownerId, int ownerType,
 		PortalPreferencesWrapper portalPreferencesWrapper) {
 
-		String cacheKey = _getCacheKey(ownerId, ownerType);
-
 		PortalCacheHelperUtil.putWithoutReplicator(
-			_portalPreferencesWrapperPortalCache, cacheKey,
-			portalPreferencesWrapper);
+			_portalPreferencesWrapperPortalCache,
+			_getCacheKey(ownerId, ownerType), portalPreferencesWrapper);
 	}
 
 	public static void remove(long ownerId, int ownerType) {
-		String cacheKey = _getCacheKey(ownerId, ownerType);
-
-		_portalPreferencesWrapperPortalCache.remove(cacheKey);
+		_portalPreferencesWrapperPortalCache.remove(
+			_getCacheKey(ownerId, ownerType));
 	}
 
 	private static String _getCacheKey(long ownerId, int ownerType) {

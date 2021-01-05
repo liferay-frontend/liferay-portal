@@ -15,6 +15,7 @@
 package com.liferay.commerce.product.definitions.web.internal.frontend;
 
 import com.liferay.commerce.frontend.model.ImageField;
+import com.liferay.commerce.product.definitions.web.internal.frontend.constants.CommerceProductDataSetConstants;
 import com.liferay.commerce.product.definitions.web.internal.model.ProductLink;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionLink;

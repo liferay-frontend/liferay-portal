@@ -2,13 +2,12 @@
 
 @import './components/components';
 @import './form-builder/form-builder';
-@import './rule-builder/rule-builder';
 
 .col-empty > p {
 	margin: 0;
 }
 
-.calculate-fieldname {
+.calculate-field-reference {
 	display: block;
 	font-size: 10px;
 }
@@ -20,16 +19,6 @@
 
 .dropdown-menu.show {
 	z-index: 1200;
-}
-
-.liferay-ddm-form-builder-calculator {
-	flex-direction: column;
-
-	.calculator-button-area li {
-		&.disabled {
-			pointer-events: none;
-		}
-	}
 }
 
 .ddm-field-container {
@@ -54,63 +43,6 @@
 .ddm-target {
 	height: 100%;
 	width: 100%;
-}
-
-.liferay-ddm-form-rule-builder-timeline .timeline-item .panel-body .dropdown {
-	&.dropdown-action,
-	&.calculator-add-field-button-container {
-		position: relative;
-		right: 0;
-		top: 0;
-	}
-
-	.calculator-add-operator-button-area {
-		background-color: #fff;
-		border: solid 1px #cdced9;
-		color: #6b6c7e;
-	}
-}
-
-.form-builder-rule-builder {
-	.add-item.timeline-increment-icon {
-		padding-left: 10px;
-	}
-
-	.liferay-ddm-form-rule-builder-timeline {
-		margin-bottom: 0;
-
-		&.can-remove-item {
-			.timeline-item:hover > .container-trash {
-				display: block;
-			}
-		}
-
-		[class*=' target-message-'] {
-			max-width: max-content;
-		}
-
-		&.liferay-ddm-form-builder-rule-action-list
-			.timeline-item:last-child:before {
-			bottom: 0;
-		}
-
-		.container-trash {
-			cursor: pointer;
-			display: none;
-			padding: 10px;
-			position: absolute;
-			right: 10px;
-			top: 13px;
-
-			&:hover {
-				color: #65b6f0;
-			}
-		}
-	}
-}
-
-.form-builder-rule-builder-rule-description {
-	margin-bottom: 0;
 }
 
 .form-builder-select-field {

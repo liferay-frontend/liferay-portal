@@ -93,7 +93,8 @@ class Parent extends JSXComponent {
 	render() {
 		return (
 			<LayoutProvider
-				defaultLanguageIdd="en_US"
+				availableLanguageIds={['en_US']}
+				defaultLanguageId="en_US"
 				editingLanguageId="en_US"
 				initialPages={[...mockPages]}
 				pages={[...mockPages]}
@@ -695,6 +696,7 @@ describe('LayoutProvider', () => {
 
 				const changedFocusedField = {
 					...mockFieldType,
+					fieldName: 'text1',
 					settingsContext: {
 						...mockFieldType.settingsContext,
 						pages: changeField(mockFieldType, 'required', false),

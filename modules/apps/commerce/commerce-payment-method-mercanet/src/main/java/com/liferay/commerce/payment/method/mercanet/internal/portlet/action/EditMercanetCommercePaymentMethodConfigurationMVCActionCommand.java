@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.COMMERCE_PAYMENT_METHODS,
-		"mvc.command.name=editMercanetCommercePaymentMethodConfiguration"
+		"mvc.command.name=/commerce_payment_methods/edit_mercanet_commerce_payment_method_configuration"
 	},
 	service = MVCActionCommand.class
 )

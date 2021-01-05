@@ -28,12 +28,12 @@ FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(groupId, themeDisp
 ManifestSummary manifestSummary = ExportImportHelperUtil.getManifestSummary(themeDisplay.getUserId(), groupId, new HashMap<String, String[]>(), fileEntry);
 %>
 
-<portlet:actionURL name="exportImport" var="importPortletActionURL">
-	<portlet:param name="mvcRenderCommandName" value="exportImport" />
+<portlet:actionURL name="/export_import/export_import" var="importPortletActionURL">
+	<portlet:param name="mvcRenderCommandName" value="/export_import/export_import" />
 </portlet:actionURL>
 
 <portlet:renderURL var="importPortletRenderURL">
-	<portlet:param name="mvcRenderCommandName" value="exportImport" />
+	<portlet:param name="mvcRenderCommandName" value="/export_import/export_import" />
 	<portlet:param name="tabs2" value="import" />
 	<portlet:param name="tabs3" value="current-and-previous" />
 	<portlet:param name="redirect" value="<%= redirect %>" />
@@ -354,7 +354,7 @@ ManifestSummary manifestSummary = ExportImportHelperUtil.getManifestSummary(them
 
 	<aui:button-row>
 		<portlet:renderURL var="backURL">
-			<portlet:param name="mvcRenderCommandName" value="exportImport" />
+			<portlet:param name="mvcRenderCommandName" value="/export_import/export_import" />
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.VALIDATE %>" />
 			<portlet:param name="tabs2" value="import" />
 			<portlet:param name="portletResource" value="<%= String.valueOf(portletResource) %>" />

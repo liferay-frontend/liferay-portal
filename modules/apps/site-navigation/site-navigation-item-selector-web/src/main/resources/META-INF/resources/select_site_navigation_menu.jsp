@@ -25,8 +25,24 @@ SelectSiteNavigationMenuDisplayContext selectSiteNavigationMenuDisplayContext = 
 		<liferay-util:include page="/select_site_navigation_menu_level.jsp" servletContext="<%= application %>" />
 	</c:when>
 	<c:otherwise>
-		<div class="container-fluid-1280 p-4">
-			<p class="text-secondary"><liferay-ui:message key="select-the-page-level-of-the-navigation-menu-to-be-displayed" /></p>
+		<div class="container-fluid container-fluid-max-xl p-4">
+			<div class="alert alert-info">
+				<liferay-ui:message key="select-the-page-level-of-the-navigation-menu-to-be-displayed" />
+			</div>
+
+			<div class="align-items-center d-flex justify-content-between">
+				<liferay-site-navigation:breadcrumb
+					breadcrumbEntries="<%= selectSiteNavigationMenuDisplayContext.getBreadcrumbEntries() %>"
+				/>
+
+				<clay:button
+					cssClass="site-navigation-menu-selector"
+					disabled="<%= true %>"
+					displayType="primary"
+					label='<%= LanguageUtil.get(resourceBundle, "select-this-level") %>'
+					small="<%= true %>"
+				/>
+			</div>
 
 			<liferay-ui:search-container
 				cssClass="table-hover"
@@ -49,25 +65,25 @@ SelectSiteNavigationMenuDisplayContext selectSiteNavigationMenuDisplayContext = 
 					%>
 
 					<liferay-ui:search-container-column-text
-						colspan="<%= 2 %>"
+						cssClass="table-cell-expand"
 						name="name"
 					>
-						<clay:icon
-							cssClass="mr-2"
-							symbol="sites"
+						<clay:sticker
+							cssClass="bg-light mr-3"
+							displayType="light"
+							icon="sites"
 						/>
 
-						<a href="<%= selectSiteNavigationMenuDisplayContext.getSelectSiteNavigationMenuLevelURL(siteNavigationMenu.getSiteNavigationMenuId()) %>">
+						<a href="<%= selectSiteNavigationMenuDisplayContext.getSelectSiteNavigationMenuLevelURL(siteNavigationMenu.getSiteNavigationMenuId(), siteNavigationMenu.getType()) %>">
 							<b><%= HtmlUtil.escape(name) %></b>
 						</a>
+					</liferay-ui:search-container-column-text>
 
-						<c:if test="<%= siteNavigationMenu.getSiteNavigationMenuId() == 0 %>">
-							<clay:label
-								cssClass="ml-1"
-								displayType="primary"
-								label="default"
-							/>
-						</c:if>
+					<liferay-ui:search-container-column-text
+						cssClass="table-cell-minw-300"
+						name="marked-as"
+					>
+						<liferay-ui:message key="<%= siteNavigationMenu.getTypeKey() %>" />
 					</liferay-ui:search-container-column-text>
 				</liferay-ui:search-container-row>
 

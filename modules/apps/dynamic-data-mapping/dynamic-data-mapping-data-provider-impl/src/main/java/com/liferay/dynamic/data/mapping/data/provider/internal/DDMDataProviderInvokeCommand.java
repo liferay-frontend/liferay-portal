@@ -58,6 +58,7 @@ public class DDMDataProviderInvokeCommand
 
 		_ddmDataProvider = ddmDataProvider;
 		_ddmDataProviderRequest = ddmDataProviderRequest;
+
 		_permissionChecker = PermissionThreadLocal.getPermissionChecker();
 	}
 

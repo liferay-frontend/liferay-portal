@@ -85,16 +85,17 @@ public class AggregationContextProvider
 				ComplexEntityField complexEntityField =
 					(ComplexEntityField)entityField;
 
-				entityFieldsMap = complexEntityField.getEntityFieldsMap();
+				Map<String, EntityField> complexEntityFieldsMap =
+					complexEntityField.getEntityFieldsMap();
 
-				entityField = entityFieldsMap.get(aggregationTermParts[1]);
+				entityField = complexEntityFieldsMap.get(
+					aggregationTermParts[1]);
 			}
 
 			if (entityField != null) {
 				aggregationTerms.put(
 					aggregationTerm,
-					entityField.getFilterableName(
-						acceptLanguage.getPreferredLocale()));
+					_getAggregationTermValue(acceptLanguage, entityField));
 			}
 		}
 
@@ -116,6 +117,19 @@ public class AggregationContextProvider
 		catch (Exception exception) {
 			throw new ServerErrorException(500, exception);
 		}
+	}
+
+	private String _getAggregationTermValue(
+		AcceptLanguage acceptLanguage, EntityField entityField) {
+
+		String aggregationTermValue = entityField.getFilterableName(
+			acceptLanguage.getPreferredLocale());
+
+		if (aggregationTermValue.startsWith("expando")) {
+			aggregationTermValue += ".raw";
+		}
+
+		return aggregationTermValue;
 	}
 
 	private final Language _language;

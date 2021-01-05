@@ -75,8 +75,6 @@ public class CPDisplayLayoutLocalServiceImpl
 			String layoutUuid)
 		throws PortalException {
 
-		User user = userLocalService.getUser(userId);
-
 		validate(classPK, layoutUuid);
 
 		long classNameId = classNameLocalService.getClassNameId(clazz);
@@ -113,7 +111,11 @@ public class CPDisplayLayoutLocalServiceImpl
 			cpDisplayLayoutId);
 
 		cpDisplayLayout.setGroupId(groupId);
+
+		User user = userLocalService.getUser(userId);
+
 		cpDisplayLayout.setCompanyId(user.getCompanyId());
+
 		cpDisplayLayout.setClassNameId(classNameId);
 		cpDisplayLayout.setClassPK(classPK);
 		cpDisplayLayout.setLayoutUuid(layoutUuid);

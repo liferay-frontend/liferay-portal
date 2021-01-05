@@ -112,7 +112,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(enabled = false, immediate = true, service = CPFileImporter.class)
 public class CPFileImporterImpl implements CPFileImporter {
 
-	public static final String GROUP_ID_PLACEHOLDER = "[$groupId$]";
+	public static final String GROUP_ID_PLACEHOLDER = "[$GROUP_ID$]";
 
 	public static final String IMG_TAG =
 		"<img alt='' src='%s' data-fileentryid='%s' />";
@@ -396,7 +396,6 @@ public class CPFileImporterImpl implements CPFileImporter {
 
 		boolean hidden = jsonObject.getBoolean("hidden");
 		String icon = jsonObject.getString("icon");
-		String layoutTemplateId = jsonObject.getString("layoutTemplateId");
 		String layoutType = jsonObject.getString(
 			"layoutType", LayoutConstants.TYPE_PORTLET);
 		String name = jsonObject.getString("name");
@@ -442,6 +441,8 @@ public class CPFileImporterImpl implements CPFileImporter {
 		JSONArray portletsJSONArray = jsonObject.getJSONArray("portlets");
 
 		if ((portletsJSONArray != null) && (portletsJSONArray.length() > 0)) {
+			String layoutTemplateId = jsonObject.getString("layoutTemplateId");
+
 			addLayoutPortlets(
 				portletsJSONArray, layout, layoutTemplateId, classLoader,
 				serviceContext);
@@ -812,9 +813,8 @@ public class CPFileImporterImpl implements CPFileImporter {
 			if (key.equals("assetEntryId")) {
 				String articleId = jsonObject.getString("articleId");
 
-				long assetEntryId = getAssetEntryId(articleId, serviceContext);
-
-				value = String.valueOf(assetEntryId);
+				value = String.valueOf(
+					getAssetEntryId(articleId, serviceContext));
 			}
 			else if (key.equals("groupId")) {
 				value = String.valueOf(serviceContext.getScopeGroupId());
@@ -837,15 +837,14 @@ public class CPFileImporterImpl implements CPFileImporter {
 			theme.getConfigurableSettings();
 
 		for (Map.Entry<String, ThemeSetting> entry : themeSettings.entrySet()) {
-			String key = entry.getKey();
-
 			ThemeSetting themeSetting = entry.getValue();
 
 			String value = themeSetting.getValue();
 
 			if (!value.equals(themeSetting.getValue())) {
 				typeSettingUnicodeProperties.setProperty(
-					ThemeSettingImpl.namespaceProperty(device, key), value);
+					ThemeSettingImpl.namespaceProperty(device, entry.getKey()),
+					value);
 			}
 		}
 	}

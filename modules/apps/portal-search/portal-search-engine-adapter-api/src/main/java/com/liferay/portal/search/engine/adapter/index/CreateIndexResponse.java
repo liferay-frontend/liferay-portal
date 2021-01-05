@@ -21,6 +21,7 @@ public class CreateIndexResponse implements IndexResponse {
 
 	public CreateIndexResponse(boolean acknowledged) {
 		_acknowledged = acknowledged;
+
 		_indexName = null;
 	}
 

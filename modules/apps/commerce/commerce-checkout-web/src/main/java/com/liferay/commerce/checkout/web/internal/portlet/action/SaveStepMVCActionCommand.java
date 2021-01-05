@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_CHECKOUT,
-		"mvc.command.name=saveStep"
+		"mvc.command.name=/commerce_checkout/save_step"
 	},
 	service = MVCActionCommand.class
 )

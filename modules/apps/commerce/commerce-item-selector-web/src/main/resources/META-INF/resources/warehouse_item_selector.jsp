@@ -62,7 +62,7 @@ for (ManagementBarFilterItem managementBarFilterItem : managementBarFilterItems)
 	</liferay-frontend:management-bar-buttons>
 </liferay-frontend:management-bar>
 
-<div class="container-fluid-1280" id="<portlet:namespace />commerceInventoryWarehouseSelectorWrapper">
+<div class="container-fluid container-fluid-max-xl" id="<portlet:namespace />commerceInventoryWarehouseSelectorWrapper">
 	<liferay-ui:search-container
 		id="commerceInventoryWarehouses"
 		searchContainer="<%= commerceInventoryWarehouseItemSelectorViewDisplayContext.getSearchContainer() %>"
@@ -73,12 +73,12 @@ for (ManagementBarFilterItem managementBarFilterItem : managementBarFilterItems)
 			modelVar="commerceInventoryWarehouse"
 		>
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				property="name"
 			/>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				property="city"
 			/>
 		</liferay-ui:search-container-row>

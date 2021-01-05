@@ -56,6 +56,14 @@ definition {
 		AssertVisible(locator1 = "Form#PUBLISH_URL_ICON");
 	}
 
+	macro changeFieldTypeModalConfirmation {
+		FormFields.changeFieldType(selectOption = "${selectOption}");
+
+		while (IsElementPresent(locator1 = "Form#VALIDATE_CHANGE_FIELD_TYPE_MODAL_MESSAGE")) {
+			Click(locator1 = "Form#SIDEBAR_CHANGE_FIELD_TYPE_MODAL_BUTTON");
+		}
+	}
+
 	macro closeSidebar {
 		Pause(locator1 = "1000");
 
@@ -212,6 +220,18 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "Form#FIELD_LABEL",
+			value1 = "${fieldValue}");
+	}
+
+	macro editFieldReferenceMetal {
+		FormFields.editText(
+			fieldName = "fieldReference",
+			fieldValue = "${fieldValue}");
+
+		var key_fieldName = "${fieldValue}";
+
+		AssertTextEquals(
+			locator1 = "Form#FIELD_REFERENCE",
 			value1 = "${fieldValue}");
 	}
 

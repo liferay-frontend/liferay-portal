@@ -20,7 +20,7 @@
 SiteNavigationMenuItem siteNavigationMenuItem = (SiteNavigationMenuItem)request.getAttribute(SiteNavigationWebKeys.SITE_NAVIGATION_MENU_ITEM);
 
 String url = StringPool.BLANK;
-boolean useNewtab = false;
+boolean useNewTab = false;
 
 if (siteNavigationMenuItem != null) {
 	UnicodeProperties typeSettingsProperties = new UnicodeProperties();
@@ -28,7 +28,7 @@ if (siteNavigationMenuItem != null) {
 	typeSettingsProperties.fastLoad(siteNavigationMenuItem.getTypeSettings());
 
 	url = typeSettingsProperties.getProperty("url");
-	useNewtab = GetterUtil.getBoolean(typeSettingsProperties.getProperty("useNewtab", Boolean.FALSE.toString()));
+	useNewTab = GetterUtil.getBoolean(typeSettingsProperties.getProperty("useNewTab", Boolean.FALSE.toString()));
 }
 %>
 
@@ -42,4 +42,4 @@ if (siteNavigationMenuItem != null) {
 	<aui:validator name="url" />
 </aui:input>
 
-<aui:input checked="<%= useNewtab %>" label="open-in-a-new-tab" name="TypeSettingsProperties--useNewtab--" type="checkbox" />
+<aui:input checked="<%= useNewTab %>" label="open-in-a-new-tab" name="TypeSettingsProperties--useNewTab--" type="checkbox" />

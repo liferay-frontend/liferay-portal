@@ -18,6 +18,7 @@ import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceEntryService;
+import com.liferay.commerce.price.list.web.internal.frontend.constants.CommercePriceListDataSetConstants;
 import com.liferay.commerce.price.list.web.internal.model.InstancePriceEntry;
 import com.liferay.frontend.taglib.clay.data.Filter;
 import com.liferay.frontend.taglib.clay.data.Pagination;

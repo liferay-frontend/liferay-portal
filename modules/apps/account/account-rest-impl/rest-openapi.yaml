@@ -3,17 +3,15 @@ components:
         Account:
             # @review
             description:
-                An account represents an external account, for example a
-                customer business.
+                An account represents an external account, for example a customer business.
             properties:
                 description:
                     type: string
                 domains:
                     # @review
                     description:
-                        The account's email domains. Users assigned to this
-                        account generally will have email addresses under one
-                        of these domains.
+                        The account's email domains. Users assigned to this account generally will have email addresses
+                        under one of these domains.
                     items:
                         type: string
                     type: array
@@ -283,8 +281,7 @@ paths:
         patch:
             # @review
             description:
-                Updates the account with information sent in the request body. Only the provided fields
-                are updated.
+                Updates the account with information sent in the request body. Only the provided fields are updated.
             operationId: patchAccountByExternalReferenceCode
             parameters:
                 - in: path
@@ -316,8 +313,8 @@ paths:
         put:
             # @review
             description:
-                Replaces the account with information sent in the request body. Any missing fields are deleted
-                unless they are required.
+                Replaces the account with information sent in the request body. Any missing fields are deleted unless
+                they are required.
             operationId: putAccountByExternalReferenceCode
             parameters:
                 - in: path
@@ -549,8 +546,7 @@ paths:
         patch:
             # @review
             description:
-                Updates the account with information sent in the request body. Only the provided fields
-                are updated.
+                Updates the account with information sent in the request body. Only the provided fields are updated.
             operationId: patchAccount
             parameters:
                 - in: path
@@ -583,8 +579,8 @@ paths:
         put:
             # @review
             description:
-                Replaces the account with information sent in the request body. Any missing fields are deleted
-                unless they are required.
+                Replaces the account with information sent in the request body. Any missing fields are deleted unless
+                they are required.
             operationId: putAccount
             parameters:
                 - in: path

@@ -21,7 +21,6 @@ import React from 'react';
 import {EVENT_TYPES} from '../../actions/eventTypes.es';
 import {useForm} from '../../hooks/useForm.es';
 import {usePage} from '../../hooks/usePage.es';
-import {Placeholder} from './DefaultVariant.es';
 
 /* eslint-disable react/jsx-fragments */
 export const Container = ({children, empty, page, pageIndex, pages}) => {
@@ -186,6 +185,8 @@ export const Container = ({children, empty, page, pageIndex, pages}) => {
 	);
 };
 
+Container.displayName = 'MultiPagesVariant.Container';
+
 export const Page = ({
 	children,
 	editable,
@@ -222,32 +223,4 @@ export const Page = ({
 	</div>
 );
 
-export const Rows = ({children, editable, pageIndex, rows}) => {
-	if (!rows) {
-		return null;
-	}
-
-	return rows.map((row, index) => (
-		<div key={index}>
-			{index === 0 && editable && (
-				<Placeholder
-					isRow
-					pageIndex={pageIndex}
-					rowIndex={0}
-					size={12}
-				/>
-			)}
-
-			{children({index, row})}
-
-			{editable && (
-				<Placeholder
-					isRow
-					pageIndex={pageIndex}
-					rowIndex={index + 1}
-					size={12}
-				/>
-			)}
-		</div>
-	));
-};
+Page.displayName = 'MultiPagesVariant.Page';

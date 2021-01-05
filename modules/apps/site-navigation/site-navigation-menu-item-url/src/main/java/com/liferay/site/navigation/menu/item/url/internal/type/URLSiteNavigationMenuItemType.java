@@ -80,11 +80,11 @@ public class URLSiteNavigationMenuItemType
 		typeSettingsUnicodeProperties.fastLoad(
 			siteNavigationMenuItem.getTypeSettings());
 
-		boolean useNewtab = GetterUtil.getBoolean(
+		boolean useNewTab = GetterUtil.getBoolean(
 			typeSettingsUnicodeProperties.getProperty(
-				"useNewtab", Boolean.FALSE.toString()));
+				"useNewTab", Boolean.FALSE.toString()));
 
-		if (!useNewtab) {
+		if (!useNewTab) {
 			return StringPool.BLANK;
 		}
 

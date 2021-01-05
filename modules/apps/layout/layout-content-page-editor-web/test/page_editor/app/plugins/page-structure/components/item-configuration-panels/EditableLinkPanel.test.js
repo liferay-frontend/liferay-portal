@@ -63,6 +63,7 @@ function getStateWithConfig(config = {}) {
 				},
 			},
 		},
+		languageId: 'en',
 		mappedInfoItems: [],
 		segmentsExperienceId: 0,
 	};
@@ -228,7 +229,7 @@ describe('EditableLinkPanel', () => {
 			target: {value: 'manual'},
 		});
 
-		expect(editableConfig).toEqual({});
+		expect(editableConfig.en).toEqual({});
 
 		expect(getByLabelText(document.body, 'url')).toHaveValue('');
 		expect(
@@ -255,7 +256,9 @@ describe('EditableLinkPanel', () => {
 		expect(updateEditableValues).toHaveBeenCalled();
 
 		expect(editableConfig).toEqual({
-			href: 'http://google.com',
+			en: {
+				href: 'http://google.com',
+			},
 			mapperType: 'link',
 		});
 	});
@@ -280,7 +283,9 @@ describe('EditableLinkPanel', () => {
 		expect(updateEditableValues).toHaveBeenCalled();
 
 		expect(editableConfig).toEqual({
-			href: 'http://google.com',
+			en: {
+				href: 'http://google.com',
+			},
 		});
 	});
 });

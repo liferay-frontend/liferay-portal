@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
@@ -60,6 +61,7 @@ public class LayoutsAdminManagementToolbarDisplayContext
 			layoutsAdminDisplayContext.getLayoutsSearchContainer());
 
 		_layoutsAdminDisplayContext = layoutsAdminDisplayContext;
+
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}
@@ -303,7 +305,7 @@ public class LayoutsAdminManagementToolbarDisplayContext
 		if (layout != null) {
 			return LanguageUtil.format(
 				httpServletRequest, "add-child-collection-page-of-x",
-				layout.getName(_themeDisplay.getLocale()));
+				HtmlUtil.escape(layout.getName(_themeDisplay.getLocale())));
 		}
 
 		if (_isSiteTemplate()) {
@@ -325,7 +327,7 @@ public class LayoutsAdminManagementToolbarDisplayContext
 		if (layout != null) {
 			return LanguageUtil.format(
 				httpServletRequest, "add-child-page-of-x",
-				layout.getName(_themeDisplay.getLocale()));
+				HtmlUtil.escape(layout.getName(_themeDisplay.getLocale())));
 		}
 
 		if (_isSiteTemplate()) {

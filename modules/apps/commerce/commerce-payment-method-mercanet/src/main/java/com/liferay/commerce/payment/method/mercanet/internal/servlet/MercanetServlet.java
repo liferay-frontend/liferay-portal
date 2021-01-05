@@ -57,7 +57,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -83,10 +82,9 @@ public class MercanetServlet extends HttpServlet {
 		throws IOException, ServletException {
 
 		try {
-			HttpSession httpSession = httpServletRequest.getSession();
-
 			if (PortalSessionThreadLocal.getHttpSession() == null) {
-				PortalSessionThreadLocal.setHttpSession(httpSession);
+				PortalSessionThreadLocal.setHttpSession(
+					httpServletRequest.getSession());
 			}
 
 			// Handle initializing permission checker for guests
@@ -118,10 +116,9 @@ public class MercanetServlet extends HttpServlet {
 			Map<String, String> parameterMap = _getResponseParameters(data);
 
 			if (Objects.equals("normal", type)) {
-				HttpSession httpSession = httpServletRequest.getSession();
-
 				if (PortalSessionThreadLocal.getHttpSession() == null) {
-					PortalSessionThreadLocal.setHttpSession(httpSession);
+					PortalSessionThreadLocal.setHttpSession(
+						httpServletRequest.getSession());
 				}
 
 				PermissionChecker permissionChecker =
@@ -175,14 +172,12 @@ public class MercanetServlet extends HttpServlet {
 					Integer.valueOf(keyVersion),
 					mercanetGroupServiceConfiguration.secretKey());
 
-				Map<String, String> verifyMap = HashMapBuilder.put(
-					"Data", data
-				).put(
-					"Seal", ParamUtil.getString(httpServletRequest, "Seal")
-				).build();
-
 				PaypageResponse paypageResponse = paypageClient.decodeResponse(
-					verifyMap);
+					HashMapBuilder.put(
+						"Data", data
+					).put(
+						"Seal", ParamUtil.getString(httpServletRequest, "Seal")
+					).build());
 
 				ResponseData responseData = paypageResponse.getData();
 

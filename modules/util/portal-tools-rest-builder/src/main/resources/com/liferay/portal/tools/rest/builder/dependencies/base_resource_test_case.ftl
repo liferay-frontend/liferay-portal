@@ -994,7 +994,20 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 					_beanUtilsBean.copyProperties(expectedPatch${schemaName}, randomPatch${schemaName});
 
-					${schemaName} get${schemaName} = ${schemaVarName}Resource.get${schemaName}(patch${schemaName}.getId());
+					${schemaName} get${schemaName} = ${schemaVarName}Resource.get${javaMethodSignature.methodName?remove_beginning("patch")}(
+						<#if (javaMethodSignature.javaMethodParameters?size != 0) &&
+							 stringUtil.equals(javaMethodSignature.javaMethodParameters[0].parameterName, "externalReferenceCode")>
+
+							patch${schemaName}.getExternalReferenceCode()
+						<#elseif (javaMethodSignature.javaMethodParameters?size != 0) &&
+								 (stringUtil.equals(javaMethodSignature.javaMethodParameters[0].parameterName, "id") ||
+								 stringUtil.equals(javaMethodSignature.javaMethodParameters[0].parameterName, schemaVarName + "Id"))>
+
+							patch${schemaName}.getId()
+						<#else>
+							null
+						</#if>
+					);
 
 					assertEquals(expectedPatch${schemaName}, get${schemaName});
 					assertValid(get${schemaName});
@@ -1519,7 +1532,44 @@ public abstract class Base${schemaName}ResourceTestCase {
 				}
 
 				protected ${relatedSchemaName} test${javaMethodSignature.methodName?cap_first}_add${relatedSchemaName}(long ${schemaVarName}Id, ${relatedSchemaName} ${relatedSchemaVarName}) throws Exception {
-					return ${schemaVarName}Resource.${javaMethodSignature.methodName?replace("get", "post")}(${schemaVarName}Id, ${relatedSchemaVarName});
+					<#if freeMarkerTool.hasJavaMethodSignature(javaMethodSignatures, javaMethodSignature.methodName?replace("get", "post"))>
+						return ${schemaVarName}Resource.${javaMethodSignature.methodName?replace("get", "post")}(${schemaVarName}Id, ${relatedSchemaVarName});
+					<#else>
+						throw new UnsupportedOperationException("This method needs to be implemented");
+					</#if>
+				}
+			<#elseif freeMarkerTool.hasHTTPMethod(javaMethodSignature, "patch") && javaMethodSignature.returnType?ends_with("." + relatedSchemaName)>
+				@Test
+				public void test${javaMethodSignature.methodName?cap_first}() throws Exception {
+					${schemaName} post${schemaName} = testPatch${schemaName}_add${schemaName}();
+
+					test${javaMethodSignature.methodName?cap_first}_add${relatedSchemaName}(post${schemaName}.getId(), random${relatedSchemaName}());
+
+					${relatedSchemaName} random${relatedSchemaName} = random${relatedSchemaName}();
+
+					${relatedSchemaName} patch${relatedSchemaName} = ${schemaVarName}Resource.${javaMethodSignature.methodName}(
+						<#list javaMethodSignature.javaMethodParameters as javaMethodParameter>
+							<#if freeMarkerTool.isPathParameter(javaMethodParameter, javaMethodSignature.operation) && stringUtil.equals(javaMethodParameter.parameterName, schemaVarName + "Id")>
+								post${schemaName}.getId()
+							<#elseif stringUtil.equals(javaMethodParameter.parameterName, relatedSchemaVarName)>
+								random${relatedSchemaName}
+							<#else>
+								null
+							</#if>
+							<#sep>, </#sep>
+						</#list>
+					);
+
+					assertEquals(random${relatedSchemaName}, patch${relatedSchemaName});
+					assertValid(patch${relatedSchemaName});
+				}
+
+				protected ${relatedSchemaName} test${javaMethodSignature.methodName?cap_first}_add${relatedSchemaName}(long ${schemaVarName}Id, ${relatedSchemaName} ${relatedSchemaVarName}) throws Exception {
+					<#if freeMarkerTool.hasJavaMethodSignature(javaMethodSignatures, javaMethodSignature.methodName?replace("patch", "post"))>
+						return ${schemaVarName}Resource.${javaMethodSignature.methodName?replace("patch", "post")}(${schemaVarName}Id, ${relatedSchemaVarName});
+					<#else>
+						throw new UnsupportedOperationException("This method needs to be implemented");
+					</#if>
 				}
 			<#elseif freeMarkerTool.hasHTTPMethod(javaMethodSignature, "post") && javaMethodSignature.returnType?ends_with("." + relatedSchemaName)>
 				@Test

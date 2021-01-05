@@ -64,12 +64,6 @@ public class AssetCategoryFriendlyURLResolver implements FriendlyURLResolver {
 
 		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
 
-		HttpServletRequest httpServletRequest =
-			(HttpServletRequest)requestContext.get("request");
-
-		String languageId = LanguageUtil.getLanguageId(
-			_portal.getLocale(httpServletRequest));
-
 		long classNameId = _portal.getClassNameId(AssetCategory.class);
 
 		String urlTitle = friendlyURL.substring(
@@ -108,6 +102,9 @@ public class AssetCategoryFriendlyURLResolver implements FriendlyURLResolver {
 		actualParams.put("p_p_lifecycle", new String[] {"0"});
 		actualParams.put("p_p_mode", new String[] {"view"});
 
+		HttpServletRequest httpServletRequest =
+			(HttpServletRequest)requestContext.get("request");
+
 		httpServletRequest.setAttribute(WebKeys.ASSET_CATEGORY, assetCategory);
 
 		String queryString = _http.parameterMapToString(actualParams, false);
@@ -120,6 +117,9 @@ public class AssetCategoryFriendlyURLResolver implements FriendlyURLResolver {
 			layoutActualURL =
 				layoutActualURL + StringPool.QUESTION + queryString;
 		}
+
+		String languageId = LanguageUtil.getLanguageId(
+			_portal.getLocale(httpServletRequest));
 
 		_portal.addPageSubtitle(
 			assetCategory.getTitle(languageId), httpServletRequest);
@@ -147,12 +147,6 @@ public class AssetCategoryFriendlyURLResolver implements FriendlyURLResolver {
 
 		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
 
-		HttpServletRequest httpServletRequest =
-			(HttpServletRequest)requestContext.get("request");
-
-		String languageId = LanguageUtil.getLanguageId(
-			_portal.getLocale(httpServletRequest));
-
 		long classNameId = _portal.getClassNameId(AssetCategory.class);
 
 		String urlTitle = friendlyURL.substring(
@@ -175,6 +169,12 @@ public class AssetCategoryFriendlyURLResolver implements FriendlyURLResolver {
 
 		Layout layout = getAssetCategoryLayout(
 			groupId, privateLayout, friendlyURLEntry.getClassPK());
+
+		HttpServletRequest httpServletRequest =
+			(HttpServletRequest)requestContext.get("request");
+
+		String languageId = LanguageUtil.getLanguageId(
+			_portal.getLocale(httpServletRequest));
 
 		return new LayoutFriendlyURLComposite(
 			layout,

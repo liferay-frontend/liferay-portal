@@ -28,7 +28,7 @@ import {AppContext} from './AppContext';
 import DataSetDisplayContext from './DataSetDisplayContext';
 import EmptyResultMessage from './EmptyResultMessage';
 import {updateViewComponent} from './actions/updateViewComponent';
-import ManagementBar from './management_bar/index';
+import ManagementBar from './management_bar/ManagementBar';
 import Modal from './modal/Modal';
 import SidePanel from './side_panel/SidePanel';
 import {
@@ -76,7 +76,8 @@ function DataSetDisplay({
 	style,
 }) {
 	const wrapperRef = useRef(null);
-	const [loading, setLoading] = useState(false);
+	const [dataLoading, setDataLoading] = useState(false);
+	const [componentLoading, setComponentLoading] = useState(false);
 	const [dataSetDisplaySupportSidePanelId] = useState(
 		sidePanelId || 'support-side-panel-' + getRandomId()
 	);
@@ -99,6 +100,7 @@ function DataSetDisplay({
 	);
 	const [total, setTotal] = useState(0);
 	const [{activeView, views}, dispatch] = useContext(ViewsContext);
+
 	const {
 		component: CurrentViewComponent,
 		contentRenderer,
@@ -171,41 +173,6 @@ function DataSetDisplay({
 		updateItems(dataSetData.items);
 	}
 
-	const pendingPromise = useRef(null);
-
-	useEffect(() => {
-		const promise = Promise.race([
-			delay(200).then(() => {
-				if (isMounted() && pendingPromise.current === promise) {
-					setLoading(true);
-				}
-			}),
-			Promise.all([requestComponent(), requestData()]).then(
-				([component, data]) => {
-					if (isMounted() && pendingPromise.current === promise) {
-						pendingPromise.current = null;
-
-						dispatch(
-							updateViewComponent(activeViewName, component)
-						);
-
-						setLoading(false);
-						updateDataSetItems(data);
-					}
-				}
-			),
-		]);
-
-		pendingPromise.current = promise;
-	}, [
-		activeViewName,
-		dispatch,
-		isMounted,
-		requestComponent,
-		requestData,
-		setLoading,
-	]);
-
 	useEffect(() => {
 		const itemsAreInjected = !apiURL && itemsProp?.length !== items.length;
 
@@ -258,7 +225,7 @@ function DataSetDisplay({
 	}, [wrapperRef]);
 
 	function refreshData(successNotification) {
-		setLoading(true);
+		setDataLoading(true);
 
 		return requestData()
 			.then((data) => {
@@ -272,7 +239,7 @@ function DataSetDisplay({
 				}
 
 				if (isMounted()) {
-					setLoading(false);
+					setDataLoading(false);
 					updateDataSetItems(data);
 
 					Liferay.fire(DATASET_DISPLAY_UPDATED, {id});
@@ -282,11 +249,39 @@ function DataSetDisplay({
 			})
 			.catch((error) => {
 				logError(error);
-				setLoading(false);
+				setDataLoading(false);
 
 				throw error;
 			});
 	}
+
+	useEffect(() => {
+		setComponentLoading(true);
+
+		requestComponent().then((component) => {
+			if (isMounted()) {
+				setComponentLoading(false);
+				dispatch(updateViewComponent(activeViewName, component));
+			}
+		});
+	}, [
+		activeViewName,
+		dispatch,
+		isMounted,
+		requestComponent,
+		setComponentLoading,
+	]);
+
+	useEffect(() => {
+		setDataLoading(true);
+
+		requestData().then((data) => {
+			if (isMounted()) {
+				setDataLoading(false);
+				updateDataSetItems(data);
+			}
+		});
+	}, [isMounted, requestData, setDataLoading]);
 
 	useEffect(() => {
 		function handleRefreshFromTheOutside(event) {
@@ -342,7 +337,7 @@ function DataSetDisplay({
 	) : null;
 
 	const view =
-		!loading && CurrentViewComponent ? (
+		!dataLoading && !componentLoading ? (
 			<div className="data-set-display-content-wrapper">
 				<input
 					hidden

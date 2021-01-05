@@ -1545,15 +1545,6 @@ public class SamlSpIdpConnectionPersistenceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		SamlSpIdpConnectionPersistenceImpl.class);
 
-	static {
-		try {
-			Class.forName(SamlPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;

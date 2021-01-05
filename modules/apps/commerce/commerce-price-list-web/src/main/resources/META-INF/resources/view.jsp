@@ -31,7 +31,7 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 </liferay-util:include>
 
 <div id="<portlet:namespace />priceListsContainer">
-	<div class="closed container-fluid-1280 sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
+	<div class="closed container-fluid container-fluid-max-xl sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
 		<c:if test="<%= commercePriceListDisplayContext.isShowInfoPanel() %>">
 			<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="commercePriceListInfoPanel" var="sidebarPanelURL" />
 
@@ -72,37 +72,37 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 							%>
 
 							<liferay-ui:search-container-column-text
-								cssClass="important table-cell-content"
+								cssClass="important table-cell-expand"
 								href="<%= rowURL %>"
 								property="name"
 							/>
 
 							<liferay-ui:search-container-column-text
-								cssClass="table-cell-content"
+								cssClass="table-cell-expand"
 								name="author"
 								property="userName"
 							/>
 
 							<liferay-ui:search-container-column-text
-								cssClass="table-cell-content"
+								cssClass="table-cell-expand"
 								name="catalog"
 								value="<%= (commerceCatalog == null) ? StringPool.BLANK : HtmlUtil.escape(commerceCatalog.getName()) %>"
 							/>
 
 							<liferay-ui:search-container-column-date
-								cssClass="table-cell-content"
+								cssClass="table-cell-expand"
 								name="create-date"
 								property="createDate"
 							/>
 
 							<liferay-ui:search-container-column-date
-								cssClass="table-cell-content"
+								cssClass="table-cell-expand"
 								name="display-date"
 								property="displayDate"
 							/>
 
 							<liferay-ui:search-container-column-status
-								cssClass="table-cell-content"
+								cssClass="table-cell-expand"
 								name="status"
 								status="<%= commercePriceList.getStatus() %>"
 							/>

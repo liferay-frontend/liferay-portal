@@ -14,19 +14,18 @@
 
 package com.liferay.portal.configuration.module.configuration.internal;
 
-import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
-import com.liferay.petra.concurrent.ConcurrentReferenceValueHashMap;
-import com.liferay.petra.memory.FinalizeManager;
+import aQute.bnd.annotation.metatype.Meta;
+
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.TypedSettings;
 
-import java.lang.ref.Reference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Preston Crary
@@ -34,6 +33,14 @@ import java.util.Map;
 public class ConfigurationOverrideInstance {
 
 	public static final Object NULL_RESULT = new Object();
+
+	public static void clearConfigurationOverrideInstance(Class<?> clazz) {
+		clearConfigurationOverrideInstance(clazz.getName());
+	}
+
+	public static void clearConfigurationOverrideInstance(String className) {
+		_configurationOverrideInstances.remove(className);
+	}
 
 	public static ConfigurationOverrideInstance
 			getConfigurationOverrideInstance(
@@ -46,15 +53,17 @@ public class ConfigurationOverrideInstance {
 			return null;
 		}
 
+		String key = _getKey(clazz);
+
 		ConfigurationOverrideInstance configurationOverrideInstance =
-			_configurationOverrideInstances.get(configurationOverrideClass);
+			_configurationOverrideInstances.get(key);
 
 		if (configurationOverrideInstance == null) {
 			configurationOverrideInstance = new ConfigurationOverrideInstance(
 				configurationOverrideClass, typedSettings);
 
 			_configurationOverrideInstances.put(
-				configurationOverrideClass, configurationOverrideInstance);
+				key, configurationOverrideInstance);
 		}
 
 		return configurationOverrideInstance;
@@ -68,6 +77,16 @@ public class ConfigurationOverrideInstance {
 		}
 
 		return overriddenMethod.invoke(_configurationOverrideInstance);
+	}
+
+	private static String _getKey(Class<?> clazz) {
+		for (Class<?> interfaceClazz : clazz.getInterfaces()) {
+			if (interfaceClazz.getAnnotation(Meta.OCD.class) != null) {
+				return interfaceClazz.getName();
+			}
+		}
+
+		return clazz.getName();
 	}
 
 	private static Class<?> _getOverrideClass(Class<?> clazz) {
@@ -99,12 +118,8 @@ public class ConfigurationOverrideInstance {
 		}
 	}
 
-	private static final Map<Class<?>, ConfigurationOverrideInstance>
-		_configurationOverrideInstances = new ConcurrentReferenceKeyHashMap<>(
-			new ConcurrentReferenceValueHashMap
-				<Reference<Class<?>>, ConfigurationOverrideInstance>(
-					FinalizeManager.WEAK_REFERENCE_FACTORY),
-			FinalizeManager.WEAK_REFERENCE_FACTORY);
+	private static final Map<String, ConfigurationOverrideInstance>
+		_configurationOverrideInstances = new ConcurrentHashMap<>();
 
 	private final Object _configurationOverrideInstance;
 	private final Map<String, Method> _methods = new HashMap<>();

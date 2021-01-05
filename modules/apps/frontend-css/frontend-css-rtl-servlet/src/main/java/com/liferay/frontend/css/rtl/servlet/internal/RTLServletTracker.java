@@ -16,11 +16,15 @@ package com.liferay.frontend.css.rtl.servlet.internal;
 
 import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.util.Dictionary;
 import java.util.Hashtable;
 
 import javax.servlet.Servlet;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -108,6 +112,16 @@ public class RTLServletTracker {
 			RTLServlet.class.getName());
 		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN, "*.css");
+
+		Bundle bundle = serviceReference.getBundle();
+
+		Dictionary<String, String> headers = bundle.getHeaders(
+			StringPool.BLANK);
+
+		int themeContributorWeight = GetterUtil.getInteger(
+			headers.get("Liferay-Theme-Contributor-Weight"));
+
+		properties.put("service.ranking", themeContributorWeight);
 
 		return properties;
 	}

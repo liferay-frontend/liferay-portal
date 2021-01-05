@@ -235,10 +235,8 @@ public class CommerceDiscountTargetGrossV2Test {
 			discountAmountWithoutTaxAmount.stripTrailingZeros(),
 			discountAmountPrice.stripTrailingZeros());
 
-		BigDecimal price = commercePriceEntry.getPrice();
-
 		BigDecimal expectedPrice = CommerceTaxTestUtil.getPriceWithTaxAmount(
-			price, taxRate,
+			commercePriceEntry.getPrice(), taxRate,
 			RoundingMode.valueOf(_commerceCurrency.getRoundingMode()));
 
 		expectedPrice = expectedPrice.subtract(commerceDiscount.getLevel1());
@@ -324,10 +322,8 @@ public class CommerceDiscountTargetGrossV2Test {
 			_commerceProductPriceCalculation.getCommerceProductPrice(
 				cpInstance.getCPInstanceId(), 1, commerceContext);
 
-		BigDecimal price = commercePriceEntry.getPrice();
-
 		BigDecimal expectedPrice = CommerceTaxTestUtil.getPriceWithTaxAmount(
-			price, taxRate,
+			commercePriceEntry.getPrice(), taxRate,
 			RoundingMode.valueOf(_commerceCurrency.getRoundingMode()));
 
 		expectedPrice = expectedPrice.subtract(commerceDiscount.getLevel1());
@@ -1110,10 +1106,8 @@ public class CommerceDiscountTargetGrossV2Test {
 			discountAmountWithoutTaxAmount.stripTrailingZeros(),
 			discountPrice.stripTrailingZeros());
 
-		BigDecimal price = commercePriceEntry.getPrice();
-
 		BigDecimal expectedPrice = CommerceTaxTestUtil.getPriceWithTaxAmount(
-			price, taxRate,
+			commercePriceEntry.getPrice(), taxRate,
 			RoundingMode.valueOf(_commerceCurrency.getRoundingMode()));
 
 		expectedPrice = expectedPrice.subtract(commerceDiscount.getLevel1());

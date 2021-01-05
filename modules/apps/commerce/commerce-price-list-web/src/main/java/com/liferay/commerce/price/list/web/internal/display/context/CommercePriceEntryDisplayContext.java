@@ -160,10 +160,6 @@ public class CommercePriceEntryDisplayContext
 			return searchContainer;
 		}
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		searchContainer = new SearchContainer<>(
 			liferayPortletRequest, getPortletURL(), null,
 			"there-are-no-price-entries");
@@ -178,6 +174,10 @@ public class CommercePriceEntryDisplayContext
 		searchContainer.setRowChecker(getRowChecker());
 
 		if (isSearch()) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			Sort sort = CommercePriceListPortletUtil.getCommercePriceEntrySort(
 				getOrderByCol(), getOrderByType());
 

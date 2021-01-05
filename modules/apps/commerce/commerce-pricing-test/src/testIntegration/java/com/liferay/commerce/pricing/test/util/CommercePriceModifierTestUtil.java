@@ -155,12 +155,10 @@ public class CommercePriceModifierTestUtil {
 			long classPK)
 		throws PortalException {
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId);
-
 		return CommercePriceModifierRelLocalServiceUtil.
 			addCommercePriceModifierRel(
-				commercePriceModifierId, className, classPK, serviceContext);
+				commercePriceModifierId, className, classPK,
+				ServiceContextTestUtil.getServiceContext(groupId));
 	}
 
 	public static CommercePriceModifier updateCommercePriceModifier(

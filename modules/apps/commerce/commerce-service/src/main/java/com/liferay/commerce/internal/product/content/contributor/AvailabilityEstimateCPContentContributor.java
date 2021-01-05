@@ -77,10 +77,6 @@ public class AvailabilityEstimateCPContentContributor
 			return jsonObject;
 		}
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		CPDefinitionInventory cpDefinitionInventory =
 			_cpDefinitionInventoryLocalService.
 				fetchCPDefinitionInventoryByCPDefinitionId(
@@ -92,16 +88,21 @@ public class AvailabilityEstimateCPContentContributor
 
 		boolean available = false;
 
-		if (_commerceInventoryEngine.getStockQuantity(
-				cpInstance.getCompanyId(), commerceChannel.getGroupId(),
-				cpInstance.getSku()) >
-					cpDefinitionInventoryEngine.getMinStockQuantity(
-						cpInstance)) {
+		int stockQuantity = _commerceInventoryEngine.getStockQuantity(
+			cpInstance.getCompanyId(), commerceChannel.getGroupId(),
+			cpInstance.getSku());
+		int minStockQuantity = cpDefinitionInventoryEngine.getMinStockQuantity(
+			cpInstance);
 
+		if (stockQuantity > minStockQuantity) {
 			available = true;
 		}
 
 		if (!available) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			jsonObject.put(
 				CPContentContributorConstants.AVAILABILITY_ESTIMATE_NAME,
 				getAvailabilityEstimateLabel(

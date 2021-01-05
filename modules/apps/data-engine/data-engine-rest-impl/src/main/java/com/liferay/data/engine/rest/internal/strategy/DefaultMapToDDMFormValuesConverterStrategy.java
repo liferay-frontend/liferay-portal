@@ -47,19 +47,12 @@ public class DefaultMapToDDMFormValuesConverterStrategy
 		DDMFormValues ddmFormValues, Locale locale) {
 
 		Map<String, DDMFormField> ddmFormFields = ddmForm.getDDMFormFieldsMap(
-			true);
+			false);
 
 		for (Map.Entry<String, DDMFormField> entry : ddmFormFields.entrySet()) {
-			if (dataRecordValues.containsKey(entry.getKey())) {
-				List<DDMFormFieldValue> ddmFormFieldValues =
-					createDDMFormFieldValues(
-						dataRecordValues, entry.getValue(),
-						ddmForm.getDefaultLocale(), locale);
-
-				Stream<DDMFormFieldValue> stream = ddmFormFieldValues.stream();
-
-				stream.forEach(ddmFormValues::addDDMFormFieldValue);
-			}
+			_addDDFormFieldValues(
+				dataRecordValues, entry.getValue(), ddmFormValues,
+				ddmForm.getDefaultLocale(), locale);
 		}
 	}
 
@@ -194,6 +187,40 @@ public class DefaultMapToDDMFormValuesConverterStrategy
 	}
 
 	private DefaultMapToDDMFormValuesConverterStrategy() {
+	}
+
+	private List<DDMFormFieldValue> _addDDFormFieldValues(
+		Map<String, Object> dataRecordValues, DDMFormField ddmFormField,
+		DDMFormValues ddmFormValues, Locale defaultLocale, Locale locale) {
+
+		List<DDMFormFieldValue> ddmFormFieldValues = new ArrayList<>();
+
+		ddmFormFieldValues.addAll(
+			createDDMFormFieldValues(
+				dataRecordValues, ddmFormField, defaultLocale, locale));
+
+		Stream<DDMFormFieldValue> stream = ddmFormFieldValues.stream();
+
+		stream.forEach(
+			ddmFormFieldValue -> {
+				List<DDMFormField> nestedDDMFormFields =
+					ddmFormField.getNestedDDMFormFields();
+
+				nestedDDMFormFields.forEach(
+					nestedDDMFormField -> {
+						List<DDMFormFieldValue> nestedDDMFormFieldValues =
+							_addDDFormFieldValues(
+								dataRecordValues, nestedDDMFormField,
+								ddmFormValues, defaultLocale, locale);
+
+						nestedDDMFormFieldValues.forEach(
+							ddmFormFieldValue::addNestedDDMFormFieldValue);
+					});
+
+				ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
+			});
+
+		return ddmFormFieldValues;
 	}
 
 	private static DefaultMapToDDMFormValuesConverterStrategy

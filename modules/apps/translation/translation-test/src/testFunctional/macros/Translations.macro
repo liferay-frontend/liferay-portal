@@ -163,7 +163,7 @@ definition {
 
 		if (isSet(webContentTextBox)) {
 			Type(
-				key_fieldName = "TextBox",
+				key_fieldName = "Text Box",
 				locator1 = "TextArea#TRANSLATIONS_TARGET_TEXT_BOX_FIELD",
 				value1 = "${webContentTextBox}");
 		}
@@ -177,7 +177,7 @@ definition {
 
 		if (isSet(webContentNumber)) {
 			Type(
-				key_fieldName = "Number",
+				key_fieldName = "Numeric",
 				locator1 = "TextInput#TRANSLATIONS_TARGET_FIELD",
 				value1 = "${webContentNumber}");
 		}
@@ -220,54 +220,57 @@ definition {
 				value1 = "${webContentDescription}");
 		}
 
-		if (isSet(webContentHTML)) {
+		if (isSet(webContentRichText)) {
 			AssertTextEquals.assertPartialText(
-				key_content = "${webContentHTML}",
+				key_content = "${webContentRichText}",
 				key_fieldName = "HTML",
 				locator1 = "Translation#BASE_LANGUAGE_CONTENT_FIELD",
-				value1 = "${webContentHTML}");
+				value1 = "${webContentRichText}");
 		}
 
 		if (isSet(webContentText)) {
-			AssertElementPresent(
-				key_fieldName = "Text",
-				key_fieldValue = "${webContentText}",
-				locator1 = "Translation#BASE_LANGUAGE_FIELD");
+			if (!(isSet(webContentTextFieldLabel))) {
+				var webContentTextFieldLabel = "Text";
+			}
+
+			if ("${fieldType}" == "Multiple Lines") {
+				AssertElementPresent(
+					key_fieldName = "${webContentTextFieldLabel}",
+					key_fieldValue = "${webContentText}",
+					locator1 = "Translation#BASE_LANGUAGE_TEXT_BOX_FIELD");
+			}
+			else {
+				AssertElementPresent(
+					key_fieldName = "${webContentTextFieldLabel}",
+					key_fieldValue = "${webContentText}",
+					locator1 = "Translation#BASE_LANGUAGE_FIELD");
+			}
 		}
 
-		if (isSet(webContentTextBox)) {
-			AssertElementPresent(
-				key_fieldName = "Text Box",
-				key_fieldValue = "${webContentTextBox}",
-				locator1 = "Translation#BASE_LANGUAGE_TEXT_BOX_FIELD");
-		}
+		if (isSet(webContentNumeric)) {
+			if (!(isSet(webContentNumericFieldLabel))) {
+				var webContentNumericFieldLabel = "Numeric";
+			}
 
-		if (isSet(webContentInteger)) {
-			AssertElementPresent(
-				key_fieldName = "Integer",
-				key_fieldValue = "${webContentInteger}",
-				locator1 = "Translation#BASE_LANGUAGE_FIELD");
-		}
-
-		if (isSet(webContentNumber)) {
-			AssertElementPresent(
-				key_fieldName = "Number",
-				key_fieldValue = "${webContentNumber}",
-				locator1 = "Translation#BASE_LANGUAGE_FIELD");
-		}
-
-		if (isSet(webContentDecimal)) {
-			AssertElementPresent(
-				key_fieldName = "Decimal",
-				key_fieldValue = "${webContentDecimal}",
-				locator1 = "Translation#BASE_LANGUAGE_FIELD");
+			if ("${numericType}" == "Decimal") {
+				AssertElementPresent(
+					key_fieldName = "${webContentNumericFieldLabel}",
+					key_fieldValue = "${webContentNumeric}",
+					locator1 = "Translation#BASE_LANGUAGE_FIELD");
+			}
+			else {
+				AssertElementPresent(
+					key_fieldName = "${webContentNumericFieldLabel}",
+					key_fieldValue = "${webContentNumeric}",
+					locator1 = "Translation#BASE_LANGUAGE_FIELD");
+			}
 		}
 	}
 
 	macro viewTargetFields {
 		if (isSet(webContentTitle)) {
 			AssertElementPresent(
-				key_fieldName = "title",
+				key_fieldName = "Title",
 				key_fieldValue = "${webContentTitle}",
 				locator1 = "Translation#TARGET_LANGUAGE_FIELD");
 		}
@@ -327,7 +330,7 @@ definition {
 
 		if (isSet(webContentTextBox)) {
 			AssertElementPresent(
-				key_fieldName = "TextBox",
+				key_fieldName = "Text Box",
 				key_fieldValue = "${webContentTextBox}",
 				locator1 = "Translation#TARGET_LANGUAGE_TEXT_BOX_FIELD");
 		}
@@ -341,7 +344,7 @@ definition {
 
 		if (isSet(webContentNumber)) {
 			AssertElementPresent(
-				key_fieldName = "Number",
+				key_fieldName = "Numeric",
 				key_fieldValue = "${webContentNumber}",
 				locator1 = "Translation#TARGET_LANGUAGE_FIELD");
 		}

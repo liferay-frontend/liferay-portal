@@ -32,7 +32,7 @@ CommerceDiscountRel commerceDiscountRel = (CommerceDiscountRel)row.getObject();
 	showWhenSingleIcon="<%= true %>"
 >
 	<c:if test="<%= commerceDiscountRelDisplayContext.hasPermission(commerceDiscountRel.getCommerceDiscountId(), ActionKeys.UPDATE) %>">
-		<portlet:actionURL name="editCommerceDiscountRel" var="deleteURL">
+		<portlet:actionURL name="/commerce_discount/edit_commerce_discount_rel" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceDiscountRelId" value="<%= String.valueOf(commerceDiscountRel.getCommerceDiscountRelId()) %>" />

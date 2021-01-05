@@ -77,10 +77,11 @@ public class ExportTemplatesToolbarDisplayContext
 
 				dropdownItem.setHref(
 					getRenderURL(), "mvcRenderCommandName",
-					"editExportConfiguration", Constants.CMD, Constants.ADD,
-					"groupId", groupDisplayContextHelper.getGroupId(),
-					"liveGroupId", groupDisplayContextHelper.getLiveGroupId(),
-					"privateLayout", Boolean.FALSE.toString());
+					"/export_import/edit_export_configuration", Constants.CMD,
+					Constants.ADD, "groupId",
+					groupDisplayContextHelper.getGroupId(), "liveGroupId",
+					groupDisplayContextHelper.getLiveGroupId(), "privateLayout",
+					Boolean.FALSE.toString());
 
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "new"));
@@ -98,7 +99,8 @@ public class ExportTemplatesToolbarDisplayContext
 		PortletURL searchActionURL = getRenderURL();
 
 		searchActionURL.setParameter(
-			"mvcRenderCommandName", "viewExportConfigurations");
+			"mvcRenderCommandName",
+			"/export_import/view_export_configurations");
 
 		return searchActionURL.toString();
 	}

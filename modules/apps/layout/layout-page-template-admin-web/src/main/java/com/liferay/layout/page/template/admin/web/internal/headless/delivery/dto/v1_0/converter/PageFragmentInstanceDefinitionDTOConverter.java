@@ -35,6 +35,7 @@ import com.liferay.headless.delivery.dto.v1_0.FragmentImageClassPKReference;
 import com.liferay.headless.delivery.dto.v1_0.FragmentImageConfiguration;
 import com.liferay.headless.delivery.dto.v1_0.FragmentInlineValue;
 import com.liferay.headless.delivery.dto.v1_0.FragmentLink;
+import com.liferay.headless.delivery.dto.v1_0.FragmentLinkValue;
 import com.liferay.headless.delivery.dto.v1_0.FragmentMappedValue;
 import com.liferay.headless.delivery.dto.v1_0.FragmentStyle;
 import com.liferay.headless.delivery.dto.v1_0.FragmentViewport;
@@ -52,6 +53,7 @@ import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -490,6 +492,23 @@ public class PageFragmentInstanceDefinitionDTOConverter {
 			return null;
 		}
 
+		if (JSONUtil.isValid(alt)) {
+			JSONObject localizedJSONObject = configJSONObject.getJSONObject(
+				"alt");
+
+			Map<String, String> localizedValues = new HashMap<>();
+
+			for (String key : localizedJSONObject.keySet()) {
+				localizedValues.put(key, localizedJSONObject.getString(key));
+			}
+
+			return new FragmentInlineValue() {
+				{
+					value_i18n = localizedValues;
+				}
+			};
+		}
+
 		return new FragmentInlineValue() {
 			{
 				value = alt;
@@ -708,13 +727,26 @@ public class PageFragmentInstanceDefinitionDTOConverter {
 
 		JSONObject configJSONObject = jsonObject.getJSONObject("config");
 
-		if (configJSONObject.isNull("href") &&
-			!_isSaveFragmentMappedValue(configJSONObject, saveMapping)) {
+		return new FragmentLink() {
+			{
+				value = _toFragmentLinkValue(configJSONObject, saveMapping);
+				value_i18n = _toLocalizedFragmentLinkValues(
+					configJSONObject, saveMapping);
+			}
+		};
+	}
+
+	private FragmentLinkValue _toFragmentLinkValue(
+		JSONObject configJSONObject, boolean saveMapping) {
+
+		if ((configJSONObject == null) ||
+			(configJSONObject.isNull("href") &&
+			 !_isSaveFragmentMappedValue(configJSONObject, saveMapping))) {
 
 			return null;
 		}
 
-		return new FragmentLink() {
+		return new FragmentLinkValue() {
 			{
 				setHref(
 					() -> {
@@ -901,6 +933,30 @@ public class PageFragmentInstanceDefinitionDTOConverter {
 				classPK = _toitemClassPK(jsonObject);
 			}
 		};
+	}
+
+	private Map<String, FragmentLinkValue> _toLocalizedFragmentLinkValues(
+		JSONObject configJSONObject, boolean saveMapping) {
+
+		Map<String, FragmentLinkValue> fragmentLinkValues = new HashMap<>();
+
+		List<String> availableLanguageIds = _getAvailableLanguageIds();
+
+		for (String languageId : availableLanguageIds) {
+			JSONObject localizedJSONObject = configJSONObject.getJSONObject(
+				languageId);
+
+			FragmentLinkValue fragmentLinkValue = _toFragmentLinkValue(
+				localizedJSONObject, saveMapping);
+
+			if (fragmentLinkValue == null) {
+				continue;
+			}
+
+			fragmentLinkValues.put(languageId, fragmentLinkValue);
+		}
+
+		return fragmentLinkValues;
 	}
 
 	private Map<String, JSONObject> _toLocalizedValueJSONObjects(

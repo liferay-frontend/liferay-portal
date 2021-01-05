@@ -16,6 +16,7 @@ package com.liferay.portal.action;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Contact;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -120,6 +122,7 @@ public class UpdateLanguageAction implements Action {
 			layoutURL = redirect.substring(0, questionIndex);
 		}
 
+		String friendlyURLSeparator = StringPool.BLANK;
 		int friendlyURLSeparatorIndex = -1;
 
 		for (String urlSeparator :
@@ -134,6 +137,8 @@ public class UpdateLanguageAction implements Action {
 			friendlyURLSeparatorIndex = layoutURL.indexOf(urlSeparator);
 
 			if (friendlyURLSeparatorIndex != -1) {
+				friendlyURLSeparator = urlSeparator;
+
 				break;
 			}
 		}
@@ -144,18 +149,27 @@ public class UpdateLanguageAction implements Action {
 			friendlyURLSeparatorPart = layoutURL.substring(
 				friendlyURLSeparatorIndex);
 
-			LayoutFriendlyURLSeparatorComposite
-				layoutFriendlyURLSeparatorComposite =
-					PortalUtil.getLayoutFriendlyURLSeparatorComposite(
-						layout.getGroupId(), layout.isPrivateLayout(),
-						friendlyURLSeparatorPart,
-						httpServletRequest.getParameterMap(),
-						HashMapBuilder.<String, Object>put(
-							"request", httpServletRequest
-						).build());
+			try {
+				LayoutFriendlyURLSeparatorComposite
+					layoutFriendlyURLSeparatorComposite =
+						PortalUtil.getLayoutFriendlyURLSeparatorComposite(
+							layout.getGroupId(), layout.isPrivateLayout(),
+							friendlyURLSeparatorPart,
+							httpServletRequest.getParameterMap(),
+							HashMapBuilder.<String, Object>put(
+								"request", httpServletRequest
+							).build());
 
-			friendlyURLSeparatorPart =
-				layoutFriendlyURLSeparatorComposite.getFriendlyURL();
+				friendlyURLSeparatorPart =
+					layoutFriendlyURLSeparatorComposite.getFriendlyURL();
+			}
+			catch (NoSuchLayoutException noSuchLayoutException) {
+				if (!Portal.FRIENDLY_URL_SEPARATOR.equals(
+						friendlyURLSeparator)) {
+
+					throw noSuchLayoutException;
+				}
+			}
 
 			layoutURL = layoutURL.substring(0, friendlyURLSeparatorIndex);
 		}

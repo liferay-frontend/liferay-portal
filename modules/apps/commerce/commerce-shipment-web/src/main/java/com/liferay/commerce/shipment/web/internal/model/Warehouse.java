@@ -20,12 +20,12 @@ package com.liferay.commerce.shipment.web.internal.model;
 public class Warehouse {
 
 	public Warehouse(
-		long warehouseId, WarehouseItem warehouseItem, int availabile,
+		long warehouseId, WarehouseItem warehouseItem, int available,
 		String distance, String name) {
 
 		_warehouseId = warehouseId;
 		_warehouseItem = warehouseItem;
-		_available = availabile;
+		_available = available;
 		_distance = distance;
 		_name = name;
 	}

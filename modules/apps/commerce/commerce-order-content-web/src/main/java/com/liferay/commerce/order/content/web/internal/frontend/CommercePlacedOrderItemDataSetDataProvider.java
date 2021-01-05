@@ -17,6 +17,7 @@ package com.liferay.commerce.order.content.web.internal.frontend;
 import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
+import com.liferay.commerce.order.content.web.internal.frontend.constants.CommerceOrderDataSetConstants;
 import com.liferay.commerce.order.content.web.internal.model.OrderItem;
 import com.liferay.commerce.price.CommerceOrderItemPrice;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
@@ -265,11 +266,11 @@ public class CommercePlacedOrderItemDataSetDataProvider
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 
-		List<OrderItem> orderItems = new ArrayList<>();
-
 		if (commerceOrderItems.isEmpty()) {
 			return Collections.emptyList();
 		}
+
+		List<OrderItem> orderItems = new ArrayList<>();
 
 		for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
 			ThemeDisplay themeDisplay =

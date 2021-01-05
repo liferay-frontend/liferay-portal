@@ -33,7 +33,7 @@ CommerceAvailabilityEstimate commerceAvailabilityEstimate = (CommerceAvailabilit
 >
 	<c:if test="<%= commerceAvailabilityEstimateDisplayContext.hasManageCommerceAvailabilityEstimatesPermission() %>">
 		<portlet:renderURL var="editURL">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceAvailabilityEstimate" />
+			<portlet:param name="mvcRenderCommandName" value="/commerce_availability_estimate/edit_commerce_availability_estimate" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceAvailabilityEstimateId" value="<%= String.valueOf(commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId()) %>" />
 		</portlet:renderURL>
@@ -43,7 +43,7 @@ CommerceAvailabilityEstimate commerceAvailabilityEstimate = (CommerceAvailabilit
 			url="<%= editURL %>"
 		/>
 
-		<portlet:actionURL name="editCommerceAvailabilityEstimate" var="deleteURL">
+		<portlet:actionURL name="/commerce_availability_estimate/edit_commerce_availability_estimate" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceAvailabilityEstimateId" value="<%= String.valueOf(commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId()) %>" />

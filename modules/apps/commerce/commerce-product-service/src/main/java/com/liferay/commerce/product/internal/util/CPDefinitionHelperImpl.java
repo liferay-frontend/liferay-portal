@@ -268,11 +268,9 @@ public class CPDefinitionHelperImpl implements CPDefinitionHelper {
 	}
 
 	private Sort _getSort(String orderByType, String sortField) {
-		int sortType = _getSortType(sortField);
-
 		return SortFactoryUtil.getSort(
-			CPDefinition.class, sortType, _getOrderByCol(sortField),
-			orderByType);
+			CPDefinition.class, _getSortType(sortField),
+			_getOrderByCol(sortField), orderByType);
 	}
 
 	private Sort[] _getSorts(CPQuery cpQuery) {

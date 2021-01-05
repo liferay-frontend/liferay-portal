@@ -25,12 +25,14 @@ public class AccountOrganization {
 		_id = id;
 		_name = name;
 		_email = email;
-		_success = true;
 		_thumbnail = thumbnail;
+
+		_success = true;
 	}
 
 	public AccountOrganization(String[] errorMessages) {
 		_errorMessages = errorMessages;
+
 		_success = false;
 	}
 

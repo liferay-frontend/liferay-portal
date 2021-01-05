@@ -89,7 +89,7 @@ definition {
 				locator1 = "Button#SELECT",
 				value1 = "Select Site");
 
-			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_IFRAME");
+			SelectFrame(locator1 = "IFrame#MODAL_IFRAME");
 
 			Click(
 				key_siteName = "${siteName}",
@@ -178,20 +178,13 @@ definition {
 			locator1 = "CommerceEntry#DISCOUNT_AMOUNT",
 			value1 = "${discountAmount}");
 
-		Type(
-			locator1 = "CommerceEntry#MAXIMUM_DISCOUNT_AMOUNT_FIELD",
-			value1 = "${maximumDiscountAmount}");
+		if (isSet(maximumDiscountAmount)) {
+			Type(
+				locator1 = "CommerceEntry#MAXIMUM_DISCOUNT_AMOUNT_FIELD",
+				value1 = "${maximumDiscountAmount}");
+		}
 
 		Check.checkToggleSwitch(locator1 = "CommerceEntry#ACTIVE_CHECKBOX");
-
-		Button.clickPublish();
-
-		CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
-
-		CommerceEntry.setEntryEligibility(
-			accountGroupsEligibility = "${accountGroupsEligibility}",
-			accountsEligibility = "${accountsEligibility}",
-			channelsEligibility = "${channelsEligibility}");
 
 		Button.clickPublish();
 	}
@@ -264,8 +257,6 @@ definition {
 
 	macro addNewPriceListsEntry {
 		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
-		Pause(locator1 = "3000");
 
 		Type(
 			locator1 = "TextInput#NAME",
@@ -349,13 +340,9 @@ definition {
 			locator1 = "CommerceEntry#NAME_FIELD",
 			value1 = "${productName}");
 
-		Type(
-			locator1 = "CommerceEntry#CREATE_NEW_PRODUCT_CATALOG_FIELD",
-			value1 = "${productCatalog}");
-
-		Click(
-			key_menuItem = "${productCatalog}",
-			locator1 = "MenuItem#DROPDOWN_MENU_ITEM");
+		CommerceEntry.selectAutoCompleteField(
+			entryName = "${productCatalog}",
+			label = "Catalog");
 
 		Click(locator1 = "Button#SUBMIT");
 
@@ -614,6 +601,17 @@ definition {
 		}
 	}
 
+	macro selectAutoCompleteField {
+		Type(
+			key_label = "${label}",
+			locator1 = "CommerceEntry#ANY_AUTOCOMPLETE_TEXT_FIELD",
+			value1 = "${entryName}");
+
+		Click(
+			key_menuItem = "${entryName}",
+			locator1 = "MenuItem#DROPDOWN_MENU_ITEM");
+	}
+
 	macro setEntryEligibility {
 		if (isSet(accountGroupsEligibility)) {
 			var title = "Add Account Groups";
@@ -676,6 +674,13 @@ definition {
 			Click(
 				key_radioOption = "All Channels",
 				locator1 = "CommerceEntry#RADIO_BUTTON");
+		}
+
+		if (isSet(unpublish)) {
+			echo("Do not need to click Publish button");
+		}
+		else {
+			Button.clickPublish();
 		}
 	}
 

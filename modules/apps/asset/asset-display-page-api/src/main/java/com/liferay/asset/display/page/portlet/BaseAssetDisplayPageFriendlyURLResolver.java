@@ -151,12 +151,10 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			Map<String, Object> requestContext)
 		throws PortalException {
 
-		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
-			_getLayoutDisplayPageProvider(friendlyURL);
-
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
 			_getLayoutDisplayPageObjectProvider(
-				layoutDisplayPageProvider, groupId, friendlyURL);
+				_getLayoutDisplayPageProvider(friendlyURL), groupId,
+				friendlyURL);
 
 		if (layoutDisplayPageObjectProvider == null) {
 			throw new PortalException();
@@ -261,15 +259,16 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			return layoutDisplayPageObjectProvider.getDisplayObject();
 		}
 
+		InfoItemIdentifier infoItemIdentifier = new ClassPKInfoItemIdentifier(
+			layoutDisplayPageObjectProvider.getClassPK());
+
 		InfoItemObjectProvider<Object> infoItemObjectProvider =
 			(InfoItemObjectProvider<Object>)
 				infoItemServiceTracker.getFirstInfoItemService(
 					InfoItemObjectProvider.class,
 					portal.getClassName(
-						layoutDisplayPageObjectProvider.getClassNameId()));
-
-		InfoItemIdentifier infoItemIdentifier = new ClassPKInfoItemIdentifier(
-			layoutDisplayPageObjectProvider.getClassPK());
+						layoutDisplayPageObjectProvider.getClassNameId()),
+					infoItemIdentifier.getInfoItemServiceFilter());
 
 		infoItemIdentifier.setVersion(InfoItemIdentifier.VERSION_LATEST);
 

@@ -25,6 +25,7 @@ import com.liferay.gradle.plugins.workspace.configurators.PluginsProjectConfigur
 import com.liferay.gradle.plugins.workspace.configurators.RootProjectConfigurator;
 import com.liferay.gradle.plugins.workspace.configurators.ThemesProjectConfigurator;
 import com.liferay.gradle.plugins.workspace.configurators.WarsProjectConfigurator;
+import com.liferay.gradle.plugins.workspace.internal.util.FileUtil;
 import com.liferay.gradle.plugins.workspace.internal.util.GradleUtil;
 import com.liferay.gradle.util.Validator;
 import com.liferay.portal.tools.bundle.support.commands.DownloadCommand;
@@ -94,8 +95,12 @@ public class WorkspaceExtension {
 		_bundleTokenPasswordFile = _getProperty(
 			settings, "bundle.token.password.file",
 			_BUNDLE_TOKEN_PASSWORD_FILE);
+
 		_bundleUrl = _getProperty(
 			settings, "bundle.url", _getDefaultProductBundleUrl());
+
+		_bundleChecksumMD5Default = _getBundleChecksumMD5(_bundleUrl);
+
 		_configsDir = _getProperty(
 			settings, "configs.dir",
 			BundleSupportConstants.DEFAULT_CONFIGS_DIR_NAME);
@@ -195,6 +200,14 @@ public class WorkspaceExtension {
 		return GradleUtil.toFile(_gradle.getRootProject(), _bundleCacheDir);
 	}
 
+	public String getBundleChecksumMD5() {
+		if (_bundleChecksumMD5 != null) {
+			return GradleUtil.toString(_bundleChecksumMD5);
+		}
+
+		return GradleUtil.toString(_bundleChecksumMD5Default);
+	}
+
 	public String getBundleDistRootDirName() {
 		return GradleUtil.toString(_bundleDistRootDirName);
 	}
@@ -286,6 +299,10 @@ public class WorkspaceExtension {
 		_bundleCacheDir = bundleCacheDir;
 	}
 
+	public void setBundleChecksumMD5(Object bundleChecksumMD5) {
+		_bundleChecksumMD5 = bundleChecksumMD5;
+	}
+
 	public void setBundleDistRootDirName(Object bundleDistRootDirName) {
 		_bundleDistRootDirName = bundleDistRootDirName;
 	}
@@ -312,6 +329,8 @@ public class WorkspaceExtension {
 
 	public void setBundleUrl(Object bundleUrl) {
 		_bundleUrl = bundleUrl;
+
+		_bundleChecksumMD5Default = _getBundleChecksumMD5(bundleUrl);
 	}
 
 	public void setConfigsDir(Object configsDir) {
@@ -363,6 +382,47 @@ public class WorkspaceExtension {
 			throw new GradleException(
 				"Unable to determine bundle URL", exception);
 		}
+	}
+
+	private String _getBundleChecksumMD5(Object bundleUrl) {
+		String bundleUrlString = bundleUrl.toString();
+
+		if (Objects.isNull(bundleUrlString) || bundleUrlString.isEmpty()) {
+			return null;
+		}
+
+		try {
+			DownloadCommand downloadCommand = new DownloadCommand();
+
+			downloadCommand.setCacheDir(_workspaceCacheDir);
+			downloadCommand.setPassword(null);
+			downloadCommand.setQuiet(true);
+			downloadCommand.setToken(false);
+			downloadCommand.setUrl(new URL(bundleUrlString + ".MD5"));
+			downloadCommand.setUserName(null);
+
+			downloadCommand.execute();
+
+			Path md5FilePath = downloadCommand.getDownloadPath();
+
+			String md5Content = FileUtil.read(md5FilePath.toFile());
+
+			if (Objects.isNull(md5Content)) {
+				return null;
+			}
+
+			String[] md5Contents = md5Content.split(" ");
+
+			if (md5Contents.length < 1) {
+				return null;
+			}
+
+			return md5Contents[0].trim();
+		}
+		catch (Exception exception) {
+		}
+
+		return null;
 	}
 
 	private String _getDefaultAppServerVersion() {
@@ -513,6 +573,8 @@ public class WorkspaceExtension {
 
 	private final Object _appServerTomcatVersion;
 	private Object _bundleCacheDir;
+	private Object _bundleChecksumMD5;
+	private String _bundleChecksumMD5Default;
 	private Object _bundleDistRootDirName;
 	private Object _bundleTokenDownload;
 	private Object _bundleTokenEmailAddress;

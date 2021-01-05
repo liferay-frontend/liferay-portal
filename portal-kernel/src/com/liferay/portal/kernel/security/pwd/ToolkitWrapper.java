@@ -23,8 +23,9 @@ import com.liferay.portal.kernel.model.PasswordPolicy;
 public class ToolkitWrapper implements Toolkit {
 
 	public ToolkitWrapper(Toolkit toolkit) {
-		_originalToolkit = toolkit;
 		_toolkit = toolkit;
+
+		_originalToolkit = toolkit;
 	}
 
 	@Override

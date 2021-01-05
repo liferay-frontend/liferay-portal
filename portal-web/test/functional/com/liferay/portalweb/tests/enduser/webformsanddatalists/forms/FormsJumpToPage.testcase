@@ -34,7 +34,8 @@ definition {
 	@description = "This is a use case for LPS-68227."
 	@priority = "4"
 	test ViewFormRulesSummary {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormsJumpToPage#ViewFormRulesSummary";
 
 		Navigator.openURL();
@@ -164,6 +165,7 @@ definition {
 	@priority = "5"
 	test ViewPagesAfterJump {
 		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormsJumpToPage#ViewPagesAfterJump";
 
 		Navigator.openURL();
@@ -467,6 +469,8 @@ definition {
 
 		var key_conditionRowNumber = "1";
 
+		var key_fieldColumnNumber = "1";
+
 		AssertTextEquals.assertPartialText(
 			locator1 = "FormRules#RULE_BUILDER_CONDITION_FIELD",
 			value1 = "Edit Label");
@@ -475,7 +479,8 @@ definition {
 	@description = "This is a use case for LPS-68227."
 	@priority = "3"
 	test ViewRuleAfterOptionValueEdit {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormsJumpToPage#ViewRuleAfterOptionValueEdit";
 
 		Navigator.openURL();
@@ -606,6 +611,8 @@ definition {
 
 		var key_conditionRowNumber = "1";
 
+		var key_fieldColumnNumber = "4";
+
 		AssertTextEquals.assertPartialText(
 			locator1 = "FormRules#RULE_BUILDER_CONDITION_VALUE_FIELD",
 			value1 = "Edited Destiny");
@@ -614,7 +621,8 @@ definition {
 	@description = "This is a use case for LPS-68227."
 	@priority = "4"
 	test ViewRuleAfterPageNameChange {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "FormsJumpToPage#ViewRuleAfterPageNameChange";
 
 		Navigator.openURL();
@@ -738,9 +746,10 @@ definition {
 		FormRules.gotoEdit(ruleNumber = "1");
 
 		var key_actionRowNumber = "1";
+		var key_fieldColumnNumber = "2";
 
 		AssertTextEquals.assertPartialText(
-			locator1 = "FormRules#RULE_BUILDER_JUMP_TO_PAGE_ACTION_TARGET",
+			locator1 = "FormRules#RULE_BUILDER_ACTION_FIELD",
 			value1 = "3 Renamed Page");
 	}
 

@@ -238,10 +238,8 @@ public class FrequentPatternCommerceMLRecommendationManagerImpl
 
 		BooleanQuery booleanQuery = _getConstantScoreQuery(cpDefinitionIds);
 
-		Script script = _getScript(cpDefinitionIds);
-
 		ScriptScoreFunction scriptScoreFunction = _scoreFunctions.script(
-			script);
+			_getScript(cpDefinitionIds));
 
 		FunctionScoreQuery functionScoreQuery = _queries.functionScore(
 			excludeRecommendationsBooleanQuery);

@@ -84,13 +84,4 @@ public abstract class SourceFinderBaseImpl extends BasePersistenceImpl<Source> {
 	private static final Log _log = LogFactoryUtil.getLog(
 		SourceFinderBaseImpl.class);
 
-	static {
-		try {
-			Class.forName(ReportsPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			throw new ExceptionInInitializerError(classNotFoundException);
-		}
-	}
-
 }

@@ -45,13 +45,27 @@ const RichText = ({
 			<ClassicEditor
 				contents={currentValue}
 				data={currentValue}
-				editorConfig={editorConfig.JSONObject}
+				editorConfig={editorConfig}
 				name={name}
 				onChange={(data) => {
 					if (currentValue !== data) {
 						setCurrentValue(data);
 
 						onChange({}, data);
+					}
+				}}
+				onMode={({editor}) => {
+					if (editor.mode === 'source') {
+						editor.on('afterSetData', ({data}) => {
+							const {dataValue} = data;
+
+							setCurrentValue(dataValue);
+
+							onChange({}, dataValue);
+						});
+					}
+					else {
+						editor.removeListener('afterSetData');
 					}
 				}}
 				readOnly={readOnly}

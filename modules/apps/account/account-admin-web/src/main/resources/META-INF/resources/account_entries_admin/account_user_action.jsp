@@ -18,6 +18,7 @@
 
 <%
 AccountEntryDisplay accountEntryDisplay = (AccountEntryDisplay)request.getAttribute(AccountWebKeys.ACCOUNT_ENTRY_DISPLAY);
+
 ResultRow row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 
 AccountUserDisplay accountUserDisplay = (AccountUserDisplay)row.getObject();

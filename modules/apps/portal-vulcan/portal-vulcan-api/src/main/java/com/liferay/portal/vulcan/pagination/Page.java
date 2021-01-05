@@ -126,6 +126,7 @@ public class Page<T> {
 
 		_actions = actions;
 		_items = items;
+
 		_page = 1;
 		_pageSize = items.size();
 		_totalCount = items.size();

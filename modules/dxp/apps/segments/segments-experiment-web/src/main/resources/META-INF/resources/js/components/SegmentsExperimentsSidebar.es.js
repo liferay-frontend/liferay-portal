@@ -364,7 +364,7 @@ function SegmentsExperimentsSidebar({
 		const body = {
 			description: experiment.description,
 			goal: experiment.goal.value,
-			goalTarget: selector,
+			goalTarget: selector && `#${selector}`,
 			name: experiment.name,
 			segmentsExperimentId: experiment.segmentsExperimentId,
 		};

@@ -19,11 +19,13 @@
 
 		<!-- Other fields -->
 
+		<column name="defaultBillingAddressId" type="long" />
+		<column name="defaultShippingAddressId" type="long" />
 		<column name="parentAccountEntryId" type="long" />
-		<column name="name" type="String" />
 		<column name="description" type="String" />
 		<column name="domains" type="String" />
 		<column name="logoId" type="long" />
+		<column name="name" type="String" />
 		<column name="taxIdNumber" type="String" />
 		<column name="type" type="String" />
 		<column name="status" type="int" />
@@ -47,6 +49,7 @@
 		<!-- References -->
 
 		<reference entity="Group" package-path="com.liferay.portal" />
+		<reference entity="Organization" package-path="com.liferay.portal" />
 		<reference entity="Resource" package-path="com.liferay.portal" />
 		<reference entity="User" package-path="com.liferay.portal" />
 		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
@@ -133,13 +136,18 @@
 
 		<!-- Other fields -->
 
-		<column name="name" type="String" />
+		<column name="defaultAccountGroup" type="boolean" />
 		<column name="description" type="String" />
+		<column name="name" type="String" />
 
 		<!-- Finder methods -->
 
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_D" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="defaultAccountGroup" />
 		</finder>
 
 		<!-- References -->
@@ -213,6 +221,7 @@
 		<exception>AccountEntryDomains</exception>
 		<exception>AccountEntryName</exception>
 		<exception>AccountEntryType</exception>
+		<exception>DefaultAccountGroup</exception>
 		<exception>DuplicateAccountEntryId</exception>
 		<exception>DuplicateAccountEntryOrganizationRel</exception>
 		<exception>DuplicateAccountEntryUserRel</exception>

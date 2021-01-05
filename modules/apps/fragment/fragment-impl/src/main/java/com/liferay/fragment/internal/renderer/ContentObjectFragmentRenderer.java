@@ -100,7 +100,9 @@ public class ContentObjectFragmentRenderer implements FragmentRenderer {
 		Optional<Object> displayObjectOptional =
 			fragmentRendererContext.getDisplayObjectOptional();
 
-		if (!displayObjectOptional.isPresent() && (jsonObject == null)) {
+		if (!displayObjectOptional.isPresent() &&
+			((jsonObject == null) || (jsonObject.length() == 0))) {
+
 			if (FragmentRendererUtil.isEditMode(httpServletRequest)) {
 				FragmentRendererUtil.printPortletMessageInfo(
 					httpServletRequest, httpServletResponse,

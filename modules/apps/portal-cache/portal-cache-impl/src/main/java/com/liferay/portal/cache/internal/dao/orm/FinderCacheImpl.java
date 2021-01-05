@@ -376,6 +376,7 @@ public class FinderCacheImpl
 	 * 			#putResult(FinderPath, Object[], Object)}
 	 */
 	@Deprecated
+	@Override
 	public void putResult(
 		FinderPath finderPath, Object[] args, Object result, boolean quiet) {
 

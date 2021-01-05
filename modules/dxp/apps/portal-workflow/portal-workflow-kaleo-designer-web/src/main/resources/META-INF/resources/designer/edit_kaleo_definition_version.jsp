@@ -237,7 +237,7 @@ String successMessageKey = KaleoDesignerPortletKeys.KALEO_DESIGNER + "requestPro
 				size='<%= Objects.equals(renderRequest.getWindowState(), LiferayWindowState.POP_UP) ? "xl" : "lg" %>'
 			>
 				<div class="sidenav-content">
-					<aui:form method="post" name="fm" onSubmit="event.preventDefault();">
+					<aui:form cssClass="full-width-content" method="post" name="fm" onSubmit="event.preventDefault();">
 						<aui:model-context bean="<%= kaleoDefinitionVersion %>" model="<%= KaleoDefinitionVersion.class %>" />
 						<aui:input name="mvcPath" type="hidden" value="<%= mvcPath %>" />
 						<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
@@ -265,14 +265,14 @@ String successMessageKey = KaleoDesignerPortletKeys.KALEO_DESIGNER + "requestPro
 									<div class="property-builder-content" id="<portlet:namespace />propertyBuilderContent">
 										<div class="tabbable">
 											<div class="tabbable-content">
-												<ul class="nav nav-tabs nav-tabs-default">
-													<li class="active">
-														<a href="javascript:;">
+												<ul class="nav nav-tabs">
+													<li class="active nav-item">
+														<a class="active nav-link" href="javascript:;">
 															<liferay-ui:message key="nodes" />
 														</a>
 													</li>
-													<li>
-														<a href="javascript:;">
+													<li class="nav-item">
+														<a class="nav-link" href="javascript:;">
 															<liferay-ui:message key="properties" />
 														</a>
 													</li>
@@ -291,12 +291,12 @@ String successMessageKey = KaleoDesignerPortletKeys.KALEO_DESIGNER + "requestPro
 												<div class="main-tab tabbable-content">
 													<ul class="nav nav-tabs">
 														<li class="active nav-item">
-															<a href="javascript:;">
+															<a class="active nav-link" href="javascript:;">
 																<liferay-ui:message key="diagram" />
 															</a>
 														</li>
 														<li class="nav-item">
-															<a href="javascript:;">
+															<a class="nav-link" href="javascript:;">
 																<liferay-ui:message key="source" />
 															</a>
 														</li>
@@ -352,7 +352,7 @@ String successMessageKey = KaleoDesignerPortletKeys.KALEO_DESIGNER + "requestPro
 										<portlet:namespace />updateTitle();
 
 										<portlet:namespace />updateAction(
-											'<portlet:actionURL name="publishKaleoDefinitionVersion" />'
+											'<portlet:actionURL name="/kaleo_designer/publish_kaleo_definition_version" />'
 										);
 
 										submitForm(document.<portlet:namespace />fm);
@@ -364,7 +364,7 @@ String successMessageKey = KaleoDesignerPortletKeys.KALEO_DESIGNER + "requestPro
 										<portlet:namespace />updateTitle();
 
 										<portlet:namespace />updateAction(
-											'<portlet:actionURL name="saveKaleoDefinitionVersion" />'
+											'<portlet:actionURL name="/kaleo_designer/save_kaleo_definition_version" />'
 										);
 
 										submitForm(document.<portlet:namespace />fm);
@@ -774,7 +774,7 @@ String successMessageKey = KaleoDesignerPortletKeys.KALEO_DESIGNER + "requestPro
 		</div>
 
 		<c:if test="<%= kaleoDefinition != null %>">
-			<liferay-portlet:actionURL name="duplicateWorkflowDefinition" portletName="<%= KaleoDesignerPortletKeys.KALEO_DESIGNER %>" var="duplicateWorkflowDefinition">
+			<liferay-portlet:actionURL name="/kaleo_designer/duplicate_workflow_definition" portletName="<%= KaleoDesignerPortletKeys.KALEO_DESIGNER %>" var="duplicateWorkflowDefinition">
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 			</liferay-portlet:actionURL>
 

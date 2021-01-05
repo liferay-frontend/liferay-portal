@@ -13,7 +13,7 @@
  */
 
 import parser from 'bbcode-to-react';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Highlight from './Highlight.es';
 
@@ -24,10 +24,21 @@ export default ({
 	id,
 	signature,
 }) => {
+	const [
+		articleBodyContainsParagraph,
+		setArticleBodyContainsParagraph,
+	] = useState(true);
+
+	useEffect(() => {
+		setArticleBodyContainsParagraph(articleBody.includes('<p>'));
+	}, [articleBody]);
+
 	return (
 		<>
 			{encodingFormat === 'bbcode' && (
-				<p>{parser.toReact(articleBody)}</p>
+				<div className={`questions-article-body-${id}`}>
+					<div>{parser.toReact(articleBody)}</div>
+				</div>
 			)}
 			{encodingFormat !== 'bbcode' && compactMode && (
 				<div
@@ -44,7 +55,9 @@ export default ({
 			{signature && (
 				<style
 					dangerouslySetInnerHTML={{
-						__html: `.questions-article-body-${id} p:last-child:after {content: " - ${signature}"; font-weight: bold;}`,
+						__html: `.questions-article-body-${id} ${
+							articleBodyContainsParagraph ? 'p' : 'div'
+						}:last-child:after {content: " - ${signature}"; font-weight: bold;}`,
 					}}
 				/>
 			)}

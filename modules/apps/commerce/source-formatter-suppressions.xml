@@ -4,9 +4,7 @@
 	<checkstyle>
 		<suppress checks="CamelCaseNameCheck" files="commerce-google-merchant/src/main/java/com/liferay/commerce/google/merchant/internal/sftp/SftpUploader\.java" />
 		<suppress checks="ChainingCheck" files="commerce-frontend-impl/src/main/java/com/liferay/commerce/frontend/internal/account/CommerceAccountResource\.java" />
-		<suppress checks="ListUtilCheck" files=".*" />
-		<suppress checks="OperatorOperandCheck" files=".*" />
-		<suppress checks="VariableDeclarationAsUsedCheck" files=".*" />
+		<suppress checks="MVCCommandNameCheck" files=".*" />
 		<suppress checks="VariableNameCheck" files="commerce-google-merchant/src/main/java/com/liferay/commerce/google/merchant/internal/jsch/FingerprintHostKeyRepository\.java" />
 	</checkstyle>
 	<source-check>
@@ -21,9 +19,6 @@
 		<suppress checks="BNDExportsCheck" files="commerce-shipping-web/bnd\.bnd" />
 		<suppress checks="CopyrightCheck" files="commerce-theme-minium/commerce-theme-minium/src/js/intersection-observer\.js" />
 		<suppress checks="CopyrightCheck" files="commerce-theme-speedwell/commerce-theme-speedwell/src/js/intersection-observer\.js" />
-		<suppress checks="GradleDependenciesCheck" files=".*" />
-		<suppress checks="GradleDependencyArtifactsCheck" files=".*" />
-		<suppress checks="GradleTestDependencyVersionCheck" files=".*" />
 		<suppress checks="JavaAPISignatureCheck" files="commerce-account-api/src/main/java/com/liferay/commerce/account/util/CommerceAccountHelper\.java" />
 		<suppress checks="JavaAPISignatureCheck" files="commerce-account-api/src/main/java/com/liferay/commerce/account/util/CommerceAccountRoleHelper\.java" />
 		<suppress checks="JavaAPISignatureCheck" files="commerce-api/src/main/java/com/liferay/commerce/context/CommerceContextFactory\.java" />
@@ -70,15 +65,11 @@
 		<suppress checks="JavaAPISignatureCheck" files="headless/headless-commerce/headless-commerce-admin-pricing-impl/src/main/java/com/liferay/headless/commerce/admin/pricing/internal/util/v1_0/DiscountRuleUtil\.java" />
 		<suppress checks="JavaAPISignatureCheck" files="headless/headless-commerce/headless-commerce-admin-pricing-impl/src/main/java/com/liferay/headless/commerce/admin/pricing/internal/util/v1_0/PriceListAccountGroupUtil\.java" />
 		<suppress checks="JavaAPISignatureCheck" files="headless/headless-commerce/headless-commerce-admin-pricing-impl/src/main/java/com/liferay/headless/commerce/admin/pricing/internal/util/v1_0/TierPriceUtil\.java" />
-		<suppress checks="JavaClassNameCheck" files=".*" />
 		<suppress checks="JavaConfigurationCategoryCheck" files=".*" />
 		<suppress checks="JavaHelperUtilCheck" files="commerce-checkout-web/src/main/java/com/liferay/commerce/checkout/web/internal/util/AddressCommerceCheckoutStepUtil\.java" />
 		<suppress checks="JavaHelperUtilCheck" files="commerce-frontend-impl/src/main/java/com/liferay/commerce/frontend/internal/cart/CommerceCartResourceUtil\.java" />
 		<suppress checks="JavaHelperUtilCheck" files="commerce-frontend-impl/src/main/java/com/liferay/commerce/frontend/internal/search/util/CommerceSearchUtil\.java" />
 		<suppress checks="JavaHelperUtilCheck" files="commerce-product-asset-categories-web/src/main/java/com/liferay/commerce/product/asset/categories/web/internal/util/CPAssetCategoryWebPortletUtil\.java" />
-		<suppress checks="JavaInternalPackageCheck" files="commerce-product-service/.*" />
-		<suppress checks="JavaInternalPackageCheck" files="commerce-service/.*" />
-		<suppress checks="JavaPackagePathCheck" files=".*" />
 		<suppress checks="JavaUpgradeVersionCheck" files="commerce-product-type-virtual-service/src/main/java/com/liferay/commerce/product/type/virtual/internal/upgrade/CommerceProductTypeVirtualUpgradeStepRegistrator\.java" />
 		<suppress checks="JavaUpgradeVersionCheck" files="commerce-shipping-engine-fixed-service/src/main/java/com/liferay/commerce/shipping/engine/fixed/internal/upgrade/CommerceShippingEngineFixedUpgradeStepRegistrator\.java" />
 		<suppress checks="JavaVariableTypeCheck" files="commerce-product-api/src/main/java/com/liferay/commerce/product/option/CommerceOptionValue\.java" />
@@ -88,7 +79,6 @@
 		<suppress checks="JSONPackageJSONCheck" files="commerce-product-content-web/package\.json" />
 		<suppress checks="JSONPackageJSONCheck" files="commerce-product-options-web/package\.json" />
 		<suppress checks="JSONPackageJSONCheck" files="commerce-theme-minium/commerce-theme-minium-impl/package\.json" />
-		<suppress checks="JSONPackageJSONDependencyVersionCheck" files=".*" />
 		<suppress checks="PropertiesLiferayPluginPackageLiferayVersionsCheck" files="commerce-theme-minium/commerce-theme-minium/src/WEB-INF/liferay-plugin-package\.properties" />
 		<suppress checks="PropertiesLiferayPluginPackageLiferayVersionsCheck" files="commerce-theme-speedwell/commerce-theme-speedwell/src/WEB-INF/liferay-plugin-package\.properties" />
 		<suppress checks="StringMethodsCheck" files="commerce-discount-web/src/main/java/com/liferay/commerce/discount/web/internal/display/context/CommerceDiscountDisplayContext\.java" />
@@ -98,6 +88,5 @@
 		<suppress checks="XMLServiceEntityNameCheck" files="commerce-discount-service/service\.xml" />
 		<suppress checks="XMLServiceEntityNameCheck" files="commerce-price-list-service/service\.xml" />
 		<suppress checks="XMLServiceEntityNameCheck" files="commerce-wish-list-service/service\.xml" />
-		<suppress checks="YMLLongLinesCheck" files="headless/headless-commerce/headless-commerce-admin-inventory-impl/rest-openapi\.yaml" />
 	</source-check>
 </suppressions>

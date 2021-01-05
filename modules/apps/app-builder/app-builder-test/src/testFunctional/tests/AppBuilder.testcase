@@ -163,7 +163,8 @@ definition {
 	@description = "This is a use case for LPS-95964"
 	@priority = "5"
 	test AddRulesViaFormView {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "AppBuilder#AddRulesViaFormView";
 
 		var myFormViewName = "My Registration form";
@@ -589,6 +590,109 @@ definition {
 			title = "Numeric Field - Table View Title");
 	}
 
+	@description = "Automate LPS-117199 Define translations when creating fieldsets"
+	@priority = "5"
+	test DefineTranslationCreatedFieldSets {
+		property portal.acceptance = "true";
+
+		AppBuilderAdmin.addCustomObject(
+			customObjectName = "my custom object",
+			isCreatingFormView = "true",
+			isCreatingViaPlusIcon = "true");
+
+		FormViewBuilder.setUpFieldSet(
+			fieldLabel = "Name EN",
+			fieldSetName = "Field Set English",
+			fieldType = "Text");
+
+		FormViewBuilder.editFieldSetEntry(
+			rowNumber = "1",
+			selectAction = "Edit");
+
+		FormViewBuilder.switchLocalizationForFieldSets(
+			localizationName = "pt-BR",
+			statusName = "Not Translated",
+			symbolName = "en-US");
+
+		FormViewBuilder.validateLocalizationForFieldSet(symbolName = "pt-BR");
+
+		FormViewBuilder.gotoFirstFieldset(fieldLabel = "Name EN");
+
+		FormViewBuilder.setFieldLabel(fieldLabel = "Name BR");
+
+		Type(
+			locator1 = "FormViewBuilder#FIELD_SET_NAME",
+			value1 = "Field Set Brazil");
+
+		Click(locator1 = "FormViewBuilder#RULE_BUILDER_GO_BACK");
+
+		FormViewBuilder.validateTranslatedField(fieldLabel = "Name BR");
+
+		FormViewBuilder.validateTranslatedLocalization(
+			localizationName = "pt-BR",
+			statusName = "Translated",
+			symbolName = "pt-BR");
+
+		Click(
+			key_symbolName = "pt-BR",
+			locator1 = "FormViewBuilder#BUTTON_LOCALIZATION_FIELD_SET");
+
+		FormViewBuilder.validateTranslatedLocalization(
+			localizationName = "en-US",
+			statusName = "Default",
+			symbolName = "pt-BR");
+
+		Click(locator1 = "FormViewBuilder#FIELD_SET_SAVE_BUTTON");
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Field Set English");
+
+		FormViewBuilder.setName(formViewName = "Translated Form");
+
+		FormViewBuilder.save();
+	}
+
+	@description = "Automate LPS-117199 Define translations when creating fieldsets"
+	@priority = "5"
+	test DefineTranslationForFieldSets {
+		property portal.acceptance = "true";
+
+		Site.openSiteSettingsAdmin(siteURLKey = "guest");
+
+		Site.configureCurrentLanguagesCP(defaultSiteLanguage = "Spanish (Spain)");
+
+		Navigator.openURL();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "App Builder",
+			panel = "Applications",
+			portlet = "Objects");
+
+		AppBuilderAdmin.addCustomObject(
+			customObjectName = "my custom object",
+			isCreatingFormView = "true",
+			isCreatingViaPlusIcon = "true");
+
+		Click(locator1 = "FormViewBuilder#FIELD_SETS_TAB");
+		Click(locator1 = "FormViewBuilder#CREATE_NEW_FIELD_SETS");
+		FormViewBuilder.validateLocalizationForFieldSet(symbolName = "es-ES");
+		FormViewBuilder.cancelFieldSet();
+
+		FormViewBuilder.setUpFieldSet(
+			fieldLabel = "Name ES",
+			fieldSetName = "Field Set Spanish",
+			fieldType = "Text");
+
+		FormViewBuilder.editFieldSetEntry(
+			rowNumber = "1",
+			selectAction = "Edit");
+
+		FormViewBuilder.validateLocalizationForFieldSet(symbolName = "es-ES");
+
+		Navigator.openURL();
+		Site.openSiteSettingsAdmin(siteURLKey = "guest");
+		Site.configureCurrentLanguagesCP(defaultSiteLanguage = "English (United States)");
+	}
+
 	@description = "Delete an existing custom object with no associated relationships"
 	@priority = "5"
 	test DeleteCustomObjectWithAssociatedRelationship {
@@ -644,6 +748,139 @@ definition {
 		AppBuilderAdmin.gotoBack();
 
 		AppBuilderAdmin.deleteEntry(itemName = "my custom object");
+	}
+
+	@description = "Delete fieldsets used in a form view and when it is not used"
+	@priority = "5"
+	test DeleteFieldSet {
+		property portal.acceptance = "true";
+
+		AppBuilderAdmin.addCustomObject(
+			customObjectName = "my custom object one",
+			isCreatingFormView = "true",
+			isCreatingViaPlusIcon = "true");
+
+		FormViewBuilder.setUpTwoFieldSets(
+			fieldSetName = "Field Sets",
+			fieldType1 = "Text",
+			fieldType2 = "Numeric");
+
+		FormViewBuilder.goToFieldsetsTab();
+
+		FormViewBuilder.deleteFieldSetEntry(
+			rowNumber = "1",
+			selectAction = "Delete");
+
+		FormViewBuilder.setUpTwoFieldSets(
+			fieldSetName = "Field Sets",
+			fieldType1 = "Text",
+			fieldType2 = "Numeric");
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Field Sets");
+
+		FormViewBuilder.setName(formViewName = "Form One");
+
+		FormViewBuilder.validateFieldLabel(fieldLabel = "Field Sets");
+
+		FormViewBuilder.confirmDeleteFromObject(
+			fieldLabel = "Field Sets",
+			selectAction = "Delete from Object");
+
+		FormViewBuilder.goToFieldsetsTab();
+
+		FormViewBuilder.deleteFieldSetEntry(
+			rowNumber = "1",
+			selectAction = "Delete");
+
+		FormViewBuilder.setUpTwoFieldSets(
+			fieldSetName = "Field Sets",
+			fieldType1 = "Text",
+			fieldType2 = "Numeric");
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Field Sets");
+
+		FormViewBuilder.save();
+
+		AppBuilderAdmin.add();
+
+		FormViewBuilder.goToFieldsetsTab();
+
+		FormViewBuilder.deleteDisabledFieldSetEntry(
+			rowNumber = "1",
+			selectAction = "Delete");
+
+		FormViewBuilder.setUpTwoFieldSets(
+			fieldSetName = "Field Sets",
+			fieldType1 = "Text",
+			fieldType2 = "Numeric");
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Field Sets");
+
+		FormViewBuilder.setName(formViewName = "Form Two");
+
+		FormViewBuilder.save();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "App Builder",
+			panel = "Applications",
+			portlet = "Objects");
+
+		AppBuilderAdmin.addCustomObject(
+			customObjectName = "my custom object two",
+			isCreatingFormView = "true",
+			isCreatingViaPlusIcon = "true");
+
+		FormViewBuilder.goToFieldsetsTab();
+
+		FormViewBuilder.deleteFieldSetEntry(
+			rowNumber = "1",
+			selectAction = "Delete");
+
+		FormViewBuilder.setUpTwoFieldSets(
+			fieldSetName = "Field Sets",
+			fieldType1 = "Text",
+			fieldType2 = "Numeric");
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Field Sets");
+
+		FormViewBuilder.setName(formViewName = "Form One");
+
+		FormViewBuilder.save();
+
+		AppBuilderAdmin.switchTab(tabName = "Table Views");
+
+		AppBuilderAdmin.add();
+
+		TableViewBuilder.addColumnByDoubleClick(fieldType = "Text");
+		TableViewBuilder.addColumnByDoubleClick(fieldType = "Numeric");
+
+		TableViewBuilder.setName(tableViewName = "Table One");
+
+		TableViewBuilder.save();
+
+		AppBuilderAdmin.validateItemNameOnTable(itemName = "Table One");
+
+		App.add(
+			appTitle = "App One",
+			deployOption = "Product Menu",
+			formViewName = "Form One",
+			tableViewName = "Table One");
+
+		AppBuilderAdmin.switchTab(tabName = "Form Views");
+
+		AppBuilderAdmin.openItem(itemName = "Form One");
+
+		FormViewBuilder.goToFieldsetsTab();
+
+		FormViewBuilder.deleteDisabledFieldSetEntry(
+			rowNumber = "1",
+			selectAction = "Delete");
+
+		FormViewBuilder.save();
+
+		AppBuilderAdmin.gotoCustomAppApplicationsMenuApplications(portlet = "App One");
+
+		AppBuilderAdmin.validateProductMenuApp(appName = "App One");
 	}
 
 	@description = "Delete an existing Form View with no active publishing through the kebab/action menu"
@@ -833,11 +1070,15 @@ definition {
 
 		App.selectTableView(tableViewName = "My Table View 2");
 
+		Button.clickNext();
+
 		App.clickPrevious();
 
 		App.clickPrevious();
 
 		App.selectTableView(tableViewName = "My Table View 1");
+
+		Button.clickNext();
 
 		App.toggleDeploy(deployOption = "Widget");
 
@@ -891,6 +1132,8 @@ definition {
 
 		App.selectTableView(tableViewName = "My Table View 2");
 
+		Button.clickNext();
+
 		App.saveApp();
 
 		Navigator.gotoSitePage(
@@ -913,6 +1156,8 @@ definition {
 		App.clickNext();
 
 		App.selectTableView(tableViewName = "My Table View 1");
+
+		Button.clickNext();
 
 		App.saveApp();
 
@@ -1136,7 +1381,8 @@ definition {
 	@description = "Place a widget in my page with only a Form View of my App"
 	@priority = "5"
 	test PlaceFormViewWidget {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 
 		var myFormViewName = "My Registration form";
 		var myTableViewName = "My display table";
@@ -1363,7 +1609,8 @@ definition {
 	@description = "Publish my app as a widget with only a Table View"
 	@priority = "5"
 	test PublishAppAsWidgetWithOnlyTableView {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 
 		AppBuilderAdmin.addCustomObject(
 			customObjectName = "my custom object",
@@ -1438,7 +1685,8 @@ definition {
 	@description = "Publish my app in one or more sites"
 	@priority = "5"
 	test PublishAppsInOneOrMoreSites {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 
 		JSONLayout.addPublicLayout(
 			groupName = "App Builder Site 1",
@@ -1625,7 +1873,8 @@ definition {
 	@description = "Publish apps in the product menu and reuse its views"
 	@priority = "5"
 	test PublishAppsInProductMenuAndReuseItsViews {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 
 		var myFormViewName_1 = "My Form View 1";
 		var myFormViewName_2 = "My Form View 2";
@@ -1676,6 +1925,7 @@ definition {
 		AppBuilderAdmin.validateItemNameOnTable(itemName = "${myTableViewName_1}");
 		AppBuilderAdmin.validateItemNameOnTable(itemName = "${myTableViewName_2}");
 		App.selectTableView(tableViewName = "${myTableViewName_1}");
+		Button.clickNext();
 		App.toggleDeploy(deployOption = "Product Menu");
 		App.openProductMenuPlaceItDropdown();
 		App.validateProductMenuPlaceItDropdownList(menuOption = "Applications");
@@ -1738,7 +1988,8 @@ definition {
 	@description = "Publish apps in standalone mode and reuse its views"
 	@priority = "4"
 	test PublishAppsInStandaloneAndReuseItsViews {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 
 		var myFormViewName_1 = "My Form View 1";
 		var myFormViewName_2 = "My Form View 2";
@@ -1784,6 +2035,7 @@ definition {
 		AppBuilderAdmin.setName(title = "${myAppName_1}");
 		App.selectFormView(formViewName = "${myFormViewName_1}");
 		App.selectTableView(tableViewName = "${myTableViewName_1}");
+		Button.clickNext();
 		App.toggleDeploy(deployOption = "Widget");
 		App.toggleDeploy(deployOption = "Standalone");
 		App.toggleDeploy(deployOption = "Product Menu");
@@ -1873,7 +2125,8 @@ definition {
 	@description = "Search for a column(field) in the columns list in Table View Builder"
 	@priority = "5"
 	test SearchColumnListInTableViewBuilder {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "AppBuilder#SearchColumnListInTableViewBuilder";
 
 		AppBuilderAdmin.addCustomObject(
@@ -2167,7 +2420,12 @@ definition {
 			userLoginEmailAddress = "userea@liferay.com",
 			userLoginFullName = "userfn userln");
 
-		AppBuilderAdmin.gotoCustomAppApplicationsMenuApplications(portlet = "App Admin");
+		Navigator.openURL();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "App Admin",
+			panel = "Applications",
+			portlet = "App Admin");
 
 		AppBuilderAdmin.validateProductMenuApp(appName = "App Admin");
 
@@ -2242,7 +2500,8 @@ definition {
 	@description = "Set permissions for User and Portal Content Reviewer and perform CRUD operations in a deployed widget App"
 	@priority = "5"
 	test SetPermissionsFor2RolesAndPerformCRUD {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 
 		JSONUser.addUser(
 			userEmailAddress = "userea@liferay.com",
@@ -2815,6 +3074,8 @@ definition {
 
 		App.selectTableView(tableViewName = "Table View Title");
 
+		Button.clickNext();
+
 		App.saveApp();
 
 		AppBuilderAdmin.openItem(itemName = "Test App C");
@@ -2822,6 +3083,8 @@ definition {
 		App.selectFormView(formViewName = "Form View Title");
 
 		App.selectTableView(tableViewName = "Table View Title Two");
+
+		Button.clickNext();
 
 		App.saveApp();
 
@@ -2831,7 +3094,161 @@ definition {
 
 		App.selectTableView(tableViewName = "Table View Title");
 
+		Button.clickNext();
+
 		App.saveApp();
+	}
+
+	@description = "Usecase for LPS-107630 As n App Adm,I want to use an existing fieldset"
+	@priority = "5"
+	test UseExistingFieldSet {
+		property portal.acceptance = "true";
+
+		AppBuilderAdmin.addCustomObject(
+			customObjectName = "my custom object one",
+			isCreatingFormView = "true",
+			isCreatingViaPlusIcon = "true");
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Text");
+
+		FormViewBuilder.validateFieldLabel(fieldLabel = "Text");
+
+		Click(locator1 = "FormViewBuilder#RULE_BUILDER_GO_BACK");
+
+		FormViewBuilder.setUpFieldSetOptions(
+			fieldSetName = "Field Sets",
+			fieldType1 = "Select from List",
+			fieldType2 = "Single Selection",
+			fieldType3 = "Multiple Selection");
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Field Sets");
+
+		FormViewBuilder.setName(formViewName = "Form One");
+
+		FormViewBuilder.validateFieldLabel(fieldLabel = "Field Sets");
+
+		Click(locator1 = "FormViewBuilder#RULE_BUILDER_GO_BACK");
+
+		FormViewBuilder.dragAndDropFieldSet(fieldType = "Select from List");
+
+		FormViewBuilder.goToFieldsetsTab();
+
+		FormViewBuilder.deleteDisabledFieldSetEntry(
+			rowNumber = "1",
+			selectAction = "Delete");
+
+		FormViewBuilder.setUpTwoFieldSets(
+			fieldSetName = "Field Sets",
+			fieldType1 = "Text",
+			fieldType2 = "Numeric");
+
+		FormViewBuilder.setName(formViewName = "Form One");
+
+		FormViewBuilder.save();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "App Builder",
+			panel = "Applications",
+			portlet = "Objects");
+
+		AppBuilderAdmin.addCustomObject(
+			customObjectName = "my custom object two",
+			isCreatingFormView = "true",
+			isCreatingViaPlusIcon = "true");
+
+		FormViewBuilder.goToFieldsetsTab();
+
+		FormViewBuilder.addFieldSetByDragAndDrop(fieldType = "Field Sets");
+	}
+
+	@description = "As an App Adm, I want to make my app's name available in different languages"
+	@priority = "5"
+	test ValidateAppLocalization {
+		property portal.acceptance = "true";
+
+		AppBuilderAdmin.addCustomObject(
+			customObjectName = "my custom object",
+			isCreatingFormView = "true",
+			isCreatingViaPlusIcon = "true");
+
+		FormViewBuilder.validateLocalization(symbolName = "en-US");
+
+		FormViewBuilder.setName(formViewName = "EN Form View");
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Text");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Text",
+			label = "My EN Text");
+
+		FormViewBuilder.switchLocalization(
+			localizationName = "pt-BR",
+			symbolName = "en-US");
+
+		FormViewBuilder.validateLocalization(symbolName = "pt-BR");
+
+		FormViewBuilder.closeSidebar();
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Text");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Text",
+			label = "My PT Text");
+
+		FormViewBuilder.setName(formViewName = "PT Form View");
+
+		FormViewBuilder.save();
+
+		AppBuilderAdmin.switchTab(tabName = "Table Views");
+
+		AppBuilderAdmin.add();
+
+		TableViewBuilder.addColumnByDoubleClick(fieldType = "My EN Text");
+
+		FormViewBuilder.validateLocalization(symbolName = "en-US");
+
+		TableViewBuilder.setName(tableViewName = "EN Table View");
+
+		FormViewBuilder.switchLocalization(
+			localizationName = "pt-BR",
+			symbolName = "en-US");
+
+		FormViewBuilder.validateLocalization(symbolName = "pt-BR");
+
+		TableViewBuilder.setName(tableViewName = "PT Table View");
+
+		TableViewBuilder.save();
+
+		Navigator.openURL();
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "pt-BR/");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Construtor",
+			panel = "Aplicativos",
+			portlet = "Objetos");
+
+		AppBuilderAdmin.openItem(itemName = "my custom object");
+
+		AppBuilderAdmin.validateItemNameOnTable(itemName = "PT Form View");
+
+		AppBuilderAdmin.switchTab(tabName = "Visualização de Tabela");
+
+		AppBuilderAdmin.validateItemNameOnTable(itemName = "PT Table View");
+
+		AppBuilderAdmin.openItem(itemName = "PT Table View");
+
+		FormViewBuilder.switchLocalization(
+			localizationName = "pt-BR",
+			symbolName = "en-US");
+
+		TableViewBuilder.addColumnByDoubleClick(fieldType = "My PT Text");
+
+		TableViewBuilder.validateColumnLabel(columnLabel = "My PT Text");
+
+		Navigator.openURL();
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "en-US/");
 	}
 
 	@description = "Make sure the search result show if the column is available to be added or already inserted in the table view"
@@ -2871,7 +3288,7 @@ definition {
 		AppBuilderAdmin.switchTab(tabName = "Apps");
 
 		AppBuilderAdmin.validateEmptyListMessage(
-			description = "Select the form and table view you want and deploy your app as a widget, standalone or place it in the product menu.",
+			description = "Select the form and table view you want and deploy your app as a widget, standalone, or place it in the product menu.",
 			title = "There are no apps yet.");
 
 		AppBuilderAdmin.assertNewButtonIsVisible(buttonValue = "New App");
@@ -2930,7 +3347,8 @@ definition {
 	@description = "View details of an entry in an App"
 	@priority = "5"
 	test ViewEntryDetails {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 
 		var myFormViewName = "My Registration form";
 		var myTableViewName = "My display table";
@@ -3043,7 +3461,7 @@ definition {
 
 		FormViewBuilder.setUpTwoFieldSets(
 			fieldSetName = "Field Sets",
-			fieldType = "Text",
+			fieldType1 = "Text",
 			fieldType2 = "Numeric");
 
 		FormViewBuilder.goToFieldsetsTab();
@@ -3088,7 +3506,7 @@ definition {
 	@description = "Saved form view rules run during new entry submissions"
 	@priority = "5"
 	test ViewFormViewRules {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -3218,7 +3636,9 @@ definition {
 			action = "Calculate",
 			actionRowNumber = "1");
 
-		FormRules.selectCalculateResultField(calculateResultField = "Total");
+		FormRules.selectActionTarget(
+			actionRowNumber = "1",
+			actionTarget = "Total");
 
 		FormRules.selectCalculateField(calculateFieldOption = "Value");
 

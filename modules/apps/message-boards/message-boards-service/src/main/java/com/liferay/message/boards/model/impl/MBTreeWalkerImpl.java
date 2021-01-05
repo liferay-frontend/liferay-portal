@@ -56,6 +56,7 @@ public class MBTreeWalkerImpl implements MBTreeWalker {
 		}
 
 		_messages = messages;
+
 		_rootMessage = rootMessage;
 	}
 

@@ -129,23 +129,27 @@ if (cpAttachmentFileEntry != null) {
 		});
 	});
 
-	function <portlet:namespace />saveAttachmentFileEntry(forceDisable) {
-		var form = window.document['<portlet:namespace />fm'];
+	Liferay.provide(
+		window,
+		'<portlet:namespace />saveAttachmentFileEntry',
+		function () {
+			var form = window.document['<portlet:namespace />fm'];
 
-		var ddmForm = Liferay.component(
-			'ProductOptions<%= cpDefinitionId %>DDMForm'
-		);
-
-		if (ddmForm) {
-			var fieldValues = FormsHelper.getDefaultFieldsShape(ddmForm);
-
-			form['<portlet:namespace />ddmFormValues'].value = JSON.stringify(
-				fieldValues
+			var ddmForm = Liferay.component(
+				'ProductOptions<%= cpDefinitionId %>DDMForm'
 			);
-		}
 
-		submitForm(form);
-	}
+			if (ddmForm) {
+				var fieldValues = FormsHelper.getDefaultFieldsShape(ddmForm);
+
+				form['<portlet:namespace />ddmFormValues'].value = JSON.stringify(
+					fieldValues
+				);
+			}
+
+			submitForm(form);
+		}
+	);
 </aui:script>
 
 <aui:script use="aui-base,event-input">

@@ -147,7 +147,7 @@
 }
 
 .product-menu {
-	&.light {
+	&.sidebar-inverse {
 		.sidebar-header {
 			color: $white;
 			font-size: 14px;
@@ -190,6 +190,7 @@
 	.list-group-heading[data-toggle='collapse'] {
 		border-color: transparent;
 		color: $product-menu-list-group-heading-color;
+		text-decoration: none;
 	}
 
 	.list-group {
@@ -283,10 +284,6 @@
 		&.panel-header:not(.collapsed) {
 			background-color: $product-menu-list-group-heading-active-bg;
 			color: white;
-		}
-
-		.list-group-item-field {
-			width: auto;
 		}
 	}
 
@@ -430,7 +427,6 @@
 
 		&.panel-heading {
 			border-bottom-width: 0;
-			padding: 0;
 		}
 	}
 
@@ -443,7 +439,6 @@
 	.user-icon,
 	.sticker {
 		display: inline-block;
-		float: left;
 		margin-right: 16px;
 		vertical-align: middle;
 	}

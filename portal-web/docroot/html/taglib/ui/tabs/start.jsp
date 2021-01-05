@@ -59,6 +59,7 @@ if (url != null) {
 	String[] urlArray = PortalUtil.stripURLAnchor(url, "&#");
 
 	anchor = urlArray[1];
+
 	url = urlArray[0];
 
 	if (!url.contains(StringPool.QUESTION)) {
@@ -69,6 +70,7 @@ if (url != null) {
 // Back url
 
 String backLabel = (String)request.getAttribute("liferay-ui:tabs:backLabel");
+
 String backURL = (String)request.getAttribute("liferay-ui:tabs:backURL");
 
 if (Validator.isNotNull(backURL) && !backURL.equals("javascript:history.go(-1);")) {

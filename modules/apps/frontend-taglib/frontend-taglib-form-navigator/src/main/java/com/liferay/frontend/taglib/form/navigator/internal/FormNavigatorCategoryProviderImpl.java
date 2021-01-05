@@ -16,6 +16,7 @@ package com.liferay.frontend.taglib.form.navigator.internal;
 
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorCategory;
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorCategoryProvider;
+import com.liferay.frontend.taglib.form.navigator.internal.servlet.taglib.ui.WrapperFormNavigatorCategory;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapperFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
@@ -113,11 +114,12 @@ public class FormNavigatorCategoryProviderImpl
 			new PropertyServiceReferenceComparator<>(
 				"form.navigator.category.order"));
 
-		_serviceTracker = ServiceTrackerFactory.open(
+		_serviceTracker = ServiceTrackerFactory.openWrapperServiceRegistrator(
 			bundleContext,
 			com.liferay.portal.kernel.servlet.taglib.ui.FormNavigatorCategory.
 				class,
-			new FormNavigatorCategoryServiceTrackerCustomizer(bundleContext));
+			FormNavigatorCategory.class, WrapperFormNavigatorCategory::new,
+			"form.navigator.category.order");
 	}
 
 	@Deactivate

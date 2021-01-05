@@ -1,7 +1,26 @@
 definition {
 
+	macro assertColumnPresent {
+		AssertElementPresent(
+			key_columnName = "${columnName}",
+			locator1 = "AppBuilderAppAdmin#STANDARD_APP_RUNNIN_COLUMN");
+	}
+
 	macro assertCreateObjectShortLinkPresent {
 		AssertElementPresent(locator1 = "AppBuilderAppAdmin#CREATE_NEW_OBJECT_SHORT_LINK");
+	}
+
+	macro assertWorkflowAppDeploymentType {
+		AssertElementPresent(
+			key_deploymentType = "${deploymentType}",
+			key_workflowAppName = "${workflowAppName}",
+			locator1 = "AppBuilderAppAdmin#WORKFLOW_DELOYMENT_TYPE");
+	}
+
+	macro assertWorkflowAppName {
+		AssertElementPresent(
+			key_workflowAppName = "${workflowAppName}",
+			locator1 = "AppBuilderAppAdmin#WORKFLOW_APP_NAME");
 	}
 
 	macro assertWorkflowAppVersion {
@@ -47,6 +66,18 @@ definition {
 
 		App.toggleDeploy(deployOption = "${deployOption}");
 
+		if (isSet(menuOption) && isSet(siteOptionList)) {
+			App.selectProductMenuPlaceItDropdownOption(menuOption = "${menuOption}");
+
+			App.openProductMenuSiteOption();
+
+			for (var siteOption : list "${siteOptionList}") {
+				App.selectProductMenuSiteOption(siteOption = "${siteOption}");
+			}
+
+			App.openProductMenuSiteOption();
+		}
+
 		Button.click(button = "Done");
 
 		AppBuilderWorkflow.waitForButtonNotPresent(buttonName = "Done");
@@ -77,6 +108,18 @@ definition {
 		Button.click(button = "Deploy");
 
 		App.toggleDeploy(deployOption = "${deployOption}");
+
+		if (isSet(menuOption) && isSet(siteOptionList)) {
+			App.selectProductMenuPlaceItDropdownOption(menuOption = "${menuOption}");
+
+			App.openProductMenuSiteOption();
+
+			for (var siteOption : list "${siteOptionList}") {
+				App.selectProductMenuSiteOption(siteOption = "${siteOption}");
+			}
+
+			App.openProductMenuSiteOption();
+		}
 
 		Button.click(button = "Done");
 
@@ -160,7 +203,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "AppBuilderAppAdmin#COLUMN_ITEM",
-			value1 = "Create Date");
+			value1 = "Created Date");
 
 		AssertTextEquals(
 			locator1 = "AppBuilderAppAdmin#COLUMN_ITEM",
@@ -198,7 +241,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "AppBuilderAppAdmin#COLUMN_ITEM",
-			value1 = "Create Date");
+			value1 = "Created Date");
 
 		AssertTextEquals(
 			locator1 = "AppBuilderAppAdmin#COLUMN_ITEM",
@@ -214,9 +257,9 @@ definition {
 	}
 
 	macro waitForItemPresentOnTable {
-		while (IsElementNotPresent(locator1 = "AppBuilder#ITEM_ON_THE_TABLE", value1 = "${itemName}")) {
-			Pause(locator1 = "3000");
+		while (IsElementNotPresent(key_itemName = "${itemName}", locator1 = "AppBuilder#ITEM_ON_THE_TABLE_CLICK")) {
 			Refresh();
+			Pause(locator1 = "3000");
 		}
 	}
 

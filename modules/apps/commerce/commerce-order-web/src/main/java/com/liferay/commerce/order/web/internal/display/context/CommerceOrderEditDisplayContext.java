@@ -30,7 +30,7 @@ import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.order.status.CommerceOrderStatus;
 import com.liferay.commerce.order.status.CommerceOrderStatusRegistry;
 import com.liferay.commerce.order.web.internal.display.context.util.CommerceOrderRequestHelper;
-import com.liferay.commerce.order.web.internal.servlet.taglib.ui.CommerceOrderScreenNavigationConstants;
+import com.liferay.commerce.order.web.internal.servlet.taglib.ui.constants.CommerceOrderScreenNavigationConstants;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -197,7 +197,8 @@ public class CommerceOrderEditDisplayContext {
 
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceOrder");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_order/edit_commerce_order");
 		portletURL.setParameter(
 			"commerceOrderId", String.valueOf(getCommerceOrderId()));
 		portletURL.setParameter(
@@ -273,7 +274,8 @@ public class CommerceOrderEditDisplayContext {
 
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceOrder");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_order/edit_commerce_order");
 		portletURL.setParameter(
 			"commerceOrderId", String.valueOf(getCommerceOrderId()));
 		portletURL.setParameter(
@@ -340,7 +342,8 @@ public class CommerceOrderEditDisplayContext {
 
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceOrder");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_order/edit_commerce_order");
 		portletURL.setParameter(
 			"commerceOrderId", String.valueOf(getCommerceOrderId()));
 		portletURL.setParameter(
@@ -389,7 +392,8 @@ public class CommerceOrderEditDisplayContext {
 
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceOrder");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_order/edit_commerce_order");
 		portletURL.setParameter(
 			"commerceOrderId", String.valueOf(getCommerceOrderId()));
 		portletURL.setParameter(
@@ -536,9 +540,6 @@ public class CommerceOrderEditDisplayContext {
 			return steps;
 		}
 
-		List<CommerceOrderStatus> commerceOrderStatuses =
-			_commerceOrderStatusRegistry.getCommerceOrderStatuses();
-
 		if ((currentCommerceOrderStatus != null) &&
 			currentCommerceOrderStatus.isWorkflowEnabled(_commerceOrder)) {
 
@@ -551,6 +552,9 @@ public class CommerceOrderEditDisplayContext {
 
 			return steps;
 		}
+
+		List<CommerceOrderStatus> commerceOrderStatuses =
+			_commerceOrderStatusRegistry.getCommerceOrderStatuses();
 
 		for (CommerceOrderStatus commerceOrderStatus : commerceOrderStatuses) {
 			if (((commerceOrderStatus.getKey() ==
@@ -604,7 +608,8 @@ public class CommerceOrderEditDisplayContext {
 
 		PortletURL portletURL = liferayPortletResponse.createActionURL();
 
-		portletURL.setParameter(ActionRequest.ACTION_NAME, "editCommerceOrder");
+		portletURL.setParameter(
+			ActionRequest.ACTION_NAME, "/commerce_order/edit_commerce_order");
 		portletURL.setParameter(Constants.CMD, "transition");
 		portletURL.setParameter(
 			"commerceOrderId",

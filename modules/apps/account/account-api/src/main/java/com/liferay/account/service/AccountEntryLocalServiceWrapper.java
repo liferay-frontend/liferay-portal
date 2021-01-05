@@ -413,6 +413,14 @@ public class AccountEntryLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.account.model.AccountEntry getGuestAccountEntry(
+			long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _accountEntryLocalService.getGuestAccountEntry(companyId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -438,6 +446,48 @@ public class AccountEntryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _accountEntryLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	@Override
+	public java.util.List<com.liferay.account.model.AccountEntry>
+			getUserAccountEntries(
+				long userId, Long parentAccountEntryId, String keywords,
+				String[] types, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _accountEntryLocalService.getUserAccountEntries(
+			userId, parentAccountEntryId, keywords, types, start, end);
+	}
+
+	@Override
+	public java.util.List<com.liferay.account.model.AccountEntry>
+			getUserAccountEntries(
+				long userId, Long parentAccountEntryId, String keywords,
+				String[] types, Integer status, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _accountEntryLocalService.getUserAccountEntries(
+			userId, parentAccountEntryId, keywords, types, status, start, end);
+	}
+
+	@Override
+	public int getUserAccountEntriesCount(
+			long userId, Long parentAccountEntryId, String keywords,
+			String[] types)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _accountEntryLocalService.getUserAccountEntriesCount(
+			userId, parentAccountEntryId, keywords, types);
+	}
+
+	@Override
+	public int getUserAccountEntriesCount(
+			long userId, Long parentAccountEntryId, String keywords,
+			String[] types, Integer status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _accountEntryLocalService.getUserAccountEntriesCount(
+			userId, parentAccountEntryId, keywords, types, status);
 	}
 
 	@Override

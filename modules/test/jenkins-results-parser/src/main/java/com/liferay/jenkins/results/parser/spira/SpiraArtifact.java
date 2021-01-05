@@ -30,9 +30,16 @@ public interface SpiraArtifact extends Serializable {
 
 	public int getID();
 
+	public String getKeyID();
+
 	public String getName();
 
+	public Object getProperty(String propertyName);
+
 	public List<SpiraCustomProperty> getSpiraCustomProperties();
+
+	public SpiraCustomPropertyValue getSpiraCustomPropertyValue(
+		String spiraCustomPropertyName);
 
 	public List<SpiraCustomPropertyValue> getSpiraCustomPropertyValues();
 

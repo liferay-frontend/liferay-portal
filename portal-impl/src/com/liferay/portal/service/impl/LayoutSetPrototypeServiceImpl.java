@@ -41,6 +41,23 @@ public class LayoutSetPrototypeServiceImpl
 	public LayoutSetPrototype addLayoutSetPrototype(
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			boolean active, boolean layoutsUpdateable,
+			boolean readyForPropagation, ServiceContext serviceContext)
+		throws PortalException {
+
+		PortalPermissionUtil.check(
+			getPermissionChecker(), ActionKeys.ADD_LAYOUT_PROTOTYPE);
+
+		User user = getUser();
+
+		return layoutSetPrototypeLocalService.addLayoutSetPrototype(
+			user.getUserId(), user.getCompanyId(), nameMap, descriptionMap,
+			active, layoutsUpdateable, readyForPropagation, serviceContext);
+	}
+
+	@Override
+	public LayoutSetPrototype addLayoutSetPrototype(
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			boolean active, boolean layoutsUpdateable,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -112,6 +129,22 @@ public class LayoutSetPrototypeServiceImpl
 		}
 
 		return filteredLayoutSetPrototypes;
+	}
+
+	@Override
+	public LayoutSetPrototype updateLayoutSetPrototype(
+			long layoutSetPrototypeId, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, boolean active,
+			boolean layoutsUpdateable, boolean readyForPropagation,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		LayoutSetPrototypePermissionUtil.check(
+			getPermissionChecker(), layoutSetPrototypeId, ActionKeys.UPDATE);
+
+		return layoutSetPrototypeLocalService.updateLayoutSetPrototype(
+			layoutSetPrototypeId, nameMap, descriptionMap, active,
+			layoutsUpdateable, readyForPropagation, serviceContext);
 	}
 
 	@Override

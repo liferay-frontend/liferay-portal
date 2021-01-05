@@ -16,6 +16,7 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClayTable from '@clayui/table';
+import {ClayTooltipProvider} from '@clayui/tooltip';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useState} from 'react';
@@ -59,13 +60,17 @@ const FieldsSelectorDropdown = ({fields}) => {
 			className="data-set-fields-selector-dropdown"
 			onActiveChange={setActive}
 			trigger={
-				<ClayButtonWithIcon
-					borderless
-					className="p-0"
-					displayType="secondary"
-					monospaced={false}
-					symbol={active ? 'caret-top' : 'caret-bottom'}
-				/>
+				<ClayTooltipProvider>
+					<ClayButtonWithIcon
+						borderless
+						className="p-0"
+						data-tooltip-align="top"
+						displayType="secondary"
+						monospaced={false}
+						symbol={active ? 'caret-top' : 'caret-bottom'}
+						title={Liferay.Language.get('show-hide-columns')}
+					/>
+				</ClayTooltipProvider>
 			}
 		>
 			<ClayDropDown.Search

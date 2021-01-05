@@ -100,9 +100,6 @@ public class EditCommerceShippingMethodMVCActionCommand
 		UploadPortletRequest uploadPortletRequest =
 			_portal.getUploadPortletRequest(actionRequest);
 
-		long commerceChannelId = ParamUtil.getLong(
-			actionRequest, "commerceChannelId");
-
 		long commerceShippingMethodId = ParamUtil.getLong(
 			actionRequest, "commerceShippingMethodId");
 
@@ -112,17 +109,21 @@ public class EditCommerceShippingMethodMVCActionCommand
 			LocalizationUtil.getLocalizationMap(
 				actionRequest, "descriptionMapAsXML");
 		File imageFile = uploadPortletRequest.getFile("imageFile");
-		String commerceShippingMethodEngineKey = ParamUtil.getString(
-			actionRequest, "commerceShippingMethodEngineKey");
 		double priority = ParamUtil.getDouble(actionRequest, "priority");
 		boolean active = ParamUtil.getBoolean(actionRequest, "active");
-
-		CommerceChannel commerceChannel =
-			_commerceChannelService.getCommerceChannel(commerceChannelId);
 
 		CommerceShippingMethod commerceShippingMethod = null;
 
 		if (commerceShippingMethodId <= 0) {
+			long commerceChannelId = ParamUtil.getLong(
+				actionRequest, "commerceChannelId");
+
+			CommerceChannel commerceChannel =
+				_commerceChannelService.getCommerceChannel(commerceChannelId);
+
+			String commerceShippingMethodEngineKey = ParamUtil.getString(
+				actionRequest, "commerceShippingMethodEngineKey");
+
 			commerceShippingMethod =
 				_commerceShippingMethodService.addCommerceShippingMethod(
 					_portal.getUserId(actionRequest),

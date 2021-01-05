@@ -17,6 +17,8 @@ package com.liferay.document.library.opener.internal.upload;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.opener.upload.UniqueFileEntryTitleProvider;
+import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.Language;
@@ -46,19 +48,35 @@ public class UniqueFileEntryTitleProviderImpl
 			locale, UniqueFileEntryTitleProviderImpl.class);
 
 		return _provide(
-			groupId, folderId, _language.get(resourceBundle, "untitled"));
+			groupId, folderId, StringPool.BLANK,
+			_language.get(resourceBundle, "untitled"));
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #provide(long
+	 *             groupId, long folderId, String extension, String title)}
+	 */
+	@Deprecated
+	@Override
+	public String provide(long groupId, long folderId, String title)
+		throws PortalException {
+
+		return _uniqueFileNameProvider.provide(
+			title,
+			generatedTitle -> _titleExists(groupId, folderId, generatedTitle));
 	}
 
 	@Override
-	public String provide(long groupId, long folderId, String fileName)
+	public String provide(
+			long groupId, long folderId, String extension, String title)
 		throws PortalException {
 
-		return _provide(groupId, folderId, fileName);
+		return _provide(groupId, folderId, extension, title);
 	}
 
-	private boolean _exists(long groupId, long folderId, String fileName) {
+	private boolean _exists(UnsafeRunnable<PortalException> unsafeRunnable) {
 		try {
-			_dlAppLocalService.getFileEntry(groupId, folderId, fileName);
+			unsafeRunnable.run();
 
 			return true;
 		}
@@ -74,12 +92,29 @@ public class UniqueFileEntryTitleProviderImpl
 		return false;
 	}
 
-	private String _provide(long groupId, long folderId, String fileName)
+	private boolean _fileNameExists(
+		long groupId, long folderId, String fileName) {
+
+		return _exists(
+			() -> _dlAppLocalService.getFileEntryByFileName(
+				groupId, folderId, fileName));
+	}
+
+	private String _provide(
+			long groupId, long folderId, String extension, String title)
 		throws PortalException {
 
 		return _uniqueFileNameProvider.provide(
-			fileName,
-			generatedFileName -> _exists(groupId, folderId, generatedFileName));
+			title,
+			generatedTitle ->
+				_fileNameExists(
+					groupId, folderId, generatedTitle.concat(extension)) ||
+				_titleExists(groupId, folderId, generatedTitle));
+	}
+
+	private boolean _titleExists(long groupId, long folderId, String title) {
+		return _exists(
+			() -> _dlAppLocalService.getFileEntry(groupId, folderId, title));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

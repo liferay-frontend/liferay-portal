@@ -14,8 +14,6 @@
 
 package com.liferay.saml.opensaml.integration.internal.binding;
 
-import com.liferay.saml.opensaml.integration.SamlBinding;
-
 import java.util.function.Supplier;
 
 import org.opensaml.messaging.decoder.servlet.HttpServletRequestMessageDecoder;

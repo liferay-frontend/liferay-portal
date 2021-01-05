@@ -14,8 +14,10 @@
 
 package com.liferay.data.engine.taglib.servlet.taglib;
 
+import com.liferay.data.engine.taglib.internal.servlet.taglib.util.DataLayoutTaglibUtil;
 import com.liferay.data.engine.taglib.servlet.taglib.base.BaseDataLayoutBuilderTag;
-import com.liferay.data.engine.taglib.servlet.taglib.util.DataLayoutTaglibUtil;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -23,6 +25,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -110,6 +113,28 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 				availableLocales, getDataDefinitionId(), getDataLayoutId(),
 				httpServletRequest,
 				(HttpServletResponse)pageContext.getResponse()));
+		setNamespacedAttribute(
+			httpServletRequest, "defaultLanguageId", _getDefaultLanguageId());
+	}
+
+	private String _getDefaultLanguageId() {
+		long dataDefinitionId = getDataDefinitionId();
+
+		String languageId = LocaleUtil.toLanguageId(
+			LocaleUtil.getSiteDefault());
+
+		if (dataDefinitionId <= 0) {
+			return languageId;
+		}
+
+		DDMStructure ddmStructure =
+			DDMStructureLocalServiceUtil.fetchDDMStructure(dataDefinitionId);
+
+		if (ddmStructure == null) {
+			return languageId;
+		}
+
+		return ddmStructure.getDefaultLanguageId();
 	}
 
 	private String[] _getLanguageIds(Set<Locale> locales) {

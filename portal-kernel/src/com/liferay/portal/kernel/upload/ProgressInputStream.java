@@ -37,10 +37,11 @@ public class ProgressInputStream extends InputStream {
 		PortletRequest portletRequest, InputStream inputStream, long totalSize,
 		String progressId) {
 
-		_portletSession = portletRequest.getPortletSession();
 		_inputStream = inputStream;
 		_totalSize = totalSize;
 		_progressId = progressId;
+
+		_portletSession = portletRequest.getPortletSession();
 
 		initProgress();
 	}

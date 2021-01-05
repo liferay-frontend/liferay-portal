@@ -1,0 +1,459 @@
+@component-name = "portal-wcm"
+definition {
+
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Fragments";
+
+	setUp {
+		task ("Set up instance and sign in") {
+			TestCase.setUpPortalInstance();
+
+			User.firstLoginPG();
+		}
+
+		task ("Add a site via JSON") {
+			JSONGroup.addGroup(groupName = "Test Site Name");
+		}
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			JSONGroup.deleteGroupByName(groupName = "Test Site Name");
+		}
+	}
+
+	@description = "This is a test for LPS-120190. Can add fragments into drop zone of Dropdown fragment."
+	@priority = "5"
+	test AddFragmentIntoDropdownPanel {
+		task ("Add a custom master page") {
+			JSONLayoutpagetemplate.addMasterPageTemplateEntry(
+				groupName = "Test Site Name",
+				masterPageTemplateEntryName = "Custom Masters Page Template");
+		}
+
+		task ("Add a Dropdown fragment as header in custom master page") {
+			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
+
+			MastersPageTemplatesAdmin.gotoMasters(masterLayoutName = "Custom Masters Page Template");
+
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				dropTarget = "Header",
+				fragmentName = "Dropdown",
+				scope = "Master");
+		}
+
+		task ("Define the Keep Panel Open in Edit Mode as displayed behavior") {
+			PageEditor.editDropdown(
+				displayedBehavior = "Keep Panel Open in Edit Mode",
+				panel = "General");
+		}
+
+		task ("Add a Menu Display into dropdown panel") {
+			PageEditor.addElementToDropdownPanel(
+				collectionName = "Menu Display",
+				fragmentName = "Menu Display",
+				navTab = "Fragments");
+
+			Button.click(button = "Publish Master");
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("Add a page based on custom master page") {
+			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
+
+			ContentPages.addPage(
+				masterLayoutName = "Custom Masters Page Template",
+				pageName = "Test Content Page");
+		}
+
+		task ("Assert the dropdown panel is collapsed") {
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "false");
+
+			AssertNotVisible(
+				key_element = "//div[contains(@class,'alert-info')][normalize-space(text())='There are no menu items to display.']",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_MENU_CONTENT");
+		}
+
+		task ("Assert the Menu Display is shown in dropdown panel when click the toggle button") {
+			Click.javaScriptClick(locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE");
+
+			AssertVisible(
+				key_element = "//div[contains(@class,'alert-info')][normalize-space(text())='There are no menu items to display.']",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_MENU_CONTENT");
+
+			PageEditor.clickPublish();
+		}
+
+		task ("Assert the dropdown panel is collapsed in view mode") {
+			ContentPagesNavigator.openViewContentPage(
+				pageName = "Test Content Page",
+				siteName = "Test Site Name");
+
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "false");
+
+			AssertNotVisible(
+				key_element = "//li[contains(@class,'nav-item')]//a[normalize-space()='Test Content Page']",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_MENU_CONTENT");
+		}
+
+		task ("Assert the Menu Display is shown in dropdown panel when click the toggle button") {
+			Click(locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE");
+
+			AssertVisible(
+				key_element = "//li[contains(@class,'nav-item')]//a[normalize-space()='Test Content Page']",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_MENU_CONTENT");
+		}
+	}
+
+	@description = "This is a test for LPS-120190. Can define the displayed behavior of dropdown panel in Dropdown fragment."
+	@priority = "5"
+	test DefineDisplayedBehaviorOfDropdownPanel {
+		task ("Add a custom master page") {
+			JSONLayoutpagetemplate.addMasterPageTemplateEntry(
+				groupName = "Test Site Name",
+				masterPageTemplateEntryName = "Custom Masters Page Template");
+		}
+
+		task ("Add a Dropdown fragment as header in custom master page") {
+			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
+
+			MastersPageTemplatesAdmin.gotoMasters(masterLayoutName = "Custom Masters Page Template");
+
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				dropTarget = "Header",
+				fragmentName = "Dropdown",
+				scope = "Master");
+		}
+
+		task ("Assert the drop zone is shown in dropdown panel when click the toggle button") {
+			PageEditor.clickConfigurableField(fragmentName = "Dropdown");
+
+			Click(locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE");
+
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "true");
+
+			AssertVisible(
+				key_content = "Place fragments here.",
+				key_fragmentClass = "menu",
+				key_position = "1",
+				locator1 = "Fragment#PAGE_EDITOR_NO_FRAGMENTS_MESSAGE");
+
+			Click(locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE");
+
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "false");
+
+			AssertNotVisible(
+				key_content = "Place fragments here.",
+				key_fragmentClass = "menu",
+				key_position = "1",
+				locator1 = "Fragment#PAGE_EDITOR_NO_FRAGMENTS_MESSAGE");
+
+			Button.click(button = "Publish Master");
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("Add a page based on custom master page") {
+			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
+
+			ContentPages.addPage(
+				masterLayoutName = "Custom Masters Page Template",
+				pageName = "Test Content Page");
+		}
+
+		task ("Assert the dropdown panel is not shown when click the toggle button") {
+			Click(locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE");
+
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "false");
+		}
+
+		task ("Define the Display on Hover as displayed behavior") {
+			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
+
+			MastersPageTemplatesAdmin.gotoMasters(masterLayoutName = "Custom Masters Page Template");
+
+			PageEditor.editDropdown(
+				displayedBehavior = "Display on Hover",
+				panel = "General");
+		}
+
+		task ("Assert the drop zone is shown in dropdown panel when hover on the toggle button") {
+			PageEditor.clickManagementBar();
+
+			MouseOver(locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE");
+
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "true");
+
+			AssertVisible(
+				key_content = "Place fragments here.",
+				key_fragmentClass = "menu",
+				key_position = "1",
+				locator1 = "Fragment#PAGE_EDITOR_NO_FRAGMENTS_MESSAGE");
+
+			MouseOver(
+				key_sidebarButton = "Selection",
+				locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
+
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "false");
+
+			AssertNotVisible(
+				key_content = "Place fragments here.",
+				key_fragmentClass = "menu",
+				key_position = "1",
+				locator1 = "Fragment#PAGE_EDITOR_NO_FRAGMENTS_MESSAGE");
+		}
+
+		task ("Define the Keep Panel Open in Edit Mode as displayed behavior") {
+			PageEditor.editDropdown(
+				displayedBehavior = "Keep Panel Open in Edit Mode",
+				panel = "General");
+
+			while (IsChecked(checkboxName = "Display on Hover", locator1 = "Checkbox#ANY_CHECKBOX")) {
+				Click.clickAtNotVisible(
+					checkboxName = "Display on Hover",
+					locator1 = "Checkbox#ANY_CHECKBOX");
+			}
+
+			Pause(locator1 = "3000");
+
+			AssertNotChecked.assertNotCheckedNotVisible(
+				checkboxName = "Display on Hover",
+				locator1 = "Checkbox#ANY_CHECKBOX");
+		}
+
+		task ("Assert the drop zone is always shown in dropdown panel") {
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "true");
+
+			AssertVisible(
+				key_content = "Place fragments here.",
+				key_fragmentClass = "menu",
+				key_position = "1",
+				locator1 = "Fragment#PAGE_EDITOR_NO_FRAGMENTS_MESSAGE");
+
+			PageEditor.clickManagementBar();
+
+			AssertNotVisible(
+				key_fragmentName = "Dropdown",
+				locator1 = "Fragment#FRAGMENT_HEADER");
+
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "true");
+
+			AssertVisible(
+				key_content = "Place fragments here.",
+				key_fragmentClass = "menu",
+				key_position = "1",
+				locator1 = "Fragment#PAGE_EDITOR_NO_FRAGMENTS_MESSAGE");
+		}
+
+		task ("Define the Display on Hover and Keep Panel Open in Edit Mode as displayed behavior") {
+			PageEditor.editDropdown(
+				displayedBehavior = "Display on Hover",
+				panel = "General");
+		}
+
+		task ("Assert the drop zone is always shown in dropdown panel") {
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "true");
+
+			AssertVisible(
+				key_content = "Place fragments here.",
+				key_fragmentClass = "menu",
+				key_position = "1",
+				locator1 = "Fragment#PAGE_EDITOR_NO_FRAGMENTS_MESSAGE");
+
+			PageEditor.clickManagementBar();
+
+			AssertNotVisible(
+				key_fragmentName = "Dropdown",
+				locator1 = "Fragment#FRAGMENT_HEADER");
+
+			AssertAttributeValue(
+				attribute1 = "aria-expanded",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE",
+				value1 = "true");
+
+			AssertVisible(
+				key_content = "Place fragments here.",
+				key_fragmentClass = "menu",
+				key_position = "1",
+				locator1 = "Fragment#PAGE_EDITOR_NO_FRAGMENTS_MESSAGE");
+		}
+	}
+
+	@description = "This is a test for LPS-120190. Can define the panel type of Dropdown fragment."
+	@priority = "5"
+	test DefinePanelType {
+		task ("Add a custom master page") {
+			JSONLayoutpagetemplate.addMasterPageTemplateEntry(
+				groupName = "Test Site Name",
+				masterPageTemplateEntryName = "Custom Masters Page Template");
+		}
+
+		task ("Add a Grid element above the Drop Zone") {
+			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
+
+			MastersPageTemplatesAdmin.gotoMasters(masterLayoutName = "Custom Masters Page Template");
+
+			PageEditor.addFragment(
+				collectionName = "Layout Elements",
+				dropTarget = "Header",
+				fragmentName = "Grid",
+				scope = "Master");
+		}
+
+		task ("Add a Dropdown fragment to the second module") {
+			PageEditor.addElementToColumn(
+				collectionName = "Basic Components",
+				columnNumber = "2",
+				fragmentName = "Dropdown",
+				navTab = "Fragments");
+		}
+
+		task ("Assert the panel type of Dropdown fragment") {
+			PageEditor.clickConfigurableField(fragmentName = "Dropdown");
+
+			Click(locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE");
+
+			AssertVisible(
+				key_panelWidth = "240px",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_MENU_WIDTH");
+
+			PageEditor.gotoConfiguration(fragmentName = "Dropdown");
+
+			AssertSelectedLabel(
+				key_fieldLabel = "Panel Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Regular");
+		}
+
+		task ("Select the Full Width as Panel Type") {
+			PageEditor.editDropdown(
+				panel = "General",
+				panelType = "Full Width");
+		}
+
+		task ("Assert the panel type of Dropdown fragment") {
+			Click(locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE");
+
+			var moduleContainerWidth = selenium.getAttribute("//div[contains(@class,'col-4')][2]//div[contains(@class,'col__border')]@width");
+
+			AssertVisible(
+				key_panelWidth = "${moduleContainerWidth}",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_MENU_WIDTH");
+		}
+
+		task ("Select the Mega Menu as Panel Type") {
+			PageEditor.editDropdown(
+				panel = "General",
+				panelType = "Mega Menu");
+		}
+
+		task ("Assert the panel type of Dropdown fragment") {
+			Click(locator1 = "Fragment#DROPDOWN_FRAGMENT_TOGGLE");
+
+			var pageEditorWidth = selenium.getAttribute("//div[contains(@class,'layout-viewport')]/div[contains(@id,'page-editor')]@width");
+
+			AssertVisible(
+				key_panelWidth = "${pageEditorWidth}",
+				locator1 = "Fragment#DROPDOWN_FRAGMENT_MENU_WIDTH");
+		}
+	}
+
+	@description = "This is a test for LPS-120190. Can edit the text of dropdown button in Dropdown fragment."
+	@priority = "5"
+	test EditInlineContent {
+		task ("Add a custom master page") {
+			JSONLayoutpagetemplate.addMasterPageTemplateEntry(
+				groupName = "Test Site Name",
+				masterPageTemplateEntryName = "Custom Masters Page Template");
+		}
+
+		task ("Add a Dropdown fragment as header in custom master page") {
+			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
+
+			MastersPageTemplatesAdmin.gotoMasters(masterLayoutName = "Custom Masters Page Template");
+
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				dropTarget = "Header",
+				fragmentName = "Dropdown",
+				scope = "Master");
+		}
+
+		task ("Edit inline content of Dropdown fragment") {
+			PageEditor.editFragmentText(
+				fragmentName = "Dropdown",
+				id = "dropdown-text",
+				text = "Mega Menu");
+		}
+
+		task ("Assert the inline content of Dropdown fragment") {
+			PageEditor.viewFragmentEditableText(
+				editableText = "Mega Menu",
+				fragmentName = "Dropdown",
+				id = "dropdown-text");
+
+			Button.click(button = "Publish Master");
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("Add a page based on custom master page") {
+			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
+
+			ContentPages.addPage(
+				masterLayoutName = "Custom Masters Page Template",
+				pageName = "Test Content Page");
+		}
+
+		task ("Assert the inline content of Dropdown fragment") {
+			AssertVisible(
+				key_fragmentName = "dropdown",
+				locator1 = "PageEditor#FRAGMENT_INHERITED_FROM_CUSTOM_MASTERS");
+
+			AssertTextEquals.assertPartialText(
+				key_fragmentName = "dropdown",
+				locator1 = "PageEditor#FRAGMENT_INHERITED_FROM_CUSTOM_MASTERS",
+				value1 = "Mega Menu");
+		}
+	}
+
+}

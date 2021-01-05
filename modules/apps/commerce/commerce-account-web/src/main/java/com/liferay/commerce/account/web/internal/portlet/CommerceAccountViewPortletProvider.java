@@ -68,7 +68,8 @@ public class CommerceAccountViewPortletProvider
 			httpServletRequest, getPortletName(), plid,
 			PortletRequest.RENDER_PHASE);
 
-		portletURL.setParameter("mvcRenderCommandName", "viewCommerceAccount");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_account/view_commerce_account");
 
 		return portletURL;
 	}

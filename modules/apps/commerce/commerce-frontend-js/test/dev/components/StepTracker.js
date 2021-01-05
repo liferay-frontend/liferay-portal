@@ -17,7 +17,7 @@ import launcher from '../../../src/main/resources/META-INF/resources/components/
 import '../../../src/main/resources/META-INF/resources/styles/main.scss';
 
 launcher('step_tracker', 'step-tracker', {
-	spritemap: './assets/icons.svg',
+	spritemap: './assets/clay/icons.svg',
 	steps: [
 		{
 			id: 'received',

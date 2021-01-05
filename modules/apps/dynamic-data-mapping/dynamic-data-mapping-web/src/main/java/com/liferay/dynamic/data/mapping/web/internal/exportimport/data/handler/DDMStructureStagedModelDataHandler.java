@@ -19,8 +19,6 @@ import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
-import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRequest;
-import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeResponse;
 import com.liferay.dynamic.data.mapping.io.DDMFormLayoutDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormLayoutDeserializerDeserializeRequest;
 import com.liferay.dynamic.data.mapping.io.DDMFormLayoutDeserializerDeserializeResponse;
@@ -40,6 +38,7 @@ import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalServ
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
+import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.exportimport.data.handler.base.BaseStagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
@@ -495,7 +494,8 @@ public class DDMStructureStagedModelDataHandler
 
 		structureElement.addAttribute("ddm-form-path", ddmFormPath);
 
-		portletDataContext.addZipEntry(ddmFormPath, structure.getDefinition());
+		portletDataContext.addZipEntry(
+			ddmFormPath, _ddm.getDDMFormJSONString(structure.getDDMForm()));
 	}
 
 	protected void exportDDMFormLayout(
@@ -572,22 +572,13 @@ public class DDMStructureStagedModelDataHandler
 	}
 
 	protected DDMForm getImportDDMForm(
-		PortletDataContext portletDataContext, Element structureElement) {
+			PortletDataContext portletDataContext, Element structureElement)
+		throws PortalException {
 
 		String ddmFormPath = structureElement.attributeValue("ddm-form-path");
 
-		String serializedDDMForm = portletDataContext.getZipEntryAsString(
-			ddmFormPath);
-
-		DDMFormDeserializerDeserializeRequest.Builder builder =
-			DDMFormDeserializerDeserializeRequest.Builder.newBuilder(
-				serializedDDMForm);
-
-		DDMFormDeserializerDeserializeResponse
-			ddmFormDeserializerDeserializeResponse =
-				_jsonDDMFormDeserializer.deserialize(builder.build());
-
-		return ddmFormDeserializerDeserializeResponse.getDDMForm();
+		return _ddm.getDDMForm(
+			portletDataContext.getZipEntryAsString(ddmFormPath));
 	}
 
 	protected DDMFormLayout getImportDDMFormLayout(
@@ -704,7 +695,7 @@ public class DDMStructureStagedModelDataHandler
 
 			DEDataDefinitionFieldLink deDataDefinitionFieldLink =
 				(DEDataDefinitionFieldLink)
-					portletDataContext.getZipEntryAsObject(path);
+					portletDataContext.getZipEntryAsObject(element, path);
 
 			StagedModelDataHandlerUtil.importStagedModel(
 				portletDataContext, deDataDefinitionFieldLink);
@@ -849,6 +840,9 @@ public class DDMStructureStagedModelDataHandler
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMStructureStagedModelDataHandler.class);
+
+	@Reference
+	private DDM _ddm;
 
 	@Reference
 	private DDMDataProviderInstanceLinkLocalService

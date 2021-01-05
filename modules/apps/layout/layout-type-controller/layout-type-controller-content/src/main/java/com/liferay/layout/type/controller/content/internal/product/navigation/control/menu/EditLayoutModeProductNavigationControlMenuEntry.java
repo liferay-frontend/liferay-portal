@@ -43,7 +43,11 @@ import com.liferay.product.navigation.control.menu.constants.ProductNavigationCo
 
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -119,7 +123,7 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 						layout.getDescriptionMap(), layout.getKeywordsMap(),
 						layout.getRobotsMap(), layout.getType(),
 						unicodeProperties.toString(), true, true,
-						layout.getMasterLayoutPlid(), Collections.emptyMap(),
+						Collections.emptyMap(), layout.getMasterLayoutPlid(),
 						serviceContext);
 
 					draftLayout = _layoutCopyHelper.copyLayout(
@@ -133,8 +137,13 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 				redirect = _portal.getLayoutFullURL(draftLayout, themeDisplay);
 			}
 
+			redirect = _removeAssetCategoryParameters(
+				httpServletRequest, redirect);
+
 			redirect = _http.setParameter(
-				redirect, "p_l_back_url", themeDisplay.getURLCurrent());
+				redirect, "p_l_back_url",
+				_removeAssetCategoryParameters(
+					httpServletRequest, themeDisplay.getURLCurrent()));
 
 			return _http.setParameter(redirect, "p_l_mode", Constants.EDIT);
 		}
@@ -202,6 +211,29 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 		}
 
 		return false;
+	}
+
+	private String _removeAssetCategoryParameters(
+		HttpServletRequest httpServletRequest, String url) {
+
+		Map<String, String[]> parameterMap =
+			httpServletRequest.getParameterMap();
+
+		Set<String> parameterNames = parameterMap.keySet();
+
+		Stream<String> parameterNameStream = parameterNames.stream();
+
+		Set<String> categoryIdParameterNames = parameterNameStream.filter(
+			parameterName -> parameterName.startsWith("categoryId_")
+		).collect(
+			Collectors.toSet()
+		);
+
+		for (String categoryIdParameterName : categoryIdParameterNames) {
+			url = _http.removeParameter(url, categoryIdParameterName);
+		}
+
+		return url;
 	}
 
 	@Reference

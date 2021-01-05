@@ -21,6 +21,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 String moduleId = ParamUtil.getString(request, "moduleId");
 String pluginId = ParamUtil.getString(request, "pluginId");
+
 String pluginType = ParamUtil.getString(request, "pluginType");
 
 String title = ParamUtil.getString(request, "title", pluginType);
@@ -73,6 +74,7 @@ renderResponse.setTitle(title);
 							int maxNumberOfRolesChecked = 500;
 
 							List<Role> roles = RoleLocalServiceUtil.search(company.getCompanyId(), null, null, (Integer[])null, 0, maxNumberOfRolesChecked, new RoleRoleIdComparator(true));
+
 							int rolesCount = RoleLocalServiceUtil.searchCount(company.getCompanyId(), null, null, (Integer[])null);
 
 							List<Role> addToPageRoles = null;

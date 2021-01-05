@@ -177,7 +177,6 @@ ClaySampleImageCard claySampleImageCard = new ClaySampleImageCard();
 			actionDropdownItems="<%= claySampleImageCard.getActionDropdownItems() %>"
 			icon="camera"
 			labels="<%= claySampleImageCard.getLabels() %>"
-			labelStylesMap="<%= claySampleImageCard.getLabelStylesMap() %>"
 			stickerLabel="SVG"
 			stickerStyle="warning"
 			subtitle="<%= claySampleImageCard.getSubtitle() %>"
@@ -303,6 +302,7 @@ ClaySampleFileCard claySampleFileCard = new ClaySampleFileCard();
 		<clay:file-card
 			actionDropdownItems="<%= claySampleFileCard.getActionDropdownItems() %>"
 			disabled="<%= true %>"
+			icon="user"
 			labels="<%= claySampleFileCard.getLabels() %>"
 			stickerLabel="PDF"
 			stickerStyle="<%= claySampleFileCard.getStickerStyle() %>"
@@ -317,7 +317,6 @@ ClaySampleFileCard claySampleFileCard = new ClaySampleFileCard();
 		<clay:file-card
 			actionDropdownItems="<%= claySampleFileCard.getActionDropdownItems() %>"
 			labels="<%= claySampleFileCard.getLabels() %>"
-			labelStylesMap="<%= claySampleFileCard.getLabelStylesMap() %>"
 			selectable="<%= false %>"
 			stickerLabel="MP3"
 			stickerStyle="warning"
@@ -370,6 +369,7 @@ ClaySampleFileCard claySampleFileCard = new ClaySampleFileCard();
 		<%
 		ClaySampleFileCard sampleFileCard = new ClaySampleFileCard();
 
+		sampleFileCard.setIcon("list");
 		sampleFileCard.setSelectable(true);
 		sampleFileCard.setSelected(true);
 		sampleFileCard.setStickerLabel("MP3");
@@ -410,7 +410,6 @@ ClaySampleUserCard claySampleUserCard = new ClaySampleUserCard();
 		<clay:user-card
 			actionDropdownItems="<%= claySampleUserCard.getActionDropdownItems() %>"
 			icon="picture"
-			labels="<%= claySampleUserCard.getLabels() %>"
 			name="<%= claySampleUserCard.getName() %>"
 			selectable="<%= false %>"
 			subtitle="<%= claySampleUserCard.getSubtitle() %>"
@@ -427,7 +426,6 @@ ClaySampleUserCard claySampleUserCard = new ClaySampleUserCard();
 			disabled="<%= true %>"
 			imageAlt="<%= claySampleUserCard.getImageAlt() %>"
 			imageSrc="https://images.unsplash.com/photo-1502290822284-9538ef1f1291"
-			labels="<%= claySampleUserCard.getLabels() %>"
 			name="<%= claySampleUserCard.getName() %>"
 			selectable="<%= false %>"
 			subtitle="<%= claySampleUserCard.getSubtitle() %>"
@@ -457,7 +455,6 @@ ClaySampleUserCard claySampleUserCard = new ClaySampleUserCard();
 		<clay:user-card
 			actionDropdownItems="<%= claySampleUserCard.getActionDropdownItems() %>"
 			icon="picture"
-			labels="<%= claySampleUserCard.getLabels() %>"
 			name="<%= claySampleUserCard.getName() %>"
 			selected="<%= true %>"
 			subtitle="<%= claySampleUserCard.getSubtitle() %>"
@@ -473,7 +470,6 @@ ClaySampleUserCard claySampleUserCard = new ClaySampleUserCard();
 			actionDropdownItems="<%= claySampleUserCard.getActionDropdownItems() %>"
 			imageAlt="<%= claySampleUserCard.getImageAlt() %>"
 			imageSrc="https://images.unsplash.com/photo-1502290822284-9538ef1f1291"
-			labels="<%= claySampleUserCard.getLabels() %>"
 			name="<%= claySampleUserCard.getName() %>"
 			subtitle="<%= claySampleUserCard.getSubtitle() %>"
 		/>
@@ -691,6 +687,50 @@ ClaySampleVerticalCard claySampleVerticalCard = new ClaySampleVerticalCard();
 
 		<clay:vertical-card
 			verticalCard="<%= sampleVerticalCard %>"
+		/>
+	</clay:col>
+</clay:row>
+
+<h4>Navigation Cards</h4>
+
+<clay:row>
+	<clay:col
+		md="3"
+	>
+		<clay:navigation-card
+			icon="page"
+			propsTransformer="js/ClaySampleNavigationCardPropsTransformer"
+			small="<%= true %>"
+			title="add-page"
+		/>
+	</clay:col>
+
+	<clay:col
+		md="3"
+	>
+		<clay:navigation-card
+			href="#"
+			icon="page"
+			small="<%= true %>"
+			title="children-pages"
+		/>
+	</clay:col>
+
+	<clay:col
+		md="3"
+	>
+		<clay:navigation-card
+			description="choose-a-display-page-template"
+			icon="page-template"
+			title="private-page"
+		/>
+	</clay:col>
+
+	<clay:col
+		md="3"
+	>
+		<clay:navigation-card
+			navigationCard="<%= new ClaySampleNavigationCard() %>"
 		/>
 	</clay:col>
 </clay:row>

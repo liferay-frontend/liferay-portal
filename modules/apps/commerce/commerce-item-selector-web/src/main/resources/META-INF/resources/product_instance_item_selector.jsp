@@ -56,7 +56,7 @@ PortletURL portletURL = commerceProductInstanceItemSelectorViewDisplayContext.ge
 	</liferay-frontend:management-bar-filters>
 </liferay-frontend:management-bar>
 
-<div class="container-fluid-1280" id="<portlet:namespace />cpInstanceSelectorWrapper">
+<div class="container-fluid container-fluid-max-xl" id="<portlet:namespace />cpInstanceSelectorWrapper">
 	<liferay-ui:search-container
 		id="cpInstances"
 		searchContainer="<%= commerceProductInstanceItemSelectorViewDisplayContext.getSearchContainer() %>"
@@ -73,7 +73,7 @@ PortletURL portletURL = commerceProductInstanceItemSelectorViewDisplayContext.ge
 			%>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="title"
 			>
 				<div class="commerce-product-definition-title" data-id="<%= cpDefinition.getCPDefinitionId() %>">
@@ -82,12 +82,12 @@ PortletURL portletURL = commerceProductInstanceItemSelectorViewDisplayContext.ge
 			</liferay-ui:search-container-column-text>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				property="sku"
 			/>
 
 			<liferay-ui:search-container-column-status
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="status"
 				status="<%= cpInstance.getStatus() %>"
 			/>

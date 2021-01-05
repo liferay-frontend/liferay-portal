@@ -1,8 +1,6 @@
 @component-name = "portal-document-management"
 definition {
 
-	property osgi.module.configuration.file.names = "com.liferay.depot.web.internal.configuration.FFDepotStagingConfiguration.config";
-	property osgi.module.configurations = "enabled=B&quot;true&quot;";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Depot";
@@ -56,6 +54,10 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
+			Site.tearDownCP();
+
+			Depot.tearDownCP();
+
 			User.logoutPG();
 		}
 	}
@@ -90,9 +92,7 @@ definition {
 
 		PortletEntry.publish();
 
-		Navigator.gotoStagedSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
+		Navigator.openSiteURL(siteName = "Site Name");
 
 		Navigator.gotoStagedView();
 
@@ -185,9 +185,7 @@ definition {
 			locator1 = "TextInput#FRIENDLY_URL",
 			value1 = "friendlyurl");
 
-		Navigator.gotoStagedSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
+		Navigator.openSiteURL(siteName = "Site Name");
 
 		Navigator.gotoStagedView();
 
@@ -227,9 +225,7 @@ definition {
 			locator1 = "TextInput#FRIENDLY_URL",
 			value1 = "friendlyurledit");
 
-		Navigator.gotoStagedSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
+		Navigator.openSiteURL(siteName = "Site Name");
 
 		Navigator.gotoStagedView();
 
@@ -278,9 +274,7 @@ definition {
 
 		PortletEntry.publish();
 
-		Navigator.gotoStagedSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
+		Navigator.openSiteURL(siteName = "Site Name");
 
 		Navigator.gotoStagedView();
 
@@ -304,6 +298,7 @@ definition {
 
 		DMDocument.editCP(
 			dmDocumentFileEdit = "Document_3.jpg",
+			dmDocumentFileNameEdit = "Document_3.jpg",
 			dmDocumentTitle = "Document_2.jpg",
 			dmDocumentTitleEdit = "Document_3.jpg");
 
@@ -348,8 +343,7 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -383,9 +377,7 @@ definition {
 
 		PortletEntry.publish();
 
-		Navigator.gotoStagedSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
+		Navigator.openSiteURL(siteName = "Site Name");
 
 		Navigator.gotoStagedView();
 
@@ -400,9 +392,7 @@ definition {
 			siteName = "Site Name",
 			webContentTitle = "Web Content Title");
 
-		Navigator.gotoStagedSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
+		Navigator.openSiteURL(siteName = "Site Name");
 
 		Navigator.gotoStagedView();
 
@@ -434,8 +424,7 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -469,9 +458,7 @@ definition {
 
 		PortletEntry.publish();
 
-		Navigator.gotoStagedSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
+		Navigator.openSiteURL(siteName = "Site Name");
 
 		Navigator.gotoStagedView();
 
@@ -504,6 +491,142 @@ definition {
 		WebContent.viewTitle(
 			onLive = "true",
 			webContentTitle = "Web Content Title Edit");
+	}
+
+	@description = "This ensures that web content with a category in depot can be published in local staging site."
+	@priority = "4"
+	test PublishWCWithCategory {
+		DepotNavigator.openDepotCategoriesAdminStaging(depotName = "Test Depot Name");
+
+		Vocabulary.addCP(vocabularyName = "Vocabulary Name");
+
+		Category.addCP(
+			categoryName = "Category Name",
+			vocabularyName = "Vocabulary Name");
+
+		DepotNavigator.openDepotWebContentAdminStaging(depotName = "Test Depot Name");
+
+		WebContentNavigator.gotoAddCP();
+
+		WebContent.addWithCategoryCP(
+			categoryName = "Category Name",
+			vocabularyName = "Vocabulary Name",
+			webContentContent = "Depot web content with a category",
+			webContentTitle = "WC WebContent Title");
+
+		DepotNavigator.openDepotWebContentAdminStaging(depotName = "Test Depot Name");
+
+		DepotNavigator.switchStagingStatus(stagingItem = "Publish to Live");
+
+		Staging.publishToLive();
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Test Page",
+			siteName = "Site Name");
+
+		Portlet.addPG(portletName = "Asset Publisher");
+
+		AssetPublisherPortlet.configureManualAssetSelectionPG(
+			assetTitle = "WC WebContent Title",
+			assetType = "Basic Web Content",
+			depotName = "Test Depot Name");
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Test Page",
+			siteName = "Site Name");
+
+		Staging.gotoPublishToLive();
+
+		Staging.publishToLive();
+
+		Navigator.gotoSitePage(
+			pageName = "Test Page",
+			siteName = "Site Name");
+
+		AssertTextEquals(
+			locator1 = "AP#ASSET_ABSTRACT_DETAIL_CONTENT",
+			value1 = "Depot web content with a category");
+	}
+
+	@description = "This ensures that a web content folder with an article in depot can be published in AP through widget config manual selection when enabling local staging."
+	@priority = "5"
+	test PublishWebContentFolder {
+		DepotNavigator.openDepotWebContentAdminStaging(depotName = "Test Depot Name");
+
+		WebContentFolder.addCP(
+			folderDescription = "WC Folder Description",
+			folderName = "WC Folder Name");
+
+		WebContentFolder.gotoCP(
+			folderName = "WC Folder Name",
+			webContentTitle = "WC Folder Name");
+
+		WebContentNavigator.gotoAddCP();
+
+		WebContent.addCP(
+			webContentContent = "WC WebContent Content",
+			webContentTitle = "WC WebContent Title");
+
+		PortletEntry.publish();
+
+		DepotNavigator.switchStagingStatus(stagingItem = "Publish to Live");
+
+		Staging.publishToLive();
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Test Page",
+			siteName = "Site Name");
+
+		Portlet.addPG(portletName = "Asset Publisher");
+
+		Staging.gotoPublishToLive();
+
+		Staging.publishToLive();
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Test Page",
+			siteName = "Site Name");
+
+		AssetPublisherPortlet.configureManualAssetSelectionPG(
+			assetTitle = "WC Folder Name",
+			assetType = "Web Content Folder",
+			depotName = "Test Depot Name");
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Test Page",
+			siteName = "Site Name");
+
+		AssetPublisherPortlet.viewAssetDetailsPG(
+			assetArticleDetails = "1 Article",
+			assetSubfolderDetails = "0 Subfolders",
+			assetTitle = "WC Folder Name",
+			assetType = "Web Content Folder");
+
+		Navigator.gotoSitePage(
+			pageName = "Test Page",
+			siteName = "Site Name");
+
+		AssertElementNotPresent(
+			key_assetTitle = "WC Folder Name",
+			locator1 = "AP#ASSET_ABSTRACT_TITLE");
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Test Page",
+			siteName = "Site Name");
+
+		Staging.gotoPublishToLive();
+
+		Staging.publishToLive();
+
+		Navigator.gotoSitePage(
+			pageName = "Test Page",
+			siteName = "Site Name");
+
+		AssetPublisherPortlet.viewAssetDetailsPG(
+			assetArticleDetails = "1 Article",
+			assetSubfolderDetails = "0 Subfolders",
+			assetTitle = "WC Folder Name",
+			assetType = "Web Content Folder");
 	}
 
 }

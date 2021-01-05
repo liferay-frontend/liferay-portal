@@ -221,16 +221,36 @@ body .ddm-user-view-content {
 	a {
 		display: inline-block;
 	}
-}
 
-.liferay-ddm-form-field-paragraph,
-.liferay-ddm-form-field-tip {
-	color: #5b7b86;
-	line-height: 16px;
+	.clear-button-upload {
+		border-bottom-left-radius: 0;
+		border-top-left-radius: 0;
+	}
+
+	.clear-button-upload-on {
+		border-bottom-right-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	.input-file {
+		height: 0.1px;
+		opacity: 0;
+		overflow: hidden;
+		position: absolute;
+		width: 0.1px;
+		z-index: -1;
+	}
 }
 
 .liferay-ddm-form-field-paragraph {
+	color: #272833;
 	font-size: 14px;
+	line-height: 16px;
+}
+
+.liferay-ddm-form-field-tip {
+	color: #5b7b86;
+	line-height: 16px;
 }
 
 .liferay-ddm-form-field-options .form-control-feedback {
@@ -444,7 +464,7 @@ body .ddm-user-view-content {
 
 .lfr-ddm-form-page-description,
 .lfr-ddm-form-page-title {
-	padding-left: 32px;
+	padding-left: 8px;
 	padding-right: 32px;
 }
 
@@ -456,9 +476,25 @@ body .ddm-user-view-content {
 .lfr-ddm-form-field-repeatable-toolbar {
 	.ddm-form-field-repeatable-add-button,
 	.ddm-form-field-repeatable-delete-button {
-		border-radius: 12px !important;
+		border-radius: 10px !important;
+		height: 18px;
 		padding: 2px !important;
 		position: absolute;
+		width: 18px;
+
+		.lexicon-icon {
+			height: 10px;
+			margin-bottom: 6px;
+			margin-top: 0;
+		}
+
+		.lexicon-icon-hr {
+			width: 8px;
+		}
+
+		.lexicon-icon-plus {
+			width: 10px;
+		}
 	}
 
 	.ddm-form-field-repeatable-delete-button {
@@ -567,6 +603,10 @@ body .ddm-user-view-content {
 	display: inline-block;
 }
 
+.ddm-label-required {
+	padding-left: 4px;
+}
+
 .ddm-tooltip {
 	color: #a7a9bc;
 	display: inline-block;
@@ -599,5 +639,7 @@ legend .reference-mark,
 p .reference-mark {
 	color: #b95000;
 	font-size: 6px;
-	margin-left: 4px;
+	margin: 4px 0 32px;
+	padding-left: 8px;
+	padding-right: 4px;
 }

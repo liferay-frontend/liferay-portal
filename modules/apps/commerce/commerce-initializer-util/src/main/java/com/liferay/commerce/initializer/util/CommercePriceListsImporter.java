@@ -102,13 +102,7 @@ public class CommercePriceListsImporter {
 			return;
 		}
 
-		CommerceCurrency commerceCurrency =
-			_commerceCurrencyLocalService.getCommerceCurrency(
-				serviceContext.getCompanyId(), currencyCode);
-
 		User user = _userLocalService.getUser(serviceContext.getUserId());
-
-		int priority = jsonObject.getInt("Priority");
 
 		Calendar displayCalendar = CalendarFactoryUtil.getCalendar(
 			user.getTimeZone());
@@ -153,27 +147,32 @@ public class CommercePriceListsImporter {
 			expirationDateHour += 12;
 		}
 
-		boolean neverExpire = jsonObject.getBoolean("NeverExpire", true);
-
 		// Add Commerce Price List
-
-		String externalReferenceCode = FriendlyURLNormalizerUtil.normalize(
-			name);
-
-		CommercePriceList commercePriceList =
-			_commercePriceListLocalService.upsertCommercePriceList(
-				catalogGroupId, user.getUserId(), 0,
-				commerceCurrency.getCommerceCurrencyId(), parentPriceListId,
-				name, priority, displayDateMonth, displayDateDay,
-				displayDateYear, displayDateHour, displayDateMinute,
-				expirationDateMonth, expirationDateDay, expirationDateYear,
-				expirationDateHour, expirationDateMinute, externalReferenceCode,
-				neverExpire, serviceContext);
 
 		JSONArray accountGroupsJSONArray = jsonObject.getJSONArray(
 			"AccountGroups");
 
 		if (accountGroupsJSONArray != null) {
+			int priority = jsonObject.getInt("Priority");
+			boolean neverExpire = jsonObject.getBoolean("NeverExpire", true);
+
+			CommerceCurrency commerceCurrency =
+				_commerceCurrencyLocalService.getCommerceCurrency(
+					serviceContext.getCompanyId(), currencyCode);
+
+			String externalReferenceCode = FriendlyURLNormalizerUtil.normalize(
+				name);
+
+			CommercePriceList commercePriceList =
+				_commercePriceListLocalService.upsertCommercePriceList(
+					catalogGroupId, user.getUserId(), 0,
+					commerceCurrency.getCommerceCurrencyId(), parentPriceListId,
+					name, priority, displayDateMonth, displayDateDay,
+					displayDateYear, displayDateHour, displayDateMinute,
+					expirationDateMonth, expirationDateDay, expirationDateYear,
+					expirationDateHour, expirationDateMinute,
+					externalReferenceCode, neverExpire, serviceContext);
+
 			for (int i = 0; i < accountGroupsJSONArray.length(); i++) {
 				try {
 					String accountGroupExternalReferenceCode =

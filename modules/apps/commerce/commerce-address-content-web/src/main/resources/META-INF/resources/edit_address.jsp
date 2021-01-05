@@ -36,7 +36,7 @@ long commerceRegionId = commerceAddressDisplayContext.getCommerceRegionId();
 CommerceAccount commerceAccount = commerceAddressDisplayContext.getCommerceAccount();
 %>
 
-<portlet:actionURL name="editCommerceAddress" var="editCommerceAddressActionURL" />
+<portlet:actionURL name="/commerce_address_content/edit_commerce_address" var="editCommerceAddressActionURL" />
 
 <aui:form action="<%= editCommerceAddressActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceAddress == null) ? Constants.ADD : Constants.UPDATE %>" />

@@ -99,13 +99,10 @@ public class CommerceDiscountTestUtil {
 			groupId, BigDecimal.valueOf(RandomTestUtil.randomDouble()), level,
 			CommerceDiscountConstants.TARGET_PRODUCTS, cpDefinitionId);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId);
-
 		CommerceDiscountAccountRelLocalServiceUtil.
 			addCommerceDiscountAccountRel(
 				commerceDiscount.getCommerceDiscountId(), commerceAccountId,
-				serviceContext);
+				ServiceContextTestUtil.getServiceContext(groupId));
 
 		return commerceDiscount;
 	}
@@ -226,13 +223,10 @@ public class CommerceDiscountTestUtil {
 		CommerceDiscount commerceDiscount = addFixedCommerceDiscount(
 			groupId, RandomTestUtil.randomDouble(), type, null);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId);
-
 		CommerceDiscountAccountRelLocalServiceUtil.
 			addCommerceDiscountAccountRel(
 				commerceDiscount.getCommerceDiscountId(), commerceAccountId,
-				serviceContext);
+				ServiceContextTestUtil.getServiceContext(groupId));
 
 		return commerceDiscount;
 	}
@@ -246,13 +240,10 @@ public class CommerceDiscountTestUtil {
 			groupId, BigDecimal.valueOf(RandomTestUtil.randomDouble()), level,
 			CommerceDiscountConstants.TARGET_PRODUCTS, cpDefinitionId);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId);
-
 		CommerceChannelRelLocalServiceUtil.addCommerceChannelRel(
 			CommerceDiscount.class.getName(),
 			commerceDiscount.getCommerceDiscountId(), commerceChannelId,
-			serviceContext);
+			ServiceContextTestUtil.getServiceContext(groupId));
 
 		return commerceDiscount;
 	}
@@ -264,13 +255,10 @@ public class CommerceDiscountTestUtil {
 		CommerceDiscount commerceDiscount = addFixedCommerceDiscount(
 			groupId, RandomTestUtil.randomDouble(), type, null);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId);
-
 		CommerceChannelRelLocalServiceUtil.addCommerceChannelRel(
 			CommerceDiscount.class.getName(),
 			commerceDiscount.getCommerceDiscountId(), commerceChannelId,
-			serviceContext);
+			ServiceContextTestUtil.getServiceContext(groupId));
 
 		return commerceDiscount;
 	}

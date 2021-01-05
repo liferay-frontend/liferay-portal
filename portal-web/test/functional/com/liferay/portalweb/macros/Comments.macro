@@ -1,13 +1,13 @@
 definition {
 
 	macro addPG {
-		Click(
-			key_editor = "postReply",
-			locator1 = "AlloyEditor#EDITOR");
+		SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
 
-		AlloyEditor.typeEditor(
-			content = "${entryComment}",
-			editor = "postReply");
+		Type(
+			locator1 = "CKEditor#BODY",
+			value1 = "${entryComment}");
+
+		SelectFrame(value1 = "relative=top");
 
 		AssertClick(
 			locator1 = "Button#REPLY",
@@ -23,11 +23,13 @@ definition {
 
 		var entryComment = "${entryComment}";
 
-		Click(locator1 = "Comments#COMMENT_FIELD");
+		SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
 
 		Type(
-			locator1 = "Comments#COMMENT_FIELD",
+			locator1 = "CKEditor#BODY",
 			value1 = "${entryComment}");
+
+		SelectFrame(value1 = "relative=top");
 
 		AssertElementPresent(locator1 = "UserBar#USER_SIGN_IN");
 
@@ -95,22 +97,24 @@ definition {
 	macro edit {
 		var key_entryComment = "${entryComment}";
 
-		MouseOver(locator1 = "Comments#COMMENT_BODY_SPECIFIC");
+		Click.mouseOverClick(locator1 = "Comments#COMMENT_BODY_SPECIFIC");
 
-		Click(locator1 = "Comments#COMMENT_ACTIONS");
+		Click.clickNoMouseOver(locator1 = "Comments#COMMENT_ACTIONS");
 
 		AssertClick(
 			key_menuItem = "Edit",
 			locator1 = "MenuItem#ANY_MENU_ITEM",
 			value1 = "Edit");
 
-		AssertElementPresent.pauseAssertVisible(locator1 = "Comments#EDIT_COMMENT_FIELD");
+		AssertElementPresent.pauseAssertVisible(locator1 = "CKEditor#BODY_FIELD_IFRAME_2");
 
-		Click.clickAt(locator1 = "Comments#EDIT_COMMENT_FIELD");
+		SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME_2");
 
 		Type(
-			locator1 = "Comments#EDIT_COMMENT_FIELD",
+			locator1 = "CKEditor#BODY",
 			value1 = "${entryCommentEdit}");
+
+		SelectFrame(value1 = "relative=top");
 
 		AssertClick(
 			key_text = "Save",
@@ -127,7 +131,7 @@ definition {
 	}
 
 	macro subscribePG {
-		AssertElementPresent.pauseAssertVisible(locator1 = "Comments#COMMENT_FIELD");
+		AssertElementPresent.pauseAssertVisible(locator1 = "CKEditor#BODY_FIELD_IFRAME");
 
 		AssertClick(
 			locator1 = "Button#SUBSCRIBE",

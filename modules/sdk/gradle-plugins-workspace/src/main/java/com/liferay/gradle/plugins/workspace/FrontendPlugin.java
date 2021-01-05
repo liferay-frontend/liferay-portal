@@ -91,10 +91,8 @@ public class FrontendPlugin implements Plugin<Project> {
 	private void _configureArtifacts(final Project project) {
 		ArtifactHandler artifacts = project.getArtifacts();
 
-		File jarFile = _getJarFile(project);
-
 		artifacts.add(
-			Dependency.ARCHIVES_CONFIGURATION, jarFile,
+			Dependency.ARCHIVES_CONFIGURATION, _getJarFile(project),
 			new Closure<Void>(project) {
 
 				@SuppressWarnings("unused")

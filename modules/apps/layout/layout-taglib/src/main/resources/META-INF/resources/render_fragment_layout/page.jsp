@@ -26,6 +26,8 @@ boolean showPreview = GetterUtil.getBoolean(request.getAttribute("liferay-layout
 RenderFragmentLayoutDisplayContext renderFragmentLayoutDisplayContext = new RenderFragmentLayoutDisplayContext(request, response);
 %>
 
+<liferay-util:dynamic-include key="com.liferay.layout,taglib#/render_fragment_layout/page.jsp#pre" />
+
 <liferay-util:html-top>
 	<%= renderFragmentLayoutDisplayContext.getPortletHeaderPaths() %>
 </liferay-util:html-top>
@@ -59,3 +61,5 @@ finally {
 <liferay-util:html-bottom>
 	<%= renderFragmentLayoutDisplayContext.getPortletFooterPaths() %>
 </liferay-util:html-bottom>
+
+<liferay-util:dynamic-include key="com.liferay.layout,taglib#/render_fragment_layout/page.jsp#post" />

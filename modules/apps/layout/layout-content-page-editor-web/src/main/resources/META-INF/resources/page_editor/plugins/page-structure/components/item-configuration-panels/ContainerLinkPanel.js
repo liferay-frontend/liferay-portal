@@ -13,11 +13,12 @@
  */
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import LinkField, {
 	TARGET_OPTIONS,
 } from '../../../../app/components/fragment-configuration-fields/LinkField';
+import {config} from '../../../../app/config/index';
 import selectSegmentsExperienceId from '../../../../app/selectors/selectSegmentsExperienceId';
 import {useDispatch, useSelector} from '../../../../app/store/index';
 import updateItemConfig from '../../../../app/thunks/updateItemConfig';
@@ -25,14 +26,33 @@ import {getLayoutDataItemPropTypes} from '../../../../prop-types/index';
 
 export default function ContainerLinkPanel({item}) {
 	const dispatch = useDispatch();
+	const languageId = useSelector((state) => state.languageId);
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
+	const [linkValue, setLinkValue] = useState({});
+
+	useEffect(
+		() =>
+			setLinkValue(
+				item.config?.link[languageId] ||
+					item.config?.link[config.defaultLanguageId] ||
+					item.config?.link ||
+					{}
+			),
+		[item.config?.link, languageId]
+	);
+
 	const handleValueSelect = (_, linkConfig) => {
+		const nextLinkConfig = {
+			...item.config?.link,
+			[languageId]: linkConfig,
+		};
+
 		dispatch(
 			updateItemConfig({
 				itemConfig: {
 					...item.config,
-					link: linkConfig,
+					link: nextLinkConfig,
 				},
 				itemId: item.itemId,
 				segmentsExperienceId,
@@ -44,7 +64,7 @@ export default function ContainerLinkPanel({item}) {
 		<LinkField
 			field={{name: 'link'}}
 			onValueSelect={handleValueSelect}
-			value={item.config.link || {}}
+			value={linkValue || {}}
 		/>
 	);
 }

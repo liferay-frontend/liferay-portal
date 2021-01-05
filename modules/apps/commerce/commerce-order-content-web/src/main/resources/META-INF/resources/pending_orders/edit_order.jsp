@@ -60,8 +60,8 @@ List<CommerceAddress> shippingAddresses = commerceOrderContentDisplayContext.get
 List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getBillingCommerceAddresses(commerceAccount.getCommerceAccountId(), commerceAccount.getCompanyId());
 %>
 
-<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderActionURL">
-	<portlet:param name="mvcRenderCommandName" value="editCommerceOrder" />
+<portlet:actionURL name="/commerce_open_order_content/edit_commerce_order" var="editCommerceOrderActionURL">
+	<portlet:param name="mvcRenderCommandName" value="/commerce_open_order_content/edit_commerce_order" />
 </portlet:actionURL>
 
 <aui:form action="<%= editCommerceOrderActionURL %>" cssClass="order-details-container" method="post" name="fm">
@@ -269,7 +269,7 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 		/>
 
 		<c:if test="<%= commerceOrderContentDisplayContext.hasModelPermission(commerceOrder, ActionKeys.DELETE) %>">
-			<portlet:actionURL name="editCommerceOrder" var="deleteURL">
+			<portlet:actionURL name="/commerce_open_order_content/edit_commerce_order" var="deleteURL">
 				<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 				<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
@@ -386,7 +386,7 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 	</div>
 </div>
 
-<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderURL" />
+<portlet:actionURL name="/commerce_open_order_content/edit_commerce_order" var="editCommerceOrderURL" />
 
 <%@ include file="/pending_orders/transition.jspf" %>
 

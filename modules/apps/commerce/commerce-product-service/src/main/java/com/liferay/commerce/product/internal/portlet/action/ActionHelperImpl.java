@@ -61,6 +61,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(enabled = false, service = ActionHelper.class)
 public class ActionHelperImpl implements ActionHelper {
 
+	@Override
 	public List<CPAttachmentFileEntry> getCPAttachmentFileEntries(
 			PortletRequest portletRequest)
 		throws PortalException {
@@ -83,6 +84,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpAttachmentFileEntries;
 	}
 
+	@Override
 	public CPAttachmentFileEntry getCPAttachmentFileEntry(
 			PortletRequest portletRequest)
 		throws PortalException {
@@ -112,6 +114,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpAttachmentFileEntry;
 	}
 
+	@Override
 	public CPDefinition getCPDefinition(PortletRequest portletRequest)
 		throws PortalException {
 
@@ -134,6 +137,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpDefinition;
 	}
 
+	@Override
 	public CPDefinitionLink getCPDefinitionLink(PortletRequest portletRequest)
 		throws PortalException {
 
@@ -161,6 +165,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpDefinitionLink;
 	}
 
+	@Override
 	public List<CPDefinitionLink> getCPDefinitionLinks(
 			PortletRequest portletRequest)
 		throws PortalException {
@@ -179,6 +184,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpDefinitionLinks;
 	}
 
+	@Override
 	public CPDefinitionOptionRel getCPDefinitionOptionRel(
 			PortletRequest portletRequest)
 		throws PortalException {
@@ -218,6 +224,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpDefinitionOptionRel;
 	}
 
+	@Override
 	public List<CPDefinitionOptionRel> getCPDefinitionOptionRels(
 			PortletRequest portletRequest)
 		throws PortalException {
@@ -236,6 +243,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpDefinitionOptionRels;
 	}
 
+	@Override
 	public CPDefinitionOptionValueRel getCPDefinitionOptionValueRel(
 			PortletRequest portletRequest)
 		throws PortalException {
@@ -267,6 +275,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpDefinitionOptionValueRel;
 	}
 
+	@Override
 	public List<CPDefinitionOptionValueRel> getCPDefinitionOptionValueRels(
 			long cpDefinitionOptionRelId)
 		throws PortalException {
@@ -279,6 +288,7 @@ public class ActionHelperImpl implements ActionHelper {
 			getCPDefinitionOptionValueRels(cpDefinitionOptionRelId, 0, total);
 	}
 
+	@Override
 	public List<CPDefinitionOptionValueRel> getCPDefinitionOptionValueRels(
 			PortletRequest portletRequest)
 		throws PortalException {
@@ -301,6 +311,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpDefinitionOptionValueRels;
 	}
 
+	@Override
 	public List<CPDefinition> getCPDefinitions(PortletRequest portletRequest)
 		throws PortalException {
 
@@ -317,6 +328,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpDefinitions;
 	}
 
+	@Override
 	public CPDefinitionSpecificationOptionValue
 			getCPDefinitionSpecificationOptionValue(
 				PortletRequest portletRequest)
@@ -351,6 +363,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpDefinitionSpecificationOptionValue;
 	}
 
+	@Override
 	public List<CPDefinitionSpecificationOptionValue>
 			getCPDefinitionSpecificationOptionValues(
 				PortletRequest portletRequest)
@@ -374,6 +387,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpDefinitionSpecificationOptionValues;
 	}
 
+	@Override
 	public CPInstance getCPInstance(PortletRequest portletRequest)
 		throws PortalException {
 
@@ -397,6 +411,7 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpInstance;
 	}
 
+	@Override
 	public List<CPInstance> getCPInstances(PortletRequest portletRequest)
 		throws PortalException {
 
@@ -412,14 +427,17 @@ public class ActionHelperImpl implements ActionHelper {
 		return cpInstances;
 	}
 
+	@Override
 	public CPType getCPType(String name) {
 		return _cpTypeServicesTracker.getCPType(name);
 	}
 
+	@Override
 	public List<CPType> getCPTypes() {
 		return _cpTypeServicesTracker.getCPTypes();
 	}
 
+	@Override
 	public List<CPDefinitionOptionRel> getSkuContributorCPDefinitionOptionRels(
 			long cpDefinitionId)
 		throws PortalException {
@@ -428,6 +446,7 @@ public class ActionHelperImpl implements ActionHelper {
 			cpDefinitionId, true);
 	}
 
+	@Override
 	public void writeJSON(
 			PortletRequest portletRequest, ActionResponse actionResponse,
 			Object object)

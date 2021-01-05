@@ -117,7 +117,7 @@ else {
 >
 	<c:if test="<%= recordVersion != null %>">
 		<div class="sidenav-menu-slider">
-			<div class="sidebar sidebar-default sidenav-menu">
+			<div class="sidebar sidebar-light sidenav-menu">
 				<div class="sidebar-header">
 					<aui:icon cssClass="d-inline-block d-sm-none icon-monospaced sidenav-close text-default" image="times" markupView="lexicon" url="javascript:;" />
 				</div>
@@ -130,30 +130,30 @@ else {
 				>
 					<liferay-ui:section>
 						<div class="sidebar-body">
-							<h3 class="version">
-								<liferay-ui:message key="version" /> <%= HtmlUtil.escape(recordVersion.getVersion()) %>
-							</h3>
+							<ul class="list-unstyled sidebar-dl sidebar-section">
+								<li class="sidebar-dt">
+									<liferay-ui:message key="version" />
+								</li>
+								<li class="sidebar-dd">
+									<%= HtmlUtil.escape(recordVersion.getVersion()) %>
+								</li>
+								<li class="sidebar-dt">
+									<aui:model-context bean="<%= recordVersion %>" model="<%= DDLRecordVersion.class %>" />
 
-							<div>
-								<aui:model-context bean="<%= recordVersion %>" model="<%= DDLRecordVersion.class %>" />
-
-								<aui:workflow-status model="<%= DDLRecord.class %>" status="<%= recordVersion.getStatus() %>" />
-							</div>
-
-							<div>
-								<h5>
-									<strong><liferay-ui:message key="created" /></strong>
-								</h5>
-
-								<p>
+									<aui:workflow-status model="<%= DDLRecord.class %>" status="<%= recordVersion.getStatus() %>" />
+								</li>
+								<li class="sidebar-dt">
+									<liferay-ui:message key="created" />
+								</li>
+								<li class="sidebar-dd">
 
 									<%
 									Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
 									%>
 
 									<liferay-ui:message arguments="<%= new Object[] {HtmlUtil.escape(recordVersion.getUserName()), dateFormatDateTime.format(recordVersion.getCreateDate())} %>" key="by-x-on-x" translateArguments="<%= false %>" />
-								</p>
-							</div>
+								</li>
+							</ul>
 						</div>
 					</liferay-ui:section>
 
@@ -170,7 +170,7 @@ else {
 	</c:if>
 
 	<div class="sidenav-content">
-		<aui:form action="<%= (record == null) ? addRecordURL : updateRecordURL %>" cssClass="container-fluid-1280" enctype="multipart/form-data" method="post" name="fm">
+		<aui:form action="<%= (record == null) ? addRecordURL : updateRecordURL %>" cssClass="container-fluid container-fluid-max-xl" enctype="multipart/form-data" method="post" name="fm">
 			<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 			<aui:input name="portletResource" type="hidden" value="<%= portletResource %>" />
 			<aui:input name="recordId" type="hidden" value="<%= recordId %>" />

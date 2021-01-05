@@ -15,6 +15,7 @@
 package com.liferay.gradle.plugins.workspace.configurators;
 
 import com.liferay.gradle.plugins.LiferayBasePlugin;
+import com.liferay.gradle.plugins.css.builder.CSSBuilderPlugin;
 import com.liferay.gradle.plugins.workspace.WorkspaceExtension;
 import com.liferay.gradle.plugins.workspace.WorkspacePlugin;
 import com.liferay.gradle.plugins.workspace.internal.util.GradleUtil;
@@ -39,6 +40,7 @@ import org.gradle.api.file.CopySpec;
 import org.gradle.api.initialization.Settings;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.ExtensionAware;
+import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.Copy;
 import org.gradle.api.tasks.bundling.War;
@@ -64,6 +66,8 @@ public class WarsProjectConfigurator extends BaseProjectConfigurator {
 			(ExtensionAware)project.getGradle(), WorkspaceExtension.class);
 
 		GradleUtil.applyPlugin(project, WarPlugin.class);
+
+		_configureTaskProcessResources(project);
 
 		War war = (War)GradleUtil.getTask(project, WarPlugin.WAR_TASK_NAME);
 
@@ -167,6 +171,36 @@ public class WarsProjectConfigurator extends BaseProjectConfigurator {
 					copySpec.from(war);
 				}
 
+			});
+	}
+
+	private void _configureTaskProcessResources(Project project) {
+		project.afterEvaluate(
+			curProject -> {
+				if (GradleUtil.hasTask(
+						curProject, CSSBuilderPlugin.BUILD_CSS_TASK_NAME)) {
+
+					Copy copy = (Copy)GradleUtil.getTask(
+						project, JavaPlugin.PROCESS_RESOURCES_TASK_NAME);
+
+					if (copy != null) {
+						copy.dependsOn(CSSBuilderPlugin.BUILD_CSS_TASK_NAME);
+
+						copy.exclude("**/*.css");
+						copy.exclude("**/*.scss");
+
+						copy.filesMatching(
+							"**/.sass-cache/",
+							fileCopyDetails -> {
+								String path = fileCopyDetails.getPath();
+
+								fileCopyDetails.setPath(
+									path.replace(".sass-cache/", ""));
+							});
+
+						copy.setIncludeEmptyDirs(false);
+					}
+				}
 			});
 	}
 

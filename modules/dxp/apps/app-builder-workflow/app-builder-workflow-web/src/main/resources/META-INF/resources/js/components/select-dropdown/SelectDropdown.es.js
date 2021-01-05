@@ -28,6 +28,7 @@ export default function SelectDropdown({
 	return (
 		<>
 			<DropDownWithSearch
+				className="w-100"
 				isEmpty={items.length === 0}
 				label={label}
 				trigger={
@@ -37,7 +38,7 @@ export default function SelectDropdown({
 						displayType="secondary"
 					>
 						<span
-							className="float-left text-left text-truncate w90"
+							className="dropdown-button-title float-left text-left text-truncate"
 							title={itemName}
 						>
 							{itemName}

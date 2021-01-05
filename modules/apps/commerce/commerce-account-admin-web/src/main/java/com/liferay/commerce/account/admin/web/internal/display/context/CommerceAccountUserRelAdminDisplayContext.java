@@ -107,7 +107,9 @@ public class CommerceAccountUserRelAdminDisplayContext
 	public PortletURL getPortletURL() {
 		PortletURL portletURL = super.getPortletURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceAccount");
+		portletURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_account_admin/edit_commerce_account");
 
 		return portletURL;
 	}

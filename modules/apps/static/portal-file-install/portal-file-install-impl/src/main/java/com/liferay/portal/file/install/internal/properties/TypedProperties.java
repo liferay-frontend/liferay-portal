@@ -206,11 +206,11 @@ public class TypedProperties {
 
 			String value = matcher.group(2);
 
-			value = value.trim();
+			value = InterpolationUtil.substVars(value.trim());
 
 			_propertyName = key.trim();
 
-			_propertyValue = InterpolationUtil.substVars(value);
+			_propertyValue = value;
 
 			return true;
 		}

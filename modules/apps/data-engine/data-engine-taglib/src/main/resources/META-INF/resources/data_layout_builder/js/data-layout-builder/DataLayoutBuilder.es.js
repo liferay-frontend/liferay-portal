@@ -28,6 +28,10 @@ import {
 } from '../drag-and-drop/dragTypes.es';
 import {getDataDefinitionField} from '../utils/dataDefinition.es';
 import generateDataDefinitionFieldName from '../utils/generateDataDefinitionFieldName.es';
+import {
+	normalizeDataDefinition,
+	normalizeDataLayout,
+} from '../utils/normalizers.es';
 import EventEmitter from './EventEmitter.es';
 import saveDefinitionAndLayout from './saveDefinitionAndLayout.es';
 
@@ -49,7 +53,6 @@ class DataLayoutBuilder extends React.Component {
 			config,
 			dataLayoutBuilderId,
 			fieldTypes,
-			localizable,
 			portletNamespace,
 		} = this.props;
 
@@ -82,8 +85,12 @@ class DataLayoutBuilder extends React.Component {
 					allowMultiplePages: config.allowMultiplePages,
 					allowSuccessPage: config.allowSuccessPage,
 					context,
-					defaultLanguageId: themeDisplay.getDefaultLanguageId(),
-					editingLanguageId: themeDisplay.getDefaultLanguageId(),
+					defaultLanguageId:
+						context.defaultLanguageId ||
+						themeDisplay.getDefaultLanguageId(),
+					editingLanguageId:
+						context.defaultLanguageId ||
+						themeDisplay.getDefaultLanguageId(),
 					initialPages: context.pages,
 					ref: 'layoutProvider',
 					rules: context.rules,
@@ -92,12 +99,10 @@ class DataLayoutBuilder extends React.Component {
 			this.containerRef.current
 		);
 
-		if (localizable) {
-			this._localeChangedHandler = Liferay.after(
-				'inputLocalized:localeChanged',
-				this._onLocaleChange.bind(this)
-			);
-		}
+		this._localeChangedHandler = Liferay.after(
+			'inputLocalized:localeChanged',
+			this._onLocaleChange.bind(this)
+		);
 	}
 
 	componentWillUnmount() {
@@ -257,15 +262,6 @@ class DataLayoutBuilder extends React.Component {
 				}
 
 				if (localizable) {
-					if (this.props.contentType !== 'app-builder') {
-						availableLanguageIds.forEach((languageId) => {
-							if (!localizedValue[languageId]) {
-								localizedValue[languageId] =
-									localizedValue[defaultLanguageId] || '';
-							}
-						});
-					}
-
 					if (this._isCustomProperty(fieldName)) {
 						fieldConfig.customProperties[
 							fieldName
@@ -466,6 +462,29 @@ class DataLayoutBuilder extends React.Component {
 		};
 	}
 
+	getFieldSetDDMForm(fieldSet, dataDefinition) {
+		const {defaultDataLayout, defaultLanguageId} = fieldSet;
+		const fieldSetNormalized = normalizeDataDefinition(
+			{
+				...fieldSet,
+				availableLanguageIds: [
+					...new Set([
+						...dataDefinition.availableLanguageIds,
+						...fieldSet.availableLanguageIds,
+						themeDisplay.getDefaultLanguageId(),
+					]),
+				],
+			},
+			defaultLanguageId
+		);
+		const fieldSetDataLayout = normalizeDataLayout(
+			defaultDataLayout,
+			defaultLanguageId
+		);
+
+		return this.getDDMForm(fieldSetNormalized, fieldSetDataLayout);
+	}
+
 	getFieldTypes() {
 		const {fieldTypes} = this.props;
 
@@ -473,9 +492,61 @@ class DataLayoutBuilder extends React.Component {
 	}
 
 	getFormData() {
+		const layoutProvider = this.getLayoutProvider();
+		const {defaultLanguageId} = layoutProvider.props;
+
 		const {pages, rules} = this.getStore();
 
-		return this.getDataDefinitionAndDataLayout(pages, rules || []);
+		const pagesVisitor = new PagesVisitor(pages);
+
+		const newPages = pagesVisitor.mapFields(
+			(field) => {
+				const {settingsContext} = field;
+
+				const settingsContextPagesVisitor = new PagesVisitor(
+					settingsContext.pages
+				);
+
+				const newSettingsContext = {
+					...settingsContext,
+					pages: settingsContextPagesVisitor.mapFields(
+						(settingsField) => {
+							if (settingsField.type === 'options') {
+								const {value} = settingsField;
+								const newValue = {};
+
+								Object.keys(value).forEach((locale) => {
+									newValue[locale] = value[locale].filter(
+										(localizedValue) =>
+											localizedValue.value !== ''
+									);
+								});
+
+								if (!newValue[defaultLanguageId]) {
+									newValue[defaultLanguageId] = [];
+								}
+
+								settingsField = {
+									...settingsField,
+									value: newValue,
+								};
+							}
+
+							return settingsField;
+						}
+					),
+				};
+
+				return {
+					...field,
+					settingsContext: newSettingsContext,
+				};
+			},
+			true,
+			true
+		);
+
+		return this.getDataDefinitionAndDataLayout(newPages, rules || []);
 	}
 
 	getLayoutProvider() {
@@ -555,7 +626,7 @@ class DataLayoutBuilder extends React.Component {
 		return (
 			<div
 				className={classNames(
-					'data-engine-form-builder ddm-form-builder',
+					'data-engine-form-builder ddm-form-builder pb-5',
 					{
 						'ddm-form-builder--sidebar-open': sidebarOpen,
 					}

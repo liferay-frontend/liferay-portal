@@ -321,7 +321,13 @@ definition {
 			portletName = "Sign In",
 			targetFragmentName = "Container");
 
-		PermissionsInline.gotoConfigurationPG(portletName = "Sign In");
+		Click.clickAtNotVisible(locator1 = "Portlet#OPTIONS_ICON");
+
+		Click(
+			key_menuItem = "Permissions",
+			locator1 = "MenuItem#ANY_MENU_ITEM");
+
+		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
 		AssertElementNotPresent(locator1 = "//body[.='123']");
 

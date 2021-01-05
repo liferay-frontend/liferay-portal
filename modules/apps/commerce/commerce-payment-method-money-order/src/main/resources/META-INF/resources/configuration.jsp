@@ -28,7 +28,7 @@ if (messageLocalizedValuesMap != null) {
 }
 %>
 
-<portlet:actionURL name="editMoneyOrderCommercePaymentMethodConfiguration" var="editCommercePaymentMethodActionURL" />
+<portlet:actionURL name="/commerce_payment_methods/edit_money_order_commerce_payment_method_configuration" var="editCommercePaymentMethodActionURL" />
 
 <aui:form action="<%= editCommercePaymentMethodActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
@@ -41,7 +41,6 @@ if (messageLocalizedValuesMap != null) {
 		<div id="<portlet:namespace />message">
 			<aui:field-wrapper label="message">
 				<liferay-ui:input-localized
-					editorName="alloyeditor"
 					fieldPrefix="settings"
 					fieldPrefixSeparator="--"
 					name="message"

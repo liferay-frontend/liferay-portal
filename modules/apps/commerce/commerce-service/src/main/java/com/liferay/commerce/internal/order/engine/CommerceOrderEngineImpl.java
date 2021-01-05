@@ -41,7 +41,7 @@ import com.liferay.commerce.inventory.CPDefinitionInventoryEngineRegistry;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
 import com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity;
 import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityLocalService;
-import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeConstants;
+import com.liferay.commerce.inventory.type.constants.CommerceInventoryAuditTypeConstants;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
@@ -84,8 +84,8 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.osgi.service.component.annotations.Component;
@@ -224,23 +224,24 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 		CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
 
 		for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
-			Map<String, String> context = HashMapBuilder.put(
-				CommerceInventoryAuditTypeConstants.ACCOUNT_NAME,
-				commerceAccount.getName()
-			).put(
-				CommerceInventoryAuditTypeConstants.ORDER_ID,
-				String.valueOf(commerceOrderItem.getCommerceOrderId())
-			).put(
-				CommerceInventoryAuditTypeConstants.ORDER_ITEM_ID,
-				String.valueOf(commerceOrderItem.getCommerceOrderItemId())
-			).build();
-
 			CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
 				_commerceInventoryBookedQuantityLocalService.
 					addCommerceBookedQuantity(
 						commerceOrderItem.getUserId(),
 						commerceOrderItem.getSku(),
-						commerceOrderItem.getQuantity(), null, context);
+						commerceOrderItem.getQuantity(), null,
+						HashMapBuilder.put(
+							CommerceInventoryAuditTypeConstants.ACCOUNT_NAME,
+							commerceAccount.getName()
+						).put(
+							CommerceInventoryAuditTypeConstants.ORDER_ID,
+							String.valueOf(
+								commerceOrderItem.getCommerceOrderId())
+						).put(
+							CommerceInventoryAuditTypeConstants.ORDER_ITEM_ID,
+							String.valueOf(
+								commerceOrderItem.getCommerceOrderItemId())
+						).build());
 
 			_commerceOrderItemLocalService.updateCommerceOrderItem(
 				commerceOrderItem.getCommerceOrderItemId(),
@@ -389,6 +390,8 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 
 		commerceOrder = _commerceOrderLocalService.recalculatePrice(
 			commerceOrderId, commerceContext);
+
+		commerceOrder.setOrderDate(new Date());
 
 		_updateCommerceDiscountUsageEntry(
 			commerceOrder.getCompanyId(), commerceOrder.getCommerceAccountId(),
@@ -595,10 +598,11 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 			}
 		}
 
-		if ((commerceShippingMethod == null) &&
-			(_commerceShippingMethodLocalService.
-				getCommerceShippingMethodsCount(
-					commerceOrder.getGroupId(), true) > 0) &&
+		int count =
+			_commerceShippingMethodLocalService.getCommerceShippingMethodsCount(
+				commerceOrder.getGroupId(), true);
+
+		if ((commerceShippingMethod == null) && (count > 0) &&
 			_commerceShippingHelper.isShippable(commerceOrder) &&
 			!_commerceShippingHelper.isFreeShipping(commerceOrder)) {
 

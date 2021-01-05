@@ -154,7 +154,9 @@ public class CommerceOrderResource {
 			httpServletRequest, CommerceOrder.class.getName(),
 			PortletProvider.Action.EDIT);
 
-		editURL.setParameter(ActionRequest.ACTION_NAME, "editCommerceOrder");
+		editURL.setParameter(
+			ActionRequest.ACTION_NAME,
+			"/commerce_open_order_content/edit_commerce_order");
 		editURL.setParameter(Constants.CMD, "setCurrent");
 		editURL.setParameter(
 			"commerceOrderId", String.valueOf(commerceOrderId));

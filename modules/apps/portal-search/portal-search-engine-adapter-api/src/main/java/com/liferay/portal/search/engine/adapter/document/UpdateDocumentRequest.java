@@ -51,6 +51,7 @@ public class UpdateDocumentRequest
 		_indexName = indexName;
 		_uid = uid;
 		_document = document;
+
 		_legacyDocument = null;
 	}
 

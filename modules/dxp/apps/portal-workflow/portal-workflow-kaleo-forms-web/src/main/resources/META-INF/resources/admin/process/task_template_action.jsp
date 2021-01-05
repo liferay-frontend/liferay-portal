@@ -42,6 +42,7 @@ KaleoTaskFormPair kaleoTaskFormPair = (KaleoTaskFormPair)row.getObject();
 	String initialStateName = KaleoFormsUtil.getInitialStateName(company.getCompanyId(), workflowDefinition);
 
 	String mode = initialStateName.equals(kaleoTaskFormPair.getWorkflowTaskName()) ? DDMTemplateConstants.TEMPLATE_MODE_CREATE : DDMTemplateConstants.TEMPLATE_MODE_EDIT;
+
 	String paramName = HtmlUtil.escapeJS(liferayPortletResponse.getNamespace() + ddmStructureId + workflowDefinition + kaleoTaskFormPair.getWorkflowTaskName());
 	%>
 

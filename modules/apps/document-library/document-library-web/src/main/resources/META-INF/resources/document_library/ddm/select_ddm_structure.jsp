@@ -26,7 +26,7 @@ SearchContainer<com.liferay.dynamic.data.mapping.model.DDMStructure> ddmStructur
 	displayContext="<%= new DLSelectDDMStructureManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, dlSelectDDMStructureDisplayContext) %>"
 />
 
-<aui:form cssClass="container-fluid-1280" method="post" name="selectDDMStructureFm">
+<aui:form cssClass="container-fluid container-fluid-max-xl" method="post" name="selectDDMStructureFm">
 	<liferay-ui:search-container
 		searchContainer="<%= ddmStructureSearch %>"
 	>
@@ -41,7 +41,7 @@ SearchContainer<com.liferay.dynamic.data.mapping.model.DDMStructure> ddmStructur
 			/>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="name"
 			>
 				<c:choose>
@@ -69,7 +69,7 @@ SearchContainer<com.liferay.dynamic.data.mapping.model.DDMStructure> ddmStructur
 			</liferay-ui:search-container-column-text>
 
 			<liferay-ui:search-container-column-text
-				cssClass="table-cell-content"
+				cssClass="table-cell-expand"
 				name="description"
 				truncate="<%= true %>"
 				value="<%= HtmlUtil.escape(ddmStructure.getDescription(locale)) %>"

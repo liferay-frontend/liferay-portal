@@ -1136,6 +1136,12 @@ wrapper.java.additional.11="-Dfile.encoding=UTF-8"]]></replacevalue>
 			<replacevalue><![CDATA[common.loader="${catalina.home}/lib/ext","${catalina.home}/lib/ext/*.jar","${catalina.base}/lib","${catalina.base}/lib/*.jar","${catalina.home}/lib","${catalina.home}/lib/*.jar"]]></replacevalue>
 		</replace>
 
+		<echo append="true" file="${app.server.tomcat.dir}/conf/catalina.properties">
+			<![CDATA[
+tomcat.util.scan.StandardJarScanFilter.jarsToSkip=*
+tomcat.util.scan.StandardJarScanFilter.jarsToScan=]]>
+		</echo>
+
 		<echo append="true" file="${app.server.tomcat.dir}/conf/logging.properties">
 			<![CDATA[
 org.apache.catalina.startup.Catalina.level=INFO
@@ -2118,7 +2124,7 @@ and put it in ${app.server.parent.dir}. Then rerun this task.
 			file="${app.server.websphere.instance.dir}/config/cells/liferay-cell/nodes/liferay-node/servers/server1/server.xml"
 		>
 			<replacetoken><![CDATA[genericJvmArguments="-Xquickstart"]]></replacetoken>
-			<replacevalue><![CDATA[genericJvmArguments="-Xquickstart ${app.server.websphere.jvm.args}"]]></replacevalue>
+			<replacevalue expandProperties="true"><![CDATA[genericJvmArguments="-Xquickstart ${app.server.websphere.jvm.args}"]]></replacevalue>
 		</replace>
 
 		<echo>Installing fix pack. This may take a few minutes.</echo>

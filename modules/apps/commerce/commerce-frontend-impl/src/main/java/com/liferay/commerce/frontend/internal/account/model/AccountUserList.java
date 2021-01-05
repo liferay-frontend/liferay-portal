@@ -24,11 +24,13 @@ public class AccountUserList {
 	public AccountUserList(List<AccountUser> accounts, int count) {
 		_accounts = accounts;
 		_count = count;
+
 		_success = true;
 	}
 
 	public AccountUserList(String[] errorMessages) {
 		_errorMessages = errorMessages;
+
 		_success = false;
 	}
 

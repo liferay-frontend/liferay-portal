@@ -48,11 +48,11 @@ ExportImportConfiguration exportImportConfiguration = (ExportImportConfiguration
 	/>
 
 	<portlet:renderURL var="deleteRedirectURL">
-		<portlet:param name="mvcRenderCommandName" value="viewExportConfigurations" />
+		<portlet:param name="mvcRenderCommandName" value="/export_import/view_export_configurations" />
 	</portlet:renderURL>
 
-	<portlet:actionURL name="editExportConfiguration" var="deleteExportConfigurationURL">
-		<portlet:param name="mvcRenderCommandName" value="editExportConfiguration" />
+	<portlet:actionURL name="/export_import/edit_export_configuration" var="deleteExportConfigurationURL">
+		<portlet:param name="mvcRenderCommandName" value="/export_import/edit_export_configuration" />
 		<portlet:param name="<%= Constants.CMD %>" value="<%= trashHelper.isTrashEnabled(liveGroupId) ? Constants.MOVE_TO_TRASH : Constants.DELETE %>" />
 		<portlet:param name="redirect" value="<%= deleteRedirectURL %>" />
 		<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />

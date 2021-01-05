@@ -63,8 +63,7 @@ definition {
 			structureDescription = "Structure Description",
 			structureName = "Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -257,8 +256,7 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -401,6 +399,91 @@ definition {
 			privacy = "Public Pages");
 	}
 
+	@description = "This is a use case for LPS-100807."
+	@priority = "4"
+	test EditWikiPageInLiveSiteWhenWikiNotStaged {
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Site Name",
+			layoutName = "Staging Test Page",
+			widgetName = "Wiki");
+
+		Navigator.openSiteURL(siteName = "Site Name");
+
+		WikiNavigator.gotoAllPagesPG();
+
+		WikiPage.addPG(
+			wikiPageContent = "Wiki Page Content",
+			wikiPageTitle = "Wiki Page Title");
+
+		Staging.openStagingAdmin(siteURLKey = "site-name");
+
+		Staging.activateStagingCP(
+			siteName = "Site Name",
+			uncheckContent = "Wiki");
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Staging Test Page",
+			siteName = "Site Name");
+
+		WikiNavigator.gotoAllPagesPG();
+
+		WikiNavigator.gotoEntryEditViaPGTable(wikiPageTitle = "Wiki Page Title");
+
+		WikiEntry.addPageContent(wikiPageContent = "Edited Wiki Page Content");
+
+		SelectFrame(value1 = "relative=top");
+
+		PortletEntry.publish();
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Staging Test Page",
+			siteName = "Site Name");
+
+		WikiNavigator.gotoAllPagesPG();
+
+		AssertTextEquals.assertPartialText(
+			key_wikiPageTitle = "Wiki Page Title",
+			locator1 = "WikiTable#ALL_PAGES_REVISION",
+			value1 = "1.1");
+
+		WikiNavigator.gotoPG(wikiPageTitle = "Wiki Page Title");
+
+		WikiPage.viewPG(
+			wikiPageContent = "Edited Wiki Page Content",
+			wikiPageTitle = "Wiki Page Title");
+
+		Navigator.gotoSitePage(
+			pageName = "Staging Test Page",
+			siteName = "Site Name");
+
+		WikiNavigator.gotoAllPagesPG();
+
+		AssertTextEquals.assertPartialText(
+			key_wikiPageTitle = "Wiki Page Title",
+			locator1 = "WikiTable#ALL_PAGES_REVISION",
+			value1 = "1.1");
+
+		WikiNavigator.gotoPG(wikiPageTitle = "Wiki Page Title");
+
+		WikiPage.viewPG(
+			wikiPageContent = "Edited Wiki Page Content",
+			wikiPageTitle = "Wiki Page Title");
+
+		Navigator.gotoSitePage(
+			pageName = "Staging Test Page",
+			siteName = "Site Name");
+
+		WikiNavigator.gotoAllPagesPG();
+
+		WikiNavigator.gotoEntryEditViaPGTable(wikiPageTitle = "Wiki Page Title");
+
+		WikiEntry.addPageContent(wikiPageContent = "Edited Edited Wiki Page Content");
+
+		SelectFrame(value1 = "relative=top");
+
+		PortletEntry.publish();
+	}
+
 	@priority = "4"
 	test EnableStagingWithWebContentReferencedFromDeletedSite {
 		JSONWebcontent.addWebContent(
@@ -457,6 +540,8 @@ definition {
 
 	@priority = "5"
 	test NotStagedAssets {
+		property portal.acceptance = "true";
+
 		Staging.openStagingAdmin(siteURLKey = "site-name");
 
 		Staging.activateStagingCP(
@@ -505,8 +590,7 @@ definition {
 			structureDescription = "Structure Description",
 			structureName = "Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
@@ -629,6 +713,7 @@ definition {
 		property app.server.bundles.size = "1";
 		property custom.properties = "tunneling.servlet.shared.secret=1234567890123456${line.separator}auth.verifier.TunnelAuthVerifier.hosts.allowed=";
 		property databases.size = "1";
+		property test.name.skip.portal.instance = "Staging#PublishCustomFieldDeletionviaRemoteStaging";
 
 		Staging.remoteStagingSetUp(
 			remotePort = "9080",
@@ -1449,18 +1534,17 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Text",
+		DataEngine.addField(
 			fieldFieldLabel = "Text",
 			fieldName = "Text");
 
-		DynamicDataMapping.editFieldPredefinedValue(
-			field = "Text",
-			fieldFieldLabel = "Text",
-			fieldName = "Text",
-			fieldPredefinedValue = "(Enter Text Here)");
-
 		WebContentStructures.saveCP(structureName = "WC Structure Name");
+
+		WebContentStructures.editStructureDefaultValuesCP(structureName = "WC Structure Name");
+
+		WebContent.addWithStructureCP(webContentText = "(Enter Text Here)");
+
+		PortletEntry.save();
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
 
@@ -1517,6 +1601,7 @@ definition {
 	@description = "This is a use case for LPS-110701."
 	@priority = "3"
 	test PublishWebContentWithUnchangedReferencedContent {
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "Staging#PublishWebContentWithUnchangedReferencedContent";
 
 		JSONLayout.addWidgetToPublicLayout(
@@ -1541,13 +1626,13 @@ definition {
 
 		WebContentNavigator.gotoAddCP();
 
-		WebContent.addViaCKEditor(
+		WebContent.addCP(
 			webContentContent = "Web Content Content",
 			webContentTitle = "Web Content Title");
 
 		ItemSelector.gotoItemSelectorViaCKEditor();
 
-		ItemSelector.addFromURL(
+		ItemSelector.addImageFromURL(
 			imageSourceURL = "${dmDocumentURL}",
 			navTab = "URL");
 
@@ -1883,6 +1968,8 @@ definition {
 	@description = "This is a use case for LPS-77728."
 	@priority = "5"
 	test StagingDraftWebContent {
+		property portal.acceptance = "true";
+
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
 
 		WebContentNavigator.gotoAddCP();
@@ -1890,6 +1977,8 @@ definition {
 		WebContent.addDraft(
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
+
+		VerifyElementPresent(locator1 = "Message#SUCCESS");
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
 
@@ -1911,6 +2000,8 @@ definition {
 	@description = "This is a use case for LPS-82431."
 	@priority = "5"
 	test StagingEditWebContents {
+		property portal.acceptance = "true";
+
 		for (var webContentTitle : list "WC WebContent Title 1,WC WebContent Title 2,WC WebContent Title 3") {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
 
@@ -2055,7 +2146,7 @@ definition {
 
 		LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
-		for (var dmDocumentTitle : list "Document_1.jpeg,Document_2.docx,Document_3.mp3,Document_4.txt") {
+		for (var dmDocumentTitle : list "Document_1,Document_2,Document_3,Document_4") {
 			Navigator.gotoSitePage(
 				pageName = "Staging Test Page",
 				siteName = "Site Name");
@@ -2428,12 +2519,7 @@ definition {
 			structureDescription = "Structure Description",
 			structureName = "Structure Name");
 
-		for (var structureFieldName : list "Text,Text Box") {
-			DynamicDataMapping.addField(
-				field = "${structureFieldName}",
-				fieldFieldLabel = "${structureFieldName}",
-				fieldName = StringUtil.replace("${structureFieldName}", " ", ""));
-		}
+		DataEngine.addFields(fieldNameList = "Text,Rich Text");
 
 		WebContentStructures.saveCP(structureName = "Structure Name");
 
@@ -2444,7 +2530,7 @@ definition {
 		WebContentTemplates.addCP(
 			structureName = "Structure Name",
 			templateDescription = "Template Description",
-			templateFieldNames = "Text,Text Box",
+			templateFieldNames = "Text,Rich Text",
 			templateName = "Template Name");
 
 		Navigator.openURL();
@@ -2456,8 +2542,8 @@ definition {
 		WebContent.addWithStructureCP(
 			structureName = "Structure Name",
 			templateName = "Template Name",
+			webContentRichText = "Staging Web Content Body",
 			webContentText = "Staging Web Content Text",
-			webContentTextBox = "Staging Web Content Body",
 			webContentTitle = "Web Content Title");
 
 		PortletEntry.publish();
@@ -2524,6 +2610,7 @@ definition {
 		property app.server.bundles.size = "1";
 		property custom.properties = "tunneling.servlet.shared.secret=1234567890123456${line.separator}auth.verifier.TunnelAuthVerifier.hosts.allowed=";
 		property databases.size = "1";
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "Staging#StagingRemoteLiveWebContentViaPortletCP";
 
 		Staging.remoteStagingSetUp(
@@ -2611,6 +2698,8 @@ definition {
 		WebContent.addPGViaWCD(
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
+
+		WebContent.viewPGViaWCD(webContentContent = "WC WebContent Content");
 
 		Navigator.gotoSitePage(
 			pageName = "Staging Test Page",
@@ -3161,6 +3250,111 @@ definition {
 		Staging.activateStagingCP(siteName = "Site Name");
 	}
 
+	@description = "This is a use case for LPS-101289."
+	@priority = "4"
+	test ViewCommentAfterEditingViaStage {
+		Staging.openStagingAdmin(siteURLKey = "site-name");
+
+		Staging.activateStagingCP(siteName = "Site Name");
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Staging Test Page",
+			siteName = "Site Name");
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Web Content");
+
+		WebContentNavigator.gotoAddCP();
+
+		WebContent.addCP(
+			webContentContent = "WC WebContent Content",
+			webContentTitle = "WC WebContent Title");
+
+		PortletEntry.publish();
+
+		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
+
+		SitePages.addPublicPage(pageName = "Web Content Page");
+
+		SitePages.configurePage(
+			columnName = "1 Column",
+			pageName = "Web Content Page",
+			privacy = "Public Pages",
+			sitePageType = "Widget Page");
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Web Content Page",
+			siteName = "Site Name");
+
+		Portlet.addPG(portletName = "Web Content Display");
+
+		WebContentDisplayPortlet.selectWebContent(webContentTitle = "WC WebContent Title");
+
+		WebContentDisplayPortlet.configureSetupPG(
+			enableViewCountIncrement = "true",
+			metadataNameList = "Comments");
+
+		WebContentDisplayPortlet.saveConfiguration();
+
+		AssertTextEquals.assertPartialText(
+			key_portletName = "Web Content Display",
+			locator1 = "Portlet#BODY",
+			value1 = "Comments are unavailable in staged sites.");
+
+		Staging.gotoPublishToLive();
+
+		Staging.publishToLive();
+
+		Navigator.gotoSitePage(
+			pageName = "Web Content Page",
+			siteName = "Site Name");
+
+		WebContent.viewPGViaWCD(webContentContent = "WC WebContent Content");
+
+		Comments.addPG(entryComment = "WC WebContent Content Comment");
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Web Content");
+
+		WebContent.moveToRecycleBinViaDeleteIconCP();
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Web Content Page",
+			siteName = "Site Name");
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Web Content");
+
+		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
+
+		WebContent.editCP(
+			webContentContentEdit = "WC WebContent Content Edit",
+			webContentTitle = "WC WebContent Title",
+			webContentTitleEdit = "WC WebContent Title Edit");
+
+		WebContent.viewTitle(webContentTitle = "WC WebContent Title Edit");
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Web Content Page",
+			siteName = "Site Name");
+
+		Staging.gotoPublishToLive();
+
+		Staging.publishToLive();
+
+		Navigator.gotoSitePage(
+			pageName = "Web Content Page",
+			siteName = "Site Name");
+
+		Comments.viewPG(
+			commentCount = "1",
+			entryComment = "WC WebContent Content Comment",
+			userFullName = "Test Test (You)");
+	}
+
 	@priority = "4"
 	test ViewHistoryVersionWithDeletedUser {
 		property test.name.skip.portal.instance = "Staging#ViewHistoryVersionWithDeletedUser";
@@ -3437,6 +3631,8 @@ definition {
 	@description = "This is a use case for LPS-97827."
 	@priority = "2"
 	test ViewParentPageNameAfterPublishChangesInChildPage {
+		property portal.upstream = "quarantine";
+
 		JSONLayout.addPublicLayout(
 			groupName = "Site Name",
 			layoutName = "Child Page A",
@@ -3753,10 +3949,9 @@ definition {
 			structureDescription = "Structure Description",
 			structureName = "Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Documents and Media",
-			fieldFieldLabel = "Documents and Media",
-			fieldName = "DocumentsandMedia");
+		DataEngine.addField(
+			fieldFieldLabel = "Upload",
+			fieldName = "Upload");
 
 		WebContentStructures.saveCP(structureName = "Structure Name");
 
@@ -3771,7 +3966,7 @@ definition {
 		WebContentTemplates.addCP(
 			structureName = "Structure Name",
 			templateDescription = "Template Description",
-			templateFieldNames = "Documents and Media",
+			templateFieldNames = "Upload",
 			templateName = "Template Name");
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-staging");
@@ -3779,11 +3974,11 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "Structure Name");
 
 		WebContent.addWithStructureCP(
-			fieldName = "DocumentsandMedia",
+			dmDocumentTitle = '''example (“PDF”).pdf''',
 			structureName = "Structure Name",
 			templateName = "Template Name",
-			webContentDocumentsAndMedia = '''example (“PDF”).pdf''',
-			webContentTitle = "WC WebContent Title");
+			webContentTitle = "WC WebContent Title",
+			webContentUpload = '''example (“PDF”).pdf''');
 
 		PortletEntry.publish();
 
@@ -3845,16 +4040,11 @@ definition {
 			structureDescription = "Structure Description",
 			structureName = "Structure Name");
 
-		DynamicDataMapping.addField(
-			field = "Image",
+		DataEngine.addField(
 			fieldFieldLabel = "Image",
-			fieldName = StringUtil.replace("Image", " ", ""));
+			fieldName = "Image");
 
-		DynamicDataMapping.selectDynamicDataMappingFrame();
-
-		DynamicDataMapping.editFieldSettings(fieldFieldLabel = "Image");
-
-		DynamicDataMapping.makeFieldRequired();
+		DataEngine.editFieldRequired(fieldFieldLabel = "Image");
 
 		WebContentStructures.saveCP(structureName = "Structure Name");
 
@@ -3871,6 +4061,7 @@ definition {
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "Structure Name");
 
 		WebContent.addWithStructureCP(
+			navTab = "Web Content Images",
 			structureName = "Structure Name",
 			templateName = "Template Name",
 			webContentImage = "Document_2.jpeg",
@@ -4044,6 +4235,8 @@ definition {
 	@description = "This is a use case for LPS-77935."
 	@priority = "4"
 	test ViewSimplePublicationAfterDeleteDocumentInGlobal {
+		property portal.upstream = "quarantine";
+
 		PageTemplatesAdmin.openPageTemplatesAdmin(siteURLKey = "global");
 
 		ProductMenu.gotoPortlet(

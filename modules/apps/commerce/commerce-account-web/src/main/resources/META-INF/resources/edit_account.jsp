@@ -31,7 +31,7 @@ if (commerceAddress != null) {
 }
 %>
 
-<portlet:actionURL name="editCommerceAccount" var="editCommerceAccountActionURL" />
+<portlet:actionURL name="/commerce_account/edit_commerce_account" var="editCommerceAccountActionURL" />
 
 <div class="account-management">
 	<aui:form action="<%= editCommerceAccountActionURL %>" method="post" name="fm">

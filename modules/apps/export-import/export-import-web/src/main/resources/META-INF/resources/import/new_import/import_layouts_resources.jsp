@@ -100,7 +100,7 @@ ManifestSummary manifestSummary = ExportImportHelperUtil.getManifestSummary(user
 	<liferay-ui:message arguments="<%= sdske.getStructureKey() %>" key="dynamic-data-mapping-structure-with-structure-key-x-already-exists" translateArguments="<%= false %>" />
 </liferay-ui:error>
 
-<portlet:actionURL name="importLayouts" var="importPagesURL">
+<portlet:actionURL name="/export_import/import_layouts" var="importPagesURL">
 	<portlet:param name="mvcRenderCommandName" value="viewImport" />
 	<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.IMPORT %>" />
 	<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
@@ -108,7 +108,7 @@ ManifestSummary manifestSummary = ExportImportHelperUtil.getManifestSummary(user
 
 <aui:form action="<%= importPagesURL %>" cssClass="lfr-export-dialog" method="post" name="fm1">
 	<portlet:renderURL var="portletURL">
-		<portlet:param name="mvcRenderCommandName" value="importLayoutsView" />
+		<portlet:param name="mvcRenderCommandName" value="/export_import/import_layouts_view" />
 		<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
 	</portlet:renderURL>
 
@@ -424,7 +424,7 @@ ManifestSummary manifestSummary = ExportImportHelperUtil.getManifestSummary(user
 
 	<aui:button-row>
 		<portlet:renderURL var="backURL">
-			<portlet:param name="mvcRenderCommandName" value="importLayouts" />
+			<portlet:param name="mvcRenderCommandName" value="/export_import/import_layouts" />
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.VALIDATE %>" />
 			<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
 		</portlet:renderURL>

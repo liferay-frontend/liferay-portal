@@ -65,7 +65,8 @@ public class CommerceSubscriptionEntryDisplayContext {
 	public CommerceSubscriptionEntryDisplayContext(
 		CommercePaymentMethodGroupRelLocalService
 			commercePaymentMethodGroupRelLocalService,
-		CommerceSubscriptionEntryLocalService commerceSubscriptionEntryService,
+		CommerceSubscriptionEntryLocalService
+			commerceSubscriptionEntryLocalService,
 		CommerceOrderItemLocalService commerceOrderItemLocalService,
 		CPSubscriptionTypeJSPContributorRegistry
 			cpSubscriptionTypeJSPContributorRegistry,
@@ -75,7 +76,7 @@ public class CommerceSubscriptionEntryDisplayContext {
 		_commercePaymentMethodGroupRelLocalService =
 			commercePaymentMethodGroupRelLocalService;
 		_commerceSubscriptionEntryLocalService =
-			commerceSubscriptionEntryService;
+			commerceSubscriptionEntryLocalService;
 		_commerceOrderItemLocalService = commerceOrderItemLocalService;
 		_cpSubscriptionTypeJSPContributorRegistry =
 			cpSubscriptionTypeJSPContributorRegistry;
@@ -202,7 +203,9 @@ public class CommerceSubscriptionEntryDisplayContext {
 			_httpServletRequest, themeDisplay.getScopeGroup(),
 			CommerceOrder.class.getName(), PortletProvider.Action.MANAGE);
 
-		portletURL.setParameter("mvcRenderCommandName", "editCommerceOrder");
+		portletURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_open_order_content/edit_commerce_order");
 		portletURL.setParameter("redirect", themeDisplay.getURLCurrent());
 		portletURL.setParameter("commerceOrderId", orderId);
 
@@ -342,7 +345,9 @@ public class CommerceSubscriptionEntryDisplayContext {
 
 		PortletURL portletURL = liferayPortletResponse.createActionURL();
 
-		portletURL.setParameter(ActionRequest.ACTION_NAME, "editCommerceOrder");
+		portletURL.setParameter(
+			ActionRequest.ACTION_NAME,
+			"/commerce_open_order_content/edit_commerce_order");
 		portletURL.setParameter(Constants.CMD, ActionKeys.UPDATE);
 		portletURL.setParameter(
 			"commerceSubscriptionEntryId",

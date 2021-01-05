@@ -98,12 +98,12 @@ public class AssetVocabularyMetric {
 
 		Stream<AssetCategoryMetric> stream = _assetCategoryMetrics.stream();
 
-		return stream.findFirst(
-		).map(
+		return stream.map(
 			AssetCategoryMetric::getAssetVocabularyMetric
 		).filter(
 			assetVocabularyMetric -> ListUtil.isNotEmpty(
 				assetVocabularyMetric.getAssetCategoryMetrics())
+		).findFirst(
 		).map(
 			AssetVocabularyMetric::getName
 		).map(

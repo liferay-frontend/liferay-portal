@@ -26,22 +26,26 @@ import java.util.Optional;
  */
 public class ServiceBuilderCountryUtil {
 
-	public static Country toServiceBuilderCountry(String addressCountry) {
+	public static Country toServiceBuilderCountry(
+		long companyId, String addressCountry) {
+
 		try {
 			Country country = CountryServiceUtil.fetchCountryByA2(
-				addressCountry);
+				companyId, addressCountry);
 
 			if (country != null) {
 				return country;
 			}
 
-			country = CountryServiceUtil.fetchCountryByA3(addressCountry);
+			country = CountryServiceUtil.fetchCountryByA3(
+				companyId, addressCountry);
 
 			if (country != null) {
 				return country;
 			}
 
-			return CountryServiceUtil.getCountryByName(addressCountry);
+			return CountryServiceUtil.getCountryByName(
+				companyId, addressCountry);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
@@ -52,11 +56,13 @@ public class ServiceBuilderCountryUtil {
 		return null;
 	}
 
-	public static long toServiceBuilderCountryId(String addressCountry) {
+	public static long toServiceBuilderCountryId(
+		long companyId, String addressCountry) {
+
 		return Optional.ofNullable(
 			addressCountry
 		).map(
-			ServiceBuilderCountryUtil::toServiceBuilderCountry
+			country -> toServiceBuilderCountry(companyId, country)
 		).map(
 			Country::getCountryId
 		).orElse(

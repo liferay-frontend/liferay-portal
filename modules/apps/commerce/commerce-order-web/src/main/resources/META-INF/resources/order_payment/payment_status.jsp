@@ -22,7 +22,7 @@ CommerceOrderEditDisplayContext commerceOrderEditDisplayContext = (CommerceOrder
 CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder();
 %>
 
-<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderPaymentStatusActionURL" />
+<portlet:actionURL name="/commerce_order/edit_commerce_order" var="editCommerceOrderPaymentStatusActionURL" />
 
 <commerce-ui:modal-content>
 	<aui:form action="<%= editCommerceOrderPaymentStatusActionURL %>" method="post" name="fm">

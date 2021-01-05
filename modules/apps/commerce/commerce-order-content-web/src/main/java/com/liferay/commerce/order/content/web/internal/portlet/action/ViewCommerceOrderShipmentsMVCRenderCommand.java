@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Component;
 	enabled = false,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER_CONTENT,
-		"mvc.command.name=viewCommerceOrderShipments"
+		"mvc.command.name=/commerce_order_content/view_commerce_order_shipments"
 	},
 	service = MVCRenderCommand.class
 )

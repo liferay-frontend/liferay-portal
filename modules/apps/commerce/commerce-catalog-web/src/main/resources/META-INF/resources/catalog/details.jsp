@@ -31,7 +31,7 @@ long fileEntryId = BeanParamUtil.getLong(fileEntry, request, "fileEntryId");
 boolean isViewOnly = !commerceCatalogDisplayContext.hasPermission(commerceCatalog.getCommerceCatalogId(), ActionKeys.UPDATE);
 %>
 
-<portlet:actionURL name="editCommerceCatalog" var="editCommerceCatalogActionURL" />
+<portlet:actionURL name="/commerce_catalogs/edit_commerce_catalog" var="editCommerceCatalogActionURL" />
 
 <aui:form action="<%= editCommerceCatalogActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceCatalog == null) ? Constants.ADD : Constants.UPDATE %>" />
@@ -170,7 +170,7 @@ boolean isViewOnly = !commerceCatalogDisplayContext.hasPermission(commerceCatalo
 						<aui:model-context bean="<%= fileEntry %>" model="<%= FileEntry.class %>" />
 
 						<div class="lfr-attachment-cover-image-selector">
-							<portlet:actionURL name="uploadCommerceMediaDefaultImage" var="uploadCommerceMediaDefaultImageActionURL" />
+							<portlet:actionURL name="/commerce_catalogs/upload_commerce_media_default_image" var="uploadCommerceMediaDefaultImageActionURL" />
 
 							<liferay-item-selector:image-selector
 								draggableImage="vertical"

@@ -38,8 +38,6 @@ body.open .app-builder-upper-toolbar {
 	}
 }
 
-.publications-enabled {
-	.app-builder-upper-toolbar {
-		top: 80px;
-	}
+.menu-indicator-enabled .app-builder-upper-toolbar {
+	top: 80px;
 }

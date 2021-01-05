@@ -41,7 +41,7 @@ if (ddmStructure != null) {
 	<portlet:param name="mvcPath" value="/view_ddm_templates.jsp" />
 </portlet:actionURL>
 
-<aui:form action="<%= deleteDDMTemplateURL %>" cssClass="container-fluid-1280" method="post" name="fm">
+<aui:form action="<%= deleteDDMTemplateURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 
 	<c:if test="<%= !journalDisplayContext.isNavigationMine() && !journalDisplayContext.isNavigationRecent() %>">
@@ -83,13 +83,8 @@ if (ddmStructure != null) {
 
 			<c:choose>
 				<c:when test='<%= Objects.equals(journalDDMTemplateDisplayContext.getDisplayStyle(), "icon") %>'>
-
-					<%
-					row.setCssClass("entry-card lfr-asset-item " + row.getCssClass());
-					%>
-
 					<liferay-ui:search-container-column-text>
-						<clay:vertical-card-v2
+						<clay:vertical-card
 							verticalCard="<%= new JournalDDMTemplateVerticalCard(ddmTemplate, renderRequest, renderResponse, searchContainer.getRowChecker()) %>"
 						/>
 					</liferay-ui:search-container-column-text>
@@ -101,14 +96,14 @@ if (ddmStructure != null) {
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						href="<%= rowHREF %>"
 						name="name"
 						value="<%= HtmlUtil.escape(ddmTemplate.getName(locale)) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
+						cssClass="table-cell-expand"
 						name="description"
 						value="<%= HtmlUtil.escape(ddmTemplate.getDescription(locale)) %>"
 					/>

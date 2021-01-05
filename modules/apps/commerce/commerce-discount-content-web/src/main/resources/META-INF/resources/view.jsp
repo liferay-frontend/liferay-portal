@@ -28,7 +28,7 @@ if (commerceOrder != null) {
 }
 %>
 
-<portlet:actionURL name="applyCommerceDiscountCouponCode" var="applyCommerceDiscountCouponCodeActionURL" />
+<portlet:actionURL name="/commerce_discount_content/apply_commerce_discount_coupon_code" var="applyCommerceDiscountCouponCodeActionURL" />
 
 <aui:form action="<%= applyCommerceDiscountCouponCodeActionURL %>" method="post" name="fm">
 	<liferay-ui:error exception="<%= CommerceDiscountCouponCodeException.class %>" message="please-enter-a-valid-coupon-code" />

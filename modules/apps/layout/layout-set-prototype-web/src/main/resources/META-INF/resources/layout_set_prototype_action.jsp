@@ -24,6 +24,8 @@ LayoutSetPrototype layoutSetPrototype = (LayoutSetPrototype)row.getObject();
 long layoutSetPrototypeId = layoutSetPrototype.getLayoutSetPrototypeId();
 
 Group group = layoutSetPrototype.getGroup();
+
+boolean readyForPropagation = GetterUtil.getBoolean(layoutSetPrototype.getSettingsProperty("readyForPropagation"), true);
 %>
 
 <liferay-ui:icon-menu
@@ -59,7 +61,7 @@ Group group = layoutSetPrototype.getGroup();
 
 		<c:choose>
 			<c:when test="<%= layoutSetPrototype.isActive() && !group.isGuest() %>">
-				<portlet:actionURL name="activateDeactivateLayoutSetPrototype" var="deactivateURL">
+				<portlet:actionURL name="updateLayoutSetPrototypeAction" var="deactivateURL">
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 					<portlet:param name="layoutSetPrototypeId" value="<%= String.valueOf(layoutSetPrototypeId) %>" />
 					<portlet:param name="active" value="<%= Boolean.FALSE.toString() %>" />
@@ -70,7 +72,7 @@ Group group = layoutSetPrototype.getGroup();
 				/>
 			</c:when>
 			<c:when test="<%= !layoutSetPrototype.isActive() %>">
-				<portlet:actionURL name="activateDeactivateLayoutSetPrototype" var="activateURL">
+				<portlet:actionURL name="updateLayoutSetPrototypeAction" var="activateURL">
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 					<portlet:param name="layoutSetPrototypeId" value="<%= String.valueOf(layoutSetPrototypeId) %>" />
 					<portlet:param name="active" value="<%= Boolean.TRUE.toString() %>" />
@@ -79,6 +81,33 @@ Group group = layoutSetPrototype.getGroup();
 				<liferay-ui:icon
 					message="activate"
 					url="<%= activateURL %>"
+				/>
+			</c:when>
+		</c:choose>
+
+		<c:choose>
+			<c:when test="<%= readyForPropagation && !group.isGuest() %>">
+				<portlet:actionURL name="updateLayoutSetPrototypeAction" var="disablePropagationURL">
+					<portlet:param name="redirect" value="<%= currentURL %>" />
+					<portlet:param name="layoutSetPrototypeId" value="<%= String.valueOf(layoutSetPrototypeId) %>" />
+					<portlet:param name="readyForPropagation" value="<%= Boolean.FALSE.toString() %>" />
+				</portlet:actionURL>
+
+				<liferay-ui:icon
+					message="disable-propagation"
+					url="<%= disablePropagationURL %>"
+				/>
+			</c:when>
+			<c:when test="<%= !readyForPropagation %>">
+				<portlet:actionURL name="updateLayoutSetPrototypeAction" var="readyForPropagationURL">
+					<portlet:param name="redirect" value="<%= currentURL %>" />
+					<portlet:param name="layoutSetPrototypeId" value="<%= String.valueOf(layoutSetPrototypeId) %>" />
+					<portlet:param name="readyForPropagation" value="<%= Boolean.TRUE.toString() %>" />
+				</portlet:actionURL>
+
+				<liferay-ui:icon
+					message="ready-for-propagation"
+					url="<%= readyForPropagationURL %>"
 				/>
 			</c:when>
 		</c:choose>

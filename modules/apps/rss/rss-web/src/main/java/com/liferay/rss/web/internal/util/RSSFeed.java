@@ -46,11 +46,12 @@ public class RSSFeed {
 		SyndFeed syndFeed = getSyndFeed();
 
 		if (syndFeed == null) {
+			_title = title;
+
 			_baseURL = StringPool.BLANK;
 			_syndFeedImageLink = StringPool.BLANK;
 			_syndFeedImageURL = StringPool.BLANK;
 			_syndFeedLink = StringPool.BLANK;
-			_title = title;
 
 			return;
 		}
@@ -100,11 +101,12 @@ public class RSSFeed {
 			}
 		}
 
+		_title = title;
+
 		_baseURL = baseURL;
 		_syndFeedImageLink = syndFeedImageLink;
 		_syndFeedImageURL = syndFeedImageURL;
 		_syndFeedLink = syndFeedLink;
-		_title = title;
 	}
 
 	public String getBaseURL() {

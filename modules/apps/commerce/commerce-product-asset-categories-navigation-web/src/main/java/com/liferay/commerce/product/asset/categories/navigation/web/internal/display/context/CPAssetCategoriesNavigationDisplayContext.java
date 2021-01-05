@@ -21,9 +21,9 @@ import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
 import com.liferay.commerce.media.CommerceMediaResolver;
 import com.liferay.commerce.product.asset.categories.navigation.web.internal.configuration.CPAssetCategoriesNavigationPortletInstanceConfiguration;
+import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
-import com.liferay.commerce.product.model.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryService;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
@@ -159,11 +159,9 @@ public class CPAssetCategoriesNavigationDisplayContext {
 	public String getDefaultImageSrc(long categoryId, ThemeDisplay themeDisplay)
 		throws Exception {
 
-		long classNameId = _portal.getClassNameId(AssetCategory.class);
-
 		List<CPAttachmentFileEntry> cpAttachmentFileEntries =
 			_cpAttachmentFileEntryService.getCPAttachmentFileEntries(
-				classNameId, categoryId,
+				_portal.getClassNameId(AssetCategory.class), categoryId,
 				CPAttachmentFileEntryConstants.TYPE_IMAGE,
 				WorkflowConstants.STATUS_APPROVED, 0, 1);
 
@@ -217,9 +215,6 @@ public class CPAssetCategoriesNavigationDisplayContext {
 			return StringPool.BLANK;
 		}
 
-		String groupFriendlyURL = _portal.getGroupFriendlyURL(
-			themeDisplay.getLayoutSet(), themeDisplay);
-
 		long classNameId = _portal.getClassNameId(AssetCategory.class);
 
 		FriendlyURLEntry friendlyURLEntry = null;
@@ -232,6 +227,9 @@ public class CPAssetCategoriesNavigationDisplayContext {
 		catch (Exception exception) {
 			return StringPool.BLANK;
 		}
+
+		String groupFriendlyURL = _portal.getGroupFriendlyURL(
+			themeDisplay.getLayoutSet(), themeDisplay);
 
 		String languageId = LanguageUtil.getLanguageId(
 			themeDisplay.getLocale());

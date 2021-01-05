@@ -33,7 +33,7 @@ CommerceCurrency commerceCurrency = (CommerceCurrency)row.getObject();
 >
 	<c:if test="<%= commerceCurrenciesDisplayContext.hasManageCommerceCurrencyPermission() %>">
 		<portlet:renderURL var="editURL">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceCurrency" />
+			<portlet:param name="mvcRenderCommandName" value="/commerce_currency/edit_commerce_currency" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceCurrencyId" value="<%= String.valueOf(commerceCurrency.getCommerceCurrencyId()) %>" />
 		</portlet:renderURL>
@@ -44,7 +44,7 @@ CommerceCurrency commerceCurrency = (CommerceCurrency)row.getObject();
 		/>
 
 		<c:if test="<%= !commerceCurrency.isPrimary() %>">
-			<portlet:actionURL name="editCommerceCurrency" var="setPrimaryURL">
+			<portlet:actionURL name="/commerce_currency/edit_commerce_currency" var="setPrimaryURL">
 				<portlet:param name="<%= Constants.CMD %>" value="setPrimary" />
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 				<portlet:param name="commerceCurrencyId" value="<%= String.valueOf(commerceCurrency.getCommerceCurrencyId()) %>" />
@@ -57,7 +57,7 @@ CommerceCurrency commerceCurrency = (CommerceCurrency)row.getObject();
 			/>
 		</c:if>
 
-		<portlet:actionURL name="editCommerceCurrency" var="setActiveURL">
+		<portlet:actionURL name="/commerce_currency/edit_commerce_currency" var="setActiveURL">
 			<portlet:param name="<%= Constants.CMD %>" value="setActive" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceCurrencyId" value="<%= String.valueOf(commerceCurrency.getCommerceCurrencyId()) %>" />
@@ -69,7 +69,7 @@ CommerceCurrency commerceCurrency = (CommerceCurrency)row.getObject();
 			url="<%= setActiveURL %>"
 		/>
 
-		<portlet:actionURL name="editCommerceCurrency" var="deleteURL">
+		<portlet:actionURL name="/commerce_currency/edit_commerce_currency" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceCurrencyId" value="<%= String.valueOf(commerceCurrency.getCommerceCurrencyId()) %>" />

@@ -25,7 +25,7 @@ import {
 	generateName,
 } from 'dynamic-data-mapping-form-renderer';
 import {makeFetch} from 'dynamic-data-mapping-form-renderer/js/util/fetch.es';
-import dom from 'metal-dom';
+import {openModal} from 'frontend-js-web';
 import {Drag, DragDrop} from 'metal-drag-drop';
 import {EventHandler} from 'metal-events';
 import Component, {Fragment} from 'metal-jsx';
@@ -48,8 +48,10 @@ class Sidebar extends Component {
 	attached() {
 		this._bindDragAndDrop();
 
-		this._eventHandler.add(
-			dom.on(document, 'mousedown', this._handleDocumentMouseDown, false)
+		document.addEventListener(
+			'mousedown',
+			this._handleDocumentMouseDown,
+			false
 		);
 	}
 
@@ -153,6 +155,12 @@ class Sidebar extends Component {
 	disposeInternal() {
 		super.disposeInternal();
 
+		document.removeEventListener(
+			'mousedown',
+			this._handleDocumentMouseDown,
+			false
+		);
+
 		this._eventHandler.removeAllListeners();
 		this.disposeDragAndDrop();
 	}
@@ -206,16 +214,23 @@ class Sidebar extends Component {
 			return;
 		}
 
-		dom.once(container, transitionEnd, () => {
-			if (this._isEditMode()) {
-				const firstInput = this.element.querySelector('input');
+		container.addEventListener(
+			transitionEnd,
+			() => {
+				if (this._isEditMode()) {
+					const firstInput = this.element.querySelector('input');
 
-				if (firstInput && !container.contains(document.activeElement)) {
-					firstInput.focus();
-					selectText(firstInput);
+					if (
+						firstInput &&
+						!container.contains(document.activeElement)
+					) {
+						firstInput.focus();
+						selectText(firstInput);
+					}
 				}
-			}
-		});
+			},
+			{once: true}
+		);
 
 		this.setState({
 			activeTab: 0,
@@ -524,7 +539,48 @@ class Sidebar extends Component {
 
 	_handleChangeFieldTypeItemClicked({data}) {
 		const newFieldType = data.item.name;
+		const {fieldName} = this.props.focusedField;
+		const {rules} = this.props;
 
+		if (rules && RulesSupport.findRuleByFieldName(fieldName, null, rules)) {
+			const dropdown = document.querySelector('.dropdown-menu.show');
+
+			dropdown.classList.remove('show');
+
+			openModal({
+				bodyHTML: Liferay.Language.get(
+					'a-rule-is-applied-to-this-field-by-changing-its-type'
+				),
+				buttons: [
+					{
+						displayType: 'secondary',
+						label: Liferay.Language.get('cancel'),
+						type: 'cancel',
+					},
+					{
+						displayType: 'danger',
+						label: Liferay.Language.get('change-field-type'),
+						onClick: () => {
+							this._handleChangeFieldTypeModalButtonClicked(
+								newFieldType
+							);
+						},
+						type: 'cancel',
+					},
+				],
+				id: 'ddm-change-field-type-with-rule-modal',
+				size: 'md',
+				title: Liferay.Language.get(
+					'change-field-type-with-rule-applied'
+				),
+			});
+		}
+		else {
+			this.changeFieldType(newFieldType);
+		}
+	}
+
+	_handleChangeFieldTypeModalButtonClicked(newFieldType) {
 		this.changeFieldType(newFieldType);
 	}
 
@@ -552,8 +608,10 @@ class Sidebar extends Component {
 		) {
 			this.close();
 
-			dom.once(this.refs.container, transitionEnd, () =>
-				this.dispatchFieldBlurred()
+			this.refs.container.addEventListener(
+				transitionEnd,
+				() => this.dispatchFieldBlurred(),
+				{once: true}
 			);
 
 			if (!this._isModalElement(target)) {
@@ -690,7 +748,7 @@ class Sidebar extends Component {
 
 				if (
 					rules &&
-					RulesSupport.findRuleByFieldName(fieldName, rules)
+					RulesSupport.findRuleByFieldName(fieldName, null, rules)
 				) {
 					const dropdown = document.querySelector(
 						'.dropdown-menu.show'
@@ -712,10 +770,14 @@ class Sidebar extends Component {
 
 		this.close();
 
-		dom.once(this.refs.container, transitionEnd, () => {
-			this.dispatchFieldBlurred();
-			this.open();
-		});
+		this.refs.container.addEventListener(
+			transitionEnd,
+			() => {
+				this.dispatchFieldBlurred();
+				this.open();
+			},
+			{once: true}
+		);
 	}
 
 	_handleSettingsFieldBlurred({fieldInstance, value}) {

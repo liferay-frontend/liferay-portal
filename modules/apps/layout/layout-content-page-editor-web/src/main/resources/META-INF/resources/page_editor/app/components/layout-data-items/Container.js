@@ -17,12 +17,15 @@ import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
 import {getLayoutDataItemPropTypes} from '../../../prop-types/index';
+import {config} from '../../config/index';
 import selectLanguageId from '../../selectors/selectLanguageId';
 import InfoItemService from '../../services/InfoItemService';
 import {useSelector} from '../../store/index';
 import {getFrontendTokenValue} from '../../utils/getFrontendTokenValue';
 import {getResponsiveConfig} from '../../utils/getResponsiveConfig';
 import loadBackgroundImage from '../../utils/loadBackgroundImage';
+import {useBackgroundImageMediaQueries} from '../../utils/useBackgroundImageQueries';
+import {useId} from '../../utils/useId';
 
 const Container = React.forwardRef(
 	({children, className, data, item, withinTopper = false}, ref) => {
@@ -67,9 +70,15 @@ const Container = React.forwardRef(
 
 		const {widthType} = itemConfig;
 
+		const elementId = useId();
 		const languageId = useSelector(selectLanguageId);
 		const [backgroundImageValue, setBackgroundImageValue] = useState('');
 		const [link, setLink] = useState(null);
+
+		const backgroundImageMediaQueries = useBackgroundImageMediaQueries(
+			elementId,
+			backgroundImage
+		);
 
 		useEffect(() => {
 			loadBackgroundImage(backgroundImage).then(setBackgroundImageValue);
@@ -80,18 +89,27 @@ const Container = React.forwardRef(
 				return;
 			}
 
-			if (itemConfig.link.href) {
-				setLink(itemConfig.link);
+			const linkConfig =
+				itemConfig.link[languageId] ||
+				itemConfig.link[config.defaultLanguageId] ||
+				itemConfig.link;
+
+			if (!linkConfig) {
+				return;
 			}
-			else if (itemConfig.link.fieldId) {
+
+			if (linkConfig.href) {
+				setLink(linkConfig);
+			}
+			else if (linkConfig.fieldId) {
 				InfoItemService.getInfoItemFieldValue({
-					...itemConfig.link,
+					...linkConfig,
 					languageId,
 					onNetworkStatus: () => {},
 				}).then(({fieldValue}) => {
 					setLink({
 						href: fieldValue,
-						target: itemConfig.link.target,
+						target: linkConfig.target,
 					});
 				});
 			}
@@ -127,6 +145,11 @@ const Container = React.forwardRef(
 			style.backgroundPosition = '50% 50%';
 			style.backgroundRepeat = 'no-repeat';
 			style.backgroundSize = 'cover';
+
+			if (backgroundImage?.fileEntryId) {
+				style['--background-image-file-entry-id'] =
+					backgroundImage.fileEntryId;
+			}
 		}
 
 		const content = (
@@ -143,6 +166,8 @@ const Container = React.forwardRef(
 					{
 						container: widthType === 'fixed',
 						empty: !item.children.length && !height,
+						[`bg-${backgroundColor}`]:
+							backgroundColor && !backgroundColor.startsWith('#'),
 						[`ml-${marginLeft || 0}`]:
 							widthType !== 'fixed' && !withinTopper,
 						[`mr-${marginRight || 0}`]:
@@ -154,9 +179,11 @@ const Container = React.forwardRef(
 							: '']: textAlign,
 					}
 				)}
+				id={elementId}
 				ref={ref}
 				style={style}
 			>
+				<style>{backgroundImageMediaQueries}</style>
 				{children}
 			</div>
 		);

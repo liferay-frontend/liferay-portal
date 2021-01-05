@@ -204,9 +204,8 @@ public class MimeTypesImplTest {
 
 	private String _getContentType(String fileName, boolean checkStream) {
 		if (checkStream) {
-			InputStream inputStream = _getInputStream(fileName);
-
-			return _mimeTypes.getContentType(inputStream, fileName);
+			return _mimeTypes.getContentType(
+				_getInputStream(fileName), fileName);
 		}
 
 		return _mimeTypes.getContentType(fileName);

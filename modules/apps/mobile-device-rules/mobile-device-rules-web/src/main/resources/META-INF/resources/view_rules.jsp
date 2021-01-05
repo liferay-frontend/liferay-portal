@@ -64,6 +64,7 @@ rulesSearchContainer.setOrderByComparator(orderByComparator);
 rulesSearchContainer.setOrderByType(orderByType);
 
 int rulesCount = MDRRuleLocalServiceUtil.getRulesCount(ruleGroupId);
+
 List<MDRRule> rules = MDRRuleLocalServiceUtil.getRules(ruleGroupId, rulesSearchContainer.getStart(), rulesSearchContainer.getEnd(), rulesSearchContainer.getOrderByComparator());
 
 rulesSearchContainer.setResults(rules);
@@ -168,11 +169,6 @@ renderResponse.setTitle(ruleGroup.getName(locale));
 					/>
 				</c:when>
 				<c:when test='<%= displayStyle.equals("icon") %>'>
-
-					<%
-					row.setCssClass("entry-card lfr-asset-item");
-					%>
-
 					<liferay-ui:search-container-column-text>
 						<liferay-frontend:icon-vertical-card
 							actionJsp="/rule_actions.jsp"

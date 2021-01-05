@@ -16,7 +16,6 @@ package com.liferay.segments.internal.security.permission.contributor;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -28,12 +27,12 @@ import com.liferay.portal.kernel.security.permission.contributor.RoleContributor
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.segments.SegmentsEntryRetriever;
+import com.liferay.segments.configuration.SegmentsConfiguration;
 import com.liferay.segments.context.RequestContextMapper;
-import com.liferay.segments.internal.configuration.SegmentsServiceConfiguration;
 import com.liferay.segments.model.SegmentsEntryRole;
 import com.liferay.segments.provider.SegmentsEntryProviderRegistry;
 import com.liferay.segments.service.SegmentsEntryRoleLocalService;
-import com.liferay.segments.simulator.SegmentsEntrySimulator;
 
 import java.util.List;
 import java.util.Map;
@@ -46,15 +45,12 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Drew Brokke
  */
 @Component(
-	configurationPid = "com.liferay.segments.internal.configuration.SegmentsServiceConfiguration",
+	configurationPid = "com.liferay.segments.configuration.SegmentsConfiguration",
 	service = {}
 )
 public class SegmentsEntryRoleContributor implements RoleContributor {
@@ -90,11 +86,11 @@ public class SegmentsEntryRoleContributor implements RoleContributor {
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
-		SegmentsServiceConfiguration segmentsServiceConfiguration =
+		SegmentsConfiguration segmentsConfiguration =
 			ConfigurableUtil.createConfigurable(
-				SegmentsServiceConfiguration.class, properties);
+				SegmentsConfiguration.class, properties);
 
-		if (segmentsServiceConfiguration.roleSegmentationEnabled()) {
+		if (segmentsConfiguration.roleSegmentationEnabled()) {
 			_serviceRegistration = bundleContext.registerService(
 				RoleContributor.class, this, new HashMapDictionary<>());
 		}
@@ -108,44 +104,24 @@ public class SegmentsEntryRoleContributor implements RoleContributor {
 	}
 
 	private long[] _getSegmentsEntryIds(RoleCollection roleCollection) {
-		long[] segmentsEntryIds = new long[0];
-
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
 		if (serviceContext == null) {
-			return segmentsEntryIds;
+			return new long[0];
 		}
 
 		HttpServletRequest httpServletRequest = serviceContext.getRequest();
 
 		if (httpServletRequest == null) {
-			return segmentsEntryIds;
+			return new long[0];
 		}
 
 		User user = roleCollection.getUser();
 
-		if ((_segmentsEntrySimulator != null) &&
-			_segmentsEntrySimulator.isSimulationActive(user.getUserId())) {
-
-			segmentsEntryIds =
-				_segmentsEntrySimulator.getSimulatedSegmentsEntryIds(
-					user.getUserId());
-		}
-		else {
-			try {
-				segmentsEntryIds =
-					_segmentsEntryProviderRegistry.getSegmentsEntryIds(
-						roleCollection.getGroupId(), User.class.getName(),
-						user.getUserId(),
-						_requestContextMapper.map(httpServletRequest));
-			}
-			catch (PortalException portalException) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(portalException.getMessage());
-				}
-			}
-		}
+		long[] segmentsEntryIds = _segmentsEntryRetriever.getSegmentsEntryIds(
+			roleCollection.getGroupId(), user.getUserId(),
+			_requestContextMapper.map(httpServletRequest));
 
 		if ((segmentsEntryIds.length > 0) && _log.isDebugEnabled()) {
 			_log.debug(
@@ -171,15 +147,10 @@ public class SegmentsEntryRoleContributor implements RoleContributor {
 	private SegmentsEntryProviderRegistry _segmentsEntryProviderRegistry;
 
 	@Reference
-	private SegmentsEntryRoleLocalService _segmentsEntryRoleLocalService;
+	private SegmentsEntryRetriever _segmentsEntryRetriever;
 
-	@Reference(
-		cardinality = ReferenceCardinality.OPTIONAL,
-		policy = ReferencePolicy.DYNAMIC,
-		policyOption = ReferencePolicyOption.GREEDY,
-		target = "(model.class.name=com.liferay.portal.kernel.model.User)"
-	)
-	private volatile SegmentsEntrySimulator _segmentsEntrySimulator;
+	@Reference
+	private SegmentsEntryRoleLocalService _segmentsEntryRoleLocalService;
 
 	private ServiceRegistration<RoleContributor> _serviceRegistration;
 

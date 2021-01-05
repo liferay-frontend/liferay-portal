@@ -28,6 +28,7 @@ public class ClayDataSetDataRow {
 
 	public ClayDataSetDataRow(Object item) {
 		_item = item;
+
 		_actionDropdownItems = new ArrayList<>();
 	}
 
