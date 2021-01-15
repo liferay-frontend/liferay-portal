@@ -18,6 +18,8 @@
 
 <%
 String fullName = namespace.concat(HtmlUtil.escapeAttribute(name));
+
+String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 %>
 
 <form action="<%= HtmlUtil.escapeAttribute(action) %>" class="form <%= cssClass %> <%= inlineLabels ? "field-labels-inline" : StringPool.BLANK %>" data-fm-namespace="<%= namespace %>" id="<%= fullName %>" method="<%= method %>" name="<%= fullName %>" <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %>>
@@ -25,4 +27,4 @@ String fullName = namespace.concat(HtmlUtil.escapeAttribute(name));
 		<fieldset class="input-container" disabled="disabled">
 	</c:if>
 
-	<aui:input name="formDate" type="hidden" value="<%= System.currentTimeMillis() %>" />
+	<aui:input name='<%= randomNamespace + "formDate" %>' type="hidden" value="<%= System.currentTimeMillis() %>" />

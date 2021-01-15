@@ -154,7 +154,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 													skipEditorLoading="<%= skipEditorLoading %>"
 												/>
 
-												<aui:input name="postReplyBody0" type="hidden" />
+												<aui:input name='<%= randomNamespace + "postReplyBody0" %>' type="hidden" />
 
 												<aui:button-row>
 													<aui:button cssClass="btn-comment btn-primary btn-sm" disabled="<%= true %>" id="postReplyButton0" onClick='<%= randomNamespace + "postReply(0);" %>' value='<%= themeDisplay.isSignedIn() ? "reply" : "reply-as" %>' />

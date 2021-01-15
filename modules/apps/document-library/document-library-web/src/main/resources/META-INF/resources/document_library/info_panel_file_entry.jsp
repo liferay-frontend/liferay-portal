@@ -243,7 +243,9 @@ long assetClassPK = DLAssetHelperUtil.getAssetClassPK(fileEntry, fileVersion);
 						urlLabel = LanguageUtil.format(request, "version-x-url", fileVersion.getVersion());
 					}
 
-					String urlInputId = liferayPortletResponse.getNamespace() + "urlInput";
+					String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
+
+					String urlInputId = liferayPortletResponse.getNamespace() + randomNamespace + "urlInput";
 					%>
 
 					<div class="form-group">

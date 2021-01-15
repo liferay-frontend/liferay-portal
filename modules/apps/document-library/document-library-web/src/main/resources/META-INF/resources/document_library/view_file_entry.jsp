@@ -39,6 +39,9 @@ if (portletTitleBasedNavigation) {
 
 	renderResponse.setTitle(fileVersion.getTitle());
 }
+
+String portletNamespace = liferayPortletResponse.getNamespace();
+String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 %>
 
 <div class="<%= portletTitleBasedNavigation ? StringPool.BLANK : "closed sidenav-container sidenav-right" %>" id="<%= liferayPortletResponse.getNamespace() + (portletTitleBasedNavigation ? "FileEntry" : ("infoPanelId" + StringPool.UNDERLINE + fileEntry.getFileEntryId())) %>">
@@ -48,7 +51,7 @@ if (portletTitleBasedNavigation) {
 
 	<portlet:actionURL name="/document_library/edit_file_entry" var="editFileEntry" />
 
-	<aui:form action="<%= editFileEntry %>" method="post" name="fm">
+	<aui:form action="<%= editFileEntry %>" method="post" name="fm" portletNamespace="<%= portletNamespace + randomNamespace %>">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" />
 		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 		<aui:input name="fileEntryId" type="hidden" value="<%= String.valueOf(fileEntry.getFileEntryId()) %>" />
