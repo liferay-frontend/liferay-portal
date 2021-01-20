@@ -40,8 +40,7 @@ if (portletTitleBasedNavigation) {
 	renderResponse.setTitle(fileVersion.getTitle());
 }
 
-String portletNamespace = liferayPortletResponse.getNamespace();
-String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
+String randomNamespace = PortalUtil.generateRandomKey(request, liferayPortletResponse.getNamespace());
 %>
 
 <div class="<%= portletTitleBasedNavigation ? StringPool.BLANK : "closed sidenav-container sidenav-right" %>" id="<%= liferayPortletResponse.getNamespace() + (portletTitleBasedNavigation ? "FileEntry" : ("infoPanelId" + StringPool.UNDERLINE + fileEntry.getFileEntryId())) %>">
@@ -51,7 +50,7 @@ String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 
 	<portlet:actionURL name="/document_library/edit_file_entry" var="editFileEntry" />
 
-	<aui:form action="<%= editFileEntry %>" method="post" name="fm" portletNamespace="<%= portletNamespace + randomNamespace %>">
+	<aui:form action="<%= editFileEntry %>" method="post" name="fm" portletNamespace="<%= randomNamespace %>">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" />
 		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 		<aui:input name="fileEntryId" type="hidden" value="<%= String.valueOf(fileEntry.getFileEntryId()) %>" />
@@ -76,6 +75,7 @@ String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 				<%
 				request.setAttribute("info_panel.jsp-fileEntry", dlViewFileEntryDisplayContext.getFileEntry());
 				request.setAttribute("info_panel.jsp-fileVersion", dlViewFileEntryDisplayContext.getFileVersion());
+				request.setAttribute("info_panel.jsp-randomNamespace", randomNamespace);
 				request.setAttribute("info_panel_file_entry.jsp-hideActions", true);
 				%>
 

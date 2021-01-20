@@ -19,6 +19,7 @@
 <%
 FileEntry fileEntry = (FileEntry)request.getAttribute("info_panel.jsp-fileEntry");
 FileVersion fileVersion = (FileVersion)request.getAttribute("info_panel.jsp-fileVersion");
+String randomNamespace = GetterUtil.getString(request.getAttribute("info_panel.jsp-randomNamespace"), liferayPortletResponse.getNamespace());
 boolean hideActions = GetterUtil.getBoolean(request.getAttribute("info_panel_file_entry.jsp-hideActions"));
 
 DLPortletInstanceSettings dlPortletInstanceSettings = dlRequestHelper.getDLPortletInstanceSettings();
@@ -243,8 +244,6 @@ long assetClassPK = DLAssetHelperUtil.getAssetClassPK(fileEntry, fileVersion);
 					else {
 						urlLabel = LanguageUtil.format(request, "version-x-url", fileVersion.getVersion());
 					}
-
-					String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 
 					String urlInputId = liferayPortletResponse.getNamespace() + randomNamespace + "urlInput";
 					%>
