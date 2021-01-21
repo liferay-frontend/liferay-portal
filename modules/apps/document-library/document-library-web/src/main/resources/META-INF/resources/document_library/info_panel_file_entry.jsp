@@ -19,7 +19,7 @@
 <%
 FileEntry fileEntry = (FileEntry)request.getAttribute("info_panel.jsp-fileEntry");
 FileVersion fileVersion = (FileVersion)request.getAttribute("info_panel.jsp-fileVersion");
-String randomNamespace = GetterUtil.getString(request.getAttribute("info_panel.jsp-randomNamespace"), liferayPortletResponse.getNamespace());
+String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 boolean hideActions = GetterUtil.getBoolean(request.getAttribute("info_panel_file_entry.jsp-hideActions"));
 
 DLPortletInstanceSettings dlPortletInstanceSettings = dlRequestHelper.getDLPortletInstanceSettings();
