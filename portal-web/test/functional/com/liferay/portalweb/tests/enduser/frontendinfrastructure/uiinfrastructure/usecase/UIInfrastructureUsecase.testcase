@@ -227,7 +227,7 @@ definition {
 			var key_tab = "General";
 
 			AssertTextEquals(
-				locator1 = "NavTab#ACTIVE_TAB_LINK",
+				locator1 = "NavTab#TAB_LINK",
 				value1 = "General");
 
 			IFrame.closeFrame();
