@@ -48,7 +48,8 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 			prepareProps(props);
 
 			ComponentDescriptor componentDescriptor = new ComponentDescriptor(
-				getModule(), getComponentId(), null, isPositionInLine());
+				getNamespacedModule(_module), getComponentId(), null,
+				isPositionInLine(), getNamespacedModule(_propsTransformer));
 
 			ReactRenderer reactRenderer =
 				ReactRendererProvider.getReactRenderer();
@@ -75,17 +76,21 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 		return _componentId;
 	}
 
-	public String getModule() {
+	public String getNamespacedModule(String module) {
+		if (Validator.isBlank(module)) {
+			return null;
+		}
+
 		if (_setServletContext) {
 			String namespace = NPMResolvedPackageNameUtil.get(servletContext);
 
-			return StringBundler.concat(namespace, "/", _module);
+			return StringBundler.concat(namespace, "/", module);
 		}
 
 		String namespace = NPMResolvedPackageNameUtil.get(
 			pageContext.getServletContext());
 
-		return StringBundler.concat(namespace, "/", _module);
+		return StringBundler.concat(namespace, "/", module);
 	}
 
 	@Override
@@ -115,6 +120,10 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 		_props = props;
 	}
 
+	public void setPropsTransformer(String propsTransformer) {
+		_propsTransformer = propsTransformer;
+	}
+
 	@Override
 	public void setServletContext(ServletContext servletContext) {
 		super.setServletContext(servletContext);
@@ -126,6 +135,7 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 		_componentId = null;
 		_module = null;
 		_props = Collections.emptyMap();
+		_propsTransformer = null;
 		_setServletContext = false;
 	}
 
@@ -139,6 +149,10 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 
 	protected Map<String, Object> getProps() {
 		return _props;
+	}
+
+	protected String getPropsTransformer() {
+		return _propsTransformer;
 	}
 
 	protected boolean isPositionInLine() {
@@ -187,6 +201,7 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 	private String _componentId;
 	private String _module;
 	private Map<String, Object> _props = Collections.emptyMap();
+	private String _propsTransformer;
 	private boolean _setServletContext;
 
 }
