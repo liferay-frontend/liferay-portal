@@ -48,7 +48,8 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 			prepareProps(props);
 
 			ComponentDescriptor componentDescriptor = new ComponentDescriptor(
-				getModule(), getComponentId(), null, isPositionInLine());
+				getModule(), getComponentId(), null, isPositionInLine(),
+				_getPropsTransformerModule());
 
 			ReactRenderer reactRenderer =
 				ReactRendererProvider.getReactRenderer();
@@ -76,16 +77,7 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 	}
 
 	public String getModule() {
-		if (_setServletContext) {
-			String namespace = NPMResolvedPackageNameUtil.get(servletContext);
-
-			return StringBundler.concat(namespace, "/", _module);
-		}
-
-		String namespace = NPMResolvedPackageNameUtil.get(
-			pageContext.getServletContext());
-
-		return StringBundler.concat(namespace, "/", _module);
+		return StringBundler.concat(_getNamespace(), "/", _module);
 	}
 
 	@Override
@@ -115,6 +107,16 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 		_props = props;
 	}
 
+	public void setPropsTransformer(String propsTransformer) {
+		_propsTransformer = propsTransformer;
+	}
+
+	public void setPropsTransformerServletContext(
+		ServletContext servletContext) {
+
+		_propsTransformerServletContext = servletContext;
+	}
+
 	@Override
 	public void setServletContext(ServletContext servletContext) {
 		super.setServletContext(servletContext);
@@ -126,6 +128,8 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 		_componentId = null;
 		_module = null;
 		_props = Collections.emptyMap();
+		_propsTransformer = null;
+		_propsTransformerServletContext = null;
 		_setServletContext = false;
 	}
 
@@ -184,9 +188,33 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 	protected void prepareProps(Map<String, Object> props) {
 	}
 
+	private String _getNamespace() {
+		if (_setServletContext) {
+			return NPMResolvedPackageNameUtil.get(servletContext);
+		}
+
+		return NPMResolvedPackageNameUtil.get(pageContext.getServletContext());
+	}
+
+	private String _getPropsTransformerModule() {
+		if (Validator.isBlank(_propsTransformer)) {
+			return null;
+		}
+
+		if (_propsTransformerServletContext != null) {
+			return StringBundler.concat(
+				NPMResolvedPackageNameUtil.get(_propsTransformerServletContext),
+				"/", _propsTransformer);
+		}
+
+		return StringBundler.concat(_getNamespace(), "/", _propsTransformer);
+	}
+
 	private String _componentId;
 	private String _module;
 	private Map<String, Object> _props = Collections.emptyMap();
+	private String _propsTransformer;
+	private ServletContext _propsTransformerServletContext;
 	private boolean _setServletContext;
 
 }
