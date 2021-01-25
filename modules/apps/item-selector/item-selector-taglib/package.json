@@ -7,7 +7,6 @@
 		"@clayui/tabs": "3.3.3",
 		"clay-alert": "2.22.0",
 		"frontend-js-web": "*",
-		"metal-events": "2.16.8",
 		"metal-state": "2.16.8",
 		"prop-types": "15.7.2",
 		"react": "16.12.0",
