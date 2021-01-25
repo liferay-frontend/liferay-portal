@@ -12,7 +12,6 @@
  * details.
  */
 
-import {EventHandler} from 'metal-events';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -44,28 +43,20 @@ export default function Editor({
 	}, [editor, initialValue]);
 
 	useEffect(() => {
-		const editorEventHandler = new EventHandler();
-
 		if (editor && onChange) {
 			const nativeEditor = editor.get('nativeEditor');
 
-			editorEventHandler.add(
-				nativeEditor.on('change', () =>
-					onChange(nativeEditor.getData())
-				)
+			nativeEditor.on('change', () => onChange(nativeEditor.getData()));
+
+			nativeEditor.on('actionPerformed', () =>
+				onChange(nativeEditor.getData())
 			);
 
-			editorEventHandler.add(
-				nativeEditor.on('actionPerformed', () =>
-					onChange(nativeEditor.getData())
-				)
-			);
+			return () => {
+				nativeEditor._.events.change = null;
+				nativeEditor._.events.actionPerformed = null;
+			};
 		}
-
-		return () => {
-			editorEventHandler.removeAllListeners();
-			editorEventHandler.dispose();
-		};
 	}, [editor, onChange]);
 
 	useEffect(() => {

@@ -15,7 +15,6 @@
 import {ClayAlert} from 'clay-alert';
 import {render} from 'frontend-js-react-web';
 import {PortletBase, delegate} from 'frontend-js-web';
-import {EventHandler} from 'metal-events';
 import {Config} from 'metal-state';
 import ReactDOM from 'react-dom';
 
@@ -33,13 +32,6 @@ const statusCode = Liferay.STATUS_CODE;
  * @extends {PortletBase}
  */
 class ItemSelectorRepositoryEntryBrowser extends PortletBase {
-
-	/**
-	 * @inheritDoc
-	 */
-	created() {
-		this._eventHandler = new EventHandler();
-	}
 
 	/**
 	 * @inheritDoc
@@ -105,7 +97,28 @@ class ItemSelectorRepositoryEntryBrowser extends PortletBase {
 
 		this._itemSelectorUploader.destroy();
 
-		this._eventHandler.removeAllListeners();
+		if (this._itemPreviewClickHandle) {
+			this._itemPreviewClickHandle.dispose();
+		}
+
+		if (this._inputFileNode) {
+			this._inputFileNode.removeEventListener(
+				'change',
+				this._handleInputFileNodeChange
+			);
+		}
+
+		if (this.rootNode) {
+			this.rootNode.removeEventListener(STR_DRAG_OVER, (event) =>
+				this._ddEventHandler(event)
+			);
+			this.rootNode.removeEventListener(STR_DRAG_LEAVE, (event) =>
+				this._ddEventHandler(event)
+			);
+			this.rootNode.removeEventListener(STR_DROP, (event) =>
+				this._ddEventHandler(event)
+			);
+		}
 	}
 
 	/**
@@ -114,19 +127,23 @@ class ItemSelectorRepositoryEntryBrowser extends PortletBase {
 	 * @private
 	 */
 	_bindEvents() {
-		this._eventHandler.add(
-			delegate(this.rootNode, 'click', '.item-preview', (event) =>
-				this._onItemSelected(event.delegateTarget.dataset)
-			)
+		this._itemPreviewClickHandle = delegate(
+			this.rootNode,
+			'click',
+			'.item-preview',
+			(event) => this._onItemSelected(event.delegateTarget.dataset)
 		);
 
-		const inputFileNode = this.one('input[type="file"]');
+		this._inputFileNode = document.querySelector('input[type="file"]');
 
-		if (inputFileNode) {
-			this._eventHandler.add(
-				inputFileNode.addEventListener('change', (event) => {
-					this._validateFile(event.target.files[0]);
-				})
+		this._handleInputFileNodeChange = (event) => {
+			this._validateFile(event.target.files[0]);
+		};
+
+		if (this._inputFileNode) {
+			this._inputFileNode.addEventListener(
+				'change',
+				this._handleInputFileNodeChange
 			);
 		}
 
@@ -134,47 +151,50 @@ class ItemSelectorRepositoryEntryBrowser extends PortletBase {
 			const itemSelectorUploader = this._itemSelectorUploader;
 			const rootNode = this.rootNode;
 
-			this._eventHandler.add(
-				itemSelectorUploader.after('itemUploadCancel', () => {
-					this.closeItemSelectorPreview();
-				}),
-				itemSelectorUploader.after('itemUploadComplete', (itemData) => {
-					const itemFile = itemData.file;
-					const itemFileUrl = itemFile.url;
-					let itemFileValue = itemFile.resolvedValue;
+			itemSelectorUploader.after('itemUploadCancel', () => {
+				this.closeItemSelectorPreview();
+			});
 
-					if (!itemFileValue) {
-						const imageValue = {
-							fileEntryId: itemFile.fileEntryId,
-							groupId: itemFile.groupId,
-							title: itemFile.title,
-							type: itemFile.type,
-							url: itemFileUrl,
-							uuid: itemFile.uuid,
-						};
+			itemSelectorUploader.after('itemUploadComplete', (itemData) => {
+				const itemFile = itemData.file;
+				const itemFileUrl = itemFile.url;
+				let itemFileValue = itemFile.resolvedValue;
 
-						itemFileValue = JSON.stringify(imageValue);
-					}
+				if (!itemFileValue) {
+					const imageValue = {
+						fileEntryId: itemFile.fileEntryId,
+						groupId: itemFile.groupId,
+						title: itemFile.title,
+						type: itemFile.type,
+						url: itemFileUrl,
+						uuid: itemFile.uuid,
+					};
 
-					Liferay.componentReady('ItemSelectorPreview').then(() => {
-						Liferay.fire('updateCurrentItem', {
-							url: itemFileUrl,
-							value: itemFileValue,
-						});
+					itemFileValue = JSON.stringify(imageValue);
+				}
+
+				Liferay.componentReady('ItemSelectorPreview').then(() => {
+					Liferay.fire('updateCurrentItem', {
+						url: itemFileUrl,
+						value: itemFileValue,
 					});
-				}),
-				itemSelectorUploader.after('itemUploadError', (event) => {
-					this._onItemUploadError(event);
-				}),
-				rootNode.addEventListener(STR_DRAG_OVER, (event) =>
-					this._ddEventHandler(event)
-				),
-				rootNode.addEventListener(STR_DRAG_LEAVE, (event) =>
-					this._ddEventHandler(event)
-				),
-				rootNode.addEventListener(STR_DROP, (event) =>
-					this._ddEventHandler(event)
-				)
+				});
+			});
+
+			itemSelectorUploader.after('itemUploadError', (event) => {
+				this._onItemUploadError(event);
+			});
+
+			rootNode.addEventListener(STR_DRAG_OVER, (event) =>
+				this._ddEventHandler(event)
+			);
+
+			rootNode.addEventListener(STR_DRAG_LEAVE, (event) =>
+				this._ddEventHandler(event)
+			);
+
+			rootNode.addEventListener(STR_DROP, (event) =>
+				this._ddEventHandler(event)
 			);
 		}
 	}

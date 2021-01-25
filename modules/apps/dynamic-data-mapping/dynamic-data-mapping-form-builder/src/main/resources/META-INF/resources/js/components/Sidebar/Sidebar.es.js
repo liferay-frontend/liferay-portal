@@ -27,7 +27,6 @@ import {
 import {makeFetch} from 'dynamic-data-mapping-form-renderer/js/util/fetch.es';
 import {openModal} from 'frontend-js-web';
 import {Drag, DragDrop} from 'metal-drag-drop';
-import {EventHandler} from 'metal-events';
 import Component, {Fragment} from 'metal-jsx';
 import {Config} from 'metal-state';
 
@@ -105,7 +104,6 @@ class Sidebar extends Component {
 	}
 
 	created() {
-		this._eventHandler = new EventHandler();
 		const transitionEnd = this._getTransitionEndEvent();
 
 		this.supportsTransitionEnd = transitionEnd !== false;
@@ -155,13 +153,6 @@ class Sidebar extends Component {
 	disposeInternal() {
 		super.disposeInternal();
 
-		document.removeEventListener(
-			'mousedown',
-			this._handleDocumentMouseDown,
-			false
-		);
-
-		this._eventHandler.removeAllListeners();
 		this.disposeDragAndDrop();
 	}
 
@@ -385,17 +376,15 @@ class Sidebar extends Component {
 			useShim: false,
 		});
 
-		this._eventHandler.add(
-			this._dragAndDrop.on(Drag.Events.START, this._handleDragStarted),
-			this._dragAndDrop.on(DragDrop.Events.END, this._handleDragEnded),
-			this._dragAndDrop.on(
-				DragDrop.Events.TARGET_ENTER,
-				this._handleDragTargetEnter
-			),
-			this._dragAndDrop.on(
-				DragDrop.Events.TARGET_LEAVE,
-				this._handleDragTargetLeave
-			)
+		this._dragAndDrop.on(Drag.Events.START, this._handleDragStarted);
+		this._dragAndDrop.on(DragDrop.Events.END, this._handleDragEnded);
+		this._dragAndDrop.on(
+			DragDrop.Events.TARGET_ENTER,
+			this._handleDragTargetEnter
+		);
+		this._dragAndDrop.on(
+			DragDrop.Events.TARGET_LEAVE,
+			this._handleDragTargetLeave
 		);
 	}
 
