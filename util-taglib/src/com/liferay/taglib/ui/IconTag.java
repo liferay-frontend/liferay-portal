@@ -310,7 +310,7 @@ public class IconTag extends IncludeTag {
 		if (isForcePost()) {
 			StringBundler sb = new StringBundler(5);
 
-			sb.append("event.preventDefault();");
+			sb.append("event.preventDefault();event.stopPropagation();");
 			sb.append(onClick);
 			sb.append("submitForm(document.hrefFm, '");
 			sb.append(HtmlUtil.escapeJS(getUrl()));
