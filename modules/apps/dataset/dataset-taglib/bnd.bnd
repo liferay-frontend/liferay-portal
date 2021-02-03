@@ -1,0 +1,24 @@
+Bundle-Name: Liferay Dataset Taglib
+Bundle-SymbolicName: com.liferay.dataset.taglib
+Bundle-Version: 1.0.0
+DynamicImport-Package: *
+Export-Package:\
+	com.liferay.dataset.taglib.clay.data,\
+	com.liferay.dataset.taglib.clay.data.set,\
+	com.liferay.dataset.taglib.clay.data.set.constants,\
+	com.liferay.dataset.taglib.clay.data.set.filter,\
+	com.liferay.dataset.taglib.clay.data.set.model,\
+	com.liferay.dataset.taglib.clay.data.set.provider,\
+	com.liferay.dataset.taglib.clay.data.set.servlet.taglib.util,\
+	com.liferay.dataset.taglib.clay.data.set.view.cards,\
+	com.liferay.dataset.taglib.clay.data.set.view.list,\
+	com.liferay.dataset.taglib.clay.data.set.view.table,\
+	com.liferay.dataset.taglib.clay.data.set.view.table.selectable,\
+	com.liferay.dataset.taglib.clay.data.set.view.timeline,\
+	com.liferay.dataset.taglib.clay.servlet.taglib
+Provide-Capability:\
+	osgi.extender;\
+		osgi.extender="jsp.taglib";\
+		uri="http://liferay.com/tld/dataset";\
+		version:Version="${Bundle-Version}"
+Web-ContextPath: /dataset-taglib
