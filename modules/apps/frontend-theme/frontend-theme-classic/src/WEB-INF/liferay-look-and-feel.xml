@@ -7,6 +7,7 @@
 	</compatibility>
 	<theme id="classic" name="Classic">
 		<template-extension>ftl</template-extension>
+		<control-panel-theme>true</control-panel-theme>
 		<settings>
 			<setting configurable="false" key="color-palette" value="primary,success,danger,warning,info,dark,gray-dark,secondary,light,lighter,white" />
 			<setting configurable="true" key="show-footer" type="checkbox" value="true" />
