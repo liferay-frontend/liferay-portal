@@ -24,8 +24,6 @@ String containerId = randomNamespace + "table-id";
 JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
 %>
 
-<link href="<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/dataset-taglib/display/styles/main.css") %>" rel="stylesheet" />
-
 <div class="table-root" id="<%= containerId %>">
 	<span aria-hidden="true" class="loading-animation my-7"></span>
 </div>

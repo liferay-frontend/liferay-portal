@@ -52,6 +52,8 @@ import getJsModule from './utils/modules';
 import ViewsContext from './views/ViewsContext';
 import {getViewContentRenderer} from './views/index';
 
+import './styles/main.scss';
+
 function DataSetDisplay({
 	actionParameterName,
 	bulkActions,

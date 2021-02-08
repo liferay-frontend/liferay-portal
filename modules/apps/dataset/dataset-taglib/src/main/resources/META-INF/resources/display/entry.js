@@ -12,13 +12,11 @@
  * details.
  */
 
-import {render, useThunk} from 'frontend-js-react-web';
+import {useThunk} from 'frontend-js-react-web';
 import PropTypes from 'prop-types';
 import React, {useReducer} from 'react';
 
-import {AppContext} from './AppContext';
-import DataSetDisplay from './DataSetDisplay';
-import ViewsContext, {viewsReducer} from './views/ViewsContext';
+import {AppContext, DataSetDisplay, ViewsContext, viewsReducer} from 'dataset-web';
 
 const App = ({
 	activeViewSettings,
@@ -70,4 +68,4 @@ App.proptypes = {
 	).isRequired,
 };
 
-export default (...data) => render(App, ...data);
+export default App;

@@ -16,49 +16,71 @@
 
 <%@ include file="/display/init.jsp" %>
 
-<link href="<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/dataset-taglib/display/styles/main.css") %>" rel="stylesheet" />
-
 <div class="table-root" id="<%= containerId %>">
 	<span aria-hidden="true" class="loading-animation my-7"></span>
+
+	<react:component
+		module="display/entry"
+		props='<%=
+			HashMapBuilder.<String, Object>put(
+				"actionParameterName", GetterUtil.getString(actionParameterName)
+			).put(
+				"activeViewSettings", activeViewSettingsJSON
+			).put(
+				"apiURL", apiURL
+			).put(
+				"appURL", appURL
+			).put(
+				"bulkActions", bulkActionDropdownItems
+			).put(
+				"componentId", containerId
+			).put(
+				"creationMenu", creationMenu
+			).put(
+				"currentURL", PortalUtil.getCurrentURL(request)
+			).put(
+				"dataProviderKey", dataProviderKey
+			).put(
+				"formId", GetterUtil.getString(formId)
+			).put(
+				"id", id
+			).put(
+				"nestedItemsKey", GetterUtil.getString(nestedItemsKey)
+			).put(
+				"nestedItemsReferenceKey", GetterUtil.getString(nestedItemsReferenceKey)
+			).put(
+				"pagination", HashMapBuilder.<String, Object>put(
+						"deltas", clayPaginationEntries
+					).put(
+						"initialDelta", itemsPerPage
+					).put(
+						"initialPageNumber", pageNumber
+					).build()
+			).put(
+				"showManagementBar", showManagementBar
+			).put(
+				"showPagination", showPagination
+			).put(
+				"showSearch", showSearch
+			).put(
+				"namespace", namespace
+			).put(
+				"portletId", portletDisplay.getRootPortletId()
+			).put(
+				"portletURL", portletURL
+			).put(
+				"selectedItems", selectedItems
+			).put(
+				"selectedItemsKey", GetterUtil.getString(selectedItemsKey)
+			).put(
+				"selectionType", GetterUtil.getString(selectionType)
+			).put(
+				"sorting", sortItemList
+			).put(
+				"style", style
+			).put(
+				"views", clayDataSetDisplayViewsContext
+			).build()
+		%>'
+	/>
 </div>
-
-<aui:script require='<%= module + " as dataSetDisplay" %>'>
-	var container = document.getElementById('<%= containerId %>');
-
-	dataSetDisplay.default(
-		{
-			actionParameterName: '<%= GetterUtil.getString(actionParameterName) %>',
-			activeViewSettings: <%= activeViewSettingsJSON %>,
-			apiURL: '<%= apiURL %>',
-			appURL: '<%= appURL %>',
-			bulkActions: <%= jsonSerializer.serializeDeep(bulkActionDropdownItems) %>,
-			componentId: '<%= containerId %>',
-			creationMenu: <%= jsonSerializer.serializeDeep(creationMenu) %>,
-			currentURL: '<%= PortalUtil.getCurrentURL(request) %>',
-			dataProviderKey: '<%= dataProviderKey %>',
-			formId: '<%= GetterUtil.getString(formId) %>',
-			id: '<%= id %>',
-			nestedItemsKey: '<%= GetterUtil.getString(nestedItemsKey) %>',
-			nestedItemsReferenceKey:
-				'<%= GetterUtil.getString(nestedItemsReferenceKey) %>',
-			pagination: {
-				deltas: <%= jsonSerializer.serializeDeep(clayPaginationEntries) %>,
-				initialDelta: <%= itemsPerPage %>,
-				initialPageNumber: <%= pageNumber %>,
-			},
-			showManagementBar: <%= showManagementBar %>,
-			showPagination: <%= showPagination %>,
-			showSearch: <%= showSearch %>,
-			namespace: '<%= namespace %>',
-			portletId: '<%= portletDisplay.getRootPortletId() %>',
-			portletURL: '<%= portletURL %>',
-			selectedItems: <%= jsonSerializer.serializeDeep(selectedItems) %>,
-			selectedItemsKey: '<%= GetterUtil.getString(selectedItemsKey) %>',
-			selectionType: '<%= GetterUtil.getString(selectionType) %>',
-			sorting: <%= jsonSerializer.serializeDeep(sortItemList) %>,
-			style: '<%= style %>',
-			views: <%= jsonSerializer.serializeDeep(clayDataSetDisplayViewsContext) %>,
-		},
-		container
-	);
-</aui:script>

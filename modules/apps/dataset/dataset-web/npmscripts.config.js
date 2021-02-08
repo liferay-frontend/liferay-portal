@@ -14,10 +14,6 @@
 
 module.exports = {
 	federation: {
-		exposes: [
-			'<inputDir>/display/entry.js'
-		],
-		remotes: ['dataset-web'],
 		runLegacyBuild: false,
 	},
 	preset: '@liferay/npm-scripts/src/presets/standard',

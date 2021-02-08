@@ -12,13 +12,8 @@
  * details.
  */
 
-module.exports = {
-	federation: {
-		exposes: [
-			'<inputDir>/display/entry.js'
-		],
-		remotes: ['dataset-web'],
-		runLegacyBuild: false,
-	},
-	preset: '@liferay/npm-scripts/src/presets/standard',
-};
+export {AppContext} from './AppContext';
+export {default as DataSetDisplay} from './DataSetDisplay';
+export {default as DataSetDisplayContext} from './DataSetDisplayContext';
+export {default as ViewsContext} from './views/ViewsContext';
+export {viewsReducer} from './views/ViewsContext';
