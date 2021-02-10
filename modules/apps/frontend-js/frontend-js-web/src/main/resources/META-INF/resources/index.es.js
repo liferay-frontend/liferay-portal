@@ -101,3 +101,18 @@ export {default as navigate} from './liferay/util/navigate.es';
 export {default as normalizeFriendlyURL} from './liferay/util/normalize_friendly_url';
 export {default as runScriptsInElement} from './liferay/util/run_scripts_in_element.es';
 export {default as toggleDisabled} from './liferay/util/toggle_disabled';
+
+// Validators API
+
+export {
+	validateAny,
+	validateArrayOf,
+	validateBoolean,
+	validateFunction,
+	validateNumber,
+	validateObject,
+	validateOneOf,
+	validateOneOfType,
+	validateShapeOf,
+	validateString,
+} from './liferay/validators';
