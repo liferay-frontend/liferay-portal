@@ -29,9 +29,9 @@ import EventEmitter from './events/EventEmitter';
  * @property {String|Number}  width        The width of the side navigation.
  */
 const DEFAULTS = {
-	breakpoint: 768,
+	breakpoint: 576,
 	content: '.sidenav-content',
-	gutter: '0px',
+	gutter: '12px',
 	loadingIndicatorTPL:
 		'<div class="loading-animation loading-animation-md"></div>',
 	navigation: '.sidenav-menu-slider',
@@ -300,6 +300,26 @@ function toInt(str) {
 	return parseInt(str, 10) || 0;
 }
 
+let _handleWindowResize;
+
+const windowResize = () => {
+	if (!_handleWindowResize) {
+		_handleWindowResize = () => {
+			const screenChangeEvent = document.createEvent('Event');
+
+			screenChangeEvent.initEvent(
+				'screenChange.lexicon.sidenav',
+				true,
+				true
+			);
+
+			document.dispatchEvent(screenChangeEvent);
+		};
+
+		window.addEventListener('resize', _handleWindowResize);
+	}
+};
+
 function SideNavigation(toggler, options) {
 	toggler = getElement(toggler);
 	this.init(toggler, options);
@@ -427,6 +447,48 @@ SideNavigation.prototype = {
 		}
 	},
 
+	_onScreenChange() {
+		const instance = this;
+		const options = instance.options;
+
+		const container = document.querySelector(options.container);
+		const content = document.querySelector(options.content);
+
+		let startRegion = instance._isDesktop();
+
+		if (!instance._handleOnScreenChange) {
+			instance._handleOnScreenChange = () => {
+				const type = !instance._isDesktop()
+					? options.typeMobile
+					: options.type;
+
+				if (type === 'relative' && hasClass(container, 'open')) {
+					instance.setHeight();
+					instance.setWidth();
+				}
+
+				if (instance._isDesktop() !== startRegion) {
+					if (type !== 'relative') {
+						addClass(container, 'sidenav-fixed');
+
+						content.style.paddingRight = '';
+						content.style.minHeight = '';
+					}
+					else {
+						removeClass(container, 'sidenav-fixed');
+					}
+
+					startRegion = instance._isDesktop();
+				}
+			};
+
+			document.addEventListener(
+				'screenChange.lexicon.sidenav',
+				instance._handleOnScreenChange
+			);
+		}
+	},
+
 	_renderNav() {
 		const instance = this;
 		const options = instance.options;
@@ -469,6 +531,10 @@ SideNavigation.prototype = {
 		const type = mobile ? options.typeMobile : options.type;
 
 		if (!instance.useDataAttribute) {
+			windowResize();
+
+			instance._onScreenChange();
+
 			if (mobile) {
 				setClasses(container, {
 					closed: true,
@@ -579,6 +645,19 @@ SideNavigation.prototype = {
 		}
 
 		INSTANCE_MAP.delete(instance.toggler);
+
+		if (instance._handleOnScreenChange) {
+			document.removeEventListener(
+				'screenChange.lexicon.sidenav',
+				instance._handleOnScreenChange
+			);
+		}
+
+		if (_handleWindowResize) {
+			window.removeEventListener('resize', _handleWindowResize);
+
+			_handleWindowResize = null;
+		}
 	},
 
 	hide() {
@@ -750,14 +829,16 @@ SideNavigation.prototype = {
 
 		const container = document.querySelector(options.container);
 
-		const type = instance.mobile ? options.typeMobile : options.type;
+		const type = !instance._isDesktop() ? options.typeMobile : options.type;
 
 		if (type !== 'fixed' && type !== 'fixed-push') {
 			const content = container.querySelector(options.content);
 			const navigation = container.querySelector(options.navigation);
 			const menu = container.querySelector('.sidenav-menu');
 
-			const contentHeight = content.getBoundingClientRect().height;
+			const contentHeight = content.closest('.page-maximized')
+				? window.innerHeight - menu.getBoundingClientRect().top
+				: content.getBoundingClientRect().height;
 			const navigationHeight = navigation.getBoundingClientRect().height;
 
 			const tallest = px(Math.max(contentHeight, navigationHeight));
@@ -778,20 +859,9 @@ SideNavigation.prototype = {
 		}
 	},
 
-	show() {
+	setWidth() {
 		const instance = this;
-
-		if (instance.useDataAttribute) {
-			instance.showSimpleSidenav();
-		}
-		else {
-			instance.toggleNavigation(true);
-		}
-	},
-
-	showSidenav() {
-		const instance = this;
-		const mobile = instance.mobile;
+		const mobile = !instance._isDesktop();
 		const options = instance.options;
 
 		const container = document.querySelector(options.container);
@@ -803,12 +873,6 @@ SideNavigation.prototype = {
 		const width = instance._getSidenavWidth();
 
 		const offset = width + options.gutter;
-
-		const url = options.url;
-
-		if (url) {
-			instance._loadUrl(menu, url);
-		}
 
 		setStyles(navigation, {
 			width: px(width),
@@ -830,6 +894,10 @@ SideNavigation.prototype = {
 			? positionDirection
 			: paddingDirection;
 		const type = mobile ? options.typeMobile : options.type;
+
+		if (type !== 'relative') {
+			addClass(container, 'sidenav-fixed');
+		}
 
 		if (type !== 'fixed') {
 			let navigationStartX = hasClass(container, 'open')
@@ -868,6 +936,34 @@ SideNavigation.prototype = {
 				[pushContentCssProperty]: px(padding),
 			});
 		}
+	},
+
+	show() {
+		const instance = this;
+
+		if (instance.useDataAttribute) {
+			instance.showSimpleSidenav();
+		}
+		else {
+			instance.toggleNavigation(true);
+		}
+	},
+
+	showSidenav() {
+		const instance = this;
+		const options = instance.options;
+
+		const container = document.querySelector(options.container);
+		const navigation = container.querySelector(options.navigation);
+		const menu = navigation.querySelector('.sidenav-menu');
+
+		const url = options.url;
+
+		if (url) {
+			instance._loadUrl(menu, url);
+		}
+
+		instance.setWidth();
 	},
 
 	showSimpleSidenav() {
@@ -933,6 +1029,7 @@ SideNavigation.prototype = {
 	toggleNavigation(force) {
 		const instance = this;
 		const options = instance.options;
+		const type = !instance._isDesktop() ? options.typeMobile : options.type;
 
 		const container = document.querySelector(options.container);
 		const menu = container.querySelector('.sidenav-menu');
@@ -982,7 +1079,9 @@ SideNavigation.prototype = {
 		});
 
 		if (closed) {
-			instance.setHeight();
+			if (type === 'relative') {
+				instance.setHeight();
+			}
 
 			setStyles(menu, {
 				width: px(width),
