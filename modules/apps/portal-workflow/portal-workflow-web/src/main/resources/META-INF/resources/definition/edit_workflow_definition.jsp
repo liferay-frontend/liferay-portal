@@ -197,101 +197,99 @@ renderResponse.setTitle((workflowDefinition == null) ? LanguageUtil.get(request,
 		</div>
 	</c:if>
 
-	<div class="sidenav-content">
-		<clay:container-fluid
-			cssClass="container-form-lg"
-		>
-			<aui:form method="post" name="fm">
-				<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
-				<aui:input name="name" type="hidden" value="<%= name %>" />
-				<aui:input name="version" type="hidden" value="<%= version %>" />
-				<aui:input name="content" type="hidden" value="<%= content %>" />
-				<aui:input name="successMessage" type="hidden" value='<%= active ? LanguageUtil.get(request, "workflow-updated-successfully") : LanguageUtil.get(request, "workflow-published-successfully") %>' />
+	<clay:container-fluid
+		cssClass="container-form-lg sidenav-content"
+	>
+		<aui:form method="post" name="fm">
+			<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+			<aui:input name="name" type="hidden" value="<%= name %>" />
+			<aui:input name="version" type="hidden" value="<%= version %>" />
+			<aui:input name="content" type="hidden" value="<%= content %>" />
+			<aui:input name="successMessage" type="hidden" value='<%= active ? LanguageUtil.get(request, "workflow-updated-successfully") : LanguageUtil.get(request, "workflow-published-successfully") %>' />
 
-				<div class="sheet">
-					<liferay-ui:error exception="<%= IllegalArgumentException.class %>">
+			<div class="sheet">
+				<liferay-ui:error exception="<%= IllegalArgumentException.class %>">
 
-						<%
-						IllegalArgumentException iae = (IllegalArgumentException)errorException;
-						%>
+					<%
+					IllegalArgumentException iae = (IllegalArgumentException)errorException;
+					%>
 
-						<liferay-ui:message key="<%= iae.getMessage() %>" />
-					</liferay-ui:error>
+					<liferay-ui:message key="<%= iae.getMessage() %>" />
+				</liferay-ui:error>
 
-					<liferay-ui:error exception="<%= NoSuchRoleException.class %>" message="the-role-could-not-be-found" />
+				<liferay-ui:error exception="<%= NoSuchRoleException.class %>" message="the-role-could-not-be-found" />
 
-					<liferay-ui:error exception="<%= RequiredWorkflowDefinitionException.class %>">
-						<liferay-ui:message arguments="<%= workflowDefinitionDisplayContext.getMessageArguments((RequiredWorkflowDefinitionException)errorException) %>" key="<%= workflowDefinitionDisplayContext.getMessageKey((RequiredWorkflowDefinitionException)errorException) %>" translateArguments="<%= false %>" />
-					</liferay-ui:error>
+				<liferay-ui:error exception="<%= RequiredWorkflowDefinitionException.class %>">
+					<liferay-ui:message arguments="<%= workflowDefinitionDisplayContext.getMessageArguments((RequiredWorkflowDefinitionException)errorException) %>" key="<%= workflowDefinitionDisplayContext.getMessageKey((RequiredWorkflowDefinitionException)errorException) %>" translateArguments="<%= false %>" />
+				</liferay-ui:error>
 
-					<liferay-ui:error exception="<%= WorkflowDefinitionFileException.class %>" message="please-enter-valid-content" />
+				<liferay-ui:error exception="<%= WorkflowDefinitionFileException.class %>" message="please-enter-valid-content" />
 
-					<liferay-ui:error exception="<%= WorkflowDefinitionTitleException.class %>" message="please-add-a-workflow-title-before-publishing" />
+				<liferay-ui:error exception="<%= WorkflowDefinitionTitleException.class %>" message="please-add-a-workflow-title-before-publishing" />
 
-					<liferay-ui:error exception="<%= WorkflowException.class %>" message="an-error-occurred-in-the-workflow-engine" />
+				<liferay-ui:error exception="<%= WorkflowException.class %>" message="an-error-occurred-in-the-workflow-engine" />
 
-					<aui:fieldset cssClass="workflow-definition-content">
-						<clay:col
-							size="12"
+				<aui:fieldset cssClass="workflow-definition-content">
+					<clay:col
+						size="12"
+					>
+						<aui:field-wrapper label="title">
+							<liferay-ui:input-localized
+								name="title"
+								placeholder="untitled-workflow"
+								xml='<%= BeanPropertiesUtil.getString(workflowDefinition, "title") %>'
+							/>
+						</aui:field-wrapper>
+					</clay:col>
+
+					<clay:col
+						cssClass="workflow-definition-upload"
+						size="12"
+					>
+						<liferay-util:buffer
+							var="importFileMark"
 						>
-							<aui:field-wrapper label="title">
-								<liferay-ui:input-localized
-									name="title"
-									placeholder="untitled-workflow"
-									xml='<%= BeanPropertiesUtil.getString(workflowDefinition, "title") %>'
-								/>
-							</aui:field-wrapper>
-						</clay:col>
+							<aui:a href="#" id="uploadLink">
+								<%= StringUtil.toLowerCase(LanguageUtil.get(request, "import-a-file")) %>
+							</aui:a>
+						</liferay-util:buffer>
 
-						<clay:col
-							cssClass="workflow-definition-upload"
-							size="12"
-						>
-							<liferay-util:buffer
-								var="importFileMark"
-							>
-								<aui:a href="#" id="uploadLink">
-									<%= StringUtil.toLowerCase(LanguageUtil.get(request, "import-a-file")) %>
-								</aui:a>
-							</liferay-util:buffer>
+						<liferay-ui:message arguments="<%= importFileMark %>" key="write-your-definition-or-x" translateArguments="<%= false %>" />
 
-							<liferay-ui:message arguments="<%= importFileMark %>" key="write-your-definition-or-x" translateArguments="<%= false %>" />
+						<input accept="application/xml" class="workflow-definition-upload-source" id="<portlet:namespace />upload" type="file" />
+					</clay:col>
 
-							<input accept="application/xml" class="workflow-definition-upload-source" id="<portlet:namespace />upload" type="file" />
-						</clay:col>
+					<clay:col
+						cssClass="workflow-definition-content-source-wrapper"
+						id='<%= liferayPortletResponse.getNamespace() + "contentSourceWrapper" %>'
+						size="12"
+					>
+						<div class="workflow-definition-content-source" id="<portlet:namespace />contentEditor"></div>
+					</clay:col>
+				</aui:fieldset>
+			</div>
 
-						<clay:col
-							cssClass="workflow-definition-content-source-wrapper"
-							id='<%= liferayPortletResponse.getNamespace() + "contentSourceWrapper" %>'
-							size="12"
-						>
-							<div class="workflow-definition-content-source" id="<portlet:namespace />contentEditor"></div>
-						</clay:col>
-					</aui:fieldset>
-				</div>
+			<div class="sheet-footer">
+				<c:if test="<%= workflowDefinitionDisplayContext.canPublishWorkflowDefinition() %>">
 
-				<div class="sheet-footer">
-					<c:if test="<%= workflowDefinitionDisplayContext.canPublishWorkflowDefinition() %>">
+					<%
+					String taglibUpdateOnClick = "Liferay.fire('" + liferayPortletResponse.getNamespace() + "publishDefinition');";
+					%>
 
-						<%
-						String taglibUpdateOnClick = "Liferay.fire('" + liferayPortletResponse.getNamespace() + "publishDefinition');";
-						%>
+					<aui:button onClick="<%= taglibUpdateOnClick %>" primary="<%= true %>" value='<%= ((workflowDefinition == null) || !active) ? "publish" : "update" %>' />
+				</c:if>
 
-						<aui:button onClick="<%= taglibUpdateOnClick %>" primary="<%= true %>" value='<%= ((workflowDefinition == null) || !active) ? "publish" : "update" %>' />
-					</c:if>
+				<c:if test="<%= (workflowDefinition == null) || !active %>">
 
-					<c:if test="<%= (workflowDefinition == null) || !active %>">
+					<%
+					String taglibSaveOnClick = "Liferay.fire('" + liferayPortletResponse.getNamespace() + "saveDefinition');";
+					%>
 
-						<%
-						String taglibSaveOnClick = "Liferay.fire('" + liferayPortletResponse.getNamespace() + "saveDefinition');";
-						%>
-
-						<aui:button onClick="<%= taglibSaveOnClick %>" value="save" />
-					</c:if>
-				</div>
-			</aui:form>
-		</clay:container-fluid>
-	</div>
+					<aui:button onClick="<%= taglibSaveOnClick %>" value="save" />
+				</c:if>
+			</div>
+		</aui:form>
+	</clay:container-fluid>
 </div>
 
 <div class="hide" id="<%= randomNamespace %>titleInputLocalized">

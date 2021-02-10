@@ -112,66 +112,66 @@ renderResponse.setTitle(LanguageUtil.get(request, "specifications"));
 			</liferay-frontend:sidebar-panel>
 		</c:if>
 
-		<div class="sidenav-content">
-			<clay:container-fluid>
-				<aui:form action="<%= portletURL.toString() %>" method="post" name="fm">
-					<aui:input name="<%= Constants.CMD %>" type="hidden" />
-					<aui:input name="redirect" type="hidden" value="<%= portletURL.toString() %>" />
-					<aui:input name="deleteCPOptionCategoryIds" type="hidden" />
+		<clay:container-fluid
+			cssClass="sidenav-content"
+		>
+			<aui:form action="<%= portletURL.toString() %>" method="post" name="fm">
+				<aui:input name="<%= Constants.CMD %>" type="hidden" />
+				<aui:input name="redirect" type="hidden" value="<%= portletURL.toString() %>" />
+				<aui:input name="deleteCPOptionCategoryIds" type="hidden" />
 
-					<div class="product-option-categories-container" id="<portlet:namespace />entriesContainer">
-						<liferay-ui:search-container
-							id="cpOptionCategories"
-							iteratorURL="<%= portletURL %>"
-							searchContainer="<%= cpOptionCategoryDisplayContext.getSearchContainer() %>"
+				<div class="product-option-categories-container" id="<portlet:namespace />entriesContainer">
+					<liferay-ui:search-container
+						id="cpOptionCategories"
+						iteratorURL="<%= portletURL %>"
+						searchContainer="<%= cpOptionCategoryDisplayContext.getSearchContainer() %>"
+					>
+						<liferay-ui:search-container-row
+							className="com.liferay.commerce.product.model.CPOptionCategory"
+							keyProperty="CPOptionCategoryId"
+							modelVar="cpOptionCategory"
 						>
-							<liferay-ui:search-container-row
-								className="com.liferay.commerce.product.model.CPOptionCategory"
-								keyProperty="CPOptionCategoryId"
-								modelVar="cpOptionCategory"
-							>
 
-								<%
-								PortletURL rowURL = renderResponse.createRenderURL();
+							<%
+							PortletURL rowURL = renderResponse.createRenderURL();
 
-								rowURL.setParameter("mvcRenderCommandName", "/cp_specification_options/edit_cp_option_category");
-								rowURL.setParameter("redirect", currentURL);
-								rowURL.setParameter("cpOptionCategoryId", String.valueOf(cpOptionCategory.getCPOptionCategoryId()));
-								%>
+							rowURL.setParameter("mvcRenderCommandName", "/cp_specification_options/edit_cp_option_category");
+							rowURL.setParameter("redirect", currentURL);
+							rowURL.setParameter("cpOptionCategoryId", String.valueOf(cpOptionCategory.getCPOptionCategoryId()));
+							%>
 
-								<liferay-ui:search-container-column-text
-									cssClass="important table-cell-expand"
-									href="<%= rowURL %>"
-									name="group"
-									value="<%= HtmlUtil.escape(cpOptionCategory.getTitle(locale)) %>"
-								/>
-
-								<liferay-ui:search-container-column-text
-									cssClass="table-cell-expand"
-									property="priority"
-								/>
-
-								<liferay-ui:search-container-column-date
-									cssClass="table-cell-expand"
-									name="modified-date"
-									property="modifiedDate"
-								/>
-
-								<liferay-ui:search-container-column-jsp
-									cssClass="entry-action-column"
-									path="/option_category_action.jsp"
-								/>
-							</liferay-ui:search-container-row>
-
-							<liferay-ui:search-iterator
-								displayStyle="<%= displayStyle %>"
-								markupView="lexicon"
+							<liferay-ui:search-container-column-text
+								cssClass="important table-cell-expand"
+								href="<%= rowURL %>"
+								name="group"
+								value="<%= HtmlUtil.escape(cpOptionCategory.getTitle(locale)) %>"
 							/>
-						</liferay-ui:search-container>
-					</div>
-				</aui:form>
-			</clay:container-fluid>
-		</div>
+
+							<liferay-ui:search-container-column-text
+								cssClass="table-cell-expand"
+								property="priority"
+							/>
+
+							<liferay-ui:search-container-column-date
+								cssClass="table-cell-expand"
+								name="modified-date"
+								property="modifiedDate"
+							/>
+
+							<liferay-ui:search-container-column-jsp
+								cssClass="entry-action-column"
+								path="/option_category_action.jsp"
+							/>
+						</liferay-ui:search-container-row>
+
+						<liferay-ui:search-iterator
+							displayStyle="<%= displayStyle %>"
+							markupView="lexicon"
+						/>
+					</liferay-ui:search-container>
+				</div>
+			</aui:form>
+		</clay:container-fluid>
 	</div>
 </div>
 

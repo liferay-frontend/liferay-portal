@@ -48,58 +48,58 @@ Role role = usersDisplayContext.getRole();
 		<liferay-util:include page="/user_info_panel.jsp" servletContext="<%= application %>" />
 	</liferay-frontend:sidebar-panel>
 
-	<div class="sidenav-content">
-		<clay:container-fluid>
-			<portlet:actionURL name="deleteGroupUsers" var="deleteGroupUsersURL">
-				<portlet:param name="redirect" value="<%= currentURL %>" />
-			</portlet:actionURL>
+	<clay:container-fluid
+		cssClass="sidenav-content"
+	>
+		<portlet:actionURL name="deleteGroupUsers" var="deleteGroupUsersURL">
+			<portlet:param name="redirect" value="<%= currentURL %>" />
+		</portlet:actionURL>
 
-			<aui:form action="<%= deleteGroupUsersURL %>" cssClass="portlet-site-memberships-users" method="post" name="fm">
-				<aui:input name="tabs1" type="hidden" value="users" />
-				<aui:input name="navigation" type="hidden" value="<%= usersDisplayContext.getNavigation() %>" />
-				<aui:input name="addUserIds" type="hidden" />
-				<aui:input name="roleId" type="hidden" value="<%= (role != null) ? role.getRoleId() : 0 %>" />
+		<aui:form action="<%= deleteGroupUsersURL %>" cssClass="portlet-site-memberships-users" method="post" name="fm">
+			<aui:input name="tabs1" type="hidden" value="users" />
+			<aui:input name="navigation" type="hidden" value="<%= usersDisplayContext.getNavigation() %>" />
+			<aui:input name="addUserIds" type="hidden" />
+			<aui:input name="roleId" type="hidden" value="<%= (role != null) ? role.getRoleId() : 0 %>" />
 
-				<liferay-ui:breadcrumb
-					showLayout="<%= false %>"
-				/>
+			<liferay-ui:breadcrumb
+				showLayout="<%= false %>"
+			/>
 
-				<liferay-ui:membership-policy-error />
+			<liferay-ui:membership-policy-error />
 
-				<liferay-ui:search-container
-					id="users"
-					searchContainer="<%= usersDisplayContext.getUserSearchContainer() %>"
+			<liferay-ui:search-container
+				id="users"
+				searchContainer="<%= usersDisplayContext.getUserSearchContainer() %>"
+			>
+				<liferay-ui:search-container-row
+					className="com.liferay.portal.kernel.model.User"
+					escapedModel="<%= true %>"
+					keyProperty="userId"
+					modelVar="user2"
+					rowIdProperty="screenName"
 				>
-					<liferay-ui:search-container-row
-						className="com.liferay.portal.kernel.model.User"
-						escapedModel="<%= true %>"
-						keyProperty="userId"
-						modelVar="user2"
-						rowIdProperty="screenName"
-					>
 
-						<%
-						String displayStyle = usersDisplayContext.getDisplayStyle();
+					<%
+					String displayStyle = usersDisplayContext.getDisplayStyle();
 
-						boolean selectUsers = false;
+					boolean selectUsers = false;
 
-						row.setData(
-							HashMapBuilder.<String, Object>put(
-								"actions", usersManagementToolbarDisplayContext.getAvailableActions(user2)
-							).build());
-						%>
+					row.setData(
+						HashMapBuilder.<String, Object>put(
+							"actions", usersManagementToolbarDisplayContext.getAvailableActions(user2)
+						).build());
+					%>
 
-						<%@ include file="/user_columns.jspf" %>
-					</liferay-ui:search-container-row>
+					<%@ include file="/user_columns.jspf" %>
+				</liferay-ui:search-container-row>
 
-					<liferay-ui:search-iterator
-						displayStyle="<%= usersDisplayContext.getDisplayStyle() %>"
-						markupView="lexicon"
-					/>
-				</liferay-ui:search-container>
-			</aui:form>
-		</clay:container-fluid>
-	</div>
+				<liferay-ui:search-iterator
+					displayStyle="<%= usersDisplayContext.getDisplayStyle() %>"
+					markupView="lexicon"
+				/>
+			</liferay-ui:search-container>
+		</aui:form>
+	</clay:container-fluid>
 </div>
 
 <portlet:actionURL name="addGroupUsers" var="addGroupUsersURL">

@@ -115,8 +115,8 @@ renderResponse.setTitle(cpDefinition.getName(themeDisplay.getLanguageId()));
 			</liferay-frontend:sidebar-panel>
 		</c:if>
 
-		<div class="sidenav-content">
-			<aui:form action="<%= portletURL.toString() %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
+		<div class="container-fluid container-max-xl sidenav-content">
+			<aui:form action="<%= portletURL.toString() %>" method="post" name="fm">
 				<aui:input name="<%= Constants.CMD %>" type="hidden" />
 				<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 				<aui:input name="deleteCPDefinitionGroupedEntryIds" type="hidden" />

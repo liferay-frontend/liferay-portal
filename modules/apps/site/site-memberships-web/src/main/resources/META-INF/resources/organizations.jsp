@@ -46,44 +46,44 @@ OrganizationsDisplayContext organizationsDisplayContext = new OrganizationsDispl
 		<liferay-util:include page="/organization_info_panel.jsp" servletContext="<%= application %>" />
 	</liferay-frontend:sidebar-panel>
 
-	<div class="sidenav-content">
-		<clay:container-fluid>
-			<portlet:actionURL name="deleteGroupOrganizations" var="deleteGroupOrganizationsURL">
-				<portlet:param name="redirect" value="<%= currentURL %>" />
-			</portlet:actionURL>
+	<clay:container-fluid
+		cssClass="sidenav-content"
+	>
+		<portlet:actionURL name="deleteGroupOrganizations" var="deleteGroupOrganizationsURL">
+			<portlet:param name="redirect" value="<%= currentURL %>" />
+		</portlet:actionURL>
 
-			<aui:form action="<%= deleteGroupOrganizationsURL %>" method="post" name="fm">
-				<aui:input name="tabs1" type="hidden" value="organizations" />
-				<aui:input name="groupId" type="hidden" value="<%= String.valueOf(siteMembershipsDisplayContext.getGroupId()) %>" />
+		<aui:form action="<%= deleteGroupOrganizationsURL %>" method="post" name="fm">
+			<aui:input name="tabs1" type="hidden" value="organizations" />
+			<aui:input name="groupId" type="hidden" value="<%= String.valueOf(siteMembershipsDisplayContext.getGroupId()) %>" />
 
-				<liferay-ui:search-container
-					id="organizations"
-					searchContainer="<%= organizationsDisplayContext.getOrganizationSearchContainer() %>"
+			<liferay-ui:search-container
+				id="organizations"
+				searchContainer="<%= organizationsDisplayContext.getOrganizationSearchContainer() %>"
+			>
+				<liferay-ui:search-container-row
+					className="com.liferay.portal.kernel.model.Organization"
+					escapedModel="<%= true %>"
+					keyProperty="organizationId"
+					modelVar="organization"
 				>
-					<liferay-ui:search-container-row
-						className="com.liferay.portal.kernel.model.Organization"
-						escapedModel="<%= true %>"
-						keyProperty="organizationId"
-						modelVar="organization"
-					>
 
-						<%
-						String displayStyle = organizationsDisplayContext.getDisplayStyle();
+					<%
+					String displayStyle = organizationsDisplayContext.getDisplayStyle();
 
-						boolean selectOrganizations = false;
-						%>
+					boolean selectOrganizations = false;
+					%>
 
-						<%@ include file="/organization_columns.jspf" %>
-					</liferay-ui:search-container-row>
+					<%@ include file="/organization_columns.jspf" %>
+				</liferay-ui:search-container-row>
 
-					<liferay-ui:search-iterator
-						displayStyle="<%= organizationsDisplayContext.getDisplayStyle() %>"
-						markupView="lexicon"
-					/>
-				</liferay-ui:search-container>
-			</aui:form>
-		</clay:container-fluid>
-	</div>
+				<liferay-ui:search-iterator
+					displayStyle="<%= organizationsDisplayContext.getDisplayStyle() %>"
+					markupView="lexicon"
+				/>
+			</liferay-ui:search-container>
+		</aui:form>
+	</clay:container-fluid>
 </div>
 
 <portlet:actionURL name="addGroupOrganizations" var="addGroupOrganizationsURL">
