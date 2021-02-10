@@ -12,8 +12,7 @@
  * details.
  */
 
-import {DefaultEventHandler} from 'frontend-js-web';
-import {Config} from 'metal-state';
+import {DefaultEventHandler, validateString} from 'frontend-js-web';
 
 class DisplayPageManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	deleteSelectedDisplayPages() {
@@ -32,7 +31,9 @@ class DisplayPageManagementToolbarDefaultEventHandler extends DefaultEventHandle
 }
 
 DisplayPageManagementToolbarDefaultEventHandler.STATE = {
-	spritemap: Config.string(),
+	spritemap: {
+		validator: validateString,
+	},
 };
 
 export default DisplayPageManagementToolbarDefaultEventHandler;

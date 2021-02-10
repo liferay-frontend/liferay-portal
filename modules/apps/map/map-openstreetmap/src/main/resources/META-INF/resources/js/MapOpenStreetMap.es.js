@@ -12,8 +12,8 @@
  * details.
  */
 
+import {validateString} from 'frontend-js-web';
 import MapBase from 'map-common/js/MapBase.es';
-import {Config} from 'metal-state';
 
 import OpenStreetMapDialog from './OpenStreetMapDialog.es';
 import OpenStreetMapGeoJSON from './OpenStreetMapGeoJSON.es';
@@ -163,9 +163,10 @@ MapOpenStreetMap.STATE = {
 	 * Url used for fetching map tile information
 	 * @type {string}
 	 */
-	tileURI: Config.string().value(
-		'//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-	),
+	tileURI: {
+		validator: validateString,
+		value: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+	},
 };
 
 export default MapOpenStreetMap;

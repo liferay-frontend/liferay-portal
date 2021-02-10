@@ -12,9 +12,9 @@
  * details.
  */
 
+import {validateNumber, validateObject, validateString} from 'frontend-js-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import templates from './TagSelector.soy';
 
@@ -83,34 +83,49 @@ TagSelector.STATE = {
 	 * request being closed
 	 */
 
-	eventName: Config.string().value(''),
+	eventName: {
+		validator: validateString,
+		value: '',
+	},
 
 	/**
 	 * Array of group ids (sites) where tags will be searched.
 	 * It defaults to an empty array, which is the current site.
 	 */
 
-	groupIds: Config.string().value(''),
+	groupIds: {
+		validator: validateString,
+		value: '',
+	},
 
 	/**
 	 * Id of the hidden input used to pass the selected tags
 	 */
 
-	hiddenInput: Config.string().value(''),
+	hiddenInput: {
+		validator: validateString,
+		value: '',
+	},
 
 	/**
 	 * Number used for avoiding conflicts between different
 	 * instances of the component/portlet.
 	 */
 
-	index: Config.number().value(0),
+	index: {
+		validator: validateNumber,
+		value: 0,
+	},
 
 	/**
 	 * String used for avoiding conflicts between different
 	 * instances of the component/portlet.
 	 */
 
-	namespace: Config.string().value(''),
+	namespace: {
+		validator: validateString,
+		value: '',
+	},
 
 	/**
 	 * Existing information of the form.
@@ -119,7 +134,10 @@ TagSelector.STATE = {
 	 *  This property is updated as the user selects new tags.
 	 */
 
-	rule: Config.object().value({}),
+	rule: {
+		validator: validateObject,
+		value: {},
+	},
 
 	/**
 	 * When specified, this porlet (found for the given ID) will
@@ -127,7 +145,10 @@ TagSelector.STATE = {
 	 * the select button will not appear.
 	 */
 
-	tagSelectorURL: Config.string().value(''),
+	tagSelectorURL: {
+		validator: validateString,
+		value: '',
+	},
 };
 
 Soy.register(TagSelector, templates);

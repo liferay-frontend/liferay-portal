@@ -16,8 +16,8 @@ import {
 	DefaultEventHandler,
 	openSelectionModal,
 	openSimpleInputModal,
+	validateString,
 } from 'frontend-js-web';
-import {Config} from 'metal-state';
 
 class FragmentEntryDropdownDefaultEventHandler extends DefaultEventHandler {
 	copyFragmentEntry(itemData) {
@@ -156,10 +156,18 @@ class FragmentEntryDropdownDefaultEventHandler extends DefaultEventHandler {
 }
 
 FragmentEntryDropdownDefaultEventHandler.STATE = {
-	copyFragmentEntryURL: Config.string(),
-	fragmentCollectionId: Config.string(),
-	moveFragmentEntryURL: Config.string(),
-	spritemap: Config.string(),
+	copyFragmentEntryURL: {
+		validator: validateString,
+	},
+	fragmentCollectionId: {
+		validator: validateString,
+	},
+	moveFragmentEntryURL: {
+		validator: validateString,
+	},
+	spritemap: {
+		validator: validateString,
+	},
 };
 
 export default FragmentEntryDropdownDefaultEventHandler;

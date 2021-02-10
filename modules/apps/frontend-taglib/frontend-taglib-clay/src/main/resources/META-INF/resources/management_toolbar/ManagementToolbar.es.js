@@ -19,9 +19,17 @@ import {
 	filterItemsValidator,
 	filterLabelsValidator,
 } from 'clay-management-toolbar';
+import {
+	validateArrayOf,
+	validateBoolean,
+	validateNumber,
+	validateObject,
+	validateOneOf,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 import {EventEmitterProxy} from 'metal-events';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import templates from './ManagementToolbar.soy';
 
@@ -304,11 +312,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	checkboxStatus: Config.oneOf([
-		'checked',
-		'indeterminate',
-		'unchecked',
-	]).value('unchecked'),
+	checkboxStatus: {
+		validator: validateOneOf(['checked', 'indeterminate', 'unchecked']),
+		value: 'unchecked',
+	},
 
 	/**
 	 * URL for the clear results link.
@@ -318,7 +325,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	clearResultsURL: Config.string(),
+	clearResultsURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * URL for the clear selection link.
@@ -328,7 +337,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	clearSelectionURL: Config.string(),
+	clearSelectionURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * Name of the content renderer to use template variants.
@@ -338,7 +349,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	contentRenderer: Config.string(),
+	contentRenderer: {
+		validator: validateString,
+	},
 
 	/**
 	 * Configuration of the creation menu.
@@ -362,17 +375,33 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(object|string|bool|undefined)}
 	 */
-	creationMenu: Config.shapeOf({
-		caption: Config.string(),
-		helpText: Config.string(),
-		itemsIconAlignment: Config.string(),
-		maxPrimaryItems: Config.number(),
-		maxSecondaryItems: Config.number(),
-		maxTotalItems: Config.number(),
-		primaryItems: creationMenuItemsValidator,
-		secondaryItems: creationMenuItemsValidator,
-		viewMoreURL: Config.string(),
-	}),
+	creationMenu: {
+		validator: validateShapeOf({
+			caption: {
+				validator: validateString,
+			},
+			helpText: {
+				validator: validateString,
+			},
+			itemsIconAlignment: {
+				validator: validateString,
+			},
+			maxPrimaryItems: {
+				validator: validateNumber,
+			},
+			maxSecondaryItems: {
+				validator: validateNumber,
+			},
+			maxTotalItems: {
+				validator: validateNumber,
+			},
+			primaryItems: creationMenuItemsValidator,
+			secondaryItems: creationMenuItemsValidator,
+			viewMoreURL: {
+				validator: validateString,
+			},
+		}),
+	},
 
 	/**
 	 * Component wired to handle the available user actions in the Management
@@ -383,7 +412,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|object|undefined)}
 	 */
-	defaultEventHandler: Config.object(),
+	defaultEventHandler: {
+		validator: validateObject,
+	},
 
 	/**
 	 * Flag to indicate if the managment toolbar is disabled.
@@ -393,7 +424,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?bool}
 	 */
-	disabled: Config.bool().value(false),
+	disabled: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * CSS classes to be applied to the element.
@@ -403,7 +437,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	elementClasses: Config.string(),
+	elementClasses: {
+		validator: validateString,
+	},
 
 	/**
 	 * List of filter menu items.
@@ -433,7 +469,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	id: Config.string(),
+	id: {
+		validator: validateString,
+	},
 
 	/**
 	 * ID to get the info panel node.
@@ -443,7 +481,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?string|undefined}
 	 */
-	infoPanelId: Config.string(),
+	infoPanelId: {
+		validator: validateString,
+	},
 
 	/**
 	 * URL of the search form action.
@@ -453,7 +493,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	searchActionURL: Config.string(),
+	searchActionURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * ID to get an instance of the search container.
@@ -463,7 +505,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?string|undefined}
 	 */
-	searchContainerId: Config.string(),
+	searchContainerId: {
+		validator: validateString,
+	},
 
 	/**
 	 * Map of properties that are rendered as hidden inputs in the search form.
@@ -473,7 +517,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?object}
 	 */
-	searchData: Config.object(),
+	searchData: {
+		validator: validateObject,
+	},
 
 	/**
 	 * Method of the search form.
@@ -483,7 +529,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	searchFormMethod: Config.oneOf(['GET', 'POST']).value('GET'),
+	searchFormMethod: {
+		validator: validateOneOf(['GET', 'POST']),
+		value: 'GET',
+	},
 
 	/**
 	 * Name of the search form.
@@ -493,7 +542,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	searchFormName: Config.string(),
+	searchFormName: {
+		validator: validateString,
+	},
 
 	/**
 	 * Name of the search input.
@@ -503,7 +554,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	searchInputName: Config.string(),
+	searchInputName: {
+		validator: validateString,
+	},
 
 	/**
 	 * Value of the search input.
@@ -513,7 +566,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	searchValue: Config.string(),
+	searchValue: {
+		validator: validateString,
+	},
 
 	/**
 	 * URL for the Select All link.
@@ -523,7 +578,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	selectAllURL: Config.string(),
+	selectAllURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * Flag to indicate if the managment toolbar controls the selection of
@@ -534,7 +591,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(bool|undefined)}
 	 */
-	selectable: Config.bool().value(false),
+	selectable: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * Number of selected items.
@@ -544,7 +604,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(number|undefined)}
 	 */
-	selectedItems: Config.number(),
+	selectedItems: {
+		validator: validateNumber,
+	},
 
 	/**
 	 * Flag to indicate if the advanced search is visible.
@@ -554,7 +616,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?bool}
 	 */
-	showAdvancedSearch: Config.bool().value(false),
+	showAdvancedSearch: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * Flag to indicate if the creation menu button is visible.
@@ -564,7 +629,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?bool}
 	 */
-	showCreationMenu: Config.bool().value(true),
+	showCreationMenu: {
+		validator: validateBoolean,
+		value: true,
+	},
 
 	/**
 	 * Flag to indicate if the Done button in the filter dropdown is visible.
@@ -574,7 +642,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?bool}
 	 */
-	showFiltersDoneButton: Config.bool().value(true),
+	showFiltersDoneButton: {
+		validator: validateBoolean,
+		value: true,
+	},
 
 	/**
 	 * Flag to indicate if the Info button is visible.
@@ -584,7 +655,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?bool}
 	 */
-	showInfoButton: Config.bool().value(false),
+	showInfoButton: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * Flag to indicate if the results bar is visible.
@@ -594,7 +668,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?bool}
 	 */
-	showResultsBar: Config.bool().value(false),
+	showResultsBar: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * Flag to indicate if search is visible.
@@ -604,7 +681,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?bool}
 	 */
-	showSearch: Config.bool().value(true),
+	showSearch: {
+		validator: validateBoolean,
+		value: true,
+	},
 
 	/**
 	 * Flag to indicate if the Select All button is visible.
@@ -614,7 +694,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?bool}
 	 */
-	showSelectAllButton: Config.bool().value(false),
+	showSelectAllButton: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * Sorting order.
@@ -624,7 +707,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	sortingOrder: Config.oneOf(['asc', 'desc']),
+	sortingOrder: {
+		validator: validateOneOf(['asc', 'desc']),
+	},
 
 	/**
 	 * Sorting URL.
@@ -634,7 +719,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	sortingURL: Config.string(),
+	sortingURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * Path to the SVG spritemap file containing the icons.
@@ -644,7 +731,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * Flag to indicate if the toolbar supports bulk selection.
@@ -654,7 +744,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {boolean}
 	 */
-	supportsBulkActions: Config.bool().value(false),
+	supportsBulkActions: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * Total number of items. If <code>0</code>, most of the elements in the
@@ -665,7 +758,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(number|undefined)}
 	 */
-	totalItems: Config.number(),
+	totalItems: {
+		validator: validateNumber,
+	},
 
 	/**
 	 * List of view items.
@@ -675,15 +770,31 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(array|undefined)}
 	 */
-	viewTypes: Config.arrayOf(
-		Config.shapeOf({
-			active: Config.bool().value(false),
-			disabled: Config.bool().value(false),
-			href: Config.string(),
-			icon: Config.string().required(),
-			label: Config.string().required(),
-		})
-	),
+	viewTypes: {
+		validator: validateArrayOf({
+			validator: validateShapeOf({
+				active: {
+					validator: validateBoolean,
+					value: false,
+				},
+				disabled: {
+					validator: validateBoolean,
+					value: false,
+				},
+				href: {
+					validator: validateString,
+				},
+				icon: {
+					required: true,
+					validator: validateString,
+				},
+				label: {
+					required: true,
+					validator: validateString,
+				},
+			}),
+		}),
+	},
 };
 
 Soy.register(ManagementToolbar, templates);

@@ -17,8 +17,8 @@ import {
 	addParams,
 	openModal,
 	openSelectionModal,
+	validateBoolean,
 } from 'frontend-js-web';
-import {Config} from 'metal-state';
 
 class ElementsDefaultEventHandler extends DefaultEventHandler {
 	compareVersions(itemData) {
@@ -159,7 +159,9 @@ class ElementsDefaultEventHandler extends DefaultEventHandler {
 }
 
 ElementsDefaultEventHandler.STATE = {
-	trashEnabled: Config.bool(),
+	trashEnabled: {
+		validator: validateBoolean,
+	},
 };
 
 export default ElementsDefaultEventHandler;

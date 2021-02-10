@@ -12,8 +12,7 @@
  * details.
  */
 
-import {DefaultEventHandler} from 'frontend-js-web';
-import {Config} from 'metal-state';
+import {DefaultEventHandler, validateBoolean} from 'frontend-js-web';
 
 class ElementsDefaultEventHandler extends DefaultEventHandler {
 	delete(itemData) {
@@ -56,7 +55,9 @@ class ElementsDefaultEventHandler extends DefaultEventHandler {
 }
 
 ElementsDefaultEventHandler.STATE = {
-	trashEnabled: Config.bool(),
+	trashEnabled: {
+		validator: validateBoolean,
+	},
 };
 
 export default ElementsDefaultEventHandler;

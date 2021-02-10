@@ -16,8 +16,8 @@ import {
 	DefaultEventHandler,
 	openModal,
 	openSelectionModal,
+	validateString,
 } from 'frontend-js-web';
-import {Config} from 'metal-state';
 
 /**
  * @class FragmentCollectionsViewDefaultEventHandler
@@ -174,7 +174,10 @@ FragmentCollectionsViewDefaultEventHandler.STATE = {
 	 * @review
 	 * @type {string}
 	 */
-	deleteFragmentCollectionURL: Config.string().required(),
+	deleteFragmentCollectionURL: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -183,7 +186,10 @@ FragmentCollectionsViewDefaultEventHandler.STATE = {
 	 * @review
 	 * @type {string}
 	 */
-	exportFragmentCollectionsURL: Config.string().required(),
+	exportFragmentCollectionsURL: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -192,7 +198,10 @@ FragmentCollectionsViewDefaultEventHandler.STATE = {
 	 * @review
 	 * @type {string}
 	 */
-	viewDeleteFragmentCollectionsURL: Config.string().required(),
+	viewDeleteFragmentCollectionsURL: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -201,7 +210,10 @@ FragmentCollectionsViewDefaultEventHandler.STATE = {
 	 * @review
 	 * @type {string}
 	 */
-	viewExportFragmentCollectionsURL: Config.string().required(),
+	viewExportFragmentCollectionsURL: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -210,7 +222,10 @@ FragmentCollectionsViewDefaultEventHandler.STATE = {
 	 * @review
 	 * @type {string}
 	 */
-	viewImportURL: Config.string().required(),
+	viewImportURL: {
+		required: true,
+		validator: validateString,
+	},
 };
 
 export default FragmentCollectionsViewDefaultEventHandler;

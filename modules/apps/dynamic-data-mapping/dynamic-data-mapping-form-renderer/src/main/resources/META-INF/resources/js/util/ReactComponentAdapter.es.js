@@ -12,9 +12,9 @@
  * details.
  */
 
+import {validateAny} from 'frontend-js-web';
 import IncrementalDomRenderer from 'metal-incremental-dom';
 import JSXComponent from 'metal-jsx';
-import {Config} from 'metal-state';
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 
@@ -84,7 +84,10 @@ function getConnectedReactComponentAdapter(ReactComponent) {
 				.concat(CONFIG_DEFAULT)
 				.forEach((key) => {
 					if (!CONFIG_BLACKLIST.includes(key)) {
-						props[key] = Config.any().value(config[key]);
+						props[key] = {
+							validator: validateAny,
+							value: config[key],
+						};
 					}
 				});
 

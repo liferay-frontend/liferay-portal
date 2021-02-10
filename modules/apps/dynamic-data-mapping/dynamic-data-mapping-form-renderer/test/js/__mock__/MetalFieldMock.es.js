@@ -14,9 +14,9 @@
 
 import './MetalFieldMockRegister.soy';
 
+import {validateString} from 'frontend-js-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import templates from './MetalFieldMock.soy';
 
@@ -61,7 +61,9 @@ class MetalFieldMock extends Component {
 }
 
 MetalFieldMock.STATE = {
-	name: Config.string(),
+	name: {
+		validator: validateString,
+	},
 };
 
 Soy.register(MetalFieldMock, templates);

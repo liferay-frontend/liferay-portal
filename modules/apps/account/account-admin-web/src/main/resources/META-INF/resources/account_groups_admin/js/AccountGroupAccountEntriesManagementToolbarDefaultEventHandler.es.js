@@ -12,8 +12,11 @@
  * details.
  */
 
-import {DefaultEventHandler, openSelectionModal} from 'frontend-js-web';
-import {Config} from 'metal-state';
+import {
+	DefaultEventHandler,
+	openSelectionModal,
+	validateString,
+} from 'frontend-js-web';
 
 class AccountGroupAccountEntriesManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	removeAccountGroupAccountEntries() {
@@ -65,10 +68,22 @@ class AccountGroupAccountEntriesManagementToolbarDefaultEventHandler extends Def
 }
 
 AccountGroupAccountEntriesManagementToolbarDefaultEventHandler.STATE = {
-	accountGroupName: Config.string().required(),
-	assignAccountGroupAccountEntriesURL: Config.string().required(),
-	removeAccountGroupAccountEntriesURL: Config.string().required(),
-	selectAccountGroupAccountEntriesURL: Config.string().required(),
+	accountGroupName: {
+		required: true,
+		validator: validateString,
+	},
+	assignAccountGroupAccountEntriesURL: {
+		required: true,
+		validator: validateString,
+	},
+	removeAccountGroupAccountEntriesURL: {
+		required: true,
+		validator: validateString,
+	},
+	selectAccountGroupAccountEntriesURL: {
+		required: true,
+		validator: validateString,
+	},
 };
 
 export default AccountGroupAccountEntriesManagementToolbarDefaultEventHandler;

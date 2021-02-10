@@ -20,9 +20,20 @@ import {
 	generateName,
 	getRepeatedIndex,
 } from 'dynamic-data-mapping-form-renderer';
-import {openModal, openToast} from 'frontend-js-web';
+import {
+	openModal,
+	openToast,
+	validateArray,
+	validateArrayOf,
+	validateBoolean,
+	validateFunction,
+	validateNumber,
+	validateObject,
+	validateOneOfType,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-jsx';
-import {Config} from 'metal-state';
 
 import RulesSupport from '../../components/RuleBuilder/RulesSupport.es';
 import {pageStructure, ruleStructure} from '../../util/config.es';
@@ -825,7 +836,10 @@ LayoutProvider.PROPS = {
 	 * @type {boolean}
 	 */
 
-	allowMultiplePages: Config.bool().value(true),
+	allowMultiplePages: {
+		validator: validateBoolean,
+		value: true,
+	},
 
 	/**
 	 * @instance
@@ -833,7 +847,10 @@ LayoutProvider.PROPS = {
 	 * @type {boolean}
 	 */
 
-	allowSuccessPage: Config.bool().value(true),
+	allowSuccessPage: {
+		validator: validateBoolean,
+		value: true,
+	},
 
 	/**
 	 * @default undefined
@@ -842,7 +859,9 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	defaultLanguageId: Config.string(),
+	defaultLanguageId: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -851,7 +870,9 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	editingLanguageId: Config.string(),
+	editingLanguageId: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default {}
@@ -860,7 +881,10 @@ LayoutProvider.PROPS = {
 	 * @type {?object}
 	 */
 
-	events: Config.setter('_setEvents').value({}),
+	events: {
+		setter: '_setEvents',
+		value: {},
+	},
 
 	/**
 	 * @default undefined
@@ -869,7 +893,10 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	fieldActions: Config.array().valueFn('_fieldActionsValueFn'),
+	fieldActions: {
+		validator: validateArray,
+		valueFn: '_fieldActionsValueFn',
+	},
 
 	/**
 	 * @default _fieldNameGeneratorValueFn
@@ -878,7 +905,10 @@ LayoutProvider.PROPS = {
 	 * @type {?function}
 	 */
 
-	fieldNameGenerator: Config.func().valueFn('_fieldNameGeneratorValueFn'),
+	fieldNameGenerator: {
+		validator: validateFunction,
+		valueFn: '_fieldNameGeneratorValueFn',
+	},
 
 	/**
 	 * @default undefined
@@ -887,7 +917,9 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	fieldSetDefinitionURL: Config.string(),
+	fieldSetDefinitionURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default []
@@ -896,7 +928,10 @@ LayoutProvider.PROPS = {
 	 * @type {?(array|undefined)}
 	 */
 
-	fieldSets: Config.array().value([]),
+	fieldSets: {
+		validator: validateArray,
+		value: [],
+	},
 
 	/**
 	 * @default false
@@ -905,7 +940,10 @@ LayoutProvider.PROPS = {
 	 * @type {?bool}
 	 */
 
-	generateFieldNameUsingFieldLabel: Config.bool().value(false),
+	generateFieldNameUsingFieldLabel: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * @default undefined
@@ -914,9 +952,11 @@ LayoutProvider.PROPS = {
 	 * @type {?(array|undefined)}
 	 */
 
-	initialPages: Config.arrayOf(pageStructure)
-		.setter('_setInitialPages')
-		.value([]),
+	initialPages: {
+		setter: '_setInitialPages',
+		validator: validateArrayOf(pageStructure),
+		value: [],
+	},
 
 	/**
 	 * @default 'wizard'
@@ -925,7 +965,10 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	initialPaginationMode: Config.string().value('wizard'),
+	initialPaginationMode: {
+		validator: validateString,
+		value: 'wizard',
+	},
 
 	/**
 	 * @instance
@@ -933,11 +976,19 @@ LayoutProvider.PROPS = {
 	 * @type {object}
 	 */
 
-	initialSuccessPageSettings: Config.shapeOf({
-		body: Config.object(),
-		enabled: Config.bool(),
-		title: Config.object(),
-	}),
+	initialSuccessPageSettings: {
+		validator: validateShapeOf({
+			body: {
+				validator: validateObject,
+			},
+			enabled: {
+				validator: validateBoolean,
+			},
+			title: {
+				validator: validateObject,
+			},
+		}),
+	},
 
 	/**
 	 * @default undefined
@@ -946,7 +997,9 @@ LayoutProvider.PROPS = {
 	 * @type {?(array|undefined)}
 	 */
 
-	rules: Config.arrayOf(ruleStructure),
+	rules: {
+		validator: validateArrayOf(ruleStructure),
+	},
 
 	/**
 	 * @default undefined
@@ -955,7 +1008,9 @@ LayoutProvider.PROPS = {
 	 * @type {?(array|undefined)}
 	 */
 
-	spritemap: Config.string(),
+	spritemap: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -964,7 +1019,9 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	view: Config.string(),
+	view: {
+		validator: validateString,
+	},
 };
 
 LayoutProvider.STATE = {
@@ -975,7 +1032,10 @@ LayoutProvider.STATE = {
 	 * @type {?number}
 	 */
 
-	activePage: Config.number().value(0),
+	activePage: {
+		validator: validateNumber,
+		value: 0,
+	},
 
 	/**
 	 * @default {}
@@ -983,7 +1043,10 @@ LayoutProvider.STATE = {
 	 * @memberof LayoutProvider
 	 * @type {?object}
 	 */
-	fieldHovered: Config.object().value({}),
+	fieldHovered: {
+		validator: validateObject,
+		value: {},
+	},
 
 	/**
 	 * @default {}
@@ -991,15 +1054,35 @@ LayoutProvider.STATE = {
 	 * @memberof LayoutProvider
 	 * @type {?object}
 	 */
-	focusedField: Config.shapeOf({
-		columnIndex: Config.oneOfType([
-			Config.bool().value(false),
-			Config.number(),
-		]).required(),
-		pageIndex: Config.number().required(),
-		rowIndex: Config.number().required(),
-		type: Config.string().required(),
-	}).value({}),
+	focusedField: {
+		validator: validateShapeOf({
+			columnIndex: {
+				required: true,
+				validator: validateOneOfType([
+					{
+						validator: validateBoolean,
+						value: false,
+					},
+					{
+						validator: validateNumber,
+					},
+				]),
+			},
+			pageIndex: {
+				required: true,
+				validator: validateNumber,
+			},
+			rowIndex: {
+				required: true,
+				validator: validateNumber,
+			},
+			type: {
+				required: true,
+				validator: validateString,
+			},
+		}),
+		value: {},
+	},
 
 	/**
 	 * @default undefined
@@ -1008,9 +1091,11 @@ LayoutProvider.STATE = {
 	 * @type {?array}
 	 */
 
-	pages: Config.arrayOf(pageStructure)
-		.setter('_setPages')
-		.valueFn('_pagesValueFn'),
+	pages: {
+		setter: '_setPages',
+		validator: validateArrayOf(pageStructure),
+		valueFn: '_pagesValueFn',
+	},
 
 	/**
 	 * @instance
@@ -1018,7 +1103,10 @@ LayoutProvider.STATE = {
 	 * @type {string}
 	 */
 
-	paginationMode: Config.string().valueFn('_paginationModeValueFn'),
+	paginationMode: {
+		validator: validateString,
+		valueFn: '_paginationModeValueFn',
+	},
 
 	/**
 	 * @default {}
@@ -1027,15 +1115,35 @@ LayoutProvider.STATE = {
 	 * @type {?object}
 	 */
 
-	previousFocusedField: Config.shapeOf({
-		columnIndex: Config.oneOfType([
-			Config.bool().value(false),
-			Config.number(),
-		]).required(),
-		pageIndex: Config.number().required(),
-		rowIndex: Config.number().required(),
-		type: Config.string().required(),
-	}).value({}),
+	previousFocusedField: {
+		validator: validateShapeOf({
+			columnIndex: {
+				required: true,
+				validator: validateOneOfType([
+					{
+						validator: validateBoolean,
+						value: false,
+					},
+					{
+						validator: validateNumber,
+					},
+				]),
+			},
+			pageIndex: {
+				required: true,
+				validator: validateNumber,
+			},
+			rowIndex: {
+				required: true,
+				validator: validateNumber,
+			},
+			type: {
+				required: true,
+				validator: validateString,
+			},
+		}),
+		value: {},
+	},
 
 	/**
 	 * @default undefined
@@ -1044,7 +1152,10 @@ LayoutProvider.STATE = {
 	 * @type {?(array|undefined)}
 	 */
 
-	rules: Config.arrayOf(ruleStructure).valueFn('_rulesValueFn'),
+	rules: {
+		validator: validateArrayOf(ruleStructure),
+		valueFn: '_rulesValueFn',
+	},
 
 	/**
 	 * @default undefined
@@ -1053,7 +1164,10 @@ LayoutProvider.STATE = {
 	 * @type {?(object|undefined)}
 	 */
 
-	successPageSettings: Config.object().valueFn('_successPageSettingsValueFn'),
+	successPageSettings: {
+		validator: validateObject,
+		valueFn: '_successPageSettingsValueFn',
+	},
 };
 
 export default LayoutProvider;

@@ -12,7 +12,15 @@
  * details.
  */
 
-import {Config} from 'metal-state';
+import {
+	validateArray,
+	validateArrayOf,
+	validateBoolean,
+	validateNumber,
+	validateObject,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 
 import {focusedFieldStructure, pageStructure} from '../../util/config.es';
 
@@ -25,7 +33,10 @@ export default {
 	 * @type {?number}
 	 */
 
-	activePage: Config.number().value(0),
+	activePage: {
+		validator: validateNumber,
+		value: 0,
+	},
 
 	/**
 	 * @default undefined
@@ -34,7 +45,9 @@ export default {
 	 * @type {?string}
 	 */
 
-	defaultLanguageId: Config.string(),
+	defaultLanguageId: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -43,7 +56,9 @@ export default {
 	 * @type {?string}
 	 */
 
-	editingLanguageId: Config.string(),
+	editingLanguageId: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default []
@@ -52,7 +67,10 @@ export default {
 	 * @type {?(array|undefined)}
 	 */
 
-	fieldActions: Config.array().value([]),
+	fieldActions: {
+		validator: validateArray,
+		value: [],
+	},
 
 	/**
 	 * @default undefined
@@ -61,7 +79,9 @@ export default {
 	 * @type {?string}
 	 */
 
-	fieldSetDefinitionURL: Config.string(),
+	fieldSetDefinitionURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default []
@@ -70,7 +90,10 @@ export default {
 	 * @type {?(array|undefined)}
 	 */
 
-	fieldSets: Config.array().value([]),
+	fieldSets: {
+		validator: validateArray,
+		value: [],
+	},
 
 	/**
 	 * @default []
@@ -79,7 +102,10 @@ export default {
 	 * @type {?(array|undefined)}
 	 */
 
-	fieldTypes: Config.array().value([]),
+	fieldTypes: {
+		validator: validateArray,
+		value: [],
+	},
 
 	/**
 	 * @default {}
@@ -97,7 +123,10 @@ export default {
 	 * @type {?array<object>}
 	 */
 
-	pages: Config.arrayOf(pageStructure).value([]),
+	pages: {
+		validator: validateArrayOf(pageStructure),
+		value: [],
+	},
 
 	/**
 	 * @instance
@@ -105,7 +134,10 @@ export default {
 	 * @type {string}
 	 */
 
-	paginationMode: Config.string().required(),
+	paginationMode: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @instance
@@ -113,7 +145,10 @@ export default {
 	 * @type {string}
 	 */
 
-	portletNamespace: Config.string().required(),
+	portletNamespace: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -122,7 +157,10 @@ export default {
 	 * @type {!string}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @instance
@@ -130,11 +168,20 @@ export default {
 	 * @type {object}
 	 */
 
-	successPageSettings: Config.shapeOf({
-		body: Config.object(),
-		enabled: Config.bool(),
-		title: Config.object(),
-	}).value({}),
+	successPageSettings: {
+		validator: validateShapeOf({
+			body: {
+				validator: validateObject,
+			},
+			enabled: {
+				validator: validateBoolean,
+			},
+			title: {
+				validator: validateObject,
+			},
+		}),
+		value: {},
+	},
 
 	/**
 	 * @default undefined
@@ -143,5 +190,7 @@ export default {
 	 * @type {?string}
 	 */
 
-	view: Config.string(),
+	view: {
+		validator: validateString,
+	},
 };

@@ -12,8 +12,11 @@
  * details.
  */
 
-import {DefaultEventHandler, openSimpleInputModal} from 'frontend-js-web';
-import {Config} from 'metal-state';
+import {
+	DefaultEventHandler,
+	openSimpleInputModal,
+	validateString,
+} from 'frontend-js-web';
 
 class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	addSiteNavigationMenu(itemData) {
@@ -40,7 +43,9 @@ class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 }
 
 ManagementToolbarDefaultEventHandler.STATE = {
-	spritemap: Config.string(),
+	spritemap: {
+		validator: validateString,
+	},
 };
 
 export default ManagementToolbarDefaultEventHandler;

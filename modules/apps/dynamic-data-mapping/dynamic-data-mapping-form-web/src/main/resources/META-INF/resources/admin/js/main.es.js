@@ -29,9 +29,18 @@ import {
 } from 'dynamic-data-mapping-form-builder/js/util/dom.es';
 import {sub} from 'dynamic-data-mapping-form-builder/js/util/strings.es';
 import {PagesVisitor, compose} from 'dynamic-data-mapping-form-renderer';
-import {EventHandler, delegate} from 'frontend-js-web';
+import {
+	EventHandler,
+	delegate,
+	validateArray,
+	validateArrayOf,
+	validateBoolean,
+	validateNumber,
+	validateObject,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-jsx';
-import {Config} from 'metal-state';
 
 import ShareFormModal from './components/ShareFormModal/ShareFormModal.es';
 import AutoSave from './util/AutoSave.es';
@@ -1220,7 +1229,9 @@ Form.PROPS = {
 	 * @type {!string}
 	 */
 
-	autocompleteUserURL: Config.string(),
+	autocompleteUserURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -1229,7 +1240,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	availableLanguageIds: Config.array().value([]),
+	availableLanguageIds: {
+		validator: validateArray,
+		value: [],
+	},
 
 	/**
 	 * The context for rendering a layout that represents a form.
@@ -1239,14 +1253,26 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	context: Config.shapeOf({
-		pages: Config.arrayOf(Config.object()),
-		paginationMode: Config.string(),
-		rules: Config.array(),
-		successPageSettings: Config.object(),
-	})
-		.required()
-		.setter('_setContext'),
+	context: {
+		required: true,
+		setter: '_setContext',
+		validator: validateShapeOf({
+			pages: {
+				validator: validateArrayOf({
+					validator: validateObject,
+				}),
+			},
+			paginationMode: {
+				validator: validateString,
+			},
+			rules: {
+				validator: validateArray,
+			},
+			successPageSettings: {
+				validator: validateObject,
+			},
+		}),
+	},
 
 	/**
 	 * The rules of a form.
@@ -1256,7 +1282,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	dataProviderInstanceParameterSettingsURL: Config.string().required(),
+	dataProviderInstanceParameterSettingsURL: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * The rules of a form.
@@ -1266,7 +1295,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	dataProviderInstancesURL: Config.string().required(),
+	dataProviderInstancesURL: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * The default language id of the form.
@@ -1276,9 +1308,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	defaultLanguageId: Config.string().value(
-		themeDisplay.getDefaultLanguageId()
-	),
+	defaultLanguageId: {
+		validator: validateString,
+		value: themeDisplay.getDefaultLanguageId(),
+	},
 
 	/**
 	 * The default language id of the form.
@@ -1288,9 +1321,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	editingLanguageId: Config.string().value(
-		themeDisplay.getDefaultLanguageId()
-	),
+	editingLanguageId: {
+		validator: validateString,
+		value: themeDisplay.getDefaultLanguageId(),
+	},
 
 	/**
 	 * @default undefined
@@ -1299,7 +1333,9 @@ Form.PROPS = {
 	 * @type {?string}
 	 */
 
-	fieldSetDefinitionURL: Config.string(),
+	fieldSetDefinitionURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default []
@@ -1308,7 +1344,10 @@ Form.PROPS = {
 	 * @type {?(array|undefined)}
 	 */
 
-	fieldSets: Config.array().value([]),
+	fieldSets: {
+		validator: validateArray,
+		value: [],
+	},
 
 	/**
 	 * @default []
@@ -1317,7 +1356,10 @@ Form.PROPS = {
 	 * @type {?(array|undefined)}
 	 */
 
-	fieldTypes: Config.array().value([]),
+	fieldTypes: {
+		validator: validateArray,
+		value: [],
+	},
 
 	/**
 	 * A map with all translated values available as the form description.
@@ -1327,7 +1369,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	formInstanceId: Config.number().value(0),
+	formInstanceId: {
+		validator: validateNumber,
+		value: 0,
+	},
 
 	/**
 	 * A map with all translated values available as the form name.
@@ -1337,7 +1382,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	functionsMetadata: Config.object().value({}),
+	functionsMetadata: {
+		validator: validateObject,
+		value: {},
+	},
 
 	/**
 	 * A map with all translated values available as the form name.
@@ -1347,7 +1395,9 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	functionsURL: Config.string(),
+	functionsURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * A map with all translated values available as the form description.
@@ -1357,7 +1407,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	localizedDescription: Config.object().value({}),
+	localizedDescription: {
+		validator: validateObject,
+		value: {},
+	},
 
 	/**
 	 * The context for rendering a layout that represents a form.
@@ -1367,7 +1420,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	localizedName: Config.object().value({}),
+	localizedName: {
+		validator: validateObject,
+		value: {},
+	},
 
 	/**
 	 * The namespace of the portlet.
@@ -1377,7 +1433,10 @@ Form.PROPS = {
 	 * @type {!string}
 	 */
 
-	namespace: Config.string().required(),
+	namespace: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * Whether the form is published or not
@@ -1387,7 +1446,10 @@ Form.PROPS = {
 	 * @type {!boolean}
 	 */
 
-	published: Config.bool().value(false),
+	published: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * The url to be redirected when canceling the Element Set edition.
@@ -1397,7 +1459,9 @@ Form.PROPS = {
 	 * @type {!string}
 	 */
 
-	redirectURL: Config.string(),
+	redirectURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * The rules of a form.
@@ -1407,7 +1471,9 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	rolesURL: Config.string(),
+	rolesURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * The rules of a form.
@@ -1417,7 +1483,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	rules: Config.array().value([]),
+	rules: {
+		validator: validateArray,
+		value: [],
+	},
 
 	/**
 	 * The path to the SVG spritemap file containing the icons.
@@ -1427,7 +1496,9 @@ Form.PROPS = {
 	 * @type {!boolean}
 	 */
 
-	saved: Config.bool(),
+	saved: {
+		validator: validateBoolean,
+	},
 
 	/**
 	 * @default undefined
@@ -1436,7 +1507,9 @@ Form.PROPS = {
 	 * @type {!string}
 	 */
 
-	shareFormInstanceURL: Config.string(),
+	shareFormInstanceURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * Whether to show an alert telling the user about the result of the
@@ -1447,7 +1520,10 @@ Form.PROPS = {
 	 * @type {!boolean}
 	 */
 
-	showPublishAlert: Config.bool().value(false),
+	showPublishAlert: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * The path to the SVG spritemap file containing the icons.
@@ -1457,9 +1533,14 @@ Form.PROPS = {
 	 * @type {!string}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: validateString,
+	},
 
-	view: Config.string(),
+	view: {
+		validator: validateString,
+	},
 };
 
 Form.STATE = {
@@ -1472,7 +1553,10 @@ Form.STATE = {
 	 * @type {!number}
 	 */
 
-	activeNavItem: Config.number().valueFn('_activeNavItemValueFn'),
+	activeNavItem: {
+		validator: validateNumber,
+		valueFn: '_activeNavItemValueFn',
+	},
 
 	/**
 	 * Internal mirror of the pages state
@@ -1482,7 +1566,10 @@ Form.STATE = {
 	 * @type {!array}
 	 */
 
-	pages: Config.arrayOf(pageStructure).valueFn('_pagesValueFn'),
+	pages: {
+		validator: validateArrayOf(pageStructure),
+		valueFn: '_pagesValueFn',
+	},
 
 	/**
 	 * @default _paginationModeValueFn
@@ -1491,7 +1578,10 @@ Form.STATE = {
 	 * @type {!array}
 	 */
 
-	paginationMode: Config.string().valueFn('_paginationModeValueFn'),
+	paginationMode: {
+		validator: validateString,
+		valueFn: '_paginationModeValueFn',
+	},
 
 	/**
 	 * The label of the save button
@@ -1501,7 +1591,10 @@ Form.STATE = {
 	 * @type {!string}
 	 */
 
-	saveButtonLabel: Config.string().valueFn('_saveButtonLabelValueFn'),
+	saveButtonLabel: {
+		validator: validateString,
+		valueFn: '_saveButtonLabelValueFn',
+	},
 };
 
 export default Form;

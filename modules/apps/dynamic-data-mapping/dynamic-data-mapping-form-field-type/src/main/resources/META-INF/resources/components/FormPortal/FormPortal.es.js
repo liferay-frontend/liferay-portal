@@ -13,9 +13,9 @@
  */
 
 import 'clay-icon';
+import {validateAny} from 'frontend-js-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import templates from './FormPortal.soy';
 
@@ -30,7 +30,9 @@ FormPortal.STATE = {
 	 * @type {?html}
 	 */
 
-	contentRenderer: Config.any(),
+	contentRenderer: {
+		validator: validateAny,
+	},
 };
 
 Soy.register(FormPortal, templates);

@@ -13,8 +13,12 @@
  */
 
 import ClayButton from 'clay-button';
+import {
+	validateBoolean,
+	validateFunction,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-jsx';
-import {Config} from 'metal-state';
 
 class PublishButton extends Component {
 	publish(event) {
@@ -82,11 +86,25 @@ class PublishButton extends Component {
 }
 
 PublishButton.PROPS = {
-	namespace: Config.string().required(),
-	published: Config.bool().value(false),
-	spritemap: Config.string().required(),
-	submitForm: Config.func().required(),
-	url: Config.string(),
+	namespace: {
+		required: true,
+		validator: validateString,
+	},
+	published: {
+		validator: validateBoolean,
+		value: false,
+	},
+	spritemap: {
+		required: true,
+		validator: validateString,
+	},
+	submitForm: {
+		required: true,
+		validator: validateFunction,
+	},
+	url: {
+		validator: validateString,
+	},
 };
 
 export default PublishButton;

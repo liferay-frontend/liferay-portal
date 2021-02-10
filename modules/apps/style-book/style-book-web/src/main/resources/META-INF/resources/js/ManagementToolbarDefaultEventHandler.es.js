@@ -12,8 +12,11 @@
  * details.
  */
 
-import {DefaultEventHandler, openSimpleInputModal} from 'frontend-js-web';
-import {Config} from 'metal-state';
+import {
+	DefaultEventHandler,
+	openSimpleInputModal,
+	validateString,
+} from 'frontend-js-web';
 
 class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	addStyleBookEntry(itemData) {
@@ -53,9 +56,15 @@ class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 }
 
 ManagementToolbarDefaultEventHandler.STATE = {
-	copyStyleBookEntryURL: Config.string(),
-	exportStyleBookEntriesURL: Config.string(),
-	spritemap: Config.string(),
+	copyStyleBookEntryURL: {
+		validator: validateString,
+	},
+	exportStyleBookEntriesURL: {
+		validator: validateString,
+	},
+	spritemap: {
+		validator: validateString,
+	},
 };
 
 export default ManagementToolbarDefaultEventHandler;

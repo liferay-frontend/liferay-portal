@@ -12,8 +12,7 @@
  * details.
  */
 
-import {PortletBase, createPortletURL} from 'frontend-js-web';
-import {Config} from 'metal-state';
+import {PortletBase, createPortletURL, validateString} from 'frontend-js-web';
 
 /**
  * Handles actions to display user name field for a given locale.
@@ -244,7 +243,11 @@ UserNameFields.STATE = {
 	 * @memberof UserNameFields
 	 * @type {String}
 	 */
-	baseURL: Config.required().string().writeOnce(),
+	baseURL: {
+		required: true,
+		validator: validateString,
+		writeOnce: true,
+	},
 
 	/**
 	 * Form node.
@@ -252,9 +255,11 @@ UserNameFields.STATE = {
 	 * @memberof UserNameFields
 	 * @type {String}
 	 */
-	formNode: Config.required()
-		.setter((selector) => document.querySelector(selector))
-		.writeOnce(),
+	formNode: {
+		required: true,
+		setter: (selector) => document.querySelector(selector),
+		writeOnce: true,
+	},
 
 	/**
 	 * Language id select field.
@@ -262,9 +267,11 @@ UserNameFields.STATE = {
 	 * @memberof UserNameFields
 	 * @type {String}
 	 */
-	languageIdSelectNode: Config.required()
-		.setter((selector) => document.querySelector(selector))
-		.writeOnce(),
+	languageIdSelectNode: {
+		required: true,
+		setter: (selector) => document.querySelector(selector),
+		writeOnce: true,
+	},
 
 	/**
 	 * HTML element containing the user name fields.
@@ -272,9 +279,11 @@ UserNameFields.STATE = {
 	 * @memberof UserNameFields
 	 * @type {String}
 	 */
-	userNameFieldsNode: Config.required()
-		.setter((selector) => document.querySelector(selector))
-		.writeOnce(),
+	userNameFieldsNode: {
+		required: true,
+		setter: (selector) => document.querySelector(selector),
+		writeOnce: true,
+	},
 };
 
 export default UserNameFields;

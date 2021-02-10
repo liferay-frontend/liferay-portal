@@ -17,10 +17,14 @@
 import '../FormPortal/FormPortal.es';
 
 import 'clay-icon';
-import {ALIGN_POSITIONS, align} from 'frontend-js-web';
+import {
+	ALIGN_POSITIONS,
+	align,
+	validateBoolean,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import templates from './Tooltip.soy';
 
@@ -64,7 +68,10 @@ Tooltip.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	icon: Config.string().required(),
+	icon: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -73,7 +80,9 @@ Tooltip.STATE = {
 	 * @type {?(number|undefined)}
 	 */
 
-	position: Config.string(),
+	position: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -82,7 +91,9 @@ Tooltip.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	showContent: Config.bool(),
+	showContent: {
+		validator: validateBoolean,
+	},
 
 	/**
 	 * @default undefined
@@ -91,7 +102,10 @@ Tooltip.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -100,7 +114,10 @@ Tooltip.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	text: Config.string().required(),
+	text: {
+		required: true,
+		validator: validateString,
+	},
 };
 
 export default Tooltip;

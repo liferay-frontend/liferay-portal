@@ -12,8 +12,13 @@
  * details.
  */
 
-import {PortletBase, delegate, openToast} from 'frontend-js-web';
-import {Config} from 'metal-state';
+import {
+	PortletBase,
+	delegate,
+	openToast,
+	validateArray,
+	validateString,
+} from 'frontend-js-web';
 
 import {LocaleChangedHandler} from './LocaleChangedHandler.es';
 
@@ -382,12 +387,25 @@ class JournalPortlet extends PortletBase {
 }
 
 JournalPortlet.STATE = {
-	_selectedLanguageId: Config.internal().string(),
-	articleId: Config.string(),
-	availableLocales: Config.array(),
-	classNameId: Config.string(),
-	contentTitle: Config.string(),
-	defaultLanguageId: Config.string(),
+	_selectedLanguageId: {
+		internal: true,
+		validator: validateString,
+	},
+	articleId: {
+		validator: validateString,
+	},
+	availableLocales: {
+		validator: validateArray,
+	},
+	classNameId: {
+		validator: validateString,
+	},
+	contentTitle: {
+		validator: validateString,
+	},
+	defaultLanguageId: {
+		validator: validateString,
+	},
 };
 
 export {JournalPortlet};

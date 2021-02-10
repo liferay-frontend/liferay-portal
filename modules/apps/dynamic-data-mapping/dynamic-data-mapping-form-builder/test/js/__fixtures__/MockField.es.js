@@ -12,9 +12,14 @@
  * details.
  */
 
+import {
+	validateAny,
+	validateArray,
+	validateBoolean,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import Config from 'metal-state/lib/Config';
 
 import templates from './MockField.soy';
 
@@ -38,12 +43,24 @@ class MockField extends Component {
 }
 
 MockField.STATE = {
-	fieldName: Config.string(),
-	label: Config.string(),
-	options: Config.array(),
-	readOnly: Config.bool(),
-	type: Config.string(),
-	value: Config.any(),
+	fieldName: {
+		validator: validateString,
+	},
+	label: {
+		validator: validateString,
+	},
+	options: {
+		validator: validateArray,
+	},
+	readOnly: {
+		validator: validateBoolean,
+	},
+	type: {
+		validator: validateString,
+	},
+	value: {
+		validator: validateAny,
+	},
 };
 
 Soy.register(MockField, templates);

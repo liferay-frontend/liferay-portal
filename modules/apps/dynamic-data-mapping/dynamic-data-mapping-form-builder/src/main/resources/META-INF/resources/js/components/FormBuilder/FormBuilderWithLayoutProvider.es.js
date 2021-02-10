@@ -13,8 +13,8 @@
  */
 
 import {compose} from 'dynamic-data-mapping-form-renderer';
+import {validateObject} from 'frontend-js-web';
 import Component from 'metal-jsx';
-import {Config} from 'metal-state';
 
 import LayoutProvider from '../LayoutProvider/LayoutProvider.es';
 import {FormBuilderBase} from './FormBuilder.es';
@@ -53,8 +53,12 @@ class FormBuilderWithLayoutProvider extends Component {
 }
 
 FormBuilderWithLayoutProvider.PROPS = {
-	formBuilderProps: Config.object(),
-	layoutProviderProps: Config.object(),
+	formBuilderProps: {
+		validator: validateObject,
+	},
+	layoutProviderProps: {
+		validator: validateObject,
+	},
 };
 
 export default FormBuilderWithLayoutProvider;

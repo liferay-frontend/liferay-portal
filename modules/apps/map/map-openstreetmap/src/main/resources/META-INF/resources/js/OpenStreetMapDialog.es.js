@@ -12,7 +12,8 @@
  * details.
  */
 
-import State, {Config} from 'metal-state';
+import {validateObject} from 'frontend-js-web';
+import State from 'metal-state';
 
 /**
  * OpenStreetMapDialog
@@ -64,7 +65,9 @@ OpenStreetMapDialog.STATE = {
 	 * @review
 	 * @type {Object}
 	 */
-	map: Config.object(),
+	map: {
+		validator: validateObject,
+	},
 };
 
 export default OpenStreetMapDialog;

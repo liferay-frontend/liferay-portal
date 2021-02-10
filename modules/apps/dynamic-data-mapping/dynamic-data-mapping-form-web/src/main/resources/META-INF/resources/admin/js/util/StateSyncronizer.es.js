@@ -13,8 +13,13 @@
  */
 
 import {FormSupport, PagesVisitor} from 'dynamic-data-mapping-form-renderer';
+import {
+	validateAny,
+	validateBoolean,
+	validateObject,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-jsx';
-import {Config} from 'metal-state';
 
 class StateSyncronizer extends Component {
 	created() {
@@ -281,15 +286,36 @@ class StateSyncronizer extends Component {
 }
 
 StateSyncronizer.PROPS = {
-	descriptionEditor: Config.any(),
-	localizedDescription: Config.object().value({}),
-	localizedName: Config.object().value({}),
-	nameEditor: Config.any(),
-	namespace: Config.string().required(),
-	published: Config.bool(),
-	settingsDDMForm: Config.any(),
-	store: Config.any(),
-	translationManager: Config.any(),
+	descriptionEditor: {
+		validator: validateAny,
+	},
+	localizedDescription: {
+		validator: validateObject,
+		value: {},
+	},
+	localizedName: {
+		validator: validateObject,
+		value: {},
+	},
+	nameEditor: {
+		validator: validateAny,
+	},
+	namespace: {
+		required: true,
+		validator: validateString,
+	},
+	published: {
+		validator: validateBoolean,
+	},
+	settingsDDMForm: {
+		validator: validateAny,
+	},
+	store: {
+		validator: validateAny,
+	},
+	translationManager: {
+		validator: validateAny,
+	},
 };
 
 export default StateSyncronizer;

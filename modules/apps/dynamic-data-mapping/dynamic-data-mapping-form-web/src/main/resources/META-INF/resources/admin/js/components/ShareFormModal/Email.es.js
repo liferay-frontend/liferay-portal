@@ -14,8 +14,8 @@
 
 import ClayMultiSelect from 'clay-multi-select';
 import {makeFetch} from 'dynamic-data-mapping-form-renderer/js/util/fetch.es';
+import {validateArray, validateObject, validateString} from 'frontend-js-web';
 import Component from 'metal-jsx';
-import {Config} from 'metal-state';
 
 class Email extends Component {
 	created() {
@@ -219,7 +219,9 @@ Email.PROPS = {
 	 * @memberof Email
 	 * @type {!string}
 	 */
-	autocompleteUserURL: Config.string(),
+	autocompleteUserURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -227,7 +229,9 @@ Email.PROPS = {
 	 * @memberof Email
 	 * @type {!object}
 	 */
-	localizedName: Config.object(),
+	localizedName: {
+		validator: validateObject,
+	},
 
 	/**
 	 * @default undefined
@@ -235,7 +239,10 @@ Email.PROPS = {
 	 * @memberof Email
 	 * @type {!spritemap}
 	 */
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: validateString,
+	},
 };
 
 Email.STATE = {
@@ -246,7 +253,10 @@ Email.STATE = {
 	 * @memberof Email
 	 * @type {!array}
 	 */
-	autocompleteUser: Config.array().valueFn('_autocompleteUserValueFn'),
+	autocompleteUser: {
+		validator: validateArray,
+		valueFn: '_autocompleteUserValueFn',
+	},
 
 	/**
 	 * @default undefined
@@ -254,7 +264,10 @@ Email.STATE = {
 	 * @memberof Email
 	 * @type {!array}
 	 */
-	emailContent: Config.object().valueFn('_emailContentValueFn'),
+	emailContent: {
+		validator: validateObject,
+		valueFn: '_emailContentValueFn',
+	},
 };
 
 export default Email;

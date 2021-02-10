@@ -16,9 +16,9 @@ import '../components/Tooltip/Tooltip.es';
 
 import 'clay-icon';
 import {compose, getRepeatedIndex} from 'dynamic-data-mapping-form-renderer';
+import {validateAny, validateBoolean, validateString} from 'frontend-js-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import withDispatch from '../util/withDispatch.es';
 import templates from './FieldBase.soy';
@@ -45,7 +45,9 @@ FieldBase.STATE = {
 	 * @type {?html}
 	 */
 
-	contentRenderer: Config.any(),
+	contentRenderer: {
+		validator: validateAny,
+	},
 
 	/**
 	 * @default false
@@ -53,7 +55,10 @@ FieldBase.STATE = {
 	 * @type {?boolean}
 	 */
 
-	displayErrors: Config.bool().value(false),
+	displayErrors: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * @default undefined
@@ -61,7 +66,9 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	id: Config.string(),
+	id: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -69,7 +76,9 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	label: Config.string(),
+	label: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -77,7 +86,9 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	name: Config.string(),
+	name: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -85,7 +96,9 @@ FieldBase.STATE = {
 	 * @type {?(bool|undefined)}
 	 */
 
-	repeatable: Config.bool(),
+	repeatable: {
+		validator: validateBoolean,
+	},
 
 	/**
 	 * @default undefined
@@ -93,7 +106,9 @@ FieldBase.STATE = {
 	 * @type {?(bool|undefined)}
 	 */
 
-	required: Config.bool(),
+	required: {
+		validator: validateBoolean,
+	},
 
 	/**
 	 * @default true
@@ -101,7 +116,10 @@ FieldBase.STATE = {
 	 * @type {?(bool|undefined)}
 	 */
 
-	showLabel: Config.bool().value(true),
+	showLabel: {
+		validator: validateBoolean,
+		value: true,
+	},
 
 	/**
 	 * @default undefined
@@ -109,7 +127,10 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -117,7 +138,9 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	tip: Config.string(),
+	tip: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -125,7 +148,9 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	tooltip: Config.string(),
+	tooltip: {
+		validator: validateString,
+	},
 };
 
 const composed = compose(

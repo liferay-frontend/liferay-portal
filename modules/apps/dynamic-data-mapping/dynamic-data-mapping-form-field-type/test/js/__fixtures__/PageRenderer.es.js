@@ -12,20 +12,28 @@
  * details.
  */
 
+import {
+	validateArrayOf,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import templates from './PageRenderer.soy';
 
 class PageRenderer extends Component {}
 
 PageRenderer.STATE = {
-	items: Config.arrayOf(
-		Config.shapeOf({
-			type: Config.string(),
-		})
-	),
+	items: {
+		validator: validateArrayOf({
+			validator: validateShapeOf({
+				type: {
+					validator: validateString,
+				},
+			}),
+		}),
+	},
 };
 
 Soy.register(PageRenderer, templates);

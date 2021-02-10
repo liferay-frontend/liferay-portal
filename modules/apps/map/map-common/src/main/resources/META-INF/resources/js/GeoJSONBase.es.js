@@ -12,7 +12,8 @@
  * details.
  */
 
-import State, {Config} from 'metal-state';
+import {validateObject} from 'frontend-js-web';
+import State from 'metal-state';
 
 /**
  * GeoJSONBase
@@ -104,7 +105,9 @@ GeoJSONBase.STATE = {
 	 * @review
 	 * @type {Object}
 	 */
-	map: Config.object(),
+	map: {
+		validator: validateObject,
+	},
 };
 
 window.Liferay = window.Liferay || {};

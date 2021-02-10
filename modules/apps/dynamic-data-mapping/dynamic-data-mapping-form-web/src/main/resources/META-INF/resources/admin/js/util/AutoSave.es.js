@@ -16,8 +16,13 @@ import {
 	convertToFormData,
 	makeFetch,
 } from 'dynamic-data-mapping-form-renderer/js/util/fetch.es';
+import {
+	validateAny,
+	validateBoolean,
+	validateNumber,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-jsx';
-import {Config} from 'metal-state';
 import objectHash from 'object-hash';
 
 class AutoSave extends Component {
@@ -170,11 +175,23 @@ class AutoSave extends Component {
 }
 
 AutoSave.PROPS = {
-	form: Config.any(),
-	interval: Config.number().setter('_setInterval'),
-	saveAsDraft: Config.bool().value(true),
-	stateSyncronizer: Config.any(),
-	url: Config.string(),
+	form: {
+		validator: validateAny,
+	},
+	interval: {
+		setter: '_setInterval',
+		validator: validateNumber,
+	},
+	saveAsDraft: {
+		validator: validateBoolean,
+		value: true,
+	},
+	stateSyncronizer: {
+		validator: validateAny,
+	},
+	url: {
+		validator: validateString,
+	},
 };
 
 export default AutoSave;

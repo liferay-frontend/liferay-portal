@@ -13,9 +13,16 @@
  */
 
 import Component from 'metal-component';
-import {Config} from 'metal-state';
 
 import toggleDisabled from './util/toggle_disabled';
+import {
+	validateArrayOf,
+	validateBoolean,
+	validateNumber,
+	validateObject,
+	validateOneOf,
+	validateString,
+} from './validators';
 
 /**
  * Shows a dialog and handles the selected item.
@@ -157,7 +164,10 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	buttonAddLabel: Config.string().value(Liferay.Language.get('add')),
+	buttonAddLabel: {
+		validator: validateString,
+		value: Liferay.Language.get('add'),
+	},
 
 	/**
 	 * Label for the Cancel button.
@@ -166,7 +176,10 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	buttonCancelLabel: Config.string().value(Liferay.Language.get('cancel')),
+	buttonCancelLabel: {
+		validator: validateString,
+		value: Liferay.Language.get('cancel'),
+	},
 
 	/**
 	 * CSS classes to pass to the dialog.
@@ -175,7 +188,9 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	dialogClasses: Config.string(),
+	dialogClasses: {
+		validator: validateString,
+	},
 
 	/**
 	 * Event name.
@@ -184,7 +199,10 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	eventName: Config.string().required(),
+	eventName: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * The selected item(s) in the dialog.
@@ -193,17 +211,28 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {Object|Object[]}
 	 */
-	selectedItem: Config.oneOfType([
-		Config.object(),
-		Config.arrayOf(Config.object()),
-	]),
+	selectedItem: {
+		validator: validateOneOf([
+			{
+				validator: validateObject,
+			},
+			{
+				validator: validateArrayOf({
+					validator: validateObject,
+				}),
+			},
+		]),
+	},
 
 	/**
 	 * Enables single selection of item.
 	 * @type {boolean}
 	 */
 
-	singleSelect: Config.bool().value(false),
+	singleSelect: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * Dialog's title.
@@ -212,7 +241,10 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	title: Config.string().value(Liferay.Language.get('select-file')),
+	title: {
+		validator: validateString,
+		value: Liferay.Language.get('select-file'),
+	},
 
 	/**
 	 * URL that opens the dialog.
@@ -221,7 +253,10 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	url: Config.string().required(),
+	url: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * Dialog's zIndex.
@@ -230,7 +265,9 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {Number}
 	 */
-	zIndex: Config.number(),
+	zIndex: {
+		validator: validateNumber,
+	},
 };
 
 export default ItemSelectorDialog;

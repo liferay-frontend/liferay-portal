@@ -17,8 +17,9 @@ import {
 	addParams,
 	navigate,
 	openSelectionModal,
+	validateBoolean,
+	validateString,
 } from 'frontend-js-web';
-import {Config} from 'metal-state';
 
 class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	deleteEntries() {
@@ -128,14 +129,30 @@ class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 }
 
 ManagementToolbarDefaultEventHandler.STATE = {
-	addArticleURL: Config.string(),
-	folderId: Config.string(),
-	moveArticlesAndFoldersURL: Config.string(),
-	namespace: Config.string(),
-	openViewMoreStructuresURL: Config.string(),
-	selectEntityURL: Config.string(),
-	trashEnabled: Config.bool(),
-	viewDDMStructureArticlesURL: Config.string(),
+	addArticleURL: {
+		validator: validateString,
+	},
+	folderId: {
+		validator: validateString,
+	},
+	moveArticlesAndFoldersURL: {
+		validator: validateString,
+	},
+	namespace: {
+		validator: validateString,
+	},
+	openViewMoreStructuresURL: {
+		validator: validateString,
+	},
+	selectEntityURL: {
+		validator: validateString,
+	},
+	trashEnabled: {
+		validator: validateBoolean,
+	},
+	viewDDMStructureArticlesURL: {
+		validator: validateString,
+	},
 };
 
 export default ManagementToolbarDefaultEventHandler;

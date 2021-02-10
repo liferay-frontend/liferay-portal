@@ -25,10 +25,17 @@ import {
 	generateName,
 } from 'dynamic-data-mapping-form-renderer';
 import {makeFetch} from 'dynamic-data-mapping-form-renderer/js/util/fetch.es';
-import {EventHandler, openModal} from 'frontend-js-web';
+import {
+	EventHandler,
+	openModal,
+	validateArray,
+	validateBoolean,
+	validateNumber,
+	validateObject,
+	validateString,
+} from 'frontend-js-web';
 import {Drag, DragDrop} from 'metal-drag-drop';
 import Component, {Fragment} from 'metal-jsx';
-import {Config} from 'metal-state';
 
 import RulesSupport from '../../components/RuleBuilder/RulesSupport.es';
 import {focusedFieldStructure} from '../../util/config.es';
@@ -1330,7 +1337,11 @@ Sidebar.STATE = {
 	 * @type {?number}
 	 */
 
-	activeTab: Config.number().value(0).internal(),
+	activeTab: {
+		internal: true,
+		validator: validateNumber,
+		value: 0,
+	},
 
 	/**
 	 * @default _dropdownFieldTypesValueFn
@@ -1339,7 +1350,10 @@ Sidebar.STATE = {
 	 * @type {?array}
 	 */
 
-	dropdownFieldTypes: Config.array().valueFn('_dropdownFieldTypesValueFn'),
+	dropdownFieldTypes: {
+		validator: validateArray,
+		valueFn: '_dropdownFieldTypesValueFn',
+	},
 
 	/**
 	 * @instance
@@ -1347,7 +1361,10 @@ Sidebar.STATE = {
 	 * @type {array}
 	 */
 
-	fieldTypesGroup: Config.object().valueFn('_fieldTypesGroupValueFn'),
+	fieldTypesGroup: {
+		validator: validateObject,
+		valueFn: '_fieldTypesGroupValueFn',
+	},
 
 	/**
 	 * @default false
@@ -1356,7 +1373,11 @@ Sidebar.STATE = {
 	 * @type {?bool}
 	 */
 
-	open: Config.bool().internal().value(false),
+	open: {
+		internal: true,
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * @default object
@@ -1365,12 +1386,14 @@ Sidebar.STATE = {
 	 * @type {?object}
 	 */
 
-	tabs: Config.object()
-		.value([
+	tabs: {
+		internal: true,
+		validator: validateObject,
+		value: [
 			Liferay.Language.get('elements'),
 			Liferay.Language.get('element-sets'),
-		])
-		.internal(),
+		],
+	},
 };
 
 Sidebar.PROPS = {
@@ -1382,7 +1405,9 @@ Sidebar.PROPS = {
 	 * @type {?string}
 	 */
 
-	defaultLanguageId: Config.string(),
+	defaultLanguageId: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -1391,7 +1416,9 @@ Sidebar.PROPS = {
 	 * @type {?string}
 	 */
 
-	editingLanguageId: Config.string(),
+	editingLanguageId: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -1400,7 +1427,9 @@ Sidebar.PROPS = {
 	 * @type {?string}
 	 */
 
-	fieldSetDefinitionURL: Config.string(),
+	fieldSetDefinitionURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default []
@@ -1409,7 +1438,10 @@ Sidebar.PROPS = {
 	 * @type {?(array|undefined)}
 	 */
 
-	fieldSets: Config.array().value([]),
+	fieldSets: {
+		validator: validateArray,
+		value: [],
+	},
 
 	/**
 	 * @default []
@@ -1418,7 +1450,10 @@ Sidebar.PROPS = {
 	 * @type {?(array|undefined)}
 	 */
 
-	fieldTypes: Config.array().value([]),
+	fieldTypes: {
+		validator: validateArray,
+		value: [],
+	},
 
 	/**
 	 * @default {}
@@ -1436,7 +1471,9 @@ Sidebar.PROPS = {
 	 * @type {?string}
 	 */
 
-	portletNamespace: Config.string(),
+	portletNamespace: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -1445,7 +1482,10 @@ Sidebar.PROPS = {
 	 * @type {?bool}
 	 */
 
-	readOnlyFieldName: Config.bool().value(true),
+	readOnlyFieldName: {
+		validator: validateBoolean,
+		value: true,
+	},
 
 	/**
 	 * @default undefined
@@ -1454,7 +1494,10 @@ Sidebar.PROPS = {
 	 * @type {?(string|undefined)}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: validateString,
+	},
 };
 
 export default Sidebar;

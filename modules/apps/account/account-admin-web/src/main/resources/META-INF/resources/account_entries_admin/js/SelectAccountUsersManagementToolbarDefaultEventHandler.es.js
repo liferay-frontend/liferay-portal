@@ -12,8 +12,11 @@
  * details.
  */
 
-import {DefaultEventHandler} from 'frontend-js-web';
-import {Config} from 'metal-state';
+import {
+	DefaultEventHandler,
+	validateBoolean,
+	validateString,
+} from 'frontend-js-web';
 
 import {MODAL_STATE_ACCOUNT_USERS} from './SessionStorageKeys.es';
 
@@ -28,8 +31,14 @@ class SelectAccountUsersManagementToolbarDefaultEventHandler extends DefaultEven
 }
 
 SelectAccountUsersManagementToolbarDefaultEventHandler.STATE = {
-	addAccountEntryUserURL: Config.string().required(),
-	openModalOnRedirect: Config.bool().value(false),
+	addAccountEntryUserURL: {
+		required: true,
+		validator: validateString,
+	},
+	openModalOnRedirect: {
+		validator: validateBoolean,
+		value: false,
+	},
 };
 
 export default SelectAccountUsersManagementToolbarDefaultEventHandler;

@@ -13,7 +13,7 @@
  */
 
 import {isInputNode} from 'map-common/js/validators.es';
-import State, {Config} from 'metal-state';
+import State from 'metal-state';
 
 /**
  * GoogleMapsSearch
@@ -109,7 +109,10 @@ GoogleMapsSearch.STATE = {
 	 * @review
 	 * @type {HTMLInputElement}
 	 */
-	inputNode: Config.validator(isInputNode).value(null),
+	inputNode: {
+		validator: isInputNode,
+		value: null,
+	},
 };
 
 export default GoogleMapsSearch;

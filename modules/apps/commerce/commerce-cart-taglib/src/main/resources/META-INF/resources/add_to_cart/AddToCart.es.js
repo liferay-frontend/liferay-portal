@@ -12,10 +12,9 @@
  * details.
  */
 
-import {fetch} from 'frontend-js-web';
+import {fetch, validateString} from 'frontend-js-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import templates from './AddToCart.soy';
 
@@ -167,7 +166,9 @@ AddToCart.STATE = {
 	 * @default undefined
 	 */
 
-	cpDefinitionId: Config.string(),
+	cpDefinitionId: {
+		validator: validateString,
+	},
 
 	/**
 	 * CPInstanceId.
@@ -177,7 +178,9 @@ AddToCart.STATE = {
 	 * @default undefined
 	 */
 
-	cpInstanceId: Config.string(),
+	cpInstanceId: {
+		validator: validateString,
+	},
 
 	/**
 	 * CSS classes to be applied to the element.
@@ -187,7 +190,9 @@ AddToCart.STATE = {
 	 * @default undefined
 	 */
 
-	elementClasses: Config.string(),
+	elementClasses: {
+		validator: validateString,
+	},
 
 	/**
 	 * Component id.
@@ -196,7 +201,10 @@ AddToCart.STATE = {
 	 * @type {String}
 	 */
 
-	id: Config.string().required(),
+	id: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * Text to display inside the add to cart button.
@@ -205,7 +213,10 @@ AddToCart.STATE = {
 	 * @type {String}
 	 */
 
-	label: Config.string().required(),
+	label: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * Portlet's namespace
@@ -214,7 +225,10 @@ AddToCart.STATE = {
 	 * @type {String}
 	 */
 
-	portletNamespace: Config.string().required(),
+	portletNamespace: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * Product content id
@@ -223,7 +237,9 @@ AddToCart.STATE = {
 	 * @type {String}
 	 */
 
-	productContentId: Config.string(),
+	productContentId: {
+		validator: validateString,
+	},
 
 	/**
 	 * Default quantity to add to cart.
@@ -233,7 +249,9 @@ AddToCart.STATE = {
 	 * @default undefined
 	 */
 
-	quantity: Config.string(),
+	quantity: {
+		validator: validateString,
+	},
 
 	/**
 	 * Id of the html input to get the quantity.
@@ -243,7 +261,9 @@ AddToCart.STATE = {
 	 * @default undefined
 	 */
 
-	taglibQuantityInputId: Config.string(),
+	taglibQuantityInputId: {
+		validator: validateString,
+	},
 
 	/**
 	 * Uri to add a cart item.
@@ -252,7 +272,10 @@ AddToCart.STATE = {
 	 * @type {String}
 	 */
 
-	uri: Config.string().required(),
+	uri: {
+		required: true,
+		validator: validateString,
+	},
 };
 
 // Register component

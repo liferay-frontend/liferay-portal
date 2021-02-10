@@ -12,7 +12,8 @@
  * details.
  */
 
-import State, {Config} from 'metal-state';
+import {validateNumber, validateObject, validateShapeOf} from 'frontend-js-web';
+import State from 'metal-state';
 
 /**
  * MarkerBase
@@ -116,20 +117,29 @@ MarkerBase.STATE = {
 	 * @review
 	 * @type {Object}
 	 */
-	location: Config.shapeOf({
-		lat: Config.number().required(),
-		lng: Config.number().required(),
-	}).value({
-		lat: 0,
-		lng: 0,
-	}),
+	location: {
+		validator: validateShapeOf({
+			lat: {
+				required: true,
+				validator: validateNumber,
+			},
+			lng: {
+				required: true,
+				validator: validateNumber,
+			},
+		}),
+		value: {lat: 0, lng: 0},
+	},
 
 	/**
 	 * Map to be used
 	 * @review
 	 * @type {Object}
 	 */
-	map: Config.object().value({}),
+	map: {
+		validator: validateObject,
+		value: {},
+	},
 };
 
 window.Liferay = window.Liferay || {};

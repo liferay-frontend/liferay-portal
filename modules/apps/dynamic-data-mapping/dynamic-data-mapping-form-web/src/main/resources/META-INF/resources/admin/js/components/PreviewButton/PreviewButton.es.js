@@ -13,8 +13,8 @@
  */
 
 import ClayButton from 'clay-button';
+import {validateFunction, validateString} from 'frontend-js-web';
 import Component from 'metal-jsx';
-import {Config} from 'metal-state';
 
 import Notifications from '../../util/Notifications.es';
 
@@ -57,8 +57,14 @@ class PreviewButton extends Component {
 }
 
 PreviewButton.PROPS = {
-	resolvePreviewURL: Config.func().required(),
-	spritemap: Config.string().required(),
+	resolvePreviewURL: {
+		required: true,
+		validator: validateFunction,
+	},
+	spritemap: {
+		required: true,
+		validator: validateString,
+	},
 };
 
 export default PreviewButton;

@@ -12,9 +12,9 @@
  * details.
  */
 
+import {validateNumber, validateObject, validateString} from 'frontend-js-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import templates from './CategorySelector.soy';
 
@@ -77,41 +77,59 @@ CategorySelector.STATE = {
 	 * to select categories.
 	 */
 
-	categorySelectorURL: Config.string().value(''),
+	categorySelectorURL: {
+		validator: validateString,
+		value: '',
+	},
 
 	/**
 	 * Name of the event that will be dispatched when the
 	 * category selector dialog is closed
 	 */
 
-	eventName: Config.string().value(''),
+	eventName: {
+		validator: validateString,
+		value: '',
+	},
 
 	/**
 	 * Array of group ids (sites) where categories will be searched.
 	 * It defaults to an empty array, which is the current site.
 	 */
 
-	groupIds: Config.string().value(''),
+	groupIds: {
+		validator: validateString,
+		value: '',
+	},
 
 	/**
 	 * Id of the hidden input used to pass the selected categories
 	 */
 
-	hiddenInput: Config.string().value(''),
+	hiddenInput: {
+		validator: validateString,
+		value: '',
+	},
 
 	/**
 	 * Number used for avoiding conflicts between different
 	 * instances of the component/portlet.
 	 */
 
-	index: Config.number().value(0),
+	index: {
+		validator: validateNumber,
+		value: 0,
+	},
 
 	/**
 	 * String used for avoiding conflicts between different
 	 * instances of the component/portlet.
 	 */
 
-	namespace: Config.string().value(''),
+	namespace: {
+		validator: validateString,
+		value: '',
+	},
 
 	/**
 	 * Existing information of the form.
@@ -121,14 +139,20 @@ CategorySelector.STATE = {
 	 * 	already selected. It is kept in sync with `queryValues`
 	 */
 
-	rule: Config.object().value({}),
+	rule: {
+		validator: validateObject,
+		value: {},
+	},
 
 	/**
 	 * Ids of the vocabularies parents of the selected categories.
 	 * Vocabularies are super groups which group a set of categories.
 	 */
 
-	vocabularyIds: Config.string().value(''),
+	vocabularyIds: {
+		validator: validateString,
+		value: '',
+	},
 };
 
 Soy.register(CategorySelector, templates);

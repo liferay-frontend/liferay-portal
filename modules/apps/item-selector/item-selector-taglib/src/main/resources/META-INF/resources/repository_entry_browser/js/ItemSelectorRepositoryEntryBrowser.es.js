@@ -14,8 +14,14 @@
 
 import {ClayAlert} from 'clay-alert';
 import {render} from 'frontend-js-react-web';
-import {EventHandler, PortletBase, delegate} from 'frontend-js-web';
-import {Config} from 'metal-state';
+import {
+	EventHandler,
+	PortletBase,
+	delegate,
+	validateNumber,
+	validateOneOfType,
+	validateString,
+} from 'frontend-js-web';
 import ReactDOM from 'react-dom';
 
 import ItemSelectorPreview from '../../item_selector_preview/js/ItemSelectorPreview.es';
@@ -517,14 +523,20 @@ ItemSelectorRepositoryEntryBrowser.STATE = {
 	 * @memberof ItemSelectorRepositoryEntryBrowser
 	 * @type {String}
 	 */
-	closeCaption: Config.string(),
+	closeCaption: {
+		validator: validateString,
+	},
 
 	/**
 	 * Time to hide the alert messages.
 	 *
 	 * @type {Number} milliseconds
 	 */
-	hideAlertDelay: Config.number().value(5000).internal(),
+	hideAlertDelay: {
+		internal: true,
+		validator: validateNumber,
+		value: 5000,
+	},
 
 	/**
 	 * Maximum allowed file size to drop in the item selector.
@@ -533,9 +545,18 @@ ItemSelectorRepositoryEntryBrowser.STATE = {
 	 * @memberof ItemSelectorRepositoryEntryBrowser
 	 * @type {Number | String}
 	 */
-	maxFileSize: Config.oneOfType([Config.number(), Config.string()])
-		.setter('_convertMaxFileSize')
-		.value(Liferay.PropsValues.UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE),
+	maxFileSize: {
+		setter: '_convertMaxFileSize',
+		validator: validateOneOfType([
+			{
+				validator: validateNumber,
+			},
+			{
+				validator: validateString,
+			},
+		]),
+		value: Liferay.PropsValues.UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE,
+	},
 
 	/**
 	 * The return type for the uploaded item.
@@ -544,7 +565,9 @@ ItemSelectorRepositoryEntryBrowser.STATE = {
 	 * @memberof ItemSelectorRepositoryEntryBrowser
 	 * @type {String}
 	 */
-	uploadItemReturnType: Config.string(),
+	uploadItemReturnType: {
+		validator: validateString,
+	},
 
 	/**
 	 * URL to upload an item.
@@ -553,7 +576,9 @@ ItemSelectorRepositoryEntryBrowser.STATE = {
 	 * @memberof ItemSelectorRepositoryEntryBrowser
 	 * @type {String}
 	 */
-	uploadItemURL: Config.string(),
+	uploadItemURL: {
+		validator: validateString,
+	},
 
 	/**
 	 * Valid extensions for files uploaded to the Item Selector.
@@ -562,7 +587,10 @@ ItemSelectorRepositoryEntryBrowser.STATE = {
 	 * @memberof ItemSelectorRepositoryEntryBrowser
 	 * @type {String}
 	 */
-	validExtensions: Config.string().value('*'),
+	validExtensions: {
+		validator: validateString,
+		value: '*',
+	},
 };
 
 export default ItemSelectorRepositoryEntryBrowser;

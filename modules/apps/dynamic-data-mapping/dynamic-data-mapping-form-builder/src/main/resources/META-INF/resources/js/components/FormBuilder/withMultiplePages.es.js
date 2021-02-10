@@ -12,8 +12,8 @@
  * details.
  */
 
+import {validateBoolean} from 'frontend-js-web';
 import Component from 'metal-jsx';
-import {Config} from 'metal-state';
 
 import formBuilderProps from './props.es';
 
@@ -74,7 +74,10 @@ const withMultiplePages = (ChildComponent) => {
 		 * @type {boolean}
 		 */
 
-		allowSuccessPage: Config.bool().value(true),
+		allowSuccessPage: {
+			validator: validateBoolean,
+			value: true,
+		},
 
 		...formBuilderProps,
 	};
@@ -88,7 +91,11 @@ const withMultiplePages = (ChildComponent) => {
 		 * @type {boolean}
 		 */
 
-		dropdownExpanded: Config.bool().value(false).internal(),
+		dropdownExpanded: {
+			internal: true,
+			validator: validateBoolean,
+			value: false,
+		},
 	};
 
 	return MultiplePages;

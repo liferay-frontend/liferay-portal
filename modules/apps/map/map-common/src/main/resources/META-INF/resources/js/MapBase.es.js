@@ -12,8 +12,15 @@
  * details.
  */
 
-import {buildFragment} from 'frontend-js-web';
-import State, {Config} from 'metal-state';
+import {
+	buildFragment,
+	validateBoolean,
+	validateNumber,
+	validateObject,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
+import State from 'metal-state';
 
 import GeoJSONBase from './GeoJSONBase.es';
 import MarkerBase from './MarkerBase.es';
@@ -778,7 +785,10 @@ MapBase.STATE = {
 	 * @review
 	 * @type {string}
 	 */
-	boundingBox: Config.string().value(''),
+	boundingBox: {
+		validator: validateString,
+		value: '',
+	},
 
 	/**
 	 * List of controls that will be shown on the map.
@@ -786,27 +796,33 @@ MapBase.STATE = {
 	 * @review
 	 * @type {Array<string>}
 	 */
-	controls: Config.validator(
-		isSubsetOf(Object.values(MapBase.CONTROLS))
-	).value([
-		MapBase.CONTROLS.PAN,
-		MapBase.CONTROLS.TYPE,
-		MapBase.CONTROLS.ZOOM,
-	]),
+	controls: {
+		validator: isSubsetOf(Object.values(MapBase.CONTROLS)),
+		value: [
+			MapBase.CONTROLS.PAN,
+			MapBase.CONTROLS.TYPE,
+			MapBase.CONTROLS.ZOOM,
+		],
+	},
 
 	/**
 	 * Data that will be parsed as GeoJSONData
 	 * @review
 	 * @type {Object}
 	 */
-	data: Config.object(),
+	data: {
+		validator: validateObject,
+	},
 
 	/**
 	 * If true, the geolocation API will be used (if implemented)
 	 * @review
 	 * @type {boolean}
 	 */
-	geolocation: Config.bool().value(false),
+	geolocation: {
+		validator: validateBoolean,
+		value: false,
+	},
 
 	/**
 	 * Position being shown on the map. This value will be updated
@@ -814,23 +830,36 @@ MapBase.STATE = {
 	 * @review
 	 * @type {{ lat: number, lng: number }}
 	 */
-	position: Config.shapeOf({
-		location: Config.shapeOf({
-			lat: Config.number().value(0),
-			lng: Config.number().value(0),
+	position: {
+		setter: 'setPosition',
+		validator: validateShapeOf({
+			location: {
+				validator: validateShapeOf({
+					lat: {
+						validator: validateNumber,
+						value: 0,
+					},
+					lng: {
+						validator: validateNumber,
+						value: 0,
+					},
+				}),
+			},
 		}),
-	})
-		.value({
+		value: {
 			location: {lat: 0, lng: 0},
-		})
-		.setter('setPosition'),
+		},
+	},
 
 	/**
 	 * Zoom being used on the map.
 	 * @review
 	 * @type {number}
 	 */
-	zoom: Config.number().value(11),
+	zoom: {
+		validator: validateNumber,
+		value: 11,
+	},
 };
 
 Liferay.MapBase = MapBase;

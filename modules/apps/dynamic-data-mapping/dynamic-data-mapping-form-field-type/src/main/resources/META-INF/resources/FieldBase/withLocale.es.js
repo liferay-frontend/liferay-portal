@@ -12,7 +12,13 @@
  * details.
  */
 
-import {Config} from 'metal-state';
+import {
+	validateAny,
+	validateArrayOf,
+	validateObject,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 
 export default (Component) => {
 	class WithLocale extends Component {
@@ -37,14 +43,24 @@ export default (Component) => {
 	}
 
 	WithLocale.STATE = {
-		_localizedValue: Config.arrayOf(
-			Config.shapeOf({
-				name: Config.string(),
-				value: Config.any(),
-			})
-		).value([]),
+		_localizedValue: {
+			validator: validateArrayOf({
+				validator: validateShapeOf({
+					name: {
+						validator: validateString,
+					},
+					value: {
+						validator: validateAny,
+					},
+				}),
+			}),
+			value: [],
+		},
 
-		localizedValue: Config.object().value({}),
+		localizedValue: {
+			validator: validateObject,
+			value: {},
+		},
 	};
 
 	return WithLocale;

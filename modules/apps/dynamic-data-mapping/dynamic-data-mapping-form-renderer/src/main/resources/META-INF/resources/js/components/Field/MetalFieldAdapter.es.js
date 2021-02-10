@@ -12,9 +12,14 @@
  * details.
  */
 
+import {
+	validateAny,
+	validateBoolean,
+	validateNumber,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import templates from './MetalFieldAdapter.soy';
 
@@ -65,18 +70,42 @@ class MetalFieldAdapter extends Component {
 }
 
 MetalFieldAdapter.STATE = {
-	activePage: Config.number(),
-	editable: Config.bool(),
-	editingLanguageId: Config.string(),
-	field: Config.any(),
-	onBlur: Config.any(),
-	onChange: Config.any(),
-	onFocus: Config.any(),
-	onRemoved: Config.any(),
-	onRepeated: Config.any(),
-	pageIndex: Config.number(),
-	spritemap: Config.string(),
-	type: Config.string(),
+	activePage: {
+		validator: validateNumber,
+	},
+	editable: {
+		validator: validateBoolean,
+	},
+	editingLanguageId: {
+		validator: validateString,
+	},
+	field: {
+		validator: validateAny,
+	},
+	onBlur: {
+		validator: validateAny,
+	},
+	onChange: {
+		validator: validateAny,
+	},
+	onFocus: {
+		validator: validateAny,
+	},
+	onRemoved: {
+		validator: validateAny,
+	},
+	onRepeated: {
+		validator: validateAny,
+	},
+	pageIndex: {
+		validator: validateNumber,
+	},
+	spritemap: {
+		validator: validateString,
+	},
+	type: {
+		validator: validateString,
+	},
 };
 
 Soy.register(MetalFieldAdapter, templates);

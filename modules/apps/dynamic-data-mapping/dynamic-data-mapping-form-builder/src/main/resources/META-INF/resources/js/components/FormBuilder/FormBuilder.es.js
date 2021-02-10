@@ -18,8 +18,15 @@ import {
 	compose,
 	getConnectedReactComponentAdapter,
 } from 'dynamic-data-mapping-form-renderer';
+import {
+	validateArrayOf,
+	validateBoolean,
+	validateNumber,
+	validateObject,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-jsx';
-import {Config} from 'metal-state';
 
 import {pageStructure} from '../../util/config.es';
 import withEditablePageHeader from './withEditablePageHeader.es';
@@ -132,7 +139,10 @@ FormBuilderBase.PROPS = {
 	 * @type {?number}
 	 */
 
-	activePage: Config.number().value(0),
+	activePage: {
+		validator: validateNumber,
+		value: 0,
+	},
 
 	/**
 	 * @default undefined
@@ -141,7 +151,9 @@ FormBuilderBase.PROPS = {
 	 * @type {?string}
 	 */
 
-	defaultLanguageId: Config.string(),
+	defaultLanguageId: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -150,7 +162,9 @@ FormBuilderBase.PROPS = {
 	 * @type {?string}
 	 */
 
-	editingLanguageId: Config.string(),
+	editingLanguageId: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default []
@@ -159,7 +173,10 @@ FormBuilderBase.PROPS = {
 	 * @type {?array<object>}
 	 */
 
-	pages: Config.arrayOf(pageStructure).value([]),
+	pages: {
+		validator: validateArrayOf(pageStructure),
+		value: [],
+	},
 
 	/**
 	 * @instance
@@ -167,7 +184,10 @@ FormBuilderBase.PROPS = {
 	 * @type {string}
 	 */
 
-	paginationMode: Config.string().required(),
+	paginationMode: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @instance
@@ -175,7 +195,10 @@ FormBuilderBase.PROPS = {
 	 * @type {string}
 	 */
 
-	portletNamespace: Config.string().required(),
+	portletNamespace: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -184,7 +207,10 @@ FormBuilderBase.PROPS = {
 	 * @type {!string}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: validateString,
+	},
 
 	/**
 	 * @instance
@@ -192,11 +218,20 @@ FormBuilderBase.PROPS = {
 	 * @type {object}
 	 */
 
-	successPageSettings: Config.shapeOf({
-		body: Config.object(),
-		enabled: Config.bool(),
-		title: Config.object(),
-	}).value({}),
+	successPageSettings: {
+		validator: validateShapeOf({
+			body: {
+				validator: validateObject,
+			},
+			enabled: {
+				validator: validateBoolean,
+			},
+			title: {
+				validator: validateObject,
+			},
+		}),
+		value: {},
+	},
 
 	/**
 	 * @default undefined
@@ -205,7 +240,9 @@ FormBuilderBase.PROPS = {
 	 * @type {?string}
 	 */
 
-	view: Config.string(),
+	view: {
+		validator: validateString,
+	},
 
 	/**
 	 * @default undefined
@@ -214,7 +251,9 @@ FormBuilderBase.PROPS = {
 	 * @type {?bool}
 	 */
 
-	viewMode: Config.bool(),
+	viewMode: {
+		validator: validateBoolean,
+	},
 };
 
 export default compose(

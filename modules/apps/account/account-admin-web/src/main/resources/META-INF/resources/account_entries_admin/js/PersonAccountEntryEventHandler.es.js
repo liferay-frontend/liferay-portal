@@ -12,8 +12,12 @@
  * details.
  */
 
-import {PortletBase, delegate, openSelectionModal} from 'frontend-js-web';
-import {Config} from 'metal-state';
+import {
+	PortletBase,
+	delegate,
+	openSelectionModal,
+	validateString,
+} from 'frontend-js-web';
 
 class PersonAccountEntryEventHandler extends PortletBase {
 
@@ -108,14 +112,34 @@ class PersonAccountEntryEventHandler extends PortletBase {
 }
 
 PersonAccountEntryEventHandler.STATE = {
-	container: Config.string().setter('_setElement'),
-	removeUserIconMarkup: Config.string(),
-	removeUserLinkSelector: Config.string(),
-	searchContainer: Config.string().setter('_setSearchContainer'),
-	selectUserButton: Config.string().setter('_setElement'),
-	selectUserEventName: Config.string(),
-	selectUserURL: Config.string(),
-	userIdInput: Config.string().setter('_setElement'),
+	container: {
+		setter: '_setElement',
+		validator: validateString,
+	},
+	removeUserIconMarkup: {
+		validator: validateString,
+	},
+	removeUserLinkSelector: {
+		validator: validateString,
+	},
+	searchContainer: {
+		setter: '_setSearchContainer',
+		validator: validateString,
+	},
+	selectUserButton: {
+		setter: '_setElement',
+		validator: validateString,
+	},
+	selectUserEventName: {
+		validator: validateString,
+	},
+	selectUserURL: {
+		validator: validateString,
+	},
+	userIdInput: {
+		setter: '_setElement',
+		validator: validateString,
+	},
 };
 
 export default PersonAccountEntryEventHandler;
