@@ -6,8 +6,7 @@
 		"clay-table": "2.22.2",
 		"frontend-js-web": "*",
 		"metal-component": "2.16.8",
-		"metal-soy": "2.16.9",
-		"metal-state": "2.16.8"
+		"metal-soy": "2.16.9"
 	},
 	"name": "commerce-frontend-taglib",
 	"scripts": {
