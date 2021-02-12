@@ -128,6 +128,14 @@ function getUniqueSelector(element) {
 	].join('');
 }
 
+function dispatchCustomEvent(element, eventName, detail = null) {
+	const customEvent = element.createEvent('CustomEvent');
+
+	customEvent.initCustomEvent(eventName, true, true, detail);
+
+	element.dispatchEvent(customEvent);
+}
+
 function addClass(element, className) {
 	setClasses(element, {
 		[className]: true,
@@ -305,15 +313,7 @@ let _handleWindowResize;
 const windowResize = () => {
 	if (!_handleWindowResize) {
 		_handleWindowResize = () => {
-			const screenChangeEvent = document.createEvent('Event');
-
-			screenChangeEvent.initEvent(
-				'screenChange.lexicon.sidenav',
-				true,
-				true
-			);
-
-			document.dispatchEvent(screenChangeEvent);
+			dispatchCustomEvent(document, 'screenChange.lexicon.sidenav');
 		};
 
 		window.addEventListener('resize', _handleWindowResize);
@@ -447,6 +447,164 @@ SideNavigation.prototype = {
 		}
 	},
 
+	_onClosed() {
+		const instance = this;
+		const options = instance.options;
+
+		const container = document.querySelector(options.container);
+
+		if (!instance._handleClosed) {
+			instance._handleClosed = () => {
+				const type = !instance._isDesktop()
+					? options.typeMobile
+					: options.type;
+
+				if (type === 'relative' && hasClass(container, 'open')) {
+					removeClass(container, 'sidenav-transition');
+				}
+			};
+
+			document.addEventListener(
+				'closed.lexicon.sidenav',
+				instance._handleClosed
+			);
+		}
+	},
+
+	_onClosedStart() {
+		const instance = this;
+		const options = instance.options;
+
+		const container = document.querySelector(options.container);
+		const content = document.querySelector(options.content);
+
+		if (!instance._handleClosedStart) {
+			instance._handleClosedStart = () => {
+				const type = !instance._isDesktop()
+					? options.typeMobile
+					: options.type;
+
+				if (
+					type === 'relative' &&
+					hasClass(container, 'open') &&
+					content.closest('.page-maximized')
+				) {
+					let contentMargin =
+						document.body.scrollWidth -
+						content.getBoundingClientRect().right;
+
+					let paddingRight = options.gutter + options.width;
+
+					const contentMaxWidth =
+						getComputedStyle(content).maxWidth ||
+						getComputedStyle(content).width;
+
+					if (contentMaxWidth.match(/px$/g)) {
+						contentMargin =
+							(document.body.scrollWidth -
+								toInt(contentMaxWidth)) /
+							2;
+
+						if (contentMargin > options.width) {
+							paddingRight = '';
+						}
+						else if (
+							contentMargin > 0 &&
+							contentMargin < options.width
+						) {
+							paddingRight =
+								options.gutter + options.width - contentMargin;
+						}
+					}
+
+					addClass(container, 'sidenav-transition');
+
+					setStyles(content, {
+						'padding-right': px(paddingRight),
+					});
+				}
+			};
+
+			document.addEventListener(
+				'closedStart.lexicon.sidenav',
+				instance._handleClosedStart
+			);
+		}
+	},
+
+	_onOpen() {
+		const instance = this;
+		const options = instance.options;
+
+		const container = document.querySelector(options.container);
+
+		if (!instance._handleOpen) {
+			instance._handleOpen = () => {
+				const type = !instance._isDesktop()
+					? options.typeMobile
+					: options.type;
+
+				if (type === 'relative' && hasClass(container, 'open')) {
+					removeClass(container, 'sidenav-transition');
+				}
+			};
+
+			document.addEventListener(
+				'open.lexicon.sidenav',
+				instance._handleOpen
+			);
+		}
+	},
+
+	_onOpenStart() {
+		const instance = this;
+		const options = instance.options;
+
+		const container = document.querySelector(options.container);
+		const content = document.querySelector(options.content);
+
+		if (!instance._handleOpenStart) {
+			instance._handleOpenStart = (event) => {
+				const type = !instance._isDesktop()
+					? options.typeMobile
+					: options.type;
+
+				if (
+					type === 'relative' &&
+					hasClass(container, 'open') &&
+					content.closest('.page-maximized')
+				) {
+					const otherMenu = document.querySelector(
+						event.detail.options.container + ' .sidenav-menu'
+					);
+					const otherMenuWidth = otherMenu.getBoundingClientRect()
+						.width;
+
+					const contentMargin =
+						document.body.scrollWidth -
+						content.getBoundingClientRect().right -
+						otherMenuWidth / 2;
+
+					const paddingRight =
+						contentMargin > 0
+							? options.width + options.gutter - contentMargin
+							: options.width + options.gutter;
+
+					addClass(container, 'sidenav-transition');
+
+					setStyles(content, {
+						'padding-right': px(paddingRight),
+					});
+				}
+			};
+
+			document.addEventListener(
+				'openStart.lexicon.sidenav',
+				instance._handleOpenStart
+			);
+		}
+	},
+
 	_onScreenChange() {
 		const instance = this;
 		const options = instance.options;
@@ -533,6 +691,10 @@ SideNavigation.prototype = {
 		if (!instance.useDataAttribute) {
 			windowResize();
 
+			instance._onClosedStart();
+			instance._onClosed();
+			instance._onOpenStart();
+			instance._onOpen();
 			instance._onScreenChange();
 
 			if (mobile) {
@@ -646,6 +808,34 @@ SideNavigation.prototype = {
 
 		INSTANCE_MAP.delete(instance.toggler);
 
+		if (instance._handleClosedStart) {
+			document.removeEventListener(
+				'closedStart.lexicon.sidenav',
+				instance._handleClosedStart
+			);
+		}
+
+		if (instance._handleClosed) {
+			document.removeEventListener(
+				'closed.lexicon.sidenav',
+				instance._handleClosed
+			);
+		}
+
+		if (instance._handleOpenStart) {
+			document.removeEventListener(
+				'openStart.lexicon.sidenav',
+				instance._handleOpenStart
+			);
+		}
+
+		if (instance._handleOpen) {
+			document.removeEventListener(
+				'open.lexicon.sidenav',
+				instance._handleOpen
+			);
+		}
+
 		if (instance._handleOnScreenChange) {
 			document.removeEventListener(
 				'screenChange.lexicon.sidenav',
@@ -728,13 +918,21 @@ SideNavigation.prototype = {
 			const target =
 				toggler.dataset.target || toggler.getAttribute('href');
 
-			instance._emit('closedStart.lexicon.sidenav');
+			dispatchCustomEvent(
+				document,
+				'closedStart.lexicon.sidenav',
+				instance
+			);
 
 			instance._subscribeSidenavTransitionEnd(content, () => {
 				removeClass(container, 'sidenav-transition');
 				removeClass(toggler, 'sidenav-transition');
 
-				instance._emit('closed.lexicon.sidenav');
+				dispatchCustomEvent(
+					document,
+					'closed.lexicon.sidenav',
+					instance
+				);
 			});
 
 			if (hasClass(content, openClass)) {
@@ -988,13 +1186,17 @@ SideNavigation.prototype = {
 				instance._loadUrl(container, url);
 			}
 
-			instance._emit('openStart.lexicon.sidenav');
+			dispatchCustomEvent(
+				document,
+				'openStart.lexicon.sidenav',
+				instance
+			);
 
 			instance._subscribeSidenavTransitionEnd(content, () => {
 				removeClass(container, 'sidenav-transition');
 				removeClass(toggler, 'sidenav-transition');
 
-				instance._emit('open.lexicon.sidenav');
+				dispatchCustomEvent(document, 'open.lexicon.sidenav', instance);
 			});
 
 			setClasses(content, {
@@ -1042,10 +1244,18 @@ SideNavigation.prototype = {
 		const sidenavRight = instance._isSidenavRight();
 
 		if (closed) {
-			instance._emit('openStart.lexicon.sidenav');
+			dispatchCustomEvent(
+				document,
+				'openStart.lexicon.sidenav',
+				instance
+			);
 		}
 		else {
-			instance._emit('closedStart.lexicon.sidenav');
+			dispatchCustomEvent(
+				document,
+				'closedStart.lexicon.sidenav',
+				instance
+			);
 		}
 
 		instance._subscribeSidenavTransitionEnd(container, () => {
@@ -1059,7 +1269,11 @@ SideNavigation.prototype = {
 					'sidenav-transition': false,
 				});
 
-				instance._emit('closed.lexicon.sidenav');
+				dispatchCustomEvent(
+					document,
+					'closed.lexicon.sidenav',
+					instance
+				);
 			}
 			else {
 				setClasses(toggler, {
@@ -1067,7 +1281,7 @@ SideNavigation.prototype = {
 					'sidenav-transition': false,
 				});
 
-				instance._emit('open.lexicon.sidenav');
+				dispatchCustomEvent(document, 'open.lexicon.sidenav', instance);
 			}
 
 			if (instance.mobile) {
