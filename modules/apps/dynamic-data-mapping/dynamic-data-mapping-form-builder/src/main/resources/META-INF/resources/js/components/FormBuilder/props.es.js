@@ -114,7 +114,7 @@ export default {
 	 * @type {?object}
 	 */
 
-	focusedField: focusedFieldStructure.value({}),
+	focusedField: focusedFieldStructure,
 
 	/**
 	 * @default []

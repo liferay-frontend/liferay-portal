@@ -66,6 +66,7 @@ export const focusedFieldStructure = {
 			validator: validateNumber,
 		},
 	}),
+	value: {},
 };
 
 export const ruleStructure = {

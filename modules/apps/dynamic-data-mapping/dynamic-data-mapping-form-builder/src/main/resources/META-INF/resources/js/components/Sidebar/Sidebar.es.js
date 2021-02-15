@@ -1462,7 +1462,7 @@ Sidebar.PROPS = {
 	 * @type {?object}
 	 */
 
-	focusedField: focusedFieldStructure.value({}),
+	focusedField: focusedFieldStructure,
 
 	/**
 	 * @default undefined
