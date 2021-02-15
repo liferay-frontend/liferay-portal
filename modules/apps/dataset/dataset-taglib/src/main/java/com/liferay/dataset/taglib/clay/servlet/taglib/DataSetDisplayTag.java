@@ -14,10 +14,8 @@
 
 package com.liferay.dataset.taglib.clay.servlet.taglib;
 
-import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.dataset.taglib.clay.data.set.ClayDataSetDisplayViewSerializer;
 import com.liferay.dataset.taglib.clay.data.set.model.ClayPaginationEntry;
-import com.liferay.dataset.taglib.clay.internal.js.loader.modules.extender.npm.NPMResolverProvider;
 import com.liferay.dataset.taglib.clay.internal.servlet.ServletContextUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
@@ -97,13 +95,6 @@ public class DataSetDisplayTag extends IncludeTag {
 
 			if (_creationMenu == null) {
 				_creationMenu = new CreationMenu();
-			}
-
-			NPMResolver npmResolver = NPMResolverProvider.getNPMResolver();
-
-			if ((npmResolver != null) && Validator.isNull(_module)) {
-				_module = npmResolver.resolveModuleName(
-					"dataset-taglib/display/entry");
 			}
 
 			_setActiveViewSettingsJSON();
