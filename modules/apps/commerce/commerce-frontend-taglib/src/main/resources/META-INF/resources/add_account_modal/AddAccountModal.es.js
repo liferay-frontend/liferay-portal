@@ -14,9 +14,18 @@
 
 'use strict';
 
-import {debounce, fetch} from 'frontend-js-web';
+import {
+	debounce,
+	fetch,
+	validateArray,
+	validateBoolean,
+	validateNumber,
+	validateOneOfType,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-component';
-import Soy, {Config} from 'metal-soy';
+import Soy from 'metal-soy';
 
 import template from './AddAccountModal.soy';
 
@@ -165,22 +174,66 @@ class AddAccountModal extends Component {
 
 Soy.register(AddAccountModal, template);
 
-const USER_SCHEMA = Config.shapeOf({
-	email: Config.string().required(),
-	name: Config.string().required(),
-	thumbnail: Config.string().required(),
-	userId: Config.oneOfType([Config.string(), Config.number()]).required(),
-});
+const USER_SCHEMA = {
+	validator: validateShapeOf({
+		email: {
+			required: true,
+			validator: validateString,
+		},
+		name: {
+			required: true,
+			validator: validateString,
+		},
+		thumbnail: {
+			required: true,
+			validator: validateString,
+		},
+		userId: {
+			required: true,
+			validator: validateOneOfType([
+				{
+					validator: validateString,
+				},
+				{
+					validator: validateNumber,
+				},
+			]),
+		},
+	}),
+};
 
 AddAccountModal.STATE = {
-	_loading: Config.bool().internal().value(false),
-	_modalVisible: Config.bool().internal().value(false),
-	accountName: Config.string().value(''),
-	addedUsers: Config.array(USER_SCHEMA).value([]),
-	query: Config.string().value(''),
-	spritemap: Config.string(),
-	users: Config.array(USER_SCHEMA).value([]),
-	usersAPI: Config.string().value(''),
+	_loading: {
+		internal: true,
+		validator: validateBoolean,
+		value: false,
+	},
+	_modalVisible: {
+		internal: true,
+		validator: validateBoolean,
+		value: false,
+	},
+	accountName: {
+		validator: validateString,
+		value: '',
+	},
+	addedUsers: {
+		validator: validateArray(USER_SCHEMA),
+		value: [],
+	},
+	query: {
+		validator: validateString,
+		value: '',
+	},
+	spritemap: {validator: validateString},
+	users: {
+		validator: validateArray(USER_SCHEMA),
+		value: [],
+	},
+	usersAPI: {
+		validator: validateString,
+		value: '',
+	},
 };
 
 export {AddAccountModal};

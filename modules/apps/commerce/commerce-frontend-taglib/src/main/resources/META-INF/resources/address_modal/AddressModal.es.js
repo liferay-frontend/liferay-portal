@@ -14,9 +14,18 @@
 
 'use strict';
 
-import {fetch} from 'frontend-js-web';
+import {
+	fetch,
+	validateArray,
+	validateBoolean,
+	validateNumber,
+	validateOneOf,
+	validateOneOfType,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-component';
-import Soy, {Config} from 'metal-soy';
+import Soy from 'metal-soy';
 
 import template from './AddressModal.soy';
 
@@ -225,50 +234,152 @@ class AddressModal extends Component {
 Soy.register(AddressModal, template);
 
 AddressModal.STATE = {
-	_countries: Config.array(
-		Config.shapeOf({
-			billingAllowed: Config.bool().required(),
-			id: Config.number().required(),
-			name: Config.string().required(),
-			shippingAllowed: Config.bool().required(),
-		})
-	).value([]),
-	_firstFormValid: Config.bool().value(false),
-	_formData: Config.shapeOf({
-		address: Config.string(),
-		addressType: Config.oneOfType([Config.string(), Config.number()]),
-		city: Config.string(),
-		country: Config.oneOfType([Config.string(), Config.number()]),
-		id: Config.oneOfType([Config.string(), Config.number()]),
-		referent: Config.string(),
-		region: Config.oneOfType([Config.string(), Config.number()]),
-		telephone: Config.string(),
-		zipCode: Config.string(),
-	}).value({
-		address: null,
-		addressType: 2,
-		city: null,
-		country: null,
-		id: null,
-		referent: null,
-		region: null,
-		telephone: null,
-		zipCode: null,
-	}),
-	_isBillingAllowed: Config.bool().value(true),
-	_isShippingAllowed: Config.bool().value(true),
-	_modalVisible: Config.bool().internal().value(false),
-	_regions: Config.array(
-		Config.shapeOf({
-			id: Config.number().required(),
-			name: Config.string().required(),
-		})
-	).value([]),
-	_secondFormValid: Config.bool().value(false),
-	_stage: Config.number(Config.oneOf([1, 2])).value(1),
-	countriesAPI: Config.string().required(),
-	regionsAPI: Config.string().required(),
-	spritemap: Config.string(),
+	_countries: {
+		validator: validateArray({
+			validator: validateShapeOf({
+				billingAllowed: {
+					required: true,
+					validator: validateBoolean,
+				},
+				id: {
+					required: true,
+					validator: validateNumber,
+				},
+				name: {
+					required: true,
+					validator: validateString,
+				},
+				shippingAllowed: {
+					required: true,
+					validator: validateBoolean,
+				},
+			}),
+		}),
+		value: [],
+	},
+	_firstFormValid: {
+		validator: validateBoolean,
+		value: false,
+	},
+	_formData: {
+		validator: validateShapeOf({
+			address: {
+				validator: validateString,
+			},
+			addressType: {
+				validator: validateOneOfType([
+					{
+						validator: validateString,
+					},
+					{
+						validator: validateNumber,
+					},
+				]),
+			},
+			city: {
+				validator: validateString,
+			},
+			country: {
+				validator: validateOneOfType([
+					{
+						validator: validateString,
+					},
+					{
+						validator: validateNumber,
+					},
+				]),
+			},
+			id: {
+				validator: validateOneOfType([
+					{
+						validator: validateString,
+					},
+					{
+						validator: validateNumber,
+					},
+				]),
+			},
+			referent: {
+				validator: validateString,
+			},
+			region: {
+				validator: validateOneOfType([
+					{
+						validator: validateString,
+					},
+					{
+						validator: validateNumber,
+					},
+				]),
+			},
+			telephone: {
+				validator: validateString,
+			},
+			zipCode: {
+				validator: validateString,
+			},
+		}),
+		value: {
+			address: null,
+			addressType: 2,
+			city: null,
+			country: null,
+			id: null,
+			referent: null,
+			region: null,
+			telephone: null,
+			zipCode: null,
+		},
+	},
+	_isBillingAllowed: {
+		validator: validateBoolean,
+		value: true,
+	},
+	_isShippingAllowed: {
+		validator: validateBoolean,
+		value: true,
+	},
+	_modalVisible: {
+		internal: true,
+		validator: validateBoolean,
+		value: false,
+	},
+	_regions: {
+		validator: validateArray({
+			validator: validateShapeOf({
+				id: {
+					required: true,
+					validator: validateNumber,
+				},
+				name: {
+					required: true,
+					validator: validateString,
+				},
+			}),
+		}),
+		value: [],
+	},
+	_secondFormValid: {
+		validator: validateBoolean,
+		value: false,
+	},
+	_stage: {
+		validator: validateNumber({
+			validator: validateOneOf([1, 2]),
+		}),
+		value: 1,
+	},
+	countriesAPI: {
+		required: true,
+		validator: validateString,
+	},
+	regionsAPI: {
+		required: true,
+		validator: validateString,
+	},
+	spritemap: {
+		validator: validateString,
+	},
 };
 
 export {AddressModal};

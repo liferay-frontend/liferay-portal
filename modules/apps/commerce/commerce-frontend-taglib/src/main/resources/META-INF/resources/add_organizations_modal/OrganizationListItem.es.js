@@ -14,8 +14,16 @@
 
 'use strict';
 
+import {
+	validateArray,
+	validateBoolean,
+	validateNumber,
+	validateOneOfType,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-component';
-import Soy, {Config} from 'metal-soy';
+import Soy from 'metal-soy';
 
 import template from './OrganizationListItem.soy';
 
@@ -47,17 +55,44 @@ class OrganizationListItem extends Component {
 Soy.register(OrganizationListItem, template);
 
 OrganizationListItem.STATE = {
-	_selected: Config.bool().value(false),
-	colorId: Config.number(),
-	id: Config.oneOfType([Config.number(), Config.string()]),
-	name: Config.string().required(),
-	query: Config.string(),
-	selectedOrganizations: Config.array(
-		Config.shapeOf({
-			id: Config.oneOfType([Config.number(), Config.string()]),
-			name: Config.string(),
-		})
-	).value([]),
+	_selected: {
+		validator: validateBoolean,
+		value: false,
+	},
+	colorId: {
+		validator: validateNumber,
+	},
+	id: {
+		validator: validateOneOfType([
+			{
+				validator: validateNumber,
+			},
+			{validator: validateString},
+		]),
+	},
+	name: {
+		required: true,
+		validator: validateString,
+	},
+	query: {
+		validator: validateString,
+	},
+	selectedOrganizations: {
+		validator: validateArray({
+			validator: validateShapeOf({
+				id: {
+					validator: validateOneOfType([
+						{
+							validator: validateNumber,
+						},
+						{validator: validateString},
+					]),
+				},
+				name: {validator: validateString},
+			}),
+		}),
+		value: [],
+	},
 };
 
 export {OrganizationListItem};

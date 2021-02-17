@@ -14,8 +14,13 @@
 
 'use strict';
 
+import {
+	validateNumber,
+	validateOneOfType,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-component';
-import Soy, {Config} from 'metal-soy';
+import Soy from 'metal-soy';
 
 import template from './OrganizationInputItem.soy';
 
@@ -32,9 +37,24 @@ class OrganizationInputItem extends Component {
 Soy.register(OrganizationInputItem, template);
 
 OrganizationInputItem.STATE = {
-	id: Config.oneOfType([Config.number(), Config.string()]).required(),
-	name: Config.string().required(),
-	spritemap: Config.string(),
+	id: {
+		required: true,
+		validator: validateOneOfType([
+			{
+				validator: validateNumber,
+			},
+			{
+				validator: validateString,
+			},
+		]),
+	},
+	name: {
+		required: true,
+		validator: validateString,
+	},
+	spritemap: {
+		validator: validateString,
+	},
 };
 
 export {OrganizationInputItem};

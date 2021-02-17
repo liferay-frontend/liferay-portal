@@ -14,9 +14,18 @@
 
 'use strict';
 
-import {debounce, fetch} from 'frontend-js-web';
+import {
+	debounce,
+	fetch,
+	validateArray,
+	validateBoolean,
+	validateNumber,
+	validateOneOfType,
+	validateShapeOf,
+	validateString,
+} from 'frontend-js-web';
 import Component from 'metal-component';
-import Soy, {Config} from 'metal-soy';
+import Soy from 'metal-soy';
 
 import template from './AddOrganizationsModal.soy';
 
@@ -160,20 +169,59 @@ class AddOrganizationModal extends Component {
 
 Soy.register(AddOrganizationModal, template);
 
-const ORGANIZATION_SCHEMA = Config.shapeOf({
-	colorId: Config.number(),
-	id: Config.oneOfType([Config.number(), Config.string()]).required(),
-	name: Config.string().required(),
-});
+const ORGANIZATION_SCHEMA = {
+	validator: validateShapeOf({
+		colorId: {
+			validator: validateNumber,
+		},
+		id: {
+			required: true,
+			validator: validateOneOfType([
+				{
+					validator: validateNumber,
+				},
+				{
+					validator: validateString,
+				},
+			]),
+		},
+		name: {
+			required: true,
+			validator: validateString,
+		},
+	}),
+};
 
 AddOrganizationModal.STATE = {
-	_loading: Config.bool().internal().value(false),
-	_modalVisible: Config.bool().internal().value(false),
-	organizations: Config.array(ORGANIZATION_SCHEMA).value([]),
-	organizationsAPI: Config.string().value(''),
-	query: Config.string().value(''),
-	selectedOrganizations: Config.array(ORGANIZATION_SCHEMA).value([]),
-	spritemap: Config.string(),
+	_loading: {
+		internal: true,
+		validator: validateBoolean,
+		value: false,
+	},
+	_modalVisible: {
+		internal: true,
+		validator: validateBoolean,
+		value: false,
+	},
+	organizations: {
+		validator: validateArray(ORGANIZATION_SCHEMA),
+		value: [],
+	},
+	organizationsAPI: {
+		validator: validateString,
+		value: '',
+	},
+	query: {
+		validator: validateString,
+		value: '',
+	},
+	selectedOrganizations: {
+		validator: validateArray(ORGANIZATION_SCHEMA),
+		value: [],
+	},
+	spritemap: {
+		validator: validateString,
+	},
 };
 
 export {AddOrganizationModal};
