@@ -14,12 +14,12 @@
 
 import ClayComponent from 'clay-component';
 import {
-	actionItemsValidator,
 	creationMenuItemsValidator,
 	filterItemsValidator,
 	filterLabelsValidator,
 } from 'clay-management-toolbar';
 import {
+	validateAny,
 	validateArrayOf,
 	validateBoolean,
 	validateNumber,
@@ -301,7 +301,43 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(array|undefined)}
 	 */
-	actionItems: actionItemsValidator,
+	actionItems: {
+		validator: validateArrayOf({
+			validator: validateShapeOf({
+				disabled: {
+					validator: validateBoolean,
+					value: false,
+				},
+				href: {
+					required: true,
+					validator: validateString,
+				},
+				icon: {
+					validator: validateString,
+				},
+				id: {
+					validator: validateString,
+				},
+				label: {
+					required: true,
+					validator: validateString,
+				},
+				quickAction: validateBoolean,
+				separator: {
+					validator: validateBoolean,
+					value: false,
+				},
+				title: {
+					validator: validateString,
+				},
+				type: {
+					validator: validateOneOf(['group', 'item']),
+					value: 'item',
+				},
+			}),
+		}),
+		value: [],
+	},
 
 	/**
 	 * Status of the select items checkbox. If the status is checked or
@@ -733,7 +769,7 @@ ManagementToolbar.STATE = {
 	 */
 	spritemap: {
 		required: true,
-		validator: validateString,
+		validator: validateAny,
 	},
 
 	/**
