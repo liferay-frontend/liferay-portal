@@ -75,8 +75,20 @@ AUI.add(
 				},
 
 				rowClassNameActive: {
-					validator: Lang.isString,
-					value: 'active table-active',
+					setter(rowClassNameActive) {
+						if (Lang.isString(rowClassNameActive)) {
+							var active = rowClassNameActive.split(',');
+							var rowSelector = [
+								'li[data-selectable="true"]',
+								'tr[data-selectable="true"]',
+							];
+
+							return active[
+								rowSelector.indexOf(this.get(STR_ROW_SELECTOR))
+							];
+						}
+					},
+					value: 'active,table-active',
 				},
 
 				rowSelector: {
