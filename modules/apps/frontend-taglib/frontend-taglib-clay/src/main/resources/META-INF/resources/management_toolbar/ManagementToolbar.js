@@ -16,7 +16,7 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayManagementToolbar from '@clayui/management-toolbar';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import ActionControls from './ActionControls';
 import CreationMenu from './CreationMenu';
@@ -44,6 +44,7 @@ function ManagementToolbar({
 	onClearSelectionButtonClick = () => {},
 	onCreateButtonClick = () => {},
 	onCreationMenuItemClick = () => {},
+	onComponentMount,
 	onInfoButtonClick = () => {},
 	onSelectAllButtonClick = () => {},
 	onShowMoreButtonClick,
@@ -69,6 +70,14 @@ function ManagementToolbar({
 	);
 	const [active, setActive] = useState(initialCheckboxStatus !== 'unchecked');
 	const [searchMobile, setSearchMobile] = useState(false);
+
+	useEffect(() => {
+		if (onComponentMount) {
+			onComponentMount();
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<>
