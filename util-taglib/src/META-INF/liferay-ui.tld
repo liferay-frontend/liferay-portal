@@ -695,6 +695,12 @@
 			<type>int</type>
 		</attribute>
 		<attribute>
+			<description>A CSS class for styling the component's <![CDATA[<code>ul</code>]]> menu element.</description>
+			<name>menuCssClass</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<description>Text to display next to the icon menu trigger. The default value is <![CDATA[<code>actions</code>]]>.</description>
 			<name>message</name>
 			<required>false</required>

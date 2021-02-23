@@ -97,6 +97,7 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 			_id = null;
 			_localizeMessage = true;
 			_maxDisplayItems = _DEFAULT_MAX_DISPLAY_ITEMS;
+			_menuCssClass = null;
 			_message = "actions";
 			_scroll = false;
 			_select = false;
@@ -207,6 +208,10 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 		_maxDisplayItems = maxDisplayItems;
 	}
 
+	public void setMenuCssClass(String menuCssClass) {
+		_menuCssClass = menuCssClass;
+	}
+
 	public void setMessage(String message) {
 		if (message != null) {
 			_message = message;
@@ -310,6 +315,10 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 					if (Validator.isNotNull(_cssClass)) {
 						jspWriter.write(StringPool.SPACE);
 						jspWriter.write(_cssClass);
+					}
+
+					if (Validator.isNotNull(_menuCssClass)) {
+						jspWriter.write(StringPool.SPACE + _menuCssClass);
 					}
 
 					jspWriter.write("\" id=\"");
@@ -423,6 +432,11 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 					jspWriter.write("<ul class=\"dropdown-menu lfr-menu-list");
 					jspWriter.write(" direction-");
 					jspWriter.write(_direction);
+
+					if (Validator.isNotNull(_menuCssClass)) {
+						jspWriter.write(StringPool.SPACE + _menuCssClass);
+					}
+
 					jspWriter.write("\">");
 				}
 			}
@@ -486,6 +500,8 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 		}
 
 		httpServletRequest.setAttribute(
+			"liferay-ui:icon-menu:menuCssClass", _menuCssClass);
+		httpServletRequest.setAttribute(
 			"liferay-ui:icon-menu:message", message);
 
 		httpServletRequest.setAttribute("liferay-ui:icon-menu:scroll", _scroll);
@@ -515,6 +531,7 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 	private boolean _localizeMessage = true;
 	private String _markupView;
 	private int _maxDisplayItems = _DEFAULT_MAX_DISPLAY_ITEMS;
+	private String _menuCssClass;
 	private String _message = "actions";
 	private boolean _scroll;
 	private boolean _select;
