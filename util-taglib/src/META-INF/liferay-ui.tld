@@ -518,6 +518,12 @@
 			<type>boolean</type>
 		</attribute>
 		<attribute>
+			<description>A CSS class for styling the icon's URL.</description>
+			<name>linkCssClass</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<description>A URL navigated to when the icon is clicked.</description>
 			<name>url</name>
 			<required>true</required>
