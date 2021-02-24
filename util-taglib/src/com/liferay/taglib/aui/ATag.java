@@ -77,6 +77,7 @@ public class ATag extends BaseATag {
 				jspWriter.write("</svg>");
 			}
 
+			jspWriter.write("</span>");
 			jspWriter.write("</a>");
 		}
 		else {
@@ -171,6 +172,8 @@ public class ATag extends BaseATag {
 		_writeDynamicAttributes(jspWriter);
 
 		jspWriter.write(">");
+
+		jspWriter.write("<span class=\"c-inner\" tabindex=\"-1\">");
 
 		if (Validator.isNotNull(label)) {
 			if (getLocalizeLabel()) {
