@@ -66,7 +66,7 @@ clearResultsURL.setParameter("keywords", StringPool.BLANK);
 			<portlet:param name="publishConfigurationButtons" value="saved" />
 		</liferay-portlet:renderURL>
 
-		<clay:management-toolbar-v2
+		<clay:management-toolbar
 			clearResultsURL="<%= clearResultsURL.toString() %>"
 			itemsTotal="<%= exportImportConfigurationsCount %>"
 			searchActionURL="<%= searchURL.toString() %>"
