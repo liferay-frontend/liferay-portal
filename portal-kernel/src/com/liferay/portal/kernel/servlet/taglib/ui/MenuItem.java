@@ -29,6 +29,10 @@ public abstract class MenuItem extends BaseUIItem implements UIActionItem {
 		return _label;
 	}
 
+	public String getLinkCssClass() {
+		return _linkCssClass;
+	}
+
 	public boolean hasSeparator() {
 		return _separator;
 	}
@@ -43,12 +47,19 @@ public abstract class MenuItem extends BaseUIItem implements UIActionItem {
 		_label = label;
 	}
 
+	public void setLinkCssClass(String linkCssClass) {
+		_linkCssClass = linkCssClass;
+	}
+
 	public void setSeparator(boolean separator) {
 		_separator = separator;
 	}
 
+	private static final String _LINK_CSS_CLASS_DEFAULT = "dropdown-item";
+
 	private String _icon;
 	private String _label;
+	private String _linkCssClass = _LINK_CSS_CLASS_DEFAULT;
 	private boolean _separator;
 
 }
