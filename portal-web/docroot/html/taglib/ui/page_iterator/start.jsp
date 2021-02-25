@@ -203,6 +203,7 @@ NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 							%>
 
 								<liferay-ui:icon
+									linkCssClass="dropdown-item"
 									message="<%= String.valueOf(i) %>"
 									onClick='<%= forcePost ? _getOnClick(namespace, curParam, i) : "" %>'
 									url='<%= HtmlUtil.escapeJSLink(url + namespace + curParam + "=" + i + urlAnchor) %>'
