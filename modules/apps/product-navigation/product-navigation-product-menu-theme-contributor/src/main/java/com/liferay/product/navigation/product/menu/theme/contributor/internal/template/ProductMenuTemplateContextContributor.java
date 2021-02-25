@@ -14,7 +14,6 @@
 
 package com.liferay.product.navigation.product.menu.theme.contributor.internal.template;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.template.TemplateContextContributor;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.SessionClicks;
@@ -59,7 +58,7 @@ public class ProductMenuTemplateContextContributor
 			"closed");
 
 		if (Objects.equals(productMenuState, "open")) {
-			cssClass += StringPool.SPACE + "open product-menu-open";
+			cssClass += " open product-menu-open";
 		}
 
 		contextObjects.put("bodyCssClass", cssClass);

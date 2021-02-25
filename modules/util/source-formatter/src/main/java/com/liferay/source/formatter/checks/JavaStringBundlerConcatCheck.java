@@ -52,6 +52,10 @@ public class JavaStringBundlerConcatCheck extends BaseJavaTermCheck {
 		Matcher matcher1 = _stringBundlerConcatPattern.matcher(content);
 
 		while (matcher1.find()) {
+			if (ToolsUtil.isInsideQuotes(content, matcher1.start() + 1)) {
+				continue;
+			}
+
 			String stringBundlerConcatMethodCall = _getMethodCall(
 				content, matcher1.start());
 

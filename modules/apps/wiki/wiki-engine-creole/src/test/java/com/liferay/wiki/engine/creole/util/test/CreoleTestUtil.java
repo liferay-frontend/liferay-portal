@@ -14,6 +14,8 @@
 
 package com.liferay.wiki.engine.creole.util.test;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.engine.creole.internal.parser.ast.WikiPageNode;
@@ -70,9 +72,17 @@ public class CreoleTestUtil {
 			creole10Parser.wikipage();
 		}
 		catch (IOException ioException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(ioException, ioException);
+			}
+
 			throw new RuntimeException("File " + fileName + " does not exist");
 		}
 		catch (RecognitionException recognitionException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(recognitionException, recognitionException);
+			}
+
 			throw new RuntimeException("Unable to parse " + fileName);
 		}
 
@@ -95,5 +105,7 @@ public class CreoleTestUtil {
 
 		return new Creole10Parser(commonTokenStream);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(CreoleTestUtil.class);
 
 }

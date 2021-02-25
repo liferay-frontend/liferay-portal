@@ -16,6 +16,8 @@ package com.liferay.layout.test.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CustomizedPages;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -196,6 +198,9 @@ public class LayoutTestUtil {
 				groupId, false, friendlyURL);
 		}
 		catch (NoSuchLayoutException noSuchLayoutException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchLayoutException, noSuchLayoutException);
+			}
 		}
 
 		String description = "This is a test page.";
@@ -434,5 +439,7 @@ public class LayoutTestUtil {
 			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
 			layout.getTypeSettings());
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(LayoutTestUtil.class);
 
 }

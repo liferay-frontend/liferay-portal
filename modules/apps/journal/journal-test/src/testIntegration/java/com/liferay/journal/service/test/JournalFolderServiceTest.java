@@ -28,6 +28,8 @@ import com.liferay.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.journal.service.JournalFolderServiceUtil;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -328,6 +330,9 @@ public class JournalFolderServiceTest {
 			Assert.fail();
 		}
 		catch (RestoreEntryException restoreEntryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(restoreEntryException, restoreEntryException);
+			}
 		}
 
 		JournalFolder subfolder = JournalTestUtil.addFolder(
@@ -340,6 +345,9 @@ public class JournalFolderServiceTest {
 			Assert.fail();
 		}
 		catch (RestoreEntryException restoreEntryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(restoreEntryException, restoreEntryException);
+			}
 		}
 	}
 
@@ -462,6 +470,9 @@ public class JournalFolderServiceTest {
 			Assert.fail();
 		}
 		catch (RestoreEntryException restoreEntryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(restoreEntryException, restoreEntryException);
+			}
 		}
 
 		JournalFolder subfolder = JournalTestUtil.addFolder(
@@ -474,6 +485,9 @@ public class JournalFolderServiceTest {
 			Assert.fail();
 		}
 		catch (RestoreEntryException restoreEntryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(restoreEntryException, restoreEntryException);
+			}
 		}
 	}
 
@@ -772,6 +786,9 @@ public class JournalFolderServiceTest {
 
 		Assert.assertEquals("Description 1", parentFolder.getDescription());
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		JournalFolderServiceTest.class);
 
 	@DeleteAfterTestRun
 	private Group _group;

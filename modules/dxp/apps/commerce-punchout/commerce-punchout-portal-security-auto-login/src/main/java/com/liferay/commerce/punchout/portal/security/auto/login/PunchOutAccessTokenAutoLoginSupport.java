@@ -55,7 +55,7 @@ public class PunchOutAccessTokenAutoLoginSupport extends BaseAutoLogin {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					_PUNCH_OUT_ACCESS_TOKEN_PARAM +
-						"  parameter not found in " + "request");
+						"  parameter not found in request");
 			}
 
 			return null;

@@ -17,24 +17,19 @@ package com.liferay.commerce.health.status.web.internal;
 import com.liferay.commerce.constants.CommerceHealthStatusConstants;
 import com.liferay.commerce.constants.CommerceSAPConstants;
 import com.liferay.commerce.health.status.CommerceHealthHttpStatus;
+import com.liferay.commerce.helper.CommerceSAPHelper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.resource.bundle.AggregateResourceBundleLoader;
-import com.liferay.portal.kernel.resource.bundle.ClassResourceBundleLoader;
-import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.security.service.access.policy.model.SAPEntry;
 import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalService;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -63,11 +58,12 @@ public class ServiceAccessPolicyCommerceHealthHttpStatus
 
 		long companyId = _portal.getCompanyId(httpServletRequest);
 
-		_removeCommerceDefaultSAPEntries(companyId);
+		_commerceSAPHelper.removeCommerceDefaultSAPEntries(companyId);
 
 		User user = _userLocalService.getDefaultUser(companyId);
 
-		_addCommerceDefaultSAPEntries(companyId, user.getUserId());
+		_commerceSAPHelper.addCommerceDefaultSAPEntries(
+			companyId, user.getUserId());
 	}
 
 	@Override
@@ -142,55 +138,8 @@ public class ServiceAccessPolicyCommerceHealthHttpStatus
 		return false;
 	}
 
-	private void _addCommerceDefaultSAPEntries(long companyId, long userId)
-		throws PortalException {
-
-		Class<?> clazz = getClass();
-
-		ResourceBundleLoader resourceBundleLoader =
-			new AggregateResourceBundleLoader(
-				new ClassResourceBundleLoader(
-					"content.Language", clazz.getClassLoader()),
-				LanguageResources.PORTAL_RESOURCE_BUNDLE_LOADER);
-
-		for (String[] sapEntryObjectArray :
-				CommerceSAPConstants.SAP_ENTRY_OBJECT_ARRAYS) {
-
-			String sapEntryName = sapEntryObjectArray[0];
-
-			SAPEntry sapEntry = _sapEntryLocalService.fetchSAPEntry(
-				companyId, sapEntryName);
-
-			if (sapEntry != null) {
-				continue;
-			}
-
-			Map<Locale, String> titleMap =
-				ResourceBundleUtil.getLocalizationMap(
-					resourceBundleLoader,
-					"public-access-to-the-commerce-service-apis");
-
-			_sapEntryLocalService.addSAPEntry(
-				userId, sapEntryObjectArray[1], true, true, sapEntryName,
-				titleMap, new ServiceContext());
-		}
-	}
-
-	private void _removeCommerceDefaultSAPEntries(long companyId)
-		throws PortalException {
-
-		List<SAPEntry> companySAPEntries =
-			_sapEntryLocalService.getCompanySAPEntries(
-				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		for (SAPEntry sapEntry : companySAPEntries) {
-			if (Objects.equals(
-					sapEntry.getName(), CommerceSAPConstants.SAP_ENTRY_NAME)) {
-
-				_sapEntryLocalService.deleteSAPEntry(sapEntry);
-			}
-		}
-	}
+	@Reference
+	private CommerceSAPHelper _commerceSAPHelper;
 
 	@Reference
 	private Portal _portal;

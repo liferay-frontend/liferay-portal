@@ -84,6 +84,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ANY_LAST</td>
+	<td>xpath=(//*[contains(@class,'btn')][normalize-space(text())='${key_text}'])[last()]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>APPLY_EFFECTS</td>
 	<td>//div[contains(@class,'controls-container') and contains(@class,'open')]//button[contains(@class,'btn') and contains(.,'Apply')]</td>
 	<td></td>
@@ -111,11 +116,6 @@
 <tr>
 	<td>CANCEL_CHECKOUT</td>
 	<td>//a[contains(@class,'btn') and contains(.,'Cancel Checkout')] | //button[contains(.,'Cancel Checkout')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>CANCEL_GIVEN_POSITION</td>
-	<td>//div[contains(@class,'lfr-form-content')]/../div/a[contains(@class,'cancel') and contains(@class,'btn')] | //button[contains(.,'Cancel')] | //a[contains(@class,'btn') and contains(.,'Cancel')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -514,11 +514,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>PUBLISH_GIVEN_POSITION</td>
-	<td>//div[contains(@class,'lfr-form-content')]/../div/button[span[contains(.,'Publish')]]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>PUBLISH_LOCALIZED</td>
 	<td>//button[contains(@id,'publishButton')]</td>
 	<td></td>
@@ -530,7 +525,7 @@
 </tr>
 <tr>
 	<td>REMOVE_IMAGE</td>
-	<td>//button[@id='sdjj___removeImage']</td>
+	<td>//button[*[name()='svg'][contains(@class,'lexicon-icon-trash')]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -675,7 +670,7 @@
 </tr>
 <tr>
 	<td>SELECT_FILE_SMALL_IMAGE</td>
-	<td>//div[contains(@class,'blogs-small-image-selector')]//a[contains(.,'Select File')]</td>
+	<td>//div[contains(@class,'blogs-small-image-selector')]//div[contains(@class,'browse-image-controls')]//button[contains(.,'Select File')]</td>
 	<td></td>
 </tr>
 <tr>

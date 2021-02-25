@@ -208,16 +208,17 @@ public class CountryLocalServiceTest {
 		_addCountry(
 			"a6", "a66", false, keywords + RandomTestUtil.randomString());
 
+		_assertSearchCountriesPaginationSort(
+			expectedCountries, keywords,
+			OrderByComparatorFactoryUtil.create("Country", "countryId", true),
+			ServiceContextTestUtil.getServiceContext());
+
 		Comparator<Country> comparator = Comparator.comparing(
-			Country::getName, String.CASE_INSENSITIVE_ORDER);
+			Country::getCountryId);
 
 		_assertSearchCountriesPaginationSort(
-			ListUtil.sort(expectedCountries, comparator), keywords,
-			OrderByComparatorFactoryUtil.create("Country", "name", true),
-			ServiceContextTestUtil.getServiceContext());
-		_assertSearchCountriesPaginationSort(
 			ListUtil.sort(expectedCountries, comparator.reversed()), keywords,
-			OrderByComparatorFactoryUtil.create("Country", "name", false),
+			OrderByComparatorFactoryUtil.create("Country", "countryId", false),
 			ServiceContextTestUtil.getServiceContext());
 	}
 

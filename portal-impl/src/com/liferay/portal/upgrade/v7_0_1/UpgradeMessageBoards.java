@@ -48,8 +48,7 @@ public class UpgradeMessageBoards extends BaseUpgradePortletPreferences {
 
 		for (Locale availableLocale : availableLocales) {
 			String key =
-				"priorities" + CharPool.UNDERLINE +
-					LanguageUtil.getLanguageId(availableLocale);
+				"priorities_" + LanguageUtil.getLanguageId(availableLocale);
 
 			String[] oldThreadPriorities = portletPreferences.getValues(
 				key, StringPool.EMPTY_ARRAY);

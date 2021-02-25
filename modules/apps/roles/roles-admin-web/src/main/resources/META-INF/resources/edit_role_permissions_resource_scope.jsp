@@ -23,7 +23,6 @@ Object[] objArray = (Object[])row.getObject();
 
 Role role = (Role)objArray[0];
 String target = (String)objArray[3];
-Boolean supportsFilterByGroup = (Boolean)objArray[5];
 long[] groupIdsArray = (long[])objArray[7];
 List<String> groupNames = (List<String>)objArray[8];
 String portletId = (String)objArray[9];
@@ -34,45 +33,39 @@ String portletId = (String)objArray[9];
 
 <div id="<portlet:namespace />groupDiv<%= HtmlUtil.escapeAttribute(target) %>">
 	<span id="<portlet:namespace />groupHTML<%= HtmlUtil.escapeAttribute(target) %>">
+		<c:choose>
+			<c:when test="<%= (Boolean)objArray[5] %>">
 
-		<%
-		if (supportsFilterByGroup) {
-			ItemSelector itemSelector = (ItemSelector)request.getAttribute(RolesAdminWebKeys.ITEM_SELECTOR);
+				<%
+				ItemSelector itemSelector = (ItemSelector)request.getAttribute(RolesAdminWebKeys.ITEM_SELECTOR);
 
-			GroupItemSelectorCriterion groupItemSelectorCriterion = new GroupItemSelectorCriterion();
+				GroupItemSelectorCriterion groupItemSelectorCriterion = new GroupItemSelectorCriterion();
 
-			groupItemSelectorCriterion.setAllowNavigation(false);
-			groupItemSelectorCriterion.setDesiredItemSelectorReturnTypes(new URLItemSelectorReturnType());
-			groupItemSelectorCriterion.setIncludeAllVisibleGroups(true);
-			groupItemSelectorCriterion.setIncludeFormsSite(true);
-			groupItemSelectorCriterion.setIncludeUserPersonalSite(true);
-			groupItemSelectorCriterion.setPortletId(portletId);
-			groupItemSelectorCriterion.setTarget(target);
+				groupItemSelectorCriterion.setAllowNavigation(false);
+				groupItemSelectorCriterion.setDesiredItemSelectorReturnTypes(new URLItemSelectorReturnType());
+				groupItemSelectorCriterion.setIncludeAllVisibleGroups(true);
+				groupItemSelectorCriterion.setIncludeFormsSite(true);
+				groupItemSelectorCriterion.setIncludeUserPersonalSite(true);
+				groupItemSelectorCriterion.setPortletId(portletId);
+				groupItemSelectorCriterion.setTarget(target);
 
-			PortletURL itemSelectorURL = itemSelector.getItemSelectorURL(RequestBackedPortletURLFactoryUtil.create(liferayPortletRequest), liferayPortletResponse.getNamespace() + "selectGroup", groupItemSelectorCriterion);
-		%>
+				PortletURL itemSelectorURL = itemSelector.getItemSelectorURL(RequestBackedPortletURLFactoryUtil.create(liferayPortletRequest), liferayPortletResponse.getNamespace() + "selectGroup", groupItemSelectorCriterion);
+				%>
 
-			<react:component
-				module="js/GroupLabels.es"
-				props='<%=
-					HashMapBuilder.<String, Object>put(
-						"itemSelectorURL", itemSelectorURL.toString()
-					).put(
-						"target", target
-					).build()
-				%>'
-			/>
-
-		<%
-		}
-		else if (role.getType() == RoleConstants.TYPE_REGULAR) {
-		%>
-
-			<liferay-ui:message key="all-sites-and-asset-libraries" />
-
-		<%
-		}
-		%>
-
+				<react:component
+					module="js/GroupLabels.es"
+					props='<%=
+						HashMapBuilder.<String, Object>put(
+							"itemSelectorURL", itemSelectorURL.toString()
+						).put(
+							"target", target
+						).build()
+					%>'
+				/>
+			</c:when>
+			<c:when test="<%= role.getType() == RoleConstants.TYPE_REGULAR %>">
+				<liferay-ui:message key="all-sites-and-asset-libraries" />
+			</c:when>
+		</c:choose>
 	</span>
 </div>

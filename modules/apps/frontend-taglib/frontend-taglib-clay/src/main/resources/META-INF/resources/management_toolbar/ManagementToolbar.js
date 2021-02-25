@@ -43,7 +43,9 @@ function ManagementToolbar({
 	onCheckboxChange = () => {},
 	onClearSelectionButtonClick = () => {},
 	onCreateButtonClick = () => {},
+	onCreationMenuItemClick = () => {},
 	onInfoButtonClick = () => {},
+	onFilterDropdownItemClick = () => {},
 	onSelectAllButtonClick = () => {},
 	onShowMoreButtonClick,
 	searchActionURL,
@@ -51,6 +53,7 @@ function ManagementToolbar({
 	searchData,
 	searchFormMethod,
 	searchFormName,
+	searchInputAutoFocus,
 	searchInputName,
 	searchValue,
 	selectAllURL,
@@ -92,6 +95,12 @@ function ManagementToolbar({
 							selectAllURL={selectAllURL}
 							setActionDropdownItems={setActionDropdownItems}
 							setActive={setActive}
+							showCheckBoxLabel={
+								!active &&
+								!filterDropdownItems &&
+								!sortingURL &&
+								!showSearch
+							}
 							supportsBulkActions={supportsBulkActions}
 						/>
 					)}
@@ -100,6 +109,9 @@ function ManagementToolbar({
 						<FilterOrderControls
 							disabled={disabled}
 							filterDropdownItems={filterDropdownItems}
+							onFilterDropdownItemClick={
+								onFilterDropdownItemClick
+							}
 							sortingURL={sortingURL}
 						/>
 					)}
@@ -111,6 +123,7 @@ function ManagementToolbar({
 						searchData={searchData}
 						searchFormMethod={searchFormMethod}
 						searchFormName={searchFormName}
+						searchInputAutoFocus={searchInputAutoFocus}
 						searchInputName={searchInputName}
 						searchMobile={searchMobile}
 						searchValue={searchValue}
@@ -126,7 +139,6 @@ function ManagementToolbar({
 					)}
 					{showInfoButton && (
 						<InfoPanelControl
-							disabled={disabled}
 							infoPanelId={infoPanelId}
 							onInfoButtonClick={onInfoButtonClick}
 						/>
@@ -148,7 +160,6 @@ function ManagementToolbar({
 										trigger={
 											<ClayButtonWithIcon
 												className="nav-link nav-link-monospaced"
-												disabled={disabled}
 												displayType="unstyled"
 												symbol={
 													viewTypeItems.find(
@@ -167,6 +178,9 @@ function ManagementToolbar({
 										{...creationMenu}
 										onCreateButtonClick={
 											onCreateButtonClick
+										}
+										onCreationMenuItemClick={
+											onCreationMenuItemClick
 										}
 										onShowMoreButtonClick={
 											onShowMoreButtonClick

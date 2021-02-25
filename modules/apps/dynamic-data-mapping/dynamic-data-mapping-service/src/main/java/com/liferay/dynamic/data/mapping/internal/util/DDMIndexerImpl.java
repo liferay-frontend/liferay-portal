@@ -637,7 +637,7 @@ public class DDMIndexerImpl implements DDMIndexer {
 
 	private String _getSortableFieldName(String name) {
 		return com.liferay.portal.kernel.search.Field.getSortableFieldName(
-			StringBundler.concat(name, StringPool.UNDERLINE, "String"));
+			name + "_String");
 	}
 
 	private String _getSortableValue(

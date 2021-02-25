@@ -19,6 +19,8 @@ import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -88,30 +90,45 @@ public class StagingGroupHelperTest {
 			GroupLocalServiceUtil.deleteGroup(_localLiveGroup.getGroupId());
 		}
 		catch (NoSuchGroupException noSuchGroupException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchGroupException, noSuchGroupException);
+			}
 		}
 
 		try {
 			GroupLocalServiceUtil.deleteGroup(_localStagingGroup.getGroupId());
 		}
 		catch (NoSuchGroupException noSuchGroupException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchGroupException, noSuchGroupException);
+			}
 		}
 
 		try {
 			GroupLocalServiceUtil.deleteGroup(_regularGroup.getGroupId());
 		}
 		catch (NoSuchGroupException noSuchGroupException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchGroupException, noSuchGroupException);
+			}
 		}
 
 		try {
 			GroupLocalServiceUtil.deleteGroup(_remoteLiveGroup.getGroupId());
 		}
 		catch (NoSuchGroupException noSuchGroupException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchGroupException, noSuchGroupException);
+			}
 		}
 
 		try {
 			GroupLocalServiceUtil.deleteGroup(_remoteStagingGroup.getGroupId());
 		}
 		catch (NoSuchGroupException noSuchGroupException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchGroupException, noSuchGroupException);
+			}
 		}
 	}
 
@@ -956,6 +973,9 @@ public class StagingGroupHelperTest {
 
 	private static final String _PORTLET_ID_BOOKMARKS =
 		"com_liferay_bookmarks_web_portlet_BookmarksPortlet";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		StagingGroupHelperTest.class);
 
 	private Group _localLiveGroup;
 	private Group _localLiveScopeGroup;

@@ -2465,7 +2465,7 @@ public class OrganizationLocalServiceImpl
 	}
 
 	private static final String _TYPE_FIELD_NAME = Field.getSortableFieldName(
-		StringBundler.concat(Field.TYPE, StringPool.UNDERLINE, "String"));
+		Field.TYPE + "_String");
 
 	private static volatile OrganizationTypesSettings
 		_organizationTypesSettings =

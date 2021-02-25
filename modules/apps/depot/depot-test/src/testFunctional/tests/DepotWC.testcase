@@ -324,7 +324,11 @@ definition {
 	@description = "This ensures that web content with structure can be restored to a depot."
 	@priority = "5"
 	test RestoreWebContentWithStructure {
-		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
+		JSONDepot.addDepot(
+			depotDescription = "This is the description of a depot",
+			depotName = "Test Restore WC In Depot");
+
+		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Restore WC In Depot");
 
 		NavItem.gotoStructures();
 
@@ -338,7 +342,7 @@ definition {
 
 		WebContentStructures.saveCP(structureName = "WC Structure Name");
 
-		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
+		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Restore WC In Depot");
 
 		NavItem.gotoTemplates();
 
@@ -348,37 +352,37 @@ definition {
 			templateFieldNames = "Text",
 			templateName = "WC Template Name");
 
-		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
+		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Restore WC In Depot");
 
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
 
 		WebContent.addWithStructureCP(
 			webContentText = "WC WebContent Text",
-			webContentTitle = "Romove and Restore WC WebContent Title");
+			webContentTitle = "Remove and Restore WC WebContent Title");
 
 		PortletEntry.publish();
 
 		WebContent.moveToRecycleBinCP(
 			assetType = "Web Content Article",
-			webContentTitle = "Romove and Restore WC WebContent Title");
+			webContentTitle = "Remove and Restore WC WebContent Title");
 
-		DepotNavigator.openDepotRecycleBinAdmin(depotName = "Test Depot Name");
+		DepotNavigator.openDepotRecycleBinAdmin(depotName = "Test Restore WC In Depot");
 
 		RecycleBin.viewCP(
-			assetName = "Romove and Restore WC WebContent Title",
+			assetName = "Remove and Restore WC WebContent Title",
 			assetType = "Web Content Article",
 			deleteUser = "Test Test");
 
 		RecycleBin.restoreCP(
-			assetName = "Romove and Restore WC WebContent Title",
+			assetName = "Remove and Restore WC WebContent Title",
 			assetRestoreLocation = "Home",
 			assetType = "Web Content Article");
 
-		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
+		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Restore WC In Depot");
 
 		WebContent.viewWithStructureCP(
 			webContentText = "WC WebContent Text",
-			webContentTitle = "Romove and Restore WC WebContent Title");
+			webContentTitle = "Remove and Restore WC WebContent Title");
 	}
 
 }

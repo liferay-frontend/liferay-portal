@@ -440,6 +440,7 @@ away from Soy:
 > were the only people using this technology.
 
 ---------------------------------------
+
 ### The spi.id property in log4j xml definition file has been removed
 - **Date:** 2021-Jan-19
 - **JIRA Ticket:** [LPS-125998](https://issues.liferay.com/browse/LPS-125998)
@@ -461,6 +462,7 @@ Remove `@spi.id@` from log4j xml definition file.
 The support of SPI has been removed by LPS-110758.
 
 ---------------------------------------
+
 ### Deprecated attributes have been removed from the frontend-taglib-clay tags
 - **Date:** 2021-Jan-26
 - **JIRA Ticket:** [LPS-125256](https://issues.liferay.com/browse/LPS-125256)
@@ -481,3 +483,67 @@ The `frontend-taglib-clay` module is now using components from
 previous attributes.
 
 ---------------------------------------
+
+### Handling HTML boolean attributes in tags
+- **Date:** 2021-Feb-18
+- **JIRA Ticket:** [LPS-127832](https://issues.liferay.com/browse/LPS-127832)
+
+#### What changed?
+
+Boolean HTML attributes will only be rendered if passed a value of `true`.
+The value for such attributes will be their canonical name.
+
+Previously, a value such as `false` for a `disabled` attribute
+would be rendered into the DOM as `disabled="false"`; now, it is simply
+omitted. Likewise, a `true` value for a `disabled` attribute was
+formerly rendered into the DOM as `disabled="true"`; now it is rendered
+as `disabled="disabled"`.
+
+#### Who is affected?
+
+Anyone passing the following boolean attributes to tag libraries:
+
+"allowfullscreen", "allowpaymentrequest", "async", "autofocus", "autoplay",
+"checked", "controls", "default", "disabled", "formnovalidate", "hidden",
+"ismap", "itemscope", "loop", "multiple", "muted", "nomodule", "novalidate",
+"open", "playsinline", "readonly", "required", "reversed", "selected",
+and "truespeed".
+
+#### How should I update my code?
+
+Ensure that you pass `true` when you want a boolean attribute to be
+present in the DOM. If you have any CSS selectors targeting a `true`
+value (e.g., `[disabled="true"]`) update them to instead target presence
+of the attribute (e.g., `[disabled]`) or its canonical name (e.g.,
+`[disabled="disabled"]`).
+
+#### Why was this change made?
+
+This change is being made for better compliance with [the HTML Standard](https://html.spec.whatwg.org/#boolean-attribute),
+which says that "The presence of a boolean attribute on an element represents
+the true value, and the absence of the attribute represents the false value. If
+the attribute is present, its value must either be the empty string or a value
+that is an ASCII case-insensitive match for the attribute's canonical name."
+
+---------------------------------------
+
+### Remove CSS Compatibility Layer
+- **Date:** 2021-Jan-2
+- **JIRA Ticket:** [LPS-123359](https://issues.liferay.com/browse/LPS-123359)
+
+#### What changed?
+
+The support for Boostrap 3 markup has been deleted and is no longer available.
+
+#### Who is affected?
+
+This affects any development that uses the old Boostrap 3 markup and was not correctly migrated to Boostrap 4 markup.
+
+#### How should I update my code?
+
+If you are using Clay markup you can update it by following the last [Clay components](https://clayui.com/docs/components/index.html) version.
+If your markup is based on Boostrap 3, you can update it with new Boostrap 4 markup following [migrating guidelines](https://getbootstrap.com/docs/4.4/migration/).
+
+#### Why was this change made?
+
+We included a "small" configurable CSS compatibility layer to simplify the migration from Liferay 7.0 to 7.1. Now it has been removed in order to fix conflicts with new styles and improve general CSS weight.

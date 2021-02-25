@@ -29,21 +29,18 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portlet.test.MockLiferayPortletContext;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
 import com.liferay.registry.ServiceTracker;
 
 import java.util.Dictionary;
-import java.util.Objects;
 
 import javax.portlet.Portlet;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletRequestDispatcher;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -141,27 +138,7 @@ public class SegmentsDisplayContextTest {
 		mockLiferayPortletRenderRequest.setAttribute(
 			MVCRenderConstants.
 				PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX + path,
-			ProxyUtil.newProxyInstance(
-				PortletContext.class.getClassLoader(),
-				new Class<?>[] {PortletContext.class},
-				(PortletContextProxy, portletContextMethod,
-				 portletContextArgs) -> {
-
-					if (Objects.equals(
-							portletContextMethod.getName(),
-							"getRequestDispatcher") &&
-						Objects.equals(portletContextArgs[0], path)) {
-
-						return ProxyUtil.newProxyInstance(
-							PortletRequestDispatcher.class.getClassLoader(),
-							new Class<?>[] {PortletRequestDispatcher.class},
-							(portletRequestDispatcherProxy,
-							 portletRequestDispatcherMethod,
-							 portletRequestDispatcherArgs) -> null);
-					}
-
-					throw new UnsupportedOperationException();
-				}));
+			new MockLiferayPortletContext(path));
 
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay());

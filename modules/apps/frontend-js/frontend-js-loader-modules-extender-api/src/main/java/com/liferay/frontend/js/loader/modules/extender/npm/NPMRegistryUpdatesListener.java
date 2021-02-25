@@ -14,8 +14,6 @@
 
 package com.liferay.frontend.js.loader.modules.extender.npm;
 
-import org.osgi.annotation.versioning.ConsumerType;
-
 /**
  * Can be implemented by any service needing to be notified when the
  * {@link NPMRegistry} is updated.
@@ -23,7 +21,6 @@ import org.osgi.annotation.versioning.ConsumerType;
  * @author Iván Zaera Avellón
  * @review
  */
-@ConsumerType
 public interface NPMRegistryUpdatesListener {
 
 	public void onAfterUpdate();

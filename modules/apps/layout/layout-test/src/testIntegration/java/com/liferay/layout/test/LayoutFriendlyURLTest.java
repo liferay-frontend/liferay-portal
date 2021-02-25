@@ -18,6 +18,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLException;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLsException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -387,6 +389,10 @@ public class LayoutFriendlyURLTest {
 			Assert.fail();
 		}
 		catch (LayoutFriendlyURLsException layoutFriendlyURLsException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					layoutFriendlyURLsException, layoutFriendlyURLsException);
+			}
 		}
 	}
 
@@ -441,6 +447,10 @@ public class LayoutFriendlyURLTest {
 			Assert.fail();
 		}
 		catch (LayoutFriendlyURLsException layoutFriendlyURLsException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					layoutFriendlyURLsException, layoutFriendlyURLsException);
+			}
 		}
 	}
 
@@ -539,6 +549,9 @@ public class LayoutFriendlyURLTest {
 			LayoutConstants.TYPE_PORTLET, StringPool.BLANK, false,
 			friendlyURLMap, serviceContext);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutFriendlyURLTest.class);
 
 	private Group _group;
 

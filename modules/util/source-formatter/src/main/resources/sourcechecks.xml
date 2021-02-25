@@ -911,6 +911,7 @@
 		<check name="JSPArrowFunctionCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that there are no array functions." />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="JSPDefineObjectsCheck">
 			<category name="Performance" />
@@ -1397,6 +1398,11 @@
 		<check name="XMLDDLStructuresFileCheck">
 			<category name="Styling" />
 			<description name="Checks the order of attributes in `-structures.xml` file." />
+		</check>
+		<check name="XMLDTDVersionCheck">
+			<category name="Styling" />
+			<description name="Checks the DTD version in `*.xml` file." />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="XMLFriendlyURLRoutesFileCheck">
 			<category name="Styling" />

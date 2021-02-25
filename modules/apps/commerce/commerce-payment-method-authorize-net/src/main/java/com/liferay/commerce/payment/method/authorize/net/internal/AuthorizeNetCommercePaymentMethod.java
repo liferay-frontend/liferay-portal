@@ -209,8 +209,7 @@ public class AuthorizeNetCommercePaymentMethod
 
 			String url = StringBundler.concat(
 				_getServletUrl(authorizeNetCommercePaymentRequest),
-				StringPool.QUESTION, "redirectUrl=",
-				URLCodec.encodeURL(redirectUrl), StringPool.AMPERSAND, "token=",
+				"?redirectUrl=", URLCodec.encodeURL(redirectUrl), "&token=",
 				URLEncoder.encode(token, "UTF-8"));
 
 			List<String> resultMessages = new ArrayList<>();

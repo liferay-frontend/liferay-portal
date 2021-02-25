@@ -22,23 +22,16 @@
 	OAuthException oae = (OAuthException)errorException;
 
 	String exceptionMessage = oae.getMessage();
-
-	if (exceptionMessage.contains("token_expired")) {
 	%>
 
-		<liferay-ui:message key="the-temporary-oauth-token-expired.-please-go-back-to-your-client-application-and-repeat-the-oauth-authorization" />
-
-	<%
-	}
-	else {
-	%>
-
-		<liferay-ui:message key="an-unexpected-oauth-error-occured" />
-
-	<%
-	}
-	%>
-
+	<c:choose>
+		<c:when test='<%= exceptionMessage.contains("token_expired") %>'>
+			<liferay-ui:message key="the-temporary-oauth-token-expired.-please-go-back-to-your-client-application-and-repeat-the-oauth-authorization" />
+		</c:when>
+		<c:otherwise>
+			<liferay-ui:message key="an-unexpected-oauth-error-occured" />
+		</c:otherwise>
+	</c:choose>
 </liferay-ui:error>
 
 <c:if test="<%= !SessionErrors.contains(liferayPortletRequest, OAuthException.class) %>">

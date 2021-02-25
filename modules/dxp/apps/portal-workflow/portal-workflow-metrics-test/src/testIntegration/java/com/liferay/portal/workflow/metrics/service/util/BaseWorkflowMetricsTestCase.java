@@ -17,6 +17,8 @@ package com.liferay.portal.workflow.metrics.service.util;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -118,6 +120,9 @@ public abstract class BaseWorkflowMetricsTestCase {
 						kaleoNode.getKaleoNodeId());
 				}
 				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException, portalException);
+					}
 				}
 
 				return null;
@@ -289,6 +294,9 @@ public abstract class BaseWorkflowMetricsTestCase {
 			() -> StringPool.BLANK
 		);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		BaseWorkflowMetricsTestCase.class);
 
 	@Inject
 	private KaleoDefinitionVersionLocalService

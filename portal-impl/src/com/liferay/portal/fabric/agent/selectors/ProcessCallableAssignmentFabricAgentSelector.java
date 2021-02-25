@@ -15,7 +15,6 @@
 package com.liferay.portal.fabric.agent.selectors;
 
 import com.liferay.petra.process.ProcessCallable;
-import com.liferay.petra.string.StringPool;
 
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public class ProcessCallableAssignmentFabricAgentSelector
 
 	public static final String PROCESS_CALLABLE_ASSIGNMENT_EXPRESSION_KEY =
 		ProcessCallableAssignmentFabricAgentSelector.class.getName() +
-			StringPool.POUND + "processCallableAssignmentExpressionKey";
+			"#processCallableAssignmentExpressionKey";
 
 	@Override
 	protected boolean accept(

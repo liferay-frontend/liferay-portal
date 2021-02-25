@@ -22,6 +22,8 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -80,6 +82,9 @@ public class DLTestUtil {
 				DLFolderLocalServiceUtil.deleteFolder(folder.getFolderId());
 			}
 			catch (NoSuchFolderException noSuchFolderException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(noSuchFolderException, noSuchFolderException);
+				}
 			}
 		}
 
@@ -94,5 +99,7 @@ public class DLTestUtil {
 
 		return addDLFolder(groupId, true, serviceContext);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(DLTestUtil.class);
 
 }

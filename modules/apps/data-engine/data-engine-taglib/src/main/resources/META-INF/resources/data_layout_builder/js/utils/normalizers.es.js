@@ -88,6 +88,7 @@ function normalizeField(
  * Normalize Data Definition
  * @param {Object} dataDefinition
  * @param {String?} defaultLanguageId
+ * @param {boolean?} normalizeFieldset
  */
 
 export function normalizeDataDefinition(
@@ -132,23 +133,13 @@ export function normalizeDataDefinition(
 
 export function normalizeDataLayout(
 	dataLayout,
-	defaultLanguageId = themeDisplay.getDefaultLanguageId(),
-	dataDefinitionFieldNames
+	defaultLanguageId = themeDisplay.getDefaultLanguageId()
 ) {
-	const {dataLayoutFields = {}} = dataLayout;
-
-	if (dataDefinitionFieldNames) {
-		Object.keys(dataLayoutFields).forEach((field) => {
-			if (!dataDefinitionFieldNames.includes(field)) {
-				delete dataLayoutFields[field];
-			}
-		});
-	}
+	const {dataLayoutPages, dataRules, description} = dataLayout;
 
 	return {
 		...dataLayout,
-		dataLayoutFields,
-		dataLayoutPages: dataLayout.dataLayoutPages.map((dataLayoutPage) => ({
+		dataLayoutPages: dataLayoutPages.map((dataLayoutPage) => ({
 			...dataLayoutPage,
 			dataLayoutRows: (dataLayoutPage.dataLayoutRows || []).map(
 				(dataLayoutRow) => ({
@@ -162,7 +153,7 @@ export function normalizeDataLayout(
 				})
 			),
 			description: {
-				...dataLayout.description,
+				...description,
 				[defaultLanguageId]:
 					dataLayoutPage.description[defaultLanguageId] || '',
 			},
@@ -172,7 +163,7 @@ export function normalizeDataLayout(
 					dataLayoutPage.title[defaultLanguageId] || '',
 			},
 		})),
-		dataRules: dataLayout.dataRules.map((rule) => {
+		dataRules: dataRules.map((rule) => {
 			delete rule.ruleEditedIndex;
 
 			return rule;

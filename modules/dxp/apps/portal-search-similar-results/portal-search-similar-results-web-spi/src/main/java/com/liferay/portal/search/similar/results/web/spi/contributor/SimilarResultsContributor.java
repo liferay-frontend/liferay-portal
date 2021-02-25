@@ -21,12 +21,9 @@ import com.liferay.portal.search.similar.results.web.spi.contributor.helper.Dest
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.RouteBuilder;
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.RouteHelper;
 
-import org.osgi.annotation.versioning.ConsumerType;
-
 /**
  * @author André de Oliveira
  */
-@ConsumerType
 public interface SimilarResultsContributor {
 
 	public void detectRoute(RouteBuilder routeBuilder, RouteHelper routeHelper);

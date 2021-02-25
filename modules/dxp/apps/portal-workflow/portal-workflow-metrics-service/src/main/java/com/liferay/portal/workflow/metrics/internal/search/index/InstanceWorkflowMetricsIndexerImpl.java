@@ -14,8 +14,6 @@
 
 package com.liferay.portal.workflow.metrics.internal.search.index;
 
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.search.document.Document;
@@ -65,9 +63,7 @@ public class InstanceWorkflowMetricsIndexerImpl
 			documentBuilder.setDate(
 				"completionDate", getDate(completionDate)
 			).setValue(
-				Field.getSortableFieldName(
-					StringBundler.concat(
-						"completionDate", StringPool.UNDERLINE, "Number")),
+				Field.getSortableFieldName("completionDate_Number"),
 				completionDate.getTime()
 			);
 		}
@@ -75,9 +71,7 @@ public class InstanceWorkflowMetricsIndexerImpl
 		documentBuilder.setDate(
 			"createDate", getDate(createDate)
 		).setValue(
-			Field.getSortableFieldName(
-				StringBundler.concat(
-					"createDate", StringPool.UNDERLINE, "Number")),
+			Field.getSortableFieldName("createDate_Number"),
 			createDate.getTime()
 		).setValue(
 			"deleted", Boolean.FALSE
@@ -130,9 +124,7 @@ public class InstanceWorkflowMetricsIndexerImpl
 		).setDate(
 			"completionDate", getDate(completionDate)
 		).setValue(
-			Field.getSortableFieldName(
-				StringBundler.concat(
-					"completionDate", StringPool.UNDERLINE, "Number")),
+			Field.getSortableFieldName("completionDate_Number"),
 			completionDate.getTime()
 		).setLong(
 			"duration", duration

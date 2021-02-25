@@ -37,6 +37,14 @@ definition {
 		TableViewBuilder.validateColumnLabelAtSidebar(columnLabel = "${fieldType}");
 	}
 
+	macro assertMessageNoResultsWereFoundIsShown {
+		AssertElementPresent(locator1 = "TableViewBuilder#NO_RESULTS_WERE_FOUND_MESSAGE");
+	}
+
+	macro assertMessageThereAreNoResultsForIsShown {
+		AssertElementPresent(locator1 = "TableViewBuilder#THERE_ARE_NO_RESULTS_FOR");
+	}
+
 	macro clearSearch {
 		Click(locator1 = "TableViewBuilder#CLEAR_SEARCH");
 	}

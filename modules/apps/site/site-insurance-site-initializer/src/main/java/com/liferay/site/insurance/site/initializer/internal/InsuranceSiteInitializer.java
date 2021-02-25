@@ -489,9 +489,7 @@ public class InsuranceSiteInitializer implements SiteInitializer {
 			String path = jsonObject.getString("path");
 
 			JSONObject pageJSONObject = JSONFactoryUtil.createJSONObject(
-				_read(
-					StringBundler.concat(
-						"/layouts/", path, StringPool.SLASH, "page.json")));
+				_read(StringBundler.concat("/layouts/", path, "/page.json")));
 
 			String type = StringUtil.toLowerCase(
 				pageJSONObject.getString("type"));
@@ -504,8 +502,7 @@ public class InsuranceSiteInitializer implements SiteInitializer {
 				String pageDefinitionJSON = StringUtil.replace(
 					_read(
 						StringBundler.concat(
-							"/layouts/", path, StringPool.SLASH,
-							"page-definition.json")),
+							"/layouts/", path, "/page-definition.json")),
 					"\"[$", "$]\"", resourcesMap);
 
 				layout = _addContentLayout(

@@ -90,6 +90,39 @@ public class CTProcessServiceHttp {
 		}
 	}
 
+	public static int getCTProcessesCount(
+		HttpPrincipal httpPrincipal, long companyId, long userId,
+		String keywords, int status) {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CTProcessServiceUtil.class, "getCTProcessesCount",
+				_getCTProcessesCountParameterTypes1);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, userId, keywords, status);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return ((Integer)returnObj).intValue();
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(CTProcessServiceHttp.class);
 
 	private static final Class<?>[] _getCTProcessesParameterTypes0 =
@@ -97,5 +130,7 @@ public class CTProcessServiceHttp {
 			long.class, long.class, String.class, int.class, int.class,
 			int.class, com.liferay.portal.kernel.util.OrderByComparator.class
 		};
+	private static final Class<?>[] _getCTProcessesCountParameterTypes1 =
+		new Class[] {long.class, long.class, String.class, int.class};
 
 }

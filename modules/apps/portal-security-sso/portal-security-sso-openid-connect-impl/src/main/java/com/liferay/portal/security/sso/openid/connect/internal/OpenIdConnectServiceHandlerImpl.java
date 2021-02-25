@@ -32,7 +32,7 @@ import com.liferay.portal.security.sso.openid.connect.OpenIdConnectProviderRegis
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceHandler;
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectConstants;
-import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
+import com.liferay.portal.security.sso.openid.connect.internal.provider.OpenIdConnectSessionProviderImpl;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
@@ -191,6 +191,9 @@ public class OpenIdConnectServiceHandlerImpl
 
 		openIdConnectSessionImpl.setOpenIdConnectFlowState(
 			OpenIdConnectFlowState.AUTH_COMPLETE);
+
+		_openIdConnectSessionProviderImpl.setOpenIdConnectSession(
+			httpSession, openIdConnectSessionImpl);
 	}
 
 	@Override
@@ -212,8 +215,8 @@ public class OpenIdConnectServiceHandlerImpl
 			getOpenIdConnectSessionImpl(httpSession, openIdConnectProviderName);
 
 		if (openIdConnectSessionImpl == null) {
-			openIdConnectSessionImpl = createAndSetOpenIdConnectSession(
-				httpSession, openIdConnectProviderName);
+			openIdConnectSessionImpl = new OpenIdConnectSessionImpl(
+				openIdConnectProviderName, new Nonce(), new State());
 		}
 
 		URI authenticationRequestURI = getAuthenticationRequestURI(
@@ -228,6 +231,9 @@ public class OpenIdConnectServiceHandlerImpl
 
 			openIdConnectSessionImpl.setOpenIdConnectFlowState(
 				OpenIdConnectFlowState.AUTH_REQUESTED);
+
+			_openIdConnectSessionProviderImpl.setOpenIdConnectSession(
+				httpSession, openIdConnectSessionImpl);
 		}
 		catch (IOException ioException) {
 			throw new SystemException(
@@ -237,20 +243,6 @@ public class OpenIdConnectServiceHandlerImpl
 					ioException.getMessage()),
 				ioException);
 		}
-	}
-
-	protected OpenIdConnectSessionImpl createAndSetOpenIdConnectSession(
-		HttpSession httpSession, String openIdConnectProviderName) {
-
-		OpenIdConnectSessionImpl openIdConnectSessionImpl =
-			new OpenIdConnectSessionImpl(
-				openIdConnectProviderName, new Nonce(), new State());
-
-		httpSession.setAttribute(
-			OpenIdConnectWebKeys.OPEN_ID_CONNECT_SESSION,
-			openIdConnectSessionImpl);
-
-		return openIdConnectSessionImpl;
 	}
 
 	protected URI getAuthenticationRequestURI(
@@ -367,8 +359,9 @@ public class OpenIdConnectServiceHandlerImpl
 	protected OpenIdConnectSessionImpl getOpenIdConnectSessionImpl(
 		HttpSession httpSession, String expectedProviderName) {
 
-		Object openIdConnectSessionObject = httpSession.getAttribute(
-			OpenIdConnectWebKeys.OPEN_ID_CONNECT_SESSION);
+		Object openIdConnectSessionObject =
+			_openIdConnectSessionProviderImpl.getOpenIdConnectSession(
+				httpSession);
 
 		if (openIdConnectSessionObject instanceof OpenIdConnectSessionImpl) {
 			OpenIdConnectSessionImpl openIdConnectSessionImpl =
@@ -419,7 +412,7 @@ public class OpenIdConnectServiceHandlerImpl
 
 		openIdConnectSessionImpl.setLoginUserId(userId);
 
-		openIdConnectSessionImpl.setUserInfo(userInfo);
+		openIdConnectSessionImpl.setUserInfoJSONObject(userInfo.toJSONObject());
 	}
 
 	protected boolean refreshAuthToken(
@@ -687,6 +680,9 @@ public class OpenIdConnectServiceHandlerImpl
 	private OpenIdConnectProviderRegistry
 		<OIDCClientMetadata, OIDCProviderMetadata>
 			_openIdConnectProviderRegistry;
+
+	@Reference
+	private OpenIdConnectSessionProviderImpl _openIdConnectSessionProviderImpl;
 
 	@Reference
 	private OpenIdConnectUserInfoProcessor _openIdConnectUserInfoProcessor;

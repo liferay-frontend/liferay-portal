@@ -20,13 +20,32 @@ import React from 'react';
 
 import LinkOrButton from './LinkOrButton';
 
-const FilterOrderControls = ({disabled, filterDropdownItems, sortingURL}) => {
+const FilterOrderControls = ({
+	disabled,
+	filterDropdownItems,
+	onFilterDropdownItemClick,
+	sortingURL,
+}) => {
 	return (
 		<>
 			{filterDropdownItems && (
 				<ClayManagementToolbar.Item>
 					<ClayDropDownWithItems
-						items={filterDropdownItems}
+						items={filterDropdownItems.map((item) => {
+							return {
+								...item,
+								items: item.items.map((childItem) => {
+									return {
+										...childItem,
+										onClick(event) {
+											onFilterDropdownItemClick(event, {
+												item: childItem,
+											});
+										},
+									};
+								}),
+							};
+						})}
 						trigger={
 							<ClayButton
 								className="nav-link"

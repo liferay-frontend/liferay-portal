@@ -15,7 +15,6 @@
 import {LayoutTypes} from './LayoutTypes';
 
 export interface Config {
-	adaptiveMediaEnabled: boolean;
 	addFragmentCompositionURL: string;
 	addFragmentEntryLinkCommentURL: string;
 	addFragmentEntryLinkURL: string;
@@ -129,10 +128,6 @@ export interface Config {
 	getPageContentsURL: string;
 	imageSelectorURL: string;
 	infoItemSelectorURL: string;
-
-	languageDirection: {
-		[key: string]: 'ltr' | 'rtl';
-	};
 
 	layoutItemSelectorURL: String;
 	layoutConversionWarningMessages: string[] | null;

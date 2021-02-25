@@ -26,8 +26,6 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -203,12 +201,6 @@ public class ExportUsersMVCResourceCommand extends BaseMVCResourceCommand {
 
 		if (userGroupId > 0) {
 			params.put("usersUserGroups", Long.valueOf(userGroupId));
-		}
-
-		Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
-
-		if (indexer.isIndexerEnabled() && PropsValues.USERS_SEARCH_WITH_INDEX) {
-			params.put("expandoAttributes", searchTerms.getKeywords());
 		}
 
 		if (searchTerms.isAdvancedSearch()) {

@@ -29,33 +29,33 @@ String tag = ParamUtil.getString(request, "tag");
 PortletURL portletURL = renderResponse.createRenderURL();
 
 String tagsNavigation = _buildTagsNavigation(scopeGroupId, tag, portletURL, classNameId, displayStyle, maxAssetTags, showAssetCount, showZeroAssetCount);
-
-if (Validator.isNotNull(tagsNavigation)) {
 %>
 
-	<liferay-ui:panel-container
-		cssClass="taglib-asset-tags-navigation"
-		extended="<%= true %>"
-		persistState="<%= true %>"
-	>
-		<%= tagsNavigation %>
-	</liferay-ui:panel-container>
+<c:choose>
+	<c:when test="<%= Validator.isNotNull(tagsNavigation) %>">
+		<liferay-ui:panel-container
+			cssClass="taglib-asset-tags-navigation"
+			extended="<%= true %>"
+			persistState="<%= true %>"
+		>
+			<%= tagsNavigation %>
+		</liferay-ui:panel-container>
+	</c:when>
+	<c:otherwise>
+
+		<%
+		if (hidePortletWhenEmpty) {
+			renderRequest.setAttribute(WebKeys.PORTLET_CONFIGURATOR_VISIBILITY, Boolean.TRUE);
+		}
+		%>
+
+		<div class="alert alert-info">
+			<liferay-ui:message key="there-are-no-tags" />
+		</div>
+	</c:otherwise>
+</c:choose>
 
 <%
-}
-else {
-	if (hidePortletWhenEmpty) {
-		renderRequest.setAttribute(WebKeys.PORTLET_CONFIGURATOR_VISIBILITY, Boolean.TRUE);
-	}
-%>
-
-	<div class="alert alert-info">
-		<liferay-ui:message key="there-are-no-tags" />
-	</div>
-
-<%
-}
-
 if (Validator.isNotNull(tag)) {
 	PortalUtil.addPortletBreadcrumbEntry(request, tag, currentURL, null, false);
 }

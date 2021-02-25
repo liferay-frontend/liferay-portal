@@ -15,6 +15,8 @@
 package com.liferay.portal.security.auth.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.AuthException;
 import com.liferay.portal.kernel.security.auth.AuthFailure;
 import com.liferay.portal.kernel.security.auth.Authenticator;
@@ -138,6 +140,9 @@ public class AuthPipelineTest {
 				"auth.failure", 0, RandomTestUtil.randomString(), null, null);
 		}
 		catch (AuthException authException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(authException, authException);
+			}
 		}
 
 		Assert.assertTrue(_calledAuthFailure);
@@ -150,6 +155,9 @@ public class AuthPipelineTest {
 				"auth.failure", 0, RandomTestUtil.randomLong(), null, null);
 		}
 		catch (AuthException authException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(authException, authException);
+			}
 		}
 
 		Assert.assertTrue(_calledAuthFailure);
@@ -163,6 +171,9 @@ public class AuthPipelineTest {
 				null);
 		}
 		catch (AuthException authException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(authException, authException);
+			}
 		}
 
 		Assert.assertTrue(_calledAuthFailure);
@@ -176,6 +187,9 @@ public class AuthPipelineTest {
 				null);
 		}
 		catch (AuthException authException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(authException, authException);
+			}
 		}
 
 		Assert.assertTrue(_calledAuthFailure);
@@ -189,10 +203,16 @@ public class AuthPipelineTest {
 				null);
 		}
 		catch (AuthException authException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(authException, authException);
+			}
 		}
 
 		Assert.assertTrue(_calledAuthFailure);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AuthPipelineTest.class);
 
 	private static ServiceRegistration<Authenticator>
 		_authenticatorServiceRegistration;

@@ -23,12 +23,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.osgi.annotation.versioning.ConsumerType;
-
 /**
  * @author Marco Leo
  */
-@ConsumerType
 public interface ClayDataSetDataProvider<T> {
 
 	public List<T> getItems(

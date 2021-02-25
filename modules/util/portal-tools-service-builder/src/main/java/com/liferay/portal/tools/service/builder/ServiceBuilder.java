@@ -1074,8 +1074,7 @@ public class ServiceBuilder {
 	public String getCompatJavaClassName(String key) {
 		return _compatProperties.getProperty(
 			StringBundler.concat(
-				"java.class.name", StringPool.OPEN_BRACKET, key,
-				StringPool.CLOSE_BRACKET));
+				"java.class.name[", key, StringPool.CLOSE_BRACKET));
 	}
 
 	public String getCreateMappingTableSQL(EntityMapping entityMapping)

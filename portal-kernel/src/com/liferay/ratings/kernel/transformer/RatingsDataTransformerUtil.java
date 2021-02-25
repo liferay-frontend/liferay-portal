@@ -40,7 +40,7 @@ import javax.portlet.PortletPreferences;
 public class RatingsDataTransformerUtil {
 
 	public static String getPropertyKey(String className) {
-		return className + StringPool.UNDERLINE + "RatingsType";
+		return className + "_RatingsType";
 	}
 
 	public static void transformCompanyRatingsData(

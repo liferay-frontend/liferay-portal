@@ -14,7 +14,6 @@
 
 package com.liferay.commerce.lang.internal;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.Enumeration;
@@ -26,8 +25,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	enabled = false, property = "language.id=" + StringPool.BLANK,
-	service = ResourceBundle.class
+	enabled = false, property = "language.id=", service = ResourceBundle.class
 )
 public class CommerceLangResourceBundle extends ResourceBundle {
 

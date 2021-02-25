@@ -1709,8 +1709,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 
 			if (Validator.isNotNull(layoutURL)) {
 				return StringBundler.concat(
-					layoutURL, Portal.FRIENDLY_URL_SEPARATOR, "blogs",
-					StringPool.SLASH, entry.getEntryId());
+					layoutURL, Portal.FRIENDLY_URL_SEPARATOR, "blogs/",
+					entry.getEntryId());
 			}
 		}
 
@@ -1873,8 +1873,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		if (Validator.isNull(entryURL)) {
 			entryURL = StringBundler.concat(
 				serviceContext.getLayoutFullURL(),
-				Portal.FRIENDLY_URL_SEPARATOR, "blogs", StringPool.SLASH,
-				entry.getEntryId());
+				Portal.FRIENDLY_URL_SEPARATOR, "blogs/", entry.getEntryId());
 		}
 
 		BlogsGroupServiceSettings blogsGroupServiceSettings =

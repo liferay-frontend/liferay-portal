@@ -336,7 +336,7 @@ public class LayoutsTreeDisplayContext {
 		return StringBundler.concat(
 			portletURL, StringPool.AMPERSAND,
 			PortalUtil.getPortletNamespace(AssetListPortletKeys.ASSET_LIST),
-			"collectionPK={collectionPK}", StringPool.AMPERSAND,
+			"collectionPK={collectionPK}&",
 			PortalUtil.getPortletNamespace(AssetListPortletKeys.ASSET_LIST),
 			"collectionType={collectionType}");
 	}

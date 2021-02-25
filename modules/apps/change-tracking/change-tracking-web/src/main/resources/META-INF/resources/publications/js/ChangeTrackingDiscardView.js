@@ -20,12 +20,7 @@ import React, {useState} from 'react';
 
 import ChangeTrackingRenderView from './ChangeTrackingRenderView';
 
-const ChangeTrackingDiscardView = ({
-	ctEntriesJSONArray,
-	spritemap,
-	typeNames,
-	userInfo,
-}) => {
+export default ({ctEntriesJSONArray, spritemap, typeNames, userInfo}) => {
 	const [delta, setDelta] = useState(20);
 	const [page, setPage] = useState(1);
 	const [viewEntry, setViewEntry] = useState(null);
@@ -51,10 +46,10 @@ const ChangeTrackingDiscardView = ({
 	}
 
 	ctEntries.sort((a, b) => {
-		const titleA = a.title;
-		const titleB = b.title;
-		const typeNameA = a.typeName.toUpperCase();
-		const typeNameB = b.typeName.toUpperCase();
+		const titleA = a.title.toLowerCase();
+		const titleB = b.title.toLowerCase();
+		const typeNameA = a.typeName.toLowerCase();
+		const typeNameB = b.typeName.toLowerCase();
 
 		if (typeNameA < typeNameB) {
 			return -1;
@@ -219,7 +214,3 @@ const ChangeTrackingDiscardView = ({
 		</>
 	);
 };
-
-export default function (props) {
-	return <ChangeTrackingDiscardView {...props} />;
-}

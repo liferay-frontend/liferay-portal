@@ -32,25 +32,22 @@ else {
 
 		tilesPopUp = GetterUtil.getBoolean(attributes.get("pop_up"));
 	}
-
-	if (tilesPopUp || themeDisplay.isStatePopUp() || themeDisplay.isWidget()) {
 %>
 
-		<liferay-theme:include
-			page="portal_pop_up.jsp"
-		/>
-
-	<%
-	}
-	else {
-	%>
-
-		<liferay-theme:include
-			page="portal_normal.jsp"
-		/>
+	<c:choose>
+		<c:when test="<%= tilesPopUp || themeDisplay.isStatePopUp() || themeDisplay.isWidget() %>">
+			<liferay-theme:include
+				page="portal_pop_up.jsp"
+			/>
+		</c:when>
+		<c:otherwise>
+			<liferay-theme:include
+				page="portal_normal.jsp"
+			/>
+		</c:otherwise>
+	</c:choose>
 
 <%
-	}
 }
 
 request.removeAttribute(WebKeys.LAYOUT_CONTENT);

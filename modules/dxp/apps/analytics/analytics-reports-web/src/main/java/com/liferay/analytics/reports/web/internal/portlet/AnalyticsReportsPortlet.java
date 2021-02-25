@@ -17,10 +17,9 @@ package com.liferay.analytics.reports.web.internal.portlet;
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsPortletKeys;
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsWebKeys;
 import com.liferay.analytics.reports.web.internal.display.context.AnalyticsReportsDisplayContext;
-import com.liferay.analytics.reports.web.internal.info.display.contributor.util.LayoutDisplayPageProviderUtil;
-import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
-import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
+import com.liferay.info.item.InfoItemReference;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
@@ -30,6 +29,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
+
+import java.util.Optional;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
@@ -84,10 +85,8 @@ public class AnalyticsReportsPortlet extends MVCPortlet {
 			return;
 		}
 
-		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
-			LayoutDisplayPageProviderUtil.initLayoutDisplayPageObjectProvider(
-				httpServletRequest, _layoutDisplayPageProviderTracker, _portal);
-
+		InfoItemReference infoItemReference = _getInfoItemReference(
+			httpServletRequest);
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -95,11 +94,48 @@ public class AnalyticsReportsPortlet extends MVCPortlet {
 		renderRequest.setAttribute(
 			AnalyticsReportsWebKeys.ANALYTICS_REPORTS_DISPLAY_CONTEXT,
 			new AnalyticsReportsDisplayContext(
-				layoutDisplayPageObjectProvider.getClassNameId(),
-				layoutDisplayPageObjectProvider.getClassPK(), renderRequest,
-				renderResponse, themeDisplay));
+				_portal.getClassNameId(infoItemReference.getClassName()),
+				infoItemReference.getClassPK(), renderRequest, renderResponse,
+				themeDisplay));
 
 		super.doDispatch(renderRequest, renderResponse);
+	}
+
+	private String _getClassName(HttpServletRequest httpServletRequest) {
+		long classNameId = ParamUtil.getLong(httpServletRequest, "classNameId");
+
+		if (classNameId == 0) {
+			return Layout.class.getName();
+		}
+
+		return _portal.getClassName(classNameId);
+	}
+
+	private long _getClassPK(HttpServletRequest httpServletRequest) {
+		long classPK = ParamUtil.getLong(httpServletRequest, "classPK");
+
+		if (classPK == 0) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			return themeDisplay.getPlid();
+		}
+
+		return classPK;
+	}
+
+	private InfoItemReference _getInfoItemReference(
+		HttpServletRequest httpServletRequest) {
+
+		return Optional.ofNullable(
+			(InfoItemReference)httpServletRequest.getAttribute(
+				AnalyticsReportsWebKeys.INFO_ITEM_REFERENCE)
+		).orElseGet(
+			() -> new InfoItemReference(
+				_getClassName(httpServletRequest),
+				_getClassPK(httpServletRequest))
+		);
 	}
 
 	@Reference
@@ -107,9 +143,6 @@ public class AnalyticsReportsPortlet extends MVCPortlet {
 
 	@Reference
 	private Language _language;
-
-	@Reference
-	private LayoutDisplayPageProviderTracker _layoutDisplayPageProviderTracker;
 
 	@Reference
 	private Portal _portal;

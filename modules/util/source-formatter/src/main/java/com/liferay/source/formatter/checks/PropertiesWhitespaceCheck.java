@@ -48,8 +48,7 @@ public class PropertiesWhitespaceCheck extends WhitespaceCheck {
 				}
 
 				if (line.contains(" \t")) {
-					line = StringUtil.replace(
-						line, " \t", " " + StringPool.FOUR_SPACES);
+					line = StringUtil.replace(line, " \t", "     ");
 				}
 
 				if (previousLine.matches("\\s*[^\\s#].*[,=]\\\\")) {

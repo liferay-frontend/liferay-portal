@@ -19,6 +19,8 @@ import com.liferay.exportimport.kernel.lar.BasePortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.test.util.lar.BaseExportImportTestCase;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -83,6 +85,9 @@ public class WrongPreferenceWithDataLevelExportImportTest
 			Assert.fail();
 		}
 		catch (PortletDataException portletDataException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portletDataException, portletDataException);
+			}
 		}
 		finally {
 			portletServiceRegistration.unregister();
@@ -92,5 +97,8 @@ public class WrongPreferenceWithDataLevelExportImportTest
 
 	private static final String _PORTLET_NAME =
 		"com_liferay_exportimport_test_WrongPreferenceWithDataLevelPortlet";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		WrongPreferenceWithDataLevelExportImportTest.class);
 
 }

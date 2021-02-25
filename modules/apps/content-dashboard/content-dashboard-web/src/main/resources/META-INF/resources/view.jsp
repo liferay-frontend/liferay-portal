@@ -18,8 +18,6 @@
 
 <%
 ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (ContentDashboardAdminDisplayContext)request.getAttribute(ContentDashboardWebKeys.CONTENT_DASHBOARD_ADMIN_DISPLAY_CONTEXT);
-
-ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManagementToolbarDisplayContext = (ContentDashboardAdminManagementToolbarDisplayContext)request.getAttribute(ContentDashboardWebKeys.CONTENT_DASHBOARD_ADMIN_MANAGEMENT_TOOLBAR_DISPLAY_CONTEXT);
 %>
 
 <div class="sidebar-wrapper">
@@ -96,9 +94,10 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 				</span>
 			</h2>
 
-			<clay:management-toolbar-v2
-				displayContext="<%= contentDashboardAdminManagementToolbarDisplayContext %>"
-				elementClasses="content-dashboard-management-toolbar"
+			<clay:management-toolbar
+				cssClass="content-dashboard-management-toolbar"
+				managementToolbarDisplayContext="<%= (ContentDashboardAdminManagementToolbarDisplayContext)request.getAttribute(ContentDashboardWebKeys.CONTENT_DASHBOARD_ADMIN_MANAGEMENT_TOOLBAR_DISPLAY_CONTEXT) %>"
+				propsTransformer="js/ContentDashboardManagementToolbarPropsTransformer"
 			/>
 
 			<liferay-ui:search-container
@@ -195,8 +194,8 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 						%>
 
 							<clay:label
-								label="<%= StringUtil.toUpperCase(version.getLabel()) %>"
-								style="<%= version.getStyle() %>"
+								displayType="<%= version.getStyle() %>"
+								label="<%= version.getLabel() %>"
 							/>
 
 						<%
@@ -269,8 +268,3 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 		</clay:sheet>
 	</clay:container-fluid>
 </div>
-
-<liferay-frontend:component
-	componentId="<%= contentDashboardAdminManagementToolbarDisplayContext.getDefaultEventHandler() %>"
-	module="js/ContentDashboardManagementToolbarDefaultEventHandler"
-/>

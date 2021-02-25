@@ -76,6 +76,13 @@ public class MBMessageLocalServiceUtil {
 		return getService().addMBMessage(mbMessage);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #addMessage(String, long, String, long, long, long, long,
+	 String, String, String, List, boolean, double, boolean,
+	 ServiceContext)}
+	 */
+	@Deprecated
 	public static com.liferay.message.boards.model.MBMessage addMessage(
 			long userId, String userName, long groupId, long categoryId,
 			long threadId, long parentMessageId, String subject, String body,
@@ -93,6 +100,13 @@ public class MBMessageLocalServiceUtil {
 			allowPingbacks, serviceContext);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #addMessage(String, long, String, long, long, long, long,
+	 String, String, String, List, boolean, double, boolean,
+	 ServiceContext)}
+	 */
+	@Deprecated
 	public static com.liferay.message.boards.model.MBMessage addMessage(
 			long userId, String userName, long groupId, long categoryId,
 			String subject, String body,
@@ -104,6 +118,13 @@ public class MBMessageLocalServiceUtil {
 			serviceContext);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #addMessage(String, long, String, long, long, long, long,
+	 String, String, String, List, boolean, double, boolean,
+	 ServiceContext)}
+	 */
+	@Deprecated
 	public static com.liferay.message.boards.model.MBMessage addMessage(
 			long userId, String userName, long groupId, long categoryId,
 			String subject, String body, String format,
@@ -120,6 +141,13 @@ public class MBMessageLocalServiceUtil {
 			serviceContext);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #addMessage(String, long, String, long, long, long, long,
+	 String, String, String, List, boolean, double, boolean,
+	 ServiceContext)}
+	 */
+	@Deprecated
 	public static com.liferay.message.boards.model.MBMessage addMessage(
 			long userId, String userName, long groupId, long categoryId,
 			String subject, String body, String format, String fileName,
@@ -133,6 +161,23 @@ public class MBMessageLocalServiceUtil {
 			userId, userName, groupId, categoryId, subject, body, format,
 			fileName, file, anonymous, priority, allowPingbacks,
 			serviceContext);
+	}
+
+	public static com.liferay.message.boards.model.MBMessage addMessage(
+			String externalReferenceCode, long userId, String userName,
+			long groupId, long categoryId, long threadId, long parentMessageId,
+			String subject, String body, String format,
+			java.util.List
+				<com.liferay.portal.kernel.util.ObjectValuePair
+					<String, java.io.InputStream>> inputStreamOVPs,
+			boolean anonymous, double priority, boolean allowPingbacks,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().addMessage(
+			externalReferenceCode, userId, userName, groupId, categoryId,
+			threadId, parentMessageId, subject, body, format, inputStreamOVPs,
+			anonymous, priority, allowPingbacks, serviceContext);
 	}
 
 	public static void addMessageAttachment(
@@ -419,6 +464,21 @@ public class MBMessageLocalServiceUtil {
 		long messageId) {
 
 		return getService().fetchMBMessage(messageId);
+	}
+
+	/**
+	 * Returns the message-boards message with the matching external reference code and group.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param externalReferenceCode the message-boards message's external reference code
+	 * @return the matching message-boards message, or <code>null</code> if a matching message-boards message could not be found
+	 */
+	public static com.liferay.message.boards.model.MBMessage
+		fetchMBMessageByReferenceCode(
+			long groupId, String externalReferenceCode) {
+
+		return getService().fetchMBMessageByReferenceCode(
+			groupId, externalReferenceCode);
 	}
 
 	public static com.liferay.message.boards.model.MBMessage

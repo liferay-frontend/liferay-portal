@@ -23,6 +23,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.text.NumberFormat;
 import java.text.ParseException;
 
@@ -188,6 +190,10 @@ public class FieldConstants {
 			return value;
 		}
 		else if (type.equals(DOUBLE)) {
+			if (value.matches(_SCIENTIFIC_NOTATION_PATTERN)) {
+				return new BigDecimal(value.trim());
+			}
+
 			return GetterUtil.getDouble(value);
 		}
 		else if (type.equals(FLOAT)) {
@@ -218,6 +224,9 @@ public class FieldConstants {
 
 		return false;
 	}
+
+	private static final String _SCIENTIFIC_NOTATION_PATTERN =
+		"^[+-]?\\d+(?:\\.\\d*(?:[eE][+-]?\\d+)+)?$";
 
 	private static final Log _log = LogFactoryUtil.getLog(FieldConstants.class);
 

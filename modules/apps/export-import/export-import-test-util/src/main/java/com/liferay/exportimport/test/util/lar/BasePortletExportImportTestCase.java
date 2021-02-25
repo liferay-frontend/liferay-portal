@@ -36,6 +36,8 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.StagedModel;
@@ -562,6 +564,10 @@ public abstract class BasePortletExportImportTestCase
 			Assert.assertFalse(expectFailure);
 		}
 		catch (LocaleException localeException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(localeException, localeException);
+			}
+
 			Assert.assertTrue(expectFailure);
 		}
 	}
@@ -715,5 +721,8 @@ public abstract class BasePortletExportImportTestCase
 
 	protected void validateVersions() throws Exception {
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		BasePortletExportImportTestCase.class);
 
 }

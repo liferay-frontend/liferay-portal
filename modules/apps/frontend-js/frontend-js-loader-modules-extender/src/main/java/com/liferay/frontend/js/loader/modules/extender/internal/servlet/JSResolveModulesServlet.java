@@ -69,7 +69,7 @@ public class JSResolveModulesServlet
 	@Override
 	public void onAfterUpdate() {
 		_etag = StringBundler.concat(
-			"W/", StringPool.QUOTE, UUID.randomUUID(), StringPool.QUOTE);
+			"W/\"", UUID.randomUUID(), StringPool.QUOTE);
 	}
 
 	@Override

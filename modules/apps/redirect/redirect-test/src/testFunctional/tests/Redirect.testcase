@@ -853,7 +853,7 @@ definition {
 			entry1 = "1",
 			entry2 = "2");
 
-		Click(locator1 = "ManagementBar#ORDER_ICON_GENERIC");
+		Click(locator1 = "ContentDashboard#REVERSE_SORT_DIRECTION_BUTTON");
 
 		Redirect.viewOrderedURLs(
 			entry1 = "2",

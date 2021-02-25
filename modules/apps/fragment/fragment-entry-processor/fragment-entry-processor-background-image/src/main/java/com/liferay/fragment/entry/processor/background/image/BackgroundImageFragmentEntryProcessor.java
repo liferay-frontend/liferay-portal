@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -113,32 +114,12 @@ public class BackgroundImageFragmentEntryProcessor
 
 			String value = StringPool.BLANK;
 
-			if (_fragmentEntryProcessorHelper.isAssetDisplayPage(
-					fragmentEntryProcessorContext.getMode())) {
+			Object fieldValue = _getFieldValue(
+				editableValueJSONObject, infoDisplaysFieldValues,
+				fragmentEntryProcessorContext);
 
-				String mappedField = editableValueJSONObject.getString(
-					"mappedField");
-
-				Optional<Map<String, Object>> fieldValuesOptional =
-					fragmentEntryProcessorContext.getFieldValuesOptional();
-
-				Map<String, Object> fieldValues = fieldValuesOptional.orElse(
-					new HashMap<>());
-
-				value = _getImageURL(fieldValues.get(mappedField));
-			}
-
-			if (_fragmentEntryProcessorHelper.isMapped(
-					editableValueJSONObject)) {
-
-				Object fieldValue =
-					_fragmentEntryProcessorHelper.getMappedValue(
-						editableValueJSONObject, infoDisplaysFieldValues,
-						fragmentEntryProcessorContext);
-
-				if (fieldValue != null) {
-					value = _getImageURL(fieldValue);
-				}
+			if (fieldValue != null) {
+				value = _getImageURL(fieldValue);
 			}
 
 			if (Validator.isNull(value)) {
@@ -155,6 +136,14 @@ public class BackgroundImageFragmentEntryProcessor
 						JSONFactoryUtil.createJSONObject(value);
 
 					fileEntryId = valueJSONObject.getLong("fileEntryId");
+
+					if (fileEntryId == 0) {
+						fileEntryId =
+							_fragmentEntryProcessorHelper.getFileEntryId(
+								valueJSONObject.getString("className"),
+								valueJSONObject.getLong("classPK"));
+					}
+
 					value = valueJSONObject.getString("url", value);
 				}
 
@@ -163,6 +152,31 @@ public class BackgroundImageFragmentEntryProcessor
 				sb.append("background-image: url(");
 				sb.append(value);
 				sb.append("); background-size: cover;");
+
+				if (fileEntryId == 0) {
+					fileEntryId = _fragmentEntryProcessorHelper.getFileEntryId(
+						editableValueJSONObject.getLong("classNameId"),
+						editableValueJSONObject.getLong("classPK"),
+						editableValueJSONObject.getString("fieldId"),
+						fragmentEntryProcessorContext.getLocale());
+				}
+
+				Optional<Object> displayObjectOptional =
+					fragmentEntryProcessorContext.getDisplayObjectOptional();
+
+				if ((fileEntryId == 0) && displayObjectOptional.isPresent()) {
+					fileEntryId = _fragmentEntryProcessorHelper.getFileEntryId(
+						displayObjectOptional.get(),
+						editableValueJSONObject.getString("collectionFieldId"),
+						fragmentEntryProcessorContext.getLocale());
+				}
+
+				if ((fileEntryId == 0) && displayObjectOptional.isPresent()) {
+					fileEntryId = _fragmentEntryProcessorHelper.getFileEntryId(
+						displayObjectOptional.get(),
+						editableValueJSONObject.getString("mappedField"),
+						fragmentEntryProcessorContext.getLocale());
+				}
 
 				if (fileEntryId > 0) {
 					sb.append(" --background-image-file-entry-id: ");
@@ -231,6 +245,43 @@ public class BackgroundImageFragmentEntryProcessor
 		return document;
 	}
 
+	private Object _getFieldValue(
+			JSONObject editableValueJSONObject,
+			Map<Long, Map<String, Object>> infoDisplaysFieldValues,
+			FragmentEntryProcessorContext fragmentEntryProcessorContext)
+		throws PortalException {
+
+		if (_fragmentEntryProcessorHelper.isAssetDisplayPage(
+				fragmentEntryProcessorContext.getMode())) {
+
+			String mappedField = editableValueJSONObject.getString(
+				"mappedField");
+
+			Optional<Map<String, Object>> fieldValuesOptional =
+				fragmentEntryProcessorContext.getFieldValuesOptional();
+
+			Map<String, Object> fieldValues = fieldValuesOptional.orElse(
+				new HashMap<>());
+
+			return fieldValues.get(mappedField);
+		}
+		else if (_fragmentEntryProcessorHelper.isMapped(
+					editableValueJSONObject)) {
+
+			return _fragmentEntryProcessorHelper.getMappedValue(
+				editableValueJSONObject, infoDisplaysFieldValues,
+				fragmentEntryProcessorContext);
+		}
+		else if (_fragmentEntryProcessorHelper.isMappedCollection(
+					editableValueJSONObject)) {
+
+			return _fragmentEntryProcessorHelper.getMappedCollectionValue(
+				editableValueJSONObject, fragmentEntryProcessorContext);
+		}
+
+		return null;
+	}
+
 	private String _getImageURL(Object fieldValue) {
 		if (fieldValue instanceof JSONObject) {
 			JSONObject fieldValueJSONObject = (JSONObject)fieldValue;
@@ -249,5 +300,8 @@ public class BackgroundImageFragmentEntryProcessor
 
 	@Reference
 	private FragmentEntryProcessorHelper _fragmentEntryProcessorHelper;
+
+	@Reference
+	private Portal _portal;
 
 }

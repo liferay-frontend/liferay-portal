@@ -440,12 +440,8 @@ public abstract class BaseEmptyLinesCheck extends BaseFileCheck {
 
 			String whitespace = matcher.group(1);
 
-			int x = content.indexOf(
-				whitespace + StringPool.CLOSE_CURLY_BRACE + "\n",
-				matcher.end());
-			int y = content.indexOf(
-				whitespace + StringPool.CLOSE_CURLY_BRACE + "\n\n",
-				matcher.end());
+			int x = content.indexOf(whitespace + "}\n", matcher.end());
+			int y = content.indexOf(whitespace + "}\n\n", matcher.end());
 
 			if ((x != -1) && (x != y)) {
 				return StringUtil.replaceFirst(content, "\n", "\n\n", x + 1);

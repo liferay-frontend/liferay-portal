@@ -108,8 +108,8 @@ ServiceContext#deriveDefaultPermissions(long, String).
 							<%
 							disabled = true;
 
-							checkboxFieldId = checkboxFieldId + StringPool.UNDERLINE + "display";
-							checkboxFieldName = checkboxFieldName + StringPool.UNDERLINE + "display";
+							checkboxFieldId = checkboxFieldId + "_display";
+							checkboxFieldName = checkboxFieldName + "_display";
 							%>
 
 						</c:if>

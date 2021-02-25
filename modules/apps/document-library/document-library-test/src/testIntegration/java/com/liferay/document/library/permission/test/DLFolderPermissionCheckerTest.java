@@ -18,6 +18,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.Folder;
@@ -84,6 +86,9 @@ public class DLFolderPermissionCheckerTest extends BasePermissionTestCase {
 				name);
 		}
 		catch (NoSuchFolderException noSuchFolderException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchFolderException, noSuchFolderException);
+			}
 		}
 
 		ServiceContext serviceContext =
@@ -101,6 +106,9 @@ public class DLFolderPermissionCheckerTest extends BasePermissionTestCase {
 				group.getGroupId(), _folder.getFolderId(), name);
 		}
 		catch (NoSuchFolderException noSuchFolderException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchFolderException, noSuchFolderException);
+			}
 		}
 
 		_subfolder = DLAppServiceUtil.addFolder(
@@ -122,6 +130,9 @@ public class DLFolderPermissionCheckerTest extends BasePermissionTestCase {
 			ResourceConstants.SCOPE_INDIVIDUAL,
 			String.valueOf(group.getGroupId()), ActionKeys.VIEW);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DLFolderPermissionCheckerTest.class);
 
 	@Inject(
 		filter = "model.class.name=com.liferay.portal.kernel.repository.model.Folder"

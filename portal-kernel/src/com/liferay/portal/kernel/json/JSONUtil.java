@@ -721,8 +721,7 @@ public class JSONUtil {
 
 		if (jsonArray.length() == 0) {
 			return StringBundler.concat(
-				StringPool.OPEN_BRACKET, "\n", _getIndent(indent, level),
-				StringPool.CLOSE_BRACKET);
+				"[\n", _getIndent(indent, level), StringPool.CLOSE_BRACKET);
 		}
 
 		StringBundler sb = new StringBundler();
@@ -753,8 +752,7 @@ public class JSONUtil {
 
 		if (jsonObject.length() == 0) {
 			return StringBundler.concat(
-				StringPool.OPEN_CURLY_BRACE, "\n", _getIndent(indent, level),
-				StringPool.CLOSE_CURLY_BRACE);
+				"{\n", _getIndent(indent, level), StringPool.CLOSE_CURLY_BRACE);
 		}
 
 		StringBundler sb = new StringBundler();

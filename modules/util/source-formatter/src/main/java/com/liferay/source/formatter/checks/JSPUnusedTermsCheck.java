@@ -119,8 +119,8 @@ public class JSPUnusedTermsCheck extends BaseJSPTermsCheck {
 			String prefix = taglibLine.substring(x + 8, y);
 
 			String regex = StringBundler.concat(
-				StringPool.LESS_THAN, prefix, StringPool.COLON, StringPool.PIPE,
-				"\\$\\{", prefix, StringPool.COLON);
+				StringPool.LESS_THAN, prefix, ":|\\$\\{", prefix,
+				StringPool.COLON);
 
 			if (hasUnusedJSPTerm(
 					fileName, content, regex, "taglib", checkedFileNames,

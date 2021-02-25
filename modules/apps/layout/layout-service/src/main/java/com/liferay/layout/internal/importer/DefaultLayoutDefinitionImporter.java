@@ -76,8 +76,7 @@ public class DefaultLayoutDefinitionImporter {
 					StringBundler.concat(
 						"Welcome to ",
 						StringUtil.replace(
-							releaseInfo, CharPool.OPEN_PARENTHESIS,
-							"<br>" + StringPool.OPEN_PARENTHESIS),
+							releaseInfo, CharPool.OPEN_PARENTHESIS, "<br>("),
 						".")
 				).put(
 					"WELCOME_IMAGE_URL",

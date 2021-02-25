@@ -245,6 +245,7 @@ JournalEditArticleDisplayContext journalEditArticleDisplayContext = new JournalE
 					containerId='<%= liferayPortletResponse.getNamespace() + "dataEngineLayoutRenderer" %>'
 					dataDefinitionId="<%= ddmStructure.getStructureId() %>"
 					dataRecordValues="<%= journalEditArticleDisplayContext.getValues(ddmStructure) %>"
+					defaultLanguageId="<%= journalEditArticleDisplayContext.getDefaultArticleLanguageId() %>"
 					namespace="<%= liferayPortletResponse.getNamespace() %>"
 				/>
 

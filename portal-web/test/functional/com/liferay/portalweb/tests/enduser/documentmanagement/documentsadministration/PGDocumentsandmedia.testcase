@@ -1076,6 +1076,10 @@ definition {
 			dmFolderName = "DM Folder1 Name",
 			locationFieldName = "true");
 
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder1 Name");
+
 		DMDocument.moveToFolderPG(
 			dmDocumentTitle = "DM Document Title",
 			dmFolderName = "DM Folder2 Name");

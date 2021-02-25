@@ -24,6 +24,8 @@ import com.liferay.dispatch.service.DispatchLogLocalService;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
@@ -59,21 +61,50 @@ public class DispatchMessageListener extends BaseMessageListener {
 					dispatchTriggerId, DispatchTaskStatus.IN_PROGRESS);
 
 			if (dispatchLog != null) {
+				Date date = new Date();
+
 				_dispatchLogLocalService.addDispatchLog(
 					dispatchTrigger.getUserId(),
-					dispatchTrigger.getDispatchTriggerId(), null, null, null,
-					new Date(), DispatchTaskStatus.CANCELED);
+					dispatchTrigger.getDispatchTriggerId(), date,
+					"Only one instance in progress is allowed", null, date,
+					DispatchTaskStatus.CANCELED);
 
 				return;
 			}
 		}
 
+		_execute(dispatchTrigger);
+	}
+
+	private void _execute(DispatchTrigger dispatchTrigger) throws Exception {
 		DispatchTaskExecutor dispatchTaskExecutor =
-			_dispatchTaskExecutorRegistry.getDispatchTaskExecutor(
+			_dispatchTaskExecutorRegistry.fetchDispatchTaskExecutor(
 				dispatchTrigger.getDispatchTaskExecutorType());
 
-		dispatchTaskExecutor.execute(dispatchTriggerId);
+		if (dispatchTaskExecutor != null) {
+			dispatchTaskExecutor.execute(
+				dispatchTrigger.getDispatchTriggerId());
+
+			return;
+		}
+
+		String message =
+			"Unable to find dispatch task executor of type " +
+				dispatchTrigger.getDispatchTaskExecutorType();
+
+		if (_log.isWarnEnabled()) {
+			_log.warn(message);
+		}
+
+		Date date = new Date();
+
+		_dispatchLogLocalService.addDispatchLog(
+			dispatchTrigger.getUserId(), dispatchTrigger.getDispatchTriggerId(),
+			date, message, null, date, DispatchTaskStatus.CANCELED);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DispatchMessageListener.class);
 
 	@Reference
 	private DispatchLogLocalService _dispatchLogLocalService;

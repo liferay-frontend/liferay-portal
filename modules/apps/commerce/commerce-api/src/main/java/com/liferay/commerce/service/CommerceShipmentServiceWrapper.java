@@ -197,6 +197,15 @@ public class CommerceShipmentServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.model.CommerceShipment
+			reprocessCommerceShipment(long commerceShipmentId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceShipmentService.reprocessCommerceShipment(
+			commerceShipmentId);
+	}
+
+	@Override
 	public com.liferay.commerce.model.CommerceShipment updateAddress(
 			long commerceShipmentId, String name, String description,
 			String street1, String street2, String street3, String city,

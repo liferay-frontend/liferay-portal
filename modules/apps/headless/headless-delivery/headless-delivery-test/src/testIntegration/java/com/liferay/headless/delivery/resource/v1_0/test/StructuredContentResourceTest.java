@@ -280,8 +280,7 @@ public class StructuredContentResourceTest
 
 		User ownerUser = UserTestUtil.addUser(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			password,
-			RandomTestUtil.randomString() + StringPool.AT + "liferay.com",
+			password, RandomTestUtil.randomString() + "@liferay.com",
 			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
 			ServiceContextTestUtil.getServiceContext());
@@ -334,8 +333,7 @@ public class StructuredContentResourceTest
 
 		User regularUser = UserTestUtil.addUser(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			password,
-			RandomTestUtil.randomString() + StringPool.AT + "liferay.com",
+			password, RandomTestUtil.randomString() + "@liferay.com",
 			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
 			ServiceContextTestUtil.getServiceContext());

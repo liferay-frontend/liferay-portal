@@ -30,95 +30,93 @@ if (socialUserStatisticsPortletInstanceConfiguration.rankByContribution()) {
 }
 
 String[] rankingNames = rankingNamesList.toArray(new String[0]);
+%>
 
-if (!rankingNamesList.isEmpty()) {
-	SearchContainer<Tuple> searchContainer = new SearchContainer(renderRequest, null, null, SearchContainer.DEFAULT_CUR_PARAM, 5, portletURL, null, null);
+<c:choose>
+	<c:when test="<%= !rankingNamesList.isEmpty() %>">
 
-	int total = SocialActivityCounterLocalServiceUtil.getUserActivityCountersCount(scopeGroupId, rankingNames);
+		<%
+		SearchContainer<Tuple> searchContainer = new SearchContainer(renderRequest, null, null, SearchContainer.DEFAULT_CUR_PARAM, 5, portletURL, null, null);
 
-	searchContainer.setTotal(total);
+		int total = SocialActivityCounterLocalServiceUtil.getUserActivityCountersCount(scopeGroupId, rankingNames);
 
-	List<String> selectedNamesList = new ArrayList<String>();
+		searchContainer.setTotal(total);
 
-	selectedNamesList.add(SocialActivityCounterConstants.NAME_CONTRIBUTION);
-	selectedNamesList.add(SocialActivityCounterConstants.NAME_PARTICIPATION);
+		List<String> selectedNamesList = new ArrayList<String>();
 
-	if (socialUserStatisticsPortletInstanceConfiguration.displayAdditionalActivityCounters()) {
-		String[] displayActivityCounterName = socialUserStatisticsPortletInstanceConfiguration.displayActivityCounterName();
+		selectedNamesList.add(SocialActivityCounterConstants.NAME_CONTRIBUTION);
+		selectedNamesList.add(SocialActivityCounterConstants.NAME_PARTICIPATION);
 
-		int displayActivityCounterNameCount = displayActivityCounterName.length;
+		if (socialUserStatisticsPortletInstanceConfiguration.displayAdditionalActivityCounters()) {
+			String[] displayActivityCounterName = socialUserStatisticsPortletInstanceConfiguration.displayActivityCounterName();
 
-		for (int displayActivityCounterNameIndex = 0; displayActivityCounterNameIndex < displayActivityCounterNameCount; displayActivityCounterNameIndex++) {
-			selectedNamesList.add(displayActivityCounterName[displayActivityCounterNameIndex]);
+			int displayActivityCounterNameCount = displayActivityCounterName.length;
+
+			for (int displayActivityCounterNameIndex = 0; displayActivityCounterNameIndex < displayActivityCounterNameCount; displayActivityCounterNameIndex++) {
+				selectedNamesList.add(displayActivityCounterName[displayActivityCounterNameIndex]);
+			}
 		}
-	}
 
-	String[] selectedNames = selectedNamesList.toArray(new String[0]);
+		String[] selectedNames = selectedNamesList.toArray(new String[0]);
 
-	List<Tuple> results = SocialActivityCounterLocalServiceUtil.getUserActivityCounters(scopeGroupId, rankingNames, selectedNames, searchContainer.getStart(), searchContainer.getEnd());
+		List<Tuple> results = SocialActivityCounterLocalServiceUtil.getUserActivityCounters(scopeGroupId, rankingNames, selectedNames, searchContainer.getStart(), searchContainer.getEnd());
 
-	searchContainer.setResults(results);
+		searchContainer.setResults(results);
 
-	List<com.liferay.portal.kernel.dao.search.ResultRow> resultRows = searchContainer.getResultRows();
+		List<com.liferay.portal.kernel.dao.search.ResultRow> resultRows = searchContainer.getResultRows();
 
-	for (int i = 0; i < results.size(); i++) {
-		Tuple tuple = results.get(i);
+		for (int i = 0; i < results.size(); i++) {
+			Tuple tuple = results.get(i);
 
-		ResultRow row = new ResultRow((Map<String, SocialActivityCounter>)tuple.getObject(1), (Long)tuple.getObject(0), i);
+			ResultRow row = new ResultRow((Map<String, SocialActivityCounter>)tuple.getObject(1), (Long)tuple.getObject(0), i);
 
-		// User display
+			// User display
 
-		row.addJSP("/user_display.jsp", application, request, response);
+			row.addJSP("/user_display.jsp", application, request, response);
 
-		// Add result row
+			// Add result row
 
-		resultRows.add(row);
-	}
+			resultRows.add(row);
+		}
 
-	String rankingNamesMessage = LanguageUtil.format(request, rankingNames[0], StringPool.BLANK, false);
+		String rankingNamesMessage = LanguageUtil.format(request, rankingNames[0], StringPool.BLANK, false);
 
-	for (int i = 1; i < rankingNames.length; i++) {
-		rankingNamesMessage = LanguageUtil.format(request, "x-and-y", new Object[] {rankingNamesMessage, rankingNames[i]});
-	}
-%>
+		for (int i = 1; i < rankingNames.length; i++) {
+			rankingNamesMessage = LanguageUtil.format(request, "x-and-y", new Object[] {rankingNamesMessage, rankingNames[i]});
+		}
+		%>
 
-	<c:if test="<%= socialUserStatisticsPortletInstanceConfiguration.showHeaderText() %>">
-		<div class="top-users">
-			<c:if test="<%= total > 0 %>">
-				<liferay-ui:message arguments="<%= total %>" key="top-users-out-of-x" translateArguments="<%= false %>" /> <liferay-ui:message arguments="<%= rankingNamesMessage %>" key="ranking-is-based-on-x" translateArguments="<%= false %>" /><br />
-			</c:if>
+		<c:if test="<%= socialUserStatisticsPortletInstanceConfiguration.showHeaderText() %>">
+			<div class="top-users">
+				<c:if test="<%= total > 0 %>">
+					<liferay-ui:message arguments="<%= total %>" key="top-users-out-of-x" translateArguments="<%= false %>" /> <liferay-ui:message arguments="<%= rankingNamesMessage %>" key="ranking-is-based-on-x" translateArguments="<%= false %>" /><br />
+				</c:if>
+			</div>
+		</c:if>
+
+		<c:if test="<%= total == 0 %>">
+			<liferay-ui:message key="there-are-no-active-users-for-this-period" />
+		</c:if>
+
+		<liferay-ui:search-iterator
+			paginate="<%= false %>"
+			searchContainer="<%= searchContainer %>"
+		/>
+
+		<c:if test="<%= !results.isEmpty() %>">
+			<div class="taglib-search-iterator-page-iterator-bottom" id="<portlet:namespace />searchTopUsers">
+				<liferay-ui:search-paginator
+					searchContainer="<%= searchContainer %>"
+					type="article"
+				/>
+			</div>
+		</c:if>
+	</c:when>
+	<c:otherwise>
+		<div class="alert alert-info portlet-configuration">
+			<a href="<%= HtmlUtil.escapeHREF(portletDisplay.getURLConfiguration()) %>" onClick="<%= portletDisplay.getURLConfigurationJS() %>">
+				<liferay-ui:message key="please-configure-this-widget-and-select-at-least-one-ranking-criteria" />
+			</a>
 		</div>
-	</c:if>
-
-	<c:if test="<%= total == 0 %>">
-		<liferay-ui:message key="there-are-no-active-users-for-this-period" />
-	</c:if>
-
-	<liferay-ui:search-iterator
-		paginate="<%= false %>"
-		searchContainer="<%= searchContainer %>"
-	/>
-
-	<c:if test="<%= !results.isEmpty() %>">
-		<div class="taglib-search-iterator-page-iterator-bottom" id="<portlet:namespace />searchTopUsers">
-			<liferay-ui:search-paginator
-				searchContainer="<%= searchContainer %>"
-				type="article"
-			/>
-		</div>
-	</c:if>
-
-<%
-}
-else {
-%>
-
-	<div class="alert alert-info portlet-configuration">
-		<a href="<%= HtmlUtil.escapeHREF(portletDisplay.getURLConfiguration()) %>" onClick="<%= portletDisplay.getURLConfigurationJS() %>">
-			<liferay-ui:message key="please-configure-this-widget-and-select-at-least-one-ranking-criteria" />
-		</a>
-	</div>
-
-<%
-}
-%>
+	</c:otherwise>
+</c:choose>

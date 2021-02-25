@@ -261,28 +261,33 @@ renderResponse.setTitle((feed == null) ? LanguageUtil.get(request, "new-feed") :
 
 							for (DDMFormField ddmFormField : ddmFormFieldsMap.values()) {
 								String ddmFormFieldType = ddmFormField.getType();
-
-								if (ddmFormFieldType.equals("radio") || ddmFormFieldType.equals("select")) {
-									DDMFormFieldOptions ddmFormFieldOptions = ddmFormField.getDDMFormFieldOptions();
-
-									for (String optionValue : ddmFormFieldOptions.getOptionsValues()) {
-										LocalizedValue optionLabels = ddmFormFieldOptions.getOptionLabels(optionValue);
-
-										optionValue = ddmFormField.getName() + StringPool.UNDERLINE + optionValue;
 							%>
 
-										<aui:option label='<%= TextFormatter.format(optionLabels.getString(locale), TextFormatter.J) + "(" + LanguageUtil.get(request, ddmFormFieldType) + ")" %>' selected="<%= contentField.equals(optionValue) %>" value="<%= optionValue %>" />
+								<c:choose>
+									<c:when test='<%= ddmFormFieldType.equals("radio") || ddmFormFieldType.equals("select") %>'>
 
-								<%
-									}
-								}
-								else if (!ddmFormFieldType.equals("checkbox")) {
-								%>
+										<%
+										DDMFormFieldOptions ddmFormFieldOptions = ddmFormField.getDDMFormFieldOptions();
 
-									<aui:option label='<%= TextFormatter.format(ddmFormField.getName(), TextFormatter.J) + "(" + LanguageUtil.get(request, ddmFormFieldType) + ")" %>' selected="<%= contentField.equals(ddmFormField.getName()) %>" value="<%= ddmFormField.getName() %>" />
+										for (String optionValue : ddmFormFieldOptions.getOptionsValues()) {
+											LocalizedValue optionLabels = ddmFormFieldOptions.getOptionLabels(optionValue);
+
+											optionValue = ddmFormField.getName() + StringPool.UNDERLINE + optionValue;
+										%>
+
+											<aui:option label='<%= TextFormatter.format(optionLabels.getString(locale), TextFormatter.J) + "(" + LanguageUtil.get(request, ddmFormFieldType) + ")" %>' selected="<%= contentField.equals(optionValue) %>" value="<%= optionValue %>" />
+
+										<%
+										}
+										%>
+
+									</c:when>
+									<c:when test='<%= !ddmFormFieldType.equals("checkbox") %>'>
+										<aui:option label='<%= TextFormatter.format(ddmFormField.getName(), TextFormatter.J) + "(" + LanguageUtil.get(request, ddmFormFieldType) + ")" %>' selected="<%= contentField.equals(ddmFormField.getName()) %>" value="<%= ddmFormField.getName() %>" />
+									</c:when>
+								</c:choose>
 
 							<%
-								}
 							}
 							%>
 

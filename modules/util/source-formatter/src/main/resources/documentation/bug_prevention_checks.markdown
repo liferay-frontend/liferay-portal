@@ -23,6 +23,7 @@ CDNCheck | | Checks the URL in `artifact.properties` files. |
 CQLKeywordCheck | .cql | Checks that Cassandra keywords are upper case. |
 [CodeownersFileLocationCheck](checks/codeowners_file_location_check.markdown#codeownersfilelocationcheck) | CODEOWNERS | Checks that `CODEOWNERS` files are located in `.github` directory. |
 CompatClassImportsCheck | .java, .jsp, .jspf, .tag, .tpl or .vm | Checks that classes are imported from `compat` modules, when possible. |
+ConsumerTypeAnnotationCheck | .java | Performs several checks on classes with @ConsumerType annotation. |
 DeprecatedUsageCheck | .java | Finds calls to deprecated classes or methods. |
 FactoryCheck | .java, .jsp, .jspf, .tag, .tpl or .vm | Finds cases where `*Factory` should be used when creating new instances of an object. |
 FilterStringWhitespaceCheck | .java | Finds missing and unnecessary whitespace in the value of the filter string in `ServiceTrackerFactory.open` or `WaiterUtil.waitForFilter`. |

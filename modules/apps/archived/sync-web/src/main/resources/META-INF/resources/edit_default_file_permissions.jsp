@@ -59,53 +59,39 @@ if (groupIds.length == 1) {
 
 			<tr class="record-row">
 				<td>
+					<c:choose>
+						<c:when test="<%= permissions == SyncPermissionsConstants.PERMISSIONS_FULL_ACCESS %>">
 
-					<%
-					if (permissions == SyncPermissionsConstants.PERMISSIONS_FULL_ACCESS) {
-						List<String> resourceActions = ListUtil.toList(SyncPermissionsConstants.getFileResourceActions(permissions));
+							<%
+							List<String> resourceActions = ListUtil.toList(SyncPermissionsConstants.getFileResourceActions(permissions));
 
-						List<String> localizedResourceActions = new ArrayList<String>(resourceActions.size());
+							List<String> localizedResourceActions = new ArrayList<String>(resourceActions.size());
 
-						for (String resourceAction : resourceActions) {
-							localizedResourceActions.add(ResourceActionsUtil.getAction(request, resourceAction));
-						}
-					%>
+							for (String resourceAction : resourceActions) {
+								localizedResourceActions.add(ResourceActionsUtil.getAction(request, resourceAction));
+							}
+							%>
 
-						<liferay-ui:message arguments="<%= StringUtil.merge(localizedResourceActions, StringPool.COMMA_AND_SPACE) %>" key="full-access-x" />
+							<liferay-ui:message arguments="<%= StringUtil.merge(localizedResourceActions, StringPool.COMMA_AND_SPACE) %>" key="full-access-x" />
 
-						<liferay-ui:icon-help message="full-access-help" />
+							<liferay-ui:icon-help message="full-access-help" />
+						</c:when>
+						<c:when test="<%= permissions == SyncPermissionsConstants.PERMISSIONS_VIEW_AND_ADD_DISCUSSION %>">
+							<liferay-ui:message key="view-and-add-discussion" />
 
-					<%
-					}
-					else if (permissions == SyncPermissionsConstants.PERMISSIONS_VIEW_AND_ADD_DISCUSSION) {
-					%>
+							<liferay-ui:icon-help message="view-and-add-discussion-help" />
+						</c:when>
+						<c:when test="<%= permissions == SyncPermissionsConstants.PERMISSIONS_VIEW_ONLY %>">
+							<liferay-ui:message key="view-only" />
 
-						<liferay-ui:message key="view-and-add-discussion" />
+							<liferay-ui:icon-help message="view-only-help" />
+						</c:when>
+						<c:when test="<%= permissions == SyncPermissionsConstants.PERMISSIONS_VIEW_UPDATE_AND_ADD_DISCUSSION %>">
+							<liferay-ui:message key="view-update-and-add-discussion" />
 
-						<liferay-ui:icon-help message="view-and-add-discussion-help" />
-
-					<%
-					}
-					else if (permissions == SyncPermissionsConstants.PERMISSIONS_VIEW_ONLY) {
-					%>
-
-						<liferay-ui:message key="view-only" />
-
-						<liferay-ui:icon-help message="view-only-help" />
-
-					<%
-					}
-					else if (permissions == SyncPermissionsConstants.PERMISSIONS_VIEW_UPDATE_AND_ADD_DISCUSSION) {
-					%>
-
-						<liferay-ui:message key="view-update-and-add-discussion" />
-
-						<liferay-ui:icon-help message="view-update-and-add-discussion-help" />
-
-					<%
-					}
-					%>
-
+							<liferay-ui:icon-help message="view-update-and-add-discussion-help" />
+						</c:when>
+					</c:choose>
 				</td>
 				<td>
 					<portlet:actionURL name="updateSites" var="setPermissionsURL">

@@ -122,19 +122,17 @@ export function saveDataDefinition({
 	dataLayout,
 	dataLayoutId,
 }) {
-	const {dataDefinitionFields, defaultLanguageId} = dataDefinition;
-
-	const dataDefinitionFieldNames = dataDefinitionFields.map(({name}) => name);
+	const {defaultLanguageId} = dataDefinition;
 
 	const normalizedDataDefinition = normalizeDataDefinition(
 		dataDefinition,
 		defaultLanguageId,
 		false
 	);
+
 	const normalizedDataLayout = normalizeDataLayout(
 		dataLayout,
-		defaultLanguageId,
-		dataDefinitionFieldNames
+		defaultLanguageId
 	);
 
 	const updateDefinition = () =>

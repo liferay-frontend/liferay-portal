@@ -71,10 +71,7 @@ public class PropertiesPortalFileCheck extends BaseFileCheck {
 			String line = null;
 
 			while ((line = unsyncBufferedReader.readLine()) != null) {
-				if (line.matches(
-						StringPool.FOUR_SPACES +
-							"[^# ]+?=[^,]+(,[^ ][^,]+)+")) {
-
+				if (line.matches("    [^# ]+?=[^,]+(,[^ ][^,]+)+")) {
 					String propertyKey = StringUtil.extractFirst(
 						StringUtil.trimLeading(line), "=");
 

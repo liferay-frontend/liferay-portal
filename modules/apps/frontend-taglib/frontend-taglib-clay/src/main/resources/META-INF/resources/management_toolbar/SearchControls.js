@@ -23,6 +23,7 @@ const SearchControls = ({
 	searchData,
 	searchFormMethod,
 	searchFormName,
+	searchInputAutoFocus,
 	searchInputName,
 	searchMobile,
 	searchValue,
@@ -39,6 +40,7 @@ const SearchControls = ({
 				<ClayInput.Group>
 					<ClayInput.GroupItem>
 						<ClayInput
+							autoFocus={searchInputAutoFocus}
 							className="form-control input-group-inset input-group-inset-after"
 							defaultValue={searchValue}
 							disabled={disabled}
@@ -67,14 +69,16 @@ const SearchControls = ({
 				</ClayInput.Group>
 
 				{searchData &&
-					Object.keys(searchData).map((key) => (
-						<ClayInput
-							key={key}
-							name={key}
-							type="hidden"
-							value={searchData[key]}
-						/>
-					))}
+					Object.keys(searchData).map((key) =>
+						searchData[key].map((value) => (
+							<ClayInput
+								key={key}
+								name={key}
+								type="hidden"
+								value={value}
+							/>
+						))
+					)}
 			</ClayManagementToolbar.Search>
 		</>
 	);

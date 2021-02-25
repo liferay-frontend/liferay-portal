@@ -22,12 +22,7 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-const ChangeTrackingRenderView = ({
-	dataURL,
-	getCache,
-	spritemap,
-	updateCache,
-}) => {
+export default ({dataURL, getCache, spritemap, updateCache}) => {
 	const CHANGE_TYPE_ADDED = 'added';
 	const CHANGE_TYPE_DELETED = 'deleted';
 	const CHANGE_TYPE_PRODUCTION = 'production';
@@ -564,9 +559,7 @@ const ChangeTrackingRenderView = ({
 		return (
 			<tr
 				className={
-					loading
-						? className + ' publications-render-view-loading'
-						: className
+					loading ? className + ' publications-loading' : className
 				}
 			>
 				<td className="publications-render-view-divider">{title}</td>
@@ -598,7 +591,7 @@ const ChangeTrackingRenderView = ({
 		}
 
 		return (
-			<tr className={loading ? 'publications-render-view-loading' : ''}>
+			<tr className={loading ? 'publications-loading' : ''}>
 				<td
 					className="publications-render-view-toolbar"
 					colSpan={columns}
@@ -741,7 +734,7 @@ const ChangeTrackingRenderView = ({
 
 			{renderDividers()}
 
-			<tr className={loading ? 'publications-render-view-loading' : ''}>
+			<tr className={loading ? 'publications-loading' : ''}>
 				{(state.contentSelect === CONTENT_SELECT_LEFT ||
 					state.viewType === VIEW_TYPE_SPLIT) && (
 					<td className="publications-render-view-content">
@@ -766,6 +759,3 @@ const ChangeTrackingRenderView = ({
 		</table>
 	);
 };
-
-export default ChangeTrackingRenderView;
-export {ChangeTrackingRenderView};

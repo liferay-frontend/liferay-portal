@@ -47,9 +47,8 @@ if (cpSku != null) {
 				<div class="availability d-flex mb-4">
 					<div>
 						<commerce-ui:availability-label
-							lowStock="<%= cpContentModel.isLowStock() %>"
-							stockQuantity="<%= cpContentModel.getStockQuantity() %>"
-							willUpdate="<%= true %>"
+							cpCatalogEntry="<%= cpCatalogEntry %>"
+							namespace="<%= liferayPortletResponse.getNamespace() %>"
 						/>
 					</div>
 
@@ -150,19 +149,14 @@ if (cpSku != null) {
 				/>
 
 				<commerce-ui:add-to-wish-list
-					commerceAccountId="<%= cpContentModel.getAccountId() %>"
-					cpDefinitionId="<%= cpDefinitionId %>"
-					inWishList="<%= cpContentModel.isInWishList() %>"
-					large="<%= true %>"
-					skuId="<%= skuId %>"
-					spritemap="<%= cpContentModel.getSpritemap() %>"
+					cpCatalogEntry="<%= cpCatalogEntry %>"
 				/>
 			</div>
 
 			<div class="mt-3">
 				<commerce-ui:compare-checkbox
-					CPDefinitionId="<%= cpDefinitionId %>"
-					label="<%= LanguageUtil.get(resourceBundle, "compare") %>"
+					cpCatalogEntry="<%= cpCatalogEntry %>"
+					label='<%= LanguageUtil.get(resourceBundle, "compare") %>'
 				/>
 			</div>
 		</div>

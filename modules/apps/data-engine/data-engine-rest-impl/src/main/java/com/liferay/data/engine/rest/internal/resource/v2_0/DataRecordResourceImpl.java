@@ -210,9 +210,7 @@ public class DataRecordResourceImpl
 
 					ddmContentBooleanQuery.addTerm(
 						Field.getLocalizedName(locale, "ddmContent"),
-						StringBundler.concat(
-							StringPool.QUOTE, "*", keywords, "*",
-							StringPool.QUOTE));
+						StringBundler.concat("\"*", keywords, "*\""));
 				}
 
 				BooleanFilter booleanFilter =

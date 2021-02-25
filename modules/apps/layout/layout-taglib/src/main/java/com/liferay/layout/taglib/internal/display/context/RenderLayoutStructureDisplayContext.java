@@ -16,6 +16,7 @@ package com.liferay.layout.taglib.internal.display.context;
 
 import com.liferay.asset.info.display.contributor.util.ContentAccessor;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.fragment.entry.processor.helper.FragmentEntryProcessorHelper;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
@@ -102,6 +103,7 @@ public class RenderLayoutStructureDisplayContext {
 
 	public RenderLayoutStructureDisplayContext(
 		Map<String, Object> fieldValues,
+		FragmentEntryProcessorHelper fragmentEntryProcessorHelper,
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse,
@@ -114,6 +116,7 @@ public class RenderLayoutStructureDisplayContext {
 		String mainItemId, String mode, boolean showPreview) {
 
 		_fieldValues = fieldValues;
+		_fragmentEntryProcessorHelper = fragmentEntryProcessorHelper;
 		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 		_httpServletRequest = httpServletRequest;
 		_httpServletResponse = httpServletResponse;
@@ -657,18 +660,23 @@ public class RenderLayoutStructureDisplayContext {
 				 backgroundImageJSONObject.has("classPK") &&
 				 backgroundImageJSONObject.has("fieldId")) {
 
-			fileEntryId = _getFileEntryId(
+			fileEntryId = _fragmentEntryProcessorHelper.getFileEntryId(
 				backgroundImageJSONObject.getLong("classNameId"),
 				backgroundImageJSONObject.getLong("classPK"),
-				backgroundImageJSONObject.getString("fieldId"));
+				backgroundImageJSONObject.getString("fieldId"),
+				LocaleUtil.fromLanguageId(_themeDisplay.getLanguageId()));
 		}
 		else if (backgroundImageJSONObject.has("collectionFieldId")) {
-			fileEntryId = _getMappedCollectionFileEntryId(
-				backgroundImageJSONObject.getString("collectionFieldId"));
+			fileEntryId = _fragmentEntryProcessorHelper.getFileEntryId(
+				_httpServletRequest.getAttribute(
+					InfoDisplayWebKeys.INFO_LIST_DISPLAY_OBJECT),
+				backgroundImageJSONObject.getString("collectionFieldId"),
+				LocaleUtil.fromLanguageId(_themeDisplay.getLanguageId()));
 		}
 		else if (backgroundImageJSONObject.has("mappedField")) {
 			fileEntryId = _getFileEntryId(
-				backgroundImageJSONObject.getString("mappedField"));
+				backgroundImageJSONObject.getString("mappedField"),
+				LocaleUtil.fromLanguageId(_themeDisplay.getLanguageId()));
 		}
 
 		if (fileEntryId != 0) {
@@ -992,33 +1000,9 @@ public class RenderLayoutStructureDisplayContext {
 		return StringPool.BLANK;
 	}
 
-	private long _getFileEntryId(long classNameId, long classPK, String fieldId)
+	private long _getFileEntryId(String fieldId, Locale locale)
 		throws Exception {
 
-		InfoItemIdentifier infoItemIdentifier = new ClassPKInfoItemIdentifier(
-			classPK);
-
-		InfoItemObjectProvider<Object> infoItemObjectProvider =
-			_infoItemServiceTracker.getFirstInfoItemService(
-				InfoItemObjectProvider.class,
-				PortalUtil.getClassName(classNameId),
-				infoItemIdentifier.getInfoItemServiceFilter());
-
-		if (infoItemObjectProvider == null) {
-			return 0;
-		}
-
-		Object object = infoItemObjectProvider.getInfoItem(infoItemIdentifier);
-
-		if (object == null) {
-			return 0;
-		}
-
-		return _getFileEntryId(
-			PortalUtil.getClassName(classNameId), object, fieldId);
-	}
-
-	private long _getFileEntryId(String fieldId) throws Exception {
 		InfoItemDetails infoItemDetails =
 			(InfoItemDetails)_httpServletRequest.getAttribute(
 				InfoDisplayWebKeys.INFO_ITEM_DETAILS);
@@ -1044,60 +1028,9 @@ public class RenderLayoutStructureDisplayContext {
 		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
 			(ClassPKInfoItemIdentifier)infoItemIdentifier;
 
-		return _getFileEntryId(
+		return _fragmentEntryProcessorHelper.getFileEntryId(
 			PortalUtil.getClassNameId(infoItemReference.getClassName()),
-			classPKInfoItemIdentifier.getClassPK(), fieldId);
-	}
-
-	private long _getFileEntryId(
-		String className, Object displayObject, String fieldId) {
-
-		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
-			_infoItemServiceTracker.getFirstInfoItemService(
-				InfoItemFieldValuesProvider.class, className);
-
-		if (infoItemFieldValuesProvider == null) {
-			return 0;
-		}
-
-		InfoFieldValue<Object> infoFieldValue =
-			infoItemFieldValuesProvider.getInfoItemFieldValue(
-				displayObject, fieldId);
-
-		Object value = StringPool.BLANK;
-
-		if (infoFieldValue != null) {
-			value = infoFieldValue.getValue(
-				LocaleUtil.fromLanguageId(_themeDisplay.getLanguageId()));
-		}
-
-		if (!(value instanceof WebImage)) {
-			return 0;
-		}
-
-		WebImage webImage = (WebImage)value;
-
-		InfoItemReference infoItemReference = webImage.getInfoItemReference();
-
-		if (!Objects.equals(
-				infoItemReference.getClassName(), FileEntry.class.getName())) {
-
-			return 0;
-		}
-
-		InfoItemIdentifier fileEntryInfoItemIdentifier =
-			infoItemReference.getInfoItemIdentifier();
-
-		if (!(fileEntryInfoItemIdentifier instanceof
-				ClassPKInfoItemIdentifier)) {
-
-			return 0;
-		}
-
-		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			(ClassPKInfoItemIdentifier)fileEntryInfoItemIdentifier;
-
-		return classPKInfoItemIdentifier.getClassPK();
+			classPKInfoItemIdentifier.getClassPK(), fieldId, locale);
 	}
 
 	private JSONObject _getFrontendTokensJSONObject() throws Exception {
@@ -1238,20 +1171,6 @@ public class RenderLayoutStructureDisplayContext {
 		}
 
 		return _layoutStructure.getMainItemId();
-	}
-
-	private long _getMappedCollectionFileEntryId(String fieldId) {
-		Object displayObject = _httpServletRequest.getAttribute(
-			InfoDisplayWebKeys.INFO_LIST_DISPLAY_OBJECT);
-
-		if (!(displayObject instanceof ClassedModel)) {
-			return 0;
-		}
-
-		ClassedModel classedModel = (ClassedModel)displayObject;
-
-		return _getFileEntryId(
-			classedModel.getModelClassName(), displayObject, fieldId);
 	}
 
 	private String _getMappedCollectionValue(
@@ -1398,6 +1317,7 @@ public class RenderLayoutStructureDisplayContext {
 
 	private long[][] _assetCategoryIds;
 	private final Map<String, Object> _fieldValues;
+	private final FragmentEntryProcessorHelper _fragmentEntryProcessorHelper;
 	private final FrontendTokenDefinitionRegistry
 		_frontendTokenDefinitionRegistry;
 	private JSONObject _frontendTokensJSONObject;

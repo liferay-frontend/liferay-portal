@@ -43,25 +43,24 @@ PortletURL portletURL = renderResponse.createRenderURL();
 
 		<li class="tag-popularity-<%= popularity %>">
 			<span>
+				<c:choose>
+					<c:when test="<%= assetTagName.equals(assetTag.getName()) %>">
 
-				<%
-				if (assetTagName.equals(assetTag.getName())) {
-					portletURL.setParameter("tag", StringPool.BLANK);
-				%>
+						<%
+						portletURL.setParameter("tag", StringPool.BLANK);
+						%>
 
-					<a class="tag-selected" href="<%= portletURL %>">
+						<a class="tag-selected" href="<%= portletURL %>">
+					</c:when>
+					<c:otherwise>
 
-				<%
-				}
-				else {
-					portletURL.setParameter("tag", assetTag.getName());
-				%>
+						<%
+						portletURL.setParameter("tag", assetTag.getName());
+						%>
 
-					<a href="<%= portletURL %>">
-
-				<%
-				}
-				%>
+						<a href="<%= portletURL %>">
+					</c:otherwise>
+				</c:choose>
 
 					<strong><%= HtmlUtil.escape(assetTag.getName()) %></strong>
 				</a>

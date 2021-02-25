@@ -1395,7 +1395,7 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 			throw new FolderNameException(
 				StringBundler.concat(
 					"Folder name ", folderName,
-					" is invalid because it contains a ", StringPool.SLASH));
+					" is invalid because it contains a /"));
 		}
 	}
 

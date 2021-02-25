@@ -109,6 +109,14 @@ definition {
 		Click(locator1 = "FormViewBuilder#RULE_ADD_BUTTON");
 	}
 
+	macro addSelectTypeFieldOptions {
+		var key_rowNumber = "${rowNumber}";
+
+		Type(
+			locator1 = "FormViewBuilder#OPTIONS_OPTION_VALUE_FIELD",
+			value1 = "${optionValue}");
+	}
+
 	macro assertFieldIsNotPresentInFormBuilder {
 		AssertElementNotPresent(
 			locator1 = "FormViewBuilder#FIELD_IN_FORM_BUILDER",

@@ -37,11 +37,11 @@ definition {
 	test ChangeWCDSelection {
 		JSONLayout.addPublicLayout(
 			groupName = "Site Name",
-			layoutName = "Page Name");
+			layoutName = "Test New Page Name");
 
 		JSONLayout.addWidgetToPublicLayout(
 			groupName = "Site Name",
-			layoutName = "Page Name",
+			layoutName = "Test New Page Name",
 			widgetName = "Web Content Display");
 
 		JSONWebcontent.addWebContent(
@@ -71,7 +71,7 @@ definition {
 		}
 
 		Navigator.gotoSitePage(
-			pageName = "Page Name",
+			pageName = "Test New Page Name",
 			siteName = "Site Name");
 
 		WebContentDisplayPortlet.selectWebContent(
@@ -79,7 +79,7 @@ definition {
 			webContentTitle = "WC WebContent Title 1");
 
 		Navigator.gotoSitePage(
-			pageName = "Page Name",
+			pageName = "Test New Page Name",
 			siteName = "Site Name");
 
 		WebContentDisplayPortlet.changeWebContent(
@@ -87,7 +87,7 @@ definition {
 			webContentTitle = "WC WebContent Title 2");
 
 		Navigator.gotoSitePage(
-			pageName = "Page Name",
+			pageName = "Test New Page Name",
 			siteName = "Site Name");
 
 		WebContent.viewPGViaWCD(webContentContent = "WC WebContent Depot 2");

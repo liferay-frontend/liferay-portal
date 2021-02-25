@@ -105,17 +105,17 @@
 </tr>
 <tr>
 	<td>LIST_PUBLISHED_STATUS</td>
-	<td>//a[contains(.,'${key_publicationsName}')]//following-sibling::div/span[contains(.,'Published')]</td>
+	<td>//p[contains(.,'${key_publicationsName}')]//following-sibling::p/span[contains(.,'Published')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>LIST_REVERT_BUTTON</td>
-	<td>//div[contains(.,'${key_publicationsName}')]//following-sibling::div/a[contains(.,'Revert')]</td>
+	<td>//div[contains(.,'${key_publicationsName}')]//following-sibling::div//a[contains(.,'Revert')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>LIST_REVERT_DISABLED</td>
-	<td>//div[contains(.,'${key_publicationsName}')]//following-sibling::div/a[contains(@class, 'btn-sm disabled') and contains(.,'Revert')]</td>
+	<td>//div[contains(.,'${key_publicationsName}')]//following-sibling::div//a[contains(@class, 'disabled btn') and contains(.,'Revert')]</td>
 	<td></td>
 </tr>
 <tr>

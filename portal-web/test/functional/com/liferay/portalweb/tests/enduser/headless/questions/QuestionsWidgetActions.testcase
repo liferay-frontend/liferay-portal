@@ -362,6 +362,45 @@ definition {
 			value1 = "Title Anonymous User Ask questions");
 	}
 
+	@description = "Validate if the user can cancel the deletions."
+	@priority = "4"
+	test CancelDeletions {
+		JSONMBMessage.addCategory(
+			categoryDescription = "Description",
+			categoryName = "Questions Test Category",
+			userEmailAddress = "test@liferay.com");
+
+		Questions.addQuestionByAPI(
+			bodyField = "Body AddQuestion",
+			categoryName = "Questions Test Category",
+			tagField = "test tag",
+			titleField = "Title AddQuestion");
+
+		Navigator.gotoPage(pageName = "Questions Page");
+
+		Questions.gotoCategory(categoryName = "Questions Test Category");
+
+		Questions.gotoDetails(
+			questionTabField = "Questions",
+			questionTitle = "Title AddQuestion");
+
+		Questions.answerQuestion(contentField = "This is my answer");
+
+		Questions.replyToComment(commentReply = "This is my reply");
+
+		Questions.deleteComment(
+			cancel = "true",
+			commentReply = "This is my reply");
+
+		Questions.deleteAnswer(
+			cancel = "true",
+			contentField = "This is my answer");
+
+		Questions.deleteQuestion(
+			cancel = "true",
+			questionTitle = "Title AddQuestion");
+	}
+
 	@description = "Validate if the user can add root topic without permission."
 	@priority = "4"
 	test CannotAddRootTopicWithoutPermission {
@@ -608,6 +647,89 @@ definition {
 		Questions.changeTopic(
 			parentTopicName = "Questions Test SubCategory",
 			subTopicName = "New Questions Test SubCategory");
+	}
+
+	@description = "Validate if the user can delete an answer to a question."
+	@priority = "4"
+	test DeleteAnswer {
+		JSONMBMessage.addCategory(
+			categoryDescription = "Description",
+			categoryName = "Questions Test Category",
+			userEmailAddress = "test@liferay.com");
+
+		Questions.addQuestionByAPI(
+			bodyField = "Question Body 1",
+			categoryName = "Questions Test Category",
+			tagField = "test tag",
+			titleField = "What is your Chinese name?");
+
+		Navigator.gotoPage(pageName = "Questions Page");
+
+		Questions.gotoCategory(categoryName = "Questions Test Category");
+
+		Questions.gotoDetails(
+			questionTabField = "Questions",
+			questionTitle = "What is your Chinese name?");
+
+		Questions.answerQuestion(contentField = "This is my answer");
+
+		Questions.deleteAnswer(contentField = "This is my answer");
+	}
+
+	@description = "Validate if the user can delete a comment to an answer."
+	@priority = "4"
+	test DeleteComment {
+		JSONMBMessage.addCategory(
+			categoryDescription = "Description",
+			categoryName = "Questions Test Category",
+			userEmailAddress = "test@liferay.com");
+
+		Questions.addQuestionByAPI(
+			bodyField = "Question Body Text",
+			categoryName = "Questions Test Category",
+			tagField = "test tag",
+			titleField = "What is your favorite food?");
+
+		Navigator.gotoPage(pageName = "Questions Page");
+
+		Questions.gotoCategory(categoryName = "Questions Test Category");
+
+		Questions.gotoDetails(
+			questionTabField = "Questions",
+			questionTitle = "What is your favorite food?");
+
+		Questions.answerQuestion(contentField = "This is my answer");
+
+		Questions.replyToComment(commentReply = "This is my reply");
+
+		Questions.deleteComment(commentReply = "This is my reply");
+	}
+
+	@description = "Validate if the user can delete a question with an answer."
+	@priority = "4"
+	test DeleteQuestionWithAnAnswer {
+		JSONMBMessage.addCategory(
+			categoryDescription = "Description",
+			categoryName = "Questions Test Category",
+			userEmailAddress = "test@liferay.com");
+
+		Questions.addQuestionByAPI(
+			bodyField = "Question Body Text",
+			categoryName = "Questions Test Category",
+			tagField = "test tag",
+			titleField = "What is your English name?");
+
+		Navigator.gotoPage(pageName = "Questions Page");
+
+		Questions.gotoCategory(categoryName = "Questions Test Category");
+
+		Questions.gotoDetails(
+			questionTabField = "Questions",
+			questionTitle = "What is your English name?");
+
+		Questions.answerQuestion(contentField = "This is my answer");
+
+		Questions.deleteQuestion();
 	}
 
 	@description = "Validate if the user can lock and unlock a question through the MB."

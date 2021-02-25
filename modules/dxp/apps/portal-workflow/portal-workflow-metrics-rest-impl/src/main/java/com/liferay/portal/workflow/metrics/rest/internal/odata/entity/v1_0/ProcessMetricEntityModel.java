@@ -15,7 +15,6 @@
 package com.liferay.portal.workflow.metrics.rest.internal.odata.entity.v1_0;
 
 import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
@@ -42,9 +41,7 @@ public class ProcessMetricEntityModel implements EntityModel {
 				"overdueInstanceCount", locale -> "overdueInstanceCount"),
 			new StringEntityField(
 				"title",
-				locale ->
-					Field.getLocalizedName(locale, "title") +
-						StringPool.PERIOD + "keyword")
+				locale -> Field.getLocalizedName(locale, "title") + ".keyword")
 		).collect(
 			Collectors.toMap(EntityField::getName, Function.identity())
 		);

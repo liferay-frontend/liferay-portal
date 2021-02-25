@@ -14,7 +14,6 @@
 
 package com.liferay.frontend.taglib.servlet.taglib;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -64,8 +63,7 @@ public class UserVerticalCardTag extends VerticalCardTag {
 				"liferay-frontend:card:cardCssClass"));
 
 		httpServletRequest.setAttribute(
-			"liferay-frontend:card:cardCssClass",
-			cardCssClass + StringPool.BLANK + "user-card");
+			"liferay-frontend:card:cardCssClass", cardCssClass + "user-card");
 
 		httpServletRequest.setAttribute(
 			"liferay-frontend:card:user", getUser());

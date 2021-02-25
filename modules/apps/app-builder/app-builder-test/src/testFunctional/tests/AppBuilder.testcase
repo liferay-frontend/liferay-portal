@@ -1649,8 +1649,7 @@ definition {
 	@description = "Place a widget in my page with only a Form View of my App"
 	@priority = "5"
 	test PlaceFormViewWidget {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
 
 		var myFormViewName = "My Registration form";
 		var myTableViewName = "My display table";
@@ -2143,8 +2142,7 @@ definition {
 	@description = "Publish my app as a widget with only a Table View"
 	@priority = "5"
 	test PublishAppAsWidgetWithOnlyTableView {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
 
 		AppBuilderAdmin.addCustomObject(
 			customObjectName = "my custom object",
@@ -2219,8 +2217,7 @@ definition {
 	@description = "Publish my app in one or more sites"
 	@priority = "5"
 	test PublishAppsInOneOrMoreSites {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
 
 		JSONLayout.addPublicLayout(
 			groupName = "App Builder Site 1",
@@ -2407,8 +2404,7 @@ definition {
 	@description = "Publish apps in the product menu and reuse its views"
 	@priority = "5"
 	test PublishAppsInProductMenuAndReuseItsViews {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
 
 		var myFormViewName_1 = "My Form View 1";
 		var myFormViewName_2 = "My Form View 2";
@@ -2522,8 +2518,7 @@ definition {
 	@description = "Publish apps in standalone mode and reuse its views"
 	@priority = "4"
 	test PublishAppsInStandaloneAndReuseItsViews {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
 
 		var myFormViewName_1 = "My Form View 1";
 		var myFormViewName_2 = "My Form View 2";
@@ -2737,8 +2732,7 @@ definition {
 	@description = "Search for a column(field) in the columns list in Table View Builder"
 	@priority = "5"
 	test SearchColumnListInTableViewBuilder {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "AppBuilder#SearchColumnListInTableViewBuilder";
 
 		AppBuilderAdmin.addCustomObject(
@@ -2748,11 +2742,44 @@ definition {
 
 		FormViewBuilder.setName(formViewName = "Form View Title 1");
 
-		for (var fieldType : list "Text,Select from List,Single Selection,Multiple Selection,Date,Numeric,Upload") {
+		for (var fieldType : list "Text,Date,Numeric,Upload") {
 			FormViewBuilder.addFieldByDoubleClick(fieldType = "${fieldType}");
 
 			FormViewBuilder.closeSidebar();
 		}
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Select from List");
+
+		for (var number : list "1,2,3") {
+			FormViewBuilder.editOptionsRow(
+				optionName = "Select${number}",
+				optionValue = "Select ${number}",
+				rowNumber = "${number}");
+		}
+
+		FormViewBuilder.closeSidebar();
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Single Selection");
+
+		for (var number : list "1,2,3") {
+			FormViewBuilder.editOptionsRow(
+				optionName = "Single${number}",
+				optionValue = "Single ${number}",
+				rowNumber = "${number}");
+		}
+
+		FormViewBuilder.closeSidebar();
+
+		FormViewBuilder.addFieldByDoubleClick(fieldType = "Multiple Selection");
+
+		for (var number : list "1,2,3") {
+			FormViewBuilder.editOptionsRow(
+				optionName = "Multiple${number}",
+				optionValue = "Multiple ${number}",
+				rowNumber = "${number}");
+		}
+
+		FormViewBuilder.closeSidebar();
 
 		FormViewBuilder.editFieldLabel(
 			fieldLabel = "Text",
@@ -2803,6 +2830,10 @@ definition {
 		for (var columnLabel : list "Text,Select from List,Single Selection,Multiple Selection,Date,Numeric,Upload") {
 			TableViewBuilder.validateNoColumnLabelAtSidebar(columnLabel = "${columnLabel}");
 		}
+
+		TableViewBuilder.assertMessageNoResultsWereFoundIsShown();
+
+		TableViewBuilder.assertMessageThereAreNoResultsForIsShown(itemName = "Oranges");
 
 		TableViewBuilder.clearSearch();
 
@@ -4259,7 +4290,7 @@ definition {
 	@description = "Saved form view rules run during new entry submissions"
 	@priority = "5"
 	test ViewFormViewRules {
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "true";
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",

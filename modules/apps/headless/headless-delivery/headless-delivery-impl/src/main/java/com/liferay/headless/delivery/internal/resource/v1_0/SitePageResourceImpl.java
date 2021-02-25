@@ -24,6 +24,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
@@ -52,6 +53,7 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.util.JaxRsLinkUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.portal.vulcan.util.TransformUtil;
 import com.liferay.segments.SegmentsEntryRetriever;
@@ -150,11 +152,16 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 		throws Exception {
 
 		return SearchUtil.search(
-			HashMapBuilder.put(
+			HashMapBuilder.<String, Map<String, String>>put(
 				"get",
-				addAction(
-					"VIEW", "getSiteSitePagesPage",
-					"com.liferay.portal.kernel.model.Group", siteId)
+				HashMapBuilder.put(
+					"href",
+					JaxRsLinkUtil.getJaxRsLink(
+						"headless-delivery", BaseSitePageResourceImpl.class,
+						"getSiteSitePagesPage", contextUriInfo, siteId)
+				).put(
+					"method", "GET"
+				).build()
 			).build(),
 			booleanQuery -> {
 				BooleanFilter booleanFilter =
@@ -202,8 +209,8 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 		return HashMapBuilder.<String, Map<String, String>>put(
 			"get",
 			addAction(
-				"VIEW", "getSiteSitePage",
-				"com.liferay.portal.kernel.model.Group", layout.getGroupId())
+				"VIEW", layout.getPlid(), "getSiteSitePage", null,
+				Layout.class.getName(), layout.getGroupId())
 		).put(
 			"get-experiences",
 			() -> {
@@ -213,14 +220,13 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 
 				return addAction(
 					"VIEW", "getSiteSitePageFriendlyUrlPathExperiencesPage",
-					"com.liferay.portal.kernel.model.Group",
-					layout.getGroupId());
+					Group.class.getName(), layout.getGroupId());
 			}
 		).put(
 			"get-rendered-page",
 			addAction(
-				"VIEW", "getSiteSitePageRenderedPage",
-				"com.liferay.portal.kernel.model.Group", layout.getGroupId())
+				"VIEW", layout.getPlid(), "getSiteSitePageRenderedPage", null,
+				Layout.class.getName(), layout.getGroupId())
 		).build();
 	}
 
@@ -246,12 +252,12 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 			"get",
 			addAction(
 				"VIEW", "getSiteSitePageExperienceExperienceKey",
-				"com.liferay.portal.kernel.model.Group", layout.getGroupId())
+				Group.class.getName(), layout.getGroupId())
 		).put(
 			"get-rendered-page",
 			addAction(
 				"VIEW", "getSiteSitePageExperienceExperienceKeyRenderedPage",
-				"com.liferay.portal.kernel.model.Group", layout.getGroupId())
+				Group.class.getName(), layout.getGroupId())
 		).build();
 	}
 
@@ -293,7 +299,7 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 		throws Exception {
 
 		List<SegmentsExperience> segmentsExperiences = new ArrayList<>(
-			_segmentsExperienceService.getSegmentsExperiences(
+			_segmentsExperienceLocalService.getSegmentsExperiences(
 				layout.getGroupId(),
 				_portal.getClassNameId(Layout.class.getName()),
 				layout.getPlid(), true));

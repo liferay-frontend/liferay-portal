@@ -20,34 +20,26 @@
 String randomNamespace = PortalUtil.generateRandomKey(request, "taglib") + StringPool.UNDERLINE;
 %>
 
-<%
-if (cpContentListEntryModel.getSkuId() == 0) {
-%>
-
-	<div class="add-to-cart d-flex my-2 pt-5" id="<%= randomNamespace + "add_to_cart" %>">
-		<a class="btn btn-block btn-secondary" href="<%= productDetailURL %>" role="button" style="margin-top: 0.35rem;">
-			<%= LanguageUtil.get(request, "view-all-variants") %>
-		</a>
-	</div>
-
-<%
-}
-else {
-%>
-
-	<commerce-ui:add-to-order
-		block="<%= true %>"
-		channelId="<%= cpContentListEntryModel.getChannelId() %>"
-		commerceAccountId="<%= cpContentListEntryModel.getAccountId() %>"
-		currencyCode="<%= cpContentListEntryModel.getCurrencyCode() %>"
-		disabled="<%= cpContentListEntryModel.getStockQuantity() == 0 %>"
-		inCart="<%= cpContentListEntryModel.isInCart() %>"
-		orderId="<%= cpContentListEntryModel.getOrderId() %>"
-		skuId="<%= cpContentListEntryModel.getSkuId() %>"
-		spritemap="<%= spritemap %>"
-		stockQuantity="<%= cpContentListEntryModel.getStockQuantity() %>"
-	/>
-
-<%
-}
-%>
+<c:choose>
+	<c:when test="<%= Validator.isNull(sku) %>">
+		<div class="add-to-cart d-flex my-2 pt-5" id="<%= randomNamespace + "add_to_cart" %>">
+			<a class="btn btn-block btn-secondary" href="<%= productDetailURL %>" role="button" style="margin-top: 0.35rem;">
+				<liferay-ui:message key="view-all-variants" />
+			</a>
+		</div>
+	</c:when>
+	<c:otherwise>
+		<commerce-ui:add-to-order
+			block="<%= true %>"
+			channelId="<%= cpContentListEntryModel.getChannelId() %>"
+			commerceAccountId="<%= cpContentListEntryModel.getAccountId() %>"
+			currencyCode="<%= cpContentListEntryModel.getCurrencyCode() %>"
+			disabled="<%= cpContentListEntryModel.getStockQuantity() == 0 %>"
+			inCart="<%= cpContentListEntryModel.isInCart() %>"
+			orderId="<%= cpContentListEntryModel.getOrderId() %>"
+			skuId="<%= cpContentListEntryModel.getSkuId() %>"
+			spritemap="<%= cpContentListEntryModel.getSpritemap() %>"
+			stockQuantity="<%= cpContentListEntryModel.getStockQuantity() %>"
+		/>
+	</c:otherwise>
+</c:choose>

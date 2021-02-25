@@ -37,44 +37,20 @@ definition {
 	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"
 	@priority = "5"
 	test CheckFieldsetTranslationsOnStructure {
+		property portal.acceptance = "true";
+
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
 		NavItem.gotoStructures();
 
 		WebContentStructures.addCP(structureName = "WC Structure Name");
 
-		DataEngine.addFieldsets(
-			createNewFieldset = "true",
+		DataEngine.createNewFieldset(
 			fieldNameList = "Text",
-			fieldsetLabel = "New Fieldset",
-			fieldsetName = "New Fieldset");
+			fieldsetName = "New Fieldset",
+			localeList = "pt-BR");
 
-		PortletEntry.changeLocale(locale = "pt-BR");
-
-		DataEngine.editFieldsetsLabel(
-			fieldsetLabel = "New Fieldset",
-			fieldsetLabelEdit = "Novo Fieldset");
-
-		DataEngine.gotoFieldsetItemEllipsis(fieldsetName = "New Fieldset");
-
-		MenuItem.click(menuItem = "Edit");
-
-		PortletEntry.changeLocale(
-			locale = "pt-BR",
-			modal = "true");
-
-		DataEngine.editFieldLabel(
-			fieldFieldLabel = "Text",
-			fieldFieldLabelEdit = "Texto",
-			fieldsetModal = "true");
-
-		Click(locator1 = "Modal#SAVE_BUTTON");
-
-		Click(
-			key_text = "Propagate",
-			locator1 = "Button#ANY");
-
-		Alert.viewSuccessMessage();
+		DataEngine.addFieldsets(fieldsetName = "New Fieldset");
 
 		WebContentStructures.saveCP();
 
@@ -94,17 +70,14 @@ definition {
 
 		PortletEntry.changeLocale(locale = "pt-BR");
 
+		DataEngine.viewFieldsetTranslation(
+			fieldNameList = "Text",
+			fieldsetName = "New Fieldset",
+			localeList = "pt-BR");
+
 		AssertTextEquals(
 			locator1 = "TextInput#NAME",
 			value1 = "WC Structure Name");
-
-		AssertVisible(
-			key_fieldsetLabel = "Novo Fieldset",
-			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
-
-		AssertVisible(
-			key_fieldFieldLabel = "Texto",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
 	}
 
 	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"
@@ -145,12 +118,45 @@ definition {
 	}
 
 	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"
-	@ignore = "true"
 	@priority = "4"
 	test DefaultTitleIsDisplayedUponLocaleChange {
-		property portal.acceptance = "false";
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
-		// TODO LPS-123538 DefaultTitleIsDisplayedUponLocaleChange pending implementation
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Name");
+
+		DataEngine.createNewFieldset(
+			fieldNameList = "Date",
+			fieldsetName = "Fieldset Name",
+			localeList = "pt-BR");
+
+		DataEngine.addFieldsets(fieldsetName = "Fieldset Name");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
+
+		AssertTextEquals(
+			locator1 = "TextInput#NAME",
+			value1 = "WC Structure Name");
+
+		AssertVisible(
+			key_fieldsetLabel = "Fieldset Name",
+			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Date",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		DataEngine.viewFieldsetTranslation(
+			fieldNameList = "Date",
+			fieldsetName = "Fieldset Name",
+			localeList = "pt-BR");
+
+		AssertTextEquals(
+			locator1 = "TextInput#NAME",
+			value1 = "WC Structure Name");
 	}
 
 	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"
@@ -228,50 +234,73 @@ definition {
 	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"
 	@priority = "5"
 	test EditFieldset {
-		property portal.acceptance = "false";
-
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
 		NavItem.gotoStructures();
 
-		WebContentStructures.addCP(structureName = "Structure Name");
+		WebContentStructures.addCP(structureName = "WC Structure Name");
 
 		DataEngine.addFieldsets(
 			createNewFieldset = "true",
+			fieldHelp = "true",
 			fieldNameList = "Text",
-			fieldsetName = "My New Fieldset");
+			fieldsetName = "New Fieldset");
 
-		DataEngine.gotoFieldsetItemEllipsis(fieldsetName = "My New Fieldset");
+		PortletEntry.changeLocale(locale = "pt-BR");
 
-		MenuItem.click(menuItem = "Edit");
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "New Fieldset",
+			label = "New Fieldset pt-BR");
 
-		DataEngine.editFieldLabel(
-			fieldFieldLabel = "Text",
-			fieldFieldLabelEdit = "Text Edit",
-			fieldsetModal = "true");
+		PortletEntry.changeLocale(locale = "en-US");
 
-		DataEngine.editFieldTip(
-			fieldFieldLabel = "Text Edit",
-			fieldHelp = "Edited Help Text",
-			fieldsetModal = "true");
+		DataEngine.addTranslationToFieldset(
+			fieldHelp = "true",
+			fieldNameList = "Text",
+			fieldsetName = "New Fieldset",
+			localeList = "pt-BR");
 
-		Click(locator1 = "Modal#SAVE_BUTTON");
+		WebContentStructures.saveCP();
 
-		Click(locator1 = "Modal#PROPAGATE_BUTTON");
+		Navigator.gotoNavTab(navTab = "Web Content");
 
-		Alert.viewSuccessMessage();
+		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
 
-		Button.clickSave();
+		AssertVisible(locator1 = "WCEditWebContent#SIDEBAR");
 
-		WebContentNavigator.gotoEditStructure(structureName = "Structure Name");
+		PortletEntry.viewLocale(locale = "en-US");
 
 		AssertVisible(
-			key_fieldFieldLabel = "Text Edit",
+			key_fieldsetLabel = "New Fieldset",
+			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Text",
 			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
 
 		AssertVisible(
-			key_helpText = "Edited Help Text",
+			key_helpText = "Text Help Text",
 			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_HELP_TEXT");
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		PortletEntry.viewLocale(locale = "pt-BR");
+
+		AssertVisible(
+			key_fieldsetLabel = "New Fieldset pt-BR",
+			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Text pt-BR",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_helpText = "Text Help Text pt-BR",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_HELP_TEXT");
+
+		DataEngine.deleteFieldsetFromSideBar(
+			fieldsetName = "New Fieldset",
+			siteURLKey = "test-site-name");
 	}
 
 	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"
@@ -283,99 +312,27 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Name");
 
-		DataEngine.addFieldsets(
-			createNewFieldset = "true",
-			fieldNameList = "Text,Numeric",
-			fieldsetName = "Fieldset Name");
-
-		DataEngine.addTranslationToFieldset(
+		DataEngine.createNewFieldset(
 			fieldNameList = "Text,Numeric",
 			fieldsetName = "Fieldset Name",
 			localeList = "pt-BR,de-DE,es-ES");
+
+		DataEngine.addFieldsets(fieldsetName = "Fieldset Name");
+
+		AssertVisible(
+			key_fieldsetLabel = "Fieldset Name",
+			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
+
+		for (var fieldLabel : list "Text,Numeric") {
+			AssertVisible(
+				key_fieldFieldLabel = "${fieldLabel}",
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+		}
 
 		DataEngine.viewFieldsetTranslation(
 			fieldNameList = "Text,Numeric",
 			fieldsetName = "Fieldset Name",
 			localeList = "pt-BR,de-DE,es-ES");
-	}
-
-	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"
-	@priority = "5"
-	test TranslateFieldsetWithNestedFields {
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(
-			structureDescription = "Structure Description Test",
-			structureName = "Structure Fieldset Test");
-
-		DataEngine.addField(
-			fieldFieldLabel = "Text Test",
-			fieldName = "Text");
-
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Text Test Second",
-			fieldName = "Text",
-			targetFieldLabel = "Text Test");
-
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Text Test Third",
-			fieldName = "Text",
-			targetFieldLabel = "Text Test Second");
-
-		WebContentStructures.addLocalization(
-			locale = "pt-BR",
-			localization1Name = "Nome Fieldset Teste");
-
-		DataEngine.editFieldLabel(
-			fieldFieldLabel = "Text Test",
-			fieldFieldLabelEdit = "Texto Teste pt_BR");
-
-		DataEngine.editFieldLabel(
-			fieldFieldLabel = "Text Test Second",
-			fieldFieldLabelEdit = "Texto Teste Segundo pt_BR");
-
-		DataEngine.editFieldLabel(
-			fieldFieldLabel = "Text Test Third",
-			fieldFieldLabelEdit = "Texto Teste Terceiro pt_BR");
-
-		WebContentStructures.saveCP(structureName = "Structure Name Test");
-
-		WebContentStructures.addCP(
-			structureDescription = "Structure Description Test",
-			structureName = "Structure Name Test");
-
-		DataEngine.addFieldsets(
-			fieldsetLabel = "Structure Fieldset Test",
-			fieldsetName = "Structure Fieldset Test");
-
-		WebContentStructures.saveCP(structureName = "Structure Name Test");
-
-		WebContentNavigator.gotoEditStructure(structureName = "Structure Name Test");
-
-		PortletEntry.changeLocale(locale = "pt_BR");
-
-		AssertClick.assertPartialTextClickAt(
-			key_fieldFieldLabel = "Nome Fieldset Teste",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL",
-			value1 = "Nome Fieldset Teste");
-
-		AssertElementPresent(
-			key_fieldFieldLabel = "Nome Fieldset Teste",
-			locator1 = "Sidebar#DDM_LABEL");
-
-		AssertElementPresent(
-			key_fieldFieldLabel = "Texto Teste pt_BR",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER");
-
-		AssertElementPresent(
-			key_fieldFieldLabel = "Texto Teste Segundo pt_BR",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER");
-
-		AssertElementPresent(
-			key_fieldFieldLabel = "Texto Teste Terceiro pt_BR",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER");
 	}
 
 	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"
@@ -887,6 +844,379 @@ definition {
 				key_fieldsGroupLabel = "Feldgruppe der dritten Ebene",
 				locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
 		}
+	}
+
+	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"
+	@priority = "5"
+	test TranslateStructureWithFieldsetAndNested {
+		property portal.acceptance = "true";
+
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(
+			structureDescription = "WC Structure Description",
+			structureName = "WC Structure Name");
+
+		DataEngine.gotoCreateNewFieldset();
+
+		Type(
+			locator1 = "FormViewBuilder#FIELD_SET_NAME",
+			value1 = "New Fieldset");
+
+		DataEngine.addFields(fieldNameList = "Text");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Text",
+			fieldFieldLabelEdit = "First Text",
+			fieldsetModal = "true");
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Second Text",
+			fieldName = "Text",
+			targetFieldLabel = "First Text");
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Third Text",
+			fieldName = "Text",
+			targetFieldLabel = "Second Text");
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Fourth Text",
+			fieldName = "Text",
+			targetFieldLabel = "Third Text");
+
+		for (var prefix : list "First Level,Second Level,Third Level") {
+			DataEngine.editFieldsGroupLabel(
+				fieldsetModal = "true",
+				fieldsGroupLabel = "Fields Group",
+				fieldsGroupLabelEdit = "${prefix} Fields Group");
+		}
+
+		PortletEntry.changeLocale(
+			locale = "pt-BR",
+			modal = "true");
+
+		Type(
+			locator1 = "FormViewBuilder#FIELD_SET_NAME",
+			value1 = "Novo Fieldset");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsetModal = "true",
+			fieldsGroupLabel = "First Level Fields Group",
+			fieldsGroupLabelEdit = "Grupo de campos de primeiro nível");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsetModal = "true",
+			fieldsGroupLabel = "Second Level Fields Group",
+			fieldsGroupLabelEdit = "Grupo de Campos de Segundo Nível");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsetModal = "true",
+			fieldsGroupLabel = "Third Level Fields Group",
+			fieldsGroupLabelEdit = "Grupo de campos de terceiro nível");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "First Text",
+			fieldFieldLabelEdit = "Primeiro Texto",
+			fieldsetModal = "true");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Second Text",
+			fieldFieldLabelEdit = "Segundo Texto",
+			fieldsetModal = "true");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Third Text",
+			fieldFieldLabelEdit = "Terceiro Texto",
+			fieldsetModal = "true");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Fourth Text",
+			fieldFieldLabelEdit = "Quarto Texto",
+			fieldsetModal = "true");
+
+		PortletEntry.changeLocale(
+			locale = "es-ES",
+			modal = "true");
+
+		Type(
+			locator1 = "FormViewBuilder#FIELD_SET_NAME",
+			value1 = "Nueva Fieldset");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsetModal = "true",
+			fieldsGroupLabel = "First Level Fields Group",
+			fieldsGroupLabelEdit = "Grupo de campos de primer nivel");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsetModal = "true",
+			fieldsGroupLabel = "Second Level Fields Group",
+			fieldsGroupLabelEdit = "Grupo de campos de segundo nivel");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsetModal = "true",
+			fieldsGroupLabel = "Third Level Fields Group",
+			fieldsGroupLabelEdit = "Grupo de campos de tercer nivel");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "First Text",
+			fieldFieldLabelEdit = "Primera Texto",
+			fieldsetModal = "true");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Second Text",
+			fieldFieldLabelEdit = "Segunda Texto",
+			fieldsetModal = "true");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Third Text",
+			fieldFieldLabelEdit = "Tercero Texto",
+			fieldsetModal = "true");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Fourth Text",
+			fieldFieldLabelEdit = "Cuarto Texto",
+			fieldsetModal = "true");
+
+		PortletEntry.changeLocale(
+			locale = "de-DE",
+			modal = "true");
+
+		Type(
+			locator1 = "FormViewBuilder#FIELD_SET_NAME",
+			value1 = "Neues Feldset");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsetModal = "true",
+			fieldsGroupLabel = "First Level Fields Group",
+			fieldsGroupLabelEdit = "Feldgruppe der ersten Ebene");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsetModal = "true",
+			fieldsGroupLabel = "Second Level Fields Group",
+			fieldsGroupLabelEdit = "Feldgruppe der zweiten Ebene");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsetModal = "true",
+			fieldsGroupLabel = "Third Level Fields Group",
+			fieldsGroupLabelEdit = "Feldgruppe der dritten Ebene");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "First Text",
+			fieldFieldLabelEdit = "Erster Text",
+			fieldsetModal = "true");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Second Text",
+			fieldFieldLabelEdit = "Zweite Text",
+			fieldsetModal = "true");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Third Text",
+			fieldFieldLabelEdit = "Dritte Text",
+			fieldsetModal = "true");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Fourth Text",
+			fieldFieldLabelEdit = "Vierte Text",
+			fieldsetModal = "true");
+
+		Click(locator1 = "Modal#SAVE_BUTTON");
+
+		Alert.viewSuccessMessage();
+
+		DataEngine.addFieldsets(fieldsetName = "New Fieldset");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
+
+		AssertTextEquals(
+			locator1 = "TextInput#NAME",
+			value1 = "WC Structure Name");
+
+		AssertVisible(
+			key_fieldsetLabel = "New Fieldset",
+			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
+
+		for (var prefix : list "First Level,Second Level,Third Level") {
+			AssertVisible(
+				key_fieldFieldLabel = "${prefix} Fields Group",
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+		}
+
+		AssertVisible(
+			key_fieldFieldLabel = "First Text",
+			key_fieldsGroupLabel = "First Level Fields Group",
+			locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Second Text",
+			key_fieldsGroupLabel = "Second Level Fields Group",
+			locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+
+		for (var fieldFieldLabel : list "Third Text,Fourth Text") {
+			AssertVisible(
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				key_fieldsGroupLabel = "Third Level Fields Group",
+				locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+		}
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		AssertTextEquals(
+			locator1 = "TextInput#NAME",
+			value1 = "WC Structure Name");
+
+		AssertVisible(
+			key_fieldsetLabel = "Novo Fieldset",
+			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Grupo de campos de primeiro nível",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Grupo de Campos de Segundo Nível",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Grupo de campos de terceiro nível",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Primeiro Texto",
+			key_fieldsGroupLabel = "Grupo de campos de primeiro nível",
+			locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Segundo Texto",
+			key_fieldsGroupLabel = "Grupo de Campos de Segundo Nível",
+			locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+
+		for (var fieldFieldLabel : list "Terceiro Texto,Quarto Texto") {
+			AssertVisible(
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				key_fieldsGroupLabel = "Grupo de campos de terceiro nível",
+				locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+		}
+
+		PortletEntry.changeLocale(locale = "es-ES");
+
+		AssertTextEquals(
+			locator1 = "TextInput#NAME",
+			value1 = "WC Structure Name");
+
+		AssertVisible(
+			key_fieldsetLabel = "Nueva Fieldset",
+			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Grupo de campos de primer nivel",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Grupo de campos de segundo nivel",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Grupo de campos de tercer nivel",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Primera Texto",
+			key_fieldsGroupLabel = "Grupo de campos de primer nivel",
+			locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Segunda Texto",
+			key_fieldsGroupLabel = "Grupo de campos de segundo nivel",
+			locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+
+		for (var fieldFieldLabel : list "Tercero Texto,Cuarto Texto") {
+			AssertVisible(
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				key_fieldsGroupLabel = "Grupo de campos de tercer nivel",
+				locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+		}
+
+		PortletEntry.changeLocale(locale = "de-DE");
+
+		AssertTextEquals(
+			locator1 = "TextInput#NAME",
+			value1 = "WC Structure Name");
+
+		AssertVisible(
+			key_fieldsetLabel = "Neues Feldset",
+			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Feldgruppe der ersten Ebene",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Feldgruppe der zweiten Ebene",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Feldgruppe der dritten Ebene",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Erster Text",
+			key_fieldsGroupLabel = "Feldgruppe der ersten Ebene",
+			locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Zweite Text",
+			key_fieldsGroupLabel = "Feldgruppe der zweiten Ebene",
+			locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+
+		for (var fieldFieldLabel : list "Dritte Text,Vierte Text") {
+			AssertVisible(
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				key_fieldsGroupLabel = "Feldgruppe der dritten Ebene",
+				locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+		}
+	}
+
+	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"
+	@priority = "5"
+	test VerifyDefaultLanguageIsFirstShown {
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Name");
+
+		DataEngine.createNewFieldset(
+			fieldNameList = "Text",
+			fieldsetName = "Fieldset Name",
+			localeList = "pt-BR");
+
+		DataEngine.addFieldsets(fieldsetName = "Fieldset Name");
+
+		WebContentStructures.addLocalization(
+			locale = "pt-BR",
+			localization1Name = "Nome da Estrutura WC");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
+
+		AssertTextEquals(
+			locator1 = "TextInput#NAME",
+			value1 = "WC Structure Name");
+
+		AssertVisible(
+			key_fieldsetLabel = "Fieldset Name",
+			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Text",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
 	}
 
 	@description = "This is a test for LPS-123538. As Content Creator, I want to define reusable translations when creating WEM Structures with fieldset"

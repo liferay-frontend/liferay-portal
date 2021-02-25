@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.taglib.util.TagResourceBundleUtil;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -309,6 +310,18 @@ public class ManagementToolbarTag extends BaseContainerTag {
 		return _disabled;
 	}
 
+	public Boolean isSearchInputAutoFocus() {
+		if (_searchInputAutoFocus == null) {
+			if (_managementToolbarDisplayContext != null) {
+				_managementToolbarDisplayContext.isSearchInputAutoFocus();
+			}
+
+			return ManagementToolbarDefaults.isSearchInputAutoFocus();
+		}
+
+		return _searchInputAutoFocus;
+	}
+
 	public Boolean isSelectable() {
 		if (_selectable == null) {
 			if (_managementToolbarDisplayContext != null) {
@@ -464,6 +477,10 @@ public class ManagementToolbarTag extends BaseContainerTag {
 		_searchFormName = searchFormName;
 	}
 
+	public void setSearchInputAutoFocus(Boolean searchInputAutoFocus) {
+		_searchInputAutoFocus = searchInputAutoFocus;
+	}
+
 	public void setSearchInputName(String searchInputName) {
 		_searchInputName = searchInputName;
 	}
@@ -565,6 +582,7 @@ public class ManagementToolbarTag extends BaseContainerTag {
 		_searchContainerId = null;
 		_searchFormMethod = null;
 		_searchFormName = null;
+		_searchInputAutoFocus = null;
 		_searchInputName = null;
 		_searchValue = null;
 		_selectable = null;
@@ -623,6 +641,7 @@ public class ManagementToolbarTag extends BaseContainerTag {
 
 		props.put("searchFormMethod", searchFormMethod);
 		props.put("searchFormName", _namespace(namespace, getSearchFormName()));
+		props.put("searchInputAutoFocus", isSearchInputAutoFocus());
 		props.put(
 			"searchInputName", _namespace(namespace, getSearchInputName()));
 		props.put("searchValue", getSearchValue());
@@ -1067,8 +1086,8 @@ public class ManagementToolbarTag extends BaseContainerTag {
 		return SKIP_BODY;
 	}
 
-	private Map<String, String> _getParamsMap(String url) {
-		Map<String, String> searchData = new HashMap<>();
+	private Map<String, List<String>> _getParamsMap(String url) {
+		Map<String, List<String>> searchData = new HashMap<>();
 
 		String[] parameters = StringUtil.split(
 			HttpUtil.getQueryString(url), CharPool.AMPERSAND);
@@ -1095,7 +1114,15 @@ public class ManagementToolbarTag extends BaseContainerTag {
 
 			parameterValue = HttpUtil.decodeURL(parameterValue);
 
-			searchData.put(parameterName, parameterValue);
+			List<String> parameterValues = searchData.get(parameterName);
+
+			if (parameterValues == null) {
+				parameterValues = new LinkedList<>();
+
+				searchData.put(parameterName, parameterValues);
+			}
+
+			parameterValues.add(parameterValue);
 		}
 
 		return searchData;
@@ -1157,6 +1184,7 @@ public class ManagementToolbarTag extends BaseContainerTag {
 	private String _searchContainerId;
 	private String _searchFormMethod;
 	private String _searchFormName;
+	private Boolean _searchInputAutoFocus;
 	private String _searchInputName;
 	private String _searchValue;
 	private Boolean _selectable;

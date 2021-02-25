@@ -32,6 +32,10 @@ public class DataLayoutRendererContext {
 		return _dataRecordValues;
 	}
 
+	public String getDefaultLanguageId() {
+		return _defaultLanguageId;
+	}
+
 	public HttpServletRequest getHttpServletRequest() {
 		return _httpServletRequest;
 	}
@@ -56,6 +60,10 @@ public class DataLayoutRendererContext {
 		_dataRecordValues = dataRecordValues;
 	}
 
+	public void setDefaultLanguageId(String defaultLanguageId) {
+		_defaultLanguageId = defaultLanguageId;
+	}
+
 	public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
 		_httpServletRequest = httpServletRequest;
 	}
@@ -76,6 +84,7 @@ public class DataLayoutRendererContext {
 
 	private String _containerId;
 	private Map<String, Object> _dataRecordValues;
+	private String _defaultLanguageId;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
 	private String _portletNamespace;

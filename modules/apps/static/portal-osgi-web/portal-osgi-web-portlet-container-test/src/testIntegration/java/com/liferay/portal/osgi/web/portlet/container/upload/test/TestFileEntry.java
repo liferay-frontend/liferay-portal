@@ -21,6 +21,8 @@ import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lock.Lock;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.capabilities.Capability;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
@@ -151,6 +153,10 @@ public class TestFileEntry implements FileEntry {
 			return DLAppLocalServiceUtil.getFolder(_folderId);
 		}
 		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException, portalException);
+			}
+
 			return null;
 		}
 	}
@@ -416,6 +422,8 @@ public class TestFileEntry implements FileEntry {
 	public FileEntry toUnescapedModel() {
 		return this;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(TestFileEntry.class);
 
 	private final Date _date;
 	private final String _fileName;

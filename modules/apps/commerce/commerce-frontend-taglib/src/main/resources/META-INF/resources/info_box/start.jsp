@@ -17,7 +17,7 @@
 <%@ include file="/info_box/init.jsp" %>
 
 <%
-String linkId = PortalUtil.generateRandomKey(request, "info-box") + StringPool.UNDERLINE + "action-link";
+String linkId = PortalUtil.generateRandomKey(request, "info-box") + "_action-link";
 %>
 
 <div class="<%= "info-box" + (Validator.isNotNull(elementClasses) ? StringPool.SPACE + elementClasses : StringPool.BLANK) %>">

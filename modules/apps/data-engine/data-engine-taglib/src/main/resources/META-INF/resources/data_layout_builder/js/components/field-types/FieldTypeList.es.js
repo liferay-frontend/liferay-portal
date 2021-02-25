@@ -31,7 +31,8 @@ const FieldTypeWrapper = ({expanded, fieldType, showArrows, ...otherProps}) => {
 	return <FieldType {...otherProps} {...fieldType} icon={getIcon()} />;
 };
 
-export default ({
+const FieldTypeList = ({
+	dataDefinition,
 	deleteLabel,
 	emptyState,
 	fieldTypes,
@@ -41,7 +42,7 @@ export default ({
 	onDoubleClick,
 	showEmptyState = true,
 }) => {
-	const regex = new RegExp(keywords, 'ig');
+	const regex = new RegExp(keywords, 'i');
 
 	const filteredFieldTypes = fieldTypes
 		.filter(({system}) => !system)
@@ -71,6 +72,7 @@ export default ({
 		if (nestedDataDefinitionFields.length) {
 			const Header = ({expanded, setExpanded}) => (
 				<FieldTypeWrapper
+					dataDefinition={dataDefinition}
 					deleteLabel={deleteLabel}
 					expanded={expanded}
 					fieldType={{
@@ -102,6 +104,7 @@ export default ({
 							{nestedDataDefinitionFields.map(
 								(nestedFieldType) => (
 									<FieldTypeWrapper
+										dataDefinition={dataDefinition}
 										draggable={false}
 										fieldType={{
 											...nestedFieldType,
@@ -119,6 +122,7 @@ export default ({
 
 		return (
 			<FieldTypeWrapper
+				dataDefinition={dataDefinition}
 				deleteLabel={deleteLabel}
 				fieldType={fieldType}
 				key={index}
@@ -129,3 +133,6 @@ export default ({
 		);
 	});
 };
+
+FieldTypeList.displayName = 'FieldTypeList';
+export default FieldTypeList;

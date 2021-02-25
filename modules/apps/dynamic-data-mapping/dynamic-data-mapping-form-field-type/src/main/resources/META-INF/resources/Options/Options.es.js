@@ -16,6 +16,7 @@ import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import {RulesSupport} from 'dynamic-data-mapping-form-builder';
 import {usePage} from 'dynamic-data-mapping-form-renderer';
+import {usePrevious} from 'frontend-js-react-web';
 import {openModal} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 import {DndProvider} from 'react-dnd';
@@ -30,6 +31,7 @@ import {
 	dedupValue,
 	getDefaultOptionValue,
 	isOptionValueGenerated,
+	normalizeFieldReference,
 	normalizeFields,
 	random,
 } from './util.es';
@@ -198,45 +200,61 @@ const Options = ({
 		);
 	});
 
+	const prevEditingLanguageId = usePrevious(editingLanguageId);
+
 	useEffect(() => {
-		const availableLanguageIds = Object.getOwnPropertyNames(value);
+		const hasOwnProperty = Object.prototype.hasOwnProperty;
 
-		availableLanguageIds.forEach((languageId) => {
-			normalizedValue[languageId] = normalizeFields(
-				value[languageId].map((option) => {
-					if (option.edited) {
-						return option;
-					}
+		if (
+			prevEditingLanguageId !== editingLanguageId ||
+			(!hasOwnProperty.call(normalizedValue, editingLanguageId) &&
+				hasOwnProperty.call(value, editingLanguageId))
+		) {
+			const availableLanguageIds = Object.getOwnPropertyNames(value);
 
-					const {label} = value[defaultLanguageId].find(
-						(defaultOption) => defaultOption.value === option.value
-					);
+			availableLanguageIds.forEach((languageId) => {
+				normalizedValue[languageId] = normalizeFields(
+					value[languageId].map((option) => {
+						if (option.edited) {
+							return {
+								id: random(),
+								...option,
+							};
+						}
 
-					return {
-						...option,
-						label,
-					};
-				}),
-				generateOptionValueUsingOptionLabel
+						const {label} = value[defaultLanguageId].find(
+							(defaultOption) =>
+								defaultOption.value === option.value
+						);
+
+						return {
+							id: random(),
+							...option,
+							label,
+						};
+					}),
+					generateOptionValueUsingOptionLabel
+				);
+			});
+
+			const options = normalizedValue[editingLanguageId] || [];
+
+			setFields(
+				refreshFields(
+					defaultLanguageId,
+					editingLanguageId,
+					generateOptionValueUsingOptionLabel,
+					initialOptionRef.current,
+					options
+				)
 			);
-		});
-
-		const options = normalizedValue[editingLanguageId] || [];
-
-		setFields(
-			refreshFields(
-				defaultLanguageId,
-				editingLanguageId,
-				generateOptionValueUsingOptionLabel,
-				initialOptionRef.current,
-				options
-			)
-		);
+		}
 	}, [
 		defaultLanguageId,
 		editingLanguageId,
 		generateOptionValueUsingOptionLabel,
 		normalizedValue,
+		prevEditingLanguageId,
 		value,
 	]);
 
@@ -267,10 +285,14 @@ const Options = ({
 					return {
 						...existingValue,
 						label: field.label,
+						reference: field.reference,
 					};
 				}
 
-				return existingValue;
+				return {
+					...existingValue,
+					reference: field.reference,
+				};
 			}
 
 			let copyFrom = editingLanguageId;
@@ -408,10 +430,15 @@ const Options = ({
 		return [fields];
 	};
 
-	const normalize = (fields) => {
+	const normalize = (fields, index) => {
 		clearError();
 
-		return [normalizeFields(fields, generateOptionValueUsingOptionLabel)];
+		return [
+			normalizeFields(
+				normalizeFieldReference(index, fields),
+				generateOptionValueUsingOptionLabel
+			),
+		];
 	};
 
 	const composedAdd = compose(clone, dedup, add, set);
@@ -473,7 +500,7 @@ const Options = ({
 						{children({
 							defaultOptionRef,
 							fieldError,
-							handleBlur: composedBlur,
+							handleBlur: composedBlur.bind(this, index),
 							handleField: !(fields.length - 1 === index)
 								? composedChange.bind(this, index)
 								: composedAdd.bind(this, index),

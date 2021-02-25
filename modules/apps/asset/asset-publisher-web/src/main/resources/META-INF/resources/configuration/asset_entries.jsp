@@ -143,45 +143,20 @@ for (long groupId : groupIds) {
 			Map<String, Object> data = HashMapBuilder.<String, Object>put(
 				"groupid", String.valueOf(curGroupId)
 			).build();
-
-			if (!curRendererFactory.isSupportsClassTypes()) {
-				data.put("href", assetBrowserURL.toString());
-
-				String type = curRendererFactory.getTypeName(locale);
-
-				data.put("destroyOnHide", true);
-				data.put("title", LanguageUtil.format(request, "select-x", type, false));
-				data.put("type", type);
 		%>
 
-				<liferay-ui:icon
-					cssClass="asset-selector"
-					data="<%= data %>"
-					id="<%= curGroupId + FriendlyURLNormalizerUtil.normalize(type) %>"
-					message="<%= HtmlUtil.escape(type) %>"
-					url="javascript:;"
-				/>
+			<c:choose>
+				<c:when test="<%= !curRendererFactory.isSupportsClassTypes() %>">
 
-			<%
-			}
-			else {
-				ClassTypeReader classTypeReader = curRendererFactory.getClassTypeReader();
-
-				List<ClassType> assetAvailableClassTypes = classTypeReader.getAvailableClassTypes(PortalUtil.getCurrentAndAncestorSiteGroupIds(curGroupId), locale);
-
-				for (ClassType assetAvailableClassType : assetAvailableClassTypes) {
-					assetBrowserURL.setParameter("subtypeSelectionId", String.valueOf(assetAvailableClassType.getClassTypeId()));
-					assetBrowserURL.setParameter("showNonindexable", String.valueOf(Boolean.TRUE));
-					assetBrowserURL.setParameter("showScheduled", String.valueOf(Boolean.TRUE));
-
+					<%
 					data.put("href", assetBrowserURL.toString());
 
-					String type = assetAvailableClassType.getName();
+					String type = curRendererFactory.getTypeName(locale);
 
 					data.put("destroyOnHide", true);
 					data.put("title", LanguageUtil.format(request, "select-x", type, false));
 					data.put("type", type);
-			%>
+					%>
 
 					<liferay-ui:icon
 						cssClass="asset-selector"
@@ -190,10 +165,44 @@ for (long groupId : groupIds) {
 						message="<%= HtmlUtil.escape(type) %>"
 						url="javascript:;"
 					/>
+				</c:when>
+				<c:otherwise>
+
+					<%
+					ClassTypeReader classTypeReader = curRendererFactory.getClassTypeReader();
+
+					List<ClassType> assetAvailableClassTypes = classTypeReader.getAvailableClassTypes(PortalUtil.getCurrentAndAncestorSiteGroupIds(curGroupId), locale);
+
+					for (ClassType assetAvailableClassType : assetAvailableClassTypes) {
+						assetBrowserURL.setParameter("subtypeSelectionId", String.valueOf(assetAvailableClassType.getClassTypeId()));
+						assetBrowserURL.setParameter("showNonindexable", String.valueOf(Boolean.TRUE));
+						assetBrowserURL.setParameter("showScheduled", String.valueOf(Boolean.TRUE));
+
+						data.put("href", assetBrowserURL.toString());
+
+						String type = assetAvailableClassType.getName();
+
+						data.put("destroyOnHide", true);
+						data.put("title", LanguageUtil.format(request, "select-x", type, false));
+						data.put("type", type);
+					%>
+
+						<liferay-ui:icon
+							cssClass="asset-selector"
+							data="<%= data %>"
+							id="<%= curGroupId + FriendlyURLNormalizerUtil.normalize(type) %>"
+							message="<%= HtmlUtil.escape(type) %>"
+							url="javascript:;"
+						/>
+
+					<%
+					}
+					%>
+
+				</c:otherwise>
+			</c:choose>
 
 		<%
-				}
-			}
 		}
 		%>
 

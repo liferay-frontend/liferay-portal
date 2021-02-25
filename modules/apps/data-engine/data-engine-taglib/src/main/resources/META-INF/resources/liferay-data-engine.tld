@@ -54,6 +54,17 @@
 			<type>boolean</type>
 		</attribute>
 		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>moduleServletContext</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>javax.servlet.ServletContext</type>
+		</attribute>
+		<attribute>
 			<name>namespace</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -98,6 +109,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.util.Map</type>
+		</attribute>
+		<attribute>
+			<name>defaultLanguageId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>namespace</name>

@@ -43,121 +43,127 @@ List<AssetVocabulary> vocabularies = new ArrayList<>();
 vocabularies.addAll(AssetVocabularyServiceUtil.getGroupVocabularies(groupIds));
 
 vocabularies.sort(new AssetVocabularyGroupLocalizedTitleComparator(scopeGroupId, locale, true));
+%>
 
-if (Validator.isNotNull(className)) {
-	long classNameId = PortalUtil.getClassNameId(className);
+<c:choose>
+	<c:when test="<%= Validator.isNotNull(className) %>">
 
-	vocabularies = ListUtil.filter(vocabularies, assetVocabulary -> assetVocabulary.isAssociatedToClassNameIdAndClassTypePK(classNameId, classTypePK));
+		<%
+		long classNameId = PortalUtil.getClassNameId(className);
 
-	for (AssetVocabulary vocabulary : vocabularies) {
-		vocabulary = vocabulary.toEscapedModel();
+		vocabularies = ListUtil.filter(vocabularies, assetVocabulary -> assetVocabulary.isAssociatedToClassNameIdAndClassTypePK(classNameId, classTypePK));
 
-		if (AssetCategoryServiceUtil.getVocabularyCategoriesCount(vocabulary.getGroupId(), vocabulary.getVocabularyId()) == 0) {
-			continue;
+		for (AssetVocabulary vocabulary : vocabularies) {
+			vocabulary = vocabulary.toEscapedModel();
+
+			if (AssetCategoryServiceUtil.getVocabularyCategoriesCount(vocabulary.getGroupId(), vocabulary.getVocabularyId()) == 0) {
+				continue;
+			}
+
+			if (Validator.isNotNull(className) && (classPK > 0)) {
+				List<AssetCategory> categories = AssetCategoryServiceUtil.getCategories(className, classPK);
+
+				curCategoryIds = ListUtil.toString(categories, AssetCategory.CATEGORY_ID_ACCESSOR);
+				curCategoryNames = ListUtil.toString(categories, AssetCategory.NAME_ACCESSOR);
+			}
+
+			if (!ignoreRequestValue) {
+				String curCategoryIdsParam = request.getParameter(hiddenInput + StringPool.UNDERLINE + vocabulary.getVocabularyId());
+
+				if (Validator.isNotNull(curCategoryIdsParam)) {
+					curCategoryIds = curCategoryIdsParam;
+					curCategoryNames = StringPool.BLANK;
+				}
+			}
+
+			String[] categoryIdsTitles = _getCategoryIdsTitles(curCategoryIds, curCategoryNames, vocabulary.getVocabularyId(), themeDisplay);
+		%>
+
+			<span class="field-content">
+				<label id="<%= namespace %>assetCategoriesLabel_<%= vocabulary.getVocabularyId() %>">
+					<%= vocabulary.getTitle(locale) %>
+
+					<c:if test="<%= vocabulary.getGroupId() != themeDisplay.getSiteGroupId() %>">
+
+						<%
+						Group vocabularyGroup = GroupLocalServiceUtil.getGroup(vocabulary.getGroupId());
+						%>
+
+						(<%= vocabularyGroup.getDescriptiveName(locale) %>)
+					</c:if>
+
+					<c:if test="<%= vocabulary.isRequired(classNameId, classTypePK) && showRequiredLabel %>">
+						<span class="icon-asterisk text-warning">
+							<span class="hide-accessible"><liferay-ui:message key="required" /></span>
+						</span>
+					</c:if>
+				</label>
+
+				<div class="lfr-tags-selector-content" id="<%= namespace + randomNamespace %>assetCategoriesSelector_<%= vocabulary.getVocabularyId() %>">
+					<aui:input name="<%= hiddenInput + StringPool.UNDERLINE + vocabulary.getVocabularyId() %>" type="hidden" />
+				</div>
+			</span>
+
+			<aui:script use="liferay-asset-categories-selector">
+				new Liferay.AssetCategoriesSelector(
+					{
+						className: '<%= className %>',
+						contentBox: '#<%= namespace + randomNamespace %>assetCategoriesSelector_<%= vocabulary.getVocabularyId() %>',
+						curEntries: '<%= HtmlUtil.escapeJS(categoryIdsTitles[1]) %>',
+						curEntryIds: '<%= categoryIdsTitles[0] %>',
+						hiddenInput: '#<%= namespace + hiddenInput + StringPool.UNDERLINE + vocabulary.getVocabularyId() %>',
+						instanceVar: '<%= namespace + randomNamespace %>',
+						labelNode: '#<%= namespace %>assetCategoriesLabel_<%= vocabulary.getVocabularyId() %>',
+						maxEntries: <%= maxEntries %>,
+						moreResultsLabel: '<%= UnicodeLanguageUtil.get(resourceBundle, "load-more-results") %>',
+						portalModelResource: <%= Validator.isNotNull(className) && (ResourceActionsUtil.isPortalModelResource(className) || className.equals(Group.class.getName())) %>,
+						singleSelect: <%= !vocabulary.isMultiValued() %>,
+						title: '<%= UnicodeLanguageUtil.format(request, "select-x", vocabulary.getTitle(locale), false) %>',
+						vocabularyGroupIds: '<%= StringUtil.merge(groupIds) %>',
+						vocabularyIds: '<%= String.valueOf(vocabulary.getVocabularyId()) %>'
+					}
+				).render();
+			</aui:script>
+
+		<%
 		}
+		%>
 
-		if (Validator.isNotNull(className) && (classPK > 0)) {
-			List<AssetCategory> categories = AssetCategoryServiceUtil.getCategories(className, classPK);
+	</c:when>
+	<c:otherwise>
 
-			curCategoryIds = ListUtil.toString(categories, AssetCategory.CATEGORY_ID_ACCESSOR);
-			curCategoryNames = ListUtil.toString(categories, AssetCategory.NAME_ACCESSOR);
-		}
-
+		<%
 		if (!ignoreRequestValue) {
-			String curCategoryIdsParam = request.getParameter(hiddenInput + StringPool.UNDERLINE + vocabulary.getVocabularyId());
+			String curCategoryIdsParam = request.getParameter(hiddenInput);
 
-			if (Validator.isNotNull(curCategoryIdsParam)) {
+			if (curCategoryIdsParam != null) {
 				curCategoryIds = curCategoryIdsParam;
-				curCategoryNames = StringPool.BLANK;
 			}
 		}
 
-		String[] categoryIdsTitles = _getCategoryIdsTitles(curCategoryIds, curCategoryNames, vocabulary.getVocabularyId(), themeDisplay);
-%>
+		String[] categoryIdsTitles = _getCategoryIdsTitles(curCategoryIds, curCategoryNames, 0, themeDisplay);
+		%>
 
-		<span class="field-content">
-			<label id="<%= namespace %>assetCategoriesLabel_<%= vocabulary.getVocabularyId() %>">
-				<%= vocabulary.getTitle(locale) %>
-
-				<c:if test="<%= vocabulary.getGroupId() != themeDisplay.getSiteGroupId() %>">
-
-					<%
-					Group vocabularyGroup = GroupLocalServiceUtil.getGroup(vocabulary.getGroupId());
-					%>
-
-					(<%= vocabularyGroup.getDescriptiveName(locale) %>)
-				</c:if>
-
-				<c:if test="<%= vocabulary.isRequired(classNameId, classTypePK) && showRequiredLabel %>">
-					<span class="icon-asterisk text-warning">
-						<span class="hide-accessible"><liferay-ui:message key="required" /></span>
-					</span>
-				</c:if>
-			</label>
-
-			<div class="lfr-tags-selector-content" id="<%= namespace + randomNamespace %>assetCategoriesSelector_<%= vocabulary.getVocabularyId() %>">
-				<aui:input name="<%= hiddenInput + StringPool.UNDERLINE + vocabulary.getVocabularyId() %>" type="hidden" />
-			</div>
-		</span>
+		<div class="lfr-tags-selector-content" id="<%= namespace + randomNamespace %>assetCategoriesSelector">
+			<aui:input name="<%= hiddenInput %>" type="hidden" />
+		</div>
 
 		<aui:script use="liferay-asset-categories-selector">
 			new Liferay.AssetCategoriesSelector(
 				{
 					className: '<%= className %>',
-					contentBox: '#<%= namespace + randomNamespace %>assetCategoriesSelector_<%= vocabulary.getVocabularyId() %>',
+					contentBox: '#<%= namespace + randomNamespace %>assetCategoriesSelector',
 					curEntries: '<%= HtmlUtil.escapeJS(categoryIdsTitles[1]) %>',
 					curEntryIds: '<%= categoryIdsTitles[0] %>',
-					hiddenInput: '#<%= namespace + hiddenInput + StringPool.UNDERLINE + vocabulary.getVocabularyId() %>',
+					hiddenInput: '#<%= namespace + hiddenInput %>',
 					instanceVar: '<%= namespace + randomNamespace %>',
-					labelNode: '#<%= namespace %>assetCategoriesLabel_<%= vocabulary.getVocabularyId() %>',
 					maxEntries: <%= maxEntries %>,
 					moreResultsLabel: '<%= UnicodeLanguageUtil.get(resourceBundle, "load-more-results") %>',
 					portalModelResource: <%= Validator.isNotNull(className) && (ResourceActionsUtil.isPortalModelResource(className) || className.equals(Group.class.getName())) %>,
-					singleSelect: <%= !vocabulary.isMultiValued() %>,
-					title: '<%= UnicodeLanguageUtil.format(request, "select-x", vocabulary.getTitle(locale), false) %>',
 					vocabularyGroupIds: '<%= StringUtil.merge(groupIds) %>',
-					vocabularyIds: '<%= String.valueOf(vocabulary.getVocabularyId()) %>'
+					vocabularyIds: '<%= ListUtil.toString(vocabularies, "vocabularyId") %>'
 				}
 			).render();
 		</aui:script>
-
-<%
-	}
-}
-else {
-	if (!ignoreRequestValue) {
-		String curCategoryIdsParam = request.getParameter(hiddenInput);
-
-		if (curCategoryIdsParam != null) {
-			curCategoryIds = curCategoryIdsParam;
-		}
-	}
-
-	String[] categoryIdsTitles = _getCategoryIdsTitles(curCategoryIds, curCategoryNames, 0, themeDisplay);
-%>
-
-	<div class="lfr-tags-selector-content" id="<%= namespace + randomNamespace %>assetCategoriesSelector">
-		<aui:input name="<%= hiddenInput %>" type="hidden" />
-	</div>
-
-	<aui:script use="liferay-asset-categories-selector">
-		new Liferay.AssetCategoriesSelector(
-			{
-				className: '<%= className %>',
-				contentBox: '#<%= namespace + randomNamespace %>assetCategoriesSelector',
-				curEntries: '<%= HtmlUtil.escapeJS(categoryIdsTitles[1]) %>',
-				curEntryIds: '<%= categoryIdsTitles[0] %>',
-				hiddenInput: '#<%= namespace + hiddenInput %>',
-				instanceVar: '<%= namespace + randomNamespace %>',
-				maxEntries: <%= maxEntries %>,
-				moreResultsLabel: '<%= UnicodeLanguageUtil.get(resourceBundle, "load-more-results") %>',
-				portalModelResource: <%= Validator.isNotNull(className) && (ResourceActionsUtil.isPortalModelResource(className) || className.equals(Group.class.getName())) %>,
-				vocabularyGroupIds: '<%= StringUtil.merge(groupIds) %>',
-				vocabularyIds: '<%= ListUtil.toString(vocabularies, "vocabularyId") %>'
-			}
-		).render();
-	</aui:script>
-
-<%
-}
-%>
+	</c:otherwise>
+</c:choose>

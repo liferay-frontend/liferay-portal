@@ -28,6 +28,8 @@ import com.liferay.message.boards.service.MBThreadLocalServiceUtil;
 import com.liferay.message.boards.service.MBThreadServiceUtil;
 import com.liferay.message.boards.test.util.MBTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.ClassedModel;
 import com.liferay.portal.kernel.model.Group;
@@ -227,6 +229,10 @@ public class MBThreadTrashHandlerTest
 		catch (com.liferay.trash.kernel.exception.TrashEntryException
 					trashEntryException) {
 
+			if (_log.isDebugEnabled()) {
+				_log.debug(trashEntryException, trashEntryException);
+			}
+
 			throw new TrashEntryException();
 		}
 	}
@@ -239,6 +245,10 @@ public class MBThreadTrashHandlerTest
 		}
 		catch (com.liferay.trash.kernel.exception.RestoreEntryException
 					restoreEntryException) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(restoreEntryException, restoreEntryException);
+			}
 
 			throw new RestoreEntryException();
 		}
@@ -395,6 +405,9 @@ public class MBThreadTrashHandlerTest
 	}
 
 	private static final String _SUBJECT = "Subject";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		MBThreadTrashHandlerTest.class);
 
 	@Inject(
 		filter = "model.class.name=com.liferay.message.boards.model.MBCategory"

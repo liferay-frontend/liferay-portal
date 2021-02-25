@@ -91,9 +91,21 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alessio Antonio Rendina
+ * @author Ivica Cardic
  */
 @Component(enabled = false, immediate = true, service = CPContentHelper.class)
 public class CPContentHelperImpl implements CPContentHelper {
+
+	@Override
+	public JSONObject getAvailabilityContentContributorValueJSONObject(
+			CPCatalogEntry cpCatalogEntry,
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		return getCPContentContributorValueJSONObject(
+			CPContentContributorConstants.AVAILABILITY_NAME, cpCatalogEntry,
+			httpServletRequest);
+	}
 
 	@Override
 	public String getAvailabilityEstimateLabel(
@@ -101,7 +113,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 		throws Exception {
 
 		JSONObject availabilityEstimateJSONObject =
-			(JSONObject)getCPContentContributorValue(
+			getCPContentContributorValueJSONObject(
 				CPContentContributorConstants.AVAILABILITY_ESTIMATE_NAME,
 				httpServletRequest);
 
@@ -118,7 +130,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 		throws Exception {
 
 		JSONObject availabilityJSONObject =
-			(JSONObject)getCPContentContributorValue(
+			getCPContentContributorValueJSONObject(
 				CPContentContributorConstants.AVAILABILITY_NAME,
 				httpServletRequest);
 
@@ -211,8 +223,9 @@ public class CPContentHelperImpl implements CPContentHelper {
 	}
 
 	@Override
-	public Object getCPContentContributorValue(
-			String contributorKey, HttpServletRequest httpServletRequest)
+	public JSONObject getCPContentContributorValueJSONObject(
+			String contributorKey, CPCatalogEntry cpCatalogEntry,
+			HttpServletRequest httpServletRequest)
 		throws Exception {
 
 		CPContentContributor cpContentContributor =
@@ -224,7 +237,17 @@ public class CPContentHelperImpl implements CPContentHelper {
 		}
 
 		return cpContentContributor.getValue(
-			getDefaultCPInstance(httpServletRequest), httpServletRequest);
+			getDefaultCPInstance(cpCatalogEntry), httpServletRequest);
+	}
+
+	@Override
+	public JSONObject getCPContentContributorValueJSONObject(
+			String contributorKey, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		return getCPContentContributorValueJSONObject(
+			contributorKey, getCPCatalogEntry(httpServletRequest),
+			httpServletRequest);
 	}
 
 	@Override
@@ -284,22 +307,25 @@ public class CPContentHelperImpl implements CPContentHelper {
 	}
 
 	@Override
-	public CPInstance getDefaultCPInstance(
-			HttpServletRequest httpServletRequest)
+	public CPInstance getDefaultCPInstance(CPCatalogEntry cpCatalogEntry)
 		throws Exception {
 
-		CPCatalogEntry cpCatalogEntry = getCPCatalogEntry(httpServletRequest);
+		if ((cpCatalogEntry == null) ||
+			!cpCatalogEntry.isIgnoreSKUCombinations()) {
 
-		if (cpCatalogEntry == null) {
-			return null;
-		}
-
-		if (!cpCatalogEntry.isIgnoreSKUCombinations()) {
 			return null;
 		}
 
 		return _cpInstanceHelper.getDefaultCPInstance(
 			cpCatalogEntry.getCPDefinitionId());
+	}
+
+	@Override
+	public CPInstance getDefaultCPInstance(
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		return getDefaultCPInstance(getCPCatalogEntry(httpServletRequest));
 	}
 
 	@Override
@@ -381,7 +407,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 		throws Exception {
 
 		JSONObject stockQuantityJSONObject =
-			(JSONObject)getCPContentContributorValue(
+			getCPContentContributorValueJSONObject(
 				CPContentContributorConstants.STOCK_QUANTITY_NAME,
 				httpServletRequest);
 
@@ -398,7 +424,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 		throws Exception {
 
 		JSONObject stockQuantityJSONObject =
-			(JSONObject)getCPContentContributorValue(
+			getCPContentContributorValueJSONObject(
 				CPContentContributorConstants.STOCK_QUANTITY_NAME,
 				httpServletRequest);
 
@@ -418,7 +444,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 		throws Exception {
 
 		JSONObject subscriptionInfoJSONObject =
-			(JSONObject)getCPContentContributorValue(
+			getCPContentContributorValueJSONObject(
 				CPContentContributorConstants.SUBSCRIPTION_INFO,
 				httpServletRequest);
 

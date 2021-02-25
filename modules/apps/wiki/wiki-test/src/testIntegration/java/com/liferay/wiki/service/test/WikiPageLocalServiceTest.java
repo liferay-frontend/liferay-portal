@@ -36,6 +36,8 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -175,6 +177,10 @@ public class WikiPageLocalServiceTest {
 				true, serviceContext);
 		}
 		catch (AssetCategoryException assetCategoryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(assetCategoryException, assetCategoryException);
+			}
+
 			throw new AssetCategoryTestException();
 		}
 	}
@@ -1200,6 +1206,9 @@ public class WikiPageLocalServiceTest {
 
 		Assert.assertArrayEquals(expectedArray, actualArray);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		WikiPageLocalServiceTest.class);
 
 	@DeleteAfterTestRun
 	private Group _group;

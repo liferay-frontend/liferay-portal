@@ -22,7 +22,6 @@ definition {
 		var categoryId = JSONMBMessage.getCategoryId();
 
 		var rightCategoryId = StringUtil.extractLast("${categoryId}", "CategoryId=");
-
 		JSONQuestionsAPI._addQuestion(
 			bodyField = "${bodyField}",
 			categoryId = "${rightCategoryId}",
@@ -349,6 +348,80 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
+	macro deleteAnswer {
+		Click(
+			key_text = "Delete",
+			locator1 = "Button#ANY");
+
+		if (isSet(cancel)) {
+			Click(
+				key_text = "Cancel",
+				locator1 = "Questions#MODAL_ITEM_BUTTON");
+
+			AssertVisible(
+				key_answerBodyContent = "${contentField}",
+				locator1 = "Questions#ANSWER_BODY");
+		}
+		else {
+			Click(
+				key_text = "Delete",
+				locator1 = "Questions#MODAL_ITEM_BUTTON");
+
+			AssertElementNotPresent(
+				key_answerBodyContent = "${contentField}",
+				locator1 = "Questions#ANSWER_BODY");
+		}
+	}
+
+	macro deleteComment {
+		Click(
+			key_text = "Delete",
+			locator1 = "Button#ANY_LAST");
+
+		if (isSet(cancel)) {
+			Click(
+				key_text = "Cancel",
+				locator1 = "Questions#MODAL_ITEM_BUTTON");
+
+			AssertVisible(
+				key_replyBodyContent = "${commentReply}",
+				locator1 = "Questions#REPLY_BODY");
+		}
+		else {
+			Click(
+				key_text = "Delete",
+				locator1 = "Questions#MODAL_ITEM_BUTTON");
+
+			AssertElementNotPresent(
+				key_replyBodyContent = "${commentReply}",
+				locator1 = "Questions#REPLY_BODY");
+		}
+	}
+
+	macro deleteQuestion {
+		Click(locator1 = "Icon#DELETE");
+
+		if (isSet(cancel)) {
+			Click(
+				key_text = "Cancel",
+				locator1 = "Questions#MODAL_ITEM_BUTTON");
+
+			AssertTextEquals(
+				key_questionTitle = "${questionTitle}",
+				locator1 = "Questions#QUESTIONS_DETAILS_TITLE",
+				value1 = "${questionTitle}");
+		}
+		else {
+			Click(
+				key_text = "Delete",
+				locator1 = "Questions#MODAL_ITEM_BUTTON");
+
+			AssertElementPresent(
+				key_emptyInfo = "This topic is empty.",
+				locator1 = "Questions#EMPTY_STATE_MESSAGE");
+		}
+	}
+
 	macro fillName {
 		Click(locator1 = "Questions#CREATE_QUESTIONS_NAME_FIELD");
 
@@ -402,6 +475,28 @@ definition {
 		Button.clickRemove();
 
 		PortletEntry.save();
+	}
+
+	macro replyToComment {
+		AssertClick(
+			locator1 = "Button#REPLY",
+			value1 = "Reply");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
+
+		Type(
+			locator1 = "CKEditor#BODY",
+			value1 = "${commentReply}");
+
+		SelectFrame(value1 = "relative=top");
+
+		AssertClick(
+			locator1 = "Button#REPLY_LAST",
+			value1 = "Reply");
+
+		AssertVisible(
+			key_replyBodyContent = "${commentReply}",
+			locator1 = "Questions#REPLY_BODY");
 	}
 
 	macro search {

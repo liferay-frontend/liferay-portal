@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -371,6 +372,46 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 	@Override
 	public String getSearchActionURL() {
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
+
+		List<Long> assetCategoryIds =
+			_contentDashboardAdminDisplayContext.getAssetCategoryIds();
+
+		if (!ListUtil.isEmpty(assetCategoryIds)) {
+			Stream<Long> stream = assetCategoryIds.stream();
+
+			portletURL.setParameter(
+				"assetCategoryId",
+				stream.map(
+					String::valueOf
+				).toArray(
+					String[]::new
+				));
+		}
+
+		Set<String> assetTagIds =
+			_contentDashboardAdminDisplayContext.getAssetTagIds();
+
+		if (!SetUtil.isEmpty(assetTagIds)) {
+			Stream<String> stream = assetTagIds.stream();
+
+			portletURL.setParameter(
+				"assetTagId", stream.toArray(String[]::new));
+		}
+
+		List<Long> authorIds =
+			_contentDashboardAdminDisplayContext.getAuthorIds();
+
+		if (!ListUtil.isEmpty(authorIds)) {
+			Stream<Long> stream = authorIds.stream();
+
+			portletURL.setParameter(
+				"authorIds",
+				stream.map(
+					String::valueOf
+				).toArray(
+					String[]::new
+				));
+		}
 
 		List<? extends ContentDashboardItemType> contentDashboardItemTypes =
 			_contentDashboardAdminDisplayContext.getContentDashboardItemTypes();

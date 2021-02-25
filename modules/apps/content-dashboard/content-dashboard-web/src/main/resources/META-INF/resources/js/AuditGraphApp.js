@@ -12,20 +12,40 @@
  * details.
  */
 
+import ClayAlert from '@clayui/alert';
 import React from 'react';
 
 import AuditBarChart from './components/AuditBarChart';
 import EmptyAuditBarChart from './components/EmptyAuditBarChart';
 
 export default function ({context, props}) {
-	const {languageDirection} = context;
+	const {languageDirection, namespace} = context;
 	const {learnHowURL, vocabularies} = props;
 
+	const hasBarsCategoryFilters = new URLSearchParams(
+		window.location.href
+	).get('resetBarsCategoryFiltersURL');
+
 	return vocabularies.length ? (
-		<AuditBarChart
-			rtl={languageDirection === 'rtl'}
-			vocabularies={vocabularies}
-		/>
+		<>
+			{hasBarsCategoryFilters && (
+				<div className="c-mb-3 c-mx-3 small text-info">
+					<ClayAlert displayType="info">
+						<span>
+							{Liferay.Language.get(
+								"press-escape-to-remove-the-bar's-category-filters"
+							)}
+						</span>
+					</ClayAlert>
+				</div>
+			)}
+
+			<AuditBarChart
+				namespace={namespace}
+				rtl={languageDirection === 'rtl'}
+				vocabularies={vocabularies}
+			/>
+		</>
 	) : (
 		<EmptyAuditBarChart learnHowURL={learnHowURL} />
 	);

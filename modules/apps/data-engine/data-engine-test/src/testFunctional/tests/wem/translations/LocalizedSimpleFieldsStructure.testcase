@@ -305,13 +305,109 @@ definition {
 	}
 
 	@description = "This is a test for LPS-122278. As Content Creator, I want to define reusable translations when creating WEM Structures without nested fields or fieldsets"
-	@ignore = "true"
 	@priority = "5"
 	test TranslateStructureWithAllFields {
 		property portal.acceptance = "false";
 
-		// TODO LPS-122278 TranslateStructureWithAllFields pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Web Content");
 
+		NavItem.click(navItem = "Structures");
+
+		LexiconEntry.gotoAdd();
+
+		PortletEntry.inputName(name = "Structure Title");
+
+		DataEngine.addFields(fieldNameList = "Web Content,Date,Rich Text,Single Selection,Grid,Select from List,Numeric,Link to Page,Image,Upload,Color,Text,Multiple Selection,Geolocation,Separator");
+
+		var index = "1";
+		for (var optionValue : list "Value 1,Value 2") {
+			DataEngine.addFieldOption(
+				fieldFieldLabel = "Multiple Selection",
+				index = "${index}",
+				optionValue = "${optionValue}");
+			var index = ${index} + 1;
+		}
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		WebContentStructures.addName(structureName = "Testando");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Text",
+			label = "Texto");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Link to Page",
+			label = "Link para Página");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Numeric",
+			label = "Numérico");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Web Content",
+			label = "Conteúdo Web");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Separator",
+			label = "Separador");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Select from List",
+			label = "Selecionar da Lista");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Image",
+			label = "Imagem");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Rich Text",
+			label = "Texto Completo");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Geolocation",
+			label = "Localização Terrestre");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Single Selection",
+			label = "Seleção Única");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Grid",
+			label = "Grade");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Multiple Selection",
+			label = "Seleção Múltipla");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Date",
+			label = "Data");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Upload",
+			label = "Enviar");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Color",
+			label = "Cor");
+
+		WebContentStructures.saveCP();
+
+		LexiconEntry.gotoEntryMenuItem(
+			menuItem = "Edit",
+			rowEntry = "Structure Title");
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		for (var key_fieldFieldLabel : list "Conteúdo Web,Numérico,Data,Enviar,Imagem,Texto Completo,Cor,Seleção Única,Seleção Múltipla,Texto,Grade,Localização Terrestre,Selecionar da Lista,Separador,Link para Página") {
+			AssertTextEquals(
+				key_fieldFieldLabel = "${key_fieldFieldLabel}",
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL",
+				value1 = "${key_fieldFieldLabel}");
+		}
 	}
 
 	@description = "This is a test for LPS-122278. As Content Creator, I want to define reusable translations when creating WEM Structures without nested fields or fieldsets"
@@ -447,6 +543,8 @@ definition {
 	@description = "This is a test for LPS-122278. As Content Creator, I want to define reusable translations when creating WEM Structures without nested fields or fieldsets"
 	@priority = "5"
 	test TranslationPersistsAfterEditingAnother {
+		property portal.acceptance = "true";
+
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
 		NavItem.gotoStructures();

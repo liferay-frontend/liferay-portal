@@ -53,8 +53,7 @@ public class FragmentPortletSetupUtil {
 		}
 
 		advancedDataJSONObject.put(
-			"customCSSClassName",
-			customCSSClassNames + StringPool.SPACE + "portlet-barebone");
+			"customCSSClassName", customCSSClassNames + " portlet-barebone");
 
 		jsonObject.put("advancedData", advancedDataJSONObject);
 

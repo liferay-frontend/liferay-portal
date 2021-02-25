@@ -224,7 +224,7 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 			Layout currentLayout = (Layout)httpServletRequest.getAttribute(
 				WebKeys.LAYOUT);
 
-			String friendlyURL = StringPool.FORWARD_SLASH + "authentication";
+			String friendlyURL = "/authentication";
 
 			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
 				_portal.getScopeGroupId(httpServletRequest), false,

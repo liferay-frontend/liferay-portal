@@ -54,6 +54,71 @@ public class CTProcessServiceImpl extends CTProcessServiceBaseImpl {
 		long companyId, long userId, String keywords, int status, int start,
 		int end, OrderByComparator<CTProcess> orderByComparator) {
 
+		DSLQuery dslQuery = DSLQueryFactoryUtil.select(
+			CTProcessTable.INSTANCE
+		).from(
+			CTProcessTable.INSTANCE
+		).innerJoinON(
+			CTCollectionTable.INSTANCE,
+			CTCollectionTable.INSTANCE.ctCollectionId.eq(
+				CTProcessTable.INSTANCE.ctCollectionId)
+		).innerJoinON(
+			BackgroundTaskTable.INSTANCE,
+			BackgroundTaskTable.INSTANCE.backgroundTaskId.eq(
+				CTProcessTable.INSTANCE.backgroundTaskId)
+		).where(
+			_getPredicate(companyId, keywords, status, userId)
+		).orderBy(
+			orderByStep -> {
+				if (orderByComparator != null) {
+					LimitStep limitStep = orderByStep.orderBy(
+						CTCollectionTable.INSTANCE, orderByComparator);
+
+					if (limitStep == orderByStep) {
+						return orderByStep.orderBy(
+							CTProcessTable.INSTANCE, orderByComparator);
+					}
+
+					return limitStep;
+				}
+
+				return orderByStep.orderBy(
+					CTProcessTable.INSTANCE.createDate.descending());
+			}
+		).limit(
+			start, end
+		);
+
+		return ctProcessPersistence.dslQuery(dslQuery);
+	}
+
+	@Override
+	public int getCTProcessesCount(
+		long companyId, long userId, String keywords, int status) {
+
+		DSLQuery dslQuery = DSLQueryFactoryUtil.count(
+		).from(
+			CTProcessTable.INSTANCE
+		).innerJoinON(
+			CTCollectionTable.INSTANCE,
+			CTCollectionTable.INSTANCE.ctCollectionId.eq(
+				CTProcessTable.INSTANCE.ctCollectionId)
+		).innerJoinON(
+			BackgroundTaskTable.INSTANCE,
+			BackgroundTaskTable.INSTANCE.backgroundTaskId.eq(
+				CTProcessTable.INSTANCE.backgroundTaskId)
+		).where(
+			_getPredicate(companyId, keywords, status, userId)
+		);
+
+		Long count = ctProcessPersistence.dslQuery(dslQuery);
+
+		return count.intValue();
+	}
+
+	private Predicate _getPredicate(
+		long companyId, String keywords, int status, long userId) {
+
 		Predicate predicate = CTProcessTable.INSTANCE.companyId.eq(companyId);
 
 		if (userId > 0) {
@@ -99,46 +164,9 @@ public class CTProcessServiceImpl extends CTProcessServiceBaseImpl {
 			predicate = predicate.and(keywordsPredicate.withParentheses());
 		}
 
-		predicate = predicate.and(
+		return predicate.and(
 			_inlineSQLHelper.getPermissionWherePredicate(
 				CTCollection.class, CTCollectionTable.INSTANCE.ctCollectionId));
-
-		DSLQuery dslQuery = DSLQueryFactoryUtil.select(
-			CTProcessTable.INSTANCE
-		).from(
-			CTProcessTable.INSTANCE
-		).innerJoinON(
-			CTCollectionTable.INSTANCE,
-			CTCollectionTable.INSTANCE.ctCollectionId.eq(
-				CTProcessTable.INSTANCE.ctCollectionId)
-		).innerJoinON(
-			BackgroundTaskTable.INSTANCE,
-			BackgroundTaskTable.INSTANCE.backgroundTaskId.eq(
-				CTProcessTable.INSTANCE.backgroundTaskId)
-		).where(
-			predicate
-		).orderBy(
-			orderByStep -> {
-				if (orderByComparator != null) {
-					LimitStep limitStep = orderByStep.orderBy(
-						CTCollectionTable.INSTANCE, orderByComparator);
-
-					if (limitStep == orderByStep) {
-						return orderByStep.orderBy(
-							CTProcessTable.INSTANCE, orderByComparator);
-					}
-
-					return limitStep;
-				}
-
-				return orderByStep.orderBy(
-					CTProcessTable.INSTANCE.createDate.descending());
-			}
-		).limit(
-			start, end
-		);
-
-		return ctProcessPersistence.dslQuery(dslQuery);
 	}
 
 	@Reference

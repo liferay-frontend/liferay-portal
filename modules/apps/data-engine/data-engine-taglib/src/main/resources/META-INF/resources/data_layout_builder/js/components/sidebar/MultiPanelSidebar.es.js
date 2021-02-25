@@ -12,6 +12,8 @@
  * details.
  */
 
+import './MultiPanelSidebar.scss';
+
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
@@ -87,12 +89,15 @@ export default function MultiPanelSidebar({
 		const formBuilderMessage = document.querySelector(
 			'.data-engine-form-builder-messages'
 		);
-		const className = formBuilderMessage.className;
 
-		formBuilderMessage.className = className.replace(
-			formBuilderMessage.className,
-			styleName
-		);
+		if (formBuilderMessage) {
+			const className = formBuilderMessage.className;
+
+			formBuilderMessage.className = className.replace(
+				formBuilderMessage.className,
+				styleName
+			);
+		}
 	};
 
 	useEffect(() => {

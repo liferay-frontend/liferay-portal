@@ -24,6 +24,8 @@ import com.liferay.portal.kernel.exception.GroupParentException;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.NoSuchResourcePermissionException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -1344,6 +1346,10 @@ public class GroupServiceTest {
 			Assert.assertFalse(expectFailure);
 		}
 		catch (LocaleException localeException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(localeException, localeException);
+			}
+
 			Assert.assertTrue(expectFailure);
 		}
 		finally {
@@ -1352,6 +1358,9 @@ public class GroupServiceTest {
 				LocaleUtil.getDefault());
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		GroupServiceTest.class);
 
 	@Inject
 	private AssetTagLocalService _assetTagLocalService;

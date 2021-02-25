@@ -15,21 +15,18 @@
 package com.liferay.analytics.reports.web.internal.item.action.provider;
 
 import com.liferay.analytics.reports.info.action.provider.AnalyticsReportsContentDashboardItemActionProvider;
+import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItem;
 import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItemTracker;
+import com.liferay.analytics.reports.info.item.provider.AnalyticsReportsInfoItemObjectProvider;
+import com.liferay.analytics.reports.web.internal.info.item.provider.AnalyticsReportsInfoItemObjectProviderTracker;
 import com.liferay.analytics.reports.web.internal.item.action.AnalyticsReportsContentDashboardItemAction;
 import com.liferay.analytics.reports.web.internal.util.AnalyticsReportsUtil;
-import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
 import com.liferay.content.dashboard.item.action.ContentDashboardItemAction;
 import com.liferay.content.dashboard.item.action.exception.ContentDashboardItemActionException;
 import com.liferay.info.item.InfoItemReference;
-import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
-import com.liferay.layout.display.page.LayoutDisplayPageProvider;
-import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
-import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
-import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -50,27 +47,23 @@ public class AnalyticsReportsContentDashboardItemActionProviderImpl
 
 	@Override
 	public ContentDashboardItemAction getContentDashboardItemAction(
-			String className, long classPK,
-			HttpServletRequest httpServletRequest)
+			HttpServletRequest httpServletRequest,
+			InfoItemReference infoItemReference)
 		throws ContentDashboardItemActionException {
 
 		try {
 			if (!isShowContentDashboardItemAction(
-					className, classPK, httpServletRequest)) {
+					httpServletRequest, infoItemReference)) {
 
 				return null;
 			}
 
-			LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
-				_getLayoutDisplayPageObjectProvider(className, classPK);
-
 			return new AnalyticsReportsContentDashboardItemAction(
 				_resourceBundleLoader,
 				AnalyticsReportsUtil.getAnalyticsReportsPanelURL(
-					layoutDisplayPageObjectProvider.getClassNameId(),
-					layoutDisplayPageObjectProvider.getClassPK(),
-					layoutDisplayPageObjectProvider.getGroupId(),
-					httpServletRequest, _portal, _portletURLFactory));
+					_portal.getClassNameId(infoItemReference.getClassName()),
+					infoItemReference.getClassPK(), httpServletRequest, _portal,
+					_portletURLFactory));
 		}
 		catch (PortalException | WindowStateException exception) {
 			throw new ContentDashboardItemActionException(exception);
@@ -78,28 +71,55 @@ public class AnalyticsReportsContentDashboardItemActionProviderImpl
 	}
 
 	@Override
-	public boolean isShowContentDashboardItemAction(
+	public ContentDashboardItemAction getContentDashboardItemAction(
 			String className, long classPK,
 			HttpServletRequest httpServletRequest)
+		throws ContentDashboardItemActionException {
+
+		try {
+			return getContentDashboardItemAction(
+				httpServletRequest, new InfoItemReference(className, classPK));
+		}
+		catch (PortalException portalException) {
+			throw new ContentDashboardItemActionException(portalException);
+		}
+	}
+
+	@Override
+	public boolean isShowContentDashboardItemAction(
+			HttpServletRequest httpServletRequest,
+			InfoItemReference infoItemReference)
 		throws PortalException {
 
-		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
-			_getLayoutDisplayPageObjectProvider(className, classPK);
+		AnalyticsReportsInfoItemObjectProvider<Object>
+			analyticsReportsInfoItemObjectProvider =
+				(AnalyticsReportsInfoItemObjectProvider<Object>)
+					_analyticsReportsInfoItemObjectProviderTracker.
+						getAnalyticsReportsInfoItemObjectProvider(
+							infoItemReference.getClassName());
 
-		if ((layoutDisplayPageObjectProvider == null) ||
-			(layoutDisplayPageObjectProvider.getDisplayObject() == null)) {
-
+		if (analyticsReportsInfoItemObjectProvider == null) {
 			return false;
 		}
 
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			AssetDisplayPageUtil.getAssetDisplayPageLayoutPageTemplateEntry(
-				layoutDisplayPageObjectProvider.getGroupId(),
-				layoutDisplayPageObjectProvider.getClassNameId(),
-				layoutDisplayPageObjectProvider.getClassPK(),
-				layoutDisplayPageObjectProvider.getClassTypeId());
+		Object analyticsReportsInfoItemObject =
+			analyticsReportsInfoItemObjectProvider.
+				getAnalyticsReportsInfoItemObject(infoItemReference);
 
-		if (layoutPageTemplateEntry == null) {
+		if (analyticsReportsInfoItemObject == null) {
+			return false;
+		}
+
+		AnalyticsReportsInfoItem<Object> analyticsReportsInfoItem =
+			(AnalyticsReportsInfoItem<Object>)
+				_analyticsReportsInfoItemTracker.getAnalyticsReportsInfoItem(
+					infoItemReference.getClassName());
+
+		if (analyticsReportsInfoItem == null) {
+			return false;
+		}
+
+		if (!analyticsReportsInfoItem.isShow(analyticsReportsInfoItemObject)) {
 			return false;
 		}
 
@@ -108,12 +128,7 @@ public class AnalyticsReportsContentDashboardItemActionProviderImpl
 				WebKeys.THEME_DISPLAY);
 
 		if (AnalyticsReportsUtil.isShowAnalyticsReportsPanel(
-				_analyticsReportsInfoItemTracker, themeDisplay.getCompanyId(),
-				httpServletRequest,
-				_layoutLocalService.fetchLayout(
-					layoutPageTemplateEntry.getPlid()),
-				layoutDisplayPageObjectProvider,
-				themeDisplay.getPermissionChecker(), _portal)) {
+				themeDisplay.getCompanyId(), httpServletRequest)) {
 
 			return true;
 		}
@@ -121,29 +136,22 @@ public class AnalyticsReportsContentDashboardItemActionProviderImpl
 		return false;
 	}
 
-	private LayoutDisplayPageObjectProvider<?>
-		_getLayoutDisplayPageObjectProvider(String className, long classPK) {
+	@Override
+	public boolean isShowContentDashboardItemAction(
+			String className, long classPK,
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
 
-		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
-			_layoutDisplayPageProviderTracker.
-				getLayoutDisplayPageProviderByClassName(className);
-
-		if (layoutDisplayPageProvider == null) {
-			return null;
-		}
-
-		return layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
-			new InfoItemReference(className, classPK));
+		return isShowContentDashboardItemAction(
+			httpServletRequest, new InfoItemReference(className, classPK));
 	}
 
 	@Reference
+	private AnalyticsReportsInfoItemObjectProviderTracker
+		_analyticsReportsInfoItemObjectProviderTracker;
+
+	@Reference
 	private AnalyticsReportsInfoItemTracker _analyticsReportsInfoItemTracker;
-
-	@Reference
-	private LayoutDisplayPageProviderTracker _layoutDisplayPageProviderTracker;
-
-	@Reference
-	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private Portal _portal;

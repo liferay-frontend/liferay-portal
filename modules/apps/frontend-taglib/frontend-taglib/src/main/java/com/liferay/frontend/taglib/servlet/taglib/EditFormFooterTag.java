@@ -14,7 +14,6 @@
 
 package com.liferay.frontend.taglib.servlet.taglib;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
@@ -47,7 +46,7 @@ public class EditFormFooterTag extends IncludeTag {
 			WebKeys.THEME_DISPLAY);
 
 		if (themeDisplay.isStatePopUp()) {
-			cssClass = cssClass + StringPool.SPACE + "dialog-footer";
+			cssClass = cssClass + " dialog-footer";
 		}
 
 		jspWriter.write(cssClass);

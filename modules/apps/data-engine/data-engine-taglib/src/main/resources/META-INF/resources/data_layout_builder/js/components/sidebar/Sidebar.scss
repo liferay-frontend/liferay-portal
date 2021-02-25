@@ -1,0 +1,43 @@
+@import '../../../css/variables';
+
+.data-layout-builder-sidebar {
+	.sidebar {
+		box-shadow: none;
+
+		.sidebar-body {
+			height: calc(100vh - 224px);
+
+			.component-tbar {
+				height: auto;
+				margin-left: -1rem;
+				margin-right: -1rem;
+				min-height: auto;
+				position: relative;
+				top: auto;
+				width: auto;
+			}
+		}
+
+		.sidebar-header {
+			padding-bottom: 0;
+		}
+	}
+
+	.lfr-ddm-form-container .ddm-field-options-container .ddm-options-target {
+		margin: 2px 0;
+	}
+
+	&.display-settings .sidebar {
+		.sidebar-body {
+			height: calc(100vh - (224px - #{$displaySettingsHeight}));
+		}
+
+		.sidebar-header {
+			padding-top: 0;
+
+			.component-title {
+				display: none;
+			}
+		}
+	}
+}

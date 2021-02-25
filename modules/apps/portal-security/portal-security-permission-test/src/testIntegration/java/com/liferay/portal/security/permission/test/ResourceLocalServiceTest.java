@@ -17,6 +17,8 @@ package com.liferay.portal.security.permission.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -92,6 +94,9 @@ public class ResourceLocalServiceTest {
 			successCount == ServiceTestConstants.THREAD_COUNT);
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		ResourceLocalServiceTest.class);
+
 	@DeleteAfterTestRun
 	private Group _group;
 
@@ -113,6 +118,11 @@ public class ResourceLocalServiceTest {
 						TestPropsValues.getPlid(_group.getGroupId())));
 			}
 			catch (NoSuchResourceException noSuchResourceException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						noSuchResourceException, noSuchResourceException);
+				}
+
 				_resourceLocalService.addResources(
 					TestPropsValues.getCompanyId(), _group.getGroupId(), 0,
 					Layout.class.getName(),

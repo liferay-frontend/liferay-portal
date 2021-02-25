@@ -20,10 +20,13 @@ import EditAppContext, {
 	UPDATE_APP,
 	UPDATE_DATA_LIST_VIEW_ID,
 } from 'app-builder-web/js/pages/apps/edit/EditAppContext.es';
-import {getLocalizedValue, sub} from 'app-builder-web/js/utils/lang.es';
-import {successToast} from 'app-builder-web/js/utils/toast.es';
-import {concatValues} from 'app-builder-web/js/utils/utils.es';
 import classNames from 'classnames';
+import {
+	getLocalizedValue,
+	sub,
+} from 'data-engine-js-components-web/js/utils/lang.es';
+import {successToast} from 'data-engine-js-components-web/js/utils/toast.es';
+import {concatValues} from 'data-engine-js-components-web/js/utils/utils.es';
 import {DataDefinitionUtils} from 'data-engine-taglib';
 import {openModal} from 'frontend-js-web';
 import React, {useContext} from 'react';
@@ -38,7 +41,6 @@ import {
 	UPDATE_STEP_FORM_VIEW_READONLY,
 	UPDATE_TABLE_VIEW,
 } from '../configReducer.es';
-import {checkRequiredFields} from '../utils.es';
 import SelectFormView from './SelectFormView.es';
 import SelectTableView from './SelectTableView.es';
 
@@ -85,12 +87,7 @@ export default function DataAndViewsTab({
 	dispatchConfig,
 }) {
 	const {objectsPortletURL} = useContext(AppContext);
-	const {
-		config,
-		openFormViewModal,
-		state: {app},
-		updateFormView,
-	} = useContext(EditAppContext);
+	const {openFormViewModal, updateFormView} = useContext(EditAppContext);
 	const {
 		appWorkflowDataLayoutLinks: stepFormViews = [],
 		errors: {
@@ -98,19 +95,17 @@ export default function DataAndViewsTab({
 		} = {},
 	} = currentStep;
 
-	const availableFormViews = formViews.map((form) => ({
-		...form,
+	const availableFormViews = formViews.map((formView) => ({
+		...formView,
 		disabled:
 			stepFormViews.findIndex(
-				({dataLayoutId}) => dataLayoutId === form.id
+				({dataLayoutId}) => dataLayoutId === formView.id
 			) > -1,
 	}));
 
-	const mainFormViews = formViews.map((form) => ({
-		...form,
-		disabled:
-			form.missingRequiredFields?.customField &&
-			form.missingRequiredFields?.nativeField,
+	const mainFormViews = formViews.map((formView) => ({
+		...formView,
+		disabled: formView.missingRequiredFields?.nativeField,
 	}));
 
 	const addStepFormView = () => {
@@ -481,14 +476,7 @@ export default function DataAndViewsTab({
 								addButton={addFormViewButton(updateFormView)}
 								ariaLabelId="form-view-label"
 								isLoading={fetching}
-								items={
-									app.active
-										? mainFormViews
-										: checkRequiredFields(
-												mainFormViews,
-												config.dataObject
-										  )
-								}
+								items={mainFormViews}
 								onSelect={updateFormView}
 								openButtonProps={{
 									disabled: !formView.name,

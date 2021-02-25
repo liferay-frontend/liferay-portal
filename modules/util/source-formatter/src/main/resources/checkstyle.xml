@@ -278,6 +278,11 @@
 			<property name="description" value="Checks for line breaks when assiging variables in constructor." />
 			<message key="empty.line.missing" value="There should be an empty line before line ''{0}''" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.checks.ConsumerTypeAnnotationCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Performs several checks on classes with @ConsumerType annotation." />
+			<message key="default.annotation.redundant" value="No need to specify default ''ConsumerType'' annotation. See https://docs.osgi.org/javadoc/osgi.annotation/8.0.0/org/osgi/annotation/versioning/ConsumerType.html" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.checks.ContractionsCheck">
 			<property name="category" value="Styling" />
 			<property name="description" value="Finds contractions in Strings (such as `can't` or `you're`)." />

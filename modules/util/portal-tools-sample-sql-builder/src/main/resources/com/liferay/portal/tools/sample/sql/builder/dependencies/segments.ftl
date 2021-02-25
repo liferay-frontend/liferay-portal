@@ -1,5 +1,3 @@
-<#list dataFactory.newSegmentsEntries(guestGroupModel.groupId) as segmentEntry>
-	${dataFactory.toInsertSQL(segmentEntry)}
-
-	${csvFileWriter.write("segments", segmentEntry.segmentsEntryId + ", "+ segmentEntry.name + "\n")}
+<#list dataFactory.getSequence(dataFactory.maxSegmentsEntryCount) as index>
+	${dataFactory.toInsertSQL(dataFactory.newSegmentsEntry(guestGroupModel.groupId, index))}
 </#list>

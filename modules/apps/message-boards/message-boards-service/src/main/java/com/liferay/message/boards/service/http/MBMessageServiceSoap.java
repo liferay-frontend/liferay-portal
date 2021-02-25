@@ -86,6 +86,12 @@ public class MBMessageServiceSoap {
 		}
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #addMessage(String, long, String, String, String, List,
+	 boolean, double, boolean, ServiceContext)}
+	 */
+	@Deprecated
 	public static com.liferay.message.boards.model.MBMessageSoap addMessage(
 			long groupId, long categoryId, String subject, String body,
 			String format,
@@ -112,6 +118,12 @@ public class MBMessageServiceSoap {
 		}
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #addMessage(String, long, String, String, String, List,
+	 boolean, double, boolean, ServiceContext)}
+	 */
+	@Deprecated
 	public static com.liferay.message.boards.model.MBMessageSoap addMessage(
 			long categoryId, String subject, String body,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -132,6 +144,12 @@ public class MBMessageServiceSoap {
 		}
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #addMessage(String, long, String, String, String, List,
+	 boolean, double, boolean, ServiceContext)}
+	 */
+	@Deprecated
 	public static com.liferay.message.boards.model.MBMessageSoap addMessage(
 			long parentMessageId, String subject, String body, String format,
 			java.util.List
@@ -146,6 +164,33 @@ public class MBMessageServiceSoap {
 				MBMessageServiceUtil.addMessage(
 					parentMessageId, subject, body, format, inputStreamOVPs,
 					anonymous, priority, allowPingbacks, serviceContext);
+
+			return com.liferay.message.boards.model.MBMessageSoap.toSoapModel(
+				returnValue);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static com.liferay.message.boards.model.MBMessageSoap addMessage(
+			String externalReferenceCode, long parentMessageId, String subject,
+			String body, String format,
+			java.util.List
+				<com.liferay.portal.kernel.util.ObjectValuePair
+					<String, java.io.InputStream>> inputStreamOVPs,
+			boolean anonymous, double priority, boolean allowPingbacks,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws RemoteException {
+
+		try {
+			com.liferay.message.boards.model.MBMessage returnValue =
+				MBMessageServiceUtil.addMessage(
+					externalReferenceCode, parentMessageId, subject, body,
+					format, inputStreamOVPs, anonymous, priority,
+					allowPingbacks, serviceContext);
 
 			return com.liferay.message.boards.model.MBMessageSoap.toSoapModel(
 				returnValue);

@@ -24,13 +24,8 @@ import com.liferay.dynamic.data.mapping.storage.Fields;
 import com.liferay.dynamic.data.mapping.storage.constants.FieldConstants;
 import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.dynamic.data.mapping.util.DDMFieldsCounter;
-import com.liferay.journal.article.dynamic.data.mapping.form.field.type.constants.JournalArticleDDMFormFieldTypeConstants;
 import com.liferay.journal.exception.ArticleContentException;
-import com.liferay.journal.model.JournalArticle;
-import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.util.JournalConverter;
-import com.liferay.layout.dynamic.data.mapping.form.field.type.constants.LayoutDDMFormFieldTypeConstants;
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.xml.XMLUtil;
@@ -38,13 +33,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -67,7 +59,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marcellus Tavares
@@ -96,6 +87,8 @@ public class JournalConverterImpl implements JournalConverter {
 
 		rootElement.addAttribute(
 			"default-locale", LocaleUtil.toLanguageId(defaultLocale));
+
+		rootElement.addAttribute("version", "1.0");
 
 		DDMFieldsCounter ddmFieldsCounter = new DDMFieldsCounter();
 
@@ -363,7 +356,7 @@ public class JournalConverterImpl implements JournalConverter {
 			}
 
 			Serializable serializable = getFieldValue(
-				ddmFormField, dynamicContentElement, defaultLocale);
+				ddmFormField, dynamicContentElement);
 
 			ddmField.addValue(locale, serializable);
 		}
@@ -398,8 +391,7 @@ public class JournalConverterImpl implements JournalConverter {
 	}
 
 	protected Serializable getFieldValue(
-		DDMFormField ddmFormField, Element dynamicContentElement,
-		Locale defaultLocale) {
+		DDMFormField ddmFormField, Element dynamicContentElement) {
 
 		if (Objects.equals(
 				DDMFormFieldTypeConstants.CHECKBOX_MULTIPLE,
@@ -407,21 +399,6 @@ public class JournalConverterImpl implements JournalConverter {
 
 			return _getCheckboxMultipleValue(
 				ddmFormField, dynamicContentElement);
-		}
-
-		if (Objects.equals(
-				JournalArticleDDMFormFieldTypeConstants.JOURNAL_ARTICLE,
-				ddmFormField.getType())) {
-
-			return _getJournalArticleValue(
-				defaultLocale, dynamicContentElement);
-		}
-
-		if (Objects.equals(
-				LayoutDDMFormFieldTypeConstants.LINK_TO_LAYOUT,
-				ddmFormField.getType())) {
-
-			return _getLinkToLayoutValue(defaultLocale, dynamicContentElement);
 		}
 
 		if (Objects.equals(
@@ -490,7 +467,6 @@ public class JournalConverterImpl implements JournalConverter {
 		boolean multiple = GetterUtil.getBoolean(
 			ddmStructure.getFieldProperty(fieldName, "multiple"));
 
-		dynamicElementElement.addAttribute("type", fieldType);
 		dynamicElementElement.addAttribute("index-type", indexType);
 
 		int count = ddmFieldsCounter.get(fieldName);
@@ -523,6 +499,8 @@ public class JournalConverterImpl implements JournalConverter {
 					multiple, valueString.trim());
 			}
 		}
+
+		dynamicElementElement.addAttribute("type", fieldType);
 
 		ddmFieldsCounter.incrementKey(fieldName);
 	}
@@ -656,84 +634,6 @@ public class JournalConverterImpl implements JournalConverter {
 			ddmFormField.getDataType(), dynamicContentElement.getText());
 	}
 
-	private String _getJournalArticleValue(
-		Locale defaultLocale, Element dynamicContentElement) {
-
-		try {
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				dynamicContentElement.getText());
-
-			long classPK = jsonObject.getLong("classPK");
-
-			if (classPK <= 0) {
-				return jsonObject.toString();
-			}
-
-			JournalArticle article =
-				_journalArticleLocalService.fetchLatestArticle(classPK);
-
-			if (article != null) {
-				jsonObject.put(
-					"groupId", article.getGroupId()
-				).put(
-					"title", article.getTitle(defaultLocale)
-				).put(
-					"titleMap", article.getTitleMap()
-				).put(
-					"uuid", article.getUuid()
-				);
-			}
-
-			return jsonObject.toString();
-		}
-		catch (JSONException jsonException) {
-			return StringPool.BLANK;
-		}
-	}
-
-	private String _getLinkToLayoutValue(
-		Locale defaultLocale, Element dynamicContentElement) {
-
-		String value = dynamicContentElement.getText();
-
-		if (JSONUtil.isValid(value)) {
-			return value;
-		}
-
-		String[] values = StringUtil.split(
-			dynamicContentElement.getText(), CharPool.AT);
-
-		if (ArrayUtil.isEmpty(values)) {
-			return StringPool.BLANK;
-		}
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-		long layoutId = GetterUtil.getLong(values[0]);
-		boolean privateLayout = !Objects.equals(values[1], "public");
-
-		if (values.length > 2) {
-			long groupId = GetterUtil.getLong(values[2]);
-
-			jsonObject.put("groupId", groupId);
-
-			Layout layout = _layoutLocalService.fetchLayout(
-				groupId, privateLayout, layoutId);
-
-			if (layout != null) {
-				jsonObject.put("name", layout.getName(defaultLocale));
-			}
-		}
-
-		jsonObject.put(
-			"layoutId", layoutId
-		).put(
-			"privateLayout", privateLayout
-		);
-
-		return jsonObject.toString();
-	}
-
 	private String _getSelectValue(Element dynamicContentElement) {
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
@@ -753,11 +653,5 @@ public class JournalConverterImpl implements JournalConverter {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		JournalConverterImpl.class);
-
-	@Reference
-	private JournalArticleLocalService _journalArticleLocalService;
-
-	@Reference(unbind = "-")
-	private LayoutLocalService _layoutLocalService;
 
 }

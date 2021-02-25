@@ -66,8 +66,7 @@ definition {
 	@description = "Create, Remove, Update and Delete entries of an application deployed as Product Menu"
 	@priority = "5"
 	test CreateRemoveUpdateDeleteEntriesOfProductMenuApp {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "AppBuilder#CreateRemoveUpdateDeleteEntriesOfProductMenuApp";
 
 		var myFormViewName = "My Registration form";
@@ -766,8 +765,7 @@ definition {
 	@description = "Create table views with a fixed entries filter of list field types (select from list and single selection)"
 	@priority = "5"
 	test CreateTableViewsWithFixedEntriesFilter {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "AppBuilder#CreateTableViewsWithFixedEntriesFilter";
 
 		AppBuilderAdmin.addCustomObject(
@@ -1060,8 +1058,7 @@ definition {
 	@description = "Delete fields from the Form View through the Delete options and assert its affect on other Form and Table views"
 	@priority = "5"
 	test DeleteFormViewFieldFromObject {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "AppBuilder#DeleteFormViewFieldFromObject";
 
 		AppBuilderAdmin.addCustomObject(
@@ -1075,7 +1072,7 @@ definition {
 		FormViewBuilder.addFieldByDoubleClick(fieldType = "Select from List");
 
 		for (var number : list "1,2,3") {
-			FormViewBuilder.editOptionsRow(
+			FormViewBuilder.addSelectTypeFieldOptions(
 				optionName = "Select${number}",
 				optionValue = "Select ${number}",
 				rowNumber = "${number}");
@@ -1143,7 +1140,7 @@ definition {
 		FormViewBuilder.addFieldByDoubleClick(fieldType = "Multiple Selection");
 
 		for (var number : list "1,2,3") {
-			FormViewBuilder.editOptionsRow(
+			FormViewBuilder.addSelectTypeFieldOptions(
 				optionName = "Multiple${number}",
 				optionValue = "Multiple ${number}",
 				rowNumber = "${number}");
@@ -1172,7 +1169,7 @@ definition {
 		FormViewBuilder.addFieldByDoubleClick(fieldType = "Single Selection");
 
 		for (var number : list "1,2,3") {
-			FormViewBuilder.editOptionsRow(
+			FormViewBuilder.addSelectTypeFieldOptions(
 				optionName = "Single${number}",
 				optionValue = "Single ${number}",
 				rowNumber = "${number}");

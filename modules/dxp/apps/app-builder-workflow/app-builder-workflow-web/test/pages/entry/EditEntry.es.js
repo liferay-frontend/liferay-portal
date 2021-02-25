@@ -96,13 +96,13 @@ const mockGetItem = jest
 		totalCount: 1,
 	});
 
-jest.mock('app-builder-web/js/utils/client.es', () => ({
+jest.mock('data-engine-js-components-web/js/utils/client.es', () => ({
 	addItem: () => mockAddItem(),
 	getItem: () => mockGetItem(),
 	request: jest.fn().mockResolvedValue(),
 }));
 
-jest.mock('app-builder-web/js/utils/toast.es', () => ({
+jest.mock('data-engine-js-components-web/js/utils/toast.es', () => ({
 	__esModule: true,
 	errorToast: (title) => mockToast(title),
 	successToast: (title) => mockToast(title),

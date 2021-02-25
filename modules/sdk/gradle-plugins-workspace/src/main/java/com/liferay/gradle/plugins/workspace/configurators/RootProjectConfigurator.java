@@ -598,6 +598,7 @@ public class RootProjectConfigurator implements Plugin<Project> {
 					try {
 						File destinationDir = workspaceExtension.getDockerDir();
 
+						_createTouchFile(new File(destinationDir, "configs"));
 						_createTouchFile(new File(destinationDir, "deploy"));
 						_createTouchFile(new File(destinationDir, "patching"));
 						_createTouchFile(new File(destinationDir, "scripts"));
@@ -1382,7 +1383,7 @@ public class RootProjectConfigurator implements Plugin<Project> {
 
 		if (dockerContainerId == null) {
 			workspaceExtension.setDockerContainerId(
-				project.getName() + "-liferay");
+				StringUtil.getDockerSafeName(project.getName()) + "-liferay");
 		}
 
 		String dockerImageId = workspaceExtension.getDockerImageId();
@@ -1403,7 +1404,9 @@ public class RootProjectConfigurator implements Plugin<Project> {
 			}
 
 			workspaceExtension.setDockerImageId(
-				String.format("%s-liferay:%s", project.getName(), version));
+				String.format(
+					"%s-liferay:%s",
+					StringUtil.getDockerSafeName(project.getName()), version));
 		}
 	}
 

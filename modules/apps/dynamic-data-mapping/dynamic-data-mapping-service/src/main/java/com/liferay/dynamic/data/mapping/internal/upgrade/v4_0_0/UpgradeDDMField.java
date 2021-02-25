@@ -457,8 +457,10 @@ public class UpgradeDDMField extends UpgradeProcess {
 				DDMFormField ddmFormField = ddmFormFieldsMap.get(
 					ddmFieldInfo._fieldName);
 
-				fieldType = ddmFormField.getType();
-				localizable = ddmFormField.isLocalizable();
+				if (ddmFormField != null) {
+					fieldType = ddmFormField.getType();
+					localizable = ddmFormField.isLocalizable();
+				}
 			}
 
 			insertDDMFieldPreparedStatement.setLong(1, fieldId);

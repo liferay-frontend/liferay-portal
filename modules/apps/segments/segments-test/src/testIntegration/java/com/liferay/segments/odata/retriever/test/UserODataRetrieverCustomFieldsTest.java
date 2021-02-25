@@ -250,7 +250,7 @@ public class UserODataRetrieverCustomFieldsTest {
 			ExpandoColumnConstants.DOUBLE_ARRAY,
 			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
 
-		double columnValue = 1.0;
+		double[] columnValue = {1.0};
 
 		User user1 = _addUser(expandoColumn.getName(), columnValue);
 
@@ -261,7 +261,8 @@ public class UserODataRetrieverCustomFieldsTest {
 		_users.add(user2);
 
 		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+			"(customField/%s eq %s)", _encodeName(expandoColumn),
+			columnValue[0]);
 
 		int count = _getODataRetriever().getResultsCount(
 			TestPropsValues.getCompanyId(), filterString,
@@ -285,7 +286,7 @@ public class UserODataRetrieverCustomFieldsTest {
 			ExpandoColumnConstants.DOUBLE_ARRAY,
 			ExpandoColumnConstants.INDEX_TYPE_TEXT);
 
-		double columnValue = 1.0;
+		double[] columnValue = {1.0};
 
 		User user1 = _addUser(expandoColumn.getName(), columnValue);
 
@@ -296,7 +297,8 @@ public class UserODataRetrieverCustomFieldsTest {
 		_users.add(user2);
 
 		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+			"(customField/%s eq %s)", _encodeName(expandoColumn),
+			columnValue[0]);
 
 		int count = _getODataRetriever().getResultsCount(
 			TestPropsValues.getCompanyId(), filterString,
@@ -390,7 +392,7 @@ public class UserODataRetrieverCustomFieldsTest {
 			ExpandoColumnConstants.FLOAT_ARRAY,
 			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
 
-		float columnValue = 1.0F;
+		float[] columnValue = {1.0F};
 
 		User user1 = _addUser(expandoColumn.getName(), columnValue);
 
@@ -401,7 +403,8 @@ public class UserODataRetrieverCustomFieldsTest {
 		_users.add(user2);
 
 		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+			"(customField/%s eq %s)", _encodeName(expandoColumn),
+			columnValue[0]);
 
 		int count = _getODataRetriever().getResultsCount(
 			TestPropsValues.getCompanyId(), filterString,
@@ -425,7 +428,7 @@ public class UserODataRetrieverCustomFieldsTest {
 			ExpandoColumnConstants.FLOAT_ARRAY,
 			ExpandoColumnConstants.INDEX_TYPE_TEXT);
 
-		float columnValue = 1.0F;
+		float[] columnValue = {1.0F};
 
 		User user1 = _addUser(expandoColumn.getName(), columnValue);
 
@@ -436,7 +439,8 @@ public class UserODataRetrieverCustomFieldsTest {
 		_users.add(user2);
 
 		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+			"(customField/%s eq %s)", _encodeName(expandoColumn),
+			columnValue[0]);
 
 		int count = _getODataRetriever().getResultsCount(
 			TestPropsValues.getCompanyId(), filterString,
@@ -530,7 +534,7 @@ public class UserODataRetrieverCustomFieldsTest {
 			ExpandoColumnConstants.INTEGER_ARRAY,
 			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
 
-		int columnValue = 1;
+		int[] columnValue = {1};
 
 		User user1 = _addUser(expandoColumn.getName(), columnValue);
 
@@ -541,7 +545,8 @@ public class UserODataRetrieverCustomFieldsTest {
 		_users.add(user2);
 
 		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+			"(customField/%s eq %s)", _encodeName(expandoColumn),
+			columnValue[0]);
 
 		int count = _getODataRetriever().getResultsCount(
 			TestPropsValues.getCompanyId(), filterString,
@@ -565,7 +570,7 @@ public class UserODataRetrieverCustomFieldsTest {
 			ExpandoColumnConstants.INTEGER_ARRAY,
 			ExpandoColumnConstants.INDEX_TYPE_TEXT);
 
-		int columnValue = 1;
+		int[] columnValue = {1};
 
 		User user1 = _addUser(expandoColumn.getName(), columnValue);
 
@@ -576,7 +581,8 @@ public class UserODataRetrieverCustomFieldsTest {
 		_users.add(user2);
 
 		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+			"(customField/%s eq %s)", _encodeName(expandoColumn),
+			columnValue[0]);
 
 		int count = _getODataRetriever().getResultsCount(
 			TestPropsValues.getCompanyId(), filterString,
@@ -749,7 +755,7 @@ public class UserODataRetrieverCustomFieldsTest {
 			ExpandoColumnConstants.LONG_ARRAY,
 			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
 
-		long columnValue = 1;
+		long[] columnValue = {1};
 
 		User user1 = _addUser(expandoColumn.getName(), columnValue);
 
@@ -760,7 +766,8 @@ public class UserODataRetrieverCustomFieldsTest {
 		_users.add(user2);
 
 		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+			"(customField/%s eq %s)", _encodeName(expandoColumn),
+			columnValue[0]);
 
 		int count = _getODataRetriever().getResultsCount(
 			TestPropsValues.getCompanyId(), filterString,
@@ -784,7 +791,7 @@ public class UserODataRetrieverCustomFieldsTest {
 			ExpandoColumnConstants.LONG_ARRAY,
 			ExpandoColumnConstants.INDEX_TYPE_TEXT);
 
-		long columnValue = 1;
+		long[] columnValue = {1};
 
 		User user1 = _addUser(expandoColumn.getName(), columnValue);
 
@@ -795,7 +802,8 @@ public class UserODataRetrieverCustomFieldsTest {
 		_users.add(user2);
 
 		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+			"(customField/%s eq %s)", _encodeName(expandoColumn),
+			columnValue[0]);
 
 		int count = _getODataRetriever().getResultsCount(
 			TestPropsValues.getCompanyId(), filterString,
@@ -889,7 +897,7 @@ public class UserODataRetrieverCustomFieldsTest {
 			ExpandoColumnConstants.SHORT_ARRAY,
 			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
 
-		short columnValue = 1;
+		short[] columnValue = {1};
 
 		User user1 = _addUser(expandoColumn.getName(), columnValue);
 
@@ -900,7 +908,8 @@ public class UserODataRetrieverCustomFieldsTest {
 		_users.add(user2);
 
 		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+			"(customField/%s eq %s)", _encodeName(expandoColumn),
+			columnValue[0]);
 
 		int count = _getODataRetriever().getResultsCount(
 			TestPropsValues.getCompanyId(), filterString,
@@ -924,7 +933,7 @@ public class UserODataRetrieverCustomFieldsTest {
 			ExpandoColumnConstants.SHORT_ARRAY,
 			ExpandoColumnConstants.INDEX_TYPE_TEXT);
 
-		short columnValue = 1;
+		short[] columnValue = {1};
 
 		User user1 = _addUser(expandoColumn.getName(), columnValue);
 
@@ -935,7 +944,8 @@ public class UserODataRetrieverCustomFieldsTest {
 		_users.add(user2);
 
 		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+			"(customField/%s eq %s)", _encodeName(expandoColumn),
+			columnValue[0]);
 
 		int count = _getODataRetriever().getResultsCount(
 			TestPropsValues.getCompanyId(), filterString,

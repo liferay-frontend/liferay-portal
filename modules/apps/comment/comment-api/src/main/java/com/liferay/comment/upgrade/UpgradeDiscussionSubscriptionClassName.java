@@ -16,6 +16,7 @@ package com.liferay.comment.upgrade;
 
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.message.boards.model.MBDiscussion;
+import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -25,6 +26,8 @@ import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.subscription.model.Subscription;
 import com.liferay.subscription.service.SubscriptionLocalService;
+
+import java.sql.Connection;
 
 /**
  * @author Roberto Díaz
@@ -51,10 +54,21 @@ public class UpgradeDiscussionSubscriptionClassName extends UpgradeProcess {
 		SubscriptionLocalService subscriptionLocalService,
 		String oldSubscriptionClassName, DeletionMode deletionMode) {
 
-		_classNameLocalService = classNameLocalService;
-		_subscriptionLocalService = subscriptionLocalService;
-		_oldSubscriptionClassName = oldSubscriptionClassName;
-		_deletionMode = deletionMode;
+		this(
+			classNameLocalService, subscriptionLocalService,
+			oldSubscriptionClassName, deletionMode, null);
+	}
+
+	public UpgradeDiscussionSubscriptionClassName(
+		ClassNameLocalService classNameLocalService,
+		SubscriptionLocalService subscriptionLocalService,
+		String oldSubscriptionClassName,
+		UnsafeBiFunction<String, Connection, Boolean, Exception>
+			unsafeBiFunction) {
+
+		this(
+			classNameLocalService, subscriptionLocalService,
+			oldSubscriptionClassName, null, unsafeBiFunction);
 	}
 
 	/**
@@ -72,23 +86,61 @@ public class UpgradeDiscussionSubscriptionClassName extends UpgradeProcess {
 
 	public enum DeletionMode {
 
-		/**
-		 * @deprecated As of Athanasius (7.3.x), replaced by {@link #UPDATE}
-		 */
-		@Deprecated
-		ADD_NEW,
-		DELETE_OLD, UPDATE
+		ADD_NEW, DELETE_OLD, UPDATE
 
 	}
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		if (_deletionMode == DeletionMode.DELETE_OLD) {
+		if (_unsafeBiFunction != null) {
+			_unsafeBiFunction.apply(_oldSubscriptionClassName, connection);
+		}
+		else if (_deletionMode == DeletionMode.ADD_NEW) {
+			_addSubscriptions();
+		}
+		else if (_deletionMode == DeletionMode.DELETE_OLD) {
 			_deleteSubscriptions();
 		}
 		else {
 			_updateSubscriptions();
 		}
+	}
+
+	private UpgradeDiscussionSubscriptionClassName(
+		ClassNameLocalService classNameLocalService,
+		SubscriptionLocalService subscriptionLocalService,
+		String oldSubscriptionClassName, DeletionMode deletionMode,
+		UnsafeBiFunction<String, Connection, Boolean, Exception>
+			unsafeBiFunction) {
+
+		_classNameLocalService = classNameLocalService;
+		_subscriptionLocalService = subscriptionLocalService;
+		_oldSubscriptionClassName = oldSubscriptionClassName;
+		_deletionMode = deletionMode;
+		_unsafeBiFunction = unsafeBiFunction;
+	}
+
+	private void _addSubscriptions() throws Exception {
+		String newSubscriptionClassName =
+			MBDiscussion.class.getName() + StringPool.UNDERLINE +
+				_oldSubscriptionClassName;
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_subscriptionLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> dynamicQuery.add(
+				RestrictionsFactoryUtil.eq(
+					"classNameId",
+					_classNameLocalService.getClassNameId(
+						_oldSubscriptionClassName))));
+		actionableDynamicQuery.setPerformActionMethod(
+			(Subscription subscription) ->
+				_subscriptionLocalService.addSubscription(
+					subscription.getUserId(), subscription.getGroupId(),
+					newSubscriptionClassName, subscription.getClassPK()));
+
+		actionableDynamicQuery.performActions();
 	}
 
 	private void _deleteSubscriptions() throws Exception {
@@ -128,5 +180,7 @@ public class UpgradeDiscussionSubscriptionClassName extends UpgradeProcess {
 	private final DeletionMode _deletionMode;
 	private final String _oldSubscriptionClassName;
 	private final SubscriptionLocalService _subscriptionLocalService;
+	private final UnsafeBiFunction<String, Connection, Boolean, Exception>
+		_unsafeBiFunction;
 
 }

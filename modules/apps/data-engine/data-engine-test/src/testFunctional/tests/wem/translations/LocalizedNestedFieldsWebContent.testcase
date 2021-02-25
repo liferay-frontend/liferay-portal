@@ -628,39 +628,325 @@ definition {
 	}
 
 	@description = "This is a test for LPS-123537. As Content Creator, I want to leverage the structures’ translations with nested field when creating a new Web Content"
-	@ignore = "true"
 	@priority = "5"
 	test TranslationDoesNotChangeAnother {
-		property portal.acceptance = "false";
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
-		// TODO LPS-123537 TranslationDoesNotChangeAnother pending implementation
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Name");
+
+		DataEngine.addField(
+			fieldFieldLabel = "Text",
+			fieldName = "Text");
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Rich Text",
+			fieldName = "Rich Text",
+			targetFieldLabel = "Text");
+
+		WebContentStructures.saveCP();
+
+		Navigator.gotoNavTab(navTab = "Web Content");
+
+		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
+
+		WebContent.addWithStructureCP(
+			webContentRichText = "English Rich Text",
+			webContentText = "English Text",
+			webContentTitle = "WC WebContent English");
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		WebContent.addWithStructureCP(
+			webContentRichText = "ptBR Rich Text",
+			webContentText = "ptBR Text",
+			webContentTitle = "WC WebContent ptBR");
+
+		PortletEntry.changeLocale(locale = "fr-FR");
+
+		WebContent.addWithStructureCP(
+			webContentRichText = "frFR Rich Text",
+			webContentText = "frFR Text",
+			webContentTitle = "WC WebContent frFR");
+
+		PortletEntry.publish();
+
+		WebContent.viewWithStructureCP(
+			webContentRichText = "English Rich Text",
+			webContentText = "English Text",
+			webContentTitle = "WC WebContent English");
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		AssertTextEquals(
+			locator1 = "TextInput#TITLE",
+			value1 = "WC WebContent ptBR");
+
+		WebContent.viewWithStructureCP(
+			predefinedValue = "true",
+			webContentRichText = "ptBR Rich Text",
+			webContentText = "ptBR Text");
+
+		PortletEntry.changeLocale(locale = "fr-FR");
+
+		AssertTextEquals(
+			locator1 = "TextInput#TITLE",
+			value1 = "WC WebContent frFR");
+
+		WebContent.viewWithStructureCP(
+			predefinedValue = "true",
+			webContentRichText = "frFR Rich Text",
+			webContentText = "frFR Text");
 	}
 
 	@description = "This is a test for LPS-123537. As Content Creator, I want to leverage the structures’ translations with nested field when creating a new Web Content"
-	@ignore = "true"
 	@priority = "5"
 	test TranslationPersistsAfterEditingAnother {
-		property portal.acceptance = "false";
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
-		// TODO LPS-123537 TranslationPersistsAfterEditingAnother pending implementation
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Name");
+
+		DataEngine.addField(
+			fieldFieldLabel = "Text",
+			fieldName = "Text");
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Numeric",
+			fieldName = "Numeric",
+			targetFieldLabel = "Text");
+
+		WebContentStructures.addLocalization(
+			locale = "pt-BR",
+			localization1Name = "Nome da Estrutura WC");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsGroupLabel = "Fields Group",
+			fieldsGroupLabelEdit = "Grupo de Campos");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Text",
+			fieldFieldLabelEdit = "Texto");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Numeric",
+			fieldFieldLabelEdit = "Numerico");
+
+		WebContentStructures.saveCP();
+
+		Navigator.gotoNavTab(navTab = "Web Content");
+
+		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
+
+		WebContent.addWithStructureCP(
+			webContentNumeric = "123",
+			webContentText = "This is a Text field",
+			webContentTitle = "Web Content Title");
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		WebContent.addWithStructureCP(
+			webContentNumeric = "9",
+			webContentNumericFieldLabel = "Numerico",
+			webContentText = "Este é um campo de texto",
+			webContentTextFieldLabel = "Texto",
+			webContentTitle = "Título do conteúdo da web");
+
+		PortletEntry.publish();
+
+		WebContent.viewWithStructureCP(
+			webContentNumeric = "123",
+			webContentText = "This is a Text field",
+			webContentTitle = "Web Content Title");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Fields Group",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		for (var fieldFieldLabel : list "Text,Numeric") {
+			AssertVisible(
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				key_fieldsGroupLabel = "Fields Group",
+				locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+		}
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		AssertTextEquals(
+			locator1 = "TextInput#TITLE",
+			value1 = "Título do conteúdo da web");
+
+		WebContent.viewWithStructureCP(
+			predefinedValue = "true",
+			webContentNumeric = "9",
+			webContentNumericFieldLabel = "Numerico",
+			webContentText = "Este é um campo de texto",
+			webContentTextFieldLabel = "Texto");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Grupo de Campos",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		for (var fieldFieldLabel : list "Texto,Numerico") {
+			AssertVisible(
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				key_fieldsGroupLabel = "Grupo de Campos",
+				locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+		}
 	}
 
 	@description = "This is a test for LPS-123537. As Content Creator, I want to leverage the structures’ translations with nested field when creating a new Web Content"
-	@ignore = "true"
 	@priority = "5"
 	test TranslationsRemainsUponSavingWebContent {
-		property portal.acceptance = "false";
+		property portal.acceptance = "true";
 
-		// TODO LPS-123537 TranslationsRemainsUponSavingWebContent pending implementation
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Name");
+
+		DataEngine.addField(
+			fieldFieldLabel = "First Rich Text",
+			fieldName = "Rich Text");
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Second Rich Text",
+			fieldName = "Rich Text",
+			targetFieldLabel = "First Rich Text");
+
+		WebContentStructures.saveCP();
+
+		Navigator.gotoNavTab(navTab = "Web Content");
+
+		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
+
+		WebContent.addWithStructureCP(
+			webContentRichText = "This is the first Rich Text field",
+			webContentRichTextFieldLabel = "First Rich Text",
+			webContentTitle = "WC WebContent Title");
+
+		WebContent.addWithStructureCP(
+			webContentRichText = "This is the second Rich Text field",
+			webContentRichTextFieldLabel = "Second Rich Text");
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		WebContent.addWithStructureCP(
+			webContentRichText = "Este é o primeiro campo Rico Texto",
+			webContentRichTextFieldLabel = "First Rich Text",
+			webContentTitle = "Título da Estrutura WC");
+
+		WebContent.addWithStructureCP(
+			webContentRichText = "Este é o segundo campo de Rico Texto",
+			webContentRichTextFieldLabel = "Second Rich Text");
+
+		PortletEntry.publish();
+
+		WebContent.viewWithStructureCP(
+			webContentRichText = "This is the first Rich Text field",
+			webContentRichTextFieldLabel = "First Rich Text",
+			webContentTitle = "WC WebContent Title");
+
+		WebContent.viewWithStructureCP(
+			predefinedValue = "true",
+			webContentRichText = "This is the second Rich Text field",
+			webContentRichTextFieldLabel = "Second Rich Text");
+
+		for (var fieldFieldLabel : list "First Rich Text,Second Rich Text") {
+			AssertVisible(
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				key_fieldsGroupLabel = "Fields Group",
+				locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+		}
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		AssertTextEquals(
+			locator1 = "TextInput#TITLE",
+			value1 = "Título da Estrutura WC");
+
+		WebContent.viewWithStructureCP(
+			predefinedValue = "true",
+			webContentRichText = "Este é o primeiro campo Rico Texto",
+			webContentRichTextFieldLabel = "First Rich Text");
+
+		WebContent.viewWithStructureCP(
+			predefinedValue = "true",
+			webContentRichText = "Este é o segundo campo de Rico Texto",
+			webContentRichTextFieldLabel = "Second Rich Text");
+
+		for (var fieldFieldLabel : list "First Rich Text,Second Rich Text") {
+			AssertVisible(
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				key_fieldsGroupLabel = "Fields Group",
+				locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+		}
 	}
 
 	@description = "This is a test for LPS-123537. As Content Creator, I want to leverage the structures’ translations with nested field when creating a new Web Content"
-	@ignore = "true"
 	@priority = "4"
 	test VerifyDefaultLanguageIsFirstShown {
-		property portal.acceptance = "false";
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
-		// TODO LPS-123537 VerifyDefaultLanguageIsFirstShown pending implementation
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Name");
+
+		DataEngine.addField(
+			fieldFieldLabel = "Image",
+			fieldName = "Image");
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Numeric",
+			fieldName = "Numeric",
+			targetFieldLabel = "Image");
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Text",
+			fieldName = "Text",
+			targetFieldLabel = "Numeric");
+
+		WebContentStructures.addLocalization(
+			locale = "pt-BR",
+			localization1Name = "Nome da Estrutura WC");
+
+		DataEngine.editFieldsGroupLabel(
+			fieldsGroupLabel = "Fields Group",
+			fieldsGroupLabelEdit = "Grupo de Campos");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Image",
+			fieldFieldLabelEdit = "Imagem");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Numeric",
+			fieldFieldLabelEdit = "Numérica");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Text",
+			fieldFieldLabelEdit = "Texto");
+
+		WebContentStructures.saveCP();
+
+		Navigator.gotoNavTab(navTab = "Web Content");
+
+		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
+
+		PortletEntry.viewLocale(locale = "en-US");
+
+		AssertVisible(
+			key_fieldFieldLabel = "Fields Group",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+		for (var fieldFieldLabel : list "Image,Numeric,Text") {
+			AssertVisible(
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				key_fieldsGroupLabel = "Fields Group",
+				locator1 = "DataEngineBuilder#FORM_FIELD_NESTED");
+		}
 	}
 
 }

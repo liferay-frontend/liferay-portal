@@ -188,9 +188,9 @@ public class WikiExportImportPortletPreferencesProcessorTest {
 			primaryKeys.toString(),
 			primaryKeys.contains(
 				StringBundler.concat(
-					String.class.getName(), StringPool.POUND,
-					"com.liferay.message.boards.model.MBMessage",
-					StringPool.POUND, commentPrimaryKey)));
+					String.class.getName(),
+					"#com.liferay.message.boards.model.MBMessage#",
+					commentPrimaryKey)));
 	}
 
 	@Test

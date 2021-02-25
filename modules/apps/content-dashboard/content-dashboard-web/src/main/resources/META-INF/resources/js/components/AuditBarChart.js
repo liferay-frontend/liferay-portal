@@ -15,6 +15,7 @@
 import ClayEmptyState from '@clayui/empty-state';
 import {ClayCheckbox} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
+import {useEventListener} from 'frontend-js-react-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo, useState} from 'react';
 import {
@@ -32,7 +33,17 @@ import {
 import {BAR_CHART, COLORS, DEFAULT_COLOR} from '../utils/constants';
 import {shortenNumber} from '../utils/shortenNumber';
 
-export default function AuditBarChart({rtl, vocabularies}) {
+const handleKeydown = (event) => {
+	const resetBarsCategoryFiltersURL = new URLSearchParams(
+		window.location.href
+	).get('resetBarsCategoryFiltersURL');
+
+	if (event.key === 'Escape' && resetBarsCategoryFiltersURL) {
+		Liferay.Util.navigate(decodeURIComponent(resetBarsCategoryFiltersURL));
+	}
+};
+
+export default function AuditBarChart({namespace, rtl, vocabularies}) {
 	const auditBarChartData = useMemo(() => {
 		const dataKeys = new Set();
 		var maxValue = 0;
@@ -86,7 +97,7 @@ export default function AuditBarChart({rtl, vocabularies}) {
 						[key]: value,
 					};
 				},
-				{name: category.name}
+				{key: category.key, name: category.name}
 			);
 		});
 
@@ -206,6 +217,41 @@ export default function AuditBarChart({rtl, vocabularies}) {
 
 	const [tooltip, setTooltip] = useState(null);
 
+	const onBarClick = (assetCategoryIds) => {
+		if (assetCategoryIds.length) {
+			const params = new URLSearchParams(window.location.search);
+
+			let uri = window.location.href;
+
+			if (!params.get('resetBarsCategoryFiltersURL')) {
+				uri = Liferay.Util.addParams(
+					'resetBarsCategoryFiltersURL=' + encodeURIComponent(uri),
+					uri
+				);
+			}
+
+			params.getAll(namespace + 'assetCategoryId').forEach((category) => {
+				uri = uri.replace(
+					namespace + 'assetCategoryId=' + category,
+					''
+				);
+			});
+
+			assetCategoryIds.forEach((assetCategoryId) => {
+				if (assetCategoryId !== 'none') {
+					uri = Liferay.Util.addParams(
+						namespace + 'assetCategoryId=' + assetCategoryId,
+						uri
+					);
+				}
+			});
+
+			Liferay.Util.navigate(uri);
+		}
+	};
+
+	useEventListener('keydown', handleKeydown, true, document);
+
 	return (
 		<>
 			{Object.keys(checkboxes).length > 0 && noCheckboxesChecked && (
@@ -284,6 +330,12 @@ export default function AuditBarChart({rtl, vocabularies}) {
 									key={index}
 									legendType="square"
 									name={bar.name}
+									onClick={(props) =>
+										onBarClick([
+											props.payload.key,
+											bar.dataKey,
+										])
+									}
 									onMouseOut={() => {
 										setTooltip(null);
 									}}
@@ -293,6 +345,7 @@ export default function AuditBarChart({rtl, vocabularies}) {
 											name: props.name,
 										});
 									}}
+									style={{cursor: 'pointer'}}
 								>
 									{data.map((entry, index) => (
 										<Cell
@@ -317,6 +370,7 @@ export default function AuditBarChart({rtl, vocabularies}) {
 						<Bar
 							barSize={BAR_CHART.barHeight}
 							dataKey="value"
+							onClick={(props) => onBarClick([props.payload.key])}
 							onMouseOut={() => {
 								setTooltip(null);
 							}}
@@ -326,6 +380,7 @@ export default function AuditBarChart({rtl, vocabularies}) {
 									name: props.name,
 								});
 							}}
+							style={{cursor: 'pointer'}}
 						>
 							{data.map((entry, index) => (
 								<Cell
@@ -416,6 +471,7 @@ function CustomYAxisTick(props) {
 }
 
 AuditBarChart.propTypes = {
+	namespace: PropTypes.string.isRequired,
 	rtl: PropTypes.bool.isRequired,
 	vocabularies: PropTypes.array.isRequired,
 };

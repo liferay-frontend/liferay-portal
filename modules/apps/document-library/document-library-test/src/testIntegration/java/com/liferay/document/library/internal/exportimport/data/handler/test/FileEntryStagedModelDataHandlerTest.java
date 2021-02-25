@@ -40,6 +40,8 @@ import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.test.util.lar.BaseStagedModelDataHandlerTestCase;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
@@ -600,6 +602,10 @@ public class FileEntryStagedModelDataHandlerTest
 			latestFileVersion = fileEntry.getLatestFileVersion();
 		}
 		catch (NoSuchFileEntryException noSuchFileEntryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchFileEntryException, noSuchFileEntryException);
+			}
+
 			return;
 		}
 
@@ -636,5 +642,8 @@ public class FileEntryStagedModelDataHandlerTest
 
 		return DLAppLocalServiceUtil.getFileEntry(fileEntry.getFileEntryId());
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		FileEntryStagedModelDataHandlerTest.class);
 
 }

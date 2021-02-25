@@ -15,6 +15,7 @@
 package com.liferay.commerce.internal.instance.lifecycle;
 
 import com.liferay.commerce.constants.CommerceSAPConstants;
+import com.liferay.commerce.helper.CommerceSAPHelper;
 import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
 import com.liferay.oauth2.provider.scope.spi.scope.mapper.ScopeMapper;
 import com.liferay.petra.string.StringPool;
@@ -22,23 +23,13 @@ import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.resource.bundle.AggregateResourceBundleLoader;
-import com.liferay.portal.kernel.resource.bundle.ClassResourceBundleLoader;
-import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.language.LanguageResources;
-import com.liferay.portal.security.service.access.policy.model.SAPEntry;
-import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalService;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -75,7 +66,8 @@ public class CommerceServicePortalInstanceLifecycleListener
 	public void portalInstanceRegistered(Company company) throws Exception {
 		User user = _userLocalService.getDefaultUser(company.getCompanyId());
 
-		_addSAPEntries(company.getCompanyId(), user.getUserId());
+		_commerceSAPHelper.addCommerceDefaultSAPEntries(
+			company.getCompanyId(), user.getUserId());
 	}
 
 	@Activate
@@ -91,40 +83,8 @@ public class CommerceServicePortalInstanceLifecycleListener
 		);
 	}
 
-	private void _addSAPEntries(long companyId, long userId) throws Exception {
-		Class<?> clazz = getClass();
-
-		ResourceBundleLoader resourceBundleLoader =
-			new AggregateResourceBundleLoader(
-				new ClassResourceBundleLoader(
-					"content.Language", clazz.getClassLoader()),
-				LanguageResources.PORTAL_RESOURCE_BUNDLE_LOADER);
-
-		for (String[] sapEntryObjectArray :
-				CommerceSAPConstants.SAP_ENTRY_OBJECT_ARRAYS) {
-
-			String sapEntryName = sapEntryObjectArray[0];
-
-			SAPEntry sapEntry = _sapEntryLocalService.fetchSAPEntry(
-				companyId, sapEntryName);
-
-			if (sapEntry != null) {
-				continue;
-			}
-
-			Map<Locale, String> titleMap =
-				ResourceBundleUtil.getLocalizationMap(
-					resourceBundleLoader,
-					"public-access-to-the-commerce-service-apis");
-
-			_sapEntryLocalService.addSAPEntry(
-				userId, sapEntryObjectArray[1], true, true, sapEntryName,
-				titleMap, new ServiceContext());
-		}
-	}
-
 	@Reference
-	private SAPEntryLocalService _sapEntryLocalService;
+	private CommerceSAPHelper _commerceSAPHelper;
 
 	private List<String> _scopeAliasesList;
 

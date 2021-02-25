@@ -15,6 +15,8 @@
 package com.liferay.portal.kernel.test.util;
 
 import com.liferay.portal.kernel.exception.NoSuchRoleException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
@@ -88,6 +90,10 @@ public class RoleTestUtil {
 				TestPropsValues.getCompanyId(), roleName);
 		}
 		catch (NoSuchRoleException noSuchRoleException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchRoleException, noSuchRoleException);
+			}
+
 			role = RoleLocalServiceUtil.addRole(
 				TestPropsValues.getUserId(), null, 0, roleName, null, null,
 				roleType, null, null);
@@ -120,5 +126,7 @@ public class RoleTestUtil {
 			role.getCompanyId(), resourceName, scope, primKey, role.getRoleId(),
 			actionId);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(RoleTestUtil.class);
 
 }

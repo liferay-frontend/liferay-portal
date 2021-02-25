@@ -23,6 +23,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
@@ -41,14 +42,17 @@ import com.liferay.portal.kernel.service.PortletPreferenceValueLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -63,10 +67,8 @@ import com.liferay.segments.service.SegmentsExperimentLocalServiceUtil;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -120,6 +122,9 @@ public class SegmentsExperienceUtil {
 		boolean addedDefault = false;
 
 		for (SegmentsExperience segmentsExperience : segmentsExperiences) {
+			UnicodeProperties typeSettingsUnicodeProperties =
+				segmentsExperience.getTypeSettingsUnicodeProperties();
+
 			if ((segmentsExperience.getPriority() <
 					SegmentsExperienceConstants.PRIORITY_DEFAULT) &&
 				!addedDefault) {
@@ -131,10 +136,9 @@ public class SegmentsExperienceUtil {
 				addedDefault = true;
 			}
 
-			Set<Locale> locales = LanguageUtil.getAvailableLocales(
-				segmentsExperience.getGroupId());
-
-			Stream<Locale> stream = locales.stream();
+			String[] languageIds = StringUtil.split(
+				typeSettingsUnicodeProperties.getProperty(
+					PropsKeys.LOCALES, StringPool.BLANK));
 
 			availableSegmentsExperiences.put(
 				String.valueOf(segmentsExperience.getSegmentsExperienceId()),
@@ -142,12 +146,7 @@ public class SegmentsExperienceUtil {
 					"hasLockedSegmentsExperiment",
 					segmentsExperience.hasSegmentsExperiment()
 				).put(
-					"languageIds",
-					stream.map(
-						LocaleUtil::toLanguageId
-					).toArray(
-						String[]::new
-					)
+					"languageIds", languageIds
 				).put(
 					"name", segmentsExperience.getName(themeDisplay.getLocale())
 				).put(
@@ -183,20 +182,23 @@ public class SegmentsExperienceUtil {
 	public static JSONObject getSegmentsExperienceJSONObject(
 		SegmentsExperience segmentsExperience) {
 
-		Set<Locale> locales = LanguageUtil.getAvailableLocales(
-			segmentsExperience.getGroupId());
+		UnicodeProperties typeSettingsUnicodeProperties =
+			segmentsExperience.getTypeSettingsUnicodeProperties();
 
-		Stream<Locale> stream = locales.stream();
+		String[] languageIds = StringUtil.split(
+			typeSettingsUnicodeProperties.getProperty(
+				PropsKeys.LOCALES, StringPool.BLANK));
+
+		if (ArrayUtil.isEmpty(languageIds)) {
+			languageIds = LocaleUtil.toLanguageIds(
+				LanguageUtil.getAvailableLocales(
+					segmentsExperience.getGroupId()));
+		}
 
 		return JSONUtil.put(
 			"active", segmentsExperience.isActive()
 		).put(
-			"languageIds",
-			stream.map(
-				LocaleUtil::toLanguageId
-			).toArray(
-				String[]::new
-			)
+			"languageIds", languageIds
 		).put(
 			"name", segmentsExperience.getNameCurrentValue()
 		).put(

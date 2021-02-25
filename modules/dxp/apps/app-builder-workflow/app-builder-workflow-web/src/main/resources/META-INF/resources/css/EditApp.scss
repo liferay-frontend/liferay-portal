@@ -240,16 +240,21 @@ $navbarHeight: 120px;
 	}
 }
 
-.dropdown-button-asset {
+.dropdown-button-asset,
+.icon-with-popover,
+.step-card-icon {
 	margin-top: 0.25rem;
 
 	&.help-cursor {
 		display: flex;
 		justify-content: center;
 		margin-top: unset;
-		position: absolute;
 		right: 12px;
 		width: 2rem;
+
+		&:not(.icon-with-popover) {
+			position: absolute;
+		}
 
 		.icon {
 			border: 5px solid;

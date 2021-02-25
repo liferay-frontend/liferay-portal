@@ -15,6 +15,8 @@
 package com.liferay.site.memberships.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Role;
@@ -70,6 +72,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _group.getGroupId(),
@@ -95,6 +101,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _group.getGroupId(),
@@ -120,6 +130,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _group.getGroupId(),
@@ -145,6 +159,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _group.getGroupId(),
@@ -175,6 +193,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), group.getGroupId(),
@@ -205,6 +227,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), group.getGroupId(),
@@ -234,6 +260,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), group.getGroupId(),
@@ -263,6 +293,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), group.getGroupId(),
@@ -369,6 +403,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), group.getGroupId(),
@@ -399,6 +437,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), group.getGroupId(),
@@ -428,6 +470,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), group.getGroupId(),
@@ -457,6 +503,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), group.getGroupId(),
@@ -485,6 +535,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _organization.getGroupId(),
@@ -513,6 +567,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _organization.getGroupId(),
@@ -540,6 +598,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _organization.getGroupId(),
@@ -567,6 +629,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _organization.getGroupId(),
@@ -594,6 +660,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _organization.getGroupId(),
@@ -621,6 +691,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _organization.getGroupId(),
@@ -648,6 +722,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _organization.getGroupId(),
@@ -675,6 +753,10 @@ public class UserGroupRoleServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
+
 			Assert.assertTrue(
 				_userGroupRoleLocalService.hasUserGroupRole(
 					_objectUser.getUserId(), _organization.getGroupId(),
@@ -881,6 +963,9 @@ public class UserGroupRoleServiceTest {
 		_userGroupRoleService.deleteUserGroupRoles(
 			new long[] {objectUser.getUserId()}, groupId, roleId);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		UserGroupRoleServiceTest.class);
 
 	@DeleteAfterTestRun
 	private Group _group;

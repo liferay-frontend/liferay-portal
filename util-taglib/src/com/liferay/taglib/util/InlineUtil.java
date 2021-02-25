@@ -16,8 +16,10 @@ package com.liferay.taglib.util;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.SetUtil;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Shuyang Zhou
@@ -34,17 +36,37 @@ public class InlineUtil {
 		StringBundler sb = new StringBundler(dynamicAttributes.size() * 4);
 
 		for (Map.Entry<String, Object> entry : dynamicAttributes.entrySet()) {
-			String key = entry.getKey();
+			String attributeName = entry.getKey();
 
-			if (!key.equals("class")) {
-				sb.append(key);
+			if (!attributeName.equals("class")) {
+				String attributeValue = String.valueOf(entry.getValue());
+
+				if (_attributeNames.contains(attributeName)) {
+					if (!Boolean.valueOf(attributeValue)) {
+						continue;
+					}
+
+					attributeValue = attributeName;
+				}
+
+				sb.append(attributeName);
 				sb.append("=\"");
-				sb.append(String.valueOf(entry.getValue()));
+				sb.append(attributeValue);
 				sb.append("\" ");
 			}
 		}
 
 		return sb.toString();
 	}
+
+	private static final Set<String> _attributeNames = SetUtil.fromArray(
+		new String[] {
+			"allowfullscreen", "allowpaymentrequest", "async", "autofocus",
+			"autoplay", "checked", "controls", "default", "disabled",
+			"formnovalidate", "hidden", "ismap", "itemscope", "loop",
+			"multiple", "muted", "nomodule", "novalidate", "open",
+			"playsinline", "readonly", "required", "reversed", "selected",
+			"truespeed"
+		});
 
 }

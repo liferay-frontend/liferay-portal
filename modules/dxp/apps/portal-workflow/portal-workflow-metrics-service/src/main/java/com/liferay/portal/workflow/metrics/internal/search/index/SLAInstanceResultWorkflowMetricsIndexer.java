@@ -157,7 +157,7 @@ public class SLAInstanceResultWorkflowMetricsIndexer
 				booleanQuery,
 				scripts.script(
 					StringBundler.concat(
-						"ctx._source.slaStatus = ", StringPool.QUOTE,
+						"ctx._source.slaStatus = \"",
 						WorkflowMetricsInstanceSLAStatus.UNTRACKED.getValue(),
 						StringPool.QUOTE)),
 				getIndexName(companyId));

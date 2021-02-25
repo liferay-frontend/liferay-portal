@@ -58,47 +58,45 @@ childPages.remove(wikiPage);
 
 		<%
 		boolean newParentAvailable = true;
-
-		if (childPages.isEmpty()) {
-			newParentAvailable = false;
 		%>
 
-			<aui:select disabled="<%= true %>" label="new-parent" name="newParentTitle">
-				<aui:option label="not-available" value="" />
-			</aui:select>
-
-		<%
-		}
-		else {
-		%>
-
-			<aui:select label="new-parent" name="newParentTitle">
-				<aui:option label="none" selected="<%= Validator.isNull(wikiPage.getParentTitle()) %>" value="" />
+		<c:choose>
+			<c:when test="<%= childPages.isEmpty() %>">
 
 				<%
-				for (WikiPage childPage : childPages) {
+				newParentAvailable = false;
 				%>
 
-					<c:if test="<%= Validator.isNull(childPage.getRedirectTitle()) %>">
+				<aui:select disabled="<%= true %>" label="new-parent" name="newParentTitle">
+					<aui:option label="not-available" value="" />
+				</aui:select>
+			</c:when>
+			<c:otherwise>
+				<aui:select label="new-parent" name="newParentTitle">
+					<aui:option label="none" selected="<%= Validator.isNull(wikiPage.getParentTitle()) %>" value="" />
 
-						<%
-						request.setAttribute(WikiWebKeys.WIKI_TREE_WALKER_DEPTH, 1);
-						request.setAttribute(WikiWebKeys.WIKI_TREE_WALKER_PAGE, wikiPage);
-						request.setAttribute(WikiWebKeys.WIKI_TREE_WALKER_PARENT, childPage);
-						%>
+					<%
+					for (WikiPage childPage : childPages) {
+					%>
 
-						<liferay-util:include page="/wiki/page_tree.jsp" servletContext="<%= application %>" />
-					</c:if>
+						<c:if test="<%= Validator.isNull(childPage.getRedirectTitle()) %>">
 
-				<%
-				}
-				%>
+							<%
+							request.setAttribute(WikiWebKeys.WIKI_TREE_WALKER_DEPTH, 1);
+							request.setAttribute(WikiWebKeys.WIKI_TREE_WALKER_PAGE, wikiPage);
+							request.setAttribute(WikiWebKeys.WIKI_TREE_WALKER_PARENT, childPage);
+							%>
 
-			</aui:select>
+							<liferay-util:include page="/wiki/page_tree.jsp" servletContext="<%= application %>" />
+						</c:if>
 
-		<%
-		}
-		%>
+					<%
+					}
+					%>
+
+				</aui:select>
+			</c:otherwise>
+		</c:choose>
 
 		<c:if test="<%= pending %>">
 			<div class="alert alert-info">

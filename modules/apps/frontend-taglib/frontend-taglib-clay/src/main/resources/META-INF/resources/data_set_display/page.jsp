@@ -36,27 +36,48 @@
 			creationMenu: <%= jsonSerializer.serializeDeep(creationMenu) %>,
 			currentURL: '<%= PortalUtil.getCurrentURL(request) %>',
 			dataProviderKey: '<%= dataProviderKey %>',
-			formId: '<%= GetterUtil.getString(formId) %>',
+
+			<c:if test="<%= Validator.isNotNull(formId) %>">
+				formId: '<%= formId %>',
+			</c:if>
+
 			id: '<%= id %>',
-			nestedItemsKey: '<%= GetterUtil.getString(nestedItemsKey) %>',
-			nestedItemsReferenceKey:
-				'<%= GetterUtil.getString(nestedItemsReferenceKey) %>',
+			namespace: '<%= namespace %>',
+
+			<c:if test="<%= Validator.isNotNull(nestedItemsKey) %>">
+				nestedItemsKey: '<%= nestedItemsKey %>',
+			</c:if>
+
+			<c:if test="<%= Validator.isNotNull(nestedItemsReferenceKey) %>">
+				nestedItemsReferenceKey: '<%= nestedItemsReferenceKey %>',
+			</c:if>
+
 			pagination: {
 				deltas: <%= jsonSerializer.serializeDeep(clayPaginationEntries) %>,
 				initialDelta: <%= itemsPerPage %>,
 				initialPageNumber: <%= pageNumber %>,
 			},
-			showManagementBar: <%= showManagementBar %>,
-			showPagination: <%= showPagination %>,
-			showSearch: <%= showSearch %>,
-			namespace: '<%= namespace %>',
 			portletId: '<%= portletDisplay.getRootPortletId() %>',
 			portletURL: '<%= portletURL %>',
 			selectedItems: <%= jsonSerializer.serializeDeep(selectedItems) %>,
-			selectedItemsKey: '<%= GetterUtil.getString(selectedItemsKey) %>',
-			selectionType: '<%= GetterUtil.getString(selectionType) %>',
+
+			<c:if test="<%= Validator.isNotNull(selectedItemsKey) %>">
+				selectedItemsKey: '<%= selectedItemsKey %>',
+			</c:if>
+
+			<c:if test="<%= Validator.isNotNull(selectionType) %>">
+				selectionType: '<%= selectionType %>',
+			</c:if>
+
+			showManagementBar: <%= showManagementBar %>,
+			showPagination: <%= showPagination %>,
+			showSearch: <%= showSearch %>,
 			sorting: <%= jsonSerializer.serializeDeep(sortItemList) %>,
-			style: '<%= style %>',
+
+			<c:if test="<%= Validator.isNotNull(style) %>">
+				style: '<%= style %>',
+			</c:if>
+
 			views: <%= jsonSerializer.serializeDeep(clayDataSetDisplayViewsContext) %>,
 		},
 		container

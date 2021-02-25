@@ -17,6 +17,8 @@ package com.liferay.portal.util.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -99,6 +101,9 @@ public class PortalImplActualURLTest {
 			Assert.fail();
 		}
 		catch (NoSuchLayoutException noSuchLayoutException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchLayoutException, noSuchLayoutException);
+			}
 		}
 	}
 
@@ -158,6 +163,9 @@ public class PortalImplActualURLTest {
 			"request", new MockHttpServletRequest(Method.GET, "/")
 		).build();
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		PortalImplActualURLTest.class);
 
 	@DeleteAfterTestRun
 	private Group _group;

@@ -6,9 +6,11 @@ Export-Package:\
 	com.liferay.commerce.configuration,\
 	com.liferay.commerce.constants,\
 	com.liferay.commerce.context,\
+	com.liferay.commerce.country,\
 	com.liferay.commerce.discount,\
 	com.liferay.commerce.exception,\
 	com.liferay.commerce.health.status,\
+	com.liferay.commerce.helper,\
 	com.liferay.commerce.inventory,\
 	com.liferay.commerce.model,\
 	com.liferay.commerce.order,\

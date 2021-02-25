@@ -369,9 +369,7 @@ renderResponse.setTitle(headerTitle);
 										%>
 
 											<c:if test="<%= (curDLFileEntryType.getFileEntryTypeId() == DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT) || (fileEntryTypeId == curDLFileEntryType.getFileEntryTypeId()) || DLFileEntryTypePermission.contains(permissionChecker, curDLFileEntryType, ActionKeys.VIEW) %>">
-
-											<aui:option label="<%= HtmlUtil.escape(curDLFileEntryType.getName(locale)) %>" selected="<%= fileEntryTypeId == curDLFileEntryType.getPrimaryKey() %>" value="<%= curDLFileEntryType.getPrimaryKey() %>" />
-
+												<aui:option label="<%= HtmlUtil.escape(curDLFileEntryType.getName(locale)) %>" selected="<%= fileEntryTypeId == curDLFileEntryType.getPrimaryKey() %>" value="<%= curDLFileEntryType.getPrimaryKey() %>" />
 											</c:if>
 
 										<%
@@ -389,61 +387,68 @@ renderResponse.setTitle(headerTitle);
 
 							<c:if test="<%= fileEntryTypeId > 0 %>">
 
-							<%
-							List<DDMStructure> ddmStructures = dlFileEntryType.getDDMStructures();
-							%>
+								<%
+								List<DDMStructure> ddmStructures = dlFileEntryType.getDDMStructures();
 
-								<div class="mb-3">
-									<react:component
-										module="document_library/js/LanguageSelector"
-										props='<%=
-											HashMapBuilder.<String, Object>put(
-												"ddmStructureIds", DDMStructureUtil.getDDMStructureIds(ddmStructures)
-											).put(
-												"languageIds", DDMStructureUtil.getAvailableLanguageIds(themeDisplay)
-											).put(
-												"selectedLanguageId", themeDisplay.getLanguageId()
-											).put(
-												"translatedLanguageIds", DDMStructureUtil.getTranslatedLanguageIds(ddmStructures, dlEditFileEntryDisplayContext, fileVersionId)
-											).build()
-										%>'
-									/>
-								</div>
+								boolean showLanguageSelector = false;
 
-							<%
-							try {
-								boolean localizable = true;
+								for (DDMStructure ddmStructure : ddmStructures) {
+									if (dlEditFileEntryDisplayContext.isDDMStructureVisible(ddmStructure)) {
+										showLanguageSelector = true;
 
-								for (DDMStructure ddmStructure : dlFileEntryType.getDDMStructures()) {
-									com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues = null;
-
-									try {
-										DLFileEntryMetadata fileEntryMetadata = DLFileEntryMetadataLocalServiceUtil.getFileEntryMetadata(ddmStructure.getStructureId(), fileVersionId);
-
-										ddmFormValues = dlEditFileEntryDisplayContext.getDDMFormValues(fileEntryMetadata.getDDMStorageId());
+										break;
 									}
-									catch (Exception e) {
-									}
-							%>
+								}
+								%>
 
-										<c:if test="<%= !dlEditFileEntryDisplayContext.isDDMStructureVisible(ddmStructure) %>">
-											<div class="hide">
-										</c:if>
-
-										<%
-										DDMFormValuesToMapConverter ddmFormValuesToMapConverter = (DDMFormValuesToMapConverter)request.getAttribute(DDMFormValuesToMapConverter.class.getName());
-										%>
-
-										<liferay-data-engine:data-layout-renderer
-											containerId='<%= liferayPortletResponse.getNamespace() + "dataEngineLayoutRenderer" + ddmStructure.getStructureId() %>'
-											dataDefinitionId="<%= ddmStructure.getStructureId() %>"
-											dataRecordValues="<%= ddmFormValuesToMapConverter.convert(ddmFormValues, DDMStructureLocalServiceUtil.getStructure(ddmStructure.getStructureId())) %>"
-											namespace="<%= liferayPortletResponse.getNamespace() + ddmStructure.getStructureId() + StringPool.UNDERLINE %>"
+								<c:if test="<%= showLanguageSelector %>">
+									<div class="mb-3">
+										<react:component
+											module="document_library/js/LanguageSelector"
+											props='<%=
+												HashMapBuilder.<String, Object>put(
+													"ddmStructureIds", DDMStructureUtil.getDDMStructureIds(ddmStructures)
+												).put(
+													"languageIds", DDMStructureUtil.getAvailableLanguageIds(themeDisplay)
+												).put(
+													"selectedLanguageId", themeDisplay.getLanguageId()
+												).put(
+													"translatedLanguageIds", DDMStructureUtil.getTranslatedLanguageIds(ddmStructures, dlEditFileEntryDisplayContext, fileVersionId)
+												).build()
+											%>'
 										/>
+									</div>
+								</c:if>
 
-										<c:if test="<%= !dlEditFileEntryDisplayContext.isDDMStructureVisible(ddmStructure) %>">
-											</div>
-										</c:if>
+								<%
+								try {
+									boolean localizable = true;
+
+									for (DDMStructure ddmStructure : dlFileEntryType.getDDMStructures()) {
+										com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues = null;
+
+										try {
+											DLFileEntryMetadata fileEntryMetadata = DLFileEntryMetadataLocalServiceUtil.getFileEntryMetadata(ddmStructure.getStructureId(), fileVersionId);
+
+											ddmFormValues = dlEditFileEntryDisplayContext.getDDMFormValues(fileEntryMetadata.getDDMStorageId());
+										}
+										catch (Exception e) {
+										}
+								%>
+
+										<div class="<%= !dlEditFileEntryDisplayContext.isDDMStructureVisible(ddmStructure) ? "hide" : "" %> file-entry-type-fields">
+
+											<%
+											DDMFormValuesToMapConverter ddmFormValuesToMapConverter = (DDMFormValuesToMapConverter)request.getAttribute(DDMFormValuesToMapConverter.class.getName());
+											%>
+
+											<liferay-data-engine:data-layout-renderer
+												containerId='<%= liferayPortletResponse.getNamespace() + "dataEngineLayoutRenderer" + ddmStructure.getStructureId() %>'
+												dataDefinitionId="<%= ddmStructure.getStructureId() %>"
+												dataRecordValues="<%= ddmFormValuesToMapConverter.convert(ddmFormValues, DDMStructureLocalServiceUtil.getStructure(ddmStructure.getStructureId())) %>"
+												namespace="<%= liferayPortletResponse.getNamespace() + ddmStructure.getStructureId() + StringPool.UNDERLINE %>"
+											/>
+										</div>
 
 								<%
 										localizable = false;
@@ -562,7 +567,7 @@ renderResponse.setTitle(headerTitle);
 					</c:if>
 
 					<c:if test="<%= dlEditFileEntryDisplayContext.isCheckoutDocumentButtonVisible() %>">
-						<aui:button disabled="<%= dlEditFileEntryDisplayContext.isCheckoutDocumentButtonDisabled() %>" onClick='<%= liferayPortletResponse.getNamespace() + "checkOut();" %>' value="checkout[document]" />
+						<aui:button disabled="<%= dlEditFileEntryDisplayContext.isCheckoutDocumentButtonDisabled() %>" onClick='<%= liferayPortletResponse.getNamespace() + "checkOut();" %>' primary="<%= false %>" type="submit" value="checkout[document]" />
 					</c:if>
 
 					<c:if test="<%= dlEditFileEntryDisplayContext.isCheckinButtonVisible() %>">
@@ -570,7 +575,7 @@ renderResponse.setTitle(headerTitle);
 					</c:if>
 
 					<c:if test="<%= dlEditFileEntryDisplayContext.isCancelCheckoutDocumentButtonVisible() %>">
-						<aui:button disabled="<%= dlEditFileEntryDisplayContext.isCancelCheckoutDocumentButtonDisabled() %>" onClick='<%= liferayPortletResponse.getNamespace() + "cancelCheckOut();" %>' value="cancel-checkout[document]" />
+						<aui:button disabled="<%= dlEditFileEntryDisplayContext.isCancelCheckoutDocumentButtonDisabled() %>" onClick='<%= liferayPortletResponse.getNamespace() + "cancelCheckOut();" %>' primary="<%= false %>" type="submit" value="cancel-checkout[document]" />
 					</c:if>
 
 					<aui:button href="<%= redirect %>" type="cancel" />
@@ -598,18 +603,16 @@ renderResponse.setTitle(headerTitle);
 	var form = document.<portlet:namespace />fm;
 
 	function <portlet:namespace />changeFileEntryType() {
-		var uri = '<%= themeDisplay.getURLCurrent() %>';
+		Liferay.Util.setFormValues(form, {
+			<%= Constants.CMD %>: '<%= Constants.PREVIEW %>',
+		});
 
-		form.<portlet:namespace />cmd.value = '<%= Constants.PREVIEW %>';
-
-		submitForm(form, uri, false, false);
+		form.submit();
 	}
 
 	function <portlet:namespace />cancelCheckOut() {
-		Liferay.Util.postForm(form, {
-			data: {
-				<%= Constants.CMD %>: '<%= Constants.CANCEL_CHECKOUT %>',
-			},
+		Liferay.Util.setFormValues(form, {
+			<%= Constants.CMD %>: '<%= Constants.CANCEL_CHECKOUT %>',
 		});
 	}
 
@@ -622,15 +625,13 @@ renderResponse.setTitle(headerTitle);
 			<portlet:namespace />showVersionDetailsDialog(form);
 		}
 		else {
-			submitForm(form);
+			form.submit();
 		}
 	}
 
 	function <portlet:namespace />checkOut() {
-		Liferay.Util.postForm(form, {
-			data: {
-				<%= Constants.CMD %>: '<%= Constants.CHECKOUT %>',
-			},
+		Liferay.Util.setFormValues(form, {
+			<%= Constants.CMD %>: '<%= Constants.CHECKOUT %>',
 		});
 	}
 
@@ -641,10 +642,14 @@ renderResponse.setTitle(headerTitle);
 			<%= HtmlUtil.escape(uploadProgressId) %>.startProgress();
 		}
 
-		Liferay.Util.setFormValues(form, {
-			<%= Constants.CMD %>:
-				'<%= (fileEntry == null) ? Constants.ADD : Constants.UPDATE %>',
-		});
+		var cmdElement = Liferay.Util.getFormElement(form, 'cmd');
+
+		if (cmdElement && !cmdElement.value) {
+			Liferay.Util.setFormValues(form, {
+				<%= Constants.CMD %>:
+					'<%= (fileEntry == null) ? Constants.ADD : Constants.UPDATE %>',
+			});
+		}
 
 		if (draft) {
 			Liferay.Util.setFormValues(form, {
@@ -660,13 +665,12 @@ renderResponse.setTitle(headerTitle);
 			'<portlet:namespace />DocumentLibraryCheckinModal'
 		).then((documentLibraryCheckinModal) => {
 			documentLibraryCheckinModal.open((versionIncrease, changeLog) => {
-				Liferay.Util.postForm(form, {
-					data: {
-						changeLog: changeLog,
-						updateVersionDetails: true,
-						versionIncrease: versionIncrease,
-					},
+				Liferay.Util.setFormValues(form, {
+					changeLog: changeLog,
+					updateVersionDetails: true,
+					versionIncrease: versionIncrease,
 				});
+				form.submit();
 			});
 		});
 	}

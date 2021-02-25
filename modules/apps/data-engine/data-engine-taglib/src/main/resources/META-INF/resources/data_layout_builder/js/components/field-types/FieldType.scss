@@ -1,0 +1,120 @@
+@import '../../../css/variables';
+
+$fieldTypeFieldGroup: #0b5fff;
+$fieldTypeFieldSet: #5aca75;
+
+.field-type {
+	border: 2px solid transparent;
+	border-radius: 4px;
+	box-sizing: border-box;
+	padding: 0.75rem 0;
+	transition: transform 0.3s $animation;
+
+	&:not(.disabled) {
+		cursor: move;
+		cursor: grab;
+	}
+
+	&:hover:not(.disabled) {
+		border-color: #80acff;
+		box-shadow: 0 2px 4px rgba(39, 40, 51, 0.12);
+		transform: translateX(-2px);
+	}
+
+	&.disabled .autofit-col {
+		opacity: 0.3;
+	}
+
+	&.dragging {
+		background-color: #e7e7ed;
+		opacity: 0.5;
+	}
+
+	.sticker {
+		background-color: #f7f8f9;
+		color: #6b6c7e;
+	}
+
+	.list-group-subtitle {
+		line-height: 0.875rem;
+
+		small {
+			font-size: 0.75rem;
+		}
+	}
+
+	.reference-mark {
+		color: #b95000;
+		font-size: 6px;
+		margin: 2px 0 0 2px;
+	}
+}
+
+.field-type-drag-preview {
+	max-width: 280px;
+
+	.field-type {
+		background-color: #fff;
+		border-color: #80acff;
+		box-shadow: 0 8px 16px rgba(39, 40, 51, 0.16);
+		cursor: grabbing;
+	}
+}
+
+.field-type-list {
+	.field-type-fieldgroup {
+		.field-type-header {
+			&:hover {
+				background-color: rgba($fieldTypeFieldGroup, 0.05) !important;
+			}
+
+			.data-layout-builder-field-sticker {
+				background-color: rgba($fieldTypeFieldGroup, 0.1) !important;
+
+				.sticker-overlay {
+					svg {
+						color: $fieldTypeFieldGroup !important;
+					}
+				}
+			}
+		}
+
+		.field-type-item:before {
+			border-color: rgba($fieldTypeFieldGroup, 0.2);
+		}
+	}
+
+	.field-type-fieldset {
+		.field-type-header {
+			&:hover {
+				background-color: rgba($fieldTypeFieldSet, 0.1) !important;
+			}
+
+			.data-layout-builder-field-sticker {
+				background-color: rgba($fieldTypeFieldSet, 0.2) !important;
+
+				.sticker-overlay {
+					svg {
+						color: $fieldTypeFieldSet !important;
+					}
+				}
+			}
+		}
+
+		.field-type-item:before {
+			border-color: rgba($fieldTypeFieldSet, 0.2);
+		}
+	}
+
+	.field-type-item:before {
+		border-left: 2px solid;
+		content: '';
+		height: calc(100% - 15px);
+		position: absolute;
+		width: 0;
+	}
+
+	.panel-body {
+		padding-right: 0;
+	}
+}

@@ -364,7 +364,8 @@ definition {
 						fieldHelp = "${fieldName} Help Text");
 				}
 			}
-			else if (isSet(fieldPlaceholder)) {
+
+			if (isSet(fieldPlaceholder)) {
 				for (var fieldName : list "${fieldNameList}") {
 					DataEngine.editFieldTip(
 						fieldFieldLabel = "${fieldName}",
@@ -537,7 +538,8 @@ definition {
 						fieldFieldLabel = "${fieldName} ${locale}",
 						fieldHelp = "${fieldName} Help Text ${locale}");
 				}
-				else if (isSet(fieldPlaceholder)) {
+
+				if (isSet(fieldPlaceholder)) {
 					DataEngine.editFieldTip(
 						fieldFieldLabel = "${fieldName} ${locale}",
 						fieldPlaceholder = "${fieldName} Placeholder ${locale}");
@@ -597,6 +599,22 @@ definition {
 
 		DataEngine.addFields(fieldNameList = "${fieldNameList}");
 
+		if (isSet(fieldHelp)) {
+			for (var fieldName : list "${fieldNameList}") {
+				DataEngine.editFieldTip(
+					fieldFieldLabel = "${fieldName}",
+					fieldHelp = "${fieldName} Help Text");
+			}
+		}
+
+		if (isSet(fieldPlaceholder)) {
+			for (var fieldName : list "${fieldNameList}") {
+				DataEngine.editFieldTip(
+					fieldFieldLabel = "${fieldName}",
+					fieldPlaceholder = "${fieldName} Placeholder");
+			}
+		}
+
 		if (isSet(localeList)) {
 			for (var locale : list "${localeList}") {
 				PortletEntry.changeLocale(
@@ -618,7 +636,8 @@ definition {
 							fieldFieldLabel = "${fieldName} ${locale}",
 							fieldHelp = "${fieldName} Help Text ${locale}");
 					}
-					else if (isSet(fieldPlaceholder)) {
+
+					if (isSet(fieldPlaceholder)) {
 						DataEngine.editFieldTip(
 							fieldFieldLabel = "${fieldName} ${locale}",
 							fieldPlaceholder = "${fieldName} Placeholder ${locale}");
@@ -662,6 +681,22 @@ definition {
 		}
 
 		MenuItem.click(menuItem = "Delete");
+	}
+
+	macro deleteFieldsetFromSideBar {
+		if (isSet(siteURLKey)) {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+		}
+
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP();
+
+		DataEngine.gotoFieldsetItemEllipsis(fieldsetName = "${fieldsetName}");
+
+		MenuItem.click(menuItem = "Delete");
+
+		Button.clickDelete();
 	}
 
 	macro duplicate {

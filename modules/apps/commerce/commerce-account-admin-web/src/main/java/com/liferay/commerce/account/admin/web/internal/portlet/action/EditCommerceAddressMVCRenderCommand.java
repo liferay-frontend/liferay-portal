@@ -19,10 +19,10 @@ import com.liferay.commerce.account.constants.CommerceAccountPortletKeys;
 import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.commerce.account.service.CommerceAccountService;
 import com.liferay.commerce.service.CommerceAddressService;
-import com.liferay.commerce.service.CommerceCountryService;
-import com.liferay.commerce.service.CommerceRegionService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.RegionService;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.PortletException;
@@ -53,9 +53,8 @@ public class EditCommerceAddressMVCRenderCommand implements MVCRenderCommand {
 		CommerceAccountAddressAdminDisplayContext
 			commerceAccountUserRelAdminDisplayContext =
 				new CommerceAccountAddressAdminDisplayContext(
-					_commerceAccountModelResourcePermission,
 					_commerceAccountService, _commerceAddressService,
-					_commerceCountryService, _commerceRegionService,
+					_countryService, _modelResourcePermission, _regionService,
 					renderRequest);
 
 		renderRequest.setAttribute(
@@ -65,12 +64,6 @@ public class EditCommerceAddressMVCRenderCommand implements MVCRenderCommand {
 		return "/edit_commerce_address.jsp";
 	}
 
-	@Reference(
-		target = "(model.class.name=com.liferay.commerce.account.model.CommerceAccount)"
-	)
-	private ModelResourcePermission<CommerceAccount>
-		_commerceAccountModelResourcePermission;
-
 	@Reference
 	private CommerceAccountService _commerceAccountService;
 
@@ -78,9 +71,14 @@ public class EditCommerceAddressMVCRenderCommand implements MVCRenderCommand {
 	private CommerceAddressService _commerceAddressService;
 
 	@Reference
-	private CommerceCountryService _commerceCountryService;
+	private CountryService _countryService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.account.model.CommerceAccount)"
+	)
+	private ModelResourcePermission<CommerceAccount> _modelResourcePermission;
 
 	@Reference
-	private CommerceRegionService _commerceRegionService;
+	private RegionService _regionService;
 
 }

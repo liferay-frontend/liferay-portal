@@ -14,20 +14,18 @@
 
 package com.liferay.portal.search.web.internal.type.facet.portlet;
 
-import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
-import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.search.asset.SearchableAssetClassNamesProvider;
 import com.liferay.portal.search.web.internal.util.PortletPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.portlet.PortletPreferences;
 
@@ -38,7 +36,10 @@ public class TypeFacetPortletPreferencesImpl
 	implements TypeFacetPortletPreferences {
 
 	public TypeFacetPortletPreferencesImpl(
-		Optional<PortletPreferences> portletPreferencesOptional) {
+		Optional<PortletPreferences> portletPreferencesOptional,
+		SearchableAssetClassNamesProvider searchableAssetClassNamesProvider) {
+
+		_searchableAssetClassNamesProvider = searchableAssetClassNamesProvider;
 
 		_portletPreferencesHelper = new PortletPreferencesHelper(
 			portletPreferencesOptional);
@@ -122,20 +123,7 @@ public class TypeFacetPortletPreferencesImpl
 	}
 
 	protected String[] getAllAssetTypes(long companyId) {
-		List<AssetRendererFactory<?>> assetRendererFactories =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactories(
-				companyId);
-
-		Stream<AssetRendererFactory<?>> assetRendererFactoriesStream =
-			assetRendererFactories.stream();
-
-		return assetRendererFactoriesStream.filter(
-			AssetRendererFactory::isSearchable
-		).map(
-			AssetRendererFactory::getClassName
-		).toArray(
-			String[]::new
-		);
+		return _searchableAssetClassNamesProvider.getClassNames(companyId);
 	}
 
 	protected KeyValuePair getKeyValuePair(Locale locale, String className) {
@@ -144,5 +132,7 @@ public class TypeFacetPortletPreferencesImpl
 	}
 
 	private final PortletPreferencesHelper _portletPreferencesHelper;
+	private final SearchableAssetClassNamesProvider
+		_searchableAssetClassNamesProvider;
 
 }

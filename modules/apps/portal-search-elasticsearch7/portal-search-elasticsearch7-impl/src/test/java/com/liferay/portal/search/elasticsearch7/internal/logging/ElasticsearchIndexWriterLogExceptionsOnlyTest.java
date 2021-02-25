@@ -14,6 +14,8 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.logging;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
@@ -74,6 +76,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.addDocuments(createSearchContext(), documents);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -98,6 +103,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.addDocuments(createSearchContext(), documents);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -115,6 +123,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.commit(searchContext);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -133,6 +144,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.deleteDocument(searchContext, "1");
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -154,6 +168,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.deleteDocument(searchContext, "1");
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -175,6 +192,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.deleteDocuments(searchContext, uids);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -198,6 +218,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.deleteDocuments(searchContext, uids);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -215,6 +238,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.deleteEntityDocuments(searchContext, "test");
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -233,6 +259,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 				createSearchContext(), document);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -255,6 +284,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 				createSearchContext(), documents);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -279,6 +311,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 				createSearchContext(), documents);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -297,6 +332,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.updateDocument(createSearchContext(), document);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -318,6 +356,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.updateDocument(createSearchContext(), document);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -340,6 +381,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.updateDocuments(createSearchContext(), documents);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -365,6 +409,9 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			indexWriter.updateDocuments(createSearchContext(), documents);
 		}
 		catch (SearchException searchException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(searchException, searchException);
+			}
 		}
 	}
 
@@ -390,5 +437,8 @@ public class ElasticsearchIndexWriterLogExceptionsOnlyTest
 			new ElasticsearchFixture(createElasticsearchConnectionFixture())
 		).build();
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ElasticsearchIndexWriterLogExceptionsOnlyTest.class);
 
 }

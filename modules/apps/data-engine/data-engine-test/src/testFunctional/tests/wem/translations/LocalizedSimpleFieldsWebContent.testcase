@@ -27,13 +27,35 @@ definition {
 	}
 
 	@description = "This is a test for LPS-122317. As Content Creator, I want to leverage the structures' translations without nested fields or fieldsets when creating a new Web Content"
-	@ignore = "true"
 	@priority = "4"
 	test CheckDefaultWebContentTitleOnWebContentList {
 		property portal.acceptance = "false";
 
-		// TODO LPS-122317 CheckDefaultWebContentTitleOnWebContentList pending implementation
+		NavItem.gotoStructures();
 
+		WebContentStructures.addCP(structureName = "WC Structure Title");
+
+		DataEngine.addField(
+			fieldFieldLabel = "Text",
+			fieldName = "Text");
+
+		WebContentStructures.saveCP();
+
+		NavItem.click(navItem = "Web Content");
+
+		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Title");
+
+		WebContent.addWithStructureCP(webContentTitle = "WC Title");
+
+		PortletEntry.changeLocale(locale = "pt-BR");
+
+		WebContent.addWithStructureCP(webContentTitle = "Titulo do WC");
+
+		PortletEntry.publish();
+
+		AssertElementPresent(
+			key_webContentTitle = "WC Title",
+			locator1 = "WC#ENTRY_LIST_TITLE_NAME");
 	}
 
 	@description = "This is a test for LPS-122317. As Content Creator, I want to leverage the structures' translations without nested fields or fieldsets when creating a new Web Content"
@@ -298,6 +320,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO LPS-122317 DefaultTitleIsDisplayedUponLocaleChange pending implementation
+
 	}
 
 	@description = "This is a test for LPS-122317. As Content Creator, I want to leverage the structures' translations without nested fields or fieldsets when creating a new Web Content"
@@ -663,7 +686,7 @@ definition {
 	@ignore = "true"
 	@priority = "5"
 	test TranslationDoesNotChangeAnother {
-		property portal.acceptance = "false";
+		property portal.acceptance = "true";
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 

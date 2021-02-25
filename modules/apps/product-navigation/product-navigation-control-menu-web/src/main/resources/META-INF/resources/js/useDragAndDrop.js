@@ -28,7 +28,11 @@ import addPortlet from './addPortlet';
 import {LAYOUT_DATA_ITEM_TYPES} from './constants/layoutDataItemTypes';
 import {POSITIONS} from './constants/positions';
 
+const DROP_CLASS = 'yui3-dd-drop';
+
 const DROP_OVER_CLASS = 'yui3-dd-drop-over';
+
+const DROP_ZONE_CLASS = 'portlet-dropzone';
 
 const initialDragDrop = {
 	dragIndicatorPosition: {},
@@ -187,12 +191,19 @@ export const useDropTarget = (targetItem) => {
 		};
 	}, []);
 
+	const itemIsDroppable = (item) => item.classList.contains(DROP_CLASS);
+	const itemIsDropzone = (item) => item.classList.contains(DROP_ZONE_CLASS);
+
 	const [, setDropTargetRef] = useDrop({
 		accept: Object.values(LAYOUT_DATA_ITEM_TYPES),
 		drop(item, monitor) {
 			setDropTargetColumn(null);
 
 			if (!monitor.isOver({shallow: true})) {
+				return;
+			}
+
+			if (!itemIsDroppable(targetItem) && !itemIsDropzone(targetItem)) {
 				return;
 			}
 
@@ -215,11 +226,13 @@ export const useDropTarget = (targetItem) => {
 				return;
 			}
 
-			const itemIsDropzone = targetItem.classList.contains(
-				'portlet-dropzone'
-			);
+			const targetItemIsDropzone = itemIsDropzone(targetItem);
 
-			const parentTargetItem = itemIsDropzone
+			if (!itemIsDroppable(targetItem) && !targetItemIsDropzone) {
+				return;
+			}
+
+			const parentTargetItem = targetItemIsDropzone
 				? targetItem.parentElement
 				: targetItem.parentElement.parentElement;
 
@@ -229,7 +242,7 @@ export const useDropTarget = (targetItem) => {
 				}
 				setDropTargetColumn(parentTargetItem);
 
-				if (itemIsDropzone) {
+				if (targetItemIsDropzone) {
 					parentTargetItem.classList.add(DROP_OVER_CLASS);
 				}
 			}

@@ -14,6 +14,7 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
+import classNames from 'classnames';
 import React, {useRef, useState} from 'react';
 
 import LinkOrButton from './LinkOrButton';
@@ -23,6 +24,7 @@ const CreationMenu = ({
 	maxSecondaryItems,
 	maxTotalItems = 15,
 	onCreateButtonClick,
+	onCreationMenuItemClick,
 	onShowMoreButtonClick,
 	primaryItems,
 	secondaryItems,
@@ -83,6 +85,65 @@ const CreationMenu = ({
 		getVisibleItemsCount()
 	);
 
+	const Item = ({item}) => {
+		return (
+			<ClayDropDown.Item
+				href={item.href}
+				onClick={(event) => {
+					onCreationMenuItemClick(event, {item});
+				}}
+				symbolLeft={item.icon}
+			>
+				{item.label}
+			</ClayDropDown.Item>
+		);
+	};
+
+	const ItemList = () => {
+		let currentItemCount = 0;
+
+		return (
+			<ClayDropDown.ItemList
+				className={classNames({
+					'dropdown-menu-indicator-start': primaryItems.some(
+						(item) => item.icon
+					),
+				})}
+			>
+				{primaryItems?.map((item, index) => {
+					currentItemCount++;
+
+					if (currentItemCount > visibleItemsCount) {
+						return false;
+					}
+
+					return <Item item={item} key={index} />;
+				})}
+
+				{secondaryItems?.map((secondaryItemsGroup, index) => (
+					<ClayDropDown.Group
+						header={secondaryItemsGroup.label}
+						key={index}
+					>
+						{secondaryItemsGroup.items.map((item, index) => {
+							currentItemCount++;
+
+							if (currentItemCount > visibleItemsCount) {
+								return false;
+							}
+
+							return <Item item={item} key={index} />;
+						})}
+
+						{secondaryItemsGroup.separator && (
+							<ClayDropDown.Item className="dropdown-divider" />
+						)}
+					</ClayDropDown.Group>
+				))}
+			</ClayDropDown.ItemList>
+		);
+	};
+
 	return (
 		<>
 			{primaryItems.length > 1 || secondaryItems ? (
@@ -139,6 +200,7 @@ const CreationMenu = ({
 						</>
 					) : (
 						<ItemList
+							onCreationMenuItemClick={onCreationMenuItemClick}
 							primaryItems={primaryItems}
 							secondaryItems={secondaryItems}
 							visibleItemsCount={totalItemsCountRef.current}
@@ -158,53 +220,6 @@ const CreationMenu = ({
 				/>
 			)}
 		</>
-	);
-};
-
-const ItemList = ({primaryItems, secondaryItems, visibleItemsCount}) => {
-	let currentItemCount = 0;
-
-	return (
-		<ClayDropDown.ItemList>
-			{primaryItems?.map((item, index) => {
-				currentItemCount++;
-
-				if (currentItemCount > visibleItemsCount) {
-					return false;
-				}
-
-				return (
-					<ClayDropDown.Item href={item.href} key={index}>
-						{item.label}
-					</ClayDropDown.Item>
-				);
-			})}
-
-			{secondaryItems?.map((secondaryItemsGroup, index) => (
-				<ClayDropDown.Group
-					header={secondaryItemsGroup.label}
-					key={index}
-				>
-					{secondaryItemsGroup.items.map((item, index) => {
-						currentItemCount++;
-
-						if (currentItemCount > visibleItemsCount) {
-							return false;
-						}
-
-						return (
-							<ClayDropDown.Item href={item.href} key={index}>
-								{item.label}
-							</ClayDropDown.Item>
-						);
-					})}
-
-					{secondaryItemsGroup.separator && (
-						<ClayDropDown.Item className="dropdown-divider" />
-					)}
-				</ClayDropDown.Group>
-			))}
-		</ClayDropDown.ItemList>
 	);
 };
 

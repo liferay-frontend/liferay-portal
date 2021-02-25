@@ -317,7 +317,7 @@ public class FriendlyURLServletTest {
 				"GET",
 				StringBundler.concat(
 					PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-					group.getFriendlyURL(), StringPool.SLASH, "home")),
+					group.getFriendlyURL(), "/home")),
 			mockHttpServletResponse, getPath(group, homeLayout) + "/home",
 			Portal.PATH_MAIN,
 			_redirectConstructor1.newInstance(getURL(homeLayout)));
@@ -337,7 +337,7 @@ public class FriendlyURLServletTest {
 				"GET",
 				StringBundler.concat(
 					PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-					_group.getFriendlyURL(), StringPool.SLASH, "path")),
+					_group.getFriendlyURL(), "/path")),
 			mockHttpServletResponse, getPath(_group, _layout) + "/path",
 			Portal.PATH_MAIN,
 			_redirectConstructor1.newInstance(getURL(_layout)));
@@ -438,7 +438,7 @@ public class FriendlyURLServletTest {
 					"GET",
 					StringBundler.concat(
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-						_group.getFriendlyURL(), StringPool.SLASH, "path")),
+						_group.getFriendlyURL(), "/path")),
 				mockHttpServletResponse);
 
 			Assert.assertEquals(301, mockHttpServletResponse.getStatus());
@@ -474,7 +474,7 @@ public class FriendlyURLServletTest {
 					"GET",
 					StringBundler.concat(
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-						_group.getFriendlyURL(), StringPool.SLASH, "path")),
+						_group.getFriendlyURL(), "/path")),
 				mockHttpServletResponse);
 
 			Assert.assertEquals(302, mockHttpServletResponse.getStatus());

@@ -14,8 +14,6 @@
 
 package com.liferay.user.associated.data.web.internal.util;
 
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
@@ -339,9 +337,7 @@ public class UADSearchContainerBuilder {
 			SearchContainer.DEFAULT_DELTA, currentURL, null,
 			"no-entities-remain-of-this-type", null);
 
-		searchContainer.setId(
-			StringBundler.concat(
-				"UADEntities", StringPool.UNDERLINE, StringUtil.randomId()));
+		searchContainer.setId("UADEntities_" + StringUtil.randomId());
 
 		String orderByCol = ParamUtil.getString(
 			renderRequest, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM);

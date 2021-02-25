@@ -25,6 +25,7 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPOptionCategory;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -41,9 +42,15 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Alessio Antonio Rendina
+ * @author Ivica Cardic
  */
 @ProviderType
 public interface CPContentHelper {
+
+	public JSONObject getAvailabilityContentContributorValueJSONObject(
+			CPCatalogEntry cpCatalogEntry,
+			HttpServletRequest httpServletRequest)
+		throws Exception;
 
 	public String getAvailabilityEstimateLabel(
 			HttpServletRequest httpServletRequest)
@@ -65,7 +72,12 @@ public interface CPContentHelper {
 			HttpServletRequest httpServletRequest)
 		throws PortalException;
 
-	public Object getCPContentContributorValue(
+	public JSONObject getCPContentContributorValueJSONObject(
+			String contributorKey, CPCatalogEntry cpCatalogEntry,
+			HttpServletRequest httpServletRequest)
+		throws Exception;
+
+	public JSONObject getCPContentContributorValueJSONObject(
 			String contributorKey, HttpServletRequest httpServletRequest)
 		throws Exception;
 
@@ -81,6 +93,9 @@ public interface CPContentHelper {
 	public List<CPOptionCategory> getCPOptionCategories(long companyId);
 
 	public List<CPType> getCPTypes();
+
+	public CPInstance getDefaultCPInstance(CPCatalogEntry cpCatalogEntry)
+		throws Exception;
 
 	public CPInstance getDefaultCPInstance(
 			HttpServletRequest httpServletRequest)

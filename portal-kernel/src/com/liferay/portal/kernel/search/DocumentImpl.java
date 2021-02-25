@@ -1006,7 +1006,7 @@ public class DocumentImpl implements Document {
 		Class<? extends Number> clazz) {
 
 		if (typify) {
-			name = StringBundler.concat(name, StringPool.UNDERLINE, "Number");
+			name = name + "_Number";
 		}
 
 		Field field = createField(Field.getSortableFieldName(name), value);
@@ -1102,7 +1102,7 @@ public class DocumentImpl implements Document {
 		String name, boolean typify, String value) {
 
 		if (typify) {
-			name = StringBundler.concat(name, StringPool.UNDERLINE, "String");
+			name = name + "_String";
 		}
 
 		String truncatedValue = value;

@@ -287,7 +287,7 @@ public class LayoutPageTemplatesExporter {
 		throws Exception {
 
 		String displayPagePath =
-			"display-page-templates" + StringPool.SLASH +
+			"display-page-templates/" +
 				layoutPageTemplateEntry.getLayoutPageTemplateEntryKey();
 
 		SimpleFilterProvider simpleFilterProvider = new SimpleFilterProvider();
@@ -361,7 +361,7 @@ public class LayoutPageTemplatesExporter {
 		throws Exception {
 
 		String masterLayoutPath =
-			"master-pages" + StringPool.SLASH +
+			"master-pages/" +
 				layoutPageTemplateEntry.getLayoutPageTemplateEntryKey();
 
 		SimpleFilterProvider simpleFilterProvider = new SimpleFilterProvider();
@@ -420,8 +420,7 @@ public class LayoutPageTemplatesExporter {
 			layoutPageTemplateCollection.getLayoutPageTemplateCollectionKey();
 
 		String layoutPageTemplateCollectionPath =
-			"page-templates" + StringPool.SLASH +
-				layoutPageTemplateCollectionKey;
+			"page-templates/" + layoutPageTemplateCollectionKey;
 
 		SimpleFilterProvider simpleFilterProvider = new SimpleFilterProvider();
 

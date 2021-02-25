@@ -15,6 +15,8 @@
 package com.liferay.portal.kernel.concurrent.test;
 
 import com.liferay.portal.kernel.concurrent.ThreadPoolExecutor;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -57,6 +59,10 @@ public class TestUtil {
 			}
 		}
 		catch (InterruptedException interruptedException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(interruptedException, interruptedException);
+			}
+
 			throw new RuntimeException();
 		}
 	}
@@ -84,5 +90,7 @@ public class TestUtil {
 
 		Thread.sleep(SHORT_WAIT);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(TestUtil.class);
 
 }

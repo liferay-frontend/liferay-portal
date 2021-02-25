@@ -16,6 +16,8 @@ package com.liferay.portal.jsonwebservice;
 
 import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceAction;
 import com.liferay.portal.kernel.jsonwebservice.NoSuchJSONWebServiceException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.util.PropsUtil;
@@ -47,6 +49,11 @@ public class JSONWebServiceStrictTest extends BaseJSONWebServiceTestCase {
 			Assert.fail();
 		}
 		catch (NoSuchJSONWebServiceException noSuchJSONWebServiceException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					noSuchJSONWebServiceException,
+					noSuchJSONWebServiceException);
+			}
 		}
 
 		mockHttpServletRequest = createHttpRequest(
@@ -59,5 +66,8 @@ public class JSONWebServiceStrictTest extends BaseJSONWebServiceTestCase {
 
 		Assert.assertEquals("post 123", jsonWebServiceAction.invoke());
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		JSONWebServiceStrictTest.class);
 
 }

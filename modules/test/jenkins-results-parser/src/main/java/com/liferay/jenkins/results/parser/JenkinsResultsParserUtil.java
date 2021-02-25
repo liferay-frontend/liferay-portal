@@ -51,6 +51,7 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 
@@ -84,6 +85,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -917,9 +921,7 @@ public class JenkinsResultsParserUtil {
 			boolean checkCache, String propertyName)
 		throws IOException {
 
-		Properties buildProperties = getBuildProperties(checkCache);
-
-		return buildProperties.getProperty(propertyName);
+		return getProperty(getBuildProperties(checkCache), propertyName);
 	}
 
 	public static String getBuildProperty(String propertyName)
@@ -932,9 +934,8 @@ public class JenkinsResultsParserUtil {
 			boolean checkCache, String key)
 		throws IOException {
 
-		Properties buildProperties = getBuildProperties(checkCache);
-
-		String propertyContent = buildProperties.getProperty(key);
+		String propertyContent = getProperty(
+			getBuildProperties(checkCache), key);
 
 		if (propertyContent == null) {
 			return Collections.emptyList();
@@ -1110,6 +1111,25 @@ public class JenkinsResultsParserUtil {
 		}
 
 		return matcher.group("cohortName");
+	}
+
+	public static long getCurrentTimeMillis() {
+		if (_currentTimeMillisDelta == null) {
+			if (!isCINode()) {
+				_currentTimeMillisDelta = 0L;
+			}
+			else {
+				long remoteCurrentTimeSeconds = getRemoteCurrentTimeSeconds(
+					getJenkinsMasterName(getHostName(null)));
+
+				long remoteCurrentTimeMillis = remoteCurrentTimeSeconds * 1000;
+
+				_currentTimeMillisDelta =
+					System.currentTimeMillis() - remoteCurrentTimeMillis;
+			}
+		}
+
+		return System.currentTimeMillis() - _currentTimeMillisDelta;
 	}
 
 	public static List<File> getDirectoriesContainingFiles(
@@ -2834,6 +2854,25 @@ public class JenkinsResultsParserUtil {
 						buildProperties.getProperty("jenkins.admin.user.name"));
 				}
 
+				boolean testrayRequest = false;
+
+				if (url.matches("https://testray.liferay.com/?.+") ||
+					url.matches(
+						"https://webserver-testray-dev.lfr.cloud/?.+")) {
+
+					testrayRequest = true;
+				}
+
+				if ((httpAuthorizationHeader == null) && testrayRequest) {
+					Properties buildProperties = getBuildProperties();
+
+					httpAuthorizationHeader = new BasicHTTPAuthorization(
+						getProperty(
+							buildProperties, "testray.admin.user.password"),
+						getProperty(
+							buildProperties, "testray.admin.user.name"));
+				}
+
 				URL urlObject = new URL(url);
 
 				URLConnection urlConnection = urlObject.openConnection();
@@ -2886,8 +2925,11 @@ public class JenkinsResultsParserUtil {
 						httpURLConnection.setRequestProperty(
 							"Authorization",
 							httpAuthorizationHeader.toString());
-						httpURLConnection.setRequestProperty(
-							"Content-Type", "application/json");
+
+						if (!testrayRequest) {
+							httpURLConnection.setRequestProperty(
+								"Content-Type", "application/json");
+						}
 					}
 
 					if (postContent != null) {
@@ -3422,6 +3464,39 @@ public class JenkinsResultsParserUtil {
 			httpAuthorization, false);
 	}
 
+	public static void unzip(File zipFile, File destDir) {
+		try (FileInputStream fileInputStream = new FileInputStream(zipFile);
+			ZipInputStream zipInputStream = new ZipInputStream(
+				fileInputStream)) {
+
+			ZipEntry zipEntry = zipInputStream.getNextEntry();
+
+			while (zipEntry != null) {
+				String zipEntryName = zipEntry.getName();
+
+				File destFile = new File(destDir, zipEntryName);
+
+				if (zipEntryName.endsWith(File.separator)) {
+					Files.createDirectories(destFile.toPath());
+				}
+				else {
+					destFile.mkdirs();
+
+					Files.copy(
+						zipInputStream, destFile.toPath(),
+						StandardCopyOption.REPLACE_EXISTING);
+				}
+
+				zipEntry = zipInputStream.getNextEntry();
+			}
+
+			zipInputStream.closeEntry();
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+	}
+
 	public static void updateBuildDescription(
 		String buildDescription, int buildNumber, String jobName,
 		String masterHostname) {
@@ -3511,6 +3586,54 @@ public class JenkinsResultsParserUtil {
 					"Unable to read properties file " + propertiesFile,
 					ioException);
 			}
+		}
+	}
+
+	public static void zip(final File sourceDir, File zipFile) {
+		try (FileOutputStream fileOutputStream = new FileOutputStream(zipFile);
+			final ZipOutputStream zipOutputStream = new ZipOutputStream(
+				fileOutputStream)) {
+
+			Files.walkFileTree(
+				sourceDir.toPath(),
+				new SimpleFileVisitor<Path>() {
+
+					@Override
+					public FileVisitResult visitFile(
+						Path path, BasicFileAttributes attributes) {
+
+						if (attributes.isSymbolicLink()) {
+							return FileVisitResult.CONTINUE;
+						}
+
+						try (FileInputStream fileInputStream =
+								new FileInputStream(path.toFile())) {
+
+							zipOutputStream.putNextEntry(
+								new ZipEntry(
+									getPathRelativeTo(
+										path.toFile(), sourceDir)));
+
+							byte[] bytes = new byte[1024];
+							int len;
+
+							while ((len = fileInputStream.read(bytes)) > 0) {
+								zipOutputStream.write(bytes, 0, len);
+							}
+
+							zipOutputStream.closeEntry();
+						}
+						catch (IOException ioException) {
+							throw new RuntimeException(ioException);
+						}
+
+						return FileVisitResult.CONTINUE;
+					}
+
+				});
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
 		}
 	}
 
@@ -4187,6 +4310,7 @@ public class JenkinsResultsParserUtil {
 	private static String[] _buildPropertiesURLs;
 	private static final Pattern _curlyBraceExpansionPattern = Pattern.compile(
 		"\\{.*?\\}");
+	private static Long _currentTimeMillisDelta;
 	private static final DateFormat _gitHubDateFormat = new SimpleDateFormat(
 		"yyyy-MM-dd'T'HH:mm:ss");
 	private static final Pattern _javaVersionPattern = Pattern.compile(

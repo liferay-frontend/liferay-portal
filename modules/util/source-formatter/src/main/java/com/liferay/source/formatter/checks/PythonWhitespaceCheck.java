@@ -43,7 +43,7 @@ public class PythonWhitespaceCheck extends WhitespaceCheck {
 			String previousLine = null;
 
 			while ((line = unsyncBufferedReader.readLine()) != null) {
-				while (line.matches("^\t*" + StringPool.FOUR_SPACES + ".*")) {
+				while (line.matches("^\t*    .*")) {
 					if (previousLine.endsWith(StringPool.BACK_SLASH) ||
 						insideMultiLines) {
 

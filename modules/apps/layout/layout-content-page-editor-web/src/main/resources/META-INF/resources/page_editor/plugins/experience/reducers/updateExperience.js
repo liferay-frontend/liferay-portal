@@ -15,7 +15,7 @@
 function updateExperienceReducer(state, payload) {
 	let nextState = state;
 
-	const updatedExperience = payload;
+	const {updatedExperience} = payload;
 
 	const experience =
 		state.availableSegmentsExperiences[
@@ -28,8 +28,8 @@ function updateExperienceReducer(state, payload) {
 			availableSegmentsExperiences: {
 				...nextState.availableSegmentsExperiences,
 				[experience.segmentsExperienceId]: {
+					...experience,
 					...updatedExperience,
-					priority: experience.priority,
 				},
 			},
 		};

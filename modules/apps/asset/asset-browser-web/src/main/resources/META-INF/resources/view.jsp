@@ -39,12 +39,15 @@
 			escapedModel="<%= true %>"
 			modelVar="assetEntry"
 		>
+
+			<%
+			AssetRenderer<?> assetRenderer = assetEntry.getAssetRenderer();
+			%>
+
 			<c:choose>
-				<c:when test="<%= assetEntry.getEntryId() != assetBrowserDisplayContext.getRefererAssetEntryId() %>">
+				<c:when test="<%= (assetRenderer != null) && (assetEntry.getEntryId() != assetBrowserDisplayContext.getRefererAssetEntryId()) %>">
 
 					<%
-					AssetRenderer<?> assetRenderer = assetEntry.getAssetRenderer();
-
 					AssetRendererFactory<?> assetRendererFactory = assetRenderer.getAssetRendererFactory();
 
 					Group group = GroupLocalServiceUtil.getGroup(assetEntry.getGroupId());
@@ -209,6 +212,10 @@
 				<c:otherwise>
 
 					<%
+					if (assetRenderer == null) {
+						_log.error("Unable to get asset renderer for assetEntry with primary key " + assetEntry.getEntryId());
+					}
+
 					row.setSkip(true);
 					%>
 
@@ -296,3 +303,7 @@
 		</aui:script>
 	</c:otherwise>
 </c:choose>
+
+<%!
+private static Log _log = LogFactoryUtil.getLog("com_liferay_asset_browser_web.view_jsp");
+%>

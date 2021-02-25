@@ -461,7 +461,7 @@ AUI.add(
 					dialog.bodyNode.prepend(
 						Lang.sub(TPL_MESSAGE, {
 							message: Liferay.Language.get(
-								'press-enter-to-choose-this-field-set-or-use-arrow-keys-to-navigate-through-the-available-field-sets.-press-esc-at-anytime-to-close-this-dialog'
+								'press-enter-to-choose-this-field-set-or-use-arrow-keys-to-navigate-through-the-available-field-sets.-press-escape-at-anytime-to-close-this-dialog'
 							),
 						})
 					);

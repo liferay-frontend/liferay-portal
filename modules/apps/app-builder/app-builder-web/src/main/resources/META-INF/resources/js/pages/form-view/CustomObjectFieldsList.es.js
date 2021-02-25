@@ -75,7 +75,7 @@ const getFieldTypes = ({
 
 	const setDefinitionField = (
 		{
-			customProperties,
+			customProperties = {},
 			fieldType,
 			label,
 			name,
@@ -126,7 +126,7 @@ const getFieldTypes = ({
 				? DragTypes.DRAG_FIELDSET
 				: DragTypes.DRAG_DATA_DEFINITION_FIELD,
 			icon: fieldTypeSettings.icon,
-			isCustomField: !customProperties['nativeField'],
+			isCustomField: !customProperties.nativeField,
 			isFieldSet,
 			...(isFieldGroup && {
 				fieldSet: getFieldSet({
@@ -183,7 +183,7 @@ const FieldCategory = ({categoryName}) => (
 	</div>
 );
 
-export default ({keywords}) => {
+const CustomObjectFieldsList = ({keywords}) => {
 	const [dataLayoutBuilder] = useContext(DataLayoutBuilderContext);
 	const [state, dispatch] = useContext(FormViewContext);
 	const {dataDefinition, fieldSets} = state;
@@ -282,6 +282,7 @@ export default ({keywords}) => {
 
 			<FieldTypeList
 				{...fieldTypeListProps}
+				dataDefinition={dataDefinition}
 				fieldTypes={customFieldTypes}
 				showEmptyState={false}
 			/>
@@ -294,9 +295,13 @@ export default ({keywords}) => {
 
 			<FieldTypeList
 				{...fieldTypeListProps}
+				dataDefinition={dataDefinition}
 				fieldTypes={nativeFieldTypes}
 				showEmptyState={false}
 			/>
 		</>
 	);
 };
+
+CustomObjectFieldsList.displayName = 'CustomObjectFieldsList';
+export default CustomObjectFieldsList;

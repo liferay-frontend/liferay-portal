@@ -17,6 +17,8 @@ package com.liferay.layout.test.util;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.test.randomizerbumpers.RandomizerBumper;
 import com.liferay.portal.model.impl.LayoutImpl;
 
@@ -49,8 +51,16 @@ public class LayoutFriendlyURLRandomizerBumper
 			return true;
 		}
 		catch (LayoutFriendlyURLException layoutFriendlyURLException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					layoutFriendlyURLException, layoutFriendlyURLException);
+			}
+
 			return false;
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutFriendlyURLRandomizerBumper.class);
 
 }

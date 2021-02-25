@@ -26,6 +26,8 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.LayoutParentLayoutIdException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -519,6 +521,9 @@ public class LayoutSetPrototypePropagationTest
 					"dashboard");
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException, principalException);
+			}
 		}
 	}
 
@@ -855,12 +860,21 @@ public class LayoutSetPrototypePropagationTest
 				layoutSetPrototypeLinkEnabled);
 		}
 		catch (LayoutParentLayoutIdException layoutParentLayoutIdException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					layoutParentLayoutIdException,
+					layoutParentLayoutIdException);
+			}
+
 			Assert.assertTrue(
 				"Unable to add a child page to a page associated to a " +
 					"template with link disabled",
 				layoutSetPrototypeLinkEnabled);
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutSetPrototypePropagationTest.class);
 
 	private int _initialLayoutCount;
 	private int _initialPrototypeLayoutCount;

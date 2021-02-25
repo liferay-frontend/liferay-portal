@@ -216,7 +216,6 @@ import org.gradle.api.tasks.TaskOutputs;
 import org.gradle.api.tasks.Upload;
 import org.gradle.api.tasks.VerificationTask;
 import org.gradle.api.tasks.bundling.Jar;
-import org.gradle.api.tasks.bundling.Zip;
 import org.gradle.api.tasks.compile.CompileOptions;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.javadoc.Javadoc;
@@ -308,9 +307,6 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 
 	public static final String UPDATE_FILE_VERSIONS_TASK_NAME =
 		"updateFileVersions";
-
-	public static final String ZIP_ZIPPABLE_RESOURCES_TASK_NAME =
-		"zipZippableResources";
 
 	@Override
 	@SuppressWarnings("serial")
@@ -435,7 +431,6 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 
 		Copy deployConfigsTask = _addTaskDeployConfigs(
 			project, liferayExtension);
-		Task zipZippableResourcesTask = _addTaskZipZippableResources(project);
 
 		if (deployToAppServerLibs) {
 			_addTaskAlias(
@@ -484,7 +479,7 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 		GradlePluginsDefaultsUtil.configureRepositories(project, portalRootDir);
 		_configureSourceSetMain(project);
 		_configureTaskDeploy(project, deployConfigsTask);
-		_configureTaskJar(jar, zipZippableResourcesTask, testProject);
+		_configureTaskJar(jar, testProject);
 		_configureTaskJavadoc(project, bundleExtension, portalRootDir);
 		_configureTaskTest(project);
 		_configureTaskTestIntegration(project);
@@ -1625,53 +1620,6 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 		return replaceRegexTask;
 	}
 
-	private Zip _addTaskZipDirectory(
-		Project project, String taskName, File dir, File destinationDir) {
-
-		Zip zip = GradleUtil.addTask(project, taskName, Zip.class);
-
-		zip.from(dir);
-		zip.setArchiveName(dir.getName() + ".zip");
-		zip.setDestinationDir(destinationDir);
-
-		zip.setDescription(
-			"Assembles " + project.relativePath(zip.getArchivePath()) +
-				" with the contents of the " + project.relativePath(dir) +
-					" directory.");
-
-		return zip;
-	}
-
-	private Task _addTaskZipZippableResources(Project project) {
-		Task task = project.task(ZIP_ZIPPABLE_RESOURCES_TASK_NAME);
-
-		File zippableResourcesDir = project.file("src/main/zippableResources");
-
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("Assembles Zip files from the subdirectories of ");
-		sb.append(project.relativePath(zippableResourcesDir));
-		sb.append('.');
-
-		task.setDescription(sb.toString());
-
-		File[] dirs = FileUtil.getDirectories(zippableResourcesDir);
-
-		if (dirs != null) {
-			for (File dir : dirs) {
-				String taskName = GradleUtil.getTaskName(
-					ZIP_ZIPPABLE_RESOURCES_TASK_NAME, dir);
-
-				Zip zip = _addTaskZipDirectory(
-					project, taskName, dir, project.file("classes"));
-
-				task.dependsOn(zip);
-			}
-		}
-
-		return task;
-	}
-
 	private void _applyConfigScripts(Project project) {
 		GradleUtil.applyScript(
 			project,
@@ -2483,20 +2431,44 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 						return;
 					}
 
+					String name = externalModuleDependency.getName();
 					String version = externalModuleDependency.getVersion();
 
-					if (!version.equals("default")) {
+					String newNotation = null;
+
+					if ((Objects.equals(name, "release.dxp.api") ||
+						 Objects.equals(name, "release.portal.api")) &&
+						(version == null)) {
+
+						String releaseAPIVersion = GradleUtil.getProperty(
+							project, name + ".version", (String)null);
+
+						StringBuilder sb = new StringBuilder();
+
+						sb.append(group);
+						sb.append(':');
+						sb.append(name);
+						sb.append(':');
+
+						if (Validator.isNull(releaseAPIVersion)) {
+							sb.append('+');
+						}
+						else {
+							sb.append(releaseAPIVersion);
+						}
+
+						newNotation = sb.toString();
+					}
+					else if ((version == null) || !version.equals("default")) {
 						return;
 					}
-
-					String name = externalModuleDependency.getName();
-
-					String newNotation = null;
 
 					String compatVersion = GradleUtil.getProperty(
 						project, "build.compat.version." + name, (String)null);
 
-					if (Validator.isNotNull(compatVersion)) {
+					if (Validator.isNull(newNotation) &&
+						Validator.isNotNull(compatVersion)) {
+
 						boolean fixDeliveryMethodCore = false;
 
 						if (appBndFile != null) {
@@ -2561,7 +2533,10 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 					sb.append(':');
 					sb.append(name);
 					sb.append(':');
-					sb.append(version);
+
+					if (Validator.isNotNull(version)) {
+						sb.append(version);
+					}
 
 					String oldNotation = sb.toString();
 
@@ -3426,11 +3401,7 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 		generateJSPJavaTask.doLast(taskAction);
 	}
 
-	private void _configureTaskJar(
-		Jar jar, Task zipZippableResourcesTask, boolean testProject) {
-
-		jar.dependsOn(zipZippableResourcesTask);
-
+	private void _configureTaskJar(Jar jar, boolean testProject) {
 		if (testProject) {
 			jar.dependsOn(JavaPlugin.TEST_CLASSES_TASK_NAME);
 

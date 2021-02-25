@@ -16,8 +16,6 @@ package com.liferay.commerce.shipping.engine.fixed.web.internal.frontend;
 
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
-import com.liferay.commerce.model.CommerceCountry;
-import com.liferay.commerce.model.CommerceRegion;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
@@ -39,6 +37,8 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuil
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
@@ -207,28 +207,26 @@ public class CommerceShippingFixedOptionSettingClayTable
 			ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		CommerceCountry commerceCountry =
-			commerceShippingFixedOptionRel.getCommerceCountry();
+		Country country = commerceShippingFixedOptionRel.getCountry();
 
-		if (commerceCountry == null) {
+		if (country == null) {
 			return StringPool.STAR;
 		}
 
-		return commerceCountry.getName(themeDisplay.getLanguageId());
+		return country.getTitle(themeDisplay.getLanguageId());
 	}
 
 	private String _getRegion(
 			CommerceShippingFixedOptionRel commerceShippingFixedOptionRel)
 		throws PortalException {
 
-		CommerceRegion commerceRegion =
-			commerceShippingFixedOptionRel.getCommerceRegion();
+		Region region = commerceShippingFixedOptionRel.getRegion();
 
-		if (commerceRegion == null) {
+		if (region == null) {
 			return StringPool.STAR;
 		}
 
-		return commerceRegion.getName();
+		return region.getName();
 	}
 
 	private String _getShippingFixedOptionSettingDeleteURL(

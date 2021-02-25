@@ -528,39 +528,32 @@ public class Field implements Serializable {
 	protected void validate(String name) {
 		if (name.contains(StringPool.COMMA)) {
 			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"Name must not contain ", StringPool.COMMA, ": ", name));
+				"Name must not contain ,: " + name);
 		}
 
 		if (name.contains(StringPool.PERIOD)) {
 			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"Name must not contain ", StringPool.PERIOD, ": ", name));
+				"Name must not contain .: " + name);
 		}
 
 		if (name.contains(StringPool.POUND)) {
 			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"Name must not contain ", StringPool.POUND, ": ", name));
+				"Name must not contain #: " + name);
 		}
 
 		if (name.contains(StringPool.SLASH)) {
 			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"Name must not contain ", StringPool.SLASH, ": ", name));
+				"Name must not contain /: " + name);
 		}
 
 		if (name.contains(StringPool.STAR)) {
 			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"Name must not contain ", StringPool.STAR, ": ", name));
+				"Name must not contain *: " + name);
 		}
 
 		if (name.startsWith(StringPool.UNDERLINE)) {
 			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"Name must not start with ", StringPool.UNDERLINE, ": ",
-					name));
+				"Name must not start with _: " + name);
 		}
 	}
 

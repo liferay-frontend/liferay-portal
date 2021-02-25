@@ -21,7 +21,6 @@ import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.journal.model.JournalArticle;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -133,8 +132,7 @@ public class ContentDashboardItemTypeItemSelectorViewTest {
 			new MockLiferayPortletRenderRequest();
 
 		mockLiferayPortletRenderRequest.setAttribute(
-			"null" + StringPool.DASH + WebKeys.CURRENT_PORTLET_URL,
-			new MockLiferayPortletURL());
+			"null-" + WebKeys.CURRENT_PORTLET_URL, new MockLiferayPortletURL());
 
 		mockLiferayPortletRenderRequest.setParameter("keywords", keywords);
 
