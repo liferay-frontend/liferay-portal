@@ -91,6 +91,10 @@ if (toolTip) {
 	cssClass += " lfr-portal-tooltip";
 }
 
+if (iconMenuIconCount != null) {
+	linkcssClass += " dropdown-item";
+}
+
 linkCssClass += " lfr-icon-item taglib-icon";
 %>
 
