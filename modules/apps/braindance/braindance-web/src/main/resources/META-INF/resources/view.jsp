@@ -22,7 +22,9 @@
 			size="3"
 		>
 			<clay:navigation-card
+				data-feature='<%= LanguageUtil.get(request, "see") %>'
 				icon="page"
+				propsTransformer="js/CardPropsTransformer"
 				title="see"
 			/>
 		</clay:col>
@@ -31,7 +33,9 @@
 			size="3"
 		>
 			<clay:navigation-card
+				data-feature='<%= LanguageUtil.get(request, "hear") %>'
 				icon="page"
+				propsTransformer="js/CardPropsTransformer"
 				title="hear"
 			/>
 		</clay:col>
@@ -40,7 +44,9 @@
 			size="3"
 		>
 			<clay:navigation-card
+				data-feature='<%= LanguageUtil.get(request, "smell") %>'
 				icon="page"
+				propsTransformer="js/CardPropsTransformer"
 				title="smell"
 			/>
 		</clay:col>
@@ -49,7 +55,9 @@
 			size="3"
 		>
 			<clay:navigation-card
+				data-feature='<%= LanguageUtil.get(request, "touch") %>'
 				icon="page"
+				propsTransformer="js/CardPropsTransformer"
 				title="touch"
 			/>
 		</clay:col>

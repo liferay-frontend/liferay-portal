@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,19 +11,35 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+const getRandomPositiveReview = () => {
+	switch (Math.floor(Math.random() * 5)) {
+		case 0:
+			return 'Life Changing!';
+		case 1:
+			return 'Brilliant!';
+		case 2:
+			return 'Astonishing!';
+		case 3:
+			return 'Bewildering!';
+		default:
+			return 'Amazing!';
+	}
+};
 
-<%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
-taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
-taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
-taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
+const getRandomUserName = () => {
+	switch (Math.floor(Math.random() * 5)) {
+		case 0:
+			return 'Mitch';
+		case 1:
+			return 'Jimmy';
+		case 2:
+			return 'Susan';
+		case 3:
+			return 'Johnny';
+		default:
+			return 'Mary';
+	}
+};
 
-<%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>
-
-<liferay-frontend:defineObjects />
-
-<liferay-theme:defineObjects />
-
-<portlet:defineObjects />
+export {getRandomPositiveReview, getRandomUserName};

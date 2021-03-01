@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,19 +11,27 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+import {openModal} from 'frontend-js-web';
 
-<%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
-taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
-taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
-taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
+import {getRandomPositiveReview, getRandomUserName} from './Reviews';
 
-<%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>
+export default function propsTransformer({...props}) {
+	return {
+		...props,
+		onClick: (event) => {
+			const reviews = [];
 
-<liferay-frontend:defineObjects />
+			for (let i = 0; i < 10; i++) {
+				reviews.push(
+					`<div>⭐⭐⭐⭐⭐</div><div>${getRandomUserName()}: ${getRandomPositiveReview()}</div><hr />`
+				);
+			}
 
-<liferay-theme:defineObjects />
-
-<portlet:defineObjects />
+			openModal({
+				bodyHTML: reviews.join(''),
+				title: `Reviews on ${event.currentTarget.dataset.feature}`,
+			});
+		},
+	};
+}
