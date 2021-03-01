@@ -16,39 +16,52 @@
 
 <%@ include file="/init.jsp" %>
 
-<clay:row>
-	<clay:col md="4">
-		<clay:navigation-card
-			icon="page"
-			title="see"
-		/>
-	</clay:col>
+<clay:container-fluid>
+	<clay:row>
+		<clay:col
+			size="3"
+		>
+			<clay:navigation-card
+				icon="page"
+				title="see"
+			/>
+		</clay:col>
 
-	<clay:col md="4">
-		<clay:navigation-card
-			icon="page"
-			title="hear"
-		/>
-	</clay:col>
+		<clay:col
+			size="3"
+		>
+			<clay:navigation-card
+				icon="page"
+				title="hear"
+			/>
+		</clay:col>
 
-	<clay:col md="4">
-		<clay:navigation-card
-			icon="page"
-			title="smell"
-		/>
-	</clay:col>
+		<clay:col
+			size="3"
+		>
+			<clay:navigation-card
+				icon="page"
+				title="smell"
+			/>
+		</clay:col>
 
-	<clay:col md="4">
-		<clay:navigation-card
-			icon="page"
-			title="touch"
-		/>
-	</clay:col>
-</clay:row>
-<clay:row>
-	<clay:col>
-		<react:component
-			module="js/Braindance"
-		/>
-	</clay:col>
-</clay:row>
+		<clay:col
+			size="3"
+		>
+			<clay:navigation-card
+				icon="page"
+				title="touch"
+			/>
+		</clay:col>
+	</clay:row>
+
+	<clay:row>
+		<clay:col
+			size="12"
+		>
+			<react:component
+				module="js/Braindance"
+			/>
+		</clay:col>
+	</clay:row>
+</clay:container-fluid>
