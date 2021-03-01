@@ -68,6 +68,7 @@ List<Group> selectedGroups = GroupLocalServiceUtil.getGroups(assetPublisherDispl
 			<liferay-ui:icon
 				icon="times-circle"
 				markupView="lexicon"
+				onClick="event.stopPropagation();"
 				url="<%= deleteURL %>"
 			/>
 		</liferay-ui:search-container-column-text>
