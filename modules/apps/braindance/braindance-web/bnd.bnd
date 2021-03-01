@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Braindance Web
+Bundle-SymbolicName: com.liferay.braindance.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /braindance-web
