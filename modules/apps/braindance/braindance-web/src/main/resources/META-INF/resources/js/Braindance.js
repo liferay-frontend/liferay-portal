@@ -16,6 +16,22 @@ import React from 'react';
 
 import '../css/Braindance.scss';
 
-export default () => {
-	return <div className="braindance">{'Hello World Again!'}</div>;
+export default ({senses}) => {
+	return (
+		<div className="braindance">
+			{senses ? (
+				<>
+					<div>Simulation started</div>
+					<div>
+						Senses:
+						{senses.map((item) => {
+							return `${item}, `;
+						})}
+					</div>
+				</>
+			) : (
+				'Show vanilla world'
+			)}
+		</div>
+	);
 };

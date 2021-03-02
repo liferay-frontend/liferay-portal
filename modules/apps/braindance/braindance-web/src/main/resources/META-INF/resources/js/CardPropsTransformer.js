@@ -19,19 +19,24 @@ import {getRandomPositiveReview, getRandomUserName} from './Reviews';
 export default function propsTransformer({...props}) {
 	return {
 		...props,
-		onClick: (event) => {
-			const reviews = [];
+		actions: [
+			{
+				label: Liferay.Language.get('reviews'),
+				onClick() {
+					const reviews = [];
 
-			for (let i = 0; i < 10; i++) {
-				reviews.push(
-					`<div>⭐⭐⭐⭐⭐</div><div>${getRandomUserName()}: ${getRandomPositiveReview()}</div><hr />`
-				);
-			}
+					for (let i = 0; i < 10; i++) {
+						reviews.push(
+							`<div>⭐⭐⭐⭐⭐</div><div>${getRandomUserName()}: ${getRandomPositiveReview()}</div><hr />`
+						);
+					}
 
-			openModal({
-				bodyHTML: reviews.join(''),
-				title: `Reviews on ${event.currentTarget.dataset.feature}`,
-			});
-		},
+					openModal({
+						bodyHTML: reviews.join(''),
+						title: Liferay.Language.get('reviews'),
+					});
+				},
+			},
+		],
 	};
 }

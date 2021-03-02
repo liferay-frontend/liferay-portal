@@ -16,52 +16,77 @@
 
 <%@ include file="/init.jsp" %>
 
+<%
+String[] senses = (String[])request.getAttribute("senses");
+%>
+
 <clay:container-fluid>
-	<clay:row>
-		<clay:col
-			size="3"
-		>
-			<clay:navigation-card
-				data-feature='<%= LanguageUtil.get(request, "see") %>'
-				icon="page"
-				propsTransformer="js/CardPropsTransformer"
-				title="see"
-			/>
-		</clay:col>
+	<portlet:actionURL name="/braindance/start_simulation" var="startSimulationURL" />
 
-		<clay:col
-			size="3"
-		>
-			<clay:navigation-card
-				data-feature='<%= LanguageUtil.get(request, "hear") %>'
-				icon="page"
-				propsTransformer="js/CardPropsTransformer"
-				title="hear"
-			/>
-		</clay:col>
+	<aui:form action="<%= startSimulationURL %>" method="post" name="fm">
+		<clay:row>
+			<clay:col
+				size="3"
+			>
+				<clay:vertical-card
+					icon="page"
+					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
+					inputValue="see"
+					propsTransformer="js/CardPropsTransformer"
+					selectable="<%= true %>"
+					title="see"
+				/>
+			</clay:col>
 
-		<clay:col
-			size="3"
-		>
-			<clay:navigation-card
-				data-feature='<%= LanguageUtil.get(request, "smell") %>'
-				icon="page"
-				propsTransformer="js/CardPropsTransformer"
-				title="smell"
-			/>
-		</clay:col>
+			<clay:col
+				size="3"
+			>
+				<clay:vertical-card
+					icon="page"
+					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
+					inputValue="hear"
+					propsTransformer="js/CardPropsTransformer"
+					selectable="<%= true %>"
+					title="hear"
+				/>
+			</clay:col>
 
-		<clay:col
-			size="3"
-		>
-			<clay:navigation-card
-				data-feature='<%= LanguageUtil.get(request, "touch") %>'
-				icon="page"
-				propsTransformer="js/CardPropsTransformer"
-				title="touch"
+			<clay:col
+				size="3"
+			>
+				<clay:vertical-card
+					icon="page"
+					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
+					inputValue="smell"
+					propsTransformer="js/CardPropsTransformer"
+					selectable="<%= true %>"
+					title="smell"
+				/>
+			</clay:col>
+
+			<clay:col
+				size="3"
+			>
+				<clay:vertical-card
+					icon="page"
+					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
+					inputValue="touch"
+					propsTransformer="js/CardPropsTransformer"
+					selectable="<%= true %>"
+					title="touch"
+				/>
+			</clay:col>
+		</clay:row>
+
+		<clay:row>
+			<clay:button
+				displayType="primary"
+				label='<%= LanguageUtil.get(request, "start-simulation") %>'
+				small="<%= false %>"
+				type="submit"
 			/>
-		</clay:col>
-	</clay:row>
+		</clay:row>
+	</aui:form>
 
 	<clay:row>
 		<clay:col
@@ -69,6 +94,11 @@
 		>
 			<react:component
 				module="js/Braindance"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"senses", senses
+					).build()
+				%>'
 			/>
 		</clay:col>
 	</clay:row>
