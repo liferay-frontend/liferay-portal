@@ -42,7 +42,7 @@ String viewMode = ParamUtil.getString(request, "viewMode");
 			<liferay-ui:icon
 				icon="print"
 				label="<%= true %>"
-				linkCssClass="btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
+				linkCssClass="btn btn-outline-borderless btn-outline-secondary btn-sm c-px-2"
 				markupView="lexicon"
 				message='<%= LanguageUtil.format(request, "print-x-x", new Object[] {"hide-accessible", HtmlUtil.escape(articleDisplay.getTitle())}, false) %>'
 				url='<%= "javascript:" + liferayPortletResponse.getNamespace() + "printPage();" %>'

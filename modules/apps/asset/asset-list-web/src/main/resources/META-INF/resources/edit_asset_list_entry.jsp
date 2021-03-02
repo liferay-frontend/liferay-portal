@@ -73,7 +73,7 @@ renderResponse.setTitle(assetListDisplayContext.getAssetListEntryTitle());
 													<c:if test="<%= !availableSegmentsEntries.isEmpty() %>">
 														<liferay-ui:icon
 															icon="plus"
-															iconCssClass="btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
+															iconCssClass="btn btn-outline-borderless btn-outline-secondary btn-sm c-px-2"
 															id="addAssetListEntryVariationIcon"
 															markupView="lexicon"
 															url='<%= "javascript:" + liferayPortletResponse.getNamespace() + "openSelectSegmentsEntryDialog();" %>'
