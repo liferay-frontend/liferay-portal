@@ -14,6 +14,7 @@
 
 package com.liferay.braindance.web.internal.portlet;
 
+import com.liferay.braindance.web.constants.BraindancePortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
 import javax.portlet.Portlet;
@@ -26,12 +27,13 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	immediate = true,
 	property = {
+		"com.liferay.portlet.css-class-wrapper=braindance",
 		"com.liferay.portlet.display-category=category.sample",
-		"javax.portlet.display-name=Braindance Player",
+		"javax.portlet.display-name=Braindance",
 		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.copy-request-parameters=true",
+		"javax.portlet.init-param.template-path=/META-INF/resources/",
 		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=com_liferay_braindance_web_internal_portlet_BraindancePortlet",
+		"javax.portlet.name=" + BraindancePortletKeys.BRAINDANCE,
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=administrator,power-user,user"
 	},
