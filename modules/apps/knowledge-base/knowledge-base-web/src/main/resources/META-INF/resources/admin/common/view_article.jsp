@@ -71,7 +71,7 @@ if (portletTitleBasedNavigation) {
 		</liferay-frontend:sidebar-panel>
 	</c:if>
 
-	<div class="<%= portletTitleBasedNavigation ? "container-fluid container-fluid-max-xl container-form-lg" : StringPool.BLANK %> sidenav-content">
+	<div class="<%= portletTitleBasedNavigation ? "container-fluid container-fluid-max-xl container-form-lg sidenav-content" : "sidenav-content" %>">
 		<c:if test="<%= !portletTitleBasedNavigation %>">
 			<liferay-ui:header
 				title="<%= kbArticle.getTitle() %>"

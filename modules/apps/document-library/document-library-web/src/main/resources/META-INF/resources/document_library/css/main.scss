@@ -38,7 +38,7 @@ $productMenuWidth: 320px;
 			right: 0;
 			text-align: center;
 			width: 100%;
-			z-index: 1050;
+			z-index: $zindex-modal;
 
 			@include transition(all 0.4s ease-in-out);
 
