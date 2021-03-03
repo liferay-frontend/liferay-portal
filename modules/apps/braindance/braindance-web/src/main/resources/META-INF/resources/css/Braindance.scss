@@ -1,6 +1,317 @@
-@import 'atlas-variables';
+/* ---------- * settings ---------- */
 
-.braindance {
-	border: 1px solid lightgray;
-	color: yellowgreen;
+// @import 'atlas-variables';
+
+// $primary: #6ff3f7;
+// $secondary: #d0ed57;
+// $success: #41d063;
+// $info: #6200ff;
+// $warning: #f74af1;
+// $dark: #171018;
+// $light: white;
+
+// #wrapper {
+// 	--primary: #{$primary};
+// 	--secondary: #{$secondary};
+// 	--success: #{$success};
+// 	--info: #{$info};
+// 	--warning: #{$warning};
+// 	--dark: #{$dark};
+// 	--light: #{$light};
+// }
+
+$colors: (
+	primary: #6ff3f7,
+	primary-d1: darken(#6ff3f7, 30),
+	secondary: #d0ed57,
+	success: #41d063,
+	info: #6200ff,
+	warning: #f74af1,
+	dark: #171018,
+	light: white,
+);
+
+:root {
+	@each $name, $value in $colors {
+		--#{$name}: #{$value};
+	}
+}
+
+/* ---------- * styles ---------- */
+
+// #wrapper {
+// 	--body-bg: $dark;
+// }
+
+// #wrapper {
+// 	--body-bg: var(--dark);
+// }
+
+#wrapper {
+	--body-bg: var(--dark);
+	--body-color: var(--secondary);
+
+	.navbar-classic {
+		background-color: transparent;
+	}
+
+	.text-dark {
+		--dark: var(--light);
+	}
+
+	.navbar-light .navbar-nav .active > .nav-link {
+		color: var(--light);
+	}
+
+	.input-group .input-group-inset-item-after,
+	.form-control {
+		color: var(--light);
+	}
+
+	.input-group .input-group-inset-item,
+	.form-control {
+		border-radius: 0;
+	}
+
+	.input-group .input-group-inset-item,
+	.input-group-inset:focus ~ .input-group-inset-item,
+	.form-control,
+	.form-control:focus {
+		background-color: transparent;
+		border-color: var(--secondary);
+	}
+
+	.user-icon-color-8 {
+		box-shadow: none;
+		color: var(--dark);
+	}
+
+	.navbar-classic.navbar-light {
+		border-color: var(--secondary);
+	}
+
+	.braindance .container-fluid {
+		// padding-block: 3rem;
+		padding-bottom: 3rem;
+		padding-top: 3rem;
+	}
+
+	/*
+	* Cards
+	*/
+
+	// .card {
+	// 	background-color: transparent;
+	// 	border-width: 1px;
+	// 	border-color: var(--secondary);
+	// 	border-radius: 0;
+
+	// 	clip-path: polygon(
+	// 		0 0,
+	// 		75% 0,
+	// 		100% 25%,
+	// 		100% 100%,
+	// 		0 100%
+	// 	);
+	// }
+
+	// .card {
+	// 	background-color: transparent;
+	// 	border-width: 1px;
+	// 	border-color: var(--secondary);
+	// 	border-radius: 0;
+
+	// 	position: relative;
+	// 	clip-path: polygon(
+	// 		0 0,
+	// 		calc(100% - var(--cut)) 0,
+	// 		100% var(--cut),
+	// 		100% 100%,
+	// 		0 100%
+	// 	);
+
+	// 	&:before {
+	// 		content: '';
+	// 		position: absolute;
+	// 		top: 0;
+	// 		right: 0;
+	// 		border-style: solid;
+	// 		border-width: 0 var(--cut) var(--cut) 0;
+	// 		border-color: transparent; // inherit transparent transparent;
+	// 		border-right-color: inherit;
+	// 	}
+	// }
+
+	%cut-top-right {
+		--cut: 1rem;
+		position: relative;
+		clip-path: polygon(
+			0 0,
+			calc(100% - var(--cut)) 0,
+			100% var(--cut),
+			100% 100%,
+			0 100%
+		);
+
+		&:before {
+			border-color: transparent; // inherit transparent transparent;
+			border-right-color: inherit;
+			border-style: solid;
+			border-width: 0 var(--cut) var(--cut) 0;
+			content: '';
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
+	}
+
+	.card {
+		background-color: transparent;
+		border-color: var(--secondary);
+		border-radius: 0;
+		border-width: 1px;
+		color: var(--light);
+
+		--cut: 3rem;
+		@extend %cut-top-right;
+	}
+
+	.active .card {
+		--secondary: var(--primary);
+	}
+
+	.card-title {
+		color: inherit;
+	}
+
+	.component-action {
+		&,
+		&:hover,
+		&:focus {
+			color: inherit;
+		}
+	}
+
+	@at-root {
+		/*
+		* Dropdown
+		*/
+
+		.dropdown-menu {
+			backdrop-filter: blur(2px);
+			background-color: rgba(black, 0.8);
+			border-color: var(--secondary);
+			border-radius: 0;
+			color: var(--secondary);
+		}
+
+		.dropdown-subheader {
+			color: inherit;
+		}
+
+		.dropdown-item {
+			color: var(--light);
+
+			&:hover,
+			&:focus {
+				background-color: var(--secondary);
+				color: var(--dark);
+			}
+		}
+
+		.dropdown-divider {
+			border-color: currentColor;
+		}
+
+		/*
+		* Modals
+		*/
+		.modal-content {
+			background-color: var(--dark);
+			border-color: var(--secondary);
+			border-radius: 0;
+			color: var(--secondary);
+		}
+
+		.close {
+			&,
+			&:hover,
+			&:focus {
+				color: inherit;
+			}
+		}
+
+		.modal-header {
+			border-color: currentColor;
+		}
+	}
+
+	.custom-control-input:checked ~ .custom-control-label::before {
+		background-color: var(--primary);
+		border-color: var(--primary);
+	}
+
+	.custom-checkbox
+		.custom-control-input:checked
+		~ .custom-control-label::after {
+		filter: invert(1);
+	}
+
+	.card-type-asset .card-row {
+		align-items: center;
+	}
+
+	.card-type-asset .aspect-ratio {
+		border-color: var(--secondary);
+	}
+
+	.file-card .card-type-asset-icon {
+	}
+
+	.card-type-asset.active .card-type-asset-icon > .lexicon-icon {
+		fill: var(--primary);
+		filter: drop-shadow(0 0 3px var(--primary));
+	}
+
+	/*
+	* Buttons
+	*/
+
+	.btn {
+		border-radius: 0;
+	}
+
+	.btn-primary:not(.alert-btn):not(.dropdown-item) {
+		@extend %cut-top-right;
+
+		--btn-primary-color: var(--dark);
+		--btn-primary-border-color: var(--primary);
+		--btn-primary-background-color: var(--primary);
+
+		&:hover {
+			--btn-primary-hover-color: var(--dark);
+			--btn-primary-hover-border-color: var(--primary-d1);
+			--btn-primary-hover-background-color: var(--primary-d1);
+		}
+	}
+
+	/*
+	* Misc
+	*/
+
+	.portlet-topper {
+		--portlet-topper-color: var(--dark);
+		--portlet-topper-border-radius: 0;
+
+		--cut: 0.5rem;
+		@extend %cut-top-right;
+		position: absolute;
+
+		// Temp fix
+		.component-action {
+			height: 1rem;
+			width: 1rem;
+			// aspect-ratio: 1;
+		}
+	}
 }
