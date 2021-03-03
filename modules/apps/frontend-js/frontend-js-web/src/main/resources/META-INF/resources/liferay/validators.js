@@ -25,6 +25,12 @@ export function validateString(value, name, context) {
 }
 
 export function validateObject(value, name, context) {
+	if (value === null || value === undefined) {
+		const errorMessage = `${name} cannot be null or undefined.`;
+
+		return composeError(errorMessage, name, context);
+	}
+
 	return validateType('object', value, name, context);
 }
 
@@ -86,17 +92,15 @@ function composeError(error, name, context) {
 }
 
 /**
- * Gets the name of the given function. If the current browser doesn't
- * support the `name` property, like IE11, this will calculate it from the function's
- * content string.
- * @param {!function()} fn
+ * Gets the name of the given function.
+ * @param {Function} fn The function to get the name of.
  * @return {string}
  */
 function getFunctionName(fn) {
 	if (!fn.name) {
 		const stringifiedName = fn.toString();
 
-		fn.name = stringifiedName.substring(9, stringifiedName.indexOf('('));
+		return stringifiedName.substring(9, stringifiedName.indexOf('('));
 	}
 
 	return fn.name;
