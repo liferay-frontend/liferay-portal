@@ -103,10 +103,8 @@ MoveEntries.STATE = {
 	 * @type {string}
 	 */
 	selectFolderURL: {
-		config: {
-			required: true,
-			validator: validateString,
-		},
+		required: true,
+		validator: validateString,
 	},
 };
 
