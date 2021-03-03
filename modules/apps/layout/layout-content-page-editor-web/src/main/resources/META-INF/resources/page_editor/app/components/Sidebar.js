@@ -158,13 +158,22 @@ export default function Sidebar() {
 				onHandleSidebar(true);
 			}
 
-			const sideNavigationListener = sideNavigation.on(
+			const sideNavigationListener = (event) => {
+				if (event.detail === sideNavigation) {
+					onHandleSidebar(false);
+				}
+			};
+
+			document.addEventListener(
 				'openStart.lexicon.sidenav',
-				() => onHandleSidebar(false)
+				sideNavigationListener
 			);
 
 			return () => {
-				sideNavigationListener.removeListener();
+				document.removeEventListener(
+					'openStart.lexicon.sidenav',
+					sideNavigationListener
+				);
 			};
 		}
 	}, []);

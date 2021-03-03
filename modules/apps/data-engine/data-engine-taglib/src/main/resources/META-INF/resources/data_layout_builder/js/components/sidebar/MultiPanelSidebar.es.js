@@ -121,13 +121,22 @@ export default function MultiPanelSidebar({
 				onCloseSidebar();
 			}
 
-			const sideNavigationListener = sideNavigation.on(
+			const sideNavigationListener = (event) => {
+				if (event.detail === sideNavigation) {
+					onCloseSidebar();
+				}
+			};
+
+			document.addEventListener(
 				'openStart.lexicon.sidenav',
-				onCloseSidebar
+				sideNavigationListener
 			);
 
 			return () => {
-				sideNavigationListener.removeListener();
+				document.removeEventListener(
+					'openStart.lexicon.sidenav',
+					sideNavigationListener
+				);
 			};
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps

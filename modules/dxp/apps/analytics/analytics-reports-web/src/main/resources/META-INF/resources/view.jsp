@@ -60,21 +60,38 @@ String analyticsReportsPanelState = SessionClicks.get(request, "com.liferay.anal
 		analyticsReportsPanelToggle
 	);
 
-	sidenavInstance.on('open.lexicon.sidenav', (event) => {
-		Liferay.Util.Session.set(
-			'com.liferay.analytics.reports.web_panelState',
-			'open'
-		);
-	});
+	var onAnalyticsReportsPanelToggle = (event) => {
+		if (event.detail === sidenavInstance) {
+			const state = event.type === 'open.lexicon.sidenav' ? 'open' : 'closed';
 
-	sidenavInstance.on('closed.lexicon.sidenav', (event) => {
-		Liferay.Util.Session.set(
-			'com.liferay.analytics.reports.web_panelState',
-			'closed'
-		);
-	});
+			Liferay.Util.Session.set(
+				'com.liferay.analytics.reports.web_panelState',
+				state
+			);
+		}
+	};
+
+	document.addEventListener(
+		'closed.lexicon.sidenav',
+		onAnalyticsReportsPanelToggle
+	);
+
+	document.addEventListener(
+		'open.lexicon.sidenav',
+		onAnalyticsReportsPanelToggle
+	);
 
 	Liferay.once('screenLoad', () => {
 		Liferay.SideNavigation.destroy(analyticsReportsPanelToggle);
+
+		document.removeEventListener(
+			'closed.lexicon.sidenav',
+			onAnalyticsReportsPanelToggle
+		);
+
+		document.removeEventListener(
+			'open.lexicon.sidenav',
+			onAnalyticsReportsPanelToggle
+		);
 	});
 </aui:script>

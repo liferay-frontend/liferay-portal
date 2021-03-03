@@ -2,23 +2,37 @@ var simulationToggle = document.getElementById('${portletNamespace}simulationTog
 
 var sidenavInstance = Liferay.SideNavigation.initialize(simulationToggle);
 
-sidenavInstance.on(
-	'open.lexicon.sidenav',
-	function(event) {
-		Liferay.fire('SimulationMenu:openSimulationPanel');
+var onSimulationMenuToggle = (event) => {
+	if (event.detail === sidenavInstance) {
+		const state = event.type === 'open.lexicon.sidenav' ? 'open' : 'close';
+
+		Liferay.fire('SimulationMenu:' + state + 'SimulationPanel');
 	}
+};
+
+document.addEventListener(
+	'closed.lexicon.sidenav',
+	onSimulationMenuToggle
 );
 
-sidenavInstance.on(
-	'closed.lexicon.sidenav',
-	function(event) {
-		Liferay.fire('SimulationMenu:closeSimulationPanel');
-	}
+document.addEventListener(
+	'open.lexicon.sidenav',
+	onSimulationMenuToggle
 );
 
 Liferay.once(
 	'screenLoad',
 	function() {
 		Liferay.SideNavigation.destroy(simulationToggle);
+
+		document.removeEventListener(
+			'closed.lexicon.sidenav',
+			onSimulationMenuToggle
+		);
+
+		document.removeEventListener(
+			'open.lexicon.sidenav',
+			onSimulationMenuToggle
+		);
 	}
 );

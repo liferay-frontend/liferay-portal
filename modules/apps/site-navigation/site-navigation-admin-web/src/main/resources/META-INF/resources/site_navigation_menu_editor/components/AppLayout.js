@@ -40,10 +40,26 @@ export const AppLayout = ({
 	);
 
 	useEffect(() => {
-		const handler = onProductMenuOpen(() => setSidebarPanelId(null));
+		const sideNavigation = Liferay.SideNavigation.instance(
+			document.querySelector('.product-menu-toggle')
+		);
+
+		const onCloseSidebarPanel = (event) => {
+			if (event.detail === sideNavigation) {
+				setSidebarPanelId(null);
+			}
+		};
+
+		document.addEventListener(
+			'openStart.lexicon.sidenav',
+			onCloseSidebarPanel
+		);
 
 		return () => {
-			handler.removeListener();
+			document.removeEventListener(
+				'openStart.lexicon.sidenav',
+				onCloseSidebarPanel
+			);
 		};
 	}, [setSidebarPanelId]);
 
@@ -53,7 +69,9 @@ export const AppLayout = ({
 
 	useEffect(() => {
 		if (SidebarPanel) {
-			closeProductMenu();
+			Liferay.SideNavigation.hide(
+				document.querySelector('.product-menu-toggle')
+			);
 		}
 	}, [SidebarPanel]);
 
@@ -114,15 +132,3 @@ AppLayout.ToolbarItem.propTypes = {
 	children: PropTypes.node,
 	expand: PropTypes.bool,
 };
-
-function closeProductMenu() {
-	Liferay.SideNavigation.hide(document.querySelector('.product-menu-toggle'));
-}
-
-function onProductMenuOpen(fn) {
-	return (
-		Liferay.SideNavigation.instance(
-			document.querySelector('.product-menu-toggle')
-		)?.on('openStart.lexicon.sidenav', fn) ?? {removeListener: () => {}}
-	);
-}

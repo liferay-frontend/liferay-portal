@@ -39,18 +39,22 @@
 			width: '<%= width %>',
 		});
 
-		sidenavInstance.on('closed.lexicon.sidenav', (event) => {
-			Liferay.Util.Session.set(
-				'com.liferay.info.panel_<%= sidenavId %>',
-				'closed'
-			);
+		document.addEventListener('closed.lexicon.sidenav', (event) => {
+			if (event.detail === sidenavInstance) {
+				Liferay.Util.Session.set(
+					'com.liferay.info.panel_<%= sidenavId %>',
+					'closed'
+				);
+			}
 		});
 
-		sidenavInstance.on('open.lexicon.sidenav', (event) => {
-			Liferay.Util.Session.set(
-				'com.liferay.info.panel_<%= sidenavId %>',
-				'open'
-			);
+		document.addEventListener('open.lexicon.sidenav', (event) => {
+			if (event.detail === sidenavInstance) {
+				Liferay.Util.Session.set(
+					'com.liferay.info.panel_<%= sidenavId %>',
+					'open'
+				);
+			}
 		});
 	}
 </aui:script>

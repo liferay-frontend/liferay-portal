@@ -124,13 +124,15 @@ for (ProductNavigationControlMenuCategory productNavigationControlMenuCategory :
 			return Liferay.SideNavigation.instance(toggle);
 		});
 
-		sidenavInstances.forEach((instance) => {
-			instance.on('openStart.lexicon.sidenav', (event, source) => {
-				sidenavInstances.forEach((sidenav) => {
-					if (sidenav !== source) {
-						sidenav.hide();
-					}
-				});
+		document.addEventListener('openStart.lexicon.sidenav', (event) => {
+			sidenavInstances.forEach((instance) => {
+				if (instance === event.detail) {
+					sidenavInstances.forEach((sidenav) => {
+						if (sidenav !== event.detail) {
+							sidenav.hide();
+						}
+					});
+				}
 			});
 		});
 	</aui:script>

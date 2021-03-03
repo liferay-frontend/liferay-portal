@@ -41,21 +41,38 @@
 		segmentsExperimentPanelToggle
 	);
 
-	sidenavInstance.on('open.lexicon.sidenav', (event) => {
-		Liferay.Util.Session.set(
-			'com.liferay.segments.experiment.web_panelState',
-			'open'
-		);
-	});
+	var onSegmentsExperimentPanelToggle = (event) => {
+		if (event.detail === sidenavInstance) {
+			const state = event.type === 'open.lexicon.sidenav' ? 'open' : 'closed';
 
-	sidenavInstance.on('closed.lexicon.sidenav', (event) => {
-		Liferay.Util.Session.set(
-			'com.liferay.segments.experiment.web_panelState',
-			'closed'
-		);
-	});
+			Liferay.Util.Session.set(
+				'com.liferay.segments.experiment.web_panelState',
+				state
+			);
+		}
+	};
+
+	document.addEventListener(
+		'closed.lexicon.sidenav',
+		onSegmentsExperimentPanelToggle
+	);
+
+	document.addEventListener(
+		'open.lexicon.sidenav',
+		onSegmentsExperimentPanelToggle
+	);
 
 	Liferay.once('screenLoad', () => {
 		Liferay.SideNavigation.destroy(segmentsExperimentPanelToggle);
+
+		document.removeEventListener(
+			'closed.lexicon.sidenav',
+			onSegmentsExperimentPanelToggle
+		);
+
+		document.removeEventListener(
+			'open.lexicon.sidenav',
+			onSegmentsExperimentPanelToggle
+		);
 	});
 </aui:script>
