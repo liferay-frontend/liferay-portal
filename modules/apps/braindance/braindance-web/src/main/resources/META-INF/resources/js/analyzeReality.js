@@ -50,7 +50,7 @@ export default function analyzeReality() {
 				name: 'Hyperloop',
 				info: 'The last design from Alon Misk, based on magnetic levitation that vehicle doesn\'t make a sound.',
 				popoverAlign: 'left',
-				sense: 'smell',
+				sense: 'hear',
 				size: 140,
 				x: 700,
 				y: 140,
