@@ -1,9 +1,10 @@
-// @import 'atlas-variables';
-@import "braindance-variables";
+.braindance {
+	.braindance-simulation {
+		position: relative;
 
-@import "braindance-global";
-@import "braindance-cards";
-@import "braindance-buttons";
-@import "braindance-dropdown";
-@import "braindance-modals";
-@import "braindance-simulator";
+		.hud {
+			border: 2px solid red;
+			position: absolute;
+		}
+	}
+}
