@@ -31,7 +31,7 @@ $colors: (
 	light: white,
 );
 
-:root {
+body {
 	@each $name, $value in $colors {
 		--#{$name}: #{$value};
 	}
@@ -300,12 +300,17 @@ $colors: (
 	*/
 
 	.portlet-topper {
-		--portlet-topper-color: var(--dark);
+		--portlet-topper-bg: var(--primary);
+		--portlet-topper-border: var(--primary);
 		--portlet-topper-border-radius: 0;
+		--portlet-topper-color: var(--dark);
 
 		--cut: 0.5rem;
 		@extend %cut-top-right;
-		position: absolute;
+
+		@media (min-width: 768px) {
+			position: absolute;
+		}
 
 		// Temp fix
 		.component-action {
