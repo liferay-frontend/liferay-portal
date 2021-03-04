@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String[] senses = (String[])request.getAttribute("senses");
+List<String> senses = (List<String>)request.getAttribute("senses");
 %>
 
 <clay:container-fluid>
@@ -34,6 +34,7 @@ String[] senses = (String[])request.getAttribute("senses");
 					inputValue="see"
 					propsTransformer="js/CardPropsTransformer"
 					selectable="<%= true %>"
+					selected='<%= Validator.isNotNull(senses) && senses.contains("see") %>'
 					title="see"
 				/>
 			</clay:col>
@@ -47,6 +48,7 @@ String[] senses = (String[])request.getAttribute("senses");
 					inputValue="hear"
 					propsTransformer="js/CardPropsTransformer"
 					selectable="<%= true %>"
+					selected='<%= Validator.isNotNull(senses) && senses.contains("hear") %>'
 					title="hear"
 				/>
 			</clay:col>
@@ -60,6 +62,7 @@ String[] senses = (String[])request.getAttribute("senses");
 					inputValue="smell"
 					propsTransformer="js/CardPropsTransformer"
 					selectable="<%= true %>"
+					selected='<%= Validator.isNotNull(senses) && senses.contains("smell") %>'
 					title="smell"
 				/>
 			</clay:col>
@@ -73,6 +76,7 @@ String[] senses = (String[])request.getAttribute("senses");
 					inputValue="touch"
 					propsTransformer="js/CardPropsTransformer"
 					selectable="<%= true %>"
+					selected='<%= Validator.isNotNull(senses) && senses.contains("touch") %>'
 					title="touch"
 				/>
 			</clay:col>
@@ -88,18 +92,20 @@ String[] senses = (String[])request.getAttribute("senses");
 		</clay:row>
 	</aui:form>
 
-	<clay:row>
-		<clay:col
-			size="12"
-		>
-			<react:component
-				module="js/Braindance"
-				props='<%=
-					HashMapBuilder.<String, Object>put(
-						"senses", senses
-					).build()
-				%>'
-			/>
-		</clay:col>
-	</clay:row>
+	<c:if test="<%= Validator.isNotNull(senses) %>">
+		<clay:row>
+			<clay:col
+				size="12"
+			>
+				<react:component
+					module="js/Braindance"
+					props='<%=
+						HashMapBuilder.<String, Object>put(
+							"activeSenses", senses
+						).build()
+					%>'
+				/>
+			</clay:col>
+		</clay:row>
+	</c:if>
 </clay:container-fluid>
