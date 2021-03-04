@@ -12,26 +12,80 @@
  * details.
  */
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import ClayPopover from '@clayui/popover';
+
+import analyzeReality from './analyzeReality';
 
 import '../css/Braindance.scss';
 
-export default ({senses}) => {
+const HUDElement = ({align,info,name,size,x,y}) => {
+	const [show, setShow] = useState();
+
+	const handleMouseOut = () => {
+		setShow(false);
+	}
+
+	const handleMouseOver = () => {
+		setShow(true);
+	}
+
 	return (
-		<div className="braindance">
-			{senses ? (
+		<ClayPopover
+			alignPosition={align}
+			header={name}
+			show={show}
+			trigger={
+				<div
+					className="hud"
+					onMouseOver={handleMouseOver}
+					onMouseOut={handleMouseOut}
+					style={{
+						height: `${size}px`,
+						left: x - size / 2, 
+						top: y - size / 2,
+						width: `${size}px`
+					}}
+				>
+				</div>
+			}
+		>
+			{info}
+		</ClayPopover>
+	)
+};
+
+export default ({activeSenses = []}) => {
+	const [realityElements, setRealityElements] = useState([]);
+
+	useEffect(() => {
+		const {elements} = analyzeReality();
+		setRealityElements(elements);
+	}, []);
+
+	return (
+		<div 
+			className="braindance-simulation"
+		>
+			<img 
+				src="https://steamuserimages-a.akamaihd.net/ugc/2438013375536940927/D370DBF7BFC83ED36F783F08A598FFF3E71A1D61/"
+			/>
+
+			{realityElements.map(element => (
 				<>
-					<div>Simulation started</div>
-					<div>
-						Senses:
-						{senses.map((item) => {
-							return `${item}, `;
-						})}
-					</div>
+					{activeSenses.includes(element.sense) && (
+						<HUDElement
+							align={element.popoverAlign}
+							key={element.id}
+							info={element.info}
+							name={element.name}
+							size={element.size}
+							x={element.x}
+							y={element.y}
+						/>
+					)}
 				</>
-			) : (
-				'Show vanilla world'
-			)}
+			))}
 		</div>
 	);
 };
