@@ -14,6 +14,7 @@
 
 package com.liferay.braindance.web.internal.portlet.action;
 
+import com.liferay.braindance.web.constants.BraindancePortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -29,7 +30,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	immediate = true,
 	property = {
-		"javax.portlet.name=com_liferay_braindance_web_internal_portlet_BraindancePortlet",
+		"javax.portlet.name=" + BraindancePortletKeys.BRAINDANCE,
 		"mvc.command.name=/braindance/start_simulation"
 	},
 	service = MVCActionCommand.class
@@ -44,6 +45,7 @@ public class StartSimulationMVCActionCommand extends BaseMVCActionCommand {
 		String[] senses = ParamUtil.getStringValues(actionRequest, "sense");
 
 		actionRequest.setAttribute("senses", senses);
+
 	}
 
 }
