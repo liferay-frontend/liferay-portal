@@ -14,3 +14,52 @@ $btn-outline-secondary: (
 
 $portlet-decorate-bg: #fff;
 $portlet-decorate-border: 1px solid $light-color;
+
+// Cyberfrontend
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap');
+$primary: #6ff3f7;
+$secondary: #d0ed57;
+$success: #41d063;
+$info: #6200ff;
+$warning: #f74af1;
+$dark: #171018;
+$body-bg: $dark;
+$body-color: $secondary;
+$font-family-sans-serif: 'Baloo 2', cursive;
+$border-radius: 0;
+$border-radius-lg: 0;
+$border-radius-sm: 0;
+
+// Cards
+$card-bg: transparent;
+$card-border-color: $secondary;
+$card-border-width: 1px;
+$card-box-shadow: none;
+$card-title: (
+	color: white,
+);
+$card-type-asset: (
+	aspect-ratio-border-color: $secondary,
+);
+
+// Dropdowns
+$dropdown-bg: rgba($dark, 0.8);
+$dropdown-border-color: $secondary;
+$dropdown-header-color: $primary;
+$dropdown-link-color: $secondary;
+$dropdown-link-hover-bg: $secondary;
+$dropdown-link-hover-color: $dark;
+
+// Modals
+$modal-content-bg: $dark;
+$modal-content-color: $secondary;
+$modal-content-border-color: $secondary;
+$modal-content-bg: 'transparent';
+$modal-header-border-color: $secondary;
+$close: (
+	color: 'inherit',
+);
+
+// Alerts
+$alert-success-bg: $dark;
