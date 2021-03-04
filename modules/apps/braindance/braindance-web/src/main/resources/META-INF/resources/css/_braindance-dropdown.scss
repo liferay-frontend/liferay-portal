@@ -1,0 +1,29 @@
+/*
+* Dropdown
+*/
+
+.dropdown-menu {
+	backdrop-filter: blur(2px);
+	background-color: rgba(black, 0.8);
+	border-color: var(--secondary);
+	border-radius: 0;
+	color: var(--secondary);
+}
+
+.dropdown-subheader {
+	color: inherit;
+}
+
+.dropdown-item {
+	color: var(--light);
+
+	&:hover,
+	&:focus {
+		background-color: var(--secondary);
+		color: var(--dark);
+	}
+}
+
+.dropdown-divider {
+	border-color: currentColor;
+}

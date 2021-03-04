@@ -1,0 +1,22 @@
+/*
+* Modals
+*/
+
+.modal-content {
+	background-color: var(--dark);
+	border-color: var(--secondary);
+	border-radius: 0;
+	color: var(--secondary);
+}
+
+.close {
+	&,
+	&:hover,
+	&:focus {
+		color: inherit;
+	}
+}
+
+.modal-header {
+	border-color: currentColor;
+}

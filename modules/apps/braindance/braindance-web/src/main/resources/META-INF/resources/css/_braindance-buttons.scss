@@ -1,0 +1,23 @@
+/*
+* Buttons
+*/
+
+#wrapper {
+	.btn {
+		border-radius: 0;
+	}
+
+	.btn-primary:not(.alert-btn):not(.dropdown-item) {
+		@extend %cut-top-right;
+
+		--btn-primary-color: var(--dark);
+		--btn-primary-border-color: var(--primary);
+		--btn-primary-background-color: var(--primary);
+
+		&:hover {
+			--btn-primary-hover-color: var(--dark);
+			--btn-primary-hover-border-color: var(--primary-d1);
+			--btn-primary-hover-background-color: var(--primary-d1);
+		}
+	}
+}

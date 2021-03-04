@@ -1,0 +1,38 @@
+/*
+* Variabless
+*/
+
+// $primary: #6ff3f7;
+// $secondary: #d0ed57;
+// $success: #41d063;
+// $info: #6200ff;
+// $warning: #f74af1;
+// $dark: #171018;
+// $light: white;
+
+// #wrapper {
+// 	--primary: #{$primary};
+// 	--secondary: #{$secondary};
+// 	--success: #{$success};
+// 	--info: #{$info};
+// 	--warning: #{$warning};
+// 	--dark: #{$dark};
+// 	--light: #{$light};
+// }
+
+$colors: (
+	primary: #6ff3f7,
+	primary-d1: darken(#6ff3f7, 30),
+	secondary: #d0ed57,
+	success: #41d063,
+	info: #6200ff,
+	warning: #f74af1,
+	dark: #171018,
+	light: white,
+);
+
+body {
+	@each $name, $value in $colors {
+		--#{$name}: #{$value};
+	}
+}
