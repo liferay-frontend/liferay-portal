@@ -24,6 +24,9 @@ import javax.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Marko Cikos
  */
@@ -44,7 +47,9 @@ public class StartSimulationMVCActionCommand extends BaseMVCActionCommand {
 
 		String[] senses = ParamUtil.getStringValues(actionRequest, "sense");
 
-		actionRequest.setAttribute("senses", senses);
+		List<String> sensesAsList = Arrays.asList(senses);
+
+		actionRequest.setAttribute("senses", sensesAsList);
 
 	}
 
