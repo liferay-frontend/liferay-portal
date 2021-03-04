@@ -26,6 +26,10 @@ import './OrganizationInputItem.es';
 
 import './OrganizationListItem.es';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class AddOrganizationModal extends Component {
 	created() {
 		this._debouncedFetchOrganizations = debounce(
@@ -162,18 +166,34 @@ Soy.register(AddOrganizationModal, template);
 
 const ORGANIZATION_SCHEMA = Config.shapeOf({
 	colorId: Config.number(),
-	id: Config.oneOfType([Config.number(), Config.string()]).required(),
-	name: Config.string().required(),
+	id: Config.oneOfType([
+		Config.number(),
+		{
+			validator: isString,
+		},
+	]).required(),
+	name: {
+		required: true,
+		validator: isString,
+	},
 });
 
 AddOrganizationModal.STATE = {
 	_loading: Config.bool().internal().value(false),
 	_modalVisible: Config.bool().internal().value(false),
 	organizations: Config.array(ORGANIZATION_SCHEMA).value([]),
-	organizationsAPI: Config.string().value(''),
-	query: Config.string().value(''),
+	organizationsAPI: {
+		validator: isString,
+		value: '',
+	},
+	query: {
+		validator: isString,
+		value: '',
+	},
 	selectedOrganizations: Config.array(ORGANIZATION_SCHEMA).value([]),
-	spritemap: Config.string(),
+	spritemap: {
+		validator: isString,
+	},
 };
 
 export {AddOrganizationModal};

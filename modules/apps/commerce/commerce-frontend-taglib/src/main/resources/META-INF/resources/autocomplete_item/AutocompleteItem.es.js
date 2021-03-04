@@ -19,6 +19,10 @@ import Soy, {Config} from 'metal-soy';
 
 import template from './AutocompleteItem.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class AutocompleteItem extends Component {
 	processQuery() {
 		const regex = new RegExp(`(.*?)(${this.query})(.*)`, 'gmi');
@@ -62,11 +66,22 @@ class AutocompleteItem extends Component {
 Soy.register(AutocompleteItem, template);
 
 AutocompleteItem.STATE = {
-	firstGroup: Config.string().internal(),
-	query: Config.string(),
-	secondGroup: Config.string().internal(),
+	firstGroup: {
+		internal: true,
+		validator: isString,
+	},
+	query: {
+		validator: isString,
+	},
+	secondGroup: {
+		internal: true,
+		validator: isString,
+	},
 	text: Config.any(),
-	thirdGroup: Config.string().internal(),
+	thirdGroup: {
+		internal: true,
+		validator: isString,
+	},
 };
 
 export {AutocompleteItem};

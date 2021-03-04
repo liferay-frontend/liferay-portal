@@ -25,6 +25,10 @@ import {Config} from 'metal-state';
 
 import templates from './ManagementToolbar.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 /**
  * Creates a Metal Management Toolbar component.
  */
@@ -318,7 +322,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	clearResultsURL: Config.string(),
+	clearResultsURL: {
+		validator: isString,
+	},
 
 	/**
 	 * URL for the clear selection link.
@@ -328,7 +334,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	clearSelectionURL: Config.string(),
+	clearSelectionURL: {
+		validator: isString,
+	},
 
 	/**
 	 * Name of the content renderer to use template variants.
@@ -338,7 +346,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	contentRenderer: Config.string(),
+	contentRenderer: {
+		validator: isString,
+	},
 
 	/**
 	 * Configuration of the creation menu.
@@ -363,15 +373,23 @@ ManagementToolbar.STATE = {
 	 * @type {?(object|string|bool|undefined)}
 	 */
 	creationMenu: Config.shapeOf({
-		caption: Config.string(),
-		helpText: Config.string(),
-		itemsIconAlignment: Config.string(),
+		caption: {
+			validator: isString,
+		},
+		helpText: {
+			validator: isString,
+		},
+		itemsIconAlignment: {
+			validator: isString,
+		},
 		maxPrimaryItems: Config.number(),
 		maxSecondaryItems: Config.number(),
 		maxTotalItems: Config.number(),
 		primaryItems: creationMenuItemsValidator,
 		secondaryItems: creationMenuItemsValidator,
-		viewMoreURL: Config.string(),
+		viewMoreURL: {
+			validator: isString,
+		},
 	}),
 
 	/**
@@ -403,7 +421,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	elementClasses: Config.string(),
+	elementClasses: {
+		validator: isString,
+	},
 
 	/**
 	 * List of filter menu items.
@@ -433,7 +453,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	id: Config.string(),
+	id: {
+		validator: isString,
+	},
 
 	/**
 	 * ID to get the info panel node.
@@ -443,7 +465,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?string|undefined}
 	 */
-	infoPanelId: Config.string(),
+	infoPanelId: {
+		validator: isString,
+	},
 
 	/**
 	 * URL of the search form action.
@@ -453,7 +477,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	searchActionURL: Config.string(),
+	searchActionURL: {
+		validator: isString,
+	},
 
 	/**
 	 * ID to get an instance of the search container.
@@ -463,7 +489,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?string|undefined}
 	 */
-	searchContainerId: Config.string(),
+	searchContainerId: {
+		validator: isString,
+	},
 
 	/**
 	 * Map of properties that are rendered as hidden inputs in the search form.
@@ -493,7 +521,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	searchFormName: Config.string(),
+	searchFormName: {
+		validator: isString,
+	},
 
 	/**
 	 * Name of the search input.
@@ -503,7 +533,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	searchInputName: Config.string(),
+	searchInputName: {
+		validator: isString,
+	},
 
 	/**
 	 * Value of the search input.
@@ -513,7 +545,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	searchValue: Config.string(),
+	searchValue: {
+		validator: isString,
+	},
 
 	/**
 	 * URL for the Select All link.
@@ -523,7 +557,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	selectAllURL: Config.string(),
+	selectAllURL: {
+		validator: isString,
+	},
 
 	/**
 	 * Flag to indicate if the managment toolbar controls the selection of
@@ -634,7 +670,9 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	sortingURL: Config.string(),
+	sortingURL: {
+		validator: isString,
+	},
 
 	/**
 	 * Path to the SVG spritemap file containing the icons.
@@ -644,7 +682,10 @@ ManagementToolbar.STATE = {
 	 * @memberof ManagementToolbar
 	 * @type {?(string|undefined)}
 	 */
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * Flag to indicate if the toolbar supports bulk selection.
@@ -679,9 +720,17 @@ ManagementToolbar.STATE = {
 		Config.shapeOf({
 			active: Config.bool().value(false),
 			disabled: Config.bool().value(false),
-			href: Config.string(),
-			icon: Config.string().required(),
-			label: Config.string().required(),
+			href: {
+				validator: isString,
+			},
+			icon: {
+				required: true,
+				validator: isString,
+			},
+			label: {
+				required: true,
+				validator: isString,
+			},
 		})
 	),
 };

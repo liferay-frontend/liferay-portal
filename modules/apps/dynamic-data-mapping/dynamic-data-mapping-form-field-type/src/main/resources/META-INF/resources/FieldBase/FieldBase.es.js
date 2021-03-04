@@ -25,6 +25,10 @@ import templates from './FieldBase.soy';
 import withLocale from './withLocale.es';
 import withRepetitionControls from './withRepetitionControls.es';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class FieldBase extends Component {
 	prepareStateForRender(state) {
 		const repeatedIndex = getRepeatedIndex(this.name);
@@ -61,7 +65,9 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	id: Config.string(),
+	id: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -69,7 +75,9 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	label: Config.string(),
+	label: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -77,7 +85,9 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	name: Config.string(),
+	name: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -109,7 +119,10 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -117,7 +130,9 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	tip: Config.string(),
+	tip: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -125,7 +140,9 @@ FieldBase.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	tooltip: Config.string(),
+	tooltip: {
+		validator: isString,
+	},
 };
 
 const composed = compose(

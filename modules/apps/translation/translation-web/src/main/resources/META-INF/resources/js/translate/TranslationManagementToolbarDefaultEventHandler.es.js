@@ -13,7 +13,10 @@
  */
 
 import {DefaultEventHandler} from 'frontend-js-web';
-import {Config} from 'metal-state';
+
+function isString(value) {
+	return typeof value === 'string';
+}
 
 class TranslationManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	deleteSelectedTranslationEntries() {
@@ -38,8 +41,12 @@ class TranslationManagementToolbarDefaultEventHandler extends DefaultEventHandle
 }
 
 TranslationManagementToolbarDefaultEventHandler.STATE = {
-	deleteTranslationEntriesURL: Config.string(),
-	spritemap: Config.string(),
+	deleteTranslationEntriesURL: {
+		validator: isString,
+	},
+	spritemap: {
+		validator: isString,
+	},
 };
 
 export default TranslationManagementToolbarDefaultEventHandler;

@@ -13,7 +13,6 @@
  */
 
 import {DefaultEventHandler, openSimpleInputModal} from 'frontend-js-web';
-import {Config} from 'metal-state';
 
 class MasterLayoutManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	addMasterLayout(itemData) {
@@ -44,7 +43,9 @@ class MasterLayoutManagementToolbarDefaultEventHandler extends DefaultEventHandl
 }
 
 MasterLayoutManagementToolbarDefaultEventHandler.STATE = {
-	spritemap: Config.string(),
+	spritemap: {
+		validator: (value) => typeof value === 'string',
+	},
 };
 
 export default MasterLayoutManagementToolbarDefaultEventHandler;

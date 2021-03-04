@@ -18,6 +18,10 @@ import {Config} from 'metal-state';
 
 import templates from './MetalFieldAdapter.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class MetalFieldAdapter extends Component {
 	getChildContext() {
 		return {
@@ -67,7 +71,9 @@ class MetalFieldAdapter extends Component {
 MetalFieldAdapter.STATE = {
 	activePage: Config.number(),
 	editable: Config.bool(),
-	editingLanguageId: Config.string(),
+	editingLanguageId: {
+		validator: isString,
+	},
 	field: Config.any(),
 	onBlur: Config.any(),
 	onChange: Config.any(),
@@ -75,8 +81,12 @@ MetalFieldAdapter.STATE = {
 	onRemoved: Config.any(),
 	onRepeated: Config.any(),
 	pageIndex: Config.number(),
-	spritemap: Config.string(),
-	type: Config.string(),
+	spritemap: {
+		validator: isString,
+	},
+	type: {
+		validator: isString,
+	},
 };
 
 Soy.register(MetalFieldAdapter, templates);

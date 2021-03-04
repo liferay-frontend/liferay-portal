@@ -46,6 +46,10 @@ const NAV_ITEMS = {
 	RULES: 1,
 };
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 /**
  * Form.
  * @extends Component
@@ -1245,7 +1249,9 @@ Form.PROPS = {
 	 * @type {!string}
 	 */
 
-	autocompleteUserURL: Config.string(),
+	autocompleteUserURL: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -1267,7 +1273,9 @@ Form.PROPS = {
 	context: Config.shapeOf({
 		dataEngineSidebar: Config.bool(),
 		pages: Config.arrayOf(Config.object()),
-		paginationMode: Config.string(),
+		paginationMode: {
+			validator: isString,
+		},
 		rules: Config.array(),
 		successPageSettings: Config.object(),
 	})
@@ -1282,7 +1290,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	dataProviderInstanceParameterSettingsURL: Config.string().required(),
+	dataProviderInstanceParameterSettingsURL: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * The rules of a form.
@@ -1292,7 +1303,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	dataProviderInstancesURL: Config.string().required(),
+	dataProviderInstancesURL: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * The default language id of the form.
@@ -1302,9 +1316,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	defaultLanguageId: Config.string().value(
-		themeDisplay.getDefaultLanguageId()
-	),
+	defaultLanguageId: {
+		validator: isString,
+		value: themeDisplay.getDefaultLanguageId(),
+	},
 
 	/**
 	 * The default language id of the form.
@@ -1314,9 +1329,10 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	editingLanguageId: Config.string().value(
-		themeDisplay.getDefaultLanguageId()
-	),
+	editingLanguageId: {
+		validator: isString,
+		value: themeDisplay.getDefaultLanguageId(),
+	},
 
 	/**
 	 * @default undefined
@@ -1325,7 +1341,9 @@ Form.PROPS = {
 	 * @type {?string}
 	 */
 
-	fieldSetDefinitionURL: Config.string(),
+	fieldSetDefinitionURL: {
+		validator: isString,
+	},
 
 	/**
 	 * @default []
@@ -1373,7 +1391,9 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	functionsURL: Config.string(),
+	functionsURL: {
+		validator: isString,
+	},
 
 	/**
 	 * A map with all translated values available as the form description.
@@ -1403,7 +1423,10 @@ Form.PROPS = {
 	 * @type {!string}
 	 */
 
-	namespace: Config.string().required(),
+	namespace: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * Whether the form is published or not
@@ -1423,7 +1446,9 @@ Form.PROPS = {
 	 * @type {!string}
 	 */
 
-	redirectURL: Config.string(),
+	redirectURL: {
+		validator: isString,
+	},
 
 	/**
 	 * The rules of a form.
@@ -1433,7 +1458,9 @@ Form.PROPS = {
 	 * @type {!array}
 	 */
 
-	rolesURL: Config.string(),
+	rolesURL: {
+		validator: isString,
+	},
 
 	/**
 	 * The rules of a form.
@@ -1462,7 +1489,9 @@ Form.PROPS = {
 	 * @type {!string}
 	 */
 
-	shareFormInstanceURL: Config.string(),
+	shareFormInstanceURL: {
+		validator: isString,
+	},
 
 	/**
 	 * Whether to show an alert telling the user about the result of the
@@ -1483,9 +1512,14 @@ Form.PROPS = {
 	 * @type {!string}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 
-	view: Config.string(),
+	view: {
+		validator: isString,
+	},
 };
 
 Form.STATE = {
@@ -1517,7 +1551,10 @@ Form.STATE = {
 	 * @type {!array}
 	 */
 
-	paginationMode: Config.string().valueFn('_paginationModeValueFn'),
+	paginationMode: {
+		validator: isString,
+		valueFn: '_paginationModeValueFn',
+	},
 
 	/**
 	 * The label of the save button
@@ -1527,7 +1564,10 @@ Form.STATE = {
 	 * @type {!string}
 	 */
 
-	saveButtonLabel: Config.string().valueFn('_saveButtonLabelValueFn'),
+	saveButtonLabel: {
+		validator: isString,
+		valueFn: '_saveButtonLabelValueFn',
+	},
 
 	/**
 	 * @default true

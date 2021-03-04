@@ -58,7 +58,10 @@ class PreviewButton extends Component {
 
 PreviewButton.PROPS = {
 	resolvePreviewURL: Config.func().required(),
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: (value) => typeof value === 'string',
+	},
 };
 
 export default PreviewButton;

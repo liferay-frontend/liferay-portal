@@ -19,6 +19,10 @@ import Soy, {Config} from 'metal-soy';
 
 import template from './OrganizationInputItem.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class OrganizationInputItem extends Component {
 	_handleRemoveItem(e) {
 		e.preventDefault();
@@ -32,9 +36,19 @@ class OrganizationInputItem extends Component {
 Soy.register(OrganizationInputItem, template);
 
 OrganizationInputItem.STATE = {
-	id: Config.oneOfType([Config.number(), Config.string()]).required(),
-	name: Config.string().required(),
-	spritemap: Config.string(),
+	id: Config.oneOfType([
+		Config.number(),
+		{
+			validator: isString,
+		},
+	]).required(),
+	name: {
+		required: true,
+		validator: isString,
+	},
+	spritemap: {
+		validator: isString,
+	},
 };
 
 export {OrganizationInputItem};

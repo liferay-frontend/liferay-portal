@@ -19,19 +19,33 @@ import Soy, {Config} from 'metal-soy';
 
 import template from './CommerceInputText.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class CommerceInputText extends Component {}
 
 Soy.register(CommerceInputText, template);
 
 CommerceInputText.STATE = {
 	_handleInputKeyUp: Config.func(),
-	contextName: Config.string(),
-	label: Config.string(),
-	name: Config.string(),
+	contextName: {
+		validator: isString,
+	},
+	label: {
+		validator: isString,
+	},
+	name: {
+		validator: isString,
+	},
 	pattern: Config.any(),
 	required: Config.bool(),
-	type: Config.string(),
-	value: Config.string(),
+	type: {
+		validator: isString,
+	},
+	value: {
+		validator: isString,
+	},
 };
 
 export {CommerceInputText};

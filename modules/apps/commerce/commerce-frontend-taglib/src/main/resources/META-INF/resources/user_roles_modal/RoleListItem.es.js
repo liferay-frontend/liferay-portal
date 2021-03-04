@@ -21,6 +21,10 @@ import template from './RoleListItem.soy';
 
 import '../autocomplete_item/AutocompleteItem.es';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class RoleListItem extends Component {
 	syncSelectedRoles() {
 		this._selected = this.selectedRoles.reduce(
@@ -45,13 +49,29 @@ Soy.register(RoleListItem, template);
 
 RoleListItem.STATE = {
 	_selected: Config.bool().value(false),
-	id: Config.oneOfType([Config.number(), Config.string()]),
-	name: Config.string(),
-	query: Config.string(),
+	id: Config.oneOfType([
+		Config.number(),
+		{
+			validator: isString,
+		},
+	]),
+	name: {
+		validator: isString,
+	},
+	query: {
+		validator: isString,
+	},
 	selectedRoles: Config.array(
 		Config.shapeOf({
-			id: Config.oneOfType([Config.number(), Config.string()]),
-			name: Config.string(),
+			id: Config.oneOfType([
+				Config.number(),
+				{
+					validator: isString,
+				},
+			]),
+			name: {
+				validator: isString,
+			},
 		})
 	).value([]),
 };

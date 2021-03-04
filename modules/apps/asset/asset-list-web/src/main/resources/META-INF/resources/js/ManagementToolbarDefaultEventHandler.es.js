@@ -13,7 +13,6 @@
  */
 
 import {DefaultEventHandler, openSimpleInputModal} from 'frontend-js-web';
-import {Config} from 'metal-state';
 
 class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	addAssetListEntry(itemData) {
@@ -40,7 +39,9 @@ class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 }
 
 ManagementToolbarDefaultEventHandler.STATE = {
-	spritemap: Config.string(),
+	spritemap: {
+		validator: (value) => typeof value === 'string',
+	},
 };
 
 export default ManagementToolbarDefaultEventHandler;

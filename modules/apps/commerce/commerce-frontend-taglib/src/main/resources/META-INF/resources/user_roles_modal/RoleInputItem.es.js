@@ -19,6 +19,9 @@ import Soy, {Config} from 'metal-soy';
 
 import template from './RoleInputItem.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
 class RoleInputItem extends Component {
 	_handleRemoveItem(evt) {
 		evt.preventDefault();
@@ -32,9 +35,19 @@ class RoleInputItem extends Component {
 Soy.register(RoleInputItem, template);
 
 RoleInputItem.STATE = {
-	id: Config.oneOfType([Config.number(), Config.string()]).required(),
-	name: Config.string().required(),
-	spritemap: Config.string(),
+	id: Config.oneOfType([
+		Config.number(),
+		{
+			validator: isString,
+		},
+	]).required(),
+	name: {
+		required: true,
+		validator: isString,
+	},
+	spritemap: {
+		validator: isString,
+	},
 };
 
 export {RoleInputItem};

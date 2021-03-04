@@ -18,6 +18,10 @@ import Soy, {Config} from 'metal-soy';
 
 import template from './SearchResults.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class SearchResults extends Component {
 	created() {
 		this.search = debounce(this.search.bind(this), 500);
@@ -179,19 +183,36 @@ class SearchResults extends Component {
 Soy.register(SearchResults, template);
 
 SearchResults.STATE = {
-	commerceAccountId: Config.oneOfType([Config.number(), Config.string()]),
+	commerceAccountId: Config.oneOfType([
+		Config.number(),
+		{
+			validator: isString,
+		},
+	]),
 	loading: Config.bool().value(false),
-	queryString: Config.string().value(''),
-	queryValue: Config.string().value(''),
+	queryString: {
+		validator: isString,
+		value: '',
+	},
+	queryValue: {
+		validator: isString,
+		value: '',
+	},
 	results: {
 		value: [],
 	},
-	searchAPI: Config.string().required(),
+	searchAPI: {
+		required: true,
+		validator: isString,
+	},
 	selectedIndex: {
 		setter: 'setSelected',
 		value: -1,
 	},
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 	visible: Config.bool().value(false),
 };
 

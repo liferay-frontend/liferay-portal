@@ -24,6 +24,10 @@ import 'clay-modal';
 
 import '../input_utils/CommerceInputText';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class AddressModal extends Component {
 	attached() {
 		return this._fetchCountries();
@@ -229,21 +233,54 @@ AddressModal.STATE = {
 		Config.shapeOf({
 			billingAllowed: Config.bool().required(),
 			id: Config.number().required(),
-			name: Config.string().required(),
+			name: {
+				required: true,
+				validator: isString,
+			},
 			shippingAllowed: Config.bool().required(),
 		})
 	).value([]),
 	_firstFormValid: Config.bool().value(false),
 	_formData: Config.shapeOf({
-		address: Config.string(),
-		addressType: Config.oneOfType([Config.string(), Config.number()]),
-		city: Config.string(),
-		country: Config.oneOfType([Config.string(), Config.number()]),
-		id: Config.oneOfType([Config.string(), Config.number()]),
-		referent: Config.string(),
-		region: Config.oneOfType([Config.string(), Config.number()]),
-		telephone: Config.string(),
-		zipCode: Config.string(),
+		address: {
+			validator: isString,
+		},
+		addressType: Config.oneOfType([
+			{
+				validator: isString,
+			},
+			Config.number(),
+		]),
+		city: {
+			validator: isString,
+		},
+		country: Config.oneOfType([
+			{
+				validator: isString,
+			},
+			Config.number(),
+		]),
+		id: Config.oneOfType([
+			{
+				validator: isString,
+			},
+			Config.number(),
+		]),
+		referent: {
+			validator: isString,
+		},
+		region: Config.oneOfType([
+			{
+				validator: isString,
+			},
+			Config.number(),
+		]),
+		telephone: {
+			validator: isString,
+		},
+		zipCode: {
+			validator: isString,
+		},
 	}).value({
 		address: null,
 		addressType: 2,
@@ -261,14 +298,25 @@ AddressModal.STATE = {
 	_regions: Config.array(
 		Config.shapeOf({
 			id: Config.number().required(),
-			name: Config.string().required(),
+			name: {
+				required: true,
+				validator: isString,
+			},
 		})
 	).value([]),
 	_secondFormValid: Config.bool().value(false),
 	_stage: Config.number(Config.oneOf([1, 2])).value(1),
-	countriesAPI: Config.string().required(),
-	regionsAPI: Config.string().required(),
-	spritemap: Config.string(),
+	countriesAPI: {
+		required: true,
+		validator: isString,
+	},
+	regionsAPI: {
+		required: true,
+		validator: isString,
+	},
+	spritemap: {
+		validator: isString,
+	},
 };
 
 export {AddressModal};

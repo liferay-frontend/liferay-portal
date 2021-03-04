@@ -28,6 +28,10 @@ import './UserInputItem.es';
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class UserInvitation extends Component {
 	attached() {
 		this._debouncedFetchUsers = debounce(this._fetchUsers.bind(this), 300);
@@ -141,19 +145,41 @@ class UserInvitation extends Component {
 Soy.register(UserInvitation, template);
 
 const USER_SCHEMA = Config.shapeOf({
-	email: Config.string().required(),
-	name: Config.string().required(),
-	thumbnail: Config.string().required(),
-	userId: Config.oneOfType([Config.number(), Config.string()]).required(),
+	email: {
+		required: true,
+		validator: isString,
+	},
+	name: {
+		required: true,
+		validator: isString,
+	},
+	thumbnail: {
+		required: true,
+		validator: isString,
+	},
+	userId: Config.oneOfType([
+		Config.number(),
+		{
+			validator: isString,
+		},
+	]).required(),
 });
 
 UserInvitation.STATE = {
 	_loading: Config.bool().internal().value(false),
 	addedUsers: Config.array(USER_SCHEMA).value([]),
-	query: Config.string().value(''),
-	spritemap: Config.string(),
+	query: {
+		validator: isString,
+		value: '',
+	},
+	spritemap: {
+		validator: isString,
+	},
 	users: Config.array(USER_SCHEMA).value([]),
-	usersAPI: Config.string().value(''),
+	usersAPI: {
+		validator: isString,
+		value: '',
+	},
 };
 
 export {UserInvitation};

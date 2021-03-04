@@ -13,7 +13,6 @@
  */
 
 import {PortletBase, openSelectionModal} from 'frontend-js-web';
-import {Config} from 'metal-state';
 
 /**
  * @class MoveEntries
@@ -103,7 +102,10 @@ MoveEntries.STATE = {
 	 * @review
 	 * @type {string}
 	 */
-	selectFolderURL: Config.string().required(),
+	selectFolderURL: {
+		required: true,
+		validator: (value) => typeof value === 'string',
+	},
 };
 
 export default MoveEntries;

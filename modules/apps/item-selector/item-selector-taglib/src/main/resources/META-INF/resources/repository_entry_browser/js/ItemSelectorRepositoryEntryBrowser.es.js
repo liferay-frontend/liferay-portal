@@ -25,6 +25,10 @@ const STR_DRAG_OVER = 'dragover';
 const STR_DROP = 'drop';
 const statusCode = Liferay.STATUS_CODE;
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 /**
  * Handles the events in the Repository Entry Browser taglib.
  *
@@ -517,7 +521,9 @@ ItemSelectorRepositoryEntryBrowser.STATE = {
 	 * @memberof ItemSelectorRepositoryEntryBrowser
 	 * @type {String}
 	 */
-	closeCaption: Config.string(),
+	closeCaption: {
+		validator: isString,
+	},
 
 	/**
 	 * Time to hide the alert messages.
@@ -533,7 +539,12 @@ ItemSelectorRepositoryEntryBrowser.STATE = {
 	 * @memberof ItemSelectorRepositoryEntryBrowser
 	 * @type {Number | String}
 	 */
-	maxFileSize: Config.oneOfType([Config.number(), Config.string()])
+	maxFileSize: Config.oneOfType([
+		Config.number(),
+		{
+			validator: isString,
+		},
+	])
 		.setter('_convertMaxFileSize')
 		.value(Liferay.PropsValues.UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE),
 
@@ -544,7 +555,9 @@ ItemSelectorRepositoryEntryBrowser.STATE = {
 	 * @memberof ItemSelectorRepositoryEntryBrowser
 	 * @type {String}
 	 */
-	uploadItemReturnType: Config.string(),
+	uploadItemReturnType: {
+		validator: isString,
+	},
 
 	/**
 	 * URL to upload an item.
@@ -553,7 +566,9 @@ ItemSelectorRepositoryEntryBrowser.STATE = {
 	 * @memberof ItemSelectorRepositoryEntryBrowser
 	 * @type {String}
 	 */
-	uploadItemURL: Config.string(),
+	uploadItemURL: {
+		validator: isString,
+	},
 
 	/**
 	 * Valid extensions for files uploaded to the Item Selector.
@@ -562,7 +577,10 @@ ItemSelectorRepositoryEntryBrowser.STATE = {
 	 * @memberof ItemSelectorRepositoryEntryBrowser
 	 * @type {String}
 	 */
-	validExtensions: Config.string().value('*'),
+	validExtensions: {
+		validator: isString,
+		value: '*',
+	},
 };
 
 export default ItemSelectorRepositoryEntryBrowser;

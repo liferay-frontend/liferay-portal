@@ -39,7 +39,9 @@ export default (Component) => {
 	WithLocale.STATE = {
 		_localizedValue: Config.arrayOf(
 			Config.shapeOf({
-				name: Config.string(),
+				name: {
+					validator: (value) => typeof value === 'string',
+				},
 				value: Config.any(),
 			})
 		).value([]),

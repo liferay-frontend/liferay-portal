@@ -28,6 +28,9 @@ import '../user_utils/UserInputItem.es';
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+function isString(value) {
+	return typeof value === 'string';
+}
 class UserInvitationModal extends Component {
 	created() {
 		this._debouncedFetchUser = debounce(this._fetchUsers.bind(this), 300);
@@ -157,20 +160,42 @@ class UserInvitationModal extends Component {
 Soy.register(UserInvitationModal, template);
 
 const USER_SCHEMA = Config.shapeOf({
-	email: Config.string().required(),
-	name: Config.string().required(),
-	thumbnail: Config.string().required(),
-	userId: Config.oneOfType([Config.string(), Config.number()]).required(),
+	email: {
+		required: true,
+		validator: isString,
+	},
+	name: {
+		required: true,
+		validator: isString,
+	},
+	thumbnail: {
+		required: true,
+		validator: isString,
+	},
+	userId: Config.oneOfType([
+		{
+			validator: isString,
+		},
+		Config.number(),
+	]).required(),
 });
 
 UserInvitationModal.STATE = {
 	_loading: Config.bool().internal().value(false),
 	_modalVisible: Config.bool().internal().value(false),
 	addedUsers: Config.array(USER_SCHEMA).value([]),
-	query: Config.string().value(''),
-	spritemap: Config.string(),
+	query: {
+		validator: isString,
+		value: '',
+	},
+	spritemap: {
+		validator: isString,
+	},
 	users: Config.array(USER_SCHEMA).value([]),
-	usersAPI: Config.string().value(''),
+	usersAPI: {
+		validator: isString,
+		value: '',
+	},
 };
 
 export {UserInvitationModal};

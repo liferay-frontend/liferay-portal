@@ -25,6 +25,9 @@ import './RoleInputItem.es';
 
 import './RoleListItem.es';
 
+function isString(value) {
+	return typeof value === 'string';
+}
 class UserRolesModal extends Component {
 	syncSelectedRoles() {
 		const contentWrapper = this.element.querySelector(
@@ -121,17 +124,30 @@ class UserRolesModal extends Component {
 Soy.register(UserRolesModal, template);
 
 const ROLE_SCHEMA = Config.shapeOf({
-	id: Config.oneOfType([Config.number(), Config.string()]).required(),
-	name: Config.string().required(),
+	id: Config.oneOfType([
+		Config.number(),
+		{
+			validator: isString,
+		},
+	]).required(),
+	name: {
+		required: true,
+		validator: isString,
+	},
 });
 
 UserRolesModal.STATE = {
 	_modalVisible: Config.bool().internal().value(false),
 	filteredRoles: Config.array(ROLE_SCHEMA).value([]),
-	query: Config.string().value(''),
+	query: {
+		validator: isString,
+		value: '',
+	},
 	roles: Config.array(ROLE_SCHEMA).value([]),
 	selectedRoles: Config.array(ROLE_SCHEMA).value([]),
-	spritemap: Config.string(),
+	spritemap: {
+		validator: isString,
+	},
 };
 
 export {UserRolesModal};

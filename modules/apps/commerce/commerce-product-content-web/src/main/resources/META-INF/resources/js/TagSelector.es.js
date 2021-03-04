@@ -18,6 +18,10 @@ import {Config} from 'metal-state';
 
 import templates from './TagSelector.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 /**
  * TagSelector is a temporary Component wrapping the existing
  * AUI module liferay-commerce-frontend-asset-tag-selector
@@ -83,20 +87,29 @@ TagSelector.STATE = {
 	 * request being closed
 	 */
 
-	eventName: Config.string().value(''),
+	eventName: {
+		validator: isString,
+		value: '',
+	},
 
 	/**
 	 * Array of group ids (sites) where tags will be searched.
 	 * It defaults to an empty array, which is the current site.
 	 */
 
-	groupIds: Config.string().value(''),
+	groupIds: {
+		validator: isString,
+		value: '',
+	},
 
 	/**
 	 * Id of the hidden input used to pass the selected tags
 	 */
 
-	hiddenInput: Config.string().value(''),
+	hiddenInput: {
+		validator: isString,
+		value: '',
+	},
 
 	/**
 	 * Number used for avoiding conflicts between different
@@ -110,7 +123,10 @@ TagSelector.STATE = {
 	 * instances of the component/portlet.
 	 */
 
-	namespace: Config.string().value(''),
+	namespace: {
+		validator: isString,
+		value: '',
+	},
 
 	/**
 	 * Existing information of the form.
@@ -127,7 +143,10 @@ TagSelector.STATE = {
 	 * the select button will not appear.
 	 */
 
-	tagSelectorURL: Config.string().value(''),
+	tagSelectorURL: {
+		validator: isString,
+		value: '',
+	},
 };
 
 Soy.register(TagSelector, templates);

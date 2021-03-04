@@ -16,6 +16,10 @@ import {Config} from 'metal-state';
 
 import {focusedFieldStructure, pageStructure} from '../../util/config.es';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 export default {
 
 	/**
@@ -34,7 +38,9 @@ export default {
 	 * @type {?string}
 	 */
 
-	defaultLanguageId: Config.string(),
+	defaultLanguageId: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -43,7 +49,9 @@ export default {
 	 * @type {?string}
 	 */
 
-	editingLanguageId: Config.string(),
+	editingLanguageId: {
+		validator: isString,
+	},
 
 	/**
 	 * @default []
@@ -61,7 +69,9 @@ export default {
 	 * @type {?string}
 	 */
 
-	fieldSetDefinitionURL: Config.string(),
+	fieldSetDefinitionURL: {
+		validator: isString,
+	},
 
 	/**
 	 * @default []
@@ -105,7 +115,10 @@ export default {
 	 * @type {string}
 	 */
 
-	paginationMode: Config.string().required(),
+	paginationMode: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * @instance
@@ -113,7 +126,10 @@ export default {
 	 * @type {string}
 	 */
 
-	portletNamespace: Config.string().required(),
+	portletNamespace: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -122,7 +138,10 @@ export default {
 	 * @type {!string}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * @instance
@@ -143,5 +162,7 @@ export default {
 	 * @type {?string}
 	 */
 
-	view: Config.string(),
+	view: {
+		validator: isString,
+	},
 };

@@ -13,7 +13,6 @@
  */
 
 import {DefaultEventHandler, openSimpleInputModal} from 'frontend-js-web';
-import {Config} from 'metal-state';
 
 class LayoutPageTemplateEntryManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	addLayoutPageTemplateEntry(itemData) {
@@ -44,7 +43,9 @@ class LayoutPageTemplateEntryManagementToolbarDefaultEventHandler extends Defaul
 }
 
 LayoutPageTemplateEntryManagementToolbarDefaultEventHandler.STATE = {
-	spritemap: Config.string(),
+	spritemap: {
+		validator: (value) => typeof value === 'string',
+	},
 };
 
 export default LayoutPageTemplateEntryManagementToolbarDefaultEventHandler;

@@ -25,6 +25,10 @@ const BUTTON_ROW_CLASS = '.journal-article-button-row';
 
 const SIDEBAR_VISIBLE_CLASS = 'contextual-sidebar-visible';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 /**
  * JournalPortlet
  *
@@ -389,11 +393,19 @@ class JournalPortlet extends PortletBase {
 
 JournalPortlet.STATE = {
 	_selectedLanguageId: Config.internal().string(),
-	articleId: Config.string(),
+	articleId: {
+		validator: isString,
+	},
 	availableLocales: Config.array(),
-	classNameId: Config.string(),
-	contentTitle: Config.string(),
-	defaultLanguageId: Config.string(),
+	classNameId: {
+		validator: isString,
+	},
+	contentTitle: {
+		validator: isString,
+	},
+	defaultLanguageId: {
+		validator: isString,
+	},
 };
 
 export {JournalPortlet};

@@ -17,6 +17,10 @@ import {Config} from 'metal-state';
 
 import toggleDisabled from './util/toggle_disabled';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 /**
  * Shows a dialog and handles the selected item.
  */
@@ -157,7 +161,10 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	buttonAddLabel: Config.string().value(Liferay.Language.get('add')),
+	buttonAddLabel: {
+		validator: isString,
+		value: Liferay.Language.get('add'),
+	},
 
 	/**
 	 * Label for the Cancel button.
@@ -166,7 +173,10 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	buttonCancelLabel: Config.string().value(Liferay.Language.get('cancel')),
+	buttonCancelLabel: {
+		validator: isString,
+		value: Liferay.Language.get('cancel'),
+	},
 
 	/**
 	 * CSS classes to pass to the dialog.
@@ -175,7 +185,9 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	dialogClasses: Config.string(),
+	dialogClasses: {
+		validator: isString,
+	},
 
 	/**
 	 * Event name.
@@ -184,7 +196,10 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	eventName: Config.string().required(),
+	eventName: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * The selected item(s) in the dialog.
@@ -212,7 +227,10 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	title: Config.string().value(Liferay.Language.get('select-file')),
+	title: {
+		validator: isString,
+		value: Liferay.Language.get('select-file'),
+	},
 
 	/**
 	 * URL that opens the dialog.
@@ -221,7 +239,10 @@ ItemSelectorDialog.STATE = {
 	 * @memberof ItemSelectorDialog
 	 * @type {String}
 	 */
-	url: Config.string().required(),
+	url: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * Dialog's zIndex.

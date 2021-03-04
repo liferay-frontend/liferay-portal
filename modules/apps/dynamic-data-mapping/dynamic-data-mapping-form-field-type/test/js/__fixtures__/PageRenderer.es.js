@@ -23,7 +23,9 @@ class PageRenderer extends Component {}
 PageRenderer.STATE = {
 	items: Config.arrayOf(
 		Config.shapeOf({
-			type: Config.string(),
+			type: {
+				validator: (value) => typeof value === 'string',
+			},
 		})
 	),
 };

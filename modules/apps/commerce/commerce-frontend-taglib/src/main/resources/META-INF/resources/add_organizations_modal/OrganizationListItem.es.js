@@ -23,6 +23,10 @@ import '../add_to_tick_item/AddToTickItem.es';
 
 import '../autocomplete_item/AutocompleteItem.es';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class OrganizationListItem extends Component {
 	syncSelectedOrganizations() {
 		this._selected = this.selectedOrganizations.reduce(
@@ -49,13 +53,30 @@ Soy.register(OrganizationListItem, template);
 OrganizationListItem.STATE = {
 	_selected: Config.bool().value(false),
 	colorId: Config.number(),
-	id: Config.oneOfType([Config.number(), Config.string()]),
-	name: Config.string().required(),
-	query: Config.string(),
+	id: Config.oneOfType([
+		Config.number(),
+		{
+			validator: isString,
+		},
+	]),
+	name: {
+		required: true,
+		validator: isString,
+	},
+	query: {
+		validator: isString,
+	},
 	selectedOrganizations: Config.array(
 		Config.shapeOf({
-			id: Config.oneOfType([Config.number(), Config.string()]),
-			name: Config.string(),
+			id: Config.oneOfType([
+				Config.number(),
+				{
+					validator: isString,
+				},
+			]),
+			name: {
+				validator: isString,
+			},
 		})
 	).value([]),
 };

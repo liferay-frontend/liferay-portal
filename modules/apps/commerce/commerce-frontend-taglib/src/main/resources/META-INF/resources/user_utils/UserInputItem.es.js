@@ -15,9 +15,13 @@
 'use strict';
 
 import Component from 'metal-component';
-import Soy, {Config} from 'metal-soy';
+import Soy from 'metal-soy';
 
 import template from './UserInputItem.soy';
+
+function isString(value) {
+	return typeof value === 'string';
+}
 
 class UserInputItem extends Component {
 	_handleRemoveItem(evt) {
@@ -32,10 +36,19 @@ class UserInputItem extends Component {
 Soy.register(UserInputItem, template);
 
 UserInputItem.STATE = {
-	email: Config.string().required(),
-	name: Config.string(),
-	spritemap: Config.string(),
-	thumbnail: Config.string(),
+	email: {
+		required: true,
+		validator: isString,
+	},
+	name: {
+		validator: isString,
+	},
+	spritemap: {
+		validator: isString,
+	},
+	thumbnail: {
+		validator: isString,
+	},
 };
 
 export {UserInputItem};

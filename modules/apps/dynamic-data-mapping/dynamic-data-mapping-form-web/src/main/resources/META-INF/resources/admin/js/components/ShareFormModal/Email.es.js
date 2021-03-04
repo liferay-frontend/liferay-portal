@@ -17,6 +17,10 @@ import {makeFetch} from 'dynamic-data-mapping-form-renderer/js/util/fetch.es';
 import Component from 'metal-jsx';
 import {Config} from 'metal-state';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class Email extends Component {
 	created() {
 		this._fetchAutocompleteUser();
@@ -219,7 +223,9 @@ Email.PROPS = {
 	 * @memberof Email
 	 * @type {!string}
 	 */
-	autocompleteUserURL: Config.string(),
+	autocompleteUserURL: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -235,7 +241,10 @@ Email.PROPS = {
 	 * @memberof Email
 	 * @type {!spritemap}
 	 */
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 };
 
 Email.STATE = {

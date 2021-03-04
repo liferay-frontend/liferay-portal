@@ -17,7 +17,10 @@ import {
 	openSelectionModal,
 	openSimpleInputModal,
 } from 'frontend-js-web';
-import {Config} from 'metal-state';
+
+function isString(value) {
+	return typeof value === 'string';
+}
 
 class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	addFragmentEntry(itemData) {
@@ -139,14 +142,30 @@ class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 }
 
 ManagementToolbarDefaultEventHandler.STATE = {
-	copyContributedFragmentEntryURL: Config.string(),
-	copyFragmentEntryURL: Config.string(),
-	deleteFragmentCompositionsAndFragmentEntriesURL: Config.string(),
-	exportFragmentCompositionsAndFragmentEntriesURL: Config.string(),
-	fragmentCollectionId: Config.string(),
-	moveFragmentCompositionsAndFragmentEntriesURL: Config.string(),
-	selectFragmentCollectionURL: Config.string(),
-	spritemap: Config.string(),
+	copyContributedFragmentEntryURL: {
+		validator: isString,
+	},
+	copyFragmentEntryURL: {
+		validator: isString,
+	},
+	deleteFragmentCompositionsAndFragmentEntriesURL: {
+		validator: isString,
+	},
+	exportFragmentCompositionsAndFragmentEntriesURL: {
+		validator: isString,
+	},
+	fragmentCollectionId: {
+		validator: isString,
+	},
+	moveFragmentCompositionsAndFragmentEntriesURL: {
+		validator: isString,
+	},
+	selectFragmentCollectionURL: {
+		validator: isString,
+	},
+	spritemap: {
+		validator: isString,
+	},
 };
 
 export default ManagementToolbarDefaultEventHandler;

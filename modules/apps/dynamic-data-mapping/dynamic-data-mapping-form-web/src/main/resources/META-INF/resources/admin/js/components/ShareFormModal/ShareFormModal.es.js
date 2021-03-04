@@ -23,6 +23,10 @@ import Component, {Config} from 'metal-jsx';
 import Email from './Email.es';
 import Link from './Link.es';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class ShareFormModal extends Component {
 	attached() {
 		this._shareButtonClickEventHandler = delegate(
@@ -215,7 +219,9 @@ ShareFormModal.PROPS = {
 	 * @memberof ShareFormModal
 	 * @type {!string}
 	 */
-	autocompleteUserURL: Config.string(),
+	autocompleteUserURL: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -231,7 +237,9 @@ ShareFormModal.PROPS = {
 	 * @memberof ShareFormModal
 	 * @type {!string}
 	 */
-	portletNamespace: Config.string(),
+	portletNamespace: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -239,7 +247,9 @@ ShareFormModal.PROPS = {
 	 * @memberof ShareFormModal
 	 * @type {!string}
 	 */
-	shareFormInstanceURL: Config.string(),
+	shareFormInstanceURL: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -247,7 +257,9 @@ ShareFormModal.PROPS = {
 	 * @memberof ShareFormModal
 	 * @type {!string}
 	 */
-	spritemap: Config.string(),
+	spritemap: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -255,7 +267,9 @@ ShareFormModal.PROPS = {
 	 * @memberof ShareFormModal
 	 * @type {!string}
 	 */
-	url: Config.string(),
+	url: {
+		validator: isString,
+	},
 };
 
 export default ShareFormModal;

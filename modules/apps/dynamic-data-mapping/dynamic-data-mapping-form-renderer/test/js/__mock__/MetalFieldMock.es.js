@@ -16,7 +16,6 @@ import './MetalFieldMockRegister.soy';
 
 import Component from 'metal-component';
 import Soy from 'metal-soy';
-import {Config} from 'metal-state';
 
 import templates from './MetalFieldMock.soy';
 
@@ -61,7 +60,9 @@ class MetalFieldMock extends Component {
 }
 
 MetalFieldMock.STATE = {
-	name: Config.string(),
+	name: {
+		validator: (value) => typeof value === 'string',
+	},
 };
 
 Soy.register(MetalFieldMock, templates);

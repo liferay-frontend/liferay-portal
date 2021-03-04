@@ -25,6 +25,10 @@ import '../add_to_tick_item/AddToTickItem.es';
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class UserListItem extends Component {
 	attached() {
 		return this._updateStatus();
@@ -79,17 +83,36 @@ Soy.register(UserListItem, template);
 
 UserListItem.STATE = {
 	_invited: Config.bool().value(false),
-	_status: Config.string().value('valid'),
+	_status: {
+		validator: isString,
+		value: '',
+	},
 	addedUsers: Config.array(
 		Config.shapeOf({
-			email: Config.string(),
+			email: {
+				validator: isString,
+			},
 		})
 	).value([]),
-	email: Config.string().required(),
-	name: Config.string(),
-	query: Config.string(),
-	thumbnail: Config.string(),
-	userId: Config.oneOfType([Config.string(), Config.number()]),
+	email: {
+		required: true,
+		validator: isString,
+	},
+	name: {
+		validator: isString,
+	},
+	query: {
+		validator: isString,
+	},
+	thumbnail: {
+		validator: isString,
+	},
+	userId: Config.oneOfType([
+		{
+			validator: isString,
+		},
+		Config.number(),
+	]),
 };
 
 export {UserListItem};

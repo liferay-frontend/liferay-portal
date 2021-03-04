@@ -149,7 +149,9 @@ Soy.register(SearchBar, template);
 SearchBar.STATE = {
 	active: Config.bool(),
 	placeholder: Config.value(''),
-	query: Config.string(),
+	query: {
+		validator: (value) => typeof value === 'string',
+	},
 };
 
 export {SearchBar};

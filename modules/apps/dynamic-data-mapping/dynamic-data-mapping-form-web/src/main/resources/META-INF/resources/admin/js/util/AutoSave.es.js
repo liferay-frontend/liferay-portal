@@ -174,7 +174,9 @@ AutoSave.PROPS = {
 	interval: Config.number().setter('_setInterval'),
 	saveAsDraft: Config.bool().value(true),
 	stateSyncronizer: Config.any(),
-	url: Config.string(),
+	url: {
+		validator: (value) => typeof value === 'string',
+	},
 };
 
 export default AutoSave;

@@ -18,6 +18,10 @@ import {Config} from 'metal-state';
 
 import templates from './CategorySelector.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 /**
  * CategorySelector is a temporary Component wrapping the existing
  * AUI module liferay-commerce-frontend-asset-categories-selector
@@ -77,27 +81,39 @@ CategorySelector.STATE = {
 	 * to select categories.
 	 */
 
-	categorySelectorURL: Config.string().value(''),
+	categorySelectorURL: {
+		validator: isString,
+		value: '',
+	},
 
 	/**
 	 * Name of the event that will be dispatched when the
 	 * category selector dialog is closed
 	 */
 
-	eventName: Config.string().value(''),
+	eventName: {
+		validator: isString,
+		value: '',
+	},
 
 	/**
 	 * Array of group ids (sites) where categories will be searched.
 	 * It defaults to an empty array, which is the current site.
 	 */
 
-	groupIds: Config.string().value(''),
+	groupIds: {
+		validator: isString,
+		value: '',
+	},
 
 	/**
 	 * Id of the hidden input used to pass the selected categories
 	 */
 
-	hiddenInput: Config.string().value(''),
+	hiddenInput: {
+		validator: isString,
+		value: '',
+	},
 
 	/**
 	 * Number used for avoiding conflicts between different
@@ -111,7 +127,10 @@ CategorySelector.STATE = {
 	 * instances of the component/portlet.
 	 */
 
-	namespace: Config.string().value(''),
+	namespace: {
+		validator: isString,
+		value: '',
+	},
 
 	/**
 	 * Existing information of the form.
@@ -128,7 +147,10 @@ CategorySelector.STATE = {
 	 * Vocabularies are super groups which group a set of categories.
 	 */
 
-	vocabularyIds: Config.string().value(''),
+	vocabularyIds: {
+		validator: isString,
+		value: '',
+	},
 };
 
 Soy.register(CategorySelector, templates);

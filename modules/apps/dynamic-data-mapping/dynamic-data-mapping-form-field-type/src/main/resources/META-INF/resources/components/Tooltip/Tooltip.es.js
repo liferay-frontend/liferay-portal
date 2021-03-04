@@ -24,6 +24,10 @@ import {Config} from 'metal-state';
 
 import templates from './Tooltip.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 const POSITIONS = ['top', 'left', 'right', 'bottom'];
 
 class Tooltip extends Component {
@@ -64,7 +68,10 @@ Tooltip.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	icon: Config.string().required(),
+	icon: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -73,7 +80,9 @@ Tooltip.STATE = {
 	 * @type {?(number|undefined)}
 	 */
 
-	position: Config.string(),
+	position: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -91,7 +100,10 @@ Tooltip.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -100,7 +112,10 @@ Tooltip.STATE = {
 	 * @type {?(string|undefined)}
 	 */
 
-	text: Config.string().required(),
+	text: {
+		required: true,
+		validator: isString,
+	},
 };
 
 export default Tooltip;

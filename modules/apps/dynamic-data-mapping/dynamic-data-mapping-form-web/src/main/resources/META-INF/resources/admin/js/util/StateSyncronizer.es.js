@@ -285,7 +285,10 @@ StateSyncronizer.PROPS = {
 	localizedDescription: Config.object().value({}),
 	localizedName: Config.object().value({}),
 	nameEditor: Config.any(),
-	namespace: Config.string().required(),
+	namespace: {
+		required: true,
+		validator: (value) => typeof value === 'string',
+	},
 	published: Config.bool(),
 	settingsDDMForm: Config.any(),
 	store: Config.any(),

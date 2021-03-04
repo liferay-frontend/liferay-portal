@@ -44,6 +44,10 @@ import handleLanguageIdDeleted from './handlers/languageIdDeletedHandler.es';
 import handleSectionAdded from './handlers/sectionAddedHandler.es';
 import {generateFieldName} from './util/fields.es';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 /**
  * LayoutProvider listens to your children's events to
  * control the `pages` and make manipulations.
@@ -832,7 +836,9 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	defaultLanguageId: Config.string(),
+	defaultLanguageId: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -841,7 +847,9 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	editingLanguageId: Config.string(),
+	editingLanguageId: {
+		validator: isString,
+	},
 
 	/**
 	 * @default {}
@@ -877,7 +885,9 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	fieldSetDefinitionURL: Config.string(),
+	fieldSetDefinitionURL: {
+		validator: isString,
+	},
 
 	/**
 	 * @default []
@@ -915,7 +925,10 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	initialPaginationMode: Config.string().value('wizard'),
+	initialPaginationMode: {
+		validator: isString,
+		value: 'wizard',
+	},
 
 	/**
 	 * @instance
@@ -945,7 +958,9 @@ LayoutProvider.PROPS = {
 	 * @type {?(array|undefined)}
 	 */
 
-	spritemap: Config.string(),
+	spritemap: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -954,7 +969,9 @@ LayoutProvider.PROPS = {
 	 * @type {?string}
 	 */
 
-	view: Config.string(),
+	view: {
+		validator: isString,
+	},
 };
 
 LayoutProvider.STATE = {
@@ -988,7 +1005,10 @@ LayoutProvider.STATE = {
 		]).required(),
 		pageIndex: Config.number().required(),
 		rowIndex: Config.number().required(),
-		type: Config.string().required(),
+		type: {
+			required: true,
+			validator: isString,
+		},
 	}).value({}),
 
 	/**
@@ -1008,7 +1028,10 @@ LayoutProvider.STATE = {
 	 * @type {string}
 	 */
 
-	paginationMode: Config.string().valueFn('_paginationModeValueFn'),
+	paginationMode: {
+		validator: isString,
+		valueFn: '_paginationModeValueFn',
+	},
 
 	/**
 	 * @default {}
@@ -1024,7 +1047,10 @@ LayoutProvider.STATE = {
 		]).required(),
 		pageIndex: Config.number().required(),
 		rowIndex: Config.number().required(),
-		type: Config.string().required(),
+		type: {
+			required: true,
+			validator: isString,
+		},
 	}).value({}),
 
 	/**

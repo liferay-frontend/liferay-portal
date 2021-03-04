@@ -39,6 +39,10 @@ import {
 } from '../../util/fieldSupport.es';
 import FieldTypeBox from '../FieldTypeBox/FieldTypeBox.es';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 /**
  * Sidebar is a tooling to mount forms.
  */
@@ -1382,7 +1386,9 @@ Sidebar.PROPS = {
 	 * @type {?string}
 	 */
 
-	defaultLanguageId: Config.string(),
+	defaultLanguageId: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -1391,7 +1397,9 @@ Sidebar.PROPS = {
 	 * @type {?string}
 	 */
 
-	editingLanguageId: Config.string(),
+	editingLanguageId: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -1400,7 +1408,9 @@ Sidebar.PROPS = {
 	 * @type {?string}
 	 */
 
-	fieldSetDefinitionURL: Config.string(),
+	fieldSetDefinitionURL: {
+		validator: isString,
+	},
 
 	/**
 	 * @default []
@@ -1436,7 +1446,9 @@ Sidebar.PROPS = {
 	 * @type {?string}
 	 */
 
-	portletNamespace: Config.string(),
+	portletNamespace: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -1454,7 +1466,10 @@ Sidebar.PROPS = {
 	 * @type {?(string|undefined)}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 };
 
 export default Sidebar;

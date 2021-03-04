@@ -13,7 +13,6 @@
  */
 
 import {DefaultEventHandler, openSimpleInputModal} from 'frontend-js-web';
-import {Config} from 'metal-state';
 
 class SelectCollectionManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	addAssetListEntry(itemData) {
@@ -30,7 +29,9 @@ class SelectCollectionManagementToolbarDefaultEventHandler extends DefaultEventH
 }
 
 SelectCollectionManagementToolbarDefaultEventHandler.STATE = {
-	spritemap: Config.string(),
+	spritemap: {
+		validator: (value) => typeof value === 'string',
+	},
 };
 
 export default SelectCollectionManagementToolbarDefaultEventHandler;

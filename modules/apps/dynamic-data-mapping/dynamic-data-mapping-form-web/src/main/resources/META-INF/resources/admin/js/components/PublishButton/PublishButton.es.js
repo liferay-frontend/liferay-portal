@@ -16,6 +16,10 @@ import ClayButton from 'clay-button';
 import Component from 'metal-jsx';
 import {Config} from 'metal-state';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class PublishButton extends Component {
 	publish(event) {
 		this.props.published = true;
@@ -82,11 +86,19 @@ class PublishButton extends Component {
 }
 
 PublishButton.PROPS = {
-	namespace: Config.string().required(),
+	namespace: {
+		required: true,
+		validator: isString,
+	},
 	published: Config.bool().value(false),
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 	submitForm: Config.func().required(),
-	url: Config.string(),
+	url: {
+		validator: isString,
+	},
 };
 
 export default PublishButton;

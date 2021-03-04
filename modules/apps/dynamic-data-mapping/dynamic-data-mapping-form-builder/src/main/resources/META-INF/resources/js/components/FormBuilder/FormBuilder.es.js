@@ -23,6 +23,10 @@ import {pageStructure} from '../../util/config.es';
 import withEditablePageHeader from './withEditablePageHeader.es';
 import withMultiplePages from './withMultiplePages.es';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 const FormNoopAdapter = getConnectedReactComponentAdapter(FormNoop);
 
 /**
@@ -149,7 +153,9 @@ FormBuilderBase.PROPS = {
 	 * @type {?string}
 	 */
 
-	defaultLanguageId: Config.string(),
+	defaultLanguageId: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -158,7 +164,9 @@ FormBuilderBase.PROPS = {
 	 * @type {?string}
 	 */
 
-	editingLanguageId: Config.string(),
+	editingLanguageId: {
+		validator: isString,
+	},
 
 	/**
 	 * @default []
@@ -175,7 +183,10 @@ FormBuilderBase.PROPS = {
 	 * @type {string}
 	 */
 
-	paginationMode: Config.string().required(),
+	paginationMode: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * @instance
@@ -183,7 +194,10 @@ FormBuilderBase.PROPS = {
 	 * @type {string}
 	 */
 
-	portletNamespace: Config.string().required(),
+	portletNamespace: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -192,7 +206,10 @@ FormBuilderBase.PROPS = {
 	 * @type {!string}
 	 */
 
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * @instance
@@ -213,7 +230,9 @@ FormBuilderBase.PROPS = {
 	 * @type {?string}
 	 */
 
-	view: Config.string(),
+	view: {
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined

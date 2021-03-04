@@ -20,6 +20,10 @@ import {
 } from 'frontend-js-web';
 import {Config} from 'metal-state';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 	deleteEntries() {
 		const searchContainer = Liferay.SearchContainer.get(
@@ -128,14 +132,28 @@ class ManagementToolbarDefaultEventHandler extends DefaultEventHandler {
 }
 
 ManagementToolbarDefaultEventHandler.STATE = {
-	addArticleURL: Config.string(),
-	folderId: Config.string(),
-	moveArticlesAndFoldersURL: Config.string(),
-	namespace: Config.string(),
-	openViewMoreStructuresURL: Config.string(),
-	selectEntityURL: Config.string(),
+	addArticleURL: {
+		validator: isString,
+	},
+	folderId: {
+		validator: isString,
+	},
+	moveArticlesAndFoldersURL: {
+		validator: isString,
+	},
+	namespace: {
+		validator: isString,
+	},
+	openViewMoreStructuresURL: {
+		validator: isString,
+	},
+	selectEntityURL: {
+		validator: isString,
+	},
 	trashEnabled: Config.bool(),
-	viewDDMStructureArticlesURL: Config.string(),
+	viewDDMStructureArticlesURL: {
+		validator: isString,
+	},
 };
 
 export default ManagementToolbarDefaultEventHandler;

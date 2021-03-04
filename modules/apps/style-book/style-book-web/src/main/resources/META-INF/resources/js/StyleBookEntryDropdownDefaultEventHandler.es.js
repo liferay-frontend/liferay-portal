@@ -17,7 +17,6 @@ import {
 	openSelectionModal,
 	openSimpleInputModal,
 } from 'frontend-js-web';
-import {Config} from 'metal-state';
 
 class StyleBookEntryDropdownDefaultEventHandler extends DefaultEventHandler {
 	copyStyleBookEntry(itemData) {
@@ -99,7 +98,9 @@ class StyleBookEntryDropdownDefaultEventHandler extends DefaultEventHandler {
 }
 
 StyleBookEntryDropdownDefaultEventHandler.STATE = {
-	spritemap: Config.string(),
+	spritemap: {
+		validator: (value) => typeof value === 'string',
+	},
 };
 
 export default StyleBookEntryDropdownDefaultEventHandler;

@@ -17,6 +17,10 @@ import ClipboardJS from 'clipboard';
 import {selectText} from 'dynamic-data-mapping-form-builder/js/util/dom.es';
 import Component, {Config} from 'metal-jsx';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class Link extends Component {
 	attached() {
 		this._clipboard = new ClipboardJS('.ddm-copy-clipboard');
@@ -129,7 +133,10 @@ Link.PROPS = {
 	 * @memberof Link
 	 * @type {!spritemap}
 	 */
-	spritemap: Config.string().required(),
+	spritemap: {
+		required: true,
+		validator: isString,
+	},
 
 	/**
 	 * @default undefined
@@ -137,7 +144,10 @@ Link.PROPS = {
 	 * @memberof Link
 	 * @type {!string}
 	 */
-	url: Config.string().required(),
+	url: {
+		required: true,
+		validator: isString,
+	},
 };
 
 Link.STATE = {

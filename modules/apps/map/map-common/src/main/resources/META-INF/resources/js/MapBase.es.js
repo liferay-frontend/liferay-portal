@@ -778,7 +778,10 @@ MapBase.STATE = {
 	 * @review
 	 * @type {string}
 	 */
-	boundingBox: Config.string().value(''),
+	boundingBox: {
+		validator: (value) => typeof value === 'string',
+		value: '',
+	},
 
 	/**
 	 * List of controls that will be shown on the map.

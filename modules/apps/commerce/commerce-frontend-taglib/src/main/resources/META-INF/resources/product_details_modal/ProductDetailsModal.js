@@ -21,6 +21,10 @@ import template from './ProductDetailsModal.soy';
 
 import 'clay-modal';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class ProductDetailsModal extends Component {
 	created() {
 		setTimeout(() => {
@@ -39,25 +43,50 @@ Soy.register(ProductDetailsModal, template);
 
 ProductDetailsModal.STATE = {
 	_modalVisible: Config.bool().value(false),
-	addToOrderLink: Config.string(),
-	availability: Config.string()
+	addToOrderLink: {
+		validator: isString,
+	},
+	availability: {
+		validator: isString,
+	}
 		.oneOf(['available', 'inStock', 'notAvailable'])
 		.value('inStock'),
 	categories: Config.array(
 		Config.shapeOf({
-			link: Config.string().required(),
-			name: Config.string().required(),
+			link: {
+				required: true,
+				validator: isString,
+			},
+			name: {
+				required: true,
+				validator: isString,
+			},
 		})
 	).value([]),
-	description: Config.string(),
-	detailsLink: Config.string(),
-	name: Config.string().required(),
-	pictureUrl: Config.string().required(),
+	description: {
+		validator: isString,
+	},
+	detailsLink: {
+		validator: isString,
+	},
+	name: {
+		required: true,
+		validator: isString,
+	},
+	pictureUrl: {
+		required: true,
+		validator: isString,
+	},
 	settings: Config.shapeOf({
 		minQuantity: Config.number(),
 	}).value(),
-	sku: Config.string().required(),
-	spritemap: Config.string(),
+	sku: {
+		required: true,
+		validator: isString,
+	},
+	spritemap: {
+		validator: isString,
+	},
 };
 
 export {ProductDetailsModal};

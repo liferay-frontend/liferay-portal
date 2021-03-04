@@ -14,8 +14,14 @@
 
 import {Config} from 'metal-state';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 export const pageStructure = Config.shapeOf({
-	description: Config.string(),
+	description: {
+		validator: isString,
+	},
 	rows: Config.arrayOf(
 		Config.shapeOf({
 			columns: Config.arrayOf(
@@ -26,12 +32,17 @@ export const pageStructure = Config.shapeOf({
 			),
 		})
 	),
-	title: Config.string(),
+	title: {
+		validator: isString,
+	},
 });
 
 export const focusedFieldStructure = Config.shapeOf({
 	columnIndex: Config.number(),
-	name: Config.string().required(),
+	name: {
+		required: true,
+		validator: isString,
+	},
 	pageIndex: Config.number(),
 	rowIndex: Config.number(),
 });
@@ -39,23 +50,39 @@ export const focusedFieldStructure = Config.shapeOf({
 export const ruleStructure = Config.shapeOf({
 	actions: Config.arrayOf(
 		Config.shapeOf({
-			action: Config.string(),
-			label: Config.string(),
-			target: Config.string(),
+			action: {
+				validator: isString,
+			},
+			label: {
+				validator: isString,
+			},
+			target: {
+				validator: isString,
+			},
 		})
 	),
 	conditions: Config.arrayOf(
 		Config.shapeOf({
 			operands: Config.arrayOf(
 				Config.shapeOf({
-					label: Config.string(),
+					label: {
+						validator: isString,
+					},
 					repeatable: Config.bool(),
-					type: Config.string(),
-					value: Config.string(),
+					type: {
+						validator: isString,
+					},
+					value: {
+						validator: isString,
+					},
 				})
 			),
-			operator: Config.string(),
+			operator: {
+				validator: isString,
+			},
 		})
 	),
-	logicalOperator: Config.string(),
+	logicalOperator: {
+		validator: isString,
+	},
 });

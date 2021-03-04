@@ -18,6 +18,10 @@ import Config from 'metal-state/lib/Config';
 
 import templates from './MockField.soy';
 
+function isString(value) {
+	return typeof value === 'string';
+}
+
 class MockField extends Component {
 	emitFieldEdited(value, fieldName) {
 		this.value = value;
@@ -38,11 +42,17 @@ class MockField extends Component {
 }
 
 MockField.STATE = {
-	fieldName: Config.string(),
-	label: Config.string(),
+	fieldName: {
+		validator: isString,
+	},
+	label: {
+		validator: isString,
+	},
 	options: Config.array(),
 	readOnly: Config.bool(),
-	type: Config.string(),
+	type: {
+		validator: isString,
+	},
 	value: Config.any(),
 };
 
