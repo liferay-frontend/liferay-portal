@@ -22,8 +22,8 @@ export default function analyzeReality() {
 				popoverAlign: 'right',
 				sense: 'see',
 				size: 60,
-				x: 61,
-				y: 243,
+				x: 58,
+				y: 232,
 			},
 			{
 				id: 2,
@@ -32,8 +32,8 @@ export default function analyzeReality() {
 				popoverAlign: 'top',
 				sense: 'touch',
 				size: 50,
-				x: 500,
-				y: 480,
+				x: 475,
+				y: 440,
 			},
 			{
 				id: 3,
@@ -42,8 +42,8 @@ export default function analyzeReality() {
 				popoverAlign: 'left',
 				sense: 'smell',
 				size: 200,
-				x: 1150,
-				y: 325,
+				x: 1090,
+				y: 315,
 			},
 			{
 				id: 4,

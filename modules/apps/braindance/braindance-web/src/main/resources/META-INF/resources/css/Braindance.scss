@@ -2,7 +2,11 @@
 	.braindance-simulation {
 		position: relative;
 
-		.hud {
+		.braindance-image {
+			max-width: 100%;
+		}
+
+		.braindance-hud {
 			border: 2px solid red;
 			position: absolute;
 		}

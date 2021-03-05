@@ -37,7 +37,7 @@ const HUDElement = ({align,info,name,size,x,y}) => {
 			show={show}
 			trigger={
 				<div
-					className="hud"
+					className="braindance-hud"
 					onMouseOver={handleMouseOver}
 					onMouseOut={handleMouseOut}
 					style={{
@@ -64,10 +64,9 @@ export default ({activeSenses = []}) => {
 	}, []);
 
 	return (
-		<div 
-			className="braindance-simulation"
-		>
-			<img 
+		<div className="braindance-simulation">
+			<img
+				className="braindance-image"
 				src="https://steamuserimages-a.akamaihd.net/ugc/2438013375536940927/D370DBF7BFC83ED36F783F08A598FFF3E71A1D61/"
 			/>
 
