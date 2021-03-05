@@ -12,23 +12,23 @@
  * details.
  */
 
-import React, {useEffect, useState} from 'react';
 import ClayPopover from '@clayui/popover';
+import React, {useEffect, useState} from 'react';
 
 import analyzeReality from './analyzeReality';
 
 import '../css/Braindance.scss';
 
-const HUDElement = ({align,info,name,size,x,y}) => {
+const HUDElement = ({align, info, name, size, x, y}) => {
 	const [show, setShow] = useState();
 
 	const handleMouseOut = () => {
 		setShow(false);
-	}
+	};
 
 	const handleMouseOver = () => {
 		setShow(true);
-	}
+	};
 
 	return (
 		<ClayPopover
@@ -38,21 +38,20 @@ const HUDElement = ({align,info,name,size,x,y}) => {
 			trigger={
 				<div
 					className="braindance-hud"
-					onMouseOver={handleMouseOver}
 					onMouseOut={handleMouseOut}
+					onMouseOver={handleMouseOver}
 					style={{
 						height: `${size}px`,
-						left: x - size / 2, 
+						left: x - size / 2,
 						top: y - size / 2,
-						width: `${size}px`
+						width: `${size}px`,
 					}}
-				>
-				</div>
+				></div>
 			}
 		>
 			{info}
 		</ClayPopover>
-	)
+	);
 };
 
 export default ({activeSenses = []}) => {
@@ -70,13 +69,13 @@ export default ({activeSenses = []}) => {
 				src="https://steamuserimages-a.akamaihd.net/ugc/2438013375536940927/D370DBF7BFC83ED36F783F08A598FFF3E71A1D61/"
 			/>
 
-			{realityElements.map(element => (
+			{realityElements.map((element) => (
 				<>
 					{activeSenses.includes(element.sense) && (
 						<HUDElement
 							align={element.popoverAlign}
-							key={element.id}
 							info={element.info}
+							key={element.id}
 							name={element.name}
 							size={element.size}
 							x={element.x}

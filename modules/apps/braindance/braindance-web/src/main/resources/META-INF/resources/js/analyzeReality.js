@@ -28,7 +28,7 @@ export default function analyzeReality() {
 			{
 				id: 2,
 				name: 'Wet balaustrade',
-				info: 'It\'s raining, genius.',
+				info: "It's raining, genius.",
 				popoverAlign: 'top',
 				sense: 'touch',
 				size: 50,
@@ -48,13 +48,14 @@ export default function analyzeReality() {
 			{
 				id: 4,
 				name: 'Hyperloop',
-				info: 'The last design from Alon Misk, based on magnetic levitation that vehicle doesn\'t make a sound.',
+				info:
+					"The last design from Alon Misk, based on magnetic levitation that vehicle doesn't make a sound.",
 				popoverAlign: 'left',
 				sense: 'hear',
 				size: 140,
 				x: 700,
 				y: 140,
-			}
-		]
+			},
+		],
 	};
 }
