@@ -29,7 +29,7 @@ List<String> senses = (List<String>)request.getAttribute("senses");
 				size="3"
 			>
 				<clay:vertical-card
-					icon="page"
+					icon="view"
 					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
 					inputValue="see"
 					propsTransformer="js/CardPropsTransformer"
@@ -43,7 +43,7 @@ List<String> senses = (List<String>)request.getAttribute("senses");
 				size="3"
 			>
 				<clay:vertical-card
-					icon="page"
+					icon="audio"
 					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
 					inputValue="hear"
 					propsTransformer="js/CardPropsTransformer"
@@ -57,7 +57,7 @@ List<String> senses = (List<String>)request.getAttribute("senses");
 				size="3"
 			>
 				<clay:vertical-card
-					icon="page"
+					icon="magic"
 					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
 					inputValue="smell"
 					propsTransformer="js/CardPropsTransformer"
@@ -71,7 +71,7 @@ List<String> senses = (List<String>)request.getAttribute("senses");
 				size="3"
 			>
 				<clay:vertical-card
-					icon="page"
+					icon="move"
 					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
 					inputValue="touch"
 					propsTransformer="js/CardPropsTransformer"
