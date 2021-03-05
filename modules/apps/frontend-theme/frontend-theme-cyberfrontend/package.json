@@ -11,7 +11,7 @@
 		"baseTheme": "styled",
 		"distName": "theme-cyberfrontend",
 		"rubySass": false,
-		"version": "7.1"
+		"version": "7.4"
 	},
 	"main": "package.json",
 	"name": "liferay-theme-cyberfrontend",
