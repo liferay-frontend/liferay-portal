@@ -135,12 +135,12 @@ body {
 	}
 
 	.card {
-		--cut: 3rem;
 		@extend %cut-top-right;
+		--cut: 3rem;
 	}
 
 	.active {
-		.card-type-asset .aspect-ratio,
+		&.card-type-asset .aspect-ratio,
 		.card {
 			border-color: $primary;
 		}
@@ -150,4 +150,13 @@ body {
 		fill: $primary;
 		filter: drop-shadow(0 0 3px $primary);
 	}
+}
+
+.popover-header {
+	@extend %cut-top-right;
+	--cut: 0.5rem;
+	bottom: 100%;
+	display: inline-block;
+	left: -1px;
+	position: absolute;
 }
