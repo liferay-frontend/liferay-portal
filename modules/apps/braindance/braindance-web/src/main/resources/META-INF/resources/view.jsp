@@ -83,18 +83,24 @@ List<String> senses = (List<String>)request.getAttribute("senses");
 		</clay:row>
 
 		<clay:row>
-			<clay:button
-				displayType="primary"
-				label='<%= LanguageUtil.get(request, "start-simulation") %>'
-				small="<%= false %>"
-				type="submit"
-			/>
+			<clay:col
+				cssClass="text-center"
+				size="12"
+			>
+				<clay:button
+					displayType="primary"
+					label='<%= LanguageUtil.get(request, "start-simulation") %>'
+					small="<%= false %>"
+					type="submit"
+				/>
+			</clay:col>
 		</clay:row>
 	</aui:form>
 
 	<c:if test="<%= Validator.isNotNull(senses) %>">
 		<clay:row>
 			<clay:col
+				cssClass="mt-4"
 				size="12"
 			>
 				<react:component

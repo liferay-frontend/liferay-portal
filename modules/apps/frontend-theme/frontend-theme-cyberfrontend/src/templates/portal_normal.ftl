@@ -21,7 +21,7 @@
 <div class="d-flex flex-column min-vh-100">
 	<@liferay.control_menu />
 
-	<div class="d-flex flex-column flex-fill theme-cyberfrontend" id="wrapper">
+	<div class="d-flex flex-column flex-fill py-5 theme-cyberfrontend" id="wrapper">
 		<section class="flex-fill" id="content">
 			<h1 class="h2 sr-only">${the_title}</h1>
 
