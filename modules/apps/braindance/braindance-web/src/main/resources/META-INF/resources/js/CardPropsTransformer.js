@@ -14,36 +14,38 @@
 
 import {openModal} from 'frontend-js-web';
 
-import {getRandomPositiveReview, getRandomUserName} from './Reviews';
+import {getReviewsHTML} from './Reviews';
 
-export default function propsTransformer({...props}) {
+export default function propsTransformer({actions, ...otherProps}) {
 	return {
-		...props,
-		actions: [
-			{
-				label: Liferay.Language.get('reviews'),
+		...otherProps,
+		actions: actions?.map((item) => {
+			return {
+				...item,
 				onClick() {
-					const reviews = [];
+					const action = item.data.action;
 
-					for (let i = 0; i < 10; i++) {
-						reviews.push(
-							`<div>⭐⭐⭐⭐⭐</div><div>${getRandomUserName()}: ${getRandomPositiveReview()}</div><hr />`
-						);
+					if (action === 'showInfo') {
+						openModal({
+							title: Liferay.Language.get('info'),
+							url: item.data.url,
+						});
 					}
-
-					openModal({
-						bodyHTML: reviews.join(''),
-						title: Liferay.Language.get('reviews'),
-					});
+					else if (action === 'showReviews') {
+						openModal({
+							bodyHTML: getReviewsHTML(),
+							title: Liferay.Language.get('reviews'),
+						});
+					}
 				},
-			},
-		],
+			};
+		}),
 		onSelectChange: (isSelected) => {
 			if (isSelected) {
-				Liferay.fire('senseSelected', {sense: props.inputValue});
+				Liferay.fire('senseSelected', {sense: otherProps.inputValue});
 			}
 			else {
-				Liferay.fire('senseUnselected', {sense: props.inputValue});
+				Liferay.fire('senseUnselected', {sense: otherProps.inputValue});
 			}
 		},
 	};

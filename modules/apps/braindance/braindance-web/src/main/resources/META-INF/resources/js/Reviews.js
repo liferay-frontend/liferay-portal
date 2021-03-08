@@ -42,4 +42,16 @@ const getRandomUserName = () => {
 	}
 };
 
-export {getRandomPositiveReview, getRandomUserName};
+const getReviewsHTML = () => {
+	const reviews = [];
+
+	for (let i = 0; i < 10; i++) {
+		reviews.push(
+			`<div>⭐⭐⭐⭐⭐</div><div>${getRandomUserName()}: ${getRandomPositiveReview()}</div><hr />`
+		);
+	}
+
+	return reviews.join('');
+};
+
+export {getReviewsHTML};

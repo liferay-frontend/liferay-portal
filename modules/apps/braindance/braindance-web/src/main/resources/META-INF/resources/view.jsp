@@ -22,12 +22,8 @@
 			size="3"
 		>
 			<clay:vertical-card
-				imageSrc='<%= application.getContextPath() + "/images/see.jpg"%>'
-				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
-				inputValue="see"
 				propsTransformer="js/CardPropsTransformer"
-				selectable="<%= true %>"
-				title="see"
+				verticalCard="<%= new SightVerticalCard(renderRequest, renderResponse) %>"
 			/>
 		</clay:col>
 
@@ -35,7 +31,7 @@
 			size="3"
 		>
 			<clay:vertical-card
-				imageSrc='<%= application.getContextPath() + "/images/hear.jpg"%>'
+				imageSrc='<%= application.getContextPath() + "/images/hear.jpg" %>'
 				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
 				inputValue="hear"
 				propsTransformer="js/CardPropsTransformer"
@@ -48,7 +44,7 @@
 			size="3"
 		>
 			<clay:vertical-card
-				imageSrc='<%= application.getContextPath() + "/images/smell.jpg"%>'
+				imageSrc='<%= application.getContextPath() + "/images/smell.jpg" %>'
 				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
 				inputValue="smell"
 				propsTransformer="js/CardPropsTransformer"
@@ -61,7 +57,7 @@
 			size="3"
 		>
 			<clay:vertical-card
-				imageSrc='<%= application.getContextPath() + "/images/touch.jpg"%>'
+				imageSrc='<%= application.getContextPath() + "/images/touch.jpg" %>'
 				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
 				inputValue="touch"
 				propsTransformer="js/CardPropsTransformer"
