@@ -38,5 +38,13 @@ export default function propsTransformer({...props}) {
 				},
 			},
 		],
+		onSelectChange: (isSelected) => {
+			if (isSelected) {
+				Liferay.fire('senseSelected', {sense: props.inputValue});
+			}
+			else {
+				Liferay.fire('senseUnselected', {sense: props.inputValue});
+			}
+		},
 	};
 }

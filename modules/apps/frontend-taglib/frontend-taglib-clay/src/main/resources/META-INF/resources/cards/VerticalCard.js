@@ -36,6 +36,7 @@ export default function VerticalCard({
 	inputValue = '',
 	labels = [],
 	locale: _locale,
+	onSelectChange = () => {},
 	portletId: _portletId,
 	portletNamespace: _portletNamespace,
 	selectable,
@@ -127,7 +128,8 @@ export default function VerticalCard({
 			onSelectChange={
 				selectable
 					? (selected) => {
-							setSelected(selected);
+						onSelectChange(selected);
+						setSelected(selected);
 					  }
 					: null
 			}

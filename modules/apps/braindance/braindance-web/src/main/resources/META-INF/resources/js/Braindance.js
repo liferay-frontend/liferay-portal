@@ -54,19 +54,32 @@ const HUDElement = ({align, info, name, size, x, y}) => {
 	);
 };
 
-export default ({activeSenses = []}) => {
+export default ({world}) => {
+	const [activeSenses, setActiveSenses] = useState([]);
 	const [realityElements, setRealityElements] = useState([]);
 
 	useEffect(() => {
-		const {elements} = analyzeReality();
+		const {elements} = analyzeReality(world);
 		setRealityElements(elements);
+
+		Liferay.on("senseSelected", (event) => {
+			setActiveSenses(currentActiveSenses => [...currentActiveSenses, event.sense]);
+		});
+
+		Liferay.on('senseUnselected', (event) => {
+			setActiveSenses(currentActiveSenses => {
+				const newActiveSenses = [...currentActiveSenses];
+				newActiveSenses.splice(newActiveSenses.indexOf(event.sense), 1);
+				return newActiveSenses;
+			})
+		});
 	}, []);
 
 	return (
 		<div className="braindance-simulation">
 			<img
 				className="braindance-image"
-				src="https://steamuserimages-a.akamaihd.net/ugc/2438013375536940927/D370DBF7BFC83ED36F783F08A598FFF3E71A1D61/"
+				src={world}
 			/>
 
 			{realityElements.map((element) => (

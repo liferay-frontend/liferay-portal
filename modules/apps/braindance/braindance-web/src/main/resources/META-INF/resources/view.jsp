@@ -16,102 +16,74 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-List<String> senses = (List<String>)request.getAttribute("senses");
-%>
-
 <clay:container-fluid>
-	<portlet:actionURL name="/braindance/start_simulation" var="startSimulationURL" />
+	<clay:row>
+		<clay:col
+			size="3"
+		>
+			<clay:vertical-card
+				imageSrc='<%= application.getContextPath() + "/images/see.jpg"%>'
+				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
+				inputValue="see"
+				propsTransformer="js/CardPropsTransformer"
+				selectable="<%= true %>"
+				title="see"
+			/>
+		</clay:col>
 
-	<aui:form action="<%= startSimulationURL %>" method="post" name="fm">
-		<clay:row>
-			<clay:col
-				size="3"
-			>
-				<clay:vertical-card
-					icon="view"
-					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
-					inputValue="see"
-					propsTransformer="js/CardPropsTransformer"
-					selectable="<%= true %>"
-					selected='<%= Validator.isNotNull(senses) && senses.contains("see") %>'
-					title="see"
-				/>
-			</clay:col>
+		<clay:col
+			size="3"
+		>
+			<clay:vertical-card
+				imageSrc='<%= application.getContextPath() + "/images/hear.jpg"%>'
+				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
+				inputValue="hear"
+				propsTransformer="js/CardPropsTransformer"
+				selectable="<%= true %>"
+				title="hear"
+			/>
+		</clay:col>
 
-			<clay:col
-				size="3"
-			>
-				<clay:vertical-card
-					icon="audio"
-					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
-					inputValue="hear"
-					propsTransformer="js/CardPropsTransformer"
-					selectable="<%= true %>"
-					selected='<%= Validator.isNotNull(senses) && senses.contains("hear") %>'
-					title="hear"
-				/>
-			</clay:col>
+		<clay:col
+			size="3"
+		>
+			<clay:vertical-card
+				imageSrc='<%= application.getContextPath() + "/images/smell.jpg"%>'
+				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
+				inputValue="smell"
+				propsTransformer="js/CardPropsTransformer"
+				selectable="<%= true %>"
+				title="smell"
+			/>
+		</clay:col>
 
-			<clay:col
-				size="3"
-			>
-				<clay:vertical-card
-					icon="magic"
-					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
-					inputValue="smell"
-					propsTransformer="js/CardPropsTransformer"
-					selectable="<%= true %>"
-					selected='<%= Validator.isNotNull(senses) && senses.contains("smell") %>'
-					title="smell"
-				/>
-			</clay:col>
+		<clay:col
+			size="3"
+		>
+			<clay:vertical-card
+				imageSrc='<%= application.getContextPath() + "/images/touch.jpg"%>'
+				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
+				inputValue="touch"
+				propsTransformer="js/CardPropsTransformer"
+				selectable="<%= true %>"
+				title="touch"
+			/>
+		</clay:col>
+	</clay:row>
 
-			<clay:col
-				size="3"
-			>
-				<clay:vertical-card
-					icon="move"
-					inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
-					inputValue="touch"
-					propsTransformer="js/CardPropsTransformer"
-					selectable="<%= true %>"
-					selected='<%= Validator.isNotNull(senses) && senses.contains("touch") %>'
-					title="touch"
-				/>
-			</clay:col>
-		</clay:row>
-
-		<clay:row>
-			<clay:col
-				cssClass="text-center"
-				size="12"
-			>
-				<clay:button
-					displayType="primary"
-					label='<%= LanguageUtil.get(request, "start-simulation") %>'
-					small="<%= false %>"
-					type="submit"
-				/>
-			</clay:col>
-		</clay:row>
-	</aui:form>
-
-	<c:if test="<%= Validator.isNotNull(senses) %>">
-		<clay:row>
-			<clay:col
-				cssClass="mt-4"
-				size="12"
-			>
-				<react:component
-					module="js/Braindance"
-					props='<%=
-						HashMapBuilder.<String, Object>put(
-							"activeSenses", senses
-						).build()
-					%>'
-				/>
-			</clay:col>
-		</clay:row>
-	</c:if>
+	<clay:row>
+		<clay:col
+			cssClass="mt-4"
+			size="12"
+		>
+			<react:component
+				module="js/Braindance"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"world", application.getContextPath() + "/images/world.gif"
+					).build()
+				%>'
+			/>
+		</clay:col>
+	</clay:row>
 </clay:container-fluid>
