@@ -1,6 +1,7 @@
 {
 	"dependencies": {
-		"frontend-js-web": "*"
+		"frontend-js-web": "*",
+		"classnames": "2.2.6"
 	},
 	"name": "braindance-web",
 	"scripts": {

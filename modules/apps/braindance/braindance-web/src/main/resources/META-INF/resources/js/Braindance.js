@@ -14,6 +14,7 @@
 
 import ClayPopover from '@clayui/popover';
 import React, {useEffect, useState} from 'react';
+import classNames from 'classnames';
 
 import analyzeReality from './analyzeReality';
 
@@ -80,7 +81,11 @@ export default ({world}) => {
 	}, []);
 
 	return (
-		<div className="braindance-simulation">
+		<div
+			className={classNames('braindance-simulation', {
+				active: !!activeSenses.length,
+			})}
+		>
 			<img className="braindance-image" src={world} />
 
 			{realityElements.map((element) => (

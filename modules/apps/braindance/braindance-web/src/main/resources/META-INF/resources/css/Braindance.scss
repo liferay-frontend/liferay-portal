@@ -3,7 +3,6 @@
 		position: relative;
 
 		.braindance-image {
-			filter: brightness(0.5);
 			max-width: 100%;
 		}
 
@@ -12,6 +11,12 @@
 			backdrop-filter: brightness(3);
 			border: 2px solid red;
 			position: absolute;
+		}
+
+		&.active {
+			.braindance-image {
+				filter: brightness(0.5);
+			}
 		}
 	}
 }
