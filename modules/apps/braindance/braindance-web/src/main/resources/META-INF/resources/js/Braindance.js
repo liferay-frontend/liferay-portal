@@ -62,25 +62,26 @@ export default ({world}) => {
 		const {elements} = analyzeReality(world);
 		setRealityElements(elements);
 
-		Liferay.on("senseSelected", (event) => {
-			setActiveSenses(currentActiveSenses => [...currentActiveSenses, event.sense]);
+		Liferay.on('senseSelected', (event) => {
+			setActiveSenses((currentActiveSenses) => [
+				...currentActiveSenses,
+				event.sense,
+			]);
 		});
 
 		Liferay.on('senseUnselected', (event) => {
-			setActiveSenses(currentActiveSenses => {
+			setActiveSenses((currentActiveSenses) => {
 				const newActiveSenses = [...currentActiveSenses];
 				newActiveSenses.splice(newActiveSenses.indexOf(event.sense), 1);
+
 				return newActiveSenses;
-			})
+			});
 		});
 	}, []);
 
 	return (
 		<div className="braindance-simulation">
-			<img
-				className="braindance-image"
-				src={world}
-			/>
+			<img className="braindance-image" src={world} />
 
 			{realityElements.map((element) => (
 				<>
