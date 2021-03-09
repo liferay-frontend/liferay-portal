@@ -14,7 +14,7 @@
 
 package com.liferay.braindance.web.internal.portlet;
 
-import com.liferay.braindance.web.constants.BraindancePortletKeys;
+import com.liferay.braindance.web.internal.constants.BraindancePortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
 import javax.portlet.Portlet;

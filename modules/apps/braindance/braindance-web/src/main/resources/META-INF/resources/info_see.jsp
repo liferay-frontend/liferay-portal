@@ -14,7 +14,7 @@
  */
 --%>
 
-<div class="bg-dark text-white p-5 min-vh-100">
+<div class="bg-dark min-vh-100 p-5 text-white">
 	<h2>Sight Information</h2>
 
 	<p>

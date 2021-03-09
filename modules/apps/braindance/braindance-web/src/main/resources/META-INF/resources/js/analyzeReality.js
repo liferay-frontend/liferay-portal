@@ -17,8 +17,8 @@ export default function analyzeReality() {
 		elements: [
 			{
 				id: 1,
-				name: 'Flickering Light',
 				info: 'That neon light is flickering, is quite anoying.',
+				name: 'Flickering Light',
 				popoverAlign: 'right',
 				sense: 'see',
 				size: 60,
@@ -27,8 +27,8 @@ export default function analyzeReality() {
 			},
 			{
 				id: 2,
-				name: 'Wet balaustrade',
 				info: "It's raining, genius.",
+				name: 'Wet balaustrade',
 				popoverAlign: 'top',
 				sense: 'touch',
 				size: 50,
@@ -37,8 +37,8 @@ export default function analyzeReality() {
 			},
 			{
 				id: 3,
-				name: 'Cigarette',
 				info: 'That smells like a factory, with vanilla touches.',
+				name: 'Cigarette',
 				popoverAlign: 'left',
 				sense: 'smell',
 				size: 200,
@@ -47,9 +47,9 @@ export default function analyzeReality() {
 			},
 			{
 				id: 4,
-				name: 'Hyperloop',
 				info:
 					"The last design from Alon Misk, based on magnetic levitation that vehicle doesn't make a sound.",
+				name: 'Hyperloop',
 				popoverAlign: 'left',
 				sense: 'hear',
 				size: 140,

@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.braindance.web.constants;
+package com.liferay.braindance.web.internal.constants;
 
 /**
  * @author Carlos Lancha
