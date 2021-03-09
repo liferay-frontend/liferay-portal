@@ -18,6 +18,13 @@
 
 <clay:container-fluid>
 	<clay:row>
+		<clay:col cssClass="text-center">
+			<h1>BRAINDANCE PLAYER</h1>
+			<p>With our brand new BrainDance Player (BDP&trade;) you'll live an experience like no other, with better graphics, better sound and better sensations.</p>
+		</clay:col>
+	</clay:row>
+
+	<clay:row>
 		<clay:col
 			size="3"
 		>
