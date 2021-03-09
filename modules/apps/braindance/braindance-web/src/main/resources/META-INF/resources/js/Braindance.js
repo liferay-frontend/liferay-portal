@@ -61,21 +61,21 @@ export default ({world}) => {
 
 	useEffect(() => {
 		const {elements} = analyzeReality(world);
+
 		setRealityElements(elements);
 
-		Liferay.on('senseSelected', (event) => {
-			setActiveSenses((currentActiveSenses) => [
-				...currentActiveSenses,
-				event.sense,
-			]);
-		});
-
-		Liferay.on('senseUnselected', (event) => {
+		Liferay.on('senseSelectChanged', (event) => {
 			setActiveSenses((currentActiveSenses) => {
-				const newActiveSenses = [...currentActiveSenses];
-				newActiveSenses.splice(newActiveSenses.indexOf(event.sense), 1);
+				const senses = [...currentActiveSenses];
 
-				return newActiveSenses;
+				if (event.selected) {
+					senses.push(event.sense);
+				}
+				else {
+					senses.splice(senses.indexOf(event.sense), 1);
+				}
+
+				return senses;
 			});
 		});
 	}, [world]);
