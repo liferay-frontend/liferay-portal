@@ -21,7 +21,10 @@ taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
-<%@ page import="com.liferay.braindance.web.internal.servlet.taglib.clay.SightVerticalCard" %><%@
+<%@ page import="com.liferay.braindance.web.internal.servlet.taglib.clay.HearingVerticalCard" %><%@
+page import="com.liferay.braindance.web.internal.servlet.taglib.clay.SightVerticalCard" %><%@
+page import="com.liferay.braindance.web.internal.servlet.taglib.clay.SmellVerticalCard" %><%@
+page import="com.liferay.braindance.web.internal.servlet.taglib.clay.TouchVerticalCard" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %>
 
 <liferay-frontend:defineObjects />

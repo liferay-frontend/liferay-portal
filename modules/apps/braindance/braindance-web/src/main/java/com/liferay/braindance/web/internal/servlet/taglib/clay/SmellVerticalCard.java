@@ -36,9 +36,9 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Marko Cikos
  */
-public class SightVerticalCard implements VerticalCard {
+public class SmellVerticalCard implements VerticalCard {
 
-	public SightVerticalCard(
+	public SmellVerticalCard(
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
 		_renderRequest = renderRequest;
@@ -51,7 +51,7 @@ public class SightVerticalCard implements VerticalCard {
 	public List<DropdownItem> getActionDropdownItems() {
 		PortletURL portletURL = _renderResponse.createRenderURL();
 
-		portletURL.setParameter("mvcPath", "/info_sight.jsp");
+		portletURL.setParameter("mvcPath", "/info_smell.jsp");
 
 		try {
 			portletURL.setWindowState(LiferayWindowState.POP_UP);
@@ -85,17 +85,17 @@ public class SightVerticalCard implements VerticalCard {
 
 	@Override
 	public String getImageSrc() {
-		return PortalUtil.getPathModule() + "/braindance-web/images/see.jpg";
+		return PortalUtil.getPathModule() + "/braindance-web/images/smell.jpg";
 	}
 
 	@Override
 	public String getInputValue() {
-		return "see";
+		return "smell";
 	}
 
 	@Override
 	public String getTitle() {
-		return LanguageUtil.get(_httpServletRequest, "see");
+		return LanguageUtil.get(_httpServletRequest, "smell");
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class SightVerticalCard implements VerticalCard {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		SightVerticalCard.class);
+		SmellVerticalCard.class);
 
 	private final HttpServletRequest _httpServletRequest;
 	private final RenderRequest _renderRequest;
