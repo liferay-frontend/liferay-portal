@@ -312,7 +312,7 @@ $product-menu-pages-administration-link-height: 72px;
 		padding: 0;
 		position: absolute;
 		right: 0;
-		top: 0;
+		top: 0 !important;
 
 		@include media-breakpoint-down(xs) {
 			overflow: visible;
