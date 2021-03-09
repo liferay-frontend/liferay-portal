@@ -64,7 +64,7 @@ export default ({world}) => {
 
 		setRealityElements(elements);
 
-		Liferay.on('senseSelectChanged', (event) => {
+		const eventHandler = Liferay.on('senseSelectChanged', (event) => {
 			setActiveSenses((currentActiveSenses) => {
 				const senses = [...currentActiveSenses];
 
@@ -78,6 +78,10 @@ export default ({world}) => {
 				return senses;
 			});
 		});
+
+		return () => {
+			Liferay.detach(eventHandler);
+		};
 	}, [world]);
 
 	return (
