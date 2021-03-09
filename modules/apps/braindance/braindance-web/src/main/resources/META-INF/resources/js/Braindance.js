@@ -89,19 +89,18 @@ export default ({world}) => {
 			<img className="braindance-image" src={world} />
 
 			{realityElements.map((element) => (
-				<>
+				<React.Fragment key={element.id}>
 					{activeSenses.includes(element.sense) && (
 						<HUDElement
 							align={element.popoverAlign}
 							info={element.info}
-							key={element.id}
 							name={element.name}
 							size={element.size}
 							x={element.x}
 							y={element.y}
 						/>
 					)}
-				</>
+				</React.Fragment>
 			))}
 		</div>
 	);
