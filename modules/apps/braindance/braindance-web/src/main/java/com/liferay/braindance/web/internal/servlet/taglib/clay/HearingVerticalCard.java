@@ -15,8 +15,12 @@
 package com.liferay.braindance.web.internal.servlet.taglib.clay;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.soy.VerticalCard;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+
+import java.util.List;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -35,6 +39,21 @@ public class HearingVerticalCard implements VerticalCard {
 		_renderResponse = renderResponse;
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
+	}
+
+	@Override
+	public List<DropdownItem> getActionDropdownItems() {
+		return DropdownItemListBuilder.add(
+			dropdownItem -> {
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "what-is-this"));
+			}
+		).add(
+			dropdownItem -> {
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "reviews"));
+			}
+		).build();
 	}
 
 	@Override
