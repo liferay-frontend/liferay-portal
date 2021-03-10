@@ -1,0 +1,67 @@
+// Global
+$primary: #6ff3f7;
+$secondary: #d0ed57;
+$success: #41d063;
+$info: #6200ff;
+$warning: #f74af1;
+$dark: #171018;
+$white: white;
+
+$body-bg: $dark;
+$body-color: $white;
+
+$font-family-sans-serif: 'Baloo 2', cursive;
+
+$border-radius: 0;
+$border-radius-lg: 0;
+$border-radius-sm: 0;
+
+// Cards
+$card-bg: transparent;
+$card-border-color: $secondary;
+$card-border-width: 1px;
+$card-box-shadow: none;
+$card-title: (
+	color: $white,
+);
+$card-type-asset: (
+	aspect-ratio-border-color: $secondary,
+);
+$component-action: (
+	hover-color: $white,
+	focus-color: $white,
+	active-color: $white,
+);
+
+// Dropdowns
+$dropdown-bg: rgba($dark, 0.8);
+$dropdown-border-color: $secondary;
+$dropdown-link-color: $secondary;
+$dropdown-link-hover-bg: $secondary;
+$dropdown-link-hover-color: $dark;
+
+// Modals
+$modal-content-bg: rgba($dark, 0.8);
+$modal-content-color: inherit;
+$modal-content-border-color: $secondary;
+$modal-header-border-color: $secondary;
+$close-color: 'inherit';
+$close: (
+	color: 'inherit',
+	hover-color: 'inherit',
+);
+
+// Alerts
+$alert-success-bg: rgba($dark, 0.8);
+
+// Popovers
+$popover-bg: rgba($dark, 0.8);
+$popover-body-color: inherit;
+$popover-border-color: $secondary;
+$popover-header-color: $dark;
+$popover-header-bg: $secondary;
+$popover-header-border-color: transparent;
+$popover-header-margin-x: 0;
+$popover-header-padding-y: 0;
+$popover-header-padding-x: 0.5rem;
+$popover-arrow-color: $secondary;
