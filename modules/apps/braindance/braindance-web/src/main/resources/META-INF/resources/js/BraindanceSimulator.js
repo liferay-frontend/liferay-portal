@@ -13,6 +13,7 @@
  */
 
 import ClayPopover from '@clayui/popover';
+import classNames from 'classnames';
 import React, {useEffect, useState} from 'react';
 
 import analyzeReality from './analyzeReality';
@@ -55,28 +56,55 @@ const HUDElement = ({align, info, name, size, x, y}) => {
 };
 
 export default ({world}) => {
+	const [activeSenses, setActiveSenses] = useState([]);
 	const [realityElements, setRealityElements] = useState([]);
 
 	useEffect(() => {
 		const {elements} = analyzeReality(world);
 
 		setRealityElements(elements);
+
+		const eventHandler = Liferay.on('senseSelectChanged', (event) => {
+			setActiveSenses((currentActiveSenses) => {
+				const senses = [...currentActiveSenses];
+
+				if (event.selected) {
+					senses.push(event.sense);
+				}
+				else {
+					senses.splice(senses.indexOf(event.sense), 1);
+				}
+
+				return senses;
+			});
+		});
+
+		return () => {
+			Liferay.detach(eventHandler);
+		};
 	}, [world]);
 
 	return (
-		<div className="active braindance-simulation">
+		<div
+			className={classNames('braindance-simulation', {
+				active: !!activeSenses.length,
+			})}
+		>
 			<img className="braindance-image" src={world} />
 
 			{realityElements.map((element) => (
-				<HUDElement
-					align={element.popoverAlign}
-					info={element.info}
-					key={element.id}
-					name={element.name}
-					size={element.size}
-					x={element.x}
-					y={element.y}
-				/>
+				<React.Fragment key={element.id}>
+					{activeSenses.includes(element.sense) && (
+						<HUDElement
+							align={element.popoverAlign}
+							info={element.info}
+							name={element.name}
+							size={element.size}
+							x={element.x}
+							y={element.y}
+						/>
+					)}
+				</React.Fragment>
 			))}
 		</div>
 	);
