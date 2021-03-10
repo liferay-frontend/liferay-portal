@@ -64,4 +64,15 @@
 			/>
 		</clay:col>
 	</clay:row>
+
+	<clay:row>
+		<clay:col
+			cssClass="mt-4"
+			size="12"
+		>
+			<react:component
+				module="js/BraindanceSimulator"
+			/>
+		</clay:col>
+	</clay:row>
 </clay:container-fluid>
