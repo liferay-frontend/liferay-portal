@@ -471,3 +471,9 @@ body.product-menu-open .toast-animation {
 		width: 19px;
 	}
 }
+
+@media (min-width: 576px) {
+	.modal-dialog:not(.modal-full-screen) {
+		max-width: 600px !important;
+	}
+}

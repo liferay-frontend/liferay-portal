@@ -45,8 +45,10 @@ $modal-content-bg: rgba($dark, 0.8);
 $modal-content-color: inherit;
 $modal-content-border-color: $secondary;
 $modal-header-border-color: $secondary;
+$close-color: 'inherit';
 $close: (
 	color: 'inherit',
+	hover-color: 'inherit',
 );
 
 // Alerts
