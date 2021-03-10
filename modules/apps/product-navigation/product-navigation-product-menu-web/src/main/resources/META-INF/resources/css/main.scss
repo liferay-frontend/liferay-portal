@@ -312,7 +312,7 @@ $product-menu-pages-administration-link-height: 72px;
 		padding: 0;
 		position: absolute;
 		right: 0;
-		top: 0 !important;
+		top: 0;
 
 		@include media-breakpoint-down(xs) {
 			overflow: visible;
@@ -469,11 +469,5 @@ body.product-menu-open .toast-animation {
 	.cn {
 		border-left-width: 9px;
 		width: 19px;
-	}
-}
-
-@media (min-width: 576px) {
-	.modal-dialog:not(.modal-full-screen) {
-		max-width: 600px !important;
 	}
 }

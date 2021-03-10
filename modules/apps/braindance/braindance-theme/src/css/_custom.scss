@@ -44,3 +44,15 @@
 	left: -1px;
 	position: absolute;
 }
+
+/**/
+
+@media (min-width: 576px) {
+	.modal-dialog:not(.modal-full-screen) {
+		max-width: 600px !important;
+	}
+}
+
+.product-menu .sidebar-body {
+	top: 0 !important;
+}
