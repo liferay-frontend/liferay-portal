@@ -32,10 +32,7 @@
 			size="3"
 		>
 			<clay:vertical-card
-				imageSrc='<%= application.getContextPath() + "/images/see.jpg" %>'
-				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
-				inputValue="see"
-				title="see"
+				verticalCard="<%= new SightVerticalCard(renderRequest, renderResponse) %>"
 			/>
 		</clay:col>
 
@@ -43,10 +40,7 @@
 			size="3"
 		>
 			<clay:vertical-card
-				imageSrc='<%= application.getContextPath() + "/images/hear.jpg" %>'
-				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
-				inputValue="hear"
-				title="hear"
+				verticalCard="<%= new HearingVerticalCard(renderRequest, renderResponse) %>"
 			/>
 		</clay:col>
 
@@ -54,10 +48,7 @@
 			size="3"
 		>
 			<clay:vertical-card
-				imageSrc='<%= application.getContextPath() + "/images/smell.jpg" %>'
-				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
-				inputValue="smell"
-				title="smell"
+				verticalCard="<%= new SmellVerticalCard(renderRequest, renderResponse) %>"
 			/>
 		</clay:col>
 
@@ -65,10 +56,7 @@
 			size="3"
 		>
 			<clay:vertical-card
-				imageSrc='<%= application.getContextPath() + "/images/touch.jpg" %>'
-				inputName='<%= liferayPortletResponse.getNamespace() + "sense" %>'
-				inputValue="touch"
-				title="touch"
+				verticalCard="<%= new TouchVerticalCard(renderRequest, renderResponse) %>"
 			/>
 		</clay:col>
 	</clay:row>
