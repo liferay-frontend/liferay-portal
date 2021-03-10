@@ -72,6 +72,11 @@
 		>
 			<react:component
 				module="js/BraindanceSimulator"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"world", application.getContextPath() + "/images/world.gif"
+					).build()
+				%>'
 			/>
 		</clay:col>
 	</clay:row>

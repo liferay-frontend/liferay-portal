@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"@clayui/popover": "3.5.5",
 		"frontend-js-web": "*"
 	},
 	"name": "braindance-web",

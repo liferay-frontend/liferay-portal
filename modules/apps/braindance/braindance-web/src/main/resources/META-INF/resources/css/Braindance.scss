@@ -1,0 +1,22 @@
+.braindance {
+	.braindance-simulation {
+		position: relative;
+
+		.braindance-image {
+			max-width: 100%;
+		}
+
+		.braindance-hud {
+			-webkit-backdrop-filter: brightness(3);
+			backdrop-filter: brightness(3);
+			border: 2px solid red;
+			position: absolute;
+		}
+
+		&.active {
+			.braindance-image {
+				filter: brightness(0.5);
+			}
+		}
+	}
+}

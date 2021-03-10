@@ -12,8 +12,72 @@
  * details.
  */
 
-import React from 'react';
+import ClayPopover from '@clayui/popover';
+import React, {useEffect, useState} from 'react';
 
-export default () => {
-	return <div>Hello World!</div>;
+import analyzeReality from './analyzeReality';
+
+import '../css/Braindance.scss';
+
+const HUDElement = ({align, info, name, size, x, y}) => {
+	const [show, setShow] = useState();
+
+	const handleMouseOut = () => {
+		setShow(false);
+	};
+
+	const handleMouseOver = () => {
+		setShow(true);
+	};
+
+	return (
+		<ClayPopover
+			alignPosition={align}
+			header={name}
+			show={show}
+			trigger={
+				<div
+					className="braindance-hud"
+					onMouseOut={handleMouseOut}
+					onMouseOver={handleMouseOver}
+					style={{
+						height: `${size}px`,
+						left: x - size / 2,
+						top: y - size / 2,
+						width: `${size}px`,
+					}}
+				></div>
+			}
+		>
+			{info}
+		</ClayPopover>
+	);
+};
+
+export default ({world}) => {
+	const [realityElements, setRealityElements] = useState([]);
+
+	useEffect(() => {
+		const {elements} = analyzeReality(world);
+
+		setRealityElements(elements);
+	}, [world]);
+
+	return (
+		<div className="active braindance-simulation">
+			<img className="braindance-image" src={world} />
+
+			{realityElements.map((element) => (
+				<HUDElement
+					align={element.popoverAlign}
+					info={element.info}
+					key={element.id}
+					name={element.name}
+					size={element.size}
+					x={element.x}
+					y={element.y}
+				/>
+			))}
+		</div>
+	);
 };
