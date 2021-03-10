@@ -18,12 +18,18 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.soy.VerticalCard;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.List;
 
+import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.WindowStateException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -43,13 +49,34 @@ public class SmellVerticalCard implements VerticalCard {
 
 	@Override
 	public List<DropdownItem> getActionDropdownItems() {
+		PortletURL portletURL = _renderResponse.createRenderURL();
+
+		portletURL.setParameter("mvcPath", "/info_smell.jsp");
+
+		try {
+			portletURL.setWindowState(LiferayWindowState.POP_UP);
+		}
+		catch (WindowStateException windowStateException) {
+			_log.error(windowStateException, windowStateException);
+		}
+
 		return DropdownItemListBuilder.add(
 			dropdownItem -> {
+				dropdownItem.setData(
+					HashMapBuilder.<String, Object>put(
+						"action", "showInfo"
+					).put(
+						"url", portletURL.toString()
+					).build());
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "what-is-this"));
 			}
 		).add(
 			dropdownItem -> {
+				dropdownItem.setData(
+					HashMapBuilder.<String, Object>put(
+						"action", "showReviews"
+					).build());
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "reviews"));
 			}
@@ -75,6 +102,9 @@ public class SmellVerticalCard implements VerticalCard {
 	public boolean isSelectable() {
 		return false;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		SmellVerticalCard.class);
 
 	private final HttpServletRequest _httpServletRequest;
 	private final RenderRequest _renderRequest;

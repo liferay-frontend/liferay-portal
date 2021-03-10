@@ -32,6 +32,7 @@
 			size="3"
 		>
 			<clay:vertical-card
+				propsTransformer="js/CardPropsTransformer"
 				verticalCard="<%= new SightVerticalCard(renderRequest, renderResponse) %>"
 			/>
 		</clay:col>
@@ -40,6 +41,7 @@
 			size="3"
 		>
 			<clay:vertical-card
+				propsTransformer="js/CardPropsTransformer"
 				verticalCard="<%= new HearingVerticalCard(renderRequest, renderResponse) %>"
 			/>
 		</clay:col>
@@ -48,6 +50,7 @@
 			size="3"
 		>
 			<clay:vertical-card
+				propsTransformer="js/CardPropsTransformer"
 				verticalCard="<%= new SmellVerticalCard(renderRequest, renderResponse) %>"
 			/>
 		</clay:col>
@@ -56,6 +59,7 @@
 			size="3"
 		>
 			<clay:vertical-card
+				propsTransformer="js/CardPropsTransformer"
 				verticalCard="<%= new TouchVerticalCard(renderRequest, renderResponse) %>"
 			/>
 		</clay:col>
