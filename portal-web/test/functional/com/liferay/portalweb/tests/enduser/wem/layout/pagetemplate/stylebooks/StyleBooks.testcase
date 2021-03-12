@@ -124,6 +124,8 @@ definition {
 	@description = "This is for LPS-116078. Can not preview style book when there are no pages in site."
 	@priority = "4"
 	test CannotPreviewStyleBookWhenSiteWithoutPage {
+		property portal.acceptance = "true";
+
 		task ("Add a style book") {
 			StyleBooksAdmin.openStyleBooksAdmin(siteURLKey = "test-site-name");
 
@@ -241,6 +243,8 @@ definition {
 	@description = "This is for LPS-116106. Page Creator can change style book of content page via Look and Feel settings."
 	@priority = "4"
 	test ChangeStyleBookOfContentPageViaLookAndFeel {
+		property portal.acceptance = "true";
+
 		task ("Add a style book") {
 			StyleBooksAdmin.openStyleBooksAdmin(siteURLKey = "test-site-name");
 
