@@ -14,6 +14,7 @@ import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React, {useContext} from 'react';
 
+import {ChartDispatchContext} from '../context/ChartStateContext';
 import {StoreDispatchContext} from '../context/StoreContext';
 import KeywordsDetail from './detail/KeywordsDetail';
 import ReferralDetail from './detail/ReferralDetail';
@@ -32,6 +33,8 @@ export default function Detail({
 	onCurrentPageChange,
 	timeSpanOptions,
 }) {
+	const chartDispatch = useContext(ChartDispatchContext);
+
 	const dispatch = useContext(StoreDispatchContext);
 
 	return (
@@ -41,6 +44,7 @@ export default function Detail({
 					displayType="unstyled"
 					onClick={() => {
 						onCurrentPageChange({view: 'main'});
+						chartDispatch({type: 'SET_LOADING'});
 						dispatch({
 							selectedTrafficSourceName: '',
 							type: 'SET_SELECTED_TRAFFIC_SOURCE_NAME',

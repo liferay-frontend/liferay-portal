@@ -29,7 +29,6 @@ import {
 	ChartStateContext,
 	useDateTitle,
 	useIsPreviousPeriodButtonDisabled,
-	useSetLoading,
 } from '../context/ChartStateContext';
 import ConnectionContext from '../context/ConnectionContext';
 import {StoreStateContext} from '../context/StoreContext';
@@ -156,8 +155,6 @@ export default function Chart({publishDate, timeSpanOptions}) {
 
 	const isPreviousPeriodButtonDisabled = useIsPreviousPeriodButtonDisabled();
 
-	const setLoading = useSetLoading();
-
 	const dateFormatters = useMemo(() => dateFormat(languageTag), [
 		languageTag,
 	]);
@@ -165,7 +162,7 @@ export default function Chart({publishDate, timeSpanOptions}) {
 	const title = dateFormatters.formatChartTitle([firstDate, lastDate]);
 
 	useEffect(() => {
-		setLoading();
+		dispatch({type: 'SET_LOADING'});
 
 		const timeSpanComparator =
 			timeSpanKey === LAST_24_HOURS
@@ -207,7 +204,6 @@ export default function Chart({publishDate, timeSpanOptions}) {
 		endpoints.analyticsReportsHistoricalReadsURL,
 		historicalReads,
 		historicalViews,
-		setLoading,
 		timeSpanKey,
 		validAnalyticsConnection,
 	]);
