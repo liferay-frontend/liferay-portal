@@ -29,7 +29,6 @@ import {
 	ChartDispatchContext,
 	ChartStateContext,
 	useAddDataSetItems,
-	useChangeTimeSpanKey,
 	useDateTitle,
 	useIsPreviousPeriodButtonDisabled,
 	useSetLoading,
@@ -155,8 +154,6 @@ export default function Chart({publishDate, timeSpanOptions}) {
 
 	const addDataSetItems = useAddDataSetItems();
 
-	const changeTimeSpanKey = useChangeTimeSpanKey();
-
 	const setLoading = useSetLoading();
 
 	const dateFormatters = useMemo(() => dateFormat(languageTag), [
@@ -222,7 +219,7 @@ export default function Chart({publishDate, timeSpanOptions}) {
 	const handleTimeSpanChange = (event) => {
 		const {value} = event.target;
 
-		changeTimeSpanKey({key: value});
+		dispatch({payload: {key: value}, type: 'CHANGE_TIME_SPAN_KEY'});
 	};
 
 	const legendFormatter =

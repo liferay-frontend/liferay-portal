@@ -18,7 +18,6 @@ import React, {useContext, useMemo, useState} from 'react';
 import {
 	ChartDispatchContext,
 	ChartStateContext,
-	useChangeTimeSpanKey,
 	useDateTitle,
 	useIsPreviousPeriodButtonDisabled,
 } from '../../context/ChartStateContext';
@@ -67,12 +66,10 @@ export default function ReferralDetail({
 
 	const isPreviousPeriodButtonDisabled = useIsPreviousPeriodButtonDisabled();
 
-	const changeTimeSpanKey = useChangeTimeSpanKey();
-
 	const handleTimeSpanChange = (event) => {
 		const {value} = event.target;
 
-		changeTimeSpanKey({key: value});
+		dispatch({payload: {key: value}, type: 'CHANGE_TIME_SPAN_KEY'});
 	};
 
 	return (
