@@ -10,7 +10,6 @@
  */
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import {useIsMounted} from '@liferay/frontend-js-react-web';
 import className from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useMemo} from 'react';
@@ -28,7 +27,6 @@ import {
 import {
 	ChartDispatchContext,
 	ChartStateContext,
-	useAddDataSetItems,
 	useDateTitle,
 	useIsPreviousPeriodButtonDisabled,
 	useSetLoading,
@@ -146,13 +144,17 @@ export default function Chart({publishDate, timeSpanOptions}) {
 
 	const dispatch = useContext(ChartDispatchContext);
 
-	const {dataSet, loading, timeRange, timeSpanKey, timeSpanOffset} = useContext(ChartStateContext);
+	const {
+		dataSet,
+		loading,
+		timeRange,
+		timeSpanKey,
+		timeSpanOffset,
+	} = useContext(ChartStateContext);
 
 	const {firstDate, lastDate} = useDateTitle();
 
 	const isPreviousPeriodButtonDisabled = useIsPreviousPeriodButtonDisabled();
-
-	const addDataSetItems = useAddDataSetItems();
 
 	const setLoading = useSetLoading();
 
@@ -161,8 +163,6 @@ export default function Chart({publishDate, timeSpanOptions}) {
 	]);
 
 	const title = dateFormatters.formatChartTitle([firstDate, lastDate]);
-
-	const isMounted = useIsMounted();
 
 	useEffect(() => {
 		setLoading();
@@ -182,23 +182,29 @@ export default function Chart({publishDate, timeSpanOptions}) {
 		}
 
 		if (validAnalyticsConnection) {
-			addDataSetItems({
-				dataSetItems,
-				keys,
-				timeSpanComparator,
+			dispatch({
+				payload: {
+					dataSetItems,
+					keys,
+					timeSpanComparator,
+				},
+				type: 'ADD_DATA_SET_ITEMS',
+				validAnalyticsConnection,
 			});
 		}
 		else {
-			addDataSetItems({
-				keys,
-				timeSpanComparator,
+			dispatch({
+				payload: {
+					keys,
+					timeSpanComparator,
+				},
+				type: 'ADD_DATA_SET_ITEMS',
+				validAnalyticsConnection,
 			});
 		}
 	}, [
-		addDataSetItems,
+		dispatch,
 		endpoints.analyticsReportsHistoricalReadsURL,
-		endpoints.analyticsReportsHistoricalViewsURL,
-		isMounted,
 		historicalReads,
 		historicalViews,
 		setLoading,
@@ -304,8 +310,12 @@ export default function Chart({publishDate, timeSpanOptions}) {
 									!validAnalyticsConnection ||
 									histogram.length === 0
 										? [
-											new Date(timeRange.startDate).getDate(),
-											new Date(timeRange.endDate).getDate(),
+												new Date(
+													timeRange.startDate
+												).getDate(),
+												new Date(
+													timeRange.endDate
+												).getDate(),
 										  ]
 										: []
 								}
