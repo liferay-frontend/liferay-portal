@@ -14,7 +14,7 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import PropTypes from 'prop-types';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 
-import {useChartState} from '../context/ChartStateContext';
+import {ChartStateContext} from '../context/ChartStateContext';
 import ConnectionContext from '../context/ConnectionContext';
 import {StoreDispatchContext, StoreStateContext} from '../context/StoreContext';
 import APIService from '../utils/APIService';
@@ -50,9 +50,7 @@ export default function Navigation({
 
 	const [currentPage, setCurrentPage] = useState({view: 'main'});
 
-	const chartState = useChartState();
-
-	const {timeSpanKey, timeSpanOffset} = chartState;
+	const {timeSpanKey, timeSpanOffset} = useContext(ChartStateContext);
 
 	useEffect(() => {
 		const requests = Object.keys(endpoints).map((request) => {

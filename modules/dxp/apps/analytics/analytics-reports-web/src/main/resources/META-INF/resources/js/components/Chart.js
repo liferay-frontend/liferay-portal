@@ -26,9 +26,9 @@ import {
 } from 'recharts';
 
 import {
+	ChartStateContext,
 	useAddDataSetItems,
 	useChangeTimeSpanKey,
-	useChartState,
 	useDateTitle,
 	useIsPreviousPeriodButtonDisabled,
 	useNextTimeSpan,
@@ -146,7 +146,7 @@ export default function Chart({publishDate, timeSpanOptions}) {
 		publishedToday,
 	} = useContext(StoreStateContext);
 
-	const chartState = useChartState();
+	const {dataSet, loading, timeRange, timeSpanKey, timeSpanOffset} = useContext(ChartStateContext);
 
 	const {firstDate, lastDate} = useDateTitle();
 
@@ -174,7 +174,7 @@ export default function Chart({publishDate, timeSpanOptions}) {
 		setLoading();
 
 		const timeSpanComparator =
-			chartState.timeSpanKey === LAST_24_HOURS
+			timeSpanKey === LAST_24_HOURS
 				? HOUR_IN_MILLISECONDS
 				: DAY_IN_MILLISECONDS;
 
@@ -202,26 +202,25 @@ export default function Chart({publishDate, timeSpanOptions}) {
 		}
 	}, [
 		addDataSetItems,
-		chartState.timeSpanKey,
 		endpoints.analyticsReportsHistoricalReadsURL,
 		endpoints.analyticsReportsHistoricalViewsURL,
 		isMounted,
 		historicalReads,
 		historicalViews,
 		setLoading,
+		timeSpanKey,
 		validAnalyticsConnection,
 	]);
 
-	const {dataSet} = chartState;
 	const {histogram, keyList} = dataSet;
 
 	const referenceDotPosition = useMemo(() => {
 		const publishDateISOString = new Date(publishDate).toISOString();
 
-		return chartState.timeSpanKey === LAST_24_HOURS
+		return timeSpanKey === LAST_24_HOURS
 			? publishDateISOString.split(':')[0].concat(':00:00')
 			: publishDateISOString.split('T')[0].concat('T00:00:00');
-	}, [chartState.timeSpanKey, publishDate]);
+	}, [timeSpanKey, publishDate]);
 
 	const handleTimeSpanChange = (event) => {
 		const {value} = event.target;
@@ -239,12 +238,12 @@ export default function Chart({publishDate, timeSpanOptions}) {
 		);
 
 	const xAxisFormatter =
-		chartState.timeSpanKey === LAST_24_HOURS
+		timeSpanKey === LAST_24_HOURS
 			? dateFormatters.formatNumericHour
 			: dateFormatters.formatNumericDay;
 
 	const lineChartWrapperClasses = className('line-chart-wrapper', {
-		'line-chart-wrapper--loading': chartState.loading,
+		'line-chart-wrapper--loading': loading,
 	});
 
 	return (
@@ -252,14 +251,14 @@ export default function Chart({publishDate, timeSpanOptions}) {
 			{timeSpanOptions.length && (
 				<div className="c-mb-3 c-mt-4">
 					<TimeSpanSelector
-						disabledNextTimeSpan={chartState.timeSpanOffset === 0}
+						disabledNextTimeSpan={timeSpanOffset === 0}
 						disabledPreviousPeriodButton={
 							isPreviousPeriodButtonDisabled
 						}
 						onNextTimeSpanClick={nextTimeSpan}
 						onPreviousTimeSpanClick={previousTimeSpan}
 						onTimeSpanChange={handleTimeSpanChange}
-						timeSpanKey={chartState.timeSpanKey}
+						timeSpanKey={timeSpanKey}
 						timeSpanOptions={timeSpanOptions}
 					/>
 				</div>
@@ -267,7 +266,7 @@ export default function Chart({publishDate, timeSpanOptions}) {
 
 			{dataSet ? (
 				<div className={lineChartWrapperClasses}>
-					{chartState.loading && (
+					{loading && (
 						<ClayLoadingIndicator
 							className="chart-loading-indicator"
 							small
@@ -311,12 +310,8 @@ export default function Chart({publishDate, timeSpanOptions}) {
 									!validAnalyticsConnection ||
 									histogram.length === 0
 										? [
-												new Date(
-													chartState.timeRange.startDate
-												).getDate(),
-												new Date(
-													chartState.timeRange.endDate
-												).getDate(),
+											new Date(timeRange.startDate).getDate(),
+											new Date(timeRange.endDate).getDate(),
 										  ]
 										: []
 								}
