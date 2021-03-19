@@ -172,13 +172,15 @@ AUI.add(
 				_clearFormValidator(input) {
 					var form = input.get('form');
 
-					var liferayForm = Liferay.Form.get(form.attr('id'));
+					if (form) {
+						var liferayForm = Liferay.Form.get(form.attr('id'));
 
-					if (liferayForm) {
-						var validator = liferayForm.formValidator;
+						if (liferayForm) {
+							var validator = liferayForm.formValidator;
 
-						if (A.instanceOf(validator, A.FormValidator)) {
-							validator.resetAllFields();
+							if (A.instanceOf(validator, A.FormValidator)) {
+								validator.resetAllFields();
+							}
 						}
 					}
 				},
