@@ -24,8 +24,14 @@ const FilterOrderControls = ({
 	disabled,
 	filterDropdownItems,
 	onFilterDropdownItemClick,
+	sortingOrder,
 	sortingURL,
 }) => {
+	const sortingClasses =
+		sortingOrder === 'desc'
+			? 'order-arrow-down-active'
+			: 'order-arrow-up-active';
+
 	return (
 		<>
 			{filterDropdownItems && (
@@ -77,7 +83,7 @@ const FilterOrderControls = ({
 			{sortingURL && (
 				<ClayManagementToolbar.Item>
 					<LinkOrButton
-						className="nav-link nav-link-monospaced"
+						className={`nav-link nav-link-monospaced ${sortingClasses}`}
 						disabled={disabled}
 						displayType="unstyled"
 						href={sortingURL}
