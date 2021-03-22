@@ -218,12 +218,6 @@ export default function Chart({publishDate, timeSpanOptions}) {
 			: publishDateISOString.split('T')[0].concat('T00:00:00');
 	}, [timeSpanKey, publishDate]);
 
-	const handleTimeSpanChange = (event) => {
-		const {value} = event.target;
-
-		dispatch({payload: {key: value}, type: 'CHANGE_TIME_SPAN_KEY'});
-	};
-
 	const legendFormatter =
 		dataSet &&
 		legendFormatterGenerator(
@@ -251,9 +245,6 @@ export default function Chart({publishDate, timeSpanOptions}) {
 						disabledPreviousPeriodButton={
 							isPreviousPeriodButtonDisabled
 						}
-						onNextTimeSpanClick={() => dispatch({type: 'NEXT_TIME_SPAN'})}
-						onPreviousTimeSpanClick={() => dispatch({type: 'PREV_TIME_SPAN'})}
-						onTimeSpanChange={handleTimeSpanChange}
 						timeSpanKey={timeSpanKey}
 						timeSpanOptions={timeSpanOptions}
 					/>
