@@ -12,20 +12,73 @@
  * details.
  */
 
-import ClayAlert from '@clayui/alert';
+import ClayCard from '@clayui/card';
+import ClayForm, {ClayInput} from '@clayui/form';
+import {useLiferayState} from '@liferay/frontend-js-react-web';
+import {State} from '@liferay/frontend-js-state-web';
 import React from 'react';
 
 import '../css/main.scss';
 
-export default () => {
-	return (
-		<div>
-			<ClayAlert title="Info">
-				This widget is used to test out Clay components. Simply add
-				whatever JS you want to App.js and redeploy.
-			</ClayAlert>
+// Shared state (atoms and selectors); normally these would be in a separate
+// file.
 
-			<div className="clay-test-class">This is where your code goes.</div>
+const userAtom = State.atom('clay-sample-atom', {
+	name: Liferay.ThemeDisplay.getUserName(),
+});
+
+const userSelector = State.selector('clay-sample-selector', (get) => {
+	const user = get(userAtom);
+
+	return `${user.name} (${user.name.length})`;
+});
+
+// Components that access that shared state:
+
+function Name() {
+	const [userNameAndLength] = useLiferayState(userSelector);
+
+	return (
+		<ClayCard>
+			<ClayCard.Body>
+				<ClayCard.Description displayType="title">
+					{Liferay.Language.get('name')}
+				</ClayCard.Description>
+				<ClayCard.Description displayType="text" truncate={false}>
+					{userNameAndLength}
+				</ClayCard.Description>
+			</ClayCard.Body>
+		</ClayCard>
+	);
+}
+
+function NameUpdater(portletId) {
+	const id = `${portletId}_form`;
+	const [user, setUser] = useLiferayState(userAtom);
+
+	return (
+		<ClayForm.Group>
+			<label htmlFor={id}>Name</label>
+			<ClayInput
+				id={id}
+				onChange={(event) => {
+					setUser({
+						...user,
+						name: event.target.value,
+					});
+				}}
+				type="text"
+				value={user.name}
+			/>
+		</ClayForm.Group>
+	);
+}
+
+export default ({portletId}) => {
+	return (
+		<div className="col-md-6">
+			<NameUpdater portletId={portletId} />
+			<Name />
 		</div>
 	);
 };
