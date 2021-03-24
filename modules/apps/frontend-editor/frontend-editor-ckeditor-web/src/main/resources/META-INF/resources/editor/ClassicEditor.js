@@ -146,6 +146,32 @@ const ClassicEditor = React.forwardRef(
 					}}
 					onInstanceReady={({editor}) => {
 						editor.setData(contents);
+
+						CKEDITOR.on(
+							'dialogDefinition',
+							({data: {definition}}) => {
+								definition.onShow = CKEDITOR.tools.override(
+									definition.onShow,
+									(onShow) => {
+										return () => {
+											onShow.call(definition.dialog);
+
+											const {dialog} = definition;
+											const dialogSize = dialog.getSize();
+
+											const x =
+												window.innerWidth / 2 -
+												dialogSize.width / 2;
+											const y =
+												window.innerHeight / 2 -
+												dialogSize.height / 2;
+
+											dialog.move(x, y);
+										};
+									}
+								);
+							}
+						);
 					}}
 					ref={(element) => {
 						if (ref) {
