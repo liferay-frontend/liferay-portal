@@ -199,12 +199,12 @@ export default function Chart({publishDate, timeSpanOptions}) {
 				validAnalyticsConnection,
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		dispatch,
 		endpoints.analyticsReportsHistoricalReadsURL,
 		historicalReads,
 		historicalViews,
-		timeSpanKey,
 		validAnalyticsConnection,
 	]);
 
