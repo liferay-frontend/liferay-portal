@@ -162,8 +162,6 @@ export default function Chart({publishDate, timeSpanOptions}) {
 	const title = dateFormatters.formatChartTitle([firstDate, lastDate]);
 
 	useEffect(() => {
-		dispatch({type: 'SET_LOADING'});
-
 		const timeSpanComparator =
 			timeSpanKey === LAST_24_HOURS
 				? HOUR_IN_MILLISECONDS
