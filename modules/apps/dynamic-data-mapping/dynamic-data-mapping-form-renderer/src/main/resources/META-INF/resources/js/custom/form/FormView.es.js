@@ -14,7 +14,6 @@
 
 import '../../../css/main.scss';
 
-import dom from 'metal-dom';
 import React, {
 	useCallback,
 	useEffect,
@@ -99,11 +98,10 @@ const useFormSubmit = ({apiRef, containerRef}) => {
 
 	useEffect(() => {
 		let onHandle;
-
-		let submitHandle;
+		let form;
 
 		if (containerRef.current) {
-			const form = getFormNode(containerRef.current);
+			form = getFormNode(containerRef.current);
 
 			if (form) {
 				onHandle = Liferay.on(
@@ -116,7 +114,7 @@ const useFormSubmit = ({apiRef, containerRef}) => {
 					this
 				);
 
-				submitHandle = dom.on(form, 'submit', handleFormSubmitted);
+				form.addEventListener('submit', handleFormSubmitted);
 			}
 		}
 
@@ -125,8 +123,8 @@ const useFormSubmit = ({apiRef, containerRef}) => {
 				onHandle.detach();
 			}
 
-			if (submitHandle) {
-				submitHandle.removeListener();
+			if (form) {
+				form.removeEventListener('submit', handleFormSubmitted);
 			}
 		};
 	}, [containerRef, handleFormSubmitted]);
