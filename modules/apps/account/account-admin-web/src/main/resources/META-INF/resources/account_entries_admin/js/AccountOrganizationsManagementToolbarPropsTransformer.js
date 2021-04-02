@@ -54,24 +54,26 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 			openSelectionModal({
 				buttonAddLabel: Liferay.Language.get('assign'),
 				multiple: true,
-				onSelect: (selectedItem) => {
-					if (selectedItem) {
+				onSelect: (selectedItems) => {
+					if (selectedItems.length) {
 						const form = document.getElementById(
 							`${portletNamespace}fm`
 						);
 
 						if (form) {
+							const values = selectedItems.map(
+								(item) => item.value
+							);
+
 							postForm(form, {
 								data: {
-									accountOrganizationIds: selectedItem.value,
+									accountOrganizationIds: values.join(','),
 								},
 								url: data?.assignAccountOrganizationsURL,
 							});
 						}
 					}
 				},
-				searchContainerId: `${portletNamespace}organizations`,
-				selectEventName: `${portletNamespace}assignAccountOrganizations`,
 				title: Liferay.Util.sub(
 					Liferay.Language.get('assign-organizations-to-x'),
 					data?.accountEntryName

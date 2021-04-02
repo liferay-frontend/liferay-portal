@@ -74,21 +74,21 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 		openSelectionModal({
 			buttonAddLabel: Liferay.Language.get('select'),
 			multiple: true,
-			onSelect: (selectedItem) => {
-				if (selectedItem) {
+			onSelect: (selectedItems) => {
+				if (selectedItems.length) {
+					const values = selectedItems.map((item) => item.value);
+
 					const redirectURL = createPortletURL(
 						itemData?.redirectURL,
 						{
 							accountEntriesNavigation: 'accounts',
-							accountEntryIds: selectedItem.value,
+							accountEntryIds: values.join(','),
 						}
 					);
 
 					navigate(redirectURL);
 				}
 			},
-			searchContainerId: `${portletNamespace}accountEntries`,
-			selectEventName: `${portletNamespace}selectAccountEntries`,
 			title: itemData?.dialogTitle,
 			url: itemData?.accountEntriesSelectorURL,
 		});

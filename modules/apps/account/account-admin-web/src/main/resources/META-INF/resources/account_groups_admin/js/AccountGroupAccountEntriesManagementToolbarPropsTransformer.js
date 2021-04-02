@@ -59,24 +59,26 @@ export default function propsTransformer({
 			openSelectionModal({
 				buttonAddLabel: Liferay.Language.get('assign'),
 				multiple: true,
-				onSelect: (selectedItem) => {
-					if (selectedItem) {
+				onSelect: (selectedItems) => {
+					if (selectedItems.length) {
 						const form = document.getElementById(
 							`${portletNamespace}fm`
 						);
 
 						if (form) {
+							const values = selectedItems.map(
+								(item) => item.value
+							);
+
 							postForm(form, {
 								data: {
-									accountEntryIds: selectedItem.value,
+									accountEntryIds: values.join(','),
 								},
 								url: assignAccountGroupAccountEntriesURL,
 							});
 						}
 					}
 				},
-				searchContainerId: otherProps.searchContainerId,
-				selectEventName: `${portletNamespace}selectAccountEntries`,
 				title: Liferay.Util.sub(
 					Liferay.Language.get('assign-accounts-to-x'),
 					accountGroupName
