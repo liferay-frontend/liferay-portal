@@ -132,15 +132,13 @@ function AssetTagsSelector({
 			buttonAddLabel: Liferay.Language.get('done'),
 			multiple: true,
 			onSelect: (dialogSelectedItems) => {
-				if (dialogSelectedItems && dialogSelectedItems.items.length) {
-					const newValues = dialogSelectedItems.items
-						.split(',')
-						.map((value) => {
-							return {
-								label: value,
-								value,
-							};
-						});
+				if (dialogSelectedItems.length) {
+					const newValues = dialogSelectedItems.map((item) => {
+						return {
+							label: item.value,
+							value: item.value,
+						};
+					});
 
 					const addedItems = newValues.filter(
 						(newValue) =>
