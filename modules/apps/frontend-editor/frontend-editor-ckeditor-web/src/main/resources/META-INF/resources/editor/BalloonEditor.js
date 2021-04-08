@@ -20,23 +20,9 @@ import {Editor} from './Editor';
 import '../css/main.scss';
 
 const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
-	const defaultExtraPlugins = 'balloontoolbar,floatingspace';
-
-	const getConfig = () => {
-		const extraPlugins = config.extraPlugins
-			? `${config.extraPlugins}`
-			: '';
-
-		return {
-			...config,
-			extraAllowedContent: '*',
-			extraPlugins: `${extraPlugins}${defaultExtraPlugins}`,
-		};
-	};
-
 	return (
 		<Editor
-			config={getConfig()}
+			config={config}
 			name={name}
 			onBeforeLoad={(CKEDITOR) => {
 				CKEDITOR.disableAutoInline = true;
