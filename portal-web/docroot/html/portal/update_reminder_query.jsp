@@ -26,22 +26,22 @@ if (referer.equals(themeDisplay.getPathMain() + "/portal/update_reminder_query")
 }
 %>
 
-<div class="mt-4 sheet sheet-lg">
-	<div class="sheet-header">
-		<div class="autofit-padded-no-gutters-x autofit-row">
-			<div class="autofit-col autofit-col-expand">
-				<h2 class="sheet-title">
-					<liferay-ui:message key="password-reminder" />
-				</h2>
-			</div>
+<div class="cadmin container-form-lg">
+	<div class="sheet sheet-lg">
+		<div class="sheet-header">
+			<div class="autofit-padded-no-gutters-x autofit-row">
+				<div class="autofit-col autofit-col-expand">
+					<h2 class="sheet-title">
+						<liferay-ui:message key="password-reminder" />
+					</h2>
+				</div>
 
-			<div class="autofit-col">
-				<%@ include file="/html/portal/select_language.jspf" %>
+				<div class="autofit-col">
+					<%@ include file="/html/portal/select_language.jspf" %>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="sheet-text">
 		<aui:form action='<%= themeDisplay.getPathMain() + "/portal/update_reminder_query" %>' autocomplete='<%= PropsValues.COMPANY_SECURITY_PASSWORD_REMINDER_QUERY_FORM_AUTOCOMPLETE ? "on" : "off" %>' cssClass="update-reminder-query" method="post" name="fm">
 			<aui:input name="p_auth" type="hidden" value="<%= AuthTokenUtil.getToken(request) %>" />
 			<aui:input name="doAsUserId" type="hidden" value="<%= themeDisplay.getDoAsUserId() %>" />
@@ -55,30 +55,36 @@ if (referer.equals(themeDisplay.getPathMain() + "/portal/update_reminder_query")
 			</c:if>
 
 			<aui:fieldset>
-				<%@ include file="/html/portal/update_reminder_query_question.jspf" %>
+				<div class="sheet-section">
+					<%@ include file="/html/portal/update_reminder_query_question.jspf" %>
 
-				<c:if test="<%= PropsValues.USERS_REMINDER_QUERIES_CUSTOM_QUESTION_ENABLED %>">
-					<div class="hide" id="customQuestionContainer">
-						<aui:input autoFocus="<%= true %>" bean="<%= user %>" cssClass="reminder-query-custom" fieldParam="reminderQueryCustomQuestion" label="" model="<%= User.class %>" name="reminderQueryQuestion" />
-					</div>
-				</c:if>
+					<c:if test="<%= PropsValues.USERS_REMINDER_QUERIES_CUSTOM_QUESTION_ENABLED %>">
+						<div class="hide" id="customQuestionContainer">
+							<aui:input autoFocus="<%= true %>" bean="<%= user %>" cssClass="reminder-query-custom" fieldParam="reminderQueryCustomQuestion" label="" model="<%= User.class %>" name="reminderQueryQuestion" />
+						</div>
+					</c:if>
 
-				<%
-				String answer = user.getReminderQueryAnswer();
+					<%
+					String answer = user.getReminderQueryAnswer();
 
-				if (!PropsValues.USERS_REMINDER_QUERIES_DISPLAY_IN_PLAIN_TEXT && Validator.isNotNull(answer)) {
-					answer = Portal.TEMP_OBFUSCATION_VALUE;
-				}
-				%>
+					if (!PropsValues.USERS_REMINDER_QUERIES_DISPLAY_IN_PLAIN_TEXT && Validator.isNotNull(answer)) {
+						answer = Portal.TEMP_OBFUSCATION_VALUE;
+					}
+					%>
 
-				<aui:input autocomplete="off" cssClass="reminder-query-answer" label="answer" maxlength="<%= ModelHintsConstants.TEXT_MAX_LENGTH %>" name="reminderQueryAnswer" showRequiredLabel="<%= false %>" size="50" type='<%= PropsValues.USERS_REMINDER_QUERIES_DISPLAY_IN_PLAIN_TEXT ? "text" : "password" %>' value="<%= answer %>">
-					<aui:validator name="required" />
-				</aui:input>
+					<aui:input autocomplete="off" cssClass="reminder-query-answer" label="answer" maxlength="<%= ModelHintsConstants.TEXT_MAX_LENGTH %>" name="reminderQueryAnswer" showRequiredLabel="<%= false %>" size="50" type='<%= PropsValues.USERS_REMINDER_QUERIES_DISPLAY_IN_PLAIN_TEXT ? "text" : "password" %>' value="<%= answer %>">
+						<aui:validator name="required" />
+					</aui:input>
+				</div>
 			</aui:fieldset>
 
-			<aui:button-row>
-				<aui:button type="submit" />
-			</aui:button-row>
+			<div class="sheet-footer">
+				<div class="btn-group">
+					<div class="btn-group-item">
+						<aui:button type="submit" />
+					</div>
+				</div>
+			</div>
 		</aui:form>
 	</div>
 </div>
