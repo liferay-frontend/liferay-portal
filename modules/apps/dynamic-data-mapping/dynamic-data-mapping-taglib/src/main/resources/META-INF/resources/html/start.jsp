@@ -198,16 +198,21 @@
 				});
 			};
 
-			var onDestroyPortlet = function (event) {
-				if (event.portletId === '<%= portletDisplay.getId() %>') {
-					liferayDDMForm.destroy();
+			// Again, note the somewhat icky use of the `__unsafe__` namespace
+			// here.
 
-					Liferay.detach('inputLocalized:localeChanged', onLocaleChange);
-					Liferay.detach('destroyPortlet', onDestroyPortlet);
+			var {dispose} = Liferay.State.__unsafe__.subscribe(
+				'frontend-js-web:active-portlet-ids',
+				(ids) => {
+					if ('<%= portletDisplay.getId() %>' in ids) {
+						liferayDDMForm.destroy();
+
+						Liferay.detach('inputLocalized:localeChanged', onLocaleChange);
+
+						dispose();
+					}
 				}
-			};
-
-			Liferay.on('destroyPortlet', onDestroyPortlet);
+			);
 		</aui:script>
 	</c:if>
 

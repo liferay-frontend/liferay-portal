@@ -12,6 +12,31 @@
  * details.
  */
 
+const ACTIVE_PORTLET_IDS = 'frontend-js-web:active-portlet-ids';
+
+// Note: This won't actually work; it's just a demo. This is
+// an AUI module that doesn't get processed by the Bundler's
+// Babel transforms (see the .npmbundlerc), and is loaded via the
+// `Liferay-JS-Resources-Top-Head` mechanism (see the bnd.bnd). So
+// for now we are just pretending that we can/could load/acess
+// `Liferay.State` from here. This is a general problem with trying to
+// access "new" modules from legacy places like this module.
+//
+// And note how the fact that we can't load modules properly means we'd
+// be forced to use the `__unsafe__` API anyway... I'm just assigning it
+// to a local binding here to make the code further down more readable.
+//
+// All of this suggests to me that it might be better to start with
+// adopting global state in more "modern" parts of the codebase.
+
+const State = Liferay.State.__unsafe__;
+
+// Assuming for now that we define the atom here, and that everybody accesses it
+// `__unsafe__`-ly, due to the difficulty of loading/exporting modules in AUI vs
+// AMD.
+
+Liferay.State.atom(ACTIVE_PORTLET_IDS, {});
+
 (function (A) {
 	var Lang = A.Lang;
 
@@ -151,6 +176,33 @@
 			}
 		},
 	};
+
+	function destroyPortlet(options) {
+
+		// NOTE: Will have to vet all the current listeners to see what
+		// `options` they might care about. A cursory examination suggests that
+		// it is probably only ever (or mostly) `portletId`.
+
+		const {portletId} = options;
+
+		let activeIds = State.readKey(ACTIVE_PORTLET_IDS);
+
+		if (!(portletId in activeIds)) {
+			console.warn(
+				`destroyPortlet(): ${portletId} is not in the set of active portlet IDs`
+			);
+		}
+
+		activeIds = {...activeIds};
+
+		delete activeIds[portletId];
+
+		State.writeKey(ACTIVE_PORTLET_IDS, activeIds);
+
+		// Backwards compatibility.
+
+		Liferay.fire('destroyPortlet', options);
+	}
 
 	Liferay.provide(
 		Portlet,
@@ -448,7 +500,7 @@
 
 				Portlet.destroyComponents(portletId);
 
-				Liferay.fire('destroyPortlet', options);
+				destroyPortlet(options);
 
 				Liferay.fire('closePortlet', options);
 			}
@@ -471,10 +523,7 @@
 
 				Portlet.destroyComponents(portletId);
 
-				Liferay.fire(
-					'destroyPortlet',
-					Portlet._mergeOptions(portlet, options)
-				);
+				destroyPortlet(Portlet._mergeOptions(portlet, options));
 			}
 		},
 		['aui-node-base']
@@ -532,6 +581,21 @@
 					});
 				}
 			}
+
+			const activeIds = State.readKey(ACTIVE_PORTLET_IDS);
+
+			if (portletId in activeIds) {
+				console.warn(
+					`Liferay.Portlet.onLoad(): ${portletId} is already in the set of active portlet IDs`
+				);
+			}
+
+			State.writeKey(ACTIVE_PORTLET_IDS, {
+				...activeIds,
+				[portletId]: true,
+			});
+
+			// Backwards compatibility.
 
 			Liferay.fire('portletReady', {
 				portlet,
