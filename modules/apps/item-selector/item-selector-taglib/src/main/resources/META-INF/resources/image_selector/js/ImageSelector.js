@@ -13,10 +13,12 @@
  */
 
 import ClayIcon from '@clayui/icon';
+import {State} from '@liferay/frontend-js-state-web';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
+import imageSelectorCoverImageAtom from '../../atoms/imageSelectorCoverImageAtom';
 import DropHereInfo from '../../drop_here_info/js/DropHereInfo';
 import BrowseImage from './BrowseImage';
 import ChangeImageControls from './ChangeImageControls';
@@ -27,9 +29,22 @@ import ProgressWrapper from './ProgressWrapper';
 const CSS_DROP_ACTIVE = 'drop-active';
 const CSS_PROGRESS_ACTIVE = 'progress-active';
 const STATUS_CODE = Liferay.STATUS_CODE;
+
+/**
+ * @deprecated As of Cavanaugh (7.4.x), replaced by imageSelectorCoverImageAtom.
+ */
 const STR_IMAGE_DELETED = 'coverImageDeleted';
+
+/**
+ * @deprecated As of Cavanaugh (7.4.x), replaced by imageSelectorCoverImageAtom.
+ */
 const STR_IMAGE_SELECTED = 'coverImageSelected';
+
+/**
+ * @deprecated As of Cavanaugh (7.4.x), replaced by imageSelectorCoverImageAtom.
+ */
 const STR_IMAGE_UPLOADED = 'coverImageUploaded';
+
 const STR_SPACE = ' ';
 
 const TPL_PROGRESS_DATA =
@@ -153,6 +168,8 @@ const ImageSelector = ({
 		Liferay.fire(STR_IMAGE_DELETED, {
 			imageData: null,
 		});
+
+		State.write(imageSelectorCoverImageAtom, null);
 	};
 
 	const handleFileSelect = (event) => {
@@ -190,6 +207,11 @@ const ImageSelector = ({
 					});
 
 					Liferay.fire(STR_IMAGE_SELECTED);
+
+					// TODO: change type to match what I'm passing here, and
+					// always pass it
+
+					State.write(imageSelectorCoverImageAtom, image);
 				}
 			},
 			selectEventName: itemSelectorEventName,
@@ -233,6 +255,15 @@ const ImageSelector = ({
 		Liferay.fire(fireEvent, {
 			imageData: success ? image : null,
 		});
+
+		State.write(
+			imageSelectorCoverImageAtom,
+			success
+				? {
+						imageData: image,
+				  }
+				: null
+		);
 	};
 
 	const handleUploadProgressChange = (event) => {

@@ -1,0 +1,38 @@
+{
+	"@generated": "51030f0dc064021948cd0dcde665f2460ffb0c76",
+	"@overrides": {
+	},
+	"@readonly": "** AUTO-GENERATED: DO NOT EDIT OUTSIDE @overrides **",
+	"@see": "https://git.io/JY2EA",
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"baseUrl": ".",
+		"composite": true,
+		"jsx": "react",
+		"module": "es6",
+		"moduleResolution": "node",
+		"outDir": "./types",
+		"paths": {
+			"@liferay/frontend-js-state-web": [
+				"../../frontend-js/frontend-js-state-web/src/main/resources/META-INF/resources/index.ts"
+			]
+		},
+		"sourceMap": false,
+		"strict": true,
+		"target": "es6",
+		"tsBuildInfoFile": "tmp/tsconfig.tsbuildinfo",
+		"typeRoots": [
+			"../../../node_modules/@types",
+			"./node_modules/@types"
+		]
+	},
+	"include": [
+		"src/**/*",
+		"test/**/*"
+	],
+	"references": [
+		{
+			"path": "../../frontend-js/frontend-js-state-web"
+		}
+	]
+}
