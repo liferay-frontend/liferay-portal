@@ -15,19 +15,8 @@
 import {State} from '@liferay/frontend-js-state-web';
 
 const imageSelectorCoverImageAtom = State.atom<{
-	imageData: {
-		attributeDataImageId?: string;
-		coverImageFileEntryId?: string;
-		entryId?: string;
-		fileEntryId?: string;
-		groupId?: string;
-		mimeType?: string;
-		randomId?: string;
-		title?: string;
-		type?: string;
-		url?: string;
-		uuid?: string;
-	};
-} | null>('imageSelectorCoverImage', null);
+	fileEntryId: string;
+	src: string;
+}>('imageSelectorCoverImage', {fileEntryId: '0', src: ''});
 
 export default imageSelectorCoverImageAtom;

@@ -511,7 +511,7 @@ export default class Blogs {
 	}
 
 	_updateCaption(imageData) {
-		if (imageData) {
+		if (imageData.fileEntryId !== '0') {
 			this._showCaption();
 		}
 		else {
@@ -580,7 +580,7 @@ export default class Blogs {
 		this._eventsHandles.forEach((removeListener) => removeListener());
 		this._eventsHandles = [];
 
-		this._imageSelectorCoverImageSubscription?.dispose();
+		this._imageSelectorCoverImageSubscription.dispose();
 		this._imageSelectorCoverImageSubscription = null;
 	}
 

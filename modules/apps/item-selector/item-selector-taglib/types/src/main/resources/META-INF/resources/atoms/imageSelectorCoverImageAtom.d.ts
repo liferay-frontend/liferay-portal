@@ -14,20 +14,9 @@
 
 declare const imageSelectorCoverImageAtom: {
 	readonly default: {
-		readonly imageData: {
-			readonly attributeDataImageId?: string | undefined;
-			readonly coverImageFileEntryId?: string | undefined;
-			readonly entryId?: string | undefined;
-			readonly fileEntryId?: string | undefined;
-			readonly groupId?: string | undefined;
-			readonly mimeType?: string | undefined;
-			readonly randomId?: string | undefined;
-			readonly title?: string | undefined;
-			readonly type?: string | undefined;
-			readonly url?: string | undefined;
-			readonly uuid?: string | undefined;
-		};
-	} | null;
+		readonly fileEntryId: string;
+		readonly src: string;
+	};
 	readonly key: string;
 	readonly 'Liferay.State.ATOM': true;
 };
