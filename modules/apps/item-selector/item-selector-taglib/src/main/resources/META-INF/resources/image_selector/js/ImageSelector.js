@@ -18,7 +18,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
-import imageSelectorCoverImageAtom from '../../atoms/imageSelectorCoverImageAtom';
+import imageSelectorCoverImageAtom, {
+	STR_NULL_IMAGE_FILE_ENTRY_ID,
+} from '../../atoms/imageSelectorCoverImageAtom';
 import DropHereInfo from '../../drop_here_info/js/DropHereInfo';
 import BrowseImage from './BrowseImage';
 import ChangeImageControls from './ChangeImageControls';
@@ -44,8 +46,6 @@ const STR_IMAGE_SELECTED = 'coverImageSelected';
  * @deprecated As of Cavanaugh (7.4.x), replaced by imageSelectorCoverImageAtom
  */
 const STR_IMAGE_UPLOADED = 'coverImageUploaded';
-
-const STR_NULL_IMAGE_FILE_ENTRY_ID = '0';
 
 const STR_SPACE = ' ';
 
@@ -314,7 +314,7 @@ const ImageSelector = ({
 	}, []);
 
 	useEffect(() => {
-		if (image?.fileEntryId !== STR_NULL_IMAGE_FILE_ENTRY_ID) {
+		if (image.fileEntryId !== STR_NULL_IMAGE_FILE_ENTRY_ID) {
 			setErrorMessage('');
 		}
 	}, [image]);

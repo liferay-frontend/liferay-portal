@@ -12,6 +12,7 @@
  * details.
  */
 
+export declare const STR_NULL_IMAGE_FILE_ENTRY_ID = '0';
 declare const imageSelectorCoverImageAtom: {
 	readonly default: {
 		readonly fileEntryId: string;

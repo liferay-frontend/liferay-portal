@@ -13,7 +13,10 @@
  */
 
 import {State} from '@liferay/frontend-js-state-web';
-import {imageSelectorCoverImageAtom} from 'item-selector-taglib';
+import {
+	STR_NULL_IMAGE_FILE_ENTRY_ID,
+	imageSelectorCoverImageAtom,
+} from 'item-selector-taglib';
 
 const CSS_INVISIBLE = 'invisible';
 const STR_BLANK = '';
@@ -511,7 +514,7 @@ export default class Blogs {
 	}
 
 	_updateCaption(imageData) {
-		if (imageData.fileEntryId !== '0') {
+		if (imageData.fileEntryId !== STR_NULL_IMAGE_FILE_ENTRY_ID) {
 			this._showCaption();
 		}
 		else {

@@ -14,4 +14,7 @@
 
 export {default as ItemSelectorRepositoryEntryBrowser} from './repository_entry_browser/js/ItemSelectorRepositoryEntryBrowser.es';
 
-export {default as imageSelectorCoverImageAtom} from './atoms/imageSelectorCoverImageAtom';
+export {
+	STR_NULL_IMAGE_FILE_ENTRY_ID,
+	default as imageSelectorCoverImageAtom,
+} from './atoms/imageSelectorCoverImageAtom';
