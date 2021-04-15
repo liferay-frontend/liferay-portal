@@ -32,21 +32,6 @@ const CSS_DROP_ACTIVE = 'drop-active';
 const CSS_PROGRESS_ACTIVE = 'progress-active';
 const STATUS_CODE = Liferay.STATUS_CODE;
 
-/**
- * @deprecated As of Cavanaugh (7.4.x), replaced by imageSelectorCoverImageAtom
- */
-const STR_IMAGE_DELETED = 'coverImageDeleted';
-
-/**
- * @deprecated As of Cavanaugh (7.4.x), replaced by imageSelectorCoverImageAtom
- */
-const STR_IMAGE_SELECTED = 'coverImageSelected';
-
-/**
- * @deprecated As of Cavanaugh (7.4.x), replaced by imageSelectorCoverImageAtom
- */
-const STR_IMAGE_UPLOADED = 'coverImageUploaded';
-
 const STR_SPACE = ' ';
 
 const TPL_PROGRESS_DATA =
@@ -171,10 +156,6 @@ const ImageSelector = ({
 			fileEntryId: STR_NULL_IMAGE_FILE_ENTRY_ID,
 			src: '',
 		});
-
-		Liferay.fire(STR_IMAGE_DELETED, {
-			imageData: null,
-		});
 	};
 
 	const handleFileSelect = (event) => {
@@ -212,8 +193,6 @@ const ImageSelector = ({
 							STR_NULL_IMAGE_FILE_ENTRY_ID,
 						src: itemValue.url || '',
 					});
-
-					Liferay.fire(STR_IMAGE_SELECTED);
 				}
 			},
 			selectEventName: itemSelectorEventName,
@@ -235,11 +214,7 @@ const ImageSelector = ({
 		const image = data.file;
 		const success = data.success;
 
-		let fireEvent = STR_IMAGE_DELETED;
-
 		if (success) {
-			fireEvent = STR_IMAGE_UPLOADED;
-
 			setImage({
 				fileEntryId: image.fileEntryId,
 				src: image.url,
@@ -253,10 +228,6 @@ const ImageSelector = ({
 
 			setErrorMessage(getErrorMessage(data.error));
 		}
-
-		Liferay.fire(fireEvent, {
-			imageData: success ? image : null,
-		});
 	};
 
 	const handleUploadProgressChange = (event) => {
