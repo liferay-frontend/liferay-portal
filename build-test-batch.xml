@@ -4379,6 +4379,10 @@ log.sanitizer.enabled=false</echo>
 		/>
 	</target>
 
+	<target name="functional-smoke-firefox-jdk8">
+		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
+	</target>
+
 	<target name="functional-smoke-jboss72-mysql57-jdk8">
 		<run-functional-test app.server.type="jboss" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
 	</target>
