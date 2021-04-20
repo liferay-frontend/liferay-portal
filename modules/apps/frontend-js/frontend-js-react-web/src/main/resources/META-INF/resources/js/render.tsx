@@ -83,11 +83,13 @@ export default function render(
 
 		// eslint-disable-next-line @liferay/portal/no-react-dom-render
 		ReactDOM.render(
-			<ClayTooltipProvider>
-				<ClayIconSpriteContext.Provider value={spritemap}>
-					{Component ? <Component {...renderData} /> : renderable}
-				</ClayIconSpriteContext.Provider>
-			</ClayTooltipProvider>,
+			<ClayIconSpriteContext.Provider value={spritemap}>
+				<ClayTooltipProvider>
+					<span>
+						{Component ? <Component {...renderData} /> : renderable}
+					</span>
+				</ClayTooltipProvider>
+			</ClayIconSpriteContext.Provider>,
 			container
 		);
 	}
