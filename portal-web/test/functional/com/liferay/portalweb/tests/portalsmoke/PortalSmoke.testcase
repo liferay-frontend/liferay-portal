@@ -41,9 +41,13 @@ definition {
 
 		Smoke.viewWelcomeContentPage();
 
+		takeScreenshot();
+
 		Smoke.runSmoke();
 
 		// Assert mismatching checksum for release bundles
+
+		takeScreenshot();
 
 		AssertConsoleTextNotPresent(value1 = "Running validation because of mismatched checksum");
 

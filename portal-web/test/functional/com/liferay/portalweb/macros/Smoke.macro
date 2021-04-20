@@ -32,6 +32,8 @@ definition {
 
 		SitePages.addPublicPage(pageName = "Test Page3");
 
+		takeScreenshot();
+
 		var pageName = "Test Page1";
 		var portletBody = "Test Page1";
 		var portletName = "Navigation Menu";
@@ -117,6 +119,8 @@ definition {
 			WebContent.addCP(
 				webContentContent = "${webContentContent}",
 				webContentTitle = "${webContentTitle}");
+
+			takeScreenshot();
 
 			PortletEntry.publish();
 
