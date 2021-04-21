@@ -20,21 +20,28 @@
 		/>
 
 		<#if (portlet_configuration_icons?has_content || portlet_title_menus?has_content)>
-			<header class="portlet-topper">
+			<header class="cadmin portlet-topper">
 				<div class="portlet-title-default">
 					<span class="portlet-name-text">${portlet_display_name}</span>
 				</div>
 
 				<#foreach portletTitleMenu in portlet_title_menus>
 					<menu class="portlet-topper-toolbar" id="portlet-title-menu_${portlet_id}_${portletTitleMenu_index}" type="toolbar">
-						<@liferay_ui["menu"] menu=portletTitleMenu />
+						${portletTitleMenu.setDirection("right cadmin")}
+
+						<@liferay_ui["menu"]
+							menu=portletTitleMenu
+						/>
 					</menu>
 				</#foreach>
 
 				<#if portlet_configuration_icons?has_content>
 					<#if (portlet_configuration_icons?size > 1)>
 						<menu class="portlet-topper-toolbar" id="portlet-topper-toolbar_${portlet_id}" type="toolbar">
-							<@liferay_portlet["icon-options"] portletConfigurationIcons=portlet_configuration_icons />
+							<@liferay_portlet["icon-options"]
+								direction="right cadmin"
+								portletConfigurationIcons=portlet_configuration_icons
+							/>
 						</menu>
 					<#else>
 						<menu class="portlet-topper-toolbar" id="portlet-topper-toolbar_${portlet_id}" type="toolbar">
@@ -48,7 +55,10 @@
 									url="javascript:;"
 								/>
 							<#else>
-								<@liferay_portlet["icon-options"] portletConfigurationIcons=portlet_configuration_icons />
+								<@liferay_portlet["icon-options"]
+									direction="right cadmin"
+									portletConfigurationIcons=portlet_configuration_icons
+								/>
 							</#if>
 						</menu>
 					</#if>

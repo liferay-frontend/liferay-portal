@@ -1,28 +1,59 @@
+html#{$cadmin-selector} {
+	.cadmin {
+		&.portlet-topper {
+			position: relative;
+
+			.portlet-topper-toolbar {
+				.portlet-icon-back {
+					background: url(../images/arrows/12_left.png) no-repeat 0 50%;
+					padding: 5px 5px 5px 18px;
+				}
+
+				.portlet-options .lfr-icon-menu-text {
+					display: none;
+				}
+			}
+		}
+	}
+
+	.portlet-draggable {
+		.portlet-topper {
+			cursor: move;
+		}
+	}
+
+	.portlet-title-editable {
+		cursor: pointer;
+	}
+
+	.controls-hidden .portlet .visible-interaction {
+		@include media-breakpoint-down(sm) {
+			display: none;
+		}
+	}
+
+	.portlet {
+		.visible-interaction {
+			@include media-breakpoint-up(sm) {
+				display: none;
+			}
+		}
+
+		&:hover,
+		&.open {
+			.visible-interaction {
+				display: block;
+			}
+		}
+	}
+}
+
 body.portlet {
 	border-width: 0;
 }
 
 .portlet-icon-back {
 	margin-top: -2px;
-}
-
-.portlet-topper {
-	position: relative;
-
-	.portlet-topper-toolbar {
-		.portlet-icon-back {
-			background: url(../images/arrows/12_left.png) no-repeat 0 50%;
-			padding: 5px 5px 5px 18px;
-		}
-
-		.portlet-options .lfr-icon-menu-text {
-			display: none;
-		}
-	}
-}
-
-.portlet-title-editable {
-	cursor: pointer;
 }
 
 .portlet-title-text {
@@ -55,32 +86,5 @@ body.portlet {
 .portlet-layout {
 	.portlet-header {
 		margin-bottom: $portlet-header-margin-bottom;
-	}
-}
-
-.portlet-draggable {
-	.portlet-topper {
-		cursor: move;
-	}
-}
-
-.portlet {
-	.visible-interaction {
-		@include media-breakpoint-up(sm) {
-			display: none;
-		}
-	}
-
-	&:hover,
-	&.open {
-		.visible-interaction {
-			display: block;
-		}
-	}
-}
-
-.controls-hidden .portlet .visible-interaction {
-	@include media-breakpoint-down(sm) {
-		display: none;
 	}
 }

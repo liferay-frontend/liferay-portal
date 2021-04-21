@@ -31,13 +31,18 @@
 			<div class="portlet-topper-toolbar-wrapper">
 				<#foreach portletTitleMenu in portlet_title_menus>
 					<menu class="portlet-topper-toolbar" id="portlet-title-menu_${portlet_id}_${portletTitleMenu_index}" type="toolbar">
+						${portletTitleMenu.setDirection("right cadmin")}
+
 						<@liferay_ui["menu"] menu=portletTitleMenu />
 					</menu>
 				</#foreach>
 
 				<#if portlet_configuration_icons?has_content>
 					<menu class="portlet-topper-toolbar" id="portlet-topper-toolbar_${portlet_id}" type="toolbar">
-						<@liferay_portlet["icon-options"] portletConfigurationIcons=portlet_configuration_icons />
+						<@liferay_portlet["icon-options"]
+							direction="right cadmin"
+							portletConfigurationIcons=portlet_configuration_icons
+						/>
 					</menu>
 				</#if>
 			</div>
