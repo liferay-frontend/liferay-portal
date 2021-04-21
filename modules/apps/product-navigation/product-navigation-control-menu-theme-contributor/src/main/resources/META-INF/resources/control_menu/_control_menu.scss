@@ -65,13 +65,21 @@ html#{$cadmin-selector} {
 			}
 		}
 
+		.icon-monospaced {
+			height: 32px;
+			line-height: 32px;
+			text-align: center;
+			width: 32px;
+
+			&.lexicon-icon {
+				height: 1em;
+				line-height: inherit;
+				width: 1em;
+			}
+		}
+
 		.control-menu-icon {
 			display: inline-block;
-
-			.icon-monospaced {
-				height: 32px;
-				width: 32px;
-			}
 		}
 
 		a.control-menu-icon,
@@ -331,13 +339,6 @@ html#{$cadmin-selector} {
 			}
 		}
 
-		%control-menu-icon-monospaced {
-			height: 32px;
-			line-height: 32px;
-			text-align: center;
-			width: 32px;
-		}
-
 		.tools-control-group {
 			flex: 1;
 			flex-wrap: wrap;
@@ -349,10 +350,6 @@ html#{$cadmin-selector} {
 				@include media-breakpoint-up(md, $cadmin-grid-breakpoints) {
 					flex-wrap: wrap;
 				}
-
-				> li > .lfr-portal-tooltip > .control-menu-icon {
-					@extend %control-menu-icon-monospaced;
-				}
 			}
 
 			.taglib-icon-help {
@@ -363,10 +360,6 @@ html#{$cadmin-selector} {
 		}
 
 		.user-control-group {
-			> .control-menu-nav > li > .control-menu-icon {
-				@extend %control-menu-icon-monospaced;
-			}
-
 			.portlet-options {
 				margin-right: -1px;
 			}

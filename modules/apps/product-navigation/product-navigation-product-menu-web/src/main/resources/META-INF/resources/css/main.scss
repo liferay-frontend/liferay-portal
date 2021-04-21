@@ -117,6 +117,15 @@ html#{$cadmin-selector} {
 			}
 
 			.tree-view {
+				ul {
+					list-style: none;
+					padding-left: 0;
+				}
+
+				.tree-root-container {
+					margin-left: 15px;
+				}
+
 				.lfr-root-node.tree-node-content {
 					align-items: center;
 					display: flex;
@@ -177,6 +186,7 @@ html#{$cadmin-selector} {
 						background-color: $cadmin-gray-800;
 						border: 1px solid $cadmin-gray-800;
 						border-radius: 2px;
+						color: $cadmin-white;
 						font-size: 6px;
 						height: 12px;
 						margin-right: 0;

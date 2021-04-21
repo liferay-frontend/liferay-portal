@@ -33,14 +33,10 @@ html#{$cadmin-selector} {
 
 				.icon-monospaced {
 					color: #a7a9bc;
+					font-size: 1.2em;
 					height: 40px;
+					line-height: 40px;
 					width: 40px;
-
-					> .lexicon-icon {
-						height: 1.2em;
-						margin-top: 3px;
-						width: 1.2em;
-					}
 				}
 
 				small {
