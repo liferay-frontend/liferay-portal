@@ -14,6 +14,7 @@
 
 package com.liferay.frontend.taglib.clay.internal.util;
 
+import com.liferay.dataset.custom.view.settings.DatasetCustomViewSettingsFactory;
 import com.liferay.frontend.js.module.launcher.JSModuleResolver;
 import com.liferay.portal.template.react.renderer.ReactRenderer;
 
@@ -26,12 +27,25 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = {})
 public class ServicesProvider {
 
+	public static DatasetCustomViewSettingsFactory
+		getDatasetCustomViewSettingsFactory() {
+
+		return _datasetCustomViewSettingsFactory;
+	}
+
 	public static JSModuleResolver getJSModuleResolver() {
 		return _jsModuleResolver;
 	}
 
 	public static ReactRenderer getReactRenderer() {
 		return _reactRenderer;
+	}
+
+	@Reference(unbind = "-")
+	public void setDatasetCustomViewSettingsFactory(
+		DatasetCustomViewSettingsFactory datasetCustomViewSettingsFactory) {
+
+		_datasetCustomViewSettingsFactory = datasetCustomViewSettingsFactory;
 	}
 
 	@Reference(unbind = "-")
@@ -44,6 +58,8 @@ public class ServicesProvider {
 		_reactRenderer = reactRenderer;
 	}
 
+	private static DatasetCustomViewSettingsFactory
+		_datasetCustomViewSettingsFactory;
 	private static JSModuleResolver _jsModuleResolver;
 	private static ReactRenderer _reactRenderer;
 
