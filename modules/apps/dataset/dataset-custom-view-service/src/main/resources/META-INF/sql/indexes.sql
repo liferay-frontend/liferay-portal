@@ -1,0 +1,2 @@
+create unique index IX_3A936ED1 on DatasetCustomViewEntry (datasetDisplayId[$COLUMN_LENGTH:75$], plid, portletId[$COLUMN_LENGTH:75$], userId);
+create index IX_FF0D71E on DatasetCustomViewEntry (uuid_[$COLUMN_LENGTH:75$], companyId);
