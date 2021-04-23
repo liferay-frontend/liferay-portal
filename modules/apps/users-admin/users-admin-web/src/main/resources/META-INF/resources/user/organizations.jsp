@@ -197,26 +197,14 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 
 		if (selectOrganizationLink) {
 			selectOrganizationLink.on('click', (event) => {
-				Util.selectEntity(
-					{
-						dialog: {
-							constrain: true,
-							modal: true,
-						},
-						id: '<portlet:namespace />selectOrganization',
-						selectedData: searchContainer.getData(true),
-						title:
-							'<liferay-ui:message arguments="organization" key="select-x" />',
-						uri:
-							'<portlet:renderURL windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="mvcPath" value="/select_organization.jsp" /><portlet:param name="p_u_i_d" value='<%= (selUser == null) ? "0" : String.valueOf(selUser.getUserId()) %>' /></portlet:renderURL>',
-					},
-					(event) => {
-						var entityId = event.entityid;
+				Util.openSelectionModal({
+					onSelect: (selectedItem) => {
+						const entityId = selectedItem.entityid;
 
-						var rowColumns = [];
+						const rowColumns = [];
 
-						rowColumns.push(event.entityname);
-						rowColumns.push(event.type);
+						rowColumns.push(selectedItem.entityname);
+						rowColumns.push(selectedItem.type);
 						rowColumns.push('');
 						rowColumns.push(
 							'<a class="modify-link" data-rowId="' +
@@ -238,8 +226,14 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 						document.<portlet:namespace />fm.<portlet:namespace />deleteOrganizationIds.value = deleteOrganizationIds.join(
 							','
 						);
-					}
-				);
+					},
+					selectEventName: '<portlet:namespace />selectOrganization',
+					selectedData: [searchContainer.getData(true)],
+					title:
+						'<liferay-ui:message arguments="organization" key="select-x" />',
+					url:
+						'<portlet:renderURL windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="mvcPath" value="/select_organization.jsp" /><portlet:param name="p_u_i_d" value='<%= (selUser == null) ? "0" : String.valueOf(selUser.getUserId()) %>' /></portlet:renderURL>',
+				});
 			});
 		}
 	</aui:script>

@@ -155,47 +155,13 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 					searchContainerData = searchContainerData.split(',');
 				}
 
-				Util.selectEntity(
-					{
-						dialog: {
-							constrain: true,
-							modal: true,
-						},
+				Util.openSelectionModal({
+					onSelect: (selectedItem) => {
+						const entityId = selectedItem.entityid;
 
-						<%
-						String eventName = liferayPortletResponse.getNamespace() + "selectSite";
-						%>
+						const rowColumns = [];
 
-						id: '<%= eventName %>',
-						selectedData: searchContainerData,
-						title: '<liferay-ui:message arguments="site" key="select-x" />',
-
-						<%
-						PortletURL groupSelectorURL = PortletURLBuilder.create(
-							PortletProviderUtil.getPortletURL(request, Group.class.getName(), PortletProvider.Action.BROWSE)
-						).setParameter(
-							"eventName", eventName
-						).setParameter(
-							"filterManageableGroups", Boolean.FALSE.toString()
-						).setParameter(
-							"includeCurrentGroup", Boolean.FALSE.toString()
-						).setParameter(
-							"manualMembership", Boolean.TRUE.toString()
-						).setParameter(
-							"p_u_i_d", (selUser == null) ? "0" : String.valueOf(selUser.getUserId())
-						).setWindowState(
-							LiferayWindowState.POP_UP
-						).build();
-						%>
-
-						uri: '<%= groupSelectorURL.toString() %>',
-					},
-					(event) => {
-						var entityId = event.entityid;
-
-						var rowColumns = [];
-
-						rowColumns.push(event.entityname);
+						rowColumns.push(selectedItem.entityname);
 						rowColumns.push('');
 						rowColumns.push(
 							'<a class="modify-link" data-rowId="' +
@@ -217,8 +183,36 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 						document.<portlet:namespace />fm.<portlet:namespace />deleteGroupIds.value = deleteGroupIds.join(
 							','
 						);
-					}
-				);
+					},
+
+					<%
+					String eventName = liferayPortletResponse.getNamespace() + "selectSite";
+					%>
+
+					selectEventName: '<%= eventName %>',
+					selectedData: [searchContainerData],
+					title: '<liferay-ui:message arguments="site" key="select-x" />',
+
+					<%
+					PortletURL groupSelectorURL = PortletURLBuilder.create(
+						PortletProviderUtil.getPortletURL(request, Group.class.getName(), PortletProvider.Action.BROWSE)
+					).setParameter(
+						"p_u_i_d", (selUser == null) ? "0" : String.valueOf(selUser.getUserId())
+					).setParameter(
+						"filterManageableGroups", Boolean.FALSE.toString()
+					).setParameter(
+						"includeCurrentGroup", Boolean.FALSE.toString()
+					).setParameter(
+						"manualMembership", Boolean.TRUE.toString()
+					).setParameter(
+						"eventName", eventName
+					).setWindowState(
+						LiferayWindowState.POP_UP
+					).build();
+					%>
+
+					url: '<%= groupSelectorURL.toString() %>',
+				});
 			}
 		);
 
