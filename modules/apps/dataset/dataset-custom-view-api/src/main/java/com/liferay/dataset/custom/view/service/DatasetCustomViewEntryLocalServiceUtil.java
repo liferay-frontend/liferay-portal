@@ -61,6 +61,10 @@ public class DatasetCustomViewEntryLocalServiceUtil {
 		return getService().addDatasetCustomViewEntry(datasetCustomViewEntry);
 	}
 
+	public static DatasetCustomViewEntry createDatasetCustomViewEntry() {
+		return getService().createDatasetCustomViewEntry();
+	}
+
 	/**
 	 * Creates a new dataset custom view entry with the primary key. Does not add the dataset custom view entry to the database.
 	 *

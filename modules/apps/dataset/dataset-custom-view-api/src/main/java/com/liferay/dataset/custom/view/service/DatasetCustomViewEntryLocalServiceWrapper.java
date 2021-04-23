@@ -54,6 +54,14 @@ public class DatasetCustomViewEntryLocalServiceWrapper
 			datasetCustomViewEntry);
 	}
 
+	@Override
+	public com.liferay.dataset.custom.view.model.DatasetCustomViewEntry
+		createDatasetCustomViewEntry() {
+
+		return _datasetCustomViewEntryLocalService.
+			createDatasetCustomViewEntry();
+	}
+
 	/**
 	 * Creates a new dataset custom view entry with the primary key. Does not add the dataset custom view entry to the database.
 	 *

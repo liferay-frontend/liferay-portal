@@ -40,6 +40,16 @@ import org.osgi.service.component.annotations.Component;
 public class DatasetCustomViewEntryLocalServiceImpl
 	extends DatasetCustomViewEntryLocalServiceBaseImpl {
 
+	public DatasetCustomViewEntry createDatasetCustomViewEntry() {
+		DatasetCustomViewEntry datasetCustomViewEntry =
+			datasetCustomViewEntryLocalService.createDatasetCustomViewEntry(
+				counterLocalService.increment());
+
+		datasetCustomViewEntry.setSettingsJSON("{}");
+
+		return datasetCustomViewEntry;
+	}
+
 	public DatasetCustomViewEntry fetchDatasetCustomViewEntry(
 		long userId, String datasetDisplayId, long plid, String portletId) {
 
