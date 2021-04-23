@@ -424,12 +424,9 @@ public class DataSetDisplayTag extends IncludeTag {
 		DatasetCustomViewSettingsFactory datasetCustomViewSettingsFactory =
 			ServicesProvider.getDatasetCustomViewSettingsFactory();
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		DatasetCustomViewSettings datasetCustomViewSettings =
 			datasetCustomViewSettingsFactory.getDatasetCustomViewSettings(
-				themeDisplay, _id);
+				request, _id);
 
 		_activeViewSettingsJSON = datasetCustomViewSettings.getJSONString();
 	}

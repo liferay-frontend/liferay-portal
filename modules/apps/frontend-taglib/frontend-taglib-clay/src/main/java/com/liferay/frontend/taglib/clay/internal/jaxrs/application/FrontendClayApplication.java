@@ -144,7 +144,7 @@ public class FrontendClayApplication extends Application {
 		try {
 			DatasetCustomViewSettings datasetCustomViewSettings =
 				_datasetCustomViewSettingsFactory.getDatasetCustomViewSettings(
-					themeDisplay, id);
+					httpServletRequest, id);
 
 			JSONObject currentActiveViewSettingsJSONObject =
 				_jsonFactory.createJSONObject(

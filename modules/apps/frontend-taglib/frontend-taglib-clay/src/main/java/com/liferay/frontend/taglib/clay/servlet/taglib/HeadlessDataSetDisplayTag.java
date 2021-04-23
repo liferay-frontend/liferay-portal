@@ -31,10 +31,8 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.SortItemList;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.taglib.util.IncludeTag;
 
@@ -397,12 +395,9 @@ public class HeadlessDataSetDisplayTag extends IncludeTag {
 		DatasetCustomViewSettingsFactory datasetCustomViewSettingsFactory =
 			ServicesProvider.getDatasetCustomViewSettingsFactory();
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		DatasetCustomViewSettings datasetCustomViewSettings =
 			datasetCustomViewSettingsFactory.getDatasetCustomViewSettings(
-				themeDisplay, _id);
+				request, _id);
 
 		_activeViewSettingsJSON = datasetCustomViewSettings.getJSONString();
 	}
