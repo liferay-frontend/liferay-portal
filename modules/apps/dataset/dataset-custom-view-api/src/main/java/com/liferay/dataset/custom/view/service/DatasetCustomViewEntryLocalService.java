@@ -78,8 +78,6 @@ public interface DatasetCustomViewEntryLocalService
 	public DatasetCustomViewEntry addDatasetCustomViewEntry(
 		DatasetCustomViewEntry datasetCustomViewEntry);
 
-	public DatasetCustomViewEntry createDatasetCustomViewEntry();
-
 	/**
 	 * Creates a new dataset custom view entry with the primary key. Does not add the dataset custom view entry to the database.
 	 *
@@ -89,6 +87,9 @@ public interface DatasetCustomViewEntryLocalService
 	@Transactional(enabled = false)
 	public DatasetCustomViewEntry createDatasetCustomViewEntry(
 		long datasetCustomViewEntryId);
+
+	public DatasetCustomViewEntry createDatasetCustomViewEntry(
+		String jsonString);
 
 	/**
 	 * @throws PortalException

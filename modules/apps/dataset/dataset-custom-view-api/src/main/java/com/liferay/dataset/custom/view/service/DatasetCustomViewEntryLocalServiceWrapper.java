@@ -54,14 +54,6 @@ public class DatasetCustomViewEntryLocalServiceWrapper
 			datasetCustomViewEntry);
 	}
 
-	@Override
-	public com.liferay.dataset.custom.view.model.DatasetCustomViewEntry
-		createDatasetCustomViewEntry() {
-
-		return _datasetCustomViewEntryLocalService.
-			createDatasetCustomViewEntry();
-	}
-
 	/**
 	 * Creates a new dataset custom view entry with the primary key. Does not add the dataset custom view entry to the database.
 	 *
@@ -74,6 +66,14 @@ public class DatasetCustomViewEntryLocalServiceWrapper
 
 		return _datasetCustomViewEntryLocalService.createDatasetCustomViewEntry(
 			datasetCustomViewEntryId);
+	}
+
+	@Override
+	public com.liferay.dataset.custom.view.model.DatasetCustomViewEntry
+		createDatasetCustomViewEntry(String jsonString) {
+
+		return _datasetCustomViewEntryLocalService.createDatasetCustomViewEntry(
+			jsonString);
 	}
 
 	/**
