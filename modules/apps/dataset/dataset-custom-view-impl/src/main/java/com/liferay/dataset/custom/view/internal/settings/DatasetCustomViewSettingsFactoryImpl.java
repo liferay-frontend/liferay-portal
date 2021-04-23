@@ -43,11 +43,23 @@ public class DatasetCustomViewSettingsFactoryImpl
 				themeDisplay.getPlid(), portletDisplay.getId());
 
 		if (datasetCustomViewEntry == null) {
-			return null;
+			return new DatasetCustomViewSettingsImpl(
+				_datasetCustomViewEntryLocalService.
+					createDatasetCustomViewEntry());
 		}
 
-		return new DatasetCustomViewSettingsImpl(
-			datasetCustomViewEntry.getSettingsJSON());
+		return new DatasetCustomViewSettingsImpl(datasetCustomViewEntry);
+	}
+
+	@Override
+	public void storeDatasetCustomViewSettings(
+		DatasetCustomViewSettings datasetCustomViewSettings) {
+
+		DatasetCustomViewSettingsImpl datasetCustomViewSettingsImpl =
+			(DatasetCustomViewSettingsImpl)datasetCustomViewSettings;
+
+		_datasetCustomViewEntryLocalService.updateDatasetCustomViewEntry(
+			datasetCustomViewSettingsImpl.getDatasetCustomViewEntry());
 	}
 
 	@Reference

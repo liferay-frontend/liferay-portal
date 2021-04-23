@@ -14,7 +14,9 @@
 
 package com.liferay.dataset.custom.view.internal.settings;
 
+import com.liferay.dataset.custom.view.model.DatasetCustomViewEntry;
 import com.liferay.dataset.custom.view.settings.DatasetCustomViewSettings;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Iván Zaera Avellón
@@ -22,15 +24,36 @@ import com.liferay.dataset.custom.view.settings.DatasetCustomViewSettings;
 public class DatasetCustomViewSettingsImpl
 	implements DatasetCustomViewSettings {
 
-	public DatasetCustomViewSettingsImpl(String jsonString) {
-		_jsonString = jsonString;
+	public DatasetCustomViewSettingsImpl(
+		DatasetCustomViewEntry datasetCustomViewEntry) {
+
+		_datasetCustomViewEntry = datasetCustomViewEntry;
+	}
+
+	public DatasetCustomViewEntry getDatasetCustomViewEntry() {
+		return _datasetCustomViewEntry;
 	}
 
 	@Override
 	public String getJSONString() {
-		return _jsonString;
+		String jsonString = _datasetCustomViewEntry.getSettingsJSON();
+
+		if (Validator.isNull(jsonString)) {
+			jsonString = "{}";
+		}
+
+		return jsonString;
 	}
 
-	private final String _jsonString;
+	@Override
+	public void setJSONString(String jsonString) {
+		if (Validator.isNull(jsonString)) {
+			jsonString = "{}";
+		}
+
+		_datasetCustomViewEntry.setSettingsJSON(jsonString);
+	}
+
+	private final DatasetCustomViewEntry _datasetCustomViewEntry;
 
 }

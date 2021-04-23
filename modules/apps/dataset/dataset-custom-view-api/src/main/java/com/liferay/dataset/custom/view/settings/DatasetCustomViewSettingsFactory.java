@@ -24,4 +24,7 @@ public interface DatasetCustomViewSettingsFactory {
 	public DatasetCustomViewSettings getDatasetCustomViewSettings(
 		ThemeDisplay themeDisplay, String datasetDisplayId);
 
+	public void storeDatasetCustomViewSettings(
+		DatasetCustomViewSettings datasetCustomViewSettings);
+
 }
