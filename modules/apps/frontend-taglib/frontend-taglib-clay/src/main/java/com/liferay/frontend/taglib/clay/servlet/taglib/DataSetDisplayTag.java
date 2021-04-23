@@ -431,12 +431,7 @@ public class DataSetDisplayTag extends IncludeTag {
 			datasetCustomViewSettingsFactory.getDatasetCustomViewSettings(
 				themeDisplay, _id);
 
-		if (datasetCustomViewSettings == null) {
-			_activeViewSettingsJSON = null;
-		}
-		else {
-			_activeViewSettingsJSON = datasetCustomViewSettings.getJSONString();
-		}
+		_activeViewSettingsJSON = datasetCustomViewSettings.getJSONString();
 	}
 
 	private void _setClayDataSetDisplayViewsContext() {
