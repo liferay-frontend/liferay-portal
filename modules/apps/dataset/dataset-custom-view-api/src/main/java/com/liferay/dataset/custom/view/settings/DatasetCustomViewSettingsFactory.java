@@ -14,7 +14,7 @@
 
 package com.liferay.dataset.custom.view.settings;
 
-import com.liferay.portal.kernel.theme.ThemeDisplay;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Iván Zaera Avellón
@@ -22,7 +22,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 public interface DatasetCustomViewSettingsFactory {
 
 	public DatasetCustomViewSettings getDatasetCustomViewSettings(
-		ThemeDisplay themeDisplay, String datasetDisplayId);
+		HttpServletRequest httpServletRequest, String datasetDisplayId);
 
 	public void storeDatasetCustomViewSettings(
 		DatasetCustomViewSettings datasetCustomViewSettings);

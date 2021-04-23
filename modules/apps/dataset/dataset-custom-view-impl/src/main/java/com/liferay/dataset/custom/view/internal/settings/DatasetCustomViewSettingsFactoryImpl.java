@@ -18,8 +18,17 @@ import com.liferay.dataset.custom.view.model.DatasetCustomViewEntry;
 import com.liferay.dataset.custom.view.service.DatasetCustomViewEntryLocalService;
 import com.liferay.dataset.custom.view.settings.DatasetCustomViewSettings;
 import com.liferay.dataset.custom.view.settings.DatasetCustomViewSettingsFactory;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.portlet.PortalPreferences;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,7 +42,11 @@ public class DatasetCustomViewSettingsFactoryImpl
 
 	@Override
 	public DatasetCustomViewSettings getDatasetCustomViewSettings(
-		ThemeDisplay themeDisplay, String datasetDisplayId) {
+		HttpServletRequest httpServletRequest, String datasetDisplayId) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
@@ -43,9 +56,16 @@ public class DatasetCustomViewSettingsFactoryImpl
 				themeDisplay.getPlid(), portletDisplay.getId());
 
 		if (datasetCustomViewEntry == null) {
+			String jsonString = _getLegacyJSONString(
+				httpServletRequest, datasetDisplayId);
+
+			if (Validator.isNull(jsonString)) {
+				jsonString = "{}";
+			}
+
 			return new DatasetCustomViewSettingsImpl(
 				_datasetCustomViewEntryLocalService.
-					createDatasetCustomViewEntry());
+					createDatasetCustomViewEntry(jsonString));
 		}
 
 		return new DatasetCustomViewSettingsImpl(datasetCustomViewEntry);
@@ -62,8 +82,54 @@ public class DatasetCustomViewSettingsFactoryImpl
 			datasetCustomViewSettingsImpl.getDatasetCustomViewEntry());
 	}
 
+	private String _getClayDataSetDisplaySettingsNamespace(
+		HttpServletRequest httpServletRequest, String datasetDisplayId) {
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append("com.liferay.frontend.taglib.clay.servlet.taglib.");
+		sb.append("DataSetDisplayTag");
+		sb.append(StringPool.POUND);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		String portletNamespace = _portal.getPortletNamespace(
+			portletDisplay.getId());
+
+		sb.append(portletNamespace);
+
+		sb.append(StringPool.POUND);
+		sb.append(themeDisplay.getPlid());
+		sb.append(StringPool.POUND);
+		sb.append(datasetDisplayId);
+
+		return sb.toString();
+	}
+
+	private String _getLegacyJSONString(
+		HttpServletRequest httpServletRequest, String datasetDisplayId) {
+
+		PortalPreferences portalPreferences =
+			PortletPreferencesFactoryUtil.getPortalPreferences(
+				httpServletRequest);
+
+		String clayDataSetDisplaySettingsNamespace =
+			_getClayDataSetDisplaySettingsNamespace(
+				httpServletRequest, datasetDisplayId);
+
+		return portalPreferences.getValue(
+			clayDataSetDisplaySettingsNamespace, "activeViewSettingsJSON");
+	}
+
 	@Reference
 	private DatasetCustomViewEntryLocalService
 		_datasetCustomViewEntryLocalService;
+
+	@Reference
+	private Portal _portal;
 
 }
