@@ -20,8 +20,6 @@ import NodeListItem from './NodeListItem';
 export default function NodeList({
 	NodeComponent,
 	nodes,
-	onBlur,
-	onFocus,
 	role = 'group',
 	tabIndex = -1,
 }) {
@@ -35,21 +33,7 @@ export default function NodeList({
 	}
 
 	return (
-		<div
-			className="lfr-treeview-node-list"
-			onBlur={() => {
-				if (onBlur) {
-					onBlur();
-				}
-			}}
-			onFocus={(event) => {
-				if (onFocus) {
-					onFocus(event);
-				}
-			}}
-			role={role}
-			tabIndex={tabIndex}
-		>
+		<div className="lfr-treeview-node-list" role={role} tabIndex={tabIndex}>
 			{nodes.map((node) => (
 				<NodeListItem
 					NodeComponent={NodeComponent}
@@ -70,7 +54,5 @@ NodeList.propTypes = {
 			name: PropTypes.string.isRequired,
 		})
 	).isRequired,
-	onBlur: PropTypes.func,
-	onFocus: PropTypes.func,
 	tabIndex: PropTypes.number,
 };
