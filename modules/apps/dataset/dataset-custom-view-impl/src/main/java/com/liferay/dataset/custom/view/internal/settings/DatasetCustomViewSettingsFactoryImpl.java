@@ -121,8 +121,20 @@ public class DatasetCustomViewSettingsFactoryImpl
 			_getClayDataSetDisplaySettingsNamespace(
 				httpServletRequest, datasetDisplayId);
 
-		return portalPreferences.getValue(
+		String jsonString = portalPreferences.getValue(
 			clayDataSetDisplaySettingsNamespace, "activeViewSettingsJSON");
+
+		if (jsonString != null) {
+			_datasetCustomViewEntryLocalService.updateDatasetCustomViewEntry(
+				_datasetCustomViewEntryLocalService.
+					createDatasetCustomViewEntry(jsonString));
+
+			portalPreferences.setValue(
+				clayDataSetDisplaySettingsNamespace, "activeViewSettingsJSON",
+				null);
+		}
+
+		return jsonString;
 	}
 
 	@Reference
