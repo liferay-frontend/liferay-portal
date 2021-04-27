@@ -46,6 +46,11 @@ public class DatasetCustomViewSettingsImpl
 	}
 
 	@Override
+	public String getName() {
+		return _datasetCustomViewEntry.getName();
+	}
+
+	@Override
 	public void setJSONString(String jsonString) {
 		if (Validator.isNull(jsonString)) {
 			jsonString = "{}";

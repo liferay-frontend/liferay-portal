@@ -396,7 +396,7 @@ public class HeadlessDataSetDisplayTag extends IncludeTag {
 			ServicesProvider.getDatasetCustomViewSettingsFactory();
 
 		DatasetCustomViewSettings datasetCustomViewSettings =
-			datasetCustomViewSettingsFactory.getDatasetCustomViewSettings(
+			datasetCustomViewSettingsFactory.getActiveDatasetCustomViewSettings(
 				request, _id);
 
 		_activeViewSettingsJSON = datasetCustomViewSettings.getJSONString();

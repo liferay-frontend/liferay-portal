@@ -21,6 +21,8 @@ public interface DatasetCustomViewSettings {
 
 	public String getJSONString();
 
+	public String getName();
+
 	public void setJSONString(String jsonString);
 
 }

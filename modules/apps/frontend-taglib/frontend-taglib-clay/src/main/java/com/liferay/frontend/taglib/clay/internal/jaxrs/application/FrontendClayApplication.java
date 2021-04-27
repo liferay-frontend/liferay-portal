@@ -143,8 +143,8 @@ public class FrontendClayApplication extends Application {
 
 		try {
 			DatasetCustomViewSettings datasetCustomViewSettings =
-				_datasetCustomViewSettingsFactory.getDatasetCustomViewSettings(
-					httpServletRequest, id);
+				_datasetCustomViewSettingsFactory.
+					getActiveDatasetCustomViewSettings(httpServletRequest, id);
 
 			JSONObject currentActiveViewSettingsJSONObject =
 				_jsonFactory.createJSONObject(
@@ -157,6 +157,9 @@ public class FrontendClayApplication extends Application {
 				currentActiveViewSettingsJSONObject.put(
 					key, activeViewSettingsJSONObject.get(key));
 			}
+
+			datasetCustomViewSettings.setJSONString(
+				currentActiveViewSettingsJSONObject.toJSONString());
 
 			_datasetCustomViewSettingsFactory.storeDatasetCustomViewSettings(
 				datasetCustomViewSettings);

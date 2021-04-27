@@ -21,8 +21,12 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface DatasetCustomViewSettingsFactory {
 
-	public DatasetCustomViewSettings getDatasetCustomViewSettings(
+	public DatasetCustomViewSettings getActiveDatasetCustomViewSettings(
 		HttpServletRequest httpServletRequest, String datasetDisplayId);
+
+	public DatasetCustomViewSettings getDatasetCustomViewSettings(
+		HttpServletRequest httpServletRequest, String datasetDisplayId,
+		String name);
 
 	public void storeDatasetCustomViewSettings(
 		DatasetCustomViewSettings datasetCustomViewSettings);

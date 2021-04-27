@@ -41,8 +41,17 @@ public class DatasetCustomViewSettingsFactoryImpl
 	implements DatasetCustomViewSettingsFactory {
 
 	@Override
-	public DatasetCustomViewSettings getDatasetCustomViewSettings(
+	public DatasetCustomViewSettings getActiveDatasetCustomViewSettings(
 		HttpServletRequest httpServletRequest, String datasetDisplayId) {
+
+		return getDatasetCustomViewSettings(
+			httpServletRequest, datasetDisplayId, StringPool.BLANK);
+	}
+
+	@Override
+	public DatasetCustomViewSettings getDatasetCustomViewSettings(
+		HttpServletRequest httpServletRequest, String datasetDisplayId,
+		String name) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -52,20 +61,20 @@ public class DatasetCustomViewSettingsFactoryImpl
 
 		DatasetCustomViewEntry datasetCustomViewEntry =
 			_datasetCustomViewEntryLocalService.fetchDatasetCustomViewEntry(
-				themeDisplay.getUserId(), datasetDisplayId,
+				themeDisplay.getUserId(), datasetDisplayId, name,
 				themeDisplay.getPlid(), portletDisplay.getId());
 
-		if (datasetCustomViewEntry == null) {
-			String jsonString = _getLegacyJSONString(
+		if ((datasetCustomViewEntry == null) && name.isEmpty()) {
+			datasetCustomViewEntry = _upgradeDatasetCustomViewEntry(
 				httpServletRequest, datasetDisplayId);
+		}
 
-			if (Validator.isNull(jsonString)) {
-				jsonString = "{}";
-			}
-
-			return new DatasetCustomViewSettingsImpl(
+		if (datasetCustomViewEntry == null) {
+			datasetCustomViewEntry =
 				_datasetCustomViewEntryLocalService.
-					createDatasetCustomViewEntry(jsonString));
+					createDatasetCustomViewEntry(
+						themeDisplay.getUserId(), datasetDisplayId, name, "{}",
+						themeDisplay.getPlid(), portletDisplay.getId());
 		}
 
 		return new DatasetCustomViewSettingsImpl(datasetCustomViewEntry);
@@ -83,13 +92,28 @@ public class DatasetCustomViewSettingsFactoryImpl
 	}
 
 	private String _getClayDataSetDisplaySettingsNamespace(
-		HttpServletRequest httpServletRequest, String datasetDisplayId) {
+		String datasetDisplayId, long plid, String portletId) {
 
 		StringBundler sb = new StringBundler(8);
 
 		sb.append("com.liferay.frontend.taglib.clay.servlet.taglib.");
 		sb.append("DataSetDisplayTag");
 		sb.append(StringPool.POUND);
+		sb.append(_portal.getPortletNamespace(portletId));
+		sb.append(StringPool.POUND);
+		sb.append(plid);
+		sb.append(StringPool.POUND);
+		sb.append(datasetDisplayId);
+
+		return sb.toString();
+	}
+
+	private DatasetCustomViewEntry _upgradeDatasetCustomViewEntry(
+		HttpServletRequest httpServletRequest, String datasetDisplayId) {
+
+		PortalPreferences portalPreferences =
+			PortletPreferencesFactoryUtil.getPortalPreferences(
+				httpServletRequest);
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -97,44 +121,33 @@ public class DatasetCustomViewSettingsFactoryImpl
 
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
-		String portletNamespace = _portal.getPortletNamespace(
-			portletDisplay.getId());
-
-		sb.append(portletNamespace);
-
-		sb.append(StringPool.POUND);
-		sb.append(themeDisplay.getPlid());
-		sb.append(StringPool.POUND);
-		sb.append(datasetDisplayId);
-
-		return sb.toString();
-	}
-
-	private String _getLegacyJSONString(
-		HttpServletRequest httpServletRequest, String datasetDisplayId) {
-
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(
-				httpServletRequest);
-
 		String clayDataSetDisplaySettingsNamespace =
 			_getClayDataSetDisplaySettingsNamespace(
-				httpServletRequest, datasetDisplayId);
+				datasetDisplayId, themeDisplay.getPlid(),
+				portletDisplay.getId());
 
 		String jsonString = portalPreferences.getValue(
 			clayDataSetDisplaySettingsNamespace, "activeViewSettingsJSON");
 
-		if (jsonString != null) {
-			_datasetCustomViewEntryLocalService.updateDatasetCustomViewEntry(
+		if (Validator.isNotNull(jsonString)) {
+			DatasetCustomViewEntry datasetCustomViewEntry =
 				_datasetCustomViewEntryLocalService.
-					createDatasetCustomViewEntry(jsonString));
+					createDatasetCustomViewEntry(
+						portalPreferences.getUserId(), datasetDisplayId,
+						StringPool.BLANK, jsonString, themeDisplay.getPlid(),
+						portletDisplay.getId());
+
+			_datasetCustomViewEntryLocalService.updateDatasetCustomViewEntry(
+				datasetCustomViewEntry);
 
 			portalPreferences.setValue(
 				clayDataSetDisplaySettingsNamespace, "activeViewSettingsJSON",
 				null);
+
+			return datasetCustomViewEntry;
 		}
 
-		return jsonString;
+		return null;
 	}
 
 	@Reference
