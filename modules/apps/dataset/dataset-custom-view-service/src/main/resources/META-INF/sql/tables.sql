@@ -8,6 +8,7 @@ create table DatasetCustomViewEntry (
 	createDate DATE null,
 	modifiedDate DATE null,
 	datasetDisplayId VARCHAR(75) null,
+	name VARCHAR(75) null,
 	plid LONG,
 	portletId VARCHAR(75) null,
 	settingsJSON TEXT null

@@ -70,10 +70,12 @@ public class DatasetCustomViewEntryLocalServiceWrapper
 
 	@Override
 	public com.liferay.dataset.custom.view.model.DatasetCustomViewEntry
-		createDatasetCustomViewEntry(String jsonString) {
+		createDatasetCustomViewEntry(
+			long userId, String datasetDisplayId, String name,
+			String jsonString, long plid, String portletId) {
 
 		return _datasetCustomViewEntryLocalService.createDatasetCustomViewEntry(
-			jsonString);
+			userId, datasetDisplayId, name, jsonString, plid, portletId);
 	}
 
 	/**
@@ -248,10 +250,11 @@ public class DatasetCustomViewEntryLocalServiceWrapper
 	@Override
 	public com.liferay.dataset.custom.view.model.DatasetCustomViewEntry
 		fetchDatasetCustomViewEntry(
-			long userId, String datasetDisplayId, long plid, String portletId) {
+			long userId, String datasetDisplayId, String name, long plid,
+			String portletId) {
 
 		return _datasetCustomViewEntryLocalService.fetchDatasetCustomViewEntry(
-			userId, datasetDisplayId, plid, portletId);
+			userId, datasetDisplayId, name, plid, portletId);
 	}
 
 	/**

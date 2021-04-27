@@ -20,6 +20,7 @@
 		<!-- Other fields -->
 
 		<column name="datasetDisplayId" type="String" />
+		<column name="name" type="String" />
 		<column name="plid" type="long" />
 		<column name="portletId" type="String" />
 		<column name="settingsJSON" type="String" />
@@ -28,9 +29,10 @@
 
 		<!-- Finder methods -->
 
-		<finder name="U_D_P_P" return-type="DatasetCustomViewEntry" unique="true">
+		<finder name="U_D_N_P_P" return-type="DatasetCustomViewEntry" unique="true">
 			<finder-column name="userId" />
 			<finder-column name="datasetDisplayId" />
+			<finder-column name="name" />
 			<finder-column name="plid" />
 			<finder-column name="portletId" />
 		</finder>

@@ -41,22 +41,29 @@ public class DatasetCustomViewEntryLocalServiceImpl
 	extends DatasetCustomViewEntryLocalServiceBaseImpl {
 
 	public DatasetCustomViewEntry createDatasetCustomViewEntry(
-		String jsonString) {
+		long userId, String datasetDisplayId, String name, String jsonString,
+		long plid, String portletId) {
 
 		DatasetCustomViewEntry datasetCustomViewEntry =
 			datasetCustomViewEntryLocalService.createDatasetCustomViewEntry(
 				counterLocalService.increment());
 
+		datasetCustomViewEntry.setUserId(userId);
+		datasetCustomViewEntry.setDatasetDisplayId(datasetDisplayId);
+		datasetCustomViewEntry.setName(name);
+		datasetCustomViewEntry.setPlid(plid);
+		datasetCustomViewEntry.setPortletId(portletId);
 		datasetCustomViewEntry.setSettingsJSON(jsonString);
 
 		return datasetCustomViewEntry;
 	}
 
 	public DatasetCustomViewEntry fetchDatasetCustomViewEntry(
-		long userId, String datasetDisplayId, long plid, String portletId) {
+		long userId, String datasetDisplayId, String name, long plid,
+		String portletId) {
 
-		return datasetCustomViewEntryPersistence.fetchByU_D_P_P(
-			userId, datasetDisplayId, plid, portletId);
+		return datasetCustomViewEntryPersistence.fetchByU_D_N_P_P(
+			userId, datasetDisplayId, name, plid, portletId);
 	}
 
 }

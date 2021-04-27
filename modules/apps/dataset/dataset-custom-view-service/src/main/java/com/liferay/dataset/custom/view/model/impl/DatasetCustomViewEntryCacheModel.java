@@ -78,7 +78,7 @@ public class DatasetCustomViewEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -98,6 +98,8 @@ public class DatasetCustomViewEntryCacheModel
 		sb.append(modifiedDate);
 		sb.append(", datasetDisplayId=");
 		sb.append(datasetDisplayId);
+		sb.append(", name=");
+		sb.append(name);
 		sb.append(", plid=");
 		sb.append(plid);
 		sb.append(", portletId=");
@@ -156,6 +158,13 @@ public class DatasetCustomViewEntryCacheModel
 			datasetCustomViewEntryImpl.setDatasetDisplayId(datasetDisplayId);
 		}
 
+		if (name == null) {
+			datasetCustomViewEntryImpl.setName("");
+		}
+		else {
+			datasetCustomViewEntryImpl.setName(name);
+		}
+
 		datasetCustomViewEntryImpl.setPlid(plid);
 
 		if (portletId == null) {
@@ -193,6 +202,7 @@ public class DatasetCustomViewEntryCacheModel
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 		datasetDisplayId = objectInput.readUTF();
+		name = objectInput.readUTF();
 
 		plid = objectInput.readLong();
 		portletId = objectInput.readUTF();
@@ -233,6 +243,13 @@ public class DatasetCustomViewEntryCacheModel
 			objectOutput.writeUTF(datasetDisplayId);
 		}
 
+		if (name == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(name);
+		}
+
 		objectOutput.writeLong(plid);
 
 		if (portletId == null) {
@@ -259,6 +276,7 @@ public class DatasetCustomViewEntryCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public String datasetDisplayId;
+	public String name;
 	public long plid;
 	public String portletId;
 	public String settingsJSON;

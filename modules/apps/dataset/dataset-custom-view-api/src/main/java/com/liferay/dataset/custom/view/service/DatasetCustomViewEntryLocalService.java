@@ -89,7 +89,8 @@ public interface DatasetCustomViewEntryLocalService
 		long datasetCustomViewEntryId);
 
 	public DatasetCustomViewEntry createDatasetCustomViewEntry(
-		String jsonString);
+		long userId, String datasetDisplayId, String name, String jsonString,
+		long plid, String portletId);
 
 	/**
 	 * @throws PortalException
@@ -209,7 +210,8 @@ public interface DatasetCustomViewEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DatasetCustomViewEntry fetchDatasetCustomViewEntry(
-		long userId, String datasetDisplayId, long plid, String portletId);
+		long userId, String datasetDisplayId, String name, long plid,
+		String portletId);
 
 	/**
 	 * Returns the dataset custom view entry with the matching UUID and company.

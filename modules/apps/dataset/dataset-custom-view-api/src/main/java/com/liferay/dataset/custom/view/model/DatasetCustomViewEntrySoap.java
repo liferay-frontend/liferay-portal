@@ -45,6 +45,7 @@ public class DatasetCustomViewEntrySoap implements Serializable {
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setDatasetDisplayId(model.getDatasetDisplayId());
+		soapModel.setName(model.getName());
 		soapModel.setPlid(model.getPlid());
 		soapModel.setPortletId(model.getPortletId());
 		soapModel.setSettingsJSON(model.getSettingsJSON());
@@ -182,6 +183,14 @@ public class DatasetCustomViewEntrySoap implements Serializable {
 		_datasetDisplayId = datasetDisplayId;
 	}
 
+	public String getName() {
+		return _name;
+	}
+
+	public void setName(String name) {
+		_name = name;
+	}
+
 	public long getPlid() {
 		return _plid;
 	}
@@ -215,6 +224,7 @@ public class DatasetCustomViewEntrySoap implements Serializable {
 	private Date _createDate;
 	private Date _modifiedDate;
 	private String _datasetDisplayId;
+	private String _name;
 	private long _plid;
 	private String _portletId;
 	private String _settingsJSON;

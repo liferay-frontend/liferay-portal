@@ -55,6 +55,7 @@ public class DatasetCustomViewEntryWrapper
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("datasetDisplayId", getDatasetDisplayId());
+		attributes.put("name", getName());
 		attributes.put("plid", getPlid());
 		attributes.put("portletId", getPortletId());
 		attributes.put("settingsJSON", getSettingsJSON());
@@ -117,6 +118,12 @@ public class DatasetCustomViewEntryWrapper
 
 		if (datasetDisplayId != null) {
 			setDatasetDisplayId(datasetDisplayId);
+		}
+
+		String name = (String)attributes.get("name");
+
+		if (name != null) {
+			setName(name);
 		}
 
 		Long plid = (Long)attributes.get("plid");
@@ -216,6 +223,16 @@ public class DatasetCustomViewEntryWrapper
 	@Override
 	public long getMvccVersion() {
 		return model.getMvccVersion();
+	}
+
+	/**
+	 * Returns the name of this dataset custom view entry.
+	 *
+	 * @return the name of this dataset custom view entry
+	 */
+	@Override
+	public String getName() {
+		return model.getName();
 	}
 
 	/**
@@ -381,6 +398,16 @@ public class DatasetCustomViewEntryWrapper
 	@Override
 	public void setMvccVersion(long mvccVersion) {
 		model.setMvccVersion(mvccVersion);
+	}
+
+	/**
+	 * Sets the name of this dataset custom view entry.
+	 *
+	 * @param name the name of this dataset custom view entry
+	 */
+	@Override
+	public void setName(String name) {
+		model.setName(name);
 	}
 
 	/**

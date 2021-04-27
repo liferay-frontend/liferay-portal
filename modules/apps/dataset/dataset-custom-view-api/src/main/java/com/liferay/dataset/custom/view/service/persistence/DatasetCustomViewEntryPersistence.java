@@ -340,69 +340,78 @@ public interface DatasetCustomViewEntryPersistence
 	public int countByUuid_C(String uuid, long companyId);
 
 	/**
-	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and plid = &#63; and portletId = &#63; or throws a <code>NoSuchEntryException</code> if it could not be found.
+	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and name = &#63; and plid = &#63; and portletId = &#63; or throws a <code>NoSuchEntryException</code> if it could not be found.
 	 *
 	 * @param userId the user ID
 	 * @param datasetDisplayId the dataset display ID
+	 * @param name the name
 	 * @param plid the plid
 	 * @param portletId the portlet ID
 	 * @return the matching dataset custom view entry
 	 * @throws NoSuchEntryException if a matching dataset custom view entry could not be found
 	 */
-	public DatasetCustomViewEntry findByU_D_P_P(
-			long userId, String datasetDisplayId, long plid, String portletId)
+	public DatasetCustomViewEntry findByU_D_N_P_P(
+			long userId, String datasetDisplayId, String name, long plid,
+			String portletId)
 		throws NoSuchEntryException;
 
 	/**
-	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and plid = &#63; and portletId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and name = &#63; and plid = &#63; and portletId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
 	 * @param userId the user ID
 	 * @param datasetDisplayId the dataset display ID
+	 * @param name the name
 	 * @param plid the plid
 	 * @param portletId the portlet ID
 	 * @return the matching dataset custom view entry, or <code>null</code> if a matching dataset custom view entry could not be found
 	 */
-	public DatasetCustomViewEntry fetchByU_D_P_P(
-		long userId, String datasetDisplayId, long plid, String portletId);
+	public DatasetCustomViewEntry fetchByU_D_N_P_P(
+		long userId, String datasetDisplayId, String name, long plid,
+		String portletId);
 
 	/**
-	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and plid = &#63; and portletId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and name = &#63; and plid = &#63; and portletId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param userId the user ID
 	 * @param datasetDisplayId the dataset display ID
+	 * @param name the name
 	 * @param plid the plid
 	 * @param portletId the portlet ID
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching dataset custom view entry, or <code>null</code> if a matching dataset custom view entry could not be found
 	 */
-	public DatasetCustomViewEntry fetchByU_D_P_P(
-		long userId, String datasetDisplayId, long plid, String portletId,
-		boolean useFinderCache);
+	public DatasetCustomViewEntry fetchByU_D_N_P_P(
+		long userId, String datasetDisplayId, String name, long plid,
+		String portletId, boolean useFinderCache);
 
 	/**
-	 * Removes the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and plid = &#63; and portletId = &#63; from the database.
+	 * Removes the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and name = &#63; and plid = &#63; and portletId = &#63; from the database.
 	 *
 	 * @param userId the user ID
 	 * @param datasetDisplayId the dataset display ID
+	 * @param name the name
 	 * @param plid the plid
 	 * @param portletId the portlet ID
 	 * @return the dataset custom view entry that was removed
 	 */
-	public DatasetCustomViewEntry removeByU_D_P_P(
-			long userId, String datasetDisplayId, long plid, String portletId)
+	public DatasetCustomViewEntry removeByU_D_N_P_P(
+			long userId, String datasetDisplayId, String name, long plid,
+			String portletId)
 		throws NoSuchEntryException;
 
 	/**
-	 * Returns the number of dataset custom view entries where userId = &#63; and datasetDisplayId = &#63; and plid = &#63; and portletId = &#63;.
+	 * Returns the number of dataset custom view entries where userId = &#63; and datasetDisplayId = &#63; and name = &#63; and plid = &#63; and portletId = &#63;.
 	 *
 	 * @param userId the user ID
 	 * @param datasetDisplayId the dataset display ID
+	 * @param name the name
 	 * @param plid the plid
 	 * @param portletId the portlet ID
 	 * @return the number of matching dataset custom view entries
 	 */
-	public int countByU_D_P_P(
-		long userId, String datasetDisplayId, long plid, String portletId);
+	public int countByU_D_N_P_P(
+		long userId, String datasetDisplayId, String name, long plid,
+		String portletId);
 
 	/**
 	 * Caches the dataset custom view entry in the entity cache if it is enabled.

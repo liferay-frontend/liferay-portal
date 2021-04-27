@@ -146,6 +146,8 @@ public class DatasetCustomViewEntryPersistenceTest {
 		newDatasetCustomViewEntry.setDatasetDisplayId(
 			RandomTestUtil.randomString());
 
+		newDatasetCustomViewEntry.setName(RandomTestUtil.randomString());
+
 		newDatasetCustomViewEntry.setPlid(RandomTestUtil.nextLong());
 
 		newDatasetCustomViewEntry.setPortletId(RandomTestUtil.randomString());
@@ -191,6 +193,9 @@ public class DatasetCustomViewEntryPersistenceTest {
 			existingDatasetCustomViewEntry.getDatasetDisplayId(),
 			newDatasetCustomViewEntry.getDatasetDisplayId());
 		Assert.assertEquals(
+			existingDatasetCustomViewEntry.getName(),
+			newDatasetCustomViewEntry.getName());
+		Assert.assertEquals(
 			existingDatasetCustomViewEntry.getPlid(),
 			newDatasetCustomViewEntry.getPlid());
 		Assert.assertEquals(
@@ -220,13 +225,14 @@ public class DatasetCustomViewEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByU_D_P_P() throws Exception {
-		_persistence.countByU_D_P_P(
-			RandomTestUtil.nextLong(), "", RandomTestUtil.nextLong(), "");
+	public void testCountByU_D_N_P_P() throws Exception {
+		_persistence.countByU_D_N_P_P(
+			RandomTestUtil.nextLong(), "", "", RandomTestUtil.nextLong(), "");
 
-		_persistence.countByU_D_P_P(0L, "null", 0L, "null");
+		_persistence.countByU_D_N_P_P(0L, "null", "null", 0L, "null");
 
-		_persistence.countByU_D_P_P(0L, (String)null, 0L, (String)null);
+		_persistence.countByU_D_N_P_P(
+			0L, (String)null, (String)null, 0L, (String)null);
 	}
 
 	@Test
@@ -260,7 +266,8 @@ public class DatasetCustomViewEntryPersistenceTest {
 			"DatasetCustomViewEntry", "mvccVersion", true, "uuid", true,
 			"datasetCustomViewEntryId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true,
-			"datasetDisplayId", true, "plid", true, "portletId", true);
+			"datasetDisplayId", true, "name", true, "plid", true, "portletId",
+			true);
 	}
 
 	@Test
@@ -567,6 +574,11 @@ public class DatasetCustomViewEntryPersistenceTest {
 				datasetCustomViewEntry, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "datasetDisplayId"));
 		Assert.assertEquals(
+			datasetCustomViewEntry.getName(),
+			ReflectionTestUtil.invoke(
+				datasetCustomViewEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "name"));
+		Assert.assertEquals(
 			Long.valueOf(datasetCustomViewEntry.getPlid()),
 			ReflectionTestUtil.<Long>invoke(
 				datasetCustomViewEntry, "getColumnOriginalValue",
@@ -601,6 +613,8 @@ public class DatasetCustomViewEntryPersistenceTest {
 
 		datasetCustomViewEntry.setDatasetDisplayId(
 			RandomTestUtil.randomString());
+
+		datasetCustomViewEntry.setName(RandomTestUtil.randomString());
 
 		datasetCustomViewEntry.setPlid(RandomTestUtil.nextLong());
 

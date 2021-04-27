@@ -75,8 +75,9 @@ public class DatasetCustomViewEntryModelImpl
 		{"datasetCustomViewEntryId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
-		{"datasetDisplayId", Types.VARCHAR}, {"plid", Types.BIGINT},
-		{"portletId", Types.VARCHAR}, {"settingsJSON", Types.CLOB}
+		{"datasetDisplayId", Types.VARCHAR}, {"name", Types.VARCHAR},
+		{"plid", Types.BIGINT}, {"portletId", Types.VARCHAR},
+		{"settingsJSON", Types.CLOB}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -92,13 +93,14 @@ public class DatasetCustomViewEntryModelImpl
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("datasetDisplayId", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("plid", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("portletId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("settingsJSON", Types.CLOB);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table DatasetCustomViewEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,datasetCustomViewEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,datasetDisplayId VARCHAR(75) null,plid LONG,portletId VARCHAR(75) null,settingsJSON TEXT null)";
+		"create table DatasetCustomViewEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,datasetCustomViewEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,datasetDisplayId VARCHAR(75) null,name VARCHAR(75) null,plid LONG,portletId VARCHAR(75) null,settingsJSON TEXT null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table DatasetCustomViewEntry";
@@ -131,32 +133,38 @@ public class DatasetCustomViewEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PLID_COLUMN_BITMASK = 4L;
+	public static final long NAME_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PORTLETID_COLUMN_BITMASK = 8L;
+	public static final long PLID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long USERID_COLUMN_BITMASK = 16L;
+	public static final long PORTLETID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long USERID_COLUMN_BITMASK = 32L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long UUID_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long DATASETCUSTOMVIEWENTRYID_COLUMN_BITMASK = 64L;
+	public static final long DATASETCUSTOMVIEWENTRYID_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -355,6 +363,11 @@ public class DatasetCustomViewEntryModelImpl
 			"datasetDisplayId",
 			(BiConsumer<DatasetCustomViewEntry, String>)
 				DatasetCustomViewEntry::setDatasetDisplayId);
+		attributeGetterFunctions.put("name", DatasetCustomViewEntry::getName);
+		attributeSetterBiConsumers.put(
+			"name",
+			(BiConsumer<DatasetCustomViewEntry, String>)
+				DatasetCustomViewEntry::setName);
 		attributeGetterFunctions.put("plid", DatasetCustomViewEntry::getPlid);
 		attributeSetterBiConsumers.put(
 			"plid",
@@ -580,6 +593,34 @@ public class DatasetCustomViewEntryModelImpl
 	}
 
 	@Override
+	public String getName() {
+		if (_name == null) {
+			return "";
+		}
+		else {
+			return _name;
+		}
+	}
+
+	@Override
+	public void setName(String name) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_name = name;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalName() {
+		return getColumnOriginalValue("name");
+	}
+
+	@Override
 	public long getPlid() {
 		return _plid;
 	}
@@ -661,7 +702,7 @@ public class DatasetCustomViewEntryModelImpl
 
 	@Override
 	public String getContainerModelName() {
-		return String.valueOf(getContainerModelId());
+		return String.valueOf(getName());
 	}
 
 	@Override
@@ -747,6 +788,7 @@ public class DatasetCustomViewEntryModelImpl
 		datasetCustomViewEntryImpl.setCreateDate(getCreateDate());
 		datasetCustomViewEntryImpl.setModifiedDate(getModifiedDate());
 		datasetCustomViewEntryImpl.setDatasetDisplayId(getDatasetDisplayId());
+		datasetCustomViewEntryImpl.setName(getName());
 		datasetCustomViewEntryImpl.setPlid(getPlid());
 		datasetCustomViewEntryImpl.setPortletId(getPortletId());
 		datasetCustomViewEntryImpl.setSettingsJSON(getSettingsJSON());
@@ -885,6 +927,14 @@ public class DatasetCustomViewEntryModelImpl
 			datasetCustomViewEntryCacheModel.datasetDisplayId = null;
 		}
 
+		datasetCustomViewEntryCacheModel.name = getName();
+
+		String name = datasetCustomViewEntryCacheModel.name;
+
+		if ((name != null) && (name.length() == 0)) {
+			datasetCustomViewEntryCacheModel.name = null;
+		}
+
 		datasetCustomViewEntryCacheModel.plid = getPlid();
 
 		datasetCustomViewEntryCacheModel.portletId = getPortletId();
@@ -988,6 +1038,7 @@ public class DatasetCustomViewEntryModelImpl
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private String _datasetDisplayId;
+	private String _name;
 	private long _plid;
 	private String _portletId;
 	private String _settingsJSON;
@@ -1031,6 +1082,7 @@ public class DatasetCustomViewEntryModelImpl
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
 		_columnOriginalValues.put("datasetDisplayId", _datasetDisplayId);
+		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("plid", _plid);
 		_columnOriginalValues.put("portletId", _portletId);
 		_columnOriginalValues.put("settingsJSON", _settingsJSON);
@@ -1075,11 +1127,13 @@ public class DatasetCustomViewEntryModelImpl
 
 		columnBitmasks.put("datasetDisplayId", 256L);
 
-		columnBitmasks.put("plid", 512L);
+		columnBitmasks.put("name", 512L);
 
-		columnBitmasks.put("portletId", 1024L);
+		columnBitmasks.put("plid", 1024L);
 
-		columnBitmasks.put("settingsJSON", 2048L);
+		columnBitmasks.put("portletId", 2048L);
+
+		columnBitmasks.put("settingsJSON", 4096L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

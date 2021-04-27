@@ -62,6 +62,8 @@ public class DatasetCustomViewEntryTable
 		createColumn(
 			"datasetDisplayId", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
+	public final Column<DatasetCustomViewEntryTable, String> name =
+		createColumn("name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<DatasetCustomViewEntryTable, Long> plid = createColumn(
 		"plid", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<DatasetCustomViewEntryTable, String> portletId =

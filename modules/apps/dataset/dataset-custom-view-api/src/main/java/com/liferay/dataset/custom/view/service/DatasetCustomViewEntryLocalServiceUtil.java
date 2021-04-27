@@ -75,9 +75,11 @@ public class DatasetCustomViewEntryLocalServiceUtil {
 	}
 
 	public static DatasetCustomViewEntry createDatasetCustomViewEntry(
-		String jsonString) {
+		long userId, String datasetDisplayId, String name, String jsonString,
+		long plid, String portletId) {
 
-		return getService().createDatasetCustomViewEntry(jsonString);
+		return getService().createDatasetCustomViewEntry(
+			userId, datasetDisplayId, name, jsonString, plid, portletId);
 	}
 
 	/**
@@ -225,10 +227,11 @@ public class DatasetCustomViewEntryLocalServiceUtil {
 	}
 
 	public static DatasetCustomViewEntry fetchDatasetCustomViewEntry(
-		long userId, String datasetDisplayId, long plid, String portletId) {
+		long userId, String datasetDisplayId, String name, long plid,
+		String portletId) {
 
 		return getService().fetchDatasetCustomViewEntry(
-			userId, datasetDisplayId, plid, portletId);
+			userId, datasetDisplayId, name, plid, portletId);
 	}
 
 	/**

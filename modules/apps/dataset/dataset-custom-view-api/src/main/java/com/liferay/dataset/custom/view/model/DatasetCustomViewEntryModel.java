@@ -221,6 +221,21 @@ public interface DatasetCustomViewEntryModel
 	public void setDatasetDisplayId(String datasetDisplayId);
 
 	/**
+	 * Returns the name of this dataset custom view entry.
+	 *
+	 * @return the name of this dataset custom view entry
+	 */
+	@AutoEscape
+	public String getName();
+
+	/**
+	 * Sets the name of this dataset custom view entry.
+	 *
+	 * @param name the name of this dataset custom view entry
+	 */
+	public void setName(String name);
+
+	/**
 	 * Returns the plid of this dataset custom view entry.
 	 *
 	 * @return the plid of this dataset custom view entry

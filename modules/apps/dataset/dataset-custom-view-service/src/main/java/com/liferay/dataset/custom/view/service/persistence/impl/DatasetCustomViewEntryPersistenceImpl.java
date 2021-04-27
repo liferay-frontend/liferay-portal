@@ -1231,29 +1231,31 @@ public class DatasetCustomViewEntryPersistenceImpl
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 =
 		"datasetCustomViewEntry.companyId = ?";
 
-	private FinderPath _finderPathFetchByU_D_P_P;
-	private FinderPath _finderPathCountByU_D_P_P;
+	private FinderPath _finderPathFetchByU_D_N_P_P;
+	private FinderPath _finderPathCountByU_D_N_P_P;
 
 	/**
-	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and plid = &#63; and portletId = &#63; or throws a <code>NoSuchEntryException</code> if it could not be found.
+	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and name = &#63; and plid = &#63; and portletId = &#63; or throws a <code>NoSuchEntryException</code> if it could not be found.
 	 *
 	 * @param userId the user ID
 	 * @param datasetDisplayId the dataset display ID
+	 * @param name the name
 	 * @param plid the plid
 	 * @param portletId the portlet ID
 	 * @return the matching dataset custom view entry
 	 * @throws NoSuchEntryException if a matching dataset custom view entry could not be found
 	 */
 	@Override
-	public DatasetCustomViewEntry findByU_D_P_P(
-			long userId, String datasetDisplayId, long plid, String portletId)
+	public DatasetCustomViewEntry findByU_D_N_P_P(
+			long userId, String datasetDisplayId, String name, long plid,
+			String portletId)
 		throws NoSuchEntryException {
 
-		DatasetCustomViewEntry datasetCustomViewEntry = fetchByU_D_P_P(
-			userId, datasetDisplayId, plid, portletId);
+		DatasetCustomViewEntry datasetCustomViewEntry = fetchByU_D_N_P_P(
+			userId, datasetDisplayId, name, plid, portletId);
 
 		if (datasetCustomViewEntry == null) {
-			StringBundler sb = new StringBundler(10);
+			StringBundler sb = new StringBundler(12);
 
 			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
 
@@ -1262,6 +1264,9 @@ public class DatasetCustomViewEntryPersistenceImpl
 
 			sb.append(", datasetDisplayId=");
 			sb.append(datasetDisplayId);
+
+			sb.append(", name=");
+			sb.append(name);
 
 			sb.append(", plid=");
 			sb.append(plid);
@@ -1282,44 +1287,49 @@ public class DatasetCustomViewEntryPersistenceImpl
 	}
 
 	/**
-	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and plid = &#63; and portletId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and name = &#63; and plid = &#63; and portletId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
 	 * @param userId the user ID
 	 * @param datasetDisplayId the dataset display ID
+	 * @param name the name
 	 * @param plid the plid
 	 * @param portletId the portlet ID
 	 * @return the matching dataset custom view entry, or <code>null</code> if a matching dataset custom view entry could not be found
 	 */
 	@Override
-	public DatasetCustomViewEntry fetchByU_D_P_P(
-		long userId, String datasetDisplayId, long plid, String portletId) {
+	public DatasetCustomViewEntry fetchByU_D_N_P_P(
+		long userId, String datasetDisplayId, String name, long plid,
+		String portletId) {
 
-		return fetchByU_D_P_P(userId, datasetDisplayId, plid, portletId, true);
+		return fetchByU_D_N_P_P(
+			userId, datasetDisplayId, name, plid, portletId, true);
 	}
 
 	/**
-	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and plid = &#63; and portletId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and name = &#63; and plid = &#63; and portletId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param userId the user ID
 	 * @param datasetDisplayId the dataset display ID
+	 * @param name the name
 	 * @param plid the plid
 	 * @param portletId the portlet ID
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching dataset custom view entry, or <code>null</code> if a matching dataset custom view entry could not be found
 	 */
 	@Override
-	public DatasetCustomViewEntry fetchByU_D_P_P(
-		long userId, String datasetDisplayId, long plid, String portletId,
-		boolean useFinderCache) {
+	public DatasetCustomViewEntry fetchByU_D_N_P_P(
+		long userId, String datasetDisplayId, String name, long plid,
+		String portletId, boolean useFinderCache) {
 
 		datasetDisplayId = Objects.toString(datasetDisplayId, "");
+		name = Objects.toString(name, "");
 		portletId = Objects.toString(portletId, "");
 
 		Object[] finderArgs = null;
 
 		if (useFinderCache) {
 			finderArgs = new Object[] {
-				userId, datasetDisplayId, plid, portletId
+				userId, datasetDisplayId, name, plid, portletId
 			};
 		}
 
@@ -1327,7 +1337,7 @@ public class DatasetCustomViewEntryPersistenceImpl
 
 		if (useFinderCache) {
 			result = finderCache.getResult(
-				_finderPathFetchByU_D_P_P, finderArgs);
+				_finderPathFetchByU_D_N_P_P, finderArgs);
 		}
 
 		if (result instanceof DatasetCustomViewEntry) {
@@ -1338,6 +1348,7 @@ public class DatasetCustomViewEntryPersistenceImpl
 				!Objects.equals(
 					datasetDisplayId,
 					datasetCustomViewEntry.getDatasetDisplayId()) ||
+				!Objects.equals(name, datasetCustomViewEntry.getName()) ||
 				(plid != datasetCustomViewEntry.getPlid()) ||
 				!Objects.equals(
 					portletId, datasetCustomViewEntry.getPortletId())) {
@@ -1347,34 +1358,45 @@ public class DatasetCustomViewEntryPersistenceImpl
 		}
 
 		if (result == null) {
-			StringBundler sb = new StringBundler(6);
+			StringBundler sb = new StringBundler(7);
 
 			sb.append(_SQL_SELECT_DATASETCUSTOMVIEWENTRY_WHERE);
 
-			sb.append(_FINDER_COLUMN_U_D_P_P_USERID_2);
+			sb.append(_FINDER_COLUMN_U_D_N_P_P_USERID_2);
 
 			boolean bindDatasetDisplayId = false;
 
 			if (datasetDisplayId.isEmpty()) {
-				sb.append(_FINDER_COLUMN_U_D_P_P_DATASETDISPLAYID_3);
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_DATASETDISPLAYID_3);
 			}
 			else {
 				bindDatasetDisplayId = true;
 
-				sb.append(_FINDER_COLUMN_U_D_P_P_DATASETDISPLAYID_2);
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_DATASETDISPLAYID_2);
 			}
 
-			sb.append(_FINDER_COLUMN_U_D_P_P_PLID_2);
+			boolean bindName = false;
+
+			if (name.isEmpty()) {
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_NAME_3);
+			}
+			else {
+				bindName = true;
+
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_NAME_2);
+			}
+
+			sb.append(_FINDER_COLUMN_U_D_N_P_P_PLID_2);
 
 			boolean bindPortletId = false;
 
 			if (portletId.isEmpty()) {
-				sb.append(_FINDER_COLUMN_U_D_P_P_PORTLETID_3);
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_PORTLETID_3);
 			}
 			else {
 				bindPortletId = true;
 
-				sb.append(_FINDER_COLUMN_U_D_P_P_PORTLETID_2);
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_PORTLETID_2);
 			}
 
 			String sql = sb.toString();
@@ -1394,6 +1416,10 @@ public class DatasetCustomViewEntryPersistenceImpl
 					queryPos.add(datasetDisplayId);
 				}
 
+				if (bindName) {
+					queryPos.add(name);
+				}
+
 				queryPos.add(plid);
 
 				if (bindPortletId) {
@@ -1405,7 +1431,7 @@ public class DatasetCustomViewEntryPersistenceImpl
 				if (list.isEmpty()) {
 					if (useFinderCache) {
 						finderCache.putResult(
-							_finderPathFetchByU_D_P_P, finderArgs, list);
+							_finderPathFetchByU_D_N_P_P, finderArgs, list);
 					}
 				}
 				else {
@@ -1433,78 +1459,94 @@ public class DatasetCustomViewEntryPersistenceImpl
 	}
 
 	/**
-	 * Removes the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and plid = &#63; and portletId = &#63; from the database.
+	 * Removes the dataset custom view entry where userId = &#63; and datasetDisplayId = &#63; and name = &#63; and plid = &#63; and portletId = &#63; from the database.
 	 *
 	 * @param userId the user ID
 	 * @param datasetDisplayId the dataset display ID
+	 * @param name the name
 	 * @param plid the plid
 	 * @param portletId the portlet ID
 	 * @return the dataset custom view entry that was removed
 	 */
 	@Override
-	public DatasetCustomViewEntry removeByU_D_P_P(
-			long userId, String datasetDisplayId, long plid, String portletId)
+	public DatasetCustomViewEntry removeByU_D_N_P_P(
+			long userId, String datasetDisplayId, String name, long plid,
+			String portletId)
 		throws NoSuchEntryException {
 
-		DatasetCustomViewEntry datasetCustomViewEntry = findByU_D_P_P(
-			userId, datasetDisplayId, plid, portletId);
+		DatasetCustomViewEntry datasetCustomViewEntry = findByU_D_N_P_P(
+			userId, datasetDisplayId, name, plid, portletId);
 
 		return remove(datasetCustomViewEntry);
 	}
 
 	/**
-	 * Returns the number of dataset custom view entries where userId = &#63; and datasetDisplayId = &#63; and plid = &#63; and portletId = &#63;.
+	 * Returns the number of dataset custom view entries where userId = &#63; and datasetDisplayId = &#63; and name = &#63; and plid = &#63; and portletId = &#63;.
 	 *
 	 * @param userId the user ID
 	 * @param datasetDisplayId the dataset display ID
+	 * @param name the name
 	 * @param plid the plid
 	 * @param portletId the portlet ID
 	 * @return the number of matching dataset custom view entries
 	 */
 	@Override
-	public int countByU_D_P_P(
-		long userId, String datasetDisplayId, long plid, String portletId) {
+	public int countByU_D_N_P_P(
+		long userId, String datasetDisplayId, String name, long plid,
+		String portletId) {
 
 		datasetDisplayId = Objects.toString(datasetDisplayId, "");
+		name = Objects.toString(name, "");
 		portletId = Objects.toString(portletId, "");
 
-		FinderPath finderPath = _finderPathCountByU_D_P_P;
+		FinderPath finderPath = _finderPathCountByU_D_N_P_P;
 
 		Object[] finderArgs = new Object[] {
-			userId, datasetDisplayId, plid, portletId
+			userId, datasetDisplayId, name, plid, portletId
 		};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs);
 
 		if (count == null) {
-			StringBundler sb = new StringBundler(5);
+			StringBundler sb = new StringBundler(6);
 
 			sb.append(_SQL_COUNT_DATASETCUSTOMVIEWENTRY_WHERE);
 
-			sb.append(_FINDER_COLUMN_U_D_P_P_USERID_2);
+			sb.append(_FINDER_COLUMN_U_D_N_P_P_USERID_2);
 
 			boolean bindDatasetDisplayId = false;
 
 			if (datasetDisplayId.isEmpty()) {
-				sb.append(_FINDER_COLUMN_U_D_P_P_DATASETDISPLAYID_3);
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_DATASETDISPLAYID_3);
 			}
 			else {
 				bindDatasetDisplayId = true;
 
-				sb.append(_FINDER_COLUMN_U_D_P_P_DATASETDISPLAYID_2);
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_DATASETDISPLAYID_2);
 			}
 
-			sb.append(_FINDER_COLUMN_U_D_P_P_PLID_2);
+			boolean bindName = false;
+
+			if (name.isEmpty()) {
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_NAME_3);
+			}
+			else {
+				bindName = true;
+
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_NAME_2);
+			}
+
+			sb.append(_FINDER_COLUMN_U_D_N_P_P_PLID_2);
 
 			boolean bindPortletId = false;
 
 			if (portletId.isEmpty()) {
-				sb.append(_FINDER_COLUMN_U_D_P_P_PORTLETID_3);
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_PORTLETID_3);
 			}
 			else {
 				bindPortletId = true;
 
-				sb.append(_FINDER_COLUMN_U_D_P_P_PORTLETID_2);
+				sb.append(_FINDER_COLUMN_U_D_N_P_P_PORTLETID_2);
 			}
 
 			String sql = sb.toString();
@@ -1522,6 +1564,10 @@ public class DatasetCustomViewEntryPersistenceImpl
 
 				if (bindDatasetDisplayId) {
 					queryPos.add(datasetDisplayId);
+				}
+
+				if (bindName) {
+					queryPos.add(name);
 				}
 
 				queryPos.add(plid);
@@ -1545,22 +1591,28 @@ public class DatasetCustomViewEntryPersistenceImpl
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_U_D_P_P_USERID_2 =
+	private static final String _FINDER_COLUMN_U_D_N_P_P_USERID_2 =
 		"datasetCustomViewEntry.userId = ? AND ";
 
-	private static final String _FINDER_COLUMN_U_D_P_P_DATASETDISPLAYID_2 =
+	private static final String _FINDER_COLUMN_U_D_N_P_P_DATASETDISPLAYID_2 =
 		"datasetCustomViewEntry.datasetDisplayId = ? AND ";
 
-	private static final String _FINDER_COLUMN_U_D_P_P_DATASETDISPLAYID_3 =
+	private static final String _FINDER_COLUMN_U_D_N_P_P_DATASETDISPLAYID_3 =
 		"(datasetCustomViewEntry.datasetDisplayId IS NULL OR datasetCustomViewEntry.datasetDisplayId = '') AND ";
 
-	private static final String _FINDER_COLUMN_U_D_P_P_PLID_2 =
+	private static final String _FINDER_COLUMN_U_D_N_P_P_NAME_2 =
+		"datasetCustomViewEntry.name = ? AND ";
+
+	private static final String _FINDER_COLUMN_U_D_N_P_P_NAME_3 =
+		"(datasetCustomViewEntry.name IS NULL OR datasetCustomViewEntry.name = '') AND ";
+
+	private static final String _FINDER_COLUMN_U_D_N_P_P_PLID_2 =
 		"datasetCustomViewEntry.plid = ? AND ";
 
-	private static final String _FINDER_COLUMN_U_D_P_P_PORTLETID_2 =
+	private static final String _FINDER_COLUMN_U_D_N_P_P_PORTLETID_2 =
 		"datasetCustomViewEntry.portletId = ?";
 
-	private static final String _FINDER_COLUMN_U_D_P_P_PORTLETID_3 =
+	private static final String _FINDER_COLUMN_U_D_N_P_P_PORTLETID_3 =
 		"(datasetCustomViewEntry.portletId IS NULL OR datasetCustomViewEntry.portletId = '')";
 
 	public DatasetCustomViewEntryPersistenceImpl() {
@@ -1590,10 +1642,11 @@ public class DatasetCustomViewEntryPersistenceImpl
 			datasetCustomViewEntry.getPrimaryKey(), datasetCustomViewEntry);
 
 		finderCache.putResult(
-			_finderPathFetchByU_D_P_P,
+			_finderPathFetchByU_D_N_P_P,
 			new Object[] {
 				datasetCustomViewEntry.getUserId(),
 				datasetCustomViewEntry.getDatasetDisplayId(),
+				datasetCustomViewEntry.getName(),
 				datasetCustomViewEntry.getPlid(),
 				datasetCustomViewEntry.getPortletId()
 			},
@@ -1676,13 +1729,15 @@ public class DatasetCustomViewEntryPersistenceImpl
 		Object[] args = new Object[] {
 			datasetCustomViewEntryModelImpl.getUserId(),
 			datasetCustomViewEntryModelImpl.getDatasetDisplayId(),
+			datasetCustomViewEntryModelImpl.getName(),
 			datasetCustomViewEntryModelImpl.getPlid(),
 			datasetCustomViewEntryModelImpl.getPortletId()
 		};
 
-		finderCache.putResult(_finderPathCountByU_D_P_P, args, Long.valueOf(1));
 		finderCache.putResult(
-			_finderPathFetchByU_D_P_P, args, datasetCustomViewEntryModelImpl);
+			_finderPathCountByU_D_N_P_P, args, Long.valueOf(1));
+		finderCache.putResult(
+			_finderPathFetchByU_D_N_P_P, args, datasetCustomViewEntryModelImpl);
 	}
 
 	/**
@@ -2213,22 +2268,28 @@ public class DatasetCustomViewEntryPersistenceImpl
 			new String[] {String.class.getName(), Long.class.getName()},
 			new String[] {"uuid_", "companyId"}, false);
 
-		_finderPathFetchByU_D_P_P = new FinderPath(
-			FINDER_CLASS_NAME_ENTITY, "fetchByU_D_P_P",
+		_finderPathFetchByU_D_N_P_P = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByU_D_N_P_P",
 			new String[] {
 				Long.class.getName(), String.class.getName(),
-				Long.class.getName(), String.class.getName()
+				String.class.getName(), Long.class.getName(),
+				String.class.getName()
 			},
-			new String[] {"userId", "datasetDisplayId", "plid", "portletId"},
+			new String[] {
+				"userId", "datasetDisplayId", "name", "plid", "portletId"
+			},
 			true);
 
-		_finderPathCountByU_D_P_P = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_D_P_P",
+		_finderPathCountByU_D_N_P_P = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_D_N_P_P",
 			new String[] {
 				Long.class.getName(), String.class.getName(),
-				Long.class.getName(), String.class.getName()
+				String.class.getName(), Long.class.getName(),
+				String.class.getName()
 			},
-			new String[] {"userId", "datasetDisplayId", "plid", "portletId"},
+			new String[] {
+				"userId", "datasetDisplayId", "name", "plid", "portletId"
+			},
 			false);
 	}
 
