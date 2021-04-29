@@ -149,7 +149,6 @@ public class WebDriverUtil extends PropsValues {
 	}
 
 	private WebDriver _getFirefoxDriver() {
-		System.setProperty("webdriver.firefox.marionette", "false");
 		System.setProperty(
 			"webdriver.gecko.driver",
 			SELENIUM_EXECUTABLE_DIR_NAME + SELENIUM_GECKO_DRIVER_EXECUTABLE);
