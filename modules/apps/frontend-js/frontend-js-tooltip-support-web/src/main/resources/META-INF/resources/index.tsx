@@ -75,6 +75,7 @@ const TRIGGER_SHOW_EVENTS = [
 	'touchstart',
 ];
 
+const DEFAULT_TOOLTIP_CONTAINER_CLASS = 'cadmin';
 const DEFAULT_TOOLTIP_CONTAINER_ID = 'tooltipContainer';
 
 const getDefaultTooltipContainer = () => {
@@ -83,6 +84,9 @@ const getDefaultTooltipContainer = () => {
 	if (!container) {
 		container = document.createElement('div');
 		container.id = DEFAULT_TOOLTIP_CONTAINER_ID;
+
+		container.classList.add(DEFAULT_TOOLTIP_CONTAINER_CLASS);
+
 		document.body.appendChild(container);
 	}
 
