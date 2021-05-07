@@ -68,6 +68,9 @@ function PageTypeSelector(props) {
 					<ClayDropDown
 						active={active}
 						onActiveChange={setActive}
+						menuElementAttrs={{
+							className: 'cadmin',
+						}}
 						trigger={
 							<ClayButton
 								aria-haspopup="true"
