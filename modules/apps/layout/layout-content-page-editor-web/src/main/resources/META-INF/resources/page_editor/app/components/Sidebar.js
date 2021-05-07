@@ -206,7 +206,7 @@ export default function Sidebar() {
 
 	return createPortal(
 		<div
-			className="page-editor__sidebar page-editor__theme-adapter-forms"
+			className="cadmin page-editor__sidebar page-editor__theme-adapter-forms"
 			ref={dropClearRef}
 		>
 			<div

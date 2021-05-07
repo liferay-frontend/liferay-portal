@@ -374,7 +374,7 @@ const ExperienceSelector = ({
 			{open &&
 				createPortal(
 					<div
-						className="dropdown-menu p-4 page-editor__toolbar-experience__dropdown-menu toggled"
+						className="cadmin dropdown-menu p-4 page-editor__toolbar-experience__dropdown-menu toggled"
 						onBlur={handleDropdownBlur}
 						onFocus={handleDropdownFocus}
 						style={{

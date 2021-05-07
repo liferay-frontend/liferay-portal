@@ -363,7 +363,7 @@ public class LayoutReportsProductNavigationControlMenuEntry
 			sb.append("lfr-has-layout-reports-panel open-admin-panel ");
 		}
 
-		sb.append("d-print-none lfr-admin-panel lfr-product-menu-panel ");
+		sb.append("cadmin d-print-none lfr-admin-panel lfr-product-menu-panel ");
 		sb.append("lfr-layout-reports-panel sidenav-fixed ");
 		sb.append("sidenav-menu-slider sidenav-right\" id=\"");
 		sb.append(_portletNamespace);

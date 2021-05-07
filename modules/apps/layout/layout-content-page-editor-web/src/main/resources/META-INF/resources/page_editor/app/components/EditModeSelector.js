@@ -38,6 +38,7 @@ export default function EditModeSelector() {
 		<ClayDropDown
 			active={active}
 			alignmentPosition={Align.BottomLeft}
+			menuElementAttrs={{className: 'cadmin'}}
 			onActiveChange={setActive}
 			trigger={
 				<ClayButton

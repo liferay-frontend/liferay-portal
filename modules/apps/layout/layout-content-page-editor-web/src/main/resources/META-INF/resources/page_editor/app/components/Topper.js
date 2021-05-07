@@ -352,7 +352,7 @@ function TopperLabel({children, isActive, isMapped, itemElement}) {
 
 	return (
 		<div
-			className={classNames('page-editor__topper__bar', 'tbar', {
+			className={classNames('cadmin', 'page-editor__topper__bar', 'tbar', {
 				'page-editor__topper__bar--inset': isInset,
 				'page-editor__topper__bar--mapped': isMapped,
 			})}
