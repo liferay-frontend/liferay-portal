@@ -1,16 +1,20 @@
-.page-editor__global-context-iframe {
-	border: none;
-	height: 100%;
-	width: 100%;
+@import 'cadmin-variables';
 
-	&--loading {
-		opacity: 0.5;
-	}
+html#{$cadmin-selector} {
+	.page-editor__global-context-iframe {
+		border: none;
+		height: 100%;
+		width: 100%;
 
-	&--hidden {
-		left: -99999px;
-		opacity: 0;
-		position: absolute;
-		top: -99999px;
+		&--loading {
+			opacity: 0.5;
+		}
+
+		&--hidden {
+			left: -99999px;
+			opacity: 0;
+			position: absolute;
+			top: -99999px;
+		}
 	}
 }

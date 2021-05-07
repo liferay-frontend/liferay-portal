@@ -1,269 +1,272 @@
-@import 'atlas-variables';
-
 @import './variables';
 
-.page-editor__topper {
-	$borderWidth: 2px;
-	$color: $white;
-	$showDuration: 0.2s;
+html#{$cadmin-selector} {
+	.cadmin {
+		&.page-editor__topper {
+			$borderWidth: 2px;
+			$color: $cadmin-white;
+			$showDuration: 0.2s;
 
-	position: relative;
+			position: relative;
 
-	&:after {
-		box-shadow: inset 0 0 0 $borderWidth fade_out($primary-l2, 1);
-		content: '';
-		display: block;
-		height: 100%;
-		left: 0;
-		pointer-events: none;
-		position: absolute;
-		top: 0;
-		transition: box-shadow ease $showDuration;
-		width: 100%;
-	}
+			&:after {
+				box-shadow: inset 0 0 0 $borderWidth fade_out($cadmin-primary-l2, 1);
+				content: '';
+				display: block;
+				height: 100%;
+				left: 0;
+				pointer-events: none;
+				position: absolute;
+				top: 0;
+				transition: box-shadow ease $showDuration;
+				width: 100%;
+			}
 
-	.page-editor__row:not(.no-gutters) > .page-editor__col:before {
-		$spacingUnit: 12px;
+			.page-editor__row:not(.no-gutters) > .page-editor__col:before {
+				$spacingUnit: 12px;
 
-		left: $spacingUnit;
-		width: calc(100% - #{$spacingUnit * 2});
-	}
+				left: $spacingUnit;
+				width: calc(100% - #{$spacingUnit * 2});
+			}
 
-	&:focus {
-		outline: none;
-	}
+			&:focus {
+				outline: none;
+			}
 
-	&.dragged {
-		opacity: 0.5;
-	}
+			&.dragged {
+				opacity: 0.5;
+			}
 
-	&__bar {
-		background-color: $primary;
-		border-radius: 2px 2px 0 0;
-		bottom: calc(100% + #{$borderWidth});
-		box-shadow: 0 0 0 $borderWidth $primary;
-		color: $color;
-		font-size: 12px;
-		height: 22px;
-		left: $borderWidth;
-		line-height: 22px;
-		max-width: calc(100% - #{$borderWidth * 2});
-		min-width: 120px;
-		opacity: 0;
-		padding: 0 8px 0 4px;
-		position: absolute;
-		transition: box-shadow ease $showDuration, opacity ease $showDuration;
-		z-index: -1;
+			&__bar {
+				background-color: $cadmin-primary;
+				border-radius: 2px 2px 0 0;
+				bottom: calc(100% + #{$borderWidth});
+				box-shadow: 0 0 0 $borderWidth $cadmin-primary;
+				color: $color;
+				font-size: 12px;
+				height: 22px;
+				left: $borderWidth;
+				line-height: 22px;
+				max-width: calc(100% - #{$borderWidth * 2});
+				min-width: 120px;
+				opacity: 0;
+				padding: 0 8px 0 4px;
+				position: absolute;
+				transition: box-shadow ease $showDuration, opacity ease $showDuration;
+				z-index: -1;
 
-		&--inset {
-			border-radius: 0 0 2px;
-			top: $borderWidth;
-			transform: translateY(0);
+				&--inset {
+					border-radius: 0 0 2px;
+					top: $borderWidth;
+					transform: translateY(0);
+				}
+
+				&--mapped {
+					background-color: $cadmin-purple;
+					box-shadow: 0 0 0 $borderWidth $cadmin-purple;
+				}
+			}
+
+			&__content .alert {
+				font-family: $cadmin-font-family-base;
+			}
+
+			&.active > .page-editor__topper__bar {
+				opacity: 1;
+				transform: translateY(2px);
+				z-index: $portletTopperZIndex + 1;
+			}
+
+			&.hovered:after {
+				box-shadow: inset 0 0 0 $borderWidth $cadmin-primary-l1;
+			}
+
+			&.active:after {
+				box-shadow: inset 0 0 0 $borderWidth $cadmin-primary;
+				z-index: 1;
+			}
+
+			&.drag-over-bottom:after {
+				border-bottom: 4px solid $cadmin-primary-l1;
+			}
+
+			// For left and right, we use box-shadow instead of border because border is
+			// automatically inverted in rtl, and we don't want that behavior here
+
+			&.drag-over-left:after {
+				box-shadow: inset 4px 0 0 0 $cadmin-primary-l1;
+				transition: none;
+			}
+
+			&.drag-over-right:after {
+				box-shadow: inset -4px 0 0 0 $cadmin-primary-l1;
+				transition: none;
+			}
+
+			&.drag-over-top:after {
+				border-top: 4px solid $cadmin-primary-l1;
+			}
+
+			&.drag-over-bottom.page-editor__col {
+				&:after {
+					border: none;
+				}
+
+				&:before {
+					border-bottom: 4px solid $cadmin-primary-l1;
+				}
+			}
+
+			&.drag-over-top.page-editor__col {
+				&:after {
+					border: none;
+				}
+
+				&:before {
+					border-top: 4px solid $cadmin-primary-l1;
+				}
+			}
+
+			&.drag-over-middle
+				> .page-editor__topper__content
+				> .page-editor__container.empty,
+			&.drag-over-middle.page-editor__col.empty:before,
+			&.drag-over-middle.page-editor__collection-item:before {
+				box-shadow: inset 0 0 0 4px $cadmin-primary-l1;
+			}
+
+			&.drag-over-middle
+				> .page-editor__topper__content
+				> .page-editor__container
+				> :last-child:after {
+				box-shadow: inset -4px 0 0 0 $cadmin-primary-l1;
+				transition: none;
+			}
+
+			&.drag-over-middle.page-editor__col
+				> .page-editor__col__border
+				> :last-child:after {
+				border-bottom: 4px solid $cadmin-primary-l1;
+			}
+
+			&.drag-over-middle .page-editor__no-fragments-message {
+				border: 2px solid $cadmin-primary-l1;
+
+				.page-editor__no-fragments-message__title {
+					color: $cadmin-gray-400;
+				}
+			}
+
+			&.not-droppable.page-editor__col:before {
+				box-shadow: none;
+			}
+
+			&.not-droppable.page-editor__col > .page-editor__col__border,
+			&.not-droppable.page-editor__collection-item
+				> .page-editor__collection-item__border {
+				border: 1px solid $cadmin-danger;
+			}
+
+			&.not-droppable
+				> .page-editor__topper__content
+				> .page-editor__container:before,
+			&.not-droppable.page-editor__collection-item:before {
+				box-shadow: inset 0 0 0 1px $cadmin-danger;
+				position: absolute;
+			}
+
+			&[data-not-droppable-message],
+			& [data-not-droppable-message] {
+				position: relative;
+			}
+
+			&[data-not-droppable-message]:after,
+			& [data-not-droppable-message]:after {
+				background-color: $cadmin-danger;
+				border-radius: 2px;
+				color: $cadmin-white;
+				content: attr(data-not-droppable-message) ' ';
+				font-size: 10px;
+				height: auto;
+				left: 16px;
+				max-width: calc(100% - 32px);
+				padding: 2px 6px;
+				position: absolute;
+				top: 0;
+				transform: translateY(4px);
+				width: auto;
+			}
+
+			&.page-editor__collection-item[data-not-droppable-message]:after {
+				left: 4px;
+			}
+
+			&[data-not-droppable-message]:before {
+				height: auto;
+				width: calc(100% - 32px);
+
+				@include media-breakpoint-up(lg, $cadmin-grid-breakpoints) {
+					height: 20px;
+					width: auto;
+				}
+			}
+
+			&.page-editor__collection-item[data-not-droppable-message]:before {
+				left: 4px;
+			}
+
+			&__drag-icon {
+				cursor: grab;
+				height: 16px;
+				width: 16px;
+			}
+
+			&__icon {
+				fill: $color;
+				padding: 0;
+				position: relative;
+				top: 1px;
+			}
+
+			&__item {
+				margin: 0;
+			}
+
+			&__title {
+				cursor: default;
+				font-family: $cadmin-font-family-base;
+				font-weight: 600;
+				margin-right: 8px;
+				min-width: 4ch;
+				overflow: hidden;
+				text-align: left;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			&--mapped {
+				&:after {
+					box-shadow: inset 0 0 0 1px #dfc9ff;
+				}
+
+				&.hovered:after {
+					box-shadow: inset 0 0 0 $borderWidth fade_out($cadmin-purple, 0.5);
+				}
+
+				&.active:after {
+					box-shadow: inset 0 0 0 $borderWidth $cadmin-purple;
+				}
+			}
+
+			&--hovered:after {
+				box-shadow: none;
+				outline: $borderWidth dashed fade_out($cadmin-purple, 0.5);
+				outline-offset: -$borderWidth;
+			}
+
+			& > .page-editor__topper__content {
+				height: 100%;
+			}
 		}
-
-		&--mapped {
-			background-color: $purple;
-			box-shadow: 0 0 0 $borderWidth $purple;
-		}
-	}
-
-	&__content .alert {
-		font-family: $font-family-base;
-	}
-
-	&.active > &__bar {
-		opacity: 1;
-		transform: translateY(2px);
-		z-index: $portletTopperZIndex + 1;
-	}
-
-	&.hovered:after {
-		box-shadow: inset 0 0 0 $borderWidth $primary-l1;
-	}
-
-	&.active:after {
-		box-shadow: inset 0 0 0 $borderWidth $primary;
-		z-index: 1;
-	}
-
-	&.drag-over-bottom:after {
-		border-bottom: 4px solid $primary-l1;
-	}
-
-	// For left and right, we use box-shadow instead of border because border is
-	// automatically inverted in rtl, and we don't want that behavior here
-
-	&.drag-over-left:after {
-		box-shadow: inset 4px 0 0 0 $primary-l1;
-		transition: none;
-	}
-
-	&.drag-over-right:after {
-		box-shadow: inset -4px 0 0 0 $primary-l1;
-		transition: none;
-	}
-
-	&.drag-over-top:after {
-		border-top: 4px solid $primary-l1;
-	}
-
-	&.drag-over-bottom.page-editor__col {
-		&:after {
-			border: none;
-		}
-
-		&:before {
-			border-bottom: 4px solid $primary-l1;
-		}
-	}
-
-	&.drag-over-top.page-editor__col {
-		&:after {
-			border: none;
-		}
-
-		&:before {
-			border-top: 4px solid $primary-l1;
-		}
-	}
-
-	&.drag-over-middle
-		> .page-editor__topper__content
-		> .page-editor__container.empty,
-	&.drag-over-middle.page-editor__col.empty:before,
-	&.drag-over-middle.page-editor__collection-item:before {
-		box-shadow: inset 0 0 0 4px $primary-l1;
-	}
-
-	&.drag-over-middle
-		> .page-editor__topper__content
-		> .page-editor__container
-		> :last-child:after {
-		box-shadow: inset -4px 0 0 0 $primary-l1;
-		transition: none;
-	}
-
-	&.drag-over-middle.page-editor__col
-		> .page-editor__col__border
-		> :last-child:after {
-		border-bottom: 4px solid $primary-l1;
-	}
-
-	&.drag-over-middle .page-editor__no-fragments-message {
-		border: 2px solid $primary-l1;
-
-		.page-editor__no-fragments-message__title {
-			color: $gray-400;
-		}
-	}
-
-	&.not-droppable.page-editor__col:before {
-		box-shadow: none;
-	}
-
-	&.not-droppable.page-editor__col > .page-editor__col__border,
-	&.not-droppable.page-editor__collection-item
-		> .page-editor__collection-item__border {
-		border: 1px solid $danger;
-	}
-
-	&.not-droppable
-		> .page-editor__topper__content
-		> .page-editor__container:before,
-	&.not-droppable.page-editor__collection-item:before {
-		box-shadow: inset 0 0 0 1px $danger;
-		position: absolute;
-	}
-
-	&[data-not-droppable-message],
-	& [data-not-droppable-message] {
-		position: relative;
-	}
-
-	&[data-not-droppable-message]:after,
-	& [data-not-droppable-message]:after {
-		background-color: $danger;
-		border-radius: 2px;
-		color: $white;
-		content: attr(data-not-droppable-message) ' ';
-		font-size: 10px;
-		height: auto;
-		left: 16px;
-		max-width: calc(100% - 32px);
-		padding: 2px 6px;
-		position: absolute;
-		top: 0;
-		transform: translateY(4px);
-		width: auto;
-	}
-
-	&.page-editor__collection-item[data-not-droppable-message]:after {
-		left: 4px;
-	}
-
-	&[data-not-droppable-message]:before {
-		height: auto;
-		width: calc(100% - 32px);
-
-		@include media-breakpoint-up(lg) {
-			height: 20px;
-			width: auto;
-		}
-	}
-
-	&.page-editor__collection-item[data-not-droppable-message]:before {
-		left: 4px;
-	}
-
-	&__drag-icon {
-		cursor: grab;
-		height: 16px;
-		width: 16px;
-	}
-
-	&__icon {
-		fill: $color;
-		padding: 0;
-		position: relative;
-		top: 1px;
-	}
-
-	&__item {
-		margin: 0;
-	}
-
-	&__title {
-		cursor: default;
-		font-family: $font-family-base;
-		font-weight: 600;
-		margin-right: 8px;
-		min-width: 4ch;
-		overflow: hidden;
-		text-align: left;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	&--mapped {
-		&:after {
-			box-shadow: inset 0 0 0 1px #dfc9ff;
-		}
-
-		&.hovered:after {
-			box-shadow: inset 0 0 0 $borderWidth fade_out($purple, 0.5);
-		}
-
-		&.active:after {
-			box-shadow: inset 0 0 0 $borderWidth $purple;
-		}
-	}
-	&--hovered:after {
-		box-shadow: none;
-		outline: $borderWidth dashed fade_out($purple, 0.5);
-		outline-offset: -$borderWidth;
-	}
-
-	& > .page-editor__topper__content {
-		height: 100%;
 	}
 }

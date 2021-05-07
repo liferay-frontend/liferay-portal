@@ -1,29 +1,33 @@
-@import 'atlas-variables';
-
-.page-editor__translation {
-	min-width: 35ch;
-
-	&__label {
-		text-transform: uppercase;
-
-		&-wrapper {
-			width: auto;
+html#{$cadmin-selector} {
+	.cadmin {
+		&.page-editor__translation {
+			min-width: 35ch;
 		}
 
-		&.default {
-			border-color: $info;
-			color: $info;
-		}
+		.page-editor__translation {
+			&__label {
+				text-transform: uppercase;
 
-		&.untranslated,
-		&.translating {
-			border-color: $warning;
-			color: $warning;
-		}
+				&-wrapper {
+					width: auto;
+				}
 
-		&.translated {
-			border-color: $success;
-			color: $success;
+				&.default {
+					border-color: $cadmin-info;
+					color: $cadmin-info;
+				}
+
+				&.untranslated,
+				&.translating {
+					border-color: $cadmin-warning;
+					color: $cadmin-warning;
+				}
+
+				&.translated {
+					border-color: $cadmin-success;
+					color: $cadmin-success;
+				}
+			}
 		}
 	}
 }
