@@ -32,7 +32,7 @@ export default function (url, listeners) {
 			});
 		}
 	}
-	else {
+	else if (!url.startsWith('javascript:')) {
 		window.location.href = url;
 	}
 }
