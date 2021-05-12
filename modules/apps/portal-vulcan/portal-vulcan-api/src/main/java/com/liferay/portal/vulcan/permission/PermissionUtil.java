@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.ws.rs.BadRequestException;
@@ -146,10 +147,15 @@ public class PermissionUtil {
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		Role role) {
 
-		ResourcePermission resourcePermission =
+		ResourcePermission resourcePermission = Optional.ofNullable(
 			resourcePermissionLocalService.fetchResourcePermission(
 				companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(id), role.getRoleId());
+				String.valueOf(id), role.getRoleId())
+		).orElseGet(
+			() -> resourcePermissionLocalService.fetchResourcePermission(
+				companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+				resourceName, role.getRoleId())
+		);
 
 		if (resourcePermission == null) {
 			return null;
