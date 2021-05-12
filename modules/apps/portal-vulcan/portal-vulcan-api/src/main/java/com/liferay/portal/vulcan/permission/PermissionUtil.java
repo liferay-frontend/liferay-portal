@@ -66,6 +66,24 @@ public class PermissionUtil {
 		}
 	}
 
+	public static List<ResourcePermission> getResourcePermissions(
+		long companyId, long resourceId, String resourceName,
+		ResourcePermissionLocalService resourcePermissionLocalService) {
+
+		List<ResourcePermission> resourcePermissions =
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(resourceId));
+
+		if (resourcePermissions.isEmpty()) {
+			return resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+				resourceName);
+		}
+
+		return resourcePermissions;
+	}
+
 	public static List<Role> getRoles(
 			Company company, RoleLocalService roleLocalService,
 			String[] roleNames)
