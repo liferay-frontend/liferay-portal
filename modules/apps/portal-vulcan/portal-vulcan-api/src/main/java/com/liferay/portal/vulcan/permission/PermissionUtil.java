@@ -152,9 +152,20 @@ public class PermissionUtil {
 				companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(id), role.getRoleId())
 		).orElseGet(
-			() -> resourcePermissionLocalService.fetchResourcePermission(
-				companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
-				resourceName, role.getRoleId())
+			() -> {
+				int resourcePermissionsCount =
+					resourcePermissionLocalService.getResourcePermissionsCount(
+						companyId, resourceName,
+						ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(id));
+
+				if (resourcePermissionsCount > 0) {
+					return null;
+				}
+
+				return resourcePermissionLocalService.fetchResourcePermission(
+					companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+					resourceName, role.getRoleId());
+			}
 		);
 
 		if (resourcePermission == null) {
