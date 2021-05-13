@@ -29,6 +29,8 @@ import java.util.List;
  */
 public interface GraphQLDTOContributor<D, R> {
 
+	public Class<?> getDTOClass();
+
 	public R createDTO(D dto, DTOConverterContext dtoConverterContext)
 		throws Exception;
 
