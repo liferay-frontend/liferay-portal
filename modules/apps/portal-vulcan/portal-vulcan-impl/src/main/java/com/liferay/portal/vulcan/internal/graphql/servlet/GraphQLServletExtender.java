@@ -781,6 +781,25 @@ public class GraphQLServletExtender {
 		return builder.build();
 	}
 
+	private GraphQLObjectType _buildFacetGraphQLType() {
+		GraphQLObjectType.Builder builder = new GraphQLObjectType.Builder();
+
+		builder.name("FacetValue");
+		builder.field(_addField(Scalars.GraphQLInt, "numberOfOccurrences"));
+		builder.field(_addField(Scalars.GraphQLString, "term"));
+
+		GraphQLObjectType facetValueGraphQLType = builder.build();
+
+		builder = new GraphQLObjectType.Builder();
+
+		builder.name("Facet");
+		builder.field(_addField(Scalars.GraphQLString, "facetCriteria"));
+		builder.field(
+			_addField(GraphQLList.list(facetValueGraphQLType), "facetValues"));
+
+		return builder.build();
+	}
+
 	private void _collectObjectFields(
 		GraphQLObjectType.Builder builder,
 		Map<String, Configuration> configurations,
@@ -1535,6 +1554,10 @@ public class GraphQLServletExtender {
 	private GraphQLObjectType _getPageGraphQLObjectType(
 		GraphQLType facetGraphQLType, GraphQLType objectGraphQLType,
 		String name) {
+
+		if (facetGraphQLType == null) {
+			facetGraphQLType = _buildFacetGraphQLType();
+		}
 
 		GraphQLObjectType.Builder builder = new GraphQLObjectType.Builder();
 
