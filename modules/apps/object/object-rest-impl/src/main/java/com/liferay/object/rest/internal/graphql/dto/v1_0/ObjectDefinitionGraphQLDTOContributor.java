@@ -74,6 +74,11 @@ public class ObjectDefinitionGraphQLDTOContributor
 	}
 
 	@Override
+	public Class<?> getDTOClass() {
+		return Map.class;
+	}
+
+	@Override
 	public Map<String, Object> createDTO(
 			Map<String, Object> dto, DTOConverterContext dtoConverterContext)
 		throws Exception {
