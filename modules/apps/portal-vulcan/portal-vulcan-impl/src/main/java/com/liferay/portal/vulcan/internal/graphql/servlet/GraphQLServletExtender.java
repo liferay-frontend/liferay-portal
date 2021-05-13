@@ -1256,6 +1256,11 @@ public class GraphQLServletExtender {
 			Map<Class<?>, Set<Class<?>>> classesMap =
 				processingElementsContainer.getExtensionsTypeRegistry();
 
+			processingElementsContainer.setTypeRegistry(
+				HashMapBuilder.<String, GraphQLType>put(
+					"Facet", _buildFacetGraphQLType()
+				).build());
+
 			List<ServletData> servletDatas = new ArrayList<>();
 
 			for (ServletData servletData : _servletDataList) {
@@ -1554,10 +1559,6 @@ public class GraphQLServletExtender {
 	private GraphQLObjectType _getPageGraphQLObjectType(
 		GraphQLType facetGraphQLType, GraphQLType objectGraphQLType,
 		String name) {
-
-		if (facetGraphQLType == null) {
-			facetGraphQLType = _buildFacetGraphQLType();
-		}
 
 		GraphQLObjectType.Builder builder = new GraphQLObjectType.Builder();
 
