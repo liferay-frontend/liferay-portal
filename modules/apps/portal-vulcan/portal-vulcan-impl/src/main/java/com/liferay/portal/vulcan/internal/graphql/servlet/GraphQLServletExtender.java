@@ -1675,7 +1675,9 @@ public class GraphQLServletExtender {
 				FieldCoordinates.coordinates("mutation", createName),
 				(DataFetcher<Object>)
 					dataFetchingEnvironment -> graphQLDTOContributor.createDTO(
-						dataFetchingEnvironment.getArgument(resourceName),
+						_objectMapper.convertValue(
+							dataFetchingEnvironment.getArgument(resourceName),
+							graphQLDTOContributor.getDTOClass()),
 						_getDTOConverterContext(
 							dataFetchingEnvironment,
 							HashMapBuilder.<String, Serializable>put(
@@ -1804,9 +1806,9 @@ public class GraphQLServletExtender {
 				FieldCoordinates.coordinates("mutation", updateName),
 				(DataFetcher<Object>)
 					dataFetchingEnvironment -> graphQLDTOContributor.updateDTO(
-						dataFetchingEnvironment.
-							<Map<String, Serializable>>getArgument(
-								resourceName),
+						_objectMapper.convertValue(
+							dataFetchingEnvironment.getArgument(resourceName),
+							graphQLDTOContributor.getDTOClass()),
 						_getDTOConverterContext(dataFetchingEnvironment, null),
 						dataFetchingEnvironment.getArgument(idName))
 			).build());
