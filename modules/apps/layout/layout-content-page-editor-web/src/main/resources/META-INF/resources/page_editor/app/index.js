@@ -17,6 +17,7 @@ import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import App from './components/App';
+import PageAccessibilityToolSidebar from './components/page-accessibility-tool/index';
 import {initializeConfig} from './config/index';
 
 /**
@@ -30,7 +31,10 @@ export default function (data) {
 
 	return (
 		<DndProvider backend={HTML5Backend}>
-			<App state={data.state} />
+			<>
+				<PageAccessibilityToolSidebar />
+				<App state={data.state} />
+			</>
 		</DndProvider>
 	);
 }

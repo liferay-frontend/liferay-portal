@@ -1,0 +1,34 @@
+@import 'atlas-variables';
+
+.page-accessibility-tool__sidebar {
+	width: 320px;
+
+	&--violations-panel-header-title {
+		margin-left: 1rem;
+		margin-right: 1rem;
+		margin-top: 0;
+		padding: 0.5rem 0;
+		border-color: #e7e7ed;
+		border-bottom: 0.0625rem solid #f2f2f2;
+	}
+
+	&--violations-panel-header-description {
+		padding: 1rem;
+	}
+
+	&--occurrences-panel-wrapper {
+		padding: 0 1rem;
+	}
+
+	&--occurrences-description-wrapper {
+		padding: 0.1875rem 1rem;
+	}
+
+	&--rule-list-item {
+		padding-left: inherit !important;
+	}
+
+	.list-group-item {
+		border: 0.0625rem solid transparent;
+	}
+}
