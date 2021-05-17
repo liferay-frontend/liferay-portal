@@ -1677,7 +1677,7 @@ public class GraphQLServletExtender {
 					dataFetchingEnvironment -> graphQLDTOContributor.createDTO(
 						_objectMapper.convertValue(
 							dataFetchingEnvironment.getArgument(resourceName),
-							graphQLDTOContributor.getDTOClass()),
+							graphQLDTOContributor.getGraphQLDTOInputClass()),
 						_getDTOConverterContext(
 							dataFetchingEnvironment,
 							HashMapBuilder.<String, Serializable>put(
@@ -1808,7 +1808,7 @@ public class GraphQLServletExtender {
 					dataFetchingEnvironment -> graphQLDTOContributor.updateDTO(
 						_objectMapper.convertValue(
 							dataFetchingEnvironment.getArgument(resourceName),
-							graphQLDTOContributor.getDTOClass()),
+							graphQLDTOContributor.getGraphQLDTOInputClass()),
 						_getDTOConverterContext(dataFetchingEnvironment, null),
 						dataFetchingEnvironment.getArgument(idName))
 			).build());

@@ -74,11 +74,6 @@ public class ObjectDefinitionGraphQLDTOContributor
 	}
 
 	@Override
-	public Class<?> getDTOClass() {
-		return Map.class;
-	}
-
-	@Override
 	public Map<String, Object> createDTO(
 			Map<String, Object> dto, DTOConverterContext dtoConverterContext)
 		throws Exception {
@@ -134,6 +129,11 @@ public class ObjectDefinitionGraphQLDTOContributor
 	@Override
 	public EntityModel getEntityModel() {
 		return _entityModel;
+	}
+
+	@Override
+	public Class<?> getGraphQLDTOInputClass() {
+		return Map.class;
 	}
 
 	@Override

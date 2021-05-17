@@ -363,11 +363,6 @@ public class GraphQLDTOContributorTest {
 		}
 
 		@Override
-		public Class<?> getDTOClass() {
-			return GraphQLDTO.class;
-		}
-
-		@Override
 		public Page<GraphQLDTO> getDTOs(
 			Aggregation aggregation, DTOConverterContext dtoConverterContext,
 			Filter filter, Pagination pagination, String search, Sort[] sorts) {
@@ -382,6 +377,11 @@ public class GraphQLDTOContributorTest {
 			).put(
 				"name", new StringEntityField("name", locale -> "name")
 			).build();
+		}
+
+		@Override
+		public Class<?> getGraphQLDTOInputClass() {
+			return GraphQLDTO.class;
 		}
 
 		@Override

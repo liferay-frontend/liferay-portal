@@ -29,8 +29,6 @@ import java.util.List;
  */
 public interface GraphQLDTOContributor<D, R> {
 
-	public Class<?> getDTOClass();
-
 	public R createDTO(D dto, DTOConverterContext dtoConverterContext)
 		throws Exception;
 
@@ -45,6 +43,8 @@ public interface GraphQLDTOContributor<D, R> {
 		throws Exception;
 
 	public EntityModel getEntityModel();
+
+	public Class<?> getGraphQLDTOInputClass();
 
 	public List<GraphQLDTOProperty> getGraphQLDTOProperties();
 
