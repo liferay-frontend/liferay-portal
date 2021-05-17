@@ -152,8 +152,10 @@ export default function PageStructureSidebar() {
 				<DragAndDropContextProvider>
 					<Treeview
 						NodeComponent={StructureTreeNode}
+						focusManagement={false}
+						initialSelectedNodeIds={[activeItemId]}
+						multiSelection={false}
 						nodes={nodes}
-						selectedNodeIds={[activeItemId]}
 					/>
 				</DragAndDropContextProvider>
 			</div>

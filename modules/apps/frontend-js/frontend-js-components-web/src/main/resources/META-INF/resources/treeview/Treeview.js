@@ -141,6 +141,7 @@ function getLastVisible(node) {
  */
 function init({
 	filter,
+	focusManagement,
 	inheritSelection,
 	initialNodes,
 	initialSelectedNodeIds,
@@ -178,6 +179,7 @@ function init({
 		active: false,
 		filter: filterFn,
 		filteredNodes: filterNodes(nodes, filterFn),
+		focusManagement,
 		focusedNodeId: null,
 		inheritSelection,
 		multiSelection,
@@ -729,6 +731,7 @@ function visit(node, callback, nodeMap) {
 function Treeview({
 	NodeComponent,
 	filter,
+	focusManagement,
 	inheritSelection,
 	initialSelectedNodeIds,
 	multiSelection,
@@ -745,6 +748,7 @@ function Treeview({
 		reducer,
 		{
 			filter,
+			focusManagement,
 			inheritSelection,
 			initialNodes,
 			initialSelectedNodeIds,
@@ -825,12 +829,14 @@ function Treeview({
 
 Treeview.defaultProps = {
 	NodeComponent: TreeviewLabel,
+	focusManagement: true,
 	multiSelection: true,
 };
 
 Treeview.propTypes = {
 	NodeComponent: PropTypes.func,
 	filter: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+	focusManagement: PropTypes.bool,
 	inheritSelection: PropTypes.bool,
 	initialSelectedNodeIds: PropTypes.arrayOf(PropTypes.string),
 	multiSelection: PropTypes.bool,
