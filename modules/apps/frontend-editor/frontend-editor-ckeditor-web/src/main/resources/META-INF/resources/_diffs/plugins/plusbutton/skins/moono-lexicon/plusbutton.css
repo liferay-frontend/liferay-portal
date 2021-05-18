@@ -1,0 +1,13 @@
+.plusbutton {
+	align-items: center;
+	background: white;
+	border-radius: 3px;
+	border: 0.75px solid #0B5FFF;
+	color: #0B5FFF;
+	display: flex;
+	flex-direction: row;
+	font-size: 1.1em;
+	font-weight: bolder;
+	height: 28px;
+	width: 28px;
+}
