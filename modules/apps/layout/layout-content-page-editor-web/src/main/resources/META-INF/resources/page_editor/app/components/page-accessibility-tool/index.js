@@ -12,28 +12,20 @@
  * details.
  */
 
-import React, {useRef} from 'react';
+import React from 'react';
 
 import Violations from './components/Violations';
+import {FilteredViolationsContextProvider} from './components/useFilteredViolations';
 import {violations as violationsMock} from './mock';
 
 export default function PageAccessibilityToolSidebar({
 	violations = violationsMock,
 }) {
-	const sidebarRef = useRef(null);
-
-	const hasViolations = !!violations.length;
-
 	return (
-		<div
-			className="page-accessibility-tool__sidebar sidebar sidebar-light"
-			ref={sidebarRef}
-		>
-			{hasViolations ? (
-				<Violations.Panel violations={violations} />
-			) : (
-				<Violations.EmptyState />
-			)}
-		</div>
+		<FilteredViolationsContextProvider>
+			<div className="page-accessibility-tool__sidebar sidebar sidebar-light">
+				<Violations violations={violations} />
+			</div>
+		</FilteredViolationsContextProvider>
 	);
 }

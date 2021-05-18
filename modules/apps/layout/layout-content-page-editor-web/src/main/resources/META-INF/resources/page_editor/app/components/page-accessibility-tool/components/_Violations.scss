@@ -4,12 +4,12 @@
 	width: 320px;
 
 	&--violations-panel-header-title {
+		border-bottom: 0.0625rem solid #f2f2f2;
+		border-color: #e7e7ed;
 		margin-left: 1rem;
 		margin-right: 1rem;
 		margin-top: 0;
 		padding: 0.5rem 0;
-		border-color: #e7e7ed;
-		border-bottom: 0.0625rem solid #f2f2f2;
 	}
 
 	&--violations-panel-header-description {
