@@ -20,14 +20,15 @@ import {Editor} from './Editor';
 import '../css/main.scss';
 
 const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
-	const defaultExtraPlugins = 'balloontoolbar,floatingspace';
+	const defaultExtraPlugins = 'ballooneditor';
 
 	const [cssClass, setCssClass] = useState('');
 
 	const extraPlugins = config.extraPlugins ? `${config.extraPlugins},` : '';
 
 	const basicToolbars = {
-		toolbarImage: 'JustifyLeft,JustifyCenter,JustifyRight',
+		toolbarImage:
+			'ImageAlignLeft,ImageAlignCenter,ImageAlignRight,LinkToolbar,AltImg',
 		toolbarLink: 'Link,Unlink',
 		toolbarText:
 			'Bold,Italic,Underline,BulletedList,NumberedList,Link' +
@@ -51,12 +52,24 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 				setCssClass(CKEDITOR.env.cssClass);
 
 				CKEDITOR.env.cssClass = `${CKEDITOR.env.cssClass} lfr-balloon-editor`;
+
+				CKEDITOR.getNextZIndex = function () {
+					return CKEDITOR.dialog._.currentZIndex
+						? CKEDITOR.dialog._.currentZIndex + 10
+						: Liferay.zIndex.WINDOW + 10;
+				};
 			}}
 			onDestroy={() => {
 				CKEDITOR.env.cssClass = cssClass;
 			}}
 			onInstanceReady={(event) => {
 				const editor = event.editor;
+
+				// Workaround to make the "CKEDITOR.ui.richCombo"
+				// plugin work with the CKEditor (React) component
+				// the "id" needs to be "cke_" + "editor.name"
+
+				editor.element.setAttribute('id', `cke_${editor.name}`);
 
 				const balloonToolbars = editor.balloonToolbars;
 
