@@ -60,10 +60,10 @@ public class CKEditorBalloonEditorConfigContributor
 		String extraPlugins = jsonObject.getString("extraPlugins");
 
 		if (Validator.isNotNull(extraPlugins)) {
-			extraPlugins += ",stylescombo";
+			extraPlugins += ",itemselector,stylescombo";
 		}
 		else {
-			extraPlugins = "stylescombo";
+			extraPlugins = "itemselector,stylescombo";
 		}
 
 		jsonObject.put(
@@ -71,7 +71,8 @@ public class CKEditorBalloonEditorConfigContributor
 		).put(
 			"stylesSet", getStyleFormatsJSONArray(themeDisplay.getLocale())
 		).put(
-			"toolbarImage", "JustifyLeft,JustifyCenter,JustifyRight,Link,Unlink"
+			"toolbarImage",
+			"ImageAlignLeft,ImageAlignCenter,ImageAlignRight,LinkToolbar,AltImg"
 		).put(
 			"toolbarText", getToolbarText()
 		).put(
@@ -120,7 +121,8 @@ public class CKEditorBalloonEditorConfigContributor
 
 	protected String getToolbarText() {
 		return "Styles,Bold,Italic,Underline,BulletedList,NumberedList,Link," +
-			"JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,RemoveFormat";
+			"JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,BGColor," +
+				"RemoveFormat";
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
