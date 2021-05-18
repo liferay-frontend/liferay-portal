@@ -76,7 +76,7 @@ public class CKEditorBalloonEditorConfigContributor
 		).put(
 			"toolbarText", getToolbarText()
 		).put(
-			"toolbarVideo", "JustifyLeft,JustifyCenter,JustifyRight"
+			"toolbarVideo", "VideoAlignLeft,VideoAlignCenter,VideoAlignRight"
 		);
 	}
 

@@ -359,7 +359,7 @@
 				'balloonpanel',
 				'balloontoolbar',
 				'imagealt',
-				'imagetoolbarbuttons',
+				'toolbarbuttons',
 				'linktoolbar',
 				'plusbutton',
 			],

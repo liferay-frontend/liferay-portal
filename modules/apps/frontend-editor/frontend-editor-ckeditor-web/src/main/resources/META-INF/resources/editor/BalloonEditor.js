@@ -20,7 +20,7 @@ import {Editor} from './Editor';
 import '../css/main.scss';
 
 const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
-	const defaultExtraPlugins = 'ballooneditor';
+	const defaultExtraPlugins = 'ballooneditor,videoembed';
 
 	const [cssClass, setCssClass] = useState('');
 
@@ -33,6 +33,7 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 		toolbarText:
 			'Bold,Italic,Underline,BulletedList,NumberedList,Link' +
 			'JustifyLeft,JustifyCenter,JustifyRight,RemoveFormat',
+		toolbarVideo: 'VideoAlignLeft,VideoAlignCenter,VideoAlignRight',
 	};
 
 	const editorConfig = {
@@ -95,10 +96,10 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 				if (editorConfig.toolbarVideo) {
 					balloonToolbars.create({
 						buttons: editorConfig.toolbarVideo,
-						cssSelector: 'div[data-widget="videoembed"]',
 						priority:
 							window.CKEDITOR.plugins.balloontoolbar.PRIORITY
 								.HIGH,
+						widgets: 'videoembed',
 					});
 				}
 
