@@ -1,0 +1,20 @@
+.ui-select {
+	border: none;
+	color: grey;
+	float: left;
+	line-height: 30px;
+	margin: 2px;
+	min-height: 30px;
+	padding: 6px;
+	outline: none;
+	width: auto;
+}
+.ui-select option {
+	border: none;
+	color: grey;
+	float: left;
+	line-height: 30px;
+	padding: 6px;
+	outline: none;
+	width: auto;
+}
