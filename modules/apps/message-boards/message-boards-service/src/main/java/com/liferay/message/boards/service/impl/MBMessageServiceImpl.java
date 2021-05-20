@@ -31,6 +31,7 @@ import com.liferay.message.boards.util.comparator.MessageCreateDateComparator;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.lock.LockManager;
@@ -673,6 +674,20 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 
 		return mbMessagePersistence.filterCountByG_C_T_A(
 			groupId, categoryId, threadId, true);
+	}
+
+	@Override
+	public List<MBMessage> getThreadMessages(
+			long threadId, QueryDefinition<MBMessage> queryDefinition)
+		throws PrincipalException {
+
+		if (queryDefinition.isIncludeOwner() &&
+			(queryDefinition.getOwnerUserId() != 0)) {
+
+			queryDefinition.setOwnerUserId(getUserId());
+		}
+
+		return mbMessageFinder.findByThreadId(threadId, queryDefinition);
 	}
 
 	@Override
