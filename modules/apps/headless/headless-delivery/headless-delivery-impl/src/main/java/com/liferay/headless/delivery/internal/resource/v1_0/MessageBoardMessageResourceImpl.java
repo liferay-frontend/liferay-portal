@@ -38,6 +38,7 @@ import com.liferay.message.boards.model.MBThread;
 import com.liferay.message.boards.service.MBMessageLocalService;
 import com.liferay.message.boards.service.MBMessageService;
 import com.liferay.message.boards.service.MBThreadLocalService;
+import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -45,11 +46,14 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
@@ -63,12 +67,14 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.SearchUtil;
+import com.liferay.portal.vulcan.util.TransformUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalService;
 
 import java.io.Serializable;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.BadRequestException;
@@ -186,8 +192,8 @@ public class MessageBoardMessageResourceImpl
 		MBThread mbThread = _mbThreadLocalService.getMBThread(
 			messageBoardThreadId);
 
-		return _getMessageBoardMessagesPage(
-			HashMapBuilder.put(
+		HashMap<String, Map<String, String>> actions =
+			HashMapBuilder.<String, Map<String, String>>put(
 				"create",
 				addAction(
 					ActionKeys.ADD_MESSAGE, mbThread.getThreadId(),
@@ -201,9 +207,42 @@ public class MessageBoardMessageResourceImpl
 					"getMessageBoardThreadMessageBoardMessagesPage",
 					mbThread.getUserId(), MBConstants.RESOURCE_NAME,
 					mbThread.getGroupId())
-			).build(),
-			mbThread.getRootMessageId(), null, false, search, aggregation,
-			filter, pagination, sorts);
+			).build();
+
+		if ((search == null) && (filter == null) && (sorts == null)) {
+			int status = WorkflowConstants.STATUS_APPROVED;
+
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
+			if (permissionChecker.isContentReviewer(
+					contextCompany.getCompanyId(), mbThread.getGroupId())) {
+
+				status = WorkflowConstants.STATUS_ANY;
+			}
+
+			return Page.of(
+				actions,
+				TransformUtil.transform(
+					_mbMessageService.getThreadMessages(
+						mbThread.getThreadId(),
+						new QueryDefinition<>(
+							status, contextUser.getUserId(), true,
+							pagination.getStartPosition(),
+							pagination.getEndPosition(), null)),
+					this::_toMessageBoardMessage),
+				pagination,
+				_mbMessageService.getThreadMessagesCount(
+					mbThread.getThreadId(),
+					new QueryDefinition<>(
+						status, contextUser.getUserId(), true,
+						pagination.getStartPosition(),
+						pagination.getEndPosition(), null)));
+		}
+
+		return _getMessageBoardMessagesPage(
+			actions, mbThread.getRootMessageId(), null, false, search,
+			aggregation, filter, pagination, sorts);
 	}
 
 	@Override

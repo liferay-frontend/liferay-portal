@@ -90,7 +90,7 @@ public class MBMessageFinderImpl
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
-			sqlQuery.addEntity(MBMessageImpl.TABLE_NAME, MBMessageImpl.class);
+			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
 
 			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
 
