@@ -678,20 +678,6 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 
 	@Override
 	public List<MBMessage> getThreadMessages(
-			long threadId, QueryDefinition<MBMessage> queryDefinition)
-		throws PrincipalException {
-
-		if (queryDefinition.isIncludeOwner() &&
-			(queryDefinition.getOwnerUserId() != 0)) {
-
-			queryDefinition.setOwnerUserId(getUserId());
-		}
-
-		return mbMessageFinder.findByThreadId(threadId, queryDefinition);
-	}
-
-	@Override
-	public List<MBMessage> getThreadMessages(
 		long groupId, long categoryId, long threadId, int status, int start,
 		int end) {
 
@@ -705,6 +691,20 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 	}
 
 	@Override
+	public List<MBMessage> getThreadMessages(
+			long threadId, QueryDefinition<MBMessage> queryDefinition)
+		throws PrincipalException {
+
+		if (queryDefinition.isIncludeOwner() &&
+			(queryDefinition.getOwnerUserId() != 0)) {
+
+			queryDefinition.setOwnerUserId(getUserId());
+		}
+
+		return mbMessageFinder.findByThreadId(threadId, queryDefinition);
+	}
+
+	@Override
 	public int getThreadMessagesCount(
 		long groupId, long categoryId, long threadId, int status) {
 
@@ -715,6 +715,20 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 
 		return mbMessagePersistence.filterCountByG_C_T_S(
 			groupId, categoryId, threadId, status);
+	}
+
+	@Override
+	public int getThreadMessagesCount(
+			long threadId, QueryDefinition<MBMessage> queryDefinition)
+		throws PrincipalException {
+
+		if (queryDefinition.isIncludeOwner() &&
+			(queryDefinition.getOwnerUserId() != 0)) {
+
+			queryDefinition.setOwnerUserId(getUserId());
+		}
+
+		return mbMessageFinder.countByThreadId(threadId, queryDefinition);
 	}
 
 	@Override
