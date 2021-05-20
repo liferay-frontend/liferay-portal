@@ -334,11 +334,32 @@ public class MBMessageServiceWrapper
 	}
 
 	@Override
+	public java.util.List<MBMessage> getThreadMessages(
+			long threadId,
+			com.liferay.portal.kernel.dao.orm.QueryDefinition<MBMessage>
+				queryDefinition)
+		throws com.liferay.portal.kernel.security.auth.PrincipalException {
+
+		return _mbMessageService.getThreadMessages(threadId, queryDefinition);
+	}
+
+	@Override
 	public int getThreadMessagesCount(
 		long groupId, long categoryId, long threadId, int status) {
 
 		return _mbMessageService.getThreadMessagesCount(
 			groupId, categoryId, threadId, status);
+	}
+
+	@Override
+	public int getThreadMessagesCount(
+			long threadId,
+			com.liferay.portal.kernel.dao.orm.QueryDefinition<MBMessage>
+				queryDefinition)
+		throws com.liferay.portal.kernel.security.auth.PrincipalException {
+
+		return _mbMessageService.getThreadMessagesCount(
+			threadId, queryDefinition);
 	}
 
 	@Override

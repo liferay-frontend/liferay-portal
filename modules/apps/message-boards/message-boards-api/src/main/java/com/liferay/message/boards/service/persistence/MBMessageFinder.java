@@ -23,6 +23,11 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface MBMessageFinder {
 
+	public int countByThreadId(
+		long threadId,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition
+			<com.liferay.message.boards.model.MBMessage> queryDefinition);
+
 	public int countByC_T(java.util.Date createDate, long threadId);
 
 	public int countByG_U_C_S(

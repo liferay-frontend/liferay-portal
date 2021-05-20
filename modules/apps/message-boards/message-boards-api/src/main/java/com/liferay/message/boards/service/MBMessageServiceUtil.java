@@ -308,11 +308,29 @@ public class MBMessageServiceUtil {
 			groupId, categoryId, threadId, status, start, end);
 	}
 
+	public static List<MBMessage> getThreadMessages(
+			long threadId,
+			com.liferay.portal.kernel.dao.orm.QueryDefinition<MBMessage>
+				queryDefinition)
+		throws com.liferay.portal.kernel.security.auth.PrincipalException {
+
+		return getService().getThreadMessages(threadId, queryDefinition);
+	}
+
 	public static int getThreadMessagesCount(
 		long groupId, long categoryId, long threadId, int status) {
 
 		return getService().getThreadMessagesCount(
 			groupId, categoryId, threadId, status);
+	}
+
+	public static int getThreadMessagesCount(
+			long threadId,
+			com.liferay.portal.kernel.dao.orm.QueryDefinition<MBMessage>
+				queryDefinition)
+		throws com.liferay.portal.kernel.security.auth.PrincipalException {
+
+		return getService().getThreadMessagesCount(threadId, queryDefinition);
 	}
 
 	public static String getThreadMessagesRSS(

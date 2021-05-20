@@ -425,6 +425,29 @@ public class MBMessageServiceSoap {
 		}
 	}
 
+	public static com.liferay.message.boards.model.MBMessageSoap[]
+			getThreadMessages(
+				long threadId,
+				com.liferay.portal.kernel.dao.orm.QueryDefinition
+					<com.liferay.message.boards.model.MBMessage>
+						queryDefinition)
+		throws RemoteException {
+
+		try {
+			java.util.List<com.liferay.message.boards.model.MBMessage>
+				returnValue = MBMessageServiceUtil.getThreadMessages(
+					threadId, queryDefinition);
+
+			return com.liferay.message.boards.model.MBMessageSoap.toSoapModels(
+				returnValue);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
 	public static int getThreadMessagesCount(
 			long groupId, long categoryId, long threadId, int status)
 		throws RemoteException {
@@ -432,6 +455,25 @@ public class MBMessageServiceSoap {
 		try {
 			int returnValue = MBMessageServiceUtil.getThreadMessagesCount(
 				groupId, categoryId, threadId, status);
+
+			return returnValue;
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static int getThreadMessagesCount(
+			long threadId,
+			com.liferay.portal.kernel.dao.orm.QueryDefinition
+				<com.liferay.message.boards.model.MBMessage> queryDefinition)
+		throws RemoteException {
+
+		try {
+			int returnValue = MBMessageServiceUtil.getThreadMessagesCount(
+				threadId, queryDefinition);
 
 			return returnValue;
 		}
