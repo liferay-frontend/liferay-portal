@@ -59,8 +59,6 @@
 				this._tableToolbar.destroy();
 				this._tableToolbar = null;
 
-				// TODO: apparently table selection is broken
-
 				setTimeout(() => {
 					var firstCell = new CKEDITOR.dom.element(
 						table.$.rows[0].cells[0]
@@ -200,9 +198,16 @@
 
 			_onContentDom() {
 				this.documentBody = this.editor.document.getBody();
+
 				if (!this.documentBody.contains(this._button)) {
 					this.documentBody.append(this._button);
 				}
+
+				this._eventListeners.push(
+					this.editor.document.on('mousedown', () => {
+						this.hide();
+					})
+				);
 			},
 
 			_onDestroy() {
@@ -354,14 +359,15 @@
 				this.editor = editor;
 
 				this._eventListeners.push(
-					this.editor.on('blur', this._onBlur.bind(this)),
-					this.editor.on('change', this._onChange.bind(this)),
-					this.editor.on('contentDom', this._onContentDom.bind(this)),
-					this.editor.on('destroy', this._onDestroy.bind(this)),
 					this.editor.on(
 						'afterCommandExec',
 						this._onAfterCommandExec.bind(this)
 					),
+					this.editor.on('blur', this._onBlur.bind(this)),
+					this.editor.on('change', this._onChange.bind(this)),
+					this.editor.on('contentDom', this._onContentDom.bind(this)),
+					this.editor.on('destroy', this._onDestroy.bind(this)),
+					this.editor.on('paste', this._onChange.bind(this)),
 					this.editor.on(
 						'selectionChange',
 						this._onSelectionChange.bind(this)

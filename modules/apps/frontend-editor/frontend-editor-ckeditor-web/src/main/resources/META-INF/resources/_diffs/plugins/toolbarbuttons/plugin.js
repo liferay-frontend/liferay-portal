@@ -20,6 +20,9 @@
 	if (!CKEDITOR.plugins.get(pluginName)) {
 		CKEDITOR.plugins.add(pluginName, {
 			init(editor) {
+
+				// Image Toolbar buttons
+
 				editor.ui.addBalloonToolbarButton('ImageAlignLeft', {
 					click() {
 						var imageWidget = editor.widgets.selected[0];
@@ -88,6 +91,42 @@
 					icon: 'align-image-right',
 					title: editor.lang.common.alignRight,
 				});
+
+				editor.ui.addBalloonToolbarButton('LinkToolbar', {
+					click() {
+						editor.fire('showToolbar', {
+							toolbarCommand: 'linkToolbar',
+						});
+					},
+					icon: 'link',
+					title: editor.lang.link.title,
+				});
+
+				// Link toolbar buttons
+
+				editor.ui.addBalloonToolbarButton('LinkAddOrEdit', {
+					click() {
+						editor.fire('showToolbar', {
+							toolbarCommand: 'linkToolbar',
+						});
+					},
+					icon: 'link',
+					title: editor.lang.link.title,
+				});
+
+				// Text toolbar buttons
+
+				editor.ui.addBalloonToolbarButton('TextLink', {
+					click() {
+						editor.fire('showToolbar', {
+							toolbarCommand: 'linkToolbar',
+						});
+					},
+					icon: 'link',
+					title: editor.lang.link.title,
+				});
+
+				// Video Toolbar Buttons
 
 				editor.ui.addBalloonToolbarButton('VideoAlignLeft', {
 					command: 'justifyleft',

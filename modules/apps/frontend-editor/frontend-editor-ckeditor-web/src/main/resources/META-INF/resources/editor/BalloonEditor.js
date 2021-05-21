@@ -29,9 +29,9 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 	const basicToolbars = {
 		toolbarImage:
 			'ImageAlignLeft,ImageAlignCenter,ImageAlignRight,LinkToolbar,AltImg',
-		toolbarLink: 'Link,Unlink',
+		toolbarLink: 'LinkAddOrEdit,Unlink',
 		toolbarText:
-			'Bold,Italic,Underline,BulletedList,NumberedList,Link' +
+			'Bold,Italic,Underline,BulletedList,NumberedList,TextLink' +
 			'JustifyLeft,JustifyCenter,JustifyRight,RemoveFormat',
 		toolbarVideo: 'VideoAlignLeft,VideoAlignCenter,VideoAlignRight',
 	};

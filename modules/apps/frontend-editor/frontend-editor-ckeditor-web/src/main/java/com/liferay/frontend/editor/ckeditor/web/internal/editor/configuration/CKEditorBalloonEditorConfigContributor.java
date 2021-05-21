@@ -120,7 +120,7 @@ public class CKEditorBalloonEditorConfigContributor
 	}
 
 	protected String getToolbarText() {
-		return "Styles,Bold,Italic,Underline,BulletedList,NumberedList,Link," +
+		return "Styles,Bold,Italic,Underline,BulletedList,NumberedList,TextLink," +
 			"JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,BGColor," +
 				"RemoveFormat";
 	}

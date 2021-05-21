@@ -130,70 +130,153 @@
 			},
 
 			_onOkButtonClick() {
-				var imageWidget = this.editor.widgets.selected[0];
 
-				if (!imageWidget || imageWidget.name !== 'image') {
-					return;
-				}
+				// If we don't have a link, there's nothing to do
 
 				var linkInput = this._toolbar.getItem('linkInput');
 
 				if (!linkInput.value) {
-
-					// TODO: Warn the user about missing URL?
-
 					this._toolbar.hide();
 
 					return;
 				}
 
-				var newData = Object.assign(imageWidget.data, {
-					link: {
-						url: linkInput.value,
-					},
-				});
+				var targetSelect = this._toolbar.getItem('targetSelect');
 
-				var instance = this;
+				var hasTarget = targetSelect.value !== 'Default';
 
-				imageWidget.shiftState({
-					deflate() {},
-					element: imageWidget.element,
-					inflate() {
+				if (this.editor.widgets.selected[0]) {
 
-						// Insert target and rel attributes
+					// Deal with image widget
 
-						var wrapperElement = imageWidget.wrapper;
-						var linkElement = wrapperElement.findOne('a');
-						if (linkElement) {
-							var targetSelect = instance._toolbar.getItem(
-								'targetSelect'
-							);
+					var imageWidget = this.editor.widgets.selected[0];
 
-							if (targetSelect.value !== 'default') {
-								linkElement.setAttribute(
-									'target',
-									targetSelect.value
-								);
+					if (!imageWidget || imageWidget.name !== 'image') {
+						return;
+					}
+
+					var newData = Object.assign(imageWidget.data, {
+						link: {
+							url: linkInput.value,
+						},
+					});
+
+					imageWidget.shiftState({
+						deflate() {},
+						element: imageWidget.element,
+						inflate() {
+
+							// Insert target and rel attributes
+
+							var wrapperElement = imageWidget.wrapper;
+
+							var linkElement = wrapperElement.findOne('a');
+
+							if (linkElement) {
+								linkElement.setAttribute('rel', 'noopener');
+
+								if (hasTarget) {
+									linkElement.setAttribute(
+										'target',
+										targetSelect.value
+									);
+								}
 							}
-							linkElement.setAttribute('rel', 'noopener');
+						},
+						newData,
+						oldData: imageWidget.oldData,
+						widget: imageWidget,
+					});
+
+					this._toolbar.hide();
+
+					imageWidget.focus();
+					imageWidget.element.focus();
+				}
+				else {
+					var selection = this.options.selection;
+
+					var startElement = selection.getStartElement();
+
+					var linkElement;
+
+					if (startElement.getName() === 'a') {
+
+						// We've selected a link so we just need to update it
+
+						linkElement = startElement;
+
+						linkElement.setAttributes({
+
+							// CKEditor processes links, so we also
+							// need to update the "data-cke-saved-href" attribute
+
+							'data-cke-saved-href': linkInput.value,
+							href: linkInput.value,
+							rel: 'noopener',
+						});
+
+						if (hasTarget) {
+							linkElement.setAttribute(
+								'target',
+								targetSelect.value
+							);
 						}
-					},
-					newData,
-					oldData: imageWidget.oldData,
-					widget: imageWidget,
-				});
 
-				this._toolbar.hide();
+						linkInput.clear();
 
-				imageWidget.focus();
-				imageWidget.element.focus();
+						this._toolbar.hide();
+					}
+					else if (selection.getSelectedText()) {
+						selection = this.editor.getSelection();
+						var selectedText = selection.getSelectedText();
+
+						var ranges = selection.getRanges();
+						var range = ranges[0];
+
+						var bookmark = range.createBookmark();
+
+						linkElement = new CKEDITOR.dom.element('a');
+
+						linkElement.setAttributes({
+							href: linkInput.value,
+							rel: 'noopener',
+						});
+
+						if (hasTarget) {
+							linkElement.setAttribute(
+								'target',
+								targetSelect.value
+							);
+						}
+
+						linkElement.setText(selectedText);
+
+						linkElement.insertAfter(bookmark.endNode);
+
+						// Remove selected text
+
+						range.moveToBookmark(bookmark);
+						range.deleteContents();
+
+						// Reset input
+
+						linkInput.clear();
+
+						this._toolbar.hide();
+
+						selection = this.editor.getSelection();
+
+						selection.unlock(true);
+					}
+				}
 			},
+
 			_onSelectionChange() {
 				if (this._toolbar) {
 					this._toolbar.hide();
 				}
 			},
-			_parentToolbar: null,
 
 			_toolbar: null,
 
@@ -202,6 +285,10 @@
 
 				instance.editor = editor;
 
+				instance.options = {
+					selection: null,
+				};
+
 				editor.on(
 					'selectionChange',
 					this._onSelectionChange.bind(this)
@@ -209,27 +296,45 @@
 
 				editor.addCommand('linkToolbar', {
 					exec(editor) {
-						var toolbar = instance._createToolbar();
-						var imageWidget = editor.widgets.selected[0];
-						if (!imageWidget || imageWidget.name !== 'image') {
-							return;
+						instance._createToolbar();
+
+						if (editor.widgets.selected[0]) {
+							var imageWidget = editor.widgets.selected[0];
+
+							if (!imageWidget || imageWidget.name !== 'image') {
+								return;
+							}
+
+							imageWidget.focus();
 						}
 
-						imageWidget.focus();
-						instance._keepToolbar = true;
-
 						var selection = editor.getSelection();
-						toolbar.attach(selection);
-					},
-				});
 
-				editor.ui.addBalloonToolbarButton('LinkToolbar', {
-					click() {
-						instance._parentToolbar = this.balloonToolbar;
-						editor.execCommand('linkToolbar');
+						selection.lock();
+
+						instance.options.selection = selection;
+
+						var isLink =
+							selection.getStartElement().getName() === 'a';
+
+						instance._toolbar.attach(selection);
+
+						var linkInput = instance._toolbar.getItem('linkInput');
+
+						if (isLink) {
+							linkInput.setValue(
+								selection.getStartElement().getAttribute('href')
+							);
+						}
+
+						setTimeout(() => {
+							var linkInputElement = linkInput.getInputElement();
+
+							if (linkInputElement) {
+								linkInputElement.focus();
+							}
+						}, 0);
 					},
-					icon: 'link',
-					title: editor.lang.link.title,
 				});
 			},
 

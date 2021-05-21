@@ -51,9 +51,16 @@
 			proto: {
 				clear() {
 					this.value = '';
-					if (this._element) {
-						this._element.setAttribute('value', this.value);
+
+					var inputElement = this.getInputElement();
+
+					if (inputElement) {
+						inputElement.setAttribute('value', this.value);
 					}
+				},
+
+				getInputElement() {
+					return this._editor.document.getById(this._id);
 				},
 
 				render(editor, output) {
@@ -101,11 +108,19 @@
 
 					inputTemplate.output(params, output);
 
-					this._element = this._editor.document.findOne(
-						'#' + this._id
-					);
-
 					return instance;
+				},
+
+				setValue(value) {
+					if (value) {
+						this.value = value;
+
+						var inputElement = this.getInputElement();
+
+						if (inputElement) {
+							inputElement.setAttribute('value', value);
+						}
+					}
 				},
 			},
 		});

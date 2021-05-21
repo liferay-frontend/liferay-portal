@@ -41,6 +41,20 @@
 					);
 				});
 
+				editor.on('resize', () => {
+					editor.balloonToolbars.hide();
+				});
+
+				editor.on('showToolbar', (event) => {
+					var toolbarCommand = event.data.toolbarCommand;
+
+					// Hide all toolbars
+
+					editor.balloonToolbars.hide();
+
+					editor.execCommand(toolbarCommand);
+				});
+
 				editor.on('destroy', () => {
 					CKEDITOR.tools.array.forEach(eventListeners, (listener) => {
 						listener.removeListener();
