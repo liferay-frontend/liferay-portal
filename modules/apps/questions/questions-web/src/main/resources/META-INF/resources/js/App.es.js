@@ -69,7 +69,7 @@ export default (props) => {
 										/>
 									)}
 									exact
-									path="/question/:questionId"
+									path="/questions/question/:questionId"
 								/>
 								<Route
 									component={(props) => (
@@ -79,7 +79,7 @@ export default (props) => {
 										/>
 									)}
 									exact
-									path="/activity/:creatorId"
+									path="/questions/activity/:creatorId"
 								/>
 								<Route
 									component={(props) => (
@@ -89,7 +89,7 @@ export default (props) => {
 										/>
 									)}
 									exact
-									path="/subscriptions/:creatorId"
+									path="/questions/subscriptions/:creatorId"
 								/>
 								<Route
 									component={(props) => (
