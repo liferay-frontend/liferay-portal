@@ -28,28 +28,7 @@
 					instance._toolbar = new CKEDITOR.ui.balloonToolbar(editor);
 
 					var unlinkButton = new CKEDITOR.ui.balloonToolbarButton({
-						click() {
-							var imageWidget =
-								instance.editor.widgets.selected[0];
-							if (!imageWidget || imageWidget.name !== 'image') {
-								return;
-							}
-
-							if (
-								Object.prototype.hasOwnProperty.call(
-									imageWidget.data,
-									'link'
-								)
-							) {
-								imageWidget.setData('link', {url: ''});
-
-								var linkInput = instance._toolbar.getItem(
-									'linkInput'
-								);
-								linkInput.clear();
-								instance._toolbar.hide();
-							}
-						},
+						click: instance._onUnlinkButtonClick.bind(instance),
 						icon: 'unlink',
 						title: editor.lang.undo.undo,
 					});
@@ -90,8 +69,6 @@
 
 					linkInput.on('cancel', () => {
 						instance._toolbar.hide();
-
-						instance._parentToolbar.show();
 					});
 
 					var changeOrClickHandler = instance._onOkButtonClick.bind(
@@ -115,9 +92,16 @@
 					var folderButton = new CKEDITOR.ui.balloonToolbarButton({
 						click() {
 							instance._toolbar.hide();
-							instance._parentToolbar.hide();
 
-							instance.editor.execCommand('imageselector');
+							var editor = instance.editor;
+
+							var imageWidget = editor.widgets.selected[0];
+
+							if (!imageWidget || imageWidget.name !== 'image') {
+								return;
+							}
+
+							editor.execCommand('imageselector');
 						},
 						icon: 'folder',
 						title: editor.lang.common.browseServer,
@@ -125,9 +109,9 @@
 
 					instance._toolbar.addItem('folderButton', folderButton);
 				}
-
-				return this._toolbar;
 			},
+
+			_currentSelection: null,
 
 			_onOkButtonClick() {
 
@@ -194,7 +178,7 @@
 					imageWidget.element.focus();
 				}
 				else {
-					var selection = this.options.selection;
+					var selection = this._currentSelection;
 
 					var startElement = selection.getStartElement();
 
@@ -278,6 +262,40 @@
 				}
 			},
 
+			_onUnlinkButtonClick() {
+				var startElement = this._currentSelection.getStartElement();
+				var startElementName = startElement.getName();
+
+				if (startElementName === 'a') {
+
+					// Insert text back into parent
+
+					startElement.remove(true);
+				}
+				else if (startElement.findOne('img')) {
+					var imageWidget = this.editor.widgets.selected[0];
+					if (!imageWidget || imageWidget.name !== 'image') {
+						return;
+					}
+
+					if (
+						Object.prototype.hasOwnProperty.call(
+							imageWidget.data,
+							'link'
+						)
+					) {
+						imageWidget.setData('link', {url: ''});
+
+						var linkInput = this._toolbar.getItem('linkInput');
+						linkInput.clear();
+
+						this._toolbar.hide();
+					}
+				}
+
+				this.editor.fire('hideToolbars');
+			},
+
 			_toolbar: null,
 
 			init(editor) {
@@ -285,14 +303,15 @@
 
 				instance.editor = editor;
 
-				instance.options = {
-					selection: null,
-				};
-
 				editor.on(
 					'selectionChange',
 					this._onSelectionChange.bind(this)
 				);
+
+				editor.on('unlinkTextOrImage', (event) => {
+					instance._currentSelection = event.data.selection;
+					instance._onUnlinkButtonClick();
+				});
 
 				editor.addCommand('linkToolbar', {
 					exec(editor) {
@@ -312,7 +331,7 @@
 
 						selection.lock();
 
-						instance.options.selection = selection;
+						instance._currentSelection = selection;
 
 						var isLink =
 							selection.getStartElement().getName() === 'a';
