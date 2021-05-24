@@ -41,6 +41,16 @@
 					);
 				});
 
+				editor.on('destroy', () => {
+					CKEDITOR.tools.array.forEach(eventListeners, (listener) => {
+						listener.removeListener();
+					});
+				});
+
+				editor.on('hideToolbars', () => {
+					editor.balloonToolbars.hide();
+				});
+
 				editor.on('resize', () => {
 					editor.balloonToolbars.hide();
 				});
@@ -53,12 +63,6 @@
 					editor.balloonToolbars.hide();
 
 					editor.execCommand(toolbarCommand);
-				});
-
-				editor.on('destroy', () => {
-					CKEDITOR.tools.array.forEach(eventListeners, (listener) => {
-						listener.removeListener();
-					});
 				});
 			},
 
