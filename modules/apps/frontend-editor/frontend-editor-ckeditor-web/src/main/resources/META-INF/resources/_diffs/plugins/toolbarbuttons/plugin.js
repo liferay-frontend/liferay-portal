@@ -21,7 +21,7 @@
 		CKEDITOR.plugins.add(pluginName, {
 			init(editor) {
 
-				// Image Toolbar buttons
+				// Image buttons
 
 				editor.ui.addBalloonToolbarButton('ImageAlignLeft', {
 					click() {
@@ -102,7 +102,7 @@
 					title: editor.lang.link.title,
 				});
 
-				// Link toolbar buttons
+				// Link buttons
 
 				editor.ui.addBalloonToolbarButton('LinkAddOrEdit', {
 					click() {
@@ -124,7 +124,76 @@
 					title: editor.lang.link.unlink,
 				});
 
-				// Text toolbar buttons
+				// Table buttons (and combo)
+
+				editor.ui.addRichCombo('TableHeaders', {
+					init() {
+						var headersPrefix = editor.lang.table.headers;
+						var headersNone =
+							headersPrefix +
+							': ' +
+							editor.lang.table.headersNone;
+						var headersRow =
+							headersPrefix + ': ' + editor.lang.table.headersRow;
+						var headersColumn =
+							headersPrefix +
+							': ' +
+							editor.lang.table.headersColumn;
+						var headersBoth =
+							headersPrefix +
+							': ' +
+							editor.lang.table.headersBoth;
+
+						this.add(headersNone, headersNone, headersNone);
+						this.add(headersRow, headersRow, headersRow);
+						this.add(headersColumn, headersColumn, headersColumn);
+						this.add(headersBoth, headersBoth, headersBoth);
+					},
+
+					label: editor.lang.table.headers,
+
+					panel: {
+						attributes: {'aria-label': editor.lang.table.title},
+						css: [CKEDITOR.skin.getPath('editor')].concat(
+							editor.config.contentsCss
+						),
+						multiSelect: false,
+					},
+
+					title: editor.lang.table.title,
+				});
+
+				editor.ui.addBalloonToolbarButton('TableRow', {
+					icon: 'add-row',
+					title: editor.lang.table.row.menu,
+				});
+
+				editor.ui.addBalloonToolbarButton('TableColumn', {
+					icon: 'add-column',
+					title: editor.lang.table.column.menu,
+				});
+
+				editor.ui.addBalloonToolbarButton('TableCell', {
+					icon: 'add-cell',
+					title: editor.lang.table.cell.menu,
+				});
+
+				editor.ui.addBalloonToolbarButton('TableDelete', {
+					click() {
+						var selection = editor.getSelection();
+						var startElement = selection.getStartElement();
+						var tableElement = startElement.getAscendant('table');
+
+						if (tableElement) {
+							tableElement.remove();
+							editor.fire('hideToolbars');
+						}
+					},
+					icon: 'trash',
+					title: editor.lang.table.deleteTable,
+				});
+
+				// Text buttons
 
 				editor.ui.addBalloonToolbarButton('TextLink', {
 					click() {

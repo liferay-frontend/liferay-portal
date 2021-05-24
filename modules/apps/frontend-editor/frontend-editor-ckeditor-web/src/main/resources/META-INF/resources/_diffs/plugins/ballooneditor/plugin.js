@@ -377,9 +377,9 @@
 				'balloonpanel',
 				'balloontoolbar',
 				'imagealt',
-				'toolbarbuttons',
 				'linktoolbar',
 				'plusbutton',
+				'toolbarbuttons',
 			],
 		});
 	}

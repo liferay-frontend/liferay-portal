@@ -28,46 +28,40 @@
 			_createTable() {
 				var editor = this.editor;
 
-				var table = new CKEDITOR.dom.element('table');
-				table.setAttributes({
+				var tableElement = new CKEDITOR.dom.element('table');
+				tableElement.setAttributes({
 					border: 1,
 					cellpadding: 1,
 					cellspacing: 1,
 				});
 
-				table.setStyle('width', '500px');
+				tableElement.setStyle('width', '500px');
 
-				var tbody = new CKEDITOR.dom.element('tbody');
-				table.append(tbody);
+				var tbodyElement = new CKEDITOR.dom.element('tbody');
+				tableElement.append(tbodyElement);
 
 				var columns = this._tableData.columns;
 				var rows = this._tableData.rows;
 
 				for (var i = 0; i < rows; i++) {
-					var tr = new CKEDITOR.dom.element('tr');
+					var tableRowElement = new CKEDITOR.dom.element('tr');
 					for (var j = 0; j < columns; j++) {
-						var td = new CKEDITOR.dom.element('td');
-						var br = new CKEDITOR.dom.element('br');
-						td.append(br);
-						tr.append(td);
+						var tableCellElement = new CKEDITOR.dom.element('td');
+						var lineBreakElement = new CKEDITOR.dom.element('br');
+						tableCellElement.append(lineBreakElement);
+						tableRowElement.append(tableCellElement);
 					}
-					tbody.append(tr);
+					tbodyElement.append(tableRowElement);
 				}
 
-				editor.insertElement(table);
+				editor.insertElement(tableElement);
 
 				this._tableToolbar.destroy();
 				this._tableToolbar = null;
 
 				setTimeout(() => {
-					var firstCell = new CKEDITOR.dom.element(
-						table.$.rows[0].cells[0]
-					);
 					var range = editor.createRange();
-					range.moveToPosition(
-						firstCell,
-						CKEDITOR.POSITION_AFTER_START
-					);
+					range.selectNodeContents(tableElement);
 					range.select();
 				}, 0);
 			},

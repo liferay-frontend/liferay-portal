@@ -93,6 +93,22 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 						window.CKEDITOR.plugins.balloontoolbar.PRIORITY.HIGH,
 				});
 
+				balloonToolbars.create({
+					buttons:
+						'TableHeaders,TableRow,TableColumn,TableCell,TableDelete',
+					priority:
+						window.CKEDITOR.plugins.balloontoolbar.PRIORITY.HIGH,
+					refresh(editor, path) {
+						return (
+							!!path.contains('table') ||
+							!!path.contains('tbody') ||
+							!!path.contains('tr') ||
+							!!path.contains('td') ||
+							path.lastElement.getName() === 'td'
+						);
+					},
+				});
+
 				if (editorConfig.toolbarVideo) {
 					balloonToolbars.create({
 						buttons: editorConfig.toolbarVideo,
