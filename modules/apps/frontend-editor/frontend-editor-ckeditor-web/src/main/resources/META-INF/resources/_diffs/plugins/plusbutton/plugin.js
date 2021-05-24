@@ -202,12 +202,6 @@
 				if (!this.documentBody.contains(this._button)) {
 					this.documentBody.append(this._button);
 				}
-
-				this._eventListeners.push(
-					this.editor.document.on('mousedown', () => {
-						this.hide();
-					})
-				);
 			},
 
 			_onDestroy() {
