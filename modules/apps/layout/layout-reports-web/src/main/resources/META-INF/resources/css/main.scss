@@ -1,63 +1,73 @@
-@import 'atlas-variables';
+@import 'cadmin-variables';
 
-.lfr-layout-reports-panel {
-	&.open-admin-panel.sidenav-menu-slider {
-		visibility: visible;
-		width: 330px;
-	}
+html#{$cadmin-selector} {
+	.cadmin {
+		&.lfr-layout-reports-panel {
+			font-size: 14px;
 
-	.sidebar-header {
-		background-color: $dark;
-		color: $white;
-		height: 56px;
-		line-height: 32px;
-		padding-bottom: 8px;
-		padding-right: 9px;
-		padding-top: 8px;
+			&.open-admin-panel.sidenav-menu-slider {
+				visibility: visible;
+				width: 330px;
+			}
 
-		.sidenav-close,
-		.sidenav-relaunch {
-			color: $white;
+			.sidebar-header {
+				background-color: $cadmin-dark;
+				color: $cadmin-white;
+				height: 56px;
+				line-height: 32px;
+				padding-bottom: 8px;
+				padding-right: 9px;
+				padding-top: 8px;
+
+				.close,
+				.sidenav-relaunch {
+					color: $cadmin-white;
+				}
+			}
+
+			@include media-breakpoint-up(sm, $cadmin-grid-breakpoints) {
+				.sidebar-header {
+					padding-bottom: 12px;
+					padding-top: 12px;
+				}
+			}
+
+			.sidebar-body {
+				bottom: 0;
+				left: 0;
+				position: absolute;
+				right: 0;
+				top: 56px;
+
+				.chart-loading-indicator {
+					position: absolute;
+					transform: translate(80%, 100%);
+					z-index: 1;
+				}
+
+				.loading-animation {
+					left: 0;
+					position: absolute;
+					right: 0;
+					top: 40%;
+				}
+			}
+
+			.text-truncate-reverse {
+				direction: rtl;
+			}
+
+			.btn {
+				font-size: 14px;
+			}
+
+			.list-group {
+				margin-bottom: 8px;
+			}
 		}
 	}
 
-	@media only screen and (min-width: 576px) {
-		.sidebar-header {
-			padding-bottom: 12px;
-			padding-top: 12px;
-		}
+	.dropdown-menu__languages {
+		max-height: 295px;
 	}
-
-	.sidebar-body {
-		bottom: 0;
-		left: 0;
-		position: absolute;
-		right: 0;
-		top: 56px;
-
-		.chart-loading-indicator {
-			position: absolute;
-			transform: translate(80%, 100%);
-			z-index: 1;
-		}
-
-		.loading-animation {
-			left: 0;
-			position: absolute;
-			right: 0;
-			top: 40%;
-		}
-	}
-
-	.text-truncate-reverse {
-		direction: rtl;
-	}
-
-	.list-group {
-		margin-bottom: 0.5rem;
-	}
-}
-
-.dropdown-menu__languages {
-	max-height: 295px;
 }
