@@ -77,9 +77,10 @@ definition {
 		BlogsEntry.viewInlineImage(uploadFileName = "Document_1");
 	}
 
+	@description = "Verify editor can display html formatted contents from copy paste"
 	@priority = "4"
 	@refactorneeded
-	test AddWebContentArticleCopyPasteContent {
+	test CanDisplayFormattedHTMLFromCopyPaste {
 		property app.server.types = "jboss,tcserver,tomcat,weblogic,websphere,wildfly";
 		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver,sybase";
 		property environment.acceptance = "true";
@@ -202,6 +203,7 @@ definition {
 		AssertElementPresent(locator1 = "//img[contains(@src,'Document_1.jpg')]");
 	}
 
+	@description = "Verify existing text can be formatted as a hyperlink"
 	@priority = "4"
 	@refactorneeded
 	test CanAddHyperlinkToExistingText {
@@ -230,9 +232,10 @@ definition {
 			locator1 = "CKEditor#BODY_TEXT_HREF");
 	}
 
+	@description = "Verify source content can be previewed"
 	@priority = "4"
 	@refactorneeded
-	test PreviewSourceContent {
+	test CanPreviewSourceContent {
 		ProductMenu.gotoPortlet(
 			category = "Content & Data",
 			portlet = "Web Content");
@@ -264,9 +267,10 @@ definition {
 		AssertElementPresent(locator1 = "//p[normalize-space(text())='sample text']");
 	}
 
+	@description = "Verify source content can be previewed"
 	@priority = "4"
 	@refactorneeded
-	test PreviewSourceContentEditContent {
+	test CanEditTextInPreviewSourceContent {
 		property portal.upstream = "quarantine";
 
 		Open(locator1 = "http://www.standards-schmandards.com/exhibits/wysiwyg/sampledoc.htm");
@@ -310,6 +314,7 @@ definition {
 		AssertElementPresent(locator1 = "//h1[normalize-space(text())='Sample document for editor area test edit']");
 	}
 
+	@description = "Verify styled content can be added from source view"
 	@priority = "4"
 	@refactorneeded
 	test ViewSourceCodeFormattedInTextView {
@@ -336,9 +341,10 @@ definition {
 		AssertElementPresent(locator1 = "//p[normalize-space(text())='sample text']");
 	}
 
+	@description = "Verify content can display content from left to right"
 	@priority = "4"
 	@refactorneeded
-	test ViewWikiFrontPageLeftToRight {
+	test CanDisplayContentLeftToRight {
 		ProductMenu.gotoPortlet(
 			category = "Site Builder",
 			portlet = "Pages");
@@ -361,9 +367,10 @@ definition {
 		WikiPage.viewLocalizedFrontPagePG(wikiPageContent = "Wiki Left to Right Content");
 	}
 
+	@description = "Verify content localized with a right to left language is displayed from right to left"
 	@priority = "4"
 	@refactorneeded
-	test ViewWikiFrontPageRightToLeft {
+	test CanDisplayContentRightToLeft {
 		property test.name.skip.portal.instance = "WYSIWIGUsecase#ViewWikiFrontPageRightToLeft";
 
 		ProductMenu.gotoPortlet(
@@ -399,6 +406,16 @@ definition {
 		LanguagePortlet.selectLanguagePG(
 			locale = "en_US",
 			textIcon = "english-United States");
+	}
+
+	@description = "Verify a styling button can be toggled on text"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test CanToggleTextStyling {
+		property portal.acceptance = "false";
+
+		// TODO LPS-133050 CanToggleContentStyling pending implementation
+
 	}
 
 }

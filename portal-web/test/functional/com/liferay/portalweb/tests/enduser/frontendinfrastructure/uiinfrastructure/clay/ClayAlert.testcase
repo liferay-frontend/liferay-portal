@@ -20,10 +20,11 @@ definition {
 		}
 	}
 
+	@description = "Verify toast message popup will close automatically"
 	@priority = "4"
 	@refactorneeded
-	test ToastMessageAutoClose {
-		property test.name.skip.portal.instance = "ClayAlert#ToastMessageAutoClose";
+	test ToastMessageCanCloseAutomatically {
+		property test.name.skip.portal.instance = "ClayAlert#ToastMessageCanCloseAutomatically";
 
 		var portalURL = PropsUtil.get("portal.url");
 
@@ -47,10 +48,11 @@ definition {
 		AssertElementNotPresent(locator1 = "Message#SUCCESS_DISMISSIBLE");
 	}
 
+	@description = "Verify toast message popup can be closed manually"
 	@priority = "3"
 	@refactorneeded
-	test ToastMessageManualClose {
-		property test.name.skip.portal.instance = "ClayAlert#ToastMessageManualClose";
+	test ToastMessageCanBeClosedManually {
+		property test.name.skip.portal.instance = "ClayAlert#ToastMessageCanBeClosedManually";
 
 		var portalURL = PropsUtil.get("portal.url");
 
