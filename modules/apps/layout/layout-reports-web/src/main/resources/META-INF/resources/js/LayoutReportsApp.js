@@ -123,7 +123,7 @@ const SidebarHeader = () => {
 					/>
 				)}
 				<ClayButtonWithIcon
-					className="sidenav-close"
+					className="close"
 					displayType="unstyled"
 					symbol="times"
 					title={Liferay.Language.get('close')}

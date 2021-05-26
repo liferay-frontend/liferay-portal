@@ -350,12 +350,12 @@ public class LayoutReportsProductNavigationControlMenuEntry
 			sb.append("lfr-has-layout-reports-panel open-admin-panel ");
 		}
 
-		sb.append("d-print-none lfr-admin-panel lfr-product-menu-panel ");
-		sb.append("lfr-layout-reports-panel sidenav-fixed ");
-		sb.append("sidenav-menu-slider sidenav-right\" id=\"");
+		sb.append("cadmin d-print-none lfr-admin-panel ");
+		sb.append("lfr-product-menu-panel lfr-layout-reports-panel ");
+		sb.append("sidenav-fixed sidenav-menu-slider sidenav-right\" id=\"");
 		sb.append(_portletNamespace);
 		sb.append("layoutReportsPanelId\"><div class=\"sidebar sidebar-light ");
-		sb.append("sidenav-menu sidebar-sm\"><div class=\"sidebar-header\">");
+		sb.append("sidenav-menu\"><div class=\"sidebar-header\">");
 		sb.append("<div class=\"autofit-row autofit-row-center\"><div ");
 		sb.append("class=\"autofit-col autofit-col-expand\">");
 		sb.append("<h1 class=\"sr-only\">");
