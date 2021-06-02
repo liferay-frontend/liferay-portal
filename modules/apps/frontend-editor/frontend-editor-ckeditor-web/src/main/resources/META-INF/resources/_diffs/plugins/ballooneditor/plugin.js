@@ -206,7 +206,7 @@
 						}
 
 						if (y < editableClientRect.y) {
-							y = clientRect.bottom + padding;
+							y = editableClientRect.bottom + padding;
 						}
 
 						this.move(y, x);
