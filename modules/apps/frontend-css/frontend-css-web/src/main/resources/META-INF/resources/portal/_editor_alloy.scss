@@ -6,6 +6,22 @@
 	}
 }
 
+.ae-ui .ae-toolbars .ae-toolbar-add {
+	border-width: 1px;
+	margin-left: 4px;
+	z-index: 989;
+
+	.ae-button {
+		height: 28px;
+		width: 28px;
+
+		@include media-breakpoint-up(xl) {
+			height: 32px;
+			width: 32px;
+		}
+	}
+}
+
 .alloy-editor-container {
 	position: relative;
 
@@ -98,31 +114,19 @@
 			}
 		}
 	}
-}
 
-.ae-ui .ae-toolbars .ae-toolbar-add {
-	border-width: 1px;
-	margin-left: 4px;
-	z-index: 989;
-
-	.ae-button {
-		height: 28px;
-		width: 28px;
-
-		@include media-breakpoint-up(xl) {
-			height: 32px;
-			width: 32px;
+	.form-feedback-item {
+		.has-error & {
+			font-size: 16px;
+			font-weight: normal;
+			line-height: 1.4em;
+			text-align: left;
 		}
 	}
-}
 
-.has-error .alloy-editor-container .form-feedback-item {
-	font-size: 16px;
-	font-weight: normal;
-	line-height: 1.4em;
-	text-align: left;
-}
-
-.ie11 .alloy-editor-container .cke_widget_inline {
-	display: inline-block;
+	.cke_widget_inline {
+		.ie11 & {
+			display: inline-block;
+		}
+	}
 }
