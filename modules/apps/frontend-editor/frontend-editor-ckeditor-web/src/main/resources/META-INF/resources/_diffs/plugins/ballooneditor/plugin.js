@@ -17,12 +17,24 @@
 
 	var pluginName = 'ballooneditor';
 
+	var stylesLoaded = false;
+
 	CKEDITOR.SELECTION_TOP_TO_BOTTOM = 0;
 	CKEDITOR.SELECTION_BOTTOM_TO_TOP = 1;
 
 	if (!CKEDITOR.plugins.get(pluginName)) {
 		CKEDITOR.plugins.add(pluginName, {
 			init(editor) {
+				if (!stylesLoaded) {
+					CKEDITOR.document.appendStyleSheet(
+						this.path +
+							'skins/' +
+							CKEDITOR.skin.name +
+							'/ballooneditor.css'
+					);
+					stylesLoaded = true;
+				}
+
 				var eventListeners = [];
 
 				editor.on('contentDom', () => {
