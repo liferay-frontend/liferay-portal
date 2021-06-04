@@ -30,8 +30,9 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 		toolbarImage:
 			'ImageAlignLeft,ImageAlignCenter,ImageAlignRight,LinkToolbar,AltImg',
 		toolbarLink: 'LinkAddOrEdit,LinkRemove',
+		toolbarTable: 'TableHeaders,TableRow,TableColumn,TableCell,TableDelete',
 		toolbarText:
-			'Bold,Italic,Underline,BulletedList,NumberedList,TextLink' +
+			'Styles,Bold,Italic,Underline,BulletedList,NumberedList,TextLink' +
 			'JustifyLeft,JustifyCenter,JustifyRight,RemoveFormat',
 		toolbarVideo: 'VideoAlignLeft,VideoAlignCenter,VideoAlignRight',
 	};
@@ -94,8 +95,7 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 				});
 
 				balloonToolbars.create({
-					buttons:
-						'TableHeaders,TableRow,TableColumn,TableCell,TableDelete',
+					buttons: editorConfig.toolbarTable,
 					priority:
 						window.CKEDITOR.plugins.balloontoolbar.PRIORITY.HIGH,
 					refresh(editor, path) {
@@ -109,15 +109,12 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 					},
 				});
 
-				if (editorConfig.toolbarVideo) {
-					balloonToolbars.create({
-						buttons: editorConfig.toolbarVideo,
-						priority:
-							window.CKEDITOR.plugins.balloontoolbar.PRIORITY
-								.HIGH,
-						widgets: 'videoembed',
-					});
-				}
+				balloonToolbars.create({
+					buttons: editorConfig.toolbarVideo,
+					priority:
+						window.CKEDITOR.plugins.balloontoolbar.PRIORITY.HIGH,
+					widgets: 'videoembed',
+				});
 
 				if (contents) {
 					editor.setData(contents);
