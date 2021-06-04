@@ -47,6 +47,7 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 	return (
 		<Editor
 			config={editorConfig}
+			data={contents}
 			name={name}
 			onBeforeLoad={(CKEDITOR) => {
 				CKEDITOR.disableAutoInline = true;
@@ -115,10 +116,6 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 						window.CKEDITOR.plugins.balloontoolbar.PRIORITY.HIGH,
 					widgets: 'videoembed',
 				});
-
-				if (contents) {
-					editor.setData(contents);
-				}
 			}}
 			type="inline"
 			{...otherProps}
