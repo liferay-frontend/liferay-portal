@@ -31,8 +31,22 @@ public class RangeTermFilterTranslatorImpl
 
 	@Override
 	public QueryBuilder translate(RangeTermFilter rangeTermFilter) {
-		RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(
-			rangeTermFilter.getField());
+		String field = rangeTermFilter.getField();
+
+		if (NestedFieldArrayTranslatorUtil.isNestedFieldArrayQuery(field)) {
+			return NestedFieldArrayTranslatorUtil.translate(
+				field,
+				nestedFieldName -> _createRangeQueryBuilder(
+					nestedFieldName, rangeTermFilter));
+		}
+
+		return _createRangeQueryBuilder(field, rangeTermFilter);
+	}
+
+	private RangeQueryBuilder _createRangeQueryBuilder(
+		String field, RangeTermFilter rangeTermFilter) {
+
+		RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(field);
 
 		rangeQueryBuilder.from(rangeTermFilter.getLowerBound());
 		rangeQueryBuilder.includeLower(rangeTermFilter.isIncludesLower());

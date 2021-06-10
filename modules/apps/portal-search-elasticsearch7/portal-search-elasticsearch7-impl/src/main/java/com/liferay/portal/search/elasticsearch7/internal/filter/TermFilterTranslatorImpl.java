@@ -29,8 +29,16 @@ public class TermFilterTranslatorImpl implements TermFilterTranslator {
 
 	@Override
 	public QueryBuilder translate(TermFilter termFilter) {
-		return QueryBuilders.termQuery(
-			termFilter.getField(), termFilter.getValue());
+		String field = termFilter.getField();
+
+		if (NestedFieldArrayTranslatorUtil.isNestedFieldArrayQuery(field)) {
+			return NestedFieldArrayTranslatorUtil.translate(
+				field,
+				nestedFieldName -> QueryBuilders.termQuery(
+					nestedFieldName, termFilter.getValue()));
+		}
+
+		return QueryBuilders.termQuery(field, termFilter.getValue());
 	}
 
 }

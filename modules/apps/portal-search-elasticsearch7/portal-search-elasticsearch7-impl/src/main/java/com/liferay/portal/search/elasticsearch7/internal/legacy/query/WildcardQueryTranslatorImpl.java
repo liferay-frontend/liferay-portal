@@ -16,6 +16,7 @@ package com.liferay.portal.search.elasticsearch7.internal.legacy.query;
 
 import com.liferay.portal.kernel.search.QueryTerm;
 import com.liferay.portal.kernel.search.WildcardQuery;
+import com.liferay.portal.search.elasticsearch7.internal.filter.NestedFieldArrayTranslatorUtil;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -33,8 +34,24 @@ public class WildcardQueryTranslatorImpl implements WildcardQueryTranslator {
 	public QueryBuilder translate(WildcardQuery wildcardQuery) {
 		QueryTerm queryTerm = wildcardQuery.getQueryTerm();
 
+		String field = queryTerm.getField();
+
+		if (NestedFieldArrayTranslatorUtil.isNestedFieldArrayQuery(field)) {
+			return NestedFieldArrayTranslatorUtil.translate(
+				field,
+				nestedFieldName -> _createWildcardQueryBuilder(
+					nestedFieldName, queryTerm.getValue(), wildcardQuery));
+		}
+
+		return _createWildcardQueryBuilder(
+			field, queryTerm.getValue(), wildcardQuery);
+	}
+
+	private WildcardQueryBuilder _createWildcardQueryBuilder(
+		String name, String value, WildcardQuery wildcardQuery) {
+
 		WildcardQueryBuilder wildcardQueryBuilder = QueryBuilders.wildcardQuery(
-			queryTerm.getField(), queryTerm.getValue());
+			name, value);
 
 		if (!wildcardQuery.isDefaultBoost()) {
 			wildcardQueryBuilder.boost(wildcardQuery.getBoost());
