@@ -58,6 +58,7 @@
 								value: '_top',
 							},
 						],
+						label: editor.lang.common.target,
 						name: editor.lang.common.target,
 					});
 

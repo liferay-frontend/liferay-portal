@@ -20,8 +20,28 @@
 
 	if (!CKEDITOR.plugins.get(pluginName)) {
 		var template = new CKEDITOR.template((data) => {
-			var output =
-				'<select class="ui-select" id="{id}" ' +
+			var output;
+
+			if (data.icon) {
+				output =
+					'<a class="cke_button"' +
+					'tabindex="-1"' +
+					'title="{title}"' +
+					'hidefocus="true"' +
+					'role="button"' +
+					'"><span class="cke_button_icon cke_button__{icon}_icon"' +
+					' >&nbsp;</span>';
+			}
+
+			output += '<select class="';
+
+			if (data.icon) {
+				output += 'ui-select-wrapper';
+			}
+
+			output +=
+				' ui-select"' +
+				'id="{id}" ' +
 				'name="{name}" ' +
 				'onchange="CKEDITOR.tools.callFunction({changeFn},event,this);return false;">';
 
@@ -34,7 +54,7 @@
 						: '';
 					output +=
 						'<option value="' +
-						value +
+						String(value) +
 						'">' +
 						item.label +
 						'</option>';
@@ -42,6 +62,10 @@
 			}
 
 			output += '</select>';
+
+			if (data.icon) {
+				output += '</a>';
+			}
 
 			return output;
 		});
@@ -63,9 +87,11 @@
 					: '';
 
 				CKEDITOR.tools.extend(this, definition, {
+					icon: definition.icon,
 					items,
 					modes: {wysiwyg: 1},
 					name: definition.name,
+					title: definition.title,
 					value,
 				});
 			},
@@ -103,24 +129,34 @@
 								},
 								this._editor
 							);
+
+							if (select.onChange) {
+								select.onChange(value);
+							}
 						}
 					));
 
 					var params = {
 						changeFn,
+						icon: this.icon,
 						id,
 						items: this.items,
 						name: this.name,
+						title: this.title,
 					};
 
 					template.output(params, output);
+
+					if (this.onRender) {
+						this.onRender(instance);
+					}
 
 					return instance;
 				},
 			},
 		});
 
-		CKEDITOR.ui.balloonToolbarSelect.hanlder = {
+		CKEDITOR.ui.balloonToolbarSelect.handler = {
 			create(definition) {
 				return new CKEDITOR.ui.balloonToolbarSelect(definition);
 			},
@@ -129,8 +165,8 @@
 		CKEDITOR.UI_BALLOON_TOOLBAR_SELECT = 'balloonToolbarSelect';
 
 		CKEDITOR.tools.extend(CKEDITOR.ui.prototype, {
-			addBalloonToolbarSelect(name, defintion) {
-				this.add(name, CKEDITOR.UI_BALLOON_TOOLBAR_SELECT, defintion);
+			addBalloonToolbarSelect(name, definition) {
+				this.add(name, CKEDITOR.UI_BALLOON_TOOLBAR_SELECT, definition);
 			},
 		});
 

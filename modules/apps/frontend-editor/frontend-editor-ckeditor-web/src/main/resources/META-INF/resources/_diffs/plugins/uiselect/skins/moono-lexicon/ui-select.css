@@ -18,3 +18,8 @@
 	outline: none;
 	width: auto;
 }
+
+.ui-select-wrapper {
+	position: relative;
+	top: -9px;
+}

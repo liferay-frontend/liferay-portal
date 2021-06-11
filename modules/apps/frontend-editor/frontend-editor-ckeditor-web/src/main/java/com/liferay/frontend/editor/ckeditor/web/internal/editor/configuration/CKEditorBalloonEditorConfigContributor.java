@@ -125,7 +125,7 @@ public class CKEditorBalloonEditorConfigContributor
 	protected String getToolbarText() {
 		return "Styles,Bold,Italic,Underline,BulletedList,NumberedList," +
 			"TextLink,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock," +
-				"BGColor,RemoveFormat";
+				"LineHeight,BGColor,RemoveFormat";
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

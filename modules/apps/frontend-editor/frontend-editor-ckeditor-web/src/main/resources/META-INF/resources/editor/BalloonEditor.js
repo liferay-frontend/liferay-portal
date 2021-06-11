@@ -33,7 +33,7 @@ const BalloonEditor = ({config = {}, contents, name, ...otherProps}) => {
 		toolbarTable: 'TableHeaders,TableRow,TableColumn,TableCell,TableDelete',
 		toolbarText:
 			'Styles,Bold,Italic,Underline,BulletedList,NumberedList,TextLink' +
-			'JustifyLeft,JustifyCenter,JustifyRight,RemoveFormat',
+			'JustifyLeft,JustifyCenter,JustifyRight,LineHeight,RemoveFormat',
 		toolbarVideo: 'VideoAlignLeft,VideoAlignCenter,VideoAlignRight',
 	};
 

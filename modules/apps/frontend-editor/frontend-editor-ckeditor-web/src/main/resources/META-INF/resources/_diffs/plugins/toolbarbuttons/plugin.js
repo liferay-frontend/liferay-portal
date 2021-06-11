@@ -205,6 +205,146 @@
 					title: editor.lang.link.title,
 				});
 
+				editor.ui.addBalloonToolbarSelect('LineHeight', {
+					_applyStyle(className) {
+						var styleConfig = {
+							attributes: {
+								class: className,
+							},
+							element: 'div',
+						};
+
+						var selection = editor.getSelection();
+
+						var startElement = selection.getStartElement();
+
+						var style = new CKEDITOR.style(styleConfig);
+
+						editor.getSelection().lock();
+
+						style.applyToObject(startElement, this.editor);
+
+						editor.getSelection().unlock();
+					},
+
+					_checkActive({elementPath, styleConfig}) {
+						var active = true;
+
+						if (elementPath && elementPath.lastElement) {
+							styleConfig.attributes.class
+								.split(' ')
+								.forEach((className) => {
+									active =
+										active &&
+										elementPath.lastElement.hasClass(
+											className
+										);
+								});
+						}
+						else {
+							active = false;
+						}
+
+						return active;
+					},
+
+					_getSelectedIndex(key) {
+						return this.items.findIndex((item) => {
+							return item.value === key;
+						});
+					},
+
+					_stylesFactory: {
+						'1.0x': {
+							style: {attributes: {class: ''}, element: 'div'},
+						},
+						'1.5x': {
+							style: {
+								attributes: {class: 'mt-1 mb-1'},
+								element: 'div',
+							},
+						},
+						'2.0x': {
+							style: {
+								attributes: {class: 'mt-2 mb-2'},
+								element: 'div',
+							},
+						},
+						'3.0x': {
+							style: {
+								attributes: {class: 'mt-3 mb-3'},
+								element: 'div',
+							},
+						},
+						'4.0x': {
+							style: {
+								attributes: {class: 'mt-4 mb-4'},
+								element: 'div',
+							},
+						},
+						'5.0x': {
+							style: {
+								attributes: {class: 'mt-5 mb-5'},
+								element: 'div',
+							},
+						},
+					},
+
+					icon: 'horizontalrule',
+
+					items: [
+						{label: '1.0x', value: '1.0x'},
+						{label: '1.5x', value: '1.5x'},
+						{label: '2.0x', value: '2.0x'},
+						{label: '3.0x', value: '3.0x'},
+						{label: '4.0x', value: '4.0x'},
+						{label: '5.0x', value: '5.0x'},
+					],
+
+					name: Liferay.Language.get('line-height'),
+
+					onChange(key) {
+						this._applyStyle(
+							this._stylesFactory[key].style.attributes.class
+						);
+					},
+
+					onRender() {
+						editor.on(
+							'selectionChange',
+							function (event) {
+								this._editor.focusManager.add(
+									this._editor.document.getById(this._id),
+									1
+								);
+
+								Object.keys(this._stylesFactory).forEach(
+									(spacingKey) => {
+										if (
+											this._checkActive({
+												elementPath: event.data.path,
+												styleConfig: this
+													._stylesFactory[spacingKey]
+													.style,
+											})
+										) {
+											var newSelectedIndex = this._getSelectedIndex(
+												spacingKey
+											);
+											document.getElementById(
+												this._id
+											).selectedIndex = newSelectedIndex;
+										}
+									}
+								);
+							},
+							this
+						);
+					},
+
+					title: Liferay.Language.get('line-height'),
+				});
+
 				// Video Toolbar Buttons
 
 				editor.ui.addBalloonToolbarButton('VideoAlignLeft', {
@@ -226,7 +366,7 @@
 				});
 			},
 
-			requires: ['uibutton'],
+			requires: ['uibutton', 'uiselect', 'uitextinput'],
 		});
 	}
 })();
