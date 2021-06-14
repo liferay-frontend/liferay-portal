@@ -32,7 +32,13 @@ import org.elasticsearch.index.query.QueryBuilders;
 public class NestedFieldArrayTranslatorUtil {
 
 	public static boolean isNestedFieldArrayQuery(String filterField) {
-		return filterField.startsWith("nestedFieldArray");
+		if (filterField.startsWith("nestedFieldArray") &&
+			filterField.contains(StringPool.POUND)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public static QueryBuilder translate(
