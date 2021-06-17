@@ -536,3 +536,25 @@ This change was made in order to deprecate class
 `com.liferay.portal.kernel.util.StringBundler`
 
 ---------------------------------------
+
+### frontend-css-web CSS classes have been removed or replaced
+- **Date:** 2021-Jun-17
+- **JIRA Ticket:** [LPS-127085](https://issues.liferay.com/browse/LPS-127085)
+
+#### What changed?
+
+Many CSS classes have been removed or replaced, you can find an updated list here: https://docs.google.com/spreadsheets/d/1gWdQvLJe8KApcY70lxQb5fuvg6XKdwkfMEBLVPkigfU
+
+#### Who is affected?
+
+The involved CSS classes are secondary classes that belong to specific modules or part of them.
+
+#### How should I update my code?
+
+No manual updates are required. Therefore, our recommendation is before using a known CSS class, check if it's already being used in Portal or Clay
+
+#### Why was this change made?
+
+This change was made to remove deprecated legacy code from Portal and improve the code consistency and performance
+
+---------------------------------------
