@@ -67,6 +67,11 @@ function PageTypeSelector(props) {
 				{props.showAddIcon && (
 					<ClayDropDown
 						active={active}
+						menuElementAttrs={{
+							containerProps: {
+								className: 'cadmin',
+							},
+						}}
 						onActiveChange={setActive}
 						trigger={
 							<ClayButton
