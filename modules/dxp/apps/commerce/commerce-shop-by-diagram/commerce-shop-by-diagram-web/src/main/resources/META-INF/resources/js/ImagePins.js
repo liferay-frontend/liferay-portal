@@ -9,15 +9,13 @@
  * distribution rights of the Software.
  */
 
-import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
+import { mouse, drag, event, select, zoom, zoomIdentity, rebind, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
-import React, { useLayoutEffect, useRef, useState} from 'react';
-
-import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
-import ZoomController from './ZoomController';
+import React, {useLayoutEffect, useRef} from 'react';
 import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
-
+import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
+import ZoomController from './ZoomController';
 const PIN_ATTRIBUTES = [
 	'cx',
 	'cy',
@@ -43,6 +41,7 @@ const ImagePins = ({
 	imageURL,
 	namespace,
 	navigationController,
+	isAdmin,
 	removePinHandler,
 	resetZoom,
 	selectedOption,
@@ -63,20 +62,44 @@ const ImagePins = ({
 	const handlers = useRef();
 	const containerRef = useRef();
 	const panZoomRef = useRef();
-
+	let timeout = null;
 	const svgRef = useRef(null);
 
 	useLayoutEffect(() => {
 		containerRef.current = select(`#${namespace}container`);
 		panZoomRef.current = zoom()
 			.scaleExtent([0.5, 40])
-			.on('zoom', () => {
-				containerRef.current.attr('transform', event.transform);
-			});
+			.on('zoom', () => containerRef.current.attr('transform', event.transform))
+			// .on("dblclick.zoom", null);
+
 
 		if (enablePanZoom) {
 			containerRef.current.call(panZoomRef.current);
 		}
+
+		// containerRef.current.on("dblclick.zoom", null)
+		containerRef.current.on("dblclick.zoom", () => {
+			// let mouseEvent = mouse(this);
+			console.log(event)
+			setCpins(
+				cPins.concat({
+					cx: event.layerX,
+					cy: event.layerY,
+					draggable: true,
+					fill: '#' + addNewPinState.fill,
+					id: cPins.length,
+					label: 'new' + cPins.length,
+					linked_to_sku: 'sku',
+					quantity: 0,
+					r: addNewPinState.radius,
+					sku: addNewPinState.sku,
+				})
+			);
+
+	
+		})
+
+
 
 		if (resetZoom) {
 			setResetZoom(false);
@@ -213,11 +236,13 @@ const ImagePins = ({
 			setCpins(newState);
 		}
 
-		const dragHandler = drag()
+		const dragHandler = isAdmin ? 
+			drag()
 			.on('start', dragStarted)
 			.on('drag', dragged)
-			.on('end', dragEnded);
-
+			.on('end', dragEnded)
+		: drag()
+		
 		const addPin = () => {
 			setCpins(
 				cPins.concat({
@@ -314,7 +339,34 @@ const ImagePins = ({
 				.attr('alignment-baseline', 'central');
 		}
 
-		select('#newPin').on('click', handleAddPin);
+		// clickcancel.on('dblclick', function () {
+			// const mouseEvent = mouse(this);
+
+			// containerRef
+			// 	.append('g')
+			// 	.datum({ x: mouseEvent[0], y: mouseEvent[1], selected: false })
+			// 	.attr(
+			// 		'transform',
+			// 		(attr) => 'translate(' + mouseEvent[0] + "," + mouseEvent[1] + ')'
+			// 	)
+			// 	.attr('cx', (attr) => attr.cx)
+			// 	.attr('cy', (attr) => attr.cy)
+			// 	.attr('id', (attr) => attr.id)
+			// 	.attr('label', (attr) => attr.label)
+			// 	.attr('fill', (attr) => attr.fill)
+			// 	.attr('linked_to_sku', (attr) => attr.linked_to_sku)
+			// 	.attr('quantity', (attr) => attr.quantity)
+			// 	.attr('r', (attr) => attr.r)
+			// 	.attr('sku', (attr) => attr.sku)
+			// 	.attr('id', (attr) => attr.id)
+			// 	.attr('class', 'circle_pin')
+			// 	.attr('draggable', (attr) => (attr.draggable ? true : false))
+		// });
+		
+
+		if (isAdmin) {
+			select('#newPin').on('click', handleAddPin);
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		addPinHandler,
