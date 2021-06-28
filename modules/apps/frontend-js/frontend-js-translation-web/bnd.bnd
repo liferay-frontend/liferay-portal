@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Frontend JS Translation Web
+Bundle-SymbolicName: com.liferay.frontend.js.translation.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /frontend-js-translation-web
