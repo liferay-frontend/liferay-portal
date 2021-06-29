@@ -78,7 +78,6 @@ const TranslationModal = ({
 									}}
 									placeholder={Liferay.Language.get('search')}
 									ref={inputRef}
-									type="text"
 								/>
 								<ClayInput.GroupInsetItem after tag="span">
 									<ClayButtonWithIcon
