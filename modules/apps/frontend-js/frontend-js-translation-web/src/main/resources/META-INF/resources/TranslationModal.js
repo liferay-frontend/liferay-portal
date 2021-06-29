@@ -37,9 +37,13 @@ const TranslationModal = ({
 	translations,
 }) => {
 	const [active, setActive] = React.useState(false);
-	const [icon, setIcon] = React.useState('search');
-	const inputRef = React.createRef();
-	const [visibleLocales, setVisibleLocales] = React.useState(locales);
+	const [value, setValue] = React.useState('');
+
+	const filteredLocales = React.useMemo(() => {
+		return locales.filter((locale) =>
+			locale.label.match(new RegExp(value, 'i'))
+		);
+	}, [locales, value]);
 
 	return (
 		<ClayModal observer={observer}>
@@ -57,30 +61,13 @@ const TranslationModal = ({
 								<ClayInput
 									aria-label={Liferay.Language.get('search')}
 									insetAfter={true}
-									onInput={() => {
-										const value = inputRef.current?.value;
+									onChange={(event) => {
+										const {value} = event.target;
 
-										const icon = value ? 'times' : 'search';
-										setIcon(icon);
-
-										if (!value) {
-											setVisibleLocales(locales);
-
-											return;
-										}
-
-										const result = Object.values(
-											visibleLocales
-										).filter((locale) => {
-											return locale.label.match(
-												new RegExp(value, 'i')
-											);
-										});
-
-										setVisibleLocales(result);
+										setValue(value);
 									}}
 									placeholder={Liferay.Language.get('search')}
-									ref={inputRef}
+									value={value}
 								/>
 								<ClayInput.GroupInsetItem after tag="span">
 									<ClayButtonWithIcon
@@ -89,16 +76,9 @@ const TranslationModal = ({
 										)}
 										displayType="unstyled"
 										onClick={() => {
-											if (
-												icon === 'times' &&
-												inputRef.current?.value
-											) {
-												inputRef.current.value = '';
-												setIcon('search');
-												setVisibleLocales(locales);
-											}
+											setValue('');
 										}}
-										symbol={icon}
+										symbol={value ? 'times' : 'search'}
 									/>
 								</ClayInput.GroupInsetItem>
 							</ClayInput.GroupItem>
@@ -130,7 +110,7 @@ const TranslationModal = ({
 						</ClayTable.Row>
 					</ClayTable.Head>
 					<ClayTable.Body>
-						{visibleLocales.map((locale) => {
+						{filteredLocales.map((locale) => {
 							const label = locale.label;
 
 							const isDefaultLocale =
