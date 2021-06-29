@@ -15,8 +15,8 @@
 import {render} from '@liferay/frontend-js-react-web';
 import React from 'react';
 
-import TranslationModal from './TranslationModal';
-import TranslationSelector from './TranslationSelector';
+import TranslationModal from './translation/TranslationModal';
+import TranslationSelector from './translation/TranslationSelector';
 
 export {TranslationModal};
 

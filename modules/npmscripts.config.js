@@ -45,9 +45,6 @@ module.exports = {
 					'@liferay/frontend-js-state-web': {
 						'/': '*',
 					},
-					'@liferay/frontend-js-translation-web': {
-						'/': '*',
-					},
 					'@liferay/frontend-taglib': {
 						'/': '*',
 					},

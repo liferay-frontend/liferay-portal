@@ -15,7 +15,7 @@
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
-import TranslationSelector from '../src/main/resources/META-INF/resources/TranslationSelector';
+import TranslationSelector from '../src/main/resources/META-INF/resources/translation/TranslationSelector';
 
 const locales = [
 	{
