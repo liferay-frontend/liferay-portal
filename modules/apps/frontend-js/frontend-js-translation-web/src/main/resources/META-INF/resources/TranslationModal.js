@@ -56,7 +56,7 @@ const TranslationModal = ({
 							<ClayInput.GroupItem>
 								<ClayInput
 									aria-label={Liferay.Language.get('search')}
-									className="form-control input-group-inset input-group-inset-after"
+									insetAfter={true}
 									onInput={() => {
 										const value = inputRef.current?.value;
 
