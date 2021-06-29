@@ -90,7 +90,7 @@ const TranslationModal = ({
 							active={active}
 							onActiveChange={setActive}
 							trigger={<ClayButtonWithIcon symbol="plus" />}
-						></ClayDropDown>
+						/>
 					</ClayManagementToolbar.ItemList>
 				</ClayManagementToolbar>
 
@@ -106,7 +106,7 @@ const TranslationModal = ({
 							<ClayTable.Cell headingCell>
 								{Liferay.Language.get('status')}
 							</ClayTable.Cell>
-							<ClayTable.Cell headingCell></ClayTable.Cell>
+							<ClayTable.Cell headingCell />
 						</ClayTable.Row>
 					</ClayTable.Head>
 					<ClayTable.Body>
