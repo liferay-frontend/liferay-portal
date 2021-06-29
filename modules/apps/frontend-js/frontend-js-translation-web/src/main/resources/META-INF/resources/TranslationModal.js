@@ -27,6 +27,7 @@ const TranslationModal = ({
 	ariaLabels = {
 		default: Liferay.Language.get('default'),
 		manageTranslations: Liferay.Language.get('manage-translations'),
+		managementToolbar: Liferay.Language.get('management-toolbar'),
 		translated: Liferay.Language.get('translated'),
 		untranslated: Liferay.Language.get('untranslated'),
 	},
@@ -47,7 +48,9 @@ const TranslationModal = ({
 			</ClayModal.Header>
 
 			<ClayModal.Body scrollable>
-				<ClayManagementToolbar aria-label="Management toolbar">
+				<ClayManagementToolbar
+					aria-label={ariaLabels.managementToolbar}
+				>
 					<ClayManagementToolbar.Search showMobile={true}>
 						<ClayInput.Group>
 							<ClayInput.GroupItem>
@@ -185,6 +188,7 @@ TranslationModal.propTypes = {
 	arialLabels: PropTypes.shape({
 		default: PropTypes.string,
 		manageTranslations: PropTypes.string,
+		managementToolbar: PropTypes.string,
 		tranlated: PropTypes.string,
 		untranslated: PropTypes.string,
 	}),
