@@ -37,6 +37,7 @@ const Diagram = ({
 		handler: false,
 		pin: null,
 	});
+	const [diagramSizes, setDiagramSizes] = useState({ k: 1, x: 0, y:0})
 	const [resetZoom, setResetZoom] = useState(false);
 	const [zoomInHandler, setZoomInHandler] = useState(false);
 	const [zoomOutHandler, setZoomOutHandler] = useState(false);
@@ -203,6 +204,8 @@ const Diagram = ({
 					removePinHandler={removePinHandler}
 					resetZoom={resetZoom}
 					scale={scale}
+					diagramSizes={diagramSizes}
+					setDiagramSizes={setDiagramSizes}
 					selectedOption={selectedOption}
 					setAddPinHandler={setAddPinHandler}
 					setChangedScale={setChangedScale}
