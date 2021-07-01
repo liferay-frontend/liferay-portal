@@ -12,8 +12,11 @@
  * details.
  */
 
-import TranslationModal from './translation/TranslationModal';
-import TranslationSelector from './translation/TranslationSelector';
-import renderTranslationSelector from './translation/render_translation_selector';
+import {render} from '@liferay/frontend-js-react-web';
+import React from 'react';
 
-export {renderTranslationSelector, TranslationModal, TranslationSelector};
+import TranslationSelector from './translation/TranslationSelector';
+
+export default function renderTranslationSelector(container, props) {
+	render(<TranslationSelector {...props} />, {}, container);
+}
