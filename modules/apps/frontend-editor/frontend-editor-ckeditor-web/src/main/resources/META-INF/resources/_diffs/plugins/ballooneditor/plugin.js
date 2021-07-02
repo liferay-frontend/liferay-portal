@@ -354,6 +354,7 @@
 			'imagealt',
 			'insertbutton',
 			'linktoolbar',
+			'tabletoolbar',
 			'toolbarbuttons',
 		],
 	});
