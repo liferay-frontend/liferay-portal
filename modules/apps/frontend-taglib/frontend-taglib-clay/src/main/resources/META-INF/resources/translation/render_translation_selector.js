@@ -15,7 +15,7 @@
 import {render} from '@liferay/frontend-js-react-web';
 import React from 'react';
 
-import TranslationSelector from './translation/TranslationSelector';
+import TranslationSelector from './TranslationSelector';
 
 export default function renderTranslationSelector(container, props) {
 	render(<TranslationSelector {...props} />, {}, container);
