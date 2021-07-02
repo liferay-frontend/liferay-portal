@@ -1,4 +1,17 @@
 {
+	"frontend-taglib-clay": {
+		"dest-mod-name-mapper": {
+			"from": "(.*)\\.js$",
+			"to": "bridge/frontend-taglib-clay/$1"
+		},
+		"file-globs": "**/*.js,!**/bridge",
+		"input": "build/node/packageRunBuild/resources",
+		"output": "build/node/packageRunBuild/resources/bridge/frontend-taglib-clay",
+		"src-mod-name-mapper": {
+			"from": "(.*)\\.js$",
+			"to": "frontend-taglib-clay/$1"
+		}
+	},
 	"metal": {
 		"dest-file-mapper": {
 			"from": "(.*)\\$(.*)@.*/lib/(.*)",
