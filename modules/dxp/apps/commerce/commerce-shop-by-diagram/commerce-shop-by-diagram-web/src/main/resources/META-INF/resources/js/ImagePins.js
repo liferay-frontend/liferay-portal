@@ -69,22 +69,28 @@ const ImagePins = ({
 		containerRef.current = select(`#${namespace}container`);
 		panZoomRef.current = zoom()
 			.scaleExtent([0.5, 40])
-			.on('zoom', () => containerRef.current.attr('transform', event.transform))
-			// .on("dblclick.zoom", null);
-
+			.on('zoom', () => {
+				containerRef.current.attr('transform', event.transform);
+				currentZoom.current = event.transform
+			});
 
 		if (enablePanZoom) {
 			containerRef.current.call(panZoomRef.current);
 		}
 
-		// containerRef.current.on("dblclick.zoom", null)
 		containerRef.current.on("dblclick.zoom", () => {
-			// let mouseEvent = mouse(this);
-			console.log(event)
+
+			const diagramBackgroundImagePosition = containerRef.current.attr('transform');
+
+			// this regex takes a string value from inline html to make the image zoom/translations working
+			const imageInformations = diagramBackgroundImagePosition.match(/(-?[0-9]+[.,-\s]*)+/g);
+			const scale = parseFloat(imageInformations[1])
+			const coordinates = imageInformations[0].split(',').map((x) => parseInt(x, 10));
+
 			setCpins(
 				cPins.concat({
-					cx: event.layerX,
-					cy: event.layerY,
+					cx: (event.layerX - coordinates[0]) * scale,
+					cy: (event.layerY - coordinates[1]) * scale,
 					draggable: true,
 					fill: '#' + addNewPinState.fill,
 					id: cPins.length,
@@ -95,8 +101,8 @@ const ImagePins = ({
 					sku: addNewPinState.sku,
 				})
 			);
+			console.log(newa)
 
-	
 		})
 
 

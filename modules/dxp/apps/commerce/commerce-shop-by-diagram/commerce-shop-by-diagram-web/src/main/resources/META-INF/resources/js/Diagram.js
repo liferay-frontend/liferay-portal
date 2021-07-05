@@ -132,24 +132,6 @@ const Diagram = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [showTooltip, setShowTooltip]);
 
-	const [cPins, setCpins] = useState(pins);
-	const [showTooltip, setShowTooltip] = useState({
-		details: {
-			cx: 0,
-			cy: 0,
-			id: null,
-			label: '',
-			linked_to_sku: 'sku',
-			quantity: null,
-			sku: '',
-		},
-		tooltip: null,
-	});
-	const [addNewPinState, setAddNewPinState] = useState({
-		fill: newPinSettings.colorPicker.selectedColor,
-		radius: newPinSettings.defaultRadius,
-	});
-
 	useEffect(() => {
 		if (!showTooltip.tooltip && showTooltip.details.id) {
 			const myNewState = cPins.map((element) => {
