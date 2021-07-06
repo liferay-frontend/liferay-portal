@@ -17,16 +17,17 @@ import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import React, {useContext, useState} from 'react';
 
-import {AppContext} from '../../AppContext';
+import AppContext from '../../AppContext';
 import DataSetDisplayContext from '../../DataSetDisplayContext';
 import persistActiveView from '../../thunks/persistActiveView';
 import ViewsContext from '../../views/ViewsContext';
 
 function ActiveViewSelector({views}) {
 	const {appURL, portletId} = useContext(AppContext);
-	const [active, setActive] = useState(false);
-	const [{activeView}, dispatch] = useContext(ViewsContext);
 	const {id} = useContext(DataSetDisplayContext);
+	const [{activeView}, dispatch] = useContext(ViewsContext);
+
+	const [active, setActive] = useState(false);
 
 	return (
 		<ClayDropDown

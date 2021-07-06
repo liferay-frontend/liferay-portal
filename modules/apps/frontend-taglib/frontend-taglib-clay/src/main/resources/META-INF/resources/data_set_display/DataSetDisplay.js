@@ -105,7 +105,7 @@ function DataSetDisplay({
 	);
 	const [sorting, updateSorting] = useState(sortingProp);
 	const [total, setTotal] = useState(0);
-	const [{activeView}, dispatch] = useContext(ViewsContext);
+	const [{activeView}, viewsDispatch] = useContext(ViewsContext);
 
 	const {
 		component: CurrentViewComponent,
@@ -266,12 +266,12 @@ function DataSetDisplay({
 		requestComponent().then((component) => {
 			if (isMounted()) {
 				setComponentLoading(false);
-				dispatch(updateViewComponent(activeViewName, component));
+				viewsDispatch(updateViewComponent(activeViewName, component));
 			}
 		});
 	}, [
 		activeViewName,
-		dispatch,
+		viewsDispatch,
 		isMounted,
 		requestComponent,
 		setComponentLoading,
