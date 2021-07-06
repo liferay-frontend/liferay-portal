@@ -14,8 +14,10 @@
 
 import React from 'react';
 
-export const AppContext = React.createContext({
+const AppContext = React.createContext({
 	apiURL: null,
 	appURL: null,
 	portletId: null,
 });
+
+export default AppContext;

@@ -16,7 +16,7 @@ import {render, useThunk} from '@liferay/frontend-js-react-web';
 import PropTypes from 'prop-types';
 import React, {useReducer} from 'react';
 
-import {AppContext} from './AppContext';
+import AppContext from './AppContext';
 import DataSetDisplay from './DataSetDisplay';
 import ViewsContext, {viewsReducer} from './views/ViewsContext';
 

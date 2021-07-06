@@ -18,7 +18,7 @@ import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useState} from 'react';
 
-import {AppContext} from '../../AppContext';
+import AppContext from '../../AppContext';
 import DataSetDisplayContext from '../../DataSetDisplayContext';
 import persistVisibleFieldNames from '../../thunks/persistVisibleFieldNames';
 import ViewsContext from '../ViewsContext';

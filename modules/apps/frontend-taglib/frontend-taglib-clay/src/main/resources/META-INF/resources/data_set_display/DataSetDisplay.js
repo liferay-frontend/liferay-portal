@@ -24,7 +24,7 @@ import React, {
 	useState,
 } from 'react';
 
-import {AppContext} from './AppContext';
+import AppContext from './AppContext';
 import DataSetDisplayContext from './DataSetDisplayContext';
 import EmptyResultMessage from './EmptyResultMessage';
 import {updateViewComponent} from './actions/updateViewComponent';
