@@ -9,7 +9,7 @@
  * distribution rights of the Software.
  */
 
-import { mouse, drag, event, select, zoom, zoomIdentity, rebind, zoomTransform} from 'd3';
+import { drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useLayoutEffect, useRef} from 'react';
 import AdminTooltip from './AdminTooltip';
@@ -62,35 +62,41 @@ const ImagePins = ({
 	const handlers = useRef();
 	const containerRef = useRef();
 	const panZoomRef = useRef();
-	let timeout = null;
 	const svgRef = useRef(null);
 
 	useLayoutEffect(() => {
 		containerRef.current = select(`#${namespace}container`);
 		panZoomRef.current = zoom()
 			.scaleExtent([0.5, 40])
-			.on('zoom', () => {
-				containerRef.current.attr('transform', event.transform);
-				currentZoom.current = event.transform
-			});
+			.on('zoom', () => containerRef.current.attr('transform', event.transform));
 
 		if (enablePanZoom) {
 			containerRef.current.call(panZoomRef.current);
 		}
 
 		containerRef.current.on("dblclick.zoom", () => {
-
+	
 			const diagramBackgroundImagePosition = containerRef.current.attr('transform');
 
 			// this regex takes a string value from inline html to make the image zoom/translations working
 			const imageInformations = diagramBackgroundImagePosition.match(/(-?[0-9]+[.,-\s]*)+/g);
+			
 			const scale = parseFloat(imageInformations[1])
-			const coordinates = imageInformations[0].split(',').map((x) => parseInt(x, 10));
+			console.log(scale)
+			const coordinates = imageInformations[0].split(',').map((x) => parseFloat(x));
+			console.log(coordinates[0], coordinates[1])
+			console.log({event})
+			let ccx = event.layerX - (Math.abs(coordinates[0]))
+			// let ccx = ccx1 * scale
+			console.log(ccx)
+			let ccy = event.layerY - Math.abs(coordinates[1])
+			// let ccy = ccy1 * scale
+			console.log(ccy)
 
 			setCpins(
 				cPins.concat({
-					cx: (event.layerX - coordinates[0]) * scale,
-					cy: (event.layerY - coordinates[1]) * scale,
+					cx: ccx,
+					cy: ccy,
 					draggable: true,
 					fill: '#' + addNewPinState.fill,
 					id: cPins.length,
@@ -101,11 +107,8 @@ const ImagePins = ({
 					sku: addNewPinState.sku,
 				})
 			);
-			console.log(newa)
 
 		})
-
-
 
 		if (resetZoom) {
 			setResetZoom(false);
@@ -344,31 +347,6 @@ const ImagePins = ({
 				.attr('fill', '#000000')
 				.attr('alignment-baseline', 'central');
 		}
-
-		// clickcancel.on('dblclick', function () {
-			// const mouseEvent = mouse(this);
-
-			// containerRef
-			// 	.append('g')
-			// 	.datum({ x: mouseEvent[0], y: mouseEvent[1], selected: false })
-			// 	.attr(
-			// 		'transform',
-			// 		(attr) => 'translate(' + mouseEvent[0] + "," + mouseEvent[1] + ')'
-			// 	)
-			// 	.attr('cx', (attr) => attr.cx)
-			// 	.attr('cy', (attr) => attr.cy)
-			// 	.attr('id', (attr) => attr.id)
-			// 	.attr('label', (attr) => attr.label)
-			// 	.attr('fill', (attr) => attr.fill)
-			// 	.attr('linked_to_sku', (attr) => attr.linked_to_sku)
-			// 	.attr('quantity', (attr) => attr.quantity)
-			// 	.attr('r', (attr) => attr.r)
-			// 	.attr('sku', (attr) => attr.sku)
-			// 	.attr('id', (attr) => attr.id)
-			// 	.attr('class', 'circle_pin')
-			// 	.attr('draggable', (attr) => (attr.draggable ? true : false))
-		// });
-		
 
 		if (isAdmin) {
 			select('#newPin').on('click', handleAddPin);
