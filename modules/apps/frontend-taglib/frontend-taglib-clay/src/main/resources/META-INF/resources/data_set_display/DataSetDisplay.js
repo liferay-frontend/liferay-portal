@@ -80,6 +80,7 @@ function DataSetDisplay({
 	style,
 }) {
 	const {apiURL} = useContext(AppContext);
+	const [{activeView}, viewsDispatch] = useContext(ViewsContext);
 
 	const wrapperRef = useRef(null);
 	const [componentLoading, setComponentLoading] = useState(false);
@@ -105,7 +106,6 @@ function DataSetDisplay({
 	);
 	const [sorting, updateSorting] = useState(sortingProp);
 	const [total, setTotal] = useState(0);
-	const [{activeView}, viewsDispatch] = useContext(ViewsContext);
 
 	const {
 		component: CurrentViewComponent,

@@ -18,46 +18,125 @@ import React, {useReducer} from 'react';
 
 import AppContext from './AppContext';
 import DataSetDisplay from './DataSetDisplay';
+import StatesContext, {statesReducer} from './contexts/StatesContext';
 import ViewsContext, {viewsReducer} from './views/ViewsContext';
 
 const App = ({
-	activeViewSettings,
+	activeViewSettings: activeState,
 	apiURL,
 	appURL,
 	portletId,
+	states,
 	views,
 	...props
 }) => {
-	const activeViewName = activeViewSettings?.name;
+
+	// MOCK
+	states = [
+		{
+			displayType: {
+				name: 'table',
+				settings: {
+					visibleFieldNames: {
+						name: true,
+						url: true,
+					},
+				},
+			},
+			id: 'default-1',
+			label: 'Default 1',
+		},
+		{
+			displayType: {
+				name: 'table',
+				settings: {
+					visibleFieldNames: {
+						name: true,
+						url: false,
+					},
+				},
+			},
+			id: 'default-2',
+			label: 'Default 2',
+		},
+		{
+			displayType: {
+				name: 'table',
+				settings: {
+					visibleFieldNames: {
+						name: false,
+						url: true,
+					},
+				},
+			},
+			id: 'default-3',
+			label: 'Default 3',
+		},
+	];
+
+	activeState = {...states[0]};
+	// END MOCK
+
+	const activeViewName = activeState?.displayType?.name;
 
 	const activeView = activeViewName
 		? views.find(({name}) => name === activeViewName)
 		: views[0];
-	const [state, dispatch] = useThunk(
+
+	const [viewsState, viewsDispatch] = useThunk(
 		useReducer(viewsReducer, {
 			activeView,
 			views,
-			visibleFieldNames: activeViewSettings?.visibleFieldNames || {},
+			visibleFieldNames:
+				activeState?.displayType?.settings?.visibleFieldNames || {},
+		})
+	);
+
+	const [statesState, statesDispatch] = useThunk(
+		useReducer(statesReducer, {
+			activeState,
+			states,
 		})
 	);
 
 	return (
 		<AppContext.Provider value={{apiURL, appURL, portletId}}>
-			<ViewsContext.Provider value={[state, dispatch]}>
-				<DataSetDisplay {...props} />
-			</ViewsContext.Provider>
+			<StatesContext.Provider value={[statesState, statesDispatch]}>
+				<ViewsContext.Provider value={[viewsState, viewsDispatch]}>
+					<DataSetDisplay {...props} />
+				</ViewsContext.Provider>
+			</StatesContext.Provider>
 		</AppContext.Provider>
 	);
 };
 
 App.proptypes = {
 	activeViewSettings: PropTypes.shape({
+		displayType: PropTypes.shape({
+			name: PropTypes.string, // id of the display view, must match with a view id
+			settings: PropTypes.object,
+		}),
+		filters: PropTypes.array,
+		itemsPerPage: PropTypes.number,
+		label: PropTypes.string,
 		name: PropTypes.string,
 		visibleFieldNames: PropTypes.array,
 	}),
 	apiURL: PropTypes.string,
 	appURL: PropTypes.string,
 	portletId: PropTypes.string,
+	states: PropTypes.arrayOf(
+		PropTypes.shape({
+			displayType: PropTypes.shape({
+				name: PropTypes.string, // id of the display view, must match with a view id
+				settings: PropTypes.object,
+			}),
+			filters: PropTypes.array,
+			itemsPerPage: PropTypes.number,
+			label: PropTypes.string,
+			name: PropTypes.string,
+		})
+	),
 	views: PropTypes.arrayOf(
 		PropTypes.shape({
 			component: PropTypes.any,
