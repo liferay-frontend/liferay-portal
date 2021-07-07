@@ -34,6 +34,7 @@ const App = ({
 	// MOCK
 	states = [
 		{
+			delta: 10,
 			displayType: {
 				name: 'table',
 				settings: {
@@ -47,6 +48,7 @@ const App = ({
 			label: 'Default 1',
 		},
 		{
+			delta: 20,
 			displayType: {
 				name: 'table',
 				settings: {
@@ -60,6 +62,7 @@ const App = ({
 			label: 'Default 2',
 		},
 		{
+			delta: 4,
 			displayType: {
 				name: 'table',
 				settings: {
@@ -112,12 +115,12 @@ const App = ({
 
 App.proptypes = {
 	activeViewSettings: PropTypes.shape({
+		delta: PropTypes.number,
 		displayType: PropTypes.shape({
 			name: PropTypes.string, // id of the display view, must match with a view id
 			settings: PropTypes.object,
 		}),
 		filters: PropTypes.array,
-		itemsPerPage: PropTypes.number,
 		label: PropTypes.string,
 		name: PropTypes.string,
 		visibleFieldNames: PropTypes.array,
@@ -127,12 +130,12 @@ App.proptypes = {
 	portletId: PropTypes.string,
 	states: PropTypes.arrayOf(
 		PropTypes.shape({
+			delta: PropTypes.number,
 			displayType: PropTypes.shape({
 				name: PropTypes.string, // id of the display view, must match with a view id
 				settings: PropTypes.object,
 			}),
 			filters: PropTypes.array,
-			itemsPerPage: PropTypes.number,
 			label: PropTypes.string,
 			name: PropTypes.string,
 		})

@@ -28,9 +28,11 @@ import AppContext from './AppContext';
 import DataSetDisplayContext from './DataSetDisplayContext';
 import EmptyResultMessage from './EmptyResultMessage';
 import {updateViewComponent} from './actions/updateViewComponent';
+import StatesContext from './contexts/StatesContext';
 import ManagementBar from './management_bar/ManagementBar';
 import Modal from './modal/Modal';
 import SidePanel from './side_panel/SidePanel';
+import selectActiveDelta from './thunks/selectActiveDelta';
 import {
 	DATASET_ACTION_PERFORMED,
 	DATASET_DISPLAY_UPDATED,
@@ -81,8 +83,15 @@ function DataSetDisplay({
 }) {
 	const {apiURL} = useContext(AppContext);
 	const [{activeView}, viewsDispatch] = useContext(ViewsContext);
+	const [
+		{
+			activeState: {delta},
+		},
+		statesDispatch,
+	] = useContext(StatesContext);
 
 	const wrapperRef = useRef(null);
+
 	const [componentLoading, setComponentLoading] = useState(false);
 	const [dataLoading, setDataLoading] = useState(!!apiURL);
 	const [dataSetDisplaySupportModalId] = useState(
@@ -90,10 +99,6 @@ function DataSetDisplay({
 	);
 	const [dataSetDisplaySupportSidePanelId] = useState(
 		sidePanelId || `support-side-panel-${getRandomId()}`
-	);
-	const [delta, setDelta] = useState(
-		showPagination &&
-			(pagination.initialDelta || pagination.deltas[0].label)
 	);
 	const [filters, updateFilters] = useState(filtersProp);
 	const [highlightedItemsValue, setHighlightedItemsValue] = useState([]);
@@ -384,7 +389,12 @@ function DataSetDisplay({
 					ellipsisBuffer={3}
 					onDeltaChange={(deltaVal) => {
 						setPageNumber(1);
-						setDelta(deltaVal);
+
+						statesDispatch(
+							selectActiveDelta({
+								delta: deltaVal,
+							})
+						);
 					}}
 					onPageChange={setPageNumber}
 					totalItems={total}

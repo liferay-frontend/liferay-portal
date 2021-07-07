@@ -14,17 +14,27 @@
 
 import React from 'react';
 
+import {ACTION_UPDATE_ACTIVE_DELTA} from '../actions/updateActiveDelta';
 import {ACTION_UPDATE_ACTIVE_STATE} from '../actions/updateActiveState';
 
 const dispatch = () => {};
 
 export const statesReducer = (state, {type, value}) => {
-	const {states} = state;
+	const {activeState, states} = state;
 
 	if (type === ACTION_UPDATE_ACTIVE_STATE) {
 		return {
 			...state,
 			activeState: states.find(({id}) => id === value),
+		};
+	}
+	else if (type === ACTION_UPDATE_ACTIVE_DELTA) {
+		return {
+			...state,
+			activeState: {
+				...activeState,
+				delta: value,
+			},
 		};
 	}
 
