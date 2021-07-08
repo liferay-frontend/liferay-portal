@@ -22,7 +22,7 @@ export const moveController = (
 
 	switch (direction) {
 		case 'right':
-			position.x =  navigationController.dragStep;
+			position.x = navigationController.dragStep;
 			break;
 		case 'left':
 			position.x = -navigationController.dragStep;
