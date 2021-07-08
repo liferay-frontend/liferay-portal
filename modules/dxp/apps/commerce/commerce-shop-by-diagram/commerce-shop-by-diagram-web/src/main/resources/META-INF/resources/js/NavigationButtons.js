@@ -35,7 +35,7 @@ const NavigationButtons = ({moveController, position}) => {
 			</div>
 			<div
 				className="bottom box"
-				onClick={() => moveController('bottom')}
+				onClick={() => moveController('down')}
 			>
 				<ClayIcon className="icon" symbol="angle-down" />
 			</div>

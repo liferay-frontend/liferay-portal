@@ -37,57 +37,13 @@ const Diagram = ({
 		handler: false,
 		pin: null,
 	});
-	const [diagramSizes, setDiagramSizes] = useState({ k: 1, x: 0, y:0})
+	const [diagramSizes, setDiagramSizes] = useState({k: 1, x: 0, y: 0});
 	const [resetZoom, setResetZoom] = useState(false);
 	const [zoomInHandler, setZoomInHandler] = useState(false);
 	const [zoomOutHandler, setZoomOutHandler] = useState(false);
 	const [changedScale, setChangedScale] = useState(false);
 	const [scale, setScale] = useState(1);
 	const [selectedOption, setSelectedOption] = useState(1);
-
-	const [cPins, setCpins] = useState(pins);
-	const [showTooltip, setShowTooltip] = useState({
-		details: {
-			cx: 0,
-			cy: 0,
-			id: null,
-			label: '',
-			linked_to_sku: 'sku',
-			quantity: null,
-			sku: '',
-		},
-		tooltip: null,
-	});
-	const [addNewPinState, setAddNewPinState] = useState({
-		fill: newPinSettings.colorPicker.selectedColor,
-		radius: newPinSettings.defaultRadius,
-	});
-
-	useEffect(() => {
-		if (!showTooltip.tooltip) {
-			const newCPinState = cPins.map((element) => {
-				if (element.id === showTooltip.details.id) {
-					return {
-						cx: cPins[element.id].cx,
-						cy: cPins[element.id].cy,
-						draggable: cPins[element.id].draggable,
-						fill: cPins[element.id].fill,
-						id: showTooltip.details.id,
-						label: showTooltip.details.label,
-						linked_to_sku: showTooltip.details.linked_to_sku,
-						quantity: showTooltip.details.quantity,
-						r: cPins[element.id].r,
-						sku: showTooltip.details.sku,
-					};
-				}
-				else {
-					return element;
-				}
-			});
-			setCpins(newCPinState);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [showTooltip, setShowTooltip]);
 	const [cPins, setCpins] = useState(pins);
 	const [showTooltip, setShowTooltip] = useState({
 		details: {
@@ -176,6 +132,7 @@ const Diagram = ({
 					addPinHandler={addPinHandler}
 					cPins={cPins}
 					changedScale={changedScale}
+					diagramSizes={diagramSizes}
 					enablePanZoom={enablePanZoom}
 					enableResetZoom={enableResetZoom}
 					imageSettings={imageSettings}
@@ -186,12 +143,11 @@ const Diagram = ({
 					removePinHandler={removePinHandler}
 					resetZoom={resetZoom}
 					scale={scale}
-					diagramSizes={diagramSizes}
-					setDiagramSizes={setDiagramSizes}
 					selectedOption={selectedOption}
 					setAddPinHandler={setAddPinHandler}
 					setChangedScale={setChangedScale}
 					setCpins={setCpins}
+					setDiagramSizes={setDiagramSizes}
 					setRemovePinHandler={setRemovePinHandler}
 					setResetZoom={setResetZoom}
 					setScale={setScale}
