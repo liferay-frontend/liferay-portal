@@ -14,6 +14,13 @@
 
 import TranslationModal from './translation/TranslationModal';
 import TranslationSelector from './translation/TranslationSelector';
-import renderTranslationSelector from './translation/render_translation_selector';
-
-export {renderTranslationSelector, TranslationModal, TranslationSelector};
+import {
+	renderTranslationModal,
+	renderTranslationSelector,
+} from './translation/renderer';
+export {
+	renderTranslationModal,
+	renderTranslationSelector,
+	TranslationModal,
+	TranslationSelector,
+};

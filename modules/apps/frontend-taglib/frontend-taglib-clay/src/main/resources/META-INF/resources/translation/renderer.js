@@ -15,8 +15,13 @@
 import {render} from '@liferay/frontend-js-react-web';
 import React from 'react';
 
+import TranslationModalOpener from './TranslationModalOpener';
 import TranslationSelector from './TranslationSelector';
 
-export default function renderTranslationSelector(container, props) {
+export function renderTranslationSelector(container, props) {
 	render(<TranslationSelector {...props} />, {}, container);
+}
+
+export function renderTranslationModal(container, props) {
+	render(<TranslationModalOpener {...props} />, {}, container);
 }

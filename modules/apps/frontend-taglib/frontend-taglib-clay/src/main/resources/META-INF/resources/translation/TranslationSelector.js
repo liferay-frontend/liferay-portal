@@ -89,7 +89,7 @@ const TranslationSelector = ({
 						return (
 							<ClayDropDown.Item
 								key={locale.label}
-								onClick={() => onSelectedLocaleChange(locale)}
+								onClick={onSelectedLocaleChange(locale)}
 							>
 								<ClayLayout.ContentRow containerElement="span">
 									<ClayLayout.ContentCol

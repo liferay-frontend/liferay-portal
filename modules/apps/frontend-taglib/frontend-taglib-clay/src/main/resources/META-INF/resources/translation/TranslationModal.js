@@ -12,11 +12,13 @@
  * details.
  */
 
+import ClayAlert from '@clayui/alert';
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
+import ClayLink from '@clayui/link';
 import ClayManagementToolbar from '@clayui/management-toolbar';
 import ClayModal from '@clayui/modal';
 import ClayTable from '@clayui/table';
@@ -37,13 +39,16 @@ const TranslationModal = ({
 	translations,
 }) => {
 	const [active, setActive] = React.useState(false);
+	const [deletedLocale, setDeletedLocale] = React.useState(null);
+	const [deletedLocales, setDeletedLocales] = React.useState([]);
+	const [initialLocales, setInitialLocales] = React.useState(locales);
 	const [value, setValue] = React.useState('');
 
 	const filteredLocales = React.useMemo(() => {
-		return locales.filter((locale) =>
+		return initialLocales.filter((locale) =>
 			locale.label.match(new RegExp(value, 'i'))
 		);
-	}, [locales, value]);
+	}, [initialLocales, value]);
 
 	return (
 		<ClayModal observer={observer}>
@@ -88,11 +93,89 @@ const TranslationModal = ({
 					<ClayManagementToolbar.ItemList>
 						<ClayDropDown
 							active={active}
+							hasLeftSymbols
 							onActiveChange={setActive}
-							trigger={<ClayButtonWithIcon symbol="plus" />}
-						/>
+							trigger={
+								<ClayButtonWithIcon
+									disabled={deletedLocales.length < 1}
+									symbol="plus"
+								/>
+							}
+						>
+							<ClayDropDown.ItemList>
+								{deletedLocales.map(({index, locale}) => {
+									return (
+										<ClayDropDown.Item
+											key={index}
+											onClick={() => {
+												var deletedLocaleIndex = deletedLocales.indexOf(
+													locale
+												);
+												deletedLocales.splice(
+													deletedLocaleIndex,
+													1
+												);
+												setDeletedLocales(
+													deletedLocales
+												);
+
+												filteredLocales.splice(
+													index,
+													0,
+													locale
+												);
+												setInitialLocales(
+													filteredLocales
+												);
+												setActive(false);
+												setDeletedLocale(null);
+											}}
+											symbolLeft={locale.symbol}
+										>
+											{locale.label}
+										</ClayDropDown.Item>
+									);
+								})}
+							</ClayDropDown.ItemList>
+						</ClayDropDown>
 					</ClayManagementToolbar.ItemList>
 				</ClayManagementToolbar>
+
+				{deletedLocale && (
+					<ClayAlert
+						displayType="success"
+						onClose={() => {
+							setDeletedLocale(null);
+						}}
+						title={Liferay.Language.get('success')}
+					>
+						{Liferay.Util.sub(
+							Liferay.Language.get(
+								'success-translation-x-deleted.'
+							),
+							deletedLocale
+						)}
+						<ClayLink
+							onClick={() => {
+								const deletedLocaleIndex = deletedLocales.indexOf(
+									deletedLocale
+								);
+								deletedLocales.splice(deletedLocaleIndex, 1);
+								setDeletedLocales(deletedLocales);
+
+								filteredLocales.splice(
+									deletedLocale.index,
+									0,
+									deletedLocale.locale
+								);
+								setInitialLocales(filteredLocales);
+								setDeletedLocale(null);
+							}}
+						>
+							{Liferay.Language.get('undo')}
+						</ClayLink>
+					</ClayAlert>
+				)}
 
 				<ClayTable>
 					<ClayTable.Head>
@@ -128,7 +211,9 @@ const TranslationModal = ({
 											<strong>{label}</strong>
 										</>
 									</ClayTable.Cell>
-									<ClayTable.Cell>Long name</ClayTable.Cell>
+									<ClayTable.Cell expanded>
+										{locale.displayName}
+									</ClayTable.Cell>
 									<ClayTable.Cell>
 										<ClayLabel
 											displayType={
@@ -150,6 +235,32 @@ const TranslationModal = ({
 										{!isDefaultLocale && (
 											<ClayIcon
 												className="inline-item"
+												onClick={() => {
+													const index = filteredLocales.indexOf(
+														locale
+													);
+
+													filteredLocales.splice(
+														index,
+														1
+													);
+
+													deletedLocales.push({
+														index,
+														locale,
+													});
+													setDeletedLocales(
+														deletedLocales
+													);
+
+													setDeletedLocale({
+														index,
+														locale,
+													});
+													setInitialLocales(
+														filteredLocales
+													);
+												}}
 												symbol="trash"
 											/>
 										)}
