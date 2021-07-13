@@ -241,6 +241,10 @@ public abstract class BaseInputTag extends com.liferay.taglib.BaseValidatorTagSu
 		return _wrapperCssClass;
 	}
 
+	public void setAdminMode(boolean adminMode) {
+		_adminMode = adminMode;
+	}
+
 	public void setAutoFocus(boolean autoFocus) {
 		_autoFocus = autoFocus;
 	}
@@ -453,6 +457,7 @@ public abstract class BaseInputTag extends com.liferay.taglib.BaseValidatorTagSu
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_adminMode = false;
 		_autoFocus = false;
 		_autoSize = false;
 		_bean = null;
@@ -514,6 +519,7 @@ public abstract class BaseInputTag extends com.liferay.taglib.BaseValidatorTagSu
 
 	@Override
 	protected void setAttributes(HttpServletRequest request) {
+		setNamespacedAttribute(request, "adminMode", _adminMode);
 		setNamespacedAttribute(request, "autoFocus", _autoFocus);
 		setNamespacedAttribute(request, "autoSize", _autoSize);
 		setNamespacedAttribute(request, "bean", _bean);
@@ -573,6 +579,7 @@ public abstract class BaseInputTag extends com.liferay.taglib.BaseValidatorTagSu
 	private static final String _PAGE =
 		"/html/taglib/aui/input/page.jsp";
 
+	private boolean _adminMode = false;
 	private boolean _autoFocus = false;
 	private boolean _autoSize = false;
 	private java.lang.Object _bean = null;

@@ -81,8 +81,20 @@
 		<%
 		languageIds.add(defaultLanguageId);
 
+		String currentLanguageId = LanguageUtil.getLanguageId(request);
+
+		System.out.println("currentLanguageId : " + currentLanguageId);
+
+		Locale currentLocale = LanguageUtil.getLocale(currentLanguageId);
+
+		System.out.println("currentLocale : " + currentLocale);
+
 		for (Locale availableLocale : availableLocales) {
 			String curLanguageId = LocaleUtil.toLanguageId(availableLocale);
+
+			System.out.println("availableLocale : " + availableLocale);
+			System.out.println("curLanguageId : " + curLanguageId);
+			System.out.println("displayName " + availableLocale.getDisplayName(LocaleUtil.fromLanguageId(LanguageUtil.getLanguageId(request))));
 
 			if (curLanguageId.equals(defaultLanguageId)) {
 				continue;
@@ -93,6 +105,8 @@
 			if (Validator.isNotNull(xml)) {
 				languageValue = LocalizationUtil.getLocalization(xml, curLanguageId, false);
 			}
+
+			System.out.println("languageValue : " + languageValue);
 
 			if (Validator.isNotNull(languageValue) || (!ignoreRequestValue && Validator.isNotNull(ParamUtil.getString(request, name + StringPool.UNDERLINE + curLanguageId, languageValue)))) {
 				languageIds.add(curLanguageId);
@@ -216,7 +230,17 @@
 						<%
 						}
 						%>
-
+						<c:if test="<%= adminMode %>">
+							<li aria-hidden="true" class="dropdown-divider" role="presentation"></li>
+							<li>
+								<button class="dropdown-item" id="manage-translations">
+									<svg class="lexicon-icon lexicon-icon-automatic-translate" role="presentation">
+										<use xlink:href="<%= themeDisplay.getPathThemeImages() %>/clay/icons.svg#automatic-translate" />
+									</svg>
+									<span><liferay-ui:message key="manage-translations" /></span>
+								</button>
+							</li>
+						</c:if>
 					</div>
 				</div>
 			</liferay-ui:icon-menu>
@@ -291,6 +315,11 @@
 			Liferay.InputLocalized.register(
 				'<%= namespace + id + HtmlUtil.getAUICompatibleId(fieldSuffix) %>',
 				{
+					<c:if test='<%= adminMode %>'>
+						adminMode: true,
+						availableLocales: available,
+					</c:if>
+
 					boundingBox: '#<%= namespace + id %>PaletteBoundingBox',
 					columns: 20,
 					contentBox: '#<%= namespace + id %>PaletteContentBox',
