@@ -50,6 +50,21 @@ const TranslationModal = ({
 		);
 	}, [initialLocales, value]);
 
+	const restoreLocale = (locale) => {
+		const deletedLocaleIndex = deletedLocales.findIndex((item) => {
+			return item.label === locale.label;
+		});
+
+		deletedLocales.splice(deletedLocaleIndex, 1);
+
+		setDeletedLocales(deletedLocales);
+
+		filteredLocales.splice(locale.index, 0, locale);
+		setInitialLocales(filteredLocales);
+		setActive(false);
+		setDeletedLocale(null);
+	};
+
 	return (
 		<ClayModal observer={observer}>
 			<ClayModal.Header>
@@ -103,32 +118,12 @@ const TranslationModal = ({
 							}
 						>
 							<ClayDropDown.ItemList>
-								{deletedLocales.map(({index, locale}) => {
+								{deletedLocales.map((locale) => {
 									return (
 										<ClayDropDown.Item
-											key={index}
+											key={locale.label}
 											onClick={() => {
-												var deletedLocaleIndex = deletedLocales.indexOf(
-													locale
-												);
-												deletedLocales.splice(
-													deletedLocaleIndex,
-													1
-												);
-												setDeletedLocales(
-													deletedLocales
-												);
-
-												filteredLocales.splice(
-													index,
-													0,
-													locale
-												);
-												setInitialLocales(
-													filteredLocales
-												);
-												setActive(false);
-												setDeletedLocale(null);
+												restoreLocale(locale);
 											}}
 											symbolLeft={locale.symbol}
 										>
@@ -150,26 +145,12 @@ const TranslationModal = ({
 						title={Liferay.Language.get('success')}
 					>
 						{Liferay.Util.sub(
-							Liferay.Language.get(
-								'success-translation-x-deleted.'
-							),
-							deletedLocale
+							Liferay.Language.get('translation-deleted'),
+							deletedLocale.label
 						)}
 						<ClayLink
 							onClick={() => {
-								const deletedLocaleIndex = deletedLocales.indexOf(
-									deletedLocale
-								);
-								deletedLocales.splice(deletedLocaleIndex, 1);
-								setDeletedLocales(deletedLocales);
-
-								filteredLocales.splice(
-									deletedLocale.index,
-									0,
-									deletedLocale.locale
-								);
-								setInitialLocales(filteredLocales);
-								setDeletedLocale(null);
+								restoreLocale(deletedLocale);
 							}}
 						>
 							{Liferay.Language.get('undo')}
@@ -193,7 +174,7 @@ const TranslationModal = ({
 						</ClayTable.Row>
 					</ClayTable.Head>
 					<ClayTable.Body>
-						{filteredLocales.map((locale) => {
+						{filteredLocales.map((locale, index) => {
 							const label = locale.label;
 
 							const isDefaultLocale =
@@ -236,27 +217,19 @@ const TranslationModal = ({
 											<ClayIcon
 												className="inline-item"
 												onClick={() => {
-													const index = filteredLocales.indexOf(
-														locale
-													);
-
 													filteredLocales.splice(
 														index,
 														1
 													);
 
-													deletedLocales.push({
-														index,
-														locale,
-													});
+													deletedLocales.push(locale);
+
 													setDeletedLocales(
 														deletedLocales
 													);
 
-													setDeletedLocale({
-														index,
-														locale,
-													});
+													setDeletedLocale(locale);
+
 													setInitialLocales(
 														filteredLocales
 													);
