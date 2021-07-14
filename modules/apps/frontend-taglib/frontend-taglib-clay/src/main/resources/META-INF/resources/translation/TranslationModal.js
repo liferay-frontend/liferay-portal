@@ -40,7 +40,7 @@ const TranslationModal = ({
 }) => {
 	const [active, setActive] = React.useState(false);
 	const [deletedLocale, setDeletedLocale] = React.useState(null);
-	const [deletedLocales, setDeletedLocales] = React.useState([]);
+	const [deletedLocales, setDeletedLocales] = React.useState(new Set([]));
 	const [initialLocales, setInitialLocales] = React.useState(locales);
 	const [value, setValue] = React.useState('');
 
@@ -51,13 +51,10 @@ const TranslationModal = ({
 	}, [initialLocales, value]);
 
 	const restoreLocale = (locale) => {
-		const deletedLocaleIndex = deletedLocales.findIndex((item) => {
-			return item.label === locale.label;
-		});
-
-		deletedLocales.splice(deletedLocaleIndex, 1);
-
-		setDeletedLocales(deletedLocales);
+		if (deletedLocales.has(locale)) {
+			deletedLocales.delete(locale);
+			setDeletedLocales(deletedLocales);
+		}
 
 		filteredLocales.splice(locale.index, 0, locale);
 		setInitialLocales(filteredLocales);
@@ -112,13 +109,13 @@ const TranslationModal = ({
 							onActiveChange={setActive}
 							trigger={
 								<ClayButtonWithIcon
-									disabled={deletedLocales.length < 1}
+									disabled={deletedLocales.size < 1}
 									symbol="plus"
 								/>
 							}
 						>
 							<ClayDropDown.ItemList>
-								{deletedLocales.map((locale) => {
+								{Array.from(deletedLocales).map((locale) => {
 									return (
 										<ClayDropDown.Item
 											key={locale.label}
@@ -222,8 +219,7 @@ const TranslationModal = ({
 														1
 													);
 
-													deletedLocales.push(locale);
-
+													deletedLocales.add(locale);
 													setDeletedLocales(
 														deletedLocales
 													);
