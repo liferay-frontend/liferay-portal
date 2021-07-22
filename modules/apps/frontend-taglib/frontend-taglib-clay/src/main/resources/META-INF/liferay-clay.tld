@@ -2191,7 +2191,7 @@
 		<attribute>
 			<description></description>
 			<name>paginationBarDeltas</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
