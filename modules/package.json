@@ -14,6 +14,9 @@
 		"checkFormat": "liferay-npm-scripts check",
 		"format": "liferay-npm-scripts fix"
 	},
+	"resolutions": {
+		"d3-color": "3.0.0"
+	},
 	"workspaces": {
 		"packages": [
 			"apps/*/*",
