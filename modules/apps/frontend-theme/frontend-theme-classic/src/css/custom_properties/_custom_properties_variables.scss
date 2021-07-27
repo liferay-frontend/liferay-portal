@@ -160,6 +160,11 @@ $custom-properties-theme-colors: map-merge(
 
 	// Colors
 
+	--brand-c1: #{$primary};
+	--brand-c2: #{$secondary};
+	--brand-c3: #{$info};
+	--brand-c4: #{$complementary-color};
+
 	--black: #{$black};
 	--gray-100: #{$gray-100};
 	--gray-200: #{$gray-200};
