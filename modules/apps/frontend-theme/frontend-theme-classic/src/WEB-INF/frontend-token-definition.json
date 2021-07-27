@@ -7,11 +7,11 @@
 						{
 							"defaultValue": "#0b5fff",
 							"editorType": "ColorPicker",
-							"label": "brand-c1",
+							"label": "brand-color-1",
 							"mappings": [
 								{
 									"type": "cssVariable",
-									"value": "brand-c1"
+									"value": "brand-color-1"
 								}
 							],
 							"name": "brandColor1",
@@ -20,11 +20,11 @@
 						{
 							"defaultValue": "#6b6c7e",
 							"editorType": "ColorPicker",
-							"label": "brand-c2",
+							"label": "brand-color-2",
 							"mappings": [
 								{
 									"type": "cssVariable",
-									"value": "brand-c2"
+									"value": "brand-color-2"
 								}
 							],
 							"name": "brandColor2",
@@ -33,11 +33,11 @@
 						{
 							"defaultValue": "#2e5aac",
 							"editorType": "ColorPicker",
-							"label": "brand-c3",
+							"label": "brand-color-3",
 							"mappings": [
 								{
 									"type": "cssVariable",
-									"value": "brand-c3"
+									"value": "brand-color-3"
 								}
 							],
 							"name": "brandColor3",
@@ -46,11 +46,11 @@
 						{
 							"defaultValue": "#30313f",
 							"editorType": "ColorPicker",
-							"label": "brand-c4",
+							"label": "brand-color-4",
 							"mappings": [
 								{
 									"type": "cssVariable",
-									"value": "brand-c4"
+									"value": "brand-color-4"
 								}
 							],
 							"name": "brandColor4",
