@@ -24,6 +24,7 @@ import com.liferay.remote.app.model.CustomElementPortletEntry;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service utility for CustomElementPortletEntry. This utility wraps
@@ -60,6 +61,15 @@ public class CustomElementPortletEntryLocalServiceUtil {
 
 		return getService().addCustomElementPortletEntry(
 			customElementPortletEntry);
+	}
+
+	public static CustomElementPortletEntry addCustomElementPortletEntry(
+			long userId, Map<java.util.Locale, String> nameMap, String tagName,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().addCustomElementPortletEntry(
+			userId, nameMap, tagName, serviceContext);
 	}
 
 	/**
@@ -335,6 +345,24 @@ public class CustomElementPortletEntryLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static List<CustomElementPortletEntry>
+			searchCustomElementPortletEntries(
+				long companyId, String keywords, int start, int end,
+				com.liferay.portal.kernel.search.Sort sort)
+		throws PortalException {
+
+		return getService().searchCustomElementPortletEntries(
+			companyId, keywords, start, end, sort);
+	}
+
+	public static int searchCustomElementPortletEntriesCount(
+			long companyId, String keywords)
+		throws PortalException {
+
+		return getService().searchCustomElementPortletEntriesCount(
+			companyId, keywords);
+	}
+
 	/**
 	 * Updates the custom element portlet entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -350,6 +378,16 @@ public class CustomElementPortletEntryLocalServiceUtil {
 
 		return getService().updateCustomElementPortletEntry(
 			customElementPortletEntry);
+	}
+
+	public static CustomElementPortletEntry updateCustomElementPortletEntry(
+			long customElementPortletEntryId,
+			Map<java.util.Locale, String> nameMap, String tagName,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().updateCustomElementPortletEntry(
+			customElementPortletEntryId, nameMap, tagName, serviceContext);
 	}
 
 	public static CustomElementPortletEntryLocalService getService() {

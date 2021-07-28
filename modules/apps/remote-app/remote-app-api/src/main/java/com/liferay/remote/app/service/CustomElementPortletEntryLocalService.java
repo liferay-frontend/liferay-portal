@@ -26,8 +26,10 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -37,6 +39,8 @@ import com.liferay.remote.app.model.CustomElementPortletEntry;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -77,6 +81,12 @@ public interface CustomElementPortletEntryLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public CustomElementPortletEntry addCustomElementPortletEntry(
 		CustomElementPortletEntry customElementPortletEntry);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public CustomElementPortletEntry addCustomElementPortletEntry(
+			long userId, Map<Locale, String> nameMap, String tagName,
+			ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	 * Creates a new custom element portlet entry with the primary key. Does not add the custom element portlet entry to the database.
@@ -293,6 +303,16 @@ public interface CustomElementPortletEntryLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CustomElementPortletEntry> searchCustomElementPortletEntries(
+			long companyId, String keywords, int start, int end, Sort sort)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int searchCustomElementPortletEntriesCount(
+			long companyId, String keywords)
+		throws PortalException;
+
 	/**
 	 * Updates the custom element portlet entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -306,5 +326,11 @@ public interface CustomElementPortletEntryLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public CustomElementPortletEntry updateCustomElementPortletEntry(
 		CustomElementPortletEntry customElementPortletEntry);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public CustomElementPortletEntry updateCustomElementPortletEntry(
+			long customElementPortletEntryId, Map<Locale, String> nameMap,
+			String tagName, ServiceContext serviceContext)
+		throws PortalException;
 
 }
