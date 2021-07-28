@@ -15,7 +15,32 @@
 package com.liferay.remote.app.service.impl;
 
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.QueryConfig;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.remote.app.model.CustomElementPortletEntry;
 import com.liferay.remote.app.service.base.CustomElementPortletEntryLocalServiceBaseImpl;
+
+import java.io.Serializable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -39,9 +64,172 @@ import org.osgi.service.component.annotations.Component;
 public class CustomElementPortletEntryLocalServiceImpl
 	extends CustomElementPortletEntryLocalServiceBaseImpl {
 
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Use <code>com.liferay.remote.app.service.CustomElementPortletEntryLocalService</code> via injection or a <code>org.osgi.util.tracker.ServiceTracker</code> or use <code>com.liferay.remote.app.service.CustomElementPortletEntryLocalServiceUtil</code>.
-	 */
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CustomElementPortletEntry addCustomElementPortletEntry(
+			long userId, Map<Locale, String> nameMap, String tagName,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		User user = userLocalService.getUser(userId);
+
+		long companyId = user.getCompanyId();
+
+		long customElementPortletEntryId = counterLocalService.increment();
+
+		CustomElementPortletEntry customElementPortletEntry =
+			customElementPortletEntryPersistence.create(
+				customElementPortletEntryId);
+
+		customElementPortletEntry.setUuid(serviceContext.getUuid());
+		customElementPortletEntry.setCompanyId(companyId);
+		customElementPortletEntry.setUserId(user.getUserId());
+		customElementPortletEntry.setUserName(user.getFullName());
+		customElementPortletEntry.setNameMap(nameMap);
+		customElementPortletEntry.setTagName(tagName);
+
+		return customElementPortletEntryPersistence.update(
+			customElementPortletEntry);
+	}
+
+	@Override
+	public List<CustomElementPortletEntry> searchCustomElementPortletEntries(
+			long companyId, String keywords, int start, int end, Sort sort)
+		throws PortalException {
+
+		SearchContext searchContext = buildSearchContext(
+			companyId, keywords, start, end, sort);
+
+		return searchCustomElementPortletEntries(searchContext);
+	}
+
+	@Override
+	public int searchCustomElementPortletEntriesCount(
+			long companyId, String keywords)
+		throws PortalException {
+
+		SearchContext searchContext = buildSearchContext(
+			companyId, keywords, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		return searchCustomElementPortletEntriesCount(searchContext);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CustomElementPortletEntry updateCustomElementPortletEntry(
+			long customElementPortletEntryId, Map<Locale, String> nameMap,
+			String tagName, ServiceContext serviceContext)
+		throws PortalException {
+
+		CustomElementPortletEntry customElementPortletEntry =
+			customElementPortletEntryPersistence.findByPrimaryKey(
+				customElementPortletEntryId);
+
+		customElementPortletEntry.setNameMap(nameMap);
+		customElementPortletEntry.setTagName(tagName);
+
+		return customElementPortletEntryPersistence.update(
+			customElementPortletEntry);
+	}
+
+	protected SearchContext buildSearchContext(
+		long companyId, String keywords, int start, int end, Sort sort) {
+
+		SearchContext searchContext = new SearchContext();
+
+		QueryConfig queryConfig = searchContext.getQueryConfig();
+
+		queryConfig.setHighlightEnabled(false);
+		queryConfig.setScoreEnabled(false);
+
+		searchContext.setAttributes(
+			HashMapBuilder.<String, Serializable>put(
+				Field.NAME, keywords
+			).put(
+				Field.SUBTITLE, keywords
+			).build());
+		searchContext.setCompanyId(companyId);
+		searchContext.setEnd(end);
+		searchContext.setKeywords(keywords);
+
+		if (sort != null) {
+			searchContext.setSorts(sort);
+		}
+
+		searchContext.setStart(start);
+
+		return searchContext;
+	}
+
+	protected List<CustomElementPortletEntry> getCustomElementPortletEntries(
+			Hits hits)
+		throws PortalException {
+
+		List<Document> documents = hits.toList();
+
+		List<CustomElementPortletEntry> customElementPortletEntries =
+			new ArrayList<>(documents.size());
+
+		for (Document document : documents) {
+			long customElementPortletsEntryId = GetterUtil.getLong(
+				document.get(Field.ENTRY_CLASS_PK));
+
+			CustomElementPortletEntry customElementPortletEntry =
+				customElementPortletEntryPersistence.fetchByPrimaryKey(
+					customElementPortletsEntryId);
+
+			if (customElementPortletEntry == null) {
+				customElementPortletEntries = null;
+
+				Indexer<CustomElementPortletEntry> indexer =
+					IndexerRegistryUtil.getIndexer(
+						CustomElementPortletEntry.class);
+
+				long companyId = GetterUtil.getLong(
+					document.get(Field.COMPANY_ID));
+
+				indexer.delete(companyId, document.getUID());
+			}
+			else {
+				customElementPortletEntries.add(customElementPortletEntry);
+			}
+		}
+
+		return customElementPortletEntries;
+	}
+
+	protected List<CustomElementPortletEntry> searchCustomElementPortletEntries(
+			SearchContext searchContext)
+		throws PortalException {
+
+		Indexer<CustomElementPortletEntry> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(
+				CustomElementPortletEntry.class);
+
+		for (int i = 0; i < 10; i++) {
+			Hits hits = indexer.search(searchContext);
+
+			List<CustomElementPortletEntry> customElementEntries =
+				getCustomElementPortletEntries(hits);
+
+			if (customElementEntries != null) {
+				return customElementEntries;
+			}
+		}
+
+		throw new SearchException(
+			"Unable to fix the search index after 10 attempts");
+	}
+
+	protected int searchCustomElementPortletEntriesCount(
+			SearchContext searchContext)
+		throws PortalException {
+
+		Indexer<CustomElementPortletEntry> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(
+				CustomElementPortletEntry.class);
+
+		return GetterUtil.getInteger(indexer.searchCount(searchContext));
+	}
+
 }
