@@ -3,6 +3,35 @@
 
 <service-builder auto-import-default-references="false" auto-namespace-tables="false" dependency-injector="ds" mvcc-enabled="true" package-path="com.liferay.remote.app">
 	<namespace>RemoteApp</namespace>
+	<entity local-service="true" name="CustomElementPortletEntry" remote-service="false" trash-enabled="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column container-model="true" name="customElementPortletEntryId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column localized="true" name="name" type="String" uad-nonanonymizable="true" />
+		<column name="tagName" type="String" uad-nonanonymizable="true" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column case-sensitive="false" name="name" />
+		</order>
+
+		<!-- References -->
+
+		<reference entity="User" package-path="com.liferay.portal" />
+	</entity>
 	<entity local-service="true" name="RemoteAppEntry" remote-service="false" trash-enabled="false" uuid="true">
 
 		<!-- PK fields -->
