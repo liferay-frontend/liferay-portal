@@ -19,6 +19,10 @@ package com.liferay.remote.app.admin.web.internal.constants;
  */
 public class RemoteAppAdminPortletKeys {
 
+	public static final String CUSTOM_ELEMENT_PORTLET_ADMIN =
+		"com_liferay_remote_app_admin_web_portlet_" +
+			"CustomElementPortletAdminPortlet";
+
 	public static final String REMOTE_APP_ADMIN =
 		"com_liferay_remote_app_admin_web_portlet_RemoteAppAdminPortlet";
 
