@@ -55,6 +55,19 @@ public class CustomElementPortletEntryLocalServiceWrapper
 			addCustomElementPortletEntry(customElementPortletEntry);
 	}
 
+	@Override
+	public com.liferay.remote.app.model.CustomElementPortletEntry
+			addCustomElementPortletEntry(
+				long userId, java.util.Map<java.util.Locale, String> nameMap,
+				String tagName,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _customElementPortletEntryLocalService.
+			addCustomElementPortletEntry(
+				userId, nameMap, tagName, serviceContext);
+	}
+
 	/**
 	 * Creates a new custom element portlet entry with the primary key. Does not add the custom element portlet entry to the database.
 	 *
@@ -376,6 +389,28 @@ public class CustomElementPortletEntryLocalServiceWrapper
 			primaryKeyObj);
 	}
 
+	@Override
+	public java.util.List
+		<com.liferay.remote.app.model.CustomElementPortletEntry>
+				searchCustomElementPortletEntries(
+					long companyId, String keywords, int start, int end,
+					com.liferay.portal.kernel.search.Sort sort)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _customElementPortletEntryLocalService.
+			searchCustomElementPortletEntries(
+				companyId, keywords, start, end, sort);
+	}
+
+	@Override
+	public int searchCustomElementPortletEntriesCount(
+			long companyId, String keywords)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _customElementPortletEntryLocalService.
+			searchCustomElementPortletEntriesCount(companyId, keywords);
+	}
+
 	/**
 	 * Updates the custom element portlet entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -394,6 +429,19 @@ public class CustomElementPortletEntryLocalServiceWrapper
 
 		return _customElementPortletEntryLocalService.
 			updateCustomElementPortletEntry(customElementPortletEntry);
+	}
+
+	@Override
+	public com.liferay.remote.app.model.CustomElementPortletEntry
+			updateCustomElementPortletEntry(
+				long customElementPortletEntryId,
+				java.util.Map<java.util.Locale, String> nameMap, String tagName,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _customElementPortletEntryLocalService.
+			updateCustomElementPortletEntry(
+				customElementPortletEntryId, nameMap, tagName, serviceContext);
 	}
 
 	@Override
