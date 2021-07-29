@@ -59,7 +59,7 @@ public abstract class BaseCustomElementPortletEntryUADExporter
 	protected String toXmlString(
 		CustomElementPortletEntry customElementPortletEntry) {
 
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(28);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.remote.app.model.CustomElementPortletEntry");
@@ -78,8 +78,20 @@ public abstract class BaseCustomElementPortletEntryUADExporter
 		sb.append(customElementPortletEntry.getUserName());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>cssURLs</column-name><column-value><![CDATA[");
+		sb.append(customElementPortletEntry.getCssURLs());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>tagAttributes</column-name><column-value><![CDATA[");
+		sb.append(customElementPortletEntry.getTagAttributes());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>name</column-name><column-value><![CDATA[");
 		sb.append(customElementPortletEntry.getName());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>portletDisplayCategory</column-name><column-value><![CDATA[");
+		sb.append(customElementPortletEntry.getPortletDisplayCategory());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>tagName</column-name><column-value><![CDATA[");

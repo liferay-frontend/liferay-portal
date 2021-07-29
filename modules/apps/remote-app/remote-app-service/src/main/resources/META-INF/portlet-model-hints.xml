@@ -10,7 +10,10 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="cssURLs" type="String" />
+		<field name="tagAttributes" type="String" />
 		<field localized="true" name="name" type="String" />
+		<field name="portletDisplayCategory" type="String" />
 		<field name="tagName" type="String" />
 	</model>
 	<model name="com.liferay.remote.app.model.RemoteAppEntry">

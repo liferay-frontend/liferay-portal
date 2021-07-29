@@ -52,7 +52,10 @@ public abstract class BaseCustomElementPortletEntryUADDisplay
 
 	@Override
 	public String[] getDisplayFieldNames() {
-		return new String[] {"name", "tagName"};
+		return new String[] {
+			"cssURLs", "tagAttributes", "name", "portletDisplayCategory",
+			"tagName"
+		};
 	}
 
 	@Override

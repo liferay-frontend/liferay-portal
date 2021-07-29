@@ -55,7 +55,10 @@ public class CustomElementPortletEntryWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("cssURLs", getCssURLs());
+		attributes.put("tagAttributes", getTagAttributes());
 		attributes.put("name", getName());
+		attributes.put("portletDisplayCategory", getPortletDisplayCategory());
 		attributes.put("tagName", getTagName());
 
 		return attributes;
@@ -112,10 +115,29 @@ public class CustomElementPortletEntryWrapper
 			setModifiedDate(modifiedDate);
 		}
 
+		String cssURLs = (String)attributes.get("cssURLs");
+
+		if (cssURLs != null) {
+			setCssURLs(cssURLs);
+		}
+
+		String tagAttributes = (String)attributes.get("tagAttributes");
+
+		if (tagAttributes != null) {
+			setTagAttributes(tagAttributes);
+		}
+
 		String name = (String)attributes.get("name");
 
 		if (name != null) {
 			setName(name);
+		}
+
+		String portletDisplayCategory = (String)attributes.get(
+			"portletDisplayCategory");
+
+		if (portletDisplayCategory != null) {
+			setPortletDisplayCategory(portletDisplayCategory);
 		}
 
 		String tagName = (String)attributes.get("tagName");
@@ -168,6 +190,16 @@ public class CustomElementPortletEntryWrapper
 	@Override
 	public Date getCreateDate() {
 		return model.getCreateDate();
+	}
+
+	/**
+	 * Returns the css ur ls of this custom element portlet entry.
+	 *
+	 * @return the css ur ls of this custom element portlet entry
+	 */
+	@Override
+	public String getCssURLs() {
+		return model.getCssURLs();
 	}
 
 	/**
@@ -292,6 +324,16 @@ public class CustomElementPortletEntryWrapper
 	}
 
 	/**
+	 * Returns the portlet display category of this custom element portlet entry.
+	 *
+	 * @return the portlet display category of this custom element portlet entry
+	 */
+	@Override
+	public String getPortletDisplayCategory() {
+		return model.getPortletDisplayCategory();
+	}
+
+	/**
 	 * Returns the primary key of this custom element portlet entry.
 	 *
 	 * @return the primary key of this custom element portlet entry
@@ -299,6 +341,16 @@ public class CustomElementPortletEntryWrapper
 	@Override
 	public long getPrimaryKey() {
 		return model.getPrimaryKey();
+	}
+
+	/**
+	 * Returns the tag attributes of this custom element portlet entry.
+	 *
+	 * @return the tag attributes of this custom element portlet entry
+	 */
+	@Override
+	public String getTagAttributes() {
+		return model.getTagAttributes();
 	}
 
 	/**
@@ -399,6 +451,16 @@ public class CustomElementPortletEntryWrapper
 	@Override
 	public void setCreateDate(Date createDate) {
 		model.setCreateDate(createDate);
+	}
+
+	/**
+	 * Sets the css ur ls of this custom element portlet entry.
+	 *
+	 * @param cssURLs the css ur ls of this custom element portlet entry
+	 */
+	@Override
+	public void setCssURLs(String cssURLs) {
+		model.setCssURLs(cssURLs);
 	}
 
 	/**
@@ -507,6 +569,16 @@ public class CustomElementPortletEntryWrapper
 	}
 
 	/**
+	 * Sets the portlet display category of this custom element portlet entry.
+	 *
+	 * @param portletDisplayCategory the portlet display category of this custom element portlet entry
+	 */
+	@Override
+	public void setPortletDisplayCategory(String portletDisplayCategory) {
+		model.setPortletDisplayCategory(portletDisplayCategory);
+	}
+
+	/**
 	 * Sets the primary key of this custom element portlet entry.
 	 *
 	 * @param primaryKey the primary key of this custom element portlet entry
@@ -514,6 +586,16 @@ public class CustomElementPortletEntryWrapper
 	@Override
 	public void setPrimaryKey(long primaryKey) {
 		model.setPrimaryKey(primaryKey);
+	}
+
+	/**
+	 * Sets the tag attributes of this custom element portlet entry.
+	 *
+	 * @param tagAttributes the tag attributes of this custom element portlet entry
+	 */
+	@Override
+	public void setTagAttributes(String tagAttributes) {
+		model.setTagAttributes(tagAttributes);
 	}
 
 	/**

@@ -45,7 +45,10 @@ public class CustomElementPortletEntrySoap implements Serializable {
 		soapModel.setUserName(model.getUserName());
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
+		soapModel.setCssURLs(model.getCssURLs());
+		soapModel.setTagAttributes(model.getTagAttributes());
 		soapModel.setName(model.getName());
+		soapModel.setPortletDisplayCategory(model.getPortletDisplayCategory());
 		soapModel.setTagName(model.getTagName());
 
 		return soapModel;
@@ -176,12 +179,36 @@ public class CustomElementPortletEntrySoap implements Serializable {
 		_modifiedDate = modifiedDate;
 	}
 
+	public String getCssURLs() {
+		return _cssURLs;
+	}
+
+	public void setCssURLs(String cssURLs) {
+		_cssURLs = cssURLs;
+	}
+
+	public String getTagAttributes() {
+		return _tagAttributes;
+	}
+
+	public void setTagAttributes(String tagAttributes) {
+		_tagAttributes = tagAttributes;
+	}
+
 	public String getName() {
 		return _name;
 	}
 
 	public void setName(String name) {
 		_name = name;
+	}
+
+	public String getPortletDisplayCategory() {
+		return _portletDisplayCategory;
+	}
+
+	public void setPortletDisplayCategory(String portletDisplayCategory) {
+		_portletDisplayCategory = portletDisplayCategory;
 	}
 
 	public String getTagName() {
@@ -200,7 +227,10 @@ public class CustomElementPortletEntrySoap implements Serializable {
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
+	private String _cssURLs;
+	private String _tagAttributes;
 	private String _name;
+	private String _portletDisplayCategory;
 	private String _tagName;
 
 }
