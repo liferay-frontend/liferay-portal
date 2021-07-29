@@ -17,10 +17,18 @@ package com.liferay.remote.app.admin.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.remote.app.model.RemoteCustomElementEntry;
 import com.liferay.remote.app.service.CustomElementPortletEntryLocalService;
+import com.liferay.remote.app.service.RemoteCustomElementEntryLocalService;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
@@ -36,10 +44,14 @@ public class CustomElementPortletAdminDisplayContext {
 	public CustomElementPortletAdminDisplayContext(
 		RenderRequest renderRequest, RenderResponse renderResponse,
 		CustomElementPortletEntryLocalService
-			customElementPortletEntryLocalService) {
+			customElementPortletEntryLocalService,
+		RemoteCustomElementEntryLocalService
+			remoteCustomElementEntryLocalService) {
 
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
+		_remoteCustomElementEntryLocalService =
+			remoteCustomElementEntryLocalService;
 	}
 
 	public CreationMenu getCreationMenu() {
@@ -64,6 +76,23 @@ public class CustomElementPortletAdminDisplayContext {
 		return PortletURLUtil.getCurrent(_renderRequest, _renderResponse);
 	}
 
+	public Collection<String> getCustomElementTagNames() {
+		List<RemoteCustomElementEntry> remoteCustomElementEntries =
+			_remoteCustomElementEntryLocalService.
+				getRemoteCustomElementEntries(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Stream<RemoteCustomElementEntry> stream =
+			remoteCustomElementEntries.stream();
+
+		return stream.map(
+			remoteCustomElementEntry -> remoteCustomElementEntry.getTagName()
+		).sorted(
+		).collect(
+			Collectors.toList()
+		);
+	}
+
 	private HttpServletRequest _getHttpServletRequest() {
 		return PortalUtil.getHttpServletRequest(_renderRequest);
 	}
@@ -76,6 +105,8 @@ public class CustomElementPortletAdminDisplayContext {
 		return PortalUtil.getCurrentURL(_getHttpServletRequest());
 	}
 
+	private final RemoteCustomElementEntryLocalService
+		_remoteCustomElementEntryLocalService;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 

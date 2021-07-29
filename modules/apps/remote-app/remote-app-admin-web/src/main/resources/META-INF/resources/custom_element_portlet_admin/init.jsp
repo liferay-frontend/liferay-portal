@@ -18,3 +18,7 @@
 
 <%@ page import="com.liferay.remote.app.admin.web.internal.display.context.CustomElementPortletAdminDisplayContext" %><%@
 page import="com.liferay.remote.app.model.CustomElementPortletEntry" %>
+
+<%
+CustomElementPortletAdminDisplayContext customElementPortletAdminDisplayContext = (CustomElementPortletAdminDisplayContext)renderRequest.getAttribute(RemoteAppAdminWebKeys.CUSTOM_ELEMENT_PORTLET_ADMIN_DISPLAY_CONTEXT);
+%>
