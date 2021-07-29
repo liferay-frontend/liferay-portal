@@ -64,12 +64,16 @@ public class CustomElementPortletEntryLocalServiceUtil {
 	}
 
 	public static CustomElementPortletEntry addCustomElementPortletEntry(
-			long userId, Map<java.util.Locale, String> nameMap, String tagName,
+			long userId, java.util.Collection<String> cssURLs,
+			Map<java.util.Locale, String> nameMap,
+			String portletDisplayCategory, Map<String, String> tagAttributes,
+			String tagName,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCustomElementPortletEntry(
-			userId, nameMap, tagName, serviceContext);
+			userId, cssURLs, nameMap, portletDisplayCategory, tagAttributes,
+			tagName, serviceContext);
 	}
 
 	/**
@@ -382,12 +386,16 @@ public class CustomElementPortletEntryLocalServiceUtil {
 
 	public static CustomElementPortletEntry updateCustomElementPortletEntry(
 			long customElementPortletEntryId,
-			Map<java.util.Locale, String> nameMap, String tagName,
+			java.util.Collection<String> cssURLs,
+			Map<java.util.Locale, String> nameMap,
+			String portletDisplayCategory, Map<String, String> tagAttributes,
+			String tagName,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().updateCustomElementPortletEntry(
-			customElementPortletEntryId, nameMap, tagName, serviceContext);
+			customElementPortletEntryId, cssURLs, nameMap,
+			portletDisplayCategory, tagAttributes, tagName, serviceContext);
 	}
 
 	public static CustomElementPortletEntryLocalService getService() {

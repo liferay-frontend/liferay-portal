@@ -34,15 +34,19 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.remote.app.model.CustomElementPortletEntry;
 import com.liferay.remote.app.service.base.CustomElementPortletEntryLocalServiceBaseImpl;
+import com.liferay.remote.app.util.CSSURLsParser;
+import com.liferay.remote.app.util.TagAttributesParser;
 
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * The implementation of the custom element portlet entry local service.
@@ -67,7 +71,9 @@ public class CustomElementPortletEntryLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CustomElementPortletEntry addCustomElementPortletEntry(
-			long userId, Map<Locale, String> nameMap, String tagName,
+			long userId, Collection<String> cssURLs,
+			Map<Locale, String> nameMap, String portletDisplayCategory,
+			Map<String, String> tagAttributes, String tagName,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -85,7 +91,12 @@ public class CustomElementPortletEntryLocalServiceImpl
 		customElementPortletEntry.setCompanyId(companyId);
 		customElementPortletEntry.setUserId(user.getUserId());
 		customElementPortletEntry.setUserName(user.getFullName());
+		customElementPortletEntry.setCssURLs(_cssURLsParser.serialize(cssURLs));
 		customElementPortletEntry.setNameMap(nameMap);
+		customElementPortletEntry.setTagAttributes(
+			_tagAttributesParser.serialize(tagAttributes));
+		customElementPortletEntry.setPortletDisplayCategory(
+			portletDisplayCategory);
 		customElementPortletEntry.setTagName(tagName);
 
 		return customElementPortletEntryPersistence.update(
@@ -117,15 +128,22 @@ public class CustomElementPortletEntryLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CustomElementPortletEntry updateCustomElementPortletEntry(
-			long customElementPortletEntryId, Map<Locale, String> nameMap,
-			String tagName, ServiceContext serviceContext)
+			long customElementPortletEntryId, Collection<String> cssURLs,
+			Map<Locale, String> nameMap, String portletDisplayCategory,
+			Map<String, String> tagAttributes, String tagName,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		CustomElementPortletEntry customElementPortletEntry =
 			customElementPortletEntryPersistence.findByPrimaryKey(
 				customElementPortletEntryId);
 
+		customElementPortletEntry.setCssURLs(_cssURLsParser.serialize(cssURLs));
 		customElementPortletEntry.setNameMap(nameMap);
+		customElementPortletEntry.setTagAttributes(
+			_tagAttributesParser.serialize(tagAttributes));
+		customElementPortletEntry.setPortletDisplayCategory(
+			portletDisplayCategory);
 		customElementPortletEntry.setTagName(tagName);
 
 		return customElementPortletEntryPersistence.update(
@@ -231,5 +249,11 @@ public class CustomElementPortletEntryLocalServiceImpl
 
 		return GetterUtil.getInteger(indexer.searchCount(searchContext));
 	}
+
+	@Reference
+	private CSSURLsParser _cssURLsParser;
+
+	@Reference
+	private TagAttributesParser _tagAttributesParser;
 
 }
