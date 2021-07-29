@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.remote.app.admin.web.internal.RemoteCustomElementScriptRegistry;
 import com.liferay.remote.app.admin.web.internal.constants.RemoteAppAdminPortletKeys;
 import com.liferay.remote.app.exception.DuplicateRemoteCustomElementEntryURLException;
 import com.liferay.remote.app.exception.NoSuchEntryException;
@@ -72,19 +73,30 @@ public class EditRemoteCustomElementEntryMVCActionCommand
 
 		try {
 			if (cmd.equals(Constants.ADD)) {
-				_remoteCustomElementEntryLocalService.
-					addRemoteCustomElementEntry(
-						serviceContext.getUserId(), nameMap, tagName, url,
-						serviceContext);
+				RemoteCustomElementEntry remoteCustomElementEntry =
+					_remoteCustomElementEntryLocalService.
+						addRemoteCustomElementEntry(
+							serviceContext.getUserId(), nameMap, tagName, url,
+							serviceContext);
+
+				_remoteCustomElementScriptRegistry.register(
+					remoteCustomElementEntry);
 			}
 			else if (cmd.equals(Constants.UPDATE)) {
 				long remoteCustomElementEntryId = ParamUtil.getLong(
 					actionRequest, "remoteCustomElementEntryId");
 
-				_remoteCustomElementEntryLocalService.
-					updateRemoteCustomElementEntry(
-						remoteCustomElementEntryId, nameMap, tagName, url,
-						serviceContext);
+				RemoteCustomElementEntry remoteCustomElementEntry =
+					_remoteCustomElementEntryLocalService.
+						updateRemoteCustomElementEntry(
+							remoteCustomElementEntryId, nameMap, tagName, url,
+							serviceContext);
+
+				_remoteCustomElementScriptRegistry.unregister(
+					remoteCustomElementEntry);
+
+				_remoteCustomElementScriptRegistry.register(
+					remoteCustomElementEntry);
 			}
 
 			if (Validator.isNotNull(redirect)) {
@@ -114,5 +126,9 @@ public class EditRemoteCustomElementEntryMVCActionCommand
 	@Reference
 	private RemoteCustomElementEntryLocalService
 		_remoteCustomElementEntryLocalService;
+
+	@Reference
+	private RemoteCustomElementScriptRegistry
+		_remoteCustomElementScriptRegistry;
 
 }
