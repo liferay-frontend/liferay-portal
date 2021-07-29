@@ -43,7 +43,8 @@ public class RemoteCustomElementEntryTableClayDataSetDisplayView
 
 		_addClayTableSchemaField(
 			clayTableSchemaBuilder, "name", "name", "actionLink");
-		_addClayTableSchemaField(clayTableSchemaBuilder, "tagName", "tagName");
+		_addClayTableSchemaField(
+			clayTableSchemaBuilder, "tagName", "html-tag-name");
 		_addClayTableSchemaField(clayTableSchemaBuilder, "url", "url");
 
 		return clayTableSchemaBuilder.build();
