@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.remote.app.admin.web.internal.CustomElementPortletRegistrar;
 import com.liferay.remote.app.admin.web.internal.constants.RemoteAppAdminPortletKeys;
 import com.liferay.remote.app.exception.NoSuchEntryException;
 import com.liferay.remote.app.model.CustomElementPortletEntry;
@@ -70,19 +71,30 @@ public class EditCustomElementPortletEntryMVCActionCommand
 
 		try {
 			if (cmd.equals(Constants.ADD)) {
-				_customElementPortletEntryLocalService.
-					addCustomElementPortletEntry(
-						serviceContext.getUserId(), nameMap, tagName,
-						serviceContext);
+				CustomElementPortletEntry customElementPortletEntry =
+					_customElementPortletEntryLocalService.
+						addCustomElementPortletEntry(
+							serviceContext.getUserId(), nameMap, tagName,
+							serviceContext);
+
+				_customElementPortletRegistrar.unregisterPortlet(
+					customElementPortletEntry);
 			}
 			else if (cmd.equals(Constants.UPDATE)) {
 				long customElementPortletEntryId = ParamUtil.getLong(
 					actionRequest, "customElementPortletEntryId");
 
-				_customElementPortletEntryLocalService.
-					updateCustomElementPortletEntry(
-						customElementPortletEntryId, nameMap, tagName,
-						serviceContext);
+				CustomElementPortletEntry customElementPortletEntry =
+					_customElementPortletEntryLocalService.
+						updateCustomElementPortletEntry(
+							customElementPortletEntryId, nameMap, tagName,
+							serviceContext);
+
+				_customElementPortletRegistrar.unregisterPortlet(
+					customElementPortletEntry);
+
+				_customElementPortletRegistrar.registerPortlet(
+					customElementPortletEntry);
 			}
 
 			if (Validator.isNotNull(redirect)) {
@@ -107,5 +119,8 @@ public class EditCustomElementPortletEntryMVCActionCommand
 	@Reference
 	private CustomElementPortletEntryLocalService
 		_customElementPortletEntryLocalService;
+
+	@Reference
+	private CustomElementPortletRegistrar _customElementPortletRegistrar;
 
 }
