@@ -24,6 +24,7 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import com.liferay.remote.app.service.RemoteCustomElementEntryLocalService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -50,7 +51,9 @@ public class CustomElementPortletAdminViewMVCRenderCommand
 			RemoteAppAdminWebKeys.CUSTOM_ELEMENT_PORTLET_ADMIN_DISPLAY_CONTEXT,
 			new CustomElementPortletAdminDisplayContext(
 				renderRequest, renderResponse,
-				_customElementPortletEntryLocalService));
+				_customElementPortletEntryLocalService,
+				_remoteCustomElementEntryLocalService
+				));
 
 		return "/custom_element_portlet_admin/view.jsp";
 	}
@@ -58,5 +61,9 @@ public class CustomElementPortletAdminViewMVCRenderCommand
 	@Reference
 	private CustomElementPortletEntryLocalService
 		_customElementPortletEntryLocalService;
+
+	@Reference
+	private RemoteCustomElementEntryLocalService
+		_remoteCustomElementEntryLocalService;
 
 }

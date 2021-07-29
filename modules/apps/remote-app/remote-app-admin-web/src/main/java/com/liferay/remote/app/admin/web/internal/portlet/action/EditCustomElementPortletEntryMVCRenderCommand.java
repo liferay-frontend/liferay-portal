@@ -27,6 +27,7 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import com.liferay.remote.app.service.RemoteCustomElementEntryLocalService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -50,10 +51,11 @@ public class EditCustomElementPortletEntryMVCRenderCommand
 		throws PortletException {
 
 		renderRequest.setAttribute(
-			RemoteAppAdminWebKeys.REMOTE_CUSTOM_ELEMENT_ADMIN_DISPLAY_CONTEXT,
+			RemoteAppAdminWebKeys.CUSTOM_ELEMENT_PORTLET_ADMIN_DISPLAY_CONTEXT,
 			new CustomElementPortletAdminDisplayContext(
 				renderRequest, renderResponse,
-				_customElementPortletEntryLocalService));
+				_customElementPortletEntryLocalService,
+				_remoteCustomElementEntryLocalService));
 
 		try {
 			long customElementPortletEntryId = ParamUtil.getLong(
@@ -84,5 +86,9 @@ public class EditCustomElementPortletEntryMVCRenderCommand
 	@Reference
 	private CustomElementPortletEntryLocalService
 		_customElementPortletEntryLocalService;
+
+	@Reference
+	private RemoteCustomElementEntryLocalService
+		_remoteCustomElementEntryLocalService;
 
 }

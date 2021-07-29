@@ -49,9 +49,19 @@ renderResponse.setTitle((customElementPortletEntry == null) ? LanguageUtil.get(r
 					/>
 				</aui:field-wrapper>
 
-				<aui:input label="html-tag-name" name="tagName">
-					<aui:validator name="tagName" />
-				</aui:input>
+				<aui:select label="html-tag-name" name="tagName" showEmptyOption="<%= false %>">
+
+					<%
+					for (String customElementTagName : customElementPortletAdminDisplayContext.getCustomElementTagNames()) {
+					%>
+
+						<aui:option label="<%= customElementTagName %>" selected="<%= customElementTagName.equals(BeanPropertiesUtil.getString(customElementPortletEntry, "tagName")) %>" value="<%= customElementTagName %>" />
+
+					<%
+					}
+					%>
+
+				</aui:select>
 			</aui:fieldset>
 		</aui:fieldset-group>
 

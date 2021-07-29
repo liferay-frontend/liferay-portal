@@ -16,10 +16,6 @@
 
 <%@ include file="/custom_element_portlet_admin/init.jsp" %>
 
-<%
-CustomElementPortletAdminDisplayContext customElementPortletAdminDisplayContext = (CustomElementPortletAdminDisplayContext)renderRequest.getAttribute(RemoteAppAdminWebKeys.CUSTOM_ELEMENT_PORTLET_ADMIN_DISPLAY_CONTEXT);
-%>
-
 <clay:data-set-display
 	actionParameterName="customElementPortletEntryId"
 	creationMenu="<%= customElementPortletAdminDisplayContext.getCreationMenu() %>"
