@@ -20,8 +20,10 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.remote.app.admin.web.internal.RemoteCustomElementScriptRegistry;
 import com.liferay.remote.app.admin.web.internal.constants.RemoteAppAdminPortletKeys;
 import com.liferay.remote.app.exception.NoSuchEntryException;
+import com.liferay.remote.app.model.RemoteCustomElementEntry;
 import com.liferay.remote.app.service.RemoteCustomElementEntryLocalService;
 
 import javax.portlet.ActionRequest;
@@ -55,8 +57,12 @@ public class DeleteRemoteCustomElementEntryMVCActionCommand
 			actionRequest, "remoteCustomElementEntryId");
 
 		try {
-			_remoteCustomElementEntryLocalService.
-				deleteRemoteCustomElementEntry(remoteCustomElementEntryId);
+			RemoteCustomElementEntry remoteCustomElementEntry =
+				_remoteCustomElementEntryLocalService.
+					deleteRemoteCustomElementEntry(remoteCustomElementEntryId);
+
+			_remoteCustomElementScriptRegistry.unregister(
+				remoteCustomElementEntry);
 
 			if (Validator.isNotNull(redirect)) {
 				actionResponse.sendRedirect(redirect);
@@ -77,5 +83,9 @@ public class DeleteRemoteCustomElementEntryMVCActionCommand
 	@Reference
 	private RemoteCustomElementEntryLocalService
 		_remoteCustomElementEntryLocalService;
+
+	@Reference
+	private RemoteCustomElementScriptRegistry
+		_remoteCustomElementScriptRegistry;
 
 }
