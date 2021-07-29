@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.remote.app.admin.web.internal.RemoteAppPortletRegistrar;
 import com.liferay.remote.app.admin.web.internal.constants.RemoteAppAdminPortletKeys;
 import com.liferay.remote.app.exception.NoSuchEntryException;
+import com.liferay.remote.app.model.RemoteAppEntry;
 import com.liferay.remote.app.service.RemoteAppEntryLocalService;
 
 import javax.portlet.ActionRequest;
@@ -55,11 +56,11 @@ public class DeleteRemoteAppEntryMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest, "remoteAppEntryId");
 
 		try {
-			_remoteAppPortletRegistrar.unregisterPortlet(
-				_remoteAppEntryLocalService.getRemoteAppEntry(
-					remoteAppEntryId));
+			RemoteAppEntry remoteAppEntry =
+				_remoteAppEntryLocalService.deleteRemoteAppEntry(
+					remoteAppEntryId);
 
-			_remoteAppEntryLocalService.deleteRemoteAppEntry(remoteAppEntryId);
+			_remoteAppPortletRegistrar.unregisterPortlet(remoteAppEntry);
 
 			if (Validator.isNotNull(redirect)) {
 				actionResponse.sendRedirect(redirect);
