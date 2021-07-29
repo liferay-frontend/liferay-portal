@@ -5,4 +5,5 @@ Export-Package:\
 	com.liferay.remote.app.exception,\
 	com.liferay.remote.app.model,\
 	com.liferay.remote.app.service,\
-	com.liferay.remote.app.service.persistence
+	com.liferay.remote.app.service.persistence,\
+	com.liferay.remote.app.util

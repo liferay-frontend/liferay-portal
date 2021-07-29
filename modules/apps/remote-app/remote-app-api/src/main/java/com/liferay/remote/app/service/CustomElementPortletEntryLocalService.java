@@ -38,6 +38,7 @@ import com.liferay.remote.app.model.CustomElementPortletEntry;
 
 import java.io.Serializable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -84,7 +85,9 @@ public interface CustomElementPortletEntryLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CustomElementPortletEntry addCustomElementPortletEntry(
-			long userId, Map<Locale, String> nameMap, String tagName,
+			long userId, Collection<String> cssURLs,
+			Map<Locale, String> nameMap, String portletDisplayCategory,
+			Map<String, String> tagAttributes, String tagName,
 			ServiceContext serviceContext)
 		throws PortalException;
 
@@ -329,8 +332,10 @@ public interface CustomElementPortletEntryLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CustomElementPortletEntry updateCustomElementPortletEntry(
-			long customElementPortletEntryId, Map<Locale, String> nameMap,
-			String tagName, ServiceContext serviceContext)
+			long customElementPortletEntryId, Collection<String> cssURLs,
+			Map<Locale, String> nameMap, String portletDisplayCategory,
+			Map<String, String> tagAttributes, String tagName,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 }

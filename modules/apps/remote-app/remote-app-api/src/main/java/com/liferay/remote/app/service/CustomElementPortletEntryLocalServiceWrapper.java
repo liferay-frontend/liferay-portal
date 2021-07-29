@@ -58,14 +58,17 @@ public class CustomElementPortletEntryLocalServiceWrapper
 	@Override
 	public com.liferay.remote.app.model.CustomElementPortletEntry
 			addCustomElementPortletEntry(
-				long userId, java.util.Map<java.util.Locale, String> nameMap,
-				String tagName,
+				long userId, java.util.Collection<String> cssURLs,
+				java.util.Map<java.util.Locale, String> nameMap,
+				String portletDisplayCategory,
+				java.util.Map<String, String> tagAttributes, String tagName,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _customElementPortletEntryLocalService.
 			addCustomElementPortletEntry(
-				userId, nameMap, tagName, serviceContext);
+				userId, cssURLs, nameMap, portletDisplayCategory, tagAttributes,
+				tagName, serviceContext);
 	}
 
 	/**
@@ -435,13 +438,17 @@ public class CustomElementPortletEntryLocalServiceWrapper
 	public com.liferay.remote.app.model.CustomElementPortletEntry
 			updateCustomElementPortletEntry(
 				long customElementPortletEntryId,
-				java.util.Map<java.util.Locale, String> nameMap, String tagName,
+				java.util.Collection<String> cssURLs,
+				java.util.Map<java.util.Locale, String> nameMap,
+				String portletDisplayCategory,
+				java.util.Map<String, String> tagAttributes, String tagName,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _customElementPortletEntryLocalService.
 			updateCustomElementPortletEntry(
-				customElementPortletEntryId, nameMap, tagName, serviceContext);
+				customElementPortletEntryId, cssURLs, nameMap,
+				portletDisplayCategory, tagAttributes, tagName, serviceContext);
 	}
 
 	@Override

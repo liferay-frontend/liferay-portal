@@ -19,7 +19,10 @@
 
 		<!-- Other fields -->
 
+		<column name="cssURLs" type="String" uad-nonanonymizable="true" />
+		<column name="tagAttributes" type="String" uad-nonanonymizable="true" />
 		<column localized="true" name="name" type="String" uad-nonanonymizable="true" />
+		<column name="portletDisplayCategory" type="String" uad-nonanonymizable="true" />
 		<column name="tagName" type="String" uad-nonanonymizable="true" />
 
 		<!-- Order -->
