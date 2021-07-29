@@ -57,8 +57,18 @@ public class CustomElementPortletEntryTable
 	public final Column<CustomElementPortletEntryTable, Date> modifiedDate =
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<CustomElementPortletEntryTable, String> cssURLs =
+		createColumn(
+			"cssURLs", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CustomElementPortletEntryTable, String> tagAttributes =
+		createColumn(
+			"tagAttributes", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CustomElementPortletEntryTable, String> name =
 		createColumn("name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CustomElementPortletEntryTable, String>
+		portletDisplayCategory = createColumn(
+			"portletDisplayCategory", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CustomElementPortletEntryTable, String> tagName =
 		createColumn(
 			"tagName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);

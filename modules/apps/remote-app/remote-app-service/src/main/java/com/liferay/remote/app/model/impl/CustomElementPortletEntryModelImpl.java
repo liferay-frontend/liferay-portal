@@ -83,8 +83,9 @@ public class CustomElementPortletEntryModelImpl
 		{"customElementPortletEntryId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"name", Types.VARCHAR},
-		{"tagName", Types.VARCHAR}
+		{"modifiedDate", Types.TIMESTAMP}, {"cssURLs", Types.VARCHAR},
+		{"tagAttributes", Types.VARCHAR}, {"name", Types.VARCHAR},
+		{"portletDisplayCategory", Types.VARCHAR}, {"tagName", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -99,12 +100,15 @@ public class CustomElementPortletEntryModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("cssURLs", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("tagAttributes", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("portletDisplayCategory", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("tagName", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CustomElementPortletEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,customElementPortletEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,tagName VARCHAR(75) null)";
+		"create table CustomElementPortletEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,customElementPortletEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,cssURLs VARCHAR(75) null,tagAttributes VARCHAR(75) null,name STRING null,portletDisplayCategory VARCHAR(75) null,tagName VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CustomElementPortletEntry";
@@ -335,11 +339,30 @@ public class CustomElementPortletEntryModelImpl
 			(BiConsumer<CustomElementPortletEntry, Date>)
 				CustomElementPortletEntry::setModifiedDate);
 		attributeGetterFunctions.put(
+			"cssURLs", CustomElementPortletEntry::getCssURLs);
+		attributeSetterBiConsumers.put(
+			"cssURLs",
+			(BiConsumer<CustomElementPortletEntry, String>)
+				CustomElementPortletEntry::setCssURLs);
+		attributeGetterFunctions.put(
+			"tagAttributes", CustomElementPortletEntry::getTagAttributes);
+		attributeSetterBiConsumers.put(
+			"tagAttributes",
+			(BiConsumer<CustomElementPortletEntry, String>)
+				CustomElementPortletEntry::setTagAttributes);
+		attributeGetterFunctions.put(
 			"name", CustomElementPortletEntry::getName);
 		attributeSetterBiConsumers.put(
 			"name",
 			(BiConsumer<CustomElementPortletEntry, String>)
 				CustomElementPortletEntry::setName);
+		attributeGetterFunctions.put(
+			"portletDisplayCategory",
+			CustomElementPortletEntry::getPortletDisplayCategory);
+		attributeSetterBiConsumers.put(
+			"portletDisplayCategory",
+			(BiConsumer<CustomElementPortletEntry, String>)
+				CustomElementPortletEntry::setPortletDisplayCategory);
 		attributeGetterFunctions.put(
 			"tagName", CustomElementPortletEntry::getTagName);
 		attributeSetterBiConsumers.put(
@@ -519,6 +542,44 @@ public class CustomElementPortletEntryModelImpl
 	}
 
 	@Override
+	public String getCssURLs() {
+		if (_cssURLs == null) {
+			return "";
+		}
+		else {
+			return _cssURLs;
+		}
+	}
+
+	@Override
+	public void setCssURLs(String cssURLs) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_cssURLs = cssURLs;
+	}
+
+	@Override
+	public String getTagAttributes() {
+		if (_tagAttributes == null) {
+			return "";
+		}
+		else {
+			return _tagAttributes;
+		}
+	}
+
+	@Override
+	public void setTagAttributes(String tagAttributes) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_tagAttributes = tagAttributes;
+	}
+
+	@Override
 	public String getName() {
 		if (_name == null) {
 			return "";
@@ -622,6 +683,25 @@ public class CustomElementPortletEntryModelImpl
 			LocalizationUtil.updateLocalization(
 				nameMap, getName(), "Name",
 				LocaleUtil.toLanguageId(defaultLocale)));
+	}
+
+	@Override
+	public String getPortletDisplayCategory() {
+		if (_portletDisplayCategory == null) {
+			return "";
+		}
+		else {
+			return _portletDisplayCategory;
+		}
+	}
+
+	@Override
+	public void setPortletDisplayCategory(String portletDisplayCategory) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_portletDisplayCategory = portletDisplayCategory;
 	}
 
 	@Override
@@ -807,7 +887,11 @@ public class CustomElementPortletEntryModelImpl
 		customElementPortletEntryImpl.setUserName(getUserName());
 		customElementPortletEntryImpl.setCreateDate(getCreateDate());
 		customElementPortletEntryImpl.setModifiedDate(getModifiedDate());
+		customElementPortletEntryImpl.setCssURLs(getCssURLs());
+		customElementPortletEntryImpl.setTagAttributes(getTagAttributes());
 		customElementPortletEntryImpl.setName(getName());
+		customElementPortletEntryImpl.setPortletDisplayCategory(
+			getPortletDisplayCategory());
 		customElementPortletEntryImpl.setTagName(getTagName());
 
 		customElementPortletEntryImpl.resetOriginalValues();
@@ -935,12 +1019,41 @@ public class CustomElementPortletEntryModelImpl
 			customElementPortletEntryCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
+		customElementPortletEntryCacheModel.cssURLs = getCssURLs();
+
+		String cssURLs = customElementPortletEntryCacheModel.cssURLs;
+
+		if ((cssURLs != null) && (cssURLs.length() == 0)) {
+			customElementPortletEntryCacheModel.cssURLs = null;
+		}
+
+		customElementPortletEntryCacheModel.tagAttributes = getTagAttributes();
+
+		String tagAttributes =
+			customElementPortletEntryCacheModel.tagAttributes;
+
+		if ((tagAttributes != null) && (tagAttributes.length() == 0)) {
+			customElementPortletEntryCacheModel.tagAttributes = null;
+		}
+
 		customElementPortletEntryCacheModel.name = getName();
 
 		String name = customElementPortletEntryCacheModel.name;
 
 		if ((name != null) && (name.length() == 0)) {
 			customElementPortletEntryCacheModel.name = null;
+		}
+
+		customElementPortletEntryCacheModel.portletDisplayCategory =
+			getPortletDisplayCategory();
+
+		String portletDisplayCategory =
+			customElementPortletEntryCacheModel.portletDisplayCategory;
+
+		if ((portletDisplayCategory != null) &&
+			(portletDisplayCategory.length() == 0)) {
+
+			customElementPortletEntryCacheModel.portletDisplayCategory = null;
 		}
 
 		customElementPortletEntryCacheModel.tagName = getTagName();
@@ -1037,8 +1150,11 @@ public class CustomElementPortletEntryModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private String _cssURLs;
+	private String _tagAttributes;
 	private String _name;
 	private String _nameCurrentLanguageId;
+	private String _portletDisplayCategory;
 	private String _tagName;
 
 	public <T> T getColumnValue(String columnName) {
@@ -1079,7 +1195,11 @@ public class CustomElementPortletEntryModelImpl
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
+		_columnOriginalValues.put("cssURLs", _cssURLs);
+		_columnOriginalValues.put("tagAttributes", _tagAttributes);
 		_columnOriginalValues.put("name", _name);
+		_columnOriginalValues.put(
+			"portletDisplayCategory", _portletDisplayCategory);
 		_columnOriginalValues.put("tagName", _tagName);
 	}
 
@@ -1120,9 +1240,15 @@ public class CustomElementPortletEntryModelImpl
 
 		columnBitmasks.put("modifiedDate", 128L);
 
-		columnBitmasks.put("name", 256L);
+		columnBitmasks.put("cssURLs", 256L);
 
-		columnBitmasks.put("tagName", 512L);
+		columnBitmasks.put("tagAttributes", 512L);
+
+		columnBitmasks.put("name", 1024L);
+
+		columnBitmasks.put("portletDisplayCategory", 2048L);
+
+		columnBitmasks.put("tagName", 4096L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

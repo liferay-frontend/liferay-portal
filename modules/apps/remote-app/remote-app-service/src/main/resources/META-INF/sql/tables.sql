@@ -7,7 +7,10 @@ create table CustomElementPortletEntry (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
+	cssURLs VARCHAR(75) null,
+	tagAttributes VARCHAR(75) null,
 	name STRING null,
+	portletDisplayCategory VARCHAR(75) null,
 	tagName VARCHAR(75) null
 );
 

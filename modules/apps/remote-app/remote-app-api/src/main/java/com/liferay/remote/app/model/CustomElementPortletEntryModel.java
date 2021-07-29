@@ -211,6 +211,36 @@ public interface CustomElementPortletEntryModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the css ur ls of this custom element portlet entry.
+	 *
+	 * @return the css ur ls of this custom element portlet entry
+	 */
+	@AutoEscape
+	public String getCssURLs();
+
+	/**
+	 * Sets the css ur ls of this custom element portlet entry.
+	 *
+	 * @param cssURLs the css ur ls of this custom element portlet entry
+	 */
+	public void setCssURLs(String cssURLs);
+
+	/**
+	 * Returns the tag attributes of this custom element portlet entry.
+	 *
+	 * @return the tag attributes of this custom element portlet entry
+	 */
+	@AutoEscape
+	public String getTagAttributes();
+
+	/**
+	 * Sets the tag attributes of this custom element portlet entry.
+	 *
+	 * @param tagAttributes the tag attributes of this custom element portlet entry
+	 */
+	public void setTagAttributes(String tagAttributes);
+
+	/**
 	 * Returns the name of this custom element portlet entry.
 	 *
 	 * @return the name of this custom element portlet entry
@@ -308,6 +338,21 @@ public interface CustomElementPortletEntryModel
 	 * @param defaultLocale the default locale
 	 */
 	public void setNameMap(Map<Locale, String> nameMap, Locale defaultLocale);
+
+	/**
+	 * Returns the portlet display category of this custom element portlet entry.
+	 *
+	 * @return the portlet display category of this custom element portlet entry
+	 */
+	@AutoEscape
+	public String getPortletDisplayCategory();
+
+	/**
+	 * Sets the portlet display category of this custom element portlet entry.
+	 *
+	 * @param portletDisplayCategory the portlet display category of this custom element portlet entry
+	 */
+	public void setPortletDisplayCategory(String portletDisplayCategory);
 
 	/**
 	 * Returns the tag name of this custom element portlet entry.

@@ -141,7 +141,15 @@ public class CustomElementPortletEntryPersistenceTest {
 
 		newCustomElementPortletEntry.setModifiedDate(RandomTestUtil.nextDate());
 
+		newCustomElementPortletEntry.setCssURLs(RandomTestUtil.randomString());
+
+		newCustomElementPortletEntry.setTagAttributes(
+			RandomTestUtil.randomString());
+
 		newCustomElementPortletEntry.setName(RandomTestUtil.randomString());
+
+		newCustomElementPortletEntry.setPortletDisplayCategory(
+			RandomTestUtil.randomString());
 
 		newCustomElementPortletEntry.setTagName(RandomTestUtil.randomString());
 
@@ -181,8 +189,17 @@ public class CustomElementPortletEntryPersistenceTest {
 			Time.getShortTimestamp(
 				newCustomElementPortletEntry.getModifiedDate()));
 		Assert.assertEquals(
+			existingCustomElementPortletEntry.getCssURLs(),
+			newCustomElementPortletEntry.getCssURLs());
+		Assert.assertEquals(
+			existingCustomElementPortletEntry.getTagAttributes(),
+			newCustomElementPortletEntry.getTagAttributes());
+		Assert.assertEquals(
 			existingCustomElementPortletEntry.getName(),
 			newCustomElementPortletEntry.getName());
+		Assert.assertEquals(
+			existingCustomElementPortletEntry.getPortletDisplayCategory(),
+			newCustomElementPortletEntry.getPortletDisplayCategory());
 		Assert.assertEquals(
 			existingCustomElementPortletEntry.getTagName(),
 			newCustomElementPortletEntry.getTagName());
@@ -239,7 +256,8 @@ public class CustomElementPortletEntryPersistenceTest {
 			"CustomElementPortletEntry", "mvccVersion", true, "uuid", true,
 			"customElementPortletEntryId", true, "companyId", true, "userId",
 			true, "userName", true, "createDate", true, "modifiedDate", true,
-			"name", true, "tagName", true);
+			"cssURLs", true, "tagAttributes", true, "name", true,
+			"portletDisplayCategory", true, "tagName", true);
 	}
 
 	@Test
@@ -508,7 +526,15 @@ public class CustomElementPortletEntryPersistenceTest {
 
 		customElementPortletEntry.setModifiedDate(RandomTestUtil.nextDate());
 
+		customElementPortletEntry.setCssURLs(RandomTestUtil.randomString());
+
+		customElementPortletEntry.setTagAttributes(
+			RandomTestUtil.randomString());
+
 		customElementPortletEntry.setName(RandomTestUtil.randomString());
+
+		customElementPortletEntry.setPortletDisplayCategory(
+			RandomTestUtil.randomString());
 
 		customElementPortletEntry.setTagName(RandomTestUtil.randomString());
 

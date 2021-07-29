@@ -81,7 +81,7 @@ public class CustomElementPortletEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -99,8 +99,14 @@ public class CustomElementPortletEntryCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", cssURLs=");
+		sb.append(cssURLs);
+		sb.append(", tagAttributes=");
+		sb.append(tagAttributes);
 		sb.append(", name=");
 		sb.append(name);
+		sb.append(", portletDisplayCategory=");
+		sb.append(portletDisplayCategory);
 		sb.append(", tagName=");
 		sb.append(tagName);
 		sb.append("}");
@@ -149,11 +155,33 @@ public class CustomElementPortletEntryCacheModel
 				new Date(modifiedDate));
 		}
 
+		if (cssURLs == null) {
+			customElementPortletEntryImpl.setCssURLs("");
+		}
+		else {
+			customElementPortletEntryImpl.setCssURLs(cssURLs);
+		}
+
+		if (tagAttributes == null) {
+			customElementPortletEntryImpl.setTagAttributes("");
+		}
+		else {
+			customElementPortletEntryImpl.setTagAttributes(tagAttributes);
+		}
+
 		if (name == null) {
 			customElementPortletEntryImpl.setName("");
 		}
 		else {
 			customElementPortletEntryImpl.setName(name);
+		}
+
+		if (portletDisplayCategory == null) {
+			customElementPortletEntryImpl.setPortletDisplayCategory("");
+		}
+		else {
+			customElementPortletEntryImpl.setPortletDisplayCategory(
+				portletDisplayCategory);
 		}
 
 		if (tagName == null) {
@@ -181,7 +209,10 @@ public class CustomElementPortletEntryCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+		cssURLs = objectInput.readUTF();
+		tagAttributes = objectInput.readUTF();
 		name = objectInput.readUTF();
+		portletDisplayCategory = objectInput.readUTF();
 		tagName = objectInput.readUTF();
 	}
 
@@ -212,11 +243,32 @@ public class CustomElementPortletEntryCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
+		if (cssURLs == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(cssURLs);
+		}
+
+		if (tagAttributes == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(tagAttributes);
+		}
+
 		if (name == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(name);
+		}
+
+		if (portletDisplayCategory == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(portletDisplayCategory);
 		}
 
 		if (tagName == null) {
@@ -235,7 +287,10 @@ public class CustomElementPortletEntryCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public String cssURLs;
+	public String tagAttributes;
 	public String name;
+	public String portletDisplayCategory;
 	public String tagName;
 
 }
