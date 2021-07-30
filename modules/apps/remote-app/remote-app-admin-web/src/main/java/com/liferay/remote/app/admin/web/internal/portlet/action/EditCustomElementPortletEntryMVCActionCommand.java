@@ -29,7 +29,10 @@ import com.liferay.remote.app.admin.web.internal.constants.RemoteAppAdminPortlet
 import com.liferay.remote.app.exception.NoSuchEntryException;
 import com.liferay.remote.app.model.CustomElementPortletEntry;
 import com.liferay.remote.app.service.CustomElementPortletEntryLocalService;
+import com.liferay.remote.app.util.CSSURLsParser;
+import com.liferay.remote.app.util.TagAttributesParser;
 
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 
@@ -62,8 +65,14 @@ public class EditCustomElementPortletEntryMVCActionCommand
 
 		String redirect = ParamUtil.getString(actionRequest, "redirect");
 
+		Collection<String> cssURLs = _cssURLsParser.parse(
+			ParamUtil.getString(actionRequest, "cssURLs"));
 		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
 			actionRequest, "name");
+		String portletDisplayCategory = ParamUtil.getString(
+			actionRequest, "portletDisplayCategory");
+		Map<String, String> tagAttributes = _tagAttributesParser.parse(
+			ParamUtil.getString(actionRequest, "tagAttributes"));
 		String tagName = ParamUtil.getString(actionRequest, "tagName");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
@@ -74,7 +83,8 @@ public class EditCustomElementPortletEntryMVCActionCommand
 				CustomElementPortletEntry customElementPortletEntry =
 					_customElementPortletEntryLocalService.
 						addCustomElementPortletEntry(
-							serviceContext.getUserId(), nameMap, tagName,
+							serviceContext.getUserId(), cssURLs, nameMap,
+							portletDisplayCategory, tagAttributes, tagName,
 							serviceContext);
 
 				_customElementPortletRegistrar.unregisterPortlet(
@@ -87,7 +97,8 @@ public class EditCustomElementPortletEntryMVCActionCommand
 				CustomElementPortletEntry customElementPortletEntry =
 					_customElementPortletEntryLocalService.
 						updateCustomElementPortletEntry(
-							customElementPortletEntryId, nameMap, tagName,
+							customElementPortletEntryId, cssURLs, nameMap,
+							portletDisplayCategory, tagAttributes, tagName,
 							serviceContext);
 
 				_customElementPortletRegistrar.unregisterPortlet(
@@ -117,10 +128,16 @@ public class EditCustomElementPortletEntryMVCActionCommand
 	}
 
 	@Reference
+	private CSSURLsParser _cssURLsParser;
+
+	@Reference
 	private CustomElementPortletEntryLocalService
 		_customElementPortletEntryLocalService;
 
 	@Reference
 	private CustomElementPortletRegistrar _customElementPortletRegistrar;
+
+	@Reference
+	private TagAttributesParser _tagAttributesParser;
 
 }

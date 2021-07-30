@@ -78,9 +78,8 @@ public class CustomElementPortletAdminDisplayContext {
 
 	public Collection<String> getCustomElementTagNames() {
 		List<RemoteCustomElementEntry> remoteCustomElementEntries =
-			_remoteCustomElementEntryLocalService.
-				getRemoteCustomElementEntries(
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			_remoteCustomElementEntryLocalService.getRemoteCustomElementEntries(
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		Stream<RemoteCustomElementEntry> stream =
 			remoteCustomElementEntries.stream();
