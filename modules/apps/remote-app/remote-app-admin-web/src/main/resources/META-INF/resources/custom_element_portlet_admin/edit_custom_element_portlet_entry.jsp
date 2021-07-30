@@ -49,19 +49,24 @@ renderResponse.setTitle((customElementPortletEntry == null) ? LanguageUtil.get(r
 					/>
 				</aui:field-wrapper>
 
+				<aui:input label="portlet-display-category" name="portletDisplayCategory" type="text" value='<%= BeanPropertiesUtil.getString(customElementPortletEntry, "portletDisplayCategory", "category.sample") %>' />
+
 				<aui:select label="html-tag-name" name="tagName" showEmptyOption="<%= false %>">
 
 					<%
 					for (String customElementTagName : customElementPortletAdminDisplayContext.getCustomElementTagNames()) {
 					%>
 
-						<aui:option label="<%= customElementTagName %>" selected="<%= customElementTagName.equals(BeanPropertiesUtil.getString(customElementPortletEntry, "tagName")) %>" value="<%= customElementTagName %>" />
+						<aui:option label="<%= customElementTagName %>" selected='<%= customElementTagName.equals(BeanPropertiesUtil.getString(customElementPortletEntry, "tagName")) %>' value="<%= customElementTagName %>" />
 
 					<%
 					}
 					%>
 
 				</aui:select>
+
+				<aui:input helpMessage="tag-attributes-help" label="tag-attributes" name="tagAttributes" type="textarea" />
+				<aui:input helpMessage="css-urls-help" label="css-urls" name="cssURLs" type="textarea" />
 			</aui:fieldset>
 		</aui:fieldset-group>
 

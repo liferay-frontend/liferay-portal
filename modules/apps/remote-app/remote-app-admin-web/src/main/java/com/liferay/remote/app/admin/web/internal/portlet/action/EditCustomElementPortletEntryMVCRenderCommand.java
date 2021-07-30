@@ -22,12 +22,12 @@ import com.liferay.remote.app.admin.web.internal.constants.RemoteAppAdminWebKeys
 import com.liferay.remote.app.admin.web.internal.display.context.CustomElementPortletAdminDisplayContext;
 import com.liferay.remote.app.exception.NoSuchEntryException;
 import com.liferay.remote.app.service.CustomElementPortletEntryLocalService;
+import com.liferay.remote.app.service.RemoteCustomElementEntryLocalService;
 
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import com.liferay.remote.app.service.RemoteCustomElementEntryLocalService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
