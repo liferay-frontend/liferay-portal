@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.remote.app.admin.web.internal.portlet.CustomElementPortlet;
 import com.liferay.remote.app.model.CustomElementPortletEntry;
 import com.liferay.remote.app.service.CustomElementPortletEntryLocalService;
+import com.liferay.remote.app.util.CSSURLsParser;
+import com.liferay.remote.app.util.TagAttributesParser;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -85,7 +87,7 @@ public class CustomElementPortletRegistrar {
 		CustomElementPortletEntry customElementPortletEntry) {
 
 		CustomElementPortlet customElementPortlet = new CustomElementPortlet(
-			customElementPortletEntry);
+			customElementPortletEntry, _cssURLsParser, _tagAttributesParser);
 
 		long customElementPortletEntryId =
 			customElementPortletEntry.getCustomElementPortletEntryId();
@@ -128,7 +130,14 @@ public class CustomElementPortletRegistrar {
 		CustomElementPortletRegistrar.class);
 
 	private BundleContext _bundleContext;
+
+	@Reference
+	private CSSURLsParser _cssURLsParser;
+
 	private final ConcurrentMap<Long, CustomElementPortlet>
 		_customElementPortlets = new ConcurrentHashMap<>();
+
+	@Reference
+	private TagAttributesParser _tagAttributesParser;
 
 }

@@ -21,10 +21,13 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.remote.app.model.CustomElementPortletEntry;
+import com.liferay.remote.app.util.CSSURLsParser;
+import com.liferay.remote.app.util.TagAttributesParser;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -46,9 +49,12 @@ import org.osgi.framework.ServiceRegistration;
 public class CustomElementPortlet extends MVCPortlet {
 
 	public CustomElementPortlet(
-		CustomElementPortletEntry customElementPortletEntry) {
+		CustomElementPortletEntry customElementPortletEntry,
+		CSSURLsParser cssURLsParser, TagAttributesParser tagAttributesParser) {
 
 		_customElementPortletEntry = customElementPortletEntry;
+		_cssURLsParser = cssURLsParser;
+		_tagAttributesParser = tagAttributesParser;
 	}
 
 	public String getName() {
@@ -69,8 +75,17 @@ public class CustomElementPortlet extends MVCPortlet {
 		properties.put(
 			"com.liferay.portlet.css-class-wrapper",
 			"portlet-custom-element-portlet");
+
+		Collection<String> cssURLs = _cssURLsParser.parse(
+			_customElementPortletEntry.getCssURLs());
+
 		properties.put(
-			"com.liferay.portlet.display-category", "category.sample");
+			"com.liferay.portlet.header-portal-css",
+			cssURLs.toArray(new String[0]));
+
+		properties.put(
+			"com.liferay.portlet.display-category",
+			_customElementPortletEntry.getPortletDisplayCategory());
 		properties.put("com.liferay.portlet.instanceable", true);
 		properties.put("javax.portlet.name", _getPortletName());
 		properties.put("javax.portlet.security-role-ref", "power-user,user");
@@ -100,6 +115,22 @@ public class CustomElementPortlet extends MVCPortlet {
 
 			printWriter.print(StringPool.LESS_THAN);
 			printWriter.print(_customElementPortletEntry.getTagName());
+
+			Map<String, String> tagAttributes = _tagAttributesParser.parse(
+				_customElementPortletEntry.getTagAttributes());
+
+			for (Map.Entry<String, String> entry : tagAttributes.entrySet()) {
+				printWriter.print(StringPool.SPACE);
+				printWriter.print(entry.getKey());
+				printWriter.print("=\"");
+
+				String value = entry.getValue();
+
+				printWriter.print(value.replaceAll(StringPool.QUOTE, "&quot;"));
+
+				printWriter.print(StringPool.QUOTE);
+			}
+
 			printWriter.print("></");
 			printWriter.print(_customElementPortletEntry.getTagName());
 			printWriter.print(StringPool.GREATER_THAN);
@@ -156,9 +187,11 @@ public class CustomElementPortlet extends MVCPortlet {
 	private static final Log _log = LogFactoryUtil.getLog(
 		CustomElementPortlet.class);
 
+	private final CSSURLsParser _cssURLsParser;
 	private final CustomElementPortletEntry _customElementPortletEntry;
 	private ServiceRegistration<ResourceBundleLoader>
 		_resourceBundleLoaderServiceRegistration;
 	private ServiceRegistration<Portlet> _serviceRegistration;
+	private final TagAttributesParser _tagAttributesParser;
 
 }
