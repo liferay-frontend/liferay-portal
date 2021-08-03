@@ -31,7 +31,5 @@ public class RemoteCustomElementEntryImpl
 	 *
 	 * Never reference this class directly. All methods that expect a remote custom element entry model instance should use the {@link com.liferay.remote.app.model.RemoteCustomElementEntry} interface instead.
 	 */
-	public RemoteCustomElementEntryImpl() {
-	}
 
 }
