@@ -22,3 +22,27 @@
 <liferay-ui:error exception="<%= NoSuchUserException.class %>" message="the-user-could-not-be-found" />
 
 <liferay-ui:error-principal />
+
+<react:component
+	module="js/Diagram"
+	props='<%=
+		HashMapBuilder.<String, Object>put(
+			"enablePanZoom", true
+		).put(
+			"enableResetZoom", true
+		).put(
+			"imageSettings",
+			JSONUtil.put(
+				"height", "500px"
+			).put(
+				"width", "100%"
+			)
+		).put(
+			"imageURL", imageURL
+		).put(
+			"pinsEndpoint", "/o/headless-commerce-admin-catalog/v1.0/"
+		).put(
+			"productId", cpDefinition.getCProductId()
+		).build()
+	%>'
+/>
