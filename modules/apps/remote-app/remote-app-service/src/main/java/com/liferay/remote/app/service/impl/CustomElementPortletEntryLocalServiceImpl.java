@@ -77,18 +77,16 @@ public class CustomElementPortletEntryLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		User user = userLocalService.getUser(userId);
-
-		long companyId = user.getCompanyId();
-
 		long customElementPortletEntryId = counterLocalService.increment();
 
 		CustomElementPortletEntry customElementPortletEntry =
 			customElementPortletEntryPersistence.create(
 				customElementPortletEntryId);
 
+		User user = userLocalService.getUser(userId);
+
 		customElementPortletEntry.setUuid(serviceContext.getUuid());
-		customElementPortletEntry.setCompanyId(companyId);
+		customElementPortletEntry.setCompanyId(user.getCompanyId());
 		customElementPortletEntry.setUserId(user.getUserId());
 		customElementPortletEntry.setUserName(user.getFullName());
 		customElementPortletEntry.setCssURLs(_cssURLsParser.serialize(cssURLs));
@@ -108,10 +106,8 @@ public class CustomElementPortletEntryLocalServiceImpl
 			long companyId, String keywords, int start, int end, Sort sort)
 		throws PortalException {
 
-		SearchContext searchContext = buildSearchContext(
-			companyId, keywords, start, end, sort);
-
-		return searchCustomElementPortletEntries(searchContext);
+		return searchCustomElementPortletEntries(
+			buildSearchContext(companyId, keywords, start, end, sort));
 	}
 
 	@Override
@@ -119,10 +115,10 @@ public class CustomElementPortletEntryLocalServiceImpl
 			long companyId, String keywords)
 		throws PortalException {
 
-		SearchContext searchContext = buildSearchContext(
-			companyId, keywords, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-		return searchCustomElementPortletEntriesCount(searchContext);
+		return searchCustomElementPortletEntriesCount(
+			buildSearchContext(
+				companyId, keywords, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null));
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

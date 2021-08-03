@@ -31,7 +31,5 @@ public class CustomElementPortletEntryImpl
 	 *
 	 * Never reference this class directly. All methods that expect a custom element portlet entry model instance should use the {@link com.liferay.remote.app.model.CustomElementPortletEntry} interface instead.
 	 */
-	public CustomElementPortletEntryImpl() {
-	}
 
 }
