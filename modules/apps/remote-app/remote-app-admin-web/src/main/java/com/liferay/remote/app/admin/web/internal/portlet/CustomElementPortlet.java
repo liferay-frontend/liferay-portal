@@ -17,9 +17,11 @@ package com.liferay.remote.app.admin.web.internal.portlet;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.remote.app.admin.web.internal.route.CustomElementPortletEntryFriendlyURLMapper;
 import com.liferay.remote.app.model.CustomElementPortletEntry;
 import com.liferay.remote.app.util.CSSURLsParser;
 import com.liferay.remote.app.util.TagAttributesParser;
@@ -104,6 +106,16 @@ public class CustomElementPortlet extends MVCPortlet {
 			bundleContext.registerService(
 				ResourceBundleLoader.class,
 				locale -> _getResourceBundle(locale), properties);
+
+		properties = new Hashtable<>();
+
+		properties.put("javax.portlet.name", _getPortletName());
+
+		_friendlyURLMapperServiceRegistration = bundleContext.registerService(
+			FriendlyURLMapper.class,
+			new CustomElementPortletEntryFriendlyURLMapper(
+				_customElementPortletEntry),
+			properties);
 	}
 
 	@Override
@@ -147,9 +159,11 @@ public class CustomElementPortlet extends MVCPortlet {
 			throw new IllegalStateException("Portlet is not registered");
 		}
 
+		_friendlyURLMapperServiceRegistration.unregister();
 		_resourceBundleLoaderServiceRegistration.unregister();
 		_serviceRegistration.unregister();
 
+		_friendlyURLMapperServiceRegistration = null;
 		_resourceBundleLoaderServiceRegistration = null;
 		_serviceRegistration = null;
 	}
@@ -189,6 +203,8 @@ public class CustomElementPortlet extends MVCPortlet {
 
 	private final CSSURLsParser _cssURLsParser;
 	private final CustomElementPortletEntry _customElementPortletEntry;
+	private ServiceRegistration<FriendlyURLMapper>
+		_friendlyURLMapperServiceRegistration;
 	private ServiceRegistration<ResourceBundleLoader>
 		_resourceBundleLoaderServiceRegistration;
 	private ServiceRegistration<Portlet> _serviceRegistration;
