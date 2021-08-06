@@ -41,6 +41,7 @@ import java.util.ResourceBundle;
 import javax.portlet.Portlet;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.RenderURL;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -88,7 +89,9 @@ public class CustomElementPortlet extends MVCPortlet {
 		properties.put(
 			"com.liferay.portlet.display-category",
 			_customElementPortletEntry.getPortletDisplayCategory());
-		properties.put("com.liferay.portlet.instanceable", true);
+		properties.put(
+			"com.liferay.portlet.instanceable",
+			_customElementPortletEntry.getInstanceable());
 		properties.put("javax.portlet.name", _getPortletName());
 		properties.put("javax.portlet.security-role-ref", "power-user,user");
 		properties.put(

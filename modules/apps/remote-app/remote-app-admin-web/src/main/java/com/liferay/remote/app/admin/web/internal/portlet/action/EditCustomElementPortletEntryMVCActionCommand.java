@@ -67,6 +67,8 @@ public class EditCustomElementPortletEntryMVCActionCommand
 
 		Collection<String> cssURLs = _cssURLsParser.parse(
 			ParamUtil.getString(actionRequest, "cssURLs"));
+		boolean instanceable = ParamUtil.getBoolean(
+			actionRequest, "instanceable");
 		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
 			actionRequest, "name");
 		String portletDisplayCategory = ParamUtil.getString(
@@ -83,11 +85,11 @@ public class EditCustomElementPortletEntryMVCActionCommand
 				CustomElementPortletEntry customElementPortletEntry =
 					_customElementPortletEntryLocalService.
 						addCustomElementPortletEntry(
-							serviceContext.getUserId(), cssURLs, nameMap,
-							portletDisplayCategory, tagAttributes, tagName,
-							serviceContext);
+							serviceContext.getUserId(), cssURLs, instanceable,
+							nameMap, portletDisplayCategory, tagAttributes,
+							tagName, serviceContext);
 
-				_customElementPortletRegistrar.unregisterPortlet(
+				_customElementPortletRegistrar.registerPortlet(
 					customElementPortletEntry);
 			}
 			else if (cmd.equals(Constants.UPDATE)) {
@@ -97,9 +99,9 @@ public class EditCustomElementPortletEntryMVCActionCommand
 				CustomElementPortletEntry customElementPortletEntry =
 					_customElementPortletEntryLocalService.
 						updateCustomElementPortletEntry(
-							customElementPortletEntryId, cssURLs, nameMap,
-							portletDisplayCategory, tagAttributes, tagName,
-							serviceContext);
+							customElementPortletEntryId, cssURLs, instanceable,
+							nameMap, portletDisplayCategory, tagAttributes,
+							tagName, serviceContext);
 
 				_customElementPortletRegistrar.unregisterPortlet(
 					customElementPortletEntry);

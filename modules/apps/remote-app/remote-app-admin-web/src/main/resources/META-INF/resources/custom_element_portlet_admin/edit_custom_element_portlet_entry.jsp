@@ -65,6 +65,8 @@ renderResponse.setTitle((customElementPortletEntry == null) ? LanguageUtil.get(r
 
 				</aui:select>
 
+				<aui:input label="instanceable" name="instanceable" type="checkbox" value='<%= BeanPropertiesUtil.getBoolean(customElementPortletEntry, "instanceable", true) %>' />
+
 				<aui:input helpMessage="tag-attributes-help" label="tag-attributes" name="tagAttributes" type="textarea" />
 				<aui:input helpMessage="css-urls-help" label="css-urls" name="cssURLs" type="textarea" />
 			</aui:fieldset>

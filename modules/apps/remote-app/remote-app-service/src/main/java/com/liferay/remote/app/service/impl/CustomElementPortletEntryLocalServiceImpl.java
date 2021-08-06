@@ -71,7 +71,7 @@ public class CustomElementPortletEntryLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CustomElementPortletEntry addCustomElementPortletEntry(
-			long userId, Collection<String> cssURLs,
+			long userId, Collection<String> cssURLs, boolean instanceable,
 			Map<Locale, String> nameMap, String portletDisplayCategory,
 			Map<String, String> tagAttributes, String tagName,
 			ServiceContext serviceContext)
@@ -90,6 +90,7 @@ public class CustomElementPortletEntryLocalServiceImpl
 		customElementPortletEntry.setUserId(user.getUserId());
 		customElementPortletEntry.setUserName(user.getFullName());
 		customElementPortletEntry.setCssURLs(_cssURLsParser.serialize(cssURLs));
+		customElementPortletEntry.setInstanceable(instanceable);
 		customElementPortletEntry.setNameMap(nameMap);
 		customElementPortletEntry.setTagAttributes(
 			_tagAttributesParser.serialize(tagAttributes));
@@ -125,9 +126,9 @@ public class CustomElementPortletEntryLocalServiceImpl
 	@Override
 	public CustomElementPortletEntry updateCustomElementPortletEntry(
 			long customElementPortletEntryId, Collection<String> cssURLs,
-			Map<Locale, String> nameMap, String portletDisplayCategory,
-			Map<String, String> tagAttributes, String tagName,
-			ServiceContext serviceContext)
+			boolean instanceable, Map<Locale, String> nameMap,
+			String portletDisplayCategory, Map<String, String> tagAttributes,
+			String tagName, ServiceContext serviceContext)
 		throws PortalException {
 
 		CustomElementPortletEntry customElementPortletEntry =
@@ -135,6 +136,7 @@ public class CustomElementPortletEntryLocalServiceImpl
 				customElementPortletEntryId);
 
 		customElementPortletEntry.setCssURLs(_cssURLsParser.serialize(cssURLs));
+		customElementPortletEntry.setInstanceable(instanceable);
 		customElementPortletEntry.setNameMap(nameMap);
 		customElementPortletEntry.setTagAttributes(
 			_tagAttributesParser.serialize(tagAttributes));
