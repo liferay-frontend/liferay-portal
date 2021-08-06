@@ -14,6 +14,7 @@
 
 package com.liferay.remote.app.admin.web.internal.portlet;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -41,7 +42,6 @@ import java.util.ResourceBundle;
 import javax.portlet.Portlet;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-import javax.portlet.RenderURL;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -51,6 +51,19 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class CustomElementPortlet extends MVCPortlet {
 
+	public static String getPortletName(
+		CustomElementPortletEntry customElementPortletEntry) {
+
+		String escapedTagName = customElementPortletEntry.getTagName();
+
+		escapedTagName = escapedTagName.replaceAll(
+			StringPool.DASH, StringPool.UNDERLINE);
+
+		return StringBundler.concat(
+			escapedTagName, StringPool.UNDERLINE,
+			customElementPortletEntry.getCustomElementPortletEntryId());
+	}
+
 	public CustomElementPortlet(
 		CustomElementPortletEntry customElementPortletEntry,
 		CSSURLsParser cssURLsParser, TagAttributesParser tagAttributesParser) {
@@ -58,6 +71,8 @@ public class CustomElementPortlet extends MVCPortlet {
 		_customElementPortletEntry = customElementPortletEntry;
 		_cssURLsParser = cssURLsParser;
 		_tagAttributesParser = tagAttributesParser;
+
+		_portletName = getPortletName(customElementPortletEntry);
 	}
 
 	public String getName() {
@@ -92,7 +107,7 @@ public class CustomElementPortlet extends MVCPortlet {
 		properties.put(
 			"com.liferay.portlet.instanceable",
 			_customElementPortletEntry.getInstanceable());
-		properties.put("javax.portlet.name", _getPortletName());
+		properties.put("javax.portlet.name", _portletName);
 		properties.put("javax.portlet.security-role-ref", "power-user,user");
 		properties.put(
 			"javax.portlet.resource-bundle", _getResourceBundleName());
@@ -112,7 +127,7 @@ public class CustomElementPortlet extends MVCPortlet {
 
 		properties = new Hashtable<>();
 
-		properties.put("javax.portlet.name", _getPortletName());
+		properties.put("javax.portlet.name", _portletName);
 
 		_friendlyURLMapperServiceRegistration = bundleContext.registerService(
 			FriendlyURLMapper.class,
@@ -171,11 +186,6 @@ public class CustomElementPortlet extends MVCPortlet {
 		_serviceRegistration = null;
 	}
 
-	private String _getPortletName() {
-		return "custom_element_portlet_" +
-			_customElementPortletEntry.getCustomElementPortletEntryId();
-	}
-
 	private ResourceBundle _getResourceBundle(Locale locale) {
 		return new ResourceBundle() {
 
@@ -190,7 +200,7 @@ public class CustomElementPortlet extends MVCPortlet {
 			}
 
 			private final Map<String, String> _labels = HashMapBuilder.put(
-				"javax.portlet.title." + _getPortletName(),
+				"javax.portlet.title." + _portletName,
 				_customElementPortletEntry.getName(locale)
 			).build();
 
@@ -198,7 +208,7 @@ public class CustomElementPortlet extends MVCPortlet {
 	}
 
 	private String _getResourceBundleName() {
-		return _getPortletName() + ".Language";
+		return _portletName + ".Language";
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -208,6 +218,7 @@ public class CustomElementPortlet extends MVCPortlet {
 	private final CustomElementPortletEntry _customElementPortletEntry;
 	private ServiceRegistration<FriendlyURLMapper>
 		_friendlyURLMapperServiceRegistration;
+	private final String _portletName;
 	private ServiceRegistration<ResourceBundleLoader>
 		_resourceBundleLoaderServiceRegistration;
 	private ServiceRegistration<Portlet> _serviceRegistration;

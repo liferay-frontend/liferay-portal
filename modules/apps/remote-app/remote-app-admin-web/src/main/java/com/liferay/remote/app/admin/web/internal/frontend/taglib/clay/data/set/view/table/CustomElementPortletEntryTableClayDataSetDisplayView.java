@@ -45,6 +45,8 @@ public class CustomElementPortletEntryTableClayDataSetDisplayView
 			clayTableSchemaBuilder, "name", "name", "actionLink");
 		_addClayTableSchemaField(
 			clayTableSchemaBuilder, "tagName", "html-tag-name");
+		_addClayTableSchemaField(
+			clayTableSchemaBuilder, "portletName", "portlet-name");
 
 		return clayTableSchemaBuilder.build();
 	}

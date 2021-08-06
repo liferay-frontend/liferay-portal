@@ -14,6 +14,7 @@
 
 package com.liferay.remote.app.admin.web.internal.frontend.taglib.clay.data.set;
 
+import com.liferay.remote.app.admin.web.internal.portlet.CustomElementPortlet;
 import com.liferay.remote.app.model.CustomElementPortletEntry;
 
 import java.util.Locale;
@@ -36,6 +37,10 @@ public class CustomElementPortletClayDataSetEntry {
 
 	public String getName() {
 		return _customElementPortletEntry.getName(_locale);
+	}
+
+	public String getPortletName() {
+		return CustomElementPortlet.getPortletName(_customElementPortletEntry);
 	}
 
 	public String getTagName() {
