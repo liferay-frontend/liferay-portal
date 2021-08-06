@@ -56,6 +56,7 @@ public class CustomElementPortletEntryWrapper
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("cssURLs", getCssURLs());
+		attributes.put("instanceable", getInstanceable());
 		attributes.put("tagAttributes", getTagAttributes());
 		attributes.put("name", getName());
 		attributes.put("portletDisplayCategory", getPortletDisplayCategory());
@@ -119,6 +120,12 @@ public class CustomElementPortletEntryWrapper
 
 		if (cssURLs != null) {
 			setCssURLs(cssURLs);
+		}
+
+		Boolean instanceable = (Boolean)attributes.get("instanceable");
+
+		if (instanceable != null) {
+			setInstanceable(instanceable);
 		}
 
 		String tagAttributes = (String)attributes.get("tagAttributes");
@@ -215,6 +222,16 @@ public class CustomElementPortletEntryWrapper
 	@Override
 	public String getDefaultLanguageId() {
 		return model.getDefaultLanguageId();
+	}
+
+	/**
+	 * Returns the instanceable of this custom element portlet entry.
+	 *
+	 * @return the instanceable of this custom element portlet entry
+	 */
+	@Override
+	public Boolean getInstanceable() {
+		return model.getInstanceable();
 	}
 
 	/**
@@ -473,6 +490,16 @@ public class CustomElementPortletEntryWrapper
 		long customElementPortletEntryId) {
 
 		model.setCustomElementPortletEntryId(customElementPortletEntryId);
+	}
+
+	/**
+	 * Sets the instanceable of this custom element portlet entry.
+	 *
+	 * @param instanceable the instanceable of this custom element portlet entry
+	 */
+	@Override
+	public void setInstanceable(Boolean instanceable) {
+		model.setInstanceable(instanceable);
 	}
 
 	/**

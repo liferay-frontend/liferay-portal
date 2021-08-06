@@ -11,6 +11,7 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="cssURLs" type="String" />
+		<field name="instanceable" type="Boolean" />
 		<field name="tagAttributes" type="String" />
 		<field localized="true" name="name" type="String" />
 		<field name="portletDisplayCategory" type="String" />

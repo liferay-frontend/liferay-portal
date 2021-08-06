@@ -84,8 +84,9 @@ public class CustomElementPortletEntryModelImpl
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"modifiedDate", Types.TIMESTAMP}, {"cssURLs", Types.VARCHAR},
-		{"tagAttributes", Types.VARCHAR}, {"name", Types.VARCHAR},
-		{"portletDisplayCategory", Types.VARCHAR}, {"tagName", Types.VARCHAR}
+		{"instanceable", Types.BOOLEAN}, {"tagAttributes", Types.VARCHAR},
+		{"name", Types.VARCHAR}, {"portletDisplayCategory", Types.VARCHAR},
+		{"tagName", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -101,6 +102,7 @@ public class CustomElementPortletEntryModelImpl
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("cssURLs", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("instanceable", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("tagAttributes", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("portletDisplayCategory", Types.VARCHAR);
@@ -108,7 +110,7 @@ public class CustomElementPortletEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CustomElementPortletEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,customElementPortletEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,cssURLs VARCHAR(75) null,tagAttributes VARCHAR(75) null,name STRING null,portletDisplayCategory VARCHAR(75) null,tagName VARCHAR(75) null)";
+		"create table CustomElementPortletEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,customElementPortletEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,cssURLs VARCHAR(75) null,instanceable BOOLEAN,tagAttributes VARCHAR(75) null,name STRING null,portletDisplayCategory VARCHAR(75) null,tagName VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CustomElementPortletEntry";
@@ -345,6 +347,12 @@ public class CustomElementPortletEntryModelImpl
 			(BiConsumer<CustomElementPortletEntry, String>)
 				CustomElementPortletEntry::setCssURLs);
 		attributeGetterFunctions.put(
+			"instanceable", CustomElementPortletEntry::getInstanceable);
+		attributeSetterBiConsumers.put(
+			"instanceable",
+			(BiConsumer<CustomElementPortletEntry, Boolean>)
+				CustomElementPortletEntry::setInstanceable);
+		attributeGetterFunctions.put(
 			"tagAttributes", CustomElementPortletEntry::getTagAttributes);
 		attributeSetterBiConsumers.put(
 			"tagAttributes",
@@ -558,6 +566,20 @@ public class CustomElementPortletEntryModelImpl
 		}
 
 		_cssURLs = cssURLs;
+	}
+
+	@Override
+	public Boolean getInstanceable() {
+		return _instanceable;
+	}
+
+	@Override
+	public void setInstanceable(Boolean instanceable) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_instanceable = instanceable;
 	}
 
 	@Override
@@ -888,6 +910,7 @@ public class CustomElementPortletEntryModelImpl
 		customElementPortletEntryImpl.setCreateDate(getCreateDate());
 		customElementPortletEntryImpl.setModifiedDate(getModifiedDate());
 		customElementPortletEntryImpl.setCssURLs(getCssURLs());
+		customElementPortletEntryImpl.setInstanceable(getInstanceable());
 		customElementPortletEntryImpl.setTagAttributes(getTagAttributes());
 		customElementPortletEntryImpl.setName(getName());
 		customElementPortletEntryImpl.setPortletDisplayCategory(
@@ -1027,6 +1050,12 @@ public class CustomElementPortletEntryModelImpl
 			customElementPortletEntryCacheModel.cssURLs = null;
 		}
 
+		Boolean instanceable = getInstanceable();
+
+		if (instanceable != null) {
+			customElementPortletEntryCacheModel.instanceable = instanceable;
+		}
+
 		customElementPortletEntryCacheModel.tagAttributes = getTagAttributes();
 
 		String tagAttributes =
@@ -1151,6 +1180,7 @@ public class CustomElementPortletEntryModelImpl
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private String _cssURLs;
+	private Boolean _instanceable;
 	private String _tagAttributes;
 	private String _name;
 	private String _nameCurrentLanguageId;
@@ -1196,6 +1226,7 @@ public class CustomElementPortletEntryModelImpl
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
 		_columnOriginalValues.put("cssURLs", _cssURLs);
+		_columnOriginalValues.put("instanceable", _instanceable);
 		_columnOriginalValues.put("tagAttributes", _tagAttributes);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put(
@@ -1242,13 +1273,15 @@ public class CustomElementPortletEntryModelImpl
 
 		columnBitmasks.put("cssURLs", 256L);
 
-		columnBitmasks.put("tagAttributes", 512L);
+		columnBitmasks.put("instanceable", 512L);
 
-		columnBitmasks.put("name", 1024L);
+		columnBitmasks.put("tagAttributes", 1024L);
 
-		columnBitmasks.put("portletDisplayCategory", 2048L);
+		columnBitmasks.put("name", 2048L);
 
-		columnBitmasks.put("tagName", 4096L);
+		columnBitmasks.put("portletDisplayCategory", 4096L);
+
+		columnBitmasks.put("tagName", 8192L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

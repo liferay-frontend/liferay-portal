@@ -59,6 +59,7 @@ public class CustomElementPortletEntryLocalServiceWrapper
 	public com.liferay.remote.app.model.CustomElementPortletEntry
 			addCustomElementPortletEntry(
 				long userId, java.util.Collection<String> cssURLs,
+				boolean instanceable,
 				java.util.Map<java.util.Locale, String> nameMap,
 				String portletDisplayCategory,
 				java.util.Map<String, String> tagAttributes, String tagName,
@@ -67,8 +68,8 @@ public class CustomElementPortletEntryLocalServiceWrapper
 
 		return _customElementPortletEntryLocalService.
 			addCustomElementPortletEntry(
-				userId, cssURLs, nameMap, portletDisplayCategory, tagAttributes,
-				tagName, serviceContext);
+				userId, cssURLs, instanceable, nameMap, portletDisplayCategory,
+				tagAttributes, tagName, serviceContext);
 	}
 
 	/**
@@ -438,7 +439,7 @@ public class CustomElementPortletEntryLocalServiceWrapper
 	public com.liferay.remote.app.model.CustomElementPortletEntry
 			updateCustomElementPortletEntry(
 				long customElementPortletEntryId,
-				java.util.Collection<String> cssURLs,
+				java.util.Collection<String> cssURLs, boolean instanceable,
 				java.util.Map<java.util.Locale, String> nameMap,
 				String portletDisplayCategory,
 				java.util.Map<String, String> tagAttributes, String tagName,
@@ -447,7 +448,7 @@ public class CustomElementPortletEntryLocalServiceWrapper
 
 		return _customElementPortletEntryLocalService.
 			updateCustomElementPortletEntry(
-				customElementPortletEntryId, cssURLs, nameMap,
+				customElementPortletEntryId, cssURLs, instanceable, nameMap,
 				portletDisplayCategory, tagAttributes, tagName, serviceContext);
 	}
 

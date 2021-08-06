@@ -46,6 +46,7 @@ public class CustomElementPortletEntrySoap implements Serializable {
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setCssURLs(model.getCssURLs());
+		soapModel.setInstanceable(model.getInstanceable());
 		soapModel.setTagAttributes(model.getTagAttributes());
 		soapModel.setName(model.getName());
 		soapModel.setPortletDisplayCategory(model.getPortletDisplayCategory());
@@ -187,6 +188,14 @@ public class CustomElementPortletEntrySoap implements Serializable {
 		_cssURLs = cssURLs;
 	}
 
+	public Boolean getInstanceable() {
+		return _instanceable;
+	}
+
+	public void setInstanceable(Boolean instanceable) {
+		_instanceable = instanceable;
+	}
+
 	public String getTagAttributes() {
 		return _tagAttributes;
 	}
@@ -228,6 +237,7 @@ public class CustomElementPortletEntrySoap implements Serializable {
 	private Date _createDate;
 	private Date _modifiedDate;
 	private String _cssURLs;
+	private Boolean _instanceable;
 	private String _tagAttributes;
 	private String _name;
 	private String _portletDisplayCategory;

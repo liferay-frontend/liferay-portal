@@ -8,6 +8,7 @@ create table CustomElementPortletEntry (
 	createDate DATE null,
 	modifiedDate DATE null,
 	cssURLs VARCHAR(75) null,
+	instanceable BOOLEAN,
 	tagAttributes VARCHAR(75) null,
 	name STRING null,
 	portletDisplayCategory VARCHAR(75) null,

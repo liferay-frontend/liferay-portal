@@ -85,7 +85,7 @@ public interface CustomElementPortletEntryLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CustomElementPortletEntry addCustomElementPortletEntry(
-			long userId, Collection<String> cssURLs,
+			long userId, Collection<String> cssURLs, boolean instanceable,
 			Map<Locale, String> nameMap, String portletDisplayCategory,
 			Map<String, String> tagAttributes, String tagName,
 			ServiceContext serviceContext)
@@ -333,9 +333,9 @@ public interface CustomElementPortletEntryLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public CustomElementPortletEntry updateCustomElementPortletEntry(
 			long customElementPortletEntryId, Collection<String> cssURLs,
-			Map<Locale, String> nameMap, String portletDisplayCategory,
-			Map<String, String> tagAttributes, String tagName,
-			ServiceContext serviceContext)
+			boolean instanceable, Map<Locale, String> nameMap,
+			String portletDisplayCategory, Map<String, String> tagAttributes,
+			String tagName, ServiceContext serviceContext)
 		throws PortalException;
 
 }

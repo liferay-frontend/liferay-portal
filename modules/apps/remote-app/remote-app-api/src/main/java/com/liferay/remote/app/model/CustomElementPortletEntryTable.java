@@ -60,6 +60,9 @@ public class CustomElementPortletEntryTable
 	public final Column<CustomElementPortletEntryTable, String> cssURLs =
 		createColumn(
 			"cssURLs", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CustomElementPortletEntryTable, Boolean> instanceable =
+		createColumn(
+			"instanceable", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
 	public final Column<CustomElementPortletEntryTable, String> tagAttributes =
 		createColumn(
 			"tagAttributes", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);

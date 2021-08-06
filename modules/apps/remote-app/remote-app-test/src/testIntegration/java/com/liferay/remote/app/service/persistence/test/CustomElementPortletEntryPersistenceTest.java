@@ -143,6 +143,8 @@ public class CustomElementPortletEntryPersistenceTest {
 
 		newCustomElementPortletEntry.setCssURLs(RandomTestUtil.randomString());
 
+		newCustomElementPortletEntry.setInstanceable(RandomTestUtil.randomBoolean());
+
 		newCustomElementPortletEntry.setTagAttributes(
 			RandomTestUtil.randomString());
 
@@ -191,6 +193,9 @@ public class CustomElementPortletEntryPersistenceTest {
 		Assert.assertEquals(
 			existingCustomElementPortletEntry.getCssURLs(),
 			newCustomElementPortletEntry.getCssURLs());
+		Assert.assertEquals(
+			existingCustomElementPortletEntry.getInstanceable(),
+			newCustomElementPortletEntry.getInstanceable());
 		Assert.assertEquals(
 			existingCustomElementPortletEntry.getTagAttributes(),
 			newCustomElementPortletEntry.getTagAttributes());
@@ -256,8 +261,8 @@ public class CustomElementPortletEntryPersistenceTest {
 			"CustomElementPortletEntry", "mvccVersion", true, "uuid", true,
 			"customElementPortletEntryId", true, "companyId", true, "userId",
 			true, "userName", true, "createDate", true, "modifiedDate", true,
-			"cssURLs", true, "tagAttributes", true, "name", true,
-			"portletDisplayCategory", true, "tagName", true);
+			"cssURLs", true, "instanceable", true, "tagAttributes", true,
+			"name", true, "portletDisplayCategory", true, "tagName", true);
 	}
 
 	@Test
@@ -527,6 +532,8 @@ public class CustomElementPortletEntryPersistenceTest {
 		customElementPortletEntry.setModifiedDate(RandomTestUtil.nextDate());
 
 		customElementPortletEntry.setCssURLs(RandomTestUtil.randomString());
+
+		customElementPortletEntry.setInstanceable();
 
 		customElementPortletEntry.setTagAttributes(
 			RandomTestUtil.randomString());

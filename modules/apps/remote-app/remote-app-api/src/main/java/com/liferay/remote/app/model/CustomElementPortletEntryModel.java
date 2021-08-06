@@ -226,6 +226,20 @@ public interface CustomElementPortletEntryModel
 	public void setCssURLs(String cssURLs);
 
 	/**
+	 * Returns the instanceable of this custom element portlet entry.
+	 *
+	 * @return the instanceable of this custom element portlet entry
+	 */
+	public Boolean getInstanceable();
+
+	/**
+	 * Sets the instanceable of this custom element portlet entry.
+	 *
+	 * @param instanceable the instanceable of this custom element portlet entry
+	 */
+	public void setInstanceable(Boolean instanceable);
+
+	/**
 	 * Returns the tag attributes of this custom element portlet entry.
 	 *
 	 * @return the tag attributes of this custom element portlet entry

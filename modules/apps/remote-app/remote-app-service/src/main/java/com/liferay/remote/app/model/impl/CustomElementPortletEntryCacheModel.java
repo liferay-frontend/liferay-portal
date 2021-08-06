@@ -81,7 +81,7 @@ public class CustomElementPortletEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -101,6 +101,8 @@ public class CustomElementPortletEntryCacheModel
 		sb.append(modifiedDate);
 		sb.append(", cssURLs=");
 		sb.append(cssURLs);
+		sb.append(", instanceable=");
+		sb.append(instanceable);
 		sb.append(", tagAttributes=");
 		sb.append(tagAttributes);
 		sb.append(", name=");
@@ -162,6 +164,8 @@ public class CustomElementPortletEntryCacheModel
 			customElementPortletEntryImpl.setCssURLs(cssURLs);
 		}
 
+		customElementPortletEntryImpl.setInstanceable(instanceable);
+
 		if (tagAttributes == null) {
 			customElementPortletEntryImpl.setTagAttributes("");
 		}
@@ -210,6 +214,8 @@ public class CustomElementPortletEntryCacheModel
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 		cssURLs = objectInput.readUTF();
+
+		instanceable = objectInput.readBoolean();
 		tagAttributes = objectInput.readUTF();
 		name = objectInput.readUTF();
 		portletDisplayCategory = objectInput.readUTF();
@@ -250,6 +256,8 @@ public class CustomElementPortletEntryCacheModel
 			objectOutput.writeUTF(cssURLs);
 		}
 
+		objectOutput.writeBoolean(instanceable);
+
 		if (tagAttributes == null) {
 			objectOutput.writeUTF("");
 		}
@@ -288,6 +296,7 @@ public class CustomElementPortletEntryCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public String cssURLs;
+	public boolean instanceable;
 	public String tagAttributes;
 	public String name;
 	public String portletDisplayCategory;
