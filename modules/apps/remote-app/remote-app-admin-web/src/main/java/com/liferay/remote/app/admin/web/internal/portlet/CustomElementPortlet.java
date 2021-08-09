@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.remote.app.admin.web.internal.route.CustomElementPortletEntryFriendlyURLMapper;
 import com.liferay.remote.app.model.CustomElementPortletEntry;
 import com.liferay.remote.app.util.CSSURLsParser;
@@ -32,9 +34,7 @@ import java.io.PrintWriter;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -88,46 +88,47 @@ public class CustomElementPortlet extends MVCPortlet {
 			throw new IllegalStateException("Portlet is already registered");
 		}
 
-		Dictionary<String, Object> properties = new Hashtable<>();
-
-		properties.put(
-			"com.liferay.portlet.css-class-wrapper",
-			"portlet-custom-element-portlet");
-
 		Collection<String> cssURLs = _cssURLsParser.parse(
 			_customElementPortletEntry.getCssURLs());
 
-		properties.put(
-			"com.liferay.portlet.header-portal-css",
-			cssURLs.toArray(new String[0]));
-
-		properties.put(
-			"com.liferay.portlet.display-category",
-			_customElementPortletEntry.getPortletDisplayCategory());
-		properties.put(
-			"com.liferay.portlet.instanceable",
-			_customElementPortletEntry.getInstanceable());
-		properties.put("javax.portlet.name", _portletName);
-		properties.put("javax.portlet.security-role-ref", "power-user,user");
-		properties.put(
-			"javax.portlet.resource-bundle", _getResourceBundleName());
+		HashMapDictionary<String, Object> properties =
+			HashMapDictionaryBuilder.<String, Object>put(
+				"com.liferay.portlet.css-class-wrapper",
+				"portlet-custom-element-portlet"
+			).put(
+				"com.liferay.portlet.header-portal-css",
+				cssURLs.toArray(new String[0])
+			).put(
+				"com.liferay.portlet.display-category",
+				_customElementPortletEntry.getPortletDisplayCategory()
+			).put(
+				"com.liferay.portlet.instanceable",
+				_customElementPortletEntry.getInstanceable()
+			).put(
+				"javax.portlet.name", _portletName
+			).put(
+				"javax.portlet.security-role-ref", "power-user,user"
+			).put(
+				"javax.portlet.resource-bundle", _getResourceBundleName()
+			).build();
 
 		_serviceRegistration = bundleContext.registerService(
 			Portlet.class, this, properties);
 
-		properties = new Hashtable<>();
-
-		properties.put("resource.bundle.base.name", _getResourceBundleName());
-		properties.put("servlet.context.name", "remote-app-admin-web");
+		properties = HashMapDictionaryBuilder.<String, Object>put(
+			"resource.bundle.base.name", _getResourceBundleName()
+		).put(
+			"servlet.context.name", "remote-app-admin-web"
+		).build();
 
 		_resourceBundleLoaderServiceRegistration =
 			bundleContext.registerService(
 				ResourceBundleLoader.class,
 				locale -> _getResourceBundle(locale), properties);
 
-		properties = new Hashtable<>();
-
-		properties.put("javax.portlet.name", _portletName);
+		HashMapDictionaryBuilder.<String, Object>put(
+			"javax.portlet.name", _portletName
+		).build();
 
 		_friendlyURLMapperServiceRegistration = bundleContext.registerService(
 			FriendlyURLMapper.class,
