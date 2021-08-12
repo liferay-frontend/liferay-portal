@@ -31,6 +31,8 @@ import java.net.URL;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
@@ -107,19 +109,28 @@ public class IconContributorExtender
 		_serviceTracker.close();
 	}
 
-	private static String _getSVGContent(URL url) throws IOException {
+	private static String _getSymbolContent(String name, URL url) throws IOException {
 		try (InputStream is = url.openStream()) {
-			String svgContent = StringUtil.read(is);
+			String symbolContent = StringUtil.read(is);
 
-			// TODO: pasar esto al DynInclude y parsear el viewBox para meterlo en el symbol
+			String viewBox = "";
 
-			svgContent = svgContent.replaceFirst(
+			Pattern pattern = Pattern.compile("(?i)(viewBox.*\"(?=[\\s, >]))");
+			Matcher matcher = pattern.matcher(symbolContent);
+			if (matcher.find()) {
+				viewBox = matcher.group(1);
+			}
+
+			symbolContent = symbolContent.replaceFirst(
 				"(?i)<svg[^>]*>", StringPool.BLANK);
 
-			svgContent = svgContent.replaceFirst(
+			symbolContent = symbolContent.replaceFirst(
 				"(?i)</svg[^>]*>", StringPool.BLANK);
 
-			return svgContent;
+
+			symbolContent = "<symbol id=" + StringPool.QUOTE +name+ StringPool.QUOTE + StringPool.SPACE + viewBox + ">" + symbolContent + "</symbol>";
+
+			return symbolContent;
 		}
 	}
 
@@ -134,6 +145,7 @@ public class IconContributorExtender
 		}
 
 		String liferayIconsPath = headers.get("Liferay-Icons-Path");
+		String liferayIconsNamespace= headers.get("Liferay-Icons-Namespace");
 
 		if (Validator.isBlank(liferayIconsPath)) {
 			return null;
@@ -162,9 +174,13 @@ public class IconContributorExtender
 
 			name = FileUtil.stripExtension(name);
 
+			if (!Validator.isBlank(liferayIconsNamespace)) {
+				name = liferayIconsNamespace + "_" + name;
+			}
+
 			try {
 				iconResourcesContributorImpl.addIconResource(
-					new IconResourceImpl(name, _getSVGContent(url)));
+					new IconResourceImpl(name, _getSymbolContent(name, url)));
 			}
 			catch (IOException ioe) {
 				_log.error(
