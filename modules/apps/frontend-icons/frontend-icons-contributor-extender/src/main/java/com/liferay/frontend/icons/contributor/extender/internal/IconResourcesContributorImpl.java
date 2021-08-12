@@ -12,15 +12,29 @@
  * details.
  */
 
-package com.liferay.frontend.js.icon.contributor.extender;
+package com.liferay.frontend.icons.contributor.extender.internal;
 
+import com.liferay.frontend.icons.contributor.extender.IconResource;
+import com.liferay.frontend.icons.contributor.extender.IconResourcesContributor;
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Iván Zaera Avellón
  */
-public interface IconResourcesContributor {
+public class IconResourcesContributorImpl implements IconResourcesContributor {
 
-	public Collection<IconResource> getIconResources();
+	public void addIconResource(IconResource iconResource) {
+		_iconResources.add(iconResource);
+	}
+
+	@Override
+	public Collection<IconResource> getIconResources() {
+		return _iconResources;
+	}
+
+	private final List<IconResource> _iconResources = new ArrayList<>();
 
 }

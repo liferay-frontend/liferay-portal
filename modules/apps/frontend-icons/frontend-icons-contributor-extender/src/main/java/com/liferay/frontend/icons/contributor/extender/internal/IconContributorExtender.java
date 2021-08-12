@@ -12,9 +12,9 @@
  * details.
  */
 
-package com.liferay.frontend.js.icon.contributor.extender.internal;
+package com.liferay.frontend.icons.contributor.extender.internal;
 
-import com.liferay.frontend.js.icon.contributor.extender.IconResourcesContributor;
+import com.liferay.frontend.icons.contributor.extender.IconResourcesContributor;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;

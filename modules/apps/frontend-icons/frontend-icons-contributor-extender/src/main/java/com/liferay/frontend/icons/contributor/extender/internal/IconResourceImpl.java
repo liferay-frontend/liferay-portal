@@ -12,9 +12,9 @@
  * details.
  */
 
-package com.liferay.frontend.js.icon.contributor.extender.internal;
+package com.liferay.frontend.icons.contributor.extender.internal;
 
-import com.liferay.frontend.js.icon.contributor.extender.IconResource;
+import com.liferay.frontend.icons.contributor.extender.IconResource;
 
 /**
  * @author Iván Zaera Avellón
