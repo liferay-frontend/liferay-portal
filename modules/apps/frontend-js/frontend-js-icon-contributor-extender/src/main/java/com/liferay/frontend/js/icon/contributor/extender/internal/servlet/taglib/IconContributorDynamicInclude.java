@@ -68,13 +68,7 @@ public class IconContributorDynamicInclude implements DynamicInclude {
 
 				IconResource iconResource = iconResources.get(0);
 
-				printWriter.print("<symbol id=");
-				printWriter.print(StringPool.QUOTE);
-				printWriter.print(iconResource.getId());
-				printWriter.print(StringPool.QUOTE);
-				printWriter.print(">");
 				printWriter.print(iconResource.getSVGContent());
-				printWriter.print("</symbol>");
 			}
 		}
 		finally {
