@@ -53,7 +53,7 @@ public class IconContributorDynamicInclude implements DynamicInclude {
 
 		PrintWriter printWriter = httpServletResponse.getWriter();
 
-		printWriter.write("<svg>");
+		printWriter.write("<svg style=\"display:none;\">");
 
 		Lock lock = _readWriteLock.readLock();
 
