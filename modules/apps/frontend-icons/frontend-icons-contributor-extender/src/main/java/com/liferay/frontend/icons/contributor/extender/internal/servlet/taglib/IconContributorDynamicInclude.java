@@ -12,10 +12,10 @@
  * details.
  */
 
-package com.liferay.frontend.js.icon.contributor.extender.internal.servlet.taglib;
+package com.liferay.frontend.icons.contributor.extender.internal.servlet.taglib;
 
-import com.liferay.frontend.js.icon.contributor.extender.IconResource;
-import com.liferay.frontend.js.icon.contributor.extender.IconResourcesContributor;
+import com.liferay.frontend.icons.contributor.extender.IconResource;
+import com.liferay.frontend.icons.contributor.extender.IconResourcesContributor;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 

@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.frontend.js.icon.contributor.extender;
+package com.liferay.frontend.icons.contributor.extender;
 
 /**
  * @author Iván Zaera Avellón
