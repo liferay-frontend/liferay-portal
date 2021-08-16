@@ -105,13 +105,11 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {objectDefinitionObjectFields(objectDefinitionId: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {objectDefinitionObjectFields(objectDefinitionId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ObjectFieldPage objectDefinitionObjectFields(
-			@GraphQLName("objectDefinitionId") Long objectDefinitionId,
-			@GraphQLName("pageSize") int pageSize,
-			@GraphQLName("page") int page)
+			@GraphQLName("objectDefinitionId") Long objectDefinitionId)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
@@ -119,7 +117,7 @@ public class Query {
 			this::_populateResourceContext,
 			objectFieldResource -> new ObjectFieldPage(
 				objectFieldResource.getObjectDefinitionObjectFieldsPage(
-					objectDefinitionId, Pagination.of(page, pageSize))));
+					objectDefinitionId)));
 	}
 
 	/**

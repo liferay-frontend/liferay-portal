@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.pagination.Page;
-import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Locale;
 
@@ -50,7 +49,7 @@ public interface ObjectFieldResource {
 	}
 
 	public Page<ObjectField> getObjectDefinitionObjectFieldsPage(
-			Long objectDefinitionId, Pagination pagination)
+			Long objectDefinitionId)
 		throws Exception;
 
 	public ObjectField postObjectDefinitionObjectField(

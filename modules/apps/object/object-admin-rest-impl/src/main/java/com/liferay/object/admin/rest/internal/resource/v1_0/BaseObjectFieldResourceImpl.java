@@ -65,7 +65,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -89,19 +88,14 @@ public abstract class BaseObjectFieldResourceImpl
 	@GET
 	@Override
 	@Parameters(
-		value = {
-			@Parameter(in = ParameterIn.PATH, name = "objectDefinitionId"),
-			@Parameter(in = ParameterIn.QUERY, name = "page"),
-			@Parameter(in = ParameterIn.QUERY, name = "pageSize")
-		}
+		value = {@Parameter(in = ParameterIn.PATH, name = "objectDefinitionId")}
 	)
 	@Path("/object-definitions/{objectDefinitionId}/object-fields")
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "ObjectField")})
 	public Page<ObjectField> getObjectDefinitionObjectFieldsPage(
 			@NotNull @Parameter(hidden = true) @PathParam("objectDefinitionId")
-				Long objectDefinitionId,
-			@Context Pagination pagination)
+				Long objectDefinitionId)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -355,8 +349,7 @@ public abstract class BaseObjectFieldResourceImpl
 		throws Exception {
 
 		return getObjectDefinitionObjectFieldsPage(
-			Long.parseLong((String)parameters.get("objectDefinitionId")),
-			pagination);
+			Long.parseLong((String)parameters.get("objectDefinitionId")));
 	}
 
 	@Override
