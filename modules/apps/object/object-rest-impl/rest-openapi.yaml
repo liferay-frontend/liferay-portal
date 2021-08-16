@@ -240,6 +240,35 @@ paths:
                     description:
                         ""
             tags: ["ObjectEntry"]
+        patch:
+            operationId: patchObjectEntry
+            parameters:
+                - in: path
+                  name: objectEntryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ObjectEntry"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ObjectEntry"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                    description:
+                        ""
+            tags: ["ObjectEntry"]
         put:
             operationId: putObjectEntry
             parameters:

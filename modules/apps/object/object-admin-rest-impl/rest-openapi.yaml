@@ -288,6 +288,35 @@ paths:
                     description:
                         ""
             tags: ["ObjectField"]
+        patch:
+            operationId: patchObjectField
+            parameters:
+                - in: path
+                  name: objectFieldId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ObjectField"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ObjectField"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectField"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectField"
+                    description:
+                        ""
+            tags: ["ObjectField"]
         put:
             operationId: putObjectField
             parameters:
