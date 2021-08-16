@@ -28,8 +28,6 @@ import Numeric from 'dynamic-data-mapping-form-field-type/Numeric/Numeric';
 import RichText from 'dynamic-data-mapping-form-field-type/RichText/RichText.es';
 import Select from 'dynamic-data-mapping-form-field-type/Select/Select.es';
 import Text from 'dynamic-data-mapping-form-field-type/Text/Text.es';
-
-import 'frontend-editor-ckeditor-web';
 import React from 'react';
 
 import {Editor} from '../../../../../../src/main/resources/META-INF/resources/data_layout_builder/js/components/rules/editor/Editor.es';
