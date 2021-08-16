@@ -32,7 +32,6 @@ const AdminTooltip = ({
 	const [sku, setSku] = useState(showTooltip.details.sku);
 	const [quantity, setQuantity] = useState(showTooltip.details.quantity);
 	const [networkStatus, setNetworkStatus] = useState(4);
-
 	const initialLoading = networkStatus === 1;
 	const loadingAd = networkStatus < 4;
 	const error = networkStatus === 5;
@@ -84,11 +83,15 @@ const AdminTooltip = ({
 						onSelectedValueChange={(val) => setLinkedValue(val)}
 						selectedValue={linkedValue}
 					>
-						<ClayRadio label={Liferay.Language.get('linked-to-sku')}
-								   value="sku" />
+						<ClayRadio
+							label={Liferay.Language.get('linked-to-sku')}
+							value="sku"
+						/>
 
-						<ClayRadio label={Liferay.Language.get('linked-to-diagram')}
-								   value="diagram" />
+						<ClayRadio
+							label={Liferay.Language.get('linked-to-diagram')}
+							value="diagram"
+						/>
 					</ClayRadioGroup>
 				</ClayForm.Group>
 
@@ -132,6 +135,7 @@ const AdminTooltip = ({
 					<label htmlFor={`${namespace}pin-quantity`}>
 						{Liferay.Language.get('quantity')}
 					</label>
+
 					<ClayInput
 						id={`${namespace}pin-quantity`}
 						onChange={(event) =>
@@ -150,6 +154,7 @@ const AdminTooltip = ({
 								handler: true,
 								pin: showTooltip.details.id,
 							});
+
 							setShowTooltip({
 								details: {
 									cx: null,
@@ -188,6 +193,7 @@ const AdminTooltip = ({
 					>
 						{Liferay.Language.get('cancel')}
 					</ClayButton>
+
 					<ClayButton
 						displayType="primary"
 						onClick={() => {
@@ -200,6 +206,7 @@ const AdminTooltip = ({
 								quantity,
 								sku,
 							});
+
 							setShowTooltip({
 								details: {
 									cx: showTooltip.details.cx,

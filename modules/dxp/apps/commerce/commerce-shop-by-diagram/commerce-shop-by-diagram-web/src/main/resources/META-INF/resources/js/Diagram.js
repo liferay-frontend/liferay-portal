@@ -12,7 +12,7 @@
 import {ClayIconSpriteContext} from '@clayui/icon';
 import {fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import AdminTooltip from './AdminTooltip';
 import DiagramFooter from './DiagramFooter';
