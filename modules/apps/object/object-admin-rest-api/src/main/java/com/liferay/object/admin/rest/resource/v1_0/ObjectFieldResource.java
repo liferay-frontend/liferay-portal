@@ -63,6 +63,10 @@ public interface ObjectFieldResource {
 
 	public ObjectField getObjectField(Long objectFieldId) throws Exception;
 
+	public ObjectField patchObjectField(
+			Long objectFieldId, ObjectField objectField)
+		throws Exception;
+
 	public ObjectField putObjectField(
 			Long objectFieldId, ObjectField objectField)
 		throws Exception;

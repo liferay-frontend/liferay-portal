@@ -163,6 +163,19 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public ObjectField patchObjectField(
+			@GraphQLName("objectFieldId") Long objectFieldId,
+			@GraphQLName("objectField") ObjectField objectField)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_objectFieldResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			objectFieldResource -> objectFieldResource.patchObjectField(
+				objectFieldId, objectField));
+	}
+
+	@GraphQLField
 	public ObjectField updateObjectField(
 			@GraphQLName("objectFieldId") Long objectFieldId,
 			@GraphQLName("objectField") ObjectField objectField)

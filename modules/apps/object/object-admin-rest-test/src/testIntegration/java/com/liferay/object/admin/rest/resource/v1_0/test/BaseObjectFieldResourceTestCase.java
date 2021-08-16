@@ -396,6 +396,35 @@ public abstract class BaseObjectFieldResourceTestCase {
 	}
 
 	@Test
+	public void testPatchObjectField() throws Exception {
+		ObjectField postObjectField = testPatchObjectField_addObjectField();
+
+		ObjectField randomPatchObjectField = randomPatchObjectField();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ObjectField patchObjectField = objectFieldResource.patchObjectField(
+			postObjectField.getId(), randomPatchObjectField);
+
+		ObjectField expectedPatchObjectField = postObjectField.clone();
+
+		_beanUtilsBean.copyProperties(
+			expectedPatchObjectField, randomPatchObjectField);
+
+		ObjectField getObjectField = objectFieldResource.getObjectField(
+			patchObjectField.getId());
+
+		assertEquals(expectedPatchObjectField, getObjectField);
+		assertValid(getObjectField);
+	}
+
+	protected ObjectField testPatchObjectField_addObjectField()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPutObjectField() throws Exception {
 		ObjectField postObjectField = testPutObjectField_addObjectField();
 

@@ -59,6 +59,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -285,6 +286,49 @@ public abstract class BaseObjectEntryResourceImpl
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.PATH, name = "objectEntryId")}
 	)
+	@PATCH
+	@Path("/{objectEntryId}")
+	@Produces({"application/json", "application/xml"})
+	@Tags(value = {@Tag(name = "ObjectEntry")})
+	public ObjectEntry patchObjectEntry(
+			@NotNull @Parameter(hidden = true) @PathParam("objectEntryId") Long
+				objectEntryId,
+			ObjectEntry objectEntry)
+		throws Exception {
+
+		ObjectEntry existingObjectEntry = getObjectEntry(objectEntryId);
+
+		if (objectEntry.getActions() != null) {
+			existingObjectEntry.setActions(objectEntry.getActions());
+		}
+
+		if (objectEntry.getDateCreated() != null) {
+			existingObjectEntry.setDateCreated(objectEntry.getDateCreated());
+		}
+
+		if (objectEntry.getDateModified() != null) {
+			existingObjectEntry.setDateModified(objectEntry.getDateModified());
+		}
+
+		if (objectEntry.getExternalReferenceCode() != null) {
+			existingObjectEntry.setExternalReferenceCode(
+				objectEntry.getExternalReferenceCode());
+		}
+
+		if (objectEntry.getProperties() != null) {
+			existingObjectEntry.setProperties(objectEntry.getProperties());
+		}
+
+		preparePatch(objectEntry, existingObjectEntry);
+
+		return putObjectEntry(objectEntryId, existingObjectEntry);
+	}
+
+	@Consumes({"application/json", "application/xml"})
+	@Override
+	@Parameters(
+		value = {@Parameter(in = ParameterIn.PATH, name = "objectEntryId")}
+	)
 	@Path("/{objectEntryId}")
 	@Produces({"application/json", "application/xml"})
 	@PUT
@@ -484,6 +528,10 @@ public abstract class BaseObjectEntryResourceImpl
 
 		return addAction(
 			actionName, siteId, methodName, null, permissionName, siteId);
+	}
+
+	protected void preparePatch(
+		ObjectEntry objectEntry, ObjectEntry existingObjectEntry) {
 	}
 
 	protected <T, R> List<R> transform(

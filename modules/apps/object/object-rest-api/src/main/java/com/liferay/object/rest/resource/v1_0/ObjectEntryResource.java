@@ -78,6 +78,10 @@ public interface ObjectEntryResource {
 
 	public ObjectEntry getObjectEntry(Long objectEntryId) throws Exception;
 
+	public ObjectEntry patchObjectEntry(
+			Long objectEntryId, ObjectEntry objectEntry)
+		throws Exception;
+
 	public ObjectEntry putObjectEntry(
 			Long objectEntryId, ObjectEntry objectEntry)
 		throws Exception;
