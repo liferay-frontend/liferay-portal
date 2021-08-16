@@ -84,9 +84,11 @@ const AdminTooltip = ({
 						onSelectedValueChange={(val) => setLinkedValue(val)}
 						selectedValue={linkedValue}
 					>
-						<ClayRadio label="Linked to SKU" value="sku" />
+						<ClayRadio label={Liferay.Language.get('linked-to-sku')}
+								   value="sku" />
 
-						<ClayRadio label="Linked to Diagram" value="diagram" />
+						<ClayRadio label={Liferay.Language.get('linked-to-diagram')}
+								   value="diagram" />
 					</ClayRadioGroup>
 				</ClayForm.Group>
 
