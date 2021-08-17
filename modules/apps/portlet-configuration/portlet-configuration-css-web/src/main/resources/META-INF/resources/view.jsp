@@ -24,6 +24,7 @@
 
 		<liferay-frontend:edit-form
 			action="<%= updateLookAndFeelURL %>"
+			cssClass="cadmin"
 			method="post"
 			name="fm"
 		>

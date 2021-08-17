@@ -41,6 +41,9 @@ const ColorPicker = ({color, label, name}) => {
 
 			<ClayColorPicker
 				colors={customColors}
+				dropDownContainerProps={{
+					className: 'cadmin',
+				}}
 				label={label}
 				name={`${name}ColorPicker`}
 				onColorsChange={setCustomColors}
