@@ -24,7 +24,7 @@
 			"<rootDir>/test/liferay/portlet/mock/setup.es.js"
 		]
 	},
-	"main": "index.es.js",
+	"main": "index.js",
 	"name": "frontend-js-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",

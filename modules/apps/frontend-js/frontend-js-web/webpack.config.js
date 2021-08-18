@@ -30,6 +30,13 @@ module.exports = {
 					loader: 'babel-loader',
 				},
 			},
+			{
+				exclude: /node_modules/,
+				test: /\.tsx?$/,
+				use: {
+					loader: 'ts-loader',
+				},
+			},
 		],
 	},
 	output: {
@@ -37,5 +44,8 @@ module.exports = {
 		libraryTarget: 'window',
 		path: path.resolve('./build/node/packageRunBuild/resources/liferay/'),
 		publicPath: PUBLIC_PATH,
+	},
+	resolve: {
+		extensions: ['.tsx', '.ts', '.js'],
 	},
 };
