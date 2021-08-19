@@ -12,10 +12,18 @@
  * details.
  */
 
+import {escapeHTML} from '../util/html_util';
+
 const DEFAULT_APPEND_CONTENT = '&nbsp;&nbsp;';
 
 class AutoSize {
-	constructor(inputElement) {
+	computedStyle: CSSStyleDeclaration;
+	inputElement: HTMLInputElement;
+	minHeight: number;
+	paddingHeight: number;
+	template: HTMLPreElement;
+
+	constructor(inputElement: HTMLInputElement) {
 		this.inputElement = inputElement;
 		this.computedStyle = getComputedStyle(this.inputElement);
 
@@ -35,7 +43,7 @@ class AutoSize {
 		this._resizeInput(this.inputElement);
 	}
 
-	createTemplate(computedStyle) {
+	createTemplate(computedStyle: CSSStyleDeclaration) {
 		const template = document.createElement('pre');
 
 		template.style.clip = 'rect(0, 0, 0, 0) !important';
@@ -62,20 +70,21 @@ class AutoSize {
 		return template;
 	}
 
-	handleInput = (event) => {
+	handleInput = (event: Event) => {
 		requestAnimationFrame(() => {
-			this._resizeInput(event.target);
+			if (event.target !== null) {
+				this._resizeInput(event.target as HTMLInputElement);
+			}
 		});
 	};
 
-	_resizeInput(inputElement) {
+	_resizeInput(inputElement: HTMLInputElement) {
 		if (this.template.style.width !== this.computedStyle.width) {
 			this.template.style.width = this.computedStyle.width;
 		}
 
 		this.template.innerHTML =
-			Liferay.Util.escapeHTML(inputElement.value) +
-			DEFAULT_APPEND_CONTENT;
+			escapeHTML(inputElement.value) + DEFAULT_APPEND_CONTENT;
 
 		inputElement.style.height = `${
 			this.template.scrollHeight + this.paddingHeight < this.minHeight
