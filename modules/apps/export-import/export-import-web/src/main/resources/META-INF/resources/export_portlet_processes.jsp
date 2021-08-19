@@ -146,6 +146,7 @@ else {
 					</liferay-portlet:actionURL>
 
 					<liferay-ui:icon-menu
+						direction="cadmin"
 						icon="<%= StringPool.BLANK %>"
 						markupView="lexicon"
 						showWhenSingleIcon="<%= true %>"

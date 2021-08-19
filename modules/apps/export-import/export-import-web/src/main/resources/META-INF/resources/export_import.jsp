@@ -34,50 +34,52 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).buildPortletURL();
 %>
 
-<c:choose>
-	<c:when test="<%= !GroupPermissionUtil.contains(permissionChecker, themeDisplay.getScopeGroup(), ActionKeys.MANAGE_STAGING) %>">
-		<div class="alert alert-info">
-			<liferay-ui:message key="you-do-not-have-permission-to-access-the-requested-resource" />
-		</div>
-	</c:when>
-	<c:otherwise>
-		<clay:navigation-bar
-			navigationItems='<%=
-				new JSPNavigationItemList(pageContext) {
-					{
-						portletURL.setParameter("tabs2", "export");
+<div class="cadmin">
+	<c:choose>
+		<c:when test="<%= !GroupPermissionUtil.contains(permissionChecker, themeDisplay.getScopeGroup(), ActionKeys.MANAGE_STAGING) %>">
+			<div class="alert alert-info">
+				<liferay-ui:message key="you-do-not-have-permission-to-access-the-requested-resource" />
+			</div>
+		</c:when>
+		<c:otherwise>
+			<clay:navigation-bar
+				navigationItems='<%=
+					new JSPNavigationItemList(pageContext) {
+						{
+							portletURL.setParameter("tabs2", "export");
 
-						add(
-							navigationItem -> {
-								navigationItem.setActive(tabs2.equals("export"));
-								navigationItem.setHref(portletURL.toString());
-								navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "export"));
-							});
+							add(
+								navigationItem -> {
+									navigationItem.setActive(tabs2.equals("export"));
+									navigationItem.setHref(portletURL.toString());
+									navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "export"));
+								});
 
-						portletURL.setParameter("tabs2", "import");
+							portletURL.setParameter("tabs2", "import");
 
-						add(
-							navigationItem -> {
-								navigationItem.setActive(tabs2.equals("import"));
-								navigationItem.setHref(portletURL.toString());
-								navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "import"));
-							});
+							add(
+								navigationItem -> {
+									navigationItem.setActive(tabs2.equals("import"));
+									navigationItem.setHref(portletURL.toString());
+									navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "import"));
+								});
+						}
 					}
-				}
-			%>'
-		/>
+				%>'
+			/>
 
-		<div class="portlet-export-import-container" id="<portlet:namespace />exportImportPortletContainer">
-			<liferay-util:include page="/export_import_error.jsp" servletContext="<%= application %>" />
+			<div class="portlet-export-import-container" id="<portlet:namespace />exportImportPortletContainer">
+				<liferay-util:include page="/export_import_error.jsp" servletContext="<%= application %>" />
 
-			<c:choose>
-				<c:when test='<%= tabs2.equals("export") %>'>
-					<liferay-util:include page="/export_portlet.jsp" servletContext="<%= application %>" />
-				</c:when>
-				<c:when test='<%= tabs2.equals("import") %>'>
-					<liferay-util:include page="/import_portlet.jsp" servletContext="<%= application %>" />
-				</c:when>
-			</c:choose>
-		</div>
-	</c:otherwise>
-</c:choose>
+				<c:choose>
+					<c:when test='<%= tabs2.equals("export") %>'>
+						<liferay-util:include page="/export_portlet.jsp" servletContext="<%= application %>" />
+					</c:when>
+					<c:when test='<%= tabs2.equals("import") %>'>
+						<liferay-util:include page="/import_portlet.jsp" servletContext="<%= application %>" />
+					</c:when>
+				</c:choose>
+			</div>
+		</c:otherwise>
+	</c:choose>
+</div>

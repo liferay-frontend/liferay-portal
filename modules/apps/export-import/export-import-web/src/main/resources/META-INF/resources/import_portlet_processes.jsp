@@ -109,7 +109,7 @@ else {
 					</liferay-portlet:actionURL>
 
 					<liferay-ui:icon-menu
-						direction="left-side"
+						direction="cadmin"
 						icon="<%= StringPool.BLANK %>"
 						markupView="lexicon"
 						showWhenSingleIcon="<%= true %>"
