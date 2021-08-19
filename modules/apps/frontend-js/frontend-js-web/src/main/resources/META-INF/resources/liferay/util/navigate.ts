@@ -12,7 +12,7 @@
  * details.
  */
 
-import { Callback } from "../types";
+import {Callback} from '../types';
 
 /**
  * Performs navigation to the given url. If SPA is enabled, it will route the

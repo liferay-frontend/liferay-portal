@@ -11,19 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-export default function buildFragment(htmlString) {
-	const div = document.createElement('div');
-
-	div.innerHTML = `<br>${htmlString}`;
-
-	div.removeChild(div.firstChild);
-
-	const fragment = document.createDocumentFragment();
-
-	while (div.firstChild) {
-		fragment.appendChild(div.firstChild);
-	}
-
-	return fragment;
-}
+/**
+ * Returns url formatted as a lowercase String
+ */
+export default function normalizeFriendlyURL(text: string): string;

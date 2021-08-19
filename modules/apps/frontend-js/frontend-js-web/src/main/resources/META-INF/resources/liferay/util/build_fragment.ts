@@ -12,19 +12,18 @@
  * details.
  */
 
-/**
- * Returns url formatted as a lowercase String
- * @param {String} text Input text
- * @return {String} newText URL String constructed from input text
- */
-export default function normalizeFriendlyURL(text) {
-	if (typeof text !== 'string') {
-		throw new TypeError('parameter text must be a string');
+export default function buildFragment(htmlString: string) {
+	const div = document.createElement('div');
+
+	div.innerHTML = `<br>${htmlString}`;
+
+	div.removeChild(div.firstChild!);
+
+	const fragment = document.createDocumentFragment();
+
+	while (div.firstChild) {
+		fragment.appendChild(div.firstChild);
 	}
 
-	return text
-		.replace(/[^a-z0-9_-]/gi, '-')
-		.replace(/^-+/, '')
-		.replace(/--+/, '-')
-		.toLowerCase();
+	return fragment;
 }

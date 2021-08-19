@@ -65,9 +65,7 @@ describe('Liferay.Util.addParams', () => {
 	});
 
 	it('throws an error if not passed params as an object or a string', () => {
-		expect(() => addParams(1)).toThrow(TypeError);
-
-		expect(() => addParams(['one', 'two'])).toThrow(TypeError);
+		expect(() => addParams(1 as any, sampleUrl)).toThrow(TypeError);
 	});
 
 	it('throws an error when passed an invalid URL', () => {

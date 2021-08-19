@@ -22,7 +22,7 @@ describe('Liferay.Util.buildFragment', () => {
 		expect(fragment).toBeTruthy();
 		expect(fragment.nodeType).toBe(11);
 		expect(fragment.childNodes.length).toBe(2);
-		expect(fragment.childNodes[0].innerHTML).toBe('Hello World 1');
-		expect(fragment.childNodes[1].innerHTML).toBe('Hello World 2');
+		expect((fragment.childNodes[0] as Element).innerHTML).toBe('Hello World 1');
+		expect((fragment.childNodes[1] as Element).innerHTML).toBe('Hello World 2');
 	});
 });

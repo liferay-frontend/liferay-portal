@@ -16,7 +16,7 @@ import normalizeFriendlyURL from '../../../src/main/resources/META-INF/resources
 
 describe('Liferay.Util.normalizeFriendlyURL', () => {
 	it('throws error if text parameter is not a string', () => {
-		expect(() => normalizeFriendlyURL({})).toThrow(
+		expect(() => normalizeFriendlyURL({} as any)).toThrow(
 			'parameter text must be a string'
 		);
 	});

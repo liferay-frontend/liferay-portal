@@ -136,12 +136,7 @@ export {default as throttle} from './liferay/throttle.es';
 
 // Util API
 
-// @ts-ignore
-
 export {default as addParams} from './liferay/util/add_params';
-
-// @ts-ignore
-
 export {default as buildFragment} from './liferay/util/build_fragment';
 
 // @ts-ignore
@@ -160,9 +155,6 @@ export {default as isObject} from './liferay/util/is_object';
 export {default as isPhone} from './liferay/util/is_phone';
 export {default as isTablet} from './liferay/util/is_tablet';
 export {default as navigate} from './liferay/util/navigate';
-
-// @ts-ignore
-
 export {default as normalizeFriendlyURL} from './liferay/util/normalize_friendly_url';
 
 // @ts-ignore

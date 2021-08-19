@@ -14,12 +14,8 @@
 
 /**
  * Appends given parameters to the given URL.
- * @param {String | Object} params Parameters to be added on to the base url
- * @param {String} baseUrl Base url
- * @return {String} url URL constructed from base url and params
- * @review
  */
-export default function addParams(params, baseUrl) {
+export default function addParams(params: string | object, baseUrl: string) {
 	if (!params || (typeof params !== 'object' && typeof params !== 'string')) {
 		throw new TypeError('Parameter params must be an object or string');
 	}

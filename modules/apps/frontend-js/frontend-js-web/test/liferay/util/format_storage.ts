@@ -12,11 +12,13 @@
  * details.
  */
 
-import formatStorage from '../../../src/main/resources/META-INF/resources/liferay/util/format_storage.es';
+'use strict';
+
+import formatStorage from '../../../src/main/resources/META-INF/resources/liferay/util/format_storage';
 
 describe('Liferay.Util.formatStorage', () => {
 	it('throws error if size parameter is not a number', () => {
-		expect(() => formatStorage({})).toThrow('must be a number');
+		expect(() => formatStorage({} as any)).toThrow('must be a number');
 	});
 
 	it('formats size under 1048575 bytes to kilobytes, with the default KB suffix', () => {
