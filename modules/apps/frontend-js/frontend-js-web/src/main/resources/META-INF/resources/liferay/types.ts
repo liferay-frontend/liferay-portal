@@ -135,6 +135,7 @@ export interface ILiferay {
 // Properties from `frontend-js-web/events`
 
 export type Callback = (...args: any[]) => void;
+
 export interface ILiferay {
 	after(eventName: string, callback: Callback): void;
 	before(eventName: string, callback: Callback): void;

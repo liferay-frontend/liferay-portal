@@ -72,14 +72,16 @@ const SimpleInputModal = ({
 						setLoadingResponse(false);
 
 						handleFormError(responseContent);
-					} else {
+					}
+					else {
 						setVisible(false);
 
 						closeModal();
 
 						if (responseContent.redirectURL) {
 							navigate(responseContent.redirectURL);
-						} else {
+						}
+						else {
 							if (onFormSuccess) {
 								onFormSuccess({
 									...responseContent,

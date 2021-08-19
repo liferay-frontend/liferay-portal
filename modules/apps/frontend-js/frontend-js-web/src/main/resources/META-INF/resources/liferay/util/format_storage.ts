@@ -23,13 +23,8 @@ const DEFAULT_OPTIONS = {
 
 /**
  * Returns storage number formatted as a String
- * @param {!Number} size Storage size to be formatted
- * @param {Object} options Object representing optional parameters for
- * formatting storage size
- * @return {String} formattedStorage Final formatted storage outputted as a String
- * @review
  */
-export default function formatStorage(size, options = {}) {
+export default function formatStorage(size: number, options: object = {}) {
 	const {
 		addSpaceBeforeSuffix,
 		decimalSeparator,
