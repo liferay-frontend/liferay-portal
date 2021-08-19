@@ -13,13 +13,11 @@
  */
 
 /**
- * Returns the portlet Id extracted from the provided portletId query parameter
- * @param {!string} portletId The portletId query parameter to extract the portletId from in the form of `_p_p_id_portletId_`
- * @return {string} Portlet ID
- * @review
+ * Returns true if the specified value is an object. This includes arrays
+ * and functions.
  */
-const REGEX_PORTLET_ID = /^(?:p_p_id)?_(.*)_.*$/;
+export default function isObject(val: any) {
+	const type = typeof val;
 
-export default function getPortletId(portletId) {
-	return portletId.replace(REGEX_PORTLET_ID, '$1');
+	return (type === 'object' && val !== null) || type === 'function';
 }

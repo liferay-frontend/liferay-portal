@@ -11,17 +11,8 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 /**
- * Returns the portlet namespace with underscores prepended and appended to it
- * @param {!string} portletId The portlet ID to add underscores to
- * @return {string} Portlet namespace with underscores prepended and appended
- * @review
+ * Returns true if the specified value is an object. This includes arrays
+ * and functions.
  */
-export default function getPortletNamespace(portletId) {
-	if (typeof portletId !== 'string') {
-		throw new TypeError('portletId must be a string');
-	}
-
-	return `_${portletId}_`;
-}
+export default function isObject(val: any): boolean;

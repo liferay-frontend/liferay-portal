@@ -48,8 +48,6 @@ export {default as postForm} from './liferay/util/form/post_form.es';
 
 // Liferay API
 
-// @ts-ignore
-
 export {default as BREAKPOINTS} from './liferay/breakpoints';
 
 // @ts-ignore
@@ -153,25 +151,13 @@ export {default as fetch} from './liferay/util/fetch.es';
 // @ts-ignore
 
 export {default as focusFormField} from './liferay/util/focus_form_field';
-
-// @ts-ignore
-
 export {default as getPortletId} from './liferay/util/get_portlet_id';
 
 // @ts-ignore
 
 export {default as inBrowserView} from './liferay/util/in_browser_view';
-
-// @ts-ignore
-
 export {default as isObject} from './liferay/util/is_object';
-
-// @ts-ignore
-
 export {default as isPhone} from './liferay/util/is_phone';
-
-// @ts-ignore
-
 export {default as isTablet} from './liferay/util/is_tablet';
 
 // @ts-ignore
