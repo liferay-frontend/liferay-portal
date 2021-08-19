@@ -21,7 +21,7 @@ import {useIsMounted} from '@liferay/frontend-js-react-web';
 import React, {useState} from 'react';
 
 import fetch from '../../util/fetch.es';
-import navigate from '../../util/navigate.es';
+import navigate from '../../util/navigate';
 
 /**
  * Manipulates small amounts of data with a form shown inside a modal.
@@ -72,16 +72,14 @@ const SimpleInputModal = ({
 						setLoadingResponse(false);
 
 						handleFormError(responseContent);
-					}
-					else {
+					} else {
 						setVisible(false);
 
 						closeModal();
 
 						if (responseContent.redirectURL) {
 							navigate(responseContent.redirectURL);
-						}
-						else {
+						} else {
 							if (onFormSuccess) {
 								onFormSuccess({
 									...responseContent,

@@ -12,25 +12,22 @@
  * details.
  */
 
+import { Callback } from "../types";
+
 /**
  * Performs navigation to the given url. If SPA is enabled, it will route the
  * request through the SPA engine. If not, it will simple change the document
  * location.
- * @param {string | URL} url Destination URL to navigate
- * @param {?object} listeners Object with key-value pairs with callbacks for
- * specific page lifecycle events
- * @review
  */
 
-export default function (url, listeners) {
-	let urlString = url;
+export default function (
+	url: string | URL,
+	listeners?: {[key: string]: Callback}
+) {
+	url = url instanceof URL ? String(url) : url;
 
-	if (url?.constructor?.name === 'URL') {
-		urlString = String(url);
-	}
-
-	if (Liferay.SPA?.app?.canNavigate(urlString)) {
-		Liferay.SPA.app.navigate(urlString);
+	if (Liferay.SPA?.app?.canNavigate(url)) {
+		Liferay.SPA.app.navigate(url);
 
 		if (listeners) {
 			Object.keys(listeners).forEach((key) => {
@@ -38,12 +35,12 @@ export default function (url, listeners) {
 			});
 		}
 	}
-	else if (isValidURL(urlString)) {
-		window.location.href = urlString;
+	else if (isValidURL(url)) {
+		window.location.href = url;
 	}
 }
 
-function isValidURL(url) {
+function isValidURL(url: string) {
 	let urlObject;
 
 	try {

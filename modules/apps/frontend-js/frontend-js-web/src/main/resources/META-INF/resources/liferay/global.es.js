@@ -64,7 +64,7 @@ import {
 import inBrowserView from './util/in_browser_view';
 import isPhone from './util/is_phone';
 import isTablet from './util/is_tablet';
-import navigate from './util/navigate.es';
+import navigate from './util/navigate';
 import normalizeFriendlyURL from './util/normalize_friendly_url';
 import ns from './util/ns.es';
 import objectToURLSearchParams from './util/object_to_url_search_params.es';

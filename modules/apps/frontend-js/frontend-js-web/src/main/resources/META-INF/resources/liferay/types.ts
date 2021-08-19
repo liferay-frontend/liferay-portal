@@ -132,6 +132,32 @@ export interface ILiferay {
 	readonly currentURLEncoded: string;
 }
 
+// Properties from `frontend-js-web/events`
+
+export type Callback = (...args: any[]) => void;
+export interface ILiferay {
+	after(eventName: string, callback: Callback): void;
+	before(eventName: string, callback: Callback): void;
+	on(eventName: string, callback: Callback): void;
+	once(eventName: string, callback: Callback): void;
+	onceAfter(eventName: string, callback: Callback): void;
+}
+
+// Properties from `frontend-js-spa-web/init`
+
+export interface ILiferay {
+	SPA?: {
+		app?: {
+			canNavigate: (url: string) => boolean;
+			navigate: (
+				url: string,
+				replaceHistory?: boolean,
+				event?: Event
+			) => Promise<void>;
+		};
+	};
+}
+
 declare global {
 	var Liferay: ILiferay;
 
