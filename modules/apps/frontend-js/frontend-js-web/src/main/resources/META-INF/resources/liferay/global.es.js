@@ -55,7 +55,7 @@ import getCropRegion from './util/get_crop_region.es';
 import getDOM from './util/get_dom';
 import getElement from './util/get_element';
 import getPortletId from './util/get_portlet_id';
-import getPortletNamespace from './util/get_portlet_namespace.es';
+import getPortletNamespace from './util/get_portlet_namespace';
 import {
 	MAP_HTML_CHARS_ESCAPED,
 	escapeHTML,

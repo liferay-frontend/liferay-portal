@@ -13,13 +13,12 @@
  */
 
 /**
- * Returns true if the specified value is an object. This includes arrays
- * and functions.
- * @param {?} val Variable to test.
- * @return {boolean} Whether variable is an object.
+ * Returns the portlet namespace with underscores prepended and appended to it
  */
-export default function isObject(val) {
-	const type = typeof val;
+export default function getPortletNamespace(portletId: string) {
+	if (typeof portletId !== 'string') {
+		throw new TypeError('portletId must be a string');
+	}
 
-	return (type === 'object' && val !== null) || type === 'function';
+	return `_${portletId}_`;
 }

@@ -12,7 +12,7 @@
  * details.
  */
 
-import getPortletNamespace from '../get_portlet_namespace.es';
+import getPortletNamespace from '../get_portlet_namespace';
 
 const SCHEME_REGEXP = /^[a-z][a-z0-9+.-]*:/i;
 

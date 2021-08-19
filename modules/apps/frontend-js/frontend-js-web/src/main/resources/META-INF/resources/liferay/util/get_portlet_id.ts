@@ -14,12 +14,9 @@
 
 /**
  * Returns the portlet Id extracted from the provided portletId query parameter
- * @param {!string} portletId The portletId query parameter to extract the portletId from in the form of `_p_p_id_portletId_`
- * @return {string} Portlet ID
- * @review
  */
 const REGEX_PORTLET_ID = /^(?:p_p_id)?_(.*)_.*$/;
 
-export default function getPortletId(portletId) {
+export default function getPortletId(portletId: string) {
 	return portletId.replace(REGEX_PORTLET_ID, '$1');
 }
