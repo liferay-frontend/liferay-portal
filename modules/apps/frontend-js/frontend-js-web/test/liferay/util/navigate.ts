@@ -12,7 +12,7 @@
  * details.
  */
 
-import navigate from '../../../src/main/resources/META-INF/resources/liferay/util/navigate.es';
+import navigate from '../../../src/main/resources/META-INF/resources/liferay/util/navigate';
 
 describe('Liferay.Util.navigate', () => {
 	const externalUrl = 'http://externalurl.com';
@@ -31,7 +31,7 @@ describe('Liferay.Util.navigate', () => {
 		it('navigates to internal urls using the provided Liferay.SPA.app.navigate helper', () => {
 			navigate(internalUrl);
 
-			expect(Liferay.SPA.app.navigate).toBeCalledWith(internalUrl);
+			expect(Liferay.SPA?.app?.navigate).toBeCalledWith(internalUrl);
 		});
 
 		it('navigates to external urls using window.location.assign', () => {

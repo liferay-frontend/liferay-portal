@@ -45,7 +45,7 @@ export { default as inBrowserView } from './liferay/util/in_browser_view';
 export { default as isObject } from './liferay/util/is_object';
 export { default as isPhone } from './liferay/util/is_phone';
 export { default as isTablet } from './liferay/util/is_tablet';
-export { default as navigate } from './liferay/util/navigate.es';
+export { default as navigate } from './liferay/util/navigate';
 export { default as normalizeFriendlyURL } from './liferay/util/normalize_friendly_url';
 export { default as runScriptsInElement } from './liferay/util/run_scripts_in_element.es';
 export { default as toggleDisabled } from './liferay/util/toggle_disabled';

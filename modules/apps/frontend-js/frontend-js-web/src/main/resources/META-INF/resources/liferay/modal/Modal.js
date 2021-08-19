@@ -22,7 +22,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import './Modal.scss';
 import delegate from '../delegate/delegate.es';
-import navigate from '../util/navigate.es';
+import navigate from '../util/navigate';
 
 const Modal = ({
 	bodyHTML,
@@ -76,8 +76,7 @@ const Modal = ({
 	const onButtonClick = ({formId, onClick, type}) => {
 		if (type === 'cancel') {
 			processClose();
-		}
-		else if (url && type === 'submit') {
+		} else if (url && type === 'submit') {
 			const iframe = document.querySelector('.liferay-modal iframe');
 
 			if (iframe) {
@@ -98,8 +97,7 @@ const Modal = ({
 					if (form) {
 						form.submit();
 					}
-				}
-				else if (forms.length >= 1) {
+				} else if (forms.length >= 1) {
 					forms[0].submit();
 				}
 			}
@@ -303,8 +301,7 @@ const openPortletModal = ({
 				if (titleTextElement) {
 					title = `${titleTextElement.outerHTML} - ${title}`;
 				}
-			}
-			else {
+			} else {
 				title = `${titleElement.textContent} - ${title}`;
 			}
 		}
@@ -400,8 +397,7 @@ const openSelectionModal = ({
 					}
 				);
 			}
-		}
-		else {
+		} else {
 			onSelect(selectedItem);
 
 			processCloseFn();
@@ -458,8 +454,7 @@ const openSelectionModal = ({
 					if (selectedDataSet.has(itemId)) {
 						itemElement.disabled = true;
 						itemElement.classList.add('disabled');
-					}
-					else {
+					} else {
 						itemElement.disabled = false;
 						itemElement.classList.remove('disabled');
 					}
