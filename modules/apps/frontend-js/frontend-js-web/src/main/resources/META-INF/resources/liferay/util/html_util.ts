@@ -12,7 +12,7 @@
  * details.
  */
 
-const MAP_HTML_CHARS_ESCAPED = {
+const MAP_HTML_CHARS_ESCAPED: {[key: string]: string} = {
 	'"': '&#034;',
 	'&': '&amp;',
 	"'": '&#039;',
@@ -24,7 +24,7 @@ const MAP_HTML_CHARS_ESCAPED = {
 
 export {MAP_HTML_CHARS_ESCAPED};
 
-const MAP_HTML_CHARS_UNESCAPED = {};
+const MAP_HTML_CHARS_UNESCAPED: {[key: string]: string} = {};
 
 Object.entries(MAP_HTML_CHARS_ESCAPED).forEach(([char, escapedChar]) => {
 	MAP_HTML_CHARS_UNESCAPED[escapedChar] = char;
@@ -36,16 +36,16 @@ const HTML_ESCAPE = new RegExp(`[${HTML_UNESCAPED_VALUES.join('')}]`, 'g');
 
 const HTML_UNESCAPE = /&([^\s;]+);/g;
 
-export function escapeHTML(string) {
+export function escapeHTML(string: string) {
 	return string.replace(
 		HTML_ESCAPE,
 		(match) => MAP_HTML_CHARS_ESCAPED[match]
 	);
 }
 
-export function unescapeHTML(string) {
+export function unescapeHTML(string: string) {
 	return string.replace(HTML_UNESCAPE, (match) => {
 		return new DOMParser().parseFromString(match, 'text/html')
-			.documentElement.textContent;
+			.documentElement.textContent!;
 	});
 }

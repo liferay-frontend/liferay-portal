@@ -12,7 +12,7 @@
  * details.
  */
 export { default as AOP } from './liferay/aop/AOP.es';
-export { default as autoSize } from './liferay/autosize/autosize.es';
+export { default as autoSize } from './liferay/autosize/autosize';
 export { cancelDebounce, debounce } from './liferay/debounce/debounce.es';
 export { default as delegate } from './liferay/delegate/delegate.es';
 export { default as objectToFormData } from './liferay/util/form/object_to_form_data.es';

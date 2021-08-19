@@ -22,9 +22,7 @@ export {default as AOP} from './liferay/aop/AOP.es';
 
 // AutoSize API
 
-// @ts-ignore
-
-export {default as autoSize} from './liferay/autosize/autosize.es';
+export {default as autoSize} from './liferay/autosize/autosize';
 
 // Debounce API
 
