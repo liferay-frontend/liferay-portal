@@ -1,6 +1,7 @@
 @import 'cadmin';
 @import 'sidebar';
 
+$table-responsive-margin-left-md: 375px !default;
 $user-icon-color-0: $cadmin-secondary !default;
 $user-icon-color-1: $cadmin-blue !default;
 $user-icon-color-2: $cadmin-orange !default;
@@ -352,6 +353,82 @@ html#{$cadmin-selector} {
 			margin-right: 2px;
 			padding: 0 0 0 5px;
 		}
+
+		.lfr-search-container-wrapper {
+			&.lfr-search-container-fixed-first-column {
+				position: relative;
+
+				.table-responsive {
+					@include media-breakpoint-up(sm, $cadmin-grid-breakpoints) {
+						margin-left: $table-responsive-margin-left-md;
+						width: auto;
+					}
+
+					.table {
+						position: static;
+
+						.lfr-search-iterator-fixed-header {
+							left: 12px;
+							position: fixed;
+							right: 12px;
+							top: -1px;
+							z-index: $cadmin-zindex-sticky;
+
+							> th {
+								display: block;
+								padding: 0;
+
+								.lfr-search-iterator-fixed-header-inner-wrapper {
+									overflow-x: hidden;
+
+									@include media-breakpoint-up(
+										sm,
+										$cadmin-grid-breakpoints
+									) {
+										margin-left: $table-responsive-margin-left-md;
+									}
+
+									table {
+										border-collapse: collapse;
+										width: 100%;
+
+										th {
+											border-radius: 0;
+										}
+									}
+								}
+							}
+						}
+
+						td,
+						th {
+							width: auto;
+
+							&:first-child {
+								@include media-breakpoint-up(
+									sm,
+									$cadmin-grid-breakpoints
+								) {
+									left: 0;
+									position: absolute;
+									right: 15px;
+								}
+							}
+						}
+
+						th {
+							height: auto;
+						}
+					}
+				}
+
+				.lfr-description-column,
+				.lfr-role-column {
+					max-width: $table-responsive-margin-left-md;
+					min-width: $table-responsive-margin-left-md;
+				}
+			}
+		}
 	}
 
 	.portal-popup {
@@ -525,7 +602,7 @@ html#{$cadmin-selector} {
 				}
 			}
 
-			.portlet-configuration-edit-permissions {
+			&.portlet-configuration-edit-permissions {
 				.portlet-configuration-body-content {
 					display: flex;
 					flex-direction: column;
@@ -539,7 +616,7 @@ html#{$cadmin-selector} {
 				}
 			}
 
-			.portlet-configuration-edit-templates
+			&.portlet-configuration-edit-templates
 				.portlet-configuration-body-content {
 				bottom: 0;
 			}
