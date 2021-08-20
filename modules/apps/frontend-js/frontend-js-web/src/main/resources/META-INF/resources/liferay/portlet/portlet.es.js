@@ -15,7 +15,7 @@
 import fetch from '../util/fetch.es';
 import objectToFormData from '../util/form/object_to_form_data.es';
 import getPortletId from '../util/get_portlet_id';
-import createPortletURL from '../util/portlet_url/create_portlet_url.es';
+import createPortletURL from '../util/portlet_url/create_portlet_url';
 import register from './register.es';
 
 /**
@@ -43,8 +43,7 @@ export function minimizePortlet(portletSelector, trigger, options) {
 				content.classList.remove('d-none');
 
 				portlet.classList.remove('portlet-minimized');
-			}
-			else {
+			} else {
 				content.classList.add('d-none');
 
 				portlet.classList.add('portlet-minimized');
@@ -72,8 +71,7 @@ export function minimizePortlet(portletSelector, trigger, options) {
 					if (minimized) {
 						icon.classList.add('icon-minus');
 						icon.classList.remove('icon-resize-vertical');
-					}
-					else {
+					} else {
 						icon.classList.add('icon-resize-vertical');
 						icon.classList.remove('icon-minus');
 					}

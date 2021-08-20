@@ -16,18 +16,17 @@ import getPortletNamespace from '../get_portlet_namespace';
 
 const SCHEME_REGEXP = /^[a-z][a-z0-9+.-]*:/i;
 
-function isAbsolute_(urlString) {
+function isAbsolute_(urlString: string) {
 	return SCHEME_REGEXP.test(urlString);
 }
 
 /**
  * Returns a portlet URL in form of a URL Object
- * @param {!string} basePortletURL The base portlet URL to be modified in this utility
- * @param {object} parameters Search parameters to be added or changed in the base URL
- * @return {URL} Portlet URL Object
- * @review
  */
-export default function createPortletURL(basePortletURL, parameters = {}) {
+export default function createPortletURL(
+	basePortletURL: string,
+	parameters: {[key: string]: string} = {}
+) {
 	if (typeof basePortletURL !== 'string') {
 		throw new TypeError('basePortletURL parameter must be a string');
 	}
@@ -95,7 +94,7 @@ export default function createPortletURL(basePortletURL, parameters = {}) {
 	let namespace = '';
 
 	if (Object.entries(parameters).length) {
-		namespace = getPortletNamespace(portletID);
+		namespace = getPortletNamespace(portletID!);
 	}
 
 	Object.keys(parameters).forEach((key) => {

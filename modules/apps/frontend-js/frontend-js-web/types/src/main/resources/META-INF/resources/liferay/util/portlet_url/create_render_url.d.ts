@@ -11,19 +11,9 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-import createPortletURL from './create_portlet_url.es';
-
 /**
  * Returns a render portlet URL in form of a URL object by setting the lifecycle parameter
- * @param {!string} basePortletURL The base portlet URL to be modified in this utility
- * @param {object} parameters Search parameters to be added or changed in the base URL
- * @return {URL} Render Portlet URL
- * @review
  */
-export default function createRenderURL(basePortletURL, parameters = {}) {
-	return createPortletURL(basePortletURL, {
-		...parameters,
-		p_p_lifecycle: '0',
-	});
-}
+export default function createRenderURL(basePortletURL: string, parameters?: {
+    [key: string]: string;
+}): URL;

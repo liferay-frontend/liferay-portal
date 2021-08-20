@@ -12,22 +12,22 @@
  * details.
  */
 
-import createRenderURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_render_url.es';
+import createResourceURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_resource_url';
 
-describe('Liferay.Util.PortletURL.createRenderURL', () => {
-	it('returns a URL object with a href parameter containing the p_p_lifecycle parameter set to 0', () => {
+describe('Liferay.Util.PortletURL.createResourceURL', () => {
+	it('returns a url with the p_p_lifecycle parameter set to 2', () => {
 		Liferay = {
 			ThemeDisplay: {
 				getPortalURL: jest.fn(() => 'http://localhost:8080'),
 			},
 		};
 
-		const portletURL = createRenderURL(
+		const portletURL = createResourceURL(
 			'http://localhost:8080/group/control_panel/manage?p_p_id=foo'
 		);
 
 		expect(portletURL.href).toEqual(
-			'http://localhost:8080/group/control_panel/manage?p_p_id=foo&p_p_lifecycle=0'
+			'http://localhost:8080/group/control_panel/manage?p_p_id=foo&p_p_lifecycle=2'
 		);
 	});
 });

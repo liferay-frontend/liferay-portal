@@ -12,7 +12,7 @@
  * details.
  */
 
-import createActionURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_action_url.es';
+import createActionURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_action_url';
 
 describe('Liferay.Util.PortletURL.createActionURL', () => {
 	it('returns a URL object with a href parameter containing the p_p_lifecycle parameter set to 1', () => {
