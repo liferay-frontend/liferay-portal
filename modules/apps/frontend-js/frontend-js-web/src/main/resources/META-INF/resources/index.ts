@@ -90,21 +90,10 @@ export {default as openSimpleInputModal} from './liferay/modal/commands/OpenSimp
 
 // PortletURL API
 
-// @ts-ignore
-
-export {default as createActionURL} from './liferay/util/portlet_url/create_action_url.es';
-
-// @ts-ignore
-
-export {default as createPortletURL} from './liferay/util/portlet_url/create_portlet_url.es';
-
-// @ts-ignore
-
-export {default as createRenderURL} from './liferay/util/portlet_url/create_render_url.es';
-
-// @ts-ignore
-
-export {default as createResourceURL} from './liferay/util/portlet_url/create_resource_url.es';
+export {default as createActionURL} from './liferay/util/portlet_url/create_action_url';
+export {default as createPortletURL} from './liferay/util/portlet_url/create_portlet_url';
+export {default as createRenderURL} from './liferay/util/portlet_url/create_render_url';
+export {default as createResourceURL} from './liferay/util/portlet_url/create_resource_url';
 
 // Align API
 

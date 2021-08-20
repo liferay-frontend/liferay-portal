@@ -12,13 +12,14 @@
  * details.
  */
 
-'use strict';
-
-import createPortletURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_portlet_url.es';
+import createPortletURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_portlet_url';
 
 describe('Liferay.Util.PortletURL.createPortletURL', () => {
 	afterEach(() => {
-		Liferay.ThemeDisplay.getPortalURL.mockRestore();
+		(Liferay.ThemeDisplay.getPortalURL as jest.Mock<
+			string,
+			[]
+		>).mockRestore();
 	});
 
 	beforeEach(() => {
@@ -26,20 +27,20 @@ describe('Liferay.Util.PortletURL.createPortletURL', () => {
 			ThemeDisplay: {
 				getPortalURL: jest.fn(() => 'http://localhost:8080'),
 			},
-		};
+		} as any;
 	});
 
 	it('throws an error if basePortletURL is not a string', () => {
-		expect(() => createPortletURL({portlet: 'url'}, {foo: 'bar'})).toThrow(
-			'basePortletURL parameter must be a string'
-		);
+		expect(() =>
+			createPortletURL({portlet: 'url'} as any, {foo: 'bar'})
+		).toThrow('basePortletURL parameter must be a string');
 	});
 
 	it('throws an error if parameters is not an object', () => {
 		expect(() =>
 			createPortletURL(
 				'http://localhost:8080/group/control_panel/manage',
-				'foo:bar'
+				'foo:bar' as any
 			)
 		).toThrow('parameters argument must be an object');
 	});

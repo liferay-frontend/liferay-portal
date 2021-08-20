@@ -12,18 +12,17 @@
  * details.
  */
 
-import createPortletURL from './create_portlet_url.es';
+import createPortletURL from './create_portlet_url';
 
 /**
- * Returns an action portlet URL in form of a URL object by setting the lifecycle parameter
- * @param {!string} basePortletURL The base portlet URL to be modified in this utility
- * @param {object} parameters Search parameters to be added or changed in the base URL
- * @return {URL} Action Portlet URL
- * @review
+ * Returns a resource portlet URL in form of a URL object by setting the lifecycle parameter
  */
-export default function createActionURL(basePortletURL, parameters = {}) {
+export default function createResourceURL(
+	basePortletURL: string,
+	parameters: {[key: string]: string} = {}
+) {
 	return createPortletURL(basePortletURL, {
 		...parameters,
-		p_p_lifecycle: '1',
+		p_p_lifecycle: '2',
 	});
 }

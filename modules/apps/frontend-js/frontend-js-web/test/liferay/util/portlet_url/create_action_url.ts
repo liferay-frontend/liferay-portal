@@ -12,9 +12,7 @@
  * details.
  */
 
-'use strict';
-
-import createActionURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_action_url.es';
+import createActionURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_action_url';
 
 describe('Liferay.Util.PortletURL.createActionURL', () => {
 	it('returns a URL object with a href parameter containing the p_p_lifecycle parameter set to 1', () => {
@@ -22,7 +20,7 @@ describe('Liferay.Util.PortletURL.createActionURL', () => {
 			ThemeDisplay: {
 				getPortalURL: jest.fn(() => 'http://localhost:8080'),
 			},
-		};
+		} as any;
 
 		const portletURL = createActionURL(
 			'http://localhost:8080/group/control_panel/manage?p_p_id=foo'
