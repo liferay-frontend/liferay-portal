@@ -85,16 +85,16 @@ export default function createPortletURL(
 
 	const portletID = parameters.p_p_id || urlSearchParams.get('p_p_id');
 
-	if (Object.entries(parameters).length && !portletID) {
-		throw new TypeError(
-			'Portlet ID must not be null if parameters are provided'
-		);
-	}
-
 	let namespace = '';
 
 	if (Object.entries(parameters).length) {
-		namespace = getPortletNamespace(portletID!);
+		if (!portletID) {
+			throw new TypeError(
+				'Portlet ID must not be null if parameters are provided'
+			);
+		}
+
+		namespace = getPortletNamespace(portletID);
 	}
 
 	Object.keys(parameters).forEach((key) => {
