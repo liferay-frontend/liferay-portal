@@ -109,28 +109,9 @@ public class IconContributorExtender
 		_serviceTracker.close();
 	}
 
-	private static String _getSymbolContent(String name, URL url) throws IOException {
+	private static String _getSVGFile(String name, URL url) throws IOException {
 		try (InputStream is = url.openStream()) {
-			String symbolContent = StringUtil.read(is);
-
-			String viewBox = "";
-
-			Pattern pattern = Pattern.compile("(?i)(viewBox.*\"(?=[\\s, >]))");
-			Matcher matcher = pattern.matcher(symbolContent);
-			if (matcher.find()) {
-				viewBox = matcher.group(1);
-			}
-
-			symbolContent = symbolContent.replaceFirst(
-				"(?i)<svg[^>]*>", StringPool.BLANK);
-
-			symbolContent = symbolContent.replaceFirst(
-				"(?i)</svg[^>]*>", StringPool.BLANK);
-
-
-			symbolContent = "<symbol id=" + StringPool.QUOTE +name+ StringPool.QUOTE + StringPool.SPACE + viewBox + ">" + symbolContent + "</symbol>";
-
-			return symbolContent;
+			return StringUtil.read(is);
 		}
 	}
 
@@ -180,7 +161,7 @@ public class IconContributorExtender
 
 			try {
 				iconResourcesContributorImpl.addIconResource(
-					new IconResourceImpl(name, _getSymbolContent(name, url)));
+					new IconResourceImpl(name, _getSVGFile(name, url)));
 			}
 			catch (IOException ioe) {
 				_log.error(

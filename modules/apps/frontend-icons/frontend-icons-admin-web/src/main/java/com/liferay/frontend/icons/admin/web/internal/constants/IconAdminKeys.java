@@ -12,21 +12,13 @@
  * details.
  */
 
-package com.liferay.frontend.icons.admin.web.contributor.extender;
+package com.liferay.frontend.icons.admin.web.internal.constants;
 
 /**
  * @author Bryce Osterhaus
  */
-public interface IconResource {
+public class IconAdminKeys {
 
-	public String getId();
-
-	public default int getPriority() {
-		return 0;
-	}
-
-	public String getSVG();
-
-	public String getSVGContent();
+	public static final String GLOBAL_SPRITE_MAP = "icons-admin/global-spritemap.svg";
 
 }

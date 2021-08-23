@@ -12,15 +12,10 @@
  * details.
  */
 
-package com.liferay.frontend.icons.admin.web.contributor.extender.internal.servlet.taglib;
+package com.liferay.frontend.icons.admin.web.internal.helper;
 
 import com.liferay.frontend.icons.admin.web.contributor.extender.IconResource;
 import com.liferay.frontend.icons.admin.web.contributor.extender.IconResourcesContributor;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
-
-import java.io.IOException;
-import java.io.PrintWriter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,9 +26,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -42,46 +34,34 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 /**
  * @author Bryce Osterhaus
  */
-@Component(immediate = true, service = DynamicInclude.class)
-public class IconContributorDynamicInclude implements DynamicInclude {
+@Component(immediate = true, service = IconResourceHelper.class)
+public class IconResourceHelper {
 
-	@Override
-	public void include(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse, String key)
-		throws IOException {
-
-		PrintWriter printWriter = httpServletResponse.getWriter();
-
-		printWriter.write("<svg style=\"display:none;\">");
-
-		Lock lock = _readWriteLock.readLock();
-
-		lock.lock();
-
-		try {
-			Set<Map.Entry<String, List<IconResource>>> entries =
-				_iconResourcesMap.entrySet();
-
-			for (Map.Entry<String, List<IconResource>> entry : entries) {
-				List<IconResource> iconResources = entry.getValue();
-
-				IconResource iconResource = iconResources.get(0);
-
-				printWriter.print(iconResource.getSVGContent());
-			}
-		}
-		finally {
-			lock.unlock();
-		}
-
-		printWriter.write("</svg>");
+	public Map<String, List<IconResource>> getIconResourceMaps() {
+		return _iconResourcesMap;
 	}
 
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
+	public String getGlobalSpriteContent() {
+        StringBuilder sb = new StringBuilder();
+
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
+        sb.append("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">");
+
+
+		Set<Map.Entry<String, List<IconResource>>> entries =
+			_iconResourcesMap.entrySet();
+
+		for (Map.Entry<String, List<IconResource>> entry : entries) {
+			List<IconResource> iconResources = entry.getValue();
+
+			IconResource iconResource = iconResources.get(0);
+
+			sb.append(iconResource.getSVGContent());
+		}
+
+		sb.append("</svg>");
+
+		return new String(sb);
 	}
 
 	@Reference(
@@ -166,5 +146,4 @@ public class IconContributorDynamicInclude implements DynamicInclude {
 	private final Map<String, List<IconResource>> _iconResourcesMap =
 		new HashMap<>();
 	private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
-
 }

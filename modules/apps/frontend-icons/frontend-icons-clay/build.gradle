@@ -14,6 +14,7 @@ buildClayIcons {
 	eachFile new StripPathSegmentsAction(5)
 	from npmInstall.nodeModulesDir
 	include "@clayui/css/lib/images/icons/"
+	exclude "**/icons.svg"
 	includeEmptyDirs = false
 	into destinationDir
 }

@@ -15,12 +15,9 @@
 package com.liferay.frontend.icons.admin.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.frontend.icons.admin.web.contributor.extender.IconResource;
-import com.liferay.frontend.icons.admin.web.contributor.extender.internal.IconResourceImpl;
-import com.liferay.frontend.icons.admin.web.contributor.extender.internal.IconResourcesContributorImpl;
+import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
 import com.liferay.frontend.icons.admin.web.internal.configuration.IconsAdminConfiguration;
-import com.liferay.frontend.icons.admin.web.contributor.extender.IconResourcesContributor;
 import com.liferay.petra.reflect.ReflectionUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
@@ -29,30 +26,17 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
  * @author Bryce Osterhaus
@@ -115,7 +99,7 @@ public class IconsAdminPortalSettingsConfigurationScreenContributor
 
 
 		Set<Map.Entry<String, List<IconResource>>> entries =
-			_iconResourcesMap.entrySet();
+			_iconResourceHelper.getIconResourceMaps().entrySet();
 
 
 		List<String> ids = new ArrayList<>();
@@ -140,88 +124,7 @@ public class IconsAdminPortalSettingsConfigurationScreenContributor
 	)
 	private ServletContext _servletContext;
 
+	@Reference
+	private IconResourceHelper _iconResourceHelper;
 
-	@Reference(
-		cardinality = ReferenceCardinality.MULTIPLE,
-		policy = ReferencePolicy.DYNAMIC
-	)
-	protected void addIconResourcesContributor(
-		IconResourcesContributor iconResourcesContributor) {
-
-		Lock lock = _readWriteLock.writeLock();
-
-		lock.lock();
-
-		try {
-			for (IconResource iconResource :
-					iconResourcesContributor.getIconResources()) {
-
-				_addIconResource(iconResource);
-			}
-		}
-		finally {
-			lock.unlock();
-		}
-	}
-
-	protected void removeIconResourcesContributor(
-		IconResourcesContributor iconResourcesContributor) {
-
-		Lock lock = _readWriteLock.writeLock();
-
-		try {
-			lock.lock();
-
-			for (IconResource iconResource :
-					iconResourcesContributor.getIconResources()) {
-
-				_removeIconResource(iconResource);
-			}
-		}
-		finally {
-			lock.unlock();
-		}
-	}
-
-	private void _addIconResource(IconResource iconResource) {
-		String id = iconResource.getId();
-
-		List<IconResource> iconResources = _iconResourcesMap.get(id);
-
-		if (iconResources == null) {
-			iconResources = new ArrayList<>();
-
-			_iconResourcesMap.put(id, iconResources);
-		}
-
-		int i;
-
-		for (i = 0; i < iconResources.size(); i++) {
-			IconResource existingIconResource = iconResources.get(i);
-
-			if (existingIconResource.getPriority() >
-					iconResource.getPriority()) {
-
-				break;
-			}
-		}
-
-		iconResources.add(i, iconResource);
-	}
-
-	private void _removeIconResource(IconResource iconResource) {
-		List<IconResource> iconResources = _iconResourcesMap.get(
-			iconResource.getId());
-
-		if (iconResources == null) {
-			return;
-		}
-
-		iconResources.remove(iconResource);
-	}
-
-	private final Map<String, List<IconResource>> _iconResourcesMap =
-		new HashMap<>();
-	private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
-	private final IconResourcesContributorImpl _customIconResourcesContributor = new IconResourcesContributorImpl();
 }

@@ -15,19 +15,42 @@
 package com.liferay.frontend.icons.admin.web.contributor.extender.internal;
 
 import com.liferay.frontend.icons.admin.web.contributor.extender.IconResource;
+import com.liferay.petra.string.StringPool;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Bryce Osterhaus
  */
 public class IconResourceImpl implements IconResource {
 
-	public IconResourceImpl(String id, String svgContent) {
-		this(id, svgContent, 0);
+	public IconResourceImpl(String id, String svg) {
+		this(id, svg, 0);
 	}
 
-	public IconResourceImpl(String id, String svgContent, int priority) {
+	public IconResourceImpl(String id, String svg, int priority) {
+		String viewBox = "";
+
+		Pattern patternViewBox = Pattern.compile("(?i)(viewBox.*\"(?=[\\s, >]))");
+		Matcher matcherViewBox = patternViewBox.matcher(svg);
+		if (matcherViewBox.find()) {
+			viewBox = matcherViewBox.group(1);
+		}
+
+		String svgContent = "";
+
+		Pattern patternSvgContent = Pattern.compile("(?ims)<svg.*?>(.*)</svg>");
+		Matcher matcherSvgContent = patternSvgContent.matcher(svg);
+		if (matcherSvgContent.find()) {
+			svgContent = matcherSvgContent.group(1);
+		}
+
+		svgContent = "<symbol id=" + StringPool.QUOTE + id + StringPool.QUOTE + StringPool.SPACE + viewBox + ">" + svgContent + "</symbol>";
+
 		_id = id;
 		_svgContent = svgContent;
+		_svg = svg;
 		_priority = priority;
 	}
 
@@ -42,12 +65,18 @@ public class IconResourceImpl implements IconResource {
 	}
 
 	@Override
+	public String getSVG() {
+		return _svg;
+	}
+
+	@Override
 	public String getSVGContent() {
 		return _svgContent;
 	}
 
 	private String _id;
 	private int _priority;
+	private String _svg;
 	private String _svgContent;
 
 }
