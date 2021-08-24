@@ -97,13 +97,13 @@ export {default as createResourceURL} from './liferay/util/portlet_url/create_re
 
 // Align API
 
-// @ts-ignore
-
-export {ALIGN_POSITIONS, align, getAlignBestRegion} from './liferay/align';
-
-// @ts-ignore
-
-export {getAlignRegion, suggestAlignBestRegion} from './liferay/align';
+export {
+	ALIGN_POSITIONS,
+	align,
+	getAlignBestRegion,
+	getAlignRegion,
+	suggestAlignBestRegion,
+} from './liferay/align';
 
 // Session API
 

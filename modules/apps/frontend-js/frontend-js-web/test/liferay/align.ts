@@ -18,19 +18,19 @@ import {
 } from '../../src/main/resources/META-INF/resources/liferay/align';
 import buildFragment from '../../src/main/resources/META-INF/resources/liferay/util/build_fragment';
 
-let center;
-let element;
-let mutable;
-let offsetParent;
+let center: HTMLElement;
+let element: HTMLElement;
+let mutable: HTMLElement;
+let offsetParent: HTMLElement;
 
 window.scrollTo = jest.fn();
 
 describe('Align', () => {
 	afterEach(() => {
-		center.parentNode.removeChild(center);
-		element.parentNode.removeChild(element);
-		mutable.parentNode.removeChild(mutable);
-		offsetParent.parentNode.removeChild(offsetParent);
+		center?.parentNode?.removeChild(center);
+		element?.parentNode?.removeChild(element);
+		mutable?.parentNode?.removeChild(mutable);
+		offsetParent?.parentNode?.removeChild(offsetParent);
 		window.scrollTo(0, 0);
 	});
 
@@ -56,16 +56,16 @@ describe('Align', () => {
 			)
 		);
 
-		center = document.getElementById('center');
-		element = document.getElementById('element');
+		center = document.getElementById('center')!;
+		element = document.getElementById('element')!;
 
-		mutable = document.getElementById('mutable');
+		mutable = document.getElementById('mutable')!;
 		mutable.style.top = '100px';
 		mutable.style.left = '100px';
 		mutable.style.bottom = '';
 		mutable.style.right = '';
 
-		offsetParent = document.getElementById('offsetParent');
+		offsetParent = document.getElementById('offsetParent')!;
 	});
 
 	it('defines constants and aliases', () => {

@@ -31,8 +31,7 @@ export { default as createActionURL } from './liferay/util/portlet_url/create_ac
 export { default as createPortletURL } from './liferay/util/portlet_url/create_portlet_url';
 export { default as createRenderURL } from './liferay/util/portlet_url/create_render_url';
 export { default as createResourceURL } from './liferay/util/portlet_url/create_resource_url';
-export { ALIGN_POSITIONS, align, getAlignBestRegion } from './liferay/align';
-export { getAlignRegion, suggestAlignBestRegion } from './liferay/align';
+export { ALIGN_POSITIONS, align, getAlignBestRegion, getAlignRegion, suggestAlignBestRegion, } from './liferay/align';
 export { getSessionValue, setSessionValue } from './liferay/util/session.es';
 export { openToast } from './liferay/toast/commands/OpenToast.es';
 export { default as throttle } from './liferay/throttle.es';
