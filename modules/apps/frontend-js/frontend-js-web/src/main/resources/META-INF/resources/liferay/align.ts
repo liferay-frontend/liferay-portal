@@ -12,52 +12,54 @@
  * details.
  */
 
+interface VendorPrefixedCSSStyleDeclaration extends CSSStyleDeclaration {
+	msTransform?: string;
+	mozTransform?: string;
+}
+
+type ClientProperty = 'clientHeight' | 'clientWidth';
+type HeightOrWidth = 'Height' | 'Width';
+type Node = HTMLElement | Document | Window;
+type OffsetProperty = 'offsetHeight' | 'offsetWidth';
+type Region = Omit<DOMRect, 'x' | 'y' | 'toJSON'>;
+type ScrollProperty = 'scrollHeight' | 'scrollWidth';
+
 /**
  * Returns true if value is a document.
- * @param {*} val
- * @return {boolean}
  */
-function isDocument(val) {
+function isDocument(val: any): val is Document {
 	return val && typeof val === 'object' && val.nodeType === 9;
 }
 
 /**
  * Returns true if value is a window.
- * @param {*} val
- * @return {boolean}
  */
-function isWindow(val) {
+function isWindow(val: any): val is Window {
 	return val && val === val.window;
 }
 
 /**
  * Gets the client height or width of the specified node. Scroll height is
  * not included.
- * @param {Element|Document|Window=} node
- * @param {string} property `Width` or `Height` property.
- * @return {number}
  */
-function getClientSize(node, property) {
-	let element = node;
+function getClientSize(node: Node, property: HeightOrWidth): number {
+	const element = isWindow(node)
+		? node.document.documentElement
+		: isDocument(node)
+		? node.documentElement
+		: node;
 
-	if (isWindow(node)) {
-		element = node.document.documentElement;
-	}
-	if (isDocument(node)) {
-		element = node.documentElement;
-	}
-
-	return element[`client${property}`];
+	return element[`client${property}` as ClientProperty];
 }
 
 /**
  * Gets the region of the element, document or window.
- * @param {Element|Document|Window=} element Optional element to test.
- * @return {!DOMRect} The returned value is a simulated DOMRect object which
- *     is the union of the rectangles returned by getClientRects() for the
- *     element, i.e., the CSS border-boxes associated with the element.
+ *
+ * The returned value is a simulated DOMRect object which is the union of the
+ * rectangles returned by getClientRects() for the element, i.e., the CSS
+ * border-boxes associated with the element.
  */
-function getDocumentRegion(element) {
+function getDocumentRegion(element: Node) {
 	const height = getHeight(element);
 	const width = getWidth(element);
 
@@ -66,10 +68,8 @@ function getDocumentRegion(element) {
 
 /**
  * Gets the height of the specified node. Scroll height is included.
- * @param {Element|Document|Window=} node
- * @return {number}
  */
-function getHeight(node) {
+function getHeight(node: Node) {
 	return getSize(node, 'Height');
 }
 
@@ -78,12 +78,8 @@ function getHeight(node) {
  * nodes that were translated, which don't take that into account at all. That makes
  * the calculation more expensive though, so if you don't want that to be considered
  * either pass `ignoreTransform` as true or call `offsetLeft` directly on the node.
- * @param {!Element} node
- * @param {boolean=} ignoreTransform When set to true will ignore transform css
- *   when calculating the position. Defaults to false.
- * @return {number}
  */
-function getOffsetLeft(node, ignoreTransform) {
+function getOffsetLeft(node: HTMLElement, ignoreTransform?: boolean) {
 	return node.offsetLeft + (ignoreTransform ? 0 : getTranslation(node).left);
 }
 
@@ -92,26 +88,15 @@ function getOffsetLeft(node, ignoreTransform) {
  * nodes that were translated, which don't take that into account at all. That makes
  * the calculation more expensive though, so if you don't want that to be considered
  * either pass `ignoreTransform` as true or call `offsetTop` directly on the node.
- * @param {!Element} node
- * @param {boolean=} ignoreTransform When set to true will ignore transform css
- *   when calculating the position. Defaults to false.
- * @return {number}
  */
-function getOffsetTop(node, ignoreTransform) {
+function getOffsetTop(node: HTMLElement, ignoreTransform?: boolean) {
 	return node.offsetTop + (ignoreTransform ? 0 : getTranslation(node).top);
 }
 
 /**
  * Gets the size of an element and its position relative to the viewport.
- * @param {!Document|Element|Window} node
- * @param {boolean=} includeScroll Flag indicating if the document scroll
- *   position should be considered in the element's region coordinates. Defaults
- *   to false.
- * @return {!DOMRect} The returned value is a DOMRect object which is the
- *     union of the rectangles returned by getClientRects() for the element,
- *     i.e., the CSS border-boxes associated with the element.
  */
-function getRegion(node, includeScroll) {
+function getRegion(node: Node, includeScroll?: boolean) {
 	if (!node) {
 		return {bottom: 0, height: 0, left: 0, right: 0, top: 0, width: 0};
 	}
@@ -128,15 +113,14 @@ function getRegion(node, includeScroll) {
 
 /**
  * Gets the scroll left position of the specified node.
- * @param {Element|Document|Window=} node
- * @return {number}
  */
-function getScrollLeft(node) {
+function getScrollLeft(node: Node) {
 	if (isWindow(node)) {
 		return node.pageXOffset;
 	}
+
 	if (isDocument(node)) {
-		return node.defaultView.pageXOffset;
+		return node.defaultView?.pageXOffset ?? 0;
 	}
 
 	return node.scrollLeft;
@@ -144,15 +128,14 @@ function getScrollLeft(node) {
 
 /**
  * Gets the scroll top position of the specified node.
- * @param {Element|Document|Window=} node
- * @return {number}
  */
-function getScrollTop(node) {
+function getScrollTop(node: Node) {
 	if (isWindow(node)) {
 		return node.pageYOffset;
 	}
+
 	if (isDocument(node)) {
-		return node.defaultView.pageYOffset;
+		return node.defaultView?.pageYOffset ?? 0;
 	}
 
 	return node.scrollTop;
@@ -161,40 +144,40 @@ function getScrollTop(node) {
 /**
  * Gets the height or width of the specified node. Scroll height is
  * included.
- * @param {Element|Document|Window=} node
- * @param {string} prop `Width` or `Height` property.
- * @return {number}
  */
-function getSize(node, property) {
+function getSize(node: Node, property: HeightOrWidth) {
 	if (isWindow(node)) {
 		return getClientSize(node, property);
 	}
+
+	const clientProperty = `client${property}` as ClientProperty;
+	const offsetProperty = `offset${property}` as OffsetProperty;
+	const scrollProperty = `scroll${property}` as ScrollProperty;
+
 	if (isDocument(node)) {
 		const documentElement = node.documentElement;
 
 		return Math.max(
-			node.body[`scroll${property}`],
-			documentElement[`scroll${property}`],
-			node.body[`offset${property}`],
-			documentElement[`offset${property}`],
-			documentElement[`client${property}`]
+			node.body[scrollProperty],
+			documentElement[scrollProperty],
+			node.body[offsetProperty],
+			documentElement[offsetProperty],
+			documentElement[clientProperty]
 		);
 	}
 
 	return Math.max(
-		node[`client${property}`],
-		node[`scroll${property}`],
-		node[`offset${property}`]
+		node[clientProperty],
+		node[scrollProperty],
+		node[offsetProperty]
 	);
 }
 
 /**
  * Gets the transform matrix values for the given node.
- * @param {!Element} node
- * @return {Array<number>}
  */
-function getTransformMatrixValues(node) {
-	const style = getComputedStyle(node);
+function getTransformMatrixValues(node: HTMLElement) {
+	const style: VendorPrefixedCSSStyleDeclaration = getComputedStyle(node);
 
 	const transform =
 		style.mozTransform || style.msTransform || style.transform;
@@ -216,15 +199,14 @@ function getTransformMatrixValues(node) {
 /**
  * Gets the number of translated pixels for the given node, for both the top and
  * left positions.
- * @param {!Element} node
- * @return {number}
  */
-function getTranslation(node) {
+function getTranslation(node: HTMLElement) {
 	const values = getTransformMatrixValues(node);
 	const translation = {
 		left: 0,
 		top: 0,
 	};
+
 	if (values) {
 		translation.left = parseFloat(
 			values.length === 6 ? values[4] : values[13]
@@ -239,20 +221,15 @@ function getTranslation(node) {
 
 /**
  * Gets the width of the specified node. Scroll width is included.
- * @param {Element|Document|Window=} node
- * @return {number}
  */
-function getWidth(node) {
+function getWidth(node: Node) {
 	return getSize(node, 'Width');
 }
 
 /**
  * Tests if a region intersects with another.
- * @param {DOMRect} sourceRectangle
- * @param {DOMRect} targetRectangle
- * @return {boolean}
  */
-function intersectRegion(sourceRectangle, targetRectangle) {
+function intersectRegion(sourceRectangle: Region, targetRectangle: Region) {
 	return intersectRect(
 		sourceRectangle.top,
 		sourceRectangle.left,
@@ -269,28 +246,24 @@ function intersectRegion(sourceRectangle, targetRectangle) {
  * Tests if a rectangle intersects with another.
  *
  * Note that coordinates starts from top to down (y), left to right (x):
- *
- * @param {number} x0 Horizontal coordinate of P0.
- * @param {number} y0 Vertical coordinate of P0.
- * @param {number} x1 Horizontal coordinate of P1.
- * @param {number} y1 Vertical coordinate of P1.
- * @param {number} x2 Horizontal coordinate of P2.
- * @param {number} y2 Vertical coordinate of P2.
- * @param {number} x3 Horizontal coordinate of P3.
- * @param {number} y3 Vertical coordinate of P3.
- * @return {boolean}
  */
-function intersectRect(x0, y0, x1, y1, x2, y2, x3, y3) {
+function intersectRect(
+	x0: number,
+	y0: number,
+	x1: number,
+	y1: number,
+	x2: number,
+	y2: number,
+	x3: number,
+	y3: number
+) {
 	return !(x2 > x1 || x3 < x0 || y2 > y1 || y3 < y0);
 }
 
 /**
  * Tests if a region is inside another.
- * @param {DOMRect} sourceRectangle
- * @param {DOMRect} targetRectangle
- * @return {boolean}
  */
-function insideRegion(sourceRectangle, targetRectangle) {
+function insideRegion(sourceRectangle: Region, targetRectangle: Region) {
 	return (
 		targetRectangle.top >= sourceRectangle.top &&
 		targetRectangle.bottom <= sourceRectangle.bottom &&
@@ -301,24 +274,19 @@ function insideRegion(sourceRectangle, targetRectangle) {
 
 /**
  * Tests if a region is inside viewport region.
- * @param {DOMRect} region
- * @return {boolean}
  */
-function insideViewport(region) {
+function insideViewport(region: Region) {
 	return insideRegion(getRegion(window), region);
 }
 
 /**
  * Computes the intersection region between two regions.
- * @param {DOMRect} sourceRectangle
- * @param {DOMRect} targetRectangle
- * @return {?DOMRect} Intersection region or null if regions doesn't
- *     intersects.
  */
-function intersection(sourceRectangle, targetRectangle) {
+function intersection(sourceRectangle: Region, targetRectangle: Region) {
 	if (!intersectRegion(sourceRectangle, targetRectangle)) {
 		return null;
 	}
+
 	const bottom = Math.min(sourceRectangle.bottom, targetRectangle.bottom);
 	const right = Math.min(sourceRectangle.right, targetRectangle.right);
 	const left = Math.max(sourceRectangle.left, targetRectangle.left);
@@ -329,17 +297,15 @@ function intersection(sourceRectangle, targetRectangle) {
 
 /**
  * Makes a region object. It's a writable version of DOMRect.
- * @param {number} bottom
- * @param {number} height
- * @param {number} left
- * @param {number} right
- * @param {number} top
- * @param {number} width
- * @return {!DOMRect} The returned value is a DOMRect object which is the
- *     union of the rectangles returned by getClientRects() for the element,
- *     i.e., the CSS border-boxes associated with the element.
  */
-function makeRegion(bottom, height, left, right, top, width) {
+function makeRegion(
+	bottom: number,
+	height: number,
+	left: number,
+	right: number,
+	top: number,
+	width: number
+): Region {
 	return {
 		bottom,
 		height,
@@ -352,15 +318,11 @@ function makeRegion(bottom, height, left, right, top, width) {
 
 /**
  * Makes a region from a DOMRect result from `getBoundingClientRect`.
- * @param  {!DOMRect} rectangle The returned value is a DOMRect object which is the
- *     union of the rectangles returned by getClientRects() for the element,
- *     i.e., the CSS border-boxes associated with the element.
- * @param {boolean=} includeScroll Flag indicating if the document scroll
- *   position should be considered in the element's region coordinates. Defaults
- *   to false.
- * @return {DOMRect} Writable version of DOMRect.
  */
-function makeRegionFromBoundingRect(rectangle, includeScroll = false) {
+function makeRegionFromBoundingRect(
+	rectangle: DOMRect,
+	includeScroll: boolean = false
+) {
 	const deltaX = includeScroll ? getScrollLeft(document) : 0;
 	const deltaY = includeScroll ? getScrollTop(document) : 0;
 
@@ -385,23 +347,19 @@ function makeRegionFromBoundingRect(rectangle, includeScroll = false) {
  * Constants that represent the supported positions for `Align`.
  */
 const ALIGN_POSITIONS = {
+	Bottom: 4,
 	BottomCenter: 4,
 	BottomLeft: 5,
 	BottomRight: 3,
+	Left: 6,
 	LeftCenter: 6,
+	Right: 2,
 	RightCenter: 2,
+	Top: 0,
 	TopCenter: 0,
 	TopLeft: 7,
 	TopRight: 1,
 };
-
-/**
- * Aliases for position constants.
- */
-ALIGN_POSITIONS.Bottom = ALIGN_POSITIONS.BottomCenter;
-ALIGN_POSITIONS.Left = ALIGN_POSITIONS.LeftCenter;
-ALIGN_POSITIONS.Right = ALIGN_POSITIONS.RightCenter;
-ALIGN_POSITIONS.Top = ALIGN_POSITIONS.TopCenter;
 
 export {ALIGN_POSITIONS};
 
@@ -410,16 +368,13 @@ export {ALIGN_POSITIONS};
  * region is defined by clockwise rotation starting from the specified
  * `position`. The element is always aligned in the middle of alignElement
  * axis.
- * @param {!Element} element Element to be aligned.
- * @param {!Element} alignElement Element to align with.
- * @param {ALIGN_POSITIONS.Top|ALIGN_POSITIONS.Right|ALIGN_POSITIONS.Bottom|ALIGN_POSITIONS.Left} position
- *     The initial position to try. Options `ALIGN_POSITIONS.Top`, `ALIGN_POSITIONS.Right`,
- *     `ALIGN_POSITIONS.Bottom`, `ALIGN_POSITIONS.Left`.
- * @param {boolean} autoBestAlign Option to suggest or not the best region
- *      to align.
- * @return {string} The final chosen position for the aligned element.
  */
-export function align(element, alignElement, position, autoBestAlign = true) {
+export function align(
+	element: HTMLElement,
+	alignElement: HTMLElement,
+	position: number,
+	autoBestAlign: boolean = true
+) {
 	let bestRegion;
 
 	if (autoBestAlign) {
@@ -440,10 +395,16 @@ export function align(element, alignElement, position, autoBestAlign = true) {
 		bestRegion.top += window.pageYOffset;
 		bestRegion.left += window.pageXOffset;
 
-		let offsetParent = element;
-		while ((offsetParent = offsetParent.offsetParent)) {
+		let offsetParent: HTMLElement | null = element;
+
+		while (offsetParent !== null) {
 			bestRegion.top -= getOffsetTop(offsetParent);
 			bestRegion.left -= getOffsetLeft(offsetParent);
+
+			offsetParent =
+				offsetParent.offsetParent instanceof HTMLElement
+					? offsetParent.offsetParent
+					: null;
 		}
 	}
 
@@ -457,28 +418,24 @@ export function align(element, alignElement, position, autoBestAlign = true) {
  * Returns the best region to align element with alignElement. This is similar
  * to `suggestAlignBestRegion`, but it only returns the region information,
  * while `suggestAlignBestRegion` also returns the chosen position.
- * @param {!Element} element Element to be aligned.
- * @param {!Element} alignElement Element to align with.
- * @param {ALIGN_POSITIONS.Top|ALIGN_POSITIONS.Right|ALIGN_POSITIONS.Bottom|ALIGN_POSITIONS.Left} position
- *     The initial position to try. Options `ALIGN_POSITIONS.Top`, `ALIGN_POSITIONS.Right`,
- *     `ALIGN_POSITIONS.Bottom`, `ALIGN_POSITIONS.Left`.
- * @return {DOMRect} Best region to align element.
  */
-export function getAlignBestRegion(element, alignElement, position) {
+export function getAlignBestRegion(
+	element: HTMLElement,
+	alignElement: HTMLElement,
+	position: number
+) {
 	return suggestAlignBestRegion(element, alignElement, position).region;
 }
 
 /**
  * Returns the region to align element with alignElement. The element is
  * always aligned in the middle of alignElement axis.
- * @param {!Element} element Element to be aligned.
- * @param {!Element} alignElement Element to align with.
- * @param {ALIGN_POSITIONS.Top|ALIGN_POSITIONS.Right|ALIGN_POSITIONS.Bottom|ALIGN_POSITIONS.Left} position
- *     The position to align. Options `ALIGN_POSITIONS.Top`, `ALIGN_POSITIONS.Right`,
- *     `ALIGN_POSITIONS.Bottom`, `ALIGN_POSITIONS.Left`.
- * @return {DOMRect} Region to align element.
  */
-export function getAlignRegion(element, alignElement, position) {
+export function getAlignRegion(
+	element: HTMLElement,
+	alignElement: HTMLElement,
+	position: number
+) {
 	const targetRectangle = getRegion(alignElement);
 	const sourceRectangle = getRegion(element);
 	let top = 0;
@@ -548,14 +505,12 @@ export function getAlignRegion(element, alignElement, position) {
  * region is defined by clockwise rotation starting from the specified
  * `position`. The element is always aligned in the middle of alignElement
  * axis.
- * @param {!Element} element Element to be aligned.
- * @param {!Element} alignElement Element to align with.
- * @param {ALIGN_POSITIONS.Top|ALIGN_POSITIONS.Right|ALIGN_POSITIONS.Bottom|ALIGN_POSITIONS.Left} position
- *     The initial position to try. Options `ALIGN_POSITIONS.Top`, `ALIGN_POSITIONS.Right`,
- *     `ALIGN_POSITIONS.Bottom`, `ALIGN_POSITIONS.Left`.
- * @return {{position: string, region: DOMRect}} Best region to align element.
  */
-export function suggestAlignBestRegion(element, alignElement, position) {
+export function suggestAlignBestRegion(
+	element: HTMLElement,
+	alignElement: HTMLElement,
+	position: number
+) {
 	let bestArea = 0;
 	let bestPosition = position;
 	let bestRegion = getAlignRegion(element, alignElement, bestPosition);
@@ -566,14 +521,17 @@ export function suggestAlignBestRegion(element, alignElement, position) {
 	for (let i = 0; i < 8; ) {
 		if (intersectRegion(viewportRegion, tryRegion)) {
 			const visibleRegion = intersection(viewportRegion, tryRegion);
-			const area = visibleRegion.width * visibleRegion.height;
-			if (area > bestArea) {
-				bestArea = area;
-				bestRegion = tryRegion;
-				bestPosition = tryPosition;
-			}
-			if (insideViewport(tryRegion)) {
-				break;
+
+			if (visibleRegion) {
+				const area = visibleRegion.width * visibleRegion.height;
+				if (area > bestArea) {
+					bestArea = area;
+					bestRegion = tryRegion;
+					bestPosition = tryPosition;
+				}
+				if (insideViewport(tryRegion)) {
+					break;
+				}
 			}
 		}
 		tryPosition = (position + ++i) % 8;
