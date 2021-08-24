@@ -15,7 +15,10 @@
 /**
  * Appends given parameters to the given URL.
  */
-export default function addParams(params: string | object, baseUrl: string) {
+export default function addParams(
+	params: string | Record<string, string>,
+	baseUrl: string
+) {
 	if (!params || (typeof params !== 'object' && typeof params !== 'string')) {
 		throw new TypeError('Parameter params must be an object or string');
 	}

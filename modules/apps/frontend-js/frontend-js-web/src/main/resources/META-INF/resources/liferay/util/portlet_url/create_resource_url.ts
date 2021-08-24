@@ -19,7 +19,7 @@ import createPortletURL from './create_portlet_url';
  */
 export default function createResourceURL(
 	basePortletURL: string,
-	parameters: {[key: string]: string} = {}
+	parameters: Record<string, string> = {}
 ) {
 	return createPortletURL(basePortletURL, {
 		...parameters,

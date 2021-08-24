@@ -25,7 +25,7 @@ function isAbsolute_(urlString: string) {
  */
 export default function createPortletURL(
 	basePortletURL: string,
-	parameters: {[key: string]: string} = {}
+	parameters: Record<string, string> = {}
 ) {
 	if (typeof basePortletURL !== 'string') {
 		throw new TypeError('basePortletURL parameter must be a string');

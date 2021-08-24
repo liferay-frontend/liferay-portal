@@ -11,9 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-declare const MAP_HTML_CHARS_ESCAPED: {
-    [key: string]: string;
-};
+declare const MAP_HTML_CHARS_ESCAPED: Record<string, string>;
 export { MAP_HTML_CHARS_ESCAPED };
 export declare function escapeHTML(string: string): string;
 export declare function unescapeHTML(string: string): string;

@@ -11,7 +11,16 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+declare const DEFAULT_OPTIONS: {
+    addSpaceBeforeSuffix: boolean;
+    decimalSeparator: string;
+    denominator: number;
+    suffixGB: string;
+    suffixKB: string;
+    suffixMB: string;
+};
 /**
  * Returns storage number formatted as a String
  */
-export default function formatStorage(size: number, options?: object): string;
+export default function formatStorage(size: number, options?: Partial<typeof DEFAULT_OPTIONS>): string;
+export {};

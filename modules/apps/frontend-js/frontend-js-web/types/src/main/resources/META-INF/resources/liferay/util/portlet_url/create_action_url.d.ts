@@ -14,6 +14,4 @@
 /**
  * Returns an action portlet URL in form of a URL object by setting the lifecycle parameter
  */
-export default function createActionURL(basePortletURL: string, parameters?: {
-    [key: string]: string;
-}): URL;
+export default function createActionURL(basePortletURL: string, parameters?: Record<string, string>): URL;

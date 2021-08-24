@@ -24,7 +24,10 @@ const DEFAULT_OPTIONS = {
 /**
  * Returns storage number formatted as a String
  */
-export default function formatStorage(size: number, options: object = {}) {
+export default function formatStorage(
+	size: number,
+	options: Partial<typeof DEFAULT_OPTIONS> = {}
+) {
 	const {
 		addSpaceBeforeSuffix,
 		decimalSeparator,

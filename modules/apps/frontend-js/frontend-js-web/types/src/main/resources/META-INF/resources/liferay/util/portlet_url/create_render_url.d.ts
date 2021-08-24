@@ -14,6 +14,4 @@
 /**
  * Returns a render portlet URL in form of a URL object by setting the lifecycle parameter
  */
-export default function createRenderURL(basePortletURL: string, parameters?: {
-    [key: string]: string;
-}): URL;
+export default function createRenderURL(basePortletURL: string, parameters?: Record<string, string>): URL;
