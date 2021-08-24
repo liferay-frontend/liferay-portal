@@ -14,6 +14,4 @@
 /**
  * Returns a portlet URL in form of a URL Object
  */
-export default function createPortletURL(basePortletURL: string, parameters?: {
-    [key: string]: string;
-}): URL;
+export default function createPortletURL(basePortletURL: string, parameters?: Record<string, string>): URL;

@@ -14,4 +14,4 @@
 /**
  * Appends given parameters to the given URL.
  */
-export default function addParams(params: string | object, baseUrl: string): string;
+export default function addParams(params: string | Record<string, string>, baseUrl: string): string;

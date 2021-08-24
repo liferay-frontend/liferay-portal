@@ -17,6 +17,4 @@ import { Callback } from '../types';
  * request through the SPA engine. If not, it will simple change the document
  * location.
  */
-export default function (url: string | URL, listeners?: {
-    [key: string]: Callback;
-}): void;
+export default function (url: string | URL, listeners?: Record<string, Callback>): void;

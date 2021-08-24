@@ -12,7 +12,7 @@
  * details.
  */
 
-const MAP_HTML_CHARS_ESCAPED: {[key: string]: string} = {
+const MAP_HTML_CHARS_ESCAPED: Record<string, string> = {
 	'"': '&#034;',
 	'&': '&amp;',
 	"'": '&#039;',
@@ -24,7 +24,7 @@ const MAP_HTML_CHARS_ESCAPED: {[key: string]: string} = {
 
 export {MAP_HTML_CHARS_ESCAPED};
 
-const MAP_HTML_CHARS_UNESCAPED: {[key: string]: string} = {};
+const MAP_HTML_CHARS_UNESCAPED: Record<string, string> = {};
 
 Object.entries(MAP_HTML_CHARS_ESCAPED).forEach(([char, escapedChar]) => {
 	MAP_HTML_CHARS_UNESCAPED[escapedChar] = char;

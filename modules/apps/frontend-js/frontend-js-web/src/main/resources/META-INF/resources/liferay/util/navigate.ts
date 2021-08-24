@@ -22,7 +22,7 @@ import {Callback} from '../types';
 
 export default function (
 	url: string | URL,
-	listeners?: {[key: string]: Callback}
+	listeners?: Record<string, Callback>
 ) {
 	url = url instanceof URL ? String(url) : url;
 
