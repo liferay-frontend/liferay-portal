@@ -38,7 +38,7 @@ export { openToast } from './liferay/toast/commands/OpenToast.es';
 export { default as throttle } from './liferay/throttle.es';
 export { default as addParams } from './liferay/util/add_params';
 export { default as buildFragment } from './liferay/util/build_fragment';
-export { default as fetch } from './liferay/util/fetch.es';
+export { default as fetch } from './liferay/util/fetch';
 export { default as focusFormField } from './liferay/util/focus_form_field';
 export { default as getPortletId } from './liferay/util/get_portlet_id';
 export { default as inBrowserView } from './liferay/util/in_browser_view';

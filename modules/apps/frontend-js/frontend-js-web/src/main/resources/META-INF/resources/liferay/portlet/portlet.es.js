@@ -12,7 +12,7 @@
  * details.
  */
 
-import fetch from '../util/fetch.es';
+import fetch from '../util/fetch';
 import objectToFormData from '../util/form/object_to_form_data.es';
 import getPortletId from '../util/get_portlet_id';
 import createPortletURL from '../util/portlet_url/create_portlet_url';
@@ -43,7 +43,8 @@ export function minimizePortlet(portletSelector, trigger, options) {
 				content.classList.remove('d-none');
 
 				portlet.classList.remove('portlet-minimized');
-			} else {
+			}
+			else {
 				content.classList.add('d-none');
 
 				portlet.classList.add('portlet-minimized');
@@ -71,7 +72,8 @@ export function minimizePortlet(portletSelector, trigger, options) {
 					if (minimized) {
 						icon.classList.add('icon-minus');
 						icon.classList.remove('icon-resize-vertical');
-					} else {
+					}
+					else {
 						icon.classList.add('icon-resize-vertical');
 						icon.classList.remove('icon-minus');
 					}
@@ -90,6 +92,7 @@ export function minimizePortlet(portletSelector, trigger, options) {
 				p_v_l_s_g_id: themeDisplay.getSiteGroupId(),
 			});
 
+			// eslint-disable-next-line @liferay/portal/no-global-fetch
 			fetch(themeDisplay.getPathMain() + '/portal/update_layout', {
 				body: formData,
 				method: 'POST',
@@ -104,6 +107,7 @@ export function minimizePortlet(portletSelector, trigger, options) {
 							p_p_isolated: true,
 						};
 
+						// eslint-disable-next-line @liferay/portal/no-global-fetch
 						fetch(
 							createPortletURL(
 								themeDisplay.getPathMain() +

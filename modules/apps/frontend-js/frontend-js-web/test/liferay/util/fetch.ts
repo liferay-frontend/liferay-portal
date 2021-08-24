@@ -12,15 +12,15 @@
  * details.
  */
 
-'use strict';
+import fetchWrapper from '../../../src/main/resources/META-INF/resources/liferay/util/fetch';
 
-import fetchWrapper from '../../../src/main/resources/META-INF/resources/liferay/util/fetch.es';
+import type {FetchMock} from 'jest-fetch-mock';
 
 describe('Liferay.Util.fetch', () => {
 	const sampleUrl = 'http://sampleurl.com';
 
 	beforeEach(() => {
-		fetch.mockResponse('');
+		(fetch as FetchMock).mockResponse('');
 	});
 
 	it('applies default settings if none are given', () => {
@@ -42,7 +42,7 @@ describe('Liferay.Util.fetch', () => {
 			headers: {
 				'x-csrf-token': 'efgh',
 			},
-		};
+		} as const;
 
 		fetchWrapper(sampleUrl, init);
 

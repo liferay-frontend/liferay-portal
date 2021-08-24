@@ -20,7 +20,7 @@ import ClayModal, {useModal} from '@clayui/modal';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
 import React, {useState} from 'react';
 
-import fetch from '../../util/fetch.es';
+import fetch from '../../util/fetch';
 import navigate from '../../util/navigate';
 
 /**
@@ -61,6 +61,7 @@ const SimpleInputModal = ({
 			document.querySelector(`#${namespace}form`)
 		);
 
+		// eslint-disable-next-line @liferay/portal/no-global-fetch
 		fetch(formSubmitURL, {
 			body: formData,
 			method: 'POST',

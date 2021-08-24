@@ -43,7 +43,7 @@ import SideNavigation from './side_navigation.es';
 import addParams from './util/add_params';
 import getCountries from './util/address/get_countries.es';
 import getRegions from './util/address/get_regions.es';
-import fetch from './util/fetch.es';
+import fetch from './util/fetch';
 import focusFormField from './util/focus_form_field';
 import getFormElement from './util/form/get_form_element.es';
 import objectToFormData from './util/form/object_to_form_data.es';
