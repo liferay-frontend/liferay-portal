@@ -19,6 +19,7 @@ package com.liferay.frontend.icons.admin.web.internal.constants;
  */
 public class IconAdminKeys {
 
-	public static final String GLOBAL_SPRITE_MAP = "icons-admin/global-spritemap.svg";
+	public static final String GLOBAL_SPRITE_MAP =
+		"icons-admin/global-spritemap.svg";
 
 }

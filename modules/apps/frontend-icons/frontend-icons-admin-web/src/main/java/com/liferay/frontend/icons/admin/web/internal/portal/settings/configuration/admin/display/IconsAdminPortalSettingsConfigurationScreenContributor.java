@@ -14,9 +14,9 @@
 
 package com.liferay.frontend.icons.admin.web.internal.portal.settings.configuration.admin.display;
 
-import com.liferay.frontend.icons.admin.web.contributor.extender.IconResource;
-import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
 import com.liferay.frontend.icons.admin.web.internal.configuration.IconsAdminConfiguration;
+import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResource;
+import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -69,7 +69,7 @@ public class IconsAdminPortalSettingsConfigurationScreenContributor
 
 	@Override
 	public String getSaveMVCActionCommandName() {
-		return "/icons_admin/save_custom_icon";
+		return "/frontend_icons_admin/save_custom_icon";
 	}
 
 	@Override
@@ -82,10 +82,10 @@ public class IconsAdminPortalSettingsConfigurationScreenContributor
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
-		IconsAdminConfiguration IconsAdminConfiguration = null;
+		IconsAdminConfiguration iconsAdminConfiguration = null;
 
 		try {
-			IconsAdminConfiguration =
+			iconsAdminConfiguration =
 				_configurationProvider.getCompanyConfiguration(
 					IconsAdminConfiguration.class,
 					CompanyThreadLocal.getCompanyId());
@@ -95,12 +95,13 @@ public class IconsAdminPortalSettingsConfigurationScreenContributor
 		}
 
 		httpServletRequest.setAttribute(
-			IconsAdminConfiguration.class.getName(), IconsAdminConfiguration);
+			IconsAdminConfiguration.class.getName(), iconsAdminConfiguration);
 
+		Map<String, List<IconResource>> iconResourceMaps =
+			_iconResourceHelper.getIconResourceMaps();
 
 		Set<Map.Entry<String, List<IconResource>>> entries =
-			_iconResourceHelper.getIconResourceMaps().entrySet();
-
+			iconResourceMaps.entrySet();
 
 		List<String> ids = new ArrayList<>();
 
@@ -118,13 +119,13 @@ public class IconsAdminPortalSettingsConfigurationScreenContributor
 	@Reference
 	private ConfigurationProvider _configurationProvider;
 
+	@Reference
+	private IconResourceHelper _iconResourceHelper;
+
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.frontend.icons.admin.web)",
 		unbind = "-"
 	)
 	private ServletContext _servletContext;
-
-	@Reference
-	private IconResourceHelper _iconResourceHelper;
 
 }

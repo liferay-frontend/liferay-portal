@@ -12,10 +12,7 @@
  * details.
  */
 
-package com.liferay.frontend.icons.admin.web.contributor.extender.internal;
-
-import com.liferay.frontend.icons.admin.web.contributor.extender.IconResource;
-import com.liferay.frontend.icons.admin.web.contributor.extender.IconResourcesContributor;
+package com.liferay.frontend.icons.admin.web.internal.contributor.extender;
 
 import java.util.ArrayList;
 import java.util.Collection;

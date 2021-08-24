@@ -1,11 +1,20 @@
 /**
- * SPDX-FileCopyrightText: © 2020 Liferay, Inc. <https://liferay.com>
- * SPDX-License-Identifier: BSD-3-Clause
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  */
 
+import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
-import ClayButton from '@clayui/button';
 import ClayPanel from '@clayui/panel';
 import React, {useMemo, useState} from 'react';
 
@@ -20,9 +29,7 @@ const IconSearch = ({
 	label = 'Search Icons',
 	placeholder = 'Search Icons...',
 	portletNamespace,
-	...otherProps
 }) => {
-	console.log(otherProps);
 	const [searchQuery, setSearchQuery] = useState('');
 
 	const filteredIcons = useMemo(() => {
@@ -61,7 +68,7 @@ const IconSearch = ({
 			</ClayForm.Group>
 
 			<ClayForm.Group>
-				<h4>{'Icon Packs'}</h4>
+				<h4>Icon Packs</h4>
 
 				<ClayPanel.Group>
 					{Object.keys(iconMap).map((category) => (
@@ -69,6 +76,7 @@ const IconSearch = ({
 							collapsable
 							displayTitle={category}
 							displayType="secondary"
+							key={category}
 							showCollapseIcon={true}
 						>
 							<ClayPanel.Body className="list-group-card">
@@ -84,6 +92,7 @@ const IconSearch = ({
 														window.location.href
 													}
 													symbol={icon}
+													spritemap="/o/icons-admin/global-spritemap.svg"
 												/>
 
 												<span className="list-group-card-item-text">
@@ -103,10 +112,10 @@ const IconSearch = ({
 				</ClayPanel.Group>
 			</ClayForm.Group>
 
-			<h4>{'Add Custom Icon'}</h4>
+			<h4>Add Custom Icon</h4>
 
 			<ClayForm.Group>
-				<label htmlFor={portletNamespace + 'name'}>{'Icon Name'}</label>
+				<label htmlFor={portletNamespace + 'name'}>Icon Name</label>
 
 				<ClayInput
 					name={portletNamespace + 'name'}
@@ -116,15 +125,12 @@ const IconSearch = ({
 			</ClayForm.Group>
 
 			<ClayForm.Group>
-				<label htmlFor={portletNamespace + 'svgContent'}>
-					{'SVG Markup'}
-				</label>
+				<label htmlFor={portletNamespace + 'svgFile'}>SVG File</label>
 
 				<ClayInput
-					component="textarea"
-					name={portletNamespace + 'svgContent'}
+					name={portletNamespace + 'svgFile'}
 					placeholder="Paste SVG content"
-					type="text"
+					type="file"
 				/>
 			</ClayForm.Group>
 		</>
