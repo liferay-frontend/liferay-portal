@@ -12,7 +12,7 @@
  * details.
  */
 
-import fetch from './fetch.es';
+import fetch from './fetch';
 
 const TOKEN_SERIALIZE = 'serialize://';
 
@@ -51,6 +51,7 @@ export function getSessionValue(key, options = {}) {
 		formData.append('useHttpSession', true);
 	}
 
+	// eslint-disable-next-line @liferay/portal/no-global-fetch
 	return fetch(getSessionClickURL(), {
 		body: formData,
 		method: 'POST',
@@ -88,6 +89,7 @@ export function setSessionValue(key, value, options = {}) {
 		formData.append('useHttpSession', true);
 	}
 
+	// eslint-disable-next-line @liferay/portal/no-global-fetch
 	return fetch(getSessionClickURL(), {
 		body: formData,
 		method: 'POST',

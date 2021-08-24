@@ -127,10 +127,7 @@ export {default as throttle} from './liferay/throttle.es';
 
 export {default as addParams} from './liferay/util/add_params';
 export {default as buildFragment} from './liferay/util/build_fragment';
-
-// @ts-ignore
-
-export {default as fetch} from './liferay/util/fetch.es';
+export {default as fetch} from './liferay/util/fetch';
 
 // @ts-ignore
 

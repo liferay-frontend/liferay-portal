@@ -14,7 +14,7 @@
 
 import uuidv1 from 'uuid/v1';
 
-import fetch from './../util/fetch.es';
+import fetch from './../util/fetch';
 import isObject from './../util/is_object';
 import RenderState from './RenderState.es';
 import PortletConstants from './portlet_constants.es';
@@ -122,6 +122,7 @@ class PortletInit {
 						element
 					);
 
+					// eslint-disable-next-line @liferay/portal/no-global-fetch
 					fetch(options.url, options)
 						.then((res) => res.text())
 						.then((text) => {

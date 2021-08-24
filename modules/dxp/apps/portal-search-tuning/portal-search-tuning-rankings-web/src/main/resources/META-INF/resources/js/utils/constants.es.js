@@ -51,8 +51,8 @@ export const KEY_CODES = {
 
 /**
  * Fetch options to pass to ClayDataProvider.
- * Match fetch options from frontend-js-web's fetch.es.js.
- * @see https://github.com/liferay/liferay-portal/blob/master/modules/apps/frontend-js/frontend-js-web/src/main/resources/META-INF/resources/liferay/util/fetch.es.js
+ * Match fetch options from frontend-js-web's fetch.ts.
+ * @see https://github.com/liferay/liferay-portal/blob/master/modules/apps/frontend-js/frontend-js-web/src/main/resources/META-INF/resources/liferay/util/fetch.ts
  */
 export const FETCH_OPTIONS = {
 	credentials: 'include',
