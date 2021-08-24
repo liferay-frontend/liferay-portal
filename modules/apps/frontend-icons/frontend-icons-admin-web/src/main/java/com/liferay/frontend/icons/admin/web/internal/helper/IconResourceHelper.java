@@ -14,8 +14,8 @@
 
 package com.liferay.frontend.icons.admin.web.internal.helper;
 
-import com.liferay.frontend.icons.admin.web.contributor.extender.IconResource;
-import com.liferay.frontend.icons.admin.web.contributor.extender.IconResourcesContributor;
+import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResource;
+import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResourcesContributor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,16 +37,17 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 @Component(immediate = true, service = IconResourceHelper.class)
 public class IconResourceHelper {
 
-	public Map<String, List<IconResource>> getIconResourceMaps() {
-		return _iconResourcesMap;
-	}
-
 	public String getGlobalSpriteContent() {
-        StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
-		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
-        sb.append("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">");
+		sb.append(
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE svg PUBLIC " +
+				"\"-//W3C//DTD SVG 1.1//EN\" " +
+					"\"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
 
+		sb.append(
+			"<svg xmlns=\"http://www.w3.org/2000/svg\" " +
+				"xmlns:xlink=\"http://www.w3.org/1999/xlink\">");
 
 		Set<Map.Entry<String, List<IconResource>>> entries =
 			_iconResourcesMap.entrySet();
@@ -62,6 +63,10 @@ public class IconResourceHelper {
 		sb.append("</svg>");
 
 		return new String(sb);
+	}
+
+	public Map<String, List<IconResource>> getIconResourceMaps() {
+		return _iconResourcesMap;
 	}
 
 	@Reference(
@@ -146,4 +151,5 @@ public class IconResourceHelper {
 	private final Map<String, List<IconResource>> _iconResourcesMap =
 		new HashMap<>();
 	private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
+
 }

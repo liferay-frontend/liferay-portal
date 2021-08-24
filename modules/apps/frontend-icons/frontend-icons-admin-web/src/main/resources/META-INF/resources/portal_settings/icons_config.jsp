@@ -1,4 +1,4 @@
-<%@ page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%--
+<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-	List<String> iconIds = (List<String>)request.getAttribute("iconIds");
+List<String> iconIds = (List<String>)request.getAttribute("iconIds");
 %>
 
 <div>

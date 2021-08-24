@@ -12,9 +12,8 @@
  * details.
  */
 
-package com.liferay.frontend.icons.admin.web.contributor.extender.internal;
+package com.liferay.frontend.icons.admin.web.internal.contributor.extender;
 
-import com.liferay.frontend.icons.admin.web.contributor.extender.IconResourcesContributor;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
@@ -31,8 +30,6 @@ import java.net.URL;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
@@ -109,9 +106,9 @@ public class IconContributorExtender
 		_serviceTracker.close();
 	}
 
-	private static String _getSVGFile(String name, URL url) throws IOException {
-		try (InputStream is = url.openStream()) {
-			return StringUtil.read(is);
+	private String _getFileContents(URL url) throws IOException {
+		try (InputStream urlInputStream = url.openStream()) {
+			return StringUtil.read(urlInputStream);
 		}
 	}
 
@@ -126,7 +123,6 @@ public class IconContributorExtender
 		}
 
 		String liferayIconsPath = headers.get("Liferay-Icons-Path");
-		String liferayIconsNamespace= headers.get("Liferay-Icons-Namespace");
 
 		if (Validator.isBlank(liferayIconsPath)) {
 			return null;
@@ -134,10 +130,10 @@ public class IconContributorExtender
 
 		liferayIconsPath = "META-INF/resources/" + liferayIconsPath;
 
-		Enumeration<URL> entries = bundle.findEntries(
+		Enumeration<URL> entriesEnumeration = bundle.findEntries(
 			liferayIconsPath, "*.svg", true);
 
-		if (entries == null) {
+		if (entriesEnumeration == null) {
 			return null;
 		}
 
@@ -146,8 +142,8 @@ public class IconContributorExtender
 
 		int stripPathPrefixLength = liferayIconsPath.length() + 2;
 
-		while (entries.hasMoreElements()) {
-			URL url = entries.nextElement();
+		while (entriesEnumeration.hasMoreElements()) {
+			URL url = entriesEnumeration.nextElement();
 
 			String path = url.getPath();
 
@@ -155,20 +151,23 @@ public class IconContributorExtender
 
 			name = FileUtil.stripExtension(name);
 
+			String liferayIconsNamespace = headers.get(
+				"Liferay-Icons-Namespace");
+
 			if (!Validator.isBlank(liferayIconsNamespace)) {
 				name = liferayIconsNamespace + "_" + name;
 			}
 
 			try {
 				iconResourcesContributorImpl.addIconResource(
-					new IconResourceImpl(name, _getSVGFile(name, url)));
+					new IconResourceImpl(name, _getFileContents(url)));
 			}
-			catch (IOException ioe) {
+			catch (IOException ioException) {
 				_log.error(
 					StringBundler.concat(
 						"Unable to read icon resource ", path, " in bundle ",
 						bundle.getSymbolicName()),
-					ioe);
+					ioException);
 			}
 		}
 

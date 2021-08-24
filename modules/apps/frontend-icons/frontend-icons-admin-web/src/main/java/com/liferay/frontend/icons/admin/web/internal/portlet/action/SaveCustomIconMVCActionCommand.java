@@ -15,11 +15,9 @@
 package com.liferay.frontend.icons.admin.web.internal.portlet.action;
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
-import com.liferay.frontend.icons.admin.web.contributor.extender.IconResourcesContributor;
-import com.liferay.frontend.icons.admin.web.contributor.extender.internal.IconResourceImpl;
-import com.liferay.frontend.icons.admin.web.contributor.extender.internal.IconResourcesContributorImpl;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResourceImpl;
+import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResourcesContributor;
+import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResourcesContributorImpl;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -27,9 +25,15 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.File;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.Hashtable;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -41,11 +45,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * @author Bryce Osterhaus
  */
@@ -53,29 +52,25 @@ import java.util.regex.Pattern;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
-		"mvc.command.name=/icons_admin/save_custom_icon"
+		"mvc.command.name=/frontend_icons_admin/save_custom_icon"
 	},
 	service = MVCActionCommand.class
 )
-public class SaveCustomIconMVCActionCommand
-	extends BaseMVCActionCommand {
-
-	private ServiceRegistration<IconResourcesContributor> _serviceRegistration;
+public class SaveCustomIconMVCActionCommand extends BaseMVCActionCommand {
 
 	public void addCustomIcon(String id, String svgContent) {
 		String name = "custom_" + id;
 
-		_customIconResourcesContributor.addIconResource(
-			new IconResourceImpl(name, svgContent)
-		);
+		_customIconResourcesContributorImpl.addIconResource(
+			new IconResourceImpl(name, svgContent));
 
 		if (_serviceRegistration != null) {
 			_serviceRegistration.unregister();
 		}
 
-		_serviceRegistration =
-			_bundleContext.registerService(IconResourcesContributor.class,
-				_customIconResourcesContributor, new Hashtable<>());
+		_serviceRegistration = _bundleContext.registerService(
+			IconResourcesContributor.class, _customIconResourcesContributorImpl,
+			new Hashtable<>());
 	}
 
 	@Activate
@@ -83,15 +78,12 @@ public class SaveCustomIconMVCActionCommand
 		throws InvalidSyntaxException {
 
 		_bundleContext = bundleContext;
-
-		addCustomIcon("default","");
 	}
 
-
-	 @Override
-	 protected void doProcessAction(
-	 		ActionRequest actionRequest, ActionResponse actionResponse)
-	 	throws Exception {
+	@Override
+	protected void doProcessAction(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -107,12 +99,24 @@ public class SaveCustomIconMVCActionCommand
 			return;
 		}
 
-		String svgContent = ParamUtil.getString(actionRequest, "svgContent");
+		UploadPortletRequest uploadPortletRequest = _portal.getUploadPortletRequest(actionRequest);
+
+		String svgContent = FileUtil.read(uploadPortletRequest.getFile("svgFile"));
+
+		System.out.println(svgContent);
+
 		String name = ParamUtil.getString(actionRequest, "name");
 
 		addCustomIcon(name, svgContent);
-	 }
+	}
+
+	@Reference
+	private Portal _portal;
 
 	private BundleContext _bundleContext;
-	private final IconResourcesContributorImpl _customIconResourcesContributor = new IconResourcesContributorImpl();
+	private final IconResourcesContributorImpl
+		_customIconResourcesContributorImpl =
+			new IconResourcesContributorImpl();
+	private ServiceRegistration<IconResourcesContributor> _serviceRegistration;
+
 }

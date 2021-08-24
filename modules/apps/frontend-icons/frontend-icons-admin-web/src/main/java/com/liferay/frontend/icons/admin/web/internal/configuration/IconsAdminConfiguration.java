@@ -18,7 +18,6 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
-
 /**
  * @author Bryce Osterhaus
  */
@@ -31,5 +30,4 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	localization = "content/Language", name = "icons-admin-configuration-name"
 )
 public interface IconsAdminConfiguration {
-
 }

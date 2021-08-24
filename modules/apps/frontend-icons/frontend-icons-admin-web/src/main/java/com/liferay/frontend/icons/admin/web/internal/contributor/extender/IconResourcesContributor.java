@@ -12,21 +12,15 @@
  * details.
  */
 
-package com.liferay.frontend.icons.admin.web.contributor.extender;
+package com.liferay.frontend.icons.admin.web.internal.contributor.extender;
+
+import java.util.Collection;
 
 /**
  * @author Bryce Osterhaus
  */
-public interface IconResource {
+public interface IconResourcesContributor {
 
-	public String getId();
-
-	public default int getPriority() {
-		return 0;
-	}
-
-	public String getSVG();
-
-	public String getSVGContent();
+	public Collection<IconResource> getIconResources();
 
 }

@@ -12,10 +12,9 @@
  * details.
  */
 
-package com.liferay.frontend.icons.admin.web.contributor.extender.internal;
+package com.liferay.frontend.icons.admin.web.internal.contributor.extender;
 
-import com.liferay.frontend.icons.admin.web.contributor.extender.IconResource;
-import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,26 +31,31 @@ public class IconResourceImpl implements IconResource {
 	public IconResourceImpl(String id, String svg, int priority) {
 		String viewBox = "";
 
-		Pattern patternViewBox = Pattern.compile("(?i)(viewBox.*\"(?=[\\s, >]))");
-		Matcher matcherViewBox = patternViewBox.matcher(svg);
-		if (matcherViewBox.find()) {
-			viewBox = matcherViewBox.group(1);
+		Matcher viewBoxMatcher = _viewBoxPattern.matcher(svg);
+
+		if (viewBoxMatcher.find()) {
+			viewBox = viewBoxMatcher.group(1);
 		}
 
 		String svgContent = "";
 
-		Pattern patternSvgContent = Pattern.compile("(?ims)<svg.*?>(.*)</svg>");
-		Matcher matcherSvgContent = patternSvgContent.matcher(svg);
-		if (matcherSvgContent.find()) {
-			svgContent = matcherSvgContent.group(1);
+		Matcher svgContentMatcher = _svgContentPattern.matcher(svg);
+
+		if (svgContentMatcher.find()) {
+			svgContent = svgContentMatcher.group(1);
 		}
 
-		svgContent = "<symbol id=" + StringPool.QUOTE + id + StringPool.QUOTE + StringPool.SPACE + viewBox + ">" + svgContent + "</symbol>";
+		String symbolContent = StringUtil.replace(
+			"<symbol id=\"[$NAME$]\" viewBox=\"[$VIEW_BOX$]\">" +
+				"[$SYMBOL_CONTENT$]</symbol>",
+			new String[] {"[$NAME$]", "[$SYMBOL_CONTENT$]", "[$VIEW_BOX$]"},
+			new String[] {id, svgContent, viewBox});
 
 		_id = id;
-		_svgContent = svgContent;
 		_svg = svg;
 		_priority = priority;
+
+		_svgContent = symbolContent;
 	}
 
 	@Override
@@ -73,6 +77,11 @@ public class IconResourceImpl implements IconResource {
 	public String getSVGContent() {
 		return _svgContent;
 	}
+
+	private static final Pattern _svgContentPattern = Pattern.compile(
+		"(?ims)<svg.*?>(.*)</svg>");
+	private static final Pattern _viewBoxPattern = Pattern.compile(
+		"(?i)viewBox=\"(.*)\"(?=[\\s, >])");
 
 	private String _id;
 	private int _priority;
