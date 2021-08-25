@@ -13,11 +13,24 @@
  */
 
 /**
- * Returns true if the specified value is an object. This includes arrays
- * and functions.
+ * Returns a DOM element or elements in a form.
  */
-export default function isObject<T>(val: T): val is NonNullable<T> {
-	const type = typeof val;
 
-	return (type === 'object' && val !== null) || type === 'function';
+export default function getFormElement(
+	form: HTMLFormElement,
+	elementName: string
+) {
+	let formElement = null;
+
+	if (
+		form !== undefined &&
+		form.nodeName === 'FORM' &&
+		typeof elementName === 'string'
+	) {
+		const ns = form.dataset.fmNamespace || '';
+
+		formElement = form.elements.namedItem(ns + elementName) || null;
+	}
+
+	return formElement;
 }

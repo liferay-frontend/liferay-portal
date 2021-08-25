@@ -13,25 +13,25 @@
  */
 
 import buildFragment from '../../../../src/main/resources/META-INF/resources/liferay/util/build_fragment';
-import getFormElement from '../../../../src/main/resources/META-INF/resources/liferay/util/form/get_form_element.es';
+import getFormElement from '../../../../src/main/resources/META-INF/resources/liferay/util/form/get_form_element';
 
 describe('Liferay.Util.getFormElement', () => {
 	it('returns null if the form parameter is not a form node', () => {
 		const fragment = buildFragment('<div />');
 
-		const form = fragment.firstElementChild;
+		const form = fragment.firstElementChild as HTMLFormElement;
 
-		expect(getFormElement(undefined, 'foo')).toEqual(null);
+		expect(getFormElement(undefined as any, 'foo')).toEqual(null);
 		expect(getFormElement(form, 'foo')).toEqual(null);
 	});
 
 	it('returns null if the elementName parameter is not a string', () => {
 		const fragment = buildFragment('<form />');
 
-		const form = fragment.firstElementChild;
+		const form = fragment.firstElementChild as HTMLFormElement;
 
-		expect(getFormElement(form, undefined)).toEqual(null);
-		expect(getFormElement(form, {})).toEqual(null);
+		expect(getFormElement(form, undefined as any)).toEqual(null);
+		expect(getFormElement(form, {} as any)).toEqual(null);
 	});
 
 	it('returns null if the element does not exist withing the form', () => {
@@ -41,7 +41,7 @@ describe('Liferay.Util.getFormElement', () => {
 					</form>
 				`);
 
-		const form = fragment.firstElementChild;
+		const form = fragment.firstElementChild as HTMLFormElement;
 
 		expect(getFormElement(form, 'bar')).toEqual(null);
 	});
@@ -53,9 +53,9 @@ describe('Liferay.Util.getFormElement', () => {
 					</form>
 				`);
 
-		const form = fragment.firstElementChild;
+		const form = fragment.firstElementChild as HTMLFormElement;
 
-		const formElement = getFormElement(form, 'foo');
+		const formElement = getFormElement(form, 'foo') as HTMLInputElement;
 
 		expect(formElement.value).toEqual('abc');
 	});

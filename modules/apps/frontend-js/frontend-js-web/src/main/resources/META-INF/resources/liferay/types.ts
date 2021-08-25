@@ -161,7 +161,12 @@ export interface ILiferay {
 
 declare global {
 	var Liferay: ILiferay;
-
+	var submitForm: (
+		form: HTMLFormElement,
+		action?: string,
+		singleSubmit?: boolean,
+		validate?: boolean
+	) => void;
 	interface Window {
 		Liferay: ILiferay;
 	}

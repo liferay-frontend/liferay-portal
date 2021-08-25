@@ -11,28 +11,12 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-/**
- * Returns a DOM element or elements in a form.
- * @param {!Element} form The form DOM element
- * @param {!string} elementName The name of the DOM element
- * @return {Element|NodeList|null} The DOM element or elements in the form, with
- * the given name
- * @review
- */
-
-export default function getFormElement(form, elementName) {
-	let formElement = null;
-
-	if (
-		form !== undefined &&
-		form.nodeName === 'FORM' &&
-		typeof elementName === 'string'
-	) {
-		const ns = form.dataset.fmNamespace || '';
-
-		formElement = form.elements[ns + elementName] || null;
-	}
-
-	return formElement;
+/// <reference types="jest" />
+declare global {
+    namespace NodeJS {
+        interface Global {
+            submitForm: jest.Mock;
+        }
+    }
 }
+export {};

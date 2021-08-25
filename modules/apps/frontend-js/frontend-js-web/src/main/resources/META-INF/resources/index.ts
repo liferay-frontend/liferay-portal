@@ -38,13 +38,8 @@ export {default as delegate} from './liferay/delegate/delegate.es';
 
 // Form API
 
-// @ts-ignore
-
-export {default as objectToFormData} from './liferay/util/form/object_to_form_data.es';
-
-// @ts-ignore
-
-export {default as postForm} from './liferay/util/form/post_form.es';
+export {default as objectToFormData} from './liferay/util/form/object_to_form_data';
+export {default as postForm} from './liferay/util/form/post_form';
 
 // Liferay API
 

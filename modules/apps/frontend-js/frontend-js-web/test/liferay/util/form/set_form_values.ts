@@ -13,8 +13,8 @@
  */
 
 import buildFragment from '../../../../src/main/resources/META-INF/resources/liferay/util/build_fragment';
-import getFormElement from '../../../../src/main/resources/META-INF/resources/liferay/util/form/get_form_element.es';
-import setFormValues from '../../../../src/main/resources/META-INF/resources/liferay/util/form/set_form_values.es';
+import getFormElement from '../../../../src/main/resources/META-INF/resources/liferay/util/form/get_form_element';
+import setFormValues from '../../../../src/main/resources/META-INF/resources/liferay/util/form/set_form_values';
 
 describe('Liferay.Util.setFormValues', () => {
 	it('sets the given values of form elements', () => {
@@ -25,15 +25,15 @@ describe('Liferay.Util.setFormValues', () => {
 					</form>
 				`);
 
-		const form = fragment.firstElementChild;
+		const form = fragment.firstElementChild as HTMLFormElement;
 
 		setFormValues(form, {
 			bar: '456',
 			foo: 'def',
 		});
 
-		const barElement = getFormElement(form, 'bar');
-		const fooElement = getFormElement(form, 'foo');
+		const barElement = getFormElement(form, 'bar') as HTMLInputElement;
+		const fooElement = getFormElement(form, 'foo') as HTMLInputElement;
 
 		expect(barElement.value).toEqual('456');
 		expect(fooElement.value).toEqual('def');
