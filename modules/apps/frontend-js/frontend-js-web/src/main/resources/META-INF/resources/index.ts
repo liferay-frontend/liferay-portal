@@ -52,10 +52,6 @@ export {default as BREAKPOINTS} from './liferay/breakpoints';
 
 // @ts-ignore
 
-export {default as CompatibilityEventProxy} from './liferay/CompatibilityEventProxy.es';
-
-// @ts-ignore
-
 export {default as DefaultEventHandler} from './liferay/DefaultEventHandler.es';
 
 // @ts-ignore

@@ -18,7 +18,6 @@ export { default as delegate } from './liferay/delegate/delegate.es';
 export { default as objectToFormData } from './liferay/util/form/object_to_form_data.es';
 export { default as postForm } from './liferay/util/form/post_form.es';
 export { default as BREAKPOINTS } from './liferay/breakpoints';
-export { default as CompatibilityEventProxy } from './liferay/CompatibilityEventProxy.es';
 export { default as DefaultEventHandler } from './liferay/DefaultEventHandler.es';
 export { default as Disposable } from './liferay/events/Disposable';
 export { default as EventEmitter } from './liferay/events/EventEmitter';
