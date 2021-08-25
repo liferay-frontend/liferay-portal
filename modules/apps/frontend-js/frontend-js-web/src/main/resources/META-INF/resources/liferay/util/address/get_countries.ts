@@ -12,12 +12,16 @@
  * details.
  */
 
+interface Country {
+	countryId: string;
+	name: string;
+	nameCurrentValue: string;
+}
+
 /**
  * Returns a list of countries
- * @callback callback
- * @return {array} Array of countries
  */
-export default function getCountries(callback) {
+export default function getCountries(callback: (countries: Country[]) => void) {
 	if (typeof callback !== 'function') {
 		throw new TypeError('Parameter callback must be a function');
 	}

@@ -78,6 +78,9 @@ export interface ILiferay {
         readonly UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE: number;
         [key: string]: any;
     };
+    Service: {
+        (serviceName: string, payload: any, callback: (...args: any[]) => void): void;
+    };
     ThemeDisplay: {
         readonly getBCP47LanguageId: () => string;
         readonly getCanonicalURL: () => string;

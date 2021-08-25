@@ -12,13 +12,20 @@
  * details.
  */
 
+interface Region {
+	countryId: string;
+	name: string;
+	regionCode: string;
+	regionId: string;
+}
+
 /**
  * Returns a list of regions by country
- * @callback callback
- * @param {!string} selectKey The selected region ID
- * @return {array} Array of regions by country
  */
-export default function getRegions(callback, selectKey) {
+export default function getRegions(
+	callback: (countries: Region[]) => void,
+	selectKey?: string
+) {
 	if (typeof callback !== 'function') {
 		throw new TypeError('Parameter callback must be a function');
 	}

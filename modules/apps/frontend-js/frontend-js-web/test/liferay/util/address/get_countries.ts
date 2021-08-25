@@ -12,10 +12,10 @@
  * details.
  */
 
-import getCountries from '../../../../src/main/resources/META-INF/resources/liferay/util/address/get_countries.es';
+import getCountries from '../../../../src/main/resources/META-INF/resources/liferay/util/address/get_countries';
 
 describe('Liferay.Address.getCountries', () => {
 	it('throws an error if the callback parameter is not a function', () => {
-		expect(() => getCountries('')).toThrow('must be a function');
+		expect(() => getCountries('' as any)).toThrow('must be a function');
 	});
 });
