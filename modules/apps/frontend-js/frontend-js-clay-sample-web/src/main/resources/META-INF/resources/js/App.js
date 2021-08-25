@@ -12,7 +12,7 @@
  * details.
  */
 
-import ClayAlert from '@clayui/alert';
+import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 import '../css/main.scss';
@@ -20,12 +20,15 @@ import '../css/main.scss';
 export default () => {
 	return (
 		<div>
-			<ClayAlert title="Info">
-				This widget is used to test out Clay components. Simply add
-				whatever JS you want to App.js and redeploy.
-			</ClayAlert>
+			<ClayIcon
+				spritemap="/o/icons-admin/global-spritemap.svg"
+				symbol="clay_add-cell"
+			/>
 
-			<div className="clay-test-class">This is where your code goes.</div>
+			<ClayIcon
+				spritemap="/o/icons-admin/global-spritemap.svg"
+				symbol="custom_smiley"
+			/>
 		</div>
 	);
 };
