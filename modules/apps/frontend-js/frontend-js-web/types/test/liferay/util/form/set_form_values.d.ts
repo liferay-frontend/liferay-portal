@@ -11,13 +11,4 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-/**
- * Returns true if the specified value is an object. This includes arrays
- * and functions.
- */
-export default function isObject<T>(val: T): val is NonNullable<T> {
-	const type = typeof val;
-
-	return (type === 'object' && val !== null) || type === 'function';
-}
+export {};

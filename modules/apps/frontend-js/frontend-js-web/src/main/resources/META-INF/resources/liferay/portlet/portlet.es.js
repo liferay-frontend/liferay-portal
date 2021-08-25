@@ -13,7 +13,7 @@
  */
 
 import fetch from '../util/fetch';
-import objectToFormData from '../util/form/object_to_form_data.es';
+import objectToFormData from '../util/form/object_to_form_data';
 import getPortletId from '../util/get_portlet_id';
 import createPortletURL from '../util/portlet_url/create_portlet_url';
 import register from './register.es';

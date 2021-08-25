@@ -14,7 +14,7 @@
 
 import Component from 'metal-component';
 
-import objectToFormData from './util/form/object_to_form_data.es';
+import objectToFormData from './util/form/object_to_form_data';
 
 function toElementHelper(elementOrSelector) {
 	if (typeof elementOrSelector === 'string') {

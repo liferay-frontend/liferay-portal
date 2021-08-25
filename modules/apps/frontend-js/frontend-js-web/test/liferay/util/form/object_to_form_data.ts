@@ -12,7 +12,7 @@
  * details.
  */
 
-import objectToFormData from '../../../../src/main/resources/META-INF/resources/liferay/util/form/object_to_form_data.es';
+import objectToFormData from '../../../../src/main/resources/META-INF/resources/liferay/util/form/object_to_form_data';
 
 describe('Liferay.Util.objectToFormData', () => {
 	describe('for plain objects', () => {

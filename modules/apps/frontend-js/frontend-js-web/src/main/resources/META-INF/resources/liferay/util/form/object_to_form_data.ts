@@ -12,21 +12,16 @@
  * details.
  */
 
-import isObject from './../is_object';
+import isObject from '../is_object';
 
 /**
  * Returns a FormData containing serialized object.
- * @param {!Object} obj Object to convert to a FormData
- * @param {FormData=} formData FormData object to recursively append the serialized data
- * @param {string=} namespace Property namespace for nested objects or arrays
- * @return {FormData} FormData with the serialized object
- * @review
  */
 
 export default function objectToFormData(
-	object = {},
+	object: any = {},
 	formData = new FormData(),
-	namespace
+	namespace = ''
 ) {
 	Object.entries(object).forEach(([key, value]) => {
 		const formKey = namespace ? `${namespace}[${key}]` : key;
@@ -45,7 +40,7 @@ export default function objectToFormData(
 			objectToFormData(value, formData, formKey);
 		}
 		else {
-			formData.append(formKey, value);
+			formData.append(formKey, value as string | Blob);
 		}
 	});
 

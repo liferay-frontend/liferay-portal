@@ -13,8 +13,16 @@
  */
 
 import buildFragment from '../../../../src/main/resources/META-INF/resources/liferay/util/build_fragment';
-import getFormElement from '../../../../src/main/resources/META-INF/resources/liferay/util/form/get_form_element.es';
-import postForm from '../../../../src/main/resources/META-INF/resources/liferay/util/form/post_form.es';
+import getFormElement from '../../../../src/main/resources/META-INF/resources/liferay/util/form/get_form_element';
+import postForm from '../../../../src/main/resources/META-INF/resources/liferay/util/form/post_form';
+
+declare global {
+	namespace NodeJS {
+		interface Global {
+			submitForm: jest.Mock;
+		}
+	}
+}
 
 describe('Liferay.Util.postForm', () => {
 	afterEach(() => {
@@ -28,8 +36,8 @@ describe('Liferay.Util.postForm', () => {
 	it('does nothing if the form parameter is not a form node', () => {
 		const fragment = buildFragment('<div />');
 
-		postForm(undefined);
-		postForm(fragment.firstElementChild);
+		postForm(undefined as any);
+		postForm(fragment.firstElementChild as any);
 
 		expect(global.submitForm.mock.calls.length).toBe(0);
 	});
@@ -37,7 +45,7 @@ describe('Liferay.Util.postForm', () => {
 	it('submits form even if options parameter is not set', () => {
 		const fragment = buildFragment('<form />');
 
-		const form = fragment.firstElementChild;
+		const form = fragment.firstElementChild as HTMLFormElement;
 
 		postForm(form);
 
@@ -47,10 +55,10 @@ describe('Liferay.Util.postForm', () => {
 	it('does nothing if the url optional parameter is not a string', () => {
 		const fragment = buildFragment('<form />');
 
-		const form = fragment.firstElementChild;
+		const form = fragment.firstElementChild as HTMLFormElement;
 
 		postForm(form, {url: undefined});
-		postForm(form, {url: {}});
+		postForm(form, {url: {} as any});
 
 		expect(global.submitForm.mock.calls.length).toBe(0);
 	});
@@ -58,10 +66,10 @@ describe('Liferay.Util.postForm', () => {
 	it('does nothing if the data optional parameter is not an object', () => {
 		const fragment = buildFragment('<form />');
 
-		const form = fragment.firstElementChild;
+		const form = fragment.firstElementChild as HTMLFormElement;
 
 		postForm(form, {data: undefined});
-		postForm(form, {data: 'abc'});
+		postForm(form, {data: 'abc' as any});
 
 		expect(global.submitForm.mock.calls.length).toBe(0);
 	});
@@ -74,7 +82,7 @@ describe('Liferay.Util.postForm', () => {
 					</form>
 				`);
 
-		const form = fragment.firstElementChild;
+		const form = fragment.firstElementChild as HTMLFormElement;
 
 		postForm(form, {
 			data: {
@@ -84,8 +92,8 @@ describe('Liferay.Util.postForm', () => {
 			url: 'http://sampleurl.com',
 		});
 
-		const barElement = getFormElement(form, 'bar');
-		const fooElement = getFormElement(form, 'foo');
+		const barElement = getFormElement(form, 'bar') as HTMLInputElement;
+		const fooElement = getFormElement(form, 'foo') as HTMLInputElement;
 
 		expect(fooElement.value).toEqual('def');
 		expect(barElement.value).toEqual('456');

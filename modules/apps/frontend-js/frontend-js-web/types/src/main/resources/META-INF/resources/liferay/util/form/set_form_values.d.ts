@@ -11,30 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-import isObject from './../is_object';
-import getFormElement from './get_form_element.es';
-
 /**
  * Sets the form elements to given values.
- * @param {!Element} form The form DOM element
- * @param {!Object} data An Object containing names and values of form
- * elements
- * @review
  */
-
-export default function setFormValues(form, data) {
-	if (form === undefined || form.nodeName !== 'FORM' || !isObject(data)) {
-		return;
-	}
-
-	const entries = Object.entries(data);
-
-	entries.forEach(([elementName, elementValue]) => {
-		const element = getFormElement(form, elementName);
-
-		if (element) {
-			element.value = elementValue;
-		}
-	});
-}
+export default function setFormValues(form: HTMLFormElement, data: Record<string, string>): void;

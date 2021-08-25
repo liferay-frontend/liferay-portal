@@ -12,22 +12,24 @@
  * details.
  */
 
-import isObject from './../is_object';
-import setFormValues from './set_form_values.es';
+import isObject from '../is_object';
+import setFormValues from './set_form_values';
+
+interface Options {
+	url?: string;
+	data?: Record<string, string>;
+}
 
 /**
  * Submits the form, with optional setting of form elements.
- * @param {!Element|!string} form The form DOM element or the selector
- * @param {Object=} options An object containing optional settings:
- * - `url` : a string containing form action url
- * - `data` : an object containing form elements keys and values, to be set
- * before submission
- * @review
  */
 
-export default function postForm(form, options) {
+export default function postForm(
+	form: string | HTMLFormElement,
+	options?: Options
+) {
 	if (typeof form === 'string') {
-		form = document.querySelector(form);
+		form = document.querySelector(form) as HTMLFormElement;
 	}
 
 	if (form && form.nodeName === 'FORM') {

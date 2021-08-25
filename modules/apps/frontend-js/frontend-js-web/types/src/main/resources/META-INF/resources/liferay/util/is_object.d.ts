@@ -15,4 +15,4 @@
  * Returns true if the specified value is an object. This includes arrays
  * and functions.
  */
-export default function isObject(val: any): boolean;
+export default function isObject<T>(val: T): val is NonNullable<T>;

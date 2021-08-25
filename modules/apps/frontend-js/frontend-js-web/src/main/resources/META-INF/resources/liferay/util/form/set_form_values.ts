@@ -12,12 +12,28 @@
  * details.
  */
 
-/**
- * Returns true if the specified value is an object. This includes arrays
- * and functions.
- */
-export default function isObject<T>(val: T): val is NonNullable<T> {
-	const type = typeof val;
+import isObject from '../is_object';
+import getFormElement from './get_form_element';
 
-	return (type === 'object' && val !== null) || type === 'function';
+/**
+ * Sets the form elements to given values.
+ */
+
+export default function setFormValues(
+	form: HTMLFormElement,
+	data: Record<string, string>
+) {
+	if (form === undefined || form.nodeName !== 'FORM' || !isObject(data)) {
+		return;
+	}
+
+	const entries = Object.entries(data);
+
+	entries.forEach(([elementName, elementValue]) => {
+		const element = getFormElement(form, elementName);
+
+		if (element) {
+			(element as any).value = elementValue;
+		}
+	});
 }
