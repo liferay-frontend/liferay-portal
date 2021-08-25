@@ -11,22 +11,4 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-/**
- * Returns a list of countries
- * @callback callback
- * @return {array} Array of countries
- */
-export default function getCountries(callback) {
-	if (typeof callback !== 'function') {
-		throw new TypeError('Parameter callback must be a function');
-	}
-
-	Liferay.Service(
-		'/country/get-countries',
-		{
-			active: true,
-		},
-		callback
-	);
-}
+export {};

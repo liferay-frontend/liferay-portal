@@ -81,6 +81,14 @@ export interface ILiferay {
 		[key: string]: any;
 	};
 
+	Service: {
+		(
+			serviceName: string,
+			payload: any,
+			callback: (...args: any[]) => void
+		): void;
+	};
+
 	ThemeDisplay: {
 		readonly getBCP47LanguageId: () => string;
 		readonly getCanonicalURL: () => string;
@@ -132,7 +140,7 @@ export interface ILiferay {
 	readonly currentURLEncoded: string;
 }
 
-// Properties from `frontend-js-web/events`
+// Properties from `frontend-js-web/liferay/events`
 
 export type Callback = (...args: any[]) => void;
 
@@ -161,12 +169,16 @@ export interface ILiferay {
 
 declare global {
 	var Liferay: ILiferay;
+
+	// From frontend-js-web/liferay/events.js
+
 	var submitForm: (
 		form: HTMLFormElement,
 		action?: string,
 		singleSubmit?: boolean,
 		validate?: boolean
 	) => void;
+
 	interface Window {
 		Liferay: ILiferay;
 	}

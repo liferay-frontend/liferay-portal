@@ -12,26 +12,24 @@
  * details.
  */
 
+interface Country {
+	countryId: string;
+	name: string;
+	nameCurrentValue: string;
+}
+
 /**
- * Returns a list of regions by country
- * @callback callback
- * @param {!string} selectKey The selected region ID
- * @return {array} Array of regions by country
+ * Returns a list of countries
  */
-export default function getRegions(callback, selectKey) {
+export default function getCountries(callback: (countries: Country[]) => void) {
 	if (typeof callback !== 'function') {
 		throw new TypeError('Parameter callback must be a function');
 	}
 
-	if (typeof selectKey !== 'string') {
-		throw new TypeError('Parameter selectKey must be a string');
-	}
-
 	Liferay.Service(
-		'/region/get-regions',
+		'/country/get-countries',
 		{
 			active: true,
-			countryId: parseInt(selectKey, 10),
 		},
 		callback
 	);

@@ -12,12 +12,34 @@
  * details.
  */
 
-'use strict';
+interface Region {
+	countryId: string;
+	name: string;
+	regionCode: string;
+	regionId: string;
+}
 
-import getCountries from '../../../../src/main/resources/META-INF/resources/liferay/util/address/get_countries.es';
+/**
+ * Returns a list of regions by country
+ */
+export default function getRegions(
+	callback: (countries: Region[]) => void,
+	selectKey?: string
+) {
+	if (typeof callback !== 'function') {
+		throw new TypeError('Parameter callback must be a function');
+	}
 
-describe('Liferay.Address.getCountries', () => {
-	it('throws an error if the callback parameter is not a function', () => {
-		expect(() => getCountries('')).toThrow('must be a function');
-	});
-});
+	if (typeof selectKey !== 'string') {
+		throw new TypeError('Parameter selectKey must be a string');
+	}
+
+	Liferay.Service(
+		'/region/get-regions',
+		{
+			active: true,
+			countryId: parseInt(selectKey, 10),
+		},
+		callback
+	);
+}
