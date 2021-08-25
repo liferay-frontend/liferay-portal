@@ -54,6 +54,8 @@ const IconSearch = ({
 
 	return (
 		<>
+			<h4>Icon Packs</h4>
+
 			<ClayForm.Group>
 				<label className="form-control-label">
 					<span className="form-control-label-text">{label}</span>
@@ -68,8 +70,6 @@ const IconSearch = ({
 			</ClayForm.Group>
 
 			<ClayForm.Group>
-				<h4>Icon Packs</h4>
-
 				<ClayPanel.Group>
 					{Object.keys(iconMap).map((category) => (
 						<ClayPanel
@@ -88,11 +88,8 @@ const IconSearch = ({
 										>
 											<ClayButton displayType={null}>
 												<ClayIcon
-													spritemap={
-														window.location.href
-													}
-													symbol={icon}
 													spritemap="/o/icons-admin/global-spritemap.svg"
+													symbol={icon}
 												/>
 
 												<span className="list-group-card-item-text">

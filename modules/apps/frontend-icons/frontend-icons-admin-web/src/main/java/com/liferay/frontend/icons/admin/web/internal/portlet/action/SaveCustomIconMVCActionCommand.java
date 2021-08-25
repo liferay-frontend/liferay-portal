@@ -26,11 +26,9 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
-import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Hashtable;
@@ -99,9 +97,11 @@ public class SaveCustomIconMVCActionCommand extends BaseMVCActionCommand {
 			return;
 		}
 
-		UploadPortletRequest uploadPortletRequest = _portal.getUploadPortletRequest(actionRequest);
+		UploadPortletRequest uploadPortletRequest =
+			_portal.getUploadPortletRequest(actionRequest);
 
-		String svgContent = FileUtil.read(uploadPortletRequest.getFile("svgFile"));
+		String svgContent = FileUtil.read(
+			uploadPortletRequest.getFile("svgFile"));
 
 		System.out.println(svgContent);
 
@@ -110,13 +110,14 @@ public class SaveCustomIconMVCActionCommand extends BaseMVCActionCommand {
 		addCustomIcon(name, svgContent);
 	}
 
-	@Reference
-	private Portal _portal;
-
 	private BundleContext _bundleContext;
 	private final IconResourcesContributorImpl
 		_customIconResourcesContributorImpl =
 			new IconResourcesContributorImpl();
+
+	@Reference
+	private Portal _portal;
+
 	private ServiceRegistration<IconResourcesContributor> _serviceRegistration;
 
 }

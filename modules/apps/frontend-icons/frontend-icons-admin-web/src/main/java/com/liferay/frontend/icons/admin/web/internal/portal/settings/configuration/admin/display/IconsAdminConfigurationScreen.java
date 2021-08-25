@@ -14,16 +14,19 @@
 
 package com.liferay.frontend.icons.admin.web.internal.portal.settings.configuration.admin.display;
 
+import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.frontend.icons.admin.web.internal.configuration.IconsAdminConfiguration;
 import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResource;
 import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
+
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,18 +45,12 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Bryce Osterhaus
  */
-@Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class IconsAdminPortalSettingsConfigurationScreenContributor
-	implements PortalSettingsConfigurationScreenContributor {
+@Component(service = ConfigurationScreen.class)
+public class IconsAdminConfigurationScreen implements ConfigurationScreen {
 
 	@Override
 	public String getCategoryKey() {
 		return "icons-admin";
-	}
-
-	@Override
-	public String getJspPath() {
-		return "/portal_settings/icons_config.jsp";
 	}
 
 	@Override
@@ -68,19 +66,15 @@ public class IconsAdminPortalSettingsConfigurationScreenContributor
 	}
 
 	@Override
-	public String getSaveMVCActionCommandName() {
-		return "/frontend_icons_admin/save_custom_icon";
+	public String getScope() {
+		return ExtendedObjectClassDefinition.Scope.GROUP.getValue();
 	}
 
 	@Override
-	public ServletContext getServletContext() {
-		return _servletContext;
-	}
-
-	@Override
-	public void setAttributes(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse) {
+	public void render(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws IOException {
 
 		IconsAdminConfiguration iconsAdminConfiguration = null;
 
@@ -114,6 +108,18 @@ public class IconsAdminPortalSettingsConfigurationScreenContributor
 		}
 
 		httpServletRequest.setAttribute("iconIds", ids);
+
+		try {
+			RequestDispatcher requestDispatcher =
+				_servletContext.getRequestDispatcher(
+					"/portal_settings/icons_config.jsp");
+
+			requestDispatcher.include(httpServletRequest, httpServletResponse);
+		}
+		catch (Exception exception) {
+			throw new IOException(
+				"Unable to render icons_config.jsp", exception);
+		}
 	}
 
 	@Reference

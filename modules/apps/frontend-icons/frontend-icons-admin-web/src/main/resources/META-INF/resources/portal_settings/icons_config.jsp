@@ -18,15 +18,55 @@
 
 <%
 List<String> iconIds = (List<String>)request.getAttribute("iconIds");
+
+String redirect = ParamUtil.getString(request, "redirect");
+
+PortletURL portletURL = renderResponse.createRenderURL();
+
+if (Validator.isNull(redirect)) {
+	redirect = portletURL.toString();
+}
 %>
 
-<div>
-	<react:component
-		module="js/IconSearch"
-		props='<%=
-			HashMapBuilder.<String, Object>put(
-				"icons", iconIds
-			).build()
-		%>'
-	/>
-</div>
+<portlet:actionURL name="/frontend_icons_admin/save_custom_icon" var="saveCustomIcon" />
+
+<clay:sheet>
+	<clay:content-row
+		containerElement="h2"
+		cssClass="mb-5"
+	>
+		<clay:content-col
+			containerElement="span"
+			expand="<%= true %>"
+		>
+			<liferay-ui:message key="icons-admin-configuration-name" />
+		</clay:content-col>
+	</clay:content-row>
+
+	<aui:form action="<%= saveCustomIcon %>" data-senna-off="true" enctype="multipart/form-data" method="post" name="fm">
+		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+
+		<div>
+			<react:component
+				module="js/IconSearch"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"icons", iconIds
+					).build()
+				%>'
+			/>
+		</div>
+
+		<clay:sheet-footer>
+			<div class="btn-group mt-4">
+				<div class="btn-group-item">
+					<aui:button type="submit" value="save" />
+				</div>
+
+				<div class="btn-group-item">
+					<aui:button href="<%= redirect %>" name="cancel" type="cancel" />
+				</div>
+			</div>
+		</clay:sheet-footer>
+	</aui:form>
+</clay:sheet>
