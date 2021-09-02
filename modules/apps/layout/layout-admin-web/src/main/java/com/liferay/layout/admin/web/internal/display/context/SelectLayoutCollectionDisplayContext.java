@@ -22,6 +22,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.info.collection.provider.InfoCollectionProvider;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.item.provider.InfoItemFormProvider;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -30,6 +31,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.PortalPreferences;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -69,6 +72,9 @@ public class SelectLayoutCollectionDisplayContext {
 			WebKeys.THEME_DISPLAY);
 
 		_groupDisplayContextHelper = new GroupDisplayContextHelper(
+			_httpServletRequest);
+
+		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
 			_httpServletRequest);
 	}
 
@@ -304,8 +310,20 @@ public class SelectLayoutCollectionDisplayContext {
 			return _orderByCol;
 		}
 
-		_orderByCol = ParamUtil.getString(
-			_httpServletRequest, "orderByCol", "create-date");
+		String orderByCol = ParamUtil.getString(
+			_httpServletRequest, "orderByCol");
+
+		if (Validator.isNotNull(orderByCol)) {
+			_portalPreferences.setValue(
+				LayoutAdminPortletKeys.GROUP_PAGES, "order-by-col", orderByCol);
+		}
+		else {
+			orderByCol = _portalPreferences.getValue(
+				LayoutAdminPortletKeys.GROUP_PAGES, "order-by-col",
+				"create-date");
+		}
+
+		_orderByCol = orderByCol;
 
 		return _orderByCol;
 	}
@@ -315,8 +333,20 @@ public class SelectLayoutCollectionDisplayContext {
 			return _orderByType;
 		}
 
-		_orderByType = ParamUtil.getString(
-			_httpServletRequest, "orderByType", "asc");
+		String orderByType = ParamUtil.getString(
+			_httpServletRequest, "orderByType");
+
+		if (Validator.isNotNull(orderByType)) {
+			_portalPreferences.setValue(
+				LayoutAdminPortletKeys.GROUP_PAGES, "order-by-type",
+				orderByType);
+		}
+		else {
+			orderByType = _portalPreferences.getValue(
+				LayoutAdminPortletKeys.GROUP_PAGES, "order-by-type", "asc");
+		}
+
+		_orderByType = orderByType;
 
 		return _orderByType;
 	}
@@ -340,6 +370,7 @@ public class SelectLayoutCollectionDisplayContext {
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private String _orderByCol;
 	private String _orderByType;
+	private final PortalPreferences _portalPreferences;
 	private String _redirect;
 	private String _selectedTab;
 	private final ThemeDisplay _themeDisplay;
