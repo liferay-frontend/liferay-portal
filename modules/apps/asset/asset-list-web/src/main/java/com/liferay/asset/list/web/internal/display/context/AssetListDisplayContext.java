@@ -284,51 +284,27 @@ public class AssetListDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
-		_orderByCol = ParamUtil.getString(_httpServletRequest, "orderByCol");
-
-		if (Validator.isNull(_orderByCol)) {
-			_orderByCol = _portalPreferences.getValue(
-				AssetListPortletKeys.ASSET_LIST, "order-by-col", "create-date");
-		}
-		else {
-			boolean saveOrderBy = ParamUtil.getBoolean(
-				_httpServletRequest, "saveOrderBy");
-
-			if (saveOrderBy) {
-				_portalPreferences.setValue(
-					AssetListPortletKeys.ASSET_LIST, "order-by-col",
-					_orderByCol);
-			}
-		}
-
-		return _orderByCol;
+		return _getOrderByCol();
 	}
 
 	public String getOrderByType() {
-		if (_orderByType != null) {
+		if (Validator.isNotNull(_orderByType)) {
 			return _orderByType;
 		}
 
-		_orderByType = ParamUtil.getString(_httpServletRequest, "orderByType");
+		String orderByType = ParamUtil.getString(
+			_httpServletRequest, "orderByType");
 
-		if (Validator.isNull(_orderByType)) {
-			_orderByType = _portalPreferences.getValue(
-				AssetListPortletKeys.ASSET_LIST, "order-by-type", "asc");
+		if (Validator.isNotNull(orderByType)) {
+			_portalPreferences.setValue(
+				AssetListPortletKeys.ASSET_LIST, "order-by-type", orderByType);
 		}
 		else {
-			boolean saveOrderBy = ParamUtil.getBoolean(
-				_httpServletRequest, "saveOrderBy");
-
-			if (saveOrderBy) {
-				_portalPreferences.setValue(
-					AssetListPortletKeys.ASSET_LIST, "order-by-type",
-					_orderByType);
-			}
+			orderByType = _portalPreferences.getValue(
+				AssetListPortletKeys.ASSET_LIST, "order-by-type", "asc");
 		}
+
+		_orderByType = orderByType;
 
 		return _orderByType;
 	}
@@ -435,8 +411,19 @@ public class AssetListDisplayContext {
 			return _orderByCol;
 		}
 
-		_orderByCol = ParamUtil.getString(
-			_httpServletRequest, "orderByCol", "create-date");
+		String orderByCol = ParamUtil.getString(
+			_httpServletRequest, "orderByCol");
+
+		if (Validator.isNotNull(orderByCol)) {
+			_portalPreferences.setValue(
+				AssetListPortletKeys.ASSET_LIST, "order-by-col", orderByCol);
+		}
+		else {
+			orderByCol = _portalPreferences.getValue(
+				AssetListPortletKeys.ASSET_LIST, "order-by-col", "create-date");
+		}
+
+		_orderByCol = orderByCol;
 
 		return _orderByCol;
 	}
