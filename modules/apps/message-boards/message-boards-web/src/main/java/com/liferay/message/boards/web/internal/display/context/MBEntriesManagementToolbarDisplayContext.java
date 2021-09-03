@@ -19,6 +19,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.message.boards.constants.MBCategoryConstants;
 import com.liferay.message.boards.constants.MBPortletKeys;
 import com.liferay.message.boards.model.MBCategory;
@@ -38,8 +39,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -79,9 +78,10 @@ public class MBEntriesManagementToolbarDisplayContext {
 		_currentURLObj = currentURLObj;
 		_trashHelper = trashHelper;
 
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			liferayPortletRequest);
-		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			httpServletRequest, MBPortletKeys.MESSAGE_BOARDS_ADMIN);
+
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}
 
@@ -308,49 +308,11 @@ public class MBEntriesManagementToolbarDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
-		String orderByCol = ParamUtil.getString(
-			_httpServletRequest, "orderByCol");
-
-		if (Validator.isNotNull(orderByCol)) {
-			_portalPreferences.setValue(
-				MBPortletKeys.MESSAGE_BOARDS_ADMIN, "order-by-col", orderByCol);
-		}
-		else {
-			orderByCol = _portalPreferences.getValue(
-				MBPortletKeys.MESSAGE_BOARDS_ADMIN, "order-by-col",
-				"modified-date");
-		}
-
-		_orderByCol = orderByCol;
-
-		return _orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol("modified-date");
 	}
 
 	public String getOrderByType() {
-		if (_orderByType != null) {
-			return _orderByType;
-		}
-
-		String orderByType = ParamUtil.getString(
-			_httpServletRequest, "orderByType");
-
-		if (Validator.isNotNull(orderByType)) {
-			_portalPreferences.setValue(
-				MBPortletKeys.MESSAGE_BOARDS_ADMIN, "order-by-type",
-				orderByType);
-		}
-		else {
-			orderByType = _portalPreferences.getValue(
-				MBPortletKeys.MESSAGE_BOARDS_ADMIN, "order-by-type", "asc");
-		}
-
-		_orderByType = orderByType;
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType("asc");
 	}
 
 	public PortletURL getPortletURL() {
@@ -568,9 +530,7 @@ public class MBEntriesManagementToolbarDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
-	private String _orderByCol;
-	private String _orderByType;
-	private final PortalPreferences _portalPreferences;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final ThemeDisplay _themeDisplay;
 	private final TrashHelper _trashHelper;
 

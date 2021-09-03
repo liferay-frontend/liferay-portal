@@ -18,13 +18,12 @@ import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionServiceUtil;
 import com.liferay.fragment.web.internal.util.FragmentPortletUtil;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -54,8 +53,8 @@ public class FragmentCollectionsDisplayContext {
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
 
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			_httpServletRequest);
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			_httpServletRequest, FragmentPortletKeys.FRAGMENT);
 	}
 
 	public String getEventName() {
@@ -71,25 +70,7 @@ public class FragmentCollectionsDisplayContext {
 	}
 
 	public String getOrderByType() {
-		if (Validator.isNotNull(_orderByType)) {
-			return _orderByType;
-		}
-
-		String orderByType = ParamUtil.getString(
-			_httpServletRequest, "orderByType");
-
-		if (Validator.isNotNull(orderByType)) {
-			_portalPreferences.setValue(
-				FragmentPortletKeys.FRAGMENT, "order-by-type", orderByType);
-		}
-		else {
-			orderByType = _portalPreferences.getValue(
-				FragmentPortletKeys.FRAGMENT, "order-by-type", "asc");
-		}
-
-		_orderByType = orderByType;
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType("asc");
 	}
 
 	public SearchContainer<FragmentCollection> getSearchContainer() {
@@ -179,25 +160,7 @@ public class FragmentCollectionsDisplayContext {
 	}
 
 	private String _getOrderByCol() {
-		if (Validator.isNotNull(_orderByCol)) {
-			return _orderByCol;
-		}
-
-		String orderByCol = ParamUtil.getString(
-			_httpServletRequest, "orderByCol");
-
-		if (Validator.isNotNull(orderByCol)) {
-			_portalPreferences.setValue(
-				FragmentPortletKeys.FRAGMENT, "order-by-col", orderByCol);
-		}
-		else {
-			orderByCol = _portalPreferences.getValue(
-				FragmentPortletKeys.FRAGMENT, "order-by-col", "create-date");
-		}
-
-		_orderByCol = orderByCol;
-
-		return _orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol("create-date");
 	}
 
 	private PortletURL _getPortletURL() {
@@ -268,9 +231,7 @@ public class FragmentCollectionsDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private Boolean _includeGlobalFragmentCollections;
 	private String _keywords;
-	private String _orderByCol;
-	private String _orderByType;
-	private final PortalPreferences _portalPreferences;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private SearchContainer<FragmentCollection> _searchContainer;

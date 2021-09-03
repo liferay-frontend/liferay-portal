@@ -15,6 +15,7 @@
 package com.liferay.commerce.product.item.selector.web.internal.display.context;
 
 import com.liferay.commerce.product.display.context.util.CPRequestHelper;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -44,6 +45,9 @@ public abstract class BaseCPItemSelectorViewDisplayContext<T> {
 		_portletURL = portletURL;
 		_itemSelectedEventName = itemSelectedEventName;
 		_portalPreferenceNamespace = portalPreferenceNamespace;
+
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			httpServletRequest, portalPreferenceNamespace);
 
 		portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
 			this.httpServletRequest);
@@ -81,52 +85,11 @@ public abstract class BaseCPItemSelectorViewDisplayContext<T> {
 	}
 
 	public String getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
-		_orderByCol = ParamUtil.getString(httpServletRequest, "orderByCol");
-
-		if (Validator.isNull(_orderByCol)) {
-			_orderByCol = portalPreferences.getValue(
-				_portalPreferenceNamespace, "order-by-col", _defaultOrderByCol);
-		}
-		else {
-			boolean saveOrderBy = ParamUtil.getBoolean(
-				httpServletRequest, "saveOrderBy");
-
-			if (saveOrderBy) {
-				portalPreferences.setValue(
-					_portalPreferenceNamespace, "order-by-col", _orderByCol);
-			}
-		}
-
-		return _orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol(_defaultOrderByCol);
 	}
 
 	public String getOrderByType() {
-		if (_orderByType != null) {
-			return _orderByType;
-		}
-
-		_orderByType = ParamUtil.getString(httpServletRequest, "orderByType");
-
-		if (Validator.isNull(_orderByType)) {
-			_orderByType = portalPreferences.getValue(
-				_portalPreferenceNamespace, "order-by-type",
-				_defaultOrderByType);
-		}
-		else {
-			boolean saveOrderBy = ParamUtil.getBoolean(
-				httpServletRequest, "saveOrderBy");
-
-			if (saveOrderBy) {
-				portalPreferences.setValue(
-					_portalPreferenceNamespace, "order-by-type", _orderByType);
-			}
-		}
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType(_defaultOrderByType);
 	}
 
 	public PortletURL getPortletURL() {
@@ -206,8 +169,7 @@ public abstract class BaseCPItemSelectorViewDisplayContext<T> {
 	private String _displayStyle;
 	private final String _itemSelectedEventName;
 	private String _keywords;
-	private String _orderByCol;
-	private String _orderByType;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final String _portalPreferenceNamespace;
 	private final PortletURL _portletURL;
 	private RowChecker _rowChecker;

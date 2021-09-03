@@ -30,6 +30,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
@@ -40,8 +41,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -75,8 +74,9 @@ public class AssetListDisplayContext {
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
 
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			_httpServletRequest);
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			_httpServletRequest, AssetListPortletKeys.ASSET_LIST);
+
 		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}
@@ -122,9 +122,9 @@ public class AssetListDisplayContext {
 
 		OrderByComparator<AssetListEntry> orderByComparator =
 			AssetListPortletUtil.getAssetListEntryOrderByComparator(
-				_getOrderByCol(), getOrderByType());
+				getOrderByCol(), getOrderByType());
 
-		assetListEntriesSearchContainer.setOrderByCol(_getOrderByCol());
+		assetListEntriesSearchContainer.setOrderByCol(getOrderByCol());
 		assetListEntriesSearchContainer.setOrderByComparator(orderByComparator);
 		assetListEntriesSearchContainer.setOrderByType(getOrderByType());
 
@@ -284,29 +284,11 @@ public class AssetListDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		return _getOrderByCol();
+		return _managementBarOrderByHandler.getOrderByCol("create-date");
 	}
 
 	public String getOrderByType() {
-		if (Validator.isNotNull(_orderByType)) {
-			return _orderByType;
-		}
-
-		String orderByType = ParamUtil.getString(
-			_httpServletRequest, "orderByType");
-
-		if (Validator.isNotNull(orderByType)) {
-			_portalPreferences.setValue(
-				AssetListPortletKeys.ASSET_LIST, "order-by-type", orderByType);
-		}
-		else {
-			orderByType = _portalPreferences.getValue(
-				AssetListPortletKeys.ASSET_LIST, "order-by-type", "asc");
-		}
-
-		_orderByType = orderByType;
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType("asc");
 	}
 
 	public PortletURL getPortletURL() {
@@ -406,28 +388,6 @@ public class AssetListDisplayContext {
 		return _keywords;
 	}
 
-	private String _getOrderByCol() {
-		if (Validator.isNotNull(_orderByCol)) {
-			return _orderByCol;
-		}
-
-		String orderByCol = ParamUtil.getString(
-			_httpServletRequest, "orderByCol");
-
-		if (Validator.isNotNull(orderByCol)) {
-			_portalPreferences.setValue(
-				AssetListPortletKeys.ASSET_LIST, "order-by-col", orderByCol);
-		}
-		else {
-			orderByCol = _portalPreferences.getValue(
-				AssetListPortletKeys.ASSET_LIST, "order-by-col", "create-date");
-		}
-
-		_orderByCol = orderByCol;
-
-		return _orderByCol;
-	}
-
 	private boolean _isSearch() {
 		if (Validator.isNotNull(_getKeywords())) {
 			return true;
@@ -448,9 +408,7 @@ public class AssetListDisplayContext {
 		_assetRendererFactoryClassProvider;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
-	private String _orderByCol;
-	private String _orderByType;
-	private final PortalPreferences _portalPreferences;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private Long _segmentsEntryId;

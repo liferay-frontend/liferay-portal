@@ -14,6 +14,7 @@
 
 package com.liferay.site.memberships.web.internal.display.context;
 
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -21,8 +22,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.SearchDisplayStyleUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
@@ -63,8 +62,9 @@ public class UsersDisplayContext {
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
 
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			_httpServletRequest);
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			httpServletRequest,
+			SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN);
 	}
 
 	public String getDisplayStyle() {
@@ -118,45 +118,11 @@ public class UsersDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
-		_orderByCol = ParamUtil.getString(_httpServletRequest, "orderByCol");
-
-		if (Validator.isNull(_orderByCol)) {
-			_orderByCol = _portalPreferences.getValue(
-				SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN,
-				"order-by-col", "modified-date");
-		}
-		else {
-			_portalPreferences.setValue(
-				SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN,
-				"order-by-col", _orderByCol);
-		}
-
-		return _orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol("modified-date");
 	}
 
 	public String getOrderByType() {
-		if (_orderByType != null) {
-			return _orderByType;
-		}
-
-		_orderByType = ParamUtil.getString(_httpServletRequest, "orderByType");
-
-		if (Validator.isNull(_orderByType)) {
-			_orderByType = _portalPreferences.getValue(
-				SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN,
-				"order-by-type", "asc");
-		}
-		else {
-			_portalPreferences.setValue(
-				SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN,
-				"order-by-type", _orderByType);
-		}
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType("asc");
 	}
 
 	public PortletURL getPortletURL() {
@@ -337,10 +303,8 @@ public class UsersDisplayContext {
 	private Long _groupId;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private String _navigation;
-	private String _orderByCol;
-	private String _orderByType;
-	private final PortalPreferences _portalPreferences;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private Role _role;

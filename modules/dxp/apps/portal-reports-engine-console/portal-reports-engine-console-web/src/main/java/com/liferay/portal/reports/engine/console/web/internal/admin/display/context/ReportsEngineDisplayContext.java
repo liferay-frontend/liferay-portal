@@ -20,6 +20,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
@@ -75,8 +76,8 @@ public class ReportsEngineDisplayContext {
 		_httpServletRequest = PortalUtil.getHttpServletRequest(
 			liferayPortletRequest);
 
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			_httpServletRequest);
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			_httpServletRequest, ReportsEngineConsolePortletKeys.REPORTS_ADMIN);
 
 		_reportsEngineRequestHelper = new ReportsEngineRequestHelper(
 			_httpServletRequest);
@@ -188,29 +189,7 @@ public class ReportsEngineDisplayContext {
 	}
 
 	public String getOrderByType() {
-		if (_orderByType != null) {
-			return _orderByType;
-		}
-
-		_orderByType = ParamUtil.getString(_httpServletRequest, "orderByType");
-
-		if (Validator.isNull(_orderByType)) {
-			_orderByType = _portalPreferences.getValue(
-				ReportsEngineConsolePortletKeys.REPORTS_ADMIN, "order-by-type",
-				"asc");
-		}
-		else {
-			boolean saveOrderBy = ParamUtil.getBoolean(
-				_httpServletRequest, "saveOrderBy");
-
-			if (saveOrderBy) {
-				_portalPreferences.setValue(
-					ReportsEngineConsolePortletKeys.REPORTS_ADMIN,
-					"order-by-type", _orderByType);
-			}
-		}
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType("asc");
 	}
 
 	public PortletURL getPortletURL() {
@@ -466,19 +445,7 @@ public class ReportsEngineDisplayContext {
 	}
 
 	private String _getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
-		_orderByCol = ParamUtil.getString(_httpServletRequest, "orderByCol");
-
-		if (Validator.isNull(_orderByCol)) {
-			_orderByCol = _portalPreferences.getValue(
-				ReportsEngineConsolePortletKeys.REPORTS_ADMIN, "order-by-col",
-				"create-date");
-		}
-
-		return _orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol("create-date");
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception> _getOrderByDropdownItem(
@@ -552,10 +519,8 @@ public class ReportsEngineDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private String _navigation;
-	private String _orderByCol;
-	private String _orderByType;
-	private final PortalPreferences _portalPreferences;
 	private final ReportsEngineRequestHelper _reportsEngineRequestHelper;
 	private SearchContainer<?> _searchContainer;
 	private final ThemeDisplay _themeDisplay;

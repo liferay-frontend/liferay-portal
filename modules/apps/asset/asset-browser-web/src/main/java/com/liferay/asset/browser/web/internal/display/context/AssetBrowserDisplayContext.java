@@ -25,6 +25,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 import com.liferay.asset.util.AssetHelper;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryServiceUtil;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.item.selector.constants.ItemSelectorPortletKeys;
 import com.liferay.item.selector.criteria.constants.ItemSelectorCriteriaConstants;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
@@ -35,8 +36,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.SearchDisplayStyleUtil;
 import com.liferay.portal.kernel.search.Field;
@@ -83,8 +82,8 @@ public class AssetBrowserDisplayContext {
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
 
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			_httpServletRequest);
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			httpServletRequest, AssetBrowserPortletKeys.ASSET_BROWSER);
 	}
 
 	public AssetBrowserSearch getAssetBrowserSearch()
@@ -454,50 +453,11 @@ public class AssetBrowserDisplayContext {
 	}
 
 	protected String getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
-		String orderByCol = ParamUtil.getString(
-			_httpServletRequest, "orderByCol");
-
-		if (Validator.isNotNull(orderByCol)) {
-			_portalPreferences.setValue(
-				AssetBrowserPortletKeys.ASSET_BROWSER, "order-by-col",
-				orderByCol);
-		}
-		else {
-			orderByCol = _portalPreferences.getValue(
-				AssetBrowserPortletKeys.ASSET_BROWSER, "order-by-col",
-				"modified-date");
-		}
-
-		_orderByCol = orderByCol;
-
-		return _orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol("modified-date");
 	}
 
 	protected String getOrderByType() {
-		if (_orderByType != null) {
-			return _orderByType;
-		}
-
-		String orderByType = ParamUtil.getString(
-			_httpServletRequest, "orderByType");
-
-		if (Validator.isNotNull(orderByType)) {
-			_portalPreferences.setValue(
-				AssetBrowserPortletKeys.ASSET_BROWSER, "order-by-type",
-				orderByType);
-		}
-		else {
-			orderByType = _portalPreferences.getValue(
-				AssetBrowserPortletKeys.ASSET_BROWSER, "order-by-type", "asc");
-		}
-
-		_orderByType = orderByType;
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType("asc");
 	}
 
 	private long[] _getClassNameIds() {
@@ -647,10 +607,8 @@ public class AssetBrowserDisplayContext {
 	private Long _groupId;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private Boolean _multipleSelection;
-	private String _orderByCol;
-	private String _orderByType;
-	private final PortalPreferences _portalPreferences;
 	private final PortletURL _portletURL;
 	private Long _refererAssetEntryId;
 	private final RenderRequest _renderRequest;
