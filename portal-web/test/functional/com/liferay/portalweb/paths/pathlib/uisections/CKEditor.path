@@ -98,6 +98,57 @@
 </tr>
 <!--TOOLBAR-->
 <tr>
+	<td>HYPERLINK_BROWSE_SRVR_BTN</td>
+	<td>//a[contains(@class,'cke_button') and contains(@title,'Browse Server')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HYPERLINK_TARGET</td>
+	<td>//select[contains(@class,'ui-select') and contains(@name,'Target')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HYPERLINK_TEXT_INPUT</td>
+	<td>//input[contains(@class,'ui-textinput') and contains(@placeholder,'Link')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HYPERLINK_UNLINK</td>
+	<td>//div[contains(@class, 'cke_balloontoolbar')]//div[@class='cke_balloon_content']//span[contains(@class,'unlink_icon')]</td>
+	<td></td>
+</tr>
+<!--TOOLBAR_ELEMENTS-->
+<tr>
+	<td>TOOLBAR_ANY_ITEM_BUTTON</td>
+	<td>//a[contains(@href,"${key_titleName}")]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_LINK_BUTTON_BALLOON</td>
+	<td>//span[contains(@class,'cke_button__link_icon')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHK_BTN</td>
+	<td>//a[contains(@class,'cke_button')]//span[contains(@class,'check_icon')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHK_BTN_TABLE</td>
+	<td>//a[contains(@class,'cke_button') and contains(@title,'OK')] | //a[contains(@class,'cke_button') and contains(@data-restore-title,'OK')]//span[contains(@class,'check_icon')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INSERT_BTN</td>
+	<td>//button[contains(@class,'insert-button')][not(contains(@style,'display: none'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INSERT_TABLE_BTN</td>
+	<td>//div[contains(@class, 'cke_balloontoolbar')]//div[@class='cke_balloon_content']//span[contains(@class,'cke_button__table_icon')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TOOLBAR_AUDIO_BUTTON</td>
 	<td>//a[contains(@class,'cke_button') and contains(@class,'audio')]</td>
 	<td></td>
