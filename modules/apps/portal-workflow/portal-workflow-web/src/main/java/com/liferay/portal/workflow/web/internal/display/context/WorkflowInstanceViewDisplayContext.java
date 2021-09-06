@@ -18,6 +18,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
@@ -76,6 +77,9 @@ public class WorkflowInstanceViewDisplayContext
 		throws PortalException {
 
 		super(liferayPortletRequest, liferayPortletResponse);
+
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			httpServletRequest, WorkflowPortletKeys.USER_WORKFLOW);
 	}
 
 	public String getAssetIconCssClass(WorkflowInstance workflowInstance) {
@@ -220,55 +224,13 @@ public class WorkflowInstanceViewDisplayContext
 	}
 
 	public String getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
-		_orderByCol = ParamUtil.getString(httpServletRequest, "orderByCol");
-
-		if (Validator.isNull(_orderByCol)) {
-			_orderByCol = portalPreferences.getValue(
-				WorkflowPortletKeys.USER_WORKFLOW, "instance-order-by-col",
-				"last-activity-date");
-		}
-		else {
-			boolean saveOrderBy = ParamUtil.getBoolean(
-				httpServletRequest, "saveOrderBy");
-
-			if (saveOrderBy) {
-				portalPreferences.setValue(
-					WorkflowPortletKeys.USER_WORKFLOW, "instance-order-by-col",
-					_orderByCol);
-			}
-		}
-
-		return _orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol(
+			"instance-order-by-col", "last-activity-date");
 	}
 
 	public String getOrderByType() {
-		if (_orderByType != null) {
-			return _orderByType;
-		}
-
-		_orderByType = ParamUtil.getString(httpServletRequest, "orderByType");
-
-		if (Validator.isNull(_orderByType)) {
-			_orderByType = portalPreferences.getValue(
-				WorkflowPortletKeys.USER_WORKFLOW, "instance-order-by-type",
-				"asc");
-		}
-		else {
-			boolean saveOrderBy = ParamUtil.getBoolean(
-				httpServletRequest, "saveOrderBy");
-
-			if (saveOrderBy) {
-				portalPreferences.setValue(
-					WorkflowPortletKeys.USER_WORKFLOW, "instance-order-by-type",
-					_orderByType);
-			}
-		}
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType(
+			"instance-order-by-type", "asc");
 	}
 
 	public List<WorkflowHandler<?>> getSearchableAssetsWorkflowHandlers() {
@@ -578,9 +540,8 @@ public class WorkflowInstanceViewDisplayContext
 
 	private String _displayStyle;
 	private String _keywords;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private String _navigation;
-	private String _orderByCol;
-	private String _orderByType;
 	private WorkflowInstanceSearch _searchContainer;
 
 }

@@ -17,6 +17,7 @@ package com.liferay.portal.workflow.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
@@ -31,8 +32,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.theme.PortletDisplay;
@@ -103,8 +102,8 @@ public class WorkflowDefinitionLinkDisplayContext {
 		_workflowDefinitionLinkRequestHelper =
 			new WorkflowDefinitionLinkRequestHelper(renderRequest);
 
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			_httpServletRequest);
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			_httpServletRequest, WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW);
 
 		_resourceBundleLoader = resourceBundleLoader;
 	}
@@ -195,55 +194,13 @@ public class WorkflowDefinitionLinkDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
-		_orderByCol = ParamUtil.getString(_httpServletRequest, "orderByCol");
-
-		if (Validator.isNull(_orderByCol)) {
-			_orderByCol = _portalPreferences.getValue(
-				WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW,
-				"definition-link-order-by-col", "resource");
-		}
-		else {
-			boolean saveOrderBy = ParamUtil.getBoolean(
-				_httpServletRequest, "saveOrderBy");
-
-			if (saveOrderBy) {
-				_portalPreferences.setValue(
-					WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW,
-					"definition-link-order-by-col", _orderByCol);
-			}
-		}
-
-		return _orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol(
+			"definition-link-order-by-col", "resource");
 	}
 
 	public String getOrderByType() {
-		if (_orderByType != null) {
-			return _orderByType;
-		}
-
-		_orderByType = ParamUtil.getString(_httpServletRequest, "orderByType");
-
-		if (Validator.isNull(_orderByType)) {
-			_orderByType = _portalPreferences.getValue(
-				WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW,
-				"definition-link-order-by-type", "asc");
-		}
-		else {
-			boolean saveOrderBy = ParamUtil.getBoolean(
-				_httpServletRequest, "saveOrderBy");
-
-			if (saveOrderBy) {
-				_portalPreferences.setValue(
-					WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW,
-					"definition-link-order-by-type", _orderByType);
-			}
-		}
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType(
+			"definition-link-order-by-type", "asc");
 	}
 
 	public PortletURL getPortletURL() {
@@ -710,9 +667,7 @@ public class WorkflowDefinitionLinkDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
-	private String _orderByCol;
-	private String _orderByType;
-	private final PortalPreferences _portalPreferences;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final ResourceBundleLoader _resourceBundleLoader;
 	private final WorkflowDefinitionLinkLocalService
 		_workflowDefinitionLinkLocalService;

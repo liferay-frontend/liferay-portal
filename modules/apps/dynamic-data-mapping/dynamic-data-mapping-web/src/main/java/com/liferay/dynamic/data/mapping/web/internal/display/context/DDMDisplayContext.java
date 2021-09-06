@@ -45,6 +45,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuil
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
@@ -55,8 +56,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
@@ -112,8 +111,13 @@ public class DDMDisplayContext {
 		_ddmWebConfiguration = ddmWebConfiguration;
 		_storageAdapterRegistry = storageAdapterRegistry;
 
-		_ddmWebRequestHelper = new DDMWebRequestHelper(
-			PortalUtil.getHttpServletRequest(renderRequest));
+		HttpServletRequest httpServletRequest =
+			PortalUtil.getHttpServletRequest(renderRequest);
+
+		_ddmWebRequestHelper = new DDMWebRequestHelper(httpServletRequest);
+
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			httpServletRequest, DDMPortletKeys.DYNAMIC_DATA_MAPPING);
 	}
 
 	public boolean autogenerateStructureKey() {
@@ -263,43 +267,13 @@ public class DDMDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(_renderRequest);
-
-		String orderByCol = ParamUtil.getString(_renderRequest, "orderByCol");
-
-		if (Validator.isNull(orderByCol)) {
-			orderByCol = portalPreferences.getValue(
-				DDMPortletKeys.DYNAMIC_DATA_MAPPING, "entries-order-by-col",
-				"modified-date");
-		}
-		else {
-			portalPreferences.setValue(
-				DDMPortletKeys.DYNAMIC_DATA_MAPPING, "entries-order-by-col",
-				orderByCol);
-		}
-
-		return orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol(
+			"entries-order-by-col", "modified-date");
 	}
 
 	public String getOrderByType() {
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(_renderRequest);
-
-		String orderByType = ParamUtil.getString(_renderRequest, "orderByType");
-
-		if (Validator.isNull(orderByType)) {
-			orderByType = portalPreferences.getValue(
-				DDMPortletKeys.DYNAMIC_DATA_MAPPING, "entries-order-by-type",
-				"asc");
-		}
-		else {
-			portalPreferences.setValue(
-				DDMPortletKeys.DYNAMIC_DATA_MAPPING, "entries-order-by-type",
-				orderByType);
-		}
-
-		return orderByType;
+		return _managementBarOrderByHandler.getOrderByType(
+			"entries-order-by-type", "asc");
 	}
 
 	public String getRefererPortletName() {
@@ -1145,6 +1119,7 @@ public class DDMDisplayContext {
 	private final DDMTemplateService _ddmTemplateService;
 	private final DDMWebConfiguration _ddmWebConfiguration;
 	private final DDMWebRequestHelper _ddmWebRequestHelper;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private final StorageAdapterRegistry _storageAdapterRegistry;

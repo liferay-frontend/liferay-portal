@@ -15,7 +15,7 @@
 package com.liferay.change.tracking.web.internal.display.context;
 
 import com.liferay.change.tracking.constants.CTPortletKeys;
-import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
@@ -36,6 +36,9 @@ public abstract class BasePublicationsDisplayContext {
 		HttpServletRequest httpServletRequest) {
 
 		_httpServletRequest = httpServletRequest;
+
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			_httpServletRequest, CTPortletKeys.PUBLICATIONS);
 
 		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
 			httpServletRequest);
@@ -76,68 +79,14 @@ public abstract class BasePublicationsDisplayContext {
 	protected abstract String getDefaultOrderByCol();
 
 	protected String getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
-		String orderByCol = ParamUtil.getString(
-			_httpServletRequest, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM);
-
-		if (Validator.isNull(orderByCol)) {
-			orderByCol = _portalPreferences.getValue(
-				CTPortletKeys.PUBLICATIONS,
-				getPortalPreferencesPrefix() + "-order-by-col",
-				getDefaultOrderByCol());
-		}
-
-		try {
-			_portalPreferences.setValue(
-				CTPortletKeys.PUBLICATIONS,
-				getPortalPreferencesPrefix() + "-order-by-col", orderByCol);
-		}
-		catch (ConcurrentModificationException
-					concurrentModificationException) {
-
-			log.error(
-				concurrentModificationException,
-				concurrentModificationException);
-		}
-
-		_orderByCol = orderByCol;
-
-		return _orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol(
+			getPortalPreferencesPrefix() + "-order-by-col",
+			getDefaultOrderByCol());
 	}
 
 	protected String getOrderByType() {
-		if (_orderByType != null) {
-			return _orderByType;
-		}
-
-		String orderByType = ParamUtil.getString(
-			_httpServletRequest, SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM);
-
-		if (Validator.isNull(orderByType)) {
-			orderByType = _portalPreferences.getValue(
-				CTPortletKeys.PUBLICATIONS,
-				getPortalPreferencesPrefix() + "-order-by-type", "desc");
-		}
-
-		try {
-			_portalPreferences.setValue(
-				CTPortletKeys.PUBLICATIONS,
-				getPortalPreferencesPrefix() + "-order-by-type", orderByType);
-		}
-		catch (ConcurrentModificationException
-					concurrentModificationException) {
-
-			log.error(
-				concurrentModificationException,
-				concurrentModificationException);
-		}
-
-		_orderByType = orderByType;
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType(
+			getPortalPreferencesPrefix() + "-order-by-type", "desc");
 	}
 
 	protected abstract String getPortalPreferencesPrefix();
@@ -147,8 +96,7 @@ public abstract class BasePublicationsDisplayContext {
 
 	private String _displayStyle;
 	private final HttpServletRequest _httpServletRequest;
-	private String _orderByCol;
-	private String _orderByType;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final PortalPreferences _portalPreferences;
 
 }

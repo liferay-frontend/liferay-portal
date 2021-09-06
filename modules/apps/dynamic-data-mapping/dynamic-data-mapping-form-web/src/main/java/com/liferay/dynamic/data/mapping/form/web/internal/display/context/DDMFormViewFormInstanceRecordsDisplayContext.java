@@ -36,14 +36,13 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Field;
@@ -97,6 +96,10 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 		_ddmFormInstance = ddmFormInstance;
 		_ddmFormInstanceRecordLocalService = ddmFormInstanceRecordLocalService;
 		_ddmFormFieldTypeServicesTracker = ddmFormFieldTypeServicesTracker;
+
+		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
+			PortalUtil.getHttpServletRequest(renderRequest),
+			DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN);
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -292,43 +295,13 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(_renderRequest);
-
-		String orderByCol = ParamUtil.getString(_renderRequest, "orderByCol");
-
-		if (Validator.isNull(orderByCol)) {
-			orderByCol = portalPreferences.getValue(
-				DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN,
-				"view-entries-order-by-col", "modified-date");
-		}
-		else {
-			portalPreferences.setValue(
-				DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN,
-				"view-entries-order-by-col", orderByCol);
-		}
-
-		return orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol(
+			"view-entries-order-by-col", "modified-date");
 	}
 
 	public String getOrderByType() {
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(_renderRequest);
-
-		String orderByType = ParamUtil.getString(_renderRequest, "orderByType");
-
-		if (Validator.isNull(orderByType)) {
-			orderByType = portalPreferences.getValue(
-				DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN,
-				"view-entries-order-by-type", "asc");
-		}
-		else {
-			portalPreferences.setValue(
-				DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN,
-				"view-entries-order-by-type", orderByType);
-		}
-
-		return orderByType;
+		return _managementBarOrderByHandler.getOrderByType(
+			"view-entries-order-by-type", "asc");
 	}
 
 	public PortletURL getPortletURL() {
@@ -714,6 +687,7 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 	private final DDMFormInstance _ddmFormInstance;
 	private final DDMFormInstanceRecordLocalService
 		_ddmFormInstanceRecordLocalService;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 
