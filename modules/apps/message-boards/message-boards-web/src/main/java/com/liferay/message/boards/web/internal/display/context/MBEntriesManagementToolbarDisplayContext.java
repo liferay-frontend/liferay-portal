@@ -78,8 +78,14 @@ public class MBEntriesManagementToolbarDisplayContext {
 		_currentURLObj = currentURLObj;
 		_trashHelper = trashHelper;
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			httpServletRequest, MBPortletKeys.MESSAGE_BOARDS_ADMIN);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, MBPortletKeys.MESSAGE_BOARDS_ADMIN
+			).defaultOrderByCol(
+				"modified-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -308,11 +314,11 @@ public class MBEntriesManagementToolbarDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		return _managementBarOrderByHandler.getOrderByCol("modified-date");
+		return _managementBarOrderByHandler.getOrderByCol();
 	}
 
 	public String getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByType("asc");
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	public PortletURL getPortletURL() {

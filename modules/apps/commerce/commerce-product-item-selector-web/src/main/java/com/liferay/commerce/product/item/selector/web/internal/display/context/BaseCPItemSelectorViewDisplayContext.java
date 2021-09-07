@@ -46,9 +46,6 @@ public abstract class BaseCPItemSelectorViewDisplayContext<T> {
 		_itemSelectedEventName = itemSelectedEventName;
 		_portalPreferenceNamespace = portalPreferenceNamespace;
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			httpServletRequest, portalPreferenceNamespace);
-
 		portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
 			this.httpServletRequest);
 
@@ -59,6 +56,15 @@ public abstract class BaseCPItemSelectorViewDisplayContext<T> {
 
 		_defaultOrderByCol = "title";
 		_defaultOrderByType = "asc";
+
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, portalPreferenceNamespace
+			).defaultOrderByCol(
+				_defaultOrderByCol
+			).defaultOrderByType(
+				_defaultOrderByType
+			).build();
 	}
 
 	public String getDisplayStyle() {
@@ -85,11 +91,11 @@ public abstract class BaseCPItemSelectorViewDisplayContext<T> {
 	}
 
 	public String getOrderByCol() {
-		return _managementBarOrderByHandler.getOrderByCol(_defaultOrderByCol);
+		return _managementBarOrderByHandler.getOrderByCol();
 	}
 
 	public String getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByType(_defaultOrderByType);
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	public PortletURL getPortletURL() {
@@ -121,10 +127,28 @@ public abstract class BaseCPItemSelectorViewDisplayContext<T> {
 
 	public void setDefaultOrderByCol(String defaultOrderByCol) {
 		_defaultOrderByCol = defaultOrderByCol;
+
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, _portalPreferenceNamespace
+			).defaultOrderByCol(
+				_defaultOrderByCol
+			).defaultOrderByType(
+				_defaultOrderByType
+			).build();
 	}
 
 	public void setDefaultOrderByType(String defaultOrderByType) {
 		_defaultOrderByType = defaultOrderByType;
+
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, _portalPreferenceNamespace
+			).defaultOrderByCol(
+				_defaultOrderByCol
+			).defaultOrderByType(
+				_defaultOrderByType
+			).build();
 	}
 
 	protected String getDisplayStyle(
@@ -169,7 +193,7 @@ public abstract class BaseCPItemSelectorViewDisplayContext<T> {
 	private String _displayStyle;
 	private final String _itemSelectedEventName;
 	private String _keywords;
-	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
+	private ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final String _portalPreferenceNamespace;
 	private final PortletURL _portletURL;
 	private RowChecker _rowChecker;

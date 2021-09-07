@@ -74,8 +74,14 @@ public class AssetListDisplayContext {
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			_httpServletRequest, AssetListPortletKeys.ASSET_LIST);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				_httpServletRequest, AssetListPortletKeys.ASSET_LIST
+			).defaultOrderByCol(
+				"create-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 
 		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -284,11 +290,11 @@ public class AssetListDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		return _managementBarOrderByHandler.getOrderByCol("create-date");
+		return _managementBarOrderByHandler.getOrderByCol();
 	}
 
 	public String getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByType("asc");
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	public PortletURL getPortletURL() {

@@ -53,8 +53,14 @@ public class FragmentCollectionsDisplayContext {
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			_httpServletRequest, FragmentPortletKeys.FRAGMENT);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				_httpServletRequest, FragmentPortletKeys.FRAGMENT
+			).defaultOrderByCol(
+				"create-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 	}
 
 	public String getEventName() {
@@ -70,7 +76,7 @@ public class FragmentCollectionsDisplayContext {
 	}
 
 	public String getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByType("asc");
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	public SearchContainer<FragmentCollection> getSearchContainer() {
@@ -160,7 +166,7 @@ public class FragmentCollectionsDisplayContext {
 	}
 
 	private String _getOrderByCol() {
-		return _managementBarOrderByHandler.getOrderByCol("create-date");
+		return _managementBarOrderByHandler.getOrderByCol();
 	}
 
 	private PortletURL _getPortletURL() {

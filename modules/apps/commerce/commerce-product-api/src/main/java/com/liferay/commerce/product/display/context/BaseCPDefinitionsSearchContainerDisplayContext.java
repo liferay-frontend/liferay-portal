@@ -50,13 +50,19 @@ public abstract class BaseCPDefinitionsSearchContainerDisplayContext<T>
 
 		super(actionHelper, httpServletRequest);
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			httpServletRequest, portalPreferenceNamespace);
-
 		_portalPreferenceNamespace = portalPreferenceNamespace;
 
 		_defaultOrderByCol = "modified-date";
 		_defaultOrderByType = "asc";
+
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, portalPreferenceNamespace
+			).defaultOrderByCol(
+				_defaultOrderByCol
+			).defaultOrderByType(
+				_defaultOrderByType
+			).build();
 	}
 
 	public String getDisplayStyle() {
@@ -94,11 +100,11 @@ public abstract class BaseCPDefinitionsSearchContainerDisplayContext<T>
 	}
 
 	public String getOrderByCol() {
-		return _managementBarOrderByHandler.getOrderByCol(_defaultOrderByCol);
+		return _managementBarOrderByHandler.getOrderByCol();
 	}
 
 	public String getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByType(_defaultOrderByType);
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	@Override
@@ -193,10 +199,28 @@ public abstract class BaseCPDefinitionsSearchContainerDisplayContext<T>
 
 	public void setDefaultOrderByCol(String defaultOrderByCol) {
 		_defaultOrderByCol = defaultOrderByCol;
+
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, _portalPreferenceNamespace
+			).defaultOrderByCol(
+				_defaultOrderByCol
+			).defaultOrderByType(
+				_defaultOrderByType
+			).build();
 	}
 
 	public void setDefaultOrderByType(String defaultOrderByType) {
 		_defaultOrderByType = defaultOrderByType;
+
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, _portalPreferenceNamespace
+			).defaultOrderByCol(
+				_defaultOrderByCol
+			).defaultOrderByType(
+				_defaultOrderByType
+			).build();
 	}
 
 	protected String getDisplayStyle(
@@ -245,7 +269,7 @@ public abstract class BaseCPDefinitionsSearchContainerDisplayContext<T>
 	private String _defaultOrderByType;
 	private String _displayStyle;
 	private String _keywords;
-	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
+	private ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final String _portalPreferenceNamespace;
 	private RowChecker _rowChecker;
 	private Integer _status;

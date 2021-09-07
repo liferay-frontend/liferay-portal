@@ -116,8 +116,14 @@ public class DDMDisplayContext {
 
 		_ddmWebRequestHelper = new DDMWebRequestHelper(httpServletRequest);
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			httpServletRequest, DDMPortletKeys.DYNAMIC_DATA_MAPPING);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, DDMPortletKeys.DYNAMIC_DATA_MAPPING
+			).defaultOrderByCol(
+				"modified-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 	}
 
 	public boolean autogenerateStructureKey() {
@@ -268,12 +274,12 @@ public class DDMDisplayContext {
 
 	public String getOrderByCol() {
 		return _managementBarOrderByHandler.getOrderByCol(
-			"entries-order-by-col", "modified-date");
+			"entries-order-by-col");
 	}
 
 	public String getOrderByType() {
 		return _managementBarOrderByHandler.getOrderByType(
-			"entries-order-by-type", "asc");
+			"entries-order-by-type");
 	}
 
 	public String getRefererPortletName() {

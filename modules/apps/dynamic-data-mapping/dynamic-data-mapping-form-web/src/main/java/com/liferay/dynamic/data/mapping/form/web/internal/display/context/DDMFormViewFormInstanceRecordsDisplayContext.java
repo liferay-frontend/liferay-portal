@@ -97,9 +97,15 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 		_ddmFormInstanceRecordLocalService = ddmFormInstanceRecordLocalService;
 		_ddmFormFieldTypeServicesTracker = ddmFormFieldTypeServicesTracker;
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			PortalUtil.getHttpServletRequest(renderRequest),
-			DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				PortalUtil.getHttpServletRequest(renderRequest),
+				DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN
+			).defaultOrderByCol(
+				"modified-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -296,12 +302,12 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 
 	public String getOrderByCol() {
 		return _managementBarOrderByHandler.getOrderByCol(
-			"view-entries-order-by-col", "modified-date");
+			"view-entries-order-by-col");
 	}
 
 	public String getOrderByType() {
 		return _managementBarOrderByHandler.getOrderByType(
-			"view-entries-order-by-type", "asc");
+			"view-entries-order-by-type");
 	}
 
 	public PortletURL getPortletURL() {

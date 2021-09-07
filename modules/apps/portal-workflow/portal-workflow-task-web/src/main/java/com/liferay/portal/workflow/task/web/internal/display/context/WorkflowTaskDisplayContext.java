@@ -104,8 +104,14 @@ public class WorkflowTaskDisplayContext {
 		_httpServletRequest = PortalUtil.getHttpServletRequest(
 			liferayPortletRequest);
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			_httpServletRequest, PortletKeys.MY_WORKFLOW_TASK);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				_httpServletRequest, PortletKeys.MY_WORKFLOW_TASK
+			).defaultOrderByCol(
+				"last-activity-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)_liferayPortletRequest.getAttribute(
@@ -311,7 +317,7 @@ public class WorkflowTaskDisplayContext {
 	}
 
 	public String getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByType("asc");
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	public String getPortletResource() {
@@ -829,7 +835,7 @@ public class WorkflowTaskDisplayContext {
 	}
 
 	private String _getOrderByCol() {
-		return _managementBarOrderByHandler.getOrderByCol("last-activity-date");
+		return _managementBarOrderByHandler.getOrderByCol();
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception> _getOrderByDropdownItem(

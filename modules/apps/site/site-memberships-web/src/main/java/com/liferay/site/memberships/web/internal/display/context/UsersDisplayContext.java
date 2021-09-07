@@ -62,9 +62,15 @@ public class UsersDisplayContext {
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			httpServletRequest,
-			SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest,
+				SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN
+			).defaultOrderByCol(
+				"modified-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 	}
 
 	public String getDisplayStyle() {
@@ -118,11 +124,11 @@ public class UsersDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		return _managementBarOrderByHandler.getOrderByCol("modified-date");
+		return _managementBarOrderByHandler.getOrderByCol();
 	}
 
 	public String getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByType("asc");
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	public PortletURL getPortletURL() {

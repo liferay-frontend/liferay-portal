@@ -76,8 +76,15 @@ public class ReportsEngineDisplayContext {
 		_httpServletRequest = PortalUtil.getHttpServletRequest(
 			liferayPortletRequest);
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			_httpServletRequest, ReportsEngineConsolePortletKeys.REPORTS_ADMIN);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				_httpServletRequest,
+				ReportsEngineConsolePortletKeys.REPORTS_ADMIN
+			).defaultOrderByCol(
+				"create-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 
 		_reportsEngineRequestHelper = new ReportsEngineRequestHelper(
 			_httpServletRequest);
@@ -189,7 +196,7 @@ public class ReportsEngineDisplayContext {
 	}
 
 	public String getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByType("asc");
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	public PortletURL getPortletURL() {
@@ -445,7 +452,7 @@ public class ReportsEngineDisplayContext {
 	}
 
 	private String _getOrderByCol() {
-		return _managementBarOrderByHandler.getOrderByCol("create-date");
+		return _managementBarOrderByHandler.getOrderByCol();
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception> _getOrderByDropdownItem(

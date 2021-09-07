@@ -73,8 +73,14 @@ public class DLViewFileEntryMetadataSetsDisplayContext {
 
 		_dlRequestHelper = new DLRequestHelper(httpServletRequest);
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			httpServletRequest, DDMPortletKeys.DYNAMIC_DATA_MAPPING);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, DDMPortletKeys.DYNAMIC_DATA_MAPPING
+			).defaultOrderByCol(
+				"modified-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 	}
 
 	public PortletURL getCopyDDMStructurePortletURL(DDMStructure ddmStructure) {
@@ -122,11 +128,11 @@ public class DLViewFileEntryMetadataSetsDisplayContext {
 
 	public String getOrderByCol() {
 		return _managementBarOrderByHandler.getOrderByCol(
-			"entries-order-by-col", "modified-date");
+			"entries-order-by-col");
 	}
 
 	public String getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByCol(
+		return _managementBarOrderByHandler.getOrderByType(
 			"entries-order-by-type");
 	}
 

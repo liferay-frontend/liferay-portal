@@ -34,6 +34,7 @@ import com.liferay.document.library.kernel.versioning.VersioningStrategy;
 import com.liferay.document.library.web.internal.display.context.logic.DLPortletInstanceSettingsHelper;
 import com.liferay.document.library.web.internal.display.context.util.DLRequestHelper;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
+import com.liferay.frontend.taglib.servlet.taglib.util.ManagementBarOrderByHandler;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -111,6 +112,15 @@ public class DLAdminDisplayContext {
 		_dlPortletInstanceSettingsHelper = new DLPortletInstanceSettingsHelper(
 			_dlRequestHelper);
 
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, DLPortletKeys.DOCUMENT_LIBRARY
+			).defaultOrderByCol(
+				"modifiedDate"
+			).defaultOrderByType(
+				"desc"
+			).build();
+
 		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
 			httpServletRequest);
 
@@ -177,10 +187,6 @@ public class DLAdminDisplayContext {
 	}
 
 	public String getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
 		String orderByCol = ParamUtil.getString(
 			_httpServletRequest, "orderByCol");
 
@@ -191,40 +197,12 @@ public class DLAdminDisplayContext {
 			orderByCol = "modifiedDate";
 		}
 
-		if (Validator.isNotNull(orderByCol)) {
-			_portalPreferences.setValue(
-				DLPortletKeys.DOCUMENT_LIBRARY, "order-by-col", orderByCol);
-		}
-		else {
-			orderByCol = _portalPreferences.getValue(
-				DLPortletKeys.DOCUMENT_LIBRARY, "order-by-col", "modifiedDate");
-		}
-
-		_orderByCol = orderByCol;
-
-		return _orderByCol;
+		return _managementBarOrderByHandler.getOrderByCol(
+			"order-by-col", orderByCol);
 	}
 
 	public String getOrderByType() {
-		if (_orderByType != null) {
-			return _orderByType;
-		}
-
-		String orderByType = ParamUtil.getString(
-			_httpServletRequest, "orderByType");
-
-		if (Validator.isNotNull(orderByType)) {
-			_portalPreferences.setValue(
-				DLPortletKeys.DOCUMENT_LIBRARY, "order-by-type", orderByType);
-		}
-		else {
-			orderByType = _portalPreferences.getValue(
-				DLPortletKeys.DOCUMENT_LIBRARY, "order-by-type", "desc");
-		}
-
-		_orderByType = orderByType;
-
-		return _orderByType;
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	public String getRememberCheckBoxStateURLRegex() {
@@ -787,9 +765,8 @@ public class DLAdminDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
+	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private String _navigation;
-	private String _orderByCol;
-	private String _orderByType;
 	private final PermissionChecker _permissionChecker;
 	private final PortalPreferences _portalPreferences;
 	private Long _repositoryId;

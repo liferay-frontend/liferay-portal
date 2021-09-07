@@ -73,8 +73,14 @@ public class SelectLayoutCollectionDisplayContext {
 		_groupDisplayContextHelper = new GroupDisplayContextHelper(
 			_httpServletRequest);
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			_httpServletRequest, LayoutAdminPortletKeys.GROUP_PAGES);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				_httpServletRequest, LayoutAdminPortletKeys.GROUP_PAGES
+			).defaultOrderByCol(
+				"create-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 	}
 
 	public SearchContainer<InfoCollectionProvider<?>>
@@ -305,11 +311,11 @@ public class SelectLayoutCollectionDisplayContext {
 	}
 
 	private String _getOrderByCol() {
-		return _managementBarOrderByHandler.getOrderByCol("create-date");
+		return _managementBarOrderByHandler.getOrderByCol();
 	}
 
 	private String _getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByType("asc");
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	private boolean _isSearch() {

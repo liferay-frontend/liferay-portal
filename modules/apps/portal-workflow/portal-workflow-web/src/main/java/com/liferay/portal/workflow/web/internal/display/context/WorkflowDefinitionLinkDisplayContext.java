@@ -102,8 +102,14 @@ public class WorkflowDefinitionLinkDisplayContext {
 		_workflowDefinitionLinkRequestHelper =
 			new WorkflowDefinitionLinkRequestHelper(renderRequest);
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			_httpServletRequest, WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				_httpServletRequest, WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW
+			).defaultOrderByCol(
+				"resource"
+			).defaultOrderByType(
+				"asc"
+			).build();
 
 		_resourceBundleLoader = resourceBundleLoader;
 	}
@@ -195,12 +201,12 @@ public class WorkflowDefinitionLinkDisplayContext {
 
 	public String getOrderByCol() {
 		return _managementBarOrderByHandler.getOrderByCol(
-			"definition-link-order-by-col", "resource");
+			"definition-link-order-by-col");
 	}
 
 	public String getOrderByType() {
 		return _managementBarOrderByHandler.getOrderByType(
-			"definition-link-order-by-type", "asc");
+			"definition-link-order-by-type");
 	}
 
 	public PortletURL getPortletURL() {

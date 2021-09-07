@@ -78,8 +78,14 @@ public class WorkflowInstanceViewDisplayContext
 
 		super(liferayPortletRequest, liferayPortletResponse);
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			httpServletRequest, WorkflowPortletKeys.USER_WORKFLOW);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, WorkflowPortletKeys.USER_WORKFLOW
+			).defaultOrderByCol(
+				"last-activity-date"
+			).defaultOrderByType(
+				"asc"
+			).build();
 	}
 
 	public String getAssetIconCssClass(WorkflowInstance workflowInstance) {
@@ -225,12 +231,12 @@ public class WorkflowInstanceViewDisplayContext
 
 	public String getOrderByCol() {
 		return _managementBarOrderByHandler.getOrderByCol(
-			"instance-order-by-col", "last-activity-date");
+			"instance-order-by-col");
 	}
 
 	public String getOrderByType() {
 		return _managementBarOrderByHandler.getOrderByType(
-			"instance-order-by-type", "asc");
+			"instance-order-by-type");
 	}
 
 	public List<WorkflowHandler<?>> getSearchableAssetsWorkflowHandlers() {

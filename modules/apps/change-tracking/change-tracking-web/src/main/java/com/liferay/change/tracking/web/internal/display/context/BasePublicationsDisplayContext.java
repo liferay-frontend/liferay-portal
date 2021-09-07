@@ -37,8 +37,14 @@ public abstract class BasePublicationsDisplayContext {
 
 		_httpServletRequest = httpServletRequest;
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			_httpServletRequest, CTPortletKeys.PUBLICATIONS);
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, CTPortletKeys.PUBLICATIONS
+			).defaultOrderByCol(
+				getDefaultOrderByCol()
+			).defaultOrderByType(
+				"desc"
+			).build();
 
 		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
 			httpServletRequest);
@@ -80,13 +86,12 @@ public abstract class BasePublicationsDisplayContext {
 
 	protected String getOrderByCol() {
 		return _managementBarOrderByHandler.getOrderByCol(
-			getPortalPreferencesPrefix() + "-order-by-col",
-			getDefaultOrderByCol());
+			getPortalPreferencesPrefix() + "-order-by-col");
 	}
 
 	protected String getOrderByType() {
 		return _managementBarOrderByHandler.getOrderByType(
-			getPortalPreferencesPrefix() + "-order-by-type", "desc");
+			getPortalPreferencesPrefix() + "-order-by-type");
 	}
 
 	protected abstract String getPortalPreferencesPrefix();

@@ -50,9 +50,6 @@ public abstract class BaseCPOptionsDisplayContext<T> {
 		_portalPreferenceNamespace = portalPreferenceNamespace;
 		_portletResourcePermission = portletResourcePermission;
 
-		_managementBarOrderByHandler = new ManagementBarOrderByHandler(
-			httpServletRequest, portalPreferenceNamespace);
-
 		portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
 			this.httpServletRequest);
 
@@ -63,6 +60,15 @@ public abstract class BaseCPOptionsDisplayContext<T> {
 
 		_defaultOrderByCol = "title";
 		_defaultOrderByType = "asc";
+
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, _portalPreferenceNamespace
+			).defaultOrderByCol(
+				_defaultOrderByCol
+			).defaultOrderByType(
+				_defaultOrderByType
+			).build();
 	}
 
 	public String getDisplayStyle() {
@@ -75,11 +81,11 @@ public abstract class BaseCPOptionsDisplayContext<T> {
 	}
 
 	public String getOrderByCol() {
-		return _managementBarOrderByHandler.getOrderByCol(_defaultOrderByCol);
+		return _managementBarOrderByHandler.getOrderByCol();
 	}
 
 	public String getOrderByType() {
-		return _managementBarOrderByHandler.getOrderByType(_defaultOrderByType);
+		return _managementBarOrderByHandler.getOrderByType();
 	}
 
 	public PortletURL getPortletURL() throws PortalException {
@@ -198,10 +204,28 @@ public abstract class BaseCPOptionsDisplayContext<T> {
 
 	protected void setDefaultOrderByCol(String defaultOrderByCol) {
 		_defaultOrderByCol = defaultOrderByCol;
+
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, _portalPreferenceNamespace
+			).defaultOrderByCol(
+				_defaultOrderByCol
+			).defaultOrderByType(
+				_defaultOrderByType
+			).build();
 	}
 
 	protected void setDefaultOrderByType(String defaultOrderByType) {
 		_defaultOrderByType = defaultOrderByType;
+
+		_managementBarOrderByHandler =
+			new ManagementBarOrderByHandler.ManagementBarOrderByHandlerBuilder(
+				httpServletRequest, _portalPreferenceNamespace
+			).defaultOrderByCol(
+				_defaultOrderByCol
+			).defaultOrderByType(
+				_defaultOrderByType
+			).build();
 	}
 
 	protected final ActionHelper actionHelper;
@@ -216,7 +240,7 @@ public abstract class BaseCPOptionsDisplayContext<T> {
 	private String _defaultOrderByType;
 	private String _displayStyle;
 	private String _keywords;
-	private final ManagementBarOrderByHandler _managementBarOrderByHandler;
+	private ManagementBarOrderByHandler _managementBarOrderByHandler;
 	private final String _portalPreferenceNamespace;
 	private final PortletResourcePermission _portletResourcePermission;
 	private RowChecker _rowChecker;
