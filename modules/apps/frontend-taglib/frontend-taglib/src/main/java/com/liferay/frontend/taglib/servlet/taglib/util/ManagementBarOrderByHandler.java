@@ -26,36 +26,29 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ManagementBarOrderByHandler {
 
-	public ManagementBarOrderByHandler(
-		HttpServletRequest httpServletRequest, String namespace) {
-
-		_httpServletRequest = httpServletRequest;
-		_namespace = namespace;
-
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			httpServletRequest);
+	public String getOrderByCol() {
+		return getOrderByCol("order-by-col");
 	}
 
-	public String getOrderByCol(String defaultOrderByCol) {
-		return getOrderByCol("order-by-col", defaultOrderByCol);
+	public String getOrderByCol(String orderByColName) {
+		return getOrderByCol(
+			orderByColName,
+			ParamUtil.getString(_httpServletRequest, "orderByCol"));
 	}
 
-	public String getOrderByCol(
-		String orderByColName, String defaultOrderByCol) {
-
+	public String getOrderByCol(String orderByColName, String orderByColValue) {
 		if (Validator.isNotNull(_orderByCol)) {
 			return _orderByCol;
 		}
 
-		String orderByCol = ParamUtil.getString(
-			_httpServletRequest, "orderByCol");
+		String orderByCol = orderByColValue;
 
 		if (Validator.isNotNull(orderByCol)) {
 			_portalPreferences.setValue(_namespace, orderByColName, orderByCol);
 		}
 		else {
 			orderByCol = _portalPreferences.getValue(
-				_namespace, orderByColName, defaultOrderByCol);
+				_namespace, orderByColName, _defaultOrderByCol);
 		}
 
 		_orderByCol = orderByCol;
@@ -63,13 +56,11 @@ public class ManagementBarOrderByHandler {
 		return _orderByCol;
 	}
 
-	public String getOrderByType(String defaultOrderByType) {
-		return getOrderByType("order-by-type", defaultOrderByType);
+	public String getOrderByType() {
+		return getOrderByType("order-by-type");
 	}
 
-	public String getOrderByType(
-		String orderByTypeName, String defaultOrderByType) {
-
+	public String getOrderByType(String orderByTypeName) {
 		if (Validator.isNotNull(_orderByType)) {
 			return _orderByType;
 		}
@@ -83,7 +74,7 @@ public class ManagementBarOrderByHandler {
 		}
 		else {
 			orderByType = _portalPreferences.getValue(
-				_namespace, orderByTypeName, defaultOrderByType);
+				_namespace, orderByTypeName, _defaultOrderByType);
 		}
 
 		_orderByType = orderByType;
@@ -91,6 +82,62 @@ public class ManagementBarOrderByHandler {
 		return _orderByType;
 	}
 
+	public static class ManagementBarOrderByHandlerBuilder {
+
+		public ManagementBarOrderByHandlerBuilder(
+			HttpServletRequest httpServletRequest, String namespace) {
+
+			_httpServletRequest = httpServletRequest;
+			_namespace = namespace;
+		}
+
+		public ManagementBarOrderByHandler build() {
+			ManagementBarOrderByHandler managementBarOrderByHandler =
+				new ManagementBarOrderByHandler(
+					_httpServletRequest, _namespace);
+
+			managementBarOrderByHandler._defaultOrderByCol = _defaultOrderByCol;
+			managementBarOrderByHandler._defaultOrderByType =
+				_defaultOrderByType;
+
+			return managementBarOrderByHandler;
+		}
+
+		public ManagementBarOrderByHandlerBuilder defaultOrderByCol(
+			String defaultOrderByCol) {
+
+			_defaultOrderByCol = defaultOrderByCol;
+
+			return this;
+		}
+
+		public ManagementBarOrderByHandlerBuilder defaultOrderByType(
+			String defaultOrderByType) {
+
+			_defaultOrderByType = defaultOrderByType;
+
+			return this;
+		}
+
+		private String _defaultOrderByCol;
+		private String _defaultOrderByType;
+		private HttpServletRequest _httpServletRequest;
+		private String _namespace;
+
+	}
+
+	private ManagementBarOrderByHandler(
+		HttpServletRequest httpServletRequest, String namespace) {
+
+		_httpServletRequest = httpServletRequest;
+		_namespace = namespace;
+
+		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
+			httpServletRequest);
+	}
+
+	private String _defaultOrderByCol;
+	private String _defaultOrderByType;
 	private final HttpServletRequest _httpServletRequest;
 	private final String _namespace;
 	private String _orderByCol;
