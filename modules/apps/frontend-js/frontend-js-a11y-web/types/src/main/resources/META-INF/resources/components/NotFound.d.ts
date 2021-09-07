@@ -11,17 +11,11 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 /// <reference types="react" />
-
 declare type Props = {
-	description: string;
-	onClick: () => void;
-	title: string;
+    description: string;
+    onClick: () => void;
+    title: string;
 };
-export declare const NotFound: ({
-	description,
-	onClick,
-	title,
-}: Props) => JSX.Element;
+export declare const NotFound: ({ description, onClick, title }: Props) => JSX.Element;
 export {};

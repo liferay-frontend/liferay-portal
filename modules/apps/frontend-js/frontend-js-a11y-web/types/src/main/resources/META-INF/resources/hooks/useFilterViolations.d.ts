@@ -11,31 +11,24 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 /// <reference types="react" />
-
-import type {NodeViolations, RuleRaw, Violations} from './useA11y';
+import type { NodeViolations, RuleRaw, Violations } from './useA11y';
 export declare const TYPES: {
-	readonly ADD_FILTER: 'ADD_FILTER';
-	readonly REMOVE_FILTER: 'REMOVE_FILTER';
+    readonly ADD_FILTER: "ADD_FILTER";
+    readonly REMOVE_FILTER: "REMOVE_FILTER";
 };
 declare type TAction = {
-	payload: {
-		key: keyof RuleRaw;
-		value: string;
-	};
-	type: keyof typeof TYPES;
+    payload: {
+        key: keyof RuleRaw;
+        value: string;
+    };
+    type: keyof typeof TYPES;
 };
-export declare function useFilterViolations(
-	value: Violations
-): readonly [
-	{
-		readonly filters: Record<keyof RuleRaw, string[]>;
-		readonly violations: {
-			readonly nodes: Record<string, NodeViolations>;
-			readonly rules: Record<string, RuleRaw>;
-		};
-	},
-	import('react').Dispatch<TAction>
-];
+export declare function useFilterViolations(value: Violations): readonly [{
+    readonly filters: Record<keyof RuleRaw, string[]>;
+    readonly violations: {
+        readonly nodes: Record<string, NodeViolations>;
+        readonly rules: Record<string, RuleRaw>;
+    };
+}, import("react").Dispatch<TAction>];
 export {};

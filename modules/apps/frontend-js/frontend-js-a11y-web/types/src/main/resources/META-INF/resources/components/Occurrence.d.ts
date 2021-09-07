@@ -11,24 +11,18 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 /// <reference types="react" />
-
 import './Occurrence.scss';
-import type {Violations} from '../hooks/useA11y';
+import type { Violations } from '../hooks/useA11y';
 declare type Params = {
-	name: string;
-	ruleId: string;
-	target: string;
+    name: string;
+    ruleId: string;
+    target: string;
 };
 declare type OccurrenceProps = {
-	params?: Params;
-	previous?: (state: Omit<Params, 'target'>) => void;
-	violations: Omit<Violations, 'iframes'>;
+    params?: Params;
+    previous?: (state: Omit<Params, 'target'>) => void;
+    violations: Omit<Violations, 'iframes'>;
 };
-declare function Occurrence({
-	params,
-	previous,
-	violations,
-}: OccurrenceProps): JSX.Element | null;
+declare function Occurrence({ params, previous, violations }: OccurrenceProps): JSX.Element | null;
 export default Occurrence;

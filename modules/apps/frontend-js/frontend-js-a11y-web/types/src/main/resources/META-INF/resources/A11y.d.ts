@@ -11,10 +11,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 /// <reference types="react" />
-
-import type {A11yCheckerOptions} from './A11yChecker';
-export declare function A11y(
-	props: Omit<A11yCheckerOptions, 'callback'>
-): JSX.Element | null;
+import type { A11yCheckerOptions } from './A11yChecker';
+export declare function A11y(props: Omit<A11yCheckerOptions, 'callback'>): JSX.Element | null;

@@ -11,32 +11,22 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 /// <reference types="react" />
-
 import './Violations.scss';
-import {TYPES} from '../hooks/useFilterViolations';
-import type {RuleRaw, Violations} from '../hooks/useA11y';
+import { TYPES } from '../hooks/useFilterViolations';
+import type { RuleRaw, Violations } from '../hooks/useA11y';
 declare type TViolationNext = {
-	ruleId: string;
+    ruleId: string;
 };
-declare type onFilterChange = (
-	type: keyof typeof TYPES,
-	payload: {
-		value: string;
-		key: keyof RuleRaw;
-	}
-) => void;
+declare type onFilterChange = (type: keyof typeof TYPES, payload: {
+    value: string;
+    key: keyof RuleRaw;
+}) => void;
 declare type ViolationsPanelProps = {
-	filters: Record<keyof RuleRaw, Array<string>>;
-	next?: (payload: TViolationNext) => void;
-	onFilterChange: onFilterChange;
-	violations: Omit<Violations, 'iframes'>;
+    filters: Record<keyof RuleRaw, Array<string>>;
+    next?: (payload: TViolationNext) => void;
+    onFilterChange: onFilterChange;
+    violations: Omit<Violations, 'iframes'>;
 };
-export default function ViolationsPanel({
-	filters,
-	next,
-	onFilterChange,
-	violations,
-}: ViolationsPanelProps): JSX.Element;
+export default function ViolationsPanel({ filters, next, onFilterChange, violations, }: ViolationsPanelProps): JSX.Element;
 export {};

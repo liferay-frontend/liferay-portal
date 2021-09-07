@@ -11,21 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 /// <reference types="react" />
-
 import './ViolationPopover.scss';
-import type {RuleRaw} from '../hooks/useA11y';
+import type { RuleRaw } from '../hooks/useA11y';
 declare type ViolationProps = {
-	onClick: (target: string, id: string) => void;
-	rules: Record<string, RuleRaw>;
-	target: string;
-	violations: Array<string>;
+    onClick: (target: string, id: string) => void;
+    rules: Record<string, RuleRaw>;
+    target: string;
+    violations: Array<string>;
 };
-export declare function ViolationPopover({
-	onClick,
-	rules,
-	target,
-	violations,
-}: ViolationProps): JSX.Element | null;
+export declare function ViolationPopover({ onClick, rules, target, violations, }: ViolationProps): JSX.Element | null;
 export {};

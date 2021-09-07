@@ -11,8 +11,4 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-export declare const useObserveRect: (
-	callback: (rect: DOMRect | undefined) => void,
-	node: Element | null
-) => void;
+export declare const useObserveRect: (callback: (rect: DOMRect | undefined) => void, node: Element | null) => void;

@@ -11,10 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 export declare enum Kind {
-	Click = 'a11y:popover:click',
+    Click = "a11y:popover:click"
 }
-export default function useIframeClient<T>(
-	initialState: T
-): readonly [T, <P>(kind: Kind, payload: P) => void];
+export default function useIframeClient<T>(initialState: T): readonly [T, <P>(kind: Kind, payload: P) => void];

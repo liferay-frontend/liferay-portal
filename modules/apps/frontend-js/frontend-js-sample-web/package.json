@@ -1,7 +1,7 @@
 {
 	"dependencies": {
-		"@clayui/alert": "3.26.0",
-		"@clayui/button": "3.6.0",
+		"@clayui/alert": "3.32.0",
+		"@clayui/button": "3.32.0",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/frontend-js-state-web": "*",
 		"frontend-js-web": "*",

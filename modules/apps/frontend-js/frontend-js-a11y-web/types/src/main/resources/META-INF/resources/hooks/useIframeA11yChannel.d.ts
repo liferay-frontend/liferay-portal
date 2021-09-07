@@ -11,13 +11,8 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-import type {Recv} from '../SDK';
-import type {Violations} from './useA11y';
+import type { Recv } from '../SDK';
+import type { Violations } from './useA11y';
 declare type FilteredViolations = Omit<Violations, 'iframes'>;
-export default function useIframeA11yChannel<T, K>(
-	iframes: Record<string, Array<string>>,
-	violations: FilteredViolations,
-	onMessage: Recv<T, K>
-): void;
+export default function useIframeA11yChannel<T, K>(iframes: Record<string, Array<string>>, violations: FilteredViolations, onMessage: Recv<T, K>): void;
 export {};

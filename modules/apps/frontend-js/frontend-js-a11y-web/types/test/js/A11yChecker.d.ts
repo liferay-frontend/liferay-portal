@@ -11,15 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 declare global {
-	namespace NodeJS {
-		interface Performance {
-			now: () => number;
-		}
-		interface Global {
-			performance?: Performance;
-		}
-	}
+    namespace NodeJS {
+        interface Performance {
+            now: () => number;
+        }
+        interface Global {
+            performance?: Performance;
+        }
+    }
 }
 export {};

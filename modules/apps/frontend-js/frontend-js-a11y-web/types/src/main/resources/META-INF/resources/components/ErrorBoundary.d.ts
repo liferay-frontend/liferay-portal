@@ -11,22 +11,18 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 import React from 'react';
 declare type Props = {
-	fallback: React.ReactElement;
-	children: React.ReactElement;
+    fallback: React.ReactElement;
+    children: React.ReactElement;
 };
 declare type State = {
-	hasError: boolean;
+    hasError: boolean;
 };
 export declare class ErrorBoundary extends React.Component<Props, State> {
-	state: State;
-	static getDerivedStateFromError(_: Error): State;
-	componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void;
-	render(): React.ReactElement<
-		any,
-		string | React.JSXElementConstructor<any>
-	>;
+    state: State;
+    static getDerivedStateFromError(_: Error): State;
+    componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void;
+    render(): React.ReactElement<any, string | React.JSXElementConstructor<any>>;
 }
 export {};

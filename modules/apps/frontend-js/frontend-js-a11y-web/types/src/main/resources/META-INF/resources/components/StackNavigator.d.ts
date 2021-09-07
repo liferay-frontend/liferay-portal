@@ -11,23 +11,13 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 import React from 'react';
 declare type StackNavigatorProps<T> = {
-	activePage: number;
-	children: Array<React.ReactElement>;
-	onActiveChange: (index: number) => void;
-	onParamsChange: (payload: T) => void;
-	params: T | undefined;
+    activePage: number;
+    children: Array<React.ReactElement>;
+    onActiveChange: (index: number) => void;
+    onParamsChange: (payload: T) => void;
+    params: T | undefined;
 };
-export declare function StackNavigator<T>({
-	activePage,
-	children,
-	onActiveChange,
-	onParamsChange,
-	params,
-}: StackNavigatorProps<T>): React.ReactElement<
-	any,
-	string | React.JSXElementConstructor<any>
->;
+export declare function StackNavigator<T>({ activePage, children, onActiveChange, onParamsChange, params, }: StackNavigatorProps<T>): React.ReactElement<any, string | React.JSXElementConstructor<any>>;
 export {};

@@ -11,21 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 import './Rule.scss';
 import React from 'react';
-import type {ImpactValue} from 'axe-core';
+import type { ImpactValue } from 'axe-core';
 interface IRule extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-	quantity?: number;
-	ruleSubtext?: ImpactValue;
-	ruleText?: React.ReactNode;
-	ruleTitle?: React.ReactNode;
+    quantity?: number;
+    ruleSubtext?: ImpactValue;
+    ruleText?: React.ReactNode;
+    ruleTitle?: React.ReactNode;
 }
-declare function Rule({
-	quantity,
-	ruleSubtext,
-	ruleText,
-	ruleTitle,
-	...otherProps
-}: IRule): JSX.Element;
+declare function Rule({ quantity, ruleSubtext, ruleText, ruleTitle, ...otherProps }: IRule): JSX.Element;
 export default Rule;

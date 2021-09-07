@@ -11,26 +11,19 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
 /// <reference types="react" />
-
 import './Violation.scss';
-import type {Violations} from '../hooks/useA11y';
+import type { Violations } from '../hooks/useA11y';
 declare type Params = {
-	name: string;
-	ruleId: string;
-	target: string;
+    name: string;
+    ruleId: string;
+    target: string;
 };
 declare type ViolationProps = {
-	next?: (payload: Params) => void;
-	params?: Pick<Params, 'ruleId'>;
-	previous?: () => void;
-	violations: Omit<Violations, 'iframes'>;
+    next?: (payload: Params) => void;
+    params?: Pick<Params, 'ruleId'>;
+    previous?: () => void;
+    violations: Omit<Violations, 'iframes'>;
 };
-declare function Violation({
-	next,
-	params,
-	previous,
-	violations,
-}: ViolationProps): JSX.Element | null;
+declare function Violation({ next, params, previous, violations }: ViolationProps): JSX.Element | null;
 export default Violation;
