@@ -73,7 +73,7 @@ export {default as PortletBase} from './liferay/PortletBase.es';
 
 // @ts-ignore
 
-export {openModal, openSelectionModal} from './liferay/modal/Modal';
+export {openModal, openSelectionModal} from './liferay/modal/Modal.js';
 
 // @ts-ignore
 

@@ -1,6 +1,9 @@
 {
-	"@generated": "bcba4b119d3cf7bdcb52b5d3d5a71d24f5290ca2",
+	"@generated": "77a38b092fb1219506137f2dded84f315c87e273",
 	"@overrides": {
+		"include": [
+			"../../../global-env.d.ts"
+		]
 	},
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT OUTSIDE @overrides **",
 	"@see": "https://git.io/JY2EA",
@@ -25,7 +28,8 @@
 	},
 	"include": [
 		"src/**/*",
-		"test/**/*"
+		"test/**/*",
+		"../../../global-env.d.ts"
 	],
 	"references": [
 	]

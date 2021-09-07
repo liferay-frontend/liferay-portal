@@ -11,17 +11,11 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-interface EventFacade {
-    currentTarget: any;
-    details: any;
-    relatedTarget: any;
-    target: any;
-    type: any;
-    halt(): void;
-    preventDefault(): void;
-    stopImmediatePropagation(): void;
-    stopPropagation(): void;
-    [key: string]: any;
+
+import type State from './State';
+
+declare global {
+	export interface Liferay {
+		State?: typeof State;
+	}
 }
-export declare type EventCallback = (event: EventFacade) => void;
-export {};

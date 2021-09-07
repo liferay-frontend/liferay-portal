@@ -11,10 +11,10 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-import { Callback } from '../types';
+import type { EventCallback } from '../types';
 /**
  * Performs navigation to the given url. If SPA is enabled, it will route the
  * request through the SPA engine. If not, it will simple change the document
  * location.
  */
-export default function (url: string | URL, listeners?: Record<string, Callback>): void;
+export default function (url: string | URL, listeners?: Record<string, EventCallback>): void;
