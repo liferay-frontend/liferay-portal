@@ -1,5 +1,5 @@
 {
-	"@generated": "77a38b092fb1219506137f2dded84f315c87e273",
+	"@generated": "4d0f4361e95d822e1d78a31a3ee96527ab4266b9",
 	"@overrides": {
 		"include": [
 			"../../../global-env.d.ts"
@@ -16,6 +16,9 @@
 		"moduleResolution": "node",
 		"outDir": "./types",
 		"paths": {
+			"frontend-js-web": [
+				"../frontend-js-web/src/main/resources/META-INF/resources/index.ts"
+			]
 		},
 		"sourceMap": false,
 		"strict": true,
@@ -32,5 +35,8 @@
 		"../../../global-env.d.ts"
 	],
 	"references": [
+		{
+			"path": "../frontend-js-web"
+		}
 	]
 }

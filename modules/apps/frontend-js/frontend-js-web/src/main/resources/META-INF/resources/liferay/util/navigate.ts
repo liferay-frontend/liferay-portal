@@ -12,7 +12,7 @@
  * details.
  */
 
-import {Callback} from '../types';
+import type {EventCallback} from '../types';
 
 /**
  * Performs navigation to the given url. If SPA is enabled, it will route the
@@ -22,7 +22,7 @@ import {Callback} from '../types';
 
 export default function (
 	url: string | URL,
-	listeners?: Record<string, Callback>
+	listeners?: Record<string, EventCallback>
 ) {
 	url = url instanceof URL ? String(url) : url;
 

@@ -11,17 +11,20 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-interface EventFacade {
-    currentTarget: any;
-    details: any;
-    relatedTarget: any;
-    target: any;
-    type: any;
-    halt(): void;
-    preventDefault(): void;
-    stopImmediatePropagation(): void;
-    stopPropagation(): void;
-    [key: string]: any;
+
+declare global {
+	export interface Liferay {
+		SPA?: {
+			app?: {
+				canNavigate: (url: string) => boolean;
+				navigate: (
+					url: string,
+					replaceHistory?: boolean,
+					event?: Event
+				) => Promise<void>;
+			};
+		};
+	}
 }
-export declare type EventCallback = (event: EventFacade) => void;
+
 export {};

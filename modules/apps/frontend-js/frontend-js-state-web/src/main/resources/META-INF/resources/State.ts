@@ -514,11 +514,3 @@ window.Liferay.State = State;
  */
 
 export default State;
-
-declare global {
-	interface Window {
-		Liferay: {
-			State: typeof State;
-		};
-	}
-}
