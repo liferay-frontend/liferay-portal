@@ -29,6 +29,8 @@ import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -39,6 +41,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PropsImpl;
+import com.liferay.portlet.PortletPreferencesImpl;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -77,6 +80,8 @@ public class DDMFormViewFormInstanceRecordsDisplayContextTest
 	@Before
 	public void setUp() throws PortalException {
 		_setUpPortalUtil();
+
+		_setUpPortletPreferencesFactoryUtil();
 
 		_setUpDDMFormViewFormInstanceRecordsDisplayContext();
 	}
@@ -300,6 +305,24 @@ public class DDMFormViewFormInstanceRecordsDisplayContextTest
 		);
 
 		portalUtil.setPortal(portal);
+	}
+
+	private void _setUpPortletPreferencesFactoryUtil() {
+		PortletPreferencesFactoryUtil portletPreferencesFactoryUtil =
+			new PortletPreferencesFactoryUtil();
+
+		PortletPreferencesFactory portletPreferencesFactory = mock(
+			PortletPreferencesFactory.class);
+
+		when(
+			portletPreferencesFactory.getPreferences(
+				Mockito.any(HttpServletRequest.class))
+		).thenReturn(
+			new PortletPreferencesImpl()
+		);
+
+		portletPreferencesFactoryUtil.setPortletPreferencesFactory(
+			portletPreferencesFactory);
 	}
 
 	private DDMFormViewFormInstanceRecordsDisplayContext
