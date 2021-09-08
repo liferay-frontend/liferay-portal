@@ -57,7 +57,7 @@ function CreationMenu({primaryItems}) {
 					) : (
 						<ClayButtonWithIcon
 							className="nav-btn nav-btn-monospaced"
-							data-tooltip-align="top"
+							data-tooltip-align="top-left"
 							onClick={() =>
 								triggerAction(primaryItems[0], dataSetContext)
 							}
