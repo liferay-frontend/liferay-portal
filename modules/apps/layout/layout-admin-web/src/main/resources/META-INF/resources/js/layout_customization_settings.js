@@ -15,6 +15,7 @@
 AUI.add(
 	'liferay-layout-customization-settings',
 	(A) => {
+		// eslint-disable-next-line @liferay/aui/no-get-body
 		var BODY = A.getBody();
 
 		var BOUNDING_BOX = 'boundingBox';
