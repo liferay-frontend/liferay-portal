@@ -23,13 +23,9 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
-
-import java.io.File;
-import java.io.InputStream;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -44,11 +40,11 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
-		"mvc.command.name=/frontend_icons_admin/save_custom_icon"
+		"mvc.command.name=/frontend_icons_admin/delete_custom_icon"
 	},
 	service = MVCActionCommand.class
 )
-public class SaveCustomIconMVCActionCommand extends BaseMVCActionCommand {
+public class DeleteCustomIconMVCActionCommand extends BaseMVCActionCommand {
 
 	@Override
 	protected void doProcessAction(
@@ -69,23 +65,12 @@ public class SaveCustomIconMVCActionCommand extends BaseMVCActionCommand {
 			return;
 		}
 
-		UploadPortletRequest uploadPortletRequest =
-			_portal.getUploadPortletRequest(actionRequest);
-
-		InputStream inputStream = uploadPortletRequest.getFileAsStream(
-			"svgFile");
-
-		String contentType = uploadPortletRequest.getContentType("svgFile");
-
-		long size = uploadPortletRequest.getSize("svgFile");
-
 		String name = ParamUtil.getString(actionRequest, "name");
 
 		String iconPack = ParamUtil.getString(actionRequest, "iconPack");
 
-		_iconResourceHelper.addFileEntry(
-			themeDisplay.getCompanyGroupId(), name, iconPack, contentType,
-			inputStream, size);
+		_iconResourceHelper.deleteFileEntry(
+			themeDisplay.getCompanyGroupId(), name, iconPack);
 	}
 
 	@Reference

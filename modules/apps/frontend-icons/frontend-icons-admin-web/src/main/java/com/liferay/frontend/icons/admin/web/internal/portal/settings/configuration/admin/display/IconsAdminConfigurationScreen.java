@@ -14,30 +14,24 @@
 
 package com.liferay.frontend.icons.admin.web.internal.portal.settings.configuration.admin.display;
 
-import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResourcePack;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResource;
-import com.liferay.frontend.icons.admin.web.internal.portal.settings.configuration.admin.category.IconsAdminConfiguration;
+import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResourcePack;
 import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -81,40 +75,35 @@ public class IconsAdminConfigurationScreen implements ConfigurationScreen {
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
-		IconsAdminConfiguration iconsAdminConfiguration = null;
-
-		try {
-			iconsAdminConfiguration =
-				_configurationProvider.getCompanyConfiguration(
-					IconsAdminConfiguration.class,
-					CompanyThreadLocal.getCompanyId());
-		}
-		catch (PortalException portalException) {
-			ReflectionUtil.throwException(portalException);
-		}
-
-		httpServletRequest.setAttribute(
-			IconsAdminConfiguration.class.getName(), iconsAdminConfiguration);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		Map<String, IconResourcePack> iconResourcePacks =
-			_iconResourceHelper.getIconResourceMaps();
+			_iconResourceHelper.getIconResourceMaps(
+				themeDisplay.getCompanyGroupId());
 
-		JSONObject json = JSONFactoryUtil.createJSONObject();
+		JSONObject iconsJSONObject = JSONFactoryUtil.createJSONObject();
 
-		for (Map.Entry<String, IconResourcePack> entry: iconResourcePacks.entrySet()) {
-			String name = entry.getKey();
+		for (Map.Entry<String, IconResourcePack> entry :
+				iconResourcePacks.entrySet()) {
+
+			String iconResourcePackName = entry.getKey();
 			IconResourcePack iconResourcePack = entry.getValue();
 
 			List<String> iconNames = new ArrayList<>();
 
-			for (IconResource iconResource : iconResourcePack.getIconResources()) {
+			for (IconResource iconResource :
+					iconResourcePack.getIconResources()) {
+
 				iconNames.add(iconResource.getId());
 			}
 
-			json.put(name, iconNames);
+			iconsJSONObject.put(iconResourcePackName, iconNames);
 		}
 
-		httpServletRequest.setAttribute("icons", json.toJSONString());
+		httpServletRequest.setAttribute(
+			"icons", iconsJSONObject.toJSONString());
 
 		try {
 			RequestDispatcher requestDispatcher =
@@ -128,9 +117,6 @@ public class IconsAdminConfigurationScreen implements ConfigurationScreen {
 				"Unable to render icons_config.jsp", exception);
 		}
 	}
-
-	@Reference
-	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private IconResourceHelper _iconResourceHelper;

@@ -56,8 +56,8 @@ public class IconContributorExtender
 	public ServiceRegistration<IconResourcePack> addingService(
 		ServiceReference<ServletContext> serviceReference) {
 
-		IconResourcePack iconResourcePack =
-			_getIconResourcePack(serviceReference.getBundle());
+		IconResourcePack iconResourcePack = _getIconResourcePack(
+			serviceReference.getBundle());
 
 		if (iconResourcePack == null) {
 			return null;
@@ -112,9 +112,7 @@ public class IconContributorExtender
 		}
 	}
 
-	private IconResourcePack _getIconResourcePack(
-		Bundle bundle) {
-
+	private IconResourcePack _getIconResourcePack(Bundle bundle) {
 		Dictionary<String, String> headers = bundle.getHeaders(
 			StringPool.BLANK);
 
@@ -145,8 +143,8 @@ public class IconContributorExtender
 
 		int stripPathPrefixLength = liferayIconsPath.length() + 2;
 
-		IconResourcePackImpl iconResourcePackImpl =
-			new IconResourcePackImpl(liferayIconsNamespace);
+		IconResourcePackImpl iconResourcePackImpl = new IconResourcePackImpl(
+			liferayIconsNamespace);
 
 		while (entriesEnumeration.hasMoreElements()) {
 			URL url = entriesEnumeration.nextElement();
@@ -158,7 +156,8 @@ public class IconContributorExtender
 			name = FileUtil.stripExtension(name);
 
 			try {
-				iconResourcePackImpl.addIconResource(name, _getFileContents(url));
+				iconResourcePackImpl.addIconResource(
+					name, _getFileContents(url));
 			}
 			catch (IOException ioException) {
 				_log.error(
@@ -177,7 +176,6 @@ public class IconContributorExtender
 
 	private BundleContext _bundleContext;
 	private ServiceTracker
-		<ServletContext, ServiceRegistration<IconResourcePack>>
-			_serviceTracker;
+		<ServletContext, ServiceRegistration<IconResourcePack>> _serviceTracker;
 
 }

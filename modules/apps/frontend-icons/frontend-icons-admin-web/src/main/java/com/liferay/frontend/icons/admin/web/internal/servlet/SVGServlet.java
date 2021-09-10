@@ -15,11 +15,15 @@
 package com.liferay.frontend.icons.admin.web.internal.servlet;
 
 import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
-import com.liferay.petra.string.CharPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.Portal;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +33,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.liferay.portal.kernel.util.StringUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -61,7 +64,6 @@ public class SVGServlet extends HttpServlet {
 
 			String path = httpServletRequest.getPathInfo();
 
-
 			Matcher matcher = _pattern.matcher(path);
 
 			if (!matcher.matches()) {
@@ -71,21 +73,40 @@ public class SVGServlet extends HttpServlet {
 
 			String packName = matcher.group(1);
 
+			Company company = _portal.getCompany(httpServletRequest);
+
+			long groupId = company.getGroupId();
+
 			if (packName.equals("global")) {
-				printWriter.write(_iconResourceHelper.getGlobalSpriteContent());
-			} else {
-				printWriter.write(_iconResourceHelper.getIconPackSpriteContent(packName));
+				printWriter.write(
+					_iconResourceHelper.getGlobalSpriteContent(groupId));
+			}
+			else {
+				printWriter.write(
+					_iconResourceHelper.getIconPackSpriteContent(
+						groupId, packName));
 			}
 		}
 		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception, exception);
+			}
+
+			exception.printStackTrace();
+
 			httpServletResponse.setStatus(
 				HttpServletResponse.SC_PRECONDITION_FAILED);
 		}
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(SVGServlet.class);
+
+	private static final Pattern _pattern = Pattern.compile("^/(.*).svg");
+
 	@Reference
 	private IconResourceHelper _iconResourceHelper;
 
-	private Pattern _pattern = Pattern.compile("^/(.*).svg");
+	@Reference
+	private Portal _portal;
 
 }

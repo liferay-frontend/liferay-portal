@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@clayui/form": "3.32.0",
+		"@clayui/form": "3.35.2",
 		"@clayui/icon": "3.32.0",
 		"react": "16.12.0"
 	},

@@ -25,10 +25,6 @@ import java.util.regex.Pattern;
 public class IconResourceImpl implements IconResource {
 
 	public IconResourceImpl(String id, String svg) {
-		this(id, svg, 0);
-	}
-
-	public IconResourceImpl(String id, String svg, int priority) {
 		String viewBox = "";
 
 		Matcher viewBoxMatcher = _viewBoxPattern.matcher(svg);
@@ -39,7 +35,7 @@ public class IconResourceImpl implements IconResource {
 
 		String svgContent = "";
 
-		Matcher svgContentMatcher = _svgContentPattern.matcher(svg);
+		Matcher svgContentMatcher = _internalSVGContentPattern.matcher(svg);
 
 		if (svgContentMatcher.find()) {
 			svgContent = svgContentMatcher.group(1);
@@ -53,9 +49,8 @@ public class IconResourceImpl implements IconResource {
 
 		_id = id;
 		_svg = svg;
-		_priority = priority;
 
-		_svgContent = symbolContent;
+		_internalSVGContent = symbolContent;
 	}
 
 	@Override
@@ -64,8 +59,8 @@ public class IconResourceImpl implements IconResource {
 	}
 
 	@Override
-	public int getPriority() {
-		return _priority;
+	public String getInternalSVGContent() {
+		return _internalSVGContent;
 	}
 
 	@Override
@@ -73,19 +68,13 @@ public class IconResourceImpl implements IconResource {
 		return _svg;
 	}
 
-	@Override
-	public String getSVGContent() {
-		return _svgContent;
-	}
-
-	private static final Pattern _svgContentPattern = Pattern.compile(
+	private static final Pattern _internalSVGContentPattern = Pattern.compile(
 		"(?ims)<svg.*?>(.*)</svg>");
 	private static final Pattern _viewBoxPattern = Pattern.compile(
 		"(?i)viewBox=\"(.*)\"(?=[\\s, >])");
 
-	private String _id;
-	private int _priority;
-	private String _svg;
-	private String _svgContent;
+	private final String _id;
+	private final String _internalSVGContent;
+	private final String _svg;
 
 }

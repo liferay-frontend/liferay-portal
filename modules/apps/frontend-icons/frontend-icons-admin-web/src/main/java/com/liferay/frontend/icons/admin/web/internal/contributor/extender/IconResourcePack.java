@@ -21,9 +21,12 @@ import java.util.Collection;
  */
 public interface IconResourcePack {
 
+	public void addIconResource(String id, String svgContent);
+
 	public Collection<IconResource> getIconResources();
 
 	public String getName();
 
-	void addIconResource(String id, String svgContent);
+	public void removeIconResource(String id);
+
 }

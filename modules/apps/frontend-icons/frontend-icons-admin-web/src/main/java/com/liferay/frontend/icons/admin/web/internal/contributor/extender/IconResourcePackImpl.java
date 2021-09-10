@@ -28,8 +28,9 @@ public class IconResourcePackImpl implements IconResourcePack {
 	}
 
 	public void addIconResource(String iconName, String iconContents) {
-		IconResource iconResource = new IconResourceImpl(iconName, iconContents);
-		
+		IconResource iconResource = new IconResourceImpl(
+			iconName, iconContents);
+
 		_iconResources.add(iconResource);
 	}
 
@@ -41,6 +42,19 @@ public class IconResourcePackImpl implements IconResourcePack {
 	@Override
 	public String getName() {
 		return _name;
+	}
+
+	public void removeIconResource(String iconName) {
+		for (IconResource iconResource : _iconResources) {
+			String iconResourceId = iconResource.getId();
+
+			if (iconResourceId.equals(iconName)) {
+
+				_iconResources.remove(iconResource);
+
+				return;
+			}
+		}
 	}
 
 	private final List<IconResource> _iconResources = new ArrayList<>();

@@ -21,12 +21,8 @@ public interface IconResource {
 
 	public String getId();
 
-	public default int getPriority() {
-		return 0;
-	}
+	public String getInternalSVGContent();
 
 	public String getSVG();
-
-	public String getSVGContent();
 
 }
