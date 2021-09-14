@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Frontend CSS Shared
+Bundle-SymbolicName: com.liferay.frontend.css.shared
+Bundle-Version: 1.0
+Web-ContextPath: /frontend-css-shared
