@@ -205,7 +205,7 @@ if (journalContentDisplayContext.isShowArticle()) {
 	%>
 
 	<c:if test="<%= ListUtil.isNotEmpty(selectedUserToolAssetAddonEntries) || (ratingsContentMetadataAssetAddonEntry != null) %>">
-		<div class="separator"><!-- --></div>
+		<hr />
 
 		<clay:content-row
 			cssClass="mb-4 user-tool-asset-addon-entries"
@@ -233,7 +233,7 @@ if (journalContentDisplayContext.isShowArticle()) {
 	%>
 
 	<c:if test="<%= ListUtil.isNotEmpty(commentsContentMetadataAssetAddonEntries) %>">
-		<div class="separator"><!-- --></div>
+		<hr />
 
 		<div class="asset-links content-metadata-asset-addon-entries mb-4">
 			<liferay-asset:asset-addon-entry-display

@@ -126,7 +126,7 @@ AUI.add(
 			'</label>' +
 			'</div>';
 
-		var TPL_SEPARATOR = '<div class="separator"></div>';
+		var TPL_SEPARATOR = '<hr />';
 
 		var TPL_TEXT_HTML =
 			'<textarea class="form-builder-field-node lfr-ddm-text-html"></textarea>';

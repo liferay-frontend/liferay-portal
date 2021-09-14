@@ -252,7 +252,7 @@ Map<String, Object> fragmentsEditorData = HashMapBuilder.<String, Object>put(
 	%>
 
 	<c:if test="<%= showContextLink || showRatings || assetPublisherDisplayContext.isEnableFlags() || assetPublisherDisplayContext.isEnablePrint() || Validator.isNotNull(assetPublisherDisplayContext.getSocialBookmarksTypes()) %>">
-		<div class="separator"><!-- --></div>
+		<hr />
 
 		<clay:content-row
 			cssClass="asset-details"
@@ -385,7 +385,7 @@ Map<String, Object> fragmentsEditorData = HashMapBuilder.<String, Object>put(
 	%>
 
 	<c:if test="<%= showConversions || showLocalization %>">
-		<div class="separator"><!-- --></div>
+		<hr />
 
 		<clay:content-row
 			cssClass="asset-details"

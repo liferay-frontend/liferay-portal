@@ -99,7 +99,7 @@ if (tabs1.equals("published")) {
 		<aui:button onClick='<%= "javascript:" + liferayPortletResponse.getNamespace() + "editWorkflow('" + addURL + "');" %>' primary="<%= true %>" value="add-workflow" />
 	</c:if>
 
-	<div class="separator"><!-- --></div>
+	<hr />
 
 	<liferay-portlet:renderURL varImpl="portletURL">
 		<portlet:param name="mvcPath" value="/admin/edit_kaleo_process.jsp" />
