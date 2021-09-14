@@ -103,7 +103,7 @@
 				<%@ include file="/search_columns.jspf" %>
 			</liferay-ui:search-container-row>
 
-			<div class="separator"><!-- --></div>
+			<hr />
 
 			<liferay-ui:search-iterator
 				searchContainer="<%= searchContainer %>"
