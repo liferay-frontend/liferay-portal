@@ -412,6 +412,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 						<#if stringUtil.equals(javaMethodParameter.parameterName, "pagination")>
 							Pagination.of(1, 10)
+						<#elseif stringUtil.equals(javaMethodParameter.parameterName, "search")>
+							null
 						<#elseif freeMarkerTool.isPathParameter(javaMethodParameter, javaMethodSignature.operation)>
 							${javaMethodParameter.parameterName}
 						<#elseif stringUtil.equals(javaMethodParameter.parameterType, "java.lang.String")>
