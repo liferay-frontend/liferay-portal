@@ -202,8 +202,7 @@ public abstract class BaseObjectFieldResourceTestCase {
 
 		Page<ObjectField> page =
 			objectFieldResource.getObjectDefinitionObjectFieldsPage(
-				objectDefinitionId, RandomTestUtil.randomString(),
-				Pagination.of(1, 10));
+				objectDefinitionId, null, Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
 

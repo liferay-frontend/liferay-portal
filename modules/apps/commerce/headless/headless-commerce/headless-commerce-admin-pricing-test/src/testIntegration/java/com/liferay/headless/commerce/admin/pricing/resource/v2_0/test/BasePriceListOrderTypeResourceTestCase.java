@@ -373,7 +373,7 @@ public abstract class BasePriceListOrderTypeResourceTestCase {
 
 		Page<PriceListOrderType> page =
 			priceListOrderTypeResource.getPriceListIdPriceListOrderTypesPage(
-				id, RandomTestUtil.randomString(), Pagination.of(1, 10));
+				id, null, Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
 

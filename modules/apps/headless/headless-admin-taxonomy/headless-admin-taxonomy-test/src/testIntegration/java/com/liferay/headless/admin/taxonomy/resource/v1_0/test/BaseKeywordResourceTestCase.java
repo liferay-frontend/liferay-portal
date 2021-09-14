@@ -228,8 +228,7 @@ public abstract class BaseKeywordResourceTestCase {
 			testGetAssetLibraryKeywordsPage_getIrrelevantAssetLibraryId();
 
 		Page<Keyword> page = keywordResource.getAssetLibraryKeywordsPage(
-			assetLibraryId, RandomTestUtil.randomString(), null,
-			Pagination.of(1, 10), null);
+			assetLibraryId, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -597,7 +596,7 @@ public abstract class BaseKeywordResourceTestCase {
 	@Test
 	public void testGetKeywordsRankedPage() throws Exception {
 		Page<Keyword> page = keywordResource.getKeywordsRankedPage(
-			null, RandomTestUtil.randomString(), Pagination.of(1, 10));
+			null, null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
@@ -841,8 +840,7 @@ public abstract class BaseKeywordResourceTestCase {
 		Long irrelevantSiteId = testGetSiteKeywordsPage_getIrrelevantSiteId();
 
 		Page<Keyword> page = keywordResource.getSiteKeywordsPage(
-			siteId, RandomTestUtil.randomString(), null, Pagination.of(1, 10),
-			null);
+			siteId, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

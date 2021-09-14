@@ -387,8 +387,7 @@ public abstract class BaseWikiPageResourceTestCase {
 			testGetWikiNodeWikiPagesPage_getIrrelevantWikiNodeId();
 
 		Page<WikiPage> page = wikiPageResource.getWikiNodeWikiPagesPage(
-			wikiNodeId, RandomTestUtil.randomString(), null, null,
-			Pagination.of(1, 10), null);
+			wikiNodeId, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

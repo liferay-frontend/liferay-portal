@@ -376,7 +376,7 @@ public abstract class BaseOrderTypeChannelResourceTestCase {
 
 		Page<OrderTypeChannel> page =
 			orderTypeChannelResource.getOrderTypeIdOrderTypeChannelsPage(
-				id, RandomTestUtil.randomString(), Pagination.of(1, 10), null);
+				id, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

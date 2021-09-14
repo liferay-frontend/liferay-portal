@@ -535,8 +535,8 @@ public abstract class BaseMessageBoardSectionResourceTestCase {
 		Page<MessageBoardSection> page =
 			messageBoardSectionResource.
 				getMessageBoardSectionMessageBoardSectionsPage(
-					parentMessageBoardSectionId, RandomTestUtil.randomString(),
-					null, null, Pagination.of(1, 10), null);
+					parentMessageBoardSectionId, null, null, null,
+					Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -914,8 +914,7 @@ public abstract class BaseMessageBoardSectionResourceTestCase {
 
 		Page<MessageBoardSection> page =
 			messageBoardSectionResource.getSiteMessageBoardSectionsPage(
-				siteId, null, RandomTestUtil.randomString(), null, null,
-				Pagination.of(1, 10), null);
+				siteId, null, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

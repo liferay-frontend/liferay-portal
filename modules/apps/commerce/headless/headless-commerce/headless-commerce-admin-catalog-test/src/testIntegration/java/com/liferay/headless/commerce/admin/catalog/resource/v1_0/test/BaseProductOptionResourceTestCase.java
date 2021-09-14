@@ -338,8 +338,7 @@ public abstract class BaseProductOptionResourceTestCase {
 		Page<ProductOption> page =
 			productOptionResource.
 				getProductByExternalReferenceCodeProductOptionsPage(
-					externalReferenceCode, RandomTestUtil.randomString(),
-					Pagination.of(1, 10), null);
+					externalReferenceCode, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -614,7 +613,7 @@ public abstract class BaseProductOptionResourceTestCase {
 
 		Page<ProductOption> page =
 			productOptionResource.getProductIdProductOptionsPage(
-				id, RandomTestUtil.randomString(), Pagination.of(1, 10), null);
+				id, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

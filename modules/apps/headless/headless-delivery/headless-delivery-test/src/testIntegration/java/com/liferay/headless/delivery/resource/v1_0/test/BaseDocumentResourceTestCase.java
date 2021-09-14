@@ -242,8 +242,7 @@ public abstract class BaseDocumentResourceTestCase {
 			testGetAssetLibraryDocumentsPage_getIrrelevantAssetLibraryId();
 
 		Page<Document> page = documentResource.getAssetLibraryDocumentsPage(
-			assetLibraryId, null, RandomTestUtil.randomString(), null, null,
-			Pagination.of(1, 10), null);
+			assetLibraryId, null, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -628,8 +627,8 @@ public abstract class BaseDocumentResourceTestCase {
 			testGetDocumentFolderDocumentsPage_getIrrelevantDocumentFolderId();
 
 		Page<Document> page = documentResource.getDocumentFolderDocumentsPage(
-			documentFolderId, null, RandomTestUtil.randomString(), null, null,
-			Pagination.of(1, 10), null);
+			documentFolderId, null, null, null, null, Pagination.of(1, 10),
+			null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -1218,8 +1217,7 @@ public abstract class BaseDocumentResourceTestCase {
 		Long irrelevantSiteId = testGetSiteDocumentsPage_getIrrelevantSiteId();
 
 		Page<Document> page = documentResource.getSiteDocumentsPage(
-			siteId, null, RandomTestUtil.randomString(), null, null,
-			Pagination.of(1, 10), null);
+			siteId, null, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

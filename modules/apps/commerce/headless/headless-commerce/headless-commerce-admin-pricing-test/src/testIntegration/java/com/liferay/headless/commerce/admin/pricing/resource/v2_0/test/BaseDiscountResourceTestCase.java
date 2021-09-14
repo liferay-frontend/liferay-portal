@@ -214,7 +214,7 @@ public abstract class BaseDiscountResourceTestCase {
 	@Test
 	public void testGetDiscountsPage() throws Exception {
 		Page<Discount> page = discountResource.getDiscountsPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

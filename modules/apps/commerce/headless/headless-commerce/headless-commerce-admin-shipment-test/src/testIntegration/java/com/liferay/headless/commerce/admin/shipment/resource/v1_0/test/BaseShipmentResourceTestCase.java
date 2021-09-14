@@ -208,7 +208,7 @@ public abstract class BaseShipmentResourceTestCase {
 	@Test
 	public void testGetShipmentsPage() throws Exception {
 		Page<Shipment> page = shipmentResource.getShipmentsPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

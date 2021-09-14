@@ -369,8 +369,7 @@ public abstract class BaseDiscountSkuResourceTestCase {
 
 		Page<DiscountSku> page =
 			discountSkuResource.getDiscountIdDiscountSkusPage(
-				id, RandomTestUtil.randomString(), null, Pagination.of(1, 10),
-				null);
+				id, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

@@ -189,7 +189,7 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	@Test
 	public void testGetTaxCategoriesPage() throws Exception {
 		Page<TaxCategory> page = taxCategoryResource.getTaxCategoriesPage(
-			RandomTestUtil.randomString(), Pagination.of(1, 10));
+			null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 

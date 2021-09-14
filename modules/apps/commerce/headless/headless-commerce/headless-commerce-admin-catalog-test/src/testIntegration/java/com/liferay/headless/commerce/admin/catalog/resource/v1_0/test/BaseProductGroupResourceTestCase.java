@@ -202,7 +202,7 @@ public abstract class BaseProductGroupResourceTestCase {
 	@Test
 	public void testGetProductGroupsPage() throws Exception {
 		Page<ProductGroup> page = productGroupResource.getProductGroupsPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

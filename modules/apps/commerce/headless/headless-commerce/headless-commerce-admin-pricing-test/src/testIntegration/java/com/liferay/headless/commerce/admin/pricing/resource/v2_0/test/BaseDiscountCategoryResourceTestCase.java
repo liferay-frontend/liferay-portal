@@ -377,8 +377,7 @@ public abstract class BaseDiscountCategoryResourceTestCase {
 
 		Page<DiscountCategory> page =
 			discountCategoryResource.getDiscountIdDiscountCategoriesPage(
-				id, RandomTestUtil.randomString(), null, Pagination.of(1, 10),
-				null);
+				id, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

@@ -228,8 +228,8 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 		Page<MessageBoardThread> page =
 			messageBoardThreadResource.
 				getMessageBoardSectionMessageBoardThreadsPage(
-					messageBoardSectionId, RandomTestUtil.randomString(), null,
-					null, Pagination.of(1, 10), null);
+					messageBoardSectionId, null, null, null,
+					Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -1184,8 +1184,7 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 
 		Page<MessageBoardThread> page =
 			messageBoardThreadResource.getSiteMessageBoardThreadsPage(
-				siteId, null, RandomTestUtil.randomString(), null, null,
-				Pagination.of(1, 10), null);
+				siteId, null, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

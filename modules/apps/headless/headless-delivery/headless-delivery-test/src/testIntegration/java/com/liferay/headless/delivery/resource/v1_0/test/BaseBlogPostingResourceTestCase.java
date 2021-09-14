@@ -485,8 +485,7 @@ public abstract class BaseBlogPostingResourceTestCase {
 			testGetSiteBlogPostingsPage_getIrrelevantSiteId();
 
 		Page<BlogPosting> page = blogPostingResource.getSiteBlogPostingsPage(
-			siteId, RandomTestUtil.randomString(), null, null,
-			Pagination.of(1, 10), null);
+			siteId, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

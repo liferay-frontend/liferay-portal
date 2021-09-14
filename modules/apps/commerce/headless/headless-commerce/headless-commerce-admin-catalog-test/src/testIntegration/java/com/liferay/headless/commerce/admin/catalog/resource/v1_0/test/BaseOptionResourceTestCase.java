@@ -204,7 +204,7 @@ public abstract class BaseOptionResourceTestCase {
 	@Test
 	public void testGetOptionsPage() throws Exception {
 		Page<Option> page = optionResource.getOptionsPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

@@ -204,7 +204,7 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 	public void testGetObjectDefinitionsPage() throws Exception {
 		Page<ObjectDefinition> page =
 			objectDefinitionResource.getObjectDefinitionsPage(
-				RandomTestUtil.randomString(), Pagination.of(1, 10));
+				null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 

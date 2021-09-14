@@ -210,7 +210,7 @@ public abstract class BasePriceListResourceTestCase {
 	@Test
 	public void testGetPriceListsPage() throws Exception {
 		Page<PriceList> page = priceListResource.getPriceListsPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

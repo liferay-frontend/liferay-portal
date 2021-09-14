@@ -386,8 +386,7 @@ public abstract class BaseDiscountProductGroupResourceTestCase {
 
 		Page<DiscountProductGroup> page =
 			discountProductGroupResource.getDiscountIdDiscountProductGroupsPage(
-				id, RandomTestUtil.randomString(), null, Pagination.of(1, 10),
-				null);
+				id, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

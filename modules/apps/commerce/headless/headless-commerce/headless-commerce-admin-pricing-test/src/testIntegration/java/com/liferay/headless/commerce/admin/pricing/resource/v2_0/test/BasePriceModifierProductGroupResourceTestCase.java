@@ -398,8 +398,7 @@ public abstract class BasePriceModifierProductGroupResourceTestCase {
 		Page<PriceModifierProductGroup> page =
 			priceModifierProductGroupResource.
 				getPriceModifierIdPriceModifierProductGroupsPage(
-					id, RandomTestUtil.randomString(), null,
-					Pagination.of(1, 10), null);
+					id, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

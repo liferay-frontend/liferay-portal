@@ -238,7 +238,7 @@ public abstract class BaseAccountResourceTestCase {
 	@Test
 	public void testGetAccountsPage() throws Exception {
 		Page<Account> page = accountResource.getAccountsPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

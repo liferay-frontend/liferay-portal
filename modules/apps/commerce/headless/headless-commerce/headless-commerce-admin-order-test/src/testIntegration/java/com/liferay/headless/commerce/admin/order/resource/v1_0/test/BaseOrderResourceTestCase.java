@@ -253,7 +253,7 @@ public abstract class BaseOrderResourceTestCase {
 	@Test
 	public void testGetOrdersPage() throws Exception {
 		Page<Order> page = orderResource.getOrdersPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

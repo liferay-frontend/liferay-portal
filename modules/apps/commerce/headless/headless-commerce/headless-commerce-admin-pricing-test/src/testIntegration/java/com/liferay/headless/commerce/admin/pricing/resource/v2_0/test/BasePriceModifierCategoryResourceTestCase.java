@@ -392,8 +392,7 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 		Page<PriceModifierCategory> page =
 			priceModifierCategoryResource.
 				getPriceModifierIdPriceModifierCategoriesPage(
-					id, RandomTestUtil.randomString(), null,
-					Pagination.of(1, 10), null);
+					id, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

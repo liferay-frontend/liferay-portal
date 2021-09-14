@@ -220,8 +220,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 
 		Page<StructuredContent> page =
 			structuredContentResource.getSiteStructuredContentsPage(
-				siteId, null, RandomTestUtil.randomString(), null, null,
-				Pagination.of(1, 10), null);
+				siteId, null, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

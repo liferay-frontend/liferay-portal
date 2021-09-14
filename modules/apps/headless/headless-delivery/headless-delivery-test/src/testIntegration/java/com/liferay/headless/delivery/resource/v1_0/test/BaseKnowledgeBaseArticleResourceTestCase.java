@@ -582,8 +582,7 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		Page<KnowledgeBaseArticle> page =
 			knowledgeBaseArticleResource.
 				getKnowledgeBaseArticleKnowledgeBaseArticlesPage(
-					parentKnowledgeBaseArticleId, null,
-					RandomTestUtil.randomString(), null, null,
+					parentKnowledgeBaseArticleId, null, null, null, null,
 					Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
@@ -971,8 +970,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		Page<KnowledgeBaseArticle> page =
 			knowledgeBaseArticleResource.
 				getKnowledgeBaseFolderKnowledgeBaseArticlesPage(
-					knowledgeBaseFolderId, null, RandomTestUtil.randomString(),
-					null, null, Pagination.of(1, 10), null);
+					knowledgeBaseFolderId, null, null, null, null,
+					Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -1355,8 +1354,7 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 
 		Page<KnowledgeBaseArticle> page =
 			knowledgeBaseArticleResource.getSiteKnowledgeBaseArticlesPage(
-				siteId, null, RandomTestUtil.randomString(), null, null,
-				Pagination.of(1, 10), null);
+				siteId, null, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

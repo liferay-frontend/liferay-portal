@@ -206,7 +206,7 @@ public abstract class BaseAccountResourceTestCase {
 	@Test
 	public void testGetAccountsPage() throws Exception {
 		Page<Account> page = accountResource.getAccountsPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -906,8 +906,7 @@ public abstract class BaseAccountResourceTestCase {
 			testGetOrganizationAccountsPage_getIrrelevantOrganizationId();
 
 		Page<Account> page = accountResource.getOrganizationAccountsPage(
-			organizationId, RandomTestUtil.randomString(), null,
-			Pagination.of(1, 10), null);
+			organizationId, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

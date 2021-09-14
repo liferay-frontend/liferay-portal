@@ -209,8 +209,7 @@ public abstract class BaseSitePageResourceTestCase {
 		Long irrelevantSiteId = testGetSiteSitePagesPage_getIrrelevantSiteId();
 
 		Page<SitePage> page = sitePageResource.getSiteSitePagesPage(
-			siteId, RandomTestUtil.randomString(), null, null,
-			Pagination.of(1, 10), null);
+			siteId, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

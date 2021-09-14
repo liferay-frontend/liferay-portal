@@ -209,8 +209,7 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		Page<ProductOptionValue> page =
 			productOptionValueResource.
 				getProductOptionIdProductOptionValuesPage(
-					id, RandomTestUtil.randomString(), Pagination.of(1, 10),
-					null);
+					id, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

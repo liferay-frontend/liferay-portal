@@ -426,7 +426,7 @@ public abstract class BaseCatalogResourceTestCase {
 	@Test
 	public void testGetCatalogsPage() throws Exception {
 		Page<Catalog> page = catalogResource.getCatalogsPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

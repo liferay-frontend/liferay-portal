@@ -202,7 +202,7 @@ public abstract class BaseSpecificationResourceTestCase {
 	@Test
 	public void testGetSpecificationsPage() throws Exception {
 		Page<Specification> page = specificationResource.getSpecificationsPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

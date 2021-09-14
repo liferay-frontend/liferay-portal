@@ -202,7 +202,7 @@ public abstract class BaseOrderTypeResourceTestCase {
 	@Test
 	public void testGetOrderTypesPage() throws Exception {
 		Page<OrderType> page = orderTypeResource.getOrderTypesPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

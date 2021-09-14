@@ -447,8 +447,7 @@ public abstract class BaseOptionValueResourceTestCase {
 		Page<OptionValue> page =
 			optionValueResource.
 				getOptionByExternalReferenceCodeOptionValuesPage(
-					externalReferenceCode, RandomTestUtil.randomString(),
-					Pagination.of(1, 10), null);
+					externalReferenceCode, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -731,7 +730,7 @@ public abstract class BaseOptionValueResourceTestCase {
 
 		Page<OptionValue> page =
 			optionValueResource.getOptionIdOptionValuesPage(
-				id, RandomTestUtil.randomString(), Pagination.of(1, 10), null);
+				id, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 

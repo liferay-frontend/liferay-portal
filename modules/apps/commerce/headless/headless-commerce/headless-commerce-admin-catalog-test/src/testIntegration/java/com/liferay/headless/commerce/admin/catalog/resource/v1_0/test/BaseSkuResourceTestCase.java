@@ -444,7 +444,7 @@ public abstract class BaseSkuResourceTestCase {
 	@Test
 	public void testGetSkusPage() throws Exception {
 		Page<Sku> page = skuResource.getSkusPage(
-			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

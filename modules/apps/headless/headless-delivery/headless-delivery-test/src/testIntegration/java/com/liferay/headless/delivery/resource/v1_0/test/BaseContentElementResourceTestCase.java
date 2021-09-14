@@ -224,8 +224,7 @@ public abstract class BaseContentElementResourceTestCase {
 
 		Page<ContentElement> page =
 			contentElementResource.getAssetLibraryContentElementsPage(
-				assetLibraryId, RandomTestUtil.randomString(), null, null,
-				Pagination.of(1, 10), null);
+				assetLibraryId, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -547,8 +546,7 @@ public abstract class BaseContentElementResourceTestCase {
 
 		Page<ContentElement> page =
 			contentElementResource.getSiteContentElementsPage(
-				siteId, RandomTestUtil.randomString(), null, null,
-				Pagination.of(1, 10), null);
+				siteId, null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
 
