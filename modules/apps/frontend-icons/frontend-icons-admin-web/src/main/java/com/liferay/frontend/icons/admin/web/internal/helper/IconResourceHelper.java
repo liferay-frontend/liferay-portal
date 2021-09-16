@@ -297,7 +297,7 @@ public class IconResourceHelper {
 		IconResourcePack iconResourcePack = groupIconResourceMap.get(
 			folderName);
 
-		iconResourcePack.addIconResource(iconName, svgContent);
+		iconResourcePack.addIconResource(iconName, svgContent, true);
 	}
 
 	private String _generateXmlSvg(String content) {

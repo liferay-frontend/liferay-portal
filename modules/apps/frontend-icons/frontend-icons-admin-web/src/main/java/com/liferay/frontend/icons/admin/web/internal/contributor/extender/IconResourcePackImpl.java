@@ -27,9 +27,9 @@ public class IconResourcePackImpl implements IconResourcePack {
 		_name = name;
 	}
 
-	public void addIconResource(String iconName, String iconContents) {
+	public void addIconResource(String iconName, String iconContents, boolean removable) {
 		IconResource iconResource = new IconResourceImpl(
-			iconName, iconContents);
+			iconName, iconContents, removable);
 
 		_iconResources.add(iconResource);
 	}

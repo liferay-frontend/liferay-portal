@@ -157,7 +157,7 @@ public class IconContributorExtender
 
 			try {
 				iconResourcePackImpl.addIconResource(
-					name, _getFileContents(url));
+					name, _getFileContents(url), false);
 			}
 			catch (IOException ioException) {
 				_log.error(

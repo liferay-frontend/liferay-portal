@@ -19,8 +19,10 @@ import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconRe
 import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResourcePack;
 import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -91,12 +93,18 @@ public class IconsAdminConfigurationScreen implements ConfigurationScreen {
 			String iconResourcePackName = entry.getKey();
 			IconResourcePack iconResourcePack = entry.getValue();
 
-			List<String> iconNames = new ArrayList<>();
+			JSONArray iconNames = JSONFactoryUtil.createJSONArray();
 
 			for (IconResource iconResource :
 					iconResourcePack.getIconResources()) {
 
-				iconNames.add(iconResource.getId());
+				JSONObject iconJsonObject = JSONUtil.put(
+					"name", iconResource.getId()
+				).put(
+					"removable", iconResource.getRemovable()
+				);
+
+				iconNames.put(iconJsonObject);
 			}
 
 			iconsJSONObject.put(iconResourcePackName, iconNames);

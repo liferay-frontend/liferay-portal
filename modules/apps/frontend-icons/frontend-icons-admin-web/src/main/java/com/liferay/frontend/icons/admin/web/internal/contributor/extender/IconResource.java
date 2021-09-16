@@ -25,4 +25,6 @@ public interface IconResource {
 
 	public String getSVG();
 
+	public boolean getRemovable();
+
 }

@@ -12,12 +12,14 @@
  * details.
  */
 
+import {fetch, openToast} from 'frontend-js-web';
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayPanel from '@clayui/panel';
-import React, {useMemo, useState} from 'react';
+import ClayModal, {useModal} from '@clayui/modal';
+import React, {useEffect, useMemo, useState} from 'react';
 
 const IconSearch = ({
 	initialIcons,
@@ -25,15 +27,23 @@ const IconSearch = ({
 	placeholder = Liferay.Language.get('search-icons'),
 	portletNamespace,
 	submitURL,
-	redirectURL,
 	deleteURL,
 }) => {
 	const svgFileInputRef = React.useRef(null);
-	const [icons, setIcons] = React.useState(JSON.parse(initialIcons));
 
+	const [icons, setIcons] = useState(JSON.parse(initialIcons));
 	const [iconName, setIconName] = useState('');
 	const [iconPackName, setIconPackName] = useState('');
 	const [searchQuery, setSearchQuery] = useState('');
+	const [showModal, setShowModal] = useState(false);
+	const [selectedIcon, setSelectedIcon] = useState(null);
+
+	const {observer} = useModal({
+		onClose: () => {
+			setShowModal(false);
+			setSelectedIcon(null);
+		},
+	});
 
 	const iconPackNames = Object.keys(icons);
 
@@ -42,11 +52,18 @@ const IconSearch = ({
 			return {
 				...acc,
 				[packName]: icons[packName].filter((icon) =>
-					icon.toLowerCase().includes(searchQuery.toLocaleLowerCase())
+					icon.name
+						.toLowerCase()
+						.includes(searchQuery.toLocaleLowerCase())
 				),
 			};
 		}, {});
 	}, [iconPackNames, icons, searchQuery]);
+
+	useEffect(() => {
+		setIconName('');
+		setIconPackName('');
+	}, [icons]);
 
 	const handleDelete = (iconName, iconPackName) => {
 		const formData = new FormData();
@@ -54,30 +71,28 @@ const IconSearch = ({
 		formData.append(portletNamespace + 'name', iconName);
 		formData.append(portletNamespace + 'iconPack', iconPackName);
 
-		Liferay.Util.fetch(deleteURL, {body: formData, method: 'post'}).then(
-			() => {
-				Liferay.Util.openToast({
-					message: Liferay.Language.get('icon-deleted'),
-					title: Liferay.Language.get('success'),
-					toastProps: {
-						autoClose: 5000,
-					},
-					type: 'success',
-				});
+		return fetch(deleteURL, {body: formData, method: 'post'}).then(() => {
+			openToast({
+				message: Liferay.Language.get('icon-deleted'),
+				title: Liferay.Language.get('success'),
+				toastProps: {
+					autoClose: 5000,
+				},
+				type: 'success',
+			});
 
-				const newIcons = {...icons};
+			const newIcons = {...icons};
 
-				newIcons[iconPackName] = newIcons[iconPackName].filter(
-					(icon) => icon !== iconName
-				);
+			newIcons[iconPackName] = newIcons[iconPackName].filter(
+				(icon) => icon.name !== iconName
+			);
 
-				if (newIcons[iconPackName].length === 0) {
-					delete newIcons[iconPackName];
-				}
-
-				setIcons(newIcons);
+			if (newIcons[iconPackName].length === 0) {
+				delete newIcons[iconPackName];
 			}
-		);
+
+			setIcons(newIcons);
+		});
 	};
 
 	const handleSubmit = () => {
@@ -90,29 +105,29 @@ const IconSearch = ({
 		formData.append(portletNamespace + 'name', iconName);
 		formData.append(portletNamespace + 'iconPack', iconPackName);
 
-		Liferay.Util.fetch(submitURL, {body: formData, method: 'post'}).then(
-			() => {
-				Liferay.Util.openToast({
-					message: Liferay.Language.get('icon-added'),
-					title: Liferay.Language.get('success'),
-					toastProps: {
-						autoClose: 5000,
-					},
-					type: 'success',
-				});
+		return fetch(submitURL, {body: formData, method: 'post'}).then(() => {
+			openToast({
+				message: Liferay.Language.get('icon-added'),
+				title: Liferay.Language.get('success'),
+				toastProps: {
+					autoClose: 5000,
+				},
+				type: 'success',
+			});
 
-				const newIcons = {...icons};
+			const newIcons = {...icons};
 
-				if (newIcons[iconPackName]) {
-					newIcons[iconPackName].push(iconName);
-				}
-				else {
-					newIcons[iconPackName] = [iconName];
-				}
+			const newIcon = {name: iconName, removable: true};
 
-				setIcons(newIcons);
+			if (newIcons[iconPackName]) {
+				newIcons[iconPackName].push(newIcon);
 			}
-		);
+			else {
+				newIcons[iconPackName] = [newIcon];
+			}
+
+			setIcons(newIcons);
+		});
 	};
 
 	return (
@@ -125,142 +140,206 @@ const IconSearch = ({
 
 			<h4>{Liferay.Language.get('icon-packs')}</h4>
 
-			<ClayForm
-				onSubmit={(e) => {
-					e.preventDefault();
+			<label className="form-control-label">
+				<span className="form-control-label-text">{label}</span>
 
-					handleSubmit();
-				}}
-			>
-				<input name="redirect" type="hidden" value={redirectURL} />
-				<ClayForm.Group>
-					<label className="form-control-label">
-						<span className="form-control-label-text">{label}</span>
+				<ClayInput
+					onChange={(event) => setSearchQuery(event.target.value)}
+					placeholder={placeholder}
+					type="text"
+					value={searchQuery}
+				/>
+			</label>
 
-						<ClayInput
-							onChange={(event) =>
-								setSearchQuery(event.target.value)
-							}
-							placeholder={placeholder}
-							type="text"
-							value={searchQuery}
-						/>
-					</label>
-				</ClayForm.Group>
+			<ClayPanel.Group className="mt-4">
+				{iconPackNames.map((iconPackName) => (
+					<ClayPanel
+						collapsable
+						displayTitle={`${iconPackName} (${filteredIcons[iconPackName].length})`}
+						displayType="secondary"
+						key={iconPackName}
+						showCollapseIcon={true}
+					>
+						<ClayPanel.Body className="list-group-card">
+							<ul className="list-group">
+								{filteredIcons[iconPackName]
+									.sort()
+									.map((icon) => (
+										<li
+											className="list-group-card-item w-25"
+											key={icon.name}
+										>
+											<ClayButton
+												displayType={null}
+												onClick={() => {
+													setShowModal(true);
+													setSelectedIcon({
+														...icon,
+														iconPackName,
+													});
+												}}
+											>
+												<ClayIcon
+													spritemap={`/o/icons/${iconPackName}.svg`}
+													symbol={icon.name}
+												/>
 
-				<ClayForm.Group>
-					<ClayPanel.Group>
-						{iconPackNames.map((iconPackName) => (
-							<ClayPanel
-								collapsable
-								displayTitle={`${iconPackName} (${filteredIcons[iconPackName].length})`}
-								displayType="secondary"
-								key={iconPackName}
-								showCollapseIcon={true}
-							>
-								<ClayPanel.Body className="list-group-card">
-									<ul className="list-group">
-										{filteredIcons[iconPackName]
-											.sort()
-											.map((icon) => (
-												<li
-													className="list-group-card-item w-25"
-													key={icon}
-												>
-													<ClayButton
-														displayType={null}
-														onClick={() => {
-															if (
-																confirm(
-																	Liferay.Language.get(
-																		'are-you-sure-you-want-to-delete-this-icon'
-																	)
-																)
-															) {
-																handleDelete(
-																	icon,
-																	iconPackName
-																);
-															}
-														}}
-													>
-														<ClayIcon
-															spritemap={`/o/icons/${iconPackName}.svg`}
-															symbol={icon}
-														/>
+												<span className="list-group-card-item-text">
+													{icon.name}
+												</span>
+											</ClayButton>
+										</li>
+									))}
 
-														<span className="list-group-card-item-text">
-															{icon}
-														</span>
-													</ClayButton>
-												</li>
-											))}
-
-										{!filteredIcons[iconPackName]
-											.length && (
-											<li className="list-group-card-item w-100">
-												{Liferay.Language.get(
-													'no-results-found'
-												)}
-											</li>
+								{!filteredIcons[iconPackName].length && (
+									<li className="list-group-card-item w-100">
+										{Liferay.Language.get(
+											'no-results-found'
 										)}
-									</ul>
-								</ClayPanel.Body>
-							</ClayPanel>
-						))}
-					</ClayPanel.Group>
-				</ClayForm.Group>
+									</li>
+								)}
+							</ul>
+						</ClayPanel.Body>
+					</ClayPanel>
+				))}
+			</ClayPanel.Group>
 
-				<h4>{Liferay.Language.get('add-icon')}</h4>
+			<ClayLayout.SheetFooter>
+				<ClayButton onClick={() => setShowModal(true)}>
+					{Liferay.Language.get('add-icon')}
+				</ClayButton>
+			</ClayLayout.SheetFooter>
 
-				<ClayForm.Group>
-					<label htmlFor={portletNamespace + 'iconPack'}>
-						{Liferay.Language.get('pack-name')}
-					</label>
+			{showModal && (
+				<ClayModal observer={observer} size="lg">
+					<ClayModal.Header withTitle>
+						{selectedIcon
+							? Liferay.Language.get('edit-icon')
+							: Liferay.Language.get('add-icon')}
+					</ClayModal.Header>
+					<ClayModal.Body>
+						<ClayForm
+							onSubmit={(e) => {
+								e.preventDefault();
+							}}
+						>
+							<ClayForm.Group>
+								<label htmlFor={portletNamespace + 'iconPack'}>
+									{Liferay.Language.get('pack-name')}
+								</label>
 
-					<ClayInput
-						name={portletNamespace + 'iconPack'}
-						placeholder="Name"
-						type="text"
-						onChange={(e) => setIconPackName(e.target.value)}
-						value={iconPackName}
+								<ClayInput
+									name={portletNamespace + 'iconPack'}
+									placeholder="Name"
+									type="text"
+									onChange={(e) =>
+										setIconPackName(e.target.value)
+									}
+									value={
+										iconPackName ||
+										selectedIcon?.iconPackName
+									}
+									readOnly={selectedIcon}
+								/>
+							</ClayForm.Group>
+
+							<ClayForm.Group>
+								<label htmlFor={portletNamespace + 'name'}>
+									{Liferay.Language.get('icon-name')}
+								</label>
+
+								<ClayInput
+									name={portletNamespace + 'name'}
+									placeholder="Name"
+									type="text"
+									onChange={(e) =>
+										setIconName(e.target.value)
+									}
+									value={iconName || selectedIcon?.name}
+									readOnly={selectedIcon}
+								/>
+							</ClayForm.Group>
+
+							{!selectedIcon && (
+								<ClayForm.Group>
+									<label
+										htmlFor={portletNamespace + 'svgFile'}
+									>
+										{Liferay.Language.get('svg-file')}
+									</label>
+
+									<ClayInput
+										accept=".svg"
+										name={portletNamespace + 'svgFile'}
+										type="file"
+										ref={svgFileInputRef}
+									/>
+								</ClayForm.Group>
+							)}
+						</ClayForm>
+					</ClayModal.Body>
+
+					<ClayModal.Footer
+						last={
+							<ClayButton.Group spaced>
+								{selectedIcon ? (
+									<ClayButton
+										displayType="danger"
+										onClick={() => {
+											if (
+												confirm(
+													Liferay.Language.get(
+														'are-you-sure'
+													)
+												)
+											) {
+												handleDelete(
+													selectedIcon.name,
+													selectedIcon.iconPackName
+												).then(() => {
+													setShowModal(false);
+													setSelectedIcon(null);
+												});
+											}
+										}}
+										title={
+											selectedIcon.removable
+												? Liferay.Language.get('delete')
+												: Liferay.Language.get(
+														'non-removable-icon'
+												  )
+										}
+										disabled={!selectedIcon.removable}
+									>
+										{Liferay.Language.get('delete')}
+									</ClayButton>
+								) : (
+									<ClayButton
+										type="submit"
+										onClick={() => {
+											handleSubmit().then(() => {
+												setShowModal(false);
+												setSelectedIcon(null);
+											});
+										}}
+									>
+										{Liferay.Language.get('save')}
+									</ClayButton>
+								)}
+								<ClayButton
+									displayType="secondary"
+									onClick={() => {
+										setShowModal(false);
+										setSelectedIcon(null);
+									}}
+								>
+									{Liferay.Language.get('cancel')}
+								</ClayButton>
+							</ClayButton.Group>
+						}
 					/>
-				</ClayForm.Group>
-
-				<ClayForm.Group>
-					<label htmlFor={portletNamespace + 'name'}>
-						{Liferay.Language.get('icon-name')}
-					</label>
-
-					<ClayInput
-						name={portletNamespace + 'name'}
-						placeholder="Name"
-						type="text"
-						onChange={(e) => setIconName(e.target.value)}
-						value={iconName}
-					/>
-				</ClayForm.Group>
-
-				<ClayForm.Group>
-					<label htmlFor={portletNamespace + 'svgFile'}>
-						{Liferay.Language.get('svg-file')}
-					</label>
-
-					<ClayInput
-						accept=".svg"
-						name={portletNamespace + 'svgFile'}
-						type="file"
-						ref={svgFileInputRef}
-					/>
-				</ClayForm.Group>
-				<ClayLayout.SheetFooter>
-					<ClayButton.Group className="mt-4">
-						<ClayButton type="submit">
-							{Liferay.Language.get('save')}
-						</ClayButton>
-					</ClayButton.Group>
-				</ClayLayout.SheetFooter>
-			</ClayForm>
+				</ClayModal>
+			)}
 		</ClayLayout.Sheet>
 	);
 };

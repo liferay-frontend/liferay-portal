@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  */
 public class IconResourceImpl implements IconResource {
 
-	public IconResourceImpl(String id, String svg) {
+	public IconResourceImpl(String id, String svg, boolean removable) {
 		String viewBox = "";
 
 		Matcher viewBoxMatcher = _viewBoxPattern.matcher(svg);
@@ -48,9 +48,9 @@ public class IconResourceImpl implements IconResource {
 			new String[] {id, svgContent, viewBox});
 
 		_id = id;
-		_svg = svg;
-
 		_internalSVGContent = symbolContent;
+		_removable = removable;
+		_svg = svg;
 	}
 
 	@Override
@@ -61,6 +61,11 @@ public class IconResourceImpl implements IconResource {
 	@Override
 	public String getInternalSVGContent() {
 		return _internalSVGContent;
+	}
+
+	@Override
+	public boolean getRemovable() {
+		return _removable;
 	}
 
 	@Override
@@ -76,5 +81,6 @@ public class IconResourceImpl implements IconResource {
 	private final String _id;
 	private final String _internalSVGContent;
 	private final String _svg;
+	private final boolean _removable;
 
 }
