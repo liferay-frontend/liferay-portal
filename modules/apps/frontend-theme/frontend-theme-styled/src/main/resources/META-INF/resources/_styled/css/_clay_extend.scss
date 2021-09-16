@@ -62,3 +62,13 @@
 		margin-bottom: 1em;
 	}
 }
+
+// AUI
+.overlay {
+	position: absolute;
+}
+
+.overlay-hidden,
+.overlaymask-hidden {
+	display: none;
+}
