@@ -247,8 +247,8 @@ const IconSearch = ({
 					</label>
 
 					<ClayInput
+						accept=".svg"
 						name={portletNamespace + 'svgFile'}
-						placeholder="Paste SVG content"
 						type="file"
 						ref={svgFileInputRef}
 					/>

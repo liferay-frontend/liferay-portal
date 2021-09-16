@@ -56,6 +56,17 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 @Component(immediate = true, service = IconResourceHelper.class)
 public class IconResourceHelper {
 
+	private Boolean _validateAddFileEntry(long repositoryId, long folderId, String iconName)
+		throws PortalException {
+		try {
+			DLFileEntry fileEntry = _dlFileEntryLocalService.getFileEntry(repositoryId, folderId, iconName);
+
+			return fileEntry != null;
+		} catch(PortalException portalException) {
+			return null;
+		}
+	}
+
 	public void addFileEntry(
 			long repositoryId, String iconName, String folderName,
 			String contentType, InputStream inputStream, long size)
@@ -78,8 +89,14 @@ public class IconResourceHelper {
 			folder = _addFolder(repositoryId, folderName, companyIconsFolderId);
 		}
 
+		long folderId = folder.getFolderId();
+
+		if (!_validateAddFileEntry(repositoryId, folderId, iconName)) {
+			return;
+		}
+
 		FileEntry fileEntry = _dlAppService.addFileEntry(
-			null, repositoryId, folder.getFolderId(), iconName, contentType,
+			null, repositoryId, folderId, iconName, contentType,
 			iconName, "", null, inputStream, size, null, null,
 			new ServiceContext());
 

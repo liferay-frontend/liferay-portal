@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -76,6 +77,10 @@ public class SaveCustomIconMVCActionCommand extends BaseMVCActionCommand {
 			"svgFile");
 
 		String contentType = uploadPortletRequest.getContentType("svgFile");
+
+		if (!contentType.equals(ContentTypes.IMAGE_SVG_XML)) {
+			return;
+		}
 
 		long size = uploadPortletRequest.getSize("svgFile");
 
