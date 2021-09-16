@@ -48,9 +48,10 @@ public class IconResourceImpl implements IconResource {
 			new String[] {id, svgContent, viewBox});
 
 		_id = id;
-		_internalSVGContent = symbolContent;
-		_removable = removable;
 		_svg = svg;
+		_removable = removable;
+
+		_internalSVGContent = symbolContent;
 	}
 
 	@Override
@@ -80,7 +81,7 @@ public class IconResourceImpl implements IconResource {
 
 	private final String _id;
 	private final String _internalSVGContent;
-	private final String _svg;
 	private final boolean _removable;
+	private final String _svg;
 
 }

@@ -30,8 +30,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -93,21 +91,20 @@ public class IconsAdminConfigurationScreen implements ConfigurationScreen {
 			String iconResourcePackName = entry.getKey();
 			IconResourcePack iconResourcePack = entry.getValue();
 
-			JSONArray iconNames = JSONFactoryUtil.createJSONArray();
+			JSONArray iconNamesJSONArray = JSONFactoryUtil.createJSONArray();
 
 			for (IconResource iconResource :
 					iconResourcePack.getIconResources()) {
 
-				JSONObject iconJsonObject = JSONUtil.put(
-					"name", iconResource.getId()
-				).put(
-					"removable", iconResource.getRemovable()
-				);
-
-				iconNames.put(iconJsonObject);
+				iconNamesJSONArray.put(
+					JSONUtil.put(
+						"name", iconResource.getId()
+					).put(
+						"removable", iconResource.getRemovable()
+					));
 			}
 
-			iconsJSONObject.put(iconResourcePackName, iconNames);
+			iconsJSONObject.put(iconResourcePackName, iconNamesJSONArray);
 		}
 
 		httpServletRequest.setAttribute(

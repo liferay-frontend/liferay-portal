@@ -27,7 +27,9 @@ public class IconResourcePackImpl implements IconResourcePack {
 		_name = name;
 	}
 
-	public void addIconResource(String iconName, String iconContents, boolean removable) {
+	public void addIconResource(
+		String iconName, String iconContents, boolean removable) {
+
 		IconResource iconResource = new IconResourceImpl(
 			iconName, iconContents, removable);
 
@@ -49,7 +51,6 @@ public class IconResourcePackImpl implements IconResourcePack {
 			String iconResourceId = iconResource.getId();
 
 			if (iconResourceId.equals(iconName)) {
-
 				_iconResources.remove(iconResource);
 
 				return;

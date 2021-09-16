@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -56,21 +55,10 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 @Component(immediate = true, service = IconResourceHelper.class)
 public class IconResourceHelper {
 
-	private Boolean _validateAddFileEntry(long repositoryId, long folderId, String iconName)
-		throws PortalException {
-		try {
-			DLFileEntry fileEntry = _dlFileEntryLocalService.getFileEntry(repositoryId, folderId, iconName);
-
-			return fileEntry != null;
-		} catch(PortalException portalException) {
-			return null;
-		}
-	}
-
 	public void addFileEntry(
 			long repositoryId, String iconName, String folderName,
 			String contentType, InputStream inputStream, long size)
-		throws PortalException, IOException {
+		throws IOException, PortalException {
 
 		DLFolder companyIconsFolder = _getFolder(
 			repositoryId, _ROOT_FOLDER_NAME, 0L);
@@ -95,12 +83,12 @@ public class IconResourceHelper {
 			return;
 		}
 
-		FileEntry fileEntry = _dlAppService.addFileEntry(
-			null, repositoryId, folderId, iconName, contentType,
-			iconName, "", null, inputStream, size, null, null,
-			new ServiceContext());
+		_dlAppService.addFileEntry(
+			null, repositoryId, folderId, iconName, contentType, iconName, "",
+			null, inputStream, size, null, null, new ServiceContext());
 
-		_addIconToResourceMap(repositoryId, iconName, folderName, StringUtil.read(inputStream));
+		_addIconToResourceMap(
+			repositoryId, iconName, folderName, StringUtil.read(inputStream));
 	}
 
 	public void deleteFileEntry(
@@ -132,11 +120,13 @@ public class IconResourceHelper {
 
 		_dlFileEntryLocalService.deleteFileEntry(fileEntry.getFileEntryId());
 
-		long totalFileCount =  _dlFileEntryLocalService.getFileEntriesCount(repositoryId, folderId);
+		long totalFileCount = _dlFileEntryLocalService.getFileEntriesCount(
+			repositoryId, folderId);
 
 		if (totalFileCount == 0) {
 			_dlFolderLocalService.deleteFolder(folderId);
 		}
+
 		_removeIconFromResourceMap(repositoryId, iconName, folderName);
 	}
 
@@ -369,7 +359,7 @@ public class IconResourceHelper {
 
 		Collection<IconResource> icons = iconResourcePack.getIconResources();
 
-		if (icons.size() == 0) {
+		if (icons.isEmpty()) {
 			groupIconResourceMap.remove(folderName);
 		}
 	}
@@ -382,6 +372,25 @@ public class IconResourceHelper {
 				_iconResourcesMap.get(_GLOBAL_ID);
 
 			iconResourceMap.remove(name);
+		}
+	}
+
+	private Boolean _validateAddFileEntry(
+			long repositoryId, long folderId, String iconName)
+		throws PortalException {
+
+		try {
+			DLFileEntry fileEntry = _dlFileEntryLocalService.getFileEntry(
+				repositoryId, folderId, iconName);
+
+			return fileEntry != null;
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException, portalException);
+			}
+
+			return null;
 		}
 	}
 

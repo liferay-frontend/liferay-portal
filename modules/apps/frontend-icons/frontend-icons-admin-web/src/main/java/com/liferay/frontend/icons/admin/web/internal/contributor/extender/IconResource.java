@@ -23,8 +23,8 @@ public interface IconResource {
 
 	public String getInternalSVGContent();
 
-	public String getSVG();
-
 	public boolean getRemovable();
+
+	public String getSVG();
 
 }

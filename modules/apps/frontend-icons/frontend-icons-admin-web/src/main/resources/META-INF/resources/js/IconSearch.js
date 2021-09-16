@@ -12,13 +12,13 @@
  * details.
  */
 
-import {fetch, openToast} from 'frontend-js-web';
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
-import ClayPanel from '@clayui/panel';
 import ClayModal, {useModal} from '@clayui/modal';
+import ClayPanel from '@clayui/panel';
+import {fetch, openToast} from 'frontend-js-web';
 import React, {useEffect, useMemo, useState} from 'react';
 
 const IconSearch = ({
@@ -219,8 +219,8 @@ const IconSearch = ({
 					</ClayModal.Header>
 					<ClayModal.Body>
 						<ClayForm
-							onSubmit={(e) => {
-								e.preventDefault();
+							onSubmit={(event) => {
+								event.preventDefault();
 							}}
 						>
 							<ClayForm.Group>
@@ -230,16 +230,16 @@ const IconSearch = ({
 
 								<ClayInput
 									name={portletNamespace + 'iconPack'}
-									placeholder="Name"
-									type="text"
-									onChange={(e) =>
-										setIconPackName(e.target.value)
+									onChange={(event) =>
+										setIconPackName(event.target.value)
 									}
+									placeholder="Name"
+									readOnly={selectedIcon}
+									type="text"
 									value={
 										iconPackName ||
 										selectedIcon?.iconPackName
 									}
-									readOnly={selectedIcon}
 								/>
 							</ClayForm.Group>
 
@@ -250,13 +250,13 @@ const IconSearch = ({
 
 								<ClayInput
 									name={portletNamespace + 'name'}
-									placeholder="Name"
-									type="text"
-									onChange={(e) =>
-										setIconName(e.target.value)
+									onChange={(event) =>
+										setIconName(event.target.value)
 									}
-									value={iconName || selectedIcon?.name}
+									placeholder="Name"
 									readOnly={selectedIcon}
+									type="text"
+									value={iconName || selectedIcon?.name}
 								/>
 							</ClayForm.Group>
 
@@ -271,8 +271,8 @@ const IconSearch = ({
 									<ClayInput
 										accept=".svg"
 										name={portletNamespace + 'svgFile'}
-										type="file"
 										ref={svgFileInputRef}
+										type="file"
 									/>
 								</ClayForm.Group>
 							)}
@@ -284,6 +284,7 @@ const IconSearch = ({
 							<ClayButton.Group spaced>
 								{selectedIcon ? (
 									<ClayButton
+										disabled={!selectedIcon.removable}
 										displayType="danger"
 										onClick={() => {
 											if (
@@ -309,19 +310,18 @@ const IconSearch = ({
 														'non-removable-icon'
 												  )
 										}
-										disabled={!selectedIcon.removable}
 									>
 										{Liferay.Language.get('delete')}
 									</ClayButton>
 								) : (
 									<ClayButton
-										type="submit"
 										onClick={() => {
 											handleSubmit().then(() => {
 												setShowModal(false);
 												setSelectedIcon(null);
 											});
 										}}
+										type="submit"
 									>
 										{Liferay.Language.get('save')}
 									</ClayButton>

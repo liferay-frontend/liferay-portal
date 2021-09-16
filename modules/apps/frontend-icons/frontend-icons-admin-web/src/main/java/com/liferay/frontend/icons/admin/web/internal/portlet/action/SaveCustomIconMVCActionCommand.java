@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.io.File;
 import java.io.InputStream;
 
 import javax.portlet.ActionRequest;
@@ -73,14 +72,14 @@ public class SaveCustomIconMVCActionCommand extends BaseMVCActionCommand {
 		UploadPortletRequest uploadPortletRequest =
 			_portal.getUploadPortletRequest(actionRequest);
 
-		InputStream inputStream = uploadPortletRequest.getFileAsStream(
-			"svgFile");
-
 		String contentType = uploadPortletRequest.getContentType("svgFile");
 
 		if (!contentType.equals(ContentTypes.IMAGE_SVG_XML)) {
 			return;
 		}
+
+		InputStream inputStream = uploadPortletRequest.getFileAsStream(
+			"svgFile");
 
 		long size = uploadPortletRequest.getSize("svgFile");
 

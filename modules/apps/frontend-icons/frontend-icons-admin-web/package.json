@@ -1,10 +1,10 @@
 {
 	"dependencies": {
-		"@clayui/button": "*",
-		"@clayui/form": "*",
-		"@clayui/icon": "*",
-		"@clayui/layout": "*",
-		"@clayui/panel": "*",
+		"@clayui/button": "3.32.0",
+		"@clayui/form": "3.35.3",
+		"@clayui/icon": "3.32.0",
+		"@clayui/layout": "3.32.0",
+		"@clayui/panel": "3.35.3",
 		"frontend-js-web": "*",
 		"react": "16.12.0"
 	},
