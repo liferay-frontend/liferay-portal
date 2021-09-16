@@ -313,3 +313,5 @@ renderResponse.setTitle(workflowTaskDisplayContext.getHeaderTitle(workflowTask))
 		onTaskClickFn
 	);
 </aui:script>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="lfr_asset_column_details.css" />

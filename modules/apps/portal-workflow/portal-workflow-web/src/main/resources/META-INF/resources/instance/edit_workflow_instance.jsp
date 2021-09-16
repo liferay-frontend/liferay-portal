@@ -214,3 +214,5 @@ renderResponse.setTitle(workflowInstanceEditDisplayContext.getHeaderTitle());
 		</aui:fieldset-group>
 	</clay:col>
 </clay:container-fluid>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="lfr_asset_column_details.css" />

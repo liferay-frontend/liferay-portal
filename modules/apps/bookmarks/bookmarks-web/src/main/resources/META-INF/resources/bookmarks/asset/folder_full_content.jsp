@@ -88,3 +88,5 @@ BookmarksFolder folder = (BookmarksFolder)request.getAttribute(BookmarksWebKeys.
 		</clay:col>
 	</clay:row>
 </c:if>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="lfr_asset_column_details.css" />

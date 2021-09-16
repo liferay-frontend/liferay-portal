@@ -231,3 +231,5 @@ renderResponse.setTitle(definition.getName(locale));
 		</aui:fieldset>
 	</aui:fieldset-group>
 </clay:container-fluid>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="lfr_asset_column_details.css" />
