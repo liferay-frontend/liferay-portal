@@ -33,6 +33,30 @@ definition {
 		}
 	}
 
+	@description = "Assert text edition enabled in the table"
+	@priority = "4"
+	test CanEditTextInTable {
+		task ("Create a table") {
+			BalloonEditor.clearParagraphWithBackspace(paragraph_number = "2");
+
+			BalloonEditor.addTable();
+		}
+
+		task ("Write in a cell") {
+			Click(locator1 = "CKEditorBalloonEditorSample#TABLE_CELL");
+
+			Type.sendKeys(
+				locator1 = "CKEditorBalloonEditorSample#TABLE_CELL",
+				value1 = "test");
+		}
+
+		task ("Assert text edition toolbar appearance when highlighting a text inside the cell") {
+			TripleClick(locator1 = "CKEditorBalloonEditorSample#TABLE_CELL");
+
+			AssertVisible(locator1 = "CKEditor#TOOLBAR_ANY_ITEM_BUTTON");
+		}
+	}
+
 	@description = "Assert text edit function (bold, italic, underline, numbered/bulleted list, block styles)"
 	@priority = "5"
 	@refactorneeded
@@ -251,8 +275,8 @@ definition {
 				value1 = "${textSample}");
 
 			AssertTextEquals(
-					locator1 = "CKEditorBalloonEditorSample#TABLE_CELL",
-					value1 = "${textSample}");
+				locator1 = "CKEditorBalloonEditorSample#TABLE_CELL",
+				value1 = "${textSample}");
 		}
 
 		task ("Remove the table") {
@@ -260,32 +284,8 @@ definition {
 
 			Click(locator1 = "CKEditor#REMOVE_TABLE_BUTTON");
 
-			AssertElementNotPresent(
-					locator1 = "CKEditorBalloonEditorSample#TABLE_CELL");
+			AssertElementNotPresent(locator1 = "CKEditorBalloonEditorSample#TABLE_CELL");
 		}
 	}
 
-	@description = "Assert text edition enabled in the table"
-	@priority = "4"
-	test CanEditTextInTable {
-		task ("Create a table") {
-			BalloonEditor.clearParagraphWithBackspace(paragraph_number = "2");
-
-			BalloonEditor.addTable();
-		}
-
-		task ("Write in a cell") {
-			Click(locator1 = "CKEditorBalloonEditorSample#TABLE_CELL");
-
-			Type.sendKeys(
-					locator1 = "CKEditorBalloonEditorSample#TABLE_CELL",
-					value1 = "test");
-		}
-
-		task ("Assert text edition toolbar appearance when highlighting a text inside the cell") {
-			TripleClick(locator1 = "CKEditorBalloonEditorSample#TABLE_CELL");
-
-			AssertVisible(locator1 = "CKEditor#TOOLBAR_ANY_ITEM_BUTTON");
-		}
-	}
 }
