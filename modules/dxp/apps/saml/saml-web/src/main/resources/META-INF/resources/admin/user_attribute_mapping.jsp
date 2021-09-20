@@ -188,3 +188,5 @@ String userIdentifierExpression = attributeMappingDisplayContext.getUserIdentifi
 		.querySelectorAll('.user-attribute-mapping-row')
 		.forEach((row) => <portlet:namespace />evaluateAttributeMappingRow(row));
 </script>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="lfr_form_row.css" />

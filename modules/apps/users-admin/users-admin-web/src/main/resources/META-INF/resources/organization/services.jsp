@@ -221,3 +221,5 @@ Format timeFormat = FastDateFormatFactoryUtil.getSimpleDateFormat("HH:mm", local
 		namespace: '<portlet:namespace />',
 	}).render();
 </aui:script>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="lfr_form_row.css" />

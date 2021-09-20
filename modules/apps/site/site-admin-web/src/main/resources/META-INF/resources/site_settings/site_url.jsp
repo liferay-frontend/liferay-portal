@@ -377,3 +377,5 @@ if (privateVirtualHostnames.isEmpty()) {
 		});
 	}
 </script>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="lfr_form_row.css" />

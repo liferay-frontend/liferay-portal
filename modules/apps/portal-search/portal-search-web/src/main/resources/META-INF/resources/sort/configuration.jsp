@@ -125,3 +125,5 @@ JSONArray fieldsJSONArray = sortPortletPreferences.getFieldsJSONArray();
 <aui:script use="liferay-search-sort-configuration">
 	new Liferay.Search.SortConfiguration(A.one(document.<portlet:namespace />fm));
 </aui:script>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="lfr_form_row.css" />

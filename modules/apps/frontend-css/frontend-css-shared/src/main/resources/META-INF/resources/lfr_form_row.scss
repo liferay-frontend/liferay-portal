@@ -1,0 +1,44 @@
+@import 'atlas-variables';
+
+.lfr-form-row {
+	border-bottom: 1px solid $secondary-l2;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	padding: 1px 5px 25px;
+	position: relative;
+
+	&:after {
+		clear: both;
+		content: '';
+		display: block;
+		height: 0;
+	}
+
+	&:hover {
+		border-color: $secondary-l2;
+		border-width: 1px 0;
+		padding-top: 0;
+	}
+
+	&.lfr-form-row-inline .form-group {
+		margin-right: 5px;
+	}
+
+	legend .field-label {
+		float: left;
+		margin-right: 10px;
+	}
+
+	.handle-sort-vertical {
+		background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAA1VBMVEUAAAD///9SVFVTVVZUVVZUVldVVlZVVldVV1dWVldWV1dWV1hXV1hXWFhXWlpYWVlZWVlZWltcXV1dXV5eX19fYGBhZGRjZWZlZmdmZ2dmaWpub29ucHFvcHBxcnKIi42OkpOVmZuXmJmYmpqZmpukqKmus7Sytbeytri1t7e6v8C7wMG9v7/K0NLX3N7d4ePe5Obf5OXh5efi5OXk6evl6ern6enn6uzs7+/s8PHt8PHu8PHw8vPw8/Px8/Px9PX09vb29/j3+Pn4+fr4+vr6+/v6+/zMjPJ8AAAAAnRSTlMAAHaTzTgAAAChSURBVHjaXc7FAoJQEEbhf0AMZBzsxu7uwkR9/0dS4a78lmd1QH9AAOaNimFUGnP8EDDM6XGxbSmMgtDVDFH6vzBNGG9FMjOA6pq8ngGW9hpUioqwItUDSGd5KSLZK0gzzcctEDJTJ1CemWMKl8+gmsmewtw8giZJ9u6BSHq1A6FjcVgZuP56r8i+4viy9APQdCzLaW1PC6iAzd519xt8fQCMbRmNXMRKbQAAAABJRU5ErkJggg==')
+			no-repeat 0 50%;
+		cursor: move;
+		padding-left: 20px;
+	}
+
+	fieldset {
+		border-width: 0;
+		margin: 0;
+		padding: 0;
+	}
+}

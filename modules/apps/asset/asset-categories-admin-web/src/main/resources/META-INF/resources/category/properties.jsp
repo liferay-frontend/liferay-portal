@@ -147,3 +147,5 @@ renderResponse.setTitle(category.getTitle(locale));
 		categoryPropertiesTrigger.setData('autoFieldsInstance', autoFields);
 	}
 </aui:script>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="lfr_form_row.css" />
