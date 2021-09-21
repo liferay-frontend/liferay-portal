@@ -50,7 +50,7 @@ const DEFAULT_BALLOON_EDITOR_CONFIG = {
 	toolbarLink: 'LinkRemove,LinkTarget,LinkInput,LinkConfirm,LinkBrowse',
 	toolbarTable: 'TableHeaders,TableRow,TableColumn,TableCell,TableDelete',
 	toolbarText:
-		'Styles,Bold,Italic,Underline,BulletedList,NumberedList,TextLink,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,LineHeight,BGColor,RemoveFormat',
+		'Styles,Bold,Italic,Underline,BulletedList,NumberedList,TextLink,Twitter,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,LineHeight,BGColor,RemoveFormat',
 	toolbarVideo: 'VideoAlignLeft,VideoAlignCenter,VideoAlignRight',
 };
 
