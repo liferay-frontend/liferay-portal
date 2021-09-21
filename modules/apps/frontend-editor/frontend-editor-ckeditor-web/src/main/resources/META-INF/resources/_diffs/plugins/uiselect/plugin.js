@@ -151,6 +151,17 @@
 
 				return instance;
 			},
+			setSelectValue(value) {
+				const newSelectedIndex = this.items.findIndex(
+					(item) => item.value === value
+				);
+
+				const selectId = this._id;
+
+				document.getElementById(
+					selectId
+				).selectedIndex = newSelectedIndex;
+			},
 		},
 	});
 

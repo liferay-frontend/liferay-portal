@@ -12,6 +12,8 @@
  * details.
  */
 
+let linkUtils = null;
+
 (function () {
 	const pluginName = 'toolbarbuttons';
 
@@ -21,6 +23,14 @@
 
 	CKEDITOR.plugins.add(pluginName, {
 		init(editor) {
+			const path = this.path;
+
+			const dependencies = [CKEDITOR.getUrl(path + 'LinkUtils.js')];
+
+			CKEDITOR.scriptLoader.load(dependencies, () => {
+				linkUtils = new Liferay.LinkUtilsCKEditor(editor);
+			});
+
 			editor.ui.addBalloonToolbarButton('ImageAlignLeft', {
 				command: 'justifyleft',
 				icon: 'align-image-left',
@@ -47,6 +57,76 @@
 				},
 				icon: 'link',
 				title: editor.lang.link.title,
+			});
+
+			editor.ui.addBalloonToolbarButton('Twitter', {
+
+				//
+
+				_MAX_TWEET_LENGTH: 280,
+				_getHref(url, via) {
+					const selectedText = editor
+						.getSelection()
+						.getSelectedText()
+						.substring(0, this._MAX_TWEET_LENGTH);
+
+					// TODO - These parameters need to be revisited to see when to use `url` and `via`.
+					// There is a doc about it in https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/guides/parameter-reference1
+					// Where:
+					// url -> URL included with the Tweet.
+					// via -> Attribute the source of a Tweet to a Twitter username.(a.k.a the twitter handle)
+
+					// const url = this.props.url;
+					// const via = this.props.via;
+
+					let twitterHref =
+						'https://twitter.com/intent/tweet?text=' + selectedText;
+
+					if (url) {
+						twitterHref += '&url=' + url;
+					}
+
+					if (via) {
+						twitterHref += '&via=' + via;
+					}
+
+					return twitterHref;
+				},
+				_isActive() {
+					const link = linkUtils.getFromSelection();
+
+					return (
+						link &&
+						link
+							.getAttribute('href')
+							.indexOf('twitter.com/intent/tweet') !== -1
+					);
+				},
+				click() {
+					if (this._isActive()) {
+						linkUtils.remove(linkUtils.getFromSelection());
+					}
+					else {
+						const INITIAL_TARGET = '_blank';
+
+						const linkInputValue = linkUtils.create(
+							this._getHref(),
+							{
+								target: INITIAL_TARGET,
+							}
+						);
+
+						editor.fire('showToolbar', {
+							config: {
+								linkInputValue,
+								target: INITIAL_TARGET,
+							},
+							toolbarCommand: 'linkToolbar',
+						});
+					}
+				},
+				icon: 'twitter',
+				title: Liferay.Language.get('share-on-twitter'),
 			});
 
 			editor.ui.addRichCombo('TableHeaders', {

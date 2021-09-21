@@ -297,7 +297,7 @@
 			});
 
 			editor.addCommand('linkToolbar', {
-				exec(editor) {
+				exec(editor, config) {
 					instance._createToolbar();
 
 					if (!instance._toolbar) {
@@ -325,7 +325,18 @@
 						link = startElement;
 					}
 
-					const linkInput = instance._toolbar.getItem('LinkInput');
+					const linkInput =
+						instance._toolbar.getItem('LinkInput') ??
+						config.linkInputValue;
+
+					const linkTargetValue =
+						startElement.getAttribute('target') ??
+						config.target ??
+						'';
+
+					instance._toolbar
+						.getItem('LinkTarget')
+						.setSelectValue(linkTargetValue);
 
 					if (linkInput) {
 						if (link) {

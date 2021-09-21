@@ -63,9 +63,11 @@
 			editor.on('showToolbar', (event) => {
 				const toolbarCommand = event.data.toolbarCommand;
 
+				const config = event.data.config;
+
 				editor.balloonToolbars.hide();
 
-				editor.execCommand(toolbarCommand);
+				editor.execCommand(toolbarCommand, config);
 			});
 		},
 
