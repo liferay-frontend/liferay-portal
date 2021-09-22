@@ -180,7 +180,9 @@ const IconSearch = ({
 												}}
 											>
 												<ClayIcon
-													spritemap={`/o/icons/${iconPackName}.svg`}
+													spritemap={Liferay.Icons.getSpritemapPath(
+														iconPackName
+													)}
 													symbol={icon.name}
 												/>
 

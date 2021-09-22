@@ -14,6 +14,7 @@
 
 package com.liferay.frontend.icons.admin.web.internal.servlet;
 
+import com.liferay.frontend.icons.admin.web.constants.IconConstants;
 import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -77,7 +78,7 @@ public class SVGServlet extends HttpServlet {
 
 			long groupId = company.getGroupId();
 
-			if (packName.equals("global")) {
+			if (packName.equals(IconConstants.GLOBAL_ICON_PACK_NAME)) {
 				printWriter.write(
 					_iconResourceHelper.getGlobalSpriteContent(groupId));
 			}
