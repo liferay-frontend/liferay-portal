@@ -117,6 +117,8 @@ renderResponse.setTitle(editRemoteAppEntryDisplayContext.getTitle());
 				%>"
 			/>
 
+			<aui:input label="alias" name="portletAlias" />
+
 			<aui:input label="properties" name="properties" type="textarea" />
 		</liferay-frontend:fieldset-group>
 	</liferay-frontend:edit-form-body>

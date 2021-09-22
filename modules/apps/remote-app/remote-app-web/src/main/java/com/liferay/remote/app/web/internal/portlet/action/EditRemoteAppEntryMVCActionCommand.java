@@ -91,8 +91,11 @@ public class EditRemoteAppEntryMVCActionCommand extends BaseMVCActionCommand {
 	private void _add(ActionRequest actionRequest) throws PortalException {
 		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
 			actionRequest, "name");
+		String portletAlias = ParamUtil.getString(
+			actionRequest, "portletAlias");
 		String portletCategoryName = ParamUtil.getString(
 			actionRequest, "portletCategoryName");
+		String properties = ParamUtil.getString(actionRequest, "properties");
 		String type = ParamUtil.getString(actionRequest, "type");
 
 		if (type.equals(RemoteAppConstants.TYPE_CUSTOM_ELEMENT)) {
@@ -101,14 +104,12 @@ public class EditRemoteAppEntryMVCActionCommand extends BaseMVCActionCommand {
 				ParamUtil.getString(
 					actionRequest, "customElementHTMLElementName"),
 				ParamUtil.getString(actionRequest, "customElementURLs"),
-				nameMap, portletCategoryName,
-				ParamUtil.getString(actionRequest, "properties"));
+				nameMap, portletAlias, portletCategoryName, properties);
 		}
 		else if (type.equals(RemoteAppConstants.TYPE_IFRAME)) {
 			_remoteAppEntryService.addIFrameRemoteAppEntry(
 				ParamUtil.getString(actionRequest, "iFrameURL"), nameMap,
-				portletCategoryName,
-				ParamUtil.getString(actionRequest, "properties"));
+				portletAlias, portletCategoryName, properties);
 		}
 	}
 
@@ -130,8 +131,11 @@ public class EditRemoteAppEntryMVCActionCommand extends BaseMVCActionCommand {
 
 		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
 			actionRequest, "name");
+		String portletAlias = ParamUtil.getString(
+			actionRequest, "portletAlias");
 		String portletCategoryName = ParamUtil.getString(
 			actionRequest, "portletCategoryName");
+		String properties = ParamUtil.getString(actionRequest, "properties");
 
 		if (Objects.equals(
 				remoteAppEntry.getType(),
@@ -148,8 +152,7 @@ public class EditRemoteAppEntryMVCActionCommand extends BaseMVCActionCommand {
 				ParamUtil.getString(
 					actionRequest, "customElementHTMLElementName"),
 				StringUtil.merge(customElementURLs, StringPool.NEW_LINE),
-				nameMap, portletCategoryName,
-				ParamUtil.getString(actionRequest, "properties"));
+				nameMap, portletAlias, portletCategoryName, properties);
 		}
 		else if (Objects.equals(
 					remoteAppEntry.getType(), RemoteAppConstants.TYPE_IFRAME)) {
@@ -157,8 +160,7 @@ public class EditRemoteAppEntryMVCActionCommand extends BaseMVCActionCommand {
 			_remoteAppEntryService.updateIFrameRemoteAppEntry(
 				remoteAppEntry.getRemoteAppEntryId(),
 				ParamUtil.getString(actionRequest, "iFrameURL"), nameMap,
-				portletCategoryName,
-				ParamUtil.getString(actionRequest, "properties"));
+				portletAlias, portletCategoryName, properties);
 		}
 	}
 
