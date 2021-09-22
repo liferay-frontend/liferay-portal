@@ -91,8 +91,9 @@ public class RemoteAppEntryModelImpl
 		{"customElementCSSURLs", Types.CLOB},
 		{"customElementHTMLElementName", Types.VARCHAR},
 		{"customElementURLs", Types.CLOB}, {"iFrameURL", Types.VARCHAR},
-		{"name", Types.VARCHAR}, {"portletCategoryName", Types.VARCHAR},
-		{"properties", Types.CLOB}, {"type_", Types.VARCHAR}
+		{"name", Types.VARCHAR}, {"portletAlias", Types.VARCHAR},
+		{"portletCategoryName", Types.VARCHAR}, {"properties", Types.CLOB},
+		{"type_", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -112,13 +113,14 @@ public class RemoteAppEntryModelImpl
 		TABLE_COLUMNS_MAP.put("customElementURLs", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("iFrameURL", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("portletAlias", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("portletCategoryName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("properties", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("type_", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table RemoteAppEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,remoteAppEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,customElementCSSURLs TEXT null,customElementHTMLElementName VARCHAR(255) null,customElementURLs TEXT null,iFrameURL STRING null,name STRING null,portletCategoryName VARCHAR(75) null,properties TEXT null,type_ VARCHAR(75) null)";
+		"create table RemoteAppEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,remoteAppEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,customElementCSSURLs TEXT null,customElementHTMLElementName VARCHAR(255) null,customElementURLs TEXT null,iFrameURL STRING null,name STRING null,portletAlias VARCHAR(75) null,portletCategoryName VARCHAR(75) null,properties TEXT null,type_ VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table RemoteAppEntry";
 
@@ -196,6 +198,7 @@ public class RemoteAppEntryModelImpl
 		model.setCustomElementURLs(soapModel.getCustomElementURLs());
 		model.setIFrameURL(soapModel.getIFrameURL());
 		model.setName(soapModel.getName());
+		model.setPortletAlias(soapModel.getPortletAlias());
 		model.setPortletCategoryName(soapModel.getPortletCategoryName());
 		model.setProperties(soapModel.getProperties());
 		model.setType(soapModel.getType());
@@ -416,6 +419,12 @@ public class RemoteAppEntryModelImpl
 		attributeSetterBiConsumers.put(
 			"name",
 			(BiConsumer<RemoteAppEntry, String>)RemoteAppEntry::setName);
+		attributeGetterFunctions.put(
+			"portletAlias", RemoteAppEntry::getPortletAlias);
+		attributeSetterBiConsumers.put(
+			"portletAlias",
+			(BiConsumer<RemoteAppEntry, String>)
+				RemoteAppEntry::setPortletAlias);
 		attributeGetterFunctions.put(
 			"portletCategoryName", RemoteAppEntry::getPortletCategoryName);
 		attributeSetterBiConsumers.put(
@@ -800,6 +809,26 @@ public class RemoteAppEntryModelImpl
 
 	@JSON
 	@Override
+	public String getPortletAlias() {
+		if (_portletAlias == null) {
+			return "";
+		}
+		else {
+			return _portletAlias;
+		}
+	}
+
+	@Override
+	public void setPortletAlias(String portletAlias) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_portletAlias = portletAlias;
+	}
+
+	@JSON
+	@Override
 	public String getPortletCategoryName() {
 		if (_portletCategoryName == null) {
 			return "";
@@ -1024,6 +1053,7 @@ public class RemoteAppEntryModelImpl
 		remoteAppEntryImpl.setCustomElementURLs(getCustomElementURLs());
 		remoteAppEntryImpl.setIFrameURL(getIFrameURL());
 		remoteAppEntryImpl.setName(getName());
+		remoteAppEntryImpl.setPortletAlias(getPortletAlias());
 		remoteAppEntryImpl.setPortletCategoryName(getPortletCategoryName());
 		remoteAppEntryImpl.setProperties(getProperties());
 		remoteAppEntryImpl.setType(getType());
@@ -1063,6 +1093,8 @@ public class RemoteAppEntryModelImpl
 		remoteAppEntryImpl.setIFrameURL(
 			this.<String>getColumnOriginalValue("iFrameURL"));
 		remoteAppEntryImpl.setName(this.<String>getColumnOriginalValue("name"));
+		remoteAppEntryImpl.setPortletAlias(
+			this.<String>getColumnOriginalValue("portletAlias"));
 		remoteAppEntryImpl.setPortletCategoryName(
 			this.<String>getColumnOriginalValue("portletCategoryName"));
 		remoteAppEntryImpl.setProperties(
@@ -1237,6 +1269,14 @@ public class RemoteAppEntryModelImpl
 			remoteAppEntryCacheModel.name = null;
 		}
 
+		remoteAppEntryCacheModel.portletAlias = getPortletAlias();
+
+		String portletAlias = remoteAppEntryCacheModel.portletAlias;
+
+		if ((portletAlias != null) && (portletAlias.length() == 0)) {
+			remoteAppEntryCacheModel.portletAlias = null;
+		}
+
 		remoteAppEntryCacheModel.portletCategoryName = getPortletCategoryName();
 
 		String portletCategoryName =
@@ -1369,6 +1409,7 @@ public class RemoteAppEntryModelImpl
 	private String _iFrameURL;
 	private String _name;
 	private String _nameCurrentLanguageId;
+	private String _portletAlias;
 	private String _portletCategoryName;
 	private String _properties;
 	private String _type;
@@ -1417,6 +1458,7 @@ public class RemoteAppEntryModelImpl
 		_columnOriginalValues.put("customElementURLs", _customElementURLs);
 		_columnOriginalValues.put("iFrameURL", _iFrameURL);
 		_columnOriginalValues.put("name", _name);
+		_columnOriginalValues.put("portletAlias", _portletAlias);
 		_columnOriginalValues.put("portletCategoryName", _portletCategoryName);
 		_columnOriginalValues.put("properties", _properties);
 		_columnOriginalValues.put("type_", _type);
@@ -1470,11 +1512,13 @@ public class RemoteAppEntryModelImpl
 
 		columnBitmasks.put("name", 4096L);
 
-		columnBitmasks.put("portletCategoryName", 8192L);
+		columnBitmasks.put("portletAlias", 8192L);
 
-		columnBitmasks.put("properties", 16384L);
+		columnBitmasks.put("portletCategoryName", 16384L);
 
-		columnBitmasks.put("type_", 32768L);
+		columnBitmasks.put("properties", 32768L);
+
+		columnBitmasks.put("type_", 65536L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

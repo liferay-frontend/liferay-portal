@@ -57,6 +57,7 @@ public class RemoteAppEntryWrapper
 		attributes.put("customElementURLs", getCustomElementURLs());
 		attributes.put("iFrameURL", getIFrameURL());
 		attributes.put("name", getName());
+		attributes.put("portletAlias", getPortletAlias());
 		attributes.put("portletCategoryName", getPortletCategoryName());
 		attributes.put("properties", getProperties());
 		attributes.put("type", getType());
@@ -144,6 +145,12 @@ public class RemoteAppEntryWrapper
 
 		if (name != null) {
 			setName(name);
+		}
+
+		String portletAlias = (String)attributes.get("portletAlias");
+
+		if (portletAlias != null) {
+			setPortletAlias(portletAlias);
 		}
 
 		String portletCategoryName = (String)attributes.get(
@@ -365,6 +372,16 @@ public class RemoteAppEntryWrapper
 	@Override
 	public long getParentContainerModelId() {
 		return model.getParentContainerModelId();
+	}
+
+	/**
+	 * Returns the portlet alias of this remote app entry.
+	 *
+	 * @return the portlet alias of this remote app entry
+	 */
+	@Override
+	public String getPortletAlias() {
+		return model.getPortletAlias();
 	}
 
 	/**
@@ -640,6 +657,16 @@ public class RemoteAppEntryWrapper
 	@Override
 	public void setParentContainerModelId(long parentContainerModelId) {
 		model.setParentContainerModelId(parentContainerModelId);
+	}
+
+	/**
+	 * Sets the portlet alias of this remote app entry.
+	 *
+	 * @param portletAlias the portlet alias of this remote app entry
+	 */
+	@Override
+	public void setPortletAlias(String portletAlias) {
+		model.setPortletAlias(portletAlias);
 	}
 
 	/**

@@ -370,6 +370,21 @@ public interface RemoteAppEntryModel
 	public void setNameMap(Map<Locale, String> nameMap, Locale defaultLocale);
 
 	/**
+	 * Returns the portlet alias of this remote app entry.
+	 *
+	 * @return the portlet alias of this remote app entry
+	 */
+	@AutoEscape
+	public String getPortletAlias();
+
+	/**
+	 * Sets the portlet alias of this remote app entry.
+	 *
+	 * @param portletAlias the portlet alias of this remote app entry
+	 */
+	public void setPortletAlias(String portletAlias);
+
+	/**
 	 * Returns the portlet category name of this remote app entry.
 	 *
 	 * @return the portlet category name of this remote app entry

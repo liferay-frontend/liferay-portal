@@ -148,6 +148,8 @@ public class RemoteAppEntryPersistenceTest {
 
 		newRemoteAppEntry.setName(RandomTestUtil.randomString());
 
+		newRemoteAppEntry.setPortletAlias(RandomTestUtil.randomString());
+
 		newRemoteAppEntry.setPortletCategoryName(RandomTestUtil.randomString());
 
 		newRemoteAppEntry.setProperties(RandomTestUtil.randomString());
@@ -195,6 +197,9 @@ public class RemoteAppEntryPersistenceTest {
 			newRemoteAppEntry.getIFrameURL());
 		Assert.assertEquals(
 			existingRemoteAppEntry.getName(), newRemoteAppEntry.getName());
+		Assert.assertEquals(
+			existingRemoteAppEntry.getPortletAlias(),
+			newRemoteAppEntry.getPortletAlias());
 		Assert.assertEquals(
 			existingRemoteAppEntry.getPortletCategoryName(),
 			newRemoteAppEntry.getPortletCategoryName());
@@ -252,7 +257,8 @@ public class RemoteAppEntryPersistenceTest {
 			"remoteAppEntryId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true,
 			"customElementHTMLElementName", true, "iFrameURL", true, "name",
-			true, "portletCategoryName", true, "type", true);
+			true, "portletAlias", true, "portletCategoryName", true, "type",
+			true);
 	}
 
 	@Test
@@ -498,6 +504,8 @@ public class RemoteAppEntryPersistenceTest {
 		remoteAppEntry.setIFrameURL(RandomTestUtil.randomString());
 
 		remoteAppEntry.setName(RandomTestUtil.randomString());
+
+		remoteAppEntry.setPortletAlias(RandomTestUtil.randomString());
 
 		remoteAppEntry.setPortletCategoryName(RandomTestUtil.randomString());
 
