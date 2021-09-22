@@ -19,6 +19,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.remote.app.constants.RemoteAppConstants;
 import com.liferay.remote.app.deployer.RemoteAppEntryDeployer;
@@ -68,8 +69,22 @@ public class RemoteAppEntryDeployerImpl implements RemoteAppEntryDeployer {
 	}
 
 	private String _getPortletId(RemoteAppEntry remoteAppEntry) {
-		return "com_liferay_remote_app_web_internal_portlet_" +
-			"RemoteAppEntryPortlet_" + remoteAppEntry.getRemoteAppEntryId();
+		String portletId = remoteAppEntry.getPortletAlias();
+
+		if (Validator.isNull(portletId)) {
+			portletId = remoteAppEntry.getName(LocaleUtil.US);
+
+			if (Validator.isNull(portletId)) {
+				portletId = String.valueOf(
+					remoteAppEntry.getRemoteAppEntryId());
+			}
+
+			portletId =
+				"com_liferay_remote_app_web_internal_portlet_" +
+					"RemoteAppEntryPortlet_" + portletId;
+		}
+
+		return _portal.getJsSafePortletId(portletId);
 	}
 
 	private ServiceRegistration<ConfigurationAction>
@@ -143,5 +158,8 @@ public class RemoteAppEntryDeployerImpl implements RemoteAppEntryDeployer {
 
 	@Reference
 	private NPMResolver _npmResolver;
+
+	@Reference
+	private Portal _portal;
 
 }
