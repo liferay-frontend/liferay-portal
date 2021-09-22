@@ -19,3 +19,15 @@
 	position: absolute;
 	right: 5px;
 }
+
+.dropdown-menu {
+	.dropdown.open > &,
+	.overlay-content .open > & {
+		display: block;
+	}
+
+	html#{$cadmin-selector} .overlay-content .open > &.cadmin {
+		display: block;
+		position: static;
+	}
+}
