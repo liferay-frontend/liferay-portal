@@ -49,6 +49,12 @@ public class RemoteAppEntryUpgradeProcess extends UpgradeProcess {
 			RemoteAppEntryTable.class,
 			new AlterColumnName("url", "iFrameURL STRING null"));
 
+		if (!hasColumn("RemoteAppEntry", "portletAlias")) {
+			alter(
+				RemoteAppEntryTable.class,
+				new AlterTableAddColumn("portletAlias", "VARCHAR(255)"));
+		}
+
 		if (!hasColumn("RemoteAppEntry", "portletCategoryName")) {
 			alter(
 				RemoteAppEntryTable.class,
