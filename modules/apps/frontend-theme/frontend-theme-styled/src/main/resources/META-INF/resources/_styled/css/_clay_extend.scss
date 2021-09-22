@@ -122,3 +122,10 @@
 	position: absolute;
 	right: 5px;
 }
+
+.dropdown-menu {
+	.dropdown.open > &,
+	.overlay-content .open > & {
+		display: block;
+	}
+}
