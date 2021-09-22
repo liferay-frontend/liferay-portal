@@ -60,6 +60,10 @@ public class IconResourceHelper {
 			String contentType, InputStream inputStream, long size)
 		throws IOException, PortalException {
 
+		if (!_validateAddFileEntry(repositoryId, folderName, iconName)) {
+			return;
+		}
+
 		DLFolder companyIconsFolder = _getFolder(
 			repositoryId, _ROOT_FOLDER_NAME, 0L);
 
@@ -78,10 +82,6 @@ public class IconResourceHelper {
 		}
 
 		long folderId = folder.getFolderId();
-
-		if (!_validateAddFileEntry(repositoryId, folderId, iconName)) {
-			return;
-		}
 
 		_dlAppService.addFileEntry(
 			null, repositoryId, folderId, iconName, contentType, iconName, "",
@@ -376,22 +376,31 @@ public class IconResourceHelper {
 	}
 
 	private Boolean _validateAddFileEntry(
-			long repositoryId, long folderId, String iconName)
-		throws PortalException {
+			long groupId, String folderName, String iconName) {
 
-		try {
-			DLFileEntry fileEntry = _dlFileEntryLocalService.getFileEntry(
-				repositoryId, folderId, iconName);
+		HashMap<String, IconResourcePack> groupIconResourceMap =
+			_iconResourcesMap.get(groupId);
 
-			return fileEntry != null;
+		if (groupIconResourceMap == null) {
+			return true;
 		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException, portalException);
+
+		IconResourcePack iconResourcePack = groupIconResourceMap.get(
+			folderName);
+
+		if (iconResourcePack == null) {
+			return true;
+		}
+
+		for (IconResource iconResource : iconResourcePack.getIconResources()) {
+			String iconResourceId = iconResource.getId();
+
+			if (iconResourceId.equals(iconName)) {
+				return false;
 			}
-
-			return null;
 		}
+
+		return true;
 	}
 
 	private static final long _GLOBAL_ID = 0L;
