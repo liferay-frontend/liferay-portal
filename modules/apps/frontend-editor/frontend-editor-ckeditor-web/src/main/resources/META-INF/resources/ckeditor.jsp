@@ -152,8 +152,7 @@ name = HtmlUtil.escapeJS(name);
 			data =
 				'<%= (contents != null) ? HtmlUtil.escapeJS(contents) : StringPool.BLANK %>';
 		}
-
-		return data;
+		return Liferay.Util.transformInlineCSS(data);
 	};
 
 	var onLocaleChangedHandler = function (event) {
@@ -301,6 +300,8 @@ name = HtmlUtil.escapeJS(name);
 
 		setHTML: function (value) {
 			var ckEditorInstance = CKEDITOR.instances['<%= name %>'];
+
+			value = Liferay.Util.transformInlineCSS(value);
 
 			var win = window['<%= name %>'];
 

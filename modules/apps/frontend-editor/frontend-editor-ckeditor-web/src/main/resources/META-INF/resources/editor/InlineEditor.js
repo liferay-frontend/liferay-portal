@@ -18,7 +18,12 @@ import React from 'react';
 const BASEPATH = '/o/frontend-editor-ckeditor-web/ckeditor/';
 
 const InlineEditor = (props) => {
-	return <CKEditor {...props} type="inline" />;
+	return (
+		<CKEditor
+			{...Object.assign(props, {data: Liferay.Util.transformInlineCSS(props.data)})}
+			type="inline"
+		/>
+	);
 };
 
 CKEditor.editorUrl = `${BASEPATH}ckeditor.js`;

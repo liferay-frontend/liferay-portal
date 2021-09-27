@@ -75,6 +75,7 @@ import createResourceURL from './util/portlet_url/create_resource_url.es';
 import {getSessionValue, setSessionValue} from './util/session.es';
 import toCharCode from './util/to_char_code.es';
 import toggleDisabled from './util/toggle_disabled';
+import transformInlineCSS from './util/transform_inline_css';
 
 Liferay = window.Liferay || {};
 
@@ -271,5 +272,6 @@ Liferay.Util.Session = {
 
 Liferay.Util.unescape = unescape;
 Liferay.Util.unescapeHTML = unescapeHTML;
+Liferay.Util.transformInlineCSS = transformInlineCSS;
 
 export {portlet};

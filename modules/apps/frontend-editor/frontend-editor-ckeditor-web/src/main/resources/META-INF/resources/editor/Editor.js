@@ -29,7 +29,12 @@ const Editor = React.forwardRef((props, ref) => {
 		});
 	}, []);
 
-	return <CKEditor ref={ref} {...props} />;
+	return (
+		<CKEditor
+			ref={ref}
+			{...Object.assign(props, {data: Liferay.Util.transformInlineCSS(props.data)})}
+		/>
+	);
 });
 
 CKEditor.editorUrl = `${BASEPATH}ckeditor.js`;
