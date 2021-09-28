@@ -73,9 +73,14 @@ AssetRenderer<JournalArticle> assetRenderer = assetRendererFactory.getAssetRende
 %>
 
 <aui:script use="aui-parse-content">
+	// eslint-disable-next-line @liferay/aui/no-one
 	var templatePreview = A.one('.template-preview-content');
-	var form = A.one('#<%= refererPortletName %>fm');
-	var templateKeyInput = A.one('#<%= refererPortletName + "ddmTemplateKey" %>');
+	var form = document.getElementById(
+		'<%= HtmlUtil.escape(refererPortletName) %>fm'
+	);
+	var templateKeyInput = document.getElementById(
+		'<%= refererPortletName + "ddmTemplateKey" %>'
+	);
 
 	<%
 	String className = DDMTemplate.class.getName() + "_" + JournalArticle.class.getName();
@@ -93,19 +98,19 @@ AssetRenderer<JournalArticle> assetRenderer = assetRendererFactory.getAssetRende
 	selectDDMTemplateURL.setWindowState(LiferayWindowState.POP_UP);
 	%>
 
-	A.one('#<%= refererPortletName + "selectDDMTemplateButton" %>').on(
-		'click',
-		function (event) {
+	var selectDDMTemplateButton = document.getElementById(
+		'<%= refererPortletName + "selectDDMTemplateButton" %>'
+	);
+
+	if (selectDDMTemplateButton) {
+		selectDDMTemplateButton.addEventListener('click', function (event) {
 			event.preventDefault();
 
 			var instance = this;
 
 			Liferay.Util.openSelectionModal({
 				onSelect: function (selectedItem) {
-					templateKeyInput.setAttribute(
-						'value',
-						selectedItem.ddmtemplatekey
-					);
+					templateKeyInput.value = selectedItem.ddmtemplatekey;
 
 					templatePreview.html('<div class="loading-animation"></div>');
 
@@ -151,26 +156,32 @@ AssetRenderer<JournalArticle> assetRenderer = assetRendererFactory.getAssetRende
 				title: '<liferay-ui:message key="templates" />',
 				url: '<%= selectDDMTemplateURL %>',
 			});
-		}
+		});
+	}
+
+	var ddmTemplateTypeDefaultRadioItem = document.getElementById(
+		'<%= refererPortletName + "ddmTemplateTypeDefault" %>'
 	);
 
-	A.one('#<%= refererPortletName + "ddmTemplateTypeDefault" %>').on(
-		'click',
-		(event) => {
-			templateKeyInput.setAttribute('value', '');
-		}
+	if (ddmTemplateTypeDefaultRadioItem) {
+		ddmTemplateTypeDefaultRadioItem.addEventListener('click', (event) => {
+			templateKeyInput.value = '';
+		});
+	}
+
+	var clearddmTemplateButton = document.getElementById(
+		'<%= refererPortletName + "clearddmTemplateButton" %>'
 	);
 
-	A.one('#<%= refererPortletName + "clearddmTemplateButton" %>').on(
-		'click',
-		(event) => {
-			templateKeyInput.setAttribute('value', '');
+	if (clearddmTemplateButton) {
+		clearddmTemplateButton.addEventListener('click', (event) => {
+			templateKeyInput.value = '';
 
 			templatePreview.html(
 				'<p class="text-default"><liferay-ui:message key="no-template" /></p>'
 			);
-		}
-	);
+		});
+	}
 
 	Liferay.Util.toggleRadio(
 		'<%= refererPortletName + "ddmTemplateTypeCustom" %>',
