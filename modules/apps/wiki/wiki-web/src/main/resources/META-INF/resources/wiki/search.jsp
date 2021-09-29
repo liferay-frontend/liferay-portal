@@ -176,3 +176,5 @@ WikiURLHelper wikiURLHelper = new WikiURLHelper(wikiRequestHelper, renderRespons
 		<strong><aui:a cssClass="new-page" href="<%= addPageURL.toString() %>" label="create-a-new-page-on-this-topic" /></strong>
 	</c:if>
 </aui:form>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="form_search.css" />

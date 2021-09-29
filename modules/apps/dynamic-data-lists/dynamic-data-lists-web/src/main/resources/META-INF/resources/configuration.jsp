@@ -307,3 +307,5 @@ private OrderByComparator<DDLRecordSet> getDDLRecordSetOrderByComparator(String 
 	return orderByComparator;
 }
 %>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="form_search.css" />

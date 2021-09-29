@@ -22,3 +22,5 @@
 		title='<%= LanguageUtil.get(request, "search-documents") %>'
 	/>
 </div>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="form_search.css" />

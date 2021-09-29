@@ -30,3 +30,5 @@
 		/>
 	</aui:form>
 </div>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="form_search.css" />
