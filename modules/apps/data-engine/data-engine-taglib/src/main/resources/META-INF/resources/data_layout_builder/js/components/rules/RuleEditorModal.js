@@ -26,6 +26,8 @@ import React, {useMemo, useRef, useState} from 'react';
 
 import {Editor} from './editor/Editor.es';
 
+import 'liferay-frontend-css-shared/form_control_inline.scss';
+
 function getTransformedPages(pages) {
 	return pages.map(({title}, index) => ({
 		label: `${index + 1} ${title || Liferay.Language.get('page-title')}`,

@@ -271,3 +271,5 @@ JournalEditArticleDisplayContext journalEditArticleDisplayContext = new JournalE
 />
 
 <%@ include file="/friendly_url_changed_message.jspf" %>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="form_control_inline.css" />

@@ -137,3 +137,5 @@ else {
 	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "edit-document-type"), currentURL);
 }
 %>
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="form_control_inline.css" />

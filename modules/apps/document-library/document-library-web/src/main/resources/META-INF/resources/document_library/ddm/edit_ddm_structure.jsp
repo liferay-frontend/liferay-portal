@@ -126,3 +126,5 @@ renderResponse.setTitle(title);
 	module="document_library/js/saveDDMStructure.es"
 	servletContext="<%= application %>"
 />
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="form_control_inline.css" />

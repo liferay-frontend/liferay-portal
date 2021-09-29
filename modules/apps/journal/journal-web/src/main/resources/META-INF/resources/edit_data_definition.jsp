@@ -137,3 +137,5 @@ editDDMStructureURL.setParameter("ddmStructureId", String.valueOf(ddmStructureId
 	module="js/LocaleChangedHandler.es"
 	servletContext="<%= application %>"
 />
+
+<liferay-frontend:stylesheet bundle="com.liferay.frontend.css.shared" css="form_control_inline.css" />

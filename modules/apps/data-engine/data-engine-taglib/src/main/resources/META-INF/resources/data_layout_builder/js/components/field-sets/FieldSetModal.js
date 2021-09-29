@@ -45,6 +45,7 @@ import getFieldsWithoutOptions from './actions/getFieldsWithoutOptions.es';
 import usePropagateFieldSet from './actions/usePropagateFieldSet.es';
 
 import './FieldSetModal.scss';
+import 'liferay-frontend-css-shared/form_control_inline.scss';
 
 const ModalContent = ({
 	fieldSet: fieldSetProp,

@@ -18,6 +18,8 @@ import React from 'react';
 
 import LocalizedDropdown from './LocalizedDropdown.es';
 
+import 'liferay-frontend-css-shared/form_control_inline.scss';
+
 export default class LocalizedInput extends React.Component {
 	static propTypes = {
 		availableLanguages: PropTypes.object.isRequired,

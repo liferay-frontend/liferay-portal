@@ -262,6 +262,9 @@ module.exports = {
 					'item-selector-taglib': {
 						'/': '*',
 					},
+					'liferay-frontend-css-shared': {
+						'/': '*',
+					},
 					'map-common': {
 						'/': '*',
 					},
