@@ -15,11 +15,7 @@
 import ClayIcon from '@clayui/icon';
 import React from 'react';
 
-export const spritemap =
-	window.location.protocol +
-	'//' +
-	window.location.host +
-	'/o/classic-theme/images/clay/icons.svg';
+export const spritemap = Liferay.Icons.getSpritemapPath('clay');
 
 const Icon = (props) => {
 	const {symbol, ...otherProps} = props;

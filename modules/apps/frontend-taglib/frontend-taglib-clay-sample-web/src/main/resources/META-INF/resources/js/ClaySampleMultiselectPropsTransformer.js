@@ -17,7 +17,7 @@ import ClayIcon from '@clayui/icon';
 import ClaySticker from '@clayui/sticker';
 import React from 'react';
 
-const spritemap = `${Liferay.ThemeDisplay.getPathThemeImages()}/clay/icons.svg`;
+const spritemap = Liferay.Icons.getSpritemapPath('clay');
 
 const MenuCustom = ({
 	inputValue,

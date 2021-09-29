@@ -65,6 +65,7 @@ import com.liferay.dynamic.data.mapping.util.DDMFormLayoutFactory;
 import com.liferay.dynamic.data.mapping.util.DDMFormValuesMerger;
 import com.liferay.dynamic.data.mapping.util.comparator.DDMFormInstanceModifiedDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.DDMFormInstanceNameComparator;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
@@ -861,7 +862,7 @@ public class DDMFormAdminDisplayContext {
 	public String getLexiconIconsPath() {
 		ThemeDisplay themeDisplay = ddmFormAdminRequestHelper.getThemeDisplay();
 
-		return themeDisplay.getPathThemeImages() + "/clay/icons.svg#";
+		return IconsUtil.getSpritemapPath("clay") + "#";
 	}
 
 	public String getMainRequire() {

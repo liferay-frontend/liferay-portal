@@ -78,7 +78,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-site-template"));
 					mainFieldLabel: '<liferay-ui:message key="name" />',
 					namespace: '<portlet:namespace />',
 					spritemap:
-						'<%= themeDisplay.getPathThemeImages() %>/clay/icons.svg',
+						'<%= IconsUtil.getSpritemapPath("clay") %>',
 				});
 			}
 		);

@@ -37,8 +37,7 @@ export default function SelectLayoutPageTemplateEntryMasterLayoutVerticalCardPro
 				mainFieldName,
 				mainFieldPlaceholder,
 				namespace,
-				spritemap:
-					'<%= themeDisplay.getPathThemeImages() %>/clay/icons.svg',
+				spritemap: Liferay.Icons.getSpritemapPath('clay'),
 			});
 		},
 		onKeyDown: (event) => {

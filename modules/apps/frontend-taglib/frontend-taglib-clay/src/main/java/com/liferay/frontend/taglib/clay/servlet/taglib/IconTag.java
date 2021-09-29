@@ -14,14 +14,12 @@
 
 package com.liferay.frontend.taglib.clay.servlet.taglib;
 
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.frontend.taglib.clay.internal.servlet.taglib.BaseContainerTag;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
@@ -39,15 +37,7 @@ public class IconTag extends BaseContainerTag {
 		setDynamicAttribute(StringPool.BLANK, "role", "presentation");
 		setDynamicAttribute(StringPool.BLANK, "viewBox", "0 0 512 512");
 
-		HttpServletRequest httpServletRequest = getRequest();
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		String pathThemeImages = themeDisplay.getPathThemeImages();
-
-		_spritemap = pathThemeImages.concat("/clay/icons.svg");
+		_spritemap = IconsUtil.getSpritemapPath("clay");
 
 		return super.doStartTag();
 	}

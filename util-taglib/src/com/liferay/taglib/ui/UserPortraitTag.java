@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
+import com.liferay.frontend.icons.util.IconsUtil;
 
 import java.util.function.Supplier;
 
@@ -60,8 +61,8 @@ public class UserPortraitTag extends IncludeTag {
 			sb.append("\"><span class=\"inline-item\">");
 			sb.append("<svg class=\"lexicon-icon\">");
 			sb.append("<use href=\"");
-			sb.append(themeDisplay.getPathThemeImages());
-			sb.append("/clay/icons.svg#user\" /></svg>");
+			sb.append(IconsUtil.getSpritemapPath("clay"));
+			sb.append("#user\" /></svg>");
 			sb.append("</span></span>");
 
 			return sb.toString();

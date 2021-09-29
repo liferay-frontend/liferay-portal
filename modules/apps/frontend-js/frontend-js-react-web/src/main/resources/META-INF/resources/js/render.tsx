@@ -49,9 +49,9 @@ export default function render(
 ) {
 	if (!(window.Liferay as any).SPA || (window.Liferay as any).SPA.app) {
 		const {portletId} = renderData;
-		const spritemap =
-			(window.Liferay as any).ThemeDisplay.getPathThemeImages() +
-			'/clay/icons.svg';
+		const spritemap = (window.Liferay as any).Icons.getSpritemapPath(
+			'clay'
+		);
 
 		let {componentId} = renderData;
 

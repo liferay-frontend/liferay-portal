@@ -22,6 +22,7 @@ import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFact
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.util.DDM;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -65,9 +66,7 @@ public class DDMFormRendererImpl implements DDMFormRenderer {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		String pathThemeImages = themeDisplay.getPathThemeImages();
-
-		String spriteMap = pathThemeImages.concat("/clay/icons.svg");
+		String spriteMap = IconsUtil.getSpritemapPath("clay");
 
 		ddmFormTemplateContext.put("spritemap", spriteMap);
 

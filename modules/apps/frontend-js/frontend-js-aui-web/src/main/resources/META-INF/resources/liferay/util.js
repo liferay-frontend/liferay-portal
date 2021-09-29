@@ -43,8 +43,8 @@
 	var TPL_LEXICON_ICON =
 		'<svg aria-hidden="true" class="lexicon-icon lexicon-icon-{0} {1}" focusable="false" role="presentation">' +
 		'<use href="' +
-		themeDisplay.getPathThemeImages() +
-		'/clay/icons.svg#{0}" />' +
+		Liferay.Icons.getSpritemapPath('clay') +
+		'#{0}" />' +
 		'</svg>';
 
 	var Window = {

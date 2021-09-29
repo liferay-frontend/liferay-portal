@@ -126,8 +126,7 @@ class DocumentLibraryOpener {
 					});
 				}
 			},
-			spritemap:
-				Liferay.ThemeDisplay.getPathThemeImages() + '/clay/icons.svg',
+			spritemap: Liferay.Icons.getSpritemapPath('clay'),
 		});
 	}
 

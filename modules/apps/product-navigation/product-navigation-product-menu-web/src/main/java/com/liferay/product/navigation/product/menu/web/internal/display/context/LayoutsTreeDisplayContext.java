@@ -19,6 +19,7 @@ import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.asset.list.constants.AssetListPortletKeys;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringBundler;
@@ -293,7 +294,7 @@ public class LayoutsTreeDisplayContext {
 		).put(
 			"productMenuPortletURL", getProductMenuPortletURL()
 		).put(
-			"spritemap", _themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+			"spritemap", IconsUtil.getSpritemapPath("clay")
 		).build();
 	}
 

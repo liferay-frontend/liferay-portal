@@ -40,6 +40,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:frontend-editor:frontend-editor-api")
 	compileOnly project(":apps:frontend-editor:frontend-editor-taglib")
+	compileOnly project(":apps:frontend-icons:frontend-icons-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")

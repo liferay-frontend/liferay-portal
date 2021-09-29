@@ -29,6 +29,7 @@ import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPSku;
 import com.liferay.commerce.product.content.util.CPContentHelper;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -119,7 +120,7 @@ public class AddToCartTag extends IncludeTag {
 
 			String pathThemeImages = themeDisplay.getPathThemeImages();
 
-			_spritemap = pathThemeImages + "/icons.svg";
+		_spritemap = pathThemeImages + "/icons.svg";
 
 			if (pathThemeImages.contains("classic")) {
 				_spritemap = pathThemeImages + "/lexicon/icons.svg";
@@ -200,11 +201,7 @@ public class AddToCartTag extends IncludeTag {
 			httpServletRequest, "productSettingsModel", _productSettingsModel);
 
 		if (Validator.isNull(_spritemap)) {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
-			_spritemap = themeDisplay.getPathThemeImages() + "/clay/icons.svg";
+			_spritemap = IconsUtil.getSpritemapPath("clay");
 		}
 
 		setNamespacedAttribute(httpServletRequest, "spritemap", _spritemap);

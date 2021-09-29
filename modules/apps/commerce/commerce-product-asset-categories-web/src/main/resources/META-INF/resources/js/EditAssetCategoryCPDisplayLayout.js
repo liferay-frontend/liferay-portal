@@ -115,7 +115,7 @@ export default function ({
 
 		use.setAttribute(
 			'href',
-			`${Liferay.ThemeDisplay.getPathThemeImages()}/clay/icons.svg#times`
+			`${Liferay.Icons.getSpritemapPath('clay')}#times`
 		);
 
 		svg.appendChild(use);

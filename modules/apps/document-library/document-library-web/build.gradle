@@ -35,6 +35,7 @@ dependencies {
 	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:export-import:export-import-changeset-api")
 	compileOnly project(":apps:export-import:export-import-changeset-taglib")
+	compileOnly project(":apps:frontend-icons:frontend-icons-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-dynamic-section")

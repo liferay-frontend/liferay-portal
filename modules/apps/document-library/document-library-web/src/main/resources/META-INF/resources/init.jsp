@@ -142,6 +142,7 @@ page import="com.liferay.dynamic.data.mapping.service.DDMStorageLinkLocalService
 page import="com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil" %><%@
 page import="com.liferay.dynamic.data.mapping.storage.DDMFormValues" %><%@
 page import="com.liferay.dynamic.data.mapping.storage.StorageType" %><%@
+page import="com.liferay.frontend.icons.util.IconsUtil" %><%@
 page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.JSPDropdownItemList" %><%@
 page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.JSPNavigationItemList" %><%@
 page import="com.liferay.image.gallery.display.kernel.display.context.IGViewFileVersionDisplayContext" %><%@

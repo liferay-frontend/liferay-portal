@@ -52,6 +52,7 @@ import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutNameCompa
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidator;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -281,9 +282,7 @@ public class DataLayoutResourceImpl
 
 		ddmFormTemplateContext.put("editable", false);
 		ddmFormTemplateContext.put(
-			"spritemap",
-			dataLayoutRenderingContext.getPathThemeImages() +
-				"/clay/icons.svg");
+			"spritemap", IconsUtil.getSpritemapPath("clay"));
 		ddmFormTemplateContext.remove("fieldTypes");
 
 		return Response.ok(

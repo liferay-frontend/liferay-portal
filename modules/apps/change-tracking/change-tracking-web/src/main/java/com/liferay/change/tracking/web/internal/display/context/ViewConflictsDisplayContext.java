@@ -20,6 +20,7 @@ import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.web.internal.display.CTDisplayRendererRegistry;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.change.tracking.sql.CTSQLModeThreadLocal;
@@ -134,7 +135,7 @@ public class ViewConflictsDisplayContext {
 				"ctCollectionId", _ctCollection.getCtCollectionId()
 			).buildString()
 		).put(
-			"spritemap", _themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+			"spritemap", IconsUtil.getSpritemapPath("clay")
 		).put(
 			"timeZone",
 			() -> {

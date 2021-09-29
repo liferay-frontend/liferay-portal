@@ -168,7 +168,7 @@ FormInstancePermissionCheckerHelper formInstancePermissionCheckerHelper = ddmFor
 </clay:container-fluid>
 
 <aui:script require='<%= mainRequire + "/admin/js/components/share-form/openShareFormModal.es as Modal" %>'>
-	var spritemap = themeDisplay.getPathThemeImages() + '/clay/icons.svg';
+	var spritemap = Liferay.Icons.getSpritemapPath('clay');
 
 	var afterOpenShareFormModal = function (data) {
 		Liferay.namespace('DDM').FormSettings = {

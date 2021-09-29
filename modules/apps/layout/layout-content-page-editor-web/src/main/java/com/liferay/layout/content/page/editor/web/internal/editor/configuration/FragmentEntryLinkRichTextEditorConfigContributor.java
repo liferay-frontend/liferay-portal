@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.editor.configuration;
 
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.item.selector.criteria.DownloadURLItemSelectorReturnType;
@@ -90,7 +91,7 @@ public class FragmentEntryLinkRichTextEditorConfigContributor
 		).put(
 			"skin", "moono-lisa"
 		).put(
-			"spritemap", themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+			"spritemap", IconsUtil.getSpritemapPath("clay")
 		).put(
 			"toolbars", getToolbarsJSONObject(themeDisplay.getLocale())
 		);

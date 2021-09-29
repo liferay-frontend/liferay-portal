@@ -23,6 +23,7 @@ import com.liferay.change.tracking.service.CTProcessService;
 import com.liferay.change.tracking.service.CTSchemaVersionLocalService;
 import com.liferay.change.tracking.web.internal.constants.CTWebConstants;
 import com.liferay.change.tracking.web.internal.util.PublicationsPortletURLUtil;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -239,7 +240,7 @@ public class ViewHistoryDisplayContext extends BasePublicationsDisplayContext {
 		).put(
 			"entries", entriesJSONArray
 		).put(
-			"spritemap", _themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+			"spritemap", IconsUtil.getSpritemapPath("clay")
 		).put(
 			"userInfo",
 			() -> {

@@ -28,7 +28,7 @@ export default function SelectDisplayPageMasterLayoutVerticalCardPropsTransforme
 				formSubmitURL: addDisplayPageUrl,
 				mappingTypes,
 				namespace,
-				spritemap: `${Liferay.ThemeDisplay.getPathThemeImages()}/clay/icons.svg`,
+				spritemap: Liferay.Icons.getSpritemapPath('clay'),
 				title,
 			});
 		},

@@ -25,6 +25,7 @@ import com.liferay.change.tracking.web.internal.constants.PublicationRoleConstan
 import com.liferay.change.tracking.web.internal.display.CTDisplayRendererRegistry;
 import com.liferay.change.tracking.web.internal.security.permission.resource.CTCollectionPermission;
 import com.liferay.change.tracking.web.internal.util.PublicationsPortletURLUtil;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
@@ -242,7 +243,7 @@ public class PublicationsDisplayContext extends BasePublicationsDisplayContext {
 					"value", PublicationRoleConstants.ROLE_INVITER
 				))
 		).put(
-			"spritemap", _themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+			"spritemap", IconsUtil.getSpritemapPath("clay")
 		).put(
 			"verifyEmailAddressURL",
 			() -> {

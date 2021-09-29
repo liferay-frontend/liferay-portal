@@ -409,9 +409,7 @@ class ItemSelectorRepositoryEntryBrowser extends PortletBase {
 				closeable: true,
 				destroyOnHide: true,
 				message,
-				spritemap:
-					Liferay.ThemeDisplay.getPathThemeImages() +
-					'/clay/icons.svg',
+				spritemap: Liferay.Icons.getSpritemapPath('clay'),
 				style: 'danger',
 				title: '',
 				visible: true,

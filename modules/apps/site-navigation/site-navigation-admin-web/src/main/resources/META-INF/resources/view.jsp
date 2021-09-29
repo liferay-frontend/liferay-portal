@@ -172,7 +172,7 @@ SiteNavigationAdminManagementToolbarDisplayContext siteNavigationAdminManagement
 				mainFieldValue: data.mainFieldValue,
 				namespace: '<portlet:namespace />',
 				spritemap:
-					'<%= themeDisplay.getPathThemeImages() %>/clay/icons.svg',
+					'<%= IconsUtil.getSpritemapPath("clay") %>',
 			});
 		}
 	);

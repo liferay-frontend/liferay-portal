@@ -16,6 +16,7 @@ package com.liferay.change.tracking.web.internal.display.context;
 
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.web.internal.scheduler.ScheduledPublishInfo;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -98,7 +99,7 @@ public class ReschedulePublicationDisplayContext {
 				"minutes", calendar.get(Calendar.MINUTE)
 			)
 		).put(
-			"spritemap", _themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+			"spritemap", IconsUtil.getSpritemapPath("clay")
 		).put(
 			"timeZone",
 			() -> {

@@ -218,7 +218,7 @@ name = HtmlUtil.escapeJS(name);
 			{
 				documentBrowseLinkCallback: documentBrowseLinkCallback,
 				htmlEncodeOutput: true,
-				spritemap: themeDisplay.getPathThemeImages() + '/clay/icons.svg',
+				spritemap: Liferay.Icons.getSpritemapPath('clay'),
 				title: false,
 				uiNode: uiNode,
 			},

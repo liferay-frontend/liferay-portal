@@ -16,8 +16,8 @@ package com.liferay.commerce.frontend.taglib.servlet.taglib;
 
 import com.liferay.commerce.frontend.model.HeaderActionModel;
 import com.liferay.commerce.frontend.taglib.internal.servlet.ServletContextUtil;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
@@ -216,11 +216,7 @@ public class HeaderTag extends IncludeTag {
 		httpServletRequest = getRequest();
 
 		if (Validator.isNull(_spritemap)) {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
-			_spritemap = themeDisplay.getPathThemeImages() + "/clay/icons.svg";
+			_spritemap = IconsUtil.getSpritemapPath("clay");
 		}
 
 		httpServletRequest.setAttribute(

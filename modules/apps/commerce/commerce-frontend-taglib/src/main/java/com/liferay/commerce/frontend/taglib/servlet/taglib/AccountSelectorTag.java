@@ -24,6 +24,7 @@ import com.liferay.commerce.frontend.taglib.internal.model.WorkflowStatusModel;
 import com.liferay.commerce.frontend.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.CommerceOrderTypeLocalService;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -92,8 +93,7 @@ public class AccountSelectorTag extends IncludeTag {
 					WebKeys.THEME_DISPLAY);
 
 			if (Validator.isNull(_spritemap)) {
-				_spritemap =
-					themeDisplay.getPathThemeImages() + "/clay/icons.svg";
+				_spritemap = IconsUtil.getSpritemapPath("clay");
 			}
 
 			HttpServletRequest parentHttpServletRequest = getRequest();

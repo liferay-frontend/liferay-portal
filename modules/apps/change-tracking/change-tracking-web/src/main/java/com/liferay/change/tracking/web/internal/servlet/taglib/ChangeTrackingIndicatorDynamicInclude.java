@@ -22,6 +22,7 @@ import com.liferay.change.tracking.model.CTPreferences;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.change.tracking.web.internal.security.permission.resource.CTPermission;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.reflect.ReflectionUtil;
@@ -239,7 +240,7 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 				return saveDisplayPreferenceURL.toString();
 			}
 		).put(
-			"spritemap", themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+			"spritemap", IconsUtil.getSpritemapPath("clay")
 		).build();
 
 		long ctCollectionId = CTConstants.CT_COLLECTION_ID_PRODUCTION;

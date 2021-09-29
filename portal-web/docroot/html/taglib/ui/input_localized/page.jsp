@@ -198,9 +198,7 @@
 							>
 								<%= StringUtil.replace(curLanguageId, '_', '-') %>
 
-								<span class="dropdown-item-indicator-end w-auto">
-									<span class="label label-<%= translationStatusCssClass %>"><%= translationStatus %></span>
-								</span>
+								<span class="label label-<%= translationStatusCssClass %>"><%= translationStatus %></span>
 							</liferay-util:buffer>
 
 							<liferay-ui:icon
@@ -223,11 +221,10 @@
 							<li aria-hidden="true" class="dropdown-divider" role="presentation"></li>
 							<li>
 								<button class="dropdown-item" id="manage-translations">
-									<span class="inline-item inline-item-before">
-										<svg class="lexicon-icon lexicon-icon-automatic-translate" role="presentation">
-											<use xlink:href="<%= themeDisplay.getPathThemeImages() %>/clay/icons.svg#automatic-translate" />
-										</svg>
-									</span>
+									<svg class="lexicon-icon lexicon-icon-automatic-translate" role="presentation">
+										<use xlink:href='<%= IconsUtil.getSpritemapPath("clay") %>#automatic-translate' />
+									</svg>
+
 									<span><liferay-ui:message key="manage-translations" /></span>
 								</button>
 							</li>

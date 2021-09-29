@@ -8,6 +8,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-field-type-api")
+	compileOnly project(":apps:frontend-icons:frontend-icons-api")
 	compileOnly project(":apps:frontend-js:frontend-js-loader-modules-extender-api")
 	compileOnly project(":apps:google-places:google-places-api")
 	compileOnly project(":apps:portal-template:portal-template-react-renderer-api")

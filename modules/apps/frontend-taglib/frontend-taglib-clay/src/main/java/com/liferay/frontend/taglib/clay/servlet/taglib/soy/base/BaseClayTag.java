@@ -14,6 +14,7 @@
 
 package com.liferay.frontend.taglib.clay.servlet.taglib.soy.base;
 
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.frontend.taglib.clay.internal.ClayTagContextContributorsProvider;
 import com.liferay.frontend.taglib.clay.internal.js.loader.modules.extender.npm.NPMResolverProvider;
@@ -52,9 +53,7 @@ public abstract class BaseClayTag extends TemplateRendererTag {
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
 
-			String pathThemeImages = themeDisplay.getPathThemeImages();
-
-			putValue("spritemap", pathThemeImages.concat("/clay/icons.svg"));
+			putValue("spritemap", IconsUtil.getSpritemapPath("clay"));
 		}
 
 		String namespace = getNamespace();

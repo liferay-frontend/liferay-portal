@@ -53,6 +53,7 @@ page import="com.liferay.depot.web.internal.display.context.DepotAdminViewDepotD
 page import="com.liferay.depot.web.internal.display.context.DepotApplicationDisplayContext" %><%@
 page import="com.liferay.depot.web.internal.util.DepotLanguageUtil" %><%@
 page import="com.liferay.document.library.kernel.exception.RequiredFileEntryTypeException" %><%@
+page import="com.liferay.frontend.icons.util.IconsUtil" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.exception.DuplicateGroupException" %><%@
 page import="com.liferay.portal.kernel.exception.GroupKeyException" %><%@

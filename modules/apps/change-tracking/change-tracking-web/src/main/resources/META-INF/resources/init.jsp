@@ -47,6 +47,7 @@ page import="com.liferay.change.tracking.web.internal.display.context.ViewHistor
 page import="com.liferay.change.tracking.web.internal.display.context.ViewScheduledDisplayContext" %><%@
 page import="com.liferay.change.tracking.web.internal.display.context.ViewScheduledManagementToolbarDisplayContext" %><%@
 page import="com.liferay.change.tracking.web.internal.security.permission.resource.CTCollectionPermission" %><%@
+page import="com.liferay.frontend.icons.util.IconsUtil" %><%@
 page import="com.liferay.petra.string.StringBundler" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.dao.search.ResultRow" %><%@

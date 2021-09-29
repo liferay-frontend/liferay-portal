@@ -14,6 +14,7 @@
 
 package com.liferay.taglib.aui;
 
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -57,8 +58,8 @@ public class ATag extends BaseATag {
 				jspWriter.write("<svg class=\"lexicon-icon ");
 				jspWriter.write("lexicon-icon-shortcut\" focusable=\"false\" ");
 				jspWriter.write("role=\"img\"><use href=\"");
-				jspWriter.write(themeDisplay.getPathThemeImages());
-				jspWriter.write("/clay/icons.svg#shortcut\" /><span ");
+				jspWriter.write(IconsUtil.getSpritemapPath("clay"));
+				jspWriter.write("#shortcut\" /><span ");
 				jspWriter.write("class=\"sr-only\">");
 
 				String opensNewWindowLabel = LanguageUtil.get(
