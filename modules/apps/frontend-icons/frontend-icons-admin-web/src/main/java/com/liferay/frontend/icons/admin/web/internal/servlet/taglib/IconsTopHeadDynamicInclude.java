@@ -14,18 +14,11 @@
 
 package com.liferay.frontend.icons.admin.web.internal.servlet.taglib;
 
-import com.liferay.frontend.icons.admin.web.constants.IconConstants;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.frontend.icons.constants.IconConstants;
+import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
-import com.liferay.portal.kernel.servlet.taglib.aui.ScriptData;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
-import com.liferay.frontend.icons.admin.web.internal.util.SpritemapUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,11 +26,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Bryce Osterhaus
@@ -56,13 +45,21 @@ public class IconsTopHeadDynamicInclude extends BaseDynamicInclude {
 
 		PrintWriter printWriter = httpServletResponse.getWriter();
 
-		printWriter.write("<script data-senna-track=\"permanent\" type=\"" + ContentTypes.TEXT_JAVASCRIPT + "\">");
+		printWriter.write(
+			"<script data-senna-track=\"permanent\" type=\"" +
+				ContentTypes.TEXT_JAVASCRIPT + "\">");
 		printWriter.write("var Liferay = Liferay || {};");
 		printWriter.write("if (!Liferay.Icons) {");
 		printWriter.write("Liferay.Icons = {");
-		printWriter.write("basePath: '" + IconConstants.SPRITEMAP_BASE_PATH + "',");
-		printWriter.write("getGlobalSpritemapPath: () => '" + SpritemapUtil.getGlobalSpritemapPath() + "',");
-		printWriter.write("getSpritemapPath: (iconPackName) => '" + IconConstants.SPRITEMAP_BASE_PATH + "' + '/' + iconPackName + '.svg',");
+		printWriter.write(
+			"basePath: '" + IconConstants.SPRITEMAP_BASE_PATH + "',");
+		printWriter.write(
+			"getGlobalSpritemapPath: () => '" +
+				IconsUtil.getGlobalSpritemapPath() + "',");
+		printWriter.write(
+			"getSpritemapPath: (iconPackName) => '" +
+				IconConstants.SPRITEMAP_BASE_PATH +
+					"' + '/' + iconPackName + '.svg',");
 		printWriter.write("};");
 		printWriter.write("}");
 		printWriter.write("</script>");
@@ -70,7 +67,8 @@ public class IconsTopHeadDynamicInclude extends BaseDynamicInclude {
 
 	@Override
 	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/top_js.jspf#resources");
+		dynamicIncludeRegistry.register(
+			"/html/common/themes/top_js.jspf#resources");
 	}
 
 }

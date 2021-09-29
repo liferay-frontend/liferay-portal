@@ -12,15 +12,19 @@
  * details.
  */
 
-package com.liferay.frontend.icons.admin.web.constants;
+package com.liferay.frontend.icons.model;
 
 /**
  * @author Bryce Osterhaus
  */
-public class IconConstants {
+public interface IconResource {
 
-	public static final String GLOBAL_ICON_PACK_NAME = "global";
+	public String getId();
 
-	public static final String SPRITEMAP_BASE_PATH = "/o/icons";
+	public String getInternalSVGContent();
+
+	public boolean getRemovable();
+
+	public String getSVG();
 
 }

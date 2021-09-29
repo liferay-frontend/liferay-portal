@@ -15,9 +15,9 @@
 package com.liferay.frontend.icons.admin.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.configuration.admin.display.ConfigurationScreen;
-import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResource;
-import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResourcePack;
 import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
+import com.liferay.frontend.icons.model.IconResource;
+import com.liferay.frontend.icons.model.IconResourcePack;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;

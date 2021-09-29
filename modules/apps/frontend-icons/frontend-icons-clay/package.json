@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@clayui/css": "3.32.1"
+		"@clayui/css": "3.35.3"
 	},
 	"name": "liferay-frontend-icons-clay",
 	"version": "1.0.0"

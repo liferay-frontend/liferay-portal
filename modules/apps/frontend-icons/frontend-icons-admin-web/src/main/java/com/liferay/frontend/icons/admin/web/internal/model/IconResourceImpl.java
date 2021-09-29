@@ -12,8 +12,9 @@
  * details.
  */
 
-package com.liferay.frontend.icons.admin.web.internal.contributor.extender;
+package com.liferay.frontend.icons.admin.web.internal.model;
 
+import com.liferay.frontend.icons.model.IconResource;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.regex.Matcher;

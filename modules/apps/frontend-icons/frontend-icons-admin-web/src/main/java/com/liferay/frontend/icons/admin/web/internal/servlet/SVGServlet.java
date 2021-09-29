@@ -14,8 +14,8 @@
 
 package com.liferay.frontend.icons.admin.web.internal.servlet;
 
-import com.liferay.frontend.icons.admin.web.constants.IconConstants;
 import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
+import com.liferay.frontend.icons.constants.IconConstants;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -69,7 +69,7 @@ public class SVGServlet extends HttpServlet {
 
 			if (!matcher.matches()) {
 				httpServletResponse.setStatus(
-					HttpServletResponse.SC_PRECONDITION_FAILED);
+					HttpServletResponse.SC_NOT_FOUND);
 			}
 
 			String packName = matcher.group(1);
@@ -83,9 +83,14 @@ public class SVGServlet extends HttpServlet {
 					_iconResourceHelper.getGlobalSpriteContent(groupId));
 			}
 			else {
-				printWriter.write(
-					_iconResourceHelper.getIconPackSpriteContent(
-						groupId, packName));
+				String spriteContent = _iconResourceHelper.getIconPackSpriteContent(
+					groupId, packName);
+
+				if (spriteContent == null) {
+					return;
+				}
+
+				printWriter.write(spriteContent);
 			}
 		}
 		catch (Exception exception) {
@@ -96,7 +101,7 @@ public class SVGServlet extends HttpServlet {
 			exception.printStackTrace();
 
 			httpServletResponse.setStatus(
-				HttpServletResponse.SC_PRECONDITION_FAILED);
+				HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 

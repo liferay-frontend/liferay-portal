@@ -1,0 +1,7 @@
+Bundle-Name: Liferay Frontend Icons API
+Bundle-SymbolicName: com.liferay.frontend.icons.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.frontend.icons.constants,\
+	com.liferay.frontend.icons.model,\
+	com.liferay.frontend.icons.util

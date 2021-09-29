@@ -20,9 +20,9 @@ import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.document.library.kernel.service.DLFolderService;
-import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResource;
-import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResourcePack;
-import com.liferay.frontend.icons.admin.web.internal.contributor.extender.IconResourcePackImpl;
+import com.liferay.frontend.icons.admin.web.internal.model.IconResourcePackImpl;
+import com.liferay.frontend.icons.model.IconResource;
+import com.liferay.frontend.icons.model.IconResourcePack;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -83,12 +83,12 @@ public class IconResourceHelper {
 
 		long folderId = folder.getFolderId();
 
+		_addIconToResourceMap(
+			repositoryId, iconName, folderName, StringUtil.read(inputStream));
+
 		_dlAppService.addFileEntry(
 			null, repositoryId, folderId, iconName, contentType, iconName, "",
 			null, inputStream, size, null, null, new ServiceContext());
-
-		_addIconToResourceMap(
-			repositoryId, iconName, folderName, StringUtil.read(inputStream));
 	}
 
 	public void deleteFileEntry(
@@ -145,7 +145,15 @@ public class IconResourceHelper {
 		HashMap<String, IconResourcePack> iconResourceMap = getIconResourceMaps(
 			groupId);
 
+		if (iconResourceMap == null) {
+			return null;
+		}
+
 		IconResourcePack iconResourcePack = iconResourceMap.get(iconPackName);
+
+		if (iconResourcePack == null) {
+			return null;
+		}
 
 		for (IconResource iconResource : iconResourcePack.getIconResources()) {
 			sb.append(iconResource.getInternalSVGContent());
@@ -376,7 +384,7 @@ public class IconResourceHelper {
 	}
 
 	private Boolean _validateAddFileEntry(
-			long groupId, String folderName, String iconName) {
+		long groupId, String folderName, String iconName) {
 
 		HashMap<String, IconResourcePack> groupIconResourceMap =
 			_iconResourcesMap.get(groupId);

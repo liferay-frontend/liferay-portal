@@ -14,6 +14,8 @@
 
 package com.liferay.frontend.icons.admin.web.internal.contributor.extender;
 
+import com.liferay.frontend.icons.admin.web.internal.model.IconResourcePackImpl;
+import com.liferay.frontend.icons.model.IconResourcePack;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;

@@ -12,19 +12,21 @@
  * details.
  */
 
-package com.liferay.frontend.icons.admin.web.internal.contributor.extender;
+package com.liferay.frontend.icons.util;
+
+import com.liferay.frontend.icons.constants.IconConstants;
 
 /**
  * @author Bryce Osterhaus
  */
-public interface IconResource {
+public class IconsUtil {
 
-	public String getId();
+	public static String getGlobalSpritemapPath() {
+		return getSpritemapPath(IconConstants.GLOBAL_ICON_PACK_NAME);
+	}
 
-	public String getInternalSVGContent();
-
-	public boolean getRemovable();
-
-	public String getSVG();
+	public static String getSpritemapPath(String iconPackName) {
+		return IconConstants.SPRITEMAP_BASE_PATH + "/" + iconPackName + ".svg";
+	}
 
 }

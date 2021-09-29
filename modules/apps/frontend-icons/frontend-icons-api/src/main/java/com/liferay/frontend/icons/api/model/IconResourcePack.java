@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.frontend.icons.admin.web.internal.contributor.extender;
+package com.liferay.frontend.icons.model;
 
 import java.util.Collection;
 

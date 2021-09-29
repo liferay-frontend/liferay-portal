@@ -15,6 +15,7 @@
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayLayout from '@clayui/layout';
 import ClayModal, {useModal} from '@clayui/modal';
 import ClayPanel from '@clayui/panel';
@@ -31,6 +32,7 @@ const IconSearch = ({
 }) => {
 	const svgFileInputRef = React.useRef(null);
 
+	const [loading, setLoading] = useState(false);
 	const [icons, setIcons] = useState(JSON.parse(initialIcons));
 	const [iconName, setIconName] = useState('');
 	const [iconPackName, setIconPackName] = useState('');
@@ -38,7 +40,7 @@ const IconSearch = ({
 	const [showModal, setShowModal] = useState(false);
 	const [selectedIcon, setSelectedIcon] = useState(null);
 
-	const {observer} = useModal({
+	const {observer, onClose} = useModal({
 		onClose: () => {
 			setShowModal(false);
 			setSelectedIcon(null);
@@ -66,6 +68,8 @@ const IconSearch = ({
 	}, [icons]);
 
 	const handleDelete = (iconName, iconPackName) => {
+		setLoading(true);
+
 		const formData = new FormData();
 
 		formData.append(portletNamespace + 'name', iconName);
@@ -92,10 +96,13 @@ const IconSearch = ({
 			}
 
 			setIcons(newIcons);
+			setLoading(false);
 		});
 	};
 
 	const handleSubmit = () => {
+		setLoading(true);
+
 		const formData = new FormData();
 
 		formData.append(
@@ -127,8 +134,11 @@ const IconSearch = ({
 			}
 
 			setIcons(newIcons);
+			setLoading(false);
 		});
 	};
+
+	const referenceTime = useMemo(() => new Date().getTime(), [icons]);
 
 	return (
 		<ClayLayout.Sheet>
@@ -172,17 +182,22 @@ const IconSearch = ({
 											<ClayButton
 												displayType={null}
 												onClick={() => {
-													setShowModal(true);
 													setSelectedIcon({
 														...icon,
 														iconPackName,
 													});
+
+													setShowModal(true);
 												}}
 											>
 												<ClayIcon
-													spritemap={Liferay.Icons.getSpritemapPath(
-														iconPackName
-													)}
+													spritemap={
+														Liferay.Icons.getSpritemapPath(
+															iconPackName
+														) +
+														'?' +
+														referenceTime
+													}
 													symbol={icon.name}
 												/>
 
@@ -262,6 +277,32 @@ const IconSearch = ({
 								/>
 							</ClayForm.Group>
 
+							{selectedIcon && (
+								<ClayForm.Group>
+									<label>
+										{Liferay.Language.get(
+											'icon-reference-read-only'
+										)}
+									</label>
+
+									<ClayInput
+										onClick={(event) => {
+											event.target.select();
+										}}
+										readOnly
+										type="text"
+										value={
+											window.location.origin +
+											Liferay.Icons.getSpritemapPath(
+												selectedIcon.iconPackName
+											) +
+											'#' +
+											selectedIcon.name
+										}
+									/>
+								</ClayForm.Group>
+							)}
+
 							{!selectedIcon && (
 								<ClayForm.Group>
 									<label
@@ -286,7 +327,9 @@ const IconSearch = ({
 							<ClayButton.Group spaced>
 								{selectedIcon ? (
 									<ClayButton
-										disabled={!selectedIcon.removable}
+										disabled={
+											!selectedIcon.removable || loading
+										}
 										displayType="danger"
 										onClick={() => {
 											if (
@@ -300,8 +343,7 @@ const IconSearch = ({
 													selectedIcon.name,
 													selectedIcon.iconPackName
 												).then(() => {
-													setShowModal(false);
-													setSelectedIcon(null);
+													onClose();
 												});
 											}
 										}}
@@ -313,27 +355,38 @@ const IconSearch = ({
 												  )
 										}
 									>
-										{Liferay.Language.get('delete')}
+										{loading ? (
+											<ClayLoadingIndicator
+												className="d-inline-block m-0"
+												small
+											/>
+										) : (
+											Liferay.Language.get('delete')
+										)}
 									</ClayButton>
 								) : (
 									<ClayButton
+										disabled={loading}
 										onClick={() => {
 											handleSubmit().then(() => {
-												setShowModal(false);
-												setSelectedIcon(null);
+												onClose();
 											});
 										}}
 										type="submit"
 									>
-										{Liferay.Language.get('save')}
+										{loading ? (
+											<ClayLoadingIndicator
+												className="d-inline-block m-0"
+												small
+											/>
+										) : (
+											Liferay.Language.get('save')
+										)}
 									</ClayButton>
 								)}
 								<ClayButton
 									displayType="secondary"
-									onClick={() => {
-										setShowModal(false);
-										setSelectedIcon(null);
-									}}
+									onClick={onClose}
 								>
 									{Liferay.Language.get('cancel')}
 								</ClayButton>
