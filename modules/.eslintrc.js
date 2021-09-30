@@ -36,6 +36,17 @@ config = {
 		MODULE_PATH: true,
 	},
 	rules: {
+		'@liferay/aui/no-all': 'off',
+		'@liferay/aui/no-array': 'off',
+		'@liferay/aui/no-each': 'off',
+		'@liferay/aui/no-get-body': 'off',
+		'@liferay/aui/no-io': 'off',
+		'@liferay/aui/no-merge': 'off',
+		'@liferay/aui/no-modal': 'off',
+		'@liferay/aui/no-node': 'off',
+		'@liferay/aui/no-object': 'off',
+		'@liferay/aui/no-one': 'off',
+		'@liferay/liferay/empty-line-between-elements': 'off',
 		'no-empty': ['error', {allowEmptyCatch: true}],
 		'notice/notice': [
 			'error',

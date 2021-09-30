@@ -1543,10 +1543,10 @@
   resolved "https://registry.yarnpkg.com/@liferay/amd-loader/-/amd-loader-4.3.1.tgz#35cde6128f6e2795b7e45378e8f115f596b6cdda"
   integrity sha512-95i+LRK3gPTiBc75lJsr9OwRNFdzaamSe3B5x+kHLHYr78qS/4WD5mkDJ+WYv3CY0jFFnROTNLl3x6zCRuDMxw==
 
-"@liferay/eslint-config@25.0.1":
-  version "25.0.1"
-  resolved "https://registry.yarnpkg.com/@liferay/eslint-config/-/eslint-config-25.0.1.tgz#b1ce8cdfe9816a76796b3536811239e17e12563d"
-  integrity sha512-8GQdxVAjv/CyKVWmerbCvlGMo96q4eX8LP12MgnXLQLxi+L/fgugCqriL3Mx+LoMsM28rY7OVpVzJAzd5Fvn/A==
+"@liferay/eslint-config@27.0.1":
+  version "27.0.1"
+  resolved "https://registry.yarnpkg.com/@liferay/eslint-config/-/eslint-config-27.0.1.tgz#32cc610a911387e8d280e638d730b2ea90c5979a"
+  integrity sha512-ftLoYq7NVIpTDQe8mrHE8jNbiTRL4hmB5pSuHizDzK6SenXJnCZ7ZDI9HaRohVRtwiDzHZwzyds+A/8wPJOoew==
   dependencies:
     "@typescript-eslint/eslint-plugin" "4.19.0"
     "@typescript-eslint/parser" "4.19.0"
@@ -1613,10 +1613,10 @@
     xml-js "^1.6.8"
     yargs "^14.0.0"
 
-"@liferay/npm-scripts@46.1.0":
-  version "46.1.0"
-  resolved "https://registry.yarnpkg.com/@liferay/npm-scripts/-/npm-scripts-46.1.0.tgz#5887188f2f0c77b353345feab2d9e3e1a7cb175b"
-  integrity sha512-AFiDQSqVql2Gb1Pl4tKxVtplHXgjpqUuPUXldZe5nEA/0PBs6yYkDYmYWoZs9HZXAvWEJPaR+8ap8+xOPaATzA==
+"@liferay/npm-scripts@46.1.2":
+  version "46.1.2"
+  resolved "https://registry.yarnpkg.com/@liferay/npm-scripts/-/npm-scripts-46.1.2.tgz#d129c0523c112ebb2c2dc6f1f48d4a07458bccd3"
+  integrity sha512-gRN5v6DvcrNvT5QqtxsXOycK5+WYQyJSr7wSReRLMtOSRVmdz/czxACVRaeqBuQeFbrNorHSdu7/P+/m43ETwA==
   dependencies:
     "@babel/cli" "^7.2.3"
     "@babel/core" "^7.8.3"
@@ -1628,7 +1628,7 @@
     "@babel/preset-env" "^7.4.2"
     "@babel/preset-react" "^7.8.3"
     "@babel/preset-typescript" "^7.10.4"
-    "@liferay/eslint-config" "25.0.1"
+    "@liferay/eslint-config" "27.0.1"
     "@liferay/jest-junit-reporter" "1.2.0"
     "@liferay/js-toolkit-core" "3.0.1"
     "@testing-library/dom" "^5.6.1"
@@ -1670,7 +1670,7 @@
     liferay-npm-bundler-plugin-namespace-packages "2.24.2"
     liferay-npm-bundler-plugin-replace-browser-modules "2.24.2"
     liferay-npm-bundler-plugin-resolve-linked-dependencies "2.24.2"
-    liferay-theme-tasks "10.5.1"
+    liferay-theme-tasks "10.5.2"
     metal-tools-soy "4.3.2"
     mini-css-extract-plugin "0.11.2"
     minimist "^1.2.0"
@@ -1690,7 +1690,7 @@
     stylelint "^13.2.0"
     terser "5.3.8"
     ts-loader "^8.0.4"
-    typescript "^4.2.3"
+    typescript "4.4.2"
     webpack "^5.11.1"
     webpack-cli "^4.2.0"
     webpack-dev-server "^3.11.0"
@@ -9781,10 +9781,10 @@ liferay-npm-bundler@2.24.2:
     xml-js "^1.6.8"
     yargs "^14.0.0"
 
-liferay-theme-tasks@10.5.1:
-  version "10.5.1"
-  resolved "https://registry.yarnpkg.com/liferay-theme-tasks/-/liferay-theme-tasks-10.5.1.tgz#4506d417c2b40fbd3125f8ba70ca956361f1500f"
-  integrity sha512-KBg59Z6ajKmxpqOJV9nYSM7bGKvyvqnEPGCzesfW2hZbMagjr8O4I5zoq/u1mstyBjCCMHswrP1y4bVcRGFr4w==
+liferay-theme-tasks@10.5.2:
+  version "10.5.2"
+  resolved "https://registry.yarnpkg.com/liferay-theme-tasks/-/liferay-theme-tasks-10.5.2.tgz#eaf7e13d5123031fbfe2a1fdce03df45628d6f30"
+  integrity sha512-RXe9WVhNnpq8gWWdr/MdoVvKxVAVwtgpUQvFJ+8Wjrvd1hpyoFuFSwku/mNuv5+Yz18DxHEu5vljBDsJLCRvdA==
   dependencies:
     ansi-colors "^4.1.1"
     async "^2.6.1"
@@ -15338,10 +15338,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^4.2.3:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.3.tgz#39062d8019912d43726298f09493d598048c1ce3"
-  integrity sha512-qOcYwxaByStAWrBf4x0fibwZvMRG+r4cQoTjbPtUlrWjBHbmCAww1i448U0GJ+3cNNEtebDteo/cHOR3xJ4wEw==
+typescript@4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.2.tgz#6d618640d430e3569a1dfb44f7d7e600ced3ee86"
+  integrity sha512-gzP+t5W4hdy4c+68bfcv0t400HVJMMd2+H9B7gae1nQlBzCqvrXX+6GL/b3GAgyTH966pzrZ70/fRjwAtZksSQ==
 
 typical@^5.0.0, typical@^5.2.0:
   version "5.2.0"
