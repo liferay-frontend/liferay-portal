@@ -14,4 +14,27 @@ definition {
 		return "${logLevel}";
 	}
 
+	macro confirmLogLevelOptionSetCorrectly {
+		var logLevel = AMDLoader.getAMDLoaderLogLevel();
+		var selectOption = StringUtil.lowerCase("${selectOption}");
+
+		if ("${logLevel}" != "${selectOption}") {
+			takeScreenshot();
+			fail("AMD log level isn't set to "+"${selectOption}"+" in JS console.");
+		}
+	}
+
+	macro setLogLevelOption {
+		SystemSettings.selectOptionSetting(
+				fieldName = "Log Level",
+				selectOption = "${selectOption}");
+
+		SystemSettings.saveConfiguration();
+
+		Refresh();
+
+		FormFields.viewSelectOption(
+				fieldName = "Log Level",
+				selectOption = "${selectOption}");
+	}
 }
