@@ -120,7 +120,7 @@ public class AddToCartTag extends IncludeTag {
 
 			String pathThemeImages = themeDisplay.getPathThemeImages();
 
-		_spritemap = pathThemeImages + "/icons.svg";
+			_spritemap = pathThemeImages + "/icons.svg";
 
 			if (pathThemeImages.contains("classic")) {
 				_spritemap = pathThemeImages + "/lexicon/icons.svg";

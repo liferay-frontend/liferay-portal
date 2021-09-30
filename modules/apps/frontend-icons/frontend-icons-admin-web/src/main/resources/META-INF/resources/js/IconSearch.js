@@ -15,8 +15,8 @@
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
-import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayLayout from '@clayui/layout';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal, {useModal} from '@clayui/modal';
 import ClayPanel from '@clayui/panel';
 import {fetch, openToast} from 'frontend-js-web';
@@ -60,11 +60,13 @@ const IconSearch = ({
 				),
 			};
 		}, {});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [iconPackNames, icons, searchQuery]);
 
 	useEffect(() => {
 		setIconName('');
 		setIconPackName('');
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [icons]);
 
 	const handleDelete = (iconName, iconPackName) => {

@@ -438,7 +438,7 @@
 							<div class="alert alert-success">
 								<span class="alert-indicator">
 									<svg aria-hidden="true" class="lexicon-icon lexicon-icon-check-circle-full">
-										<use xlink:href='<%= IconsUtil.getSpritemapPath("clay") %>#check-circle-full'></use>
+										<use xlink:href="<%= IconsUtil.getSpritemapPath("clay") %>#check-circle-full"></use>
 									</svg>
 								</span>
 
@@ -467,7 +467,7 @@
 							<div class="alert alert-info">
 								<span class="alert-indicator">
 									<svg aria-hidden="true" class="lexicon-icon lexicon-icon-info-circle">
-										<use xlink:href='<%= IconsUtil.getSpritemapPath("clay") %>#info-circle'></use>
+										<use xlink:href="<%= IconsUtil.getSpritemapPath("clay") %>#info-circle"></use>
 									</svg>
 								</span>
 
@@ -479,7 +479,7 @@
 								<div class="alert alert-warning">
 									<span class="alert-indicator">
 										<svg aria-hidden="true" class="lexicon-icon lexicon-icon-warning-full">
-											<use xlink:href='<%= IconsUtil.getSpritemapPath("clay") %>#warning-full'></use>
+											<use xlink:href="<%= IconsUtil.getSpritemapPath("clay") %>#warning-full"></use>
 										</svg>
 									</span>
 

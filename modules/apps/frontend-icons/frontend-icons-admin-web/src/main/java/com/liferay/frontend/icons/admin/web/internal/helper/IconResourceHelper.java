@@ -140,8 +140,6 @@ public class IconResourceHelper {
 	}
 
 	public String getIconPackSpriteContent(long groupId, String iconPackName) {
-		StringBuilder sb = new StringBuilder();
-
 		HashMap<String, IconResourcePack> iconResourceMap = getIconResourceMaps(
 			groupId);
 
@@ -154,6 +152,8 @@ public class IconResourceHelper {
 		if (iconResourcePack == null) {
 			return null;
 		}
+
+		StringBuilder sb = new StringBuilder();
 
 		for (IconResource iconResource : iconResourcePack.getIconResources()) {
 			sb.append(iconResource.getInternalSVGContent());

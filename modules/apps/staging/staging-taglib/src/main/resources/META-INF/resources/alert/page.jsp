@@ -22,14 +22,14 @@
 	<c:choose>
 		<c:when test="<%= type == AlertType.ERROR.getAlertCode() %>">
 			<svg aria-hidden="true" class="lexicon-icon lexicon-icon-exclamation-full">
-				<use xlink:href='<%= IconsUtil.getSpritemapPath("clay") %>#exclamation-full' />
+				<use xlink:href="<%= IconsUtil.getSpritemapPath("clay") %>#exclamation-full" />
 			</svg>
 
 			<strong class="lead"><%= LanguageUtil.get(request, "alert-helper-error") %>: </strong>
 		</c:when>
 		<c:when test="<%= type == AlertType.INFO.getAlertCode() %>">
 			<svg aria-hidden="true" class="lexicon-icon lexicon-icon-info-circle">
-				<use xlink:href='<%= IconsUtil.getSpritemapPath("clay") %>#info-circle' />
+				<use xlink:href="<%= IconsUtil.getSpritemapPath("clay") %>#info-circle" />
 			</svg>
 
 			<strong class="lead"><%= LanguageUtil.get(request, "alert-helper-info") %>: </strong>
@@ -53,7 +53,7 @@
 	<c:if test="<%= dismissible %>">
 		<button aria-label="<%= LanguageUtil.get(request, "close") %>" class="close" data-dismiss="liferay-alert" type="button">
 			<svg aria-hidden="true" class="icon-monospaced lexicon-icon lexicon-icon-times">
-				<use xlink:href='<%= IconsUtil.getSpritemapPath("clay") %>#times' />
+				<use xlink:href="<%= IconsUtil.getSpritemapPath("clay") %>#times" />
 			</svg>
 
 			<span class="sr-only"><%= LanguageUtil.get(request, "close") %></span>

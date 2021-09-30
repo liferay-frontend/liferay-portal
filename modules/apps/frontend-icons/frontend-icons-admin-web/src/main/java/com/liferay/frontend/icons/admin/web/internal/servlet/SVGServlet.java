@@ -68,8 +68,7 @@ public class SVGServlet extends HttpServlet {
 			Matcher matcher = _pattern.matcher(path);
 
 			if (!matcher.matches()) {
-				httpServletResponse.setStatus(
-					HttpServletResponse.SC_NOT_FOUND);
+				httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			}
 
 			String packName = matcher.group(1);
@@ -83,8 +82,9 @@ public class SVGServlet extends HttpServlet {
 					_iconResourceHelper.getGlobalSpriteContent(groupId));
 			}
 			else {
-				String spriteContent = _iconResourceHelper.getIconPackSpriteContent(
-					groupId, packName);
+				String spriteContent =
+					_iconResourceHelper.getIconPackSpriteContent(
+						groupId, packName);
 
 				if (spriteContent == null) {
 					return;
@@ -100,8 +100,7 @@ public class SVGServlet extends HttpServlet {
 
 			exception.printStackTrace();
 
-			httpServletResponse.setStatus(
-				HttpServletResponse.SC_NOT_FOUND);
+			httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 

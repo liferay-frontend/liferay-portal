@@ -1,11 +1,11 @@
-dependencies {
-	compileOnly project(":apps:frontend-icons:frontend-icons-api")
-}
-
 buildscript {
 	apply from: file("../modules/build-buildscript.gradle"), to: buildscript
 }
 
 apply plugin: "com.liferay.tlddoc.builder"
+
+dependencies {
+	compileOnly project(":apps:frontend-icons:frontend-icons-api")
+}
 
 apply from: "../modules/build-portal.gradle"

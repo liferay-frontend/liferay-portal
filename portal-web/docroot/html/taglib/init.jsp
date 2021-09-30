@@ -21,6 +21,7 @@ page import="com.liferay.portal.kernel.util.DateFormatFactoryUtil" %><%@
 page import="com.liferay.taglib.aui.AUIUtil" %><%@
 page import="com.liferay.taglib.util.InlineUtil" %><%@
 page import="com.liferay.taglib.util.TagResourceBundleUtil" %>
+
 page import="com.liferay.frontend.icons.util.IconsUtil" %><%@
 
 <portlet:defineObjects />
