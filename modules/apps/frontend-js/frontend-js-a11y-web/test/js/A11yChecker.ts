@@ -51,6 +51,8 @@ let scheduler: Scheduler<string>;
  * time, pause... we assume control the browser APIs and decide when to call
  * them to simulate situations.
  */
+type RequestIdleCallbackType = (callbackFn: () => Promise<void>) => void;
+
 describe('A11yChecker', () => {
 	function installMockBrowserRuntime() {
 		let hasPendingCallback = false;
@@ -71,7 +73,7 @@ describe('A11yChecker', () => {
 		// A simplified mock for requestIdleCallback, this does not implement a queuing
 		// system but only simulates scheduling.
 
-		window.requestIdleCallback = (callbackFn: () => Promise<void>) => {
+		const customRequestIdleCallback = (callbackFn: () => Promise<void>) => {
 			if (hasPendingCallback) {
 				throw Error('Callback already scheduled');
 			}
@@ -81,6 +83,8 @@ describe('A11yChecker', () => {
 			callback = callbackFn;
 			hasPendingCallback = true;
 		};
+
+		window.requestIdleCallback = customRequestIdleCallback as any;
 
 		window.cancelIdleCallback = () => {
 			log('Cancel Callback');

@@ -12,8 +12,6 @@
  * details.
  */
 
-/// <reference types="react" />
-
 declare type Props = {
 	description: string;
 	onClick: () => void;
