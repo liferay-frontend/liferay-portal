@@ -26,25 +26,26 @@ definition {
 		property test.name.skip.portal.instance = "AMDLoader#LogLevelCanBeConfigured";
 
 		ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "System Settings");
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "System Settings");
 
 		SystemSettings.gotoConfiguration(
-				configurationCategory = "Infrastructure",
-				configurationName = "JavaScript Loader",
-				configurationScope = "System Scope");
+			configurationCategory = "Infrastructure",
+			configurationName = "JavaScript Loader",
+			configurationScope = "System Scope");
 
 		FormFields.viewSelectOption(
-				fieldName = "Log Level",
-				selectOption = "Warn");
+			fieldName = "Log Level",
+			selectOption = "Warn");
 
 		for (var logLevelOptionName : list "Off,Error,Info,Debug,Warn") {
 			var logLevelOption = "${logLevelOptionName}";
 
-			AMDLoader.setLogLevelOption(selectOption="${logLevelOption}");
+			AMDLoader.setLogLevelOption(selectOption = "${logLevelOption}");
 
-			AMDLoader.confirmLogLevelOptionSetCorrectly(selectOption="${logLevelOption}");
+			AMDLoader.confirmLogLevelOptionSetCorrectly(selectOption = "${logLevelOption}");
 		}
 	}
+
 }
