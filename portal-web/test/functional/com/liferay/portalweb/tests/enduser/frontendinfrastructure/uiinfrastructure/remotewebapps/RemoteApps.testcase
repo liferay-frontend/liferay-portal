@@ -47,7 +47,9 @@ definition {
 	test CanBeDeleted {
 		property portal.acceptance = "true";
 
-		JSONRemoteApp.addIFrameRemoteAppEntry(iFrameURL = "http://www.liferay.com/my_new_remote_app", name = "My New Remote App");
+		JSONRemoteApp.addIFrameRemoteAppEntry(
+			iFrameURL = "http://www.liferay.com/my_new_remote_app",
+			name = "My New Remote App");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Custom Apps",
@@ -60,4 +62,5 @@ definition {
 
 		RemoteApps.viewEmptyRemoteTable();
 	}
+
 }

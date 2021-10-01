@@ -1,4 +1,5 @@
 definition {
+
 	macro _addIFrameRemoteAppEntry {
 		Variables.assertDefined(parameterList = "${iFrameURL},${name}");
 
@@ -34,4 +35,5 @@ definition {
 
 		com.liferay.poshi.runner.util.JSONCurlUtil.post("${curl}");
 	}
+
 }
