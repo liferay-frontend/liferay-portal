@@ -78,10 +78,6 @@
 		_createTableToolbar() {
 			const instance = this;
 
-			if (instance._tableToolbar) {
-				return instance._tableToolbar;
-			}
-
 			const editor = instance.editor;
 
 			instance._tableToolbar = new CKEDITOR.ui.balloonToolbar(editor);
@@ -121,18 +117,17 @@
 			return instance._tableToolbar;
 		},
 
-		_createToolbar() {
-			if (this._toolbar) {
+		_createToolbar(editor) {
+			if (
+				this._toolbar &&
+				this._toolbar._view.editor.name === editor.name
+			) {
 				return;
 			}
 
-			const instance = this;
+			this._toolbar = new CKEDITOR.ui.balloonToolbar(editor);
 
-			const editor = instance.editor;
-
-			instance._toolbar = new CKEDITOR.ui.balloonToolbar(editor);
-
-			instance._toolbar.addItem(
+			this._toolbar.addItem(
 				'image',
 				new CKEDITOR.ui.balloonToolbarButton({
 					command: 'imageselector',
@@ -143,7 +138,7 @@
 				})
 			);
 
-			instance._toolbar.addItem(
+			this._toolbar.addItem(
 				'video',
 				new CKEDITOR.ui.balloonToolbarButton({
 					command: 'videoselector',
@@ -152,13 +147,13 @@
 				})
 			);
 
-			instance._toolbar.addItem(
+			this._toolbar.addItem(
 				'table',
 				new CKEDITOR.ui.balloonToolbarButton({
-					click() {
-						instance._toolbar.hide();
+					click: () => {
+						this._toolbar.hide();
 
-						const tableToolbar = instance._createTableToolbar();
+						const tableToolbar = this._createTableToolbar();
 
 						tableToolbar.attach(editor.getSelection());
 					},
@@ -167,7 +162,7 @@
 				})
 			);
 
-			instance._toolbar.addItem(
+			this._toolbar.addItem(
 				'horizontalrule',
 				new CKEDITOR.ui.balloonToolbarButton({
 					command: 'horizontalrule',
@@ -192,7 +187,7 @@
 		_onButtonClick(event) {
 			event.cancel();
 
-			this._createToolbar();
+			this._createToolbar(this.editor);
 			this._toolbarVisible = true;
 			this._toolbar.attach(this.editor.getSelection());
 		},
@@ -201,8 +196,10 @@
 			this.hide();
 		},
 
-		_onContentDom() {
-			this.documentBody = this.editor.document.getBody();
+		_onContentDom({editor}) {
+			this.editor = editor;
+
+			this.documentBody = editor.document.getBody();
 
 			if (!this.documentBody.contains(this._button)) {
 				this.documentBody.append(this._button);
@@ -217,8 +214,10 @@
 			this._eventListeners = [];
 		},
 
-		_onSelectionChange() {
-			const selection = this.editor.getSelection();
+		_onSelectionChange({editor}) {
+			this.editor = editor;
+
+			const selection = editor.getSelection();
 
 			const type = selection.getType();
 
@@ -267,6 +266,7 @@
 				left: `${sideOffset}px`,
 				top: `${
 					selectionClientRect.y +
+					document.defaultView.pageYOffset +
 					(selectionClientRect.height - buttonHeight) / 2
 				}px`,
 			});
