@@ -85,10 +85,12 @@ renderResponse.setTitle(editRemoteAppEntryDisplayContext.getTitle());
 				for (String customElementURL : editRemoteAppEntryDisplayContext.getCustomElementURLs()) {
 				%>
 
-					<div class="repeatable">
-						<aui:input ignoreRequestValue="<%= true %>" label="url" name="customElementURLs" type="text" value="<%= customElementURL %>">
-							<aui:validator name="url" />
-						</aui:input>
+					<div id="<%= liferayPortletResponse.getNamespace() + "_type_customElementURLs" %>">
+						<div class="lfr-form-row">
+							<aui:input ignoreRequestValue="<%= true %>" label="url" name="customElementURLs" type="text" value="<%= customElementURL %>">
+								<aui:validator name="url" />
+							</aui:input>
+						</div>
 					</div>
 
 				<%
@@ -97,10 +99,12 @@ renderResponse.setTitle(editRemoteAppEntryDisplayContext.getTitle());
 				for (String customElementCSSURL : editRemoteAppEntryDisplayContext.getCustomElementCSSURLs()) {
 				%>
 
-					<div class="repeatable">
-						<aui:input ignoreRequestValue="<%= true %>" label="css-url" name="customElementCSSURLs" type="text" value="<%= customElementCSSURL %>">
-							<aui:validator name="url" />
-						</aui:input>
+					<div id="<%= liferayPortletResponse.getNamespace() + "_type_customElementCSSURLs" %>">
+						<div class="lfr-form-row">
+							<aui:input ignoreRequestValue="<%= true %>" label="css-url" name="customElementCSSURLs" type="text" value="<%= customElementCSSURL %>">
+								<aui:validator name="url" />
+							</aui:input>
+						</div>
 					</div>
 
 				<%
@@ -140,8 +144,14 @@ renderResponse.setTitle(editRemoteAppEntryDisplayContext.getTitle());
 
 <aui:script use="liferay-auto-fields">
 	new Liferay.AutoFields({
-		baseRows: '.repeatable',
-		contentBox: '#<portlet:namespace />_type_customElement',
+		contentBox: '#<portlet:namespace />_type_customElementURLs',
+		minimumRows: 1,
+		namespace: '<portlet:namespace />',
+	}).render();
+
+	new Liferay.AutoFields({
+		contentBox: '#<portlet:namespace />_type_customElementCSSURLs',
+		minimumRows: 1,
 		namespace: '<portlet:namespace />',
 	}).render();
 </aui:script>
