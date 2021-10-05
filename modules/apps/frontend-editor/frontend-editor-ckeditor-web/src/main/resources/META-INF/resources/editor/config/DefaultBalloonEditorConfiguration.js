@@ -43,6 +43,27 @@ const DEFAULT_BALLOON_EDITOR_CONFIG = {
 			element: 'code',
 			name: Liferay.Language.get('computer-code'),
 		},
+		{
+			attributes: {
+				class: 'overflow-auto portlet-msg-info',
+			},
+			element: 'div',
+			name: Liferay.Language.get('info-message'),
+		},
+		{
+			attributes: {
+				class: 'overflow-auto portlet-msg-alert',
+			},
+			element: 'div',
+			name: Liferay.Language.get('alert-message'),
+		},
+		{
+			attributes: {
+				class: 'overflow-auto portlet-msg-error',
+			},
+			element: 'div',
+			name: Liferay.Language.get('error-message'),
+		},
 	],
 	title: false,
 	toolbarImage:
