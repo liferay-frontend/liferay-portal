@@ -15,6 +15,7 @@
 package com.liferay.object.admin.rest.resource.v1_0;
 
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -58,7 +59,9 @@ public interface ObjectDefinitionResource {
 	}
 
 	public Page<ObjectDefinition> getObjectDefinitionsPage(
-			String search, Pagination pagination)
+			String search,
+			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
+			Filter filter, Pagination pagination, Sort[] sorts)
 		throws Exception;
 
 	public ObjectDefinition postObjectDefinition(

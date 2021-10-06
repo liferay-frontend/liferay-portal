@@ -28,6 +28,7 @@ import com.liferay.object.admin.rest.client.pagination.Page;
 import com.liferay.object.admin.rest.client.pagination.Pagination;
 import com.liferay.object.admin.rest.client.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.admin.rest.client.serdes.v1_0.ObjectDefinitionSerDes;
+import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -47,6 +48,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.search.test.util.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
@@ -57,6 +59,8 @@ import java.text.DateFormat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +72,7 @@ import javax.annotation.Generated;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.lang.time.DateUtils;
 
@@ -203,7 +208,7 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 	public void testGetObjectDefinitionsPage() throws Exception {
 		Page<ObjectDefinition> page =
 			objectDefinitionResource.getObjectDefinitionsPage(
-				null, Pagination.of(1, 10));
+				null, null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -216,7 +221,7 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 				randomObjectDefinition());
 
 		page = objectDefinitionResource.getObjectDefinitionsPage(
-			null, Pagination.of(1, 10));
+			null, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -234,9 +239,72 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 	}
 
 	@Test
+	public void testGetObjectDefinitionsPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		ObjectDefinition objectDefinition1 = randomObjectDefinition();
+
+		objectDefinition1 = testGetObjectDefinitionsPage_addObjectDefinition(
+			objectDefinition1);
+
+		for (EntityField entityField : entityFields) {
+			Page<ObjectDefinition> page =
+				objectDefinitionResource.getObjectDefinitionsPage(
+					null, null,
+					getFilterString(entityField, "between", objectDefinition1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(objectDefinition1),
+				(List<ObjectDefinition>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetObjectDefinitionsPageWithFilterStringEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.STRING);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		ObjectDefinition objectDefinition1 =
+			testGetObjectDefinitionsPage_addObjectDefinition(
+				randomObjectDefinition());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ObjectDefinition objectDefinition2 =
+			testGetObjectDefinitionsPage_addObjectDefinition(
+				randomObjectDefinition());
+
+		for (EntityField entityField : entityFields) {
+			Page<ObjectDefinition> page =
+				objectDefinitionResource.getObjectDefinitionsPage(
+					null, null,
+					getFilterString(entityField, "eq", objectDefinition1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(objectDefinition1),
+				(List<ObjectDefinition>)page.getItems());
+		}
+	}
+
+	@Test
 	public void testGetObjectDefinitionsPageWithPagination() throws Exception {
 		Page<ObjectDefinition> totalPage =
-			objectDefinitionResource.getObjectDefinitionsPage(null, null);
+			objectDefinitionResource.getObjectDefinitionsPage(
+				null, null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(totalPage.getTotalCount());
 
@@ -254,7 +322,7 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 
 		Page<ObjectDefinition> page1 =
 			objectDefinitionResource.getObjectDefinitionsPage(
-				null, Pagination.of(1, totalCount + 2));
+				null, null, null, Pagination.of(1, totalCount + 2), null);
 
 		List<ObjectDefinition> objectDefinitions1 =
 			(List<ObjectDefinition>)page1.getItems();
@@ -265,7 +333,7 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 
 		Page<ObjectDefinition> page2 =
 			objectDefinitionResource.getObjectDefinitionsPage(
-				null, Pagination.of(2, totalCount + 2));
+				null, null, null, Pagination.of(2, totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -277,7 +345,7 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 
 		Page<ObjectDefinition> page3 =
 			objectDefinitionResource.getObjectDefinitionsPage(
-				null, Pagination.of(1, totalCount + 3));
+				null, null, null, Pagination.of(1, totalCount + 3), null);
 
 		assertContains(
 			objectDefinition1, (List<ObjectDefinition>)page3.getItems());
@@ -285,6 +353,130 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 			objectDefinition2, (List<ObjectDefinition>)page3.getItems());
 		assertContains(
 			objectDefinition3, (List<ObjectDefinition>)page3.getItems());
+	}
+
+	@Test
+	public void testGetObjectDefinitionsPageWithSortDateTime()
+		throws Exception {
+
+		testGetObjectDefinitionsPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, objectDefinition1, objectDefinition2) -> {
+				BeanUtils.setProperty(
+					objectDefinition1, entityField.getName(),
+					DateUtils.addMinutes(new Date(), -2));
+			});
+	}
+
+	@Test
+	public void testGetObjectDefinitionsPageWithSortInteger() throws Exception {
+		testGetObjectDefinitionsPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, objectDefinition1, objectDefinition2) -> {
+				BeanUtils.setProperty(
+					objectDefinition1, entityField.getName(), 0);
+				BeanUtils.setProperty(
+					objectDefinition2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetObjectDefinitionsPageWithSortString() throws Exception {
+		testGetObjectDefinitionsPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, objectDefinition1, objectDefinition2) -> {
+				Class<?> clazz = objectDefinition1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				java.lang.reflect.Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanUtils.setProperty(
+						objectDefinition1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanUtils.setProperty(
+						objectDefinition2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanUtils.setProperty(
+						objectDefinition1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanUtils.setProperty(
+						objectDefinition2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanUtils.setProperty(
+						objectDefinition1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanUtils.setProperty(
+						objectDefinition2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetObjectDefinitionsPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer
+				<EntityField, ObjectDefinition, ObjectDefinition, Exception>
+					unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		ObjectDefinition objectDefinition1 = randomObjectDefinition();
+		ObjectDefinition objectDefinition2 = randomObjectDefinition();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(
+				entityField, objectDefinition1, objectDefinition2);
+		}
+
+		objectDefinition1 = testGetObjectDefinitionsPage_addObjectDefinition(
+			objectDefinition1);
+
+		objectDefinition2 = testGetObjectDefinitionsPage_addObjectDefinition(
+			objectDefinition2);
+
+		for (EntityField entityField : entityFields) {
+			Page<ObjectDefinition> ascPage =
+				objectDefinitionResource.getObjectDefinitionsPage(
+					null, null, null, Pagination.of(1, 2),
+					entityField.getName() + ":asc");
+
+			assertEquals(
+				Arrays.asList(objectDefinition1, objectDefinition2),
+				(List<ObjectDefinition>)ascPage.getItems());
+
+			Page<ObjectDefinition> descPage =
+				objectDefinitionResource.getObjectDefinitionsPage(
+					null, null, null, Pagination.of(1, 2),
+					entityField.getName() + ":desc");
+
+			assertEquals(
+				Arrays.asList(objectDefinition2, objectDefinition1),
+				(List<ObjectDefinition>)descPage.getItems());
+		}
 	}
 
 	protected ObjectDefinition testGetObjectDefinitionsPage_addObjectDefinition(
@@ -572,6 +764,9 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
+
+	@Rule
+	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	protected ObjectDefinition testGraphQLObjectDefinition_addObjectDefinition()
 		throws Exception {
