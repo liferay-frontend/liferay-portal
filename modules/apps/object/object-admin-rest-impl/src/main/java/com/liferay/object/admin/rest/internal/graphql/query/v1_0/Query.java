@@ -33,12 +33,15 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.aggregation.Facet;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLTypeExtension;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
@@ -140,13 +143,16 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {objectDefinitions(page: ___, pageSize: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {objectDefinitions(aggregation: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ObjectDefinitionPage objectDefinitions(
 			@GraphQLName("search") String search,
+			@GraphQLName("aggregation") List<String> aggregations,
+			@GraphQLName("filter") String filterString,
 			@GraphQLName("pageSize") int pageSize,
-			@GraphQLName("page") int page)
+			@GraphQLName("page") int page,
+			@GraphQLName("sort") String sortsString)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
@@ -154,7 +160,14 @@ public class Query {
 			this::_populateResourceContext,
 			objectDefinitionResource -> new ObjectDefinitionPage(
 				objectDefinitionResource.getObjectDefinitionsPage(
-					search, Pagination.of(page, pageSize))));
+					search,
+					_aggregationBiFunction.apply(
+						objectDefinitionResource, aggregations),
+					_filterBiFunction.apply(
+						objectDefinitionResource, filterString),
+					Pagination.of(page, pageSize),
+					_sortsBiFunction.apply(
+						objectDefinitionResource, sortsString))));
 	}
 
 	/**
@@ -393,6 +406,8 @@ public class Query {
 		public ObjectActionPage(Page objectActionPage) {
 			actions = objectActionPage.getActions();
 
+			facets = objectActionPage.getFacets();
+
 			items = objectActionPage.getItems();
 			lastPage = objectActionPage.getLastPage();
 			page = objectActionPage.getPage();
@@ -402,6 +417,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<ObjectAction> items;
@@ -426,6 +444,8 @@ public class Query {
 		public ObjectDefinitionPage(Page objectDefinitionPage) {
 			actions = objectDefinitionPage.getActions();
 
+			facets = objectDefinitionPage.getFacets();
+
 			items = objectDefinitionPage.getItems();
 			lastPage = objectDefinitionPage.getLastPage();
 			page = objectDefinitionPage.getPage();
@@ -435,6 +455,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<ObjectDefinition> items;
@@ -459,6 +482,8 @@ public class Query {
 		public ObjectFieldPage(Page objectFieldPage) {
 			actions = objectFieldPage.getActions();
 
+			facets = objectFieldPage.getFacets();
+
 			items = objectFieldPage.getItems();
 			lastPage = objectFieldPage.getLastPage();
 			page = objectFieldPage.getPage();
@@ -468,6 +493,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<ObjectField> items;
@@ -492,6 +520,8 @@ public class Query {
 		public ObjectLayoutPage(Page objectLayoutPage) {
 			actions = objectLayoutPage.getActions();
 
+			facets = objectLayoutPage.getFacets();
+
 			items = objectLayoutPage.getItems();
 			lastPage = objectLayoutPage.getLastPage();
 			page = objectLayoutPage.getPage();
@@ -501,6 +531,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<ObjectLayout> items;
@@ -525,6 +558,8 @@ public class Query {
 		public ObjectRelationshipPage(Page objectRelationshipPage) {
 			actions = objectRelationshipPage.getActions();
 
+			facets = objectRelationshipPage.getFacets();
+
 			items = objectRelationshipPage.getItems();
 			lastPage = objectRelationshipPage.getLastPage();
 			page = objectRelationshipPage.getPage();
@@ -534,6 +569,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<ObjectRelationship> items;
@@ -659,6 +697,8 @@ public class Query {
 		_objectRelationshipResourceComponentServiceObjects;
 
 	private AcceptLanguage _acceptLanguage;
+	private BiFunction<Object, List<String>, Aggregation>
+		_aggregationBiFunction;
 	private com.liferay.portal.kernel.model.Company _company;
 	private BiFunction<Object, String, Filter> _filterBiFunction;
 	private GroupLocalService _groupLocalService;
