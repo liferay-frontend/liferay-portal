@@ -1273,7 +1273,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			Page<ObjectDefinition> objectDefinitionsPage =
 				objectDefinitionResource.getObjectDefinitionsPage(
-					objectDefinition.getName(), null);
+					objectDefinition.getName(), null, null, null, null);
 
 			ObjectDefinition existingObjectDefinition =
 				objectDefinitionsPage.fetchFirstItem();
