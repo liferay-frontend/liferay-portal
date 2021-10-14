@@ -16,8 +16,8 @@ package com.liferay.object.rest.internal.deployer;
 
 import com.liferay.object.deployer.ObjectDefinitionDeployer;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.registry.ObjectDefinitionRegistry;
 import com.liferay.object.rest.internal.graphql.dto.v1_0.ObjectDefinitionGraphQLDTOContributor;
-import com.liferay.object.rest.internal.jaxrs.context.provider.ObjectDefinitionContextProvider;
 import com.liferay.object.rest.internal.jaxrs.exception.mapper.RequiredObjectFieldExceptionMapper;
 import com.liferay.object.rest.internal.jaxrs.exception.mapper.RequiredObjectRelationshipExceptionMapper;
 import com.liferay.object.rest.internal.resource.v1_0.BaseObjectEntryResourceImpl;
@@ -43,8 +43,6 @@ import java.util.Map;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.ext.ExceptionMapper;
-
-import org.apache.cxf.jaxrs.ext.ContextProvider;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -72,7 +70,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			_objectScopeProviderRegistry.getObjectScopeProvider(
 				objectDefinition.getScope());
 
-		if (!_objectDefinitionsMap.containsKey(
+		if (!_objectDefinitionRegistry.containsRESTContextPath(
 				objectDefinition.getRESTContextPath())) {
 
 			_excludeScopedMethods(objectDefinition, objectScopeProvider);
@@ -117,21 +115,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			Collections.addAll(
 				serviceRegistrations,
 				_bundleContext.registerService(
-					ContextProvider.class,
-					new ObjectDefinitionContextProvider(this, _portal),
-					HashMapDictionaryBuilder.<String, Object>put(
-						"enabled", "false"
-					).put(
-						"osgi.jaxrs.application.select",
-						"(osgi.jaxrs.name=" + objectDefinition.getName() + ")"
-					).put(
-						"osgi.jaxrs.extension", "true"
-					).put(
-						"osgi.jaxrs.name",
-						objectDefinition.getName() +
-							"ObjectDefinitionContextProvider"
-					).build()),
-				_bundleContext.registerService(
 					ExceptionMapper.class,
 					new RequiredObjectFieldExceptionMapper(),
 					HashMapDictionaryBuilder.<String, Object>put(
@@ -171,44 +154,17 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					"dto.name", objectDefinition.getDBTableName()
 				).build()));
 
-		Map<Long, ObjectDefinition> objectDefinitions =
-			_objectDefinitionsMap.computeIfAbsent(
-				objectDefinition.getRESTContextPath(), k -> new HashMap<>());
-
-		objectDefinitions.put(
-			objectDefinition.getCompanyId(), objectDefinition);
+		_objectDefinitionRegistry.addObjectDefinition(objectDefinition);
 
 		return serviceRegistrations;
 	}
 
-	public ObjectDefinition getObjectDefinition(
-		long companyId, String restContextPath) {
-
-		Map<Long, ObjectDefinition> objectDefinitions =
-			_objectDefinitionsMap.get(restContextPath);
-
-		if (objectDefinitions != null) {
-			return objectDefinitions.get(companyId);
-		}
-
-		return null;
-	}
-
 	@Override
 	public synchronized void undeploy(ObjectDefinition objectDefinition) {
-		Map<Long, ObjectDefinition> objectDefinitions =
-			_objectDefinitionsMap.get(objectDefinition.getRESTContextPath());
 
-		if (objectDefinitions != null) {
-			objectDefinitions.remove(objectDefinition.getCompanyId());
+		_objectDefinitionRegistry.removeObjectDefinition(objectDefinition);
 
-			if (objectDefinitions.isEmpty()) {
-				_objectDefinitionsMap.remove(
-					objectDefinition.getRESTContextPath());
-			}
-		}
-
-		if (!_objectDefinitionsMap.containsKey(
+		if (!_objectDefinitionRegistry.containsRESTContextPath(
 				objectDefinition.getRESTContextPath())) {
 
 			List<ComponentInstance> componentInstances =
@@ -289,8 +245,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
 
-	private final Map<String, Map<Long, ObjectDefinition>>
-		_objectDefinitionsMap = new HashMap<>();
+	@Reference
+	private ObjectDefinitionRegistry _objectDefinitionRegistry;
 
 	@Reference(
 		target = "(component.factory=com.liferay.object.internal.jaxrs.application.ObjectEntryApplication)"

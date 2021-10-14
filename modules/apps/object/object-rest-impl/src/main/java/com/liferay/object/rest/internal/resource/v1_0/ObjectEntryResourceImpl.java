@@ -15,6 +15,7 @@
 package com.liferay.object.rest.internal.resource.v1_0;
 
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.registry.ObjectDefinitionRegistry;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.internal.odata.entity.v1_0.ObjectEntryEntityModel;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
@@ -23,7 +24,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
@@ -33,11 +33,10 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.io.Serializable;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.osgi.service.component.annotations.Component;
@@ -54,34 +53,12 @@ import org.osgi.service.component.annotations.Reference;
 public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 
 	@Override
-	public void create(
-			Collection<ObjectEntry> objectEntries,
-			Map<String, Serializable> parameters)
-		throws Exception {
-
-		_loadObjectDefinition(parameters);
-
-		super.create(objectEntries, parameters);
-	}
-
-	@Override
-	public void delete(
-			Collection<ObjectEntry> objectEntries,
-			Map<String, Serializable> parameters)
-		throws Exception {
-
-		_loadObjectDefinition(parameters);
-
-		super.delete(objectEntries, parameters);
-	}
-
-	@Override
 	public void deleteByExternalReferenceCode(String externalReferenceCode)
 		throws Exception {
 
 		_objectEntryManager.deleteObjectEntry(
 			externalReferenceCode, contextCompany.getCompanyId(),
-			_objectDefinition, null);
+			_getObjectDefinition(), null);
 	}
 
 	@Override
@@ -96,7 +73,7 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 
 		_objectEntryManager.deleteObjectEntry(
 			externalReferenceCode, contextCompany.getCompanyId(),
-			_objectDefinition, scopeKey);
+			_getObjectDefinition(), scopeKey);
 	}
 
 	@Override
@@ -105,15 +82,17 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 
 		return _objectEntryManager.getObjectEntry(
 			_getDTOConverterContext(null), externalReferenceCode,
-			contextCompany.getCompanyId(), _objectDefinition, null);
+			contextCompany.getCompanyId(), _getObjectDefinition(), null);
 	}
 
 	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		if (_entityModel == null) {
+			ObjectDefinition objectDefinition = _getObjectDefinition();
+
 			_entityModel = new ObjectEntryEntityModel(
 				_objectFieldLocalService.getObjectFields(
-					_objectDefinition.getObjectDefinitionId()));
+					objectDefinition.getObjectDefinitionId()));
 		}
 
 		return _entityModel;
@@ -126,14 +105,14 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 		throws Exception {
 
 		return _objectEntryManager.getObjectEntries(
-			contextCompany.getCompanyId(), _objectDefinition, null, aggregation,
+			contextCompany.getCompanyId(), _getObjectDefinition(), null, aggregation,
 			_getDTOConverterContext(null), filter, pagination, search, sorts);
 	}
 
 	@Override
 	public ObjectEntry getObjectEntry(Long objectEntryId) throws Exception {
 		return _objectEntryManager.getObjectEntry(
-			_getDTOConverterContext(objectEntryId), _objectDefinition,
+			_getDTOConverterContext(objectEntryId), _getObjectDefinition(),
 			objectEntryId);
 	}
 
@@ -144,7 +123,7 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 
 		return _objectEntryManager.getObjectEntry(
 			_getDTOConverterContext(null), externalReferenceCode,
-			contextCompany.getCompanyId(), _objectDefinition, scopeKey);
+			contextCompany.getCompanyId(), _getObjectDefinition(), scopeKey);
 	}
 
 	@Override
@@ -155,7 +134,7 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 		throws Exception {
 
 		return _objectEntryManager.getObjectEntries(
-			contextCompany.getCompanyId(), _objectDefinition, scopeKey,
+			contextCompany.getCompanyId(), _getObjectDefinition(), scopeKey,
 			aggregation, _getDTOConverterContext(null), filter, pagination,
 			search, sorts);
 	}
@@ -166,7 +145,7 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 
 		return _objectEntryManager.addObjectEntry(
 			_getDTOConverterContext(null), contextUser.getUserId(),
-			_objectDefinition, objectEntry, null);
+			_getObjectDefinition(), objectEntry, null);
 	}
 
 	@Override
@@ -176,7 +155,7 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 
 		return _objectEntryManager.addObjectEntry(
 			_getDTOConverterContext(null), contextUser.getUserId(),
-			_objectDefinition, objectEntry, scopeKey);
+			_getObjectDefinition(), objectEntry, scopeKey);
 	}
 
 	@Override
@@ -186,7 +165,7 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 
 		return _objectEntryManager.addOrUpdateObjectEntry(
 			_getDTOConverterContext(null), externalReferenceCode,
-			contextUser.getUserId(), _objectDefinition, objectEntry, null);
+			contextUser.getUserId(), _getObjectDefinition(), objectEntry, null);
 	}
 
 	@Override
@@ -196,7 +175,7 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 
 		return _objectEntryManager.updateObjectEntry(
 			_getDTOConverterContext(objectEntryId), contextUser.getUserId(),
-			_objectDefinition, objectEntryId, objectEntry);
+			_getObjectDefinition(), objectEntryId, objectEntry);
 	}
 
 	@Override
@@ -207,7 +186,7 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 
 		return _objectEntryManager.addOrUpdateObjectEntry(
 			_getDTOConverterContext(null), externalReferenceCode,
-			contextUser.getUserId(), _objectDefinition, objectEntry, scopeKey);
+			contextUser.getUserId(), _getObjectDefinition(), objectEntry, scopeKey);
 	}
 
 	@Override
@@ -215,8 +194,6 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 			Collection<ObjectEntry> objectEntries,
 			Map<String, Serializable> parameters)
 		throws Exception {
-
-		_loadObjectDefinition(parameters);
 
 		super.update(objectEntries, parameters);
 	}
@@ -231,31 +208,21 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 			contextUser);
 	}
 
-	private void _loadObjectDefinition(Map<String, Serializable> parameters)
-		throws Exception {
+	private ObjectDefinition _getObjectDefinition() {
+		URI baseUri = contextUriInfo.getBaseUri();
+		String baseUriPath = baseUri.getPath();
+		String restContextPath = StringUtil.removeFirst(baseUriPath, "/o");
+		restContextPath = StringUtil.replaceLast(restContextPath, '/', "");
 
-		String parameterValue = (String)parameters.get("objectDefinitionId");
 
-		if ((parameterValue != null) && (parameterValue.length() > 2)) {
-			String[] objectDefinitionIds = StringUtil.split(
-				parameterValue.substring(1, parameterValue.length() - 1), ",");
-
-			if (objectDefinitionIds.length > 0) {
-				_objectDefinition =
-					_objectDefinitionLocalService.getObjectDefinition(
-						GetterUtil.getLong(objectDefinitionIds[0]));
-
-				return;
-			}
-		}
-
-		throw new NotFoundException("Missing parameter \"objectDefinitionId\"");
+		return _objectDefinitionRegistry.getObjectDefinition(
+			contextCompany.getCompanyId(), restContextPath);
 	}
 
 	private EntityModel _entityModel;
 
-	@Context
-	private ObjectDefinition _objectDefinition;
+	@Reference
+	private ObjectDefinitionRegistry _objectDefinitionRegistry;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
