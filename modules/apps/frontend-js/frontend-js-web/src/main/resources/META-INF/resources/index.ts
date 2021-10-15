@@ -136,7 +136,7 @@ export {default as normalizeFriendlyURL} from './liferay/util/normalize_friendly
 
 // @ts-ignore
 
-export {default as runScriptsInElement} from './liferay/util/run_scripts_in_element.es';
+export {default as runScriptsInElement} from './liferay/util/run_scripts_in_element';
 
 // @ts-ignore
 

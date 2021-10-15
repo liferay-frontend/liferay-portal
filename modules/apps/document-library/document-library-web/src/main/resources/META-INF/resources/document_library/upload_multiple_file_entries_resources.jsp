@@ -209,7 +209,7 @@ else {
 
 					</c:if>
 
-					<aui:script position="inline" require="frontend-js-web/liferay/delegate/delegate.es as delegateModule,frontend-js-web/liferay/util/run_scripts_in_element.es as runScriptsInElement">
+					<aui:script position="inline" require="frontend-js-web/liferay/delegate/delegate.es as delegateModule,frontend-js-web/liferay/util/run_scripts_in_element as runScriptsInElement">
 						var documentTypeMenuList = document.querySelector(
 							'#<portlet:namespace />documentTypeSelector .lfr-menu-list'
 						);

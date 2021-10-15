@@ -16,7 +16,7 @@
 
 <%@ include file="/init.jsp" %>
 
-<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element.es as runScriptsInElement">
+<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element as runScriptsInElement">
 	function handleIframeMessage(event) {
 		if (event.data) {
 			var virtualDocument = document.createElement('html');

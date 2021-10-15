@@ -123,7 +123,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 	</aui:script>
 </aui:form>
 
-<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element.es as runScriptsInElement">
+<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element as runScriptsInElement">
 	var continueButton = document.getElementById(
 		'<portlet:namespace />continueButton'
 	);

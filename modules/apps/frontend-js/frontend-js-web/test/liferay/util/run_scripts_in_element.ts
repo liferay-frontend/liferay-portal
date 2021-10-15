@@ -12,7 +12,13 @@
  * details.
  */
 
-import runScriptsInElement from '../../../src/main/resources/META-INF/resources/liferay/util/run_scripts_in_element.es';
+import runScriptsInElement from '../../../src/main/resources/META-INF/resources/liferay/util/run_scripts_in_element';
+
+declare global {
+	interface Window {
+		testScript?: string;
+	}
+}
 
 describe('runScriptsInElement', () => {
 	afterEach(() => {
