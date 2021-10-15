@@ -41,7 +41,9 @@ describe('Liferay.Uitl.toggleDisabled', () => {
 	it('sets the `disabled` attribute on a collection of nodes if the `state` argument is passed', () => {
 		toggleDisabled('button.test-button', 'disabled');
 
-		const nodes = document.querySelectorAll('button.test-button');
+		const nodes: NodeListOf<HTMLButtonElement> = document.querySelectorAll(
+			'button.test-button'
+		);
 
 		nodes.forEach((node) => {
 			expect(node.disabled).toEqual(true);
