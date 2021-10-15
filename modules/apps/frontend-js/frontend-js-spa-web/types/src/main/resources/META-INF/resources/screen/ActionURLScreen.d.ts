@@ -11,17 +11,21 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-import type LiferayApp from './app/LiferayApp';
-
-declare global {
-	export interface Liferay {
-		SPA?: {
-			__capturedFormElement__?: HTMLFormElement;
-			__capturedFormButtonElement__?: HTMLButtonElement;
-			app?: LiferayApp;
-		};
-	}
+import EventScreen from './EventScreen';
+/**
+ * ActionURLScreen
+ *
+ * Inherits from {@link EventScreen|EventScreen}. The screen used for all
+ * requests made to ActionURLs.
+ */
+declare class ActionURLScreen extends EventScreen {
+    httpMethod: string;
+    constructor();
+    /**
+     * @inheritDoc
+     * Ensures that an action request (form submission) redirect's final
+     * URL has the lifecycle RENDER `p_p_lifecycle=0`
+     */
+    getRequestPath(): string | null;
 }
-
-export {};
+export default ActionURLScreen;

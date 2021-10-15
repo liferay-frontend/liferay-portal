@@ -11,17 +11,10 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-import type LiferayApp from './app/LiferayApp';
-
-declare global {
-	export interface Liferay {
-		SPA?: {
-			__capturedFormElement__?: HTMLFormElement;
-			__capturedFormButtonElement__?: HTMLButtonElement;
-			app?: LiferayApp;
-		};
-	}
+import type { LiferayAppConfig } from './app/LiferayApp';
+interface Config extends LiferayAppConfig {
+    excludedPaths: string[];
+    loginRedirect: string;
 }
-
+export default function init(config: Config): void;
 export {};

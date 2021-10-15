@@ -11,17 +11,4 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-import type LiferayApp from './app/LiferayApp';
-
-declare global {
-	export interface Liferay {
-		SPA?: {
-			__capturedFormElement__?: HTMLFormElement;
-			__capturedFormButtonElement__?: HTMLButtonElement;
-			app?: LiferayApp;
-		};
-	}
-}
-
 export {};
