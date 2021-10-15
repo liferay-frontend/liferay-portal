@@ -11,17 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-import type LiferayApp from './app/LiferayApp';
-
-declare global {
-	export interface Liferay {
-		SPA?: {
-			__capturedFormElement__?: HTMLFormElement;
-			__capturedFormButtonElement__?: HTMLButtonElement;
-			app?: LiferayApp;
-		};
-	}
+import EventScreen from './EventScreen';
+/**
+ * RenderURLScreen
+ *
+ * Inherits from {@link EventScreen|EventScreen}. This is the screen used for
+ * all requests made to RenderURLs.
+ */
+declare class RenderURLScreen extends EventScreen {
+    constructor();
 }
-
-export {};
+export default RenderURLScreen;

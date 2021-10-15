@@ -12,16 +12,21 @@
  * details.
  */
 
-import type LiferayApp from './app/LiferayApp';
+import EventScreen from './EventScreen';
 
-declare global {
-	export interface Liferay {
-		SPA?: {
-			__capturedFormElement__?: HTMLFormElement;
-			__capturedFormButtonElement__?: HTMLButtonElement;
-			app?: LiferayApp;
-		};
+/**
+ * RenderURLScreen
+ *
+ * Inherits from {@link EventScreen|EventScreen}. This is the screen used for
+ * all requests made to RenderURLs.
+ */
+
+class RenderURLScreen extends EventScreen {
+	constructor() {
+		super();
+
+		this.cacheable = true;
 	}
 }
 
-export {};
+export default RenderURLScreen;
