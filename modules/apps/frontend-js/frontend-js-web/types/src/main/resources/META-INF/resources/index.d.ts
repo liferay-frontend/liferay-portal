@@ -24,7 +24,7 @@ export { default as EventEmitter } from './liferay/events/EventEmitter';
 export { default as EventHandler } from './liferay/events/EventHandler';
 export { default as ItemSelectorDialog } from './liferay/ItemSelectorDialog.es';
 export { default as PortletBase } from './liferay/PortletBase.es';
-export { openModal, openSelectionModal } from './liferay/modal/Modal.js';
+export { openModal, openSelectionModal } from './liferay/modal/Modal';
 export { default as openSimpleInputModal } from './liferay/modal/commands/OpenSimpleInputModal.es';
 export { default as createActionURL } from './liferay/util/portlet_url/create_action_url';
 export { default as createPortletURL } from './liferay/util/portlet_url/create_portlet_url';

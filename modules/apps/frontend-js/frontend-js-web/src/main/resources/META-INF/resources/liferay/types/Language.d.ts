@@ -11,10 +11,13 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-import type { EventCallback } from '../types/events';
-/**
- * Performs navigation to the given url. If SPA is enabled, it will route the
- * request through the SPA engine. If not, it will simple change the document
- * location.
- */
-export default function (url: string | URL, listeners?: Record<string, EventCallback>): void;
+
+type AvailableLanguagesMap = Record<string, string>;
+type LanguageDirection = 'ltr' | 'rtl';
+type LanguageDirectionMap = Record<string, LanguageDirection | null>;
+
+export interface Language {
+	readonly available: AvailableLanguagesMap;
+	readonly direction: LanguageDirectionMap;
+	get: (key: string) => string;
+}
