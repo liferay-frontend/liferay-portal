@@ -13,6 +13,15 @@
  */
 
 import Disposable from './Disposable';
+import EventEmitter from './EventEmitter';
+
+import type EventOrEventsList from './EventEmitter';
+
+export interface IEventHandle {
+	removeListener(): void;
+}
+
+type Nullable<T> = T | null;
 
 /**
  * EventHandle utility. Holds information about an event subscription, and
@@ -20,44 +29,40 @@ import Disposable from './Disposable';
  * EventHandle is a Disposable, but it's important to note that the
  * EventEmitter that created it is not the one responsible for disposing it.
  * That responsibility is for the code that holds a reference to it.
- * @extends {Disposable}
  */
-class EventHandle extends Disposable {
+class EventHandle extends Disposable implements IEventHandle {
+	private _emitter: Nullable<EventEmitter>;
+	private _event: EventOrEventsList;
+	private _listener: Nullable<Function>;
 
 	/**
 	 * EventHandle constructor
-	 * @param {!EventEmitter} emitter Emitter the event was subscribed to.
-	 * @param {string} event The name of the event that was subscribed to.
-	 * @param {!Function} listener The listener subscribed to the event.
 	 */
-	constructor(emitter, event, listener) {
+	constructor(
+		emitter: EventEmitter,
+		event: EventOrEventsList,
+		listener: Function
+	) {
 		super();
 
 		/**
 		 * The EventEmitter instance that the event was subscribed to.
-		 * @type {EventEmitter}
-		 * @protected
 		 */
 		this._emitter = emitter;
 
 		/**
 		 * The name of the event that was subscribed to.
-		 * @type {string}
-		 * @protected
 		 */
 		this._event = event;
 
 		/**
 		 * The listener subscribed to the event.
-		 * @type {Function}
-		 * @protected
 		 */
 		this._listener = listener;
 	}
 
 	/**
 	 * Disposes of this instance's object references.
-	 * @override
 	 */
 	disposeInternal() {
 		this.removeListener();
@@ -69,8 +74,8 @@ class EventHandle extends Disposable {
 	 * Removes the listener subscription from the emitter.
 	 */
 	removeListener() {
-		if (!this._emitter.isDisposed()) {
-			this._emitter.removeListener(this._event, this._listener);
+		if (!this._emitter?.isDisposed()) {
+			this._emitter?.removeListener(this._event, this._listener);
 		}
 	}
 }

@@ -20,6 +20,7 @@
  * @constructor
  */
 class Disposable {
+	_disposed: boolean;
 
 	/**
 	 * Disposable constructor
@@ -28,8 +29,6 @@ class Disposable {
 
 		/**
 		 * Flag indicating if this instance has already been disposed.
-		 * @type {boolean}
-		 * @protected
 		 */
 		this._disposed = false;
 	}
@@ -40,6 +39,7 @@ class Disposable {
 	dispose() {
 		if (!this._disposed) {
 			this.disposeInternal();
+
 			this._disposed = true;
 		}
 	}
@@ -53,7 +53,6 @@ class Disposable {
 
 	/**
 	 * Checks if this instance has already been disposed.
-	 * @return {boolean}
 	 */
 	isDisposed() {
 		return this._disposed;

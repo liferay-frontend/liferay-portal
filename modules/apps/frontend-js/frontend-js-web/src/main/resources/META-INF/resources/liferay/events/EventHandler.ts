@@ -14,12 +14,14 @@
 
 import Disposable from './Disposable';
 
+import type IEventHandle from './EventHandle';
+
 /**
  * EventHandler utility. It's useful for easily removing a group of
  * listeners from different EventEmitter instances.
- * @extends {Disposable}
  */
 class EventHandler extends Disposable {
+	private _eventHandles: IEventHandle[];
 
 	/**
 	 * EventHandler constructor
@@ -30,8 +32,6 @@ class EventHandler extends Disposable {
 		/**
 		 * An array that holds the added event handles, so the listeners can be
 		 * removed later.
-		 * @type {Array.<EventHandle>}
-		 * @protected
 		 */
 		this._eventHandles = [];
 	}
@@ -39,11 +39,10 @@ class EventHandler extends Disposable {
 	/**
 	 * Adds event handles to be removed later through the `removeAllListeners`
 	 * method.
-	 * @param {...(!EventHandle)} args
 	 */
-	add(...args) {
+	add(...args: IEventHandle[]) {
 		for (let i = 0; i < args.length; i++) {
-			this._eventHandles.push(args[i]);
+			this._eventHandles?.push(args[i]);
 		}
 	}
 
@@ -52,7 +51,7 @@ class EventHandler extends Disposable {
 	 * @override
 	 */
 	disposeInternal() {
-		this._eventHandles = null;
+		this._eventHandles = [];
 	}
 
 	/**
