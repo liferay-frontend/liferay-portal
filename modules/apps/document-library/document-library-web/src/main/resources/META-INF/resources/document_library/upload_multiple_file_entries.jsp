@@ -111,7 +111,7 @@ if (portletTitleBasedNavigation) {
 						PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "add-multiple-file-entries"), currentURL);
 						%>
 
-						<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element.es as runScriptsInElement">
+						<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element as runScriptsInElement">
 							AUI().use('aui-base', 'aui-loading-mask-deprecated', 'node-load', (A) => {
 								Liferay.on('tempFileRemoved', () => {
 									Liferay.Util.openToast({

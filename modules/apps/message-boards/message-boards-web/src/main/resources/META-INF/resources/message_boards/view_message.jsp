@@ -62,7 +62,7 @@ MBBreadcrumbUtil.addPortletBreadcrumbEntries(message, request, renderResponse);
 	</div>
 </div>
 
-<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element.es as runScriptsInElement">
+<aui:script require="frontend-js-web/liferay/util/run_scripts_in_element as runScriptsInElement">
 	window['<portlet:namespace />addReplyToMessage'] = function (messageId, quote) {
 		var addQuickReplyContainer = document.querySelector(
 			'#<portlet:namespace />addReplyToMessage' + messageId + ' .panel'
