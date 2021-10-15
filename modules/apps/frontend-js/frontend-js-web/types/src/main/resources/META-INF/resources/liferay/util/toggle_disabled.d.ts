@@ -11,34 +11,10 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
+import type { YNode, YNodeList } from '../types/AUI';
+declare type Nodes = Element | Element[] | NodeListOf<Element> | YNode | YNodeList;
 /**
  * Toggles disabled class on received element
- * @param nodes
- * @param state
  */
-export default function toggleDisabled(nodes, state) {
-	if (typeof nodes === 'string') {
-		nodes = document.querySelectorAll(nodes);
-	}
-	else if (nodes._node) {
-		nodes = [nodes._node];
-	}
-	else if (nodes._nodes) {
-		nodes = nodes._nodes;
-	}
-	else if (nodes.nodeType === Node.ELEMENT_NODE) {
-		nodes = [nodes];
-	}
-
-	nodes.forEach((node) => {
-		node.disabled = state;
-
-		if (state) {
-			node.classList.add('disabled');
-		}
-		else {
-			node.classList.remove('disabled');
-		}
-	});
-}
+export default function toggleDisabled(nodes: string | Nodes, state: string): void;
+export {};

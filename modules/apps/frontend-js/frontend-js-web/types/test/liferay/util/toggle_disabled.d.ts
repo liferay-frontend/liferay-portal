@@ -11,26 +11,4 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-export interface AUI {
-	readonly getCombine: () => boolean;
-	readonly getComboPath: () => string;
-	readonly getDateFormat: () => string;
-	readonly getEditorCKEditorPath: () => string;
-	readonly getFilter: () => string;
-	readonly getFilterConfig: () => string;
-	readonly getJavaScriptRootPath: () => string;
-	readonly getPortletRootPath: () => string;
-	readonly getStaticResourceURLParams: () => string;
-}
-
-export interface YNode {
-	_node: HTMLElement;
-	_stateProxy: HTMLElement;
-	_yuid: string;
-}
-
-export interface YNodeList {
-	_nodes: HTMLElement[];
-	query: string;
-}
+export {};
