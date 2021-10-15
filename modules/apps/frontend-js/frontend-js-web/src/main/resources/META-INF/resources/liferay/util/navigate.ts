@@ -12,7 +12,7 @@
  * details.
  */
 
-import type {EventCallback} from '../types';
+import type {EventCallback} from '../types/events';
 
 /**
  * Performs navigation to the given url. If SPA is enabled, it will route the

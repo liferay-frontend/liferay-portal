@@ -12,7 +12,7 @@
  * details.
  */
 
-interface EventFacade {
+export interface EventFacade {
 	currentTarget: any;
 	details: any;
 	relatedTarget: any;
@@ -25,6 +25,7 @@ interface EventFacade {
 	stopPropagation(): void;
 
 	[key: string]: any;
-};
+}
 
 export type EventCallback = (event: EventFacade) => void;
+export type EventHandler = (eventName: string, callback: EventCallback) => void;

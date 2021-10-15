@@ -11,10 +11,9 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-import type { EventCallback } from '../types/events';
-/**
- * Performs navigation to the given url. If SPA is enabled, it will route the
- * request through the SPA engine. If not, it will simple change the document
- * location.
- */
-export default function (url: string | URL, listeners?: Record<string, EventCallback>): void;
+
+export interface PropsValues extends Record<string, unknown> {
+	readonly JAVASCRIPT_SINGLE_PAGE_APPLICATION_TIMEOUT: number;
+	readonly NTLM_AUTH_ENABLED: boolean;
+	readonly UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE: number;
+}

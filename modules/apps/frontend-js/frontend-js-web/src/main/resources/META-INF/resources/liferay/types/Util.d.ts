@@ -11,10 +11,15 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-import type { EventCallback } from '../types/events';
-/**
- * Performs navigation to the given url. If SPA is enabled, it will route the
- * request through the SPA engine. If not, it will simple change the document
- * location.
- */
-export default function (url: string | URL, listeners?: Record<string, EventCallback>): void;
+
+export type SubmitForm = (
+	form: HTMLFormElement,
+	action?: string,
+	singleSubmit?: boolean,
+	validate?: boolean
+) => void;
+
+export interface Util {
+	_submitLocked: boolean;
+	submitForm: SubmitForm;
+}
