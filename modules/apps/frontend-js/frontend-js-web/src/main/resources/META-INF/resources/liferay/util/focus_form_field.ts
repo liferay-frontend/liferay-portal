@@ -15,7 +15,7 @@
 import getElement from './get_element';
 import inBrowserView from './in_browser_view';
 
-function getDisabledParents(element) {
+function getDisabledParents(element: Element) {
 	const result = [];
 
 	while (element.parentElement) {
@@ -29,8 +29,8 @@ function getDisabledParents(element) {
 	return result;
 }
 
-export default function focusFormField(element) {
-	element = getElement(element);
+export default function focusFormField(element: HTMLElement) {
+	element = getElement(element) as HTMLElement;
 
 	if (inBrowserView(element)) {
 		const disabledParents = getDisabledParents(element);
@@ -51,7 +51,7 @@ export default function focusFormField(element) {
 
 			const formReadyEventName = portletName + 'formReady';
 
-			const formReadyHandler = (event) => {
+			const formReadyHandler = (event: any) => {
 				const elFormName = form.getAttribute('name');
 
 				const formName = event.formName;

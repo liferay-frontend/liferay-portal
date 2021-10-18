@@ -14,37 +14,52 @@
 
 import getElement from './get_element';
 
-export default function inBrowserView(node, baseWindow, nodeRegion) {
+type Region = {
+	bottom: number;
+	left: number;
+	right: number;
+	top: number;
+};
+
+function normalizeNodeRegion(node: HTMLElement, nodeRegion?: Region): Region {
+	if (nodeRegion) {
+		return nodeRegion;
+	}
+
+	const boundingClientRect = node.getBoundingClientRect();
+
+	const left = boundingClientRect.left + window.scrollX;
+	const top = boundingClientRect.top + window.scrollY;
+
+	return {
+		bottom: top + node.offsetHeight,
+		left,
+		right: left + node.offsetWidth,
+		top,
+	};
+}
+
+export default function inBrowserView(
+	node: HTMLElement,
+	baseWindow: Window = window,
+	nodeRegion?: Region
+): boolean {
 	let viewable = false;
 
-	node = getElement(node);
+	node = getElement(node) as HTMLElement;
 
 	if (node) {
-		if (!nodeRegion) {
-			nodeRegion = node.getBoundingClientRect();
+		nodeRegion = normalizeNodeRegion(node, nodeRegion);
 
-			nodeRegion = {
-				left: nodeRegion.left + window.scrollX,
-				top: nodeRegion.top + window.scrollY,
-			};
+		const left = baseWindow.scrollX;
+		const top = baseWindow.scrollY;
 
-			nodeRegion.bottom = nodeRegion.top + node.offsetHeight;
-			nodeRegion.right = nodeRegion.left + node.offsetWidth;
-		}
-
-		if (!baseWindow) {
-			baseWindow = window;
-		}
-
-		baseWindow = getElement(baseWindow);
-
-		const winRegion = {};
-
-		winRegion.left = baseWindow.scrollX;
-		winRegion.right = winRegion.left + baseWindow.innerWidth;
-
-		winRegion.top = baseWindow.scrollY;
-		winRegion.bottom = winRegion.top + baseWindow.innerHeight;
+		const winRegion: Region = {
+			bottom: top + baseWindow.innerHeight,
+			left,
+			right: left + baseWindow.innerWidth,
+			top,
+		};
 
 		viewable =
 			nodeRegion.bottom <= winRegion.bottom &&
@@ -56,19 +71,19 @@ export default function inBrowserView(node, baseWindow, nodeRegion) {
 			const frameElement = baseWindow.frameElement;
 
 			if (frameElement) {
-				let frameOffset = frameElement.getBoundingClientRect();
+				const frameOffset = frameElement.getBoundingClientRect();
 
-				frameOffset = {
+				const correctedFrameOffset = {
 					left: frameOffset.left + window.scrollX,
 					top: frameOffset.top + window.scrollY,
 				};
 
-				const xOffset = frameOffset.left - winRegion.left;
+				const xOffset = correctedFrameOffset.left - winRegion.left;
 
 				nodeRegion.left += xOffset;
 				nodeRegion.right += xOffset;
 
-				const yOffset = frameOffset.top - winRegion.top;
+				const yOffset = correctedFrameOffset.top - winRegion.top;
 
 				nodeRegion.top += yOffset;
 				nodeRegion.bottom += yOffset;
