@@ -25,7 +25,11 @@ export default () => {
 				whatever JS you want to App.js and redeploy.
 			</ClayAlert>
 
-			<div className="clay-test-class">This is where your code goes.</div>
+			<div className="clay-test-class">
+				This is where your code goes...
+				<p id="violation"> Text1 </p>
+				<p id="violation"> Text2 </p>
+			</div>
 		</div>
 	);
 };
