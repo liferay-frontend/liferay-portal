@@ -11,18 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-import getDOM from './get_dom';
-
 /**
  * @deprecated As of Athanasius (7.3.x), with no direct replacement
  */
-export default function getElement(element) {
-	const currentElement = getDOM(element);
-
-	return typeof currentElement === 'string'
-		? document.querySelector(currentElement)
-		: currentElement.jquery
-		? currentElement[0]
-		: currentElement;
-}
+export default function getElement<T>(element: T): T | Element | null;

@@ -47,6 +47,7 @@ declare global {
 		readonly destroyComponents: (
 			filterFn: (component: any, componentConfig: any) => boolean
 		) => void;
+		readonly detach: (eventName: string, callback: EventCallback) => void;
 		readonly fire: (eventName: string, data?: any) => void;
 		readonly initComponentCache: () => void;
 		readonly on: EventHandler;

@@ -11,14 +11,4 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-/**
- * @deprecated As of Athanasius (7.3.x), with no direct replacement
- */
-export default function getDOM(element) {
-	if (element._node || element._nodes) {
-		return element.nodeType ? element : element._node || null;
-	}
-
-	return element;
-}
+export default function focusFormField(element: HTMLElement): void;
