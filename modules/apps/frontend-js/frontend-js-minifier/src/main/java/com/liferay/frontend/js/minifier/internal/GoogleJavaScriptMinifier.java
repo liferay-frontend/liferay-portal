@@ -65,7 +65,7 @@ public class GoogleJavaScriptMinifier implements JavaScriptMinifier {
 
 			compilerOptions.setEmitUseStrict(false);
 			compilerOptions.setLanguageIn(
-				CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
+				CompilerOptions.LanguageMode.ECMASCRIPT_2017);
 			compilerOptions.setResolveSourceMapAnnotations(false);
 
 			compiler.compile(
@@ -120,7 +120,7 @@ public class GoogleJavaScriptMinifier implements JavaScriptMinifier {
 			"JSC_BAD_JSDOC_ANNOTATION", "JSC_DUPLICATE_OBJECT_KEY",
 			"JSC_GOOG_MODULE_IN_NON_MODULE", "JSC_INVALID_PARAM",
 			"JSC_JSDOC_IN_BLOCK_COMMENT", "JSC_JSDOC_MISSING_BRACES_WARNING",
-			"JSC_MISPLACED_ANNOTATION"));
+			"JSC_MISPLACED_ANNOTATION", "JSC_UNREACHABLE_CODE"));
 
 	private Method _clearThreadTraceMethod;
 
