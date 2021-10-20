@@ -71,6 +71,8 @@ class App extends EventEmitter {
 	surfaces: Record<string, Surface>;
 	updateScrollPosition: boolean;
 	appEventHandlers_: EventHandler;
+	formEventHandler_: any;
+	linkEventHandler_: any;
 
 	/**
 	 * App class that handle routes and screens lifecycle.
@@ -248,7 +250,7 @@ class App extends EventEmitter {
 		this.maybeOverloadBeforeUnload_();
 	}
 
-	addDOMEventListener(element, eventName, callback) {
+	addDOMEventListener(element: EventTarget, eventName: string, callback: EventListenerOrEventListenerObject) {
 		element.addEventListener(eventName, callback);
 
 		return {
@@ -315,10 +317,8 @@ class App extends EventEmitter {
 
 	/**
 	 * Returns if can navigate to path.
-	 * @param {!string} url
-	 * @return {boolean}
 	 */
-	canNavigate(url) {
+	canNavigate(url: string) {
 		try {
 			const uri = url.startsWith('/')
 				? new URL(url, window.location.origin)
@@ -353,17 +353,16 @@ class App extends EventEmitter {
 
 	/**
 	 * Clear screens cache.
-	 * @chainable
 	 */
 	clearScreensCache() {
 		Object.keys(this.screens).forEach((path) => {
 			if (path === this.activePath) {
-				this.activeScreen.clearCache();
+				this.activeScreen?.clearCache();
 			}
 			else if (
 				!(
 					this.isNavigationPending &&
-					this.pendingNavigate.path === path
+					this.pendingNavigate?.path === path
 				)
 			) {
 				this.removeScreen(path);
@@ -376,7 +375,7 @@ class App extends EventEmitter {
 	 * @param {!string} path Path containing the querystring part.
 	 * @return {Screen}
 	 */
-	createScreenInstance(path, route) {
+	createScreenInstance(path: string, route) {
 		if (!this.pendingNavigate && path === this.activePath) {
 			return this.activeScreen;
 		}
