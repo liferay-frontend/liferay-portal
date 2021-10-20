@@ -14,7 +14,6 @@
 
 package com.liferay.taglib.ui;
 
-import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -61,8 +60,8 @@ public class UserPortraitTag extends IncludeTag {
 			sb.append("\"><span class=\"inline-item\">");
 			sb.append("<svg class=\"lexicon-icon\">");
 			sb.append("<use href=\"");
-			sb.append(IconsUtil.getSpritemapPath("clay"));
-			sb.append("#user\" /></svg>");
+			sb.append(themeDisplay.getPathThemeImages());
+			sb.append("/clay/icons.svg#user\" /></svg>");
 			sb.append("</span></span>");
 
 			return sb.toString();

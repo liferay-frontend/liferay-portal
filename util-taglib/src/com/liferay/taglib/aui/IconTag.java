@@ -14,7 +14,6 @@
 
 package com.liferay.taglib.aui;
 
-import com.liferay.frontend.icons.util.IconsUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -147,7 +146,7 @@ public class IconTag extends BaseIconTag {
 						(ThemeDisplay)httpServletRequest.getAttribute(
 							WebKeys.THEME_DISPLAY);
 
-					src = IconsUtil.getSpritemapPath("clay")
+					src = themeDisplay.getPathThemeImages() + "/clay/icons.svg";
 				}
 
 				jspWriter.write(src);
