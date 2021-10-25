@@ -17,6 +17,7 @@ package com.liferay.frontend.icons.admin.web.internal.helper;
 import com.liferay.frontend.icons.admin.web.internal.repository.IconResourcePackRepository;
 import com.liferay.frontend.icons.admin.web.internal.util.SVGUtil;
 import com.liferay.frontend.icons.model.IconResourcePack;
+import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
@@ -42,20 +43,15 @@ public class IconResourceHelper {
 			long companyId, IconResourcePack iconResourcePack)
 		throws PortalException {
 
-		Map<String, IconResourcePack> groupIconResourceMap =
+		Map<String, IconResourcePack> companyIconResourceMap =
 			_iconResourcesMap.computeIfAbsent(
 				companyId, k -> new HashMap<String, IconResourcePack>());
 
-		groupIconResourceMap.putIfAbsent(
+		companyIconResourceMap.putIfAbsent(
 			iconResourcePack.getName(), iconResourcePack);
 
 		_iconResourcePackRepository.addIconResourcePack(
 			companyId, iconResourcePack);
-	}
-
-	public void deleteFileEntry(
-			long repositoryId, String iconName, String folderName)
-		throws PortalException {
 	}
 
 	public void deleteIconResourcePack(long companyId, String iconPack)
@@ -84,9 +80,11 @@ public class IconResourceHelper {
 		return SVGUtil.getSVGSpritemap(clayIconResourcePack);
 	}
 
-	public String getIconPackSpriteContent(long groupId, String iconPackName) {
+	public String getIconPackSpriteContent(
+		long companyId, String iconPackName) {
+
 		HashMap<String, IconResourcePack> iconResourceMap = getIconResourceMaps(
-			groupId);
+			companyId);
 
 		if (iconResourceMap == null) {
 			return null;
@@ -101,11 +99,13 @@ public class IconResourceHelper {
 		return SVGUtil.getSVGSpritemap(iconResourcePack);
 	}
 
-	public HashMap<String, IconResourcePack> getIconResourceMaps(long groupId) {
+	public HashMap<String, IconResourcePack> getIconResourceMaps(
+		long companyId) {
+
 		return HashMapBuilder.putAll(
 			_iconResourcesMap.get(_GLOBAL_ID)
 		).putAll(
-			_iconResourcesMap.get(groupId)
+			_iconResourcesMap.get(companyId)
 		).build();
 	}
 
