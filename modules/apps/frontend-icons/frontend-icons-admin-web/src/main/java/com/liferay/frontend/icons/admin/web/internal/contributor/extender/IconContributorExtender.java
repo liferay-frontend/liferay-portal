@@ -15,6 +15,8 @@
 package com.liferay.frontend.icons.admin.web.internal.contributor.extender;
 
 import com.liferay.frontend.icons.admin.web.internal.model.IconResourcePackImpl;
+import com.liferay.frontend.icons.admin.web.internal.util.SVGUtil;
+import com.liferay.frontend.icons.model.IconResource;
 import com.liferay.frontend.icons.model.IconResourcePack;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -32,6 +34,7 @@ import java.net.URL;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
@@ -158,8 +161,12 @@ public class IconContributorExtender
 			name = FileUtil.stripExtension(name);
 
 			try {
-				iconResourcePackImpl.addIconResource(
-					name, _getFileContents(url), false);
+				String svgContent = _getFileContents(url);
+
+				List<IconResource> iconResources = SVGUtil.getIconResources(
+					svgContent, name);
+
+				iconResourcePackImpl.addIconResources(iconResources);
 			}
 			catch (IOException ioException) {
 				_log.error(

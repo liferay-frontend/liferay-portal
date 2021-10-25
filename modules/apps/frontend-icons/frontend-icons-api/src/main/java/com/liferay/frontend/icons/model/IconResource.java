@@ -19,12 +19,10 @@ package com.liferay.frontend.icons.model;
  */
 public interface IconResource {
 
+	public String asSVG();
+
+	public String asSymbol();
+
 	public String getId();
-
-	public String getInternalSVGContent();
-
-	public boolean getRemovable();
-
-	public String getSVG();
 
 }

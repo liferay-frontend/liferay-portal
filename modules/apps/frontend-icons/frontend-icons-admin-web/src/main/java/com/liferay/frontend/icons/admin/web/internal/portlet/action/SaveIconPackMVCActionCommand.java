@@ -16,6 +16,15 @@ package com.liferay.frontend.icons.admin.web.internal.portlet.action;
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
+import com.liferay.frontend.icons.admin.web.internal.model.IconResourcePackImpl;
+import com.liferay.frontend.icons.admin.web.internal.util.SVGUtil;
+import com.liferay.frontend.icons.model.IconResource;
+import com.liferay.frontend.icons.model.IconResourcePack;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -27,9 +36,12 @@ import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.InputStream;
+
+import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -44,11 +56,11 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
-		"mvc.command.name=/frontend_icons_admin/save_custom_icon"
+		"mvc.command.name=/frontend_icons_admin/save_icon_pack"
 	},
 	service = MVCActionCommand.class
 )
-public class SaveCustomIconMVCActionCommand extends BaseMVCActionCommand {
+public class SaveIconPackMVCActionCommand extends BaseMVCActionCommand {
 
 	@Override
 	protected void doProcessAction(
@@ -81,15 +93,26 @@ public class SaveCustomIconMVCActionCommand extends BaseMVCActionCommand {
 		InputStream inputStream = uploadPortletRequest.getFileAsStream(
 			"svgFile");
 
-		long size = uploadPortletRequest.getSize("svgFile");
-
-		String name = ParamUtil.getString(actionRequest, "name");
-
 		String iconPack = ParamUtil.getString(actionRequest, "iconPack");
 
-		_iconResourceHelper.addFileEntry(
-			themeDisplay.getCompanyId(), themeDisplay.getCompanyGroupId(), name,
-			iconPack, contentType, inputStream, size);
+		IconResourcePack iconResourcePack = new IconResourcePackImpl(iconPack);
+
+		List<IconResource> iconResources = SVGUtil.getIconResources(
+			StringUtil.read(inputStream), StringPool.BLANK);
+
+		iconResourcePack.addIconResources(iconResources);
+
+		_iconResourceHelper.addIconResourcePack(
+			themeDisplay.getCompanyId(), iconResourcePack);
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		for (IconResource iconResource : iconResources) {
+			jsonArray.put(JSONUtil.put("name", iconResource.getId()));
+		}
+
+		JSONPortletResponseUtil.writeJSON(
+			actionRequest, actionResponse, jsonArray);
 	}
 
 	@Reference

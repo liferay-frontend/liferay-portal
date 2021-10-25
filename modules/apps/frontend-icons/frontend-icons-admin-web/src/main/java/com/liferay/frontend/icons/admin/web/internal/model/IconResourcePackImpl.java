@@ -34,13 +34,9 @@ public class IconResourcePackImpl implements IconResourcePack {
 		_iconResources.add(iconResource);
 	}
 
-	public void addIconResource(
-		String iconName, String iconContents, boolean removable) {
-
-		IconResource iconResource = new IconResourceImpl(
-			iconName, iconContents, removable);
-
-		_iconResources.add(iconResource);
+	@Override
+	public void addIconResources(List<IconResource> iconResources) {
+		_iconResources.addAll(iconResources);
 	}
 
 	@Override

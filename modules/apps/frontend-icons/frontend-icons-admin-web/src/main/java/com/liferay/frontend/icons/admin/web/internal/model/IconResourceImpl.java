@@ -15,52 +15,33 @@
 package com.liferay.frontend.icons.admin.web.internal.model;
 
 import com.liferay.frontend.icons.model.IconResource;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Bryce Osterhaus
  */
 public class IconResourceImpl implements IconResource {
 
-	public IconResourceImpl(String id, String content) {
+	public IconResourceImpl(String id, String content, String viewBox) {
 		_id = id;
-
-		_internalSVGContent = content;
-		_removable = false;
-		_svg = content;
+		_content = content;
+		_viewBox = viewBox;
 	}
 
-	public IconResourceImpl(String id, String svg, boolean removable) {
-		String viewBox = "";
+	@Override
+	public String asSVG() {
+		return StringUtil.replace(
+			_SVG_TMPL, new String[] {"[$NAME$]", "[$CONTENT$]", "[$VIEW_BOX$]"},
+			new String[] {_id, _content, _viewBox});
+	}
 
-		Matcher viewBoxMatcher = _viewBoxPattern.matcher(svg);
-
-		if (viewBoxMatcher.find()) {
-			viewBox = viewBoxMatcher.group(1);
-		}
-
-		String svgContent = "";
-
-		Matcher svgContentMatcher = _internalSVGContentPattern.matcher(svg);
-
-		if (svgContentMatcher.find()) {
-			svgContent = svgContentMatcher.group(1);
-		}
-
-		String symbolContent = StringUtil.replace(
-			"<symbol id=\"[$NAME$]\" viewBox=\"[$VIEW_BOX$]\">" +
-				"[$SYMBOL_CONTENT$]</symbol>",
-			new String[] {"[$NAME$]", "[$SYMBOL_CONTENT$]", "[$VIEW_BOX$]"},
-			new String[] {id, svgContent, viewBox});
-
-		_id = id;
-		_svg = svg;
-		_removable = removable;
-
-		_internalSVGContent = symbolContent;
+	@Override
+	public String asSymbol() {
+		return StringUtil.replace(
+			_SYMBOL_TMPL,
+			new String[] {"[$NAME$]", "[$CONTENT$]", "[$VIEW_BOX$]"},
+			new String[] {_id, _content, _viewBox});
 	}
 
 	@Override
@@ -68,29 +49,20 @@ public class IconResourceImpl implements IconResource {
 		return _id;
 	}
 
-	@Override
-	public String getInternalSVGContent() {
-		return _internalSVGContent;
+	private static String _read(String fileName) {
+		return StringUtil.read(
+			IconResourceImpl.class,
+			StringBundler.concat(
+				"/com/liferay/frontend/icons/admin/web/internal/model",
+				"/dependencies/", fileName));
 	}
 
-	@Override
-	public boolean getRemovable() {
-		return _removable;
-	}
+	private static final String _SVG_TMPL = _read("icon.svg");
 
-	@Override
-	public String getSVG() {
-		return _svg;
-	}
+	private static final String _SYMBOL_TMPL = _read("symbol.svg");
 
-	private static final Pattern _internalSVGContentPattern = Pattern.compile(
-		"(?ims)<svg.*?>(.*)</svg>");
-	private static final Pattern _viewBoxPattern = Pattern.compile(
-		"(?i)viewBox=\"(.*)\"(?=[\\s, >])");
-
+	private final String _content;
 	private final String _id;
-	private final String _internalSVGContent;
-	private final boolean _removable;
-	private final String _svg;
+	private final String _viewBox;
 
 }

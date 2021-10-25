@@ -34,7 +34,6 @@ const IconSearch = ({
 
 	const [loading, setLoading] = useState(false);
 	const [icons, setIcons] = useState(JSON.parse(initialIcons));
-	const [iconName, setIconName] = useState('');
 	const [iconPackName, setIconPackName] = useState('');
 	const [searchQuery, setSearchQuery] = useState('');
 	const [showModal, setShowModal] = useState(false);
@@ -64,7 +63,6 @@ const IconSearch = ({
 	}, [iconPackNames, icons, searchQuery]);
 
 	useEffect(() => {
-		setIconName('');
 		setIconPackName('');
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [icons]);
@@ -77,29 +75,25 @@ const IconSearch = ({
 		formData.append(portletNamespace + 'name', iconName);
 		formData.append(portletNamespace + 'iconPack', iconPackName);
 
-		return fetch(deleteURL, {body: formData, method: 'post'}).then(() => {
-			openToast({
-				message: Liferay.Language.get('icon-deleted'),
-				title: Liferay.Language.get('success'),
-				toastProps: {
-					autoClose: 5000,
-				},
-				type: 'success',
+		return fetch(deleteURL, {body: formData, method: 'post'})
+			.then((response) => response.json())
+			.then((nextIcons) => {
+				openToast({
+					message: Liferay.Language.get('icon-deleted'),
+					title: Liferay.Language.get('success'),
+					toastProps: {
+						autoClose: 5000,
+					},
+					type: 'success',
+				});
+
+				const newIcons = {...icons};
+
+				newIcons[iconPackName] = nextIcons;
+
+				setIcons(newIcons);
+				setLoading(false);
 			});
-
-			const newIcons = {...icons};
-
-			newIcons[iconPackName] = newIcons[iconPackName].filter(
-				(icon) => icon.name !== iconName
-			);
-
-			if (newIcons[iconPackName].length === 0) {
-				delete newIcons[iconPackName];
-			}
-
-			setIcons(newIcons);
-			setLoading(false);
-		});
 	};
 
 	const handleSubmit = () => {
@@ -111,36 +105,34 @@ const IconSearch = ({
 			portletNamespace + 'svgFile',
 			svgFileInputRef.current.files[0]
 		);
-		formData.append(portletNamespace + 'name', iconName);
 		formData.append(portletNamespace + 'iconPack', iconPackName);
 
-		return fetch(submitURL, {body: formData, method: 'post'}).then(() => {
-			openToast({
-				message: Liferay.Language.get('icon-added'),
-				title: Liferay.Language.get('success'),
-				toastProps: {
-					autoClose: 5000,
-				},
-				type: 'success',
+		return fetch(submitURL, {body: formData, method: 'post'})
+			.then((response) => response.json())
+			.then((nextIcons) => {
+				openToast({
+					message: Liferay.Language.get('icon-added'),
+					title: Liferay.Language.get('success'),
+					toastProps: {
+						autoClose: 5000,
+					},
+					type: 'success',
+				});
+
+				const newIcons = {...icons};
+
+				newIcons[iconPackName] = nextIcons;
+
+				setIcons(newIcons);
+				setLoading(false);
 			});
-
-			const newIcons = {...icons};
-
-			const newIcon = {name: iconName, removable: true};
-
-			if (newIcons[iconPackName]) {
-				newIcons[iconPackName].push(newIcon);
-			}
-			else {
-				newIcons[iconPackName] = [newIcon];
-			}
-
-			setIcons(newIcons);
-			setLoading(false);
-		});
 	};
 
-	const referenceTime = useMemo(() => new Date().getTime(), [icons]);
+	const referenceTime = useMemo(
+		() => new Date().getTime(),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[icons]
+	);
 
 	return (
 		<ClayLayout.Sheet>
@@ -259,23 +251,6 @@ const IconSearch = ({
 										iconPackName ||
 										selectedIcon?.iconPackName
 									}
-								/>
-							</ClayForm.Group>
-
-							<ClayForm.Group>
-								<label htmlFor={portletNamespace + 'name'}>
-									{Liferay.Language.get('icon-name')}
-								</label>
-
-								<ClayInput
-									name={portletNamespace + 'name'}
-									onChange={(event) =>
-										setIconName(event.target.value)
-									}
-									placeholder="Name"
-									readOnly={selectedIcon}
-									type="text"
-									value={iconName || selectedIcon?.name}
 								/>
 							</ClayForm.Group>
 

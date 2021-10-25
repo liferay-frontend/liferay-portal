@@ -73,17 +73,15 @@ public class SVGServlet extends HttpServlet {
 
 			String packName = matcher.group(1);
 
-			Company company = _portal.getCompany(httpServletRequest);
-
-			long groupId = company.getGroupId();
-
 			if (packName.equals(IconConstants.GLOBAL_ICON_PACK_NAME)) {
 				printWriter.write(_iconResourceHelper.getGlobalSpriteContent());
 			}
 			else {
+				Company company = _portal.getCompany(httpServletRequest);
+
 				String spriteContent =
 					_iconResourceHelper.getIconPackSpriteContent(
-						groupId, packName);
+						company.getCompanyId(), packName);
 
 				if (spriteContent == null) {
 					return;

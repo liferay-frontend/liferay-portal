@@ -15,17 +15,16 @@
 package com.liferay.frontend.icons.model;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Bryce Osterhaus
  */
 public interface IconResourcePack {
 
-	public void addIconResource(
-		String id, String svgContent, boolean removable);
+	public void addIconResource(IconResource iconResource);
 
-	public void addIconResource(
-		IconResource iconResource);
+	public void addIconResources(List<IconResource> iconResources);
 
 	public Collection<IconResource> getIconResources();
 

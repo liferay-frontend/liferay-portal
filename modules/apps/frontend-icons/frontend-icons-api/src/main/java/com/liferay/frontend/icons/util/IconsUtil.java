@@ -15,6 +15,7 @@
 package com.liferay.frontend.icons.util;
 
 import com.liferay.frontend.icons.constants.IconConstants;
+import com.liferay.portal.kernel.util.StringBundler;
 
 /**
  * @author Bryce Osterhaus
@@ -26,7 +27,8 @@ public class IconsUtil {
 	}
 
 	public static String getSpritemapPath(String iconPackName) {
-		return IconConstants.SPRITEMAP_BASE_PATH + "/" + iconPackName + ".svg";
+		return StringBundler.concat(
+			IconConstants.SPRITEMAP_BASE_PATH, "/", iconPackName, ".svg");
 	}
 
 }

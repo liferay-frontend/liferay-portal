@@ -81,7 +81,7 @@ public class IconsAdminConfigurationScreen implements ConfigurationScreen {
 
 		Map<String, IconResourcePack> iconResourcePacks =
 			_iconResourceHelper.getIconResourceMaps(
-				themeDisplay.getCompanyGroupId());
+				themeDisplay.getCompanyId());
 
 		JSONObject iconsJSONObject = JSONFactoryUtil.createJSONObject();
 
@@ -100,7 +100,7 @@ public class IconsAdminConfigurationScreen implements ConfigurationScreen {
 					JSONUtil.put(
 						"name", iconResource.getId()
 					).put(
-						"removable", iconResource.getRemovable()
+						"removable", true
 					));
 			}
 
