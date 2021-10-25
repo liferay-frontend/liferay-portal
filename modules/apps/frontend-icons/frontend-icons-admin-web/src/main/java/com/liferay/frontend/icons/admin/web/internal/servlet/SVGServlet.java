@@ -78,8 +78,7 @@ public class SVGServlet extends HttpServlet {
 			long groupId = company.getGroupId();
 
 			if (packName.equals(IconConstants.GLOBAL_ICON_PACK_NAME)) {
-				printWriter.write(
-					_iconResourceHelper.getGlobalSpriteContent(groupId));
+				printWriter.write(_iconResourceHelper.getGlobalSpriteContent());
 			}
 			else {
 				String spriteContent =

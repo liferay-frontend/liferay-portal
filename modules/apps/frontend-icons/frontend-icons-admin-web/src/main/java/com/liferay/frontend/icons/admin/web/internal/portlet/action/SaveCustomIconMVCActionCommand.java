@@ -88,8 +88,8 @@ public class SaveCustomIconMVCActionCommand extends BaseMVCActionCommand {
 		String iconPack = ParamUtil.getString(actionRequest, "iconPack");
 
 		_iconResourceHelper.addFileEntry(
-			themeDisplay.getCompanyGroupId(), name, iconPack, contentType,
-			inputStream, size);
+			themeDisplay.getCompanyId(), themeDisplay.getCompanyGroupId(), name,
+			iconPack, contentType, inputStream, size);
 	}
 
 	@Reference

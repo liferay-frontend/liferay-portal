@@ -27,8 +27,12 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -56,35 +60,38 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 public class IconResourceHelper {
 
 	public void addFileEntry(
-			long repositoryId, String iconName, String folderName,
+			long companyId, long groupId, String iconName, String folderName,
 			String contentType, InputStream inputStream, long size)
 		throws IOException, PortalException {
 
-		if (!_validateAddFileEntry(repositoryId, folderName, iconName)) {
+		long repositoryId = _getRepositoryId(groupId);
+
+		if (!_validateAddFileEntry(groupId, folderName, iconName)) {
 			return;
 		}
 
-		DLFolder companyIconsFolder = _getFolder(
+		Folder companyIconsFolder = _getFolder(
 			repositoryId, _ROOT_FOLDER_NAME, 0L);
 
 		if (companyIconsFolder == null) {
 			companyIconsFolder = _addFolder(
-				repositoryId, _ROOT_FOLDER_NAME, 0L);
+				companyId, repositoryId, _ROOT_FOLDER_NAME, 0L);
 		}
 
 		long companyIconsFolderId = companyIconsFolder.getFolderId();
 
-		DLFolder folder = _getFolder(
+		Folder folder = _getFolder(
 			repositoryId, folderName, companyIconsFolderId);
 
 		if (folder == null) {
-			folder = _addFolder(repositoryId, folderName, companyIconsFolderId);
+			folder = _addFolder(
+				companyId, repositoryId, folderName, companyIconsFolderId);
 		}
 
 		long folderId = folder.getFolderId();
 
 		_addIconToResourceMap(
-			repositoryId, iconName, folderName, StringUtil.read(inputStream));
+			groupId, iconName, folderName, StringUtil.read(inputStream));
 
 		_dlAppService.addFileEntry(
 			null, repositoryId, folderId, iconName, contentType, iconName, "",
@@ -95,14 +102,14 @@ public class IconResourceHelper {
 			long repositoryId, String iconName, String folderName)
 		throws PortalException {
 
-		DLFolder companyIconsFolder = _getFolder(
+		Folder companyIconsFolder = _getFolder(
 			repositoryId, _ROOT_FOLDER_NAME, 0L);
 
 		if (companyIconsFolder == null) {
 			return;
 		}
 
-		DLFolder folder = _getFolder(
+		Folder folder = _getFolder(
 			repositoryId, folderName, companyIconsFolder.getFolderId());
 
 		if (folder == null) {
@@ -130,11 +137,10 @@ public class IconResourceHelper {
 		_removeIconFromResourceMap(repositoryId, iconName, folderName);
 	}
 
-	public String getGlobalSpriteContent(long groupId) {
+	public String getGlobalSpriteContent() {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(_getPackSVGContent(_GLOBAL_ID));
-		sb.append(_getPackSVGContent(groupId));
 
 		return _generateXmlSvg(new String(sb));
 	}
@@ -179,7 +185,7 @@ public class IconResourceHelper {
 				try {
 					long groupId = company.getGroupId();
 
-					DLFolder companyIconsFolder = _getFolder(
+					Folder companyIconsFolder = _getFolder(
 						groupId, _ROOT_FOLDER_NAME, 0L);
 
 					if (companyIconsFolder != null) {
@@ -261,13 +267,18 @@ public class IconResourceHelper {
 		}
 	}
 
-	private DLFolder _addFolder(
-			long repositoryId, String folderName, long parentFolderId)
+	private Folder _addFolder(
+			long companyId, long repositoryId, String folderName,
+			long parentFolderId)
 		throws PortalException {
 
-		return _dlFolderService.addFolder(
-			repositoryId, repositoryId, false, parentFolderId, folderName, "",
-			new ServiceContext());
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setAddGuestPermissions(true);
+
+		return _portletFileRepository.addPortletFolder(
+			_userLocalService.getDefaultUserId(companyId), repositoryId,
+			parentFolderId, folderName, serviceContext);
 	}
 
 	private void _addIconResourcePack(IconResourcePack iconResourcePack) {
@@ -317,11 +328,11 @@ public class IconResourceHelper {
 		return new String(sb);
 	}
 
-	private DLFolder _getFolder(
+	private Folder _getFolder(
 		long repositoryId, String folderName, long parentFolderId) {
 
 		try {
-			return _dlFolderLocalService.getFolder(
+			return _portletFileRepository.getPortletFolder(
 				repositoryId, parentFolderId, folderName);
 		}
 		catch (Exception exception) {
@@ -352,6 +363,17 @@ public class IconResourceHelper {
 		}
 
 		return new String(sb);
+	}
+
+	private long _getRepositoryId(long groupId) throws PortalException {
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setAddGuestPermissions(true);
+
+		Repository repository = _portletFileRepository.addPortletRepository(
+			groupId, _REPOSITORY_NAME, serviceContext);
+
+		return repository.getRepositoryId();
 	}
 
 	private void _removeIconFromResourceMap(
@@ -413,6 +435,8 @@ public class IconResourceHelper {
 
 	private static final long _GLOBAL_ID = 0L;
 
+	private static final String _REPOSITORY_NAME = "icons.admin.web";
+
 	private static final String _ROOT_FOLDER_NAME =
 		"icons.admin.web.icon.packs";
 
@@ -436,6 +460,13 @@ public class IconResourceHelper {
 
 	private final Map<Long, HashMap<String, IconResourcePack>>
 		_iconResourcesMap = new HashMap<>();
+
+	@Reference
+	private PortletFileRepository _portletFileRepository;
+
 	private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
