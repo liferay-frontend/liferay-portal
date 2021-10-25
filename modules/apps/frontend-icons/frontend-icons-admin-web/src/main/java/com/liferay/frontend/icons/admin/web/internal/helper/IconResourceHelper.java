@@ -20,6 +20,7 @@ import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.document.library.kernel.service.DLFolderService;
+import com.liferay.frontend.icons.admin.web.internal.model.IconResourceImpl;
 import com.liferay.frontend.icons.admin.web.internal.model.IconResourcePackImpl;
 import com.liferay.frontend.icons.model.IconResource;
 import com.liferay.frontend.icons.model.IconResourcePack;
@@ -35,10 +36,17 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Tuple;
+import com.liferay.portal.kernel.xml.Attribute;
+import com.liferay.portal.kernel.xml.Document;
+import com.liferay.portal.kernel.xml.DocumentException;
+import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.kernel.xml.SAXReaderUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -306,7 +314,14 @@ public class IconResourceHelper {
 		IconResourcePack iconResourcePack = groupIconResourceMap.get(
 			folderName);
 
-		iconResourcePack.addIconResource(iconName, svgContent, true);
+		List<Tuple> tuples = _getIconResources(svgContent);
+
+		for (Tuple tuple : tuples) {
+			iconResourcePack.addIconResource(
+				new IconResourceImpl(
+					String.valueOf(tuple.getObject(0)),
+					String.valueOf(tuple.getObject(1))));
+		}
 	}
 
 	private String _generateXmlSvg(String content) {
@@ -342,6 +357,32 @@ public class IconResourceHelper {
 
 			return null;
 		}
+	}
+
+	private List<Tuple> _getIconResources(String svgContent) {
+		List<Tuple> iconResources = new ArrayList<>();
+
+		try {
+			Document document = SAXReaderUtil.read(svgContent);
+
+			Element rootElement = document.getRootElement();
+
+			List<Element> symbols = rootElement.elements("symbol");
+
+			for (Element symbol : symbols) {
+				Attribute idAttribute = symbol.attribute("id");
+
+				iconResources.add(
+					new Tuple(idAttribute.getValue(), symbol.asXML()));
+			}
+
+			System.out.println(document);
+		}
+		catch (DocumentException e) {
+			return iconResources;
+		}
+
+		return iconResources;
 	}
 
 	private String _getPackSVGContent(long groupId) {

@@ -24,6 +24,9 @@ public interface IconResourcePack {
 	public void addIconResource(
 		String id, String svgContent, boolean removable);
 
+	public void addIconResource(
+		IconResource iconResource);
+
 	public Collection<IconResource> getIconResources();
 
 	public String getName();

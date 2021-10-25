@@ -25,6 +25,14 @@ import java.util.regex.Pattern;
  */
 public class IconResourceImpl implements IconResource {
 
+	public IconResourceImpl(String id, String content) {
+		_id = id;
+
+		_internalSVGContent = content;
+		_removable = false;
+		_svg = content;
+	}
+
 	public IconResourceImpl(String id, String svg, boolean removable) {
 		String viewBox = "";
 

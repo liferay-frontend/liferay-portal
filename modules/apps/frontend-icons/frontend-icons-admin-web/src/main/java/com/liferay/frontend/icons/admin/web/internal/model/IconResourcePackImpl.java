@@ -30,6 +30,10 @@ public class IconResourcePackImpl implements IconResourcePack {
 		_name = name;
 	}
 
+	public void addIconResource(IconResource iconResource) {
+		_iconResources.add(iconResource);
+	}
+
 	public void addIconResource(
 		String iconName, String iconContents, boolean removable) {
 
