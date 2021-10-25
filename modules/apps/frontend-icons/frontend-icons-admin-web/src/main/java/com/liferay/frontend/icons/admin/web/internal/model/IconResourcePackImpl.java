@@ -27,7 +27,12 @@ import java.util.List;
 public class IconResourcePackImpl implements IconResourcePack {
 
 	public IconResourcePackImpl(String name) {
+		this(name, true);
+	}
+
+	public IconResourcePackImpl(String name, boolean editable) {
 		_name = name;
+		_editable = editable;
 	}
 
 	public void addIconResource(IconResource iconResource) {
@@ -49,6 +54,11 @@ public class IconResourcePackImpl implements IconResourcePack {
 		return _name;
 	}
 
+	@Override
+	public boolean isEditable() {
+		return _editable;
+	}
+
 	public void removeIconResource(String iconName) {
 		for (IconResource iconResource : _iconResources) {
 			String iconResourceId = iconResource.getId();
@@ -61,6 +71,7 @@ public class IconResourcePackImpl implements IconResourcePack {
 		}
 	}
 
+	private final boolean _editable;
 	private final List<IconResource> _iconResources = new ArrayList<>();
 	private final String _name;
 

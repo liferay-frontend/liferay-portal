@@ -105,14 +105,19 @@ public class SaveIconPackMVCActionCommand extends BaseMVCActionCommand {
 		_iconResourceHelper.addIconResourcePack(
 			themeDisplay.getCompanyId(), iconResourcePack);
 
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+		JSONArray iconsJSONArray = JSONFactoryUtil.createJSONArray();
 
 		for (IconResource iconResource : iconResources) {
-			jsonArray.put(JSONUtil.put("name", iconResource.getId()));
+			iconsJSONArray.put(JSONUtil.put("name", iconResource.getId()));
 		}
 
 		JSONPortletResponseUtil.writeJSON(
-			actionRequest, actionResponse, jsonArray);
+			actionRequest, actionResponse,
+			JSONUtil.put(
+				"editable", true
+			).put(
+				"icons", iconsJSONArray
+			));
 	}
 
 	@Reference

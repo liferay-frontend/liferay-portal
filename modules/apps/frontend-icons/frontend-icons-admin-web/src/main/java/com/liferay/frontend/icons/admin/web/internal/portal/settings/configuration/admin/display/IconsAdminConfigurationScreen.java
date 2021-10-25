@@ -104,11 +104,16 @@ public class IconsAdminConfigurationScreen implements ConfigurationScreen {
 					));
 			}
 
-			iconsJSONObject.put(iconResourcePackName, iconNamesJSONArray);
+			iconsJSONObject.put(
+				iconResourcePackName,
+				JSONUtil.put(
+					"editable", iconResourcePack.isEditable()
+				).put(
+					"icons", iconNamesJSONArray
+				));
 		}
 
-		httpServletRequest.setAttribute(
-			"icons", iconsJSONObject.toJSONString());
+		httpServletRequest.setAttribute("icons", iconsJSONObject);
 
 		try {
 			RequestDispatcher requestDispatcher =

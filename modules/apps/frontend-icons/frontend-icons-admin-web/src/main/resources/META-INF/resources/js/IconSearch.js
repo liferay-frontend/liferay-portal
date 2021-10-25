@@ -33,7 +33,7 @@ const IconSearch = ({
 	const svgFileInputRef = React.useRef(null);
 
 	const [loading, setLoading] = useState(false);
-	const [icons, setIcons] = useState(JSON.parse(initialIcons));
+	const [icons, setIcons] = useState(initialIcons);
 	const [iconPackName, setIconPackName] = useState('');
 	const [searchQuery, setSearchQuery] = useState('');
 	const [showModal, setShowModal] = useState(false);
@@ -52,11 +52,14 @@ const IconSearch = ({
 		return iconPackNames.reduce((acc, packName) => {
 			return {
 				...acc,
-				[packName]: icons[packName].filter((icon) =>
-					icon.name
-						.toLowerCase()
-						.includes(searchQuery.toLocaleLowerCase())
-				),
+				[packName]: {
+					...icons[packName],
+					icons: icons[packName].icons.filter((icon) =>
+						icon.name
+							.toLowerCase()
+							.includes(searchQuery.toLocaleLowerCase())
+					),
+				},
 			};
 		}, {});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,7 +83,7 @@ const IconSearch = ({
 
 		return fetch(submitURL, {body: formData, method: 'post'})
 			.then((response) => response.json())
-			.then((nextIcons) => {
+			.then((iconPack) => {
 				openToast({
 					message: Liferay.Language.get('icon-added'),
 					title: Liferay.Language.get('success'),
@@ -92,7 +95,7 @@ const IconSearch = ({
 
 				const newIcons = {...icons};
 
-				newIcons[iconPackName] = nextIcons;
+				newIcons[iconPackName] = iconPack;
 
 				setIcons(newIcons);
 				setLoading(false);
@@ -165,14 +168,14 @@ const IconSearch = ({
 					<div className="d-flex" key={iconPackName}>
 						<ClayPanel
 							collapsable
-							displayTitle={`${iconPackName} (${filteredIcons[iconPackName].length})`}
+							displayTitle={`${iconPackName} (${filteredIcons[iconPackName]?.icons.length})`}
 							displayType="secondary"
 							showCollapseIcon={true}
 							style={{flex: 1}}
 						>
 							<ClayPanel.Body className="list-group-card">
 								<ul className="list-group">
-									{filteredIcons[iconPackName]
+									{filteredIcons[iconPackName].icons
 										.sort()
 										.map((icon) => (
 											<li
@@ -208,7 +211,8 @@ const IconSearch = ({
 											</li>
 										))}
 
-									{!filteredIcons[iconPackName].length && (
+									{!filteredIcons[iconPackName].icons
+										.length && (
 										<li className="list-group-card-item w-100">
 											{Liferay.Language.get(
 												'no-results-found'
@@ -218,9 +222,9 @@ const IconSearch = ({
 								</ul>
 							</ClayPanel.Body>
 						</ClayPanel>
-
 						<ClayButtonWithIcon
 							borderless
+							disabled={!filteredIcons[iconPackName].editable}
 							displayType="secondary ml-2 mt-1"
 							onClick={() => handleDelete(iconPackName)}
 							small

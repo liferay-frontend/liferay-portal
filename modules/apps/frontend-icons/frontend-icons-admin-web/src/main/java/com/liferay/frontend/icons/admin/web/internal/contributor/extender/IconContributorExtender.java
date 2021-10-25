@@ -149,7 +149,7 @@ public class IconContributorExtender
 		int stripPathPrefixLength = liferayIconsPath.length() + 2;
 
 		IconResourcePackImpl iconResourcePackImpl = new IconResourcePackImpl(
-			liferayIconsNamespace);
+			liferayIconsNamespace, false);
 
 		while (entriesEnumeration.hasMoreElements()) {
 			URL url = entriesEnumeration.nextElement();

@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String iconsMapJSON = (String)request.getAttribute("icons");
+JSONObject iconsJSONObject = (JSONObject)request.getAttribute("icons");
 
 String redirect = ParamUtil.getString(request, "redirect");
 
@@ -38,7 +38,7 @@ if (Validator.isNull(redirect)) {
 			HashMapBuilder.<String, Object>put(
 				"deleteURL", deleteActionURL
 			).put(
-				"initialIcons", iconsMapJSON
+				"initialIcons", iconsJSONObject
 			).put(
 				"redirectURL", currentURL
 			).put(

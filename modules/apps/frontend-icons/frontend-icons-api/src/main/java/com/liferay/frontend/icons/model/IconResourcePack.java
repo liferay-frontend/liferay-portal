@@ -30,6 +30,8 @@ public interface IconResourcePack {
 
 	public String getName();
 
+	public boolean isEditable();
+
 	public void removeIconResource(String id);
 
 }
