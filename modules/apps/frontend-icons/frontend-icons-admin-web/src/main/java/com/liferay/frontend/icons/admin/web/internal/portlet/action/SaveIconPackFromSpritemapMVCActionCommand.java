@@ -56,11 +56,12 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
-		"mvc.command.name=/frontend_icons_admin/save_icon_pack"
+		"mvc.command.name=/frontend_icons_admin/save_icon_pack_from_spritemap"
 	},
 	service = MVCActionCommand.class
 )
-public class SaveIconPackMVCActionCommand extends BaseMVCActionCommand {
+public class SaveIconPackFromSpritemapMVCActionCommand
+	extends BaseMVCActionCommand {
 
 	@Override
 	protected void doProcessAction(
