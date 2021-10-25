@@ -13,14 +13,14 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import ClayForm, {ClayInput} from '@clayui/form';
+import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
-import ClayLoadingIndicator from '@clayui/loading-indicator';
-import ClayModal, {useModal} from '@clayui/modal';
 import ClayPanel from '@clayui/panel';
 import {fetch, openToast} from 'frontend-js-web';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
+
+import AddIconPackModal from './AddIconPackModal';
 
 const IconSearch = ({
 	initialIcons,
@@ -30,21 +30,9 @@ const IconSearch = ({
 	submitURL,
 	deleteURL,
 }) => {
-	const svgFileInputRef = React.useRef(null);
-
-	const [loading, setLoading] = useState(false);
 	const [icons, setIcons] = useState(initialIcons);
-	const [iconPackName, setIconPackName] = useState('');
 	const [searchQuery, setSearchQuery] = useState('');
 	const [showModal, setShowModal] = useState(false);
-	const [selectedIcon, setSelectedIcon] = useState(null);
-
-	const {observer, onClose} = useModal({
-		onClose: () => {
-			setShowModal(false);
-			setSelectedIcon(null);
-		},
-	});
 
 	const iconPackNames = Object.keys(icons);
 
@@ -65,43 +53,6 @@ const IconSearch = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [iconPackNames, icons, searchQuery]);
 
-	useEffect(() => {
-		setIconPackName('');
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [icons]);
-
-	const handleSubmit = () => {
-		setLoading(true);
-
-		const formData = new FormData();
-
-		formData.append(
-			portletNamespace + 'svgFile',
-			svgFileInputRef.current.files[0]
-		);
-		formData.append(portletNamespace + 'iconPack', iconPackName);
-
-		return fetch(submitURL, {body: formData, method: 'post'})
-			.then((response) => response.json())
-			.then((iconPack) => {
-				openToast({
-					message: Liferay.Language.get('icon-added'),
-					title: Liferay.Language.get('success'),
-					toastProps: {
-						autoClose: 5000,
-					},
-					type: 'success',
-				});
-
-				const newIcons = {...icons};
-
-				newIcons[iconPackName] = iconPack;
-
-				setIcons(newIcons);
-				setLoading(false);
-			});
-	};
-
 	const handleDelete = (iconPackName) => {
 		if (
 			!confirm(
@@ -110,8 +61,6 @@ const IconSearch = ({
 		) {
 			return;
 		}
-
-		setLoading(true);
 
 		const formData = new FormData();
 
@@ -132,7 +81,6 @@ const IconSearch = ({
 			delete newIcons[iconPackName];
 
 			setIcons(newIcons);
-			setLoading(false);
 		});
 	};
 
@@ -182,32 +130,20 @@ const IconSearch = ({
 												className="list-group-card-item w-25"
 												key={icon.name}
 											>
-												<ClayButton
-													displayType={null}
-													onClick={() => {
-														setSelectedIcon({
-															...icon,
-															iconPackName,
-														});
+												<ClayIcon
+													spritemap={
+														Liferay.Icons.getSpritemapPath(
+															iconPackName
+														) +
+														'?' +
+														referenceTime
+													}
+													symbol={icon.name}
+												/>
 
-														setShowModal(true);
-													}}
-												>
-													<ClayIcon
-														spritemap={
-															Liferay.Icons.getSpritemapPath(
-																iconPackName
-															) +
-															'?' +
-															referenceTime
-														}
-														symbol={icon.name}
-													/>
-
-													<span className="list-group-card-item-text">
-														{icon.name}
-													</span>
-												</ClayButton>
+												<span className="list-group-card-item-text">
+													{icon.name}
+												</span>
 											</li>
 										))}
 
@@ -241,155 +177,14 @@ const IconSearch = ({
 			</ClayLayout.SheetFooter>
 
 			{showModal && (
-				<ClayModal observer={observer} size="lg">
-					<ClayModal.Header withTitle>
-						{selectedIcon
-							? Liferay.Language.get('edit-icon')
-							: Liferay.Language.get('add-icon')}
-					</ClayModal.Header>
-					<ClayModal.Body>
-						<ClayForm
-							onSubmit={(event) => {
-								event.preventDefault();
-							}}
-						>
-							<ClayForm.Group>
-								<label htmlFor={portletNamespace + 'iconPack'}>
-									{Liferay.Language.get('pack-name')}
-								</label>
-
-								<ClayInput
-									name={portletNamespace + 'iconPack'}
-									onChange={(event) =>
-										setIconPackName(event.target.value)
-									}
-									placeholder="Name"
-									readOnly={selectedIcon}
-									type="text"
-									value={
-										iconPackName ||
-										selectedIcon?.iconPackName
-									}
-								/>
-							</ClayForm.Group>
-
-							{selectedIcon && (
-								<ClayForm.Group>
-									<label>
-										{Liferay.Language.get(
-											'icon-reference-read-only'
-										)}
-									</label>
-
-									<ClayInput
-										onClick={(event) => {
-											event.target.select();
-										}}
-										readOnly
-										type="text"
-										value={
-											window.location.origin +
-											Liferay.Icons.getSpritemapPath(
-												selectedIcon.iconPackName
-											) +
-											'#' +
-											selectedIcon.name
-										}
-									/>
-								</ClayForm.Group>
-							)}
-
-							{!selectedIcon && (
-								<ClayForm.Group>
-									<label
-										htmlFor={portletNamespace + 'svgFile'}
-									>
-										{Liferay.Language.get('svg-file')}
-									</label>
-
-									<ClayInput
-										accept=".svg"
-										name={portletNamespace + 'svgFile'}
-										ref={svgFileInputRef}
-										type="file"
-									/>
-								</ClayForm.Group>
-							)}
-						</ClayForm>
-					</ClayModal.Body>
-
-					<ClayModal.Footer
-						last={
-							<ClayButton.Group spaced>
-								{selectedIcon ? (
-									<ClayButton
-										disabled={
-											!selectedIcon.removable || loading
-										}
-										displayType="danger"
-										onClick={() => {
-											if (
-												confirm(
-													Liferay.Language.get(
-														'are-you-sure'
-													)
-												)
-											) {
-												handleDelete(
-													selectedIcon.name,
-													selectedIcon.iconPackName
-												).then(() => {
-													onClose();
-												});
-											}
-										}}
-										title={
-											selectedIcon.removable
-												? Liferay.Language.get('delete')
-												: Liferay.Language.get(
-														'non-removable-icon'
-												  )
-										}
-									>
-										{loading ? (
-											<ClayLoadingIndicator
-												className="d-inline-block m-0"
-												small
-											/>
-										) : (
-											Liferay.Language.get('delete')
-										)}
-									</ClayButton>
-								) : (
-									<ClayButton
-										disabled={loading}
-										onClick={() => {
-											handleSubmit().then(() => {
-												onClose();
-											});
-										}}
-										type="submit"
-									>
-										{loading ? (
-											<ClayLoadingIndicator
-												className="d-inline-block m-0"
-												small
-											/>
-										) : (
-											Liferay.Language.get('save')
-										)}
-									</ClayButton>
-								)}
-								<ClayButton
-									displayType="secondary"
-									onClick={onClose}
-								>
-									{Liferay.Language.get('cancel')}
-								</ClayButton>
-							</ClayButton.Group>
-						}
-					/>
-				</ClayModal>
+				<AddIconPackModal
+					icons={icons}
+					portletNamespace={portletNamespace}
+					setIcons={setIcons}
+					setVisible={setShowModal}
+					submitURL={submitURL}
+					visible={showModal}
+				/>
 			)}
 		</ClayLayout.Sheet>
 	);
