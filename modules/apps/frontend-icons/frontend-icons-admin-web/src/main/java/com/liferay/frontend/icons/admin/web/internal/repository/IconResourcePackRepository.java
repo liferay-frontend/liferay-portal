@@ -69,6 +69,20 @@ public class IconResourcePackRepository {
 			null, new ServiceContext());
 	}
 
+	public void deleteIconResourcePack(long companyId, String iconPackName)
+		throws PortalException {
+
+		Company company = _companyLocalService.getCompany(companyId);
+
+		long repositoryId = _getRepositoryId(company.getGroupId());
+
+		Folder companyIconsFolder = _getFolder(
+			companyId, _ROOT_FOLDER_NAME, 0L, repositoryId);
+
+		_dlAppService.deleteFileEntryByTitle(
+			repositoryId, companyIconsFolder.getFolderId(), iconPackName);
+	}
+
 	public Map<Long, Map<String, IconResourcePack>> getIconResourcePacks()
 		throws Exception {
 

@@ -12,7 +12,7 @@
  * details.
  */
 
-import ClayButton from '@clayui/button';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
@@ -67,35 +67,6 @@ const IconSearch = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [icons]);
 
-	const handleDelete = (iconName, iconPackName) => {
-		setLoading(true);
-
-		const formData = new FormData();
-
-		formData.append(portletNamespace + 'name', iconName);
-		formData.append(portletNamespace + 'iconPack', iconPackName);
-
-		return fetch(deleteURL, {body: formData, method: 'post'})
-			.then((response) => response.json())
-			.then((nextIcons) => {
-				openToast({
-					message: Liferay.Language.get('icon-deleted'),
-					title: Liferay.Language.get('success'),
-					toastProps: {
-						autoClose: 5000,
-					},
-					type: 'success',
-				});
-
-				const newIcons = {...icons};
-
-				newIcons[iconPackName] = nextIcons;
-
-				setIcons(newIcons);
-				setLoading(false);
-			});
-	};
-
 	const handleSubmit = () => {
 		setLoading(true);
 
@@ -128,6 +99,40 @@ const IconSearch = ({
 			});
 	};
 
+	const handleDelete = (iconPackName) => {
+		if (
+			!confirm(
+				`are you sure you want to delete icon pack ${iconPackName}`
+			)
+		) {
+			return;
+		}
+
+		setLoading(true);
+
+		const formData = new FormData();
+
+		formData.append(portletNamespace + 'iconPack', iconPackName);
+
+		return fetch(deleteURL, {body: formData, method: 'post'}).then(() => {
+			openToast({
+				message: Liferay.Language.get('icon-pack-deleted'),
+				title: Liferay.Language.get('success'),
+				toastProps: {
+					autoClose: 5000,
+				},
+				type: 'success',
+			});
+
+			const newIcons = {...icons};
+
+			delete newIcons[iconPackName];
+
+			setIcons(newIcons);
+			setLoading(false);
+		});
+	};
+
 	const referenceTime = useMemo(
 		() => new Date().getTime(),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -157,67 +162,77 @@ const IconSearch = ({
 
 			<ClayPanel.Group className="mt-4">
 				{iconPackNames.map((iconPackName) => (
-					<ClayPanel
-						collapsable
-						displayTitle={`${iconPackName} (${filteredIcons[iconPackName].length})`}
-						displayType="secondary"
-						key={iconPackName}
-						showCollapseIcon={true}
-					>
-						<ClayPanel.Body className="list-group-card">
-							<ul className="list-group">
-								{filteredIcons[iconPackName]
-									.sort()
-									.map((icon) => (
-										<li
-											className="list-group-card-item w-25"
-											key={icon.name}
-										>
-											<ClayButton
-												displayType={null}
-												onClick={() => {
-													setSelectedIcon({
-														...icon,
-														iconPackName,
-													});
-
-													setShowModal(true);
-												}}
+					<div className="d-flex" key={iconPackName}>
+						<ClayPanel
+							collapsable
+							displayTitle={`${iconPackName} (${filteredIcons[iconPackName].length})`}
+							displayType="secondary"
+							showCollapseIcon={true}
+							style={{flex: 1}}
+						>
+							<ClayPanel.Body className="list-group-card">
+								<ul className="list-group">
+									{filteredIcons[iconPackName]
+										.sort()
+										.map((icon) => (
+											<li
+												className="list-group-card-item w-25"
+												key={icon.name}
 											>
-												<ClayIcon
-													spritemap={
-														Liferay.Icons.getSpritemapPath(
-															iconPackName
-														) +
-														'?' +
-														referenceTime
-													}
-													symbol={icon.name}
-												/>
+												<ClayButton
+													displayType={null}
+													onClick={() => {
+														setSelectedIcon({
+															...icon,
+															iconPackName,
+														});
 
-												<span className="list-group-card-item-text">
-													{icon.name}
-												</span>
-											</ClayButton>
+														setShowModal(true);
+													}}
+												>
+													<ClayIcon
+														spritemap={
+															Liferay.Icons.getSpritemapPath(
+																iconPackName
+															) +
+															'?' +
+															referenceTime
+														}
+														symbol={icon.name}
+													/>
+
+													<span className="list-group-card-item-text">
+														{icon.name}
+													</span>
+												</ClayButton>
+											</li>
+										))}
+
+									{!filteredIcons[iconPackName].length && (
+										<li className="list-group-card-item w-100">
+											{Liferay.Language.get(
+												'no-results-found'
+											)}
 										</li>
-									))}
+									)}
+								</ul>
+							</ClayPanel.Body>
+						</ClayPanel>
 
-								{!filteredIcons[iconPackName].length && (
-									<li className="list-group-card-item w-100">
-										{Liferay.Language.get(
-											'no-results-found'
-										)}
-									</li>
-								)}
-							</ul>
-						</ClayPanel.Body>
-					</ClayPanel>
+						<ClayButtonWithIcon
+							borderless
+							displayType="secondary ml-2 mt-1"
+							onClick={() => handleDelete(iconPackName)}
+							small
+							symbol="times-circle"
+						/>
+					</div>
 				))}
 			</ClayPanel.Group>
 
 			<ClayLayout.SheetFooter>
 				<ClayButton onClick={() => setShowModal(true)}>
-					{Liferay.Language.get('add-icon')}
+					{Liferay.Language.get('add-icon-pack')}
 				</ClayButton>
 			</ClayLayout.SheetFooter>
 

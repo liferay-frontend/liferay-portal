@@ -58,6 +58,23 @@ public class IconResourceHelper {
 		throws PortalException {
 	}
 
+	public void deleteIconResourcePack(long companyId, String iconPack)
+		throws PortalException {
+
+		_iconResourcePackRepository.deleteIconResourcePack(companyId, iconPack);
+
+		Lock lock = _readWriteLock.writeLock();
+
+		lock.lock();
+
+		Map<String, IconResourcePack> stringIconResourcePackMap =
+			_iconResourcesMap.get(companyId);
+
+		stringIconResourcePackMap.remove(iconPack);
+
+		lock.unlock();
+	}
+
 	public String getGlobalSpriteContent() {
 		Map<String, IconResourcePack> iconResourcePacks = _iconResourcesMap.get(
 			_GLOBAL_ID);

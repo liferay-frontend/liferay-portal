@@ -29,7 +29,7 @@ if (Validator.isNull(redirect)) {
 %>
 
 <portlet:actionURL name="/frontend_icons_admin/save_icon_pack" var="saveActionURL" />
-<portlet:actionURL name="/frontend_icons_admin/delete_custom_icon" var="deleteActionURL" />
+<portlet:actionURL name="/frontend_icons_admin/delete_icon_pack" var="deleteActionURL" />
 
 <div>
 	<react:component
