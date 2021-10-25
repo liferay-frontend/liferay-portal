@@ -16,6 +16,7 @@ package com.liferay.frontend.icons.model;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Bryce Osterhaus
@@ -25,6 +26,8 @@ public interface IconResourcePack {
 	public void addIconResource(IconResource iconResource);
 
 	public void addIconResources(List<IconResource> iconResources);
+
+	public Optional<IconResource> getIconResourceOptional(String iconName);
 
 	public Collection<IconResource> getIconResources();
 

@@ -17,9 +17,11 @@ package com.liferay.frontend.icons.admin.web.internal.model;
 import com.liferay.frontend.icons.model.IconResource;
 import com.liferay.frontend.icons.model.IconResourcePack;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Bryce Osterhaus
@@ -36,17 +38,22 @@ public class IconResourcePackImpl implements IconResourcePack {
 	}
 
 	public void addIconResource(IconResource iconResource) {
-		_iconResources.add(iconResource);
+		_iconResources.put(iconResource.getId(), iconResource);
 	}
 
 	@Override
 	public void addIconResources(List<IconResource> iconResources) {
-		_iconResources.addAll(iconResources);
+		iconResources.forEach(this::addIconResource);
+	}
+
+	@Override
+	public Optional<IconResource> getIconResourceOptional(String iconName) {
+		return Optional.ofNullable(_iconResources.get(iconName));
 	}
 
 	@Override
 	public Collection<IconResource> getIconResources() {
-		return _iconResources;
+		return _iconResources.values();
 	}
 
 	@Override
@@ -60,19 +67,11 @@ public class IconResourcePackImpl implements IconResourcePack {
 	}
 
 	public void removeIconResource(String iconName) {
-		for (IconResource iconResource : _iconResources) {
-			String iconResourceId = iconResource.getId();
-
-			if (iconResourceId.equals(iconName)) {
-				_iconResources.remove(iconResource);
-
-				return;
-			}
-		}
+		_iconResources.remove(iconName);
 	}
 
 	private final boolean _editable;
-	private final List<IconResource> _iconResources = new ArrayList<>();
+	private final Map<String, IconResource> _iconResources = new HashMap<>();
 	private final String _name;
 
 }
