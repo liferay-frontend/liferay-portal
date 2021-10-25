@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"osgi.http.whiteboard.context.path=/",
+		"osgi.http.whiteboard.context.path=/icons",
 		"osgi.http.whiteboard.servlet.pattern=/icons/*"
 	},
 	service = Servlet.class
