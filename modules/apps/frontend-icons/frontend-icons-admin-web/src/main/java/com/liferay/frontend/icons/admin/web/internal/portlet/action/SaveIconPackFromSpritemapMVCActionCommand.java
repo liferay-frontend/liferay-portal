@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.InputStream;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
@@ -96,7 +97,12 @@ public class SaveIconPackFromSpritemapMVCActionCommand
 
 		String iconPack = ParamUtil.getString(actionRequest, "iconPack");
 
-		IconResourcePack iconResourcePack = new IconResourcePackImpl(iconPack);
+		HashMap<String, IconResourcePack> iconResourceMaps =
+			_iconResourceHelper.getIconResourceMaps(
+				themeDisplay.getCompanyId());
+
+		IconResourcePack iconResourcePack = iconResourceMaps.getOrDefault(
+			iconPack, new IconResourcePackImpl(iconPack));
 
 		List<IconResource> iconResources = SVGUtil.getIconResources(
 			StringUtil.read(inputStream), StringPool.BLANK);
@@ -108,7 +114,7 @@ public class SaveIconPackFromSpritemapMVCActionCommand
 
 		JSONArray iconsJSONArray = JSONFactoryUtil.createJSONArray();
 
-		for (IconResource iconResource : iconResources) {
+		for (IconResource iconResource : iconResourcePack.getIconResources()) {
 			iconsJSONArray.put(JSONUtil.put("name", iconResource.getId()));
 		}
 

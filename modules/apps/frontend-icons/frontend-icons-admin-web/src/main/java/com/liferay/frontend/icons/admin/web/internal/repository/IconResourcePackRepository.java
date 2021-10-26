@@ -62,6 +62,16 @@ public class IconResourcePackRepository {
 
 		String svgSpritemap = SVGUtil.getSVGSpritemap(iconResourcePack);
 
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.fetchFileEntry(
+			company.getGroupId(), companyIconsFolder.getFolderId(),
+			iconResourcePack.getName());
+
+		if (dlFileEntry != null) {
+			_dlAppService.deleteFileEntryByTitle(
+				repositoryId, companyIconsFolder.getFolderId(),
+				iconResourcePack.getName());
+		}
+
 		_dlAppService.addFileEntry(
 			null, repositoryId, companyIconsFolder.getFolderId(),
 			iconResourcePack.getName(), ContentTypes.IMAGE_SVG_XML,

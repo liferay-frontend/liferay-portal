@@ -124,6 +124,41 @@ const IconSearch = ({
 							style={{flex: 1}}
 						>
 							<ClayPanel.Body className="list-group-card">
+								{filteredIcons[iconPackName].editable && (
+									<ClayDropDownWithItems
+										items={[
+											{
+												label:
+													'Add Icons Pack from spritemap',
+												onClick: () =>
+													setModal({
+														existingIconPackName: iconPackName,
+														uploadSpritemap: true,
+														visible: true,
+													}),
+											},
+											{
+												label:
+													'Add Icons Pack from existing icons',
+												onClick: () =>
+													setModal({
+														existingIconPackName: iconPackName,
+														uploadSpritemap: false,
+														visible: true,
+													}),
+											},
+										]}
+										trigger={
+											<ClayButton
+												className="mt-2"
+												displayType="secondary"
+												small
+											>
+												Add Icons
+											</ClayButton>
+										}
+									/>
+								)}
 								<ul className="list-group">
 									{filteredIcons[iconPackName].icons
 										.sort()
@@ -202,6 +237,7 @@ const IconSearch = ({
 
 			{modal.visible && (
 				<AddIconPackModal
+					existingIconPackName={modal.existingIconPackName}
 					icons={icons}
 					portletNamespace={portletNamespace}
 					saveFromExistingIconsActionURL={

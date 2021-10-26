@@ -81,9 +81,6 @@ public class SaveIconPackFromExistingIconsMVCActionCommand
 
 		String iconPack = ParamUtil.getString(actionRequest, "iconPack");
 
-		IconResourcePack nextIconResourcePack = new IconResourcePackImpl(
-			iconPack);
-
 		String icons = ParamUtil.getString(actionRequest, "icons");
 
 		JSONObject iconsJSONObject = JSONFactoryUtil.createJSONObject(icons);
@@ -92,8 +89,12 @@ public class SaveIconPackFromExistingIconsMVCActionCommand
 			_iconResourceHelper.getIconResourceMaps(
 				themeDisplay.getCompanyId());
 
+		IconResourcePack iconResourcePack = iconResourceMaps.getOrDefault(
+			iconPack, new IconResourcePackImpl(iconPack));
+
 		for (String key : iconsJSONObject.keySet()) {
-			IconResourcePack iconResourcePack = iconResourceMaps.get(key);
+			IconResourcePack existingIconResourcePack = iconResourceMaps.get(
+				key);
 
 			if (iconResourcePack == null) {
 				continue;
@@ -105,18 +106,19 @@ public class SaveIconPackFromExistingIconsMVCActionCommand
 			iconNames.forEach(
 				iconName -> {
 					Optional<IconResource> iconResourceOptional =
-						iconResourcePack.getIconResourceOptional(iconName);
+						existingIconResourcePack.getIconResourceOptional(
+							iconName);
 
 					iconResourceOptional.ifPresent(
-						nextIconResourcePack::addIconResource);
+						iconResourcePack::addIconResource);
 				});
 		}
 
 		_iconResourceHelper.addIconResourcePack(
-			themeDisplay.getCompanyId(), nextIconResourcePack);
+			themeDisplay.getCompanyId(), iconResourcePack);
 
 		Collection<IconResource> iconResources =
-			nextIconResourcePack.getIconResources();
+			iconResourcePack.getIconResources();
 
 		JSONArray iconsJSONArray = JSONFactoryUtil.createJSONArray();
 

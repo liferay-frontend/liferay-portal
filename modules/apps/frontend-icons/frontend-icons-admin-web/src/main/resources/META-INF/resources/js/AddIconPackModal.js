@@ -23,6 +23,7 @@ import {fetch, openToast} from 'frontend-js-web';
 import React, {useMemo, useRef, useState} from 'react';
 
 export default function AddIconPackModal({
+	existingIconPackName,
 	icons,
 	portletNamespace,
 	saveFromExistingIconsActionURL,
@@ -34,7 +35,7 @@ export default function AddIconPackModal({
 }) {
 	const svgFileInputRef = useRef();
 
-	const [iconPackName, setIconPackName] = useState('');
+	const [iconPackName, setIconPackName] = useState(existingIconPackName);
 	const [loading, setLoading] = useState(false);
 	const [selectedIcons, setSelectedIcons] = useState({});
 
@@ -145,6 +146,7 @@ export default function AddIconPackModal({
 									setIconPackName(event.target.value)
 								}
 								placeholder="Name"
+								readOnly={existingIconPackName}
 								type="text"
 								value={iconPackName}
 							/>
@@ -165,6 +167,7 @@ export default function AddIconPackModal({
 							</ClayForm.Group>
 						) : (
 							<IconPicker
+								existingIconPackName={existingIconPackName}
 								icons={icons}
 								selectedIcons={selectedIcons}
 								setSelectedIcons={setSelectedIcons}
@@ -206,7 +209,12 @@ export default function AddIconPackModal({
 	);
 }
 
-function IconPicker({icons, selectedIcons, setSelectedIcons}) {
+function IconPicker({
+	existingIconPackName,
+	icons,
+	selectedIcons,
+	setSelectedIcons,
+}) {
 	const referenceTime = useMemo(
 		() => new Date().getTime(),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -215,78 +223,81 @@ function IconPicker({icons, selectedIcons, setSelectedIcons}) {
 
 	return (
 		<ClayPanel.Group className="mt-4">
-			{Object.entries(icons).map(([iconPackName, {icons}]) => (
-				<div className="d-flex" key={iconPackName}>
-					<ClayPanel
-						collapsable
-						displayTitle={`${iconPackName} (${icons.length})`}
-						displayType="secondary"
-						showCollapseIcon={true}
-						style={{flex: 1}}
-					>
-						<ClayPanel.Body className="list-group-card">
-							<ul className="list-group">
-								{icons.map((icon) => (
-									<li
-										className="list-group-card-item w-25"
-										key={icon.name}
-									>
-										<ClayButton
-											className={classNames({
-												'bg-light': selectedIcons[
-													iconPackName
-												]?.includes(icon.name),
-											})}
-											displayType={null}
-											ke
-											onClick={() => {
-												const selectedIconsFromCurrentPackName =
-													selectedIcons[
-														iconPackName
-													] || [];
-
-												const isSelected = selectedIconsFromCurrentPackName.includes(
-													icon.name
-												);
-
-												setSelectedIcons({
-													...selectedIcons,
-													[iconPackName]: isSelected
-														? selectedIconsFromCurrentPackName.filter(
-																(
-																	selectedIcon
-																) =>
-																	selectedIcon !==
-																	icon.name
-														  )
-														: [
-																...selectedIconsFromCurrentPackName,
-																icon.name,
-														  ],
-												});
-											}}
+			{Object.entries(icons)
+				.filter(
+					([iconPackName]) => iconPackName !== existingIconPackName
+				)
+				.map(([iconPackName, {icons}]) => (
+					<div className="d-flex" key={iconPackName}>
+						<ClayPanel
+							collapsable
+							displayTitle={`${iconPackName} (${icons.length})`}
+							displayType="secondary"
+							showCollapseIcon={true}
+							style={{flex: 1}}
+						>
+							<ClayPanel.Body className="list-group-card">
+								<ul className="list-group">
+									{icons.map((icon) => (
+										<li
+											className="list-group-card-item w-25"
+											key={icon.name}
 										>
-											<ClayIcon
-												spritemap={
-													Liferay.Icons.getSpritemapPath(
+											<ClayButton
+												className={classNames({
+													'bg-light': selectedIcons[
 														iconPackName
-													) +
-													'?' +
-													referenceTime
-												}
-												symbol={icon.name}
-											/>
-											<span className="list-group-card-item-text">
-												{icon.name}
-											</span>
-										</ClayButton>
-									</li>
-								))}
-							</ul>
-						</ClayPanel.Body>
-					</ClayPanel>
-				</div>
-			))}
+													]?.includes(icon.name),
+												})}
+												displayType={null}
+												onClick={() => {
+													const selectedIconsFromCurrentPackName =
+														selectedIcons[
+															iconPackName
+														] || [];
+
+													const isSelected = selectedIconsFromCurrentPackName.includes(
+														icon.name
+													);
+
+													setSelectedIcons({
+														...selectedIcons,
+														[iconPackName]: isSelected
+															? selectedIconsFromCurrentPackName.filter(
+																	(
+																		selectedIcon
+																	) =>
+																		selectedIcon !==
+																		icon.name
+															  )
+															: [
+																	...selectedIconsFromCurrentPackName,
+																	icon.name,
+															  ],
+													});
+												}}
+											>
+												<ClayIcon
+													spritemap={
+														Liferay.Icons.getSpritemapPath(
+															iconPackName
+														) +
+														'?' +
+														referenceTime
+													}
+													symbol={icon.name}
+												/>
+												<span className="list-group-card-item-text">
+													{icon.name}
+												</span>
+											</ClayButton>
+										</li>
+									))}
+								</ul>
+							</ClayPanel.Body>
+						</ClayPanel>
+					</div>
+				))}
 		</ClayPanel.Group>
 	);
 }
