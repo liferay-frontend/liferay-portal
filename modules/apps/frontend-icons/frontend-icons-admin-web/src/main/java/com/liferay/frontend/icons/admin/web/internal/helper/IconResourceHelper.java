@@ -17,7 +17,6 @@ package com.liferay.frontend.icons.admin.web.internal.helper;
 import com.liferay.frontend.icons.admin.web.internal.repository.IconResourcePackRepository;
 import com.liferay.frontend.icons.admin.web.internal.util.SVGUtil;
 import com.liferay.frontend.icons.model.IconResourcePack;
-import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 

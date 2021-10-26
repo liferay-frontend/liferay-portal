@@ -13,6 +13,7 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import {ClayDropDownWithItems} from '@clayui/drop-down';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
@@ -27,12 +28,13 @@ const IconSearch = ({
 	label = Liferay.Language.get('search-icons'),
 	placeholder = Liferay.Language.get('search-icons'),
 	portletNamespace,
-	submitURL,
+	saveFromExistingIconsActionURL,
+	saveFromSpritemapActionURL,
 	deleteURL,
 }) => {
 	const [icons, setIcons] = useState(initialIcons);
 	const [searchQuery, setSearchQuery] = useState('');
-	const [showModal, setShowModal] = useState(false);
+	const [modal, setModal] = useState({visible: false});
 
 	const iconPackNames = Object.keys(icons);
 
@@ -171,19 +173,50 @@ const IconSearch = ({
 			</ClayPanel.Group>
 
 			<ClayLayout.SheetFooter>
-				<ClayButton onClick={() => setShowModal(true)}>
-					{Liferay.Language.get('add-icon-pack')}
-				</ClayButton>
+				<ClayDropDownWithItems
+					items={[
+						{
+							label: 'Add Icon Pack from spritemap',
+							onClick: () =>
+								setModal({
+									uploadSpritemap: true,
+									visible: true,
+								}),
+						},
+						{
+							label: 'Add Icon Pack from existing icons',
+							onClick: () =>
+								setModal({
+									uploadSpritemap: false,
+									visible: true,
+								}),
+						},
+					]}
+					trigger={
+						<ClayButton>
+							{Liferay.Language.get('add-icon-pack')}
+						</ClayButton>
+					}
+				/>
 			</ClayLayout.SheetFooter>
 
-			{showModal && (
+			{modal.visible && (
 				<AddIconPackModal
 					icons={icons}
 					portletNamespace={portletNamespace}
+					saveFromExistingIconsActionURL={
+						saveFromExistingIconsActionURL
+					}
+					saveFromSpritemapActionURL={saveFromSpritemapActionURL}
 					setIcons={setIcons}
-					setVisible={setShowModal}
-					submitURL={submitURL}
-					visible={showModal}
+					setVisible={(visible) =>
+						setModal((previousModal) => ({
+							...previousModal,
+							visible,
+						}))
+					}
+					uploadSpritemap={modal.uploadSpritemap}
+					visible={modal.visible}
 				/>
 			)}
 		</ClayLayout.Sheet>

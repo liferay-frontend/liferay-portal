@@ -30,6 +30,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -93,9 +96,13 @@ public class IconsAdminConfigurationScreen implements ConfigurationScreen {
 
 			JSONArray iconNamesJSONArray = JSONFactoryUtil.createJSONArray();
 
-			for (IconResource iconResource :
-					iconResourcePack.getIconResources()) {
+			ArrayList<IconResource> iconResources = new ArrayList<>(
+				iconResourcePack.getIconResources());
 
+			Collections.sort(
+				iconResources, Comparator.comparing(IconResource::getId));
+
+			for (IconResource iconResource : iconResources) {
 				iconNamesJSONArray.put(
 					JSONUtil.put(
 						"name", iconResource.getId()

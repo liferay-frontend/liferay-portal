@@ -28,7 +28,8 @@ if (Validator.isNull(redirect)) {
 }
 %>
 
-<portlet:actionURL name="/frontend_icons_admin/save_icon_pack_from_spritemap" var="saveActionURL" />
+<portlet:actionURL name="/frontend_icons_admin/save_icon_pack_from_existing_icons" var="saveFromExistingIconsActionURL" />
+<portlet:actionURL name="/frontend_icons_admin/save_icon_pack_from_spritemap" var="saveFromSpritemapActionURL" />
 <portlet:actionURL name="/frontend_icons_admin/delete_icon_pack" var="deleteActionURL" />
 
 <div>
@@ -42,7 +43,9 @@ if (Validator.isNull(redirect)) {
 			).put(
 				"redirectURL", currentURL
 			).put(
-				"submitURL", saveActionURL
+				"saveFromExistingIconsActionURL", saveFromExistingIconsActionURL
+			).put(
+				"saveFromSpritemapActionURL", saveFromSpritemapActionURL
 			).build()
 		%>'
 	/>

@@ -14,23 +14,29 @@
 
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
+import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal, {useModal} from '@clayui/modal';
+import ClayPanel from '@clayui/panel';
+import classNames from 'classnames';
 import {fetch, openToast} from 'frontend-js-web';
-import React, {useRef, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 
 export default function AddIconPackModal({
 	icons,
 	portletNamespace,
+	saveFromExistingIconsActionURL,
+	saveFromSpritemapActionURL,
 	setIcons,
 	setVisible,
-	submitURL,
+	uploadSpritemap = true,
 	visible,
 }) {
 	const svgFileInputRef = useRef();
 
 	const [iconPackName, setIconPackName] = useState('');
 	const [loading, setLoading] = useState(false);
+	const [selectedIcons, setSelectedIcons] = useState({});
 
 	const {observer, onClose} = useModal({
 		onClose: () => {
@@ -38,7 +44,7 @@ export default function AddIconPackModal({
 		},
 	});
 
-	const handleSubmit = () => {
+	const handleUploadSpritemapSubmit = () => {
 		setLoading(true);
 
 		const formData = new FormData();
@@ -49,7 +55,10 @@ export default function AddIconPackModal({
 		);
 		formData.append(portletNamespace + 'iconPack', iconPackName);
 
-		return fetch(submitURL, {body: formData, method: 'post'})
+		return fetch(saveFromSpritemapActionURL, {
+			body: formData,
+			method: 'post',
+		})
 			.then((response) => response.json())
 			.then((iconPack) => {
 				openToast({
@@ -67,8 +76,51 @@ export default function AddIconPackModal({
 
 				setIcons(newIcons);
 				setLoading(false);
+
+				onClose();
 			});
 	};
+
+	const handleSelectIconsSubmit = () => {
+		setLoading(true);
+
+		const formData = new FormData();
+
+		formData.append(
+			portletNamespace + 'icons',
+			JSON.stringify(selectedIcons)
+		);
+		formData.append(portletNamespace + 'iconPack', iconPackName);
+
+		return fetch(saveFromExistingIconsActionURL, {
+			body: formData,
+			method: 'post',
+		})
+			.then((response) => response.json())
+			.then((iconPack) => {
+				openToast({
+					message: Liferay.Language.get('icon-added'),
+					title: Liferay.Language.get('success'),
+					toastProps: {
+						autoClose: 5000,
+					},
+					type: 'success',
+				});
+
+				const newIcons = {...icons};
+
+				newIcons[iconPackName] = iconPack;
+
+				setIcons(newIcons);
+				setLoading(false);
+
+				onClose();
+			});
+	};
+
+	const handleSubmit = uploadSpritemap
+		? handleUploadSpritemapSubmit
+		: handleSelectIconsSubmit;
 
 	return (
 		visible && (
@@ -98,18 +150,26 @@ export default function AddIconPackModal({
 							/>
 						</ClayForm.Group>
 
-						<ClayForm.Group>
-							<label htmlFor={portletNamespace + 'svgFile'}>
-								{Liferay.Language.get('svg-file')}
-							</label>
+						{uploadSpritemap ? (
+							<ClayForm.Group>
+								<label htmlFor={portletNamespace + 'svgFile'}>
+									{Liferay.Language.get('svg-file')}
+								</label>
 
-							<ClayInput
-								accept=".svg"
-								name={portletNamespace + 'svgFile'}
-								ref={svgFileInputRef}
-								type="file"
+								<ClayInput
+									accept=".svg"
+									name={portletNamespace + 'svgFile'}
+									ref={svgFileInputRef}
+									type="file"
+								/>
+							</ClayForm.Group>
+						) : (
+							<IconPicker
+								icons={icons}
+								selectedIcons={selectedIcons}
+								setSelectedIcons={setSelectedIcons}
 							/>
-						</ClayForm.Group>
+						)}
 					</ClayForm>
 				</ClayModal.Body>
 
@@ -119,9 +179,7 @@ export default function AddIconPackModal({
 							<ClayButton
 								disabled={loading}
 								onClick={() => {
-									handleSubmit().then(() => {
-										onClose();
-									});
+									handleSubmit();
 								}}
 								type="submit"
 							>
@@ -145,5 +203,90 @@ export default function AddIconPackModal({
 				/>
 			</ClayModal>
 		)
+	);
+}
+
+function IconPicker({icons, selectedIcons, setSelectedIcons}) {
+	const referenceTime = useMemo(
+		() => new Date().getTime(),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[icons]
+	);
+
+	return (
+		<ClayPanel.Group className="mt-4">
+			{Object.entries(icons).map(([iconPackName, {icons}]) => (
+				<div className="d-flex" key={iconPackName}>
+					<ClayPanel
+						collapsable
+						displayTitle={`${iconPackName} (${icons.length})`}
+						displayType="secondary"
+						showCollapseIcon={true}
+						style={{flex: 1}}
+					>
+						<ClayPanel.Body className="list-group-card">
+							<ul className="list-group">
+								{icons.map((icon) => (
+									<li
+										className="list-group-card-item w-25"
+										key={icon.name}
+									>
+										<ClayButton
+											className={classNames({
+												'bg-light': selectedIcons[
+													iconPackName
+												]?.includes(icon.name),
+											})}
+											displayType={null}
+											ke
+											onClick={() => {
+												const selectedIconsFromCurrentPackName =
+													selectedIcons[
+														iconPackName
+													] || [];
+
+												const isSelected = selectedIconsFromCurrentPackName.includes(
+													icon.name
+												);
+
+												setSelectedIcons({
+													...selectedIcons,
+													[iconPackName]: isSelected
+														? selectedIconsFromCurrentPackName.filter(
+																(
+																	selectedIcon
+																) =>
+																	selectedIcon !==
+																	icon.name
+														  )
+														: [
+																...selectedIconsFromCurrentPackName,
+																icon.name,
+														  ],
+												});
+											}}
+										>
+											<ClayIcon
+												spritemap={
+													Liferay.Icons.getSpritemapPath(
+														iconPackName
+													) +
+													'?' +
+													referenceTime
+												}
+												symbol={icon.name}
+											/>
+											<span className="list-group-card-item-text">
+												{icon.name}
+											</span>
+										</ClayButton>
+									</li>
+								))}
+							</ul>
+						</ClayPanel.Body>
+					</ClayPanel>
+				</div>
+			))}
+		</ClayPanel.Group>
 	);
 }
