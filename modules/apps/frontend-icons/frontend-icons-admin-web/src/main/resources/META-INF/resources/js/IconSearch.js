@@ -22,6 +22,7 @@ import {fetch, openToast} from 'frontend-js-web';
 import React, {useMemo, useState} from 'react';
 
 import AddIconPackModal from './AddIconPackModal';
+import DeleteIconModal from './DeleteIconModal';
 
 const IconSearch = ({
 	initialIcons,
@@ -30,11 +31,13 @@ const IconSearch = ({
 	portletNamespace,
 	saveFromExistingIconsActionURL,
 	saveFromSpritemapActionURL,
-	deleteURL,
+	deleteIconPackURL,
+	deleteIconURL,
 }) => {
 	const [icons, setIcons] = useState(initialIcons);
 	const [searchQuery, setSearchQuery] = useState('');
-	const [modal, setModal] = useState({visible: false});
+	const [addModal, setAddModal] = useState({visible: false});
+	const [deleteModal, setDeleteModal] = useState({visible: false});
 
 	const iconPackNames = Object.keys(icons);
 
@@ -68,22 +71,24 @@ const IconSearch = ({
 
 		formData.append(portletNamespace + 'iconPack', iconPackName);
 
-		return fetch(deleteURL, {body: formData, method: 'post'}).then(() => {
-			openToast({
-				message: Liferay.Language.get('icon-pack-deleted'),
-				title: Liferay.Language.get('success'),
-				toastProps: {
-					autoClose: 5000,
-				},
-				type: 'success',
-			});
+		return fetch(deleteIconPackURL, {body: formData, method: 'post'}).then(
+			() => {
+				openToast({
+					message: Liferay.Language.get('icon-pack-deleted'),
+					title: Liferay.Language.get('success'),
+					toastProps: {
+						autoClose: 5000,
+					},
+					type: 'success',
+				});
 
-			const newIcons = {...icons};
+				const newIcons = {...icons};
 
-			delete newIcons[iconPackName];
+				delete newIcons[iconPackName];
 
-			setIcons(newIcons);
-		});
+				setIcons(newIcons);
+			}
+		);
 	};
 
 	const referenceTime = useMemo(
@@ -131,7 +136,7 @@ const IconSearch = ({
 												label:
 													'Add Icons Pack from spritemap',
 												onClick: () =>
-													setModal({
+													setAddModal({
 														existingIconPackName: iconPackName,
 														uploadSpritemap: true,
 														visible: true,
@@ -141,7 +146,7 @@ const IconSearch = ({
 												label:
 													'Add Icons Pack from existing icons',
 												onClick: () =>
-													setModal({
+													setAddModal({
 														existingIconPackName: iconPackName,
 														uploadSpritemap: false,
 														visible: true,
@@ -167,20 +172,38 @@ const IconSearch = ({
 												className="list-group-card-item w-25"
 												key={icon.name}
 											>
-												<ClayIcon
-													spritemap={
-														Liferay.Icons.getSpritemapPath(
-															iconPackName
-														) +
-														'?' +
-														referenceTime
-													}
-													symbol={icon.name}
-												/>
+												<ClayButton
+													displayType={null}
+													onClick={() => {
+														if (
+															filteredIcons[
+																iconPackName
+															].editable
+														) {
+															setDeleteModal({
+																iconPackName,
+																selectedIcon:
+																	icon.name,
+																visible: true,
+															});
+														}
+													}}
+												>
+													<ClayIcon
+														spritemap={
+															Liferay.Icons.getSpritemapPath(
+																iconPackName
+															) +
+															'?' +
+															referenceTime
+														}
+														symbol={icon.name}
+													/>
 
-												<span className="list-group-card-item-text">
-													{icon.name}
-												</span>
+													<span className="list-group-card-item-text">
+														{icon.name}
+													</span>
+												</ClayButton>
 											</li>
 										))}
 
@@ -213,7 +236,7 @@ const IconSearch = ({
 						{
 							label: 'Add Icon Pack from spritemap',
 							onClick: () =>
-								setModal({
+								setAddModal({
 									uploadSpritemap: true,
 									visible: true,
 								}),
@@ -221,7 +244,7 @@ const IconSearch = ({
 						{
 							label: 'Add Icon Pack from existing icons',
 							onClick: () =>
-								setModal({
+								setAddModal({
 									uploadSpritemap: false,
 									visible: true,
 								}),
@@ -235,9 +258,9 @@ const IconSearch = ({
 				/>
 			</ClayLayout.SheetFooter>
 
-			{modal.visible && (
+			{addModal.visible && (
 				<AddIconPackModal
-					existingIconPackName={modal.existingIconPackName}
+					existingIconPackName={addModal.existingIconPackName}
 					icons={icons}
 					portletNamespace={portletNamespace}
 					saveFromExistingIconsActionURL={
@@ -246,13 +269,31 @@ const IconSearch = ({
 					saveFromSpritemapActionURL={saveFromSpritemapActionURL}
 					setIcons={setIcons}
 					setVisible={(visible) =>
-						setModal((previousModal) => ({
+						setAddModal((previousModal) => ({
 							...previousModal,
 							visible,
 						}))
 					}
-					uploadSpritemap={modal.uploadSpritemap}
-					visible={modal.visible}
+					uploadSpritemap={addModal.uploadSpritemap}
+					visible={addModal.visible}
+				/>
+			)}
+
+			{deleteModal.visible && (
+				<DeleteIconModal
+					deleteIconURL={deleteIconURL}
+					iconPackName={deleteModal.iconPackName}
+					icons={icons}
+					portletNamespace={portletNamespace}
+					selectedIcon={deleteModal.selectedIcon}
+					setIcons={setIcons}
+					setVisible={(visible) =>
+						setDeleteModal((previousModal) => ({
+							...previousModal,
+							visible,
+						}))
+					}
+					visible={deleteModal.visible}
 				/>
 			)}
 		</ClayLayout.Sheet>

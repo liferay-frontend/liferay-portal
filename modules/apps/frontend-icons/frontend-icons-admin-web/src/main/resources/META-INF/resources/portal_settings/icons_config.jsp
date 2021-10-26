@@ -30,14 +30,17 @@ if (Validator.isNull(redirect)) {
 
 <portlet:actionURL name="/frontend_icons_admin/save_icon_pack_from_existing_icons" var="saveFromExistingIconsActionURL" />
 <portlet:actionURL name="/frontend_icons_admin/save_icon_pack_from_spritemap" var="saveFromSpritemapActionURL" />
-<portlet:actionURL name="/frontend_icons_admin/delete_icon_pack" var="deleteActionURL" />
+<portlet:actionURL name="/frontend_icons_admin/delete_custom_icon" var="deleteIconURL" />
+<portlet:actionURL name="/frontend_icons_admin/delete_icon_pack" var="deleteIconPackURL" />
 
 <div>
 	<react:component
 		module="js/IconSearch"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
-				"deleteURL", deleteActionURL
+				"deleteIconPackURL", deleteIconPackURL
+			).put(
+				"deleteIconURL", deleteIconURL
 			).put(
 				"initialIcons", iconsJSONObject
 			).put(

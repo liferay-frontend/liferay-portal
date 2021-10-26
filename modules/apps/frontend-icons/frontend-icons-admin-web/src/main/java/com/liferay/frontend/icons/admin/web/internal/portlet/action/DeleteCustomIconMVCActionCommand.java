@@ -16,6 +16,7 @@ package com.liferay.frontend.icons.admin.web.internal.portlet.action;
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.frontend.icons.admin.web.internal.helper.IconResourceHelper;
+import com.liferay.frontend.icons.model.IconResourcePack;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -26,6 +27,8 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.HashMap;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -65,9 +68,22 @@ public class DeleteCustomIconMVCActionCommand extends BaseMVCActionCommand {
 			return;
 		}
 
-		String name = ParamUtil.getString(actionRequest, "name");
+		String icon = ParamUtil.getString(actionRequest, "icon");
 
 		String iconPack = ParamUtil.getString(actionRequest, "iconPack");
+
+		HashMap<String, IconResourcePack> iconResourceMaps =
+			_iconResourceHelper.getIconResourceMaps(
+				themeDisplay.getCompanyId());
+
+		IconResourcePack iconResourcePack = iconResourceMaps.get(iconPack);
+
+		if (iconResourcePack != null) {
+			iconResourcePack.removeIconResource(icon);
+
+			_iconResourceHelper.addIconResourcePack(
+				themeDisplay.getCompanyId(), iconResourcePack);
+		}
 	}
 
 	@Reference
