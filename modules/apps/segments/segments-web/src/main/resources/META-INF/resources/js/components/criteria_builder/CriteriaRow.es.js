@@ -255,7 +255,9 @@ class CriteriaRow extends Component {
 		return (
 			<span>
 				<b className="mr-1 text-dark">{propertyLabel}</b>
+
 				<span className="mr-1 operator">{operatorLabel}</span>
+
 				<b>{parsedValue}</b>
 			</span>
 		);

@@ -22,7 +22,8 @@ import '@testing-library/jest-dom/extend-expect';
 
 xdescribe('The SLAListPage component should', () => {
 	xdescribe('Be rendered correctly with no items', () => {
-		let getByTitle, getByText;
+		let getByTitle;
+		let getByText;
 
 		// const clientMock = {
 		// 	get: jest.fn().mockResolvedValue({data: {items: []}}),
@@ -68,7 +69,8 @@ xdescribe('The SLAListPage component should', () => {
 	});
 
 	xdescribe('Be rendered correctly with items', () => {
-		let container, getByText;
+		let container;
+		let getByText;
 
 		// const data = {
 		// 	actions: {},
@@ -228,7 +230,8 @@ xdescribe('The SLAListPage component should', () => {
 	});
 
 	xdescribe('Be rendered correctly with blocked items', () => {
-		let container, getByText;
+		let container;
+		let getByText;
 
 		// const data = {
 		// 	actions: {},

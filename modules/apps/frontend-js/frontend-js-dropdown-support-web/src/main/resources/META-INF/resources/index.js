@@ -14,6 +14,6 @@
 
 import DropdownProvider from './DropdownProvider';
 
-export default () => {
+export default function main() {
 	new DropdownProvider();
-};
+}

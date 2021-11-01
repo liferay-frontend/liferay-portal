@@ -317,6 +317,7 @@ function AutoField({
 							<div className="h4 panel-title">
 								{Liferay.Language.get('rules')}
 							</div>
+
 							<div className="timeline-increment">
 								<span className="timeline-icon"></span>
 							</div>

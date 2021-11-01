@@ -64,4 +64,6 @@ const NAMED_COLORS = {
 
 export {NAMED_COLORS};
 
-export default (index) => COLORS[index % COLORS.length];
+export default function colors(index) {
+	return COLORS[index % COLORS.length];
+}

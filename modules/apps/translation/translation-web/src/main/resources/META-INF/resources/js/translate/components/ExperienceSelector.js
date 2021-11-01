@@ -36,6 +36,7 @@ const ExperienceSelector = ({
 					{label}
 				</label>
 			</ClayLayout.ContentCol>
+
 			<ClayLayout.ContentCol>
 				<ClaySelectWithOption
 					id={selectorId}

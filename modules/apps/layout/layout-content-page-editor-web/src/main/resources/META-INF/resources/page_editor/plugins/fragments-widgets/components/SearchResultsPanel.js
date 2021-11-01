@@ -26,6 +26,7 @@ export default function SearchResultsPanel({filteredTabs}) {
 				<div className="page-editor__fragments-widgets__search-results-panel__filter-subtitle">
 					{tab.label}
 				</div>
+
 				{tab.collections.map((collection, index) => (
 					<TabCollection
 						collection={collection}

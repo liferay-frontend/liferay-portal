@@ -75,6 +75,7 @@ const App = (props) => {
 						value={{...state, ...dataDefinition, dataLayout}}
 					>
 						<DataEngineTaglibCompatibilityLayer />
+
 						<FormBuilder />
 					</FormProvider>
 				</ConfigProvider>

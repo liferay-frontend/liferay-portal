@@ -165,6 +165,7 @@ function BulkActions({
 									{Liferay.Language.get('of')} {total}{' '}
 									{Liferay.Language.get('items-selected')}
 								</span>
+
 								<ClayLink
 									className="ml-3"
 									href="#"
@@ -177,6 +178,7 @@ function BulkActions({
 								</ClayLink>
 							</li>
 						</ul>
+
 						<div className="bulk-actions">
 							{bulkActions.map((actionDefinition, i) => (
 								<button

@@ -47,6 +47,7 @@ function LanguageSelector({
 					<span className="inline-item">
 						<ClayIcon symbol={selectedLanguage.icon} />
 					</span>
+
 					<span className="btn-section">{selectedLanguage.text}</span>
 				</ClayButton>
 			}

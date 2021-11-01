@@ -28,7 +28,7 @@ import {
 } from '../utils/dataConverter.es';
 import {normalizeDataLayoutRows} from '../utils/normalizers.es';
 
-export default (state, action, config) => {
+export default function fieldSetReducer(state, action, config) {
 	switch (action.type) {
 		case EVENT_TYPES.FIELD_SET.UPDATE_LIST: {
 			return {fieldSets: action.payload.fieldSets};
@@ -239,4 +239,4 @@ export default (state, action, config) => {
 		default:
 			return {};
 	}
-};
+}

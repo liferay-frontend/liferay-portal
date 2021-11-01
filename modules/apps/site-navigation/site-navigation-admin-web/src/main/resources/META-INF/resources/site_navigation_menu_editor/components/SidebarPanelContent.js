@@ -28,11 +28,7 @@ import {
 } from '../contexts/SelectedMenuItemIdContext';
 import {useSetSidebarPanelId} from '../contexts/SidebarPanelIdContext';
 
-export const SidebarPanelContent = ({
-	contentRequestBody,
-	contentUrl,
-	title,
-}) => {
+export function SidebarPanelContent({contentRequestBody, contentUrl, title}) {
 	const [body, setBody] = useState(null);
 
 	const changedRef = useRef(false);
@@ -125,7 +121,7 @@ export const SidebarPanelContent = ({
 			</div>
 		</>
 	);
-};
+}
 
 SidebarPanelContent.propTypes = {
 	contentRequestBody: PropTypes.object,

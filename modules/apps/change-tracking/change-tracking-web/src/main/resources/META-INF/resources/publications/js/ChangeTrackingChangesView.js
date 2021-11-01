@@ -93,7 +93,7 @@ const DrilldownMenu = ({
 	);
 };
 
-export default ({
+export default function ChangeTrackingChangesView({
 	activeCTCollection,
 	changeTypesFromURL,
 	changes,
@@ -120,7 +120,7 @@ export default ({
 	updateCTCommentURL,
 	userInfo,
 	usersFromURL,
-}) => {
+}) {
 	const CHANGE_TYPE_ADDITION = 0;
 	const CHANGE_TYPE_DELETION = 1;
 	const CHANGE_TYPE_MODIFICATION = 2;
@@ -182,14 +182,14 @@ export default ({
 
 	const params = new URLSearchParams(search);
 
-	const initialized = useRef(false);
+	const initializedRef = useRef(false);
 
 	if (
-		!initialized.current &&
+		!initializedRef.current &&
 		isWithinApp(params) &&
 		(!window.history.state || !window.history.state.senna)
 	) {
-		initialized.current = true;
+		initializedRef.current = true;
 
 		const state = {
 			path: pathname + search,
@@ -207,10 +207,10 @@ export default ({
 	params.delete(PARAM_TYPES);
 	params.delete(PARAM_USERS);
 
-	const basePath = useRef(pathname + '?' + params.toString());
+	const basePathRef = useRef(pathname + '?' + params.toString());
 
-	const commentsCache = useRef({});
-	const renderCache = useRef({});
+	const commentsCacheRef = useRef({});
+	const renderCacheRef = useRef({});
 
 	const modelsRef = useRef(null);
 
@@ -792,7 +792,7 @@ export default ({
 	const getPath = useCallback(
 		(filters, keywords, pathParam, showHideable) => {
 			let path =
-				basePath.current +
+				basePathRef.current +
 				'&' +
 				PARAM_PATH +
 				'=' +
@@ -1677,6 +1677,7 @@ export default ({
 				<span className="dropdown-item-indicator-text-end">
 					{label}
 				</span>
+
 				<span className="dropdown-item-indicator-end">
 					<ClayIcon spritemap={spritemap} symbol="angle-right" />
 				</span>
@@ -1717,6 +1718,7 @@ export default ({
 									type="text"
 									value={filterSearchTerms}
 								/>
+
 								<ClayInput.GroupInsetItem after tag="span">
 									{filterSearchTerms ? (
 										<ClayButton
@@ -1747,6 +1749,7 @@ export default ({
 						</ClayInput.Group>
 					</div>
 				)}
+
 				<div className="inline-scroller">
 					<ClayDropDown.ItemList>
 						{getFilterListFunction()}
@@ -2135,6 +2138,7 @@ export default ({
 										symbol="caret-bottom"
 									/>
 								</span>
+
 								<span className="navbar-breakpoint-d-none">
 									<ClayIcon
 										spritemap={spritemap}
@@ -2159,37 +2163,44 @@ export default ({
 										Liferay.Language.get('change-types'),
 										MENU_CHANGE_TYPES
 									)}
+
 									{getDrilldownRootItem(
 										Liferay.Language.get('sites'),
 										MENU_SITES
 									)}
+
 									{getDrilldownRootItem(
 										Liferay.Language.get('types'),
 										MENU_TYPES
 									)}
+
 									{getDrilldownRootItem(
 										Liferay.Language.get('users'),
 										MENU_USERS
 									)}
 								</DrilldownMenu>
+
 								{getDrilldownMenu(
 									getChangeTypesFilterList,
 									Liferay.Language.get('change-types'),
 									false,
 									MENU_CHANGE_TYPES
 								)}
+
 								{getDrilldownMenu(
 									getSitesFilterList,
 									Liferay.Language.get('sites'),
 									true,
 									MENU_SITES
 								)}
+
 								{getDrilldownMenu(
 									getTypesFilterList,
 									Liferay.Language.get('types'),
 									true,
 									MENU_TYPES
 								)}
+
 								{getDrilldownMenu(
 									getUsersFilterList,
 									Liferay.Language.get('users'),
@@ -2214,6 +2225,7 @@ export default ({
 				}
 			>
 				{renderFilterDropdown()}
+
 				{renderState.viewType === VIEW_TYPE_CHANGES && (
 					<ClayManagementToolbar.Search
 						onSubmit={(event) => {
@@ -2241,6 +2253,7 @@ export default ({
 									type="text"
 									value={entrySearchTerms}
 								/>
+
 								<ClayInput.GroupInsetItem after tag="span">
 									<ClayButtonWithIcon
 										className="navbar-breakpoint-d-none"
@@ -2250,6 +2263,7 @@ export default ({
 										spritemap={spritemap}
 										symbol="times"
 									/>
+
 									<ClayButtonWithIcon
 										displayType="unstyled"
 										spritemap={spritemap}
@@ -2261,6 +2275,7 @@ export default ({
 						</ClayInput.Group>
 					</ClayManagementToolbar.Search>
 				)}
+
 				<ClayManagementToolbar.ItemList>
 					{renderState.viewType === VIEW_TYPE_CHANGES ? (
 						<ClayManagementToolbar.Item className="navbar-breakpoint-d-none">
@@ -2319,6 +2334,7 @@ export default ({
 												symbol="caret-bottom"
 											/>
 										</span>
+
 										<span className="navbar-breakpoint-d-none">
 											<ClayIcon
 												spritemap={spritemap}
@@ -2330,6 +2346,7 @@ export default ({
 							/>
 						</ClayManagementToolbar.Item>
 					)}
+
 					{renderState.viewType === VIEW_TYPE_CONTEXT && (
 						<ClayManagementToolbar.Item
 							data-tooltip-align="top"
@@ -2355,9 +2372,11 @@ export default ({
 							</ClayButton>
 						</ClayManagementToolbar.Item>
 					)}
+
 					{renderState.viewType === VIEW_TYPE_CONTEXT && (
 						<ClayManagementToolbar.Item className="nav-item-expand" />
 					)}
+
 					<ClayManagementToolbar.Item className="simple-toggle-switch-reverse">
 						<ClayToggle
 							disabled={changes.length === 0}
@@ -2368,6 +2387,7 @@ export default ({
 							toggled={renderState.showHideable}
 						/>
 					</ClayManagementToolbar.Item>
+
 					{contextViewRef.current && (
 						<ClayManagementToolbar.Item
 							data-tooltip-align="top"
@@ -2424,6 +2444,7 @@ export default ({
 							/>
 						</ClayManagementToolbar.Item>
 					)}
+
 					<ClayManagementToolbar.Item
 						data-tooltip-align="top"
 						title={Liferay.Language.get('comments')}
@@ -2680,6 +2701,7 @@ export default ({
 				return (
 					<div className="sheet taglib-empty-result-message">
 						<div className="taglib-empty-search-result-message-header" />
+
 						<div className="sheet-text text-center">
 							{Liferay.Language.get(
 								'there-are-no-changes-to-display-in-this-view'
@@ -2709,12 +2731,14 @@ export default ({
 										Liferay.Language.get('user')
 									)}
 								</ClayTable.Cell>
+
 								<ClayTable.Cell headingCell>
 									{getColumnHeader(
 										COLUMN_SITE,
 										Liferay.Language.get('site')
 									)}
 								</ClayTable.Cell>
+
 								<ClayTable.Cell
 									className="table-cell-expand"
 									headingCell
@@ -2724,6 +2748,7 @@ export default ({
 										Liferay.Language.get('title')
 									)}
 								</ClayTable.Cell>
+
 								<ClayTable.Cell
 									className="table-cell-expand-smallest"
 									headingCell
@@ -2733,6 +2758,7 @@ export default ({
 										Liferay.Language.get('change-type')
 									)}
 								</ClayTable.Cell>
+
 								<ClayTable.Cell
 									className="table-cell-expand-smallest"
 									headingCell
@@ -2806,6 +2832,7 @@ export default ({
 
 					<div className="sheet taglib-empty-result-message">
 						<div className="taglib-empty-result-message-header" />
+
 						<div className="sheet-text text-center">
 							{Liferay.Language.get('no-changes-were-found')}
 						</div>
@@ -2851,7 +2878,7 @@ export default ({
 								}
 								discardURL={getDiscardURL(renderState.node)}
 								getCache={() =>
-									renderCache.current[
+									renderCacheRef.current[
 										renderState.node.modelClassNameId +
 											'-' +
 											renderState.node.modelClassPK
@@ -2864,7 +2891,7 @@ export default ({
 								spritemap={spritemap}
 								title={renderState.node.title}
 								updateCache={(data) => {
-									renderCache.current[
+									renderCacheRef.current[
 										renderState.node.modelClassNameId +
 											'-' +
 											renderState.node.modelClassPK
@@ -2882,6 +2909,7 @@ export default ({
 								}}
 							/>
 						)}
+
 						{renderTable()}
 					</div>
 				</div>
@@ -2929,7 +2957,7 @@ export default ({
 								currentUserId={currentUserId}
 								deleteCommentURL={deleteCTCommentURL}
 								getCache={() => {
-									return commentsCache.current['0'];
+									return commentsCacheRef.current['0'];
 								}}
 								getCommentsURL={getCTCommentsURL}
 								keyParam=""
@@ -2942,13 +2970,14 @@ export default ({
 
 									cacheData.updatedCommentId = null;
 
-									commentsCache.current['0'] = cacheData;
+									commentsCacheRef.current['0'] = cacheData;
 								}}
 								updateCommentURL={updateCTCommentURL}
 							/>
 						)}
 					</div>
 				</div>
+
 				<div
 					className="sidenav-content"
 					style={
@@ -2962,4 +2991,4 @@ export default ({
 			</div>
 		</>
 	);
-};
+}

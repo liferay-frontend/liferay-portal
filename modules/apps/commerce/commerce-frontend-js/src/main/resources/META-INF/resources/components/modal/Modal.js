@@ -126,6 +126,7 @@ function Modal(props) {
 					status={props.status}
 				>
 					{title && <ClayModal.Header>{title}</ClayModal.Header>}
+
 					<div
 						className="modal-body modal-body-iframe"
 						style={{
@@ -134,6 +135,7 @@ function Modal(props) {
 						}}
 					>
 						<iframe src={url} title={title} />
+
 						{loading && (
 							<div className="loader-container">
 								<ClayLoadingIndicator />

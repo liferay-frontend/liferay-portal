@@ -25,7 +25,7 @@ import InfoItemService from '../../services/InfoItemService';
 import itemSelectorValueToInfoItem from '../../utils/item-selector-value/itemSelectorValueToInfoItem';
 import {useId} from '../../utils/useId';
 
-export const ItemSelectorField = ({field, onValueSelect, value}) => {
+export function ItemSelectorField({field, onValueSelect, value}) {
 	const collectionItemContext = useContext(CollectionItemContext);
 
 	const {typeOptions = {}} = field;
@@ -73,7 +73,7 @@ export const ItemSelectorField = ({field, onValueSelect, value}) => {
 			)}
 		</>
 	);
-};
+}
 
 ItemSelectorField.propTypes = {
 	field: PropTypes.shape({

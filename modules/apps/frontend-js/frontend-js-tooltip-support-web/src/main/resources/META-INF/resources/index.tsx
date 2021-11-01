@@ -51,7 +51,7 @@ const getDefaultTooltipContainer = () => {
 	return container;
 };
 
-export default () => {
+export default function main() {
 	render(
 		ClayTooltipProvider,
 		{
@@ -62,4 +62,4 @@ export default () => {
 		},
 		getDefaultTooltipContainer()
 	);
-};
+}

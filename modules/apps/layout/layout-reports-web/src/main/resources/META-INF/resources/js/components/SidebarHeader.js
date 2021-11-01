@@ -42,6 +42,7 @@ const DefaultSidebarHeader = () => {
 			<span className="font-weight-bold">
 				{Liferay.Language.get('page-audit')}
 			</span>
+
 			<div>
 				{showRefreshButton && (
 					<ClayButtonWithIcon
@@ -66,6 +67,7 @@ const DefaultSidebarHeader = () => {
 						title={Liferay.Language.get('relaunch')}
 					/>
 				)}
+
 				<ClayButtonWithIcon
 					className="sidenav-close text-secondary"
 					displayType="unstyled"

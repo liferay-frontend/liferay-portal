@@ -16,13 +16,13 @@ import React, {useEffect, useState} from 'react';
 
 import Highlight from './Highlight.es';
 
-export default ({
+export default function ArticleBodyRenderer({
 	articleBody,
 	compactMode = false,
 	encodingFormat,
 	id,
 	signature,
-}) => {
+}) {
 	const [
 		articleBodyContainsParagraph,
 		setArticleBodyContainsParagraph,
@@ -57,4 +57,4 @@ export default ({
 			)}
 		</>
 	);
-};
+}

@@ -15,7 +15,7 @@
 import ClayIcon from '@clayui/icon';
 import React from 'react';
 
-export default ({className, symbol, tooltip, value}) => {
+export default function QuestionsBadge({className, symbol, tooltip, value}) {
 	return (
 		<div
 			className={`c-py-2 c-px-3 rounded stretched-link-layer ${className}`}
@@ -29,4 +29,4 @@ export default ({className, symbol, tooltip, value}) => {
 			<span className="c-ml-2 font-weight-bold small">{value || 0}</span>
 		</div>
 	);
-};
+}

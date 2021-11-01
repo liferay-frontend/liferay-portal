@@ -100,7 +100,7 @@ AUI.add(
 					if (instance._triggerNode) {
 						instance._triggerNode.on(['keyup', 'tap'], (event) => {
 							if (
-								event.type == 'tap' ||
+								event.type === 'tap' ||
 								event.isKeyInSet('ENTER', 'SPACE')
 							) {
 								instance._toggleMenu(

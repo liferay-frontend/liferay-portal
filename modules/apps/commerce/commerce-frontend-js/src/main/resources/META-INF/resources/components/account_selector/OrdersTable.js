@@ -27,14 +27,17 @@ function OrdersTable({orders, selectOrderURL}) {
 					<ClayTable.Cell headingCell>
 						{Liferay.Language.get('order-number')}
 					</ClayTable.Cell>
+
 					<ClayTable.Cell headingCell>
 						{Liferay.Language.get('status')}
 					</ClayTable.Cell>
+
 					<ClayTable.Cell headingCell>
 						{Liferay.Language.get('last-modified')}
 					</ClayTable.Cell>
 				</ClayTable.Row>
 			</ClayTable.Head>
+
 			<ClayTable.Body>
 				{orders.map((order) => (
 					<ClayTable.Row key={order.id}>
@@ -43,9 +46,11 @@ function OrdersTable({orders, selectOrderURL}) {
 								{order.id}
 							</a>
 						</ClayTable.Cell>
+
 						<ClayTable.Cell>
 							<StatusRenderer value={order.orderStatusInfo} />
 						</ClayTable.Cell>
+
 						<ClayTable.Cell>
 							<DateRenderer value={order.modifiedDate} />
 						</ClayTable.Cell>

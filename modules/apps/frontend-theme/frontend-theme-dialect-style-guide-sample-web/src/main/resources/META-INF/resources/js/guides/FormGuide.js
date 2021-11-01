@@ -140,6 +140,7 @@ const Input = (props) => {
 					{message && (
 						<div className="form-feedback-item">
 							<span className="form-feedback-indicator"></span>
+
 							{message}
 						</div>
 					)}
@@ -201,6 +202,7 @@ const Select = (props) => {
 					{message && (
 						<div className="form-feedback-item">
 							<span className="form-feedback-indicator"></span>
+
 							{message}
 						</div>
 					)}

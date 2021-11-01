@@ -26,7 +26,7 @@ ConfigContext.displayName = 'ConfigContext';
  * in the same `store` may be rendering unnecessary components
  * that use only configuration properties.
  */
-export const ConfigProvider = ({children, config, initialConfig}) => {
+export function ConfigProvider({children, config, initialConfig}) {
 
 	// Use `useRef` to avoid causing a new rendering of components that
 	// consume context data. We do not want to cause a new rendering after
@@ -40,8 +40,10 @@ export const ConfigProvider = ({children, config, initialConfig}) => {
 			{children}
 		</ConfigContext.Provider>
 	);
-};
+}
 
 ConfigProvider.displayName = 'ConfigProvider';
 
-export const useConfig = () => useContext(ConfigContext);
+export function useConfig() {
+	return useContext(ConfigContext);
+}

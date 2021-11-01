@@ -47,7 +47,7 @@ FormStateContext.displayName = 'FormStateContext';
  *  </FormBuilder>
  * </LayoutProvider>
  */
-export const FormNoopProvider = ({children, initialState, onAction, value}) => {
+export function FormNoopProvider({children, initialState, onAction, value}) {
 	const [, dispatch] = useThunk([{}, onAction]);
 
 	return (
@@ -57,7 +57,7 @@ export const FormNoopProvider = ({children, initialState, onAction, value}) => {
 			</FormStateContext.Provider>
 		</FormDispatchContext.Provider>
 	);
-};
+}
 
 /**
  * Propagate Action is used in conjunction with useReducer that "listens"
@@ -119,14 +119,14 @@ const usePropagateAction = ([state, dispatch], onAction) => {
  *  </FormProvider>
  * </ConfigProvider>
  */
-export const FormProvider = ({
+export function FormProvider({
 	children,
 	init = (props) => props,
 	initialState = {},
 	onAction,
 	reducers,
 	value,
-}) => {
+}) {
 	const config = useConfig();
 
 	const [state, dispatch] = useThunk(
@@ -147,14 +147,14 @@ export const FormProvider = ({
 			</FormStateContext.Provider>
 		</FormDispatchContext.Provider>
 	);
-};
+}
 
 FormProvider.displayName = 'FormProvider';
 
-export const useForm = () => {
+export function useForm() {
 	return useContext(FormDispatchContext);
-};
+}
 
-export const useFormState = ({schema} = {}) => {
+export function useFormState({schema} = {}) {
 	return useDataView(useContext(FormStateContext), schema);
-};
+}

@@ -177,6 +177,7 @@ export default function ReferralDetail({
 						<ClayList.ItemTitle className="text-truncate-inline">
 							<span className="text-truncate">
 								{Liferay.Language.get('top-referring-pages')}
+
 								<span className="text-secondary">
 									<Hint
 										message={Liferay.Language.get(
@@ -190,12 +191,14 @@ export default function ReferralDetail({
 							</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
+
 					<ClayList.ItemField>
 						<ClayList.ItemTitle>
 							<span>{Liferay.Language.get('traffic')}</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
 				</ClayList.Item>
+
 				{referringPages
 					.slice(0, isReferringPagesExpanded ? 10 : ITEMS_TO_SHOW)
 					.map(({trafficAmount, url}) => {
@@ -218,6 +221,7 @@ export default function ReferralDetail({
 										</span>
 									</ClayList.ItemText>
 								</ClayList.ItemField>
+
 								<ClayList.ItemField expand>
 									<span className="align-self-end font-weight-semi-bold text-dark">
 										{numberFormat(
@@ -255,6 +259,7 @@ export default function ReferralDetail({
 						<ClayList.ItemTitle className="text-truncate-inline">
 							<span className="text-truncate">
 								{Liferay.Language.get('top-referring-domains')}
+
 								<span className="text-secondary">
 									<Hint
 										message={Liferay.Language.get(
@@ -268,12 +273,14 @@ export default function ReferralDetail({
 							</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
+
 					<ClayList.ItemField>
 						<ClayList.ItemTitle>
 							<span>{Liferay.Language.get('traffic')}</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
 				</ClayList.Item>
+
 				{referringDomains
 					.slice(0, isReferringDomainsExpanded ? 10 : ITEMS_TO_SHOW)
 					.map(({trafficAmount, url}) => {
@@ -296,6 +303,7 @@ export default function ReferralDetail({
 										</span>
 									</ClayList.ItemText>
 								</ClayList.ItemField>
+
 								<ClayList.ItemField expand>
 									<span className="align-self-end font-weight-semi-bold text-dark">
 										{numberFormat(

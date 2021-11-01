@@ -26,7 +26,7 @@
 			}
 
 			if (
-				node.type == CKEDITOR.NODE_ELEMENT &&
+				node.type === CKEDITOR.NODE_ELEMENT &&
 				cellNodeRegex.test(node.getName()) &&
 				!node.getCustomData('selected_cell')
 			) {
@@ -59,7 +59,7 @@
 
 				while ((node = walker.next())) {
 					if (
-						node.type != CKEDITOR.NODE_ELEMENT ||
+						node.type !== CKEDITOR.NODE_ELEMENT ||
 						!node.is(CKEDITOR.dtd.table)
 					) {
 						const parent =
@@ -175,7 +175,7 @@
 			if (
 				cloneRow[i].rowSpan > 1 &&
 				nextRow &&
-				cloneRow[i] == nextRow[i]
+				cloneRow[i] === nextRow[i]
 			) {
 				cell = cloneRow[i];
 				cell.rowSpan += 1;
@@ -236,13 +236,13 @@
 
 					const cellRowIndex = cell.getParent().$.rowIndex;
 
-					if (cell.$.rowSpan == 1) {
+					if (cell.$.rowSpan === 1) {
 						cell.remove();
 					}
 					else {
 						cell.$.rowSpan -= 1;
 
-						if (cellRowIndex == i) {
+						if (cellRowIndex === i) {
 							const nextMapRow = map[i + 1];
 							if (nextMapRow[j - 1]) {
 								cell.insertAfter(
@@ -280,7 +280,7 @@
 		else if (selectionOrRow instanceof CKEDITOR.dom.element) {
 			const table = selectionOrRow.getAscendant('table');
 
-			if (table.$.rows.length == 1) {
+			if (table.$.rows.length === 1) {
 				table.remove();
 			}
 			else {
@@ -300,7 +300,7 @@
 		for (let i = 0; i < rowCells.length; i++) {
 			const mapCell = rowCells[i];
 			colIndex += isStart ? 1 : mapCell.colSpan;
-			if (mapCell == cell.$) {
+			if (mapCell === cell.$) {
 				break;
 			}
 		}
@@ -363,7 +363,7 @@
 				continue;
 			}
 
-			if (cloneCol[i].colSpan > 1 && nextCol[i] == cloneCol[i]) {
+			if (cloneCol[i].colSpan > 1 && nextCol[i] === cloneCol[i]) {
 				cell = cloneCol[i];
 				cell.colSpan += 1;
 			}
@@ -418,10 +418,10 @@
 
 		for (let i = 0, rows = map.length; i < rows; i++) {
 			for (let j = 0, cols = map[i].length; j < cols; j++) {
-				if (map[i][j] == firstCell.$) {
+				if (map[i][j] === firstCell.$) {
 					startColIndex = j;
 				}
-				if (map[i][j] == lastCell.$) {
+				if (map[i][j] === lastCell.$) {
 					endColIndex = j;
 				}
 			}
@@ -436,7 +436,7 @@
 				const cell = new CKEDITOR.dom.element(mapRow[i]);
 
 				if (cell.$) {
-					if (cell.$.colSpan == 1) {
+					if (cell.$.colSpan === 1) {
 						cell.remove();
 					}
 					else {
@@ -461,7 +461,7 @@
 					: table.$.parentNode)
 		);
 
-		if (rowsToDelete.length == rows) {
+		if (rowsToDelete.length === rows) {
 			table.remove();
 		}
 
@@ -510,7 +510,7 @@
 		}
 		else if (selectionOrCell instanceof CKEDITOR.dom.element) {
 			const tr = selectionOrCell.getParent();
-			if (tr.getChildCount() == 1) {
+			if (tr.getChildCount() === 1) {
 				tr.remove();
 			}
 			else {
@@ -533,7 +533,7 @@
 
 		const docOuter = CKEDITOR.document;
 
-		if (CKEDITOR.env.ie && CKEDITOR.env.version == 10) {
+		if (CKEDITOR.env.ie && CKEDITOR.env.version === 10) {
 			docOuter.focus();
 			docInner.focus();
 		}
@@ -552,15 +552,15 @@
 	function cellInRow(tableMap, rowIndex, cell) {
 		const row = tableMap[rowIndex];
 
-		if (typeof cell == 'undefined') {
+		if (typeof cell === 'undefined') {
 			return row;
 		}
 
 		for (let cellIndex = 0; row && cellIndex < row.length; cellIndex++) {
-			if (cell.is && row[cellIndex] == cell.$) {
+			if (cell.is && row[cellIndex] === cell.$) {
 				return cellIndex;
 			}
-			else if (cellIndex == cell) {
+			else if (cellIndex === cell) {
 				return new CKEDITOR.dom.element(row[cellIndex]);
 			}
 		}
@@ -590,9 +590,9 @@
 		let commonAncestor;
 
 		if (
-			(mergeDirection ? cells.length != 1 : cells.length < 2) ||
+			(mergeDirection ? cells.length !== 1 : cells.length < 2) ||
 			((commonAncestor = selection.getCommonAncestor()) &&
-				commonAncestor.type == CKEDITOR.NODE_ELEMENT &&
+				commonAncestor.type === CKEDITOR.NODE_ELEMENT &&
 				commonAncestor.is('table'))
 		) {
 			return false;
@@ -624,15 +624,15 @@
 
 				targetCell =
 					map[
-						mergeDirection == 'up'
+						mergeDirection === 'up'
 							? startRow - rowspan
-							: mergeDirection == 'down'
+							: mergeDirection === 'down'
 							? startRow + rowspan
 							: startRow
 					][
-						mergeDirection == 'left'
+						mergeDirection === 'left'
 							? startColumn - colspan
-							: mergeDirection == 'right'
+							: mergeDirection === 'right'
 							? startColumn + colspan
 							: startColumn
 					];
@@ -641,12 +641,12 @@
 				return false;
 			}
 
-			if (!targetCell || firstCell.$ == targetCell) {
+			if (!targetCell || firstCell.$ === targetCell) {
 				return false;
 			}
 
 			cells[
-				mergeDirection == 'up' || mergeDirection == 'left'
+				mergeDirection === 'up' || mergeDirection === 'left'
 					? 'unshift'
 					: 'push'
 			](new CKEDITOR.dom.element(targetCell));
@@ -694,7 +694,7 @@
 			if (!isDetect) {
 				if ((trimCell(cell), cell.getChildren().count())) {
 					if (
-						rowIndex != lastRowIndex &&
+						rowIndex !== lastRowIndex &&
 						cellFirstChild &&
 						!(
 							cellFirstChild.isBlockBoundary &&
@@ -757,7 +757,7 @@
 			return firstCell;
 		}
 		else {
-			return totalRowSpan * totalColSpan == dimension;
+			return totalRowSpan * totalColSpan === dimension;
 		}
 	}
 
@@ -809,7 +809,7 @@
 			for (let c = 0; c < newCellRow.length; c++) {
 				candidateCell = newCellRow[c];
 
-				if (candidateCell.parentNode == newCellTr.$ && c > colIndex) {
+				if (candidateCell.parentNode === newCellTr.$ && c > colIndex) {
 					newCell.insertBefore(
 						new CKEDITOR.dom.element(candidateCell)
 					);
@@ -841,10 +841,10 @@
 
 		cell.$.rowSpan = newRowSpan;
 		newCell.$.rowSpan = newCellRowSpan;
-		if (newRowSpan == 1) {
+		if (newRowSpan === 1) {
 			cell.removeAttribute('rowSpan');
 		}
-		if (newCellRowSpan == 1) {
+		if (newCellRowSpan === 1) {
 			newCell.removeAttribute('rowSpan');
 		}
 
@@ -895,10 +895,10 @@
 
 		cell.$.colSpan = newColSpan;
 		newCell.$.colSpan = newCellColSpan;
-		if (newColSpan == 1) {
+		if (newColSpan === 1) {
 			cell.removeAttribute('colSpan');
 		}
-		if (newCellColSpan == 1) {
+		if (newCellColSpan === 1) {
 			newCell.removeAttribute('colSpan');
 		}
 

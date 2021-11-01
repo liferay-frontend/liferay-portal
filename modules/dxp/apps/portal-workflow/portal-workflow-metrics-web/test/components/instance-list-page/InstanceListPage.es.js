@@ -59,7 +59,9 @@ xdescribe('The instance list card should', () => {
 	// 		.mockResolvedValue({data: {items, totalCount: items.length + 1}}),
 	// };
 
-	let container, findByText, getByText;
+	let container;
+	let findByText;
+	let getByText;
 
 	// beforeAll(async () => {
 	// 	const renderResult = render(

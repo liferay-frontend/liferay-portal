@@ -31,7 +31,10 @@ export default function multipleUndo({numberOfActions, store, type}) {
 			return;
 		}
 
-		let isUndoAction, remainingUndos, undosToUndo, updateHistoryAction;
+		let isUndoAction;
+		let remainingUndos;
+		let undosToUndo;
+		let updateHistoryAction;
 
 		let updatedStore = store;
 

@@ -172,6 +172,7 @@ function ActionItem({
 					<ClayIcon symbol={icon} />
 				</span>
 			)}
+
 			{label}
 		</ClayDropDown.Item>
 	);
@@ -202,6 +203,7 @@ function ActionsDropdownRenderer({actions, itemData, itemId}) {
 				small
 				symbol="times-small"
 			/>
+
 			{loading ? (
 				<ClayButton disabled monospaced small>
 					<ClayLoadingIndicator small />
@@ -338,6 +340,7 @@ function ActionsDropdownRenderer({actions, itemData, itemId}) {
 				return (
 					<ClayDropDown.Group {...item}>
 						{separator && <ClayDropDown.Divider />}
+
 						{renderItems(nestedItems)}
 					</ClayDropDown.Group>
 				);
@@ -360,6 +363,7 @@ function ActionsDropdownRenderer({actions, itemData, itemId}) {
 	return (
 		<div className="d-flex justify-content-end ml-auto">
 			{inlineEditingAlwaysOn && inlineEditingActions}
+
 			<ClayDropDown
 				active={menuActive}
 				onActiveChange={setMenuActive}
@@ -370,6 +374,7 @@ function ActionsDropdownRenderer({actions, itemData, itemId}) {
 						displayType="unstyled"
 					>
 						<ClayIcon symbol="ellipsis-v" />
+
 						<span className="sr-only">
 							{Liferay.Language.get('actions')}
 						</span>

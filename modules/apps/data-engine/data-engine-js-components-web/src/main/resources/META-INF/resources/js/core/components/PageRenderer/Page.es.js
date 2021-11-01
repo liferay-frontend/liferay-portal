@@ -218,9 +218,11 @@ const Page = ({
 							<span className="c-mr-1 reference-mark">
 								<ClayIcon symbol="asterisk" />
 							</span>
+
 							{Liferay.Language.get('indicates-required-fields')}
 						</p>
 					)}
+
 					<Layout
 						components={Components}
 						editable={editable}

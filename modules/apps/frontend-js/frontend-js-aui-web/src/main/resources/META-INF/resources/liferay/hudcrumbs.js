@@ -81,7 +81,7 @@ AUI.add(
 						action = 'show';
 					}
 
-					if (instance.lastAction != action) {
+					if (instance.lastAction !== action) {
 						hudcrumbs[action]();
 					}
 

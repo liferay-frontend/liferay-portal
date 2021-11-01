@@ -37,7 +37,7 @@ AUI().use('escape', 'aui-lang', (A) => {
 
 			var message = '';
 
-			if (parameterKey.length == 0) {
+			if (parameterKey.length === 0) {
 				A.all('.portlet-msg-error').setStyle('display', 'none');
 
 				message = Liferay.Language.get(
@@ -51,7 +51,7 @@ AUI().use('escape', 'aui-lang', (A) => {
 				return;
 			}
 
-			if (parameterType != 'date' && parameterValue.length == 0) {
+			if (parameterType !== 'date' && parameterValue.length === 0) {
 				A.all('.portlet-msg-error').setStyle('display', 'none');
 
 				message = Liferay.Language.get(
@@ -89,7 +89,7 @@ AUI().use('escape', 'aui-lang', (A) => {
 				for (var i in reportParametersJSON) {
 					var reportParameter = reportParametersJSON[i];
 
-					if (reportParameter.key == parameterKey) {
+					if (reportParameter.key === parameterKey) {
 						message = Liferay.Language.get(
 							'that-vocabulary-already-exists'
 						);
@@ -103,7 +103,7 @@ AUI().use('escape', 'aui-lang', (A) => {
 				}
 			}
 
-			if (parameterType == 'date') {
+			if (parameterType === 'date') {
 				parameterValue = instance._getDateValue(namespace);
 			}
 
@@ -259,7 +259,7 @@ AUI().use('escape', 'aui-lang', (A) => {
 			var parameterType = A.one('.parameters-input-type').val();
 			var parameterValue = A.one('.parameters-value').val();
 
-			if (parameterType == 'date') {
+			if (parameterType === 'date') {
 				parameterValue = instance._getDateValue(namespace);
 			}
 
@@ -290,7 +290,7 @@ AUI().use('escape', 'aui-lang', (A) => {
 				for (var i in reportParameters) {
 					var reportParameter = reportParameters[i];
 
-					if (reportParameter.key == parameterKey) {
+					if (reportParameter.key === parameterKey) {
 						reportParameters.splice(i, 1);
 
 						break;
@@ -360,26 +360,26 @@ AUI().use('escape', 'aui-lang', (A) => {
 					'.parameters-value-field-set'
 				);
 
-				if (currentTarget.val() == 'text') {
+				if (currentTarget.val() === 'text') {
 					parametersValue.val('');
 					parametersValue.attr('disabled', '');
 					parametersInputDate.setStyle('display', 'none');
 					parametersValueFieldSet.setStyle('display', 'block');
 				}
 
-				if (currentTarget.val() == 'date') {
+				if (currentTarget.val() === 'date') {
 					parametersValueFieldSet.setStyle('display', 'none');
 					parametersInputDate.setStyle('display', 'block');
 				}
 
-				if (currentTarget.val() == 'startDateDay') {
+				if (currentTarget.val() === 'startDateDay') {
 					parametersInputDate.setStyle('display', 'none');
 					parametersValueFieldSet.setStyle('display', 'block');
 					parametersValue.attr('disabled', 'disabled');
 					parametersValue.val('${startDateDay}');
 				}
 
-				if (currentTarget.val() == 'endDateDay') {
+				if (currentTarget.val() === 'endDateDay') {
 					parametersInputDate.setStyle('display', 'none');
 					parametersValueFieldSet.setStyle('display', 'block');
 					parametersValue.attr('disabled', 'disabled');

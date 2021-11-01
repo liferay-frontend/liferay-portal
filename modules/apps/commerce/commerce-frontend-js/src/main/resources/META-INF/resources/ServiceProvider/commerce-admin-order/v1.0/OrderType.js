@@ -22,6 +22,8 @@ function resolvePath(basePath = '', orderTypeId = '') {
 	return `${basePath}${VERSION}${ORDER_TYPES_PATH}/${orderTypeId}`;
 }
 
-export default (basePath) => ({
-	addOrderType: (json) => AJAX.POST(resolvePath(basePath), json),
-});
+export default function OrderType(basePath) {
+	return {
+		addOrderType: (json) => AJAX.POST(resolvePath(basePath), json),
+	};
+}

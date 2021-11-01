@@ -113,13 +113,13 @@ function AutocompleteFilter({
 	const [query, setQuery] = useState('');
 	const [search, setSearch] = useState('');
 	const [selectedItems, setSelectedItems] = useState(valueProp?.items || []);
-	const [items, updateItems] = useState(null);
+	const [items, setItems] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [total, updateTotal] = useState(0);
-	const scrollingArea = useRef(null);
+	const [total, setTotal] = useState(0);
+	const scrollingAreaRef = useRef(null);
 	const [scrollingAreaRendered, setScrollingAreaRendered] = useState(false);
-	const infiniteLoader = useRef(null);
+	const infiniteLoaderRef = useRef(null);
 	const [infiniteLoaderRendered, setInfiniteLoaderRendered] = useState(false);
 	const [exclude, setExclude] = useState(!!valueProp?.exclude);
 
@@ -149,12 +149,12 @@ function AutocompleteFilter({
 
 				setLoading(false);
 				if (currentPage === 1) {
-					updateItems(data.items);
+					setItems(data.items);
 				}
 				else {
-					updateItems((items) => [...items, ...data.items]);
+					setItems((items) => [...items, ...data.items]);
 				}
-				updateTotal(data.totalCount);
+				setTotal(data.totalCount);
 			})
 			.catch((error) => {
 				logError(error);
@@ -166,26 +166,26 @@ function AutocompleteFilter({
 	}, [currentPage, isMounted, search, apiURL]);
 
 	const setScrollingArea = useCallback((node) => {
-		scrollingArea.current = node;
+		scrollingAreaRef.current = node;
 		setScrollingAreaRendered(true);
 	}, []);
 
 	const setInfiniteLoader = useCallback((node) => {
-		infiniteLoader.current = node;
+		infiniteLoaderRef.current = node;
 		setInfiniteLoaderRendered(true);
 	}, []);
 
 	const setObserver = useCallback(() => {
 		if (
-			!scrollingArea.current ||
-			!infiniteLoader.current ||
+			!scrollingAreaRef.current ||
+			!infiniteLoaderRef.current ||
 			!IntersectionObserver
 		) {
 			return;
 		}
 
 		const options = {
-			root: scrollingArea.current,
+			root: scrollingAreaRef.current,
 			rootMargin: '0px',
 			threshold: 1.0,
 		};
@@ -197,7 +197,7 @@ function AutocompleteFilter({
 			setCurrentPage((page) => page + 1);
 		}, options);
 
-		observer.observe(infiniteLoader.current);
+		observer.observe(infiniteLoaderRef.current);
 	}, []);
 
 	useEffect(() => {
@@ -240,8 +240,10 @@ function AutocompleteFilter({
 						onChange={(event) => setQuery(event.target.value)}
 						placeholder={inputPlaceholder}
 					/>
+
 					{loading && <ClayAutocomplete.LoadingIndicator />}
 				</ClayAutocomplete>
+
 				{selectedItems.length ? (
 					<div className="mt-2 selected-elements-wrapper">
 						{selectedItems.map((selectedItem) => (
@@ -272,6 +274,7 @@ function AutocompleteFilter({
 							{Liferay.Language.get('exclude')}
 						</label>
 					</div>
+
 					<div className="col-auto">
 						<ClayToggle
 							id={`autocomplete-exclude-${id}`}
@@ -336,6 +339,7 @@ function AutocompleteFilter({
 									/>
 								);
 							})}
+
 							{loaderVisible && (
 								<ClayLoadingIndicator
 									ref={setInfiniteLoader}
@@ -375,8 +379,10 @@ function AutocompleteFilter({
 					small
 				>
 					{actionType === 'add' && Liferay.Language.get('add-filter')}
+
 					{actionType === 'edit' &&
 						Liferay.Language.get('edit-filter')}
+
 					{actionType === 'delete' &&
 						Liferay.Language.get('delete-filter')}
 				</ClayButton>

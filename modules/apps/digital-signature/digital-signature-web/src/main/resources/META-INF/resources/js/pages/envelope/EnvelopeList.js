@@ -187,6 +187,7 @@ const EnvelopeList = ({history}) => {
 					recipients: (
 						<span className="d-flex flex-wrap">
 							{signers[0]?.name}
+
 							{signers.length > 1 && (
 								<ClayBadge
 									className="ml-1"

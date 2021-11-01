@@ -23,13 +23,13 @@ import {useStyleBook} from '../../../plugins/page-design-options/hooks/useStyleB
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
 import {useId} from '../../utils/useId';
 
-export const SelectField = ({
+export function SelectField({
 	className,
 	disabled,
 	field,
 	onValueSelect,
 	value,
-}) => {
+}) {
 	const inputId = useId();
 	const {tokenValues} = useStyleBook();
 
@@ -63,6 +63,7 @@ export const SelectField = ({
 	return (
 		<ClayForm.Group className={className} small>
 			<label htmlFor={inputId}>{field.label}</label>
+
 			{multiSelect ? (
 				<MultiSelect
 					disabled={disabled}
@@ -90,7 +91,7 @@ export const SelectField = ({
 			)}
 		</ClayForm.Group>
 	);
-};
+}
 
 const MultiSelect = ({
 	disabled,

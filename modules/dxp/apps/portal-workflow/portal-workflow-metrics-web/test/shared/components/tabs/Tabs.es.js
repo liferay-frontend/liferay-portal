@@ -18,7 +18,9 @@ import Tabs from '../../../../src/main/resources/META-INF/resources/js/shared/co
 import {MockRouter} from '../../../mock/MockRouter.es';
 
 describe('The Tabs component should', () => {
-	let container, renderResult, tabButtons;
+	let container;
+	let renderResult;
+	let tabButtons;
 	const setCurrentTab = jest.fn();
 
 	beforeAll(() => {

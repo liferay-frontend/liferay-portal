@@ -16,14 +16,14 @@ import React, {useLayoutEffect, useRef, useState} from 'react';
 import {calculateTooltipStyleFromTarget} from '../utilities/index';
 
 function TooltipProvider({children, closeTooltip, target}) {
-	const [tooltipStyle, updateTooltipStyle] = useState({});
+	const [tooltipStyle, setTooltipStyle] = useState({});
 	const tooltipRef = useRef();
 	const bodyRef = useRef(document.querySelector('body'));
 
 	useLayoutEffect(() => {
 		const style = calculateTooltipStyleFromTarget(target);
 
-		updateTooltipStyle(style);
+		setTooltipStyle(style);
 	}, [target]);
 
 	useLayoutEffect(() => {

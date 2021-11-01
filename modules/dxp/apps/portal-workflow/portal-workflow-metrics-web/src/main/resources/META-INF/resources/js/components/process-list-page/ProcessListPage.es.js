@@ -84,6 +84,7 @@ function ProcessListPage({history, query, routeParams}) {
 					},
 				]}
 			/>
+
 			<ProcessListPage.Header
 				search={search}
 				totalCount={data?.totalCount}

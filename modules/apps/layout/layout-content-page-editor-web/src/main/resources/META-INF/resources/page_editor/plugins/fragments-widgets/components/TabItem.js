@@ -103,6 +103,7 @@ const ListItem = React.forwardRef(({disabled, item}, ref) => {
 		>
 			<div className="page-editor__fragments-widgets__tab-list-item-body">
 				<ClayIcon className="mr-3" symbol={item.icon} />
+
 				<div className="text-truncate title">{item.label}</div>
 			</div>
 		</li>
@@ -138,6 +139,7 @@ const CardItem = React.forwardRef(({disabled, item}, ref) => {
 						</div>
 					)}
 				</ClayCard.AspectRatio>
+
 				<ClayCard.Body>
 					<ClayCard.Row>
 						<div className="autofit-col autofit-col-expand">

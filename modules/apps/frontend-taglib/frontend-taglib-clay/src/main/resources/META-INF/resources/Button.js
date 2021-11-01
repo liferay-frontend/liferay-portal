@@ -39,6 +39,7 @@ export default function Button({
 					<ClayIcon symbol={icon} />
 				</span>
 			)}
+
 			{label}
 		</ClayButton>
 	);

@@ -28,17 +28,19 @@ const minimize = (ticksNumber) =>
 		? MAX_TEXT_SIZE / Math.log(ticksNumber)
 		: MAX_TEXT_SIZE;
 
-export default ({payload, ticksNumber, x, y}) => (
-	<Text
-		textAnchor="middle"
-		verticalAnchor="start"
-		width={MAX_WIDTH - ticksNumber * SPACING_SIZE}
-		x={x}
-		y={y}
-	>
-		{payload.value.length > MAX_TEXT_SIZE &&
-		ticksNumber > MIN_TICKS_TO_ELLIPSIZE
-			? ellipsize(payload.value, minimize(ticksNumber))
-			: payload.value}
-	</Text>
-);
+export default function CustomizedAxisTick({payload, ticksNumber, x, y}) {
+	return (
+		<Text
+			textAnchor="middle"
+			verticalAnchor="start"
+			width={MAX_WIDTH - ticksNumber * SPACING_SIZE}
+			x={x}
+			y={y}
+		>
+			{payload.value.length > MAX_TEXT_SIZE &&
+			ticksNumber > MIN_TICKS_TO_ELLIPSIZE
+				? ellipsize(payload.value, minimize(ticksNumber))
+				: payload.value}
+		</Text>
+	);
+}

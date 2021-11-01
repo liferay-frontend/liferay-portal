@@ -16,15 +16,17 @@ import {createMemoryHistory} from 'history';
 import React, {cloneElement} from 'react';
 import {Route, Router} from 'react-router-dom';
 
-export default ({
+export default function RouterWrapper({
 	children,
 	path = '/',
 	initialEntries = [{pathname: '/', search: ''}],
-}) => (
-	<Router history={createMemoryHistory({initialEntries})}>
-		<Route
-			component={(props) => cloneElement(children, props)}
-			path={path}
-		/>
-	</Router>
-);
+}) {
+	return (
+		<Router history={createMemoryHistory({initialEntries})}>
+			<Route
+				component={(props) => cloneElement(children, props)}
+				path={path}
+			/>
+		</Router>
+	);
+}

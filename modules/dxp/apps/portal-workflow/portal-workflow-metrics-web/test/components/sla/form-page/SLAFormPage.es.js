@@ -71,17 +71,17 @@ xdescribe('The SLAFormPage component should', () => {
 	// ];
 
 	xdescribe('Create a new SLA', () => {
-		let alertMessage,
-			container,
-			durationDaysField,
-			durationHoursField,
-			durationHoursInput,
-			getByText,
-			nameField,
-			nameInput,
-			saveButton,
-			startField,
-			stopField;
+		let alertMessage;
+		let container;
+		let durationDaysField;
+		let durationHoursField;
+		let durationHoursInput;
+		let getByText;
+		let nameField;
+		let nameInput;
+		let saveButton;
+		let startField;
+		let stopField;
 
 		// const data = {
 		// 	calendarKey: '',
@@ -327,7 +327,8 @@ xdescribe('The SLAFormPage component should', () => {
 	});
 
 	xdescribe('Edit a SLA', () => {
-		let container, getByText;
+		let container;
+		let getByText;
 
 		// const data = {
 		// 	calendarKey: 'default',

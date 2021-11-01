@@ -20,7 +20,7 @@ import React, {useState} from 'react';
 
 const noop = () => {};
 
-export const Button = ({label, onClick = noop, tooltip}) => {
+export function Button({label, onClick = noop, tooltip}) {
 	const [showPreview, setShowPreview] = useState(false);
 
 	return (
@@ -33,6 +33,7 @@ export const Button = ({label, onClick = noop, tooltip}) => {
 			small
 		>
 			{label}
+
 			<ClayPopover
 				alignPosition="left"
 				disableScroll
@@ -54,7 +55,7 @@ export const Button = ({label, onClick = noop, tooltip}) => {
 			</ClayPopover>
 		</ClayButton>
 	);
-};
+}
 
 Button.propTypes = {
 	label: PropTypes.string.isRequired,

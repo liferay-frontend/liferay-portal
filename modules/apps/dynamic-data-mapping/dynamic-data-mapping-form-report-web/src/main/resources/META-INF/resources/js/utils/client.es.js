@@ -36,7 +36,7 @@ const parseResponse = (response) =>
 		}
 	});
 
-export const getURL = (path, params) => {
+export function getURL(path, params) {
 	params = {
 		['p_auth']: Liferay.authToken,
 		t: Date.now(),
@@ -56,10 +56,11 @@ export const getURL = (path, params) => {
 	});
 
 	return uri.toString();
-};
+}
 
-export const request = ({endpoint, method = 'GET', params = {}}) =>
-	fetch(getURL(endpoint, params), {
+export function request({endpoint, method = 'GET', params = {}}) {
+	return fetch(getURL(endpoint, params), {
 		headers: HEADERS,
 		method,
 	}).then((response) => parseResponse(response));
+}

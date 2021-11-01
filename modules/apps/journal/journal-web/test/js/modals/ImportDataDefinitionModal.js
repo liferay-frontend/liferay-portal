@@ -28,7 +28,8 @@ import Modal from '../../../src/main/resources/META-INF/resources/js/modals/Impo
 const ImportDataDefinitionModal = () => <Modal portletNamespace="test" />;
 
 describe('Import Structure Modal', () => {
-	let file, openModal;
+	let file;
+	let openModal;
 
 	beforeEach(() => {
 		cleanup();

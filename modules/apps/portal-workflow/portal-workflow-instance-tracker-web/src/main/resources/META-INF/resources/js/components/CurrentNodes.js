@@ -94,9 +94,11 @@ export default function CurrentNodes({nodesNames = []}) {
 	return (
 		<div className="current-node">
 			<ClayIcon className="current-icon ml-2" symbol="live" />
+
 			<span className="current-node-text">
 				{Liferay.Language.get('current-node')}:
 			</span>
+
 			{firstNodes.map((node, index) => (
 				<a
 					className="current-node-link"
@@ -104,9 +106,11 @@ export default function CurrentNodes({nodesNames = []}) {
 					onClick={focusNode(node)}
 				>
 					{node}
+
 					{index !== nodesLabels.length - 1 && ','}
 				</a>
 			))}
+
 			{!!moreNodes.length && (
 				<MoreNodes focusNode={focusNode} nodes={moreNodes} />
 			)}

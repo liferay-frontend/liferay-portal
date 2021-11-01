@@ -32,7 +32,7 @@ class DateTimeInput extends React.Component {
 	static getDerivedStateFromProps(props, state) {
 		let returnVal = null;
 
-		if (props.value != state.initialValue) {
+		if (props.value !== state.initialValue) {
 			returnVal = {
 				initialValue: props.value,
 				value: dateFns.format(new Date(props.value), INPUT_DATE_FORMAT),

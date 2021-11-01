@@ -15,7 +15,7 @@
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React from 'react';
 
-export const withLoading = (Component) => {
+export function withLoading(Component) {
 	return ({loading, ...restProps}) => {
 		if (loading) {
 			return (
@@ -27,6 +27,6 @@ export const withLoading = (Component) => {
 
 		return <Component {...restProps} />;
 	};
-};
+}
 
 export const Loading = withLoading(({children}) => <>{children}</>);

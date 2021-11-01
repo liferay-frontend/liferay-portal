@@ -35,6 +35,7 @@ function Author({author: {authorId, name, url}}) {
 					<ClayIcon symbol="user" />
 				)}
 			</ClaySticker>
+
 			{Liferay.Util.sub(Liferay.Language.get('authored-by-x'), name)}
 		</div>
 	);
@@ -73,6 +74,7 @@ function BasicInformation({
 						</ClayLayout.ContentRow>
 					</div>
 				</ClayLayout.ContentCol>
+
 				<ClayLayout.ContentCol expand>
 					<ClayLayout.ContentRow>
 						<span className="font-weight-semi-bold text-truncate-inline">

@@ -70,6 +70,7 @@ function Violation({next, params, previous, violations}: ViolationProps) {
 					>
 						<ClayPanel.Body>{description}</ClayPanel.Body>
 					</ClayPanel>
+
 					<ClayPanel
 						displayTitle={Liferay.Language.get('occurrences')}
 						displayType="unstyled"

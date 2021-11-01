@@ -20,7 +20,7 @@ import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
 import {config} from '../../config/index';
 import itemSelectorValueToVideoItem from '../../utils/item-selector-value/itemSelectorValueToVideoItem';
 
-export const VideoSelectorField = ({field, onValueSelect, value}) => {
+export function VideoSelectorField({field, onValueSelect, value}) {
 	const eventName = `${config.portletNamespace}selectVideo`;
 
 	return (
@@ -35,7 +35,7 @@ export const VideoSelectorField = ({field, onValueSelect, value}) => {
 			transformValueCallback={itemSelectorValueToVideoItem}
 		/>
 	);
-};
+}
 
 VideoSelectorField.propTypes = {
 	field: PropTypes.shape(ConfigurationFieldPropTypes).isRequired,

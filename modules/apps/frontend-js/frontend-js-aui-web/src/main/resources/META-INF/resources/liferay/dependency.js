@@ -96,7 +96,7 @@
 					context = this;
 				}
 
-				if (modules.length == 1) {
+				if (modules.length === 1) {
 					if (modules[0] in usedModules) {
 						Dependency._replaceMethod(
 							object,

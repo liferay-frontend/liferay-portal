@@ -66,6 +66,7 @@ const renderCollection = ({
 					})}
 				>
 					<AutoSelector />
+
 					<CollectionWithControls
 						item={collection}
 						layoutData={layoutData}

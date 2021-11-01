@@ -23,6 +23,7 @@ export default function Field({children, errors, id, label, name}) {
 		<ClayForm.Group className={errorMessage ? 'has-error' : null}>
 			<label htmlFor={id}>
 				{label}
+
 				<span className="reference-mark">
 					<ClayIcon symbol="asterisk" />
 				</span>
@@ -35,6 +36,7 @@ export default function Field({children, errors, id, label, name}) {
 					<span className="form-feedback-indicator mr-1">
 						<ClayIcon symbol="exclamation-full" />
 					</span>
+
 					{errorMessage}
 				</div>
 			)}

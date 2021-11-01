@@ -35,6 +35,7 @@ export default function MappingSidebar() {
 					<p className="list-group-title">
 						{config.selectedMappingTypes.type.groupTypeTitle}:
 					</p>
+
 					<p className="mb-0 small">
 						{config.selectedMappingTypes.type.label}
 					</p>
@@ -50,6 +51,7 @@ export default function MappingSidebar() {
 								}
 								:
 							</p>
+
 							<p className="mb-0 small">
 								{config.selectedMappingTypes.subtype.url ? (
 									<ClayLink
@@ -86,6 +88,7 @@ export default function MappingSidebar() {
 								}
 								:
 							</p>
+
 							<p className="small">
 								{config.selectedMappingTypes.itemType.label}
 							</p>

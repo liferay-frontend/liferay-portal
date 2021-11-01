@@ -52,6 +52,7 @@ export default function ColorFrontendToken({
 			small
 		>
 			<label htmlFor={id}>{label}</label>
+
 			<ClayInput.Group small>
 				<ClayInput.GroupItem prepend shrink>
 					<ClayColorPicker
@@ -69,6 +70,7 @@ export default function ColorFrontendToken({
 						value={color?.replace('#', '') ?? ''}
 					/>
 				</ClayInput.GroupItem>
+
 				<ClayInput.GroupItem append>
 					<ClayInput
 						id={id}

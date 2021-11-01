@@ -30,7 +30,9 @@ import {INPUT_TYPES} from './inputTypes';
  * @param {String|object} item Item to check
  * @return {boolean}
  */
-export const isDefined = (item) => typeof item !== 'undefined';
+export function isDefined(item) {
+	return typeof item !== 'undefined';
+}
 
 /**
  * Checks if a value is blank. For example: `''` or `{}` or `[]`.
@@ -39,7 +41,7 @@ export const isDefined = (item) => typeof item !== 'undefined';
  * @param {*} type Input type (optional).
  * @return {boolean}
  */
-export const isEmpty = (value, type = '') => {
+export function isEmpty(value, type = '') {
 	if (typeof value === 'string' && value === '') {
 		return true;
 	}
@@ -57,14 +59,14 @@ export const isEmpty = (value, type = '') => {
 	}
 
 	return !isDefined(value);
-};
+}
 
 /**
  * Used for converting a JSON string to display in a code mirror editor.
  * @param {String} jsonString The JSON string to convert.
  * @return {String} The converted JSON string.
  */
-export const parseAndPrettifyJSON = (json) => {
+export function parseAndPrettifyJSON(json) {
 	if (!isDefined(json)) {
 		return '';
 	}
@@ -79,7 +81,7 @@ export const parseAndPrettifyJSON = (json) => {
 
 		return json;
 	}
-};
+}
 
 /**
  * Function to replace all instances of a string.
@@ -93,9 +95,9 @@ export const parseAndPrettifyJSON = (json) => {
  * @param {String} replace Snippet to replace with
  * @return {String}
  */
-export const replaceStr = (str, search, replace) => {
+export function replaceStr(str, search, replace) {
 	return str.split(search).join(replace);
-};
+}
 
 /**
  * Function turn string into number, otherwise returns itself.
@@ -111,14 +113,14 @@ export const replaceStr = (str, search, replace) => {
  * @param {String} str String
  * @return {number}
  */
-export const toNumber = (str) => {
+export function toNumber(str) {
 	try {
 		return JSON.parse(str);
 	}
 	catch {
 		return str;
 	}
-};
+}
 
 /**
  * Cleans up the UIConfigurationJSON to prevent page load failures
@@ -163,7 +165,7 @@ export const toNumber = (str) => {
  * @param {object} uiConfigurationJSON Object with UI configuration
  * @return {object}
  */
-export const cleanUIConfigurationJSON = (uiConfigurationJSON = {}) => {
+export function cleanUIConfigurationJSON(uiConfigurationJSON = {}) {
 	const fieldSets = [];
 
 	if (Array.isArray(uiConfigurationJSON.fieldSets)) {
@@ -188,7 +190,7 @@ export const cleanUIConfigurationJSON = (uiConfigurationJSON = {}) => {
 	}
 
 	return {fieldSets};
-};
+}
 
 /**
  * Function for retrieving a valid default value from one element
@@ -225,18 +227,18 @@ export const cleanUIConfigurationJSON = (uiConfigurationJSON = {}) => {
  * @param {object} item Configuration with label, name, type, defaultValue
  * @return {(string|Array|number)}
  */
-export const getDefaultValue = (item) => {
+export function getDefaultValue(item) {
 	const itemValue = item.defaultValue;
 
 	switch (item.type) {
 		case INPUT_TYPES.DATE:
-			return typeof itemValue == 'number'
+			return typeof itemValue === 'number'
 				? itemValue
 				: moment(itemValue, ['MM-DD-YYYY', 'YYYY-MM-DD']).isValid()
 				? moment(itemValue, ['MM-DD-YYYY', 'YYYY-MM-DD']).unix()
 				: '';
 		case INPUT_TYPES.FIELD_MAPPING:
-			return typeof itemValue == 'object' && itemValue.field
+			return typeof itemValue === 'object' && itemValue.field
 				? itemValue
 				: {
 						field: '',
@@ -251,7 +253,7 @@ export const getDefaultValue = (item) => {
 				? itemValue.filter((item) => item.label && item.value)
 				: [];
 		case INPUT_TYPES.JSON:
-			return typeof itemValue == 'object'
+			return typeof itemValue === 'object'
 				? JSON.stringify(itemValue, null, '\t')
 				: '{}';
 		case INPUT_TYPES.MULTISELECT:
@@ -259,9 +261,9 @@ export const getDefaultValue = (item) => {
 				? itemValue.filter((item) => item.label && item.value)
 				: [];
 		case INPUT_TYPES.NUMBER:
-			return typeof itemValue == 'number'
+			return typeof itemValue === 'number'
 				? itemValue
-				: typeof toNumber(itemValue) == 'number'
+				: typeof toNumber(itemValue) === 'number'
 				? toNumber(itemValue)
 				: '';
 		case INPUT_TYPES.SELECT:
@@ -271,15 +273,15 @@ export const getDefaultValue = (item) => {
 				? item.typeOptions.options[0].value
 				: '';
 		case INPUT_TYPES.SLIDER:
-			return typeof itemValue == 'number'
+			return typeof itemValue === 'number'
 				? itemValue
-				: typeof toNumber(itemValue) == 'number'
+				: typeof toNumber(itemValue) === 'number'
 				? toNumber(itemValue)
 				: '';
 		default:
-			return typeof itemValue == 'string' ? itemValue : '';
+			return typeof itemValue === 'string' ? itemValue : '';
 	}
-};
+}
 
 /**
  * Function for replacing the ${variable_name} with actual value.
@@ -289,11 +291,11 @@ export const getDefaultValue = (item) => {
  * @param {object} _.uiConfigurationValues Values that will replace the keys in uiConfigurationJSON
  * @return {object}
  */
-export const getSXPElementOutput = ({
+export function getSXPElementOutput({
 	sxpElementTemplateJSON,
 	uiConfigurationJSON,
 	uiConfigurationValues,
-}) => {
+}) {
 	const fieldSets = cleanUIConfigurationJSON(uiConfigurationJSON).fieldSets;
 
 	if (fieldSets.length > 0) {
@@ -442,8 +444,8 @@ export const getSXPElementOutput = ({
 				}
 				else if (config.type === INPUT_TYPES.NUMBER) {
 					configValue =
-						typeof config.typeOptions?.unitSuffix == 'string'
-							? typeof initialConfigValue == 'string'
+						typeof config.typeOptions?.unitSuffix === 'string'
+							? typeof initialConfigValue === 'string'
 								? initialConfigValue.concat(
 										config.typeOptions?.unitSuffix
 								  )
@@ -487,7 +489,7 @@ export const getSXPElementOutput = ({
 	catch {
 		return sxpElementTemplateJSON;
 	}
-};
+}
 
 /**
  * Function for getting all the default values from a UI configuration.
@@ -522,8 +524,8 @@ export const getSXPElementOutput = ({
  * @param {object} uiConfigurationJSON Object with UI configuration
  * @return {object}
  */
-export const getUIConfigurationValues = (uiConfigurationJSON) =>
-	cleanUIConfigurationJSON(uiConfigurationJSON).fieldSets.reduce(
+export function getUIConfigurationValues(uiConfigurationJSON) {
+	return cleanUIConfigurationJSON(uiConfigurationJSON).fieldSets.reduce(
 		(allValues, fieldSet) => {
 			const uiConfigurationValues = fieldSet.fields.reduce(
 				(acc, curr) => ({
@@ -539,6 +541,7 @@ export const getUIConfigurationValues = (uiConfigurationJSON) =>
 		},
 		{}
 	);
+}
 
 /**
  * Function for transforming the framework configuration's `clause_contributor`
@@ -561,7 +564,7 @@ export const getUIConfigurationValues = (uiConfigurationJSON) =>
  * @param {object} clauseContributorsConfig The framework configuration's `clause_contributors` object
  * @return {object} An object of enabled state for each contributor
  */
-export const getClauseContributorsState = (clauseContributorsConfig = {}) => {
+export function getClauseContributorsState(clauseContributorsConfig = {}) {
 	const clauseContributorsState = {};
 
 	if (Array.isArray(clauseContributorsConfig.excludes)) {
@@ -577,7 +580,7 @@ export const getClauseContributorsState = (clauseContributorsConfig = {}) => {
 	}
 
 	return clauseContributorsState;
-};
+}
 
 /**
  * Function for transforming the `enabled` state object to the framework
@@ -604,9 +607,9 @@ export const getClauseContributorsState = (clauseContributorsConfig = {}) => {
  * @param {object} clauseContributorsEnabledState State object that tracks whether clause is enabled/disabled
  * @return {object} The framework configuration's `clause_contributors` object
  */
-export const getClauseContributorsConfig = (
+export function getClauseContributorsConfig(
 	clauseContributorsEnabledState = {}
-) => {
+) {
 	const clauseContributors = {
 		excludes: [],
 		includes: [],
@@ -622,4 +625,4 @@ export const getClauseContributorsConfig = (
 	});
 
 	return clauseContributors;
-};
+}

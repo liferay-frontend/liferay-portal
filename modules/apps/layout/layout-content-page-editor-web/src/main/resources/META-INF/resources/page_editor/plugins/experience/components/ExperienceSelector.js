@@ -347,6 +347,7 @@ const ExperienceSelector = ({
 							{selectedExperience.name}
 						</span>
 					</ClayLayout.ContentCol>
+
 					<ClayLayout.ContentCol>
 						{selectedExperience.hasLockedSegmentsExperiment && (
 							<ClayIcon symbol="lock" />
@@ -428,6 +429,7 @@ const ExperiencesSelectorHeader = ({
 						{Liferay.Language.get('select-experience')}
 					</h3>
 				</ClayLayout.ContentCol>
+
 				<ClayLayout.ContentCol>
 					{canCreateExperiences === true && (
 						<ClayButton

@@ -14,9 +14,9 @@
 
 export const ACTION_UPDATE_VIEW_COMPONENT = 'ACTION_UPDATE_VIEW_COMPONENT';
 
-export const updateViewComponent = (name, component) => {
+export function updateViewComponent(name, component) {
 	return {
 		type: ACTION_UPDATE_VIEW_COMPONENT,
 		value: {component, name},
 	};
-};
+}

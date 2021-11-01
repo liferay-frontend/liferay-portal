@@ -204,12 +204,14 @@ export default function SocialDetail({
 							</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
+
 					<ClayList.ItemField>
 						<ClayList.ItemTitle>
 							<span>{Liferay.Language.get('traffic')}</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
 				</ClayList.Item>
+
 				{referringSocialMedia.map(
 					({name, title, trafficAmount}, index) => {
 						const listItemClasses = className({
@@ -231,6 +233,7 @@ export default function SocialDetail({
 										</span>
 									</ClayList.ItemText>
 								</ClayList.ItemField>
+
 								<ClayList.ItemField
 									className="align-self-center"
 									expand
@@ -245,6 +248,7 @@ export default function SocialDetail({
 										}}
 									/>
 								</ClayList.ItemField>
+
 								<ClayList.ItemField className="align-self-center">
 									<span className="align-self-end c-ml-2 font-weight-semi-bold text-dark">
 										{numberFormat(

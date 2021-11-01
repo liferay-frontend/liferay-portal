@@ -30,6 +30,7 @@ const InfoScreen: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 	return (
 		<Card>
 			<Card.Header title={Liferay.Language.get('basic-info')} />
+
 			<Card.Body>
 				<ClayForm.Group>
 					<Input

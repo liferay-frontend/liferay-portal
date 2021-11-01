@@ -220,6 +220,7 @@ export default function PageContent({
 					role="presentation"
 					symbol={icon || 'document-text'}
 				/>
+
 				<ClayLayout.ContentCol expand>
 					<span className="font-weight-semi-bold text-truncate">
 						{title}
@@ -246,6 +247,7 @@ export default function PageContent({
 								<span className="sr-only">
 									{Liferay.Language.get('open-actions-menu')}
 								</span>
+
 								<ClayIcon symbol="ellipsis-v" />
 							</ClayButton>
 						}
@@ -262,6 +264,7 @@ export default function PageContent({
 						<span className="sr-only">
 							{Liferay.Language.get('edit-inline-text')}
 						</span>
+
 						<ClayIcon symbol="pencil" />
 					</ClayButton>
 				)}

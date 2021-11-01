@@ -29,7 +29,11 @@ xdescribe('The IndexesPage component should', () => {
 
 		// jest.runAllTimers();
 
-		let container, indexesItems, getAllByRole, getAllByText, getByText;
+		let container;
+		let indexesItems;
+		let getAllByRole;
+		let getAllByText;
+		let getByText;
 
 		// const items = [
 		// 	{
@@ -204,7 +208,8 @@ xdescribe('The IndexesPage component should', () => {
 
 		// jest.runAllTimers();
 
-		let container, getAllByRole;
+		let container;
+		let getAllByRole;
 
 		// const items = [
 		// 	{

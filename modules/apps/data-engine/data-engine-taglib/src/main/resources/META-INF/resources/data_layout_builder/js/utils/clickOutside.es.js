@@ -12,7 +12,7 @@
  * details.
  */
 
-export default (target, ...elements) => {
+export default function clickOutside(target, ...elements) {
 	return !elements.some((element) => {
 		if (typeof element === 'string') {
 			return !!target.closest(element);
@@ -20,4 +20,4 @@ export default (target, ...elements) => {
 
 		return element && element.contains(target);
 	});
-};
+}

@@ -44,7 +44,7 @@ const TreeFilter = ({
 	const selectedNodesRef = useRef(null);
 	const refItemsCount = selectedNodesRef.current?.length || 0;
 
-	const searchInputElement = useRef(null);
+	const searchInputElementRef = useRef(null);
 
 	const initialSelectedNodeIds = useMemo(() => {
 		const selectedNodes = [];
@@ -144,7 +144,7 @@ const TreeFilter = ({
 
 	const handleInputClear = () => {
 		setFilterQuery('');
-		searchInputElement.current.value = '';
+		searchInputElementRef.current.value = '';
 	};
 
 	useEffect(() => {
@@ -167,7 +167,7 @@ const TreeFilter = ({
 								className="form-control h-100 input-group-inset input-group-inset-after"
 								onChange={inputSearchHandler}
 								placeholder={Liferay.Language.get('search')}
-								ref={searchInputElement}
+								ref={searchInputElementRef}
 								type="text"
 							/>
 
@@ -222,6 +222,7 @@ const TreeFilter = ({
 						{!computedNodes().length && (
 							<div className="border-0 pt-0 sheet taglib-empty-result-message">
 								<div className="taglib-empty-result-message-header"></div>
+
 								<div className="sheet-text text-center">
 									{Liferay.Language.get(
 										'no-results-were-found'

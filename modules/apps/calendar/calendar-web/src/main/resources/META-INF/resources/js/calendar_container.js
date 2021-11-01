@@ -236,7 +236,7 @@ AUI.add(
 
 							if (item.get('defaultCalendar')) {
 								if (
-									calendarResourceId ==
+									calendarResourceId ===
 										instance.get(
 											'groupCalendarResourceId'
 										) &&
@@ -246,14 +246,14 @@ AUI.add(
 								}
 
 								if (
-									calendarResourceId ==
+									calendarResourceId ===
 									instance.get('userCalendarResourceId')
 								) {
 									defaultCalendar = item;
 								}
 
 								if (
-									calendarResourceId ==
+									calendarResourceId ===
 										instance.get(
 											'groupCalendarResourceId'
 										) &&
@@ -264,8 +264,9 @@ AUI.add(
 							}
 
 							if (
-								defaultCalendar == null &&
-								calendarResourceId ==
+								(defaultCalendar === null ||
+									defaultCalendar === undefined) &&
+								calendarResourceId ===
 									instance.get('groupCalendarResourceId') &&
 								item.get('permissions').VIEW_BOOKING_DETAILS
 							) {

@@ -20,7 +20,7 @@ import {useSetSidebarPanelId} from '../contexts/SidebarPanelIdContext';
 import {AddItemDropDown} from './AddItemDropdown';
 import {AppLayout} from './AppLayout';
 
-export const Toolbar = () => {
+export function Toolbar() {
 	const setSidebarPanelId = useSetSidebarPanelId();
 
 	const onSettingsButtonClick = () => {
@@ -50,4 +50,4 @@ export const Toolbar = () => {
 			</AppLayout.ToolbarItem>
 		</>
 	);
-};
+}

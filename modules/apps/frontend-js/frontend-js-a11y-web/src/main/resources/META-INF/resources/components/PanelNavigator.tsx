@@ -27,8 +27,8 @@ type PanelNavigatorProps = {
 	helpUrl: string;
 	impact?: ImpactValue;
 	onBack: (event: React.MouseEvent<HTMLButtonElement>) => void;
-	title: string;
 	tags: Array<string>;
+	title: string;
 };
 
 function PanelNavigator({
@@ -58,6 +58,7 @@ function PanelNavigator({
 						{impact && (
 							<div className="component-subtitle text-capitalize text-secondary">
 								{`${impact} - `}
+
 								<ClayLink
 									className="text-primary"
 									displayType="unstyled"

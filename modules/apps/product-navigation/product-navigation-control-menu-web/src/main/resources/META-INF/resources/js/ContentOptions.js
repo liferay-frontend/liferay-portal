@@ -59,6 +59,7 @@ const ContentOptions = ({onChangeSelect}) => {
 					sizing="sm"
 				/>
 			</ClayForm.Group>
+
 			<ClayButton
 				className="btn-monospaced sidebar-body__add-panel__content-options-list"
 				displayType="unstyled"
@@ -67,6 +68,7 @@ const ContentOptions = ({onChangeSelect}) => {
 				title={Liferay.Language.get('display-style')}
 			>
 				<ClayIcon symbol={displayGrid ? 'cards2' : 'list'} />
+
 				<span className="sr-only">
 					{Liferay.Language.get('display-style')}
 				</span>
@@ -88,6 +90,7 @@ const ContentOptions = ({onChangeSelect}) => {
 						title={Liferay.Language.get('add-new')}
 					>
 						<ClayIcon symbol="plus" />
+
 						<span className="sr-only">
 							{Liferay.Language.get('add-new')}
 						</span>

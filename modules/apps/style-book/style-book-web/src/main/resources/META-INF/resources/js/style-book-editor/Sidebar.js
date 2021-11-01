@@ -42,6 +42,7 @@ export default function Sidebar() {
 	return (
 		<div className="style-book-editor__sidebar" ref={sidebarRef}>
 			{!config.templatesPreviewEnabled && <OldToolbar />}
+
 			<div className="style-book-editor__sidebar-content">
 				<ThemeInformation />
 
@@ -67,10 +68,12 @@ function ThemeInformation() {
 					'this-token-definition-belongs-to-the-theme-set-for-public-pages'
 				)}
 			</p>
+
 			<p className="mb-0 small">
 				<span className="font-weight-semi-bold">
 					{`${Liferay.Language.get('theme')}: `}
 				</span>
+
 				{config.themeName}
 			</p>
 		</div>

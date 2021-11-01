@@ -19,13 +19,7 @@ import React, {useContext} from 'react';
 import {DND_ORIGIN_TYPE, useDrop} from '../hooks/useDrop.es';
 import {ParentFieldContext} from './Field/ParentFieldContext.es';
 
-export const Placeholder = ({
-	columnIndex,
-	isRow,
-	pageIndex,
-	rowIndex,
-	size,
-}) => {
+export function Placeholder({columnIndex, isRow, pageIndex, rowIndex, size}) {
 	const parentField = useContext(ParentFieldContext);
 	const {canDrop, drop, overTarget} = useDrop({
 		columnIndex: columnIndex ?? 0,
@@ -60,4 +54,4 @@ export const Placeholder = ({
 	}
 
 	return Content;
-};
+}

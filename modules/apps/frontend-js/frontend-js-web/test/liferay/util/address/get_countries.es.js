@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import getCountries from '../../../../src/main/resources/META-INF/resources/liferay/util/address/get_countries.es';
 
 describe('Liferay.Address.getCountries', () => {

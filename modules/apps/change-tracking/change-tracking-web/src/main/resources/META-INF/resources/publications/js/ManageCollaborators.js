@@ -171,14 +171,17 @@ const CollaboratorRow = ({
 					)}
 				</ClaySticker>
 			</ClayTable.Cell>
+
 			<ClayTable.Cell className="table-cell-expand">
 				{user.isCurrentUser
 					? user.fullName + ' (' + Liferay.Language.get('you') + ')'
 					: user.fullName}
 			</ClayTable.Cell>
+
 			<ClayTable.Cell className="table-cell-expand">
 				{user.emailAddress}
 			</ClayTable.Cell>
+
 			<ClayTable.Cell className="table-column-text-end">
 				{readOnly ? (
 					<div
@@ -236,6 +239,7 @@ const CollaboratorRow = ({
 											symbolLeft={item.symbolLeft}
 										>
 											<strong>{item.label}</strong>
+
 											<div>{item.description}</div>
 										</ClayDropDown.Item>
 									);
@@ -301,6 +305,7 @@ const SharingAutocomplete = ({onItemClick = () => {}, sourceItems}) => {
 
 								<div className="autofit-col">
 									<strong>{item.fullName}</strong>
+
 									<span>{item.emailAddress}</span>
 								</div>
 							</div>
@@ -346,7 +351,7 @@ const ManageCollaborators = ({
 	const [selectedRole, setSelectedRole] = useState(defaultRole);
 
 	const handleChange = useCallback((value) => {
-		if (!emailValidationInProgress.current) {
+		if (!emailValidationInProgressRef.current) {
 			setMultiSelectValue(value);
 		}
 	}, []);
@@ -370,7 +375,7 @@ const ManageCollaborators = ({
 
 	const handleItemsChange = useCallback(
 		(items) => {
-			emailValidationInProgress.current = true;
+			emailValidationInProgressRef.current = true;
 
 			Promise.all(
 				items.map((item) => {
@@ -430,7 +435,7 @@ const ManageCollaborators = ({
 						});
 				})
 			).then((results) => {
-				emailValidationInProgress.current = false;
+				emailValidationInProgressRef.current = false;
 
 				const erroredResults = results.filter(({error}) => !!error);
 
@@ -522,7 +527,7 @@ const ManageCollaborators = ({
 
 	const autocompleteUsers = autocompleteResource;
 
-	const emailValidationInProgress = useRef(false);
+	const emailValidationInProgressRef = useRef(false);
 
 	const isEmailAddressValid = (email) => {
 		const emailRegex = /.+@.+\..+/i;
@@ -538,7 +543,7 @@ const ManageCollaborators = ({
 		setSelectedUserData({});
 		setUpdatedRoles({});
 
-		emailValidationInProgress.current = false;
+		emailValidationInProgressRef.current = false;
 	};
 
 	const showNotification = (message, error) => {
@@ -810,6 +815,7 @@ const ManageCollaborators = ({
 						<label htmlFor={`${namespace}userEmailAddress`}>
 							{Liferay.Language.get('people')}
 						</label>
+
 						<ClayInput.Group>
 							<ClayInput.GroupItem>
 								<ClayMultiSelect
@@ -846,6 +852,7 @@ const ManageCollaborators = ({
 									spritemap={spritemap}
 								/>
 							</ClayInput.GroupItem>
+
 							<ClayInput.GroupItem shrink>
 								<ClayDropDown
 									active={active}
@@ -882,6 +889,7 @@ const ManageCollaborators = ({
 													<strong>
 														{item.label}
 													</strong>
+
 													<div>
 														{item.description}
 													</div>
@@ -953,6 +961,7 @@ const ManageCollaborators = ({
 									<ClayIcon symbol="users" />
 								</ClaySticker>
 							</div>
+
 							<div className="autofit-col">
 								<div className="modal-title">
 									{readOnly
@@ -964,10 +973,13 @@ const ManageCollaborators = ({
 							</div>
 						</div>
 					</ClayModal.Header>
+
 					<div className="inline-scroller modal-body publications-invite-users-modal-body">
 						{renderSelect()}
+
 						{renderCollaborators()}
 					</div>
+
 					{readOnly || (
 						<ClayModal.Footer
 							last={
@@ -993,6 +1005,7 @@ const ManageCollaborators = ({
 									>
 										{Liferay.Language.get('cancel')}
 									</ClayButton>
+
 									{renderSubmit()}
 								</ClayButton.Group>
 							}

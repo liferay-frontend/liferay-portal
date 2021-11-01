@@ -70,7 +70,10 @@ const getLocalizedValue = ({
 	const defaultValue = localizedValue[defaultLanguageId];
 
 	if (localizedValue) {
-		if (localizedValue[editingLanguageId] != null) {
+		if (
+			localizedValue[editingLanguageId] !== null &&
+			localizedValue[editingLanguageId] !== undefined
+		) {
 			if (
 				Array.isArray(localizedValue[editingLanguageId]) &&
 				!localizedValue[editingLanguageId]?.length &&
@@ -226,7 +229,7 @@ const removeLanguageFromForm = (focusedField, pages, ...deletedLanguageIds) => {
  * NOTE: This is a literal copy of the old LayoutProvider logic. Small changes
  * were made only to adapt to the reducer.
  */
-export default (state, action) => {
+export default function languageReducer(state, action) {
 	switch (action.type) {
 		case EVENT_TYPES.LANGUAGE.CHANGE: {
 			const {
@@ -384,4 +387,4 @@ export default (state, action) => {
 		default:
 			return state;
 	}
-};
+}

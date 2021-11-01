@@ -131,6 +131,7 @@ export default withRouter(({history}) => {
 													title=""
 												>
 													<ClayIcon symbol="plus" />
+
 													<span className="c-ml-3 text-truncate">
 														{Liferay.Language.get(
 															'new-topic'
@@ -192,6 +193,7 @@ export default withRouter(({history}) => {
 															]
 														)}
 													</span>
+
 													<button className="btn btn-link btn-sm d-xl-none float-right font-weight-bold p-0">
 														View Topic
 													</button>
@@ -241,6 +243,7 @@ export default withRouter(({history}) => {
 					visible={topicModalVisibility}
 				/>
 			</div>
+
 			{loading && <ClayLoadingIndicator />}
 
 			<Alert info={error} />
@@ -248,6 +251,7 @@ export default withRouter(({history}) => {
 			{context.historyRouterBasePath && (
 				<Helmet>
 					<title>Questions</title>
+
 					<link
 						href={getBasePathWithHistoryRouter(
 							context.historyRouterBasePath

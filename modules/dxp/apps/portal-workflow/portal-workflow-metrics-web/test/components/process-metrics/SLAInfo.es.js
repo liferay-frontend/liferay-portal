@@ -18,7 +18,8 @@ import {MockRouter} from '../../mock/MockRouter.es';
 import '@testing-library/jest-dom/extend-expect';
 
 describe('The SLAInfo component should', () => {
-	let container, getByText;
+	let container;
+	let getByText;
 
 	describe('SLA count 0', () => {
 		beforeAll(async () => {

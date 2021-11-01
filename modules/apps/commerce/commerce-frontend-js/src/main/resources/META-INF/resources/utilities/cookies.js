@@ -28,8 +28,8 @@ class CommerceCookie {
 	}
 
 	setValue(key, value, expires, path = '/') {
-		const cookieValue = `${this.scope}${key}=${value};`,
-			cookiePath = `path=${path};`;
+		const cookieValue = `${this.scope}${key}=${value};`;
+		const cookiePath = `path=${path};`;
 
 		let cookieExp = '';
 

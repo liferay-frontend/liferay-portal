@@ -13,10 +13,10 @@
  */
 
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link as RouterLink} from 'react-router-dom';
 
 import {stringToSlug} from '../utils/utils.es';
 
-export default (props) => {
-	return <Link {...props} to={stringToSlug(props.to)} />;
-};
+export default function Link(props) {
+	return <RouterLink {...props} to={stringToSlug(props.to)} />;
+}

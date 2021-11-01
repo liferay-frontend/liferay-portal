@@ -27,7 +27,7 @@ import updateConfigurationValue from '../../../../../../app/utils/updateConfigur
 import {getLayoutDataItemPropTypes} from '../../../../../../prop-types/index';
 import {FieldSet} from './FieldSet';
 
-export const FragmentGeneralPanel = ({item}) => {
+export function FragmentGeneralPanel({item}) {
 	const dispatch = useDispatch();
 
 	const fragmentEntryLink = useSelectorCallback(
@@ -78,7 +78,7 @@ export const FragmentGeneralPanel = ({item}) => {
 			})}
 		</>
 	);
-};
+}
 
 FragmentGeneralPanel.propTypes = {
 	item: getLayoutDataItemPropTypes({

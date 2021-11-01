@@ -103,7 +103,7 @@ const SidebarContent = () => {
 	);
 };
 
-export default () => {
+export default function Sidebar() {
 	const {field, isOpen, portletNamespace} = useContext(SidebarContext);
 
 	return (
@@ -122,4 +122,4 @@ export default () => {
 			</div>
 		</>
 	);
-};
+}

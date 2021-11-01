@@ -69,6 +69,7 @@ export default function Sidebar({
 					})}
 				/>
 			</div>
+
 			<div className="ddm_template_editor__App-sidebar-buttons pt-3">
 				<ClayButtonWithIcon
 					aria-pressed={PANEL_IDS.elements === selectedSidebarPanelId}

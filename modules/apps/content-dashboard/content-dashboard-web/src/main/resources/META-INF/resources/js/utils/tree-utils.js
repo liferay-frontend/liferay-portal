@@ -12,7 +12,7 @@
  * details.
  */
 
-export const visit = (nodes, callback) => {
+export function visit(nodes, callback) {
 	nodes.forEach((node) => {
 		callback(node);
 
@@ -20,18 +20,18 @@ export const visit = (nodes, callback) => {
 			visit(node.children, callback);
 		}
 	});
-};
+}
 
 /**
  * Map the node array prop in an understandable format for the Treeview component
  * @param {array} nodeArray - Array of nodes.
  * @return {array} A new array of nodes.
  */
-export const nodeTreeArrayMapper = ({
+export function nodeTreeArrayMapper({
 	childrenPropertyKey,
 	namePropertyKey,
 	nodeArray,
-}) => {
+}) {
 	return nodeArray.map((node, index) => {
 		const hasChildren = !!node[childrenPropertyKey]?.length;
 
@@ -57,7 +57,7 @@ export const nodeTreeArrayMapper = ({
 				: node[namePropertyKey],
 		};
 	});
-};
+}
 
 /**
  * Adds to the node name the total count of children, if any
@@ -66,7 +66,7 @@ export const nodeTreeArrayMapper = ({
  * @param {array} object.node Tree node object.
  * @return {string} The node name with the total count.
  */
-export const handleNodeName = ({childrenPropertyKey, node}) => {
+export function handleNodeName({childrenPropertyKey, node}) {
 	const children = node.children || node[childrenPropertyKey];
 	let count = children.length;
 
@@ -80,7 +80,7 @@ export const handleNodeName = ({childrenPropertyKey, node}) => {
 			: Liferay.Language.get('item');
 
 	return `${node.label} (${count} ${langKey})`;
-};
+}
 
 /**
  * Handles the node filtering
@@ -90,12 +90,12 @@ export const handleNodeName = ({childrenPropertyKey, node}) => {
  * @param {string} object.query - string used in search input.
  * @return {array} A new array of nodes.
  */
-export const filterNodes = ({
+export function filterNodes({
 	childrenPropertyKey,
 	namePropertyKey,
 	nodes,
 	query,
-}) => {
+}) {
 	const filteredNodes = handleNodeFiltering({
 		childrenPropertyKey,
 		namePropertyKey,
@@ -110,7 +110,7 @@ export const filterNodes = ({
 	filteredNodes[0].expanded = true;
 
 	return filteredNodes;
-};
+}
 
 /**
  * Filters the array of nodes using a string
@@ -180,7 +180,7 @@ const handleNodeFiltering = ({
  * @param {object} object.node - the selected node from the tree
  * @return {object} A object with the proper keys from mandatoryFieldsForFiltering
  */
-export const getSelectedNodeObject = ({mandatoryFieldsForFiltering, node}) => {
+export function getSelectedNodeObject({mandatoryFieldsForFiltering, node}) {
 	const nodeObject = {};
 
 	mandatoryFieldsForFiltering.forEach((key) => {
@@ -188,7 +188,7 @@ export const getSelectedNodeObject = ({mandatoryFieldsForFiltering, node}) => {
 	});
 
 	return nodeObject;
-};
+}
 
 /**
  * Processes and returns the data in an understandable format for the backend
@@ -198,13 +198,13 @@ export const getSelectedNodeObject = ({mandatoryFieldsForFiltering, node}) => {
  * @param {array} object.mandatoryFieldsForFiltering - Array of strings referencing properties.
  * @return {object, array} The data object when mandatoryFieldsForFiltering length is > 1, an array of strings otherwise
  */
-export const selectedDataOutputTransfomer = ({
+export function selectedDataOutputTransfomer({
 	data,
 	mandatoryFieldsForFiltering,
-}) => {
+}) {
 	if (!data.length || mandatoryFieldsForFiltering.length > 1) {
 		return data;
 	}
 
 	return data.map((node) => node[mandatoryFieldsForFiltering[0]]);
-};
+}

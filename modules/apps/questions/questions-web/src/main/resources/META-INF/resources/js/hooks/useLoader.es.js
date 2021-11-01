@@ -18,13 +18,13 @@ import {useCallback, useRef} from 'react';
 const EmptyModule = {default: () => null};
 
 export default function useLoader() {
-	const modules = useRef(new Map());
+	const modulesRef = useRef(new Map());
 	const isMounted = useIsMounted();
 
 	return useCallback(
 		(module) => {
-			if (!modules.current.has(module)) {
-				modules.current.set(
+			if (!modulesRef.current.has(module)) {
+				modulesRef.current.set(
 					module,
 					new Promise((resolve) => {
 						Liferay.Loader.require(
@@ -48,7 +48,7 @@ export default function useLoader() {
 				);
 			}
 
-			return modules.current.get(module);
+			return modulesRef.current.get(module);
 		},
 		[isMounted]
 	);

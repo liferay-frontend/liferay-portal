@@ -177,7 +177,7 @@ AUI.add(
 									(event) => {
 										targetNodes.toggleClass(
 											target.infoCssClass,
-											event.type == 'drag:start'
+											event.type === 'drag:start'
 										);
 									}
 								);

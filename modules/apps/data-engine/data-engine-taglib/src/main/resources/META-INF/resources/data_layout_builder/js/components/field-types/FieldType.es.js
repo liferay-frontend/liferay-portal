@@ -122,15 +122,18 @@ const FieldType = (props) => {
 					<ClayIcon symbol={fieldIcon} />
 				</ClaySticker>
 			</ClayLayout.ContentCol>
+
 			<ClayLayout.ContentCol className="pr-2" expand>
 				<div className="d-flex list-group-title">
 					<span className="text-truncate">{label}</span>
+
 					{required && (
 						<span className="reference-mark">
 							<ClayIcon symbol="asterisk" />
 						</span>
 					)}
 				</div>
+
 				{description && (
 					<p className="list-group-subtitle text-truncate">
 						<small>{description}</small>

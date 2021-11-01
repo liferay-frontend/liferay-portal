@@ -90,7 +90,7 @@ describe('ItemSelectorPreview', () => {
 	it('renders the header component', () => {
 		const {getByText} = renderPreviewComponent(previewProps);
 
-		expect(getByText(headerTitle));
+		expect(getByText(headerTitle)).toBeTruthy();
 	});
 
 	it('renders the carousel component', () => {
@@ -105,7 +105,7 @@ describe('ItemSelectorPreview', () => {
 			currentIndex: 1,
 		});
 
-		expect(getByText(item2Title));
+		expect(getByText(item2Title)).toBeTruthy();
 	});
 
 	it('shows the next item when requested', () => {
@@ -113,13 +113,13 @@ describe('ItemSelectorPreview', () => {
 			...previewProps,
 		});
 
-		expect(getByText(item1Title));
+		expect(getByText(item1Title)).toBeTruthy();
 
 		const rigthArrowButton = container.querySelectorAll('.icon-arrow')[1];
 
 		fireEvent.click(rigthArrowButton);
 
-		expect(getByText(item2Title));
+		expect(getByText(item2Title)).toBeTruthy();
 	});
 
 	it('returns to the first item when requested the next item for the last one', () => {
@@ -131,7 +131,7 @@ describe('ItemSelectorPreview', () => {
 		const rigthArrowButton = container.querySelectorAll('.icon-arrow')[1];
 
 		fireEvent.click(rigthArrowButton);
-		expect(getByText(item1Title));
+		expect(getByText(item1Title)).toBeTruthy();
 	});
 
 	it('shows the previous item when pressed the left key event', () => {
@@ -145,7 +145,7 @@ describe('ItemSelectorPreview', () => {
 			which: 37,
 		});
 
-		expect(getByText(item2Title));
+		expect(getByText(item2Title)).toBeTruthy();
 	});
 
 	it('handleSelectedItem is called when Add button is clicked', () => {

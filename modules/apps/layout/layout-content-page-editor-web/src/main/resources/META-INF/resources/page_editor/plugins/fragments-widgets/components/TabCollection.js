@@ -49,6 +49,7 @@ export default function TabCollection({
 							item={item}
 							key={item.itemId}
 						/>
+
 						{item.portletItems?.length && (
 							<TabPortletItems item={item} />
 						)}

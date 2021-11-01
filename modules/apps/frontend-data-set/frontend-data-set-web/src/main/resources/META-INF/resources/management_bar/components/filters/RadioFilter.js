@@ -57,6 +57,7 @@ function RadioFilter({id, items, updateFilterState, value: valueProp}) {
 							{Liferay.Language.get('exclude')}
 						</label>
 					</div>
+
 					<div className="col-auto">
 						<ClayToggle
 							id={`autocomplete-exclude-${id}`}
@@ -103,6 +104,7 @@ function RadioFilter({id, items, updateFilterState, value: valueProp}) {
 					small
 				>
 					{actionType === 'add' && Liferay.Language.get('add-filter')}
+
 					{actionType === 'edit' &&
 						Liferay.Language.get('edit-filter')}
 				</ClayButton>

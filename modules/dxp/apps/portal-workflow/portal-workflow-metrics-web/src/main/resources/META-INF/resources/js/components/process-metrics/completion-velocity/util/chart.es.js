@@ -26,7 +26,7 @@ import {
 	YESTERDAY,
 } from './chartConstants.es';
 
-export const formatMonthDate = (date, timeRange) => {
+export function formatMonthDate(date, timeRange) {
 	const currentDate = moment.utc(date);
 	const dateEnd = moment.utc(timeRange.dateEnd);
 	const dateStart = moment.utc(timeRange.dateStart);
@@ -48,9 +48,9 @@ export const formatMonthDate = (date, timeRange) => {
 	return `${firstDayOfMonth.format(
 		Liferay.Language.get('mmm-dd')
 	)}-${lastDayOfMonth.format(Liferay.Language.get('dd-yyyy'))}`;
-};
+}
 
-export const formatWeekDate = (date, timeRange) => {
+export function formatWeekDate(date, timeRange) {
 	const currentDate = moment.utc(date);
 	const dateEnd = moment.utc(timeRange.dateEnd);
 	const dateStart = moment.utc(timeRange.dateStart);
@@ -79,9 +79,9 @@ export const formatWeekDate = (date, timeRange) => {
 	return `${firstDayOfWeek.format(
 		Liferay.Language.get('mmm-dd')
 	)}-${lastDayOfWeek.format(Liferay.Language.get('mmm-dd'))}`;
-};
+}
 
-export const formatWeekDateWithYear = (date, timeRange) => {
+export function formatWeekDateWithYear(date, timeRange) {
 	const currentDate = moment.utc(date);
 	const dateEnd = moment.utc(timeRange.dateEnd);
 	const dateStart = moment.utc(timeRange.dateStart);
@@ -118,9 +118,9 @@ export const formatWeekDateWithYear = (date, timeRange) => {
 	return `${firstDayOfWeek.format(
 		Liferay.Language.get('mmm-dd')
 	)} - ${lastDayOfWeek.format(Liferay.Language.get('dd-yyyy'))}`;
-};
+}
 
-export const getRangeKey = (timeRange) => {
+export function getRangeKey(timeRange) {
 	const endDate = moment.utc(timeRange.dateEnd);
 	const startDate = moment.utc(timeRange.dateStart);
 
@@ -142,9 +142,9 @@ export const getRangeKey = (timeRange) => {
 	}
 
 	return LAST_YEAR;
-};
+}
 
-export const formatXAxisDate = (date, isAmPm, timeRangeKey, timeRange) => {
+export function formatXAxisDate(date, isAmPm, timeRangeKey, timeRange) {
 	const currentDate = moment.utc(date);
 	const rangeUnit = getRangeKey(timeRange);
 
@@ -174,9 +174,9 @@ export const formatXAxisDate = (date, isAmPm, timeRangeKey, timeRange) => {
 	}
 
 	return currentDate.format(Liferay.Language.get('mmm-dd'));
-};
+}
 
-export const formatYearDate = (date, timeRange) => {
+export function formatYearDate(date, timeRange) {
 	const currentDate = moment.utc(date);
 	const dateEnd = moment.utc(timeRange.dateEnd);
 	const dateStart = moment.utc(timeRange.dateStart);
@@ -198,9 +198,9 @@ export const formatYearDate = (date, timeRange) => {
 	return `${firstDayOfYear.format(
 		Liferay.Language.get('mmm-dd')
 	)}-${lastDayOfYear.format(Liferay.Language.get('mmm-dd-yyyy'))}`;
-};
+}
 
-export const getAxisMeasures = (value) => {
+export function getAxisMeasures(value) {
 	const numChars = Math.floor(value).toString().length;
 	const decOrder = Math.pow(10, numChars - 1);
 	let maxValue = decOrder * Math.floor(value / decOrder) + decOrder;
@@ -238,18 +238,19 @@ export const getAxisMeasures = (value) => {
 		intervals,
 		maxValue,
 	};
-};
+}
 
-export const getAxisMeasuresFromData = (data) =>
-	getAxisMeasures(
+export function getAxisMeasuresFromData(data) {
+	return getAxisMeasures(
 		Math.max(
 			...data
 				.reduce((prev, next) => prev.concat(next), [])
 				.filter((value) => typeof value === 'number')
 		)
 	);
+}
 
-export const getXAxisIntervals = (timeRange, keys, type) => {
+export function getXAxisIntervals(timeRange, keys, type) {
 	const endDate = moment.utc(timeRange.dateEnd);
 	const lengthKeys = keys.length;
 	const secondDate = moment.utc(keys[1]);
@@ -387,4 +388,4 @@ export const getXAxisIntervals = (timeRange, keys, type) => {
 				index > diffIndex.padLeft &&
 				index < lengthKeys - diffIndex.padRight + 1)
 	);
-};
+}

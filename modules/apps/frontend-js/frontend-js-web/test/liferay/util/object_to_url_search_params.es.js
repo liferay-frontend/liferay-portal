@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import objectToURLSearchParams from '../../../src/main/resources/META-INF/resources/liferay/util/object_to_url_search_params.es';
 
 describe('Liferay.Util.objectToURLSearchParams', () => {

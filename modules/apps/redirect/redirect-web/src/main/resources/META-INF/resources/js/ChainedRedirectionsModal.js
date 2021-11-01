@@ -61,6 +61,7 @@ const ChainedRedirectionsModal = ({
 								  )}
 						</strong>
 					</p>
+
 					<div className="portlet-redirect-modal-description">
 						<p>
 							{redirectEntryChainCause === 'sourceURL'
@@ -71,6 +72,7 @@ const ChainedRedirectionsModal = ({
 										'this-redirect-points-to-the-source-url-of-another-redirect'
 								  )}
 						</p>
+
 						<p>
 							{redirectEntryChainCause === 'sourceURL'
 								? Liferay.Language.get(
@@ -81,6 +83,7 @@ const ChainedRedirectionsModal = ({
 								  )}
 						</p>
 					</div>
+
 					<fieldset className="fieldset">
 						<ClayCheckbox
 							checked={updateChainedRedirectEntries}

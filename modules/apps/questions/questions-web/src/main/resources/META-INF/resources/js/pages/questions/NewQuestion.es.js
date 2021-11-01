@@ -45,7 +45,7 @@ export default withRouter(
 			params: {sectionTitle},
 		},
 	}) => {
-		const editor = useRef('');
+		const editorRef = useRef('');
 		const [hasEnoughContent, setHasEnoughContent] = useState(false);
 		const [headline, setHeadline] = useState('');
 		const [error, setError] = useState({});
@@ -139,7 +139,7 @@ export default withRouter(
 				createQuestionInRoot({
 					fetchOptionsOverrides: getContextLink(sectionTitle),
 					variables: {
-						articleBody: editor.current.getContent(),
+						articleBody: editorRef.current.getContent(),
 						headline,
 						keywords: tags.map((tag) => tag.label),
 						siteKey: context.siteKey,
@@ -152,7 +152,7 @@ export default withRouter(
 				createQuestionInASection({
 					fetchOptionsOverrides: getContextLink(sectionTitle),
 					variables: {
-						articleBody: editor.current.getContent(),
+						articleBody: editorRef.current.getContent(),
 						headline,
 						keywords: tags.map((tag) => tag.label),
 						messageBoardSectionId: sectionId,
@@ -168,6 +168,7 @@ export default withRouter(
 				<div className="questions-container row">
 					<div className="c-mx-auto col-xl-10">
 						<h1>{Liferay.Language.get('new-question')}</h1>
+
 						<ClayForm className="c-mt-5">
 							<ClayForm.Group>
 								<label htmlFor="basicInput">
@@ -208,7 +209,7 @@ export default withRouter(
 								)}
 								label={Liferay.Language.get('body')}
 								onContentLengthValid={setHasEnoughContent}
-								ref={editor}
+								ref={editorRef}
 							/>
 
 							{sections.length > 1 && (
@@ -216,6 +217,7 @@ export default withRouter(
 									<label htmlFor="basicInput">
 										{Liferay.Language.get('topic')}
 									</label>
+
 									<ClaySelect
 										onChange={(event) =>
 											setSectionId(event.target.value)
@@ -268,6 +270,7 @@ export default withRouter(
 						</div>
 					</div>
 				</div>
+
 				<Alert info={error} />
 			</section>
 		);

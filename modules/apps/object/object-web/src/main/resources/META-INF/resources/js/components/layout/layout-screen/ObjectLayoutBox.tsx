@@ -26,10 +26,10 @@ import ObjectLayoutRows from './ObjectLayoutRows';
 
 interface IObjectLayoutBoxProps extends React.HTMLAttributes<HTMLElement> {
 	boxIndex: number;
-	tabIndex: number;
 	collapsable: boolean;
 	label: string;
 	objectLayoutRows?: TObjectLayoutRow[];
+	tabIndex: number;
 }
 
 const ObjectLayoutBox: React.FC<IObjectLayoutBoxProps> = ({

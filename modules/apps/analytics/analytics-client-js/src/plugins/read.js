@@ -40,7 +40,7 @@ function getReadableContent() {
 		"meta[name='data-analytics-readable-content']"
 	);
 
-	if (meta && meta.getAttribute('content') == 'true' && mainContent) {
+	if (meta && meta.getAttribute('content') === 'true' && mainContent) {
 		return mainContent.innerText;
 	}
 

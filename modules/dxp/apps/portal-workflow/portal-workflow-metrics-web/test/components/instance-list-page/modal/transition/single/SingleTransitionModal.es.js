@@ -54,7 +54,8 @@ import '@testing-library/jest-dom/extend-expect';
 // 	);
 // };
 
-let getByPlaceholderText, getByText;
+let getByPlaceholderText;
+let getByText;
 
 // const items = [
 // 	{

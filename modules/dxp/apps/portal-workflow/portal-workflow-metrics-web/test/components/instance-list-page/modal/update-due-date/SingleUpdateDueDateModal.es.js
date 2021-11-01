@@ -55,7 +55,8 @@ import '@testing-library/jest-dom/extend-expect';
 // };
 
 describe('The SingleUpdateDueDateModal component should', () => {
-	let getByPlaceholderText, getByText;
+	let getByPlaceholderText;
+	let getByText;
 
 	// const items = [{dateDue: '2020-02-01T10:00:00', id: 1}];
 

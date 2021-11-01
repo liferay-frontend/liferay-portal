@@ -128,7 +128,7 @@ export default function ({classTypes, namespace}) {
 		);
 
 		subtypeFieldsWrappers.forEach((subtypeFieldsWrapper) => {
-			if (selectedSubtype != 'false' && selectedSubtype != 'true') {
+			if (selectedSubtype !== 'false' && selectedSubtype !== 'true') {
 				if (orderingPanel) {
 					removeOptionsOrderByFilter();
 
@@ -165,10 +165,10 @@ export default function ({classTypes, namespace}) {
 	const toggle = (assetSelectorValue, {className, classNameId}) => {
 		const assetOptions = assetMultipleSelector.options;
 		const showOptions =
-			assetSelector.value == `${classNameId}` ||
-			(assetSelector.value == 'false' &&
-				assetOptions.length == 1 &&
-				assetOptions[0].value == `${classNameId}`);
+			assetSelector.value === `${classNameId}` ||
+			(assetSelector.value === 'false' &&
+				assetOptions.length === 1 &&
+				assetOptions[0].value === `${classNameId}`);
 
 		if (showOptions) {
 			options[className].classList.remove('hide');

@@ -208,7 +208,7 @@ AUI.add(
 
 						var cssClass = CSS_SIMPLE_MENU_ITEM;
 
-						if (caption == STR_DASH) {
+						if (caption === STR_DASH) {
 							cssClass = CSS_SIMPLE_MENU_SEPARATOR;
 						}
 

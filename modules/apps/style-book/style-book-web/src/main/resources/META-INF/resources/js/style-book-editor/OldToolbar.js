@@ -51,6 +51,7 @@ export default function OldToolbar() {
 						symbol="check-circle"
 					/>
 				)}
+
 				<span
 					className={classNames(
 						'ml-1 style-book-editor__status-text',
@@ -70,6 +71,7 @@ export default function OldToolbar() {
 					type="hidden"
 					value={config.redirectURL}
 				/>
+
 				<input
 					name={`${config.namespace}styleBookEntryId`}
 					type="hidden"

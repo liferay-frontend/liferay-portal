@@ -71,6 +71,7 @@ function NavBar({creationMenu, showSearch}) {
 						<ActiveViewSelector views={views} />
 					</ClayManagementToolbar.Item>
 				)}
+
 				{creationMenu && (
 					<ClayManagementToolbar.Item>
 						<CreationMenu {...creationMenu} />

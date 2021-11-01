@@ -44,9 +44,11 @@ export default function List({onChange, selected, versions}) {
 									<ClayList.ItemText>
 										{version.displayDate}
 									</ClayList.ItemText>
+
 									<ClayList.ItemTitle>
 										{version.label}
 									</ClayList.ItemTitle>
+
 									<ClayList.ItemText>
 										{version.userName}
 									</ClayList.ItemText>

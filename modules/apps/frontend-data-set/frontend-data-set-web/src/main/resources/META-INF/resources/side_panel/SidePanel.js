@@ -405,6 +405,7 @@ export default class SidePanel extends React.Component {
 						<div className="loader">
 							<ClayLoadingIndicator />
 						</div>
+
 						<div
 							className="active fade show tab-pane"
 							role="tabpanel"

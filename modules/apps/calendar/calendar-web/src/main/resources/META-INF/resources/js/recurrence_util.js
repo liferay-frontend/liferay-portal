@@ -175,7 +175,7 @@ AUI.add(
 				var params = [];
 				var parts = [];
 
-				if (recurrence.interval == 1) {
+				if (Number(recurrence.interval) === 1) {
 					parts.push(A.Lang.String.toLowerCase(recurrence.frequency));
 				}
 				else {
@@ -188,7 +188,7 @@ AUI.add(
 				}
 
 				if (recurrence.positionalWeekday) {
-					if (recurrence.frequency == instance.FREQUENCY.MONTHLY) {
+					if (recurrence.frequency === instance.FREQUENCY.MONTHLY) {
 						parts.push('on-x-x');
 
 						params.push(
@@ -223,7 +223,7 @@ AUI.add(
 					}
 				}
 				else if (
-					recurrence.frequency == instance.FREQUENCY.WEEKLY &&
+					recurrence.frequency === instance.FREQUENCY.WEEKLY &&
 					recurrence.weekdays.length > 0
 				) {
 					parts.push('on-x');

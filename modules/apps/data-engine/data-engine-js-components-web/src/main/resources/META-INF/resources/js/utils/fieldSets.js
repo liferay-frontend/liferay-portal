@@ -56,12 +56,12 @@ const addNestedFields = ({field, indexes, nestedFields, props}) => {
 	};
 };
 
-export const createFieldSet = (
+export function createFieldSet(
 	props,
 	event,
 	nestedFields,
 	rows = [{columns: [{fields: [], size: 12}]}]
-) => {
+) {
 	const {
 		defaultLanguageId,
 		editingLanguageId,
@@ -95,4 +95,4 @@ export const createFieldSet = (
 		nestedFields,
 		props,
 	});
-};
+}

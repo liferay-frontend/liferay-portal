@@ -33,7 +33,7 @@ import {deleteField} from './fieldEditableReducer.es';
  * NOTE: This is a literal copy of the old LayoutProvider logic. Small changes
  * were made only to adapt to the reducer.
  */
-export default (state, action, config) => {
+export default function dragAndDropReducer(state, action, config) {
 	switch (action.type) {
 		case EVENT_TYPES.DND.MOVE: {
 			const {
@@ -176,7 +176,7 @@ export default (state, action, config) => {
 			const visitor = new PagesVisitor(updatedPages);
 
 			updatedPages = visitor.mapFields((field) => {
-				if (field.type != 'grid' && field.rows) {
+				if (field.type !== 'grid' && field.rows) {
 					return updateField(
 						{
 							availableLanguageIds,
@@ -253,4 +253,4 @@ export default (state, action, config) => {
 		default:
 			return state;
 	}
-};
+}

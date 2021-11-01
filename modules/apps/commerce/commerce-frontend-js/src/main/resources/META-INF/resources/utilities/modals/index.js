@@ -75,10 +75,10 @@ export function isSubmitting() {
 }
 
 export function onSubmitFail(reason = {}) {
-	const t_Liferay = window.top.Liferay,
-		{title = ''} = reason,
-		errorMessage =
-			title || Liferay.Language.get('an-unexpected-error-occurred');
+	const t_Liferay = window.top.Liferay;
+	const {title = ''} = reason;
+	const errorMessage =
+		title || Liferay.Language.get('an-unexpected-error-occurred');
 
 	t_Liferay.fire(IS_LOADING_MODAL, {isLoading: false});
 

@@ -13,7 +13,7 @@
  * It generates a set of functions used to produce
  * internationalized date related content.
  */
-export const generateDateFormatters = (key) => {
+export function generateDateFormatters(key) {
 
 	/**
 	 * Given 2 date objects it produces a user friendly date interval
@@ -93,4 +93,4 @@ export const generateDateFormatters = (key) => {
 		formatNumericDay,
 		formatNumericHour,
 	};
-};
+}

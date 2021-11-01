@@ -48,7 +48,7 @@ const initialDragDrop = {
 const DragAndDropContext = React.createContext(initialDragDrop);
 export const DragAndDropProvider = DragAndDropContext.Provider;
 
-export const useDragItem = (sourceItem) => {
+export function useDragItem(sourceItem) {
 	const getSourceItem = useCallback(() => sourceItem, [sourceItem]);
 	const sourceRef = useRef(null);
 
@@ -77,9 +77,9 @@ export const useDragItem = (sourceItem) => {
 		isDraggingSource,
 		sourceRef,
 	};
-};
+}
 
-export const useDragSymbol = ({data, icon, label, portletId, type}) => {
+export function useDragSymbol({data, icon, label, portletId, type}) {
 	const sourceItem = useMemo(
 		() => ({
 			data,
@@ -103,9 +103,9 @@ export const useDragSymbol = ({data, icon, label, portletId, type}) => {
 		isDraggingSource,
 		sourceRef: symbolRef,
 	};
-};
+}
 
-export const useDropClear = (targetItem) => {
+export function useDropClear(targetItem) {
 	const {dropTargetColumn, setDropTargetColumn} = useContext(
 		DragAndDropContext
 	);
@@ -126,7 +126,7 @@ export const useDropClear = (targetItem) => {
 	});
 
 	setDropClearRef(targetItem);
-};
+}
 
 const getHoverPosition = (monitor, targetItem) => {
 	const clientOffset = monitor.getClientOffset();
@@ -168,7 +168,7 @@ const getDropIndicatorPosition = ({
 	};
 };
 
-export const useDropTarget = (targetItem) => {
+export function useDropTarget(targetItem) {
 	const {
 		dropTargetColumn,
 		dropTargetItem,
@@ -275,4 +275,4 @@ export const useDropTarget = (targetItem) => {
 	});
 
 	setDropTargetRef(targetItem);
-};
+}

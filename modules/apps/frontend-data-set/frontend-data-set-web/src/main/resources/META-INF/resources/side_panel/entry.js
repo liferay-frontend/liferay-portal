@@ -16,4 +16,6 @@ import {render} from '@liferay/frontend-js-react-web';
 
 import SidePanel from './SidePanel';
 
-export default (...data) => render(SidePanel, ...data);
+export default function entry(...data) {
+	return render(SidePanel, ...data);
+}

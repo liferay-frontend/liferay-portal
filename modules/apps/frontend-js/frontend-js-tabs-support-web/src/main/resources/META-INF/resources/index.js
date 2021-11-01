@@ -14,6 +14,6 @@
 
 import TabsProvider from './TabsProvider';
 
-export default () => {
+export default function main() {
 	new TabsProvider();
-};
+}

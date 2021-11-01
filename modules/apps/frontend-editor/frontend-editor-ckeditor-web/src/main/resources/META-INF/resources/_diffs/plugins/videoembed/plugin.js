@@ -172,7 +172,7 @@ if (!CKEDITOR.plugins.get('videoembed')) {
 
 			if (
 				selectedElement &&
-				selectedElement.getAttribute('data-cke-widget-wrapper')
+				selectedElement.dataset['cke-widget-wrapper']
 			) {
 				result.alignment = getEmbedAlignment(selectedElement);
 				result.element = selectedElement;
@@ -193,8 +193,7 @@ if (!CKEDITOR.plugins.get('videoembed')) {
 			);
 
 			if (widgetElement) {
-				const styles =
-					JSON.parse(widgetElement.getAttribute('data-styles')) || {};
+				const styles = JSON.parse(widgetElement.dataset.styles) || {};
 
 				styles.width = `${width}px`;
 				styles.height = `${height}px`;
@@ -385,9 +384,7 @@ if (!CKEDITOR.plugins.get('videoembed')) {
 
 						if (
 							selectedElement &&
-							selectedElement.getAttribute(
-								'data-cke-widget-wrapper'
-							)
+							selectedElement.dataset['cke-widget-wrapper']
 						) {
 							const selectedEmbed = selectedElement.findOne(
 								'[data-widget="videoembed"] [data-embed-id]'
@@ -448,9 +445,7 @@ if (!CKEDITOR.plugins.get('videoembed')) {
 
 						if (
 							lastElement &&
-							lastElement.getAttribute(
-								'data-cke-widget-wrapper'
-							) &&
+							lastElement.dataset['cke-widget-wrapper'] &&
 							lastElement.findOne('[data-widget] [data-embed-id]')
 						) {
 							const embedAlignment = getEmbedAlignment(
@@ -494,9 +489,7 @@ if (!CKEDITOR.plugins.get('videoembed')) {
 				data(event) {
 					const instance = this;
 
-					const stylesJSON = instance.element.getAttribute(
-						'data-styles'
-					);
+					const stylesJSON = instance.element.dataset.styles;
 
 					let styles = stylesJSON ? JSON.parse(stylesJSON) : null;
 

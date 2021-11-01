@@ -76,7 +76,7 @@ function ToolbarBody({className}) {
 		},
 	});
 
-	const loading = useRef(() => {
+	const loadingRef = useRef(() => {
 		Promise.all(
 			config.toolbarPlugins.map((toolbarPlugin) => {
 				const {pluginEntryPoint} = toolbarPlugin;
@@ -112,12 +112,12 @@ function ToolbarBody({className}) {
 		});
 	});
 
-	if (loading.current) {
+	if (loadingRef.current) {
 
 		// Do this once only.
 
-		loading.current();
-		loading.current = null;
+		loadingRef.current();
+		loadingRef.current = null;
 	}
 
 	const ToolbarSection = useLazy(
@@ -228,6 +228,7 @@ function ToolbarBody({className}) {
 						);
 					}
 				)}
+
 				<li className="nav-item">
 					<Translation
 						availableLanguages={config.availableLanguages}
@@ -238,6 +239,7 @@ function ToolbarBody({className}) {
 						segmentsExperienceId={segmentsExperienceId}
 					/>
 				</li>
+
 				{!config.singleSegmentsExperienceMode &&
 					segmentsExperimentStatus && (
 						<li className="nav-item pl-2">
@@ -288,6 +290,7 @@ function ToolbarBody({className}) {
 						{Liferay.Language.get('preview')}
 					</ClayButtonWithIcon>
 				</li>
+
 				{config.singleSegmentsExperienceMode && (
 					<li className="nav-item">
 						<form action={config.discardDraftURL} method="POST">
