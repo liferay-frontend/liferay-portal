@@ -65,8 +65,10 @@ const TabItem = ({item}) => {
 				<div className="icon">
 					<ClayIcon symbol={item.icon} />
 				</div>
+
 				<div className="text">
 					<div className="text-truncate title">{item.label}</div>
+
 					{isContent && (
 						<div className="subtitle text-truncate">
 							{item.category}
@@ -84,6 +86,7 @@ const TabItem = ({item}) => {
 					title={item.name}
 				>
 					<ClayIcon symbol="plus" />
+
 					<span className="sr-only">{item.name}</span>
 				</ClayButton>
 			)}

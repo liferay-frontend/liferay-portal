@@ -92,6 +92,7 @@ export default function Header({data}) {
 						/>
 					</ClayManagementToolbar.Item>
 				</ClayManagementToolbar.ItemList>
+
 				<ClayManagementToolbar.Search onSubmit={handleSubmit}>
 					<Autocomplete
 						defaultValue={selectedAssignee?.name || ''}

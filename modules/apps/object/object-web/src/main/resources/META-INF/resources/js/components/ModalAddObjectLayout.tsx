@@ -93,6 +93,7 @@ const ModalAddListTypeDefinition: React.FC<IProps> = ({apiURL}) => {
 					<ClayModal.Header>
 						{Liferay.Language.get('new-layout')}
 					</ClayModal.Header>
+
 					<ClayModal.Body>
 						{error && (
 							<ClayAlert displayType="danger">{error}</ClayAlert>
@@ -122,6 +123,7 @@ const ModalAddListTypeDefinition: React.FC<IProps> = ({apiURL}) => {
 							/>
 						</ClayForm.Group>
 					</ClayModal.Body>
+
 					<ClayModal.Footer
 						last={
 							<ClayButton.Group key={1} spaced>

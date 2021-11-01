@@ -43,6 +43,7 @@ const Trigger = React.forwardRef(
 								</span>
 							</span>
 						</div>
+
 						<div className="d-flex">
 							{currentOrder?.id ? (
 								<>

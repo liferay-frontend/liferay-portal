@@ -64,6 +64,7 @@ function ActiveFiltersBar({disabled}) {
 								})}
 							</div>
 						</li>
+
 						<li className="tbar-item">
 							<div className="tbar-section">
 								<ClayButton

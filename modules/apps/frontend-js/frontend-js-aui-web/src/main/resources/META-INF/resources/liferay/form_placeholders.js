@@ -98,7 +98,7 @@ AUI.add(
 					);
 
 					placeholderInputs.each((item) => {
-						if (item.val() == item.attr(STR_PLACEHOLDER)) {
+						if (item.val() === item.attr(STR_PLACEHOLDER)) {
 							item.val(STR_BLANK);
 						}
 					});

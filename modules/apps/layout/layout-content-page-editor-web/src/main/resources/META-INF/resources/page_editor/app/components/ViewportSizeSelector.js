@@ -85,6 +85,7 @@ const SelectorButton = ({icon, label, onSelect, selectedSize, sizeId}) => {
 							{Liferay.Language.get('default-viewport')}
 						</span>
 					)}
+
 					{VIEWPORT_DESCRIPTIONS[sizeId]}
 				</ClayPopover>
 			)}
@@ -154,6 +155,7 @@ export default function ViewportSizeSelector({onSizeSelected, selectedSize}) {
 						<ClayIcon
 							symbol={availableViewportSizes[selectedSize].icon}
 						/>
+
 						<span className="sr-only">
 							{availableViewportSizes[selectedSize].label}
 						</span>

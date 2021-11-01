@@ -88,6 +88,7 @@ function DateRangeFilter({
 						<label htmlFor={`from-${id}`}>
 							{Liferay.Language.get('from')}
 						</label>
+
 						<input
 							className="form-control"
 							id={`from-${id}`}
@@ -102,10 +103,12 @@ function DateRangeFilter({
 							value={fromValue || ''}
 						/>
 					</ClayForm.Group>
+
 					<ClayForm.Group className="form-group-sm mt-2">
 						<label htmlFor={`to-${id}`}>
 							{Liferay.Language.get('to')}
 						</label>
+
 						<input
 							className="form-control"
 							id={`to-${id}`}
@@ -148,8 +151,10 @@ function DateRangeFilter({
 					small
 				>
 					{actionType === 'add' && Liferay.Language.get('add-filter')}
+
 					{actionType === 'edit' &&
 						Liferay.Language.get('edit-filter')}
+
 					{actionType === 'delete' &&
 						Liferay.Language.get('delete-filter')}
 				</ClayButton>

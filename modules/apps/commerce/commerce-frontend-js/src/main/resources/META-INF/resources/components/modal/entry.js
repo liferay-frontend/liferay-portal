@@ -15,4 +15,6 @@
 import launcher from '../../utilities/launcher';
 import Modal from './Modal';
 
-export default (...data) => launcher(Modal, ...data);
+export default function entry(...data) {
+	return launcher(Modal, ...data);
+}

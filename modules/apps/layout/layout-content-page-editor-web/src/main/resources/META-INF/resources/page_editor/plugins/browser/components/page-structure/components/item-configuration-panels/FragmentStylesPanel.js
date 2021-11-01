@@ -32,7 +32,7 @@ import {getLayoutDataItemPropTypes} from '../../../../../../prop-types/index';
 import {CommonStyles} from './CommonStyles';
 import {FieldSet} from './FieldSet';
 
-export const FragmentStylesPanel = ({item}) => {
+export function FragmentStylesPanel({item}) {
 	const dispatch = useDispatch();
 
 	const {availableViewportSizes} = config;
@@ -69,6 +69,7 @@ export const FragmentStylesPanel = ({item}) => {
 		<>
 			<p className="page-editor__row-styles-panel__viewport-label">
 				<ClayIcon className="mr-2" symbol={viewportSize.icon} />
+
 				{viewportSize.label}
 			</p>
 
@@ -82,7 +83,7 @@ export const FragmentStylesPanel = ({item}) => {
 			<CommonStyles commonStylesValues={itemConfig.styles} item={item} />
 		</>
 	);
-};
+}
 
 FragmentStylesPanel.propTypes = {
 	item: getLayoutDataItemPropTypes({

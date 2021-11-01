@@ -21,6 +21,7 @@ export default function PageStructureSidebar() {
 	return (
 		<div className="page-editor__page-structure">
 			<StructureTree />
+
 			<ItemConfiguration />
 		</div>
 	);

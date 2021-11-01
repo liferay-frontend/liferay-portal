@@ -24,7 +24,9 @@ function resolvePath(basePath = '', orderTypeId = '', orderTypeChannelId = '') {
 	return `${basePath}${VERSION}${ORDER_TYPE_PATH}/${orderTypeId}${ORDER_TYPE_RULES_PATH}/${orderTypeChannelId}`;
 }
 
-export default (basePath) => ({
-	addOrderTypeChannel: (orderTypeId, json) =>
-		AJAX.POST(resolvePath(basePath, orderTypeId), json),
-});
+export default function OrderTypeChannel(basePath) {
+	return {
+		addOrderTypeChannel: (orderTypeId, json) =>
+			AJAX.POST(resolvePath(basePath, orderTypeId), json),
+	};
+}

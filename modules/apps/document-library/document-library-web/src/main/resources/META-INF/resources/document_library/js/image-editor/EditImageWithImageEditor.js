@@ -17,7 +17,11 @@ import {navigate} from 'frontend-js-web';
 import {ImageEditor} from 'item-selector-taglib';
 import React, {useEffect, useRef, useState} from 'react';
 
-export default ({editImageURL, portletNamespace, redirectURL}) => {
+export default function EditImageWithImageEditor({
+	editImageURL,
+	portletNamespace,
+	redirectURL,
+}) {
 	const fileEntryIdRef = useRef();
 
 	const [imageURL, setImageURL] = useState();
@@ -80,4 +84,4 @@ export default ({editImageURL, portletNamespace, redirectURL}) => {
 			)}
 		</>
 	);
-};
+}

@@ -273,7 +273,7 @@ function getExpressionName(oDataASTNode) {
 
 	let returnValue = oDataV4ParserNameMap[type];
 
-	if (type == EXPRESSION_TYPES.METHOD_CALL) {
+	if (type === EXPRESSION_TYPES.METHOD_CALL) {
 		returnValue = oDataASTNode.value.method;
 	}
 
@@ -491,10 +491,10 @@ function transformCommonNode({oDataASTNode}) {
 
 	let value;
 
-	if (methodExpressionName == OPERATORS.CONTAINS) {
+	if (methodExpressionName === OPERATORS.CONTAINS) {
 		value = formatCriterionValue(methodExpression.value.parameters[1].raw);
 	}
-	else if (methodExpressionName == OPERATORS.EQ) {
+	else if (methodExpressionName === OPERATORS.EQ) {
 		value = formatCriterionValue(methodExpression.value.right.raw);
 	}
 
@@ -596,7 +596,7 @@ function transformNotNode({oDataASTNode}) {
 
 	let returnValue;
 
-	if (nextNodeExpressionName == OPERATORS.CONTAINS) {
+	if (nextNodeExpressionName === OPERATORS.CONTAINS) {
 		returnValue = [
 			{
 				operatorName: NOT_OPERATORS.NOT_CONTAINS,
@@ -607,7 +607,7 @@ function transformNotNode({oDataASTNode}) {
 			},
 		];
 	}
-	else if (nextNodeExpressionName == OPERATORS.EQ) {
+	else if (nextNodeExpressionName === OPERATORS.EQ) {
 		returnValue = [
 			{
 				operatorName: NOT_OPERATORS.NOT_EQ,
@@ -616,14 +616,14 @@ function transformNotNode({oDataASTNode}) {
 			},
 		];
 	}
-	else if (nextNodeExpression.type == EXPRESSION_TYPES.PROPERTY_PATH) {
+	else if (nextNodeExpression.type === EXPRESSION_TYPES.PROPERTY_PATH) {
 		const anyExpression = nextNodeExpression.value.next.value;
 
 		const methodExpression = anyExpression.value.predicate.value;
 
 		const methodExpressionName = getExpressionName(methodExpression);
 
-		if (methodExpressionName == OPERATORS.CONTAINS) {
+		if (methodExpressionName === OPERATORS.CONTAINS) {
 			returnValue = [
 				{
 					operatorName: NOT_OPERATORS.NOT_CONTAINS,
@@ -634,7 +634,7 @@ function transformNotNode({oDataASTNode}) {
 				},
 			];
 		}
-		else if (methodExpressionName == OPERATORS.EQ) {
+		else if (methodExpressionName === OPERATORS.EQ) {
 			returnValue = [
 				{
 					operatorName: NOT_OPERATORS.NOT_EQ,

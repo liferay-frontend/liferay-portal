@@ -98,6 +98,7 @@ export default function TrafficSources({dataProvider, onTrafficSourceClick}) {
 		<>
 			<h5 className="mt-3 sheet-subtitle">
 				{Liferay.Language.get('traffic-channels')}
+
 				<Hint
 					message={Liferay.Language.get('traffic-channels-help')}
 					secondary={true}
@@ -143,6 +144,7 @@ export default function TrafficSources({dataProvider, onTrafficSourceClick}) {
 												}}
 											></span>
 										</td>
+
 										<td
 											className="c-py-1 text-secondary"
 											onMouseOut={handleLegendMouseLeave}
@@ -173,12 +175,14 @@ export default function TrafficSources({dataProvider, onTrafficSourceClick}) {
 												<span>{entry.title}</span>
 											)}
 										</td>
+
 										<td className="text-secondary">
 											<Hint
 												message={entry.helpMessage}
 												title={entry.title}
 											/>
 										</td>
+
 										<td className="font-weight-semi-bold">
 											{validAnalyticsConnection &&
 											!publishedToday &&
@@ -297,12 +301,17 @@ function TrafficSourcesCustomTooltip(props) {
 							<React.Fragment key={item.name}>
 								<li>
 									{Liferay.Language.get('visitors')}
+
 									{separator}
+
 									<b>{value}</b>
 								</li>
+
 								<li>
 									{Liferay.Language.get('traffic-share')}
+
 									{separator}
+
 									<b>{`${payload.share}%`}</b>
 								</li>
 							</React.Fragment>

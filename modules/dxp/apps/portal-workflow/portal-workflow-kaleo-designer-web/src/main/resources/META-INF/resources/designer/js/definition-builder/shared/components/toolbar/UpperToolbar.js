@@ -26,9 +26,11 @@ export default function ({title, version}) {
 					displayType="secondary"
 				>
 					<ClayIcon symbol="en-us" />
+
 					<div className="translation-label">en-US</div>
 				</ClayButton>
 			</ClayUpperToolbar.Item>
+
 			<ClayUpperToolbar.Item expand>
 				<ClayUpperToolbar.Input
 					id="definition-title"
@@ -40,6 +42,7 @@ export default function ({title, version}) {
 					value={definitionTitle}
 				/>
 			</ClayUpperToolbar.Item>
+
 			<ClayUpperToolbar.Item>
 				<ClayLabel className="version" displayType="secondary">
 					<div>
@@ -48,21 +51,25 @@ export default function ({title, version}) {
 					</div>
 				</ClayLabel>
 			</ClayUpperToolbar.Item>
+
 			<ClayUpperToolbar.Item>
 				<ClayButton displayType="secondary">
 					{Liferay.Language.get('cancel')}
 				</ClayButton>
 			</ClayUpperToolbar.Item>
+
 			<ClayUpperToolbar.Item>
 				<ClayButton displayType="secondary">
 					{Liferay.Language.get('save')}
 				</ClayButton>
 			</ClayUpperToolbar.Item>
+
 			<ClayUpperToolbar.Item>
 				<ClayButton displayType="primary">
 					{Liferay.Language.get('publish')}
 				</ClayButton>
 			</ClayUpperToolbar.Item>
+
 			<ClayUpperToolbar.Item>
 				<ClayButtonWithIcon
 					displayType="secondary"

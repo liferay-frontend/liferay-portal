@@ -141,8 +141,10 @@ const AdaptiveMediaProgress = ({
 		<div className="progress-error-container">
 			<span className="text-danger">
 				<ClayIcon symbol="exclamation-full" />
+
 				<span>
 					<strong>{Liferay.Language.get('error')}: </strong>
+
 					{imagesFailed === 1
 						? Liferay.Language.get('1-image-failed-process')
 						: Liferay.Util.sub(

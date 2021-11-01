@@ -19,7 +19,7 @@ import React, {useState} from 'react';
 
 import {useConstants} from '../contexts/ConstantsContext';
 
-export const AddItemDropDown = ({trigger}) => {
+export function AddItemDropDown({trigger}) {
 	const [active, setActive] = useState(false);
 	const {addSiteNavigationMenuItemOptions, portletNamespace} = useConstants();
 
@@ -116,7 +116,7 @@ export const AddItemDropDown = ({trigger}) => {
 			</ClayDropDown>
 		</>
 	);
-};
+}
 
 AddItemDropDown.propTypes = {
 	trigger: PropTypes.element,

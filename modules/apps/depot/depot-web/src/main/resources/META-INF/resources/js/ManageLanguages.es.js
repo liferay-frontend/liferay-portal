@@ -48,7 +48,7 @@ const ManageLanguages = ({
 		else {
 			setSelectedLocales(
 				selectedLocales.filter(
-					({localeId}) => localeId != selectedLocaleId
+					({localeId}) => localeId !== selectedLocaleId
 				)
 			);
 		}
@@ -59,7 +59,7 @@ const ManageLanguages = ({
 	}, [selectedLocales]);
 
 	const Language = ({displayName, isDefault, localeId}) => {
-		const checked = selectedLocalesIds.indexOf(localeId) != -1;
+		const checked = selectedLocalesIds.indexOf(localeId) !== -1;
 
 		return (
 			<ClayTable.Row>

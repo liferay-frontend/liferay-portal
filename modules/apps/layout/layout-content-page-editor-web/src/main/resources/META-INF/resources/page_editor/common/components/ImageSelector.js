@@ -65,6 +65,7 @@ export function ImageSelector({
 							value={selectedImageTitle}
 						/>
 					</ClayInput.GroupItem>
+
 					<ClayInput.GroupItem shrink>
 						<ClayButtonWithIcon
 							displayType="secondary"
@@ -83,6 +84,7 @@ export function ImageSelector({
 							)}
 						/>
 					</ClayInput.GroupItem>
+
 					{hasImageTitle && (
 						<>
 							<ClayInput.GroupItem shrink>

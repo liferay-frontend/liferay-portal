@@ -16,8 +16,8 @@ export const EMAIL_VALIDATION_PATTERN = /^(\D)+(\w)*((\.(\w)+)?)+@(\D)+(\w)*((\.
 
 export function validateEmailAddress(address) {
 	return new Promise((resolve, reject) => {
-		const pattern = new RegExp(EMAIL_VALIDATION_PATTERN),
-			isValid = pattern.exec(address).length;
+		const pattern = new RegExp(EMAIL_VALIDATION_PATTERN);
+		const isValid = pattern.exec(address).length;
 
 		if (isValid) {
 			resolve(address);

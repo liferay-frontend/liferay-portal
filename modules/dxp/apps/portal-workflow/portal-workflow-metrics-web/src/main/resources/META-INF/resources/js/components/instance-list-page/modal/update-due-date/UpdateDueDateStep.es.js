@@ -183,6 +183,7 @@ function TimePickerInputWithOptions({format, isAmPm, setValue, value}) {
 					}}
 				>
 					<div className="arrow"></div>
+
 					<div className="inline-scroller">
 						<div className="popover-body">
 							{options.map((option, index) => (

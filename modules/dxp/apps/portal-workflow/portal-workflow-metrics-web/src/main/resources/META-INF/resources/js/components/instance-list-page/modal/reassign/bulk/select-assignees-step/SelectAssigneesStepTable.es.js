@@ -165,6 +165,7 @@ function Table({data, items}) {
 						}}
 					>
 						{`${Liferay.Language.get('new-assignee')}`}
+
 						<span
 							className="ml-1 workflow-tooltip"
 							data-tooltip-align="top"

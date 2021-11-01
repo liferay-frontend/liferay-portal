@@ -196,7 +196,7 @@ const Numeric: React.FC<IProps> = ({
 			? {
 					decimalSymbol: symbolsProp.decimalSymbol,
 					thousandsSeparator:
-						symbolsProp.thousandsSeparator == 'none'
+						symbolsProp.thousandsSeparator === 'none'
 							? null
 							: symbolsProp.thousandsSeparator,
 			  }
@@ -310,7 +310,9 @@ const Numeric: React.FC<IProps> = ({
 							<ClayInput.GroupText>{append}</ClayInput.GroupText>
 						</ClayInput.GroupItem>
 					)}
+
 					<ClayInput.GroupItem prepend>{input}</ClayInput.GroupItem>
+
 					{appendType === 'suffix' && (
 						<ClayInput.GroupItem append shrink>
 							<ClayInput.GroupText>{append}</ClayInput.GroupText>
@@ -320,6 +322,7 @@ const Numeric: React.FC<IProps> = ({
 			) : (
 				input
 			)}
+
 			{inputMask && (
 				<input name={name} type="hidden" value={inputValue.raw} />
 			)}

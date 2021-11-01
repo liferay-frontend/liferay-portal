@@ -24,7 +24,7 @@ import {getFormId, getFormNode} from '../../../utils/formId.es';
 import nextPage from '../thunks/nextPage.es';
 import previousPage from '../thunks/previousPage.es';
 
-export const Pagination = ({activePage, pages}) => {
+export function Pagination({activePage, pages}) {
 	const {containerElement} = usePage();
 	const dispatch = useForm();
 
@@ -105,4 +105,4 @@ export const Pagination = ({activePage, pages}) => {
 			</li>
 		</ClayPagination>
 	);
-};
+}

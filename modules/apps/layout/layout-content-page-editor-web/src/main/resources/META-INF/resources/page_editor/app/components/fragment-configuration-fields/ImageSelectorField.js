@@ -40,7 +40,7 @@ const IMAGE_SOURCES = {
 	},
 };
 
-export const ImageSelectorField = ({field, onValueSelect, value = {}}) => {
+export function ImageSelectorField({field, onValueSelect, value = {}}) {
 	const imageSourceInputId = useId();
 
 	const selectedViewportSize = useSelector(
@@ -121,7 +121,7 @@ export const ImageSelectorField = ({field, onValueSelect, value = {}}) => {
 			)}
 		</>
 	);
-};
+}
 
 ImageSelectorField.propTypes = {
 	field: PropTypes.shape(ConfigurationFieldPropTypes),

@@ -53,14 +53,14 @@ const zoomSteps = [12.5, 25, 50, 100, 150, 200];
 
 const noop = () => {};
 
-export default ({
+export default function ImageEditor({
 	imageId,
 	imageSrc,
 	itemReturnType,
 	onCancel = noop,
 	onSave = noop,
 	saveURL,
-}) => {
+}) {
 	const ref = useRef();
 
 	const [currentZoom, setCurrentZoom] = useState(100);
@@ -274,4 +274,4 @@ export default ({
 			</ClayToolbar>
 		</div>
 	);
-};
+}

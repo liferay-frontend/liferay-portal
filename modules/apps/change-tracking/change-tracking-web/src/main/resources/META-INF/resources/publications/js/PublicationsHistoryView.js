@@ -173,6 +173,7 @@ const renderPublicationInfo = (entry, published) => {
 			}
 		>
 			<div className="publication-name">{entry.name}</div>
+
 			{entry.description && (
 				<div className="publication-description">
 					{entry.description}
@@ -209,10 +210,12 @@ const PublicationsHistoryListItem = ({entry, spritemap, userInfo}) => {
 			<ClayList.ItemField>
 				{renderUserPortrait(entry, userInfo)}
 			</ClayList.ItemField>
+
 			<ClayList.ItemField expand>
 				<ClayList.ItemText>
 					{renderPublicationInfo(entry, publishedValue)}
 				</ClayList.ItemText>
+
 				<ClayList.ItemText>
 					<PublicationStatus
 						dataURL={entry.statusURL}
@@ -228,6 +231,7 @@ const PublicationsHistoryListItem = ({entry, spritemap, userInfo}) => {
 					/>
 				</ClayList.ItemText>
 			</ClayList.ItemField>
+
 			<ClayList.ItemField>
 				<div data-tooltip-align="top" title={title}>
 					<a
@@ -275,12 +279,15 @@ const PublicationsHistoryTableRow = ({entry, spritemap, userInfo}) => {
 			<ClayTable.Cell className="table-cell-expand">
 				{renderPublicationInfo(entry, publishedValue)}
 			</ClayTable.Cell>
+
 			<ClayTable.Cell className="table-cell-expand-smaller">
 				{entry.timeDescription}
 			</ClayTable.Cell>
+
 			<ClayTable.Cell className="table-cell-expand-smallest">
 				{renderUserPortrait(entry, userInfo)}
 			</ClayTable.Cell>
+
 			<ClayTable.Cell className="table-cell-expand-smaller">
 				<PublicationStatus
 					dataURL={entry.statusURL}
@@ -295,6 +302,7 @@ const PublicationsHistoryTableRow = ({entry, spritemap, userInfo}) => {
 					}}
 				/>
 			</ClayTable.Cell>
+
 			<ClayTable.Cell className="table-cell-expand-smallest">
 				<div data-tooltip-align="top" title={title}>
 					<a
@@ -315,7 +323,12 @@ const PublicationsHistoryTableRow = ({entry, spritemap, userInfo}) => {
 	);
 };
 
-export default ({displayStyle, entries, spritemap, userInfo}) => {
+export default function PublicationsHistoryView({
+	displayStyle,
+	entries,
+	spritemap,
+	userInfo,
+}) {
 	if (displayStyle === 'list') {
 		const rows = [];
 
@@ -343,30 +356,35 @@ export default ({displayStyle, entries, spritemap, userInfo}) => {
 						>
 							{Liferay.Language.get('publication')}
 						</ClayTable.Cell>
+
 						<ClayTable.Cell
 							className="table-cell-expand-smaller"
 							headingCell
 						>
 							{Liferay.Language.get('published-date')}
 						</ClayTable.Cell>
+
 						<ClayTable.Cell
 							className="table-cell-expand-smallest text-center"
 							headingCell
 						>
 							{Liferay.Language.get('published-by')}
 						</ClayTable.Cell>
+
 						<ClayTable.Cell
 							className="table-cell-expand-smaller"
 							headingCell
 						>
 							{Liferay.Language.get('status')}
 						</ClayTable.Cell>
+
 						<ClayTable.Cell
 							className="table-cell-expand-smallest"
 							headingCell
 						/>
 					</ClayTable.Row>
 				</ClayTable.Head>
+
 				<ClayTable.Body>{rows}</ClayTable.Body>
 			</ClayTable>
 		);
@@ -385,4 +403,4 @@ export default ({displayStyle, entries, spritemap, userInfo}) => {
 	}
 
 	return <ClayList className="publications-table">{items}</ClayList>;
-};
+}

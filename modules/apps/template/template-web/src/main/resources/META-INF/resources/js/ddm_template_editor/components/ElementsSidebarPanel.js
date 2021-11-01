@@ -25,7 +25,7 @@ import {CollapsableButtonList} from './CollapsableButtonList';
 
 const SEARCH_INPUT_ID = 'ddm_template_editor_Sidebar-SearchInputId';
 
-export const ElementsSidebarPanel = ({className}) => {
+export function ElementsSidebarPanel({className}) {
 	const {
 		inputChannel,
 		templateVariableGroups: initialTemplateVariableGroups,
@@ -67,6 +67,7 @@ export const ElementsSidebarPanel = ({className}) => {
 			<h1 className="ddm_template_editor__App-sidebar-title my-3">
 				{Liferay.Language.get('elements')}
 			</h1>
+
 			<ClayForm.Group small>
 				<label className="sr-only" htmlFor={SEARCH_INPUT_ID}>
 					{Liferay.Language.get('search')}
@@ -83,6 +84,7 @@ export const ElementsSidebarPanel = ({className}) => {
 							placeholder={`${Liferay.Language.get('search')}...`}
 							value={searchValue}
 						/>
+
 						<ClayInput.GroupInsetItem after tag="span">
 							{searchValue ? (
 								<ClayButtonWithIcon
@@ -121,7 +123,7 @@ export const ElementsSidebarPanel = ({className}) => {
 			)}
 		</div>
 	);
-};
+}
 
 ElementsSidebarPanel.propTypes = {
 	className: PropTypes.string,

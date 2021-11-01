@@ -85,6 +85,7 @@ const ModalAddListTypeDefinition: React.FC<IProps> = ({
 				<ClayModal.Header>
 					{Liferay.Language.get('new-picklist')}
 				</ClayModal.Header>
+
 				<ClayModal.Body>
 					{error && (
 						<ClayAlert displayType="danger">{error}</ClayAlert>
@@ -109,6 +110,7 @@ const ModalAddListTypeDefinition: React.FC<IProps> = ({
 						value={values.name_i18n[defaultLanguageId]}
 					/>
 				</ClayModal.Body>
+
 				<ClayModal.Footer
 					last={
 						<ClayButton.Group key={1} spaced>

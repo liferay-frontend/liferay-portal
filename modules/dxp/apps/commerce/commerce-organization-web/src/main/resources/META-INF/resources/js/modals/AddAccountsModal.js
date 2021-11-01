@@ -39,7 +39,7 @@ export default function AddOrganizationModal({
 	const [fetchedAccounts, setFetchedAccounts] = useState([]);
 	const [selectedAccounts, setSelectedAccounts] = useState([]);
 	const [errors, setErrors] = useState([]);
-	const [newAccountMode, updateNewAccountMode] = useState(false);
+	const [newAccountMode, setNewAccountMode] = useState(false);
 
 	useEffect(() => {
 		if (accountsQuery) {
@@ -191,6 +191,7 @@ export default function AddOrganizationModal({
 			{errors.map((error, i) => (
 				<ClayForm.FeedbackItem key={i}>
 					<ClayForm.FeedbackIndicator symbol="info-circle" />
+
 					{error}
 				</ClayForm.FeedbackItem>
 			))}
@@ -206,7 +207,7 @@ export default function AddOrganizationModal({
 			<ClayModal.Body>
 				<ClayRadioGroup
 					className="mb-4"
-					onSelectedValueChange={updateNewAccountMode}
+					onSelectedValueChange={setNewAccountMode}
 					selectedValue={newAccountMode}
 				>
 					<ClayRadio

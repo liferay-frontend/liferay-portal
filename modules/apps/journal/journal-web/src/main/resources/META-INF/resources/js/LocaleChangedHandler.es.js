@@ -56,7 +56,7 @@ class LocaleChangedHandler {
 	 */
 	_onDefaultLocaleChange(event) {
 		if (event.item) {
-			this.defaultLanguageId = event.item.getAttribute('data-value');
+			this.defaultLanguageId = event.item.dataset.value;
 
 			if (this.onDefaultLocaleChangedCallback) {
 				this.onDefaultLocaleChangedCallback(this.defaultLanguageId);
@@ -69,7 +69,7 @@ class LocaleChangedHandler {
 	 * @param {Event} event
 	 */
 	_onLocaleChange(event) {
-		const selectedLanguageId = event.item.getAttribute('data-value');
+		const selectedLanguageId = event.item.dataset.value;
 
 		this._selectedLanguageId = selectedLanguageId;
 

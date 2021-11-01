@@ -55,10 +55,15 @@ export function formatItem(item, type) {
 	return item;
 }
 
-export const formatAccountChild = (child) => formatChild(child, 'account');
-export const formatOrganizationChild = (child) =>
-	formatChild(child, 'organization');
-export const formatUserChild = (child) => formatChild(child, 'user');
+export function formatAccountChild(child) {
+	return formatChild(child, 'account');
+}
+export function formatOrganizationChild(child) {
+	return formatChild(child, 'organization');
+}
+export function formatUserChild(child) {
+	return formatChild(child, 'user');
+}
 
 export function formatChild(child, entityType = null) {
 	if (entityType) {
@@ -199,7 +204,7 @@ export function insertAddButtons(root, selectedNodesIds) {
 
 export const tree = d3Tree().nodeSize([DX, DY]);
 
-export const getChartNodeId = (data) => {
+export function getChartNodeId(data) {
 	if (!(data.id || data.id === 0) || !data.type) {
 		throw new Error(
 			`type or id properties not defined in entity: ${JSON.stringify(
@@ -209,9 +214,9 @@ export const getChartNodeId = (data) => {
 	}
 
 	return `${data.type}_${data.id}`;
-};
+}
 
-export const formatRootData = (rootData) => {
+export function formatRootData(rootData) {
 	if (Array.isArray(rootData)) {
 		const fakeRoot = {
 			[ORGANIZATIONS_PROPERTY_NAME]: rootData,
@@ -228,11 +233,11 @@ export const formatRootData = (rootData) => {
 	rootData.fetched = true;
 
 	return rootData;
-};
+}
 
-export const formatAccountDescription = (d) => {
+export function formatAccountDescription(d) {
 	return `${d.data[COUNTER_KEYS_MAP.user]} ${Liferay.Language.get('users')}`;
-};
+}
 
 export function hasPermission(data, actionKey) {
 	if (!PERMISSION_CHECK_ON_HEADLESS_API_ACTIONS) {
@@ -254,7 +259,7 @@ export function hasPermissions(data, actionsKeys) {
 	);
 }
 
-export const formatUserDescription = (d) => {
+export function formatUserDescription(d) {
 	const parentBriefsKey = BRIEFS_KEYS_MAP[d.parent.data.type];
 
 	const parentBrief = d.data[parentBriefsKey].find(
@@ -272,18 +277,19 @@ export const formatUserDescription = (d) => {
 	}
 
 	return description;
-};
+}
 
-export const trimString = (string, nodeType) =>
-	string.length > MAX_NAME_LENGTH[nodeType]
+export function trimString(string, nodeType) {
+	return string.length > MAX_NAME_LENGTH[nodeType]
 		? string.slice(0, MAX_NAME_LENGTH[nodeType] - 1).trim() + '…'
 		: string;
+}
 
-export const formatItemName = (d) => {
+export function formatItemName(d) {
 	const name = d.data.name || d.data.emailAddress;
 
 	return trimString(name, d.data.type);
-};
+}
 
 export function getMinWidth(nodes) {
 	return nodes.reduce((maxWidth, node) => {

@@ -53,6 +53,7 @@ function NumberFilter({
 								value={value !== undefined ? value : ''}
 							/>
 						</div>
+
 						{inputText && (
 							<div className="input-group-append input-group-item input-group-item-shrink">
 								<span className="input-group-text">

@@ -46,6 +46,7 @@ const FieldsSidebarSettingsHeader: React.FC<IProps> = ({field}) => {
 				onClick={() => dispatch({type: EVENT_TYPES.SIDEBAR.FIELD.BLUR})}
 				symbol="angle-left"
 			/>
+
 			<Sidebar.Title title={label} />
 		</div>
 	);

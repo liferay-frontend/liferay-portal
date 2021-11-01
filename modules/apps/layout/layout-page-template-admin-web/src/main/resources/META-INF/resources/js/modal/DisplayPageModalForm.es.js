@@ -19,12 +19,12 @@ import FormField from './FormField.es';
 
 const DisplayPageModalForm = React.forwardRef((props, ref) => {
 	const [subtypes, setSubtypes] = useState([]);
-	const nameInput = useRef(null);
+	const nameInputRef = useRef(null);
 	const [error, setError] = useState(props.error);
 
 	useEffect(() => {
-		if (nameInput.current) {
-			nameInput.current.focus();
+		if (nameInputRef.current) {
+			nameInputRef.current.focus();
 		}
 	}, []);
 
@@ -67,7 +67,7 @@ const DisplayPageModalForm = React.forwardRef((props, ref) => {
 					id={`${props.namespace}name`}
 					name={`${props.namespace}name`}
 					onChange={() => setError({...error, name: null})}
-					ref={nameInput}
+					ref={nameInputRef}
 				/>
 			</FormField>
 
@@ -89,6 +89,7 @@ const DisplayPageModalForm = React.forwardRef((props, ref) => {
 										'not-selected'
 									)} --`}
 								</option>
+
 								{props.mappingTypes.map((mappingType) => (
 									<option
 										key={mappingType.id}
@@ -118,6 +119,7 @@ const DisplayPageModalForm = React.forwardRef((props, ref) => {
 											'not-selected'
 										)} --`}
 									</option>
+
 									{subtypes.map((subtype) => (
 										<option
 											key={subtype.id}

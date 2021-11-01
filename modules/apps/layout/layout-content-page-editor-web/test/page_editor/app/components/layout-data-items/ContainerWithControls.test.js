@@ -83,6 +83,7 @@ const renderContainer = ({
 					})}
 				>
 					<AutoSelect />
+
 					<ContainerWithControls
 						item={container}
 						layoutData={layoutData}

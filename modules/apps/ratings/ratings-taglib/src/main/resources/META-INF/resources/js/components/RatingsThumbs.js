@@ -184,6 +184,7 @@ const RatingsThumbs = ({
 						<span className="off">
 							<ClayIcon symbol="thumbs-up" />
 						</span>
+
 						<span
 							className="on"
 							onAnimationEnd={handleAnimationEndUp}
@@ -191,11 +192,13 @@ const RatingsThumbs = ({
 							<ClayIcon symbol="thumbs-up-full" />
 						</span>
 					</span>
+
 					<span className="inline-item">
 						<AnimatedCounter counter={positiveVotes} />
 					</span>
 				</span>
 			</ClayButton>
+
 			<ClayButton
 				aria-pressed={pressed === PRESSED_DOWN}
 				borderless
@@ -214,6 +217,7 @@ const RatingsThumbs = ({
 						<span className="off">
 							<ClayIcon symbol="thumbs-down" />
 						</span>
+
 						<span
 							className="on"
 							onAnimationEnd={handleAnimationEndDown}
@@ -221,6 +225,7 @@ const RatingsThumbs = ({
 							<ClayIcon symbol="thumbs-down-full" />
 						</span>
 					</span>
+
 					<span className="inline-item">
 						<AnimatedCounter counter={negativeVotes} />
 					</span>

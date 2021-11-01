@@ -85,7 +85,7 @@ const MILLISECONDS_TO_MINUTE = 60000;
  *
  * Each time the rules are changed, the form is saved.
  */
-export const AutoSaveProvider = ({children, interval, url}) => {
+export function AutoSaveProvider({children, interval, url}) {
 	const {portletNamespace} = useConfig();
 	const {
 		availableLanguageIds,
@@ -240,8 +240,8 @@ export const AutoSaveProvider = ({children, interval, url}) => {
 			{children}
 		</AutoSaveContext.Provider>
 	);
-};
+}
 
-export const useAutoSave = () => {
+export function useAutoSave() {
 	return useContext(AutoSaveContext);
-};
+}

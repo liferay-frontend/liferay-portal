@@ -56,6 +56,7 @@ const Captcha = ({html, name, ...otherProps}) => {
 				dangerouslySetInnerHTML={{__html: contentMemoized}}
 				ref={elRef}
 			/>
+
 			<input id={name} type="hidden" />
 		</FieldBase>
 	);

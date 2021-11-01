@@ -223,7 +223,7 @@ function DataSetDisplay({
 		if (wrapperRef.current) {
 			const form = wrapperRef.current.closest('form');
 
-			if (form?.getAttribute('data-senna-off') === null) {
+			if (form.dataset['senna-off'] === null) {
 				form.setAttribute('data-senna-off', true);
 			}
 		}
@@ -361,6 +361,7 @@ function DataSetDisplay({
 					readOnly
 					value={selectedItemsValue.join(',')}
 				/>
+
 				{items?.length ||
 				overrideEmptyResultView ||
 				inlineAddingSettings ? (
@@ -624,22 +625,30 @@ function DataSetDisplay({
 				{style === 'default' && (
 					<div className="data-set-display data-set-display-inline">
 						{managementBar}
+
 						{wrappedView}
+
 						{paginationComponent}
 					</div>
 				)}
+
 				{style === 'stacked' && (
 					<div className="data-set-display data-set-display-stacked">
 						{managementBar}
+
 						{wrappedView}
+
 						{paginationComponent}
 					</div>
 				)}
+
 				{style === 'fluid' && (
 					<div className="data-set-display data-set-display-fluid">
 						{managementBar}
+
 						<div className="container-fluid container-xl mt-3">
 							{wrappedView}
+
 							{paginationComponent}
 						</div>
 					</div>

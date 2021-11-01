@@ -12,4 +12,6 @@
  * details.
  */
 
-export const isValidSpacingOption = (value) => !isNaN(parseInt(value, 10));
+export function isValidSpacingOption(value) {
+	return !isNaN(parseInt(value, 10));
+}

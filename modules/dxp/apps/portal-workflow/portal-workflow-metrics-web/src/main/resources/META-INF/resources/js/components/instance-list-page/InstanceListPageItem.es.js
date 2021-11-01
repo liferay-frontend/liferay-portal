@@ -291,7 +291,7 @@ function DueDateSLAResults({slaResults, slaStatusIconInfo}) {
 
 		let format = '';
 
-		const sameYear = dateOverdue.split('-')[0] == new Date().getFullYear();
+		const sameYear = dateOverdue.split('-')[0] === new Date().getFullYear();
 
 		if (sameYear) {
 			format = fullDatetime
@@ -362,6 +362,7 @@ function DueDateSLAResults({slaResults, slaStatusIconInfo}) {
 							onMouseOver={() => showPopover()}
 						>
 							<span className="due-date-badge"></span>
+
 							{slaResultDateOverdue}
 						</div>
 					}
@@ -369,8 +370,9 @@ function DueDateSLAResults({slaResults, slaStatusIconInfo}) {
 					{instanceSlaResults.map((slaResult) => (
 						<div key={`critical-sla-${slaResult.id}`}>
 							<div>{slaResult.name}:</div>
+
 							<div className={slaResult.textClass}>
-								{slaResult.datetimeOverdueFormatted} (
+								{slaResult.datetimeOverdueFormatted}(
 								{slaResult.durationText} {slaResult.onTimeText})
 							</div>
 						</div>

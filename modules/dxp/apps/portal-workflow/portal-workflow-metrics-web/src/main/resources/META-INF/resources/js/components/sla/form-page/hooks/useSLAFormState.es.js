@@ -196,7 +196,7 @@ const useSLAFormState = ({errors, id, processId, setErrors}) => {
 		const nodeKeys = pauseNodeKeys || [];
 
 		return pauseNodes.filter(({id}) =>
-			nodeKeys.find((node) => node.id == id)
+			nodeKeys.find((node) => node.id === id)
 		);
 	};
 

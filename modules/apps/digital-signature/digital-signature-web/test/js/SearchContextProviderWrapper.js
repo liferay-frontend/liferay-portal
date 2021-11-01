@@ -18,7 +18,11 @@ import SearchContext, {
 	reducer,
 } from '../../src/main/resources/META-INF/resources/js/components/management-toolbar/SearchContext';
 
-export default ({dispatch = jest.fn(), children, defaultQuery = {}}) => {
+export default function SearchContextProviderWrapper({
+	dispatch = jest.fn(),
+	children,
+	defaultQuery = {},
+}) {
 	const [query, setQuery] = useState(defaultQuery);
 
 	const defaultCallback = useCallback(
@@ -35,4 +39,4 @@ export default ({dispatch = jest.fn(), children, defaultQuery = {}}) => {
 			{children}
 		</SearchContext.Provider>
 	);
-};
+}

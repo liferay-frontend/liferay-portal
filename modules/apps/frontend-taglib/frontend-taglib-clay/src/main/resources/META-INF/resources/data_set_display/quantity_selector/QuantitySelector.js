@@ -83,10 +83,10 @@ function QuantitySelector({
 	}
 
 	function handleInputKeyUp(event) {
-		if (event.keyCode == 38) {
+		if (Number(event.keyCode) === 38) {
 			increaseQuantity();
 		}
-		else if (event.keyCode == 40) {
+		else if (Number(event.keyCode) === 40) {
 			decreaseQuantity();
 		}
 	}
@@ -142,6 +142,7 @@ function QuantitySelector({
 							</span>
 						</div>
 					)}
+
 					<div
 						className={classnames(
 							'input-group-item input-group-item-shrink',
@@ -164,6 +165,7 @@ function QuantitySelector({
 							value={currentQuantity}
 						/>
 					</div>
+
 					{(appendedIcon || appendedText) && (
 						<div className="input-group-append input-group-item input-group-item-shrink">
 							<span className="input-group-text">

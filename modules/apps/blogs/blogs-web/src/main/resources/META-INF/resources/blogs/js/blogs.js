@@ -535,7 +535,7 @@ export default class Blogs {
 
 		const finalContentImages = this._getContentImages(finalContent);
 
-		if (originalContentImages.length != finalContentImages.length) {
+		if (originalContentImages.length !== finalContentImages.length) {
 			return;
 		}
 

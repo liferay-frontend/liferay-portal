@@ -65,17 +65,17 @@ const getValidation = (validations, transformValidationFromExpression) => {
 	};
 };
 
-export const normalizeDataType = (initialDataType) => {
+export function normalizeDataType(initialDataType) {
 	return initialDataType === 'double' || initialDataType === 'integer'
 		? 'numeric'
 		: initialDataType;
-};
+}
 
-export const getLocalizedValue = ({defaultLanguageId, editingLanguageId}) => (
-	value
-) => value[editingLanguageId] || value[defaultLanguageId];
+export function getLocalizedValue({defaultLanguageId, editingLanguageId}) {
+	return (value) => value[editingLanguageId] || value[defaultLanguageId];
+}
 
-export const getSelectedValidation = (validations) => {
+export function getSelectedValidation(validations) {
 	return function transformSelectedValidation(value) {
 		if (Array.isArray(value)) {
 			value = value[0];
@@ -89,16 +89,16 @@ export const getSelectedValidation = (validations) => {
 
 		return selectedValidation;
 	};
-};
+}
 
-export const transformData = ({
+export function transformData({
 	defaultLanguageId,
 	editingLanguageId,
 	initialDataType,
 	validation,
 	validations: initialValidations,
 	value,
-}) => {
+}) {
 	const dataType = validation?.dataType ?? initialDataType;
 	const validations = transformValidations(initialValidations, dataType);
 	const parsedValidation = getValidation(
@@ -113,4 +113,4 @@ export const transformData = ({
 		localizationMode,
 		validations,
 	};
-};
+}

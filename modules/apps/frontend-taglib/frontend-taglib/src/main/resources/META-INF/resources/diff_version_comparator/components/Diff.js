@@ -54,9 +54,11 @@ export default function Diff({diff, onClose, version}) {
 				<span className="diff-html-added legend-item">
 					{Liferay.Language.get('added')}
 				</span>
+
 				<span className="diff-html-removed legend-item">
 					{Liferay.Language.get('deleted')}
 				</span>
+
 				<span className="diff-html-changed">
 					{Liferay.Language.get('format-changes')}
 				</span>

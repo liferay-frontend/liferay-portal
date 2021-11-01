@@ -54,12 +54,14 @@ export default function EmptyAuditBarChart({learnHowURL}) {
 					width={BAR_CHART.width}
 				>
 					<CartesianGrid stroke={BAR_CHART.stroke} />
+
 					<XAxis
 						axisLine={{
 							stroke: BAR_CHART.stroke,
 						}}
 						tickLine={false}
 					/>
+
 					<YAxis
 						axisLine={{
 							stroke: BAR_CHART.stroke,

@@ -16,7 +16,7 @@
 	var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 	var isString = function (val) {
-		return typeof val == 'string';
+		return typeof val === 'string';
 	};
 
 	var ELEMENTS_BLOCK = {
@@ -117,7 +117,7 @@
 				tagName = tagName.toLowerCase();
 
 				for (pos = stack.length - 1; pos >= 0; pos--) {
-					if (stack[pos] == tagName) {
+					if (stack[pos] === tagName) {
 						break;
 					}
 				}
@@ -158,7 +158,7 @@
 
 				if (
 					hasOwnProperty.call(ELEMENTS_CLOSE_SELF, tagName) &&
-					stack.last() == tagName
+					stack.last() === tagName
 				) {
 					instance._handleTagEnd(tagName);
 				}
@@ -229,10 +229,10 @@
 				if (token[1]) {
 					instance._handleTagStart(token);
 
-					if (token[1].toLowerCase() == STR_TAG_CODE) {
+					if (token[1].toLowerCase() === STR_TAG_CODE) {
 						while (
 							(token = lexer.getNextToken()) &&
-							token[3] != STR_TAG_CODE
+							token[3] !== STR_TAG_CODE
 						) {
 
 							// Continue.

@@ -15,4 +15,6 @@
 import launcher from '../../utilities/launcher';
 import AddToCart from './AddToCart';
 
-export default (...data) => launcher(AddToCart, ...data);
+export default function entry(...data) {
+	return launcher(AddToCart, ...data);
+}

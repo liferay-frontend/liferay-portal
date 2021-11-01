@@ -92,7 +92,7 @@ export default function WorkflowInstanceTracker({workflowInstanceId}) {
 						data: {
 							current: isCurrent(currentNodes, node),
 							done: isVisited(visitedNodes, node),
-							initial: node.type == 'INITIAL_STATE',
+							initial: node.type === 'INITIAL_STATE',
 							label: node.label,
 							notifyVisibilityChange: (visible) => () => {
 								eventObserver.notify(node.name, () => visible);

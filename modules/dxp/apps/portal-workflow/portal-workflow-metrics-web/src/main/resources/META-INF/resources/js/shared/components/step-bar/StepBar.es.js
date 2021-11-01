@@ -17,6 +17,7 @@ const StepBar = ({current, title, total}) => {
 	return (
 		<div className="step-of-bar">
 			<small>{title}</small>
+
 			<small>
 				{sub(Liferay.Language.get('step-x-of-x'), [current, total])}
 			</small>

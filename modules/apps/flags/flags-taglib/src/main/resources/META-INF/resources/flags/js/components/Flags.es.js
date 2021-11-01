@@ -155,6 +155,7 @@ const Flags = ({
 				>
 					<ClayIcon symbol="flag-empty" />
 				</span>
+
 				<span className={onlyIcon ? 'sr-only' : undefined}>
 					{message}
 				</span>

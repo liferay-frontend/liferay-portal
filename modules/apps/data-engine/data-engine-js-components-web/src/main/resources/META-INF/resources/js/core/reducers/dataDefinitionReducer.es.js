@@ -18,7 +18,7 @@ import {createField} from '../../utils/fieldSupport';
 import {PagesVisitor} from '../../utils/visitors.es';
 import {EVENT_TYPES} from '../actions/eventTypes.es';
 
-export default (state, action, config) => {
+export default function dataDefinitionReducer(state, action, config) {
 	switch (action.type) {
 		case EVENT_TYPES.DATA_DEFINITION.ADD: {
 			const {type} = action.payload;
@@ -144,4 +144,4 @@ export default (state, action, config) => {
 		default:
 			return state;
 	}
-};
+}

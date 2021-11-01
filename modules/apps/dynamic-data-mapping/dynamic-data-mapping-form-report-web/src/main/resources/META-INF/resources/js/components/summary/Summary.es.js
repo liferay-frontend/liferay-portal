@@ -16,7 +16,7 @@ import React from 'react';
 
 import {formatNumber} from './../../utils/numeric.es';
 
-export default ({summary}) => {
+export default function Summary({summary}) {
 	const getAttributes = (summaryItem) => {
 		return {
 			className: 'value',
@@ -28,6 +28,7 @@ export default ({summary}) => {
 		<div className="summary">
 			<div className="summary-item">
 				<div className="type">{Liferay.Language.get('sum')}</div>
+
 				<div
 					{...getAttributes(summary['sum'])}
 					data-tooltip-align="bottom"
@@ -35,8 +36,10 @@ export default ({summary}) => {
 					{formatNumber(summary['sum'], true)}
 				</div>
 			</div>
+
 			<div className="summary-item">
 				<div className="type">{Liferay.Language.get('average')}</div>
+
 				<div
 					{...getAttributes(summary['average'])}
 					data-tooltip-align="bottom"
@@ -44,8 +47,10 @@ export default ({summary}) => {
 					{formatNumber(summary['average'], true)}
 				</div>
 			</div>
+
 			<div className="summary-item">
 				<div className="type">{Liferay.Language.get('min')}</div>
+
 				<div
 					{...getAttributes(summary['min'])}
 					data-tooltip-align="bottom"
@@ -53,8 +58,10 @@ export default ({summary}) => {
 					{formatNumber(summary['min'], true)}
 				</div>
 			</div>
+
 			<div className="summary-item">
 				<div className="type">{Liferay.Language.get('max')}</div>
+
 				<div
 					{...getAttributes(summary['max'])}
 					data-tooltip-align="bottom"
@@ -64,4 +71,4 @@ export default ({summary}) => {
 			</div>
 		</div>
 	);
-};
+}

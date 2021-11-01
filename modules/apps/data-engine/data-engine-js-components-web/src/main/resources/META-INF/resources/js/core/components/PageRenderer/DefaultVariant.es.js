@@ -21,26 +21,23 @@ import {useFormState} from '../../hooks/useForm.es';
 const DDM_FORM_ADMIN_PORTLET_NAMESPACE =
 	'com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormAdminPortlet';
 
-export const Container = ({
-	activePage,
-	children,
-	isBuilder = true,
-	pageIndex,
-}) => (
-	<div
-		className={classnames('fade tab-pane', {
-			'active show': activePage === pageIndex,
-			'hide': activePage !== pageIndex,
-		})}
-		role="tabpanel"
-	>
-		{isBuilder ? (
-			<div className="form-builder-layout">{children}</div>
-		) : (
-			children
-		)}
-	</div>
-);
+export function Container({activePage, children, isBuilder = true, pageIndex}) {
+	return (
+		<div
+			className={classnames('fade tab-pane', {
+				'active show': activePage === pageIndex,
+				'hide': activePage !== pageIndex,
+			})}
+			role="tabpanel"
+		>
+			{isBuilder ? (
+				<div className="form-builder-layout">{children}</div>
+			) : (
+				children
+			)}
+		</div>
+	);
+}
 
 Container.displayName = 'DefaultVariant.Container';
 
@@ -119,52 +116,59 @@ export const Column = forwardRef(
 
 Column.displayName = 'DefaultVariant.Column';
 
-export const Page = ({
+export function Page({
 	children,
 	forceAriaUpdate,
 	header: Header,
 	invalidFormMessage,
 	pageIndex,
-}) => (
-	<div
-		className="active ddm-form-page lfr-ddm-form-page"
-		data-ddm-page={pageIndex}
-	>
-		{invalidFormMessage && (
-			<span aria-atomic="true" aria-live="polite" className="sr-only">
-				{invalidFormMessage}
-				<span aria-hidden="true">{forceAriaUpdate}</span>
-			</span>
-		)}
+}) {
+	return (
+		<div
+			className="active ddm-form-page lfr-ddm-form-page"
+			data-ddm-page={pageIndex}
+		>
+			{invalidFormMessage && (
+				<span aria-atomic="true" aria-live="polite" className="sr-only">
+					{invalidFormMessage}
 
-		{Header}
+					<span aria-hidden="true">{forceAriaUpdate}</span>
+				</span>
+			)}
 
-		{children}
-	</div>
-);
+			{Header}
+
+			{children}
+		</div>
+	);
+}
 
 Page.displayName = 'DefaultVariant.Page';
 
-export const PageHeader = ({description, title}) => (
-	<>
-		{title && <h2 className="lfr-ddm-form-page-title">{title}</h2>}
-		{description && (
-			<h3 className="lfr-ddm-form-page-description">{description}</h3>
-		)}
-	</>
-);
+export function PageHeader({description, title}) {
+	return (
+		<>
+			{title && <h2 className="lfr-ddm-form-page-title">{title}</h2>}
+			{description && (
+				<h3 className="lfr-ddm-form-page-description">{description}</h3>
+			)}
+		</>
+	);
+}
 
 PageHeader.displayName = 'DefaultVariant.PageHeader';
 
-export const Row = ({children, index, row}) => (
-	<div className="position-relative row" key={index}>
-		{row.columns.map((column, index) => children({column, index}))}
-	</div>
-);
+export function Row({children, index, row}) {
+	return (
+		<div className="position-relative row" key={index}>
+			{row.columns.map((column, index) => children({column, index}))}
+		</div>
+	);
+}
 
 Row.displayName = 'DefaultVariant.Row';
 
-export const Rows = ({children, rows}) => {
+export function Rows({children, rows}) {
 	if (!rows) {
 		return null;
 	}
@@ -174,6 +178,6 @@ export const Rows = ({children, rows}) => {
 			{children({index, row})}
 		</div>
 	));
-};
+}
 
 Rows.displayName = 'DefaultVariant.Rows';

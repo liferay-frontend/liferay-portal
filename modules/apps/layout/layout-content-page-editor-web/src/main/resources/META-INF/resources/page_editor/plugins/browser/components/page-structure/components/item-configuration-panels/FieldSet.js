@@ -35,14 +35,14 @@ const fieldIsDisabled = (item, field) =>
 	item.config?.widthType === CONTAINER_WIDTH_TYPES.fixed &&
 	(field.name === 'marginRight' || field.name === 'marginLeft');
 
-export const FieldSet = ({
+export function FieldSet({
 	fields,
 	item = {},
 	label,
 	languageId,
 	onValueSelect,
 	values,
-}) => {
+}) {
 	const store = useSelector((state) => state);
 
 	const {selectedViewportSize} = store;
@@ -110,7 +110,7 @@ export const FieldSet = ({
 			</>
 		)
 	);
-};
+}
 
 function getFieldValue({field, languageId, values}) {
 	const value = values[field.name];

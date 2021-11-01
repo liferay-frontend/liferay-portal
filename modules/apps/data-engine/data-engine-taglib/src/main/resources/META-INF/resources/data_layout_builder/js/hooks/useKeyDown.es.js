@@ -14,7 +14,7 @@
 
 import {useEffect, useRef} from 'react';
 
-export default (callback, targetKeyCode, element = window) => {
+export default function useKeyDown(callback, targetKeyCode, element = window) {
 	const callbackRef = useRef();
 
 	useEffect(() => {
@@ -33,4 +33,4 @@ export default (callback, targetKeyCode, element = window) => {
 
 		return () => current.removeEventListener('keydown', handler);
 	}, [element, callbackRef, targetKeyCode]);
-};
+}

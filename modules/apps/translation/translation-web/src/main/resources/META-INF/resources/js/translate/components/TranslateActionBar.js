@@ -54,6 +54,7 @@ const TransLateActionBar = ({
 							/>
 						</li>
 					)}
+
 					<li
 						className={classNames('tbar-item', {
 							'tbar-item-expand': !autoTranslateEnabled,
@@ -66,6 +67,7 @@ const TransLateActionBar = ({
 							}
 						/>
 					</li>
+
 					{autoTranslateEnabled && (
 						<>
 							<li className="tbar-item">
@@ -85,6 +87,7 @@ const TransLateActionBar = ({
 										<span className="inline-item inline-item-before">
 											<ClayLoadingIndicator small />
 										</span>
+
 										<span className="inline-item">
 											{Liferay.Language.get(
 												'requesting-translation'
@@ -92,18 +95,22 @@ const TransLateActionBar = ({
 										</span>
 									</div>
 								)}
+
 								{status === 'SUCCESS' && (
 									<div className="has-success">
 										<ClayForm.FeedbackItem className="mt-0">
 											<ClayForm.FeedbackIndicator symbol="check-circle-full" />
+
 											{message}
 										</ClayForm.FeedbackItem>
 									</div>
 								)}
+
 								{status === 'ERROR' && (
 									<div className="has-error">
 										<ClayForm.FeedbackItem className="mt-0">
 											<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
 											{message}
 										</ClayForm.FeedbackItem>
 									</div>
@@ -111,6 +118,7 @@ const TransLateActionBar = ({
 							</li>
 						</>
 					)}
+
 					<li className="tbar-item">
 						<div className="tbar-section text-right">
 							<ClayButton.Group spaced>
@@ -121,6 +129,7 @@ const TransLateActionBar = ({
 								>
 									{Liferay.Language.get('cancel')}
 								</ClayLink>
+
 								<ClayButton
 									disabled={saveButtonDisabled}
 									displayType="secondary"
@@ -130,6 +139,7 @@ const TransLateActionBar = ({
 								>
 									{saveButtonLabel}
 								</ClayButton>
+
 								<ClayButton
 									disabled={publishButtonDisabled}
 									displayType="primary"

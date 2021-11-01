@@ -30,7 +30,7 @@ class DateInput extends React.Component {
 	static getDerivedStateFromProps(props, state) {
 		let returnVal = null;
 
-		if (props.value != state.initialValue) {
+		if (props.value !== state.initialValue) {
 			returnVal = {
 				initialValue: props.value,
 				value: props.value,

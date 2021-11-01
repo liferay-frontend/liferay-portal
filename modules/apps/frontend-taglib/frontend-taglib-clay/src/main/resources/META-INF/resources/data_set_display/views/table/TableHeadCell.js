@@ -31,16 +31,16 @@ function TableHeadCell({
 	sortingKey: sortingKeyProp,
 	updateSorting,
 }) {
-	const [sortingKey, updateSortingKey] = useState(null);
-	const [sortingMatch, updateSortingMatch] = useState(null);
+	const [sortingKey, setSortingKey] = useState(null);
+	const [sortingMatch, setSortingMatch] = useState(null);
 
 	useEffect(() => {
 		const newSortingKey =
 			sortingKeyProp ||
 			(Array.isArray(fieldName) ? fieldName[0] : fieldName);
 
-		updateSortingKey(newSortingKey);
-		updateSortingMatch(
+		setSortingKey(newSortingKey);
+		setSortingMatch(
 			sorting.find((element) => element.key === newSortingKey)
 		);
 	}, [fieldName, sorting, sortingKeyProp]);
@@ -89,6 +89,7 @@ function TableHeadCell({
 					small
 				>
 					{!hideColumnLabel && label}
+
 					<span className="inline-item inline-item-after sorting-icons-wrapper">
 						<ClayIcon
 							className={classNames(
@@ -98,6 +99,7 @@ function TableHeadCell({
 							draggable
 							symbol="order-arrow-up"
 						/>
+
 						<ClayIcon
 							className={classNames(
 								'sorting-icon',

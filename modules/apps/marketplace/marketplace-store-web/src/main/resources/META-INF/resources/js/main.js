@@ -54,7 +54,7 @@ AUI.add(
 				else {
 					instance._messages.push(message);
 
-					if (instance._messages.length == 1) {
+					if (instance._messages.length === 1) {
 						A.postMessage(
 							message,
 							instance._targetURI,

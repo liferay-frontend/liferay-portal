@@ -12,7 +12,7 @@
  * details.
  */
 
-export const isLayoutDataItemDeleted = (layoutData, itemId) => {
+export function isLayoutDataItemDeleted(layoutData, itemId) {
 	const item = layoutData.items[itemId];
 
 	if (!item) {
@@ -30,4 +30,4 @@ export const isLayoutDataItemDeleted = (layoutData, itemId) => {
 	}
 
 	return false;
-};
+}

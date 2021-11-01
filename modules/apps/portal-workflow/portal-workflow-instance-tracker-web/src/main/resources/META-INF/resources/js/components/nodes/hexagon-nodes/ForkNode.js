@@ -26,7 +26,9 @@ export default function ForkNode({
 			title={label}
 		>
 			<ClayIcon className="mr-2" symbol="arrow-split" />
+
 			<span>{label}</span>
+
 			{done && (
 				<ClayIcon
 					className="done-icon hexagon-done-icon"

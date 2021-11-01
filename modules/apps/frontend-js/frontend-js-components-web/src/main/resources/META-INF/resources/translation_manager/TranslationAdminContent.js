@@ -219,6 +219,7 @@ const TranslationAdminContent = ({
 						<ClayButton displayType="secondary" onClick={onCancel}>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
+
 						<ClayButton displayType="primary" onClick={onDone}>
 							{Liferay.Language.get('done')}
 						</ClayButton>

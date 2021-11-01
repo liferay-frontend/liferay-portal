@@ -15,12 +15,12 @@
 (function (w) {
 	'use strict';
 
-	var TOPBAR_CLASS = 'speedwell-topbar',
-		TRANSLUCENT_CLASS = TOPBAR_CLASS + '--translucent',
-		TOGGLE_PREFIX = '.js-toggle-',
-		SPEEDWELL_PREFIX = '.speedwell-',
-		IS_OPEN = 'is-open',
-		IS_BEHIND = 'is-behind';
+	var TOPBAR_CLASS = 'speedwell-topbar';
+	var TRANSLUCENT_CLASS = TOPBAR_CLASS + '--translucent';
+	var TOGGLE_PREFIX = '.js-toggle-';
+	var SPEEDWELL_PREFIX = '.speedwell-';
+	var IS_OPEN = 'is-open';
+	var IS_BEHIND = 'is-behind';
 
 	var TOGGLES = {
 		ACCOUNT: {name: 'account'},
@@ -30,8 +30,8 @@
 
 	var CONTAINER = window.document.getElementById('speedwell');
 
-	var TOPBAR,
-		translucencyIsEnabled = false;
+	var TOPBAR;
+	var translucencyIsEnabled = false;
 
 	function hideFiltersButtonOnMenuOpen() {
 		Liferay.componentReady('SpeedwellMobileHelpers').then(

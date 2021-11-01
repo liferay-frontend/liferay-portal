@@ -19,7 +19,7 @@ import {SidebarContext} from '../sidebar/SidebarContext.es';
 
 const MAX_FIELD_LABEL_LENGTH = 91;
 
-export default ({fields}) => {
+export default function CardShortcut({fields}) {
 	const [itemSelectedIndex, setItemSelectedIndex] = useState();
 
 	const {portletNamespace} = useContext(SidebarContext);
@@ -48,7 +48,7 @@ export default ({fields}) => {
 				<li key={`card-item-${index}`}>
 					<a
 						className={`${
-							itemSelectedIndex == index ? 'selected' : ''
+							itemSelectedIndex === index ? 'selected' : ''
 						}`}
 						data-senna-off
 						onClick={() => {
@@ -57,6 +57,7 @@ export default ({fields}) => {
 						}}
 					>
 						<div className="indicator"></div>
+
 						<div className="field-label">
 							{showFieldLabel(field.label)}
 						</div>
@@ -67,4 +68,4 @@ export default ({fields}) => {
 	});
 
 	return <ul>{shortcuts}</ul>;
-};
+}

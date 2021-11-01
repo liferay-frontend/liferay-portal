@@ -290,12 +290,11 @@ AUI.add(
 
 						if (fieldWrapper && formTabs) {
 							var tabs = formTabs.all('.nav-item');
-							var tabsNamespace = formTabs.getAttribute(
-								'data-tabs-namespace'
-							);
+							var tabsNamespace =
+								formTabs.dataset['tabs-namespace'];
 
 							var tabNames = AArray.map(tabs._nodes, (tab) => {
-								return tab.getAttribute('data-tab-name');
+								return tab.dataset['tab-name'];
 							});
 
 							var fieldWrapperId = fieldWrapper
@@ -313,7 +312,7 @@ AUI.add(
 							Liferay.Portal.Tabs.show(
 								tabsNamespace,
 								tabNames,
-								fieldTabId.getAttribute('data-tab-name')
+								fieldTabId.dataset['tab-name']
 							);
 						}
 					}
@@ -499,7 +498,7 @@ AUI.add(
 						validatorName
 					);
 
-					if (ruleIndex == -1) {
+					if (ruleIndex === -1) {
 						fieldRules.push({
 							body: body || '',
 							custom: custom || false,
@@ -564,7 +563,7 @@ AUI.add(
 						validatorName
 					);
 
-					if (ruleIndex != -1) {
+					if (ruleIndex !== -1) {
 						var rule = fieldRules[ruleIndex];
 
 						instance.formValidator.resetField(rule.fieldName);

@@ -18,7 +18,7 @@ import React from 'react';
 import {dateToBriefInternationalHuman} from '../utils/utils.es';
 import UserIcon from './UserIcon.es';
 
-export default ({creator, statistics}) => {
+export default function UserPopover({creator, statistics}) {
 	return (
 		<ClayPopover
 			alignPosition="bottom"
@@ -49,12 +49,14 @@ export default ({creator, statistics}) => {
 		>
 			<div className="text-secondary">
 				<p className="c-mb-0">Posts: {statistics?.postsNumber}</p>
+
 				<p className="c-mb-0">
 					Join Date:{' '}
 					{statistics
 						? dateToBriefInternationalHuman(statistics.joinDate)
 						: ''}
 				</p>
+
 				<p className="c-mb-0">
 					Last Post Date:{' '}
 					{statistics
@@ -64,4 +66,4 @@ export default ({creator, statistics}) => {
 			</div>
 		</ClayPopover>
 	);
-};
+}

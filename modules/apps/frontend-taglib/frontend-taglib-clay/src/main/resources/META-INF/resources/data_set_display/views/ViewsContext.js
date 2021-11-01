@@ -18,7 +18,7 @@ import {ACTION_UPDATE_ACTIVE_VIEW} from '../actions/updateActiveView';
 import {ACTION_UPDATE_VIEW_COMPONENT} from '../actions/updateViewComponent';
 import {ACTION_UPDATE_VISIBLE_FIELD_NAMES} from '../actions/updateVisibleFieldNames';
 
-export const viewsReducer = (state, {type, value}) => {
+export function viewsReducer(state, {type, value}) {
 	const {activeView, views} = state;
 
 	if (type === ACTION_UPDATE_ACTIVE_VIEW) {
@@ -57,7 +57,7 @@ export const viewsReducer = (state, {type, value}) => {
 	}
 
 	return state;
-};
+}
 
 export default React.createContext({
 	activeView: null,

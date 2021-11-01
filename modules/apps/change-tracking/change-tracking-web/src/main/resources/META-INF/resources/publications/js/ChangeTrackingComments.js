@@ -36,6 +36,7 @@ const CTEditComment = ({handleCancel, handleSave, initialValue}) => {
 					value={value}
 				/>
 			</ClayForm.Group>
+
 			<div className="btn-group">
 				<div className="btn-group-item">
 					<button
@@ -46,6 +47,7 @@ const CTEditComment = ({handleCancel, handleSave, initialValue}) => {
 						{Liferay.Language.get('save')}
 					</button>
 				</div>
+
 				<div className="btn-group-item">
 					<button
 						className="btn btn-secondary"
@@ -60,7 +62,7 @@ const CTEditComment = ({handleCancel, handleSave, initialValue}) => {
 	);
 };
 
-export default ({
+export default function ChangeTrackingComments({
 	ctEntryId,
 	currentUserId,
 	deleteCommentURL,
@@ -71,7 +73,7 @@ export default ({
 	spritemap,
 	updateCache,
 	updateCommentURL,
-}) => {
+}) {
 	const [deleting, setDeleting] = useState(0);
 	const [editing, setEditing] = useState(0);
 	const [fetchData, setFetchData] = useState(null);
@@ -286,6 +288,7 @@ export default ({
 			return (
 				<div className="taglib-empty-result-message">
 					<div className="taglib-empty-result-message-header" />
+
 					<div className="sheet-text text-center">
 						{Liferay.Language.get('no-comments-yet')}
 					</div>
@@ -375,6 +378,7 @@ export default ({
 									'are-you-sure-you-want-to-delete-this-comment'
 								)}
 							</div>
+
 							<div>
 								<div className="btn-group">
 									<div className="btn-group-item">
@@ -390,6 +394,7 @@ export default ({
 											{Liferay.Language.get('delete')}
 										</button>
 									</div>
+
 									<div className="btn-group-item">
 										<button
 											className="btn btn-secondary btn-sm"
@@ -403,17 +408,20 @@ export default ({
 							</div>
 						</div>
 					)}
+
 					<div className="comment-row">
 						<div className="autofit-padded-no-gutters-x autofit-row">
 							<div className="autofit-col">
 								{renderUserPortrait(comment.userId)}
 							</div>
+
 							<div className="autofit-col autofit-col-expand">
 								<div className="autofit-row">
 									<div className="autofit-col autofit-col-expand">
 										<div className="comment-title">
 											{title}
 										</div>
+
 										<div
 											className="text-secondary"
 											data-tooltip-align="top"
@@ -422,6 +430,7 @@ export default ({
 											{comment.timeDescription}
 										</div>
 									</div>
+
 									{editing !== comment.ctCommentId && (
 										<div className="autofit-col">
 											<ClayDropDownWithItems
@@ -448,6 +457,7 @@ export default ({
 								</div>
 							</div>
 						</div>
+
 						<div className="autofit-row">{commentBody}</div>
 					</div>
 				</div>
@@ -476,6 +486,7 @@ export default ({
 								count.toString()
 							)}
 						</li>
+
 						<li className="tbar-item">
 							<ClayButtonWithIcon
 								displayType="unstyled"
@@ -489,6 +500,7 @@ export default ({
 					</ul>
 				</div>
 			</nav>
+
 			<div
 				className={`sidebar-body${
 					fetchData && loading ? ' publications-loading' : ''
@@ -506,8 +518,10 @@ export default ({
 						</ClayAlert>
 					</div>
 				)}
+
 				{renderComments()}
 			</div>
+
 			<div className="sidebar-footer">
 				<ClayForm.Group>
 					<ClayInput
@@ -521,6 +535,7 @@ export default ({
 						value={inputValue}
 					/>
 				</ClayForm.Group>
+
 				<div>
 					<button
 						className={`btn btn-primary${
@@ -535,4 +550,4 @@ export default ({
 			</div>
 		</div>
 	);
-};
+}

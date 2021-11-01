@@ -80,12 +80,12 @@ const clickEvent = ({
  * @protected
  * @returns {Object}
  */
-export const normalizeEvent = (
+export function normalizeEvent(
 	eventId,
 	applicationId,
 	properties,
 	contextHash
-) => {
+) {
 	const date = new Date();
 	const eventDate = date.toISOString();
 	const eventLocalDate = convertUTCDateToLocalDate(date).toISOString();
@@ -98,7 +98,7 @@ export const normalizeEvent = (
 		eventLocalDate,
 		properties,
 	};
-};
+}
 
 /**
  * Sort comparator for ISO 8601 eventDates in ascending order.

@@ -20,14 +20,14 @@ import {useConfig} from '../../../core/hooks/useConfig.es';
 import {Pagination} from '../components/Pagination.es';
 import {PaginationControls} from '../components/PaginationControls.es';
 
-export const Container = ({
+export function Container({
 	activePage,
 	children,
 	pageIndex,
 	pages,
 	readOnly,
 	strings,
-}) => {
+}) {
 	const {showSubmitButton, submitLabel} = useConfig();
 
 	return (
@@ -68,6 +68,6 @@ export const Container = ({
 			)}
 		</div>
 	);
-};
+}
 
 Container.displayName = 'PaginatedVariant.Container';

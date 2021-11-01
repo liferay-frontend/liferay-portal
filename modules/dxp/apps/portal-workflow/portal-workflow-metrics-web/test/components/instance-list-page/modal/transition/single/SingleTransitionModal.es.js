@@ -53,7 +53,8 @@ const ContainerMock = ({children}) => {
 	);
 };
 
-let getByPlaceholderText, getByText;
+let getByPlaceholderText;
+let getByText;
 
 const items = [
 	{

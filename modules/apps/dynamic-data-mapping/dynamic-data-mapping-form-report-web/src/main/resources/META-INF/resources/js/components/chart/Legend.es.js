@@ -82,8 +82,8 @@ const ShowAll = ({expand, expanded, labelsLength}) => {
 	);
 };
 
-export default ({activeIndex, labels, onMouseOut, onMouseOver}) => {
-	const [isShowAllExpanded, expandShowAll] = useState(false);
+export default function Legend({activeIndex, labels, onMouseOut, onMouseOver}) {
+	const [isShowAllExpanded, setIsShowAllExpanded] = useState(false);
 
 	const handleOnMouseOver = ({currentTarget}) => {
 		const item = currentTarget.closest('li').dataset.item;
@@ -115,7 +115,7 @@ export default ({activeIndex, labels, onMouseOut, onMouseOver}) => {
 						))}
 
 					<ShowAll
-						expand={expandShowAll}
+						expand={setIsShowAllExpanded}
 						expanded={isShowAllExpanded}
 						labelsLength={labels.length}
 					/>
@@ -123,4 +123,4 @@ export default ({activeIndex, labels, onMouseOut, onMouseOver}) => {
 			</div>
 		</div>
 	);
-};
+}

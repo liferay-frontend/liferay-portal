@@ -184,7 +184,9 @@ const DigitalSignatureForm = ({fileEntries = [], history}) => {
 						{Liferay.Language.get('new-digital-signature-envelope')}
 					</h1>
 				</div>
+
 				<hr />
+
 				<ClayCard.Body className="m-2">
 					<ClayForm onSubmit={handleSubmit}>
 						<DigitalSignatureFormBase
@@ -205,6 +207,7 @@ const DigitalSignatureForm = ({fileEntries = [], history}) => {
 						>
 							{Liferay.Language.get('send')}
 						</ClayButton>
+
 						<ClayButton
 							className="ml-2"
 							displayType="secondary"

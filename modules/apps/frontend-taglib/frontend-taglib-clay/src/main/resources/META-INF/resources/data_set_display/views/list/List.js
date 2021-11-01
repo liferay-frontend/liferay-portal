@@ -80,6 +80,7 @@ function List({
 							/>
 						)}
 					</ClayList.ItemField>
+
 					{image && item[image] ? (
 						<ClayList.ItemField>
 							<ImageRenderer
@@ -99,6 +100,7 @@ function List({
 							</ClayList.ItemField>
 						)
 					)}
+
 					<ClayList.ItemField
 						className="justify-content-center"
 						expand
@@ -108,6 +110,7 @@ function List({
 								{item[title]}
 							</ClayList.ItemTitle>
 						)}
+
 						{description && (
 							<ClayList.ItemText>
 								{item[description]}

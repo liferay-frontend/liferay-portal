@@ -30,11 +30,11 @@ CKEDITOR.dialog.add('video', (editor) => {
 		var scriptTPL = null;
 		var textScript = null;
 
-		var videoHeight = videoNode.getAttribute('data-height');
-		var videoOgvUrl = videoNode.getAttribute('data-video-ogv-url');
-		var videoPoster = videoNode.getAttribute('data-poster');
-		var videoUrl = videoNode.getAttribute('data-video-url');
-		var videoWidth = videoNode.getAttribute('data-width');
+		var videoHeight = videoNode.dataset.height;
+		var videoOgvUrl = videoNode.dataset['video-ogv-url'];
+		var videoPoster = videoNode.dataset.poster;
+		var videoUrl = videoNode.dataset['video-url'];
+		var videoWidth = videoNode.dataset.width;
 
 		if (id === 'poster') {
 			videoNode.setAttribute('data-document-url', value);
@@ -118,13 +118,13 @@ CKEDITOR.dialog.add('video', (editor) => {
 			var value = null;
 
 			if (id === 'poster') {
-				value = videoNode.getAttribute('data-document-url');
+				value = videoNode.dataset['document-url'];
 			}
 			else if (id === 'height') {
-				value = videoNode.getAttribute('data-height');
+				value = videoNode.dataset.height;
 			}
 			else if (id === 'width') {
-				value = videoNode.getAttribute('data-width');
+				value = videoNode.dataset.width;
 			}
 
 			if (value !== null) {

@@ -221,9 +221,9 @@ type TObjectActionExecutor = {
 };
 
 type TObjectAction = {
+	description: string;
 	key: string;
 	label: string;
-	description: string;
 };
 
 type TInitialValues = {

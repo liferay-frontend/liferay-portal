@@ -280,6 +280,7 @@ const Layout: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 							>
 								{Liferay.Language.get('cancel')}
 							</ClayButton>
+
 							<ClayButton onClick={() => saveObjectLayout()}>
 								{Liferay.Language.get('save')}
 							</ClayButton>

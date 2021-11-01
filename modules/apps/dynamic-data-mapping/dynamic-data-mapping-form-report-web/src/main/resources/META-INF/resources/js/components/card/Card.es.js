@@ -24,7 +24,7 @@ import Summary from '../summary/Summary.es';
 const TotalEntriesLabel = ({totalEntries}) => {
 	let label = Liferay.Language.get('there-are-no-entries');
 
-	if (totalEntries == 1) {
+	if (totalEntries === 1) {
 		label = `1 ${Liferay.Language.get('entry').toLowerCase()}`;
 	}
 
@@ -41,13 +41,13 @@ const TotalEntriesLabel = ({totalEntries}) => {
 	);
 };
 
-export default ({
+export default function Card({
 	children,
 	field: {icon, label, title},
 	index,
 	summary,
 	totalEntries,
-}) => {
+}) {
 	const {portletNamespace} = useContext(SidebarContext);
 
 	return (
@@ -96,4 +96,4 @@ export default ({
 			</ClayLayout.Sheet>
 		</div>
 	);
-};
+}

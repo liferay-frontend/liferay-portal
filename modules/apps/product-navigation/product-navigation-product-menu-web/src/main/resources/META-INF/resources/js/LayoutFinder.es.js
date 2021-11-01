@@ -68,7 +68,7 @@ function LayoutFinder(props) {
 				`#${props.namespace}layoutsTree`
 			);
 
-			if (newKeywords.length == 0) {
+			if (newKeywords.length === 0) {
 				setLoading(false);
 				setLayouts([]);
 				setTotalCount(0);
@@ -140,6 +140,7 @@ function LayoutFinder(props) {
 
 				{`${Liferay.Language.get('back-to-menu')} `}
 			</button>
+
 			<form onSubmit={handleFormSubmit} role="search">
 				<label
 					className="sr-only"

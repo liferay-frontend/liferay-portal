@@ -36,7 +36,7 @@ const loadScript = (readOnly, elementId, googlePlacesAPIKey, callback) => {
 		script.setAttribute('src', url);
 	}
 
-	const dataLoaded = script.getAttribute('data-loaded');
+	const dataLoaded = script.dataset.loaded;
 
 	if (dataLoaded) {
 		callback();
@@ -106,14 +106,19 @@ const usePlaces = ({
 	onChange,
 	viewMode,
 }) => {
-	const autoComplete = useRef();
+	const autoCompleteRef = useRef();
 	const [listener, setListener] = useState();
 	const [value, setValue] = useState();
 
 	useEffect(() => {
 		if (viewMode) {
 			loadScript(isReadOnly, elementId, googlePlacesAPIKey, () =>
-				handleScriptLoad(autoComplete, elementId, setListener, setValue)
+				handleScriptLoad(
+					autoCompleteRef,
+					elementId,
+					setListener,
+					setValue
+				)
 			);
 
 			return () => {

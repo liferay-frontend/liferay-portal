@@ -55,24 +55,24 @@ const EmptyState = ({
 	);
 };
 
-export const FilteredEmpty = (props) => {
+export function FilteredEmpty(props) {
 	const description = Liferay.Language.get(
 		'there-are-no-envelopes-with-these-attributes'
 	);
 
 	return <EmptyState description={description} {...props} />;
-};
+}
 
-export const SearchEmpty = ({keywords, ...otherProps}) => {
+export function SearchEmpty({keywords, ...otherProps}) {
 	const description = Liferay.Util.sub(
 		Liferay.Language.get('there-are-no-envelopes-for-x'),
 		keywords
 	);
 
 	return <EmptyState description={description} {...otherProps} />;
-};
+}
 
-export const SearchAndFilteredEmpty = ({keywords, ...otherProps}) => {
+export function SearchAndFilteredEmpty({keywords, ...otherProps}) {
 	const description = Liferay.Util.sub(
 		Liferay.Language.get(
 			'there-are-no-envelopes-for-x-with-these-attributes'
@@ -81,9 +81,9 @@ export const SearchAndFilteredEmpty = ({keywords, ...otherProps}) => {
 	);
 
 	return <EmptyState description={description} {...otherProps} />;
-};
+}
 
-export const withEmpty = (Component) => {
+export function withEmpty(Component) {
 	const Wrapper = ({
 		emptyState,
 		isEmpty,
@@ -128,6 +128,6 @@ export const withEmpty = (Component) => {
 	};
 
 	return Wrapper;
-};
+}
 
 export default EmptyState;

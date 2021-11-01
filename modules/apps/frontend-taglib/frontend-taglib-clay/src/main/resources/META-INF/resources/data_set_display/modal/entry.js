@@ -16,4 +16,6 @@ import {render} from '@liferay/frontend-js-react-web';
 
 import Modal from './Modal';
 
-export default (...data) => render(Modal, ...data);
+export default function entry(...data) {
+	return render(Modal, ...data);
+}

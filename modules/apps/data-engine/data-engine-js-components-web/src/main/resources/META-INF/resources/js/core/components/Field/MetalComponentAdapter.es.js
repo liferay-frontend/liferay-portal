@@ -31,22 +31,22 @@ class NoRender extends React.Component {
 	}
 }
 
-export const MetalComponentAdapter = ({
+export function MetalComponentAdapter({
 	onBlur,
 	onChange,
 	onFocus,
 	type,
 	...field
-}) => {
+}) {
 	const {activePage, editable, pageIndex, spritemap} = usePage();
 	const dispatch = useForm();
 
-	const component = useRef(null);
-	const container = useRef(null);
+	const componentRef = useRef(null);
+	const containerRef = useRef(null);
 
 	useEffect(() => {
-		if (!component.current && container.current) {
-			component.current = new MetalFieldAdapter(
+		if (!componentRef.current && containerRef.current) {
+			componentRef.current = new MetalFieldAdapter(
 				{
 					activePage,
 					editable,
@@ -68,21 +68,21 @@ export const MetalComponentAdapter = ({
 					spritemap,
 					type,
 				},
-				container.current
+				containerRef.current
 			);
 		}
 
 		return () => {
-			if (component.current) {
-				component.current.dispose();
+			if (componentRef.current) {
+				componentRef.current.dispose();
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
-		if (component.current) {
-			component.current.setState({
+		if (componentRef.current) {
+			componentRef.current.setState({
 				activePage,
 				editable,
 				field,
@@ -93,5 +93,5 @@ export const MetalComponentAdapter = ({
 		}
 	}, [activePage, editable, onChange, pageIndex, spritemap, field]);
 
-	return <NoRender forwardRef={container} />;
-};
+	return <NoRender forwardRef={containerRef} />;
+}

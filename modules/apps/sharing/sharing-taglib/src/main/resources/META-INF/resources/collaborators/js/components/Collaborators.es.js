@@ -102,12 +102,13 @@ const Collaborators = ({
 								</div>
 							</ClayLayout.ContentCol>
 						))}
+
 						{moreCollaboratorsCount > 0 && (
 							<ClayLayout.ContentCol className="collaborators-collaborator">
 								<div
 									className="lfr-portal-tooltip"
 									data-title={
-										moreCollaboratorsCount == 1
+										moreCollaboratorsCount === 1
 											? Liferay.Util.sub(
 													Liferay.Language.get(
 														'x-more-collaborator'

@@ -21,7 +21,8 @@ import {MockRouter} from '../../../mock/MockRouter.es';
 
 describe('The SLAListPage component should', () => {
 	describe('Be rendered correctly with no items', () => {
-		let getByTitle, getByText;
+		let getByTitle;
+		let getByText;
 
 		const clientMock = {
 			get: jest.fn().mockResolvedValue({data: {items: []}}),
@@ -67,7 +68,8 @@ describe('The SLAListPage component should', () => {
 	});
 
 	describe('Be rendered correctly with items', () => {
-		let container, getByText;
+		let container;
+		let getByText;
 
 		const data = {
 			actions: {},
@@ -226,7 +228,8 @@ describe('The SLAListPage component should', () => {
 	});
 
 	describe('Be rendered correctly with blocked items', () => {
-		let container, getByText;
+		let container;
+		let getByText;
 
 		const data = {
 			actions: {},

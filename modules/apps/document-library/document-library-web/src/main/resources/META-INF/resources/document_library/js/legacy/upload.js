@@ -450,7 +450,7 @@ AUI.add(
 
 								parentElement.toggleClass(
 									CSS_ACTIVE_AREA,
-									event.type == 'dragover'
+									event.type === 'dragover'
 								);
 							}
 						},
@@ -585,7 +585,7 @@ AUI.add(
 						'id': A.guid(),
 					});
 
-					if (displayStyle == CSS_ICON) {
+					if (displayStyle === CSS_ICON) {
 						var entryNodeWrapper = ANode.create(
 							Lang.sub(TPL_ENTRY_WRAPPER, {
 								title: name,
@@ -619,13 +619,13 @@ AUI.add(
 						(item, index) => {
 							var value = STR_BLANK;
 
-							if (item == STR_NAME) {
+							if (item === STR_NAME) {
 								value = sub(TPL_ENTRY_ROW_TITLE, [name]);
 							}
-							else if (item == STR_SIZE) {
+							else if (item === STR_SIZE) {
 								value = Liferay.Util.formatStorage(size);
 							}
-							else if (item == 'downloads') {
+							else if (item === 'downloads') {
 								value = '0';
 							}
 							else if (index === 0) {
@@ -747,7 +747,7 @@ AUI.add(
 				_displayEntryError(node, message, displayStyle) {
 					var instance = this;
 
-					if (displayStyle == STR_LIST) {
+					if (displayStyle === STR_LIST) {
 						var imageIcon = node.one(SELECTOR_IMAGE_ICON);
 
 						imageIcon.attr(
@@ -798,7 +798,7 @@ AUI.add(
 							if (error === true) {
 								uploadResultClass = CSS_UPLOAD_ERROR;
 							}
-							else if (error == ERROR_RESULTS_MIXED) {
+							else if (error === ERROR_RESULTS_MIXED) {
 								uploadResultClass = CSS_UPLOAD_WARNING;
 							}
 						}
@@ -844,7 +844,7 @@ AUI.add(
 					var displayStyle = instance._displayStyle;
 
 					if (style) {
-						displayStyle = style == displayStyle;
+						displayStyle = style === displayStyle;
 					}
 
 					return displayStyle;
@@ -1112,7 +1112,7 @@ AUI.add(
 						(queue.queuedFiles.length > 0 ||
 							queue.numberOfUploads > 0 ||
 							!A.Object.isEmpty(queue.currentFiles)) &&
-						queue._currentState == UploaderQueue.UPLOADING
+						queue._currentState === UploaderQueue.UPLOADING
 					);
 				},
 
@@ -1217,7 +1217,7 @@ AUI.add(
 							);
 						}
 						else {
-							var displayStyleList = displayStyle == STR_LIST;
+							var displayStyleList = displayStyle === STR_LIST;
 
 							var fileEntryId = JSON.parse(event.data)
 								.fileEntryId;

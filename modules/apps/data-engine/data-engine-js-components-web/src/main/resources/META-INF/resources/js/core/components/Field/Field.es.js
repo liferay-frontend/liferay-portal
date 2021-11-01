@@ -186,7 +186,7 @@ const getRootParentField = (field, currentLoc, {loc, root}) => {
 	};
 };
 
-export const Field = ({field, loc, ...otherProps}) => {
+export function Field({field, loc, ...otherProps}) {
 	const parentField = useContext(ParentFieldContext);
 	const {defaultLanguageId, editingLanguageId} = useFormState();
 	const {fieldTypes} = usePage();
@@ -223,6 +223,7 @@ export const Field = ({field, loc, ...otherProps}) => {
 						[field.type]
 					)}
 				</p>
+
 				{hasError.network && (
 					<ClayButton
 						className="ddm-field-renderer--button"
@@ -259,4 +260,4 @@ export const Field = ({field, loc, ...otherProps}) => {
 			</AutoFocus>
 		</ErrorBoundary>
 	);
-};
+}

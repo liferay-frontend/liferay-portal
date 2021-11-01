@@ -18,6 +18,7 @@ function EmptyResultMessage() {
 	return (
 		<div className="border-0 pt-0 sheet taglib-empty-result-message">
 			<div className="taglib-empty-result-message-header"></div>
+
 			<div className="sheet-text text-center">
 				{Liferay.Language.get('no-items-were-found')}
 			</div>

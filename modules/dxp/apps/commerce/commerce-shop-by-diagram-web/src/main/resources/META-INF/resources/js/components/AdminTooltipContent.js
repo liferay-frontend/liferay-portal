@@ -37,29 +37,27 @@ function AdminTooltipContent({
 	x,
 	y,
 }) {
-	const [type, updateType] = useState(
+	const [type, setType] = useState(
 		selectedPin?.mappedProduct.type || DEFAULT_LINK_OPTION
 	);
-	const [quantity, updateQuantity] = useState(
+	const [quantity, setQuantity] = useState(
 		selectedPin?.mappedProduct.quantity || 1
 	);
-	const [mappedProduct, updateMappedProduct] = useState(
+	const [mappedProduct, setMappedProduct] = useState(
 		selectedPin?.mappedProduct || null
 	);
-	const [sequence, updateSequence] = useState(
+	const [sequence, setSequence] = useState(
 		sequenceProp || selectedPin?.sequence || ''
 	);
-	const [saving, updateSaving] = useState(false);
-	const [deleting, updateDeleting] = useState(false);
+	const [saving, setSaving] = useState(false);
+	const [deleting, setDeleting] = useState(false);
 	const isMounted = useIsMounted();
 
 	useEffect(() => {
-		updateQuantity(selectedPin?.mappedProduct.quantity || 1);
-		updateSequence(
-			selectedPin?.mappedProduct.sequence || sequenceProp || ''
-		);
-		updateType(selectedPin?.mappedProduct.type || DEFAULT_LINK_OPTION);
-		updateMappedProduct(selectedPin?.mappedProduct || null);
+		setQuantity(selectedPin?.mappedProduct.quantity || 1);
+		setSequence(selectedPin?.mappedProduct.sequence || sequenceProp || '');
+		setType(selectedPin?.mappedProduct.type || DEFAULT_LINK_OPTION);
+		setMappedProduct(selectedPin?.mappedProduct || null);
 	}, [selectedPin, sequenceProp]);
 
 	function _handleSubmit(event) {
@@ -74,7 +72,7 @@ function AdminTooltipContent({
 
 		const update = Boolean(selectedPin?.id);
 
-		updateSaving(true);
+		setSaving(true);
 
 		savePin(
 			update ? selectedPin.id : null,
@@ -109,7 +107,7 @@ function AdminTooltipContent({
 						: [...updatedPins, newPin];
 				});
 
-				updateSaving(false);
+				setSaving(false);
 
 				closeTooltip();
 
@@ -137,12 +135,12 @@ function AdminTooltipContent({
 					type: 'danger',
 				});
 
-				updateSaving(false);
+				setSaving(false);
 			});
 	}
 
 	function _handleDelete() {
-		updateDeleting(true);
+		setDeleting(true);
 
 		deletePin(selectedPin.id)
 			.then(() => {
@@ -154,7 +152,7 @@ function AdminTooltipContent({
 					pins.filter((pin) => pin.id !== selectedPin.id)
 				);
 
-				updateDeleting(false);
+				setDeleting(false);
 
 				closeTooltip();
 
@@ -180,7 +178,7 @@ function AdminTooltipContent({
 					type: 'danger',
 				});
 
-				updateDeleting(false);
+				setDeleting(false);
 			});
 	}
 
@@ -204,7 +202,7 @@ function AdminTooltipContent({
 
 				<ClayInput
 					id="sequenceInput"
-					onChange={(event) => updateSequence(event.target.value)}
+					onChange={(event) => setSequence(event.target.value)}
 					readOnly={readOnlySequence}
 					type="text"
 					value={sequence}
@@ -219,8 +217,8 @@ function AdminTooltipContent({
 				<ClaySelect
 					id="typeInput"
 					onChange={(event) => {
-						updateMappedProduct(null);
-						updateType(event.target.value);
+						setMappedProduct(null);
+						setType(event.target.value);
 					}}
 					value={type}
 				>
@@ -237,7 +235,7 @@ function AdminTooltipContent({
 			<div className="row">
 				<div className="col">
 					<LinkedProductFormGroup
-						updateValue={updateMappedProduct}
+						updateValue={setMappedProduct}
 						value={mappedProduct}
 					/>
 				</div>
@@ -253,7 +251,7 @@ function AdminTooltipContent({
 								id="quantityInput"
 								min={1}
 								onChange={(event) =>
-									updateQuantity(event.target.value)
+									setQuantity(event.target.value)
 								}
 								type="number"
 								value={quantity}

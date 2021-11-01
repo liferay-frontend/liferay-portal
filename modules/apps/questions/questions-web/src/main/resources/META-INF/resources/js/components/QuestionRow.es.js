@@ -31,7 +31,12 @@ import SectionLabel from './SectionLabel.es';
 import TagList from './TagList.es';
 import UserIcon from './UserIcon.es';
 
-export default ({currentSection, items, question, showSectionLabel}) => {
+export default function QuestionRow({
+	currentSection,
+	items,
+	question,
+	showSectionLabel,
+}) {
 	const sectionTitle =
 		currentSection || currentSection === '0'
 			? currentSection
@@ -132,6 +137,7 @@ export default ({currentSection, items, question, showSectionLabel}) => {
 					)}
 				>
 					{question.headline}
+
 					{question.status && question.status !== 'approved' && (
 						<span className="c-ml-2">
 							<ClayLabel displayType="info">
@@ -189,4 +195,4 @@ export default ({currentSection, items, question, showSectionLabel}) => {
 			</div>
 		</div>
 	);
-};
+}

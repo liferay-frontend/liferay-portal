@@ -27,9 +27,9 @@ const isEqualLengthOptions = (options1, options2) => {
 
 const isFieldValueOperand = (operands) => {
 	return (
-		operands.length == 2 &&
+		operands.length === 2 &&
 		operands[0].type === 'field' &&
-		operands[1].type == 'string'
+		operands[1].type === 'string'
 	);
 };
 
@@ -37,11 +37,11 @@ const isOptionReferencedByOperand = (options, operandValue) => {
 	return options.some(({label}) => operandValue === label);
 };
 
-export const renameFieldInsideExpression = (
+export function renameFieldInsideExpression(
 	expression,
 	fieldName,
 	newFieldName
-) => {
+) {
 	const tokens = Tokenizer.tokenize(expression);
 
 	return Tokenizer.stringifyTokens(
@@ -53,7 +53,7 @@ export const renameFieldInsideExpression = (
 			return token;
 		})
 	);
-};
+}
 
 const renameFieldInsideAutofill = (object, oldFieldName, newFieldName) => {
 	Object.keys(object).map((key) => {
@@ -65,7 +65,7 @@ const renameFieldInsideAutofill = (object, oldFieldName, newFieldName) => {
 	return object;
 };
 
-export const updateRulesReferences = (rules, oldProperties, newProperties) => {
+export function updateRulesReferences(rules, oldProperties, newProperties) {
 	const oldFieldName = oldProperties.fieldName;
 	const newFieldName = newProperties.fieldName;
 	const visitor = new RulesVisitor(rules);
@@ -151,4 +151,4 @@ export const updateRulesReferences = (rules, oldProperties, newProperties) => {
 			}),
 		};
 	});
-};
+}

@@ -330,8 +330,8 @@ AUI.add(
 						.get('links')
 						.item(instance.get('currentIndex'));
 
-					var itemTitle = item.getAttribute('data-title');
-					var itemURL = item.getAttribute('data-url');
+					var itemTitle = item.dataset.title;
+					var itemURL = item.dataset.url;
 
 					var editDialogTitle = Lang.sub(TPL_EDIT_DIALOG_TITLE, {
 						copy: Liferay.Language.get('copy'),

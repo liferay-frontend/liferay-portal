@@ -206,6 +206,7 @@ function TopperContent({
 					>
 						{name}
 					</TopperListItem>
+
 					{item.type === LAYOUT_DATA_ITEM_TYPES.fragment && (
 						<TopperListItem>
 							<ClayButton
@@ -228,6 +229,7 @@ function TopperContent({
 							</ClayButton>
 						</TopperListItem>
 					)}
+
 					{canUpdatePageStructure && isActive && (
 						<TopperListItem>
 							<ItemActions item={item} />

@@ -45,6 +45,7 @@ function TooltipTableRow({
 			)}
 		>
 			<td className="pr-3 table-column-text-start">{label}</td>
+
 			<td className="table-column-text-end text-right">
 				<DataRenderer
 					itemData={itemData}

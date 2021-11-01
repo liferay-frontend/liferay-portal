@@ -23,7 +23,7 @@ import {useForm, useFormState} from '../../../core/hooks/useForm.es';
 import {setValue} from '../../../utils/i18n.es';
 import {EVENT_TYPES} from '../eventTypes.es';
 
-export const Container = ({children, pages, strings = {}}) => {
+export function Container({children, pages, strings = {}}) {
 	const {editingLanguageId} = useFormState();
 	const dispatch = useForm();
 
@@ -73,11 +73,11 @@ export const Container = ({children, pages, strings = {}}) => {
 			</div>
 		</div>
 	);
-};
+}
 
 Container.displayName = 'SuccessVariant.Container';
 
-export const Page = ({page: {successPageSettings}}) => {
+export function Page({page: {successPageSettings}}) {
 	const {defaultLanguageId, editingLanguageId} = useFormState();
 
 	const dispatch = useForm();
@@ -144,6 +144,6 @@ export const Page = ({page: {successPageSettings}}) => {
 			/>
 		</div>
 	);
-};
+}
 
 Page.displayName = 'SuccessVariant.Page';

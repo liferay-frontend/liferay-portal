@@ -69,12 +69,12 @@ const getLayoutedElements = (elements) => {
 	let transitions = elements.filter((element) => isEdge(element));
 
 	transitions = transitions.map((transition) => {
-		const sourceNode = nodes.find((node) => node.id == transition.source);
+		const sourceNode = nodes.find((node) => node.id === transition.source);
 
 		const sourceX = sourceNode.position.x;
 		const sourceY = sourceNode.position.y;
 
-		const targetNode = nodes.find((node) => node.id == transition.target);
+		const targetNode = nodes.find((node) => node.id === transition.target);
 
 		const targetX = targetNode.position.x;
 		const targetY = targetNode.position.y;

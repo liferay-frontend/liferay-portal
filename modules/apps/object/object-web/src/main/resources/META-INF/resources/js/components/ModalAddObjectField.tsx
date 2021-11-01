@@ -256,10 +256,10 @@ type TPicklist = {
 
 type TInitialValues = {
 	label: string;
-	name?: string;
-	type: string;
 	listTypeDefinitionId: number;
+	name?: string;
 	required: boolean;
+	type: string;
 };
 
 const ModalWithProvider: React.FC<IProps> = ({apiURL}) => {

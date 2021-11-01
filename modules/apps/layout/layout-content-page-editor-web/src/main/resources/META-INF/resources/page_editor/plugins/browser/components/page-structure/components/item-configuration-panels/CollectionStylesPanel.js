@@ -22,7 +22,7 @@ import {getResponsiveConfig} from '../../../../../../app/utils/getResponsiveConf
 import {getLayoutDataItemPropTypes} from '../../../../../../prop-types/index';
 import {CommonStyles} from './CommonStyles';
 
-export const CollectionStylesPanel = ({item}) => {
+export function CollectionStylesPanel({item}) {
 	const {availableViewportSizes} = config;
 
 	const selectedViewportSize = useSelector(
@@ -39,6 +39,7 @@ export const CollectionStylesPanel = ({item}) => {
 		<>
 			<p className="page-editor__row-styles-panel__viewport-label">
 				<ClayIcon className="mr-2" symbol={viewportSize.icon} />
+
 				{viewportSize.label}
 			</p>
 
@@ -48,7 +49,7 @@ export const CollectionStylesPanel = ({item}) => {
 			/>
 		</>
 	);
-};
+}
 
 CollectionStylesPanel.propTypes = {
 	item: getLayoutDataItemPropTypes({

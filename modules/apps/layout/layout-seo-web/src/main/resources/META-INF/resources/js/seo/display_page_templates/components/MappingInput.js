@@ -33,7 +33,7 @@ function MappingInput({
 }) {
 	const [source, setSource] = useState(selectedSource);
 	const [value, setValue] = useState(initialValue || '');
-	const inputEl = useRef(null);
+	const inputElRef = useRef(null);
 	const isMounted = useIsMounted();
 
 	const isActive = !!value.trim();
@@ -48,8 +48,8 @@ function MappingInput({
 	};
 
 	const addNewVar = ({key}) => {
-		const selectionStart = inputEl.current.selectionStart;
-		const selectionEnd = inputEl.current.selectionEnd;
+		const selectionStart = inputElRef.current.selectionStart;
+		const selectionEnd = inputElRef.current.selectionEnd;
 		const fieldVariable = fieldTemplate(key);
 
 		setValue(
@@ -61,9 +61,9 @@ function MappingInput({
 
 		setTimeout(() => {
 			if (isMounted()) {
-				inputEl.current.selectionStart = inputEl.current.selectionEnd =
+				inputElRef.current.selectionStart = inputElRef.current.selectionEnd =
 					selectionStart + fieldVariable.length;
-				inputEl.current.focus();
+				inputElRef.current.focus();
 			}
 		}, 100);
 	};
@@ -73,6 +73,7 @@ function MappingInput({
 			<label className="control-label" htmlFor={name}>
 				{label}
 			</label>
+
 			<ClayInput.Group>
 				<ClayInput.GroupItem>
 					<ClayInput
@@ -82,10 +83,11 @@ function MappingInput({
 						onChange={(event) => {
 							setValue(event.target.value);
 						}}
-						ref={inputEl}
+						ref={inputElRef}
 						value={value}
 					/>
 				</ClayInput.GroupItem>
+
 				<ClayInput.GroupItem shrink>
 					<MappingPanel
 						clearSelectionOnClose
@@ -101,6 +103,7 @@ function MappingInput({
 					/>
 				</ClayInput.GroupItem>
 			</ClayInput.Group>
+
 			{helpMessage && <ClayForm.Text>{helpMessage}</ClayForm.Text>}
 		</ClayForm.Group>
 	);

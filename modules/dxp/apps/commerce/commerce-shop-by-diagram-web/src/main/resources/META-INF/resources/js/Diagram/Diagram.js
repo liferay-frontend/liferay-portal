@@ -37,57 +37,57 @@ function Diagram({
 	pinsRadius: initialPinsRadius,
 	productId,
 }) {
-	const chartInstance = useRef(null);
-	const pinsRadiusInitialized = useRef(false);
+	const chartInstanceRef = useRef(null);
+	const pinsRadiusInitializedRef = useRef(false);
 	const svgRef = useRef(null);
 	const zoomHandlerRef = useRef(null);
-	const [currentZoom, updateCurrentZoom] = useState(1);
-	const [expanded, updateExpanded] = useState(false);
-	const [pins, updatePins] = useState(null);
+	const [currentZoom, setCurrentZoom] = useState(1);
+	const [expanded, setExpanded] = useState(false);
+	const [pins, setPins] = useState(null);
 	const [dropdownActive, setDropdownActive] = useState(false);
-	const [pinsRadius, updatePinsRadius] = useState(initialPinsRadius);
+	const [pinsRadius, setPinsRadius] = useState(initialPinsRadius);
 	const [tooltipData, setTooltipData] = useState(false);
 
-	useTableHandlers(chartInstance, productId, () =>
-		loadPins(productId).then(updatePins)
+	useTableHandlers(chartInstanceRef, productId, () =>
+		loadPins(productId).then(setPins)
 	);
 
 	useEffect(() => {
-		if (pinsRadiusInitialized.current) {
+		if (pinsRadiusInitializedRef.current) {
 			debouncedUpdatePinsRadius(diagramId, pinsRadius, namespace);
 		}
 		else {
-			pinsRadiusInitialized.current = true;
+			pinsRadiusInitializedRef.current = true;
 		}
 	}, [pinsRadius, diagramId, namespace]);
 
 	useEffect(() => {
-		loadPins(productId).then(updatePins);
+		loadPins(productId).then(setPins);
 	}, [productId]);
 
 	useEffect(() => {
 		if (pins) {
-			chartInstance.current?.updatePins(pins);
+			chartInstanceRef.current?.updatePins(pins);
 		}
 	}, [pins]);
 
 	useEffect(() => {
-		chartInstance.current?.updatePinsRadius(pinsRadius);
+		chartInstanceRef.current?.updatePinsRadius(pinsRadius);
 	}, [pinsRadius]);
 
 	useLayoutEffect(() => {
-		chartInstance.current = new D3Handler(
+		chartInstanceRef.current = new D3Handler(
 			isAdmin,
 			() => setDropdownActive(false),
 			svgRef.current,
 			imageURL,
 			setTooltipData,
-			updateCurrentZoom,
+			setCurrentZoom,
 			zoomHandlerRef.current
 		);
 
 		return () => {
-			chartInstance.current.cleanUp();
+			chartInstanceRef.current.cleanUp();
 		};
 	}, [imageURL, isAdmin]);
 
@@ -98,7 +98,7 @@ function Diagram({
 					dropdownActive={dropdownActive}
 					pinsRadius={pinsRadius}
 					setDropdownActive={setDropdownActive}
-					updatePinsRadius={updatePinsRadius}
+					updatePinsRadius={setPinsRadius}
 				/>
 			)}
 
@@ -120,17 +120,18 @@ function Diagram({
 						datasetDisplayId={datasetDisplayId}
 						productId={productId}
 						readOnlySequence={false}
-						updatePins={updatePins}
+						updatePins={setPins}
 						{...tooltipData}
 					/>
 				</TooltipProvider>
 			)}
+
 			<DiagramFooter
-				chartInstance={chartInstance}
+				chartInstance={chartInstanceRef}
 				currentZoom={currentZoom}
 				expanded={expanded}
-				updateCurrentZoom={updateCurrentZoom}
-				updateExpanded={updateExpanded}
+				updateCurrentZoom={setCurrentZoom}
+				updateExpanded={setExpanded}
 			/>
 		</div>
 	);

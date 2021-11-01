@@ -322,6 +322,7 @@ function FieldBase({
 									/>
 								)}
 							</legend>
+
 							{children}
 						</fieldset>
 					) : (

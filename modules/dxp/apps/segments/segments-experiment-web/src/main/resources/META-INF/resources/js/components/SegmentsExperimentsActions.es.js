@@ -137,6 +137,7 @@ function SegmentsExperimentsActions({onEditSegmentsExperimentStatus}) {
 					target="_blank"
 				>
 					{Liferay.Language.get('view-data-in-analytics-cloud')}
+
 					<ClayIcon className="ml-2" symbol="shortcut" />
 				</ClayLink>
 			)}

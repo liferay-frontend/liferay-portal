@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import EventEmitter from 'metal-events/lib/EventEmitter';
 
 import CompatibilityEventProxy from '../../src/main/resources/META-INF/resources/liferay/CompatibilityEventProxy.es';

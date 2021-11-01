@@ -14,7 +14,7 @@
 
 import {Config} from 'metal-state';
 
-export default (Component) => {
+export default function withLocale(Component) {
 	class WithLocale extends Component {
 		prepareStateForRender(states) {
 			const {editingLanguageId} = this.context.store;
@@ -48,4 +48,4 @@ export default (Component) => {
 	};
 
 	return WithLocale;
-};
+}

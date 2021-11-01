@@ -34,7 +34,7 @@ const {blueDark, gray} = NAMED_COLORS;
 
 const MAX_LABEL_SIZE = 44;
 
-export default ({data, field, height, structure, width}) => {
+export default function MultiBarChart({data, field, height, structure, width}) {
 	const [activeIndex, setActiveIndex] = useState(null);
 
 	const getRowLabel = (row) => {
@@ -109,6 +109,7 @@ export default ({data, field, height, structure, width}) => {
 									width="12"
 								/>
 							</svg>
+
 							<span>
 								{label && label.length > MAX_LABEL_SIZE
 									? ellipsize(label, MAX_LABEL_SIZE)
@@ -176,8 +177,9 @@ export default ({data, field, height, structure, width}) => {
 								{data.map((_, index) => (
 									<Cell
 										fillOpacity={
-											activeIndex != null &&
-											activeIndex != index
+											activeIndex !== null &&
+											activeIndex !== undefined &&
+											activeIndex !== index
 												? '.5'
 												: 1
 										}
@@ -197,4 +199,4 @@ export default ({data, field, height, structure, width}) => {
 			</ResponsiveContainer>
 		</div>
 	);
-};
+}

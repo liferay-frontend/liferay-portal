@@ -105,6 +105,7 @@ const TranslationItem = ({
 			) : (
 				<span>{languageLabel}</span>
 			)}
+
 			<span className="dropdown-item-indicator-end page-editor__translation__label-wrapper">
 				<div
 					className={classNames(
@@ -113,6 +114,7 @@ const TranslationItem = ({
 					)}
 				>
 					{TRANSLATION_STATUS_LANGUAGE[status]}
+
 					{TRANSLATION_STATUS_TYPE[status] ===
 						TRANSLATION_STATUS_TYPE.translating &&
 						` ${translatedValuesLength}/${editableValuesLength}`}
@@ -190,6 +192,7 @@ export default function Translation({
 					small
 				>
 					<ClayIcon symbol={languageIcon} />
+
 					<span className="sr-only">{languageLabel}</span>
 				</ClayButton>
 			}

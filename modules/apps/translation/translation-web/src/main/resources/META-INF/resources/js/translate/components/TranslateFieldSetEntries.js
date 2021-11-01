@@ -48,6 +48,7 @@ const TranslateAutoTranslateRow = ({
 			<ClayLayout.ContentCol className="col-autotranslate-content" expand>
 				{children}
 			</ClayLayout.ContentCol>
+
 			<ClayLayout.ContentCol className="align-self-top col-autotranslate-button">
 				<ClayButton
 					disabled={isLoading || !sourceContent}
@@ -61,6 +62,7 @@ const TranslateAutoTranslateRow = ({
 					) : (
 						<ClayIcon symbol="automatic-translate" />
 					)}
+
 					<span className="sr-only">{text}</span>
 				</ClayButton>
 			</ClayLayout.ContentCol>
@@ -86,6 +88,7 @@ const TranslateFieldFeedback = ({message = '', status = ''}) =>
 						}
 					/>
 				</span>
+
 				{message}
 			</div>
 		</div>
@@ -120,6 +123,7 @@ const TranslateFieldEditor = ({
 			<ClayLayout.Col md={6}>
 				<ClayForm.Group>
 					<label className="control-label">{label}</label>
+
 					<div
 						className="translation-editor-preview"
 						dangerouslySetInnerHTML={{__html: sourceContent}}
@@ -127,9 +131,11 @@ const TranslateFieldEditor = ({
 					/>
 				</ClayForm.Group>
 			</ClayLayout.Col>
+
 			<ClayLayout.Col md={6}>
 				<ClayForm.Group>
 					<label className="control-label">{label}</label>
+
 					<ClassicEditor
 						editorConfig={{
 							...editorConfiguration.editorConfig,
@@ -154,6 +160,7 @@ const TranslateFieldEditor = ({
 					/>
 
 					<input defaultValue={content} name={id} type="hidden" />
+
 					<TranslateFieldFeedback
 						message={fieldStatus.message}
 						status={fieldStatus.status}
@@ -179,6 +186,7 @@ const TranslateFieldInput = ({
 		<ClayLayout.Col md={6}>
 			<ClayForm.Group>
 				<label className="control-label">{label}</label>
+
 				<ClayInput
 					component={multiline ? 'textarea' : undefined}
 					defaultValue={sourceContent}
@@ -188,6 +196,7 @@ const TranslateFieldInput = ({
 				/>
 			</ClayForm.Group>
 		</ClayLayout.Col>
+
 		<ClayLayout.Col md={6}>
 			<ClayForm.Group>
 				<ClayLayout.Row>
@@ -197,6 +206,7 @@ const TranslateFieldInput = ({
 						</label>
 					</ClayLayout.ContentCol>
 				</ClayLayout.Row>
+
 				<ClayInput
 					component={multiline ? 'textarea' : undefined}
 					dir={targetContentDir}
@@ -209,6 +219,7 @@ const TranslateFieldInput = ({
 					type="text"
 					value={targetContent}
 				/>
+
 				<TranslateFieldFeedback
 					message={fieldStatus.message}
 					status={fieldStatus.status}
@@ -236,10 +247,12 @@ const TranslateFieldSetEntries = ({
 				<ClayLayout.Col md={6}>
 					<div className="fieldset-title">{legend}</div>
 				</ClayLayout.Col>
+
 				<ClayLayout.Col md={6}>
 					<div className="fieldset-title">{legend}</div>
 				</ClayLayout.Col>
 			</ClayLayout.Row>
+
 			{fields.map((field) => {
 				const fieldProps = {
 					...field,

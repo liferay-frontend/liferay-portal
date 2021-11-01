@@ -18,6 +18,6 @@ import {config} from '../config/index';
 
 let nextId = 0;
 
-export const useId = () => {
+export function useId() {
 	return useMemo(() => `${config.portletNamespace}_useId_${nextId++}`, []);
-};
+}

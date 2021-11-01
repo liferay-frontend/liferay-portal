@@ -15,4 +15,6 @@
 import launcher from '../../utilities/launcher';
 import Dropdown from './Dropdown';
 
-export default (...data) => launcher(Dropdown, ...data);
+export default function entry(...data) {
+	return launcher(Dropdown, ...data);
+}

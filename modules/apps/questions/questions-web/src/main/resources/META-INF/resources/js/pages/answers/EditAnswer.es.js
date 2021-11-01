@@ -38,13 +38,13 @@ export default withRouter(
 		const [addUpdateMessage] = useMutation(updateMessageQuery);
 
 		const [data, setData] = useState();
-		const editor = useRef('');
+		const editorRef = useRef('');
 		const [isUpdateButtonDisabled, setIsUpdateButtonDisabled] = useState(
 			false
 		);
 
 		useEffect(() => {
-			editor.current.setContent(
+			editorRef.current.setContent(
 				data && data.messageBoardMessageByFriendlyUrlPath.articleBody
 			);
 		}, [data]);
@@ -54,6 +54,7 @@ export default withRouter(
 				<div className="questions-container row">
 					<div className="c-mx-auto col-xl-10">
 						<h1>{Liferay.Language.get('edit-answer')}</h1>
+
 						<DefaultQuestionsEditor
 							label={Liferay.Language.get('your-answer')}
 							onContentLengthValid={setIsUpdateButtonDisabled}
@@ -68,7 +69,7 @@ export default withRouter(
 									})
 									.then(({data}) => setData(data));
 							}}
-							ref={editor}
+							ref={editorRef}
 						/>
 
 						<div className="c-mt-4 d-flex flex-column-reverse flex-sm-row">
@@ -82,14 +83,14 @@ export default withRouter(
 											`${sectionTitle}/${questionId}`
 										),
 										variables: {
-											articleBody: editor.current.getContent(),
+											articleBody: editorRef.current.getContent(),
 											messageBoardMessageId:
 												data
 													.messageBoardMessageByFriendlyUrlPath
 													.id,
 										},
 									}).then(() => {
-										editor.current.clearContent();
+										editorRef.current.clearContent();
 										history.goBack();
 									});
 								}}

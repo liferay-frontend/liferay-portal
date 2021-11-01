@@ -399,12 +399,14 @@ class SegmentEdit extends Component {
 							type="hidden"
 							value={value}
 						/>
+
 						<input
 							name={`${portletNamespace}key`}
 							readOnly
 							type="hidden"
 							value={value}
 						/>
+
 						<input
 							name={`${portletNamespace}name`}
 							readOnly
@@ -536,6 +538,7 @@ class SegmentEdit extends Component {
 						name="contributors"
 						render={this._renderContributors}
 					/>
+
 					<ContributorInputs contributors={contributors} />
 				</div>
 			</div>

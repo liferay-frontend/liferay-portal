@@ -256,7 +256,7 @@ AUI.add(
 					);
 				}
 
-				if (instance.get('selPlid') == node.plid) {
+				if (instance.get('selPlid') === node.plid) {
 					instance._pendingSelectedNodeId = id;
 				}
 

@@ -27,7 +27,11 @@ describe('The IndexesPage component should', () => {
 	describe('Render and dispatch actions', () => {
 		jest.runAllTimers();
 
-		let container, indexesItems, getAllByRole, getAllByText, getByText;
+		let container;
+		let indexesItems;
+		let getAllByRole;
+		let getAllByText;
+		let getByText;
 
 		const items = [
 			{
@@ -201,7 +205,8 @@ describe('The IndexesPage component should', () => {
 	describe('Render loading reindexes', () => {
 		jest.runAllTimers();
 
-		let container, getAllByRole;
+		let container;
+		let getAllByRole;
 
 		const items = [
 			{

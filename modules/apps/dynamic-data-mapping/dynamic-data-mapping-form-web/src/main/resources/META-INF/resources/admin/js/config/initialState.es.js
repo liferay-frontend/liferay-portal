@@ -106,7 +106,7 @@ const normalizePages = (pages) => {
 	);
 };
 
-export const initState = (
+export function initState(
 	{
 		initialSuccessPageSettings,
 		pages: initialPages,
@@ -116,7 +116,7 @@ export const initState = (
 		...otherProps
 	},
 	{view}
-) => {
+) {
 	const pages = initialPages.length
 		? normalizePages(initialPages)
 		: INITIAL_PAGES;
@@ -191,4 +191,4 @@ export const initState = (
 		successPageSettings,
 		...otherProps,
 	};
-};
+}

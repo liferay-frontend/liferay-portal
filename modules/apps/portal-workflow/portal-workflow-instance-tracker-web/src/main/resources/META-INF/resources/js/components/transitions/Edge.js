@@ -61,8 +61,8 @@ export default function Edge({
 	let labelPositionY = edgeCenterY;
 
 	if (
-		edgePath.indexOf(`${edgeCenterX}`) == -1 &&
-		edgePath.indexOf(`${edgeCenterY}`) == -1
+		edgePath.indexOf(`${edgeCenterX}`) === -1 &&
+		edgePath.indexOf(`${edgeCenterY}`) === -1
 	) {
 		const substring1 = edgePath.substring(0, edgePath.lastIndexOf(','));
 

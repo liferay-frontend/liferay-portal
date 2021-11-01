@@ -14,11 +14,13 @@
 
 import {getEditableLocalizedValue} from './getEditableLocalizedValue';
 
-export const getEditableLinkValue = (editableValue, languageId) => ({
-	...(typeof editableValue === 'object' && editableValue
-		? editableValue
-		: {}),
+export function getEditableLinkValue(editableValue, languageId) {
+	return {
+		...(typeof editableValue === 'object' && editableValue
+			? editableValue
+			: {}),
 
-	href: getEditableLocalizedValue(editableValue?.href, languageId),
-	target: editableValue?.target || '',
-});
+		href: getEditableLocalizedValue(editableValue?.href, languageId),
+		target: editableValue?.target || '',
+	};
+}

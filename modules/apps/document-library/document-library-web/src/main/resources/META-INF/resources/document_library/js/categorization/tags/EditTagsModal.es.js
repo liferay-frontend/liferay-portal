@@ -25,9 +25,9 @@ import React, {useCallback, useContext, useEffect, useState} from 'react';
 
 import EditTagsContext from './EditTagsContext.es';
 
-const URL_SELECTION = '/bulk/v1.0/bulk-selection',
-	URL_TAGS = '/bulk/v1.0/keywords/common',
-	URL_UPDATE_TAGS = '/bulk/v1.0/keywords/batch';
+const URL_SELECTION = '/bulk/v1.0/bulk-selection';
+const URL_TAGS = '/bulk/v1.0/keywords/common';
+const URL_UPDATE_TAGS = '/bulk/v1.0/keywords/batch';
 
 const noop = () => {};
 

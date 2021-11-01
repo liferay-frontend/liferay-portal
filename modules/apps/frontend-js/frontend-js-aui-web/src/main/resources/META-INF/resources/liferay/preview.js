@@ -385,7 +385,7 @@ AUI.add(
 
 						MAP_IMAGE_DATA.displayedIndex = displayedIndex;
 						MAP_IMAGE_DATA.selectedCssClass =
-							previewFileCountDown == currentIndex
+							previewFileCountDown === currentIndex
 								? CSS_IMAGE_SELECTED
 								: '';
 						MAP_IMAGE_DATA.index = previewFileCountDown;
@@ -497,7 +497,7 @@ AUI.add(
 						prevItem.removeClass(CSS_IMAGE_SELECTED);
 					}
 
-					if (src != STR_SCROLLER) {
+					if (src !== STR_SCROLLER) {
 						var newItem = nodeList.item(value);
 
 						if (newItem) {

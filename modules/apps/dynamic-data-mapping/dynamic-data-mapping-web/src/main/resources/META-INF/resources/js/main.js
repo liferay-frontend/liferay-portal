@@ -1125,7 +1125,7 @@ AUI.add(
 						!A.Text.Unicode.test(item, 'L') &&
 						!A.Text.Unicode.test(item, 'N') &&
 						!A.Text.Unicode.test(item, 'Pd') &&
-						item != STR_UNDERSCORE
+						item !== STR_UNDERSCORE
 					) {
 						key = key.replace(item, STR_SPACE);
 					}
@@ -1171,7 +1171,7 @@ AUI.add(
 						!A.Text.Unicode.test(item, 'L') &&
 						!A.Text.Unicode.test(item, 'N') &&
 						!A.Text.Unicode.test(item, 'Pd') &&
-						item != STR_UNDERSCORE
+						item !== STR_UNDERSCORE
 					) {
 						valid = false;
 

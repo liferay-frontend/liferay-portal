@@ -16,7 +16,7 @@ import ClayAlert from '@clayui/alert';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
-export const ClosableAlert = ({id, message, visible: initialVisible}) => {
+export function ClosableAlert({id, message, visible: initialVisible}) {
 	const [visible, setVisible] = useState(!!initialVisible);
 
 	return (
@@ -32,7 +32,7 @@ export const ClosableAlert = ({id, message, visible: initialVisible}) => {
 			</ClayAlert>
 		)
 	);
-};
+}
 
 ClosableAlert.propTypes = {
 	id: PropTypes.string,

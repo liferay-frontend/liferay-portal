@@ -36,7 +36,7 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 		Boolean(props.customViewModuleUrl || props.customView)
 	);
 	const [active, setActive] = useState(false);
-	const [selectedItem, updateSelectedItem] = useState(
+	const [selectedItem, setSelectedItem] = useState(
 		formatAutocompleteItem(
 			props.initialValue,
 			props.itemsKey,
@@ -44,15 +44,15 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 			props.itemsLabel
 		)
 	);
-	const [items, updateItems] = useState(null);
+	const [items, setItems] = useState(null);
 	const [loading, setLoading] = useState(false);
-	const [totalCount, updateTotalCount] = useState(null);
-	const [lastPage, updateLastPage] = useState(null);
-	const [page, updatePage] = useState(1);
-	const [pageSize, updatePageSize] = useState(props.pageSize);
-	const node = useRef();
-	const dropdownNode = useRef();
-	const inputNode = useRef();
+	const [totalCount, setTotalCount] = useState(null);
+	const [lastPage, setLastPage] = useState(null);
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(props.pageSize);
+	const nodeRef = useRef();
+	const dropdownNodeRef = useRef();
+	const inputNodeRef = useRef();
 	const FetchedCustomView = useLiferayModule(props.customViewModuleUrl);
 	const isMounted = useIsMounted();
 
@@ -64,12 +64,12 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 	useEffect(() => {
 		if (items && items.length === 1 && props.autofill) {
 			const firstItem = items[0];
-			updateSelectedItem(firstItem);
+			setSelectedItem(firstItem);
 		}
 	}, [items, props.autofill, props.itemsKey, props.itemsLabel]);
 
 	useEffect(() => {
-		updateSelectedItem(
+		setSelectedItem(
 			formatAutocompleteItem(
 				props.initialValue,
 				props.itemsKey,
@@ -127,12 +127,12 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 		}
 
 		if (props.infiniteScrollMode) {
-			updateItems(null);
+			setItems(null);
 		}
 
-		updatePage(1);
-		updateTotalCount(null);
-		updateLastPage(null);
+		setPage(1);
+		setTotalCount(null);
+		setLastPage(null);
 	}, [props.infiniteScrollMode, query]);
 
 	useEffect(() => {
@@ -145,7 +145,7 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 						return;
 					}
 
-					updateItems((prevItems) => {
+					setItems((prevItems) => {
 						if (
 							props.infiniteScrollMode &&
 							prevItems?.length &&
@@ -157,8 +157,8 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 						return jsonResponse.items;
 					});
 
-					updateTotalCount(jsonResponse.totalCount);
-					updateLastPage(jsonResponse.lastPage);
+					setTotalCount(jsonResponse.totalCount);
+					setLastPage(jsonResponse.lastPage);
 					setLoading(false);
 
 					if (!query) {
@@ -169,7 +169,7 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 							getValueFromItem(item, props.itemsLabel) === query
 					);
 					if (found) {
-						updateSelectedItem(found);
+						setSelectedItem(found);
 					}
 				})
 				.catch(() => {
@@ -200,10 +200,10 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 	useEffect(() => {
 		function handleClick(event) {
 			if (
-				node.current.contains(event.target) ||
-				event.target === dropdownNode.current.parentElement ||
-				(dropdownNode.current &&
-					dropdownNode.current.contains(event.target))
+				nodeRef.current.contains(event.target) ||
+				event.target === dropdownNodeRef.current.parentElement ||
+				(dropdownNodeRef.current &&
+					dropdownNodeRef.current.contains(event.target))
 			) {
 				return;
 			}
@@ -229,9 +229,9 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 			page={page}
 			pageSize={pageSize}
 			totalCount={totalCount}
-			updatePage={updatePage}
-			updatePageSize={updatePageSize}
-			updateSelectedItem={updateSelectedItem}
+			updatePage={setPage}
+			updatePageSize={setPageSize}
+			updateSelectedItem={setSelectedItem}
 		/>
 	) : (
 		<ClayDropDown.ItemList className="mb-0">
@@ -240,13 +240,14 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 					{Liferay.Language.get('no-items-were-found')}
 				</ClayDropDown.Item>
 			)}
+
 			{items &&
 				items.length > 0 &&
 				items.map((item) => (
 					<ClayAutocomplete.Item
 						key={item.id || String(item[props.itemsKey])}
 						onClick={() => {
-							updateSelectedItem(item);
+							setSelectedItem(item);
 							setActive(false);
 						}}
 						value={String(getValueFromItem(item, props.itemsLabel))}
@@ -260,7 +261,7 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 			<InfiniteScroller
 				onBottomTouched={() => {
 					if (!loading) {
-						updatePage((currentPage) =>
+						setPage((currentPage) =>
 							currentPage < lastPage
 								? currentPage + 1
 								: currentPage
@@ -278,7 +279,7 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 	return (
 		<>
 			<FocusScope>
-				<ClayAutocomplete className={props.inputClass} ref={node}>
+				<ClayAutocomplete className={props.inputClass} ref={nodeRef}>
 					<input
 						id={props.inputId || props.inputName}
 						name={props.inputName}
@@ -289,13 +290,14 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 								: ''
 						}
 					/>
+
 					<ClayAutocomplete.Input
 						disabled={props.readOnly}
 						id={props.id}
 						name={props.name}
 						onChange={(event) => {
-							updateSelectedItem(null);
-							updatePage(1);
+							setSelectedItem(null);
+							setPage(1);
 							setQuery(event.target.value);
 						}}
 						onFocus={(_e) => {
@@ -306,7 +308,7 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 							setActive(event.keyCode !== 27);
 						}}
 						placeholder={props.inputPlaceholder}
-						ref={inputNode}
+						ref={inputNodeRef}
 						required={props.required || false}
 						value={
 							selectedItem
@@ -317,6 +319,7 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 								: query
 						}
 					/>
+
 					{!CustomView && !props.disabled && (
 						<ClayAutocomplete.DropDown
 							active={
@@ -325,12 +328,13 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 						>
 							<div
 								className="autocomplete-items"
-								ref={dropdownNode}
+								ref={dropdownNodeRef}
 							>
 								{wrappedResults}
 							</div>
 						</ClayAutocomplete.DropDown>
 					)}
+
 					{loading && <ClayAutocomplete.LoadingIndicator />}
 				</ClayAutocomplete>
 			</FocusScope>

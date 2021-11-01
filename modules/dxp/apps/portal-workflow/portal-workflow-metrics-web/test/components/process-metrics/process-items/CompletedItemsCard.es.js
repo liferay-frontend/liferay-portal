@@ -59,7 +59,8 @@ const timeRangeData = {
 };
 
 describe('The completed items card component should', () => {
-	let container, getAllByText;
+	let container;
+	let getAllByText;
 
 	afterEach(cleanup);
 

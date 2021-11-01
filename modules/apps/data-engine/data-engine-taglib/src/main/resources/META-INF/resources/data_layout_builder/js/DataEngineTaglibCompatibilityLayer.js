@@ -48,7 +48,7 @@ class DataEngineCompatibilityLayer {
  * application to be accessible via Liferay.componentReady, this implementation
  * is only for the use case of modules that use the data engine via taglib
  */
-export const DataEngineTaglibCompatibilityLayer = () => {
+export function DataEngineTaglibCompatibilityLayer() {
 	const {dataLayoutBuilderId} = useConfig();
 	const dispatch = useForm();
 
@@ -97,4 +97,4 @@ export const DataEngineTaglibCompatibilityLayer = () => {
 	}, [dispatch]);
 
 	return null;
-};
+}

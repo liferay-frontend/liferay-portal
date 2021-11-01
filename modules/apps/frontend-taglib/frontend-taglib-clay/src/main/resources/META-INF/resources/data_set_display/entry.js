@@ -70,4 +70,6 @@ App.proptypes = {
 	).isRequired,
 };
 
-export default (...data) => render(App, ...data);
+export default function entry(...data) {
+	return render(App, ...data);
+}

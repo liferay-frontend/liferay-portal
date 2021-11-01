@@ -29,7 +29,7 @@ function hideBanner() {
 
 function main() {
 	if (!editMode) {
-		if (localStorage.getItem('liferay.cookie.consent') == 'accepted') {
+		if (localStorage.getItem('liferay.cookie.consent') === 'accepted') {
 			hideBanner();
 		}
 		else {

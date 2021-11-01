@@ -41,6 +41,7 @@ function TableInlineAddingRow({fields, selectable}) {
 					columnName="item-selector"
 				/>
 			)}
+
 			{fields.map((field) => {
 				let InputRenderer = null;
 
@@ -87,6 +88,7 @@ function TableInlineAddingRow({fields, selectable}) {
 					</DndTable.Cell>
 				);
 			})}
+
 			<DndTable.Cell className="item-actions" columnName="item-actions">
 				<div className="d-flex ml-auto">
 					<ClayButtonWithIcon
@@ -99,6 +101,7 @@ function TableInlineAddingRow({fields, selectable}) {
 						small
 						symbol="times-small"
 					/>
+
 					{loading ? (
 						<ClayButton disabled monospaced small>
 							<ClayLoadingIndicator small />

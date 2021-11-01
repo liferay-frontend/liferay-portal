@@ -42,7 +42,7 @@ function PerformanceByStepPage({query, routeParams}) {
 			completed: true,
 			key: search,
 			processVersion:
-				processVersion?.indexOf('allVersions') == -1
+				processVersion?.indexOf('allVersions') === -1
 					? processVersion
 					: undefined,
 			...paginationParams,

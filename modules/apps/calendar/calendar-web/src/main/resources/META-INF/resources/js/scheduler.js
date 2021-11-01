@@ -279,16 +279,16 @@ AUI.add(
 
 					var viewName = view.get('name');
 
-					if (viewName == 'agenda') {
+					if (viewName === 'agenda') {
 						schedulerViewText = Liferay.Language.get('agenda-view');
 					}
-					else if (viewName == 'day') {
+					else if (viewName === 'day') {
 						schedulerViewText = Liferay.Language.get('day-view');
 					}
-					else if (viewName == 'month') {
+					else if (viewName === 'month') {
 						schedulerViewText = Liferay.Language.get('month-view');
 					}
-					else if (viewName == 'week') {
+					else if (viewName === 'week') {
 						schedulerViewText = Liferay.Language.get('week-view');
 					}
 

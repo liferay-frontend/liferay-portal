@@ -17,7 +17,7 @@ import React, {useEffect, useState} from 'react';
 import lang from '../utils/lang.es';
 import {stripHTML} from '../utils/utils.es';
 
-export default ({text}) => {
+export default function TextLengthValidation({text}) {
 	const [htmlText, setHtmlText] = useState('');
 
 	useEffect(() => setHtmlText(stripHTML(text)), [text]);
@@ -34,4 +34,4 @@ export default ({text}) => {
 			)}
 		</>
 	);
-};
+}
