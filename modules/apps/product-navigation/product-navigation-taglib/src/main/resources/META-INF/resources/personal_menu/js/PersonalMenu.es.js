@@ -29,11 +29,11 @@ function PersonalMenu({
 	userPortraitURL,
 }) {
 	const [items, setItems] = useState([]);
-	const preloadPromise = useRef();
+	const preloadPromiseRef = useRef();
 
 	function preloadItems() {
-		if (!preloadPromise.current) {
-			preloadPromise.current = fetch(itemsURL)
+		if (!preloadPromiseRef.current) {
+			preloadPromiseRef.current = fetch(itemsURL)
 				.then((response) => response.json())
 				.then((items) => setItems(items));
 		}

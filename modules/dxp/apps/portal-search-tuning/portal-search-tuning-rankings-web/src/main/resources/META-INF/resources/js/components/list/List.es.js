@@ -81,7 +81,7 @@ class List extends PureComponent {
 
 		const pinLength = resultIdsPinned ? resultIdsPinned.length : 0;
 
-		if (event.key === KEY_CODES.SPACE || event.key == KEY_CODES.ENTER) {
+		if (event.key === KEY_CODES.SPACE || event.key === KEY_CODES.ENTER) {
 			event.preventDefault();
 
 			this._handleReorder(!reorder && focusIndex < pinLength);

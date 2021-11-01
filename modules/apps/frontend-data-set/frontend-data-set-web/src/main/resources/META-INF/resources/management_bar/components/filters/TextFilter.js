@@ -54,6 +54,7 @@ function TextFilter({id, inputText, updateFilterState, value: valueProp}) {
 								value={value || ''}
 							/>
 						</div>
+
 						{inputText && (
 							<div className="input-group-append input-group-item input-group-item-shrink">
 								<span className="input-group-text">
@@ -79,8 +80,10 @@ function TextFilter({id, inputText, updateFilterState, value: valueProp}) {
 					small
 				>
 					{actionType === 'add' && Liferay.Language.get('add-filter')}
+
 					{actionType === 'edit' &&
 						Liferay.Language.get('edit-filter')}
+
 					{actionType === 'delete' &&
 						Liferay.Language.get('delete-filter')}
 				</ClayButton>

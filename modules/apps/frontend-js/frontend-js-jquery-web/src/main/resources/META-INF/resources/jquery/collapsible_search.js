@@ -153,7 +153,7 @@
 				$this.data('lexicon.collapsible-search', data);
 			}
 
-			if (typeof option == 'string') {
+			if (typeof option === 'string') {
 				data[option]();
 			}
 		});

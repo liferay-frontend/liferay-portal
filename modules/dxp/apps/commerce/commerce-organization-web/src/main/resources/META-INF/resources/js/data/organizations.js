@@ -19,7 +19,7 @@ import {fetchFromHeadless} from '../utils/fetch';
 export const ORGANIZATIONS_ROOT_ENDPOINT =
 	'/o/headless-admin-user/v1.0/organizations';
 
-export const createOrganizations = (names, parentOrganizationId) => {
+export function createOrganizations(names, parentOrganizationId) {
 	const url = new URL(
 		ORGANIZATIONS_ROOT_ENDPOINT,
 		themeDisplay.getPortalURL()
@@ -36,7 +36,7 @@ export const createOrganizations = (names, parentOrganizationId) => {
 			})
 		)
 	);
-};
+}
 
 export function getOrganization(id) {
 	const url = new URL(

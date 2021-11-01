@@ -43,7 +43,7 @@ const InfoPanel = ({metadata}) => {
 	const itemsHeader = imageData.groups.map((group, index) => {
 		return (
 			<ClayTabs.Item
-				active={activeTabKeyValue == index}
+				active={activeTabKeyValue === index}
 				key={group.title}
 				onClick={() => setActiveTabKeyValue(index)}
 			>
@@ -57,6 +57,7 @@ const InfoPanel = ({metadata}) => {
 			return (
 				<React.Fragment key={item.key}>
 					<dt className="sidebar-dt">{item.key}</dt>
+
 					<dd className="sidebar-dd">{item.value}</dd>
 				</React.Fragment>
 			);
@@ -77,6 +78,7 @@ const InfoPanel = ({metadata}) => {
 			<div className="sidebar-header">
 				<ClayTabs modern>{itemsHeader}</ClayTabs>
 			</div>
+
 			<div className="sidebar-body">
 				<ClayTabs.Content activeIndex={activeTabKeyValue} fade>
 					{itemsContent}

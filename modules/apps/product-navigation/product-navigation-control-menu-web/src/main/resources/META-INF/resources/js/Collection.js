@@ -46,6 +46,7 @@ const Collection = ({collection, isContentTab, isSearchResult, open}) => {
 				{collection.children.map((item) => (
 					<React.Fragment key={item.itemId}>
 						<TabItem item={item} />
+
 						{item.portletItems?.length && (
 							<TabPortletItem items={item.portletItems} />
 						)}

@@ -59,6 +59,7 @@ const FileUrlCopyButton = ({url}) => {
 					<ClayInput.GroupItem prepend>
 						<ClayInput readOnly type="text" value={url} />
 					</ClayInput.GroupItem>
+
 					<ClayInput.GroupItem append shrink>
 						<ClayButtonWithIcon
 							displayType="secondary"

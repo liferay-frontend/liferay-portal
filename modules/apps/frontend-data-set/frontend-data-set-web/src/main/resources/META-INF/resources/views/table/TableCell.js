@@ -32,13 +32,13 @@ function InlineEditInputRenderer({
 	valuePath,
 	...otherProps
 }) {
-	const [InputRenderer, updateInputRenderer] = useState(() =>
+	const [InputRenderer, setInputRenderer] = useState(() =>
 		getInputRendererById(type)
 	);
 	const {itemsChanges, updateItem} = useContext(DataSetContext);
 
 	useEffect(() => {
-		updateInputRenderer(() => getInputRendererById(type));
+		setInputRenderer(() => getInputRendererById(type));
 	}, [type]);
 
 	let inputValue = value;
@@ -87,7 +87,7 @@ function TableCell({
 		dataRenderer = null;
 	}
 
-	const [currentView, updateCurrentView] = useState({
+	const [currentView, setCurrentView] = useState({
 		...view,
 		Component: dataRenderer,
 	});
@@ -99,7 +99,7 @@ function TableCell({
 			setLoading(true);
 			getDataRendererByURL(currentView.contentRendererModuleURL).then(
 				(Component) => {
-					updateCurrentView({
+					setCurrentView({
 						...currentView,
 						Component,
 					});

@@ -69,18 +69,18 @@ describe('The SLAFormPage component should', () => {
 	];
 
 	describe('Create a new SLA', () => {
-		let alertMessage,
-			container,
-			durationDaysField,
-			durationHoursField,
-			durationHoursInput,
-			getByText,
-			nameField,
-			nameInput,
-			renderResult,
-			saveButton,
-			startField,
-			stopField;
+		let alertMessage;
+		let container;
+		let durationDaysField;
+		let durationHoursField;
+		let durationHoursInput;
+		let getByText;
+		let nameField;
+		let nameInput;
+		let renderResult;
+		let saveButton;
+		let startField;
+		let stopField;
 
 		const data = {
 			calendarKey: '',
@@ -326,7 +326,9 @@ describe('The SLAFormPage component should', () => {
 	});
 
 	describe('Edit a SLA', () => {
-		let container, getByText, renderResult;
+		let container;
+		let getByText;
+		let renderResult;
 
 		const data = {
 			calendarKey: 'default',
@@ -438,7 +440,8 @@ describe('The SLAFormPage component should', () => {
 	});
 
 	describe('Edit a Blocked SLA', () => {
-		let getByText, renderResult;
+		let getByText;
+		let renderResult;
 
 		const nodes = [
 			{

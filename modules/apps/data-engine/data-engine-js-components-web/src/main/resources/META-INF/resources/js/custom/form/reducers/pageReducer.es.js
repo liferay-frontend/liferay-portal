@@ -28,7 +28,7 @@ const getLocalizedValue = (languageId, key, value) => {
  * NOTE: This is a literal copy of the old LayoutProvider logic. Small changes
  * were made only to adapt to the reducer.
  */
-export default (state, action) => {
+export default function pageReducer(state, action) {
 	switch (action.type) {
 		case EVENT_TYPES.SUCCESS_PAGE: {
 			const {defaultLanguageId, pages, paginationMode} = state;
@@ -182,4 +182,4 @@ export default (state, action) => {
 		default:
 			return state;
 	}
-};
+}

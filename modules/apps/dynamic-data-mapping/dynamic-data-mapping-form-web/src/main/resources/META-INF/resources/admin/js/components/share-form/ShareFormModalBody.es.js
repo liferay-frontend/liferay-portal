@@ -17,12 +17,12 @@ import React, {useState} from 'react';
 import Email from './Email.es';
 import Link from './Link.es';
 
-export const ShareFormModalBody = ({
+export function ShareFormModalBody({
 	autocompleteUserURL,
 	emailContent,
 	localizedName,
 	url,
-}) => {
+}) {
 	const [addresses, setAddresses] = useState([]);
 	const [message, setMessage] = useState(
 		Liferay.Util.sub(
@@ -40,14 +40,17 @@ export const ShareFormModalBody = ({
 				<div className="popover-header">
 					{Liferay.Language.get('link')}
 				</div>
+
 				<div className="popover-body">
 					<Link url={url} />
 				</div>
 			</div>
+
 			<div className="share-form-modal-item">
 				<div className="popover-header">
 					{Liferay.Language.get('email')}
 				</div>
+
 				<div className="popover-body">
 					<Email
 						addresses={addresses}
@@ -64,4 +67,4 @@ export const ShareFormModalBody = ({
 			</div>
 		</div>
 	);
-};
+}

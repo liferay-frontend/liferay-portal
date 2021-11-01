@@ -13,11 +13,12 @@
  */
 
 export default function throttle(fn, limit) {
-	let lastFunction, lastRan;
+	let lastFunction;
+	let lastRan;
 
 	return () => {
-		const context = this,
-			args = arguments;
+		const context = this;
+		const args = arguments;
 
 		if (!lastRan) {
 			fn.apply(context, args);

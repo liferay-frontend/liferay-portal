@@ -272,6 +272,7 @@ export function Conditions({
 				operator={logicalOperator}
 				title={name}
 			/>
+
 			{conditions.map(({operator, operands: [left, right]}, index) => (
 				<Timeline.Item key={index}>
 					<Timeline.Panel expression={expression}>
@@ -289,6 +290,7 @@ export function Conditions({
 								})
 							}
 						/>
+
 						<FieldOperator
 							fields={fields}
 							left={left}
@@ -303,6 +305,7 @@ export function Conditions({
 							readOnly={!left.value}
 							right={right}
 						/>
+
 						{right && right.type && (
 							<FieldRight
 								fields={fields}
@@ -322,9 +325,11 @@ export function Conditions({
 							/>
 						)}
 					</Timeline.Panel>
+
 					{conditions.length > 1 && conditions.length - 1 > index && (
 						<Timeline.Operator operator={logicalOperator} />
 					)}
+
 					{conditions.length > 1 && (
 						<Timeline.ActionTrash
 							onClick={() => {
@@ -349,6 +354,7 @@ export function Conditions({
 														'dismiss'
 													)}
 												</ClayButton>
+
 												<ClayButton
 													onClick={() => {
 														dispatch({
@@ -379,6 +385,7 @@ export function Conditions({
 					)}
 				</Timeline.Item>
 			))}
+
 			<Timeline.ItemAction>
 				<Timeline.IncrementButton
 					onClick={() =>

@@ -103,7 +103,7 @@ function getDDMFormFieldSettingsContext({
 				localizedValue = {...propertyValue};
 			}
 
-			if (Object.keys(localizedValue).length == 0) {
+			if (Object.keys(localizedValue).length === 0) {
 				localizedValue = {[defaultLanguageId]: ''};
 			}
 

@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import createResourceURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_resource_url.es';
 
 describe('Liferay.Util.PortletURL.createResourceURL', () => {

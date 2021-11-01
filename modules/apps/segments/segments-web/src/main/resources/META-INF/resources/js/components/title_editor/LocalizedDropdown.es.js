@@ -105,6 +105,7 @@ class LocalizedDropdown extends React.Component {
 							symbol={currentLangKey}
 						/>
 					</span>
+
 					<span className="btn-section">{currentLangTag}</span>
 				</button>
 
@@ -137,8 +138,10 @@ class LocalizedDropdown extends React.Component {
 												)}
 											/>
 										</span>
+
 										<span className="taglib-text-icon">
 											{keyLangToLanguageTag(key, false)}
+
 											{defaultLang === key && (
 												<span className="label label-info ml-1">
 													{Liferay.Language.get(
@@ -146,6 +149,7 @@ class LocalizedDropdown extends React.Component {
 													)}
 												</span>
 											)}
+
 											{defaultLang !== key &&
 												(hasValue ? (
 													<span className="label label-success ml-1">

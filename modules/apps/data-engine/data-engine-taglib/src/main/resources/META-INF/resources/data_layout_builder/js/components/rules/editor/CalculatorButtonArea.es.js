@@ -58,6 +58,7 @@ function CalculatorButtonArea({
 					symbol="angle-left"
 					title={Liferay.Language.get('backspace')}
 				/>
+
 				<ClayButton
 					aria-label={Liferay.Language.get('left-parenthesis')}
 					className="calculator-button"
@@ -91,6 +92,7 @@ function CalculatorButtonArea({
 				>
 					)
 				</ClayButton>
+
 				{ONE_TO_NINE.map((value) => (
 					<ClayButton
 						className="calculator-button"
@@ -108,6 +110,7 @@ function CalculatorButtonArea({
 						{value}
 					</ClayButton>
 				))}
+
 				<ClayButton
 					aria-label={Liferay.Language.get('zero')}
 					className="border-bottom-left button-two-columns calculator-button"
@@ -123,6 +126,7 @@ function CalculatorButtonArea({
 				>
 					0
 				</ClayButton>
+
 				<ClayButton
 					aria-label={Liferay.Language.get('period')}
 					className="border-bottom-right calculator-button"
@@ -158,6 +162,7 @@ function CalculatorButtonArea({
 							/>
 						}
 					/>
+
 					{OPERATORS.map(({label, value}) => (
 						<ClayButton
 							aria-label={label}

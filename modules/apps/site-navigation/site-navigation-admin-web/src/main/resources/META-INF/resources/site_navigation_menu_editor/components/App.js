@@ -49,6 +49,7 @@ export function App(props) {
 			<ConstantsProvider constants={props}>
 				<ItemsProvider initialItems={siteNavigationMenuItems}>
 					<DragPreview />
+
 					<DragDropProvider>
 						<SelectedMenuItemIdProvider>
 							<SidebarPanelIdProvider>

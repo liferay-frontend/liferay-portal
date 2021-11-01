@@ -14,15 +14,10 @@
 
 import {TObjectLayoutRow} from '../components/layout/types';
 
-type TFindObjectLayoutRowIndex = (
+export function findObjectLayoutRowIndex(
 	objectLayoutRows: TObjectLayoutRow[],
-	size: number
-) => number;
-
-export const findObjectLayoutRowIndex: TFindObjectLayoutRowIndex = (
-	objectLayoutRows,
-	fieldSize
-) => {
+	fieldSize: number
+): number {
 	let objectLayoutRowIndex = -1;
 
 	objectLayoutRows.some(({objectLayoutColumns}, rowIndex) => {
@@ -42,16 +37,14 @@ export const findObjectLayoutRowIndex: TFindObjectLayoutRowIndex = (
 	});
 
 	return objectLayoutRowIndex;
-};
+}
 
-type TFindObjectFieldIndex = (object: any[], objectId: number) => number;
-
-export const findObjectFieldIndex: TFindObjectFieldIndex = (
-	objectFields,
-	objectFieldId
-) => {
+export function findObjectFieldIndex(
+	objectFields: any[],
+	objectFieldId: number
+): number {
 	const objIds = objectFields.map(({id}) => id);
 	const objectIndex = objIds.indexOf(objectFieldId);
 
 	return objectIndex;
-};
+}

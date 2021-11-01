@@ -43,17 +43,21 @@ export default function Toolbar() {
 							<span className="style-book-editor__page-preview-text">
 								{`${Liferay.Language.get('preview')}:`}
 							</span>
+
 							<PreviewSelector />
 						</li>
 					)}
 				</ul>
+
 				<ul className="end navbar-nav">
 					<li className="mr-3 nav-item">
 						<DraftStatus />
 					</li>
+
 					<li className="mx-3 nav-item">
 						<HelpInformation />
 					</li>
+
 					<li className="ml-3 nav-item">
 						<PublishButton />
 					</li>
@@ -74,6 +78,7 @@ function DraftStatus() {
 					symbol="check-circle"
 				/>
 			)}
+
 			<span
 				className={classNames('ml-1 style-book-editor__status-text', {
 					'text-success': draftStatus === DRAFT_STATUS.draftSaved,
@@ -109,6 +114,7 @@ function HelpInformation() {
 				ref={helpIconRef}
 				symbol="question-circle"
 			/>
+
 			{isShowPopover && (
 				<ClayPopover
 					alignPosition="bottom"
@@ -144,6 +150,7 @@ function PublishButton() {
 				type="hidden"
 				value={config.redirectURL}
 			/>
+
 			<input
 				name={`${config.namespace}styleBookEntryId`}
 				type="hidden"

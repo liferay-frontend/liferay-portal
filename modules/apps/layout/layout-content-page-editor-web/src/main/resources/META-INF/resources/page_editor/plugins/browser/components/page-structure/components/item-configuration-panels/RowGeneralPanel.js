@@ -35,7 +35,7 @@ const ROW_CONFIGURATION_IDENTIFIERS = {
 	numberOfColumns: 'numberOfColumns',
 };
 
-export const RowGeneralPanel = ({item}) => {
+export function RowGeneralPanel({item}) {
 	const dispatch = useDispatch();
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const selectedViewportSize = useSelector(
@@ -114,7 +114,7 @@ export const RowGeneralPanel = ({item}) => {
 			)}
 		</>
 	);
-};
+}
 
 RowGeneralPanel.propTypes = {
 	item: getLayoutDataItemPropTypes({

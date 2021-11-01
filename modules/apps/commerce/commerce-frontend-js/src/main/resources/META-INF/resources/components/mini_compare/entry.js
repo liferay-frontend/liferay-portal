@@ -15,4 +15,6 @@
 import launcher from '../../utilities/launcher';
 import MiniCompare from './MiniCompare';
 
-export default (...data) => launcher(MiniCompare, ...data);
+export default function entry(...data) {
+	return launcher(MiniCompare, ...data);
+}

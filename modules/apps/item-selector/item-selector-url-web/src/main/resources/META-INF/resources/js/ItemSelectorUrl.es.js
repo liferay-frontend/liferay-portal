@@ -92,6 +92,7 @@ const ItemSelectorUrl = ({eventName}) => {
 					<label htmlFor={inputName}>
 						{Liferay.Language.get('url')}
 					</label>
+
 					<ClayInput
 						id={inputName}
 						onChange={handleUrlChange}
@@ -99,12 +100,14 @@ const ItemSelectorUrl = ({eventName}) => {
 						type="text"
 						value={url}
 					/>
+
 					<p className="form-text">
 						{sub(Liferay.Language.get('for-example-x'), [
 							'http://www.liferay.com/liferay.png',
 						])}
 					</p>
 				</ClayForm.Group>
+
 				<ClayButton disabled={!loaded} type="submit">
 					{Liferay.Language.get('add')}
 				</ClayButton>
@@ -123,9 +126,11 @@ const ItemSelectorUrl = ({eventName}) => {
 						src={url}
 					/>
 				)}
+
 				{(isLoading || previewError) && (
 					<div className="aspect-ratio-item aspect-ratio-item-center-middle aspect-ratio-item-fluid">
 						{isLoading && <ClayLoadingIndicator />}
+
 						{previewError && (
 							<strong className="text-secondary">
 								{Liferay.Language.get(

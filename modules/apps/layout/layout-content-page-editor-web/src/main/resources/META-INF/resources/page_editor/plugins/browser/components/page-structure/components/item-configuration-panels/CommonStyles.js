@@ -25,7 +25,7 @@ import selectSegmentsExperienceId from '../../../../../../app/selectors/selectSe
 import updateItemStyle from '../../../../../../app/utils/updateItemStyle';
 import {FieldSet} from './FieldSet';
 
-export const CommonStyles = ({commonStylesValues, item}) => {
+export function CommonStyles({commonStylesValues, item}) {
 	const {commonStyles} = config;
 	const dispatch = useDispatch();
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
@@ -70,7 +70,7 @@ export const CommonStyles = ({commonStylesValues, item}) => {
 			</div>
 		</>
 	);
-};
+}
 
 CommonStyles.propTypes = {
 	commonStylesValues: PropTypes.object.isRequired,

@@ -722,17 +722,18 @@ export const getSectionQuery = `
 	}
 `;
 
-export const getThread = (friendlyUrlPath, siteKey) =>
-	clientNestedFields.request({
+export function getThread(friendlyUrlPath, siteKey) {
+	return clientNestedFields.request({
 		query: getThreadQuery,
 		variables: {
 			friendlyUrlPath,
 			siteKey,
 		},
 	});
+}
 
-export const getMessages = (messageBoardThreadId, page, pageSize) =>
-	clientNestedFields.request({
+export function getMessages(messageBoardThreadId, page, pageSize) {
+	return clientNestedFields.request({
 		query: getMessagesQuery,
 		variables: {
 			messageBoardThreadId,
@@ -741,6 +742,7 @@ export const getMessages = (messageBoardThreadId, page, pageSize) =>
 			sort: 'dateCreated:asc',
 		},
 	});
+}
 
 export const getUserActivityQuery = `
 	query messageBoardMessages(

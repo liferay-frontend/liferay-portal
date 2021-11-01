@@ -33,9 +33,13 @@ const getOpenMenuTooltip = (keyLabel) => (
 		<div>{Liferay.Language.get('open-menu')}</div>
 		<kbd className="c-kbd c-kbd-dark">
 			<kbd className="c-kbd">{keyLabel}</kbd>
+
 			<span className="c-kbd-separator">+</span>
+
 			<kbd className="c-kbd">⇧</kbd>
+
 			<span className="c-kbd-separator">+</span>
+
 			<kbd className="c-kbd">M</kbd>
 		</kbd>
 	</>
@@ -212,6 +216,7 @@ const AppsPanel = ({
 			<h1 className="sr-only">
 				{Liferay.Language.get('applications-menu')}
 			</h1>
+
 			<div className="applications-menu-header">
 				<ClayLayout.ContainerFluid>
 					<ClayLayout.Row>

@@ -16,7 +16,7 @@ import {delegate} from 'frontend-js-web';
 
 let handle;
 
-export default () => {
+export default function main() {
 	if (!handle) {
 		handle = delegate(
 			document.body,
@@ -33,4 +33,4 @@ export default () => {
 			}
 		);
 	}
-};
+}

@@ -52,6 +52,7 @@ export default function Translation({onSelectedLanguageClick, viewURLs}) {
 							small
 						>
 							<ClayIcon symbol={selectedLanguage.toLowerCase()} />
+
 							<span
 								className="d-block font-weight-normal"
 								style={{fontSize: '9px'}}
@@ -91,6 +92,7 @@ export default function Translation({onSelectedLanguageClick, viewURLs}) {
 											</span>
 										</ClayTooltipProvider>
 									</ClayLayout.ContentCol>
+
 									{language.default && (
 										<ClayLabel displayType="primary">
 											{Liferay.Language.get('default')}

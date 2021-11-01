@@ -28,7 +28,9 @@ function resolvePath(
 	return `${basePath}${VERSION}${PRICE_LISTS_PATH}/${priceListId}${PRICE_LIST_ORDER_TYPE_PATH}/${priceListOrderTypeId}`;
 }
 
-export default (basePath) => ({
-	addPriceListOrderType: (priceListId, json) =>
-		AJAX.POST(resolvePath(basePath, priceListId), json),
-});
+export default function PriceListOrderType(basePath) {
+	return {
+		addPriceListOrderType: (priceListId, json) =>
+			AJAX.POST(resolvePath(basePath, priceListId), json),
+	};
+}

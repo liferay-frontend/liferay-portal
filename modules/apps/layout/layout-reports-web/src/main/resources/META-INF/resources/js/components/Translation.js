@@ -75,6 +75,7 @@ export default function Translation({
 					small
 				>
 					<ClayIcon symbol={selectedLanguageId.toLowerCase()} />
+
 					<span
 						className="d-block font-weight-normal"
 						style={{fontSize: '9px'}}
@@ -107,6 +108,7 @@ export default function Translation({
 										</span>
 									</ClayTooltipProvider>
 								</ClayLayout.ContentCol>
+
 								{defaultLanguageId === languageId && (
 									<ClayLabel
 										className="flex-shrink-0 ml-1"

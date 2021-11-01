@@ -23,7 +23,7 @@ import {usePage} from '../../../core/hooks/usePage.es';
 import {sub} from '../../../utils/strings';
 import {EVENT_TYPES} from '../eventTypes.es';
 
-export const Container = ({children, empty, pageIndex, pages}) => {
+export function Container({children, empty, pageIndex, pages}) {
 	const {editingLanguageId, successPageSettings} = useFormState();
 	const dispatch = useForm();
 
@@ -159,6 +159,7 @@ export const Container = ({children, empty, pageIndex, pages}) => {
 
 				<div className="add-page-button-container">
 					<div className="horizontal-line" />
+
 					<ClayButton
 						className="add-page-button"
 						displayType="secondary"
@@ -172,12 +173,14 @@ export const Container = ({children, empty, pageIndex, pages}) => {
 					>
 						{Liferay.Language.get('new-page')}
 					</ClayButton>
+
 					<div className="horizontal-line" />
 				</div>
 
 				{pages.length - 1 === pageIndex && (
 					<div className="add-page-button-container">
 						<div className="horizontal-line" />
+
 						<ClayButton
 							className="add-page-button"
 							displayType="secondary"
@@ -186,17 +189,18 @@ export const Container = ({children, empty, pageIndex, pages}) => {
 						>
 							{Liferay.Language.get('add-success-page')}
 						</ClayButton>
+
 						<div className="horizontal-line" />
 					</div>
 				)}
 			</div>
 		</>
 	);
-};
+}
 
 Container.displayName = 'MultiPagesVariant.Container';
 
-export const PageHeader = ({localizedDescription, localizedTitle}) => {
+export function PageHeader({localizedDescription, localizedTitle}) {
 	const {defaultLanguageId, editingLanguageId} = useFormState();
 	const {pageIndex} = usePage();
 
@@ -219,6 +223,7 @@ export const PageHeader = ({localizedDescription, localizedTitle}) => {
 					localizedTitle[defaultLanguageId]
 				}
 			/>
+
 			<input
 				className="form-builder-page-header-description form-control p-0"
 				maxLength="120"
@@ -238,6 +243,6 @@ export const PageHeader = ({localizedDescription, localizedTitle}) => {
 			/>
 		</div>
 	);
-};
+}
 
 PageHeader.displayName = 'MultiPagesVariant.PageHeader';

@@ -107,6 +107,7 @@ export function ObjectRelationship({
 		>
 			<ClayAutocomplete ref={autocompleteRef}>
 				<input id={id} name={name} type="hidden" value={value || ''} />
+
 				<ClayAutocomplete.Input
 					name={inputName}
 					onBlur={onBlur}
@@ -189,6 +190,7 @@ export function ObjectRelationship({
 						</ClayDropDown.ItemList>
 					</div>
 				</ClayAutocomplete.DropDown>
+
 				{loading && <ClayAutocomplete.LoadingIndicator />}
 			</ClayAutocomplete>
 		</FieldBase>

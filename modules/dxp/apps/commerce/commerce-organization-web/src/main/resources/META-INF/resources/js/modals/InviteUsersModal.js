@@ -137,6 +137,7 @@ export default function InviteUserModal({closeModal, observer, parentData}) {
 				>
 					<label htmlFor="inviteUsersRoleInput">
 						{Liferay.Language.get('roles')}
+
 						<ClayIcon
 							className="ml-1 reference-mark"
 							symbol="asterisk"
@@ -162,6 +163,7 @@ export default function InviteUserModal({closeModal, observer, parentData}) {
 									{errors.map((error, i) => (
 										<ClayForm.FeedbackItem key={i}>
 											<ClayForm.FeedbackIndicator symbol="info-circle" />
+
 											{error}
 										</ClayForm.FeedbackItem>
 									))}

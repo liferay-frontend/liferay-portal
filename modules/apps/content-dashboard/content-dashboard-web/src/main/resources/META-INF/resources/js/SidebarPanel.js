@@ -82,7 +82,7 @@ const dataReducer = (state, action) => {
 
 const SidebarPanel = React.forwardRef(
 	({fetchURL, onClose, viewComponent: View}, ref) => {
-		const CurrentView = useRef(View);
+		const CurrentViewRef = useRef(View);
 
 		const isMounted = useIsMounted();
 
@@ -132,13 +132,13 @@ const SidebarPanel = React.forwardRef(
 		}, [fetchURL]);
 
 		useEffect(() => {
-			CurrentView.current = View;
+			CurrentViewRef.current = View;
 		}, [View]);
 
 		useImperativeHandle(ref, () => ({
 			close: () => safeDispatch({type: 'CLOSE_SIDEBAR'}),
 			open: (fetchURL, View) => {
-				CurrentView.current = View;
+				CurrentViewRef.current = View;
 
 				getData(fetchURL);
 
@@ -161,7 +161,7 @@ const SidebarPanel = React.forwardRef(
 						</ClayAlert>
 					</>
 				) : (
-					state?.data && <CurrentView.current {...state.data} />
+					state?.data && <CurrentViewRef.current {...state.data} />
 				)}
 			</Sidebar>
 		);

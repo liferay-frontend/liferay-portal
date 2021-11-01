@@ -59,9 +59,9 @@ const PanelBody: React.FC<IPanelBodyProps> = ({children, className}) => {
 };
 
 interface IPanelHeaderProps extends React.HTMLAttributes<HTMLElement> {
-	title: string;
 	contentLeft?: React.ReactNode;
 	contentRight?: React.ReactNode;
+	title: string;
 }
 
 const PanelHeader: React.FC<IPanelHeaderProps> = ({
@@ -88,6 +88,7 @@ const PanelHeader: React.FC<IPanelHeaderProps> = ({
 					</span>
 				)}
 			</div>
+
 			<div className="object-admin-panel__header__content-right">
 				{contentRight && (
 					<span className="align-items-center d-flex ml-2">
@@ -111,8 +112,8 @@ const PanelHeader: React.FC<IPanelHeaderProps> = ({
 };
 
 interface IPanelSimpleBodyProps extends React.HTMLAttributes<HTMLElement> {
-	title: string;
 	contentRight?: React.ReactNode;
+	title: string;
 }
 
 const PanelSimpleBody: React.FC<IPanelSimpleBodyProps> = ({
@@ -127,6 +128,7 @@ const PanelSimpleBody: React.FC<IPanelSimpleBodyProps> = ({
 
 				<div>
 					<h5 className="object-admin-panel__title">{title}</h5>
+
 					<div>{children}</div>
 				</div>
 			</div>

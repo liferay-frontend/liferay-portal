@@ -92,7 +92,7 @@ class ChangeTrackingConflictsView extends ChangeTrackingBaseScheduleView {
 						/>
 					)}
 
-					{this.unresolvedConflicts.length == 0 && (
+					{this.unresolvedConflicts.length === 0 && (
 						<ClayAlert
 							displayType="success"
 							spritemap={this.spritemap}
@@ -128,6 +128,7 @@ class ChangeTrackingConflictsView extends ChangeTrackingBaseScheduleView {
 						</ClayPanel>
 					)}
 				</div>
+
 				<div className="sheet-section">
 					{this.resolvedConflicts.length > 0 && (
 						<ClayPanel
@@ -158,6 +159,7 @@ class ChangeTrackingConflictsView extends ChangeTrackingBaseScheduleView {
 						</div>
 
 						<label>{Liferay.Language.get('date-and-time')}</label>
+
 						<div className="input-group">
 							<div className={this.getDateClassName()}>
 								<div>
@@ -179,6 +181,7 @@ class ChangeTrackingConflictsView extends ChangeTrackingBaseScheduleView {
 									{this.getDateHelpText()}
 								</div>
 							</div>
+
 							<div className={this.getTimeClassName()}>
 								<div>
 									<ClayTimePicker
@@ -223,6 +226,7 @@ class ChangeTrackingConflictsView extends ChangeTrackingBaseScheduleView {
 									: Liferay.Language.get('publish')}
 							</button>
 						</div>
+
 						<div className="btn-group-item">
 							<button
 								className="btn btn-secondary"
@@ -406,9 +410,11 @@ const ConflictsTable = ({conflicts, spritemap}) => {
 							>
 								{conflict.description}
 							</ClayList.ItemText>
+
 							<ClayList.ItemTitle>
 								{conflict.title}
 							</ClayList.ItemTitle>
+
 							<ClayList.ItemText
 								className={
 									'conflicts-' + conflict.alertType + '-text'
@@ -417,6 +423,7 @@ const ConflictsTable = ({conflicts, spritemap}) => {
 								<strong>
 									{conflict.conflictDescription + ': '}
 								</strong>
+
 								{conflict.conflictResolution}
 							</ClayList.ItemText>
 						</a>
@@ -477,12 +484,14 @@ const ConflictsTable = ({conflicts, spritemap}) => {
 							<div className="modal-title">
 								{viewConflict.title}
 							</div>
+
 							<div className="modal-description">
 								{viewConflict.description}
 							</div>
 						</div>
 					</div>
 				</ClayModal.Header>
+
 				<ClayModal.Header
 					className="publications-conflicts-header"
 					withTitle={false}
@@ -497,6 +506,7 @@ const ConflictsTable = ({conflicts, spritemap}) => {
 						{getAlertFooter(viewConflict)}
 					</ClayAlert>
 				</ClayModal.Header>
+
 				<div className="publications-modal-body">
 					<ChangeTrackingRenderView
 						dataURL={viewConflict.dataURL}

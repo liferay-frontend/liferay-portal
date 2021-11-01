@@ -81,7 +81,7 @@ AUI.add(
 
 					var action = 'show';
 
-					if (instance._ids.length == 0) {
+					if (instance._ids.length === 0) {
 						action = 'hide';
 
 						if (instance._emptyResultsMessage) {
@@ -166,7 +166,7 @@ AUI.add(
 						instance._table.all('tr').some((item, index) => {
 							if (
 								!item.hasClass(CSS_TEMPLATE) &&
-								index == object
+								index === object
 							) {
 								row = item;
 							}
@@ -277,7 +277,7 @@ AUI.add(
 								.attr('method')
 								.toLowerCase();
 
-							if (method && method == 'get') {
+							if (method && method === 'get') {
 								instance._dataStore = null;
 							}
 						}
@@ -314,7 +314,7 @@ AUI.add(
 					var instance = this;
 
 					if (ids) {
-						if (typeof ids == 'string') {
+						if (typeof ids === 'string') {
 							ids = ids.split(',');
 						}
 

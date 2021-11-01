@@ -43,7 +43,9 @@ const Panel = () => {
 					}
 					{...state}
 				/>
+
 				<Violation violations={state.violations} />
+
 				<Occurrence violations={state.violations} />
 			</StackNavigator>
 		</div>

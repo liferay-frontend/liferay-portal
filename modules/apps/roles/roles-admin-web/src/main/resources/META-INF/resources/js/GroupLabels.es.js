@@ -92,14 +92,14 @@ export default function GroupLabels({
 						onSelect: (event) => {
 							if (event.grouptarget === target) {
 								setGroupIds((groupIds) =>
-									groupIds.indexOf(event.groupid) == -1
+									groupIds.indexOf(event.groupid) === -1
 										? [...groupIds, event.groupid]
 										: groupIds
 								);
 								setGroupNames((groupNames) =>
 									groupNames.indexOf(
 										event.groupdescriptivename
-									) == -1
+									) === -1
 										? [
 												...groupNames,
 												event.groupdescriptivename,

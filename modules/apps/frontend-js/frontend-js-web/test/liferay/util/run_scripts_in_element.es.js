@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import runScriptsInElement from '../../../src/main/resources/META-INF/resources/liferay/util/run_scripts_in_element.es';
 
 describe('runScriptsInElement', () => {

@@ -30,6 +30,7 @@ export default function CurrentLanguageFlag({className}) {
 			data-title={Liferay.Language.get('localizable')}
 		>
 			<ClayIcon symbol={language.languageIcon} />
+
 			<span className="sr-only">{language.w3cLanguageId}</span>
 		</div>
 	);

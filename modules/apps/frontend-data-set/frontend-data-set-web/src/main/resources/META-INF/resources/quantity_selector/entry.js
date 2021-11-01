@@ -16,4 +16,6 @@ import {render} from '@liferay/frontend-js-react-web';
 
 import QuantitySelector from './QuantitySelector';
 
-export default (...data) => render(QuantitySelector, ...data);
+export default function entry(...data) {
+	return render(QuantitySelector, ...data);
+}

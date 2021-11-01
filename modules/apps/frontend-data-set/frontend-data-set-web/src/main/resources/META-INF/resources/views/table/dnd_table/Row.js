@@ -52,6 +52,7 @@ function Row({children, className, paddingLeftCells}) {
 	return (
 		<div className={classNames('dnd-tr', className)} style={style}>
 			{placeholderPaddingCells}
+
 			{children}
 		</div>
 	);

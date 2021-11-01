@@ -14,9 +14,9 @@
 
 export const ACTION_UPDATE_ACTIVE_VIEW = 'ACTION_UPDATE_ACTIVE_VIEW';
 
-export const updateActiveView = (activeViewName) => {
+export function updateActiveView(activeViewName) {
 	return {
 		type: ACTION_UPDATE_ACTIVE_VIEW,
 		value: activeViewName,
 	};
-};
+}

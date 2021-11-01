@@ -19,6 +19,7 @@ export default function ModelInfo({label, value}) {
 		value && (
 			<span className={`mr-2 workflow-${label}`}>
 				<span className="workflow-label">{`${label}: `}</span>
+
 				<span className="workflow-value">{value}</span>
 			</span>
 		)

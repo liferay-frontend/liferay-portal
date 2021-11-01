@@ -74,7 +74,7 @@ export default withRouter(({history, location}) => {
 	});
 
 	useEffect(() => {
-		if (!page || !pageSize || search == null) {
+		if (!page || !pageSize || search === null || search === undefined) {
 			return;
 		}
 
@@ -210,6 +210,7 @@ export default withRouter(({history, location}) => {
 									tag="span"
 								>
 									{loading && <ClayLoadingIndicator small />}
+
 									{!loading &&
 										((!!search && (
 											<ClayButtonWithIcon
@@ -283,6 +284,7 @@ export default withRouter(({history, location}) => {
 														</div>
 													</div>
 												</div>
+
 												<div className="card-row">
 													<div className="autofit-col autofit-col-expand card-subtitle">
 														{orderBy ===
@@ -316,6 +318,7 @@ export default withRouter(({history, location}) => {
 											</div>
 										</Link>
 									</div>
+
 									<div className="c-pr-3">
 										{tag.actions.subscribe && (
 											<div className="autofit-col">

@@ -12,7 +12,7 @@
  * details.
  */
 
-export const limitValue = ({
+export function limitValue({
 	defaultValue,
 	max,
 	min,
@@ -22,7 +22,7 @@ export const limitValue = ({
 	max: number;
 	min: number;
 	value: number;
-}) => {
+}) {
 	if (isNaN(value) || value < min) {
 		return defaultValue;
 	}
@@ -31,4 +31,4 @@ export const limitValue = ({
 	}
 
 	return value;
-};
+}

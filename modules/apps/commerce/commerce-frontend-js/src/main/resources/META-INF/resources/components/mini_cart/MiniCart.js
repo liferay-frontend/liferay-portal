@@ -67,7 +67,7 @@ function MiniCart({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [actionURLs, setActionURLs] = useState(cartActionURLs);
 	const [CartViews, setCartViews] = useState({});
-	const [cartState, updateCartState] = useState({
+	const [cartState, setCartState] = useState({
 		id: orderId,
 		summary: {itemsQuantity},
 	});
@@ -76,19 +76,20 @@ function MiniCart({
 	const openCart = () => setIsOpen(true);
 	const resetCartState = useCallback(
 		({accountId = 0}) =>
-			updateCartState({
+			setCartState({
 				accountId,
 				id: 0,
 				summary: {itemsQuantity: 0},
 			}),
-		[updateCartState]
+		[setCartState]
 	);
 
 	const updateCartModel = useCallback(
 		({id: cartId}) => {
 			CartResource.getCartByIdWithItems(cartId)
 				.then((model) => {
-					let latestActionURLs, latestCartState;
+					let latestActionURLs;
+					let latestCartState;
 
 					setActionURLs((currentURLs) => {
 						const {orderUUID} = model;
@@ -104,7 +105,7 @@ function MiniCart({
 						return latestActionURLs;
 					});
 
-					updateCartState((currentState) => {
+					setCartState((currentState) => {
 						latestCartState = {...currentState, ...model};
 
 						return latestCartState;
@@ -169,7 +170,7 @@ function MiniCart({
 				summaryDataMapper,
 				toggleable,
 				updateCartModel,
-				updateCartState,
+				updateCartState: setCartState,
 			}}
 		>
 			{!!CartViews[CART] && (

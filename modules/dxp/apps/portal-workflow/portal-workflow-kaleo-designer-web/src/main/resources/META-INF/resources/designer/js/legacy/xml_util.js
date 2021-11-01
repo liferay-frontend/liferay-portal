@@ -137,13 +137,13 @@ AUI.add(
 						var metadata = item.split(STR_CHAR_CR_LF_CRLF);
 						item = '';
 						for (var i = 0; i < metadata.length; i++) {
-							if (i == 0 || i == 2) {
+							if (i === 0 || i === 2) {
 								pad += 1;
 							}
 
 							if (
-								i == metadata.length - 2 ||
-								i == metadata.length - 1
+								i === metadata.length - 2 ||
+								i === metadata.length - 1
 							) {
 								pad -= 1;
 							}

@@ -64,7 +64,7 @@
 		parse(node, data, options) {
 			if (options) {
 				for (var i in this.options) {
-					if (typeof options[i] == 'undefined') {
+					if (typeof options[i] === 'undefined') {
 						options[i] = this.options[i];
 					}
 				}
@@ -112,7 +112,7 @@
 				var best = false;
 				var rule = false;
 				for (let i = 0; i < this.children.length; i++) {
-					if (typeof matches[i] == 'undefined') {
+					if (typeof matches[i] === 'undefined') {
 						if (!this.children[i].match) {
 							this.children[i] = new this.constructor(
 								this.children[i]
@@ -126,7 +126,7 @@
 					) {
 						best = matches[i];
 						rule = this.children[i];
-						if (best.index == 0) {
+						if (best.index === 0) {
 							break;
 						}
 					}
@@ -190,7 +190,7 @@
 			if (this.attrs) {
 				for (var i in this.attrs) {
 					target.setAttribute(i, this.attrs[i]);
-					if (options && options.forIE && i == 'class') {
+					if (options && options.forIE && i === 'class') {
 						target.className = this.attrs[i];
 					}
 				}
@@ -248,7 +248,7 @@
 			}
 
 			format = Array.isArray(format) ? format : [format];
-			if (typeof format[1] == 'undefined') {
+			if (typeof format[1] === 'undefined') {
 				format[1] = '';
 			}
 
@@ -455,13 +455,14 @@
 			build(node, r, options) {
 				var link = document.createElement('a');
 
-				var m, f;
+				var m;
+				var f;
 				if (options && options.interwiki) {
 					m = r[1].match(/(.*?):(.*)/);
 					f = options.interwiki[m[1]];
 				}
 
-				if (typeof f == 'undefined') {
+				if (typeof f === 'undefined') {
 					if (!g.namedLink.apply) {
 						g.namedLink = new this.constructor(g.namedLink);
 					}

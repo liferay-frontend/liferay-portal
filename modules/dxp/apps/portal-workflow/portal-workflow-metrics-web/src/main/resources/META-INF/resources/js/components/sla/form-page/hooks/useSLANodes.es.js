@@ -99,7 +99,7 @@ const useSLANodes = (processId) => {
 			.filter(({id}) => !selectedNodes.includes(`${id}`))
 			.filter(
 				(node, index, self) =>
-					self.findIndex(({id}) => id == node.id) === index
+					self.findIndex(({id}) => id === node.id) === index
 			)
 			.map((node) => ({
 				...node,

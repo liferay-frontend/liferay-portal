@@ -26,12 +26,14 @@ export default function DeleteLocaleModal({observer, onCancel, onConfirm}) {
 					)}
 				</h4>
 			</ClayModal.Body>
+
 			<ClayModal.Footer
 				last={
 					<ClayButton.Group spaced>
 						<ClayButton displayType="secondary" onClick={onCancel}>
 							{Liferay.Language.get('dismiss')}
 						</ClayButton>
+
 						<ClayButton onClick={onConfirm}>
 							{Liferay.Language.get('delete')}
 						</ClayButton>

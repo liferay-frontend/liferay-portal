@@ -49,6 +49,7 @@ export default function DeleteSLAModal() {
 						)}
 					</p>
 				</ClayModal.Body>
+
 				<ClayModal.Footer
 					last={
 						<ClayButton.Group spaced>
@@ -58,6 +59,7 @@ export default function DeleteSLAModal() {
 							>
 								{Liferay.Language.get('cancel')}
 							</ClayButton>
+
 							<ClayButton
 								id="removeSlaButton"
 								onClick={removeItem}

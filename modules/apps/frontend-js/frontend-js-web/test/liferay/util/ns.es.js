@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import ns from '../../../src/main/resources/META-INF/resources/liferay/util/ns.es';
 
 describe('Liferay.Util.ns', () => {

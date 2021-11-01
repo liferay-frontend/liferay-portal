@@ -19,10 +19,10 @@ import React, {useEffect, useState} from 'react';
 import {useId} from '../../app/utils/useId';
 import CurrentLanguageFlag from './CurrentLanguageFlag';
 
-export const ImageSelectorDescription = ({
+export function ImageSelectorDescription({
 	imageDescription,
 	onImageDescriptionChanged,
-}) => {
+}) {
 	const [
 		imageDescriptionInputElement,
 		setImageDescriptionInputElement,
@@ -41,6 +41,7 @@ export const ImageSelectorDescription = ({
 			<label htmlFor={imageDescriptionInputId}>
 				{Liferay.Language.get('image-description')}
 			</label>
+
 			<ClayInput.Group small>
 				<ClayInput.GroupItem>
 					<ClayInput
@@ -53,13 +54,14 @@ export const ImageSelectorDescription = ({
 						type="text"
 					/>
 				</ClayInput.GroupItem>
+
 				<ClayInput.GroupItem shrink>
 					<CurrentLanguageFlag />
 				</ClayInput.GroupItem>
 			</ClayInput.Group>
 		</ClayForm.Group>
 	);
-};
+}
 
 ImageSelectorDescription.propTypes = {
 	imageDescription: PropTypes.string.isRequired,

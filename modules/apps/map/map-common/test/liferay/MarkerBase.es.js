@@ -79,7 +79,7 @@ describe('MarkerBase', () => {
 		it('returns a function', () => {
 			const fn = markerChild._getNativeEventFunction('nativeEvent');
 
-			expect(typeof fn === 'function');
+			expect(typeof fn === 'function').toBe(true);
 		});
 
 		it('returns a function that calls _handleNativeEvent when executed', () => {

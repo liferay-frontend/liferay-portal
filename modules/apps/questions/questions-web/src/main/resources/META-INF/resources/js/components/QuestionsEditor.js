@@ -101,8 +101,8 @@ const QuestionsEditor = ({
 		let endIndex;
 		let range;
 		if (
-			typeof element.selectionStart != 'undefined' &&
-			typeof element.selectionEnd != 'undefined'
+			typeof element.selectionStart !== 'undefined' &&
+			typeof element.selectionEnd !== 'undefined'
 		) {
 			endIndex = element.selectionEnd;
 			element.value =
@@ -113,8 +113,8 @@ const QuestionsEditor = ({
 				endIndex + text.length;
 		}
 		else if (
-			typeof document.selection != 'undefined' &&
-			typeof document.selection.createRange != 'undefined'
+			typeof document.selection !== 'undefined' &&
+			typeof document.selection.createRange !== 'undefined'
 		) {
 			element.focus();
 			range = document.selection.createRange();

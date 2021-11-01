@@ -545,6 +545,7 @@ const Main = ({
 				value={value}
 				{...otherProps}
 			/>
+
 			<ClayInput name={name} type="hidden" value={value} />
 		</FieldBase>
 	);

@@ -21,15 +21,15 @@ const {useCallback, useRef} = React;
  * looking things up in the registry.
  */
 export default function usePlugins() {
-	const plugins = useRef(new Map());
+	const pluginsRef = useRef(new Map());
 
 	const getInstance = useCallback((key) => {
-		return plugins.current.get(key) || Promise.resolve(null);
+		return pluginsRef.current.get(key) || Promise.resolve(null);
 	}, []);
 
 	const register = useCallback((key, promise, init) => {
-		if (!plugins.current.has(key)) {
-			plugins.current.set(
+		if (!pluginsRef.current.has(key)) {
+			pluginsRef.current.set(
 				key,
 				promise
 					.then((Plugin) => new Plugin(init))
@@ -39,7 +39,7 @@ export default function usePlugins() {
 
 							// Reset to allow future retries.
 
-							plugins.current.delete(key);
+							pluginsRef.current.delete(key);
 						}
 
 						return null;
@@ -47,7 +47,7 @@ export default function usePlugins() {
 			);
 		}
 
-		return plugins.current.get(key);
+		return pluginsRef.current.get(key);
 	}, []);
 
 	return {getInstance, register};

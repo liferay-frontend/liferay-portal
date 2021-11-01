@@ -14,11 +14,12 @@ import React, {useCallback, useRef} from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 
 export default function ChartWrapper({data, loading, noDataErrorMessage}) {
-	const chart = useRef();
+	const chartRef = useRef();
 
-	const resize = useCallback(() => chart.current && chart.current.resize(), [
-		chart,
-	]);
+	const resize = useCallback(
+		() => chartRef.current && chartRef.current.resize(),
+		[chartRef]
+	);
 
 	const wrapper = useCallback(
 		(node) => {
@@ -38,7 +39,7 @@ export default function ChartWrapper({data, loading, noDataErrorMessage}) {
 	else {
 		return (
 			<div ref={wrapper}>
-				<ClayChart {...data} ref={chart} />
+				<ClayChart {...data} ref={chartRef} />
 			</div>
 		);
 	}

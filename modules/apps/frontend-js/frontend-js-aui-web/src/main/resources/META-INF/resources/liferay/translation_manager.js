@@ -354,7 +354,7 @@ AUI.add(
 
 					var locales = A.Object.keys(val);
 
-					if (locales.length != 0) {
+					if (locales.length !== 0) {
 						this.syncAvailableLocales(locales);
 					}
 

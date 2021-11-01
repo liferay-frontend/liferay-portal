@@ -17,7 +17,7 @@ import {useEffect, useState} from 'react';
 
 import {isEqualObjects} from '../utils/utils';
 
-export default ({customFetch, endpoint, method, params}) => {
+export default function useResource({customFetch, endpoint, method, params}) {
 	const [state, setState] = useState({
 		error: null,
 		isLoading: true,
@@ -60,4 +60,4 @@ export default ({customFetch, endpoint, method, params}) => {
 	}, [params]);
 
 	return {refetch, ...state};
-};
+}

@@ -68,8 +68,8 @@ describe('Flags', () => {
 	it('renders', () => {
 		const {getByRole, getByText} = _renderFlagsComponent();
 
-		expect(getByText('report'));
-		expect(getByRole('button'));
+		expect(getByText('report')).toBeTruthy();
+		expect(getByRole('button')).toBeTruthy();
 	});
 
 	it('renders with only icon visible (text visually hidden)', () => {

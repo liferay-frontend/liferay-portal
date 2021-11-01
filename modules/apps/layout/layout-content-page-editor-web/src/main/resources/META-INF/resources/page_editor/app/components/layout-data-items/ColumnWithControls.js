@@ -89,7 +89,7 @@ const ColumnWithControls = React.forwardRef(({children, item}, ref) => {
 	/**
 	 * @type {{current: ResizeInfo}}
 	 */
-	const resizeInfo = useRef();
+	const resizeInfoRef = useRef();
 
 	const columnIndex = parentItem.children.indexOf(item.itemId);
 
@@ -130,7 +130,7 @@ const ColumnWithControls = React.forwardRef(({children, item}, ref) => {
 			// layoutData only if we have some value in nextSizes, that contains
 			// the new column sizes calculated during the resize
 
-			resizeInfo.current = null;
+			resizeInfoRef.current = null;
 			setColumnSelected(null);
 			setResizing(false);
 			setCanDrag(true);
@@ -259,7 +259,7 @@ const ColumnWithControls = React.forwardRef(({children, item}, ref) => {
 			};
 		}
 
-		resizeInfo.current = {
+		resizeInfoRef.current = {
 			columnWidth:
 				ref.current.getBoundingClientRect().width /
 				rightColumn.initialSize,
@@ -280,7 +280,7 @@ const ColumnWithControls = React.forwardRef(({children, item}, ref) => {
 		'mousemove',
 		useCallback(
 			(event) => {
-				if (!resizeInfo.current || !resizing) {
+				if (!resizeInfoRef.current || !resizing) {
 					return;
 				}
 
@@ -294,7 +294,7 @@ const ColumnWithControls = React.forwardRef(({children, item}, ref) => {
 					nextColumn,
 					previousResizableColumn,
 					rightColumn,
-				} = resizeInfo.current;
+				} = resizeInfoRef.current;
 
 				// Calculate displacement in px
 
@@ -403,7 +403,7 @@ const ColumnWithControls = React.forwardRef(({children, item}, ref) => {
 	useEventListener(
 		'mouseleave',
 		useCallback(() => {
-			if (!resizeInfo.current) {
+			if (!resizeInfoRef.current) {
 				return;
 			}
 
@@ -418,7 +418,7 @@ const ColumnWithControls = React.forwardRef(({children, item}, ref) => {
 	useEventListener(
 		'mouseup',
 		useCallback(() => {
-			if (!resizeInfo.current) {
+			if (!resizeInfoRef.current) {
 				return;
 			}
 

@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import formatStorage from '../../../src/main/resources/META-INF/resources/liferay/util/format_storage.es';
 
 describe('Liferay.Util.formatStorage', () => {

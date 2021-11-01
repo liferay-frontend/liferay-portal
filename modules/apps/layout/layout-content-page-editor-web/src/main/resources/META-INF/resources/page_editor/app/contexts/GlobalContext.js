@@ -143,11 +143,13 @@ GlobalContextFrame.propTypes = {
 	useIframe: PropTypes.bool,
 };
 
-export const GlobalContextProvider = ({children}) => (
-	<GlobalContext.Provider value={useState({document, window})}>
-		{children}
-	</GlobalContext.Provider>
-);
+export function GlobalContextProvider({children}) {
+	return (
+		<GlobalContext.Provider value={useState({document, window})}>
+			{children}
+		</GlobalContext.Provider>
+	);
+}
 
 export function useGlobalContext() {
 	const [globalContext] = useContext(GlobalContext);

@@ -45,7 +45,9 @@ export default function MainImage({
 					/>
 				)}
 			</div>
+
 			<Arrows onNext={onNext} onPrev={onPrev} />
+
 			{loading ? <ClayLoadingIndicator /> : null}
 		</div>
 	);

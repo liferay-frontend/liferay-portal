@@ -98,7 +98,7 @@ const DEFAULT_DATA_LAYOUT = {
 	paginationMode: 'single-page',
 };
 
-export const useData = ({dataDefinitionId, dataLayoutId}) => {
+export function useData({dataDefinitionId, dataLayoutId}) {
 	const {resource: dataDefinition} = useResource({
 		fetch: customFetch({
 			defaultData: DEFAULT_DATA_DEFINITION,
@@ -126,4 +126,4 @@ export const useData = ({dataDefinitionId, dataLayoutId}) => {
 	});
 
 	return {dataDefinition, dataLayout};
-};
+}

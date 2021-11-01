@@ -77,7 +77,7 @@ describe('GeoJSONBase', () => {
 			const eventData = geoJSONChild.emit.mock.calls[0][1];
 
 			eventData.features.forEach((wrappedFeature, index) => {
-				expect(wrappedFeature.wrapped);
+				expect(wrappedFeature.wrapped).toBeTruthy();
 				expect(wrappedFeature.feature).toBe(features[index]);
 			});
 		});

@@ -45,6 +45,7 @@ export default function BasicInfoPanel({url}) {
 					{Liferay.Language.get('properties')}
 				</p>
 			</div>
+
 			<div className="sidebar-body">
 				{loading ? (
 					<ClayLoadingIndicator />

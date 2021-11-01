@@ -155,6 +155,7 @@ const SidebarPanelInfoView = ({
 							<ClayIcon symbol="user" />
 						)}
 					</ClaySticker>
+
 					<span className="c-ml-2 text-secondary">{user.name}</span>
 				</div>
 
@@ -173,6 +174,7 @@ const SidebarPanelInfoView = ({
 						<h5 className="c-mb-1 font-weight-semi-bold">
 							{Liferay.Language.get('description')}
 						</h5>
+
 						<p className="text-secondary">{description}</p>
 					</div>
 				)}
@@ -232,11 +234,13 @@ const SidebarPanelInfoView = ({
 						<h5 className="c-mb-1 font-weight-semi-bold">
 							{Liferay.Language.get('extension')}
 						</h5>
+
 						<p className="text-secondary">{extension}</p>
 
 						<h5 className="c-mb-1 font-weight-semi-bold">
 							{Liferay.Language.get('size')}
 						</h5>
+
 						<p className="text-secondary">{size}</p>
 					</div>
 				)}

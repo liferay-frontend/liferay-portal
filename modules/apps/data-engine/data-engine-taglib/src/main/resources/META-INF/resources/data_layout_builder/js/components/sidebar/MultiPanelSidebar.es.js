@@ -209,6 +209,7 @@ export default function MultiPanelSidebar({
 						}, [])}
 					</ul>
 				</nav>
+
 				<div
 					className={classNames('multi-panel-sidebar-content', {
 						'multi-panel-sidebar-content-open': open,

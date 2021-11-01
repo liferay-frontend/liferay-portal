@@ -18,13 +18,17 @@ import React, {useContext, useState} from 'react';
 const SidebarPanelIdContext = React.createContext(null);
 const SetSidebarPanelIdContext = React.createContext(() => {});
 
-export const useSetSidebarPanelId = () => useContext(SetSidebarPanelIdContext);
-export const useSidebarPanelId = () => useContext(SidebarPanelIdContext);
+export function useSetSidebarPanelId() {
+	return useContext(SetSidebarPanelIdContext);
+}
+export function useSidebarPanelId() {
+	return useContext(SidebarPanelIdContext);
+}
 
-export const SidebarPanelIdProvider = ({
+export function SidebarPanelIdProvider({
 	children,
 	initialSidebarPanelId = null,
-}) => {
+}) {
 	const [sidebarPanelId, setSidebarPanelId] = useState(initialSidebarPanelId);
 
 	return (
@@ -34,7 +38,7 @@ export const SidebarPanelIdProvider = ({
 			</SidebarPanelIdContext.Provider>
 		</SetSidebarPanelIdContext.Provider>
 	);
-};
+}
 
 SidebarPanelIdContext.propTypes = {
 	setSidebarPanelId: PropTypes.func,

@@ -76,7 +76,7 @@ export default withRouter(
 
 		const [error, setError] = useState(null);
 
-		const editor = useRef('');
+		const editorRef = useRef('');
 
 		const [isPostButtonDisable, setIsPostButtonDisable] = useState(true);
 		const [showDeleteModalPanel, setShowDeleteModalPanel] = useState(false);
@@ -446,7 +446,7 @@ export default withRouter(
 													setIsPostButtonDisable
 												}
 												question={question}
-												ref={editor}
+												ref={editorRef}
 											/>
 
 											{!question.locked && (
@@ -461,12 +461,12 @@ export default withRouter(
 																`${sectionTitle}/${questionId}`
 															),
 															variables: {
-																articleBody: editor.current.getContent(),
+																articleBody: editorRef.current.getContent(),
 																messageBoardThreadId:
 																	question.id,
 															},
 														}).then(() => {
-															editor.current.clearContent();
+															editorRef.current.clearContent();
 															fetchMessages();
 														});
 													}}
@@ -485,6 +485,7 @@ export default withRouter(
 							</div>
 						</div>
 					)}
+
 					{question && question.id && (
 						<RelatedQuestions question={question} />
 					)}
@@ -495,6 +496,7 @@ export default withRouter(
 				{question && (
 					<Helmet>
 						<title>{question.headline}</title>
+
 						<link
 							href={`${getFullPath(
 								context.historyRouterBasePath || 'questions'

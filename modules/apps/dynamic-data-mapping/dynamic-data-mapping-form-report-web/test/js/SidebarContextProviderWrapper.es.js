@@ -16,7 +16,10 @@ import React from 'react';
 
 import {SidebarContext} from '../../src/main/resources/META-INF/resources/js/components/sidebar/SidebarContext.es';
 
-export default ({children, ...otherProps}) => {
+export default function SidebarContextProviderWrapper({
+	children,
+	...otherProps
+}) {
 	const field = {
 		icon: 'text',
 		label: 'Text',
@@ -44,4 +47,4 @@ export default ({children, ...otherProps}) => {
 			{children}
 		</SidebarContext.Provider>
 	);
-};
+}

@@ -124,7 +124,7 @@ const chartFactory = ({
 	}
 };
 
-export default ({data, fields}) => {
+export default function CardList({data, fields}) {
 	let hasCards = false;
 
 	const cards = fields.map((field, index) => {
@@ -179,4 +179,4 @@ export default ({data, fields}) => {
 	}
 
 	return cards;
-};
+}

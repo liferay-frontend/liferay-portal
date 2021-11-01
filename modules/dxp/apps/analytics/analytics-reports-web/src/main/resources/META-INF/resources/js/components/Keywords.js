@@ -95,6 +95,7 @@ export default function Keywords({currentPage}) {
 				<label htmlFor="countrySelect">
 					{Liferay.Language.get('select-country')}
 				</label>
+
 				<ClaySelect
 					aria-label={Liferay.Language.get('select-country')}
 					className="bg-white"
@@ -118,6 +119,7 @@ export default function Keywords({currentPage}) {
 						<ClayList.ItemTitle className="text-truncate-inline">
 							<span className="text-truncate">
 								{Liferay.Language.get('best-keyword')}
+
 								<span className="text-secondary">
 									<Hint
 										message={Liferay.Language.get(
@@ -131,6 +133,7 @@ export default function Keywords({currentPage}) {
 							</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
+
 					<ClayList.ItemField>
 						<ClayDropDown
 							active={isDropdownOpen}
@@ -145,6 +148,7 @@ export default function Keywords({currentPage}) {
 										<span className="pr-2">
 											{keywordValueType.label}
 										</span>
+
 										<ClayIcon symbol="caret-bottom" />
 									</span>
 								</ClayButton>
@@ -172,6 +176,7 @@ export default function Keywords({currentPage}) {
 						</ClayDropDown>
 					</ClayList.ItemField>
 				</ClayList.Item>
+
 				{!publishedToday &&
 					keywords.map(
 						({keyword, position, searchVolume, traffic}) => {
@@ -190,6 +195,7 @@ export default function Keywords({currentPage}) {
 											</span>
 										</ClayList.ItemText>
 									</ClayList.ItemField>
+
 									<ClayList.ItemField expand>
 										<span className="align-self-end font-weight-semi-bold text-dark">
 											{numberFormat(
@@ -208,6 +214,7 @@ export default function Keywords({currentPage}) {
 							);
 						}
 					)}
+
 				{(publishedToday || keywords.length === 0) && (
 					<ClayList.Item flex>
 						<ClayList.ItemField expand>

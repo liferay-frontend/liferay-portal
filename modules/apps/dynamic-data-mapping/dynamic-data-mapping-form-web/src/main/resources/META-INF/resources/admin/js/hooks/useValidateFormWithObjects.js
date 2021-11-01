@@ -48,7 +48,7 @@ const getUnmappedRequiredObjectFields = (formFields, objectFields) => {
  * This hook is used to validate the Forms when the
  * storage type object is selected in the Forms settings
  */
-export const useValidateFormWithObjects = () => {
+export function useValidateFormWithObjects() {
 	const {portletNamespace} = useConfig();
 	const {objectFields, pages} = useFormState();
 
@@ -102,4 +102,4 @@ export const useValidateFormWithObjects = () => {
 		},
 		[objectFields, pages, portletNamespace]
 	);
-};
+}

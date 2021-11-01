@@ -53,6 +53,7 @@ export default function PropertiesSidebarPanel({className}) {
 			<h1 className="ddm_template_editor__App-sidebar-title my-3">
 				{Liferay.Language.get('properties')}
 			</h1>
+
 			<div>
 				{loading ? (
 					<ClayLoadingIndicator />

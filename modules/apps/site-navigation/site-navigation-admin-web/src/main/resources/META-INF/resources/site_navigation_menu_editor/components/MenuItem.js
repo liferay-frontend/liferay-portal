@@ -35,7 +35,7 @@ import deleteItem from '../utils/deleteItem';
 import getItemPath from '../utils/getItemPath';
 import {useDragItem, useDropTarget} from '../utils/useDragAndDrop';
 
-export const MenuItem = ({item}) => {
+export function MenuItem({item}) {
 	const setItems = useSetItems();
 	const setSelectedMenuItemId = useSetSelectedMenuItemId();
 	const setSidebarPanelId = useSetSidebarPanelId();
@@ -166,7 +166,7 @@ export const MenuItem = ({item}) => {
 			</ClayCard>
 		</div>
 	);
-};
+}
 
 MenuItem.propTypes = {
 	item: PropTypes.shape({

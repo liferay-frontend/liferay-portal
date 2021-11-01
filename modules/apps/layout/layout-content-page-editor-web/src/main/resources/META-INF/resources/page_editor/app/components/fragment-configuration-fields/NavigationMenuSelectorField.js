@@ -20,7 +20,7 @@ import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
 import {config} from '../../config/index';
 import itemSelectorValueToSiteNavigationMenuItem from '../../utils/item-selector-value/itemSelectorValueToSiteNavigationMenuItem';
 
-export const NavigationMenuSelectorField = ({field, onValueSelect, value}) => {
+export function NavigationMenuSelectorField({field, onValueSelect, value}) {
 	const eventName = `${config.portletNamespace}selectSiteNavigationMenu`;
 
 	const selectedValue = value
@@ -48,7 +48,7 @@ export const NavigationMenuSelectorField = ({field, onValueSelect, value}) => {
 			transformValueCallback={itemSelectorValueToSiteNavigationMenuItem}
 		/>
 	);
-};
+}
 
 NavigationMenuSelectorField.propTypes = {
 	field: PropTypes.shape(ConfigurationFieldPropTypes).isRequired,

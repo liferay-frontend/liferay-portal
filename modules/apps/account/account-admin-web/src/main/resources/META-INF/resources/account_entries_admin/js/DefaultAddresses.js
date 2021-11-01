@@ -24,11 +24,11 @@ export default function ({
 	);
 
 	const getTitle = (type) => {
-		if (type == 'billing') {
+		if (type === 'billing') {
 			return Liferay.Language.get('set-default-billing-address');
 		}
 
-		if (type == 'shipping') {
+		if (type === 'shipping') {
 			return Liferay.Language.get('set-default-shipping-address');
 		}
 

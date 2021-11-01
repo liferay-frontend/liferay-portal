@@ -58,6 +58,7 @@ const FieldsSelectorDropdown = ({fields}) => {
 			trigger={
 				<ClayButton borderless displayType="secondary">
 					<ClayIcon symbol={active ? 'caret-top' : 'caret-bottom'} />
+
 					<span className="sr-only">
 						{active
 							? Liferay.Language.get('close-fields-menu')
@@ -71,6 +72,7 @@ const FieldsSelectorDropdown = ({fields}) => {
 				onChange={(event) => setQuery(event.target.value)}
 				value={query}
 			/>
+
 			{filteredFields.length ? (
 				<ClayDropDown.ItemList>
 					{filteredFields.map(({fieldName, label}) => (
@@ -95,6 +97,7 @@ const FieldsSelectorDropdown = ({fields}) => {
 							{selectedFieldNames[fieldName] && (
 								<ClayIcon className="mr-2" symbol="check" />
 							)}
+
 							{label}
 						</ClayDropDown.Item>
 					))}

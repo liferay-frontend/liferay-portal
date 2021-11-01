@@ -51,14 +51,14 @@ interface IProps {
 	defaultLanguageId: Locale;
 	editingLanguageId: Locale;
 	ffDecimalPlacesSettingsEnabled: boolean;
+	onBlur: FocusEventHandler<HTMLInputElement>;
+	onChange: FieldChangeEventHandler;
+	onFocus: FocusEventHandler<HTMLInputElement>;
 	readOnly: boolean;
 	thousandsSeparator?: ThousandsSeparator[];
 	thousandsSeparators: ISelectProps<ThousandsSeparator>[];
 	value: INumericInputMaskValue;
 	visible: boolean;
-	onBlur: FocusEventHandler<HTMLInputElement>;
-	onChange: FieldChangeEventHandler;
-	onFocus: FocusEventHandler<HTMLInputElement>;
 }
 
 export interface ISymbols {
@@ -189,6 +189,7 @@ const NumericInputMask: React.FC<IProps> = ({
 						visible={visible}
 					/>
 				</div>
+
 				<div className="pl-2 w-50">
 					<Select
 						label={Liferay.Language.get('decimal-separator')}
@@ -222,6 +223,7 @@ const NumericInputMask: React.FC<IProps> = ({
 						<label htmlFor="decimal_places ">
 							{Liferay.Language.get('decimal-places')}
 						</label>
+
 						<ClayInput
 							className="ddm-field-text"
 							disabled={readOnly}

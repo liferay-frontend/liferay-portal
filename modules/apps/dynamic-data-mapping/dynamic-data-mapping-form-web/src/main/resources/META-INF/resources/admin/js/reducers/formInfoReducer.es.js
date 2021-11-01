@@ -14,7 +14,7 @@
 
 import {EVENT_TYPES} from '../eventTypes.es';
 
-export default (state, action) => {
+export default function formInfoReducer(state, action) {
 	switch (action.type) {
 		case EVENT_TYPES.FORM_INFO.DESCRIPTION_CHANGE: {
 			const {editingLanguageId, localizedDescription} = state;
@@ -54,4 +54,4 @@ export default (state, action) => {
 		default:
 			return state;
 	}
-};
+}

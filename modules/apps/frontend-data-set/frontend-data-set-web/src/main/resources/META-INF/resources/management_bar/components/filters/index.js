@@ -35,7 +35,7 @@ export const filterIdToComponentMap = {
 export function Filter(props) {
 	const {moduleURL, type} = props;
 
-	const [Component, updateComponent] = useState(() => {
+	const [Component, setComponent] = useState(() => {
 		if (!moduleURL) {
 			const Matched = filterIdToComponentMap[type];
 
@@ -53,7 +53,7 @@ export function Filter(props) {
 	useEffect(() => {
 		if (moduleURL) {
 			getComponentByModuleURL(moduleURL).then((FetchedComponent) =>
-				updateComponent(() => FetchedComponent)
+				setComponent(() => FetchedComponent)
 			);
 		}
 	}, [moduleURL]);

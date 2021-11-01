@@ -88,6 +88,7 @@ const FileNamePicker = ({
 				<ClayForm.FeedbackGroup>
 					<ClayForm.FeedbackItem>
 						<ClayIcon className="mr-1" symbol="exclamation-full" />
+
 						{Liferay.Util.sub(
 							Liferay.Language.get(
 								'please-enter-a-file-with-a-valid-file-size-no-larger-than-x'

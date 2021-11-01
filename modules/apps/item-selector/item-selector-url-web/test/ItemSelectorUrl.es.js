@@ -57,7 +57,7 @@ describe('ItemSelectorUrl', () => {
 			it('renders no preview available message', () => {
 				expect(
 					itemSelectorUrl.getByText('there-is-no-preview-available')
-				);
+				).toBeTruthy();
 			});
 
 			it('enables the button', () => {

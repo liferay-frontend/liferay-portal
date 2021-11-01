@@ -50,6 +50,7 @@ function SlidingText({current, previous}) {
 			}}
 		>
 			<span className="current">{current}</span>
+
 			{animated && <span className="previous">{previous}</span>}
 		</span>
 	);

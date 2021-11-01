@@ -17,7 +17,7 @@ import React from 'react';
 
 import {Button} from './Button';
 
-export const ButtonList = ({items, onButtonClick}) => {
+export function ButtonList({items, onButtonClick}) {
 	return items.map((item) => (
 		<Button
 			key={item.label}
@@ -26,7 +26,7 @@ export const ButtonList = ({items, onButtonClick}) => {
 			tooltip={item.tooltip}
 		/>
 	));
-};
+}
 
 ButtonList.propTypes = {
 	items: PropTypes.arrayOf(PropTypes.object),

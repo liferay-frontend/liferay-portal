@@ -32,7 +32,7 @@ import {updateRulesReferences} from '../utils/rules';
 import sectionAdded from '../utils/sectionAddedHandler';
 import {enableSubmitButton} from '../utils/submitButtonController.es';
 
-export const deleteField = ({
+export function deleteField({
 	clean = false,
 	defaultLanguageId,
 	editingLanguageId,
@@ -41,8 +41,8 @@ export const deleteField = ({
 	fieldPage,
 	generateFieldNameUsingFieldLabel,
 	pages,
-}) =>
-	pages.map((page, pageIndex) => {
+}) {
+	return pages.map((page, pageIndex) => {
 		if (fieldPage === pageIndex) {
 			const pagesWithFieldRemoved = removeField(
 				{
@@ -69,6 +69,7 @@ export const deleteField = ({
 
 		return page;
 	});
+}
 
 const updateFieldProperty = ({
 	defaultLanguageId,
@@ -109,7 +110,7 @@ const updateFieldProperty = ({
  * NOTE: This is a literal copy of the old LayoutProvider logic. Small changes
  * were made only to adapt to the reducer.
  */
-export default (state, action, config) => {
+export default function fieldEditableReducer(state, action, config) {
 	switch (action.type) {
 		case EVENT_TYPES.FIELD.ADD: {
 			const {data, fieldType, indexes} = action.payload;
@@ -590,4 +591,4 @@ export default (state, action, config) => {
 		default:
 			return state;
 	}
-};
+}

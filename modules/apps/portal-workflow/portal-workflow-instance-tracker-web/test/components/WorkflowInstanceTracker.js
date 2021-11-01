@@ -111,7 +111,9 @@ Object.defineProperties(window.HTMLElement.prototype, {
 });
 
 describe('The WorkflowInstanceTracker component should', () => {
-	let container, queryAllByText, queryByText;
+	let container;
+	let queryAllByText;
+	let queryByText;
 
 	beforeAll(async () => {
 		fetch.mockResponseOnce(JSON.stringify(workflowInstanceData));

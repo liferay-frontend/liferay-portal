@@ -20,8 +20,10 @@ function resolveProductsPath(basePath, channelId) {
 	return `${basePath}${VERSION}/channels/${channelId}/products`;
 }
 
-export default (basePath) => ({
-	getBaseURL: (channelId) => resolveProductsPath(basePath, channelId),
-	getProductsByChannelId: (channelId, ...params) =>
-		AJAX.GET(resolveProductsPath(basePath, channelId), ...params),
-});
+export default function Product(basePath) {
+	return {
+		getBaseURL: (channelId) => resolveProductsPath(basePath, channelId),
+		getProductsByChannelId: (channelId, ...params) =>
+			AJAX.GET(resolveProductsPath(basePath, channelId), ...params),
+	};
+}

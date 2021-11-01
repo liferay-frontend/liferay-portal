@@ -24,11 +24,11 @@ function useDebounceCallback(callback, milliseconds) {
 	return [callbackRef.current, () => cancelDebounce(callbackRef.current)];
 }
 
-export const useDLVideoExternalShortcutFields = ({
+export function useDLVideoExternalShortcutFields({
 	getDLVideoExternalShortcutFieldsURL,
 	namespace,
 	url,
-}) => {
+}) {
 	const [error, setError] = useState('');
 	const [fields, setFields] = useState(null);
 	const [loading, setLoading] = useState(false);
@@ -77,4 +77,4 @@ export const useDLVideoExternalShortcutFields = ({
 	}, [getFields, url]);
 
 	return {error, fields, loading};
-};
+}

@@ -22,6 +22,7 @@ function Step(props) {
 		<div className={classnames(`step`, props.state || 'inactive')}>
 			<span className="step-label">
 				{props.label}
+
 				{props.state === 'completed' && (
 					<ClayIcon className="ml-3" symbol="check" />
 				)}

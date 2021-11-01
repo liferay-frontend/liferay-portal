@@ -68,9 +68,9 @@ describe('WrapperWithQuantity', () => {
 			});
 
 			await wait(() => {
-				expect(
-					AddToCartButtonElement.getAttribute('data-test-quantity')
-				).toEqual(updatedValue.toString());
+				expect(AddToCartButtonElement.dataset['test-quantity']).toEqual(
+					updatedValue.toString()
+				);
 			});
 		});
 	});

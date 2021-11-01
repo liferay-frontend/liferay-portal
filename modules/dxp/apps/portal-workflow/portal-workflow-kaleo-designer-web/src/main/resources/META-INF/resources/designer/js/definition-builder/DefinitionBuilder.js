@@ -33,6 +33,7 @@ export default function (props) {
 					<ReactFlow elements={[]} minZoom="0.1" onLoad={onLoad} />
 
 					<Controls showInteractive={false} />
+
 					<Background size={1} />
 				</ReactFlowProvider>
 			</div>

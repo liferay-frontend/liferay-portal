@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import createRenderURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_render_url.es';
 
 describe('Liferay.Util.PortletURL.createRenderURL', () => {

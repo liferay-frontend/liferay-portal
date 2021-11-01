@@ -28,7 +28,7 @@ AUI.add(
 		 * newer layouts (ADT) sometimes only use `id`.
 		 */
 		function _getTermId(term) {
-			return term.getAttribute('data-term-id') || term.id;
+			return term.dataset['term-id'] || term.id;
 		}
 
 		/**

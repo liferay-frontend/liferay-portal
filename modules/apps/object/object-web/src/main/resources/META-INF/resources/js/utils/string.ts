@@ -12,40 +12,39 @@
  * details.
  */
 
-type TStringFn = (str: string) => string;
-
 /**
  * Format string removing spaces and special characters
  */
-export const removeAllSpecialCharacters: TStringFn = (str) => {
+export function removeAllSpecialCharacters(str: string): string {
 	return str.replace(/[^A-Z0-9]/gi, '');
-};
+}
 
 /**
  * Transform first letter in lowercase
  */
-export const firstLetterLowercase: TStringFn = (str) => {
+export function firstLetterLowercase(str: string): string {
 	return str.charAt(0).toLowerCase() + str.slice(1);
-};
+}
 
 /**
  * Transform first letter in uppercase
  */
-export const firstLetterUppercase: TStringFn = (str) => {
+export function firstLetterUppercase(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1);
-};
+}
 
 /**
  * Normalize languageId to be used in the
  * frontend with themeDisplay.getDefaultLanguageId()
  */
-export const normalizeLanguageId: TStringFn = (languageId) =>
-	languageId.replace('_', '-');
+export function normalizeLanguageId(languageId: string): string {
+	return languageId.replace('_', '-');
+}
 
 /**
  * Normalize string in camel case pattern.
  */
-export const toCamelCase: TStringFn = (str) => {
+export function toCamelCase(str: string): string {
 	const split = str.split(' ');
 	const capitalizeFirstLetters = split.map((str: string) =>
 		firstLetterUppercase(str)
@@ -53,4 +52,4 @@ export const toCamelCase: TStringFn = (str) => {
 	const join = capitalizeFirstLetters.join('');
 
 	return firstLetterLowercase(removeAllSpecialCharacters(join));
-};
+}

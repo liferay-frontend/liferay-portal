@@ -48,11 +48,13 @@ const Collapse = ({children, label}) => {
 			>
 				<span className="c-inner" tabIndex="-1">
 					{label}
+
 					<span className={`collapse-icon-${collapseIconClassName}`}>
 						<ClayIcon key={collapseIcon} symbol={collapseIcon} />
 					</span>
 				</span>
 			</button>
+
 			{isOpen && children}
 		</div>
 	);

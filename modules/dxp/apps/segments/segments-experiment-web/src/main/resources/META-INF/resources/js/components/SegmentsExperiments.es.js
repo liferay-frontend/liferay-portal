@@ -85,6 +85,7 @@ function SegmentsExperiments({
 						<label>
 							{Liferay.Language.get('select-experience')}
 						</label>
+
 						<ClaySelect
 							defaultValue={_selectedExperienceId}
 							onChange={_handleExperienceSelection}
@@ -110,16 +111,18 @@ function SegmentsExperiments({
 
 			<ClayTabs justified={true}>
 				<ClayTabs.Item
-					active={activeTab == TABS_STATES.ACTIVE}
+					active={activeTab === TABS_STATES.ACTIVE}
 					onClick={() => setActiveTab(TABS_STATES.ACTIVE)}
 				>
 					{Liferay.Language.get('active-test')}
 				</ClayTabs.Item>
+
 				<ClayTabs.Item
-					active={activeTab == TABS_STATES.HISTORY}
+					active={activeTab === TABS_STATES.HISTORY}
 					onClick={() => setActiveTab(TABS_STATES.HISTORY)}
 				>
 					{Liferay.Language.get('history')}
+
 					{' (' + experimentHistory.length + ')'}
 				</ClayTabs.Item>
 			</ClayTabs>
@@ -161,6 +164,7 @@ function SegmentsExperiments({
 											>
 												{Liferay.Language.get('edit')}
 											</ClayDropDown.Item>
+
 											<ClayDropDown.Item
 												onClick={
 													_handleDeleteActiveExperiment
@@ -200,6 +204,7 @@ function SegmentsExperiments({
 											),
 										}}
 									/>
+
 									<ClayAlert.Footer>
 										<ClayButton.Group>
 											<ClayButton
@@ -258,16 +263,19 @@ function SegmentsExperiments({
 								src={noExperimentIllustration}
 								width="120px"
 							/>
+
 							<h4 className="text-dark">
 								{Liferay.Language.get(
 									'no-active-tests-were-found-for-the-selected-experience'
 								)}
 							</h4>
+
 							<p>
 								{Liferay.Language.get(
 									'create-test-help-message'
 								)}
 							</p>
+
 							<ClayButton
 								displayType="secondary"
 								onClick={() =>
@@ -281,6 +289,7 @@ function SegmentsExperiments({
 						</div>
 					)}
 				</ClayTabs.TabPane>
+
 				<ClayTabs.TabPane>
 					<ExperimentsHistory
 						experimentHistory={experimentHistory}

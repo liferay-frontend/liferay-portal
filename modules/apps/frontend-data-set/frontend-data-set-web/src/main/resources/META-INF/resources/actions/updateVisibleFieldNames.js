@@ -15,9 +15,9 @@
 export const ACTION_UPDATE_VISIBLE_FIELD_NAMES =
 	'ACTION_UPDATE_VISIBLE_FIELD_NAMES';
 
-export const updateVisibleFieldNames = (visibleFieldNames) => {
+export function updateVisibleFieldNames(visibleFieldNames) {
 	return {
 		type: ACTION_UPDATE_VISIBLE_FIELD_NAMES,
 		value: visibleFieldNames,
 	};
-};
+}

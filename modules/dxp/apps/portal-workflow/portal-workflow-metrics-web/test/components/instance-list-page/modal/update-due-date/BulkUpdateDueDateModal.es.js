@@ -113,7 +113,10 @@ const ContainerMock = ({children}) => {
 };
 
 describe('The BulkReassignModal component should', () => {
-	let getAllByRole, getAllByText, getByText, renderResult;
+	let getAllByRole;
+	let getAllByText;
+	let getByText;
+	let renderResult;
 
 	beforeAll(async () => {
 		renderResult = render(<BulkUpdateDueDateModal />, {

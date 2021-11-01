@@ -34,6 +34,7 @@ const DocumentPreview = ({
 						target="_blank"
 					>
 						<img alt={documentTitle} src={documentSrc} />
+
 						<ClayIcon
 							className="document-preview-icon"
 							symbol="shortcut"
@@ -41,6 +42,7 @@ const DocumentPreview = ({
 					</a>
 				</figure>
 			)}
+
 			<div>
 				{isFile && (
 					<ClayLink className="btn btn-primary" href={downloadURL}>

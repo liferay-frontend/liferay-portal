@@ -47,7 +47,7 @@ CKEDITOR.plugins.add('wikilink', {
 
 				if (
 					element &&
-					element.getName() == 'a' &&
+					element.getName() === 'a' &&
 					element.getAttribute('href')
 				) {
 					commandState = CKEDITOR.TRISTATE_OFF;
@@ -112,7 +112,7 @@ CKEDITOR.plugins.link = {
 		try {
 			var selection = editor.getSelection();
 
-			if (selection.getType() == CKEDITOR.SELECTION_ELEMENT) {
+			if (selection.getType() === CKEDITOR.SELECTION_ELEMENT) {
 				var selectedElement = selection.getSelectedElement();
 
 				if (selectedElement.is('a')) {

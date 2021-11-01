@@ -210,6 +210,7 @@ const GuestUploadFile = ({
 						value={transformedFileEntryTitle || ''}
 					/>
 				</ClayInput.GroupItem>
+
 				<ClayInput.GroupItem append shrink>
 					<label
 						className={
@@ -223,6 +224,7 @@ const GuestUploadFile = ({
 					>
 						{Liferay.Language.get('select')}
 					</label>
+
 					<input
 						className="input-file"
 						disabled={readOnly}
@@ -231,6 +233,7 @@ const GuestUploadFile = ({
 						type="file"
 					/>
 				</ClayInput.GroupItem>
+
 				{transformedFileEntryTitle && (
 					<ClayInput.GroupItem shrink>
 						<ClayButton

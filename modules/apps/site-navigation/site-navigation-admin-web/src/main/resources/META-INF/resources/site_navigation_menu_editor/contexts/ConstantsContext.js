@@ -17,13 +17,17 @@ import React, {useContext} from 'react';
 
 const ConstantsContext = React.createContext({});
 
-export const useConstants = () => useContext(ConstantsContext);
+export function useConstants() {
+	return useContext(ConstantsContext);
+}
 
-export const ConstantsProvider = ({children, constants}) => (
-	<ConstantsContext.Provider value={constants}>
-		{children}
-	</ConstantsContext.Provider>
-);
+export function ConstantsProvider({children, constants}) {
+	return (
+		<ConstantsContext.Provider value={constants}>
+			{children}
+		</ConstantsContext.Provider>
+	);
+}
 
 ConstantsProvider.propTypes = {
 	constants: PropTypes.shape({

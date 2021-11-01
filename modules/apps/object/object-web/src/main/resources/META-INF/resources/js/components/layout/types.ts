@@ -17,15 +17,15 @@ export type TName = {
 };
 
 export type TObjectLayout = {
-	name: TName;
 	defaultObjectLayout: boolean;
+	name: TName;
 	objectLayoutTabs: TObjectLayoutTab[];
 };
 
 export type TObjectLayoutTab = {
-	objectRelationshipId: number;
 	name: TName;
 	objectLayoutBoxes: TObjectLayoutBox[];
+	objectRelationshipId: number;
 	priority: number;
 };
 
@@ -37,8 +37,8 @@ export type TObjectLayoutBox = {
 };
 
 export type TObjectLayoutRow = {
-	priority: number;
 	objectLayoutColumns: TObjectLayoutColumn[];
+	priority: number;
 };
 
 export type TObjectLayoutColumn = {
@@ -52,7 +52,7 @@ export type TObjectField = {
 	indexed: boolean;
 	indexedAsKeyword: boolean;
 	indexedLanguageId: string;
-	inLayout?: boolean;
+	inLayout?: boolean; // eslint-disable-line @typescript-eslint/member-ordering
 	label: TName;
 	listTypeDefinitionId: boolean;
 	name: string;

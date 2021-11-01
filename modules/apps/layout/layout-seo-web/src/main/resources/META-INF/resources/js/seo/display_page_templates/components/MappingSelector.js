@@ -49,6 +49,7 @@ function MappingSelector({
 			<label className="control-label" htmlFor={name}>
 				{label}
 			</label>
+
 			<ClayInput.Group>
 				<ClayInput.GroupItem>
 					<ClayInput
@@ -63,8 +64,10 @@ function MappingSelector({
 							''
 						}${field.label}`}
 					/>
+
 					<ClayInput name={name} type="hidden" value={field.key} />
 				</ClayInput.GroupItem>
+
 				<ClayInput.GroupItem shrink>
 					<MappingPanel
 						field={field}
@@ -79,6 +82,7 @@ function MappingSelector({
 					/>
 				</ClayInput.GroupItem>
 			</ClayInput.Group>
+
 			{helpMessage && <ClayForm.Text>{helpMessage}</ClayForm.Text>}
 		</ClayForm.Group>
 	);

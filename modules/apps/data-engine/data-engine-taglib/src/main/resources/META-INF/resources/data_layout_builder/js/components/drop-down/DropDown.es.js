@@ -19,7 +19,7 @@ import React, {useState} from 'react';
 
 const {Item, ItemList} = ClayDropDown;
 
-export default ({actions, className, disabled}) => {
+export default function DropDown({actions, className, disabled}) {
 	const [active, setActive] = useState(false);
 
 	const DropdownButton = (
@@ -65,4 +65,4 @@ export default ({actions, className, disabled}) => {
 			</ItemList>
 		</ClayDropDown>
 	);
-};
+}

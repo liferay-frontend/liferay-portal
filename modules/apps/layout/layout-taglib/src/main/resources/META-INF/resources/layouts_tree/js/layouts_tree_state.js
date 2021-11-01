@@ -331,7 +331,7 @@ AUI.add(
 							checkedNodes.push(plid);
 						}
 
-						if (localCheckedIndex == -1) {
+						if (localCheckedIndex === -1) {
 							localCheckedNodes.push(plid);
 						}
 

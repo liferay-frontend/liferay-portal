@@ -40,7 +40,7 @@ function getFields(pages) {
 
 	visitor.mapFields(
 		(field, fieldIndex, columnIndex, rowIndex, pageIndex) => {
-			if (field.type != 'fieldset') {
+			if (field.type !== 'fieldset') {
 				fields.push({
 					...field,
 					pageIndex,
@@ -139,6 +139,7 @@ const RuleEditorModalContent = ({onClose, onSaveRule, rule}) => {
 						<ClayButton displayType="secondary" onClick={onClose}>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
+
 						<ClayButton
 							disabled={invalidRule || !ruleName}
 							onClick={() => {
@@ -159,7 +160,12 @@ const RuleEditorModalContent = ({onClose, onSaveRule, rule}) => {
 	);
 };
 
-export default ({onClose: onCloseFn, onSaveRule, rule, showModal}) => {
+export default function RuleEditorModal({
+	onClose: onCloseFn,
+	onSaveRule,
+	rule,
+	showModal,
+}) {
 	const {observer, onClose} = useModal({
 		onClose: onCloseFn,
 	});
@@ -181,4 +187,4 @@ export default ({onClose: onCloseFn, onSaveRule, rule, showModal}) => {
 			/>
 		</ClayModal>
 	);
-};
+}

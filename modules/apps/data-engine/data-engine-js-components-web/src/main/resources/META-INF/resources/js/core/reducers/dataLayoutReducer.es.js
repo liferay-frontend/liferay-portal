@@ -14,7 +14,7 @@
 
 import {EVENT_TYPES} from '../actions/eventTypes.es';
 
-export default (state, action) => {
+export default function dataLayoutReducer(state, action) {
 	switch (action.type) {
 		case EVENT_TYPES.DATA_LAYOUT.NAME: {
 			const {name} = action.payload;
@@ -29,4 +29,4 @@ export default (state, action) => {
 		default:
 			return state;
 	}
-};
+}

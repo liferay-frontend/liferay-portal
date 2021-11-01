@@ -78,7 +78,11 @@ describe('The time range filter component should', () => {
 	});
 
 	describe('Render with custom date range option selected and', () => {
-		let container, dateEndInput, dateStartInput, getAllByText, getByText;
+		let container;
+		let dateEndInput;
+		let dateStartInput;
+		let getAllByText;
+		let getByText;
 
 		beforeAll(() => {
 			jsonSessionStorage.set('timeRanges', data);

@@ -16,7 +16,7 @@ import React from 'react';
 
 import {getColumnLabel, roundPercentage} from '../../utils/data.es';
 
-export default ({
+export default function TooltipContent({
 	active,
 	field,
 	label,
@@ -25,7 +25,7 @@ export default ({
 	showBullet = true,
 	showHeader = true,
 	totalEntries = 0,
-}) => {
+}) {
 	if (active) {
 		const getPercentage = (count) => count / totalEntries;
 
@@ -49,7 +49,10 @@ export default ({
 							? payload.label
 							: getColumnLabel(dataKey, field);
 
-						fill = fill == undefined ? payload.fill : null;
+						fill =
+							fill === undefined || fill === null
+								? payload.fill
+								: null;
 
 						return (
 							<li key={`tooltip-${index}`}>
@@ -72,15 +75,18 @@ export default ({
 										)}
 									</svg>
 								) : null}
+
 								<div id="tooltip-label">
 									{`${dataKey}: ${value} `}
-									{value == 1
+
+									{Number(value) === 1
 										? `${Liferay.Language.get(
 												'entry'
 										  ).toLowerCase()} `
 										: `${Liferay.Language.get(
 												'entries'
 										  ).toLowerCase()} `}
+
 									<b>
 										({roundPercentage(getPercentage(value))}
 										)
@@ -95,4 +101,4 @@ export default ({
 	}
 
 	return null;
-};
+}

@@ -69,7 +69,8 @@ const timeRangeData = {
 };
 
 describe('The PerformanceByAssigneePage component having data should', () => {
-	let getAllByRole, rows;
+	let getAllByRole;
+	let rows;
 
 	beforeAll(async () => {
 		jsonSessionStorage.set('timeRanges', timeRangeData);

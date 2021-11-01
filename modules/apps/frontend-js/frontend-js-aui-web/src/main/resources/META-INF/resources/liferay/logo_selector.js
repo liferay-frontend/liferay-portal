@@ -129,7 +129,7 @@ AUI.add(
 						'logoDisplaySelector'
 					);
 
-					var deleteLogo = src == DELETE_LOGO;
+					var deleteLogo = src === DELETE_LOGO;
 
 					var defaultLogo = instance.get('defaultLogo');
 

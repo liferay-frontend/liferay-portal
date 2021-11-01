@@ -385,7 +385,8 @@
 			i = moduleName.indexOf('/', i + 1);
 		}
 
-		let containerId, path;
+		let containerId;
+		let path;
 
 		if (i === -1) {
 			containerId = moduleName;

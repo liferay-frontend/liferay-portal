@@ -54,6 +54,7 @@ function Info({data, velocityUnit}) {
 	return (
 		<div className="pb-2">
 			<span className="velocity-value">{formattedValue}</span>
+
 			<span className="velocity-unit">{velocityUnit.name}</span>
 		</div>
 	);

@@ -17,8 +17,8 @@ import ClayTable from '@clayui/table';
 import React, {useEffect, useState} from 'react';
 
 function FieldsTable({portletNamespace}) {
-	const [fields, updateFields] = useState([]);
-	const [selectedFields, updateSelectedFields] = useState([]);
+	const [fields, setFields] = useState([]);
+	const [selectedFields, setSelectedFields] = useState([]);
 
 	useEffect(() => {
 		const handleSchemaUpdated = (event) => {
@@ -47,12 +47,12 @@ function FieldsTable({portletNamespace}) {
 					newSelectedFields.push(field);
 				}
 
-				updateFields(newFields);
-				updateSelectedFields(newSelectedFields);
+				setFields(newFields);
+				setSelectedFields(newSelectedFields);
 			}
 			else {
-				updateFields([]);
-				updateSelectedFields([]);
+				setFields([]);
+				setSelectedFields([]);
 			}
 		};
 
@@ -70,6 +70,7 @@ function FieldsTable({portletNamespace}) {
 			<h4 className="card-header py-3">
 				{Liferay.Language.get('entity-attributes')}
 			</h4>
+
 			<div className="card-body p-0">
 				<ClayTable borderless hover={false} responsive={false}>
 					<ClayTable.Head>
@@ -89,14 +90,15 @@ function FieldsTable({portletNamespace}) {
 											selectedFields.length ===
 											fields.length
 										) {
-											updateSelectedFields([]);
+											setSelectedFields([]);
 										}
 										else {
-											updateSelectedFields(fields);
+											setSelectedFields(fields);
 										}
 									}}
 								/>
 							</ClayTable.Cell>
+
 							<ClayTable.Cell
 								className="table-cell-expand-small"
 								headingCell
@@ -105,6 +107,7 @@ function FieldsTable({portletNamespace}) {
 							</ClayTable.Cell>
 						</ClayTable.Row>
 					</ClayTable.Head>
+
 					<ClayTable.Body>
 						{fields.map((field) => {
 							const included = selectedFields.includes(field);
@@ -118,7 +121,7 @@ function FieldsTable({portletNamespace}) {
 											name={`${portletNamespace}fieldName`}
 											onChange={() => {
 												if (included) {
-													updateSelectedFields(
+													setSelectedFields(
 														selectedFields.filter(
 															(selected) =>
 																selected !==
@@ -127,7 +130,7 @@ function FieldsTable({portletNamespace}) {
 													);
 												}
 												else {
-													updateSelectedFields([
+													setSelectedFields([
 														...selectedFields,
 														field,
 													]);
@@ -136,6 +139,7 @@ function FieldsTable({portletNamespace}) {
 											value={field.value}
 										/>
 									</ClayTable.Cell>
+
 									<ClayTable.Cell>
 										<label
 											htmlFor={`${portletNamespace}fieldName_${field.label}`}

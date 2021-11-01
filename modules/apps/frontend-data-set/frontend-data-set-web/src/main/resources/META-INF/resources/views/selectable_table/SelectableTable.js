@@ -24,10 +24,10 @@ import EmptyResultMessage from '../../EmptyResultMessage';
 function SelectableTable({dataLoading, items: itemsProp, schema, style}) {
 	const {namespace} = useContext(DataSetContext);
 	const {selectedItemsKey} = useContext(DataSetContext);
-	const [items, updateItems] = useState(null);
+	const [items, setItems] = useState(null);
 
 	useEffect(() => {
-		updateItems(itemsProp);
+		setItems(itemsProp);
 	}, [itemsProp]);
 
 	function handleCheckboxChange(itemField, itemId, value) {
@@ -57,7 +57,7 @@ function SelectableTable({dataLoading, items: itemsProp, schema, style}) {
 			return item;
 		});
 
-		updateItems(updatedItems);
+		setItems(updatedItems);
 	}
 
 	if (dataLoading) {
@@ -80,6 +80,7 @@ function SelectableTable({dataLoading, items: itemsProp, schema, style}) {
 						>
 							{schema.firstColumnLabel}
 						</ClayTable.Cell>
+
 						{items[0].restrictionFields.map((columnField) => {
 							const checkedItems = items.reduce(
 								(checked, item) => {
@@ -123,6 +124,7 @@ function SelectableTable({dataLoading, items: itemsProp, schema, style}) {
 						})}
 					</ClayTable.Row>
 				</ClayTable.Head>
+
 				<ClayTable.Body>
 					{items.map((item, i) => {
 						const itemId = item[selectedItemsKey];
@@ -132,6 +134,7 @@ function SelectableTable({dataLoading, items: itemsProp, schema, style}) {
 								<ClayTable.Cell>
 									{item[schema.firstColumnName]}
 								</ClayTable.Cell>
+
 								{item.restrictionFields.map((field) => {
 									return (
 										<ClayTable.Cell key={field.name}>

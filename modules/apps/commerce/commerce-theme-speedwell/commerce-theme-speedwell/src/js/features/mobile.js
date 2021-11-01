@@ -15,13 +15,13 @@
 Liferay.component(
 	'SpeedwellMobileHelpers',
 	(function () {
-		let filtersButton,
-			filtersHeader,
-			addToCartInline,
-			addToCartInlineDefaultPosition;
+		let filtersButton;
+		let filtersHeader;
+		let addToCartInline;
+		let addToCartInlineDefaultPosition;
 
-		const IS_OPEN_CLASS = 'is-open',
-			IS_FIXED_CLASS = 'is-fixed';
+		const IS_OPEN_CLASS = 'is-open';
+		const IS_FIXED_CLASS = 'is-fixed';
 
 		function setupFiltersHeader() {
 			filtersHeader.querySelector(

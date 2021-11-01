@@ -56,7 +56,9 @@ describe('The instance list card should', () => {
 			.fn()
 			.mockResolvedValue({data: {items, totalCount: items.length + 1}}),
 	};
-	let container, findByText, getByText;
+	let container;
+	let findByText;
+	let getByText;
 
 	beforeAll(async () => {
 		const renderResult = render(

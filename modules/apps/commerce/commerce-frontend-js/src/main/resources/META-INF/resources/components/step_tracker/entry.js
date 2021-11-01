@@ -15,4 +15,6 @@
 import launcher from '../../utilities/launcher';
 import StepTracker from './StepTracker';
 
-export default (...data) => launcher(StepTracker, ...data);
+export default function entry(...data) {
+	return launcher(StepTracker, ...data);
+}

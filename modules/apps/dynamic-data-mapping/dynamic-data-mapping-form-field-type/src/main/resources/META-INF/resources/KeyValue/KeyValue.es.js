@@ -105,6 +105,7 @@ const Main = ({
 				value={value}
 				visible={visible}
 			/>
+
 			{showKeyword && (
 				<KeyValue
 					className="key-value-input"
@@ -120,6 +121,7 @@ const Main = ({
 					value={keyword}
 				/>
 			)}
+
 			<KeyValue
 				className="key-value-reference-input"
 				onBlur={onReferenceBlur}

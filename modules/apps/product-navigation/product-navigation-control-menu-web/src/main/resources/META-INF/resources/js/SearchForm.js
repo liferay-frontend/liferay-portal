@@ -24,6 +24,7 @@ const SearchForm = ({onChange, tabIndex, value}) => {
 			<label className="sr-only" htmlFor={id}>
 				{Liferay.Language.get('search-form')}
 			</label>
+
 			<ClayInput
 				id={id}
 				onChange={(event) => {

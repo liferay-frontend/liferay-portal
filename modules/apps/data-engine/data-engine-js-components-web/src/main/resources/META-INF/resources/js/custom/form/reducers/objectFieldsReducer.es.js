@@ -14,7 +14,7 @@
 
 import {EVENT_TYPES} from '../eventTypes.es';
 
-export default (state, action) => {
+export default function objectFieldsReducer(state, action) {
 	switch (action.type) {
 		case EVENT_TYPES.OBJECT_FIELDS.ADD: {
 			const {objectFields} = action.payload;
@@ -26,4 +26,4 @@ export default (state, action) => {
 		default:
 			return state;
 	}
-};
+}
