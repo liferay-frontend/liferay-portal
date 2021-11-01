@@ -33,7 +33,7 @@ function ManagementBar({
 	showSearch,
 	total,
 }) {
-	const [filters, updateFilters] = useState(propFilters);
+	const [filters, setFilters] = useState(propFilters);
 
 	useEffect(() => {
 		onFiltersChange(filters);
@@ -42,7 +42,7 @@ function ManagementBar({
 	const state = {
 		filters,
 		resetFiltersValue: () => {
-			updateFilters((filters) => {
+			setFilters((filters) => {
 				return filters.map((element) => ({
 					...element,
 					additionalData: undefined,
@@ -53,7 +53,7 @@ function ManagementBar({
 			});
 		},
 		updateFilterState: (id, value, formattedValue, odataFilterString) => {
-			updateFilters((filters) => {
+			setFilters((filters) => {
 				return filters.map((filter) => ({
 					...filter,
 					...(filter.id === id
@@ -80,9 +80,11 @@ function ManagementBar({
 					total={total}
 				/>
 			)}
+
 			{(!selectedItemsValue.length || selectionType === 'single') && (
 				<NavBar creationMenu={creationMenu} showSearch={showSearch} />
 			)}
+
 			<ActiveFiltersBar disabled={!!selectedItemsValue.length} />
 		</FiltersContext.Provider>
 	);

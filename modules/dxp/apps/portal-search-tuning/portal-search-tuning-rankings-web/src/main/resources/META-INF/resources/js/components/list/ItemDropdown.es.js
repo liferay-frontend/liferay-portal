@@ -95,6 +95,7 @@ class ItemDropdown extends Component {
 								  )}
 						</ClayDropDown.Item>
 					)}
+
 					{onClickHide && (
 						<ClayDropDown.Item
 							onClick={this._handleDropdownAction(onClickHide)}

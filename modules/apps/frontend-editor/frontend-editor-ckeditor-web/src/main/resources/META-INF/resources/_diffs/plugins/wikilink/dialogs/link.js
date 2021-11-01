@@ -174,7 +174,7 @@ CKEDITOR.dialog.add('link', (editor) => {
 
 				var ranges = selection.getRanges(true);
 
-				if (ranges.length == 1 && ranges[0].collapsed) {
+				if (ranges.length === 1 && ranges[0].collapsed) {
 					var text = new CKEDITOR.dom.text(
 						data.text,
 						editor.document

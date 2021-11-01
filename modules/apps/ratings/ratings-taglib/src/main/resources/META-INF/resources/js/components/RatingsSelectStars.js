@@ -65,6 +65,7 @@ export default function RatingsSelectStars({
 							<span className="inline-item inline-item-before">
 								<ClayIcon symbol={score ? 'star' : 'star-o'} />
 							</span>
+
 							<span className="inline-item ratings-stars-button-text">
 								{score || '-'}
 							</span>
@@ -91,6 +92,7 @@ export default function RatingsSelectStars({
 									}}
 								>
 									{label}
+
 									<span className="sr-only">
 										{Lang.sub(srMessage, [
 											index + 1,
@@ -119,8 +121,10 @@ export default function RatingsSelectStars({
 							symbol="star"
 						/>
 					</span>
+
 					<span className="inline-item ratings-stars-average-text">
 						{averageScore.toFixed(1)}
+
 						{!!totalEntries &&
 							` (${totalEntries} ${
 								totalEntries === 1
@@ -128,6 +132,7 @@ export default function RatingsSelectStars({
 									: Liferay.Language.get('votes')
 							})`}
 					</span>
+
 					<span className="sr-only">{getSrAverageMessage()}</span>
 				</span>
 			</ClayLayout.ContentCol>

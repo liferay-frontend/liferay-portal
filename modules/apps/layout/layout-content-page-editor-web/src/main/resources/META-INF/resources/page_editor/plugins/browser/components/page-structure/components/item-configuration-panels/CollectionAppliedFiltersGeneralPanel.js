@@ -35,7 +35,7 @@ import isEmptyObject from '../../../../../../app/utils/isEmptyObject';
 import updateConfigurationValue from '../../../../../../app/utils/updateConfigurationValue';
 import getLayoutDataItemPropTypes from '../../../../../../prop-types/getLayoutDataItemPropTypes';
 
-export const CollectionAppliedFiltersGeneralPanel = ({item}) => {
+export function CollectionAppliedFiltersGeneralPanel({item}) {
 	const dispatch = useDispatch();
 	const fragmentEntryLink = useSelectorCallback(
 		(state) => state.fragmentEntryLinks[item.config.fragmentEntryLinkId],
@@ -143,7 +143,7 @@ export const CollectionAppliedFiltersGeneralPanel = ({item}) => {
 			/>
 		</>
 	);
-};
+}
 
 CollectionAppliedFiltersGeneralPanel.propTypes = {
 	item: getLayoutDataItemPropTypes({

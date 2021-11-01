@@ -33,10 +33,11 @@ function Item({
 			<ClayTable.Cell className="table-title">{label}</ClayTable.Cell>
 
 			<ClayTable.Cell className="text-right">
-				{isValidNumber(breachedInstanceCount)
-					? breachedInstanceCount
-					: 0}{' '}
-				({formattedPercentage})
+				{`${
+					isValidNumber(breachedInstanceCount)
+						? breachedInstanceCount
+						: 0
+				} (${formattedPercentage})`}
 			</ClayTable.Cell>
 
 			<ClayTable.Cell className="text-right">

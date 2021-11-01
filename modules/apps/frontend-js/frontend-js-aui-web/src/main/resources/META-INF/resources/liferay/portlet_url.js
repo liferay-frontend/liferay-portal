@@ -270,7 +270,7 @@ AUI.add(
 
 				Object.entries(instance.reservedParams).forEach(
 					([key, value]) => {
-						if (value != null) {
+						if (value !== null && value !== undefined) {
 							reservedParameters[key] = value;
 						}
 					}

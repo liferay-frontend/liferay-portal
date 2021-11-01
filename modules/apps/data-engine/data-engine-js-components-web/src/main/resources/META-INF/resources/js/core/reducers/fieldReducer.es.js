@@ -22,7 +22,7 @@ import {
 import {PagesVisitor} from '../../utils/visitors.es';
 import {EVENT_TYPES} from '../actions/eventTypes.es';
 
-export const createRepeatedField = (sourceField, repeatedIndex) => {
+export function createRepeatedField(sourceField, repeatedIndex) {
 	const instanceId = generateInstanceId();
 	const {locale, name, nestedFields, predefinedValue} = sourceField;
 	let localizedValue;
@@ -52,9 +52,9 @@ export const createRepeatedField = (sourceField, repeatedIndex) => {
 		valid: true,
 		value: predefinedValue,
 	};
-};
+}
 
-export const updateNestedFieldNames = (parentFieldName, nestedFields) => {
+export function updateNestedFieldNames(parentFieldName, nestedFields) {
 	return (nestedFields || []).map((nestedField) => {
 		const newNestedFieldName = generateNestedFieldName(
 			nestedField.name,
@@ -71,9 +71,9 @@ export const updateNestedFieldNames = (parentFieldName, nestedFields) => {
 			...parseNestedFieldName(newNestedFieldName),
 		};
 	});
-};
+}
 
-export default (state, action) => {
+export default function fieldReducer(state, action) {
 	switch (action.type) {
 		case EVENT_TYPES.FIELD.BLUR: {
 			const {fieldInstance} = action.payload;
@@ -84,7 +84,7 @@ export default (state, action) => {
 					const matches =
 						field.name === fieldInstance.name &&
 						field.required &&
-						fieldInstance.value == '';
+						fieldInstance.value === '';
 
 					return {
 						...field,
@@ -256,4 +256,4 @@ export default (state, action) => {
 		default:
 			return state;
 	}
-};
+}

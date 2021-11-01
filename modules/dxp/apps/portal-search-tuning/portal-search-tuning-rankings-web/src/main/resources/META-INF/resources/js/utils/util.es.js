@@ -53,7 +53,7 @@ export function isArray(val) {
  * @param {*} val The variable to check.
  */
 export function isNil(val) {
-	return val == null;
+	return val === null || val === undefined;
 }
 
 /**

@@ -18,13 +18,13 @@ import React from 'react';
 import {ButtonList} from './ButtonList';
 import Collapse from './Collapse';
 
-export const CollapsableButtonList = ({items, label, onButtonClick}) => {
+export function CollapsableButtonList({items, label, onButtonClick}) {
 	return (
 		<Collapse label={label}>
 			<ButtonList items={items} onButtonClick={onButtonClick} />
 		</Collapse>
 	);
-};
+}
 
 CollapsableButtonList.propTypes = {
 	items: PropTypes.arrayOf(PropTypes.object),

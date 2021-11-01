@@ -23,7 +23,7 @@ import lang from '../utils/lang.es';
 import ArticleBodyRenderer from './ArticleBodyRenderer.es';
 import Modal from './Modal.es';
 
-export default ({comment, commentChange, editable = true}) => {
+export default function Comment({comment, commentChange, editable = true}) {
 	const [dateModified, setDateModified] = useState('');
 	const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
 
@@ -48,6 +48,7 @@ export default ({comment, commentChange, editable = true}) => {
 						dateModified,
 					])}
 				</span>
+
 				{comment.status && comment.status !== 'approved' && (
 					<span className="c-ml-2 text-secondary">
 						<ClayLabel displayType="info">
@@ -55,6 +56,7 @@ export default ({comment, commentChange, editable = true}) => {
 						</ClayLabel>
 					</span>
 				)}
+
 				<div className="c-mb-0">
 					<ArticleBodyRenderer
 						{...comment}
@@ -101,4 +103,4 @@ export default ({comment, commentChange, editable = true}) => {
 			</div>
 		</div>
 	);
-};
+}

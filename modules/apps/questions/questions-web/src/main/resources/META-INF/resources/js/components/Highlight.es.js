@@ -29,11 +29,11 @@ hljs.registerLanguage('plaintext', plaintext);
 
 function Highlight(props) {
 	const {children, element: Element, innerHTML} = props;
-	const element = useRef(null);
+	const elementRef = useRef(null);
 
 	const highlightCode = () => {
-		if (element.current) {
-			const nodes = element.current.querySelectorAll('pre code');
+		if (elementRef.current) {
+			const nodes = elementRef.current.querySelectorAll('pre code');
 			for (let i = 0; i < nodes.length; i++) {
 				hljs.highlightBlock(nodes[i]);
 			}
@@ -41,7 +41,7 @@ function Highlight(props) {
 	};
 
 	useEffect(highlightCode, []);
-	const elProps = {ref: element};
+	const elProps = {ref: elementRef};
 
 	if (innerHTML) {
 		elProps.dangerouslySetInnerHTML = {__html: children};
@@ -56,7 +56,7 @@ function Highlight(props) {
 	}
 
 	return (
-		<pre ref={element}>
+		<pre ref={elementRef}>
 			<code>{children}</code>
 		</pre>
 	);

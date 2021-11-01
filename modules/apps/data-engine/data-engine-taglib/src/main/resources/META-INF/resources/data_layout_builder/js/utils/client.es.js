@@ -42,7 +42,7 @@ function fetchItem(url, options) {
 	});
 }
 
-export const getURL = (path, params) => {
+export function getURL(path, params) {
 	params = {
 		['p_auth']: Liferay.authToken,
 		t: Date.now(),
@@ -55,53 +55,58 @@ export const getURL = (path, params) => {
 	keys.forEach((key) => uri.searchParams.set(key, params[key]));
 
 	return uri.toString();
-};
+}
 
-export const addItem = (endpoint, item) =>
-	fetchItem(getURL(endpoint), {
+export function addItem(endpoint, item) {
+	return fetchItem(getURL(endpoint), {
 		body: JSON.stringify(item),
 		headers: HEADERS,
 		method: 'POST',
 	});
+}
 
-export const deleteItem = (endpoint) => {
+export function deleteItem(endpoint) {
 	return fetch(getURL(endpoint), {
 		method: 'DELETE',
 	});
-};
+}
 
-export const confirmDelete = (endpoint) => (item) =>
-	new Promise((resolve, reject) => {
-		const confirmed = confirm(
-			Liferay.Language.get('are-you-sure-you-want-to-delete-this')
-		);
+export function confirmDelete(endpoint) {
+	return (item) =>
+		new Promise((resolve, reject) => {
+			const confirmed = confirm(
+				Liferay.Language.get('are-you-sure-you-want-to-delete-this')
+			);
 
-		if (confirmed) {
-			deleteItem(endpoint + item.id)
-				.then(() => resolve(true))
-				.catch((error) => reject(error));
-		}
-		else {
-			resolve(false);
-		}
-	});
+			if (confirmed) {
+				deleteItem(endpoint + item.id)
+					.then(() => resolve(true))
+					.catch((error) => reject(error));
+			}
+			else {
+				resolve(false);
+			}
+		});
+}
 
-export const request = (endpoint, method = 'GET') =>
-	fetch(getURL(endpoint), {
+export function request(endpoint, method = 'GET') {
+	return fetch(getURL(endpoint), {
 		headers: HEADERS,
 		method,
 	});
+}
 
-export const getItem = (endpoint) => {
+export function getItem(endpoint) {
 	return fetch(getURL(endpoint), {
 		headers: HEADERS,
 		method: 'GET',
 	}).then((response) => response.json());
-};
+}
 
-export const updateItem = (endpoint, item, params) =>
-	fetchItem(getURL(endpoint, params), {
+export function updateItem(endpoint, item, params) {
+	return fetchItem(getURL(endpoint, params), {
 		body: JSON.stringify(item),
 		headers: HEADERS,
 		method: 'PUT',
 	});
+}

@@ -20,7 +20,12 @@ import ManagementToolbarRight from './ManagementToolbarRight';
 import ManagementToolbarSearch from './ManagementToolbarSearch';
 import SearchContext from './SearchContext';
 
-export default ({addButton, columns, disabled, filters}) => {
+export default function ManagementToolbar({
+	addButton,
+	columns,
+	disabled,
+	filters,
+}) {
 	const [{keywords}, dispatch] = useContext(SearchContext);
 	const [showMobile, setShowMobile] = useState(false);
 
@@ -48,4 +53,4 @@ export default ({addButton, columns, disabled, filters}) => {
 			/>
 		</ClayManagementToolbar>
 	);
-};
+}

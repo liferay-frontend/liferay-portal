@@ -26,7 +26,9 @@ export default function ConditionNode({
 			title={label}
 		>
 			<ClayIcon className="mr-2" symbol="bolt" />
+
 			<span>{label}</span>
+
 			{done && (
 				<ClayIcon
 					className="done-icon hexagon-done-icon"

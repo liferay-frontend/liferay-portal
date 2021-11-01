@@ -18,7 +18,8 @@ import NavbarTabs from '../../../../src/main/resources/META-INF/resources/js/sha
 import {MockRouter} from '../../../mock/MockRouter.es';
 
 describe('The NavbarTabs component should', () => {
-	let container, renderResult;
+	let container;
+	let renderResult;
 
 	const tabs = [
 		{

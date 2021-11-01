@@ -14,7 +14,7 @@ import {INPUT_TYPES} from './inputTypes';
 import {sub} from './language';
 import {isDefined, isEmpty} from './utils';
 
-export const validateBoost = (configValue, type) => {
+export function validateBoost(configValue, type) {
 	if (configValue === null) {
 		return;
 	}
@@ -29,10 +29,15 @@ export const validateBoost = (configValue, type) => {
 	) {
 		return ERROR_MESSAGES.NEGATIVE_BOOST;
 	}
-};
+}
 
-export const validateJSON = (configValue, type) => {
-	if (configValue === null || !isDefined(configValue) || configValue == '') {
+export function validateJSON(configValue, type) {
+	if (
+		configValue === null ||
+		configValue === undefined ||
+		!isDefined(configValue) ||
+		configValue === ''
+	) {
 		return;
 	}
 
@@ -46,9 +51,9 @@ export const validateJSON = (configValue, type) => {
 	catch {
 		return ERROR_MESSAGES.INVALID_JSON;
 	}
-};
+}
 
-export const validateNumberRange = (configValue, type, typeOptions) => {
+export function validateNumberRange(configValue, type, typeOptions) {
 	if (configValue === null) {
 		return;
 	}
@@ -63,14 +68,14 @@ export const validateNumberRange = (configValue, type, typeOptions) => {
 	if (isDefined(typeOptions.max) && configValue > typeOptions.max) {
 		return sub(ERROR_MESSAGES.LESS_THAN_X, [typeOptions.max]);
 	}
-};
+}
 
-export const validateRequired = (
+export function validateRequired(
 	configValue,
 	type,
 	required = true,
 	nullable = false
-) => {
+) {
 	if (!required || nullable) {
 		return;
 	}
@@ -78,4 +83,4 @@ export const validateRequired = (
 	if (isEmpty(configValue, type)) {
 		return ERROR_MESSAGES.REQUIRED;
 	}
-};
+}

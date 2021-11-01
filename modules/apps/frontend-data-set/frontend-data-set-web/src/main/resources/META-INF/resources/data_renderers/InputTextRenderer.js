@@ -26,6 +26,7 @@ function InputTextRenderer({options = {}, updateItem, value}) {
 					{prependText}
 				</ClayInput.GroupItem>
 			)}
+
 			<ClayInput.GroupItem append={appendText} prepend={prependText}>
 				<ClayInput
 					onChange={(event) => {
@@ -35,6 +36,7 @@ function InputTextRenderer({options = {}, updateItem, value}) {
 					{...inputProps}
 				/>
 			</ClayInput.GroupItem>
+
 			{appendText && (
 				<ClayInput.GroupItem append shrink>
 					<ClayInput.GroupText>{appendText}</ClayInput.GroupText>

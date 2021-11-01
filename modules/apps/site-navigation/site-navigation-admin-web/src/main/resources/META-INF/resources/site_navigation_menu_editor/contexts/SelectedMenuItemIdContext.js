@@ -17,13 +17,15 @@ import React, {useContext, useState} from 'react';
 const SelectedMenuItemIdContext = React.createContext(null);
 const SetSelectedMenuItemIdContext = React.createContext(() => {});
 
-export const useSetSelectedMenuItemId = () =>
-	useContext(SetSelectedMenuItemIdContext);
+export function useSetSelectedMenuItemId() {
+	return useContext(SetSelectedMenuItemIdContext);
+}
 
-export const useSelectedMenuItemId = () =>
-	useContext(SelectedMenuItemIdContext);
+export function useSelectedMenuItemId() {
+	return useContext(SelectedMenuItemIdContext);
+}
 
-export const SelectedMenuItemIdProvider = ({children}) => {
+export function SelectedMenuItemIdProvider({children}) {
 	const [selectedMenuItemId, setSelectedMenuItemId] = useState(null);
 
 	return (
@@ -33,4 +35,4 @@ export const SelectedMenuItemIdProvider = ({children}) => {
 			</SelectedMenuItemIdContext.Provider>
 		</SetSelectedMenuItemIdContext.Provider>
 	);
-};
+}

@@ -41,6 +41,7 @@ function TestFilter({id, inputText, updateFilterState, value: valueProp}) {
 							value={value || ''}
 						/>
 					</div>
+
 					<div className="input-group-append input-group-item input-group-item-shrink">
 						<span className="input-group-text">
 							{Liferay.Language.get('test')}

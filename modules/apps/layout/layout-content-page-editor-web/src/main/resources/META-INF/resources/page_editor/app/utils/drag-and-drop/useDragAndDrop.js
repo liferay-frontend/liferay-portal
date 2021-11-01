@@ -100,19 +100,23 @@ export const initialDragDrop = {
 
 const DragAndDropContext = React.createContext(initialDragDrop);
 
-export const useSetCanDrag = () => useContext(DragAndDropContext).setCanDrag;
+export function useSetCanDrag() {
+	return useContext(DragAndDropContext).setCanDrag;
+}
 
-export const NotDraggableArea = ({children}) => (
-	<div
-		draggable
-		onDragStart={(event) => {
-			event.preventDefault();
-			event.stopPropagation();
-		}}
-	>
-		{children}
-	</div>
-);
+export function NotDraggableArea({children}) {
+	return (
+		<div
+			draggable
+			onDragStart={(event) => {
+				event.preventDefault();
+				event.stopPropagation();
+			}}
+		>
+			{children}
+		</div>
+	);
+}
 
 export function useDragItem(sourceItem, onDragEnd, onBegin = () => {}) {
 	const getSourceItem = useCallback(() => sourceItem, [sourceItem]);
@@ -271,7 +275,7 @@ export function useDropTarget(_targetItem, computeHover = defaultComputeHover) {
 	};
 }
 
-export const DragAndDropContextProvider = ({children}) => {
+export function DragAndDropContextProvider({children}) {
 	const layoutDataRef = useRef({
 		items: [],
 	});
@@ -315,7 +319,7 @@ export const DragAndDropContextProvider = ({children}) => {
 			{children}
 		</DragAndDropContext.Provider>
 	);
-};
+}
 
 function computeDrop({dispatch, layoutDataRef, onDragEnd, state}) {
 	if (state.droppable && state.dropItem && state.dropTargetItem) {
@@ -359,7 +363,7 @@ function getSiblingPosition(state, parentItem) {
 		return siblingPosition + 1;
 	}
 	else if (
-		dropItemPosition != -1 &&
+		dropItemPosition !== -1 &&
 		dropItemPosition < siblingPosition &&
 		siblingPosition > 0
 	) {

@@ -245,7 +245,7 @@ AUI.add(
 
 								var key = term;
 
-								if (term == '*') {
+								if (term === '*') {
 									term = '';
 								}
 
@@ -288,7 +288,7 @@ AUI.add(
 					var charCode = event.charCode;
 
 					if (!A.UA.gecko || event._event.charCode) {
-						if (charCode == '44') {
+						if (charCode === '44') {
 							event.preventDefault();
 
 							instance._addEntries();

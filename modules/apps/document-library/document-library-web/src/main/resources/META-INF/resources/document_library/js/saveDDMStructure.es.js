@@ -12,7 +12,7 @@
  * details.
  */
 
-export const getInputLocalizedValues = (namespace, fieldName) => {
+export function getInputLocalizedValues(namespace, fieldName) {
 	const inputLocalized = Liferay.component(`${namespace}${fieldName}`);
 	const localizedValues = {};
 
@@ -27,9 +27,9 @@ export const getInputLocalizedValues = (namespace, fieldName) => {
 	}
 
 	return localizedValues;
-};
+}
 
-export const getDataEngineStructure = ({dataLayoutBuilder, namespace}) => {
+export function getDataEngineStructure({dataLayoutBuilder, namespace}) {
 	const {dataDefinition, dataLayout} = dataLayoutBuilder.current.state;
 
 	const name = getInputLocalizedValues(namespace, 'name');
@@ -47,7 +47,7 @@ export const getDataEngineStructure = ({dataLayoutBuilder, namespace}) => {
 			name,
 		}),
 	};
-};
+}
 
 export default function saveDDMStructure({namespace}) {
 	const form = document[`${namespace}fm`];

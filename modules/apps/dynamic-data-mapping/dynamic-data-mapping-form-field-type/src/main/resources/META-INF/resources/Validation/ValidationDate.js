@@ -183,11 +183,13 @@ const CustomDates = ({
 						visible={visible}
 					/>
 				</div>
+
 				<div className="ddm-form-field-type__validation-date pr-2">
 					<div className="form-group">
 						<label htmlFor={`${name}_validation_date_quantity`}>
 							{Liferay.Language.get('quantity')}
 						</label>
+
 						<ClayInput
 							className="ddm-field-text"
 							disabled={readOnly}
@@ -224,6 +226,7 @@ const CustomDates = ({
 						/>
 					</div>
 				</div>
+
 				<div className="ddm-form-field-type__validation-date">
 					<Select
 						label={Liferay.Language.get('unit')}

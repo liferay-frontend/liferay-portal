@@ -23,6 +23,7 @@ const TableHead = ({columns}) => (
 	<ClayTable.Head>
 		<ClayTable.Row>
 			<ClayTable.Cell headingCell />
+
 			{columns.map((column, colIndex) => {
 				return (
 					<ClayTable.Cell

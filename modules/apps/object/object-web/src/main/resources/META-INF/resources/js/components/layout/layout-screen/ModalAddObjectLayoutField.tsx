@@ -32,8 +32,8 @@ const defaultLanguageId = normalizeLanguageId(
 );
 
 type TInitialValues = {
-	objectFieldSize: number;
 	objectFieldId: number;
+	objectFieldSize: number;
 };
 
 interface IBoxBtnColumnsProps extends React.HTMLAttributes<HTMLElement> {
@@ -150,6 +150,7 @@ const ModalAddObjectLayoutField: React.FC<IModalAddObjectLayoutFieldProps> = ({
 				<ClayModal.Header>
 					{Liferay.Language.get('add-field')}
 				</ClayModal.Header>
+
 				<ClayModal.Body>
 					<AutoComplete
 						contentRight={
@@ -183,6 +184,7 @@ const ModalAddObjectLayoutField: React.FC<IModalAddObjectLayoutFieldProps> = ({
 						{({label, required}) => (
 							<div className="d-flex justify-content-between">
 								<div>{label[defaultLanguageId]}</div>
+
 								<div>
 									<RequiredLabel required={required} />
 								</div>
@@ -192,6 +194,7 @@ const ModalAddObjectLayoutField: React.FC<IModalAddObjectLayoutFieldProps> = ({
 
 					<BoxBtnColumns handleChange={handleChange} />
 				</ClayModal.Body>
+
 				<ClayModal.Footer
 					last={
 						<ClayButton.Group spaced>
@@ -201,6 +204,7 @@ const ModalAddObjectLayoutField: React.FC<IModalAddObjectLayoutFieldProps> = ({
 							>
 								{Liferay.Language.get('cancel')}
 							</ClayButton>
+
 							<ClayButton type="submit">
 								{Liferay.Language.get('save')}
 							</ClayButton>

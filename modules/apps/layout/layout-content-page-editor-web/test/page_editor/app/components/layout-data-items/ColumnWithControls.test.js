@@ -109,6 +109,7 @@ const renderColumn = ({
 					})}
 				>
 					<AutoSelect />
+
 					<ColumnWithControls
 						item={columnIndex ? columnB : columnA}
 					/>

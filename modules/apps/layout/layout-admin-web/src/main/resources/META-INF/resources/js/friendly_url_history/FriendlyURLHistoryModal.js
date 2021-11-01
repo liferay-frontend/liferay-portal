@@ -159,7 +159,7 @@ const FriendlyURLHistoryModal = ({
 									languageId
 								].history.filter(
 									({friendlyURLEntryId}) =>
-										friendlyURLEntryId !=
+										friendlyURLEntryId !==
 										deleteFriendlyURLEntryId
 								),
 							},
@@ -242,6 +242,7 @@ const FriendlyURLHistoryModal = ({
 							<div className="active-url-tite">
 								{Liferay.Language.get('active-url')}
 							</div>
+
 							<p className="active-url-text">
 								{
 									friendlyURLEntryLocalizations[languageId]
@@ -275,6 +276,7 @@ const FriendlyURLHistoryModal = ({
 														{urlTitle}
 													</ClayList.ItemText>
 												</ClayList.ItemField>
+
 												<ClayList.ItemField>
 													<ClayList.QuickActionMenu>
 														<ClayList.QuickActionMenu.Item
@@ -290,6 +292,7 @@ const FriendlyURLHistoryModal = ({
 															}}
 															symbol="reload"
 														/>
+
 														<ClayList.QuickActionMenu.Item
 															className="lfr-portal-tooltip"
 															data-title={Liferay.Language.get(

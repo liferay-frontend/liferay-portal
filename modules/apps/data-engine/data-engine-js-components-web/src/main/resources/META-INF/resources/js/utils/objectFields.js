@@ -47,7 +47,7 @@ const fetchObjectFields = (objectDefinitionId) => {
 	).then((response) => response.json());
 };
 
-export const getFieldsGroupedByTypes = (fields) => {
+export function getFieldsGroupedByTypes(fields) {
 	const types = fields.map(({type}) => type);
 	const uniqueTypes = types.filter(
 		(type, index) => types.indexOf(type) === index
@@ -59,9 +59,9 @@ export const getFieldsGroupedByTypes = (fields) => {
 			type: uniqueTypes,
 		};
 	});
-};
+}
 
-export const addObjectFields = async (dispatch) => {
+export async function addObjectFields(dispatch) {
 	const settingsDDMForm = await Liferay.componentReady('formSettingsAPI');
 	const objectDefinitionId = settingsDDMForm.reactComponentRef.current.getObjectDefinitionId();
 
@@ -73,9 +73,9 @@ export const addObjectFields = async (dispatch) => {
 			type: EVENT_TYPES.OBJECT_FIELDS.ADD,
 		});
 	}
-};
+}
 
-export const updateObjectFields = async (dispatch) => {
+export async function updateObjectFields(dispatch) {
 	const settingsDDMForm = await Liferay.componentReady('formSettingsAPI');
 	const objectDefinitionId = settingsDDMForm.reactComponentRef.current.getObjectDefinitionId();
 
@@ -93,9 +93,9 @@ export const updateObjectFields = async (dispatch) => {
 			type: EVENT_TYPES.OBJECT_FIELDS.ADD,
 		});
 	}
-};
+}
 
-export const getSelectedValue = (value) => {
+export function getSelectedValue(value) {
 	if (typeof value === 'string' && value !== '') {
 		const newValue = JSON.parse(value);
 
@@ -103,9 +103,9 @@ export const getSelectedValue = (value) => {
 	}
 
 	return value[0];
-};
+}
 
-export const getObjectFieldName = ({settingsContext}) => {
+export function getObjectFieldName({settingsContext}) {
 	const getAdvancedColumn = ({title}) => title.toLowerCase() === 'advanced';
 	const fieldsFromAdvancedColumn = settingsContext.pages.find(
 		getAdvancedColumn
@@ -120,4 +120,4 @@ export const getObjectFieldName = ({settingsContext}) => {
 	);
 
 	return objectFieldName;
-};
+}

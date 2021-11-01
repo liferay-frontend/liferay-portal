@@ -194,6 +194,7 @@ const Modal = ({
 							title
 						)}
 					</ClayModal.Header>
+
 					<div
 						className={classNames('modal-body', {
 							'modal-body-iframe': url,
@@ -224,6 +225,7 @@ const Modal = ({
 							<>{bodyHTML && <Body html={bodyHTML} />}</>
 						)}
 					</div>
+
 					{buttons && (
 						<ClayModal.Footer
 							className={footerCssClass}

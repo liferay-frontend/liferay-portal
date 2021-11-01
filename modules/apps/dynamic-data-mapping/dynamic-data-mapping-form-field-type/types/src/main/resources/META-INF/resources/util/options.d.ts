@@ -27,10 +27,10 @@ export declare function normalizeOptions({
 	showEmptyOption: boolean;
 	valueArray: string[];
 }): {
-	separator?: true | undefined;
 	active?: boolean | undefined;
 	checked?: boolean | undefined;
 	label: string | undefined;
+	separator?: true | undefined;
 	type?: 'checkbox' | 'item' | undefined;
 	value: string | null;
 }[];
@@ -50,7 +50,7 @@ export declare function normalizeValue<T>({
 	valueArray: T[];
 }): T[];
 interface Option<T> {
-	value: T;
 	label: LocalizedValue<string>;
+	value: T;
 }
 export {};

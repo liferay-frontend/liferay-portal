@@ -138,6 +138,7 @@ export default function PageStructureSidebar() {
 						)}
 					</ClayAlert>
 				)}
+
 				<DragAndDropContextProvider>
 					<Treeview
 						NodeComponent={StructureTreeNode}

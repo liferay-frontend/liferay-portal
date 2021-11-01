@@ -25,14 +25,14 @@ const {useCallback, useRef} = React;
  * promise that resolves to the loaded module's default export.
  */
 export default function useLoad() {
-	const modules = useRef(new Map());
+	const modulesRef = useRef(new Map());
 
 	const isMounted = useIsMounted();
 
 	return useCallback(
 		(key, entryPoint) => {
-			if (!modules.current.get(key)) {
-				modules.current.set(
+			if (!modulesRef.current.get(key)) {
+				modulesRef.current.set(
 					key,
 					new Promise((resolve, reject) => {
 						Liferay.Loader.require(
@@ -47,7 +47,7 @@ export default function useLoad() {
 
 									// Reset to allow future retries.
 
-									modules.current.delete(key);
+									modulesRef.current.delete(key);
 									reject(error);
 								}
 							}
@@ -56,7 +56,7 @@ export default function useLoad() {
 				);
 			}
 
-			return modules.current.get(key);
+			return modulesRef.current.get(key);
 		},
 		[isMounted]
 	);

@@ -26,7 +26,7 @@ import {ColorPaletteField} from './ColorPaletteField';
 
 const COLOR_PICKER_TYPE = 'ColorPicker';
 
-export const ColorPickerField = ({field, onValueSelect, value}) => {
+export function ColorPickerField({field, onValueSelect, value}) {
 	const {tokenValues} = useStyleBook();
 	const [color, setColor] = useControlledState(tokenValues[value]?.value);
 	let colors = {};
@@ -83,6 +83,7 @@ export const ColorPickerField = ({field, onValueSelect, value}) => {
 	return (
 		<ClayForm.Group small>
 			<label>{field.label}</label>
+
 			<ClayInput.Group>
 				<ClayInput.GroupItem prepend shrink>
 					<ColorPicker
@@ -96,6 +97,7 @@ export const ColorPickerField = ({field, onValueSelect, value}) => {
 						value={color}
 					/>
 				</ClayInput.GroupItem>
+
 				<ClayInput.GroupItem append>
 					<ClayInput
 						readOnly
@@ -106,6 +108,7 @@ export const ColorPickerField = ({field, onValueSelect, value}) => {
 						}
 					/>
 				</ClayInput.GroupItem>
+
 				{color && (
 					<ClayButtonWithIcon
 						className="ml-2"
@@ -123,7 +126,7 @@ export const ColorPickerField = ({field, onValueSelect, value}) => {
 			</ClayInput.Group>
 		</ClayForm.Group>
 	);
-};
+}
 
 ColorPickerField.propTypes = {
 	field: PropTypes.shape(ConfigurationFieldPropTypes).isRequired,

@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import fetchWrapper from '../../../src/main/resources/META-INF/resources/liferay/util/fetch.es';
 
 describe('Liferay.Util.fetch', () => {

@@ -11,20 +11,20 @@
 
 import {openToast} from 'frontend-js-web';
 
-export const openErrorToast = (config) => {
+export function openErrorToast(config) {
 	openToast({
 		message: Liferay.Language.get('an-unexpected-error-occurred'),
 		title: Liferay.Language.get('error'),
 		type: 'danger',
 		...config,
 	});
-};
+}
 
-export const openSuccessToast = (config) => {
+export function openSuccessToast(config) {
 	openToast({
 		message: Liferay.Language.get('your-request-completed-successfully'),
 		title: Liferay.Language.get('success'),
 		type: 'success',
 		...config,
 	});
-};
+}

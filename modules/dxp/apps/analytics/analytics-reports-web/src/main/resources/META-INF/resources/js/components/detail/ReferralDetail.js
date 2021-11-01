@@ -78,7 +78,7 @@ export default function ReferralDetail({
 
 	const isPreviousPeriodButtonDisabled = useIsPreviousPeriodButtonDisabled();
 
-	const firstUpdate = useRef(true);
+	const firstUpdateRef = useRef(true);
 
 	const trafficSourceDetailClasses = className(
 		'c-p-3 traffic-source-detail',
@@ -88,8 +88,8 @@ export default function ReferralDetail({
 	);
 
 	useEffect(() => {
-		if (firstUpdate.current) {
-			firstUpdate.current = false;
+		if (firstUpdateRef.current) {
+			firstUpdateRef.current = false;
 
 			return;
 		}
@@ -136,6 +136,7 @@ export default function ReferralDetail({
 					small
 				/>
 			)}
+
 			<div className="c-mb-3 c-mt-2">
 				<TimeSpanSelector
 					disabledNextTimeSpan={timeSpanOffset === 0}
@@ -177,6 +178,7 @@ export default function ReferralDetail({
 						<ClayList.ItemTitle className="text-truncate-inline">
 							<span className="text-truncate">
 								{Liferay.Language.get('top-referring-pages')}
+
 								<span className="text-secondary">
 									<Hint
 										message={Liferay.Language.get(
@@ -190,12 +192,14 @@ export default function ReferralDetail({
 							</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
+
 					<ClayList.ItemField>
 						<ClayList.ItemTitle>
 							<span>{Liferay.Language.get('traffic')}</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
 				</ClayList.Item>
+
 				{referringPages
 					.slice(0, isReferringPagesExpanded ? 10 : ITEMS_TO_SHOW)
 					.map(({trafficAmount, url}) => {
@@ -218,6 +222,7 @@ export default function ReferralDetail({
 										</span>
 									</ClayList.ItemText>
 								</ClayList.ItemField>
+
 								<ClayList.ItemField expand>
 									<span className="align-self-end font-weight-semi-bold text-dark">
 										{numberFormat(
@@ -255,6 +260,7 @@ export default function ReferralDetail({
 						<ClayList.ItemTitle className="text-truncate-inline">
 							<span className="text-truncate">
 								{Liferay.Language.get('top-referring-domains')}
+
 								<span className="text-secondary">
 									<Hint
 										message={Liferay.Language.get(
@@ -268,12 +274,14 @@ export default function ReferralDetail({
 							</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
+
 					<ClayList.ItemField>
 						<ClayList.ItemTitle>
 							<span>{Liferay.Language.get('traffic')}</span>
 						</ClayList.ItemTitle>
 					</ClayList.ItemField>
 				</ClayList.Item>
+
 				{referringDomains
 					.slice(0, isReferringDomainsExpanded ? 10 : ITEMS_TO_SHOW)
 					.map(({trafficAmount, url}) => {
@@ -296,6 +304,7 @@ export default function ReferralDetail({
 										</span>
 									</ClayList.ItemText>
 								</ClayList.ItemField>
+
 								<ClayList.ItemField expand>
 									<span className="align-self-end font-weight-semi-bold text-dark">
 										{numberFormat(

@@ -12,8 +12,8 @@
  * details.
  */
 
-const LARGE = 'lg',
-	SMALL = 'sm';
+const LARGE = 'lg';
+const SMALL = 'sm';
 
 export const CLAY_MODAL_SIZES_MAP = {
 	DEFAULT: null,

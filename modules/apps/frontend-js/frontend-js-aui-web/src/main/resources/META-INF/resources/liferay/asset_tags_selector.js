@@ -302,7 +302,7 @@ AUI.add(
 
 								var key = term;
 
-								if (term == '*') {
+								if (term === '*') {
 									term = STR_BLANK;
 								}
 
@@ -408,7 +408,7 @@ AUI.add(
 					var charCode = event.charCode;
 
 					if (!A.UA.gecko || event._event.charCode) {
-						if (charCode == '44') {
+						if (Number(charCode) === 44) {
 							event.preventDefault();
 
 							instance._addEntries();
@@ -526,7 +526,7 @@ AUI.add(
 						if (checkbox) {
 							var checked = false;
 
-							if (event.type == 'dataset:add') {
+							if (event.type === 'dataset:add') {
 								checked = true;
 							}
 

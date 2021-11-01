@@ -52,6 +52,7 @@ export default function Collapse({children, label, open}) {
 			>
 				<span className="c-inner ellipsis" tabIndex="-1">
 					{label}
+
 					<span className={`collapse-icon-${collapseIconClassName}`}>
 						<ClayIcon key={collapseIcon} symbol={collapseIcon} />
 					</span>

@@ -357,7 +357,7 @@ const Options = ({
 				generateOptionValueUsingOptionLabel
 			);
 		}
-		else if (property == 'reference') {
+		else if (property === 'reference') {
 			setFieldError(
 				checkValidReference(fields, value, fields[index].value)
 			);
@@ -488,6 +488,7 @@ const Options = ({
 	return (
 		<div className="ddm-field-options-container">
 			<DragPreview component={Option}>{children}</DragPreview>
+
 			{fields.map((option, index) => (
 				<DnD
 					index={index}

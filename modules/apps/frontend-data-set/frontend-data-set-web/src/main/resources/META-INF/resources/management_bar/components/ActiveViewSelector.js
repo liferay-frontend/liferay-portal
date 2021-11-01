@@ -58,6 +58,7 @@ function ActiveViewSelector({views}) {
 						}}
 					>
 						<ClayIcon className="mr-3" symbol={thumbnail} />
+
 						{label}
 					</ClayDropDown.Item>
 				))}

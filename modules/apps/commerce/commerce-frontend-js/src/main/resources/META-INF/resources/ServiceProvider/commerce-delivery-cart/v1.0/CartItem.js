@@ -14,9 +14,9 @@
 
 import AJAX from '../../../utilities/AJAX/index';
 
-const CARTS_PATH = '/carts',
-	CART_ITEMS_PATH = '/cart-items',
-	ITEMS_PATH = '/items';
+const CARTS_PATH = '/carts';
+const CART_ITEMS_PATH = '/cart-items';
+const ITEMS_PATH = '/items';
 
 const VERSION = 'v1.0';
 
@@ -28,20 +28,24 @@ function resolveCartItemsPath(basePath = '', itemId) {
 	return `${basePath}${VERSION}${CART_ITEMS_PATH}/${itemId}`;
 }
 
-export default (basePath) => ({
-	createItemByCartId: (cartId, json) =>
-		AJAX.POST(resolveItemsPath(basePath, cartId), json),
+export default function CartItem(basePath) {
+	return {
+		createItemByCartId: (cartId, json) =>
+			AJAX.POST(resolveItemsPath(basePath, cartId), json),
 
-	deleteItemById: (itemId) =>
-		AJAX.DELETE(resolveCartItemsPath(basePath, itemId)),
+		deleteItemById: (itemId) =>
+			AJAX.DELETE(resolveCartItemsPath(basePath, itemId)),
 
-	getItemById: (itemId) => AJAX.GET(resolveCartItemsPath(basePath, itemId)),
+		getItemById: (itemId) =>
+			AJAX.GET(resolveCartItemsPath(basePath, itemId)),
 
-	getItemsByCartId: (cartId) => AJAX.GET(resolveItemsPath(basePath, cartId)),
+		getItemsByCartId: (cartId) =>
+			AJAX.GET(resolveItemsPath(basePath, cartId)),
 
-	replaceItemById: (itemId, json) =>
-		AJAX.PUT(resolveCartItemsPath(basePath, itemId), json),
+		replaceItemById: (itemId, json) =>
+			AJAX.PUT(resolveCartItemsPath(basePath, itemId), json),
 
-	updateItemById: (itemId, jsonProps) =>
-		AJAX.PATCH(resolveCartItemsPath(basePath, itemId), jsonProps),
-});
+		updateItemById: (itemId, jsonProps) =>
+			AJAX.PATCH(resolveCartItemsPath(basePath, itemId), jsonProps),
+	};
+}

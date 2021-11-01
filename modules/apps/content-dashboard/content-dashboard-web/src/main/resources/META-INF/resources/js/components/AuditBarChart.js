@@ -167,6 +167,7 @@ export default function AuditBarChart({namespace, rtl, vocabularies}) {
 					<ClayLayout.Col size={1}>
 						<span className="small">{yAxisName}:</span>
 					</ClayLayout.Col>
+
 					<ClayLayout.Col>
 						<ClayLayout.Row>
 							{payload.map((entry) => (
@@ -282,7 +283,9 @@ export default function AuditBarChart({namespace, rtl, vocabularies}) {
 								yAxisName={axisNames.y}
 							/>
 						)}
+
 						<CartesianGrid stroke={BAR_CHART.stroke} />
+
 						<XAxis
 							axisLine={{
 								stroke: BAR_CHART.stroke,
@@ -300,6 +303,7 @@ export default function AuditBarChart({namespace, rtl, vocabularies}) {
 							tick={<CustomXAxisTick />}
 							tickLine={false}
 						/>
+
 						<YAxis
 							allowDataOverflow={true}
 							allowDecimals={false}
@@ -312,12 +316,14 @@ export default function AuditBarChart({namespace, rtl, vocabularies}) {
 							tickLine={false}
 							width={45}
 						/>
+
 						<Tooltip
 							animationDuration={0}
 							content={<CustomTooltip />}
 							cursor={{fill: 'transparent'}}
 							tooltip={tooltip}
 						/>
+
 						{!!bars.length &&
 							bars.map((bar, index) => {
 								return (
@@ -368,6 +374,7 @@ export default function AuditBarChart({namespace, rtl, vocabularies}) {
 									</Bar>
 								);
 							})}
+
 						{!bars.length && (
 							<Bar
 								barSize={BAR_CHART.barHeight}
@@ -429,6 +436,7 @@ function CustomTooltip(props) {
 							? label
 							: payload[i].name}
 					</ClayLayout.ContentCol>
+
 					<ClayLayout.ContentCol>
 						{payload[i].value}
 					</ClayLayout.ContentCol>

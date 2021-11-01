@@ -82,6 +82,7 @@ function PageTypeSelector({
 								<ClayDropDown.Item disabled key={option.value}>
 									{option.name}
 								</ClayDropDown.Item>
+
 								{option.items.map((item) => (
 									<ClayDropDown.Item
 										className="page-type-selector-option"
@@ -135,6 +136,7 @@ function PageTypeSelector({
 									{Liferay.Language.get('add-page')}
 								</ClayDropDown.Item>
 							)}
+
 							{addCollectionLayoutURL && (
 								<ClayDropDown.Item
 									data-value={Liferay.Language.get(
@@ -157,6 +159,7 @@ function PageTypeSelector({
 					</ClayDropDown>
 				)}
 			</div>
+
 			<div className="autofit-col ml-2">
 				{configureLayoutSetURL && (
 					<ClayLink

@@ -24,8 +24,8 @@ const rectAttrs: Array<keyof DOMRect> = [
 ];
 
 interface IRectState {
-	rect: DOMRect | undefined;
 	hasRectChanged: boolean;
+	rect: DOMRect | undefined;
 }
 
 const DOMRectStub = {} as DOMRect;
@@ -33,10 +33,10 @@ const DOMRectStub = {} as DOMRect;
 const rectChanged = (a: DOMRect, b: DOMRect = DOMRectStub) =>
 	rectAttrs.some((prop) => a[prop] !== b[prop]);
 
-export const useObserveRect = (
+export function useObserveRect(
 	callback: (rect: DOMRect | undefined) => void,
 	node: Element | null
-) => {
+) {
 	const rafIdRef = useRef<number>();
 
 	const run = useCallback(
@@ -70,4 +70,4 @@ export const useObserveRect = (
 			};
 		}
 	}, [node, run]);
-};
+}

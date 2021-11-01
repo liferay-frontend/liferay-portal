@@ -80,7 +80,8 @@ function SLAInfo({processId}) {
 						onClose={() => setAlert()}
 						title={Liferay.Language.get('warning')}
 					>
-						{alert.content}{' '}
+						{alert.content + ' '}
+
 						<ChildLink
 							className="font-weight-bold"
 							query={{slaInfoLink: true}}

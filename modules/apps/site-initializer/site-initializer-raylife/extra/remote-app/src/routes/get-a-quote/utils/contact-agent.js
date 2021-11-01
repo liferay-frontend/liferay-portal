@@ -1,6 +1,7 @@
 // Let's keep this validation for now
 // eslint-disable-next-line
-const toBool = (value) => value && value != undefined && value === 'true';
+const toBool = (value) =>
+	value && value !== undefined && value !== null && value === 'true';
 
 export const verifyInputAgentPage = (properties, nextSection) => {
 	const auxBusiness = properties?.business?.hasSellProductsUnderOwnBrand;

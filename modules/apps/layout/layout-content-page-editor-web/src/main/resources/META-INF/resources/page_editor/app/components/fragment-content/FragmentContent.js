@@ -335,6 +335,7 @@ const FragmentContent = ({
 					onRender={withinTopper ? onRender : () => {}}
 					style={style}
 				/>
+
 				{backgroundImageValue.mediaQueries ? (
 					<style>{backgroundImageValue.mediaQueries}</style>
 				) : null}

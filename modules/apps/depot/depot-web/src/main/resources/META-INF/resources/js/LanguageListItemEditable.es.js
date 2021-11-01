@@ -173,6 +173,7 @@ const LanguageListItem = ({
 						expand
 					>
 						{displayName}
+
 						{isDefault && (
 							<ClayLabel className="ml-3" displayType="info">
 								{Liferay.Language.get('default')}
@@ -181,6 +182,7 @@ const LanguageListItem = ({
 					</ClayLayout.ContentCol>
 				</ClayLayout.ContentRow>
 			</ClayTable.Cell>
+
 			<ClayTable.Cell align="right">
 				<ClayDropDown
 					active={active}
@@ -204,11 +206,13 @@ const LanguageListItem = ({
 						>
 							{Liferay.Language.get('make-default')}
 						</ClayDropDown.Item>
+
 						{!isFirst && (
 							<ClayDropDown.Item onClick={moveUp}>
 								{Liferay.Language.get('move-up')}
 							</ClayDropDown.Item>
 						)}
+
 						{!isLast && (
 							<ClayDropDown.Item onClick={moveDown}>
 								{Liferay.Language.get('move-down')}

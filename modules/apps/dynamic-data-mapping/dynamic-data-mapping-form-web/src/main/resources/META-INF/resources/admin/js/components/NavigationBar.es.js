@@ -34,7 +34,7 @@ const NAV_ITEMS_REVERSE = {
  * change the React Router route, currently the component is rendered via JSP
  * and it is necessary to control the interaction via JavaScript.
  */
-export const NavigationBar = ({history, location}) => {
+export function NavigationBar({history, location}) {
 	useBack();
 
 	const onClick = useCallback(
@@ -89,4 +89,4 @@ export const NavigationBar = ({history, location}) => {
 	}, []);
 
 	return null;
-};
+}

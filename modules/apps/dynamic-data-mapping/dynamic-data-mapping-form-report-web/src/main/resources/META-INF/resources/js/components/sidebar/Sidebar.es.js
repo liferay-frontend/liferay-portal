@@ -60,7 +60,8 @@ const SidebarContent = () => {
 									<p className="title">{label}</p>
 
 									<p className="description">
-										{totalEntries}{' '}
+										{totalEntries + ' '}
+
 										{Liferay.Language.get(
 											'entries'
 										).toLowerCase()}
@@ -103,7 +104,7 @@ const SidebarContent = () => {
 	);
 };
 
-export default () => {
+export default function Sidebar() {
 	const {field, isOpen, portletNamespace} = useContext(SidebarContext);
 
 	return (
@@ -122,4 +123,4 @@ export default () => {
 			</div>
 		</>
 	);
-};
+}

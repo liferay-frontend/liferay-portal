@@ -18,15 +18,19 @@ import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import React, {useEffect, useState} from 'react';
 
-export const formatLabel = (label) => label.replace('_', '-');
+export function formatLabel(label) {
+	return label.replace('_', '-');
+}
 
-export const formatIcon = (label) => formatLabel(label).toLowerCase();
+export function formatIcon(label) {
+	return formatLabel(label).toLowerCase();
+}
 
-export const TranslationManagerLabel = ({
+export function TranslationManagerLabel({
 	defaultLanguageId,
 	languageId,
 	translatedLanguageIds,
-}) => {
+}) {
 	let className = 'label-warning';
 	let label = Liferay.Language.get('not-translated');
 
@@ -46,9 +50,9 @@ export const TranslationManagerLabel = ({
 			</span>
 		</span>
 	);
-};
+}
 
-export default ({
+export default function TranslationManager({
 	availableLanguageIds,
 	defaultLanguageId = themeDisplay.getDefaultLanguageId(),
 	editingLanguageId = themeDisplay.getDefaultLanguageId(),
@@ -57,7 +61,7 @@ export default ({
 	showUserView = false,
 	translatedLanguageIds,
 	className,
-}) => {
+}) {
 	const [active, setActive] = useState(false);
 	const [_availableLanguageIds, setAvailableLanguageIds] = useState({});
 	const [available, setAvailable] = useState({});
@@ -143,4 +147,4 @@ export default ({
 			</ClayDropDown.ItemList>
 		</ClayDropDown>
 	);
-};
+}

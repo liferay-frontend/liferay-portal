@@ -69,12 +69,14 @@ export default function Item({
 		<ClayTable.Row>
 			<ClayTable.Cell>
 				<div className="table-list-title">
-					{blocked && (
-						<ClayIcon
-							className="text-danger"
-							symbol="exclamation-full"
-						/>
-					)}{' '}
+					{blocked &&
+						(
+							<ClayIcon
+								className="text-danger"
+								symbol="exclamation-full"
+							/>
+						) + ' '}
+
 					<ChildLink to={`/sla/${processId}/edit/${id}`}>
 						{name}
 					</ChildLink>

@@ -91,6 +91,7 @@ export default function CollectionPagination({
 							{Liferay.Language.get('previous')}
 						</span>
 					</ClayButton>
+
 					<ClayButton
 						className="font-weight-semi-bold ml-3 text-secondary"
 						disabled={activePage === totalPages}

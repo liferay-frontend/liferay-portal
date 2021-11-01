@@ -24,9 +24,9 @@ AUI.add(
 		var Util = Liferay.Util;
 		var Window = Util.Window;
 
-		var IE9 = IE == 9;
+		var IE9 = IE === 9;
 
-		var IE11 = IE == 11;
+		var IE11 = IE === 11;
 
 		var setWidth = function (modal, width) {
 			if (IE9) {
@@ -464,7 +464,7 @@ AUI.add(
 
 						width *= modal.get('autoWidthRatio');
 
-						if (width != widthInitial) {
+						if (width !== widthInitial) {
 							modal.set('width', width);
 						}
 						else {
@@ -538,7 +538,7 @@ AUI.add(
 
 				var mask = modal.get('maskNode');
 
-				if (mask.getStyle('position') == 'absolute') {
+				if (mask.getStyle('position') === 'absolute') {
 					mask.setStyle('height', '100%');
 					mask.setStyle(
 						'top',

@@ -228,6 +228,7 @@ const OptionList = ({options = [], icon, type}) => {
 									</div>
 								)}
 							</ClayCard.AspectRatio>
+
 							<ClayCard.Body>
 								<ClayCard.Row>
 									<div className="autofit-col autofit-col-expand">
@@ -235,6 +236,7 @@ const OptionList = ({options = [], icon, type}) => {
 											<ClayCard.Description displayType="title">
 												{name}
 											</ClayCard.Description>
+
 											{subtitle && (
 												<ClayCard.Description displayType="subtitle">
 													{subtitle}

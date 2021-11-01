@@ -60,6 +60,7 @@ class ChangeTrackingRescheduleView extends ChangeTrackingBaseScheduleView {
 
 				<div className="sheet-section">
 					<label>{Liferay.Language.get('date-and-time')}</label>
+
 					<div className="input-group">
 						<div className={this.getDateClassName()}>
 							<div>
@@ -78,6 +79,7 @@ class ChangeTrackingRescheduleView extends ChangeTrackingBaseScheduleView {
 								{this.getDateHelpText()}
 							</div>
 						</div>
+
 						<div className={this.getTimeClassName()}>
 							<div>
 								<ClayTimePicker
@@ -114,6 +116,7 @@ class ChangeTrackingRescheduleView extends ChangeTrackingBaseScheduleView {
 								{Liferay.Language.get('reschedule')}
 							</button>
 						</div>
+
 						<div className="btn-group-item">
 							<button
 								className="btn btn-secondary"
@@ -128,6 +131,7 @@ class ChangeTrackingRescheduleView extends ChangeTrackingBaseScheduleView {
 								{Liferay.Language.get('unschedule')}
 							</button>
 						</div>
+
 						<div className="btn-group-item">
 							<button
 								className="btn btn-outline-borderless btn-secondary"

@@ -70,6 +70,7 @@ function SegmentsExperimentsModal({
 
 					<div className="form-group">
 						<label>{Liferay.Language.get('description')}</label>
+
 						<textarea
 							className="form-control"
 							maxLength="4000"
@@ -80,15 +81,18 @@ function SegmentsExperimentsModal({
 							value={inputDescription}
 						/>
 					</div>
+
 					{goals.length > 0 && (
 						<div className="form-group">
 							<label className="w100">
 								{Liferay.Language.get('select-goal')}
+
 								<ClayIcon
 									className="lexicon-icon-sm ml-1 reference-mark text-warning"
 									style={{verticalAlign: 'super'}}
 									symbol="asterisk"
 								/>
+
 								<ClaySelect
 									className="mt-1"
 									defaultValue={inputGoal}
@@ -117,6 +121,7 @@ function SegmentsExperimentsModal({
 						>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
+
 						<BusyButton
 							busy={busy}
 							disabled={invalidForm || busy}

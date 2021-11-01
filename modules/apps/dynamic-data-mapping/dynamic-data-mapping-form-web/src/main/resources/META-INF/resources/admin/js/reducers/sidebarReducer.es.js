@@ -23,7 +23,7 @@ import {EVENT_TYPES as CORE_EVENT_TYPES} from 'data-engine-taglib';
  * NOTE: This is a literal copy of the old LayoutProvider logic. Small changes
  * were made only to adapt to the reducer.
  */
-export default (state, action) => {
+export default function sidebarReducer(state, action) {
 	switch (action.type) {
 		case CORE_EVENT_TYPES.SIDEBAR.FIELD.BLUR: {
 			const {focusedField} = state;
@@ -77,4 +77,4 @@ export default (state, action) => {
 		default:
 			return state;
 	}
-};
+}

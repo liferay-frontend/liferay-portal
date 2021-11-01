@@ -30,6 +30,7 @@ const getName = ({name = {}}) => {
 const FieldInfo = ({label, value}) => (
 	<div>
 		<label className="use-propagate-field-set__field-info-label">{`${label}:`}</label>
+
 		<span>{value}</span>
 	</div>
 );
@@ -69,7 +70,7 @@ const usePropagateFieldSet = () => {
 
 		const dataDefinitionField = dataDefinition.dataDefinitionFields.find(
 			({customProperties: {ddmStructureId}}) =>
-				ddmStructureId == fieldSet.id
+				ddmStructureId === fieldSet.id
 		);
 
 		if (dataDefinitionField) {
@@ -210,6 +211,7 @@ const usePropagateFieldSet = () => {
 						>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
+
 						<ClayButton
 							disabled={
 								!allowReferencedDataDefinitionDeletion &&

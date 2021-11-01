@@ -126,6 +126,7 @@ const TranslationAdminSelector = ({
 						<span className="inline-item">
 							<ClayIcon symbol={selectedLocale.symbol} />
 						</span>
+
 						<span className="btn-section">
 							{selectedLocale.label}
 						</span>

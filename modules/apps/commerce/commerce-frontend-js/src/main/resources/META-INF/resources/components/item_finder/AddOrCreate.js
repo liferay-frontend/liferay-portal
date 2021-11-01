@@ -53,6 +53,7 @@ function Item(props) {
 					</ClayTable.Cell>
 				);
 			})}
+
 			<ClayTable.Cell>
 				<ClayButton
 					disabled={props.selected}
@@ -100,6 +101,7 @@ class AddOrCreateBase extends Component {
 				<h4 className="align-items-center card-header py-3">
 					{this.props.panelHeaderLabel}
 				</h4>
+
 				<div className="card-body">
 					<div className="input-group">
 						<div className="input-group-item">
@@ -116,6 +118,7 @@ class AddOrCreateBase extends Component {
 								type="text"
 								value={this.props.inputSearchValue}
 							/>
+
 							<span className="input-group-inset-item input-group-inset-item-after">
 								{this.props.inputSearchValue && (
 									<button
@@ -132,6 +135,7 @@ class AddOrCreateBase extends Component {
 						</div>
 					</div>
 				</div>
+
 				{this.props.active &&
 					(this.props.inputSearchValue ||
 						(this.props.items && !!this.props.items.length)) && (
@@ -163,6 +167,7 @@ class AddOrCreateBase extends Component {
 														&quot;
 													</ClayList.ItemTitle>
 												</ClayList.ItemField>
+
 												<ClayList.ItemField>
 													<ClayButton
 														onClick={
@@ -179,6 +184,7 @@ class AddOrCreateBase extends Component {
 											</ClayList.Item>
 										</>
 									)}
+
 								{this.props.items &&
 									this.props.items.length === 0 &&
 									!this.props.itemCreation && (
@@ -189,6 +195,7 @@ class AddOrCreateBase extends Component {
 										</ClayList.Header>
 									)}
 							</ClayList>
+
 							{this.props.items && !!this.props.items.length ? (
 								<>
 									{this.props.itemCreation && (

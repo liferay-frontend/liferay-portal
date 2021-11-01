@@ -92,7 +92,7 @@ const StateSync = ({
  * properties of a field, a new FormProvider is needed to control
  * the reducers of a Field's settingsContext structure.
  */
-export const FormFieldSettings = ({children, onAction, ...otherProps}) => {
+export function FormFieldSettings({children, onAction, ...otherProps}) {
 	const {config, state} = parseProps(otherProps);
 
 	return (
@@ -120,10 +120,11 @@ export const FormFieldSettings = ({children, onAction, ...otherProps}) => {
 				value={state}
 			>
 				<StateSync {...state} />
+
 				{children}
 			</FormProvider>
 		</ConfigProvider>
 	);
-};
+}
 
 FormFieldSettings.displayName = 'FormFieldSettings';

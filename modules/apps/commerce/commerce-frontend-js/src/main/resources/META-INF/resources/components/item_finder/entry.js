@@ -15,4 +15,6 @@
 import launcher from '../../utilities/launcher';
 import ItemFinder from './ItemFinder';
 
-export default (...data) => launcher(ItemFinder, ...data);
+export default function entry(...data) {
+	return launcher(ItemFinder, ...data);
+}

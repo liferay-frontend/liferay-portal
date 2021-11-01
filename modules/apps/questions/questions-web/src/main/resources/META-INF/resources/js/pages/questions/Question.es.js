@@ -76,7 +76,7 @@ export default withRouter(
 
 		const [error, setError] = useState(null);
 
-		const editor = useRef('');
+		const editorRef = useRef('');
 
 		const [isPostButtonDisable, setIsPostButtonDisable] = useState(true);
 		const [showDeleteModalPanel, setShowDeleteModalPanel] = useState(false);
@@ -292,24 +292,20 @@ export default withRouter(
 										</h1>
 
 										<p className="c-mb-0 small text-secondary">
-											{Liferay.Language.get('asked')}{' '}
-											{dateToBriefInternationalHuman(
+											{`${Liferay.Language.get(
+												'asked'
+											)} ${dateToBriefInternationalHuman(
 												question.dateCreated
-											)}
-											{' - '}
-											{Liferay.Language.get(
+											)} - ${Liferay.Language.get(
 												'active'
-											)}{' '}
-											{dateToBriefInternationalHuman(
+											)} ${dateToBriefInternationalHuman(
 												question.dateModified
-											)}
-											{' - '}
-											{lang.sub(
+											)} - ${lang.sub(
 												Liferay.Language.get(
 													'viewed-x-times'
 												),
 												[question.viewCount]
-											)}
+											)}`}
 										</p>
 									</div>
 
@@ -405,7 +401,8 @@ export default withRouter(
 								</div>
 
 								<h3 className="c-mt-4 text-secondary">
-									{answers.totalCount}{' '}
+									{answers.totalCount + ' '}
+
 									{Liferay.Language.get('answers')}
 								</h3>
 
@@ -446,7 +443,7 @@ export default withRouter(
 													setIsPostButtonDisable
 												}
 												question={question}
-												ref={editor}
+												ref={editorRef}
 											/>
 
 											{!question.locked && (
@@ -461,12 +458,12 @@ export default withRouter(
 																`${sectionTitle}/${questionId}`
 															),
 															variables: {
-																articleBody: editor.current.getContent(),
+																articleBody: editorRef.current.getContent(),
 																messageBoardThreadId:
 																	question.id,
 															},
 														}).then(() => {
-															editor.current.clearContent();
+															editorRef.current.clearContent();
 															fetchMessages();
 														});
 													}}
@@ -485,6 +482,7 @@ export default withRouter(
 							</div>
 						</div>
 					)}
+
 					{question && question.id && (
 						<RelatedQuestions question={question} />
 					)}
@@ -495,6 +493,7 @@ export default withRouter(
 				{question && (
 					<Helmet>
 						<title>{question.headline}</title>
+
 						<link
 							href={`${getFullPath(
 								context.historyRouterBasePath || 'questions'

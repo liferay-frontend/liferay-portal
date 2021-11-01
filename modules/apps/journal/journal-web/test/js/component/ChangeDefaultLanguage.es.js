@@ -61,7 +61,7 @@ describe('ChangeDefaultLanguage', () => {
 	it('render', () => {
 		const {getByText} = _renderChangeDefaultLanguageComponent();
 
-		expect(getByText('change'));
+		expect(getByText('change')).toBeTruthy();
 	});
 
 	it('render the default language', () => {
@@ -69,7 +69,7 @@ describe('ChangeDefaultLanguage', () => {
 			defaultLanguage: 'es_ES',
 		});
 
-		expect(getByText('Spanish (ES)'));
+		expect(getByText('Spanish (ES)')).toBeTruthy();
 	});
 
 	it('change default language', async () => {
@@ -79,7 +79,7 @@ describe('ChangeDefaultLanguage', () => {
 
 		await waitForElement(() => getByText('Spanish (ES)'));
 
-		expect(getByText('Spanish (ES)'));
+		expect(getByText('Spanish (ES)')).toBeTruthy();
 	});
 
 	it('to fire default locale changed event', () => {

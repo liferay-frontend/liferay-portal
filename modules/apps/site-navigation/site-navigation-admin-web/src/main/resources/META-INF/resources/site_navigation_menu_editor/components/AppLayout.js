@@ -23,11 +23,11 @@ import {
 
 const DEFAULT_SIDEBAR_PANELS = [];
 
-export const AppLayout = ({
+export function AppLayout({
 	contentChildren,
 	sidebarPanels = DEFAULT_SIDEBAR_PANELS,
 	toolbarChildren,
-}) => {
+}) {
 	const setSidebarPanelId = useSetSidebarPanelId();
 	const sidebarPanelId = useSidebarPanelId();
 
@@ -88,7 +88,7 @@ export const AppLayout = ({
 			</div>
 		</>
 	);
-};
+}
 
 AppLayout.propTypes = {
 	contentChildren: PropTypes.node,

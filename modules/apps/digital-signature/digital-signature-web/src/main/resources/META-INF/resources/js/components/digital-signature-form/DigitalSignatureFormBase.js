@@ -110,6 +110,7 @@ const DigitalSignatureFormBase = ({
 								value={recipient.fullName}
 							/>
 						</ClayInput.GroupItem>
+
 						<ClayInput.GroupItem>
 							<Input
 								className="mb-0"
@@ -124,6 +125,7 @@ const DigitalSignatureFormBase = ({
 								value={recipient.email}
 							/>
 						</ClayInput.GroupItem>
+
 						<ClayInput.GroupItem shrink>
 							<ClayButtonWithIcon
 								className="recipient-icon-button"
@@ -146,6 +148,7 @@ const DigitalSignatureFormBase = ({
 					<span className="inline-item inline-item-before">
 						<ClayIcon symbol="plus" />
 					</span>
+
 					<span>{Liferay.Language.get('add-recipient')}</span>
 				</ClayButton>
 			)}

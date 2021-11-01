@@ -38,7 +38,7 @@ export default withRouter(
 	}) => {
 		const context = useContext(AppContext);
 
-		const editor = useRef('');
+		const editorRef = useRef('');
 
 		const [isReplyButtonDisable, setIsReplyButtonDisable] = useState(false);
 
@@ -74,7 +74,7 @@ export default withRouter(
 							<DefaultQuestionsEditor
 								label={Liferay.Language.get('your-answer')}
 								onContentLengthValid={setIsReplyButtonDisable}
-								ref={editor}
+								ref={editorRef}
 							/>
 
 							<ClayButton.Group className="c-mt-3" spaced>
@@ -87,11 +87,11 @@ export default withRouter(
 												`${sectionTitle}/${questionId}`
 											),
 											variables: {
-												articleBody: editor.current.getContent(),
+												articleBody: editorRef.current.getContent(),
 												parentMessageBoardMessageId: entityId,
 											},
 										}).then(({data}) => {
-											editor.current.clearContent();
+											editorRef.current.clearContent();
 											showNewCommentChange(false);
 											commentsChange([
 												...comments,

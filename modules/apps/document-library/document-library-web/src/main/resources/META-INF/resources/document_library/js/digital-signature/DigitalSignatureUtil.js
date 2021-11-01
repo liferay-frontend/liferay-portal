@@ -145,10 +145,10 @@ const _showWarningModal = ({
 				: Liferay.Language.get('file-extensions-not-supported'),
 	});
 
-export const collectDigitalSignature = async (
+export async function collectDigitalSignature(
 	fileEntryIds,
 	digitalSignaturePortlet
-) => {
+) {
 	const response = await fetch(
 		createResourceURL(themeDisplay.getLayoutRelativeControlPanelURL(), {
 			p_p_id: digitalSignaturePortlet,
@@ -189,4 +189,4 @@ export const collectDigitalSignature = async (
 		digitalSignaturePortlet,
 		fileEntryIds.length > 1 ? fileEntryIds.join(',') : fileEntryIds[0]
 	);
-};
+}

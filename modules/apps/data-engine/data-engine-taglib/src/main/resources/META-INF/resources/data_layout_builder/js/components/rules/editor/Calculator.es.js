@@ -169,6 +169,7 @@ function FieldsDropdown({items, onFieldSelected = () => {}, ...otherProps}) {
 								}}
 							>
 								{item.label}
+
 								{item.fieldReference && (
 									<span className="calculate-field-reference">
 										{` ${Liferay.Language.get(
@@ -290,6 +291,7 @@ const Calculator = forwardRef(
 										</ClayButton>
 									}
 								/>
+
 								<CalculatorButtonArea
 									disableDot={disableDot}
 									disableFunctions={disableFunctions}
@@ -301,6 +303,7 @@ const Calculator = forwardRef(
 								/>
 							</div>
 						</ClayLayout.Col>
+
 						<ClayLayout.Col
 							className="calculate-container-fields"
 							md="9"

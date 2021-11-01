@@ -53,6 +53,7 @@ const OPERAND_TEXT = {
 const EmptyState = () => (
 	<ClayLayout.Sheet className="taglib-empty-result-message">
 		<div className="taglib-empty-result-message-header"></div>
+
 		<div className="sheet-text text-center text-muted">
 			<p className="text-default">
 				{Liferay.Language.get(
@@ -85,7 +86,7 @@ const getOperandTypeJson = (json, field) => {
 
 	const lastCommaPosition = label.lastIndexOf(', ');
 
-	if (lastCommaPosition != -1) {
+	if (lastCommaPosition !== -1) {
 		label = label.substr(0, lastCommaPosition);
 	}
 
@@ -119,6 +120,7 @@ const Operand = ({field, left, type, value}) => {
 			<span className="inline-item-before">
 				{OPERAND_TEXT[type] ?? OPERAND_TEXT.value}
 			</span>
+
 			<ClayLabelCustom displayType="secondary" large>
 				{text}
 			</ClayLabelCustom>
@@ -192,6 +194,7 @@ const ActionJumpToPage = ({pages, target}) => (
 		<b className="inline-item-before">
 			{Liferay.Language.get('jump-to-page')}
 		</b>
+
 		<ClayLabelCustom displayType="secondary" large>
 			{pages[target]?.label}
 		</ClayLabelCustom>
@@ -226,6 +229,7 @@ const ACTIONS_LABELS = {
 const ActionDefault = ({action, fields, target}) => (
 	<span className="inline-item">
 		<b className="inline-item-before">{ACTIONS_LABELS[action]}</b>
+
 		<ClayLabelCustom displayType="secondary" large>
 			{fields.find(({value}) => value === target)?.label ?? target}
 		</ClayLabelCustom>
@@ -375,6 +379,7 @@ const ListItem = ({
 					<b className="inline-item inline-item-before">
 						{Liferay.Language.get('if')}
 					</b>
+
 					{conditions.map((condition, index) => (
 						<ConditionWithLogicalOperator
 							condition={condition}
@@ -384,7 +389,9 @@ const ListItem = ({
 							operatorsByType={operatorsByType}
 						/>
 					))}
+
 					<br />
+
 					{actions.map(({action, ...otherProps}, index) => (
 						<ActionWithLogicalOperator
 							action={action}
@@ -398,6 +405,7 @@ const ListItem = ({
 					))}
 				</div>
 			</ClayLayout.ContentCol>
+
 			<ClayLayout.ContentCol>
 				<div className="form-rule-list-col px-2 py-2">
 					{invalidRule && (
@@ -412,6 +420,7 @@ const ListItem = ({
 							</ClayLabelCustom>
 						</div>
 					)}
+
 					<ClayDropDownWithItems
 						items={[
 							{
@@ -447,32 +456,37 @@ const ListItem = ({
 	);
 };
 
-export const RuleList = ({
+export function RuleList({
 	rules = [],
 	onDelete,
 	onEdit,
 	operatorsByType = [],
 	...otherProps
-}) => (
-	<div className="form-rule-list">
-		<h1 className="text-default">{Liferay.Language.get('rule-builder')}</h1>
+}) {
+	return (
+		<div className="form-rule-list">
+			<h1 className="text-default">
+				{Liferay.Language.get('rule-builder')}
+			</h1>
 
-		{rules.length === 0 && <EmptyState />}
-		{rules.length > 0 && (
-			<ClayList className="mt-4" showQuickActionsOnHover={false}>
-				{rules.map((rule, index) => (
-					<ListItem
-						key={index}
-						onDelete={() => onDelete(index)}
-						onEdit={() => onEdit(index)}
-						operatorsByType={operatorsByType}
-						rule={rule}
-						{...otherProps}
-					/>
-				))}
-			</ClayList>
-		)}
-	</div>
-);
+			{rules.length === 0 && <EmptyState />}
+
+			{rules.length > 0 && (
+				<ClayList className="mt-4" showQuickActionsOnHover={false}>
+					{rules.map((rule, index) => (
+						<ListItem
+							key={index}
+							onDelete={() => onDelete(index)}
+							onEdit={() => onEdit(index)}
+							operatorsByType={operatorsByType}
+							rule={rule}
+							{...otherProps}
+						/>
+					))}
+				</ClayList>
+			)}
+		</div>
+	);
+}
 
 RuleList.displayName = 'RuleList';

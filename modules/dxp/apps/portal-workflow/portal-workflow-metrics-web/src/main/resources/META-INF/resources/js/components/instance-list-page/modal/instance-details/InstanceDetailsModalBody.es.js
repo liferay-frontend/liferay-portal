@@ -338,7 +338,7 @@ function SLAResultItem({dateOverdue, name, onTime, remainingTime, status}) {
 			</span>
 
 			<span className="font-weight-medium small text-secondary">
-				{`${name}`}{' '}
+				{`${name}` + ' '}
 			</span>
 
 			<span className="small">{getStatusText(status)}</span>

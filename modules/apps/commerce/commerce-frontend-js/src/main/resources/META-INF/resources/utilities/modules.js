@@ -69,14 +69,14 @@ export function useLiferayModule(
 	moduleUrl,
 	LoadingComponent = ClayLoadingIndicator
 ) {
-	const [Component, updateComponent] = useState(
+	const [Component, setComponent] = useState(
 		moduleUrl ? LoadingComponent : null
 	);
 
 	useEffect(() => {
 		if (moduleUrl) {
 			getComponentByModuleUrl(moduleUrl).then((module) => {
-				updateComponent(() => module);
+				setComponent(() => module);
 			});
 		}
 	}, [moduleUrl]);

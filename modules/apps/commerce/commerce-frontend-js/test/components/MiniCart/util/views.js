@@ -117,9 +117,7 @@ describe('MiniCart Utils -> Views', () => {
 				const customViewElement = getByText('test');
 
 				expect(customViewElement).toBeInTheDocument();
-				expect(customViewElement.getAttribute('data-testattr')).toEqual(
-					'test'
-				);
+				expect(customViewElement.dataset.testattr).toEqual('test');
 			});
 
 			it('resolved custom Liferay module component implementations', async () => {
@@ -166,9 +164,7 @@ describe('MiniCart Utils -> Views', () => {
 				const customViewElement = getByText('test');
 
 				expect(customViewElement).toBeInTheDocument();
-				expect(customViewElement.getAttribute('data-testattr')).toEqual(
-					'test'
-				);
+				expect(customViewElement.dataset.testattr).toEqual('test');
 			});
 
 			it('fallback default MiniCart views if Liferay modules fail to resolve', async () => {

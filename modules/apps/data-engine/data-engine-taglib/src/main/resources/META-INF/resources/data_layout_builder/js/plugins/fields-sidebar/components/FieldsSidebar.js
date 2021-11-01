@@ -20,7 +20,7 @@ import Sidebar from '../../../components/sidebar/Sidebar.es';
 import FieldsSidebarBody from './FieldsSidebarBody';
 import SidebarFieldSettings from './SidebarFieldSettings';
 
-export const FieldsSidebar = ({title}) => {
+export function FieldsSidebar({title}) {
 	const {focusedField} = useFormState();
 
 	return Object.keys(focusedField).length ? (
@@ -28,7 +28,7 @@ export const FieldsSidebar = ({title}) => {
 	) : (
 		<FieldListSidebar title={title} />
 	);
-};
+}
 
 const FieldListSidebar = ({title}) => {
 	const [searchTerm, setSearchTerm] = useState('');
@@ -37,6 +37,7 @@ const FieldListSidebar = ({title}) => {
 		<Sidebar>
 			<Sidebar.Header>
 				<Sidebar.Title className="mb-3" title={title} />
+
 				<ClayForm onSubmit={(event) => event.preventDefault()}>
 					<Sidebar.SearchInput
 						onSearch={(keywords) => setSearchTerm(keywords)}
@@ -44,6 +45,7 @@ const FieldListSidebar = ({title}) => {
 					/>
 				</ClayForm>
 			</Sidebar.Header>
+
 			<Sidebar.Body>
 				<FieldsSidebarBody
 					keywords={searchTerm}

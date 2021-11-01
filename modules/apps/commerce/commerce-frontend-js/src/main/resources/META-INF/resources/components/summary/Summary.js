@@ -112,7 +112,7 @@ function Summary({
 	items = [],
 	summaryData,
 }) {
-	const [summaryItems, updateSummaryItems] = useState(items);
+	const [summaryItems, setSummaryItems] = useState(items);
 
 	const mapDataToLayout = useCallback(
 		(data) => (typeof dataMapper === 'function' ? dataMapper(data) : data),
@@ -123,7 +123,7 @@ function Summary({
 		({id = null}) => {
 			if (!id || datasetDisplayId !== id) {
 				return AJAX.GET(apiUrl).then((data) =>
-					updateSummaryItems(mapDataToLayout(data))
+					setSummaryItems(mapDataToLayout(data))
 				);
 			}
 		},
@@ -144,7 +144,7 @@ function Summary({
 
 	useEffect(() => {
 		if (!!summaryData && Object.keys(summaryData).length > 0) {
-			updateSummaryItems(mapDataToLayout(summaryData));
+			setSummaryItems(mapDataToLayout(summaryData));
 		}
 
 		return () => {};

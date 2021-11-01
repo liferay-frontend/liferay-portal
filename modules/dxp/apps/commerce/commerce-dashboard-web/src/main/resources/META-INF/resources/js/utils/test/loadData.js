@@ -139,13 +139,13 @@ describe('Chart loadData utils', () => {
 
 	it('Filters out points whose actual AND forecast values are NULL', () => {
 		const invalidSample = {
-				actual: NULL_VALUE,
-				forecast: NULL_VALUE,
-			},
-			validSample = {
-				actual: 1232,
-				forecast: NULL_VALUE,
-			};
+			actual: NULL_VALUE,
+			forecast: NULL_VALUE,
+		};
+		const validSample = {
+			actual: 1232,
+			forecast: NULL_VALUE,
+		};
 
 		const result = [invalidSample, validSample].filter(
 			hasNoActualNorForecastValue

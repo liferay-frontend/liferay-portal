@@ -36,6 +36,7 @@ export default function TextFrontendToken({
 	return (
 		<ClayForm.Group small>
 			<label htmlFor={id}>{label}</label>
+
 			<ClayInput
 				defaultValue={value}
 				id={id}

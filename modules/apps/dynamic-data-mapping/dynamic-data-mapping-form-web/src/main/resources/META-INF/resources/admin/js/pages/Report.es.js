@@ -19,7 +19,7 @@ import {useEffect} from 'react';
  * manipulate the visibility of the report page, it is currently rendered via
  * JSP and it is necessary to control visibility via JavaScript.
  */
-export const Report = () => {
+export function Report() {
 	useEffect(() => {
 		const formReport = document.querySelector(
 			'#container-portlet-ddm-form-report'
@@ -37,4 +37,4 @@ export const Report = () => {
 	}, []);
 
 	return null;
-};
+}

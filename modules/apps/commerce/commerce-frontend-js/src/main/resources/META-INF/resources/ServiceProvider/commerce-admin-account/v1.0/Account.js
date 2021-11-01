@@ -22,7 +22,9 @@ function resolvePath(basePath = '') {
 	return `${basePath}${VERSION}${ACCOUNTS_PATH}`;
 }
 
-export default (basePath) => ({
-	baseURL: resolvePath(basePath),
-	getAccounts: (...params) => AJAX.GET(resolvePath(basePath), ...params),
-});
+export default function Account(basePath) {
+	return {
+		baseURL: resolvePath(basePath),
+		getAccounts: (...params) => AJAX.GET(resolvePath(basePath), ...params),
+	};
+}

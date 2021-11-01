@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import {
 	getSessionValue,
 	setSessionValue,

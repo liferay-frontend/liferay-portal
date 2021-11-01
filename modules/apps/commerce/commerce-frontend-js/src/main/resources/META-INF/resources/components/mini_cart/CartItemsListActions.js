@@ -114,6 +114,7 @@ function CartItemsListActions() {
 							>
 								{Liferay.Language.get('yes')}
 							</button>
+
 							<button
 								className="btn btn-outline-danger btn-sm"
 								onClick={cancel}

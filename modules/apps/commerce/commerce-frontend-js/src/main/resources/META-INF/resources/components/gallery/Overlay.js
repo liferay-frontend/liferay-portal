@@ -37,6 +37,7 @@ export default function Overlay({
 			) : (
 				<img alt={title} src={src} />
 			)}
+
 			<Arrows onNext={onNext} onPrev={onPrev} />
 		</div>
 	);

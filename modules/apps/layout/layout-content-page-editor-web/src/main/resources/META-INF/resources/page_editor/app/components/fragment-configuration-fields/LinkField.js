@@ -155,6 +155,7 @@ export default function LinkField({field, onValueSelect, value}) {
 								value={nextHref || ''}
 							/>
 						</ClayInput.GroupItem>
+
 						<ClayInput.GroupItem shrink>
 							<CurrentLanguageFlag />
 						</ClayInput.GroupItem>

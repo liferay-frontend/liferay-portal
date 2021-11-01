@@ -29,6 +29,7 @@ function Item({assignee: {image, name}, durationTaskAvg, id, taskCount}) {
 			<ClayTable.Cell className="border-0 text-right">
 				<span className="task-count-value">{taskCount}</span>
 			</ClayTable.Cell>
+
 			<ClayTable.Cell className="border-0 text-right">
 				<span className="task-count-value">{formattedDuration}</span>
 			</ClayTable.Cell>

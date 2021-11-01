@@ -40,6 +40,7 @@ function ContributorInputs({contributors}) {
 						type="hidden"
 						value={criteria.query}
 					/>
+
 					<input
 						id={criteria.conjunctionInputId}
 						name={criteria.conjunctionInputId}

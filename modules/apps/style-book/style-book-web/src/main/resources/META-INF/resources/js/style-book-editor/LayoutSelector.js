@@ -48,6 +48,7 @@ export default function LayoutSelector() {
 					symbol="time"
 				>
 					{previewLayout?.name}
+
 					<ClayIcon className="mt-0" symbol="caret-bottom-l" />
 				</ClayButton>
 			}
@@ -58,6 +59,7 @@ export default function LayoutSelector() {
 						<label className="sr-only" htmlFor={id}>
 							{Liferay.Language.get('page-type-selector')}
 						</label>
+
 						<ClaySelectWithOption
 							id={id}
 							onChange={(event) =>

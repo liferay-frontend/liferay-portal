@@ -68,13 +68,13 @@ function ReviewExperimentModal({modalObserver, onModalClose, onRun, variants}) {
 	const {APIService, imagesPath} = useContext(SegmentsExperimentContext);
 	const {experiment} = useContext(StateContext);
 
-	const mounted = useRef();
+	const mountedRef = useRef();
 
 	useEffect(() => {
-		mounted.current = true;
+		mountedRef.current = true;
 
 		return () => {
-			mounted.current = false;
+			mountedRef.current = false;
 		};
 	});
 
@@ -83,7 +83,7 @@ function ReviewExperimentModal({modalObserver, onModalClose, onRun, variants}) {
 	const [getEstimation] = useDebounceCallback((body) => {
 		APIService.getEstimatedTime(body)
 			.then(({segmentsExperimentEstimatedDaysDuration}) => {
-				if (mounted.current) {
+				if (mountedRef.current) {
 					setEstimation({
 						days: segmentsExperimentEstimatedDaysDuration,
 						loading: false,
@@ -91,7 +91,7 @@ function ReviewExperimentModal({modalObserver, onModalClose, onRun, variants}) {
 				}
 			})
 			.catch((_error) => {
-				if (mounted.current) {
+				if (mountedRef.current) {
 					setEstimation({
 						error: true,
 					});
@@ -134,6 +134,7 @@ function ReviewExperimentModal({modalObserver, onModalClose, onRun, variants}) {
 					? Liferay.Language.get('test-started-successfully')
 					: Liferay.Language.get('review-and-run-test')}
 			</ClayModal.Header>
+
 			<ClayModal.Body>
 				{success ? (
 					<div
@@ -146,6 +147,7 @@ function ReviewExperimentModal({modalObserver, onModalClose, onRun, variants}) {
 							src={successAnimationPath}
 							width="250px"
 						/>
+
 						<h3>{Liferay.Language.get('test-running-message')}</h3>
 					</div>
 				) : (
@@ -178,6 +180,7 @@ function ReviewExperimentModal({modalObserver, onModalClose, onRun, variants}) {
 						/>
 
 						<hr />
+
 						<div className="d-flex">
 							<div className="w-100">
 								<label>
@@ -264,7 +267,7 @@ function ReviewExperimentModal({modalObserver, onModalClose, onRun, variants}) {
 			confidenceLevel: percentageNumberToIndex(confidenceLevel),
 			splitVariantsMap,
 		}).then(() => {
-			if (mounted.current) {
+			if (mountedRef.current) {
 				setBusy(false);
 				setSuccess(true);
 			}

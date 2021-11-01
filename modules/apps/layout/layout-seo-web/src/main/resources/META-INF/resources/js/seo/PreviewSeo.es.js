@@ -33,6 +33,7 @@ const PreviewSeo = ({
 	const titleUrl = [
 		<div className="preview-seo-title text-truncate" key="title">
 			{title}
+
 			{titleSuffix && ` - ${titleSuffix}`}
 		</div>,
 		<div className="preview-seo-url text-truncate" key="url">
@@ -54,7 +55,9 @@ const PreviewSeo = ({
 					/>
 				</div>
 			)}
+
 			{displayType === 'og' ? titleUrl.reverse() : titleUrl}
+
 			<div className="preview-seo-description">
 				{description.length < MAX_LENGTH_DESCIPTION
 					? description
@@ -103,8 +106,7 @@ const PreviewSeoContainer = ({
 		const inputLocalizedLocaleChangedHandle = Liferay.on(
 			'inputLocalized:localeChanged',
 			(event) => {
-				const newLanguage =
-					event.item && event.item.getAttribute('data-value');
+				const newLanguage = event.item && event.item.dataset.value;
 
 				if (newLanguage && isMounted()) {
 					setLanguage(newLanguage);

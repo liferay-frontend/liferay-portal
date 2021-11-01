@@ -96,7 +96,7 @@ const Sharing = ({
 	const [multiSelectValue, setMultiSelectValue] = useState('');
 	const [allowSharingChecked, setAllowSharingChecked] = useState(true);
 	const [sharingPermission, setSharingPermission] = useState('VIEW');
-	const emailValidationInProgress = useRef(false);
+	const emailValidationInProgressRef = useRef(false);
 
 	const closeDialog = () => {
 		Liferay.Util.getOpener().Liferay.fire('closeModal', {
@@ -170,7 +170,7 @@ const Sharing = ({
 
 	const handleItemsChange = useCallback(
 		(items) => {
-			emailValidationInProgress.current = true;
+			emailValidationInProgressRef.current = true;
 
 			Promise.all(
 				items.map((item) => {
@@ -213,7 +213,7 @@ const Sharing = ({
 						}));
 				})
 			).then((results) => {
-				emailValidationInProgress.current = false;
+				emailValidationInProgressRef.current = false;
 
 				const erroredResults = results.filter(({error}) => !!error);
 
@@ -242,7 +242,7 @@ const Sharing = ({
 	);
 
 	const handleChange = useCallback((value) => {
-		if (!emailValidationInProgress.current) {
+		if (!emailValidationInProgressRef.current) {
 			setMultiSelectValue(value);
 
 			if (value.trim() === '') {
@@ -309,6 +309,7 @@ const Sharing = ({
 										: []
 								}
 							/>
+
 							<ClayForm.FeedbackGroup>
 								<ClayForm.Text>
 									{Liferay.Language.get(

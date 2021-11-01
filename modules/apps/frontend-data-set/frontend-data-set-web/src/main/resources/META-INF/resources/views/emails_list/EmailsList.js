@@ -74,16 +74,19 @@ function Email({
 										</ClaySticker>
 									</div>
 								)}
+
 								<div className="col d-flex flex-column justify-content-center">
 									<small className="d-block text-body">
 										<strong>{author.name}</strong>
 									</small>
+
 									<small className="d-block">
 										{author.email}
 									</small>
 								</div>
 							</div>
 						</div>
+
 						<div className="col-auto d-flex flex-column justify-content-center">
 							<ClayLabel
 								displayType={status.displayStyle || 'success'}
@@ -91,19 +94,23 @@ function Email({
 								{status.label}
 							</ClayLabel>
 						</div>
+
 						<div className="col-auto d-flex flex-column justify-content-center">
 							<small>{date}</small>
 						</div>
+
 						<div className="col-12">
 							<h5 className="mt-3">
 								<a href="#" onClick={handleClickOnSubject}>
 									{subject}
 								</a>
 							</h5>
+
 							<div>{summary}</div>
 						</div>
 					</div>
 				</div>
+
 				{actionDropdownItems.length ? (
 					<div className="col-auto d-flex flex-column justify-content-center">
 						<ActionsDropdownRenderer

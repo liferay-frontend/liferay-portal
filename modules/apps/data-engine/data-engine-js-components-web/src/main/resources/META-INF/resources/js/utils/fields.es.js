@@ -14,9 +14,9 @@
 
 import {PagesVisitor} from './visitors.es';
 
-export const checkValidFieldNameCharacter = (character) => {
+export function checkValidFieldNameCharacter(character) {
 	return /[A-Za-z0-9_]/g.test(character);
-};
+}
 
 export function normalizeFieldName(fieldName) {
 	let nextUpperCase = false;
@@ -52,7 +52,7 @@ export function normalizeFieldName(fieldName) {
 	return normalizedFieldName;
 }
 
-export const getFields = (pages) => {
+export function getFields(pages) {
 	const fields = [];
 	const visitor = new PagesVisitor(pages);
 
@@ -66,7 +66,8 @@ export const getFields = (pages) => {
 	);
 
 	return fields;
-};
+}
 
-export const hasFieldSet = (field) =>
-	field && field.type === 'fieldset' && field.ddmStructureId;
+export function hasFieldSet(field) {
+	return field && field.type === 'fieldset' && field.ddmStructureId;
+}

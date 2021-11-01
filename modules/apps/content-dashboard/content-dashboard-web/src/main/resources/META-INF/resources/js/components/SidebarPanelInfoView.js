@@ -127,7 +127,8 @@ const SidebarPanelInfoView = ({
 					{versions.map((version) => (
 						<div className="c-mt-2" key={version.version}>
 							<ClayLabel displayType="info">
-								{Liferay.Language.get('version')}{' '}
+								{Liferay.Language.get('version') + ' '}
+
 								{version.version}
 							</ClayLabel>
 
@@ -155,6 +156,7 @@ const SidebarPanelInfoView = ({
 							<ClayIcon symbol="user" />
 						)}
 					</ClaySticker>
+
 					<span className="c-ml-2 text-secondary">{user.name}</span>
 				</div>
 
@@ -173,6 +175,7 @@ const SidebarPanelInfoView = ({
 						<h5 className="c-mb-1 font-weight-semi-bold">
 							{Liferay.Language.get('description')}
 						</h5>
+
 						<p className="text-secondary">{description}</p>
 					</div>
 				)}
@@ -232,11 +235,13 @@ const SidebarPanelInfoView = ({
 						<h5 className="c-mb-1 font-weight-semi-bold">
 							{Liferay.Language.get('extension')}
 						</h5>
+
 						<p className="text-secondary">{extension}</p>
 
 						<h5 className="c-mb-1 font-weight-semi-bold">
 							{Liferay.Language.get('size')}
 						</h5>
+
 						<p className="text-secondary">{size}</p>
 					</div>
 				)}

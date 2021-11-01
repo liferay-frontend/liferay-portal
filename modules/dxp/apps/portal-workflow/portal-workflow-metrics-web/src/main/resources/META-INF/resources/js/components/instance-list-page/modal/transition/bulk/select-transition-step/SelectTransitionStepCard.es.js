@@ -149,7 +149,8 @@ function Card({cardIndex, nextTransitions = [], tasks}) {
 						className="control-label"
 						htmlFor={`transitionSelect${cardIndex}`}
 					>
-						{`${Liferay.Language.get('transition-to')}`}{' '}
+						{Liferay.Language.get('transition-to') + ' '}
+
 						<ClayIcon
 							className="reference-mark text-warning"
 							symbol="asterisk"

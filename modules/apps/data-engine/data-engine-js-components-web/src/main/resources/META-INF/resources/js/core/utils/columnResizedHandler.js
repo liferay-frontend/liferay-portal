@@ -15,7 +15,7 @@
 import * as FormSupport from '../../utils/FormSupport.es';
 import {updateField} from '../../utils/settingsContext';
 
-export const getColumn = (pages, nestedIndexes = []) => {
+export function getColumn(pages, nestedIndexes = []) {
 	let column;
 	let context = pages;
 
@@ -40,7 +40,7 @@ export const getColumn = (pages, nestedIndexes = []) => {
 	});
 
 	return column;
-};
+}
 
 const getContext = (context, nestedIndexes = []) => {
 	if (nestedIndexes.length) {
@@ -78,7 +78,7 @@ const getColumnPosition = (context, indexes) => {
 	);
 };
 
-export const handleResizeRight = (props, state, indexes, columnTarget) => {
+export function handleResizeRight(props, state, indexes, columnTarget) {
 	const {pages} = state;
 
 	const {columnIndex, pageIndex, rowIndex} = indexes[indexes.length - 1];
@@ -207,9 +207,9 @@ export const handleResizeRight = (props, state, indexes, columnTarget) => {
 		newContext[indexes.length > 1 ? 0 : pageIndex].rows;
 
 	return pages;
-};
+}
 
-export const handleResizeLeft = (props, state, indexes, columnTarget) => {
+export function handleResizeLeft(props, state, indexes, columnTarget) {
 	const {pages} = state;
 
 	const {columnIndex, pageIndex, rowIndex} = indexes[indexes.length - 1];
@@ -330,9 +330,15 @@ export const handleResizeLeft = (props, state, indexes, columnTarget) => {
 		newContext[indexes.length > 1 ? 0 : pageIndex].rows;
 
 	return pages;
-};
+}
 
-export default ({column, direction, loc, props, state}) => {
+export default function columnResizedHandler({
+	column,
+	direction,
+	loc,
+	props,
+	state,
+}) {
 	const {pages} = state;
 
 	let newPages = [...pages];
@@ -351,4 +357,4 @@ export default ({column, direction, loc, props, state}) => {
 	return {
 		pages: newPages,
 	};
-};
+}

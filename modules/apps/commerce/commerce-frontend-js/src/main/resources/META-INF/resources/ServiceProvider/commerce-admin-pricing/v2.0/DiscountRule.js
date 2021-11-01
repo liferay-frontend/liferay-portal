@@ -28,10 +28,12 @@ function resolveRulePath(basePath = '', discountRuleId = '') {
 	return `${basePath}${VERSION}${DISCOUNT_RULES_PATH}/${discountRuleId}`;
 }
 
-export default (basePath) => ({
-	addDiscountRule: (discountId, json) =>
-		AJAX.POST(resolvePath(basePath, discountId), json),
+export default function DiscountRule(basePath) {
+	return {
+		addDiscountRule: (discountId, json) =>
+			AJAX.POST(resolvePath(basePath, discountId), json),
 
-	updateDiscountRule: (discountRuleId, json) =>
-		AJAX.PATCH(resolveRulePath(basePath, discountRuleId), json),
-});
+		updateDiscountRule: (discountRuleId, json) =>
+			AJAX.PATCH(resolveRulePath(basePath, discountRuleId), json),
+	};
+}

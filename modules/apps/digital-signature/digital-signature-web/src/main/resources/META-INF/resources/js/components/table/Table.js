@@ -48,6 +48,7 @@ const Table = ({
 						{checkable && (
 							<ClayTable.Cell headingCell></ClayTable.Cell>
 						)}
+
 						{columns.map((column, index) => (
 							<ClayTable.Cell
 								align={index === 0 ? 'left' : align}
@@ -61,11 +62,13 @@ const Table = ({
 								{column.value}
 							</ClayTable.Cell>
 						))}
+
 						{actions && (
 							<ClayTable.Cell headingCell></ClayTable.Cell>
 						)}
 					</ClayTable.Row>
 				</ClayTable.Head>
+
 				<ClayTable.Body>
 					{items.map((item, index) => (
 						<ClayTable.Row key={index}>
@@ -79,6 +82,7 @@ const Table = ({
 									/>
 								</ClayTable.Cell>
 							)}
+
 							{columns.map((column, index) => (
 								<CellWrapper
 									fieldAlign={align}
@@ -88,6 +92,7 @@ const Table = ({
 									{item[column.key]}
 								</CellWrapper>
 							))}
+
 							{actions && (
 								<ClayTable.Cell>
 									<DropDown

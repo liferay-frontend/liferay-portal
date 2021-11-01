@@ -76,6 +76,7 @@ export default function UpperToolbar({
 							translations={translations}
 						/>
 					</ClayToolbar.Item>
+
 					<ClayToolbar.Item expand>
 						<ClayInput
 							className="form-control-inline"
@@ -100,7 +101,8 @@ export default function UpperToolbar({
 								displayType="secondary"
 							>
 								<div>
-									{Liferay.Language.get('version')}:
+									{Liferay.Language.get('version') + ':'}
+
 									<span className="version-text">
 										{version}
 									</span>
@@ -108,21 +110,25 @@ export default function UpperToolbar({
 							</ClayLabel>
 						</ClayToolbar.Item>
 					)}
+
 					<ClayToolbar.Item>
 						<ClayButton displayType="secondary">
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
 					</ClayToolbar.Item>
+
 					<ClayToolbar.Item>
 						<ClayButton displayType="secondary">
 							{Liferay.Language.get('save')}
 						</ClayButton>
 					</ClayToolbar.Item>
+
 					<ClayToolbar.Item>
 						<ClayButton displayType="primary">
 							{Liferay.Language.get('publish')}
 						</ClayButton>
 					</ClayToolbar.Item>
+
 					<ClayToolbar.Item>
 						<ClayButtonWithIcon
 							displayType="secondary"

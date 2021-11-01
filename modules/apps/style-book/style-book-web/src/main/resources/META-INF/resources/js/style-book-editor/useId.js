@@ -18,6 +18,6 @@ import {config} from './config';
 
 let nextId = 0;
 
-export const useId = () => {
+export function useId() {
 	return useMemo(() => `${config.namespace}_useId_${nextId++}`, []);
-};
+}

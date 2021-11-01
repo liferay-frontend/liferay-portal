@@ -80,6 +80,7 @@ const Radio = ({
 					/>
 				))}
 			</div>
+
 			<ClayInput name={name} type="hidden" value={currentValue} />
 		</FieldBase>
 	);

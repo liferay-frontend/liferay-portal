@@ -390,39 +390,39 @@ function serializeRequestInit(init: RequestInit): StructuredClonable {
 		serialized.body = serializeBody(init.body);
 	}
 
-	if (init.cache != null) {
+	if (init.cache !== null) {
 		serialized.cache = init.cache;
 	}
 
-	if (init.credentials != null) {
+	if (init.credentials !== null) {
 		serialized.credentials = init.credentials;
 	}
 
-	if (init.headers != null) {
+	if (init.headers !== null && init.headers !== undefined) {
 		serialized.headers = serializeHeaders(init.headers);
 	}
 
-	if (init.integrity != null) {
+	if (init.integrity !== null) {
 		serialized.integrity = init.integrity;
 	}
 
-	if (init.keepalive != null) {
+	if (init.keepalive !== null) {
 		serialized.keepalive = init.keepalive;
 	}
 
-	if (init.method != null) {
+	if (init.method !== null) {
 		serialized.method = init.method;
 	}
 
-	if (init.redirect != null) {
+	if (init.redirect !== null) {
 		serialized.redirect = init.redirect;
 	}
 
-	if (init.referrer != null) {
+	if (init.referrer !== null) {
 		serialized.referrer = init.referrer;
 	}
 
-	if (init.referrerPolicy != null) {
+	if (init.referrerPolicy !== null) {
 		serialized.referrerPolicy = init.referrerPolicy;
 	}
 

@@ -73,7 +73,8 @@ const data = {
 };
 
 describe('The InstanceDetailsModal component should', () => {
-	let getByText, renderResult;
+	let getByText;
+	let renderResult;
 
 	const renderComponent = () => {
 		cleanup();

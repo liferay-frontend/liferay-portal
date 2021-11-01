@@ -31,7 +31,6 @@ describe('State', () => {
 				const atom = State.atom('foo', 'value');
 
 				expect(() => {
-					'use strict';
 
 					// @ts-ignore: avoid TS2540 here.
 
@@ -45,7 +44,6 @@ describe('State', () => {
 				const atom = State.atom('bar', 'value');
 
 				expect(() => {
-					'use strict';
 
 					// @ts-ignore: avoid TS2540 here.
 
@@ -305,8 +303,6 @@ describe('State', () => {
 				expect(value.added).toBe(undefined);
 
 				expect(() => {
-					'use strict';
-
 					const value = State.readSelector(selector);
 
 					// @ts-expect-error TS2339: Property 'added' does not exist
@@ -341,7 +337,6 @@ describe('State', () => {
 				const selector = State.selector('foo', () => 'value');
 
 				expect(() => {
-					'use strict';
 
 					// @ts-ignore: avoid TS2540 here.
 
@@ -355,7 +350,6 @@ describe('State', () => {
 				const selector = State.selector('bar', () => 'value');
 
 				expect(() => {
-					'use strict';
 
 					// @ts-ignore: avoid TS2540 here.
 

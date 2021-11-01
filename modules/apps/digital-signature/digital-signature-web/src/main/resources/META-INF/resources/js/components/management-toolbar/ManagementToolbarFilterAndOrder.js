@@ -37,7 +37,11 @@ const getSortable = (columns, sort = '', defaultSort) => {
 	return {};
 };
 
-export default ({columns = [], disabled, filters = []}) => {
+export default function ManagementToolbarFilterAndOrder({
+	columns = [],
+	disabled,
+	filters = [],
+}) {
 	const [
 		{filters: appliedFilters = {}, defaultSort, sort},
 		dispatch,
@@ -200,6 +204,7 @@ export default ({columns = [], disabled, filters = []}) => {
 											symbol="caret-bottom"
 										/>
 									</span>
+
 									<span className="navbar-breakpoint-d-none">
 										<ClayIcon
 											className="inline-item inline-item-after"
@@ -238,4 +243,4 @@ export default ({columns = [], disabled, filters = []}) => {
 			)}
 		</>
 	);
-};
+}

@@ -52,11 +52,13 @@ const Collapse = ({children, label, open}) => {
 			>
 				<span className="c-inner ellipsis" tabIndex="-1">
 					{label}
+
 					<span className={`collapse-icon-${collapseIconClassName}`}>
 						<ClayIcon key={collapseIcon} symbol={collapseIcon} />
 					</span>
 				</span>
 			</button>
+
 			<div className="sidebar__collapse-content">
 				{isOpen && children}
 			</div>

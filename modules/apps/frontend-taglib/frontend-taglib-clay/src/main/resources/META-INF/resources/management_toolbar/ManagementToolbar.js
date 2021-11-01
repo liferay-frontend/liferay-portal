@@ -118,6 +118,7 @@ function ManagementToolbar({
 						/>
 					)}
 				</ClayManagementToolbar.ItemList>
+
 				{!active && showSearch && (
 					<SearchControls
 						disabled={disabled}
@@ -132,6 +133,7 @@ function ManagementToolbar({
 						setSearchMobile={setSearchMobile}
 					/>
 				)}
+
 				<ClayManagementToolbar.ItemList>
 					{!active && showSearch && (
 						<SearchControls.ShowMobileButton
@@ -139,12 +141,14 @@ function ManagementToolbar({
 							setSearchMobile={setSearchMobile}
 						/>
 					)}
+
 					{showInfoButton && (
 						<InfoPanelControl
 							infoPanelId={infoPanelId}
 							onInfoButtonClick={onInfoButtonClick}
 						/>
 					)}
+
 					{active ? (
 						<>
 							<ActionControls

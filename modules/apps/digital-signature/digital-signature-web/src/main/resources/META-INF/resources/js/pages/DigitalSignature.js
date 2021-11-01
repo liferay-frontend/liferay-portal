@@ -25,11 +25,13 @@ const DigitalSignature = (props) => (
 		<HashRouter>
 			<Switch>
 				<Route component={EnvelopeList} exact path="/" />
+
 				<Route
 					component={EnvelopeView}
 					exact
 					path="/envelope/:envelopeId"
 				/>
+
 				<Route component={EnvelopeForm} exact path="/new-envelope" />
 			</Switch>
 		</HashRouter>
