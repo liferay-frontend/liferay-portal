@@ -19,6 +19,9 @@
 		<field name="customElementURLs" type="String">
 			<hint-collection name="CLOB" />
 		</field>
+		<field localized="true" name="description" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
 		<field name="iFrameURL" type="String">
 			<hint-collection name="URL" />
 			<hint name="method-name">IFrameURL</hint>
@@ -28,6 +31,9 @@
 		<field name="portletCategoryName" type="String" />
 		<field name="properties" type="String">
 			<hint-collection name="CLOB" />
+		</field>
+		<field name="sourceCodeURL" type="String">
+			<hint-collection name="URL" />
 		</field>
 		<field name="type" type="String" />
 	</model>
