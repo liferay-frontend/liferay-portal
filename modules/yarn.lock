@@ -1543,10 +1543,10 @@
   resolved "https://registry.yarnpkg.com/@liferay/amd-loader/-/amd-loader-4.3.1.tgz#35cde6128f6e2795b7e45378e8f115f596b6cdda"
   integrity sha512-95i+LRK3gPTiBc75lJsr9OwRNFdzaamSe3B5x+kHLHYr78qS/4WD5mkDJ+WYv3CY0jFFnROTNLl3x6zCRuDMxw==
 
-"@liferay/eslint-plugin@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@liferay/eslint-plugin/-/eslint-plugin-1.0.0.tgz#f25e539233d6ad74adf434c2391864e807e5b0b3"
-  integrity sha512-RvpUzzahePrN/l5zVJ6v1irl/q0ZjdYvMxdaw+yiPYO/fHMTnUMG57tnjS2Uohvy1Kz/U6i8o7c4jY+kwYVqyg==
+"@liferay/eslint-plugin@1.0.0", "@liferay/eslint-plugin@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@liferay/eslint-plugin/-/eslint-plugin-1.1.0.tgz#8ced1af68ac1feea7b5ab300c7fe90545779eb33"
+  integrity sha512-Rspcs3sfNhUOSI+ATLNIe3MzkX0E+ELkNpqPEXk3WJeOuQYmgfJECpDQB0E+Sg+kANfKfjl7rm/sUtOldtxa1w==
   dependencies:
     "@typescript-eslint/eslint-plugin" "4.30.0"
     "@typescript-eslint/parser" "4.30.0"
@@ -1554,6 +1554,7 @@
     eslint-plugin-no-for-of-loops "^1.0.0"
     eslint-plugin-no-only-tests "^2.1.0"
     eslint-plugin-notice "0.9.10"
+    eslint-plugin-promise "^5.1.0"
     eslint-plugin-react "7.23.1"
     eslint-plugin-react-hooks "4.2.0"
     eslint-plugin-sort-destructure-keys "^1.3.5"
@@ -5961,6 +5962,11 @@ eslint-plugin-notice@0.9.10:
     find-root "^1.1.0"
     lodash "^4.17.15"
     metric-lcs "^0.1.2"
+
+eslint-plugin-promise@^5.1.0:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-5.1.1.tgz#9674d11c056d1bafac38e4a3a9060be740988d90"
+  integrity sha512-XgdcdyNzHfmlQyweOPTxmc7pIsS6dE4MvwhXWMQ2Dxs1XAL2GJDilUsjWen6TWik0aSI+zD/PqocZBblcm9rdA==
 
 eslint-plugin-react-hooks@4.2.0:
   version "4.2.0"
