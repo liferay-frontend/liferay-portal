@@ -16,10 +16,10 @@ import React from 'react';
 import {TObjectLayoutRow} from '../types';
 interface IObjectLayoutBoxProps extends React.HTMLAttributes<HTMLElement> {
 	boxIndex: number;
-	tabIndex: number;
 	collapsable: boolean;
 	label: string;
 	objectLayoutRows?: TObjectLayoutRow[];
+	tabIndex: number;
 }
 declare const ObjectLayoutBox: React.FC<IObjectLayoutBoxProps>;
 export default ObjectLayoutBox;

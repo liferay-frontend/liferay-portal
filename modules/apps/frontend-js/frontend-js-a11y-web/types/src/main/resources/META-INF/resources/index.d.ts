@@ -29,7 +29,6 @@ declare global {
 		themeDisplay: ThemeDisplay;
 	}
 }
-declare const _default: (
+export default function main(
 	props: Omit<A11yCheckerOptions, 'callback' | 'targets'>
-) => void;
-export default _default;
+): void;

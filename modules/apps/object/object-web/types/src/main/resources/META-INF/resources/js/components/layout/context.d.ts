@@ -52,5 +52,8 @@ interface ILayoutContextProviderProps
 		objectLayoutId: string;
 	};
 }
-export declare const LayoutContextProvider: React.FC<ILayoutContextProviderProps>;
+export declare function LayoutContextProvider({
+	children,
+	value,
+}: ILayoutContextProviderProps): JSX.Element;
 export default LayoutContext;

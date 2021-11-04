@@ -13,14 +13,11 @@
  */
 
 import {TObjectLayoutRow} from '../components/layout/types';
-declare type TFindObjectLayoutRowIndex = (
+export declare function findObjectLayoutRowIndex(
 	objectLayoutRows: TObjectLayoutRow[],
-	size: number
-) => number;
-export declare const findObjectLayoutRowIndex: TFindObjectLayoutRowIndex;
-declare type TFindObjectFieldIndex = (
-	object: any[],
-	objectId: number
-) => number;
-export declare const findObjectFieldIndex: TFindObjectFieldIndex;
-export {};
+	fieldSize: number
+): number;
+export declare function findObjectFieldIndex(
+	objectFields: any[],
+	objectFieldId: number
+): number;
