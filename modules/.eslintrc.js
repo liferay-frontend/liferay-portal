@@ -54,6 +54,7 @@ config = {
 				templateFile: path.join(__dirname, 'copyright.js'),
 			},
 		],
+		'promise/catch-or-return': 'off',
 	},
 };
 
