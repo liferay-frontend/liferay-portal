@@ -22,8 +22,8 @@ interface IInputLocalizedProps {
 	id: string;
 	label: string;
 	locales: TLocale[];
-	onTranslationsChange: (value: TTranslations) => void;
 	onSelectedLocaleChange: (value: TLocale) => void;
+	onTranslationsChange: (value: TTranslations) => void;
 	required?: boolean;
 	selectedLocale: TLocale;
 	translations: TTranslations;

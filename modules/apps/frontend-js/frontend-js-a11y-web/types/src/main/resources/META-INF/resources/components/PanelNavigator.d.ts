@@ -19,8 +19,8 @@ declare type PanelNavigatorProps = {
 	helpUrl: string;
 	impact?: ImpactValue;
 	onBack: (event: React.MouseEvent<HTMLButtonElement>) => void;
-	title: string;
 	tags: Array<string>;
+	title: string;
 };
 declare function PanelNavigator({
 	helpUrl,

@@ -12,5 +12,4 @@
  * details.
  */
 
-declare const _default: () => void;
-export default _default;
+export default function main(): void;
