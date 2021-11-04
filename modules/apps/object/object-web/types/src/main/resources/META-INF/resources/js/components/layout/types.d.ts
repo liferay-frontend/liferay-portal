@@ -16,14 +16,14 @@ export declare type TName = {
 	[key: string]: string;
 };
 export declare type TObjectLayout = {
-	name: TName;
 	defaultObjectLayout: boolean;
+	name: TName;
 	objectLayoutTabs: TObjectLayoutTab[];
 };
 export declare type TObjectLayoutTab = {
-	objectRelationshipId: number;
 	name: TName;
 	objectLayoutBoxes: TObjectLayoutBox[];
+	objectRelationshipId: number;
 	priority: number;
 };
 export declare type TObjectLayoutBox = {
@@ -33,8 +33,8 @@ export declare type TObjectLayoutBox = {
 	priority: number;
 };
 export declare type TObjectLayoutRow = {
-	priority: number;
 	objectLayoutColumns: TObjectLayoutColumn[];
+	priority: number;
 };
 export declare type TObjectLayoutColumn = {
 	objectFieldId: number;

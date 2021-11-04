@@ -16,8 +16,8 @@ import React from 'react';
 declare type TFormEvent = React.FormEventHandler<HTMLFormElement>;
 declare type TUseFormProps = {
 	initialValues: {};
-	validate: (values: any) => {};
 	onSubmit: (values: any) => void;
+	validate: (values: any) => {};
 };
 declare type TGenericObject = {
 	[key: string]: any;
