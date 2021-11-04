@@ -45,7 +45,6 @@ config = {
 		'@liferay/aui/no-node': 'off',
 		'@liferay/aui/no-object': 'off',
 		'@liferay/aui/no-one': 'off',
-		'@liferay/empty-line-between-elements': 'off',
 		'no-empty': ['error', {allowEmptyCatch: true}],
 		'notice/notice': [
 			'error',
@@ -55,7 +54,6 @@ config = {
 				templateFile: path.join(__dirname, 'copyright.js'),
 			},
 		],
-		'quote-props': 'off',
 	},
 };
 
