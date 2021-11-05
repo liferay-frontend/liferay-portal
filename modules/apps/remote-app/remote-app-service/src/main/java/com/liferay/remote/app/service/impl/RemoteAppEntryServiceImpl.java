@@ -16,12 +16,15 @@ package com.liferay.remote.app.service.impl;
 
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.remote.app.constants.RemoteAppConstants;
 import com.liferay.remote.app.model.RemoteAppEntry;
 import com.liferay.remote.app.service.base.RemoteAppEntryServiceBaseImpl;
+
+import java.io.InputStream;
 
 import java.util.Locale;
 import java.util.Map;
@@ -40,6 +43,18 @@ import org.osgi.service.component.annotations.Reference;
 	service = AopService.class
 )
 public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
+
+	@Override
+	public FileEntry addAttachment(
+			long remoteAppEntryId, String fileName, InputStream inputStream,
+			String mimeType)
+		throws PortalException {
+
+		_checkAttachmentPermissions(remoteAppEntryId);
+
+		return remoteAppEntryLocalService.addAttachment(
+			getUserId(), remoteAppEntryId, fileName, inputStream, mimeType);
+	}
 
 	@Override
 	public RemoteAppEntry addCustomElementRemoteAppEntry(
@@ -63,7 +78,8 @@ public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
 			String customElementCSSURLs, String customElementHTMLElementName,
 			String customElementURLs, Map<Locale, String> descriptionMap,
 			boolean instanceable, Map<Locale, String> nameMap,
-			String portletCategoryName, String properties, String sourceCodeURL)
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, String sourceCodeURL)
 		throws PortalException {
 
 		_portletResourcePermission.check(
@@ -72,7 +88,7 @@ public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
 		return remoteAppEntryLocalService.addCustomElementRemoteAppEntry(
 			getUserId(), customElementCSSURLs, customElementHTMLElementName,
 			customElementURLs, descriptionMap, instanceable, nameMap,
-			portletCategoryName, properties, sourceCodeURL);
+			portletCategoryName, properties, selectedFileNames, sourceCodeURL);
 	}
 
 	@Override
@@ -93,7 +109,8 @@ public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
 	public RemoteAppEntry addIFrameRemoteAppEntry(
 			String iFrameURL, Map<Locale, String> descriptionMap,
 			boolean instanceable, Map<Locale, String> nameMap,
-			String portletCategoryName, String properties, String sourceCodeURL)
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, String sourceCodeURL)
 		throws PortalException {
 
 		_portletResourcePermission.check(
@@ -101,7 +118,19 @@ public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
 
 		return remoteAppEntryLocalService.addIFrameRemoteAppEntry(
 			getUserId(), iFrameURL, descriptionMap, instanceable, nameMap,
-			portletCategoryName, properties, sourceCodeURL);
+			portletCategoryName, properties, selectedFileNames, sourceCodeURL);
+	}
+
+	@Override
+	public void addTempAttachment(
+			long remoteAppEntryId, String fileName, String tempFolderName,
+			InputStream inputStream, String mimeType)
+		throws PortalException {
+
+		_checkAttachmentPermissions(remoteAppEntryId);
+
+		remoteAppEntryLocalService.addTempAttachment(
+			getUserId(), fileName, tempFolderName, inputStream, mimeType);
 	}
 
 	@Override
@@ -113,6 +142,17 @@ public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
 
 		return remoteAppEntryLocalService.deleteRemoteAppEntry(
 			remoteAppEntryId);
+	}
+
+	@Override
+	public void deleteTempAttachment(
+			long remoteAppEntryId, String fileName, String tempFolderName)
+		throws PortalException {
+
+		_checkAttachmentPermissions(remoteAppEntryId);
+
+		remoteAppEntryLocalService.deleteTempAttachment(
+			getUserId(), fileName, tempFolderName);
 	}
 
 	@Override
@@ -130,7 +170,9 @@ public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
 			long remoteAppEntryId, String customElementCSSURLs,
 			String customElementHTMLElementName, String customElementURLs,
 			Map<Locale, String> descriptionMap, Map<Locale, String> nameMap,
-			String portletCategoryName, String properties, String sourceCodeURL)
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, long[] removeFileEntryIds,
+			String sourceCodeURL)
 		throws PortalException {
 
 		_remoteAppEntryModelResourcePermission.check(
@@ -139,7 +181,8 @@ public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
 		return remoteAppEntryLocalService.updateCustomElementRemoteAppEntry(
 			getUserId(), remoteAppEntryId, customElementCSSURLs,
 			customElementHTMLElementName, customElementURLs, descriptionMap,
-			nameMap, portletCategoryName, properties, sourceCodeURL);
+			nameMap, portletCategoryName, properties, selectedFileNames,
+			removeFileEntryIds, sourceCodeURL);
 	}
 
 	@Override
@@ -163,7 +206,9 @@ public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
 	public RemoteAppEntry updateIFrameRemoteAppEntry(
 			long remoteAppEntryId, String iFrameURL,
 			Map<Locale, String> descriptionMap, Map<Locale, String> nameMap,
-			String portletCategoryName, String properties, String sourceCodeURL)
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, long[] removeFileEntryIds,
+			String sourceCodeURL)
 		throws PortalException {
 
 		_remoteAppEntryModelResourcePermission.check(
@@ -171,7 +216,8 @@ public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
 
 		return remoteAppEntryLocalService.updateIFrameRemoteAppEntry(
 			getUserId(), remoteAppEntryId, iFrameURL, descriptionMap, nameMap,
-			portletCategoryName, properties, sourceCodeURL);
+			portletCategoryName, properties, selectedFileNames,
+			removeFileEntryIds, sourceCodeURL);
 	}
 
 	@Override
@@ -187,6 +233,19 @@ public class RemoteAppEntryServiceImpl extends RemoteAppEntryServiceBaseImpl {
 		return remoteAppEntryLocalService.updateIFrameRemoteAppEntry(
 			remoteAppEntryId, iFrameURL, nameMap, portletCategoryName,
 			properties);
+	}
+
+	private void _checkAttachmentPermissions(long remoteAppEntryId)
+		throws PortalException {
+
+		if (remoteAppEntryId <= 0) {
+			_portletResourcePermission.check(
+				getPermissionChecker(), null, ActionKeys.ADD_ENTRY);
+		}
+		else {
+			_remoteAppEntryModelResourcePermission.check(
+				getPermissionChecker(), remoteAppEntryId, ActionKeys.UPDATE);
+		}
 	}
 
 	@Reference(

@@ -23,6 +23,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -39,10 +41,12 @@ import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
@@ -55,6 +59,7 @@ import com.liferay.remote.app.exception.RemoteAppEntryIFrameURLException;
 import com.liferay.remote.app.model.RemoteAppEntry;
 import com.liferay.remote.app.service.base.RemoteAppEntryLocalServiceBaseImpl;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -83,6 +88,23 @@ import org.osgi.service.component.annotations.Reference;
 public class RemoteAppEntryLocalServiceImpl
 	extends RemoteAppEntryLocalServiceBaseImpl {
 
+	@Override
+	public FileEntry addAttachment(
+			long userId, long remoteAppEntryId, String fileName,
+			InputStream inputStream, String mimeType)
+		throws PortalException {
+
+		RemoteAppEntry remoteAppEntry =
+			remoteAppEntryLocalService.getRemoteAppEntry(remoteAppEntryId);
+
+		return _portletFileRepository.addPortletFileEntry(
+			0L, userId, RemoteAppEntry.class.getName(),
+			remoteAppEntry.getRemoteAppEntryId(),
+			RemoteAppConstants.RESOURCE_NAME,
+			remoteAppEntry.getAttachmentsFolderId(), inputStream, fileName,
+			mimeType, false);
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public RemoteAppEntry addCustomElementRemoteAppEntry(
@@ -95,7 +117,7 @@ public class RemoteAppEntryLocalServiceImpl
 		return remoteAppEntryLocalService.addCustomElementRemoteAppEntry(
 			userId, customElementCSSURLs, customElementHTMLElementName,
 			customElementURLs, Collections.emptyMap(), instanceable, nameMap,
-			portletCategoryName, properties, "");
+			portletCategoryName, properties, null, "");
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -105,7 +127,7 @@ public class RemoteAppEntryLocalServiceImpl
 			String customElementHTMLElementName, String customElementURLs,
 			Map<Locale, String> descriptionMap, boolean instanceable,
 			Map<Locale, String> nameMap, String portletCategoryName,
-			String properties, String sourceCodeURL)
+			String properties, String[] selectedFileNames, String sourceCodeURL)
 		throws PortalException {
 
 		customElementCSSURLs = StringUtil.trim(customElementCSSURLs);
@@ -145,6 +167,10 @@ public class RemoteAppEntryLocalServiceImpl
 
 		_addResources(remoteAppEntry);
 
+		// Attachments
+
+		_addAttachments(userId, remoteAppEntry, selectedFileNames);
+
 		// Workflow
 
 		return _startWorkflowInstance(userId, remoteAppEntry);
@@ -160,7 +186,7 @@ public class RemoteAppEntryLocalServiceImpl
 
 		return remoteAppEntryLocalService.addIFrameRemoteAppEntry(
 			userId, iFrameURL, Collections.emptyMap(), instanceable, nameMap,
-			portletCategoryName, properties, "");
+			portletCategoryName, properties, null, "");
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -168,7 +194,8 @@ public class RemoteAppEntryLocalServiceImpl
 	public RemoteAppEntry addIFrameRemoteAppEntry(
 			long userId, String iFrameURL, Map<Locale, String> descriptionMap,
 			boolean instanceable, Map<Locale, String> nameMap,
-			String portletCategoryName, String properties, String sourceCodeURL)
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, String sourceCodeURL)
 		throws PortalException {
 
 		iFrameURL = StringUtil.trim(iFrameURL);
@@ -200,9 +227,23 @@ public class RemoteAppEntryLocalServiceImpl
 
 		_addResources(remoteAppEntry);
 
+		// Attachments
+
+		_addAttachments(userId, remoteAppEntry, selectedFileNames);
+
 		// Workflow
 
 		return _startWorkflowInstance(userId, remoteAppEntry);
+	}
+
+	@Override
+	public void addTempAttachment(
+			long userId, String fileName, String tempFolderName,
+			InputStream inputStream, String mimeType)
+		throws PortalException {
+
+		TempFileEntryUtil.addTempFileEntry(
+			0L, userId, tempFolderName, fileName, inputStream, mimeType);
 	}
 
 	@Override
@@ -230,6 +271,15 @@ public class RemoteAppEntryLocalServiceImpl
 		remoteAppEntryLocalService.undeployRemoteAppEntry(remoteAppEntry);
 
 		return remoteAppEntry;
+	}
+
+	@Override
+	public void deleteTempAttachment(
+			long userId, String fileName, String tempFolderName)
+		throws PortalException {
+
+		TempFileEntryUtil.deleteTempFileEntry(
+			0L, userId, tempFolderName, fileName);
 	}
 
 	@Clusterable
@@ -314,7 +364,9 @@ public class RemoteAppEntryLocalServiceImpl
 			long userId, long remoteAppEntryId, String customElementCSSURLs,
 			String customElementHTMLElementName, String customElementURLs,
 			Map<Locale, String> descriptionMap, Map<Locale, String> nameMap,
-			String portletCategoryName, String properties, String sourceCodeURL)
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, long[] removeFileEntryIds,
+			String sourceCodeURL)
 		throws PortalException {
 
 		customElementCSSURLs = StringUtil.trim(customElementCSSURLs);
@@ -344,6 +396,12 @@ public class RemoteAppEntryLocalServiceImpl
 
 		remoteAppEntry = remoteAppEntryPersistence.update(remoteAppEntry);
 
+		// Attachments
+
+		_addAttachments(userId, remoteAppEntry, selectedFileNames);
+
+		_removeAttachments(removeFileEntryIds);
+
 		return _startWorkflowInstance(userId, remoteAppEntry);
 	}
 
@@ -355,11 +413,11 @@ public class RemoteAppEntryLocalServiceImpl
 			String properties)
 		throws PortalException {
 
-		return updateCustomElementRemoteAppEntry(
+		return remoteAppEntryLocalService.updateCustomElementRemoteAppEntry(
 			GuestOrUserUtil.getUserId(), remoteAppEntryId, customElementCSSURLs,
 			customElementHTMLElementName, customElementURLs,
 			Collections.emptyMap(), nameMap, portletCategoryName, properties,
-			"");
+			null, null, "");
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -367,7 +425,9 @@ public class RemoteAppEntryLocalServiceImpl
 	public RemoteAppEntry updateIFrameRemoteAppEntry(
 			long userId, long remoteAppEntryId, String iFrameURL,
 			Map<Locale, String> descriptionMap, Map<Locale, String> nameMap,
-			String portletCategoryName, String properties, String sourceCodeURL)
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, long[] removeFileEntryIds,
+			String sourceCodeURL)
 		throws PortalException {
 
 		iFrameURL = StringUtil.trim(iFrameURL);
@@ -389,6 +449,12 @@ public class RemoteAppEntryLocalServiceImpl
 
 		remoteAppEntry = remoteAppEntryPersistence.update(remoteAppEntry);
 
+		// Attachments
+
+		_addAttachments(userId, remoteAppEntry, selectedFileNames);
+
+		_removeAttachments(removeFileEntryIds);
+
 		return _startWorkflowInstance(userId, remoteAppEntry);
 	}
 
@@ -400,10 +466,10 @@ public class RemoteAppEntryLocalServiceImpl
 			String properties)
 		throws PortalException {
 
-		return updateIFrameRemoteAppEntry(
+		return remoteAppEntryLocalService.updateIFrameRemoteAppEntry(
 			GuestOrUserUtil.getUserId(), remoteAppEntryId, iFrameURL,
 			Collections.emptyMap(), nameMap, portletCategoryName, properties,
-			"");
+			null, null, "");
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -441,6 +507,39 @@ public class RemoteAppEntryLocalServiceImpl
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
+	}
+
+	private void _addAttachment(
+			long userId, RemoteAppEntry remoteAppEntry, String selectedFileName)
+		throws PortalException {
+
+		FileEntry tempFileEntry = TempFileEntryUtil.getTempFileEntry(
+			0L, userId, RemoteAppConstants.RESOURCE_NAME, selectedFileName);
+
+		InputStream inputStream = tempFileEntry.getContentStream();
+
+		addAttachment(
+			userId, remoteAppEntry.getRemoteAppEntryId(), selectedFileName,
+			inputStream, tempFileEntry.getMimeType());
+
+		if (tempFileEntry != null) {
+			TempFileEntryUtil.deleteTempFileEntry(
+				tempFileEntry.getFileEntryId());
+		}
+	}
+
+	private void _addAttachments(
+			long userId, RemoteAppEntry remoteAppEntry,
+			String[] selectedFileNames)
+		throws PortalException {
+
+		if (ArrayUtil.isEmpty(selectedFileNames)) {
+			return;
+		}
+
+		for (String selectedFileName : selectedFileNames) {
+			_addAttachment(userId, remoteAppEntry, selectedFileName);
+		}
 	}
 
 	private void _addResources(RemoteAppEntry remoteAppEntry)
@@ -513,6 +612,18 @@ public class RemoteAppEntryLocalServiceImpl
 		}
 
 		return remoteAppEntries;
+	}
+
+	private void _removeAttachments(long[] removeFileEntryIds)
+		throws PortalException {
+
+		if (ArrayUtil.isEmpty(removeFileEntryIds)) {
+			return;
+		}
+
+		for (long removeFileEntryId : removeFileEntryIds) {
+			_portletFileRepository.deletePortletFileEntry(removeFileEntryId);
+		}
 	}
 
 	private RemoteAppEntry _startWorkflowInstance(
@@ -632,6 +743,9 @@ public class RemoteAppEntryLocalServiceImpl
 	}
 
 	private BundleContext _bundleContext;
+
+	@Reference
+	private PortletFileRepository _portletFileRepository;
 
 	@Reference
 	private RemoteAppEntryDeployer _remoteAppEntryDeployer;
