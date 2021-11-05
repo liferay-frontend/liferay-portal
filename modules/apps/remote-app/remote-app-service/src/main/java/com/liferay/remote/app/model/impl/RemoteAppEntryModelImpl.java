@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.remote.app.model.RemoteAppEntry;
 import com.liferay.remote.app.model.RemoteAppEntryModel;
 import com.liferay.remote.app.model.RemoteAppEntrySoap;
@@ -90,10 +91,13 @@ public class RemoteAppEntryModelImpl
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"customElementCSSURLs", Types.CLOB},
 		{"customElementHTMLElementName", Types.VARCHAR},
-		{"customElementURLs", Types.CLOB}, {"iFrameURL", Types.VARCHAR},
-		{"instanceable", Types.BOOLEAN}, {"name", Types.VARCHAR},
-		{"portletCategoryName", Types.VARCHAR}, {"properties", Types.CLOB},
-		{"type_", Types.VARCHAR}
+		{"customElementURLs", Types.CLOB}, {"description", Types.VARCHAR},
+		{"iFrameURL", Types.VARCHAR}, {"instanceable", Types.BOOLEAN},
+		{"name", Types.VARCHAR}, {"portletCategoryName", Types.VARCHAR},
+		{"properties", Types.CLOB}, {"sourceCodeURL", Types.VARCHAR},
+		{"type_", Types.VARCHAR}, {"status", Types.INTEGER},
+		{"statusByUserId", Types.BIGINT}, {"statusByUserName", Types.VARCHAR},
+		{"statusDate", Types.TIMESTAMP}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -111,16 +115,22 @@ public class RemoteAppEntryModelImpl
 		TABLE_COLUMNS_MAP.put("customElementCSSURLs", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("customElementHTMLElementName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("customElementURLs", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("iFrameURL", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("instanceable", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("portletCategoryName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("properties", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("sourceCodeURL", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("type_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("statusByUserId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("statusByUserName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("statusDate", Types.TIMESTAMP);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table RemoteAppEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,remoteAppEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,customElementCSSURLs TEXT null,customElementHTMLElementName VARCHAR(255) null,customElementURLs TEXT null,iFrameURL STRING null,instanceable BOOLEAN,name STRING null,portletCategoryName VARCHAR(75) null,properties TEXT null,type_ VARCHAR(75) null)";
+		"create table RemoteAppEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,remoteAppEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,customElementCSSURLs TEXT null,customElementHTMLElementName VARCHAR(255) null,customElementURLs TEXT null,description STRING null,iFrameURL STRING null,instanceable BOOLEAN,name STRING null,portletCategoryName VARCHAR(75) null,properties TEXT null,sourceCodeURL STRING null,type_ VARCHAR(75) null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 
 	public static final String TABLE_SQL_DROP = "drop table RemoteAppEntry";
 
@@ -196,12 +206,18 @@ public class RemoteAppEntryModelImpl
 		model.setCustomElementHTMLElementName(
 			soapModel.getCustomElementHTMLElementName());
 		model.setCustomElementURLs(soapModel.getCustomElementURLs());
+		model.setDescription(soapModel.getDescription());
 		model.setIFrameURL(soapModel.getIFrameURL());
 		model.setInstanceable(soapModel.isInstanceable());
 		model.setName(soapModel.getName());
 		model.setPortletCategoryName(soapModel.getPortletCategoryName());
 		model.setProperties(soapModel.getProperties());
+		model.setSourceCodeURL(soapModel.getSourceCodeURL());
 		model.setType(soapModel.getType());
+		model.setStatus(soapModel.getStatus());
+		model.setStatusByUserId(soapModel.getStatusByUserId());
+		model.setStatusByUserName(soapModel.getStatusByUserName());
+		model.setStatusDate(soapModel.getStatusDate());
 
 		return model;
 	}
@@ -411,6 +427,11 @@ public class RemoteAppEntryModelImpl
 			"customElementURLs",
 			(BiConsumer<RemoteAppEntry, String>)
 				RemoteAppEntry::setCustomElementURLs);
+		attributeGetterFunctions.put(
+			"description", RemoteAppEntry::getDescription);
+		attributeSetterBiConsumers.put(
+			"description",
+			(BiConsumer<RemoteAppEntry, String>)RemoteAppEntry::setDescription);
 		attributeGetterFunctions.put("iFrameURL", RemoteAppEntry::getIFrameURL);
 		attributeSetterBiConsumers.put(
 			"iFrameURL",
@@ -436,10 +457,37 @@ public class RemoteAppEntryModelImpl
 		attributeSetterBiConsumers.put(
 			"properties",
 			(BiConsumer<RemoteAppEntry, String>)RemoteAppEntry::setProperties);
+		attributeGetterFunctions.put(
+			"sourceCodeURL", RemoteAppEntry::getSourceCodeURL);
+		attributeSetterBiConsumers.put(
+			"sourceCodeURL",
+			(BiConsumer<RemoteAppEntry, String>)
+				RemoteAppEntry::setSourceCodeURL);
 		attributeGetterFunctions.put("type", RemoteAppEntry::getType);
 		attributeSetterBiConsumers.put(
 			"type",
 			(BiConsumer<RemoteAppEntry, String>)RemoteAppEntry::setType);
+		attributeGetterFunctions.put("status", RemoteAppEntry::getStatus);
+		attributeSetterBiConsumers.put(
+			"status",
+			(BiConsumer<RemoteAppEntry, Integer>)RemoteAppEntry::setStatus);
+		attributeGetterFunctions.put(
+			"statusByUserId", RemoteAppEntry::getStatusByUserId);
+		attributeSetterBiConsumers.put(
+			"statusByUserId",
+			(BiConsumer<RemoteAppEntry, Long>)
+				RemoteAppEntry::setStatusByUserId);
+		attributeGetterFunctions.put(
+			"statusByUserName", RemoteAppEntry::getStatusByUserName);
+		attributeSetterBiConsumers.put(
+			"statusByUserName",
+			(BiConsumer<RemoteAppEntry, String>)
+				RemoteAppEntry::setStatusByUserName);
+		attributeGetterFunctions.put(
+			"statusDate", RemoteAppEntry::getStatusDate);
+		attributeSetterBiConsumers.put(
+			"statusDate",
+			(BiConsumer<RemoteAppEntry, Date>)RemoteAppEntry::setStatusDate);
 
 		_attributeGetterFunctions = Collections.unmodifiableMap(
 			attributeGetterFunctions);
@@ -682,6 +730,118 @@ public class RemoteAppEntryModelImpl
 
 	@JSON
 	@Override
+	public String getDescription() {
+		if (_description == null) {
+			return "";
+		}
+		else {
+			return _description;
+		}
+	}
+
+	@Override
+	public String getDescription(Locale locale) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getDescription(languageId);
+	}
+
+	@Override
+	public String getDescription(Locale locale, boolean useDefault) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getDescription(languageId, useDefault);
+	}
+
+	@Override
+	public String getDescription(String languageId) {
+		return LocalizationUtil.getLocalization(getDescription(), languageId);
+	}
+
+	@Override
+	public String getDescription(String languageId, boolean useDefault) {
+		return LocalizationUtil.getLocalization(
+			getDescription(), languageId, useDefault);
+	}
+
+	@Override
+	public String getDescriptionCurrentLanguageId() {
+		return _descriptionCurrentLanguageId;
+	}
+
+	@JSON
+	@Override
+	public String getDescriptionCurrentValue() {
+		Locale locale = getLocale(_descriptionCurrentLanguageId);
+
+		return getDescription(locale);
+	}
+
+	@Override
+	public Map<Locale, String> getDescriptionMap() {
+		return LocalizationUtil.getLocalizationMap(getDescription());
+	}
+
+	@Override
+	public void setDescription(String description) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_description = description;
+	}
+
+	@Override
+	public void setDescription(String description, Locale locale) {
+		setDescription(description, locale, LocaleUtil.getDefault());
+	}
+
+	@Override
+	public void setDescription(
+		String description, Locale locale, Locale defaultLocale) {
+
+		String languageId = LocaleUtil.toLanguageId(locale);
+		String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);
+
+		if (Validator.isNotNull(description)) {
+			setDescription(
+				LocalizationUtil.updateLocalization(
+					getDescription(), "Description", description, languageId,
+					defaultLanguageId));
+		}
+		else {
+			setDescription(
+				LocalizationUtil.removeLocalization(
+					getDescription(), "Description", languageId));
+		}
+	}
+
+	@Override
+	public void setDescriptionCurrentLanguageId(String languageId) {
+		_descriptionCurrentLanguageId = languageId;
+	}
+
+	@Override
+	public void setDescriptionMap(Map<Locale, String> descriptionMap) {
+		setDescriptionMap(descriptionMap, LocaleUtil.getDefault());
+	}
+
+	@Override
+	public void setDescriptionMap(
+		Map<Locale, String> descriptionMap, Locale defaultLocale) {
+
+		if (descriptionMap == null) {
+			return;
+		}
+
+		setDescription(
+			LocalizationUtil.updateLocalization(
+				descriptionMap, getDescription(), "Description",
+				LocaleUtil.toLanguageId(defaultLocale)));
+	}
+
+	@JSON
+	@Override
 	public String getIFrameURL() {
 		if (_iFrameURL == null) {
 			return "";
@@ -870,6 +1030,26 @@ public class RemoteAppEntryModelImpl
 
 	@JSON
 	@Override
+	public String getSourceCodeURL() {
+		if (_sourceCodeURL == null) {
+			return "";
+		}
+		else {
+			return _sourceCodeURL;
+		}
+	}
+
+	@Override
+	public void setSourceCodeURL(String sourceCodeURL) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_sourceCodeURL = sourceCodeURL;
+	}
+
+	@JSON
+	@Override
 	public String getType() {
 		if (_type == null) {
 			return "";
@@ -886,6 +1066,87 @@ public class RemoteAppEntryModelImpl
 		}
 
 		_type = type;
+	}
+
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
+	@JSON
+	@Override
+	public long getStatusByUserId() {
+		return _statusByUserId;
+	}
+
+	@Override
+	public void setStatusByUserId(long statusByUserId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_statusByUserId = statusByUserId;
+	}
+
+	@Override
+	public String getStatusByUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getStatusByUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException portalException) {
+			return "";
+		}
+	}
+
+	@Override
+	public void setStatusByUserUuid(String statusByUserUuid) {
+	}
+
+	@JSON
+	@Override
+	public String getStatusByUserName() {
+		if (_statusByUserName == null) {
+			return "";
+		}
+		else {
+			return _statusByUserName;
+		}
+	}
+
+	@Override
+	public void setStatusByUserName(String statusByUserName) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_statusByUserName = statusByUserName;
+	}
+
+	@JSON
+	@Override
+	public Date getStatusDate() {
+		return _statusDate;
+	}
+
+	@Override
+	public void setStatusDate(Date statusDate) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_statusDate = statusDate;
 	}
 
 	@Override
@@ -916,6 +1177,86 @@ public class RemoteAppEntryModelImpl
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
 			PortalUtil.getClassNameId(RemoteAppEntry.class.getName()));
+	}
+
+	@Override
+	public boolean isApproved() {
+		if (getStatus() == WorkflowConstants.STATUS_APPROVED) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isDenied() {
+		if (getStatus() == WorkflowConstants.STATUS_DENIED) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isDraft() {
+		if (getStatus() == WorkflowConstants.STATUS_DRAFT) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isExpired() {
+		if (getStatus() == WorkflowConstants.STATUS_EXPIRED) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isInactive() {
+		if (getStatus() == WorkflowConstants.STATUS_INACTIVE) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isIncomplete() {
+		if (getStatus() == WorkflowConstants.STATUS_INCOMPLETE) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isPending() {
+		if (getStatus() == WorkflowConstants.STATUS_PENDING) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isScheduled() {
+		if (getStatus() == WorkflowConstants.STATUS_SCHEDULED) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	public long getColumnBitmask() {
@@ -959,6 +1300,17 @@ public class RemoteAppEntryModelImpl
 	public String[] getAvailableLanguageIds() {
 		Set<String> availableLanguageIds = new TreeSet<String>();
 
+		Map<Locale, String> descriptionMap = getDescriptionMap();
+
+		for (Map.Entry<Locale, String> entry : descriptionMap.entrySet()) {
+			Locale locale = entry.getKey();
+			String value = entry.getValue();
+
+			if (Validator.isNotNull(value)) {
+				availableLanguageIds.add(LocaleUtil.toLanguageId(locale));
+			}
+		}
+
 		Map<Locale, String> nameMap = getNameMap();
 
 		for (Map.Entry<Locale, String> entry : nameMap.entrySet()) {
@@ -976,7 +1328,7 @@ public class RemoteAppEntryModelImpl
 
 	@Override
 	public String getDefaultLanguageId() {
-		String xml = getName();
+		String xml = getDescription();
 
 		if (xml == null) {
 			return "";
@@ -1010,6 +1362,17 @@ public class RemoteAppEntryModelImpl
 		Locale defaultLocale = LocaleUtil.getDefault();
 
 		String modelDefaultLanguageId = getDefaultLanguageId();
+
+		String description = getDescription(defaultLocale);
+
+		if (Validator.isNull(description)) {
+			setDescription(
+				getDescription(modelDefaultLanguageId), defaultLocale);
+		}
+		else {
+			setDescription(
+				getDescription(defaultLocale), defaultLocale, defaultLocale);
+		}
 
 		String name = getName(defaultLocale);
 
@@ -1052,12 +1415,18 @@ public class RemoteAppEntryModelImpl
 		remoteAppEntryImpl.setCustomElementHTMLElementName(
 			getCustomElementHTMLElementName());
 		remoteAppEntryImpl.setCustomElementURLs(getCustomElementURLs());
+		remoteAppEntryImpl.setDescription(getDescription());
 		remoteAppEntryImpl.setIFrameURL(getIFrameURL());
 		remoteAppEntryImpl.setInstanceable(isInstanceable());
 		remoteAppEntryImpl.setName(getName());
 		remoteAppEntryImpl.setPortletCategoryName(getPortletCategoryName());
 		remoteAppEntryImpl.setProperties(getProperties());
+		remoteAppEntryImpl.setSourceCodeURL(getSourceCodeURL());
 		remoteAppEntryImpl.setType(getType());
+		remoteAppEntryImpl.setStatus(getStatus());
+		remoteAppEntryImpl.setStatusByUserId(getStatusByUserId());
+		remoteAppEntryImpl.setStatusByUserName(getStatusByUserName());
+		remoteAppEntryImpl.setStatusDate(getStatusDate());
 
 		remoteAppEntryImpl.resetOriginalValues();
 
@@ -1091,6 +1460,8 @@ public class RemoteAppEntryModelImpl
 				"customElementHTMLElementName"));
 		remoteAppEntryImpl.setCustomElementURLs(
 			this.<String>getColumnOriginalValue("customElementURLs"));
+		remoteAppEntryImpl.setDescription(
+			this.<String>getColumnOriginalValue("description"));
 		remoteAppEntryImpl.setIFrameURL(
 			this.<String>getColumnOriginalValue("iFrameURL"));
 		remoteAppEntryImpl.setInstanceable(
@@ -1100,8 +1471,18 @@ public class RemoteAppEntryModelImpl
 			this.<String>getColumnOriginalValue("portletCategoryName"));
 		remoteAppEntryImpl.setProperties(
 			this.<String>getColumnOriginalValue("properties"));
+		remoteAppEntryImpl.setSourceCodeURL(
+			this.<String>getColumnOriginalValue("sourceCodeURL"));
 		remoteAppEntryImpl.setType(
 			this.<String>getColumnOriginalValue("type_"));
+		remoteAppEntryImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
+		remoteAppEntryImpl.setStatusByUserId(
+			this.<Long>getColumnOriginalValue("statusByUserId"));
+		remoteAppEntryImpl.setStatusByUserName(
+			this.<String>getColumnOriginalValue("statusByUserName"));
+		remoteAppEntryImpl.setStatusDate(
+			this.<Date>getColumnOriginalValue("statusDate"));
 
 		return remoteAppEntryImpl;
 	}
@@ -1254,6 +1635,14 @@ public class RemoteAppEntryModelImpl
 			remoteAppEntryCacheModel.customElementURLs = null;
 		}
 
+		remoteAppEntryCacheModel.description = getDescription();
+
+		String description = remoteAppEntryCacheModel.description;
+
+		if ((description != null) && (description.length() == 0)) {
+			remoteAppEntryCacheModel.description = null;
+		}
+
 		remoteAppEntryCacheModel.iFrameURL = getIFrameURL();
 
 		String iFrameURL = remoteAppEntryCacheModel.iFrameURL;
@@ -1291,12 +1680,41 @@ public class RemoteAppEntryModelImpl
 			remoteAppEntryCacheModel.properties = null;
 		}
 
+		remoteAppEntryCacheModel.sourceCodeURL = getSourceCodeURL();
+
+		String sourceCodeURL = remoteAppEntryCacheModel.sourceCodeURL;
+
+		if ((sourceCodeURL != null) && (sourceCodeURL.length() == 0)) {
+			remoteAppEntryCacheModel.sourceCodeURL = null;
+		}
+
 		remoteAppEntryCacheModel.type = getType();
 
 		String type = remoteAppEntryCacheModel.type;
 
 		if ((type != null) && (type.length() == 0)) {
 			remoteAppEntryCacheModel.type = null;
+		}
+
+		remoteAppEntryCacheModel.status = getStatus();
+
+		remoteAppEntryCacheModel.statusByUserId = getStatusByUserId();
+
+		remoteAppEntryCacheModel.statusByUserName = getStatusByUserName();
+
+		String statusByUserName = remoteAppEntryCacheModel.statusByUserName;
+
+		if ((statusByUserName != null) && (statusByUserName.length() == 0)) {
+			remoteAppEntryCacheModel.statusByUserName = null;
+		}
+
+		Date statusDate = getStatusDate();
+
+		if (statusDate != null) {
+			remoteAppEntryCacheModel.statusDate = statusDate.getTime();
+		}
+		else {
+			remoteAppEntryCacheModel.statusDate = Long.MIN_VALUE;
 		}
 
 		return remoteAppEntryCacheModel;
@@ -1401,13 +1819,20 @@ public class RemoteAppEntryModelImpl
 	private String _customElementCSSURLs;
 	private String _customElementHTMLElementName;
 	private String _customElementURLs;
+	private String _description;
+	private String _descriptionCurrentLanguageId;
 	private String _iFrameURL;
 	private boolean _instanceable;
 	private String _name;
 	private String _nameCurrentLanguageId;
 	private String _portletCategoryName;
 	private String _properties;
+	private String _sourceCodeURL;
 	private String _type;
+	private int _status;
+	private long _statusByUserId;
+	private String _statusByUserName;
+	private Date _statusDate;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1451,12 +1876,18 @@ public class RemoteAppEntryModelImpl
 		_columnOriginalValues.put(
 			"customElementHTMLElementName", _customElementHTMLElementName);
 		_columnOriginalValues.put("customElementURLs", _customElementURLs);
+		_columnOriginalValues.put("description", _description);
 		_columnOriginalValues.put("iFrameURL", _iFrameURL);
 		_columnOriginalValues.put("instanceable", _instanceable);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("portletCategoryName", _portletCategoryName);
 		_columnOriginalValues.put("properties", _properties);
+		_columnOriginalValues.put("sourceCodeURL", _sourceCodeURL);
 		_columnOriginalValues.put("type_", _type);
+		_columnOriginalValues.put("status", _status);
+		_columnOriginalValues.put("statusByUserId", _statusByUserId);
+		_columnOriginalValues.put("statusByUserName", _statusByUserName);
+		_columnOriginalValues.put("statusDate", _statusDate);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1503,17 +1934,29 @@ public class RemoteAppEntryModelImpl
 
 		columnBitmasks.put("customElementURLs", 1024L);
 
-		columnBitmasks.put("iFrameURL", 2048L);
+		columnBitmasks.put("description", 2048L);
 
-		columnBitmasks.put("instanceable", 4096L);
+		columnBitmasks.put("iFrameURL", 4096L);
 
-		columnBitmasks.put("name", 8192L);
+		columnBitmasks.put("instanceable", 8192L);
 
-		columnBitmasks.put("portletCategoryName", 16384L);
+		columnBitmasks.put("name", 16384L);
 
-		columnBitmasks.put("properties", 32768L);
+		columnBitmasks.put("portletCategoryName", 32768L);
 
-		columnBitmasks.put("type_", 65536L);
+		columnBitmasks.put("properties", 65536L);
+
+		columnBitmasks.put("sourceCodeURL", 131072L);
+
+		columnBitmasks.put("type_", 262144L);
+
+		columnBitmasks.put("status", 524288L);
+
+		columnBitmasks.put("statusByUserId", 1048576L);
+
+		columnBitmasks.put("statusByUserName", 2097152L);
+
+		columnBitmasks.put("statusDate", 4194304L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

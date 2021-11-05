@@ -17,12 +17,15 @@ package com.liferay.remote.app.service;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.remote.app.model.RemoteAppEntry;
+
+import java.io.InputStream;
 
 import java.util.Locale;
 import java.util.Map;
@@ -52,6 +55,11 @@ public interface RemoteAppEntryService extends BaseService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.remote.app.service.impl.RemoteAppEntryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the remote app entry remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link RemoteAppEntryServiceUtil} if injection and service tracking are not available.
 	 */
+	public FileEntry addAttachment(
+			long remoteAppEntryId, String fileName, InputStream inputStream,
+			String mimeType)
+		throws PortalException;
+
 	public RemoteAppEntry addCustomElementRemoteAppEntry(
 			String customElementCSSURLs, String customElementHTMLElementName,
 			String customElementURLs, boolean instanceable,
@@ -59,12 +67,36 @@ public interface RemoteAppEntryService extends BaseService {
 			String properties)
 		throws PortalException;
 
+	public RemoteAppEntry addCustomElementRemoteAppEntry(
+			String customElementCSSURLs, String customElementHTMLElementName,
+			String customElementURLs, Map<Locale, String> descriptionMap,
+			boolean instanceable, Map<Locale, String> nameMap,
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, String sourceCodeURL)
+		throws PortalException;
+
 	public RemoteAppEntry addIFrameRemoteAppEntry(
 			String iFrameURL, boolean instanceable, Map<Locale, String> nameMap,
 			String portletCategoryName, String properties)
 		throws PortalException;
 
+	public RemoteAppEntry addIFrameRemoteAppEntry(
+			String iFrameURL, Map<Locale, String> descriptionMap,
+			boolean instanceable, Map<Locale, String> nameMap,
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, String sourceCodeURL)
+		throws PortalException;
+
+	public void addTempAttachment(
+			long remoteAppEntryId, String fileName, String tempFolderName,
+			InputStream inputStream, String mimeType)
+		throws PortalException;
+
 	public RemoteAppEntry deleteRemoteAppEntry(long remoteAppEntryId)
+		throws PortalException;
+
+	public void deleteTempAttachment(
+			long remoteAppEntryId, String fileName, String tempFolderName)
 		throws PortalException;
 
 	/**
@@ -81,8 +113,25 @@ public interface RemoteAppEntryService extends BaseService {
 	public RemoteAppEntry updateCustomElementRemoteAppEntry(
 			long remoteAppEntryId, String customElementCSSURLs,
 			String customElementHTMLElementName, String customElementURLs,
+			Map<Locale, String> descriptionMap, Map<Locale, String> nameMap,
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, long[] removeFileEntryIds,
+			String sourceCodeURL)
+		throws PortalException;
+
+	public RemoteAppEntry updateCustomElementRemoteAppEntry(
+			long remoteAppEntryId, String customElementCSSURLs,
+			String customElementHTMLElementName, String customElementURLs,
 			Map<Locale, String> nameMap, String portletCategoryName,
 			String properties)
+		throws PortalException;
+
+	public RemoteAppEntry updateIFrameRemoteAppEntry(
+			long remoteAppEntryId, String iFrameURL,
+			Map<Locale, String> descriptionMap, Map<Locale, String> nameMap,
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, long[] removeFileEntryIds,
+			String sourceCodeURL)
 		throws PortalException;
 
 	public RemoteAppEntry updateIFrameRemoteAppEntry(

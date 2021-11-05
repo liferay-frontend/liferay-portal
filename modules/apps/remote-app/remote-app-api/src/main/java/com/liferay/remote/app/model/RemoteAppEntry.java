@@ -56,4 +56,11 @@ public interface RemoteAppEntry extends PersistedModel, RemoteAppEntryModel {
 
 		};
 
+	public java.util.List<com.liferay.portal.kernel.repository.model.FileEntry>
+			getAttachmentsFileEntries()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
+	public long getAttachmentsFolderId()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
 }

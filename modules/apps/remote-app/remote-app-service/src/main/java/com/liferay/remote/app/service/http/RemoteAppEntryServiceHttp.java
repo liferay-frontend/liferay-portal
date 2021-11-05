@@ -51,6 +51,50 @@ import com.liferay.remote.app.service.RemoteAppEntryServiceUtil;
  */
 public class RemoteAppEntryServiceHttp {
 
+	public static com.liferay.portal.kernel.repository.model.FileEntry
+			addAttachment(
+				HttpPrincipal httpPrincipal, long remoteAppEntryId,
+				String fileName, java.io.InputStream inputStream,
+				String mimeType)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				RemoteAppEntryServiceUtil.class, "addAttachment",
+				_addAttachmentParameterTypes0);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, remoteAppEntryId, fileName, inputStream, mimeType);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.portal.kernel.repository.model.FileEntry)
+				returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.remote.app.model.RemoteAppEntry
 			addCustomElementRemoteAppEntry(
 				HttpPrincipal httpPrincipal, String customElementCSSURLs,
@@ -64,12 +108,63 @@ public class RemoteAppEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				RemoteAppEntryServiceUtil.class,
 				"addCustomElementRemoteAppEntry",
-				_addCustomElementRemoteAppEntryParameterTypes0);
+				_addCustomElementRemoteAppEntryParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, customElementCSSURLs, customElementHTMLElementName,
 				customElementURLs, instanceable, nameMap, portletCategoryName,
 				properties);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.remote.app.model.RemoteAppEntry)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.remote.app.model.RemoteAppEntry
+			addCustomElementRemoteAppEntry(
+				HttpPrincipal httpPrincipal, String customElementCSSURLs,
+				String customElementHTMLElementName, String customElementURLs,
+				java.util.Map<java.util.Locale, String> descriptionMap,
+				boolean instanceable,
+				java.util.Map<java.util.Locale, String> nameMap,
+				String portletCategoryName, String properties,
+				String[] selectedFileNames, String sourceCodeURL)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				RemoteAppEntryServiceUtil.class,
+				"addCustomElementRemoteAppEntry",
+				_addCustomElementRemoteAppEntryParameterTypes2);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, customElementCSSURLs, customElementHTMLElementName,
+				customElementURLs, descriptionMap, instanceable, nameMap,
+				portletCategoryName, properties, selectedFileNames,
+				sourceCodeURL);
 
 			Object returnObj = null;
 
@@ -110,7 +205,7 @@ public class RemoteAppEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				RemoteAppEntryServiceUtil.class, "addIFrameRemoteAppEntry",
-				_addIFrameRemoteAppEntryParameterTypes1);
+				_addIFrameRemoteAppEntryParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, iFrameURL, instanceable, nameMap,
@@ -145,6 +240,93 @@ public class RemoteAppEntryServiceHttp {
 	}
 
 	public static com.liferay.remote.app.model.RemoteAppEntry
+			addIFrameRemoteAppEntry(
+				HttpPrincipal httpPrincipal, String iFrameURL,
+				java.util.Map<java.util.Locale, String> descriptionMap,
+				boolean instanceable,
+				java.util.Map<java.util.Locale, String> nameMap,
+				String portletCategoryName, String properties,
+				String[] selectedFileNames, String sourceCodeURL)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				RemoteAppEntryServiceUtil.class, "addIFrameRemoteAppEntry",
+				_addIFrameRemoteAppEntryParameterTypes4);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, iFrameURL, descriptionMap, instanceable, nameMap,
+				portletCategoryName, properties, selectedFileNames,
+				sourceCodeURL);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.remote.app.model.RemoteAppEntry)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static void addTempAttachment(
+			HttpPrincipal httpPrincipal, long remoteAppEntryId, String fileName,
+			String tempFolderName, java.io.InputStream inputStream,
+			String mimeType)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				RemoteAppEntryServiceUtil.class, "addTempAttachment",
+				_addTempAttachmentParameterTypes5);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, remoteAppEntryId, fileName, tempFolderName,
+				inputStream, mimeType);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.remote.app.model.RemoteAppEntry
 			deleteRemoteAppEntry(
 				HttpPrincipal httpPrincipal, long remoteAppEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -152,7 +334,7 @@ public class RemoteAppEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				RemoteAppEntryServiceUtil.class, "deleteRemoteAppEntry",
-				_deleteRemoteAppEntryParameterTypes2);
+				_deleteRemoteAppEntryParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, remoteAppEntryId);
@@ -185,6 +367,43 @@ public class RemoteAppEntryServiceHttp {
 		}
 	}
 
+	public static void deleteTempAttachment(
+			HttpPrincipal httpPrincipal, long remoteAppEntryId, String fileName,
+			String tempFolderName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				RemoteAppEntryServiceUtil.class, "deleteTempAttachment",
+				_deleteTempAttachmentParameterTypes7);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, remoteAppEntryId, fileName, tempFolderName);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.remote.app.model.RemoteAppEntry getRemoteAppEntry(
 			HttpPrincipal httpPrincipal, long remoteAppEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -192,10 +411,62 @@ public class RemoteAppEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				RemoteAppEntryServiceUtil.class, "getRemoteAppEntry",
-				_getRemoteAppEntryParameterTypes3);
+				_getRemoteAppEntryParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, remoteAppEntryId);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.remote.app.model.RemoteAppEntry)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.remote.app.model.RemoteAppEntry
+			updateCustomElementRemoteAppEntry(
+				HttpPrincipal httpPrincipal, long remoteAppEntryId,
+				String customElementCSSURLs,
+				String customElementHTMLElementName, String customElementURLs,
+				java.util.Map<java.util.Locale, String> descriptionMap,
+				java.util.Map<java.util.Locale, String> nameMap,
+				String portletCategoryName, String properties,
+				String[] selectedFileNames, long[] removeFileEntryIds,
+				String sourceCodeURL)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				RemoteAppEntryServiceUtil.class,
+				"updateCustomElementRemoteAppEntry",
+				_updateCustomElementRemoteAppEntryParameterTypes9);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, remoteAppEntryId, customElementCSSURLs,
+				customElementHTMLElementName, customElementURLs, descriptionMap,
+				nameMap, portletCategoryName, properties, selectedFileNames,
+				removeFileEntryIds, sourceCodeURL);
 
 			Object returnObj = null;
 
@@ -238,12 +509,61 @@ public class RemoteAppEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				RemoteAppEntryServiceUtil.class,
 				"updateCustomElementRemoteAppEntry",
-				_updateCustomElementRemoteAppEntryParameterTypes4);
+				_updateCustomElementRemoteAppEntryParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, remoteAppEntryId, customElementCSSURLs,
 				customElementHTMLElementName, customElementURLs, nameMap,
 				portletCategoryName, properties);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.remote.app.model.RemoteAppEntry)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.remote.app.model.RemoteAppEntry
+			updateIFrameRemoteAppEntry(
+				HttpPrincipal httpPrincipal, long remoteAppEntryId,
+				String iFrameURL,
+				java.util.Map<java.util.Locale, String> descriptionMap,
+				java.util.Map<java.util.Locale, String> nameMap,
+				String portletCategoryName, String properties,
+				String[] selectedFileNames, long[] removeFileEntryIds,
+				String sourceCodeURL)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				RemoteAppEntryServiceUtil.class, "updateIFrameRemoteAppEntry",
+				_updateIFrameRemoteAppEntryParameterTypes11);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, remoteAppEntryId, iFrameURL, descriptionMap, nameMap,
+				portletCategoryName, properties, selectedFileNames,
+				removeFileEntryIds, sourceCodeURL);
 
 			Object returnObj = null;
 
@@ -284,7 +604,7 @@ public class RemoteAppEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				RemoteAppEntryServiceUtil.class, "updateIFrameRemoteAppEntry",
-				_updateIFrameRemoteAppEntryParameterTypes5);
+				_updateIFrameRemoteAppEntryParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, remoteAppEntryId, iFrameURL, nameMap,
@@ -321,27 +641,62 @@ public class RemoteAppEntryServiceHttp {
 	private static Log _log = LogFactoryUtil.getLog(
 		RemoteAppEntryServiceHttp.class);
 
+	private static final Class<?>[] _addAttachmentParameterTypes0 =
+		new Class[] {
+			long.class, String.class, java.io.InputStream.class, String.class
+		};
 	private static final Class<?>[]
-		_addCustomElementRemoteAppEntryParameterTypes0 = new Class[] {
+		_addCustomElementRemoteAppEntryParameterTypes1 = new Class[] {
 			String.class, String.class, String.class, boolean.class,
 			java.util.Map.class, String.class, String.class
 		};
-	private static final Class<?>[] _addIFrameRemoteAppEntryParameterTypes1 =
+	private static final Class<?>[]
+		_addCustomElementRemoteAppEntryParameterTypes2 = new Class[] {
+			String.class, String.class, String.class, java.util.Map.class,
+			boolean.class, java.util.Map.class, String.class, String.class,
+			String[].class, String.class
+		};
+	private static final Class<?>[] _addIFrameRemoteAppEntryParameterTypes3 =
 		new Class[] {
 			String.class, boolean.class, java.util.Map.class, String.class,
 			String.class
 		};
-	private static final Class<?>[] _deleteRemoteAppEntryParameterTypes2 =
+	private static final Class<?>[] _addIFrameRemoteAppEntryParameterTypes4 =
+		new Class[] {
+			String.class, java.util.Map.class, boolean.class,
+			java.util.Map.class, String.class, String.class, String[].class,
+			String.class
+		};
+	private static final Class<?>[] _addTempAttachmentParameterTypes5 =
+		new Class[] {
+			long.class, String.class, String.class, java.io.InputStream.class,
+			String.class
+		};
+	private static final Class<?>[] _deleteRemoteAppEntryParameterTypes6 =
 		new Class[] {long.class};
-	private static final Class<?>[] _getRemoteAppEntryParameterTypes3 =
+	private static final Class<?>[] _deleteTempAttachmentParameterTypes7 =
+		new Class[] {long.class, String.class, String.class};
+	private static final Class<?>[] _getRemoteAppEntryParameterTypes8 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_updateCustomElementRemoteAppEntryParameterTypes4 = new Class[] {
+		_updateCustomElementRemoteAppEntryParameterTypes9 = new Class[] {
+			long.class, String.class, String.class, String.class,
+			java.util.Map.class, java.util.Map.class, String.class,
+			String.class, String[].class, long[].class, String.class
+		};
+	private static final Class<?>[]
+		_updateCustomElementRemoteAppEntryParameterTypes10 = new Class[] {
 			long.class, String.class, String.class, String.class,
 			java.util.Map.class, String.class, String.class
 		};
-	private static final Class<?>[] _updateIFrameRemoteAppEntryParameterTypes5 =
-		new Class[] {
+	private static final Class<?>[]
+		_updateIFrameRemoteAppEntryParameterTypes11 = new Class[] {
+			long.class, String.class, java.util.Map.class, java.util.Map.class,
+			String.class, String.class, String[].class, long[].class,
+			String.class
+		};
+	private static final Class<?>[]
+		_updateIFrameRemoteAppEntryParameterTypes12 = new Class[] {
 			long.class, String.class, java.util.Map.class, String.class,
 			String.class
 		};

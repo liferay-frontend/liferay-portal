@@ -17,6 +17,8 @@ package com.liferay.remote.app.service;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.remote.app.model.RemoteAppEntry;
 
+import java.io.InputStream;
+
 import java.util.Map;
 
 /**
@@ -38,6 +40,16 @@ public class RemoteAppEntryServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.remote.app.service.impl.RemoteAppEntryServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static com.liferay.portal.kernel.repository.model.FileEntry
+			addAttachment(
+				long remoteAppEntryId, String fileName, InputStream inputStream,
+				String mimeType)
+		throws PortalException {
+
+		return getService().addAttachment(
+			remoteAppEntryId, fileName, inputStream, mimeType);
+	}
+
 	public static RemoteAppEntry addCustomElementRemoteAppEntry(
 			String customElementCSSURLs, String customElementHTMLElementName,
 			String customElementURLs, boolean instanceable,
@@ -51,6 +63,20 @@ public class RemoteAppEntryServiceUtil {
 			properties);
 	}
 
+	public static RemoteAppEntry addCustomElementRemoteAppEntry(
+			String customElementCSSURLs, String customElementHTMLElementName,
+			String customElementURLs,
+			Map<java.util.Locale, String> descriptionMap, boolean instanceable,
+			Map<java.util.Locale, String> nameMap, String portletCategoryName,
+			String properties, String[] selectedFileNames, String sourceCodeURL)
+		throws PortalException {
+
+		return getService().addCustomElementRemoteAppEntry(
+			customElementCSSURLs, customElementHTMLElementName,
+			customElementURLs, descriptionMap, instanceable, nameMap,
+			portletCategoryName, properties, selectedFileNames, sourceCodeURL);
+	}
+
 	public static RemoteAppEntry addIFrameRemoteAppEntry(
 			String iFrameURL, boolean instanceable,
 			Map<java.util.Locale, String> nameMap, String portletCategoryName,
@@ -61,10 +87,39 @@ public class RemoteAppEntryServiceUtil {
 			iFrameURL, instanceable, nameMap, portletCategoryName, properties);
 	}
 
+	public static RemoteAppEntry addIFrameRemoteAppEntry(
+			String iFrameURL, Map<java.util.Locale, String> descriptionMap,
+			boolean instanceable, Map<java.util.Locale, String> nameMap,
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, String sourceCodeURL)
+		throws PortalException {
+
+		return getService().addIFrameRemoteAppEntry(
+			iFrameURL, descriptionMap, instanceable, nameMap,
+			portletCategoryName, properties, selectedFileNames, sourceCodeURL);
+	}
+
+	public static void addTempAttachment(
+			long remoteAppEntryId, String fileName, String tempFolderName,
+			InputStream inputStream, String mimeType)
+		throws PortalException {
+
+		getService().addTempAttachment(
+			remoteAppEntryId, fileName, tempFolderName, inputStream, mimeType);
+	}
+
 	public static RemoteAppEntry deleteRemoteAppEntry(long remoteAppEntryId)
 		throws PortalException {
 
 		return getService().deleteRemoteAppEntry(remoteAppEntryId);
+	}
+
+	public static void deleteTempAttachment(
+			long remoteAppEntryId, String fileName, String tempFolderName)
+		throws PortalException {
+
+		getService().deleteTempAttachment(
+			remoteAppEntryId, fileName, tempFolderName);
 	}
 
 	/**
@@ -85,6 +140,22 @@ public class RemoteAppEntryServiceUtil {
 	public static RemoteAppEntry updateCustomElementRemoteAppEntry(
 			long remoteAppEntryId, String customElementCSSURLs,
 			String customElementHTMLElementName, String customElementURLs,
+			Map<java.util.Locale, String> descriptionMap,
+			Map<java.util.Locale, String> nameMap, String portletCategoryName,
+			String properties, String[] selectedFileNames,
+			long[] removeFileEntryIds, String sourceCodeURL)
+		throws PortalException {
+
+		return getService().updateCustomElementRemoteAppEntry(
+			remoteAppEntryId, customElementCSSURLs,
+			customElementHTMLElementName, customElementURLs, descriptionMap,
+			nameMap, portletCategoryName, properties, selectedFileNames,
+			removeFileEntryIds, sourceCodeURL);
+	}
+
+	public static RemoteAppEntry updateCustomElementRemoteAppEntry(
+			long remoteAppEntryId, String customElementCSSURLs,
+			String customElementHTMLElementName, String customElementURLs,
 			Map<java.util.Locale, String> nameMap, String portletCategoryName,
 			String properties)
 		throws PortalException {
@@ -93,6 +164,20 @@ public class RemoteAppEntryServiceUtil {
 			remoteAppEntryId, customElementCSSURLs,
 			customElementHTMLElementName, customElementURLs, nameMap,
 			portletCategoryName, properties);
+	}
+
+	public static RemoteAppEntry updateIFrameRemoteAppEntry(
+			long remoteAppEntryId, String iFrameURL,
+			Map<java.util.Locale, String> descriptionMap,
+			Map<java.util.Locale, String> nameMap, String portletCategoryName,
+			String properties, String[] selectedFileNames,
+			long[] removeFileEntryIds, String sourceCodeURL)
+		throws PortalException {
+
+		return getService().updateIFrameRemoteAppEntry(
+			remoteAppEntryId, iFrameURL, descriptionMap, nameMap,
+			portletCategoryName, properties, selectedFileNames,
+			removeFileEntryIds, sourceCodeURL);
 	}
 
 	public static RemoteAppEntry updateIFrameRemoteAppEntry(

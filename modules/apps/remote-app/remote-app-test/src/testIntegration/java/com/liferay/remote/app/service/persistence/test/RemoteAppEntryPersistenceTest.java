@@ -144,6 +144,8 @@ public class RemoteAppEntryPersistenceTest {
 
 		newRemoteAppEntry.setCustomElementURLs(RandomTestUtil.randomString());
 
+		newRemoteAppEntry.setDescription(RandomTestUtil.randomString());
+
 		newRemoteAppEntry.setIFrameURL(RandomTestUtil.randomString());
 
 		newRemoteAppEntry.setInstanceable(RandomTestUtil.randomBoolean());
@@ -154,7 +156,17 @@ public class RemoteAppEntryPersistenceTest {
 
 		newRemoteAppEntry.setProperties(RandomTestUtil.randomString());
 
+		newRemoteAppEntry.setSourceCodeURL(RandomTestUtil.randomString());
+
 		newRemoteAppEntry.setType(RandomTestUtil.randomString());
+
+		newRemoteAppEntry.setStatus(RandomTestUtil.nextInt());
+
+		newRemoteAppEntry.setStatusByUserId(RandomTestUtil.nextLong());
+
+		newRemoteAppEntry.setStatusByUserName(RandomTestUtil.randomString());
+
+		newRemoteAppEntry.setStatusDate(RandomTestUtil.nextDate());
 
 		_remoteAppEntries.add(_persistence.update(newRemoteAppEntry));
 
@@ -193,6 +205,9 @@ public class RemoteAppEntryPersistenceTest {
 			existingRemoteAppEntry.getCustomElementURLs(),
 			newRemoteAppEntry.getCustomElementURLs());
 		Assert.assertEquals(
+			existingRemoteAppEntry.getDescription(),
+			newRemoteAppEntry.getDescription());
+		Assert.assertEquals(
 			existingRemoteAppEntry.getIFrameURL(),
 			newRemoteAppEntry.getIFrameURL());
 		Assert.assertEquals(
@@ -207,7 +222,21 @@ public class RemoteAppEntryPersistenceTest {
 			existingRemoteAppEntry.getProperties(),
 			newRemoteAppEntry.getProperties());
 		Assert.assertEquals(
+			existingRemoteAppEntry.getSourceCodeURL(),
+			newRemoteAppEntry.getSourceCodeURL());
+		Assert.assertEquals(
 			existingRemoteAppEntry.getType(), newRemoteAppEntry.getType());
+		Assert.assertEquals(
+			existingRemoteAppEntry.getStatus(), newRemoteAppEntry.getStatus());
+		Assert.assertEquals(
+			existingRemoteAppEntry.getStatusByUserId(),
+			newRemoteAppEntry.getStatusByUserId());
+		Assert.assertEquals(
+			existingRemoteAppEntry.getStatusByUserName(),
+			newRemoteAppEntry.getStatusByUserName());
+		Assert.assertEquals(
+			Time.getShortTimestamp(existingRemoteAppEntry.getStatusDate()),
+			Time.getShortTimestamp(newRemoteAppEntry.getStatusDate()));
 	}
 
 	@Test
@@ -256,9 +285,11 @@ public class RemoteAppEntryPersistenceTest {
 			"RemoteAppEntry", "mvccVersion", true, "uuid", true,
 			"remoteAppEntryId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true,
-			"customElementHTMLElementName", true, "iFrameURL", true,
-			"instanceable", true, "name", true, "portletCategoryName", true,
-			"type", true);
+			"customElementHTMLElementName", true, "description", true,
+			"iFrameURL", true, "instanceable", true, "name", true,
+			"portletCategoryName", true, "sourceCodeURL", true, "type", true,
+			"status", true, "statusByUserId", true, "statusByUserName", true,
+			"statusDate", true);
 	}
 
 	@Test
@@ -501,6 +532,8 @@ public class RemoteAppEntryPersistenceTest {
 
 		remoteAppEntry.setCustomElementURLs(RandomTestUtil.randomString());
 
+		remoteAppEntry.setDescription(RandomTestUtil.randomString());
+
 		remoteAppEntry.setIFrameURL(RandomTestUtil.randomString());
 
 		remoteAppEntry.setInstanceable(RandomTestUtil.randomBoolean());
@@ -511,7 +544,17 @@ public class RemoteAppEntryPersistenceTest {
 
 		remoteAppEntry.setProperties(RandomTestUtil.randomString());
 
+		remoteAppEntry.setSourceCodeURL(RandomTestUtil.randomString());
+
 		remoteAppEntry.setType(RandomTestUtil.randomString());
+
+		remoteAppEntry.setStatus(RandomTestUtil.nextInt());
+
+		remoteAppEntry.setStatusByUserId(RandomTestUtil.nextLong());
+
+		remoteAppEntry.setStatusByUserName(RandomTestUtil.randomString());
+
+		remoteAppEntry.setStatusDate(RandomTestUtil.nextDate());
 
 		_remoteAppEntries.add(_persistence.update(remoteAppEntry));
 

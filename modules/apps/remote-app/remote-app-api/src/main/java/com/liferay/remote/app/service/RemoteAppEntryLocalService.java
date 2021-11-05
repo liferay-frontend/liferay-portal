@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.SystemEventConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Sort;
@@ -38,6 +39,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.remote.app.model.RemoteAppEntry;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.List;
@@ -69,6 +71,11 @@ public interface RemoteAppEntryLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.remote.app.service.impl.RemoteAppEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the remote app entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link RemoteAppEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	public FileEntry addAttachment(
+			long userId, long remoteAppEntryId, String fileName,
+			InputStream inputStream, String mimeType)
+		throws PortalException;
+
 	@Indexable(type = IndexableType.REINDEX)
 	public RemoteAppEntry addCustomElementRemoteAppEntry(
 			long userId, String customElementCSSURLs,
@@ -78,10 +85,27 @@ public interface RemoteAppEntryLocalService
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
+	public RemoteAppEntry addCustomElementRemoteAppEntry(
+			long userId, String customElementCSSURLs,
+			String customElementHTMLElementName, String customElementURLs,
+			Map<Locale, String> descriptionMap, boolean instanceable,
+			Map<Locale, String> nameMap, String portletCategoryName,
+			String properties, String[] selectedFileNames, String sourceCodeURL)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
 	public RemoteAppEntry addIFrameRemoteAppEntry(
 			long userId, String iFrameURL, boolean instanceable,
 			Map<Locale, String> nameMap, String portletCategoryName,
 			String properties)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public RemoteAppEntry addIFrameRemoteAppEntry(
+			long userId, String iFrameURL, Map<Locale, String> descriptionMap,
+			boolean instanceable, Map<Locale, String> nameMap,
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, String sourceCodeURL)
 		throws PortalException;
 
 	/**
@@ -96,6 +120,11 @@ public interface RemoteAppEntryLocalService
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public RemoteAppEntry addRemoteAppEntry(RemoteAppEntry remoteAppEntry);
+
+	public void addTempAttachment(
+			long userId, String fileName, String tempFolderName,
+			InputStream inputStream, String mimeType)
+		throws PortalException;
 
 	/**
 	 * @throws PortalException
@@ -148,6 +177,10 @@ public interface RemoteAppEntryLocalService
 	@Indexable(type = IndexableType.DELETE)
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public RemoteAppEntry deleteRemoteAppEntry(RemoteAppEntry remoteAppEntry)
+		throws PortalException;
+
+	public void deleteTempAttachment(
+			long userId, String fileName, String tempFolderName)
 		throws PortalException;
 
 	@Clusterable
@@ -324,10 +357,29 @@ public interface RemoteAppEntryLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public RemoteAppEntry updateCustomElementRemoteAppEntry(
+			long userId, long remoteAppEntryId, String customElementCSSURLs,
+			String customElementHTMLElementName, String customElementURLs,
+			Map<Locale, String> descriptionMap, Map<Locale, String> nameMap,
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, long[] removeFileEntryIds,
+			String sourceCodeURL)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public RemoteAppEntry updateCustomElementRemoteAppEntry(
 			long remoteAppEntryId, String customElementCSSURLs,
 			String customElementHTMLElementName, String customElementURLs,
 			Map<Locale, String> nameMap, String portletCategoryName,
 			String properties)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public RemoteAppEntry updateIFrameRemoteAppEntry(
+			long userId, long remoteAppEntryId, String iFrameURL,
+			Map<Locale, String> descriptionMap, Map<Locale, String> nameMap,
+			String portletCategoryName, String properties,
+			String[] selectedFileNames, long[] removeFileEntryIds,
+			String sourceCodeURL)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -349,5 +401,10 @@ public interface RemoteAppEntryLocalService
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public RemoteAppEntry updateRemoteAppEntry(RemoteAppEntry remoteAppEntry);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public RemoteAppEntry updateStatus(
+			long userId, long remoteAppEntryId, int status)
+		throws PortalException;
 
 }
