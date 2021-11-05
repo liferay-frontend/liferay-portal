@@ -284,7 +284,9 @@ AUI.add(
 					return item !== 'value';
 				});
 
-				instance._triggerConfigDefaults = TRIGGER_CONFIG_DEFAULTS;
+				// LPS-141928
+
+				instance._triggerConfigDefaults = {...TRIGGER_CONFIG_DEFAULTS};
 
 				A.mix(
 					instance._triggerConfigDefaults,
