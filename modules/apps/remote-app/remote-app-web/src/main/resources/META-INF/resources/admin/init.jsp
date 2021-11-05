@@ -16,9 +16,16 @@
 
 <%@ include file="/init.jsp" %>
 
-<%@ page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.SelectOption" %><%@
+<%@ page import="com.liferay.document.library.configuration.DLConfiguration" %><%@
+page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.SelectOption" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
+page import="com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil" %><%@
+page import="com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil" %><%@
+page import="com.liferay.portal.kernel.repository.model.FileEntry" %><%@
+page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.StringUtil" %><%@
+page import="com.liferay.portal.kernel.workflow.WorkflowConstants" %><%@
 page import="com.liferay.remote.app.exception.RemoteAppEntryCustomElementCSSURLsException" %><%@
 page import="com.liferay.remote.app.exception.RemoteAppEntryCustomElementHTMLElementNameException" %><%@
 page import="com.liferay.remote.app.exception.RemoteAppEntryCustomElementURLsException" %><%@
@@ -28,4 +35,6 @@ page import="com.liferay.remote.app.web.internal.constants.RemoteAppAdminWebKeys
 page import="com.liferay.remote.app.web.internal.display.context.EditRemoteAppEntryDisplayContext" %><%@
 page import="com.liferay.remote.app.web.internal.display.context.RemoteAppAdminDisplayContext" %>
 
-<%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.ArrayList" %><%@
+page import="java.util.Arrays" %><%@
+page import="java.util.List" %>

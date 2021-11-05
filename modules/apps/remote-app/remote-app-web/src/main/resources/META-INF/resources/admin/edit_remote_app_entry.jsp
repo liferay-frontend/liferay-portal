@@ -52,6 +52,17 @@ renderResponse.setTitle(editRemoteAppEntryDisplayContext.getTitle());
 				/>
 			</aui:field-wrapper>
 
+			<aui:field-wrapper label="description" name="description">
+				<liferay-ui:input-localized
+					autoFocus="<%= windowState.equals(WindowState.MAXIMIZED) %>"
+					name="description"
+					type="textarea"
+					xml="<%= editRemoteAppEntryDisplayContext.getDescription() %>"
+				/>
+			</aui:field-wrapper>
+
+			<aui:input label="sourceCodeURL" name="sourceCodeURL" type="text" />
+
 			<clay:select
 				disabled="<%= editRemoteAppEntryDisplayContext.isTypeDisabled() %>"
 				label="type"
@@ -129,6 +140,12 @@ renderResponse.setTitle(editRemoteAppEntryDisplayContext.getTitle());
 			/>
 
 			<aui:input label="properties" name="properties" type="textarea" />
+
+			<aui:fieldset collapsed="<%= true %>" collapsible="<%= true %>" label="attachments">
+				<div id="<portlet:namespace />attachments">
+					<liferay-util:include page="/admin/attachments.jsp" servletContext="<%= application %>" />
+				</div>
+			</aui:fieldset>
 		</liferay-frontend:fieldset-group>
 	</liferay-frontend:edit-form-body>
 

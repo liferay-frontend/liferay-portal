@@ -25,4 +25,12 @@
 			}
 		}
 	}
+
+	.remote-app-attachments {
+		margin: 20px 0 0;
+
+		& > div {
+			padding-left: 0;
+		}
+	}
 }

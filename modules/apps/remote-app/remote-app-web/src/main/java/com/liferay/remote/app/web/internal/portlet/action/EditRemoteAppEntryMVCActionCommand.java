@@ -91,11 +91,17 @@ public class EditRemoteAppEntryMVCActionCommand extends BaseMVCActionCommand {
 	private void _add(ActionRequest actionRequest) throws PortalException {
 		boolean instanceable = ParamUtil.getBoolean(
 			actionRequest, "instanceable");
+		Map<Locale, String> descriptionMap =
+			LocalizationUtil.getLocalizationMap(actionRequest, "description");
 		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
 			actionRequest, "name");
 		String portletCategoryName = ParamUtil.getString(
 			actionRequest, "portletCategoryName");
 		String properties = ParamUtil.getString(actionRequest, "properties");
+		String[] selectedFileNames = ParamUtil.getParameterValues(
+			actionRequest, "selectedFileName");
+		String sourceCodeURL = ParamUtil.getString(
+			actionRequest, "sourceCodeURL");
 		String type = ParamUtil.getString(actionRequest, "type");
 
 		if (type.equals(RemoteAppConstants.TYPE_CUSTOM_ELEMENT)) {
@@ -110,12 +116,14 @@ public class EditRemoteAppEntryMVCActionCommand extends BaseMVCActionCommand {
 					ParamUtil.getStringValues(
 						actionRequest, "customElementURLs"),
 					StringPool.NEW_LINE),
-				instanceable, nameMap, portletCategoryName, properties);
+				descriptionMap, instanceable, nameMap, portletCategoryName,
+				properties, selectedFileNames, sourceCodeURL);
 		}
 		else if (type.equals(RemoteAppConstants.TYPE_IFRAME)) {
 			_remoteAppEntryService.addIFrameRemoteAppEntry(
-				ParamUtil.getString(actionRequest, "iFrameURL"), instanceable,
-				nameMap, portletCategoryName, properties);
+				ParamUtil.getString(actionRequest, "iFrameURL"), descriptionMap,
+				instanceable, nameMap, portletCategoryName, properties,
+				selectedFileNames, sourceCodeURL);
 		}
 	}
 
@@ -135,11 +143,19 @@ public class EditRemoteAppEntryMVCActionCommand extends BaseMVCActionCommand {
 	private void _update(ActionRequest actionRequest) throws PortalException {
 		RemoteAppEntry remoteAppEntry = _getRemoteAppEntry(actionRequest);
 
+		Map<Locale, String> descriptionMap =
+			LocalizationUtil.getLocalizationMap(actionRequest, "description");
 		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
 			actionRequest, "name");
 		String portletCategoryName = ParamUtil.getString(
 			actionRequest, "portletCategoryName");
 		String properties = ParamUtil.getString(actionRequest, "properties");
+		String[] selectedFileNames = ParamUtil.getParameterValues(
+			actionRequest, "selectedFileName");
+		String sourceCodeURL = ParamUtil.getString(
+			actionRequest, "sourceCodeURL");
+		long[] removeFileEntryIds = ParamUtil.getLongValues(
+			actionRequest, "removeFileEntryIds");
 
 		if (Objects.equals(
 				remoteAppEntry.getType(),
@@ -157,15 +173,17 @@ public class EditRemoteAppEntryMVCActionCommand extends BaseMVCActionCommand {
 					ParamUtil.getStringValues(
 						actionRequest, "customElementURLs"),
 					StringPool.NEW_LINE),
-				nameMap, portletCategoryName, properties);
+				descriptionMap, nameMap, portletCategoryName, properties,
+				selectedFileNames, removeFileEntryIds, sourceCodeURL);
 		}
 		else if (Objects.equals(
 					remoteAppEntry.getType(), RemoteAppConstants.TYPE_IFRAME)) {
 
 			_remoteAppEntryService.updateIFrameRemoteAppEntry(
 				remoteAppEntry.getRemoteAppEntryId(),
-				ParamUtil.getString(actionRequest, "iFrameURL"), nameMap,
-				portletCategoryName, properties);
+				ParamUtil.getString(actionRequest, "iFrameURL"), descriptionMap,
+				nameMap, portletCategoryName, properties, selectedFileNames,
+				removeFileEntryIds, sourceCodeURL);
 		}
 	}
 
