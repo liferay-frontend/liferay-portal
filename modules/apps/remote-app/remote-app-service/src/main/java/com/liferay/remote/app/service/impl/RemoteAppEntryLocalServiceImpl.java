@@ -52,6 +52,7 @@ import com.liferay.remote.app.exception.RemoteAppEntryCustomElementHTMLElementNa
 import com.liferay.remote.app.exception.RemoteAppEntryCustomElementURLsException;
 import com.liferay.remote.app.exception.RemoteAppEntryFriendlyURLMappingException;
 import com.liferay.remote.app.exception.RemoteAppEntryIFrameURLException;
+import com.liferay.remote.app.internal.configuration.RemoteAppEntryWorkflowConfigurationActivator;
 import com.liferay.remote.app.model.RemoteAppEntry;
 import com.liferay.remote.app.service.base.RemoteAppEntryLocalServiceBaseImpl;
 
@@ -472,6 +473,12 @@ public class RemoteAppEntryLocalServiceImpl
 			long userId, RemoteAppEntry remoteAppEntry)
 		throws PortalException {
 
+		if (!_remoteAppEntryWorkflowConfigurationActivator.enabled()) {
+			return remoteAppEntryLocalService.updateStatus(
+				userId, remoteAppEntry.getRemoteAppEntryId(),
+				WorkflowConstants.STATUS_APPROVED);
+		}
+
 		ServiceContext serviceContext = new ServiceContext();
 
 		serviceContext.setAddGroupPermissions(true);
@@ -601,6 +608,10 @@ public class RemoteAppEntryLocalServiceImpl
 
 	@Reference
 	private RemoteAppEntryDeployer _remoteAppEntryDeployer;
+
+	@Reference
+	private RemoteAppEntryWorkflowConfigurationActivator
+		_remoteAppEntryWorkflowConfigurationActivator;
 
 	private final Set<String> _reservedCustomElementHTMLElementNames =
 		SetUtil.fromArray(
