@@ -159,6 +159,7 @@ export default function TrafficSources({dataProvider, onTrafficSourceClick}) {
 						small
 					/>
 				)}
+
 				<div className="pie-chart-wrapper--legend">
 					<table>
 						<tbody>

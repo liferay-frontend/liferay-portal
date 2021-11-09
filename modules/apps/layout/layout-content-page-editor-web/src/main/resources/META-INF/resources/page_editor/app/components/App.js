@@ -67,6 +67,7 @@ export default function App({state}) {
 	return (
 		<StoreContextProvider initialState={initialState} reducer={reducer}>
 			<BackURL />
+
 			<LanguageDirection />
 
 			<URLParser />

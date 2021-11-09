@@ -92,7 +92,7 @@ export default function SocialDetail({
 
 	const [highlighted, setHighlighted] = useState(null);
 
-	const firstUpdate = useRef(true);
+	const firstUpdateRef = useRef(true);
 
 	const trafficSourceDetailClasses = className(
 		'c-p-3 traffic-source-detail',
@@ -110,8 +110,8 @@ export default function SocialDetail({
 	}
 
 	useEffect(() => {
-		if (firstUpdate.current) {
-			firstUpdate.current = false;
+		if (firstUpdateRef.current) {
+			firstUpdateRef.current = false;
 
 			return;
 		}
@@ -158,6 +158,7 @@ export default function SocialDetail({
 					small
 				/>
 			)}
+
 			<div className="c-mb-3 c-mt-2">
 				<TimeSpanSelector
 					disabledNextTimeSpan={timeSpanOffset === 0}

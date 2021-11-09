@@ -78,7 +78,7 @@ export default function ReferralDetail({
 
 	const isPreviousPeriodButtonDisabled = useIsPreviousPeriodButtonDisabled();
 
-	const firstUpdate = useRef(true);
+	const firstUpdateRef = useRef(true);
 
 	const trafficSourceDetailClasses = className(
 		'c-p-3 traffic-source-detail',
@@ -88,8 +88,8 @@ export default function ReferralDetail({
 	);
 
 	useEffect(() => {
-		if (firstUpdate.current) {
-			firstUpdate.current = false;
+		if (firstUpdateRef.current) {
+			firstUpdateRef.current = false;
 
 			return;
 		}
@@ -136,6 +136,7 @@ export default function ReferralDetail({
 					small
 				/>
 			)}
+
 			<div className="c-mb-3 c-mt-2">
 				<TimeSpanSelector
 					disabledNextTimeSpan={timeSpanOffset === 0}
