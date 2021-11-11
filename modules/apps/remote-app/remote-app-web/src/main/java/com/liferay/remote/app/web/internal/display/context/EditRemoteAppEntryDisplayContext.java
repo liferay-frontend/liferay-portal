@@ -85,6 +85,12 @@ public class EditRemoteAppEntryDisplayContext {
 		return customElementCSSURLs;
 	}
 
+	public String getCustomElementHTMLElementName() {
+		return BeanParamUtil.getString(
+			_remoteAppEntry, _portletRequest, "customElementHTMLElementName",
+			"vanilla-counter");
+	}
+
 	public String[] getCustomElementURLs() {
 		String[] customElementURLs = StringPool.EMPTY_ARRAY;
 
@@ -100,15 +106,24 @@ public class EditRemoteAppEntryDisplayContext {
 			_portletRequest, "customElementURLs", customElementURLs);
 
 		if (customElementURLs.length == 0) {
-			customElementURLs = new String[1];
+			customElementURLs = new String[] {
+				"https://liferay.github.io/liferay-frontend-projects" +
+					"/vanilla-counter/index.js"
+			};
 		}
 
 		return customElementURLs;
 	}
 
+	public String getFriendlyURLMapping() {
+		return BeanParamUtil.getString(
+			_remoteAppEntry, _portletRequest, "friendlyURLMapping",
+			"vanilla_counter");
+	}
+
 	public String getName() {
 		return BeanParamUtil.getString(
-			_remoteAppEntry, _portletRequest, "name");
+			_remoteAppEntry, _portletRequest, "name", "Vanilla Counter");
 	}
 
 	public List<SelectOption> getPortletCategoryNameSelectOptions()
@@ -169,6 +184,12 @@ public class EditRemoteAppEntryDisplayContext {
 				}
 
 			});
+	}
+
+	public String getProperties() {
+		return BeanParamUtil.getString(
+			_remoteAppEntry, _portletRequest, "properties",
+			"friendly-url-mapping=vanilla_counter");
 	}
 
 	public String getRedirect() {
@@ -256,7 +277,7 @@ public class EditRemoteAppEntryDisplayContext {
 		}
 
 		if (_remoteAppEntry == null) {
-			return RemoteAppConstants.TYPE_IFRAME;
+			return RemoteAppConstants.TYPE_CUSTOM_ELEMENT;
 		}
 
 		return _remoteAppEntry.getType();

@@ -78,7 +78,7 @@ renderResponse.setTitle(editRemoteAppEntryDisplayContext.getTitle());
 				disabled="<%= !editRemoteAppEntryDisplayContext.isEditingRemoteAppEntryType(RemoteAppConstants.TYPE_CUSTOM_ELEMENT) %>"
 				id='<%= liferayPortletResponse.getNamespace() + "_type_customElement" %>'
 			>
-				<aui:input label="html-element-name" name="customElementHTMLElementName">
+				<aui:input label="html-element-name" name="customElementHTMLElementName" value="<%= editRemoteAppEntryDisplayContext.getCustomElementHTMLElementName() %>">
 					<aui:validator name="customElementName" />
 				</aui:input>
 
@@ -129,11 +129,11 @@ renderResponse.setTitle(editRemoteAppEntryDisplayContext.getTitle());
 				%>"
 			/>
 
-			<aui:input label="friendly-url-mapping" name="friendlyURLMapping">
+			<aui:input label="friendly-url-mapping" name="friendlyURLMapping" value="<%= editRemoteAppEntryDisplayContext.getFriendlyURLMapping() %>">
 				<aui:validator name="friendlyURLMapping" />
 			</aui:input>
 
-			<aui:input label="properties" name="properties" type="textarea" />
+			<aui:input label="properties" name="properties" type="textarea" value="<%= editRemoteAppEntryDisplayContext.getProperties() %>" />
 		</liferay-frontend:fieldset-group>
 	</liferay-frontend:edit-form-body>
 
