@@ -35,4 +35,15 @@ String name = namespace + GetterUtil.getString((String)request.getAttribute(CKEd
 			).build()
 		%>'
 	/>
+
+	<liferay-frontend:component
+		context='<%=
+			HashMapBuilder.<String, Object>put(
+				"contents", (contents != null) ? HtmlUtil.escapeJS(contents) : StringPool.BLANK
+			).put(
+				"name", HtmlUtil.escapeAttribute(name)
+			).build()
+		%>'
+		module="editor/LiferayEditorComponent"
+	/>
 </div>

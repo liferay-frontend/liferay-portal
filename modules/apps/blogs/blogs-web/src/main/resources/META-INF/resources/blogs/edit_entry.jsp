@@ -167,7 +167,7 @@ renderResponse.setTitle((entry != null) ? BlogsEntryUtil.getDisplayTitle(resourc
 						<div class="entry-content form-group">
 							<liferay-editor:editor
 								contents="<%= content %>"
-								editorName='<%= PropsUtil.get("editor.wysiwyg.portal-web.docroot.html.portlet.blogs.edit_entry.jsp") %>'
+								editorName="ballooneditor"
 								name="contentEditor"
 								onChangeMethod="onChangeContentEditor"
 								placeholder="content"

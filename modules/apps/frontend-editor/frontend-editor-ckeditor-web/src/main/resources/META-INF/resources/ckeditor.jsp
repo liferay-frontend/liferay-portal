@@ -134,6 +134,19 @@ if (inlineEdit && Validator.isNotNull(inlineEditSaveURL)) {
 name = HtmlUtil.escapeJS(name);
 %>
 
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"contents", (contents != null) ? HtmlUtil.escapeJS(contents) : StringPool.BLANK
+		).put(
+			"initMethod", HtmlUtil.escapeJS(namespace + initMethod)
+		).put(
+			"name", name
+		).build()
+	%>'
+	module="editor/LiferayEditorComponent"
+/>
+
 <aui:script use="<%= modules %>">
 	var UA = A.UA;
 

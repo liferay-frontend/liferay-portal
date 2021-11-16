@@ -94,6 +94,12 @@ export default class Blogs {
 				);
 			}
 
+			// Liferay.Editor[
+			// 	`${this._config.namespace}contentEditor`
+			// ].onChangeMethod((html) => {
+			// 	this.setDescription(html);
+			// });
+
 			window[`${namespace}onChangeContentEditor`] = (html) => {
 				this.setDescription(html);
 			};
@@ -229,7 +235,7 @@ export default class Blogs {
 		if (this._shortenDescription) {
 			this._customDescription = this._getElementById('description').value;
 
-			description = window[
+			description = Liferay.Editor[
 				`${this._config.namespace}contentEditor`
 			].getText();
 		}
@@ -315,9 +321,9 @@ export default class Blogs {
 			captionNode.classList.add(CSS_INVISIBLE);
 		}
 
-		CKEDITOR.instances[
+		Liferay.Editor[
 			`${this._config.namespace}coverImageCaptionEditor`
-		].setData(STR_BLANK);
+		].ckEditor.setData(STR_BLANK);
 	}
 
 	_saveEntry(draft, ajax) {
@@ -325,11 +331,11 @@ export default class Blogs {
 		const entry = this._config.entry;
 		const namespace = this._config.namespace;
 
-		const content = window[`${namespace}contentEditor`].getHTML();
+		const content = Liferay.Editor[`${namespace}contentEditor`].getHTML();
 
-		const coverImageCaption = CKEDITOR.instances[
+		const coverImageCaption = Liferay.Editor[
 			`${namespace}coverImageCaptionEditor`
-		].getData();
+		].getHTML();
 
 		const subtitle = this._getElementById('subtitle').value;
 		const title = this._getElementById('title').value;
