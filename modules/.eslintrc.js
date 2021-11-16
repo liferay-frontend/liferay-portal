@@ -45,6 +45,7 @@ config = {
 		'@liferay/aui/no-node': 'off',
 		'@liferay/aui/no-object': 'off',
 		'@liferay/aui/no-one': 'off',
+		'@liferay/no-get-data-attribute': 'off',
 		'no-empty': ['error', {allowEmptyCatch: true}],
 		'notice/notice': [
 			'error',

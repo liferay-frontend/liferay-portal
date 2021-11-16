@@ -37,7 +37,7 @@ const DropDownAction = ({action: {action, name}, item, setActive}) => {
 	);
 };
 
-export default ({actions, item, noActionsMessage}) => {
+export default function DropDown({actions, item, noActionsMessage}) {
 	const [active, setActive] = useState(false);
 
 	const DropdownButton = (
@@ -81,4 +81,4 @@ export default ({actions, item, noActionsMessage}) => {
 			</ClayDropDown.ItemList>
 		</ClayDropDown>
 	);
-};
+}

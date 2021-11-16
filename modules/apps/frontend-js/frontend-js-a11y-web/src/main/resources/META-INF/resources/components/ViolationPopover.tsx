@@ -144,7 +144,8 @@ export function ViolationPopover({
 					>
 						<ClayList.ItemField expand>
 							<ClayList.ItemTitle>
-								{ruleId}{' '}
+								{ruleId + ' '}
+
 								<span className="text-secondary">{`- ${rules[ruleId].impact}`}</span>
 							</ClayList.ItemTitle>
 

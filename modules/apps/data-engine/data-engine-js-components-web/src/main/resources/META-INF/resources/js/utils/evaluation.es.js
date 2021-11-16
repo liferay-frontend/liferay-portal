@@ -23,7 +23,7 @@ const EVALUATOR_URL =
 
 let controller = null;
 
-export const mergeFieldOptions = (field, newField) => {
+export function mergeFieldOptions(field, newField) {
 	let newValue = {...newField.value};
 
 	Object.keys(newValue).forEach((languageId) => {
@@ -46,16 +46,16 @@ export const mergeFieldOptions = (field, newField) => {
 	});
 
 	return newValue;
-};
+}
 
-export const mergePages = (
+export function mergePages(
 	defaultLanguageId,
 	editingLanguageId,
 	fieldName,
 	newPages,
 	sourcePages,
 	viewMode
-) => {
+) {
 	const newPagesVisitor = new PagesVisitor(newPages);
 	const sourcePagesVisitor = new PagesVisitor(sourcePages);
 
@@ -108,7 +108,7 @@ export const mergePages = (
 				if (
 					field.type === 'numeric' &&
 					field.valueChanged &&
-					field.value != field.localizedValue[editingLanguageId]
+					field.value !== field.localizedValue[editingLanguageId]
 				) {
 					sourceField.localizedValue[editingLanguageId] = field.value;
 				}
@@ -126,7 +126,7 @@ export const mergePages = (
 		false,
 		true
 	);
-};
+}
 
 const doEvaluate = debounce((fieldName, evaluatorContext, callback) => {
 	const {
@@ -182,7 +182,7 @@ const doEvaluate = debounce((fieldName, evaluatorContext, callback) => {
 		.catch((error) => callback(error));
 }, 600);
 
-export const evaluate = (fieldName, evaluatorContext) => {
+export function evaluate(fieldName, evaluatorContext) {
 	return new Promise((resolve, reject) => {
 		doEvaluate(fieldName, evaluatorContext, (error, pages) => {
 			if (error) {
@@ -192,4 +192,4 @@ export const evaluate = (fieldName, evaluatorContext) => {
 			resolve(pages);
 		});
 	});
-};
+}

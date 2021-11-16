@@ -18,7 +18,7 @@ import React from 'react';
 import CollectionSelector from '../../../common/components/CollectionSelector';
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
 
-export const CollectionSelectorField = ({field, onValueSelect, value}) => {
+export function CollectionSelectorField({field, onValueSelect, value}) {
 	const {typeOptions = {}} = field;
 
 	return (
@@ -31,7 +31,7 @@ export const CollectionSelectorField = ({field, onValueSelect, value}) => {
 			}}
 		/>
 	);
-};
+}
 
 CollectionSelectorField.propTypes = {
 	field: PropTypes.shape(ConfigurationFieldPropTypes).isRequired,

@@ -24,6 +24,7 @@ export const Switch = React.forwardRef(
 						{renderActions}
 					</Label>
 				)}
+
 				<div className="switch-wrapper">
 					<button
 						className={`btn switch ${

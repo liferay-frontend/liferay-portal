@@ -15,4 +15,6 @@
 import launcher from '../../utilities/launcher';
 import AddToWishList from './AddToWishList';
 
-export default (...data) => launcher(AddToWishList, ...data);
+export default function entry(...data) {
+	return launcher(AddToWishList, ...data);
+}

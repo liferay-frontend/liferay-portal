@@ -14,7 +14,7 @@ import {fetch} from 'frontend-js-web';
 import {DEFAULT_ERROR} from './constants';
 import {openErrorToast} from './toasts';
 
-export const fetchData = (url = '', parameters, successFcn, errorFcn) => {
+export function fetchData(url = '', parameters, successFcn, errorFcn) {
 	fetch(url, parameters)
 		.then((response) => {
 			if (!response.ok) {
@@ -35,7 +35,7 @@ export const fetchData = (url = '', parameters, successFcn, errorFcn) => {
 
 			errorFcn(error);
 		});
-};
+}
 
 /**
  * Modifies the url to include parameters.

@@ -3,11 +3,7 @@ import {PHONE_REGEX} from '~/common/utils/patterns';
 
 import {ControlledInputWithMask} from '.';
 
-export const PhoneControlledInput = ({
-	rules = {},
-	inputProps = {},
-	...props
-}) => {
+export function PhoneControlledInput({rules = {}, inputProps = {}, ...props}) {
 	return (
 		<ControlledInputWithMask
 			{...props}
@@ -26,4 +22,4 @@ export const PhoneControlledInput = ({
 			}}
 		/>
 	);
-};
+}

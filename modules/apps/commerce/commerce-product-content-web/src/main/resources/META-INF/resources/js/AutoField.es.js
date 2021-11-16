@@ -58,7 +58,7 @@ class AutoField extends Component {
 	 */
 
 	changeSelector_(event) {
-		const itemIndex = event.delegateTarget.getAttribute('data-item-index');
+		const itemIndex = event.delegateTarget.dataset.itemIndex;
 		const rules = this.rules;
 
 		rules[itemIndex] = {
@@ -78,7 +78,7 @@ class AutoField extends Component {
 	 */
 
 	deleteRule_(event) {
-		const itemIndex = event.delegateTarget.getAttribute('data-rule-id');
+		const itemIndex = event.delegateTarget.dataset.ruleId;
 
 		this.rules = this.rules.filter((_rule, i) => i !== Number(itemIndex));
 	}

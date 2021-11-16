@@ -119,6 +119,6 @@ describe('Infopanel', () => {
 	it('renders item data on the info panel', () => {
 		const {getByText} = renderCarouselComponent(carouselProps);
 
-		expect(getByText(itemTitle));
+		expect(getByText(itemTitle)).toBeTruthy();
 	});
 });

@@ -137,7 +137,7 @@ AUI.add(
 
 				var editMode = inputEditModeNode.val();
 
-				var boolEditMode = editMode == 'true';
+				var boolEditMode = editMode === 'true' || editMode === true;
 
 				inputEditModeNode.val(!boolEditMode);
 			},

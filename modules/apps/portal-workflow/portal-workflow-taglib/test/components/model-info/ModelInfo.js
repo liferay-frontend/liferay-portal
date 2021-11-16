@@ -19,7 +19,8 @@ import React from 'react';
 import ModelInfo from '../../../src/main/resources/META-INF/resources/workflow_status/js/components/model-info/ModelInfo';
 
 describe('The ModelInfo component should', () => {
-	let label, value;
+	let label;
+	let value;
 
 	afterEach(cleanup);
 

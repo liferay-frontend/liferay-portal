@@ -20,7 +20,8 @@ let enableTabEvent = true;
  * Handle differents browser versions to Visibility API
  */
 function getHiddenKey() {
-	let hidden, visibilityChange;
+	let hidden;
+	let visibilityChange;
 
 	if (typeof document.hidden !== 'undefined') {
 		hidden = 'hidden';

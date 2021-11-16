@@ -15,8 +15,8 @@
 AUI().ready(() => {
 	const Speedwell = window.Speedwell;
 
-	const RETRY_TIMES = 3,
-		RETRY_INTERVAL = 333;
+	const RETRY_TIMES = 3;
+	const RETRY_INTERVAL = 333;
 
 	function retrySlidersBootUp() {
 		let currentRetry = 0;

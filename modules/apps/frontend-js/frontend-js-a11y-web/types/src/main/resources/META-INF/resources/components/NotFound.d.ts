@@ -19,9 +19,9 @@ declare type Props = {
 	onClick: () => void;
 	title: string;
 };
-export declare const NotFound: ({
+export declare function NotFound({
 	description,
 	onClick,
 	title,
-}: Props) => JSX.Element;
+}: Props): JSX.Element;
 export {};

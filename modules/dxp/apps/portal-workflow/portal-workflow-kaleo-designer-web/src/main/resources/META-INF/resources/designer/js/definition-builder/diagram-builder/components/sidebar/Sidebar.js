@@ -17,6 +17,7 @@ export default function Sidebar() {
 			<div className="sidebar-header">
 				<span className="title">Nodes</span>
 			</div>
+
 			<div className="sidebar-body"></div>
 		</div>
 	);

@@ -28,8 +28,8 @@ const {
 } = ACTION_ITEM_TARGETS;
 
 export function triggerAction(item, context) {
-	const {href: actionTargetURL, target: actionTarget} = item,
-		{loadData, modalId, sidePanelId} = context;
+	const {href: actionTargetURL, target: actionTarget} = item;
+	const {loadData, modalId, sidePanelId} = context;
 
 	switch (actionTarget) {
 		case BLANK:

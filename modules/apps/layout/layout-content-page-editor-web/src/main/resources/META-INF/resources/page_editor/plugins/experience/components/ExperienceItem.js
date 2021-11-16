@@ -132,6 +132,7 @@ const ExperienceItem = ({
 										<span className="mr-1 text-secondary">
 											{Liferay.Language.get('audience')}
 										</span>
+
 										{experience.segmentsEntryName}
 									</span>
 
@@ -163,6 +164,7 @@ const ExperienceItem = ({
 					</div>
 				</ClayButton>
 			</ClayList.ItemField>
+
 			<ClayList.ItemField className="align-self-center">
 				<ExperienceActions
 					editable={editable}

@@ -14,7 +14,7 @@ const compare = (a, b) => {
 	return a.section === b.section && a.subsection === b.subsection;
 };
 
-export const Forms = ({form}) => {
+export function Forms({form}) {
 	const {selectedStep, setSection} = useStepWizard();
 	const [loaded, setLoaded] = useState(false);
 	const [loadedSections, setLoadedSections] = useState(false);
@@ -104,4 +104,4 @@ export const Forms = ({form}) => {
 	}
 
 	return <div></div>;
-};
+}

@@ -149,6 +149,7 @@ const SaveFragmentCompositionModal = ({onCloseModal}) => {
 								<ClayForm.FeedbackGroup>
 									<ClayForm.FeedbackItem>
 										<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
 										{Liferay.Language.get(
 											'this-field-is-required'
 										)}
@@ -185,6 +186,7 @@ const SaveFragmentCompositionModal = ({onCloseModal}) => {
 										)}
 									</ClayButton>
 								</ClayInput.GroupItem>
+
 								<ClayInput.GroupItem className="align-items-center">
 									<span className="ml-2 text-truncate">
 										{thumbnail.title}
@@ -228,6 +230,7 @@ const SaveFragmentCompositionModal = ({onCloseModal}) => {
 										}
 									/>
 								</ClayInput.GroupItem>
+
 								<ClayInput.GroupItem>
 									<ClayCheckbox
 										checked={saveMappingConfiguration}
@@ -244,6 +247,7 @@ const SaveFragmentCompositionModal = ({onCloseModal}) => {
 								</ClayInput.GroupItem>
 							</ClayInput.Group>
 						</ClayForm.Group>
+
 						<ClayForm.Group>
 							{collections.length > 0 ? (
 								<>
@@ -285,6 +289,7 @@ const SaveFragmentCompositionModal = ({onCloseModal}) => {
 																	<ClayIcon symbol="folder" />
 																</ClaySticker>
 															</ClayLayout.ContentCol>
+
 															<ClayLayout.ContentCol
 																containerElement="span"
 																expand
@@ -325,6 +330,7 @@ const SaveFragmentCompositionModal = ({onCloseModal}) => {
 					</InvisibleFieldset>
 				</ClayForm>
 			</ClayModal.Body>
+
 			<ClayModal.Footer
 				last={
 					<ClayButton.Group spaced>

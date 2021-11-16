@@ -16,7 +16,7 @@ import React, {useLayoutEffect, useRef, useState} from 'react';
 
 import {usePage} from '../hooks/usePage.es';
 
-export const AutoFocus = ({children}) => {
+export function AutoFocus({children}) {
 	const childRef = useRef();
 	const {activePage, containerElement} = usePage();
 	const [increment, setIncrement] = useState(0);
@@ -67,4 +67,4 @@ export const AutoFocus = ({children}) => {
 			childRef.current = node;
 		},
 	});
-};
+}

@@ -531,7 +531,7 @@ AUI.add(
 					startTimeDayOfWeekInput.val(dayOfWeek);
 
 					daysOfWeekCheckboxes.each((item) => {
-						if (item.val() == dayOfWeek) {
+						if (item.val() === dayOfWeek) {
 							item.set('checked', true);
 							item.set('disabled', true);
 						}

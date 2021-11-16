@@ -166,6 +166,7 @@ function CartItem({item: cartItem}) {
 						}}
 					/>
 				)}
+
 				<div
 					className={classnames('mini-cart-item-info ml-3', {
 						options: !!options,
@@ -179,6 +180,7 @@ function CartItem({item: cartItem}) {
 					/>
 				</div>
 			</a>
+
 			<div className="mini-cart-item-quantity">
 				<QuantitySelector
 					onUpdate={(freshQuantity) => {
@@ -206,6 +208,7 @@ function CartItem({item: cartItem}) {
 					{...settings}
 				/>
 			</div>
+
 			<div className="mini-cart-item-price">
 				<Price
 					compact={true}
@@ -213,6 +216,7 @@ function CartItem({item: cartItem}) {
 					price={price}
 				/>
 			</div>
+
 			<div className="mini-cart-item-delete">
 				<button
 					className="btn btn-unstyled"
@@ -222,6 +226,7 @@ function CartItem({item: cartItem}) {
 					<ClayIcon symbol="times-circle-full" />
 				</button>
 			</div>
+
 			{(errorMessages || isShowingErrors) && (
 				<div className="mini-cart-item-errors">
 					<ClayIcon symbol="exclamation-circle" />
@@ -231,6 +236,7 @@ function CartItem({item: cartItem}) {
 					</span>
 				</div>
 			)}
+
 			<div
 				className={classnames({
 					'active': isGettingRemoved,
@@ -239,6 +245,7 @@ function CartItem({item: cartItem}) {
 				})}
 			>
 				<span>{Liferay.Language.get('the-item-has-been-removed')}</span>
+
 				<span>
 					<ClayButton
 						displayType="link"

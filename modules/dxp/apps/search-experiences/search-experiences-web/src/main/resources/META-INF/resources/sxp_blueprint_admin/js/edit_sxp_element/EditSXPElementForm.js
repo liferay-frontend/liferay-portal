@@ -53,7 +53,7 @@ function EditSXPElementForm({
 }) {
 	const {defaultLocale, redirectURL} = useContext(ThemeContext);
 
-	const form = useRef();
+	const formRef = useRef();
 	const sxpElementTemplateJSONRef = useRef();
 
 	const [errors, setErrors] = useState([]);
@@ -414,7 +414,7 @@ function EditSXPElementForm({
 
 	return (
 		<>
-			<form ref={form}>
+			<form ref={formRef}>
 				<SubmitWarningModal
 					errors={errors}
 					isSubmitting={isSubmitting}
@@ -671,6 +671,7 @@ function EditSXPElementForm({
 											{Liferay.Language.get(
 												'ui-configuration-json'
 											)}
+
 											<ClayTooltipProvider>
 												<ClaySticker
 													displayType="unstyled"

@@ -34,6 +34,7 @@ const FilterItem = ({filterKey, name, value}) => {
 			>
 				<span className="label-section">
 					{`${name}: `}
+
 					<span className="font-weight-normal">{value}</span>
 				</span>
 			</ClayLabel>
@@ -41,7 +42,7 @@ const FilterItem = ({filterKey, name, value}) => {
 	);
 };
 
-export const getSelectedFilters = (filters, appliedFilters) => {
+export function getSelectedFilters(filters, appliedFilters) {
 	const selectedFilters = [];
 
 	Object.keys(appliedFilters).forEach((filterKey) => {
@@ -64,9 +65,13 @@ export const getSelectedFilters = (filters, appliedFilters) => {
 	});
 
 	return selectedFilters;
-};
+}
 
-export default ({filters = [], isLoading, totalCount}) => {
+export default function ManagementToolbarResultsBar({
+	filters = [],
+	isLoading,
+	totalCount,
+}) {
 	const [{filters: appliedFilters = {}, keywords}, dispatch] = useContext(
 		SearchContext
 	);
@@ -108,4 +113,4 @@ export default ({filters = [], isLoading, totalCount}) => {
 			)}
 		</>
 	);
-};
+}

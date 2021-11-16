@@ -51,6 +51,7 @@ const LocalizationDropdown = ({
 								symbol={currentLocale.symbol}
 							/>
 						</span>
+
 						<span className="btn-section">
 							{currentLocale.label}
 						</span>
@@ -93,6 +94,7 @@ const LocalizationDropdown = ({
 												{locale.label}
 											</ClayLayout.ContentSection>
 										</ClayLayout.ContentCol>
+
 										<ClayLayout.ContentCol containerElement="span">
 											<ClayLayout.ContentSection>
 												<ClayLabel
@@ -124,7 +126,7 @@ const LocalizationDropdown = ({
 	);
 };
 
-export default ({
+export default function ChangeTrackingRenderView({
 	childEntries,
 	dataURL,
 	defaultLocale,
@@ -139,7 +141,7 @@ export default ({
 	spritemap,
 	title,
 	updateCache,
-}) => {
+}) {
 	const CHANGE_TYPE_ADDED = 'added';
 	const CHANGE_TYPE_DELETED = 'deleted';
 	const CHANGE_TYPE_MODIFIED = 'modified';
@@ -770,9 +772,11 @@ export default ({
 					<span className="diff-html-added legend-item">
 						{Liferay.Language.get('added')}
 					</span>
+
 					<span className="diff-html-removed legend-item">
 						{Liferay.Language.get('deleted')}
 					</span>
+
 					<span className="diff-html-changed">
 						{Liferay.Language.get('format-changes')}
 					</span>
@@ -1048,6 +1052,7 @@ export default ({
 			return (
 				<div className="taglib-empty-result-message">
 					<div className="taglib-empty-search-result-message-header" />
+
 					<div className="sheet-text text-center">
 						{Liferay.Language.get(
 							'there-are-no-changes-to-display-in-this-view'
@@ -1136,6 +1141,7 @@ export default ({
 				}
 			>
 				<ClayTable.Head>{renderToolbar()}</ClayTable.Head>
+
 				<ClayTable.Body>
 					{(state.contentType === CONTENT_TYPE_PREVIEW ||
 						state.contentType === CONTENT_TYPE_RENDER) && (
@@ -1168,6 +1174,7 @@ export default ({
 
 					{state.contentType === CONTENT_TYPE_PARENTS &&
 						getTableRows(state.parents)}
+
 					{state.contentType === CONTENT_TYPE_CHILDREN &&
 						getTableRows(state.children)}
 				</ClayTable.Body>
@@ -1387,15 +1394,18 @@ export default ({
 								spritemap={spritemap}
 							/>
 						)}
+
 					<div className="autofit-col autofit-col-expand">
 						<h2>{currentTitle}</h2>
 
 						<div className="entry-description">{description}</div>
 					</div>
+
 					{renderDropdownMenu()}
 				</div>
 			)}
+
 			<div className="sheet-section">{renderEntry()}</div>
 		</div>
 	);
-};
+}

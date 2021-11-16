@@ -18,7 +18,7 @@ import {EVENT_TYPES} from '../eventTypes.es';
  * NOTE: This is a literal copy of the old LayoutProvider logic. Small changes
  * were made only to adapt to the reducer.
  */
-export default (state, action) => {
+export default function paginationReducer(state, action) {
 	switch (action.type) {
 		case EVENT_TYPES.PAGINATION.NEXT: {
 			const {activePage, pages} = state;
@@ -37,4 +37,4 @@ export default (state, action) => {
 		default:
 			return state;
 	}
-};
+}

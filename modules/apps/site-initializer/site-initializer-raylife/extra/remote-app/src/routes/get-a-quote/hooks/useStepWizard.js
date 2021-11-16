@@ -12,7 +12,7 @@ import {businessTotalFields} from '../utils/businessFields';
 import {AVAILABLE_STEPS, TOTAL_OF_FIELD} from '../utils/constants';
 import {propertyTotalFields} from '../utils/propertyFields';
 
-export const useStepWizard = () => {
+export function useStepWizard() {
 	const form = useWatch();
 	const [dispatchEvent] = useCustomEvent(TIP_EVENT);
 	const {dispatch, state} = useContext(AppContext);
@@ -201,4 +201,4 @@ export const useStepWizard = () => {
 		setPercentage,
 		setSection,
 	};
-};
+}

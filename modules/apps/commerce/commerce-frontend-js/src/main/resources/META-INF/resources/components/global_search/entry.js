@@ -15,4 +15,6 @@
 import launcher from '../../utilities/launcher';
 import GlobalSearch from './GlobalSearch';
 
-export default (...data) => launcher(GlobalSearch, ...data);
+export default function entry(...data) {
+	return launcher(GlobalSearch, ...data);
+}

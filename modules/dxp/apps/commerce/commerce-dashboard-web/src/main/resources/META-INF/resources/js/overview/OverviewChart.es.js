@@ -34,12 +34,16 @@ export default function OverviewChart(
 						xmlns="http://www.w3.org/2000/svg"
 					>
 						<circle className="track" cx="52" cy="52" r="50" />
+
 						<circle className="filler" cx="52" cy="52" r="50" />
 					</svg>
+
 					<div className="text">66%</div>
 				</div>
+
 				<div className="label">Label</div>
 			</div>
+
 			<div className="donut" style={{'--perc': 66}}>
 				<div className="chart">
 					<svg
@@ -47,12 +51,16 @@ export default function OverviewChart(
 						xmlns="http://www.w3.org/2000/svg"
 					>
 						<circle className="track" cx="52" cy="52" r="50" />
+
 						<circle className="filler" cx="52" cy="52" r="50" />
 					</svg>
+
 					<div className="text">66%</div>
 				</div>
+
 				<div className="label">Label</div>
 			</div>
+
 			<div className="donut" style={{'--perc': 66}}>
 				<div className="chart">
 					<svg
@@ -60,10 +68,13 @@ export default function OverviewChart(
 						xmlns="http://www.w3.org/2000/svg"
 					>
 						<circle className="track" cx="52" cy="52" r="50" />
+
 						<circle className="filler" cx="52" cy="52" r="50" />
 					</svg>
+
 					<div className="text">66%</div>
 				</div>
+
 				<div className="label">Label</div>
 			</div>
 		</div>

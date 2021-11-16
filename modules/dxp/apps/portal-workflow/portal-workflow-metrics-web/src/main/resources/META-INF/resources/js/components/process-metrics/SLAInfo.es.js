@@ -9,6 +9,8 @@
  * distribution rights of the Software.
  */
 
+/* eslint-disable @liferay/empty-line-between-elements */
+
 import ClayAlert from '@clayui/alert';
 import ClayLayout from '@clayui/layout';
 import React, {useContext, useEffect, useState} from 'react';

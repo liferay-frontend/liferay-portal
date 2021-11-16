@@ -25,6 +25,7 @@ export const InputWithMask = React.forwardRef(
 						{renderActions}
 					</Label>
 				)}
+
 				<ReactInputMask
 					{...props}
 					allowNegative={allowNegative}

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import {WarningBadge} from '~/common/components/fragments/Badges/Warning';
 
-export const InputAreaWithError = ({children, className, error}) => {
+export function InputAreaWithError({children, className, error}) {
 	return (
 		<div
 			className={classNames('input-area', {
@@ -11,7 +11,8 @@ export const InputAreaWithError = ({children, className, error}) => {
 			})}
 		>
 			{children}
+
 			{error?.message && <WarningBadge>{error.message}</WarningBadge>}
 		</div>
 	);
-};
+}

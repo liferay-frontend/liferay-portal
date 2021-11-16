@@ -74,6 +74,7 @@ const ManageAllowedFragmentModal = ({item, observer, onClose}) => {
 						'specify-which-fragments-a-page-author-is-allowed-to-use-within-the-drop-zone-when-creating-a-page-from-this-master'
 					)}
 				</p>
+
 				<AllowedFragmentSelector
 					dropZoneConfig={item.config}
 					onSelectedFragment={onSelectedFragment}
@@ -99,6 +100,7 @@ const ManageAllowedFragmentModal = ({item, observer, onClose}) => {
 									></span>
 								</span>
 							)}
+
 							{Liferay.Language.get('save')}
 						</ClayButton>
 					</ClayButton.Group>

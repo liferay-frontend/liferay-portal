@@ -23,7 +23,7 @@ const initialState = {
 
 export const AppContext = createContext({});
 
-export const AppProvider = ({children}) => {
+export function AppProvider({children}) {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	useEffect(() => {
@@ -39,4 +39,4 @@ export const AppProvider = ({children}) => {
 			{children}
 		</AppContext.Provider>
 	);
-};
+}

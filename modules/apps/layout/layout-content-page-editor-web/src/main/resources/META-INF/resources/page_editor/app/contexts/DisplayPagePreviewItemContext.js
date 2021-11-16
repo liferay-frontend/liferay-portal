@@ -44,7 +44,7 @@ function itemsAreEqual(itemA, itemB) {
 	return deepEqual(itemA, itemB);
 }
 
-export const DisplayPagePreviewItemContextProvider = ({children}) => {
+export function DisplayPagePreviewItemContextProvider({children}) {
 	const [state, setState] = useState(() => ({
 		recentItemList: [],
 		selectedItem: null,
@@ -57,15 +57,17 @@ export const DisplayPagePreviewItemContextProvider = ({children}) => {
 			</SelectedItemStateContext.Provider>
 		</SelectedItemDispatchContext.Provider>
 	);
-};
+}
 
-export const useDisplayPagePreviewItem = () =>
-	useContext(SelectedItemStateContext).selectedItem;
+export function useDisplayPagePreviewItem() {
+	return useContext(SelectedItemStateContext).selectedItem;
+}
 
-export const useDisplayPageRecentPreviewItemList = () =>
-	useContext(SelectedItemStateContext).recentItemList;
+export function useDisplayPageRecentPreviewItemList() {
+	return useContext(SelectedItemStateContext).recentItemList;
+}
 
-export const useSelectDisplayPagePreviewItem = () => {
+export function useSelectDisplayPagePreviewItem() {
 	const setState = useContext(SelectedItemDispatchContext);
 
 	return useCallback(
@@ -97,4 +99,4 @@ export const useSelectDisplayPagePreviewItem = () => {
 			}),
 		[setState]
 	);
-};
+}

@@ -63,7 +63,7 @@ describe('Header', () => {
 	it('renders the header title', () => {
 		const {getByText} = render(<Header {...headerProps} />);
 
-		expect(getByText(headerTitle));
+		expect(getByText(headerTitle)).toBeTruthy();
 	});
 
 	it('calls to handleClickBack when click on back button', () => {

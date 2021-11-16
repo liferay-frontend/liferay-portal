@@ -106,7 +106,7 @@ const WIDTH_TYPE_OPTIONS = [
 	},
 ];
 
-export const ContainerStylesPanel = ({item}) => {
+export function ContainerStylesPanel({item}) {
 	const dispatch = useDispatch();
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
@@ -130,6 +130,7 @@ export const ContainerStylesPanel = ({item}) => {
 		<>
 			<p className="page-editor__row-styles-panel__viewport-label">
 				<ClayIcon className="mr-2" symbol={viewportSize.icon} />
+
 				{viewportSize.label}
 			</p>
 
@@ -258,7 +259,7 @@ export const ContainerStylesPanel = ({item}) => {
 			/>
 		</>
 	);
-};
+}
 
 ContainerStylesPanel.propTypes = {
 	item: getLayoutDataItemPropTypes({

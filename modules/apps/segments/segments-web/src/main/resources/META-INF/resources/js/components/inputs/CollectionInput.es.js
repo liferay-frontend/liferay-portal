@@ -67,7 +67,7 @@ class CollectionInput extends React.Component {
 	 */
 	_stringToKeyValueObject = (stringValue) => {
 		const [key = '', value = ''] =
-			typeof stringValue == 'string' ? stringValue.split('=') : [];
+			typeof stringValue === 'string' ? stringValue.split('=') : [];
 
 		return {
 			key,

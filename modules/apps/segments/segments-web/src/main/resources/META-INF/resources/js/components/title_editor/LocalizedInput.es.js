@@ -139,6 +139,7 @@ export default class LocalizedInput extends React.Component {
 					initialOpen={initialOpen}
 					onLanguageChange={this._handleLanguageChange}
 				/>
+
 				<div className={inputGroupItemClasses}>
 					<input
 						className="field form-control form-control-inline language-value rounded"

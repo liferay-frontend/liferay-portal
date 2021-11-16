@@ -83,7 +83,9 @@ const FormSettingsModal = ({
 					<ClayModal.Header>
 						{Liferay.Language.get('settings')}
 					</ClayModal.Header>
+
 					<ClayModal.Body>{children}</ClayModal.Body>
+
 					<ClayModal.Footer
 						last={
 							<ClayButton.Group key={1} spaced>
@@ -97,6 +99,7 @@ const FormSettingsModal = ({
 								>
 									{Liferay.Language.get('cancel')}
 								</ClayButton>
+
 								<ClayButton
 									displayType="primary"
 									onClick={() => {

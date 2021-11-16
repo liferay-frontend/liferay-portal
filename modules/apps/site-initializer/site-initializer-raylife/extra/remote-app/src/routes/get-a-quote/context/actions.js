@@ -13,23 +13,23 @@ export const ActionTypes = {
  * }} payload - selectedStep
  * @returns {Object} action object used by the reducer
  */
-export const setSelectedStep = (payload) => {
+export function setSelectedStep(payload) {
 	return {
 		payload,
 		type: ActionTypes.SET_SELECTED_STEP,
 	};
-};
+}
 
-export const setSelectedTrigger = (payload) => {
+export function setSelectedTrigger(payload) {
 	return {
 		payload,
 		type: ActionTypes.SET_SELECTED_TRIGGER,
 	};
-};
+}
 
-export const setSelectedProduct = (payload) => {
+export function setSelectedProduct(payload) {
 	return {
 		payload,
 		type: ActionTypes.SET_SELECTED_PRODUCT,
 	};
-};
+}

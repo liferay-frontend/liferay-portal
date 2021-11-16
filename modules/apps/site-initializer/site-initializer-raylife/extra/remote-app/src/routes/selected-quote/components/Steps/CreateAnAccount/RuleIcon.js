@@ -9,7 +9,7 @@ const COLORS = {
 	[UNCHECKED_VALUE]: {className: 'unchecked', symbol: 'hr'},
 };
 
-export const RuleIcon = ({label, status}) => {
+export function RuleIcon({label, status}) {
 	const ruleConfig = COLORS[status] || {};
 
 	return (
@@ -18,7 +18,8 @@ export const RuleIcon = ({label, status}) => {
 				className={classNames('ca-icon-rule', ruleConfig.className)}
 				symbol={ruleConfig.symbol}
 			/>
+
 			{label}
 		</a>
 	);
-};
+}

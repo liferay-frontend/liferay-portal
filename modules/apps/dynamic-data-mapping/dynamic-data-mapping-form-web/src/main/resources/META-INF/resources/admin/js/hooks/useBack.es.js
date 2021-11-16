@@ -25,7 +25,7 @@ import {useAutoSave} from './useAutoSave.es';
  * Menu to alert the user if there is any change in the form that has not
  * been saved.
  */
-export const useBack = () => {
+export function useBack() {
 	const {portletNamespace} = useConfig();
 	const [{onClose}, dispatch] = useContext(ModalContext);
 
@@ -58,6 +58,7 @@ export const useBack = () => {
 							>
 								{Liferay.Language.get('leave')}
 							</ClayButton>
+
 							<ClayButton displayType="primary" onClick={onClose}>
 								{Liferay.Language.get('stay')}
 							</ClayButton>
@@ -80,4 +81,4 @@ export const useBack = () => {
 			`#${portletNamespace}controlMenu .sites-control-group span .control-menu-icon`
 		)
 	);
-};
+}

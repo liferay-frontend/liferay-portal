@@ -31,7 +31,7 @@ export function Modal({
 	url,
 }) {
 	const {observer} = useModal({onClose});
-	const emailContent = useRef({
+	const emailContentRef = useRef({
 		addresses: [],
 		message: Liferay.Util.sub(
 			Liferay.Language.get('please-fill-out-this-form-x'),
@@ -48,14 +48,16 @@ export function Modal({
 				<ClayModal.Header>
 					{Liferay.Language.get('share')}
 				</ClayModal.Header>
+
 				<ClayModal.Body>
 					<ShareFormModalBody
 						autocompleteUserURL={autocompleteUserURL}
-						emailContent={emailContent}
+						emailContent={emailContentRef}
 						localizedName={localizedName}
 						url={url}
 					/>
 				</ClayModal.Body>
+
 				<ClayModal.Footer
 					last={
 						<ClayButton.Group spaced>
@@ -65,16 +67,19 @@ export function Modal({
 							>
 								{Liferay.Language.get('cancel')}
 							</ClayButton>
+
 							<ClayButton
 								displayType="primary"
 								onClick={() => {
 									submitEmailContent({
 										addresses:
-											emailContent.current.addresses,
-										message: emailContent.current.message,
+											emailContentRef.current.addresses,
+										message:
+											emailContentRef.current.message,
 										portletNamespace,
 										shareFormInstanceURL,
-										subject: emailContent.current.subject,
+										subject:
+											emailContentRef.current.subject,
 									});
 
 									onClose();

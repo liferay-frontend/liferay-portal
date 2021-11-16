@@ -9,27 +9,27 @@ const liferayStorage = localStorage;
  * @param {*} key Storage Key
  */
 
-export const getItem = (key) => {
+export function getItem(key) {
 	return liferayStorage.getItem(key);
-};
+}
 
 /**
  * @description Use this to verify if a key exists with some value
  * @param {*} key Storage Key
  */
 
-export const itemExist = (key) => {
+export function itemExist(key) {
 	return !!liferayStorage.getItem(key);
-};
+}
 
 /**
  * @description Use this to remove values from Storage
  * @param {*} key Storage Key
  */
 
-export const removeItem = (key) => {
+export function removeItem(key) {
 	liferayStorage.removeItem(key);
-};
+}
 
 /**
  * @description Use this to set values into Storage
@@ -37,9 +37,9 @@ export const removeItem = (key) => {
  * @param {*} value Storage Value
  */
 
-export const setItem = (key, value) => {
+export function setItem(key, value) {
 	liferayStorage.setItem(key, value);
-};
+}
 
 export const Storage = {
 	getItem,

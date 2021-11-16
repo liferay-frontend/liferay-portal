@@ -9,6 +9,8 @@
  * distribution rights of the Software.
  */
 
+/* eslint-disable @liferay/empty-line-between-elements */
+
 import {ClayCheckbox} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
@@ -291,7 +293,8 @@ function DueDateSLAResults({slaResults, slaStatusIconInfo}) {
 
 		let format = '';
 
-		const sameYear = dateOverdue.split('-')[0] == new Date().getFullYear();
+		const sameYear =
+			dateOverdue.split('-')[0] === new Date().getFullYear().toString();
 
 		if (sameYear) {
 			format = fullDatetime
@@ -370,8 +373,7 @@ function DueDateSLAResults({slaResults, slaStatusIconInfo}) {
 						<div key={`critical-sla-${slaResult.id}`}>
 							<div>{slaResult.name}:</div>
 							<div className={slaResult.textClass}>
-								{slaResult.datetimeOverdueFormatted} (
-								{slaResult.durationText} {slaResult.onTimeText})
+								{`${slaResult.datetimeOverdueFormatted} (${slaResult.durationText} ${slaResult.onTimeText})`}
 							</div>
 						</div>
 					))}

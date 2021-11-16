@@ -2,7 +2,7 @@
 import {useEffect, useState} from 'react';
 import {LiferayService} from '~/common/services/liferay';
 
-export const useBusinessTypes = () => {
+export function useBusinessTypes() {
 	const [data, setData] = useState();
 	const [error, setError] = useState();
 
@@ -39,4 +39,4 @@ export const useBusinessTypes = () => {
 		isLoading: !data && !error,
 		reload: loadBusinessTypes,
 	};
-};
+}

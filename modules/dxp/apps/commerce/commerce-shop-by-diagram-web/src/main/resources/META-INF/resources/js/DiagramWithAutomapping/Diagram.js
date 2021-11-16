@@ -50,29 +50,29 @@ function Diagram({
 }) {
 	const commerceCart = useCommerceCart({id: initialCartId});
 	const commerceAccount = useCommerceAccount({id: initialAccountId});
-	const chartInstance = useRef(null);
+	const chartInstanceRef = useRef(null);
 	const svgRef = useRef(null);
 	const wrapperRef = useRef(null);
 	const zoomHandlerRef = useRef(null);
-	const [pins, updatePins] = useState(null);
+	const [pins, setPins] = useState(null);
 	const [tooltipData, setTooltipData] = useState(false);
-	const [currentZoom, updateCurrentZoom] = useState(1);
-	const [expanded, updateExpanded] = useState(false);
-	const [labels, updateLabels] = useState([]);
-	const [selectedText, updateSelectedText] = useState(null);
-	const [highlightedTexts, updateHighlightedTexts] = useState([]);
+	const [currentZoom, setCurrentZoom] = useState(1);
+	const [expanded, setExpanded] = useState(false);
+	const [labels, setLabels] = useState([]);
+	const [selectedText, setSelectedText] = useState(null);
+	const [highlightedTexts, setHighlightedTexts] = useState([]);
 
 	useEffect(() => {
-		loadPins(productId).then(updatePins);
+		loadPins(productId).then(setPins);
 	}, [productId]);
 
 	useEffect(() => {
-		chartInstance.current?.updatePins(pins);
+		chartInstanceRef.current?.updatePins(pins);
 	}, [pins]);
 
 	useEffect(() => {
 		if (!tooltipData) {
-			updateSelectedText(null);
+			setSelectedText(null);
 		}
 	}, [tooltipData]);
 
@@ -83,7 +83,7 @@ function Diagram({
 			const selectedPin = pins.find((pin) => pin.sequence === sequence);
 
 			setTooltipData({selectedPin, sequence, target});
-			updateSelectedText(target);
+			setSelectedText(target);
 		},
 		[pins]
 	);
@@ -94,13 +94,13 @@ function Diagram({
 				(label) => label.textContent === target.textContent
 			);
 
-			updateHighlightedTexts(hightlightedLabels);
+			setHighlightedTexts(hightlightedLabels);
 		},
 		[labels]
 	);
 
 	const handleMouseLeaveOnLabel = () => {
-		updateHighlightedTexts([]);
+		setHighlightedTexts([]);
 	};
 
 	useEffect(() => {
@@ -136,15 +136,15 @@ function Diagram({
 				);
 
 				if (selectedPin) {
-					updateHighlightedTexts([]);
+					setHighlightedTexts([]);
 
-					chartInstance.current.recenterOnPin(pinNode).then(() => {
+					chartInstanceRef.current.recenterOnPin(pinNode).then(() => {
 						setTooltipData({
 							selectedPin,
 							sequence: pinNode.textContent,
 							target: pinNode,
 						});
-						updateSelectedText(pinNode);
+						setSelectedText(pinNode);
 					});
 				}
 			}
@@ -158,12 +158,12 @@ function Diagram({
 
 		function handleRemovePinHighlightByTable({diagramProductId}) {
 			if (diagramProductId === productId) {
-				updateHighlightedTexts([]);
+				setHighlightedTexts([]);
 			}
 		}
 
 		function handlePinsUpdatedByTable() {
-			loadPins(productId).then(updatePins);
+			loadPins(productId).then(setPins);
 		}
 
 		Liferay.on(DIAGRAM_TABLE_EVENTS.SELECT_PIN, handleSelectPinByTable);
@@ -198,15 +198,15 @@ function Diagram({
 	}, [handleMouseEnterOnLabel, labels, pins, productId]);
 
 	useLayoutEffect(() => {
-		chartInstance.current = new D3Handler(
+		chartInstanceRef.current = new D3Handler(
 			svgRef.current,
 			imageURL,
 			pinsCSSSelectors,
-			updateLabels,
+			setLabels,
 			(scale) => {
 				setTooltipData(null);
 
-				updateCurrentZoom(scale);
+				setCurrentZoom(scale);
 			},
 			zoomHandlerRef.current
 		);
@@ -256,7 +256,7 @@ function Diagram({
 							datasetDisplayId={datasetDisplayId}
 							productId={productId}
 							readOnlySequence={false}
-							updatePins={updatePins}
+							updatePins={setPins}
 							{...tooltipData}
 						/>
 					) : (
@@ -274,11 +274,11 @@ function Diagram({
 			)}
 
 			<DiagramFooter
-				chartInstance={chartInstance}
+				chartInstance={chartInstanceRef}
 				currentZoom={currentZoom}
 				expanded={expanded}
-				updateCurrentZoom={updateCurrentZoom}
-				updateExpanded={updateExpanded}
+				updateCurrentZoom={setCurrentZoom}
+				updateExpanded={setExpanded}
 			/>
 		</div>
 	);

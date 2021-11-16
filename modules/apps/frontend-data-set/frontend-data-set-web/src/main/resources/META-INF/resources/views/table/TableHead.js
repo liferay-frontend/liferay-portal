@@ -64,6 +64,7 @@ function TableHead({
 						) : null}
 					</DndTable.Cell>
 				)}
+
 				{fields.map((field) => (
 					<TableHeadCell
 						{...field}
@@ -73,6 +74,7 @@ function TableHead({
 						updateSorting={updateSorting}
 					/>
 				))}
+
 				<DndTable.Cell
 					className="item-actions"
 					columnName="item-actions"

@@ -105,6 +105,7 @@ function SegmentsExperimentsSidebar({
 						onTargetChange={_handleTargetChange}
 						segmentsExperiences={initialSegmentsExperiences}
 					/>
+
 					{createExperimentModal.active && (
 						<ClayModal observer={creationModalObserver} size="lg">
 							<SegmentsExperimentsModal
@@ -121,6 +122,7 @@ function SegmentsExperimentsSidebar({
 							/>
 						</ClayModal>
 					)}
+
 					{editExperimentModal.active && (
 						<ClayModal observer={editionModalObserver} size="lg">
 							<SegmentsExperimentsModal

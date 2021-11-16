@@ -19,7 +19,7 @@ import React, {useState} from 'react';
 import ColorPalette from '../../../common/components/ColorPalette';
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
 
-export const ColorPaletteField = ({field, onValueSelect, value}) => {
+export function ColorPaletteField({field, onValueSelect, value}) {
 	const [nextValue, setNextValue] = useState(value && value.cssClass);
 
 	return (
@@ -44,7 +44,7 @@ export const ColorPaletteField = ({field, onValueSelect, value}) => {
 			/>
 		</ClayForm.Group>
 	);
-};
+}
 
 function getRgbValue(className) {
 	const node = document.createElement('div');

@@ -28,7 +28,9 @@ export default function DiagramBuilder() {
 			<div className="diagram-area">
 				<ReactFlowProvider>
 					<ReactFlow elements={[]} minZoom="0.1" onLoad={onLoad} />
+
 					<Controls showInteractive={false} />
+
 					<Background size={1} />
 				</ReactFlowProvider>
 			</div>

@@ -15,16 +15,18 @@
 import ClayLabel from '@clayui/label';
 import React from 'react';
 
-export default ({section}) => (
-	<>
-		{section && (
-			<ClayLabel
-				className="bg-light border-0 stretched-link-layer text-uppercase"
-				displayType="secondary"
-				large
-			>
-				{section.title}
-			</ClayLabel>
-		)}
-	</>
-);
+export default function SectionLabel({section}) {
+	return (
+		<>
+			{section && (
+				<ClayLabel
+					className="bg-light border-0 stretched-link-layer text-uppercase"
+					displayType="secondary"
+					large
+				>
+					{section.title}
+				</ClayLabel>
+			)}
+		</>
+	);
+}

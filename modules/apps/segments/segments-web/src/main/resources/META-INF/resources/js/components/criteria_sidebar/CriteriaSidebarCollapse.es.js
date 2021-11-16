@@ -141,6 +141,7 @@ const CriteriaSidebarCollapse = ({
 										'inherited-attributes-are-not-taken-into-account-to-include-members-in-segments'
 									)}
 								</p>
+
 								<ul className="pl-0">
 									{filteredProperties.length === 0 && (
 										<li className="empty-message">

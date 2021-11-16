@@ -336,7 +336,7 @@ AUI.add(
 
 					var dialogTitle = '';
 
-					if (selectedItems == 1) {
+					if (Number(selectedItems) === 1) {
 						dialogTitle = Liferay.Language.get(
 							'select-destination-folder-for-x-item'
 						);

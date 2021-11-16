@@ -210,6 +210,7 @@ const UploadDocuments = ({
 					<div className="header">
 						<h3 className="title">
 							{section.title}
+
 							{section.required ? (
 								<span className="required">*</span>
 							) : (
@@ -247,6 +248,7 @@ const UploadDocuments = ({
 					)}
 				</div>
 			))}
+
 			<div className="upload-footer">
 				<button
 					className="btn btn-lg btn-primary"

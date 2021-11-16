@@ -486,7 +486,7 @@
 
 			var canEditTitle = options.canEditTitle;
 			var columnPos = options.columnPos;
-			var isStatic = options.isStatic == 'no' ? null : options.isStatic;
+			var isStatic = options.isStatic === 'no' ? null : options.isStatic;
 			var namespacedId = options.namespacedId;
 			var portletId = options.portletId;
 			var refreshURL = options.refreshURL;

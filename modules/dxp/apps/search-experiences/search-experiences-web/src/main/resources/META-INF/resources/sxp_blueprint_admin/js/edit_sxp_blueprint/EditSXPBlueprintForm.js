@@ -71,14 +71,14 @@ function EditSXPBlueprintForm({
 	const [showSubmitWarningModal, setShowSubmitWarningModal] = useState(false);
 	const [tab, setTab] = useState('query-builder');
 
-	const form = useRef();
+	const formRef = useRef();
 
-	const sxpElementIdCounter = useRef(
+	const sxpElementIdCounterRef = useRef(
 		initialSXPElementInstances.queryConfiguration?.queryEntries?.length || 0
 	);
 
 	const _getFormInput = (key) => {
-		for (const pair of new FormData(form.current).entries()) {
+		for (const pair of new FormData(formRef.current).entries()) {
 			if (pair[0].includes(`${namespace}${key}`)) {
 				return pair[1];
 			}
@@ -390,7 +390,7 @@ function EditSXPBlueprintForm({
 		formik.setFieldValue('selectedQuerySXPElements', [
 			{
 				...sxpElement,
-				id: sxpElementIdCounter.current++,
+				id: sxpElementIdCounterRef.current++,
 				uiConfigurationValues: getUIConfigurationValues(
 					sxpElement.uiConfigurationJSON
 				),
@@ -405,7 +405,7 @@ function EditSXPBlueprintForm({
 
 	const _handleDeleteSXPElement = (id) => {
 		const index = formik.values.selectedQuerySXPElements.findIndex(
-			(item) => item.id == id
+			(item) => item.id === id
 		);
 
 		if (formik.touched?.selectedQuerySXPElements) {
@@ -648,7 +648,7 @@ function EditSXPBlueprintForm({
 	};
 
 	return (
-		<form ref={form}>
+		<form ref={formRef}>
 			<SubmitWarningModal
 				errors={errors}
 				isSubmitting={formik.isSubmitting}

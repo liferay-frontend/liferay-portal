@@ -142,7 +142,7 @@ export default function DataEngineLayoutBuilderHandler({namespace}) {
 	// Update editing language id in the data engine side
 
 	const updateEditingLanguageId = async (event) => {
-		const editingLanguageId = event.item.getAttribute('data-value');
+		const editingLanguageId = event.item.dataset.value;
 		const dataLayoutBuilder = await getDataLayoutBuilder();
 
 		dataLayoutBuilder.current.dispatch({

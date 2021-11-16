@@ -104,12 +104,14 @@ export default function CollectionFilterConfigurationModal({
 			<ClayModal.Header>
 				{Liferay.Language.get('filter-collection')}
 			</ClayModal.Header>
+
 			<ClayModal.Body className="pt-0">
 				<FilterInformationToolbar
 					collectionConfiguration={collectionConfiguration}
 					itemConfig={itemConfig}
 					setItemConfig={setItemConfig}
 				/>
+
 				<div className="p-4">
 					{typeLabel && (
 						<p
@@ -124,6 +126,7 @@ export default function CollectionFilterConfigurationModal({
 							<span className="mr-1">
 								{Liferay.Language.get('type')}:
 							</span>
+
 							{typeLabel}
 						</p>
 					)}
@@ -133,6 +136,7 @@ export default function CollectionFilterConfigurationModal({
 							<span className="mr-1">
 								{Liferay.Language.get('subtype')}:
 							</span>
+
 							{subtypeLabel}
 						</p>
 					)}
@@ -165,6 +169,7 @@ export default function CollectionFilterConfigurationModal({
 					</div>
 				</div>
 			</ClayModal.Body>
+
 			<ClayModal.Footer
 				last={
 					<>
@@ -285,6 +290,7 @@ const FilterInformationToolbar = ({
 							</ClayToolbar.Section>
 						)}
 					</ClayToolbar.Item>
+
 					<ClayToolbar.Item>
 						<ClayButton
 							className="component-link tbar-link"

@@ -38,7 +38,7 @@ function AddToCartButton({channel, cpInstance, orderId, quantity, settings}) {
 		[]
 	);
 
-	const [catalogItem, updateCatalogItem] = useState(cpInstance);
+	const [catalogItem, setCatalogItem] = useState(cpInstance);
 	const [activeOrder, setActiveOrder] = useState({id: orderId});
 	const [disabled, setDisabled] = useState(
 		settings.disabled || !catalogItem.accountId
@@ -66,7 +66,7 @@ function AddToCartButton({channel, cpInstance, orderId, quantity, settings}) {
 	const remove = useCallback(
 		({skuId: removedSkuId}) => {
 			if (removedSkuId === catalogItem.skuId || removedSkuId === ALL) {
-				updateCatalogItem({...catalogItem, inCart: false});
+				setCatalogItem({...catalogItem, inCart: false});
 			}
 		},
 		[catalogItem]
@@ -84,7 +84,7 @@ function AddToCartButton({channel, cpInstance, orderId, quantity, settings}) {
 				)
 				.catch(() => Promise.resolve(false))
 				.then((inCart) => {
-					updateCatalogItem({
+					setCatalogItem({
 						...catalogItem,
 						...cpInstance,
 						inCart,
@@ -154,7 +154,7 @@ function AddToCartButton({channel, cpInstance, orderId, quantity, settings}) {
 							orderDidChange ? {...order} : {...activeOrder}
 						);
 
-						updateCatalogItem({...catalogItem, inCart: true});
+						setCatalogItem({...catalogItem, inCart: true});
 
 						if (orderDidChange) {
 							orderCookie.setValue(

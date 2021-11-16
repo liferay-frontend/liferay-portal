@@ -55,7 +55,7 @@ export default function ({ADD, CMD, UPDATE, namespace}) {
 
 	quantityInputElements.forEach((quantityInputElement) => {
 		quantityInputElement.addEventListener('keypress', (event) => {
-			if (event.keyCode == enterKeyCode) {
+			if (event.keyCode === enterKeyCode) {
 				event.preventDefault();
 
 				quantityInputElement

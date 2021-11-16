@@ -175,18 +175,18 @@ function StorefrontTooltipContent({
 	productBaseURL,
 	selectedPin,
 }) {
-	const [product, updateProduct] = useState(null);
-	const [loading, updateLoading] = useState(false);
+	const [product, setProduct] = useState(null);
+	const [loading, setLoading] = useState(false);
 	const isMounted = useIsMounted();
 
 	useEffect(() => {
 		if (selectedPin.mappedProduct.type === 'external') {
-			updateProduct(selectedPin.mappedProduct);
+			setProduct(selectedPin.mappedProduct);
 
 			return;
 		}
 
-		updateLoading(true);
+		setLoading(true);
 
 		getProduct(selectedPin.mappedProduct.productId, channelId, accountId)
 			.then((product) => {
@@ -194,19 +194,19 @@ function StorefrontTooltipContent({
 					return;
 				}
 
-				updateProduct({
+				setProduct({
 					type: selectedPin.mappedProduct.type,
 					...product,
 				});
 			})
 			.catch(() => {
-				updateProduct({
+				setProduct({
 					...selectedPin.mappedProduct,
 					type: 'external',
 				});
 			})
 			.finally(() => {
-				updateLoading(false);
+				setLoading(false);
 			});
 	}, [accountId, channelId, isMounted, selectedPin]);
 

@@ -43,7 +43,7 @@ const PreviewModal = ({body, children, size = 'md', title}) => {
 	);
 };
 
-export const PreviewModalWithCopyDownload = ({
+export function PreviewModalWithCopyDownload({
 	children,
 	fileName,
 	folded = false,
@@ -53,7 +53,7 @@ export const PreviewModalWithCopyDownload = ({
 	text,
 	title,
 	type = 'application/json',
-}) => {
+}) {
 	const _handleCopyToClipboard = () => {
 		navigator.clipboard.writeText(text);
 
@@ -116,6 +116,6 @@ export const PreviewModalWithCopyDownload = ({
 			{children}
 		</PreviewModal>
 	);
-};
+}
 
 export default PreviewModal;

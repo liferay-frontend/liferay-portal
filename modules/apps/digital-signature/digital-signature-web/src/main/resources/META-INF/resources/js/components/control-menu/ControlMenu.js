@@ -25,7 +25,7 @@ const ExternalLink = ({children, to, ...props}) => {
 	);
 };
 
-export const BackButtonPortal = ({backURL = '/'}) => {
+export function BackButtonPortal({backURL = '/'}) {
 	const [container, setContainer] = useState(null);
 	const Link =
 		backURL && backURL.startsWith('http') ? ExternalLink : InternalLink;
@@ -57,4 +57,4 @@ export const BackButtonPortal = ({backURL = '/'}) => {
 			</li>
 		</ReactPortal>
 	);
-};
+}

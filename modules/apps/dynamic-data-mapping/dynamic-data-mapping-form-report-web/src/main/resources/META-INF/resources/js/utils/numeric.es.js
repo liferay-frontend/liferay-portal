@@ -21,7 +21,7 @@ const _THOUSANDS_DELIMITER_REGEX = /\B(?=(\d{3})+(?!\d))/g;
 function getDelimiter(key, defaultValue) {
 	const delimiter = Liferay.Language.get(key);
 
-	if (delimiter == key) {
+	if (delimiter === key) {
 		return defaultValue;
 	}
 
@@ -42,7 +42,7 @@ export function formatNumber(number, delimit) {
 
 	formattedNumber =
 		formattedInteger +
-		(formattedDecimal && formattedDecimal != '0'
+		(formattedDecimal && Number(formattedDecimal) !== 0
 			? getDelimiter('decimal-delimiter', '.') + formattedDecimal
 			: '');
 

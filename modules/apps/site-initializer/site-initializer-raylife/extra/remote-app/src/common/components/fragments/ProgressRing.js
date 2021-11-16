@@ -1,13 +1,13 @@
 import React from 'react';
 import {calculateCircumference, calculateOffset} from '~/common/utils';
 
-export const ProgressRing = ({
+export function ProgressRing({
 	className,
 	diameter = 24,
 	percent = 0,
 	strokeColor = '#4C85FF',
 	strokeWidth = 2,
-}) => {
+}) {
 	const radius = diameter / 2;
 	const normalizedRadius = radius - strokeWidth * 2;
 	const center = (radius - strokeWidth) / 2;
@@ -35,4 +35,4 @@ export const ProgressRing = ({
 			/>
 		</svg>
 	);
-};
+}

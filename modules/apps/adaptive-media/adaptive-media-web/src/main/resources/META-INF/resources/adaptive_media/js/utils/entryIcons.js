@@ -23,7 +23,7 @@ export function disableEntryIcon(element) {
 export function enableEntryIcon(element) {
 	element.parentElement.classList.remove('disabled');
 
-	element.setAttribute('onclick', element.getAttribute('data-onclick'));
+	element.setAttribute('onclick', element.dataset.onclick);
 
 	element.removeAttribute('data-onclick');
 }

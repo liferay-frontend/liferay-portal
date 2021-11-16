@@ -20,7 +20,7 @@ launcher('mini_cart', 'mini-cart-root-id', {
 	cartActionURLs: {
 		checkoutURL: 'http://localhost:8080',
 		orderDetailURL: 'http://localhost:8080?commerceOrderUuid=12323',
-		siteDefaultURL: 'http://localhost:8080/group/siteDefaultUrl',
 		productURLSeparator: 'p',
-	}
+		siteDefaultURL: 'http://localhost:8080/group/siteDefaultUrl',
+	},
 });

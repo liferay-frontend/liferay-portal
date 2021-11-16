@@ -154,7 +154,7 @@ Liferay = window.Liferay || {};
 		var form = args[1];
 
 		if (isNode(form)) {
-			if (form.enctype == STR_MULTIPART) {
+			if (form.enctype === STR_MULTIPART) {
 				ioConfig.contentType = 'multipart/form-data';
 			}
 

@@ -62,6 +62,7 @@ function Variants({onVariantPublish, selectedSegmentsExperienceId}) {
 		<>
 			<h4 className="mb-3 mt-4 sheet-subtitle">
 				{Liferay.Language.get('variants')}
+
 				<ClayIcon
 					className="lexicon-icon-sm ml-1 reference-mark text-warning"
 					style={{verticalAlign: 'super'}}
@@ -87,6 +88,7 @@ function Variants({onVariantPublish, selectedSegmentsExperienceId}) {
 								className="mr-2"
 								symbol="exclamation-full"
 							/>
+
 							{Liferay.Language.get(
 								'a-variant-needs-to-be-created'
 							)}

@@ -23,10 +23,14 @@ const getFlatItems = (items) =>
 export const ItemsContext = React.createContext([]);
 export const SetItemsContext = React.createContext(() => {});
 
-export const useItems = () => useContext(ItemsContext);
-export const useSetItems = () => useContext(SetItemsContext);
+export function useItems() {
+	return useContext(ItemsContext);
+}
+export function useSetItems() {
+	return useContext(SetItemsContext);
+}
 
-export const ItemsProvider = ({children, initialItems}) => {
+export function ItemsProvider({children, initialItems}) {
 	const [items, setItems] = useState(getFlatItems(initialItems));
 
 	return (
@@ -36,7 +40,7 @@ export const ItemsProvider = ({children, initialItems}) => {
 			</ItemsContext.Provider>
 		</SetItemsContext.Provider>
 	);
-};
+}
 
 ItemsProvider.propTypes = {
 	initialItems: PropTypes.arrayOf(

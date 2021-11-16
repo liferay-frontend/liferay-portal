@@ -456,7 +456,7 @@ AUI.add(
 
 					if (
 						validExtensions === '*' ||
-						validExtensions.indexOf(fileExtension) != -1
+						validExtensions.indexOf(fileExtension) !== -1
 					) {
 						var maxFileSize = instance.get('maxFileSize');
 

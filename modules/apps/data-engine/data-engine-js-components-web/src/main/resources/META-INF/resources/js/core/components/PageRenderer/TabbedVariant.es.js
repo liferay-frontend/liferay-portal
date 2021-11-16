@@ -18,7 +18,7 @@ import React from 'react';
 import {Tabs} from '../Tabs.es';
 import * as DefaultVariant from './DefaultVariant.es';
 
-export const Column = ({children, column, index}) => {
+export function Column({children, column, index}) {
 	if (column.fields.length === 0) {
 		return null;
 	}
@@ -28,33 +28,42 @@ export const Column = ({children, column, index}) => {
 			{column.fields.map((field, index) => children({field, index}))}
 		</ClayLayout.Col>
 	);
-};
+}
 
 Column.displayName = 'TabbedVariant.Column';
 
-export const Container = ({activePage, children, pageIndex, pages}) => (
-	<div className="ddm-form-page-container tabbed">
-		{pages.length > 0 && pageIndex === activePage && (
-			<Tabs activePage={activePage} pageIndex={pageIndex} pages={pages} />
-		)}
+export function Container({activePage, children, pageIndex, pages}) {
+	return (
+		<div className="ddm-form-page-container tabbed">
+			{pages.length > 0 && pageIndex === activePage && (
+				<Tabs
+					activePage={activePage}
+					pageIndex={pageIndex}
+					pages={pages}
+				/>
+			)}
 
-		<DefaultVariant.Container
-			activePage={activePage}
-			isBuilder={false}
-			pageIndex={pageIndex}
-		>
-			{children}
-		</DefaultVariant.Container>
-	</div>
-);
+			<DefaultVariant.Container
+				activePage={activePage}
+				isBuilder={false}
+				pageIndex={pageIndex}
+			>
+				{children}
+			</DefaultVariant.Container>
+		</div>
+	);
+}
 
 Container.displayName = 'TabbedVariant.Container';
 
-export const Page = ({children}) => children;
+export function Page({children}) {
+	return children;
+}
 
 Page.displayName = 'TabbedVariant.Page';
 
-export const Rows = ({children, rows}) =>
-	rows.map((row, index) => children({index, row}));
+export function Rows({children, rows}) {
+	return rows.map((row, index) => children({index, row}));
+}
 
 Rows.displayName = 'TabbedVariant.Rows';

@@ -1,3 +1,4 @@
+/* eslint-disable @liferay/empty-line-between-elements */
 import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 
@@ -66,6 +67,7 @@ const ListItems = ({
 
 							<span>{title}</span>
 						</div>
+
 						{formattedValue}
 					</li>
 				);

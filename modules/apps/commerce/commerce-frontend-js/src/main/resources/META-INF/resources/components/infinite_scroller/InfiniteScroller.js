@@ -24,31 +24,31 @@ function InfiniteScroller({
 	scrollCompleted,
 }) {
 	const [scrollingAreaRendered, setScrollingAreaRendered] = useState(false);
-	const infiniteLoader = useRef(null);
+	const infiniteLoaderRef = useRef(null);
 	const [infiniteLoaderRendered, setInfiniteLoaderRendered] = useState(false);
-	const scrollingArea = useRef(null);
+	const scrollingAreaRef = useRef(null);
 
 	const setScrollingArea = useCallback((node) => {
-		scrollingArea.current = node;
+		scrollingAreaRef.current = node;
 		setScrollingAreaRendered(true);
 	}, []);
 
 	const setInfiniteLoader = useCallback((node) => {
-		infiniteLoader.current = node;
+		infiniteLoaderRef.current = node;
 		setInfiniteLoaderRendered(true);
 	}, []);
 
 	const setObserver = useCallback(() => {
 		if (
-			!scrollingArea.current ||
-			!infiniteLoader.current ||
+			!scrollingAreaRef.current ||
+			!infiniteLoaderRef.current ||
 			!IntersectionObserver
 		) {
 			return;
 		}
 
 		const options = {
-			root: scrollingArea.current,
+			root: scrollingAreaRef.current,
 			rootMargin: '0px',
 			threshold: 1.0,
 		};
@@ -59,7 +59,7 @@ function InfiniteScroller({
 			}
 		}, options);
 
-		observer.observe(infiniteLoader.current);
+		observer.observe(infiniteLoaderRef.current);
 	}, [onBottomTouched]);
 
 	useEffect(() => {
@@ -84,6 +84,7 @@ function InfiniteScroller({
 			style={maxHeight ? {maxHeight} : null}
 		>
 			{children}
+
 			{!scrollCompleted &&
 				(CustomLoader ? (
 					<CustomLoader ref={setInfiniteLoader} />

@@ -18,7 +18,7 @@ import React, {useState} from 'react';
 
 import ManageCollaborators from './ManageCollaborators';
 
-export default ({
+export default function ViewPublicationsDropdownMenu({
 	checkoutURL,
 	deleteURL,
 	editURL,
@@ -29,7 +29,9 @@ export default ({
 	scheduleURL,
 	spritemap,
 	...props
-}) => {
+}) {
+	const [showModal, setShowModal] = useState(false);
+
 	if (!namespace) {
 		return (
 			<ClayDropDownWithItems
@@ -77,8 +79,6 @@ export default ({
 		label: Liferay.Language.get('review-changes'),
 		symbolLeft: 'list-ul',
 	});
-
-	const [showModal, setShowModal] = useState(false);
 
 	if (permissionsURL) {
 		dropdownItems.push({
@@ -148,4 +148,4 @@ export default ({
 			{...props}
 		/>
 	);
-};
+}

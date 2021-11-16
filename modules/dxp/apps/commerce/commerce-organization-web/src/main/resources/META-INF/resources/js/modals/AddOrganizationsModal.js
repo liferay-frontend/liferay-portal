@@ -119,6 +119,7 @@ export default function AddOrganizationModal({
 				>
 					<label htmlFor="addNewOrganization">
 						{Liferay.Language.get('name') + ' '}
+
 						<ClayIcon
 							className="ml-1 reference-mark"
 							symbol="asterisk"
@@ -143,6 +144,7 @@ export default function AddOrganizationModal({
 									{errors.map((error, i) => (
 										<ClayForm.FeedbackItem key={i}>
 											<ClayForm.FeedbackIndicator symbol="info-circle" />
+
 											{error}
 										</ClayForm.FeedbackItem>
 									))}

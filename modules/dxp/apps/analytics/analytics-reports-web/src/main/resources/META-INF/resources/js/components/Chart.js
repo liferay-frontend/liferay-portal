@@ -114,9 +114,11 @@ function legendFormatterGenerator(
 						backgroundColor: keyToHexColor(value),
 					}}
 				></span>
+
 				<span className="text-secondary">
 					{keyToTranslatedLabelValue(value)}
 				</span>
+
 				<span className="font-weight-bold inline-item-after">
 					{validAnalyticsConnection &&
 					preformattedNumber !== null &&

@@ -110,6 +110,7 @@ export default withRouter(
 									dateModified,
 								])}
 							</span>
+
 							{answer.status && answer.status !== 'approved' && (
 								<span className="c-ml-2 text-secondary">
 									<ClayLabel displayType="info">
@@ -117,9 +118,11 @@ export default withRouter(
 									</ClayLabel>
 								</span>
 							)}
+
 							<div className="c-mt-2">
 								<ArticleBodyRenderer {...answer} />
 							</div>
+
 							<div className="d-flex justify-content-between">
 								<div>
 									{editable && (
@@ -231,6 +234,7 @@ export default withRouter(
 											)}
 
 											{/* this is an extra double check, remove it without creating 2 clay-group-item */}
+
 											{answer.actions.replace && (
 												<ClayButton
 													className="text-reset"
@@ -249,6 +253,7 @@ export default withRouter(
 										</ClayButton.Group>
 									)}
 								</div>
+
 								<div className="c-ml-md-auto c-ml-sm-2 c-mr-lg-2 c-mr-md-4 c-mr-xl-2">
 									<UserRow
 										creator={answer.creator}

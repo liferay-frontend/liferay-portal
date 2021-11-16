@@ -19,7 +19,9 @@ import SummaryCard from '../../../../src/main/resources/META-INF/resources/js/co
 import {MockRouter} from '../../../mock/MockRouter.es';
 
 describe('The SummaryCard component should', () => {
-	let container, getByText, renderResult;
+	let container;
+	let getByText;
+	let renderResult;
 
 	const props = {
 		getTitle: () => 'Overdue',
@@ -88,7 +90,8 @@ describe('The SummaryCard component should', () => {
 });
 
 describe('The SummaryCard component should', () => {
-	let container, renderResult;
+	let container;
+	let renderResult;
 
 	const props = {
 		completed: true,
@@ -143,7 +146,8 @@ describe('The SummaryCard component should', () => {
 });
 
 describe('The SummaryCard component should', () => {
-	let container, renderResult;
+	let container;
+	let renderResult;
 
 	const props = {
 		getTitle: () => 'On Time',

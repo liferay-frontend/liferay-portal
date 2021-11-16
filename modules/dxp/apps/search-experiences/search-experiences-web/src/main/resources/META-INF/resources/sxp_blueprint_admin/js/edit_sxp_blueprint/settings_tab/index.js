@@ -44,6 +44,7 @@ function SettingsTab({
 				<ClayForm.FeedbackGroup>
 					<ClayForm.FeedbackItem>
 						<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
 						{errors[configName]}
 					</ClayForm.FeedbackItem>
 				</ClayForm.FeedbackGroup>

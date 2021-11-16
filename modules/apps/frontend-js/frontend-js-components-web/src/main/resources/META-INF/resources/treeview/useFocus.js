@@ -21,13 +21,13 @@ export default function useFocus(nodeId) {
 
 	const {active, focusedNodeId} = state;
 
-	const focusable = useRef();
+	const focusableRef = useRef();
 
 	useEffect(() => {
-		if (active && nodeId === focusedNodeId && focusable.current) {
-			focusable.current.focus();
+		if (active && nodeId === focusedNodeId && focusableRef.current) {
+			focusableRef.current.focus();
 		}
 	}, [active, focusedNodeId, nodeId]);
 
-	return focusable;
+	return focusableRef;
 }

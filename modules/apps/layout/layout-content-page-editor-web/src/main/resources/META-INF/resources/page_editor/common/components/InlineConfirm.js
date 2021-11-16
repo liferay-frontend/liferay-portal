@@ -27,12 +27,12 @@ export default function InlineConfirm({
 	onConfirmButtonClick,
 }) {
 	const [performingAction, setPerformingAction] = useState(false);
-	const wrapper = useRef(null);
+	const wrapperRef = useRef(null);
 	const isMounted = useIsMounted();
 
 	const _handleConfirmButtonClick = () => {
-		if (wrapper.current) {
-			wrapper.current.focus();
+		if (wrapperRef.current) {
+			wrapperRef.current.focus();
 		}
 
 		setPerformingAction(true);
@@ -45,14 +45,14 @@ export default function InlineConfirm({
 	};
 
 	useEffect(() => {
-		if (wrapper.current) {
-			wrapper.current.focus();
+		if (wrapperRef.current) {
+			wrapperRef.current.focus();
 		}
 	}, []);
 
 	useEffect(() => {
-		if (wrapper.current) {
-			const confirmButton = wrapper.current.querySelector(
+		if (wrapperRef.current) {
+			const confirmButton = wrapperRef.current.querySelector(
 				'page-editor__inline-confirm-button'
 			);
 
@@ -63,10 +63,10 @@ export default function InlineConfirm({
 
 		const _handleDocumentFocusOut = () => {
 			requestAnimationFrame(() => {
-				if (wrapper.current && !performingAction) {
+				if (wrapperRef.current && !performingAction) {
 					if (
-						!wrapper.current.contains(document.activeElement) &&
-						wrapper.current !== document.activeElement
+						!wrapperRef.current.contains(document.activeElement) &&
+						wrapperRef.current !== document.activeElement
 					) {
 						onCancelButtonClick();
 					}
@@ -90,7 +90,7 @@ export default function InlineConfirm({
 			onKeyDown={(event) =>
 				event.key === 'Escape' && onCancelButtonClick()
 			}
-			ref={wrapper}
+			ref={wrapperRef}
 			role="alertdialog"
 			tabIndex="-1"
 		>

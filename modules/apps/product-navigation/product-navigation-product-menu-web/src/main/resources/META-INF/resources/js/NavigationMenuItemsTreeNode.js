@@ -43,6 +43,7 @@ export default function NavigationMenuItemsTreeNode({node}) {
 					className="mr-2"
 					symbol={node.url ? 'page' : 'folder'}
 				/>
+
 				{node.name}
 			</Parent>
 		</div>

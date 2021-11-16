@@ -92,7 +92,8 @@ const AllowedFragmentSelector = ({dropZoneConfig, onSelectedFragment}) => {
 	);
 
 	const initialAllowNewFragmentEntries =
-		dropZoneConfig.allowNewFragmentEntries == undefined
+		dropZoneConfig.allowNewFragmentEntries === undefined ||
+		dropZoneConfig.allowNewFragmentEntries === null
 			? true
 			: dropZoneConfig.allowNewFragmentEntries;
 

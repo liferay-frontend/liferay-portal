@@ -163,7 +163,9 @@ import '@testing-library/jest-dom/extend-expect';
 // };
 
 xdescribe('The BulkReassignModal component should', () => {
-	let getAllByRole, getAllByText, getByText;
+	let getAllByRole;
+	let getAllByText;
+	let getByText;
 
 	// beforeAll(async () => {
 	// 	renderResult = render(<BulkReassignModal />, {

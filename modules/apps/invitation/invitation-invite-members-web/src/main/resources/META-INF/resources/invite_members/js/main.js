@@ -217,7 +217,7 @@ AUI.add(
 				_onEmailKeypress(event) {
 					var instance = this;
 
-					if (event.keyCode == KEY_ENTER) {
+					if (Number(event.keyCode) === KEY_ENTER) {
 						instance._addMemberEmail();
 
 						event.preventDefault();
@@ -239,9 +239,7 @@ AUI.add(
 
 					var node = event.currentTarget;
 
-					var start = A.DataType.Number.parse(
-						node.getAttribute('data-end')
-					);
+					var start = A.DataType.Number.parse(node.dataset.end);
 
 					var end = start + instance.get('pageDelta');
 
@@ -282,7 +280,7 @@ AUI.add(
 				_removeMemberInvite(user, userId) {
 					var instance = this;
 
-					userId = userId || user.getAttribute('data-userId');
+					userId = userId || user.dataset.userId;
 
 					var membersList = instance.one('#membersList');
 
@@ -310,8 +308,8 @@ AUI.add(
 
 					var buffer = [];
 
-					if (results.length == 0) {
-						if (options.start == 0) {
+					if (results.length === 0) {
+						if (Number(options.start) === 0) {
 							var noUsersMessage = A.Lang.sub(
 								TPL_NO_USERS_MESSAGE,
 								{
@@ -483,11 +481,11 @@ AUI.add(
 						resultTextLocator(response) {
 							var result = STR_BLANK;
 
-							if (typeof response.toString != 'undefined') {
+							if (typeof response.toString !== 'undefined') {
 								result = response.toString();
 							}
 							else if (
-								typeof response.responseText != 'undefined'
+								typeof response.responseText !== 'undefined'
 							) {
 								result = response.responseText;
 							}

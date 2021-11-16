@@ -31,7 +31,7 @@ import DragLayer from './drag-and-drop/DragLayer.es';
 import {EVENT_TYPES} from './eventTypes';
 import {getItem} from './utils/client.es';
 
-export const FormBuilder = () => {
+export function FormBuilder() {
 	const dispatch = useForm();
 	const [{onClose}, modalDispatch] = useContext(ModalContext);
 	const {
@@ -153,6 +153,7 @@ export const FormBuilder = () => {
 				<div className="ddm-form-builder-wrapper">
 					<div className="container ddm-form-builder">
 						<DragLayer />
+
 						<Pages
 							editable={true}
 							fieldActions={[
@@ -185,6 +186,7 @@ export const FormBuilder = () => {
 								},
 							]}
 						/>
+
 						<MultiPanelSidebar
 							createPlugin={({
 								panel,
@@ -208,4 +210,4 @@ export const FormBuilder = () => {
 			</ClayLayout.Sheet>
 		</div>
 	);
-};
+}

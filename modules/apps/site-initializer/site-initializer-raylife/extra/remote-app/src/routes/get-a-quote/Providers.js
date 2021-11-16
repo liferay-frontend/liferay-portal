@@ -22,7 +22,7 @@ const getDefaultValues = () => {
 	}
 };
 
-export const Providers = ({children}) => {
+export function Providers({children}) {
 	const defaultValues = getDefaultValues();
 	const form = useForm({defaultValues, mode: 'onChange'});
 
@@ -35,4 +35,4 @@ export const Providers = ({children}) => {
 			</ClayIconProvider>
 		</AppProvider>
 	);
-};
+}

@@ -596,7 +596,7 @@ const getUrl = function (
 			// Now add the state to the URL, taking into account cacheability if
 			// we're dealing with a resource URL.
 
-			// Put the private & public parameters on the URL if cacheability != FULL
+			// Put the private & public parameters on the URL if cacheability !== FULL
 
 			if (type !== 'RESOURCE' || cacheability !== 'cacheLevelFull') {
 

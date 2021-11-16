@@ -6,7 +6,7 @@ export const SEGMENT_ALLOWED = {
 	OVERALL_SALES: ['Retail'],
 };
 
-export const businessTotalFields = (properties) => {
+export function businessTotalFields(properties) {
 	let fieldCount = 4;
 
 	if (NAICS_ALLOWED.OWN_BRAND_LABEL.includes(properties?.naics)) {
@@ -20,11 +20,14 @@ export const businessTotalFields = (properties) => {
 	}
 
 	return fieldCount;
-};
+}
 
-export const validatePercentSales = (naics) =>
-	NAICS_ALLOWED.PERCENT_SALES.includes(naics);
-export const validateOwnBrandLabel = (naics) =>
-	NAICS_ALLOWED.OWN_BRAND_LABEL.includes(naics);
-export const validateOverallSales = (segment) =>
-	SEGMENT_ALLOWED.OVERALL_SALES.includes(segment);
+export function validatePercentSales(naics) {
+	return NAICS_ALLOWED.PERCENT_SALES.includes(naics);
+}
+export function validateOwnBrandLabel(naics) {
+	return NAICS_ALLOWED.OWN_BRAND_LABEL.includes(naics);
+}
+export function validateOverallSales(segment) {
+	return SEGMENT_ALLOWED.OVERALL_SALES.includes(segment);
+}

@@ -471,6 +471,7 @@ function SXPElement({
 										<ClayForm.FeedbackGroup>
 											<ClayForm.FeedbackItem>
 												<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
 												{
 													error.uiConfigurationValues[
 														config.name

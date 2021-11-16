@@ -179,7 +179,9 @@ import '@testing-library/jest-dom/extend-expect';
 // };
 
 xdescribe('The BulkTransitionModal component should', () => {
-	let getAllByRole, getAllByText, getByText;
+	let getAllByRole;
+	let getAllByText;
+	let getByText;
 
 	// beforeAll(async () => {
 	// 	const component = render(<BulkTransitionModal />, {

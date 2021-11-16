@@ -170,14 +170,14 @@ class MBPortlet {
 	_removeAttachment(event) {
 		const link = event.currentTarget;
 
-		const deleteURL = link.getAttribute('data-url');
+		const deleteURL = link.dataset.url;
 
 		fetch(deleteURL).then(() => {
 			Liferay.componentReady(this.searchContainerId).then(
 				(searchContainer) => {
 					searchContainer.deleteRow(
 						link.ancestor('tr'),
-						link.getAttribute('data-rowid')
+						link.dataset.rowid
 					);
 					searchContainer.updateDataStore();
 				}
@@ -303,7 +303,7 @@ class MBPortlet {
 								if (
 									searchContainerData.indexOf(
 										attachment.id
-									) == -1
+									) === -1
 								) {
 									searchContainer.addRow(
 										[

@@ -15,4 +15,6 @@
 import launcher from '../../utilities/launcher';
 import Summary from './Summary';
 
-export default (...data) => launcher(Summary, ...data);
+export default function entry(...data) {
+	return launcher(Summary, ...data);
+}

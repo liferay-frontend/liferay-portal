@@ -35,6 +35,7 @@ function Header() {
 							: labels[YOUR_ORDER]}
 					</h3>
 				</div>
+
 				{toggleable && (
 					<button className="mini-cart-close" onClick={closeCart}>
 						<ClayIcon symbol="times" />

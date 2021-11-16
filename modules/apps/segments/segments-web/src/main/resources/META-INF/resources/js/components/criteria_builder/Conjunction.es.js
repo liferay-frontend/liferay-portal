@@ -65,6 +65,7 @@ function Conjunction({
 					small
 				>
 					{activeLabel}
+
 					<ClayIcon className="ml-2" symbol="caret-bottom" />
 				</ClayButton>
 			}

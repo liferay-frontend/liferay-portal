@@ -230,6 +230,7 @@ export default function FragmentsSidebar() {
 						)}
 					/>
 				</div>
+
 				{searchValue ? (
 					<SearchResultsPanel filteredTabs={filteredTabs} />
 				) : (

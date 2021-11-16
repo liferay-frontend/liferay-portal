@@ -85,7 +85,7 @@ const getSerializedFormBuilderContext = (state, defaultLanguageId) => {
  * This hook is just a way to save the state in the hidden input of the form
  * to make the submit, this is the same implementation of StateSyncronizer.
  */
-export const useStateSync = () => {
+export function useStateSync() {
 	const {portletNamespace, sidebarPanels} = useConfig();
 	const {
 		availableLanguageIds,
@@ -142,4 +142,4 @@ export const useStateSync = () => {
 		sidebarPanels,
 		successPageSettings,
 	]);
-};
+}

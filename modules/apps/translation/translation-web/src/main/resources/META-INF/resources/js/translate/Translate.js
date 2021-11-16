@@ -288,6 +288,7 @@ const Translate = ({
 				name={`${portletNamespace}workflowAction`}
 				type="hidden"
 			/>
+
 			{Object.entries(additionalFields).map(([name, value]) => (
 				<input
 					defaultValue={value}

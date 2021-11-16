@@ -41,14 +41,14 @@ function DiagramHeader({
 	setDropdownActive,
 	updatePinsRadius,
 }) {
-	const [buttonLabel, updateButtonLabel] = useState(getLabel(pinsRadius));
+	const [buttonLabel, setButtonLabel] = useState(getLabel(pinsRadius));
 
 	const smallActive = pinsRadius === PINS_RADIUS.OPTIONS.small.value;
 	const mediumActive = pinsRadius === PINS_RADIUS.OPTIONS.medium.value;
 	const largeActive = pinsRadius === PINS_RADIUS.OPTIONS.large.value;
 
 	useEffect(() => {
-		debouncedUpdateLabel(pinsRadius, updateButtonLabel);
+		debouncedUpdateLabel(pinsRadius, setButtonLabel);
 	}, [pinsRadius]);
 
 	return (

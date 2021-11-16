@@ -227,6 +227,7 @@ const ItemSelectorPreview = ({
 				showInfoIcon={!!currentItem.metadata}
 				showNavbar={!isEditing}
 			/>
+
 			{isEditing ? (
 				<ImageEditor
 					imageId={currentItem.fileEntryId || currentItem.fileentryid}
@@ -252,7 +253,6 @@ const ItemSelectorPreview = ({
 					/>
 				</>
 			)}
-			;
 		</div>
 	);
 };

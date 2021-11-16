@@ -14,7 +14,7 @@
 
 const NON_NUMERIC_REGEX = /[\D]/g;
 
-export const limitValue = ({
+export function limitValue({
 	defaultValue,
 	max,
 	min,
@@ -24,7 +24,7 @@ export const limitValue = ({
 	max: number;
 	min: number;
 	value: number;
-}) => {
+}) {
 	if (isNaN(value) || value < min) {
 		return defaultValue;
 	}
@@ -33,13 +33,17 @@ export const limitValue = ({
 	}
 
 	return value;
-};
+}
 
-export const trimLeftZero: (options: {
+export function trimLeftZero({
+	decimalSymbol,
+	thousandsSeparator,
+	value,
+}: {
 	decimalSymbol: string;
 	thousandsSeparator: string | null | undefined;
 	value: string;
-}) => string = ({decimalSymbol, thousandsSeparator, value}) => {
+}): string {
 	if (
 		value.length > 1 &&
 		(value[0] === '0' || value[0] === thousandsSeparator) &&
@@ -60,4 +64,4 @@ export const trimLeftZero: (options: {
 	}
 
 	return value;
-};
+}

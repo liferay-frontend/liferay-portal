@@ -1,10 +1,14 @@
 import {TOTAL_OF_FIELD} from './constants';
 
-export const isHabitational = (value) => value === 'habitational';
+export function isHabitational(value) {
+	return value === 'habitational';
+}
 
-export const isThereSwimming = (value) => value === 'true';
+export function isThereSwimming(value) {
+	return value === 'true' || value === true;
+}
 
-export const propertyTotalFields = (properties) => {
+export function propertyTotalFields(properties) {
 	let fieldCount = TOTAL_OF_FIELD.PROPERTY;
 
 	if (
@@ -17,4 +21,4 @@ export const propertyTotalFields = (properties) => {
 	}
 
 	return fieldCount;
-};
+}

@@ -12,8 +12,6 @@
  * details.
  */
 
-'use strict';
-
 import createActionURL from '../../../../src/main/resources/META-INF/resources/liferay/util/portlet_url/create_action_url.es';
 
 describe('Liferay.Util.PortletURL.createActionURL', () => {

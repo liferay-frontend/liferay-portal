@@ -25,14 +25,15 @@ import isEmptyArray from '../../utils/isEmptyArray';
 import {isLayoutDataItemDeleted} from '../../utils/isLayoutDataItemDeleted';
 import {useId} from '../../utils/useId';
 
-export const selectConfiguredCollectionDisplays = (state) =>
-	Object.values(state.layoutData.items).filter(
+export function selectConfiguredCollectionDisplays(state) {
+	return Object.values(state.layoutData.items).filter(
 		(item) =>
 			item.type === LAYOUT_DATA_ITEM_TYPES.collection &&
 			item.config?.collection &&
 			Object.keys(item.config.collection).length > 0 &&
 			!isLayoutDataItemDeleted(state.layoutData, item.itemId)
 	);
+}
 
 export function TargetCollectionsField({
 	enableCompatibleCollections = false,
@@ -139,6 +140,7 @@ export function TargetCollectionsField({
 							)}
 						</ClayDropDown.Help>
 					)}
+
 				{items.map((item) => (
 					<label
 						className={classNames('d-flex dropdown-item', {
@@ -153,6 +155,7 @@ export function TargetCollectionsField({
 							disabled={item.disabled}
 							onChange={item.onChange}
 						/>
+
 						<span className="font-weight-normal ml-2">
 							{item.label}
 						</span>

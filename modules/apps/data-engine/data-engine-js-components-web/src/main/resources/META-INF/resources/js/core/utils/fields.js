@@ -29,13 +29,13 @@ import {
 import {sub} from '../../utils/strings';
 import {PagesVisitor} from '../../utils/visitors.es';
 
-export const generateFieldName = (
+export function generateFieldName(
 	pages,
 	desiredName,
 	currentName = null,
 	blacklist = [],
 	generateFieldNameUsingFieldLabel
-) => {
+) {
 	let fieldName;
 	let existingField;
 
@@ -77,9 +77,9 @@ export const generateFieldName = (
 
 		return fieldName;
 	}
-};
+}
 
-export const getFieldProperty = (pages, fieldName, propertyName) => {
+export function getFieldProperty(pages, fieldName, propertyName) {
 	const visitor = new PagesVisitor(pages);
 	let propertyValue;
 
@@ -94,13 +94,13 @@ export const getFieldProperty = (pages, fieldName, propertyName) => {
 	);
 
 	return propertyValue;
-};
+}
 
-export const getFieldValue = (pages, fieldName) => {
+export function getFieldValue(pages, fieldName) {
 	return getFieldProperty(pages, fieldName, 'value');
-};
+}
 
-export const getField = (pages, fieldName) => {
+export function getField(pages, fieldName) {
 	const visitor = new PagesVisitor(pages);
 	let field;
 
@@ -111,9 +111,9 @@ export const getField = (pages, fieldName) => {
 	});
 
 	return field;
-};
+}
 
-export const getFieldLocalizedValue = (pages, fieldName, locale) => {
+export function getFieldLocalizedValue(pages, fieldName, locale) {
 	const fieldLocalizedValue = getFieldProperty(
 		pages,
 		fieldName,
@@ -121,13 +121,9 @@ export const getFieldLocalizedValue = (pages, fieldName, locale) => {
 	);
 
 	return fieldLocalizedValue[locale];
-};
+}
 
-export const getLabel = (
-	originalField,
-	defaultLanguageId,
-	editingLanguageId
-) => {
+export function getLabel(originalField, defaultLanguageId, editingLanguageId) {
 	const labelFieldLocalizedValue = getFieldLocalizedValue(
 		originalField.settingsContext.pages,
 		'label',
@@ -139,14 +135,14 @@ export const getLabel = (
 	}
 
 	return sub(Liferay.Language.get('copy-of-x'), [labelFieldLocalizedValue]);
-};
+}
 
-export const updateFieldValidationProperty = (
+export function updateFieldValidationProperty(
 	pages,
 	fieldName,
 	propertyName,
 	propertyValue
-) => {
+) {
 	const visitor = new PagesVisitor(pages);
 
 	return visitor.mapFields((field) => {
@@ -179,18 +175,18 @@ export const updateFieldValidationProperty = (
 
 		return field;
 	});
-};
+}
 
-export const getValidation = (originalField) => {
+export function getValidation(originalField) {
 	const validation = getSettingsContextProperty(
 		originalField.settingsContext,
 		'validation'
 	);
 
 	return validation;
-};
+}
 
-export const createDuplicatedField = (originalField, props, blacklist = []) => {
+export function createDuplicatedField(originalField, props, blacklist = []) {
 	const {
 		availableLanguageIds,
 		defaultLanguageId,
@@ -317,9 +313,9 @@ export const createDuplicatedField = (originalField, props, blacklist = []) => {
 		'validation',
 		getValidation(duplicatedField)
 	);
-};
+}
 
-export const findInvalidFieldReference = (focusedField, pages, value) => {
+export function findInvalidFieldReference(focusedField, pages, value) {
 	let hasInvalidFieldReference = false;
 
 	const visitor = new PagesVisitor(pages);
@@ -343,4 +339,4 @@ export const findInvalidFieldReference = (focusedField, pages, value) => {
 	);
 
 	return hasInvalidFieldReference;
-};
+}

@@ -21,6 +21,7 @@ const LanguageListItem = ({displayName, isDefault}) => (
 	<ClayTable.Row>
 		<ClayTable.Cell expanded>
 			{displayName}
+
 			{isDefault && (
 				<ClayLabel className="ml-3" displayType="info">
 					{Liferay.Language.get('default')}

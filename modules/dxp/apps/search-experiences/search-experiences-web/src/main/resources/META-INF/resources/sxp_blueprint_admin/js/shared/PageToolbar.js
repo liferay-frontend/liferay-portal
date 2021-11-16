@@ -37,7 +37,7 @@ function EditTitleModal({
 	const [hasError, setHasError] = useState(false);
 	const [title, setTitle] = useState(initialTitle);
 
-	const titleInput = useRef();
+	const titleInputRef = useRef();
 
 	const _handleSubmit = (event) => {
 		event.preventDefault();
@@ -45,7 +45,7 @@ function EditTitleModal({
 		if (!title[defaultLocale]) {
 			setHasError(true);
 
-			titleInput.current.focus();
+			titleInputRef.current.focus();
 		}
 		else {
 			onSubmit({description, title});
@@ -85,7 +85,7 @@ function EditTitleModal({
 									[defaultLocale]: value,
 								})
 							}
-							ref={titleInput}
+							ref={titleInputRef}
 							type="text"
 							value={title[defaultLocale]}
 						/>
@@ -94,6 +94,7 @@ function EditTitleModal({
 							<ClayForm.FeedbackGroup>
 								<ClayForm.FeedbackItem>
 									<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
 									{Liferay.Language.get(
 										'this-field-is-required'
 									)}

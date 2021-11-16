@@ -54,7 +54,7 @@ describe('Translation', () => {
 		);
 
 		const defaultLanguageId = getAllByText('English');
-		expect(defaultLanguageId.length === 2);
+		expect(defaultLanguageId.length === 1).toBe(true);
 		expect(defaultLanguageId[0]).toBeInTheDocument();
 
 		expect(getByText('Spanish')).toBeInTheDocument();

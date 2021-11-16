@@ -141,7 +141,7 @@ describe('FriendlyURLHistory', () => {
 				result.getByText('history')
 			);
 
-			expect(title);
+			expect(title).toBeTruthy();
 		});
 
 		it('renders the active url', async () => {
@@ -149,7 +149,7 @@ describe('FriendlyURLHistory', () => {
 				result.getByText(activeUrl)
 			);
 
-			expect(activeUrlElement);
+			expect(activeUrlElement).toBeTruthy();
 		});
 
 		it('renders the old friendly urls', async () => {

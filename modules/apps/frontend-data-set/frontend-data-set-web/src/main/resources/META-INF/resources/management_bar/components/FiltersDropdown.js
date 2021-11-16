@@ -54,6 +54,7 @@ function FiltersDropdown() {
 					<span className="navbar-text-truncate">
 						{Liferay.Language.get('filter')}
 					</span>
+
 					<Icon
 						className="ml-2"
 						symbol={active ? 'caret-top' : 'caret-bottom'}
@@ -71,6 +72,7 @@ function FiltersDropdown() {
 							small
 							symbol="angle-left"
 						/>
+
 						{activeFilter.label}
 					</li>
 					<Filter
@@ -84,7 +86,9 @@ function FiltersDropdown() {
 						onChange={(event) => setQuery(event.target.value)}
 						value={query}
 					/>
+
 					<ClayDropDown.Divider className="m-0" />
+
 					{visibleFilters.length ? (
 						<ClayDropDown.ItemList>
 							{visibleFilters.map((item) => (

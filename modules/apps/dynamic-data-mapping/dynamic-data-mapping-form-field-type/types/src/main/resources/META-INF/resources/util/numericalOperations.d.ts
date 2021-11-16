@@ -12,7 +12,7 @@
  * details.
  */
 
-export declare const limitValue: ({
+export declare function limitValue({
 	defaultValue,
 	max,
 	min,
@@ -22,9 +22,13 @@ export declare const limitValue: ({
 	max: number;
 	min: number;
 	value: number;
-}) => number;
-export declare const trimLeftZero: (options: {
+}): number;
+export declare function trimLeftZero({
+	decimalSymbol,
+	thousandsSeparator,
+	value,
+}: {
 	decimalSymbol: string;
 	thousandsSeparator: string | null | undefined;
 	value: string;
-}) => string;
+}): string;

@@ -3,7 +3,7 @@ import {EMAIL_REGEX} from '~/common/utils/patterns';
 
 import {ControlledInput} from '.';
 
-export const EmailControlledInput = ({rules, ...props}) => {
+export function EmailControlledInput({rules, ...props}) {
 	return (
 		<ControlledInput
 			{...props}
@@ -16,4 +16,4 @@ export const EmailControlledInput = ({rules, ...props}) => {
 			}}
 		/>
 	);
-};
+}

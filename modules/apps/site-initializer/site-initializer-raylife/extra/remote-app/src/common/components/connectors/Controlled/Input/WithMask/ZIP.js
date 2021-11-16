@@ -3,7 +3,7 @@ import {ZIP_REGEX} from '~/common/utils/patterns';
 
 import {ControlledInputWithMask} from '.';
 
-export const ZIPControlledInput = ({rules = {}, inputProps = {}, ...props}) => {
+export function ZIPControlledInput({rules = {}, inputProps = {}, ...props}) {
 	return (
 		<ControlledInputWithMask
 			{...props}
@@ -17,4 +17,4 @@ export const ZIPControlledInput = ({rules = {}, inputProps = {}, ...props}) => {
 			}}
 		/>
 	);
-};
+}

@@ -132,32 +132,43 @@ export default withRouter(
 									userId={String(userInfo.id)}
 								/>
 							</div>
+
 							<div className="c-ml-4 flex-column">
 								<div>
 									<span className="small">
-										{Liferay.Language.get('rank')}:{' '}
+										{Liferay.Language.get('rank') +
+											':' +
+											' '}
+
 										{userInfo.rank}
 									</span>
 								</div>
+
 								<div>
 									<strong className="h2">
 										{userInfo.name}
 									</strong>
 								</div>
+
 								<div>
 									<span className="small">
-										{Liferay.Language.get('posts')}:{' '}
+										{Liferay.Language.get('posts') +
+											':' +
+											' '}
+
 										{userInfo.postsNumber}
 									</span>
 								</div>
 							</div>
 						</div>
+
 						<div className="border-bottom c-mt-5">
 							<h2>
 								{Liferay.Language.get('latest-questions-asked')}
 							</h2>
 						</div>
 					</div>
+
 					<div className="c-mx-auto c-px-0 col-xl-10">
 						<PaginatedList
 							activeDelta={pageSize}

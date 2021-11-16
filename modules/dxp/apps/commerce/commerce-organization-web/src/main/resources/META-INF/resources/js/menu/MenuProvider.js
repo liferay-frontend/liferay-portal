@@ -28,14 +28,14 @@ export default function MenuProvider({
 	parentData,
 }) {
 	const [active, setActive] = useState(false);
-	const [data, updateData] = useState(false);
+	const [data, setData] = useState(false);
 	const menuRef = useRef(null);
 
 	// The useEffect below force the component repositioning
 
 	useEffect(() => {
 		setActive(false);
-		updateData(propData);
+		setData(propData);
 	}, [propData]);
 
 	useEffect(() => {
@@ -47,7 +47,7 @@ export default function MenuProvider({
 	const MenuContent = useMemo(() => data && CONTENT[data.type], [data]);
 
 	const closeMenu = () => {
-		updateData(null);
+		setData(null);
 		setActive(false);
 	};
 

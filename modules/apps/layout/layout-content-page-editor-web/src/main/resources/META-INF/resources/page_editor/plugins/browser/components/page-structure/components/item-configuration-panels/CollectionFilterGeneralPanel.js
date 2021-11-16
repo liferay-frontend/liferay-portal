@@ -37,7 +37,7 @@ import updateConfigurationValue from '../../../../../../app/utils/updateConfigur
 import getLayoutDataItemPropTypes from '../../../../../../prop-types/getLayoutDataItemPropTypes';
 import {FieldSet} from './FieldSet';
 
-export const CollectionFilterGeneralPanel = ({item}) => {
+export function CollectionFilterGeneralPanel({item}) {
 	const collections = useSelectorCallback(
 		selectConfiguredCollectionDisplays,
 		[],
@@ -102,12 +102,12 @@ export const CollectionFilterGeneralPanel = ({item}) => {
 			item={item}
 		/>
 	);
-};
+}
 
-export const CollectionFilterGeneralPanelContent = ({
+export function CollectionFilterGeneralPanelContent({
 	filterableCollections,
 	item,
-}) => {
+}) {
 	const dispatch = useDispatch();
 
 	const fragmentEntryLink = useSelectorCallback(
@@ -229,7 +229,7 @@ export const CollectionFilterGeneralPanelContent = ({
 					))}
 		</>
 	);
-};
+}
 
 CollectionFilterGeneralPanel.propTypes = {
 	item: getLayoutDataItemPropTypes({

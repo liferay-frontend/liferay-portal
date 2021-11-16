@@ -291,6 +291,7 @@ function SXPElementSidebar({
 								variant="stripe"
 							>
 								{emptyMessage}
+
 								<ClayButton alert onClick={refresh}>
 									{Liferay.Language.get('refresh')}
 								</ClayButton>

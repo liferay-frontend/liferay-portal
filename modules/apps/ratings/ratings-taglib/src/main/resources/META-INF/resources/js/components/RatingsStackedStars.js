@@ -59,6 +59,7 @@ export default function RatingsStackedStars({
 						);
 					})}
 				</span>
+
 				<span className="inline-item ratings-stars-average-text">
 					{!!totalEntries &&
 						` (${totalEntries} ${
@@ -67,6 +68,7 @@ export default function RatingsStackedStars({
 								: Liferay.Language.get('votes')
 						})`}
 				</span>
+
 				<span className="sr-only">{getSrAverageMessage()}</span>
 			</div>
 
@@ -101,6 +103,7 @@ export default function RatingsStackedStars({
 										type="radio"
 										value={value}
 									/>
+
 									<label
 										className={
 											full
@@ -113,10 +116,12 @@ export default function RatingsStackedStars({
 											className="ratings-stars-icon-full"
 											symbol="star"
 										/>
+
 										<ClayIcon
 											className="ratings-stars-icon-empty"
 											symbol="star-o"
 										/>
+
 										<span className="sr-only">
 											{Lang.sub(srMessage, [
 												label,

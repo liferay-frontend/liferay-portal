@@ -139,6 +139,7 @@ export default withRouter(({allowCreateTopicInRootTopic, history, section}) => {
 						<AllBreadcrumb />
 					)}
 				</ol>
+
 				{((section &&
 					section.actions &&
 					section.actions['add-subcategory']) ||
@@ -161,6 +162,7 @@ export default withRouter(({allowCreateTopicInRootTopic, history, section}) => {
 							onClick={() => setVisible(true)}
 						>
 							<ClayIcon className="c-mr-2" symbol="plus" />
+
 							{Liferay.Language.get('new-topic')}
 						</ClayButton>
 					</>

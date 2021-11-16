@@ -60,9 +60,11 @@ function ExperimentsHistory({experimentHistory, onDeleteSegmentsExperiment}) {
 							<ClayList.ItemTitle>
 								{experiment.name}
 							</ClayList.ItemTitle>
+
 							<ClayList.ItemText className="text-secondary">
 								{experiment.description}
 							</ClayList.ItemText>
+
 							<ClayList.ItemText>
 								<ClayLabel
 									displayType={statusToLabelDisplayType(
@@ -73,6 +75,7 @@ function ExperimentsHistory({experimentHistory, onDeleteSegmentsExperiment}) {
 								</ClayLabel>
 							</ClayList.ItemText>
 						</ClayList.ItemField>
+
 						<ClayList.ItemField>
 							<ClayList.QuickActionMenu>
 								<ClayList.QuickActionMenu.Item

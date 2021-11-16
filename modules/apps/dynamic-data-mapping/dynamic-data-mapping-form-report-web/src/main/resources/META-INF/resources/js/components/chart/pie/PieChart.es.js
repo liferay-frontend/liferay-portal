@@ -16,7 +16,7 @@ import React, {useState} from 'react';
 import {
 	Cell,
 	Pie,
-	PieChart,
+	PieChart as RechartsPieChart,
 	ResponsiveContainer,
 	Sector,
 	Tooltip,
@@ -29,7 +29,7 @@ import TooltipContent from '../TooltipContent.es';
 
 const RADIAN = Math.PI / 180;
 
-export default ({data, height, totalEntries, width}) => {
+export default function PieChart({data, height, totalEntries, width}) {
 	const [activeIndex, setActiveIndex] = useState(null);
 	const [isAnimationActive, setAnimationActive] = useState(true);
 
@@ -91,7 +91,7 @@ export default ({data, height, totalEntries, width}) => {
 				height={height || '99%'}
 				width={width || '50%'}
 			>
-				<PieChart>
+				<RechartsPieChart>
 					<Pie
 						activeIndex={activeIndex}
 						activeShape={ActiveShape}
@@ -131,7 +131,7 @@ export default ({data, height, totalEntries, width}) => {
 							/>
 						}
 					/>
-				</PieChart>
+				</RechartsPieChart>
 			</ResponsiveContainer>
 
 			<Legend
@@ -142,4 +142,4 @@ export default ({data, height, totalEntries, width}) => {
 			/>
 		</div>
 	);
-};
+}

@@ -75,6 +75,7 @@ export default function Main({
 					/>
 				</div>
 			)}
+
 			{title && <h5 className="c-mb-4">{title}</h5>}
 
 			<h5 className="mt-3 sheet-subtitle">

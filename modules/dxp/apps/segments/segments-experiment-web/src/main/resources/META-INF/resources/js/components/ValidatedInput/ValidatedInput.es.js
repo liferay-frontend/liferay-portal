@@ -34,10 +34,10 @@ function ValidatedInput(props) {
 
 	const [invalid, setInvalid] = useState(false);
 
-	const node = useRef();
+	const nodeRef = useRef();
 	useEffect(() => {
-		if (node.current && autofocus) {
-			node.current.focus();
+		if (nodeRef.current && autofocus) {
+			nodeRef.current.focus();
 		}
 	}, [autofocus]);
 
@@ -64,10 +64,11 @@ function ValidatedInput(props) {
 				onBlur={_handleNameInputBlur}
 				onChange={onChange}
 				onFocus={_handleNameInputFocus}
-				ref={node}
+				ref={nodeRef}
 				type="text"
 				value={value}
 			/>
+
 			{invalid && errorMessage && (
 				<div className="form-feedback-group">
 					<div className="form-feedback-item">
@@ -75,6 +76,7 @@ function ValidatedInput(props) {
 							className="mr-1 text-danger"
 							symbol="info-circle"
 						/>
+
 						{errorMessage}
 					</div>
 				</div>

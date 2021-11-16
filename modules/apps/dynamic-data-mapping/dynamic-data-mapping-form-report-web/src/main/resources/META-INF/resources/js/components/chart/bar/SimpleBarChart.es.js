@@ -30,7 +30,7 @@ import TooltipContent from '../TooltipContent.es';
 
 const {blueDark, gray, lightBlue, white} = NAMED_COLORS;
 
-export default ({data, height, totalEntries, width}) => {
+export default function SimpleBarChart({data, height, totalEntries, width}) {
 	const [activeIndex, setActiveIndex] = useState(null);
 
 	const handleOnMouseOut = () => {
@@ -122,7 +122,9 @@ export default ({data, height, totalEntries, width}) => {
 						{data.map((_, index) => (
 							<Cell
 								fillOpacity={
-									activeIndex != null && activeIndex != index
+									activeIndex !== null &&
+									activeIndex !== undefined &&
+									activeIndex !== index
 										? '.5'
 										: 1
 								}
@@ -142,4 +144,4 @@ export default ({data, height, totalEntries, width}) => {
 			</ResponsiveContainer>
 		</div>
 	);
-};
+}

@@ -10,7 +10,7 @@ import {useLocation} from '~/routes/get-a-quote/hooks/useLocation';
 const setFormPath = (value) =>
 	`basics.businessInformation.business.location.${value}`;
 
-export const BusinessInformationAddress = () => {
+export function BusinessInformationAddress() {
 	const ref = useRef();
 	const {setAutoComplete} = useLocation();
 	const {control, register, setValue} = useFormContext();
@@ -98,4 +98,4 @@ export const BusinessInformationAddress = () => {
 			</div>
 		</>
 	);
-};
+}

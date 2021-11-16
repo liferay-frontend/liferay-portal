@@ -21,10 +21,10 @@ import DataSetContext from '../../DataSetContext';
 function MainSearch({setShowMobile}) {
 	const {searchParam, updateSearchParam} = useContext(DataSetContext);
 
-	const [inputValue, updateInputValue] = useState(searchParam);
+	const [inputValue, setInputValue] = useState(searchParam);
 
 	useEffect(() => {
-		updateInputValue(searchParam || '');
+		setInputValue(searchParam || '');
 	}, [searchParam]);
 
 	function handleKeyDown(event) {
@@ -41,11 +41,12 @@ function MainSearch({setShowMobile}) {
 				<ClayInput
 					aria-label={Liferay.Language.get('search')}
 					className="input-group-inset input-group-inset-after"
-					onChange={(event) => updateInputValue(event.target.value)}
+					onChange={(event) => setInputValue(event.target.value)}
 					onKeyDown={handleKeyDown}
 					placeholder={Liferay.Language.get('search')}
 					value={inputValue}
 				/>
+
 				<ClayInput.GroupInsetItem after tag="div">
 					<ClayButtonWithIcon
 						aria-label={Liferay.Language.get('clear')}
@@ -56,7 +57,7 @@ function MainSearch({setShowMobile}) {
 						onClick={(event) => {
 							event.preventDefault();
 
-							updateInputValue('');
+							setInputValue('');
 							setShowMobile(false);
 
 							updateSearchParam('');
@@ -67,6 +68,7 @@ function MainSearch({setShowMobile}) {
 						}}
 						symbol="times-circle"
 					/>
+
 					<ClayButtonWithIcon
 						aria-label={Liferay.Language.get('search')}
 						displayType="unstyled"

@@ -33,6 +33,7 @@ const Feedback = ({message, warning}) => (
 	<ClayForm.FeedbackGroup>
 		<ClayForm.FeedbackItem>
 			{warning && <ClayIcon className="mr-1" symbol="warning-full" />}
+
 			{message}
 		</ClayForm.FeedbackItem>
 	</ClayForm.FeedbackGroup>
@@ -41,7 +42,7 @@ const Feedback = ({message, warning}) => (
 const FileNameInput = ({initialValue, portletNamespace, required, visible}) => {
 	const inputId = portletNamespace + 'fileName';
 	const [inputValue, setInputValue] = useState(initialValue);
-	const valueChanged = initialValue != inputValue;
+	const valueChanged = initialValue !== inputValue;
 
 	const showWarning = required ? valueChanged && inputValue : valueChanged;
 	const showError = required && !inputValue;
@@ -74,6 +75,7 @@ const FileNameInput = ({initialValue, portletNamespace, required, visible}) => {
 					message={Liferay.Language.get('this-field-is-required')}
 				/>
 			)}
+
 			{showWarning && (
 				<Feedback
 					message={Liferay.Language.get(

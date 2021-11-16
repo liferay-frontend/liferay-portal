@@ -38,7 +38,8 @@ const instances = [
 ];
 
 describe('The instance list table should', () => {
-	let container, getAllByRole;
+	let container;
+	let getAllByRole;
 
 	afterEach(cleanup);
 

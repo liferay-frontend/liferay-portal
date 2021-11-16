@@ -1,6 +1,6 @@
 import {ActionTypes} from './actions';
 
-export const reducer = (state, action) => {
+export function reducer(state, action) {
 	switch (action.type) {
 		case ActionTypes.SET_SELECTED_STEP:
 			return {
@@ -23,4 +23,4 @@ export const reducer = (state, action) => {
 		default:
 			return state;
 	}
-};
+}

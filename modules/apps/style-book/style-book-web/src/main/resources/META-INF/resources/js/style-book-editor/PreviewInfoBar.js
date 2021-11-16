@@ -41,8 +41,10 @@ export default function PreviewInfoBar() {
 				<span className="style-book-editor__page-preview-text">
 					{Liferay.Language.get('page-preview')}
 				</span>
+
 				<LayoutSelector />
 			</div>
+
 			<span className="d-none d-xl-block">
 				{Liferay.Language.get(
 					'edit-the-style-book-using-the-sidebar-form.-you-can-preview-the-changes-instantly'
@@ -56,6 +58,7 @@ export default function PreviewInfoBar() {
 					ref={helpIconRef}
 					symbol="question-circle"
 				/>
+
 				{isShowPopover && (
 					<ClayPopover alignPosition="bottom-right" ref={popoverRef}>
 						{Liferay.Language.get(

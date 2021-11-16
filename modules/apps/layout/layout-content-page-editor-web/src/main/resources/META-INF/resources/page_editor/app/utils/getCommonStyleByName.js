@@ -14,7 +14,7 @@
 
 import {config} from '../../app/config/index';
 
-export const getCommonStyleByName = (name) => {
+export function getCommonStyleByName(name) {
 	for (const fieldSet of config.commonStyles) {
 		for (const field of fieldSet.styles) {
 			if (field.name === name) {
@@ -22,4 +22,4 @@ export const getCommonStyleByName = (name) => {
 			}
 		}
 	}
-};
+}

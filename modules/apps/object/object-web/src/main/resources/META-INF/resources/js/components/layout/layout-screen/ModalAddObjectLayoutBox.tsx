@@ -83,6 +83,7 @@ const ModalAddObjectLayoutBox: React.FC<IModalAddObjectLayoutBoxProps> = ({
 				<ClayModal.Header>
 					{Liferay.Language.get('add-block')}
 				</ClayModal.Header>
+
 				<ClayModal.Body>
 					<Input
 						error={errors.name}
@@ -94,6 +95,7 @@ const ModalAddObjectLayoutBox: React.FC<IModalAddObjectLayoutBoxProps> = ({
 						value={values.name}
 					/>
 				</ClayModal.Body>
+
 				<ClayModal.Footer
 					last={
 						<ClayButton.Group spaced>
@@ -103,6 +105,7 @@ const ModalAddObjectLayoutBox: React.FC<IModalAddObjectLayoutBoxProps> = ({
 							>
 								{Liferay.Language.get('cancel')}
 							</ClayButton>
+
 							<ClayButton type="submit">
 								{Liferay.Language.get('save')}
 							</ClayButton>

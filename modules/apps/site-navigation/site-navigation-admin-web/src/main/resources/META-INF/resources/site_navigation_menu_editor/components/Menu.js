@@ -17,7 +17,7 @@ import React from 'react';
 import {useItems} from '../contexts/ItemsContext';
 import {MenuItem} from './MenuItem';
 
-export const Menu = () => {
+export function Menu() {
 	const items = useItems();
 
 	return (
@@ -27,4 +27,4 @@ export const Menu = () => {
 			))}
 		</div>
 	);
-};
+}

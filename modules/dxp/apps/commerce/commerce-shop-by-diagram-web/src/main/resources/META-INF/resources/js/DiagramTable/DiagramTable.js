@@ -30,20 +30,20 @@ import ManagementBar from './ManagementBar';
 const PAGE_SIZE = 15;
 
 function DiagramTable({isAdmin, productId}) {
-	const [currentPage, updateCurrentpage] = useState(1);
-	const [loaderActive, updateLoaderActive] = useState(false);
-	const [lastPage, updateLastPage] = useState(null);
-	const [query, updateQuery] = useState('');
-	const [results, updateResults] = useState(null);
-	const [refreshTrigger, updateRefreshTrigger] = useState(false);
-	const [selectedProducts, updateSelectedProducts] = useState([]);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [loaderActive, setLoaderActive] = useState(false);
+	const [lastPage, setLastPage] = useState(null);
+	const [query, setQuery] = useState('');
+	const [results, setResults] = useState(null);
+	const [refreshTrigger, setRefreshTrigger] = useState(false);
+	const [selectedProducts, setSelectedProducts] = useState([]);
 	const wrapperRef = useRef();
 
 	const handleDiagramUpdated = useCallback(
 		({diagramProductId}) => {
 			if (diagramProductId === productId) {
-				updateRefreshTrigger((trigger) => !trigger);
-				updateCurrentpage(1);
+				setRefreshTrigger((trigger) => !trigger);
+				setCurrentPage(1);
 			}
 		},
 		[productId]
@@ -63,15 +63,15 @@ function DiagramTable({isAdmin, productId}) {
 	useEffect(() => {
 		getMappedProducts(productId, query, currentPage, PAGE_SIZE).then(
 			(data) => {
-				updateLoaderActive(false);
+				setLoaderActive(false);
 
-				updateResults((results) =>
+				setResults((results) =>
 					results && currentPage > 1
 						? [...results, ...data.items]
 						: data.items
 				);
 
-				updateLastPage(data.lastPage);
+				setLastPage(data.lastPage);
 			}
 		);
 	}, [productId, currentPage, query, refreshTrigger]);
@@ -105,10 +105,10 @@ function DiagramTable({isAdmin, productId}) {
 		<div className="shop-by-diagram-table" ref={wrapperRef}>
 			<ManagementBar
 				updateQuery={(query) => {
-					updateCurrentpage(1);
-					updateLoaderActive(true);
-					updateQuery(query);
-					updateResults(null);
+					setCurrentPage(1);
+					setLoaderActive(true);
+					setQuery(query);
+					setResults(null);
 				}}
 			/>
 
@@ -123,7 +123,7 @@ function DiagramTable({isAdmin, productId}) {
 
 			{!loaderActive && results && !!results.length && (
 				<InfiniteScroller
-					onBottomTouched={() => updateCurrentpage(currentPage + 1)}
+					onBottomTouched={() => setCurrentPage(currentPage + 1)}
 					scrollCompleted={currentPage >= lastPage}
 				>
 					<ClayTable borderless>
@@ -149,12 +149,12 @@ function DiagramTable({isAdmin, productId}) {
 													selectedProducts.length !==
 														selectableProduct.length
 												) {
-													updateSelectedProducts(
+													setSelectedProducts(
 														selectableProduct
 													);
 												}
 												else {
-													updateSelectedProducts([]);
+													setSelectedProducts([]);
 												}
 											}}
 										/>
@@ -205,7 +205,7 @@ function DiagramTable({isAdmin, productId}) {
 														if (
 															event.target.checked
 														) {
-															updateSelectedProducts(
+															setSelectedProducts(
 																[
 																	...selectedProducts,
 																	product,
@@ -213,7 +213,7 @@ function DiagramTable({isAdmin, productId}) {
 															);
 														}
 														else {
-															updateSelectedProducts(
+															setSelectedProducts(
 																selectedProducts.filter(
 																	(
 																		selectedProduct

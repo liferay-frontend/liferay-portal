@@ -67,7 +67,7 @@ const useFilterFetch = ({
 		url,
 	});
 
-	const request = method == 'post' ? fetchPost : fetch;
+	const request = method === 'post' ? fetchPost : fetch;
 
 	useEffect(
 		() => {

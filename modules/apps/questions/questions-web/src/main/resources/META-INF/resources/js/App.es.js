@@ -24,7 +24,7 @@ import NavigationBar from './pages/NavigationBar.es';
 import {client} from './utils/client.es';
 import {getFullPath} from './utils/utils.es';
 
-export default (props) => {
+export default function App(props) {
 	redirectForNotifications(props);
 
 	const Component = useLazy();
@@ -53,6 +53,7 @@ export default (props) => {
 					<ErrorBoundary>
 						<div>
 							<NavigationBar />
+
 							<Switch>
 								<Route
 									component={(props) => (
@@ -64,6 +65,7 @@ export default (props) => {
 									exact
 									path="/"
 								/>
+
 								<Route
 									component={(props) => (
 										<Component
@@ -74,6 +76,7 @@ export default (props) => {
 									exact
 									path="/questions"
 								/>
+
 								<Route
 									component={(props) => (
 										<Component
@@ -84,6 +87,7 @@ export default (props) => {
 									exact
 									path="/questions/question/:questionId"
 								/>
+
 								<Route
 									component={(props) => (
 										<Component
@@ -94,6 +98,7 @@ export default (props) => {
 									exact
 									path="/questions/activity/:creatorId"
 								/>
+
 								<Route
 									component={(props) => (
 										<Component
@@ -104,6 +109,7 @@ export default (props) => {
 									exact
 									path="/questions/subscriptions/:creatorId"
 								/>
+
 								<Route
 									component={(props) => (
 										<Component
@@ -114,6 +120,7 @@ export default (props) => {
 									exact
 									path="/questions/tag/:tag"
 								/>
+
 								<Route
 									component={(props) => (
 										<Component
@@ -140,6 +147,7 @@ export default (props) => {
 													exact
 													path={`${path}/:questionId/answers/:answerId/edit`}
 												/>
+
 												<Route
 													component={(props) => (
 														<Component
@@ -150,6 +158,7 @@ export default (props) => {
 													exact
 													path={`${path}/creator/:creatorId`}
 												/>
+
 												<Route
 													component={(props) => (
 														<Component
@@ -160,6 +169,7 @@ export default (props) => {
 													exact
 													path={`${path}/tag/:tag`}
 												/>
+
 												<ProtectedRoute
 													component={(props) => (
 														<Component
@@ -170,6 +180,7 @@ export default (props) => {
 													exact
 													path={`${path}/new`}
 												/>
+
 												<Route
 													component={(props) => (
 														<Component
@@ -180,6 +191,7 @@ export default (props) => {
 													exact
 													path={`${path}/:questionId`}
 												/>
+
 												<ProtectedRoute
 													component={(props) => (
 														<Component
@@ -190,6 +202,7 @@ export default (props) => {
 													exact
 													path={`${path}/:questionId/edit`}
 												/>
+
 												<Route
 													component={(props) => (
 														<Component
@@ -226,4 +239,4 @@ export default (props) => {
 			}
 		}
 	}
-};
+}

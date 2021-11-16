@@ -39,11 +39,13 @@ const getErrorAlertComponent = ({data = null, error = null} = {}) => {
 			}}
 		>
 			<SidebarHeader />
+
 			<BasicInformation
 				defaultLanguageId={pageURLs[0].languageId}
 				pageURLs={pageURLs}
 				selectedLanguageId={pageURLs[0].languageId}
 			/>
+
 			<ErrorAlert />
 		</StoreContextProvider>
 	);

@@ -73,7 +73,9 @@ import '@testing-library/jest-dom/extend-expect';
 // };
 
 describe('The App component should', () => {
-	let container, findByText, getByText;
+	let container;
+	let findByText;
+	let getByText;
 
 	// beforeAll(async () => {
 	// 	const header = document.createElement('div');

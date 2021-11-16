@@ -22,7 +22,7 @@ const StyleBookStateContext = React.createContext({
 	tokenValues: {},
 });
 
-export const StyleBookContextProvider = ({children}) => {
+export function StyleBookContextProvider({children}) {
 	const [styleBook, setStyleBook] = useState({
 		styleBookEntryId: config.styleBookEntryId,
 		tokenValues: config.frontendTokens,
@@ -35,7 +35,11 @@ export const StyleBookContextProvider = ({children}) => {
 			</StyleBookStateContext.Provider>
 		</StyleBookDispatchContext.Provider>
 	);
-};
+}
 
-export const useSetStyleBook = () => useContext(StyleBookDispatchContext);
-export const useStyleBook = () => useContext(StyleBookStateContext);
+export function useSetStyleBook() {
+	return useContext(StyleBookDispatchContext);
+}
+export function useStyleBook() {
+	return useContext(StyleBookStateContext);
+}

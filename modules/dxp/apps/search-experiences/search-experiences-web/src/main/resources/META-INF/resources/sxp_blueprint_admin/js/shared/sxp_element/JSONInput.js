@@ -42,6 +42,7 @@ function JSONInput({
 		>
 			<label>
 				{label}
+
 				{(!required || nullable) && (
 					<span className="optional-text">
 						{Liferay.Language.get('optional')}

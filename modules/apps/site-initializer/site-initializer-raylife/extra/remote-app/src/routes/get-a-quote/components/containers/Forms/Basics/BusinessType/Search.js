@@ -22,7 +22,7 @@ import {BusinessTypeRadioGroup} from './RadioGroup';
 
 const MAX_LENGTH_TO_TRUNCATE = 28;
 
-export const BusinessTypeSearch = ({form, setNewSelectedProduct}) => {
+export function BusinessTypeSearch({form, setNewSelectedProduct}) {
 	const {
 		formState: {errors},
 		register,
@@ -177,4 +177,4 @@ export const BusinessTypeSearch = ({form, setNewSelectedProduct}) => {
 			{renderResults()}
 		</>
 	);
-};
+}

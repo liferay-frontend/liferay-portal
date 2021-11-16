@@ -26,7 +26,7 @@
 		(id, fn) => {
 			var element = A.config.doc.getElementById(id);
 
-			if (!element || element.id != id) {
+			if (!element || element.id !== id) {
 				return;
 			}
 

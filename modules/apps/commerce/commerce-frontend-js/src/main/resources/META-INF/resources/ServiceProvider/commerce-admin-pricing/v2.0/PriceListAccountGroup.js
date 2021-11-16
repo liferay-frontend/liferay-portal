@@ -28,7 +28,9 @@ function resolvePath(
 	return `${basePath}${VERSION}${PRICE_LISTS_PATH}/${priceListId}${PRICE_LIST_RULES_PATH}/${priceListAccountGroupId}`;
 }
 
-export default (basePath) => ({
-	addPriceListAccountGroup: (priceListId, json) =>
-		AJAX.POST(resolvePath(basePath, priceListId), json),
-});
+export default function PriceListAccountGroup(basePath) {
+	return {
+		addPriceListAccountGroup: (priceListId, json) =>
+			AJAX.POST(resolvePath(basePath, priceListId), json),
+	};
+}

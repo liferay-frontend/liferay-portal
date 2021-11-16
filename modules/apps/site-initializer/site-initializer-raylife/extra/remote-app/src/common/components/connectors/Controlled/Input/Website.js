@@ -3,7 +3,7 @@ import {WEBSITE_REGEX} from '~/common/utils/patterns';
 
 import {ControlledInput} from '.';
 
-export const WebsiteControlledInput = ({rules, ...props}) => {
+export function WebsiteControlledInput({rules, ...props}) {
 	return (
 		<ControlledInput
 			{...props}
@@ -16,4 +16,4 @@ export const WebsiteControlledInput = ({rules, ...props}) => {
 			}}
 		/>
 	);
-};
+}

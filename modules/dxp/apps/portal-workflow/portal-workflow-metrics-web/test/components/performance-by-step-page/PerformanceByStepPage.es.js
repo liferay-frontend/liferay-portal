@@ -19,7 +19,8 @@ import {MockRouter} from '../../mock/MockRouter.es';
 import '@testing-library/jest-dom/extend-expect';
 
 describe('The PerformanceByStepPage component having data should', () => {
-	let getAllByRole, rows;
+	let getAllByRole;
+	let rows;
 
 	const items = [
 		{

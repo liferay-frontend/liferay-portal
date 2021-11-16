@@ -10,12 +10,12 @@ import {
 const getValueFromValidation = (condition) =>
 	condition ? CHECK_VALUE : UNCHECKED_VALUE;
 
-export const SendAccountRequest = (email, password) => {
+export function SendAccountRequest(email, password) {
 	/* eslint-disable no-console */
 	console.log(email, password);
 
 	return CHECK_VALUE;
-};
+}
 
 export function validadePassword(confirmPassword, password) {
 	const rules = {...INITIAL_VALIDATION};

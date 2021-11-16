@@ -63,7 +63,7 @@ AUI.add(
 						var isStatic = dropNode.isStatic;
 
 						if (isStatic) {
-							var start = isStatic == 'start';
+							var start = isStatic === 'start';
 
 							portalLayout.quadrant = start ? 4 : 1;
 						}
@@ -150,7 +150,7 @@ AUI.add(
 									var quadrant = portalLayout.quadrant;
 
 									if (isStatic) {
-										var start = isStatic == 'start';
+										var start = isStatic === 'start';
 
 										var siblingPos = start
 											? 'nextSibling'
@@ -162,7 +162,8 @@ AUI.add(
 										);
 										var staticSibling =
 											siblingPortlet &&
-											siblingPortlet.isStatic == isStatic;
+											siblingPortlet.isStatic ===
+												isStatic;
 
 										if (
 											staticSibling ||
@@ -189,7 +190,7 @@ AUI.add(
 
 										if (!emptyColumn) {
 											if (
-												activeDropNode !=
+												activeDropNode !==
 												lastActiveDropNode
 											) {
 												var referencePortlet = Layout.getLastPortletNode(
@@ -234,7 +235,7 @@ AUI.add(
 
 									if (
 										Layout.OVER_NESTED_PORTLET &&
-										activeDropNode == lastActiveDropNode
+										activeDropNode === lastActiveDropNode
 									) {
 										event.halt();
 									}

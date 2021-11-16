@@ -1,3 +1,4 @@
+/* eslint-disable @liferay/empty-line-between-elements */
 import ClayIcon from '@clayui/icon';
 import React, {useState} from 'react';
 
@@ -48,8 +49,8 @@ const UploadFiles = ({dropAreaProps, files, setFiles, title}) => {
 					<InfoBadge>
 						<div className="alert-content">
 							<div className="alert-description">
-								{dropAreaProps.limitFiles} file upload limit
-								reached for {title}.
+								{dropAreaProps.limitFiles}
+								file upload limit reached for {title}.
 							</div>
 
 							<div

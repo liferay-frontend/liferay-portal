@@ -1,3 +1,4 @@
+/* eslint-disable @liferay/empty-line-between-elements */
 import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import React, {useEffect, useRef, useState} from 'react';
@@ -66,7 +67,8 @@ const DropArea = ({
 
 						if (type === 'image') {
 							fileURL = fileReader.result;
-						} else {
+						}
+						else {
 							const json = JSON.stringify({
 								dataURL: fileReader.result,
 							});
@@ -84,19 +86,21 @@ const DropArea = ({
 					};
 
 					fileReader.readAsDataURL(currentFiles[i]);
-				} else {
+				}
+				else {
 					alert('Invalid file!');
 				}
 			}
-		} else {
+		}
+		else {
 			setShowBadgeInfo(true);
 		}
 	};
 
 	useEffect(() => {
-		const dropArea = dropAreaRef.current,
-			button = buttonRef.current,
-			input = inputRef.current;
+		const dropArea = dropAreaRef.current;
+		const button = buttonRef.current;
+		const input = inputRef.current;
 
 		button.onclick = () => {
 			input.click();

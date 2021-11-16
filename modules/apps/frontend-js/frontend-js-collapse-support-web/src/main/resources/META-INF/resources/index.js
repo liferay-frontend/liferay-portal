@@ -14,6 +14,6 @@
 
 import CollapseProvider from './CollapseProvider';
 
-export default () => {
+export default function main() {
 	new CollapseProvider();
-};
+}

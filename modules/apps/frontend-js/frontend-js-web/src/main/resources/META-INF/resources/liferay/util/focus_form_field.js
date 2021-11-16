@@ -47,7 +47,7 @@ export default function focusFormField(element) {
 			element.focus();
 		}
 		else if (form) {
-			const portletName = form.getAttribute('data-fm-namespace');
+			const portletName = form.dataset.fmNamespace;
 
 			const formReadyEventName = portletName + 'formReady';
 

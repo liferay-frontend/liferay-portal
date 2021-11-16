@@ -4,12 +4,12 @@ import {useFormContext} from 'react-hook-form';
 
 import {WarningBadge} from '../Badges/Warning';
 
-export const CardFormActionsWithSave = ({
+export function CardFormActionsWithSave({
 	isValid = true,
 	onNext,
 	onPrevious,
 	onSave,
-}) => {
+}) {
 	const {
 		formState: {errors},
 	} = useFormContext();
@@ -56,4 +56,4 @@ export const CardFormActionsWithSave = ({
 			</div>
 		</>
 	);
-};
+}

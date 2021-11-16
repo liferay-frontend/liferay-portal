@@ -109,7 +109,8 @@ function UpdateDueDateStep({className, dueDate = new Date()}) {
 						}`}
 					>
 						<label htmlFor="dateInput">
-							{Liferay.Language.get('new-due-date')}{' '}
+							{Liferay.Language.get('new-due-date') + ' '}
+
 							<span className="reference-mark">
 								<ClayIcon symbol="asterisk" />
 							</span>
@@ -183,6 +184,7 @@ function TimePickerInputWithOptions({format, isAmPm, setValue, value}) {
 					}}
 				>
 					<div className="arrow"></div>
+
 					<div className="inline-scroller">
 						<div className="popover-body">
 							{options.map((option, index) => (

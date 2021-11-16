@@ -253,6 +253,7 @@ function AssetVocabulariesCategoriesSelector({
 							<ClayForm.FeedbackGroup>
 								<ClayForm.FeedbackItem>
 									<ClayForm.FeedbackIndicator symbol="info-circle" />
+
 									<span className="ml-2">
 										{Liferay.Language.get(
 											'this-field-is-required'

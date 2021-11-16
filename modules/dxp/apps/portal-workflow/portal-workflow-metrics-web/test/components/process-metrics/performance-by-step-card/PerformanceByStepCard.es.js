@@ -77,7 +77,8 @@ const timeRangeData = {
 const processVersions = {items: [{name: '1.0'}]};
 
 describe('The performance by step card component should', () => {
-	let getAllByText, getByText;
+	let getAllByText;
+	let getByText;
 
 	beforeAll(() => {
 		jsonSessionStorage.set('timeRanges', timeRangeData);

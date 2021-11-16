@@ -7,5 +7,6 @@ const PRODUCT_QUOTE = [
 	'business-owners-policy',
 ];
 
-export const allowedProductQuote = (title) =>
-	PRODUCT_QUOTE.includes(toSlug(title));
+export function allowedProductQuote(title) {
+	return PRODUCT_QUOTE.includes(toSlug(title));
+}

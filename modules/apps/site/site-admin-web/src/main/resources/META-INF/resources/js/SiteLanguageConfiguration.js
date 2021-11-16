@@ -133,6 +133,7 @@ export default function SiteLanguageConfiguration({
 					<h5 className="h4">
 						{Liferay.Language.get('default-language')}
 					</h5>
+
 					<p>{defaultLanguageLabel}</p>
 
 					<h5 className="h4">

@@ -16,10 +16,10 @@ import React from 'react';
 
 import FieldType from './FieldType.es';
 
-export default (props) => {
+export default function FieldTypeDragPreview(props) {
 	return (
 		<div className="field-type-drag-preview">
 			<FieldType {...props} />
 		</div>
 	);
-};
+}

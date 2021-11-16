@@ -152,7 +152,7 @@ class AccountUserEmailDomainValidator extends PortletBase {
 
 		const fieldErrors = errors[field.get('name')];
 
-		if (fieldErrors.length == 1 && fieldErrors[0] == validatorName) {
+		if (fieldErrors.length === 1 && fieldErrors[0] === validatorName) {
 			submitForm(form);
 
 			event.halt();
@@ -177,8 +177,8 @@ class AccountUserEmailDomainValidator extends PortletBase {
 
 		formValidator.after('errorField', (event) => {
 			if (
-				event.validator.field == formField &&
-				event.validator.errors[0] == validatorName
+				event.validator.field === formField &&
+				event.validator.errors[0] === validatorName
 			) {
 				const fieldContainer = formValidator.findFieldContainer(
 					formField
@@ -195,7 +195,7 @@ class AccountUserEmailDomainValidator extends PortletBase {
 		formValidator.resetFieldCss = function (field) {
 			resetFieldCss.apply(formValidator, [field]);
 
-			if (field != formField) {
+			if (field !== formField) {
 				return;
 			}
 

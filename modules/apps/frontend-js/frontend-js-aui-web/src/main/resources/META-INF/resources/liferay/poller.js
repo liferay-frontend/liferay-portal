@@ -92,7 +92,7 @@ AUI.add(
 					_requestDelay = _delays[_delayIndex];
 					_delayAccessCount++;
 
-					if (_delayAccessCount == 3) {
+					if (_delayAccessCount === 3) {
 						_delayIndex++;
 						_delayAccessCount = 0;
 					}

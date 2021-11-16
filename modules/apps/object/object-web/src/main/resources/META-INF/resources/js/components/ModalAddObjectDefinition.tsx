@@ -158,6 +158,7 @@ const ModalAddObjectDefinition: React.FC<IProps> = ({
 						value={values.name ?? normalizeName(values.label)}
 					/>
 				</ClayModal.Body>
+
 				<ClayModal.Footer
 					last={
 						<ClayButton.Group key={1} spaced>

@@ -38,6 +38,7 @@ export const SearchInput = React.forwardRef(
 							required={required}
 						/>
 					</InputAreaWithError>
+
 					{children}
 				</div>
 			</>

@@ -43,6 +43,7 @@ function FilterResume(props) {
 					className="mr-2"
 					symbol={open ? 'caret-top' : 'caret-bottom'}
 				/>
+
 				<div className="label-section">
 					{props.label}: {props.formattedValue}
 				</div>
@@ -58,6 +59,7 @@ function FilterResume(props) {
 			trigger={label}
 		>
 			<li className="dropdown-subheader">{props.label}</li>
+
 			<Filter {...props} />
 		</ClayDropDown>
 	);

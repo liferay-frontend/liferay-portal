@@ -15,19 +15,19 @@
 Liferay.component(
 	'SpeedwellScrollHandler',
 	(function () {
-		const SCROLL_EVENT = 'scroll',
-			callbackQueueOnScroll = {};
+		const SCROLL_EVENT = 'scroll';
+		const callbackQueueOnScroll = {};
 
 		function sign(x) {
 			return (x > 0) - (x < 0) || +x;
 		}
 
-		let lastKnownScrollPosition = 0,
-			lastKnownScrollOffset = 0,
-			ticking = false;
+		let lastKnownScrollPosition = 0;
+		let lastKnownScrollOffset = 0;
+		let ticking = false;
 
-		const scrollThreshold = 100,
-			myMap = new Map();
+		const scrollThreshold = 100;
+		const myMap = new Map();
 
 		myMap.set(-1, 'up');
 		myMap.set(1, 'down');

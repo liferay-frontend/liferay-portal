@@ -29,6 +29,7 @@ import {concatValues} from '../../utils/utils';
 const QuestionLine = ({children, className, colon = true, question}) => (
 	<div className={className}>
 		<b>{`${question}${colon ? ':' : ''}`}</b>
+
 		<span className="ml-1">{children}</span>
 	</div>
 );
@@ -47,6 +48,7 @@ const EnvelopeDetail = ({
 		<div>
 			<b>{Liferay.Language.get('envelope-id')}</b>: {envelopeId}
 		</div>
+
 		<hr />
 
 		<div className="d-flex">
@@ -55,14 +57,17 @@ const EnvelopeDetail = ({
 				colon={false}
 				question={emailSubject}
 			/>
+
 			<QuestionLine
 				colon={false}
 				question={toLocalDateTimeFormatted(createdLocalDateTime)}
 			/>
 		</div>
+
 		<QuestionLine question={Liferay.Language.get('to')}>
 			{concatValues(recipients?.signers.map(({email}) => email))}
 		</QuestionLine>
+
 		<QuestionLine question={Liferay.Language.get('from')}>
 			{senderEmailAddress}
 		</QuestionLine>
@@ -80,10 +85,12 @@ const EnvelopeHeader = ({docusignStatus, emailSubject, envelopeId}) => {
 				<span className="envelope-view__header__title">
 					{emailSubject}
 				</span>
+
 				<ClayLabel className="ml-2" displayType={docusignStatus.color}>
 					{docusignStatus.label}
 				</ClayLabel>
 			</div>
+
 			<ClayButton
 				onClick={() =>
 					window.open(
@@ -100,6 +107,7 @@ const EnvelopeHeader = ({docusignStatus, emailSubject, envelopeId}) => {
 				}
 			>
 				<ClayIcon symbol="download" />
+
 				<span className="ml-1">{Liferay.Language.get('download')}</span>
 			</ClayButton>
 		</div>

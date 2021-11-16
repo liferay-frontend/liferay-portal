@@ -170,7 +170,7 @@ AUI.add(
 
 					return actions.reduce((commonActions, elementActions) => {
 						return commonActions.filter((action) => {
-							return elementActions.indexOf(action) != -1;
+							return elementActions.indexOf(action) !== -1;
 						});
 					}, actions[0]);
 				},

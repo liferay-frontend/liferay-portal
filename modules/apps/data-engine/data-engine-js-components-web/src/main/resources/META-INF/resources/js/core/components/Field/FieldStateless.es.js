@@ -16,16 +16,18 @@ import React from 'react';
 
 import {Field} from './Field.es';
 
-export const FieldStateless = ({
+export function FieldStateless({
 	onBlur = () => {},
 	onChange,
 	onFocus = () => {},
 	...otherProps
-}) => (
-	<Field
-		field={otherProps}
-		onBlur={onBlur}
-		onChange={onChange}
-		onFocus={onFocus}
-	/>
-);
+}) {
+	return (
+		<Field
+			field={otherProps}
+			onBlur={onBlur}
+			onChange={onChange}
+			onFocus={onFocus}
+		/>
+	);
+}

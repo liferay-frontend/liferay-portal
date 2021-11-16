@@ -16,7 +16,7 @@ import {BusinessInformationAddress} from './Address';
 
 const setFormPath = (value) => `basics.businessInformation.${value}`;
 
-export const FormBasicBusinessInformation = ({form}) => {
+export function FormBasicBusinessInformation({form}) {
 	const {selectedStep} = useStepWizard();
 	const [dispatchEvent] = useCustomEvent(TIP_EVENT);
 	const {onNext, onPrevious, onSave} = useFormActions(
@@ -125,4 +125,4 @@ export const FormBasicBusinessInformation = ({form}) => {
 			/>
 		</div>
 	);
-};
+}

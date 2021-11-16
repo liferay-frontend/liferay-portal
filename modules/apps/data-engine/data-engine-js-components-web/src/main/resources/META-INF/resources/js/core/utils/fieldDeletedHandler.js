@@ -16,11 +16,11 @@ import {removeEmptyRows as removeEmptyRowsUtil} from '../../utils/FormSupport.es
 import {removeField} from '../../utils/fieldSupport';
 import {formatRules} from '../../utils/rulesSupport';
 
-export const handleFieldDeleted = (
+export function handleFieldDeleted(
 	props,
 	state,
 	{activePage, editRule = true, fieldName, removeEmptyRows = true}
-) => {
+) {
 	const {pages} = state;
 
 	if (activePage === undefined) {
@@ -52,6 +52,6 @@ export const handleFieldDeleted = (
 		pages: newPages,
 		rules: editRule ? formatRules(newPages, state.rules) : state.rules,
 	};
-};
+}
 
 export default handleFieldDeleted;

@@ -2,7 +2,7 @@ import React from 'react';
 
 import {ControlledInput} from '.';
 
-export const NumberControlledInput = ({...props}) => {
+export function NumberControlledInput({...props}) {
 	return (
 		<ControlledInput
 			{...props}
@@ -12,4 +12,4 @@ export const NumberControlledInput = ({...props}) => {
 			}}
 		/>
 	);
-};
+}

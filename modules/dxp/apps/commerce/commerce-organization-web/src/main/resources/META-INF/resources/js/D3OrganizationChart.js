@@ -658,7 +658,7 @@ class D3OrganizationChart {
 			.remove()
 			.attr('opacity', 0)
 			.attr('transform', (d) => {
-				if (showDeleteTransition || d.data.type == 'add') {
+				if (showDeleteTransition || d.data.type === 'add') {
 					return `translate(${d.y},${d.x}) scale(0)`;
 				}
 

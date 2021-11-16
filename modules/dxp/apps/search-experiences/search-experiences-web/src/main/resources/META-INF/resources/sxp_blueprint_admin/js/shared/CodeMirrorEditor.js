@@ -81,12 +81,12 @@ const CodeMirrorEditor = React.forwardRef(
 		ref
 	) => {
 		const innerRef = useRef(ref);
-		const editorWrapper = useRef();
+		const editorWrapperRef = useRef();
 		const editor = useCombinedRefs(ref, innerRef);
 
 		useEffect(() => {
-			if (editorWrapper.current) {
-				const codeMirror = CodeMirror(editorWrapper.current, {
+			if (editorWrapperRef.current) {
+				const codeMirror = CodeMirror(editorWrapperRef.current, {
 					autoCloseTags: true,
 					autoRefresh: true,
 					extraKeys: {
@@ -131,7 +131,7 @@ const CodeMirrorEditor = React.forwardRef(
 		return (
 			<div
 				className="codemirror-editor-wrapper"
-				ref={editorWrapper}
+				ref={editorWrapperRef}
 			></div>
 		);
 	}

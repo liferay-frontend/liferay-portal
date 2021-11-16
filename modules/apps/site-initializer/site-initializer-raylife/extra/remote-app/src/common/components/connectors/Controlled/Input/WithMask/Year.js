@@ -3,11 +3,7 @@ import {YEAR_REGEX} from '~/common/utils/patterns';
 
 import {ControlledInputWithMask} from '.';
 
-export const YearControlledInput = ({
-	rules = {},
-	inputProps = {},
-	...props
-}) => {
+export function YearControlledInput({rules = {}, inputProps = {}, ...props}) {
 	return (
 		<ControlledInputWithMask
 			{...props}
@@ -25,4 +21,4 @@ export const YearControlledInput = ({
 			}}
 		/>
 	);
-};
+}

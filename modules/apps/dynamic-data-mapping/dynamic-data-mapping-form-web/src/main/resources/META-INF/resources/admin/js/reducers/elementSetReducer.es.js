@@ -24,7 +24,7 @@ import {EVENT_TYPES} from '../eventTypes.es';
  * NOTE: This is a literal copy of the old LayoutProvider logic. Small changes
  * were made only to adapt to the reducer.
  */
-export default (state, {payload, type}) => {
+export default function elementSetReducer(state, {payload, type}) {
 	switch (type) {
 		case EVENT_TYPES.ELEMENT_SET_ADD: {
 			const {elementSetPages, indexes} = payload;
@@ -94,4 +94,4 @@ export default (state, {payload, type}) => {
 		default:
 			return state;
 	}
-};
+}

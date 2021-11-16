@@ -12,7 +12,7 @@
  * details.
  */
 
-export declare const limitValue: ({
+export declare function limitValue({
 	defaultValue,
 	max,
 	min,
@@ -22,4 +22,4 @@ export declare const limitValue: ({
 	max: number;
 	min: number;
 	value: number;
-}) => number;
+}): number;

@@ -20,13 +20,13 @@ import React, {useContext, useState} from 'react';
 import {AppContext} from '../AppContext.es';
 import Link from './Link.es';
 
-export default ({
+export default function BreadcrumbNode({
 	hasDropdown = false,
 	isEllipsis = false,
 	isFirstNode = false,
 	section = {},
 	ui,
-}) => {
+}) {
 	const context = useContext(AppContext);
 	const [active, setActive] = useState(false);
 
@@ -61,6 +61,7 @@ export default ({
 										{ui || section.title}
 									</Link>
 								)}
+
 								<ClayIcon symbol="caret-bottom-l" />
 							</ClayButton>
 						}
@@ -110,4 +111,4 @@ export default ({
 			</li>
 		</>
 	);
-};
+}

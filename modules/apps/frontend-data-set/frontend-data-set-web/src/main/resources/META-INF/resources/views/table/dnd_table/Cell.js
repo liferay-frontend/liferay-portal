@@ -21,7 +21,7 @@ import Context from './TableContext';
 
 function Cell({children, className, columnName, expand, heading, resizable}) {
 	const cellRef = useRef();
-	const clientX = useRef({current: null});
+	const clientXRef = useRef({current: null});
 	const {
 		columnDefinitions,
 		draggingAllowed,
@@ -33,14 +33,14 @@ function Cell({children, className, columnName, expand, heading, resizable}) {
 		updateDraggingColumnName,
 	} = useContext(Context);
 
-	const intersectionObserver = useRef(
+	const intersectionObserverRef = useRef(
 		new IntersectionObserver(
 			(entries) => {
 				const cellWidth = entries[0].boundingClientRect.width;
 
 				if (cellWidth) {
 					registerColumn(columnName, cellWidth, resizable);
-					intersectionObserver.current.disconnect();
+					intersectionObserverRef.current.disconnect();
 				}
 			},
 			{
@@ -52,19 +52,19 @@ function Cell({children, className, columnName, expand, heading, resizable}) {
 
 	useLayoutEffect(() => {
 		if (columnName && heading && !isFixed) {
-			intersectionObserver.current.observe(cellRef.current);
+			intersectionObserverRef.current.observe(cellRef.current);
 		}
 	}, [columnName, isFixed, heading]);
 
 	const handleDrag = useMemo(() => {
 		return throttle((event) => {
-			if (event.clientX === clientX.current || !cellRef.current) {
+			if (event.clientX === clientXRef.current || !cellRef.current) {
 				return;
 			}
 
 			updateDraggingColumnName(columnName);
 
-			clientX.current = event.clientX;
+			clientXRef.current = event.clientX;
 
 			const {x: headerCellX} = cellRef.current.getClientRects()[0];
 			const newWidth = event.clientX - headerCellX;

@@ -35,7 +35,7 @@ export default withRouter(
 	}) => {
 		const context = useContext(AppContext);
 
-		const editor = useRef('');
+		const editorRef = useRef('');
 		const [hasEnoughContent, setHasEnoughContent] = useState(false);
 
 		const [headline, setHeadline] = useState('');
@@ -52,7 +52,7 @@ export default withRouter(
 
 		useEffect(() => {
 			if (data.messageBoardThreadByFriendlyUrlPath) {
-				editor.current.setContent(
+				editorRef.current.setContent(
 					data.messageBoardThreadByFriendlyUrlPath.articleBody
 				);
 				setHeadline(data.messageBoardThreadByFriendlyUrlPath.headline);
@@ -117,7 +117,7 @@ export default withRouter(
 								)}
 								label={Liferay.Language.get('body')}
 								onContentLengthValid={setHasEnoughContent}
-								ref={editor}
+								ref={editorRef}
 							/>
 
 							<ClayForm.Group className="c-mt-4">
@@ -140,7 +140,7 @@ export default withRouter(
 									updateThread(
 										{
 											variables: {
-												articleBody: editor.current.getContent(),
+												articleBody: editorRef.current.getContent(),
 												headline,
 												keywords: tags.map(
 													(tag) => tag.value

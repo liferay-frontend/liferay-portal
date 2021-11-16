@@ -12,4 +12,6 @@
  * details.
  */
 
-export default (value, lenght) => value.substring(0, lenght) + '...';
+export default function ellipsize(value, lenght) {
+	return value.substring(0, lenght) + '...';
+}

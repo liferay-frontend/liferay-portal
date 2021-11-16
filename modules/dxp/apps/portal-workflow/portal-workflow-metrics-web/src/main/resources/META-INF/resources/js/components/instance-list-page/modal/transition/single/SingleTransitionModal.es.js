@@ -113,6 +113,7 @@ export default function SingleTransitionModal() {
 						<label htmlFor="commentTextArea">
 							{Liferay.Language.get('comment')}
 						</label>
+
 						<ClayInput
 							component="textarea"
 							id="commentTextArea"

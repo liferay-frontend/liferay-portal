@@ -24,6 +24,7 @@ export const Select = React.forwardRef(
 						{renderActions}
 					</Label>
 				)}
+
 				<ClayIcon className="select-icon" symbol="caret-bottom" />
 
 				<select

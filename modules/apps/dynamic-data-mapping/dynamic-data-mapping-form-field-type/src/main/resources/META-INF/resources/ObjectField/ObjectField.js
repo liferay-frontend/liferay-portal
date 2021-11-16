@@ -66,19 +66,19 @@ const ObjectField = ({
 			({listTypeDefinitionId, type}) => {
 				if (
 					!listTypeDefinitionId &&
-					(focusedFieldType == 'radio' ||
-						focusedFieldType == 'select') &&
+					(focusedFieldType === 'radio' ||
+						focusedFieldType === 'select') &&
 					normalizedDataType.includes(type.toLowerCase())
 				) {
 					return false;
 				}
 				else if (
 					listTypeDefinitionId &&
-					(focusedFieldType == 'checkbox_multiple' ||
-						focusedFieldType == 'color' ||
-						focusedFieldType == 'grid' ||
-						focusedFieldType == 'rich_text' ||
-						focusedFieldType == 'text') &&
+					(focusedFieldType === 'checkbox_multiple' ||
+						focusedFieldType === 'color' ||
+						focusedFieldType === 'grid' ||
+						focusedFieldType === 'rich_text' ||
+						focusedFieldType === 'text') &&
 					normalizedDataType.includes(type.toLowerCase())
 				) {
 					return false;

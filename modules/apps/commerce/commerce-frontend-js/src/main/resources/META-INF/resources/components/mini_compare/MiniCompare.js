@@ -61,6 +61,7 @@ function Item(props) {
 					}
 				/>
 			</ClaySticker>
+
 			<ClayButtonWithIcon
 				className="mini-compare-delete"
 				displayType="unstyled"
@@ -73,7 +74,7 @@ function Item(props) {
 }
 
 function MiniCompare(props) {
-	const [items, updateItems] = useState(props.items);
+	const [items, setItems] = useState(props.items);
 
 	compareCookie.setValue(
 		props.commerceChannelGroupId,
@@ -87,7 +88,7 @@ function MiniCompare(props) {
 				thumbnail,
 			};
 
-			updateItems((items) => {
+			setItems((items) => {
 				const included = items.find((element) => element.id === id);
 
 				toggleStatus(props.commerceChannelGroupId, id, !included);
@@ -128,7 +129,7 @@ function MiniCompare(props) {
 							key={i}
 							onDelete={(event) => {
 								event.preventDefault();
-								updateItems(
+								setItems(
 									items.filter((v) => v.id !== currentItem.id)
 								);
 								toggleStatus(
@@ -144,6 +145,7 @@ function MiniCompare(props) {
 						/>
 					);
 				})}
+
 			<a className="btn btn-primary" href={props.compareProductsURL}>
 				{Liferay.Language.get('compare')}
 			</a>

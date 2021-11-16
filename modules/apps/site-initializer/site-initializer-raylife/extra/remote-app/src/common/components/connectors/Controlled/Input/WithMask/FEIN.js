@@ -3,11 +3,7 @@ import {FEIN_REGEX} from '~/common/utils/patterns';
 
 import {ControlledInputWithMask} from '.';
 
-export const FEINControlledInput = ({
-	rules = {},
-	inputProps = {},
-	...props
-}) => {
+export function FEINControlledInput({rules = {}, inputProps = {}, ...props}) {
 	return (
 		<ControlledInputWithMask
 			{...props}
@@ -21,4 +17,4 @@ export const FEINControlledInput = ({
 			}}
 		/>
 	);
-};
+}

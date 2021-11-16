@@ -12,6 +12,8 @@
  * details.
  */
 
+/* eslint-disable @liferay/no-use-strict-in-module */
+
 import State from '../src/main/resources/META-INF/resources/State';
 import {withEnv} from './helpers';
 

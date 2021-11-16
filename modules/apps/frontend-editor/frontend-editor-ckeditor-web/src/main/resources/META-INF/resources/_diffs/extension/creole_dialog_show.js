@@ -21,7 +21,7 @@ ckEditor.on('dialogShow', (event) => {
 
 	var dialog = event.data.definition.dialog;
 
-	if (dialog.getName() == 'image') {
+	if (dialog.getName() === 'image') {
 		var lockButton = A.one('.cke_btn_locked');
 
 		if (lockButton) {
@@ -38,7 +38,7 @@ ckEditor.on('dialogShow', (event) => {
 			imagePreviewBox.setStyle('width', 410);
 		}
 	}
-	else if (dialog.getName() == 'cellProperties') {
+	else if (dialog.getName() === 'cellProperties') {
 		var containerNode = A.one('#' + dialog.getElement('cellType').$.id);
 
 		if (!containerNode.getData(MODIFIED)) {

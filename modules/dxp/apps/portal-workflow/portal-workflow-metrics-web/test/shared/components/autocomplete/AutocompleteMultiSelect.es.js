@@ -22,13 +22,14 @@ const items = [
 ];
 
 const ContainerMock = ({children}) => {
-	const [selectedItems, onChange] = useState([]);
+	const [selectedItems, setSelectedItems] = useState([]);
 
-	return cloneElement(children, {onChange, selectedItems});
+	return cloneElement(children, {onChange: setSelectedItems, selectedItems});
 };
 
 describe('The AutocompleteMultiSelect component should', () => {
-	let container, getByText;
+	let container;
+	let getByText;
 
 	afterEach(cleanup);
 

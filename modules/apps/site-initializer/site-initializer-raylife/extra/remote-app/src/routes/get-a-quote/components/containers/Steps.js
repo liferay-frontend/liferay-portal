@@ -5,7 +5,7 @@ import {STORAGE_KEYS, Storage} from '~/common/services/liferay/storage';
 import {useStepWizard} from '~/routes/get-a-quote/hooks/useStepWizard';
 import {AVAILABLE_STEPS} from '~/routes/get-a-quote/utils/constants';
 
-export const Steps = () => {
+export function Steps() {
 	const {selectedStep, setSection} = useStepWizard();
 
 	return (
@@ -65,4 +65,4 @@ export const Steps = () => {
 			</StepItem>
 		</StepList>
 	);
-};
+}

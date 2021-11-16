@@ -3,11 +3,11 @@ import React, {useEffect} from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
 import {Radio} from '~/common/components/fragments/Forms/Radio';
 
-export const BusinessTypeRadioGroup = ({
+export function BusinessTypeRadioGroup({
 	businessTypes = [],
 	form,
 	setNewSelectedProduct,
-}) => {
+}) {
 	const {control, setValue} = useFormContext();
 
 	const selectedBusinessType = businessTypes.find(
@@ -70,4 +70,4 @@ export const BusinessTypeRadioGroup = ({
 			/>
 		</fieldset>
 	);
-};
+}

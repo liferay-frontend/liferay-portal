@@ -69,6 +69,7 @@ const Email = ({
 		<div className="share-form-modal-item-email">
 			<ClayForm.Group>
 				<label>{Liferay.Language.get('to')}</label>
+
 				<ClayInput.Group small stacked>
 					<ClayInput.GroupItem>
 						{!error && (
@@ -137,6 +138,7 @@ const Email = ({
 				<label htmlFor="subject">
 					{Liferay.Language.get('subject')}
 				</label>
+
 				<ClayInput.Group>
 					<ClayInput.GroupItem>
 						<ClayInput
@@ -158,6 +160,7 @@ const Email = ({
 				<label htmlFor="message">
 					{Liferay.Language.get('message')}
 				</label>
+
 				<ClayInput.Group>
 					<ClayInput.GroupItem>
 						<ClayInput

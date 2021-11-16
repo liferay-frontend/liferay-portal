@@ -114,7 +114,7 @@
 										fakeElement.attributes.style = fakeStyle;
 									}
 
-									if (typeof height != 'undefined') {
+									if (typeof height !== 'undefined') {
 										fakeStyle +=
 											'height:' +
 											CKEDITOR.tools.cssLength(height) +
@@ -123,7 +123,7 @@
 										fakeElement.attributes.style = fakeStyle;
 									}
 
-									if (typeof width != 'undefined') {
+									if (typeof width !== 'undefined') {
 										fakeStyle +=
 											'width:' +
 											CKEDITOR.tools.cssLength(width) +
@@ -261,7 +261,7 @@
 		},
 
 		hasClass(attributeClass, target) {
-			return attributeClass && attributeClass.indexOf(target) != -1;
+			return attributeClass && attributeClass.indexOf(target) !== -1;
 		},
 
 		init(editor) {
@@ -424,7 +424,7 @@
 		},
 
 		replaceScriptContent(divNode, scriptContent) {
-			if (divNode.getChildCount() == 2) {
+			if (divNode.getChildCount() === 2) {
 				var scriptTmp = null;
 
 				divNode.getChild(1).remove();

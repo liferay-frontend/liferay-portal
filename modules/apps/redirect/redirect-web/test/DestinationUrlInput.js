@@ -30,7 +30,7 @@ describe('DestinationUrlInput', () => {
 	it('renders an input element', () => {
 		const {getByLabelText} = renderComponent();
 
-		expect(getByLabelText('destination-url'));
+		expect(getByLabelText('destination-url')).toBeTruthy();
 	});
 
 	it('check url button is disabled if url is empty', () => {

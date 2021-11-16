@@ -19,7 +19,7 @@ import React, {useCallback, useContext, useState} from 'react';
 
 const ToastContext = React.createContext();
 
-export const ToastProvider = ({children}) => {
+export function ToastProvider({children}) {
 	const [toastItems, setToastItems] = useState([]);
 
 	const addToast = useCallback(
@@ -65,8 +65,8 @@ export const ToastProvider = ({children}) => {
 			{children}
 		</ToastContext.Provider>
 	);
-};
+}
 
-export const useToast = () => {
+export function useToast() {
 	return useContext(ToastContext);
-};
+}

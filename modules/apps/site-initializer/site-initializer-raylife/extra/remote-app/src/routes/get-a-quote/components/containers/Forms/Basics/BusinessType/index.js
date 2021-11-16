@@ -12,7 +12,7 @@ import {useStepWizard} from '~/routes/get-a-quote/hooks/useStepWizard';
 import {AVAILABLE_STEPS} from '~/routes/get-a-quote/utils/constants';
 import {BusinessTypeSearch} from './Search';
 
-export const FormBasicBusinessType = ({form}) => {
+export function FormBasicBusinessType({form}) {
 	const {setSection} = useStepWizard();
 	const [newSelectedProduct, setNewSelectedProduct] = useState('');
 	const {dispatch, state} = useContext(AppContext);
@@ -55,4 +55,4 @@ export const FormBasicBusinessType = ({form}) => {
 			/>
 		</div>
 	);
-};
+}

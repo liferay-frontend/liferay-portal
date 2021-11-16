@@ -138,7 +138,7 @@ const ManageCollaborators = ({
 
 		setCurrentCollaborators(
 			currentCollaborators.filter(
-				(collaborator) => collaborator.userId != collaboratorId
+				(collaborator) => collaborator.userId !== collaboratorId
 			)
 		);
 
@@ -429,6 +429,7 @@ const ManageCollaborators = ({
 							/>
 						</ClayLayout.ContentCol>
 					</ClayLayout.ContentRow>
+
 					<div
 						className={classNames({
 							hide: userId !== expandedCollaboratorId,
@@ -541,6 +542,7 @@ const ManageCollaborators = ({
 								<h3>
 									{Liferay.Language.get('no-collaborators')}
 								</h3>
+
 								<p>
 									{Liferay.Language.get(
 										'to-add-collaborators-share-the-file-again'
@@ -561,12 +563,14 @@ const ManageCollaborators = ({
 						>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
+
 						<ClayButton
 							disabled={loadingResponse || expirationDateError}
 							displayType="primary"
 							onClick={handleSaveButtonClick}
 						>
 							{loadingResponse && <ClayLoadingIndicator />}
+
 							{Liferay.Language.get('save')}
 						</ClayButton>
 					</ClayButton.Group>

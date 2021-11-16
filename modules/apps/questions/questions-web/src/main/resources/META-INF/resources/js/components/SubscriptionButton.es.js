@@ -17,7 +17,7 @@ import ClayIcon from '@clayui/icon';
 import {useMutation} from 'graphql-hooks';
 import React, {useEffect, useState} from 'react';
 
-export default ({
+export default function SubscriptionButton({
 	isSubscribed,
 	onSubscription,
 	parentSection = false,
@@ -25,7 +25,7 @@ export default ({
 	showTitle = false,
 	subscribeQuery,
 	unsubscribeQuery,
-}) => {
+}) {
 	const [subscription, setSubscription] = useState(false);
 
 	useEffect(() => {
@@ -68,4 +68,4 @@ export default ({
 			)}
 		</ClayButton>
 	);
-};
+}

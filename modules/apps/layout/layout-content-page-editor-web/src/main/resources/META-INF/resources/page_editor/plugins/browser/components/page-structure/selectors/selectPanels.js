@@ -120,7 +120,7 @@ export const PANELS = {
 	},
 };
 
-export const selectPanels = (activeItemId, activeItemType, state) => {
+export function selectPanels(activeItemId, activeItemType, state) {
 	let activeItem = null;
 	let panelsIds = {};
 
@@ -227,4 +227,4 @@ export const selectPanels = (activeItemId, activeItemType, state) => {
 	}
 
 	return {activeItem, panelsIds};
-};
+}

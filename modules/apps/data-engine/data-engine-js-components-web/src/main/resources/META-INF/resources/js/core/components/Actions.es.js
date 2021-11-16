@@ -64,7 +64,7 @@ const reducer = (state, action) => {
 /**
  * ActionsContext is responsible for store which field is being hovered or active
  */
-export const ActionsProvider = ({actions, children, focusedFieldId}) => {
+export function ActionsProvider({actions, children, focusedFieldId}) {
 	const [state, dispatch] = useReducer(reducer, ACTIONS_INITAL_REDUCER);
 	const dispatchForm = useForm();
 
@@ -108,23 +108,23 @@ export const ActionsProvider = ({actions, children, focusedFieldId}) => {
 			{children}
 		</ActionsContext.Provider>
 	);
-};
+}
 
-export const useActions = () => {
+export function useActions() {
 	return useContext(ActionsContext);
-};
+}
 
 ActionsContext.displayName = 'ActionsContext';
 
 const ACTIONS_CONTAINER_OFFSET = [0, 1];
 
-export const ActionsControls = ({
+export function ActionsControls({
 	actionsRef,
 	activePage,
 	children,
 	columnRef,
 	field,
-}) => {
+}) {
 	const {
 		dispatch,
 		state: {activeId, hoveredId},
@@ -185,7 +185,7 @@ export const ActionsControls = ({
 		onMouseLeave: handleFieldInteractions,
 		onMouseOver: handleFieldInteractions,
 	});
-};
+}
 
 export const Actions = forwardRef(
 	(

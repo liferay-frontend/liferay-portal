@@ -1,6 +1,6 @@
 import {RuleIcon} from '../CreateAnAccount/RuleIcon';
 
-export const ListRules = ({objValidate}) => {
+export function ListRules({objValidate}) {
 	return (
 		<div className="ca-mt-12">
 			<ul className="list-style-none">
@@ -68,4 +68,4 @@ export const ListRules = ({objValidate}) => {
 			</ul>
 		</div>
 	);
-};
+}

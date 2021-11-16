@@ -47,9 +47,11 @@ const Switcher = ({
 				type="checkbox"
 				value={value}
 			/>
+
 			<span aria-hidden="true" className="toggle-switch-bar">
 				<span className="toggle-switch-handle"></span>
 			</span>
+
 			<span className="toggle-switch-label">{label}</span>
 		</label>
 	</div>
@@ -110,6 +112,7 @@ const CheckboxMultiple = ({
 					value={option.value}
 				/>
 			))}
+
 			<input name={name} type="hidden" value={value} />
 		</div>
 	);

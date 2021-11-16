@@ -10,7 +10,7 @@ const documentFolderData = {
 	viewableBy: 'Anyone',
 };
 
-export const createDocumentInFolder = async (folderId, fileEntry, callback) => {
+export async function createDocumentInFolder(folderId, fileEntry, callback) {
 	const formData = new FormData();
 
 	formData.append('file', fileEntry);
@@ -26,11 +26,11 @@ export const createDocumentInFolder = async (folderId, fileEntry, callback) => {
 			},
 		}
 	);
-};
+}
 
-export const removeDocumentById = (documentId) => {
+export function removeDocumentById(documentId) {
 	return axios.delete(`${DeliveryAPI}/v1.0/documents/${documentId}/`);
-};
+}
 
 const getDocumentFolders = (siteId, filter = '', parentDocumentFolder) => {
 	return axios.get(
@@ -40,24 +40,20 @@ const getDocumentFolders = (siteId, filter = '', parentDocumentFolder) => {
 	);
 };
 
-export const createDocumentFolder = (
+export function createDocumentFolder(
 	siteId,
 	data,
 	parentDocumentFolder = false
-) => {
+) {
 	return axios.post(
 		parentDocumentFolder
 			? `${DeliveryAPI}/v1.0/document-folders/${siteId}/document-folders`
 			: `${DeliveryAPI}/v1.0/sites/${siteId}/document-folders/`,
 		data
 	);
-};
+}
 
-export const createFolderIfNotExist = async (
-	siteId,
-	folderName,
-	parentFolder
-) => {
+export async function createFolderIfNotExist(siteId, folderName, parentFolder) {
 	let folder;
 
 	const folderExist = await getDocumentFolders(
@@ -83,9 +79,9 @@ export const createFolderIfNotExist = async (
 	}
 
 	return folder;
-};
+}
 
-export const createRootFolders = async (applicationsFolderName) => {
+export async function createRootFolders(applicationsFolderName) {
 	const applicationId = Storage.getItem(STORAGE_KEYS.APPLICATION_ID);
 	const siteId = getScopeGroupId();
 
@@ -100,4 +96,4 @@ export const createRootFolders = async (applicationsFolderName) => {
 	);
 
 	return quoteFolder;
-};
+}

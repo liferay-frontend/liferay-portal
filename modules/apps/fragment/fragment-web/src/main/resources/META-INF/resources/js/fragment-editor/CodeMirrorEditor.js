@@ -242,7 +242,7 @@ const CodeMirrorEditor = ({
 	content = '',
 	readOnly,
 }) => {
-	const editor = useRef();
+	const editorRef = useRef();
 	const ref = useRef();
 
 	const customEntitiesSymbolsRegex = useMemo(() => {
@@ -303,21 +303,21 @@ const CodeMirrorEditor = ({
 				}
 			});
 
-			editor.current = codeMirror;
+			editorRef.current = codeMirror;
 		}
 	}, [ref]); // eslint-disable-line
 
 	useEffect(() => {
-		if (editor.current) {
-			editor.current.setOption('mode', {
+		if (editorRef.current) {
+			editorRef.current.setOption('mode', {
 				globalVars: true,
 				name: MODES[mode].type,
 			});
 
-			editor.current.setOption('readOnly', readOnly);
+			editorRef.current.setOption('readOnly', readOnly);
 
-			editor.current.setOption('hintOptions', {
-				...editor.current.getOption('hintOptions'),
+			editorRef.current.setOption('hintOptions', {
+				...editorRef.current.getOption('hintOptions'),
 				customEntities,
 				customEntitiesSymbolsRegex,
 				customTags,
@@ -332,8 +332,8 @@ const CodeMirrorEditor = ({
 	]);
 
 	useEffect(() => {
-		if (editor.current) {
-			editor.current.setValue(content);
+		if (editorRef.current) {
+			editorRef.current.setValue(content);
 		}
 	}, [content]);
 

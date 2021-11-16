@@ -36,7 +36,8 @@ jest.mock('react-flow-renderer', () => ({
 }));
 
 describe('The CurrentNodes component should', () => {
-	let container, getByText;
+	let container;
+	let getByText;
 
 	beforeAll(() => {
 		const result = render(

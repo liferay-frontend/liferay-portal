@@ -49,8 +49,10 @@ const MenuCustom = ({
 									/>
 								</ClaySticker>
 							</div>
+
 							<div className="autofit-col">
 								<strong>{item[locator.label]}</strong>
+
 								<span>{item.email}</span>
 							</div>
 						</div>

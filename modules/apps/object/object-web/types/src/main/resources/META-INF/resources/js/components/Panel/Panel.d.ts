@@ -21,12 +21,12 @@ declare const Panel: React.FC<React.HTMLAttributes<HTMLElement>> & {
 };
 interface IPanelBodyProps extends React.HTMLAttributes<HTMLElement> {}
 interface IPanelHeaderProps extends React.HTMLAttributes<HTMLElement> {
-	title: string;
 	contentLeft?: React.ReactNode;
 	contentRight?: React.ReactNode;
+	title: string;
 }
 interface IPanelSimpleBodyProps extends React.HTMLAttributes<HTMLElement> {
-	title: string;
 	contentRight?: React.ReactNode;
+	title: string;
 }
 export default Panel;

@@ -14,14 +14,14 @@
 
 import moment from 'moment/min/moment-with-locales';
 
-export const formatDate = (date, locale) => {
+export function formatDate(date, locale) {
 	const dateFormat = moment.localeData(locale).longDateFormat('L');
 
 	return moment(date).format(dateFormat);
-};
+}
 
-export const parseDate = (locale, value) => {
+export function parseDate(locale, value) {
 	const dateFormat = moment.localeData(locale).longDateFormat('L');
 
 	return moment(value, dateFormat).toDate();
-};
+}

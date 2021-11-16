@@ -16,7 +16,7 @@ import {fetch, openToast} from 'frontend-js-web';
 
 import {logError} from './logError';
 
-export const saveViewSettings = ({appURL, id, portletId, settings}) => {
+export function saveViewSettings({appURL, id, portletId, settings}) {
 	const url = new URL(`${appURL}/data-set/${id}/save-active-view-settings`);
 
 	url.searchParams.append('groupId', themeDisplay.getScopeGroupId());
@@ -38,4 +38,4 @@ export const saveViewSettings = ({appURL, id, portletId, settings}) => {
 			type: 'danger',
 		});
 	});
-};
+}

@@ -12,6 +12,7 @@ export const Input = React.forwardRef(
 						{renderActions}
 					</Label>
 				)}
+
 				<input {...props} name={name} ref={ref} required={required} />
 			</InputAreaWithError>
 		);

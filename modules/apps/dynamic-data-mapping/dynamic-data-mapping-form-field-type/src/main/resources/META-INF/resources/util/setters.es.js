@@ -12,10 +12,10 @@
  * details.
  */
 
-export const setJSONArrayValue = (value) => {
+export function setJSONArrayValue(value) {
 	if (value && value.JSONArray) {
 		return value.JSONArray;
 	}
 
 	return value || [];
-};
+}

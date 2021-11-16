@@ -25,14 +25,14 @@ export function useLiferayModule(
 	moduleUrl,
 	LoadingComponent = ClayLoadingIndicator
 ) {
-	const [Component, updateComponent] = useState(
+	const [Component, setComponent] = useState(
 		moduleUrl ? LoadingComponent : null
 	);
 
 	useEffect(() => {
 		if (moduleUrl) {
 			getComponentByModuleUrl(moduleUrl).then((module) => {
-				updateComponent(() => module);
+				setComponent(() => module);
 			});
 		}
 	}, [moduleUrl]);
@@ -65,14 +65,14 @@ export function usePersistentState(key, initialState = null) {
 }
 
 export function useCommerceAccount(initialCommerceAccount) {
-	const [commerceAccount, updateCommerceAccount] = useState(
+	const [commerceAccount, setCommerceAccount] = useState(
 		initialCommerceAccount
 	);
 
 	useEffect(() => {
 		function handleAccountUpdate(account) {
 			if (commerceAccount.id !== account.id) {
-				updateCommerceAccount(account);
+				setCommerceAccount(account);
 			}
 		}
 
@@ -87,12 +87,12 @@ export function useCommerceAccount(initialCommerceAccount) {
 }
 
 export function useCommerceCart(initialCart) {
-	const [commerceCart, updateCommerceCart] = useState(initialCart);
+	const [commerceCart, setCommerceCart] = useState(initialCart);
 
 	useEffect(() => {
 		function handleOrderUpdate(order) {
 			if (commerceCart.id !== order.id) {
-				updateCommerceCart(order);
+				setCommerceCart(order);
 			}
 		}
 

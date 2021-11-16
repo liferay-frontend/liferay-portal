@@ -2,7 +2,7 @@ import React from 'react';
 
 import {ControlledInputWithMask} from '.';
 
-export const CurrencyControlledInput = ({inputProps = {}, ...props}) => {
+export function CurrencyControlledInput({inputProps = {}, ...props}) {
 	return (
 		<ControlledInputWithMask
 			{...props}
@@ -15,4 +15,4 @@ export const CurrencyControlledInput = ({inputProps = {}, ...props}) => {
 			}}
 		/>
 	);
-};
+}

@@ -3,7 +3,7 @@ import {useContext} from 'react';
 import {AppContext} from '../context/AppContext';
 import {setSelectedTrigger} from '../context/actions';
 
-export const useTriggerContext = () => {
+export function useTriggerContext() {
 	const {
 		dispatch,
 		state: {selectedTrigger},
@@ -26,4 +26,4 @@ export const useTriggerContext = () => {
 		isSelected,
 		updateState,
 	};
-};
+}

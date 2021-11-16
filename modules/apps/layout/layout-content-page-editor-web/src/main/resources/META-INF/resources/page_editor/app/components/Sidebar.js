@@ -298,6 +298,7 @@ export default function Sidebar() {
 						}
 					}, [])}
 				</div>
+
 				<div
 					className={classNames({
 						'page-editor__sidebar__content': true,

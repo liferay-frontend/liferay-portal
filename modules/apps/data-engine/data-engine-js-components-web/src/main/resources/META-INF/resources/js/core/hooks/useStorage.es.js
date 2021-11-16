@@ -23,6 +23,6 @@ const localDataStorage = {
  * requests and fields, they are loaded on demand, so as not to make
  * unnecessary requests. Use the `useStorage` hook as a way to cache data.
  */
-export const useStorage = () => {
+export function useStorage() {
 	return localDataStorage;
-};
+}

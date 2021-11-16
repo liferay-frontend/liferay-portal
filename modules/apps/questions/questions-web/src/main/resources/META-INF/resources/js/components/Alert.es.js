@@ -15,7 +15,7 @@
 import ClayAlert from '@clayui/alert';
 import React, {useEffect, useState} from 'react';
 
-export default ({displayType = 'danger', info}) => {
+export default function Alert({displayType = 'danger', info}) {
 	const [alert, setAlert] = useState(null);
 
 	useEffect(() => {
@@ -42,4 +42,4 @@ export default ({displayType = 'danger', info}) => {
 			)}
 		</>
 	);
-};
+}

@@ -35,6 +35,7 @@ function SearchItem({className, href, label, stickerShape, thumbnailUrl}) {
 			<ClaySticker className="mr-2" shape={stickerShape}>
 				<ClaySticker.Image alt={label} src={thumbnailUrl} />
 			</ClaySticker>
+
 			{label}
 		</ClayDropDown.Item>
 	);
@@ -70,36 +71,36 @@ function GlobalSearch(props) {
 	const isMounted = useIsMounted();
 	const inputRef = useRef(null);
 	const dropdownRef = useRef(null);
-	const [accountsLoading, updateAccountsLoading] = useState(false);
-	const [accounts, updateAccounts] = useState(null);
-	const [accountsCount, updateAccountsCount] = useState(null);
+	const [accountsLoading, setAccountsLoading] = useState(false);
+	const [accounts, setAccounts] = useState(null);
+	const [accountsCount, setAccountsCount] = useState(null);
 	const [active, setActive] = useState(false);
-	const [debouncedGetAccounts, updateDebouncedGetAccounts] = useState(null);
-	const [debouncedGetOrders, updateDebouncedGetOrders] = useState(null);
-	const [debouncedGetProducts, updateDebouncedGetProducts] = useState(null);
+	const [debouncedGetAccounts, setDebouncedGetAccounts] = useState(null);
+	const [debouncedGetOrders, setDebouncedGetOrders] = useState(null);
+	const [debouncedGetProducts, setDebouncedGetProducts] = useState(null);
 	const [ids] = useState({
 		input: 'global-search-input' + getRandomId(),
 		menu: 'global-search-menu' + getRandomId(),
 	});
-	const [orders, updateOrders] = useState(null);
-	const [ordersCount, updateOrdersCount] = useState(null);
-	const [ordersLoading, updateOrdersLoading] = useState(false);
-	const [products, updateProducts] = useState(null);
-	const [productsCount, updateProductsCount] = useState(null);
-	const [productsLoading, updateProductsLoading] = useState(false);
-	const [query, updateQuery] = useState('');
+	const [orders, setOrders] = useState(null);
+	const [ordersCount, setOrdersCount] = useState(null);
+	const [ordersLoading, setOrdersLoading] = useState(false);
+	const [products, setProducts] = useState(null);
+	const [productsCount, setProductsCount] = useState(null);
+	const [productsLoading, setProductsLoading] = useState(false);
+	const [query, setQuery] = useState('');
 
 	useEffect(() => {
-		updateDebouncedGetAccounts(() =>
+		setDebouncedGetAccounts(() =>
 			debouncePromise(
 				AccountsResource.getAccounts,
 				props.fetchDataDebounce
 			)
 		);
-		updateDebouncedGetOrders(() =>
+		setDebouncedGetOrders(() =>
 			debouncePromise(OrderResource.getOrders, props.fetchDataDebounce)
 		);
-		updateDebouncedGetProducts(() =>
+		setDebouncedGetProducts(() =>
 			debouncePromise(
 				CatalogResource.getProductsByChannelId,
 				props.fetchDataDebounce
@@ -114,9 +115,9 @@ function GlobalSearch(props) {
 				search: query,
 			}),
 			isMounted,
-			updateProducts,
-			updateProductsCount,
-			updateProductsLoading
+			setProducts,
+			setProductsCount,
+			setProductsLoading
 		);
 	}, [
 		debouncedGetProducts,
@@ -133,9 +134,9 @@ function GlobalSearch(props) {
 				search: query,
 			}),
 			isMounted,
-			updateAccounts,
-			updateAccountsCount,
-			updateAccountsLoading
+			setAccounts,
+			setAccountsCount,
+			setAccountsLoading
 		);
 	}, [debouncedGetAccounts, props.resultsPageSize, query, isMounted]);
 
@@ -146,19 +147,19 @@ function GlobalSearch(props) {
 				search: query,
 			}),
 			isMounted,
-			updateOrders,
-			updateOrdersCount,
-			updateOrdersLoading
+			setOrders,
+			setOrdersCount,
+			setOrdersLoading
 		);
 	}, [debouncedGetOrders, props.resultsPageSize, query, isMounted]);
 
 	function resetContent() {
-		updateAccounts(null);
-		updateOrders(null);
-		updateProducts(null);
-		updateAccountsCount(null);
-		updateOrdersCount(null);
-		updateProductsCount(null);
+		setAccounts(null);
+		setOrders(null);
+		setProducts(null);
+		setAccountsCount(null);
+		setOrdersCount(null);
+		setProductsCount(null);
 	}
 
 	useEffect(() => {
@@ -170,9 +171,9 @@ function GlobalSearch(props) {
 			return;
 		}
 
-		updateProductsLoading(true);
-		updateAccountsLoading(true);
-		updateOrdersLoading(true);
+		setProductsLoading(true);
+		setAccountsLoading(true);
+		setOrdersLoading(true);
 
 		getProducts();
 		getAccounts();
@@ -207,7 +208,7 @@ function GlobalSearch(props) {
 		<>
 			<ClayInput
 				id={ids.input}
-				onChange={(event) => updateQuery(event.target.value)}
+				onChange={(event) => setQuery(event.target.value)}
 				onClick={() => {
 					if (query) {
 						setActive(true);
@@ -217,6 +218,7 @@ function GlobalSearch(props) {
 				ref={inputRef}
 				value={query}
 			/>
+
 			<ClayDropDown.Menu
 				active={active}
 				alignElementRef={inputRef}
@@ -275,6 +277,7 @@ function GlobalSearch(props) {
 							</ClayDropDown.Item>
 						)}
 					</ClayDropDown.Group>
+
 					<ClayDropDown.Group header={Liferay.Language.get('orders')}>
 						{!ordersLoading ? (
 							orders?.length ? (
@@ -322,6 +325,7 @@ function GlobalSearch(props) {
 							</ClayDropDown.Item>
 						)}
 					</ClayDropDown.Group>
+
 					<ClayDropDown.Group
 						header={Liferay.Language.get('accounts')}
 					>
@@ -372,7 +376,9 @@ function GlobalSearch(props) {
 							</ClayDropDown.Item>
 						)}
 					</ClayDropDown.Group>
+
 					<ClayDropDown.Divider />
+
 					<ClayDropDown.Item
 						href={formatActionUrl(props.globalSearchURLTemplate, {
 							query,

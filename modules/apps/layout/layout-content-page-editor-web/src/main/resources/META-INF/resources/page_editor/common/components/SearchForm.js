@@ -23,7 +23,9 @@ let nextInputId = 0;
 
 export default function SearchForm({className, onChange}) {
 	const id = `pageEditorSearchFormInput${nextInputId++}`;
-	const onChangeDebounce = useRef(debounce((value) => onChange(value), 100));
+	const onChangeDebounceRef = useRef(
+		debounce((value) => onChange(value), 100)
+	);
 	const [searchValue, setSearchValue] = useState('');
 
 	return (
@@ -31,6 +33,7 @@ export default function SearchForm({className, onChange}) {
 			<label className="sr-only" htmlFor={id}>
 				{Liferay.Language.get('search-form')}
 			</label>
+
 			<ClayInput.Group>
 				<ClayInput.GroupItem>
 					<ClayInput
@@ -38,12 +41,13 @@ export default function SearchForm({className, onChange}) {
 						insetAfter
 						onChange={(event) => {
 							setSearchValue(event.target.value);
-							onChangeDebounce.current(event.target.value);
+							onChangeDebounceRef.current(event.target.value);
 						}}
 						placeholder={`${Liferay.Language.get('search')}...`}
 						sizing="sm"
 						value={searchValue}
 					/>
+
 					<ClayInput.GroupInsetItem after tag="span">
 						{searchValue ? (
 							<ClayButtonWithIcon
@@ -52,7 +56,7 @@ export default function SearchForm({className, onChange}) {
 								monospaced={false}
 								onClick={() => {
 									setSearchValue('');
-									onChangeDebounce.current('');
+									onChangeDebounceRef.current('');
 								}}
 								small
 								symbol={searchValue ? 'times' : 'search'}

@@ -79,6 +79,7 @@ const DestinationUrlInput = ({
 						value={destinationUrl}
 					/>
 				</ClayInput.GroupItem>
+
 				<ClayInput.GroupItem append shrink>
 					<ClayButtonWithIcon
 						disabled={
@@ -105,8 +106,10 @@ const DestinationUrlInput = ({
 				<ClayForm.FeedbackGroup>
 					<ClayForm.FeedbackItem>
 						<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
 						{Liferay.Language.get('this-url-is-not-supported')}
 					</ClayForm.FeedbackItem>
+
 					<div
 						className="small"
 						dangerouslySetInnerHTML={{

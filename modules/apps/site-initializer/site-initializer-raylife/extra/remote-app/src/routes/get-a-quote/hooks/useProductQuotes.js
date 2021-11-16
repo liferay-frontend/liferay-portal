@@ -2,7 +2,7 @@
 import {useEffect, useState} from 'react';
 import {LiferayService} from '~/common/services/liferay';
 
-export const useProductQuotes = () => {
+export function useProductQuotes() {
 	const [data, setData] = useState();
 	const [error, setError] = useState();
 
@@ -25,4 +25,4 @@ export const useProductQuotes = () => {
 		isLoading: !data && !error,
 		productQuotes: data || [],
 	};
-};
+}

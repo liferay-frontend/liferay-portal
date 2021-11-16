@@ -16,7 +16,7 @@ const setFormPath = (value) => `employees.${value}`;
 
 const hasFein = (value) => value === 'true';
 
-export const FormEmployees = ({form}) => {
+export function FormEmployees({form}) {
 	const {selectedStep} = useStepWizard();
 	const {
 		control,
@@ -158,4 +158,4 @@ export const FormEmployees = ({form}) => {
 			/>
 		</div>
 	);
-};
+}

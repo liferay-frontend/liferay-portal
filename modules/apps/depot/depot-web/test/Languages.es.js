@@ -73,7 +73,7 @@ describe('Languages', () => {
 	it('renders a "default" label at the first element', () => {
 		const {container, getByText} = renderLanguagesComponent(defaultProps);
 
-		expect(getByText('default'));
+		expect(getByText('default')).toBeTruthy();
 
 		const firstLanguageElement = container.querySelectorAll('tr')[1];
 
@@ -86,7 +86,7 @@ describe('Languages', () => {
 			inheritLocales: false,
 		});
 
-		expect(getByText('edit'));
+		expect(getByText('edit')).toBeTruthy();
 	});
 
 	it('renders inputs with the default values', () => {
@@ -150,7 +150,7 @@ describe('Languages', () => {
 			getByText(
 				'this-change-will-only-affect-the-newly-created-localized-content'
 			)
-		);
+		).toBeTruthy();
 	});
 
 	// LPS-111488
@@ -260,7 +260,7 @@ describe('Languages', () => {
 			const title = await waitForElement(() =>
 				result.getByText('language-selection')
 			);
-			expect(title);
+			expect(title).toBeTruthy();
 		});
 
 		it('renders custom locales checked', async () => {

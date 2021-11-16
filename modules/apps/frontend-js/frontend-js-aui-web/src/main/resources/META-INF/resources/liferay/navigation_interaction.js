@@ -65,7 +65,7 @@ AUI.add(
 
 						var fallbackFirst = true;
 
-						if (direction == DIRECTION_LEFT) {
+						if (direction === DIRECTION_LEFT) {
 							item = parent.previous();
 
 							fallbackFirst = false;
@@ -138,7 +138,7 @@ AUI.add(
 					) {
 						var mapHover = instance.MAP_HOVER;
 
-						var menuOldDistinct = menuOld && menuOld != menuNew;
+						var menuOldDistinct = menuOld && menuOld !== menuNew;
 
 						if (menuOldDistinct) {
 							Liferay.fire('hideNavigationMenu', mapHover);
@@ -266,7 +266,7 @@ AUI.add(
 
 					var eventType = 'hideNavigationMenu';
 
-					if (event.type == 'mouseenter') {
+					if (event.type === 'mouseenter') {
 						eventType = 'showNavigationMenu';
 					}
 

@@ -34,7 +34,7 @@ import {Placeholder} from '../Placeholder.es';
 import ResizableColumn from '../ResizableColumn.es';
 import * as DefaultVariant from './DefaultVariant.es';
 
-export const Column = ({
+export function Column({
 	allowNestedFields,
 	children,
 	column,
@@ -44,7 +44,7 @@ export const Column = ({
 	resizeInfoRef,
 	rowIndex,
 	rowRef,
-}) => {
+}) {
 	const parentField = useContext(ParentFieldContext);
 
 	const actionsRef = useRef(null);
@@ -193,11 +193,11 @@ export const Column = ({
 			</DefaultVariant.Column>
 		</ActionsControls>
 	);
-};
+}
 
 Column.displayName = 'EditorVariant.Column';
 
-export const Page = ({
+export function Page({
 	activePage,
 	children,
 	editable,
@@ -206,7 +206,7 @@ export const Page = ({
 	header,
 	invalidFormMessage,
 	pageIndex,
-}) => {
+}) {
 	const {canDrop, drop, overTarget} = useDrop({
 		columnIndex: 0,
 		origin: DND_ORIGIN_TYPE.EMPTY,
@@ -250,11 +250,11 @@ export const Page = ({
 			)}
 		</DefaultVariant.Page>
 	);
-};
+}
 
 Page.displayName = 'EditorVariant.Page';
 
-export const Rows = ({children, editable, pageIndex, rows}) => {
+export function Rows({children, editable, pageIndex, rows}) {
 	if (!rows) {
 		return null;
 	}
@@ -282,11 +282,11 @@ export const Rows = ({children, editable, pageIndex, rows}) => {
 			)}
 		</div>
 	));
-};
+}
 
 Rows.displayName = 'EditorVariant.Rows';
 
-export const Row = ({children, index, row}) => {
+export function Row({children, index, row}) {
 	const rowRef = useRef(null);
 	const resizeInfoRef = useRef(null);
 
@@ -297,6 +297,6 @@ export const Row = ({children, index, row}) => {
 			)}
 		</div>
 	);
-};
+}
 
 Row.displayName = 'EditorVariant.Row';

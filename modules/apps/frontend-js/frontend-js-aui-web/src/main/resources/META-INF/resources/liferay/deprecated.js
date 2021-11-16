@@ -105,8 +105,8 @@
 				var nodeType = target.get('type');
 
 				if (
-					(tagName == 'input' && /text|password/.test(nodeType)) ||
-					tagName == 'textarea'
+					(tagName === 'input' && /text|password/.test(nodeType)) ||
+					tagName === 'textarea'
 				) {
 					var action = 'addClass';
 
@@ -290,7 +290,7 @@
 				var disabled = function () {
 					var currentValue = selectBox.val();
 
-					var visible = value == currentValue;
+					var visible = value === currentValue;
 
 					if (dynamicValue) {
 						visible = value(currentValue, value);
@@ -316,7 +316,7 @@
 		(textarea) => {
 			textarea = A.one(textarea);
 
-			if (textarea && textarea.attr('textareatabs') != 'enabled') {
+			if (textarea && textarea.attr('textareatabs') !== 'enabled') {
 				textarea.attr('textareatabs', 'disabled');
 
 				textarea.detach('keydown', Util.textareaTabs);
@@ -334,7 +334,7 @@
 		(textarea) => {
 			textarea = A.one(textarea);
 
-			if (textarea && textarea.attr('textareatabs') != 'enabled') {
+			if (textarea && textarea.attr('textareatabs') !== 'enabled') {
 				textarea.attr('textareatabs', 'disabled');
 
 				textarea.on('keydown', Util.textareaTabs);
@@ -393,7 +393,7 @@
 					if (usingRichEditor) {
 						try {
 							if (
-								element.get('nodeName').toLowerCase() !=
+								element.get('nodeName').toLowerCase() !==
 								'iframe'
 							) {
 								element = window[elString];

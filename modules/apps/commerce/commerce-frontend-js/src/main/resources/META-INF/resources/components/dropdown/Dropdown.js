@@ -65,6 +65,7 @@ function Dropdown(props) {
 			}
 		>
 			<Modal id={dropdownSupportModalId} />
+
 			<ClayDropDown.ItemList>
 				<ClayDropDown.Group>
 					{sortedItems.map((item, i) => {
@@ -95,6 +96,7 @@ function Dropdown(props) {
 										<ClayIcon symbol={item.icon} />
 									</span>
 								)}
+
 								{item.label}
 							</ClayDropDown.Item>
 						);

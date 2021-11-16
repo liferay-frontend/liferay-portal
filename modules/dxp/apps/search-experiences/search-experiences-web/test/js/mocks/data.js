@@ -149,7 +149,7 @@ export const INITIAL_CONFIGURATION = {
  * @param {number} itemCount Number of items
  * @return {Array} Generated list of classNames and displayNames
  */
-export const mockClassNames = (prefix, isObject = true, itemCount = 10) => {
+export function mockClassNames(prefix, isObject = true, itemCount = 10) {
 	const classNames = [];
 
 	for (let i = 1; i <= itemCount; i++) {
@@ -164,9 +164,9 @@ export const mockClassNames = (prefix, isObject = true, itemCount = 10) => {
 	}
 
 	return classNames;
-};
+}
 
-export const mockSearchResults = (itemsPerPage = 10) => {
+export function mockSearchResults(itemsPerPage = 10) {
 	const hits = [];
 
 	for (var i = 1; i <= itemsPerPage; i++) {
@@ -213,4 +213,4 @@ export const mockSearchResults = (itemsPerPage = 10) => {
 		responseString: '',
 		totalHits: 1000,
 	};
-};
+}

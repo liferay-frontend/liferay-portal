@@ -49,12 +49,12 @@ import CodeMirror from 'codemirror';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
-export const CodeMirrorEditor = ({
+export function CodeMirrorEditor({
 	autocompleteData,
 	content,
 	inputChannel,
 	onChange,
-}) => {
+}) {
 	const [editor, setEditor] = useState();
 	const [editorWrapper, setEditorWrapper] = useState();
 	const initialContentRef = useRef(content);
@@ -239,7 +239,7 @@ export const CodeMirrorEditor = ({
 			ref={setEditorWrapper}
 		/>
 	);
-};
+}
 
 CodeMirrorEditor.propTypes = {
 	autocompleteData: PropTypes.object.isRequired,

@@ -186,7 +186,7 @@ AUI.add(
 					var portraitPreviewImg = instance._portraitPreviewImg;
 
 					if (
-						portraitPreviewImg.attr('src').indexOf('spacer.png') ==
+						portraitPreviewImg.attr('src').indexOf('spacer.png') ===
 						-1
 					) {
 						var aspectRatio = instance.get('aspectRatio');

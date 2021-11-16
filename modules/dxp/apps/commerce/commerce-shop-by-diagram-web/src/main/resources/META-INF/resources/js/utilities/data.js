@@ -15,7 +15,7 @@ import {HEADERS} from './constants';
 
 export const PINS_ENDPOINT = '/o/headless-commerce-admin-catalog/v1.0';
 
-export const loadPins = (productId) => {
+export function loadPins(productId) {
 	const url = new URL(
 		`${PINS_ENDPOINT}/products/${productId}/pins`,
 		themeDisplay.getPortalURL()
@@ -28,9 +28,9 @@ export const loadPins = (productId) => {
 	})
 		.then((response) => response.json())
 		.then((jsonResponse) => jsonResponse.items);
-};
+}
 
-export const deletePin = (pinId) => {
+export function deletePin(pinId) {
 	const url = new URL(
 		`${PINS_ENDPOINT}/pins/${pinId}`,
 		themeDisplay.getPortalURL()
@@ -40,16 +40,16 @@ export const deletePin = (pinId) => {
 		headers: HEADERS,
 		method: 'DELETE',
 	});
-};
+}
 
-export const savePin = (
+export function savePin(
 	pinId,
 	mappedProduct,
 	sequence,
 	positionX,
 	positionY,
 	productId
-) => {
+) {
 	const baseURL = pinId
 		? `${PINS_ENDPOINT}/pins/${pinId}`
 		: `${PINS_ENDPOINT}/products/${productId}/pins`;
@@ -76,9 +76,9 @@ export const savePin = (
 		headers: HEADERS,
 		method: pinId ? 'PATCH' : 'POST',
 	}).then((response) => response.json());
-};
+}
 
-export const updateGlobalPinsRadius = (diagramId, radius, namespace) => {
+export function updateGlobalPinsRadius(diagramId, radius, namespace) {
 	const url = new URL(
 		`${PINS_ENDPOINT}/diagrams/${diagramId}`,
 		themeDisplay.getPortalURL()
@@ -97,9 +97,9 @@ export const updateGlobalPinsRadius = (diagramId, radius, namespace) => {
 			}
 		}
 	});
-};
+}
 
-export const getMappedProducts = (productId, query, page, pageSize) => {
+export function getMappedProducts(productId, query, page, pageSize) {
 	const url = new URL(
 		`${PINS_ENDPOINT}/products/${productId}/mapped-products`,
 		themeDisplay.getPortalURL()
@@ -118,11 +118,11 @@ export const getMappedProducts = (productId, query, page, pageSize) => {
 	return fetch(url, {
 		headers: HEADERS,
 	}).then((response) => response.json());
-};
+}
 
 const products = new Map();
 
-export const getProduct = (productId, channelId, accountId) => {
+export function getProduct(productId, channelId, accountId) {
 	const fetchedProduct = products.get(productId);
 
 	if (fetchedProduct) {
@@ -157,4 +157,4 @@ export const getProduct = (productId, channelId, accountId) => {
 			return product;
 		});
 	});
-};
+}

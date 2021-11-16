@@ -45,7 +45,7 @@ AUI.add(
 					var hash = LOCATION.hash;
 
 					var locationHashValid =
-						hash.indexOf(History.VALUE_SEPARATOR) != -1;
+						hash.indexOf(History.VALUE_SEPARATOR) !== -1;
 
 					if (locationHashValid) {
 						HISTORY.replaceState(null, null, instance._updateURI());

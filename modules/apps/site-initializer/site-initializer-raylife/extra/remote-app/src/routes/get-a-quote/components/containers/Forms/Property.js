@@ -17,7 +17,7 @@ import {
 
 const setFormPath = (value) => `property.${value}`;
 
-export const FormProperty = ({form}) => {
+export function FormProperty({form}) {
 	const {selectedStep} = useStepWizard();
 	const {
 		control,
@@ -147,6 +147,7 @@ export const FormProperty = ({form}) => {
 					name={setFormPath('isPrimaryBusinessLocation')}
 					rules={{required: true}}
 				/>
+
 				{isHabitational(
 					form?.basics?.properties?.segment.toLowerCase()
 				) && (
@@ -175,6 +176,7 @@ export const FormProperty = ({form}) => {
 						rules={{required: true}}
 					/>
 				)}
+
 				{isThereSwimming(form?.property?.isThereSwimming) && (
 					<ControlledSwitch
 						control={control}
@@ -193,4 +195,4 @@ export const FormProperty = ({form}) => {
 			/>
 		</div>
 	);
-};
+}

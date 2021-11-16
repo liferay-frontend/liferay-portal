@@ -20,9 +20,11 @@ import {useSelector} from './StoreContext';
 
 const WidgetsContext = React.createContext([]);
 
-export const useWidgets = () => useContext(WidgetsContext);
+export function useWidgets() {
+	return useContext(WidgetsContext);
+}
 
-export const WidgetsContextProvider = ({children}) => {
+export function WidgetsContextProvider({children}) {
 	const fragmentEntryLinksIds = useSelector((state) =>
 		Object.values(state.fragmentEntryLinks)
 			.filter(({portletId, removed}) => portletId && !removed)
@@ -52,4 +54,4 @@ export const WidgetsContextProvider = ({children}) => {
 			{children}
 		</WidgetsContext.Provider>
 	);
-};
+}

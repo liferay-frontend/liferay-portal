@@ -97,10 +97,12 @@ const LocalesDropdown = ({
 				<span className="inline-item">
 					<ClayIcon symbol={editingLocale.icon} />
 				</span>
+
 				<span className="btn-section" data-testid="triggerText">
 					{editingLocale.icon}
 				</span>
 			</ClayButton>
+
 			<ClayDropDown.Menu
 				active={dropdownActive}
 				alignElementRef={alignElementRef}
@@ -134,6 +136,7 @@ const LocalesDropdown = ({
 											<span className="inline-item inline-item-before">
 												<ClayIcon symbol={icon} />
 											</span>
+
 											{displayName}
 										</ClayLayout.ContentSection>
 									</ClayLayout.ContentCol>

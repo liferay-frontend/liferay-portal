@@ -28,7 +28,7 @@ const localDataStorage = {
 	rule: undefined,
 };
 
-export const RuleEditor = ({onCancel, onSave, rule, ...otherProps}) => {
+export function RuleEditor({onCancel, onSave, rule, ...otherProps}) {
 	const [disabled, setDisabled] = useState(true);
 
 	return (
@@ -45,6 +45,7 @@ export const RuleEditor = ({onCancel, onSave, rule, ...otherProps}) => {
 					)}
 				</h4>
 			</div>
+
 			<DataEngineRuleEditor
 				onChange={({logicalOperator, ...otherProps}) => {
 					localDataStorage.rule = {
@@ -56,6 +57,7 @@ export const RuleEditor = ({onCancel, onSave, rule, ...otherProps}) => {
 				rule={localDataStorage.rule ?? rule}
 				{...otherProps}
 			/>
+
 			<div className="form-rule-builder-footer">
 				<ClayButton.Group spaced>
 					<ClayButton
@@ -68,6 +70,7 @@ export const RuleEditor = ({onCancel, onSave, rule, ...otherProps}) => {
 					>
 						{Liferay.Language.get('save')}
 					</ClayButton>
+
 					<ClayButton
 						displayType="secondary"
 						onClick={() => {
@@ -81,4 +84,4 @@ export const RuleEditor = ({onCancel, onSave, rule, ...otherProps}) => {
 			</div>
 		</ClayForm>
 	);
-};
+}

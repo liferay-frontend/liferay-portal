@@ -69,7 +69,8 @@ function filterFields(fields, fieldType) {
 }
 
 function loadMappingFields({dispatch, item, sourceType}) {
-	let classNameId, classTypeId;
+	let classNameId;
+	let classTypeId;
 
 	if (sourceType === MAPPING_SOURCE_TYPES.structure) {
 		const {selectedMappingTypes} = config;
@@ -182,6 +183,7 @@ export default function MappingSelectorWrapper({
 					<span className="mr-1">
 						{Liferay.Language.get('type')}:
 					</span>
+
 					{collectionTypeLabels.itemType}
 				</p>
 			)}
@@ -191,6 +193,7 @@ export default function MappingSelectorWrapper({
 					<span className="mr-1">
 						{Liferay.Language.get('subtype')}:
 					</span>
+
 					{collectionTypeLabels.itemSubtype}
 				</p>
 			)}
@@ -418,6 +421,7 @@ function MappingSelector({fieldType, mappedItem, onMappingSelect}) {
 					<span className="mr-1">
 						{Liferay.Language.get('type')}:
 					</span>
+
 					{typeLabel}
 				</p>
 			)}
@@ -427,6 +431,7 @@ function MappingSelector({fieldType, mappedItem, onMappingSelect}) {
 					<span className="mr-1">
 						{Liferay.Language.get('subtype')}:
 					</span>
+
 					{subtypeLabel}
 				</p>
 			)}

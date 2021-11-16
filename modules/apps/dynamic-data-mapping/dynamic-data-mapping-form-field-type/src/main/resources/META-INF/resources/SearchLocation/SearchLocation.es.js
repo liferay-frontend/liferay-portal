@@ -217,6 +217,7 @@ const Main = ({
 				showLabel={showLabel}
 				visibleField="place"
 			/>
+
 			<div className="row">
 				{availableVisibleFields.length > 0 &&
 					availableVisibleFields.map((visibleField, index) => {
@@ -253,6 +254,7 @@ const Main = ({
 						}
 					})}
 			</div>
+
 			<ClayInput name={name} type="hidden" value={value} />
 		</FieldBase>
 	);

@@ -18,13 +18,13 @@ import React, {useCallback, useMemo, useState} from 'react';
 import Context from './TableContext';
 
 function ContextProvider({children, columnNames}) {
-	const [tableWidth, updateTableWidth] = useState(null);
-	const [columnDefinitions, updateColumnDefinitions] = useState(new Map());
-	const [draggingColumnName, updateDraggingColumnName] = useState(null);
-	const [draggingAllowed, updateDraggingAllowed] = useState(true);
+	const [tableWidth, setTableWidth] = useState(null);
+	const [columnDefinitions, setColumnDefinitions] = useState(new Map());
+	const [draggingColumnName, setDraggingColumnName] = useState(null);
+	const [draggingAllowed, setDraggingAllowed] = useState(true);
 
 	const registerColumn = (name, width, resizable) => {
-		updateColumnDefinitions((definitions) => {
+		setColumnDefinitions((definitions) => {
 			const updatedDefinitions = new Map(definitions);
 
 			updatedDefinitions.set(name, {
@@ -47,7 +47,7 @@ function ContextProvider({children, columnNames}) {
 	const resizeColumn = useCallback(
 		(name, width) => {
 			if (isFixed) {
-				updateColumnDefinitions((definitions) => {
+				setColumnDefinitions((definitions) => {
 					const resizedColumn = definitions.get(name);
 
 					const isColumnReducing = resizedColumn.width > width;
@@ -70,12 +70,12 @@ function ContextProvider({children, columnNames}) {
 							!nextColumn?.resizable) ||
 						width < 40
 					) {
-						updateDraggingAllowed(false);
+						setDraggingAllowed(false);
 
 						return definitions;
 					}
 
-					updateDraggingAllowed(true);
+					setDraggingAllowed(true);
 
 					const newDefinitions = new Map(definitions);
 
@@ -110,9 +110,9 @@ function ContextProvider({children, columnNames}) {
 				registerColumn,
 				resizeColumn,
 				tableWidth,
-				updateDraggingAllowed,
-				updateDraggingColumnName,
-				updateTableWidth,
+				updateDraggingAllowed: setDraggingAllowed,
+				updateDraggingColumnName: setDraggingColumnName,
+				updateTableWidth: setTableWidth,
 			}}
 		>
 			{children}

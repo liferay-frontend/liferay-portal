@@ -261,7 +261,10 @@ AUI.add(
 								XMLUtil.create('name', roleName)
 							);
 
-							if (dataAssignments.autoCreate[index] != null) {
+							if (
+								dataAssignments.autoCreate[index] !== null &&
+								dataAssignments.autoCreate[index] !== undefined
+							) {
 								buffer.push(
 									XMLUtil.create(
 										'autoCreate',

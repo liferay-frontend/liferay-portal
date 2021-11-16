@@ -75,6 +75,7 @@ export default function LayoutPreview() {
 						<ClayLoadingIndicator />
 					</div>
 				)}
+
 				{previewLayout?.url ? (
 					<>
 						{!config.templatesPreviewEnabled && <PreviewInfoBar />}

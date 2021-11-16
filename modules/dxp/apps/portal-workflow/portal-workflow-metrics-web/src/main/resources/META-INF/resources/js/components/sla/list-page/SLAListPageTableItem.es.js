@@ -21,6 +21,8 @@ import {formatDuration} from '../../../shared/util/duration.es';
 import moment from '../../../shared/util/moment.es';
 import {SLAListPageContext} from './SLAListPage.es';
 
+const SPACE = ' ';
+
 export default function Item({
 	dateModified,
 	description,
@@ -74,7 +76,10 @@ export default function Item({
 							className="text-danger"
 							symbol="exclamation-full"
 						/>
-					)}{' '}
+					)}
+
+					{SPACE}
+
 					<ChildLink to={`/sla/${processId}/edit/${id}`}>
 						{name}
 					</ChildLink>

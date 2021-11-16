@@ -86,6 +86,7 @@ const RulesSidebar = ({title}) => {
 					</ClayLayout.ContentCol>
 				</ClayLayout.ContentRow>
 			</Sidebar.Header>
+
 			<Sidebar.Body>
 				<RuleList
 					keywords={keywords}

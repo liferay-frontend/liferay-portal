@@ -12,4 +12,6 @@
  * details.
  */
 
-export const selectPageContents = (state) => state.pageContents;
+export function selectPageContents(state) {
+	return state.pageContents;
+}

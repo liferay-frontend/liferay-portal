@@ -20,12 +20,12 @@ import Sidebar from './components/sidebar/Sidebar.es';
 import {SidebarContextProvider} from './components/sidebar/SidebarContext.es';
 import {transformSearchLocationValues} from './utils/searchLocation.es';
 
-export default ({
+export default function App({
 	data,
 	fields,
 	formReportRecordsFieldValuesURL,
 	portletNamespace,
-}) => {
+}) {
 	const {data: newData, fields: newFields} = transformSearchLocationValues(
 		fields,
 		data
@@ -47,4 +47,4 @@ export default ({
 			<Sidebar />
 		</SidebarContextProvider>
 	);
-};
+}

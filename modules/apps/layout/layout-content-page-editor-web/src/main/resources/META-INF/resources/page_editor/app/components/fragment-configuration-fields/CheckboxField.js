@@ -22,7 +22,7 @@ import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
 import {VIEWPORT_SIZES} from '../../config/constants/viewportSizes';
 import {useSelector} from '../../contexts/StoreContext';
 
-export const CheckboxField = ({field, onValueSelect, value}) => {
+export function CheckboxField({field, onValueSelect, value}) {
 	const [nextValue, setNextValue] = useControlledState(value);
 
 	const selectedViewportSize = useSelector(
@@ -56,6 +56,7 @@ export const CheckboxField = ({field, onValueSelect, value}) => {
 						onValueSelect(field.name, eventValue);
 					}}
 				/>
+
 				{field.responsive &&
 					selectedViewportSize !== VIEWPORT_SIZES.desktop && (
 						<ClayButtonWithIcon
@@ -72,7 +73,7 @@ export const CheckboxField = ({field, onValueSelect, value}) => {
 			</div>
 		</ClayForm.Group>
 	);
-};
+}
 
 CheckboxField.propTypes = {
 	field: PropTypes.shape(ConfigurationFieldPropTypes).isRequired,

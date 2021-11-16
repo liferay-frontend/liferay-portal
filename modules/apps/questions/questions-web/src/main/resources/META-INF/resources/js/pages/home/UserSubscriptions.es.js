@@ -131,6 +131,7 @@ export default withRouter(({history}) => {
 			<div className="c-p-5 questions-container row">
 				<div className="col-xl-8 offset-xl-2">
 					<h2 className="sheet-subtitle">Topics</h2>
+
 					{topics &&
 						topics.myUserAccountSubscriptions.items &&
 						!topics.myUserAccountSubscriptions.items.length && (
@@ -140,6 +141,7 @@ export default withRouter(({history}) => {
 								)}
 							/>
 						)}
+
 					<div className="row">
 						{topics &&
 							topics.myUserAccountSubscriptions.items &&
@@ -181,6 +183,7 @@ export default withRouter(({history}) => {
 															</div>
 														</Link>
 													</div>
+
 													<div className="autofit-col">
 														<ClayDropDownWithItems
 															items={actions(
@@ -202,7 +205,9 @@ export default withRouter(({history}) => {
 								)
 							)}
 					</div>
+
 					<h2 className="mt-5 sheet-subtitle">Questions</h2>
+
 					<div>
 						{threads &&
 							threads.myUserAccountSubscriptions.items &&
@@ -214,6 +219,7 @@ export default withRouter(({history}) => {
 									)}
 								/>
 							)}
+
 						{threads &&
 							threads.myUserAccountSubscriptions.items &&
 							threads.myUserAccountSubscriptions.items.map(
@@ -241,6 +247,7 @@ export default withRouter(({history}) => {
 									</div>
 								)
 							)}
+
 						<DeleteQuestion
 							deleteModalVisibility={showDeleteModalPanel}
 							question={questionToDelete}
@@ -249,6 +256,7 @@ export default withRouter(({history}) => {
 					</div>
 				</div>
 			</div>
+
 			<Alert displayType="success" info={info} />
 		</section>
 	);

@@ -24,6 +24,7 @@ function Price({className, ...priceDetails}) {
 			<small className="d-block font-weight-bold mb-n1">
 				<del>{price}</del>
 			</small>
+
 			<strong className="text-danger">{finalPrice}</strong>
 		</div>
 	) : (

@@ -1,7 +1,7 @@
 /**
  * @returns {string} Liferay Group Id
  */
-export const getLiferayGroupId = () => {
+export function getLiferayGroupId() {
 	try {
 		// eslint-disable-next-line no-undef
 		const groupId = Liferay.ThemeDisplay.getSiteGroupId();
@@ -13,12 +13,12 @@ export const getLiferayGroupId = () => {
 
 		return '';
 	}
-};
+}
 
 /**
  * @returns {string} Liferay Scope Group Id
  */
-export const getScopeGroupId = () => {
+export function getScopeGroupId() {
 	try {
 		// eslint-disable-next-line no-undef
 		const scopeGroupId = Liferay.ThemeDisplay.getScopeGroupId();
@@ -30,4 +30,4 @@ export const getScopeGroupId = () => {
 
 		return '';
 	}
-};
+}

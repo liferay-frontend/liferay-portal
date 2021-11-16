@@ -123,14 +123,14 @@ const isDroppingFieldIntoFieldset = (sourceField, targetField) =>
 const isSameField = (targetField, sourceField) =>
 	targetField && targetField.fieldName === sourceField.fieldName;
 
-export const useDrop = ({
+export function useDrop({
 	columnIndex,
 	field,
 	origin,
 	pageIndex,
 	parentField,
 	rowIndex,
-}) => {
+}) {
 	const {editingLanguageId} = useFormState();
 	const {fieldTypes} = useConfig();
 
@@ -290,4 +290,4 @@ export const useDrop = ({
 		drop,
 		overTarget,
 	};
-};
+}

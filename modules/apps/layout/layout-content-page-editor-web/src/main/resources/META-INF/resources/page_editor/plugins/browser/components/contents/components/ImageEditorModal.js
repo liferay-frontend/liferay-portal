@@ -28,12 +28,12 @@ import selectLanguageId from '../../../../../app/selectors/selectLanguageId';
 import FragmentService from '../../../../../app/services/FragmentService';
 import ImageService from '../../../../../app/services/ImageService';
 
-export const updateFragmentsPreviewImage = ({
+export function updateFragmentsPreviewImage({
 	dispatch,
 	fileEntryId,
 	fragmentEntryLinks,
 	languageId,
-}) => {
+}) {
 	const fragmentsToUpdate = Object.values(fragmentEntryLinks).filter(
 		(fragmentEntryLink) => {
 			const editableValues = Object.values(
@@ -78,7 +78,7 @@ export const updateFragmentsPreviewImage = ({
 			})
 		);
 	});
-};
+}
 
 export default function ImageEditorModal({
 	editImageURL,

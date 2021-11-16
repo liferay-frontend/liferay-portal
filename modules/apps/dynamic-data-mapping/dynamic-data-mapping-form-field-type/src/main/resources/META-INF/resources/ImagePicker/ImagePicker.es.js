@@ -111,6 +111,7 @@ const ImagePicker = ({
 					type="hidden"
 					value={JSON.stringify(imageValues)}
 				/>
+
 				<ClayInput.Group>
 					<ClayInput.GroupItem className="d-none d-sm-block" prepend>
 						<ClayInput
@@ -176,6 +177,7 @@ const ImagePicker = ({
 					size="full-screen"
 				>
 					<ClayModal.Header />
+
 					<ClayModal.Body>
 						<img
 							alt={imageValues.description}
@@ -184,6 +186,7 @@ const ImagePicker = ({
 							src={imageValues.url}
 							style={{cursor: 'zoom-out', maxHeight: '95%'}}
 						/>
+
 						<p
 							className="font-weight-light text-center"
 							style={{color: '#FFFFFF'}}

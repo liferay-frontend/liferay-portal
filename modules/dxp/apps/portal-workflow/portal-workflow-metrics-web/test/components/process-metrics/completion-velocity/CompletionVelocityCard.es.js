@@ -83,7 +83,8 @@ const timeRangeData = {
 };
 
 describe('The completion velocity card component should', () => {
-	let getAllByText, getByText;
+	let getAllByText;
+	let getByText;
 
 	beforeAll(async () => {
 		jsonSessionStorage.set('timeRanges', timeRangeData);

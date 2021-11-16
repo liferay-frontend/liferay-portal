@@ -18,13 +18,13 @@ const defaultHeaders = {
 	Accept: 'application/json',
 };
 
-export const makeFetch = ({
+export function makeFetch({
 	body,
 	headers = defaultHeaders,
 	method = 'POST',
 	url,
 	...otherProps
-}) => {
+}) {
 	const fetchData = {
 		headers,
 		method,
@@ -47,9 +47,9 @@ export const makeFetch = ({
 				throw error;
 			}
 		});
-};
+}
 
-export const convertToFormData = (body) => {
+export function convertToFormData(body) {
 	let requestBody = body;
 
 	if (body instanceof FormData) {
@@ -66,4 +66,4 @@ export const convertToFormData = (body) => {
 	}
 
 	return requestBody;
-};
+}

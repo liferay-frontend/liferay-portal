@@ -43,6 +43,7 @@ export default function InfoPanel({title, url}) {
 			<div className="sidebar-header">
 				<p className="component-title h4">{title}</p>
 			</div>
+
 			<div className="sidebar-body">
 				{loading ? (
 					<ClayLoadingIndicator />

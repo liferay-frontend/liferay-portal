@@ -67,8 +67,11 @@ export default function App({state}) {
 	return (
 		<StoreContextProvider initialState={initialState} reducer={reducer}>
 			<BackURL />
+
 			<LanguageDirection />
+
 			<URLParser />
+
 			<ControlsProvider>
 				<CollectionActiveItemContextProvider>
 					<DragAndDropContextProvider>
@@ -88,7 +91,9 @@ export default function App({state}) {
 									) : null}
 
 									<DragPreview />
+
 									<Toolbar />
+
 									<ShortcutManager />
 
 									<GlobalContextProvider>

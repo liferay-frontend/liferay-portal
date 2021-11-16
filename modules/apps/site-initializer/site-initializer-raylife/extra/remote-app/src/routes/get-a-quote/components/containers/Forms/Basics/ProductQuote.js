@@ -10,7 +10,7 @@ import {useStepWizard} from '~/routes/get-a-quote/hooks/useStepWizard';
 import {useTriggerContext} from '~/routes/get-a-quote/hooks/useTriggerContext';
 import {AVAILABLE_STEPS} from '~/routes/get-a-quote/utils/constants';
 
-export const FormBasicProductQuote = ({form}) => {
+export function FormBasicProductQuote({form}) {
 	const {control} = useFormContext();
 	const {selectedStep} = useStepWizard();
 	const {productQuotes} = useProductQuotes();
@@ -83,4 +83,4 @@ export const FormBasicProductQuote = ({form}) => {
 			/>
 		</div>
 	);
-};
+}

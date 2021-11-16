@@ -2,7 +2,7 @@ import React from 'react';
 
 import {ControlledInputWithMask} from '.';
 
-export const PercentageControlledInput = ({inputProps = {}, ...props}) => {
+export function PercentageControlledInput({inputProps = {}, ...props}) {
 	return (
 		<ControlledInputWithMask
 			{...props}
@@ -15,4 +15,4 @@ export const PercentageControlledInput = ({inputProps = {}, ...props}) => {
 			}}
 		/>
 	);
-};
+}

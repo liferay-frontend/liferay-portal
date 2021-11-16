@@ -73,6 +73,7 @@ export default function App(props) {
 		<ConstantsContextProvider constants={props}>
 			<StoreContextProvider>
 				<SidebarHeader />
+
 				<SidebarBody>
 					<LayoutReports eventTriggered={eventTriggered} />
 				</SidebarBody>

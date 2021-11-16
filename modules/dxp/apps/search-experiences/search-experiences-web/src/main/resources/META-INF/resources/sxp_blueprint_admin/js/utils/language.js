@@ -19,7 +19,7 @@
  * @param {Object} object Original object
  * @return {Object}
  */
-export const renameKeys = (object, func) => {
+export function renameKeys(object, func) {
 	const newObj = {};
 
 	Object.keys(object).map((key) => {
@@ -27,7 +27,7 @@ export const renameKeys = (object, func) => {
 	});
 
 	return newObj;
-};
+}
 
 const SPLIT_REGEX = /({\d+})/g;
 

@@ -20,7 +20,7 @@ import {removeEmptyValues} from '../../utils/data.es';
 import Color from '../color/Color.es';
 import {SidebarContext} from '../sidebar/SidebarContext.es';
 
-export default ({data, field, summary, totalEntries, type}) => {
+export default function List({data, field, summary, totalEntries, type}) {
 	const {portletNamespace, toggleSidebar} = useContext(SidebarContext);
 
 	const formatDate = (field) => {
@@ -50,7 +50,7 @@ export default ({data, field, summary, totalEntries, type}) => {
 						<li key={index}>{checkType(field, type)}</li>
 					))}
 
-				{data.length == 5 && totalEntries > 5 ? (
+				{data.length === 5 && totalEntries > 5 ? (
 					<li id={`${portletNamespace}-see-more`} key="see-more">
 						<ClayButton
 							displayType="link"
@@ -70,4 +70,4 @@ export default ({data, field, summary, totalEntries, type}) => {
 			</ul>
 		</div>
 	);
-};
+}

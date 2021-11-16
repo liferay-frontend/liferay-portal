@@ -26,7 +26,7 @@ import {mergeVariants} from '../../utils/merge-variants.es';
 import {Field} from '../Field/Field.es';
 import {VariantsContext} from './VariantsContext.es';
 
-export const Layout = ({components, editable, rows, viewMode}) => {
+export function Layout({components, editable, rows, viewMode}) {
 	const {containerElement, pageIndex} = usePage();
 	const {activePage, defaultLanguageId} = useFormState();
 	const {allowNestedFields, submitButtonId} = useConfig();
@@ -115,4 +115,4 @@ export const Layout = ({components, editable, rows, viewMode}) => {
 			)}
 		</Components.Rows>
 	);
-};
+}

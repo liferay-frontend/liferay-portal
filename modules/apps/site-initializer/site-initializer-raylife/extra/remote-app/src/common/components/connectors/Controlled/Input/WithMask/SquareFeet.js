@@ -2,7 +2,7 @@ import React from 'react';
 
 import {ControlledInputWithMask} from '.';
 
-export const SquareFeatControlledInput = ({inputProps = {}, ...props}) => {
+export function SquareFeatControlledInput({inputProps = {}, ...props}) {
 	return (
 		<ControlledInputWithMask
 			{...props}
@@ -13,4 +13,4 @@ export const SquareFeatControlledInput = ({inputProps = {}, ...props}) => {
 			}}
 		/>
 	);
-};
+}

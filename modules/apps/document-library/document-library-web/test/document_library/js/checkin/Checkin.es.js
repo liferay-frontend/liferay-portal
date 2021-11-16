@@ -77,7 +77,7 @@ describe('Checkin', () => {
 					const form = await waitForElement(() =>
 						result.getByRole('form')
 					);
-					expect(form);
+					expect(form).toBeTruthy();
 				});
 
 				describe('and the form is submitted', () => {
@@ -156,7 +156,7 @@ describe('Checkin', () => {
 					const form = await waitForElement(() =>
 						result.getByRole('form')
 					);
-					expect(form);
+					expect(form).toBeTruthy();
 				});
 
 				describe('and the form is submitted', () => {

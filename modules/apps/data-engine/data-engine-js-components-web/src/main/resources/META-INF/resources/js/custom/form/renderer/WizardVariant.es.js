@@ -21,13 +21,7 @@ import {useConfig} from '../../../core/hooks/useConfig.es';
 import {MultiStep} from '../components/MultiStep.es';
 import {PaginationControls} from '../components/PaginationControls.es';
 
-export const Column = ({
-	children,
-	column,
-	columnRef,
-	editable,
-	...otherProps
-}) => {
+export function Column({children, column, columnRef, editable, ...otherProps}) {
 	const firstField = column.fields[0];
 
 	return (
@@ -42,11 +36,11 @@ export const Column = ({
 			{children}
 		</DefaultVariant.Column>
 	);
-};
+}
 
 Column.displayName = 'WizardVariant.Column';
 
-export const Container = ({
+export function Container({
 	activePage,
 	children,
 	editable,
@@ -54,7 +48,7 @@ export const Container = ({
 	pages,
 	readOnly,
 	strings = null,
-}) => {
+}) {
 	const {showSubmitButton, submitLabel} = useConfig();
 
 	return (
@@ -104,6 +98,6 @@ export const Container = ({
 			)}
 		</div>
 	);
-};
+}
 
 Container.displayName = 'WizardVariant.Container';

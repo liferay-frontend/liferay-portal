@@ -3,7 +3,7 @@ import {Controller} from 'react-hook-form';
 import {MoreInfoButton} from '~/common/components/fragments/Buttons/MoreInfo';
 import {Select} from '~/common/components/fragments/Forms/Select';
 
-export const ControlledSelect = ({
+export function ControlledSelect({
 	name,
 	label,
 	control,
@@ -13,7 +13,7 @@ export const ControlledSelect = ({
 	inputProps = {},
 	defaultValue = '',
 	...props
-}) => {
+}) {
 	return (
 		<Controller
 			control={control}
@@ -37,4 +37,4 @@ export const ControlledSelect = ({
 			{...props}
 		/>
 	);
-};
+}

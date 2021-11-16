@@ -179,6 +179,7 @@ function TopperContent({
 					<li className="d-inline-block page-editor__topper__item page-editor__topper__title tbar-item tbar-item-expand">
 						{name}
 					</li>
+
 					{item.type === LAYOUT_DATA_ITEM_TYPES.fragment && (
 						<li className="page-editor__topper__item tbar-item">
 							<ClayButton
@@ -201,6 +202,7 @@ function TopperContent({
 							</ClayButton>
 						</li>
 					)}
+
 					{canUpdatePageStructure && isActive && (
 						<li className="page-editor__topper__item tbar-item">
 							<ItemActions item={item} />

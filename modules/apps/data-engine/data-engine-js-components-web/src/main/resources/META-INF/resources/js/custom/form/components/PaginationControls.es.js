@@ -24,12 +24,12 @@ import {getFormId, getFormNode} from '../../../utils/formId.es';
 import nextPage from '../thunks/nextPage.es';
 import previousPage from '../thunks/previousPage.es';
 
-export const PaginationControls = ({
+export function PaginationControls({
 	activePage,
 	readOnly,
 	strings = null,
 	total,
-}) => {
+}) {
 	const {
 		cancelLabel,
 		redirectURL,
@@ -62,6 +62,7 @@ export const PaginationControls = ({
 					type="button"
 				>
 					<ClayIcon symbol="angle-left" />
+
 					{strings !== null
 						? strings['previous']
 						: Liferay.Language.get('previous')}
@@ -86,6 +87,7 @@ export const PaginationControls = ({
 					{strings !== null
 						? strings['next']
 						: Liferay.Language.get('next')}
+
 					<ClayIcon symbol="angle-right" />
 				</ClayButton>
 			)}
@@ -112,4 +114,4 @@ export const PaginationControls = ({
 			)}
 		</div>
 	);
-};
+}

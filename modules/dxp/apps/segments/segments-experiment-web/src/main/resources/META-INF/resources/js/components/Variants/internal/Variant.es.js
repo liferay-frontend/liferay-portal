@@ -113,6 +113,7 @@ function Variant({
 					</ClayList.ItemField>
 				</>
 			)}
+
 			{showSplit && (
 				<ClayList.ItemField>
 					<span

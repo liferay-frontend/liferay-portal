@@ -9,8 +9,6 @@
  * distribution rights of the Software.
  */
 
-'use strict';
-
 import DocumentLibraryOpener from '../../src/main/resources/META-INF/resources/js/DocumentLibraryOpener.es';
 
 const realSetTimeout = setTimeout;

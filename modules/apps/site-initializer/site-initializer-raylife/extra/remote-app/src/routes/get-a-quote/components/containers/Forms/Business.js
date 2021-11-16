@@ -19,7 +19,7 @@ import {AVAILABLE_STEPS} from '~/routes/get-a-quote/utils/constants';
 
 const setFormPath = (value) => `business.${value}`;
 
-export const FormBusiness = ({form}) => {
+export function FormBusiness({form}) {
 	const {
 		control,
 		formState: {isValid},
@@ -98,6 +98,7 @@ export const FormBusiness = ({form}) => {
 						required: 'This field is required.',
 					}}
 				/>
+
 				{validatePercentSales(form?.basics?.properties?.naics) && (
 					<PercentageControlledInput
 						control={control}
@@ -127,6 +128,7 @@ export const FormBusiness = ({form}) => {
 						}}
 					/>
 				)}
+
 				{validateOwnBrandLabel(form?.basics?.properties?.naics) && (
 					<ControlledSwitch
 						control={control}
@@ -135,6 +137,7 @@ export const FormBusiness = ({form}) => {
 						rules={{required: true}}
 					/>
 				)}
+
 				{validateOverallSales(form?.basics?.properties?.segment) && (
 					<PercentageControlledInput
 						control={control}
@@ -159,4 +162,4 @@ export const FormBusiness = ({form}) => {
 			/>
 		</div>
 	);
-};
+}

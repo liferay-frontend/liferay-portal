@@ -99,6 +99,7 @@ const ClassicEditor = React.forwardRef(
 						{title}
 					</label>
 				)}
+
 				<Editor
 					className="lfr-editable"
 					config={{

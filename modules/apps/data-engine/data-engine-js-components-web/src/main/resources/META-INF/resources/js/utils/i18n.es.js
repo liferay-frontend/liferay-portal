@@ -12,7 +12,7 @@
  * details.
  */
 
-export const setValue = (object, languageId, prop, val) => {
+export function setValue(object, languageId, prop, val) {
 	if (!object[prop]) {
 		object[prop] = {};
 	}
@@ -20,4 +20,4 @@ export const setValue = (object, languageId, prop, val) => {
 	object[prop][languageId] = val;
 
 	return object;
-};
+}

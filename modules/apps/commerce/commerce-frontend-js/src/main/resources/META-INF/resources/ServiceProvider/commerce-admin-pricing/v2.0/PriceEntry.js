@@ -26,7 +26,9 @@ function resolvePath(basePath, priceListId, priceEntryId) {
 	return path;
 }
 
-export default (basePath) => ({
-	addPriceEntry: (priceListId, json) =>
-		AJAX.POST(resolvePath(basePath, priceListId), json),
-});
+export default function PriceEntry(basePath) {
+	return {
+		addPriceEntry: (priceListId, json) =>
+			AJAX.POST(resolvePath(basePath, priceListId), json),
+	};
+}

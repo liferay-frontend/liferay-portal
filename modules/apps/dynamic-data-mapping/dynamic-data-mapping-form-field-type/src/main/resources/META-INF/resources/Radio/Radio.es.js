@@ -80,6 +80,7 @@ const Radio = ({
 					/>
 				))}
 			</div>
+
 			<input name={name} type="hidden" value={currentValue} />
 		</FieldBase>
 	);

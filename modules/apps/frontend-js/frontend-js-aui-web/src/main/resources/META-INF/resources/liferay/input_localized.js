@@ -334,9 +334,7 @@ AUI.add(
 						);
 					}
 
-					var defaultLanguageId = event.item.getAttribute(
-						'data-value'
-					);
+					var defaultLanguageId = event.item.dataset.value;
 
 					instance.set('defaultLanguageId', defaultLanguageId);
 
@@ -375,7 +373,7 @@ AUI.add(
 				_onLocaleChanged(event) {
 					var instance = this;
 
-					var languageId = event.item.getAttribute('data-value');
+					var languageId = event.item.dataset.value;
 
 					instance.selectFlag(languageId, event.source === instance);
 				},

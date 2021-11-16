@@ -68,6 +68,7 @@ export default function EditModeSelector() {
 				>
 					{EDIT_MODES.pageDesign}
 				</ClayDropDown.Item>
+
 				<ClayDropDown.Item
 					onClick={() => {
 						setActive(false);

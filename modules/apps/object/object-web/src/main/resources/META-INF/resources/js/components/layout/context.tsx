@@ -342,10 +342,10 @@ interface ILayoutContextProviderProps
 	};
 }
 
-export const LayoutContextProvider: React.FC<ILayoutContextProviderProps> = ({
+export function LayoutContextProvider({
 	children,
 	value,
-}) => {
+}: ILayoutContextProviderProps) {
 	const [state, dispatch] = useReducer<React.Reducer<TState, TAction>>(
 		layoutReducer,
 		{
@@ -359,6 +359,6 @@ export const LayoutContextProvider: React.FC<ILayoutContextProviderProps> = ({
 			{children}
 		</LayoutContext.Provider>
 	);
-};
+}
 
 export default LayoutContext;

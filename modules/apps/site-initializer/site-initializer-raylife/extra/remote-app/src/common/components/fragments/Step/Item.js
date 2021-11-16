@@ -4,12 +4,12 @@ import React from 'react';
 
 import {ProgressRing} from '../ProgressRing';
 
-export const StepItem = ({
+export function StepItem({
 	children,
 	onClick,
 	percentage = 0,
 	selected = false,
-}) => {
+}) {
 	const completed = percentage === 100;
 	const partially = percentage !== 0;
 
@@ -32,12 +32,14 @@ export const StepItem = ({
 					/>
 				)}
 			</i>
+
 			{completed && (
 				<div>
 					<ClayIcon symbol="check" />
 				</div>
 			)}
+
 			{children}
 		</div>
 	);
-};
+}

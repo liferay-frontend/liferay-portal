@@ -9,14 +9,15 @@ const fileTypes = {
 	'text/plain': 'document-text',
 };
 
-export const chooseIcon = (fileType) =>
-	fileTypes[fileType] || 'document-unknown';
+export function chooseIcon(fileType) {
+	return fileTypes[fileType] || 'document-unknown';
+}
 
-export const validateExtensions = (fileType, type) => {
+export function validateExtensions(fileType, type) {
 	const validExtensions =
 		type === 'image'
 			? ['image/jpeg', 'image/jpg', 'image/png']
 			: Object.keys(fileTypes);
 
 	return validExtensions.includes(fileType);
-};
+}

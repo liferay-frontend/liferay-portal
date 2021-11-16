@@ -19,6 +19,7 @@ export default function (props) {
 	return (
 		<div className="definition-builder-app">
 			<UpperToolbar {...props} />
+
 			<DiagramBuilder />
 		</div>
 	);

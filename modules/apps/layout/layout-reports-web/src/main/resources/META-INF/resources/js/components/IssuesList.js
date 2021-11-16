@@ -86,6 +86,7 @@ export default function IssuesList() {
 const LoadingProgressBar = ({percentage}) => (
 	<div className="my-4 text-secondary">
 		{Liferay.Language.get('connecting-with-google-pagespeed')}
+
 		<ClayProgressBar value={percentage} />
 	</div>
 );
@@ -155,6 +156,7 @@ const Section = ({section}) => {
 							>
 								{section.title}
 							</ClayLayout.ContentCol>
+
 							<ClayLayout.ContentCol>
 								<ClayBadge
 									displayType={
@@ -218,6 +220,7 @@ const Issue = ({issue}) => {
 						tabIndex="-1"
 					>
 						{issue.title}
+
 						<ClayBadge
 							displayType={issueTotal === 0 ? 'success' : 'info'}
 							label={issueTotal}

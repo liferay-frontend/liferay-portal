@@ -25,11 +25,13 @@ const SPLIT_REGEX = /({\d+})/g;
  * @param {Array} items The items to add to the new group.
  * @return {Object} The new group object.
  */
-export const createNewGroup = (items) => ({
-	conjunctionName: CONJUNCTIONS.AND,
-	groupId: generateGroupId(),
-	items,
-});
+export function createNewGroup(items) {
+	return {
+		conjunctionName: CONJUNCTIONS.AND,
+		groupId: generateGroupId(),
+		items,
+	};
+}
 
 let uniqueIdCounter_ = 1;
 

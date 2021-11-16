@@ -35,6 +35,7 @@ export default function fieldDelete({action, modalDispatch, onClose, rules}) {
 						<ClayButton displayType="secondary" onClick={onClose}>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
+
 						<ClayButton
 							displayType="danger"
 							onClick={() => {

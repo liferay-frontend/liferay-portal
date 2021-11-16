@@ -55,6 +55,7 @@ export default function Header({
 						'search-for-assignee-name'
 					)}
 				/>
+
 				<ClayManagementToolbar.ItemList>
 					<TimeRangeFilter />
 				</ClayManagementToolbar.ItemList>

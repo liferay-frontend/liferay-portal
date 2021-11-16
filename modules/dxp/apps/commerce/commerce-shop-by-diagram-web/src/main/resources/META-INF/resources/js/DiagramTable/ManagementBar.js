@@ -16,11 +16,11 @@ import {debounce} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
 
 function ManagementBar({updateQuery}) {
-	const [inputValue, udpateInputValue] = useState('');
+	const [inputValue, setInputValue] = useState('');
 	const debouncedUpdateQueryRef = useRef(debounce(updateQuery, 500));
 
 	function handleInputChange({target}) {
-		udpateInputValue(target.value);
+		setInputValue(target.value);
 
 		debouncedUpdateQueryRef.current(target.value);
 	}

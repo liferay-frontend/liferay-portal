@@ -14,7 +14,8 @@ import React from 'react';
 
 const FieldLabel = ({htmlFor, required, text, ...otherProps}) => (
 	<label htmlFor={htmlFor} {...otherProps}>
-		{`${text}`}{' '}
+		{text + ' '}
+
 		{required && (
 			<span className="reference-mark">
 				<ClayIcon symbol="asterisk" />

@@ -24,7 +24,9 @@ function resolvePath(basePath = '', orderRuleId = '', orderRuleChannelId = '') {
 	return `${basePath}${VERSION}${ORDER_RULE_PATH}/${orderRuleId}${ORDER_RULE_CHANNELS_PATH}/${orderRuleChannelId}`;
 }
 
-export default (basePath) => ({
-	addOrderRuleChannel: (orderRuleId, json) =>
-		AJAX.POST(resolvePath(basePath, orderRuleId), json),
-});
+export default function OrderRuleChannel(basePath) {
+	return {
+		addOrderRuleChannel: (orderRuleId, json) =>
+			AJAX.POST(resolvePath(basePath, orderRuleId), json),
+	};
+}

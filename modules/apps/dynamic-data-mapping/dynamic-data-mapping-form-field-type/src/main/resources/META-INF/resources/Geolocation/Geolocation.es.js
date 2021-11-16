@@ -58,12 +58,14 @@ const Geolocation = ({
 			{!disabled || viewMode ? (
 				<dl>
 					<dt className="text-capitalize"></dt>
+
 					<dd>
 						<NoRender
 							className="lfr-map"
 							id={`map_${instanceId}`}
 							style={{height: '280px'}}
 						/>
+
 						<input
 							id={`input_value_${instanceId}`}
 							name={name}

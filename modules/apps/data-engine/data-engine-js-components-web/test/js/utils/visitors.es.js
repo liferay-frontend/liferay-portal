@@ -30,7 +30,7 @@ describe('PagesVisitor', () => {
 
 	it('does not multate the fields of the original array', () => {
 		const newPages = visitor.mapFields((field) => {
-			if (field.fieldName == 'radio') {
+			if (field.fieldName === 'radio') {
 				field.fieldName = 'liferay';
 			}
 

@@ -19,7 +19,7 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import {AppContext} from './AppContext';
 import {CodeMirrorEditor} from './CodeMirrorEditor';
 
-export const Editor = ({autocompleteData, initialScript}) => {
+export function Editor({autocompleteData, initialScript}) {
 	const {inputChannel, portletNamespace} = useContext(AppContext);
 
 	const [script, setScript] = useState(initialScript);
@@ -109,7 +109,7 @@ export const Editor = ({autocompleteData, initialScript}) => {
 			/>
 		</>
 	);
-};
+}
 
 Editor.propTypes = {
 	autocompleteData: PropTypes.object.isRequired,

@@ -408,7 +408,8 @@ AUI.add(
 
 					if (
 						!instance.get('localizable') &&
-						form.getDefaultLocale() != instance.get('displayLocale')
+						form.getDefaultLocale() !==
+							instance.get('displayLocale')
 					) {
 						retVal = true;
 					}
@@ -570,7 +571,7 @@ AUI.add(
 					var instance = this;
 
 					var currentLocale = instance.get('displayLocale');
-					var displayLocale = event.item.getAttribute('data-value');
+					var displayLocale = event.item.dataset.value;
 
 					instance.updateLocalizationMap(currentLocale);
 
@@ -1004,9 +1005,9 @@ AUI.add(
 
 					if (
 						fieldDefinition &&
-						(fieldDefinition.dataType == 'html' ||
-							fieldDefinition.type == 'ddm-geolocation' ||
-							fieldDefinition.type == 'ddm-separator')
+						(fieldDefinition.dataType === 'html' ||
+							fieldDefinition.type === 'ddm-geolocation' ||
+							fieldDefinition.type === 'ddm-separator')
 					) {
 						container._node.insertAdjacentHTML(
 							'afterbegin',
@@ -2266,7 +2267,7 @@ AUI.add(
 
 							if (
 								start <= cache.total &&
-								start != cache.oldStart
+								start !== cache.oldStart
 							) {
 								cache.oldStart = start;
 
@@ -3894,9 +3895,7 @@ AUI.add(
 
 					var definition = instance.get('definition');
 
-					definition.defaultLanguageId = event.item.getAttribute(
-						'data-value'
-					);
+					definition.defaultLanguageId = event.item.dataset.value;
 
 					instance.set('definition', definition);
 				},
@@ -3963,7 +3962,7 @@ AUI.add(
 					);
 
 					availableLanguageIds.forEach((item) => {
-						if (currentAvailableLanguageIds.indexOf(item) == -1) {
+						if (currentAvailableLanguageIds.indexOf(item) === -1) {
 							currentAvailableLanguageIds.push(item);
 						}
 					});
@@ -4215,7 +4214,7 @@ AUI.add(
 
 						var nestedFields = field.get('fields');
 
-						if (!nestedFields || nestedFields.length == 0) {
+						if (!nestedFields || nestedFields.length === 0) {
 							return;
 						}
 

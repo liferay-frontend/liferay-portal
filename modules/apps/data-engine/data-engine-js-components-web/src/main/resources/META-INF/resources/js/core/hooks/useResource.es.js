@@ -27,7 +27,7 @@ const HEADERS = {
 	'Content-Type': 'application/json',
 };
 
-export const useFieldTypesResource = () => {
+export function useFieldTypesResource() {
 	const storage = useStorage();
 
 	return useResource({
@@ -42,4 +42,4 @@ export const useFieldTypesResource = () => {
 			p_auth: Liferay.authToken,
 		},
 	});
-};
+}

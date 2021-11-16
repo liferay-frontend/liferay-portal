@@ -3,7 +3,7 @@ import {Controller} from 'react-hook-form';
 import {MoreInfoButton} from '~/common/components/fragments/Buttons/MoreInfo';
 import {Input} from '~/common/components/fragments/Forms/Input';
 
-export const ControlledInput = ({
+export function ControlledInput({
 	name,
 	label,
 	rules,
@@ -11,7 +11,7 @@ export const ControlledInput = ({
 	moreInfoProps = undefined,
 	inputProps = {},
 	...props
-}) => {
+}) {
 	return (
 		<Controller
 			control={control}
@@ -33,4 +33,4 @@ export const ControlledInput = ({
 			{...props}
 		/>
 	);
-};
+}

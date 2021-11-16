@@ -115,6 +115,7 @@ export default function DragPreview() {
 						<ClayIcon className="mt-0" symbol={icon} />
 					</div>
 				)}
+
 				<span className="ml-3 text-truncate">
 					{item?.name ? item.name : Liferay.Language.get('element')}
 				</span>

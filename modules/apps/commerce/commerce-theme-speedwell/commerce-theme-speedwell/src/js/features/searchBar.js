@@ -13,11 +13,11 @@
  */
 
 (function (w) {
-	var searchToggles = w.document.querySelectorAll('.js-toggle-search'),
-		HAS_SEARCH_CLASS = 'has-search',
-		IS_OPEN_CLASS = 'is-open',
-		IS_ACTIVE_CLASS = 'is-active',
-		SEARCHBAR_SELECTOR = '.speedwell-search';
+	var searchToggles = w.document.querySelectorAll('.js-toggle-search');
+	var HAS_SEARCH_CLASS = 'has-search';
+	var IS_OPEN_CLASS = 'is-open';
+	var IS_ACTIVE_CLASS = 'is-active';
+	var SEARCHBAR_SELECTOR = '.speedwell-search';
 
 	var searchBarElement;
 
