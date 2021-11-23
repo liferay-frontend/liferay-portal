@@ -38,23 +38,15 @@ export type Violations = {
 	rules: Record<RuleId, RuleRaw>;
 };
 
-function segmentViolationsByRulesAndNodes(
-	violations: Array<Result>,
-	previousViolations: Violations
+/**
+ * Validates the previous list of violations by removing elements that are
+ * no longer visible in the DOM.
+ */
+function revalidateViolations(
+	previousViolations: Violations,
+	elements?: WeakMap<Element, string>
 ) {
-
-	// Maintains a list of target elements to ensure that targets are unique
-	// and we don't add violations with different selectors for the
-	// same element.
-
-	const elements = new WeakMap<Element, string>();
-
-	// Validates the previous list of violations by removing elements that are
-	// no longer visible in the DOM.
-
-	const revalidatedViolations = Object.values(
-		previousViolations.rules
-	).reduce(
+	return Object.values(previousViolations.rules).reduce(
 		(previousViolation, rule) => {
 
 			// Revalidation if the target exists on the DOM
@@ -95,7 +87,9 @@ function segmentViolationsByRulesAndNodes(
 						];
 					}
 
-					elements.set(element, node);
+					if (elements) {
+						elements.set(element, node);
+					}
 				}
 
 				return element;
@@ -112,7 +106,13 @@ function segmentViolationsByRulesAndNodes(
 		},
 		{iframes: {}, nodes: {}, rules: {}} as Violations
 	);
+}
 
+function segmentViolationsByRulesAndNodes(
+	violations: Array<Result>,
+	previousViolations: Violations,
+	elements: WeakMap<Element, string>
+) {
 	return violations.reduce<Violations>((previousViolation, current) => {
 		const {nodes, ...rule} = current;
 
@@ -213,7 +213,7 @@ function segmentViolationsByRulesAndNodes(
 		staleTargets.clear();
 
 		return previousViolation;
-	}, revalidatedViolations);
+	}, previousViolations);
 }
 
 const defaultState = {
@@ -227,14 +227,29 @@ export default function useA11y(props: Omit<A11yCheckerOptions, 'callback'>) {
 
 	useEffect(() => {
 		const checker = new A11yChecker({
-			callback: (results) =>
-				results.violations.length &&
-				setViolations((prevViolations) =>
-					segmentViolationsByRulesAndNodes(
-						results.violations,
-						prevViolations
-					)
-				),
+			callback: (results) => {
+				if (results.violations.length) {
+
+					// Maintains a list of target elements to ensure that targets
+					// are unique and we don't add violations with different
+					// selectors for the same element.
+
+					const elements = new WeakMap<Element, string>();
+
+					setViolations((prevViolations) =>
+						segmentViolationsByRulesAndNodes(
+							results.violations,
+							revalidateViolations(prevViolations, elements),
+							elements
+						)
+					);
+				}
+				else {
+					setViolations((prevViolations) =>
+						revalidateViolations(prevViolations)
+					);
+				}
+			},
 			...props,
 		});
 
