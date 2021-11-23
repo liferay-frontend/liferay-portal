@@ -106,6 +106,21 @@
 	}
 }
 
+.form-control-inline {
+	background-color: transparent;
+	font-size: 1.125rem;
+	font-weight: 700;
+
+	&:not(:hover) {
+		border-color: transparent;
+	}
+
+	&::placeholder {
+		color: $secondary-l1;
+		font-style: italic;
+	}
+}
+
 // AUI
 .overlay {
 	position: absolute;
