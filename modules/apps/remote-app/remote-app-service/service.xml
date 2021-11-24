@@ -29,6 +29,12 @@
 		<column name="portletCategoryName" type="String" />
 		<column name="properties" type="String" />
 		<column name="type" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
 	</entity>
 	<exceptions>
 		<exception>RemoteAppEntryCustomElementCSSURLs</exception>
