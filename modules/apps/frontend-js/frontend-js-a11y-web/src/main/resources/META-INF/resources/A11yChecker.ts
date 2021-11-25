@@ -391,6 +391,8 @@ export interface A11yCheckerOptions {
 	targets: Array<string>;
 }
 
+const scheduler = new Scheduler();
+
 export class A11yChecker {
 	private callback: A11yCheckerOptions['callback'];
 	private scheduler: Scheduler<Node>;
@@ -431,7 +433,7 @@ export class A11yChecker {
 		// A11yChecker to share the same queue to avoid bottlenecks and
 		// performance issues.
 
-		this.scheduler = new Scheduler();
+		this.scheduler = scheduler as Scheduler<Node>;
 
 		this.mutations = mutations;
 
