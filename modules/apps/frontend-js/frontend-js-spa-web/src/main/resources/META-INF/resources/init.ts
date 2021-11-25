@@ -128,7 +128,7 @@ const initSPA = function (config: Config) {
 };
 
 export default function init(config: Config) {
-	if (document.readyState == 'loading') {
+	if (document.readyState === 'loading') {
 		document.addEventListener('DOMContentLoaded', () => {
 			initSPA(config);
 		});

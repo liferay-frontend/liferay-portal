@@ -12,25 +12,31 @@
  * details.
  */
 interface Token {
-    name: string;
-    optional: boolean;
-    partial: boolean | '';
-    pattern: string;
-    prefix: string;
-    repeat: boolean;
+	name: string;
+	optional: boolean;
+	partial: boolean | '';
+	pattern: string;
+	prefix: string;
+	repeat: boolean;
 }
 declare type RouteOrTokens = string | Token[];
+
 /**
  * Parses the given route format string into tokens representing its contents.
  */
 export declare function parse(routeOrTokens: RouteOrTokens): (string | Token)[];
+
 /**
  * Converts the given route format string to a regex that can extract param
  * data from paths matching it.
  */
 export declare function toRegex(routeOrTokens: RouteOrTokens): RegExp;
+
 /**
  * Extracts data from the given path according to the specified route format.
  */
-export declare function extractData(routeOrTokens: RouteOrTokens, path: string): Record<string, string | string[]> | null;
+export declare function extractData(
+	routeOrTokens: RouteOrTokens,
+	path: string
+): Record<string, string | string[]> | null;
 export {};

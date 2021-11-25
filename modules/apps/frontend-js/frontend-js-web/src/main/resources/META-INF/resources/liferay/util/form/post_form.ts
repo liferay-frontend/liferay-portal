@@ -16,8 +16,8 @@ import isObject from '../is_object';
 import setFormValues from './set_form_values';
 
 interface Options {
-	url?: string;
 	data?: Record<string, string>;
+	url?: string;
 }
 
 /**

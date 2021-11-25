@@ -14,8 +14,8 @@
 import Disposable from './Disposable';
 import EventHandle from './EventHandle';
 interface EventFacade {
-    preventedDefault?: boolean;
     preventDefault: () => void;
+    preventedDefault?: boolean;
     target: EventEmitter;
     type: string;
 }

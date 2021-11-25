@@ -13,8 +13,8 @@
  */
 
 interface VendorPrefixedCSSStyleDeclaration extends CSSStyleDeclaration {
-	msTransform?: string;
 	mozTransform?: string;
+	msTransform?: string;
 }
 
 type ClientProperty = 'clientHeight' | 'clientWidth';

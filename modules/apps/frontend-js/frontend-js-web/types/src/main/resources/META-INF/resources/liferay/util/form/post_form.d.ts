@@ -12,8 +12,8 @@
  * details.
  */
 interface Options {
-    url?: string;
     data?: Record<string, string>;
+    url?: string;
 }
 /**
  * Submits the form, with optional setting of form elements.

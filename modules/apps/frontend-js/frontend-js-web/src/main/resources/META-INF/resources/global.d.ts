@@ -28,8 +28,8 @@ declare global {
 	export interface Liferay {
 		AUI: AUI;
 		Browser: Browser;
-		Data: Data;
 		DOMTaskRunner: DOMTaskRunner;
+		Data: Data;
 		Language: Language;
 		Portlet: Portlet;
 		PortletKeys: PortletKeys;
@@ -38,12 +38,11 @@ declare global {
 		ThemeDisplay: ThemeDisplay;
 		Util: Util;
 
+		readonly after: EventHandler;
 		readonly authToken: string;
+		readonly before: EventHandler;
 		readonly currentURL: string;
 		readonly currentURLEncoded: string;
-
-		readonly after: EventHandler;
-		readonly before: EventHandler;
 		readonly destroyComponents: (
 			filterFn: (component: any, componentConfig: any) => boolean
 		) => void;

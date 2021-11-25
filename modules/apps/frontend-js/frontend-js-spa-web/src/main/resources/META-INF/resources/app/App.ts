@@ -250,7 +250,11 @@ class App extends EventEmitter {
 		this.maybeOverloadBeforeUnload_();
 	}
 
-	addDOMEventListener(element: EventTarget, eventName: string, callback: EventListenerOrEventListenerObject) {
+	addDOMEventListener(
+		element: EventTarget,
+		eventName: string,
+		callback: EventListenerOrEventListenerObject
+	) {
 		element.addEventListener(eventName, callback);
 
 		return {

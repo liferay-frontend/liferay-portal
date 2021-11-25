@@ -53,11 +53,13 @@ declare class App extends EventEmitter {
     surfaces: Record<string, Surface>;
     updateScrollPosition: boolean;
     appEventHandlers_: EventHandler;
+    formEventHandler_: any;
+    linkEventHandler_: any;
     /**
      * App class that handle routes and screens lifecycle.
      */
     constructor({ navigationExceptionSelectors }?: AppConfig);
-    addDOMEventListener(element: any, eventName: any, callback: any): {
+    addDOMEventListener(element: EventTarget, eventName: string, callback: EventListenerOrEventListenerObject): {
         removeListener(): void;
     };
     /**
@@ -91,13 +93,10 @@ declare class App extends EventEmitter {
     addSurfaces(surfaces: any): this;
     /**
      * Returns if can navigate to path.
-     * @param {!string} url
-     * @return {boolean}
      */
-    canNavigate(url: any): boolean;
+    canNavigate(url: string): boolean;
     /**
      * Clear screens cache.
-     * @chainable
      */
     clearScreensCache(): void;
     /**
@@ -105,7 +104,7 @@ declare class App extends EventEmitter {
      * @param {!string} path Path containing the querystring part.
      * @return {Screen}
      */
-    createScreenInstance(path: any, route: any): Nullable<Screen>;
+    createScreenInstance(path: string, route: any): Nullable<Screen>;
     /**
      * @inheritDoc
      */
