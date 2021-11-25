@@ -112,6 +112,7 @@ export class Scheduler<T> {
 	 */
 	private readonly yieldInterval = 100;
 	public deadline = 0;
+	public isPaused = false;
 
 	cancelHostCallback() {
 		window.cancelIdleCallback(this.scheduledHostHandle);
@@ -153,7 +154,7 @@ export class Scheduler<T> {
 
 			const hasMoreWork = await this.flushWork();
 
-			if (hasMoreWork) {
+			if (hasMoreWork && !this.isPaused) {
 
 				// If there's more work, schedule the next callback at the
 				// end of the preceding one.
@@ -184,7 +185,7 @@ export class Scheduler<T> {
 	private async workLoop() {
 		this.currentTask = this.queue.peek();
 
-		while (this.currentTask !== null) {
+		while (this.currentTask !== null && !this.isPaused) {
 			if (this.shouldYieldToHost()) {
 
 				// We no longer have time to run currentTask now
@@ -212,6 +213,21 @@ export class Scheduler<T> {
 		// Return whether there's additional work
 
 		return this.currentTask !== null;
+	}
+
+	continueExecution(): void {
+		this.isPaused = false;
+
+		if (!this.isCallbackScheduled && !this.isPerformingWork) {
+			this.isCallbackScheduled = true;
+			this.requestHostCallback();
+		}
+	}
+
+	pauseExecution(): void {
+		this.isPaused = true;
+
+		this.isCallbackScheduled = false;
 	}
 
 	scheduleCallback(callback: Function, target: T) {
@@ -441,6 +457,10 @@ export class A11yChecker {
 			targets,
 			this.mutationCallback.bind(this)
 		);
+
+		if (this.scheduler.isPaused) {
+			this.scheduler.continueExecution();
+		}
 	}
 
 	private async run(target: HTMLElement) {
@@ -571,6 +591,7 @@ export class A11yChecker {
 	}
 
 	unobserve() {
+		this.scheduler.pauseExecution();
 		this.scheduler.cancelHostCallback();
 		this.observers.unobserve();
 	}

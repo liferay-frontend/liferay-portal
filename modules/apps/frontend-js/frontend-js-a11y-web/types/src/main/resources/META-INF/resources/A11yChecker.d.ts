@@ -85,12 +85,15 @@ export declare class Scheduler<T> {
 	 */
 	private readonly yieldInterval;
 	deadline: number;
+	isPaused: boolean;
 	cancelHostCallback(): void;
 	hasCallback(selector: Selector<Task<T>>): Task<T> | undefined;
 	private flushWork;
 	private requestHostCallback;
 	private shouldYieldToHost;
 	private workLoop;
+	continueExecution(): void;
+	pauseExecution(): void;
 	scheduleCallback(callback: Function, target: T): void;
 }
 
