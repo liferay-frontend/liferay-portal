@@ -147,9 +147,20 @@ function segmentViolationsByRulesAndNodes(
 				previousViolation.nodes[target][current.id] = node;
 			}
 			else {
-				const element = document.querySelector(
-					node.target[node.target.length - 1]
-				);
+				const lastTarget = node.target[node.target.length - 1];
+
+				let element: Element | undefined | null;
+
+				if (node.target.length > 1) {
+					element = (document.querySelector(node.target[0]) as
+						| HTMLIFrameElement
+						| undefined)?.contentDocument?.querySelector(
+						lastTarget
+					);
+				}
+				else {
+					element = document.querySelector(lastTarget);
+				}
 
 				// The selector can be different for each analysis, but the
 				// element will be the same, we just keep the target updated
