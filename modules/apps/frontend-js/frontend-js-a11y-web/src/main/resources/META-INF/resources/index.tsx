@@ -56,7 +56,7 @@ export default function main(
 	props: Omit<A11yCheckerOptions, 'callback' | 'targets'>
 ) {
 	render(
-		window.themeDisplay.isStatePopUp() ? A11yIframe : A11y,
+		window.frameElement ? A11yIframe : A11y,
 		props,
 		getDefaultContainer()
 	);
