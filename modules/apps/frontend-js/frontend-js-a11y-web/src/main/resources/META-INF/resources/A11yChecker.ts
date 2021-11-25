@@ -519,9 +519,26 @@ export class A11yChecker {
 			? (node as Element).querySelectorAll('iframe')
 			: [];
 
-		iframes.forEach((iframe: HTMLIFrameElement) =>
-			this.observers.add(`#${iframe.getAttribute('id')}`)
-		);
+		iframes.forEach((iframe: HTMLIFrameElement) => {
+			let selector = 'iframe';
+
+			const id = iframe.getAttribute('id');
+
+			if (id) {
+				selector += `#${id}`;
+			}
+
+			const className = iframe
+				.getAttribute('class')
+				?.split(' ')
+				.join('.');
+
+			if (className) {
+				selector += `.${className}`;
+			}
+
+			this.observers.add(selector);
+		});
 	}
 
 	private mutationCallback(records: Array<MutationRecord>) {
