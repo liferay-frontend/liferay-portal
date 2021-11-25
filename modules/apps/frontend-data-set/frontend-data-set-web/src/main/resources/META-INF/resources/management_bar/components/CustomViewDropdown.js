@@ -15,10 +15,23 @@
 import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
+
+import DataSetContext from '../../DataSetContext';
+import buildCustomViewDefinition from '../../utils/buildCustomViewDefinition';
+import ViewsContext from '../../views/ViewsContext';
 
 const CustomViewDropdown = () => {
+	const [{activeView, visibleFieldNames}] = useContext(ViewsContext);
+	const dataSetContext = useContext(DataSetContext);
+
 	const [active, setActive] = useState(false);
+
+	const saveCustomView = () => {
+
+		// placeholder, until we implement backend API
+
+	};
 
 	return (
 		<ClayDropDown
@@ -35,7 +48,18 @@ const CustomViewDropdown = () => {
 			}
 		>
 			<ClayDropDown.ItemList>
-				<ClayDropDown.Item>
+				<ClayDropDown.Item
+					onClick={() => {
+						const customViewDefinition = buildCustomViewDefinition({
+							activeView,
+							componentId: dataSetContext.id,
+							customViewLabel: 'New Custom View',
+							visibleFieldNames,
+						});
+
+						saveCustomView(customViewDefinition);
+					}}
+				>
 					{Liferay.Language.get('save')}
 				</ClayDropDown.Item>
 			</ClayDropDown.ItemList>
