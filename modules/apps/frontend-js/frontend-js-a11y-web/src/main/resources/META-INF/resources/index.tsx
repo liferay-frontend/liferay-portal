@@ -27,6 +27,7 @@ declare global {
 		Util: {
 			sub(...value: string[]): string;
 		};
+		on: (event: string, fn: Function) => void;
 	};
 
 	interface ThemeDisplay {
@@ -60,4 +61,12 @@ export default function main(
 		props,
 		getDefaultContainer()
 	);
+
+	Liferay.on('endNavigate', () => {
+		render(
+			window.frameElement ? A11yIframe : A11y,
+			props,
+			getDefaultContainer()
+		);
+	});
 }

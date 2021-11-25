@@ -21,6 +21,7 @@ declare global {
 		Util: {
 			sub(...value: string[]): string;
 		};
+		on: (event: string, fn: Function) => void;
 	};
 	interface ThemeDisplay {
 		isStatePopUp(): boolean;
