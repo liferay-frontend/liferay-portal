@@ -437,6 +437,7 @@ export class A11yChecker {
 		this.axeOptions = {
 			...defaultOptions,
 			...options,
+			absolutePaths: true,
 			runOnly: runOnlyArray?.length ? runOnlyArray : undefined,
 		};
 
