@@ -8,7 +8,7 @@ definition {
 	}
 
 	macro addFieldInsideCollectionDisplay {
-		Click(
+		Click.Click(
 			key_label = "${label}",
 			locator1 = "VisualizeObjectCollectionDisplay#EXPAND_BUTTON");
 
@@ -19,15 +19,15 @@ definition {
 	}
 
 	macro mapFragment {
-		Select(
+		Select.Select(
 			locator1 = "VisualizeObjectCollectionDisplay#MAP_FRAGMENT",
 			value1 = "${fieldLabel}");
 	}
 
 	macro openHeading {
-		DoubleClick(locator1 = "VisualizeObjectCollectionDisplay#HEADING_COLLECTION_DISPLAY");
+		DoubleClick.DoubleClick(locator1 = "VisualizeObjectCollectionDisplay#HEADING_COLLECTION_DISPLAY");
 
-		WaitForPageLoad();
+		WaitForPageLoad.WaitForPageLoad();
 	}
 
 	macro openObjectCollectionProvider {
@@ -35,25 +35,25 @@ definition {
 	}
 
 	macro viewEntriesFragment {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_entries = "${entries}",
 			locator1 = "VisualizeObjectCollectionDisplay#ENTRIES_FRAGMENT");
 	}
 
 	macro viewMappedFragment {
-		AssertSelectedLabel(
+		AssertSelectedLabel.AssertSelectedLabel(
 			locator1 = "VisualizeObjectCollectionDisplay#MAP_FRAGMENT",
 			value1 = "${fieldLabel}");
 	}
 
 	macro viewObjectCollectionProvider {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_labelName = "${labelName}",
 			locator1 = "VisualizeObjectCollectionDisplay#VIEW_OBJECT_COLLECTION_DISPLAY");
 	}
 
 	macro viwEntriesTable {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_entries = "${entries}",
 			locator1 = "VisualizeObjectCollectionDisplay#ENTRIES_TABLE");
 	}

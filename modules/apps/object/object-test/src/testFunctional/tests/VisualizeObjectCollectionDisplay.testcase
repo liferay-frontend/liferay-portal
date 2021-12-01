@@ -63,11 +63,11 @@ definition {
 			fragmentName = "Collection Display",
 			infoListProviderName = "Custom Objects");
 
-		DoubleClick(
+		DoubleClick.DoubleClick(
 			collectionName = "Collection Display",
 			locator1 = "VisualizeObjectCollectionDisplay#FRAGMENT_COLLECTION");
 
-		Select(
+		Select.Select(
 			key_fieldLabel = "List Style",
 			locator1 = "Select#GENERIC_SELECT_FIELD",
 			value1 = "Table");

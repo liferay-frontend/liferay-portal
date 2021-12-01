@@ -91,7 +91,7 @@ definition {
 
 		ObjectAdmin.markLayoutAsDefault();
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block 1",
@@ -165,9 +165,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block Name",
@@ -205,9 +205,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block Name",
@@ -245,9 +245,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block Name",
@@ -280,9 +280,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(tabName = "Field Tab");
 
@@ -339,7 +339,7 @@ definition {
 
 		Button.clickCancel();
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_name = "CustomObject",
 			key_system = "No",
 			locator1 = "ObjectAdmin#VIEW_OBJECT");
@@ -363,11 +363,11 @@ definition {
 
 		LexiconEntry.gotoAdd();
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#OBJECT_FIELDS_LABEL_INPUT",
 			value1 = "Custom Field");
 
-		Select(
+		Select.Select(
 			locator1 = "ObjectAdmin#OBJECT_FIELDS_TYPE",
 			value1 = "String");
 
@@ -392,23 +392,23 @@ definition {
 
 		LexiconEntry.gotoAdd();
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#LABEL_OBJECT_RELATIONSHIP",
 			value1 = "Custom Relationship");
 
-		Click(locator1 = "ObjectAdmin#RELATIONSHIPS_TYPE_FORM");
+		Click.Click(locator1 = "ObjectAdmin#RELATIONSHIPS_TYPE_FORM");
 
-		Click(
+		Click.Click(
 			key_type = "One to Many",
 			locator1 = "ObjectAdmin#SELECT_RELATIONSHIPS_TYPE_OPTION");
 
-		Select(
+		Select.Select(
 			locator1 = "ObjectAdmin#SELECT_OBJECT_RELATIONSHIP",
 			value1 = "CustomObject");
 
 		Button.clickCancel();
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "Message#EMPTY_INFO",
 			value1 = "No items were found.");
 	}
@@ -440,9 +440,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block 1",
@@ -450,17 +450,17 @@ definition {
 			fieldLabelName = "Custom Field",
 			tabName = "Field Tab");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#LAYOUT_BASIC_INFO_NAME_FIELD",
 			value1 = "Layout Updated");
 
 		Button.clickCancel();
 
-		Refresh();
+		Refresh.Refresh();
 
-		AssertTextNotEquals(
+		AssertTextNotEquals.AssertTextNotEquals(
 			key_name = "Layout",
 			locator1 = "ObjectAdmin#TABLE_LIST_TITLE",
 			value1 = "Layout Updated");
@@ -504,7 +504,7 @@ definition {
 
 		ObjectAdmin.markLayoutAsDefault();
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block 1",
@@ -540,7 +540,7 @@ definition {
 			fieldLabel = "Custom Field",
 			fieldType = "BigDecimal");
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.assertObjectField(
 			fieldLabel = "Custom Field",
@@ -565,7 +565,7 @@ definition {
 			fieldLabel = "Custom Field",
 			fieldType = "Boolean");
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.assertObjectField(
 			fieldLabel = "Custom Field",
@@ -606,7 +606,7 @@ definition {
 			fieldLabel = "Custom Field",
 			fieldType = "Date");
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.assertObjectField(
 			fieldLabel = "Custom Field",
@@ -631,7 +631,7 @@ definition {
 			fieldLabel = "Custom Field",
 			fieldType = "Double");
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.assertObjectField(
 			fieldLabel = "Custom Field",
@@ -656,7 +656,7 @@ definition {
 			fieldLabel = "Custom Field",
 			fieldType = "Integer");
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.assertObjectField(
 			fieldLabel = "Custom Field",
@@ -743,7 +743,7 @@ definition {
 			object = "CustomObjectB",
 			type = "One to Many");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_label = "Relationship",
 			locator1 = "ObjectAdmin#RELATIONSHIP_LABEL");
 	}
@@ -799,7 +799,7 @@ definition {
 			fieldLabel = "Custom Field",
 			fieldType = "String");
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.assertObjectField(
 			fieldLabel = "Custom Field",
@@ -853,9 +853,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block Name",
@@ -935,7 +935,7 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "Delete");
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "Message#EMPTY_INFO",
 			value1 = "No items were found.");
 	}
@@ -986,7 +986,7 @@ definition {
 
 		ObjectAdmin.addTabRelationshipsOnLayout(tabName = "Relationship Tab");
 
-		Click(
+		Click.Click(
 			key_tab = "Save",
 			locator1 = "Button#TAB_SUBMIT_BTN");
 
@@ -1095,7 +1095,7 @@ definition {
 			object = "CustomObject",
 			type = "One to Many");
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "Message#ERROR",
 			value1 = "Duplicate name relationship");
 	}
@@ -1143,9 +1143,9 @@ definition {
 
 		ObjectAdmin.gotoRelationshipsTab();
 
-		AssertElementNotPresent(locator1 = "ObjectAdmin#KEBAB_MENU");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "ObjectAdmin#KEBAB_MENU");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_kebabOption = "Delete",
 			locator1 = "ObjectAdmin#KEBAB_MENU_OPTION");
 	}
@@ -1203,13 +1203,13 @@ definition {
 	test CannotLeaveObjectLabelFieldBlank {
 		ObjectAdmin.openObjectAdmin();
 
-		Click(locator1 = "ObjectAdmin#ADD_CUSTOM_OBJECT");
+		Click.Click(locator1 = "ObjectAdmin#ADD_CUSTOM_OBJECT");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#PLURAL_LABEL_CUSTOM_OBJECT",
 			value1 = "Custom Objects");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#NAME_CUSTOM_OBJECT",
 			value1 = "CustomObject");
 
@@ -1262,7 +1262,7 @@ definition {
 			object = "CustomObject",
 			type = "One to Many");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#NAME_OBJECT_RELATIONSHIP_REQUIRED");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#NAME_OBJECT_RELATIONSHIP_REQUIRED");
 	}
 
 	@description = "LPS-135400 - Verify it is not possible to leave the Relationship Object blank"
@@ -1283,7 +1283,7 @@ definition {
 			label = "Custom Relationship",
 			type = "One to Many");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#SELECT_OBJECT_RELATIONSHIP_REQUIRED");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#SELECT_OBJECT_RELATIONSHIP_REQUIRED");
 	}
 
 	@description = "LPS-135400 - Verify it is not possible to leave the Relationship Type blank"
@@ -1304,7 +1304,7 @@ definition {
 			label = "Relationship",
 			object = "CustomObject");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#RELATIONSHIPS_TYPE_FORM_REQUIRED");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#RELATIONSHIPS_TYPE_FORM_REQUIRED");
 	}
 
 	@description = "LPS-135549 - Verify it is not possible to leave the Type field blank"
@@ -1409,7 +1409,7 @@ definition {
 			fieldLabelName = "ObjectTest1",
 			pluralLabelName = "ObjectsTests1");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#NAME_CUSTOM_OBJECT",
 			value1 = "ObjectTest@");
 
@@ -1452,9 +1452,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block 1",
@@ -1462,7 +1462,7 @@ definition {
 			fieldLabelName = "Custom Field Not Required",
 			tabName = "Field Tab");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
 
 		Click.clickAtNotVisible(locator1 = "ObjectAdmin#ENTRY_BOOLEAN_CHECKBOX");
 
@@ -1518,15 +1518,15 @@ definition {
 
 		PopulateObjectFormsConfiguration.openForm();
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_text = "exclamation-full",
 			locator1 = "Icon#ANY");
 
-		MouseOver(
+		MouseOver.MouseOver(
 			key_text = "exclamation-full",
 			locator1 = "Icon#ANY");
 
-		AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#ALERT_ICON_MESSAGE");
+		AssertElementPresent.AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#ALERT_ICON_MESSAGE");
 
 		LexiconEntry.gotoEllipsisMenuItem(menuItem = "Edit");
 
@@ -1537,11 +1537,11 @@ definition {
 			fieldName = "Text",
 			fieldValue = "Entry 1");
 
-		AssertClick(
+		AssertClick.AssertClick(
 			locator1 = "Button#MAIN_CONTENT_SUBMIT",
 			value1 = "Submit");
 
-		AssertElementNotPresent(locator1 = "Message#SUCCESS_DISMISSIBLE");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "Message#SUCCESS_DISMISSIBLE");
 	}
 
 	@description = "LPS-135400 - Verify it is not possible to submit an entry with a invalid value on the Relationship field"
@@ -1578,7 +1578,7 @@ definition {
 
 		ObjectAdmin.goToFieldsDetails(label = "Custom Field");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_FIELDS_MANDATORY_TOGGLE_SWITCH_DISABLED");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_FIELDS_MANDATORY_TOGGLE_SWITCH_DISABLED");
 	}
 
 	@description = "LPS-135635 - Verify it is not possible to update the Name of a Field after the Object is published"
@@ -1672,7 +1672,7 @@ definition {
 
 		ObjectPortlet.selectCustomObject(label = "Custom Object");
 
-		AssertElementPresent(locator1 = "CreateObject#VIEW_OBJECT_SCOPE_DISABLED");
+		AssertElementPresent.AssertElementPresent(locator1 = "CreateObject#VIEW_OBJECT_SCOPE_DISABLED");
 	}
 
 	@description = "LPS-135390 - Verify it is not possible to update an Object without the Update permission"
@@ -1709,7 +1709,7 @@ definition {
 
 		ObjectAdmin.goToFieldsDetails(label = "Text");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#VIEW_SEARCHABLE_SECTION_DISABLED");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#VIEW_SEARCHABLE_SECTION_DISABLED");
 	}
 
 	@description = "LPS-135649 - Verify that the Object is not displayed on Process Builder settings before Published"
@@ -1805,7 +1805,7 @@ definition {
 
 		ApplicationsMenu.gotoPanel(panel = "Control Panel");
 
-		AssertElementPresent(locator1 = "ObjectPortlet#CUSTOM_OBJECT_ON_CONTROL_PANEL");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectPortlet#CUSTOM_OBJECT_ON_CONTROL_PANEL");
 	}
 
 	@description = "LPS-135551 - Verify it is possible to scope the Object by Site"
@@ -1828,7 +1828,7 @@ definition {
 
 		ProductMenuHelper.expandCategory(category = "Content & Data");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_portlet = "Custom Objects",
 			locator1 = "ProductMenu#PORTLET",
 			value1 = "Custom Objects");
@@ -2009,7 +2009,7 @@ definition {
 
 		ApplicationsMenu.gotoPanel(panel = "Painel de Controle");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_category = "Objeto",
 			key_portlet = "Objetos Customizados",
 			locator1 = "ApplicationsMenu#PORTLET");
@@ -2096,7 +2096,7 @@ definition {
 
 		PopulateObjectFormsConfiguration.openForm();
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_text = "exclamation-full",
 			locator1 = "Icon#ANY");
 
@@ -2145,9 +2145,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block 1",
@@ -2155,17 +2155,17 @@ definition {
 			fieldLabelName = "Custom Field",
 			tabName = "Field Tab");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#LAYOUT_BASIC_INFO_NAME_FIELD",
 			value1 = "Layout Updated");
 
 		Button.clickSave();
 
-		Refresh();
+		Refresh.Refresh();
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			key_name = "Layout Updated",
 			locator1 = "ObjectAdmin#TABLE_LIST_TITLE",
 			value1 = "Layout Updated");
@@ -2202,7 +2202,7 @@ definition {
 
 		CreateObject.saveObject();
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.goToFieldsDetails(label = "Text Update");
 
@@ -2238,7 +2238,7 @@ definition {
 
 		CreateObject.saveObject();
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.goToFieldsDetails(label = "Text Update");
 
@@ -2272,7 +2272,7 @@ definition {
 
 		CreateObject.saveObject();
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.goToFieldsDetails(label = "Text");
 
@@ -2306,7 +2306,7 @@ definition {
 
 		CreateObject.saveObject();
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.goToFieldsDetails(label = "Text");
 
@@ -2340,7 +2340,7 @@ definition {
 
 		CreateObject.saveObject();
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.goToFieldsDetails(label = "Text");
 
@@ -2374,7 +2374,7 @@ definition {
 
 		CreateObject.saveObject();
 
-		Refresh();
+		Refresh.Refresh();
 
 		ObjectAdmin.goToFieldsDetails(label = "Text");
 
@@ -2449,7 +2449,7 @@ definition {
 
 		ObjectPortlet.selectCustomObject(label = "Custom Object");
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "ObjectAdmin#DETAILS_NAME_CUSTOM_OBJECT",
 			value1 = "CustomObject2");
 	}
@@ -2611,15 +2611,15 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
 		CreateObject.editLabel(labelName = "Relationship Updated");
 
 		Button.clickSave();
 
-		Refresh();
+		Refresh.Refresh();
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			key_label = "Relationship Updated",
 			locator1 = "ObjectAdmin#RELATIONSHIP_LABEL",
 			value1 = "Relationship Updated");
@@ -2661,9 +2661,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block 1",
@@ -2671,7 +2671,7 @@ definition {
 			fieldLabelName = "Custom Field",
 			tabName = "Field Tab");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
 
 		Click.clickAtNotVisible(locator1 = "ObjectAdmin#ENTRY_BOOLEAN_CHECKBOX");
 
@@ -2690,23 +2690,23 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_tabName = "Field Tab",
 			locator1 = "ObjectAdmin#ANY_TAB_ON_ENTRY");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_labelName = "Block 1",
 			locator1 = "ObjectAdmin#LABEL_FIELD_GROUP_TITLE");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_labelName = "Custom Field",
 			locator1 = "ObjectAdmin#LABEL_FIELD_ENTRY");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_text = "Save",
 			locator1 = "Button#ANY");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_text = "Cancel",
 			locator1 = "Button#ANY");
 	}
@@ -2760,9 +2760,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block 1",
@@ -2770,7 +2770,7 @@ definition {
 			fieldList = "Custom Field A,Custom Field B",
 			tabName = "Field Tab");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
 
 		Click.clickAtNotVisible(locator1 = "ObjectAdmin#ENTRY_BOOLEAN_CHECKBOX");
 
@@ -2784,12 +2784,12 @@ definition {
 
 		LexiconEntry.gotoAdd();
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldColumnNumber = "0",
 			key_fieldLabel = "Custom Field A",
 			locator1 = "ObjectAdmin#FIELD_COLUMN_POSITION_ON_ENTRY_PAGE");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldColumnNumber = "1",
 			key_fieldLabel = "Custom Field B",
 			locator1 = "ObjectAdmin#FIELD_COLUMN_POSITION_ON_ENTRY_PAGE");
@@ -2811,7 +2811,7 @@ definition {
 
 		LexiconEntry.gotoAdd();
 
-		Click(locator1 = "ObjectAdmin#RELATIONSHIPS_TYPE_FORM");
+		Click.Click(locator1 = "ObjectAdmin#RELATIONSHIPS_TYPE_FORM");
 
 		ObjectAdmin.assertRelationshipsTypeDescription(
 			description = "One object's entry interacts with many others object's entries.",
@@ -2873,7 +2873,7 @@ definition {
 
 		ObjectAdmin.goToFieldsDetails(label = "CustomObject");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#FIELDS_DETAILS_IFRAME");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#FIELDS_DETAILS_IFRAME");
 	}
 
 	@description = "LPS-139803 - Verify it the Object Entry Title of a BigDecimal type is displayed on the Relationship field when adding an entry"
@@ -3090,9 +3090,9 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block 1",
@@ -3104,7 +3104,7 @@ definition {
 			relationshipsLabelName = "Relationship",
 			tabName = "Relationship Tab");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
 
 		Click.clickAtNotVisible(locator1 = "ObjectAdmin#ENTRY_BOOLEAN_CHECKBOX");
 
@@ -3123,11 +3123,11 @@ definition {
 
 		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
 
-		Click(
+		Click.Click(
 			key_tabName = "Relationship Tab",
 			locator1 = "ObjectAdmin#ANY_TAB_ON_ENTRY");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_tabName = "Relationship Tab",
 			locator1 = "ObjectAdmin#ANY_TAB_ON_ENTRY");
 	}
@@ -3273,7 +3273,7 @@ definition {
 
 		ObjectAdmin.gotoRelationshipsTab();
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "Message#EMPTY_INFO",
 			value1 = "No items were found.");
 	}
@@ -3472,7 +3472,7 @@ definition {
 
 		VisualizeObjectCollectionDisplay.openObjectCollectionProvider();
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_labelName = "Custom Objects",
 			locator1 = "VisualizeObjectCollectionDisplay#VIEW_OBJECT_COLLECTION_DISPLAY");
 	}
@@ -3503,9 +3503,9 @@ definition {
 
 		PopulateObjectFormsConfiguration.selectObject(label = "Object");
 
-		Click(locator1 = "PopulateObjectFormsConfiguration#DEFAULT_SELECT_OBJECT");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#DEFAULT_SELECT_OBJECT");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_label = "Custom Object",
 			locator1 = "PopulateObjectFormsConfiguration#DISPLAY_SELECT_OBJECT");
 	}
@@ -3540,11 +3540,11 @@ definition {
 
 		Click.javaScriptClick(locator1 = "VisualizeObjectDisplayPage#SELECT_ITEM");
 
-		SelectFrame(
+		SelectFrame.SelectFrame(
 			key_title = "Select",
 			locator1 = "IFrame#MODAL_ANY");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_pluralLabelName = "Custom Objects",
 			locator1 = "VisualizeObjectDisplayPage#SELECT_OBJECT");
 	}
@@ -3569,11 +3569,11 @@ definition {
 
 		VisualizeObjectDisplayPage.openPageTemplate();
 
-		Click(locator1 = "VisualizeObjectDisplayPage#SELECT_BLANK_OBJECT_DISPLAY_PAGE_TEMPLATE");
+		Click.Click(locator1 = "VisualizeObjectDisplayPage#SELECT_BLANK_OBJECT_DISPLAY_PAGE_TEMPLATE");
 
-		Click(locator1 = "VisualizeObjectDisplayPage#OBJECT_CONTENT_TYPE");
+		Click.Click(locator1 = "VisualizeObjectDisplayPage#OBJECT_CONTENT_TYPE");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_type = "Custom Object",
 			locator1 = "VisualizeObjectDisplayPage#CONTENT_TYPE_OPTION",
 			value1 = "Custom Object");
@@ -3597,11 +3597,11 @@ definition {
 
 		CreateObject.saveObject();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 
 		ObjectAdmin.openWorkflowProcessBuilderConfiguration();
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_workflowResourceValue = "Custom Object",
 			locator1 = "WorkflowConfiguration#RESOURCE_TABLE_WORKFLOW");
 	}
@@ -3632,7 +3632,7 @@ definition {
 			category = "Configuration",
 			portlet = "Workflow");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_workflowResourceValue = "Custom Object",
 			locator1 = "WorkflowConfiguration#RESOURCE_TABLE_WORKFLOW");
 	}
@@ -3692,7 +3692,7 @@ definition {
 
 		ObjectAdmin.openObjectAdmin();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 
 		ObjectAdmin.openWorkflowProcessBuilderConfiguration();
 
@@ -3732,25 +3732,25 @@ definition {
 
 		ObjectAdmin.openMyWorkflowTasks();
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_workflowAssetTitle = "Custom Object",
 			locator1 = "MyWorkflowTasks#ASSIGNED_TO_ME_TABLE_ASSET_TYPE");
 
 		Navigator.gotoNavTab(navTab = "Assigned to My Roles");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_workflowAssetTitle = "Custom Object",
 			locator1 = "MyWorkflowTasks#ASSIGNED_TO_ME_TABLE_ASSET_TYPE");
 
 		ObjectAdmin.openMySubmissions();
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_submissionName = "Custom Object",
 			locator1 = "WorkflowSubmissions#SUBMISSION_BY_NAME");
 
 		ObjectAdmin.openSubmissions();
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_submissionName = "Custom Object",
 			locator1 = "WorkflowSubmissions#SUBMISSION_BY_NAME");
 	}
@@ -3852,7 +3852,7 @@ definition {
 
 		ObjectAdmin.openObjectAdmin();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 
 		ObjectAdmin.openWorkflowProcessBuilderConfiguration();
 
@@ -3896,25 +3896,25 @@ definition {
 
 		ObjectAdmin.openMyWorkflowTasks();
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_workflowAssetTitle = "Custom Object",
 			locator1 = "MyWorkflowTasks#ASSIGNED_TO_ME_TABLE_ASSET_TYPE");
 
 		Navigator.gotoNavTab(navTab = "Assigned to My Roles");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_workflowAssetTitle = "Custom Object",
 			locator1 = "MyWorkflowTasks#ASSIGNED_TO_ME_TABLE_ASSET_TYPE");
 
 		ObjectAdmin.openMySubmissions();
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_submissionName = "Custom Object",
 			locator1 = "WorkflowSubmissions#SUBMISSION_BY_NAME");
 
 		ObjectAdmin.openSubmissions();
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_submissionName = "Custom Object",
 			locator1 = "WorkflowSubmissions#SUBMISSION_BY_NAME");
 	}
@@ -3982,7 +3982,7 @@ definition {
 
 		ApplicationsMenu.gotoPanel(panel = "Control Panel");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_category = "Object",
 			key_portlet = "Custom Objects",
 			locator1 = "ApplicationsMenu#PORTLET");
@@ -4014,7 +4014,7 @@ definition {
 
 		ProductMenuHelper.expandCategory(category = "Content & Data");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_portlet = "Custom Object",
 			locator1 = "ProductMenu#PORTLET",
 			value1 = "Custom Object");
@@ -4079,7 +4079,7 @@ definition {
 
 		ProductMenuHelper.expandCategory(category = "Content & Data");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_portlet = "Custom Objects",
 			locator1 = "ProductMenu#PORTLET",
 			value1 = "Custom Objects");
@@ -4109,7 +4109,7 @@ definition {
 
 		VisualizeObjectCollectionDisplay.openObjectCollectionProvider();
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_labelName = "Custom Objects",
 			locator1 = "VisualizeObjectCollectionDisplay#VIEW_OBJECT_COLLECTION_DISPLAY");
 	}
@@ -4144,9 +4144,9 @@ definition {
 
 		PopulateObjectFormsConfiguration.selectObject(label = "Object");
 
-		Click(locator1 = "PopulateObjectFormsConfiguration#DEFAULT_SELECT_OBJECT");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#DEFAULT_SELECT_OBJECT");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_label = "Custom Object",
 			locator1 = "PopulateObjectFormsConfiguration#DISPLAY_SELECT_OBJECT");
 	}
@@ -4185,11 +4185,11 @@ definition {
 
 		Click.javaScriptClick(locator1 = "VisualizeObjectDisplayPage#SELECT_ITEM");
 
-		SelectFrame(
+		SelectFrame.SelectFrame(
 			key_title = "Select",
 			locator1 = "IFrame#MODAL_ANY");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_pluralLabelName = "Custom Objects",
 			locator1 = "VisualizeObjectDisplayPage#SELECT_OBJECT");
 	}
@@ -4218,11 +4218,11 @@ definition {
 
 		VisualizeObjectDisplayPage.openPageTemplate();
 
-		Click(locator1 = "VisualizeObjectDisplayPage#SELECT_BLANK_OBJECT_DISPLAY_PAGE_TEMPLATE");
+		Click.Click(locator1 = "VisualizeObjectDisplayPage#SELECT_BLANK_OBJECT_DISPLAY_PAGE_TEMPLATE");
 
-		Click(locator1 = "VisualizeObjectDisplayPage#OBJECT_CONTENT_TYPE");
+		Click.Click(locator1 = "VisualizeObjectDisplayPage#OBJECT_CONTENT_TYPE");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			locator1 = "VisualizeObjectDisplayPage#OBJECT_CONTENT_TYPE",
 			value1 = "Custom Object");
 	}
@@ -4253,11 +4253,11 @@ definition {
 
 		CreateObject.saveObject();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 
 		ObjectAdmin.openWorkflowProcessBuilderConfiguration();
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_workflowResourceValue = "Custom Object",
 			locator1 = "WorkflowConfiguration#RESOURCE_TABLE_WORKFLOW");
 	}
@@ -4293,7 +4293,7 @@ definition {
 			panel = "Site Administration",
 			portlet = "Workflow");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_workflowResourceValue = "Custom Object",
 			locator1 = "WorkflowConfiguration#RESOURCE_TABLE_WORKFLOW");
 	}
@@ -4465,9 +4465,9 @@ definition {
 			frameTitle = "Select",
 			pluralLabelName = "Custom Objects B");
 
-		Click(locator1 = "VisualizeObjectCollectionDisplay#MAP_FRAGMENT");
+		Click.Click(locator1 = "VisualizeObjectCollectionDisplay#MAP_FRAGMENT");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_option = "Custom Object A",
 			locator1 = "VisualizeObjectCollectionDisplay#FIELD_NAME_OPTION");
 	}
@@ -4524,7 +4524,7 @@ definition {
 
 		LexiconEntry.gotoAdd();
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_fieldLabelName = "Custom Field A",
 			locator1 = "ObjectPortlet#FIELD_LABEL_NAME",
 			value1 = "Custom Field A");
@@ -4533,7 +4533,7 @@ definition {
 
 		ObjectPortlet.viewEntryDetails(entry = "Entry 1");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_fieldLabelName = "Custom Field A",
 			locator1 = "ObjectPortlet#FIELD_LABEL_NAME",
 			value1 = "Custom Field A");
@@ -4602,7 +4602,7 @@ definition {
 
 		LexiconEntry.gotoAdd();
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldLabelName = "Custom Object A",
 			locator1 = "ObjectPortlet#FIELD_LABEL_NAME",
 			value1 = "Custom Object A");
@@ -4611,7 +4611,7 @@ definition {
 
 		ObjectPortlet.viewEntryDetails(entry = "Entry 1");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldLabelName = "Custom Object A",
 			locator1 = "ObjectPortlet#FIELD_LABEL_NAME",
 			value1 = "Custom Object A");
@@ -4666,7 +4666,7 @@ definition {
 
 		ObjectAdmin.markLayoutAsDefault();
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block 1",
@@ -4704,7 +4704,7 @@ definition {
 
 		ObjectPortlet.viewEntryDetails(entry = "Entry 1");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_tabName = "Relationship Tab",
 			locator1 = "ObjectAdmin#ENTRY_RELATIONSHIP_TAB");
 	}
@@ -4758,7 +4758,7 @@ definition {
 
 		ObjectAdmin.markLayoutAsDefault();
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 
 		ObjectAdmin.addTabFieldsOnLayout(
 			blockName = "Block 1",
@@ -4804,7 +4804,7 @@ definition {
 
 		ObjectPortlet.viewEntryDetails(entry = "Entry 1");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_tabName = "Relationship Tab",
 			locator1 = "ObjectAdmin#ENTRY_RELATIONSHIP_TAB");
 	}

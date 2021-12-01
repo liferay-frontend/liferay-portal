@@ -10,16 +10,16 @@ definition {
 	}
 
 	macro addPicklistItemViaUI {
-		SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
+		SelectFrame.SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
 
 		Click.javaScriptClick(locator1 = "Picklist#ADD_ITEM_BUTTON");
 
-		Type(
+		Type.Type(
 			locator1 = "Picklist#ADD_PICKLIST_ITEM_NAME",
 			value1 = "${picklistItemName}");
 
 		if (isSet(picklistItemKey)) {
-			Type(
+			Type.Type(
 				locator1 = "Picklist#ADD_PICKLIST_ITEM_KEY",
 				value1 = "${picklistItemKey}");
 		}
@@ -35,7 +35,7 @@ definition {
 	macro addPicklistViaUI {
 		Click.javaScriptClick(locator1 = "Picklist#ADD_PICKLIST_BUTTON");
 
-		Type(
+		Type.Type(
 			locator1 = "Picklist#ADD_PICKLIST_NAME",
 			value1 = "${picklistName}");
 
@@ -45,13 +45,13 @@ definition {
 	macro assertDisableKey {
 		IFrame.selectTopFrame();
 
-		SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_ITEM_MODAL");
+		SelectFrame.SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_ITEM_MODAL");
 
-		AssertElementPresent(locator1 = "Picklist#DISABLE_PICKLIST_KEY");
+		AssertElementPresent.AssertElementPresent(locator1 = "Picklist#DISABLE_PICKLIST_KEY");
 	}
 
 	macro assertEmptyStateMessageDisplayed {
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "Message#EMPTY_INFO",
 			value1 = "No items were found.");
 	}
@@ -59,63 +59,63 @@ definition {
 	macro assertPicklist {
 		var key_picklistName = "${picklistName}";
 
-		AssertElementPresent(locator1 = "Picklist#VIEW_PICKLIST");
+		AssertElementPresent.AssertElementPresent(locator1 = "Picklist#VIEW_PICKLIST");
 	}
 
 	macro assertPicklistDetails {
 		var key_title = "${title}";
 
-		SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
+		SelectFrame.SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
 
-		AssertElementPresent(locator1 = "Picklist#PICKLIST_DETAILS");
+		AssertElementPresent.AssertElementPresent(locator1 = "Picklist#PICKLIST_DETAILS");
 	}
 
 	macro assertPicklistItem {
 		var key_picklistItemName = "${picklistItemName}";
 		var key_picklistItemKey = "${picklistItemKey}";
 
-		if (IsElementNotPresent(locator1 = "Picklist#VIEW_PICKLIST_ITEM")) {
+		if (IsElementNotPresent.IsElementNotPresent(locator1 = "Picklist#VIEW_PICKLIST_ITEM")) {
 			Picklist.gotoPicklistView(picklistName = "${picklistItemName}");
 		}
 
-		AssertElementPresent(locator1 = "Picklist#VIEW_PICKLIST_ITEM");
+		AssertElementPresent.AssertElementPresent(locator1 = "Picklist#VIEW_PICKLIST_ITEM");
 	}
 
 	macro assertPicklistItemDetails {
 		IFrame.selectTopFrame();
 
-		SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_ITEM_MODAL");
+		SelectFrame.SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_ITEM_MODAL");
 
-		AssertElementPresent(locator1 = "Picklist#PICKLIST_ITEM_DETAILS");
+		AssertElementPresent.AssertElementPresent(locator1 = "Picklist#PICKLIST_ITEM_DETAILS");
 	}
 
 	macro assertPicklistItemNotPresent {
 		var key_picklistItemName = "${picklistItemName}";
 		var key_picklistItemKey = "${picklistItemKey}";
 
-		AssertElementNotPresent(locator1 = "Picklist#VIEW_PICKLIST_ITEM");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "Picklist#VIEW_PICKLIST_ITEM");
 	}
 
 	macro assertPicklistMessage {
 		var key_picklistMessage = "${picklistMessage}";
 
-		AssertElementPresent(locator1 = "Picklist#PICKLIST_MESSAGE");
+		AssertElementPresent.AssertElementPresent(locator1 = "Picklist#PICKLIST_MESSAGE");
 	}
 
 	macro assertPicklistNotPresent {
 		var key_picklistName = "${picklistName}";
 
-		AssertElementNotPresent(locator1 = "Picklist#VIEW_PICKLIST");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "Picklist#VIEW_PICKLIST");
 	}
 
 	macro assertRequiredKeyItem {
-		AssertElementPresent(locator1 = "Picklist#REQUIRED_KEY_ITEM");
+		AssertElementPresent.AssertElementPresent(locator1 = "Picklist#REQUIRED_KEY_ITEM");
 	}
 
 	macro cancelPicklist {
 		Click.javaScriptClick(locator1 = "Picklist#ADD_PICKLIST_BUTTON");
 
-		Type(
+		Type.Type(
 			locator1 = "Picklist#ADD_PICKLIST_NAME",
 			value1 = "${picklistName}");
 
@@ -123,7 +123,7 @@ definition {
 	}
 
 	macro cancelPicklistButton {
-		Click(locator1 = "Picklist#CANCEL_PICKLIST");
+		Click.Click(locator1 = "Picklist#CANCEL_PICKLIST");
 	}
 
 	macro cancelUpdatePicklist {
@@ -173,7 +173,7 @@ definition {
 		var key_itemKey = "${itemKey}";
 		var key_picklistItemOption = "${picklistItemOption}";
 
-		SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
+		SelectFrame.SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
 
 		Click.javaScriptClick(locator1 = "Picklist#PICKLIST_ITEM_KEBAB_MENU");
 
@@ -181,11 +181,11 @@ definition {
 	}
 
 	macro searchPicklist {
-		Type(
+		Type.Type(
 			locator1 = "TextInput#SEARCH",
 			value1 = "${picklistName}");
 
-		KeyPress(
+		KeyPress.KeyPress(
 			locator1 = "TextInput#SEARCH",
 			value1 = "\RETURN");
 	}
@@ -193,23 +193,23 @@ definition {
 	macro searchPicklistItem {
 		Picklist.selectPickilistModalFrame();
 
-		Type(
+		Type.Type(
 			locator1 = "TextInput#SEARCH",
 			value1 = "${picklistItemName}");
 
-		KeyPress(
+		KeyPress.KeyPress(
 			locator1 = "TextInput#SEARCH",
 			value1 = "\RETURN");
 	}
 
 	macro selectPickilistModalFrame {
-		SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
+		SelectFrame.SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
 	}
 
 	macro updatePicklistName {
-		SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
+		SelectFrame.SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
 
-		Type(
+		Type.Type(
 			locator1 = "Picklist#UPDATE_PICKLIST_NAME",
 			value1 = "${picklistName}");
 	}

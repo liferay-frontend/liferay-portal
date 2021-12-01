@@ -1,30 +1,30 @@
 definition {
 
 	macro addLayoutBlockViaUI {
-		Click(locator1 = "ObjectAdmin#ADD_BLOCK_BUTTON");
+		Click.Click(locator1 = "ObjectAdmin#ADD_BLOCK_BUTTON");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#TAB_LABEL_NAME",
 			value1 = "${blockName}");
 
-		Click(
+		Click.Click(
 			key_tab = "Save",
 			locator1 = "Button#TAB_SUBMIT_BTN");
 	}
 
 	macro addNewObject {
-		Click(locator1 = "ObjectAdmin#ADD_CUSTOM_OBJECT");
+		Click.Click(locator1 = "ObjectAdmin#ADD_CUSTOM_OBJECT");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#LABEL_CUSTOM_OBJECT",
 			value1 = "${fieldLabelName}");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#PLURAL_LABEL_CUSTOM_OBJECT",
 			value1 = "${pluralLabelName}");
 
 		if (isSet(fieldName)) {
-			Type(
+			Type.Type(
 				locator1 = "ObjectAdmin#NAME_CUSTOM_OBJECT",
 				value1 = "${fieldName}");
 		}
@@ -35,7 +35,7 @@ definition {
 
 		LexiconEntry.gotoAdd();
 
-		WaitForPageLoad();
+		WaitForPageLoad.WaitForPageLoad();
 
 		if ("${value}" == "true") {
 			Click.clickAtNotVisible(locator1 = "ObjectAdmin#ENTRY_BOOLEAN_CHECKBOX");
@@ -43,19 +43,19 @@ definition {
 
 		Button.clickSave();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 	}
 
 	macro addObjectDoubleFieldEntryViaUI {
 		LexiconEntry.gotoAdd();
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#ENTRY_DOUBLE_VALUE_FIELD",
 			value1 = "${entryValue}");
 
 		Button.clickSave();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 	}
 
 	macro addObjectFieldViaAPI {
@@ -75,17 +75,17 @@ definition {
 	macro addObjectFieldViaUI {
 		LexiconEntry.gotoAdd();
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#OBJECT_FIELDS_LABEL_INPUT",
 			value1 = "${fieldLabel}");
 
 		if (isSet(fieldName)) {
-			Type(
+			Type.Type(
 				locator1 = "ObjectAdmin#OBJECT_FIELDS_NAME_INPUT",
 				value1 = "${fieldName}");
 		}
 
-		Select(
+		Select.Select(
 			locator1 = "ObjectAdmin#OBJECT_FIELDS_TYPE",
 			value1 = "${fieldType}");
 
@@ -94,7 +94,7 @@ definition {
 		}
 
 		if (isSet(fieldPicklist)) {
-			Select(
+			Select.Select(
 				locator1 = "ObjectAdmin#OBJECT_FIELDS_PICKLIST",
 				value1 = "${fieldPicklist}");
 		}
@@ -113,27 +113,27 @@ definition {
 	macro addObjectLayoutViaUI {
 		LexiconEntry.gotoAdd();
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#ADD_LAYOUT_NAME_FIELD",
 			value1 = "${layoutName}");
 
 		Button.clickSave();
 
-		WaitForPageLoad();
+		WaitForPageLoad.WaitForPageLoad();
 	}
 
 	macro addObjectPicklistFieldEntryViaUI {
 		LexiconEntry.gotoAdd();
 
-		Click(locator1 = "ObjectAdmin#ENTRY_CHOOSE_OPTION");
+		Click.Click(locator1 = "ObjectAdmin#ENTRY_CHOOSE_OPTION");
 
-		Click(
+		Click.Click(
 			key_picklistOption = "${picklistOption}",
 			locator1 = "ObjectAdmin#ENTRY_PICKLIST_OPTION");
 
 		Button.clickSave();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 	}
 
 	macro addObjectRelationshipViaAPI {
@@ -151,26 +151,26 @@ definition {
 	macro addObjectRelationshipViaUI {
 		LexiconEntry.gotoAdd();
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#LABEL_OBJECT_RELATIONSHIP",
 			value1 = "${label}");
 
 		if (isSet(type)) {
-			Click(locator1 = "ObjectAdmin#RELATIONSHIPS_TYPE_FORM");
+			Click.Click(locator1 = "ObjectAdmin#RELATIONSHIPS_TYPE_FORM");
 
-			Click(
+			Click.Click(
 				key_type = "${type}",
 				locator1 = "ObjectAdmin#SELECT_RELATIONSHIPS_TYPE_OPTION");
 		}
 
 		if (isSet(object)) {
-			Select(
+			Select.Select(
 				locator1 = "ObjectAdmin#SELECT_OBJECT_RELATIONSHIP",
 				value1 = "${object}");
 		}
 
 		if (isSet(name)) {
-			Type(
+			Type.Type(
 				locator1 = "ObjectAdmin#NAME_OBJECT_RELATIONSHIP",
 				value1 = "${name}");
 		}
@@ -190,13 +190,13 @@ definition {
 	macro addObjectStringFieldEntryViaUI {
 		LexiconEntry.gotoAdd();
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#ENTRY_STRING_VALUE_FIELD",
 			value1 = "${entryValue}");
 
 		Button.clickSave();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 	}
 
 	macro addObjectViaAPI {
@@ -213,26 +213,26 @@ definition {
 	macro addTabFieldsOnLayout {
 		LexiconEntry.gotoAdd();
 
-		Click(
+		Click.Click(
 			key_type = "Fields",
 			locator1 = "ObjectAdmin#TAB_TYPE");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#TAB_LABEL_NAME",
 			value1 = "${tabName}");
 
-		Click(
+		Click.Click(
 			key_tab = "Save",
 			locator1 = "Button#TAB_SUBMIT_BTN");
 
 		if (isSet(blockName)) {
-			Click(locator1 = "ObjectAdmin#ADD_BLOCK_BUTTON");
+			Click.Click(locator1 = "ObjectAdmin#ADD_BLOCK_BUTTON");
 
-			Type(
+			Type.Type(
 				locator1 = "ObjectAdmin#TAB_LABEL_NAME",
 				value1 = "${blockName}");
 
-			Click(
+			Click.Click(
 				key_tab = "Save",
 				locator1 = "Button#TAB_SUBMIT_BTN");
 
@@ -242,37 +242,37 @@ definition {
 
 			if (isSet(fieldList)) {
 				for (var fieldLabelName : list "${fieldList}") {
-					Click(locator1 = "ObjectAdmin#ADD_FIELD_ON_BLOCK");
+					Click.Click(locator1 = "ObjectAdmin#ADD_FIELD_ON_BLOCK");
 
-					Click(locator1 = "ObjectAdmin#LAYOUT_ENTRY_CHOOSE_OPTION");
+					Click.Click(locator1 = "ObjectAdmin#LAYOUT_ENTRY_CHOOSE_OPTION");
 
-					Click(
+					Click.Click(
 						key_optionName = "${fieldLabelName}",
 						locator1 = "ObjectAdmin#LAYOUT_ADD_FIELD_OPTION");
 
-					Click(
+					Click.Click(
 						key_columnsNumber = "${columnsNumber}",
 						locator1 = "ObjectAdmin#LAYOUT_ADD_FIELD_COLUMN_NUMBER");
 
-					Click(
+					Click.Click(
 						key_tab = "Save",
 						locator1 = "Button#TAB_SUBMIT_BTN");
 				}
 			}
 			else {
-				Click(locator1 = "ObjectAdmin#ADD_FIELD_ON_BLOCK");
+				Click.Click(locator1 = "ObjectAdmin#ADD_FIELD_ON_BLOCK");
 
-				Click(locator1 = "ObjectAdmin#LAYOUT_ENTRY_CHOOSE_OPTION");
+				Click.Click(locator1 = "ObjectAdmin#LAYOUT_ENTRY_CHOOSE_OPTION");
 
-				Click(
+				Click.Click(
 					key_optionName = "${fieldLabelName}",
 					locator1 = "ObjectAdmin#LAYOUT_ADD_FIELD_OPTION");
 
-				Click(
+				Click.Click(
 					key_columnsNumber = "${columnsNumber}",
 					locator1 = "ObjectAdmin#LAYOUT_ADD_FIELD_COLUMN_NUMBER");
 
-				Click(
+				Click.Click(
 					key_tab = "Save",
 					locator1 = "Button#TAB_SUBMIT_BTN");
 			}
@@ -282,91 +282,91 @@ definition {
 	macro addTabRelationshipsOnLayout {
 		LexiconEntry.gotoAdd();
 
-		Click(
+		Click.Click(
 			key_type = "Relationships",
 			locator1 = "ObjectAdmin#TAB_TYPE");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#TAB_LABEL_NAME",
 			value1 = "${tabName}");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_ENTRY_CHOOSE_OPTION");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_ENTRY_CHOOSE_OPTION");
 
 		if (isSet(relationshipsLabelName)) {
-			Click(
+			Click.Click(
 				key_optionName = "${relationshipsLabelName}",
 				locator1 = "ObjectAdmin#LAYOUT_ADD_FIELD_OPTION");
 		}
 
-		Click(
+		Click.Click(
 			key_tab = "Save",
 			locator1 = "Button#TAB_SUBMIT_BTN");
 	}
 
 	macro assertAddEntryModalIsNotPresent {
-		AssertElementNotPresent(locator1 = "ObjectAdmin#ENTRY_STRING_VALUE_FIELD");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "ObjectAdmin#ENTRY_STRING_VALUE_FIELD");
 
-		AssertElementNotPresent(locator1 = "ObjectAdmin#ADD_ENTRY_SAVE_BUTTON");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "ObjectAdmin#ADD_ENTRY_SAVE_BUTTON");
 
-		AssertElementNotPresent(locator1 = "ObjectAdmin#ADD_ENTRY_CANCEL_BUTTON");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "ObjectAdmin#ADD_ENTRY_CANCEL_BUTTON");
 	}
 
 	macro assertBlockIsPresent {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldBlockName = "${fieldBlockName}",
 			locator1 = "ObjectAdmin#FIELD_BLOCK_NAME");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#FIELD_BLOCK_ADD_FIELD_BUTTON");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#FIELD_BLOCK_ADD_FIELD_BUTTON");
 	}
 
 	macro assertFieldsTableColumnsAreDisplayed {
-		AssertElementPresent(locator1 = "ObjectAdmin#FIELDS_LABEL_COLUMN");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#FIELDS_LABEL_COLUMN");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#FIELDS_TYPE_COLUMN");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#FIELDS_TYPE_COLUMN");
 	}
 
 	macro assertFieldTabIsPresent {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldTabName = "${fieldTabName}",
 			locator1 = "ObjectAdmin#FIELD_TAB_NAME");
 	}
 
 	macro assertKeywordAndText {
-		AssertElementPresent(locator1 = "ObjectAdmin#SEARCHABLE_SECTION_TITLE");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#SEARCHABLE_SECTION_TITLE");
 
-		AssertElementNotPresent(locator1 = "ObjectAdmin#VIEW_SEARCHABLE_SECTION_DISABLED");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "ObjectAdmin#VIEW_SEARCHABLE_SECTION_DISABLED");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_radioOption = "Keyword",
 			locator1 = "ObjectAdmin#FIELDS_RADIO_OPTION");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_radioOption = "Text",
 			locator1 = "ObjectAdmin#FIELDS_RADIO_OPTION");
 	}
 
 	macro assertLabelFieldRequired {
-		AssertElementPresent(locator1 = "ObjectAdmin#LABEL_FIELD_REQUIRED");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#LABEL_FIELD_REQUIRED");
 	}
 
 	macro assertNotPossibleAddFieldOnBlockWithoutChooseOptionField {
-		Click(locator1 = "ObjectAdmin#ADD_FIELD_ON_BLOCK");
+		Click.Click(locator1 = "ObjectAdmin#ADD_FIELD_ON_BLOCK");
 
-		Click(
+		Click.Click(
 			key_tab = "Save",
 			locator1 = "Button#TAB_SUBMIT_BTN");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_LAYOUTS_FIELD_INPUT_HAS_REQUIRED_ERROR");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_LAYOUTS_FIELD_INPUT_HAS_REQUIRED_ERROR");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_FIELDS_REQUIRED_ERROR_MESSAGE");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_FIELDS_REQUIRED_ERROR_MESSAGE");
 	}
 
 	macro assertObjectColumnsAreDisplayed {
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_LABEL_COLUMN");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_LABEL_COLUMN");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_SYSTEM_COLUMN");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_SYSTEM_COLUMN");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_STATUS_COLUMN");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_STATUS_COLUMN");
 	}
 
 	macro assertObjectColumnValue {
@@ -375,36 +375,36 @@ definition {
 		var key_system = "${system}";
 		var key_status = "${status}";
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "ObjectAdmin#OBJECT_LABEL",
 			value1 = "${label}");
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "ObjectAdmin#OBJECT_SCOPE",
 			value1 = "${scope}");
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "ObjectAdmin#OBJECT_SYSTEM",
 			value1 = "${system}");
 
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "ObjectAdmin#OBJECT_STATUS",
 			value1 = "${status}");
 	}
 
 	macro assertObjectDetailsPage {
-		Click(locator1 = "ObjectAdmin#OBJECT_DETAILS_TAB");
+		Click.Click(locator1 = "ObjectAdmin#OBJECT_DETAILS_TAB");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#DETAILS_PAGE_TITLE");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#DETAILS_PAGE_TITLE");
 	}
 
 	macro assertObjectField {
 		var key_fieldLabel = "${fieldLabel}";
 		var key_fieldType = "${fieldType}";
 
-		AssertElementPresent(locator1 = "ObjectAdmin#VIEW_OBJECT_FIELD_LABEL");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#VIEW_OBJECT_FIELD_LABEL");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#VIEW_OBJECT_FIELD_TYPE");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#VIEW_OBJECT_FIELD_TYPE");
 	}
 
 	macro assertObjectFieldNotPresent {
@@ -412,67 +412,67 @@ definition {
 
 		ObjectAdmin.goToFieldsTab();
 
-		AssertElementNotPresent(locator1 = "ObjectAdmin#VIEW_OBJECT_FIELD_LABEL");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "ObjectAdmin#VIEW_OBJECT_FIELD_LABEL");
 	}
 
 	macro assertObjectLabelFieldRequired {
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_LABEL_FIELD_REQUIRED");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_LABEL_FIELD_REQUIRED");
 	}
 
 	macro assertObjectLayout {
 		var key_layoutLabel = "${layoutLabel}";
 
-		AssertElementPresent(locator1 = "ObjectAdmin#VIEW_OBJECT_LAYOUT_LABEL");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#VIEW_OBJECT_LAYOUT_LABEL");
 	}
 
 	macro assertObjectLayoutNotPresent {
 		var key_layoutLabel = "${layoutLabel}";
 
-		AssertElementNotPresent(locator1 = "ObjectAdmin#VIEW_OBJECT_LAYOUT_LABEL");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "ObjectAdmin#VIEW_OBJECT_LAYOUT_LABEL");
 	}
 
 	macro assertObjectLayoutRelationshipFieldRequiredError {
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_LAYOUTS_RELATIONSHIP_FIELD_HAD_REQUIRED_ERROR");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_LAYOUTS_RELATIONSHIP_FIELD_HAD_REQUIRED_ERROR");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_FIELDS_REQUIRED_ERROR_MESSAGE");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_FIELDS_REQUIRED_ERROR_MESSAGE");
 	}
 
 	macro assertObjectNameFieldRequired {
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_NAME_FIELD_REQUIRED");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_NAME_FIELD_REQUIRED");
 	}
 
 	macro assertObjectStatus {
 		var key_status = "${status}";
 		var key_label = "${label}";
 
-		AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_STATUS");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#OBJECT_STATUS");
 	}
 
 	macro assertRelationshipsTypeDescription {
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			key_type = "${type}",
 			locator1 = "ObjectAdmin#RELATIONSHIPS_TYPE_DESCRIPTION",
 			value1 = "${description}");
 	}
 
 	macro assertTypeFieldRequired {
-		AssertElementPresent(locator1 = "ObjectAdmin#TYPE_FIELD_REQUIRED");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#TYPE_FIELD_REQUIRED");
 	}
 
 	macro assertUpdateEntryModalIsNotPresent {
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			locator1 = "ObjectAdmin#ENTRY_STRING_VALUE_FIELD",
 			value1 = "${value}");
 
-		AssertElementNotPresent(locator1 = "ObjectAdmin#ADD_ENTRY_SAVE_BUTTON");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "ObjectAdmin#ADD_ENTRY_SAVE_BUTTON");
 
-		AssertElementNotPresent(locator1 = "ObjectAdmin#ADD_ENTRY_CANCEL_BUTTON");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "ObjectAdmin#ADD_ENTRY_CANCEL_BUTTON");
 	}
 
 	macro cancelAddingObjectStringFieldEntryViaUI {
 		LexiconEntry.gotoAdd();
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#ENTRY_STRING_VALUE_FIELD",
 			value1 = "${entryValue}");
 
@@ -480,7 +480,7 @@ definition {
 	}
 
 	macro cancelUpdatingObjectStringFieldEntryViaUI {
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#ENTRY_STRING_VALUE_FIELD",
 			value1 = "${entryValue}");
 
@@ -488,17 +488,17 @@ definition {
 	}
 
 	macro changeLabelLanguage {
-		Click(locator1 = "ObjectAdmin#DROPDOWN_LANGUAGEM");
+		Click.Click(locator1 = "ObjectAdmin#DROPDOWN_LANGUAGEM");
 
-		Click(
+		Click.Click(
 			key_newLanguage = "${newLanguage}",
 			locator1 = "ObjectAdmin#SELECT_LANGUAGE");
 	}
 
 	macro changePluralLabelLanguage {
-		Click(locator1 = "ObjectAdmin#DROPDOWN_LANGUAGEM_PLURAL_LABEL");
+		Click.Click(locator1 = "ObjectAdmin#DROPDOWN_LANGUAGEM_PLURAL_LABEL");
 
-		Click(
+		Click.Click(
 			key_newLanguage = "${newLanguage}",
 			locator1 = "ObjectAdmin#SELECT_LANGUAGE");
 	}
@@ -510,13 +510,13 @@ definition {
 	}
 
 	macro createCustomObject {
-		Click(locator1 = "ObjectAdmin#ADD_CUSTOM_OBJECT");
+		Click.Click(locator1 = "ObjectAdmin#ADD_CUSTOM_OBJECT");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#NAME_CUSTOM_OBJECT",
 			value1 = "${name}");
 
-		Click(locator1 = "ObjectAdmin#SAVE_CUSTOM_OBJECT");
+		Click.Click(locator1 = "ObjectAdmin#SAVE_CUSTOM_OBJECT");
 	}
 
 	macro deleteAllCustomObjectsViaAPI {
@@ -543,19 +543,19 @@ definition {
 
 	macro editCustomObject {
 		if (isSet(fieldName)) {
-			Type(
+			Type.Type(
 				locator1 = "ObjectAdmin#DETAILS_NAME_CUSTOM_OBJECT",
 				value1 = "${fieldName}");
 		}
 
 		if (isSet(fieldLabelName)) {
-			Type(
+			Type.Type(
 				locator1 = "ObjectAdmin#DETAILS_LABEL_CUSTOM_OBJECT",
 				value1 = "${labelName}");
 		}
 
 		if (isSet(pluralLabelName)) {
-			Type(
+			Type.Type(
 				locator1 = "ObjectAdmin#DETAILS_PLURAL_LABEL_CUSTOM_OBJECT",
 				value1 = "${pluralLabelName}");
 		}
@@ -573,39 +573,39 @@ definition {
 	}
 
 	macro goToDetailsTab {
-		Click(locator1 = "ObjectAdmin#OBJECT_DETAILS_TAB");
+		Click.Click(locator1 = "ObjectAdmin#OBJECT_DETAILS_TAB");
 	}
 
 	macro goToFieldsDetails {
-		Click(
+		Click.Click(
 			key_label = "${label}",
 			locator1 = "ObjectAdmin#SELECT_OBJECT_FIELD");
 
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 	}
 
 	macro goToFieldsTab {
-		Click(locator1 = "ObjectAdmin#OBJECT_FIELDS_TAB");
+		Click.Click(locator1 = "ObjectAdmin#OBJECT_FIELDS_TAB");
 	}
 
 	macro goToLayoutsTab {
-		Click(locator1 = "ObjectAdmin#OBJECT_LAYOUTS_TAB");
+		Click.Click(locator1 = "ObjectAdmin#OBJECT_LAYOUTS_TAB");
 	}
 
 	macro goToLayoutTabOnLayouts {
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
 	}
 
 	macro gotoRelationshipsTab {
-		Click(locator1 = "ObjectAdmin#OBJECT_RELATIONSHIPS_TAB");
+		Click.Click(locator1 = "ObjectAdmin#OBJECT_RELATIONSHIPS_TAB");
 	}
 
 	macro markLayoutAsDefault {
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
+		Click.Click(locator1 = "ObjectAdmin#LAYOUT_INFO_TAB");
 
 		Click.clickAtNotVisible(locator1 = "ObjectAdmin#ENTRY_BOOLEAN_CHECKBOX");
 	}
@@ -646,52 +646,52 @@ definition {
 	}
 
 	macro saveCustomObject {
-		Click(locator1 = "ObjectAdmin#SAVE_CUSTOM_OBJECT");
+		Click.Click(locator1 = "ObjectAdmin#SAVE_CUSTOM_OBJECT");
 	}
 
 	macro selectKebabMenuOption {
-		Click(locator1 = "ObjectAdmin#KEBAB_MENU");
+		Click.Click(locator1 = "ObjectAdmin#KEBAB_MENU");
 
-		Click(
+		Click.Click(
 			key_kebabOption = "${kebabOption}",
 			locator1 = "ObjectAdmin#KEBAB_MENU_OPTION");
 	}
 
 	macro selectObjectScope {
-		Select(
+		Select.Select(
 			locator1 = "ObjectAdmin#SELECT_OBJECT_SCOPE",
 			value1 = "${fieldOption}");
 	}
 
 	macro viewCustomObject {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_name = "${name}",
 			key_system = "No",
 			locator1 = "ObjectAdmin#VIEW_OBJECT");
 	}
 
 	macro viewFieldDetails {
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		SelectFrame.SelectFrame(locator1 = "IFrame#IFRAME");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#FIELDS_DETAILS_IFRAME");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#FIELDS_DETAILS_IFRAME");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#FIELDS_DETAILS_TITLE");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#FIELDS_DETAILS_TITLE");
 	}
 
 	macro viewFieldErrorMessage {
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "Message#ERROR",
 			value1 = "${message}");
 	}
 
 	macro viewFieldSearchableSectionLanguage {
-		AssertElementPresent(locator1 = "ObjectAdmin#FIELD_SEARCHABLE_LANGUAGE_LABEL");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#FIELD_SEARCHABLE_LANGUAGE_LABEL");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#FIELD_SEARCHABLE_LANGUAGE_OPTION");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectAdmin#FIELD_SEARCHABLE_LANGUAGE_OPTION");
 	}
 
 	macro viewSystemObject {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_name = "${name}",
 			key_system = "Yes",
 			locator1 = "ObjectAdmin#VIEW_OBJECT");

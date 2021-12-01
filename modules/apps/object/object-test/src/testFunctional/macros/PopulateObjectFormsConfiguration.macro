@@ -1,29 +1,29 @@
 definition {
 
 	macro closeUnmappedError {
-		Click(locator1 = "PopulateObjectFormsConfiguration#CLOSE_UNMAPPED_ERROR");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#CLOSE_UNMAPPED_ERROR");
 	}
 
 	macro gotoBuilderFormFields {
-		Click(locator1 = "PopulateObjectFormsConfiguration#BUILDER_FORM_FIELDS");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#BUILDER_FORM_FIELDS");
 	}
 
 	macro gotoFormField {
-		Click(
+		Click.Click(
 			key_formFieldName = "${formFieldName}",
 			locator1 = "PopulateObjectFormsConfiguration#GO_TO_FORM_FIELD");
 	}
 
 	macro mapFormField {
-		Click(locator1 = "PopulateObjectFormsConfiguration#ADVANCED_TAB");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#ADVANCED_TAB");
 
-		Click(locator1 = "PopulateObjectFormsConfiguration#OBJECT_FIELD_TAB");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#OBJECT_FIELD_TAB");
 
-		Click(
+		Click.Click(
 			key_fieldLabelName = "${fieldLabelName}",
 			locator1 = "PopulateObjectFormsConfiguration#MAP_OBJECT_FIELD");
 
-		WaitForPageLoad();
+		WaitForPageLoad.WaitForPageLoad();
 	}
 
 	macro openForm {
@@ -31,39 +31,39 @@ definition {
 	}
 
 	macro openFormSettings {
-		Click(locator1 = "PopulateObjectFormsConfiguration#OPEN_FORM_SETTINGS");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#OPEN_FORM_SETTINGS");
 
-		Click(locator1 = "PopulateObjectFormsConfiguration#DEFAULT_STORAGE_TYPE");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#DEFAULT_STORAGE_TYPE");
 	}
 
 	macro publishFormObject {
-		Click(locator1 = "PopulateObjectFormsConfiguration#BUTTON_PUBLISH_FORM");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#BUTTON_PUBLISH_FORM");
 	}
 
 	macro saveFormObject {
-		AssertClick(
+		AssertClick.AssertClick(
 			locator1 = "PopulateObjectFormsConfiguration#BUTTON_SAVE_FORM",
 			value1 = "Save");
 	}
 
 	macro selectCustomObject {
-		Click(
+		Click.Click(
 			key_label = "${label}",
 			locator1 = "PopulateObjectFormsConfiguration#DISPLAY_SELECT_OBJECT");
 
-		Click(locator1 = "PopulateObjectFormsConfiguration#BUTTON_SETTINGS_FORM");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#BUTTON_SETTINGS_FORM");
 	}
 
 	macro selectObject {
-		Click(
+		Click.Click(
 			key_label = "${label}",
 			locator1 = "PopulateObjectFormsConfiguration#DISPLAY_SELECT_OBJECT");
 
-		Click(locator1 = "PopulateObjectFormsConfiguration#DEFAULT_SELECT_OBJECT");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#DEFAULT_SELECT_OBJECT");
 	}
 
 	macro viewDisplaySelectOption {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_label = "${label}",
 			locator1 = "PopulateObjectFormsConfiguration#DISPLAY_SELECT_OBJECT");
 	}
@@ -71,42 +71,42 @@ definition {
 	macro viewRequiredFieldOptionDisabled {
 		Form.gotoBasicTab();
 
-		AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#REQUIRED_FIELD_OPTION_DISABLED");
+		AssertElementPresent.AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#REQUIRED_FIELD_OPTION_DISABLED");
 	}
 
 	macro viewUnmappedFormField {
-		Click(locator1 = "PopulateObjectFormsConfiguration#ADVANCED_TAB");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#ADVANCED_TAB");
 
-		Click(locator1 = "PopulateObjectFormsConfiguration#OBJECT_FIELD_TAB");
+		Click.Click(locator1 = "PopulateObjectFormsConfiguration#OBJECT_FIELD_TAB");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldLabelName = "${fieldLabelName}",
 			locator1 = "PopulateObjectFormsConfiguration#MAP_OBJECT_FIELD");
 	}
 
 	macro viewUnmappedFormFieldsError {
-		AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_FORM_FIELDS_ERROR_MODAL_TITLE");
+		AssertElementPresent.AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_FORM_FIELDS_ERROR_MODAL_TITLE");
 
-		AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_FORM_FIELDS_ERROR_MODAL_BODY");
+		AssertElementPresent.AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_FORM_FIELDS_ERROR_MODAL_BODY");
 
-		AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_FORM_FIELDS_ERROR_PANEL_TITLE");
+		AssertElementPresent.AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_FORM_FIELDS_ERROR_PANEL_TITLE");
 
 		var fieldType = StringUtil.toLowerCase("${fieldType}");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldLabel = "${fieldLabel}",
 			key_fieldType = "${fieldType}",
 			locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_FORM_FIELDS_ERROR_PANEL_BODY");
 	}
 
 	macro viewUnmappedObjectRequiredFieldsError {
-		AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_OBJECT_REQUIRED_FIELDS_ERROR_MODAL_TITLE");
+		AssertElementPresent.AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_OBJECT_REQUIRED_FIELDS_ERROR_MODAL_TITLE");
 
-		AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_OBJECT_REQUIRED_FIELDS_ERROR_MODAL_BODY");
+		AssertElementPresent.AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_OBJECT_REQUIRED_FIELDS_ERROR_MODAL_BODY");
 
-		AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_OBJECT_REQUIRED_FIELDS_ERROR_PANEL_TITLE");
+		AssertElementPresent.AssertElementPresent(locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_OBJECT_REQUIRED_FIELDS_ERROR_PANEL_TITLE");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldLabelName = "${fieldLabelName}",
 			key_fieldType = "${fieldType}",
 			locator1 = "PopulateObjectFormsConfiguration#UNMAPPED_OBJECT_REQUIRED_FIELDS_ERROR_PANEL_BODY");

@@ -383,17 +383,17 @@ definition {
 
 		PopulateObjectFormsConfiguration.saveFormObject();
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			locator1 = "FormsAdmin#FORMS_NAVIGATION_BAR_ITEM",
 			value1 = "Entries");
 
 		Navigator.gotoBack();
 
-		Click(
+		Click.Click(
 			key_rowIndexNumber = "1",
 			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS_N");
 
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_itemName = "Entries",
 			locator1 = "FormsAdmin#FORMS_DROPDOWN_MENU_ITEM");
 	}
@@ -460,7 +460,7 @@ definition {
 
 		Form.gotoAdvancedTab();
 
-		AssertElementNotPresent(locator1 = "PopulateObjectFormsConfiguration#REPEATABLE_TOGGLE_SWITCH");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "PopulateObjectFormsConfiguration#REPEATABLE_TOGGLE_SWITCH");
 	}
 
 	@description = "LPS-136456 - Verify that the Searchable option is not available on a form when it is mapped to an object"
@@ -498,7 +498,7 @@ definition {
 
 		Form.gotoAdvancedTab();
 
-		AssertElementNotPresent(locator1 = "PopulateObjectFormsConfiguration#ANY_SEARCHABLE_SECTION_TITLE");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "PopulateObjectFormsConfiguration#ANY_SEARCHABLE_SECTION_TITLE");
 	}
 
 }

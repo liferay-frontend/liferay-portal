@@ -3,65 +3,65 @@ definition {
 	macro assertCanCollapseAndExpandEntryField {
 		LexiconEntry.gotoAdd();
 
-		Click(locator1 = "CreateObject#COLLAPSE_EXPAND_OBJECT_PORTLET_ENTRY_FIELD");
+		Click.Click(locator1 = "CreateObject#COLLAPSE_EXPAND_OBJECT_PORTLET_ENTRY_FIELD");
 
-		AssertNotVisible(locator1 = "ObjectAdmin#ENTRY_STRING_VALUE_FIELD");
+		AssertNotVisible.AssertNotVisible(locator1 = "ObjectAdmin#ENTRY_STRING_VALUE_FIELD");
 
-		Click(locator1 = "CreateObject#COLLAPSE_EXPAND_OBJECT_PORTLET_ENTRY_FIELD");
+		Click.Click(locator1 = "CreateObject#COLLAPSE_EXPAND_OBJECT_PORTLET_ENTRY_FIELD");
 
-		AssertVisible(locator1 = "ObjectAdmin#ENTRY_STRING_VALUE_FIELD");
+		AssertVisible.AssertVisible(locator1 = "ObjectAdmin#ENTRY_STRING_VALUE_FIELD");
 	}
 
 	macro assertCannotAddRelationshipTabFirst {
 		LexiconEntry.gotoAdd();
 
-		AssertElementPresent(locator1 = "CreateObject#DISABLED_TAB_TYPE_RELATIONSHIPS");
+		AssertElementPresent.AssertElementPresent(locator1 = "CreateObject#DISABLED_TAB_TYPE_RELATIONSHIPS");
 	}
 
 	macro assertCustomObject {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_labelName = "${labelName}",
 			locator1 = "CreateObject#OBJECT_NAME");
 	}
 
 	macro assertDisabledFieldName {
-		AssertElementPresent(locator1 = "CreateObject#DISABLED_FIELD_NAME");
+		AssertElementPresent.AssertElementPresent(locator1 = "CreateObject#DISABLED_FIELD_NAME");
 	}
 
 	macro assertDisabledFieldType {
-		AssertElementPresent(locator1 = "CreateObject#DISABLED_FIELD_TYPE");
+		AssertElementPresent.AssertElementPresent(locator1 = "CreateObject#DISABLED_FIELD_TYPE");
 	}
 
 	macro assertDisabledObjectName {
-		AssertElementPresent(locator1 = "CreateObject#DISABLED_OBJECT_NAME");
+		AssertElementPresent.AssertElementPresent(locator1 = "CreateObject#DISABLED_OBJECT_NAME");
 	}
 
 	macro assertFieldAddedOnBlock {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldLabelName = "${fieldLabelName}",
 			locator1 = "CreateObject#FIELD_ADDED_ON_BLOCK");
 	}
 
 	macro assertFieldName {
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "CreateObject#FIELD_NAME",
 			value1 = "${fieldName}");
 	}
 
 	macro assertFieldNotPresentInBlock {
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_fieldLabelName = "${fieldLabelName}",
 			locator1 = "CreateObject#FIELD_ADDED_ON_BLOCK");
 	}
 
 	macro assertFieldType {
-		AssertSelectedLabel(
+		AssertSelectedLabel.AssertSelectedLabel(
 			locator1 = "CreateObject#FIELD_TYPE",
 			value1 = "${fieldType}");
 	}
 
 	macro assertObjectDefinitionName {
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "CreateObject#OBJECT_DEFINITION_NAME",
 			value1 = "${objectName}");
 	}
@@ -69,35 +69,35 @@ definition {
 	macro assertObjectFieldNameIsAutofilled {
 		LexiconEntry.gotoAdd();
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectAdmin#OBJECT_FIELDS_LABEL_INPUT",
 			value1 = "${fieldLabel}");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldName = "${fieldName}",
 			locator1 = "CreateObject#VIEW_OBJECT_FIELD_NAME");
 	}
 
 	macro assertObjectLabel {
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "CreateObject#OBJECT_LABEL",
 			value1 = "${labelName}");
 	}
 
 	macro assertObjectPluralLabel {
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "CreateObject#OBJECT_PLURAL_LABEL",
 			value1 = "${pluralLabelName}");
 	}
 
 	macro assertPanelCategoryKey {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_panelCategoryKey = "${panelCategoryKey}",
 			locator1 = "CreateObject#PANEL_CATEGORY_KEY_SELECTED");
 	}
 
 	macro assertSearchableSectionOptionsAppears {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_radioOption = "${radioOption}",
 			locator1 = "ObjectAdmin#FIELDS_RADIO_OPTION");
 	}
@@ -127,47 +127,47 @@ definition {
 	}
 
 	macro deleteFieldOnBlock {
-		Click(locator1 = "CreateObject#KEBAB_MENU_BLOCK_FIELD");
+		Click.Click(locator1 = "CreateObject#KEBAB_MENU_BLOCK_FIELD");
 
-		Click(locator1 = "CreateObject#KEBAB_MENU_BLOCK_FIELD_OPTION_DELETE");
+		Click.Click(locator1 = "CreateObject#KEBAB_MENU_BLOCK_FIELD_OPTION_DELETE");
 	}
 
 	macro editLabel {
-		Type(
+		Type.Type(
 			locator1 = "CreateObject#OBJECT_LABEL",
 			value1 = "${labelName}");
 	}
 
 	macro editName {
-		Type(
+		Type.Type(
 			locator1 = "CreateObject#FIELD_NAME",
 			value1 = "${fieldName}");
 	}
 
 	macro editPluralLabel {
-		Type(
+		Type.Type(
 			locator1 = "CreateObject#OBJECT_PLURAL_LABEL",
 			value1 = "${pluralLabelName}");
 	}
 
 	macro editType {
-		Select(
+		Select.Select(
 			locator1 = "CreateObject#FIELD_TYPE",
 			value1 = "${fieldType}");
 	}
 
 	macro saveObject {
-		Click(locator1 = "CreateObject#SAVE_BUTTON");
+		Click.Click(locator1 = "CreateObject#SAVE_BUTTON");
 	}
 
 	macro selectPanelCategoryKey {
-		Select(
+		Select.Select(
 			locator1 = "CreateObject#PANEL_CATEGORY_KEY",
 			value1 = "${panelCategoryKey}");
 	}
 
 	macro selectTitleField {
-		Select(
+		Select.Select(
 			locator1 = "CreateObject#TITLE_FIELD",
 			value1 = "${fieldLabel}");
 	}
@@ -177,7 +177,7 @@ definition {
 	}
 
 	macro viewObject {
-		Click(
+		Click.Click(
 			key_labelName = "${labelName}",
 			locator1 = "CreateObject#VIEW_OBJECT");
 	}

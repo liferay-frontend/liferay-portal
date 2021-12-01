@@ -9,35 +9,35 @@ definition {
 
 		Button.clickSave();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 	}
 
 	macro assertAuthorColumnDisplaysUserName {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_column = "${column}",
 			locator1 = "ObjectPortlet#ENTRY_COLUMN");
 
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_entry = "${authorName}",
 			locator1 = "ObjectPortlet#ENTRY_VALUE");
 	}
 
 	macro assertDeleteEntryButtonNotPresent {
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_entry = "${entry}",
 			locator1 = "ObjectPortlet#ENTRY_KEBAB_MENU");
 
-		AssertElementNotPresent(locator1 = "ObjectPortlet#DELETE_ENTRY_BUTTON");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "ObjectPortlet#DELETE_ENTRY_BUTTON");
 	}
 
 	macro assertDuplicatedEntryNotPresent {
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_entry = "${entry}",
 			locator1 = "ObjectPortlet#DUPLICATED_ENTRY_VALUE");
 	}
 
 	macro assertEntryColumnNotPresent {
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_column = "${column}",
 			locator1 = "ObjectPortlet#ENTRY_COLUMN");
 	}
@@ -47,31 +47,31 @@ definition {
 	}
 
 	macro assertEntryDetailsLabelPresent {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_entryLabel = "${entryLabel}",
 			locator1 = "ObjectPortlet#VIEW_ENTRY_DETAILS_LABEL");
 	}
 
 	macro assertEntryDetailsValuePresent {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_entryValue = "${entryValue}",
 			locator1 = "ObjectPortlet#VIEW_ENTRY_DETAILS_VALUE");
 	}
 
 	macro assertEntryNotPresent {
-		AssertElementNotPresent(
+		AssertElementNotPresent.AssertElementNotPresent(
 			key_entry = "${entry}",
 			locator1 = "ObjectPortlet#ENTRY_VALUE");
 	}
 
 	macro assertFieldEntryColumnIsDisplayed {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldLabelName = "${fieldLabelName}",
 			locator1 = "ObjectPortlet#FIELD_ENTRY_COLUMN");
 	}
 
 	macro assertFieldLabelName {
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			key_fieldLabelName = "${fieldLabelName}",
 			locator1 = "ObjectPortlet#FIELD_LABEL_NAME",
 			value1 = "${key_fieldLabelName}");
@@ -83,7 +83,7 @@ definition {
 		for (var entry : list "${entry}") {
 			var resultOrder = ${resultOrder} + 1;
 
-			AssertVisible(
+			AssertVisible.AssertVisible(
 				key_entry = "${entry}",
 				locator1 = "ObjectPortlet#ENTRY_VALUE_SPECIFIC_ORDER",
 				resultOrder = "${resultOrder}");
@@ -91,25 +91,25 @@ definition {
 	}
 
 	macro assertGenericEntryColumnIsDisplayed {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_fieldLabelName = "${fieldLabelName}",
 			locator1 = "ObjectPortlet#GENERIC_ENTRY_COLUMN");
 	}
 
 	macro assertHeader {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_objectLabel = "${objectLabel}",
 			locator1 = "ObjectPortlet#OBJECT_PORTLET_HEADER");
 	}
 
 	macro assertMenuItemColumn {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_dropdowntItem = "${dropdowntItem}",
 			locator1 = "ObjectPortlet#CHECK_UNCHECK_DROPDOWN_ITEM");
 	}
 
 	macro assertNoFieldsWereFound {
-		AssertTextEquals(
+		AssertTextEquals.AssertTextEquals(
 			locator1 = "ObjectPortlet#NO_FIELDS_WERE_FOUND_MESSAGE",
 			value1 = "No fields were found.");
 	}
@@ -119,23 +119,23 @@ definition {
 
 		ApplicationsMenu.gotoPanel(panel = "Control Panel");
 
-		AssertElementPresent(locator1 = "ObjectPortlet#CUSTOM_OBJECT_ON_CONTROL_PANEL");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectPortlet#CUSTOM_OBJECT_ON_CONTROL_PANEL");
 	}
 
 	macro assertPlusButtonIsNotPresent {
-		AssertElementNotPresent(locator1 = "Button#PLUS");
+		AssertElementNotPresent.AssertElementNotPresent(locator1 = "Button#PLUS");
 	}
 
 	macro assertRelationshipEntrySearchResultsPresent {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_entry = "${entry}",
 			locator1 = "ObjectPortlet#SEARCH_RESULT_RELATIONSHIP_ENTRY");
 	}
 
 	macro assertUserCanNotUpdateEntryWithoutPermission {
-		Click(locator1 = "ObjectPortlet#VIEW_ENTRY_EYE_BUTTON");
+		Click.Click(locator1 = "ObjectPortlet#VIEW_ENTRY_EYE_BUTTON");
 
-		AssertNotEditable(locator1 = "ObjectPortlet#ADD_OBJECT_ENTRY");
+		AssertNotEditable.AssertNotEditable(locator1 = "ObjectPortlet#ADD_OBJECT_ENTRY");
 
 		Button.clickSave();
 
@@ -145,7 +145,7 @@ definition {
 	}
 
 	macro changePagination {
-		Click(locator1 = "ObjectPortlet#PAGINATION_ITEMS_PER_PAGE_SELECT");
+		Click.Click(locator1 = "ObjectPortlet#PAGINATION_ITEMS_PER_PAGE_SELECT");
 
 		MenuItem.click(menuItem = "${itemsPerPage}");
 	}
@@ -153,51 +153,51 @@ definition {
 	macro checkAnyPage {
 		var key_pageNumber = "${pageNumber}";
 
-		Click(locator1 = "ObjectPortlet#ANY_PAGE");
+		Click.Click(locator1 = "ObjectPortlet#ANY_PAGE");
 	}
 
 	macro checkUncheckColumnsDisplayed {
-		Click(locator1 = "ObjectPortlet#ARROW_DOWN_ICON");
+		Click.Click(locator1 = "ObjectPortlet#ARROW_DOWN_ICON");
 
-		Click(
+		Click.Click(
 			key_dropdowntItem = "${dropdowntItem}",
 			locator1 = "ObjectPortlet#CHECK_UNCHECK_DROPDOWN_ITEM");
 	}
 
 	macro deleteEntry {
-		Click(
+		Click.Click(
 			key_entry = "${entry}",
 			locator1 = "ObjectPortlet#ENTRY_KEBAB_MENU");
 
-		ClickNoError(locator1 = "ObjectPortlet#DELETE_ENTRY_BUTTON");
+		ClickNoError.ClickNoError(locator1 = "ObjectPortlet#DELETE_ENTRY_BUTTON");
 
-		AssertConfirm(value1 = "Are you sure you want to delete this entry?");
+		AssertConfirm.AssertConfirm(value1 = "Are you sure you want to delete this entry?");
 	}
 
 	macro goToCustomObjectPortletOnControlPanel {
-		Click(locator1 = "ObjectPortlet#CUSTOM_OBJECT_ON_CONTROL_PANEL");
+		Click.Click(locator1 = "ObjectPortlet#CUSTOM_OBJECT_ON_CONTROL_PANEL");
 	}
 
 	macro searchColumn {
-		Click(locator1 = "ObjectPortlet#ARROW_DOWN_ICON");
+		Click.Click(locator1 = "ObjectPortlet#ARROW_DOWN_ICON");
 
-		AssertElementPresent(locator1 = "ObjectPortlet#COLUMN_SEARCH_FIELD");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectPortlet#COLUMN_SEARCH_FIELD");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectPortlet#COLUMN_SEARCH_FIELD",
 			value1 = "${columnName}");
 
-		Click(locator1 = "ObjectPortlet#COLUMN_ICON_SEARCH");
+		Click.Click(locator1 = "ObjectPortlet#COLUMN_ICON_SEARCH");
 	}
 
 	macro searchEntry {
-		AssertElementPresent(locator1 = "ObjectPortlet#SEARCH_FIELD");
+		AssertElementPresent.AssertElementPresent(locator1 = "ObjectPortlet#SEARCH_FIELD");
 
-		Type(
+		Type.Type(
 			locator1 = "ObjectPortlet#SEARCH_FIELD",
 			value1 = "${entryName}");
 
-		KeyPress(
+		KeyPress.KeyPress(
 			locator1 = "ObjectPortlet#SEARCH_FIELD",
 			value1 = "\RETURN");
 	}
@@ -209,13 +209,13 @@ definition {
 	}
 
 	macro selectCustomObject {
-		Click(
+		Click.Click(
 			key_label = "${label}",
 			locator1 = "ObjectPortlet#SELECT_CUSTOM_OBJECT");
 	}
 
 	macro sortField {
-		Click(
+		Click.Click(
 			key_sortFieldName = "${sortFieldName}",
 			locator1 = "ObjectPortlet#SORT_FIELD",
 			value1 = "${sortFieldName}");
@@ -228,7 +228,7 @@ definition {
 
 		Button.clickSave();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 	}
 
 	macro updateEntry {
@@ -240,11 +240,11 @@ definition {
 
 		Button.clickSave();
 
-		WaitForSPARefresh();
+		WaitForSPARefresh.WaitForSPARefresh();
 	}
 
 	macro viewEntry {
-		AssertElementPresent(
+		AssertElementPresent.AssertElementPresent(
 			key_entry = "${entry}",
 			locator1 = "ObjectPortlet#ENTRY_VALUE");
 	}
@@ -252,16 +252,16 @@ definition {
 	macro viewEntryDetails {
 		var key_entry = "${entry}";
 
-		if (IsElementPresent(locator1 = "ObjectPortlet#ENTRY_KEBAB_MENU")) {
-			Click(locator1 = "ObjectPortlet#ENTRY_KEBAB_MENU");
+		if (IsElementPresent.IsElementPresent(locator1 = "ObjectPortlet#ENTRY_KEBAB_MENU")) {
+			Click.Click(locator1 = "ObjectPortlet#ENTRY_KEBAB_MENU");
 
-			Click(locator1 = "ObjectPortlet#VIEW_ENTRY_BUTTON");
+			Click.Click(locator1 = "ObjectPortlet#VIEW_ENTRY_BUTTON");
 		}
 		else {
-			Click(locator1 = "ObjectPortlet#VIEW_ENTRY_EYE_BUTTON");
+			Click.Click(locator1 = "ObjectPortlet#VIEW_ENTRY_EYE_BUTTON");
 		}
 
-		WaitForPageLoad();
+		WaitForPageLoad.WaitForPageLoad();
 	}
 
 }
