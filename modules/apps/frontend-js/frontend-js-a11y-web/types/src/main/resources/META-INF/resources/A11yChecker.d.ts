@@ -158,6 +158,7 @@ export declare class A11yChecker {
 	 * Modal, we need to monitor iframes as they appear during their lifecycle.
 	 */
 	private observeIframes;
+	private mutationFunnel;
 	private mutationCallback;
 	observe(): void;
 	unobserve(): void;

@@ -542,65 +542,71 @@ export class A11yChecker {
 		});
 	}
 
+	private mutationFunnel(
+		node: Node,
+		record: MutationRecord,
+		denylistTargets?: Array<Array<Element>>
+	) {
+		const {attributeName, type} = record;
+
+		if (type === 'attributes') {
+			const attributes =
+				this.mutations[node.nodeName.toLowerCase()] ??
+				this.mutations?.any;
+
+			const attributeValue = (node as Element).getAttribute(
+				attributeName as string
+			);
+
+			if (
+				attributes[attributeName as string]?.some((value) =>
+					value === '*' ? true : attributeValue?.includes(value)
+				)
+			) {
+				return;
+			}
+		}
+
+		// Ignores the mutation if the target was through some element
+		// within the denylist.
+
+		const hasTargetInDenylist = denylistTargets?.some((targets) =>
+			targets?.some((target) => target.contains(node))
+		);
+
+		if (hasTargetInDenylist) {
+			return;
+		}
+
+		// If the node belongs to an iframe analyze the iframe instead of
+		// the element. `axe-core` cannot directly analyze the element.
+
+		if (node.ownerDocument !== document) {
+			node = ((node.ownerDocument as Document).defaultView as Window)
+				.frameElement as Node;
+		}
+
+		this.observeIframes(node);
+
+		this.recordCallback(node);
+	}
+
 	private mutationCallback(records: Array<MutationRecord>) {
 		const denylistTargets = this.denylist?.map((selector) => [
 			...document.querySelectorAll(selector.join(' ')),
 		]);
 
 		records.forEach((record) => {
-			const {
-				addedNodes,
-				attributeName,
-				removedNodes,
-				target,
-				type,
-			} = record;
+			const {addedNodes, removedNodes, target, type} = record;
 
-			let node =
+			const nodes =
 				type === 'attributes' || removedNodes.length > 0
-					? target
-					: addedNodes[0];
+					? [target]
+					: addedNodes;
 
-			if (type === 'attributes') {
-				const attributes =
-					this.mutations[node.nodeName.toLowerCase()] ??
-					this.mutations?.any;
-
-				const attributeValue = (node as Element).getAttribute(
-					attributeName as string
-				);
-
-				if (
-					attributes[attributeName as string]?.some((value) =>
-						value === '*' ? true : attributeValue?.includes(value)
-					)
-				) {
-					return;
-				}
-			}
-
-			// Ignores the mutation if the target was through some element
-			// within the denylist.
-
-			const hasTargetInDenylist = denylistTargets?.some((targets) =>
-				targets?.some((target) => target.contains(node))
+			nodes.forEach((node: Node) =>
+				this.mutationFunnel(node, record, denylistTargets)
 			);
-
-			if (hasTargetInDenylist) {
-				return;
-			}
-
-			// If the node belongs to an iframe analyze the iframe instead of
-			// the element. `axe-core` cannot directly analyze the element.
-
-			if (node.ownerDocument !== document) {
-				node = ((node.ownerDocument as Document).defaultView as Window)
-					.frameElement as Node;
-			}
-
-			this.observeIframes(node);
-
-			this.recordCallback(node);
 		});
 	}
 
