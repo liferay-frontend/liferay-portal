@@ -121,8 +121,6 @@ public class A11yTopHeadJSPDynamicInclude implements DynamicInclude {
 				)
 			)
 		).put(
-			"portletId", "frontend-js-a11y-web"
-		).put(
 			"targets", new String[] {_a11yConfiguration.target()}
 		);
 
