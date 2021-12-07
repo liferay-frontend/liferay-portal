@@ -53,8 +53,8 @@ public class RemoteAppPortalInstanceLifecycleListener
 			StringPool.BLANK, "vanilla-counter",
 			"https://liferay.github.io/liferay-frontend-projects" +
 				"/vanilla-counter/index.js",
-			"See how a vanilla counter works as a remote app.",
-			"vanilla_counter", false,
+			"Sample vanilla counter remote application", "vanilla_counter",
+			false,
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), "Vanilla Counter"),
 			"category.remote-apps", "friendly-url-mapping=vanilla_counter",
