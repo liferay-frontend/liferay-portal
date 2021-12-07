@@ -26,9 +26,6 @@ import com.liferay.remote.app.service.RemoteAppEntryLocalService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import java.util.Locale;
-import java.util.Map;
-
 /**
  * @author Iván Zaera Avellón
  */
