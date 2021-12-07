@@ -21,7 +21,8 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.util.LocalizationUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowHandler;
+import com.liferay.remote.app.model.RemoteAppEntry;
 import com.liferay.remote.app.service.RemoteAppEntryLocalService;
 
 import org.osgi.service.component.annotations.Component;
@@ -52,8 +53,7 @@ public class RemoteAppPortalInstanceLifecycleListener
 			false,
 			LocalizationUtil.getMap(new LocalizedValuesMap("Vanilla Counter")),
 			"category.remote-apps", "friendly-url-mapping=vanilla_counter",
-			"https://liferay.github.io/liferay-frontend-projects",
-			WorkflowConstants.STATUS_APPROVED);
+			"https://liferay.github.io/liferay-frontend-projects");
 	}
 
 	@Reference
@@ -61,5 +61,10 @@ public class RemoteAppPortalInstanceLifecycleListener
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.remote.app.model.RemoteAppEntry)"
+	)
+	private WorkflowHandler<RemoteAppEntry> _workflowHandler;
 
 }
