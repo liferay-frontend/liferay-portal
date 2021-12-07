@@ -36,11 +36,7 @@ public class RemoteAppPortalInstanceLifecycleListener
 
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
-
-		// TODO Move to an upgrade process for existing companies. For new
-		// companies, use a model listener.
-
-		long count = _remoteAppEntryLocalService.getRemoteAppEntriesCount(
+		long count = _remoteAppEntryLocalService.countByCompanyId(
 			company.getCompanyId());
 
 		if (count != 0) {
