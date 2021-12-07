@@ -92,6 +92,7 @@ definition {
 		property portal.acceptance = "true";
 		property test.assert.warning.exceptions = "true";
 		property test.name.skip.portal.instance = "DatabasePartitioning#AddNewCompany";
+		property testray.component.names = "WYSIWYG";
 
 		PortalInstances.openVirtualInstancesAdmin();
 
