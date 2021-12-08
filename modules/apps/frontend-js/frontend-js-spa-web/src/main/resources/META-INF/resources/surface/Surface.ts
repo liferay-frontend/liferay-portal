@@ -141,10 +141,11 @@ class Surface extends Disposable {
 	 * the current instance.
 	 * <code>this.element</code> will be used.
 	 */
-	getElement() {
+	getElement(): Nullable<HTMLElement> {
 		if (this.element) {
 			return this.element;
 		}
+
 		this.element = document.getElementById(this.id);
 
 		return this.element;

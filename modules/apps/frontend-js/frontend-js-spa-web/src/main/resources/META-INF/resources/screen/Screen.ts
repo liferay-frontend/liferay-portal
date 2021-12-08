@@ -131,7 +131,7 @@ abstract class Screen extends Cacheable {
 	evaluateScripts(surfaces: Surfaces) {
 		Object.keys(surfaces).forEach((sId) => {
 			if (surfaces[sId].activeChild) {
-				runScriptsInElement(surfaces[sId].activeChild);
+				runScriptsInElement(surfaces[sId].activeChild as HTMLElement);
 			}
 		});
 
@@ -142,7 +142,7 @@ abstract class Screen extends Cacheable {
 	 * Allows a screen to evaluate styles before the element is made visible.
 	 * Lifecycle.
 	 */
-	evaluateStyles() {
+	evaluateStyles(): Promise<void> {
 		return Promise.resolve();
 	}
 

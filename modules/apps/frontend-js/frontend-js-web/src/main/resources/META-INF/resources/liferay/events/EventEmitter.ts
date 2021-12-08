@@ -74,8 +74,7 @@ class EventEmitter extends Disposable {
 	_addHandler(holder: any[] | null, handler: EventHandler) {
 		if (!holder) {
 			holder = handler as any;
-		}
-		else {
+		} else {
 			if (!Array.isArray(holder)) {
 				holder = [holder];
 			}
@@ -96,7 +95,7 @@ class EventEmitter extends Disposable {
 		event: EventOrEventsList,
 		listener: Function,
 		defaultListener?: boolean
-	) {
+	): EventHandle {
 		this._validateListener(listener);
 
 		const events = this._toEventsArray(event);
@@ -105,6 +104,7 @@ class EventEmitter extends Disposable {
 			this._addSingleListener(events[i], listener, defaultListener);
 		}
 
+		// @ts-ignore
 		return new EventHandle(this, event, listener);
 	}
 
@@ -165,7 +165,7 @@ class EventEmitter extends Disposable {
 	/**
 	 * Execute each of the listeners in order with the supplied arguments.
 	 */
-	emit(event: string) {
+	emit(event: string, options?: object): boolean {
 		const listeners = this._getRawListeners(event) || [];
 
 		if (listeners.length === 0) {
@@ -217,10 +217,12 @@ class EventEmitter extends Disposable {
 	 */
 	many(event: EventOrEventsList, amount: number, listener: Function) {
 		const events = this._toEventsArray(event);
+
 		for (let i = 0; i < events.length; i++) {
 			this._many(events[i], amount, listener);
 		}
 
+		// @ts-ignore
 		return new EventHandle(this, event, listener);
 	}
 
@@ -321,8 +323,7 @@ class EventEmitter extends Disposable {
 				for (let i = 0; i < events.length; i++) {
 					this._events[events[i]] = [];
 				}
-			}
-			else {
+			} else {
 				this._events = {};
 			}
 		}
@@ -391,8 +392,7 @@ class EventEmitter extends Disposable {
 
 			if (listeners[i].default) {
 				defaultListeners.push(listener);
-			}
-			else {
+			} else {
 				listener.apply(this, args);
 			}
 		}

@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-interface Token {
+export interface Token {
     name: string;
     optional: boolean;
     partial: boolean | '';
@@ -19,7 +19,7 @@ interface Token {
     prefix: string;
     repeat: boolean;
 }
-declare type RouteOrTokens = string | Token[];
+export declare type RouteOrTokens = string | Token[];
 /**
  * Parses the given route format string into tokens representing its contents.
  */
@@ -33,4 +33,3 @@ export declare function toRegex(routeOrTokens: RouteOrTokens): RegExp;
  * Extracts data from the given path according to the specified route format.
  */
 export declare function extractData(routeOrTokens: RouteOrTokens, path: string): Record<string, string | string[]> | null;
-export {};

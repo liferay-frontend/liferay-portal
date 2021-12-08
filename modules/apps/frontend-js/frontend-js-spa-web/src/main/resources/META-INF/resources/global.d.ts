@@ -17,8 +17,8 @@ import type LiferayApp from './app/LiferayApp';
 declare global {
 	export interface Liferay {
 		SPA?: {
-			__capturedFormButtonElement__?: HTMLButtonElement;
-			__capturedFormElement__?: HTMLFormElement;
+			__capturedFormButtonElement__?: HTMLButtonElement | null;
+			__capturedFormElement__?: HTMLFormElement | null;
 			app?: LiferayApp;
 		};
 	}

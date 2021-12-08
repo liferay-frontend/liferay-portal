@@ -12,20 +12,29 @@
  * details.
  */
 
-import {extractData, parse, toRegex} from '../util/pathParser';
+import {
+	RouteOrTokens,
+	Token,
+	extractData,
+	parse,
+	toRegex,
+} from '../util/pathParser';
 
 type Path = string | RegExp | Function;
+type ParsedData = {
+	regex: RegExp;
+	tokens: (string | Token)[];
+};
 
 class Route {
 	handler: Function;
 	path: Path;
+	parsedData_: ParsedData | undefined;
 
 	/**
 	 * Route class.
-	 * @param {!string|RegExp|Function} path
-	 * @param {!Function} handler
 	 */
-	constructor(path: Path, handler) {
+	constructor(path: Path, handler: Function) {
 		if (!path) {
 			throw new Error('Route path not specified.');
 		}
@@ -44,6 +53,8 @@ class Route {
 		 * Defines the path which will trigger the route handler.
 		 */
 		this.path = path;
+
+		this.parsedData_ = undefined;
 	}
 
 	/**
@@ -53,8 +64,10 @@ class Route {
 	 */
 	buildParsedData_() {
 		if (!this.parsedData_) {
-			var tokens = parse(this.path);
-			var regex = toRegex(tokens);
+			const tokens = parse(this.path as string);
+
+			const regex = toRegex(tokens as string | Token[]);
+
 			this.parsedData_ = {
 				regex,
 				tokens,
@@ -72,7 +85,10 @@ class Route {
 	 */
 	extractParams(path: string) {
 		if (typeof this.path === 'string') {
-			return extractData(this.buildParsedData_().tokens, path);
+			return extractData(
+				this.buildParsedData_().tokens as RouteOrTokens,
+				path
+			);
 		}
 
 		return {};

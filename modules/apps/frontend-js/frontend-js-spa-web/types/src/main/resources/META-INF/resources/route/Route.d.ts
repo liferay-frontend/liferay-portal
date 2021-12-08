@@ -11,22 +11,26 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+import { Token } from '../util/pathParser';
 declare type Path = string | RegExp | Function;
+declare type ParsedData = {
+    regex: RegExp;
+    tokens: (string | Token)[];
+};
 declare class Route {
     handler: Function;
     path: Path;
+    parsedData_: ParsedData | undefined;
     /**
      * Route class.
-     * @param {!string|RegExp|Function} path
-     * @param {!Function} handler
      */
-    constructor(path: Path, handler: any);
+    constructor(path: Path, handler: Function);
     /**
      * Builds parsed data (regex and tokens) for this route.
      * @return {!Object}
      * @protected
      */
-    buildParsedData_(): any;
+    buildParsedData_(): ParsedData;
     /**
      * Extracts param data from the given path, according to this route.
      * @param {string} path The url path to extract params from.

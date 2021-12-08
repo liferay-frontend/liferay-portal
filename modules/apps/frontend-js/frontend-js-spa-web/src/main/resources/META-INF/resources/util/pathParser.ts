@@ -14,7 +14,7 @@
 
 const REGEX = /([/])?(?:(?::(\w+)(?:\(((?:\\.|[^\\()])*)\))?|\(((?:\\.|[^\\()])+)\))([+*?])?)/g;
 
-interface Token {
+export interface Token {
 	name: string;
 	optional: boolean;
 	partial: boolean | '';
@@ -23,7 +23,7 @@ interface Token {
 	repeat: boolean;
 }
 
-type RouteOrTokens = string | Token[];
+export type RouteOrTokens = string | Token[];
 
 /**
  * Converts the given array of regex matches to a more readable object format.

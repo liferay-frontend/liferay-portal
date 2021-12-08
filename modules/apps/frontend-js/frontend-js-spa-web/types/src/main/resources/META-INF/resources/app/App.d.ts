@@ -29,7 +29,7 @@ interface AppConfig {
 }
 declare class App extends EventEmitter {
     activeScreen: Nullable<Screen>;
-    activePath: Nullable<string>;
+    activePath: string | null;
     allowPreventNavigate: boolean;
     basePath: string;
     browserPathBeforeNavigate: string;
@@ -81,7 +81,7 @@ declare class App extends EventEmitter {
      *         <code>{ path: /foo.+/, handler: MyScreen }</code>
      * @chainable
      */
-    addRoutes(routes: any): this;
+    addRoutes(routes: Route | Route[]): this;
     /**
      * Adds one or more surfaces to the application.
      * @param {Surface|String|Array.<Surface|String>} surfaces
@@ -90,21 +90,19 @@ declare class App extends EventEmitter {
      *     the id of surface element.
      * @chainable
      */
-    addSurfaces(surfaces: any): this;
+    addSurfaces(surfaces: Surface | Surface[]): this;
     /**
      * Returns if can navigate to path.
      */
-    canNavigate(url: string): boolean;
+    canNavigate(url: string): Boolean;
     /**
      * Clear screens cache.
      */
     clearScreensCache(): void;
     /**
      * Retrieves or create a screen instance to a path.
-     * @param {!string} path Path containing the querystring part.
-     * @return {Screen}
      */
-    createScreenInstance(path: string, route: any): Nullable<Screen>;
+    createScreenInstance(path: string, route: Route): Screen;
     /**
      * @inheritDoc
      */
@@ -114,64 +112,48 @@ declare class App extends EventEmitter {
      * any.
      * @return {Promise} Returns a pending request cancellable promise.
      */
-    dispatch(): Nullable<Promise<void>>;
+    dispatch(): Promise<void>;
     /**
      * Starts navigation to a path.
-     * @param {!string} path Path containing the querystring part.
-     * @param {boolean=} opt_replaceHistory Replaces browser history.
-     * @return {Promise} Returns a pending request cancellable promise.
      */
-    doNavigate_(path: any, opt_replaceHistory: any): Promise<void>;
+    doNavigate_(path: string, opt_replaceHistory: boolean): Promise<void>;
     /**
      * Extracts params according to the given path and route.
-     * @param {!Route} route
-     * @param {string} path
-     * @param {!Object}
      */
-    extractParams(route: any, path: any): any;
+    extractParams(route: Route, path: string): Record<string, string | string[]> | null;
     /**
      * Finalizes a screen navigation.
      * @param {!string} path Path containing the querystring part.
      * @param {!Screen} nextScreen
      * @protected
      */
-    finalizeNavigate_(path: any, nextScreen: any): void;
+    finalizeNavigate_(path: string, nextScreen: Screen): void;
     /**
-     * Finds a route for the test path. Returns true if matches has a route,
-     * otherwise returns null.
-     * @param {!string} path Path containing the querystring part.
-     * @return {?Object} Route handler if match any or <code>null</code> if the
-     *     path is the same as the current url and the path contains a fragment.
+     * Finds a route for the test path.
      */
-    findRoute(path: any): Route | null;
+    findRoute(path: string): Route | null;
     /**
      * Gets allow prevent navigate.
-     * @return {boolean}
      */
     getAllowPreventNavigate(): boolean;
     /**
      * Gets link base path.
-     * @return {!string}
      */
     getBasePath(): string;
     /**
      * Gets the default page title.
-     * @return {string} defaultTitle
      */
     getDefaultTitle(): string;
     /**
      * Gets the form selector.
-     * @return {!string}
      */
     getFormSelector(): string;
     /**
      * Check if route matching is ignoring query string from the route path.
-     * @return {boolean}
      */
     getIgnoreQueryStringFromRoutePath(): boolean;
     /**
      * Gets the link selector.
-     * @return {!string}
      */
     getLinkSelector(): string;
     /**
@@ -186,7 +168,7 @@ declare class App extends EventEmitter {
      * @param {string} path
      * @return {string}
      */
-    getRoutePath(path: any): string;
+    getRoutePath(path: string): string;
     /**
      * Gets the update scroll position value.
      * @return {boolean}
@@ -199,7 +181,7 @@ declare class App extends EventEmitter {
      * @param {!Error} error
      * @protected
      */
-    handleNavigateError_(path: any, nextScreen: any, error: any): void;
+    handleNavigateError_(path: string, nextScreen: Screen, error: Error): void;
     /**
      * Checks if app has routes.
      * @return {boolean}
@@ -207,19 +189,14 @@ declare class App extends EventEmitter {
     hasRoutes(): boolean;
     /**
      * Tests if host is an offsite link.
-     * @param {!string} host Link host to compare with
-     *     <code>window.location.host</code>.
-     * @return {boolean}
      * @protected
      */
-    isLinkSameOrigin_(host: any): boolean;
+    isLinkSameOrigin_(host: string): boolean;
     /**
      * Tests if link element has the same app's base path.
-     * @param {!string} path Link path containing the querystring part.
-     * @return {boolean}
      * @protected
      */
-    isSameBasePath_(path: any): boolean;
+    isSameBasePath_(path: string): boolean;
     /**
      * Lock the document scroll in order to avoid the browser native back and
      * forward navigation to change the scroll position. In the end of
@@ -235,16 +212,14 @@ declare class App extends EventEmitter {
     /**
      * This method is used to evaluate if is possible to queue received
      *  dom event to scheduleNavigationQueue and enqueue it.
-     * @param {string} href Information about the link's href.
-     * @param {Event} event Dom event that initiated the navigation.
      */
-    maybeScheduleNavigation_(href: any, event: any): boolean;
+    maybeScheduleNavigation_(href: string, event: Event): boolean;
     /**
      * Maybe navigate to a path.
      * @param {string} href Information about the link's href.
      * @param {Event} event Dom event that initiated the navigation.
      */
-    maybeNavigate_(href: any, event: any): void;
+    maybeNavigate_(href: string, event: Event): void;
     /**
      * Checks whether the onbeforeunload global event handler is overloaded
      * by client code. If so, it replaces with a function that halts the normal
@@ -260,7 +235,7 @@ declare class App extends EventEmitter {
      * @param {!Screen} nextScreen
      * @return {!Promise}
      */
-    maybePreventActivate_(nextScreen: any): Promise<undefined>;
+    maybePreventActivate_(nextScreen: Screen): Promise<undefined>;
     /**
      * Cancels navigation if activeScreen's beforeDeactivate lifecycle
      * method resolves to true.
@@ -279,60 +254,46 @@ declare class App extends EventEmitter {
     /**
      * Maybe restore redirected path hash in case both the current path and
      * the given path are the same.
-     * @param {!string} path Path before navigation.
-     * @param {!string} redirectPath Path after navigation.
-     * @param {!string} hash Hash to be added to the path.
-     * @return {!string} Returns the path with the hash restored.
      */
-    maybeRestoreRedirectPathHash_(path: any, redirectPath: any, hash: any): any;
+    maybeRestoreRedirectPathHash_(path: string, redirectPath: string, hash: string): string;
     /**
      * Maybe update scroll position in history state to anchor on path.
-     * @param {!string} path Path containing anchor
      */
     maybeUpdateScrollPositionState_(): void;
     /**
      * Navigates to the specified path if there is a route handler that matches.
-     * @param {!string} path Path to navigate containing the base path.
-     * @param {boolean=} opt_replaceHistory Replaces browser history.
-     * @param {Event=} event Optional event object that triggered the navigation.
-     * @return {Promise} Returns a pending request cancellable promise.
      */
-    navigate(path: any, opt_replaceHistory?: any, opt_event?: any): Nullable<Promise<void>>;
+    navigate(path: string, opt_replaceHistory?: boolean, opt_event?: Event): Promise<void>;
     /**
      * Befores navigation to a path.
      * @param {!Event} event Event facade containing <code>path</code> and
      *     <code>replaceHistory</code>.
      * @protected
      */
-    onBeforeNavigate_(event: any): void;
+    onBeforeNavigate_(event: Event): void;
     /**
      * Befores navigation to a path. Runs after external listeners.
-     * @param {!Event} event Event facade containing <code>path</code> and
-     *     <code>replaceHistory</code>.
      * @protected
      */
-    onBeforeNavigateDefault_(event: any): void;
+    onBeforeNavigateDefault_(event: Event): void;
     /**
      * Custom event handler that executes the original listener that has been
      * added by the client code and terminates the navigation accordingly.
-     * @param {!Event} event original Event facade.
      * @protected
      */
-    onBeforeUnloadDefault_(event: any): void;
+    onBeforeUnloadDefault_(event: Event): void;
     /**
      * Intercepts document clicks and test link elements in order to decide
      * whether Surface app can navigate.
-     * @param {!Event} event Event facade
      * @protected
      */
-    onDocClickDelegate_(event: any): void;
+    onDocClickDelegate_(event: Event): void;
     /**
      * Intercepts document form submits and test action path in order to decide
      * whether Surface app can navigate.
-     * @param {!Event} event Event facade
      * @protected
      */
-    onDocSubmitDelegate_(event: any): void;
+    onDocSubmitDelegate_(event: Event): void;
     /**
      * Listens to the window's load event in order to avoid issues with some browsers
      * that trigger popstate calls on the first load. For more information see
@@ -346,10 +307,9 @@ declare class App extends EventEmitter {
      * assume it is navigating to an external page or to a page we don't have
      * route, then <code>window.location.reload()</code> is invoked in order to
      * reload the content to the current url.
-     * @param {!Event} event Event facade
      * @protected
      */
-    onPopstate_(event: any): void;
+    onPopstate_(event: Event): void;
     /**
      * Listens document scroll changes in order to capture the possible lock
      * scroll position for history scrolling.
@@ -358,92 +318,67 @@ declare class App extends EventEmitter {
     onScroll_(): void;
     /**
      * Starts navigation to a path.
-     * @param {!Event} event Event facade containing <code>path</code> and
-     *     <code>replaceHistory</code>.
      * @protected
      */
-    onStartNavigate_(event: any): void;
+    onStartNavigate_(event: Event): void;
     /**
      * Prefetches the specified path if there is a route handler that matches.
-     * @param {!string} path Path to navigate containing the base path.
-     * @return {Promise} Returns a pending request cancellable promise.
      */
-    prefetch(path: any): Promise<void>;
+    prefetch(path: string): Promise<void>;
     /**
      * Prepares screen flip. Updates history state and surfaces content.
-     * @param {!string} path Path containing the querystring part.
-     * @param {!Screen} nextScreen
-     * @param {boolean=} opt_replaceHistory Replaces browser history.
      */
-    prepareNavigateHistory_(path: any, nextScreen: any, opt_replaceHistory: any): void;
-    /**
-     * Prepares screen flip. Updates history state and surfaces content.
-     * @param {!Screen} nextScreen
-     * @param {!Object} surfaces Map of surfaces to flip keyed by surface id.
-     * @param {!Object} params Params extracted from the current path.
-     */
-    prepareNavigateSurfaces_(nextScreen: any, surfaces: any, params: any): void;
+    prepareNavigateHistory_(path: string, nextScreen: Screen, opt_replaceHistory?: boolean): void;
     /**
      * Reloads the page by performing `window.location.reload()`.
      */
     reloadPage(): void;
     /**
      * Removes route instance from app routes.
-     * @param {Route} route
-     * @return {boolean} True if an element was removed.
      */
-    removeRoute(route: any): boolean;
+    removeRoute(route: Route): boolean;
     /**
      * Removes a screen.
-     * @param {!string} path Path containing the querystring part.
      */
-    removeScreen(path: any): void;
+    removeScreen(path: string): void;
     /**
      * Saves given scroll position into history state.
-     * @param {!number} scrollTop Number containing the top scroll position to be saved.
-     * @param {!number} scrollLeft Number containing the left scroll position to be saved.
      */
-    saveHistoryCurrentPageScrollPosition_(scrollTop: any, scrollLeft: any): void;
+    saveHistoryCurrentPageScrollPosition_(scrollTop: number, scrollLeft: number): void;
     /**
      * Sets allow prevent navigate.
-     * @param {boolean} allowPreventNavigate
      */
-    setAllowPreventNavigate(allowPreventNavigate: any): void;
+    setAllowPreventNavigate(allowPreventNavigate: boolean): void;
     /**
      * Sets link base path.
-     * @param {!string} path
      */
-    setBasePath(basePath: any): void;
+    setBasePath(basePath: string): void;
     /**
      * Sets the default page title.
-     * @param {string} defaultTitle
      */
-    setDefaultTitle(defaultTitle: any): void;
+    setDefaultTitle(defaultTitle: string): void;
     /**
      * Sets the form selector.
      * @param {!string} formSelector
      */
-    setFormSelector(formSelector: any): void;
+    setFormSelector(formSelector: string): void;
     /**
      * Sets if route matching should ignore query string from the route path.
      * @param {boolean} ignoreQueryStringFromRoutePath
      */
-    setIgnoreQueryStringFromRoutePath(ignoreQueryStringFromRoutePath: any): void;
+    setIgnoreQueryStringFromRoutePath(ignoreQueryStringFromRoutePath: boolean): void;
     /**
      * Sets the link selector.
-     * @param {!string} linkSelector
      */
-    setLinkSelector(linkSelector: any): void;
+    setLinkSelector(linkSelector: string): void;
     /**
      * Sets the loading css class.
-     * @param {!string} loadingCssClass
      */
-    setLoadingCssClass(loadingCssClass: any): void;
+    setLoadingCssClass(loadingCssClass: string): void;
     /**
      * Sets the update scroll position value.
-     * @param {boolean} updateScrollPosition
      */
-    setUpdateScrollPosition(updateScrollPosition: any): void;
+    setUpdateScrollPosition(updateScrollPosition: boolean): void;
     /**
      * Cancels pending navigate with <code>Cancel pending navigation</code> error.
      * @protected
@@ -459,12 +394,8 @@ declare class App extends EventEmitter {
     syncScrollPositionSyncThenAsync_(): Promise<unknown> | undefined;
     /**
      * Updates or replace browser history.
-     * @param {?string} title Document title.
-     * @param {!string} path Path containing the querystring part.
-     * @param {!object} state
-     * @param {boolean=} opt_replaceHistory Replaces browser history.
      * @protected
      */
-    updateHistory_(title: any, path: any, state: any, opt_replaceHistory: any): void;
+    updateHistory_(title: string, path: string, state: any, opt_replaceHistory?: boolean): void;
 }
 export default App;
