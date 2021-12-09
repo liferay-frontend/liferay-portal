@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
 import React, {useContext} from 'react';
 
 import DataSetContext from '../DataSetContext';
-import {formatActionURL, liferayNavigate} from '../utils/index';
+import {formatActionURL} from '../utils/index';
 import DefaultContent from './DefaultRenderer';
 
 function ActionLinkRenderer({actions, itemData, itemId, options, value}) {
@@ -128,9 +128,7 @@ function ActionLinkRenderer({actions, itemData, itemId, options, value}) {
 				onClick={
 					isNotALink()
 						? handleClickOnLink
-						: (event) => {
-								event.preventDefault();
-
+						: () => {
 								if (
 									currentAction.data &&
 									currentAction.data.confirmationMessage &&
@@ -140,8 +138,6 @@ function ActionLinkRenderer({actions, itemData, itemId, options, value}) {
 								) {
 									return;
 								}
-
-								liferayNavigate(formattedHref);
 						  }
 				}
 			>
