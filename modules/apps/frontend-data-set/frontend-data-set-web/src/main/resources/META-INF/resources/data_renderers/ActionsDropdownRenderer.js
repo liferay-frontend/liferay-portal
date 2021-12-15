@@ -24,7 +24,7 @@ import React, {useContext, useState} from 'react';
 
 import DataSetContext from '../DataSetContext';
 import {ACTION_ITEM_TARGETS} from '../utils/actionItems/constants';
-import {formatActionURL} from '../utils/index';
+import {executeAsyncAction, formatActionURL} from '../utils/index';
 import {openPermissionsModal, resolveModalSize} from '../utils/modals/index';
 
 const {MODAL_PERMISSIONS} = ACTION_ITEM_TARGETS;
@@ -110,6 +110,60 @@ export function handleAction(
 		event.preventDefault();
 
 		window.open(url);
+	}
+	else if (target === 'download') {
+		event.preventDefault();
+
+		setLoading(true);
+		let filename = '';
+
+		executeAsyncAction(url, method)
+			.then((response) => {
+				const disposition = response.headers.get('Content-Disposition');
+
+				if (disposition && disposition.indexOf('attachment') !== -1) {
+					const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+					const matchesRegex = filenameRegex.exec(disposition);
+					if (matchesRegex !== null && matchesRegex[1]) {
+						filename = matchesRegex[1].replace(/['"]/g, '');
+					}
+				}
+
+				return response.blob();
+			})
+			.then((responseBlob) => {
+				const downloadUrl = URL.createObjectURL(responseBlob);
+				const downloadElement = document.createElement('a');
+
+				if (
+					filename &&
+					typeof downloadElement.download !== 'undefined'
+				) {
+					downloadElement.href = downloadUrl;
+					downloadElement.download = filename;
+					document.body.appendChild(downloadElement);
+					downloadElement.click();
+				}
+				else {
+					window.location.href = downloadUrl;
+				}
+
+				openToast({
+					message:
+						successMessage ||
+						Liferay.Language.get('action-completed'),
+					type: 'success',
+				});
+
+				setLoading(false);
+			})
+			.catch((_) => {
+				openToast({
+					message: Liferay.Language.get('unexpected-error'),
+					type: 'danger',
+				});
+				setLoading(false);
+			});
 	}
 	else if (onClick) {
 		event.preventDefault();
