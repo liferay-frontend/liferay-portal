@@ -461,6 +461,8 @@ export class A11yChecker {
 
 		if (this.scheduler.isPaused) {
 			this.scheduler.continueExecution();
+
+			this.recordCallback(document.body);
 		}
 	}
 
