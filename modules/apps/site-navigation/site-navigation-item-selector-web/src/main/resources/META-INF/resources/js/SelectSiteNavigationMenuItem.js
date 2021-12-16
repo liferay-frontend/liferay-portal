@@ -15,7 +15,7 @@
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
-import {Treeview} from 'frontend-js-components-web';
+import {Treeview} from '@liferay/frontend-js-components-web';
 import React, {useCallback, useState} from 'react';
 
 function findSiteNavigationMenuItem(

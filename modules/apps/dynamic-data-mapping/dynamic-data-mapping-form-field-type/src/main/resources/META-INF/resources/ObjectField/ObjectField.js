@@ -13,13 +13,13 @@
  */
 
 import {useResource} from '@clayui/data-provider';
-import {usePrevious} from '@liferay/frontend-js-react-web';
 import {
 	getFields,
 	getObjectFieldName,
 	getSelectedValue,
 	useFormState,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
+import {usePrevious} from '@liferay/frontend-js-react-web';
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useMemo} from 'react';
 

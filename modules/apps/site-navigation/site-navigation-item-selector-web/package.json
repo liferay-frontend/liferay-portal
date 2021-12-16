@@ -3,11 +3,11 @@
 		"@clayui/button": "3.40.0",
 		"@clayui/form": "3.40.0",
 		"@clayui/layout": "3.40.0",
-		"frontend-js-components-web": "*",
+		"@liferay/frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "16.12.0"
 	},
-	"name": "site-navigation-item-selector-web",
+	"name": "@liferay/site-navigation-item-selector-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

@@ -18,7 +18,7 @@ import {
 	FieldStateless,
 	FieldSupport,
 	generateName,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
 import React, {useContext, useMemo} from 'react';
 
 import Timeline from './Timeline.es';

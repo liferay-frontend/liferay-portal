@@ -11,7 +11,7 @@
 		"prop-types": "15.7.2",
 		"react": "16.12.0"
 	},
-	"name": "adaptive-media-web",
+	"name": "@liferay/adaptive-media-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

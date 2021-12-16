@@ -16,7 +16,7 @@ import {State} from '@liferay/frontend-js-state-web';
 import {
 	STR_NULL_IMAGE_FILE_ENTRY_ID,
 	imageSelectorImageAtom,
-} from 'item-selector-taglib';
+} from '@liferay/item-selector-taglib';
 
 const CSS_INVISIBLE = 'invisible';
 const STR_BLANK = '';

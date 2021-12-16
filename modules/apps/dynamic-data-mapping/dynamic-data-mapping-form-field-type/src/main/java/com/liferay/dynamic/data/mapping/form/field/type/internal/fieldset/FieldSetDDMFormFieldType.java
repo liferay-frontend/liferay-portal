@@ -49,7 +49,8 @@ public class FieldSetDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/FieldSet/FieldSet.es";
+		return "@liferay/dynamic-data-mapping-form-field-type/FieldSet" +
+			"/FieldSet.es";
 	}
 
 	@Override

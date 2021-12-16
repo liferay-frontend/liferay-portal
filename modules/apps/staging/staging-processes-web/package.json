@@ -1,5 +1,5 @@
 {
-	"name": "staging-processes-web",
+	"name": "@liferay/staging-processes-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

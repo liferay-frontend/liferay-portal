@@ -12,7 +12,10 @@
  * details.
  */
 
-import {FieldSupport, normalizeFieldName} from 'data-engine-js-components-web';
+import {
+	FieldSupport,
+	normalizeFieldName,
+} from '@liferay/data-engine-js-components-web';
 
 export function random(a) {
 	return a

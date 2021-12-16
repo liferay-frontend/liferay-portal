@@ -49,7 +49,8 @@ public class RichTextDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/RichText/RichText.es";
+		return "@liferay/dynamic-data-mapping-form-field-type/RichText" +
+			"/RichText.es";
 	}
 
 	@Override

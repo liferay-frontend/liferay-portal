@@ -3,7 +3,7 @@
 		"clay-icon": "2.22.4",
 		"metal-state": "2.16.8"
 	},
-	"name": "commerce-cart-taglib",
+	"name": "@liferay/commerce-cart-taglib",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check"

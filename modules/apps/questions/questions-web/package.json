@@ -12,10 +12,10 @@
 		"@clayui/navigation-bar": "3.40.0",
 		"@clayui/popover": "3.40.0",
 		"@clayui/sticker": "3.40.0",
+		"@liferay/frontend-editor-ckeditor-web": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"asset-taglib": "*",
 		"classnames": "2.3.1",
-		"frontend-editor-ckeditor-web": "*",
 		"frontend-js-web": "*",
 		"graphql-hooks": "4.4.0",
 		"graphql-hooks-memcache": "^2.1.1",
@@ -30,7 +30,7 @@
 			"<rootDir>/test/helpers.es.js"
 		]
 	},
-	"name": "questions-web",
+	"name": "@liferay/questions-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

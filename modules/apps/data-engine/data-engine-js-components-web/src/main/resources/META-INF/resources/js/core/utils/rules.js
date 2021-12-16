@@ -12,7 +12,7 @@
  * details.
  */
 
-import {Token, Tokenizer} from 'dynamic-data-mapping-form-builder';
+import {Token, Tokenizer} from '@liferay/dynamic-data-mapping-form-builder';
 
 import {RulesVisitor} from '../../utils/visitors.es';
 

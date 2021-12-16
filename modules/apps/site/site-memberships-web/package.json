@@ -2,7 +2,7 @@
 	"dependencies": {
 		"frontend-js-web": "*"
 	},
-	"name": "site-membership-web",
+	"name": "@liferay/site-membership-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

@@ -1,6 +1,6 @@
 {
 	"main": "js/index.js",
-	"name": "dynamic-data-mapping-form-renderer",
+	"name": "@liferay/dynamic-data-mapping-form-renderer",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

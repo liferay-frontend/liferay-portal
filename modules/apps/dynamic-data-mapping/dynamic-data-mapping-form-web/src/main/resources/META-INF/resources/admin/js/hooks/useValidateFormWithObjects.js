@@ -18,7 +18,7 @@ import {
 	getSelectedValue,
 	useConfig,
 	useFormState,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
 import {useCallback} from 'react';
 
 const getUnmappedFormFields = (formFields) => {

@@ -12,7 +12,7 @@
  * details.
  */
 
-import {ClassicEditor} from 'frontend-editor-ckeditor-web';
+import {ClassicEditor} from '@liferay/frontend-editor-ckeditor-web';
 import React, {useEffect, useMemo, useRef} from 'react';
 
 import {FieldBase} from '../FieldBase/ReactFieldBase.es';

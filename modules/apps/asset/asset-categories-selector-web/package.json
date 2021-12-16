@@ -2,10 +2,10 @@
 	"dependencies": {
 		"@clayui/icon": "3.40.0",
 		"@clayui/layout": "3.40.0",
-		"frontend-js-components-web": "*",
+		"@liferay/frontend-js-components-web": "*",
 		"frontend-js-web": "*"
 	},
-	"name": "asset-categories-selector-web",
+	"name": "@liferay/asset-categories-selector-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

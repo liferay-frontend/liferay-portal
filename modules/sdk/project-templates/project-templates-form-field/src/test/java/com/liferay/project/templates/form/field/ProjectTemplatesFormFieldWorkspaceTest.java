@@ -120,7 +120,8 @@ public class ProjectTemplatesFormFieldWorkspaceTest
 		testContains(
 			gradleProjectDir,
 			"src/main/resources/META-INF/resources/foobar.es.js",
-			"'dynamic-data-mapping-form-field-type/FieldBase/FieldBase.es';",
+			"'@liferay/dynamic-data-mapping-form-field-type/FieldBase" +
+				"/FieldBase.es';",
 			"import './foobarRegister.soy.js';",
 			"import {Config} from 'metal-state'",
 			"import templates from './foobar.soy.js';", "* Foobar Component",

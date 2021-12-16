@@ -1,6 +1,6 @@
 {
 	"main": "index.es.js",
-	"name": "data-engine-rest-impl",
+	"name": "@liferay/data-engine-rest-impl",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

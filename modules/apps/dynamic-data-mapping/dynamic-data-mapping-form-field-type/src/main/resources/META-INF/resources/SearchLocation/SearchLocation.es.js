@@ -13,7 +13,10 @@
  */
 
 import {ClayInput} from '@clayui/form';
-import {SettingsContext, useFormState} from 'data-engine-js-components-web';
+import {
+	SettingsContext,
+	useFormState,
+} from '@liferay/data-engine-js-components-web';
 import React, {useEffect, useState} from 'react';
 
 import {FieldBase} from '../FieldBase/ReactFieldBase.es';

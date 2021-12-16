@@ -45,7 +45,7 @@ public class ${className}DDMFormFieldType extends BaseDDMFormFieldType {
 	@Override
 	public String getModuleName() {
 		return _npmResolver.resolveModuleName(
-			"dynamic-data-${artifactId}-form-field/${artifactId}.es");
+			"@liferay/dynamic-data-${artifactId}-form-field/${artifactId}.es");
 	}
 #end
 

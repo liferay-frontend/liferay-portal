@@ -1,5 +1,5 @@
 {
-	"name": "portal-workflow-web",
+	"name": "@liferay/portal-workflow-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

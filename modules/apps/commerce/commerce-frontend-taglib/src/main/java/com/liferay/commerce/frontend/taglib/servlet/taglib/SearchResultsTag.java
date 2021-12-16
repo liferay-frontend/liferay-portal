@@ -87,7 +87,8 @@ public class SearchResultsTag extends ComponentRendererTag {
 		}
 
 		return npmResolver.resolveModuleName(
-			"commerce-frontend-taglib/search_results/SearchResults.es");
+			"@liferay/commerce-frontend-taglib/search_results" +
+				"/SearchResults.es");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

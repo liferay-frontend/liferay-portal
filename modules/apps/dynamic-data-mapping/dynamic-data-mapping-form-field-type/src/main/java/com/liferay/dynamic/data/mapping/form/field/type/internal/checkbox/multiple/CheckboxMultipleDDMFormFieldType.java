@@ -49,8 +49,8 @@ public class CheckboxMultipleDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/CheckboxMultiple" +
-			"/CheckboxMultiple.es";
+		return "@liferay/dynamic-data-mapping-form-field-type" +
+			"/CheckboxMultiple/CheckboxMultiple.es";
 	}
 
 	@Override

@@ -2,7 +2,7 @@
 	"dependencies": {
 		"alloyeditor": "2.14.5"
 	},
-	"name": "frontend-editor-alloyeditor-web",
+	"name": "@liferay/frontend-editor-alloyeditor-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

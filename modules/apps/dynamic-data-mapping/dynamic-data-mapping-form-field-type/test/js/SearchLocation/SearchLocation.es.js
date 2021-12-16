@@ -13,8 +13,8 @@
  */
 
 import '@testing-library/jest-dom/extend-expect';
+import {FormProvider} from '@liferay/data-engine-js-components-web';
 import {cleanup, fireEvent, render} from '@testing-library/react';
-import {FormProvider} from 'data-engine-js-components-web';
 import React from 'react';
 
 import SearchLocation from '../../../src/main/resources/META-INF/resources/SearchLocation/SearchLocation.es';

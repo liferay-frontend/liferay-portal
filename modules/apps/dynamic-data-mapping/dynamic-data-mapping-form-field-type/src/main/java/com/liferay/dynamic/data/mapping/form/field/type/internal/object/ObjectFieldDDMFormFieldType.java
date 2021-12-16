@@ -35,7 +35,8 @@ public class ObjectFieldDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/ObjectField/ObjectField";
+		return "@liferay/dynamic-data-mapping-form-field-type/ObjectField" +
+			"/ObjectField";
 	}
 
 	@Override

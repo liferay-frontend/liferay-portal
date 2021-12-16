@@ -133,7 +133,7 @@ public class DDMFormRendererImpl implements DDMFormRenderer {
 	}
 
 	private static final String _MODULE_NAME =
-		"data-engine-js-components-web/js/custom/form/FormView.es";
+		"@liferay/data-engine-js-components-web/js/custom/form/FormView.es";
 
 	@Reference
 	private DDM _ddm;

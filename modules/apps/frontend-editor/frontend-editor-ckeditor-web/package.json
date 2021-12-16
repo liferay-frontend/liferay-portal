@@ -6,7 +6,7 @@
 		"prop-types": "15.7.2"
 	},
 	"main": "index.js",
-	"name": "frontend-editor-ckeditor-web",
+	"name": "@liferay/frontend-editor-ckeditor-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

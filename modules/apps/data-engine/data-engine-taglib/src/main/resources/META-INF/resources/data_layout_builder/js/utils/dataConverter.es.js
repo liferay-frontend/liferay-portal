@@ -12,7 +12,10 @@
  * details.
  */
 
-import {FieldSupport, PagesVisitor} from 'data-engine-js-components-web';
+import {
+	FieldSupport,
+	PagesVisitor,
+} from '@liferay/data-engine-js-components-web';
 
 import {getDataDefinitionField as getDataDefinitionFieldUtils} from './dataDefinition.es';
 import {normalizeDataDefinition, normalizeDataLayout} from './normalizers.es';

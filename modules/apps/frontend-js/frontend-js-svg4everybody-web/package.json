@@ -1,6 +1,6 @@
 {
 	"main": "index.js",
-	"name": "frontend-js-svg4everybody-web",
+	"name": "@liferay/frontend-js-svg4everybody-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

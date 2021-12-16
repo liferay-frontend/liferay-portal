@@ -4,7 +4,7 @@
 			"<rootDir>/jest-setup.js"
 		]
 	},
-	"name": "document-library-opener-onedrive-web",
+	"name": "@liferay/document-library-opener-onedrive-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

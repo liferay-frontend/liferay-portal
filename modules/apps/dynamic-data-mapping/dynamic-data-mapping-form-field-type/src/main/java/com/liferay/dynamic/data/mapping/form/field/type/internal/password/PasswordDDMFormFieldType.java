@@ -46,7 +46,8 @@ public class PasswordDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/Password/Password.es";
+		return "@liferay/dynamic-data-mapping-form-field-type/Password" +
+			"/Password.es";
 	}
 
 	@Override

@@ -881,7 +881,8 @@ public class DDMFormAdminDisplayContext {
 	}
 
 	public String getMainRequire() {
-		return _npmResolver.resolveModuleName("dynamic-data-mapping-form-web");
+		return _npmResolver.resolveModuleName(
+			"@liferay/dynamic-data-mapping-form-web");
 	}
 
 	public List<NavigationItem> getNavigationItems() {

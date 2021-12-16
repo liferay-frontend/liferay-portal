@@ -5,7 +5,7 @@
 		"asset-taglib": "*",
 		"frontend-js-web": "*"
 	},
-	"name": "asset-list-web",
+	"name": "@liferay/asset-list-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

@@ -158,7 +158,7 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 				_portal.getPortletNamespace(CTPortletKeys.PUBLICATIONS) +
 					"IndicatorComponent";
 			String module =
-				_npmResolver.resolveModuleName("change-tracking-web") +
+				_npmResolver.resolveModuleName("@liferay/change-tracking-web") +
 					"/publications/js/ChangeTrackingIndicator";
 
 			_reactRenderer.renderReact(

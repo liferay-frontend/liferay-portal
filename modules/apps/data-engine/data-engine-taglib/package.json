@@ -16,9 +16,9 @@
 		"@clayui/pagination-bar": "3.41.0",
 		"@clayui/sticker": "3.40.0",
 		"@clayui/table": "3.40.0",
+		"@liferay/data-engine-js-components-web": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.3.1",
-		"data-engine-js-components-web": "*",
 		"frontend-js-web": "*",
 		"lodash.omit": "^4.5.0",
 		"metal-jsx": "2.16.8",
@@ -49,7 +49,7 @@
 		]
 	},
 	"main": "data_layout_builder/js/index.es.js",
-	"name": "data-engine-taglib",
+	"name": "@liferay/data-engine-taglib",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

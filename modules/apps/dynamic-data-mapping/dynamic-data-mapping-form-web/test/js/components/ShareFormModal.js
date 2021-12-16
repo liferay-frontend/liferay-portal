@@ -12,6 +12,7 @@
  * details.
  */
 
+import {Modal} from '@liferay/dynamic-data-mapping-form-web/admin/js/components/share-form/openShareFormModal.es';
 import {
 	act,
 	cleanup,
@@ -20,7 +21,6 @@ import {
 	render,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {Modal} from 'dynamic-data-mapping-form-web/admin/js/components/share-form/openShareFormModal.es';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

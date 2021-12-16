@@ -2,7 +2,7 @@
 	"dependencies": {
 		"frontend-js-web": "*"
 	},
-	"name": "frontend-js-alert-support-web",
+	"name": "@liferay/frontend-js-alert-support-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

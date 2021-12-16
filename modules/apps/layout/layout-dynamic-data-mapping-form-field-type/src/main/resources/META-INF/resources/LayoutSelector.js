@@ -14,7 +14,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
-import {FieldBase} from 'dynamic-data-mapping-form-field-type/FieldBase/ReactFieldBase.es';
+import {FieldBase} from '@liferay/dynamic-data-mapping-form-field-type/FieldBase/ReactFieldBase.es';
 import {openSelectionModal} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 

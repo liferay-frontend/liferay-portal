@@ -41,7 +41,7 @@
 		]
 	},
 	"main": "js/index.es.js",
-	"name": "data-engine-js-components-web",
+	"name": "@liferay/data-engine-js-components-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

@@ -12,7 +12,7 @@
  * details.
  */
 
-import {StringUtils} from 'data-engine-js-components-web';
+import {StringUtils} from '@liferay/data-engine-js-components-web';
 
 export const EVENT_TYPES = {
 	CHANGE_ERROR_MESSAGE: 'changeErrorMessage',

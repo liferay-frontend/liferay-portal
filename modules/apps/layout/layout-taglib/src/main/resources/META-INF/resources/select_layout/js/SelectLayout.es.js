@@ -16,7 +16,7 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import ClayManagementToolbar from '@clayui/management-toolbar';
-import {Treeview} from 'frontend-js-components-web';
+import {Treeview} from '@liferay/frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 

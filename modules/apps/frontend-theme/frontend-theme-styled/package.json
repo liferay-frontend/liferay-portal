@@ -1,5 +1,5 @@
 {
-	"name": "liferay-frontend-theme-styled",
+	"name": "@liferay/frontend-theme-styled",
 	"scripts": {
 		"checkFormat": "liferay-npm-scripts check",
 		"format": "liferay-npm-scripts fix"

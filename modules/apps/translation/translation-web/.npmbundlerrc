@@ -4,7 +4,7 @@
 			"asset-taglib": {
 				"/": ">=4.0.0"
 			},
-			"frontend-editor-ckeditor-web": {
+			"@liferay/frontend-editor-ckeditor-web": {
 				"/": ">=4.0.0"
 			}
 		}

@@ -1,5 +1,5 @@
 {
-	"name": "contacts-web",
+	"name": "@liferay/contacts-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

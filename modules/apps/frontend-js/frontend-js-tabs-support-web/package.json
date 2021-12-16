@@ -1,5 +1,5 @@
 {
-	"name": "frontend-js-tabs-support-web",
+	"name": "@liferay/frontend-js-tabs-support-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

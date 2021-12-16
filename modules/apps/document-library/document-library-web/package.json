@@ -9,15 +9,15 @@
 		"@clayui/modal": "3.40.0",
 		"@clayui/toolbar": "3.40.0",
 		"@liferay/frontend-js-react-web": "*",
+		"@liferay/item-selector-taglib": "*",
 		"asset-taglib": "*",
 		"clipboard": "2.0.4",
 		"frontend-js-web": "*",
-		"item-selector-taglib": "*",
 		"prop-types": "15.7.2",
 		"react": "16.12.0",
 		"react-dom": "16.12.0"
 	},
-	"name": "document-library-web",
+	"name": "@liferay/document-library-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

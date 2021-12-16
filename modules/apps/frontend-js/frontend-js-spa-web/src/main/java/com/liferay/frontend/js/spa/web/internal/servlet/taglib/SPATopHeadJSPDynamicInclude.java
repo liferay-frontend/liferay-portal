@@ -101,7 +101,7 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 		);
 
 		String initModuleName = _npmResolver.resolveModuleName(
-			"frontend-js-spa-web/init");
+			"@liferay/frontend-js-spa-web/init");
 
 		ScriptData initScriptData = new ScriptData();
 

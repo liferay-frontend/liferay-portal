@@ -1,5 +1,5 @@
 {
-	"name": "frontend-js-aui-web",
+	"name": "@liferay/frontend-js-aui-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

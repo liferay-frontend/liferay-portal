@@ -34,7 +34,7 @@
 		"metal-useragent": "3.0.1",
 		"metal-web-component": "2.16.8"
 	},
-	"name": "frontend-js-metal-web",
+	"name": "@liferay/frontend-js-metal-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

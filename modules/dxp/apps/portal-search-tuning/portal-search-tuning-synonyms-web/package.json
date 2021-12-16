@@ -15,7 +15,7 @@
 		]
 	},
 	"main": "js/index-synonym-sets.es.js",
-	"name": "portal-search-synonyms-web",
+	"name": "@liferay/portal-search-synonyms-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

@@ -13,8 +13,8 @@
  */
 
 import {ClayModalProvider} from '@clayui/modal';
+import * as DDMForm from '@liferay/dynamic-data-mapping-form-builder';
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
-import * as DDMForm from 'dynamic-data-mapping-form-builder';
 import React from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';

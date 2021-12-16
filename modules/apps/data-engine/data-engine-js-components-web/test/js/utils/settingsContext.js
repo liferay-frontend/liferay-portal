@@ -15,7 +15,7 @@
 import {
 	getFieldProperty,
 	getFieldValue,
-} from 'data-engine-js-components-web/js/core/utils/fields';
+} from '@liferay/data-engine-js-components-web/js/core/utils/fields';
 
 import {
 	updateFieldDataType,

@@ -1,5 +1,5 @@
 {
-	"name": "staging-taglib",
+	"name": "@liferay/staging-taglib",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

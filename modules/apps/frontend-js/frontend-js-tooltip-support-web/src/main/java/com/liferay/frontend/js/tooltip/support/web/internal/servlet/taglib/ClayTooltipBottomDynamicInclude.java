@@ -41,7 +41,7 @@ public class ClayTooltipBottomDynamicInclude implements DynamicInclude {
 		ScriptData scriptData = new ScriptData();
 
 		String initModuleName = _npmResolver.resolveModuleName(
-			"frontend-js-tooltip-support-web/index");
+			"@liferay/frontend-js-tooltip-support-web/index");
 
 		scriptData.append(
 			null, "TooltipSupport.default()",

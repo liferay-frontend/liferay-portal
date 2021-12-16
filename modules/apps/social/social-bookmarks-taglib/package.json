@@ -2,7 +2,7 @@
 	"dependencies": {
 		"react": "16.12.0"
 	},
-	"name": "social-bookmarks-taglib",
+	"name": "@liferay/social-bookmarks-taglib",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

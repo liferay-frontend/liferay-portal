@@ -9,7 +9,7 @@
 		"react": "16.12.0"
 	},
 	"main": "index.js",
-	"name": "frontend-js-components-web",
+	"name": "@liferay/frontend-js-components-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

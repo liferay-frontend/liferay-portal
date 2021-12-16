@@ -12,10 +12,10 @@
  * details.
  */
 
+import {PageProvider} from '@liferay/data-engine-js-components-web';
 import {wait} from '@testing-library/dom';
 import {act, cleanup, render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {PageProvider} from 'data-engine-js-components-web';
 import moment from 'moment';
 import React from 'react';
 

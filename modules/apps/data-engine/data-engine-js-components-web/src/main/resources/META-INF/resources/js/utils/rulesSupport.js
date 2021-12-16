@@ -12,7 +12,7 @@
  * details.
  */
 
-import {Tokenizer} from 'dynamic-data-mapping-form-builder';
+import {Tokenizer} from '@liferay/dynamic-data-mapping-form-builder';
 
 import {getFieldProperty} from '../core/utils/fields';
 import {PagesVisitor} from './visitors.es';

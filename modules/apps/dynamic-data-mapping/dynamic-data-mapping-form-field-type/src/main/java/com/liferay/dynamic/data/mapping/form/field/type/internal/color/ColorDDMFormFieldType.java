@@ -49,7 +49,7 @@ public class ColorDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/ColorPicker" +
+		return "@liferay/dynamic-data-mapping-form-field-type/ColorPicker" +
 			"/ColorPicker.es";
 	}
 

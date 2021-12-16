@@ -13,8 +13,8 @@
  */
 
 import ClayModal, {useModal} from '@clayui/modal';
+import {ImageEditor} from '@liferay/item-selector-taglib';
 import {navigate} from 'frontend-js-web';
-import {ImageEditor} from 'item-selector-taglib';
 import React, {useEffect, useRef, useState} from 'react';
 
 export default function EditImageWithImageEditor({

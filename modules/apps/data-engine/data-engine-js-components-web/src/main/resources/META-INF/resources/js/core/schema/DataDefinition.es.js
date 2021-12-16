@@ -12,7 +12,7 @@
  * details.
  */
 
-import {DataConverter} from 'data-engine-taglib';
+import {DataConverter} from '@liferay/data-engine-taglib';
 
 import {PagesVisitor} from '../../utils/visitors.es';
 import {SYMBOL_CACHE, SYMBOL_RAW, Schema} from './Schema.es';

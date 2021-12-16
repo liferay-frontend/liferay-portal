@@ -13,7 +13,7 @@
  */
 
 import ClayForm from '@clayui/form';
-import {useFormState} from 'data-engine-js-components-web';
+import {useFormState} from '@liferay/data-engine-js-components-web';
 import React, {useState} from 'react';
 
 import Sidebar from '../../../components/sidebar/Sidebar.es';

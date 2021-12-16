@@ -48,8 +48,8 @@ public class ObjectRelationshipDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/ObjectRelationship" +
-			"/ObjectRelationship";
+		return "@liferay/dynamic-data-mapping-form-field-type" +
+			"/ObjectRelationship/ObjectRelationship";
 	}
 
 	@Override

@@ -8,12 +8,12 @@
 		"@clayui/layout": "3.40.0",
 		"@clayui/link": "3.40.0",
 		"@clayui/loading-indicator": "3.40.0",
-		"frontend-editor-ckeditor-web": "*",
+		"@liferay/frontend-editor-ckeditor-web": "*",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
 		"react": "16.12.0"
 	},
-	"name": "translation-web",
+	"name": "@liferay/translation-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

@@ -13,8 +13,8 @@
  */
 
 import '@testing-library/jest-dom/extend-expect';
+import ErrorList from '@liferay/dynamic-data-mapping-form-web/admin/js/pages/ErrorList.tsx';
 import {cleanup, getByText, render} from '@testing-library/react';
-import ErrorList from 'dynamic-data-mapping-form-web/admin/js/pages/ErrorList.tsx';
 import React from 'react';
 
 describe('Error List', () => {

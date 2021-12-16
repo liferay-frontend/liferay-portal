@@ -16,7 +16,7 @@ import ClayAutocomplete from '@clayui/autocomplete';
 import {useResource} from '@clayui/data-provider';
 import ClayDropDown from '@clayui/drop-down';
 import {useDebounce} from '@clayui/shared';
-import {FieldBase} from 'dynamic-data-mapping-form-field-type/FieldBase/ReactFieldBase.es';
+import {FieldBase} from '@liferay/dynamic-data-mapping-form-field-type/FieldBase/ReactFieldBase.es';
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 

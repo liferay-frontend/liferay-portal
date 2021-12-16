@@ -18,7 +18,7 @@ import {
 	PagesVisitor,
 	SettingsContext,
 	sectionAdded,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
 
 import {EVENT_TYPES} from '../eventTypes';
 import {

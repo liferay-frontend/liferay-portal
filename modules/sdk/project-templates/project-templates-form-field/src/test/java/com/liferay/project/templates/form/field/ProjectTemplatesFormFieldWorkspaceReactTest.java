@@ -109,10 +109,12 @@ public class ProjectTemplatesFormFieldWorkspaceReactTest
 			gradleProjectDir,
 			"src/main/resources/META-INF/resources/foobar.es.js",
 			"import React from 'react';",
-			"import {FieldBase} from 'dynamic-data-mapping-form-field-type" +
-				"/FieldBase/ReactFieldBase.es';",
+			"import {FieldBase} from " +
+				"'@liferay/dynamic-data-mapping-form-field-type/FieldBase" +
+					"/ReactFieldBase.es';",
 			"import {useSyncValue} from " +
-				"'dynamic-data-mapping-form-field-type/hooks/useSyncValue.es';",
+				"'@liferay/dynamic-data-mapping-form-field-type/hooks" +
+					"/useSyncValue.es';",
 			"const Foobar = ({name, onChange, predefinedValue, readOnly, " +
 				"value})",
 			"const Main = ({label, name, onChange, predefinedValue, " +

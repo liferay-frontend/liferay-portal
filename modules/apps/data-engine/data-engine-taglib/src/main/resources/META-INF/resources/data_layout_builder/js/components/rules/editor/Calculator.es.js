@@ -18,9 +18,12 @@ import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import ClayForm from '@clayui/form';
 import ClayLayout from '@clayui/layout';
-import {FieldStateless, RulesSupport} from 'data-engine-js-components-web';
-import Token from 'dynamic-data-mapping-form-builder/js/expressions/Token.es';
-import Tokenizer from 'dynamic-data-mapping-form-builder/js/expressions/Tokenizer.es';
+import {
+	FieldStateless,
+	RulesSupport,
+} from '@liferay/data-engine-js-components-web';
+import Token from '@liferay/dynamic-data-mapping-form-builder/js/expressions/Token.es';
+import Tokenizer from '@liferay/dynamic-data-mapping-form-builder/js/expressions/Tokenizer.es';
 import React, {forwardRef, useMemo, useState} from 'react';
 
 import CalculatorButtonArea from './CalculatorButtonArea.es';

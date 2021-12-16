@@ -12,7 +12,10 @@
  * details.
  */
 
-import {convertToFormData, makeFetch} from 'data-engine-js-components-web';
+import {
+	convertToFormData,
+	makeFetch,
+} from '@liferay/data-engine-js-components-web';
 import {openToast} from 'frontend-js-web';
 
 const openNotification = ({error, message}) => {

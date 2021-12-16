@@ -12,7 +12,7 @@
  * details.
  */
 
-import {DataConverter} from 'data-engine-taglib';
+import {DataConverter} from '@liferay/data-engine-taglib';
 import {useDrop as useDndDrop} from 'react-dnd';
 
 import * as DRAG_TYPES from '../../utils/dragTypes';

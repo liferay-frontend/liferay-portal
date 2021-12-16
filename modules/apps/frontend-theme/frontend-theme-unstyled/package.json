@@ -2,7 +2,7 @@
 	"dependencies": {
 		"@clayui/css": "3.41.0"
 	},
-	"name": "liferay-frontend-theme-unstyled",
+	"name": "@liferay/frontend-theme-unstyled",
 	"scripts": {
 		"checkFormat": "liferay-npm-scripts check",
 		"format": "liferay-npm-scripts fix"

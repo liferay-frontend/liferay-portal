@@ -15,7 +15,7 @@ import {ClayInput} from '@clayui/form';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import ClayToolbar from '@clayui/toolbar';
-import {TranslationAdminSelector} from 'frontend-js-components-web';
+import {TranslationAdminSelector} from '@liferay/frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 

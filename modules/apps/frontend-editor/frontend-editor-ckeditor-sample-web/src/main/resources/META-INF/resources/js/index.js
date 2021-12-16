@@ -12,7 +12,7 @@
  * details.
  */
 
-import {BalloonEditor} from 'frontend-editor-ckeditor-web';
+import {BalloonEditor} from '@liferay/frontend-editor-ckeditor-web';
 import React from 'react';
 
 export default function ({portletNamespace, ...otherProps}) {

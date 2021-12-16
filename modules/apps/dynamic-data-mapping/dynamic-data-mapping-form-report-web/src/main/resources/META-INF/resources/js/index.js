@@ -12,7 +12,7 @@
  * details.
  */
 
-import {FormReport} from 'data-engine-js-components-web';
+import {FormReport} from '@liferay/data-engine-js-components-web';
 import React from 'react';
 
 export default function main({data, ...restProps}) {

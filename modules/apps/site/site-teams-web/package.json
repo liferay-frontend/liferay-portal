@@ -2,7 +2,7 @@
 	"dependencies": {
 		"frontend-js-web": "*"
 	},
-	"name": "site-teams-web",
+	"name": "@liferay/site-teams-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

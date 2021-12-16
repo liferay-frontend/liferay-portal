@@ -102,7 +102,7 @@ public class HorizontalCardTag extends BaseCardTag {
 
 	@Override
 	protected String getHydratedModuleName() {
-		return "frontend-taglib-clay/cards/HorizontalCard";
+		return "@liferay/frontend-taglib-clay/cards/HorizontalCard";
 	}
 
 	@Override

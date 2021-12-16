@@ -13,7 +13,7 @@
  */
 
 import {useIsMounted} from '@liferay/frontend-js-react-web';
-import {ImageEditor} from 'item-selector-taglib';
+import {ImageEditor} from '@liferay/item-selector-taglib';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';

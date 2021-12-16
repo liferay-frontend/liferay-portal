@@ -665,7 +665,7 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 
 				if (mvcPath.endsWith("edit_configuration_templates.jsp")) {
 					String moduleName = _npmResolver.resolveModuleName(
-						"portlet-configuration-web");
+						"@liferay/portlet-configuration-web");
 
 					renderRequest.setAttribute(
 						PortletConfigurationWebKeys.MODULE_NAME, moduleName);

@@ -19,7 +19,7 @@
 		"react-dom": "16.12.0"
 	},
 	"main": "index.es.js",
-	"name": "item-selector-taglib",
+	"name": "@liferay/item-selector-taglib",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

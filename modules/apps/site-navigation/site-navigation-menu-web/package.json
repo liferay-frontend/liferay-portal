@@ -1,5 +1,5 @@
 {
-	"name": "site-navigation-menu-web",
+	"name": "@liferay/site-navigation-menu-web",
 	"optionalDependencies": {
 		"fsevents": "^1.2.7"
 	},

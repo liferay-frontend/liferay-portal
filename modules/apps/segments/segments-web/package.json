@@ -25,7 +25,7 @@
 		]
 	},
 	"main": "js/index.es.js",
-	"name": "segments-web",
+	"name": "@liferay/segments-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

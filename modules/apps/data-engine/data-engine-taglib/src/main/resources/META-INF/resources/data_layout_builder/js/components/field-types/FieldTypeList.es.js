@@ -12,13 +12,13 @@
  * details.
  */
 
-import classNames from 'classnames';
 import {
 	EVENT_TYPES as CORE_EVENT_TYPES,
 	useConfig,
 	useForm,
 	useFormState,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
+import classNames from 'classnames';
 import React from 'react';
 
 import {getSearchRegex} from '../../utils/search.es';

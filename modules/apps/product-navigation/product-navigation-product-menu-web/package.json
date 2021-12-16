@@ -4,12 +4,12 @@
 		"@clayui/drop-down": "3.41.0",
 		"@clayui/icon": "3.40.0",
 		"@clayui/loading-indicator": "3.40.0",
-		"frontend-js-components-web": "*",
+		"@liferay/frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "16.12.0",
 		"react-dom": "16.12.0"
 	},
-	"name": "product-navigation-control-menu-web",
+	"name": "@liferay/product-navigation-control-menu-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

@@ -1,5 +1,5 @@
 {
-	"name": "asset-publisher-web",
+	"name": "@liferay/asset-publisher-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

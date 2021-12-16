@@ -12,8 +12,8 @@
  * details.
  */
 
+import {RuleList} from '@liferay/dynamic-data-mapping-form-web/admin/js/pages/RuleList.es';
 import {cleanup, render} from '@testing-library/react';
-import {RuleList} from 'dynamic-data-mapping-form-web/admin/js/pages/RuleList.es';
 import React from 'react';
 
 const DEFAULT_ACTIONS = {

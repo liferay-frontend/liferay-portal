@@ -2,7 +2,7 @@
 	"dependencies": {
 		"dom-align": "1.10.4"
 	},
-	"name": "frontend-js-dropdown-support-web",
+	"name": "@liferay/frontend-js-dropdown-support-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

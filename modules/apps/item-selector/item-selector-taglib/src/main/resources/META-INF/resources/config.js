@@ -15,7 +15,7 @@
 (function () {
 	AUI().applyConfig({
 		groups: {
-			'item-selector-taglib': {
+			'@liferay/item-selector-taglib': {
 				base: MODULE_PATH + '/',
 				combine: Liferay.AUI.getCombine(),
 				filter: Liferay.AUI.getFilterConfig(),

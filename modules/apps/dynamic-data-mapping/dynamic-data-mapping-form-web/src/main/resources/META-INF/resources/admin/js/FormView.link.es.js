@@ -12,7 +12,7 @@
  * details.
  */
 
-import {FormView} from 'data-engine-js-components-web';
+import {FormView} from '@liferay/data-engine-js-components-web';
 
 // This is just a link to allow the react:component Taglib to render the
 // component that is in another module so as not to have problems with

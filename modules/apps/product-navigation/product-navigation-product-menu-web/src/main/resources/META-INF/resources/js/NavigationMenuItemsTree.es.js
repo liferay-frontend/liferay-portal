@@ -12,7 +12,7 @@
  * details.
  */
 
-import {Treeview} from 'frontend-js-components-web';
+import {Treeview} from '@liferay/frontend-js-components-web';
 import React from 'react';
 
 import NavigationMenuItemsTreeNode from './NavigationMenuItemsTreeNode';

@@ -2,7 +2,7 @@
 	"dependencies": {
 		"frontend-js-web": "*"
 	},
-	"name": "knowledge-base-web",
+	"name": "@liferay/knowledge-base-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

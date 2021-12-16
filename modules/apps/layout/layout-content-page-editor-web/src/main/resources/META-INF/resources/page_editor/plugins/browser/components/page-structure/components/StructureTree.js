@@ -13,7 +13,7 @@
  */
 
 import ClayAlert from '@clayui/alert';
-import {Treeview} from 'frontend-js-components-web';
+import {Treeview} from '@liferay/frontend-js-components-web';
 import React, {useCallback, useMemo, useState} from 'react';
 
 import getAllEditables from '../../../../../app/components/fragment-content/getAllEditables';

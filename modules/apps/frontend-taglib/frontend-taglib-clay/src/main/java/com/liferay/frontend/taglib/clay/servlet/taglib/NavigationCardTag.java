@@ -169,7 +169,7 @@ public class NavigationCardTag extends BaseCardTag {
 
 	@Override
 	protected String getHydratedModuleName() {
-		return "frontend-taglib-clay/cards/NavigationCard";
+		return "@liferay/frontend-taglib-clay/cards/NavigationCard";
 	}
 
 	@Override

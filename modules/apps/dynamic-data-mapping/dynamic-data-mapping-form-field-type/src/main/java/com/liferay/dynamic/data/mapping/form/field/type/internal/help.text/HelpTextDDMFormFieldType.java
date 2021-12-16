@@ -35,7 +35,8 @@ public class HelpTextDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/HelpText/HelpText.es";
+		return "@liferay/dynamic-data-mapping-form-field-type/HelpText" +
+			"/HelpText.es";
 	}
 
 	@Override

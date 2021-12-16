@@ -49,7 +49,7 @@ public class RadioDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/Radio/Radio.es";
+		return "@liferay/dynamic-data-mapping-form-field-type/Radio/Radio.es";
 	}
 
 	@Override

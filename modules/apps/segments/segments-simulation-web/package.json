@@ -1,5 +1,5 @@
 {
-	"name": "segments-simulation-web",
+	"name": "@liferay/segments-simulation-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

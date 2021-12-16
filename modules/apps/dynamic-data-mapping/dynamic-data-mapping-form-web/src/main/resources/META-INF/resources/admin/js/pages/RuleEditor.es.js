@@ -16,7 +16,7 @@ import './RuleEditor.scss';
 
 import ClayButton from '@clayui/button';
 import ClayForm from '@clayui/form';
-import {RuleEditor as DataEngineRuleEditor} from 'data-engine-taglib';
+import {RuleEditor as DataEngineRuleEditor} from '@liferay/data-engine-taglib';
 import React, {useState} from 'react';
 
 // A simple implementation of local storage outside

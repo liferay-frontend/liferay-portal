@@ -1,5 +1,5 @@
 {
-	"name": "adaptive-media-image-js-web",
+	"name": "@liferay/adaptive-media-image-js-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

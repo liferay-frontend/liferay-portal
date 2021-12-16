@@ -1,5 +1,5 @@
 {
-	"name": "portal-reports-engine-console-web",
+	"name": "@liferay/portal-reports-engine-console-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

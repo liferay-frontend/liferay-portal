@@ -1,7 +1,7 @@
 {
 	"config": {
 		"imports": {
-			"data-engine-js-components-web": {
+			"@liferay/data-engine-js-components-web": {
 				"/": "*"
 			}
 		}

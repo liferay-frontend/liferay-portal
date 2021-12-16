@@ -613,7 +613,8 @@ public class ManagementToolbarTag extends BaseContainerTag {
 
 	@Override
 	protected String getHydratedModuleName() {
-		return "frontend-taglib-clay/management_toolbar/ManagementToolbar";
+		return "@liferay/frontend-taglib-clay/management_toolbar" +
+			"/ManagementToolbar";
 	}
 
 	@Override

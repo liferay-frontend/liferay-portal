@@ -1,5 +1,5 @@
 {
-	"name": "invitation-invite-members-web",
+	"name": "@liferay/invitation-invite-members-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

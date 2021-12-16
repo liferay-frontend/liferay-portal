@@ -5,7 +5,7 @@
 	"devDependencies": {
 		"@liferay/npm-bundler": "3.1.0"
 	},
-	"name": "frontend-js-recharts",
+	"name": "@liferay/frontend-js-recharts",
 	"scripts": {
 		"build": "liferay-npm-bundler",
 		"checkFormat": "liferay-npm-scripts check",

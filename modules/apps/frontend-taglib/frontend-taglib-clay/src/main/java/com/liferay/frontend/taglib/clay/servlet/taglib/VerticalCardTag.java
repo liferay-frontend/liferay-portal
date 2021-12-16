@@ -348,7 +348,7 @@ public class VerticalCardTag extends BaseCardTag {
 
 	@Override
 	protected String getHydratedModuleName() {
-		return "frontend-taglib-clay/cards/VerticalCard";
+		return "@liferay/frontend-taglib-clay/cards/VerticalCard";
 	}
 
 	@Override

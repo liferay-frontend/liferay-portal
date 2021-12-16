@@ -65,7 +65,7 @@ public class NavigationBarTag extends BaseContainerTag {
 
 	@Override
 	protected String getHydratedModuleName() {
-		return "frontend-taglib-clay/NavigationBar";
+		return "@liferay/frontend-taglib-clay/NavigationBar";
 	}
 
 	@Override

@@ -83,7 +83,7 @@
 		"react": "16.12.0",
 		"react-dom": "16.12.0"
 	},
-	"name": "frontend-taglib-clay",
+	"name": "@liferay/frontend-taglib-clay",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

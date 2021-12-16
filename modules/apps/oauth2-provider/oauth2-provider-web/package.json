@@ -2,7 +2,7 @@
 	"dependencies": {
 		"frontend-js-web": "*"
 	},
-	"name": "oauth2-provider-web",
+	"name": "@liferay/oauth2-provider-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

@@ -14,7 +14,7 @@
 
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
-import {Treeview} from 'frontend-js-components-web';
+import {Treeview} from '@liferay/frontend-js-components-web';
 import React, {useMemo, useState} from 'react';
 
 function getFilter(filterQuery) {

@@ -14,7 +14,11 @@
 
 import './FieldSet.scss';
 
-import {Layout, getRepeatedIndex, usePage} from 'data-engine-js-components-web';
+import {
+	Layout,
+	getRepeatedIndex,
+	usePage,
+} from '@liferay/data-engine-js-components-web';
 import React, {useMemo} from 'react';
 
 import {FieldBase} from '../FieldBase/ReactFieldBase.es';

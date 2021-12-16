@@ -12,7 +12,7 @@
  * details.
  */
 
-import {enableSubmitButton} from 'data-engine-js-components-web';
+import {enableSubmitButton} from '@liferay/data-engine-js-components-web';
 
 import {EVENT_TYPES} from '../eventTypes';
 

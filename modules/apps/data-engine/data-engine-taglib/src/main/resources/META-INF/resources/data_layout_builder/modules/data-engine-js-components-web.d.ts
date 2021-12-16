@@ -52,7 +52,7 @@ type FieldTypeName =
 	| 'text'
 	| 'validation';
 
-declare module 'data-engine-js-components-web' {
+declare module '@liferay/data-engine-js-components-web' {
 	function useConfig(): {fieldTypes: FieldType[]};
 	function useForm(): ({
 		payload,

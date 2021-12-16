@@ -12,7 +12,7 @@
 
 import ClayLayout from '@clayui/layout';
 import ClayToolbar from '@clayui/toolbar';
-import {Editor} from 'frontend-editor-ckeditor-web';
+import {Editor} from '@liferay/frontend-editor-ckeditor-web';
 import React, {useRef} from 'react';
 
 const config = {

@@ -31,7 +31,7 @@
 			"<rootDir>/jest-setup.config.js"
 		]
 	},
-	"name": "layout-content-page-editor-web",
+	"name": "@liferay/layout-content-page-editor-web",
 	"optionalDependencies": {
 		"fsevents": "^1.2.7"
 	},

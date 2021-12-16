@@ -1,5 +1,5 @@
 {
-	"name": "dynamic-data-lists-web",
+	"name": "@liferay/dynamic-data-lists-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",
