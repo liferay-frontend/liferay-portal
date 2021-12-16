@@ -115,6 +115,7 @@ export function handleAction(
 		event.preventDefault();
 
 		setLoading(true);
+
 		let filename = '';
 
 		executeAsyncAction(url, method)
@@ -122,8 +123,15 @@ export function handleAction(
 				const disposition = response.headers.get('Content-Disposition');
 
 				if (disposition && disposition.indexOf('attachment') !== -1) {
+
+					// Captures the filename from the Content-Disposition header.
+					// For example, "attachment; filename="Filename.json" will capture
+					// "Filename.json".
+
 					const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+
 					const matchesRegex = filenameRegex.exec(disposition);
+
 					if (matchesRegex !== null && matchesRegex[1]) {
 						filename = matchesRegex[1].replace(/['"]/g, '');
 					}
@@ -139,9 +147,11 @@ export function handleAction(
 					filename &&
 					typeof downloadElement.download !== 'undefined'
 				) {
-					downloadElement.href = downloadUrl;
 					downloadElement.download = filename;
+					downloadElement.href = downloadUrl;
+
 					document.body.appendChild(downloadElement);
+
 					downloadElement.click();
 				}
 				else {
@@ -157,11 +167,12 @@ export function handleAction(
 
 				setLoading(false);
 			})
-			.catch((_) => {
+			.catch(() => {
 				openToast({
 					message: Liferay.Language.get('unexpected-error'),
 					type: 'danger',
 				});
+
 				setLoading(false);
 			});
 	}
