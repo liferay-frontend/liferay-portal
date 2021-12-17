@@ -46,21 +46,23 @@ definition {
 	test CustomElementCanBeCreated {
 		property portal.acceptance = "true";
 
-		var customElementName = "Vanilla Counter";
 		var customElementType = "Custom Element";
-		var customElementHTMLName = "vanilla-counter";
-		var customElementURL = "http://remote-component-test.wincent.com/packages/vanilla-counter/index.js";
+		var remoteAppName = "Vanilla Counter";
 
-		RemoteApps.goToRemoteAppsPortlet();
+		task ("Create Vanilla Counter as a Custom Element") {
+			JSONRemoteApp.addCustomElementRemoteAppEntry(
+					customElementHTMLName = "vanilla-counter",
+					customElementName = "Vanilla Counter",
+					customElementURL = "http://remote-component-test.wincent.com/packages/vanilla-counter/index.js");
+		}
 
-		RemoteApps.addCustomElement(
-			entryHTMLName = "${customElementHTMLName}",
-			entryName = "${customElementName}",
-			entryURL = "${customElementURL}");
+		task ("Assert that the Vanilla Counter is listed") {
+			RemoteApps.goToRemoteAppsPortlet();
 
-		RemoteApps.viewTableEntries(
-			entryName = "${customElementName}",
-			entryType = "${customElementType}");
+			RemoteApps.viewTableEntries(
+					entryName = "${remoteAppName}",
+					entryType = "${customElementType}");
+		}
 	}
 
 	@description = "Verify that remote app of type Custom Element can be deleted"
@@ -126,6 +128,82 @@ definition {
 			Navigator.gotoPage(pageName = "Test Page");
 
 			AssertElementPresent(locator1 = "RemoteApps#VANILLA_COUNTER_REMOTE_APP");
+		}
+	}
+
+	@description = "Verify that remote app of type Custom Element can be edited"
+	@priority = "4"
+	test CustomElementCanBeEdited {
+		property portal.acceptance = "true";
+
+		var remoteAppName = "New Counter";
+
+		task ("Create a Custom Element") {
+			JSONRemoteApp.addCustomElementRemoteAppEntry(
+					customElementHTMLName = "new-counter",
+					customElementName = "New Counter",
+					customElementURL = "http://remote-component-test.wincent.com/packages/vanilla-counter/index.js");
+		}
+
+		task ("Edit the fields of the Custom Element") {
+			RemoteApps.goToRemoteAppsPortlet();
+
+			Click(
+					key_tableEntryName = "${remoteAppName}",
+					locator1 = "RemoteApps#TABLE_ENTRY_NAME_REMOTE_TABLE");
+
+			RemoteApps.editCustomElement(
+					entryCSSURL = "http://remote-component-test.wincent.com/index.css",
+					entryHTMLName = "vanilla-counter-edited",
+					entryName = "Vanilla Counter Edited",
+					entryProperties = "test-data-user=QAuser");
+		}
+
+		task ("Assert that the Custom Element is listed") {
+			RemoteApps.viewTableEntryName(entryName = "Vanilla Counter Edited");
+		}
+
+		task ("Assert that the fields have been updated") {
+			Click(
+					key_tableEntryName = "Vanilla Counter Edited",
+					locator1 = "RemoteApps#TABLE_ENTRY_NAME_REMOTE_TABLE");
+
+			RemoteApps.assertCustomElementFields(
+					entryCSSURL = "http://remote-component-test.wincent.com/index.css",
+					entryHTMLName = "vanilla-counter-edited",
+					entryName = "Vanilla Counter Edited",
+					entryProperties = "test-data-user=QAuser",
+					entryURL = "http://remote-component-test.wincent.com/packages/vanilla-counter/index.js");
+		}
+	}
+
+	@description = "Verify that the fields of a Custom Element from a Remote App can be saved"
+	@priority = "5"
+	test CustomElementFieldsCanBeSaved {
+		property portal.acceptance = "true";
+
+		task ("Create Vanilla Counter as a Custom Element") {
+			JSONRemoteApp.addCustomElementRemoteAppAllFields(
+					customElementCSSURL = "http://remote-component-test.wincent.com/index.css",
+					customElementHTMLName = "vanilla-counter",
+					customElementName = "Vanilla Counter",
+					customElementProperties = "test-data-user=QAuser",
+					customElementURL = "http://remote-component-test.wincent.com/packages/vanilla-counter/index.js");
+		}
+
+		task ("Assert that the Vanilla Counter fields have been saved correctly") {
+			RemoteApps.goToRemoteAppsPortlet();
+
+			Click(
+					key_tableEntryName = "Vanilla Counter",
+					locator1 = "RemoteApps#TABLE_ENTRY_NAME_REMOTE_TABLE");
+
+			RemoteApps.assertCustomElementFields(
+					entryCSSURL = "http://remote-component-test.wincent.com/index.css",
+					entryHTMLName = "vanilla-counter",
+					entryName = "Vanilla Counter",
+					entryProperties = "test-data-user=QAuser",
+					entryURL = "http://remote-component-test.wincent.com/packages/vanilla-counter/index.js");
 		}
 	}
 
