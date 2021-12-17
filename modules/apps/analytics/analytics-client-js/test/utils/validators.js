@@ -15,6 +15,7 @@
 import {
 	isValidEvent,
 	validateEmptyString,
+	validateIsString,
 	validateMaxLength,
 	validatePropsLength,
 } from '../../src/utils/validators';
@@ -140,6 +141,20 @@ describe('validateEmptyString()', () => {
 
 	it('returns an error msg when string is empty', () => {
 		const errorMsg = validateEmptyString('testLabel')('');
+
+		expect(errorMsg).toBeTruthy();
+	});
+});
+
+describe('validateIsString()', () => {
+	it('returns an empty string when value is a string', () => {
+		const errorMsg = validateIsString('testLabel')('Value');
+
+		expect(errorMsg).toBeFalsy();
+	});
+
+	it('returns an error msg when value is not a string', () => {
+		const errorMsg = validateIsString('testLabel')({test: 'test'});
 
 		expect(errorMsg).toBeTruthy();
 	});

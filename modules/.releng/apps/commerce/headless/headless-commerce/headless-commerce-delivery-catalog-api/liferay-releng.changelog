@@ -57,3 +57,8 @@ a7f6aa66b8b6f36cc97fd6b0226ea5cb7d1fffdb^..ab9945efff8e6d6bff00fdbd98d77db074fd0
 # Bundle Version 10.6.1
 #
 ab9945efff8e6d6bff00fdbd98d77db074fd082a^..0b214bcfcbe6284c83d24d69a94082a6186c2764=LPS-143571
+
+#
+# Bundle Version 10.7.0
+#
+0b214bcfcbe6284c83d24d69a94082a6186c2764^..079337e88c4c58f8497dbe430ba60137ac8129b1=COMMERCE-8047

@@ -20,6 +20,7 @@ import {
 
 const isValidEvent = ({eventId, eventProps}) => {
 	const validationsEventId = _validate([
+		validateIsString('eventId'),
 		validateEmptyString('eventId'),
 		validateMaxLength(),
 	]);
@@ -33,16 +34,17 @@ const isValidEvent = ({eventId, eventProps}) => {
 	]);
 	let errors = [];
 
-	errors = errors.concat(
-		validationsEventId(eventId),
-		validationsEventProps({eventId, eventProps})
-	);
+	errors = errors.concat(validationsEventId(eventId));
 
-	for (const key in eventProps) {
-		errors = errors.concat(
-			validationsKey(key),
-			validationsValue(eventProps[key])
-		);
+	if (eventProps) {
+		errors = errors.concat(validationsEventProps({eventId, eventProps}));
+
+		for (const key in eventProps) {
+			errors = errors.concat(
+				validationsKey(key),
+				validationsValue(eventProps[key])
+			);
+		}
 	}
 
 	if (errors.length) {
@@ -59,6 +61,16 @@ const validateEmptyString = (labelField) => (str) => {
 
 	if (!String(str).length) {
 		error = `${labelField} is required.`;
+	}
+
+	return error;
+};
+
+const validateIsString = (labelField) => (val) => {
+	let error = '';
+
+	if (typeof val !== 'string') {
+		error = `${labelField} must be a string.`;
 	}
 
 	return error;
@@ -105,4 +117,5 @@ export {
 	validateEmptyString,
 	validateMaxLength,
 	validatePropsLength,
+	validateIsString,
 };

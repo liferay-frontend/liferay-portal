@@ -57,7 +57,7 @@ definition {
 
 			SitePages.openPagesAdmin(siteURLKey = "site-name");
 
-			SitePages.addPublicPage(
+			PagesAdmin.addPublicPage(
 				pageName = "Site Page",
 				pageTemplateName = "Page Template Name");
 		}
@@ -89,7 +89,7 @@ definition {
 		task ("Disable inherit changes") {
 			SitePages.openPagesAdmin(siteURLKey = "site-name");
 
-			SitePages.gotoPageMenuItem(
+			PagesAdmin.gotoPageEllipsisMenuItem(
 				menuItem = "Configure",
 				pageName = "Site Page");
 
@@ -192,7 +192,7 @@ definition {
 		task ("Add a page based on the widget page template") {
 			SitePages.openPagesAdmin(siteURLKey = "site-name");
 
-			SitePages.addPublicPage(
+			PagesAdmin.addPublicPage(
 				collectionName = "Page Template Collection",
 				pageName = "Test Page Name",
 				pageTemplateName = "Page Template Name");

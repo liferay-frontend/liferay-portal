@@ -40,5 +40,5 @@
 		"test": "liferay-npm-scripts test --passWithNoTests",
 		"watch": "liferay-npm-scripts webpack --watch"
 	},
-	"version": "1.0.28"
+	"version": "1.0.29"
 }

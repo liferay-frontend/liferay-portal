@@ -87,7 +87,7 @@ definition {
 		task ("Add a translation for that page") {
 			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
 
-			SitePages.gotoPageMenuItem(
+			PagesAdmin.gotoPageEllipsisMenuItem(
 				menuItem = "Configure",
 				pageName = "Content Page");
 
@@ -221,7 +221,7 @@ definition {
 		task ("Create Widget Page") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name");
 
-			SitePages.addPublicPage(
+			PagesAdmin.addPublicPage(
 				pageName = "Widget Page Name",
 				sitePageType = "Widget Page");
 		}
@@ -325,7 +325,7 @@ definition {
 		task ("Create Widget Page") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name");
 
-			SitePages.addPublicPage(
+			PagesAdmin.addPublicPage(
 				pageName = "Widget Page Name",
 				sitePageType = "Widget Page");
 		}

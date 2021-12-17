@@ -185,6 +185,12 @@ definition {
 		Click(locator1 = "ObjectPortlet#CUSTOM_OBJECT_ON_CONTROL_PANEL");
 	}
 
+	macro gotoRelationshipTab {
+		Click(
+			key_tabName = "Relationship Tab",
+			locator1 = "ObjectAdmin#ENTRY_RELATIONSHIP_TAB");
+	}
+
 	macro searchColumn {
 		Click(locator1 = "ObjectPortlet#ARROW_DOWN_ICON");
 
@@ -219,6 +225,18 @@ definition {
 		Click(
 			key_label = "${label}",
 			locator1 = "ObjectPortlet#SELECT_CUSTOM_OBJECT");
+	}
+
+	macro selectRelationshipFieldEntry {
+		Click(
+			key_entry = "${entry}",
+			locator1 = "ObjectPortlet#SEARCH_RELATIONSHIP_ENTRY");
+
+		Click(
+			key_entry = "${newEntry}",
+			locator1 = "CreateObject#ENTRY_RELATIONSHIP_FIELD_OPTION");
+
+		Button.clickSave();
 	}
 
 	macro sortField {

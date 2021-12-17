@@ -413,7 +413,7 @@ definition {
 			category = "Generador del sitio",
 			portlet = "Páginas del sitio web");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configurar",
 			pageName = "Site Page 1");
 
@@ -433,7 +433,7 @@ definition {
 			category = "Generador del sitio",
 			portlet = "Páginas del sitio web");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configurar",
 			pageName = "Site Page 2");
 
@@ -540,13 +540,13 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "Site Name");
 
-		SitePages.addPublicPage(pageName = "Dummy Page");
+		PagesAdmin.addPublicPage(pageName = "Dummy Page");
 
-		SitePages.addPublicPage(pageName = "Language Page");
+		PagesAdmin.addPublicPage(pageName = "Language Page");
 
 		SitePages.openPagesAdmin(siteURLKey = "Site Name");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Language Page");
 
@@ -647,7 +647,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "Site Name");
 
-		SitePages.addPublicPage(pageName = "Site Page Name");
+		PagesAdmin.addPublicPage(pageName = "Site Page Name");
 
 		User.logoutPG();
 
@@ -685,7 +685,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "Site Name");
 
-		SitePages.addPublicPage(pageName = "Language Page");
+		PagesAdmin.addPublicPage(pageName = "Language Page");
 
 		Site.openSiteSettingsAdmin(siteURLKey = "site-name");
 
@@ -767,7 +767,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "Site Name");
 
-		SitePages.addPublicPage(pageName = "Site Page Name");
+		PagesAdmin.addPublicPage(pageName = "Site Page Name");
 
 		Navigator.gotoSitePage(
 			pageName = "Site Page Name",
@@ -777,7 +777,7 @@ definition {
 			category = "Generador del sitio",
 			portlet = "Páginas del sitio web");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configurar",
 			pageName = "Site Page Name");
 

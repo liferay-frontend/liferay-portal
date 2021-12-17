@@ -19,17 +19,34 @@ function DateRenderer({options, value}) {
 		return null;
 	}
 
-	const locale = themeDisplay.getLanguageId().replace('_', '-');
-	const dateOptions = options?.format || {
-		day: 'numeric',
-		hour: 'numeric',
-		minute: 'numeric',
-		month: 'short',
-		second: 'numeric',
-		year: 'numeric',
+	let timestamp = value;
+
+	if (typeof value === 'string') {
+		const date = value.split('T')[0];
+
+		const dateArray = date.split('-');
+
+		if (dateArray.length === 3) {
+			const [year, month, day] = dateArray;
+
+			timestamp = Date.UTC(Number(year), Number(month) - 1, Number(day));
+		}
+		else {
+			timestamp = Number(value);
+		}
+	}
+
+	const locale = themeDisplay.getBCP47LanguageId();
+
+	const dateOptions = {
+		day: options?.format?.day || 'numeric',
+		month: options?.format?.month || 'short',
+		timeZone: options?.format?.timeZone || 'UTC',
+		year: options?.format?.year || 'numeric',
 	};
+
 	const formattedDate = new Intl.DateTimeFormat(locale, dateOptions).format(
-		new Date(value)
+		timestamp
 	);
 
 	return formattedDate;

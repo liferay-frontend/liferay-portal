@@ -134,7 +134,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.togglePrivacy(privacy = "Public Pages");
+		PagesAdmin.togglePrivacy(privacy = "Public Pages");
 
 		Page.viewNoDeletePagesAssociatedWithSiteTemplate(
 			page = "Site Child Page Name",
@@ -186,7 +186,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Permissions",
 			pageName = "Home");
 
@@ -565,7 +565,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "1");
 
@@ -581,7 +581,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "2");
 
@@ -597,7 +597,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Hello");
 
@@ -632,7 +632,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		Page.viewPagesOrder(
+		PagesAdmin.viewPagesOrder(
 			depth = "2",
 			pageNameList = "Home,1,2,Hello");
 	}

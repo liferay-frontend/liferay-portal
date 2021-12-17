@@ -13,7 +13,6 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 import {useConfig} from '../../../core/hooks/useConfig.es';
@@ -26,14 +25,17 @@ import previousPage from '../thunks/previousPage.es';
 
 export function PaginationControls({
 	activePage,
+	onClick,
 	readOnly,
 	strings = null,
 	total,
 }) {
 	const {
 		cancelLabel,
+		ffShowPartialResultsEnabled,
 		redirectURL,
 		showCancelButton,
+		showPartialResultsToRespondents,
 		showSubmitButton,
 		submitLabel,
 	} = useConfig();
@@ -48,7 +50,10 @@ export function PaginationControls({
 		<div className="lfr-ddm-form-pagination-controls">
 			{activePage > 0 && (
 				<ClayButton
-					className="lfr-ddm-form-pagination-prev"
+					className={`${
+						ffShowPartialResultsEnabled ? 'float-left' : ''
+					} lfr-ddm-form-pagination-prev`}
+					displayType="secondary"
 					onClick={() =>
 						dispatch(
 							createPreviousPage({
@@ -61,8 +66,6 @@ export function PaginationControls({
 					}
 					type="button"
 				>
-					<ClayIcon symbol="angle-left" />
-
 					{strings !== null
 						? strings['previous']
 						: Liferay.Language.get('previous')}
@@ -71,7 +74,12 @@ export function PaginationControls({
 
 			{activePage < total - 1 && (
 				<ClayButton
-					className="float-right lfr-ddm-form-pagination-next"
+					className={`${
+						ffShowPartialResultsEnabled
+							? 'float-left'
+							: 'float-right'
+					}  lfr-ddm-form-pagination-next`}
+					displayType="primary"
 					onClick={() =>
 						dispatch(
 							createNextPage({
@@ -87,14 +95,16 @@ export function PaginationControls({
 					{strings !== null
 						? strings['next']
 						: Liferay.Language.get('next')}
-
-					<ClayIcon symbol="angle-right" />
 				</ClayButton>
 			)}
 
 			{activePage === total - 1 && !readOnly && showSubmitButton && (
 				<ClayButton
-					className="float-right lfr-ddm-form-submit"
+					className={
+						ffShowPartialResultsEnabled
+							? 'float-left'
+							: 'float-right'
+					}
 					id="ddm-form-submit"
 					type="submit"
 				>
@@ -111,6 +121,16 @@ export function PaginationControls({
 						{cancelLabel}
 					</a>
 				</div>
+			)}
+
+			{ffShowPartialResultsEnabled && showPartialResultsToRespondents && (
+				<ClayButton
+					className="float-right"
+					displayType="secondary"
+					onClick={() => onClick()}
+				>
+					{Liferay.Language.get('see-partial-results')}
+				</ClayButton>
 			)}
 		</div>
 	);

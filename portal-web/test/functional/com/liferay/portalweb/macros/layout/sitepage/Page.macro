@@ -43,7 +43,7 @@ definition {
 	}
 
 	macro addJavaScript {
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "${pageName}");
 
@@ -162,7 +162,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "${pageName}");
 
@@ -244,7 +244,7 @@ definition {
 			portlet = "Pages");
 
 		if (isSet(page)) {
-			SitePages.gotoPageMenuItem(
+			PagesAdmin.gotoPageEllipsisMenuItem(
 				menuItem = "Configure",
 				pageName = "${page}");
 
@@ -599,7 +599,7 @@ definition {
 			locator1 = "SitePages#LIST_GROUP_ITEM_ROW_ELLIPSIS");
 
 		while (IsElementPresent(key_pageName = "Home", locator1 = "SitePages#LIST_GROUP_ITEM_CHILD_INDICATOR")) {
-			SitePages.expandPageTree(depth = "2");
+			PagesAdmin.expandPageTree(depth = "2");
 
 			Click.waitForMenuToggleJSClick(
 				key_index = "4",
@@ -679,10 +679,10 @@ definition {
 				portlet = "Pages");
 		}
 
-		SitePages.togglePrivacy(privacy = "${privacy}");
+		PagesAdmin.togglePrivacy(privacy = "${privacy}");
 
 		if (isSet(depth)) {
-			SitePages.expandPageTree(depth = "${depth}");
+			PagesAdmin.expandPageTree(depth = "${depth}");
 		}
 
 		AssertElementPresent(
@@ -758,7 +758,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "${pageName}");
 
@@ -892,7 +892,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.togglePrivacy(privacy = "${privacy}");
+		PagesAdmin.togglePrivacy(privacy = "${privacy}");
 
 		AssertElementNotPresent(
 			key_pageName = "${pageName}",
@@ -981,20 +981,6 @@ definition {
 			value1 = "${metaTagsKeywords}");
 	}
 
-	macro viewPagesOrder {
-		var index = "1";
-
-		for (var pageName : list "${pageNameList}") {
-			AssertTextEquals(
-				key_depth = "${depth}",
-				key_index = "${index}",
-				locator1 = "SitePages#LIST_GROUP_ITEM_ROW_ENTRY",
-				value1 = "${pageName}");
-
-			var index = ${index} + 1;
-		}
-	}
-
 	macro viewPageTemplate {
 		Navigator.openSiteURL(siteName = "Site Name");
 
@@ -1008,7 +994,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "${page}");
 
@@ -1034,7 +1020,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "${pageName}");
 

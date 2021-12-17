@@ -36,7 +36,7 @@ export function flushPromises() {
 export function getDummyEvent(eventId = 0, data = {}) {
 	return {
 		applicationId: 'test',
-		eventId,
+		eventId: String(eventId),
 		properties: {
 			a: 1,
 			b: 2,

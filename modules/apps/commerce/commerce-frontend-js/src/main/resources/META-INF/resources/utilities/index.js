@@ -15,6 +15,7 @@
 import {fetch} from 'frontend-js-web';
 
 import createOdataFilter from './odata';
+import {getProductMinQuantity} from './quantities';
 
 export const fetchHeaders = new Headers({
 	'Accept': 'application/json',
@@ -270,4 +271,26 @@ export function sortByKey(items, keyName) {
 	];
 
 	return sortedItems;
+}
+
+export function isProductPurchasable(
+	availability,
+	productConfiguration,
+	purchasable
+) {
+	if (purchasable === false) {
+		return false;
+	}
+
+	if (productConfiguration.allowBackOrder) {
+		return true;
+	}
+
+	if (
+		availability.stockQuantity > getProductMinQuantity(productConfiguration)
+	) {
+		return true;
+	}
+
+	return false;
 }

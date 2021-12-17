@@ -107,6 +107,18 @@ definition {
 			value1 = "${eventTitle}");
 	}
 
+	macro editTitleAndCalendar {
+		CalendarScheduler.selectSpecificEvent(eventTitle = "${currentEventTitle}");
+
+		CalendarScheduler.editTitle(eventTitle = "${eventTitle}");
+
+		Select(
+			locator1 = "Calendar#SCHEDULER_EVENT_DIALOG_BOX_CALENDAR",
+			value1 = "${calendarName}");
+
+		CalendarScheduler.saveEvent();
+	}
+
 	macro gotoAddViaDayView {
 		SikuliClick(locator1 = "Calendar#SCHEDULER_DAY_VIEW_PNG");
 	}

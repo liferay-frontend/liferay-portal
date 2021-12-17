@@ -73,10 +73,6 @@ body .ddm-user-view-content {
 			margin-left: 16px;
 		}
 	}
-
-	.multi-step-icon {
-		cursor: default;
-	}
 }
 
 .portlet-forms .ddm-form-basic-info .ddm-form-name {
@@ -190,6 +186,10 @@ body .ddm-user-view-content {
 
 		button {
 			margin-bottom: 20px;
+		}
+
+		.lfr-ddm-form-pagination-prev {
+			margin-right: 16px;
 		}
 	}
 

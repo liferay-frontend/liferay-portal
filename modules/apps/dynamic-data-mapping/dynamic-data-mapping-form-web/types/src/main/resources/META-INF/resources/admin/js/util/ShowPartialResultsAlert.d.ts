@@ -12,12 +12,11 @@
  * details.
  */
 
-import {FormView} from 'data-engine-js-components-web';
-
-// This is just a link to allow the react:component Taglib to render the
-// component that is in another module so as not to have problems with
-// name resolution.
-//
-// The .link nomenclature is just to symbolize the creation of a symlink file.
-
-export default FormView;
+import React from 'react';
+import './ShowPartialResultsAlert.scss';
+declare const ShowPartialResultsAlert: React.FC<IProps>;
+export default ShowPartialResultsAlert;
+interface IProps {
+	dismissible?: boolean;
+	showPartialResultsToRespondents: boolean;
+}

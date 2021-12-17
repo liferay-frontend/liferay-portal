@@ -18,7 +18,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.addPublicPage(
+		PagesAdmin.addPublicPage(
 			pageName = "Calendar Page",
 			sitePageType = "Widget Page");
 
@@ -85,30 +85,108 @@ definition {
 	}
 
 	@description = "LRQA-71888 - Verify that the user can delete a rate status into a event"
-	@ignore = "Test Stub"
 	@priority = "3"
 	test CanDeleteRateIntoAEvent {
+		Calendar.chooseSiteCalendarMenulistOption(
+			menuListOption = "Calendar Settings",
+			siteCalendarName = "Liferay DXP",
+			siteName = "Liferay DXP");
 
-		// TODO LRQA-71911 CanDeleteRateIntoAEvent pending implementation
+		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
+		CalendarMyCalendars.checkboxOption(checkboxName = "Enable Ratings");
+
+		PortletEntry.save();
+
+		Navigator.gotoPage(pageName = "Calendar Page");
+
+		CalendarNavigator.gotoAddEvent();
+
+		CalendarEvent.add(
+			eventTitle = "Calendar Event Title",
+			eventType = "Regular",
+			pageName = "Calendar Page");
+
+		Navigator.gotoPage(pageName = "Calendar Page");
+
+		CalendarScheduler.selectSpecificEventNoRefresh(eventTitle = "Calendar Event Title");
+
+		CalendarScheduler.gotoDetailsViaDialogBox();
+
+		Ratings.rateStar(ratingStarCount = "3");
+
+		Ratings.viewRateStar(
+			averageRatingStarCount = "3.0",
+			ratingStarCount = "3");
+
+		Ratings.revokeStarsRating();
 	}
 
 	@description = "LRQA-71888 - Verify that the user can edit event details via Scheduler"
-	@ignore = "Test Stub"
 	@priority = "3"
 	test CanEditEventViaScheduler {
+		CalendarNavigator.gotoAddEvent();
 
-		// TODO LRQA-71908 CanEditEventViaScheduler pending implementation
+		CalendarEvent.add(
+			eventTitle = "Calendar Event Title",
+			eventType = "Regular",
+			pageName = "Calendar Page");
 
+		CalendarScheduler.editTitleAndCalendar(
+			calendarName = "Test Test",
+			currentEventTitle = "Calendar Event Title",
+			eventTitle = "Calendar Event Title Edited");
+
+		CalendarScheduler.selectSpecificEvent(eventTitle = "Calendar Event Title Edited");
+
+		CalendarScheduler.viewEventTitleViaDialogBox(eventTitle = "Calendar Event Title Edited");
+
+		CalendarScheduler.viewEventUsersViaDialogBox(usersList = "Test Test");
 	}
 
 	@description = "LRQA-71888 - Verify that the user can rate a event"
-	@ignore = "Test Stub"
 	@priority = "3"
 	test CanRateAEvent {
+		Calendar.chooseSiteCalendarMenulistOption(
+			menuListOption = "Calendar Settings",
+			siteCalendarName = "Liferay DXP",
+			siteName = "Liferay DXP");
 
-		// TODO LRQA-71910 CanRateAEvent pending implementation
+		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
+		CalendarMyCalendars.checkboxOption(checkboxName = "Enable Ratings");
+
+		PortletEntry.save();
+
+		Navigator.gotoPage(pageName = "Calendar Page");
+
+		CalendarNavigator.gotoAddEvent();
+
+		CalendarEvent.add(
+			eventTitle = "Calendar Event Title",
+			eventType = "Regular",
+			pageName = "Calendar Page");
+
+		Navigator.gotoPage(pageName = "Calendar Page");
+
+		CalendarScheduler.selectSpecificEventNoRefresh(eventTitle = "Calendar Event Title");
+
+		CalendarScheduler.gotoDetailsViaDialogBox();
+
+		Ratings.rateStar(ratingStarCount = "3");
+
+		Ratings.viewRateStar(
+			averageRatingStarCount = "3.0",
+			ratingStarCount = "3");
+
+		MouseOver(
+			key_ratingStarCount = "3",
+			locator1 = "Ratings#YOUR_RATING_STAR_RESULT");
+
+		AssertElementPresent(
+			key_message = "You have rated this 3 stars out of 5.",
+			locator1 = "Ratings#RATED_TOOLTIP_MESSAGE",
+			value1 = "${key_message}");
 	}
 
 	@description = "LRQA-71888 - Verify that the user can view the fields Title, Starts, Ends, Rresources in event details page"
@@ -937,7 +1015,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.addPublicPage(
+		PagesAdmin.addPublicPage(
 			pageName = "Calendar Page",
 			sitePageType = "Widget Page");
 

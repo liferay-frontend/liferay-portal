@@ -277,6 +277,12 @@ describe('Analytics', () => {
 	});
 
 	describe('track()', () => {
+		afterEach(() => {
+			if (console.error.mockRestore) {
+				console.error.mockRestore();
+			}
+		});
+
 		it('is exposed as an Analytics method', () => {
 			expect(typeof Analytics.track).toBe('function');
 		});
@@ -296,6 +302,58 @@ describe('Analytics', () => {
 					applicationId: 'CustomEvent',
 					eventId,
 					properties,
+				}),
+			]);
+		});
+
+		it('returns a type error if the eventId is not a string', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+			const eventId = {test: 'test'};
+
+			console.error = jest.fn((val) => val);
+
+			await Analytics.track(eventId);
+
+			expect(console.error).toHaveBeenCalledTimes(1);
+		});
+
+		it('uses the applicationId from options', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+			const eventId = 'test';
+			const applicationId = 'Page';
+			const properties = {a: 1, b: 2, c: 3};
+
+			await Analytics.track(eventId, properties, {applicationId});
+
+			const events = Analytics.getEvents();
+
+			expect(events).toEqual([
+				expect.objectContaining({
+					applicationId,
+					eventId,
+					properties,
+				}),
+			]);
+		});
+
+		it('uses the assetType from properties over the applicationId from options', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+			const assetType = 'Blog';
+			const eventId = 'test';
+			const properties = {a: 1, assetType};
+
+			await Analytics.track(eventId, properties, {applicationId: 'Page'});
+
+			const events = Analytics.getEvents();
+
+			expect(events).toEqual([
+				expect.objectContaining({
+					applicationId: assetType,
+					eventId,
+					properties: {a: 1},
 				}),
 			]);
 		});

@@ -46,7 +46,7 @@ definition {
 
 		Staging.viewSitePagesVariationActiveCP(sitePagesVariationName = "Summer");
 
-		SitePages.addPublicPageUnderSitePagesVariation(pageName = "Test Page Name");
+		PagesAdmin.addPublicPageUnderSitePagesVariation(pageName = "Test Page Name");
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
@@ -81,7 +81,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicChildPage(
+		PagesAdmin.addPublicChildPage(
 			childPageName = "Page 1",
 			parentPageName = "Staging Test Page");
 
@@ -120,14 +120,14 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(
+		PagesAdmin.addPublicPage(
 			collectionName = "Page Template Collection",
 			pageName = "Test Page Name",
 			pageTemplateName = "Page Template Name");
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Test Page Name");
 
@@ -150,7 +150,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "Test Page Name");
+		PagesAdmin.addPublicPage(pageName = "Test Page Name");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Test Page Name",
@@ -169,7 +169,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.deletePage(pageName = "Test Page Name");
+		PagesAdmin.deletePage(pageName = "Test Page Name");
 
 		ProductMenu.gotoPortlet(
 			category = "Site Builder",
@@ -185,7 +185,7 @@ definition {
 	test PublicationWithoutReadyForPublication {
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "Staging Test Page 2");
+		PagesAdmin.addPublicPage(pageName = "Staging Test Page 2");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Staging Test Page 2",
@@ -330,7 +330,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "Page Revision Page");
+		PagesAdmin.addPublicPage(pageName = "Page Revision Page");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Page Revision Page",
@@ -612,7 +612,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "Page 2");
+		PagesAdmin.addPublicPage(pageName = "Page 2");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Page 2",
@@ -669,7 +669,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "Page 2");
+		PagesAdmin.addPublicPage(pageName = "Page 2");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Page 2",
@@ -920,7 +920,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "Test Page Name");
+		PagesAdmin.addPublicPage(pageName = "Test Page Name");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Test Page Name",
@@ -953,7 +953,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(
+		PagesAdmin.addPublicPage(
 			collectionName = "Page Template Collection",
 			inheritChanges = "false",
 			pageName = "Test Page Name",
@@ -963,9 +963,9 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.togglePrivacy(privacy = "Public Pages");
+		PagesAdmin.togglePrivacy(privacy = "Public Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Test Page Name");
 
@@ -1044,13 +1044,13 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "Page1");
+		PagesAdmin.addPublicPage(pageName = "Page1");
 
 		ProductMenu.gotoPortlet(
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Page1");
 
@@ -1061,7 +1061,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicChildPage(
+		PagesAdmin.addPublicChildPage(
 			childPageName = "Page2",
 			parentPageName = "Page1");
 
@@ -1069,7 +1069,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Page2",
 			parentPagesHierarchy = "Page1");
@@ -1158,7 +1158,7 @@ definition {
 	test ViewSummaryScreenWithDraftPage {
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "Draft Page");
+		PagesAdmin.addPublicPage(pageName = "Draft Page");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Draft Page",

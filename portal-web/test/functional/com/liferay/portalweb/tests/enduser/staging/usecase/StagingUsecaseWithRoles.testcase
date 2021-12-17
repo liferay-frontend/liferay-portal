@@ -165,7 +165,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Staging Test Page");
 
@@ -177,7 +177,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Staging Test Page");
 
@@ -189,7 +189,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Staging Test Page");
 
@@ -203,7 +203,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Staging Test Page");
 
@@ -261,7 +261,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "Test Page Name");
+		PagesAdmin.addPublicPage(pageName = "Test Page Name");
 
 		Navigator.openStagingSiteURL(siteName = "Site Name");
 
@@ -294,7 +294,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.deletePage(pageName = "Staging Test Page");
+		PagesAdmin.deletePage(pageName = "Staging Test Page");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Test Page Name",
@@ -338,7 +338,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "Empty Page Name");
+		PagesAdmin.addPublicPage(pageName = "Empty Page Name");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Empty Page Name",
@@ -420,7 +420,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.deletePage(pageName = "Wiki");
+		PagesAdmin.deletePage(pageName = "Wiki");
 
 		Navigator.openStagingSiteURL(siteName = "Site Name");
 
@@ -445,7 +445,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.addPublicPage(pageName = "New Page Name");
+		PagesAdmin.addPublicPage(pageName = "New Page Name");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "New Page Name",
@@ -895,7 +895,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.deletePage(pageName = "Wiki");
+		PagesAdmin.deletePage(pageName = "Wiki");
 
 		Navigator.openStagingSiteURL(siteName = "Site Name");
 

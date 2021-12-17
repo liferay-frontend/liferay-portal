@@ -967,7 +967,7 @@ definition {
 	macro clickDiscardDraft {
 		WaitForPageLoad();
 
-		SitePages.clickPageMenu(pageName = "${pageName}");
+		PagesAdmin.openPageEllipsisMenu(pageName = "${pageName}");
 
 		MenuItem.clickNoError(menuItem = "Discard Draft");
 
@@ -1294,6 +1294,36 @@ definition {
 				value1 = "${type}");
 
 			PageEditor.waitForAutoSave();
+		}
+	}
+
+	macro createPageTemplate {
+		Click(
+			key_text = "page-template",
+			locator1 = "Icon#ANY");
+
+		if (isSet(experienceName)) {
+			AssertTextEquals(
+				locator1 = "Message#WARNING_FEEDBACK",
+				value1 = "The page template is based on the current experience.");
+		}
+
+		PortletEntry.inputName(name = "${pageTemplateName}");
+
+		Select(
+			key_fieldLabel = "Page Template Collection",
+			locator1 = "Select#GENERIC_SELECT_FIELD",
+			value1 = "${collectionName}");
+
+		Button.click(button = "Create");
+
+		if (IsElementPresent(locator1 = "Message#ERROR_DISMISSIBLE")) {
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR_DISMISSIBLE",
+				value1 = "${alertMessage}");
+		}
+		else {
+			Alert.viewSuccessMessage();
 		}
 	}
 

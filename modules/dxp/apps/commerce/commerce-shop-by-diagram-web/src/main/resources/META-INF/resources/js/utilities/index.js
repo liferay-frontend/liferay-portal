@@ -9,6 +9,9 @@
  * distribution rights of the Software.
  */
 
+import {isProductPurchasable} from 'commerce-frontend-js/utilities/index';
+import {getProductMinQuantity} from 'commerce-frontend-js/utilities/quantities';
+
 import {DIAGRAM_LABELS_MAX_LENGTH, DRAG_AND_DROP_THRESHOLD} from './constants';
 
 export const TOOLTIP_DISTANCE_FROM_TARGET = 10;
@@ -109,24 +112,20 @@ export function formatLabel(label) {
 	return label;
 }
 
-export function formatInitialQuantities(mappedProducts) {
+export function formatMappedProductForTable(mappedProducts, isAdmin) {
 	return mappedProducts.map((mappedProduct) => {
-		let initialQuantity;
-
-		if (mappedProduct.productConfiguration?.allowedOrderQuantities.length) {
-			initialQuantity =
-				mappedProduct.productConfiguration.allowedOrderQuantities[0];
-		}
-		else {
-			initialQuantity = Math.max(
-				mappedProduct.productConfiguration?.minOrderQuantity,
-				mappedProduct.quantity
-			);
-		}
-
 		return {
 			...mappedProduct,
-			initialQuantity,
+			initialQuantity: isAdmin
+				? 0
+				: getProductMinQuantity(mappedProduct.productConfiguration),
+			selectable: isAdmin
+				? false
+				: isProductPurchasable(
+						mappedProduct.availability,
+						mappedProduct.productConfiguration,
+						mappedProduct.purchasable
+				  ),
 		};
 	});
 }

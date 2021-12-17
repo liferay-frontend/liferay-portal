@@ -156,7 +156,7 @@ definition {
 		}
 
 		task ("View the Preview and Discard Draft actions are invisible") {
-			SitePages.clickPageMenu(pageName = "Test Page Name");
+			PagesAdmin.openPageEllipsisMenu(pageName = "Test Page Name");
 
 			for (var itemName : list "Preview Draft,Discard Draft") {
 				MenuItem.viewNotPresent(menuItem = "${itemName}");
@@ -191,7 +191,7 @@ definition {
 		}
 
 		task ("View the Preview and Discard Draft actions are invisible") {
-			SitePages.clickPageMenu(pageName = "Test Page Name");
+			PagesAdmin.openPageEllipsisMenu(pageName = "Test Page Name");
 
 			for (var itemName : list "Preview Draft,Discard Draft") {
 				MenuItem.viewNotPresent(menuItem = "${itemName}");
@@ -256,6 +256,69 @@ definition {
 			Navigator.openSpecificURL(url = "http://www.able.com:8080/sitemap.xml");
 
 			AssertTextPresent(value1 = "You do not have permission to access the requested resource.");
+		}
+	}
+
+	@description = "This is a test for LPS-140483. The site admin could create page template from a content page with elements in staging site."
+	@priority = "4"
+	test CreatePageTemplateFromContentPageInStagingSite {
+		task ("Add a page template collection") {
+			JSONLayoutpagetemplate.addLayoutPageTemplateCollection(
+				groupName = "Test Site Name-staging",
+				layoutPageTemplateCollectionName = "Page Template Collection",
+				site = "false");
+		}
+
+		task ("Add a Heading fragment and an Asset Publisher widget to content page then publish") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name (Staging)",
+				layoutName = "Test Page Name",
+				site = "false",
+				type = "content");
+
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Page Name",
+				siteName = "Test Site Name Staging");
+
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				fragmentName = "Heading");
+
+			PageEditor.addWidget(
+				portletName = "Asset Publisher",
+				targetFragmentName = "Heading");
+
+			PageEditor.clickPublish();
+		}
+
+		task ("Create a content page template from the content page under page template collection") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Page Name",
+				siteName = "Test Site Name Staging");
+
+			PageEditor.createPageTemplate(
+				collectionName = "Page Template Collection",
+				pageTemplateName = "Content Page Template Name");
+		}
+
+		task ("View the content page template shown in Page Templates admin") {
+			PageTemplatesAdmin.openPageTemplatesAdmin(siteURLKey = "test-site-name-staging");
+
+			Navigator.gotoNavNested(navNested = "Page Template Collection");
+
+			PageTemplatesAdmin.viewPageTemplatePresent(pageTemplateName = "Content Page Template Name");
+
+			PageTemplatesAdmin.viewEntryWorkflowStatus(
+				entry = "Content Page Template Name",
+				workflowStatus = "Draft");
+		}
+
+		task ("View the Heading and Asset Publisher are shown in content page template") {
+			PageTemplatesAdmin.gotoPageTemplate(pageTemplateName = "Content Page Template Name");
+
+			for (var elementName : list "Heading,Asset Publisher") {
+				PageEditor.viewFragment(fragmentName = "${elementName}");
+			}
 		}
 	}
 
@@ -700,7 +763,7 @@ definition {
 		}
 
 		task ("View the Preview and Discard Draft actions are invisible") {
-			SitePages.clickPageMenu(pageName = "Test Page Name");
+			PagesAdmin.openPageEllipsisMenu(pageName = "Test Page Name");
 
 			for (var itemName : list "Preview Draft,Discard Draft") {
 				MenuItem.viewNotPresent(menuItem = "${itemName}");
@@ -733,7 +796,7 @@ definition {
 		task ("Preview the draft content page via Pages admin in staging site") {
 			SitePages.openPagesAdmin(siteURLKey = "test-site-name-staging");
 
-			SitePages.gotoPageMenuItem(
+			PagesAdmin.gotoPageEllipsisMenuItem(
 				menuItem = "Preview Draft",
 				pageName = "Test Page Name");
 
@@ -781,7 +844,7 @@ definition {
 		task ("Discard the draft content page via Pages admin in staging site") {
 			SitePages.openPagesAdmin(siteURLKey = "test-site-name-staging");
 
-			SitePages.clickPageMenu(pageName = "Test Page Name");
+			PagesAdmin.openPageEllipsisMenu(pageName = "Test Page Name");
 
 			MenuItem.clickNoError(menuItem = "Discard Draft");
 
@@ -791,7 +854,7 @@ definition {
 		}
 
 		task ("View the Preview Draft action is not shown") {
-			SitePages.clickPageMenu(pageName = "Test Page Name");
+			PagesAdmin.openPageEllipsisMenu(pageName = "Test Page Name");
 
 			MenuItem.viewNotPresent(menuItem = "Preview Draft");
 		}

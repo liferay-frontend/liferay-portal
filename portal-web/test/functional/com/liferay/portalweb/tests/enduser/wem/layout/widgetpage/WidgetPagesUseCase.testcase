@@ -35,7 +35,7 @@ definition {
 		task ("Add a panel page with collaboration component") {
 			SitePages.openPagesAdmin(siteURLKey = "Test Site Name");
 
-			SitePages.addPublicPage(
+			PagesAdmin.addPublicPage(
 				componentName = "Collaboration",
 				pageName = "Test Page Name",
 				sitePageType = "Panel");
@@ -98,11 +98,11 @@ definition {
 		task ("Delete the Search page in Liferay instance") {
 			SitePages.openPagesAdmin(siteURLKey = "guest");
 
-			SitePages.deletePage(pageName = "Search");
+			PagesAdmin.deletePage(pageName = "Search");
 		}
 
 		task ("View the last public page can not be deleted") {
-			SitePages.clickPageMenu(pageName = "Home");
+			PagesAdmin.openPageEllipsisMenu(pageName = "Home");
 
 			MenuItem.viewNotPresent(menuItem = "Delete");
 		}
@@ -119,7 +119,7 @@ definition {
 		task ("Add an embedded page") {
 			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
 
-			SitePages.addPublicPage(
+			PagesAdmin.addPublicPage(
 				pageName = "Test Page Name 1",
 				pageTypeURL = "https://www.google.com",
 				sitePageType = "Embedded");
@@ -136,7 +136,7 @@ definition {
 		task ("Add a panel page with community component") {
 			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
 
-			SitePages.addPublicPage(
+			PagesAdmin.addPublicPage(
 				componentName = "Community",
 				pageName = "Test Page Name 2",
 				sitePageType = "Panel");
@@ -244,7 +244,7 @@ definition {
 		task ("Add a localized friendly url") {
 			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
 
-			SitePages.gotoPageMenuItem(
+			PagesAdmin.gotoPageEllipsisMenuItem(
 				menuItem = "Configure",
 				pageName = "Test Page Name");
 
@@ -268,7 +268,7 @@ definition {
 		task ("View default friendly url") {
 			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
 
-			SitePages.gotoPageMenuItem(
+			PagesAdmin.gotoPageEllipsisMenuItem(
 				menuItem = "Configure",
 				pageName = "Test Page Name");
 

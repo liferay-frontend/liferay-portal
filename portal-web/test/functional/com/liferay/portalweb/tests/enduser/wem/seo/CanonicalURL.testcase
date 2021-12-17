@@ -34,7 +34,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Canonical URL Test Page");
 
@@ -134,7 +134,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Test Page");
 
@@ -176,7 +176,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Canonical URL Test Page");
 
@@ -291,9 +291,9 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.addPublicPage(pageName = "Page1");
+		PagesAdmin.addPublicPage(pageName = "Page1");
 
-		SitePages.addPublicPage(pageName = "Page2");
+		PagesAdmin.addPublicPage(pageName = "Page2");
 
 		Site.openSiteSettingsAdmin(siteURLKey = "guest");
 

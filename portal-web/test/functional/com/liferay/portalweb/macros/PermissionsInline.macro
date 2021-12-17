@@ -280,7 +280,7 @@ definition {
 			portlet = "Pages",
 			site = "${site}");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Permissions",
 			pageName = "${pageName}");
 
@@ -306,11 +306,11 @@ definition {
 	}
 
 	macro gotoSitePageCP {
-		SitePages.togglePrivacy(privacy = "${privacy}");
+		PagesAdmin.togglePrivacy(privacy = "${privacy}");
 
 		WaitForLiferayEvent.initializeLiferayEventLog();
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Permissions",
 			pageName = "${pageName}");
 
@@ -337,7 +337,7 @@ definition {
 			portlet = "Pages",
 			site = "${site}");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Permissions",
 			pageName = "${page}");
 	}

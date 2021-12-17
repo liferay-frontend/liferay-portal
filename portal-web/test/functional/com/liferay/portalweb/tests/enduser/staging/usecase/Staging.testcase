@@ -747,7 +747,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.deletePage(pageName = "Staging Test Page");
+		PagesAdmin.deletePage(pageName = "Staging Test Page");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Test Page",
@@ -2173,7 +2173,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name");
 
-		Page.viewPagesOrder(
+		PagesAdmin.viewPagesOrder(
 			depth = "2",
 			pageNameList = "Staging Test Page,Test Page 1,Test Page 2");
 	}
@@ -2203,7 +2203,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageEllipsisMenuItem(
 			menuItem = "Configure",
 			pageName = "Staging Test Page");
 

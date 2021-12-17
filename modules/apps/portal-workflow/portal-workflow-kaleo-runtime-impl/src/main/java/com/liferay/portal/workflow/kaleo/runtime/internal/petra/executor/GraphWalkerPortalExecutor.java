@@ -20,11 +20,15 @@ import com.liferay.petra.concurrent.ThreadPoolHandlerAdapter;
 import com.liferay.petra.executor.PortalExecutorConfig;
 import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.NamedThreadFactory;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PortalRunMode;
+import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.graph.GraphWalker;
 import com.liferay.portal.workflow.kaleo.runtime.graph.PathElement;
 
@@ -115,7 +119,14 @@ public class GraphWalkerPortalExecutor {
 	}
 
 	private void _walk(PathElement pathElement) {
-		try {
+		ExecutionContext executionException = pathElement.getExecutionContext();
+
+		ServiceContext serviceContext = executionException.getServiceContext();
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setWithSafeCloseable(
+					serviceContext.getCompanyId())) {
+
 			Queue<List<PathElement>> queue = new LinkedList<>();
 
 			queue.add(Collections.singletonList(pathElement));

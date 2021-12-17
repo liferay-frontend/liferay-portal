@@ -75,6 +75,7 @@ long formInstanceId = ddmFormDisplayContext.getFormInstanceId();
 				<%
 				String pageDescription;
 				String pageTitle;
+				boolean showPartialResultsToRespondents = ddmFormDisplayContext.isFFShowPartialResultsEnabled() && ddmFormDisplayContext.isShowPartialResultsToRespondents();
 
 				if (ddmFormDisplayContext.isShowSuccessPage()) {
 					DDMFormSuccessPageSettings ddmFormSuccessPageSettings = ddmFormDisplayContext.getDDMFormSuccessPageSettings();
@@ -99,11 +100,17 @@ long formInstanceId = ddmFormDisplayContext.getFormInstanceId();
 						HashMapBuilder.<String, Object>put(
 							"formDescription", formInstance.getDescription(displayLocale)
 						).put(
+							"formReportDataURL", formReportDataURL.toString()
+						).put(
 							"formTitle", formInstance.getName(displayLocale)
+						).put(
+							"limitToOneSubmissionPerUser", ddmFormDisplayContext.isLimitToOneSubmissionPerUserEnabled()
 						).put(
 							"pageDescription", pageDescription
 						).put(
 							"pageTitle", pageTitle
+						).put(
+							"showPartialResultsToRespondents", showPartialResultsToRespondents
 						).build()
 					%>'
 				/>
@@ -214,19 +221,18 @@ long formInstanceId = ddmFormDisplayContext.getFormInstanceId();
 							</clay:container-fluid>
 						</div>
 
-						<div class="ddm-form-basic-info">
-							<clay:container-fluid>
-								<h1 class="ddm-form-name"><%= HtmlUtil.escape(formInstance.getName(displayLocale)) %></h1>
-
-								<%
-								String description = StringUtil.trim(HtmlUtil.escape(formInstance.getDescription(displayLocale)));
-								%>
-
-								<c:if test="<%= Validator.isNotNull(description) %>">
-									<p class="ddm-form-description"><%= HtmlUtil.replaceNewLine(description) %></p>
-								</c:if>
-							</clay:container-fluid>
-						</div>
+						<clay:container-fluid>
+							<react:component
+								module="admin/js/util/ShowPartialResultsAlert"
+								props='<%=
+									HashMapBuilder.<String, Object>put(
+										"dismissible", true
+									).put(
+										"showPartialResultsToRespondents", ddmFormDisplayContext.isShowPartialResultsToRespondents()
+									).build()
+								%>'
+							/>
+						</clay:container-fluid>
 
 						<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/dynamic_data_mapping_form/get_form_report_data" var="formReportDataURL">
 							<portlet:param name="formInstanceId" value="<%= String.valueOf(formInstanceId) %>" />
@@ -239,10 +245,16 @@ long formInstanceId = ddmFormDisplayContext.getFormInstanceId();
 							id="<%= ddmFormDisplayContext.getContainerId() %>"
 						>
 							<react:component
-								module="admin/js/FormView.link.es"
+								module="admin/js/FormView"
 								props='<%=
 									HashMapBuilder.<String, Object>put(
+										"description", HtmlUtil.replaceNewLine(StringUtil.trim(HtmlUtil.escape(formInstance.getDescription(displayLocale))))
+									).put(
 										"formReportDataURL", formReportDataURL.toString()
+									).put(
+										"hasDescription", StringUtils.isNotEmpty(formInstance.getDescription(displayLocale))
+									).put(
+										"title", HtmlUtil.escape(formInstance.getName(displayLocale))
 									).put(
 										"validateCSRFTokenURL", validateCSRFTokenURL.toString()
 									).putAll(

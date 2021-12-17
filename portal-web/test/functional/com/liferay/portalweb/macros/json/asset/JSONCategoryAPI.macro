@@ -59,6 +59,21 @@ definition {
 		com.liferay.poshi.runner.util.JSONCurlUtil.post("${curl}");
 	}
 
+	@summary = "Directly calls the JSON WS API to delete vocabulary"
+	macro _deleteVocabulary {
+		Variables.assertDefined(parameterList = "${vocabularyId}");
+
+		var portalURL = JSONCompany.getPortalURL();
+
+		var curl = '''
+			${portalURL}/api/jsonws/assetvocabulary/delete-vocabulary \
+				-u test@liferay.com:test \
+				-d vocabularyId=${vocabularyId}
+		''';
+
+		com.liferay.poshi.runner.util.JSONCurlUtil.post("${curl}");
+	}
+
 	@summary = "Directly calls the JSON WS API to get categoryId"
 	macro _getCategoryIdByName {
 		Variables.assertDefined(parameterList = "${groupId},${categoryName},${vocabularyId}");
