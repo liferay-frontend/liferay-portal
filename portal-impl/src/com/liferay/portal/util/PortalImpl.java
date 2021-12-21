@@ -5365,10 +5365,17 @@ public class PortalImpl implements Portal {
 
 		sb.append(themeDisplay.getLanguageId());
 
-		// Build number
+		// Build identifier
 
 		sb.append("&b=");
-		sb.append(ReleaseInfo.getBuildNumber());
+
+		if (Validator.isNotNull(_STATIC_RESOURCE_URL_BUILD_IDENTIFIER)) {
+			sb.append(
+				URLCodec.encodeURL(_STATIC_RESOURCE_URL_BUILD_IDENTIFIER));
+		}
+		else {
+			sb.append(ReleaseInfo.getBuildNumber());
+		}
 
 		// Timestamp
 
@@ -8832,6 +8839,9 @@ public class PortalImpl implements Portal {
 
 	private static final String _PUBLIC_GROUP_SERVLET_MAPPING =
 		PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING;
+
+	private static final String _STATIC_RESOURCE_URL_BUILD_IDENTIFIER =
+		PropsUtil.get("static.resource.url.build.identifier");
 
 	private static final Log _log = LogFactoryUtil.getLog(PortalImpl.class);
 
