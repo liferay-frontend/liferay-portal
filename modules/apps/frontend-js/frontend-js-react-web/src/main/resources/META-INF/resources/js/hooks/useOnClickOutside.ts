@@ -14,13 +14,15 @@
 
 import {useEffect} from 'react';
 
+import {useEventListener} from './useEventListener';
+
 /**
  * Hook for excuting a function callback when clicking outside
  * some DOM elements (for example, a ClayPopover)
  */
 export default function useOnClickOutside(
-	elements: Array<any>,
-	handler: (...args: any[]) => any
+	elements: Array<Node>,
+	handler: (event: Event) => void
 ) {
 	useEffect(() => {
 		const listener = (event: any) => {
@@ -29,7 +31,7 @@ export default function useOnClickOutside(
 			/**
 			 * Detect clicks on elements or their descendent elements.
 			 */
-			const filtered = elements.filter((element: any) => {
+			const filtered = elements.filter((element: Node) => {
 				if (typeof element === 'string') {
 					return !!target.closest(element);
 				}

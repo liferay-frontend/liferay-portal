@@ -17,6 +17,6 @@
  * some DOM elements (for example, a ClayPopover)
  */
 export default function useOnClickOutside(
-	elements: Array<any>,
-	handler: (...args: any[]) => any
+	elements: Array<Node>,
+	handler: (event: Event) => void
 ): void;
