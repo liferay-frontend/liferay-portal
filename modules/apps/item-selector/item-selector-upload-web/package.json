@@ -1,8 +1,8 @@
 {
 	"dependencies": {
-		"item-selector-taglib": "*"
+		"@liferay/item-selector-taglib": "*"
 	},
-	"name": "item-selector-upload-web",
+	"name": "@liferay/item-selector-upload-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

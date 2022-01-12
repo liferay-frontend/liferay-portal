@@ -13,7 +13,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import {RulesSupport} from 'data-engine-js-components-web';
+import {RulesSupport} from '@liferay/data-engine-js-components-web';
 import React from 'react';
 
 export default function fieldDelete({action, modalDispatch, onClose, rules}) {

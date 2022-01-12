@@ -17,7 +17,7 @@ import React from 'react';
 
 import ImagePreviewer from '../src/main/resources/META-INF/resources/preview/js/ImagePreviewer.es';
 
-describe('document-library-preview-image', () => {
+describe('@liferay/document-library-preview-image', () => {
 	afterEach(cleanup);
 
 	it('renders an image previewer', () => {

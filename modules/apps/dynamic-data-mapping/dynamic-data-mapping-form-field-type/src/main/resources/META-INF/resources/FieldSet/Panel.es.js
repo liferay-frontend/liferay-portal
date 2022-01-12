@@ -16,11 +16,11 @@ import './Panel.scss';
 
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
-import classNames from 'classnames';
 import {
 	EVENT_TYPES as CORE_EVENT_TYPES,
 	useForm,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
+import classNames from 'classnames';
 import React from 'react';
 
 import useHeightTransition from './useHeightTransition.es';

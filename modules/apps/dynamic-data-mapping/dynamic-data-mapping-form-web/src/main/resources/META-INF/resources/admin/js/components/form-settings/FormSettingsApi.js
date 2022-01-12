@@ -12,7 +12,7 @@
  * details.
  */
 
-import {getFields, useFormState} from 'data-engine-js-components-web';
+import {getFields, useFormState} from '@liferay/data-engine-js-components-web';
 import React, {useEffect, useMemo} from 'react';
 
 const getFielProperty = (fields, fieldName) => {

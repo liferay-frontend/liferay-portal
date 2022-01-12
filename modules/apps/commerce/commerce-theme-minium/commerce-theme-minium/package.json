@@ -13,7 +13,7 @@
 		"version": "7.1"
 	},
 	"main": "package.json",
-	"name": "minium-theme",
+	"name": "@liferay/minium-theme",
 	"scripts": {
 		"build": "liferay-npm-scripts theme build",
 		"checkFormat": "liferay-npm-scripts check",

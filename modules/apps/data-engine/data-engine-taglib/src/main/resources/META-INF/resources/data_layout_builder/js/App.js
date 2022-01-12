@@ -17,15 +17,15 @@ import {
 	ConfigProvider,
 	FormProvider,
 	parseProps,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
 import {
 	dataLayoutReducer,
 	dragAndDropReducer,
 	fieldEditableReducer,
 	languageReducer,
 	pagesStructureReducer,
-} from 'data-engine-js-components-web/js/core/reducers/index.es';
-import {pageReducer} from 'data-engine-js-components-web/js/custom/form/reducers/index.es';
+} from '@liferay/data-engine-js-components-web/js/core/reducers/index.es';
+import {pageReducer} from '@liferay/data-engine-js-components-web/js/custom/form/reducers/index.es';
 import React from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';

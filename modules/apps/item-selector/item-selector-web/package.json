@@ -3,7 +3,7 @@
 		"frontend-js-web": "*"
 	},
 	"main": "index.es.js",
-	"name": "item-selector-web",
+	"name": "@liferay/item-selector-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

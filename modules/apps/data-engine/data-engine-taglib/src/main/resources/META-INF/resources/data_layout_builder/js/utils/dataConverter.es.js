@@ -16,7 +16,7 @@ import {
 	FieldSupport,
 	PagesVisitor,
 	getDDMFormFieldSettingsContext,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
 
 import {getDataDefinitionField as getDataDefinitionFieldUtils} from './dataDefinition.es';
 import {normalizeDataDefinition, normalizeDataLayout} from './normalizers.es';

@@ -18,13 +18,13 @@
 		"commerce-frontend-js": "*",
 		"d3": "5.9.3",
 		"frontend-js-web": "*",
-		"frontend-taglib-clay": "*",
-		"item-selector-taglib": "*",
+		"@liferay/frontend-taglib-clay": "*",
+		"@liferay/item-selector-taglib": "*",
 		"prop-types": "15.7.2"
 	},
 	"jest": {
 		"moduleNameMapper": {
-			"frontend-taglib-clay/data_set_display/utils/eventsDefinitions": "<rootDir>/../../../../node_modules/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/utils/eventsDefinitions.js"
+			"@liferay/frontend-taglib-clay/data_set_display/utils/eventsDefinitions": "<rootDir>/../../../../node_modules/@liferay/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/utils/eventsDefinitions.js"
 		},
 		"testPathIgnorePatterns": [
 			"<rootDir>/dev/",

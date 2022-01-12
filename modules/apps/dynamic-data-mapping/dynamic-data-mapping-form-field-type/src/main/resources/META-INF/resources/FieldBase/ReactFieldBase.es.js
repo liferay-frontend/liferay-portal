@@ -16,14 +16,14 @@ import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayPopover from '@clayui/popover';
-import classNames from 'classnames';
 import {
 	EVENT_TYPES as CORE_EVENT_TYPES,
 	Layout,
 	getRepeatedIndex,
 	useForm,
 	useFormState,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
+import classNames from 'classnames';
 import moment from 'moment/min/moment-with-locales';
 import React, {useMemo, useState} from 'react';
 

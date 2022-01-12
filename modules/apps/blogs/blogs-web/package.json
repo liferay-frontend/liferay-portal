@@ -2,10 +2,10 @@
 	"dependencies": {
 		"@liferay/frontend-js-state-web": "*",
 		"frontend-js-web": "*",
-		"item-selector-taglib": "*",
+		"@liferay/item-selector-taglib": "*",
 		"metal-state": "2.16.8"
 	},
-	"name": "blogs-web",
+	"name": "@liferay/blogs-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

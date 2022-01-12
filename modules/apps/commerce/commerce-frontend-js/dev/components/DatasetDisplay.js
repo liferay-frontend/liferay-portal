@@ -23,7 +23,7 @@ const datasetDisplayLauncher = (...data) => render(FrontendDataSet, ...data);
 const fluidDataSetProps = {
 	activeViewSettings: {},
 	apiURL: '/dataset-display-nested-items',
-	appURL: '/o/frontend-taglib-clay/app',
+	appURL: '/o/@liferay/frontend-taglib-clay/app',
 	bulkActions: [
 		{
 			href: '/side-panel/edit.html',
@@ -341,7 +341,7 @@ const ordersDataSetProps = {
 	},
 	apiURL:
 		'/o/headless-commerce-admin-order/v1.0/orders?nestedFields=account,channel',
-	appURL: '/o/frontend-taglib-clay/app',
+	appURL: '/o/@liferay/frontend-taglib-clay/app',
 	batchTasksStatusApiURL: '/o/fake-batch-engine/v1.0/import-task',
 	bulkActions: [
 		{

@@ -17,7 +17,7 @@ import React from 'react';
 
 import DocumentPreviewer from '../src/main/resources/META-INF/resources/preview/js/DocumentPreviewer.es';
 
-describe('document-library-preview-document', () => {
+describe('@liferay/document-library-preview-document', () => {
 	afterEach(cleanup);
 
 	it('renders a document previewer with ten pages and the first page rendered', () => {

@@ -1,5 +1,5 @@
 {
-	"name": "layout-set-prototype-web",
+	"name": "@liferay/layout-set-prototype-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

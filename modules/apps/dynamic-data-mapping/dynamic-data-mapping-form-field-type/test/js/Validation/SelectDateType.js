@@ -13,8 +13,8 @@
  */
 
 import '@testing-library/jest-dom/extend-expect';
+import {FormProvider} from '@liferay/data-engine-js-components-web';
 import {cleanup, render} from '@testing-library/react';
-import {FormProvider} from 'data-engine-js-components-web';
 import React from 'react';
 
 import SelectDateType from '../../../src/main/resources/META-INF/resources/Validation/SelectDateType';

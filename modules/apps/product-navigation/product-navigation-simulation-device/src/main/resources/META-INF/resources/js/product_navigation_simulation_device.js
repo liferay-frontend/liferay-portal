@@ -13,7 +13,7 @@
  */
 
 AUI.add(
-	'liferay-product-navigation-simulation-device',
+	'liferay-@liferay/product-navigation-simulation-device',
 	(A) => {
 		// eslint-disable-next-line @liferay/aui/no-object
 		var AObject = A.Object;
@@ -574,7 +574,7 @@ AUI.add(
 			'aui-event-input',
 			'aui-modal',
 			'liferay-portlet-base',
-			'liferay-product-navigation-control-menu',
+			'liferay-@liferay/product-navigation-control-menu',
 			'liferay-util-window',
 			'liferay-widget-size-animation-plugin',
 		],

@@ -1,138 +1,209 @@
-Liferay.Loader.define("hello-soy-web@1.0.4/Header.soy", ['exports', 'metal-component/src/all/component', 'metal-soy/src/Soy'], function (exports, _component, _Soy) {
-  'use strict';
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
 
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.templates = exports.Header = undefined;
+Liferay.Loader.define(
+	'@liferay/hello-soy-web@1.0.4/Header.soy',
+	['exports', 'metal-component/src/all/component', 'metal-soy/src/Soy'],
+	(exports, _component, _Soy) => {
+		'use strict';
 
-  var _component2 = _interopRequireDefault(_component);
+		Object.defineProperty(exports, '__esModule', {
+			value: true,
+		});
+		exports.templates = exports.Header = undefined;
 
-  var _Soy2 = _interopRequireDefault(_Soy);
+		var _component2 = _interopRequireDefault(_component);
 
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
+		var _Soy2 = _interopRequireDefault(_Soy);
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+		function _interopRequireDefault(obj) {
+			return obj && obj.__esModule
+				? obj
+				: {
+						default: obj,
+				  };
+		}
 
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
+		function _classCallCheck(instance, Constructor) {
+			if (!(instance instanceof Constructor)) {
+				throw new TypeError('Cannot call a class as a function');
+			}
+		}
 
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
+		function _possibleConstructorReturn(self, call) {
+			if (!self) {
+				throw new ReferenceError(
+					"this hasn't been initialised - super() hasn't been called"
+				);
+			}
 
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
+			return call &&
+				(typeof call === 'object' || typeof call === 'function')
+				? call
+				: self;
+		}
 
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
+		function _inherits(subClass, superClass) {
+			if (typeof superClass !== 'function' && superClass !== null) {
+				throw new TypeError(
+					'Super expression must either be null or a function, not ' +
+						typeof superClass
+				);
+			}
 
-  var templates;
-  goog.loadModule(function (exports) {
+			subClass.prototype = Object.create(
+				superClass && superClass.prototype,
+				{
+					constructor: {
+						value: subClass,
+						enumerable: false,
+						writable: true,
+						configurable: true,
+					},
+				}
+			);
+			if (superClass) {
+				Object.setPrototypeOf
+					? Object.setPrototypeOf(subClass, superClass)
+					: (subClass.__proto__ = superClass);
+			}
+		}
 
-    // This file was automatically generated from Header.soy.
-    // Please don't edit this file by hand.
+		var templates;
+		goog.loadModule((exports) => {
 
-    /**
-     * @fileoverview Templates in namespace Header.
-     * @public
-     */
+			// This file was automatically generated from Header.soy.
+			// Please don't edit this file by hand.
 
-    goog.module('Header.incrementaldom');
+			/**
+			 * @fileoverview Templates in namespace Header.
+			 * @public
+			 */
 
-    /** @suppress {extraRequire} */
-    var soy = goog.require('soy');
-    /** @suppress {extraRequire} */
-    var soydata = goog.require('soydata');
-    /** @suppress {extraRequire} */
-    goog.require('goog.i18n.bidi');
-    /** @suppress {extraRequire} */
-    goog.require('goog.asserts');
-    /** @suppress {extraRequire} */
-    goog.require('goog.string');
-    var IncrementalDom = goog.require('incrementaldom');
-    var ie_open = IncrementalDom.elementOpen;
-    var ie_close = IncrementalDom.elementClose;
-    var ie_void = IncrementalDom.elementVoid;
-    var ie_open_start = IncrementalDom.elementOpenStart;
-    var ie_open_end = IncrementalDom.elementOpenEnd;
-    var itext = IncrementalDom.text;
-    var iattr = IncrementalDom.attr;
+			goog.module('Header.incrementaldom');
 
-    /**
-     * @param {Object<string, *>=} opt_data
-     * @param {(null|undefined)=} opt_ignored
-     * @param {Object<string, *>=} opt_ijData
-     * @return {void}
-     * @suppress {checkTypes}
-     */
-    function $render(opt_data, opt_ignored, opt_ijData) {
-      ie_open('blockquote', null, null, 'class', 'blockquote-primary');
-      ie_open('p');
-      /** @desc  */
-      var MSG_EXTERNAL_4961493287620807008 = goog.getMsg('welcome-to-{$releaseInfo}', { 'releaseInfo': '\x010\x01' });
-      var lastIndex_11 = 0,
-          partRe_11 = /\x01\d+\x01/g,
-          match_11;
-      do {
-        match_11 = partRe_11.exec(MSG_EXTERNAL_4961493287620807008) || undefined;
-        itext(goog.string.unescapeEntities(MSG_EXTERNAL_4961493287620807008.substring(lastIndex_11, match_11 && match_11.index)));
-        lastIndex_11 = partRe_11.lastIndex;
-        switch (match_11 && match_11[0]) {
-          case '\x010\x01':
-            var dyn0 = opt_data.releaseInfo;
-            if (typeof dyn0 == 'function') dyn0();else if (dyn0 != null) itext(dyn0);
-            break;
-        }
-      } while (match_11);
-      ie_close('p');
-      ie_close('blockquote');
-    }
-    exports.render = $render;
-    if (goog.DEBUG) {
-      $render.soyTemplateName = 'Header.render';
-    }
+			/** @suppress {extraRequire} */
+			var soy = goog.require('soy');
 
-    exports.render.params = ["releaseInfo"];
-    exports.render.types = { "releaseInfo": "any" };
-    exports.templates = templates = exports;
-    return exports;
-  });
+			/** @suppress {extraRequire} */
+			var soydata = goog.require('soydata');
 
-  var Header = function (_Component) {
-    _inherits(Header, _Component);
+			/** @suppress {extraRequire} */
+			goog.require('goog.i18n.bidi');
 
-    function Header() {
-      _classCallCheck(this, Header);
+			/** @suppress {extraRequire} */
+			goog.require('goog.asserts');
 
-      return _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).apply(this, arguments));
-    }
+			/** @suppress {extraRequire} */
+			goog.require('goog.string');
+			var IncrementalDom = goog.require('incrementaldom');
+			var ie_open = IncrementalDom.elementOpen;
+			var ie_close = IncrementalDom.elementClose;
+			var ie_void = IncrementalDom.elementVoid;
+			var ie_open_start = IncrementalDom.elementOpenStart;
+			var ie_open_end = IncrementalDom.elementOpenEnd;
+			var itext = IncrementalDom.text;
+			var iattr = IncrementalDom.attr;
 
-    return Header;
-  }(_component2.default);
+			/**
+			 * @param {Object<string, *>=} opt_data
+			 * @param {(null|undefined)=} opt_ignored
+			 * @param {Object<string, *>=} opt_ijData
+			 * @return {void}
+			 * @suppress {checkTypes}
+			 */
+			function $render(opt_data, opt_ignored, opt_ijData) {
+				ie_open(
+					'blockquote',
+					null,
+					null,
+					'class',
+					'blockquote-primary'
+				);
+				ie_open('p');
 
-  _Soy2.default.register(Header, templates);
-  exports.Header = Header;
-  exports.templates = templates;
-  exports.default = templates;
-});
-//# sourceMappingURL=Header.soy.js.map
+				/** @desc  */
+				var MSG_EXTERNAL_4961493287620807008 = goog.getMsg(
+					'welcome-to-{$releaseInfo}',
+					{releaseInfo: '\x010\x01'}
+				);
+				var lastIndex_11 = 0;
+				var partRe_11 = /\x01\d+\x01/g;
+				var match_11;
+				do {
+					match_11 =
+						partRe_11.exec(MSG_EXTERNAL_4961493287620807008) ||
+						undefined;
+					itext(
+						goog.string.unescapeEntities(
+							MSG_EXTERNAL_4961493287620807008.substring(
+								lastIndex_11,
+								match_11 && match_11.index
+							)
+						)
+					);
+					lastIndex_11 = partRe_11.lastIndex;
+					switch (match_11 && match_11[0]) {
+						case '\x010\x01':
+							var dyn0 = opt_data.releaseInfo;
+							if (typeof dyn0 === 'function') {
+								dyn0();
+							}
+							else if (dyn0 != null) {
+								itext(dyn0);
+							}
+							break;
+					}
+				} while (match_11);
+				ie_close('p');
+				ie_close('blockquote');
+			}
+			exports.render = $render;
+			if (goog.DEBUG) {
+				$render.soyTemplateName = 'Header.render';
+			}
+
+			exports.render.params = ['releaseInfo'];
+			exports.render.types = {releaseInfo: 'any'};
+			exports.templates = templates = exports;
+
+			return exports;
+		});
+
+		var Header = (function (_Component) {
+			_inherits(Header, _Component);
+
+			function Header() {
+				_classCallCheck(this, Header);
+
+				return _possibleConstructorReturn(
+					this,
+					(Header.__proto__ || Object.getPrototypeOf(Header)).apply(
+						this,
+						arguments
+					)
+				);
+			}
+
+			return Header;
+		})(_component2.default);
+
+		_Soy2.default.register(Header, templates);
+		exports.Header = Header;
+		exports.templates = templates;
+		exports.default = templates;
+	}
+);
+
+// # sourceMappingURL=Header.soy.js.map

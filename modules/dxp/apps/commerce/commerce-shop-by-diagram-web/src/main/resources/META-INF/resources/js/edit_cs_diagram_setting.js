@@ -10,8 +10,8 @@
  */
 
 import {State} from '@liferay/frontend-js-state-web';
+import {imageSelectorImageAtom} from '@liferay/item-selector-taglib';
 import {fetch, navigate, openToast} from 'frontend-js-web';
-import {imageSelectorImageAtom} from 'item-selector-taglib';
 
 export const HEADERS = new Headers({
 	'Accept': 'application/json',

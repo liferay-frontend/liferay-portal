@@ -14,7 +14,7 @@
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal, {useModal} from '@clayui/modal';
-import {ImageEditor} from 'item-selector-taglib';
+import {ImageEditor} from '@liferay/item-selector-taglib';
 import PropTypes from 'prop-types';
 import React from 'react';
 

@@ -48,7 +48,7 @@
 		"timers": "fake"
 	},
 	"main": "js/index.es.js",
-	"name": "portal-workflow-metrics-web",
+	"name": "@liferay/portal-workflow-metrics-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

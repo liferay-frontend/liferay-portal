@@ -15,7 +15,7 @@
 (function () {
 	AUI().applyConfig({
 		groups: {
-			'layout-taglib': {
+			'@liferay/layout-taglib': {
 				base: MODULE_PATH + '/',
 				combine: Liferay.AUI.getCombine(),
 				filter: Liferay.AUI.getFilterConfig(),

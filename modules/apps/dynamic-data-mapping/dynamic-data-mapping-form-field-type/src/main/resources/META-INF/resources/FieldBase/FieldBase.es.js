@@ -15,7 +15,10 @@
 import '../components/Tooltip/Tooltip.es';
 
 import 'clay-icon';
-import {compose, getRepeatedIndex} from 'data-engine-js-components-web';
+import {
+	compose,
+	getRepeatedIndex,
+} from '@liferay/data-engine-js-components-web';
 import Component from 'metal-component';
 import Soy from 'metal-soy';
 import {Config} from 'metal-state';

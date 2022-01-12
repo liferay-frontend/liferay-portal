@@ -12,7 +12,7 @@
  * details.
  */
 
-import {useConfig} from 'data-engine-js-components-web';
+import {useConfig} from '@liferay/data-engine-js-components-web';
 import React from 'react';
 
 import FieldSetList from '../../../components/field-sets/FieldSetList';

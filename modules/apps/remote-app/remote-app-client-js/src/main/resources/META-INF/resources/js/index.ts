@@ -37,7 +37,7 @@ type ClientOptions = {
 };
 
 /**
- * Properties accessible via the `get()` method. The remote-app-support-web
+ * Properties accessible via the `get()` method. The @liferay/remote-app-support-web
  * module will reject requests for properties outside of this list.
  */
 type GettableProperties =

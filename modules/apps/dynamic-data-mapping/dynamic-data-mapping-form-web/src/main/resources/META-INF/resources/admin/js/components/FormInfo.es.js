@@ -14,7 +14,11 @@
 
 import ClayForm from '@clayui/form';
 import ClayLayout from '@clayui/layout';
-import {useConfig, useForm, useFormState} from 'data-engine-js-components-web';
+import {
+	useConfig,
+	useForm,
+	useFormState,
+} from '@liferay/data-engine-js-components-web';
 import {autoSize} from 'frontend-js-web';
 import React, {useEffect, useRef} from 'react';
 

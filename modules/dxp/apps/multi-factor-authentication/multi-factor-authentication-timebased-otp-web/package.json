@@ -2,7 +2,7 @@
 	"dependencies": {
 		"qrcode": "1.4.4"
 	},
-	"name": "multi-factor-authentication-timebased-otp-web",
+	"name": "@liferay/multi-factor-authentication-timebased-otp-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

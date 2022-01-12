@@ -1,5 +1,5 @@
 {
-	"name": "marketplace-store-web",
+	"name": "@liferay/marketplace-store-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

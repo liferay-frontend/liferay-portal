@@ -1,5 +1,5 @@
 {
-	"name": "staging-bar-web",
+	"name": "@liferay/staging-bar-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

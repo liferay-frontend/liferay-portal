@@ -1,5 +1,5 @@
 {
-	"name": "fragment-renderer-react-impl",
+	"name": "@liferay/fragment-renderer-react-impl",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

@@ -12,8 +12,8 @@
  * details.
  */
 
+import {PageProvider} from '@liferay/data-engine-js-components-web';
 import {act, fireEvent, render} from '@testing-library/react';
-import {PageProvider} from 'data-engine-js-components-web';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

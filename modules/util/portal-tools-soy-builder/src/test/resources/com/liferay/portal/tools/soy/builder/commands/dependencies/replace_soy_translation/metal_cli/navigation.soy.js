@@ -1,136 +1,194 @@
-Liferay.Loader.define("hello-soy-web@1.0.4/Navigation.soy", ['exports', 'metal-component/src/Component', 'metal-soy/src/Soy'], function (exports, _Component2, _Soy) {
-  'use strict';
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
 
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.templates = exports.Navigation = undefined;
+Liferay.Loader.define(
+	'@liferay/hello-soy-web@1.0.4/Navigation.soy',
+	['exports', 'metal-component/src/Component', 'metal-soy/src/Soy'],
+	(exports, _Component2, _Soy) => {
+		'use strict';
 
-  var _Component3 = _interopRequireDefault(_Component2);
+		Object.defineProperty(exports, '__esModule', {
+			value: true,
+		});
+		exports.templates = exports.Navigation = undefined;
 
-  var _Soy2 = _interopRequireDefault(_Soy);
+		var _Component3 = _interopRequireDefault(_Component2);
 
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
+		var _Soy2 = _interopRequireDefault(_Soy);
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+		function _interopRequireDefault(obj) {
+			return obj && obj.__esModule
+				? obj
+				: {
+						default: obj,
+				  };
+		}
 
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
+		function _classCallCheck(instance, Constructor) {
+			if (!(instance instanceof Constructor)) {
+				throw new TypeError('Cannot call a class as a function');
+			}
+		}
 
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
+		function _possibleConstructorReturn(self, call) {
+			if (!self) {
+				throw new ReferenceError(
+					"this hasn't been initialised - super() hasn't been called"
+				);
+			}
 
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
+			return call &&
+				(typeof call === 'object' || typeof call === 'function')
+				? call
+				: self;
+		}
 
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
+		function _inherits(subClass, superClass) {
+			if (typeof superClass !== 'function' && superClass !== null) {
+				throw new TypeError(
+					'Super expression must either be null or a function, not ' +
+						typeof superClass
+				);
+			}
 
-  var templates;
-  goog.loadModule(function (exports) {
+			subClass.prototype = Object.create(
+				superClass && superClass.prototype,
+				{
+					constructor: {
+						value: subClass,
+						enumerable: false,
+						writable: true,
+						configurable: true,
+					},
+				}
+			);
+			if (superClass) {
+				Object.setPrototypeOf
+					? Object.setPrototypeOf(subClass, superClass)
+					: (subClass.__proto__ = superClass);
+			}
+		}
 
-    // This file was automatically generated from Navigation.soy.
-    // Please don't edit this file by hand.
+		var templates;
+		goog.loadModule((exports) => {
 
-    /**
-     * @fileoverview Templates in namespace Navigation.
-     * @public
-     */
+			// This file was automatically generated from Navigation.soy.
+			// Please don't edit this file by hand.
 
-    goog.module('Navigation.incrementaldom');
+			/**
+			 * @fileoverview Templates in namespace Navigation.
+			 * @public
+			 */
 
-    /** @suppress {extraRequire} */
-    var soy = goog.require('soy');
-    /** @suppress {extraRequire} */
-    var soydata = goog.require('soydata');
-    /** @suppress {extraRequire} */
-    goog.require('goog.i18n.bidi');
-    /** @suppress {extraRequire} */
-    goog.require('goog.asserts');
-    var IncrementalDom = goog.require('incrementaldom');
-    var ie_open = IncrementalDom.elementOpen;
-    var ie_close = IncrementalDom.elementClose;
-    var ie_void = IncrementalDom.elementVoid;
-    var ie_open_start = IncrementalDom.elementOpenStart;
-    var ie_open_end = IncrementalDom.elementOpenEnd;
-    var itext = IncrementalDom.text;
-    var iattr = IncrementalDom.attr;
+			goog.module('Navigation.incrementaldom');
 
-    var $templateAlias2 = _Soy2.default.getTemplate('Footer.incrementaldom', 'render');
+			/** @suppress {extraRequire} */
+			var soy = goog.require('soy');
 
-    var $templateAlias1 = _Soy2.default.getTemplate('Header.incrementaldom', 'render');
+			/** @suppress {extraRequire} */
+			var soydata = goog.require('soydata');
 
-    /**
-     * @param {Object<string, *>=} opt_data
-     * @param {(null|undefined)=} opt_ignored
-     * @param {Object<string, *>=} opt_ijData
-     * @return {void}
-     * @suppress {checkTypes}
-     */
-    function $render(opt_data, opt_ignored, opt_ijData) {
-      /** @desc  */
-      var MSG_EXTERNAL_8532436723280155945 = goog.getMsg('this-is-another-view');
-      var msg_s140 = MSG_EXTERNAL_8532436723280155945;
-      /** @desc  */
-      var MSG_EXTERNAL_4596791579122762316 = goog.getMsg('click-here,-and-you-will-navigate-back.-(be-careful)');
-      var msg_s142 = MSG_EXTERNAL_4596791579122762316;
-      ie_open('div', null, null, 'id', opt_data.id);
-      $templateAlias1(opt_data, null, opt_ijData);
-      ie_open('p');
-      itext(msg_s140);
-      ie_close('p');
-      ie_open('a', null, null, 'href', opt_data.navigationURL);
-      itext(msg_s142);
-      ie_close('a');
-      $templateAlias2(opt_data, null, opt_ijData);
-      ie_close('div');
-    }
-    exports.render = $render;
-    if (goog.DEBUG) {
-      $render.soyTemplateName = 'Navigation.render';
-    }
+			/** @suppress {extraRequire} */
+			goog.require('goog.i18n.bidi');
 
-    exports.render.params = ["id", "navigationURL"];
-    exports.render.types = { "id": "any", "navigationURL": "any" };
-    exports.templates = templates = exports;
-    return exports;
-  });
+			/** @suppress {extraRequire} */
+			goog.require('goog.asserts');
+			var IncrementalDom = goog.require('incrementaldom');
+			var ie_open = IncrementalDom.elementOpen;
+			var ie_close = IncrementalDom.elementClose;
+			var ie_void = IncrementalDom.elementVoid;
+			var ie_open_start = IncrementalDom.elementOpenStart;
+			var ie_open_end = IncrementalDom.elementOpenEnd;
+			var itext = IncrementalDom.text;
+			var iattr = IncrementalDom.attr;
 
-  var Navigation = function (_Component) {
-    _inherits(Navigation, _Component);
+			var $templateAlias2 = _Soy2.default.getTemplate(
+				'Footer.incrementaldom',
+				'render'
+			);
 
-    function Navigation() {
-      _classCallCheck(this, Navigation);
+			var $templateAlias1 = _Soy2.default.getTemplate(
+				'Header.incrementaldom',
+				'render'
+			);
 
-      return _possibleConstructorReturn(this, (Navigation.__proto__ || Object.getPrototypeOf(Navigation)).apply(this, arguments));
-    }
+			/**
+			 * @param {Object<string, *>=} opt_data
+			 * @param {(null|undefined)=} opt_ignored
+			 * @param {Object<string, *>=} opt_ijData
+			 * @return {void}
+			 * @suppress {checkTypes}
+			 */
+			function $render(opt_data, opt_ignored, opt_ijData) {
 
-    return Navigation;
-  }(_Component3.default);
+				/** @desc  */
+				var MSG_EXTERNAL_8532436723280155945 = goog.getMsg(
+					'this-is-another-view'
+				);
+				var msg_s140 = MSG_EXTERNAL_8532436723280155945;
 
-  _Soy2.default.register(Navigation, templates);
-  exports.Navigation = Navigation;
-  exports.templates = templates;
-  exports.default = templates;
-});
-//# sourceMappingURL=Navigation.soy.js.map
+				/** @desc  */
+				var MSG_EXTERNAL_4596791579122762316 = goog.getMsg(
+					'click-here,-and-you-will-navigate-back.-(be-careful)'
+				);
+				var msg_s142 = MSG_EXTERNAL_4596791579122762316;
+				ie_open('div', null, null, 'id', opt_data.id);
+				$templateAlias1(opt_data, null, opt_ijData);
+				ie_open('p');
+				itext(msg_s140);
+				ie_close('p');
+				ie_open('a', null, null, 'href', opt_data.navigationURL);
+				itext(msg_s142);
+				ie_close('a');
+				$templateAlias2(opt_data, null, opt_ijData);
+				ie_close('div');
+			}
+			exports.render = $render;
+			if (goog.DEBUG) {
+				$render.soyTemplateName = 'Navigation.render';
+			}
+
+			exports.render.params = ['id', 'navigationURL'];
+			exports.render.types = {id: 'any', navigationURL: 'any'};
+			exports.templates = templates = exports;
+
+			return exports;
+		});
+
+		var Navigation = (function (_Component) {
+			_inherits(Navigation, _Component);
+
+			function Navigation() {
+				_classCallCheck(this, Navigation);
+
+				return _possibleConstructorReturn(
+					this,
+					(
+						Navigation.__proto__ ||
+						Object.getPrototypeOf(Navigation)
+					).apply(this, arguments)
+				);
+			}
+
+			return Navigation;
+		})(_Component3.default);
+
+		_Soy2.default.register(Navigation, templates);
+		exports.Navigation = Navigation;
+		exports.templates = templates;
+		exports.default = templates;
+	}
+);
+
+// # sourceMappingURL=Navigation.soy.js.map

@@ -15,7 +15,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
-const buildName = 'headless-discovery-web-min.js';
+const buildName = '@liferay/headless-discovery-web-min.js';
 
 const config = {
 	mode: 'production',

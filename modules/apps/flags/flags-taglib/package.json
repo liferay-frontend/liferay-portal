@@ -9,7 +9,7 @@
 		"react": "16.12.0",
 		"react-dom": "16.12.0"
 	},
-	"name": "flags-taglib",
+	"name": "@liferay/flags-taglib",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

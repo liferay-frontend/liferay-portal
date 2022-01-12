@@ -2,7 +2,7 @@
 	"dependencies": {
 		"lodash": "4.17.21"
 	},
-	"name": "frontend-js-lodash-web",
+	"name": "@liferay/frontend-js-lodash-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

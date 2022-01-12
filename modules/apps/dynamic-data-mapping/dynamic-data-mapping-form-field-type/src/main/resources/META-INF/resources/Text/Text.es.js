@@ -15,8 +15,8 @@
 import ClayAutocomplete from '@clayui/autocomplete';
 import ClayDropDown from '@clayui/drop-down';
 import {ClayInput} from '@clayui/form';
+import {normalizeFieldName} from '@liferay/data-engine-js-components-web';
 import {usePrevious} from '@liferay/frontend-js-react-web';
-import {normalizeFieldName} from 'data-engine-js-components-web';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {FieldBase} from '../FieldBase/ReactFieldBase.es';

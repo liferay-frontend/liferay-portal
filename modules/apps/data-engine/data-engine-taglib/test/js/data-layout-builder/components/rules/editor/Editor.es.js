@@ -12,16 +12,16 @@
  * details.
  */
 
+import Color from '@liferay/dynamic-data-mapping-form-field-type/ColorPicker/ColorPicker.es';
+import Date from '@liferay/dynamic-data-mapping-form-field-type/DatePicker/DatePicker.es';
+import DocumentLibrary from '@liferay/dynamic-data-mapping-form-field-type/DocumentLibrary/DocumentLibrary.es';
+import Grid from '@liferay/dynamic-data-mapping-form-field-type/Grid/Grid.es';
+import Image from '@liferay/dynamic-data-mapping-form-field-type/ImagePicker/ImagePicker.es';
+import Numeric from '@liferay/dynamic-data-mapping-form-field-type/Numeric/Numeric';
+import RichText from '@liferay/dynamic-data-mapping-form-field-type/RichText/RichText.es';
+import Select from '@liferay/dynamic-data-mapping-form-field-type/Select/Select.es';
+import Text from '@liferay/dynamic-data-mapping-form-field-type/Text/Text.es';
 import {act, fireEvent, render, waitFor} from '@testing-library/react';
-import Color from 'dynamic-data-mapping-form-field-type/ColorPicker/ColorPicker.es';
-import Date from 'dynamic-data-mapping-form-field-type/DatePicker/DatePicker.es';
-import DocumentLibrary from 'dynamic-data-mapping-form-field-type/DocumentLibrary/DocumentLibrary.es';
-import Grid from 'dynamic-data-mapping-form-field-type/Grid/Grid.es';
-import Image from 'dynamic-data-mapping-form-field-type/ImagePicker/ImagePicker.es';
-import Numeric from 'dynamic-data-mapping-form-field-type/Numeric/Numeric';
-import RichText from 'dynamic-data-mapping-form-field-type/RichText/RichText.es';
-import Select from 'dynamic-data-mapping-form-field-type/Select/Select.es';
-import Text from 'dynamic-data-mapping-form-field-type/Text/Text.es';
 import React from 'react';
 
 import {Editor} from '../../../../../../src/main/resources/META-INF/resources/data_layout_builder/js/components/rules/editor/Editor.es';
@@ -107,7 +107,7 @@ const defaultProps = (fieldsList = FIELDS) => {
 			},
 		],
 		dataProviderInstanceParameterSettingsURL:
-			'/o/dynamic-data-mapping-form-builder-provider-instance-parameter-settings/',
+			'/o/@liferay/dynamic-data-mapping-form-builder-provider-instance-parameter-settings/',
 		fields: fieldsList,
 		operatorsByType: OPERATORS_BY_TYPE,
 		pages,

@@ -3,7 +3,7 @@
 		"frontend-js-web": "*"
 	},
 	"main": "init.js",
-	"name": "frontend-js-spa-web",
+	"name": "@liferay/frontend-js-spa-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

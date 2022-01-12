@@ -5,7 +5,7 @@
 		"prop-types": "15.7.2",
 		"react": "16.12.0"
 	},
-	"name": "asset-categories-admin-web",
+	"name": "@liferay/asset-categories-admin-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

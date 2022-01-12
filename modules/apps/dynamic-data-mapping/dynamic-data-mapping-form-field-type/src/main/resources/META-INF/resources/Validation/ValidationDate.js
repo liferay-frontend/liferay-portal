@@ -13,7 +13,10 @@
  */
 
 import {ClayInput} from '@clayui/form';
-import {PagesVisitor, useFormState} from 'data-engine-js-components-web';
+import {
+	PagesVisitor,
+	useFormState,
+} from '@liferay/data-engine-js-components-web';
 import React, {useMemo} from 'react';
 
 import DDMSelect from './DDMSelect';

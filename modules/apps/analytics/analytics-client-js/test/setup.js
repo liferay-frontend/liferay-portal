@@ -13,7 +13,7 @@
  */
 
 /**
- * The analytics-client-js implementation relies on the non-standard
+ * The @liferay/analytics-client-js implementation relies on the non-standard
  * `innerText` property, which jsdom does not implement, so we need this
  * special helper in tests that sets `innerText` whenever `innerHTML` is
  * set.

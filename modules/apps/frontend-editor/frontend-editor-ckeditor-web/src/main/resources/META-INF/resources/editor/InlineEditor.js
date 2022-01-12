@@ -15,7 +15,7 @@
 import CKEditor from 'ckeditor4-react';
 import React from 'react';
 
-const BASEPATH = '/o/frontend-editor-ckeditor-web/ckeditor/';
+const BASEPATH = '/o/@liferay/frontend-editor-ckeditor-web/ckeditor/';
 
 const InlineEditor = (props) => {
 	return <CKEditor {...props} type="inline" />;

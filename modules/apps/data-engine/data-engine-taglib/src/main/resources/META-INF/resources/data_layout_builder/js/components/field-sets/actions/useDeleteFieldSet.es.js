@@ -12,7 +12,7 @@
  * details.
  */
 
-import {useForm, useFormState} from 'data-engine-js-components-web';
+import {useForm, useFormState} from '@liferay/data-engine-js-components-web';
 
 import {EVENT_TYPES} from '../../../eventTypes';
 import {deleteItem} from '../../../utils/client.es';

@@ -15,7 +15,7 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayForm from '@clayui/form';
 import ClayLayout from '@clayui/layout';
-import {useForm, useFormState} from 'data-engine-js-components-web';
+import {useForm, useFormState} from '@liferay/data-engine-js-components-web';
 import React, {useState} from 'react';
 
 import RuleEditorModal from '../../../components/rules/RuleEditorModal';

@@ -12,9 +12,9 @@
  * details.
  */
 
+import {parseName} from '@liferay/data-engine-js-components-web';
 import MapGoogleMaps from '@liferay/map-google-maps/js/MapGoogleMaps.es';
 import MapOpenStreetMap from '@liferay/map-openstreetmap/js/MapOpenStreetMap.es';
-import {parseName} from 'data-engine-js-components-web';
 import Leaflet from 'leaflet';
 import {useCallback, useEffect, useRef} from 'react';
 

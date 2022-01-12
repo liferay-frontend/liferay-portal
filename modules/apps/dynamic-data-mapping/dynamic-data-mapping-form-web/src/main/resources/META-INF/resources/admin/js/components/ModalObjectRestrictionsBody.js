@@ -13,7 +13,7 @@
  */
 
 import ClayPanel from '@clayui/panel';
-import {getFieldsGroupedByTypes} from 'data-engine-js-components-web';
+import {getFieldsGroupedByTypes} from '@liferay/data-engine-js-components-web';
 import React from 'react';
 
 const ModalObjectRestrictionsSection = ({children, description, title}) => {

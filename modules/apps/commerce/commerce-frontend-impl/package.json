@@ -1,5 +1,5 @@
 {
-	"name": "commerce-frontend-impl",
+	"name": "@liferay/commerce-frontend-impl",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

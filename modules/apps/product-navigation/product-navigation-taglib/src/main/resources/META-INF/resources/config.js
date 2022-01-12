@@ -20,7 +20,7 @@
 				combine: Liferay.AUI.getCombine(),
 				filter: Liferay.AUI.getFilterConfig(),
 				modules: {
-					'liferay-product-navigation-control-menu': {
+					'liferay-@liferay/product-navigation-control-menu': {
 						path:
 							'control_menu/js/product_navigation_control_menu.js',
 						requires: ['aui-node', 'event-touch'],

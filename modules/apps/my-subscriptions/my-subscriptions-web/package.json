@@ -2,7 +2,7 @@
 	"dependencies": {
 		"frontend-js-web": "*"
 	},
-	"name": "my-subscriptions-web",
+	"name": "@liferay/my-subscriptions-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

@@ -20,7 +20,7 @@ import {
 	useConfig,
 	useForm,
 	useFormState,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
 import React, {useEffect} from 'react';
 
 const FormSettingsModal = ({

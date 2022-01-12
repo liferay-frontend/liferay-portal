@@ -13,7 +13,7 @@
  */
 
 AUI.add(
-	'liferay-product-navigation-control-menu',
+	'liferay-@liferay/product-navigation-control-menu',
 	(A) => {
 		var ControlMenu = {
 			init(containerId) {

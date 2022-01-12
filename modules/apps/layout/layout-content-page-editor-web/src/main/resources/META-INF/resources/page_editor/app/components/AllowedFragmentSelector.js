@@ -13,7 +13,7 @@
  */
 
 import {ClayCheckbox, ClayInput} from '@clayui/form';
-import {Treeview} from 'frontend-js-components-web';
+import {Treeview} from '@liferay/frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo, useState} from 'react';
 

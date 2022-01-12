@@ -21,7 +21,7 @@ import {
 	RulesSupport,
 	Token,
 	Tokenizer,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
 import React, {forwardRef, useMemo, useState} from 'react';
 
 import './Calculator.scss';
@@ -69,7 +69,7 @@ function getStateBasedOnExpression(expression) {
  * Token.RIGHT_PARENTHESIS = 'Right Parenthesis';
  * Token.VARIABLE = 'Variable';
  *
- * See https://github.com/liferay/liferay-portal/blob/e066954b019e5fcf42ca45b69fd4da595ad58029/modules/apps/dynamic-data-mapping/dynamic-data-mapping-form-builder/src/main/resources/META-INF/resources/js/expressions/Token.es.js#L26
+ * See https://github.com/liferay/liferay-portal/blob/e066954b019e5fcf42ca45b69fd4da595ad58029/modules/apps/dynamic-data-mapping/@liferay/dynamic-data-mapping-form-builder/src/main/resources/META-INF/resources/js/expressions/Token.es.js#L26
  * for more details.
  *
  * Each key in the following dictionary represents the type of a token in which the

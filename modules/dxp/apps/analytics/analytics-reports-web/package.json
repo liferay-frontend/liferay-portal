@@ -21,7 +21,7 @@
 			"<rootDir>/jest-setup.config.js"
 		]
 	},
-	"name": "analytics-reports-web",
+	"name": "@liferay/analytics-reports-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

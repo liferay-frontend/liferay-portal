@@ -12,7 +12,7 @@
  * details.
  */
 
-import {ItemSelectorRepositoryEntryBrowser} from 'item-selector-taglib';
+import {ItemSelectorRepositoryEntryBrowser} from '@liferay/item-selector-taglib';
 
 export default function (props) {
 	const itemSelector = new ItemSelectorRepositoryEntryBrowser({...props});

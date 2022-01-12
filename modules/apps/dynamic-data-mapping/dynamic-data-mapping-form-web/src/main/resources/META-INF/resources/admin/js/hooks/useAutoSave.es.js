@@ -12,7 +12,6 @@
  * details.
  */
 
-import {useIsMounted} from '@liferay/frontend-js-react-web';
 import {
 	FormSupport,
 	StringUtils,
@@ -20,7 +19,8 @@ import {
 	makeFetch,
 	useConfig,
 	useFormState,
-} from 'data-engine-js-components-web';
+} from '@liferay/data-engine-js-components-web';
+import {useIsMounted} from '@liferay/frontend-js-react-web';
 import objectHash from 'object-hash';
 import React, {useCallback, useContext, useEffect, useRef} from 'react';
 

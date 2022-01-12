@@ -17,7 +17,7 @@
 		"axios": "0.24.0",
 		"classnames": "2.3.1",
 		"clay-icon": "2.23.2",
-		"frontend-editor-ckeditor-web": "*",
+		"@liferay/frontend-editor-ckeditor-web": "*",
 		"frontend-js-web": "*",
 		"leaflet": "1.7.1",
 		"metal-component": "2.16.8",
@@ -40,7 +40,7 @@
 		]
 	},
 	"main": "index.js",
-	"name": "dynamic-data-mapping-form-field-type",
+	"name": "@liferay/dynamic-data-mapping-form-field-type",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

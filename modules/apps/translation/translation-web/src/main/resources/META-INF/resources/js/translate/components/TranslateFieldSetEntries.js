@@ -17,8 +17,8 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
+import {ClassicEditor} from '@liferay/frontend-editor-ckeditor-web';
 import classNames from 'classnames';
-import {ClassicEditor} from 'frontend-editor-ckeditor-web';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {FETCH_STATUS} from '../constants';

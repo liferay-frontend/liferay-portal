@@ -16,8 +16,8 @@ import {
 	FieldUtil,
 	PagesVisitor,
 	SettingsContext,
-} from 'data-engine-js-components-web';
-import {EVENT_TYPES as CORE_EVENT_TYPES} from 'data-engine-taglib';
+} from '@liferay/data-engine-js-components-web';
+import {EVENT_TYPES as CORE_EVENT_TYPES} from '@liferay/data-engine-taglib';
 
 /**
  * NOTE: This is a literal copy of the old LayoutProvider logic. Small changes

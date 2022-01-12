@@ -2,7 +2,7 @@
 	"dependencies": {
 		"frontend-js-web": "*"
 	},
-	"name": "notifications-web",
+	"name": "@liferay/notifications-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

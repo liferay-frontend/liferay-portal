@@ -24,7 +24,7 @@
 		]
 	},
 	"main": "admin/js/App.es.js",
-	"name": "dynamic-data-mapping-form-web",
+	"name": "@liferay/dynamic-data-mapping-form-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

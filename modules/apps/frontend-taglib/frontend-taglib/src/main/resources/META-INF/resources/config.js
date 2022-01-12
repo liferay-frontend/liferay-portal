@@ -15,7 +15,7 @@
 (function () {
 	AUI().applyConfig({
 		groups: {
-			'frontend-taglib': {
+			'@liferay/frontend-taglib': {
 				base: MODULE_PATH + '/',
 				combine: Liferay.AUI.getCombine(),
 				filter: Liferay.AUI.getFilterConfig(),

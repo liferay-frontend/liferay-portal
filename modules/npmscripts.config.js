@@ -75,31 +75,31 @@ module.exports = {
 					'commerce-frontend-js': {
 						'/': '*',
 					},
-					'data-engine-js-components-web': {
+					'@liferay/data-engine-js-components-web': {
 						'/': '*',
 					},
-					'data-engine-taglib': {
+					'@liferay/data-engine-taglib': {
 						'/': '*',
 					},
-					'dynamic-data-mapping-form-builder': {
+					'@liferay/dynamic-data-mapping-form-builder': {
 						'/': '*',
 					},
-					'dynamic-data-mapping-form-field-type': {
+					'@liferay/dynamic-data-mapping-form-field-type': {
 						'/': '*',
 					},
-					'dynamic-data-mapping-form-renderer': {
+					'@liferay/dynamic-data-mapping-form-renderer': {
 						'/': '*',
 					},
-					'dynamic-data-mapping-form-web': {
+					'@liferay/dynamic-data-mapping-form-web': {
 						'/': '*',
 					},
-					'frontend-editor-ckeditor-web': {
+					'@liferay/frontend-editor-ckeditor-web': {
 						'/': '*',
 					},
-					'frontend-js-components-web': {
+					'@liferay/frontend-js-components-web': {
 						'/': '*',
 					},
-					'frontend-js-metal-web': {
+					'@liferay/frontend-js-metal-web': {
 						'incremental-dom': '*',
 						'incremental-dom-string': '*',
 						'metal': '*',
@@ -151,16 +151,16 @@ module.exports = {
 						url: '*',
 						util: '*',
 					},
-					'frontend-js-recharts': {
+					'@liferay/frontend-js-recharts': {
 						recharts: '*',
 					},
-					'frontend-js-spa-web': {
+					'@liferay/frontend-js-spa-web': {
 						senna: '*',
 					},
 					'frontend-js-web': {
 						'/': '*',
 					},
-					'frontend-taglib-chart': {
+					'@liferay/frontend-taglib-chart': {
 						'billboard.js': '*',
 						'clay-charts': '*',
 						'd3': '*',
@@ -196,7 +196,7 @@ module.exports = {
 						'd3-voronoi': '*',
 						'd3-zoom': '*',
 					},
-					'frontend-taglib-clay': {
+					'@liferay/frontend-taglib-clay': {
 						'/': '*',
 						'@clayui/alert': '*',
 						'@clayui/autocomplete': '*',
@@ -269,7 +269,7 @@ module.exports = {
 						'clay-table': '*',
 						'clay-tooltip': '*',
 					},
-					'item-selector-taglib': {
+					'@liferay/item-selector-taglib': {
 						'/': '*',
 					},
 				},
@@ -358,12 +358,12 @@ module.exports = {
 		},
 		dependencies: [
 			'asset-taglib',
-			'commerce-frontend-taglib',
-			'commerce-product-options-web',
-			'data-engine-taglib',
-			'dynamic-data-mapping-form-builder',
-			'dynamic-data-mapping-form-field-type',
-			'dynamic-data-mapping-form-renderer',
+			'@liferay/commerce-frontend-taglib',
+			'@liferay/commerce-product-options-web',
+			'@liferay/data-engine-taglib',
+			'@liferay/dynamic-data-mapping-form-builder',
+			'@liferay/dynamic-data-mapping-form-field-type',
+			'@liferay/dynamic-data-mapping-form-renderer',
 		],
 	},
 	federation: {

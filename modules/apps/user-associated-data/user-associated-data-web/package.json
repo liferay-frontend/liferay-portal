@@ -1,5 +1,5 @@
 {
-	"name": "user-associated-data-web",
+	"name": "@liferay/user-associated-data-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

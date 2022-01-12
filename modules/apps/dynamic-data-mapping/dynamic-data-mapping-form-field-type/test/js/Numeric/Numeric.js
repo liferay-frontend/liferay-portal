@@ -13,9 +13,9 @@
  */
 
 import '@testing-library/jest-dom/extend-expect';
+import {FormProvider} from '@liferay/data-engine-js-components-web';
 import {cleanup, render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {FormProvider} from 'data-engine-js-components-web';
 import React from 'react';
 
 import Numeric from '../../../src/main/resources/META-INF/resources/Numeric/Numeric';

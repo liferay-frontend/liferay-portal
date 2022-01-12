@@ -1,9 +1,9 @@
 #if (!(${liferayVersion.startsWith("7.0")} && ${liferayVersion.startsWith("7.1")} && ${liferayVersion.startsWith("7.2")}) && ${reactTemplate.equals("true")})
 import React from 'react';
-import {FieldBase} from 'dynamic-data-mapping-form-field-type/FieldBase/ReactFieldBase.es';
-import {useSyncValue} from 'dynamic-data-mapping-form-field-type/hooks/useSyncValue.es';
+import {FieldBase} from '@liferay/dynamic-data-mapping-form-field-type/FieldBase/ReactFieldBase.es';
+import {useSyncValue} from '@liferay/dynamic-data-mapping-form-field-type/hooks/useSyncValue.es';
 #elseif (!(${liferayVersion.startsWith("7.0")} || ${liferayVersion.startsWith("7.1")}))
-import 'dynamic-data-mapping-form-field-type/FieldBase/FieldBase.es';
+import '@liferay/dynamic-data-mapping-form-field-type/FieldBase/FieldBase.es';
 import './${artifactId}Register.soy.js';
 import templates from './${artifactId}.soy.js';
 import {Config} from 'metal-state';

@@ -14,7 +14,7 @@
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
-import {Token} from 'data-engine-js-components-web';
+import {Token} from '@liferay/data-engine-js-components-web';
 import React from 'react';
 
 const ONE_TO_NINE = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];

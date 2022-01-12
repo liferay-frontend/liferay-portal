@@ -12,7 +12,7 @@
  * details.
  */
 
-import {INITIAL_CONFIG_STATE} from 'data-engine-js-components-web';
+import {INITIAL_CONFIG_STATE} from '@liferay/data-engine-js-components-web';
 
 const INITIAL_CONFIG = {
 	...INITIAL_CONFIG_STATE,

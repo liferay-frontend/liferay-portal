@@ -13,7 +13,7 @@
  */
 
 import ClayForm from '@clayui/form';
-import {useFormState} from 'data-engine-js-components-web';
+import {useFormState} from '@liferay/data-engine-js-components-web';
 import React, {useEffect, useReducer} from 'react';
 
 import Checkbox from '../Checkbox/Checkbox';

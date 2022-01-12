@@ -2,7 +2,7 @@
 	"dependencies": {
 		"frontend-js-web": "*"
 	},
-	"name": "user-groups-admin-web",
+	"name": "@liferay/user-groups-admin-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

@@ -13,8 +13,8 @@
  */
 
 import '@testing-library/jest-dom/extend-expect';
+import {PageProvider} from '@liferay/data-engine-js-components-web';
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
-import {PageProvider} from 'data-engine-js-components-web';
 import React from 'react';
 
 import Text from '../../../src/main/resources/META-INF/resources/Text/Text.es';

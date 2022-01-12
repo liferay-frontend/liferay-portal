@@ -1,5 +1,5 @@
 {
-	"name": "frontend-taglib-clay-sample-web",
+	"name": "@liferay/frontend-taglib-clay-sample-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

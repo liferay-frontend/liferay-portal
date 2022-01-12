@@ -10,7 +10,7 @@
 		"react-dnd": "11.1.1",
 		"react-dnd-html5-backend": "11.1.1"
 	},
-	"name": "product-navigation-control-menu",
+	"name": "@liferay/product-navigation-control-menu",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

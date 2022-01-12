@@ -13,7 +13,7 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
-import {useConfig, useForm} from 'data-engine-js-components-web';
+import {useConfig, useForm} from '@liferay/data-engine-js-components-web';
 import React from 'react';
 
 // @ts-ignore

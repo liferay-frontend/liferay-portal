@@ -23,7 +23,7 @@
 			"<rootDir>/test/dev/"
 		]
 	},
-	"name": "commerce-organization-web",
+	"name": "@liferay/commerce-organization-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",

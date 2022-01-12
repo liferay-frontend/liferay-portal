@@ -16,7 +16,7 @@ import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button/lib/Button';
 import {Context as ClayModalContext} from '@clayui/modal';
 import ClayPanel from '@clayui/panel';
-import {useFormState} from 'data-engine-js-components-web';
+import {useFormState} from '@liferay/data-engine-js-components-web';
 import React, {useContext} from 'react';
 
 import {getItem} from '../../../utils/client.es';
