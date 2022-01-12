@@ -75,7 +75,7 @@ public class ProjectTemplatesThemeContributorTest
 
 	@Test
 	public void testBuildTemplateThemeContributor() throws Exception {
-		String template = "theme-contributor";
+		String template = "@liferay/theme-contributor";
 		String name = "my-contributor-custom";
 
 		File gradleWorkspaceDir = buildWorkspace(

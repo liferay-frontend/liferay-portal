@@ -18,7 +18,7 @@ import {
 	EVENT_TYPES,
 	useForm,
 	useFormState,
-} from '@liferay/data-engine-js-components-web';
+} from 'data-engine-js-components-web';
 import React, {useState} from 'react';
 
 import {getLocalizedValue, getPluralMessage} from '../../utils/lang.es';

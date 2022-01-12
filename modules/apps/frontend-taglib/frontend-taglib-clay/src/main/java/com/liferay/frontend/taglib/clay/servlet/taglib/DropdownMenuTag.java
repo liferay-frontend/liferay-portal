@@ -61,7 +61,7 @@ public class DropdownMenuTag extends ButtonTag {
 			return null;
 		}
 
-		return "frontend-taglib-clay/DropdownMenu";
+		return "@liferay/frontend-taglib-clay/DropdownMenu";
 	}
 
 	@Override

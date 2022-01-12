@@ -221,7 +221,7 @@ public class DDMFormTaglibUtil {
 
 	public static String getNPMResolvedPackageName() {
 		return _npmResolver.resolveModuleName(
-			"dynamic-data-mapping-form-builder");
+			"@liferay/dynamic-data-mapping-form-builder");
 	}
 
 	public static boolean hasWorkflowDefinitionLink(

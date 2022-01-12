@@ -378,7 +378,7 @@ public class StagingIndicatorDynamicInclude extends BaseDynamicInclude {
 			_portal.getPortletNamespace(DepotPortletKeys.DEPOT_ADMIN) +
 				"IndicatorComponent";
 		String module =
-			_npmResolver.resolveModuleName("depot-web") +
+			_npmResolver.resolveModuleName("@liferay/depot-web") +
 				"/dynamic_include/StagingIndicator";
 
 		_reactRenderer.renderReact(

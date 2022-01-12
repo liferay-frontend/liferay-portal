@@ -35,7 +35,7 @@ public class NumericInputMaskDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/NumericInputMask" +
+		return "@liferay/dynamic-data-mapping-form-field-type/NumericInputMask" +
 			"/NumericInputMask";
 	}
 

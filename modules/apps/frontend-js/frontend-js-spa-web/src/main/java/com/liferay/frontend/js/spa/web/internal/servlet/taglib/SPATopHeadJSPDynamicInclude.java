@@ -85,7 +85,8 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 				"message",
 				_language.get(
 					_spaHelper.getLanguageResourceBundle(
-						"frontend-js-spa-web", themeDisplay.getLocale()),
+						"@liferay/frontend-js-spa-web",
+						themeDisplay.getLocale()),
 					"it-looks-like-this-is-taking-longer-than-expected")
 			).put(
 				"timeout", _spaHelper.getUserNotificationTimeout()
@@ -93,7 +94,8 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 				"title",
 				_language.get(
 					_spaHelper.getLanguageResourceBundle(
-						"frontend-js-spa-web", themeDisplay.getLocale()),
+						"@liferay/frontend-js-spa-web",
+						themeDisplay.getLocale()),
 					"oops")
 			)
 		).put(
@@ -101,7 +103,7 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 		);
 
 		String initModuleName = _npmResolver.resolveModuleName(
-			"frontend-js-spa-web/init");
+			"@liferay/frontend-js-spa-web/init");
 
 		ScriptData initScriptData = new ScriptData();
 

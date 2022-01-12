@@ -12,7 +12,7 @@
  * details.
  */
 
-import {PageProvider} from '@liferay/data-engine-js-components-web';
+import {PageProvider} from 'data-engine-js-components-web';
 import {act, cleanup, render} from '@testing-library/react';
 import React from 'react';
 

@@ -12,7 +12,7 @@
  * details.
  */
 
-declare module '@liferay/data-engine-js-components-web' {
+declare module 'data-engine-js-components-web' {
 	function useConfig(): {formReportDataURL: string};
 
 	export const FormReport: React.FC<{

@@ -15,7 +15,7 @@
 import ClayButton from '@clayui/button';
 import ClayLabel from '@clayui/label';
 import ClayPanel from '@clayui/panel';
-import {useFormState} from '@liferay/data-engine-js-components-web';
+import {useFormState} from 'data-engine-js-components-web';
 import classNames from 'classnames';
 import React from 'react';
 

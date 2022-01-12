@@ -47,7 +47,7 @@ public class LocalizableTextDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/LocalizableText" +
+		return "@liferay/dynamic-data-mapping-form-field-type/LocalizableText" +
 			"/LocalizableText.es";
 	}
 

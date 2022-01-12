@@ -15,6 +15,8 @@
 import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
 import {Context as ModalContext} from '@clayui/modal';
+import {DragLayer, MultiPanelSidebar} from '@liferay/data-engine-taglib';
+import classNames from 'classnames';
 import {
 	EVENT_TYPES as CORE_EVENT_TYPES,
 	Pages,
@@ -24,9 +26,7 @@ import {
 	useConfig,
 	useForm,
 	useFormState,
-} from '@liferay/data-engine-js-components-web';
-import {DragLayer, MultiPanelSidebar} from '@liferay/data-engine-taglib';
-import classNames from 'classnames';
+} from 'data-engine-js-components-web';
 import React, {
 	useCallback,
 	useContext,

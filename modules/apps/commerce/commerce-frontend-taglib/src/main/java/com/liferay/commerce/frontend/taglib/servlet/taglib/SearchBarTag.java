@@ -72,7 +72,7 @@ public class SearchBarTag extends ComponentRendererTag {
 		}
 
 		return npmResolver.resolveModuleName(
-			"commerce-frontend-taglib/search_bar/SearchBar.es");
+			"@liferay/commerce-frontend-taglib/search_bar/SearchBar.es");
 	}
 
 	public void setId(String id) {

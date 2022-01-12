@@ -48,7 +48,7 @@ public class SearchLocationDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/SearchLocation" +
+		return "@liferay/dynamic-data-mapping-form-field-type/SearchLocation" +
 			"/SearchLocation.es";
 	}
 

@@ -20,7 +20,7 @@ import {
 	useConfig,
 	useForm,
 	useFormState,
-} from '@liferay/data-engine-js-components-web';
+} from 'data-engine-js-components-web';
 import React, {useMemo} from 'react';
 
 import {useSettingsContextFilter} from '../../../utils/settingsForm.es';

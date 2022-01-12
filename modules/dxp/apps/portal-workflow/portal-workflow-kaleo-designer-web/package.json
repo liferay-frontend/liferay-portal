@@ -4,8 +4,8 @@
 		"@clayui/icon": "3.40.0",
 		"@clayui/label": "3.45.0",
 		"@clayui/toolbar": "3.45.0",
-		"dagre": "0.8.2",
 		"@liferay/frontend-editor-ckeditor-web": "*",
+		"dagre": "0.8.2",
 		"react": "16.12.0",
 		"react-dom": "16.12.0",
 		"react-flow-renderer": "9.7.0"

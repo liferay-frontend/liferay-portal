@@ -13,7 +13,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import {PartialResults} from '@liferay/data-engine-js-components-web';
+import {PartialResults} from 'data-engine-js-components-web';
 import React, {useEffect, useState} from 'react';
 
 import './DefaultPage.scss';

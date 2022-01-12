@@ -17,11 +17,11 @@ import {
 	FormProvider,
 	Pages,
 	parseProps,
-} from '@liferay/data-engine-js-components-web';
+} from 'data-engine-js-components-web';
 import {
 	activePageReducer,
 	pagesStructureReducer,
-} from '@liferay/data-engine-js-components-web/js/core/reducers/index.es';
+} from 'data-engine-js-components-web/js/core/reducers/index.es';
 import React, {useRef} from 'react';
 
 import FormSettingsApi from './FormSettingsApi';

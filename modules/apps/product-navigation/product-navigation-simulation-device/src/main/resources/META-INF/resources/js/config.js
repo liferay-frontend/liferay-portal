@@ -20,14 +20,14 @@
 				combine: Liferay.AUI.getCombine(),
 				filter: Liferay.AUI.getFilterConfig(),
 				modules: {
-					'liferay-@liferay/product-navigation-simulation-device': {
+					'liferay-product-navigation-simulation-device': {
 						path: 'product_navigation_simulation_device.js',
 						requires: [
 							'aui-dialog-iframe-deprecated',
 							'aui-event-input',
 							'aui-modal',
 							'liferay-portlet-base',
-							'liferay-@liferay/product-navigation-control-menu',
+							'liferay-product-navigation-control-menu',
 							'liferay-util-window',
 							'liferay-widget-size-animation-plugin',
 						],

@@ -13,14 +13,11 @@
  */
 
 import {ClayInput} from '@clayui/form';
+import classNames from 'classnames';
 
 // @ts-ignore
 
-import {
-	SettingsContext,
-	useFormState,
-} from '@liferay/data-engine-js-components-web';
-import classNames from 'classnames';
+import {SettingsContext, useFormState} from 'data-engine-js-components-web';
 import React, {ChangeEventHandler, FocusEventHandler, useMemo} from 'react';
 import {createNumberMask} from 'text-mask-addons';
 import {conformToMask} from 'text-mask-core';

@@ -365,7 +365,7 @@ public class BaseContainerTag extends AttributesTagSupport {
 			}
 			else if (Validator.isNotNull(getDefaultEventHandler())) {
 				propsTransformer = npmResolver.resolveModuleName(
-					"frontend-taglib-clay" +
+					"@liferay/frontend-taglib-clay" +
 						"/DefaultEventHandlersPropsTransformer");
 			}
 

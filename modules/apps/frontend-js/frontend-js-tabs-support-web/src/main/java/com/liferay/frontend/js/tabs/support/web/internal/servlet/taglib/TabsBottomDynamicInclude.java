@@ -41,7 +41,7 @@ public class TabsBottomDynamicInclude implements DynamicInclude {
 		ScriptData scriptData = new ScriptData();
 
 		String initModuleName = _npmResolver.resolveModuleName(
-			"frontend-js-tabs-support-web/index");
+			"@liferay/frontend-js-tabs-support-web/index");
 
 		scriptData.append(
 			null, "TabsProvider.default()", initModuleName + " as TabsProvider",

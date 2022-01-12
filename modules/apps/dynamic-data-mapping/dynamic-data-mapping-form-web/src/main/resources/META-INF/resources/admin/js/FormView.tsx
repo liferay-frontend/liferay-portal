@@ -12,7 +12,7 @@
  * details.
  */
 
-import {FormView as DataEngineFormView} from '@liferay/data-engine-js-components-web';
+import {FormView as DataEngineFormView} from 'data-engine-js-components-web';
 import React from 'react';
 
 import DefaultPageHeader from './components/DefaultPageHeader';

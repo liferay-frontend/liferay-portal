@@ -30,7 +30,7 @@ public class ThemeContributorProjectTemplatesArgs
 
 	@Override
 	public String getTemplateName() {
-		return "theme-contributor";
+		return "@liferay/theme-contributor";
 	}
 
 	public void setContributorType(String contributorType) {

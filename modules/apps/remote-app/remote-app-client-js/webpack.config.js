@@ -14,7 +14,7 @@
 
 const path = require('path');
 
-const PUBLIC_PATH = '/o/@liferay/remote-app-client-js/';
+const PUBLIC_PATH = '/o/remote-app-client-js/';
 
 module.exports = {
 	context: path.resolve(__dirname),

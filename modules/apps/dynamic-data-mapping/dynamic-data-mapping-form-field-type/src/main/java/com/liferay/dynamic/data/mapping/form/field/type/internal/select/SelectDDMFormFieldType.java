@@ -48,7 +48,7 @@ public class SelectDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/Select/Select.es";
+		return "@liferay/dynamic-data-mapping-form-field-type/Select/Select.es";
 	}
 
 	@Override

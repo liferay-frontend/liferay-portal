@@ -26,7 +26,7 @@
 
 	var PATH_EDITOR_CKEDITOR = LiferayAUI.getEditorCKEditorPath();
 
-	var PATH_JAVASCRIPT = '/o/@liferay/frontend-js-aui-web';
+	var PATH_JAVASCRIPT = '/o/frontend-js-aui-web';
 
 	var SUPPORTS_INPUT_SELECTION =
 		typeof INPUT_EL.selectionStart === 'number' &&

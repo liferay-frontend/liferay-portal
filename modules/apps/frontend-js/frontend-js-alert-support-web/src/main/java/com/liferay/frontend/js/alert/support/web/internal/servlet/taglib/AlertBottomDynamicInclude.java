@@ -41,7 +41,7 @@ public class AlertBottomDynamicInclude implements DynamicInclude {
 		ScriptData scriptData = new ScriptData();
 
 		String initModuleName = _npmResolver.resolveModuleName(
-			"frontend-js-alert-support-web/index");
+			"@liferay/frontend-js-alert-support-web/index");
 
 		scriptData.append(
 			null, "AlertProvider.default()",

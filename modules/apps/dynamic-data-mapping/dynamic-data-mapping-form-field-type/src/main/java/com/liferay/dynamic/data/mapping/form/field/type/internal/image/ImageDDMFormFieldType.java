@@ -48,7 +48,7 @@ public class ImageDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/ImagePicker" +
+		return "@liferay/dynamic-data-mapping-form-field-type/ImagePicker" +
 			"/ImagePicker.es";
 	}
 

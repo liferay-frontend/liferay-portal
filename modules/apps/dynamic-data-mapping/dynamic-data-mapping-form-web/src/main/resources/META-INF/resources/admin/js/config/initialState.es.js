@@ -16,11 +16,11 @@ import {
 	PagesVisitor,
 	RulesSupport,
 	getUid,
-} from '@liferay/data-engine-js-components-web';
+} from 'data-engine-js-components-web';
 import {
 	INITIAL_PAGES,
 	INITIAL_STATE,
-} from '@liferay/data-engine-js-components-web/js/core/config/index.es';
+} from 'data-engine-js-components-web/js/core/config/index.es';
 
 export const BUILDER_INITIAL_STATE = {
 	...INITIAL_STATE,

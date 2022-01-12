@@ -17,7 +17,7 @@ import {
 	useConfig,
 	useForm,
 	useFormState,
-} from '@liferay/data-engine-js-components-web';
+} from 'data-engine-js-components-web';
 import {activeLanguageIdsAtom} from '@liferay/frontend-js-components-web';
 import {State} from '@liferay/frontend-js-state-web';
 import {useEffect, useRef} from 'react';

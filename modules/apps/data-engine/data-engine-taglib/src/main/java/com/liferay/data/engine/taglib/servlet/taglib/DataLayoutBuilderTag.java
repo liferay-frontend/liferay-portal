@@ -57,7 +57,7 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 			setNamespacedAttribute(
 				httpServletRequest, "dataLayoutBuilderModule",
 				DataLayoutTaglibUtil.resolveModule(
-					"data-engine-taglib/data_layout_builder/js" +
+					"@liferay/data-engine-taglib/data_layout_builder/js" +
 						"/DataLayoutBuilder.es"));
 
 			if (Validator.isNotNull(getDataDefinitionId()) &&
@@ -175,8 +175,8 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 
 	private String _getPluginEntryPoint(String value) {
 		return DataLayoutTaglibUtil.resolveModule(
-			"data-engine-taglib/data_layout_builder/js/plugins/" + value +
-				"/index");
+			"@liferay/data-engine-taglib/data_layout_builder/js/plugins/" +
+				value + "/index");
 	}
 
 	private Map<String, Object> _getSidebarPanels() {

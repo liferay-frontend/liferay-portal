@@ -48,7 +48,7 @@ public class GeolocationDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/Geolocation" +
+		return "@liferay/dynamic-data-mapping-form-field-type/Geolocation" +
 			"/Geolocation.es";
 	}
 

@@ -428,7 +428,7 @@ public class DDMFormBuilderContextFactoryHelper {
 			).put(
 				"pluginEntryPoint",
 				_npmResolver.resolveModuleName(
-					"data-engine-taglib/data_layout_builder/js/plugins" +
+					"@liferay/data-engine-taglib/data_layout_builder/js/plugins" +
 						"/fields-sidebar/index")
 			).put(
 				"sidebarPanelId", "fields"

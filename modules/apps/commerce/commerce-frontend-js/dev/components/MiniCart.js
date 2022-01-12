@@ -29,7 +29,6 @@ launcher('mini_cart', 'mini-cart-root-id', {
 	displayTotalItemsQuantity: false,
 	itemsQuantity: 3,
 	orderId: 43621,
-	spritemap:
-		'http://localhost:8080/o/@liferay/minium-theme/images/clay/icons\x2esvg',
+	spritemap: 'http://localhost:8080/o/minium-theme/images/clay/icons\x2esvg',
 	toggleable: true,
 });

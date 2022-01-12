@@ -17,7 +17,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClaySticker from '@clayui/sticker';
-import {DRAG_TYPES} from '@liferay/data-engine-js-components-web';
+import {DRAG_TYPES} from 'data-engine-js-components-web';
 import classnames from 'classnames';
 import React, {useEffect, useState} from 'react';
 import {useDrag} from 'react-dnd';

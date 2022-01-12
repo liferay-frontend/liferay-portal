@@ -17,7 +17,7 @@ import {
 	useConfig,
 	useForm,
 	useFormState,
-} from '@liferay/data-engine-js-components-web';
+} from 'data-engine-js-components-web';
 import classNames from 'classnames';
 import React from 'react';
 

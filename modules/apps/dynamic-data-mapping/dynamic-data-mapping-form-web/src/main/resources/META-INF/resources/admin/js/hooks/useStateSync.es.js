@@ -16,7 +16,7 @@ import {
 	PagesVisitor,
 	useConfig,
 	useFormState,
-} from '@liferay/data-engine-js-components-web';
+} from 'data-engine-js-components-web';
 import {useCallback} from 'react';
 
 const getSerializedSettingsContextPages = (pages, defaultLanguageId) => {

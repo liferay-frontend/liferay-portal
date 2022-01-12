@@ -75,7 +75,7 @@ module.exports = {
 					'commerce-frontend-js': {
 						'/': '*',
 					},
-					'@liferay/data-engine-js-components-web': {
+					'data-engine-js-components-web': {
 						'/': '*',
 					},
 					'@liferay/data-engine-taglib': {

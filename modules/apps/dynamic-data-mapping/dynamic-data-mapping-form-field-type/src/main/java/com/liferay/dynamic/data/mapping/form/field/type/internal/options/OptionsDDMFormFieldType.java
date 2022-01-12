@@ -36,7 +36,7 @@ public class OptionsDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public String getModuleName() {
-		return "dynamic-data-mapping-form-field-type/Options/Options.es";
+		return "@liferay/dynamic-data-mapping-form-field-type/Options/Options.es";
 	}
 
 	@Override

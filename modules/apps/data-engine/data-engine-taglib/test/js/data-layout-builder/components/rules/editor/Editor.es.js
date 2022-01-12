@@ -107,7 +107,7 @@ const defaultProps = (fieldsList = FIELDS) => {
 			},
 		],
 		dataProviderInstanceParameterSettingsURL:
-			'/o/@liferay/dynamic-data-mapping-form-builder-provider-instance-parameter-settings/',
+			'/o/dynamic-data-mapping-form-builder-provider-instance-parameter-settings/',
 		fields: fieldsList,
 		operatorsByType: OPERATORS_BY_TYPE,
 		pages,

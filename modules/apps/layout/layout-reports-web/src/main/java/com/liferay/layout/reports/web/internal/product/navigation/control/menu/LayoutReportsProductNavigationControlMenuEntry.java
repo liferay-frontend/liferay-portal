@@ -416,8 +416,8 @@ public class LayoutReportsProductNavigationControlMenuEntry
 		try {
 			_reactRenderer.renderReact(
 				new ComponentDescriptor(
-					_npmResolver.resolveModuleName("layout-reports-web") +
-						"/js/App"),
+					_npmResolver.resolveModuleName("@liferay/layout-reports-web") + "/js/App"
+				),
 				HashMapBuilder.<String, Object>put(
 					"isPanelStateOpen", isPanelStateOpen(httpServletRequest)
 				).put(

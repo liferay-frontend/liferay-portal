@@ -12,7 +12,7 @@
  * details.
  */
 
-import {FormProvider} from '@liferay/data-engine-js-components-web';
+import {FormProvider} from 'data-engine-js-components-web';
 import {cleanup, render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';

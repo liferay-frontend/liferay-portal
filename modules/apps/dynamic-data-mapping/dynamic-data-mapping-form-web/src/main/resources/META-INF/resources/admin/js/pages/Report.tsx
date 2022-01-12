@@ -15,7 +15,7 @@
 import {useResource} from '@clayui/data-provider';
 import ClayLink from '@clayui/link';
 import ClayNavigationBar from '@clayui/navigation-bar';
-import {FormReport, useConfig} from '@liferay/data-engine-js-components-web';
+import {FormReport, useConfig} from 'data-engine-js-components-web';
 import React from 'react';
 
 import './Report.scss';

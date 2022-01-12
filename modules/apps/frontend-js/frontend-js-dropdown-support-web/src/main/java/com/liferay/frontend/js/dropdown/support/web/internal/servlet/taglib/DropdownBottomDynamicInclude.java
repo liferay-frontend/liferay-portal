@@ -41,7 +41,7 @@ public class DropdownBottomDynamicInclude implements DynamicInclude {
 		ScriptData scriptData = new ScriptData();
 
 		String initModuleName = _npmResolver.resolveModuleName(
-			"frontend-js-dropdown-support-web/index");
+			"@liferay/frontend-js-dropdown-support-web/index");
 
 		scriptData.append(
 			null, "DropdownProvider.default()",

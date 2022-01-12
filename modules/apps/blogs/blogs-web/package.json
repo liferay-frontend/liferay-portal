@@ -1,8 +1,8 @@
 {
 	"dependencies": {
 		"@liferay/frontend-js-state-web": "*",
-		"frontend-js-web": "*",
 		"@liferay/item-selector-taglib": "*",
+		"frontend-js-web": "*",
 		"metal-state": "2.16.8"
 	},
 	"name": "@liferay/blogs-web",

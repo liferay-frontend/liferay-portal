@@ -22,14 +22,14 @@ import {
 	useConfig,
 	useForm,
 	useFormState,
-} from '@liferay/data-engine-js-components-web';
+} from 'data-engine-js-components-web';
 import {
 	dragAndDropReducer,
 	fieldEditableReducer,
 	languageReducer,
 	pagesStructureReducer,
-} from '@liferay/data-engine-js-components-web/js/core/reducers/index.es';
-import {pageReducer} from '@liferay/data-engine-js-components-web/js/custom/form/reducers/index.es';
+} from 'data-engine-js-components-web/js/core/reducers/index.es';
+import {pageReducer} from 'data-engine-js-components-web/js/custom/form/reducers/index.es';
 import {default as React, useCallback, useState} from 'react';
 
 import {FormBuilder} from '../../FormBuilder';

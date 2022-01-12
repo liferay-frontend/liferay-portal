@@ -123,7 +123,7 @@ public class SelectTag extends BaseContainerTag {
 		if ((!_disabled && (getAdditionalProps() != null)) ||
 			(getPropsTransformer() != null)) {
 
-			return "frontend-taglib-clay/Select";
+			return "@liferay/frontend-taglib-clay/Select";
 		}
 
 		return null;
