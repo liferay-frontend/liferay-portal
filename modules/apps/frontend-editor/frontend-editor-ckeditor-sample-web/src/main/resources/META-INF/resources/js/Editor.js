@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,15 +11,12 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
-taglib uri="http://liferay.com/tld/editor" prefix="liferay-editor" %><%@
-taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
-taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
-taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %><%@
-taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
+import {Editor} from 'frontend-editor-ckeditor-web';
+import React from 'react';
 
-<%@ page import="com.liferay.portal.kernel.util.HashMapBuilder" %>
+function EditorComponent(props) {
+	return <Editor {...props} />;
+}
 
-<liferay-theme:defineObjects />
+export default EditorComponent;
