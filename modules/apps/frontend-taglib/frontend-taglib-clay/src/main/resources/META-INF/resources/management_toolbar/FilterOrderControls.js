@@ -17,9 +17,8 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import {ManagementToolbar} from 'frontend-js-components-web';
-import React, {useContext} from 'react';
+import React from 'react';
 
-import FeatureFlagContext from './FeatureFlagContext';
 import LinkOrButton from './LinkOrButton';
 
 const FilterOrderControls = ({
@@ -31,8 +30,6 @@ const FilterOrderControls = ({
 	sortingOrder,
 	sortingURL,
 }) => {
-	const {showDesignImprovements} = useContext(FeatureFlagContext);
-
 	const showOrderToggle =
 		!orderDropdownItems || orderDropdownItems.length <= 1;
 
@@ -69,25 +66,17 @@ const FilterOrderControls = ({
 						)}
 						trigger={
 							<ClayButton
-								className={classNames('nav-link', {
-									'ml-2 mr-2': showDesignImprovements,
-								})}
+								className="ml-2 mr-2 nav-link"
 								disabled={disabled}
 								displayType="unstyled"
 							>
 								<span className="navbar-breakpoint-down-d-none">
-									{showDesignImprovements && (
-										<span className="inline-item inline-item-before">
-											<ClayIcon symbol="filter" />
-										</span>
-									)}
+									<span className="inline-item inline-item-before">
+										<ClayIcon symbol="filter" />
+									</span>
 
 									<span className="navbar-text-truncate">
-										{showDesignImprovements
-											? Liferay.Language.get('filter')
-											: Liferay.Language.get(
-													'filter-and-order'
-											  )}
+										{Liferay.Language.get('filter')}
 									</span>
 
 									<ClayIcon
@@ -98,12 +87,9 @@ const FilterOrderControls = ({
 
 								<span
 									className="navbar-breakpoint-d-none"
-									title={
-										showDesignImprovements &&
-										Liferay.Language.get(
-											'show-filter-options'
-										)
-									}
+									title={Liferay.Language.get(
+										'show-filter-options'
+									)}
 								>
 									<ClayIcon symbol="filter" />
 								</span>
@@ -113,7 +99,7 @@ const FilterOrderControls = ({
 				</ManagementToolbar.Item>
 			)}
 
-			{showDesignImprovements && !showOrderToggle && (
+			{!showOrderToggle && (
 				<ManagementToolbar.Item>
 					<ClayDropDownWithItems
 						items={[
@@ -190,8 +176,7 @@ const FilterOrderControls = ({
 				</ManagementToolbar.Item>
 			)}
 
-			{((!showDesignImprovements && sortingURL) ||
-				(showDesignImprovements && sortingURL && showOrderToggle)) && (
+			{sortingURL && showOrderToggle && (
 				<ManagementToolbar.Item>
 					<LinkOrButton
 						className="nav-link nav-link-monospaced"
@@ -203,13 +188,7 @@ const FilterOrderControls = ({
 							'order-list-up':
 								sortingOrder === 'asc' || sortingOrder === null,
 						})}
-						title={
-							showDesignImprovements
-								? Liferay.Language.get(
-										'reverse-order-direction'
-								  )
-								: Liferay.Language.get('reverse-sort-direction')
-						}
+						title={Liferay.Language.get('reverse-order-direction')}
 					/>
 				</ManagementToolbar.Item>
 			)}

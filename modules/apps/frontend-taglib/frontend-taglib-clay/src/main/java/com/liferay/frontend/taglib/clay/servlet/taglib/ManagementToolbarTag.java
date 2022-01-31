@@ -676,9 +676,6 @@ public class ManagementToolbarTag extends BaseContainerTag {
 		props.put("selectAllURL", getSelectAllURL());
 		props.put("selectable", isSelectable());
 		props.put("showCreationMenu", isShowCreationMenu());
-		props.put(
-			"showDesignImprovementsFF",
-			GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-144527")));
 		props.put("showInfoButton", isShowInfoButton());
 		props.put("showResultsBar", isShowResultsBar());
 		props.put("showSearch", isShowSearch());
@@ -706,9 +703,6 @@ public class ManagementToolbarTag extends BaseContainerTag {
 	@Override
 	protected int processStartTag() throws Exception {
 		super.processStartTag();
-
-		Boolean showDesignImprovementsFF = GetterUtil.getBoolean(
-			PropsUtil.get("feature.flag.LPS-144527"));
 
 		JspWriter jspWriter = pageContext.getOut();
 
@@ -834,10 +828,7 @@ public class ManagementToolbarTag extends BaseContainerTag {
 		if (!active && (getFilterDropdownItems() != null)) {
 			jspWriter.write("<li class=\"nav-item\"><div class=\"dropdown\">");
 			jspWriter.write("<button class=\"btn btn-unstyled dropdown-toggle");
-
-			if (showDesignImprovementsFF) {
-				jspWriter.write(" ml-2 mr-2");
-			}
+			jspWriter.write(" ml-2 mr-2");
 
 			jspWriter.write(" nav-link\"");
 
@@ -848,27 +839,19 @@ public class ManagementToolbarTag extends BaseContainerTag {
 			jspWriter.write(" type=\"button\"><span class=\"");
 			jspWriter.write("navbar-breakpoint-down-d-none\"><span class=\"");
 
-			if (showDesignImprovementsFF) {
-				jspWriter.write("inline-item inline-item-before\">");
+			jspWriter.write("inline-item inline-item-before\">");
 
-				iconTag = new IconTag();
+			iconTag = new IconTag();
 
-				iconTag.setSymbol("filter");
+			iconTag.setSymbol("filter");
 
-				iconTag.doTag(pageContext);
+			iconTag.doTag(pageContext);
 
-				jspWriter.write("</span><span class=\"");
-			}
+			jspWriter.write("</span><span class=\"");
 
 			jspWriter.write("navbar-text-truncate\">");
 
-			if (showDesignImprovementsFF) {
-				jspWriter.write(LanguageUtil.get(resourceBundle, "filter"));
-			}
-			else {
-				jspWriter.write(
-					LanguageUtil.get(resourceBundle, "filter-and-order"));
-			}
+			jspWriter.write(LanguageUtil.get(resourceBundle, "filter"));
 
 			jspWriter.write("</span>");
 
@@ -892,8 +875,8 @@ public class ManagementToolbarTag extends BaseContainerTag {
 
 		List<DropdownItem> orderDropdownItems = getOrderDropdownItems();
 
-		if (showDesignImprovementsFF && !active &&
-			(orderDropdownItems != null) && (orderDropdownItems.size() > 1)) {
+		if (!active && (orderDropdownItems != null) &&
+			(orderDropdownItems.size() > 1)) {
 
 			jspWriter.write("<li class=\"nav-item\"><div class=\"dropdown\">");
 			jspWriter.write("<button class=\"btn btn-unstyled dropdown-toggle");
@@ -946,9 +929,7 @@ public class ManagementToolbarTag extends BaseContainerTag {
 			 (orderDropdownItems.size() == 1)) ||
 			ListUtil.isEmpty(orderDropdownItems);
 
-		if ((!showDesignImprovementsFF && (getSortingURL() != null)) ||
-			(showDesignImprovementsFF && (getSortingURL() != null) &&
-			 showOrderToggle)) {
+		if ((getSortingURL() != null) && showOrderToggle) {
 
 			jspWriter.write("<li class=\"nav-item\">");
 
@@ -1116,28 +1097,9 @@ public class ManagementToolbarTag extends BaseContainerTag {
 
 			jspWriter.write("</button></li>");
 
-			if (!showDesignImprovementsFF && isShowInfoButton()) {
-				jspWriter.write("<li class=\"nav-item\"><button class=\"");
-				jspWriter.write(" nav-link nav-link-monospaced btn");
-				jspWriter.write(" btn-monospaced btn-unstyled\" type=\"button");
-				jspWriter.write("\">");
-
-				iconTag = new IconTag();
-
-				iconTag.setSymbol("info-circle-open");
-
-				iconTag.doTag(pageContext);
-
-				jspWriter.write("</button></li>");
-			}
-
 			if (getViewTypeItems() != null) {
 				jspWriter.write("<li class=\"nav-item\"><div class=\"dropdown");
 				jspWriter.write("\"><button class=\"dropdown-toggle nav-link");
-
-				if (!showDesignImprovementsFF) {
-					jspWriter.write(" nav-link-monospaced btn btn-monospaced");
-				}
 
 				jspWriter.write(" btn btn-unstyled\" type=\"button\">");
 
@@ -1149,15 +1111,13 @@ public class ManagementToolbarTag extends BaseContainerTag {
 
 						iconTag.doTag(pageContext);
 
-						if (showDesignImprovementsFF) {
-							iconTag = new IconTag();
+						iconTag = new IconTag();
 
-							iconTag.setCssClass(
-								"inline-item inline-item-after");
-							iconTag.setSymbol("caret-double-l");
+						iconTag.setCssClass(
+							"inline-item inline-item-after");
+						iconTag.setSymbol("caret-double-l");
 
-							iconTag.doTag(pageContext);
-						}
+						iconTag.doTag(pageContext);
 
 						break;
 					}
@@ -1170,15 +1130,8 @@ public class ManagementToolbarTag extends BaseContainerTag {
 				jspWriter.write("<li class=\"nav-item\">");
 
 				LinkTag linkTag = new LinkTag();
-
-				if (showDesignImprovementsFF) {
-					linkTag.setCssClass(
-						"d-md-none nav-btn nav-btn-monospaced btn btn-primary");
-				}
-				else {
-					linkTag.setCssClass(
-						"nav-btn nav-btn-monospaced btn btn-primary");
-				}
+				linkTag.setCssClass(
+					"d-md-none nav-btn nav-btn-monospaced btn btn-primary");
 
 				linkTag.setIcon("plus");
 
@@ -1186,22 +1139,22 @@ public class ManagementToolbarTag extends BaseContainerTag {
 
 				jspWriter.write("</li>");
 
-				if (showDesignImprovementsFF) {
-					jspWriter.write("<li class=\"nav-item\">");
+				jspWriter.write("<li class=\"nav-item\">");
 
-					linkTag = new LinkTag();
+				linkTag = new LinkTag();
 
-					linkTag.setCssClass(
-						"nav-btn d-md-flex d-none pl-4 pr-4 btn btn-primary");
-					linkTag.setLabel(LanguageUtil.get(resourceBundle, "new"));
+				linkTag.setCssClass(
+					"nav-btn d-md-flex d-none pl-4 pr-4 btn btn-primary");
+				linkTag.setLabel(LanguageUtil.get(resourceBundle, "new"));
 
-					linkTag.doTag(pageContext);
+				linkTag.doTag(pageContext);
 
-					jspWriter.write("</li>");
-				}
+				jspWriter.write("</li>");
+				
 			}
 
-			if (showDesignImprovementsFF && isShowInfoButton()) {
+			if (isShowInfoButton()) {
+
 				jspWriter.write("<li class=\"nav-item\"><button class=\"");
 				jspWriter.write(" nav-link nav-link-monospaced btn");
 				jspWriter.write(" btn-monospaced btn-unstyled\" type=\"button");

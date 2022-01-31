@@ -12,7 +12,7 @@
  * details.
  */
 
-import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import ClayButton from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import {LinkOrButton} from '@clayui/shared';
@@ -22,7 +22,6 @@ import React, {useMemo, useState} from 'react';
 
 import ActionControls from './ActionControls';
 import CreationMenu from './CreationMenu';
-import FeatureFlagContext from './FeatureFlagContext';
 import FilterOrderControls from './FilterOrderControls';
 import InfoPanelControl from './InfoPanelControl';
 import ResultsBar from './ResultsBar';
@@ -68,7 +67,6 @@ function ManagementToolbar({
 	selectAllURL,
 	selectable,
 	showCreationMenu,
-	showDesignImprovementsFF,
 	showInfoButton,
 	showResultsBar,
 	showSearch,
@@ -88,9 +86,7 @@ function ManagementToolbar({
 	);
 
 	return (
-		<FeatureFlagContext.Provider
-			value={{showDesignImprovements: showDesignImprovementsFF}}
-		>
+		<>
 			<FrontendManagementToolbar.Container active={active}>
 				<FrontendManagementToolbar.ItemList>
 					{selectable && (
@@ -160,13 +156,6 @@ function ManagementToolbar({
 						/>
 					)}
 
-					{!showDesignImprovementsFF && showInfoButton && (
-						<InfoPanelControl
-							infoPanelId={infoPanelId}
-							onInfoButtonClick={onInfoButtonClick}
-						/>
-					)}
-
 					{active ? (
 						<>
 							<ActionControls
@@ -182,34 +171,24 @@ function ManagementToolbar({
 									<ClayDropDownWithItems
 										items={viewTypeItems}
 										trigger={
-											showDesignImprovementsFF ? (
-												<ClayButton
-													className="nav-link"
-													displayType="unstyled"
-													title={Liferay.Language.get(
-														'show-view-options'
-													)}
-												>
-													{viewTypeIcon && (
-														<ClayIcon
-															symbol={
-																viewTypeIcon
-															}
-														/>
-													)}
-
+											<ClayButton
+												className="nav-link"
+												displayType="unstyled"
+												title={Liferay.Language.get(
+													'show-view-options'
+												)}
+											>
+												{viewTypeIcon && (
 													<ClayIcon
-														className="inline-item inline-item-after"
-														symbol="caret-double-l"
+														symbol={viewTypeIcon}
 													/>
-												</ClayButton>
-											) : (
-												<ClayButtonWithIcon
-													className="nav-link nav-link-monospaced"
-													displayType="unstyled"
-													symbol={viewTypeIcon}
+												)}
+
+												<ClayIcon
+													className="inline-item inline-item-after"
+													symbol="caret-double-l"
 												/>
-											)
+											</ClayButton>
 										}
 									/>
 								</FrontendManagementToolbar.Item>
@@ -230,7 +209,7 @@ function ManagementToolbar({
 												onShowMoreButtonClick
 											}
 										/>
-									) : showDesignImprovementsFF ? (
+									) : (
 										<LinkOrButton
 											className="nav-btn"
 											displayType="primary"
@@ -240,20 +219,13 @@ function ManagementToolbar({
 										>
 											{Liferay.Language.get('new')}
 										</LinkOrButton>
-									) : (
-										<ClayButtonWithIcon
-											className="nav-btn nav-btn-monospaced"
-											displayType="primary"
-											onClick={onCreateButtonClick}
-											symbol="plus"
-										/>
 									)}
 								</FrontendManagementToolbar.Item>
 							)}
 						</>
 					)}
 
-					{showDesignImprovementsFF && showInfoButton && (
+					{showInfoButton && (
 						<InfoPanelControl
 							infoPanelId={infoPanelId}
 							onInfoButtonClick={onInfoButtonClick}
@@ -271,7 +243,7 @@ function ManagementToolbar({
 					searchValue={searchValue}
 				/>
 			)}
-		</FeatureFlagContext.Provider>
+		</>
 	);
 }
 
@@ -310,7 +282,6 @@ ManagementToolbar.propTypes = {
 	selectAllURL: PropTypes.string,
 	selectable: PropTypes.bool,
 	showCreationMenu: PropTypes.bool,
-	showDesignImprovementsFF: PropTypes.bool,
 	showInfoButton: PropTypes.bool,
 	showResultsBar: PropTypes.bool,
 	showSearch: PropTypes.bool,

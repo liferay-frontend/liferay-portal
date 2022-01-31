@@ -14,10 +14,9 @@
 
 import {ClayCheckbox} from '@clayui/form';
 import {ManagementToolbar} from 'frontend-js-components-web';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {EVENT_MANAGEMENT_TOOLBAR_TOGGLE_ALL_ITEMS} from '../constants';
-import FeatureFlagContext from './FeatureFlagContext';
 import LinkOrButton from './LinkOrButton';
 
 function disableActionIfNeeded(item, event, bulkSelection) {
@@ -57,7 +56,6 @@ const SelectionControls = ({
 	showCheckBoxLabel,
 	supportsBulkActions,
 }) => {
-	const {showDesignImprovements} = useContext(FeatureFlagContext);
 	const [selectedItems, setSelectedItems] = useState(initialSelectedItems);
 	const [checkboxStatus, setCheckboxStatus] = useState(initialCheckboxStatus);
 	const [selectAllButtonVisible, setSelectAllButtonVisible] = useState(
@@ -196,10 +194,7 @@ const SelectionControls = ({
 						<>
 							<ManagementToolbar.Item className="nav-item-shrink">
 								<LinkOrButton
-									aria-label={
-										showDesignImprovements &&
-										Liferay.Language.get('clear')
-									}
+									aria-label={Liferay.Language.get('clear')}
 									className="nav-link"
 									displayType="unstyled"
 									href={clearSelectionURL}
@@ -215,13 +210,8 @@ const SelectionControls = ({
 
 										onClearButtonClick(event);
 									}}
-									symbol={
-										showDesignImprovements && 'times-circle'
-									}
-									title={
-										showDesignImprovements &&
-										Liferay.Language.get('clear')
-									}
+									symbol="times-circle"
+									title={Liferay.Language.get('clear')}
 								>
 									<span className="text-truncate-inline">
 										<span className="text-truncate">

@@ -79,35 +79,7 @@ public class BaseManagementToolbarDisplayContext
 
 	@Override
 	public List<DropdownItem> getFilterDropdownItems() {
-		if (GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-144527"))) {
-			return getFilterNavigationDropdownItems();
-		}
-
-		List<DropdownItem> filterNavigationDropdownItems =
-			getFilterNavigationDropdownItems();
-		List<DropdownItem> orderByDropdownItems = getOrderByDropdownItems();
-
-		DropdownItemList filterDropdownItems = DropdownItemListBuilder.addGroup(
-			() -> filterNavigationDropdownItems != null,
-			dropdownGroupItem -> {
-				dropdownGroupItem.setDropdownItems(
-					filterNavigationDropdownItems);
-				dropdownGroupItem.setLabel(
-					getFilterNavigationDropdownItemsLabel());
-			}
-		).addGroup(
-			() -> orderByDropdownItems != null,
-			dropdownGroupItem -> {
-				dropdownGroupItem.setDropdownItems(orderByDropdownItems);
-				dropdownGroupItem.setLabel(getOrderByDropdownItemsLabel());
-			}
-		).build();
-
-		if (filterDropdownItems.isEmpty()) {
-			return null;
-		}
-
-		return filterDropdownItems;
+		return getFilterNavigationDropdownItems();
 	}
 
 	@Override
