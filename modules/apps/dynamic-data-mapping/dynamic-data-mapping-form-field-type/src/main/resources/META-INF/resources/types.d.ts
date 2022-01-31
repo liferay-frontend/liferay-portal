@@ -12,13 +12,13 @@
  * details.
  */
 
-type Direction = 'ltr' | 'rtl';
-type FieldChangeEventHandler<T = any> = (event: {
-	target: {
-		value: T;
-	};
+export type Direction = 'ltr' | 'rtl';
+
+export type FieldChangeEventHandler<T = any> = (event: {
+	target: {value: T};
 }) => void;
-type Locale =
+
+export type Locale =
 	| 'ar_SA'
 	| 'ca_ES'
 	| 'de_DE'
@@ -32,11 +32,27 @@ type Locale =
 	| 'pt_BR'
 	| 'sv_SE'
 	| 'zh_CN';
-type LocalizedTextKey =
-	| 'back'
-	| 'there-are-no-entries'
-	| 'x-entries'
-	| 'x-entry';
-type LocalizedValue<T> = {
-	[key in Locale]?: T;
-};
+
+export type LocalizedTextKey =
+	| 'choose-an-option'
+	| 'days'
+	| 'date'
+	| 'date-fields'
+	| 'decimal-places'
+	| 'decimal-separator'
+	| 'for-security-reasons-upload-field-repeatability-is-limited-the-limit-is-defined-in-x-system-settings-x'
+	| 'input-mask-append-placeholder'
+	| 'minus'
+	| 'months'
+	| 'operation'
+	| 'plus'
+	| 'prefix'
+	| 'prefix-or-suffix'
+	| 'quantity'
+	| 'suffix'
+	| 'the-maximum-length-is-10-characters'
+	| 'thousands-separator'
+	| 'unit'
+	| 'years';
+
+export type LocalizedValue<T> = {[key in Locale]?: T};
