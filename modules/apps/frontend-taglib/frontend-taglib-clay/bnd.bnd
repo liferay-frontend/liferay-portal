@@ -15,6 +15,7 @@ Export-Package:\
 	com.liferay.frontend.taglib.clay.data.set.view.table.selectable,\
 	com.liferay.frontend.taglib.clay.data.set.view.timeline,\
 	com.liferay.frontend.taglib.clay.servlet.taglib,\
+	com.liferay.frontend.taglib.clay.servlet.taglib.configuration,\
 	com.liferay.frontend.taglib.clay.servlet.taglib.contributor,\
 	com.liferay.frontend.taglib.clay.servlet.taglib.display.context,\
 	com.liferay.frontend.taglib.clay.servlet.taglib.soy,\

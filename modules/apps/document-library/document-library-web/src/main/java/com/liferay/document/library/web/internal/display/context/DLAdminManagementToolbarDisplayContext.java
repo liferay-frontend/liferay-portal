@@ -32,6 +32,7 @@ import com.liferay.document.library.web.internal.display.context.helper.DLPortle
 import com.liferay.document.library.web.internal.display.context.helper.DLRequestHelper;
 import com.liferay.document.library.web.internal.helper.DLTrashHelper;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
+import com.liferay.frontend.taglib.clay.servlet.taglib.configuration.FFManagementToolbarConfigurationUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
@@ -300,15 +301,27 @@ public class DLAdminManagementToolbarDisplayContext
 			return null;
 		}
 
-		return DropdownItemListBuilder.addGroup(
-			dropdownGroupItem -> {
-				dropdownGroupItem.setDropdownItems(
-					_getFilterNavigationDropdownItems());
-				dropdownGroupItem.setLabel(
-					LanguageUtil.get(
-						_httpServletRequest, "filter-by-navigation"));
-			}
-		).build();
+		DropdownItemListBuilder.DropdownItemListWrapper filterListBuilder =
+			DropdownItemListBuilder.addGroup(
+				dropdownGroupItem -> {
+					dropdownGroupItem.setDropdownItems(
+						_getFilterNavigationDropdownItems());
+					dropdownGroupItem.setLabel(
+						LanguageUtil.get(
+							_httpServletRequest, "filter-by-navigation"));
+				});
+
+		if (!FFManagementToolbarConfigurationUtil.showDesignImprovements()) {
+			filterListBuilder.addGroup(
+				dropdownGroupItem -> {
+					dropdownGroupItem.setDropdownItems(
+						_getOrderByDropdownItems());
+					dropdownGroupItem.setLabel(
+						LanguageUtil.get(_httpServletRequest, "order-by"));
+				});
+		}
+
+		return filterListBuilder.build();
 	}
 
 	@Override
@@ -383,7 +396,9 @@ public class DLAdminManagementToolbarDisplayContext
 
 	@Override
 	public List<DropdownItem> getOrderDropdownItems() {
-		if (_isSearch()) {
+		if (_isSearch() ||
+			!FFManagementToolbarConfigurationUtil.showDesignImprovements()) {
+
 			return null;
 		}
 

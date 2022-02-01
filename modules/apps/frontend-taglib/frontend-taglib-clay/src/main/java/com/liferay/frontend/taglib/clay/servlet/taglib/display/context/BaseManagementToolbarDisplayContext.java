@@ -14,7 +14,7 @@
 
 package com.liferay.frontend.taglib.clay.servlet.taglib.display.context;
 
-import com.liferay.frontend.taglib.clay.internal.configuration.FFManagementToolbarConfigurationUtil;
+import com.liferay.frontend.taglib.clay.servlet.taglib.configuration.FFManagementToolbarConfigurationUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;

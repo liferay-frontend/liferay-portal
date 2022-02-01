@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.frontend.taglib.clay.internal.configuration;
+package com.liferay.frontend.taglib.clay.servlet.taglib.configuration;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Modified;
  * @author Carolina Alonso
  */
 @Component(
-	configurationPid = "com.liferay.frontend.taglib.clay.internal.configuration.FFManagementToolbarConfiguration",
+	configurationPid = "com.liferay.frontend.taglib.clay.servlet.taglib.configuration.FFManagementToolbarConfiguration",
 	immediate = true, service = {}
 )
 public class FFManagementToolbarConfigurationUtil {
