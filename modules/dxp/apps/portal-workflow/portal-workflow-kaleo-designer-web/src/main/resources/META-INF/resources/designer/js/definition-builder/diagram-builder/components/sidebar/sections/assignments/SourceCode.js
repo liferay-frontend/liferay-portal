@@ -9,7 +9,7 @@
  * distribution rights of the Software.
  */
 
-import {Editor} from 'frontend-editor-ckeditor-web';
+import {Editor} from '@liferay/frontend-editor-ckeditor-web';
 import React, {useContext, useRef} from 'react';
 
 import {editorConfig} from '../../../../../constants';
