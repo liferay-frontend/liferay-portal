@@ -310,14 +310,6 @@ public class DLAdminManagementToolbarDisplayContext
 					LanguageUtil.get(
 						_httpServletRequest, "filter-by-navigation"));
 			}
-		).addGroup(
-			() -> !GetterUtil.getBoolean(
-				PropsUtil.get("feature.flag.LPS-144527")),
-			dropdownGroupItem -> {
-				dropdownGroupItem.setDropdownItems(_getOrderByDropdownItems());
-				dropdownGroupItem.setLabel(
-					LanguageUtil.get(_httpServletRequest, "order-by"));
-			}
 		).build();
 	}
 
@@ -392,8 +384,7 @@ public class DLAdminManagementToolbarDisplayContext
 
 	@Override
 	public List<DropdownItem> getOrderDropdownItems() {
-		if (_isSearch() ||
-			!GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-144527"))) {
+		if (_isSearch()) {
 
 			return null;
 		}
