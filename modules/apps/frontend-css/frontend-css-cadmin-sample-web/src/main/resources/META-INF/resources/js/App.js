@@ -36,7 +36,7 @@ export default function App() {
 					<p> This is a body with cadmin.</p>
 				</body>
 				
-				<body className="cadmin blue-background">
+				<body className="blue-background cadmin">
 					<p> This is a body with cadmin and css changes higher than cadmin.</p>
 				</body>
 			</div>
