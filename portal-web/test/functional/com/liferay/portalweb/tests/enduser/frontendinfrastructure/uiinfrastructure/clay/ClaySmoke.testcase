@@ -45,11 +45,13 @@ definition {
 	@description = "Check if each nav section of clay sample portlet looks normal from screenshot"
 	@priority = "3"
 	test CanRenderUI {
-        task("Change tabs and take a screenshot") {
-            for(var tabs : list "Alerts,Badges,Buttons,Cards,Dropdowns,Form Elements,Icons,Labels,Links,Management Toolbars,Navigation Bars,Pagination Bars,Progress Bars,Stickers") {
-                Navigator.gotoNavTab(navTab = "${tabs}");
-                takeScreenshot();
-            }
-        }
+		task ("Change tabs and take a screenshot") {
+			for (var tabs : list "Alerts,Badges,Buttons,Cards,Dropdowns,Form Elements,Icons,Labels,Links,Management Toolbars,Navigation Bars,Pagination Bars,Progress Bars,Stickers") {
+				Navigator.gotoNavTab(navTab = "${tabs}");
+
+				takeScreenshot();
+			}
+		}
 	}
+
 }
