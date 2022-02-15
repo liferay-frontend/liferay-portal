@@ -19,7 +19,8 @@ definition {
 		var response = JSONRemoteAppAPI._addCustomElementRemoteAppEntry(
 			customElementHtmlName = "${customElementHtmlName}",
 			customElementName = "${customElementName}",
-			customElementURL = "${customElementURL}");
+			customElementURL = "${customElementURL}",
+			customElementUseESM = "${customElementUseESM}");
 
 		return "{response}";
 	}

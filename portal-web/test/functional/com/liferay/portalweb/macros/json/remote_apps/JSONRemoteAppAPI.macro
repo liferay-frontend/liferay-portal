@@ -37,6 +37,11 @@ definition {
 		var customElementURLModified = StringUtil.replace("${customElementURL}", ":", "%3A");
 		var nameModified = StringUtil.replace("${customElementName}", " ", "%20");
 		var htmlNameModified = StringUtil.replace("${customElementHtmlName}", " ", "%20");
+		var customElementUseESMValue ="${customElementUseESM}";
+
+		if (!(isSet(customElementUseESMValue))) {
+			var customElementUseESMValue = "false";
+		}
 
 		var portalURL = JSONCompany.getPortalURL();
 
@@ -46,6 +51,7 @@ definition {
 				  -d customElementCSSURLs= \
 				  -d customElementHTMLElementName=${htmlNameModified} \
 				  -d customElementURLs=${customElementURLModified} \
+				  -d customElementUseESM=${customElementUseESMValue} \
 				  -d description= \
 				  -d externalReferenceCode= \
 				  -d friendlyURLMapping= \
