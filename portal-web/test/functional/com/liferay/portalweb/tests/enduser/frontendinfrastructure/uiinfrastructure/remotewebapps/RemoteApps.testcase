@@ -19,14 +19,19 @@ definition {
 		}
 		else {
 			RemoteApps.tearDown();
+
 			Navigator.gotoPage(pageName = "Home");
+
 			while (IsElementPresent(locator1 = "Navigation#ANY_SITE_NAV_BUT_HOME")) {
 				var layoutName = selenium.getText("Navigation#ANY_SITE_NAV_BUT_HOME");
+
 				JSONLayout.deletePublicLayout(
-						groupName = "Guest",
-						layoutName = "${layoutName}");
+					groupName = "Guest",
+					layoutName = "${layoutName}");
+
 				Navigator.gotoPage(pageName = "Home");
 			}
+
 			PortalInstances.tearDownCP();
 		}
 	}
