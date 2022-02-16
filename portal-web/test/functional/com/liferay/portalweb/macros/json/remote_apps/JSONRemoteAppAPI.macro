@@ -37,7 +37,7 @@ definition {
 		var customElementURLModified = StringUtil.replace("${customElementURL}", ":", "%3A");
 		var nameModified = StringUtil.replace("${customElementName}", " ", "%20");
 		var htmlNameModified = StringUtil.replace("${customElementHtmlName}", " ", "%20");
-		var customElementUseESMValue ="${customElementUseESM}";
+		var customElementUseESMValue = "${customElementUseESM}";
 
 		if (!(isSet(customElementUseESMValue))) {
 			var customElementUseESMValue = "false";
