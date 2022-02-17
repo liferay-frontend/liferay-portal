@@ -45,9 +45,9 @@ if (Validator.isNull(icon)) {
 			</button>
 		</c:when>
 		<c:otherwise>
-			<a class="component-action direction-<%= direction %> dropdown-toggle <%= triggerCssClass %>" href="javascript:;" id="<%= id %>" title="<%= message %>">
+			<button aria-expanded="false" aria-haspopup="true" class="component-action direction-<%= direction %> dropdown-toggle <%= triggerCssClass %>" id="<%= id %>" <%= ((message != null) && !message.isEmpty()) ? "title=\"" + message + "\"" : StringPool.BLANK %> type="button">
 				<aui:icon image="<%= icon %>" markupView="lexicon" />
-			</a>
+			</button>
 		</c:otherwise>
 	</c:choose>
 

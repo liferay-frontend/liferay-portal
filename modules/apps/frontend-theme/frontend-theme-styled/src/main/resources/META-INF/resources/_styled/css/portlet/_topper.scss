@@ -52,7 +52,7 @@ html#{$cadmin-selector} {
 
 			> a,
 			> span > a,
-			.lfr-icon-menu > a {
+			.lfr-icon-menu > .component-action {
 				color: $portlet-topper-link-color;
 			}
 
@@ -253,7 +253,7 @@ html#{$cadmin-selector} {
 
 	> a,
 	> span > a,
-	.lfr-icon-menu > a {
+	.lfr-icon-menu > .component-action {
 		color: $portlet-topper-link-color;
 	}
 
