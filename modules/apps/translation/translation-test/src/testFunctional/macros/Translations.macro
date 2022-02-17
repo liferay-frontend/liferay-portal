@@ -742,6 +742,15 @@ definition {
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
 	}
 
+	macro viewSelectTranslationLanguageMenu {
+		Portlet.waitForForm();
+
+		Click.clickNoMouseOver(
+			key_currentLocale = StringUtil.lowerCase("${key_currentLocale}"),
+			key_title = "${key_title}",
+			locator1 = "Button#SELECT_TRANSLATION_LANGUAGE");
+	}
+
 	macro viewTargetFields {
 		if (isSet(contentPageName)) {
 			AssertElementPresent(
