@@ -452,8 +452,7 @@ AUI.add(
 				links.set(ARIA_ATTR_ROLE, ariaLinksAttr);
 
 				trigger.attr({
-					'aria-haspopup': true,
-					'role': 'button',
+					'aria-haspopup': true
 				});
 
 				listNode.setAttribute('aria-labelledby', trigger.guid());
