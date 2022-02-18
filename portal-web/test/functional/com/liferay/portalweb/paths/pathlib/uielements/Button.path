@@ -791,6 +791,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SELECT_TRANSLATION_LANGUAGE_AUI_TAG</td>
+	<td>//div[contains(@class,'col') and h3='${key_title}']//div[contains(@class,'form-group')]//button[contains(@class,'btn')]//*[name()='svg'][contains(@class,'lexicon-icon-${key_currentLocale}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>MANAGE_TRANSLATIONS</td>
 	<td>//button[contains(@class,'dropdown-item')]//div[contains(@class,'autofit-section')and text()='Manage Translations']</td>
 	<td></td>
