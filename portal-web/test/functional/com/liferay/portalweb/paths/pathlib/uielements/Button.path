@@ -786,8 +786,6 @@
 	<td></td>
 </tr>
 <tr>
-<<<<<<< HEAD
-=======
 	<td>SELECT_TRANSLATION_LANGUAGE</td>
 	<td>//div[contains(@class,'col') and h3='${key_title}']//button[contains(@class,'dropdown-toggle')]//*[name()='svg'][contains(@class,'lexicon-icon-${key_currentLocale}')]</td>
 	<td></td>
@@ -803,7 +801,6 @@
 	<td></td>
 </tr>
 <tr>
->>>>>>> 16087238af6d... LPS-147612 Upadte a path to click the selector translation language of AUI Tag Admin model
 	<td>TRANSLATIONS_LOCALIZATION</td>
 	<td>//div[contains(@class,'dropdown')]//button[contains(@class,'dropdown-toggle')]//*[name()='svg'][contains(@class,'lexicon-icon-${key_currentLocale}')]</td>
 	<td></td>
