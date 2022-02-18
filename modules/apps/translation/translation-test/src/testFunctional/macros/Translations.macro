@@ -82,6 +82,27 @@ definition {
 			rowEntry = "${translationEntry}");
 	}
 
+	macro editTranslationInput {
+		Portlet.waitForForm();
+
+		Type.type(
+			locator1 = "TextInput#INPUT_TEXT_FIELD",
+			value1 = "${languagefirst}");
+
+		Click.clickNoMouseOver(
+			key_currentLocale = StringUtil.lowerCase("${key_currentLocale}"),
+			key_title = "${key_title}",
+			locator1 = "Button#SELECT_TRANSLATION_LANGUAGE_AUI_TAG");
+
+		Click(
+			key_locale = "${key_locale}",
+			locator1 = "Translation#DROPDOWN_MENU_ITEM");
+
+		Type.type(
+			locator1 = "TextInput#INPUT_TEXT_FIELD",
+			value1 = "${languagesecond}");
+	}
+
 	macro enableAwsTranslation {
 		var accessKey = PropsUtil.get("aws.translation.access.key.id");
 		var secretKey = PropsUtil.get("aws.translation.secret.access.key");
