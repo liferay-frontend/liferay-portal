@@ -351,6 +351,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>INPUT_TEXT_FIELD</td>
+	<td>//div[contains(@class,'col') and h3='${key_title}']//div[contains(@class,'form-group')]//div[contains(@class,'input-group-item')]//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INPUT_FORM_TEXT</td>
+	<td>//div[contains(@class,'col') and h3='${key_title}']//div[contains(@class,'form-group')]//div[contains(@class,'form-text')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>KEY</td>
 	<td>//div[label[normalize-space(text())='Key']]//input[@type='text']</td>
 	<td></td>
