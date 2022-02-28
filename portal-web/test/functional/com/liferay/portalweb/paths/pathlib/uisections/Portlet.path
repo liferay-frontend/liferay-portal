@@ -137,7 +137,7 @@
 </tr>
 <tr>
 	<td>SPECIFIC_BORDERLESS_ELLIPSIS_ICON</td>
-	<td>//header[contains(@class,'portlet-topper') and contains(.,'${key_portletName}')]//div[contains(@class,'portlet-options')]/a</td>
+	<td>//header[contains(@class,'portlet-topper') and contains(.,'${key_portletName}')]//div[contains(@class,'portlet-options')]/button</td>
 	<td></td>
 </tr>
 <tr>
