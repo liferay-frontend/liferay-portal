@@ -385,7 +385,6 @@ public class DLAdminManagementToolbarDisplayContext
 	@Override
 	public List<DropdownItem> getOrderDropdownItems() {
 		if (_isSearch()) {
-
 			return null;
 		}
 

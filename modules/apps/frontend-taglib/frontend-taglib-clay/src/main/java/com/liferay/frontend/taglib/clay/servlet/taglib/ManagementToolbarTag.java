@@ -25,13 +25,11 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.taglib.util.TagResourceBundleUtil;
 
@@ -930,7 +928,6 @@ public class ManagementToolbarTag extends BaseContainerTag {
 			ListUtil.isEmpty(orderDropdownItems);
 
 		if ((getSortingURL() != null) && showOrderToggle) {
-
 			jspWriter.write("<li class=\"nav-item\">");
 
 			LinkTag linkTag = new LinkTag();
@@ -1113,8 +1110,7 @@ public class ManagementToolbarTag extends BaseContainerTag {
 
 						iconTag = new IconTag();
 
-						iconTag.setCssClass(
-							"inline-item inline-item-after");
+						iconTag.setCssClass("inline-item inline-item-after");
 						iconTag.setSymbol("caret-double-l");
 
 						iconTag.doTag(pageContext);
@@ -1130,6 +1126,7 @@ public class ManagementToolbarTag extends BaseContainerTag {
 				jspWriter.write("<li class=\"nav-item\">");
 
 				LinkTag linkTag = new LinkTag();
+
 				linkTag.setCssClass(
 					"d-md-none nav-btn nav-btn-monospaced btn btn-primary");
 
@@ -1150,11 +1147,9 @@ public class ManagementToolbarTag extends BaseContainerTag {
 				linkTag.doTag(pageContext);
 
 				jspWriter.write("</li>");
-				
 			}
 
 			if (isShowInfoButton()) {
-
 				jspWriter.write("<li class=\"nav-item\"><button class=\"");
 				jspWriter.write(" nav-link nav-link-monospaced btn");
 				jspWriter.write(" btn-monospaced btn-unstyled\" type=\"button");
