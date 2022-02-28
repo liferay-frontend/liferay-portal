@@ -35,6 +35,7 @@ import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
+import com.liferay.portal.vulcan.batch.engine.strategy.BatchStrategy;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -324,9 +325,8 @@ public abstract class BaseWikiPageAttachmentResourceImpl
 					Long.parseLong((String)parameters.get("wikiPageId")),
 					(MultipartBody)parameters.get("multipartBody"));
 
-		for (WikiPageAttachment wikiPageAttachment : wikiPageAttachments) {
-			wikiPageAttachmentUnsafeConsumer.accept(wikiPageAttachment);
-		}
+		contextBatchStrategy.apply(
+			wikiPageAttachments, wikiPageAttachmentUnsafeConsumer);
 	}
 
 	@Override
@@ -396,6 +396,10 @@ public abstract class BaseWikiPageAttachmentResourceImpl
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
 		this.contextAcceptLanguage = contextAcceptLanguage;
+	}
+
+	public void setContextBatchStrategy(BatchStrategy contextBatchStrategy) {
+		this.contextBatchStrategy = contextBatchStrategy;
 	}
 
 	public void setContextCompany(
@@ -546,6 +550,7 @@ public abstract class BaseWikiPageAttachmentResourceImpl
 	}
 
 	protected AcceptLanguage contextAcceptLanguage;
+	protected BatchStrategy contextBatchStrategy;
 	protected com.liferay.portal.kernel.model.Company contextCompany;
 	protected HttpServletRequest contextHttpServletRequest;
 	protected HttpServletResponse contextHttpServletResponse;
