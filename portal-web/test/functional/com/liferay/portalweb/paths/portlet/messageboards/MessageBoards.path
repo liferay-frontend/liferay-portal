@@ -163,7 +163,7 @@
 <!--THREAD_LIST-->
 <tr>
 	<td>THREAD_LIST_ACTIONS</td>
-	<td>//dd[contains(.,'${key_threadSubject}')]//a[span/*[name()='svg'][contains(@class,'icon-ellipsis')]]</td>
+	<td>//dd[contains(.,'${key_threadSubject}')]//button[span/*[name()='svg'][contains(@class,'icon-ellipsis')]]</td>
 	<td></td>
 </tr>
 <tr>
