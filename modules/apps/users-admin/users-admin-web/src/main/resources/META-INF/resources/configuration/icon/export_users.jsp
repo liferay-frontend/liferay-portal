@@ -27,7 +27,12 @@ int status = GetterUtil.getInteger(request.getAttribute(UsersAdminWebKeys.STATUS
 <liferay-util:buffer
 	var="onClickFn"
 >
-	if (confirm('<liferay-ui:message key="warning-this-csv-file-contains-user-supplied-inputs" unicode="<%= true %>" />')) {
+	let confirmed = false;
+
+	Liferay.Util.confirm('<liferay-ui:message key="warning-this-csv-file-contains-user-supplied-inputs" unicode="<%= true %>" />')
+		.then(confirmResult => confirmed = confirmResult);
+
+	if (confirmed) {
 		submitForm(document.hrefFm, '<%= exportURL + "&compress=0&etag=0&strip=0" %>');
 	}
 </liferay-util:buffer>
