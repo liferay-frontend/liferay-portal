@@ -17,13 +17,17 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 		...otherProps,
 		onActionButtonClick: (event, {item}) => {
 			if (item?.data?.action === 'deleteImages') {
-				if (
-					confirm(
-						Liferay.Language.get(
-							'are-you-sure-you-want-to-delete-the-selected-images'
-						)
+				let confirmDeleteImages = false;
+
+				Liferay.Util.confirm(
+					Liferay.Language.get(
+						'are-you-sure-you-want-to-delete-the-selected-images'
 					)
-				) {
+				).then((confirmResult) => {
+					confirmDeleteImages = confirmResult;
+				});
+
+				if (confirmDeleteImages) {
 					const form = document.getElementById(
 						`${portletNamespace}fm`
 					);
