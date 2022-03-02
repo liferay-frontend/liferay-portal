@@ -28,6 +28,7 @@ import {
 	getComponentCache,
 	initComponentCache,
 } from './component.es';
+import {confirmAsync} from './confirm';
 import {
 	getLayoutIcons,
 	hideLayoutPane,
@@ -144,6 +145,8 @@ Liferay.Portlet.openWindow = (...args) => {
 Liferay.SideNavigation = SideNavigation;
 
 Liferay.Util = Liferay.Util || {};
+
+Liferay.Util.confirm = confirmAsync;
 
 Liferay.Util.MAP_HTML_CHARS_ESCAPED = MAP_HTML_CHARS_ESCAPED;
 
