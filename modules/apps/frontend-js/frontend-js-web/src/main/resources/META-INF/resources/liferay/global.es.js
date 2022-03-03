@@ -39,6 +39,7 @@ import {
 import {showTab} from './portal/tabs.es';
 import {showTooltip} from './portal/tooltip.es';
 import portlet, {minimizePortlet} from './portlet/portlet.es';
+import {promptAsync} from './prompt';
 import SideNavigation from './side_navigation.es';
 import addParams from './util/add_params';
 import getCountries from './util/address/get_countries.es';
@@ -144,6 +145,8 @@ Liferay.Portlet.openWindow = (...args) => {
 Liferay.SideNavigation = SideNavigation;
 
 Liferay.Util = Liferay.Util || {};
+
+Liferay.Util.prompt = promptAsync;
 
 Liferay.Util.MAP_HTML_CHARS_ESCAPED = MAP_HTML_CHARS_ESCAPED;
 
