@@ -18,11 +18,11 @@
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
-import {render} from '@liferay/frontend-js-react-web';
+import {render, useEventListener} from '@liferay/frontend-js-react-web';
 import React, {useCallback, useState} from 'react';
 
 function PromptDialog({defaultPlaceholder, message, onClose}) {
-	const [value, setValue] = useState(() => defaultPlaceholder);
+	const [value, setValue] = useState(defaultPlaceholder);
 	const [visible, setVisible] = useState(true);
 
 	const {observer} = useModal({
@@ -32,14 +32,22 @@ function PromptDialog({defaultPlaceholder, message, onClose}) {
 	const processClose = useCallback(() => {
 		setVisible(false);
 
-		// TODO - Is this really necessary?? REFLITAO
-
-		document.body.classList.remove('modal-open');
 
 		if (onClose) {
 			onClose(value);
 		}
 	}, [onClose, value]);
+
+	useEventListener(
+		'keydown',
+		(event) => {
+			if (visible && event.key === 'Enter') {
+				processClose();
+			}
+		},
+		true,
+		document
+	);
 
 	if (!visible) {
 		return null;
@@ -58,7 +66,8 @@ function PromptDialog({defaultPlaceholder, message, onClose}) {
 
 					<ClayInput
 						id="promptInputText"
-						onChange={setValue}
+						onChange={(event) => setValue(event.target.value)}
+						placeholder={defaultPlaceholder}
 						type="text"
 					/>
 				</ClayForm.Group>
@@ -66,15 +75,20 @@ function PromptDialog({defaultPlaceholder, message, onClose}) {
 
 			<ClayModal.Footer
 				last={
-					<>
+					<ClayButton.Group spaced>
 						<ClayButton
 							aria-label={Liferay.Language.get('cancel')}
 							displayType="secondary"
-							onClick={() => onClose(null)}
+							onClick={() => {
+								onClose(null);
+
+								processClose();
+							}}
 							type="button"
 						>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
+
 						<ClayButton
 							aria-label={Liferay.Language.get('ok')}
 							displayType="primary"
@@ -83,7 +97,7 @@ function PromptDialog({defaultPlaceholder, message, onClose}) {
 						>
 							{Liferay.Language.get('ok')}
 						</ClayButton>
-					</>
+					</ClayButton.Group>
 				}
 			/>
 		</ClayModal>
