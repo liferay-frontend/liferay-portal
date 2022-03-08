@@ -145,6 +145,14 @@ Liferay.SideNavigation = SideNavigation;
 
 Liferay.Util = Liferay.Util || {};
 
+Liferay.Util.prompt = (...args) => {
+	Liferay.Loader.require('frontend-js-web/liferay/prompt', (commands) => {
+		commands.promptAsync(...args);
+	});
+};
+
+Liferay.Util.confirm = confirmAsync;
+
 Liferay.Util.MAP_HTML_CHARS_ESCAPED = MAP_HTML_CHARS_ESCAPED;
 
 /**
