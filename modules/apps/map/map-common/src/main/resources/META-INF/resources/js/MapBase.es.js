@@ -106,15 +106,26 @@ class MapBase extends State {
 				: {};
 
 		if (!geolocation.lat && !geolocation.lng) {
-			Liferay.Util.getGeolocation(
-				(lat, lng) => {
-					this._initializeLocation({lat, lng});
-				},
-				() => {
-					this.zoom = 2;
-					this._initializeLocation({lat: 0, lng: 0});
-				}
-			);
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(
+					(position) => {
+						const {latitude, longitude} = position.coords;
+
+						this._initializeLocation({
+							lat: latitude,
+							lng: longitude,
+						});
+					},
+					() => {
+						this.zoom = 2;
+						this._initializeLocation({lat: 0, lng: 0});
+					}
+				);
+			}
+			else {
+				this.zoom = 2;
+				this._initializeLocation({lat: 0, lng: 0});
+			}
 		}
 		else {
 			this._initializeLocation(geolocation);
