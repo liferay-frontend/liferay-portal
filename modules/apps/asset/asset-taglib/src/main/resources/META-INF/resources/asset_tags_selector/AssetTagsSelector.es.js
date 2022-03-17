@@ -25,6 +25,7 @@ const noop = () => {};
 
 function AssetTagsSelector({
 	addCallback,
+	autoFocus,
 	groupIds = [],
 	id,
 	inputName,
@@ -181,6 +182,7 @@ function AssetTagsSelector({
 				<ClayInput.Group>
 					<ClayInput.GroupItem>
 						<ClayMultiSelect
+							autoFocus={autoFocus}
 							inputName={inputName}
 							inputValue={inputValue}
 							items={selectedItems}
@@ -221,6 +223,7 @@ function AssetTagsSelector({
 
 AssetTagsSelector.propTypes = {
 	addCallback: PropTypes.string,
+	autoFocus: PropTypes.bool,
 	groupIds: PropTypes.array,
 	id: PropTypes.string,
 	inputName: PropTypes.string,
