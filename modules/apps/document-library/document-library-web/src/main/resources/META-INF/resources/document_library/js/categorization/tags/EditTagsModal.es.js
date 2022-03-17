@@ -250,6 +250,7 @@ const EditTagsModal = ({
 					)}
 
 					<AssetTagsSelector
+						autoFocus
 						groupIds={groupIds}
 						inputName={`${namespace}_hiddenInput`}
 						inputValue={inputValue}
