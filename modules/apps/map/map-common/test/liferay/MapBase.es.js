@@ -61,18 +61,13 @@ describe('MapBase', () => {
 	const GeocoderImpl = jest.fn().mockImplementation(() => geocoderImpl);
 
 	const geoJSONImpl = {
+		dispose: jest.fn(),
 		on: jest.fn(),
 	};
 
 	const GeoJSONImpl = jest.fn().mockImplementation(() => geoJSONImpl);
 
 	beforeEach(() => {
-		window.Liferay = {
-			Util: {
-				getGeolocation: jest.fn(),
-			},
-		};
-
 		MapImpl.MarkerImpl = MarkerImpl;
 		MapImpl.DialogImpl = DialogImpl;
 		MapImpl.GeocoderImpl = GeocoderImpl;
@@ -127,12 +122,6 @@ describe('MapBase', () => {
 
 	describe('constructor()', () => {
 		it('calls _initializeMap as a fallback', () => {
-			window.Liferay = {
-				Util: {
-					getGeolocation: jest.fn((success, fallback) => fallback()),
-				},
-			};
-
 			jest.spyOn(MapImpl.prototype, '_initializeMap');
 
 			const mapImpl = new MapImpl();
