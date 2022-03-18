@@ -252,12 +252,6 @@ describe('MapBase', () => {
 	});
 
 	describe('_getDialog()', () => {
-		it('does nothing if there is no MapBase.DialogImpl', () => {
-			MapImpl.DialogImpl = null;
-
-			expect(mapImpl._getDialog()).toBe(null);
-		});
-
 		it('passes the existing map to the dialog constructor', () => {
 			mapImpl._map = Math.random();
 
