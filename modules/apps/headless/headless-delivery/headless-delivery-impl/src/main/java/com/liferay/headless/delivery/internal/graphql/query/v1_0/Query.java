@@ -530,7 +530,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {comment(commentId: ___){actions, creator, dateCreated, dateModified, id, numberOfComments, parentCommentId, text}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {comment(commentId: ___){actions, creator, dateCreated, dateModified, externalReferenceCode, id, numberOfComments, parentCommentId, text}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(description = "Retrieves the comment.")
 	public Comment comment(@GraphQLName("commentId") Long commentId)
@@ -600,6 +600,33 @@ public class Query {
 					_filterBiFunction.apply(commentResource, filterString),
 					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(commentResource, sortsString))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {documentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(documentExternalReferenceCode: ___, externalReferenceCode: ___, siteKey: ___){actions, creator, dateCreated, dateModified, externalReferenceCode, id, numberOfComments, parentCommentId, text}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Retrieves the document's comment by document's and comment's external reference codes."
+	)
+	public Comment
+			documentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+				@GraphQLName("siteKey") @NotEmpty String siteKey,
+				@GraphQLName("documentExternalReferenceCode") String
+					documentExternalReferenceCode,
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_commentResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			commentResource ->
+				commentResource.
+					getSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+						Long.valueOf(siteKey), documentExternalReferenceCode,
+						externalReferenceCode));
 	}
 
 	/**

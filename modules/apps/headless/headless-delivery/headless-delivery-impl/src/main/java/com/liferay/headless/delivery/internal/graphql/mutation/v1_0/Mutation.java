@@ -680,6 +680,53 @@ public class Mutation {
 	}
 
 	@GraphQLField(
+		description = "Deletes the document's comment by document's and comment's external reference codes."
+	)
+	public boolean
+			deleteSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+				@GraphQLName("siteKey") @NotEmpty String siteKey,
+				@GraphQLName("documentExternalReferenceCode") String
+					documentExternalReferenceCode,
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_commentResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			commentResource ->
+				commentResource.
+					deleteSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+						Long.valueOf(siteKey), documentExternalReferenceCode,
+						externalReferenceCode));
+
+		return true;
+	}
+
+	@GraphQLField(
+		description = "Updates the document's comment given the document's and comment's external reference codes, or creates it if it not exists."
+	)
+	public Comment
+			updateSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+				@GraphQLName("siteKey") @NotEmpty String siteKey,
+				@GraphQLName("documentExternalReferenceCode") String
+					documentExternalReferenceCode,
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("comment") Comment comment)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_commentResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			commentResource ->
+				commentResource.
+					putSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+						Long.valueOf(siteKey), documentExternalReferenceCode,
+						externalReferenceCode, comment));
+	}
+
+	@GraphQLField(
 		description = "Creates a new comment on the structured content."
 	)
 	public Comment createStructuredContentComment(

@@ -105,6 +105,24 @@ public interface CommentResource {
 			Long documentId, String callbackURL, Object object)
 		throws Exception;
 
+	public void
+			deleteSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+				Long siteId, String documentExternalReferenceCode,
+				String externalReferenceCode)
+		throws Exception;
+
+	public Comment
+			getSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+				Long siteId, String documentExternalReferenceCode,
+				String externalReferenceCode)
+		throws Exception;
+
+	public Comment
+			putSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+				Long siteId, String documentExternalReferenceCode,
+				String externalReferenceCode, Comment comment)
+		throws Exception;
+
 	public Page<Comment> getStructuredContentCommentsPage(
 			Long structuredContentId, String search,
 			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
