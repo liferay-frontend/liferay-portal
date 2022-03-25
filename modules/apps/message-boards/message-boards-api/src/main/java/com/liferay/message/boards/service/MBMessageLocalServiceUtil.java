@@ -452,6 +452,14 @@ public class MBMessageLocalServiceUtil {
 		return getService().fetchMBMessage(messageId);
 	}
 
+	public static MBMessage fetchMBMessage(
+		String className, long classPK, String externalReferenceCode,
+		long groupId) {
+
+		return getService().fetchMBMessage(
+			className, classPK, externalReferenceCode, groupId);
+	}
+
 	/**
 	 * Returns the message-boards message with the matching external reference code and group.
 	 *
@@ -688,6 +696,15 @@ public class MBMessageLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getMBMessage(messageId);
+	}
+
+	public static MBMessage getMBMessage(
+			String className, long classPK, String externalReferenceCode,
+			long groupId)
+		throws PortalException {
+
+		return getService().getMBMessage(
+			className, classPK, externalReferenceCode, groupId);
 	}
 
 	/**

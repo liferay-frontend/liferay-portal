@@ -493,6 +493,15 @@ public class MBMessageLocalServiceWrapper
 		return _mbMessageLocalService.fetchMBMessage(messageId);
 	}
 
+	@Override
+	public MBMessage fetchMBMessage(
+		String className, long classPK, String externalReferenceCode,
+		long groupId) {
+
+		return _mbMessageLocalService.fetchMBMessage(
+			className, classPK, externalReferenceCode, groupId);
+	}
+
 	/**
 	 * Returns the message-boards message with the matching external reference code and group.
 	 *
@@ -770,6 +779,16 @@ public class MBMessageLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _mbMessageLocalService.getMBMessage(messageId);
+	}
+
+	@Override
+	public MBMessage getMBMessage(
+			String className, long classPK, String externalReferenceCode,
+			long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _mbMessageLocalService.getMBMessage(
+			className, classPK, externalReferenceCode, groupId);
 	}
 
 	/**
