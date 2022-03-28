@@ -92,6 +92,13 @@ public interface MBMessageLocalService
 			String body, ServiceContext serviceContext)
 		throws PortalException;
 
+	public MBMessage addDiscussionMessage(
+			String externalReferenceCode, long userId, String userName,
+			long groupId, String className, long classPK, long threadId,
+			long parentMessageId, String subject, String body,
+			ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * Adds the message-boards message to the database. Also notifies the appropriate model listeners.
 	 *
