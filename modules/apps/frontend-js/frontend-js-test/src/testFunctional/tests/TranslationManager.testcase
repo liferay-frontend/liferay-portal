@@ -40,9 +40,9 @@ definition {
 		}
 	}
 
-	@description = "LPS-148143. Add language with no success message and undo option."
+	@description = "LPS-148143. Translations manager has no success message and undo option after adding language to translations list."
 	@priority = "3"
-	test AssertNoSuccessMessageAndUndoOptionAfterAddingLanguage {
+	test HasNoSuccessMessageAndUndoOptionAfterAddingLanguage {
 		task ("Given manage translations modal") {
 			TranslationManagerPortlet.goToManageTranslationsModal(
 				key_currentLocale = "en-us",
