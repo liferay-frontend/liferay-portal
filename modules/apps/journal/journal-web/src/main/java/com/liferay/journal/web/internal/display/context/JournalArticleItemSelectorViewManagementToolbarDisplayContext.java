@@ -106,7 +106,11 @@ public class JournalArticleItemSelectorViewManagementToolbarDisplayContext
 			}
 		).build();
 
-		dropdownItemList.addAll(super.getFilterDropdownItems());
+		List<DropdownItem> filterDropdownItems = super.getFilterDropdownItems();
+
+		if (filterDropdownItems != null) {
+			dropdownItemList.addAll(filterDropdownItems);
+		}
 
 		return dropdownItemList;
 	}
