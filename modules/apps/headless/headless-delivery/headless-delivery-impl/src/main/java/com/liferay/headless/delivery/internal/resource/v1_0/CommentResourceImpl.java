@@ -81,11 +81,25 @@ public class CommentResourceImpl
 
 	@Override
 	public void deleteComment(Long commentId) throws Exception {
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
+		_deleteComment(commentId);
+	}
 
-		discussionPermission.checkDeletePermission(commentId);
+	@Override
+	public void
+			deleteSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+				Long siteId, String documentExternalReferenceCode,
+				String externalReferenceCode)
+		throws Exception {
 
-		_commentManager.deleteComment(commentId);
+		DLFileEntry dlFileEntry = _getDLFileEntry(
+			documentExternalReferenceCode, siteId);
+
+		com.liferay.portal.kernel.comment.Comment comment =
+			_commentManager.getComment(
+				DLFileEntry.class.getName(), dlFileEntry.getFileEntryId(),
+				externalReferenceCode, siteId);
+
+		_deleteComment(comment.getCommentId());
 	}
 
 	@Override
@@ -192,6 +206,30 @@ public class CommentResourceImpl
 	}
 
 	@Override
+	public Comment
+			getSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+				Long siteId, String documentExternalReferenceCode,
+				String externalReferenceCode)
+		throws Exception {
+
+		DLFileEntry dlFileEntry = _getDLFileEntry(
+			documentExternalReferenceCode, siteId);
+
+		com.liferay.portal.kernel.comment.Comment comment =
+			_commentManager.getComment(
+				DLFileEntry.class.getName(), dlFileEntry.getFileEntryId(),
+				externalReferenceCode, siteId);
+
+		DiscussionPermission discussionPermission = _getDiscussionPermission();
+
+		discussionPermission.checkViewPermission(
+			contextCompany.getCompanyId(), comment.getGroupId(),
+			comment.getClassName(), comment.getClassPK());
+
+		return CommentUtil.toComment(comment, _commentManager, _portal);
+	}
+
+	@Override
 	public Page<Comment> getStructuredContentCommentsPage(
 			Long structuredContentId, String search, Aggregation aggregation,
 			Filter filter, Pagination pagination, Sort[] sorts)
@@ -292,28 +330,36 @@ public class CommentResourceImpl
 	public Comment putComment(Long commentId, Comment comment)
 		throws Exception {
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
+		return _updateComment(
+			_commentManager.fetchComment(commentId), commentId,
+			comment.getText());
+	}
 
-		discussionPermission.checkUpdatePermission(commentId);
+	@Override
+	public Comment
+			putSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode(
+				Long siteId, String documentExternalReferenceCode,
+				String externalReferenceCode, Comment comment)
+		throws Exception {
+
+		DLFileEntry dlFileEntry = _getDLFileEntry(
+			documentExternalReferenceCode, siteId);
 
 		com.liferay.portal.kernel.comment.Comment existingComment =
-			_commentManager.fetchComment(commentId);
+			_commentManager.fetchComment(
+				DLFileEntry.class.getName(), dlFileEntry.getFileEntryId(),
+				externalReferenceCode, siteId);
 
-		try {
-			_commentManager.updateComment(
-				existingComment.getUserId(), existingComment.getClassName(),
-				existingComment.getClassPK(), commentId, StringPool.BLANK,
-				StringBundler.concat("<p>", comment.getText(), "</p>"),
-				_createServiceContextFunction());
+		if (existingComment != null) {
+			return _updateComment(
+				existingComment, existingComment.getCommentId(),
+				comment.getText());
+		}
 
-			return CommentUtil.toComment(
-				_commentManager.fetchComment(commentId), _commentManager,
-				_portal);
-		}
-		catch (MessageSubjectException messageSubjectException) {
-			throw new ClientErrorException(
-				"Comment text is null", 422, messageSubjectException);
-		}
+		return _postEntityComment(
+			DLFileEntry.class.getName(), dlFileEntry.getFileEntryId(),
+			comment.getExternalReferenceCode(), dlFileEntry.getGroupId(),
+			comment.getText());
 	}
 
 	private Function<String, ServiceContext> _createServiceContextFunction() {
@@ -324,6 +370,14 @@ public class CommentResourceImpl
 
 			return serviceContext;
 		};
+	}
+
+	private void _deleteComment(Long commentId) throws Exception {
+		DiscussionPermission discussionPermission = _getDiscussionPermission();
+
+		discussionPermission.checkDeletePermission(commentId);
+
+		_commentManager.deleteComment(commentId);
 	}
 
 	private Page<Comment> _getComments(
@@ -364,6 +418,28 @@ public class CommentResourceImpl
 	private DiscussionPermission _getDiscussionPermission() {
 		return _commentManager.getDiscussionPermission(
 			PermissionThreadLocal.getPermissionChecker());
+	}
+
+	private DLFileEntry _getDLFileEntry(
+			String externalReferenceCode, Long siteId)
+		throws Exception {
+
+		DLFileEntry dlFileEntry =
+			_dlFileEntryService.fetchFileEntryByExternalReferenceCode(
+				siteId, externalReferenceCode);
+
+		if (dlFileEntry == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append("No document exists with external reference code ");
+			sb.append(externalReferenceCode);
+			sb.append(" and site ID ");
+			sb.append(siteId);
+
+			throw new NotFoundException(sb.toString());
+		}
+
+		return dlFileEntry;
 	}
 
 	private long _getUserId() {
@@ -418,6 +494,32 @@ public class CommentResourceImpl
 				StringBundler.concat("<p>", text, "</p>"),
 				_createServiceContextFunction()),
 			className, classPK, groupId);
+	}
+
+	private Comment _updateComment(
+			com.liferay.portal.kernel.comment.Comment comment, long commentId,
+			String text)
+		throws Exception {
+
+		DiscussionPermission discussionPermission = _getDiscussionPermission();
+
+		discussionPermission.checkUpdatePermission(commentId);
+
+		try {
+			_commentManager.updateComment(
+				comment.getUserId(), comment.getClassName(),
+				comment.getClassPK(), comment.getCommentId(), StringPool.BLANK,
+				StringBundler.concat("<p>", text, "</p>"),
+				_createServiceContextFunction());
+
+			return CommentUtil.toComment(
+				_commentManager.fetchComment(comment.getCommentId()),
+				_commentManager, _portal);
+		}
+		catch (MessageSubjectException messageSubjectException) {
+			throw new ClientErrorException(
+				"Comment text is null", 422, messageSubjectException);
+		}
 	}
 
 	@Reference
