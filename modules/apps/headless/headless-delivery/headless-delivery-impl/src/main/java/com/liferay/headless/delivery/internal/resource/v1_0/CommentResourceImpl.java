@@ -234,8 +234,9 @@ public class CommentResourceImpl
 		BlogsEntry blogsEntry = _blogsEntryService.getEntry(blogPostingId);
 
 		return _postEntityComment(
-			BlogsEntry.class.getName(), blogPostingId, comment.getText(),
-			blogsEntry.getGroupId());
+			BlogsEntry.class.getName(), blogPostingId,
+			comment.getExternalReferenceCode(), blogsEntry.getGroupId(),
+			comment.getText());
 	}
 
 	@Override
@@ -251,9 +252,10 @@ public class CommentResourceImpl
 
 		return _postComment(
 			() -> _commentManager.addComment(
-				_getUserId(), parentComment.getClassName(),
-				parentComment.getClassPK(), StringPool.BLANK,
-				parentComment.getCommentId(), StringPool.BLANK,
+				comment.getExternalReferenceCode(), _getUserId(),
+				parentComment.getClassName(), parentComment.getClassPK(),
+				StringPool.BLANK, parentComment.getCommentId(),
+				StringPool.BLANK,
 				StringBundler.concat("<p>", comment.getText(), "</p>"),
 				_createServiceContextFunction()),
 			parentComment.getClassName(), parentComment.getClassPK(),
@@ -267,8 +269,9 @@ public class CommentResourceImpl
 		DLFileEntry fileEntry = _dlFileEntryService.getFileEntry(documentId);
 
 		return _postEntityComment(
-			DLFileEntry.class.getName(), documentId, comment.getText(),
-			fileEntry.getGroupId());
+			DLFileEntry.class.getName(), documentId,
+			comment.getExternalReferenceCode(), fileEntry.getGroupId(),
+			comment.getText());
 	}
 
 	@Override
@@ -281,7 +284,8 @@ public class CommentResourceImpl
 
 		return _postEntityComment(
 			JournalArticle.class.getName(), structuredContentId,
-			comment.getText(), journalArticle.getGroupId());
+			comment.getExternalReferenceCode(), journalArticle.getGroupId(),
+			comment.getText());
 	}
 
 	@Override
@@ -403,13 +407,15 @@ public class CommentResourceImpl
 	}
 
 	private Comment _postEntityComment(
-			String className, long classPK, String text, long groupId)
+			String className, long classPK, String externalReferenceCode,
+			long groupId, String text)
 		throws Exception {
 
 		return _postComment(
 			() -> _commentManager.addComment(
-				_getUserId(), groupId, className, classPK, StringPool.BLANK,
-				StringPool.BLANK, StringBundler.concat("<p>", text, "</p>"),
+				externalReferenceCode, _getUserId(), groupId, className,
+				classPK, StringPool.BLANK, StringPool.BLANK,
+				StringBundler.concat("<p>", text, "</p>"),
 				_createServiceContextFunction()),
 			className, classPK, groupId);
 	}
