@@ -1097,8 +1097,9 @@ public class ManagementToolbarTag extends BaseContainerTag {
 			if (getViewTypeItems() != null) {
 				jspWriter.write("<li class=\"nav-item\"><div class=\"dropdown");
 				jspWriter.write("\"><button class=\"dropdown-toggle nav-link");
+				jspWriter.write(" btn btn-unstyled \"");
 
-				jspWriter.write(" btn btn-unstyled\" type=\"button\">");
+				jspWriter.write(" type=\"button\">");
 
 				for (ViewTypeItem viewTypeItem : getViewTypeItems()) {
 					if ((Boolean)viewTypeItem.get("active")) {

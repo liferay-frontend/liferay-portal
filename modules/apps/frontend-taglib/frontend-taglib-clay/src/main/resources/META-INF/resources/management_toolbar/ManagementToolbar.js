@@ -15,7 +15,6 @@
 import ClayButton from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
-import {LinkOrButton} from '@clayui/shared';
 import {ManagementToolbar as FrontendManagementToolbar} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
@@ -24,6 +23,7 @@ import ActionControls from './ActionControls';
 import CreationMenu from './CreationMenu';
 import FilterOrderControls from './FilterOrderControls';
 import InfoPanelControl from './InfoPanelControl';
+import LinkOrButton from './LinkOrButton';
 import ResultsBar from './ResultsBar';
 import SearchControls from './SearchControls';
 import SelectionControls from './SelectionControls';
@@ -211,10 +211,15 @@ function ManagementToolbar({
 										/>
 									) : (
 										<LinkOrButton
+											aria-label={Liferay.Language.get(
+												'new'
+											)}
+											button={true}
 											className="nav-btn"
 											displayType="primary"
 											onClick={onCreateButtonClick}
 											symbol="plus"
+											title={Liferay.Language.get('new')}
 											wide
 										>
 											{Liferay.Language.get('new')}
