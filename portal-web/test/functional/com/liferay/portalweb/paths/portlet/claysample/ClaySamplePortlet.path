@@ -109,7 +109,7 @@
 <!--MANAGEMENT_TOOLBARS-->
 <tr>
 	<td>DISPLAY_CONTEXT_ANY_ICON</td>
-	<td>//h3[text()='USING DISPLAY CONTEXT']//following::nav[contains(@class,'management-bar')]//*[*[name()='svg'][contains(@class,'icon-${key_text}')]]</td>
+	<td>//h3[text()='USING DISPLAY CONTEXT']//following::nav[contains(@class,'management-bar')][1]//*[*[name()='svg'][contains(@class,'icon-${key_text}')]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -124,7 +124,7 @@
 </tr>
 <tr>
 	<td>DISPLAY_CONTEXT_FILTER_OR_ORDER</td>
-	<td>//h3[text()='USING DISPLAY CONTEXT']//following::nav[contains(@class,'management-bar')]//*[*[contains(@title,'${key_filter}')]]</td>
+	<td>//h3[text()='USING DISPLAY CONTEXT']//following::nav[contains(@class,'management-bar')][1]//*[*[contains(@title,'${key_filter}')]]</td>
 	<td></td>
 </tr>
 </tbody>
