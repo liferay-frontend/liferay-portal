@@ -1254,7 +1254,7 @@ public class ManagementToolbarTag extends BaseContainerTag {
 
 			if (searchValue != null) {
 				jspWriter.write("<strong> \"");
-				jspWriter.write(searchValue);
+				jspWriter.write(HtmlUtil.escape(searchValue));
 				jspWriter.write("\"</strong>");
 			}
 
