@@ -161,7 +161,7 @@ definition {
 				key_text = "order-list-down",
 				locator1 = "ClaySamplePortlet#DISPLAY_CONTEXT_ANY_ICON",
 				value1 = "management-toolbar/order_button_can_display_correct_icons/order_list_down.png",
-				value2 = "90");
+				value2 = "70");
 		}
 
 		task ("And clicks on the order button") {
@@ -185,7 +185,7 @@ definition {
 				key_text = "order-list-up",
 				locator1 = "ClaySamplePortlet#DISPLAY_CONTEXT_ANY_ICON",
 				value1 = "management-toolbar/order_button_can_display_correct_icons/order_list_up.png",
-				value2 = "90");
+				value2 = "70");
 		}
 	}
 
