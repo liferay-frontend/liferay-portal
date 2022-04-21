@@ -527,66 +527,64 @@ AUI.add(
 
 				var focusManager = menuInstance._focusManager;
 
-				if (!focusManager) {
-					var bodyNode = menuInstance._overlay.bodyNode;
+				var bodyNode = menuInstance._overlay.bodyNode;
 
-					bodyNode.plug(A.Plugin.NodeFocusManager, {
-						circular: true,
-						descendants: 'li:not(.hide) a,input',
-						focusClass: 'focus',
-						keys: {
-							next: 'down:40',
-							previous: 'down:38',
-						},
-					});
+				bodyNode.plug(A.Plugin.NodeFocusManager, {
+					circular: true,
+					descendants: 'li:not(.hide) a,input',
+					focusClass: 'focus',
+					keys: {
+						next: 'down:40',
+						previous: 'down:38',
+					},
+				});
 
-					bodyNode.on(
-						'key',
-						() => {
-							var activeTrigger = menuInstance._activeTrigger;
+				bodyNode.on(
+					'key',
+					() => {
+						var activeTrigger = menuInstance._activeTrigger;
 
-							if (activeTrigger) {
-								menuInstance._closeActiveMenu();
+						if (activeTrigger) {
+							menuInstance._closeActiveMenu();
 
-								activeTrigger.focus();
-							}
-						},
-						'down:27,9'
-					);
-
-					focusManager = bodyNode.focusManager;
-
-					bodyNode.delegate(
-						'mouseenter',
-						(event) => {
-							if (focusManager.get('focused')) {
-								focusManager.focus(
-									event.currentTarget.one(SELECTOR_ANCHOR)
-								);
-							}
-						},
-						SELECTOR_LIST_ITEM
-					);
-
-					focusManager.after('activeDescendantChange', (event) => {
-						var descendants = focusManager.get('descendants');
-
-						var selectedItem = descendants.item(event.newVal);
-
-						if (selectedItem) {
-							var overlayList = bodyNode.one('ul');
-
-							if (overlayList) {
-								overlayList.setAttribute(
-									'aria-activedescendant',
-									selectedItem.guid()
-								);
-							}
+							activeTrigger.focus();
 						}
-					});
+					},
+					'down:27,9'
+				);
 
-					menuInstance._focusManager = focusManager;
-				}
+				focusManager = bodyNode.focusManager;
+
+				bodyNode.delegate(
+					'mouseenter',
+					(event) => {
+						if (focusManager.get('focused')) {
+							focusManager.focus(
+								event.currentTarget.one(SELECTOR_ANCHOR)
+							);
+						}
+					},
+					SELECTOR_LIST_ITEM
+				);
+
+				focusManager.after('activeDescendantChange', (event) => {
+					var descendants = focusManager.get('descendants');
+
+					var selectedItem = descendants.item(event.newVal);
+
+					if (selectedItem) {
+						var overlayList = bodyNode.one('ul');
+
+						if (overlayList) {
+							overlayList.setAttribute(
+								'aria-activedescendant',
+								selectedItem.guid()
+							);
+						}
+					}
+				});
+
+				menuInstance._focusManager = focusManager;
 
 				focusManager.refresh();
 			},
