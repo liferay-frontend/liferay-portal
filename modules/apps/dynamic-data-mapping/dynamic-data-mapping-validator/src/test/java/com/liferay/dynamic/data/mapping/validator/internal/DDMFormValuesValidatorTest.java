@@ -32,8 +32,6 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustNotSetValue;
-import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustSetValidAvailableLocales;
-import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustSetValidDefaultLocale;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustSetValidValue;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustSetValidValuesSize;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.RequiredValue;
@@ -773,53 +771,6 @@ public class DDMFormValuesValidatorTest {
 				"name", new UnlocalizedValue("Joe")));
 
 		ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
-
-		_ddmFormValuesValidatorImpl.validate(ddmFormValues);
-	}
-
-	@Test(expected = MustSetValidAvailableLocales.class)
-	public void testValidationWithWrongAvailableLocales() throws Exception {
-		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
-
-		DDMFormField ddmFormField =
-			DDMFormTestUtil.createLocalizableTextDDMFormField("name");
-
-		DDMFormTestUtil.addDDMFormFields(ddmForm, ddmFormField);
-
-		DDMFormValues ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(
-			ddmForm);
-
-		LocalizedValue localizedValue = new LocalizedValue(LocaleUtil.US);
-
-		localizedValue.addString(LocaleUtil.BRAZIL, "Joao");
-		localizedValue.addString(LocaleUtil.US, "Joe");
-
-		ddmFormValues.addDDMFormFieldValue(
-			DDMFormValuesTestUtil.createDDMFormFieldValue(
-				"name", localizedValue));
-
-		_ddmFormValuesValidatorImpl.validate(ddmFormValues);
-	}
-
-	@Test(expected = MustSetValidDefaultLocale.class)
-	public void testValidationWithWrongDefaultLocale() throws Exception {
-		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
-
-		DDMFormField ddmFormField =
-			DDMFormTestUtil.createLocalizableTextDDMFormField("name");
-
-		DDMFormTestUtil.addDDMFormFields(ddmForm, ddmFormField);
-
-		DDMFormValues ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(
-			ddmForm);
-
-		LocalizedValue localizedValue = new LocalizedValue(LocaleUtil.BRAZIL);
-
-		localizedValue.addString(LocaleUtil.US, "Joe");
-
-		ddmFormValues.addDDMFormFieldValue(
-			DDMFormValuesTestUtil.createDDMFormFieldValue(
-				"name", localizedValue));
 
 		_ddmFormValuesValidatorImpl.validate(ddmFormValues);
 	}
