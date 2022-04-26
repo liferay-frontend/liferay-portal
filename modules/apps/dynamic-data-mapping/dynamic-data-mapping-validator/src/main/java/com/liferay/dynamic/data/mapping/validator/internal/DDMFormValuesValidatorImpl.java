@@ -34,8 +34,6 @@ import com.liferay.dynamic.data.mapping.storage.constants.FieldConstants;
 import com.liferay.dynamic.data.mapping.util.NumberUtil;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustNotSetValue;
-import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustSetValidAvailableLocales;
-import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustSetValidDefaultLocale;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustSetValidField;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustSetValidValue;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException.MustSetValidValuesSize;
@@ -94,7 +92,7 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 
 		_traverseDDMFormFields(
 			ddmForm.getDDMFormFields(),
-			ddmFormValues.getDDMFormFieldValuesMap());
+			ddmFormValues.getDDMFormFieldValuesMap(false));
 
 		_traverseDDMFormFieldValues(
 			ddmFormValues.getDDMFormFieldValues(),
@@ -365,24 +363,6 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 				ddmFormField.getLabel(), ddmFormFieldValue.getName());
 		}
 
-		DDMFormValues ddmFormValues = ddmFormFieldValue.getDDMFormValues();
-
-		_validateDDMFormFieldValue(
-			ddmFormField, ddmFormValues.getAvailableLocales(),
-			ddmFormValues.getDefaultLocale(), ddmFormFieldValue);
-
-		_invokeDDMFormFieldValueValidator(ddmFormField, ddmFormFieldValue);
-
-		_traverseDDMFormFieldValues(
-			ddmFormFieldValue.getNestedDDMFormFieldValues(),
-			ddmFormField.getNestedDDMFormFieldsMap());
-	}
-
-	private void _validateDDMFormFieldValue(
-			DDMFormField ddmFormField, Set<Locale> availableLocales,
-			Locale defaultLocale, DDMFormFieldValue ddmFormFieldValue)
-		throws DDMFormValuesValidationException {
-
 		Value value = ddmFormFieldValue.getValue();
 
 		if (Validator.isNull(ddmFormField.getDataType())) {
@@ -407,32 +387,15 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 					ddmFormField.getLabel(), ddmFormField.getName());
 			}
 
-			_validateDDMFormFieldValueLocales(
-				ddmFormField, availableLocales, defaultLocale, value);
-
 			validateDDMFormFieldValidationExpression(
 				ddmFormField, ddmFormFieldValue);
 		}
-	}
 
-	private void _validateDDMFormFieldValueLocales(
-			DDMFormField ddmFormField, Set<Locale> availableLocales,
-			Locale defaultLocale, Value value)
-		throws DDMFormValuesValidationException {
+		_invokeDDMFormFieldValueValidator(ddmFormField, ddmFormFieldValue);
 
-		if (!value.isLocalized()) {
-			return;
-		}
-
-		if (!availableLocales.equals(value.getAvailableLocales())) {
-			throw new MustSetValidAvailableLocales(
-				ddmFormField.getLabel(), ddmFormField.getName());
-		}
-
-		if (!defaultLocale.equals(value.getDefaultLocale())) {
-			throw new MustSetValidDefaultLocale(
-				ddmFormField.getLabel(), ddmFormField.getName());
-		}
+		_traverseDDMFormFieldValues(
+			ddmFormFieldValue.getNestedDDMFormFieldValues(),
+			ddmFormField.getNestedDDMFormFieldsMap());
 	}
 
 	private void _validateDDMFormFieldValues(
