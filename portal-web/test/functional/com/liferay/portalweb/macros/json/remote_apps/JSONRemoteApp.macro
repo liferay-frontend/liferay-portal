@@ -25,9 +25,9 @@ definition {
 	}
 
 	macro deleteIFrameRemoteAppEntry {
-		Variables.assertDefined(parameterList = "${remoteAppEntryId}");
+		Variables.assertDefined(parameterList = "${clientExtensionEntryId}");
 
-		JSONRemoteAppAPI._deleteIFrameRemoteAppEntry(remoteAppEntryId = "${remoteAppEntryId}");
+		JSONRemoteAppAPI._deleteIFrameRemoteAppEntry(clientExtensionEntryId = "${clientExtensionEntryId}");
 	}
 
 }

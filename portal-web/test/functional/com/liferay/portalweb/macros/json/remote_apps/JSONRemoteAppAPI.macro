@@ -31,7 +31,7 @@ definition {
 		var portalURL = JSONCompany.getPortalURL();
 
 		var curl = '''
-			${portalURL}/api/jsonws/remoteapp.remoteappentry/add-custom-element-remote-app-entry \
+			${portalURL}/api/jsonws/remoteapp.clientextensionentry/add-custom-element-client-extension-entry \
 				  -u test@liferay.com:test \
 				  -d customElementCSSURLs=${customElementCssurlModified} \
 				  -d customElementHTMLElementName=${htmlNameModified} \
@@ -46,9 +46,9 @@ definition {
 				  -d properties=${customElementPropertiesModified} \
 				  -d sourceCodeURL=
 		''';
-		var remoteAppEntryId = JSONCurlUtil.post("${curl}", "$.['remoteAppEntryId']");
+		var clientExtensionEntryId = JSONCurlUtil.post("${curl}", "$.['clientExtensionEntryId']");
 
-		return "${remoteAppEntryId}";
+		return "${clientExtensionEntryId}";
 	}
 
 	macro _addIFrameRemoteAppEntry {
@@ -60,7 +60,7 @@ definition {
 		var portalURL = JSONCompany.getPortalURL();
 
 		var curl = '''
-			${portalURL}/api/jsonws/remoteapp.remoteappentry/add-i-frame-remote-app-entry \
+			${portalURL}/api/jsonws/remoteapp.clientextensionentry/add-i-frame-client-extension-entry \
 				  -u test@liferay.com:test \
 				  -d description= \
 				  -d friendlyURLMapping= \
@@ -71,20 +71,20 @@ definition {
 				  -d properties= \
 				  -d sourceCodeURL=
 		''';
-		var remoteAppEntryId = JSONCurlUtil.post("${curl}", "$.['remoteAppEntryId']");
+		var clientExtensionEntryId = JSONCurlUtil.post("${curl}", "$.['clientExtensionEntryId']");
 
-		return "${remoteAppEntryId}";
+		return "${clientExtensionEntryId}";
 	}
 
 	macro _deleteIFrameRemoteAppEntry {
-		Variables.assertDefined(parameterList = "${remoteAppEntryId}");
+		Variables.assertDefined(parameterList = "${clientExtensionEntryId}");
 
 		var portalURL = JSONCompany.getPortalURL();
 
 		var curl = '''
-			${portalURL}/api/jsonws/remoteapp.remoteappentry/delete-remote-app-entry \
+			${portalURL}/api/jsonws/remoteapp.clientextensionentry/delete-client-extension-entry \
 				  -u test@liferay.com:test \
-				  -d remoteAppEntryId=${remoteAppEntryId}
+				  -d clientExtensionEntryId=${clientExtensionEntryId}
 		''';
 
 		com.liferay.poshi.runner.util.JSONCurlUtil.post("${curl}");

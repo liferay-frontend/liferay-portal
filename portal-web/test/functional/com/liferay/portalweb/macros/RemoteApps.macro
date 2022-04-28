@@ -3,10 +3,10 @@ definition {
 	macro _deleteRemoteAppAPI {
 		var currentURL = Navigator.getCurrentURL();
 
-		var findWhereIdBegins = StringUtil.extractLast("${currentURL}", "remoteAppEntryId=");
-		var remoteAppEntryIdValue = StringUtil.extractFirst("${findWhereIdBegins}", "&_com_liferay_client_extension_web_internal_portlet_ClientExtensionAdminPortlet_redirect");
+		var findWhereIdBegins = StringUtil.extractLast("${currentURL}", "clientExtensionEntryId=");
+		var clientExtensionEntryIdValue = StringUtil.extractFirst("${findWhereIdBegins}", "&_com_liferay_client_extension_web_internal_portlet_ClientExtensionAdminPortlet_redirect");
 
-		JSONRemoteApp.deleteIFrameRemoteAppEntry(remoteAppEntryId = "${remoteAppEntryIdValue}");
+		JSONRemoteApp.deleteIFrameRemoteAppEntry(clientExtensionEntryId = "${clientExtensionEntryIdValue}");
 	}
 
 	macro addApp {
