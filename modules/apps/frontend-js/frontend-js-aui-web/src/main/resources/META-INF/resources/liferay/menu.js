@@ -527,6 +527,12 @@ AUI.add(
 
 				var focusManager = menuInstance._focusManager;
 
+				if (focusManager) {
+					Liferay.once('beforeScreenFlip', () => {
+						menuInstance._focusManager = null;
+					});
+				}
+
 				var bodyNode = menuInstance._overlay.bodyNode;
 
 				bodyNode.plug(A.Plugin.NodeFocusManager, {
