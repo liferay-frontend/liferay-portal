@@ -202,4 +202,27 @@ describe('Liferay.Util.fetch', () => {
 
 		expect(fetch).toHaveBeenCalledWith(externalOriginUrl, mergedInit);
 	});
+
+	it('includes path context when it is defined on themeDisplay.getPathContext()', () => {
+		const sameOriginUrl = '/o/api/something';
+
+		const init = {
+			credentials: 'include',
+			headers: new Headers({
+				'content-type': 'application/json',
+				'x-csrf-token': 'efgh',
+			}),
+		};
+
+		globalThis.themeDisplay = {
+			getPathContext: () => '/myportal',
+		};
+
+		fetchWrapper(sameOriginUrl, init);
+
+		expect(fetch).toHaveBeenCalledWith(
+			`http://localhost/myportal${sameOriginUrl}`,
+			init
+		);
+	});
 });

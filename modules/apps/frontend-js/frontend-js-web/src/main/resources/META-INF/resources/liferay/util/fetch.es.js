@@ -22,14 +22,17 @@
  */
 
 export default function defaultFetch(resource, init = {}) {
+	const pathContext = themeDisplay.getPathContext();
+
 	if (!resource) {
-		resource = '/o/';
+		resource = `${pathContext}/o/`;
 	}
 
 	let resourceLocation = resource.url ? resource.url : resource.toString();
 
 	if (resourceLocation.startsWith('/')) {
-		resourceLocation = window.location.origin + resourceLocation;
+		resourceLocation =
+			window.location.origin + pathContext + resourceLocation;
 	}
 
 	const resourceURL = new URL(resourceLocation);
@@ -37,7 +40,10 @@ export default function defaultFetch(resource, init = {}) {
 	const headers = new Headers({});
 	const config = {};
 
-	if (resourceURL.origin === window.location.origin) {
+	if (
+		resourceURL.origin + pathContext ===
+		window.location.origin + pathContext
+	) {
 		headers.set('x-csrf-token', Liferay.authToken);
 		config.credentials = 'include';
 	}
@@ -47,5 +53,5 @@ export default function defaultFetch(resource, init = {}) {
 	});
 
 	// eslint-disable-next-line @liferay/portal/no-global-fetch
-	return fetch(resource, {...config, ...init, headers});
+	return fetch(resourceURL.toString(), {...config, ...init, headers});
 }
