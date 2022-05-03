@@ -40,10 +40,7 @@ export default function defaultFetch(resource, init = {}) {
 	const headers = new Headers({});
 	const config = {};
 
-	if (
-		resourceURL.origin + pathContext ===
-		window.location.origin + pathContext
-	) {
+	if (resourceURL.origin === window.location.origin) {
 		headers.set('x-csrf-token', Liferay.authToken);
 		config.credentials = 'include';
 	}
