@@ -15,7 +15,7 @@
 import fetchWrapper from '../../../src/main/resources/META-INF/resources/liferay/util/fetch.es';
 
 describe('Liferay.Util.fetch', () => {
-	const externalOriginUrl = 'http://externalOriginUrl.com';
+	const externalOriginUrl = 'http://externaloriginurl.com/';
 	const sameOriginUrl = window.location.origin + '/o/test';
 
 	beforeEach(() => {
@@ -204,8 +204,6 @@ describe('Liferay.Util.fetch', () => {
 	});
 
 	it('includes path context when it is defined on themeDisplay.getPathContext()', () => {
-		const sameOriginUrl = '/o/api/something';
-
 		const init = {
 			credentials: 'include',
 			headers: new Headers({
@@ -214,15 +212,12 @@ describe('Liferay.Util.fetch', () => {
 			}),
 		};
 
-		globalThis.themeDisplay = {
+		window.themeDisplay = {
 			getPathContext: () => '/myportal',
 		};
 
 		fetchWrapper(sameOriginUrl, init);
 
-		expect(fetch).toHaveBeenCalledWith(
-			`http://localhost/myportal${sameOriginUrl}`,
-			init
-		);
+		expect(fetch).toHaveBeenCalledWith(sameOriginUrl, init);
 	});
 });
