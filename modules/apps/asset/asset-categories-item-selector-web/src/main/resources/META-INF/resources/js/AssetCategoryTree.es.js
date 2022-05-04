@@ -15,6 +15,7 @@
 import {TreeView as ClayTreeView} from '@clayui/core';
 import {ClayCheckbox} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import {getOpener} from 'frontend-js-web';
 import React, {useMemo, useRef, useState} from 'react';
 
 function performFilter(value, tree) {
@@ -89,7 +90,7 @@ export function AssetCategoryTree({
 			return;
 		}
 
-		Liferay.Util.getOpener().Liferay.fire(itemSelectedEventName, {
+		getOpener().Liferay.fire(itemSelectedEventName, {
 			data: Array.from(selectedItemsRef.current.values()),
 		});
 	};
@@ -97,7 +98,7 @@ export function AssetCategoryTree({
 	const handleSingleSelectionChange = (event, item) => {
 		event.preventDefault();
 
-		Liferay.Util.getOpener().Liferay.fire(itemSelectedEventName, {
+		getOpener().Liferay.fire(itemSelectedEventName, {
 			data: {
 				className: item.className,
 				classNameId: item.classNameId,

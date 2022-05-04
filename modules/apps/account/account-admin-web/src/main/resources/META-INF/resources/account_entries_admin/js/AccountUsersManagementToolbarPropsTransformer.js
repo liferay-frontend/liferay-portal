@@ -12,7 +12,7 @@
  * details.
  */
 
-import {openSelectionModal, postForm} from 'frontend-js-web';
+import {openSelectionModal, postForm, sub} from 'frontend-js-web';
 
 export default function propsTransformer({
 	additionalProps: {
@@ -80,7 +80,7 @@ export default function propsTransformer({
 						});
 					}
 				},
-				title: Liferay.Util.sub(
+				title: sub(
 					Liferay.Language.get('assign-users-to-x'),
 					accountEntryName
 				),

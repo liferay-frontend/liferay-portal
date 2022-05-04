@@ -17,6 +17,7 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import {Treeview} from 'frontend-js-components-web';
+import {getOpener} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
 
 function findSiteNavigationMenuItem(
@@ -96,7 +97,7 @@ const SelectSiteNavigationMenuItem = ({itemSelectorSaveEvent, nodes}) => {
 				selectSiteNavigationMenuItemName: name,
 			};
 
-			Liferay.Util.getOpener().Liferay.fire(itemSelectorSaveEvent, {
+			getOpener().Liferay.fire(itemSelectorSaveEvent, {
 				data,
 			});
 		}
@@ -105,7 +106,7 @@ const SelectSiteNavigationMenuItem = ({itemSelectorSaveEvent, nodes}) => {
 	const handleTreeViewSelectionChange = (event, item) => {
 		event.preventDefault();
 
-		Liferay.Util.getOpener().Liferay.fire(itemSelectorSaveEvent, {
+		getOpener().Liferay.fire(itemSelectorSaveEvent, {
 			data: {
 				selectSiteNavigationMenuItemId: item.id,
 				selectSiteNavigationMenuItemName: item.name,

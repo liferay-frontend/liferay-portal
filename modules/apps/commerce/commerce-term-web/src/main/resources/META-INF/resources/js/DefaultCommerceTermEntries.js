@@ -12,7 +12,11 @@
  * details.
  */
 
-import {delegate} from 'frontend-js-web';
+import {
+	createPortletURL,
+	delegate,
+	openSelectionModal as openSelectionModalUtil,
+} from 'frontend-js-web';
 
 export default function ({
 	baseSelectDefaultCommerceTermEntryURL,
@@ -40,7 +44,7 @@ export default function ({
 	};
 
 	const openSelectionModal = (title, type) => {
-		Liferay.Util.openSelectionModal({
+		openSelectionModalUtil({
 			buttonAddLabel: Liferay.Language.get('save'),
 			id: '<portlet:namespace />selectDefaultCommerceTermEntry',
 			multiple: true,
@@ -49,7 +53,7 @@ export default function ({
 					return;
 				}
 
-				const updateAccountEntryDefaultCommerceTermEntryURL = Liferay.Util.PortletURL.createPortletURL(
+				const updateAccountEntryDefaultCommerceTermEntryURL = createPortletURL(
 					baseUpdateAccountEntryDefaultCommerceTermEntryURL,
 					{commerceTermEntryId: selectedItem.entityid, type}
 				);
@@ -62,10 +66,9 @@ export default function ({
 			selectEventName:
 				'<portlet:namespace />selectDefaultCommerceTermEntry',
 			title,
-			url: Liferay.Util.PortletURL.createPortletURL(
-				baseSelectDefaultCommerceTermEntryURL,
-				{type}
-			),
+			url: createPortletURL(baseSelectDefaultCommerceTermEntryURL, {
+				type,
+			}),
 		});
 	};
 

@@ -12,7 +12,7 @@
  * details.
  */
 
-import {openModal} from 'frontend-js-web';
+import {navigate, openModal} from 'frontend-js-web';
 
 import openDeleteLayoutModal from './openDeleteLayoutModal';
 
@@ -31,7 +31,7 @@ const ACTIONS = {
 		openDeleteLayoutModal({
 			message,
 			onDelete: () => {
-				Liferay.Util.navigate(deleteLayoutURL);
+				navigate(deleteLayoutURL);
 			},
 		});
 	},
@@ -42,12 +42,12 @@ const ACTIONS = {
 		);
 
 		if (confirm(discardDraftMessage)) {
-			Liferay.Util.navigate(discardDraftURL);
+			navigate(discardDraftURL);
 		}
 	},
 
 	exportTranslation: ({exportTranslationURL}) => {
-		Liferay.Util.navigate(exportTranslationURL);
+		navigate(exportTranslationURL);
 	},
 
 	permissionLayout: ({permissionLayoutURL}) => {

@@ -12,7 +12,7 @@
  * details.
  */
 
-import {openModal, openToast} from 'frontend-js-web';
+import {getTop, openModal, openToast} from 'frontend-js-web';
 
 import isNullOrUndefined from '../utils/isNullOrUndefined';
 
@@ -73,7 +73,7 @@ function createEditor(element, changeCallback, destroyCallback) {
 		headerCssClass: 'cadmin',
 		onClose: () => destroyCallback(),
 		onOpen: () => {
-			Liferay.Util.getTop()
+			getTop()
 				.AUI()
 				.use('liferay-fullscreen-source-editor', (A) => {
 					const editorContainer = document.querySelector(

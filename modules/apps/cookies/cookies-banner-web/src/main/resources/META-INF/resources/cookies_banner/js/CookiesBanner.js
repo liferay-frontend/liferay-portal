@@ -12,6 +12,8 @@
  * details.
  */
 
+import {getOpener, openModal} from 'frontend-js-web';
+
 import {
 	acceptAllCookies,
 	declineAllCookies,
@@ -63,7 +65,7 @@ export default function ({
 		});
 
 		configurationButton.addEventListener('click', () => {
-			Liferay.Util.openModal({
+			openModal({
 				buttons: [
 					{
 						displayType: 'secondary',
@@ -85,7 +87,7 @@ export default function ({
 								requiredCookieNames
 							);
 
-							Liferay.Util.getOpener().Liferay.fire('closeModal');
+							getOpener().Liferay.fire('closeModal');
 						},
 					},
 					{
@@ -103,7 +105,7 @@ export default function ({
 								requiredCookieNames
 							);
 
-							Liferay.Util.getOpener().Liferay.fire('closeModal');
+							getOpener().Liferay.fire('closeModal');
 						},
 					},
 					{
@@ -121,7 +123,7 @@ export default function ({
 								requiredCookieNames
 							);
 
-							Liferay.Util.getOpener().Liferay.fire('closeModal');
+							getOpener().Liferay.fire('closeModal');
 						},
 					},
 				],

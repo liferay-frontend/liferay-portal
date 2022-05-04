@@ -12,7 +12,12 @@
  * details.
  */
 
-import {addParams, openSelectionModal} from 'frontend-js-web';
+import {
+	addParams,
+	navigate,
+	openSelectionModal,
+	setFormValues,
+} from 'frontend-js-web';
 
 export default function ({
 	currentURL,
@@ -49,7 +54,7 @@ export default function ({
 			const form = document.getElementById(namespaceId('fm1'));
 
 			if (form) {
-				Liferay.Util.setFormValues(form, {
+				setFormValues(form, {
 					ddmTemplateId: newDDMTemplateId,
 					ddmTemplateKey:
 						(newDDMTemplate && newDDMTemplate.ddmtemplatekey) || '',
@@ -143,7 +148,7 @@ export default function ({
 					)
 				)
 			) {
-				Liferay.Util.navigate(editDDMTemplateURL);
+				navigate(editDDMTemplateURL);
 			}
 		};
 

@@ -12,7 +12,7 @@
  * details.
  */
 
-import {delegate} from 'frontend-js-web';
+import {delegate, getOpener, sub} from 'frontend-js-web';
 
 export default function ({
 	displayPageItemSelectorUrl,
@@ -21,7 +21,7 @@ export default function ({
 	removeIcon,
 	searchContainerId,
 }) {
-	const openerWindow = Liferay.Util.getOpener();
+	const openerWindow = getOpener();
 
 	const initProductSelection = (searchContainer) => {
 		const selectProductButton = document.getElementById(
@@ -35,7 +35,7 @@ export default function ({
 		selectProductButton.addEventListener('click', (event) => {
 			event.preventDefault();
 
-			openerWindow.Liferay.Util.openSelectionModal({
+			openerWindow.openSelectionModal({
 				onSelect: (selectedItem) => {
 					if (!selectedItem) {
 						return;
@@ -75,7 +75,7 @@ export default function ({
 					searchContainer.updateDataStore();
 				},
 				selectEventName: 'productDefinitionsSelectItem',
-				title: Liferay.Util.sub(
+				title: sub(
 					Liferay.Language.get('select-x'),
 					Liferay.Language.get('product')
 				),

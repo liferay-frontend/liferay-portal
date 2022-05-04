@@ -20,7 +20,7 @@ import ClayForm, {
 	ClaySelectWithOption,
 } from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
-import {fetch, navigate, objectToFormData} from 'frontend-js-web';
+import {fetch, navigate, ns, objectToFormData} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useReducer, useRef, useState} from 'react';
 
@@ -65,7 +65,7 @@ export default function TemplateModal({
 
 		setLoading(true);
 
-		const body = Liferay.Util.ns(namespace, {
+		const body = ns(namespace, {
 			infoItemClassName: itemType.value,
 			infoItemFormVariationKey: itemSubtype || '',
 			name,

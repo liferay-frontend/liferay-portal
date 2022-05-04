@@ -15,6 +15,7 @@
 import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import classNames from 'classnames';
+import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {useGlobalContext} from '../../app/contexts/GlobalContext';
@@ -226,7 +227,7 @@ function SpacingSelectorButton({field, onChange, position, type, value}) {
 					<ClayDropDown.Group header={field?.label}>
 						{field?.validValues?.map((option) => (
 							<ClayDropDown.Item
-								aria-label={Liferay.Util.sub(
+								aria-label={sub(
 									Liferay.Language.get('set-x-to-x'),
 									[field.label, option.label]
 								)}

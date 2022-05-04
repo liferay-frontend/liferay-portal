@@ -12,7 +12,7 @@
  * details.
  */
 
-import {PortletBase, openSelectionModal} from 'frontend-js-web';
+import {PortletBase, openSelectionModal, selectFolder} from 'frontend-js-web';
 import {Config} from 'metal-state';
 
 /**
@@ -77,7 +77,7 @@ class SelectFolderButton extends PortletBase {
 						nameValue: selectedItem.folderName,
 					};
 
-					Liferay.Util.selectFolder(
+					selectFolder(
 						folderData,
 						this.namespace || this.portletNamespace
 					);

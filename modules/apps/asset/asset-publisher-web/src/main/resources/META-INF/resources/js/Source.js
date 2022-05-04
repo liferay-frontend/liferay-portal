@@ -12,7 +12,13 @@
  * details.
  */
 
-import {delegate} from 'frontend-js-web';
+import {
+	addParams,
+	delegate,
+	openSelectionModal,
+	sub,
+	toggleDisabled,
+} from 'frontend-js-web';
 
 const ANY = 'any';
 const SELECT_MORE_THAN_ONE = 'select-more-than-one';
@@ -97,7 +103,7 @@ export default function ({assetPublisherNamespace, classTypes, namespace}) {
 
 		if (enabledInput) {
 			popupButtons.forEach((popupButton) => {
-				Liferay.Util.toggleDisabled(popupButton, !enabledInputChecked);
+				toggleDisabled(popupButton, !enabledInputChecked);
 			});
 		}
 	};
@@ -357,26 +363,26 @@ export default function ({assetPublisherNamespace, classTypes, namespace}) {
 	const openModal = ({delegateTarget}) => {
 		let url = delegateTarget.dataset.href;
 
-		url = Liferay.Util.addParams(
+		url = addParams(
 			`_${assetPublisherNamespace}_ddmStructureDisplayFieldValue=${encodeURIComponent(
 				ddmStructureDisplayFieldValueInput.value
 			)}`,
 			url
 		);
-		url = Liferay.Util.addParams(
+		url = addParams(
 			`_${assetPublisherNamespace}_ddmStructureFieldName=${encodeURIComponent(
 				ddmStructureFieldNameInput.value
 			)}`,
 			url
 		);
-		url = Liferay.Util.addParams(
+		url = addParams(
 			`_${assetPublisherNamespace}_ddmStructureFieldValue=${encodeURIComponent(
 				ddmStructureFieldValueInput.value
 			)}`,
 			url
 		);
 
-		Liferay.Util.openSelectionModal({
+		openSelectionModal({
 			customSelectEvent: true,
 			id: `${namespace}selectDDMStructure${delegateTarget.id}`,
 			iframeBodyCssClass: '',
@@ -390,7 +396,7 @@ export default function ({assetPublisherNamespace, classTypes, namespace}) {
 				});
 			},
 			selectEventName: `${namespace}selectDDMStructureField`,
-			title: Liferay.Util.sub(
+			title: sub(
 				Liferay.Language.get('select-x'),
 				Liferay.Language.get('structure-field')
 			),

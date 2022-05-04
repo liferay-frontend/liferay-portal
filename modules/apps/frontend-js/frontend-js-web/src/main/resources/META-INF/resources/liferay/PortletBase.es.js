@@ -15,6 +15,7 @@
 import Component from 'metal-component';
 
 import objectToFormData from './util/form/object_to_form_data.es';
+import nsUtil from './util/ns.es';
 
 function toElementHelper(elementOrSelector) {
 	if (typeof elementOrSelector === 'string') {
@@ -128,7 +129,7 @@ class PortletBase extends Component {
 	 *         the portlet namespace or a namespaced string.
 	 */
 	ns(object) {
-		return Liferay.Util.ns(this.portletNamespace || this.namespace, object);
+		return nsUtil(this.portletNamespace || this.namespace, object);
 	}
 
 	/**

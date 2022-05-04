@@ -14,6 +14,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayList from '@clayui/list';
+import {toggleDisabled} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -29,8 +30,8 @@ export default function ImportTranslationMultipleFiles({
 	const inputFileRef = useRef();
 
 	useEffect(() => {
-		Liferay.Util.toggleDisabled('#' + saveDraftBtnId, !importFiles.length);
-		Liferay.Util.toggleDisabled(
+		toggleDisabled('#' + saveDraftBtnId, !importFiles.length);
+		toggleDisabled(
 			'#' + submitBtnId,
 			!importFiles.length || workflowPending
 		);

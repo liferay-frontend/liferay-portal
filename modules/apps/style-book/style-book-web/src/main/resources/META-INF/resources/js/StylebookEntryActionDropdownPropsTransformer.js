@@ -12,7 +12,11 @@
  * details.
  */
 
-import {openSelectionModal, openSimpleInputModal} from 'frontend-js-web';
+import {
+	openSelectionModal,
+	openSimpleInputModal,
+	setFormValues,
+} from 'frontend-js-web';
 
 import openDeleteStyleBookModal from './openDeleteStyleBookModal';
 
@@ -74,7 +78,7 @@ const ACTIONS = {
 					);
 
 					if (form) {
-						Liferay.Util.setFormValues(form, {
+						setFormValues(form, {
 							fileEntryId: itemValue.fileEntryId,
 							styleBookEntryId,
 						});

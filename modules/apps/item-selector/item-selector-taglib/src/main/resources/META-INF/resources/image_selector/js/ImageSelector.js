@@ -15,7 +15,12 @@
 import ClayIcon from '@clayui/icon';
 import {State} from '@liferay/frontend-js-state-web';
 import classNames from 'classnames';
-import {STATUS_CODE} from 'frontend-js-web';
+import {
+	STATUS_CODE,
+	formatStorage,
+	openSelectionModal,
+	sub,
+} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -82,7 +87,7 @@ const ImageSelector = ({
 		}
 		else if (errorType === STATUS_CODE.SC_FILE_EXTENSION_EXCEPTION) {
 			if (validExtensions) {
-				message = Liferay.Util.sub(
+				message = sub(
 					Liferay.Language.get(
 						'please-enter-a-file-with-a-valid-extension-x'
 					),
@@ -90,7 +95,7 @@ const ImageSelector = ({
 				);
 			}
 			else {
-				message = Liferay.Util.sub(
+				message = sub(
 					Liferay.Language.get(
 						'please-enter-a-file-with-a-valid-file-type'
 					)
@@ -103,22 +108,22 @@ const ImageSelector = ({
 			);
 		}
 		else if (errorType === STATUS_CODE.SC_FILE_SIZE_EXCEPTION) {
-			message = Liferay.Util.sub(
+			message = sub(
 				Liferay.Language.get(
 					'please-enter-a-file-with-a-valid-file-size-no-larger-than-x'
 				),
-				[Liferay.Util.formatStorage(parseInt(maxFileSize, 10))]
+				[formatStorage(parseInt(maxFileSize, 10))]
 			);
 		}
 		else if (errorType === STATUS_CODE.SC_UPLOAD_REQUEST_SIZE_EXCEPTION) {
 			const maxUploadRequestSize =
 				Liferay.PropsValues.UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE;
 
-			message = Liferay.Util.sub(
+			message = sub(
 				Liferay.Language.get(
 					'request-is-larger-than-x-and-could-not-be-processed'
 				),
-				[Liferay.Util.formatStorage(maxUploadRequestSize)]
+				[formatStorage(maxUploadRequestSize)]
 			);
 		}
 
@@ -156,7 +161,7 @@ const ImageSelector = ({
 	};
 
 	const handleSelectFileClick = () => {
-		Liferay.Util.openSelectionModal({
+		openSelectionModal({
 			onSelect: (selectedItem) => {
 				if (selectedItem) {
 					const itemValue = JSON.parse(selectedItem.value);
@@ -209,16 +214,16 @@ const ImageSelector = ({
 
 		setProgressValue(Math.ceil(percentLoaded));
 
-		const bytesLoaded = Liferay.Util.formatStorage(event.bytesLoaded);
+		const bytesLoaded = formatStorage(event.bytesLoaded);
 
-		const bytesTotal = Liferay.Util.formatStorage(event.bytesTotal);
+		const bytesTotal = formatStorage(event.bytesTotal);
 
 		const bytesLoadedSpaceIndex = bytesLoaded.indexOf(STR_SPACE);
 
 		const bytesTotalSpaceIndex = bytesTotal.indexOf(STR_SPACE);
 
 		setProgressData(
-			Liferay.Util.sub(
+			sub(
 				TPL_PROGRESS_DATA,
 				bytesLoaded.substring(0, bytesLoadedSpaceIndex),
 				bytesLoaded.substring(bytesLoadedSpaceIndex + 1),

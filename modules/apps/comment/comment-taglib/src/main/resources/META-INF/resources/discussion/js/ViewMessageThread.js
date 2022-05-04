@@ -12,11 +12,13 @@
  * details.
  */
 
+import {toggleDisabled} from 'frontend-js-web';
+
 export default function ViewMessageThread({index, namespace, randomNamespace}) {
 	window[`${namespace}${randomNamespace}${index}EditOnChange`] = function (
 		html
 	) {
-		Liferay.Util.toggleDisabled(
+		toggleDisabled(
 			`#${namespace}${randomNamespace}editReplyButton${index}`,
 			html.trim() === ''
 		);
@@ -25,7 +27,7 @@ export default function ViewMessageThread({index, namespace, randomNamespace}) {
 	window[`${namespace}${randomNamespace}${index}ReplyOnChange`] = function (
 		html
 	) {
-		Liferay.Util.toggleDisabled(
+		toggleDisabled(
 			`#${namespace}${randomNamespace}postReplyButton${index}`,
 			html.trim() === ''
 		);

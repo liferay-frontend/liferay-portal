@@ -18,7 +18,7 @@ import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayPanel from '@clayui/panel';
-import {fetch, openToast} from 'frontend-js-web';
+import {fetch, openToast, sub} from 'frontend-js-web';
 import React, {useMemo, useState} from 'react';
 
 import AddIconPackModal from './AddIconPackModal';
@@ -67,7 +67,7 @@ export default function InstanceIconConfiguration({
 	const handleDelete = (iconPackName) => {
 		if (
 			!confirm(
-				Liferay.Util.sub(
+				sub(
 					Liferay.Language.get(
 						'are-you-sure-you-want-to-delete-the-x-icon-pack',
 						[iconPackName]

@@ -15,7 +15,14 @@
 import ClayIcon from '@clayui/icon';
 import ClayTabs from '@clayui/tabs';
 import {useIsMounted, usePrevious} from '@liferay/frontend-js-react-web';
-import {cancelDebounce, debounce, fetch, openToast} from 'frontend-js-web';
+import {
+	cancelDebounce,
+	debounce,
+	fetch,
+	navigate,
+	openToast,
+	sub,
+} from 'frontend-js-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import CodeMirrorEditor from './CodeMirrorEditor';
@@ -107,7 +114,7 @@ const FragmentEditor = ({
 			.then((response) => {
 				const redirectURL = response.redirect || urls.redirect;
 
-				Liferay.Util.navigate(redirectURL);
+				navigate(redirectURL);
 			})
 			.catch((error) => {
 				if (isMounted()) {
@@ -342,7 +349,7 @@ const FragmentEditor = ({
 						<div className="javascript source-editor">
 							<CodeMirrorEditor
 								codeFooterText="}"
-								codeHeaderHelpText={Liferay.Util.sub(
+								codeHeaderHelpText={sub(
 									Liferay.Language.get(
 										'parameter-x-provides-access-to-the-current-fragment-node-use-it-to-manipulate-fragment-components'
 									),

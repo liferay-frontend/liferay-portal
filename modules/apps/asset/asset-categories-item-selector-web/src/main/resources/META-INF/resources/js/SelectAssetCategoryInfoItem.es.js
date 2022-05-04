@@ -15,6 +15,7 @@
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import {Treeview} from 'frontend-js-components-web';
+import {getOpener} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 import {AssetCategoryTree} from './AssetCategoryTree.es';
@@ -74,7 +75,7 @@ function OldAssetCategoryTree({
 			data = data[0];
 		}
 
-		Liferay.Util.getOpener().Liferay.fire(itemSelectedEventName, {
+		getOpener().Liferay.fire(itemSelectedEventName, {
 			data,
 		});
 	};

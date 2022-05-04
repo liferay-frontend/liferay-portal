@@ -13,6 +13,8 @@
  */
 
 import {
+	createPortletURL,
+	ns,
 	openModal,
 	openSelectionModal,
 	openSimpleInputModal,
@@ -52,7 +54,7 @@ const ACTIONS = {
 		{itemSelectorURL, moveLayoutPageTemplateEntryURL},
 		namespace
 	) {
-		Liferay.Util.openSelectionModal({
+		openSelectionModal({
 			onSelect: (selectedItem) => {
 				if (!selectedItem) {
 					return;
@@ -60,7 +62,7 @@ const ACTIONS = {
 
 				var value = JSON.parse(selectedItem.value);
 
-				var portletURL = new Liferay.Util.PortletURL.createPortletURL(
+				var portletURL = new createPortletURL(
 					moveLayoutPageTemplateEntryURL,
 					{
 						targetLayoutPageTemplateCollectionId:
@@ -130,7 +132,7 @@ const ACTIONS = {
 					);
 				}
 			},
-			selectEventName: Liferay.Util.ns(namespace, 'changePreview'),
+			selectEventName: ns(namespace, 'changePreview'),
 			title: Liferay.Language.get('page-template-thumbnail'),
 			url: itemSelectorURL,
 		});

@@ -9,6 +9,8 @@
  * distribution rights of the Software.
  */
 
+import {fetch, getOpener, openModal} from 'frontend-js-web';
+
 var copySaved = '';
 
 var starterkitList = document.getElementsByClassName('liferay-online-item');
@@ -65,7 +67,7 @@ function openItem(
 	redirectURL,
 	siteInitializerKey
 ) {
-	Liferay.Util.openModal({
+	openModal({
 		bodyHTML: `<div class="form-group" id="snGroup">
 				 <label for="siteName">Site name
 					 <small> (more than 4 characters)</small>
@@ -87,7 +89,7 @@ function openItem(
 				displayType: 'secondary',
 				label: Liferay.Language.get('cancel'),
 				onClick() {
-					Liferay.Util.getOpener().Liferay.fire('closeModal', {
+					getOpener().Liferay.fire('closeModal', {
 						id: 'selectStarterkit',
 					});
 				},
@@ -96,7 +98,7 @@ function openItem(
 				id: 'createSite',
 				label: 'Select',
 				onClick() {
-					Liferay.Util.getOpener().Liferay.fire('closeModal', {
+					getOpener().Liferay.fire('closeModal', {
 						id: 'selectStarterkit',
 					});
 
@@ -152,7 +154,7 @@ function createOrder(
 		commerceChannelId +
 		'/carts';
 
-	Liferay.Util.fetch(cartsURL, {
+	fetch(cartsURL, {
 		body: JSON.stringify({
 			accountId: commerceAccountId,
 			channelId: commerceChannelId,
@@ -174,7 +176,7 @@ function createOrder(
 				cartId +
 				'/items';
 
-			return Liferay.Util.fetch(cartURL, {
+			return fetch(cartURL, {
 				body: JSON.stringify({
 					options:
 						'[{"key":"admin-email-address","value":["' +
@@ -212,7 +214,7 @@ function createOrder(
 						cartId +
 						'/checkout';
 
-					return Liferay.Util.fetch(checkoutURL, {
+					return fetch(checkoutURL, {
 						headers: {
 							'Accept': 'application/json',
 							'Content-Type': 'application/json',

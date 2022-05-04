@@ -12,7 +12,11 @@
  * details.
  */
 
-import {delegate} from 'frontend-js-web';
+import {
+	createPortletURL,
+	delegate,
+	openSelectionModal as openSelectionModalUtil,
+} from 'frontend-js-web';
 
 export default function ({
 	baseSelectDefaultCommercePaymentMethodURL,
@@ -28,7 +32,7 @@ export default function ({
 	};
 
 	const openSelectionModal = (title) => {
-		Liferay.Util.openSelectionModal({
+		openSelectionModalUtil({
 			buttonAddLabel: Liferay.Language.get('save'),
 			id: '<portlet:namespace />selectDefaultCommercePaymentMethod',
 			multiple: true,
@@ -37,7 +41,7 @@ export default function ({
 					return;
 				}
 
-				const updateAccountEntryDefaultCommercePaymentMethodURL = Liferay.Util.PortletURL.createPortletURL(
+				const updateAccountEntryDefaultCommercePaymentMethodURL = createPortletURL(
 					baseUpdateAccountEntryDefaultCommercePaymentMethodURL,
 					{commercePaymentMethodKey: selectedItem.entityid}
 				);
@@ -50,9 +54,7 @@ export default function ({
 			selectEventName:
 				'<portlet:namespace />selectDefaultCommercePaymentMethod',
 			title,
-			url: Liferay.Util.PortletURL.createPortletURL(
-				baseSelectDefaultCommercePaymentMethodURL
-			),
+			url: createPortletURL(baseSelectDefaultCommercePaymentMethodURL),
 		});
 	};
 

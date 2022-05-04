@@ -12,7 +12,16 @@
  * details.
  */
 
-import {fetch, openToast, runScriptsInElement} from 'frontend-js-web';
+import {
+	fetch,
+	getFormElement,
+	ns,
+	objectToFormData,
+	openToast,
+	runScriptsInElement,
+	setFormValues,
+	toggleDisabled,
+} from 'frontend-js-web';
 
 function hideEl(elementId) {
 	const element = document.getElementById(elementId);
@@ -37,7 +46,6 @@ export default function Comments({
 	subscriptionClassName,
 	userId,
 }) {
-	const Util = Liferay.Util;
 	const form = document[`${namespace}${randomNamespace}${formName}`];
 
 	if (messageId) {
@@ -50,14 +58,14 @@ export default function Comments({
 		`${namespace}moreCommentsTrigger`
 	);
 
-	const indexElement = Util.getFormElement(form, 'index');
-	const rootIndexPageElement = Util.getFormElement(form, 'rootIndexPage');
+	const indexElement = getFormElement(form, 'index');
+	const rootIndexPageElement = getFormElement(form, 'rootIndexPage');
 
 	if (moreCommentsTrigger && indexElement && rootIndexPageElement) {
 		moreCommentsTrigger.addEventListener('click', () => {
-			const data = Util.ns(namespace, {
-				className: Util.getFormElement(form, 'className').value,
-				classPK: Util.getFormElement(form, 'classPK').value,
+			const data = ns(namespace, {
+				className: getFormElement(form, 'className').value,
+				classPK: getFormElement(form, 'classPK').value,
 				hideControls,
 				index: indexElement.value,
 				randomNamespace,
@@ -67,7 +75,7 @@ export default function Comments({
 			});
 
 			fetch(paginationURL, {
-				body: Util.objectToFormData(data),
+				body: objectToFormData(data),
 				method: 'POST',
 			})
 				.then((response) => {
@@ -137,8 +145,8 @@ export default function Comments({
 			);
 		});
 
-		const className = Util.getFormElement(form, 'className').value;
-		const classPK = Util.getFormElement(form, 'classPK').value;
+		const className = getFormElement(form, 'className').value;
+		const classPK = getFormElement(form, 'classPK').value;
 
 		if (response.commentId) {
 			const messageTextNode = document.querySelector(
@@ -159,7 +167,7 @@ export default function Comments({
 			window.location.reload();
 		}
 		else {
-			const data = Liferay.Util.ns(namespace, {
+			const data = ns(namespace, {
 				className,
 				classPK,
 				skipEditorLoading: false,
@@ -172,7 +180,7 @@ export default function Comments({
 	function sendMessage(form, refreshPage) {
 		const commentButtons = form.querySelectorAll('.btn-comment');
 
-		Util.toggleDisabled(commentButtons, true);
+		toggleDisabled(commentButtons, true);
 
 		const formData = new FormData(form);
 
@@ -255,7 +263,7 @@ export default function Comments({
 					});
 				}
 
-				Util.toggleDisabled(commentButtons, false);
+				toggleDisabled(commentButtons, false);
 			})
 			.catch(() => {
 				openToast({
@@ -265,7 +273,7 @@ export default function Comments({
 					type: 'danger',
 				});
 
-				Util.toggleDisabled(commentButtons, false);
+				toggleDisabled(commentButtons, false);
 			});
 	}
 
@@ -277,7 +285,7 @@ export default function Comments({
 
 		if (!editorWrapper || editorWrapper.childNodes.length === 0) {
 			fetch(editorURL, {
-				body: Util.objectToFormData(Util.ns(namespace, options)),
+				body: objectToFormData(ns(namespace, options)),
 				method: 'POST',
 			})
 				.then((response) => {
@@ -294,7 +302,7 @@ export default function Comments({
 						runScriptsInElement(editorWrapper);
 					}
 
-					Util.toggleDisabled(
+					toggleDisabled(
 						'#' + options.name.replace('Body', 'Button'),
 						options.contents === ''
 					);
@@ -313,7 +321,7 @@ export default function Comments({
 	}
 
 	window[`${namespace}${randomNamespace}0ReplyOnChange`] = function (html) {
-		Util.toggleDisabled(
+		toggleDisabled(
 			`#${namespace}${randomNamespace}postReplyButton0`,
 			html.trim() === ''
 		);
@@ -323,7 +331,7 @@ export default function Comments({
 		emailAddress,
 		anonymousAccount
 	) {
-		Util.setFormValues(form, {
+		setFormValues(form, {
 			emailAddress,
 		});
 
@@ -331,10 +339,10 @@ export default function Comments({
 	};
 
 	window[`${randomNamespace}deleteMessage`] = function (i) {
-		const commentIdElement = Util.getFormElement(form, 'commentId' + i);
+		const commentIdElement = getFormElement(form, 'commentId' + i);
 
 		if (commentIdElement) {
-			Util.setFormValues(form, {
+			setFormValues(form, {
 				cmd: constants.DELETE,
 				commentId: commentIdElement.value,
 			});
@@ -357,13 +365,13 @@ export default function Comments({
 		const editorInstance =
 			window[`${namespace}${randomNamespace}postReplyBody${i}`];
 
-		const parentCommentIdElement = Util.getFormElement(
+		const parentCommentIdElement = getFormElement(
 			form,
 			'parentCommentId' + i
 		);
 
 		if (parentCommentIdElement) {
-			Util.setFormValues(form, {
+			setFormValues(form, {
 				body: editorInstance.getHTML(),
 				cmd: constants.ADD,
 				parentCommentId: parentCommentIdElement.value,
@@ -374,7 +382,7 @@ export default function Comments({
 			window.namespace = namespace;
 			window.randomNamespace = randomNamespace;
 
-			Util.openWindow({
+			Liferay.Util.openWindow({
 				dialog: {
 					height: 450,
 					width: 560,
@@ -438,7 +446,7 @@ export default function Comments({
 	};
 
 	window[`${randomNamespace}subscribeToComments`] = function (subscribe) {
-		Util.setFormValues(form, {
+		setFormValues(form, {
 			[`${randomNamespace}className`]: subscriptionClassName,
 			cmd: subscribe
 				? constants.SUBSCRIBE_TO_COMMENTS
@@ -452,16 +460,16 @@ export default function Comments({
 		const editorInstance =
 			window[`${namespace}${randomNamespace}editReplyBody${i}`];
 
-		const commentIdElement = Util.getFormElement(form, `commentId${i}`);
+		const commentIdElement = getFormElement(form, `commentId${i}`);
 
 		if (commentIdElement) {
 			if (pending) {
-				Util.setFormValues(form, {
+				setFormValues(form, {
 					workflowAction: constants.ACTION_SAVE_DRAFT,
 				});
 			}
 
-			Util.setFormValues(form, {
+			setFormValues(form, {
 				body: editorInstance.getHTML(),
 				cmd: constants.UPDATE,
 				commentId: commentIdElement.value,

@@ -17,7 +17,7 @@ import ClayButton from '@clayui/button';
 import {ClaySelectWithOption} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import getCN from 'classnames';
-import {fetch} from 'frontend-js-web';
+import {fetch, ns} from 'frontend-js-web';
 import {PropTypes} from 'prop-types';
 import React, {Component} from 'react';
 import {DragSource as dragSource, DropTarget as dropTarget} from 'react-dnd';
@@ -210,7 +210,7 @@ class CriteriaRow extends Component {
 
 		const {propertyName, value} = criterion;
 
-		const data = Liferay.Util.ns(this.context.namespace, {
+		const data = ns(this.context.namespace, {
 			entityName,
 			fieldName: propertyName,
 			fieldValue: value,

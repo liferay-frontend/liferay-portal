@@ -16,6 +16,7 @@ import {
 	createPortletURL,
 	delegate,
 	fetch,
+	ns,
 	openSelectionModal,
 	openToast,
 } from 'frontend-js-web';
@@ -61,7 +62,7 @@ export default function ({
 				});
 
 				const data = new URLSearchParams(
-					Liferay.Util.ns(portletNamespace, {
+					ns(portletNamespace, {
 						ddmTemplateKey: selectedItem.ddmtemplatekey,
 					})
 				);

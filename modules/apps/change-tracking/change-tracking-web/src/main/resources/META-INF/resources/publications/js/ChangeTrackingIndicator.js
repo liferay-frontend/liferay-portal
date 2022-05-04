@@ -23,7 +23,7 @@ import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
 import {ManagementToolbar} from 'frontend-js-components-web';
-import {fetch} from 'frontend-js-web';
+import {fetch, navigate as navigateUtil} from 'frontend-js-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
 const PublicationsSearchContainer = ({
@@ -758,7 +758,7 @@ export default function ChangeTrackingIndicator({
 				return;
 			}
 
-			Liferay.Util.navigate(portletURL.toString());
+			navigateUtil(portletURL.toString());
 		});
 	};
 

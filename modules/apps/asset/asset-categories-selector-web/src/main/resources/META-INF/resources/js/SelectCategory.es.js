@@ -17,7 +17,7 @@ import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import {Treeview} from 'frontend-js-components-web';
-import {navigate} from 'frontend-js-web';
+import {getOpener, navigate} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useMemo, useRef, useState} from 'react';
 
@@ -84,7 +84,7 @@ function OldSelectTree({
 
 		selectedNodesRef.current = data;
 
-		const openerWindow = Liferay.Util.getOpener();
+		const openerWindow = getOpener();
 
 		openerWindow.Liferay.fire(itemSelectorSaveEvent, {data});
 	};

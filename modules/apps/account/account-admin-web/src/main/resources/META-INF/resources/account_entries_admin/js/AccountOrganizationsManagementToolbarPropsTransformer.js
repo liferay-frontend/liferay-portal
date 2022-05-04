@@ -12,7 +12,7 @@
  * details.
  */
 
-import {openSelectionModal, postForm} from 'frontend-js-web';
+import {openSelectionModal, postForm, sub} from 'frontend-js-web';
 
 export default function propsTransformer({portletNamespace, ...otherProps}) {
 	return {
@@ -74,7 +74,7 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 						});
 					}
 				},
-				title: Liferay.Util.sub(
+				title: sub(
 					Liferay.Language.get('assign-organizations-to-x'),
 					data?.accountEntryName
 				),

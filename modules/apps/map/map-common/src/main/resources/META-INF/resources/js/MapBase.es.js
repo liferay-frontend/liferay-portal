@@ -12,7 +12,7 @@
  * details.
  */
 
-import {buildFragment} from 'frontend-js-web';
+import {buildFragment, getGeolocation} from 'frontend-js-web';
 import State, {Config} from 'metal-state';
 
 import GeoJSONBase from './GeoJSONBase.es';
@@ -106,7 +106,7 @@ class MapBase extends State {
 				: {};
 
 		if (!geolocation.lat && !geolocation.lng) {
-			Liferay.Util.getGeolocation(
+			getGeolocation(
 				(lat, lng) => {
 					this._initializeLocation({lat, lng});
 				},

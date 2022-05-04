@@ -14,6 +14,7 @@
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
+import {toggleDisabled} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
 const VALID_EXTENSIONS = '.xliff,.xlf,.zip';
@@ -28,11 +29,8 @@ export default function ImportTranslation({
 	const inputFileRef = useRef();
 
 	useEffect(() => {
-		Liferay.Util.toggleDisabled('#' + saveDraftBtnId, !importFile);
-		Liferay.Util.toggleDisabled(
-			'#' + submitBtnId,
-			!importFile || workflowPending
-		);
+		toggleDisabled('#' + saveDraftBtnId, !importFile);
+		toggleDisabled('#' + submitBtnId, !importFile || workflowPending);
 	}, [importFile, saveDraftBtnId, submitBtnId, workflowPending]);
 
 	return (

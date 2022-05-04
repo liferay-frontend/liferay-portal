@@ -17,7 +17,13 @@ import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
-import {fetch, objectToFormData, runScriptsInElement} from 'frontend-js-web';
+import {
+	fetch,
+	getPortletNamespace,
+	ns,
+	objectToFormData,
+	runScriptsInElement,
+} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -40,7 +46,7 @@ export function SidebarPanelContent({contentRequestBody, contentUrl, title}) {
 
 	const {portletId, redirect} = useConstants();
 
-	const namespace = Liferay.Util.getPortletNamespace(portletId);
+	const namespace = getPortletNamespace(portletId);
 
 	useEffect(() => {
 		if (changedRef.current) {
@@ -55,7 +61,7 @@ export function SidebarPanelContent({contentRequestBody, contentUrl, title}) {
 
 		fetch(contentUrl, {
 			body: objectToFormData(
-				Liferay.Util.ns(namespace, {redirect, ...contentRequestBody})
+				ns(namespace, {redirect, ...contentRequestBody})
 			),
 			method: 'POST',
 		})

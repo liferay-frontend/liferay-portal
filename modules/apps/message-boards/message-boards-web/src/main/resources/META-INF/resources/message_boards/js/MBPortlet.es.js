@@ -12,7 +12,7 @@
  * details.
  */
 
-import {fetch} from 'frontend-js-web';
+import {escapeHTML, fetch, openModal, sub} from 'frontend-js-web';
 
 const RECENTLY_REMOVED_ATTACHMENTS = {
 	multiple: Liferay.Language.get('x-recently-removed-attachments'),
@@ -125,7 +125,7 @@ class MBPortlet {
 
 		if (viewRemovedAttachmentsLink) {
 			this._addEventListener(viewRemovedAttachmentsLink, 'click', () => {
-				Liferay.Util.openModal({
+				openModal({
 					id: this._namespace + 'openRemovedPageAttachments',
 					onClose: this._updateRemovedAttachments.bind(this),
 					title: Liferay.Language.get('removed-attachments'),
@@ -270,7 +270,7 @@ class MBPortlet {
 					const id = index;
 					const value = item.value;
 
-					return `<input id="${namespace}selectedFileName${id}" name="${namespace}selectedFileName" type="hidden" value="${Liferay.Util.escapeHTML(
+					return `<input id="${namespace}selectedFileName${id}" name="${namespace}selectedFileName" type="hidden" value="${escapeHTML(
 						value
 					)}" />`;
 				})
@@ -334,7 +334,7 @@ class MBPortlet {
 				if (attachments.deleted.length > 0) {
 					deletedAttachmentsElement.style.display = 'initial';
 					deletedAttachmentsElement.innerHTML =
-						Liferay.Util.sub(
+						sub(
 							attachments.deleted.length > 1
 								? RECENTLY_REMOVED_ATTACHMENTS.multiple
 								: RECENTLY_REMOVED_ATTACHMENTS.single,

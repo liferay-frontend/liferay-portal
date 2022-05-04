@@ -16,6 +16,7 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import {ManagementToolbar, Treeview} from 'frontend-js-components-web';
+import {getOpener} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
@@ -66,14 +67,14 @@ const OldSelectLayoutTree = ({
 		}
 
 		if (followURLOnTitleClick) {
-			Liferay.Util.getOpener().document.location.href = data.url;
+			getOpener().document.location.href = data.url;
 		}
 		else {
 			Liferay.fire(itemSelectorSaveEvent, {
 				data,
 			});
 
-			Liferay.Util.getOpener().Liferay.fire(itemSelectorSaveEvent, {
+			getOpener().Liferay.fire(itemSelectorSaveEvent, {
 				data,
 			});
 		}

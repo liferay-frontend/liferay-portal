@@ -17,7 +17,7 @@ import {ClayCheckbox} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import classNames from 'classnames';
-import {cancelDebounce, debounce} from 'frontend-js-web';
+import {cancelDebounce, debounce, getOpener} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
@@ -114,7 +114,7 @@ const TreeFilter = ({
 
 			selectedNodesRef.current = data;
 
-			const openerWindow = Liferay.Util.getOpener();
+			const openerWindow = getOpener();
 
 			openerWindow.Liferay.fire(itemSelectorSaveEvent, {
 				data: selectedDataOutputTransfomer({

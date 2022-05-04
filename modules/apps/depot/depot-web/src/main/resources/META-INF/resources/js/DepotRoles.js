@@ -12,7 +12,7 @@
  * details.
  */
 
-import {delegate, openSelectionModal} from 'frontend-js-web';
+import {delegate, escapeHTML, openSelectionModal, sub} from 'frontend-js-web';
 
 export default function ({
 	portletNamespace,
@@ -94,9 +94,7 @@ export default function ({
 							rowColumns.push(
 								`<i class="${
 									selectedItem.iconcssclass
-								}"></i>${Liferay.Util.escapeHTML(
-									selectedItem.rolename
-								)}`
+								}"></i>${escapeHTML(selectedItem.rolename)}`
 							);
 
 							rowColumns.push(selectedItem.groupdescriptivename);
@@ -158,7 +156,7 @@ export default function ({
 						},
 						selectEventName,
 						selectedData: searchContainer.getData(true),
-						title: Liferay.Util.sub(
+						title: sub(
 							Liferay.Language.get('select-x'),
 							Liferay.Language.get('role')
 						),

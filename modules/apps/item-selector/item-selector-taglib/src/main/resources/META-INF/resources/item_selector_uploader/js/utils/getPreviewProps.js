@@ -12,6 +12,8 @@
  * details.
  */
 
+import {formatStorage, getOpener} from 'frontend-js-web';
+
 function getUploadFileMetadata(file) {
 	return {
 		groups: [
@@ -23,7 +25,7 @@ function getUploadFileMetadata(file) {
 					},
 					{
 						key: Liferay.Language.get('size'),
-						value: Liferay.Util.formatStorage(file.size),
+						value: formatStorage(file.size),
 					},
 					{
 						key: Liferay.Language.get('name'),
@@ -63,7 +65,7 @@ function getPreviewProps({
 	return {
 		currentIndex: 0,
 		handleSelectedItem: ({returntype, value}) => {
-			Liferay.Util.getOpener().Liferay.fire(itemSelectedEventName, {
+			getOpener().Liferay.fire(itemSelectedEventName, {
 				data: {
 					returnType: returntype,
 					value,

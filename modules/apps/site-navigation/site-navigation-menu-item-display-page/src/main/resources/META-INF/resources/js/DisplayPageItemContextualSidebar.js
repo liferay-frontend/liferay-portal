@@ -19,7 +19,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import classNames from 'classnames';
 import {TranslationAdminSelector} from 'frontend-js-components-web';
-import {fetch, objectToFormData, openSelectionModal} from 'frontend-js-web';
+import {fetch, ns, objectToFormData, openSelectionModal} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
@@ -108,10 +108,7 @@ function DisplayPageItemContextualSidebar({
 
 					setSelectedItem(infoItem);
 
-					const namespacedInfoItem = Liferay.Util.ns(
-						namespace,
-						infoItem
-					);
+					const namespacedInfoItem = ns(namespace, infoItem);
 
 					fetch(getItemDetailsURL, {
 						body: objectToFormData(namespacedInfoItem),

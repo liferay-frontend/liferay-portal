@@ -12,6 +12,7 @@
  * details.
  */
 
+import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../app/config/constants/layoutDataItemTypes';
@@ -95,7 +96,7 @@ function FragmentEntryLinkWithComments({fragmentEntryLink, item}) {
 			</strong>
 
 			<span className="text-secondary">
-				{Liferay.Util.sub(
+				{sub(
 					fragmentEntryLink.comments.length === 1
 						? Liferay.Language.get('x-comment')
 						: Liferay.Language.get('x-comments'),

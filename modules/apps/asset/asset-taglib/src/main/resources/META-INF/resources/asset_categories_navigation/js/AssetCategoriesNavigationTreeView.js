@@ -15,6 +15,7 @@
 import {TreeView as ClayTreeView} from '@clayui/core';
 import ClayIcon from '@clayui/icon';
 import {Treeview} from 'frontend-js-components-web';
+import {navigate} from 'frontend-js-web';
 import React from 'react';
 
 function findCategory(categoryId, categories = []) {
@@ -45,7 +46,7 @@ const AssetCategoriesNavigationTreeView = ({
 			return;
 		}
 
-		Liferay.Util.navigate(item.url);
+		navigate(item.url);
 	};
 
 	return (
@@ -93,7 +94,7 @@ const OldAssetCategoriesNavigationTreeView = ({
 			const category = findCategory(selectedNodeId, vocabularies);
 
 			if (category) {
-				Liferay.Util.navigate(category.url);
+				navigate(category.url);
 			}
 		}
 	};

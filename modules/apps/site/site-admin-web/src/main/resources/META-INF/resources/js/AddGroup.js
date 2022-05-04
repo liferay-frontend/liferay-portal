@@ -12,6 +12,8 @@
  * details.
  */
 
+import {fetch, getOpener, openToast} from 'frontend-js-web';
+
 export default function ({namespace}) {
 	const loading = document.querySelector('.add-group-loading');
 	const content = document.querySelector(
@@ -44,7 +46,7 @@ export default function ({namespace}) {
 
 		const formData = new FormData(form);
 
-		Liferay.Util.fetch(form.action, {
+		fetch(form.action, {
 			body: formData,
 			method: 'POST',
 		})
@@ -60,7 +62,7 @@ export default function ({namespace}) {
 
 					redirectURL.searchParams.set('p_p_state', 'normal');
 
-					const opener = Liferay.Util.getOpener();
+					const opener = getOpener();
 
 					opener.Liferay.fire('closeModal', {
 						id: `${namespace}addSiteDialog`,
@@ -68,7 +70,7 @@ export default function ({namespace}) {
 					});
 				}
 				else {
-					Liferay.Util.openToast({
+					openToast({
 						autoClose: false,
 						container: alertContainer,
 						message: response.error,

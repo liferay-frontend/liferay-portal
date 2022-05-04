@@ -14,7 +14,13 @@
 
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import {fetch, objectToFormData, openToast} from 'frontend-js-web';
+import {
+	fetch,
+	objectToFormData,
+	openToast,
+	setSessionValue,
+	sub,
+} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useState} from 'react';
 
@@ -92,7 +98,7 @@ function LayoutFinder(props) {
 	const handleOnClick = useCallback(() => {
 		Liferay.Portlet.destroy(`#p_p_id${props.namespace}`, true);
 
-		Liferay.Util.Session.set(
+		setSessionValue(
 			'com.liferay.product.navigation.product.menu.web_pagesTreeState',
 			'closed'
 		).then(() => {
@@ -213,7 +219,7 @@ function LayoutFinder(props) {
 					{totalCount > MAX_ITEMS_TO_SHOW && (
 						<div>
 							<div className="mb-3 mt-3 text-center">
-								{Liferay.Util.sub(
+								{sub(
 									Liferay.Language.get(
 										'there-are-x-more-results-narrow-your-searc-to-get-more-precise-results'
 									),

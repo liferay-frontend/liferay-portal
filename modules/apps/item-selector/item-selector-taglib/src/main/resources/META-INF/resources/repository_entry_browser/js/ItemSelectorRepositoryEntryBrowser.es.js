@@ -19,6 +19,8 @@ import {
 	PortletBase,
 	STATUS_CODE,
 	delegate,
+	formatStorage,
+	sub,
 } from 'frontend-js-web';
 import {Config} from 'metal-state';
 import ReactDOM from 'react-dom';
@@ -277,7 +279,7 @@ class ItemSelectorRepositoryEntryBrowser extends PortletBase {
 					break;
 				case STATUS_CODE.SC_FILE_EXTENSION_EXCEPTION:
 					if (error.message) {
-						message = Liferay.Util.sub(
+						message = sub(
 							Liferay.Language.get(
 								'please-enter-a-file-with-a-valid-extension-x'
 							),
@@ -299,11 +301,11 @@ class ItemSelectorRepositoryEntryBrowser extends PortletBase {
 					break;
 				case STATUS_CODE.SC_FILE_SIZE_EXCEPTION:
 				case STATUS_CODE.SC_UPLOAD_REQUEST_CONTENT_LENGTH_EXCEPTION:
-					message = Liferay.Util.sub(
+					message = sub(
 						Liferay.Language.get(
 							'please-enter-a-file-with-a-valid-file-size-no-larger-than-x'
 						),
-						[Liferay.Util.formatStorage(this.maxFileSize)]
+						[formatStorage(this.maxFileSize)]
 					);
 
 					break;
@@ -312,11 +314,11 @@ class ItemSelectorRepositoryEntryBrowser extends PortletBase {
 						Liferay.PropsValues
 							.UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE;
 
-					message = Liferay.Util.sub(
+					message = sub(
 						Liferay.Language.get(
 							'request-is-larger-than-x-and-could-not-be-processed'
 						),
-						[Liferay.Util.formatStorage(maxUploadRequestSize)]
+						[formatStorage(maxUploadRequestSize)]
 					);
 
 					break;
@@ -350,7 +352,7 @@ class ItemSelectorRepositoryEntryBrowser extends PortletBase {
 						},
 						{
 							key: Liferay.Language.get('size'),
-							value: Liferay.Util.formatStorage(file.size),
+							value: formatStorage(file.size),
 						},
 						{
 							key: Liferay.Language.get('name'),
@@ -488,16 +490,16 @@ class ItemSelectorRepositoryEntryBrowser extends PortletBase {
 				this._previewFile(file);
 			}
 			else {
-				errorMessage = Liferay.Util.sub(
+				errorMessage = sub(
 					Liferay.Language.get(
 						'please-enter-a-file-with-a-valid-file-size-no-larger-than-x'
 					),
-					[Liferay.Util.formatStorage(maxFileSize)]
+					[formatStorage(maxFileSize)]
 				);
 			}
 		}
 		else {
-			errorMessage = Liferay.Util.sub(
+			errorMessage = sub(
 				Liferay.Language.get(
 					'please-enter-a-file-with-a-valid-extension-x'
 				),

@@ -15,6 +15,7 @@
 import {TreeView as ClayTreeView} from '@clayui/core';
 import {ClayCheckbox} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import {getOpener} from 'frontend-js-web';
 import React, {useMemo, useRef, useState} from 'react';
 
 function performFilter(value, tree) {
@@ -130,7 +131,7 @@ export function SelectTree({
 			},
 		};
 
-		Liferay.Util.getOpener().Liferay.fire(itemSelectorSaveEvent, {
+		getOpener().Liferay.fire(itemSelectorSaveEvent, {
 			data: selectedItemsRef.current,
 		});
 	};
@@ -138,7 +139,7 @@ export function SelectTree({
 	const handleSingleSelectionChange = (event, item) => {
 		event.preventDefault();
 
-		Liferay.Util.getOpener().Liferay.fire(itemSelectorSaveEvent, {
+		getOpener().Liferay.fire(itemSelectorSaveEvent, {
 			data: {
 				[item.id]: {
 					categoryId: item.vocabulary ? 0 : item.id,
