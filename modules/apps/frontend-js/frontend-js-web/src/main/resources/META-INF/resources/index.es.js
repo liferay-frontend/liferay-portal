@@ -113,3 +113,15 @@ export {default as runScriptsInElement} from './liferay/util/run_scripts_in_elem
 export {default as selectFolder} from './liferay/util/select_folder';
 export {default as toggleControls} from './liferay/util/toggle_controls';
 export {default as toggleDisabled} from './liferay/util/toggle_disabled';
+export {escapeHTML, unescapeHTML} from './liferay/util/html_util';
+export {default as sub} from './liferay/util/sub';
+export {default as getTop} from './liferay/util/get_top';
+export {default as setFormValues} from './liferay/util/form/set_form_values.es';
+export {default as getFormElement} from './liferay/util/form/get_form_element.es';
+export {default as getOpener} from './liferay/util/get_opener';
+export {default as ns} from './liferay/util/ns.es';
+export {default as formatStorage} from './liferay/util/format_storage.es';
+export {default as getCropRegion} from './liferay/util/get_crop_region.es';
+export {default as getPortletNamespace} from './liferay/util/get_portlet_namespace.es';
+export {default as getGeolocation} from './liferay/util/get_geolocation';
+export {default as toCharCode} from './liferay/util/to_char_code.es';
