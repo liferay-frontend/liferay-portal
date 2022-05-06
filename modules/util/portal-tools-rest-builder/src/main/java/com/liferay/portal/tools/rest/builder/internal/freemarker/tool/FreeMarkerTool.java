@@ -859,6 +859,20 @@ public class FreeMarkerTool {
 		return true;
 	}
 
+	public boolean hasResourceBatchJavaMethodSignatures(
+		List<JavaMethodSignature> javaMethodSignatures) {
+
+		return ResourceOpenAPIParser.hasResourceBatchJavaMethodSignatures(
+			javaMethodSignatures);
+	}
+
+	public boolean hasResourcesGetPagesJavaMethodSignature(
+		List<JavaMethodSignature> javaMethodSignatures) {
+
+		return ResourceOpenAPIParser.hasResourcesGetPagesJavaMethodSignature(
+			javaMethodSignatures);
+	}
+
 	public boolean isDTOSchemaProperty(
 		OpenAPIYAML openAPIYAML, String propertyName, Schema schema) {
 
