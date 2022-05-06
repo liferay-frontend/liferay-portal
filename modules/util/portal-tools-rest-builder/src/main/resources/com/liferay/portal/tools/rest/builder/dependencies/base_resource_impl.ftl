@@ -609,11 +609,13 @@ public abstract class Base${schemaName}ResourceImpl
 		this.roleLocalService = roleLocalService;
 	}
 
-	<#if generateBatch>
+	<#if configYAML.generateBatch>
 		public void setVulcanBatchEngineImportTaskResource(VulcanBatchEngineImportTaskResource vulcanBatchEngineImportTaskResource) {
 			this.vulcanBatchEngineImportTaskResource = vulcanBatchEngineImportTaskResource;
 		}
+	</#if>
 
+	<#if generateBatch>
 		@Override
 		public Filter toFilter(String filterString, Map<String, List<String>> multivaluedMap) {
 			try {
@@ -689,7 +691,7 @@ public abstract class Base${schemaName}ResourceImpl
 	protected ResourcePermissionLocalService resourcePermissionLocalService;
 	protected RoleLocalService roleLocalService;
 
-	<#if generateBatch>
+	<#if configYAML.generateBatch>
 		protected VulcanBatchEngineImportTaskResource vulcanBatchEngineImportTaskResource;
 	</#if>
 
