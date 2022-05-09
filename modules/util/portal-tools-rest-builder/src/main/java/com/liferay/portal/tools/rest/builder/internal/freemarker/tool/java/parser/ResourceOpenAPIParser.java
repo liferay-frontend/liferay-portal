@@ -271,7 +271,7 @@ public class ResourceOpenAPIParser {
 		return false;
 	}
 
-	public static boolean hasResourcesGetPagesJavaMethodSignature(
+	public static boolean hasResourceGetPageJavaMethodSignature(
 		List<JavaMethodSignature> javaMethodSignatures) {
 
 		for (JavaMethodSignature javaMethodSignature : javaMethodSignatures) {

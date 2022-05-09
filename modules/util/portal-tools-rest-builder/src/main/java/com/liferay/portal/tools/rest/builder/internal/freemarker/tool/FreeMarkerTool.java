@@ -96,6 +96,27 @@ public class FreeMarkerTool {
 		);
 	}
 
+	public boolean generateBatch(
+		ConfigYAML configYAML, String javaDataType,
+		List<JavaMethodSignature> javaMethodSignatures) {
+
+		if (!configYAML.isGenerateBatch() || (javaDataType == null) ||
+			javaDataType.isEmpty()) {
+
+			return false;
+		}
+
+		if (ResourceOpenAPIParser.hasResourceBatchJavaMethodSignatures(
+				javaMethodSignatures) ||
+			ResourceOpenAPIParser.hasResourceGetPageJavaMethodSignature(
+				javaMethodSignatures)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public Map<String, Schema> getAllSchemas(
 		Map<String, Schema> allExternalSchemas, OpenAPIYAML openAPIYAML,
 		Map<String, Schema> schemas) {
@@ -857,20 +878,6 @@ public class FreeMarkerTool {
 		}
 
 		return true;
-	}
-
-	public boolean hasResourceBatchJavaMethodSignatures(
-		List<JavaMethodSignature> javaMethodSignatures) {
-
-		return ResourceOpenAPIParser.hasResourceBatchJavaMethodSignatures(
-			javaMethodSignatures);
-	}
-
-	public boolean hasResourcesGetPagesJavaMethodSignature(
-		List<JavaMethodSignature> javaMethodSignatures) {
-
-		return ResourceOpenAPIParser.hasResourcesGetPagesJavaMethodSignature(
-			javaMethodSignatures);
 	}
 
 	public boolean isDTOSchemaProperty(
