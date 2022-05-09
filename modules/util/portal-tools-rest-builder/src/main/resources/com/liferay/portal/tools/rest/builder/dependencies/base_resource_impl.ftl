@@ -76,7 +76,7 @@ public abstract class Base${schemaName}ResourceImpl
 	<#assign
 		javaDataType = freeMarkerTool.getJavaDataType(configYAML, openAPIYAML, schemaName)!""
 		javaMethodSignatures = freeMarkerTool.getResourceJavaMethodSignatures(configYAML, openAPIYAML, schemaName)
-		generateBatch = configYAML.generateBatch && javaDataType?has_content && (freeMarkerTool.hasResourceBatchJavaMethodSignatures(javaMethodSignatures) || freeMarkerTool.hasResourcesGetPagesJavaMethodSignature(javaMethodSignatures))
+		generateBatch = freeMarkerTool.generateBatch(configYAML, javaDataType, javaMethodSignatures)
 	/>
 
 	<#if generateBatch>
