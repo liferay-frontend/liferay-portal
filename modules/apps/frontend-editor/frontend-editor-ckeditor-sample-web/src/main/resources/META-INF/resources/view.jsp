@@ -17,12 +17,12 @@
 <%@ include file="/init.jsp" %>
 
 <liferay-ui:tabs
-	names="Balloon Editor Tag,Alloy Editor Tag,Input Editor Tag,CKEditor Classic Editor Tag,CKEditor BBCode Tag,Editor React Component"
+	names="Balloon Editor,Alloy Editor,CKEditor Classic Editor,CKEditor BBCode,Editor React Component"
 	refresh="<%= false %>"
 >
 
 	<%
-	String[] sections = {"ballooneditor", "alloyeditor", "inputeditor", "ckeditor_classic", "ckeditor_bbcode", "ckeditor_editor_react_component"};
+	String[] sections = {"ballooneditor", "alloyeditor", "ckeditor_classic", "ckeditor_bbcode", "ckeditor_editor_react_component"};
 
 	for (int i = 0; i < sections.length; i++) {
 	%>
