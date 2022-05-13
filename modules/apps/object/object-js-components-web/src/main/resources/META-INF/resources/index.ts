@@ -15,14 +15,8 @@
 export {default as AutoComplete} from './components/AutoComplete/index';
 export {Card} from './components/Card';
 export {CheckboxItem} from './components/CheckBoxItem';
-export {
-	default as CodeEditor,
-	CodeMirrorEditor,
-	SidebarCategory,
-} from './components/CodeEditor/index';
 export {DatePicker} from './components/DatePicker';
 export * from './components/ExpressionBuilder';
-export {FieldBase} from './components/FieldBase';
 export {CustomItem, FormCustomSelect} from './components/FormCustomSelect';
 export {Input} from './components/Input';
 export {InputLocalized} from './components/InputLocalized';

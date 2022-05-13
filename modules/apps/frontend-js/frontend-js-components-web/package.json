@@ -1,6 +1,8 @@
 {
 	"dependencies": {
 		"@liferay/frontend-js-state-web": "*",
+		"@types/codemirror": "^5.60.5",
+		"codemirror": "^5.59.0",
 		"dom-align": "1.12.2"
 	},
 	"main": "index.js",

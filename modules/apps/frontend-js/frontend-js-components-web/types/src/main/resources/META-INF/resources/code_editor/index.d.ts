@@ -12,15 +12,19 @@
  * details.
  */
 
-import {MouseEventHandler} from 'react';
-export declare function Element({
-	helpText,
-	label,
-	onClick,
-}: IProps): JSX.Element;
-interface IProps {
-	helpText: string;
-	label: string;
-	onClick?: MouseEventHandler;
+import CodeMirror from 'codemirror';
+import React from 'react';
+import {ICodeMirrorEditor} from './Editor';
+import {SidebarCategory} from './Sidebar';
+import './index.scss';
+export {default as CodeMirrorEditor} from './Editor';
+export {SidebarCategory} from './Sidebar';
+interface IProps extends ICodeMirrorEditor {
+	className?: string;
+	error?: string;
+	sidebarElements?: SidebarCategory[];
 }
-export {};
+declare const CodeEditor: React.ForwardRefExoticComponent<
+	IProps & React.RefAttributes<CodeMirror.Editor>
+>;
+export default CodeEditor;

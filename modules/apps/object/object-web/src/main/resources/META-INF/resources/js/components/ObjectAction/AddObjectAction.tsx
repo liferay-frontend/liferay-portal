@@ -12,7 +12,8 @@
  * details.
  */
 
-import {CustomItem, SidebarCategory} from '@liferay/object-js-components-web';
+import {CustomItem} from '@liferay/object-js-components-web';
+import {SidebarCategory} from 'frontend-js-components-web';
 import React from 'react';
 
 import ObjectAction from './index';

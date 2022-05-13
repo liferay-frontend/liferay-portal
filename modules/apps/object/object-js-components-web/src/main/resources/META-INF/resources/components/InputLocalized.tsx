@@ -14,9 +14,8 @@
 
 import ClayLocalizedInput from '@clayui/localized-input';
 import classNames from 'classnames';
+import {FieldBase} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
-
-import {FieldBase} from './FieldBase';
 
 import './InputLocalized.scss';
 

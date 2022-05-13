@@ -12,14 +12,33 @@
  * details.
  */
 
-export {default as Treeview} from './treeview/Treeview';
+/**
+ * Code Editor
+ */
+export {default as CodeEditor, SidebarCategory} from './code_editor/index';
+export {default as CodeMirrorEditor} from './code_editor/Editor';
 
+/**
+ * Field Base
+ */
+export * from './field_base/index';
+
+/**
+ * Management Toolbar
+ */
 export {default as ManagementToolbar} from './management_toolbar/ManagementToolbar';
 
+/**
+ * Translation Manager
+ */
 export {
 	activeLanguageIdsAtom,
 	selectedLanguageIdAtom,
 } from './translation_manager/state';
-
 export {default as TranslationAdminModal} from './translation_manager/TranslationAdminModal';
 export {default as TranslationAdminSelector} from './translation_manager/TranslationAdminSelector';
+
+/**
+ * Treeview
+ */
+export {default as Treeview} from './treeview/Treeview';

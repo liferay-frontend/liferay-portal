@@ -19,15 +19,14 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import {
 	API,
 	Card,
-	CodeEditor,
 	CustomItem,
 	ExpressionBuilder,
 	FormCustomSelect,
 	Input,
 	SelectWithOption,
-	SidebarCategory,
 	invalidateRequired,
 } from '@liferay/object-js-components-web';
+import {CodeEditor, SidebarCategory} from 'frontend-js-components-web';
 import React, {useEffect, useMemo, useState} from 'react';
 
 import PredefinedValuesTable from '../PredefinedValuesTable';

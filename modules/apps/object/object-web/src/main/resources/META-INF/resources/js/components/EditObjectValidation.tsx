@@ -15,10 +15,10 @@
 import ClayTabs from '@clayui/tabs';
 import {
 	SidePanelForm,
-	SidebarCategory,
 	openToast,
 	saveAndReload,
 } from '@liferay/object-js-components-web';
+import {SidebarCategory} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 

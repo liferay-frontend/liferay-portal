@@ -12,20 +12,34 @@
  * details.
  */
 
-import {Collapse} from '@liferay/layout-content-page-editor-web';
-import React from 'react';
+import ClayButton from '@clayui/button';
+import ClayIcon from '@clayui/icon';
+import React, {useState} from 'react';
 
-export function Collapsible({children, label}: IProps) {
-	return (
-		<div className="lfr-objects__code-editor-sidebar-collapsible-button-list">
-			<Collapse label={label} open>
-				{children}
-			</Collapse>
-		</div>
-	);
-}
+import './Collapse.scss';
 
 interface IProps {
 	children: React.ReactNode;
-	label: string;
+	label?: string;
+}
+
+export default function Collapse({children, label}: IProps) {
+	const [isOpen, setIsOpen] = useState(true);
+
+	return (
+		<div className="lfr-code-editor__collapse">
+			<ClayButton
+				aria-expanded={isOpen}
+				className="lfr-code-editor__collapse-button text-truncate"
+				displayType="unstyled"
+				onClick={() => setIsOpen((open) => !open)}
+			>
+				{label}
+
+				<ClayIcon symbol={isOpen ? 'angle-down' : 'angle-right'} />
+			</ClayButton>
+
+			{isOpen && children}
+		</div>
+	);
 }

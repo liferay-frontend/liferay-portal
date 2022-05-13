@@ -70,7 +70,7 @@ export function FieldBase({
 					<ClayTooltipProvider>
 						<span data-tooltip-align="top" title={tooltip}>
 							<ClayIcon
-								className="lfr-objects__field-base-tooltip-icon"
+								className="lfr-field-base__tooltip-icon"
 								symbol="question-circle-full"
 							/>
 						</span>

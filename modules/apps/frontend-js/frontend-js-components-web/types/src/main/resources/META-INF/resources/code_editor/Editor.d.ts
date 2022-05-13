@@ -19,11 +19,13 @@ import 'codemirror/addon/display/placeholder';
 import 'codemirror/lib/codemirror.css';
 import CodeMirror from 'codemirror';
 import React from 'react';
-import './CodeMirrorEditor.scss';
+import './Editor.scss';
+export interface ICodeMirrorEditor extends CodeMirror.EditorConfiguration {
+	className?: string;
+	fixed?: boolean;
+	onChange: (value?: string, lineCount?: number) => void;
+}
 declare const _default: React.MemoExoticComponent<React.ForwardRefExoticComponent<
 	ICodeMirrorEditor & React.RefAttributes<CodeMirror.Editor>
 >>;
 export default _default;
-export interface ICodeMirrorEditor extends CodeMirror.EditorConfiguration {
-	onChange: (value?: string, lineCount?: number) => void;
-}

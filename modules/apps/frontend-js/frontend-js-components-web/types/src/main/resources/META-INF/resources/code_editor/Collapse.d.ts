@@ -12,24 +12,11 @@
  * details.
  */
 
-/// <reference types="react" />
-
-import {CustomItem} from '@liferay/object-js-components-web';
-import {SidebarCategory} from 'frontend-js-components-web';
-export default function AddObjectAction({
-	apiURL,
-	objectActionCodeEditorElements,
-	objectActionExecutors,
-	objectActionTriggers,
-	objectDefinitionsRelationshipsURL,
-	validateExpressionURL,
-}: IProps): JSX.Element;
+import React from 'react';
+import './Collapse.scss';
 interface IProps {
-	apiURL: string;
-	objectActionCodeEditorElements: SidebarCategory[];
-	objectActionExecutors: CustomItem[];
-	objectActionTriggers: CustomItem[];
-	objectDefinitionsRelationshipsURL: string;
-	validateExpressionURL: string;
+	children: React.ReactNode;
+	label?: string;
 }
+export default function Collapse({children, label}: IProps): JSX.Element;
 export {};

@@ -12,6 +12,4 @@
  * details.
  */
 
-declare module '@liferay/frontend-js-state-web' {
-	export * from '@liferay/frontend-js-state-web/src/main/resources/META-INF/resources/State';
-}
+declare module '@liferay/frontend-js-state-web';

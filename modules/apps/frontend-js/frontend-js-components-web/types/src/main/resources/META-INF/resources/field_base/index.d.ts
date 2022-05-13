@@ -12,17 +12,5 @@
  * details.
  */
 
-/// <reference types="react" />
-
-import {SidebarCategory} from 'frontend-js-components-web';
-export default function EditObjectValidation({
-	objectValidationRule: initialValues,
-	objectValidationRuleElements,
-	readOnly,
-}: IProps): JSX.Element;
-interface IProps {
-	objectValidationRule: ObjectValidation;
-	objectValidationRuleElements: SidebarCategory[];
-	readOnly: boolean;
-}
-export {};
+export {FieldBase} from './FieldBase';
+export {FieldFeedback} from './FieldFeedback';

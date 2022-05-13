@@ -15,10 +15,26 @@
 import CodeMirror from 'codemirror';
 import React from 'react';
 
-import {Collapsible} from './Collapsible';
+import Collapse from './Collapse';
 import {Element} from './Element';
 
 import './Sidebar.scss';
+
+interface SidebarElement {
+	content: string;
+	helpText: string;
+	label: string;
+}
+
+export interface SidebarCategory {
+	items: SidebarElement[];
+	label: string;
+}
+
+interface IProps {
+	editorRef: React.RefObject<CodeMirror.Editor>;
+	elements: SidebarCategory[];
+}
 
 export function Sidebar({editorRef, elements}: IProps) {
 	const handleClick = (item: SidebarElement) =>
@@ -30,7 +46,7 @@ export function Sidebar({editorRef, elements}: IProps) {
 				<h5 className="my-3">{Liferay.Language.get('elements')}</h5>
 
 				{elements.map(({items, label}) => (
-					<Collapsible key={label} label={label}>
+					<Collapse key={label} label={label}>
 						{items.map((item) => (
 							<Element
 								helpText={item.helpText}
@@ -39,24 +55,9 @@ export function Sidebar({editorRef, elements}: IProps) {
 								onClick={() => handleClick(item)}
 							/>
 						))}
-					</Collapsible>
+					</Collapse>
 				))}
 			</div>
 		</div>
 	);
-}
-interface IProps {
-	editorRef: React.RefObject<CodeMirror.Editor>;
-	elements: SidebarCategory[];
-}
-
-export interface SidebarCategory {
-	items: SidebarElement[];
-	label: string;
-}
-
-interface SidebarElement {
-	content: string;
-	helpText: string;
-	label: string;
 }

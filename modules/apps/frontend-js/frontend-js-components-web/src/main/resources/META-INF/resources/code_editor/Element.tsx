@@ -17,6 +17,12 @@ import ClayIcon from '@clayui/icon';
 import ClayPopover from '@clayui/popover';
 import React, {MouseEventHandler, useState} from 'react';
 
+interface IProps {
+	helpText: string;
+	label: string;
+	onClick?: MouseEventHandler;
+}
+
 export function Element({helpText, label, onClick}: IProps) {
 	const [showPreview, setShowPreview] = useState(false);
 
@@ -60,10 +66,4 @@ export function Element({helpText, label, onClick}: IProps) {
 			</div>
 		</ClayButton>
 	);
-}
-
-interface IProps {
-	helpText: string;
-	label: string;
-	onClick?: MouseEventHandler;
 }

@@ -18,9 +18,8 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import {ClassicEditor, IEditor} from 'frontend-editor-ckeditor-web';
+import {FieldBase} from 'frontend-js-components-web';
 import React, {useEffect, useRef, useState} from 'react';
-
-import {FieldBase} from './FieldBase';
 
 import './RichTextLocalized.scss';
 

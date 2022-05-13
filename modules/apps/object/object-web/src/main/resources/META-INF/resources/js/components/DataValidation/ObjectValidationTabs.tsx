@@ -16,12 +16,11 @@ import 'codemirror/mode/groovy/groovy';
 import {ClayToggle} from '@clayui/form';
 import {
 	Card,
-	CodeEditor,
 	Input,
 	InputLocalized,
 	Select,
-	SidebarCategory,
 } from '@liferay/object-js-components-web';
+import {CodeEditor, SidebarCategory} from 'frontend-js-components-web';
 import React, {ChangeEventHandler} from 'react';
 
 import {ObjectValidationErrors} from '../ObjectValidationFormBase';

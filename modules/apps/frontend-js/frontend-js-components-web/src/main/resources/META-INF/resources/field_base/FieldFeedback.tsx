@@ -29,7 +29,7 @@ export function FieldFeedback({
 
 	return (
 		<ClayForm.FeedbackGroup
-			className="lfr-de__field-feedback"
+			className="lfr-field-base__feedback"
 			{...otherProps}
 		>
 			{errorMessage && (

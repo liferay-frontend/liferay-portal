@@ -1,0 +1,37 @@
+@import 'atlas-variables';
+
+.lfr-code-editor__collapse {
+	cursor: pointer;
+	margin-bottom: 1rem;
+
+	&-button {
+		align-items: center;
+		border-bottom: 1px solid $light;
+		border-radius: 0;
+		color: $secondary;
+		display: flex;
+		font-size: 0.75rem;
+		font-weight: 600;
+		height: 2rem;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+		padding-bottom: 0.5rem;
+		padding-top: 0.5rem;
+		text-transform: uppercase;
+		width: 100%;
+
+		&.btn:active:focus,
+		&.btn:focus {
+			box-shadow: none;
+		}
+
+		&:hover {
+			color: $dark;
+		}
+	}
+
+	.sheet-subtitle {
+		border-color: $light;
+		line-height: inherit;
+	}
+}

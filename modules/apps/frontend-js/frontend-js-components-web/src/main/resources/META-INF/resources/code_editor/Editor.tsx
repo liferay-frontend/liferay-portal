@@ -24,7 +24,13 @@ import 'codemirror/lib/codemirror.css';
 import CodeMirror from 'codemirror';
 import React, {useEffect, useRef} from 'react';
 
-import './CodeMirrorEditor.scss';
+import './Editor.scss';
+
+export interface ICodeMirrorEditor extends CodeMirror.EditorConfiguration {
+	className?: string;
+	fixed?: boolean;
+	onChange: (value?: string, lineCount?: number) => void;
+}
 
 const CodeMirrorEditor = React.forwardRef<CodeMirror.Editor, ICodeMirrorEditor>(
 	({onChange, ...options}, ref) => {
@@ -73,7 +79,3 @@ const CodeMirrorEditor = React.forwardRef<CodeMirror.Editor, ICodeMirrorEditor>(
 );
 
 export default React.memo(CodeMirrorEditor);
-
-export interface ICodeMirrorEditor extends CodeMirror.EditorConfiguration {
-	onChange: (value?: string, lineCount?: number) => void;
-}

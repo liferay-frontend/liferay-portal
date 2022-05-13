@@ -14,7 +14,8 @@
 
 /// <reference types="react" />
 
-import {CustomItem, SidebarCategory} from '@liferay/object-js-components-web';
+import {CustomItem} from '@liferay/object-js-components-web';
+import {SidebarCategory} from 'frontend-js-components-web';
 export default function EditObjectAction({
 	objectAction: {id, ...values},
 	objectActionCodeEditorElements,

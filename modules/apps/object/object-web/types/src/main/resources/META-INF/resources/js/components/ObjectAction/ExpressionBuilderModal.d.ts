@@ -14,7 +14,7 @@
 
 /// <reference types="react" />
 
-import {SidebarCategory} from '@liferay/object-js-components-web';
+import {SidebarCategory} from 'frontend-js-components-web';
 export default function ExpressionBuilderModal({
 	sidebarElements,
 }: IProps): JSX.Element;

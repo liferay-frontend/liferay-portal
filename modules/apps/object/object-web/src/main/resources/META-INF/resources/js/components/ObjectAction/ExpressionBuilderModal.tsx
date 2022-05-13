@@ -12,10 +12,8 @@
  * details.
  */
 
-import {
-	ExpressionBuilderModal as Modal,
-	SidebarCategory,
-} from '@liferay/object-js-components-web';
+import {ExpressionBuilderModal as Modal} from '@liferay/object-js-components-web';
+import {SidebarCategory} from 'frontend-js-components-web';
 import React from 'react';
 
 export default function ExpressionBuilderModal({sidebarElements}: IProps) {

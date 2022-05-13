@@ -15,11 +15,13 @@
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
+import {
+	CodeEditor,
+	FieldBase,
+	SidebarCategory,
+} from 'frontend-js-components-web';
 import {createResourceURL, fetch} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
-
-import CodeEditor, {SidebarCategory} from './CodeEditor/index';
-import {FieldBase} from './FieldBase';
 
 export function ExpressionBuilder({
 	buttonDisabled,

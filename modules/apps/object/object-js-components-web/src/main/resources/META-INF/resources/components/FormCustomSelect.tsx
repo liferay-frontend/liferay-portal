@@ -14,10 +14,10 @@
 
 import ClayAutocomplete from '@clayui/autocomplete';
 import ClayDropDown from '@clayui/drop-down';
+import {FieldBase} from 'frontend-js-components-web';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {CheckboxItem} from './CheckBoxItem';
-import {FieldBase} from './FieldBase';
 
 import './FormCustomSelect.scss';
 

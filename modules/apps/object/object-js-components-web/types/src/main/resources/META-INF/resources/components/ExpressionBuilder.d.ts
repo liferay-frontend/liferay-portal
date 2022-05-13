@@ -12,8 +12,8 @@
  * details.
  */
 
+import {SidebarCategory} from 'frontend-js-components-web';
 import React from 'react';
-import {SidebarCategory} from './CodeEditor/index';
 export declare function ExpressionBuilder({
 	buttonDisabled,
 	className,

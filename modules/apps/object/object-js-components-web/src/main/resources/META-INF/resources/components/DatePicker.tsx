@@ -13,9 +13,8 @@
  */
 
 import ClayDatePicker from '@clayui/date-picker';
+import {FieldBase} from 'frontend-js-components-web';
 import React from 'react';
-
-import {FieldBase} from './FieldBase';
 
 export function DatePicker({
 	className,

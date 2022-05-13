@@ -12,21 +12,15 @@
  * details.
  */
 
-import CodeMirror from 'codemirror';
-import React from 'react';
-import './Sidebar.scss';
-export declare function Sidebar({editorRef, elements}: IProps): JSX.Element;
+import {MouseEventHandler} from 'react';
 interface IProps {
-	editorRef: React.RefObject<CodeMirror.Editor>;
-	elements: SidebarCategory[];
-}
-export interface SidebarCategory {
-	items: SidebarElement[];
-	label: string;
-}
-interface SidebarElement {
-	content: string;
 	helpText: string;
 	label: string;
+	onClick?: MouseEventHandler;
 }
+export declare function Element({
+	helpText,
+	label,
+	onClick,
+}: IProps): JSX.Element;
 export {};

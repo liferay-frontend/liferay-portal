@@ -15,11 +15,8 @@
 /// <reference types="react" />
 
 import 'codemirror/mode/groovy/groovy';
-import {
-	CustomItem,
-	FormError,
-	SidebarCategory,
-} from '@liferay/object-js-components-web';
+import {CustomItem, FormError} from '@liferay/object-js-components-web';
+import {SidebarCategory} from 'frontend-js-components-web';
 export default function Action({
 	objectAction: initialValues,
 	objectActionCodeEditorElements,

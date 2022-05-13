@@ -20,12 +20,12 @@ import {
 	CustomItem,
 	FormError,
 	SidePanelForm,
-	SidebarCategory,
 	invalidateRequired,
 	openToast,
 	saveAndReload,
 	useForm,
 } from '@liferay/object-js-components-web';
+import {SidebarCategory} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useMemo, useState} from 'react';
 
