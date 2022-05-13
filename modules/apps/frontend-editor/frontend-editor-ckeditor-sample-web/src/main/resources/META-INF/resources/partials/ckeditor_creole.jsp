@@ -18,7 +18,7 @@
 
 <liferay-editor:editor
 	contents='<%= (String)request.getAttribute("view.jsp-sampleEditorContents") %>'
-	editorName="ckeditor_classic"
-	name="sampleCKEditorClassic"
+	editorName="ckeditor_creole"
+	name="sampleCKEditorCreole"
 	placeholder="content"
 />

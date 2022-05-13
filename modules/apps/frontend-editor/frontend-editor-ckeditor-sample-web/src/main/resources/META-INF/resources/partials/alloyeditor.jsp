@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <liferay-editor:editor
-	contents="<%= sampleEditorContents %>"
+	contents='<%= (String)request.getAttribute("view.jsp-sampleEditorContents") %>'
 	editorName="alloyeditor"
 	name="sampleAlloyEditor"
 	placeholder="content"

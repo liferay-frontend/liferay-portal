@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,17 +11,12 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ include file="/init.jsp" %>
+import {ClassicEditor} from 'frontend-editor-ckeditor-web';
+import React from 'react';
 
-<react:component
-	module="js/Editor"
-	props='<%=
-		HashMapBuilder.<String, Object>put(
-			"contents", sampleEditorContents
-		).put(
-			"name", "sampleCKEditorReactComponent"
-		).build()
-	%>'
-/>
+const ClassicEditorSample = (props) => {
+	return <ClassicEditor {...props} />;
+};
+
+export default ClassicEditorSample;

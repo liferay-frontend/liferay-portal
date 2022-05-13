@@ -16,18 +16,37 @@
 
 <%@ include file="/init.jsp" %>
 
+<liferay-util:buffer
+	var="sampleEditorContents"
+>
+	<h1>Sample Content</h1>
+
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc id cursus metus aliquam eleifend mi in nulla. Quam adipiscing vitae proin sagittis nisl rhoncus. Suspendisse faucibus interdum posuere lorem. Nullam ac tortor vitae purus faucibus ornare. Ac felis donec et odio pellentesque diam. Nulla at volutpat diam ut. Posuere urna nec tincidunt praesent semper feugiat nibh. Gravida quis blandit turpis cursus. Proin libero nunc consequat interdum varius. Sollicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque. Neque volutpat ac tincidunt vitae semper quis lectus nulla at. Odio euismod lacinia at quis risus sed vulputate odio ut. Augue lacus viverra vitae congue eu consequat ac. Elementum sagittis vitae et leo duis ut diam. Diam quis enim lobortis scelerisque fermentum dui faucibus.
+	</p>
+
+	<p>
+		This paragraph contains a <a href="https://example.com">link</a>.
+	</p>
+
+	<img src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?fit=crop&w=300" />
+</liferay-util:buffer>
+
 <%
 String tabs1 = ParamUtil.getString(request, "tabs1", "customized");
+
 PortletURL portletURL = PortletURLBuilder.createRenderURL(
 	renderResponse
 ).setTabs1(
 	tabs1
 ).buildPortletURL();
+
+request.setAttribute("view.jsp-sampleEditorContents", sampleEditorContents);
 %>
 
 <clay:container-fluid>
 	<liferay-ui:tabs
-		names="Balloon Editor,Alloy Editor,CKEditor Classic Editor,CKEditor BBCode,Editor React Component,minimum"
+		names="Balloon Editor,Alloy Editor,CKEditor Classic Editor,CKEditor BBCode,CKEditor ClassicEditor React Component"
 		url="<%= portletURL.toString() %>"
 	>
 		<liferay-ui:section>
@@ -55,8 +74,8 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 		</liferay-ui:section>
 
 		<liferay-ui:section>
-			<c:if test='<%= tabs1.equals("Editor React Component") %>'>
-				<liferay-util:include page="/partials/ckeditor_editor_react_component.jsp" servletContext="<%= pageContext.getServletContext() %>" />
+			<c:if test='<%= tabs1.equals("CKEditor ClassicEditor React Component") %>'>
+				<liferay-util:include page="/partials/ckeditor_classic_editor_react_component.jsp" servletContext="<%= pageContext.getServletContext() %>" />
 			</c:if>
 		</liferay-ui:section>
 	</liferay-ui:tabs>

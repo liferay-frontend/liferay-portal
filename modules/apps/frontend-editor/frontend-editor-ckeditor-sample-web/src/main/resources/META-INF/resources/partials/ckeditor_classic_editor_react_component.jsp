@@ -16,9 +16,17 @@
 
 <%@ include file="/init.jsp" %>
 
-<liferay-editor:editor
-	contents='<%= (String)request.getAttribute("view.jsp-sampleEditorContents") %>'
-	editorName="ckeditor_classic"
-	name="sampleCKEditorClassic"
-	placeholder="content"
+<%
+String sampleEditorContents = (String)request.getAttribute("view.jsp-sampleEditorContents");
+%>
+
+<react:component
+	module="js/ClassicEditorSample"
+	props='<%=
+		HashMapBuilder.<String, Object>put(
+			"contents", sampleEditorContents
+		).put(
+			"name", "sampleCKEditorClassicEditorReactComponent"
+		).build()
+	%>'
 />
