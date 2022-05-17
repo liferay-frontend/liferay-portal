@@ -53,6 +53,8 @@ class TabsProvider {
 	}
 
 	hide = ({panel, trigger}: {panel?: any; trigger?: any}) => {
+		const transitionEndEvent = this._transitionEndEvent;
+
 		if (panel && !trigger) {
 			trigger = this._getTrigger(panel);
 		}
@@ -74,9 +76,13 @@ class TabsProvider {
 
 		this._transitioning = true;
 
+		let called = false;
+
 		panel.addEventListener(
-			this._transitionEndEvent,
+			transitionEndEvent,
 			() => {
+				called = true;
+
 				panel.classList.remove(CssClass.ACTIVE);
 
 				this._transitioning = false;
@@ -85,6 +91,23 @@ class TabsProvider {
 			},
 			{once: true}
 		);
+
+		const transitionDuration = window.getComputedStyle(panel)
+			.transitionDuration;
+
+		const duration = transitionDuration.match(/ms$/g)
+			? parseInt(transitionDuration.replace('ms', ''), 10)
+			: parseFloat(transitionDuration.replace('s', '')) * 1000;
+
+		setTimeout(() => {
+			if (!called) {
+				const event = document.createEvent('Event');
+
+				event.initEvent(transitionEndEvent, true, true);
+
+				panel.dispatchEvent(event);
+			}
+		}, duration);
 	};
 
 	show = ({panel, trigger}: {panel?: any; trigger?: any}) => {
