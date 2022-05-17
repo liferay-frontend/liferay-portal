@@ -6,65 +6,95 @@ definition {
 	property testray.component.names = "Clay";
 	property testray.main.component.name = "User Interface";
 
-    setUp {
-        TestCase.setUpPortalInstance();
+	setUp {
+		TestCase.setUpPortalInstance();
 
-        User.firstLoginPG();
+		User.firstLoginPG();
 
-        task ("Add a site") {
-                JSONGroup.addGroup(groupName = "Test Site Name");
-            }
+		task ("Add a site") {
+			JSONGroup.addGroup(groupName = "Test Site Name");
+		}
 
-        task ("Add a widget page") {
-                JSONLayout.addPublicLayout(
-                    groupName = "Test Site Name",
-                    layoutName = "Language Test Page Name");
-            }
+		task ("Add a widget page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Language Test Page Name");
+		}
 
-        task ("Add a Language Selector to page") {
-                JSONLayout.addWidgetToPublicLayout(
-                    groupName = "Test Site Name",
-                    layoutName = "Language Test Page Name",
-                    widgetName = "Language Selector");
-            }
-        }
+		task ("Add a Language Selector to page") {
+			JSONLayout.addWidgetToPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Language Test Page Name",
+				widgetName = "Language Selector");
+		}
+	}
 
-        tearDown {
-            var testPortalInstance = PropsUtil.get("test.portal.instance");
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
-            if ("${testPortalInstance}" == "true") {
-                PortalInstances.tearDownCP();
-            }
-            else {
-                JSONGroup.deleteGroupByName(groupName = "Test Site Name");
-            }
-        }
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			JSONGroup.deleteGroupByName(groupName = "Test Site Name");
+		}
+	}
+
+	/** JONH'S REVIEW:
+	-DONE.  
+	Use all capitals for path locator titles  <td>FLAG_enUS</td>
+
+
+	- The path locator pattern for en-us and ca-es are very similar. Why not combine them into 1 locator like //*[*[name()='svg'][contains(@class,'${key_languageID}')]]	
+	- Also, as we talked about before, I think it would be better to target the href attribute b/c that's the attribute that ensures the proper flag icon is displayed on the page based on experimenting with the DOM.
+	So something like this helps to better make sure that Spain flag is present: //*[name()='svg']//*[contains(@href,'ca-es')].
+
+
+	- task ("When click on localization button") {
+			Click(locator1 = "Icon#FLAG_enUS");
+	I think existing path LANGUAGE#DROPDOWN path would work fine here.
+
+
+	- DONE: Moved to When task.
+	Assertions are not needed in Given task.
+		AssertElementPresent(locator1 = "Icon#FLAG_enUS");
+
+			LanguagePortlet.viewCurrentLanguage(locale = "en-US");
+
+
+	- task ("Then flag icons are present on the button and dropdown menu items") {
+	The task says we're asserting flag icons meaning multiple icons but this task is only asserting 1 icon.
+	Also, were you able to try out ocular to see if it would better meet this need for all icons rendering ok?
+	If we're not using ocular, I think something along the lines of LanguagePortlet.viewLanguages macro under Icon and else if Icon Menu section would document better what we're trying to assert
+
+	**/
+
+
 
 	@description = "LPS-152271 Verify that flag icons are present when clicking on localization button"
 	@priority = "5"
 	test FlagIconsCanRender {
-        task ("Given language portlet") {
-            Navigator.gotoSitePage(
+		task ("Given language portlet") {
+			Navigator.gotoSitePage(
 				pageName = "Language Test Page Name",
 				siteName = "Test Site Name");
+		}
 
-           AssertElementPresent(
-                locator1 = "Icon#FLAG_enUS");
+		task ("When click on localization button") {
+			AssertElementPresent(locator1 = "Icon#FLAG_ENUS");
+			LanguagePortlet.viewCurrentLanguage(locale = "en-US");
 
-            LanguagePortlet.viewCurrentLanguage(locale = "en-US");         
-        }  
-   
-        task ("When click on localization button") {
-            Click(
-                locator1 = "Icon#FLAG_enUS");
-        }
+			Click(locator1 = "Icon#FLAG_ENUS");
+		}
 
-        task ("Then flag icons are present on the button and dropdown menu items") {
-            if (IsElementPresent(locator1 = "Icon#FLAG_caES")) {
-                AssertTextEquals(
-                    key_text = "catala_2d_espanya",
-                    locator1 = "Language#ANY");
-            }
-        }  
-    }
+		task ("Then flag icons are present on the button and dropdown menu items") {
+			if (IsElementPresent(locator1 = "Icon#FLAG_CAES")) {
+				AssertTextEquals(
+					key_text = "catala_2d_espanya",
+					locator1 = "Language#ANY",
+					value1 = "català-Espanya");
+			}
+		}
+	}
+
 }

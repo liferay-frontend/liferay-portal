@@ -241,12 +241,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>FLAG_caES</td>
+	<td>FLAG_CAES</td>
 	<td>//*[*[name()='svg'][contains(@class,'ca-es')]]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>FLAG_enUS</td>
+	<td>FLAG_ENUS</td>
 	<td>//*[*[name()='svg'][contains(@class,'en-us')]]</td>
 	<td></td>
 </tr>
