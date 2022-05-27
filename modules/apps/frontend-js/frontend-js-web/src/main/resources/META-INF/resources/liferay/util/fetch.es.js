@@ -29,19 +29,6 @@ export default function defaultFetch(resource, init = {}) {
 	let resourceLocation = resource.url ? resource.url : resource.toString();
 
 	if (resourceLocation.startsWith('/')) {
-		const pathContext = Liferay.ThemeDisplay.getPathContext();
-
-		if (pathContext && !resourceLocation.startsWith(pathContext)) {
-			resourceLocation = pathContext + resourceLocation;
-
-			if (typeof resource === 'string') {
-				resource = resourceLocation;
-			}
-			else {
-				resource = {...resource, url: resourceLocation};
-			}
-		}
-
 		resourceLocation = window.location.origin + resourceLocation;
 	}
 
@@ -59,6 +46,12 @@ export default function defaultFetch(resource, init = {}) {
 		headers.set(key, value);
 	});
 
+	const pathContext = Liferay.ThemeDisplay.getPathContext();
+
+	if (pathContext && !resourceURL.pathname.startsWith(pathContext)) {
+		resourceURL.pathname = pathContext + resourceURL.pathname;
+	}
+
 	// eslint-disable-next-line @liferay/portal/no-global-fetch
-	return fetch(resource, {...config, ...init, headers});
+	return fetch(resourceURL, {...config, ...init, headers});
 }
