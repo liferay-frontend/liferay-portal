@@ -323,6 +323,11 @@ definition {
 	@summary = "This calls the JSON WS API to delete an object"
 	macro deleteObject {
 		var portalURL = JSONCompany.getPortalURL();
+
+
+		echo("This is my portal URL");
+		echo(${portalURL});
+
 		var objectId = JSONObject.getObjectId(
 			objectName = "${objectName}",
 			userEmailAddress = "${userEmailAddress}",

@@ -4,6 +4,7 @@ definition {
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Headless Frontend Infrastructure";
+	property test.skip.tear.down = "false";
 
 	setUp {
 		TestCase.setUpPortalInstance();
@@ -43,6 +44,7 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
+			echo("I am entering this as well");
 			ObjectAdmin.deleteObjectViaAPI(objectName = "Manager");
 
 			ObjectAdmin.deleteObjectViaAPI(objectName = "Employee");
