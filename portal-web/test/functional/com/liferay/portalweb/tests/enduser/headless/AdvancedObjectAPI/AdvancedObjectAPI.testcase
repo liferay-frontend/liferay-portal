@@ -33,7 +33,13 @@ definition {
 	}
 
 	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		echo("This is my test portal instance");
+		echo("${testPortalInstance}");
+
 		if ("${testPortalInstance}" == "true") {
+			echo("Portal instance is true");
 			PortalInstances.tearDownCP();
 		}
 		else {
