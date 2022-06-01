@@ -115,5 +115,4 @@ definition {
 				responseToParse = "${getEmployeesWithManager}");
 		}
 	}
-
 }

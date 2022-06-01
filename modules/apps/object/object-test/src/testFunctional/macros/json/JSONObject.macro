@@ -341,22 +341,15 @@ definition {
 			var userPassword = "test";
 		}
 
+		echo("This is the ID of the ${objectName}");
+		echo("${objectId}");
+
 		var curl = '''
 			${portalURL}/o/object-admin/v1.0/object-definitions/${objectId} \
 			-u ${userEmailAddress}:${userPassword}
 		''';
 
 		JSONCurlUtil.delete("${curl}");
-
-		var curl2 = '''
-			${portalURL}/o/object-admin/v1.0/object-definitions/${objectId} \
-			-u ${userEmailAddress}:${userPassword}
-		''';
-
-		var myResponse = JSONCurlUtil.get("${curl2}");
-	
-		echo("${myResponse}");
-
 	}
 
 	@summary = "This calls the JSON WS API to delete an entry in an object"
