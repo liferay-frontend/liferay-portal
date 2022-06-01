@@ -37,7 +37,6 @@ definition {
 			ObjectAdmin.deleteObjectViaAPI(objectName = "Manager");
 
 			ObjectAdmin.deleteObjectViaAPI(objectName = "Employee");
-		}
 	}
 
 	@description = "Nested fields in oneToMany relationship"
