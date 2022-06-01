@@ -459,6 +459,10 @@ definition {
 	macro getObjectId {
 		var portalURL = JSONCompany.getPortalURL();
 
+
+		echo("This is portal URL: ");
+		echo("${portalURL}");
+
 		if (!(isSet(userEmailAddress))) {
 			var userEmailAddress = "test@liferay.com";
 		}
