@@ -324,8 +324,8 @@ definition {
 	macro deleteObject {
 		var portalURL = JSONCompany.getPortalURL();
 
-
 		echo("This is my portal URL");
+
 		echo("${portalURL}");
 
 		var objectId = JSONObject.getObjectId(
@@ -342,6 +342,7 @@ definition {
 		}
 
 		echo("This is the ID of the ${objectName}");
+
 		echo("${objectId}");
 
 		var curl = '''
@@ -452,8 +453,8 @@ definition {
 	macro getObjectId {
 		var portalURL = JSONCompany.getPortalURL();
 
-
 		echo("This is portal URL: ");
+
 		echo("${portalURL}");
 
 		if (!(isSet(userEmailAddress))) {

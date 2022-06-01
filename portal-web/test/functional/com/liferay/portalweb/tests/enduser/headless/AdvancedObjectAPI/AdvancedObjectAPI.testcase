@@ -3,8 +3,8 @@ definition {
 
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.main.component.name = "Headless Frontend Infrastructure";
 	property test.skip.tear.down = "false";
+	property testray.main.component.name = "Headless Frontend Infrastructure";
 
 	setUp {
 		TestCase.setUpPortalInstance();
@@ -34,9 +34,9 @@ definition {
 	}
 
 	tearDown {
-			ObjectAdmin.deleteObjectViaAPI(objectName = "Manager");
+		ObjectAdmin.deleteObjectViaAPI(objectName = "Manager");
 
-			ObjectAdmin.deleteObjectViaAPI(objectName = "Employee");
+		ObjectAdmin.deleteObjectViaAPI(objectName = "Employee");
 	}
 
 	@description = "Nested fields in oneToMany relationship"
@@ -115,4 +115,5 @@ definition {
 				responseToParse = "${getEmployeesWithManager}");
 		}
 	}
+
 }
