@@ -50,12 +50,6 @@ definition {
 		}
 
 		task ("When click on localization button") {
-			AssertElementPresent(
-				key_flagID = "en-us",
-				locator1 = "Icon#FLAG_ID");
-
-			LanguagePortlet.viewCurrentLanguage(locale = "en-US");
-
 			Click(
 				key_portletName = "LanguagePortlet",
 				locator1 = "Language#DROPDOWN");
