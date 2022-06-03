@@ -7,8 +7,6 @@ definition {
 	property testray.main.component.name = "Headless Frontend Infrastructure";
 
 	setUp {
-		TestCase.setUpPortalInstance();
-
 		task ("Given active object definitions created") {
 			var objectDefinitionId1 = ObjectDefinitionAPI.createAndPublishObjectDefinition(
 				en_US_label = "Manager",
