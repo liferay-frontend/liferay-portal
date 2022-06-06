@@ -143,7 +143,7 @@ definition {
 
 		var portalURL = JSONCompany.getDefaultPortalURL();
 		var curl = '''
-        	http://localhost:8080/o/c/employees/${employeeId} \
+        	${portalURL}/o/c/employees/${employeeId} \
 			-u test@liferay.com:test
 		''';
 
@@ -157,7 +157,7 @@ definition {
 
 		var portalURL = JSONCompany.getDefaultPortalURL();
 		var curl = '''
-        	http://localhost:8080/o/c/managers/${managerId} \
+        	${portalURL}/o/c/managers/${managerId} \
 			-u test@liferay.com:test
 		''';
 
@@ -219,7 +219,7 @@ definition {
 
 		var portalURL = JSONCompany.getDefaultPortalURL();
 		var curl = '''
-        	http://localhost:8080/o/object-admin/v1.0/object-relationships/${relationshipId} \
+        	${portalURL}/o/object-admin/v1.0/object-relationships/${relationshipId} \
 			-u test@liferay.com:test
 		''';
 
