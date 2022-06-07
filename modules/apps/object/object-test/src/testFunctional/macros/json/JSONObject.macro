@@ -458,7 +458,9 @@ definition {
 		''';
 
 		var wholeBody = JSONCurlUtil.get("${curl}");
+
 		echo("This is my curl");
+
 		echo("${wholeBody}");
 
 		var objectId = JSONCurlUtil.get("${curl}", "$.items[?(@['name'] == '${objectName}')]['id']");
