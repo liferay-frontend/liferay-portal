@@ -60,7 +60,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -81,7 +80,6 @@ import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributo
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -548,11 +546,8 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		Map<Long, String[]> roleIdsToActionIds = new HashMap<>();
 
 		for (long roleId : roleIds) {
-			String[] actionIds = _getActionIds(actionRequest, roleId, false);
-
-			if (!ArrayUtil.isEmpty(actionIds)) {
-				roleIdsToActionIds.put(roleId, actionIds);
-			}
+			roleIdsToActionIds.put(
+				roleId, _getActionIds(actionRequest, roleId, false));
 		}
 
 		PermissionPropagator permissionPropagator = null;
@@ -571,9 +566,9 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 				_resourcePermissionService.setIndividualResourcePermissions(
 					resourceGroupId, themeDisplay.getCompanyId(), selResource,
 					resourcePrimKey,
-					_getIntermediateRoleIdsToActionIds(
-						themeDisplay, selResource, roleIdsToActionIds, roleIds,
-						resourcePrimKey, actionRequest));
+					_getRoleIdsToActionIdsResourcePrimKey(
+						themeDisplay.getCompanyId(), resourcePrimKey, roleIds,
+						roleIdsToActionIds, selResource, actionRequest));
 			}
 			else {
 				_resourcePermissionService.setIndividualResourcePermissions(
@@ -821,7 +816,7 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		return configurationAction;
 	}
 
-	private String[] _getIndeterminateStateActionIds(
+	private List<String> _getIndeterminateStateActionIds(
 		ActionRequest actionRequest, long roleId) {
 
 		List<String> actionIds = new ArrayList<>();
@@ -845,58 +840,7 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 			}
 		}
 
-		return actionIds.toArray(new String[0]);
-	}
-
-	private Map<Long, String[]> _getIntermediateRoleIdsToActionIds(
-			ThemeDisplay themeDisplay, String selResource,
-			Map<Long, String[]> roleIdsToActionIds, long[] roleIds,
-			String resourcePrimKey, ActionRequest actionRequest)
-		throws Exception {
-
-		Map<Long, String[]> intermediateRoleIdsToActionIds = new HashMap<>();
-
-		for (long roleId : roleIds) {
-			intermediateRoleIdsToActionIds.put(
-				roleId, _getIndeterminateStateActionIds(actionRequest, roleId));
-		}
-
-		Map<Long, String[]> indeterminateRoleIdsToActionIds = new HashMap<>(
-			roleIdsToActionIds);
-
-		for (Map.Entry<Long, String[]> indeterminateRoleIdsToActionIdsEntrySet :
-				intermediateRoleIdsToActionIds.entrySet()) {
-
-			Long roleId = indeterminateRoleIdsToActionIdsEntrySet.getKey();
-
-			String[] intermediateActionIds =
-				indeterminateRoleIdsToActionIdsEntrySet.getValue();
-
-			for (String actionId : intermediateActionIds) {
-				List<String> availableResourcePermissionActionIds =
-					_resourcePermissionLocalService.
-						getAvailableResourcePermissionActionIds(
-							themeDisplay.getCompanyId(), selResource,
-							ResourceConstants.SCOPE_INDIVIDUAL, resourcePrimKey,
-							roleId, Collections.singleton(actionId));
-
-				if (!ListUtil.isEmpty(availableResourcePermissionActionIds)) {
-					String[] actionIds =
-						indeterminateRoleIdsToActionIdsEntrySet.getValue();
-
-					if (ArrayUtil.isEmpty(actionIds)) {
-						actionIds = new String[] {actionId};
-					}
-					else if (!ArrayUtil.contains(actionIds, actionId)) {
-						actionIds = ArrayUtil.append(actionIds, actionId);
-					}
-
-					indeterminateRoleIdsToActionIds.put(roleId, actionIds);
-				}
-			}
-		}
-
-		return indeterminateRoleIdsToActionIds;
+		return actionIds;
 	}
 
 	private Tuple _getNewScope(ActionRequest actionRequest) throws Exception {
@@ -1031,6 +975,40 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		}
 
 		return portletTitle;
+	}
+
+	private Map<Long, String[]> _getRoleIdsToActionIdsResourcePrimKey(
+			long companyId, String resourcePrimKey, long[] roleIds,
+			Map<Long, String[]> roleIdsToActionIds, String selResource,
+			ActionRequest actionRequest)
+		throws Exception {
+
+		Map<Long, String[]> roleIdsToActionIdsWithIntermediateState =
+			new HashMap<>(roleIdsToActionIds);
+
+		for (long roleId : roleIds) {
+			List<String> availableResourcePermissionActionIds =
+				_resourcePermissionLocalService.
+					getAvailableResourcePermissionActionIds(
+						companyId, selResource,
+						ResourceConstants.SCOPE_INDIVIDUAL, resourcePrimKey,
+						roleId,
+						_getIndeterminateStateActionIds(actionRequest, roleId));
+
+			for (String actionId : availableResourcePermissionActionIds) {
+				String[] actionIds =
+					roleIdsToActionIdsWithIntermediateState.computeIfAbsent(
+						roleId, key -> new String[] {actionId});
+
+				if (!ArrayUtil.contains(actionIds, actionId)) {
+					actionIds = ArrayUtil.append(actionIds, actionId);
+				}
+
+				roleIdsToActionIdsWithIntermediateState.put(roleId, actionIds);
+			}
+		}
+
+		return roleIdsToActionIdsWithIntermediateState;
 	}
 
 	private void _handleException(
