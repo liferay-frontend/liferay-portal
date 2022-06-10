@@ -322,7 +322,9 @@ const FrontendDataSet = ({
 
 	useEffect(() => {
 		setSelectedItems((selectedItems) => {
-			return selectedItemsValue.map((value) => {
+			const newSelectedItems = [];
+
+			selectedItemsValue.forEach((value) => {
 				let selectedItem = items.find(
 					(item) => item[selectedItemsKey] === value
 				);
@@ -333,8 +335,12 @@ const FrontendDataSet = ({
 					);
 				}
 
-				return selectedItem;
+				if (selectedItem) {
+					newSelectedItems.push(selectedItem);
+				}
 			});
+
+			return newSelectedItems;
 		});
 	}, [selectedItemsValue, items, selectedItemsKey]);
 
