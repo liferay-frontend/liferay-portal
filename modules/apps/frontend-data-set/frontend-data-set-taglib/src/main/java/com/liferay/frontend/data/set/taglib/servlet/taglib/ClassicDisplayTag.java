@@ -168,10 +168,6 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 		return _pageNumber;
 	}
 
-	public List<String> getSelectedItems() {
-		return _selectedItems;
-	}
-
 	public String getSelectedItemsKey() {
 		return _selectedItemsKey;
 	}
@@ -259,10 +255,6 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 		_pageNumber = pageNumber;
 	}
 
-	public void setSelectedItems(List<String> selectedItems) {
-		_selectedItems = selectedItems;
-	}
-
 	public void setSelectedItemsKey(String selectedItemsKey) {
 		_selectedItemsKey = selectedItemsKey;
 	}
@@ -311,7 +303,6 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 		_nestedItemsReferenceKey = null;
 		_pageNumber = 0;
 		_paginationSelectedEntry = 0;
-		_selectedItems = null;
 		_selectedItemsKey = null;
 		_selectionType = null;
 		_showManagementBar = true;
@@ -364,8 +355,6 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 				).build()
 			).put(
 				"portletId", PortalUtil.getPortletId(getRequest())
-			).put(
-				"selectedItems", _selectedItems
 			).put(
 				"selectedItemsKey", _toNullOrObject(_selectedItemsKey)
 			).put(
@@ -464,7 +453,6 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 	private String _nestedItemsReferenceKey;
 	private int _pageNumber;
 	private int _paginationSelectedEntry;
-	private List<String> _selectedItems;
 	private String _selectedItemsKey;
 	private String _selectionType;
 	private boolean _showManagementBar = true;

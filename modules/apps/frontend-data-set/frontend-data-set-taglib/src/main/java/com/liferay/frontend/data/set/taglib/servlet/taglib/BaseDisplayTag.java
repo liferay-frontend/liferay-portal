@@ -19,6 +19,7 @@ import com.liferay.frontend.data.set.taglib.internal.util.ServicesProvider;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolvedPackageNameUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.frontend.js.module.launcher.JSModuleResolver;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.template.react.renderer.ComponentDescriptor;
@@ -27,6 +28,7 @@ import com.liferay.taglib.util.AttributesTagSupport;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 
 import javax.portlet.PortletResponse;
@@ -89,6 +91,10 @@ public class BaseDisplayTag extends AttributesTagSupport {
 		return _randomNamespace;
 	}
 
+	public List<Object> getSelectedItems() {
+		return _selectedItems;
+	}
+
 	public void setAdditionalProps(Map<String, Object> additionalProps) {
 		_additionalProps = additionalProps;
 	}
@@ -123,6 +129,10 @@ public class BaseDisplayTag extends AttributesTagSupport {
 		_randomNamespace = randomNamespace;
 	}
 
+	public void setSelectedItems(List<Object> selectedItems) {
+		_selectedItems = selectedItems;
+	}
+
 	protected void cleanUp() {
 		_additionalProps = null;
 		_id = null;
@@ -131,6 +141,7 @@ public class BaseDisplayTag extends AttributesTagSupport {
 		_propsTransformer = null;
 		_propsTransformerServletContext = null;
 		_randomNamespace = null;
+		_selectedItems = null;
 	}
 
 	protected void doClearTag() {
@@ -150,13 +161,22 @@ public class BaseDisplayTag extends AttributesTagSupport {
 	}
 
 	protected Map<String, Object> prepareProps(Map<String, Object> props) {
-		if (_additionalProps != null) {
-			props.put("additionalProps", _additionalProps);
-		}
+		return HashMapBuilder.<String, Object>putAll(
+			props
+		).put(
+			"additionalProps",
+			() -> {
+				if (_additionalProps != null) {
+					return _additionalProps;
+				}
 
-		props.put("namespace", getNamespace());
-
-		return props;
+				return null;
+			}
+		).put(
+			"namespace", getNamespace()
+		).put(
+			"selectedItems", _selectedItems
+		).build();
 	}
 
 	protected int processEndTag() throws Exception {
@@ -219,5 +239,6 @@ public class BaseDisplayTag extends AttributesTagSupport {
 	private String _propsTransformer;
 	private ServletContext _propsTransformerServletContext;
 	private String _randomNamespace;
+	private List<Object> _selectedItems;
 
 }
