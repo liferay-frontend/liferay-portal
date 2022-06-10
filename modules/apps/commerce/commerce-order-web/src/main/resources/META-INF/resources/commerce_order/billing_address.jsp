@@ -44,7 +44,7 @@ CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder()
 			formName="fm"
 			id="<%= CommerceOrderFDSNames.BILLING_ADDRESSES %>"
 			itemsPerPage="<%= 10 %>"
-			selectedItems="<%= Collections.singletonList(String.valueOf(commerceOrder.getBillingAddressId())) %>"
+			selectedItems="<%= Collections.singletonList(Math.toIntExact(commerceOrder.getBillingAddressId())) %>"
 			selectedItemsKey="addressId"
 			selectionType="single"
 		/>
