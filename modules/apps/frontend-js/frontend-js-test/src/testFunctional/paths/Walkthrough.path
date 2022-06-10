@@ -20,6 +20,11 @@
 	<td>//*[contains(@class,'popover') and contains(@class,'show')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>POPOVER_CLOSE</td>
+	<td>//*[contains(@class,'popover') and contains(@class,'show')]//button[contains(@aria-label,'Close')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
