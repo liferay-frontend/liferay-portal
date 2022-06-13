@@ -21,6 +21,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>NEXT_POPOVER</td>
+	<td>//*[contains(@class,'popover')]//button[contains(@class,'btn-primary')][contains(text(),'OK')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>POPOVER</td>
 	<td>//*[contains(@class,'popover') and contains(@class,'show')]</td>
 	<td></td>
