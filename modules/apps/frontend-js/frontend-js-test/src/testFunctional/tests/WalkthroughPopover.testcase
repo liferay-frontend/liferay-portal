@@ -95,4 +95,28 @@ definition {
 		}
 	}
 
+	@description = "LPS-154640. Assert popover mode can have a shadow around element."
+	@priority = "2"
+	test CanHaveAShadowAroundElement {
+		task ("When click hotspot element until Step 4") {
+			Click(locator1 = "Walkthrough#HOTSPOT");
+
+			for (var number : list "2,3,4") {
+				Click(locator1 = "Walkthrough#NEXT_POPOVER");
+
+				AssertElementPresent(
+					key_title = "Step ${number} of 5: Title ${number}",
+					locator1 = "Walkthrough#POPOVER_TITLE");
+			}
+		}
+
+		task ("Then element is outlined with a shadow") {
+			AssertCssValue(
+				id = "step4",
+				locator1 = "Walkthrough#ALERT",
+				locator2 = "box-shadow",
+				value1 = "rgba(11, 95, 255, 0.16) 0px 8px 16px 0px");
+		}
+	}
+
 }
