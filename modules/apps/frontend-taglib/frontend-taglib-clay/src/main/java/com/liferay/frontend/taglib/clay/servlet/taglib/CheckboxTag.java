@@ -42,6 +42,10 @@ public class CheckboxTag extends BaseContainerTag {
 		return super.doStartTag();
 	}
 
+	public String getIndeterminateValue() {
+		return _indeterminateValue;
+	}
+
 	public String getLabel() {
 		return LanguageUtil.get(
 			TagResourceBundleUtil.getResourceBundle(pageContext), _label);
@@ -83,6 +87,10 @@ public class CheckboxTag extends BaseContainerTag {
 		_indeterminate = indeterminate;
 	}
 
+	public void setIndeterminateValue(String indeterminateValue) {
+		_indeterminateValue = indeterminateValue;
+	}
+
 	public void setInline(boolean inline) {
 		_inline = inline;
 	}
@@ -106,6 +114,7 @@ public class CheckboxTag extends BaseContainerTag {
 		_checked = false;
 		_disabled = false;
 		_indeterminate = false;
+		_indeterminateValue = null;
 		_inline = false;
 		_label = null;
 		_name = null;
@@ -122,6 +131,7 @@ public class CheckboxTag extends BaseContainerTag {
 		props.put("checked", _checked);
 		props.put("disabled", _disabled);
 		props.put("indeterminate", _indeterminate);
+		props.put("indeterminateValue", _indeterminateValue);
 		props.put("inline", _inline);
 
 		if (Validator.isNotNull(getLabel())) {
@@ -221,6 +231,7 @@ public class CheckboxTag extends BaseContainerTag {
 	private boolean _checked;
 	private boolean _disabled;
 	private boolean _indeterminate;
+	private String _indeterminateValue;
 	private boolean _inline;
 	private String _label;
 	private String _name;
