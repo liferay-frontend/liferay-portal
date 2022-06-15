@@ -15,23 +15,43 @@
 import {ClayCheckbox} from '@clayui/form';
 import React, {useState} from 'react';
 
+const CHECKBOX_STATUS = {
+	checked: 'checked',
+	indeterminate: 'indeterminate',
+	unchecked: 'unchecked',
+};
+
 export default function Checkbox({
 	additionalProps: _additionalProps,
 	checked,
 	componentId: _componentId,
 	cssClass,
+	indeterminate,
 	locale: _locale,
 	portletId: _portletId,
 	portletNamespace: _portletNamespace,
 	...otherProps
 }) {
-	const [isChecked, setIsChecked] = useState(checked);
+	const [checkboxStatus, setCheckboxStatus] = useState(
+		indeterminate
+			? CHECKBOX_STATUS.indeterminate
+			: checked
+			? CHECKBOX_STATUS.checked
+			: CHECKBOX_STATUS.unchecked
+	);
 
 	return (
 		<ClayCheckbox
-			checked={isChecked}
+			checked={checkboxStatus !== CHECKBOX_STATUS.unchecked}
 			className={cssClass}
-			onChange={() => setIsChecked((isChecked) => !isChecked)}
+			indeterminate={checkboxStatus === CHECKBOX_STATUS.indeterminate}
+			onChange={() => {
+				setCheckboxStatus((checkboxStatus) =>
+					checkboxStatus === CHECKBOX_STATUS.unchecked
+						? CHECKBOX_STATUS.checked
+						: CHECKBOX_STATUS.unchecked
+				);
+			}}
 			{...otherProps}
 		/>
 	);
