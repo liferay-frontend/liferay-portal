@@ -18,7 +18,7 @@ import {Align, ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClaySticker from '@clayui/sticker';
-import {fetch, sub} from 'frontend-js-web';
+import {createPortletURL, fetch, sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 const CTEditComment = ({handleCancel, handleSave, initialValue}) => {
@@ -103,158 +103,150 @@ export default function ChangeTrackingComments({
 
 		setLoading(true);
 
-		AUI().use('liferay-portlet-url', () => {
-			const portletURL = Liferay.PortletURL.createURL(getCommentsURL);
+		const portletURL = createPortletURL(getCommentsURL);
 
-			portletURL.setParameter('ctEntryId', ctEntryId.toString());
+		portletURL.setParameter('ctEntryId', ctEntryId.toString());
 
-			fetch(portletURL.toString())
-				.then((response) => response.json())
-				.then((json) => {
-					if (!json.comments) {
-						setFetchData({
-							errorMessage: Liferay.Language.get(
-								'an-unexpected-error-occurred'
-							),
-						});
-						setLoading(false);
-
-						return;
-					}
-
-					setFetchData(json);
-					setLoading(false);
-
-					updateCache(json);
-				})
-				.catch(() => {
+		fetch(portletURL.toString())
+			.then((response) => response.json())
+			.then((json) => {
+				if (!json.comments) {
 					setFetchData({
 						errorMessage: Liferay.Language.get(
 							'an-unexpected-error-occurred'
 						),
 					});
-
 					setLoading(false);
+
+					return;
+				}
+
+				setFetchData(json);
+				setLoading(false);
+
+				updateCache(json);
+			})
+			.catch(() => {
+				setFetchData({
+					errorMessage: Liferay.Language.get(
+						'an-unexpected-error-occurred'
+					),
 				});
-		});
+
+				setLoading(false);
+			});
 	}, [ctEntryId, getCache, getCommentsURL, updateCache]);
 
 	const handleDelete = (ctCommentId) => {
-		AUI().use('liferay-portlet-url', () => {
-			const portletURL = Liferay.PortletURL.createURL(deleteCommentURL);
+		const portletURL = createPortletURL(deleteCommentURL);
 
-			portletURL.setParameter('ctCommentId', ctCommentId.toString());
-			portletURL.setParameter('ctEntryId', ctEntryId.toString());
+		portletURL.setParameter('ctCommentId', ctCommentId.toString());
+		portletURL.setParameter('ctEntryId', ctEntryId.toString());
 
-			fetch(portletURL.toString())
-				.then((response) => response.json())
-				.then((json) => {
-					if (!json.comments) {
-						setFetchData({
-							errorMessage: Liferay.Language.get(
-								'an-unexpected-error-occurred'
-							),
-						});
-
-						return;
-					}
-
-					setFetchData(json);
-
-					updateCache(json);
-				})
-				.catch(() => {
+		fetch(portletURL.toString())
+			.then((response) => response.json())
+			.then((json) => {
+				if (!json.comments) {
 					setFetchData({
 						errorMessage: Liferay.Language.get(
 							'an-unexpected-error-occurred'
 						),
 					});
+
+					return;
+				}
+
+				setFetchData(json);
+
+				updateCache(json);
+			})
+			.catch(() => {
+				setFetchData({
+					errorMessage: Liferay.Language.get(
+						'an-unexpected-error-occurred'
+					),
 				});
-		});
+			});
 	};
 
 	const handleReply = () => {
-		AUI().use('liferay-portlet-url', () => {
-			setLoading(true);
+		setLoading(true);
 
-			const portletURL = Liferay.PortletURL.createURL(updateCommentURL);
+		const portletURL = createPortletURL(updateCommentURL);
 
-			portletURL.setParameter('ctEntryId', ctEntryId.toString());
-			portletURL.setParameter('value', inputValue);
+		portletURL.setParameter('ctEntryId', ctEntryId.toString());
+		portletURL.setParameter('value', inputValue);
 
-			fetch(portletURL.toString())
-				.then((response) => response.json())
-				.then((json) => {
-					setDeleting(0);
-					setEditing(0);
+		fetch(portletURL.toString())
+			.then((response) => response.json())
+			.then((json) => {
+				setDeleting(0);
+				setEditing(0);
 
-					if (!json.comments) {
-						setFetchData({
-							errorMessage: Liferay.Language.get(
-								'an-unexpected-error-occurred'
-							),
-						});
-						setLoading(false);
-
-						return;
-					}
-
-					setFetchData(json);
-					setInputValue('');
-					setLoading(false);
-
-					updateCache(json);
-				})
-				.catch(() => {
-					setDeleting(0);
-					setEditing(0);
+				if (!json.comments) {
 					setFetchData({
 						errorMessage: Liferay.Language.get(
 							'an-unexpected-error-occurred'
 						),
 					});
 					setLoading(false);
+
+					return;
+				}
+
+				setFetchData(json);
+				setInputValue('');
+				setLoading(false);
+
+				updateCache(json);
+			})
+			.catch(() => {
+				setDeleting(0);
+				setEditing(0);
+				setFetchData({
+					errorMessage: Liferay.Language.get(
+						'an-unexpected-error-occurred'
+					),
 				});
-		});
+				setLoading(false);
+			});
 	};
 
 	const handleUpdate = (ctCommentId, newValue) => {
-		AUI().use('liferay-portlet-url', () => {
-			const portletURL = Liferay.PortletURL.createURL(updateCommentURL);
+		const portletURL = createPortletURL(updateCommentURL);
 
-			portletURL.setParameter('ctCommentId', ctCommentId);
-			portletURL.setParameter('ctEntryId', ctEntryId.toString());
-			portletURL.setParameter('value', newValue);
+		portletURL.setParameter('ctCommentId', ctCommentId);
+		portletURL.setParameter('ctEntryId', ctEntryId.toString());
+		portletURL.setParameter('value', newValue);
 
-			fetch(portletURL.toString())
-				.then((response) => response.json())
-				.then((json) => {
-					setDeleting(0);
-					setEditing(0);
+		fetch(portletURL.toString())
+			.then((response) => response.json())
+			.then((json) => {
+				setDeleting(0);
+				setEditing(0);
 
-					if (!json.comments) {
-						setFetchData({
-							errorMessage: Liferay.Language.get(
-								'an-unexpected-error-occurred'
-							),
-						});
-
-						return;
-					}
-
-					setFetchData(json);
-					updateCache(json);
-				})
-				.catch(() => {
-					setDeleting(0);
-					setEditing(0);
+				if (!json.comments) {
 					setFetchData({
 						errorMessage: Liferay.Language.get(
 							'an-unexpected-error-occurred'
 						),
 					});
+
+					return;
+				}
+
+				setFetchData(json);
+				updateCache(json);
+			})
+			.catch(() => {
+				setDeleting(0);
+				setEditing(0);
+				setFetchData({
+					errorMessage: Liferay.Language.get(
+						'an-unexpected-error-occurred'
+					),
 				});
-		});
+			});
 	};
 
 	const renderUserPortrait = (userId) => {
