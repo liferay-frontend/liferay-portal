@@ -23,7 +23,7 @@ import ClayLink from '@clayui/link';
 import ClayNavigationBar from '@clayui/navigation-bar';
 import ClayTable from '@clayui/table';
 import classNames from 'classnames';
-import {fetch} from 'frontend-js-web';
+import {createPortletURL, fetch} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
 const LocalizationDropdown = ({
@@ -790,33 +790,26 @@ export default function ChangeTrackingRenderView({
 	};
 
 	const navigate = (editURL, checkoutURL, confirmationMessage) => {
-		AUI().use('liferay-portlet-url', () => {
-			const editPortletURL = Liferay.PortletURL.createURL(editURL);
+		const editPortletURL = createPortletURL(editURL);
 
-			editPortletURL.setParameter(
-				'redirect',
-				window.location.pathname + window.location.search
-			);
+		editPortletURL.setParameter(
+			'redirect',
+			window.location.pathname + window.location.search
+		);
 
-			if (!checkoutURL) {
-				Liferay.Util.navigate(editPortletURL.toString());
+		if (!checkoutURL) {
+			Liferay.Util.navigate(editPortletURL.toString());
 
-				return;
-			}
+			return;
+		}
 
-			const checkoutPortletURL = Liferay.PortletURL.createURL(
-				checkoutURL
-			);
+		const checkoutPortletURL = createPortletURL(checkoutURL);
 
-			checkoutPortletURL.setParameter(
-				'redirect',
-				editPortletURL.toString()
-			);
+		checkoutPortletURL.setParameter('redirect', editPortletURL.toString());
 
-			if (confirm(confirmationMessage)) {
-				submitForm(document.hrefFm, checkoutPortletURL.toString());
-			}
-		});
+		if (confirm(confirmationMessage)) {
+			submitForm(document.hrefFm, checkoutPortletURL.toString());
+		}
 	};
 
 	const renderDropdownMenu = () => {
