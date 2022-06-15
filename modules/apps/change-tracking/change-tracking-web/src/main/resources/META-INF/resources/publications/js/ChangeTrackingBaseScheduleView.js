@@ -12,7 +12,7 @@
  * details.
  */
 
-import {fetch} from 'frontend-js-web';
+import {createPortletURL, fetch} from 'frontend-js-web';
 import React from 'react';
 
 class ChangeTrackingBaseScheduleView extends React.Component {
@@ -82,30 +82,28 @@ class ChangeTrackingBaseScheduleView extends React.Component {
 			return;
 		}
 
-		AUI().use('liferay-portlet-url', () => {
-			const portletURL = Liferay.PortletURL.createURL(scheduleURL);
+		const portletURL = createPortletURL(scheduleURL);
 
-			portletURL.setParameter('publishTime', publishDate.getTime());
+		portletURL.setParameter('publishTime', publishDate.getTime());
 
-			fetch(portletURL.toString(), {
-				method: 'GET',
+		fetch(portletURL.toString(), {
+			method: 'GET',
+		})
+			.then((response) => response.json())
+			.then((json) => {
+				if (json.redirect) {
+					Liferay.Util.navigate(json.redirect);
+				}
+				else if (json.validationError) {
+					this.setState({validationError: json.validationError});
+				}
+				else if (json.error) {
+					this.setState({formError: json.error});
+				}
 			})
-				.then((response) => response.json())
-				.then((json) => {
-					if (json.redirect) {
-						Liferay.Util.navigate(json.redirect);
-					}
-					else if (json.validationError) {
-						this.setState({validationError: json.validationError});
-					}
-					else if (json.error) {
-						this.setState({formError: json.error});
-					}
-				})
-				.catch((response) => {
-					this.setState({formError: response.error});
-				});
-		});
+			.catch((response) => {
+				this.setState({formError: response.error});
+			});
 	}
 
 	getDateClassName() {
