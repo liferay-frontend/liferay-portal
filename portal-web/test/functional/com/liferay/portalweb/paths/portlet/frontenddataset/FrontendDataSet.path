@@ -40,6 +40,11 @@
 	<td>//*[normalize-space(text())='${key_itemName}']/parent::*[contains(@class,'dnd-tr')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>PREVIEW_QUICK_ACTION_ICON</td>
+	<td>portal/screenshots/page/preview_quick_action_icon.png</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
