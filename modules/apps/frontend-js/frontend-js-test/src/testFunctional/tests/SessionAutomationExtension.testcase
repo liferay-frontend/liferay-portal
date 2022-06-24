@@ -1,0 +1,37 @@
+@component-name = "portal-frontend-infrastructure"
+definition {
+
+	property custom.properties = "session.timeout=2${line.separator}session.timeout.auto.extend.offset=115";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Headless Frontend Infrastructure";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+	}
+
+	@description = "LPS-151640. Validates periodic requests without logging in."
+	@priority = "3"
+	test CanViewPeriodicRequestsWithoutLoggingIn {
+		task ("Given not view expired session error message") {
+			User.viewSessionNotExpired(noSignin = "True");
+		}
+
+		task ("When opening browser network tab") {
+			CheckPeriodicExtendSessionRequests.openBrowserNetWorkTab();
+		}
+
+		task ("Then assert periodic extend session requests") {
+			CheckPeriodicExtendSessionRequests.assertPeriodicExtendSessionRequests();
+		}
+	}
+
+}
