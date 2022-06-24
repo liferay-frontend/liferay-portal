@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>SessionAutomationExtension</title>
+</head>
+
+<body>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr><td rowspan="1" colspan="3">SessionAutomationExtension</td></tr>
+</thead>
+
+<tbody>
+	<tr>
+		<td>PREVIEW_SESSION_SCREENSHOT</td>
+		<td>portal/screenshots/page/preview_session_screenshot.png</td>
+		<td></td>
+	</tr>
+</tbody>
+</table>
+</body>
+</html>
