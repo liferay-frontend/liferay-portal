@@ -1,0 +1,26 @@
+definition {
+
+	macro assertPeriodicExtendSessionRequests {
+
+		// LPS-151640 This pause is to get regular extend session requests in the browser's network tab
+
+		Pause(locator1 = "22500");
+
+		takeScreenshot();
+
+		SikuliAssertElementPresent(locator1 = "SessionAutomationExtension#PREVIEW_SESSION_SCREENSHOT");
+
+		echo("View periodic extend session requests successfuly");
+	}
+
+	macro openBrowserNetWorkTab {
+		RobotType.robotTypeShortcut(locator1 = "Ctrl + Shift + i");
+
+		RobotType.robotTypeShortcut(locator1 = "Ctrl + ]");
+
+		RobotType.robotTypeShortcut(locator1 = "Ctrl + ]");
+
+		RobotType.robotTypeShortcut(locator1 = "Ctrl + ]");
+	}
+
+}
