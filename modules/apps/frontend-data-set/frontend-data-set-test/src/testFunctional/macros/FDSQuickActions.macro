@@ -14,4 +14,18 @@ definition {
 			locator1 = "FrontendDataSet#DELETE_ACTION_BUTTON");
 	}
 
+	macro viewQuickActionMenuPresent {
+		AssertVisible(
+			key_title = "${title}",
+			locator1 = "FrontendDataSet#VIEW_ACTION_BUTTON");
+
+		AssertVisible(
+			key_title = "${title}",
+			locator1 = "FrontendDataSet#EDIT_ACTION_BUTTON");
+
+		AssertVisible(
+			key_title = "${title}",
+			locator1 = "FrontendDataSet#DELETE_ACTION_BUTTON");
+	}
+
 }
