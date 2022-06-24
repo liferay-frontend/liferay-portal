@@ -65,6 +65,18 @@ definition {
 		}
 	}
 
+	@description = "LPS-155463. Assert that Quick actions icons list should be limited to three actions."
+	@priority = "4"
+	test CanDisplayUpToThreeIcons {
+		task ("Then quick action menu only has 3 actions icons available") {
+			FDSQuickActions.viewQuickActionMenuPresent(title = "Sample1");
+
+			takeScreenshot();
+
+			SikuliAssertElementPresent(locator1 = "FrontendDataSet#PREVIEW_QUICK_ACTION_ICON");
+		}
+	}
+
 	@description = "LPS-155466. Assert that test-pencil is appended to browser URL after clicking."
 	@priority = "5"
 	test CanExecuteAnAction {
