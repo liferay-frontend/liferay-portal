@@ -150,9 +150,11 @@ name = HtmlUtil.escapeJS(name);
 				);
 
 				if (tinymceDialogContainer) {
-					var containerZIndex = window.getComputedStyle(tinymceDialogContainer).zIndex;
+					var containerZIndex = window.getComputedStyle(
+						tinymceDialogContainer
+					).zIndex;
 
-					zIndex = parseInt(containerZIndex) + 10
+					zIndex = parseInt(containerZIndex) + 10;
 				}
 
 				Liferay.Util.openSelectionModal({
@@ -182,8 +184,7 @@ name = HtmlUtil.escapeJS(name);
 						}
 
 						callback(selectedItem);
-					}
-
+					},
 				});
 			}
 		},
