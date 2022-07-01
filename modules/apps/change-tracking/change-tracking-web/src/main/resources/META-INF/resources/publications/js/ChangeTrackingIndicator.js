@@ -23,7 +23,7 @@ import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
 import {ManagementToolbar} from 'frontend-js-components-web';
-import {fetch} from 'frontend-js-web';
+import {createPortletURL, fetch} from 'frontend-js-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
 const PublicationsSearchContainer = ({
@@ -134,16 +134,12 @@ const PublicationsSearchContainer = ({
 				return;
 			}
 
-			AUI().use('liferay-portlet-url', () => {
-				const portletURL = Liferay.PortletURL.createURL(
-					saveDisplayPreferenceURL
-				);
+			const portletURL = createPortletURL(saveDisplayPreferenceURL);
 
-				portletURL.setParameter('key', preferencesPrefix + '-' + key);
-				portletURL.setParameter('value', value.toString());
+			portletURL.setParameter('key', preferencesPrefix + '-' + key);
+			portletURL.setParameter('value', value.toString());
 
-				fetch(portletURL.toString());
-			});
+			fetch(portletURL.toString());
 		},
 		[preferencesPrefix, saveDisplayPreferenceURL]
 	);
@@ -164,61 +160,21 @@ const PublicationsSearchContainer = ({
 		(keywords, newDelta, newPage) => {
 			setResultsKeywords(keywords);
 
-			AUI().use('liferay-portlet-url', () => {
-				const portletURL = Liferay.PortletURL.createURL(fetchDataURL);
+			const portletURL = createPortletURL(fetchDataURL);
 
-				if (keywords) {
-					portletURL.setParameter('keywords', keywords);
-				}
-				else {
-					portletURL.setParameter('keywords', '');
-				}
+			if (keywords) {
+				portletURL.setParameter('keywords', keywords);
+			}
+			else {
+				portletURL.setParameter('keywords', '');
+			}
 
-				setLoading(true);
+			setLoading(true);
 
-				fetch(portletURL.toString())
-					.then((response) => response.json())
-					.then((json) => {
-						if (!json.entries) {
-							const fetchData = {
-								errorMessage: Liferay.Language.get(
-									'an-unexpected-error-occurred'
-								),
-							};
-
-							setState({
-								delta: state.delta,
-								fetchData,
-								page: state.page,
-							});
-
-							setLoading(false);
-
-							return;
-						}
-
-						const newState = {
-							delta: newDelta,
-							fetchData: json,
-							page: newPage,
-						};
-
-						const lastPage = Math.ceil(
-							json.entries.length / newState.delta
-						);
-
-						if (lastPage < 1) {
-							newState.page = 1;
-						}
-						else if (newState.page > lastPage) {
-							newState.page = lastPage;
-						}
-
-						setState(newState);
-
-						setLoading(false);
-					})
-					.catch(() => {
+			fetch(portletURL.toString())
+				.then((response) => response.json())
+				.then((json) => {
+					if (!json.entries) {
 						const fetchData = {
 							errorMessage: Liferay.Language.get(
 								'an-unexpected-error-occurred'
@@ -232,8 +188,46 @@ const PublicationsSearchContainer = ({
 						});
 
 						setLoading(false);
+
+						return;
+					}
+
+					const newState = {
+						delta: newDelta,
+						fetchData: json,
+						page: newPage,
+					};
+
+					const lastPage = Math.ceil(
+						json.entries.length / newState.delta
+					);
+
+					if (lastPage < 1) {
+						newState.page = 1;
+					}
+					else if (newState.page > lastPage) {
+						newState.page = lastPage;
+					}
+
+					setState(newState);
+
+					setLoading(false);
+				})
+				.catch(() => {
+					const fetchData = {
+						errorMessage: Liferay.Language.get(
+							'an-unexpected-error-occurred'
+						),
+					};
+
+					setState({
+						delta: state.delta,
+						fetchData,
+						page: state.page,
 					});
-			});
+
+					setLoading(false);
+				});
 		},
 		[fetchDataURL, state]
 	);
@@ -744,22 +738,20 @@ export default function ChangeTrackingIndicator({
 	const [showModal, setShowModal] = useState(false);
 
 	const navigate = (url, action) => {
-		AUI().use('liferay-portlet-url', () => {
-			const portletURL = Liferay.PortletURL.createURL(url);
+		const portletURL = createPortletURL(url);
 
-			portletURL.setParameter(
-				'redirect',
-				window.location.pathname + window.location.search
-			);
+		portletURL.setParameter(
+			'redirect',
+			window.location.pathname + window.location.search
+		);
 
-			if (action) {
-				submitForm(document.hrefFm, portletURL.toString());
+		if (action) {
+			submitForm(document.hrefFm, portletURL.toString());
 
-				return;
-			}
+			return;
+		}
 
-			Liferay.Util.navigate(portletURL.toString());
-		});
+		Liferay.Util.navigate(portletURL.toString());
 	};
 
 	const dropdownItems = [];
