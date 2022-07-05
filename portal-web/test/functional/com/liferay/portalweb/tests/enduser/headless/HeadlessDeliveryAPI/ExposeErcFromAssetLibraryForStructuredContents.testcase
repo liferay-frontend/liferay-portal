@@ -59,9 +59,52 @@ definition {
 				title = "WC WebContent Title");
 		}
 
-		task ("Then structured Content is being createdAnd Then I can see the custom erc in the body response") {
+		task ("Then the structured content is created properly") {
+			var structuredContentTitle = HeadlessWebcontentAPI.getStructredContentTitleInAssetLibrary(assetLibraryId = "${depotId}");
+
+			TestUtils.assertEquals(
+				actual = "${structuredContentTitle}",
+				expected = "WC WebContent Title");
+		}
+
+		task ("And Then I can see the custom erc in the body response") {
 			HeadlessWebcontentAPI.assertExternalReferenceCodeWithCorrectValue(
-				expectedactualExternalReferenceCodeValueValue = "erc",
+				expectedExternalReferenceCodeValue = "erc",
+				responseToParse = "${response}");
+		}
+	}
+
+	@description = "StructuredContent is created in an asset library with default erc"
+	@priority = "5"
+	test StructuredContentIsCreatedInAssetLibraryWithErcByDefault {
+		property portal.acceptance = "true";
+
+		task ("When with POST request I create a structured Content without erc in asset library") {
+			var depotId = JSONGroupAPI._getDepotIdByName(depotName = "Test Depot Name");
+			var ddmStructureId = WebContentStructures.getDdmStructureId(structureName = "content-structure");
+
+			var response = HeadlessWebcontentAPI.createStructuredContentInAssetLibrary(
+				assetLibraryId = "${depotId}",
+				data = "<p>My content</p>",
+				ddmStructureId = "${ddmStructureId}",
+				label = "Text",
+				name = "Text",
+				title = "WC WebContent Title");
+		}
+
+		task ("Then the structured content is created properly") {
+			var structuredContentTitle = HeadlessWebcontentAPI.getStructredContentTitleInAssetLibrary(assetLibraryId = "${depotId}");
+
+			TestUtils.assertEquals(
+				actual = "${structuredContentTitle}",
+				expected = "WC WebContent Title");
+		}
+
+		task ("And Then I can see erc equals to the key in the body response") {
+			var keyValue = HeadlessWebcontentAPI.getKeyFromResponse(responseToParse = "${response}");
+
+			HeadlessWebcontentAPI.assertExternalReferenceCodeWithCorrectValue(
+				expectedExternalReferenceCodeValue = "${keyValue}",
 				responseToParse = "${response}");
 		}
 	}
