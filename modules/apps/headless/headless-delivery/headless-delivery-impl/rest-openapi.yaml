@@ -5269,7 +5269,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.delivery.client', and version '4.0.32'."
+        'com.liferay.headless.delivery.client', and version '4.0.33'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -11382,6 +11382,7 @@ paths:
             # @review
             description:
                 Deletes the site's document folder by external reference code returns a 204 if the operation succeeds.
+            operationId: deleteSiteDocumentsFolderByExternalReferenceCode
             parameters:
                 - in: path
                   name: siteId
@@ -11404,6 +11405,7 @@ paths:
             # @review
             description:
                 Retrieves the site's document folder by external reference code.
+            operationId: getSiteDocumentsFolderByExternalReferenceCode
             parameters:
                 - in: path
                   name: siteId
@@ -11427,6 +11429,7 @@ paths:
                                 $ref: "#/components/schemas/DocumentFolder"
             tags: ["DocumentFolder"]
         put:
+            operationId: putSiteDocumentsFolderByExternalReferenceCode
             parameters:
                 - in: path
                   name: siteId

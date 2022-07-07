@@ -1582,6 +1582,42 @@ public class Mutation {
 	}
 
 	@GraphQLField(
+		description = "Deletes the site's document folder by external reference code returns a 204 if the operation succeeds."
+	)
+	public boolean deleteSiteDocumentsFolderByExternalReferenceCode(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_documentFolderResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			documentFolderResource ->
+				documentFolderResource.
+					deleteSiteDocumentsFolderByExternalReferenceCode(
+						Long.valueOf(siteKey), externalReferenceCode));
+
+		return true;
+	}
+
+	@GraphQLField
+	public DocumentFolder updateSiteDocumentsFolderByExternalReferenceCode(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("documentFolder") DocumentFolder documentFolder)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_documentFolderResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			documentFolderResource ->
+				documentFolderResource.
+					putSiteDocumentsFolderByExternalReferenceCode(
+						Long.valueOf(siteKey), externalReferenceCode,
+						documentFolder));
+	}
+
+	@GraphQLField(
 		description = "Deletes the knowledge base article and returns a 204 if the operation succeeds."
 	)
 	public boolean deleteKnowledgeBaseArticle(

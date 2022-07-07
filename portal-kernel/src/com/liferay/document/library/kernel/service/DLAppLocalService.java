@@ -274,6 +274,12 @@ public interface DLAppLocalService extends BaseLocalService {
 			String description, ServiceContext serviceContext)
 		throws PortalException;
 
+	public Folder addFolder(
+			String externalReferenceCode, long userId, long repositoryId,
+			long parentFolderId, String name, String description,
+			ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * Delete all data associated to the given repository. This method is only
 	 * supported by the Liferay repository.

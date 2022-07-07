@@ -302,6 +302,18 @@ public class DLAppLocalServiceWrapper
 			serviceContext);
 	}
 
+	@Override
+	public com.liferay.portal.kernel.repository.model.Folder addFolder(
+			String externalReferenceCode, long userId, long repositoryId,
+			long parentFolderId, String name, String description,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _dlAppLocalService.addFolder(
+			externalReferenceCode, userId, repositoryId, parentFolderId, name,
+			description, serviceContext);
+	}
+
 	/**
 	 * Delete all data associated to the given repository. This method is only
 	 * supported by the Liferay repository.
