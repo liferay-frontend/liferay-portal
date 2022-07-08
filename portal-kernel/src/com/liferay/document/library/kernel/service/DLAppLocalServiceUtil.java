@@ -417,6 +417,15 @@ public class DLAppLocalServiceUtil {
 			groupId, externalReferenceCode);
 	}
 
+	public static com.liferay.portal.kernel.repository.model.Folder
+			fetchFolderByExternalReferenceCode(
+				long groupId, String externalReferenceCode)
+		throws PortalException {
+
+		return getService().fetchFolderByExternalReferenceCode(
+			groupId, externalReferenceCode);
+	}
+
 	/**
 	 * Returns the file entry with the primary key.
 	 *
@@ -552,6 +561,15 @@ public class DLAppLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getFolder(repositoryId, parentFolderId, name);
+	}
+
+	public static com.liferay.portal.kernel.repository.model.Folder
+			getFolderByExternalReferenceCode(
+				long groupId, String externalReferenceCode)
+		throws PortalException {
+
+		return getService().getFolderByExternalReferenceCode(
+			groupId, externalReferenceCode);
 	}
 
 	/**

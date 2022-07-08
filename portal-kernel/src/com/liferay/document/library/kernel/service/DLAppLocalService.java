@@ -352,6 +352,11 @@ public interface DLAppLocalService extends BaseLocalService {
 			long groupId, String externalReferenceCode)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Folder fetchFolderByExternalReferenceCode(
+			long groupId, String externalReferenceCode)
+		throws PortalException;
+
 	/**
 	 * Returns the file entry with the primary key.
 	 *
@@ -458,6 +463,11 @@ public interface DLAppLocalService extends BaseLocalService {
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Folder getFolder(long repositoryId, long parentFolderId, String name)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Folder getFolderByExternalReferenceCode(
+			long groupId, String externalReferenceCode)
 		throws PortalException;
 
 	/**

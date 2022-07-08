@@ -1058,6 +1058,15 @@ public class DLAppServiceUtil {
 		return getService().getFolder(repositoryId, parentFolderId, name);
 	}
 
+	public static com.liferay.portal.kernel.repository.model.Folder
+			getFolderByExternalReferenceCode(
+				long groupId, String externalReferenceCode)
+		throws PortalException {
+
+		return getService().getFolderByExternalReferenceCode(
+			groupId, externalReferenceCode);
+	}
+
 	/**
 	 * Returns all immediate subfolders of the parent folder.
 	 *

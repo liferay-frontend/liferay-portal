@@ -1097,6 +1097,16 @@ public class DLAppServiceWrapper
 		return _dlAppService.getFolder(repositoryId, parentFolderId, name);
 	}
 
+	@Override
+	public com.liferay.portal.kernel.repository.model.Folder
+			getFolderByExternalReferenceCode(
+				long groupId, String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _dlAppService.getFolderByExternalReferenceCode(
+			groupId, externalReferenceCode);
+	}
+
 	/**
 	 * Returns all immediate subfolders of the parent folder.
 	 *

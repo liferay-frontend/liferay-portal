@@ -109,22 +109,22 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 
 	@Override
 	public DLFolder addFolder(
-		long userId, long groupId, long repositoryId, boolean mountPoint,
-		long parentFolderId, String name, String description,
-		boolean hidden, ServiceContext serviceContext)
-		throws PortalException {
-
-		return dlFolderLocalService.addFolder(null,
-		 userId,  groupId,  repositoryId,  mountPoint,
-		 parentFolderId,  name,  description,
-		 hidden,  serviceContext);
-
-	}
-	@Override
-	public DLFolder addFolder(String externalReferenceCode,
 			long userId, long groupId, long repositoryId, boolean mountPoint,
 			long parentFolderId, String name, String description,
 			boolean hidden, ServiceContext serviceContext)
+		throws PortalException {
+
+		return dlFolderLocalService.addFolder(
+			null, userId, groupId, repositoryId, mountPoint, parentFolderId,
+			name, description, hidden, serviceContext);
+	}
+
+	@Override
+	public DLFolder addFolder(
+			String externalReferenceCode, long userId, long groupId,
+			long repositoryId, boolean mountPoint, long parentFolderId,
+			String name, String description, boolean hidden,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		// Folder
@@ -1181,25 +1181,6 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 		addFolderResources(dlFolder, modelPermissions);
 	}
 
-	private void _validateExternalReferenceCode(
-		String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		if (Validator.isNull(externalReferenceCode)) {
-			return;
-		}
-
-		DLFolder dlFolder = dlFolderPersistence.fetchByG_ERC(
-			groupId, externalReferenceCode);
-
-		if (dlFolder != null) {
-			throw new DuplicateFolderExternalReferenceCodeException(
-				StringBundler.concat(
-					"Duplicate folder external reference code ",
-					externalReferenceCode, " in group ", groupId));
-		}
-	}
-
 	protected void deleteFolderDependencies(
 			DLFolder dlFolder, boolean includeTrashedEntries)
 		throws PortalException {
@@ -1430,6 +1411,25 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 				StringBundler.concat(
 					"Folder name ", folderName,
 					" is invalid because it contains a /"));
+		}
+	}
+
+	private void _validateExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return;
+		}
+
+		DLFolder dlFolder = dlFolderPersistence.fetchByG_ERC(
+			groupId, externalReferenceCode);
+
+		if (dlFolder != null) {
+			throw new DuplicateFolderExternalReferenceCodeException(
+				StringBundler.concat(
+					"Duplicate folder external reference code ",
+					externalReferenceCode, " in group ", groupId));
 		}
 	}
 

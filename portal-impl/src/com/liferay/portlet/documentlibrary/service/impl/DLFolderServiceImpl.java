@@ -48,25 +48,26 @@ public class DLFolderServiceImpl extends DLFolderServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		return dlFolderService.addFolder(null,  groupId,  repositoryId,  mountPoint,
-		 parentFolderId,  name,  description, serviceContext);
-
+		return dlFolderService.addFolder(
+			null, groupId, repositoryId, mountPoint, parentFolderId, name,
+			description, serviceContext);
 	}
 
 	@Override
-	public DLFolder addFolder(String externalReferenceCode,
-		long groupId, long repositoryId, boolean mountPoint,
-		long parentFolderId, String name, String description,
-		ServiceContext serviceContext)
+	public DLFolder addFolder(
+			String externalReferenceCode, long groupId, long repositoryId,
+			boolean mountPoint, long parentFolderId, String name,
+			String description, ServiceContext serviceContext)
 		throws PortalException {
 
 		ModelResourcePermissionUtil.check(
 			_dlFolderModelResourcePermission, getPermissionChecker(), groupId,
 			parentFolderId, ActionKeys.ADD_FOLDER);
 
-		return dlFolderLocalService.addFolder(externalReferenceCode,
-			getUserId(), groupId, repositoryId, mountPoint, parentFolderId,
-			name, description, false, serviceContext);
+		return dlFolderLocalService.addFolder(
+			externalReferenceCode, getUserId(), groupId, repositoryId,
+			mountPoint, parentFolderId, name, description, false,
+			serviceContext);
 	}
 
 	@Override
@@ -94,6 +95,21 @@ public class DLFolderServiceImpl extends DLFolderServiceBaseImpl {
 		DLFolder dlFolder = getFolder(groupId, parentFolderId, name);
 
 		deleteFolder(dlFolder.getFolderId());
+	}
+
+	@Override
+	public DLFolder getDLFolderByExternalReferenceCode(
+			long groupId, String externalReferenceCode)
+		throws PortalException {
+
+		DLFolder dlFolder =
+			dlFolderLocalService.getDLFolderByExternalReferenceCode(
+				groupId, externalReferenceCode);
+
+		_dlFolderModelResourcePermission.check(
+			getPermissionChecker(), dlFolder, ActionKeys.VIEW);
+
+		return dlFolder;
 	}
 
 	@Override
@@ -149,21 +165,6 @@ public class DLFolderServiceImpl extends DLFolderServiceBaseImpl {
 
 		return dlFolderFinder.filterCountFE_FS_ByG_F_M(
 			groupId, folderId, mimeTypes, queryDefinition);
-	}
-
-	@Override
-	public DLFolder getDLFolderByExternalReferenceCode(
-		long groupId, String externalReferenceCode)
-		throws PortalException {
-
-		DLFolder dlFolder =
-			dlFolderLocalService.getDLFolderByExternalReferenceCode(
-				groupId, externalReferenceCode);
-
-		_dlFolderModelResourcePermission.check(
-			getPermissionChecker(), dlFolder, ActionKeys.VIEW);
-
-		return dlFolder;
 	}
 
 	@Override

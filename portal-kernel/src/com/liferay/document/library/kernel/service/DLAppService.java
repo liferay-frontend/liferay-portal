@@ -892,6 +892,11 @@ public interface DLAppService extends BaseService {
 	public Folder getFolder(long repositoryId, long parentFolderId, String name)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Folder getFolderByExternalReferenceCode(
+			long groupId, String externalReferenceCode)
+		throws PortalException;
+
 	/**
 	 * Returns all immediate subfolders of the parent folder.
 	 *
