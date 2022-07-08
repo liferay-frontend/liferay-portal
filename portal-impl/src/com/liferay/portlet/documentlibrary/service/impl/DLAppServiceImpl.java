@@ -420,10 +420,23 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 			String description, ServiceContext serviceContext)
 		throws PortalException {
 
+		return addFolder(
+			null, repositoryId, parentFolderId, name, description,
+			serviceContext);
+	}
+
+	@Override
+	public Folder addFolder(
+			String externalReferenceCode, long repositoryId,
+			long parentFolderId, String name, String description,
+			ServiceContext serviceContext)
+		throws PortalException {
+
 		Repository repository = getRepository(repositoryId);
 
 		Folder folder = repository.addFolder(
-			getUserId(), parentFolderId, name, description, serviceContext);
+			externalReferenceCode, getUserId(), parentFolderId, name,
+			description, serviceContext);
 
 		_dlAppHelperLocalService.addFolder(getUserId(), folder, serviceContext);
 

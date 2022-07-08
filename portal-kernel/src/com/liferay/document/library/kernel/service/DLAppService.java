@@ -275,6 +275,12 @@ public interface DLAppService extends BaseService {
 			String description, ServiceContext serviceContext)
 		throws PortalException;
 
+	public Folder addFolder(
+			String externalReferenceCode, long repositoryId,
+			long parentFolderId, String name, String description,
+			ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * Adds a temporary file entry.
 	 *

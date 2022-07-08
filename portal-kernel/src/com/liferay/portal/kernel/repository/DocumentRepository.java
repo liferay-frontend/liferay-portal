@@ -63,6 +63,11 @@ public interface DocumentRepository extends CapabilityProvider {
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public Folder addFolder(
+			String externalReferenceCode, long userId, long parentFolderId,
+			String name, String description, ServiceContext serviceContext)
+		throws PortalException;
+
 	public void checkInFileEntry(
 			long userId, long fileEntryId,
 			DLVersionNumberIncrease dlVersionNumberIncrease, String changeLog,

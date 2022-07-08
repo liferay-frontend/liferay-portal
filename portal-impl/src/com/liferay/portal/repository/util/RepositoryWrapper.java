@@ -96,6 +96,17 @@ public class RepositoryWrapper implements Repository {
 	}
 
 	@Override
+	public Folder addFolder(
+			String externalReferenceCode, long userId, long parentFolderId,
+			String name, String description, ServiceContext serviceContext)
+		throws PortalException {
+
+		return _repository.addFolder(
+			externalReferenceCode, userId, parentFolderId, name, description,
+			serviceContext);
+	}
+
+	@Override
 	public FileVersion cancelCheckOut(long fileEntryId) throws PortalException {
 		return _repository.cancelCheckOut(fileEntryId);
 	}

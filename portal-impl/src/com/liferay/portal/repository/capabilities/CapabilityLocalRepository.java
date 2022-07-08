@@ -128,6 +128,24 @@ public class CapabilityLocalRepository
 	}
 
 	@Override
+	public Folder addFolder(
+			String externalReferenCode, long userId, long parentFolderId,
+			String name, String description, ServiceContext serviceContext)
+		throws PortalException {
+
+		LocalRepository localRepository = getRepository();
+
+		Folder folder = localRepository.addFolder(
+			externalReferenCode, userId, parentFolderId, name, description,
+			serviceContext);
+
+		_repositoryEventTrigger.trigger(
+			RepositoryEventType.Add.class, Folder.class, folder);
+
+		return folder;
+	}
+
+	@Override
 	public void checkInFileEntry(
 			long userId, long fileEntryId,
 			DLVersionNumberIncrease dlVersionNumberIncrease, String changeLog,

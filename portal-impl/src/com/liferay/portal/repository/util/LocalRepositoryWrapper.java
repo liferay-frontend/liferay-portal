@@ -91,6 +91,17 @@ public class LocalRepositoryWrapper implements LocalRepository {
 	}
 
 	@Override
+	public Folder addFolder(
+			String externalReferenceCode, long userId, long parentFolderId,
+			String name, String description, ServiceContext serviceContext)
+		throws PortalException {
+
+		return _localRepository.addFolder(
+			externalReferenceCode, userId, parentFolderId, name, description,
+			serviceContext);
+	}
+
+	@Override
 	public void checkInFileEntry(
 			long userId, long fileEntryId,
 			DLVersionNumberIncrease dlVersionNumberIncrease, String changeLog,
