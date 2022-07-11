@@ -1431,6 +1431,17 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		return repository.getFolder(parentFolderId, name);
 	}
 
+	@Override
+	public Folder getFolderByExternalReferenceCode(
+			long groupId, String externalReferenceCode)
+		throws PortalException {
+
+		Repository repository = getRepository(groupId);
+
+		return repository.getFolderByExternalReferenceCode(
+			externalReferenceCode);
+	}
+
 	/**
 	 * Returns all immediate subfolders of the parent folder.
 	 *

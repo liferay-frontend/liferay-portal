@@ -650,6 +650,15 @@ public class CapabilityRepository
 	}
 
 	@Override
+	public Folder getFolderyByExternalReferenceCode(
+			String externalReferenceCode)
+		throws PortalException {
+
+		return getRepository().getFolderByExternalReferenceCode(
+			externalReferenceCode);
+	}
+
+	@Override
 	public List<Folder> getMountFolders(
 			long parentFolderId, int start, int end,
 			OrderByComparator<Folder> orderByComparator)

@@ -15,6 +15,7 @@
 package com.liferay.portal.kernel.repository;
 
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.capabilities.CapabilityProvider;
@@ -185,6 +186,21 @@ public interface DocumentRepository extends CapabilityProvider {
 
 	public Folder getFolder(long parentFolderId, String name)
 		throws PortalException;
+
+	public default Folder getFolderByExternalReferenceCode(
+			String externalReferenceCode)
+		throws PortalException {
+
+		try {
+			return getFolder(GetterUtil.getLongStrict(externalReferenceCode));
+		}
+		catch (NumberFormatException numberFormatException) {
+			throw new NoSuchFolderException(
+				"No folder exists with external reference code " +
+					externalReferenceCode,
+				numberFormatException);
+		}
+	}
 
 	public List<Folder> getFolders(
 			long parentFolderId, boolean includeMountFolders, int start,
