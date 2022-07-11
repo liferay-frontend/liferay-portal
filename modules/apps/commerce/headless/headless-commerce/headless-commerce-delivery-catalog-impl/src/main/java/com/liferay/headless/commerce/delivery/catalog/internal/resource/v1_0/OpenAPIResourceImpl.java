@@ -14,13 +14,26 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Attachment;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Category;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.MappedProduct;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Pin;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductOption;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductSpecification;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.RelatedProduct;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Sku;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Generated;
@@ -59,18 +72,35 @@ public class OpenAPIResourceImpl {
 	public Response getOpenAPI(@PathParam("type") String type)
 		throws Exception {
 
+		if (_methodExists(long.class, Map.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_company.getCompanyId(), _resourceClasses, type, _uriInfo);
+		}
+		else if (_methodExists(Set.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_resourceClasses.keySet(), type, _uriInfo);
+		}
+		else {
+			return _openAPIResource.getOpenAPI(_resourceClasses.keySet(), type);
+		}
+	}
+
+	private boolean _methodExists(Class<?>... parameterClasses) {
 		try {
 			Class<? extends OpenAPIResource> clazz =
 				_openAPIResource.getClass();
 
-			clazz.getMethod(
-				"getOpenAPI", Set.class, String.class, UriInfo.class);
+			clazz.getMethod("getOpenAPI", parameterClasses);
 		}
 		catch (NoSuchMethodException noSuchMethodException) {
-			return _openAPIResource.getOpenAPI(_resourceClasses, type);
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchMethodException);
+			}
+
+			return false;
 		}
 
-		return _openAPIResource.getOpenAPI(_resourceClasses, type, _uriInfo);
+		return true;
 	}
 
 	@Reference
@@ -79,28 +109,29 @@ public class OpenAPIResourceImpl {
 	@Context
 	private UriInfo _uriInfo;
 
-	private final Set<Class<?>> _resourceClasses = new HashSet<Class<?>>() {
-		{
-			add(AttachmentResourceImpl.class);
+	private final Map<Class<?>, Class<?>> _resourceClasses =
+		new HashMap<Class<?>, Class<?>>() {
+			{
+				put(AttachmentResourceImpl.class, Attachment.class);
+				put(CategoryResourceImpl.class, Category.class);
+				put(MappedProductResourceImpl.class, MappedProduct.class);
+				put(PinResourceImpl.class, Pin.class);
+				put(ProductOptionResourceImpl.class, ProductOption.class);
+				put(ProductResourceImpl.class, Product.class);
+				put(
+					ProductSpecificationResourceImpl.class,
+					ProductSpecification.class);
+				put(RelatedProductResourceImpl.class, RelatedProduct.class);
+				put(SkuResourceImpl.class, Sku.class);
 
-			add(CategoryResourceImpl.class);
+				put(OpenAPIResourceImpl.class, null);
+			}
+		};
 
-			add(MappedProductResourceImpl.class);
+	@Context
+	private Company _company;
 
-			add(PinResourceImpl.class);
-
-			add(ProductResourceImpl.class);
-
-			add(ProductOptionResourceImpl.class);
-
-			add(ProductSpecificationResourceImpl.class);
-
-			add(RelatedProductResourceImpl.class);
-
-			add(SkuResourceImpl.class);
-
-			add(OpenAPIResourceImpl.class);
-		}
-	};
+	private static final Log _log = LogFactoryUtil.getLog(
+		OpenAPIResourceImpl.class);
 
 }

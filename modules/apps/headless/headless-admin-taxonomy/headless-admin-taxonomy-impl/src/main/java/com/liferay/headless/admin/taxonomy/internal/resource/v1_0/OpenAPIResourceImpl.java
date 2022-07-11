@@ -14,13 +14,20 @@
 
 package com.liferay.headless.admin.taxonomy.internal.resource.v1_0;
 
+import com.liferay.headless.admin.taxonomy.dto.v1_0.Keyword;
+import com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyCategory;
+import com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyVocabulary;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Generated;
@@ -47,7 +54,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 @Generated("")
 @OpenAPIDefinition(
-	info = @Info(description = "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.admin.taxonomy.client', and version '4.0.15'.", license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"), title = "Headless Admin Taxonomy", version = "v1.0")
+	info = @Info(description = "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.admin.taxonomy.client', and version '4.0.16'.", license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"), title = "Headless Admin Taxonomy", version = "v1.0")
 )
 @Path("/v1.0")
 public class OpenAPIResourceImpl {
@@ -58,18 +65,35 @@ public class OpenAPIResourceImpl {
 	public Response getOpenAPI(@PathParam("type") String type)
 		throws Exception {
 
+		if (_methodExists(long.class, Map.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_company.getCompanyId(), _resourceClasses, type, _uriInfo);
+		}
+		else if (_methodExists(Set.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_resourceClasses.keySet(), type, _uriInfo);
+		}
+		else {
+			return _openAPIResource.getOpenAPI(_resourceClasses.keySet(), type);
+		}
+	}
+
+	private boolean _methodExists(Class<?>... parameterClasses) {
 		try {
 			Class<? extends OpenAPIResource> clazz =
 				_openAPIResource.getClass();
 
-			clazz.getMethod(
-				"getOpenAPI", Set.class, String.class, UriInfo.class);
+			clazz.getMethod("getOpenAPI", parameterClasses);
 		}
 		catch (NoSuchMethodException noSuchMethodException) {
-			return _openAPIResource.getOpenAPI(_resourceClasses, type);
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchMethodException);
+			}
+
+			return false;
 		}
 
-		return _openAPIResource.getOpenAPI(_resourceClasses, type, _uriInfo);
+		return true;
 	}
 
 	@Reference
@@ -78,16 +102,23 @@ public class OpenAPIResourceImpl {
 	@Context
 	private UriInfo _uriInfo;
 
-	private final Set<Class<?>> _resourceClasses = new HashSet<Class<?>>() {
-		{
-			add(KeywordResourceImpl.class);
+	private final Map<Class<?>, Class<?>> _resourceClasses =
+		new HashMap<Class<?>, Class<?>>() {
+			{
+				put(KeywordResourceImpl.class, Keyword.class);
+				put(TaxonomyCategoryResourceImpl.class, TaxonomyCategory.class);
+				put(
+					TaxonomyVocabularyResourceImpl.class,
+					TaxonomyVocabulary.class);
 
-			add(TaxonomyCategoryResourceImpl.class);
+				put(OpenAPIResourceImpl.class, null);
+			}
+		};
 
-			add(TaxonomyVocabularyResourceImpl.class);
+	@Context
+	private Company _company;
 
-			add(OpenAPIResourceImpl.class);
-		}
-	};
+	private static final Log _log = LogFactoryUtil.getLog(
+		OpenAPIResourceImpl.class);
 
 }

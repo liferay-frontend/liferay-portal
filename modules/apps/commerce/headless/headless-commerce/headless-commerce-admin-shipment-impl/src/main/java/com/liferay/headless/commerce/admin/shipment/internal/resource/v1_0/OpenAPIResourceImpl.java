@@ -14,13 +14,20 @@
 
 package com.liferay.headless.commerce.admin.shipment.internal.resource.v1_0;
 
+import com.liferay.headless.commerce.admin.shipment.dto.v1_0.Shipment;
+import com.liferay.headless.commerce.admin.shipment.dto.v1_0.ShipmentItem;
+import com.liferay.headless.commerce.admin.shipment.dto.v1_0.ShippingAddress;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Generated;
@@ -48,7 +55,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 @Generated("")
 @OpenAPIDefinition(
-	info = @Info(description = "Liferay Commerce Admin Admin Shipment API. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.admin.shipment.client', and version '1.0.14'.", license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"), title = "Liferay Commerce Admin Admin Shipment API", version = "v1.0")
+	info = @Info(description = "Liferay Commerce Admin Admin Shipment API. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.admin.shipment.client', and version '1.0.15'.", license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"), title = "Liferay Commerce Admin Admin Shipment API", version = "v1.0")
 )
 @Path("/v1.0")
 public class OpenAPIResourceImpl {
@@ -59,18 +66,35 @@ public class OpenAPIResourceImpl {
 	public Response getOpenAPI(@PathParam("type") String type)
 		throws Exception {
 
+		if (_methodExists(long.class, Map.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_company.getCompanyId(), _resourceClasses, type, _uriInfo);
+		}
+		else if (_methodExists(Set.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_resourceClasses.keySet(), type, _uriInfo);
+		}
+		else {
+			return _openAPIResource.getOpenAPI(_resourceClasses.keySet(), type);
+		}
+	}
+
+	private boolean _methodExists(Class<?>... parameterClasses) {
 		try {
 			Class<? extends OpenAPIResource> clazz =
 				_openAPIResource.getClass();
 
-			clazz.getMethod(
-				"getOpenAPI", Set.class, String.class, UriInfo.class);
+			clazz.getMethod("getOpenAPI", parameterClasses);
 		}
 		catch (NoSuchMethodException noSuchMethodException) {
-			return _openAPIResource.getOpenAPI(_resourceClasses, type);
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchMethodException);
+			}
+
+			return false;
 		}
 
-		return _openAPIResource.getOpenAPI(_resourceClasses, type, _uriInfo);
+		return true;
 	}
 
 	@Reference
@@ -79,16 +103,21 @@ public class OpenAPIResourceImpl {
 	@Context
 	private UriInfo _uriInfo;
 
-	private final Set<Class<?>> _resourceClasses = new HashSet<Class<?>>() {
-		{
-			add(ShipmentResourceImpl.class);
+	private final Map<Class<?>, Class<?>> _resourceClasses =
+		new HashMap<Class<?>, Class<?>>() {
+			{
+				put(ShipmentItemResourceImpl.class, ShipmentItem.class);
+				put(ShipmentResourceImpl.class, Shipment.class);
+				put(ShippingAddressResourceImpl.class, ShippingAddress.class);
 
-			add(ShipmentItemResourceImpl.class);
+				put(OpenAPIResourceImpl.class, null);
+			}
+		};
 
-			add(ShippingAddressResourceImpl.class);
+	@Context
+	private Company _company;
 
-			add(OpenAPIResourceImpl.class);
-		}
-	};
+	private static final Log _log = LogFactoryUtil.getLog(
+		OpenAPIResourceImpl.class);
 
 }

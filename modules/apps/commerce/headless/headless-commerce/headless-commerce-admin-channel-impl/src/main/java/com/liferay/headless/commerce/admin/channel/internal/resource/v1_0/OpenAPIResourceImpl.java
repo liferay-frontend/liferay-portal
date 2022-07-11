@@ -14,13 +14,26 @@
 
 package com.liferay.headless.commerce.admin.channel.internal.resource.v1_0;
 
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel;
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.OrderType;
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.PaymentMethodGroupRelOrderType;
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.PaymentMethodGroupRelTerm;
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.ShippingFixedOptionOrderType;
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.ShippingFixedOptionTerm;
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.ShippingMethod;
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.TaxCategory;
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.Term;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Generated;
@@ -59,18 +72,35 @@ public class OpenAPIResourceImpl {
 	public Response getOpenAPI(@PathParam("type") String type)
 		throws Exception {
 
+		if (_methodExists(long.class, Map.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_company.getCompanyId(), _resourceClasses, type, _uriInfo);
+		}
+		else if (_methodExists(Set.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_resourceClasses.keySet(), type, _uriInfo);
+		}
+		else {
+			return _openAPIResource.getOpenAPI(_resourceClasses.keySet(), type);
+		}
+	}
+
+	private boolean _methodExists(Class<?>... parameterClasses) {
 		try {
 			Class<? extends OpenAPIResource> clazz =
 				_openAPIResource.getClass();
 
-			clazz.getMethod(
-				"getOpenAPI", Set.class, String.class, UriInfo.class);
+			clazz.getMethod("getOpenAPI", parameterClasses);
 		}
 		catch (NoSuchMethodException noSuchMethodException) {
-			return _openAPIResource.getOpenAPI(_resourceClasses, type);
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchMethodException);
+			}
+
+			return false;
 		}
 
-		return _openAPIResource.getOpenAPI(_resourceClasses, type, _uriInfo);
+		return true;
 	}
 
 	@Reference
@@ -79,28 +109,35 @@ public class OpenAPIResourceImpl {
 	@Context
 	private UriInfo _uriInfo;
 
-	private final Set<Class<?>> _resourceClasses = new HashSet<Class<?>>() {
-		{
-			add(ChannelResourceImpl.class);
+	private final Map<Class<?>, Class<?>> _resourceClasses =
+		new HashMap<Class<?>, Class<?>>() {
+			{
+				put(ChannelResourceImpl.class, Channel.class);
+				put(OrderTypeResourceImpl.class, OrderType.class);
+				put(
+					PaymentMethodGroupRelOrderTypeResourceImpl.class,
+					PaymentMethodGroupRelOrderType.class);
+				put(
+					PaymentMethodGroupRelTermResourceImpl.class,
+					PaymentMethodGroupRelTerm.class);
+				put(
+					ShippingFixedOptionOrderTypeResourceImpl.class,
+					ShippingFixedOptionOrderType.class);
+				put(
+					ShippingFixedOptionTermResourceImpl.class,
+					ShippingFixedOptionTerm.class);
+				put(ShippingMethodResourceImpl.class, ShippingMethod.class);
+				put(TaxCategoryResourceImpl.class, TaxCategory.class);
+				put(TermResourceImpl.class, Term.class);
 
-			add(OrderTypeResourceImpl.class);
+				put(OpenAPIResourceImpl.class, null);
+			}
+		};
 
-			add(PaymentMethodGroupRelOrderTypeResourceImpl.class);
+	@Context
+	private Company _company;
 
-			add(PaymentMethodGroupRelTermResourceImpl.class);
-
-			add(ShippingFixedOptionOrderTypeResourceImpl.class);
-
-			add(ShippingFixedOptionTermResourceImpl.class);
-
-			add(ShippingMethodResourceImpl.class);
-
-			add(TaxCategoryResourceImpl.class);
-
-			add(TermResourceImpl.class);
-
-			add(OpenAPIResourceImpl.class);
-		}
-	};
+	private static final Log _log = LogFactoryUtil.getLog(
+		OpenAPIResourceImpl.class);
 
 }

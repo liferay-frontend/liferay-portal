@@ -14,13 +14,21 @@
 
 package com.liferay.headless.form.internal.resource.v1_0;
 
+import com.liferay.headless.form.dto.v1_0.Form;
+import com.liferay.headless.form.dto.v1_0.FormDocument;
+import com.liferay.headless.form.dto.v1_0.FormRecord;
+import com.liferay.headless.form.dto.v1_0.FormStructure;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Generated;
@@ -58,18 +66,35 @@ public class OpenAPIResourceImpl {
 	public Response getOpenAPI(@PathParam("type") String type)
 		throws Exception {
 
+		if (_methodExists(long.class, Map.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_company.getCompanyId(), _resourceClasses, type, _uriInfo);
+		}
+		else if (_methodExists(Set.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_resourceClasses.keySet(), type, _uriInfo);
+		}
+		else {
+			return _openAPIResource.getOpenAPI(_resourceClasses.keySet(), type);
+		}
+	}
+
+	private boolean _methodExists(Class<?>... parameterClasses) {
 		try {
 			Class<? extends OpenAPIResource> clazz =
 				_openAPIResource.getClass();
 
-			clazz.getMethod(
-				"getOpenAPI", Set.class, String.class, UriInfo.class);
+			clazz.getMethod("getOpenAPI", parameterClasses);
 		}
 		catch (NoSuchMethodException noSuchMethodException) {
-			return _openAPIResource.getOpenAPI(_resourceClasses, type);
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchMethodException);
+			}
+
+			return false;
 		}
 
-		return _openAPIResource.getOpenAPI(_resourceClasses, type, _uriInfo);
+		return true;
 	}
 
 	@Reference
@@ -78,18 +103,22 @@ public class OpenAPIResourceImpl {
 	@Context
 	private UriInfo _uriInfo;
 
-	private final Set<Class<?>> _resourceClasses = new HashSet<Class<?>>() {
-		{
-			add(FormResourceImpl.class);
+	private final Map<Class<?>, Class<?>> _resourceClasses =
+		new HashMap<Class<?>, Class<?>>() {
+			{
+				put(FormDocumentResourceImpl.class, FormDocument.class);
+				put(FormRecordResourceImpl.class, FormRecord.class);
+				put(FormResourceImpl.class, Form.class);
+				put(FormStructureResourceImpl.class, FormStructure.class);
 
-			add(FormDocumentResourceImpl.class);
+				put(OpenAPIResourceImpl.class, null);
+			}
+		};
 
-			add(FormRecordResourceImpl.class);
+	@Context
+	private Company _company;
 
-			add(FormStructureResourceImpl.class);
-
-			add(OpenAPIResourceImpl.class);
-		}
-	};
+	private static final Log _log = LogFactoryUtil.getLog(
+		OpenAPIResourceImpl.class);
 
 }

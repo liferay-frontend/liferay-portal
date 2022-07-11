@@ -14,13 +14,26 @@
 
 package com.liferay.headless.commerce.admin.pricing.internal.resource.v1_0;
 
+import com.liferay.headless.commerce.admin.pricing.dto.v1_0.Discount;
+import com.liferay.headless.commerce.admin.pricing.dto.v1_0.DiscountAccountGroup;
+import com.liferay.headless.commerce.admin.pricing.dto.v1_0.DiscountCategory;
+import com.liferay.headless.commerce.admin.pricing.dto.v1_0.DiscountProduct;
+import com.liferay.headless.commerce.admin.pricing.dto.v1_0.DiscountRule;
+import com.liferay.headless.commerce.admin.pricing.dto.v1_0.PriceEntry;
+import com.liferay.headless.commerce.admin.pricing.dto.v1_0.PriceList;
+import com.liferay.headless.commerce.admin.pricing.dto.v1_0.PriceListAccountGroup;
+import com.liferay.headless.commerce.admin.pricing.dto.v1_0.TierPrice;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Generated;
@@ -59,18 +72,35 @@ public class OpenAPIResourceImpl {
 	public Response getOpenAPI(@PathParam("type") String type)
 		throws Exception {
 
+		if (_methodExists(long.class, Map.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_company.getCompanyId(), _resourceClasses, type, _uriInfo);
+		}
+		else if (_methodExists(Set.class, String.class, UriInfo.class)) {
+			return _openAPIResource.getOpenAPI(
+				_resourceClasses.keySet(), type, _uriInfo);
+		}
+		else {
+			return _openAPIResource.getOpenAPI(_resourceClasses.keySet(), type);
+		}
+	}
+
+	private boolean _methodExists(Class<?>... parameterClasses) {
 		try {
 			Class<? extends OpenAPIResource> clazz =
 				_openAPIResource.getClass();
 
-			clazz.getMethod(
-				"getOpenAPI", Set.class, String.class, UriInfo.class);
+			clazz.getMethod("getOpenAPI", parameterClasses);
 		}
 		catch (NoSuchMethodException noSuchMethodException) {
-			return _openAPIResource.getOpenAPI(_resourceClasses, type);
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchMethodException);
+			}
+
+			return false;
 		}
 
-		return _openAPIResource.getOpenAPI(_resourceClasses, type, _uriInfo);
+		return true;
 	}
 
 	@Reference
@@ -79,28 +109,31 @@ public class OpenAPIResourceImpl {
 	@Context
 	private UriInfo _uriInfo;
 
-	private final Set<Class<?>> _resourceClasses = new HashSet<Class<?>>() {
-		{
-			add(DiscountResourceImpl.class);
+	private final Map<Class<?>, Class<?>> _resourceClasses =
+		new HashMap<Class<?>, Class<?>>() {
+			{
+				put(
+					DiscountAccountGroupResourceImpl.class,
+					DiscountAccountGroup.class);
+				put(DiscountCategoryResourceImpl.class, DiscountCategory.class);
+				put(DiscountProductResourceImpl.class, DiscountProduct.class);
+				put(DiscountResourceImpl.class, Discount.class);
+				put(DiscountRuleResourceImpl.class, DiscountRule.class);
+				put(PriceEntryResourceImpl.class, PriceEntry.class);
+				put(
+					PriceListAccountGroupResourceImpl.class,
+					PriceListAccountGroup.class);
+				put(PriceListResourceImpl.class, PriceList.class);
+				put(TierPriceResourceImpl.class, TierPrice.class);
 
-			add(DiscountAccountGroupResourceImpl.class);
+				put(OpenAPIResourceImpl.class, null);
+			}
+		};
 
-			add(DiscountCategoryResourceImpl.class);
+	@Context
+	private Company _company;
 
-			add(DiscountProductResourceImpl.class);
-
-			add(DiscountRuleResourceImpl.class);
-
-			add(PriceEntryResourceImpl.class);
-
-			add(PriceListResourceImpl.class);
-
-			add(PriceListAccountGroupResourceImpl.class);
-
-			add(TierPriceResourceImpl.class);
-
-			add(OpenAPIResourceImpl.class);
-		}
-	};
+	private static final Log _log = LogFactoryUtil.getLog(
+		OpenAPIResourceImpl.class);
 
 }
