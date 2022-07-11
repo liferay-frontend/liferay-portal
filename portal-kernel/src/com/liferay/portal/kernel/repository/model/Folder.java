@@ -63,6 +63,10 @@ public interface Folder extends RepositoryEntry, RepositoryModel<Folder> {
 
 	public String getDescription();
 
+	public default String getExternalReferenceCode() {
+		return String.valueOf(getFolderId());
+	}
+
 	public long getFolderId();
 
 	@Override

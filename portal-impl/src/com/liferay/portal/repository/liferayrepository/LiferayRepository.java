@@ -553,6 +553,16 @@ public class LiferayRepository
 	}
 
 	@Override
+	public Folder getFolderByExternalReferenceCode(String externalReferenceCode)
+		throws PortalException {
+
+		DLFolder dlFolder = dlFolderService.getDLFolderByExternalReferenceCode(
+			getGroupId(), externalReferenceCode);
+
+		return new LiferayFolder(dlFolder);
+	}
+
+	@Override
 	public List<Folder> getFolders(
 			long parentFolderId, boolean includeMountfolders, int start,
 			int end, OrderByComparator<Folder> orderByComparator)
