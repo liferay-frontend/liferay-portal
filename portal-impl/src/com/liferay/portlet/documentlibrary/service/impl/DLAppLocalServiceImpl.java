@@ -588,6 +588,17 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 			externalReferenceCode);
 	}
 
+	@Override
+	public Folder fetchFolderByExternalReferenceCode(
+			long groupId, String externalReferenceCode)
+		throws PortalException {
+
+		LocalRepository localRepository = getLocalRepository(groupId);
+
+		return localRepository.fetchFolderByExternalReferenceCode(
+			externalReferenceCode);
+	}
+
 	/**
 	 * Returns the file entry with the primary key.
 	 *

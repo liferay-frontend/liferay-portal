@@ -284,6 +284,14 @@ public class CapabilityLocalRepository
 	}
 
 	@Override
+	public Folder fetchFolderByExternalReferenceCode(
+		String externalReferenceCode) {
+
+		return getRepository().fetchFolderByExternalReferenceCode(
+			externalReferenceCode);
+	}
+
+	@Override
 	public List<FileEntry> getFileEntries(
 			long folderId, int status, int start, int end,
 			OrderByComparator<FileEntry> orderByComparator)

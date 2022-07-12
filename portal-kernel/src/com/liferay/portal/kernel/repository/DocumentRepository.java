@@ -109,6 +109,12 @@ public interface DocumentRepository extends CapabilityProvider {
 		return null;
 	}
 
+	public default Folder fetchFolderByExternalReferenceCode(
+		String externalReferenceCode) {
+
+		return null;
+	}
+
 	public List<FileEntry> getFileEntries(
 			long folderId, int status, int start, int end,
 			OrderByComparator<FileEntry> orderByComparator)

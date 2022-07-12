@@ -179,6 +179,14 @@ public class LocalRepositoryWrapper implements LocalRepository {
 	}
 
 	@Override
+	public Folder fetchFolderByExternalReferenceCode(
+		String externalReferenceCode) {
+
+		return _localRepository.fetchFolderByExternalReferenceCode(
+			externalReferenceCode);
+	}
+
+	@Override
 	public <T extends Capability> T getCapability(Class<T> capabilityClass) {
 		return _localRepository.getCapability(capabilityClass);
 	}

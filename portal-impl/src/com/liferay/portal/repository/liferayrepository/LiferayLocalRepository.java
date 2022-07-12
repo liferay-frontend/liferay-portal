@@ -286,6 +286,21 @@ public class LiferayLocalRepository
 	}
 
 	@Override
+	public Folder fetchFolderByExternalReferenceCode(
+		String externalReferenceCode) {
+
+		DLFolder dlFolder =
+			dlFolderLocalService.fetchDLFolderByExternalReferenceCode(
+				getGroupId(), externalReferenceCode);
+
+		if (dlFolder != null) {
+			return new LiferayFolder(dlFolder);
+		}
+
+		return null;
+	}
+
+	@Override
 	public List<FileEntry> getFileEntries(
 		long folderId, int status, int start, int end,
 		OrderByComparator<FileEntry> orderByComparator) {
