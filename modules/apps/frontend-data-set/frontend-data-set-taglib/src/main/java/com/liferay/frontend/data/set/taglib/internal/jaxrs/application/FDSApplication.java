@@ -24,6 +24,9 @@ import com.liferay.frontend.data.set.taglib.internal.jaxrs.context.provider.Pagi
 import com.liferay.frontend.data.set.taglib.internal.jaxrs.context.provider.SortContextProvider;
 import com.liferay.frontend.data.set.taglib.internal.jaxrs.context.provider.ThemeDisplayContextProvider;
 import com.liferay.frontend.data.set.taglib.internal.servlet.ServletContextUtil;
+import com.liferay.frontend.view.state.model.FVSEntry;
+import com.liferay.frontend.view.state.service.FVSEntryService;
+import com.liferay.frontend.view.state.service.FVSFrontendDataSetService;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -32,6 +35,7 @@ import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Portal;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -179,6 +183,37 @@ public class FDSApplication extends Application {
 		).build();
 	}
 
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/fds/{fdsName}/custom-views")
+	@POST
+	public Response saveFDSCustomView(
+		@PathParam("fdsName") String fdsName,
+		@Context HttpServletRequest httpServletRequest, String bodyJSON) {
+
+		try {
+			JSONObject bodyJSONObject = _jsonFactory.createJSONObject(bodyJSON);
+
+			FVSEntry fvsEntry = _fvsEntryService.addFVSEntry(
+				bodyJSONObject.getString("viewState"));
+
+			_fvsFrontendDataSetService.addUserFVSFrontendDataSet(
+				fvsEntry.getFVSEntryId(), fdsName,
+				bodyJSONObject.getString("name"),
+				bodyJSONObject.getLong("plid"),
+				bodyJSONObject.getString("portletId"));
+
+			return Response.ok(
+			).build();
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+
+		return Response.status(
+			Response.Status.NOT_FOUND
+		).build();
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(FDSApplication.class);
 
 	@Reference
@@ -191,10 +226,19 @@ public class FDSApplication extends Application {
 	private FDSKeywordsFactoryRegistry _fdsKeywordsFactoryRegistry;
 
 	@Reference
+	private FVSEntryService _fvsEntryService;
+
+	@Reference
+	private FVSFrontendDataSetService _fvsFrontendDataSetService;
+
+	@Reference
 	private JSONFactory _jsonFactory;
 
 	@Reference
 	private PaginationContextProvider _paginationContextProvider;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private SortContextProvider _sortContextProvider;
