@@ -198,6 +198,9 @@ AUI.add(
 					contentBox.addClass(CSS_QUEUE);
 					contentBox.addClass(CSS_QUEUE_EMPTY);
 
+					contentBox.setStyle('display', 'flex');
+					contentBox.setStyle('justify-content', 'space-between');
+
 					instance.after('update', instance._updateList);
 
 					instance._undoItemsLeft = contentBox.one(
