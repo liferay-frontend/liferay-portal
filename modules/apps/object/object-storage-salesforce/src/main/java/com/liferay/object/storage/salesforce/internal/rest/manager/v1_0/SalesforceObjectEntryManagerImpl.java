@@ -35,6 +35,8 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -228,6 +230,13 @@ public class SalesforceObjectEntryManagerImpl
 			String objectRelationshipName, Pagination pagination)
 		throws Exception {
 
+		return null;
+	}
+
+	@Override
+	public Page<Object> getRelatedSystemObjectEntries(
+		ObjectDefinition objectDefinition, Long objectEntryId,
+		String objectRelationshipName, Pagination pagination) throws Exception {
 		return null;
 	}
 
