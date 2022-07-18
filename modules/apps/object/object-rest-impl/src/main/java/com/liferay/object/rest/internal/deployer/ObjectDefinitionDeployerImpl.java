@@ -129,6 +129,16 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 								")"
 						).put(
 							"osgi.jaxrs.resource", "true"
+						).build()),
+					_relationshipsResourceComponentFactory.newInstance(
+						HashMapDictionaryBuilder.<String, Object>put(
+							"api.version", "v1.0"
+						).put(
+							"osgi.jaxrs.application.select",
+							"(osgi.jaxrs.name=" + objectDefinition.getName() +
+								")"
+						).put(
+							"osgi.jaxrs.resource", "true"
 						).build())));
 
 			Collections.addAll(
@@ -363,5 +373,10 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference(
+		target = "(component.factory=com.liferay.object.rest.extension.CustomObjectRelationshipsResource)"
+	)
+	private ComponentFactory _relationshipsResourceComponentFactory;
 
 }
