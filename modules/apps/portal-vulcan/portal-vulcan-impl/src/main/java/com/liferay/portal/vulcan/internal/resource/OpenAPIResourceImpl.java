@@ -274,7 +274,7 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 		Class<?> clazz, long companyId,
 		ExtensionProviderRegistry extensionProviderRegistry) {
 
-		List<PropertyDefinition> propertyDefinitions = new ArrayList<>();
+		List<PropertyDefinition> propertyDefinitions = null;
 
 		String className = clazz.getName();
 
@@ -287,7 +287,8 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 				entityExtensionHandler.getExtendedPropertyDefinitions(
 					companyId, className);
 
-			propertyDefinitions.addAll(extendedPropertyDefinitions.values());
+			propertyDefinitions = new ArrayList<>(
+				extendedPropertyDefinitions.values());
 		}
 
 		return propertyDefinitions;
@@ -326,7 +327,7 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 		String basePath, Set<Class<?>> classes, long companyId,
 		ExtensionProviderRegistry extensionProviderRegistry) {
 
-		Map<Class<?>, List<PropertyDefinition>> propertyDefinitions =
+		Map<Class<?>, List<PropertyDefinition>> propertyDefinitionMap =
 			new HashMap<>();
 		OpenAPISchemaFilter openAPISchemaFilter = null;
 
@@ -335,15 +336,18 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 				continue;
 			}
 
-			propertyDefinitions.put(
-				clazz,
+			List<PropertyDefinition> propertyDefinitions =
 				_getExtendedPropertyDefinitions(
-					clazz, companyId, extensionProviderRegistry));
+					clazz, companyId, extensionProviderRegistry);
+
+			if (ListUtil.isNotEmpty(propertyDefinitions)) {
+				propertyDefinitionMap.put(clazz, propertyDefinitions);
+			}
 		}
 
-		if (MapUtil.isNotEmpty(propertyDefinitions)) {
+		if (MapUtil.isNotEmpty(propertyDefinitionMap)) {
 			openAPISchemaFilter = _getOpenAPISchemaFilter(
-				basePath, propertyDefinitions);
+				basePath, propertyDefinitionMap);
 		}
 
 		return openAPISchemaFilter;
