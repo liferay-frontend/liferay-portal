@@ -176,7 +176,7 @@ definition {
 		return "${response}";
 	}
 
-	macro getIdOfCreateStructuredContentFolder {
+	macro getIdOfCreatedStructuredContentFolder {
 		var folderId = JSONUtil.getWithJSONPath("${responseToParse}", "$.id");
 
 		return "${folderId}";
