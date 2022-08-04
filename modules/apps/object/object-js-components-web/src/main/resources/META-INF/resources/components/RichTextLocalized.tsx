@@ -17,10 +17,7 @@ import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
-
-// @ts-ignore
-
-import {ClassicEditor} from 'frontend-editor-ckeditor-web';
+import {ClassicEditor, IEditor} from 'frontend-editor-ckeditor-web';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {FieldBase} from './FieldBase';
@@ -170,13 +167,6 @@ export function RichTextLocalized({
 			</div>
 		</FieldBase>
 	);
-}
-
-interface IEditor {
-	editor: {
-		config: {contentsLangDirection: unknown; contentsLanguage: unknown};
-		setData: (data: unknown) => void;
-	};
 }
 interface IItem {
 	label: Locale;
