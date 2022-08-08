@@ -1,64 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
 
-<service-builder auto-import-default-references="false" auto-namespace-tables="false" dependency-injector="ds" mvcc-enabled="true" package-path="com.liferay.frontend.view.state">
+<service-builder auto-import-default-references="false" auto-namespace-tables="false" dependency-injector="ds" mvcc-enabled="true" package-path="com.liferay.frontend.view.state" short-no-such-exception-enabled="false">
 	<namespace>FVS</namespace>
-	<entity local-service="true" name="FVSActiveEntry" remote-service="false" trash-enabled="false" uuid="true">
+	<entity local-service="true" name="FVSEntry" remote-service="true" trash-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
-		<column container-model="true" name="fvsActiveEntryId" primary="true" type="long" />
-
-		<!-- Audit fields -->
-
-		<column name="companyId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="fvsEntryId" type="long" />
-		<column name="clayDataSetDisplayId" type="String" />
-		<column name="plid" type="long" />
-		<column name="portletId" type="String" />
-
-		<!-- Order -->
-
-		<!-- Finder methods -->
-
-		<finder name="U_CDSDI_P_P" return-type="FVSActiveEntry" unique="true">
-			<finder-column name="userId" />
-			<finder-column name="clayDataSetDisplayId" />
-			<finder-column name="plid" />
-			<finder-column name="portletId" />
-		</finder>
-	</entity>
-	<entity local-service="true" name="FVSCustomEntry" remote-service="false" trash-enabled="false" uuid="true">
-
-		<!-- PK fields -->
-
-		<column container-model="true" name="fvsCustomEntryId" primary="true" type="long" />
-
-		<!-- Audit fields -->
-
-		<column name="companyId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="fvsEntryId" type="long" />
-		<column name="name" type="String" />
-	</entity>
-	<entity local-service="true" name="FVSEntry" remote-service="false" trash-enabled="false" uuid="true">
-
-		<!-- PK fields -->
-
-		<column container-model="true" name="fvsEntryId" primary="true" type="long" />
+		<column container-model="true" method-name="FVSEntryId" name="fvsEntryId" primary="true" type="long" />
 
 		<!-- Audit fields -->
 
@@ -71,6 +20,45 @@
 		<!-- Other fields -->
 
 		<column name="viewState" type="String" />
+	</entity>
+	<entity local-service="true" name="FVSFrontendDataSet" remote-service="true" trash-enabled="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column container-model="true" method-name="FVSFrontendDataSetId" name="fvsFrontendDataSetId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column method-name="FVSEntryId" name="fvsEntryId" type="long" />
+		<column method-name="FDSName" name="fdsName" type="String" />
+		<column name="name" type="String" />
+		<column name="plid" type="long" />
+		<column name="portletId" type="String" />
+		<column name="system" type="boolean" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<finder name="F_S" return-type="Collection">
+			<finder-column name="fdsName" />
+			<finder-column name="system" />
+		</finder>
+		<finder name="U_F_P_P_S" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="fdsName" />
+			<finder-column name="plid" />
+			<finder-column name="portletId" />
+			<finder-column name="system" />
+		</finder>
 	</entity>
 	<exceptions>
 	</exceptions>
