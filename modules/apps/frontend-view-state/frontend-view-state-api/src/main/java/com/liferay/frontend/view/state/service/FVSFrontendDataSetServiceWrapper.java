@@ -37,6 +37,17 @@ public class FVSFrontendDataSetServiceWrapper
 		_fvsFrontendDataSetService = fvsFrontendDataSetService;
 	}
 
+	@Override
+	public com.liferay.frontend.view.state.model.FVSFrontendDataSet
+			addUserFVSFrontendDataSet(
+				long fvsEntryId, String fdsName, String name, long plid,
+				String portletId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fvsFrontendDataSetService.addUserFVSFrontendDataSet(
+			fvsEntryId, fdsName, name, plid, portletId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

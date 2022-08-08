@@ -34,6 +34,14 @@ public class FVSEntryServiceWrapper
 		_fvsEntryService = fvsEntryService;
 	}
 
+	@Override
+	public com.liferay.frontend.view.state.model.FVSEntry addFVSEntry(
+			String viewState)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fvsEntryService.addFVSEntry(viewState);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

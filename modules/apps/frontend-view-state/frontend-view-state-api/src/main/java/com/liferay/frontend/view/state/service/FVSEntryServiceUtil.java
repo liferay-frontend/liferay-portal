@@ -14,6 +14,9 @@
 
 package com.liferay.frontend.view.state.service;
 
+import com.liferay.frontend.view.state.model.FVSEntry;
+import com.liferay.portal.kernel.exception.PortalException;
+
 /**
  * Provides the remote service utility for FVSEntry. This utility wraps
  * <code>com.liferay.frontend.view.state.service.impl.FVSEntryServiceImpl</code> and is an
@@ -33,13 +36,18 @@ public class FVSEntryServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.frontend.view.state.service.impl.FVSEntryServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static FVSEntry addFVSEntry(String viewState)
+		throws PortalException {
+
+		return getService().addFVSEntry(viewState);
+	}
 
 	/**
 	 * Returns the OSGi service identifier.
 	 *
 	 * @return the OSGi service identifier
 	 */
-	public static java.lang.String getOSGiServiceIdentifier() {
+	public static String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
 	}
 

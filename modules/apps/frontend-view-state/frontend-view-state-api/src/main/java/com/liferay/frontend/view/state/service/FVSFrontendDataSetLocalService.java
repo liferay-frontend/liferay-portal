@@ -78,6 +78,20 @@ public interface FVSFrontendDataSetLocalService
 	public FVSFrontendDataSet addFVSFrontendDataSet(
 		FVSFrontendDataSet fvsFrontendDataSet);
 
+	public FVSFrontendDataSet addFVSFrontendDataSet(
+			long userId, long fvsEntryId, String fdsName, String name,
+			long plid, String portletId, boolean system)
+		throws PortalException;
+
+	public FVSFrontendDataSet addSystemFVSFrontendDataSet(
+			long userId, long fvsEntryId, String fdsName, String name)
+		throws PortalException;
+
+	public FVSFrontendDataSet addUserFVSFrontendDataSet(
+			long userId, long fvsEntryId, String fdsName, String name,
+			long plid, String portletId)
+		throws PortalException;
+
 	/**
 	 * Creates a new fvs frontend data set with the primary key. Does not add the fvs frontend data set to the database.
 	 *
@@ -288,6 +302,14 @@ public interface FVSFrontendDataSetLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<FVSFrontendDataSet> getSystemFVSFrontendDataSets(
+		String fdsName);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<FVSFrontendDataSet> getUserFVSFrontendDataSets(
+		String fdsName, long plid, String portletId, long userId);
 
 	/**
 	 * Updates the fvs frontend data set in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

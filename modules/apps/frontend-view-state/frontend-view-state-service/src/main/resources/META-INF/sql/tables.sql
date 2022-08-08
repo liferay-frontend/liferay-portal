@@ -48,9 +48,9 @@ create table FVSFrontendDataSet (
 	createDate DATE null,
 	modifiedDate DATE null,
 	fvsEntryId LONG,
-	fdsName VARCHAR(75) null,
-	name VARCHAR(75) null,
+	fdsName VARCHAR(200) null,
+	name VARCHAR(200) null,
 	plid LONG,
-	portletId VARCHAR(75) null,
+	portletId VARCHAR(200) null,
 	system_ BOOLEAN
 );

@@ -14,6 +14,7 @@
 
 package com.liferay.frontend.view.state.service;
 
+import com.liferay.frontend.view.state.model.FVSEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
@@ -47,6 +48,7 @@ public interface FVSEntryService extends BaseService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.frontend.view.state.service.impl.FVSEntryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the fvs entry remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link FVSEntryServiceUtil} if injection and service tracking are not available.
 	 */
+	public FVSEntry addFVSEntry(String viewState) throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.

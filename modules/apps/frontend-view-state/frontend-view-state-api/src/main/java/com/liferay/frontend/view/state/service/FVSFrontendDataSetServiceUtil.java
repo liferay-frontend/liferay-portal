@@ -14,6 +14,9 @@
 
 package com.liferay.frontend.view.state.service;
 
+import com.liferay.frontend.view.state.model.FVSFrontendDataSet;
+import com.liferay.portal.kernel.exception.PortalException;
+
 /**
  * Provides the remote service utility for FVSFrontendDataSet. This utility wraps
  * <code>com.liferay.frontend.view.state.service.impl.FVSFrontendDataSetServiceImpl</code> and is an
@@ -33,13 +36,21 @@ public class FVSFrontendDataSetServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.frontend.view.state.service.impl.FVSFrontendDataSetServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static FVSFrontendDataSet addUserFVSFrontendDataSet(
+			long fvsEntryId, String fdsName, String name, long plid,
+			String portletId)
+		throws PortalException {
+
+		return getService().addUserFVSFrontendDataSet(
+			fvsEntryId, fdsName, name, plid, portletId);
+	}
 
 	/**
 	 * Returns the OSGi service identifier.
 	 *
 	 * @return the OSGi service identifier
 	 */
-	public static java.lang.String getOSGiServiceIdentifier() {
+	public static String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
 	}
 

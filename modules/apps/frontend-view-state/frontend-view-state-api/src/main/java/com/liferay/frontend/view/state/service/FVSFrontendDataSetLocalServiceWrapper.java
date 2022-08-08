@@ -57,6 +57,38 @@ public class FVSFrontendDataSetLocalServiceWrapper
 			fvsFrontendDataSet);
 	}
 
+	@Override
+	public com.liferay.frontend.view.state.model.FVSFrontendDataSet
+			addFVSFrontendDataSet(
+				long userId, long fvsEntryId, String fdsName, String name,
+				long plid, String portletId, boolean system)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fvsFrontendDataSetLocalService.addFVSFrontendDataSet(
+			userId, fvsEntryId, fdsName, name, plid, portletId, system);
+	}
+
+	@Override
+	public com.liferay.frontend.view.state.model.FVSFrontendDataSet
+			addSystemFVSFrontendDataSet(
+				long userId, long fvsEntryId, String fdsName, String name)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fvsFrontendDataSetLocalService.addSystemFVSFrontendDataSet(
+			userId, fvsEntryId, fdsName, name);
+	}
+
+	@Override
+	public com.liferay.frontend.view.state.model.FVSFrontendDataSet
+			addUserFVSFrontendDataSet(
+				long userId, long fvsEntryId, String fdsName, String name,
+				long plid, String portletId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fvsFrontendDataSetLocalService.addUserFVSFrontendDataSet(
+			userId, fvsEntryId, fdsName, name, plid, portletId);
+	}
+
 	/**
 	 * Creates a new fvs frontend data set with the primary key. Does not add the fvs frontend data set to the database.
 	 *
@@ -368,6 +400,25 @@ public class FVSFrontendDataSetLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fvsFrontendDataSetLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.frontend.view.state.model.FVSFrontendDataSet>
+			getSystemFVSFrontendDataSets(String fdsName) {
+
+		return _fvsFrontendDataSetLocalService.getSystemFVSFrontendDataSets(
+			fdsName);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.frontend.view.state.model.FVSFrontendDataSet>
+			getUserFVSFrontendDataSets(
+				String fdsName, long plid, String portletId, long userId) {
+
+		return _fvsFrontendDataSetLocalService.getUserFVSFrontendDataSets(
+			fdsName, plid, portletId, userId);
 	}
 
 	/**

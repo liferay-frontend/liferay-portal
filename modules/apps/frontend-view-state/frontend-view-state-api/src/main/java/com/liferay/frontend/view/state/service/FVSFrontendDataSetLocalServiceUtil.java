@@ -61,6 +61,32 @@ public class FVSFrontendDataSetLocalServiceUtil {
 		return getService().addFVSFrontendDataSet(fvsFrontendDataSet);
 	}
 
+	public static FVSFrontendDataSet addFVSFrontendDataSet(
+			long userId, long fvsEntryId, String fdsName, String name,
+			long plid, String portletId, boolean system)
+		throws PortalException {
+
+		return getService().addFVSFrontendDataSet(
+			userId, fvsEntryId, fdsName, name, plid, portletId, system);
+	}
+
+	public static FVSFrontendDataSet addSystemFVSFrontendDataSet(
+			long userId, long fvsEntryId, String fdsName, String name)
+		throws PortalException {
+
+		return getService().addSystemFVSFrontendDataSet(
+			userId, fvsEntryId, fdsName, name);
+	}
+
+	public static FVSFrontendDataSet addUserFVSFrontendDataSet(
+			long userId, long fvsEntryId, String fdsName, String name,
+			long plid, String portletId)
+		throws PortalException {
+
+		return getService().addUserFVSFrontendDataSet(
+			userId, fvsEntryId, fdsName, name, plid, portletId);
+	}
+
 	/**
 	 * Creates a new fvs frontend data set with the primary key. Does not add the fvs frontend data set to the database.
 	 *
@@ -325,6 +351,19 @@ public class FVSFrontendDataSetLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
+	}
+
+	public static List<FVSFrontendDataSet> getSystemFVSFrontendDataSets(
+		String fdsName) {
+
+		return getService().getSystemFVSFrontendDataSets(fdsName);
+	}
+
+	public static List<FVSFrontendDataSet> getUserFVSFrontendDataSets(
+		String fdsName, long plid, String portletId, long userId) {
+
+		return getService().getUserFVSFrontendDataSets(
+			fdsName, plid, portletId, userId);
 	}
 
 	/**

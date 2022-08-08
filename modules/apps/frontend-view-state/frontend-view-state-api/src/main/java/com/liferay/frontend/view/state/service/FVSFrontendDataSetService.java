@@ -14,6 +14,7 @@
 
 package com.liferay.frontend.view.state.service;
 
+import com.liferay.frontend.view.state.model.FVSFrontendDataSet;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
@@ -47,6 +48,10 @@ public interface FVSFrontendDataSetService extends BaseService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.frontend.view.state.service.impl.FVSFrontendDataSetServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the fvs frontend data set remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link FVSFrontendDataSetServiceUtil} if injection and service tracking are not available.
 	 */
+	public FVSFrontendDataSet addUserFVSFrontendDataSet(
+			long fvsEntryId, String fdsName, String name, long plid,
+			String portletId)
+		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
