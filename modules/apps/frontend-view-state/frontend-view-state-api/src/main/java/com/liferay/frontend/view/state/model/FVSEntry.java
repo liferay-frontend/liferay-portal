@@ -43,7 +43,7 @@ public interface FVSEntry extends FVSEntryModel, PersistedModel {
 
 			@Override
 			public Long get(FVSEntry fvsEntry) {
-				return fvsEntry.getFvsEntryId();
+				return fvsEntry.getFVSEntryId();
 			}
 
 			@Override

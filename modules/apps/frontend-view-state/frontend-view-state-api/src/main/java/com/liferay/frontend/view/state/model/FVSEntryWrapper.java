@@ -45,7 +45,7 @@ public class FVSEntryWrapper
 
 		attributes.put("mvccVersion", getMvccVersion());
 		attributes.put("uuid", getUuid());
-		attributes.put("fvsEntryId", getFvsEntryId());
+		attributes.put("fvsEntryId", getFVSEntryId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -73,7 +73,7 @@ public class FVSEntryWrapper
 		Long fvsEntryId = (Long)attributes.get("fvsEntryId");
 
 		if (fvsEntryId != null) {
-			setFvsEntryId(fvsEntryId);
+			setFVSEntryId(fvsEntryId);
 		}
 
 		Long companyId = (Long)attributes.get("companyId");
@@ -164,8 +164,8 @@ public class FVSEntryWrapper
 	 * @return the fvs entry ID of this fvs entry
 	 */
 	@Override
-	public long getFvsEntryId() {
-		return model.getFvsEntryId();
+	public long getFVSEntryId() {
+		return model.getFVSEntryId();
 	}
 
 	/**
@@ -299,8 +299,8 @@ public class FVSEntryWrapper
 	 * @param fvsEntryId the fvs entry ID of this fvs entry
 	 */
 	@Override
-	public void setFvsEntryId(long fvsEntryId) {
-		model.setFvsEntryId(fvsEntryId);
+	public void setFVSEntryId(long fvsEntryId) {
+		model.setFVSEntryId(fvsEntryId);
 	}
 
 	/**

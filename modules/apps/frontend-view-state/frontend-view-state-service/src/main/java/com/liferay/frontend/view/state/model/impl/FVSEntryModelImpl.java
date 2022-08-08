@@ -22,6 +22,7 @@ import com.liferay.frontend.view.state.model.FVSEntryModel;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.User;
@@ -60,6 +61,7 @@ import java.util.function.Function;
  * @see FVSEntryImpl
  * @generated
  */
+@JSON(strict = true)
 public class FVSEntryModelImpl
 	extends BaseModelImpl<FVSEntry> implements FVSEntryModel {
 
@@ -153,7 +155,7 @@ public class FVSEntryModelImpl
 
 	@Override
 	public void setPrimaryKey(long primaryKey) {
-		setFvsEntryId(primaryKey);
+		setFVSEntryId(primaryKey);
 	}
 
 	@Override
@@ -245,9 +247,9 @@ public class FVSEntryModelImpl
 		attributeGetterFunctions.put("uuid", FVSEntry::getUuid);
 		attributeSetterBiConsumers.put(
 			"uuid", (BiConsumer<FVSEntry, String>)FVSEntry::setUuid);
-		attributeGetterFunctions.put("fvsEntryId", FVSEntry::getFvsEntryId);
+		attributeGetterFunctions.put("fvsEntryId", FVSEntry::getFVSEntryId);
 		attributeSetterBiConsumers.put(
-			"fvsEntryId", (BiConsumer<FVSEntry, Long>)FVSEntry::setFvsEntryId);
+			"fvsEntryId", (BiConsumer<FVSEntry, Long>)FVSEntry::setFVSEntryId);
 		attributeGetterFunctions.put("companyId", FVSEntry::getCompanyId);
 		attributeSetterBiConsumers.put(
 			"companyId", (BiConsumer<FVSEntry, Long>)FVSEntry::setCompanyId);
@@ -274,6 +276,7 @@ public class FVSEntryModelImpl
 			(Map)attributeSetterBiConsumers);
 	}
 
+	@JSON
 	@Override
 	public long getMvccVersion() {
 		return _mvccVersion;
@@ -288,6 +291,7 @@ public class FVSEntryModelImpl
 		_mvccVersion = mvccVersion;
 	}
 
+	@JSON
 	@Override
 	public String getUuid() {
 		if (_uuid == null) {
@@ -316,13 +320,14 @@ public class FVSEntryModelImpl
 		return getColumnOriginalValue("uuid_");
 	}
 
+	@JSON
 	@Override
-	public long getFvsEntryId() {
+	public long getFVSEntryId() {
 		return _fvsEntryId;
 	}
 
 	@Override
-	public void setFvsEntryId(long fvsEntryId) {
+	public void setFVSEntryId(long fvsEntryId) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
@@ -330,6 +335,7 @@ public class FVSEntryModelImpl
 		_fvsEntryId = fvsEntryId;
 	}
 
+	@JSON
 	@Override
 	public long getCompanyId() {
 		return _companyId;
@@ -354,6 +360,7 @@ public class FVSEntryModelImpl
 			this.<Long>getColumnOriginalValue("companyId"));
 	}
 
+	@JSON
 	@Override
 	public long getUserId() {
 		return _userId;
@@ -384,6 +391,7 @@ public class FVSEntryModelImpl
 	public void setUserUuid(String userUuid) {
 	}
 
+	@JSON
 	@Override
 	public String getUserName() {
 		if (_userName == null) {
@@ -403,6 +411,7 @@ public class FVSEntryModelImpl
 		_userName = userName;
 	}
 
+	@JSON
 	@Override
 	public Date getCreateDate() {
 		return _createDate;
@@ -417,6 +426,7 @@ public class FVSEntryModelImpl
 		_createDate = createDate;
 	}
 
+	@JSON
 	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
@@ -437,6 +447,7 @@ public class FVSEntryModelImpl
 		_modifiedDate = modifiedDate;
 	}
 
+	@JSON
 	@Override
 	public String getViewState() {
 		if (_viewState == null) {
@@ -458,7 +469,7 @@ public class FVSEntryModelImpl
 
 	@Override
 	public long getContainerModelId() {
-		return getFvsEntryId();
+		return getFVSEntryId();
 	}
 
 	@Override
@@ -544,7 +555,7 @@ public class FVSEntryModelImpl
 
 		fvsEntryImpl.setMvccVersion(getMvccVersion());
 		fvsEntryImpl.setUuid(getUuid());
-		fvsEntryImpl.setFvsEntryId(getFvsEntryId());
+		fvsEntryImpl.setFVSEntryId(getFVSEntryId());
 		fvsEntryImpl.setCompanyId(getCompanyId());
 		fvsEntryImpl.setUserId(getUserId());
 		fvsEntryImpl.setUserName(getUserName());
@@ -564,7 +575,7 @@ public class FVSEntryModelImpl
 		fvsEntryImpl.setMvccVersion(
 			this.<Long>getColumnOriginalValue("mvccVersion"));
 		fvsEntryImpl.setUuid(this.<String>getColumnOriginalValue("uuid_"));
-		fvsEntryImpl.setFvsEntryId(
+		fvsEntryImpl.setFVSEntryId(
 			this.<Long>getColumnOriginalValue("fvsEntryId"));
 		fvsEntryImpl.setCompanyId(
 			this.<Long>getColumnOriginalValue("companyId"));
@@ -664,7 +675,7 @@ public class FVSEntryModelImpl
 			fvsEntryCacheModel.uuid = null;
 		}
 
-		fvsEntryCacheModel.fvsEntryId = getFvsEntryId();
+		fvsEntryCacheModel.fvsEntryId = getFVSEntryId();
 
 		fvsEntryCacheModel.companyId = getCompanyId();
 

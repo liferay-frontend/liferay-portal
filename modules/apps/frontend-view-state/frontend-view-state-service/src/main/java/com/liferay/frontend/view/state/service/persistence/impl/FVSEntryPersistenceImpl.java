@@ -14,7 +14,7 @@
 
 package com.liferay.frontend.view.state.service.persistence.impl;
 
-import com.liferay.frontend.view.state.exception.NoSuchEntryException;
+import com.liferay.frontend.view.state.exception.NoSuchFVSEntryException;
 import com.liferay.frontend.view.state.model.FVSEntry;
 import com.liferay.frontend.view.state.model.FVSEntryTable;
 import com.liferay.frontend.view.state.model.impl.FVSEntryImpl;
@@ -278,12 +278,12 @@ public class FVSEntryPersistenceImpl
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	@Override
 	public FVSEntry findByUuid_First(
 			String uuid, OrderByComparator<FVSEntry> orderByComparator)
-		throws NoSuchEntryException {
+		throws NoSuchFVSEntryException {
 
 		FVSEntry fvsEntry = fetchByUuid_First(uuid, orderByComparator);
 
@@ -300,7 +300,7 @@ public class FVSEntryPersistenceImpl
 
 		sb.append("}");
 
-		throw new NoSuchEntryException(sb.toString());
+		throw new NoSuchFVSEntryException(sb.toString());
 	}
 
 	/**
@@ -329,12 +329,12 @@ public class FVSEntryPersistenceImpl
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	@Override
 	public FVSEntry findByUuid_Last(
 			String uuid, OrderByComparator<FVSEntry> orderByComparator)
-		throws NoSuchEntryException {
+		throws NoSuchFVSEntryException {
 
 		FVSEntry fvsEntry = fetchByUuid_Last(uuid, orderByComparator);
 
@@ -351,7 +351,7 @@ public class FVSEntryPersistenceImpl
 
 		sb.append("}");
 
-		throw new NoSuchEntryException(sb.toString());
+		throw new NoSuchFVSEntryException(sb.toString());
 	}
 
 	/**
@@ -388,13 +388,13 @@ public class FVSEntryPersistenceImpl
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next fvs entry
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	@Override
 	public FVSEntry[] findByUuid_PrevAndNext(
 			long fvsEntryId, String uuid,
 			OrderByComparator<FVSEntry> orderByComparator)
-		throws NoSuchEntryException {
+		throws NoSuchFVSEntryException {
 
 		uuid = Objects.toString(uuid, "");
 
@@ -823,13 +823,13 @@ public class FVSEntryPersistenceImpl
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	@Override
 	public FVSEntry findByUuid_C_First(
 			String uuid, long companyId,
 			OrderByComparator<FVSEntry> orderByComparator)
-		throws NoSuchEntryException {
+		throws NoSuchFVSEntryException {
 
 		FVSEntry fvsEntry = fetchByUuid_C_First(
 			uuid, companyId, orderByComparator);
@@ -850,7 +850,7 @@ public class FVSEntryPersistenceImpl
 
 		sb.append("}");
 
-		throw new NoSuchEntryException(sb.toString());
+		throw new NoSuchFVSEntryException(sb.toString());
 	}
 
 	/**
@@ -883,13 +883,13 @@ public class FVSEntryPersistenceImpl
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	@Override
 	public FVSEntry findByUuid_C_Last(
 			String uuid, long companyId,
 			OrderByComparator<FVSEntry> orderByComparator)
-		throws NoSuchEntryException {
+		throws NoSuchFVSEntryException {
 
 		FVSEntry fvsEntry = fetchByUuid_C_Last(
 			uuid, companyId, orderByComparator);
@@ -910,7 +910,7 @@ public class FVSEntryPersistenceImpl
 
 		sb.append("}");
 
-		throw new NoSuchEntryException(sb.toString());
+		throw new NoSuchFVSEntryException(sb.toString());
 	}
 
 	/**
@@ -950,13 +950,13 @@ public class FVSEntryPersistenceImpl
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next fvs entry
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	@Override
 	public FVSEntry[] findByUuid_C_PrevAndNext(
 			long fvsEntryId, String uuid, long companyId,
 			OrderByComparator<FVSEntry> orderByComparator)
-		throws NoSuchEntryException {
+		throws NoSuchFVSEntryException {
 
 		uuid = Objects.toString(uuid, "");
 
@@ -1323,10 +1323,10 @@ public class FVSEntryPersistenceImpl
 	 *
 	 * @param fvsEntryId the primary key of the fvs entry
 	 * @return the fvs entry that was removed
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	@Override
-	public FVSEntry remove(long fvsEntryId) throws NoSuchEntryException {
+	public FVSEntry remove(long fvsEntryId) throws NoSuchFVSEntryException {
 		return remove((Serializable)fvsEntryId);
 	}
 
@@ -1335,11 +1335,11 @@ public class FVSEntryPersistenceImpl
 	 *
 	 * @param primaryKey the primary key of the fvs entry
 	 * @return the fvs entry that was removed
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	@Override
 	public FVSEntry remove(Serializable primaryKey)
-		throws NoSuchEntryException {
+		throws NoSuchFVSEntryException {
 
 		Session session = null;
 
@@ -1354,13 +1354,13 @@ public class FVSEntryPersistenceImpl
 					_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 				}
 
-				throw new NoSuchEntryException(
+				throw new NoSuchFVSEntryException(
 					_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
 			return remove(fvsEntry);
 		}
-		catch (NoSuchEntryException noSuchEntityException) {
+		catch (NoSuchFVSEntryException noSuchEntityException) {
 			throw noSuchEntityException;
 		}
 		catch (Exception exception) {
@@ -1488,11 +1488,11 @@ public class FVSEntryPersistenceImpl
 	 *
 	 * @param primaryKey the primary key of the fvs entry
 	 * @return the fvs entry
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	@Override
 	public FVSEntry findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchEntryException {
+		throws NoSuchFVSEntryException {
 
 		FVSEntry fvsEntry = fetchByPrimaryKey(primaryKey);
 
@@ -1501,7 +1501,7 @@ public class FVSEntryPersistenceImpl
 				_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
-			throw new NoSuchEntryException(
+			throw new NoSuchFVSEntryException(
 				_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 		}
 
@@ -1509,15 +1509,15 @@ public class FVSEntryPersistenceImpl
 	}
 
 	/**
-	 * Returns the fvs entry with the primary key or throws a <code>NoSuchEntryException</code> if it could not be found.
+	 * Returns the fvs entry with the primary key or throws a <code>NoSuchFVSEntryException</code> if it could not be found.
 	 *
 	 * @param fvsEntryId the primary key of the fvs entry
 	 * @return the fvs entry
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	@Override
 	public FVSEntry findByPrimaryKey(long fvsEntryId)
-		throws NoSuchEntryException {
+		throws NoSuchFVSEntryException {
 
 		return findByPrimaryKey((Serializable)fvsEntryId);
 	}

@@ -99,14 +99,14 @@ public interface FVSEntryModel
 	 *
 	 * @return the fvs entry ID of this fvs entry
 	 */
-	public long getFvsEntryId();
+	public long getFVSEntryId();
 
 	/**
 	 * Sets the fvs entry ID of this fvs entry.
 	 *
 	 * @param fvsEntryId the fvs entry ID of this fvs entry
 	 */
-	public void setFvsEntryId(long fvsEntryId);
+	public void setFVSEntryId(long fvsEntryId);
 
 	/**
 	 * Returns the company ID of this fvs entry.

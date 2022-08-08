@@ -114,7 +114,7 @@ public class FVSEntryCacheModel
 			fvsEntryImpl.setUuid(uuid);
 		}
 
-		fvsEntryImpl.setFvsEntryId(fvsEntryId);
+		fvsEntryImpl.setFVSEntryId(fvsEntryId);
 		fvsEntryImpl.setCompanyId(companyId);
 		fvsEntryImpl.setUserId(userId);
 

@@ -14,7 +14,7 @@
 
 package com.liferay.frontend.view.state.service.persistence;
 
-import com.liferay.frontend.view.state.exception.NoSuchEntryException;
+import com.liferay.frontend.view.state.exception.NoSuchFVSEntryException;
 import com.liferay.frontend.view.state.model.FVSEntry;
 import com.liferay.portal.kernel.service.persistence.BasePersistence;
 
@@ -106,13 +106,13 @@ public interface FVSEntryPersistence extends BasePersistence<FVSEntry> {
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	public FVSEntry findByUuid_First(
 			String uuid,
 			com.liferay.portal.kernel.util.OrderByComparator<FVSEntry>
 				orderByComparator)
-		throws NoSuchEntryException;
+		throws NoSuchFVSEntryException;
 
 	/**
 	 * Returns the first fvs entry in the ordered set where uuid = &#63;.
@@ -132,13 +132,13 @@ public interface FVSEntryPersistence extends BasePersistence<FVSEntry> {
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	public FVSEntry findByUuid_Last(
 			String uuid,
 			com.liferay.portal.kernel.util.OrderByComparator<FVSEntry>
 				orderByComparator)
-		throws NoSuchEntryException;
+		throws NoSuchFVSEntryException;
 
 	/**
 	 * Returns the last fvs entry in the ordered set where uuid = &#63;.
@@ -159,13 +159,13 @@ public interface FVSEntryPersistence extends BasePersistence<FVSEntry> {
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next fvs entry
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	public FVSEntry[] findByUuid_PrevAndNext(
 			long fvsEntryId, String uuid,
 			com.liferay.portal.kernel.util.OrderByComparator<FVSEntry>
 				orderByComparator)
-		throws NoSuchEntryException;
+		throws NoSuchFVSEntryException;
 
 	/**
 	 * Removes all the fvs entries where uuid = &#63; from the database.
@@ -254,13 +254,13 @@ public interface FVSEntryPersistence extends BasePersistence<FVSEntry> {
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	public FVSEntry findByUuid_C_First(
 			String uuid, long companyId,
 			com.liferay.portal.kernel.util.OrderByComparator<FVSEntry>
 				orderByComparator)
-		throws NoSuchEntryException;
+		throws NoSuchFVSEntryException;
 
 	/**
 	 * Returns the first fvs entry in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -282,13 +282,13 @@ public interface FVSEntryPersistence extends BasePersistence<FVSEntry> {
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	public FVSEntry findByUuid_C_Last(
 			String uuid, long companyId,
 			com.liferay.portal.kernel.util.OrderByComparator<FVSEntry>
 				orderByComparator)
-		throws NoSuchEntryException;
+		throws NoSuchFVSEntryException;
 
 	/**
 	 * Returns the last fvs entry in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -311,13 +311,13 @@ public interface FVSEntryPersistence extends BasePersistence<FVSEntry> {
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next fvs entry
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	public FVSEntry[] findByUuid_C_PrevAndNext(
 			long fvsEntryId, String uuid, long companyId,
 			com.liferay.portal.kernel.util.OrderByComparator<FVSEntry>
 				orderByComparator)
-		throws NoSuchEntryException;
+		throws NoSuchFVSEntryException;
 
 	/**
 	 * Removes all the fvs entries where uuid = &#63; and companyId = &#63; from the database.
@@ -363,21 +363,21 @@ public interface FVSEntryPersistence extends BasePersistence<FVSEntry> {
 	 *
 	 * @param fvsEntryId the primary key of the fvs entry
 	 * @return the fvs entry that was removed
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
-	public FVSEntry remove(long fvsEntryId) throws NoSuchEntryException;
+	public FVSEntry remove(long fvsEntryId) throws NoSuchFVSEntryException;
 
 	public FVSEntry updateImpl(FVSEntry fvsEntry);
 
 	/**
-	 * Returns the fvs entry with the primary key or throws a <code>NoSuchEntryException</code> if it could not be found.
+	 * Returns the fvs entry with the primary key or throws a <code>NoSuchFVSEntryException</code> if it could not be found.
 	 *
 	 * @param fvsEntryId the primary key of the fvs entry
 	 * @return the fvs entry
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	public FVSEntry findByPrimaryKey(long fvsEntryId)
-		throws NoSuchEntryException;
+		throws NoSuchFVSEntryException;
 
 	/**
 	 * Returns the fvs entry with the primary key or returns <code>null</code> if it could not be found.

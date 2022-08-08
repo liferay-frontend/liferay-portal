@@ -193,11 +193,12 @@ public class FVSEntryUtil {
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	public static FVSEntry findByUuid_First(
 			String uuid, OrderByComparator<FVSEntry> orderByComparator)
-		throws com.liferay.frontend.view.state.exception.NoSuchEntryException {
+		throws com.liferay.frontend.view.state.exception.
+			NoSuchFVSEntryException {
 
 		return getPersistence().findByUuid_First(uuid, orderByComparator);
 	}
@@ -221,11 +222,12 @@ public class FVSEntryUtil {
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	public static FVSEntry findByUuid_Last(
 			String uuid, OrderByComparator<FVSEntry> orderByComparator)
-		throws com.liferay.frontend.view.state.exception.NoSuchEntryException {
+		throws com.liferay.frontend.view.state.exception.
+			NoSuchFVSEntryException {
 
 		return getPersistence().findByUuid_Last(uuid, orderByComparator);
 	}
@@ -250,12 +252,13 @@ public class FVSEntryUtil {
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next fvs entry
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	public static FVSEntry[] findByUuid_PrevAndNext(
 			long fvsEntryId, String uuid,
 			OrderByComparator<FVSEntry> orderByComparator)
-		throws com.liferay.frontend.view.state.exception.NoSuchEntryException {
+		throws com.liferay.frontend.view.state.exception.
+			NoSuchFVSEntryException {
 
 		return getPersistence().findByUuid_PrevAndNext(
 			fvsEntryId, uuid, orderByComparator);
@@ -362,12 +365,13 @@ public class FVSEntryUtil {
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	public static FVSEntry findByUuid_C_First(
 			String uuid, long companyId,
 			OrderByComparator<FVSEntry> orderByComparator)
-		throws com.liferay.frontend.view.state.exception.NoSuchEntryException {
+		throws com.liferay.frontend.view.state.exception.
+			NoSuchFVSEntryException {
 
 		return getPersistence().findByUuid_C_First(
 			uuid, companyId, orderByComparator);
@@ -396,12 +400,13 @@ public class FVSEntryUtil {
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching fvs entry
-	 * @throws NoSuchEntryException if a matching fvs entry could not be found
+	 * @throws NoSuchFVSEntryException if a matching fvs entry could not be found
 	 */
 	public static FVSEntry findByUuid_C_Last(
 			String uuid, long companyId,
 			OrderByComparator<FVSEntry> orderByComparator)
-		throws com.liferay.frontend.view.state.exception.NoSuchEntryException {
+		throws com.liferay.frontend.view.state.exception.
+			NoSuchFVSEntryException {
 
 		return getPersistence().findByUuid_C_Last(
 			uuid, companyId, orderByComparator);
@@ -431,12 +436,13 @@ public class FVSEntryUtil {
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next fvs entry
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	public static FVSEntry[] findByUuid_C_PrevAndNext(
 			long fvsEntryId, String uuid, long companyId,
 			OrderByComparator<FVSEntry> orderByComparator)
-		throws com.liferay.frontend.view.state.exception.NoSuchEntryException {
+		throws com.liferay.frontend.view.state.exception.
+			NoSuchFVSEntryException {
 
 		return getPersistence().findByUuid_C_PrevAndNext(
 			fvsEntryId, uuid, companyId, orderByComparator);
@@ -496,10 +502,11 @@ public class FVSEntryUtil {
 	 *
 	 * @param fvsEntryId the primary key of the fvs entry
 	 * @return the fvs entry that was removed
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	public static FVSEntry remove(long fvsEntryId)
-		throws com.liferay.frontend.view.state.exception.NoSuchEntryException {
+		throws com.liferay.frontend.view.state.exception.
+			NoSuchFVSEntryException {
 
 		return getPersistence().remove(fvsEntryId);
 	}
@@ -509,14 +516,15 @@ public class FVSEntryUtil {
 	}
 
 	/**
-	 * Returns the fvs entry with the primary key or throws a <code>NoSuchEntryException</code> if it could not be found.
+	 * Returns the fvs entry with the primary key or throws a <code>NoSuchFVSEntryException</code> if it could not be found.
 	 *
 	 * @param fvsEntryId the primary key of the fvs entry
 	 * @return the fvs entry
-	 * @throws NoSuchEntryException if a fvs entry with the primary key could not be found
+	 * @throws NoSuchFVSEntryException if a fvs entry with the primary key could not be found
 	 */
 	public static FVSEntry findByPrimaryKey(long fvsEntryId)
-		throws com.liferay.frontend.view.state.exception.NoSuchEntryException {
+		throws com.liferay.frontend.view.state.exception.
+			NoSuchFVSEntryException {
 
 		return getPersistence().findByPrimaryKey(fvsEntryId);
 	}
