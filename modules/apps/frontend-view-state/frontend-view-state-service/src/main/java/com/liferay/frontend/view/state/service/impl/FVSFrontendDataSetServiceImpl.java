@@ -14,8 +14,11 @@
 
 package com.liferay.frontend.view.state.service.impl;
 
+import com.liferay.frontend.view.state.model.FVSFrontendDataSet;
 import com.liferay.frontend.view.state.service.base.FVSFrontendDataSetServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -31,4 +34,21 @@ import org.osgi.service.component.annotations.Component;
 )
 public class FVSFrontendDataSetServiceImpl
 	extends FVSFrontendDataSetServiceBaseImpl {
+
+	@Override
+	public FVSFrontendDataSet addUserFVSFrontendDataSet(
+			long fvsEntryId, String fdsName, String name, long plid,
+			String portletId)
+		throws PortalException {
+
+		User user = getUser();
+
+		if ((user != null) && !user.isDefaultUser()) {
+			return fvsFrontendDataSetLocalService.addUserFVSFrontendDataSet(
+				user.getUserId(), fvsEntryId, fdsName, name, plid, portletId);
+		}
+
+		return null;
+	}
+
 }

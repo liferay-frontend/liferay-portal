@@ -14,8 +14,11 @@
 
 package com.liferay.frontend.view.state.service.impl;
 
+import com.liferay.frontend.view.state.model.FVSEntry;
 import com.liferay.frontend.view.state.service.base.FVSEntryServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -30,4 +33,17 @@ import org.osgi.service.component.annotations.Component;
 	service = AopService.class
 )
 public class FVSEntryServiceImpl extends FVSEntryServiceBaseImpl {
+
+	@Override
+	public FVSEntry addFVSEntry(String viewState) throws PortalException {
+		User user = getUser();
+
+		if ((user != null) && !user.isDefaultUser()) {
+			return fvsEntryLocalService.addFVSEntry(
+				user.getUserId(), viewState);
+		}
+
+		return null;
+	}
+
 }
