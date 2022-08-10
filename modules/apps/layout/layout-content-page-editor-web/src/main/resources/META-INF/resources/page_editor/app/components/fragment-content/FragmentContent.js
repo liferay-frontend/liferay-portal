@@ -194,6 +194,7 @@ const FragmentContent = ({
 					});
 				})
 			).then(() => {
+
 				// In theory we should arrive here only for pure fragments (not
 				// portlets) since they are the only ones that can have dynamic
 				// content.
