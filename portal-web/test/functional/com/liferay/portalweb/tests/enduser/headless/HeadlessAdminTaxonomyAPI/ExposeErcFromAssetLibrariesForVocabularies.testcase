@@ -171,10 +171,10 @@ definition {
 				externalReferenceCode = "nonexistent-erc");
 		}
 
-		task ("Then response body is No AssetVocabulary exists with the key {groupId=${GROUPID}, externalReferenceCode=${ERC}}") {
+		task ("Then a not found status is returned") {
 			TestUtils.assertPartialEquals(
 				actual = "${response}",
-				expected = "No AssetVocabulary exists with the key");
+				expected = "NOT_FOUND");
 		}
 	}
 
