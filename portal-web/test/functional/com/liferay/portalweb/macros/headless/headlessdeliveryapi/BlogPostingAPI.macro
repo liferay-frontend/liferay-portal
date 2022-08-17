@@ -16,12 +16,11 @@ definition {
 			${portalURL}/o/headless-delivery/v1.0/sites/${siteId}/blog-postings \
 			-u test@liferay.com:test \
 			-H Content-Type: application/json \
-            -d
-					{
-     "headline": "${headline}",
-	 "externalReferenceCode": "${externalReferenceCode}",
-     "articleBody": "${articleBody}"
-	}
+			-d {
+				"headline": "${headline}",
+				"externalReferenceCode": "${externalReferenceCode}",
+				"articleBody": "${articleBody}"
+			}
 		''';
 
 		var curl = JSONCurlUtil.post("${curl}");
