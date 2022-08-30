@@ -26,8 +26,9 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Hotspot} from './Hotspot';
 import {Overlay} from './Overlay';
 import {doAlign} from './doAlign';
-import {useLocalStorage} from './useLocalStorage';
-import {useObserveRect} from './useObserveRect';
+import {useLocalStorage} from './hooks/useLocalStorage';
+import {useObserveRect} from './hooks/useObserveRect';
+import {useOnClickOutside} from './hooks/useOnClickOutside';
 
 /**
  * This map humanize tuples received from dom-align
@@ -334,6 +335,15 @@ const Step = ({
 		align();
 	}, [align]);
 
+	useOnClickOutside(
+		['.lfr-walkthrough-popover', '.lfr-walkthrough-hotspot'],
+		() => {
+			if (closeOnClickOutside) {
+				onPopoverVisible(false);
+			}
+		}
+	);
+
 	useObserveRect(align, popoverRef?.current);
 
 	const SITE_PREFIX_PATH = `/${getSitePrefix(currentPage)}`;
@@ -359,7 +369,7 @@ const Step = ({
 				<ReactPortal>
 					<ClayPopover
 						alignPosition={currentAlignment}
-						closeOnClickOutside={closeOnClickOutside}
+						className="lfr-walkthrough-popover"
 						displayType="secondary"
 						header={
 							<ClayLayout.ContentRow
