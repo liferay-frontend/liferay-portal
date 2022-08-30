@@ -22,4 +22,10 @@ EditClientExtensionEntryPartDisplayContext<GlobalJSCET> editClientExtensionEntry
 GlobalJSCET globalJSCET = editClientExtensionEntryPartDisplayContext.getCET();
 %>
 
-<aui:input ignoreRequestValue="<%= true %>" label="url" name="url" type="text" value="<%= globalJSCET.getURL() %>" />
+<aui:field-wrapper cssClass="form-group">
+	<aui:input ignoreRequestValue="<%= true %>" label="js-url" name="url" required="<%= true %>" type="text" value="<%= globalJSCET.getURL() %>" />
+
+	<div class="form-text">
+		<liferay-ui:message key="this-js-adds-extra-content-to-the-main-js" />
+	</div>
+</aui:field-wrapper>

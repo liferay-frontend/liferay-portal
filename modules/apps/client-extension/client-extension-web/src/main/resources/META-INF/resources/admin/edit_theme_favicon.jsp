@@ -22,4 +22,10 @@ EditClientExtensionEntryPartDisplayContext<ThemeFaviconCET> editClientExtensionE
 ThemeFaviconCET themeFaviconCET = editClientExtensionEntryPartDisplayContext.getCET();
 %>
 
-<aui:input label="url" name="url" type="text" value="<%= themeFaviconCET.getURL() %>" />
+<aui:field-wrapper cssClass="form-group">
+	<aui:input label="url" name="url" required="<%= true %>" type="text" value="<%= themeFaviconCET.getURL() %>" />
+
+	<div class="form-text">
+		<liferay-ui:message key="this-favicon-replaces-the-main-one-of-the-system" />
+	</div>
+</aui:field-wrapper>

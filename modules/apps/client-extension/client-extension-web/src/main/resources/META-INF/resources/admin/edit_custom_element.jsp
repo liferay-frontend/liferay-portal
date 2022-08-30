@@ -22,7 +22,13 @@ EditClientExtensionEntryPartDisplayContext<CustomElementCET> editClientExtension
 CustomElementCET customElementCET = editClientExtensionEntryPartDisplayContext.getCET();
 %>
 
-<aui:input label="html-element-name" name="htmlElementName" type="text" value="<%= customElementCET.getHTMLElementName() %>" />
+<aui:field-wrapper cssClass="form-group">
+	<aui:input label="html-element-name" name="htmlElementName" required="<%= true %>" type="text" value="<%= customElementCET.getHTMLElementName() %>" />
+
+	<div class="form-text">
+		<liferay-ui:message key="the-name-for-the-custom-element-thats-declared-in-its-js-file" />
+	</div>
+</aui:field-wrapper>
 
 <aui:input label="use-esm" name="useESM" type="checkbox" value="<%= customElementCET.isUseESM() %>" />
 
@@ -33,7 +39,13 @@ CustomElementCET customElementCET = editClientExtensionEntryPartDisplayContext.g
 	%>
 
 		<div class="lfr-form-row">
-			<aui:input ignoreRequestValue="<%= true %>" label="url" name="urls" type="text" value="<%= url %>" />
+			<aui:field-wrapper cssClass="form-group">
+				<aui:input ignoreRequestValue="<%= true %>" label="js-url" name="urls" required="<%= true %>" type="text" value="<%= url %>" />
+
+				<div class="form-text">
+					<liferay-ui:message key="enter-individual-urls-for-each-of-your-client-extension-js-files" />
+				</div>
+			</aui:field-wrapper>
 		</div>
 
 	<%
@@ -49,7 +61,13 @@ CustomElementCET customElementCET = editClientExtensionEntryPartDisplayContext.g
 	%>
 
 		<div class="lfr-form-row">
-			<aui:input ignoreRequestValue="<%= true %>" label="css-url" name="cssURLs" type="text" value="<%= cssURL %>" />
+			<aui:field-wrapper cssClass="form-group">
+				<aui:input ignoreRequestValue="<%= true %>" label="css-url" name="cssURLs" type="text" value="<%= cssURL %>" />
+
+				<div class="form-text">
+					<liferay-ui:message key="enter-individual-urls-for-each-of-your-client-extension-css-files" />
+				</div>
+			</aui:field-wrapper>
 		</div>
 
 	<%
@@ -74,7 +92,13 @@ CustomElementCET customElementCET = editClientExtensionEntryPartDisplayContext.g
 	options="<%= editClientExtensionEntryPartDisplayContext.getPortletCategoryNameSelectOptions(customElementCET.getPortletCategoryName()) %>"
 />
 
-<aui:input label="friendly-url-mapping" name="friendlyURLMapping" type="text" value="<%= customElementCET.getFriendlyURLMapping() %>" />
+<aui:field-wrapper cssClass="form-group">
+	<aui:input label="friendly-url-mapping" name="friendlyURLMapping" type="text" value="<%= customElementCET.getFriendlyURLMapping() %>" />
+
+	<div class="form-text">
+		<liferay-ui:message key="define-the-widgets-friendly-url-mapping-so-you-can-refer-to-it-using-a-more-user-readable-url" />
+	</div>
+</aui:field-wrapper>
 
 <aui:script use="liferay-auto-fields">
 	new Liferay.AutoFields({

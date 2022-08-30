@@ -22,7 +22,13 @@ EditClientExtensionEntryPartDisplayContext<IFrameCET> editClientExtensionEntryPa
 IFrameCET iFrameCET = editClientExtensionEntryPartDisplayContext.getCET();
 %>
 
-<aui:input label="url" name="url" type="text" value="<%= iFrameCET.getURL() %>" />
+<aui:field-wrapper cssClass="form-group">
+	<aui:input label="url" name="url" required="<%= true %>" type="text" value="<%= iFrameCET.getURL() %>" />
+
+	<div class="form-text">
+		<liferay-ui:message key="a-url-to-where-the-external-application-is-hosted" />
+	</div>
+</aui:field-wrapper>
 
 <c:choose>
 	<c:when test="<%= editClientExtensionEntryPartDisplayContext.isNew() %>">
@@ -36,7 +42,7 @@ IFrameCET iFrameCET = editClientExtensionEntryPartDisplayContext.getCET();
 </c:choose>
 
 <clay:select
-	label="portlet-category-name"
+	label="widget-category-name"
 	name="portletCategoryName"
 	options="<%= editClientExtensionEntryPartDisplayContext.getPortletCategoryNameSelectOptions(iFrameCET.getPortletCategoryName()) %>"
 />
