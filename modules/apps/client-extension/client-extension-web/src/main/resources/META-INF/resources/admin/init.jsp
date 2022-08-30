@@ -29,4 +29,5 @@ page import="com.liferay.client.extension.web.internal.constants.ClientExtension
 page import="com.liferay.client.extension.web.internal.display.context.ClientExtensionAdminDisplayContext" %><%@
 page import="com.liferay.client.extension.web.internal.display.context.EditClientExtensionEntryDisplayContext" %><%@
 page import="com.liferay.client.extension.web.internal.display.context.EditClientExtensionEntryPartDisplayContext" %><%@
+page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil" %>
