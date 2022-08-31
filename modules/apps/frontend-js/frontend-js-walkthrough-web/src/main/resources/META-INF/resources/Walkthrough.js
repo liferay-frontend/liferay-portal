@@ -420,21 +420,13 @@ const Step = ({
 											onClick={() => {
 												onPrevious(previous);
 
-												if (previous) {
-													if (
-														SITE_PREFIX_PATH === '/'
-													) {
-														return navigate(
-															previous
-														);
-													}
-
-													return navigate(
-														SITE_PREFIX_PATH.concat(
-															previous
-														)
-													);
-												}
+												navigate(
+													SITE_PREFIX_PATH === '/'
+														? previous
+														: SITE_PREFIX_PATH.concat(
+																previous
+														  )
+												);
 											}}
 											small
 										>
@@ -447,19 +439,13 @@ const Step = ({
 											onClick={() => {
 												onNext(next);
 
-												if (next) {
-													if (
-														SITE_PREFIX_PATH === '/'
-													) {
-														return navigate(next);
-													}
-
-													return navigate(
-														SITE_PREFIX_PATH.concat(
-															next
-														)
-													);
-												}
+												navigate(
+													SITE_PREFIX_PATH === '/'
+														? next
+														: SITE_PREFIX_PATH.concat(
+																next
+														  )
+												);
 											}}
 											small
 										>
