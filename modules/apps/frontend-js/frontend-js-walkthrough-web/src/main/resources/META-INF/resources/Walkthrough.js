@@ -474,10 +474,10 @@ const Step = ({
 
 const Walkthrough = ({
 	closeOnClickOutside,
-	closeable,
-	pages,
-	skippable,
-	steps,
+	closeable = true,
+	pages = {},
+	skippable = true,
+	steps = [],
 }) => {
 	const [
 		currentStepIndex,
