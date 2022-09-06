@@ -69,7 +69,7 @@ X509Certificate x509Certificate = (X509Certificate)request.getAttribute(SamlWebK
 	/>
 </c:if>
 
-<liferay-portlet:actionURL name="/admin/update_certificate" var="updateCertificateURL">
+<liferay-portlet:actionURL name="/admin/update_certificate" var="updateCertificateURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
 	<portlet:param name="mvcRenderCommandName" value="/admin/update_certificate" />
 	<portlet:param name="<%= Constants.CMD %>" value="<%= cmd %>" />
 	<portlet:param name="certificateUsage" value="<%= certificateUsage.name() %>" />
