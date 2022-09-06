@@ -21,6 +21,8 @@ public class BlogsConstants {
 
 	public static final String RESOURCE_NAME = "com.liferay.blogs";
 
+	public static final String RESOURCE_ENTITY_NAME = "com.liferay.blogs.model.BlogsEntry";
+
 	public static final String SERVICE_NAME = "com.liferay.blogs";
 
 }

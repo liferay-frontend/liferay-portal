@@ -37,6 +37,7 @@ import com.liferay.headless.delivery.resource.v1_0.BlogPostingResource;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -66,6 +67,7 @@ import java.io.Serializable;
 
 import java.time.LocalDateTime;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -162,37 +164,29 @@ public class BlogPostingResourceImpl extends BaseBlogPostingResourceImpl {
 		throws Exception {
 
 		return SearchUtil.search(
-			HashMapBuilder.put(
-				"create",
-				addAction(
-					ActionKeys.ADD_ENTRY, "postSiteBlogPosting",
-					BlogsConstants.RESOURCE_NAME, siteId)
-			).put(
-				"createBatch",
-				addAction(
-					ActionKeys.ADD_ENTRY, "postSiteBlogPostingBatch",
-					BlogsConstants.RESOURCE_NAME, siteId)
-			).put(
-				"deleteBatch",
-				addAction(
-					ActionKeys.DELETE, "deleteBlogPostingBatch",
-					BlogsConstants.RESOURCE_NAME, null)
-			).put(
-				"subscribe",
-				addAction(
-					ActionKeys.SUBSCRIBE, "putSiteBlogPostingSubscribe",
-					BlogsConstants.RESOURCE_NAME, siteId)
-			).put(
-				"unsubscribe",
-				addAction(
-					ActionKeys.SUBSCRIBE, "putSiteBlogPostingUnsubscribe",
-					BlogsConstants.RESOURCE_NAME, siteId)
-			).put(
-				"updateBatch",
-				addAction(
-					ActionKeys.UPDATE, "putBlogPostingBatch",
-					BlogsConstants.RESOURCE_NAME, null)
-			).build(),
+			blogPostings -> _addBatchMethods(
+				HashMapBuilder.<String, Map<String, String>>put(
+					"create",
+					addAction(
+						ActionKeys.ADD_ENTRY, "postSiteBlogPosting",
+						BlogsConstants.RESOURCE_NAME, siteId)
+				).put(
+					"createBatch",
+					addAction(
+						ActionKeys.SUBSCRIBE, "postSiteBlogPostingBatch",
+						BlogsConstants.RESOURCE_NAME, siteId)
+				).put(
+					"subscribe",
+					addAction(
+						ActionKeys.SUBSCRIBE, "putSiteBlogPostingSubscribe",
+						BlogsConstants.RESOURCE_NAME, siteId)
+				).put(
+					"unsubscribe",
+					addAction(
+						ActionKeys.SUBSCRIBE, "putSiteBlogPostingUnsubscribe",
+						BlogsConstants.RESOURCE_NAME, siteId)
+				),
+				blogPostings, BlogPosting::getActions),
 			booleanQuery -> {
 			},
 			filter, BlogsEntry.class.getName(), search, pagination,
@@ -318,6 +312,45 @@ public class BlogPostingResourceImpl extends BaseBlogPostingResourceImpl {
 					TaxonomyCategoryBrief::getTaxonomyCategoryId,
 					Long[].class));
 		}
+	}
+
+	private Map<String, Map<String, String>> _addBatchMethods(
+			HashMapBuilder.HashMapWrapper<String, Map<String, String>> actions,
+			List<BlogPosting> blogPostings,
+			UnsafeFunction
+				<BlogPosting, Map<String, Map<String, String>>, Exception>
+					getActionsUnsafeFunction)
+		throws Exception {
+
+		boolean deleteBatch = false;
+		boolean updateBatch = false;
+
+		for (BlogPosting blogPosting : blogPostings) {
+			Map<String, Map<String, String>> blogPostingActions =
+				getActionsUnsafeFunction.apply(blogPosting);
+
+			if ((blogPostingActions.get("delete") != null) && !deleteBatch) {
+				actions.put(
+					"deleteBatch",
+					addAction(
+						ActionKeys.DELETE, "deleteBlogPostingBatch",
+						BlogsConstants.RESOURCE_ENTITY_NAME, null));
+
+				deleteBatch = true;
+			}
+
+			if ((blogPostingActions.get("update") != null) && !updateBatch) {
+				actions.put(
+					"updateBatch",
+					addAction(
+						ActionKeys.UPDATE, "putBlogPostingBatch",
+						BlogsConstants.RESOURCE_ENTITY_NAME, null));
+
+				updateBatch = true;
+			}
+		}
+
+		return actions.build();
 	}
 
 	private BlogPosting _addBlogPosting(
