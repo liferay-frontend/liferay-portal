@@ -137,6 +137,63 @@ public class SearchUtil {
 			_getFacets(searchContext), items, pagination, totalCount);
 	}
 
+	public static <T> Page<T> search(
+			UnsafeFunction<List<T>, Map<String, Map<String, String>>, Exception>
+				actionUnsafeFunction,
+			UnsafeConsumer<BooleanQuery, Exception> booleanQueryUnsafeConsumer,
+			Filter filter, String indexerClassName, String keywords,
+			Pagination pagination,
+			UnsafeConsumer<QueryConfig, Exception> queryConfigUnsafeConsumer,
+			UnsafeConsumer<SearchContext, Exception>
+				searchContextUnsafeConsumer,
+			Sort[] sorts,
+			UnsafeFunction<Document, T, Exception> transformUnsafeFunction)
+		throws Exception {
+
+		Hits hits = null;
+		long totalCount = 0;
+
+		Indexer<?> indexer = IndexerRegistryUtil.getIndexer(indexerClassName);
+
+		if (sorts == null) {
+			sorts = new Sort[] {
+				new Sort(Field.ENTRY_CLASS_PK, Sort.LONG_TYPE, false)
+			};
+		}
+
+		SearchContext searchContext = _createSearchContext(
+			_getBooleanClause(booleanQueryUnsafeConsumer, filter), keywords,
+			pagination, queryConfigUnsafeConsumer, sorts);
+
+		searchContextUnsafeConsumer.accept(searchContext);
+
+		if (searchContext.isVulcanCheckPermissions()) {
+			hits = indexer.search(searchContext);
+			totalCount = indexer.searchCount(searchContext);
+		}
+		else {
+			Query query = indexer.getFullQuery(searchContext);
+
+			hits = IndexSearcherHelperUtil.search(searchContext, query);
+			totalCount = IndexSearcherHelperUtil.searchCount(
+				searchContext, query);
+		}
+
+		List<T> items = new ArrayList<>();
+
+		for (Document document : hits.getDocs()) {
+			T item = transformUnsafeFunction.apply(document);
+
+			if (item != null) {
+				items.add(item);
+			}
+		}
+
+		return Page.of(
+			actionUnsafeFunction.apply(items), _getFacets(searchContext), items,
+			pagination, totalCount);
+	}
+
 	public static class SearchContext
 		extends com.liferay.portal.kernel.search.SearchContext {
 
