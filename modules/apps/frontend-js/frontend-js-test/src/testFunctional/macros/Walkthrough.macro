@@ -1,5 +1,16 @@
 definition {
 
+	macro assertEnablePopoverModeNotPresent {
+		if (IsElementNotPresent(locator1 = "Walkthrough#POPOVER")) {
+			if (IsElementNotPresent(key_portletName = "JS Walkthrough Sample", locator1 = "Portlet#TITLE")) {
+				IsElementNotPresent(locator1 = "Walkthrough#HOTSPOT");
+			}
+			else {
+				IsElementNotPresent(locator1 = "Walkthrough#SAMPLE_PORTLET_HOTSPOT");
+			}
+		}
+	}
+
 	macro enablePopoverMode {
 		if (IsElementNotPresent(locator1 = "Walkthrough#POPOVER")) {
 			if (IsElementPresent(key_portletName = "JS Walkthrough Sample", locator1 = "Portlet#TITLE")) {
