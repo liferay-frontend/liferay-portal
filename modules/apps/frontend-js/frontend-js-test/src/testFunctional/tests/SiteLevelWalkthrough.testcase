@@ -24,7 +24,7 @@ definition {
 		}
 	}
 
-    @description = "LPS-159823. When closeable is set to true, then a close button is present in popover mode"
+	@description = "LPS-159823. When closeable is set to true, then a close button is present in popover mode"
 	@priority = "4"
 	test CanEnableCloseable {
 		property portal.acceptance = "true";
@@ -50,15 +50,7 @@ definition {
 			Navigator.openSitePage(
 				pageName = "Walkthrough Page",
 				siteName = "Site Name");
-			
-			Walkthrough.enablePopoverMode();
-		}
 
-		task ("When instantiate the walkthrough") {
-			Navigator.openSitePage(
-				pageName = "Walkthrough Page",
-				siteName = "Site Name");
-			
 			Walkthrough.enablePopoverMode();
 		}
 
