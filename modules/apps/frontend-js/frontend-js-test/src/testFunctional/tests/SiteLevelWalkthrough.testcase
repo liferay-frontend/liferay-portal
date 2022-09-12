@@ -1,0 +1,69 @@
+@component-name = "portal-frontend-infrastructure"
+definition {
+
+	property osgi.modules.includes = "frontend-js-walkthrough-sample-web";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.component.names = "Walkthrough";
+	property testray.main.component.name = "User Interface";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			JSONGroup.deleteGroupByName(groupName = "Site Name");
+		}
+	}
+
+    @description = "LPS-159823. When closeable is set to true, then a close button is present in popover mode"
+	@priority = "4"
+	test CanEnableCloseable {
+		property portal.acceptance = "true";
+
+		task ("Given walkthrough enabled site-level") {
+			JSONGroup.addGroup(groupName = "Site Name");
+
+			ApplicationsMenu.gotoSite(site = "Site Name");
+
+			Walkthrough.enableWalkthrough(fileName = "walkthrough_configuration_onePage.json");
+
+			JSONLayout.addPublicLayout(
+				groupName = "Site Name",
+				layoutName = "Walkthrough Page");
+
+			JSONLayout.addWidgetToPublicLayout(
+				groupName = "Site Name",
+				layoutName = "Walkthrough Page",
+				widgetName = "JS Walkthrough Sample");
+		}
+
+		task ("When in popover mode") {
+			Navigator.openSitePage(
+				pageName = "Walkthrough Page",
+				siteName = "Site Name");
+			
+			Walkthrough.enablePopoverMode();
+		}
+
+		task ("When instantiate the walkthrough") {
+			Navigator.openSitePage(
+				pageName = "Walkthrough Page",
+				siteName = "Site Name");
+			
+			Walkthrough.enablePopoverMode();
+		}
+
+		task ("Then close button is present") {
+			AssertElementPresent(locator1 = "Walkthrough#CLOSE_POPOVER");
+		}
+	}
+}
