@@ -45,8 +45,7 @@ PortletURL redirectURL = PortletURLBuilder.createRenderURL(
 			<c:when test="<%= workflowTaskDisplayContext.isAssignedToUser(workflowTask) %>">
 
 				<%
-				for (String transitionName : workflowTaskDisplayContext.getTransitionNames(workflowTask)) {
-					String message = workflowTaskDisplayContext.getTransitionMessage(transitionName);
+				for (WorkflowTransition workflowTransition : workflowTaskDisplayContext.getWorkflowTaskWorkflowTransitions(workflowTask)) {
 				%>
 
 					<liferay-portlet:actionURL copyCurrentRenderParameters="<%= false %>" name="/portal_workflow_task/complete_task" portletName="<%= PortletKeys.MY_WORKFLOW_TASK %>" var="editURL">
@@ -56,16 +55,16 @@ PortletURL redirectURL = PortletURLBuilder.createRenderURL(
 						<portlet:param name="workflowTaskId" value="<%= String.valueOf(workflowTask.getWorkflowTaskId()) %>" />
 						<portlet:param name="assigneeUserId" value="<%= String.valueOf(workflowTask.getAssigneeUserId()) %>" />
 
-						<c:if test="<%= transitionName != null %>">
-							<portlet:param name="transitionName" value="<%= transitionName %>" />
+						<c:if test="<%= Validator.isNotNull(workflowTransition.getName()) %>">
+							<portlet:param name="transitionName" value="<%= workflowTransition.getName() %>" />
 						</c:if>
 					</liferay-portlet:actionURL>
 
 					<liferay-ui:icon
 						cssClass='<%= "workflow-task-" + randomId + " task-change-status-link" %>'
 						data="<%= workflowTaskDisplayContext.getWorkflowTaskActionLinkData() %>"
-						id='<%= randomId + HtmlUtil.escapeAttribute(transitionName) + "taskChangeStatusLink" %>'
-						message="<%= HtmlUtil.escape(message) %>"
+						id='<%= randomId + HtmlUtil.escapeAttribute(workflowTransition.getName()) + "taskChangeStatusLink" %>'
+						message="<%= workflowTransition.getLabel(workflowTaskDisplayContext.getTaskContentLocale()) %>"
 						method="get"
 						url="<%= editURL %>"
 					/>

@@ -1217,7 +1217,7 @@ public class OrganizationLocalServiceImpl
 			organizationsTree.addAll(organization.getSuborganizations());
 		}
 
-		if (!ListUtil.isEmpty(organizationsTree)) {
+		if (ListUtil.isNotEmpty(organizationsTree)) {
 			int count = _userFinder.countByUser(
 				userId,
 				LinkedHashMapBuilder.<String, Object>put(
@@ -1971,6 +1971,22 @@ public class OrganizationLocalServiceImpl
 			organization.getUuid(), 0, assetCategoryIds, assetTagNames, true,
 			false, null, null, null, null, null, organization.getName(),
 			StringPool.BLANK, null, null, null, 0, 0, null);
+	}
+
+	@Override
+	public Organization updateLogo(long organizationId, byte[] logoBytes)
+		throws PortalException {
+
+		Organization organization = organizationPersistence.findByPrimaryKey(
+			organizationId);
+
+		PortalUtil.updateImageId(
+			organization, true, logoBytes, "logoId",
+			_userFileUploadsSettings.getImageMaxSize(),
+			_userFileUploadsSettings.getImageMaxHeight(),
+			_userFileUploadsSettings.getImageMaxWidth());
+
+		return organizationPersistence.update(organization);
 	}
 
 	/**

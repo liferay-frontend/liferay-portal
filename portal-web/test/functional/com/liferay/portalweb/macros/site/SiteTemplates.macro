@@ -300,6 +300,21 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
+	macro enableAutomaticPropagation {
+		SystemSettings.openSystemSettingsAdmin();
+
+		SystemSettings.gotoConfiguration(
+			configurationCategory = "Infrastructure",
+			configurationName = "Site Templates",
+			configurationScope = "Virtual Instance Scope");
+
+		Check.checkToggleSwitch(
+			key_toggleSwitchLabel = "Trigger Propagation",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		Button.clickSave();
+	}
+
 	macro enablePropagation {
 		var key_siteTemplateName = "${siteTemplateName}";
 

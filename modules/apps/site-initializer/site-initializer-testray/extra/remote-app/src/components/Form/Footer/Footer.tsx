@@ -16,26 +16,43 @@ import ClayButton from '@clayui/button';
 
 import i18n from '../../../i18n';
 
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+	loading?: boolean;
+};
+
 type FooterProps = {
-	isModal?: boolean;
 	onClose: () => void;
 	onSubmit: () => void;
-	primaryButtonTitle?: string;
+	primaryButtonProps?: ButtonProps;
+	secondaryButtonProps?: ButtonProps;
 };
 
 const Footer: React.FC<FooterProps> = ({
-	isModal = false,
 	onClose,
 	onSubmit,
-	primaryButtonTitle = 'save',
+	primaryButtonProps,
+	secondaryButtonProps,
 }) => (
 	<ClayButton.Group spaced>
-		<ClayButton displayType="primary" onClick={onSubmit}>
-			{i18n.translate(primaryButtonTitle)}
+		<ClayButton
+			{...primaryButtonProps}
+			disabled={
+				primaryButtonProps?.disabled || primaryButtonProps?.loading
+			}
+			displayType="primary"
+			onClick={onSubmit}
+		>
+			{i18n.translate(
+				primaryButtonProps?.title ?? i18n.translate('save')
+			)}
 		</ClayButton>
 
-		<ClayButton displayType="secondary" onClick={() => onClose()}>
-			{i18n.translate(isModal ? 'close' : 'cancel')}
+		<ClayButton
+			{...secondaryButtonProps}
+			displayType="secondary"
+			onClick={() => onClose()}
+		>
+			{secondaryButtonProps?.title ?? i18n.translate('cancel')}
 		</ClayButton>
 	</ClayButton.Group>
 );

@@ -16,7 +16,7 @@ package com.liferay.notification.service.impl;
 
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
-import com.liferay.notification.constants.NotificationsQueryEntryConstants;
+import com.liferay.notification.constants.NotificationQueueEntryConstants;
 import com.liferay.notification.model.NotificationQueueEntry;
 import com.liferay.notification.model.NotificationQueueEntryAttachment;
 import com.liferay.notification.service.NotificationQueueEntryAttachmentLocalService;
@@ -93,7 +93,7 @@ public class NotificationQueueEntryLocalServiceImpl
 		notificationQueueEntry.setTo(to);
 		notificationQueueEntry.setToName(toName);
 		notificationQueueEntry.setStatus(
-			NotificationsQueryEntryConstants.STATUS_SENT);
+			NotificationQueueEntryConstants.STATUS_UNSENT);
 
 		notificationQueueEntry = notificationQueueEntryPersistence.update(
 			notificationQueueEntry);
@@ -172,23 +172,23 @@ public class NotificationQueueEntryLocalServiceImpl
 	}
 
 	@Override
-	public void sendNotificationQueueEntries() throws PortalException {
+	public void sendNotificationQueueEntries() {
 		List<NotificationQueueEntry> notificationQueueEntries = null;
 
 		if (GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-159052"))) {
 			notificationQueueEntries =
 				notificationQueueEntryPersistence.findByStatus(
-					NotificationsQueryEntryConstants.STATUS_UNSENT);
+					NotificationQueueEntryConstants.STATUS_UNSENT);
 		}
 		else {
 			notificationQueueEntries =
 				notificationQueueEntryPersistence.findBySent(false);
 		}
 
-		try {
-			for (NotificationQueueEntry notificationQueueEntry :
-					notificationQueueEntries) {
+		for (NotificationQueueEntry notificationQueueEntry :
+				notificationQueueEntries) {
 
+			try {
 				MailMessage mailMessage = new MailMessage(
 					new InternetAddress(
 						notificationQueueEntry.getFrom(),
@@ -213,16 +213,17 @@ public class NotificationQueueEntryLocalServiceImpl
 				notificationQueueEntryLocalService.updateSent(
 					notificationQueueEntry.getNotificationQueueEntryId(), true);
 			}
-		}
-		catch (PortalException portalException) {
-			throw portalException;
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
+			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
+				}
 
-			throw new PortalException(exception);
+				notificationQueueEntry.setStatus(
+					NotificationQueueEntryConstants.STATUS_FAILED);
+
+				notificationQueueEntryPersistence.update(
+					notificationQueueEntry);
+			}
 		}
 	}
 
@@ -241,12 +242,12 @@ public class NotificationQueueEntryLocalServiceImpl
 		if (sent) {
 			notificationQueueEntry.setSentDate(new Date());
 			notificationQueueEntry.setStatus(
-				NotificationsQueryEntryConstants.STATUS_SENT);
+				NotificationQueueEntryConstants.STATUS_SENT);
 		}
 		else {
 			notificationQueueEntry.setSentDate(null);
 			notificationQueueEntry.setStatus(
-				NotificationsQueryEntryConstants.STATUS_UNSENT);
+				NotificationQueueEntryConstants.STATUS_UNSENT);
 		}
 
 		return notificationQueueEntryPersistence.update(notificationQueueEntry);

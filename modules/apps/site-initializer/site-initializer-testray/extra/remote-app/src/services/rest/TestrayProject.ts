@@ -12,19 +12,35 @@
  * details.
  */
 
+import i18n from '../../i18n';
 import yupSchema from '../../schema/yup';
 import Rest from './Rest';
+import {testrayBuildImpl} from './TestrayBuild';
 import {TestrayProject} from './types';
 
 type Project = typeof yupSchema.project.__outputType;
 
-class TestrayProjectRest extends Rest<Project, TestrayProject> {
+class TestrayProjectImpl extends Rest<Project, TestrayProject> {
 	constructor() {
 		super({
 			uri: 'projects',
 		});
 	}
-}
-const testrayProjectRest = new TestrayProjectRest();
 
-export {testrayProjectRest};
+	protected async beforeRemove(id: number) {
+		const hasBuildsInProjectId = await testrayBuildImpl.hasBuildsInProjectId(
+			id
+		);
+
+		if (hasBuildsInProjectId) {
+			throw new Error(
+				i18n.translate(
+					'the-project-cannot-be-deleted-because-it-has-associated-builds'
+				)
+			);
+		}
+	}
+}
+const testrayProjectImpl = new TestrayProjectImpl();
+
+export {testrayProjectImpl};

@@ -3,13 +3,29 @@
 	"name_i18n": {
 		"en_US": "Home"
 	},
-	"private": true,
-	"system": false,
-	"type": "Content",
-	"typeSettings": [
+	"permissions": [
 		{
-			"key": "collectionType",
-			"value": "com.liferay.item.selector.criteria.InfoListItemSelectorReturnType"
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "User",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "Site Member",
+			"scope": 4
 		}
-	]
+	],
+	"private": false,
+	"system": false,
+	"type": "content"
 }

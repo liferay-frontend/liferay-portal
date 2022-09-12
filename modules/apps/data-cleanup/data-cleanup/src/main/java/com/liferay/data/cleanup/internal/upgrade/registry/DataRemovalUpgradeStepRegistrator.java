@@ -14,8 +14,10 @@
 
 package com.liferay.data.cleanup.internal.upgrade.registry;
 
+import com.liferay.change.tracking.store.service.CTSContentLocalService;
 import com.liferay.data.cleanup.internal.configuration.DataRemovalConfiguration;
 import com.liferay.data.cleanup.internal.upgrade.ExpiredJournalArticleUpgradeProcess;
+import com.liferay.data.cleanup.internal.upgrade.PublishedCTSContentDataUpgradeProcess;
 import com.liferay.data.cleanup.internal.upgrade.util.ConfigurationUtil;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.petra.reflect.ReflectionUtil;
@@ -25,6 +27,7 @@ import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import java.util.Map;
@@ -52,6 +55,11 @@ public class DataRemovalUpgradeStepRegistrator
 			ConfigurationUtil.resetConfiguration(
 				_persistenceManager, DataRemovalConfiguration.class);
 
+			_removeModuleData(
+				_dataRemovalConfiguration::removePublishedCTSContentData,
+				"com.liferay.change.tracking.store.service",
+				() -> new PublishedCTSContentDataUpgradeProcess(
+					_ctsContentLocalService, _portal));
 			_removeModuleData(
 				_dataRemovalConfiguration::removeExpiredJournalArticles,
 				"com.liferay.journal.service",
@@ -88,6 +96,9 @@ public class DataRemovalUpgradeStepRegistrator
 		}
 	}
 
+	@Reference
+	private CTSContentLocalService _ctsContentLocalService;
+
 	private DataRemovalConfiguration _dataRemovalConfiguration;
 
 	@Reference
@@ -95,6 +106,9 @@ public class DataRemovalUpgradeStepRegistrator
 
 	@Reference
 	private PersistenceManager _persistenceManager;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private ReleaseLocalService _releaseLocalService;

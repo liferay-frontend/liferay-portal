@@ -26,6 +26,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>BUTTON_LAUNCH_ANY</td>
+	<td>//button[@title='Relaunch' or @title='Launch Page Audit']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>CACHE_ALERT</td>
 	<td>//div[@role="alert"] //div[@class='autofit-section' and not(*)]</td>
 	<td></td>
@@ -51,11 +56,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>ERROR_WARNING_BOX</td>
-	<td>//div[contains(@class, 'sidebar')] //div[contains(@class, 'alert')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>FAILING_CHECK_CATEGORY_NAME</td>
 	<td>//button[contains(@class, 'panel-header') and contains(., '${failingCheckCategory}')]/.. //li[contains(.,'${failingCheckName}')]</td>
 	<td></td>
@@ -68,11 +68,6 @@
 <tr>
 	<td>FAILING_CHECK_NAME</td>
 	<td>//span[contains(@class, 'text-secondary') and contains(@class, 'w-100') and contains(@class, 'c-inner') and contains (text(), '${failingCheckName}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>FAILING_CHECK_NAME_QUANTITY</td>
-	<td>//span[contains(@class, 'text-secondary') and contains(@class, 'w-100') and contains(@class, 'c-inner') and contains (text(), '${failingCheckName}')] //*[contains(@class,'badge-item')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -102,7 +97,7 @@
 </tr>
 <tr>
 	<td>HELP_TEXT</td>
-	<td>//div[@class='sidebar-body'] //p[@class='text-secondary']</td>
+	<td>//*[contains(.,'Page Audit')] /p[@class='text-secondary']</td>
 	<td></td>
 </tr>
 <tr>
@@ -113,11 +108,6 @@
 <tr>
 	<td>IMAGE_DEFAULT</td>
 	<td>//img[contains(@src, 'issues_default.svg')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>LAUNCH_PAGE_AUDIT_BUTTON</td>
-	<td>//*[contains(@class, 'btn-secondary') and contains (text(), 'Launch')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -151,28 +141,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>PREFERRED_STRATEGY_DROPDOWN</td>
-	<td>//*[contains(.,'Preferred Strategy')] //div[contains(@class, 'form-builder-select-field')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>PREFERRED_STRATEGY_OPTION</td>
-	<td>//button[@label='${strategy}']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>PREFERRED_STRATEGY_OPTION_SELECTED</td>
-	<td>//*[contains(.,'Preferred Strategy')] //div[contains(@class, 'form-builder-select-field')] //div[@class='option-selected']</td>
-	<td></td>
-</tr>
-<tr>
 	<td>PROGRESS_BAR</td>
 	<td>//*[contains(@class, 'progress-bar')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>RELAUNCH_PAGE_AUDIT_BUTTON</td>
-	<td>//*[contains(@class, 'lexicon-icon-reload')]</td>
 	<td></td>
 </tr>
 <tr>

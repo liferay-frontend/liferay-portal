@@ -18,13 +18,12 @@ import React from 'react';
 
 import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/editableFragmentEntryProcessor';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../../../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/freemarkerFragmentEntryProcessor';
-import {VIEWPORT_SIZES} from '../../../../../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
-import {StoreAPIContextProvider} from '../../../../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
 import {FragmentAdvancedPanel} from '../../../../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/browser/components/page-structure/components/item-configuration-panels/FragmentAdvancedPanel';
+import StoreMother from '../../../../../../../../../src/main/resources/META-INF/resources/page_editor/test-utils/StoreMother';
 
 const FRAGMENT_ENTRY_LINK_ID = '1';
 
-const FRAGMENT_ENTRY_LINK_WITH_ADVANCE_CONFIG = {
+const FRAGMENT_ENTRY_LINK_WITH_ADVANCED_CONFIG = {
 	configuration: {
 		fieldSets: [
 			{
@@ -78,17 +77,12 @@ const FRAGMENT_ENTRY_LINK_WITH_ADVANCE_CONFIG = {
 
 const renderComponent = ({fragmentEntryLink = {}} = {}) =>
 	render(
-		<StoreAPIContextProvider
-			dispatch={() => {}}
+		<StoreMother.Component
 			getState={() => ({
 				fragmentEntryLinks: {
 					[FRAGMENT_ENTRY_LINK_ID]: fragmentEntryLink,
 				},
-				layoutData: {
-					items: [],
-				},
 				permissions: {UPDATE: true},
-				selectedViewportSize: VIEWPORT_SIZES.desktop,
 			})}
 		>
 			<FragmentAdvancedPanel
@@ -102,13 +96,13 @@ const renderComponent = ({fragmentEntryLink = {}} = {}) =>
 					type: '',
 				}}
 			/>
-		</StoreAPIContextProvider>
+		</StoreMother.Component>
 	);
 
 describe('FragmentAdvancedPanel', () => {
 	it('renders fields that are included in fieldsets marked as advanced', () => {
 		renderComponent({
-			fragmentEntryLink: FRAGMENT_ENTRY_LINK_WITH_ADVANCE_CONFIG,
+			fragmentEntryLink: FRAGMENT_ENTRY_LINK_WITH_ADVANCED_CONFIG,
 		});
 
 		expect(screen.getByText('Advanced Config Field')).toBeInTheDocument();
@@ -116,7 +110,7 @@ describe('FragmentAdvancedPanel', () => {
 
 	it('does not render fields that are not included in fieldsets marked as advanced', () => {
 		renderComponent({
-			fragmentEntryLink: FRAGMENT_ENTRY_LINK_WITH_ADVANCE_CONFIG,
+			fragmentEntryLink: FRAGMENT_ENTRY_LINK_WITH_ADVANCED_CONFIG,
 		});
 
 		expect(

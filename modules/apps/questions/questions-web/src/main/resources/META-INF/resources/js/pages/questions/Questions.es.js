@@ -139,7 +139,9 @@ export default withRouter(
 		);
 
 		const [getRankedThreads] = useManualQuery(getRankedThreadsQuery);
-		const [getSectionThreads] = useManualQuery(getSectionThreadsQuery);
+		const [getSectionThreads] = useManualQuery(getSectionThreadsQuery, {
+			useCache: false,
+		});
 		const [getThreads] = useManualQuery(getThreadsQuery);
 
 		useEffect(() => {

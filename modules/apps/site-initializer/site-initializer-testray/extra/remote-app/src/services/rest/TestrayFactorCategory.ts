@@ -13,19 +13,52 @@
  */
 
 import yupSchema from '../../schema/yup';
-import fetcher from '../fetcher';
+import Rest from './Rest';
+import {
+	APIResponse,
+	TestrayFactor,
+	TestrayFactorCategory,
+	TestrayFactorOption,
+} from './types';
 
 type FactorCategory = typeof yupSchema.factorCategory.__outputType;
+class TestrayFactorCategoryRest extends Rest<
+	FactorCategory,
+	TestrayFactorCategory
+> {
+	constructor() {
+		super({
+			adapter: ({id, name}: FactorCategory) => ({
+				id,
+				name,
+			}),
+			uri: 'factorcategories',
+		});
+	}
 
-const adapter = ({id, name}: FactorCategory) => ({
-	id,
-	name,
-});
+	public async getFactorCategoryItems(factorItems: TestrayFactor[]) {
+		const factorCategoryItems: Array<TestrayFactorOption[]> = [];
 
-const createFactorCategory = (factorcategory: FactorCategory) =>
-	fetcher.post('/factorcategories', adapter(factorcategory));
+		for (const factorItem of factorItems) {
+			const response = await this.getFactorCategoryOptions(
+				factorItem?.factorCategory?.id as number
+			);
 
-const updateFactorCategory = (id: number, factorcategory: FactorCategory) =>
-	fetcher.put(`/factorcategories/${id}`, adapter(factorcategory));
+			if (response?.items) {
+				factorCategoryItems.push(response.items);
+			}
+		}
 
-export {createFactorCategory, updateFactorCategory};
+		return factorCategoryItems;
+	}
+
+	public async getFactorCategoryOptions(
+		factorCategoryId: number
+	): Promise<APIResponse<TestrayFactorOption> | undefined> {
+		return this.fetcher(
+			`/${this.uri}/${factorCategoryId}/factorCategoryToOptions?fields=id,name&pageSize=1000`
+		);
+	}
+}
+
+export const testrayFactorCategoryRest = new TestrayFactorCategoryRest();

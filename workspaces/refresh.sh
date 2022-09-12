@@ -1,19 +1,17 @@
 #!/bin/bash
 
 function check_blade {
-	local bladePath
-
 	if [ -e ~/jpm/bin/blade ]
 	then
-		bladePath=~/jpm/bin/blade
+		BLADE_PATH=~/jpm/bin/blade
 	fi
 
 	if [ -e ~/Library/PackageManager/bin/blade ]
 	then
-		bladePath=~/Library/PackageManager/bin/blade
+		BLADE_PATH=~/Library/PackageManager/bin/blade
 	fi
 
-	if [ -z "${bladePath}" ]
+	if [ -z "${BLADE_PATH}" ]
 	then
 		echo "Blade CLI is not available. To install Blade CLI, execute the following command:"
 		echo ""
@@ -23,9 +21,7 @@ function check_blade {
 		exit 1
 	fi
 
-	${bladePath} update -s > /dev/null
-
-	echo "${bladePath}"
+	${BLADE_PATH} update -s > /dev/null
 }
 
 function copy_template {
@@ -35,16 +31,31 @@ function copy_template {
 	find "${2}" -not -path '*/*\.ico' -type f -exec sed -i'.bak' "s/\${name}/${3}/g" {} +
 }
 
-function refresh_sample_default_workspace {
-	local bladePath=$(check_blade)
+function init_workspace {
+	cp sample-default-workspace/.gitignore ${1}
+	cp sample-default-workspace/gradle.properties ${1}
+	cp sample-default-workspace/gradlew ${1}
+	cp sample-default-workspace/settings.gradle ${1}
 
+	cp -R sample-default-workspace/gradle ${1}
+
+	mkdir -p ${1}/configs/local
+
+	cp sample-default-workspace/configs/local/portal-ext.properties ${1}/configs/local
+}
+
+function refresh_liferay_learn_workspace {
+	init_workspace liferay-learn-workspace
+}
+
+function refresh_sample_default_workspace {
 	rm -fr sample-default-workspace
 
 	mkdir sample-default-workspace
 
 	cd sample-default-workspace
 
-	${bladePath} init --liferay-version dxp-7.4-u32
+	${BLADE_PATH} init --liferay-version dxp-7.4-u40
 
 	echo -e "\n**/dist\n**/node_modules_cache\n.DS_Store" >> .gitignore
 
@@ -61,16 +72,7 @@ function refresh_sample_default_workspace {
 }
 
 function refresh_sample_minimal_workspace {
-	cp sample-default-workspace/.gitignore sample-minimal-workspace
-	cp sample-default-workspace/gradle.properties sample-minimal-workspace
-	cp sample-default-workspace/gradlew sample-minimal-workspace
-	cp sample-default-workspace/settings.gradle sample-minimal-workspace
-
-	cp -R sample-default-workspace/gradle sample-minimal-workspace
-
-	mkdir -p sample-minimal-workspace/configs/local
-
-	cp sample-default-workspace/configs/local/portal-ext.properties sample-minimal-workspace/configs/local
+	init_workspace sample-minimal-workspace
 
 	rm -fr sample-minimal-workspace/client-extensions/able-*
 
@@ -87,9 +89,13 @@ function refresh_sample_minimal_workspace {
 }
 
 function main {
+	check_blade
+
 	refresh_sample_default_workspace
 
 	refresh_sample_minimal_workspace
+
+	refresh_liferay_learn_workspace
 }
 
 main "${@}"

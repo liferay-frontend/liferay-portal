@@ -1,5 +1,6 @@
 {
 	"currencyCode": "USD",
+	"externalReferenceCode": "RAYAPCHANNEL",
 	"name": "Raylife AP Channel",
 	"type": "site"
 }

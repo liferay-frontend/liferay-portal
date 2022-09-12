@@ -67,3 +67,8 @@ dfdeb96598d4d90fa8c9e1a3f0d8ae79bd53107e^..4398646e16ce3ddbfacb48f3d45d8ecc29814
 # Bundle Version 19.0.0
 #
 e2a9e3f350466de7b00095c36c4a2aa30669c23d^..0f96d5ecb13bd2c3ac3e61301f3c12b1a664f2e4=COMMERCE-9493
+
+#
+# Bundle Version 19.0.1
+#
+0f96d5ecb13bd2c3ac3e61301f3c12b1a664f2e4^..850c062ddcb35a5cdd66d33539d2ce9267c8a1bc=COMMERCE-9820

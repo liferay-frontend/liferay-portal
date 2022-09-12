@@ -30,7 +30,8 @@ import java.util.Map;
  * @author Brian Wing Shun Chan
  * @author Marcellus Tavares
  */
-public class DefaultWorkflowTask implements Serializable, WorkflowTask {
+public class DefaultWorkflowTask
+	extends BaseWorkflowNode implements Serializable, WorkflowTask {
 
 	@Override
 	public long getAssigneeUserId() {
@@ -62,11 +63,6 @@ public class DefaultWorkflowTask implements Serializable, WorkflowTask {
 	@Override
 	public Date getDueDate() {
 		return _dueDate;
-	}
-
-	@Override
-	public String getName() {
-		return _name;
 	}
 
 	@Override
@@ -162,10 +158,6 @@ public class DefaultWorkflowTask implements Serializable, WorkflowTask {
 		_dueDate = dueDate;
 	}
 
-	public void setName(String name) {
-		_name = name;
-	}
-
 	public void setOptionalAttributes(
 		Map<String, Serializable> optionalAttributes) {
 
@@ -215,7 +207,6 @@ public class DefaultWorkflowTask implements Serializable, WorkflowTask {
 	private Date _createDate;
 	private String _description;
 	private Date _dueDate;
-	private String _name;
 	private Map<String, Serializable> _optionalAttributes;
 	private long _workflowDefinitionId;
 	private String _workflowDefinitionName;

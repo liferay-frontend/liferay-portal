@@ -115,9 +115,6 @@ public class GetInfoItemFieldValueMVCResourceCommand
 
 		String fieldId = ParamUtil.getString(resourceRequest, "fieldId");
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		JSONObject jsonObject = JSONUtil.put(
 			"classNameId", classNameId
 		).put(
@@ -126,15 +123,18 @@ public class GetInfoItemFieldValueMVCResourceCommand
 			"fieldId", fieldId
 		);
 
+		Object value = StringPool.BLANK;
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		String languageId = ParamUtil.getString(
+			resourceRequest, "languageId", themeDisplay.getLanguageId());
+
 		InfoFieldValue<Object> infoFieldValue =
 			infoItemFieldValuesProvider.getInfoFieldValue(object, fieldId);
 
-		Object value = StringPool.BLANK;
-
 		if (infoFieldValue != null) {
-			String languageId = ParamUtil.getString(
-				resourceRequest, "languageId", themeDisplay.getLanguageId());
-
 			value = infoFieldValue.getValue(
 				LocaleUtil.fromLanguageId(languageId));
 		}
@@ -154,7 +154,7 @@ public class GetInfoItemFieldValueMVCResourceCommand
 		}
 		else {
 			value = _fragmentEntryProcessorHelper.formatMappedValue(
-				value, themeDisplay.getLocale());
+				value, LocaleUtil.fromLanguageId(languageId));
 		}
 
 		jsonObject.put("fieldValue", value);

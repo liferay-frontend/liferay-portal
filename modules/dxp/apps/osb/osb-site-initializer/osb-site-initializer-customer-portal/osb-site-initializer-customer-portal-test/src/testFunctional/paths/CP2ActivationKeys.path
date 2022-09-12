@@ -16,6 +16,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ACTIVE_PRODUCT_TYPE</td>
+	<td>//button[contains(@class, 'cp-menu-btn-active') and (contains(text(), '${key_productType}'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DEACTIVATE_KEY_PAGE</td>
+	<td>//*[contains(.,'cp-project')]//p[contains(text(),'Select the activation key you wish to deactivate.')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DROPDOWN</td>
 	<td>//select/option[text()='${key_option}']</td>
 	<td></td>
@@ -113,6 +123,72 @@
 <tr>
 	<td>TABLES_DOWNLOAD_BUTTON</td>
 	<td>//tbody//*[contains(., '${key_entitlementName}')]/following-sibling::*//*[contains(@class, 'btn')]</td>
+	<td></td>
+</tr>
+
+<!--GENERATE_NEW_KEY-->
+
+<tr>
+	<td>ENABLED_PRODUCT</td>
+	<td>//*[contains(.,'Product')]//*[contains(@class, 'cp-select-card')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GENERATE_KEY_FORM</td>
+	<td>//div[contains(@class, 'cp-generateKey')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>KEY_COMPONENT_OPTION</td>
+	<td>//*[label[contains(.,'${key_label}')]]//*[@class='position-relative']/*[contains(@class, 'form-control')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUBSCRIPTION_CHOICE</td>
+	<td>//div[contains(@class, 'cp-radio-card')][${key_position}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUBSCRIPTION_KEY_AVAILABLE</td>
+	<td>//div[contains(@class, 'cp-radio-card')]//*[contains(@class, 'text-success') and not (contains(@class, 'text-danger'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUBSCRIPTION_KEY_DISABLED</td>
+	<td>//div[contains(@class, 'cp-radio-card') and @disabled]//*[contains(@class,'text-danger')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUBSCRIPTION_LENGTH</td>
+	<td>//div[contains(@class, 'cp-radio-card')][${key_position}]//label[contains(@class, 'cp-radio-card-label')]</td>
+	<td></td>
+</tr>
+
+<!--ACTIVATION_KEY_DETAILS_MODAL -->
+
+<tr>
+	<td>KEY_DETAILS_MODAL</td>
+	<td>//div[contains(@class, 'modal-content') and contains(.,'Activation Key Details') and contains (.,'${key_environmentName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>KEY_DETAILS_ELEMENT_VALUES</td>
+	<td>//div[contains(@class, 'modal-content')]//div[contains(.,'${key_group}')]//*[contains(.,'${key_label}') and contains(.,'${key_value}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>COPY_ICON_HOST_NAME</td>
+	<td>//div[contains(@class, 'row')][5]//*[contains(@class, 'lexicon-icon-copy')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>COPY_ICON_IP_ADDRESS</td>
+	<td>//div[contains(@class, 'row')][7]//*[contains(@class, 'lexicon-icon-copy')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>COPY_ICON_MAC_ADDRESS</td>
+	<td>//div[contains(@class, 'row')][9]//*[contains(@class, 'lexicon-icon-copy')]</td>
 	<td></td>
 </tr>
 </tbody>

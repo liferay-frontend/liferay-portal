@@ -20,14 +20,13 @@ import Code from '../../../../components/Code';
 import Container from '../../../../components/Layout/Container';
 import ListViewRest from '../../../../components/ListView';
 import StatusBadge from '../../../../components/StatusBadge';
-import useAssignCaseResult from '../../../../hooks/useAssignCaseResult';
 import useMutate from '../../../../hooks/useMutate';
 import i18n from '../../../../i18n';
 import {filters} from '../../../../schema/filter';
 import {
 	TestrayCaseResult,
 	caseResultResource,
-	getCaseResultTransformData,
+	testrayCaseResultRest,
 } from '../../../../services/rest';
 import {getStatusLabel} from '../../../../util/constants';
 import {searchUtil} from '../../../../util/search';
@@ -35,7 +34,6 @@ import useBuildTestActions from './useBuildTestActions';
 
 const Build = () => {
 	const {buildId} = useParams();
-	const {onAssignToMeFetch} = useAssignCaseResult();
 	const {updateItemFromList} = useMutate();
 	const {actions, form} = useBuildTestActions();
 
@@ -54,7 +52,7 @@ const Build = () => {
 							clickable: true,
 							key: 'priority',
 							render: (
-								_: any,
+								_,
 								{case: testrayCase}: TestrayCaseResult
 							) => testrayCase?.priority,
 							value: i18n.translate('priority'),
@@ -62,7 +60,7 @@ const Build = () => {
 						{
 							key: 'component',
 							render: (
-								_: any,
+								_,
 								{case: testrayCase}: TestrayCaseResult
 							) => testrayCase?.component?.name,
 							value: i18n.translate('component'),
@@ -71,14 +69,17 @@ const Build = () => {
 							clickable: true,
 							key: 'name',
 							render: (
-								_: any,
+								_,
 								{case: testrayCase}: TestrayCaseResult
 							) => testrayCase?.name,
 							value: i18n.translate('case'),
 						},
 						{
 							key: 'run',
-							render: () => '01',
+							render: (_, caseResult: TestrayCaseResult) =>
+								caseResult.run?.number
+									?.toString()
+									.padStart(2, '0'),
 							value: i18n.translate('run'),
 						},
 						{
@@ -104,7 +105,8 @@ const Build = () => {
 								return (
 									<AssignToMe
 										onClick={() =>
-											onAssignToMeFetch(caseResult)
+											testrayCaseResultRest
+												.assignToMe(caseResult)
 												.then(() => {
 													updateItemFromList(
 														mutate,
@@ -145,7 +147,9 @@ const Build = () => {
 					],
 					navigateTo: ({id}) => `case-result/${id}`,
 				}}
-				transformData={getCaseResultTransformData}
+				transformData={(response) =>
+					testrayCaseResultRest.transformDataFromList(response)
+				}
 				variables={{
 					filter: searchUtil.eq('buildId', buildId as string),
 				}}

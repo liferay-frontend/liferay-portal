@@ -15,6 +15,7 @@
 package com.liferay.account.service.impl;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.exception.AccountGroupNameException;
 import com.liferay.account.exception.DuplicateAccountGroupExternalReferenceCodeException;
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.model.AccountGroupRel;
@@ -70,6 +71,8 @@ public class AccountGroupLocalServiceImpl
 			long userId, String description, String name)
 		throws PortalException {
 
+		_validateName(name);
+
 		long accountGroupId = counterLocalService.increment();
 
 		AccountGroup accountGroup = accountGroupPersistence.create(
@@ -84,6 +87,7 @@ public class AccountGroupLocalServiceImpl
 		accountGroup.setDefaultAccountGroup(false);
 		accountGroup.setDescription(description);
 		accountGroup.setName(name);
+
 		accountGroup.setType(AccountConstants.ACCOUNT_GROUP_TYPE_STATIC);
 
 		_resourceLocalService.addResources(
@@ -245,6 +249,8 @@ public class AccountGroupLocalServiceImpl
 			long accountGroupId, String description, String name)
 		throws PortalException {
 
+		_validateName(name);
+
 		AccountGroup accountGroup = accountGroupPersistence.fetchByPrimaryKey(
 			accountGroupId);
 
@@ -374,6 +380,12 @@ public class AccountGroupLocalServiceImpl
 
 		if (accountGroup.getAccountGroupId() != accountGroupId) {
 			throw new DuplicateAccountGroupExternalReferenceCodeException();
+		}
+	}
+
+	private void _validateName(String name) throws PortalException {
+		if (Validator.isNull(name)) {
+			throw new AccountGroupNameException("Name is null");
 		}
 	}
 

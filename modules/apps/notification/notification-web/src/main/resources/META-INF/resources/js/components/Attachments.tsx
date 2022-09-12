@@ -42,8 +42,11 @@ export function Attachments({setValues, values}: IProps) {
 
 	const filteredObjectDefinitions = useMemo(() => {
 		if (objectDefinitions?.length) {
-			return objectDefinitions.filter(({label}) =>
-				stringIncludesQuery(label[defaultLanguageId] as string, query)
+			return objectDefinitions.filter(({label, name}) =>
+				stringIncludesQuery(
+					(label[defaultLanguageId] as string) ?? name,
+					query
+				)
 			);
 		}
 	}, [objectDefinitions, query]);
@@ -100,7 +103,7 @@ export function Attachments({setValues, values}: IProps) {
 	}, [values.objectDefinitionId]);
 
 	useEffect(() => {
-		API.getObjectDefinitions().then((items) => {
+		API.getAllObjectDefinitions().then((items) => {
 			const objectDefinitions = items.filter(({system}) => !system);
 
 			setObjectDefinitions(objectDefinitions);
@@ -155,15 +158,16 @@ export function Attachments({setValues, values}: IProps) {
 								'select-a-data-source'
 							)}
 							query={query}
-							value={selectedEntity?.label[defaultLanguageId]}
+							value={
+								selectedEntity?.label[defaultLanguageId] ??
+								selectedEntity?.name
+							}
 						>
-							{({label}) => (
+							{({label, name}) => (
 								<div className="d-flex justify-content-between">
-									{label[defaultLanguageId] ? (
-										<div>{label[defaultLanguageId]}</div>
-									) : (
-										<div>{label}</div>
-									)}
+									<div>
+										{label[defaultLanguageId] ?? name}
+									</div>
 								</div>
 							)}
 						</AutoComplete>

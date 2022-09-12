@@ -16,6 +16,7 @@ import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
@@ -38,7 +39,14 @@ const REGEX = /^(-?(?:[\d]*\.?[\d]+))(px|em|vh|vw|rem|%)$/;
 
 const UNITS = ['px', '%', 'em', 'rem', 'vw', 'vh', CUSTOM];
 
-export function LengthField({field, onValueSelect, value}) {
+export function LengthField({
+	className,
+	field,
+	onEnter,
+	onValueSelect,
+	showLabel = true,
+	value,
+}) {
 	const inputId = useId();
 
 	const initialValue = useMemo(() => {
@@ -64,8 +72,13 @@ export function LengthField({field, onValueSelect, value}) {
 	}, [value]);
 
 	return (
-		<ClayForm.Group className="page-editor__length-field">
-			<label className={field.icon ? 'sr-only' : null} htmlFor={inputId}>
+		<ClayForm.Group
+			className={classNames(className, 'page-editor__length-field')}
+		>
+			<label
+				className={classNames({'sr-only': !showLabel})}
+				htmlFor={inputId}
+			>
 				{field.label}
 			</label>
 
@@ -73,6 +86,7 @@ export function LengthField({field, onValueSelect, value}) {
 				field={field}
 				id={inputId}
 				initialValue={initialValue}
+				onEnter={onEnter}
 				onValueSelect={onValueSelect}
 				value={value}
 			/>
@@ -81,12 +95,22 @@ export function LengthField({field, onValueSelect, value}) {
 }
 
 LengthField.propTypes = {
+	className: PropTypes.string,
 	field: PropTypes.shape(ConfigurationFieldPropTypes).isRequired,
+	onEnter: PropTypes.func,
 	onValueSelect: PropTypes.func.isRequired,
+	showLabel: PropTypes.bool,
 	value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
-const LengthInput = ({field, id, initialValue, onValueSelect, value}) => {
+const LengthInput = ({
+	field,
+	id,
+	initialValue,
+	onEnter,
+	onValueSelect,
+	value,
+}) => {
 	const [active, setActive] = useState(false);
 	const [error, setError] = useState(false);
 	const inputRef = useRef();
@@ -164,12 +188,16 @@ const LengthInput = ({field, id, initialValue, onValueSelect, value}) => {
 		}
 	};
 
-	const handleKeyDown = (event) => {
+	const handleKeyUp = (event) => {
 		if (nextUnit !== CUSTOM && KEYS_NOT_ALLOWED.has(event.key)) {
 			event.preventDefault();
 		}
 
 		if (event.key === 'Enter') {
+			if (onEnter) {
+				onEnter();
+			}
+
 			handleValueSelect();
 		}
 	};
@@ -191,11 +219,15 @@ const LengthInput = ({field, id, initialValue, onValueSelect, value}) => {
 					aria-label={field.label}
 					id={id}
 					insetBefore={Boolean(field.icon)}
-					onBlur={handleValueSelect}
+					onBlur={(event) => {
+						if (nextValue !== value) {
+							handleValueSelect(event);
+						}
+					}}
 					onChange={(event) => {
 						setNextValue(event.target.value);
 					}}
-					onKeyDown={handleKeyDown}
+					onKeyUp={handleKeyUp}
 					ref={inputRef}
 					sizing="sm"
 					type={nextUnit === CUSTOM ? 'text' : 'number'}

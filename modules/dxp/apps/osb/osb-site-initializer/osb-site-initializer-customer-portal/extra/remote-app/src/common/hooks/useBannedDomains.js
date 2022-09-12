@@ -55,10 +55,15 @@ export default function useBannedDomains(value) {
 		else {
 			setBannedDomains([]);
 		}
+	}, [debouncedValue, fetchBannedDomain]);
 
-		setBannedDomains(bannedDomainsItems?.map((item) => item.domain) || []);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [bannedDomainsItems, debouncedValue, fetchBannedDomain]);
+	useEffect(
+		() =>
+			setBannedDomains(
+				bannedDomainsItems?.map((item) => item.domain) || []
+			),
+		[bannedDomainsItems]
+	);
 
 	return bannedDomains;
 }

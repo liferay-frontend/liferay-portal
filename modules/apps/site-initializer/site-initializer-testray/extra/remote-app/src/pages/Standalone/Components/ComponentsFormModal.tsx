@@ -24,8 +24,7 @@ import yupSchema, {yupResolver} from '../../../schema/yup';
 import {
 	APIResponse,
 	TestrayTeam,
-	createComponent,
-	updateComponent,
+	testrayComponentImpl,
 } from '../../../services/rest';
 import {searchUtil} from '../../../util/search';
 
@@ -53,7 +52,9 @@ const ComponentFormModal: React.FC<ComponentProps> = ({
 
 					teamId: modalState.team?.id,
 			  }
-			: {},
+			: {
+					teamId: 0,
+			  },
 		resolver: yupResolver(yupSchema.component),
 	});
 
@@ -73,8 +74,8 @@ const ComponentFormModal: React.FC<ComponentProps> = ({
 				projectId,
 			},
 			{
-				create: createComponent,
-				update: updateComponent,
+				create: (data) => testrayComponentImpl.create(data),
+				update: (id, data) => testrayComponentImpl.update(id, data),
 			}
 		)
 			.then(onSave)
@@ -85,7 +86,6 @@ const ComponentFormModal: React.FC<ComponentProps> = ({
 		<Modal
 			last={
 				<Form.Footer
-					isModal
 					onClose={onClose}
 					onSubmit={handleSubmit(_onSubmit)}
 				/>

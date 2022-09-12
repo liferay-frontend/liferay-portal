@@ -10,50 +10,57 @@
  */
 
 import ClayButton from '@clayui/button';
+import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 
 import {MDFColumnKey} from '../../common/enums/mdfColumnKey';
 import {PRMPageRoute} from '../../common/enums/prmPageRoute';
-import useGetMDFListingColumns from '../../common/services/liferay/object/mdf-listing/useGetMDFListingColumns';
 import liferayNavigate from '../../common/utils/liferayNavigate';
 import Table from './components/Table';
-import useGetMDFRequestListItems from './hooks/useGetMDFRequestListItems';
+import useGetMDFRequestListData from './hooks/useGetMDFRequestListData';
+import usePagination from './hooks/usePagination';
 
 type MDFRequestListItem = {
 	[key in MDFColumnKey]?: string;
 };
 
 const MDFRequestList = () => {
-	const {data: listItems} = useGetMDFRequestListItems();
-	const {data: listColumns} = useGetMDFListingColumns();
+	const pagination = usePagination();
+	const {data} = useGetMDFRequestListData(
+		pagination.activePage,
+		pagination.activeDelta
+	);
 
 	return (
 		<div className="border-0 pb-3 pt-5 px-6 sheet">
 			<h1>MDF Requests</h1>
 
-			<div className="bg-neutral-1 p-3 rounded">
-				<ClayButton className="mr-1" displayType="secondary">
-					Export MDF Report
-				</ClayButton>
-
+			<div className="bg-neutral-1 d-flex justify-content-end p-3 rounded">
 				<ClayButton
-					onClick={() => {
-						liferayNavigate(PRMPageRoute.CREATE_MDF_REQUEST);
-					}}
+					onClick={() =>
+						liferayNavigate(PRMPageRoute.CREATE_MDF_REQUEST)
+					}
 				>
 					New Request
 				</ClayButton>
 			</div>
 
-			{listItems && listColumns && (
-				<div className="mt-3">
-					<Table<MDFRequestListItem>
-						borderless
-						columns={listColumns}
-						responsive
-						rows={listItems}
-					/>
-				</div>
-			)}
+			{!!data.listItems?.items &&
+				data.listItems?.totalCount &&
+				data.listColumns && (
+					<div className="mt-3">
+						<Table<MDFRequestListItem>
+							borderless
+							columns={data.listColumns}
+							responsive
+							rows={data.listItems.items}
+						/>
+
+						<ClayPaginationBarWithBasicItems
+							{...pagination}
+							totalItems={data.listItems.totalCount}
+						/>
+					</div>
+				)}
 		</div>
 	);
 };

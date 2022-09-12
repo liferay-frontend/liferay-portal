@@ -112,6 +112,54 @@ definition {
 			locator1 = "ProcessBuilderKaleoDesignerReact#LANGUAGE_MANAGE_TRANSLATIONS_BUTTON");
 	}
 
+	macro addMultiplesActionsOnTimers {
+		Click(
+			key_buttonName = "${newSection}",
+			locator1 = "ProcessBuilderKaleoDesignerReact#BUTTON_GENERIC");
+
+		if (isSet(sectionOptionList)) {
+			for (var sectionOption : list "${sectionOptionList}") {
+				if (isSet(actionName)) {
+					Type(
+						key_inputOption = "Name*",
+						key_sectionOption = "${sectionOption}",
+						locator1 = "ProcessBuilderKaleoDesignerReact#PROPERTIES_INPUT_ACTIONS_BY_POSITION",
+						value1 = "${actionName} ${sectionOption}");
+				}
+
+				if (isSet(actionDescription)) {
+					Type(
+						key_inputOption = "Description",
+						key_sectionOption = "${sectionOption}",
+						locator1 = "ProcessBuilderKaleoDesignerReact#PROPERTIES_INPUT_ACTIONS_BY_POSITION",
+						value1 = "${actionDescription} ${sectionOption}");
+				}
+
+				if (isSet(actionsTemplateValue)) {
+					Type(
+						key_sectionOption = "${sectionOption}",
+						locator1 = "ProcessBuilderKaleoDesignerReact#PROPERTIES_TEMPLATE_TEXTAREA_ACTIONS_BY_POSITION",
+						value1 = "${actionsTemplateValue}");
+				}
+
+				if (isSet(priorityValue)) {
+					Type(
+						key_inputOption = "Priority",
+						key_sectionOption = "${sectionOption}",
+						locator1 = "ProcessBuilderKaleoDesignerReact#PROPERTIES_INPUT_ACTIONS_BY_POSITION",
+						value1 = "${priorityValue}");
+				}
+
+				if (isSet(newSection)) {
+					Click(
+						key_buttonName = "${newSection}",
+						key_sectionOption = "${sectionOption}",
+						locator1 = "ProcessBuilderKaleoDesignerReact#BUTTON_GENERIC_BY_POSITION");
+				}
+			}
+		}
+	}
+
 	macro backArrowOnSidebar {
 		Click(locator1 = "ProcessBuilderKaleoDesignerReact#BACK_TO_SIDEBAR_BUTTON");
 	}
@@ -131,6 +179,16 @@ definition {
 
 	macro closeModal {
 		Click(locator1 = "ProcessBuilderKaleoDesignerReact#BUTTON_CLOSE_MODAL");
+	}
+
+	macro deleteAssignment {
+		Click(locator1 = "ProcessBuilderKaleoDesignerReact#SELECTED_ASSIGNMENTS_VALUE");
+
+		AssertElementPresent(
+			key_text = "trash",
+			locator1 = "Icon#ANY_DISABLED");
+
+		ProcessBuilderKaleoDesignerReact.backArrowOnSidebar();
 	}
 
 	macro deleteByIconTrashSidebar {
@@ -410,6 +468,12 @@ definition {
 		}
 	}
 
+	macro viewActionsInsideTimersPresent {
+		AssertElementPresent(
+			key_actionName = "${actionName}",
+			locator1 = "ProcessBuilderKaleoDesignerReact#ACTIONS_NAME_ON_TIMERS_FIELD");
+	}
+
 	macro viewActiveNodeHighlighted {
 		AssertElementPresent(
 			key_nodeType = "${nodeType}",
@@ -575,6 +639,18 @@ definition {
 				locator1 = "ProcessBuilderKaleoDesignerReact#RECIPIENT_TYPE_NAME_OPTIONS");
 
 			ProcessBuilderKaleoDesignerReact.backArrowOnSidebar();
+		}
+
+		if ("${assignmentType}" == "Scripted Assignment") {
+			Click(locator1 = "ProcessBuilderKaleoDesignerReact#BUTTON_ADD_SOURCE_CODE");
+
+			Type.typeCodeMirrorEditorNoError(
+				locator1 = "ProcessBuilderKaleoDesignerReact#GROOVY_SOURCE_EDITOR",
+				value1 = "${groovyScript}");
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "ProcessBuilderKaleoDesignerReact#GROOVY_SOURCE_EDITOR",
+				value1 = "${groovyScript}");
 		}
 
 		if ("${assignmentType}" == "Role Type") {
@@ -1635,6 +1711,14 @@ definition {
 		AssertElementPresent(
 			key_nodeType = "${nodeType}",
 			locator1 = "ProcessBuilderKaleoDesignerReact#SELECTED_NODE");
+	}
+
+	macro viewSelectedRoleAssignmentsByPosition {
+		AssertElementPresent(
+			key_inputOption = "${inputOption}",
+			key_positonOption = "${positonOption}",
+			locator1 = "ProcessBuilderKaleoDesignerReact#ROLE_NAME_FIELD_ASSIGNMENTS_BY_POSITON",
+			value1 = "${selectedRole}");
 	}
 
 	macro viewSidebarFeedback {

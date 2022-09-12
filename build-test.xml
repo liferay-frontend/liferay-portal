@@ -172,6 +172,31 @@ module.framework.properties.osgi.console=11312</echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="create-custom-element-client-extension">
+		<sequential>
+			<echo file="${liferay.home}/osgi/configs/com.liferay.client.extension.type.configuration.CETConfiguration~customElement.config">
+baseURL=&quot;&quot;
+description=&quot;Custom Element Description&quot;
+name=&quot;Vanilla Counter&quot;
+properties=&#91;&quot;test-data-user=QAuser&quot;&#93;
+type=&quot;customElement&quot;
+typeSettings=&#91;&quot;friendlyURLMapping=vanilla&quot;,&quot;instanceable=true&quot;,&quot;portletCategoryName=category.remote-apps&quot;,&quot;urls=https:&#47;&#47;liferay.github.io&#47;liferay-frontend-projects&#47;vanilla-counter&#47;index.js&quot;,&quot;htmlElementName=vanilla-counter&quot;,&quot;cssURLs=https:&#47;&#47;liferay.github.io&#47;liferay-frontend-projects&#47;index.css&quot;,&quot;useESM=true&quot;&#93;</echo>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="create-iframe-client-extension">
+		<sequential>
+			<echo file="${liferay.home}/osgi/configs/com.liferay.client.extension.type.configuration.CETConfiguration~iframe.config">
+baseURL=&quot;&quot;
+description=&quot;IFrame Description&quot;
+name=&quot;My Pretty IFrame&quot;
+properties=&#91;&quot;a=1&quot;,&quot;b=2&quot;&#93;
+sourceCodeURL=&quot;&quot;
+type=&quot;iframe&quot;
+typeSettings=&#91;&quot;friendlyURLMapping=perico&quot;,&quot;instanceable=false&quot;,&quot;portletCategoryName=category.remote-apps&quot;,&quot;url=https:&#47;&#47;liferay.github.io&#47;liferay-frontend-projects&#47;index.html&quot;&#93;</echo>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="decompress">
 		<attribute name="dest" />
 		<attribute name="src" />
@@ -9027,6 +9052,13 @@ org.apache.catalina.tribes.level = FINE]]>
 
 	<target name="delete-dependency-file">
 		<if>
+			<isset property="liferay.dependency.config" />
+			<then>
+				<delete file="${liferay.home}/osgi/configs/${liferay.dependency.config}" verbose="true" />
+			</then>
+		</if>
+
+		<if>
 			<isset property="liferay.dependency.war" />
 			<then>
 				<delete file="${liferay.home}/osgi/war/${liferay.dependency.war}" verbose="true" />
@@ -10752,6 +10784,23 @@ ${update.properties}</echo>
 	</target>
 
 	<target name="prepare-osgi-module-configurations">
+		<get-testcase-property property.name="custom.element.client.extension.created" />
+
+		<if>
+			<equals arg1="${custom.element.client.extension.created}" arg2="true" />
+			<then>
+				<create-custom-element-client-extension />
+			</then>
+		</if>
+
+		<get-testcase-property property.name="iframe.client.extension.created" />
+
+		<if>
+			<equals arg1="${iframe.client.extension.created}" arg2="true" />
+			<then>
+				<create-iframe-client-extension />
+			</then>
+		</if>
 		<get-testcase-property property.name="osgi.module.configurations" />
 
 		<if>
@@ -13861,6 +13910,15 @@ if (ppstate.equals("normal")) {
 		</delete>
 	</target>
 
+	<target name="rename-finder-column">
+		<replaceregexp
+			file="${project.dir}/modules/util/portal-tools-service-builder-test-service/service.xml"
+			flags="g"
+			match="columnToRename"
+			replace="renamedColumn"
+		/>
+	</target>
+
 	<target name="replace-file">
 		<fail message="Please set the property ${file}." unless="file" />
 		<fail message="Please set the property ${token}." unless="token" />
@@ -14057,7 +14115,9 @@ jdbc.default.password=${database.mysql.password}</echo>
 
 				<echo append="true" file="${app.server.classes.portal.dir}/portal-ext.properties">
 
-module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.profile.names}</echo>
+module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.profile.names}
+
+mail.send.blacklist=</echo>
 
 				<delete failonerror="false" file="${app.server.classes.portal.dir}/system-ext.properties" />
 			</then>

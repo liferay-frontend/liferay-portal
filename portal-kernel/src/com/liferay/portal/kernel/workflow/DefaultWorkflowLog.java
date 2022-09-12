@@ -17,6 +17,7 @@ package com.liferay.portal.kernel.workflow;
 import java.io.Serializable;
 
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author Shuyang Zhou
@@ -41,13 +42,26 @@ public class DefaultWorkflowLog implements Serializable, WorkflowLog {
 	}
 
 	@Override
-	public long getPreviousRoleId() {
-		return _previousRoleId;
+	public String getCurrentWorkflowNodeLabel(Locale locale) {
+		if (_currentWorkflowNode != null) {
+			return _currentWorkflowNode.getLabel(locale);
+		}
+
+		return null;
 	}
 
 	@Override
-	public String getPreviousState() {
-		return _previousState;
+	public String getCurrentWorkflowNodeName() {
+		if (_currentWorkflowNode != null) {
+			return _currentWorkflowNode.getName();
+		}
+
+		return null;
+	}
+
+	@Override
+	public long getPreviousRoleId() {
+		return _previousRoleId;
 	}
 
 	@Override
@@ -56,13 +70,26 @@ public class DefaultWorkflowLog implements Serializable, WorkflowLog {
 	}
 
 	@Override
-	public long getRoleId() {
-		return _roleId;
+	public String getPreviousWorkflowNodeLabel(Locale locale) {
+		if (_previousWorkflowNode != null) {
+			return _previousWorkflowNode.getLabel(locale);
+		}
+
+		return null;
 	}
 
 	@Override
-	public String getState() {
-		return _state;
+	public String getPreviousWorkflowNodeName() {
+		if (_previousWorkflowNode != null) {
+			return _previousWorkflowNode.getName();
+		}
+
+		return null;
+	}
+
+	@Override
+	public long getRoleId() {
+		return _roleId;
 	}
 
 	@Override
@@ -97,24 +124,24 @@ public class DefaultWorkflowLog implements Serializable, WorkflowLog {
 		_createDate = createDate;
 	}
 
-	public void setPreviousRoleId(long previousRoleId) {
-		_previousRoleId = previousRoleId;
+	public void setCurrentWorkflowNode(WorkflowNode currentWorkflowNode) {
+		_currentWorkflowNode = currentWorkflowNode;
 	}
 
-	public void setPreviousState(String previousState) {
-		_previousState = previousState;
+	public void setPreviousRoleId(long previousRoleId) {
+		_previousRoleId = previousRoleId;
 	}
 
 	public void setPreviousUserId(long previousUserId) {
 		_previousUserId = previousUserId;
 	}
 
-	public void setRoleId(long roleId) {
-		_roleId = roleId;
+	public void setPreviousWorkflowNode(WorkflowNode previousWorkflowNode) {
+		_previousWorkflowNode = previousWorkflowNode;
 	}
 
-	public void setState(String state) {
-		_state = state;
+	public void setRoleId(long roleId) {
+		_roleId = roleId;
 	}
 
 	public void setType(int type) {
@@ -136,11 +163,11 @@ public class DefaultWorkflowLog implements Serializable, WorkflowLog {
 	private long _auditUserId;
 	private String _comment;
 	private Date _createDate;
+	private WorkflowNode _currentWorkflowNode;
 	private long _previousRoleId;
-	private String _previousState;
 	private long _previousUserId;
+	private WorkflowNode _previousWorkflowNode;
 	private long _roleId;
-	private String _state;
 	private int _type;
 	private long _userId;
 	private long _workflowLogId;

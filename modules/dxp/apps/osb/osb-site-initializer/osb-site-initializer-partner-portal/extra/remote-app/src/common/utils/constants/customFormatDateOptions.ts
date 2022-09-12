@@ -17,10 +17,12 @@ export const customFormatDateOptions: IOption = {
 	SHORT_MONTH: {
 		day: '2-digit',
 		month: 'short',
+		timeZone: 'UTC',
 		year: 'numeric',
 	},
 	SHORT_MONTH_YEAR: {
 		day: '2-digit',
 		month: 'short',
+		timeZone: 'UTC',
 	},
 };

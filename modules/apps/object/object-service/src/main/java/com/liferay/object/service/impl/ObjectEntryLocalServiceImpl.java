@@ -119,6 +119,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -528,13 +529,13 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<ObjectEntry> getManyToManyRelatedObjectEntries(
+	public List<ObjectEntry> getManyToManyObjectEntries(
 			long groupId, long objectRelationshipId, long primaryKey,
-			boolean reverse, int start, int end)
+			boolean related, boolean reverse, int start, int end)
 		throws PortalException {
 
-		DSLQuery dslQuery = _getManyToManyRelatedObjectEntriesGroupByStep(
-			groupId, objectRelationshipId, primaryKey, reverse,
+		DSLQuery dslQuery = _getManyToManyObjectEntriesGroupByStep(
+			groupId, objectRelationshipId, primaryKey, related, reverse,
 			DSLQueryFactoryUtil.selectDistinct(ObjectEntryTable.INSTANCE)
 		).limit(
 			start, end
@@ -548,13 +549,13 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	@Override
-	public int getManyToManyRelatedObjectEntriesCount(
+	public int getManyToManyObjectEntriesCount(
 			long groupId, long objectRelationshipId, long primaryKey,
-			boolean reverse)
+			boolean related, boolean reverse)
 		throws PortalException {
 
-		DSLQuery dslQuery = _getManyToManyRelatedObjectEntriesGroupByStep(
-			groupId, objectRelationshipId, primaryKey, reverse,
+		DSLQuery dslQuery = _getManyToManyObjectEntriesGroupByStep(
+			groupId, objectRelationshipId, primaryKey, related, reverse,
 			DSLQueryFactoryUtil.countDistinct(
 				ObjectEntryTable.INSTANCE.objectEntryId));
 
@@ -599,14 +600,13 @@ public class ObjectEntryLocalServiceImpl
 			groupId, companyId, externalReferenceCode);
 	}
 
-	@Override
-	public List<ObjectEntry> getOneToManyRelatedObjectEntries(
-			long groupId, long objectRelationshipId, long primaryKey, int start,
-			int end)
+	public List<ObjectEntry> getOneToManyObjectEntries(
+			long groupId, long objectRelationshipId, long primaryKey,
+			boolean related, int start, int end)
 		throws PortalException {
 
-		DSLQuery dslQuery = _getOneToManyRelatedObjectEntriesGroupByStep(
-			groupId, objectRelationshipId, primaryKey,
+		DSLQuery dslQuery = _getOneToManyObjectEntriesGroupByStep(
+			groupId, objectRelationshipId, primaryKey, related,
 			DSLQueryFactoryUtil.selectDistinct(ObjectEntryTable.INSTANCE)
 		).limit(
 			start, end
@@ -620,12 +620,13 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	@Override
-	public int getOneToManyRelatedObjectEntriesCount(
-			long groupId, long objectRelationshipId, long primaryKey)
+	public int getOneToManyObjectEntriesCount(
+			long groupId, long objectRelationshipId, long primaryKey,
+			boolean related)
 		throws PortalException {
 
-		DSLQuery dslQuery = _getOneToManyRelatedObjectEntriesGroupByStep(
-			groupId, objectRelationshipId, primaryKey,
+		DSLQuery dslQuery = _getOneToManyObjectEntriesGroupByStep(
+			groupId, objectRelationshipId, primaryKey, related,
 			DSLQueryFactoryUtil.countDistinct(
 				ObjectEntryTable.INSTANCE.objectEntryId));
 
@@ -701,11 +702,16 @@ public class ObjectEntryLocalServiceImpl
 				continue;
 			}
 
-			modelAttributes.put(
-				objectField.getName(),
-				GetterUtil.getObject(
-					baseModelAttributes.get(objectField.getDBColumnName()),
-					primaryKey));
+			Object value = GetterUtil.getObject(
+				baseModelAttributes.get(objectField.getDBColumnName()),
+				primaryKey);
+
+			if (value instanceof String) {
+				value = LocalizationUtil.getLocalization(
+					(String)value, null, true);
+			}
+
+			modelAttributes.put(objectField.getName(), value);
 		}
 
 		modelAttributes.putAll(
@@ -812,21 +818,8 @@ public class ObjectEntryLocalServiceImpl
 				).and(
 					_fillPredicate(objectDefinitionId, predicate, search)
 				).and(
-					() -> {
-						if (PermissionThreadLocal.getPermissionChecker() ==
-								null) {
-
-							return null;
-						}
-
-						ObjectDefinition objectDefinition =
-							_objectDefinitionPersistence.fetchByPrimaryKey(
-								objectDefinitionId);
-
-						return _inlineSQLHelper.getPermissionWherePredicate(
-							objectDefinition.getClassName(),
-							dynamicObjectDefinitionTable.getPrimaryKeyColumn());
-					}
+					_getPermissionWherePredicate(
+						dynamicObjectDefinitionTable, groupId)
 				)
 			).orderBy(
 				orderByExpressions
@@ -887,19 +880,8 @@ public class ObjectEntryLocalServiceImpl
 			).and(
 				_fillPredicate(objectDefinitionId, predicate, search)
 			).and(
-				() -> {
-					if (PermissionThreadLocal.getPermissionChecker() == null) {
-						return null;
-					}
-
-					ObjectDefinition objectDefinition =
-						_objectDefinitionPersistence.fetchByPrimaryKey(
-							objectDefinitionId);
-
-					return _inlineSQLHelper.getPermissionWherePredicate(
-						objectDefinition.getClassName(),
-						dynamicObjectDefinitionTable.getPrimaryKeyColumn());
-				}
+				_getPermissionWherePredicate(
+					dynamicObjectDefinitionTable, groupId)
 			)
 		);
 
@@ -1444,9 +1426,9 @@ public class ObjectEntryLocalServiceImpl
 		throw new IllegalArgumentException("Invalid function " + function);
 	}
 
-	private GroupByStep _getManyToManyRelatedObjectEntriesGroupByStep(
+	private GroupByStep _getManyToManyObjectEntriesGroupByStep(
 			long groupId, long objectRelationshipId, long primaryKey,
-			boolean reverse, FromStep fromStep)
+			boolean related, boolean reverse, FromStep fromStep)
 		throws PortalException {
 
 		ObjectRelationship objectRelationship =
@@ -1454,12 +1436,8 @@ public class ObjectEntryLocalServiceImpl
 				objectRelationshipId);
 
 		long objectDefinitionId1 = objectRelationship.getObjectDefinitionId1();
-		long objectDefinitionId2 = objectRelationship.getObjectDefinitionId2();
 
-		if (reverse) {
-			objectDefinitionId1 = objectRelationship.getObjectDefinitionId2();
-			objectDefinitionId2 = objectRelationship.getObjectDefinitionId1();
-		}
+		long objectDefinitionId2 = objectRelationship.getObjectDefinitionId2();
 
 		DynamicObjectDefinitionTable dynamicObjectDefinitionTable =
 			_getDynamicObjectDefinitionTable(objectDefinitionId2);
@@ -1493,18 +1471,16 @@ public class ObjectEntryLocalServiceImpl
 			dynamicObjectDefinitionTable
 		).innerJoinON(
 			ObjectEntryTable.INSTANCE,
-			ObjectEntryTable.INSTANCE.objectEntryId.eq(
-				dynamicObjectDefinitionTable.getPrimaryKeyColumn())
+			ObjectEntryTable.INSTANCE.objectEntryId.eq(primaryKeyColumn1)
 		).innerJoinON(
 			extensionDynamicObjectDefinitionTable,
 			extensionDynamicObjectDefinitionTable.getPrimaryKeyColumn(
 			).eq(
-				dynamicObjectDefinitionTable.getPrimaryKeyColumn()
+				primaryKeyColumn1
 			)
-		).innerJoinON(
+		).leftJoinOn(
 			dynamicObjectRelationshipMappingTable,
-			primaryKeyColumn2.eq(
-				dynamicObjectDefinitionTable.getPrimaryKeyColumn())
+			primaryKeyColumn2.eq(primaryKeyColumn1)
 		).where(
 			ObjectEntryTable.INSTANCE.groupId.eq(
 				groupId
@@ -1515,16 +1491,38 @@ public class ObjectEntryLocalServiceImpl
 				ObjectEntryTable.INSTANCE.objectDefinitionId.eq(
 					objectDefinitionId2)
 			).and(
-				primaryKeyColumn1.eq(primaryKey)
-			).and(
 				() -> {
 					if (PermissionThreadLocal.getPermissionChecker() == null) {
 						return null;
 					}
 
 					return _inlineSQLHelper.getPermissionWherePredicate(
-						objectDefinition2.getClassName(),
-						dynamicObjectDefinitionTable.getPrimaryKeyColumn());
+						objectDefinition2.getClassName(), primaryKeyColumn1);
+				}
+			).and(
+				() -> {
+					if (related) {
+						return primaryKeyColumn1.eq(primaryKey);
+					}
+
+					return primaryKeyColumn1.notIn(
+						DSLQueryFactoryUtil.select(
+							primaryKeyColumn2
+						).from(
+							dynamicObjectRelationshipMappingTable
+						).where(
+							primaryKeyColumn1.eq(primaryKey)
+						));
+				}
+			).and(
+				() -> {
+					if (objectDefinition1.getObjectDefinitionId() ==
+							objectDefinition2.getObjectDefinitionId()) {
+
+						return primaryKeyColumn1.neq(primaryKey);
+					}
+
+					return null;
 				}
 			)
 		);
@@ -1639,9 +1637,9 @@ public class ObjectEntryLocalServiceImpl
 		return oDataFilterStrings;
 	}
 
-	private GroupByStep _getOneToManyRelatedObjectEntriesGroupByStep(
+	private GroupByStep _getOneToManyObjectEntriesGroupByStep(
 			long groupId, long objectRelationshipId, long primaryKey,
-			FromStep fromStep)
+			boolean related, FromStep fromStep)
 		throws PortalException {
 
 		ObjectRelationship objectRelationship =
@@ -1657,17 +1655,19 @@ public class ObjectEntryLocalServiceImpl
 		ObjectField objectField = _objectFieldPersistence.fetchByPrimaryKey(
 			objectRelationship.getObjectFieldId2());
 
+		Column<DynamicObjectDefinitionTable, Long> primaryKeyColumn =
+			dynamicObjectDefinitionTable.getPrimaryKeyColumn();
+
 		return fromStep.from(
 			dynamicObjectDefinitionTable
 		).innerJoinON(
 			ObjectEntryTable.INSTANCE,
-			ObjectEntryTable.INSTANCE.objectEntryId.eq(
-				dynamicObjectDefinitionTable.getPrimaryKeyColumn())
+			ObjectEntryTable.INSTANCE.objectEntryId.eq(primaryKeyColumn)
 		).innerJoinON(
 			extensionDynamicObjectDefinitionTable,
 			extensionDynamicObjectDefinitionTable.getPrimaryKeyColumn(
 			).eq(
-				dynamicObjectDefinitionTable.getPrimaryKeyColumn()
+				primaryKeyColumn
 			)
 		).where(
 			ObjectEntryTable.INSTANCE.groupId.eq(
@@ -1680,26 +1680,31 @@ public class ObjectEntryLocalServiceImpl
 					objectRelationship.getObjectDefinitionId2())
 			).and(
 				() -> {
-					Column<DynamicObjectDefinitionTable, Long>
-						primaryKeyColumn = null;
+					Column<DynamicObjectDefinitionTable, Long> column = null;
 
 					if (Objects.equals(
 							objectField.getDBTableName(),
 							dynamicObjectDefinitionTable.getName())) {
 
-						primaryKeyColumn =
-							(Column<DynamicObjectDefinitionTable, Long>)
-								dynamicObjectDefinitionTable.getColumn(
-									objectField.getDBColumnName());
+						column = primaryKeyColumn;
 					}
 					else {
-						primaryKeyColumn =
-							(Column<DynamicObjectDefinitionTable, Long>)
-								extensionDynamicObjectDefinitionTable.getColumn(
-									objectField.getDBColumnName());
+						column =
+							extensionDynamicObjectDefinitionTable.
+								getPrimaryKeyColumn();
 					}
 
-					return primaryKeyColumn.eq(primaryKey);
+					return column.eq(related ? primaryKey : 0L);
+				}
+			).and(
+				() -> {
+					if (objectRelationship.getObjectDefinitionId1() ==
+							objectRelationship.getObjectDefinitionId2()) {
+
+						return primaryKeyColumn.neq(primaryKey);
+					}
+
+					return null;
 				}
 			).and(
 				() -> {
@@ -1712,11 +1717,29 @@ public class ObjectEntryLocalServiceImpl
 							objectRelationship.getObjectDefinitionId2());
 
 					return _inlineSQLHelper.getPermissionWherePredicate(
-						objectDefinition2.getClassName(),
-						dynamicObjectDefinitionTable.getPrimaryKeyColumn());
+						objectDefinition2.getClassName(), primaryKeyColumn);
 				}
 			)
 		);
+	}
+
+	private Predicate _getPermissionWherePredicate(
+		DynamicObjectDefinitionTable dynamicObjectDefinitionTable,
+		long groupId) {
+
+		ObjectDefinition objectDefinition =
+			dynamicObjectDefinitionTable.getObjectDefinition();
+
+		if ((PermissionThreadLocal.getPermissionChecker() == null) ||
+			!_inlineSQLHelper.isEnabled(
+				objectDefinition.getCompanyId(), groupId)) {
+
+			return null;
+		}
+
+		return _inlineSQLHelper.getPermissionWherePredicate(
+			objectDefinition.getClassName(),
+			dynamicObjectDefinitionTable.getPrimaryKeyColumn());
 	}
 
 	private Expression<?>[] _getSelectExpressions(
@@ -2041,9 +2064,7 @@ public class ObjectEntryLocalServiceImpl
 			dynamicObjectDefinitionTable.getObjectFields();
 
 		for (ObjectField objectField : objectFields) {
-			Object value = values.get(objectField.getName());
-
-			if (Validator.isNull(value)) {
+			if (!values.containsKey(objectField.getName())) {
 				if (objectField.isRequired()) {
 					throw new ObjectEntryValuesException.Required(
 						objectField.getName());
@@ -2063,7 +2084,8 @@ public class ObjectEntryLocalServiceImpl
 					ObjectRelationshipConstants.TYPE_ONE_TO_ONE)) {
 
 				_validateOneToOneInsert(
-					objectField.getDBColumnName(), GetterUtil.getLong(value),
+					objectField.getDBColumnName(),
+					GetterUtil.getLong(values.get(objectField.getName())),
 					dynamicObjectDefinitionTable);
 			}
 
@@ -2072,14 +2094,6 @@ public class ObjectEntryLocalServiceImpl
 
 			count++;
 		}
-
-		/*if (count == 1) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"No values were provided for object entry " +
-						objectEntryId);
-			}
-		}*/
 
 		sb.append(") values (?");
 
@@ -2106,9 +2120,7 @@ public class ObjectEntryLocalServiceImpl
 			_setColumn(preparedStatement, index++, Types.BIGINT, objectEntryId);
 
 			for (ObjectField objectField : objectFields) {
-				Object value = values.get(objectField.getName());
-
-				if (Validator.isNull(value)) {
+				if (!values.containsKey(objectField.getName())) {
 					continue;
 				}
 
@@ -2116,7 +2128,8 @@ public class ObjectEntryLocalServiceImpl
 					objectField.getDBColumnName());
 
 				_setColumn(
-					preparedStatement, index++, column.getSQLType(), value);
+					preparedStatement, index++, column.getSQLType(),
+					values.get(objectField.getName()));
 			}
 
 			preparedStatement.executeUpdate();
@@ -2450,9 +2463,7 @@ public class ObjectEntryLocalServiceImpl
 			dynamicObjectDefinitionTable.getObjectFields();
 
 		for (ObjectField objectField : objectFields) {
-			Object value = values.get(objectField.getName());
-
-			if (value == null) {
+			if (!values.containsKey(objectField.getName())) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(
 						"No value was provided for object field \"" +
@@ -2467,7 +2478,8 @@ public class ObjectEntryLocalServiceImpl
 					ObjectRelationshipConstants.TYPE_ONE_TO_ONE)) {
 
 				_validateOneToOneUpdate(
-					objectField.getDBColumnName(), GetterUtil.getLong(value),
+					objectField.getDBColumnName(),
+					GetterUtil.getLong(values.get(objectField.getName())),
 					dynamicObjectDefinitionTable, objectEntryId);
 			}
 
@@ -2515,9 +2527,7 @@ public class ObjectEntryLocalServiceImpl
 			int index = 1;
 
 			for (ObjectField objectField : objectFields) {
-				Object value = values.get(objectField.getName());
-
-				if (value == null) {
+				if (!values.containsKey(objectField.getName())) {
 					continue;
 				}
 
@@ -2525,7 +2535,8 @@ public class ObjectEntryLocalServiceImpl
 					objectField.getDBColumnName());
 
 				_setColumn(
-					preparedStatement, index++, column.getSQLType(), value);
+					preparedStatement, index++, column.getSQLType(),
+					values.get(objectField.getName()));
 			}
 
 			_setColumn(preparedStatement, index++, Types.BIGINT, objectEntryId);

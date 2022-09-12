@@ -35,6 +35,7 @@ import com.liferay.portal.workflow.kaleo.definition.util.KaleoLogUtil;
 import com.liferay.portal.workflow.kaleo.service.KaleoLogLocalService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -175,9 +176,13 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 					_userLocalService.fetchUser(
 						workflowLog.getPreviousUserId()));
 				previousRole = _toRole(workflowLog.getPreviousRoleId());
-				previousState = workflowLog.getPreviousState();
+				previousState = workflowLog.getPreviousWorkflowNodeName();
+				previousStateLabel = workflowLog.getPreviousWorkflowNodeLabel(
+					contextAcceptLanguage.getPreferredLocale());
 				role = _toRole(workflowLog.getRoleId());
-				state = workflowLog.getState();
+				state = workflowLog.getCurrentWorkflowNodeName();
+				stateLabel = workflowLog.getCurrentWorkflowNodeLabel(
+					contextAcceptLanguage.getPreferredLocale());
 				type = _toWorkflowLogType(
 					KaleoLogUtil.convert(workflowLog.getType()));
 				workflowTaskId = workflowLog.getWorkflowTaskId();
@@ -186,19 +191,19 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 	}
 
 	private WorkflowLog.Type _toWorkflowLogType(String type) {
-		if (type == LogType.NODE_ENTRY.name()) {
+		if (Objects.equals(type, LogType.NODE_ENTRY.name())) {
 			return WorkflowLog.Type.NODE_ENTRY;
 		}
-		else if (type == LogType.NODE_EXIT.name()) {
+		else if (Objects.equals(type, LogType.NODE_EXIT.name())) {
 			return WorkflowLog.Type.TRANSITION;
 		}
-		else if (type == LogType.TASK_ASSIGNMENT.name()) {
+		else if (Objects.equals(type, LogType.TASK_ASSIGNMENT.name())) {
 			return WorkflowLog.Type.TASK_ASSIGN;
 		}
-		else if (type == LogType.TASK_COMPLETION.name()) {
+		else if (Objects.equals(type, LogType.TASK_COMPLETION.name())) {
 			return WorkflowLog.Type.TASK_COMPLETION;
 		}
-		else if (type == LogType.TASK_UPDATE.name()) {
+		else if (Objects.equals(type, LogType.TASK_UPDATE.name())) {
 			return WorkflowLog.Type.TASK_UPDATE;
 		}
 

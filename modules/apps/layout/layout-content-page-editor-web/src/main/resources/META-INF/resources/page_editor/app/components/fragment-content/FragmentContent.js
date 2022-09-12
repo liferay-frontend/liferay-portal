@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
 
+import {TEXT_EDITABLE_TYPES} from '../../config/constants/textEditableTypes';
 import {
 	useGetContent,
 	useGetFieldValue,
@@ -185,6 +186,13 @@ const FragmentContent = ({
 						);
 
 						editable.element.classList.add('page-editor__editable');
+
+						if (TEXT_EDITABLE_TYPES.has(editable.type)) {
+							editable.element.setAttribute(
+								'data-tooltip-floating',
+								true
+							);
+						}
 					});
 				})
 			).then(() => {

@@ -19,12 +19,19 @@ import {navigate} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import ActionsDropdown from './ActionsDropdown';
+
 const ITEM_TYPES_SYMBOL = {
 	article: 'document-text',
 	folder: 'folder',
 };
+
 export default function NavigationPanel({items, selectedItemId}) {
 	const handleClickItem = (event, item) => {
+		if (event.defaultPrevented) {
+			return;
+		}
+
 		event.stopPropagation();
 		event.preventDefault();
 
@@ -41,6 +48,7 @@ export default function NavigationPanel({items, selectedItemId}) {
 			{(item) => {
 				return (
 					<ClayTreeView.Item
+						actions={ActionsDropdown({actions: item.actions})}
 						onClick={(event) => {
 							handleClickItem(event, item);
 						}}
@@ -60,6 +68,9 @@ export default function NavigationPanel({items, selectedItemId}) {
 							{(item) => {
 								return (
 									<ClayTreeView.Item
+										actions={ActionsDropdown({
+											actions: item.actions,
+										})}
 										onClick={(event) => {
 											handleClickItem(event, item);
 										}}

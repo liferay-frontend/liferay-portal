@@ -73,21 +73,25 @@ public interface WorkflowTaskManager {
 			workflowContext);
 	}
 
-	public WorkflowTask fetchWorkflowTask(long companyId, long workflowTaskId)
+	public WorkflowTask fetchWorkflowTask(long workflowTaskId)
 		throws WorkflowException;
 
-	public default List<User> getAssignableUsers(
-			long companyId, long workflowTaskId)
+	public default List<User> getAssignableUsers(long workflowTaskId)
 		throws WorkflowException {
 
 		throw new UnsupportedOperationException();
 	}
 
-	public List<String> getNextTransitionNames(
-			long companyId, long userId, long workflowTaskId)
+	public List<String> getNextTransitionNames(long userId, long workflowTaskId)
 		throws WorkflowException;
 
-	public WorkflowTask getWorkflowTask(long companyId, long workflowTaskId)
+	public default List<User> getNotifiableUsers(long workflowTaskId)
+		throws WorkflowException {
+
+		throw new UnsupportedOperationException();
+	}
+
+	public WorkflowTask getWorkflowTask(long workflowTaskId)
 		throws WorkflowException;
 
 	public int getWorkflowTaskCount(long companyId, Boolean completed)
@@ -150,7 +154,11 @@ public interface WorkflowTaskManager {
 			OrderByComparator<WorkflowTask> orderByComparator)
 		throws WorkflowException;
 
-	public boolean hasAssignableUsers(long companyId, long workflowTaskId)
+	public List<WorkflowTransition> getWorkflowTaskWorkflowTransitions(
+			long workflowTaskId)
+		throws WorkflowException;
+
+	public boolean hasAssignableUsers(long workflowTaskId)
 		throws WorkflowException;
 
 	public default List<WorkflowTask> search(

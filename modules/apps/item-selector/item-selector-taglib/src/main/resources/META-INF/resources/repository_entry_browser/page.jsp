@@ -52,7 +52,9 @@ if (uploadURL != null) {
 }
 %>
 
-<liferay-util:html-top>
+<liferay-util:html-top
+	outputKey="item_selector_repository_entry_browser"
+>
 	<link href="<%= ServletContextUtil.getContextPath() %>/repository_entry_browser/css/main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
@@ -115,41 +117,84 @@ SearchContainer<?> searchContainer = new SearchContainer(renderRequest, itemSele
 		/>
 	</c:if>
 
-	<c:if test="<%= showDragAndDropZone && !showSearchInfo %>">
-		<div class="dropzone-wrapper <%= (repositoryEntriesCount == 0) ? "dropzone-wrapper-search-container-empty" : StringPool.BLANK %>">
-			<div class="dropzone dropzone-disabled"><span aria-hidden="true" class="loading-animation loading-animation-sm"></span></div>
+	<c:choose>
+		<c:when test="<%= showDragAndDropZone && !showSearchInfo %>">
+			<div class="dropzone-wrapper <%= (repositoryEntriesCount == 0) ? "dropzone-wrapper-search-container-empty" : StringPool.BLANK %>">
+	<div class="dropzone dropzone-disabled"><span aria-hidden="true" class="loading-animation loading-animation-sm"></span></div>
+		</c:when>
+		<c:otherwise>
+			<div>
+		</c:otherwise>
+	</c:choose>
+		<c:choose>
+			<c:when test='<%= GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-160919")) %>'>
+				<react:component
+					data='<%=
+						HashMapBuilder.<String, Object>put(
+							"closeCaption", LanguageUtil.get(request, tabName)
+						).put(
+							"editImageURL",
+							() -> {
+								if (editImageURL != null) {
+									return editImageURL.toString();
+								}
 
-			<react:component
-				data='<%=
-					HashMapBuilder.<String, Object>put(
-						"closeCaption", LanguageUtil.get(request, tabName)
-					).put(
-						"editImageURL",
-						() -> {
-							if (editImageURL != null) {
-								return editImageURL.toString();
+								return null;
 							}
+						).put(
+							"itemSelectedEventName", itemSelectedEventName
+						).put(
+							"maxFileSize", maxFileSize
+						).put(
+							"mimeTypeRestriction", mimeTypeRestriction
+						).put(
+							"rootNode", "#" + randomNamespace + "ItemSelectorContainer"
+						).put(
+							"uploaderEnabled", showDragAndDropZone && !showSearchInfo
+						).put(
+							"uploadItemReturnType", HtmlUtil.escapeAttribute(returnType)
+						).put(
+							"uploadItemURL", uploadURL.toString()
+						).put(
+							"validExtensions", StringUtil.merge(extensions)
+						).build()
+					%>'
+					module="repository_entry_browser/js/ItemSelectorRepositoryEntryBrowser"
+				/>
+			</c:when>
+			<c:when test="<%= showDragAndDropZone && !showSearchInfo %>">
+				<react:component
+					data='<%=
+						HashMapBuilder.<String, Object>put(
+							"closeCaption", LanguageUtil.get(request, tabName)
+						).put(
+							"editImageURL",
+							() -> {
+								if (editImageURL != null) {
+									return editImageURL.toString();
+								}
 
-							return null;
-						}
-					).put(
-						"itemSelectedEventName", itemSelectedEventName
-					).put(
-						"maxFileSize", maxFileSize
-					).put(
-						"mimeTypeRestriction", mimeTypeRestriction
-					).put(
-						"uploadItemReturnType", HtmlUtil.escapeAttribute(returnType)
-					).put(
-						"uploadItemURL", uploadURL.toString()
-					).put(
-						"validExtensions", StringUtil.merge(extensions)
-					).build()
-				%>'
-				module="item_selector_uploader/js/SingleFileUploader"
-			/>
-		</div>
-	</c:if>
+								return null;
+							}
+						).put(
+							"itemSelectedEventName", itemSelectedEventName
+						).put(
+							"maxFileSize", maxFileSize
+						).put(
+							"mimeTypeRestriction", mimeTypeRestriction
+						).put(
+							"uploadItemReturnType", HtmlUtil.escapeAttribute(returnType)
+						).put(
+							"uploadItemURL", uploadURL.toString()
+						).put(
+							"validExtensions", StringUtil.merge(extensions)
+						).build()
+					%>'
+					module="item_selector_uploader/js/SingleFileUploader"
+				/>
+			</c:when>
+		</c:choose>
+	</div>
 
 	<c:if test="<%= (existingFileEntryReturnType != null) || (itemSelectorReturnTypeResolver != null) %>">
 		<liferay-ui:search-container
@@ -615,33 +660,35 @@ SearchContainer<?> searchContainer = new SearchContainer(renderRequest, itemSele
 	<div class="item-selector-preview-container"></div>
 </clay:container-fluid>
 
-<aui:script require='<%= npmResolvedPackageName + "/repository_entry_browser/js/ItemSelectorRepositoryEntryBrowser.es as ItemSelectorRepositoryEntryBrowser" %>'>
-	var itemSelector = new ItemSelectorRepositoryEntryBrowser.default({
-		closeCaption: '<%= UnicodeLanguageUtil.get(request, tabName) %>',
+<c:if test='<%= !GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-160919")) %>'>
+	<aui:script require='<%= npmResolvedPackageName + "/repository_entry_browser/js/ItemSelectorRepositoryEntryBrowser.es as ItemSelectorRepositoryEntryBrowser" %>'>
+		var itemSelector = new ItemSelectorRepositoryEntryBrowser.default({
+			closeCaption: '<%= UnicodeLanguageUtil.get(request, tabName) %>',
 
-		<c:if test="<%= editImageURL != null %>">
-			editImageURL: '<%= editImageURL.toString() %>',
-		</c:if>
+			<c:if test="<%= editImageURL != null %>">
+				editImageURL: '<%= editImageURL.toString() %>',
+			</c:if>
 
-		itemSelectorSingleFileUploaderEnabled: <%= true %>,
+			itemSelectorSingleFileUploaderEnabled: <%= true %>,
 
-		maxFileSize: '<%= maxFileSize %>',
+			maxFileSize: '<%= maxFileSize %>',
 
-		rootNode: '#<%= randomNamespace %>ItemSelectorContainer',
+			rootNode: '#<%= randomNamespace %>ItemSelectorContainer',
 
-		validExtensions:
-			'<%= ListUtil.isEmpty(extensions) ? "*" : StringUtil.merge(extensions) %>',
+			validExtensions:
+				'<%= ListUtil.isEmpty(extensions) ? "*" : StringUtil.merge(extensions) %>',
 
-		<c:if test="<%= uploadURL != null %>">
-			uploadItemReturnType: '<%= HtmlUtil.escapeAttribute(returnType) %>',
-			uploadItemURL: '<%= uploadURL.toString() %>',
-		</c:if>
-	});
+			<c:if test="<%= uploadURL != null %>">
+				uploadItemReturnType: '<%= HtmlUtil.escapeAttribute(returnType) %>',
+				uploadItemURL: '<%= uploadURL.toString() %>',
+			</c:if>
+		});
 
-	itemSelector.on('selectedItem', (event) => {
-		Liferay.Util.getOpener().Liferay.fire(
-			'<%= itemSelectedEventName %>',
-			event
-		);
-	});
-</aui:script>
+		itemSelector.on('selectedItem', (event) => {
+			Liferay.Util.getOpener().Liferay.fire(
+				'<%= itemSelectedEventName %>',
+				event
+			);
+		});
+	</aui:script>
+	</c:if>

@@ -843,9 +843,9 @@ public class HttpImpl implements Http {
 			if ((method.equals(Http.Method.PATCH) ||
 				 method.equals(Http.Method.POST) ||
 				 method.equals(Http.Method.PUT)) &&
-				((body != null) || !ListUtil.isEmpty(fileParts) ||
-				 !ListUtil.isEmpty(inputStreamParts) ||
-				 !MapUtil.isEmpty(parts)) &&
+				((body != null) || ListUtil.isNotEmpty(fileParts) ||
+				 ListUtil.isNotEmpty(inputStreamParts) ||
+				 MapUtil.isNotEmpty(parts)) &&
 				!hasRequestHeader(requestBuilder, HttpHeaders.CONTENT_TYPE)) {
 
 				requestBuilder.addHeader(

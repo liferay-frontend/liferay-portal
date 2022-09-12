@@ -72,7 +72,7 @@ public class AMBackwardsCompatibilityHtmlContentTransformer
 			return null;
 		}
 
-		if (!html.contains("<img") || !html.contains("/documents/")) {
+		if (!html.contains("/documents/") || !html.contains("<img")) {
 			return html;
 		}
 
@@ -201,6 +201,25 @@ public class AMBackwardsCompatibilityHtmlContentTransformer
 
 	private String _transform(String imgElementString, String src)
 		throws PortalException {
+
+		// Check if the src starts with "data:image/" first because "data:image"
+		// indicates a Base64 URL which can potentially be millions of
+		// characters. So it is faster to run startsWith first to return early
+		// on these strings first so that we do not have to call "contains" over
+		// a very long string.
+
+		if (src.startsWith("data:image/")) {
+			return imgElementString;
+		}
+
+		// If we got past the above check, we have a URL. Now we can do a quick
+		// check if the URL contains "/documents" as a crude way of bypassing
+		// most non-Liferay URLs before we have to get into the less performant
+		// regex logic.
+
+		if (!src.contains("/documents")) {
+			return imgElementString;
+		}
 
 		String replacement = imgElementString;
 

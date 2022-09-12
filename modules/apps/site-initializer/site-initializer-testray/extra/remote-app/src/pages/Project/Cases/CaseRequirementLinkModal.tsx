@@ -39,10 +39,11 @@ const CaseRequirementLinkModal: React.FC<CaseRequirementLinkModalProps> = ({
 		<Modal
 			last={
 				<Form.Footer
-					isModal
 					onClose={onClose}
 					onSubmit={() => onSave({items, state})}
-					primaryButtonTitle={i18n.translate('select-requirements')}
+					primaryButtonProps={{
+						title: i18n.translate('select-requirements'),
+					}}
 				/>
 			}
 			observer={observer}

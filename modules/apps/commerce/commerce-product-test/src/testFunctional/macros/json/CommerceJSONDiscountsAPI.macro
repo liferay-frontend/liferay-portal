@@ -36,6 +36,10 @@ definition {
 		if (!(isSet(useCouponCode))) {
 			var useCouponCode = "false";
 		}
+
+		if ("${useCouponCode}" == "false") {
+			var couponCode = "";
+		}
 		else {
 			if (!(isSet(couponCode))) {
 				var couponCode = "TEST";
@@ -86,7 +90,6 @@ definition {
 			-H 'accept: application/json' \
 			-H 'Content-Type: application/json' \
   			-d '{
-				"discountId": ${discountId},
 				"accountGroupId": ${accountGroupId}
 			}'
 		''';
@@ -112,7 +115,6 @@ definition {
 			-H 'accept: application/json' \
 			-H 'Content-Type: application/json' \
   			-d '{
-				"discountId": ${discountId},
 				"productId": ${productId}
 			}'
 		''';

@@ -26,7 +26,7 @@ import java.util.Map;
  * @author Brian Wing Shun Chan
  * @author Marcellus Tavares
  */
-public interface WorkflowTask extends WorkflowModel {
+public interface WorkflowTask extends WorkflowModel, WorkflowNode {
 
 	public long getAssigneeUserId();
 
@@ -41,6 +41,10 @@ public interface WorkflowTask extends WorkflowModel {
 	public String getName();
 
 	public Map<String, Serializable> getOptionalAttributes();
+
+	public default Type getType() {
+		return Type.TASK;
+	}
 
 	public long getWorkflowDefinitionId();
 

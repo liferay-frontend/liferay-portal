@@ -15,6 +15,7 @@
 import React, {useEffect, useRef} from 'react';
 
 import {EVENT_TYPES} from '../../actions/eventTypes.es';
+import {useConfig} from '../../hooks/useConfig.es';
 import {useForm} from '../../hooks/useForm.es';
 import {usePage} from '../../hooks/usePage.es';
 import MetalFieldAdapter from './MetalFieldAdapter.es';
@@ -38,8 +39,9 @@ export function MetalComponentAdapter({
 	type,
 	...field
 }) {
-	const {activePage, editable, pageIndex, spritemap} = usePage();
+	const {activePage, editable, pageIndex} = usePage();
 	const dispatch = useForm();
+	const {spritemap} = useConfig();
 
 	const componentRef = useRef(null);
 	const containerRef = useRef(null);

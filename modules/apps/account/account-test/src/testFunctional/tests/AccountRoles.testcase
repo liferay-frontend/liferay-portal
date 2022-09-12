@@ -19,28 +19,16 @@ definition {
 		}
 	}
 
-	@description = "This test asserts the account manager can assign and remove organizations."
+	@description = "This test asserts the account manager can assign the organizations to the account by default."
 	@priority = "4"
-	test AccountManagersCanManageOrganizations {
+	test AccountManagersCanAssignOrganizationtoAccountbyDefault {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 
-		task ("Given add 3 organizations and assign 2 of them to an account") {
+		task ("Given add user useramsn as Account Manager for AM Account") {
 			JSONAccountEntry.addAccountEntry(
 				accountEntryName = "AM Account",
 				accountEntryType = "Business");
 
-			for (var orgNum : list "1,2,3") {
-				JSONOrganization.addOrganization(organizationName = "Account Org${orgNum}");
-			}
-
-			for (var orgNum : list "1,2") {
-				JSONAccountEntry.addAccountEntryOrganization(
-					accountEntryName = "AM Account",
-					organizationName = "Account Org${orgNum}");
-			}
-		}
-
-		task ("When an account manager is added to the account") {
 			AccountConfiguration.addAccountManager(
 				accountName = "AM Account",
 				orgName = "AM Organization",
@@ -49,59 +37,55 @@ definition {
 				userFirstName = "useramfn",
 				userLastName = "useramln",
 				userScreenName = "useramsn");
+		}
 
+		task ("And add 2 organizations") {
+			JSONOrganization.addOrganization(organizationName = "Account Org1");
+
+			JSONOrganization.addOrganization(organizationName = "Account Org2");
+		}
+
+		task ("When the Account Manager useramsn assign the Account Org1 to AM Account") {
 			User.logoutPG();
 
 			User.loginUserPG(
 				password = "test",
 				userEmailAddress = "useramea@liferay.com");
-		}
 
-		task ("Then the account manager user is able to assign organization") {
 			Accounts.openAccountsAdmin();
 
 			LexiconEntry.gotoEntry(rowEntry = "AM Account");
 
 			Accounts.assignOrganizations(
 				accountName = "AM Account",
-				assigneeName = "Account Org3");
-
-			for (var orgNum : list "1,2,3") {
-				LexiconEntry.viewEntryName(rowEntry = "Account Org${orgNum}");
-			}
+				assigneeName = "Account Org1");
 		}
 
-		task ("And the account manager user is able to remove organizations") {
-			Accounts.removeOrganizationAsAssignee(assigneeName = "Account Org1");
+		task ("Then only the Account Org1 displays in the Organizations list for AM Account") {
+			LexiconEntry.viewEntryName(rowEntry = "Account Org1");
 
-			for (var orgNum : list "2,3") {
-				LexiconEntry.viewEntryName(rowEntry = "Account Org${orgNum}");
-			}
-
-			LexiconEntry.viewNoEntry(rowEntry = "Account Org1");
+			LexiconEntry.viewNoEntry(rowEntry = "Account Org2");
 		}
 	}
 
-	@description = "This test assert the account manager can view account organizations."
+	@description = "This test asserts the account manager can remove the organizations from the account by default."
 	@priority = "4"
-	test AccountManagersCanViewOrganizations {
+	test AccountManagersCanRemoveOrganizationfromAccountbyDefault {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 
-		task ("Given add 2 organizations to an account") {
+		task ("Given assign the Organization Account Org1 to Account AM Account") {
 			JSONAccountEntry.addAccountEntry(
 				accountEntryName = "AM Account",
 				accountEntryType = "Business");
 
-			for (var orgNum : list "1,2") {
-				JSONOrganization.addOrganization(organizationName = "Account Org${orgNum}");
+			JSONOrganization.addOrganization(organizationName = "Account Org1");
 
-				JSONAccountEntry.addAccountEntryOrganization(
-					accountEntryName = "AM Account",
-					organizationName = "Account Org${orgNum}");
-			}
+			JSONAccountEntry.addAccountEntryOrganization(
+				accountEntryName = "AM Account",
+				organizationName = "Account Org1");
 		}
 
-		task ("When an account manager is added to the account") {
+		task ("And add user useramsn as Account Manager") {
 			AccountConfiguration.addAccountManager(
 				accountName = "AM Account",
 				orgName = "AM Organization",
@@ -110,35 +94,100 @@ definition {
 				userFirstName = "useramfn",
 				userLastName = "useramln",
 				userScreenName = "useramsn");
+		}
 
+		task ("When the Account Manager useramsn remove the Account Org1 from AM Account") {
 			User.logoutPG();
 
 			User.loginUserPG(
 				password = "test",
 				userEmailAddress = "useramea@liferay.com");
-		}
 
-		task ("Then the user should be able to see the organizations listed in that account") {
 			Accounts.openAccountsAdmin();
 
 			LexiconEntry.gotoEntry(rowEntry = "AM Account");
 
 			Accounts.gotoAssigneeTab(assigneeTab = "Organizations");
 
+			Accounts.removeOrganizationAsAssignee(assigneeName = "Account Org1");
+		}
+
+		task ("Then only the AM Organization displays in the Organizations list for AM Account") {
+			LexiconEntry.viewNoEntry(rowEntry = "Account Org1");
+
 			LexiconEntry.viewEntryName(rowEntry = "AM Organization");
-
-			LexiconEntry.viewEntryName(rowEntry = "Account Org1");
-
-			LexiconEntry.viewEntryName(rowEntry = "Account Org2");
 		}
 	}
 
-	@description = "This test assert the account manager can view account users."
+	@description = "This test assert the account manager can view account organizations by default."
 	@priority = "4"
-	test AccountManagersCanViewUsers {
+	test AccountManagersCanViewOrganizationsbyDefault {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 
-		task ("Given an account with a company user assigned") {
+		task ("Given add 2 organizations and assign one to an account") {
+			JSONOrganization.addOrganization(organizationName = "Account Org1");
+
+			JSONOrganization.addOrganization(organizationName = "Company Org");
+
+			JSONAccountEntry.addAccountEntry(
+				accountEntryName = "AM Account",
+				accountEntryType = "Business");
+
+			JSONAccountEntry.addAccountEntryOrganization(
+				accountEntryName = "AM Account",
+				organizationName = "Account Org1");
+		}
+
+		task ("And add user useramsn as Account Manager") {
+			AccountConfiguration.addAccountManager(
+				accountName = "AM Account",
+				orgName = "AM Organization",
+				orgRoleTitle = "Account Manager",
+				userEmailAddress = "useramea@liferay.com",
+				userFirstName = "useramfn",
+				userLastName = "useramln",
+				userScreenName = "useramsn");
+		}
+
+		task ("When the account manager navigates into the Organizations tab of AM Account") {
+			User.logoutPG();
+
+			User.loginUserPG(
+				password = "test",
+				userEmailAddress = "useramea@liferay.com");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "AM Account");
+
+			Accounts.gotoAssigneeTab(assigneeTab = "Organizations");
+		}
+
+		task ("Then the account manager should be able to see the organization listed in that account") {
+			Navigator.viewActivatedNavTab(navTab = "Organizations");
+
+			LexiconEntry.viewNoEntry(rowEntry = "Company Org");
+
+			AssertTextNotPresent(value1 = "There are no organizations associated with this account.");
+
+			AssertElementPresent(locator1 = "Icon#PLUS");
+
+			for (var orgName : list "AM Organization,Account Org1") {
+				LexiconEntry.viewEntryName(rowEntry = "${orgName}");
+
+				AssertElementPresent(
+					key_assigneeName = "${orgName}",
+					locator1 = "Icon#REMOVE_ASSIGNEE");
+			}
+		}
+	}
+
+	@description = "This test assert the account manager can view account users by default."
+	@priority = "4"
+	test AccountManagersCanViewUsersbyDefault {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
+		task ("Given an account with an account user assigned") {
 			JSONAccountEntry.addAccountEntry(
 				accountEntryName = "AM Account",
 				accountEntryType = "Business");
@@ -149,19 +198,17 @@ definition {
 				userFirstName = "userfn1",
 				userLastName = "userln1",
 				userScreenName = "usersn1");
-
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONAccountEntryUser.addExistUsertoAccount(
-				accountEntryName = "AM Account",
-				userEmailAddress = "userea@liferay.com");
 		}
 
-		task ("When an account manager is added to the account") {
+		task ("And a company user is added") {
+			JSONUser.addUser(
+				userEmailAddress = "usereano@liferay.com",
+				userFirstName = "userfnno",
+				userLastName = "userlnno",
+				userScreenName = "usersnno");
+		}
+
+		task ("And add user useramsn as Account Manager") {
 			AccountConfiguration.addAccountManager(
 				accountName = "AM Account",
 				orgName = "AM Organization",
@@ -170,24 +217,34 @@ definition {
 				userFirstName = "useramfn",
 				userLastName = "useramln",
 				userScreenName = "useramsn");
+		}
 
+		task ("When the account manager navigates into the User tab of AM Account") {
 			User.logoutPG();
 
 			User.loginUserPG(
 				password = "test",
 				userEmailAddress = "useramea@liferay.com");
-		}
 
-		task ("Then the user should be able to see the user listed in that account") {
 			Accounts.openAccountsAdmin();
 
 			LexiconEntry.gotoEntry(rowEntry = "AM Account");
 
 			Accounts.gotoAssigneeTab(assigneeTab = "Users");
+		}
 
-			LexiconEntry.viewEntryName(rowEntry = "userfn userln");
+		task ("Then the account manager should be able to see the user listed in that account") {
+			Navigator.viewActivatedNavTab(navTab = "Users");
+
+			LexiconEntry.viewNoEntry(rowEntry = "userfn userln");
+
+			AssertTextNotPresent(value1 = "There are no users associated with this account.");
 
 			LexiconEntry.viewEntryName(rowEntry = "userfn1 userln1");
+
+			LexiconEntry.viewEntryMenu(rowEntry = "userfn1 userln1");
+
+			AssertElementPresent(locator1 = "Icon#PLUS");
 		}
 	}
 
@@ -272,6 +329,196 @@ definition {
 		}
 	}
 
+	@description = "This is a use case for LPS-142654. This asserts user with Define Permission can define owned account role permissions."
+	@priority = "4"
+	test CanDefinePermissionsforAccountRoleWithPermissions {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
+		task ("Given a user is granted permissions to access Account Admin portlet") {
+			JSONUser.addUser(
+				userEmailAddress = "userea1@liferay.com",
+				userFirstName = "userfn1",
+				userLastName = "userln1",
+				userScreenName = "usersn1");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "userea1@liferay.com");
+
+			Accounts.grantUserAccessToAccountAdmin(userEmailAddress = "userea1@liferay.com");
+		}
+
+		task ("And user is assigned a business account and prepare an Owned account role for testing") {
+			JSONAccountEntry.addAccountEntry(
+				accountEntryName = "Account Name",
+				accountEntryType = "Business");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.assignUsers(
+				accountName = "Account Name",
+				assigneeName = "userfn1");
+
+			Accounts.addOwnedAccountRole(accountRoleTitle = "New Account Role");
+		}
+
+		task ("When this user is granted permissions to Define Account Role Permission") {
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.gotoAssigneeTab(assigneeTab = "Roles");
+
+			Accounts.addOwnedAccountRole(accountRoleTitle = "Define Permissions Role");
+
+			for (var resourceActionIndex : list "UPDATE,VIEW_ACCOUNT_ROLES") {
+				Permissions.definePermissionViaJSONAPI(
+					resourceAction = "${resourceActionIndex}",
+					resourceName = "com.liferay.account.model.AccountEntry",
+					roleTitle = "Define Permissions Role",
+					roleType = "account");
+			}
+
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "DEFINE_PERMISSIONS",
+				resourceName = "com.liferay.account.model.AccountRole",
+				roleTitle = "Define Permissions Role",
+				roleType = "account");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.addAssigneeToRoleViaUsersTab(
+				accountRoleTitle = "Define Permissions Role",
+				accountUserName = "userfn1 userln1");
+		}
+
+		task ("Then user can define permissions and group scope permissions in owned Account Roles") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "userea1@liferay.com",
+				userLoginFullName = "userfn1 userln1");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.gotoAssigneeTab(assigneeTab = "Roles");
+
+			LexiconEntry.gotoEntryMenuItem(
+				menuItem = "Define Permissions",
+				rowEntry = "New Account Role");
+
+			Accounts.definePermissions(
+				key_navItem = "Accounts",
+				key_subItem = "Accounts",
+				permissionKey = "ACCOUNTS_RESOURCE_PERMISSIONS_ACCOUNT_ENTRY_VIEW",
+				permissionNavigationKey = "PERMISSIONS_NAVITEM_SUBITEM");
+
+			AssertElementPresent(
+				key_permissionDefinitionValue = "View",
+				key_permissionNavigationValue = "Accounts",
+				locator1 = "RolesPermissionsSummary#PERMISSION_TABLE_PERMISSIONS");
+
+			Accounts.defineGroupScopePermissions(
+				key_navItem = "Account Management",
+				permissionKey = "ACCOUNTS_APPLICATION_PERMISSIONS_VIEW",
+				permissionNavigationKey = "PERMISSIONS_NAVITEM");
+
+			AssertElementPresent(
+				key_permissionDefinitionValue = "View",
+				key_permissionNavigationValue = "Account Management",
+				locator1 = "RolesPermissionsSummary#PERMISSION_TABLE_PERMISSIONS");
+		}
+	}
+
+	@description = "This is a use case for LPS-142654. This asserts user with Delete Account Role permissions for an account can Delete account roles."
+	@priority = "4"
+	test CanDeleteAccountRoleWithPermissions {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
+		task ("Given a user is granted permissions to access Account Admin portlet Update account entry, View account role tab") {
+			JSONUser.addUser(
+				userEmailAddress = "userea1@liferay.com",
+				userFirstName = "userfn1",
+				userLastName = "userln1",
+				userScreenName = "usersn1");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "userea1@liferay.com");
+
+			Accounts.grantUserAccessToAccountAdmin(userEmailAddress = "userea1@liferay.com");
+
+			for (var resourceActionIndex : list "UPDATE,VIEW_ACCOUNT_ROLES") {
+				Permissions.definePermissionViaJSONAPI(
+					resourceAction = "${resourceActionIndex}",
+					resourceName = "com.liferay.account.model.AccountEntry",
+					roleTitle = "Access Account Permission");
+			}
+		}
+
+		task ("And he is a member of a business account") {
+			JSONAccountEntry.addAccountEntry(
+				accountEntryName = "Account Name",
+				accountEntryType = "Business");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.assignUsers(
+				accountName = "Account Name",
+				assigneeName = "userfn1");
+		}
+
+		task ("When this user is granted permissions to Delete account role for Account Name") {
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.addOwnedAccountRole(accountRoleTitle = "Account Specific Role");
+
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "DELETE",
+				resourceName = "com.liferay.account.model.AccountRole",
+				roleTitle = "Account Specific Role",
+				roleType = "account");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.addAssigneeToRoleViaUsersTab(
+				accountRoleTitle = "Account Specific Role",
+				accountUserName = "userfn1 userln1");
+		}
+
+		task ("Then he can delete account roles in Account Name") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "userea1@liferay.com",
+				userLoginFullName = "userfn1 userln1");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.deleteOwnedAccountRole(accountRoleTitle = "Account Specific Role");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.gotoAssigneeTab(assigneeTab = "Roles");
+
+			LexiconEntry.viewNoEntry(rowEntry = "Account Specific Role");
+		}
+	}
+
 	@description = "This is a use case for LPS-151552. This asserts saving edits in one permissions tab in Account Roles does not clear related permissions from the other tab."
 	@priority = "4"
 	test CanSavePermissionsWithoutDeletingOthers {
@@ -325,6 +572,95 @@ definition {
 			Role.viewPermissionCP(
 				permissionDefinitionValue = "Subscribe",
 				permissionNavigationValue = "Blogs > Blog Entries:");
+		}
+	}
+
+	@description = "This is a use case for LPS-142654. This asserts user with Update Account Role permissions for an account can update account roles."
+	@priority = "4"
+	test CanUpdateAccountRoleWithPermissions {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
+		task ("Given a user is granted permissions to access Account Admin portlet") {
+			JSONUser.addUser(
+				userEmailAddress = "userea1@liferay.com",
+				userFirstName = "userfn1",
+				userLastName = "userln1",
+				userScreenName = "usersn1");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "userea1@liferay.com");
+
+			Accounts.grantUserAccessToAccountAdmin(userEmailAddress = "userea1@liferay.com");
+		}
+
+		task ("And he is a member of a business account") {
+			JSONAccountEntry.addAccountEntry(
+				accountEntryName = "Account Name",
+				accountEntryType = "Business");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.assignUsers(
+				accountName = "Account Name",
+				assigneeName = "userfn1");
+		}
+
+		task ("And add owned account role with Update account entry, View account role tab permissions ") {
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.addOwnedAccountRole(accountRoleTitle = "Account Specific Role");
+
+			for (var resourceActionIndex : list "UPDATE,VIEW_ACCOUNT_ROLES") {
+				Permissions.definePermissionViaJSONAPI(
+					resourceAction = "${resourceActionIndex}",
+					resourceName = "com.liferay.account.model.AccountEntry",
+					roleTitle = "Account Specific Role",
+					roleType = "account");
+			}
+		}
+
+		task ("When this user is granted permissions to Update account role for Account Name") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "UPDATE",
+				resourceName = "com.liferay.account.model.AccountRole",
+				roleTitle = "Account Specific Role",
+				roleType = "account");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.addAssigneeToRoleViaUsersTab(
+				accountRoleTitle = "Account Specific Role",
+				accountUserName = "userfn1 userln1");
+		}
+
+		task ("Then he can update account roles in Account Name") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "userea1@liferay.com",
+				userLoginFullName = "userfn1 userln1");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.updateOwnedAccountRole(
+				accountRoleTitle = "Account Specific Role",
+				accountRoleTitleEdit = "Account Specific Role Edit");
+
+			Accounts.openAccountsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Account Name");
+
+			Accounts.gotoAssigneeTab(assigneeTab = "Roles");
+
+			LexiconEntry.viewEntryName(rowEntry = "Account Specific Role Edit");
 		}
 	}
 

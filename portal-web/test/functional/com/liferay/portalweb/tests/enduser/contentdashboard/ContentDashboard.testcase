@@ -1230,6 +1230,36 @@ definition {
 		}
 	}
 
+	@description = "LPS-160210: Add WebDAV URL to Info Panel"
+	@priority = "3"
+	test CheckDocumentURLLabel {
+		task ("Given a Document Asset at Content Dashboard") {
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentTitle = "DM Document Title",
+				groupName = "Test Site Name",
+				mimeType = "text/plain",
+				sourceFileName = "Document_1.txt");
+		}
+
+		task ("When the user accesses the information panel") {
+			ContentDashboard.goToContentDashboard();
+
+			ContentDashboard.openInfoPanelByDropdownMenu();
+
+			Panel.expandPanel(panel = "Details");
+		}
+
+		task ("Then the field labels should be added to distinguish between the two URLs ") {
+			AssertTextPresent(
+				locator1 = "ContentDashboard#URL_LABEL",
+				value1 = "WebDAV URL");
+
+			AssertTextPresent(
+				locator1 = "ContentDashboard#URL_LABEL",
+				value1 = "Latest Version URL");
+		}
+	}
+
 	@description = "LPS-131936 Given the Content Dashboard
     When there is an asset with more than one category per vocabulary
     Then the table will show a label with the first of the categories and another one with a + and the number of remaining categories"
@@ -3074,6 +3104,119 @@ definition {
 		}
 	}
 
+	@description = "LPS-150553: Add Filtering by Status in Content Dashboard for Blogs"
+	@priority = "4"
+	test FilterBlogByStatusAndAuthor {
+		task ("Given the Filter and Order dropdown") {
+			task ("Create a blog with the tag") {
+				JSONBlog.addEntry(
+					entryContent = "Blogs Entry Content",
+					entryTitle = "Blogs Entry Title",
+					groupName = "Test Site Name");
+			}
+
+			task ("Go to Content Dashboard") {
+				ContentDashboard.goToContentDashboard();
+			}
+		}
+
+		task ("When the user selects the option Filter by Status and another filter") {
+			ContentDashboard.filterByStatus(filterOption = "Approved");
+
+			ContentDashboard.filterByAuthorMe(filterOption = "Me");
+		}
+
+		task ("Then the list is filtered displaying only contents included in both filters, including Blogs") {
+			AssertTextPresent(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Blogs Entry Title");
+		}
+	}
+
+	@description = "LPS-150553: Add Filtering by Status in Content Dashboard for Blogs"
+	@priority = "5"
+	test FilterBlogByStatusApproved {
+		task ("Given The Filter and Order dropdown") {
+			task ("Create an approved blog") {
+				JSONBlog.addEntry(
+					entryContent = "Blogs Entry Content",
+					entryTitle = "Blogs Entry Title",
+					groupName = "Test Site Name");
+			}
+
+			task ("Go to Content Dashboard") {
+				ContentDashboard.goToContentDashboard();
+			}
+		}
+
+		task ("When the user selects the option Filter by Status: Approved") {
+			ContentDashboard.filterByStatus(filterOption = "Approved");
+		}
+
+		task ("Then the list is filtered displaying only contents labeled as Approved, including Blogs") {
+			AssertTextPresent(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Blogs Entry Title");
+		}
+	}
+
+	@description = "LPS-150553: Add Filtering by Status in Content Dashboard for Blogs"
+	@priority = "5"
+	test FilterBlogByStatusDraft {
+		task ("Given The Filter and Order dropdown") {
+			task ("Create an approved blog") {
+				JSONBlog.addEntry(
+					entryContent = "Blogs Entry Content",
+					entryTitle = "Blogs Entry Title",
+					groupName = "Test Site Name",
+					workflowAction = "DRAFT");
+			}
+
+			task ("Go to Content Dashboard") {
+				ContentDashboard.goToContentDashboard();
+			}
+		}
+
+		task ("When the user selects the option Filter by Status: Draft") {
+			ContentDashboard.filterByStatus(filterOption = "Draft");
+		}
+
+		task ("Then the list is filtered displaying only contents labeled as Draft, including Blogs") {
+			AssertTextPresent(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Blogs Entry Title");
+		}
+	}
+
+	@description = "LPS-150553: Add Filtering by Status in Content Dashboard for Blogs"
+	@priority = "5"
+	test FilterBlogByStatusScheduled {
+		task ("Given The Filter and Order dropdown") {
+			task ("Create an approved blog") {
+				JSONBlog.addEntry(
+					displayDate = "true",
+					entryContent = "Blogs Entry Content",
+					entryTitle = "Blogs Entry Title",
+					groupName = "Test Site Name",
+					increaseYears = "1");
+			}
+
+			task ("Go to Content Dashboard") {
+				ContentDashboard.goToContentDashboard();
+			}
+		}
+
+		task ("When the user selects the option Filter by Status: Scheduled'") {
+			ContentDashboard.filterByStatus(filterOption = "Scheduled");
+		}
+
+		task ("Then the list is filtered displaying only contents labeled as Scheduled, including Blogs") {
+			AssertTextPresent(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Blogs Entry Title");
+		}
+	}
+
 	@description = "LPS-150558 Given The Filter by... > Tags
 	When the user clicks on several tags and clicks Save
 	Then the content list in the Content Dashboard filters accordingly, including Blogs"
@@ -3619,7 +3762,7 @@ definition {
 		task ("Filter asset by Any status in Content Dashboard") {
 			ContentDashboard.goToContentDashboard();
 
-			ContentDashboard.filterByStatusAny(filterOption = "Any");
+			ContentDashboard.filterByStatus(filterOption = "Any");
 
 			ContentDashboard.searchValue(webContentTitle = "WC Title Approved");
 
@@ -3650,7 +3793,7 @@ definition {
 		task ("Filter asset by Aproved status in Content Dashboard") {
 			ContentDashboard.goToContentDashboard();
 
-			ContentDashboard.filterByStatusApproved(filterOption = "Approved");
+			ContentDashboard.filterByStatus(filterOption = "Approved");
 
 			AssertTextPresent(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
@@ -3674,11 +3817,81 @@ definition {
 		task ("Filter asset by Draft status in Content Dashboard") {
 			ContentDashboard.goToContentDashboard();
 
-			ContentDashboard.filterByStatusDraft(filterOption = "Draft");
+			ContentDashboard.filterByStatus(filterOption = "Draft");
 
 			AssertTextPresent(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
 				value1 = "WC Title Draft");
+		}
+	}
+
+	@description = "LPS-155386: Add Filtering by Pending Status to the Content Dashboard"
+	@priority = "4"
+	test FilterByStatusPendingBlog {
+		property portal.acceptance = "true";
+
+		task ("Given a pending Blog") {
+			task ("Configure Blogs Entry workflow to Single Approver") {
+				Workflow.openWorkflowAdmin(siteURLKey = "test-site-name");
+
+				Workflow.configureWorkflow(
+					workflowDefinition = "Single Approver",
+					workflowResourceValue = "Blogs Entry");
+			}
+
+			task ("Create a Blog Entry") {
+				JSONBlog.addEntry(
+					entryContent = "Blogs Entry Content",
+					entryTitle = "Blogs Entry Title",
+					groupName = "Test Site Name");
+			}
+		}
+
+		task ("When user filters by 'Pending' status") {
+			ContentDashboard.goToContentDashboard();
+
+			ContentDashboard.filterByStatus(filterOption = "Pending");
+		}
+
+		task ("Then the asset is filtered") {
+			AssertTextPresent(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Blogs Entry Title");
+		}
+	}
+
+	@description = "LPS-155386: Add Filtering by Pending Status to the Content Dashboard"
+	@priority = "4"
+	test FilterByStatusPendingWebContent {
+		property portal.acceptance = "true";
+
+		task ("Given a pending Web Content") {
+			task ("Configure Web Content Article workflow to Single Approver") {
+				Workflow.openWorkflowAdmin(siteURLKey = "test-site-name");
+
+				Workflow.configureWorkflow(
+					workflowDefinition = "Single Approver",
+					workflowResourceValue = "Web Content Article");
+			}
+
+			task ("Create a Web Content") {
+				JSONWebcontent.addWebContent(
+					content = "Web Content Content",
+					groupName = "Test Site Name",
+					title = "Web Content Title");
+			}
+		}
+
+		task ("When user filters by 'Pending' status") {
+			ContentDashboard.goToContentDashboard();
+
+			ContentDashboard.filterByStatus(filterOption = "Pending");
+		}
+
+		task ("Then the asset is filtered") {
+			AssertTextPresent(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Web Content Title");
 		}
 	}
 
@@ -3723,7 +3936,7 @@ definition {
 		task ("Filter asset at Content Dashboard using status") {
 			ContentDashboard.goToContentDashboard();
 
-			ContentDashboard.filterByStatusScheduled(filterOption = "Scheduled");
+			ContentDashboard.filterByStatus(filterOption = "Scheduled");
 
 			AssertTextPresent(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",

@@ -267,7 +267,7 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 					>
 
 						<%
-						List<ContentDashboardItem.Version> versions = contentDashboardItem.getVersions(locale);
+						List<ContentDashboardItem.Version> versions = contentDashboardItem.getLatestVersions(locale);
 
 						for (ContentDashboardItem.Version version : versions) {
 						%>
@@ -290,6 +290,21 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 
 					<liferay-ui:search-container-column-text>
 						<clay:dropdown-actions
+							additionalProps='<%=
+								HashMapBuilder.<String, Object>put(
+									"currentRowId", rowId
+								).put(
+									"namespace", liferayPortletResponse.getNamespace()
+								).put(
+									"panelState", contentDashboardAdminDisplayContext.getPanelState()
+								).put(
+									"selectedItemFetchURL", contentDashboardAdminDisplayContext.getSelectedItemFetchURL(contentDashboardItem)
+								).put(
+									"selectedItemRowId", contentDashboardAdminDisplayContext.getSelectedItemRowId()
+								).put(
+									"singlePageApplicationEnabled", contentDashboardAdminDisplayContext.getSinglePageApplicationEnabled()
+								).build()
+							%>'
 							dropdownItems="<%= contentDashboardAdminDisplayContext.getDropdownItems(contentDashboardItem) %>"
 							propsTransformer="js/transformers/ActionsComponentPropsTransformer"
 						/>

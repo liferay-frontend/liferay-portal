@@ -18,7 +18,9 @@ import classNames from 'classnames';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {useGlobalContext} from '../../app/contexts/GlobalContext';
+import isValidStyleValue from '../../app/utils/isValidStyleValue';
 import {useId} from '../../app/utils/useId';
+import {LengthField} from '../../common/components/LengthField';
 import {useStyleBook} from '../../plugins/page-design-options/hooks/useStyleBook';
 import {Tooltip} from './Tooltip';
 
@@ -53,7 +55,12 @@ const REVERSED_POSITION = {
 const BUTTON_CLASSNAME = 'page-editor__spacing-selector__button';
 const DROPDOWN_CLASSNAME = 'page-editor__spacing-selector__dropdown';
 
-export default function SpacingBox({fields, onChange, value}) {
+export default function SpacingBox({
+	canSetCustomValue,
+	fields,
+	onChange,
+	value,
+}) {
 	const ref = useRef();
 
 	const focusButton = (type, position) => {
@@ -135,9 +142,10 @@ export default function SpacingBox({fields, onChange, value}) {
 
 						return (
 							<SpacingSelectorButton
+								canSetCustomValue={canSetCustomValue}
 								field={fields[key]}
 								key={key}
-								onChange={(value) => onChange(key, value)}
+								onChange={onChange}
 								position={position}
 								type={type}
 								value={value[key]}
@@ -150,7 +158,14 @@ export default function SpacingBox({fields, onChange, value}) {
 	);
 }
 
-function SpacingSelectorButton({field, onChange, position, type, value}) {
+function SpacingSelectorButton({
+	canSetCustomValue,
+	field,
+	onChange,
+	position,
+	type,
+	value,
+}) {
 	const [active, setActive] = useState(false);
 	const disabled = !field || field.disabled;
 	const itemListRef = useRef();
@@ -233,6 +248,26 @@ function SpacingSelectorButton({field, onChange, position, type, value}) {
 			<div ref={itemListRef}>
 				<ClayDropDown.ItemList aria-labelledby={triggerId}>
 					<ClayDropDown.Group header={field?.label}>
+						{Liferay.FeatureFlags['LPS-143206'] &&
+						active &&
+						canSetCustomValue ? (
+							<LengthField
+								className="mb-3 mt-2 px-3"
+								field={field}
+								onEnter={() => {
+									setActive(false);
+									triggerElement?.focus();
+								}}
+								onValueSelect={onChange}
+								showLabel={false}
+								value={
+									isValidStyleValue(field.cssProperty, value)
+										? value
+										: ''
+								}
+							/>
+						) : null}
+
 						{field?.typeOptions?.validValues?.map((option) => (
 							<ClayDropDown.Item
 								aria-label={Liferay.Util.sub(
@@ -243,9 +278,9 @@ function SpacingSelectorButton({field, onChange, position, type, value}) {
 								data-value={option.value}
 								key={option.value}
 								onClick={() => {
-									onChange(option.value);
+									onChange(field.name, option.value);
 									setActive(false);
-									document.getElementById(triggerId)?.focus();
+									triggerElement?.focus();
 								}}
 							>
 								<span className="text-truncate w-50">
@@ -283,6 +318,12 @@ function SpacingOptionValue({
 	useEffect(() => {
 		if (tokenValues[`spacer${optionValue}`]) {
 			setValue(tokenValues[`spacer${optionValue}`].value);
+
+			return;
+		}
+
+		if (isValidStyleValue(`${type}-${position}`, optionValue)) {
+			setValue(optionValue);
 
 			return;
 		}

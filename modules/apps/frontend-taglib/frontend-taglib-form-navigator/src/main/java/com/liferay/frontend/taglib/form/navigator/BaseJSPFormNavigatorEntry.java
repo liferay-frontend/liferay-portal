@@ -43,7 +43,11 @@ public abstract class BaseJSPFormNavigatorEntry<T>
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
-		ServletContext servletContext = getServletContext(httpServletRequest);
+		ServletContext servletContext = getServletContext();
+
+		if (servletContext == null) {
+			servletContext = getServletContext(httpServletRequest);
+		}
 
 		RequestDispatcher requestDispatcher =
 			servletContext.getRequestDispatcher(getJspPath());
@@ -60,18 +64,10 @@ public abstract class BaseJSPFormNavigatorEntry<T>
 		}
 	}
 
-	public void setServletContext(ServletContext servletContext) {
-		_servletContext = servletContext;
-	}
-
 	protected abstract String getJspPath();
 
 	protected ServletContext getServletContext(
 		HttpServletRequest httpServletRequest) {
-
-		if (_servletContext != null) {
-			return _servletContext;
-		}
 
 		String portletId = PortalUtil.getPortletId(httpServletRequest);
 
@@ -88,7 +84,5 @@ public abstract class BaseJSPFormNavigatorEntry<T>
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseJSPFormNavigatorEntry.class);
-
-	private ServletContext _servletContext;
 
 }

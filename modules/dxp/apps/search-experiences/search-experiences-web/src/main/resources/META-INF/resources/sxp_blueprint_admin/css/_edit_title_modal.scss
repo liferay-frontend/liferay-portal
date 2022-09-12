@@ -37,6 +37,21 @@
 		}
 	}
 
+	.edit-title {
+		margin-bottom: 1.5rem;
+
+		.form-group {
+			margin-bottom: 0;
+		}
+	}
+
+	.edit-title,
+	.edit-description {
+		.form-text {
+			display: none;
+		}
+	}
+
 	.form-group:last-of-type {
 		margin-bottom: 0;
 	}

@@ -15,6 +15,7 @@
 package com.liferay.portal.configuration.persistence;
 
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.file.install.properties.ConfigurationHandler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -64,9 +65,20 @@ public class ConfigurationOverridePropertiesUtil {
 						key.substring(0, index), pid -> new HashMap<>());
 
 				try {
-					overrideProperties.put(
-						key.substring(index + 1),
-						ConfigurationHandler.read(properties.getProperty(key)));
+					String valueString = properties.getProperty(key);
+
+					Object value = ConfigurationHandler.read(valueString);
+
+					if ((value == null) && !valueString.isEmpty()) {
+						_log.error(
+							StringBundler.concat(
+								"Key ", key,
+								" was overridden with incorrectly formatted ",
+								"content"));
+					}
+					else {
+						overrideProperties.put(key.substring(index + 1), value);
+					}
 				}
 				catch (IOException ioException) {
 					_log.error("Unable to parse property", ioException);

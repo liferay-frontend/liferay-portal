@@ -17,6 +17,7 @@ package com.liferay.knowledge.base.editor.configuration.internal;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.item.selector.ItemSelectorReturnType;
+import com.liferay.item.selector.constants.ItemSelectorCriterionConstants;
 import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.item.selector.criteria.image.criterion.ImageItemSelectorCriterion;
@@ -151,24 +152,24 @@ public class KBAttachmentEditorConfigContributor
 		long resourcePrimKey, ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
 
-		ItemSelectorCriterion itemSelectorCriterion =
-			new UploadItemSelectorCriterion(
-				null,
-				PortletURLBuilder.create(
-					requestBackedPortletURLFactory.createActionURL(
-						KBPortletKeys.KNOWLEDGE_BASE_ADMIN)
-				).setActionName(
-					"/knowledge_base/upload_kb_article_attachments"
-				).setParameter(
-					"resourcePrimKey", resourcePrimKey
-				).buildString(),
-				LanguageResources.getMessage(
-					themeDisplay.getLocale(), "article-attachments"));
-
-		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-			new FileEntryItemSelectorReturnType());
-
-		return itemSelectorCriterion;
+		return UploadItemSelectorCriterion.builder(
+		).desiredItemSelectorReturnTypes(
+			new FileEntryItemSelectorReturnType()
+		).mimeTypeRestriction(
+			ItemSelectorCriterionConstants.MIME_TYPE_RESTRICTION_IMAGE
+		).repositoryName(
+			LanguageResources.getMessage(
+				themeDisplay.getLocale(), "article-attachments")
+		).url(
+			PortletURLBuilder.create(
+				requestBackedPortletURLFactory.createActionURL(
+					KBPortletKeys.KNOWLEDGE_BASE_ADMIN)
+			).setActionName(
+				"/knowledge_base/upload_kb_article_attachments"
+			).setParameter(
+				"resourcePrimKey", resourcePrimKey
+			).buildString()
+		).build();
 	}
 
 	private ItemSelectorCriterion _getURLItemSelectorCriterion() {

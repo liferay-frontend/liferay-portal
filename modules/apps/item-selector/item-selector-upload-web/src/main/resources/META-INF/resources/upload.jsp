@@ -36,48 +36,88 @@ if (Validator.isNotNull(namespace)) {
 	cssClass="lfr-item-viewer"
 	id="itemSelectorUploadContainer"
 >
-	<div class="drop-enabled drop-zone item-selector upload-view">
-		<div id="uploadDescription">
-			<c:if test="<%= !BrowserSnifferUtil.isMobile(request) %>">
-				<p>
-					<strong><liferay-ui:message arguments="<%= itemSelectorUploadViewDisplayContext.getRepositoryName() %>" key="drag-and-drop-to-upload-to-x-or" /></strong>
-				</p>
-			</c:if>
+	<c:choose>
+		<c:when test='<%= GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-160919")) %>'>
+			<liferay-util:html-top
+				outputKey="item_selector_repository_entry_browser"
+			>
+				<link href="<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/item-selector-taglib/repository_entry_browser/css/main.css") %>" rel="stylesheet" />
+			</liferay-util:html-top>
 
-			<p>
-				<input accept="<%= ArrayUtil.isEmpty(itemSelectorUploadViewDisplayContext.getExtensions()) ? "*" : StringUtil.merge(itemSelectorUploadViewDisplayContext.getExtensions()) %>" class="input-file" id="<portlet:namespace />inputFile" type="file" />
+			<div class="dropzone-wrapper dropzone-wrapper-search-container-empty">
+				<div class="dropzone dropzone-disabled"><span aria-hidden="true" class="loading-animation loading-animation-sm"></span></div>
 
-				<label class="btn btn-secondary" for="<portlet:namespace />inputFile"><liferay-ui:message key="select-file" /></label>
-			</p>
-		</div>
-	</div>
+				<react:component
+					module="js/ItemSelectorRepositoryEntryBrowser"
+					props='<%=
+						HashMapBuilder.<String, Object>put(
+							"closeCaption", itemSelectorUploadViewDisplayContext.getTitle(locale)
+						).put(
+							"editImageURL", uploadURL
+						).put(
+							"itemSelectedEventName", itemSelectorUploadViewDisplayContext.getItemSelectedEventName()
+						).put(
+							"maxFileSize", itemSelectorUploadViewDisplayContext.getMaxFileSize()
+						).put(
+							"mimeTypeRestriction", itemSelectorUploadViewDisplayContext.getMimeTypeRestriction()
+						).put(
+							"rootNode", "#itemSelectorUploadContainer"
+						).put(
+							"uploadItemReturnType", HtmlUtil.escapeAttribute(itemSelectorReturnTypeClass.getName())
+						).put(
+							"uploadItemURL", uploadURL
+						).put(
+							"validExtensions", StringUtil.merge(itemSelectorUploadViewDisplayContext.getExtensions())
+						).build()
+					%>'
+				/>
+			</div>
+		</c:when>
+		<c:otherwise>
+			<div class="drop-enabled drop-zone item-selector upload-view">
+				<div id="uploadDescription">
+					<c:if test="<%= !BrowserSnifferUtil.isMobile(request) %>">
+						<p>
+							<strong><liferay-ui:message arguments="<%= itemSelectorUploadViewDisplayContext.getRepositoryName() %>" key="drag-and-drop-to-upload-to-x-or" /></strong>
+						</p>
+					</c:if>
 
-	<liferay-ui:drop-here-info
-		message="drop-files-here"
-	/>
+					<p>
+						<input accept="<%= ArrayUtil.isEmpty(itemSelectorUploadViewDisplayContext.getExtensions()) ? "*" : StringUtil.merge(itemSelectorUploadViewDisplayContext.getExtensions()) %>" class="input-file" id="<portlet:namespace />inputFile" type="file" />
 
-	<div class="item-selector-preview-container"></div>
+						<label class="btn btn-secondary" for="<portlet:namespace />inputFile"><liferay-ui:message key="select-file" /></label>
+					</p>
+				</div>
+			</div>
+
+			<liferay-ui:drop-here-info
+				message="drop-files-here"
+			/>
+
+			<div class="item-selector-preview-container"></div>
+
+			<liferay-frontend:component
+				context='<%=
+					HashMapBuilder.<String, Object>put(
+						"closeCaption", itemSelectorUploadViewDisplayContext.getTitle(locale)
+					).put(
+						"editImageURL", uploadURL
+					).put(
+						"eventName", itemSelectorUploadViewDisplayContext.getItemSelectedEventName()
+					).put(
+						"maxFileSize", itemSelectorUploadViewDisplayContext.getMaxFileSize()
+					).put(
+						"rootNode", "#itemSelectorUploadContainer"
+					).put(
+						"uploadItemReturnType", HtmlUtil.escapeAttribute(itemSelectorReturnTypeClass.getName())
+					).put(
+						"uploadItemURL", uploadURL
+					).put(
+						"validExtensions", ArrayUtil.isEmpty(itemSelectorUploadViewDisplayContext.getExtensions()) ? "*" : StringUtil.merge(itemSelectorUploadViewDisplayContext.getExtensions())
+					).build()
+				%>'
+				module="js/ItemSelectorRepositoryEntryBrowser"
+			/>
+		</c:otherwise>
+	</c:choose>
 </clay:container-fluid>
-
-<liferay-frontend:component
-	context='<%=
-		HashMapBuilder.<String, Object>put(
-			"closeCaption", itemSelectorUploadViewDisplayContext.getTitle(locale)
-		).put(
-			"editImageURL", uploadURL
-		).put(
-			"eventName", itemSelectorUploadViewDisplayContext.getItemSelectedEventName()
-		).put(
-			"maxFileSize", itemSelectorUploadViewDisplayContext.getMaxFileSize()
-		).put(
-			"rootNode", "#itemSelectorUploadContainer"
-		).put(
-			"uploadItemReturnType", HtmlUtil.escapeAttribute(itemSelectorReturnTypeClass.getName())
-		).put(
-			"uploadItemURL", uploadURL
-		).put(
-			"validExtensions", ArrayUtil.isEmpty(itemSelectorUploadViewDisplayContext.getExtensions()) ? "*" : StringUtil.merge(itemSelectorUploadViewDisplayContext.getExtensions())
-		).build()
-	%>'
-	module="js/index.es"
-/>

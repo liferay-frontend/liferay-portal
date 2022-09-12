@@ -102,6 +102,7 @@ public class CommerceDiscountRelLocalServiceImpl
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CommerceDiscountRel deleteCommerceDiscountRel(
+			CommerceDiscount commerceDiscount,
 			CommerceDiscountRel commerceDiscountRel)
 		throws PortalException {
 
@@ -111,9 +112,22 @@ public class CommerceDiscountRelLocalServiceImpl
 
 		// Commerce discount
 
-		reindexCommerceDiscount(commerceDiscountRel.getCommerceDiscountId());
+		reindexCommerceDiscount(commerceDiscount);
 
 		return commerceDiscountRel;
+	}
+
+	@Override
+	public CommerceDiscountRel deleteCommerceDiscountRel(
+			CommerceDiscountRel commerceDiscountRel)
+		throws PortalException {
+
+		CommerceDiscount commerceDiscount =
+			_commerceDiscountPersistence.findByPrimaryKey(
+				commerceDiscountRel.getCommerceDiscountId());
+
+		return commerceDiscountRelLocalService.deleteCommerceDiscountRel(
+			commerceDiscount, commerceDiscountRel);
 	}
 
 	@Override
@@ -127,6 +141,20 @@ public class CommerceDiscountRelLocalServiceImpl
 
 		return commerceDiscountRelLocalService.deleteCommerceDiscountRel(
 			commerceDiscountRel);
+	}
+
+	@Override
+	public void deleteCommerceDiscountRels(CommerceDiscount commerceDiscount)
+		throws PortalException {
+
+		List<CommerceDiscountRel> commerceDiscountRels =
+			commerceDiscountRelPersistence.findByCommerceDiscountId(
+				commerceDiscount.getCommerceDiscountId());
+
+		for (CommerceDiscountRel commerceDiscountRel : commerceDiscountRels) {
+			commerceDiscountRelLocalService.deleteCommerceDiscountRel(
+				commerceDiscount, commerceDiscountRel);
+		}
 	}
 
 	@Override
@@ -386,16 +414,22 @@ public class CommerceDiscountRelLocalServiceImpl
 				CPInstanceTable.INSTANCE.sku));
 	}
 
+	protected void reindexCommerceDiscount(CommerceDiscount commerceDiscount)
+		throws PortalException {
+
+		Indexer<CommerceDiscount> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(CommerceDiscount.class);
+
+		indexer.reindex(commerceDiscount);
+	}
+
 	protected void reindexCommerceDiscount(long commerceDiscountId)
 		throws PortalException {
 
 		CommerceDiscount commerceDiscount =
 			_commerceDiscountPersistence.findByPrimaryKey(commerceDiscountId);
 
-		Indexer<CommerceDiscount> indexer =
-			IndexerRegistryUtil.nullSafeGetIndexer(CommerceDiscount.class);
-
-		indexer.reindex(commerceDiscount);
+		reindexCommerceDiscount(commerceDiscount);
 	}
 
 	private GroupByStep _getGroupByStep(

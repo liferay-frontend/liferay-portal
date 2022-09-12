@@ -22,7 +22,7 @@ import {useHeader} from '../../hooks';
 import useFormActions from '../../hooks/useFormActions';
 import i18n from '../../i18n';
 import yupSchema, {yupResolver} from '../../schema/yup';
-import {TestrayProject, testrayProjectRest} from '../../services/rest';
+import {TestrayProject, testrayProjectImpl} from '../../services/rest';
 
 type ProjectFormType = typeof yupSchema.project.__outputType;
 
@@ -59,8 +59,8 @@ const ProjectForm = () => {
 
 	const _onSubmit = (project: ProjectFormType) =>
 		onSubmit(project, {
-			create: (...params) => testrayProjectRest.create(...params),
-			update: (...params) => testrayProjectRest.update(...params),
+			create: (...params) => testrayProjectImpl.create(...params),
+			update: (...params) => testrayProjectImpl.update(...params),
 		})
 			.then((response) => {
 				if (project.id) {

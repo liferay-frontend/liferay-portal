@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
@@ -140,7 +141,7 @@ public class SegmentsExperienceStagedModelDataHandler
 
 		long segmentsEntryId = MapUtil.getLong(
 			segmentsEntryIds, segmentsExperience.getSegmentsEntryId(),
-			segmentsExperience.getSegmentsEntryId());
+			SegmentsEntryConstants.ID_DEFAULT);
 
 		Map<Long, Long> referenceClassPKs =
 			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(

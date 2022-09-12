@@ -212,43 +212,7 @@ public class ObjectEntryOpenAPIResourceImpl
 
 	private Operation _createOperation(
 		String httpMethod, ObjectRelationship objectRelationship,
-		ObjectDefinition relatedObjectDefinition, Operation operation) {
-
-		Map<String, Parameter> parameters = new HashMap<>();
-
-		for (Parameter parameter : operation.getParameters()) {
-			String parameterName = parameter.getName();
-
-			if (Objects.equals(parameterName, "objectRelationshipName")) {
-				continue;
-			}
-
-			if (Objects.equals(parameterName, "currentObjectEntryId")) {
-				parameterName = StringUtil.replace(
-					parameterName, "currentObjectEntry",
-					StringUtil.lowerCaseFirstLetter(
-						_objectDefinition.getShortName()));
-			}
-			else if (Objects.equals(parameterName, "relatedObjectEntryId")) {
-				parameterName = StringUtil.replace(
-					parameterName, "relatedObjectEntry",
-					StringUtil.lowerCaseFirstLetter(
-						relatedObjectDefinition.getShortName()));
-			}
-
-			String finalParameterName = parameterName;
-
-			parameters.put(
-				parameter.getName(),
-				new Parameter() {
-					{
-						name(finalParameterName);
-						in(parameter.getIn());
-						required(parameter.getRequired());
-						schema(parameter.getSchema());
-					}
-				});
-		}
+		Operation operation, ObjectDefinition relatedObjectDefinition) {
 
 		return new Operation() {
 			{
@@ -258,7 +222,7 @@ public class ObjectEntryOpenAPIResourceImpl
 						StringUtil.upperCaseFirstLetter(
 							objectRelationship.getName()),
 						relatedObjectDefinition.getShortName()));
-				parameters(new ArrayList<>(parameters.values()));
+				parameters(_getParameters(operation, relatedObjectDefinition));
 				responses(operation.getResponses());
 				tags(operation.getTags());
 			}
@@ -279,8 +243,8 @@ public class ObjectEntryOpenAPIResourceImpl
 				{
 					get(
 						_createOperation(
-							"get", objectRelationship, relatedObjectDefinition,
-							pathItem.getGet()));
+							"get", objectRelationship, pathItem.getGet(),
+							relatedObjectDefinition));
 				}
 			};
 		}
@@ -292,8 +256,8 @@ public class ObjectEntryOpenAPIResourceImpl
 				{
 					put(
 						_createOperation(
-							"put", objectRelationship, relatedObjectDefinition,
-							pathItem.getPut()));
+							"put", objectRelationship, pathItem.getPut(),
+							relatedObjectDefinition));
 				}
 			};
 		}
@@ -377,6 +341,47 @@ public class ObjectEntryOpenAPIResourceImpl
 			).build());
 
 		return openAPISchemaFilter;
+	}
+
+	private List<Parameter> _getParameters(
+		Operation operation, ObjectDefinition relatedObjectDefinition) {
+
+		List<Parameter> parameters = new ArrayList<>();
+
+		for (Parameter parameter : operation.getParameters()) {
+			String parameterName = parameter.getName();
+
+			if (Objects.equals(parameterName, "objectRelationshipName")) {
+				continue;
+			}
+
+			if (Objects.equals(parameterName, "currentObjectEntryId")) {
+				parameterName = StringUtil.replace(
+					parameterName, "currentObjectEntry",
+					StringUtil.lowerCaseFirstLetter(
+						_objectDefinition.getShortName()));
+			}
+			else if (Objects.equals(parameterName, "relatedObjectEntryId")) {
+				parameterName = StringUtil.replace(
+					parameterName, "relatedObjectEntry",
+					StringUtil.lowerCaseFirstLetter(
+						relatedObjectDefinition.getShortName()));
+			}
+
+			String finalParameterName = parameterName;
+
+			parameters.add(
+				new Parameter() {
+					{
+						in(parameter.getIn());
+						name(finalParameterName);
+						required(parameter.getRequired());
+						schema(parameter.getSchema());
+					}
+				});
+		}
+
+		return parameters;
 	}
 
 	private Map<ObjectRelationship, ObjectDefinition>

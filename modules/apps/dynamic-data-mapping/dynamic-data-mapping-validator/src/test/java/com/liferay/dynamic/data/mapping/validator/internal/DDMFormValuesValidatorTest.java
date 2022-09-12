@@ -945,10 +945,9 @@ public class DDMFormValuesValidatorTest {
 
 			});
 
-		_ddmFormValuesValidatorImpl.setDDMExpressionFactory(
+		ReflectionTestUtil.setFieldValue(
+			_ddmFormValuesValidatorImpl, "_ddmExpressionFactory",
 			ddmExpressionFactoryImpl);
-
-		_ddmFormValuesValidatorImpl.setJSONFactory(new JSONFactoryImpl());
 
 		ReflectionTestUtil.setFieldValue(
 			_ddmFormValuesValidatorImpl, "_ddmFormFieldTypeServicesTracker",
@@ -958,6 +957,8 @@ public class DDMFormValuesValidatorTest {
 			_ddmFormValuesValidatorImpl,
 			"_ddmFormFieldValueExpressionParameterAccessor",
 			new DDMFormFieldValueExpressionParameterAccessor(null, null));
+		ReflectionTestUtil.setFieldValue(
+			_ddmFormValuesValidatorImpl, "_jsonFactory", new JSONFactoryImpl());
 		ReflectionTestUtil.setFieldValue(
 			_ddmFormValuesValidatorImpl, "_serviceTrackerMap",
 			ProxyFactory.newDummyInstance(ServiceTrackerMap.class));

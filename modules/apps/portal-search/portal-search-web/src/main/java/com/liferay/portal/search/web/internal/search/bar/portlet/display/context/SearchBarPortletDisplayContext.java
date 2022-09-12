@@ -25,6 +25,10 @@ public class SearchBarPortletDisplayContext {
 		return _currentSiteSearchScopeParameterString;
 	}
 
+	public String getDestinationFriendlyURL() {
+		return _destinationFriendlyURL;
+	}
+
 	public long getDisplayStyleGroupId() {
 		return _displayStyleGroupId;
 	}
@@ -130,6 +134,10 @@ public class SearchBarPortletDisplayContext {
 
 		_currentSiteSearchScopeParameterString =
 			searchScopeCurrentSiteParameterString;
+	}
+
+	public void setDestinationFriendlyURL(String destinationFriendlyURL) {
+		_destinationFriendlyURL = destinationFriendlyURL;
 	}
 
 	public void setDestinationUnreachable(boolean destinationUnreachable) {
@@ -247,6 +255,7 @@ public class SearchBarPortletDisplayContext {
 
 	private boolean _availableEverythingSearchScope;
 	private String _currentSiteSearchScopeParameterString;
+	private String _destinationFriendlyURL;
 	private boolean _destinationUnreachable;
 	private long _displayStyleGroupId;
 	private boolean _displayWarningIgnoredConfiguration;

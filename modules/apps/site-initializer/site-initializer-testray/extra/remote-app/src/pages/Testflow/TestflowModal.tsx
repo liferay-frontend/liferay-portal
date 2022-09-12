@@ -22,9 +22,9 @@ import Modal from '../../components/Modal';
 import {FormModalOptions} from '../../hooks/useFormModal';
 import i18n from '../../i18n';
 import {
-	testrayBuildRest,
-	testrayProjectRest,
-	testrayRoutineRest,
+	testrayBuildImpl,
+	testrayProjectImpl,
+	testrayRoutineImpl,
 } from '../../services/rest';
 
 type TestflowModalProps = {
@@ -62,7 +62,7 @@ const TestflowForm = () => {
 				onSearch={(keyword) => `contains(name, '${keyword}')`}
 				resource="/projects"
 				transformData={(response) =>
-					testrayProjectRest.transformDataFromList(response)
+					testrayProjectImpl.transformDataFromList(response)
 				}
 			/>
 
@@ -71,16 +71,16 @@ const TestflowForm = () => {
 				onSearch={(keyword) => `contains(name, '${keyword}')`}
 				resource="/routines"
 				transformData={(response) =>
-					testrayRoutineRest.transformDataFromList(response)
+					testrayRoutineImpl.transformDataFromList(response)
 				}
 			/>
 
 			<Form.AutoComplete
 				label="Build"
 				onSearch={(keyword) => `contains(name, '${keyword}')`}
-				resource={testrayBuildRest.resource}
+				resource={testrayBuildImpl.resource}
 				transformData={(response) =>
-					testrayBuildRest.transformDataFromList(response)
+					testrayBuildImpl.transformDataFromList(response)
 				}
 			/>
 			<Form.Input label="Name" name="name" required />
@@ -139,10 +139,11 @@ const TestflowModal: React.FC<TestflowModalProps> = ({
 		<Modal
 			last={
 				<Form.Footer
-					isModal
 					onClose={onClose}
 					onSubmit={onSubmit}
-					primaryButtonTitle="analyse"
+					primaryButtonProps={{
+						title: i18n.translate('analyse'),
+					}}
 				/>
 			}
 			observer={observer}

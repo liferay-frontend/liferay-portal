@@ -1,5 +1,21 @@
 definition {
 
+	macro assertFailingElementCount {
+		var javaScriptCountElement = '''
+		
+		return document.querySelectorAll('.failing-element').length.toString();
+
+		''';
+
+		var count = selenium.getEval("${javaScriptCountElement}");
+
+		return "${count}";
+
+		if ("${count}" != "${expectedLabels}") {
+			fail("Labels number is not correct");
+		}
+	}
+
 	macro backToPageBackButton {
 		Click(locator1 = "Icon#BACK");
 	}
@@ -18,7 +34,7 @@ definition {
 			locator1 = "Translation#DROPDOWN_MENU_ITEM");
 	}
 
-	macro configurationSEOCanonicalURL {
+	macro configureLocalizedURL {
 		PortalSettings.openInstanceSettingsAdmin();
 
 		SystemSettings.gotoConfiguration(
@@ -41,37 +57,13 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-	macro configurationTeardown {
-		PageAudit.goToGooglePageSpeedInsightsSystemSettingConfiguration();
-
-		PageAudit.resetDefaultValues();
-	}
-
 	macro connectToGooglePageAudit {
 		ClickNoError(
 			key_text = "Configure",
 			locator1 = "Button#ANY");
 	}
 
-	macro disableGooglePageSpeed {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		if (!(isSet(settingsScope))) {
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Virtual Instance Scope");
-		}
-		else {
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "${settingsScope}");
-		}
-
+	macro disableGooglePageSpeedSettings {
 		if (IsChecked(checkboxName = "Enable", locator1 = "Checkbox#ANY_CHECKBOX")) {
 			Click.javaScriptClick(
 				checkboxName = "Enable",
@@ -85,8 +77,7 @@ definition {
 		if (IsElementPresent(locator1 = "Button#SAVE")) {
 			Click(locator1 = "Button#SAVE");
 		}
-
-		if (IsElementPresent(locator1 = "Button#UPDATE")) {
+		else if (IsElementPresent(locator1 = "Button#UPDATE")) {
 			Click(locator1 = "Button#UPDATE");
 		}
 
@@ -112,25 +103,7 @@ definition {
 				configurationScope = "${scope}");
 		}
 
-		if (IsChecked(checkboxName = "Enable", locator1 = "Checkbox#ANY_CHECKBOX")) {
-			Click.javaScriptClick(
-				checkboxName = "Enable",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-
-			AssertNotChecked.assertNotCheckedNotVisible(
-				checkboxName = "Enable",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-		}
-
-		if (IsElementPresent(locator1 = "Button#SAVE")) {
-			Click(locator1 = "Button#SAVE");
-		}
-
-		if (IsElementPresent(locator1 = "Button#UPDATE")) {
-			Click(locator1 = "Button#UPDATE");
-		}
-
-		Alert.viewSuccessMessage();
+		PageAudit.disableGooglePageSpeedSettings();
 	}
 
 	macro disableGooglePageSpeedViaSiteSettings {
@@ -143,28 +116,10 @@ definition {
 			configurationName = "Google PageSpeed Insights",
 			configurationScope = "Site Scope");
 
-		if (IsChecked(checkboxName = "Enable", locator1 = "Checkbox#ANY_CHECKBOX")) {
-			Click.javaScriptClick(
-				checkboxName = "Enable",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-
-			AssertNotChecked.assertNotCheckedNotVisible(
-				checkboxName = "Enable",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-		}
-
-		if (IsElementPresent(locator1 = "Button#SAVE")) {
-			Click(locator1 = "Button#SAVE");
-		}
-
-		if (IsElementPresent(locator1 = "Button#UPDATE")) {
-			Click(locator1 = "Button#UPDATE");
-		}
-
-		Alert.viewSuccessMessage();
+		PageAudit.disableGooglePageSpeedSettings();
 	}
 
-	macro enableGooglePageSpeed {
+	macro disableGooglePageSpeedViaSystemSettings {
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
 			panel = "Control Panel",
@@ -183,50 +138,25 @@ definition {
 				configurationScope = "${settingsScope}");
 		}
 
-		if (IsNotChecked.isNotCheckedNotVisible(checkboxName = "Enable", locator1 = "Checkbox#ANY_CHECKBOX")) {
-			Click.javaScriptClick(
-				checkboxName = "Enable",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-
-			AssertChecked.assertCheckedNotVisible(
-				checkboxName = "Enable",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-		}
-
-		if (IsElementPresent(locator1 = "Button#SAVE")) {
-			Click(locator1 = "Button#SAVE");
-		}
-		else if (IsElementPresent(locator1 = "Button#UPDATE")) {
-			Click(locator1 = "Button#UPDATE");
-		}
-
-		Alert.viewSuccessMessage();
+		PageAudit.disableGooglePageSpeedSettings();
 	}
 
 	macro goToDetailView {
 		Click(locator1 = "PageAudit#FAILING_CHECK_NAME");
 	}
 
-	macro goToGooglePageSpeedInsightsSystemSettingConfiguration {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Pages",
-			configurationName = "Google PageSpeed Insights",
-			configurationScope = "Site Scope");
-	}
-
 	macro openPageAuditSidebar {
-		if ((IsElementNotPresent(locator1 = "PageAudit#LAUNCH_PAGE_AUDIT_BUTTON")) && (IsElementNotPresent(locator1 = "PageAudit#RELAUNCH_PAGE_AUDIT_BUTTON"))) {
+		if (IsNotVisible(locator1 = "PageAudit#SIDEBAR")) {
 			Click(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
+		}
+
+		while (IsNotVisible(locator1 = "PageAudit#SIDEBAR")) {
+			WaitForElementPresent(locator1 = "PageAudit#SIDEBAR");
 		}
 	}
 
 	macro resetDefaultValues {
-		if (IsElementPresent(locator1 = "Button#UPDATE")) {
+		if (IsElementPresent(locator1 = "Icon#HISTORY_VERTICAL_ELLIPSIS")) {
 			Click(locator1 = "Icon#HISTORY_VERTICAL_ELLIPSIS");
 
 			MenuItem.clickNoError(menuItem = "Reset Default Values");
@@ -236,27 +166,36 @@ definition {
 	macro runPageAudit {
 		PageAudit.openPageAuditSidebar();
 
-		if (IsElementNotPresent(locator1 = "PageAudit#LAUNCH_PAGE_AUDIT_BUTTON")) {
-			Click(locator1 = "PageAudit#RELAUNCH_PAGE_AUDIT_BUTTON");
-		}
-		else {
-			ClickNoError(locator1 = "PageAudit#LAUNCH_PAGE_AUDIT_BUTTON");
-		}
+		Click.javaScriptClick(locator1 = "PageAudit#BUTTON_LAUNCH_ANY");
 
-		WaitForElementPresent(locator1 = "PageAudit#ALERT_BOX");
+		while (IsNotVisible(locator1 = "PageAudit#ALERT_BOX")) {
+			WaitForElementPresent(locator1 = "PageAudit#ALERT_BOX");
+		}
 	}
 
-	macro runPageAuditWithError {
-		PageAudit.openPageAuditSidebar();
+	macro setAPISettings {
+		Click(locator1 = "PageAudit#API_FIELD");
 
-		if (IsElementNotPresent(locator1 = "PageAudit#LAUNCH_PAGE_AUDIT_BUTTON")) {
-			Click(locator1 = "PageAudit#RELAUNCH_PAGE_AUDIT_BUTTON");
+		if (!(isSet(key_apiKey))) {
+			var key_apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE";
+		}
+
+		Type(
+			locator1 = "PageAudit#API_FIELD",
+			value1 = "${key_apiKey}");
+
+		if (isSet(preferredStrategy)) {
+			PageAudit.setPreferredStrategy(key_preferredStrategy = "${preferredStrategy}");
+		}
+
+		if (IsElementPresent(locator1 = "Button#SAVE")) {
+			Click(locator1 = "Button#SAVE");
 		}
 		else {
-			ClickNoError(locator1 = "PageAudit#LAUNCH_PAGE_AUDIT_BUTTON");
+			Click(locator1 = "Button#UPDATE");
 		}
 
-		WaitForElementPresent(locator1 = "PageAudit#ERROR_WARNING_BOX");
+		Alert.viewSuccessMessage();
 	}
 
 	macro setAPIViaInstanceSettings {
@@ -270,24 +209,9 @@ definition {
 			configurationName = "Google PageSpeed Insights",
 			configurationScope = "Site Scope");
 
-		Click(locator1 = "PageAudit#API_FIELD");
-
-		Type(
-			locator1 = "PageAudit#API_FIELD",
-			value1 = "${apiKey}");
-
-		if (isSet(preferredStrategy)) {
-			PageAudit.setPreferredStrategy(key_preferredStrategy = "${preferredStrategy}");
-		}
-
-		if (IsElementPresent(locator1 = "Button#SAVE")) {
-			Click(locator1 = "Button#SAVE");
-		}
-		else if (IsElementPresent(locator1 = "Button#UPDATE")) {
-			Click(locator1 = "Button#UPDATE");
-		}
-
-		Alert.viewSuccessMessage();
+		PageAudit.setAPISettings(
+			key_apiKey = "${apiKey}",
+			preferredStrategy = "${preferredStrategy}");
 	}
 
 	macro setAPIViaSiteSettings {
@@ -300,57 +224,31 @@ definition {
 			configurationName = "Google PageSpeed Insights",
 			configurationScope = "Site Scope");
 
-		Click(locator1 = "PageAudit#API_FIELD");
-
-		Type(
-			locator1 = "PageAudit#API_FIELD",
-			value1 = "${apiKey}");
-
-		if (isSet(preferredStrategy)) {
-			PageAudit.setPreferredStrategy(key_preferredStrategy = "${preferredStrategy}");
-		}
-
-		if (IsElementPresent(locator1 = "Button#SAVE")) {
-			Click(locator1 = "Button#SAVE");
-		}
-
-		if (IsElementPresent(locator1 = "Button#UPDATE")) {
-			Click(locator1 = "Button#UPDATE");
-		}
-
-		Alert.viewSuccessMessage();
+		PageAudit.setAPISettings(
+			key_apiKey = "${apiKey}",
+			preferredStrategy = "${preferredStrategy}");
 	}
 
 	macro setAPIViaSystemSettings {
-		PageAudit.goToGooglePageSpeedInsightsSystemSettingConfiguration();
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "System Settings");
 
-		Click(locator1 = "PageAudit#API_FIELD");
+		SystemSettings.gotoConfiguration(
+			configurationCategory = "Pages",
+			configurationName = "Google PageSpeed Insights",
+			configurationScope = "Site Scope");
 
-		Type(
-			locator1 = "PageAudit#API_FIELD",
-			value1 = "${apiKey}");
-
-		if (isSet(preferredStrategy)) {
-			PageAudit.setPreferredStrategy(key_preferredStrategy = "${preferredStrategy}");
-		}
-
-		if (IsElementPresent(locator1 = "Button#SAVE")) {
-			Click(locator1 = "Button#SAVE");
-		}
-
-		if (IsElementPresent(locator1 = "Button#UPDATE")) {
-			Click(locator1 = "Button#UPDATE");
-		}
-
-		Alert.viewSuccessMessage();
+		PageAudit.setAPISettings(
+			key_apiKey = "${apiKey}",
+			preferredStrategy = "${preferredStrategy}");
 	}
 
 	macro setPreferredStrategy {
-		Click(locator1 = "PageAudit#PREFERRED_STRATEGY_DROPDOWN");
+		Click(locator1 = "Dropdown#TRIGGER");
 
-		Click(
-			locator1 = "PageAudit#PREFERRED_STRATEGY_OPTION",
-			strategy = "${key_preferredStrategy}");
+		DropdownMenuItem.click(menuItem = "${key_preferredStrategy}");
 	}
 
 	macro setSEOcanonicalURL {
@@ -383,6 +281,55 @@ definition {
 			value1 = "${url}");
 
 		PortletEntry.save();
+	}
+
+	macro tearDownInstanceSettingsConfigurations {
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Instance Settings");
+
+		SystemSettings.gotoConfiguration(
+			configurationCategory = "Pages",
+			configurationName = "Google PageSpeed Insights",
+			configurationScope = "Virtual Instance Scope");
+
+		PageAudit.resetDefaultValues();
+
+		Click(
+			key_configurationName = "Google PageSpeed Insights",
+			key_configurationScope = "Site Scope",
+			locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
+
+		PageAudit.resetDefaultValues();
+	}
+
+	macro tearDownSystemSettingsConfigurations {
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "System Settings");
+
+		SystemSettings.gotoConfiguration(
+			configurationCategory = "Pages",
+			configurationName = "Google PageSpeed Insights",
+			configurationScope = "System Scope");
+
+		PageAudit.resetDefaultValues();
+
+		Click(
+			key_configurationName = "Google PageSpeed Insights",
+			key_configurationScope = "Virtual Instance Scope",
+			locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
+
+		PageAudit.resetDefaultValues();
+
+		Click(
+			key_configurationName = "Google PageSpeed Insights",
+			key_configurationScope = "Site Scope",
+			locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
+
+		PageAudit.resetDefaultValues();
 	}
 
 }

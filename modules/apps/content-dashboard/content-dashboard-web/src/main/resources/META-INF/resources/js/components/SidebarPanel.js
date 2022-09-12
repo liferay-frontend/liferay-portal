@@ -18,6 +18,7 @@ import {useIsMounted} from '@liferay/frontend-js-react-web';
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useImperativeHandle, useReducer, useRef} from 'react';
 
+import {CLOSE_PANEL_VALUE} from '../utils/constants';
 import Sidebar from './Sidebar';
 
 const initialState = {
@@ -27,9 +28,23 @@ const initialState = {
 	open: true,
 };
 
+const resetSessionPanelValues = () => {
+	Liferay.Util.Session.set(
+		'com.liferay.content.dashboard.web_panelState',
+		CLOSE_PANEL_VALUE
+	);
+
+	Liferay.Util.Session.set(
+		'com.liferay.content.dashboard.web_selectedItemRowId',
+		''
+	);
+};
+
 const dataReducer = (state, action) => {
 	switch (action.type) {
 		case 'CLOSE_SIDEBAR':
+			resetSessionPanelValues();
+
 			return {
 				...state,
 				isOpen: false,
@@ -81,7 +96,10 @@ const dataReducer = (state, action) => {
 };
 
 const SidebarPanel = React.forwardRef(
-	({fetchURL, onClose, viewComponent: View}, ref) => {
+	(
+		{fetchURL, onClose, singlePageApplicationEnabled, viewComponent: View},
+		ref
+	) => {
 		const CurrentViewRef = useRef(View);
 
 		const isMounted = useIsMounted();
@@ -134,6 +152,29 @@ const SidebarPanel = React.forwardRef(
 		useEffect(() => {
 			CurrentViewRef.current = View;
 		}, [View]);
+
+		useEffect(() => {
+			if (!singlePageApplicationEnabled) {
+				return;
+			}
+
+			const navigationEventHandler = Liferay.on(
+				'startNavigate',
+				({path, target}) => {
+					const [, paramString] = target.currentURL.split('?');
+					const params = new URLSearchParams(paramString);
+					const currentPortletId = params.get('p_p_id');
+
+					if (!path.includes(currentPortletId)) {
+						resetSessionPanelValues();
+					}
+				}
+			);
+
+			return () => {
+				navigationEventHandler.detach();
+			};
+		}, [singlePageApplicationEnabled]);
 
 		useImperativeHandle(ref, () => ({
 			close: () => safeDispatch({type: 'CLOSE_SIDEBAR'}),

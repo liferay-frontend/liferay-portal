@@ -14,24 +14,22 @@
 
 import {useRef} from 'react';
 
-import useAssignCaseResult from '../../../../hooks/useAssignCaseResult';
 import useFormActions from '../../../../hooks/useFormActions';
 import useModalContext from '../../../../hooks/useModalContext';
 import useMutate from '../../../../hooks/useMutate';
 import i18n from '../../../../i18n';
 import {Liferay} from '../../../../services/liferay';
-import {TestrayCaseResult, deleteResource} from '../../../../services/rest';
+import {
+	TestrayCaseResult,
+	deleteResource,
+	testrayCaseResultRest,
+} from '../../../../services/rest';
 import {Action} from '../../../../types';
 import {UserListView} from '../../../Manage/User';
 
 const useBuildTestActions = () => {
 	const {form} = useFormActions();
 	const {removeItemFromList, updateItemFromList} = useMutate();
-	const {
-		onAssignToFetch,
-		onAssignToMeFetch,
-		onRemoveAssignFetch,
-	} = useAssignCaseResult();
 	const {onOpenModal, state} = useModalContext();
 
 	const actionsRef = useRef([
@@ -48,7 +46,8 @@ const useBuildTestActions = () => {
 							}}
 							tableProps={{
 								onClickRow: (user) => {
-									onAssignToFetch(caseResult, user.id)
+									testrayCaseResultRest
+										.assignTo(caseResult, user.id)
 										.then(() =>
 											updateItemFromList(
 												mutate,
@@ -76,8 +75,8 @@ const useBuildTestActions = () => {
 					caseResult.user &&
 					caseResult.user.id.toString() ===
 						Liferay.ThemeDisplay.getUserId()
-						? onRemoveAssignFetch
-						: onAssignToMeFetch;
+						? testrayCaseResultRest.removeAssign
+						: testrayCaseResultRest.assignToMe;
 
 				fn(caseResult).then((user) =>
 					updateItemFromList(

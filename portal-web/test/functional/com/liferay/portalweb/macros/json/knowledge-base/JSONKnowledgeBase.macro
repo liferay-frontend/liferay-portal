@@ -92,9 +92,19 @@ definition {
 		if (isSet(folderName)) {
 			Variables.assertDefined(parameterList = "${folderName},${groupName}");
 
+			if (isSet(parentFolderName)) {
+				var parentFolderId = JSONKnowledgeBase.getFolderIdByFolderName(
+					folderName = "${parentFolderName}",
+					groupName = "${groupName}");
+			}
+			else {
+				var parentFolderId = "0";
+			}
+
 			var folderId = JSONKnowledgeBase.getFolderIdByFolderName(
 				folderName = "${folderName}",
-				groupName = "${groupName}");
+				groupName = "${groupName}",
+				parentFolderId = "${parentFolderId}");
 		}
 		else {
 			var folderId = "0";
@@ -102,6 +112,7 @@ definition {
 
 		if (isSet(groupName)) {
 			var serviceContext = JSONServiceContextUtil.setServiceContext(
+				addGuestPermissions = "${addGuestPermissions}",
 				assetCategoryIds = "${assetCategoryIds}",
 				assetTagNames = "${assetTagNames}",
 				groupName = "${groupName}");
@@ -300,6 +311,10 @@ definition {
 			var site = "true";
 		}
 
+		if (!(isSet(parentFolderId))) {
+			var parentFolderId = "0";
+		}
+
 		var groupId = JSONGroupAPI._getGroupIdByName(
 			groupName = "${groupName}",
 			site = "${site}");
@@ -309,7 +324,7 @@ definition {
 			${portalURL}/api/jsonws/kb.kbfolder/get-kb-folders \
 				-u test@liferay.com:test \
 				-d groupId=${groupId} \
-				-d parentKBFolderId=0 \
+				-d parentKBFolderId=${parentFolderId} \
 				-d "start=-1" \
 				-d "end=-1"
 		''';

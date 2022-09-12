@@ -62,11 +62,9 @@ public class WorkflowTaskTransitionsResourceImpl
 							workflowTaskTransitions.add(
 								_createWorkflowTaskTransition(
 									_workflowTaskManager.getNextTransitionNames(
-										contextCompany.getCompanyId(),
 										contextUser.getUserId(),
 										workflowTaskId),
 									_workflowTaskManager.getWorkflowTask(
-										contextCompany.getCompanyId(),
 										workflowTaskId)));
 						}
 

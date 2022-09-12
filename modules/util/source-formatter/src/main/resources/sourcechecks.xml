@@ -982,6 +982,11 @@
 			<category name="Naming Conventions" />
 			<description name="Checks if the file name of `.jsp` or `.jspf` follows the naming conventions." />
 		</check>
+		<check name="JSPGetStaticResourceURLCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks calls to `PortalUtil.getStaticResourceURL` and `getContextPath` without `getPathProxy`." />
+			<property name="enabled" value="false" />
+		</check>
 		<check name="JSPIllegalSyntaxCheck">
 			<category name="Bug Prevention" />
 			<description name="Finds incorrect use of `System.out.print`, `console.log` or `debugger.*` in `.jsp` files." />
@@ -1261,6 +1266,10 @@
 			<category name="Styling" />
 			<description name="Checks variable names for correct use of `camelCase`." />
 			<property name="enabled" value="false" />
+		</check>
+		<check name="PoshiWhitespaceCheck">
+			<category name="Styling" />
+			<description name="Finds missing and unnecessary whitespace." />
 		</check>
 	</source-processor>
 	<source-processor name="PropertiesSourceProcessor">

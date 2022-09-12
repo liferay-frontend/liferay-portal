@@ -20,6 +20,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -195,6 +196,52 @@ public class I18nServletTest extends I18nServlet {
 		I18nData i18nData = getI18nData(mockHttpServletRequest);
 
 		Assert.assertEquals(specialCharacters, i18nData.getPath());
+	}
+
+	@Test
+	public void testI18nGroupControlPanelWithLocaleDisabledInCompany()
+		throws Exception {
+
+		_group = GroupTestUtil.updateDisplaySettings(
+			_group.getGroupId(), Arrays.asList(LocaleUtil.US), LocaleUtil.US);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		Locale locale = LocaleUtil.NETHERLANDS;
+
+		mockHttpServletRequest.setServletPath(
+			String.format("/%s_%s", locale.getLanguage(), locale.getCountry()));
+
+		mockHttpServletRequest.setPathInfo(_getControlPanelPathInfo(_group));
+
+		Assert.assertNull(getI18nData(mockHttpServletRequest));
+	}
+
+	@Test
+	public void testI18nGroupControlPanelWithLocaleEnabledInCompany()
+		throws Exception {
+
+		_group = GroupTestUtil.updateDisplaySettings(
+			_group.getGroupId(), Arrays.asList(LocaleUtil.US), LocaleUtil.US);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		Locale locale = LocaleUtil.SPAIN;
+
+		mockHttpServletRequest.setServletPath(
+			String.format("/%s_%s", locale.getLanguage(), locale.getCountry()));
+
+		String controlPanePathInfo = _getControlPanelPathInfo(_group);
+
+		mockHttpServletRequest.setPathInfo(controlPanePathInfo);
+
+		I18nServlet.I18nData i18nData = getI18nData(mockHttpServletRequest);
+
+		Assert.assertNotNull(i18nData);
+
+		_testGetI18nData(locale, controlPanePathInfo, i18nData);
 	}
 
 	@Test
@@ -413,6 +460,14 @@ public class I18nServletTest extends I18nServlet {
 			mockHttpServletResponse.getHeader("Location"));
 	}
 
+	private String _getControlPanelPathInfo(Group group) {
+		return StringBundler.concat(
+			PropsValues.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING,
+			group.getFriendlyURL(),
+			VirtualLayoutConstants.CANONICAL_URL_SEPARATOR,
+			GroupConstants.CONTROL_PANEL_FRIENDLY_URL);
+	}
+
 	private Locale _getDefaultLocale(Group group) throws Exception {
 		if (group != null) {
 			return _portal.getSiteDefaultLocale(group);
@@ -453,10 +508,18 @@ public class I18nServletTest extends I18nServlet {
 			Locale locale, I18nServlet.I18nData expectedI18nData)
 		throws Exception {
 
+		_testGetI18nData(locale, StringPool.SLASH, expectedI18nData);
+	}
+
+	private void _testGetI18nData(
+			Locale locale, String pathInfo,
+			I18nServlet.I18nData expectedI18nData)
+		throws Exception {
+
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		mockHttpServletRequest.setPathInfo(StringPool.SLASH);
+		mockHttpServletRequest.setPathInfo(pathInfo);
 		mockHttpServletRequest.setServletPath(
 			StringPool.SLASH + LocaleUtil.toLanguageId(locale));
 

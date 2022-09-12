@@ -42,8 +42,18 @@
 <!-- SOURCE_VIEW_PATHS -->
 
 <tr>
+	<td>BUTTON_ADD_SOURCE_CODE</td>
+	<td>//button[contains(@class,'btn btn-secondary')][contains(.,'ADD SOURCE CODE')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SOURCE_EDITOR</td>
 	<td>//div[@class='CodeMirror-lines']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GROOVY_SOURCE_EDITOR</td>
+	<td>//div[contains(@class,'CodeMirror cm-s-default')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -393,8 +403,7 @@
 </tr>
 <tr>
 	<td>NOTIFICATIONS_TYPE_DROPDOWN_BY_POSITION</td>
-	<td>//div[contains(@class,'panel-group panel-group-flush') and contains(@role,'tablist')][${key_sectionOption}]//input[contains(@value,'Select')]
-</td>
+	<td>//div[contains(@class,'panel-group panel-group-flush') and contains(@role,'tablist')][${key_sectionOption}]//input[contains(@value,'Select')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -500,6 +509,16 @@
 <tr>
 	<td>PROPERTIES_TEMPLATE_TEXTAREA_ACTIONS_BY_POSITION</td>
 	<td>//div[@class='panel']/../..//div[@class='panel-group panel-group-flush'][${key_sectionOption}]//label[contains(., 'Script')]/..//textarea</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ROLE_NAME_FIELD_ASSIGNMENTS_BY_POSITON</td>
+	<td>//div[@class='panel']/../../div[@class='panel-group panel-group-flush'][${key_positonOption}]//label[contains(., '${key_inputOption}') and not(contains(., '*'))]/..//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ACTIONS_NAME_ON_TIMERS_FIELD</td>
+	<td>//div[@class='sidebar']//span[contains(text(),'Action')]/../..//input[contains(@value,'${key_actionName}')]</td>
 	<td></td>
 </tr>
 </tbody>

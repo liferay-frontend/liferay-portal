@@ -955,34 +955,34 @@
     "@clayui/icon" "^3.56.0"
     classnames "^2.2.6"
 
-"@clayui/css@3.69.0":
-  version "3.69.0"
-  resolved "https://registry.yarnpkg.com/@clayui/css/-/css-3.69.0.tgz#4245554c09bf4138b0d4b3eb1c0e8583de52f028"
-  integrity sha512-tvHjep+Mydq2HzmvokZ4clIdrWwiEhYV1OZt/fNFGpGyPq7muDrtgvWP5bhUsJc8NyBkIALWwcjrT7iBJXCQBg==
+"@clayui/css@3.70.1":
+  version "3.70.1"
+  resolved "https://registry.yarnpkg.com/@clayui/css/-/css-3.70.1.tgz#d1d70171ab1e000384f184d3cec9e5512ca67432"
+  integrity sha512-cjei1WYL5amKvWjb52A0DNqfcnpHYLqHd1bzc+NUiDp4qhGsKS2Dyr9LJHQAcRgTnqIPKUoQeMvoyULYw1q6TQ==
 
-"@clayui/drop-down@3.69.0":
-  version "3.69.0"
-  resolved "https://registry.yarnpkg.com/@clayui/drop-down/-/drop-down-3.69.0.tgz#e5579fae76b3c9fae5539d0e083b30a02782b91c"
-  integrity sha512-kBnr5o8bATzs1yghOH72LRs0lj5xsurb9EazLXjGu1a0MFMl8joqhNZ2dR01aDibbIjLMdUnF1BTJxzMpNlAdw==
+"@clayui/drop-down@3.72.0":
+  version "3.72.0"
+  resolved "https://registry.yarnpkg.com/@clayui/drop-down/-/drop-down-3.72.0.tgz#f6576eb1282964a40012146ec16755396d13debd"
+  integrity sha512-QoxWKn85aMXtyJEkSnyT0mCqxDQyi+K/j+5a5v2RuiYX7DB7Z1BQXjfk3CsaQYSAWhvCgpRQy+BhosrSnSL++A==
   dependencies:
     "@clayui/button" "^3.65.0"
-    "@clayui/form" "^3.69.0"
+    "@clayui/form" "^3.71.0"
     "@clayui/icon" "^3.56.0"
     "@clayui/link" "^3.56.0"
-    "@clayui/shared" "^3.69.0"
+    "@clayui/shared" "^3.71.0"
     aria-hidden "^1.1.3"
     classnames "^2.2.6"
     react-transition-group "^4.4.1"
     warning "^4.0.3"
 
-"@clayui/form@3.69.0", "@clayui/form@^3.69.0":
-  version "3.69.0"
-  resolved "https://registry.yarnpkg.com/@clayui/form/-/form-3.69.0.tgz#6c7de48e7e71e5cbddc61555cf282018bf12d479"
-  integrity sha512-a/yyTOrSvH0Mpxxck7KEWA3yBvoWq135u4vGB5/FZHgD0ObR61+uX1O9i5e0geJoMgtrRQPxEwUJklxsXRkqpA==
+"@clayui/form@3.71.0", "@clayui/form@^3.71.0":
+  version "3.71.0"
+  resolved "https://registry.yarnpkg.com/@clayui/form/-/form-3.71.0.tgz#f9bd59df30f857ffdd20beb219ec9318f85ccad5"
+  integrity sha512-vZAKfhhJqhbfQWHs4nRdW5wtzH05EyB7EPfb574+wRJgs6HN5QZIjSfD+XfXwOjd2kEviLPZS4DT0+99IFbnfQ==
   dependencies:
     "@clayui/button" "^3.65.0"
     "@clayui/icon" "^3.56.0"
-    "@clayui/shared" "^3.69.0"
+    "@clayui/shared" "^3.71.0"
     classnames "^2.2.6"
 
 "@clayui/icon@3.56.0", "@clayui/icon@^3.56.0":
@@ -1000,21 +1000,21 @@
   dependencies:
     classnames "^2.2.6"
 
-"@clayui/provider@^3.56.0":
-  version "3.56.0"
-  resolved "https://registry.yarnpkg.com/@clayui/provider/-/provider-3.56.0.tgz#7dc20ca502a2017a6eb5b9bc9eac1ebb4ed1600f"
-  integrity sha512-PrU8Uf++QGzJL2q5f9Wqf1eRYJi8nzbul62do5mYypKbF7SC4y0OmNMcw2uznwv9mceXnCxJPowrcGxYLFK11g==
+"@clayui/provider@^3.71.0":
+  version "3.71.0"
+  resolved "https://registry.yarnpkg.com/@clayui/provider/-/provider-3.71.0.tgz#4a495ff94b7ab8a3b0c815bfce21ae7675b20945"
+  integrity sha512-0N0Z5hpd84lm0SZIY6QM9vk0p0iIyvIhDF8YF5f8w3nocAwUgI3CseFok3OSEjWEt7SF4q4l+0o+3ZMnv099PA==
   dependencies:
     "@clayui/icon" "^3.56.0"
 
-"@clayui/shared@^3.69.0":
-  version "3.69.0"
-  resolved "https://registry.yarnpkg.com/@clayui/shared/-/shared-3.69.0.tgz#8931c5d17164213e42fa4cafc21384b35a07bdd9"
-  integrity sha512-tPOTUnO95atkWHBETGVuJHjPE65stu9zxV1Ug/Xfkm7GUAUyN3w8vgUPEIBr4rtQnr0+LZA/yu1+wCo1Ofq9zA==
+"@clayui/shared@^3.71.0":
+  version "3.71.0"
+  resolved "https://registry.yarnpkg.com/@clayui/shared/-/shared-3.71.0.tgz#848081448081179e8d277b3847ded069dde916ce"
+  integrity sha512-XthBQuvPF8hlS+X4220oV0BHUI7KP5lG1F8TJBJT5dFRRD4tYXrLgXr8Fchx2U7KwYn2UftGymlqa1CX9w+9uQ==
   dependencies:
     "@clayui/button" "^3.65.0"
     "@clayui/link" "^3.56.0"
-    "@clayui/provider" "^3.56.0"
+    "@clayui/provider" "^3.71.0"
     classnames "^2.2.6"
     dom-align "^1.12.2"
     warning "^4.0.3"
@@ -3918,10 +3918,10 @@ gauge@~1.2.5:
     lodash.padend "^4.1.0"
     lodash.padstart "^4.1.0"
 
-generator-liferay-fragments@2.0.0-rc3:
-  version "2.0.0-rc3"
-  resolved "https://registry.yarnpkg.com/generator-liferay-fragments/-/generator-liferay-fragments-2.0.0-rc3.tgz#585181c16f14a296f77a03a863ac4c2b51bf7004"
-  integrity sha512-Q2+65Sy+qI7+0welT8RuvbUmxLHN4gdMw/YGWAQbI3WnsZ7msih9VS2qTRqR5zisxinOM5IKCh0SkDqhVruhKw==
+generator-liferay-fragments@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/generator-liferay-fragments/-/generator-liferay-fragments-2.0.2.tgz#39c7d3d158005b592366734a7c66855b6f90a393"
+  integrity sha512-liXbIN+I6oWDJxbZTNwc/Ke8Tg6ZGOHmVJeEUi0vVR+83/7wAHh6/hWJCRa8gJUtSaGs5SRsbsqSGFZuyDiqxQ==
   dependencies:
     "@babel/core" "^7.11.6"
     "@babel/preset-env" "^7.11.5"

@@ -86,6 +86,7 @@ interface ObjectField {
 	listTypeDefinitionId: number;
 	name: string;
 	objectFieldSettings?: ObjectFieldSetting[];
+	relationshipId?: number;
 	relationshipType?: unknown;
 	required: boolean;
 	state: boolean;
@@ -103,8 +104,8 @@ interface ObjectDefinition {
 	active: boolean;
 	dateCreated: string;
 	dateModified: string;
-	enabledCategorization: boolean;
-	enabledComments: boolean;
+	enableCategorization: boolean;
+	enableComments: boolean;
 	id: number;
 	label: LocalizedValue<string>;
 	name: string;
@@ -116,6 +117,7 @@ interface ObjectDefinition {
 	parameterRequired?: boolean;
 	pluralLabel: LocalizedValue<string>;
 	portlet: boolean;
+	restContextPath: string;
 	scope: string;
 	status: {
 		code: number;
@@ -134,9 +136,28 @@ interface ObjectFieldSetting {
 		| string
 		| number
 		| boolean
+		| NameValueObject[]
 		| ObjectFieldFilterSetting[]
-		| {id: number; objectStates: ObjectState[]};
+		| ObjectFieldPicklistSetting;
 }
+
+interface ObjectEntry {
+	dateCreated: string;
+	dateModified: string;
+	id: number;
+	name: string;
+	status: {
+		code: number;
+		label: string;
+		label_i18n: string;
+	};
+	[key: string]: string | number | unknown;
+}
+
+type ObjectFieldPicklistSetting = {
+	id: number;
+	objectStates: ObjectState[];
+};
 
 type ObjectFieldFilterSetting = {
 	filterBy?: string;
@@ -251,6 +272,11 @@ interface PredefinedValue {
 
 interface LabelValueObject {
 	label: string;
+	value: string;
+}
+
+interface NameValueObject {
+	name: string;
 	value: string;
 }
 

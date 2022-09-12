@@ -930,6 +930,40 @@ definition {
 			value1 = "Select");
 	}
 
+	macro openPageTreePanel {
+		if ("${section}" == "Folders and Articles") {
+			WaitForVisible(locator1 = "KnowledgeBase#PAGE_TREE_FOLDERS_AND_ARTICLES");
+
+			Click(locator1 = "KnowledgeBase#PAGE_TREE_FOLDERS_AND_ARTICLES");
+
+			if (IsElementNotPresent(locator1 = "KnowledgeBase#PAGE_TREE_PANEL_OPENED")) {
+				Click.javaScriptClick(locator1 = "KnowledgeBase#PAGE_TREE_FOLDERS_AND_ARTICLES");
+			}
+		}
+
+		if ("${section}" == "Templates") {
+			WaitForVisible(locator1 = "KnowledgeBase#PAGE_TREE_TEMPLATES");
+
+			Click(locator1 = "KnowledgeBase#PAGE_TREE_TEMPLATES");
+
+			if (IsElementNotPresent(locator1 = "KnowledgeBase#PAGE_TREE_PANEL_OPENED")) {
+				Click.javaScriptClick(locator1 = "KnowledgeBase#PAGE_TREE_TEMPLATES");
+			}
+		}
+
+		if ("${section}" == "Suggestions") {
+			WaitForVisible(locator1 = "KnowledgeBase#PAGE_TREE_SUGGESTIONS");
+
+			Click(locator1 = "KnowledgeBase#PAGE_TREE_SUGGESTIONS");
+
+			if (IsElementNotPresent(locator1 = "KnowledgeBase#PAGE_TREE_PANEL_OPENED")) {
+				Click.javaScriptClick(locator1 = "KnowledgeBase#PAGE_TREE_SUGGESTIONS");
+			}
+		}
+
+		WaitForVisible(locator1 = "KnowledgeBase#PAGE_TREE_PANEL_OPENED");
+	}
+
 	macro openToAddKBArticle {
 
 		// You can use this navigation when you need to access the configuration quickly without checking the UI.
@@ -1026,6 +1060,21 @@ definition {
 		UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
 			locator1 = "TextInput#FILE",
 			value1 = "${kbArticleAttachment}");
+	}
+
+	macro selectFolderThroughPageTreePanel {
+		if (isSet(kbChildFolderName)) {
+			Click(locator1 = "KnowledgeBase#PAGE_TREE_CHEVRON_ICON_RIGHT");
+
+			Click(
+				key_itemName = "${kbChildFolderName}",
+				locator1 = "KnowledgeBase#PAGE_TREE_ITEM_NAME");
+		}
+		else {
+			Click(
+				key_itemName = "${kbFolderName}",
+				locator1 = "KnowledgeBase#PAGE_TREE_ITEM_NAME");
+		}
 	}
 
 	macro selectParentArticleCP {
@@ -1158,6 +1207,32 @@ definition {
 		}
 	}
 
+	macro viewArticleThroughPageTreePanel {
+		if (isSet(kbChildArticleTitle)) {
+			Click(locator1 = "KnowledgeBase#PAGE_TREE_CHEVRON_ICON_RIGHT");
+
+			AssertVisible(
+				key_itemName = "${kbChildArticleTitle}",
+				locator1 = "KnowledgeBase#PAGE_TREE_ITEM_NAME");
+		}
+		else if (isSet(kbFolderName)) {
+			AssertVisible(
+				key_itemName = "${kbFolderName}",
+				locator1 = "KnowledgeBase#PAGE_TREE_ITEM_NAME");
+
+			Click(locator1 = "KnowledgeBase#PAGE_TREE_CHEVRON_ICON_RIGHT");
+
+			AssertVisible(
+				key_itemName = "${kbArticleTitle}",
+				locator1 = "KnowledgeBase#PAGE_TREE_ITEM_NAME");
+		}
+		else {
+			AssertVisible(
+				key_itemName = "${kbArticleTitle}",
+				locator1 = "KnowledgeBase#PAGE_TREE_ITEM_NAME");
+		}
+	}
+
 	macro viewAttachmentCP {
 		Click(
 			key_rowEntry = "${kbArticleTitle}",
@@ -1189,7 +1264,14 @@ definition {
 	}
 
 	macro viewChildArticleCP {
-		KBArticle._gotoChildArticle(kbChildArticleTitle = "${kbChildArticleTitle}");
+		if (isSet(pageTreePanel)) {
+			Click(
+				key_itemName = "${kbChildArticleTitle}",
+				locator1 = "KnowledgeBase#PAGE_TREE_ITEM_NAME");
+		}
+		else {
+			KBArticle._gotoChildArticle(kbChildArticleTitle = "${kbChildArticleTitle}");
+		}
 
 		AssertTextEquals(
 			locator1 = "KnowledgeBaseArticle#TITLE",
@@ -1245,25 +1327,32 @@ definition {
 	macro viewCP {
 		var key_kbArticleTitle = "${kbArticleTitle}";
 
-		AssertTextEquals(
-			locator1 = "KnowledgeBase#DESCRIPTIVE_VIEW_ARTICLE_TITLE",
-			value1 = "${kbArticleTitle}");
-
-		if ("${kbWorkflowStatus}" == "Pending") {
-			AssertTextEquals(
-				locator1 = "KnowledgeBase#ARTICLE_TABLE_ARTICLE_STATUS",
-				value1 = "Pending");
+		if (isSet(pageTreePanel)) {
+			Click(
+				key_itemName = "${kbArticleTitle}",
+				locator1 = "KnowledgeBase#PAGE_TREE_ITEM_NAME");
 		}
-
-		if ("${kbStatus}" == "Draft") {
+		else {
 			AssertTextEquals(
-				locator1 = "KnowledgeBase#ARTICLE_TABLE_ARTICLE_STATUS",
-				value1 = "Draft");
-		}
+				locator1 = "KnowledgeBase#DESCRIPTIVE_VIEW_ARTICLE_TITLE",
+				value1 = "${kbArticleTitle}");
 
-		AssertClick(
-			locator1 = "KnowledgeBase#DESCRIPTIVE_VIEW_ARTICLE_TITLE",
-			value1 = "${kbArticleTitle}");
+			if ("${kbWorkflowStatus}" == "Pending") {
+				AssertTextEquals(
+					locator1 = "KnowledgeBase#ARTICLE_TABLE_ARTICLE_STATUS",
+					value1 = "Pending");
+			}
+
+			if ("${kbStatus}" == "Draft") {
+				AssertTextEquals(
+					locator1 = "KnowledgeBase#ARTICLE_TABLE_ARTICLE_STATUS",
+					value1 = "Draft");
+			}
+
+			AssertClick(
+				locator1 = "KnowledgeBase#DESCRIPTIVE_VIEW_ARTICLE_TITLE",
+				value1 = "${kbArticleTitle}");
+		}
 
 		AssertTextEquals(
 			locator1 = "KnowledgeBaseArticle#TITLE",

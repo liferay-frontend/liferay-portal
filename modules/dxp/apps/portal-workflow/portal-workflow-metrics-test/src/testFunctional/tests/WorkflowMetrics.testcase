@@ -960,7 +960,13 @@ definition {
 	@description = "LRQA-53660 Automate LPS-87571 [Reports] Filter the list of items for a certain process"
 	@priority = "5"
 	test FilterAllItemsList {
+		property test.name.skip.portal.instance = "WorkflowMetrics#FilterAllItemsList";
+
 		var siteName = TestCase.getSiteName(siteName = "${siteName}");
+
+		WorkflowMetrics.setSLADefinitionsJobInterval(
+			definitionsJobInterval = "1",
+			slaJobInterval = "1");
 
 		ProductMenu.gotoPortlet(
 			category = "Configuration",
@@ -1506,6 +1512,10 @@ definition {
 		var key_testSlaDefinitionName = "SLA Name";
 		var key_testSlaDefinitionStart = "Process Begins";
 
+		WorkflowMetrics.setSLADefinitionsJobInterval(
+			definitionsJobInterval = "1",
+			slaJobInterval = "1");
+
 		ProductMenu.gotoPortlet(
 			category = "Configuration",
 			portlet = "Workflow",
@@ -1800,6 +1810,11 @@ definition {
 	@priority = "5"
 	test UpdateandDeleteSLA {
 		property portal.acceptance = "true";
+		property test.name.skip.portal.instance = "WorkflowMetrics#UpdateandDeleteSLA";
+
+		WorkflowMetrics.setSLADefinitionsJobInterval(
+			definitionsJobInterval = "1",
+			slaJobInterval = "1");
 
 		Navigator.openURL();
 
@@ -2767,6 +2782,10 @@ definition {
 		var key_testSlaDefinitionEnd = "Process Ends: Approved";
 		var key_testSlaDefinitionName = "SLA Name";
 		var key_testSlaDefinitionStart = "Enters Task: Review";
+
+		WorkflowMetrics.setSLADefinitionsJobInterval(
+			definitionsJobInterval = "1",
+			slaJobInterval = "1");
 
 		ProductMenu.gotoPortlet(
 			category = "Configuration",

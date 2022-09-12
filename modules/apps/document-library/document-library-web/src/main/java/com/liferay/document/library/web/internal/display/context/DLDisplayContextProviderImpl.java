@@ -26,7 +26,9 @@ import com.liferay.document.library.kernel.versioning.VersioningStrategy;
 import com.liferay.document.library.preview.DLPreviewRendererProvider;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.document.library.web.internal.helper.DLTrashHelper;
+import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.storage.StorageEngine;
+import com.liferay.dynamic.data.mapping.util.DDMBeanTranslator;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
@@ -68,8 +70,9 @@ public class DLDisplayContextProviderImpl implements DLDisplayContextProvider {
 
 		DLEditFileEntryDisplayContext dlEditFileEntryDisplayContext =
 			new DefaultDLEditFileEntryDisplayContext(
-				httpServletRequest, httpServletResponse, dlFileEntryType,
-				_dlValidator, _storageEngine);
+				_ddmBeanTranslator, _ddmFormValuesFactory, dlFileEntryType,
+				_dlValidator, httpServletRequest, httpServletResponse,
+				_storageEngine);
 
 		for (DLDisplayContextFactory dlDisplayContextFactory :
 				_dlDisplayContextFactories) {
@@ -90,8 +93,9 @@ public class DLDisplayContextProviderImpl implements DLDisplayContextProvider {
 
 		DLEditFileEntryDisplayContext dlEditFileEntryDisplayContext =
 			new DefaultDLEditFileEntryDisplayContext(
-				httpServletRequest, httpServletResponse, _dlValidator,
-				fileEntry, _storageEngine);
+				_ddmBeanTranslator, _ddmFormValuesFactory, _dlValidator,
+				fileEntry, httpServletRequest, httpServletResponse,
+				_storageEngine);
 
 		for (DLDisplayContextFactory dlDisplayContextFactory :
 				_dlDisplayContextFactories) {
@@ -121,8 +125,8 @@ public class DLDisplayContextProviderImpl implements DLDisplayContextProvider {
 		DLViewFileEntryHistoryDisplayContext
 			dlViewFileEntryHistoryDisplayContext =
 				new DefaultDLViewFileEntryHistoryDisplayContext(
-					httpServletRequest, fileVersion, resourceBundle,
-					_dlTrashHelper, _versioningStrategy, _dlURLHelper);
+					_dlTrashHelper, _dlURLHelper, fileVersion,
+					httpServletRequest, resourceBundle, _versioningStrategy);
 
 		if (fileVersion == null) {
 			return dlViewFileEntryHistoryDisplayContext;
@@ -161,10 +165,10 @@ public class DLDisplayContextProviderImpl implements DLDisplayContextProvider {
 
 			DLViewFileVersionDisplayContext dlViewFileVersionDisplayContext =
 				new DefaultDLViewFileVersionDisplayContext(
-					httpServletRequest, httpServletResponse, fileShortcut,
-					_dlMimeTypeDisplayContext, resourceBundle, _storageEngine,
-					_dlTrashHelper, dlPreviewRendererProvider,
-					_versioningStrategy, _dlURLHelper);
+					_dlMimeTypeDisplayContext, dlPreviewRendererProvider,
+					_dlTrashHelper, _dlURLHelper, fileShortcut,
+					httpServletRequest, httpServletResponse, resourceBundle,
+					_storageEngine, _versioningStrategy);
 
 			for (DLDisplayContextFactory dlDisplayContextFactory :
 					_dlDisplayContextFactories) {
@@ -199,10 +203,10 @@ public class DLDisplayContextProviderImpl implements DLDisplayContextProvider {
 
 		DLViewFileVersionDisplayContext dlViewFileVersionDisplayContext =
 			new DefaultDLViewFileVersionDisplayContext(
-				httpServletRequest, httpServletResponse, fileVersion,
-				_dlMimeTypeDisplayContext, resourceBundle, _storageEngine,
-				_dlTrashHelper, dlPreviewRendererProvider, _versioningStrategy,
-				_dlURLHelper);
+				_dlMimeTypeDisplayContext, dlPreviewRendererProvider,
+				_dlTrashHelper, _dlURLHelper, fileVersion, httpServletRequest,
+				httpServletResponse, resourceBundle, _storageEngine,
+				_versioningStrategy);
 
 		for (DLDisplayContextFactory dlDisplayContextFactory :
 				_dlDisplayContextFactories) {
@@ -243,6 +247,12 @@ public class DLDisplayContextProviderImpl implements DLDisplayContextProvider {
 		_dlDisplayContextFactories.close();
 		_dlPreviewRendererProviders.close();
 	}
+
+	@Reference
+	private DDMBeanTranslator _ddmBeanTranslator;
+
+	@Reference
+	private DDMFormValuesFactory _ddmFormValuesFactory;
 
 	private ServiceTrackerList<DLDisplayContextFactory>
 		_dlDisplayContextFactories;

@@ -22,30 +22,46 @@ import ClayModal, {useModal} from '@clayui/modal';
 import ClayTabs from '@clayui/tabs';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useDrag, useDrop} from 'react-dnd';
 import {getEmptyImage} from 'react-dnd-html5-backend';
 
-import {
-	useDispatch,
-	useSelector,
-	useSelectorRef,
-} from '../contexts/StoreContext';
+import updateSetsOrder from '../../app/thunks/updateSetsOrder';
+import {useDispatch, useSelector} from '../contexts/StoreContext';
 import selectWidgetFragmentEntryLinks from '../selectors/selectWidgetFragmentEntryLinks';
 import loadWidgets from '../thunks/loadWidgets';
 import {useId} from '../utils/useId';
 
-const TAB_IDS = {
-	fragments: 'fragments',
-	widgets: 'widgets',
-};
+const FRAGMENTS_ID = 'fragments';
+const WIDGETS_ID = 'widgets';
 
 const ACCEPTING_ITEM_TYPE = 'acceptingItemType';
+
+const HIGHLIGHTED_CATEGORY_ID = 'root--category-highlighted';
+
+const HIGHLIGHTED_COLLECTION_ID = 'highlighted';
 
 export function ReorderSetsModal({onCloseModal}) {
 	const {observer, onClose} = useModal({
 		onClose: onCloseModal,
 	});
+
+	const dispatch = useDispatch();
+
+	const widgetFragmentEntryLinks = useSelector(
+		selectWidgetFragmentEntryLinks
+	);
+
+	const [lists, setLists] = useState({
+		[FRAGMENTS_ID]: null,
+		[WIDGETS_ID]: null,
+	});
+
+	const updateLists = useCallback(
+		(listId, newItems) =>
+			setLists({...lists, [listId]: newItems.map(({id}) => id)}),
+		[lists, setLists]
+	);
 
 	return (
 		<ClayModal
@@ -56,14 +72,14 @@ export function ReorderSetsModal({onCloseModal}) {
 				{Liferay.Language.get('reorder-sets')}
 			</ClayModal.Header>
 
-			<ClayModal.Body>
-				<p className="text-secondary">
+			<ClayModal.Body className="p-0">
+				<p className="m-0 p-3 text-secondary">
 					{Liferay.Language.get(
 						'fragments-and-widgets-sets-can-be-ordered-to-give-you-easy-access-to-the-ones-you-use-the-most'
 					)}
 				</p>
 
-				<Tabs />
+				<Tabs updateLists={updateLists} />
 			</ClayModal.Body>
 
 			<ClayModal.Footer
@@ -73,7 +89,27 @@ export function ReorderSetsModal({onCloseModal}) {
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
 
-						<ClayButton displayType="primary" onClick={() => {}}>
+						<ClayButton
+							displayType="primary"
+							onClick={() => {
+								const orderedFragments = lists[FRAGMENTS_ID];
+								const orderedWidgets = lists[WIDGETS_ID];
+
+								if (!orderedFragments && !orderedWidgets) {
+									return;
+								}
+
+								dispatch(
+									updateSetsOrder({
+										fragments: orderedFragments,
+										widgetFragmentEntryLinks,
+										widgets: orderedWidgets,
+									})
+								);
+
+								onClose();
+							}}
+						>
 							{Liferay.Language.get('save')}
 						</ClayButton>
 					</ClayButton.Group>
@@ -87,40 +123,52 @@ ReorderSetsModal.propTypes = {
 	onCloseModal: PropTypes.func.isRequired,
 };
 
-function Tabs() {
+function Tabs({updateLists}) {
 	const namespace = useId();
 
 	const getTabId = (id) => `${namespace}tab${id}`;
 	const getTabPanelId = (tabId) => `${namespace}tabPanel${tabId}`;
 
-	const [activeTabId, setActiveTabId] = useState(TAB_IDS.fragments);
+	const [activeTabId, setActiveTabId] = useState(FRAGMENTS_ID);
 
 	const dispatch = useDispatch();
-	const widgetFragmentEntryLinksRef = useSelectorRef(
+	const widgetFragmentEntryLinks = useSelector(
 		selectWidgetFragmentEntryLinks
 	);
 
-	const fragments = useSelector((state) => state.fragments);
-	const widgets = useSelector((state) => state.widgets);
+	const fragments = useSelector((state) =>
+		state.fragments
+			.filter(
+				({fragmentCollectionId}) =>
+					fragmentCollectionId !== HIGHLIGHTED_COLLECTION_ID
+			)
+			.map(({fragmentCollectionId, name}) => ({
+				id: fragmentCollectionId,
+				name,
+			}))
+	);
+
+	const widgets = useSelector((state) =>
+		state.widgets
+			? state.widgets
+					.filter(({path}) => path !== HIGHLIGHTED_CATEGORY_ID)
+					.map(({path, title}) => ({
+						id: path,
+						name: title,
+					}))
+			: null
+	);
 
 	const tabs = useMemo(
 		() => [
 			{
-				id: TAB_IDS.fragments,
-				items: fragments.map(({fragmentCollectionId, name}) => ({
-					id: fragmentCollectionId,
-					name,
-				})),
+				id: FRAGMENTS_ID,
+				items: fragments,
 				label: Liferay.Language.get('fragments'),
 			},
 			{
-				id: TAB_IDS.widgets,
-				items: widgets
-					? widgets.map(({path, title}) => ({
-							id: path,
-							name: title,
-					  }))
-					: null,
+				id: WIDGETS_ID,
+				items: widgets,
 				label: Liferay.Language.get('widgets'),
 			},
 		],
@@ -128,18 +176,18 @@ function Tabs() {
 	);
 
 	useEffect(() => {
-		if (activeTabId === TAB_IDS.widgets && !widgets) {
+		if (activeTabId === WIDGETS_ID && !widgets) {
 			dispatch(
 				loadWidgets({
-					fragmentEntryLinks: widgetFragmentEntryLinksRef.current,
+					fragmentEntryLinks: widgetFragmentEntryLinks,
 				})
 			);
 		}
-	}, [activeTabId, dispatch, widgetFragmentEntryLinksRef, widgets]);
+	}, [activeTabId, dispatch, widgetFragmentEntryLinks, widgets]);
 
 	return (
 		<>
-			<ClayTabs>
+			<ClayTabs className="px-3">
 				{tabs.map(({id, label}) => (
 					<ClayTabs.Item
 						active={activeTabId === id}
@@ -166,7 +214,11 @@ function Tabs() {
 						key={id}
 					>
 						{items ? (
-							<Items items={items} />
+							<Items
+								items={items}
+								listId={id}
+								updateLists={updateLists}
+							/>
 						) : (
 							<ClayLoadingIndicator small />
 						)}
@@ -177,7 +229,11 @@ function Tabs() {
 	);
 }
 
-function Items({items: initialItems}) {
+Tabs.propTypes = {
+	updateLists: PropTypes.func.isRequired,
+};
+
+function Items({items: initialItems, listId, updateLists}) {
 	const [items, setItems] = useState(initialItems);
 
 	const onChangeItemPosition = (itemId, newPosition) => {
@@ -187,14 +243,14 @@ function Items({items: initialItems}) {
 		const nextItems = [...items];
 
 		nextItems.splice(itemIndex, 1);
-
 		nextItems.splice(newPosition, 0, item);
 
 		setItems(nextItems);
+		updateLists(listId, nextItems);
 	};
 
 	return (
-		<div className="py-4">
+		<div className="p-4">
 			{items.map((item, index) => (
 				<CardItem
 					index={index}
@@ -209,7 +265,9 @@ function Items({items: initialItems}) {
 }
 
 Items.propTypes = {
-	items: PropTypes.array.isRequired,
+	items: PropTypes.array,
+	listId: PropTypes.string.isRequired,
+	updateLists: PropTypes.func.isRequired,
 };
 
 function CardItem({index, item, numberOfItems, onChangeItemPosition}) {
@@ -220,37 +278,41 @@ function CardItem({index, item, numberOfItems, onChangeItemPosition}) {
 
 	return (
 		<div ref={targetRef}>
-			<ClayCard className={classNames({dragging: isDragging})}>
-				<ClayCard.Body className="px-0">
-					<ClayCard.Row className="align-items-center">
-						<ClayLayout.ContentCol gutters ref={handlerRef}>
-							<ClayIcon
-								className="text-secondary"
-								symbol="drag"
-							/>
-						</ClayLayout.ContentCol>
+			<div ref={handlerRef}>
+				<ClayCard
+					className={classNames('mb-3', {dragging: isDragging})}
+				>
+					<ClayCard.Body className="px-0">
+						<ClayCard.Row className="align-items-center">
+							<ClayLayout.ContentCol gutters>
+								<ClayIcon
+									className="text-secondary"
+									symbol="drag"
+								/>
+							</ClayLayout.ContentCol>
 
-						<ClayLayout.ContentCol expand>
-							<ClayCard.Description
-								className="text-uppercase"
-								displayType="title"
-								title={name}
-							>
-								{name}
-							</ClayCard.Description>
-						</ClayLayout.ContentCol>
+							<ClayLayout.ContentCol expand>
+								<ClayCard.Description
+									className="text-uppercase"
+									displayType="title"
+									title={name}
+								>
+									{name}
+								</ClayCard.Description>
+							</ClayLayout.ContentCol>
 
-						<ClayLayout.ContentCol gutters>
-							<ReorderDropdown
-								index={index}
-								item={item}
-								numberOfItems={numberOfItems}
-								onChangeItemPosition={onChangeItemPosition}
-							/>
-						</ClayLayout.ContentCol>
-					</ClayCard.Row>
-				</ClayCard.Body>
-			</ClayCard>
+							<ClayLayout.ContentCol gutters>
+								<ReorderDropdown
+									index={index}
+									item={item}
+									numberOfItems={numberOfItems}
+									onChangeItemPosition={onChangeItemPosition}
+								/>
+							</ClayLayout.ContentCol>
+						</ClayCard.Row>
+					</ClayCard.Body>
+				</ClayCard>
+			</div>
 		</div>
 	);
 }

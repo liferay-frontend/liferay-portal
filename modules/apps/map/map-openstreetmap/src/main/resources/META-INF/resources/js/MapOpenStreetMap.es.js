@@ -12,34 +12,49 @@
  * details.
  */
 
-import MapBase from '@liferay/map-common/js/MapBase.es';
-import {Config} from 'metal-state';
+import MapBase from '@liferay/map-common/js/MapBase';
 
 import OpenStreetMapDialog from './OpenStreetMapDialog';
 import OpenStreetMapGeoJSON from './OpenStreetMapGeoJSON';
 import OpenStreetMapGeocoder from './OpenStreetMapGeocoder';
 import OpenStreetMapMarker from './OpenStreetMapMarker';
 
+const defaultTileURI = '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
 /**
  * MapOpenStreetMap
  * @review
  */
 class MapOpenStreetMap extends MapBase {
+	get tileURI() {
+		return this._STATE_.tileURI;
+	}
+
+	set tileURI(tileURI) {
+		this._STATE_.tileURI = tileURI;
+	}
 
 	/**
 	 * Creates a new map using OpenStreetMap's API
 	 * @param  {Array} args List of arguments to be passed to State
 	 * @review
 	 */
-	constructor(...args) {
+	constructor(args) {
 		MapBase.DialogImpl = OpenStreetMapDialog;
 		MapBase.GeocoderImpl = OpenStreetMapGeocoder;
 		MapBase.GeoJSONImpl = OpenStreetMapGeoJSON;
 		MapBase.MarkerImpl = OpenStreetMapMarker;
 		MapBase.SearchImpl = null;
 
-		super(...args);
+		super(args);
 
+		const {boundingBox, tileURI = defaultTileURI} = args;
+
+		this._STATE_ = {
+			tileURI,
+		};
+
+		this.boundingBox = boundingBox;
 		this._map = null;
 	}
 
@@ -145,23 +160,6 @@ MapOpenStreetMap.POSITION_MAP = {
 	[MapBase.POSITION.TOP_CENTER]: 'topright',
 	[MapBase.POSITION.TOP_LEFT]: 'topleft',
 	[MapBase.POSITION.TOP_RIGHT]: 'topright',
-};
-
-/**
- * State definition.
- * @type {!Object}
- * @static
- */
-MapOpenStreetMap.STATE = {
-	...MapBase.STATE,
-
-	/**
-	 * Url used for fetching map tile information
-	 * @type {string}
-	 */
-	tileURI: Config.string().value(
-		'//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-	),
 };
 
 export default MapOpenStreetMap;

@@ -33,6 +33,7 @@ import {
 	createSuiteCaseBatch,
 	testraySuiteRest,
 } from '../../../services/rest';
+import {getUniqueList} from '../../../util';
 import {searchUtil} from '../../../util/search';
 import {CaseListView} from '../Cases';
 import SuiteSelectCasesModal from './modal';
@@ -113,7 +114,7 @@ const SuiteForm = () => {
 				return setValue('caseParameters', JSON.stringify(value));
 			}
 
-			setCases((prevCases) => [...new Set([...prevCases, ...value])]);
+			setCases((prevCases) => getUniqueList([...prevCases, ...value]));
 		},
 	});
 
@@ -158,7 +159,7 @@ const SuiteForm = () => {
 				</ClayButton>
 			</ClayButton.Group>
 
-			{caseParameters ? (
+			{caseParameters || !!cases.length ? (
 				<div />
 			) : (
 				<ClayAlert>There are no linked cases.</ClayAlert>

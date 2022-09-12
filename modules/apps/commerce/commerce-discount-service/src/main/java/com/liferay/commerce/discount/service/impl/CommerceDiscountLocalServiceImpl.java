@@ -602,7 +602,7 @@ public class CommerceDiscountLocalServiceImpl
 				commerceDiscount.getCommerceDiscountId());
 
 		_commerceDiscountRelLocalService.deleteCommerceDiscountRels(
-			commerceDiscount.getCommerceDiscountId());
+			commerceDiscount);
 
 		_commerceDiscountRuleLocalService.deleteCommerceDiscountRules(
 			commerceDiscount.getCommerceDiscountId());

@@ -1,0 +1,18 @@
+[
+	{
+		"menuItems": [
+			{
+				"friendlyURL": "/home",
+				"privateLayout": false,
+				"type": "layout"
+			},
+			{
+				"friendlyURL": "/my-evp",
+				"privateLayout": false,
+				"type": "layout"
+			}
+		],
+		"name": "Header Navigation Menu",
+		"typeSite": 1
+	}
+]

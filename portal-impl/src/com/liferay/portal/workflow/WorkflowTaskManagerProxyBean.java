@@ -18,8 +18,10 @@ import com.liferay.portal.kernel.messaging.proxy.BaseProxyBean;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
+import com.liferay.portal.kernel.workflow.WorkflowTransition;
 
 import java.io.Serializable;
 
@@ -66,24 +68,24 @@ public class WorkflowTaskManagerProxyBean
 	}
 
 	@Override
-	public WorkflowTask fetchWorkflowTask(long companyId, long workflowTaskId) {
+	public WorkflowTask fetchWorkflowTask(long workflowTaskId) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public List<User> getAssignableUsers(long companyId, long workflowTaskId) {
+	public List<User> getAssignableUsers(long workflowTaskId) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<String> getNextTransitionNames(
-		long companyId, long userId, long workflowTaskId) {
+		long userId, long workflowTaskId) {
 
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public WorkflowTask getWorkflowTask(long companyId, long workflowTaskId) {
+	public WorkflowTask getWorkflowTask(long workflowTaskId) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -185,7 +187,15 @@ public class WorkflowTaskManagerProxyBean
 	}
 
 	@Override
-	public boolean hasAssignableUsers(long companyId, long workflowTaskId) {
+	public List<WorkflowTransition> getWorkflowTaskWorkflowTransitions(
+			long workflowTaskId)
+		throws WorkflowException {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean hasAssignableUsers(long workflowTaskId) {
 		throw new UnsupportedOperationException();
 	}
 

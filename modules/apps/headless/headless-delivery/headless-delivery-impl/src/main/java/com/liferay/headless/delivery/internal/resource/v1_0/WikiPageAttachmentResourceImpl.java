@@ -51,10 +51,47 @@ public class WikiPageAttachmentResourceImpl
 	extends BaseWikiPageAttachmentResourceImpl {
 
 	@Override
+	public void
+			deleteSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode(
+				Long siteId, String wikiPageExternalReferenceCode,
+				String externalReferenceCode)
+		throws Exception {
+
+		WikiPage wikiPage =
+			_wikiPageService.getLatestPageByExternalReferenceCode(
+				siteId, wikiPageExternalReferenceCode);
+
+		FileEntry fileEntry =
+			wikiPage.getAttachmentsFileEntryByExternalReferenceCode(
+				siteId, externalReferenceCode);
+
+		_portletFileRepository.deletePortletFileEntry(
+			fileEntry.getFileEntryId());
+	}
+
+	@Override
 	public void deleteWikiPageAttachment(Long wikiPageAttachmentId)
 		throws Exception {
 
 		_portletFileRepository.deletePortletFileEntry(wikiPageAttachmentId);
+	}
+
+	@Override
+	public WikiPageAttachment
+			getSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode(
+				Long siteId, String wikiPageExternalReferenceCode,
+				String externalReferenceCode)
+		throws Exception {
+
+		WikiPage wikiPage =
+			_wikiPageService.getLatestPageByExternalReferenceCode(
+				siteId, wikiPageExternalReferenceCode);
+
+		FileEntry fileEntry =
+			wikiPage.getAttachmentsFileEntryByExternalReferenceCode(
+				siteId, externalReferenceCode);
+
+		return _toWikiPageAttachment(fileEntry);
 	}
 
 	@Override
@@ -95,15 +132,25 @@ public class WikiPageAttachmentResourceImpl
 			throw new BadRequestException("No file found in body");
 		}
 
+		Optional<WikiPageAttachment> wikiPageAttachmentOptional =
+			multipartBody.getValueAsInstanceOptional(
+				"wikiPageAttachment", WikiPageAttachment.class);
+
+		String externalReferenceCode = wikiPageAttachmentOptional.map(
+			WikiPageAttachment::getExternalReferenceCode
+		).orElse(
+			null
+		);
+
 		Folder folder = wikiPage.addAttachmentsFolder();
 
 		return _toWikiPageAttachment(
 			_portletFileRepository.addPortletFileEntry(
-				wikiPage.getGroupId(), contextUser.getUserId(),
-				WikiPage.class.getName(), wikiPage.getResourcePrimKey(),
-				WikiConstants.SERVICE_NAME, folder.getFolderId(),
-				binaryFile.getInputStream(), binaryFile.getFileName(),
-				binaryFile.getFileName(), false));
+				externalReferenceCode, wikiPage.getGroupId(),
+				contextUser.getUserId(), WikiPage.class.getName(),
+				wikiPage.getResourcePrimKey(), WikiConstants.SERVICE_NAME,
+				folder.getFolderId(), binaryFile.getInputStream(),
+				binaryFile.getFileName(), binaryFile.getFileName(), false));
 	}
 
 	private WikiPageAttachment _toWikiPageAttachment(FileEntry fileEntry)
@@ -118,6 +165,7 @@ public class WikiPageAttachmentResourceImpl
 					"contentValue", fileEntry::getContentStream,
 					Optional.of(contextUriInfo));
 				encodingFormat = fileEntry.getMimeType();
+				externalReferenceCode = fileEntry.getExternalReferenceCode();
 				fileExtension = fileEntry.getExtension();
 				id = fileEntry.getFileEntryId();
 				sizeInBytes = fileEntry.getSize();

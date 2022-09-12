@@ -9,7 +9,7 @@ import templates from './${artifactId}.soy.js';
 import {Config} from 'metal-state';
 #end
 
-#if ((${liferayVersion.startsWith("7.0")} || ${liferayVersion.startsWith("7.1")} || ${liferayVersion.startsWith("7.2")}) && !${reactTemplate.equals("true")})
+#if (${liferayVersion.startsWith("7.0")} || ${liferayVersion.startsWith("7.1")} || ${liferayVersion.startsWith("7.2")} || !${reactTemplate.equals("true")})
 import Component from 'metal-component';
 import Soy from 'metal-soy';
 #end
@@ -116,6 +116,6 @@ ${className}.STATE = {
 Soy.register(${className}, templates);
 #end
 
-#if ((${liferayVersion.startsWith("7.0")} || ${liferayVersion.startsWith("7.1")} || ${liferayVersion.startsWith("7.2")}) && !${reactTemplate.equals("true")})
+#if (${liferayVersion.startsWith("7.0")} || ${liferayVersion.startsWith("7.1")} || ${liferayVersion.startsWith("7.2")} || !${reactTemplate.equals("true")})
 export default ${className};
 #end

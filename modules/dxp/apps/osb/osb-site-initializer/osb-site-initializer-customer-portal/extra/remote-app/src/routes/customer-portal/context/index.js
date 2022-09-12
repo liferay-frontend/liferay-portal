@@ -148,6 +148,7 @@ const AppContextProvider = ({children}) => {
 
 		const getProject = async (externalReferenceCode, accountBrief) => {
 			const {data: projects} = await client.query({
+				fetchPolicy: 'network-only',
 				query: getKoroneikiAccounts,
 				variables: {
 					filter: `accountKey eq '${externalReferenceCode}'`,
@@ -174,7 +175,6 @@ const AppContextProvider = ({children}) => {
 
 		const getSubscriptionGroups = async (accountKey) => {
 			const {data: dataSubscriptionGroups} = await client.query({
-				fetchPolicy: 'network-only',
 				query: getAccountSubscriptionGroups,
 				variables: {
 					filter: `accountKey eq '${accountKey}' and hasActivation eq true`,

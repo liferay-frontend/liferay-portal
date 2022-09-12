@@ -15,6 +15,7 @@
 import {fetch} from 'frontend-js-web';
 
 import {ERRORS} from './errors';
+import {stringToURLParameterFormat} from './string';
 
 interface ErrorDetails extends Error {
 	detail?: string;
@@ -119,9 +120,23 @@ export async function getObjectDefinition(objectDefinitionId: number) {
 	);
 }
 
-export async function getObjectDefinitions() {
+export async function getAllObjectDefinitions() {
 	return await getList<ObjectDefinition>(
 		'/o/object-admin/v1.0/object-definitions?page=-1'
+	);
+}
+
+export async function getObjectDefinitions(parameters?: string) {
+	if (!parameters) {
+		return await getList<ObjectDefinition>(
+			'/o/object-admin/v1.0/object-definitions'
+		);
+	}
+
+	return await getList<ObjectDefinition>(
+		`/o/object-admin/v1.0/object-definitions?${stringToURLParameterFormat(
+			parameters
+		)}`
 	);
 }
 
@@ -197,5 +212,11 @@ export async function updateRelationship({
 	return await save(
 		`/o/object-admin/v1.0/object-relationships/${objectRelationshipId}`,
 		others
+	);
+}
+
+export async function getRelationship<T>(relationshipId: number) {
+	return fetchJSON<T>(
+		`/o/object-admin/v1.0/object-relationships/${relationshipId}`
 	);
 }

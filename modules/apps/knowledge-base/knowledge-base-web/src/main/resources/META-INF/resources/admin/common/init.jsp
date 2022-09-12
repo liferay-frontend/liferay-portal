@@ -17,7 +17,8 @@
 <%@ include file="/init.jsp" %>
 
 <%@ page import="com.liferay.document.library.configuration.DLConfiguration" %><%@
-page import="com.liferay.knowledge.base.web.internal.display.context.KBViewSuggestionDisplayContext" %>
+page import="com.liferay.knowledge.base.web.internal.display.context.EditKBArticleDisplayContext" %><%@
+page import="com.liferay.knowledge.base.web.internal.display.context.ViewKBSuggestionDisplayContext" %>
 
 <%
 long kbFolderClassNameId = PortalUtil.getClassNameId(KBFolderConstants.getClassName());
@@ -30,7 +31,6 @@ if (resourceClassNameId == 0) {
 
 long resourcePrimKey = GetterUtil.getLong(request.getAttribute("init.jsp-resourcePrimKey"));
 
-boolean enableKBArticleDescription = GetterUtil.getBoolean(request.getAttribute("init.jsp-enableKBArticleDescription"));
 boolean enableKBArticleRatings = GetterUtil.getBoolean(request.getAttribute("init.jsp-enableKBArticleRatings"));
 boolean showKBArticleAssetEntries = GetterUtil.getBoolean(request.getAttribute("init.jsp-showKBArticleAssetEntries"));
 boolean showKBArticleAttachments = GetterUtil.getBoolean(request.getAttribute("init.jsp-showKBArticleAttachments"));

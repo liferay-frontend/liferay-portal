@@ -20,11 +20,19 @@
 SegmentsExperimentDisplayContext segmentsExperimentDisplayContext = (SegmentsExperimentDisplayContext)request.getAttribute(SegmentsExperimentWebKeys.SEGMENTS_EXPERIMENT_DISPLAY_CONTEXT);
 %>
 
-<div class="inline-item my-5 p-5 w-100">
-	<span aria-hidden="true" class="loading-animation"></span>
-</div>
+<%--
 
-<react:component
-	module="js/SegmentsExperimentApp.es"
-	props="<%= segmentsExperimentDisplayContext.getData() %>"
-/>
+// Wrap with a section prevent React from complaining about side_navigation.es.js
+
+--%>
+
+<section>
+	<div class="inline-item my-5 p-5 w-100">
+		<span aria-hidden="true" class="loading-animation"></span>
+	</div>
+
+	<react:component
+		module="js/SegmentsExperimentApp.es"
+		props="<%= segmentsExperimentDisplayContext.getData() %>"
+	/>
+</section>

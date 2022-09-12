@@ -220,6 +220,111 @@ definition {
 		ObjectPortlet.viewEntry(entry = "Allowed Entry");
 	}
 
+	@description = "LPS-147651 - Verify that the user can define and use a expression with 'Concat' to text fields"
+	@priority = "4"
+	test CanDefineExpressionConcat {
+		task ("Create Custom Object and some Custom Fields") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object 156694",
+				objectName = "CustomObject156694",
+				pluralLabelName = "Custom Objects 156694");
+
+			for (var letters : list "A,B,C,D") {
+				ObjectAdmin.addObjectFieldViaAPI(
+					fieldBusinessType = "Text",
+					fieldLabelName = "Custom Text ${letters}",
+					fieldName = "customText${letters}",
+					fieldType = "String",
+					isRequired = "false",
+					objectName = "CustomObject156694");
+			}
+
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject156694");
+		}
+
+		task ("On Custom Object, go to validations tab") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 156694");
+
+			ObjectAdmin.goToValidationsTab();
+		}
+
+		task ("Add a Custom Validation using an expression 'concat'") {
+			ObjectCustomValidation.addObjectValidation(
+				validationName = "Custom Validation",
+				validationType = "Expression Builder");
+
+			ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
+
+			ObjectCustomValidation.activeValidation();
+
+			ObjectCustomValidation.gotoTab(tabName = "Conditions");
+
+			ObjectCustomValidation.insertScriptOnValidation(scriptValidation = "customTextA == concat(customTextB, customTextC, customTextD)");
+
+			ObjectCustomValidation.addErrorMessage(errorMessage = "This entry is not possible.");
+
+			Button.clickSave();
+		}
+
+		task ("Assert that Custom Validation with 'concat' is working") {
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156694");
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Text A",
+				entry = "Liferay Experience Cloud");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Text B",
+				entry = "Cloud");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Text C",
+				entry = " Liferay");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Text D",
+				entry = " Experience");
+
+			Button.clickSave();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR",
+				value1 = "This entry is not possible.");
+
+			Navigator.gotoBack();
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Text A",
+				entry = "Liferay Digital Experience");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Text B",
+				entry = "Liferay");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Text C",
+				entry = " Digital");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Text D",
+				entry = " Experience");
+
+			Button.clickSave();
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156694");
+
+			ObjectPortlet.viewEntry(entry = "Liferay Digital Experience");
+
+			ObjectPortlet.assertEntryNotPresent(entry = "Liferay Experience Cloud");
+		}
+	}
+
 	@description = "LPS-147651 - Verify that the user can define and use a expression with 'Contains' and 'Does Not Contains' to text fields and integer fields"
 	@priority = "4"
 	test CanDefineExpressionContainsAndDoesNotContain {
@@ -605,6 +710,77 @@ definition {
 			ObjectPortlet.viewEntry(entry = "9.87");
 
 			ObjectPortlet.assertEntryNotPresent(entry = "9,87");
+		}
+	}
+
+	@description = "LPS-147651 - Verify that the user can define and use a expression with 'Is Empty' to text fields"
+	@priority = "4"
+	test CanDefineExpressionIsEmpty {
+		property portal.upstream = "quarantine";
+
+		task ("Create Custom Object and Custom Field") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object 156695",
+				objectName = "CustomObject156695",
+				pluralLabelName = "Custom Objects 156695");
+
+			ObjectAdmin.addObjectFieldViaAPI(
+				fieldBusinessType = "Text",
+				fieldLabelName = "Custom Text",
+				fieldName = "customText",
+				fieldType = "String",
+				isRequired = "false",
+				objectName = "CustomObject156695");
+
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject156695");
+		}
+
+		task ("On Custom Object, go to validations tab") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 156695");
+
+			ObjectAdmin.goToValidationsTab();
+		}
+
+		task ("Add a Custom Validation using an expression 'is empty'") {
+			ObjectCustomValidation.addObjectValidation(
+				validationName = "Custom Validation",
+				validationType = "Expression Builder");
+
+			ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
+
+			ObjectCustomValidation.activeValidation();
+
+			ObjectCustomValidation.gotoTab(tabName = "Conditions");
+
+			ObjectCustomValidation.insertScriptOnValidation(scriptValidation = "isEmpty(customText)");
+
+			ObjectCustomValidation.addErrorMessage(errorMessage = "This entry is not possible.");
+
+			Button.clickSave();
+		}
+
+		task ("Assert that Custom Validation with 'is empty' is working") {
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156695");
+
+			ObjectAdmin.addObjectStringFieldEntryViaUI(entryValue = "Invalid entry");
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR",
+				value1 = "This entry is not possible.");
+
+			Navigator.gotoBack();
+
+			ObjectAdmin.addObjectStringFieldEntryViaUI(entryValue = "");
+
+			Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156695");
+
+			ObjectPortlet.viewEntry(entry = "");
+
+			ObjectPortlet.assertEntryNotPresent(entry = "Invalid entry");
 		}
 	}
 
@@ -1011,6 +1187,295 @@ definition {
 		}
 	}
 
+	@description = "LPS-147651 - Verify that the user can define and use a expression with math operators to integer fields"
+	@priority = "4"
+	test CanDefineExpressionOperators {
+		task ("Create Custom Object and some Custom Fields") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object 156700",
+				objectName = "CustomObject156700",
+				pluralLabelName = "Custom Objects 156700");
+
+			for (var letters : list "A,B,C") {
+				ObjectAdmin.addObjectFieldViaAPI(
+					fieldBusinessType = "Integer",
+					fieldLabelName = "Custom Integer ${letters}",
+					fieldName = "customInteger${letters}",
+					fieldType = "Integer",
+					isRequired = "false",
+					objectName = "CustomObject156700");
+			}
+
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject156700");
+		}
+
+		task ("On Custom Object, go to validations tab") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 156700");
+
+			ObjectAdmin.goToValidationsTab();
+		}
+
+		task ("Add a Custom Validation using an expression that contains operation 'plus'") {
+			ObjectCustomValidation.addObjectValidation(
+				validationName = "Custom Validation",
+				validationType = "Expression Builder");
+
+			ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
+
+			ObjectCustomValidation.activeValidation();
+
+			ObjectCustomValidation.gotoTab(tabName = "Conditions");
+
+			ObjectCustomValidation.insertScriptOnValidation(scriptValidation = "customIntegerA == customIntegerB + customIntegerC");
+
+			ObjectCustomValidation.addErrorMessage(errorMessage = "This entry is not possible.");
+
+			Button.clickSave();
+		}
+
+		task ("Assert that Custom Validation with 'plus' is working") {
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156700");
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer A",
+				entry = "1100");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer B",
+				entry = "800");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer C",
+				entry = "400");
+
+			Button.clickSave();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR",
+				value1 = "This entry is not possible.");
+
+			Navigator.gotoBack();
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer A",
+				entry = "5500");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer B",
+				entry = "2250");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer C",
+				entry = "3250");
+
+			Button.clickSave();
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156700");
+
+			ObjectPortlet.viewEntry(entry = "5500");
+
+			ObjectPortlet.assertEntryNotPresent(entry = "1100");
+		}
+
+		task ("Edit a Custom Validation using an expression that contains operation 'minus'") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 156700");
+
+			ObjectAdmin.goToValidationsTab();
+
+			ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
+
+			ObjectCustomValidation.gotoTab(tabName = "Conditions");
+
+			ObjectCustomValidation.insertScriptOnValidation(scriptValidation = "customIntegerA == customIntegerB - customIntegerC");
+
+			Button.clickSave();
+		}
+
+		task ("Assert that Custom Validation with 'minus' is working") {
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156700");
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer A",
+				entry = "2000");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer B",
+				entry = "2500");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer C",
+				entry = "1000");
+
+			Button.clickSave();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR",
+				value1 = "This entry is not possible.");
+
+			Navigator.gotoBack();
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer A",
+				entry = "6500");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer B",
+				entry = "7250");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer C",
+				entry = "750");
+
+			Button.clickSave();
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156700");
+
+			ObjectPortlet.viewEntry(entry = "6500");
+
+			ObjectPortlet.assertEntryNotPresent(entry = "2000");
+		}
+
+		task ("Edit a Custom Validation using an expression that contains operation 'time'") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 156700");
+
+			ObjectAdmin.goToValidationsTab();
+
+			ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
+
+			ObjectCustomValidation.gotoTab(tabName = "Conditions");
+
+			ObjectCustomValidation.insertScriptOnValidation(scriptValidation = "customIntegerA == customIntegerB * customIntegerC");
+
+			Button.clickSave();
+		}
+
+		task ("Assert that Custom Validation with 'time' is working") {
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156700");
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer A",
+				entry = "3000");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer B",
+				entry = "2000");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer C",
+				entry = "2");
+
+			Button.clickSave();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR",
+				value1 = "This entry is not possible.");
+
+			Navigator.gotoBack();
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer A",
+				entry = "7500");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer B",
+				entry = "3750");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer C",
+				entry = "2");
+
+			Button.clickSave();
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156700");
+
+			ObjectPortlet.viewEntry(entry = "7500");
+
+			ObjectPortlet.assertEntryNotPresent(entry = "3000");
+		}
+
+		task ("Edit a Custom Validation using an expression that contains operation 'divided by'") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 156700");
+
+			ObjectAdmin.goToValidationsTab();
+
+			ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
+
+			ObjectCustomValidation.gotoTab(tabName = "Conditions");
+
+			ObjectCustomValidation.insertScriptOnValidation(scriptValidation = "customIntegerA == customIntegerB / customIntegerC");
+
+			Button.clickSave();
+		}
+
+		task ("Assert that Custom Validation with 'divided by' is working") {
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156700");
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer A",
+				entry = "4000");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer B",
+				entry = "5000");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer C",
+				entry = "2");
+
+			Button.clickSave();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR",
+				value1 = "This entry is not possible.");
+
+			Navigator.gotoBack();
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer A",
+				entry = "8500");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer B",
+				entry = "17000");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer C",
+				entry = "2");
+
+			Button.clickSave();
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156700");
+
+			ObjectPortlet.viewEntry(entry = "8500");
+
+			ObjectPortlet.assertEntryNotPresent(entry = "4000");
+		}
+	}
+
 	@description = "LPS-147651 - Verify that the user can define and use a expression with 'Range' (Future Dates and Past Dates) to date fields"
 	@priority = "4"
 	test CanDefineExpressionRange {
@@ -1085,6 +1550,111 @@ definition {
 			ObjectPortlet.assertEntryNotPresent(entry = "May 30, 2022");
 
 			ObjectPortlet.assertEntryNotPresent(entry = "Jul 1, 2022");
+		}
+	}
+
+	@description = "LPS-147651 - Verify that the user can define and use a expression with 'Sum' to integer fields"
+	@priority = "4"
+	test CanDefineExpressionSum {
+		task ("Create Custom Object and some Custom Fields") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object 156699",
+				objectName = "CustomObject156699",
+				pluralLabelName = "Custom Objects 156699");
+
+			for (var letters : list "A,B,C,D") {
+				ObjectAdmin.addObjectFieldViaAPI(
+					fieldBusinessType = "Integer",
+					fieldLabelName = "Custom Integer ${letters}",
+					fieldName = "customInteger${letters}",
+					fieldType = "Integer",
+					isRequired = "false",
+					objectName = "CustomObject156699");
+			}
+
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject156699");
+		}
+
+		task ("On Custom Object, go to validations tab") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 156699");
+
+			ObjectAdmin.goToValidationsTab();
+		}
+
+		task ("Add a Custom Validation using an expression 'sum'") {
+			ObjectCustomValidation.addObjectValidation(
+				validationName = "Custom Validation",
+				validationType = "Expression Builder");
+
+			ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
+
+			ObjectCustomValidation.activeValidation();
+
+			ObjectCustomValidation.gotoTab(tabName = "Conditions");
+
+			ObjectCustomValidation.insertScriptOnValidation(scriptValidation = "customIntegerA >= sum(customIntegerB, customIntegerC, customIntegerD)");
+
+			ObjectCustomValidation.addErrorMessage(errorMessage = "This entry is not possible.");
+
+			Button.clickSave();
+		}
+
+		task ("Assert that Custom Validation with 'sum' is working") {
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156699");
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer A",
+				entry = "10001");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer B",
+				entry = "3001");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer C",
+				entry = "4000");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer D",
+				entry = "5000");
+
+			Button.clickSave();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR",
+				value1 = "This entry is not possible.");
+
+			Navigator.gotoBack();
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer A",
+				entry = "10002");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer B",
+				entry = "2002");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer C",
+				entry = "3000");
+
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Integer D",
+				entry = "4000");
+
+			Button.clickSave();
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject156699");
+
+			ObjectPortlet.viewEntry(entry = "10002");
+
+			ObjectPortlet.assertEntryNotPresent(entry = "10001");
 		}
 	}
 

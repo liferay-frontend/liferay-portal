@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -288,10 +289,15 @@ public class LayoutModelDocumentContributor
 			long segmentsExperienceId, ServiceContext serviceContext)
 		throws PortalException {
 
+		long companyId = CompanyThreadLocal.getCompanyId();
+
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
 		try {
+			CompanyThreadLocal.setCompanyId(
+				layoutPageTemplateStructure.getCompanyId());
+
 			PermissionThreadLocal.setPermissionChecker(
 				mockContextHelper.getPermissionChecker());
 
@@ -311,6 +317,8 @@ public class LayoutModelDocumentContributor
 				FragmentEntryLinkConstants.VIEW, locale, segmentsExperienceId);
 		}
 		finally {
+			CompanyThreadLocal.setCompanyId(companyId);
+
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
 			ServiceContextThreadLocal.popServiceContext();
@@ -402,6 +410,10 @@ public class LayoutModelDocumentContributor
 					new MockHttpServletRequest(), "p_l_id=" + _layout.getPlid(),
 					false);
 
+			httpServletRequest.setAttribute(
+				WebKeys.COMPANY_ID, Long.valueOf(_layout.getCompanyId()));
+			httpServletRequest.setAttribute(WebKeys.LAYOUT, _layout);
+
 			ThemeDisplay themeDisplay = _getThemeDisplay();
 
 			themeDisplay.setLanguageId(LocaleUtil.toLanguageId(locale));
@@ -412,7 +424,6 @@ public class LayoutModelDocumentContributor
 			httpServletRequest.setAttribute(
 				WebKeys.THEME_DISPLAY, themeDisplay);
 
-			httpServletRequest.setAttribute(WebKeys.LAYOUT, _layout);
 			httpServletRequest.setAttribute(WebKeys.USER, _user);
 			httpServletRequest.setAttribute(WebKeys.USER_ID, _user.getUserId());
 

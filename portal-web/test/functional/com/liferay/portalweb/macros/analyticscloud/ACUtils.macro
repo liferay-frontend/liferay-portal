@@ -440,6 +440,22 @@ definition {
 		Click(locator1 = "ACSegments#SEGMENT_ELLIPSIS");
 	}
 
+	macro clickOnDistributionBar {
+		if (!(isSet(index))) {
+			var index = "1";
+		}
+
+		while (IsElementNotPresent(index = "${index}", locator1 = "ACIndividualsDashboard#INDIVIDUALS_ACTIVITIES_CHART_RECHARTS_BAR")) {
+			TestUtils.hardRefresh();
+
+			ACUtils.waitForChartLoad();
+		}
+
+		Click(
+			index = "${index}",
+			locator1 = "ACIndividualsDashboard#INDIVIDUALS_ACTIVITIES_CHART_RECHARTS_BAR");
+	}
+
 	macro closeAllSessions {
 		AntCommand(
 			locator1 = "build-test.xml",
@@ -632,6 +648,26 @@ definition {
 		var value = JSONUtil.getWithJSONPath("[${postDataText}]", "$..[?(@['applicationId'] == '${applicationId}' && @['eventId'] == '${eventId}')]..${property}");
 
 		return "${value}";
+	}
+
+	macro getGroupId {
+		var currentURL = Navigator.getCurrentURL();
+
+		var groupId = StringUtil.extractLast("${currentURL}", "workspace/");
+
+		var groupId = StringUtil.extractFirst("${groupId}", "/");
+
+		return "${groupId}";
+	}
+
+	macro getIPAddress {
+		var analyticsCloudURL = PropsUtil.get("analytics.cloud.url");
+
+		var extractedIPAddress = StringUtil.extractFirst("${analyticsCloudURL}", ":8080");
+
+		var extractedIPAddress = StringUtil.extractLast("${extractedIPAddress}", "/");
+
+		return "${extractedIPAddress}";
 	}
 
 	macro getIPCountry {
@@ -1120,6 +1156,13 @@ definition {
 
 			var i = StringUtil.valueOf("${i}");
 		}
+	}
+
+	macro waitForChartLoad {
+
+		// The pause is necessary because the bar takes a while to load into the chart. For more information about pause see LRAC-9517
+
+		Pause(locator1 = "2000");
 	}
 
 	macro waitForClearProperty {

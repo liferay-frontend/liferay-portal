@@ -130,6 +130,7 @@ export function AdvancedSelectField({
 				<LengthField
 					field={field}
 					onValueSelect={onValueSelect}
+					showLabel={!field.icon}
 					value={nextValue}
 				/>
 			) : (
@@ -326,7 +327,7 @@ const SingleSelectWithIcon = ({
 				id={inputId}
 				onChange={onChange}
 				options={options}
-				value={value}
+				value={value || ''}
 			/>
 
 			<div
@@ -390,7 +391,7 @@ AdvancedSelectField.propTypes = {
 					label: PropTypes.string.isRequired,
 					value: PropTypes.string.isRequired,
 				})
-			).isRequired,
+			),
 		}),
 	}),
 	onValueSelect: PropTypes.func.isRequired,

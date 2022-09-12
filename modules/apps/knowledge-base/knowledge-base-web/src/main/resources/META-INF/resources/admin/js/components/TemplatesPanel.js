@@ -18,12 +18,16 @@ import ClayLink from '@clayui/link';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import ActionsDropdown from './ActionsDropdown';
 export default function TemplatesPanel({items}) {
 	return items?.length ? (
 		<ClayTreeView defaultItems={items} nestedKey="children">
 			{(item) => {
 				return (
-					<ClayTreeView.Item className="pl-1">
+					<ClayTreeView.Item
+						actions={ActionsDropdown({actions: item.actions})}
+						className="pl-1"
+					>
 						<ClayTreeView.ItemStack>
 							<ClayLink displayType="secondary" href={item.href}>
 								{item.name}

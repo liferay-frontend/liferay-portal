@@ -15,16 +15,22 @@
 package com.liferay.batch.engine.internal.reader;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import java.lang.reflect.Field;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -123,6 +129,52 @@ public class BatchEngineImportTaskItemReaderUtil {
 		return targetFieldNameValueMap;
 	}
 
-	private static final ObjectMapper _objectMapper = new ObjectMapper();
+	private static final ObjectMapper _objectMapper = new ObjectMapper() {
+		{
+			SimpleModule simpleModule = new SimpleModule();
+
+			simpleModule.addDeserializer(Map.class, new MapStdDeserializer());
+
+			registerModule(simpleModule);
+		}
+	};
+
+	private static class MapStdDeserializer
+		extends StdDeserializer<Map<String, Object>> {
+
+		public MapStdDeserializer() {
+			this(Map.class);
+		}
+
+		@Override
+		public Map<String, Object> deserialize(
+				JsonParser jsonParser,
+				DeserializationContext deserializationContext)
+			throws IOException {
+
+			try {
+				return deserializationContext.readValue(
+					jsonParser, LinkedHashMap.class);
+			}
+			catch (Exception exception) {
+				Map<String, Object> map = new LinkedHashMap<>();
+
+				String string = jsonParser.getValueAsString();
+
+				for (String line : string.split(StringPool.RETURN_NEW_LINE)) {
+					String[] lineParts = line.split(StringPool.COLON);
+
+					map.put(lineParts[0], lineParts[1]);
+				}
+
+				return map;
+			}
+		}
+
+		protected MapStdDeserializer(Class<?> clazz) {
+			super(clazz);
+		}
+
+	}
 
 }

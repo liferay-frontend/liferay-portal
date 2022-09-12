@@ -851,6 +851,8 @@ public abstract class TopLevelBuild extends BaseBuild {
 
 		super.findDownstreamBuilds();
 
+		_findDownstreamBuildsInConsoleText();
+
 		String consoleText = getConsoleText();
 
 		for (Build downstreamBuild : downstreamBuilds) {
@@ -858,74 +860,6 @@ public abstract class TopLevelBuild extends BaseBuild {
 
 			downstreamBaseBuild.checkForReinvocation(consoleText);
 		}
-	}
-
-	@Override
-	protected List<String> findDownstreamBuildsInConsoleText() {
-		if (getParentBuild() != null) {
-			return Collections.emptyList();
-		}
-
-		String consoleText = getConsoleText();
-
-		List<String> foundDownstreamBuildURLs = new ArrayList<>();
-
-		if ((consoleText == null) || consoleText.isEmpty()) {
-			return foundDownstreamBuildURLs;
-		}
-
-		Set<String> downstreamBuildURLs = new HashSet<>();
-
-		for (Build downstreamBuild : getDownstreamBuilds(null)) {
-			String downstreamBuildURL = downstreamBuild.getBuildURL();
-
-			if (downstreamBuildURL != null) {
-				downstreamBuildURLs.add(downstreamBuildURL);
-			}
-
-			List<String> downstreamBadBuildURLs =
-				downstreamBuild.getBadBuildURLs();
-
-			if (downstreamBadBuildURLs != null) {
-				downstreamBuildURLs.addAll(downstreamBadBuildURLs);
-			}
-		}
-
-		if (getBuildURL() != null) {
-			int i = consoleText.lastIndexOf("\nstop-current-job:");
-
-			if (i != -1) {
-				consoleText = consoleText.substring(0, i);
-			}
-
-			Matcher downstreamBuildURLMatcher =
-				downstreamBuildURLPattern.matcher(
-					consoleText.substring(consoleReadCursor));
-
-			consoleReadCursor = consoleText.length();
-
-			while (downstreamBuildURLMatcher.find()) {
-				String url = downstreamBuildURLMatcher.group("url");
-
-				Pattern reinvocationPattern = Pattern.compile(
-					Pattern.quote(url) + " restarted at (?<url>[^\\s]*)\\.");
-
-				Matcher reinvocationMatcher = reinvocationPattern.matcher(
-					consoleText);
-
-				while (reinvocationMatcher.find()) {
-					url = reinvocationMatcher.group("url");
-				}
-
-				if (!foundDownstreamBuildURLs.contains(url) &&
-					!downstreamBuildURLs.contains(url)) {
-
-					foundDownstreamBuildURLs.add(url);
-				}
-			}
-		}
-
-		return foundDownstreamBuildURLs;
 	}
 
 	protected Element getBaseBranchDetailsElement() {
@@ -2009,13 +1943,15 @@ public abstract class TopLevelBuild extends BaseBuild {
 				"Unable to archive " + urlSuffix, ioException);
 		}
 		finally {
-			System.out.println(
-				JenkinsResultsParserUtil.combine(
-					"Archived ", String.valueOf(getArchiveFile(urlSuffix)),
-					" in ",
-					JenkinsResultsParserUtil.toDurationString(
-						JenkinsResultsParserUtil.getCurrentTimeMillis() -
-							start)));
+			if (JenkinsResultsParserUtil.debug) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"Archived ", String.valueOf(getArchiveFile(urlSuffix)),
+						" in ",
+						JenkinsResultsParserUtil.toDurationString(
+							JenkinsResultsParserUtil.getCurrentTimeMillis() -
+								start)));
+			}
 		}
 	}
 
@@ -2054,12 +1990,14 @@ public abstract class TopLevelBuild extends BaseBuild {
 				"Unable to copy the Jenkins report", ioException);
 		}
 		finally {
-			System.out.println(
-				JenkinsResultsParserUtil.combine(
-					"Archived ", String.valueOf(archiveFile), " in ",
-					JenkinsResultsParserUtil.toDurationString(
-						JenkinsResultsParserUtil.getCurrentTimeMillis() -
-							start)));
+			if (JenkinsResultsParserUtil.debug) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"Archived ", String.valueOf(archiveFile), " in ",
+						JenkinsResultsParserUtil.toDurationString(
+							JenkinsResultsParserUtil.getCurrentTimeMillis() -
+								start)));
+			}
 		}
 
 		try {
@@ -2070,12 +2008,14 @@ public abstract class TopLevelBuild extends BaseBuild {
 			System.out.println("Unable to archive Jenkins report");
 		}
 		finally {
-			System.out.println(
-				JenkinsResultsParserUtil.combine(
-					"Archived ", String.valueOf(archiveFile), " in ",
-					JenkinsResultsParserUtil.toDurationString(
-						JenkinsResultsParserUtil.getCurrentTimeMillis() -
-							start)));
+			if (JenkinsResultsParserUtil.debug) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"Archived ", String.valueOf(archiveFile), " in ",
+						JenkinsResultsParserUtil.toDurationString(
+							JenkinsResultsParserUtil.getCurrentTimeMillis() -
+								start)));
+			}
 		}
 	}
 
@@ -2116,13 +2056,93 @@ public abstract class TopLevelBuild extends BaseBuild {
 				"Unable to archive properties", ioException);
 		}
 		finally {
-			System.out.println(
-				JenkinsResultsParserUtil.combine(
-					"Archived ", String.valueOf(archiveFile), " in ",
-					JenkinsResultsParserUtil.toDurationString(
-						JenkinsResultsParserUtil.getCurrentTimeMillis() -
-							start)));
+			if (JenkinsResultsParserUtil.debug) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"Archived ", String.valueOf(archiveFile), " in ",
+						JenkinsResultsParserUtil.toDurationString(
+							JenkinsResultsParserUtil.getCurrentTimeMillis() -
+								start)));
+			}
 		}
+	}
+
+	private void _findDownstreamBuildsInConsoleText() {
+		if ((getBuildURL() == null) || (getParentBuild() != null)) {
+			return;
+		}
+
+		String consoleText = getConsoleText();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(consoleText)) {
+			return;
+		}
+
+		Set<String> downstreamBuildURLs = new HashSet<>();
+
+		for (Build downstreamBuild : getDownstreamBuilds(null)) {
+			String downstreamBuildURL = downstreamBuild.getBuildURL();
+
+			if (downstreamBuildURL != null) {
+				downstreamBuildURLs.add(downstreamBuildURL);
+			}
+
+			List<String> downstreamBadBuildURLs =
+				downstreamBuild.getBadBuildURLs();
+
+			if (downstreamBadBuildURLs != null) {
+				downstreamBuildURLs.addAll(downstreamBadBuildURLs);
+			}
+		}
+
+		Map<String, String> urlAxisNames = new HashMap<>();
+
+		int i = consoleText.lastIndexOf("\nstop-current-job:");
+
+		if (i != -1) {
+			consoleText = consoleText.substring(0, i);
+		}
+
+		Matcher downstreamBuildURLMatcher = _downstreamBuildURLPattern.matcher(
+			consoleText.substring(consoleReadCursor));
+
+		consoleReadCursor = consoleText.length();
+
+		while (downstreamBuildURLMatcher.find()) {
+			String url = downstreamBuildURLMatcher.group("url");
+
+			Pattern reinvocationPattern = Pattern.compile(
+				Pattern.quote(url) + " restarted at (?<url>[^\\s]*)\\.");
+
+			Matcher reinvocationMatcher = reinvocationPattern.matcher(
+				consoleText);
+
+			while (reinvocationMatcher.find()) {
+				url = reinvocationMatcher.group("url");
+			}
+
+			if (downstreamBuildURLs.contains(url) ||
+				urlAxisNames.containsKey(url)) {
+
+				continue;
+			}
+
+			String jobVariant = downstreamBuildURLMatcher.group("jobVariant");
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(jobVariant)) {
+				String jobName = downstreamBuildURLMatcher.group("jobName");
+
+				if (!JenkinsResultsParserUtil.isNullOrEmpty(jobName) &&
+					jobVariant.contains(jobName + "/")) {
+
+					jobVariant = jobVariant.replaceAll(jobName + "/", "");
+				}
+			}
+
+			urlAxisNames.put(url, jobVariant);
+		}
+
+		addDownstreamBuilds(urlAxisNames);
 	}
 
 	private Map<Map<String, String>, Integer> _getSlaveUsageByLabels() {
@@ -2187,6 +2207,9 @@ public abstract class TopLevelBuild extends BaseBuild {
 		"http://test-1-0.liferay.com/userContent/reports/ci-system-status" +
 			"/index.html";
 
+	private static final Pattern _downstreamBuildURLPattern = Pattern.compile(
+		"[\\'\\\"](?<jobVariant>[^\\'\\\"]+)[\\'\\\"] (completed|started) at " +
+			"(?<url>.+/job/(?<jobName>[^/]+)/.+)\\.");
 	private static final ExecutorService _executorService =
 		JenkinsResultsParserUtil.getNewThreadPoolExecutor(10, true);
 

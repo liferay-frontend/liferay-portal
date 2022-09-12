@@ -18,22 +18,12 @@ import com.liferay.asset.categories.item.selector.AssetCategoryTreeNodeItemSelec
 import com.liferay.asset.categories.item.selector.criterion.AssetCategoryTreeNodeItemSelectorCriterion;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
-import com.liferay.fragment.constants.FragmentConstants;
-import com.liferay.fragment.contributor.FragmentCollectionContributor;
-import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
-import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
-import com.liferay.fragment.renderer.FragmentRenderer;
-import com.liferay.fragment.renderer.FragmentRendererTracker;
-import com.liferay.fragment.service.FragmentCollectionServiceUtil;
-import com.liferay.fragment.service.FragmentCompositionServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
-import com.liferay.fragment.service.FragmentEntryServiceUtil;
-import com.liferay.fragment.util.comparator.FragmentCollectionContributorNameComparator;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.info.collection.provider.item.selector.criterion.InfoCollectionProviderItemSelectorCriterion;
@@ -58,8 +48,8 @@ import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortlet
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
 import com.liferay.layout.content.page.editor.web.internal.configuration.PageEditorConfiguration;
 import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorActionKeys;
-import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorConstants;
 import com.liferay.layout.content.page.editor.web.internal.util.ContentUtil;
+import com.liferay.layout.content.page.editor.web.internal.util.FragmentCollectionManager;
 import com.liferay.layout.content.page.editor.web.internal.util.FragmentEntryLinkManager;
 import com.liferay.layout.content.page.editor.web.internal.util.MappingContentUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.MappingTypesUtil;
@@ -91,7 +81,6 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -120,8 +109,6 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -153,7 +140,6 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -182,10 +168,8 @@ public class ContentPageEditorDisplayContext {
 
 	public ContentPageEditorDisplayContext(
 		List<ContentPageEditorSidebarPanel> contentPageEditorSidebarPanels,
-		FragmentCollectionContributorTracker
-			fragmentCollectionContributorTracker,
+		FragmentCollectionManager fragmentCollectionManager,
 		FragmentEntryLinkManager fragmentEntryLinkManager,
-		FragmentRendererTracker fragmentRendererTracker,
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
 		HttpServletRequest httpServletRequest,
 		InfoItemServiceTracker infoItemServiceTracker,
@@ -197,10 +181,8 @@ public class ContentPageEditorDisplayContext {
 		StagingGroupHelper stagingGroupHelper) {
 
 		_contentPageEditorSidebarPanels = contentPageEditorSidebarPanels;
-		_fragmentCollectionContributorTracker =
-			fragmentCollectionContributorTracker;
+		_fragmentCollectionManager = fragmentCollectionManager;
 		_fragmentEntryLinkManager = fragmentEntryLinkManager;
-		_fragmentRendererTracker = fragmentRendererTracker;
 		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 		_itemSelector = itemSelector;
 		_pageEditorConfiguration = pageEditorConfiguration;
@@ -641,10 +623,10 @@ public class ContentPageEditorDisplayContext {
 				getFragmentEntryActionURL(
 					"/layout_content_page_editor/update_form_item_config")
 			).put(
-				"updateFragmentCollectionsSortConfigurationURL",
+				"updateFragmentPortletSetsSortURL",
 				getFragmentEntryActionURL(
 					"/layout_content_page_editor" +
-						"/update_fragment_collections_sort_configuration")
+						"/update_fragment_portlet_sets_sort_configuration")
 			).put(
 				"updateFragmentsHighlightedConfigurationURL",
 				getFragmentEntryActionURL(
@@ -659,11 +641,6 @@ public class ContentPageEditorDisplayContext {
 				getFragmentEntryActionURL(
 					"/layout_content_page_editor" +
 						"/update_layout_page_template_data")
-			).put(
-				"updatePortletCategoriesSortConfigurationURL",
-				getFragmentEntryActionURL(
-					"/layout_content_page_editor" +
-						"/update_portlet_categories_sort_configuration")
 			).put(
 				"updatePortletsHighlightedConfigurationURL",
 				getFragmentEntryActionURL(
@@ -690,11 +667,17 @@ public class ContentPageEditorDisplayContext {
 		).put(
 			"state",
 			HashMapBuilder.<String, Object>put(
-				"collections", _getFragmentCollectionMapsList(true, false)
+				"collections",
+				_fragmentCollectionManager.getFragmentCollectionMapsList(
+					getGroupId(), httpServletRequest, true, false,
+					_getMasterDropZoneLayoutStructureItem(), themeDisplay)
 			).put(
 				"fragmentEntryLinks", _getFragmentEntryLinks()
 			).put(
-				"fragments", _getFragmentCollectionMapsList(false, true)
+				"fragments",
+				_fragmentCollectionManager.getFragmentCollectionMapsList(
+					getGroupId(), httpServletRequest, false, true,
+					_getMasterDropZoneLayoutStructureItem(), themeDisplay)
 			).put(
 				"languageId",
 				LocaleUtil.toLanguageId(themeDisplay.getSiteDefaultLocale())
@@ -960,80 +943,6 @@ public class ContentPageEditorDisplayContext {
 	protected final StagingGroupHelper stagingGroupHelper;
 	protected final ThemeDisplay themeDisplay;
 
-	private List<Map<String, Object>> _addLayoutElementMaps(
-		Map<String, Map<String, Object>> fragmentCollectionMaps) {
-
-		for (Map.Entry<String, List<Map<String, Object>>> entry :
-				_layoutElementMapsListMap.entrySet()) {
-
-			List<Map<String, Object>> layoutElementMapsList =
-				new LinkedList<>();
-
-			for (Map<String, Object> layoutElementMap : entry.getValue()) {
-				String fragmentEntryKey = (String)layoutElementMap.get(
-					"fragmentEntryKey");
-
-				if (!_isAllowedFragmentEntryKey(fragmentEntryKey)) {
-					continue;
-				}
-
-				layoutElementMapsList.add(
-					HashMapBuilder.create(
-						layoutElementMap
-					).put(
-						"name",
-						LanguageUtil.get(
-							themeDisplay.getLocale(),
-							(String)layoutElementMap.get("languageKey"))
-					).build());
-			}
-
-			if (layoutElementMapsList.isEmpty()) {
-				continue;
-			}
-
-			String collectionKey = entry.getKey();
-
-			Map<String, Object> fragmentCollectionMap =
-				fragmentCollectionMaps.computeIfAbsent(
-					collectionKey,
-					key -> HashMapBuilder.<String, Object>put(
-						"fragmentCollectionId", collectionKey
-					).put(
-						"name",
-						LanguageUtil.get(
-							themeDisplay.getLocale(),
-							"fragment.collection.label." +
-								StringUtil.toLowerCase(collectionKey))
-					).build());
-
-			List<Map<String, Object>> fragmentEntryMapsList =
-				(List<Map<String, Object>>)
-					fragmentCollectionMap.computeIfAbsent(
-						"fragmentEntries", key -> new LinkedList<>());
-
-			fragmentEntryMapsList.addAll(0, layoutElementMapsList);
-		}
-
-		List<Map<String, Object>> fragmentCollectionMapsList =
-			new LinkedList<>();
-
-		for (String collectionKey : _SORTED_FRAGMENT_COLLECTION_KEYS) {
-			Map<String, Object> fragmentCollectionMap =
-				fragmentCollectionMaps.remove(collectionKey);
-
-			if (fragmentCollectionMap == null) {
-				continue;
-			}
-
-			fragmentCollectionMapsList.add(fragmentCollectionMap);
-		}
-
-		fragmentCollectionMapsList.addAll(fragmentCollectionMaps.values());
-
-		return fragmentCollectionMapsList;
-	}
-
 	private String _getAssetCategoryTreeNodeItemSelectorURL() {
 		ItemSelectorCriterion itemSelectorCriterion =
 			new AssetCategoryTreeNodeItemSelectorCriterion();
@@ -1237,254 +1146,6 @@ public class ContentPageEditorDisplayContext {
 		).buildString();
 	}
 
-	private Map<String, Map<String, Object>>
-		_getDynamicFragmentCollectionMaps() {
-
-		Map<String, Map<String, Object>> dynamicFragmentCollectionMaps =
-			new LinkedHashMap<>();
-
-		for (FragmentRenderer fragmentRenderer :
-				_fragmentRendererTracker.getFragmentRenderers()) {
-
-			if (!fragmentRenderer.isSelectable(httpServletRequest) ||
-				!_isAllowedFragmentEntryKey(fragmentRenderer.getKey())) {
-
-				continue;
-			}
-
-			Map<String, Object> dynamicFragmentCollectionMap =
-				dynamicFragmentCollectionMaps.computeIfAbsent(
-					fragmentRenderer.getCollectionKey(),
-					key -> HashMapBuilder.<String, Object>put(
-						"fragmentCollectionId",
-						fragmentRenderer.getCollectionKey()
-					).put(
-						"name",
-						() -> LanguageUtil.get(
-							themeDisplay.getLocale(),
-							"fragment.collection.label." +
-								fragmentRenderer.getCollectionKey())
-					).build());
-
-			List<Map<String, Object>> fragmentEntryMapsList =
-				(List<Map<String, Object>>)
-					dynamicFragmentCollectionMap.computeIfAbsent(
-						"fragmentEntries", key -> new LinkedList<>());
-
-			fragmentEntryMapsList.add(
-				HashMapBuilder.<String, Object>put(
-					"fragmentEntryKey", fragmentRenderer.getKey()
-				).put(
-					"icon", fragmentRenderer.getIcon()
-				).put(
-					"imagePreviewURL",
-					fragmentRenderer.getImagePreviewURL(httpServletRequest)
-				).put(
-					"name", fragmentRenderer.getLabel(themeDisplay.getLocale())
-				).build());
-		}
-
-		return dynamicFragmentCollectionMaps;
-	}
-
-	private Map<String, Map<String, Object>>
-		_getFragmentCollectionContributorMaps() {
-
-		Map<String, Map<String, Object>> fragmentCollectionContributorMaps =
-			new LinkedHashMap<>();
-
-		List<FragmentCollectionContributor> fragmentCollectionContributors =
-			_fragmentCollectionContributorTracker.
-				getFragmentCollectionContributors();
-
-		Collections.sort(
-			fragmentCollectionContributors,
-			new FragmentCollectionContributorNameComparator(
-				themeDisplay.getLocale()));
-
-		for (FragmentCollectionContributor fragmentCollectionContributor :
-				fragmentCollectionContributors) {
-
-			List<FragmentComposition> fragmentCompositions =
-				fragmentCollectionContributor.getFragmentCompositions(
-					themeDisplay.getLocale());
-			List<FragmentEntry> fragmentEntries =
-				fragmentCollectionContributor.getFragmentEntries(
-					themeDisplay.getLocale());
-
-			if (ListUtil.isEmpty(fragmentCompositions) &&
-				ListUtil.isEmpty(fragmentEntries)) {
-
-				continue;
-			}
-
-			List<Map<String, Object>> fragmentEntryMapsList =
-				_getFragmentEntryMapsList(fragmentEntries);
-
-			fragmentEntryMapsList.addAll(
-				_getFragmentCompositionMapsList(fragmentCompositions));
-
-			if (ListUtil.isEmpty(fragmentEntryMapsList)) {
-				continue;
-			}
-
-			fragmentEntryMapsList.sort(
-				(fragmentEntryMap1, fragmentEntryMap2) -> {
-					String name1 = String.valueOf(
-						fragmentEntryMap1.get("name"));
-					String name2 = String.valueOf(
-						fragmentEntryMap2.get("name"));
-
-					return name1.compareTo(name2);
-				});
-
-			fragmentCollectionContributorMaps.put(
-				fragmentCollectionContributor.getFragmentCollectionKey(),
-				HashMapBuilder.<String, Object>put(
-					"fragmentCollectionId",
-					fragmentCollectionContributor.getFragmentCollectionKey()
-				).put(
-					"fragmentEntries", fragmentEntryMapsList
-				).put(
-					"name",
-					fragmentCollectionContributor.getName(
-						themeDisplay.getLocale())
-				).build());
-		}
-
-		return fragmentCollectionContributorMaps;
-	}
-
-	private List<Map<String, Object>> _getFragmentCollectionMapsList(
-		boolean includeEmpty, boolean includeSystem) {
-
-		List<Map<String, Object>> allFragmentCollectionMapsList =
-			new ArrayList<>();
-
-		if (includeSystem) {
-			Map<String, Map<String, Object>> systemFragmentCollectionMaps =
-				_getFragmentCollectionContributorMaps();
-
-			systemFragmentCollectionMaps.putAll(
-				_getDynamicFragmentCollectionMaps());
-
-			allFragmentCollectionMapsList = _addLayoutElementMaps(
-				systemFragmentCollectionMaps);
-		}
-
-		List<FragmentCollection> fragmentCollections =
-			FragmentCollectionServiceUtil.getFragmentCollections(
-				new long[] {
-					themeDisplay.getCompanyGroupId(), getGroupId(),
-					CompanyConstants.SYSTEM
-				});
-
-		for (FragmentCollection fragmentCollection : fragmentCollections) {
-			List<FragmentEntry> fragmentEntries =
-				FragmentEntryServiceUtil.getFragmentEntriesByStatus(
-					fragmentCollection.getGroupId(),
-					fragmentCollection.getFragmentCollectionId(),
-					WorkflowConstants.STATUS_APPROVED);
-
-			List<Map<String, Object>> fragmentEntryMapsList =
-				_getFragmentEntryMapsList(fragmentEntries);
-
-			fragmentEntryMapsList.addAll(
-				_getFragmentCompositionMapsList(
-					FragmentCompositionServiceUtil.getFragmentCompositions(
-						fragmentCollection.getGroupId(),
-						fragmentCollection.getFragmentCollectionId(),
-						WorkflowConstants.STATUS_APPROVED)));
-
-			if (!includeEmpty && ListUtil.isEmpty(fragmentEntryMapsList)) {
-				continue;
-			}
-
-			if (!includeSystem &&
-				(fragmentCollection.getGroupId() !=
-					themeDisplay.getScopeGroupId())) {
-
-				continue;
-			}
-
-			allFragmentCollectionMapsList.add(
-				HashMapBuilder.<String, Object>put(
-					"fragmentCollectionId",
-					fragmentCollection.getFragmentCollectionId()
-				).put(
-					"fragmentEntries", fragmentEntryMapsList
-				).put(
-					"name", fragmentCollection.getName()
-				).build());
-		}
-
-		return allFragmentCollectionMapsList;
-	}
-
-	private List<Map<String, Object>> _getFragmentCompositionMapsList(
-		List<FragmentComposition> fragmentCompositions) {
-
-		List<Map<String, Object>> filteredFragmentCompositions =
-			new ArrayList<>();
-
-		for (FragmentComposition fragmentComposition : fragmentCompositions) {
-			if (!_isAllowedFragmentEntryKey(
-					fragmentComposition.getFragmentCompositionKey())) {
-
-				continue;
-			}
-
-			filteredFragmentCompositions.add(
-				HashMapBuilder.<String, Object>put(
-					"fragmentEntryKey",
-					fragmentComposition.getFragmentCompositionKey()
-				).put(
-					"groupId", fragmentComposition.getGroupId()
-				).put(
-					"icon", fragmentComposition.getIcon()
-				).put(
-					"imagePreviewURL",
-					fragmentComposition.getImagePreviewURL(themeDisplay)
-				).put(
-					"name", fragmentComposition.getName()
-				).put(
-					"type", ContentPageEditorConstants.TYPE_COMPOSITION
-				).build());
-		}
-
-		return filteredFragmentCompositions;
-	}
-
-	private List<String> _getFragmentEntryKeys() {
-		if (_fragmentEntryKeys != null) {
-			return _fragmentEntryKeys;
-		}
-
-		LayoutStructure masterLayoutStructure = _getMasterLayoutStructure();
-
-		if (masterLayoutStructure == null) {
-			_fragmentEntryKeys = Collections.emptyList();
-
-			return _fragmentEntryKeys;
-		}
-
-		LayoutStructureItem layoutStructureItem =
-			masterLayoutStructure.getDropZoneLayoutStructureItem();
-
-		if (layoutStructureItem == null) {
-			_fragmentEntryKeys = Collections.emptyList();
-
-			return _fragmentEntryKeys;
-		}
-
-		DropZoneLayoutStructureItem dropZoneLayoutStructureItem =
-			(DropZoneLayoutStructureItem)layoutStructureItem;
-
-		_fragmentEntryKeys = dropZoneLayoutStructureItem.getFragmentEntryKeys();
-
-		return _fragmentEntryKeys;
-	}
-
 	private Map<String, Object> _getFragmentEntryLinks() throws Exception {
 		if (_fragmentEntryLinks != null) {
 			return _fragmentEntryLinks;
@@ -1622,39 +1283,6 @@ public class ContentPageEditorDisplayContext {
 		}
 
 		return fragmentEntryLinksMap;
-	}
-
-	private List<Map<String, Object>> _getFragmentEntryMapsList(
-		List<FragmentEntry> fragmentEntries) {
-
-		List<Map<String, Object>> fragmentEntryMapsList = new ArrayList<>();
-
-		for (FragmentEntry fragmentEntry : fragmentEntries) {
-			if (!_isAllowedFragmentEntryKey(
-					fragmentEntry.getFragmentEntryKey())) {
-
-				continue;
-			}
-
-			fragmentEntryMapsList.add(
-				HashMapBuilder.<String, Object>put(
-					"fragmentEntryKey", fragmentEntry.getFragmentEntryKey()
-				).put(
-					"groupId", fragmentEntry.getGroupId()
-				).put(
-					"icon", fragmentEntry.getIcon()
-				).put(
-					"imagePreviewURL",
-					fragmentEntry.getImagePreviewURL(themeDisplay)
-				).put(
-					"name", fragmentEntry.getName()
-				).put(
-					"type",
-					FragmentConstants.getTypeLabel(fragmentEntry.getType())
-				).build());
-		}
-
-		return fragmentEntryMapsList;
 	}
 
 	private ItemSelectorCriterion _getImageItemSelectorCriterion() {
@@ -1868,6 +1496,25 @@ public class ContentPageEditorDisplayContext {
 		}
 
 		return mappingFieldsJSONObject;
+	}
+
+	private DropZoneLayoutStructureItem
+		_getMasterDropZoneLayoutStructureItem() {
+
+		LayoutStructure masterLayoutStructure = _getMasterLayoutStructure();
+
+		if (masterLayoutStructure == null) {
+			return null;
+		}
+
+		LayoutStructureItem layoutStructureItem =
+			masterLayoutStructure.getDropZoneLayoutStructureItem();
+
+		if (layoutStructureItem == null) {
+			return null;
+		}
+
+		return (DropZoneLayoutStructureItem)layoutStructureItem;
 	}
 
 	private JSONObject _getMasterLayoutJSONObject() {
@@ -2148,59 +1795,6 @@ public class ContentPageEditorDisplayContext {
 		return false;
 	}
 
-	private boolean _isAllowedFragmentEntryKey(String fragmentEntryKey) {
-		List<String> fragmentEntryKeys = _getFragmentEntryKeys();
-
-		if (_isAllowNewFragmentEntries()) {
-			if (ListUtil.isEmpty(fragmentEntryKeys) ||
-				!fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-				return true;
-			}
-
-			return false;
-		}
-
-		if (ListUtil.isNotEmpty(fragmentEntryKeys) &&
-			fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean _isAllowNewFragmentEntries() {
-		if (_allowNewFragmentEntries != null) {
-			return _allowNewFragmentEntries;
-		}
-
-		LayoutStructure masterLayoutStructure = _getMasterLayoutStructure();
-
-		if (masterLayoutStructure == null) {
-			_allowNewFragmentEntries = true;
-
-			return true;
-		}
-
-		LayoutStructureItem layoutStructureItem =
-			masterLayoutStructure.getDropZoneLayoutStructureItem();
-
-		if (layoutStructureItem == null) {
-			_allowNewFragmentEntries = true;
-
-			return true;
-		}
-
-		DropZoneLayoutStructureItem dropZoneLayoutStructureItem =
-			(DropZoneLayoutStructureItem)layoutStructureItem;
-
-		_allowNewFragmentEntries =
-			dropZoneLayoutStructureItem.isAllowNewFragmentEntries();
-
-		return _allowNewFragmentEntries;
-	}
-
 	private boolean _isConversionDraft() {
 		Layout publishedLayout = _getPublishedLayout();
 
@@ -2261,83 +1855,17 @@ public class ContentPageEditorDisplayContext {
 		}
 	}
 
-	private static final String[] _SORTED_FRAGMENT_COLLECTION_KEYS = {
-		"layout-elements", "BASIC_COMPONENT", "INPUTS", "content-display"
-	};
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		ContentPageEditorDisplayContext.class);
 
-	private static final Map<String, List<Map<String, Object>>>
-		_layoutElementMapsListMap =
-			LinkedHashMapBuilder.<String, List<Map<String, Object>>>put(
-				"layout-elements",
-				() -> {
-					List<Map<String, Object>> layoutElementMapsList =
-						new LinkedList<>();
-
-					layoutElementMapsList.add(
-						HashMapBuilder.<String, Object>put(
-							"fragmentEntryKey", "container"
-						).put(
-							"icon", "container"
-						).put(
-							"itemType", "container"
-						).put(
-							"languageKey", "container"
-						).build());
-
-					layoutElementMapsList.add(
-						HashMapBuilder.<String, Object>put(
-							"fragmentEntryKey", "row"
-						).put(
-							"icon", "table"
-						).put(
-							"itemType", "row"
-						).put(
-							"languageKey", "grid"
-						).build());
-
-					return layoutElementMapsList;
-				}
-			).put(
-				"INPUTS",
-				ListUtil.fromArray(
-					HashMapBuilder.<String, Object>put(
-						"fragmentEntryKey", "form"
-					).put(
-						"icon", "container"
-					).put(
-						"itemType", "form"
-					).put(
-						"languageKey", "form-container"
-					).build())
-			).put(
-				"content-display",
-				ListUtil.fromArray(
-					HashMapBuilder.<String, Object>put(
-						"fragmentEntryKey", "collection-display"
-					).put(
-						"icon", "list"
-					).put(
-						"itemType", "collection"
-					).put(
-						"languageKey", "collection-display"
-					).build())
-			).build();
-
-	private Boolean _allowNewFragmentEntries;
 	private final List<ContentPageEditorSidebarPanel>
 		_contentPageEditorSidebarPanels;
 	private Map<String, Object> _defaultConfigurations;
 	private StyleBookEntry _defaultMasterStyleBookEntry;
 	private StyleBookEntry _defaultStyleBookEntry;
-	private final FragmentCollectionContributorTracker
-		_fragmentCollectionContributorTracker;
-	private List<String> _fragmentEntryKeys;
+	private final FragmentCollectionManager _fragmentCollectionManager;
 	private final FragmentEntryLinkManager _fragmentEntryLinkManager;
 	private Map<String, Object> _fragmentEntryLinks;
-	private final FragmentRendererTracker _fragmentRendererTracker;
 	private final FrontendTokenDefinitionRegistry
 		_frontendTokenDefinitionRegistry;
 	private Long _groupId;

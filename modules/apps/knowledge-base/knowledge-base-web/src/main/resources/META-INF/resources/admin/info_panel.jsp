@@ -139,7 +139,7 @@ if (ListUtil.isEmpty(kbFolders) && ListUtil.isEmpty(kbArticles)) {
 
 						<clay:label
 							displayType="info"
-							label='<%= LanguageUtil.get(request, "version") + StringPool.SPACE + kbArticle.getPriority() %>'
+							label='<%= LanguageUtil.get(request, "version") + StringPool.SPACE + kbArticle.getVersion() %>'
 						/>
 
 						<aui:workflow-status markupView="lexicon" showIcon="<%= false %>" showLabel="<%= false %>" status="<%= kbArticle.getStatus() %>" />

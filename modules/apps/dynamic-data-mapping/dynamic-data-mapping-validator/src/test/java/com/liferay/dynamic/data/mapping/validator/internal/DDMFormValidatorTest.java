@@ -125,13 +125,10 @@ public class DDMFormValidatorTest {
 		_ddmFormValidatorImpl.validate(ddmForm);
 	}
 
-	@Test(expected = MustNotDuplicateFieldName.class)
+	@Test
 	public void testDuplicateCaseInsensitiveFieldName() throws Exception {
 		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
-			createAvailableLocales(LocaleUtil.US), LocaleUtil.US);
-
-		ddmForm.addDDMFormField(
-			new DDMFormField("Name1", DDMFormFieldType.TEXT));
+			"Name1", "Name2", "Name3", "Name1");
 
 		DDMFormField name2DDMFormField = new DDMFormField(
 			"Name2", DDMFormFieldType.TEXT);
@@ -141,7 +138,19 @@ public class DDMFormValidatorTest {
 
 		ddmForm.addDDMFormField(name2DDMFormField);
 
-		_ddmFormValidatorImpl.validate(ddmForm);
+		try {
+			_ddmFormValidatorImpl.validate(ddmForm);
+
+			Assert.fail();
+		}
+		catch (MustNotDuplicateFieldName mustNotDuplicateFieldName) {
+			Set<String> duplicatedFieldNames =
+				mustNotDuplicateFieldName.getDuplicatedFieldNames();
+
+			Assert.assertTrue(duplicatedFieldNames.contains("Name1"));
+			Assert.assertTrue(duplicatedFieldNames.contains("Name2"));
+			Assert.assertFalse(duplicatedFieldNames.contains("Name3"));
+		}
 	}
 
 	@Test(expected = MustNotDuplicateFieldName.class)
@@ -576,7 +585,8 @@ public class DDMFormValidatorTest {
 			SetUtil.fromArray("date", "html-çê的Ü", "html-text_*", "html-text_@")
 		);
 
-		_ddmFormValidatorImpl.setDDMFormFieldTypeServicesTracker(
+		ReflectionTestUtil.setFieldValue(
+			_ddmFormValidatorImpl, "_ddmFormFieldTypeServicesTracker",
 			ddmFormFieldTypeServicesTracker);
 	}
 
@@ -588,7 +598,9 @@ public class DDMFormValidatorTest {
 			ddmExpressionFactoryImpl, "ddmExpressionFunctionTracker",
 			Mockito.mock(DDMExpressionFunctionTracker.class));
 
-		_ddmFormValidatorImpl.setDDMExpressionFactory(ddmExpressionFactoryImpl);
+		ReflectionTestUtil.setFieldValue(
+			_ddmFormValidatorImpl, "_ddmExpressionFactory",
+			ddmExpressionFactoryImpl);
 	}
 
 	private final DDMFormValidatorImpl _ddmFormValidatorImpl =

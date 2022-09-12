@@ -212,6 +212,63 @@ definition {
 		}
 	}
 
+	@description = "This is a use case for LPS-150460 TC-1. User is able to trigger propagation of the site template to all connected sites automatically."
+	@priority = "5"
+	test AssertAutomaticSiteTemplatePropagation {
+		property database.types = "mysql";
+		property test.name.skip.portal.instance = "CPSitetemplates#AssertAutomaticSiteTemplatePropagation";
+
+		var siteName = TestCase.getSiteName(siteName = "${siteName}");
+		var sQLStatement = "SELECT * FROM Layout WHERE friendlyURL = '/test';";
+		var consoleText = "last-merge-layout-modified-time";
+
+		task ("Given: User enables automatic propagation triggering in System settings") {
+			SiteTemplates.enableAutomaticPropagation();
+		}
+
+		task ("And: Add new site template and create a site based on this template") {
+			SiteTemplates.addCP(siteTemplateName = "Site Template Name");
+
+			Site.openSitesAdmin();
+
+			Site.addCP(
+				siteName = "Site Template Site Name",
+				siteTemplateName = "Site Template Name",
+				siteType = "Site Template");
+		}
+
+		task ("And: Disables propagation of the template") {
+			SiteTemplatesNavigator.openSiteTemplatesAdmin();
+
+			SiteTemplates.disablePropagation(siteTemplateName = "Site Template Name");
+		}
+
+		task ("And: Add a new page to the template") {
+			SiteTemplates.addSitePageViaSiteTemplateCP(
+				pageName = "Test",
+				siteTemplateName = "Site Template Name");
+		}
+
+		task ("When: User enables propagation then navigate to the Template's home page") {
+			SiteTemplatesNavigator.openSiteTemplatesAdmin();
+
+			SiteTemplates.enablePropagation(siteTemplateName = "Site Template Name");
+
+			SiteTemplatesNavigator.gotoSiteTemplatesPage(
+				pageName = "Home",
+				siteName = "${siteName}",
+				siteTemplateName = "Site Template Name");
+		}
+
+		task ("Then: The propagation will be triggered and the page on the Site will be present in the SQL database") {
+			var sqlResults = SQL.executeMySQLStatement(mysqlStatement = "${sQLStatement}");
+
+			TestUtils.assertPartialEquals(
+				actual = "${sqlResults}",
+				expected = "${consoleText}");
+		}
+	}
+
 	@description = "This is a use case for 118486. User should not be able to create child pages for pages derived from site templates."
 	@priority = "3"
 	test AssertNoChildPageOptionForPageDerivedFromSiteTemplate {
@@ -271,7 +328,7 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-121139. User is able to propagate pages separately on site templates and in this situation only the corresponding page's SQL value will be updated. "
+	@description = "This is a use case for LPS-121139. User is able to propagate pages separately on site templates and in this situation only the corresponding page's SQL value will be updated."
 	@priority = "4"
 	test AssertPartialSiteTemplatePropagation {
 		property database.types = "mysql";
@@ -394,6 +451,61 @@ definition {
 			if ("${homePageModificationDate3}" != "${homePageModificationDate1}") {
 				echo("The modification date of home page is updated.");
 			}
+		}
+	}
+
+	@description = "This is a use case for LPS-150460 TC-2. User can trigger Site template propagation upon visiting a connected site."
+	@priority = "5"
+	test AssertSiteTemplatePropagationWhenOpeningSite {
+		property database.types = "mysql";
+		property test.name.skip.portal.instance = "CPSitetemplates#AssertSiteTemplatePropagationWhenOpeningSite";
+
+		var siteName = TestCase.getSiteName(siteName = "${siteName}");
+		var sQLStatement = "SELECT * FROM Layout WHERE friendlyURL = '/test';";
+		var consoleText = "last-merge-layout-modified-time";
+
+		task ("Given: Add new site template, create a site based on the template, then add a page to the template") {
+			SiteTemplates.addCP(siteTemplateName = "Site Template Name");
+
+			Site.openSitesAdmin();
+
+			Site.addCP(
+				siteName = "Site Template Site Name",
+				siteTemplateName = "Site Template Name",
+				siteType = "Site Template");
+
+			SiteTemplates.addSitePageViaSiteTemplateCP(
+				pageName = "Test",
+				siteTemplateName = "Site Template Name");
+		}
+
+		task ("When: User visits the Site Template and verifies that the page is not present on the Site via looking up the database") {
+			SiteTemplatesNavigator.gotoSiteTemplatesPage(
+				pageName = "Home",
+				siteName = "${siteName}",
+				siteTemplateName = "Site Template Name");
+
+			var sqlResults = SQL.executeMySQLStatement(mysqlStatement = "${sQLStatement}");
+
+			TestUtils.assertNotEquals(
+				actual = "${sqlResults}",
+				expected = "${consoleText}");
+		}
+
+		task ("And: Open the site based on the template to trigger the propagation") {
+			Navigator.gotoSitePage(
+				pageName = "Home",
+				siteName = "Site Template Site Name");
+		}
+
+		task ("Then: The page will not be visible on the website but it is present in the database") {
+			Page.viewNoPG(pageName = "Test");
+
+			var sqlResults = SQL.executeMySQLStatement(mysqlStatement = "${sQLStatement}");
+
+			TestUtils.assertPartialEquals(
+				actual = "${sqlResults}",
+				expected = "${consoleText}");
 		}
 	}
 

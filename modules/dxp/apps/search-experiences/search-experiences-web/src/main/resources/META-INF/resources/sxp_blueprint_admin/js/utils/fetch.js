@@ -14,12 +14,13 @@ import {fetch} from 'frontend-js-web';
 import {DEFAULT_ERROR} from './constants';
 import {openErrorToast} from './toasts';
 
-const DEFAULT_HEADERS = new Headers({
+const DEFAULT_HEADERS_OBJECT = {
 	'Accept': 'application/json',
 	'Accept-Language': Liferay.ThemeDisplay.getBCP47LanguageId(),
 	'Content-Type': 'application/json',
-});
+};
 
+const DEFAULT_HEADERS = new Headers(DEFAULT_HEADERS_OBJECT);
 const DEFAULT_METHOD = 'GET';
 
 /**
@@ -31,9 +32,9 @@ const DEFAULT_METHOD = 'GET';
  * @param {Object=} init An optional object containing custom configuration.
  * @return {Promise} A Promise that resolves to a Response object.
  */
-export function fetchData(resource = '', init) {
+export function fetchData(resource = '', {headers, ...init} = {}) {
 	return fetch(resource, {
-		headers: DEFAULT_HEADERS,
+		headers: new Headers({...DEFAULT_HEADERS_OBJECT, ...headers}),
 		method: DEFAULT_METHOD,
 		...init,
 	})

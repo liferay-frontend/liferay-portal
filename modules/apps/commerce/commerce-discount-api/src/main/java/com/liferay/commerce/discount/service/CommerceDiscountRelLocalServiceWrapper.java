@@ -94,6 +94,19 @@ public class CommerceDiscountRelLocalServiceWrapper
 			primaryKeyObj);
 	}
 
+	@Override
+	public com.liferay.commerce.discount.model.CommerceDiscountRel
+			deleteCommerceDiscountRel(
+				com.liferay.commerce.discount.model.CommerceDiscount
+					commerceDiscount,
+				com.liferay.commerce.discount.model.CommerceDiscountRel
+					commerceDiscountRel)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceDiscountRelLocalService.deleteCommerceDiscountRel(
+			commerceDiscount, commerceDiscountRel);
+	}
+
 	/**
 	 * Deletes the commerce discount rel from the database. Also notifies the appropriate model listeners.
 	 *
@@ -134,6 +147,16 @@ public class CommerceDiscountRelLocalServiceWrapper
 
 		return _commerceDiscountRelLocalService.deleteCommerceDiscountRel(
 			commerceDiscountRelId);
+	}
+
+	@Override
+	public void deleteCommerceDiscountRels(
+			com.liferay.commerce.discount.model.CommerceDiscount
+				commerceDiscount)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_commerceDiscountRelLocalService.deleteCommerceDiscountRels(
+			commerceDiscount);
 	}
 
 	@Override

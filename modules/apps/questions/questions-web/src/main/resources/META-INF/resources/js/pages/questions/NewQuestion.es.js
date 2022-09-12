@@ -38,6 +38,8 @@ import {
 	useDebounceCallback,
 } from '../../utils/utils.es';
 
+const HEADLINE_MAX_LENGTH = 75;
+
 export default withRouter(
 	({
 		history,
@@ -188,7 +190,7 @@ export default withRouter(
 								</label>
 
 								<ClayInput
-									maxLength={75}
+									maxLength={HEADLINE_MAX_LENGTH}
 									onChange={(event) =>
 										setHeadline(event.target.value)
 									}
@@ -202,11 +204,15 @@ export default withRouter(
 
 								<ClayForm.FeedbackGroup>
 									<ClayForm.FeedbackItem>
-										<span className="small text-secondary">
-											{Liferay.Language.get(
-												'be-specific-and-imagine-you-are-asking-a-question-to-another-person'
-											)}
-										</span>
+										<div className="bd-highlight d-flex mb-3 text-secondary">
+											<span className="bd-highlight d-flex justify-content-start mr-auto p-2 small">
+												{Liferay.Language.get(
+													'be-specific-and-imagine-you-are-asking-a-question-to-another-person'
+												)}
+											</span>
+
+											<span className="bd-highlight p-2">{`${headline.length} / ${HEADLINE_MAX_LENGTH}`}</span>
+										</div>
 									</ClayForm.FeedbackItem>
 								</ClayForm.FeedbackGroup>
 							</ClayForm.Group>

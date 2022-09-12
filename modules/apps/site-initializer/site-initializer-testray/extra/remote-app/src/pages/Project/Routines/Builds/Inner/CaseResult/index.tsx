@@ -24,9 +24,11 @@ import Code from '../../../../../../components/Code';
 import Container from '../../../../../../components/Layout/Container';
 import StatusBadge from '../../../../../../components/StatusBadge';
 import QATable, {Orientation} from '../../../../../../components/Table/QATable';
-import useAssignCaseResult from '../../../../../../hooks/useAssignCaseResult';
 import i18n from '../../../../../../i18n';
-import {TestrayCaseResult} from '../../../../../../services/rest';
+import {
+	TestrayCaseResult,
+	testrayCaseResultRest,
+} from '../../../../../../services/rest';
 import {getStatusLabel} from '../../../../../../util/constants';
 import {getTimeFromNow} from '../../../../../../util/date';
 import CaseResultHeaderActions from './CaseResultHeaderActions';
@@ -75,8 +77,6 @@ const CaseResult = () => {
 		projectId: string;
 		refetch: () => void;
 	} = useOutletContext();
-
-	const {onAssignToMeFetch} = useAssignCaseResult();
 
 	const getAttachments = (): TestrayAttachment[] => {
 		try {
@@ -264,9 +264,9 @@ const CaseResult = () => {
 									) : (
 										<AssignToMe
 											onClick={() =>
-												onAssignToMeFetch(
-													caseResult
-												).then(refetch)
+												testrayCaseResultRest
+													.assignToMe(caseResult)
+													.then(refetch)
 											}
 										/>
 									),

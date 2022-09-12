@@ -7029,7 +7029,8 @@ public class JournalArticleLocalServiceImpl
 							tempFileEntry.getFileName(), false);
 
 						fileEntry = _portletFileRepository.addPortletFileEntry(
-							folder.getGroupId(), tempFileEntry.getUserId(),
+							null, folder.getGroupId(),
+							tempFileEntry.getUserId(),
 							JournalArticle.class.getName(),
 							article.getResourcePrimKey(),
 							JournalConstants.SERVICE_NAME, folder.getFolderId(),
@@ -7448,7 +7449,7 @@ public class JournalArticleLocalServiceImpl
 
 			for (FileEntry fileEntry : oldArticle.getImagesFileEntries()) {
 				_portletFileRepository.addPortletFileEntry(
-					oldArticle.getGroupId(), newArticle.getUserId(),
+					null, oldArticle.getGroupId(), newArticle.getUserId(),
 					JournalArticle.class.getName(),
 					newArticle.getResourcePrimKey(),
 					JournalConstants.SERVICE_NAME, folder.getFolderId(),
@@ -7842,7 +7843,7 @@ public class JournalArticleLocalServiceImpl
 				themeDisplay, tokens, viewMode, languageId, document,
 				portletRequestModel, script, propagateException,
 				HashMapBuilder.<String, Object>put(
-					"friendlyURL", _getFriendlyURL(friendlyURLMap, themeDisplay)
+					"friendlyURL", _getFriendlyURL(friendlyURLMap, languageId)
 				).put(
 					"friendlyURLs", friendlyURLMap
 				).build());
@@ -8974,10 +8975,9 @@ public class JournalArticleLocalServiceImpl
 	}
 
 	private String _getFriendlyURL(
-			Map<String, String> friendlyURLMap, ThemeDisplay themeDisplay)
-		throws PortalException {
+		Map<String, String> friendlyURLMap, String languageId) {
 
-		String friendlyURL = friendlyURLMap.get(themeDisplay.getLanguageId());
+		String friendlyURL = friendlyURLMap.get(languageId);
 
 		if (Validator.isNotNull(friendlyURL)) {
 			return friendlyURL;
@@ -9324,7 +9324,7 @@ public class JournalArticleLocalServiceImpl
 				Folder folder = article.addImagesFolder();
 
 				_portletFileRepository.addPortletFileEntry(
-					article.getGroupId(), fileEntry.getUserId(),
+					null, article.getGroupId(), fileEntry.getUserId(),
 					JournalArticle.class.getName(),
 					article.getResourcePrimKey(), JournalConstants.SERVICE_NAME,
 					folder.getFolderId(), fileEntry.getContentStream(),

@@ -15,6 +15,7 @@
 package com.liferay.notification.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.notification.constants.NotificationQueueEntryConstants;
 import com.liferay.notification.model.NotificationQueueEntry;
 import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.service.NotificationQueueEntryLocalService;
@@ -23,8 +24,10 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.util.PropsUtil;
 
 import java.util.Collections;
 
@@ -47,7 +50,53 @@ public class NotificationQueueEntryLocalServiceTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testNotificationQueueEntry() throws Exception {
+	public void testDeleteNotificationQueueEntry() throws Exception {
+		NotificationQueueEntry notificationQueueEntry =
+			_addNotificationQueueEntry();
+
+		_notificationQueueEntryLocalService.deleteNotificationQueueEntry(
+			notificationQueueEntry.getNotificationQueueEntryId());
+
+		Assert.assertEquals(
+			0,
+			_notificationQueueEntryLocalService.
+				getNotificationQueueEntriesCount());
+	}
+
+	@Test
+	public void testResendNotificationQueueEntry() throws Exception {
+		PropsUtil.addProperties(
+			UnicodePropertiesBuilder.setProperty(
+				"feature.flag.LPS-159052", "true"
+			).build());
+
+		NotificationQueueEntry notificationQueueEntry =
+			_addNotificationQueueEntry();
+
+		notificationQueueEntry = _notificationQueueEntryLocalService.updateSent(
+			notificationQueueEntry.getNotificationQueueEntryId(), true);
+
+		Assert.assertEquals(
+			NotificationQueueEntryConstants.STATUS_SENT,
+			notificationQueueEntry.getStatus());
+
+		notificationQueueEntry =
+			_notificationQueueEntryLocalService.resendNotificationQueueEntry(
+				notificationQueueEntry.getNotificationQueueEntryId());
+
+		Assert.assertEquals(
+			NotificationQueueEntryConstants.STATUS_UNSENT,
+			notificationQueueEntry.getStatus());
+
+		PropsUtil.addProperties(
+			UnicodePropertiesBuilder.setProperty(
+				"feature.flag.LPS-159052", "false"
+			).build());
+	}
+
+	private NotificationQueueEntry _addNotificationQueueEntry()
+		throws Exception {
+
 		NotificationTemplate notificationTemplate =
 			_notificationTemplateLocalService.addNotificationTemplate(
 				TestPropsValues.getUserId(), 0, RandomTestUtil.randomString(),
@@ -64,23 +113,17 @@ public class NotificationQueueEntryLocalServiceTest {
 					LocaleUtil.US, RandomTestUtil.randomString()),
 				Collections.emptyList());
 
-		NotificationQueueEntry notificationQueueEntry =
-			_notificationQueueEntryLocalService.addNotificationQueueEntry(
-				TestPropsValues.getUserId(),
-				notificationTemplate.getNotificationTemplateId(),
-				notificationTemplate.getBcc(),
-				notificationTemplate.getBody(LocaleUtil.US),
-				notificationTemplate.getCc(), RandomTestUtil.randomString(), 0,
-				notificationTemplate.getFrom(),
-				notificationTemplate.getFromName(LocaleUtil.US), 0,
-				notificationTemplate.getSubject(LocaleUtil.US),
-				notificationTemplate.getTo(LocaleUtil.US),
-				RandomTestUtil.randomString(), Collections.emptyList());
-
-		Assert.assertNotNull(notificationQueueEntry);
-		Assert.assertNotNull(
-			_notificationQueueEntryLocalService.fetchNotificationQueueEntry(
-				notificationQueueEntry.getNotificationQueueEntryId()));
+		return _notificationQueueEntryLocalService.addNotificationQueueEntry(
+			TestPropsValues.getUserId(),
+			notificationTemplate.getNotificationTemplateId(),
+			notificationTemplate.getBcc(),
+			notificationTemplate.getBody(LocaleUtil.US),
+			notificationTemplate.getCc(), RandomTestUtil.randomString(), 0,
+			notificationTemplate.getFrom(),
+			notificationTemplate.getFromName(LocaleUtil.US), 0,
+			notificationTemplate.getSubject(LocaleUtil.US),
+			notificationTemplate.getTo(LocaleUtil.US),
+			RandomTestUtil.randomString(), Collections.emptyList());
 	}
 
 	@Inject

@@ -27,7 +27,7 @@ definition {
 	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
-		JSONUser.tearDownNonAdminUsers();
+		TestUtils.hardRefresh();
 
 		JSONGroup.deleteGroupByName(groupName = "Test Site Name");
 
@@ -50,13 +50,13 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Run Page Audit") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 		}
 
 		task ("Check if proper failures are displayed at Accessibility section") {
@@ -85,11 +85,11 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Configure canonical URL") {
-			PageAudit.configurationSEOCanonicalURL();
+			PageAudit.configureLocalizedURL();
 		}
 
 		task ("Add a translation for that page") {
@@ -138,11 +138,11 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Configure canonical URL") {
-			PageAudit.configurationSEOCanonicalURL();
+			PageAudit.configureLocalizedURL();
 		}
 
 		task ("Open Page Audit panel and change locale/language") {
@@ -202,11 +202,11 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page-2");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Configure canonical URL") {
-			PageAudit.configurationSEOCanonicalURL();
+			PageAudit.configureLocalizedURL();
 		}
 
 		task ("Go to display page") {
@@ -244,11 +244,11 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/3");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Configure canonical URL") {
-			PageAudit.configurationSEOCanonicalURL();
+			PageAudit.configureLocalizedURL();
 		}
 
 		task ("Open Page Audit panel and change locale/language") {
@@ -264,49 +264,16 @@ definition {
 		}
 	}
 
-	@description = "LPS-119066: Given the Page Audit Panel
-	When the audit is launched (the API is called)
-	Then a progress bar shows and moves forward while retrieving the data until they can be shown"
-	@priority = "3"
-	@uitest
-	test AssertProgressBar {
-		property test.name.skip.portal.instance = "PageAudit#AssertProgressBar";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSystemSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-		task ("Open Page Audit panel and assert the progress bar") {
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Reset Google PageSpeed API to default at System Settings") {
-			PageAudit.configurationTeardown();
-		}
-	}
-
 	@description = "LPS-130621 Given the page audit panel
 	When the panel is showing cached data
 	Then there's an alert informing about the date and the hour when it was last updated"
 	@priority = "3"
 	test CachedDataAlert {
 		task ("Create second content page") {
-			task ("Create content page") {
-				JSONLayout.addPublicLayout(
-					groupName = "Test Site Name",
-					layoutName = "Second Page",
-					type = "content");
-			}
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Second Page",
+				type = "content");
 		}
 
 		task ("Set a custom page as canonical URL to have data already loaded") {
@@ -314,15 +281,13 @@ definition {
 		}
 
 		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSiteSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Mobile");
+			PageAudit.setAPIViaSiteSettings(preferredStrategy = "Mobile");
 		}
 
 		task ("Open Page Audit panel and run it") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 		}
 
 		task ("Navigate to second page") {
@@ -358,7 +323,7 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Set a custom page as canonical URL to have data already loaded") {
@@ -409,7 +374,7 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/3");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Set a custom page as canonical URL to have data already loaded") {
@@ -444,46 +409,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-134760: Given the Page Audit panel
-	When the API key is set but it is not valid
-	Then the Page Speed API will show a "Show details" link, that will display the info details of the error, provided by the API."
-	@priority = "3"
-	test CheckErrorDetailsDisplayedInvalidApiKey {
-		property test.name.skip.portal.instance = "PageAudit#CheckErrorDetailsDisplayedInvalidApiKey";
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-
-			Refresh();
-		}
-
-		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSystemSettings(apiKey = "invalidAPI");
-
-			Alert.viewSuccessMessage();
-		}
-
-		task ("Open Page Audit panel and assert 'Show details' link") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAuditWithError();
-
-			AssertElementPresent(
-				errorTitle = "The API key is invalid.",
-				locator1 = "PageAudit#ERROR_WARNING_TITLE");
-
-			Button.click(button = "Show Details");
-
-			AssertElementPresent(
-				errorMessage = "API key not valid. Please pass a valid API key.",
-				locator1 = "PageAudit#ERROR_WARNING_MESSAGE");
-		}
-
-		task ("Reset Google PageSpeed API to default at System Settings") {
-			PageAudit.configurationTeardown();
-		}
-	}
-
 	@description = "LPS-132234: Given the page audit panel detail view
 	When there is more than the 60% of the texts on the page with insufficient font sizes
 	Then the users will see the matching failing elements, with the size of the illegible font and the percentage of text it covers"
@@ -497,20 +422,16 @@ definition {
 			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
 		}
 
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 
 			PageAudit.goToDetailView(failingCheckName = "Illegible Font Sizes");
 
@@ -533,20 +454,16 @@ definition {
 			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
 		}
 
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 
 			PageAudit.goToDetailView(failingCheckName = "Incorrect Image Aspect Ratios");
 
@@ -568,157 +485,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions to edit Instance Settings
-	When there is no canonical URL, or it doesn't coincide with the page's URL
-	Then the users will see the invalid canonical URL, and a text with a link to the instance settings: If the problem is that the canonical URL doesn't match the URL of the page, try changing the configuration for using localized canonical URLs from Instance settings > Pages > SEO. "
-	@priority = "4"
-	@uitest
-	test CheckInvalidCanonicalURL {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckInvalidCanonicalURL";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Invalid Canonical URL");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Invalid Canonical URL");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view and a user with NO permissions to edit Instance Settings
-	When there is no canonical URL, or it doesn't coincide with the page's URL
-	Then the users will see the invalid canonical URL, and a text: If the problem is that the canonical URL doesn't match the URL of the page, try changing the configuration for using localized canonical URLs from Instance settings > Pages > SEO"
-	@priority = "4"
-	test CheckInvalidCanonicalURLWithoutPermission {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckInvalidCanonicalURL";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "WebContentEditorRole Name",
-				roleTitle = "WebContentEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.journal.model.JournalArticle",
-				roleTitle = "WebContentEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "WebContentEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Open Page Audit panel and run it") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Open detailed view and check text") {
-			PageAudit.goToDetailView(failingCheckName = "Invalid Canonical URL");
-
-			AssertElementPresent(
-				key_text = "try changing the configuration for using localized canonical URLs from Instance Settings > Pages > SEO.",
-				locator1 = "PageAudit#FAILING_CHECK_DETAIL_TEXT");
-
-			AssertElementNotPresent(
-				key_text = "Instance Settings > Pages > SEO",
-				locator1 = "Link#ANY");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "WebContentEditorRole Name");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
-	When the page has any invalid hreflang link
-	Then the users will see the matching failing elements, with the incorrect hreflang links"
-	@priority = "4"
-	@uitest
-	test CheckInvalidHreflang {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckInvalidHreflang";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Invalid Hreflang");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Invalid Hreflang");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_ELEMENT_NAME",
-				value1 = "link");
-		}
-	}
-
 	@description = "LPS-132234: Given the page audit panel detail view
 	When there links on the page that are not formatted with the a href attributes or have invalid target URLs
 	Then the users will see the matching failing elements, with current link snippet"
@@ -732,20 +498,16 @@ definition {
 			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
 		}
 
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 
 			PageAudit.goToDetailView(failingCheckName = "Not All Links Are Crawlable");
 
@@ -756,50 +518,6 @@ definition {
 			AssertTextPresent(
 				locator1 = "PageAudit#FAILING_ELEMENT_NAME",
 				value1 = "crawlable-anchors");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
-	When the link texts are not title as the link text
-	Then the users will see the link text and the link destination URL"
-	@priority = "4"
-	@uitest
-	test CheckLinksTexts {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckLinksTexts";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Link Texts");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Link Texts");
-
-			AssertElementPresent(
-				failingText = "Link Text",
-				locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
-
-			AssertElementPresent(
-				failingText = "Link Destination URL",
-				locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
 		}
 	}
 
@@ -816,20 +534,16 @@ definition {
 			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
 		}
 
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 
 			PageAudit.goToDetailView(failingCheckName = "Low Contrast Ratio");
 
@@ -856,20 +570,16 @@ definition {
 			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
 		}
 
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 
 			PageAudit.goToDetailView(failingCheckName = "Missing Img ALT Attributes");
 
@@ -896,20 +606,16 @@ definition {
 			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
 		}
 
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 
 			PageAudit.goToDetailView(failingCheckName = "Missing Input ALT Attributes");
 
@@ -920,161 +626,6 @@ definition {
 			AssertTextPresent(
 				locator1 = "PageAudit#FAILING_ELEMENT_NAME",
 				value1 = "input");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
-	When there is no meta description for the page
-	Then the users will see a text with a link to the configuration section: Add a meta-description from the Configuration section of this page."
-	@priority = "4"
-	@uitest
-	test CheckMissingMetaDescription {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckMissingMetaDescription";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Missing Meta Description");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Missing Meta Description");
-
-			AssertElementPresent(
-				failingText = "Add a description",
-				locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view and a user with NO permissions for editing the page
-	When there is no meta description for the page
-	Then the users will see a text: Add a meta-description from the Configuration section of this page."
-	@priority = "4"
-	test CheckMissingMetaDescriptionWithoutPermission {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckInvalidCanonicalURL";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "WebContentEditorRole Name",
-				roleTitle = "WebContentEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.journal.model.JournalArticle",
-				roleTitle = "WebContentEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "WebContentEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Open Page Audit panel and run it") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Open detailed view and check text") {
-			PageAudit.goToDetailView(failingCheckName = "Missing Meta Description");
-
-			AssertElementPresent(
-				key_text = "Add a description from the configuration section of this page.",
-				locator1 = "PageAudit#FAILING_CHECK_DETAIL_TEXT");
-
-			AssertElementNotPresent(
-				key_text = "Add a description",
-				locator1 = "Link#ANY");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "WebContentEditorRole Name");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
-	When there is no title for the page
-	Then the users will see a text with a link to the configuration section: Add a title from the Configuration section of this page."
-	@priority = "4"
-	@uitest
-	test CheckMissingTitleElement {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckMissingTitleElement";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Missing <title> Element");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Missing <title> Element");
-
-			AssertElementPresent(
-				failingText = "Add a title",
-				locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
 		}
 	}
 
@@ -1099,9 +650,9 @@ definition {
 		task ("Open Page Audit tab and Assert reload button id not present") {
 			PageAudit.openPageAuditSidebar();
 
-			AssertVisible(locator1 = "PageAudit#ERROR_WARNING_BOX");
-
-			AssertElementNotPresent(locator1 = "PageAudit#RELAUNCH_PAGE_AUDIT_BUTTON");
+			AssertElementNotPresent(
+				key_title = "Relaunch",
+				locator1 = "Button#ANY_TITLE");
 		}
 	}
 
@@ -1127,1487 +678,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-137227 Given a content page	When a user with permissions to edit blogs visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInContentPageWithEditBlogsPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "BlogsEditorRole Name",
-				roleTitle = "BlogsEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.blogs.model.BlogsEntry",
-				roleTitle = "BlogsEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "BlogsEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "BlogsEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a content page When a user with permissions to edit documents visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInContentPageWithEditDocumentsPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "DocumentEditorRole Name",
-				roleTitle = "DocumentEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
-				roleTitle = "DocumentEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "DocumentEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "DocumentEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a content page When the user with permissions to edit pages visits the view mode	Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInContentPageWithEditPagesPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "PagesEditorRole Name",
-				roleTitle = "PagesEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.portal.kernel.model.Layout",
-				roleTitle = "PagesEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "PagesEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "PagesEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a content page	When a user with permissions to edit web content visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInContentPageWithEditWebContentPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "WebContentEditorRole Name",
-				roleTitle = "WebContentEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.journal.model.JournalArticle",
-				roleTitle = "WebContentEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "WebContentEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "WebContentEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a content page	When a user with NO permissions to edit blogs visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "3"
-	test CheckPageAuditIconInContentPageWithoutEditBlogsPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "BlogsRole Name",
-				roleTitle = "BlogsRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "BlogsRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "BlogsRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a content page	When a user with NO permissions to edit documents visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "3"
-	test CheckPageAuditIconInContentPageWithoutEditDocumentsPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "DocumentRole Name",
-				roleTitle = "DocumentRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "DocumentRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "DocumentRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a content page	When the user with NO permissions to edit pages visits the view mode Then the issue icon for displaying the page audit panel shows"
-	@priority = "3"
-	test CheckPageAuditIconInContentPageWithoutEditPagesPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "PagesRole Name",
-				roleTitle = "PagesRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "PagesRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "PagesRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a content page	When a user with NO permissions to edit web content visits the page	Then the issue icon for displaying the page audit panel shows"
-	@priority = "3"
-	test CheckPageAuditIconInContentPageWithoutEditWebContentPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "WebContentRole Name",
-				roleTitle = "WebContentRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "WebContentRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "WebContentRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a display page	When a user with permissions to edit blogs visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInDisplayPageWithEditBlogsPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "BlogsEditorRole Name",
-				roleTitle = "BlogsEditorRole Name");
-
-			for (var resourceActionIndex : list "UPDATE,VIEW") {
-				Permissions.definePermissionViaJSONAPI(
-					resourceAction = "${resourceActionIndex}",
-					resourceName = "com.liferay.blogs.model.BlogsEntry",
-					roleTitle = "BlogsEditorRole Name");
-			}
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "BlogsEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Blogs Entry",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Create a Blog Entry") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Add 'Asset Publisher' to page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssetPublisherPortlet.clickAssetTitle(assetTitle = "Blogs Entry Title");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "BlogsEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a display page	When a user with permissions to edit documents visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInDisplayPageWithEditDocumentsPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "DocumentEditorRole Name",
-				roleTitle = "DocumentEditorRole Name");
-
-			for (var resourceActionIndex : list "UPDATE,VIEW") {
-				Permissions.definePermissionViaJSONAPI(
-					resourceAction = "${resourceActionIndex}",
-					resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
-					roleTitle = "DocumentEditorRole Name");
-			}
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "DocumentEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Document",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED",
-				subType = "Basic Document");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Create a Document") {
-			JSONDocument.addFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Add 'Asset Publisher' to page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssetPublisherPortlet.clickAssetTitle(assetTitle = "DM Document Title");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "DocumentEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a display page	When the user with permissions to edit pages visits the view mode Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInDisplayPageWithEditPagesPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "PagesEditorRole Name",
-				roleTitle = "PagesEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.portal.kernel.model.Layout",
-				roleTitle = "PagesEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "PagesEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Blogs Entry",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Create a Blog Entry") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Add 'Asset Publisher' to page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssetPublisherPortlet.clickAssetTitle(assetTitle = "Blogs Entry Title");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "PagesEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a display page	When a user with permissions to edit web content visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInDisplayPageWithEditWebContentPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "WebContentEditorRole Name",
-				roleTitle = "WebContentEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.journal.model.JournalArticle",
-				roleTitle = "WebContentEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "WebContentEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Web Content Article",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED",
-				subType = "Basic Web Content");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Create a Web Content") {
-			JSONWebcontent.addWebContent(
-				content = "Web Content Content Title",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("Add 'Asset Publisher' to page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssetPublisherPortlet.clickAssetTitle(assetTitle = "Web Content Title");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "WebContentEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a display page	When a user with NO permissions to edit blogs visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "3"
-	test CheckPageAuditIconInDisplayPageWithoutEditBlogsPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "BlogsRole Name",
-				roleTitle = "BlogsRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "BlogsRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Blogs Entry",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Create a Blog Entry") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Add 'Asset Publisher' to page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssetPublisherPortlet.clickAssetTitle(assetTitle = "Blogs Entry Title");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "BlogsRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a display page	When a user with NO permissions to edit documents visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "3"
-	test CheckPageAuditIconInDisplayPageWithoutEditDocumentsPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "DocumentRole Name",
-				roleTitle = "DocumentRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "VIEW",
-				resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
-				roleTitle = "DocumentRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "DocumentRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Document",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED",
-				subType = "Basic Document");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Create a Document") {
-			JSONDocument.addFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Add 'Asset Publisher' to page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssetPublisherPortlet.clickAssetTitle(assetTitle = "DM Document Title");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "DocumentRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a display page When the user with NO permissions to edit pages visits the view mode Then the issue icon for displaying the page audit panel is not shown"
-	@priority = "3"
-	test CheckPageAuditIconInDisplayPageWithoutEditPagesPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "PagesRole Name",
-				roleTitle = "PagesRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "PagesRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Blogs Entry",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Create a Blog Entry") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Add 'Asset Publisher' to page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssetPublisherPortlet.clickAssetTitle(assetTitle = "Blogs Entry Title");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "PagesRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a display page	When a user with NO permissions to edit web content visits the page	Then the issue icon for displaying the page audit panel shows"
-	@priority = "3"
-	test CheckPageAuditIconInDisplayPageWithoutEditWebContentPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "WebContentRole Name",
-				roleTitle = "WebContentRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "WebContentRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Web Content Article",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED",
-				subType = "Basic Web Content");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Create a Web Content") {
-			JSONWebcontent.addWebContent(
-				content = "Web Content Content Title",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("Add 'Asset Publisher' to page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssetPublisherPortlet.clickAssetTitle(assetTitle = "Web Content Title");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "WebContentRole Name");
-		}
-	}
-
-	@description = "Given a widget page When a user with permissions to edit blogs visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInWidgetPageWithEditBlogsPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "BlogsEditorRole Name",
-				roleTitle = "BlogsEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.blogs.model.BlogsEntry",
-				roleTitle = "BlogsEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "BlogsEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "BlogsEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a widget page When a user with permissions to edit documents visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInWidgetPageWithEditDocumentsPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "DocumentEditorRole Name",
-				roleTitle = "DocumentEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
-				roleTitle = "DocumentEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "DocumentEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "DocumentEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a widget page When the user with permissions to edit pages visits the view mode Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInWidgetPageWithEditPagesPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "PagesEditorRole Name",
-				roleTitle = "PagesEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.portal.kernel.model.Layout",
-				roleTitle = "PagesEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "PagesEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "PagesEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a widget page When a user with permissions to edit web content visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "4"
-	test CheckPageAuditIconInWidgetPageWithEditWebContentPermission {
-		property portal.acceptance = "true";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "WebContentEditorRole Name",
-				roleTitle = "WebContentEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.journal.model.JournalArticle",
-				roleTitle = "WebContentEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "WebContentEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssertElementPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "WebContentEditorRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a widget page When a user with NO permissions to edit blogs visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "3"
-	test CheckPageAuditIconInWidgetPageWithoutEditBlogsPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "BlogsRole Name",
-				roleTitle = "BlogsRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "BlogsRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "BlogsRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a widget page When a user with NO permissions to edit documents visits the page Then the issue icon for displaying the page audit panel shows"
-	@priority = "3"
-	test CheckPageAuditIconInWidgetPageWithoutEditDocumentsPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "DocumentRole Name",
-				roleTitle = "DocumentRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "DocumentRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "DocumentRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a widget page When the user with NO permissions to edit pages visits the view mode Then the issue icon for displaying the page audit panel is not shown"
-	@priority = "3"
-	test CheckPageAuditIconInWidgetPageWithoutEditPagesPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "PagesRole Name",
-				roleTitle = "PagesRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "PagesRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "PagesRole Name");
-		}
-	}
-
-	@description = "LPS-137227 Given a widget page	When a user with NO permissions to edit web content visits the page	Then the issue icon for displaying the page audit panel shows"
-	@priority = "3"
-	test CheckPageAuditIconInWidgetPageWithoutEditWebContentPermission {
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "WebContentRole Name",
-				roleTitle = "WebContentRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "WebContentRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Asset Publisher");
-		}
-
-		task ("Login with user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Assert if Audit Page icon is not present") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-widget-page-name");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "WebContentRole Name");
-		}
-	}
-
 	@description = "LPS-132406: Given the Page Audit Panel
 	When the users leave the page using any of the internal links in the panel (to navigate to System, instance, site or page settings) and return to the page using the 'back' button
 	Then they find the panel open"
@@ -2628,121 +698,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
-	When the page is blocked from indexing
-	Then the users will see a text with a link to the configuration section: Change the robots.txt setting from the Configuration section of this page"
-	@priority = "4"
-	@uitest
-	test CheckPageBlockedFromIndexing {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckPageBlockedFromIndexing";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Page Blocked from Indexing");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Page Blocked from Indexing");
-
-			AssertElementPresent(
-				failingText = "Change the robots.txt setting",
-				locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view and a user with NO permissions for editing the page
-	When the page is blocked from indexing
-	Then the users will see a text: Change the robots.txt setting from the Configuration section of this page"
-	@priority = "4"
-	test CheckPageBlockedFromIndexingWithoutPermission {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckInvalidCanonicalURL";
-
-		task ("Create user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create role and assign to user") {
-			JSONRole.addRegularRole(
-				roleKey = "WebContentEditorRole Name",
-				roleTitle = "WebContentEditorRole Name");
-
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = "UPDATE",
-				resourceName = "com.liferay.journal.model.JournalArticle",
-				roleTitle = "WebContentEditorRole Name");
-
-			JSONRole.assignRoleToUser(
-				roleTitle = "WebContentEditorRole Name",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Login with new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Open Page Audit panel and run it") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Open detailed view and check text") {
-			PageAudit.goToDetailView(failingCheckName = "Page Blocked from Indexing");
-
-			AssertElementPresent(
-				key_text = "Change the robots.txt setting from the configuration section of this page.",
-				locator1 = "PageAudit#FAILING_CHECK_DETAIL_TEXT");
-
-			AssertElementNotPresent(
-				key_text = "Change the robots.txt  setting",
-				locator1 = "Link#ANY");
-		}
-
-		task ("Delete Role created") {
-			JSONRole.deleteRole(roleTitle = "WebContentEditorRole Name");
-		}
-	}
-
 	@description = "LPS-132234: Given the page audit panel detail view
 	When there tap targets on the page that are too small or are overlapping with others
 	Then the users will see the matching failing elements, with the tap target snippet, size and Overlapping Target if there is one"
@@ -2756,20 +711,16 @@ definition {
 			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
 		}
 
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 
 			PageAudit.goToDetailView(failingCheckName = "Small Tap Targets");
 
@@ -2780,55 +731,6 @@ definition {
 			AssertTextPresent(
 				locator1 = "PageAudit#FAILING_ELEMENT_NAME",
 				value1 = "a");
-		}
-	}
-
-	@description = "LPS-128383: Given the preferred strategy dropdown in the Site Scope section
-	When the value is void ('Choose an option')
-	Then the call is made for Google Page Speed default value - desktop"
-	@priority = "3"
-	test DefaultStrategyAtInstanceSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#DefaultStrategyAtInstanceSettings";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaInstanceSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Choose an Option");
-		}
-
-		task ("Open Page Audit panel and run it") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Assert if a mobile failure is not shown") {
-			AssertElementNotPresent(
-				failingCheckName = "Small Tap Targets",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-
-			AssertElementPresent(
-				failingCheckName = "Invalid Canonical URL",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-		}
-
-		task ("Reset configurations to default") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Site Scope");
-
-			PageAudit.resetDefaultValues();
 		}
 	}
 
@@ -2844,15 +746,13 @@ definition {
 		}
 
 		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSiteSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Choose an Option");
+			PageAudit.setAPIViaSiteSettings(preferredStrategy = "Choose an Option");
 		}
 
 		task ("Open Page Audit panel and run it") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 		}
 
 		task ("Assert if a mobile failure is not shown") {
@@ -2863,45 +763,6 @@ definition {
 			AssertElementPresent(
 				failingCheckName = "Invalid Canonical URL",
 				locator1 = "PageAudit#FAILING_CHECK_NAME");
-		}
-	}
-
-	@description = "LPS-125851: Given the preferred strategy dropdown in the Site Scope section
-	When the value is void ('Choose an option')
-	Then the call is made for Google Page Speed default value - desktop"
-	@priority = "3"
-	test DefaultStrategyAtSystemSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#DefaultStrategyAtSystemSettings";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSystemSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Choose an Option");
-		}
-
-		task ("Open Page Audit panel and run it") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Assert if a mobile failure is not shown") {
-			AssertElementNotPresent(
-				failingCheckName = "Small Tap Targets",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-
-			AssertElementPresent(
-				failingCheckName = "Invalid Canonical URL",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-		}
-
-		task ("Reset configurations to default") {
-			PageAudit.configurationTeardown();
 		}
 	}
 
@@ -2917,15 +778,13 @@ definition {
 		}
 
 		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSiteSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Desktop");
+			PageAudit.setAPIViaSiteSettings(preferredStrategy = "Desktop");
 		}
 
 		task ("Open Page Audit panel and run it") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 		}
 
 		task ("Assert if mobile failure are shown") {
@@ -2936,45 +795,6 @@ definition {
 			AssertElementPresent(
 				failingCheckName = "Invalid Canonical URL",
 				locator1 = "PageAudit#FAILING_CHECK_NAME");
-		}
-	}
-
-	@description = "LPS-125851: Given the preferred strategy dropdown in the Site Scope section
-	When the value is Desktop
-	Then additional checks: Small Tap Targets, Incorrect Aspect Ratios and Illegible font sizes are NOT retrieved"
-	@priority = "4"
-	test DesktopStrategyAtSystemSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#DesktopStrategyAtSystemSettings";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSystemSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Desktop");
-		}
-
-		task ("Open Page Audit panel and run it") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Assert if a mobile failure is not shown") {
-			AssertElementNotPresent(
-				failingCheckName = "Small Tap Targets",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-
-			AssertElementPresent(
-				failingCheckName = "Invalid Canonical URL",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-		}
-
-		task ("Reset configurations to default") {
-			PageAudit.configurationTeardown();
 		}
 	}
 
@@ -2993,13 +813,13 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Run Page Audit") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 		}
 
 		task ("Check the number of failures and view more fails") {
@@ -3009,58 +829,11 @@ definition {
 				badgeValue = "12",
 				locator1 = "PageAudit#BADGE_NUMBER");
 
+			PageAudit.assertFailingElementCount(expectedLabels = "10");
+
 			Button.click(button = "View More");
-		}
-	}
 
-	@description = "LPS-128383: Given any value in the Instance settings Site scope section
-	Then all sites shows the same value (also void fields)"
-	@priority = "5"
-	test InstanceSettingsHierarchy {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#InstanceSettingsHierarchy";
-
-		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaInstanceSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Mobile");
-		}
-
-		task ("Go to Site Settings") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ProductMenu.gotoPortlet(
-				category = "Configuration",
-				portlet = "Site Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Site Scope");
-		}
-
-		task ("Check if values are the same as Instance Settings") {
-			AssertTextEquals(
-				locator1 = "PageAudit#API_FIELD",
-				value1 = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-
-			AssertTextEquals(
-				locator1 = "PageAudit#PREFERRED_STRATEGY_OPTION_SELECTED",
-				value1 = "Mobile");
-		}
-
-		task ("Reset configurations to default") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Site Scope");
-
-			PageAudit.resetDefaultValues();
+			PageAudit.assertFailingElementCount(expectedLabels = "12");
 		}
 	}
 
@@ -3076,10 +849,6 @@ definition {
 			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
 		}
 
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
@@ -3089,7 +858,7 @@ definition {
 		task ("Open Page Audit panel and run it") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAuditWithError();
+			PageAudit.runPageAudit();
 
 			AssertVisible(
 				errorTitle = "The API key is invalid.",
@@ -3103,7 +872,9 @@ definition {
 				key_breadcrumbName = "Site Settings",
 				locator1 = "Breadcrumb#BREADCRUMB_ENTRY");
 
-			MenuBar.viewActive(menuBar = "Google PageSpeed Insights");
+			AssertVisible(
+				key_menuBar = "Google PageSpeed Insights",
+				locator1 = "MenuBar#ACTIVE_NAV_LINK");
 		}
 	}
 
@@ -3128,15 +899,13 @@ definition {
 		}
 
 		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSiteSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Mobile");
+			PageAudit.setAPIViaSiteSettings(preferredStrategy = "Mobile");
 		}
 
 		task ("Open Page Audit panel and run it") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 		}
 
 		task ("Navigate to second page") {
@@ -3171,13 +940,13 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Run Page Audit") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 		}
 
 		task ("Check that data is retrieved") {
@@ -3188,55 +957,6 @@ definition {
 			AssertVisible(
 				failureType = "SEO",
 				locator1 = "PageAudit#FAILURE_TYPE");
-		}
-	}
-
-	@description = "LPS-128383: Given the preferred strategy dropdown in the Site Scope section
-	When the value is Mobile
-	Then additional checks: Small Tap Targets, Incorrect Aspect Ratios and Illegible font sizes are retrieved"
-	@priority = "4"
-	test MobileStrategyAtInstanceSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#MobileStrategyAtInstanceSettings";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaInstanceSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Mobile");
-		}
-
-		task ("Open Page Audit panel and run it") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Assert if a mobile failure is not shown") {
-			AssertElementPresent(
-				failingCheckName = "Small Tap Targets",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-
-			AssertElementPresent(
-				failingCheckName = "Illegible Font Sizes",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-		}
-
-		task ("Reset configurations to default") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Site Scope");
-
-			PageAudit.resetDefaultValues();
 		}
 	}
 
@@ -3252,15 +972,13 @@ definition {
 		}
 
 		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSiteSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Mobile");
+			PageAudit.setAPIViaSiteSettings(preferredStrategy = "Mobile");
 		}
 
 		task ("Open Page Audit panel and run it") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 		}
 
 		task ("Assert if mobile failure are shown") {
@@ -3271,45 +989,6 @@ definition {
 			AssertElementPresent(
 				failingCheckName = "Illegible Font Sizes",
 				locator1 = "PageAudit#FAILING_CHECK_NAME");
-		}
-	}
-
-	@description = "LPS-125851: Given the preferred strategy dropdown in the Site Scope section
-	When the value is Mobile
-	Then additional checks: Small Tap Targets, Incorrect Aspect Ratios and Illegible font sizes are retrieved"
-	@priority = "4"
-	test MobileStrategyAtSystemSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#MobileStrategyAtSystemSettings";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSystemSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Mobile");
-		}
-
-		task ("Open Page Audit panel and run it") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Assert if mobile failure are shown") {
-			AssertElementPresent(
-				failingCheckName = "Small Tap Targets",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-
-			AssertElementPresent(
-				failingCheckName = "Illegible Font Sizes",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-		}
-
-		task ("Reset configurations to default") {
-			PageAudit.configurationTeardown();
 		}
 	}
 
@@ -3326,20 +1005,16 @@ definition {
 			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
 		}
 
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 
 			PageAudit.goToDetailView(failingCheckName = "Low Contrast Ratio");
 
@@ -3425,13 +1100,13 @@ definition {
 		}
 
 		task ("Set Google PageSpeed API to first page") {
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Run Page Audit for first language") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 		}
 
 		task ("Navigate to second page") {
@@ -3455,7 +1130,9 @@ definition {
 		}
 
 		task ("Check that language has no cache data") {
-			AssertVisible(locator1 = "PageAudit#LAUNCH_PAGE_AUDIT_BUTTON");
+			AssertVisible(
+				key_title = "Relaunch",
+				locator1 = "Button#ANY_TITLE");
 		}
 	}
 
@@ -3464,10 +1141,6 @@ definition {
 	test PageAuditBackButton {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "PageAudit#PageAuditBackButton";
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
 
 		task ("Add Content Page") {
 			JSONLayout.addPublicLayout(
@@ -3509,10 +1182,6 @@ definition {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "PageAudit#PageAuditCancelButton";
 
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
 		task ("Add Content Page") {
 			JSONLayout.addPublicLayout(
 				groupName = "Test Site Name",
@@ -3547,168 +1216,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is on and a user with permissions to view page visits the view mode of a content page, the issue icon for displaying the page audit panel shows"
-	@priority = "5"
-	test PageAuditContentPage {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditContentPage";
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Add Content Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Content Page",
-				type = "content");
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-		}
-
-		task ("Open Page Audit panel") {
-			PageAudit.openPageAuditSidebar();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-
-		task ("Go to Google PageSpeed throught the button in panel") {
-			PageAudit.connectToGooglePageAudit();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
-				value1 = "Google PageSpeed Insights");
-		}
-	}
-
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is off, the issue icon to display the page audit panel in the content pages doesn't show"
-	@priority = "3"
-	test PageAuditContentPageDisabled {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditContentPageDisabled";
-
-		task ("Disable Google PageSpeed") {
-			PageAudit.disableGooglePageSpeed();
-		}
-
-		task ("Add Content Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Content Page",
-				type = "content");
-		}
-
-		task ("Go to the Content Page and assert the Page Audit panel is not shown") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-	}
-
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is on and a user with permissions to view page visits the view mode of a display page, the issue icon for displaying the page audit panel shows"
-	@priority = "5"
-	test PageAuditDisplayPage {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditDisplayPage";
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Web Content Article",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED",
-				subType = "Basic Web Content");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Add Web Content and check it in its display page") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Test Site Name",
-				title = "WC Title");
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Content",
-				panel = "Applications",
-				portlet = "Content Dashboard");
-
-			LexiconTable.clickTableEntryColumnLink(
-				columnName = "title",
-				tableEntry = "");
-		}
-
-		task ("Open Page Audit panel") {
-			PageAudit.openPageAuditSidebar();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-
-		task ("Go to Google PageSpeed throught the button in panel") {
-			PageAudit.connectToGooglePageAudit();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
-				value1 = "Google PageSpeed Insights");
-		}
-	}
-
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is off, the issue icon to display the page audit panel in the display pages doesn't show"
-	@priority = "3"
-	test PageAuditDisplayPageDisabled {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditDisplayPageDisabled";
-
-		task ("Disable Google PageSpeed") {
-			PageAudit.disableGooglePageSpeed();
-		}
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Web Content Article",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED",
-				subType = "Basic Web Content");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Add Web Content and check it in its display page") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Test Site Name",
-				title = "WC Title");
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Content",
-				panel = "Applications",
-				portlet = "Content Dashboard");
-
-			LexiconTable.clickTableEntryColumnLink(
-				columnName = "title",
-				tableEntry = "");
-		}
-
-		task ("Assert the Page Audit panel is not shown") {
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-	}
-
 	@description = "LPS-128385: Given the Google PageSpeed settings tab in the Virtual Instance Scope section
 	When the Enable Google PageSpeed Insights check is unchecked
 	Then the Page Audit icon won't be visible from the view mode of the pages in the site"
@@ -3733,102 +1240,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is on and a user with permissions to view page visits the view mode of a widget page, the issue icon for displaying the page audit panel shows"
-	@priority = "5"
-	test PageAuditWidgetPage {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditWidgetPage";
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Add Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Widget Page");
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/widget-page");
-		}
-
-		task ("Open Page Audit panel") {
-			PageAudit.openPageAuditSidebar();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-
-		task ("Go to Google PageSpeed throught the button in panel") {
-			PageAudit.connectToGooglePageAudit();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
-				value1 = "Google PageSpeed Insights");
-		}
-	}
-
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is off, the issue icon to display the page audit panel in the widget pages doesn't show"
-	@priority = "3"
-	test PageAuditWidgetPageDisabled {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditWidgetPageDisabled";
-
-		task ("Disable Google PageSpeed") {
-			PageAudit.disableGooglePageSpeed();
-		}
-
-		task ("Add Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Widget Page");
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/widget-page");
-		}
-
-		task ("Assert the Page Audit panel is not shown") {
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-	}
-
-	@description = "LPS-132232: Given the Page Audit Panel
-	When the user opens it and there are no failing elements retrieved for any of the checks
-	Then a message "Your page has no issues" and the matching image show, the two sections SEO and Accessibility show and they are collapsed by default"
-	@priority = "3"
-	@uitest
-	test PageWithNoIssues {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageWithNoIssues";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test-no-issues");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSystemSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-		task ("Open Page Audit panel and assert there are no issues") {
-			PageAudit.runPageAudit(pageName = "Content Page");
-
-			AssertElementPresent(locator1 = "PageAudit#IMAGE_SUCCESS");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#NO_ISSUES_MESSAGE",
-				value1 = "Your page has no issues.");
-		}
-
-		task ("Reset Google PageSpeed API to default at System Settings") {
-			PageAudit.configurationTeardown();
-		}
-	}
-
 	@description = "LPS-130621 Given the page audit panel
 	When the panel is showing no data because the audit has never been launched for that page / language combination
 	Then there's an image, a help texts and a button: Launch a Page Audit to check issues that impact on your page’s accessibility and SEO. + Button: Launch Page Audit, and the user is able to launch the audit by the means of clicking the button"
@@ -3840,7 +1251,7 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Open Page Audit sidebar") {
@@ -3856,7 +1267,9 @@ definition {
 				locator1 = "PageAudit#HELP_TEXT",
 				value1 = "Launch a page audit to check issues that impact on your page's accessibility and SEO.");
 
-			AssertVisible(locator1 = "PageAudit#LAUNCH_PAGE_AUDIT_BUTTON");
+			AssertVisible(
+				key_title = "Relaunch",
+				locator1 = "Button#ANY_TITLE");
 		}
 	}
 
@@ -3875,13 +1288,13 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaSiteSettings();
 		}
 
 		task ("Run Page Audit") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.runPageAudit(pageName = "Content Page");
+			PageAudit.runPageAudit();
 		}
 
 		task ("Check if proper failures are displayed at Accessibility section") {
@@ -3924,483 +1337,6 @@ definition {
 				failingCheckCategory = "SEO",
 				failingCheckName = "Missing <title> Element",
 				locator1 = "PageAudit#FAILING_CHECK_CATEGORY_NAME");
-		}
-	}
-
-	@description = "LPS-128383: Given any value in the Instance settings Site scope section
-	When the same value has been overwritten in any of the sites
-	Then the value in the site prevails over any changes in the Instance settings"
-	@priority = "5"
-	test SiteSettingsHierarchyOverInstanceSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#SiteSettingsHierarchyOverInstanceSettings";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Set Google PageSpeed API by System Settings") {
-			PageAudit.setAPIViaInstanceSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Desktop");
-		}
-
-		task ("Set Google PageSpeed API by Site Settings and selecting a different strategy") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Mobile");
-		}
-
-		task ("Open Page Audit panel and run it") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Assert if mobile failures are checked") {
-			AssertElementPresent(
-				failingCheckName = "Small Tap Targets",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-
-			AssertElementPresent(
-				failingCheckName = "Illegible Font Sizes",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-		}
-
-		task ("Reset configurations to default") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Site Scope");
-
-			PageAudit.resetDefaultValues();
-		}
-	}
-
-	@description = "LPS-125851: Given any value in the Site Scope section
-	When that value has been overwritten in any of the sites
-	Then the value in the site prevails over any changes in the System Settings Site Scope section"
-	@priority = "5"
-	test SiteSettingsHierarchyOverSystemSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#SiteSettingsHierarchyOverSystemSettings";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(url = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Set Google PageSpeed API by System Settings") {
-			PageAudit.setAPIViaSystemSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Desktop");
-		}
-
-		task ("Set Google PageSpeed API by Site Settings and selecting a different strategy") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(
-				apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE",
-				preferredStrategy = "Mobile");
-		}
-
-		task ("Open Page Audit panel and run it") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.runPageAudit(pageName = "Content Page");
-		}
-
-		task ("Assert if mobile failures are checked") {
-			AssertElementPresent(
-				failingCheckName = "Small Tap Targets",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-
-			AssertElementPresent(
-				failingCheckName = "Illegible Font Sizes",
-				locator1 = "PageAudit#FAILING_CHECK_NAME");
-		}
-
-		task ("Reset configurations to default") {
-			PageAudit.configurationTeardown();
-		}
-	}
-
-	@description = "LPS-128383: Given the Google PageSpeed settings tab in the Site Scope section
-	When the Enable Google PageSpeed Insights check is unchecked
-	Then the 'Google PageSpeed Insights' tab is visible from the Site settings of any of the sites in the instance, and it is unchecked for all those sites"
-	@priority = "3"
-	test UncheckedInstanceSettingsSiteScopeThenUncheckedAtSiteSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#UncheckedInstanceSettingsSiteScopeThenUncheckedAtSiteSettings";
-
-		task ("Uncheck PageSpeed at Instance Settings") {
-			PageAudit.disableGooglePageSpeedViaInstanceSettings(scope = "Site Scope");
-		}
-
-		task ("Navigate to Site Settings and check if tab is not visible") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ProductMenu.gotoPortlet(
-				category = "Configuration",
-				portlet = "Site Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Site Scope");
-
-			AssertNotChecked.assertNotCheckedNotVisible(
-				checkboxName = "Enable",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-		}
-
-		task ("Reset Instance Settings to default") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Site Scope");
-
-			PageAudit.resetDefaultValues();
-		}
-	}
-
-	@description = "LPS-128383: Given the Google PageSpeed settings tab in the Virtual Instance Scope section
-	When the Enable Google PageSpeed Insights check is unchecked
-	Then the 'Google PageSpeed Insights' tab won't be visible in the 'SITE SCOPE' section"
-	@ignore = "true"
-	@priority = "3"
-	test UncheckedInstanceSettingsVirtualInstanceThenNotVisibleAtSiteScope {
-
-		// TODO LPS-128383 - Not possible to automate now LPS-135167
-
-	}
-
-	@description = "LPS-128383: Given the Google PageSpeed settings tab in the Virtual Instance Scope section
-	When the Enable Google PageSpeed Insights check is unchecked
-	Then the 'Google PageSpeed Insights' tab won't be visible from the Site settings of any of the sites in the instance"
-	@priority = "3"
-	test UncheckedInstanceSettingsVirtualInstanceThenNotVisibleAtSiteSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#UncheckedInstanceSettingsVirtualInstanceThenNotVisibleAtSiteSettings";
-
-		task ("Uncheck PageSpeed at Instance Settings") {
-			PageAudit.disableGooglePageSpeedViaInstanceSettings();
-		}
-
-		task ("Navigate to Site Settings and check if tab is not visible") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ProductMenu.gotoPortlet(
-				category = "Configuration",
-				portlet = "Site Settings");
-
-			Click(
-				key_itemName = "Pages",
-				locator1 = "ListGroupItem#ITEM_TEXT");
-
-			AssertElementNotPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Site Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
-		}
-
-		task ("Reset Instance Settings to default") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Virtual Instance Scope");
-
-			PageAudit.resetDefaultValues();
-		}
-	}
-
-	@description = "LPS-128383: Given the Google PageSpeed settings tab in the Virtual Instance Scope section
-	When the Enable Google PageSpeed Insights check is unchecked
-	Then the Page Audit icon won't be visible from the view mode of the pages of any of the sites in the instance"
-	@priority = "3"
-	test UncheckedInstanceSettingsVirtualInstanceThenNotVisiblePageAuditIcon {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#UncheckedInstanceSettingsVirtualInstanceThenNotVisiblePageAuditIcon";
-
-		task ("Uncheck PageSpeed at Instance Settings") {
-			PageAudit.disableGooglePageSpeedViaInstanceSettings();
-		}
-
-		task ("Navigate to Site and check if icon is not visible") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-
-		task ("Reset Instance Settings to default") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Virtual Instance Scope");
-
-			PageAudit.resetDefaultValues();
-		}
-	}
-
-	@description = "LPS-125851: Given the Google PageSpeed settings tab in the 'SITE SCOPE' section
-	When the Enable Google PageSpeed Insights check is unchecked
-	Then the 'Google PageSpeed Insights' tab is visible from the Site settings of any of the sites in the instance, and it is unchecked for all those sites"
-	@priority = "3"
-	test UncheckedSystemSettingsSiteScopeThenUncheckedAtTabSiteSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#UncheckedSystemSettingsSiteScopeThenUncheckedAtTabSiteSettings";
-
-		task ("Disable Google PageSpeed settings tab in the System Scope section") {
-			PageAudit.disableGooglePageSpeed(settingsScope = "Site Scope");
-		}
-
-		task ("Navigate to Site Settings and check if tab is not visible") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ProductMenu.gotoPortlet(
-				category = "Configuration",
-				portlet = "Site Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Site Scope");
-
-			AssertNotChecked.assertNotCheckedNotVisible(
-				checkboxName = "Enable",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-		}
-
-		task ("Disable Google PageSpeed settings tab in the System Scope section") {
-			PageAudit.enableGooglePageSpeed(settingsScope = "Site Scope");
-		}
-
-		task ("Navigate to Site Settings and check if tab is not visible") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ProductMenu.gotoPortlet(
-				category = "Configuration",
-				portlet = "Site Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Pages",
-				configurationName = "Google PageSpeed Insights",
-				configurationScope = "Site Scope");
-
-			AssertChecked.assertCheckedNotVisible(
-				checkboxName = "Enable",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-		}
-	}
-
-	@description = "LPS-128383: Given the PageSpeed Insights settings in the System Settings
-	When Google PageSpeed Insights is not enabled (unchecked)
-	Then the tab Google PageSpeed Insights is not visible from Instance settings"
-	@priority = "4"
-	test UncheckedSystemSettingsSystemScopeThenNotVisibleAtInstanceSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#UncheckedSystemSettingsSystemScopeThenNotVisibleAtInstanceSettings";
-
-		task ("Disable Google PageSpeed settings tab in the System Scope section in System Settings") {
-			PageAudit.disableGooglePageSpeed(settingsScope = "System Scope");
-		}
-
-		task ("Go to Instance Settings") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			Click(
-				key_itemName = "Pages",
-				locator1 = "ListGroupItem#ITEM_TEXT");
-		}
-
-		task ("Check if PageSpeed tabs are not visible in Instance Settings") {
-			AssertElementNotPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Virtual Instance Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
-
-			AssertElementNotPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Site Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
-		}
-
-		task ("Enable Google PageSpeed settings tab in the System Scope section") {
-			PageAudit.enableGooglePageSpeed(settingsScope = "System Scope");
-		}
-	}
-
-	@description = "LPS-125851: Given the Google PageSpeed settings tab in the System Scope section
-	When the Enable Google PageSpeed Insights check is unchecked
-	Then the 'Google PageSpeed Insights' tab isn't visible in the 'SITE SCOPE' section "
-	@priority = "3"
-	test UncheckedSystemSettingsSystemScopeThenNotVisibleAtSiteScope {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#UncheckedSystemSettingsSystemScopeThenNotVisibleAtSiteScope";
-
-		task ("Disable Google PageSpeed settings tab in the System Scope section") {
-			PageAudit.disableGooglePageSpeed(settingsScope = "System Scope");
-		}
-
-		task ("Check if Google PageSpeed Insights tab isn't visible in the 'VIRTUAL INSTANCE SCOPE' section") {
-			AssertElementNotPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Site Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
-		}
-
-		task ("Enable Google PageSpeed settings tab in the System Scope section") {
-			PageAudit.enableGooglePageSpeed(settingsScope = "System Scope");
-		}
-
-		task ("Check if Google PageSpeed Insights tab is visible in the 'VIRTUAL INSTANCE SCOPE' section") {
-			AssertElementPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Site Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
-		}
-	}
-
-	@description = "LPS-125851: Given the Google PageSpeed settings tab in the System Scope section
-	When the Enable Google PageSpeed Insights check is unchecked
-	Then the 'Google PageSpeed Insights' tab isn't visible in the 'VIRTUAL INSTANCE SCOPE' section"
-	@priority = "3"
-	test UncheckedSystemSettingsSystemScopeThenNotVisibleAtVirtualInstance {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#UncheckedSystemSettingsSystemScopeThenNotVisibleAtVirtualInstance";
-
-		task ("Disable Google PageSpeed settings tab in the System Scope section") {
-			PageAudit.disableGooglePageSpeed(settingsScope = "System Scope");
-		}
-
-		task ("Check if Google PageSpeed Insights tab isn't visible in the 'VIRTUAL INSTANCE SCOPE' section") {
-			AssertElementNotPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Virtual Instance Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
-		}
-
-		task ("Enable Google PageSpeed settings tab in the System Scope section") {
-			PageAudit.enableGooglePageSpeed(settingsScope = "System Scope");
-		}
-
-		task ("Check if Google PageSpeed Insights tab is visible in the 'VIRTUAL INSTANCE SCOPE' section") {
-			AssertElementPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Virtual Instance Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
-		}
-	}
-
-	@description = "LPS-125851: Given the Google PageSpeed settings tab in the Virtual Instance Scope section
-	When the Enable Google PageSpeed Insights check is unchecked
-	Then the 'Google PageSpeed Insights' tab isn't visible in the Site settings of any of the sites of the current Instance."
-	@priority = "3"
-	test UncheckedSystemSettingsVirtualInstanceThenNotVisibleAtTabSiteSettings {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#UncheckedSystemSettingsVirtualInstanceThenNotVisibleAtTabSiteSettings";
-
-		task ("Disable Google PageSpeed settings tab in the System Scope section") {
-			PageAudit.disableGooglePageSpeed();
-		}
-
-		task ("Navigate to Site Settings and check if tab is not visible") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ProductMenu.gotoPortlet(
-				category = "Configuration",
-				portlet = "Site Settings");
-
-			Click(
-				key_itemName = "Pages",
-				locator1 = "ListGroupItem#ITEM_TEXT");
-
-			AssertElementNotPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Site Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
-		}
-
-		task ("Enable Google PageSpeed settings tab in the System Scope section") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Navigate to Site Settings and check if tab is visible") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ProductMenu.gotoPortlet(
-				category = "Configuration",
-				portlet = "Site Settings");
-
-			Click(
-				key_itemName = "Pages",
-				locator1 = "ListGroupItem#ITEM_TEXT");
-
-			AssertElementPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Site Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
-		}
-	}
-
-	@description = "LPS-125851: Given the Google PageSpeed settings tab in the Virtual Instance Scope section
-	When the Enable Google PageSpeed Insights check is unchecked
-	Then the 'Google PageSpeed Insights' tab is visible in the 'SITE SCOPE' section "
-	@priority = "3"
-	test UncheckedSystemSettingsVirtualInstanceThenVisibleAtSiteScope {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#UncheckedSystemSettingsVirtualInstanceThenVisibleAtSiteScope";
-
-		task ("Disable Google PageSpeed settings tab in the System Scope section") {
-			PageAudit.disableGooglePageSpeed(settingsScope = "Virtual Instance Scope");
-		}
-
-		task ("Check if Google PageSpeed Insights tab isn't visible in the 'VIRTUAL INSTANCE SCOPE' section") {
-			AssertElementNotPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Site Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
-		}
-
-		task ("Enable Google PageSpeed settings tab again") {
-			Click.javaScriptClick(
-				checkboxName = "Enable",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-
-			Click(locator1 = "Button#UPDATE");
-
-			Alert.viewSuccessMessage();
-		}
-
-		task ("Check if Google PageSpeed Insights tab is visible in the 'VIRTUAL INSTANCE SCOPE' section") {
-			AssertElementPresent(
-				key_configurationName = "Google PageSpeed Insights",
-				key_configurationScope = "Site Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
 		}
 	}
 

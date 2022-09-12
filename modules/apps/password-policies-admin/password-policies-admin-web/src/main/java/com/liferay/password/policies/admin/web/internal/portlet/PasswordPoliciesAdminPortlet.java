@@ -74,7 +74,8 @@ import org.osgi.service.component.annotations.Reference;
 		"javax.portlet.init-param.view-template=/view.jsp",
 		"javax.portlet.name=" + PasswordPoliciesAdminPortletKeys.PASSWORD_POLICIES_ADMIN,
 		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator"
+		"javax.portlet.security-role-ref=administrator",
+		"javax.portlet.version=3.0"
 	},
 	service = Portlet.class
 )
@@ -279,29 +280,16 @@ public class PasswordPoliciesAdminPortlet extends MVCPortlet {
 		return false;
 	}
 
-	@Reference(unbind = "-")
-	protected void setOrganizationService(
-		OrganizationService organizationService) {
-
-		_organizationService = organizationService;
-	}
-
-	@Reference(unbind = "-")
-	protected void setPasswordPolicyService(
-		PasswordPolicyService passwordPolicyService) {
-
-		_passwordPolicyService = passwordPolicyService;
-	}
-
-	@Reference(unbind = "-")
-	protected void setUserService(UserService userService) {
-		_userService = userService;
-	}
-
+	@Reference
 	private OrganizationService _organizationService;
+
 	private volatile PasswordPoliciesConfiguration
 		_passwordPoliciesConfiguration;
+
+	@Reference
 	private PasswordPolicyService _passwordPolicyService;
+
+	@Reference
 	private UserService _userService;
 
 }

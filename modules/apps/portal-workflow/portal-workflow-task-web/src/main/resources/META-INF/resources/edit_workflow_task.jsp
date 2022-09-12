@@ -24,9 +24,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 String backURL = ParamUtil.getString(request, "backURL", redirect);
 
 if (Validator.isNull(backURL)) {
-	PortletURL renderURL = renderResponse.createRenderURL();
-
-	backURL = renderURL.toString();
+	backURL = request.getHeader(WebKeys.REFERER);
 }
 
 String languageId = LanguageUtil.getLanguageId(request);
@@ -118,7 +116,7 @@ renderResponse.setTitle(workflowTaskDisplayContext.getHeaderTitle(workflowTask))
 
 					<aui:field-wrapper label="task-name">
 						<aui:fieldset>
-							<%= workflowTaskDisplayContext.getState(workflowTask) %>
+							<%= workflowTask.getLabel(workflowTaskDisplayContext.getTaskContentLocale()) %>
 						</aui:fieldset>
 					</aui:field-wrapper>
 				</clay:col>
@@ -316,11 +314,6 @@ renderResponse.setTitle(workflowTaskDisplayContext.getHeaderTitle(workflowTask))
 					markupView="lexicon"
 					title="activities"
 				>
-
-					<%
-					List<WorkflowLog> workflowLogs = workflowTaskDisplayContext.getWorkflowLogs(workflowTask);
-					%>
-
 					<%@ include file="/workflow_logs.jspf" %>
 				</liferay-ui:panel>
 			</liferay-ui:panel-container>

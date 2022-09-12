@@ -15,9 +15,9 @@
 import {
 	ADD_FRAGMENT_COMPOSITION,
 	TOGGLE_FRAGMENT_HIGHLIGHTED,
+	UPDATE_FRAGMENTS,
 } from '../actions/types';
-
-const HIGHLIGHTED_COLLECTION_ID = 'highlighted';
+import {HIGHLIGHTED_COLLECTION_ID} from '../config/constants/highlightedCollectionId';
 
 const DEFAULT_HIGHLIGHTED_COLLECTION = {
 	fragmentCollectionId: HIGHLIGHTED_COLLECTION_ID,
@@ -63,32 +63,40 @@ export default function fragmentsReducer(fragments = [], action) {
 		case TOGGLE_FRAGMENT_HIGHLIGHTED: {
 			const {
 				fragmentEntryKey,
+				groupId,
 				highlighted,
 				highlightedFragments,
 			} = action;
 
-			const nextFragments = fragments.reduce(
-				(collections, collection) => {
-					if (
-						collection.fragmentCollectionId !==
-						HIGHLIGHTED_COLLECTION_ID
-					) {
-						collections.push({
-							...collection,
-							fragmentEntries: collection.fragmentEntries.map(
-								(fragment) =>
-									fragment.fragmentEntryKey ===
-									fragmentEntryKey
-										? {...fragment, highlighted}
-										: fragment
-							),
-						});
-					}
+			const nextFragments = [];
 
-					return collections;
-				},
-				[]
-			);
+			fragments.forEach((collection) => {
+				if (
+					collection.fragmentCollectionId ===
+					HIGHLIGHTED_COLLECTION_ID
+				) {
+					return;
+				}
+
+				nextFragments.push({
+					...collection,
+					fragmentEntries: collection.fragmentEntries.map(
+						(fragment) => {
+							const fragmentGroupId = fragment.groupId || '0';
+
+							if (
+								fragment.fragmentEntryKey !==
+									fragmentEntryKey ||
+								fragmentGroupId !== groupId
+							) {
+								return fragment;
+							}
+
+							return {...fragment, highlighted};
+						}
+					),
+				});
+			});
 
 			if (highlightedFragments.length) {
 				nextFragments.unshift({
@@ -98,6 +106,10 @@ export default function fragmentsReducer(fragments = [], action) {
 			}
 
 			return nextFragments;
+		}
+
+		case UPDATE_FRAGMENTS: {
+			return action.fragments || fragments;
 		}
 
 		default:

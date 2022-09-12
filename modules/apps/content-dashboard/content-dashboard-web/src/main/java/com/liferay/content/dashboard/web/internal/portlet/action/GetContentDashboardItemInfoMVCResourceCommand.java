@@ -47,7 +47,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -66,9 +65,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
@@ -129,6 +127,9 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			JSONPortletResponseUtil.writeJSON(
 				resourceRequest, resourceResponse,
 				JSONUtil.put(
+					"allVersions",
+					_getAllVersionsJSONArray(contentDashboardItem, themeDisplay)
+				).put(
 					"className", _getClassName(contentDashboardItem)
 				).put(
 					"classPK", _getClassPK(contentDashboardItem)
@@ -152,6 +153,9 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 						contentDashboardItem, httpServletRequest)
 				).put(
 					"languageTag", locale.toLanguageTag()
+				).put(
+					"latestVersions",
+					_getLatestVersionsJSONArray(contentDashboardItem, locale)
 				).put(
 					"modifiedDate",
 					_toString(contentDashboardItem.getModifiedDate())
@@ -191,9 +195,6 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 					"user",
 					_getUserJSONObject(contentDashboardItem, themeDisplay)
 				).put(
-					"versions",
-					_getVersionsJSONArray(contentDashboardItem, locale)
-				).put(
 					"viewURLs",
 					_getViewURLsJSONArray(
 						contentDashboardItem, httpServletRequest)
@@ -218,33 +219,65 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 		}
 	}
 
+	private JSONArray _getAllVersionsJSONArray(
+		ContentDashboardItem contentDashboardItem, ThemeDisplay themeDisplay) {
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		List<ContentDashboardItem.Version> allVersions =
+			contentDashboardItem.getAllVersions(themeDisplay);
+
+		for (ContentDashboardItem.Version version : allVersions) {
+			jsonArray.put(version.toJSONObject());
+		}
+
+		return jsonArray;
+	}
+
 	private JSONArray _getAssetTagsJSONArray(
 		ContentDashboardItem contentDashboardItem) {
 
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
 		List<AssetTag> assetTags = contentDashboardItem.getAssetTags();
 
-		Stream<AssetTag> stream = assetTags.stream();
+		for (AssetTag assetTag : assetTags) {
+			jsonArray.put(assetTag.getName());
+		}
 
-		return JSONUtil.putAll(
-			stream.map(
-				AssetTag::getName
-			).toArray());
+		return jsonArray;
 	}
 
 	private JSONObject _getAssetVocabulariesJSONObject(
 		ContentDashboardItem contentDashboardItem, Locale locale) {
 
+		Map<Long, Map<String, Object>> assetVocabularyMaps = new HashMap<>();
+
 		List<AssetCategory> assetCategories =
 			contentDashboardItem.getAssetCategories();
 
-		Stream<AssetCategory> stream = assetCategories.stream();
+		for (AssetCategory assetCategory : assetCategories) {
+			assetVocabularyMaps.computeIfAbsent(
+				assetCategory.getVocabularyId(),
+				vocabularyId -> _getAssetVocabularyMap(
+					_assetVocabularyLocalService.fetchAssetVocabulary(
+						vocabularyId),
+					locale));
 
-		return JSONFactoryUtil.createJSONObject(
-			stream.collect(_getCollector(locale)));
+			Map<String, Object> assetVocabularyMap = assetVocabularyMaps.get(
+				assetCategory.getVocabularyId());
+
+			List<String> assetCategoryTitles =
+				(List<String>)assetVocabularyMap.get("categories");
+
+			assetCategoryTitles.add(assetCategory.getTitle(locale));
+		}
+
+		return JSONFactoryUtil.createJSONObject(assetVocabularyMaps);
 	}
 
-	private Map<String, Object> _getAssetVocabularyData(
-		Locale locale, AssetVocabulary assetVocabulary) {
+	private Map<String, Object> _getAssetVocabularyMap(
+		AssetVocabulary assetVocabulary, Locale locale) {
 
 		return HashMapBuilder.<String, Object>put(
 			"categories", ListUtil.fromArray()
@@ -290,34 +323,6 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 		).orElse(
 			null
 		);
-	}
-
-	private Collector<AssetCategory, ?, Map<Long, Map<String, Object>>>
-		_getCollector(Locale locale) {
-
-		return Collector.of(
-			() -> new HashMap<>(),
-			(assetVocabulariesData, assetCategory) -> {
-				assetVocabulariesData.computeIfAbsent(
-					assetCategory.getVocabularyId(),
-					vocabularyId -> _getAssetVocabularyData(
-						locale,
-						_assetVocabularyLocalService.fetchAssetVocabulary(
-							vocabularyId)));
-
-				Map<String, Object> assetVocabularyData =
-					assetVocabulariesData.get(assetCategory.getVocabularyId());
-
-				List<String> assetCategories =
-					(List<String>)assetVocabularyData.get("categories");
-
-				assetCategories.add(assetCategory.getTitle(locale));
-			},
-			(first, second) -> {
-				first.putAll(second);
-
-				return first;
-			});
 	}
 
 	private String _getDownloadURL(
@@ -376,31 +381,43 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 		return null;
 	}
 
+	private JSONArray _getLatestVersionsJSONArray(
+		ContentDashboardItem contentDashboardItem, Locale locale) {
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		List<ContentDashboardItem.Version> latestVersions =
+			contentDashboardItem.getLatestVersions(locale);
+
+		for (ContentDashboardItem.Version version : latestVersions) {
+			jsonArray.put(version.toJSONObject());
+		}
+
+		return jsonArray;
+	}
+
 	private JSONObject _getSpecificFieldsJSONObject(
 		ContentDashboardItem contentDashboardItem, Locale locale) {
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
 		Map<String, Object> specificInformation =
 			contentDashboardItem.getSpecificInformation(locale);
 
-		Set<Map.Entry<String, Object>> entries = specificInformation.entrySet();
+		SortedSet<String> keys = new TreeSet<>(specificInformation.keySet());
 
-		Stream<Map.Entry<String, Object>> stream = entries.stream();
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-		stream.sorted(
-			Map.Entry.comparingByKey()
-		).forEach(
-			entry -> jsonObject.put(
-				entry.getKey(),
+		for (String key : keys) {
+			jsonObject.put(
+				key,
 				JSONUtil.put(
-					"title", _language.get(locale, entry.getKey())
+					"title", _language.get(locale, key)
 				).put(
-					"type", _getSpecificInformationType(entry.getValue())
+					"type",
+					_getSpecificInformationType(specificInformation.get(key))
 				).put(
-					"value", _toString(entry.getValue())
-				))
-		);
+					"value", _toString(specificInformation.get(key))
+				));
+		}
 
 		return jsonObject;
 	}
@@ -424,7 +441,7 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			contentDashboardItem.getContentDashboardItemActions(
 				httpServletRequest, ContentDashboardItemAction.Type.SUBSCRIBE);
 
-		if (!ListUtil.isEmpty(contentDashboardItemActions)) {
+		if (ListUtil.isNotEmpty(contentDashboardItemActions)) {
 			ContentDashboardItemAction contentDashboardItemAction =
 				contentDashboardItemActions.get(0);
 
@@ -446,10 +463,6 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 		ContentDashboardItem contentDashboardItem,
 		HttpServletRequest httpServletRequest) {
 
-		if (!GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-158043"))) {
-			return null;
-		}
-
 		return Optional.ofNullable(
 			_getSubscribeContentDashboardItemActionJSONObject(
 				contentDashboardItem, httpServletRequest)
@@ -468,7 +481,7 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 				httpServletRequest,
 				ContentDashboardItemAction.Type.UNSUBSCRIBE);
 
-		if (!ListUtil.isEmpty(contentDashboardItemActions)) {
+		if (ListUtil.isNotEmpty(contentDashboardItemActions)) {
 			ContentDashboardItemAction contentDashboardItemAction =
 				contentDashboardItemActions.get(0);
 
@@ -516,23 +529,11 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 		);
 	}
 
-	private JSONArray _getVersionsJSONArray(
-		ContentDashboardItem contentDashboardItem, Locale locale) {
-
-		List<ContentDashboardItem.Version> versions =
-			contentDashboardItem.getVersions(locale);
-
-		Stream<ContentDashboardItem.Version> stream = versions.stream();
-
-		return JSONUtil.putAll(
-			stream.map(
-				ContentDashboardItem.Version::toJSONObject
-			).toArray());
-	}
-
 	private JSONArray _getViewURLsJSONArray(
 		ContentDashboardItem contentDashboardItem,
 		HttpServletRequest httpServletRequest) {
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
 		List<ContentDashboardItemAction> contentDashboardItemActions =
 			contentDashboardItem.getContentDashboardItemActions(
@@ -540,27 +541,27 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 
 		List<Locale> locales = contentDashboardItem.getAvailableLocales();
 
-		Stream<Locale> stream = locales.stream();
-
 		if (ListUtil.isEmpty(contentDashboardItemActions)) {
-			return JSONUtil.putAll(
-				stream.map(
-					locale -> JSONUtil.put(
+			for (Locale locale : locales) {
+				jsonArray.put(
+					JSONUtil.put(
 						"default",
 						Objects.equals(
 							locale, contentDashboardItem.getDefaultLocale())
 					).put(
 						"languageId", LocaleUtil.toBCP47LanguageId(locale)
-					)
-				).toArray());
+					));
+			}
+
+			return jsonArray;
 		}
 
 		ContentDashboardItemAction contentDashboardItemAction =
 			contentDashboardItemActions.get(0);
 
-		return JSONUtil.putAll(
-			stream.map(
-				locale -> JSONUtil.put(
+		for (Locale locale : locales) {
+			jsonArray.put(
+				JSONUtil.put(
 					"default",
 					Objects.equals(
 						locale, contentDashboardItem.getDefaultLocale())
@@ -568,8 +569,10 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 					"languageId", LocaleUtil.toBCP47LanguageId(locale)
 				).put(
 					"viewURL", contentDashboardItemAction.getURL(locale)
-				)
-			).toArray());
+				));
+		}
+
+		return jsonArray;
 	}
 
 	private String _toString(Date date) {

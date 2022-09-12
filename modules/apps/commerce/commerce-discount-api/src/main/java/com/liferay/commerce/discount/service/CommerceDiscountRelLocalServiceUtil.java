@@ -92,6 +92,16 @@ public class CommerceDiscountRelLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
+	public static CommerceDiscountRel deleteCommerceDiscountRel(
+			com.liferay.commerce.discount.model.CommerceDiscount
+				commerceDiscount,
+			CommerceDiscountRel commerceDiscountRel)
+		throws PortalException {
+
+		return getService().deleteCommerceDiscountRel(
+			commerceDiscount, commerceDiscountRel);
+	}
+
 	/**
 	 * Deletes the commerce discount rel from the database. Also notifies the appropriate model listeners.
 	 *
@@ -126,6 +136,14 @@ public class CommerceDiscountRelLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteCommerceDiscountRel(commerceDiscountRelId);
+	}
+
+	public static void deleteCommerceDiscountRels(
+			com.liferay.commerce.discount.model.CommerceDiscount
+				commerceDiscount)
+		throws PortalException {
+
+		getService().deleteCommerceDiscountRels(commerceDiscount);
 	}
 
 	public static void deleteCommerceDiscountRels(long commerceDiscountId)

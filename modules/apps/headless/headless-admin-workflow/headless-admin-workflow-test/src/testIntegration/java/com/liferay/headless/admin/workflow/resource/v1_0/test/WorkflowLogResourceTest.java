@@ -117,6 +117,7 @@ public class WorkflowLogResourceTest extends BaseWorkflowLogResourceTestCase {
 								TestPropsValues.getUserId(), StringPool.BLANK),
 							false);
 						state = "review";
+						stateLabel = "Review";
 						type = Type.TASK_ASSIGN;
 						workflowTaskId = workflowTask.getId();
 					}
@@ -132,6 +133,7 @@ public class WorkflowLogResourceTest extends BaseWorkflowLogResourceTestCase {
 								LocaleUtil.getDefault()),
 							false);
 						state = "review";
+						stateLabel = "Review";
 						type = Type.TASK_ASSIGN;
 						workflowTaskId = workflowTask.getId();
 					}
@@ -176,6 +178,7 @@ public class WorkflowLogResourceTest extends BaseWorkflowLogResourceTestCase {
 								TestPropsValues.getUserId(), StringPool.BLANK),
 							false);
 						state = "review";
+						stateLabel = "Review";
 						type = Type.TASK_ASSIGN;
 						workflowTaskId = workflowTask.getId();
 					}
@@ -207,6 +210,7 @@ public class WorkflowLogResourceTest extends BaseWorkflowLogResourceTestCase {
 								LocaleUtil.getDefault()),
 							false);
 						state = "review";
+						stateLabel = "Review";
 						type = Type.TASK_ASSIGN;
 						workflowTaskId = workflowTask.getId();
 					}
@@ -241,6 +245,7 @@ public class WorkflowLogResourceTest extends BaseWorkflowLogResourceTestCase {
 								LocaleUtil.getDefault()),
 							false);
 						state = "review";
+						stateLabel = "Review";
 						type = Type.TASK_ASSIGN;
 						workflowTaskId = workflowTask.getId();
 					}
@@ -285,6 +290,7 @@ public class WorkflowLogResourceTest extends BaseWorkflowLogResourceTestCase {
 								TestPropsValues.getUserId(), StringPool.BLANK),
 							false);
 						state = "review";
+						stateLabel = "Review";
 						type = Type.TASK_ASSIGN;
 						workflowTaskId = workflowTask.getId();
 					}
@@ -316,6 +322,7 @@ public class WorkflowLogResourceTest extends BaseWorkflowLogResourceTestCase {
 								LocaleUtil.getDefault()),
 							false);
 						state = "review";
+						stateLabel = "Review";
 						type = Type.TASK_ASSIGN;
 						workflowTaskId = workflowTask.getId();
 					}
@@ -326,7 +333,8 @@ public class WorkflowLogResourceTest extends BaseWorkflowLogResourceTestCase {
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
-			"commentLog", "description", "state", "type", "workflowTaskId"
+			"commentLog", "description", "state", "stateLabel", "type",
+			"workflowTaskId"
 		};
 	}
 

@@ -481,7 +481,8 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 		List<AssetVocabulary> vocabularies = new ArrayList<>();
 
 		vocabularies.addAll(
-			AssetVocabularyServiceUtil.getGroupVocabularies(getGroupIds()));
+			AssetVocabularyServiceUtil.getGroupVocabularies(
+				getGroupIds(), _visibilityTypes));
 
 		HttpServletRequest httpServletRequest = getRequest();
 

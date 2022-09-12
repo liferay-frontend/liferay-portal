@@ -15,10 +15,12 @@
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo} from 'react';
 
+import {fromControlsId} from '../../../app/components/layout-data-items/Collection';
 import {BACKGROUND_IMAGE_FRAGMENT_ENTRY_PROCESSOR} from '../../config/constants/backgroundImageFragmentEntryProcessor';
 import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../config/constants/editableFragmentEntryProcessor';
 import {ITEM_ACTIVATION_ORIGINS} from '../../config/constants/itemActivationOrigins';
 import {ITEM_TYPES} from '../../config/constants/itemTypes';
+import {TEXT_EDITABLE_TYPES} from '../../config/constants/textEditableTypes';
 import {VIEWPORT_SIZES} from '../../config/constants/viewportSizes';
 import {config} from '../../config/index';
 import {useToControlsId} from '../../contexts/CollectionItemContext';
@@ -33,7 +35,10 @@ import {
 	useIsHovered,
 	useSelectItem,
 } from '../../contexts/ControlsContext';
-import {useSetEditableProcessorUniqueId} from '../../contexts/EditableProcessorContext';
+import {
+	useEditableProcessorUniqueId,
+	useSetEditableProcessorUniqueId,
+} from '../../contexts/EditableProcessorContext';
 import {useSelector, useSelectorCallback} from '../../contexts/StoreContext';
 import selectCanUpdateEditables from '../../selectors/selectCanUpdateEditables';
 import selectCanUpdatePageStructure from '../../selectors/selectCanUpdatePageStructure';
@@ -75,6 +80,7 @@ function FragmentContentInteractionsFilter({
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
 	);
+	const editableProcessorUniqueId = useEditableProcessorUniqueId();
 	const setEditableProcessorUniqueId = useSetEditableProcessorUniqueId();
 	const toControlsId = useToControlsId();
 
@@ -131,14 +137,28 @@ function FragmentContentInteractionsFilter({
 
 	useEffect(() => {
 		editables.forEach((editable) => {
+			const isBeingEdited =
+				editable.itemId === fromControlsId(editableProcessorUniqueId);
+
 			if (isActive(editable.itemId)) {
 				editable.element.classList.add(EDITABLE_CLASS_NAMES.active);
+
+				if (isBeingEdited) {
+					editable.element.removeAttribute('title');
+				}
+				else if (TEXT_EDITABLE_TYPES.has(editable.type)) {
+					editable.element.setAttribute(
+						'title',
+						Liferay.Language.get('edit-text')
+					);
+				}
 			}
 			else {
 				editable.element.classList.remove(EDITABLE_CLASS_NAMES.active);
+				editable.element.removeAttribute('title');
 			}
 		});
-	}, [editables, isActive]);
+	}, [editables, isActive, editableProcessorUniqueId]);
 
 	useEffect(() => {
 		editables.forEach((editable) => {

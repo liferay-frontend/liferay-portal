@@ -16,6 +16,7 @@ import ErrorBoundary from '../shared/ErrorBoundary';
 import ThemeContext from '../shared/ThemeContext';
 import {COPY_BUTTON_CSS_CLASS} from '../utils/constants';
 import {fetchData} from '../utils/fetch';
+import {renameKeys, transformLocale} from '../utils/language';
 import {openInitialSuccessToast} from '../utils/toasts';
 import EditSXPBlueprintForm from './EditSXPBlueprintForm';
 
@@ -36,7 +37,8 @@ export default function ({
 		openInitialSuccessToast();
 
 		fetchData(
-			`/o/search-experiences-rest/v1.0/sxp-blueprints/${sxpBlueprintId}`
+			`/o/search-experiences-rest/v1.0/sxp-blueprints/${sxpBlueprintId}`,
+			{headers: {'X-Liferay-Accept-All-Languages': true}}
 		)
 			.then((responseContent) => setResource(responseContent))
 			.catch(() => setResource({}));
@@ -63,17 +65,15 @@ export default function ({
 					<EditSXPBlueprintForm
 						entityJSON={resource.entityJSON}
 						initialConfiguration={resource.configuration}
-						initialDescription={
-							resource.description_i18n || {
-								[defaultLocale]: resource.description,
-							}
-						}
+						initialDescription={renameKeys(
+							resource.description_i18n,
+							transformLocale
+						)}
 						initialSXPElementInstances={resource.elementInstances}
-						initialTitle={
-							resource.title_i18n || {
-								[defaultLocale]: resource.title,
-							}
-						}
+						initialTitle={renameKeys(
+							resource.title_i18n,
+							transformLocale
+						)}
 						sxpBlueprintId={sxpBlueprintId}
 					/>
 				</ErrorBoundary>

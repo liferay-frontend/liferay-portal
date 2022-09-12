@@ -83,8 +83,7 @@ public class WorkflowTaskDemoDataCreatorImpl
 			long companyId, long workflowTaskId)
 		throws WorkflowException {
 
-		return _workflowTaskManager.getNextTransitionNames(
-			companyId, 0L, workflowTaskId);
+		return _workflowTaskManager.getNextTransitionNames(0L, workflowTaskId);
 	}
 
 	@Override
@@ -149,7 +148,7 @@ public class WorkflowTaskDemoDataCreatorImpl
 		throws PortalException {
 
 		WorkflowTask workflowTask = _workflowTaskManager.getWorkflowTask(
-			companyId, workflowTaskId);
+			workflowTaskId);
 
 		WorkflowInstance workflowInstance =
 			_workflowInstanceManager.getWorkflowInstance(

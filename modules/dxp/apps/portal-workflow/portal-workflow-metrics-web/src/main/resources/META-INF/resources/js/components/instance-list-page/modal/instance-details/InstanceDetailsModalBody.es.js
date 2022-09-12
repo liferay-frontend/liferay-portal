@@ -213,9 +213,7 @@ function Body({
 							description={Liferay.Language.get(
 								'current-assignee'
 							)}
-							detail={assignees
-								.map((user) => user.name)
-								.join(', ')}
+							detail={assignees[0].name}
 						/>
 					)}
 

@@ -19,7 +19,7 @@ import useFormActions from '../../hooks/useFormActions';
 import useModalContext from '../../hooks/useModalContext';
 import useMutate from '../../hooks/useMutate';
 import i18n from '../../i18n';
-import {TestrayProject, deleteResource} from '../../services/rest';
+import {TestrayProject, testrayProjectImpl} from '../../services/rest';
 import {Action, ActionsHookParameter} from '../../types';
 import ComponentsModal from '../Standalone/Components/ComponentsModal';
 import ProductVersionModal from '../Standalone/ProductVersions/ProductVersionModal';
@@ -73,7 +73,8 @@ const useProjectActions = ({isHeaderActions}: ActionsHookParameter = {}) => {
 
 		{
 			action: ({id}, mutate) =>
-				deleteResource(`/projects/${id}`)
+				testrayProjectImpl
+					.remove(id)
 					?.then(() => removeItemFromList(mutate, id))
 					.then(form.onSuccess)
 					.catch(form.onError),

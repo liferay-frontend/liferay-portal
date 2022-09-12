@@ -21,6 +21,8 @@ public class CommerceChannelAccountEntryRelConstants {
 
 	public static final int TYPE_BILLING_ADDRESS = 2;
 
+	public static final int TYPE_CURRENCY = 6;
+
 	public static final int TYPE_DELIVERY_TERM = 0;
 
 	public static final int TYPE_DISCOUNT = 5;

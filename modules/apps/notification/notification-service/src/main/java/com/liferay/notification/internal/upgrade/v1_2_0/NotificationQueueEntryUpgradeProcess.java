@@ -14,7 +14,7 @@
 
 package com.liferay.notification.internal.upgrade.v1_2_0;
 
-import com.liferay.notification.constants.NotificationsQueryEntryConstants;
+import com.liferay.notification.constants.NotificationQueueEntryConstants;
 import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
@@ -42,11 +42,11 @@ public class NotificationQueueEntryUpgradeProcess extends UpgradeProcess {
 			while (resultSet.next()) {
 				if (resultSet.getBoolean("sent")) {
 					preparedStatement2.setInt(
-						1, NotificationsQueryEntryConstants.STATUS_SENT);
+						1, NotificationQueueEntryConstants.STATUS_SENT);
 				}
 				else {
 					preparedStatement2.setInt(
-						1, NotificationsQueryEntryConstants.STATUS_UNSENT);
+						1, NotificationQueueEntryConstants.STATUS_UNSENT);
 				}
 
 				preparedStatement2.setLong(

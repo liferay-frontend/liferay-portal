@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -308,20 +309,11 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			contentDashboardItem.getUserId(), userJSONObject.getLong("userId"));
 		Assert.assertEquals("portraitURL", userJSONObject.getString("url"));
 
-		List<ContentDashboardItem.Version> versions =
-			contentDashboardItem.getVersions(LocaleUtil.US);
+		_assertContentDashboardItemLatestVersions(
+			contentDashboardItem, jsonObject);
 
-		ContentDashboardItem.Version version = versions.get(0);
-
-		JSONObject expectedVersionJSONObject = version.toJSONObject();
-
-		JSONArray versionsJSONArray = jsonObject.getJSONArray("versions");
-
-		JSONObject actualVersionJSONObject = versionsJSONArray.getJSONObject(0);
-
-		Assert.assertEquals(
-			expectedVersionJSONObject.toString(),
-			actualVersionJSONObject.toString());
+		_assertContentDashboardItemAllVersions(
+			contentDashboardItem, jsonObject);
 	}
 
 	@Test
@@ -442,6 +434,42 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 		Assert.assertEquals(
 			contentDashboardItem.getUserId(), userJSONObject.getLong("userId"));
 		Assert.assertEquals(StringPool.BLANK, userJSONObject.getString("url"));
+	}
+
+	private void _assertContentDashboardItemAllVersions(
+		ContentDashboardItem<?> contentDashboardItem, JSONObject jsonObject) {
+
+		List<ContentDashboardItem.Version> versions =
+			contentDashboardItem.getAllVersions(new ThemeDisplay());
+
+		JSONArray expectedJSONArray = JSONFactoryUtil.createJSONArray();
+
+		for (ContentDashboardItem.Version version : versions) {
+			expectedJSONArray.put(version.toJSONObject());
+		}
+
+		JSONArray actualJSONArray = jsonObject.getJSONArray("allVersions");
+
+		Assert.assertEquals(
+			expectedJSONArray.toString(), actualJSONArray.toString());
+	}
+
+	private void _assertContentDashboardItemLatestVersions(
+		ContentDashboardItem<?> contentDashboardItem, JSONObject jsonObject) {
+
+		List<ContentDashboardItem.Version> versions =
+			contentDashboardItem.getLatestVersions(LocaleUtil.US);
+
+		ContentDashboardItem.Version version = versions.get(0);
+
+		JSONObject expectedJSONObject = version.toJSONObject();
+
+		JSONArray actualJSONArray = jsonObject.getJSONArray("latestVersions");
+
+		JSONObject actualJSONObject = actualJSONArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			expectedJSONObject.toString(), actualJSONObject.toString());
 	}
 
 	private MockLiferayResourceRequest _getMockLiferayResourceRequest(
@@ -638,6 +666,15 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			return new ContentDashboardItem() {
 
 				@Override
+				public List<Version> getAllVersions(ThemeDisplay themeDisplay) {
+					return ListUtil.fromArray(
+						new Version(
+							"version", "style", "0.1", null, "user", null),
+						new Version(
+							"version", "style", "0.2", null, "user", null));
+				}
+
+				@Override
 				public List<AssetCategory> getAssetCategories() {
 					return Arrays.asList(assetCategory1, assetCategory2);
 				}
@@ -728,6 +765,13 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 				}
 
 				@Override
+				public List<Version> getLatestVersions(Locale locale) {
+					return Collections.singletonList(
+						new Version(
+							"version", "style", "0.1", null, "user", null));
+				}
+
+				@Override
 				public Date getModifiedDate() {
 					return new Date();
 				}
@@ -773,12 +817,6 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 				@Override
 				public String getUserName() {
 					return userName;
-				}
-
-				@Override
-				public List<Version> getVersions(Locale locale) {
-					return Collections.singletonList(
-						new Version("version", "style", "0.1"));
 				}
 
 				@Override

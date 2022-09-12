@@ -59,13 +59,14 @@ import org.json.JSONObject;
  */
 public abstract class BaseBuild implements Build {
 
-	@Override
-	public void addDownstreamBuilds(String... urls) {
+	public void addDownstreamBuilds(Map<String, String> urlAxisNames) {
 		final Build thisBuild = this;
 
-		List<Callable<Build>> callables = new ArrayList<>(urls.length);
+		List<Callable<Build>> callables = new ArrayList<>(urlAxisNames.size());
 
-		for (String url : urls) {
+		for (Map.Entry<String, String> urlEntry : urlAxisNames.entrySet()) {
+			String url = urlEntry.getKey();
+
 			try {
 				url = JenkinsResultsParserUtil.getLocalURL(
 					JenkinsResultsParserUtil.decode(url));
@@ -76,6 +77,7 @@ public abstract class BaseBuild implements Build {
 			}
 
 			if (!hasBuildURL(url)) {
+				final String axisName = urlEntry.getValue();
 				final String buildURL = url;
 
 				Callable<Build> callable = new Callable<Build>() {
@@ -83,7 +85,8 @@ public abstract class BaseBuild implements Build {
 					@Override
 					public Build call() {
 						try {
-							return BuildFactory.newBuild(buildURL, thisBuild);
+							return BuildFactory.newBuild(
+								buildURL, thisBuild, axisName);
 						}
 						catch (RuntimeException runtimeException) {
 							if (!isFromArchive()) {
@@ -107,6 +110,17 @@ public abstract class BaseBuild implements Build {
 			callables, true, getExecutorService());
 
 		downstreamBuilds.addAll(parallelExecutor.execute());
+	}
+
+	@Override
+	public void addDownstreamBuilds(String... urls) {
+		Map<String, String> urlAxisNames = new HashMap<>();
+
+		for (String url : urls) {
+			urlAxisNames.put(url, null);
+		}
+
+		addDownstreamBuilds(urlAxisNames);
 	}
 
 	public abstract void addTimelineData(BaseBuild.TimelineData timelineData);
@@ -1350,7 +1364,7 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public String getStatus() {
-		if (_status == null) {
+		if ((_status == null) || !_status.equals("completed")) {
 			getResult();
 		}
 
@@ -1860,7 +1874,17 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public boolean isUniqueFailure() {
-		return !UpstreamFailureUtil.isBuildFailingInUpstreamJob(this);
+		if (_uniqueFailure != null) {
+			return _uniqueFailure;
+		}
+
+		if (!Objects.equals(getStatus(), "completed")) {
+			return !UpstreamFailureUtil.isBuildFailingInUpstreamJob(this);
+		}
+
+		_uniqueFailure = !UpstreamFailureUtil.isBuildFailingInUpstreamJob(this);
+
+		return _uniqueFailure;
 	}
 
 	@Override
@@ -2602,14 +2626,6 @@ public abstract class BaseBuild implements Build {
 	}
 
 	protected void findDownstreamBuilds() {
-		List<String> foundDownstreamBuildURLs = new ArrayList<>(
-			findDownstreamBuildsInConsoleText());
-
-		addDownstreamBuilds(foundDownstreamBuildURLs.toArray(new String[0]));
-	}
-
-	protected List<String> findDownstreamBuildsInConsoleText() {
-		return Collections.emptyList();
 	}
 
 	protected Pattern getArchiveBuildURLPattern() {
@@ -2694,7 +2710,16 @@ public abstract class BaseBuild implements Build {
 			StringBuilder sb = new StringBuilder();
 
 			sb.append("Build \"");
-			sb.append(jobName);
+
+			if (this instanceof DownstreamBuild) {
+				DownstreamBuild downstreamBuild = (DownstreamBuild)this;
+
+				sb.append(downstreamBuild.getAxisName());
+			}
+			else {
+				sb.append(jobName);
+			}
+
 			sb.append("\"");
 
 			if (status.equals("completed")) {
@@ -3741,8 +3766,6 @@ public abstract class BaseBuild implements Build {
 	protected static final String URL_BASE_TEMP_MAP =
 		"http://cloud-10-0-0-31.lax.liferay.com/osb-jenkins-web/map/";
 
-	protected static final Pattern downstreamBuildURLPattern = Pattern.compile(
-		"[\\'\\\"].*[\\'\\\"] started at (?<url>.+)\\.");
 	protected static final Pattern invocationURLPattern = Pattern.compile(
 		JenkinsResultsParserUtil.combine(
 			"\\w+://(?<master>[^/]+)/+job/+(?<jobName>[^/]+).*/",
@@ -3975,13 +3998,15 @@ public abstract class BaseBuild implements Build {
 			throw new RuntimeException("Unable to write file", ioException);
 		}
 		finally {
-			System.out.println(
-				JenkinsResultsParserUtil.combine(
-					"Archived ", String.valueOf(getArchiveFile(urlSuffix)),
-					" in ",
-					JenkinsResultsParserUtil.toDurationString(
-						JenkinsResultsParserUtil.getCurrentTimeMillis() -
-							start)));
+			if (JenkinsResultsParserUtil.debug) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"Archived ", String.valueOf(getArchiveFile(urlSuffix)),
+						" in ",
+						JenkinsResultsParserUtil.toDurationString(
+							JenkinsResultsParserUtil.getCurrentTimeMillis() -
+								start)));
+			}
 		}
 	}
 
@@ -4291,5 +4316,6 @@ public abstract class BaseBuild implements Build {
 	private Map<String, TestClassResult> _testClassResults;
 	private List<URL> _testrayAttachmentURLs;
 	private List<URL> _testrayS3AttachmentURLs;
+	private Boolean _uniqueFailure;
 
 }

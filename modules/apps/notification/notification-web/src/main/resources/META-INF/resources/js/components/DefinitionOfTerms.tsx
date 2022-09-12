@@ -13,9 +13,6 @@
  */
 
 import ClayPanel from '@clayui/panel';
-
-// @ts-ignore
-
 import {FrontendDataSet} from '@liferay/frontend-data-set-web';
 import {
 	API,
@@ -28,72 +25,6 @@ import React, {useEffect, useMemo, useState} from 'react';
 
 const defaultLanguageId = Liferay.ThemeDisplay.getDefaultLanguageId();
 
-const getDataSetProps = (items: Item[]) => {
-	return {
-		id: 'DefinitionOfTermsTable',
-		items,
-		itemsActions: [
-			{
-				href: 'copyObjectFieldTerm',
-				id: 'copyObjectFieldTerm',
-				label: Liferay.Language.get('copy'),
-				target: 'event',
-			},
-		],
-		namespace: '',
-		onActionDropdownItemClick,
-		pageSize: 5,
-		pagination: {
-			deltas: [
-				{
-					label: 5,
-				},
-				{
-					label: 10,
-				},
-				{
-					label: 20,
-				},
-				{
-					label: 30,
-				},
-				{
-					label: 50,
-				},
-				{
-					href: '',
-					label: 75,
-				},
-			],
-			initialDelta: 10,
-		},
-		selectedItemsKey: 'id',
-		showManagementBar: false,
-		showPagination: true,
-		showSearch: false,
-		views: [
-			{
-				contentRenderer: 'table',
-				label: 'Table',
-				name: 'table',
-				schema: {
-					fields: [
-						{
-							fieldName: 'name',
-							label: Liferay.Language.get('name'),
-						},
-						{
-							fieldName: 'term',
-							label: Liferay.Language.get('term'),
-						},
-					],
-				},
-				thumbnail: 'table',
-			},
-		],
-	};
-};
-
 export function DefinitionOfTerms({baseResourceURL}: IProps) {
 	const [objectDefinitions, setObjectDefinitions] = useState<
 		ObjectDefinition[]
@@ -103,18 +34,17 @@ export function DefinitionOfTerms({baseResourceURL}: IProps) {
 
 	const [entityFields, setEntityFields] = useState<Item[]>([]);
 
-	const props = useMemo(() => {
-		return getDataSetProps(entityFields);
-	}, [entityFields]);
-
 	const filteredObjectDefinitions = useMemo(() => {
-		return objectDefinitions?.filter(({label}) =>
-			stringIncludesQuery(label[defaultLanguageId] as string, query)
+		return objectDefinitions?.filter(({label, name}) =>
+			stringIncludesQuery(
+				(label[defaultLanguageId] as string) ?? name,
+				query
+			)
 		);
 	}, [objectDefinitions, query]);
 
 	useEffect(() => {
-		API.getObjectDefinitions().then((items) => {
+		API.getAllObjectDefinitions().then((items) => {
 			if (!Liferay.FeatureFlags['LPS-158482']) {
 				const objectDefinitions = items.filter(
 					({system}: ObjectDefinition) => !system
@@ -177,15 +107,51 @@ export function DefinitionOfTerms({baseResourceURL}: IProps) {
 					query={query}
 					value={selectedEntity?.label[defaultLanguageId]}
 				>
-					{({label}) => (
+					{({label, name}) => (
 						<div className="d-flex justify-content-between">
-							<div>{label[defaultLanguageId]}</div>
+							<div>{label[defaultLanguageId] ?? name}</div>
 						</div>
 					)}
 				</AutoComplete>
 
 				<div id="lfr-notification-web__definition-of-terms-table">
-					<FrontendDataSet {...props} />
+					<FrontendDataSet
+						id="DefinitionOfTermsTable"
+						items={entityFields}
+						itemsActions={[
+							{
+								href: 'copyObjectFieldTerm',
+								id: 'copyObjectFieldTerm',
+								label: Liferay.Language.get('copy'),
+								target: 'event',
+							},
+						]}
+						onActionDropdownItemClick={onActionDropdownItemClick}
+						selectedItemsKey="id"
+						showManagementBar={false}
+						showPagination={false}
+						showSearch={false}
+						views={[
+							{
+								contentRenderer: 'table',
+								label: 'Table',
+								name: 'table',
+								schema: {
+									fields: [
+										{
+											fieldName: 'name',
+											label: Liferay.Language.get('name'),
+										},
+										{
+											fieldName: 'term',
+											label: Liferay.Language.get('term'),
+										},
+									],
+								},
+								thumbnail: 'table',
+							},
+						]}
+					/>
 				</div>
 			</ClayPanel.Body>
 		</ClayPanel>

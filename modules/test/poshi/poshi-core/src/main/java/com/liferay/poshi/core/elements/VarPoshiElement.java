@@ -196,6 +196,8 @@ public class VarPoshiElement extends PoshiElement {
 				}
 			}
 
+			value = value.replace("\\\"", "\"");
+
 			value = StringEscapeUtils.unescapeXml(value);
 
 			addAttribute("value", value);
@@ -341,7 +343,7 @@ public class VarPoshiElement extends PoshiElement {
 				}
 			}
 			else {
-				value = StringUtil.replace(value, "\"", "&quot;");
+				value = StringUtil.replace(value, "\"", "\\\"");
 
 				value = doubleQuoteContent(value);
 			}
@@ -444,7 +446,8 @@ public class VarPoshiElement extends PoshiElement {
 		parametersString = parametersString.trim();
 
 		List<String> methodParameterValues =
-			PoshiScriptParserUtil.getMethodParameterValues(parametersString);
+			PoshiScriptParserUtil.getMethodParameterValues(
+				parametersString, this);
 
 		for (String methodParameterValue : methodParameterValues) {
 			methodParameterValue = methodParameterValue.trim();

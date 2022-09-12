@@ -20,6 +20,7 @@ import com.liferay.object.action.executor.ObjectActionExecutorRegistry;
 import com.liferay.object.constants.ObjectActionConstants;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.exception.ObjectActionConditionExpressionException;
 import com.liferay.object.exception.ObjectActionExecutorKeyException;
 import com.liferay.object.exception.ObjectActionNameException;
@@ -38,6 +39,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -47,6 +50,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -237,6 +241,10 @@ public class ObjectActionLocalServiceImpl
 					).build());
 			}
 			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
+				}
+
 				errorMessageKeys.put("conditionExpression", "syntax-error");
 			}
 		}
@@ -334,6 +342,10 @@ public class ObjectActionLocalServiceImpl
 					).build());
 			}
 			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
+				}
+
 				predefinedValuesErrorMessageKeys.put(name, "syntax-error");
 			}
 		}
@@ -343,7 +355,10 @@ public class ObjectActionLocalServiceImpl
 
 			if (!objectField.isRequired() ||
 				Validator.isNotNull(
-					predefinedValuesMap.get(objectField.getName()))) {
+					predefinedValuesMap.get(objectField.getName())) ||
+				StringUtil.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
 				continue;
 			}
@@ -357,6 +372,9 @@ public class ObjectActionLocalServiceImpl
 				"predefinedValues", predefinedValuesErrorMessageKeys);
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ObjectActionLocalServiceImpl.class);
 
 	@Reference
 	private DDMExpressionFactory _ddmExpressionFactory;

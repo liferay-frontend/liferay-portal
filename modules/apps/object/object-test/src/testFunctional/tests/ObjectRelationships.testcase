@@ -136,6 +136,86 @@ definition {
 		CreateObject.assertEntrySelectedOnRelationshipField(entry = "userfn");
 	}
 
+	@description = "LPS-146754 - Verify that it's possible to create a Many-to-Many relationship between a Custom Object and Native Object"
+	@priority = "5"
+	test CanCreateManyToManyRelationshipWithNativeObject {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 290",
+			objectName = "CustomObject290",
+			pluralLabelName = "Custom Objects 290");
+
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldBusinessType = "Text",
+			fieldLabelName = "Custom Field",
+			fieldName = "customObjectField",
+			fieldType = "String",
+			isRequired = "false",
+			objectName = "CustomObject290");
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object 290");
+
+		ObjectAdmin.gotoRelationshipsTab();
+
+		ObjectAdmin.addObjectRelationshipViaUI(
+			label = "Relationship",
+			object = "User",
+			type = "Many to Many");
+
+		AssertElementPresent(
+			key_label = "Relationship",
+			locator1 = "ObjectAdmin#RELATIONSHIP_LABEL");
+
+		ObjectAdmin.addObjectLayoutViaAPI(
+			layoutName = "Layout Name",
+			objectName = "CustomObject290");
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object 290");
+
+		CreateObject.selectTitleField(fieldLabel = "Custom Field");
+
+		CreateObject.saveObject();
+
+		ObjectAdmin.goToLayoutsTab();
+
+		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
+
+		ObjectAdmin.markLayoutAsDefault();
+
+		ObjectAdmin.goToLayoutTabOnLayouts();
+
+		ObjectAdmin.addTabFieldsOnLayout(
+			blockName = "Block 1",
+			columnsNumber = "1",
+			fieldList = "Custom Field",
+			tabName = "Field Tab");
+
+		ObjectAdmin.addTabRelationshipsOnLayout(
+			relationshipsLabelName = "Relationship",
+			tabName = "Relationship Tab");
+
+		Button.clickSave();
+
+		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject290");
+
+		ObjectAdmin.goToCustomObject(objectName = "CustomObject290");
+
+		ObjectAdmin.addObjectStringFieldEntryViaUI(entryValue = "Entry A");
+
+		ObjectAdmin.gotoRelationshipsTab();
+
+		CreateObject.addRelationshipAndSelectEntry(titleFieldName = "Test Test");
+
+		Navigator.openURL();
+
+		ObjectAdmin.goToCustomObject(objectName = "CustomObject290");
+
+		ObjectPortlet.viewEntry(entry = "Entry A");
+	}
+
 	@description = "LPS-145393 - Verify it is possible to create a Relationship One-to-Many from a Native Object to a Custom Object"
 	@priority = "5"
 	test CanCreateOneToManyForNativeObject {
@@ -160,6 +240,138 @@ definition {
 		AssertElementPresent(
 			key_label = "Relationship",
 			locator1 = "ObjectAdmin#RELATIONSHIP_LABEL");
+	}
+
+	@description = "LPS-151676 - Verify that it's possible to create a One-to-Many relationship between a Custom Object and Native Object"
+	@priority = "5"
+	test CanCreateOneToManyRelationshipWithNativeObject {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 290",
+			objectName = "CustomObject290",
+			pluralLabelName = "Custom Objects 290");
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "User");
+
+		ObjectAdmin.gotoRelationshipsTab();
+
+		ObjectAdmin.addObjectRelationshipViaUI(
+			label = "Relationship",
+			object = "Custom Object 290",
+			type = "One to Many");
+
+		AssertElementPresent(
+			key_label = "Relationship",
+			locator1 = "ObjectAdmin#RELATIONSHIP_LABEL");
+	}
+
+	@description = "LPS-152508 - Verify that it's possible to delete a Many-to-Many relationship from the parent side"
+	@priority = "5"
+	test CanDeleteManyToManyRelationshipFromParentSide {
+		task ("Create Custom Object") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object 289",
+				objectName = "CustomObject289",
+				pluralLabelName = "Custom Objects 289");
+		}
+
+		task ("Add a relationship between a Custom Object and Native Object") {
+			Navigator.openURL();
+
+			ObjectAdmin.addObjectRelationshipViaAPI(
+				objectName_1 = "User",
+				objectName_2 = "CustomObject289",
+				relationshipLabel = "Relationship",
+				relationshipName = "relationship",
+				relationshipType = "manyToMany");
+
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject289");
+		}
+
+		task ("Delete a Many-to-Many relationship from the parent side") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "User");
+
+			ObjectAdmin.gotoRelationshipsTab();
+
+			ObjectAdmin.deleteRelationshipViaUI(
+				relationshipLabel = "Relationship",
+				relationshipName = "relationship");
+
+			ObjectAdmin.assertObjectRelationshipNotPresent(relationshipLabel = "Relationship");
+		}
+	}
+
+	@description = "LPS-151676 - Verify that it's possible to delete a relationship between a Custom Object entry and Native Object entry (One-to-Many)"
+	@priority = "4"
+	test CanDeleteOneToManyRelationship {
+		task ("Create Custom Object") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object 289",
+				objectName = "CustomObject289",
+				pluralLabelName = "Custom Objects 289");
+
+			ObjectAdmin.addObjectFieldViaAPI(
+				fieldBusinessType = "Text",
+				fieldLabelName = "Custom Field",
+				fieldName = "customObjectField",
+				fieldType = "String",
+				isRequired = "false",
+				objectName = "CustomObject289");
+
+			JSONUser.addUser(
+				userEmailAddress = "userea@liferay.com",
+				userFirstName = "userfn",
+				userLastName = "userln",
+				userScreenName = "usersn");
+
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "User");
+
+			CreateObject.selectTitleField(fieldLabel = "First Name");
+
+			CreateObject.saveObject();
+		}
+
+		task ("Add a relationship between a Custom Object and Native Object") {
+			Navigator.openURL();
+
+			ObjectAdmin.addObjectRelationshipViaAPI(
+				objectName_1 = "User",
+				objectName_2 = "CustomObject289",
+				relationshipLabel = "Relationship",
+				relationshipName = "relationship",
+				relationshipType = "oneToMany");
+
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject289");
+		}
+
+		task ("Go to Custom Object and a relationship between a Custom Object entry and Native Object entry") {
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject289");
+
+			LexiconEntry.gotoAdd();
+
+			ObjectPortlet.selectRelationshipFieldEntry(
+				entry = "",
+				newEntry = "userfn");
+		}
+
+		task ("Delete a relationship between a Custom Object entry and Native Object entry") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "User");
+
+			ObjectAdmin.gotoRelationshipsTab();
+
+			ObjectAdmin.deleteRelationshipViaUI(
+				relationshipLabel = "Relationship",
+				relationshipName = "relationship");
+
+			ObjectAdmin.assertObjectRelationshipNotPresent(relationshipLabel = "Relationship");
+		}
 	}
 
 	@description = "LPS-147906 - Verify it is possible to do a nested relation in a One-to-Many relationship"
@@ -247,6 +459,77 @@ definition {
 		ObjectPortlet.viewEntry(entry = "Entry A");
 
 		ObjectPortlet.viewEntry(entry = "Entry B");
+	}
+
+	@description = "LPS-146754 - Verify that it's not possible for a Custom Object to create a Many-to-Many relationship with itself"
+	@priority = "4"
+	test CannotCreateManytoManyRelationshipWithItself {
+		task ("Create Custom Object") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object 290",
+				objectName = "CustomObject290",
+				pluralLabelName = "Custom Objects 290");
+
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 290");
+		}
+
+		task ("Go to Relationships tab and click to create a Many-to-Many relationship") {
+			ObjectAdmin.gotoRelationshipsTab();
+
+			LexiconEntry.gotoAdd();
+
+			ObjectField.selectType(fieldType = "Many to Many");
+		}
+
+		task ("Assert that the Custom Object created is not present") {
+			Click(locator1 = "ObjectCustomViews#SELECT_AUTO_COMPLETE");
+
+			AssertElementNotPresent(
+				key_columnOption = "Custom Objects 290",
+				locator1 = "ObjectCustomViews#SELECT_AUTO_COMPLETE_OPTION");
+		}
+	}
+
+	@description = "LPS-152508 - Verify that it's not possible to delete a Many-to-Many relationship from the child side"
+	@priority = "4"
+	test CannotDeleteManyToManyRelationshipFromChildSide {
+		task ("Create Custom Object") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object 289",
+				objectName = "CustomObject289",
+				pluralLabelName = "Custom Objects 289");
+		}
+
+		task ("Add a relationship between a Custom Object and Native Object") {
+			Navigator.openURL();
+
+			ObjectAdmin.addObjectRelationshipViaAPI(
+				objectName_1 = "User",
+				objectName_2 = "CustomObject289",
+				relationshipLabel = "Relationship",
+				relationshipName = "relationship",
+				relationshipType = "manyToMany");
+
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject289");
+		}
+
+		task ("Delete a Many-to-Many relationship from the child side") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 289");
+
+			ObjectAdmin.gotoRelationshipsTab();
+
+			Click(
+				key_objectLabel = "Relationship",
+				locator1 = "ObjectAdmin#OBJECT_KEBAB_MENU");
+
+			MenuItem.clickNoError(menuItem = "Delete");
+
+			ObjectAdmin.assertCannotDeleteRelationshipFromChildSideErrorMessage();
+		}
 	}
 
 	@description = "LPS-135400 - Verify it is not possible to leave the Relationship Label blank"

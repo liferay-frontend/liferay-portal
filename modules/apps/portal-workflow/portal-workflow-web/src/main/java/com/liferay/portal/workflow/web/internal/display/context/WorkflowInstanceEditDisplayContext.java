@@ -168,13 +168,9 @@ public class WorkflowInstanceEditDisplayContext
 	}
 
 	public String getTaskCompleted(WorkflowTask workflowTask) {
-		if (workflowTask.isCompleted()) {
-			return LanguageUtil.get(
-				workflowInstanceRequestHelper.getRequest(), "yes");
-		}
-
 		return LanguageUtil.get(
-			workflowInstanceRequestHelper.getRequest(), "no");
+			workflowInstanceRequestHelper.getRequest(),
+			workflowTask.isCompleted() ? "yes" : "no");
 	}
 
 	public Object getTaskCompletionMessageArguments(WorkflowLog workflowLog) {
@@ -183,10 +179,8 @@ public class WorkflowInstanceEditDisplayContext
 				PortalUtil.getUserName(
 					workflowLog.getAuditUserId(),
 					String.valueOf(workflowLog.getAuditUserId()))),
-			HtmlUtil.escape(
-				LanguageUtil.get(
-					workflowInstanceRequestHelper.getRequest(),
-					workflowLog.getState()))
+			workflowLog.getCurrentWorkflowNodeLabel(
+				workflowInstanceRequestHelper.getLocale())
 		};
 	}
 
@@ -215,10 +209,6 @@ public class WorkflowInstanceEditDisplayContext
 		return HtmlUtil.escape(_getActorName(workflowLog));
 	}
 
-	public String getTaskName(WorkflowTask workflowTask) {
-		return HtmlUtil.escape(workflowTask.getName());
-	}
-
 	public String getTaskUpdateMessageArguments(WorkflowLog workflowLog) {
 		return HtmlUtil.escape(
 			PortalUtil.getUserName(
@@ -232,14 +222,10 @@ public class WorkflowInstanceEditDisplayContext
 				PortalUtil.getUserName(
 					workflowLog.getAuditUserId(),
 					String.valueOf(workflowLog.getAuditUserId()))),
-			HtmlUtil.escape(
-				LanguageUtil.get(
-					workflowInstanceRequestHelper.getRequest(),
-					workflowLog.getPreviousState())),
-			HtmlUtil.escape(
-				LanguageUtil.get(
-					workflowInstanceRequestHelper.getRequest(),
-					workflowLog.getState()))
+			workflowLog.getPreviousWorkflowNodeLabel(
+				workflowInstanceRequestHelper.getLocale()),
+			workflowLog.getCurrentWorkflowNodeLabel(
+				workflowInstanceRequestHelper.getLocale())
 		};
 	}
 

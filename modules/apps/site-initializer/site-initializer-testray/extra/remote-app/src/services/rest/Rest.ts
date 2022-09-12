@@ -12,7 +12,6 @@
  * details.
  */
 
-import {deleteResource} from '.';
 import fetcher from '../fetcher';
 import {APIResponse} from './types';
 
@@ -27,12 +26,13 @@ interface RestContructor<YupModel = any, ObjectModel = any> {
 }
 
 class Rest<YupModel = any, ObjectModel = any> {
+	private batchMinimumThreshold = 10;
 	protected adapter: Adapter = (data) => data;
-	public transformData: TransformData = (data) => data;
-	public nestedFields: string = '';
-	public uri: string;
-	public resource: string = '';
 	public fetcher = fetcher;
+	public nestedFields: string = '';
+	public resource: string = '';
+	public transformData: TransformData = (data) => data;
+	public uri: string;
 
 	constructor({
 		adapter,
@@ -55,6 +55,7 @@ class Rest<YupModel = any, ObjectModel = any> {
 
 	protected async beforeCreate(_data: YupModel) {}
 	protected async beforeUpdate(_id: number, _data: YupModel) {}
+	protected async beforeRemove(_id: number) {}
 
 	public async create(data: YupModel): Promise<ObjectModel> {
 		await this.beforeCreate(data);
@@ -62,12 +63,35 @@ class Rest<YupModel = any, ObjectModel = any> {
 		return fetcher.post(`/${this.uri}`, this.adapter(data));
 	}
 
+	public async createBatch(data: YupModel[]): Promise<void> {
+		if (data.length >= this.batchMinimumThreshold) {
+			return fetcher.post(
+				`/${this.uri}/batch`,
+				data.map((item) => this.adapter(item))
+			);
+		}
+
+		await Promise.allSettled(data.map((item) => this.create(item)));
+	}
+
+	public getAll(
+		filter?: string
+	): Promise<APIResponse<ObjectModel> | undefined> {
+		return this.fetcher(`${this.resource}&filter=${filter}`);
+	}
+
+	public getOne(id: number): Promise<ObjectModel | undefined> {
+		return this.fetcher(this.getResource(id));
+	}
+
 	public getResource(id: number | string) {
 		return `/${this.uri}/${id}?${this.nestedFields}`;
 	}
 
-	public remove(id: number): Promise<any> | undefined {
-		return deleteResource(`/${this.uri}/${id}`);
+	public async remove(id: number): Promise<void> {
+		await this.beforeRemove(id);
+
+		await fetcher.delete(`/${this.uri}/${id}`);
 	}
 
 	public async update(

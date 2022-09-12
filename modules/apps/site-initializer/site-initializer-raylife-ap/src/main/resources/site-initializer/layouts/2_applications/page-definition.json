@@ -98,7 +98,7 @@
 												"widgetConfig": {
 													"properties": "route=applications"
 												},
-												"widgetName": "com_liferay_client_extension_web_internal_portlet_ClientExtensionEntryPortlet_RAYLIFEAGENTPORTAL001"
+												"widgetName": "[$CLIENT_EXTENSION_ENTRY_ID:RAYLIFEAGENTPORTAL$]"
 											}
 										},
 										"type": "Widget"
@@ -114,6 +114,13 @@
 												"showTabCounter": false
 											},
 											"fragmentFields": [
+												{
+													"id": "tab-title-${i+1}",
+													"value": {
+														"fragmentLink": {
+														}
+													}
+												},
 												{
 													"id": "tab-title-2",
 													"value": {
@@ -474,11 +481,10 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "fake-content"
+																										"key": "applications-new-submissions"
 																									},
 																									"fragmentConfig": {
-																										"fakeContentId": "fake content",
-																										"height": "257px"
+																										"textColor": ""
 																									},
 																									"fragmentFields": [
 																									],
@@ -542,7 +548,7 @@
 																								"widgetConfig": {
 																									"properties": "route=applications-table"
 																								},
-																								"widgetName": "com_liferay_client_extension_web_internal_portlet_ClientExtensionEntryPortlet_RAYLIFEAGENTPORTAL001"
+																								"widgetName": "[$CLIENT_EXTENSION_ENTRY_ID:RAYLIFEAGENTPORTAL$]"
 																							}
 																						},
 																						"type": "Widget"

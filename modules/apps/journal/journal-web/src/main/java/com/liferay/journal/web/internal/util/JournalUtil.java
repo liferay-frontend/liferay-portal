@@ -38,8 +38,10 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -234,6 +236,17 @@ public class JournalUtil {
 				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
 		}
 
+		if ((layout != null) &&
+			!LayoutPermissionUtil.contains(
+				themeDisplay.getPermissionChecker(), layout, ActionKeys.VIEW)) {
+
+			layout = _getViewableLayout(false, themeDisplay);
+
+			if (layout == null) {
+				layout = _getViewableLayout(true, themeDisplay);
+			}
+		}
+
 		if (layout != null) {
 			return layout.getPlid();
 		}
@@ -411,6 +424,42 @@ public class JournalUtil {
 		}
 
 		return recentArticles;
+	}
+
+	private static Layout _getViewableLayout(
+		boolean privateLayout, ThemeDisplay themeDisplay) {
+
+		for (int end = 0, interval = 20, start = 0;;) {
+			end = start + interval;
+
+			List<Layout> layouts = LayoutLocalServiceUtil.getLayouts(
+				themeDisplay.getScopeGroupId(), privateLayout,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false, start, end);
+
+			for (Layout layout : layouts) {
+				try {
+					if (LayoutPermissionUtil.contains(
+							themeDisplay.getPermissionChecker(), layout,
+							ActionKeys.VIEW)) {
+
+						return layout;
+					}
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
+				}
+			}
+
+			start = start + interval;
+
+			if (layouts.size() < interval) {
+				break;
+			}
+		}
+
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(JournalUtil.class);

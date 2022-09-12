@@ -86,6 +86,16 @@
 		<td></td>
 	</tr>
 	<tr>
+		<td>DROPDOWN_CATEGORIZATION_OPTION</td>
+		<td>//button[contains(@aria-controls,'clay-dropdown-menu-1')]//*[contains(@class,'lexicon-icon-ellipsis-v')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>CATEGORIZATION_TITLE_INTO_OBJECT</td>
+		<td>//span[contains(@class,'legend') and contains(.,'Categorization')]</td>
+		<td></td>
+	</tr>
+	<tr>
 		<td>ENTRY_BOOLEAN_CHECKBOX</td>
 		<td>//input[contains(@class,'custom-control-input')]</td>
 		<td></td>
@@ -503,6 +513,26 @@
 	<tr>
 		<td>PLACEHOLDER_DELETE_RELATIONSHIP</td>
 		<td>//input[contains(@placeholder,'Confirm Relationship Name')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>DROPDOWN_DEFAULT_VALUE</td>
+		<td>//div[contains(@class,'form-group')]//label[contains(text(),'Default Value')]//..//div[contains(@class,'dropdown')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>SELECT_DROPDOWN_ITEM_DEFAULT_VALUE</td>
+		<td>//*[contains(@class,'list-unstyled')]//button[contains(@class,'dropdown-item')]//..//div[contains(text(),'${key_dropdownItem}')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>OBJECT_STATE_MANAGER_TAB</td>
+		<td>//*[contains(@class,'nav-link')]//span[contains(text(), 'State Manager')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>VIEW_STATE_NAME</td>
+		<td>//h3[(@class='lfr-objects__card-title') and text()='Select the State Flow']//..//..//div[contains(@class,'lfr-objects__card-title--with-padding') and contains(.,'${key_stateName}')]</td>
 		<td></td>
 	</tr>
 </tbody>

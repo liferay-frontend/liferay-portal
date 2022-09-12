@@ -14,7 +14,7 @@
 
 import {useRef} from 'react';
 
-import useFormModal from '../../../../../../hooks/useFormModal';
+import useFormActions from '../../../../../../hooks/useFormActions';
 import useMutate from '../../../../../../hooks/useMutate';
 import i18n from '../../../../../../i18n';
 import {
@@ -26,27 +26,25 @@ import {Action, ActionsHookParameter} from '../../../../../../types';
 const useCaseResultActions = (
 	{isHeaderActions}: ActionsHookParameter = {isHeaderActions: true}
 ) => {
-	const formModal = useFormModal();
+	const {form} = useFormActions();
 	const {removeItemFromList} = useMutate();
-	const modal = formModal.modal;
 	const actionsRef = useRef([
 		{
-			action: ({id}: TestrayCaseResult, mutate) =>
+			action: ({id}, mutate) =>
 				deleteResource(`/caseresults/${id}`)
 					?.then(() => removeItemFromList(mutate, id))
-					.then(modal.onSave)
-					.catch(modal.onError),
+					.then(form.onSave)
+					.catch(form.onError),
 			icon: 'trash',
 			name: i18n.translate(
 				isHeaderActions ? 'delete-case-result' : 'delete'
 			),
 			permission: 'DELETE',
 		},
-	] as Action[]);
+	] as Action<TestrayCaseResult>[]);
 
 	return {
 		actions: actionsRef.current,
-		formModal,
 	};
 };
 

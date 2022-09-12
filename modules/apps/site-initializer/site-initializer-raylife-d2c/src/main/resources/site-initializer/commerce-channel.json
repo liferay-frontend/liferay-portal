@@ -1,5 +1,6 @@
 {
 	"currencyCode": "USD",
+	"externalReferenceCode": "RAYD2CCHANNEL",
 	"name": "Raylife D2C Channel",
 	"type": "site"
 }
