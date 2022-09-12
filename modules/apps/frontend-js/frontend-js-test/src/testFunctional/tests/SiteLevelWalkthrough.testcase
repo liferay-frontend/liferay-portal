@@ -58,4 +58,5 @@ definition {
 			AssertElementPresent(locator1 = "Walkthrough#CLOSE_POPOVER");
 		}
 	}
+
 }
