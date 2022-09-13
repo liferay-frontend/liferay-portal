@@ -99,7 +99,7 @@ public abstract class BuildTestrayCaseResult extends TestrayCaseResult {
 			return _testrayAttachments.get(key);
 		}
 
-		if (TestrayS3Bucket.googleCredentialsAvailable()) {
+		if (TestrayS3Bucket.hasGoogleApplicationCredentials()) {
 			for (URL testrayS3AttachmentURL :
 					build.getTestrayS3AttachmentURLs()) {
 

@@ -83,7 +83,7 @@ public abstract class BaseTestrayServer implements TestrayServer {
 			_importCaseResultsFromCI(topLevelBuild);
 		}
 
-		if (TestrayS3Bucket.googleCredentialsAvailable()) {
+		if (TestrayS3Bucket.hasGoogleApplicationCredentials()) {
 			_importCaseResultsToGCP(topLevelBuild);
 		}
 	}
@@ -164,7 +164,7 @@ public abstract class BaseTestrayServer implements TestrayServer {
 	}
 
 	private void _importCaseResultsToGCP(TopLevelBuild topLevelBuild) {
-		if (!TestrayS3Bucket.googleCredentialsAvailable()) {
+		if (!TestrayS3Bucket.hasGoogleApplicationCredentials()) {
 			return;
 		}
 
