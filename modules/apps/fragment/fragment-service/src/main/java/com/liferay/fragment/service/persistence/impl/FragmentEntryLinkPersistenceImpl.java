@@ -10366,6 +10366,7 @@ public class FragmentEntryLinkPersistenceImpl
 		ctStrictColumnNames.add("html");
 		ctStrictColumnNames.add("js");
 		ctStrictColumnNames.add("configuration");
+		ctStrictColumnNames.add("deleted");
 		ctStrictColumnNames.add("editableValues");
 		ctStrictColumnNames.add("namespace");
 		ctStrictColumnNames.add("position");

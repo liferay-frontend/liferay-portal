@@ -48,6 +48,8 @@ import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
 import com.liferay.portal.kernel.search.Indexable;
@@ -483,6 +485,11 @@ public abstract class CalendarBookingLocalServiceBaseImpl
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
 
+		if (_log.isWarnEnabled()) {
+			_log.warn(
+				"Implement CalendarBookingLocalServiceImpl#deleteCalendarBooking(CalendarBooking) to avoid orphaned data");
+		}
+
 		return calendarBookingLocalService.deleteCalendarBooking(
 			(CalendarBooking)persistedModel);
 	}
@@ -700,5 +707,8 @@ public abstract class CalendarBookingLocalServiceBaseImpl
 	@Reference
 	protected com.liferay.counter.kernel.service.CounterLocalService
 		counterLocalService;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CalendarBookingLocalServiceBaseImpl.class);
 
 }

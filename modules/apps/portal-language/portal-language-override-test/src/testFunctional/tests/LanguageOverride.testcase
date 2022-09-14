@@ -40,15 +40,11 @@ definition {
 		task ("Then the language key is successfully saved and can be viewed in the View page") {
 			Search.searchCP(searchTerm = "text-contains-error");
 
-			AssertTextEquals(
-				key_languageKey = "text-contains-error",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY",
-				value1 = "text-contains-error");
-
-			AssertTextEquals(
-				key_translation = "Text contains error",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY_TRANSLATION",
-				value1 = "Text contains error");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "Text contains error",
+				languageKey = "text-contains-error",
+				languagesWithOverride = "en_US, es_ES, fr_FR, pt_BR",
+				selectedLanguage = "en_US");
 		}
 	}
 
@@ -136,12 +132,11 @@ definition {
 				locator1 = "Message#EMPTY_INFO",
 				value1 = "No language entries were found.");
 
-			Click(locator1 = "LanguageOverride#FILTER_BY_ANY_LANGUAGE_REMOVE_ANY_LANGUAGE_FILTER");
+			Click(locator1 = "LanguageOverride#FILTER_BY_OVERRIDE_REMOVE_FILTER_SCOPE");
 
-			AssertTextEquals(
-				key_languageKey = "0-analytics-cloud-connection",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY",
-				value1 = "0-analytics-cloud-connection");
+			LanguageOverride.assertLanguageKeyWithoutOverride(
+				languageKey = "0-analytics-cloud-connection",
+				translation = "Analytics Cloud Connection");
 		}
 
 		task ("When add a language key and filters by Any Language") {
@@ -158,16 +153,12 @@ definition {
 				locator1 = "Search#SEARCH_INFO",
 				value1 = "1 Result for");
 
-			AssertElementPresent(locator1 = "LanguageOverride#FILTER_BY_ANY_LANGUAGE_FILTER_LABEL");
+			LanguageOverride.assertFilterScope(filterScope = "Any Language");
 
-			AssertTextEquals(
-				key_languageKey = "text-contains-error",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY",
-				value1 = "text-contains-error");
-
-			AssertTextEquals(
-				locator1 = "LanguageOverride#LANGUAGE_KEY_OVERRIDDEN_LABEL",
-				value1 = "Languages With Override: en_US");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "Text contains error",
+				languageKey = "text-contains-error",
+				selectedLanguage = "en_US");
 		}
 	}
 
@@ -194,17 +185,15 @@ definition {
 		task ("When the user filters by 'Selected Language', only language key with default en-US override displays") {
 			ManagementBar.setFilterAndOrder(filterBy = "Selected Language");
 
-			LexiconEntry.viewEntryName(rowEntry = "text-contains-error1");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "Text contains error1",
+				languageKey = "text-contains-error1",
+				selectedLanguage = "en_US");
 
-			LexiconList.viewListEntrySubtitle(
-				listEntry = "text-contains-error1",
-				listEntrySubtitle = "Languages With Override: en_US");
-
-			LexiconEntry.viewEntryName(rowEntry = "text-contains-error2");
-
-			LexiconList.viewListEntrySubtitle(
-				listEntry = "text-contains-error2",
-				listEntrySubtitle = "Languages With Override: en_US");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "Text contains error2",
+				languageKey = "text-contains-error2",
+				selectedLanguage = "en_US");
 
 			LexiconEntry.viewNoEntry(rowEntry = "text-contains-error3");
 		}
@@ -214,11 +203,10 @@ definition {
 				currentLocale = "en-US",
 				locale = "es-ES");
 
-			LexiconEntry.viewEntryName(rowEntry = "text-contains-error3");
-
-			LexiconList.viewListEntrySubtitle(
-				listEntry = "text-contains-error3",
-				listEntrySubtitle = "Languages With Override: es_ES");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "El texto contiene error3",
+				languageKey = "text-contains-error3",
+				selectedLanguage = "es_ES");
 
 			LexiconEntry.viewNoEntry(rowEntry = "text-contains-error1");
 
@@ -306,15 +294,9 @@ definition {
 				locator1 = "Search#SEARCH_INFO",
 				value1 = "1 Result for &quot;2-synced-contact-data&quot;");
 
-			AssertTextEquals(
-				key_languageKey = "2-synced-contact-data",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY",
-				value1 = "2-synced-contact-data");
-
-			AssertTextEquals(
-				key_translation = "Synced Contact Data",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY_TRANSLATION",
-				value1 = "Synced Contact Data");
+			LanguageOverride.assertLanguageKeyWithoutOverride(
+				languageKey = "2-synced-contact-data",
+				translation = "Synced Contact Data");
 		}
 	}
 
@@ -335,14 +317,11 @@ definition {
 		}
 
 		task ("Then the key should appear and list all three languages it has translations for") {
-			AssertTextEquals(
-				key_languageKey = "text-contains-error",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY",
-				value1 = "text-contains-error");
-
-			AssertTextEquals(
-				locator1 = "LanguageOverride#LANGUAGE_KEY_OVERRIDDEN_LABEL",
-				value1 = "Languages With Override: en_US, es_ES, fr_FR");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "Text contains error",
+				languageKey = "text-contains-error",
+				languagesWithOverride = "en_US, es_ES, fr_FR",
+				selectedLanguage = "en_US");
 		}
 	}
 
@@ -372,19 +351,13 @@ definition {
 		}
 
 		task ("Then the key should appear and list all three languages it has translations for") {
-			AssertTextEquals(
-				key_languageKey = "text-contains-error2",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY",
-				value1 = "text-contains-error2");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "Le texte contient une erreur2",
+				languageKey = "text-contains-error2",
+				languagesWithOverride = "en_US, es_ES, fr_FR",
+				selectedLanguage = "fr_FR");
 
-			AssertTextEquals(
-				locator1 = "LanguageOverride#LANGUAGE_KEY_OVERRIDDEN_LABEL",
-				value1 = "Languages With Override: en_US, es_ES, fr_FR");
-
-			AssertTextNotPresent(
-				key_languageKey = "text-contains-error1",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY",
-				value1 = "text-contains-error1");
+			LexiconList.viewListEntryNotPresent(listEntry = "text-contains-error1");
 		}
 	}
 
@@ -413,15 +386,10 @@ definition {
 				locator1 = "Search#SEARCH_INFO",
 				value1 = "1 Result for &quot;O texto contÃƒÂ©m erro&quot;");
 
-			AssertTextEquals(
-				key_languageKey = "text-contains-error",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY",
-				value1 = "text-contains-error");
-
-			AssertTextEquals(
-				key_translation = "O texto contÃƒÂ©m erro",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY_TRANSLATION",
-				value1 = "O texto contÃƒÂ©m erro");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "O texto contÃƒÂ©m erro",
+				languageKey = "text-contains-error",
+				selectedLanguage = "pt_BR");
 
 			PageEditor.changeLocale(
 				currentLocale = "pt-BR",
@@ -433,15 +401,10 @@ definition {
 				locator1 = "Search#SEARCH_INFO",
 				value1 = "1 Result for &quot;Le texte contient une erreur&quot;");
 
-			AssertTextEquals(
-				key_languageKey = "text-contains-error",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY",
-				value1 = "text-contains-error");
-
-			AssertTextEquals(
-				key_translation = "Le texte contient une erreur",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY_TRANSLATION",
-				value1 = "Le texte contient une erreur");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "Le texte contient une erreur",
+				languageKey = "text-contains-error",
+				selectedLanguage = "fr_FR");
 		}
 	}
 
@@ -464,15 +427,11 @@ definition {
 		}
 
 		task ("Then the key should appear and list all languages it has translations for") {
-			LexiconList.viewListEntryTitle(listEntry = "month");
-
-			LexiconList.viewListEntrySubtitle(
-				listEntry = "month",
-				listEntrySubtitle = "mês");
-
-			LexiconList.viewListEntrySubtitle(
-				listEntry = "month",
-				listEntrySubtitle = "Languages With Override: ar_SA, ca_ES, de_DE, en_US, es_ES, fi_FI, fr_FR, hu_HU, ja_JP, nl_NL, pt_BR, sv_SE, zh_CN");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "mês",
+				languageKey = "month",
+				languagesWithOverride = "ar_SA, ca_ES, de_DE, en_US, es_ES, fi_FI, fr_FR, hu_HU, ja_JP, nl_NL, pt_BR, sv_SE, zh_CN",
+				selectedLanguage = "pt_BR");
 		}
 	}
 
@@ -600,27 +559,14 @@ definition {
 		}
 
 		task ("Then both keys should be present, but only the selected language 'nl-NL' should be bold and translation in nl-NL display") {
-			AssertElementPresent(
-				key_languageKey = "text-not-bold",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "Nieuwe Sleutel",
+				languageKey = "new-key",
+				selectedLanguage = "nl_NL");
 
-			AssertElementPresent(
-				key_language = "nl_NL",
-				key_languageKey = "new-key",
-				locator1 = "LanguageOverride#BOLD_LANGUAGE_WITH_OVERRIDE");
-
-			AssertElementNotPresent(
-				key_language = "en-US",
-				key_languageKey = "text-not-bold",
-				locator1 = "LanguageOverride#BOLD_LANGUAGE_WITH_OVERRIDE");
-
-			LexiconList.viewListEntrySubtitle(
-				listEntry = "new-key",
-				listEntrySubtitle = "Nieuwe Sleutel");
-
-			AssertElementNotPresent(
-				key_translation = "Text not bold",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY_TRANSLATION");
+			LanguageOverride.assertLanguageKeyWithOverrideInListView(
+				languageKey = "text-not-bold",
+				languagesWithOverride = "en_US");
 		}
 	}
 
@@ -636,20 +582,15 @@ definition {
 		}
 
 		task ("When remove any language fiter") {
-			Click(locator1 = "LanguageOverride#FILTER_BY_ANY_LANGUAGE_REMOVE_ANY_LANGUAGE_FILTER");
+			Click(locator1 = "LanguageOverride#FILTER_BY_OVERRIDE_REMOVE_FILTER_SCOPE");
 		}
 
 		task ("Then the OOTB language keys display") {
-			AssertTextEquals(
-				key_languageKey = "0-analytics-cloud-connection",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY",
-				value1 = "0-analytics-cloud-connection");
+			LanguageOverride.assertLanguageKeyWithoutOverride(
+				languageKey = "0-analytics-cloud-connection",
+				translation = "Analytics Cloud Connection");
 
-			LexiconList.viewListEntrySubtitle(
-				listEntry = "0-analytics-cloud-connection",
-				listEntrySubtitle = "Analytics Cloud Connection");
-
-			AssertElementNotPresent(locator1 = "LanguageOverride#LANGUAGE_KEY_OVERRIDDEN_LABEL");
+			AssertElementNotPresent(locator1 = "LanguageOverride#FILTER_BY_OVERRIDE_LANGUAGES_WITH_OVERRIDE");
 		}
 	}
 

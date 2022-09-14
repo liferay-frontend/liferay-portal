@@ -255,7 +255,7 @@ public abstract class BaseBatchEngineExportTaskItemWriterImplTestCase {
 	protected static final List<String> jsonFieldNames = Arrays.asList(
 		"childItem", "createDate", "description", "id", "name");
 
-	protected Map<String, Field> fieldMap = ItemClassIndexUtil.index(
+	protected Map<String, Field> fieldsMap = ItemClassIndexUtil.index(
 		Item.class);
 
 	private String _formatJSONValue(Object value) {

@@ -48,8 +48,6 @@ const UserForm = () => {
 
 	const {mutateUser = () => {}, userAccount} = useOutletContext<any>() || {};
 
-	const roles = data?.items || [];
-
 	const {
 		form: {onClose, onError, onSave, onSubmit},
 	} = useFormActions();
@@ -58,19 +56,12 @@ const UserForm = () => {
 		formState: {errors},
 		handleSubmit,
 		register,
-		setValue,
-		watch,
 	} = useForm<UserFormDefault>({
 		defaultValues: userAccount,
 		resolver: yupResolver(yupSchema.user),
 	});
 
 	const _onSubmit = (form: UserFormDefault) => {
-		delete form.password;
-		delete form.repassword;
-		delete form.roles;
-		delete form.roleBriefs;
-
 		onSubmit(
 			{...form, userId: userAccount.id},
 			{
@@ -80,26 +71,14 @@ const UserForm = () => {
 					liferayUserAccountsRest.update(...params),
 			}
 		)
-			.then(onSave)
 			.then(mutateUser)
+			.then(() => onSave())
 			.catch(onError);
 	};
 
-	const rolesWatch = watch('roles') || [];
-
-	const setCheckedValue = (value: any) => {
-		const valueInsideList = rolesWatch?.includes(value);
-		let newRoles = [...rolesWatch];
-
-		if (valueInsideList) {
-			newRoles = newRoles.filter((role) => role !== value);
-		}
-		else {
-			newRoles = [...newRoles, Number(value)];
-		}
-
-		setValue('roles', newRoles);
-	};
+	const userRoles =
+		userAccount.roleBriefs.map(({id}: {id: number}) => id) || [];
+	const roles = data?.items || [];
 
 	const inputProps = {
 		errors,
@@ -192,7 +171,7 @@ const UserForm = () => {
 						<ClayLayout.Col size={3} sm={12} xl={3}>
 							<ClayForm.Group className="form-group-sm">
 								<ClayButton
-									className="bg-neutral-2 borderless neutral text-neutral-7"
+									className="bg-neutral-2 borderless btn-light neutral text-neutral-7"
 									onClick={() => navigate('password')}
 								>
 									{i18n.translate('change-password')}
@@ -204,7 +183,7 @@ const UserForm = () => {
 
 				<Form.Divider />
 
-				<ClayLayout.Row justify="start">
+				<ClayLayout.Row className="mb-2" justify="start">
 					<ClayLayout.Col size={12} sm={12} xl={3}>
 						<h5 className="font-weight-normal">
 							{i18n.translate('roles')}
@@ -215,19 +194,15 @@ const UserForm = () => {
 						{roles.map(({id, name}: {id: number; name: string}) => (
 							<div className="mt-2" key={id}>
 								<ClayCheckbox
-									checked={rolesWatch.includes(id)}
+									checked={userRoles.includes(id)}
+									disabled={!userRoles.includes(id)}
 									label={name}
-									onChange={(event) =>
-										setCheckedValue(event.target.value)
-									}
-									value={id}
+									onChange={() => null}
 								/>
 							</div>
 						))}
 					</ClayLayout.Col>
 				</ClayLayout.Row>
-
-				<Form.Divider />
 
 				<Form.Footer
 					onClose={onClose}

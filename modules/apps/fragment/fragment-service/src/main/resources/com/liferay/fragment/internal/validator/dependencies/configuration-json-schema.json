@@ -82,6 +82,18 @@
 					"if": {
 						"properties": {
 							"type": {
+								"const": "length"
+							}
+						}
+					},
+					"then": {
+						"$ref": "#/definitions/fieldLength"
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"type": {
 								"const": "text"
 							}
 						}
@@ -141,6 +153,7 @@
 						"colorPicker",
 						"collectionSelector",
 						"itemSelector",
+						"length",
 						"navigationMenuSelector",
 						"select",
 						"text",
@@ -307,6 +320,15 @@
 							"type": "array"
 						}
 					},
+					"title": "The Typeoptions Schema",
+					"type": "object"
+				}
+			}
+		},
+		"fieldLength": {
+			"properties": {
+				"typeOptions": {
+					"additionalProperties": false,
 					"title": "The Typeoptions Schema",
 					"type": "object"
 				}

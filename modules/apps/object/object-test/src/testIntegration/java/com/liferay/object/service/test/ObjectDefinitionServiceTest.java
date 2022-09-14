@@ -373,8 +373,8 @@ public class ObjectDefinitionServiceTest {
 
 			objectDefinition =
 				_objectDefinitionService.updateCustomObjectDefinition(
-					objectDefinition.getObjectDefinitionId(), 0, 0, 0, false,
-					objectDefinition.isActive(), true, false,
+					null, objectDefinition.getObjectDefinitionId(), 0, 0, 0,
+					false, objectDefinition.isActive(), true, false,
 					LocalizedMapUtil.getLocalizedMap("Able"), "Able", null,
 					null, false, LocalizedMapUtil.getLocalizedMap("Ables"),
 					objectDefinition.getScope());

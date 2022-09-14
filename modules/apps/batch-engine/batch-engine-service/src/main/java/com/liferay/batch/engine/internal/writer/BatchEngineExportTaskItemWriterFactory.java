@@ -36,29 +36,29 @@ public class BatchEngineExportTaskItemWriterFactory {
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		Map<String, Field> fieldMap = ItemClassIndexUtil.index(itemClass);
+		Map<String, Field> fieldsMap = ItemClassIndexUtil.index(itemClass);
 
 		if (batchEngineTaskContentType == BatchEngineTaskContentType.CSV) {
 			return new CSVBatchEngineExportTaskItemWriterImpl(
-				csvFileColumnDelimiter, fieldMap, fieldNames, outputStream,
+				csvFileColumnDelimiter, fieldsMap, fieldNames, outputStream,
 				parameters);
 		}
 
 		if (batchEngineTaskContentType == BatchEngineTaskContentType.JSON) {
 			return new JSONBatchEngineExportTaskItemWriterImpl(
-				fieldMap.keySet(), fieldNames, outputStream);
+				fieldsMap.keySet(), fieldNames, outputStream);
 		}
 
 		if (batchEngineTaskContentType == BatchEngineTaskContentType.JSONL) {
 			return new JSONLBatchEngineExportTaskItemWriterImpl(
-				fieldMap.keySet(), fieldNames, outputStream);
+				fieldsMap.keySet(), fieldNames, outputStream);
 		}
 
 		if ((batchEngineTaskContentType == BatchEngineTaskContentType.XLS) ||
 			(batchEngineTaskContentType == BatchEngineTaskContentType.XLSX)) {
 
 			return new XLSBatchEngineExportTaskItemWriterImpl(
-				fieldMap, fieldNames, outputStream);
+				fieldsMap, fieldNames, outputStream);
 		}
 
 		throw new IllegalArgumentException(

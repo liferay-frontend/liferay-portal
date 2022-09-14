@@ -16,6 +16,8 @@ package com.liferay.content.dashboard.document.library.internal.item.filter;
 
 import com.liferay.content.dashboard.document.library.internal.item.selector.file.extension.criterio.ContentDashboardFileExtensionItemSelectorCriterion;
 import com.liferay.content.dashboard.item.filter.ContentDashboardItemFilter;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
@@ -25,7 +27,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -53,6 +57,31 @@ public class FileExtensionContentDashboardItemFilter
 		_itemSelector = itemSelector;
 		_language = language;
 		_portal = portal;
+	}
+
+	@Override
+	public DropdownItem getDropdownItem() {
+		return DropdownItemBuilder.putData(
+			"dialogTitle",
+			() -> getLabel(_portal.getLocale(_httpServletRequest))
+		).putData(
+			"itemValueKey", (String)null
+		).putData(
+			"multiple", Boolean.TRUE.toString()
+		).putData(
+			"redirectURL", _getRedirectURL()
+		).putData(
+			"selectEventName", "selectedFileExtension"
+		).putData(
+			"selectItemURL", getURL()
+		).putData(
+			"urlParamName", getParameterName()
+		).setActive(
+			ListUtil.isNotEmpty(getParameterValues())
+		).setLabel(
+			_language.get(_httpServletRequest, "extension") +
+				StringPool.TRIPLE_PERIOD
+		).build();
 	}
 
 	@Override
@@ -139,6 +168,16 @@ public class FileExtensionContentDashboardItemFilter
 
 		return Arrays.asList(
 			ParamUtil.getStringValues(httpServletRequest, "fileExtension"));
+	}
+
+	private String _getRedirectURL() {
+		PortletResponse portletResponse =
+			(PortletResponse)_httpServletRequest.getAttribute(
+				JavaConstants.JAVAX_PORTLET_RESPONSE);
+
+		return HttpComponentsUtil.removeParameter(
+			_portal.getCurrentCompleteURL(_httpServletRequest),
+			portletResponse.getNamespace() + getParameterName());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

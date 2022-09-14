@@ -17,7 +17,6 @@ package com.liferay.portal.template;
 import com.liferay.portal.kernel.template.Template;
 import com.liferay.portal.kernel.template.TemplateManager;
 import com.liferay.portal.kernel.template.TemplateResource;
-import com.liferay.portal.kernel.template.TemplateResourceLoader;
 
 import java.util.Map;
 
@@ -39,35 +38,28 @@ public abstract class BaseTemplateManager implements TemplateManager {
 			templateResource, restricted, getHelperUtilities(restricted));
 	}
 
-	public void setTemplateContextHelper(
-		TemplateContextHelper templateContextHelper) {
-
-		this.templateContextHelper = templateContextHelper;
-	}
-
-	public void setTemplateResourceLoader(
-		TemplateResourceLoader templateResourceLoader) {
-
-		this.templateResourceLoader = templateResourceLoader;
-	}
-
 	protected abstract Template doGetTemplate(
 		TemplateResource templateResource, boolean restricted,
 		Map<String, Object> helperUtilities);
 
 	protected Map<String, Object> getHelperUtilities(boolean restricted) {
+		TemplateContextHelper templateContextHelper =
+			getTemplateContextHelper();
+
 		return templateContextHelper.getHelperUtilities(
 			getTemplateControlContextClassLoader(), restricted);
 	}
 
+	protected abstract TemplateContextHelper getTemplateContextHelper();
+
 	protected ClassLoader getTemplateControlContextClassLoader() {
+		TemplateContextHelper templateContextHelper =
+			getTemplateContextHelper();
+
 		TemplateControlContext templateControlContext =
 			templateContextHelper.getTemplateControlContext();
 
 		return templateControlContext.getClassLoader();
 	}
-
-	protected TemplateContextHelper templateContextHelper;
-	protected TemplateResourceLoader templateResourceLoader;
 
 }

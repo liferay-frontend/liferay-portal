@@ -52,7 +52,6 @@ export default function ActionBuilder({
 	objectActionTriggers,
 	objectDefinitionsRelationshipsURL,
 	setValues,
-	setWarningAlert,
 	validateExpressionURL,
 	values,
 }: IProps) {
@@ -78,6 +77,11 @@ export default function ActionBuilder({
 	] = useState<ObjectField[]>([]);
 
 	const [infoAlert, setInfoAlert] = useState(true);
+
+	const [warningAlerts, setWarningAlerts] = useState<WarningStates>({
+		mandatoryRelationships: false,
+		requiredFields: false,
+	});
 
 	const fetchObjectDefinitions = async () => {
 		const relationships = await API.fetchJSON<
@@ -264,6 +268,15 @@ export default function ActionBuilder({
 				...parameters,
 			},
 		});
+
+		setWarningAlerts((previousWarnings) => ({
+			...previousWarnings,
+			mandatoryRelationships: items.some(
+				(field) =>
+					field.businessType === 'Relationship' &&
+					field.required === true
+			),
+		}));
 	};
 
 	useEffect(() => {
@@ -287,8 +300,22 @@ export default function ActionBuilder({
 			invalidateRequired(item.value)
 		);
 
-		setWarningAlert(hasEmptyValues);
-	}, [values.parameters?.predefinedValues, objectFieldsMap, setWarningAlert]);
+		setWarningAlerts((previousWarnings) => ({
+			...previousWarnings,
+			requiredFields: hasEmptyValues,
+		}));
+	}, [
+		values.parameters?.predefinedValues,
+		objectFieldsMap,
+		setWarningAlerts,
+	]);
+
+	const closeWarningAlert = (warning: string) => {
+		setWarningAlerts((previousWarnings) => ({
+			...previousWarnings,
+			[warning]: false,
+		}));
+	};
 
 	return (
 		<>
@@ -380,6 +407,32 @@ export default function ActionBuilder({
 					/>
 				)}
 			</Card>
+
+			{warningAlerts.requiredFields && (
+				<ClayAlert
+					className="lfr-objects__side-panel-content-container"
+					displayType="warning"
+					onClose={() => closeWarningAlert('requiredFields')}
+					title={`${Liferay.Language.get('warning')}:`}
+				>
+					{Liferay.Language.get(
+						'required-fields-must-have-predefined-values'
+					)}
+				</ClayAlert>
+			)}
+
+			{warningAlerts.mandatoryRelationships && (
+				<ClayAlert
+					className="lfr-objects__side-panel-content-container"
+					displayType="warning"
+					onClose={() => closeWarningAlert('mandatoryRelationships')}
+					title={`${Liferay.Language.get('warning')}:`}
+				>
+					{Liferay.Language.get(
+						'the-selected-object-definition-has-mandatory-relationship-fields'
+					)}
+				</ClayAlert>
+			)}
 
 			<Card title={Liferay.Language.get('action')}>
 				<Card
@@ -566,7 +619,6 @@ interface IProps {
 	objectActionTriggers: CustomItem[];
 	objectDefinitionsRelationshipsURL: string;
 	setValues: (values: Partial<ObjectAction>) => void;
-	setWarningAlert: (value: boolean) => void;
 	validateExpressionURL: string;
 	values: Partial<ObjectAction>;
 }
@@ -574,4 +626,9 @@ interface IProps {
 interface SelectItem {
 	label: string;
 	value: number;
+}
+
+interface WarningStates {
+	mandatoryRelationships: boolean;
+	requiredFields: boolean;
 }

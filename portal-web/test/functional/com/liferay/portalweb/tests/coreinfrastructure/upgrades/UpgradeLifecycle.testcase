@@ -1,0 +1,54 @@
+@component-name = "portal-upgrades"
+definition {
+
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Database Upgrade Framework";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+	}
+
+	@description = "LPS-158090. Given auto upgrade is enabled. Then all upgrades finish before server startup."
+	@priority = "5"
+	test UpgradeCheckReturnsEmptyOnStartupWithAutoUpgrade {
+		property custom.properties = "initial.system.check.enabled=false${line.separator}upgrade.database.auto.run=true";
+		property database.bare.enabled = "true";
+		property portal.acceptance = "true";
+
+		task ("Pending upgrades are not found in the logs") {
+			AssertConsoleTextNotPresent(value1 = "Run the upgrade process or type upgrade:checkAll in the Gogo shell to get more information.");
+
+			AssertConsoleTextNotPresent(value1 = "Unable to get pending upgrade information for the portal");
+		}
+	}
+
+	@description = "LPS-162455: Given a user starts the portal with a database created previously. When property upgrade.database.auto.run is set to false. Then portal does not run any UpgradeProcess or VerifyProcess."
+	@priority = "4"
+	test UpgradeProcessAndVerifyProcessOnlyRunOnFreshDB {
+		property database.types = "db2,mariadb,mysql,oracle,postgresql";
+
+		AssertConsoleTextPresent(value1 = "UpgradeProcess");
+
+		AssertConsoleTextPresent(value1 = "VerifyProcess");
+
+		task ("Restart portal and cleaning the logs") {
+			Portlet.shutdownServer();
+
+			Portlet.startServer(keepOsGiState = "true");
+		}
+
+		AssertConsoleTextNotPresent(value1 = "UpgradeProcess");
+
+		AssertConsoleTextNotPresent(value1 = "VerifyProcess");
+	}
+
+}

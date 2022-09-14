@@ -142,23 +142,39 @@ public class StructuredContentResourceTest
 
 		// Complete structured content with all types of content fields
 
-		StructuredContent completeStructuredContent =
+		StructuredContent postStructuredContent =
 			structuredContentResource.postSiteStructuredContent(
 				testGroup.getGroupId(), _randomCompleteStructuredContent());
 
-		StructuredContent structuredContent =
+		StructuredContent getStructuredContent =
 			structuredContentResource.getStructuredContent(
-				completeStructuredContent.getId());
+				postStructuredContent.getId());
 
-		assertEquals(completeStructuredContent, structuredContent);
-		assertValid(structuredContent);
+		assertEquals(postStructuredContent, getStructuredContent);
+		assertValid(getStructuredContent);
+
+		// Different folder
+
+		postStructuredContent =
+			structuredContentResource.
+				postStructuredContentFolderStructuredContent(
+					_journalFolder.getFolderId(),
+					_randomCompleteStructuredContent());
+
+		getStructuredContent = structuredContentResource.getStructuredContent(
+			postStructuredContent.getId());
+
+		Assert.assertEquals(
+			_journalFolder.getFolderId(),
+			(long)getStructuredContent.getStructuredContentFolderId());
 
 		// Different locale
 
-		structuredContent = structuredContentResource.postSiteStructuredContent(
-			testGroup.getGroupId(), randomStructuredContent());
+		postStructuredContent =
+			structuredContentResource.postSiteStructuredContent(
+				testGroup.getGroupId(), randomStructuredContent());
 
-		String title = structuredContent.getTitle();
+		String title = postStructuredContent.getTitle();
 
 		StructuredContentResource.Builder builder =
 			StructuredContentResource.builder();
@@ -172,30 +188,28 @@ public class StructuredContentResourceTest
 
 		String frenchTitle = RandomTestUtil.randomString();
 
-		structuredContent.setTitle(frenchTitle);
+		postStructuredContent.setTitle(frenchTitle);
 
 		frenchStructuredContentResource.putStructuredContent(
-			structuredContent.getId(), structuredContent);
+			postStructuredContent.getId(), postStructuredContent);
 
-		structuredContent =
+		getStructuredContent =
 			frenchStructuredContentResource.getStructuredContent(
-				structuredContent.getId());
+				postStructuredContent.getId());
 
-		Assert.assertEquals(frenchTitle, structuredContent.getTitle());
+		Assert.assertEquals(frenchTitle, getStructuredContent.getTitle());
 
-		structuredContent = structuredContentResource.getStructuredContent(
-			structuredContent.getId());
+		getStructuredContent = structuredContentResource.getStructuredContent(
+			getStructuredContent.getId());
 
-		Assert.assertEquals(title, structuredContent.getTitle());
+		Assert.assertEquals(title, getStructuredContent.getTitle());
 
 		// Role admin user
 
-		StructuredContent postStructuredContent =
-			testGetStructuredContent_addStructuredContent();
+		postStructuredContent = testGetStructuredContent_addStructuredContent();
 
-		StructuredContent getStructuredContent =
-			structuredContentResource.getStructuredContent(
-				postStructuredContent.getId());
+		getStructuredContent = structuredContentResource.getStructuredContent(
+			postStructuredContent.getId());
 
 		Map<String, Map<String, String>> actions =
 			getStructuredContent.getActions();
@@ -711,11 +725,8 @@ public class StructuredContentResourceTest
 	private StructuredContent _randomCompleteStructuredContent()
 		throws Exception {
 
-		JournalFolder journalFolder = JournalTestUtil.addFolder(
-			testGroup.getGroupId(), RandomTestUtil.randomString());
-
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
-			testGroup.getGroupId(), journalFolder.getFolderId());
+			testGroup.getGroupId(), _journalFolder.getFolderId());
 
 		StructuredContent structuredContent = super.randomStructuredContent();
 

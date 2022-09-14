@@ -34,22 +34,22 @@
 			</h6>
 		</liferay-ui:search-container-column-text>
 
-		<liferay-ui:search-container-column-jsp
-			cssClass="entry-action-column"
-			path="/user_action.jsp"
-		/>
+		<%
+		UserActionDropdownItems userActionDropdownItems = new UserActionDropdownItems(renderRequest, renderResponse, user2);
+		%>
+
+		<liferay-ui:search-container-column-text>
+			<clay:dropdown-actions
+				dropdownItems="<%= userActionDropdownItems.getActionDropdownItems() %>"
+				propsTransformer="js/UserDropdownDefaultPropsTransformer"
+			/>
+		</liferay-ui:search-container-column-text>
 	</c:when>
 	<c:when test='<%= displayStyle.equals("icon") %>'>
 		<liferay-ui:search-container-column-text>
-			<liferay-frontend:user-vertical-card
-				actionJsp="/user_action.jsp"
-				actionJspServletContext="<%= application %>"
-				resultRow="<%= row %>"
-				rowChecker="<%= userSearchContainer.getRowChecker() %>"
-				subtitle="<%= user2.getScreenName() %>"
-				title="<%= user2.getFullName() %>"
-				url="<%= String.valueOf(rowURL) %>"
-				userId="<%= user2.getUserId() %>"
+			<clay:user-card
+				propsTransformer="js/UserDropdownDefaultPropsTransformer"
+				userCard="<%= new UserVerticalCard(renderRequest, renderResponse, userSearchContainer.getRowChecker(), true, user2) %>"
 			/>
 		</liferay-ui:search-container-column-text>
 	</c:when>
@@ -102,9 +102,15 @@
 			value="<%= HtmlUtil.escape(UsersAdminUtil.getUserColumnText(locale, userUserGroups, UserGroup.NAME_ACCESSOR, userUserGroupsCount)) %>"
 		/>
 
-		<liferay-ui:search-container-column-jsp
-			cssClass="entry-action-column"
-			path="/user_action.jsp"
-		/>
+		<%
+		UserActionDropdownItems userActionDropdownItems = new UserActionDropdownItems(renderRequest, renderResponse, user2);
+		%>
+
+		<liferay-ui:search-container-column-text>
+			<clay:dropdown-actions
+				dropdownItems="<%= userActionDropdownItems.getActionDropdownItems() %>"
+				propsTransformer="js/UserDropdownDefaultPropsTransformer"
+			/>
+		</liferay-ui:search-container-column-text>
 	</c:otherwise>
 </c:choose>

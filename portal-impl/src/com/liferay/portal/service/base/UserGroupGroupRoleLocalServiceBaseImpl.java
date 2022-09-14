@@ -29,6 +29,8 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.UserGroupGroupRole;
 import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
@@ -334,6 +336,11 @@ public abstract class UserGroupGroupRoleLocalServiceBaseImpl
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
 
+		if (_log.isWarnEnabled()) {
+			_log.warn(
+				"Implement UserGroupGroupRoleLocalServiceImpl#deleteUserGroupGroupRole(UserGroupGroupRole) to avoid orphaned data");
+		}
+
 		return userGroupGroupRoleLocalService.deleteUserGroupGroupRole(
 			(UserGroupGroupRole)persistedModel);
 	}
@@ -584,6 +591,9 @@ public abstract class UserGroupGroupRoleLocalServiceBaseImpl
 	)
 	protected com.liferay.counter.kernel.service.CounterLocalService
 		counterLocalService;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		UserGroupGroupRoleLocalServiceBaseImpl.class);
 
 	@BeanReference(type = PersistedModelLocalServiceRegistry.class)
 	protected PersistedModelLocalServiceRegistry

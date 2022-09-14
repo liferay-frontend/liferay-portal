@@ -36,8 +36,8 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -86,15 +86,9 @@ public class LayoutActionsDisplayContext {
 								LanguageUtil.get(
 									_httpServletRequest, "configure"));
 
-							if (GetterUtil.getBoolean(
-									PropsUtil.get("feature.flag.LPS-153452"))) {
-
-								dropdownItem.setTarget("_blank");
-							}
+							dropdownItem.setTarget("_blank");
 						}
 					).add(
-						() -> GetterUtil.getBoolean(
-							PropsUtil.get("feature.flag.LPS-153452")),
 						dropdownItem -> {
 							String previewLayoutURL = _getPreviewLayoutURL(
 								layout);
@@ -276,8 +270,11 @@ public class LayoutActionsDisplayContext {
 
 		// LPS-131416
 
-		long segmentsExperienceId = GetterUtil.getLong(
-			unicodeProperties.getProperty("segmentsExperienceId"), -1);
+		long segmentsExperienceId = ParamUtil.getLong(
+			PortalUtil.getOriginalServletRequest(_httpServletRequest),
+			"segmentsExperienceId",
+			GetterUtil.getLong(
+				unicodeProperties.getProperty("segmentsExperienceId"), -1));
 
 		if (segmentsExperienceId != -1) {
 			segmentsExperienceId = Optional.ofNullable(

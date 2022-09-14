@@ -548,6 +548,8 @@ definition {
 		task ("Type content in the HTML Title field") {
 			LexiconEntry.gotoHeaderMenuItem(menuItem = "Configure");
 
+			SelectWindow.selectPopUp(locator1 = "null");
+
 			Navigator.gotoNavTab(navTab = "SEO");
 
 			PortletEntry.inputText(
@@ -1637,8 +1639,6 @@ definition {
 
 			PageEditor.gotoTab(tabName = "Browser");
 
-			Navigator.gotoNavTab(navTab = "Page Elements");
-
 			Click.clickNoWaitForVisible(
 				key_index = "1",
 				key_nodeName = "Heading",
@@ -1675,9 +1675,7 @@ definition {
 		}
 
 		task ("Open the Preview modal") {
-			PageEditor.openPreviewMode();
-
-			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+			PageEditor.previewInANewTab();
 		}
 
 		task ("Assert only Heading Example 2 is shown") {

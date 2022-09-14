@@ -96,6 +96,7 @@ create table FragmentEntryLink (
 	html TEXT null,
 	js TEXT null,
 	configuration TEXT null,
+	deleted BOOLEAN,
 	editableValues TEXT null,
 	namespace VARCHAR(75) null,
 	position INTEGER,

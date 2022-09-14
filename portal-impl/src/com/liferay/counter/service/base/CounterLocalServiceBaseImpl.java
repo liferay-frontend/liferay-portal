@@ -19,6 +19,8 @@ import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.counter.kernel.service.persistence.CounterFinder;
 import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
 import com.liferay.portal.kernel.service.BaseLocalServiceImpl;
 
@@ -130,5 +132,8 @@ public abstract class CounterLocalServiceBaseImpl
 
 	@BeanReference(type = CounterFinder.class)
 	protected CounterFinder counterFinder;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CounterLocalServiceBaseImpl.class);
 
 }

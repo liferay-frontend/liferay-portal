@@ -621,7 +621,8 @@ public class ObjectDefinitionLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ObjectDefinition updateCustomObjectDefinition(
-			long objectDefinitionId, long accountEntryRestrictedObjectFieldId,
+			String externalReferenceCode, long objectDefinitionId,
+			long accountEntryRestrictedObjectFieldId,
 			long descriptionObjectFieldId, long titleObjectFieldId,
 			boolean accountEntryRestricted, boolean active,
 			boolean enableCategorization, boolean enableComments,
@@ -639,11 +640,11 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 
 		return _updateObjectDefinition(
-			objectDefinition, accountEntryRestrictedObjectFieldId,
-			descriptionObjectFieldId, titleObjectFieldId,
-			accountEntryRestricted, active, null, enableCategorization,
-			enableComments, labelMap, name, panelAppOrder, panelCategoryKey,
-			portlet, null, null, pluralLabelMap, scope);
+			externalReferenceCode, objectDefinition,
+			accountEntryRestrictedObjectFieldId, descriptionObjectFieldId,
+			titleObjectFieldId, accountEntryRestricted, active, null,
+			enableCategorization, enableComments, labelMap, name, panelAppOrder,
+			panelCategoryKey, portlet, null, null, pluralLabelMap, scope);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1033,7 +1034,7 @@ public class ObjectDefinitionLocalServiceImpl
 	}
 
 	private ObjectDefinition _updateObjectDefinition(
-			ObjectDefinition objectDefinition,
+			String externalReferenceCode, ObjectDefinition objectDefinition,
 			long accountEntryRestrictedObjectFieldId,
 			long descriptionObjectFieldId, long titleObjectFieldId,
 			boolean accountEntryRestricted, boolean active, String dbTableName,
@@ -1078,6 +1079,7 @@ public class ObjectDefinitionLocalServiceImpl
 				accountEntryRestrictedObjectFieldId, true);
 		}
 
+		objectDefinition.setExternalReferenceCode(externalReferenceCode);
 		objectDefinition.setAccountEntryRestrictedObjectFieldId(
 			accountEntryRestrictedObjectFieldId);
 		objectDefinition.setDescriptionObjectFieldId(descriptionObjectFieldId);

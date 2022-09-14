@@ -15,7 +15,6 @@
 package com.liferay.portal.workflow.kaleo.runtime.integration.internal;
 
 import com.liferay.depot.constants.DepotRolesConstants;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -23,8 +22,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lock.DuplicateLockException;
 import com.liferay.portal.kernel.lock.Lock;
 import com.liferay.portal.kernel.lock.LockManager;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroupGroupRole;
@@ -35,6 +34,8 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalService;
@@ -123,13 +124,21 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 			long companyId, long userId, long workflowTaskId,
 			long assigneeUserId, String comment, Date dueDate,
 			Map<String, Serializable> workflowContext)
-		throws WorkflowException {
+		throws PortalException {
 
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		if (permissionChecker.getUserId() != userId) {
-			ReflectionUtil.throwException(new PrincipalException());
+		List<User> assignableUsers = getAssignableUsers(workflowTaskId);
+
+		User assigneeUser = _userLocalService.getUser(assigneeUserId);
+
+		if (!assignableUsers.contains(assigneeUser) ||
+			(permissionChecker.getUserId() != userId)) {
+
+			throw new PrincipalException.MustHavePermission(
+				userId, WorkflowTask.class.getName(), workflowTaskId,
+				ActionKeys.VIEW);
 		}
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -953,6 +962,22 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 		}
 	}
 
+	private List<User> _getUsers(long groupId, long roleId)
+		throws PortalException {
+
+		List<User> users = new ArrayList<>();
+
+		List<UserGroupRole> userGroupGroupRoles =
+			_userGroupRoleLocalService.getUserGroupRolesByGroupAndRole(
+				groupId, roleId);
+
+		for (UserGroupRole userGroupRole : userGroupGroupRoles) {
+			users.add(userGroupRole.getUser());
+		}
+
+		return users;
+	}
+
 	private boolean _hasAssignableUsers(
 			KaleoTaskAssignment kaleoTaskAssignment,
 			KaleoTaskInstanceToken kaleoTaskInstanceToken, long assignedUserId)
@@ -1091,37 +1116,41 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 				return;
 			}
 
-			List<User> userGroupRolesUsers = ListUtil.toList(
-				_userGroupRoleLocalService.getUserGroupRolesByGroupAndRole(
-					kaleoTaskInstanceToken.getGroupId(),
-					kaleoTaskAssignment.getAssigneeClassPK()),
-				userGroupRole -> {
-					try {
-						return userGroupRole.getUser();
-					}
-					catch (PortalException portalException) {
-						if (_log.isWarnEnabled()) {
-							_log.warn(portalException);
-						}
-					}
+			List<User> users = _getUsers(
+				kaleoTaskInstanceToken.getGroupId(),
+				kaleoTaskAssignment.getAssigneeClassPK());
 
-					return null;
-				});
+			Group group = _groupLocalService.getGroup(
+				kaleoTaskInstanceToken.getGroupId());
+
+			if (group.isOrganization()) {
+				Organization organization =
+					_organizationLocalService.getOrganization(
+						group.getOrganizationId());
+
+				for (Organization ancestorOrganization :
+						organization.getAncestors()) {
+
+					users.addAll(
+						_getUsers(
+							ancestorOrganization.getGroupId(),
+							kaleoTaskAssignment.getAssigneeClassPK()));
+				}
+			}
 
 			if (actionType == _ACTION_TYPE_ASSIGN) {
-				userGroupRolesUsers = ListUtil.filter(
-					userGroupRolesUsers,
+				users = ListUtil.filter(
+					users,
 					user ->
 						(user != null) && user.isActive() &&
 						(user.getUserId() != assignedUserId));
 			}
 			else {
-				userGroupRolesUsers = ListUtil.filter(
-					userGroupRolesUsers,
-					user -> (user != null) && user.isActive());
+				users = ListUtil.filter(
+					users, user -> (user != null) && user.isActive());
 			}
 
-			allowedUsers.addAll(userGroupRolesUsers);
+			allowedUsers.addAll(users);
 
 			List<User> userGroupGroupRolesUsers = Stream.of(
 				_userGroupGroupRoleLocalService.
@@ -1200,12 +1229,12 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 
 	private static final int _ACTION_TYPE_VIEW_NOTIFICATION = 2;
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		WorkflowTaskManagerImpl.class);
-
 	@Reference
 	private AggregateKaleoTaskAssignmentSelector
 		_aggregateKaleoTaskAssignmentSelector;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private KaleoSignaler _kaleoSignaler;
@@ -1230,6 +1259,9 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 
 	@Reference
 	private LockManager _lockManager;
+
+	@Reference
+	private OrganizationLocalService _organizationLocalService;
 
 	@Reference
 	private RoleLocalService _roleLocalService;

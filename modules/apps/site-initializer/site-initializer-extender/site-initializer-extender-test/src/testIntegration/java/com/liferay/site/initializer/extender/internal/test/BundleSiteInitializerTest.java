@@ -794,6 +794,8 @@ public class BundleSiteInitializerTest {
 			group.getGroupId(), KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			"test-kb-folder-name");
 
+		Assert.assertEquals(
+			"TESTKBFOLDER1", kbFolder.getExternalReferenceCode());
 		Assert.assertEquals("Test KB Folder Name", kbFolder.getName());
 
 		List<KBArticle> kbFolderKBArticles =
@@ -807,6 +809,8 @@ public class BundleSiteInitializerTest {
 
 		KBArticle kbArticle1 = kbFolderKBArticles.get(0);
 
+		Assert.assertEquals(
+			"TESTKBARTICLE1", kbArticle1.getExternalReferenceCode());
 		Assert.assertEquals("Test KB Article 1 Title", kbArticle1.getTitle());
 		Assert.assertEquals(
 			"This is the body for Test KB Article 1.", kbArticle1.getContent());
@@ -822,12 +826,16 @@ public class BundleSiteInitializerTest {
 
 		KBArticle kbArticle2 = kbArticleKBArticles.get(0);
 
+		Assert.assertEquals(
+			"TESTKBARTICLE2", kbArticle2.getExternalReferenceCode());
 		Assert.assertEquals("Test KB Article 2 Title", kbArticle2.getTitle());
 		Assert.assertEquals(
 			"This is the body for Test KB Article 2.", kbArticle2.getContent());
 
 		KBArticle kbArticle3 = kbArticleKBArticles.get(1);
 
+		Assert.assertEquals(
+			"TESTKBARTICLE3", kbArticle3.getExternalReferenceCode());
 		Assert.assertEquals("Test KB Article 3 Title", kbArticle3.getTitle());
 		Assert.assertEquals(
 			"This is the body for Test KB Article 3.", kbArticle3.getContent());

@@ -123,9 +123,12 @@ public class RelatedObjectEntryOpenAPIContributor
 			_objectDefinitionLocalService.getObjectDefinition(
 				systemObjectRelationship.getObjectDefinitionId2());
 
-		openAPI.schema(
-			objectDefinition.getShortName(),
-			_getObjectDefinitionSchema(objectDefinition));
+		OpenAPI objectEntryOpenAPI = _getObjectEntryOpenAPI(objectDefinition);
+
+		_copySchema(
+			_getPageSchemaName(objectDefinition), objectEntryOpenAPI, openAPI);
+		_copySchema(
+			_getSchemaName(objectDefinition), objectEntryOpenAPI, openAPI);
 
 		Paths paths = openAPI.getPaths();
 
@@ -143,7 +146,7 @@ public class RelatedObjectEntryOpenAPIContributor
 				{
 					get(
 						_getGetOperation(
-							systemObjectRelationship,
+							objectDefinition, systemObjectRelationship,
 							systemObjectDefinitionMetadata));
 				}
 			});
@@ -161,20 +164,24 @@ public class RelatedObjectEntryOpenAPIContributor
 			});
 	}
 
-	private Content _getContent(ObjectRelationship objectRelationship)
-		throws Exception {
+	private OpenAPI _copySchema(
+		String schemaName, OpenAPI sourceOpenAPI, OpenAPI targetOpenAPI) {
 
+		Components components = sourceOpenAPI.getComponents();
+
+		Map<String, Schema> schemas = components.getSchemas();
+
+		return targetOpenAPI.schema(schemaName, schemas.get(schemaName));
+	}
+
+	private Content _getContent(String schemaName) {
 		Content content = new Content();
 
 		MediaType mediaType = new MediaType();
 
 		Schema schema = new Schema();
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.getObjectDefinition(
-				objectRelationship.getObjectDefinitionId2());
-
-		schema.set$ref(objectDefinition.getShortName());
+		schema.set$ref(schemaName);
 
 		mediaType.setSchema(schema);
 
@@ -194,9 +201,9 @@ public class RelatedObjectEntryOpenAPIContributor
 	}
 
 	private Operation _getGetOperation(
-			ObjectRelationship objectRelationship,
-			SystemObjectDefinitionMetadata systemObjectDefinitionMetadata)
-		throws Exception {
+		ObjectDefinition objectDefinition,
+		ObjectRelationship objectRelationship,
+		SystemObjectDefinitionMetadata systemObjectDefinitionMetadata) {
 
 		String parameterName = _getIdParameterName(
 			_getContentType(systemObjectDefinitionMetadata));
@@ -224,7 +231,9 @@ public class RelatedObjectEntryOpenAPIContributor
 								new ApiResponse() {
 									{
 										setContent(
-											_getContent(objectRelationship));
+											_getContent(
+												_getPageSchemaName(
+													objectDefinition)));
 									}
 								});
 						}
@@ -251,19 +260,17 @@ public class RelatedObjectEntryOpenAPIContributor
 		return path.split(StringPool.SLASH)[0];
 	}
 
-	private Schema _getObjectDefinitionSchema(ObjectDefinition objectDefinition)
+	private OpenAPI _getObjectEntryOpenAPI(ObjectDefinition objectDefinition)
 		throws Exception {
 
 		Response response = _objectEntryOpenAPIResource.getOpenAPI(
 			objectDefinition.getObjectDefinitionId(), "json", null);
 
-		OpenAPI openAPI = (OpenAPI)response.getEntity();
+		return (OpenAPI)response.getEntity();
+	}
 
-		Components components = openAPI.getComponents();
-
-		Map<String, Schema> schemas = components.getSchemas();
-
-		return schemas.get(objectDefinition.getShortName());
+	private String _getPageSchemaName(ObjectDefinition objectDefinition) {
+		return "Page" + _getSchemaName(objectDefinition);
 	}
 
 	private Operation _getPutOperation(
@@ -303,7 +310,15 @@ public class RelatedObjectEntryOpenAPIContributor
 				responses(
 					new ApiResponses() {
 						{
-							setDefault(new ApiResponse());
+							setDefault(
+								new ApiResponse() {
+									{
+										setContent(
+											_getContent(
+												_getSchemaName(
+													objectDefinition)));
+									}
+								});
 						}
 					});
 				tags(
@@ -311,6 +326,10 @@ public class RelatedObjectEntryOpenAPIContributor
 						_getContentType(systemObjectDefinitionMetadata)));
 			}
 		};
+	}
+
+	private String _getSchemaName(ObjectDefinition objectDefinition) {
+		return objectDefinition.getShortName();
 	}
 
 	private String _getSystemObjectBasePath(

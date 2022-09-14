@@ -86,6 +86,8 @@ public class FragmentEntryLinkTable extends BaseTable<FragmentEntryLinkTable> {
 	public final Column<FragmentEntryLinkTable, Clob> configuration =
 		createColumn(
 			"configuration", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<FragmentEntryLinkTable, Boolean> deleted = createColumn(
+		"deleted", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
 	public final Column<FragmentEntryLinkTable, Clob> editableValues =
 		createColumn(
 			"editableValues", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);

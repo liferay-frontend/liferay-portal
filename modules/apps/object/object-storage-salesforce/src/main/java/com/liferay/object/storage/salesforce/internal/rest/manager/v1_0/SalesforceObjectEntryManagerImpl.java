@@ -87,7 +87,7 @@ public class SalesforceObjectEntryManagerImpl
 		JSONObject responseJSONObject = _salesforceHttp.post(
 			objectDefinition.getCompanyId(),
 			getGroupId(objectDefinition, scopeKey),
-			"sobjects/" + _getSalesforceObjectName(objectDefinition.getName()),
+			"sobjects/" + objectDefinition.getExternalReferenceCode(),
 			_toJSONObject(objectDefinition, objectEntry));
 
 		return getObjectEntry(
@@ -115,8 +115,7 @@ public class SalesforceObjectEntryManagerImpl
 		_salesforceHttp.patch(
 			companyId, getGroupId(objectDefinition, scopeKey),
 			StringBundler.concat(
-				"sobjects/",
-				_getSalesforceObjectName(objectDefinition.getName()), "/",
+				"sobjects/", objectDefinition.getExternalReferenceCode(), "/",
 				externalReferenceCode),
 			_toJSONObject(objectDefinition, objectEntry));
 
@@ -140,8 +139,7 @@ public class SalesforceObjectEntryManagerImpl
 		_salesforceHttp.delete(
 			companyId, getGroupId(objectDefinition, scopeKey),
 			StringBundler.concat(
-				"sobjects/",
-				_getSalesforceObjectName(objectDefinition.getName()), "/",
+				"sobjects/", objectDefinition.getExternalReferenceCode(), "/",
 				externalReferenceCode));
 	}
 
@@ -215,9 +213,8 @@ public class SalesforceObjectEntryManagerImpl
 			_salesforceHttp.get(
 				companyId, getGroupId(objectDefinition, scopeKey),
 				StringBundler.concat(
-					"sobjects/",
-					_getSalesforceObjectName(objectDefinition.getName()), "/",
-					externalReferenceCode)),
+					"sobjects/", objectDefinition.getExternalReferenceCode(),
+					"/", externalReferenceCode)),
 			objectDefinition);
 	}
 
@@ -263,8 +260,7 @@ public class SalesforceObjectEntryManagerImpl
 				"search", "q",
 				StringBundler.concat(
 					"FIND {", search, "} IN ALL FIELDS RETURNING ",
-					_getSalesforceObjectName(objectDefinition.getName()),
-					"(FIELDS(ALL)",
+					objectDefinition.getExternalReferenceCode(), "(FIELDS(ALL)",
 					_getSorts(objectDefinition.getObjectDefinitionId(), sorts),
 					_getSalesforcePagination(pagination), ")"));
 		}
@@ -273,7 +269,7 @@ public class SalesforceObjectEntryManagerImpl
 			"query", "q",
 			StringBundler.concat(
 				"SELECT FIELDS(ALL) FROM ",
-				_getSalesforceObjectName(objectDefinition.getName()),
+				objectDefinition.getExternalReferenceCode(),
 				_getSorts(objectDefinition.getObjectDefinitionId(), sorts),
 				_getSalesforcePagination(pagination)));
 	}
@@ -330,10 +326,6 @@ public class SalesforceObjectEntryManagerImpl
 		}
 
 		return null;
-	}
-
-	private String _getSalesforceObjectName(String objectDefinitionName) {
-		return StringUtil.removeFirst(objectDefinitionName, "C_") + "__c";
 	}
 
 	private String _getSalesforcePagination(Pagination pagination) {
@@ -418,7 +410,7 @@ public class SalesforceObjectEntryManagerImpl
 			HttpComponentsUtil.addParameter(
 				"query", "q",
 				"SELECT COUNT(Id) FROM " +
-					_getSalesforceObjectName(objectDefinition.getName())));
+					objectDefinition.getExternalReferenceCode()));
 
 		JSONArray jsonArray = responseJSONObject.getJSONArray("records");
 
@@ -528,64 +520,61 @@ public class SalesforceObjectEntryManagerImpl
 		while (iterator.hasNext()) {
 			String key = iterator.next();
 
-			if (StringUtil.contains(key, "__c", StringPool.BLANK)) {
-				ObjectField objectField =
-					_getObjectFieldByExternalReferenceCode(key, objectFields);
+			ObjectField objectField = _getObjectFieldByExternalReferenceCode(
+				key, objectFields);
 
-				if (objectField == null) {
-					continue;
-				}
-
-				Map<String, Object> properties = objectEntry.getProperties();
-
-				if (jsonObject.isNull(key)) {
-					properties.put(objectField.getName(), null);
-
-					continue;
-				}
-
-				Object value = jsonObject.get(key);
-
-				if (Objects.equals(
-						objectField.getBusinessType(),
-						ObjectFieldConstants.BUSINESS_TYPE_INTEGER) ||
-					Objects.equals(
-						objectField.getBusinessType(),
-						ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER)) {
-
-					if (value instanceof BigDecimal) {
-						BigDecimal bigDecimalValue = (BigDecimal)value;
-
-						value = bigDecimalValue.toBigInteger();
-					}
-				}
-				else if (Objects.equals(
-							objectField.getBusinessType(),
-							ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
-
-					ListTypeEntry listTypeEntry =
-						_listTypeEntryLocalService.fetchListTypeEntry(
-							objectField.getListTypeDefinitionId(),
-							(String)value);
-
-					if (listTypeEntry == null) {
-						continue;
-					}
-
-					value = new ListEntry() {
-						{
-							key = listTypeEntry.getKey();
-							name = listTypeEntry.getName(
-								dtoConverterContext.getLocale());
-							name_i18n = LocalizedMapUtil.getI18nMap(
-								dtoConverterContext.isAcceptAllLanguages(),
-								listTypeEntry.getNameMap());
-						}
-					};
-				}
-
-				properties.put(objectField.getName(), value);
+			if (objectField == null) {
+				continue;
 			}
+
+			Map<String, Object> properties = objectEntry.getProperties();
+
+			if (jsonObject.isNull(key)) {
+				properties.put(objectField.getName(), null);
+
+				continue;
+			}
+
+			Object value = jsonObject.get(key);
+
+			if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_INTEGER) ||
+				Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER)) {
+
+				if (value instanceof BigDecimal) {
+					BigDecimal bigDecimalValue = (BigDecimal)value;
+
+					value = bigDecimalValue.toBigInteger();
+				}
+			}
+			else if (Objects.equals(
+						objectField.getBusinessType(),
+						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+
+				ListTypeEntry listTypeEntry =
+					_listTypeEntryLocalService.fetchListTypeEntry(
+						objectField.getListTypeDefinitionId(), (String)value);
+
+				if (listTypeEntry == null) {
+					continue;
+				}
+
+				value = new ListEntry() {
+					{
+						key = listTypeEntry.getKey();
+						name = listTypeEntry.getName(
+							dtoConverterContext.getLocale());
+						name_i18n = LocalizedMapUtil.getI18nMap(
+							dtoConverterContext.isAcceptAllLanguages(),
+							listTypeEntry.getNameMap());
+					}
+				};
+			}
+
+			properties.put(objectField.getName(), value);
 		}
 
 		return objectEntry;

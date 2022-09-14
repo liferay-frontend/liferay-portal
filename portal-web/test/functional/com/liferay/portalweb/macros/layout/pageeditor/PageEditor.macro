@@ -3732,9 +3732,7 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 	}
 
 	macro gotoEllipsisMenuItemInPageContentPanel {
-		PageEditor.gotoTab(tabName = "Browser");
-
-		Navigator.gotoNavTab(navTab = "Page Content");
+		PageEditor.gotoTab(tabName = "Page Content");
 
 		LexiconEntry.gotoFragmentPageContentEllipsisMenuItem(
 			menuItem = "${menuItem}",
@@ -3747,8 +3745,6 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 		}
 
 		PageEditor.gotoTab(tabName = "Browser");
-
-		Navigator.gotoNavTab(navTab = "Page Elements");
 
 		if (IsElementNotPresent(key_nodeName = "${fragmentName}", locator1 = "Treeview#PAGE_STRUCTURE_TREE_NODE_ACTIVE")) {
 			Click(
@@ -3869,8 +3865,6 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 
 		PageEditor.gotoTab(tabName = "Browser");
 
-		Navigator.gotoNavTab(navTab = "Page Elements");
-
 		if (IsElementNotPresent(key_index = "${index}", key_nodeName = "${fragmentName}", locator1 = "Treeview#PAGE_STRUCTURE_TREE_NODE_INDEX")) {
 			Click(
 				key_nodeName = "",
@@ -3921,10 +3915,6 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 		Click(
 			key_text = "New Experience",
 			locator1 = "Button#ANY");
-	}
-
-	macro openPreviewMode {
-		Click(locator1 = "PageEditor#PREVIEW");
 	}
 
 	macro previewInANewTab {
@@ -4067,8 +4057,6 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 
 		PageEditor.gotoTab(tabName = "Browser");
 
-		Navigator.gotoNavTab(navTab = "Page Elements");
-
 		Click(
 			key_index = "${index}",
 			key_nodeName = "${fragmentName}",
@@ -4084,8 +4072,8 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 	macro searchFragmentViaSidebar {
 		WaitForPageLoad();
 
-		if (IsElementPresent(locator1 = "Icon#TIMES")) {
-			Click(locator1 = "Icon#TIMES");
+		if (IsElementPresent(locator1 = "Icon#TIMES_2")) {
+			Click(locator1 = "Icon#TIMES_2");
 		}
 
 		Navigator.gotoNavTab(navTab = "Fragments");
@@ -4096,7 +4084,7 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 	}
 
 	macro searchInPageContentPanel {
-		Navigator.gotoNavTab(navTab = "Page Content");
+		PageEditor.gotoTab(tabName = "Page Content");
 
 		Type(
 			locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_SEARCH_FIELD",
@@ -4115,7 +4103,7 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 
 	macro selectContentFilter {
 		AssertVisible(
-			key_sidebarButton = "Browser",
+			key_sidebarButton = "Page Content",
 			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
 
 		Click(locator1 = "PageEditor#PAGE_CONTENTS_CONTENT_FILTER_TOGGLE");
@@ -4150,16 +4138,9 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 	}
 
 	macro switchViewport {
-		if (isSet(modal)) {
-			Click(
-				key_deviceType = "${deviceType}",
-				locator1 = "Modal#DEVICE_TYPE");
-		}
-		else {
-			Click(
-				key_deviceType = "${deviceType}",
-				locator1 = "PageEditor#DEVICE_TYPE");
-		}
+		Click(
+			key_deviceType = "${deviceType}",
+			locator1 = "PageEditor#DEVICE_TYPE");
 
 		if ("${deviceType}" == "Desktop") {
 			var viewport = "desktop";
@@ -4174,11 +4155,15 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 			var viewport = "portraitMobile";
 		}
 
-		if (!(isSet(modal))) {
-			WaitForVisible(
-				key_deviceType = "${viewport}",
-				locator1 = "PageEditor#VIEWPORT");
-		}
+		WaitForVisible(
+			key_deviceType = "${viewport}",
+			locator1 = "PageEditor#VIEWPORT");
+	}
+
+	macro togglePreview {
+		Click(
+			key_text = "view",
+			locator1 = "Icon#ANY");
 	}
 
 	macro unhideFragmentViaPageStructure {
@@ -4187,8 +4172,6 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 		}
 
 		PageEditor.gotoTab(tabName = "Browser");
-
-		Navigator.gotoNavTab(navTab = "Page Elements");
 
 		Click.clickNoWaitForVisible(
 			key_index = "${index}",
@@ -4200,8 +4183,6 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 
 	macro unhideFragmentViaPageStyles {
 		PageEditor.gotoTab(tabName = "Browser");
-
-		Navigator.gotoNavTab(navTab = "Page Elements");
 
 		if (IsElementNotPresent(key_nodeName = "${fragmentName}", locator1 = "Treeview#PAGE_STRUCTURE_TREE_NODE_ACTIVE")) {
 			Click(

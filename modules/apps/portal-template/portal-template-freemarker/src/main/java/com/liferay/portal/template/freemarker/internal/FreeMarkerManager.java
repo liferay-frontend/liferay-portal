@@ -167,7 +167,7 @@ public class FreeMarkerManager extends BaseTemplateManager {
 
 		_configuration = null;
 
-		templateContextHelper.removeAllHelperUtilities();
+		_templateContextHelper.removeAllHelperUtilities();
 
 		_templateModels.clear();
 
@@ -178,7 +178,7 @@ public class FreeMarkerManager extends BaseTemplateManager {
 
 	@Override
 	public void destroy(ClassLoader classLoader) {
-		templateContextHelper.removeHelperUtilities(classLoader);
+		_templateContextHelper.removeHelperUtilities(classLoader);
 	}
 
 	@Override
@@ -209,7 +209,7 @@ public class FreeMarkerManager extends BaseTemplateManager {
 						getSecondLevelPortalCache();
 
 			TemplateCache templateCache = new LiferayTemplateCache(
-				_configuration, templateResourceLoader, portalCache);
+				_configuration, _templateResourceLoader, portalCache);
 
 			field.set(_configuration, templateCache);
 
@@ -250,35 +250,12 @@ public class FreeMarkerManager extends BaseTemplateManager {
 		}
 
 		FreeMarkerTemplateContextHelper freeMarkerTemplateContextHelper =
-			(FreeMarkerTemplateContextHelper)templateContextHelper;
+			(FreeMarkerTemplateContextHelper)_templateContextHelper;
 
 		freeMarkerTemplateContextHelper.setDefaultBeansWrapper(
 			_defaultBeansWrapper);
 		freeMarkerTemplateContextHelper.setRestrictedBeansWrapper(
 			_restrictedBeansWrapper);
-	}
-
-	@Reference(unbind = "-")
-	public void setTemplateClassResolver(
-		TemplateClassResolver templateClassResolver) {
-
-		_templateClassResolver = templateClassResolver;
-	}
-
-	@Override
-	@Reference(service = FreeMarkerTemplateContextHelper.class, unbind = "-")
-	public void setTemplateContextHelper(
-		TemplateContextHelper templateContextHelper) {
-
-		super.setTemplateContextHelper(templateContextHelper);
-	}
-
-	@Override
-	@Reference(service = FreeMarkerTemplateResourceLoader.class, unbind = "-")
-	public void setTemplateResourceLoader(
-		TemplateResourceLoader templateResourceLoader) {
-
-		super.setTemplateResourceLoader(templateResourceLoader);
 	}
 
 	@Activate
@@ -372,8 +349,13 @@ public class FreeMarkerManager extends BaseTemplateManager {
 
 		return new FreeMarkerTemplate(
 			templateResource, helperUtilities, _configuration,
-			templateContextHelper, _freeMarkerTemplateResourceCache, restricted,
-			beansWrapper, this);
+			_templateContextHelper, _freeMarkerTemplateResourceCache,
+			restricted, beansWrapper, this);
+	}
+
+	@Override
+	protected TemplateContextHelper getTemplateContextHelper() {
+		return _templateContextHelper;
 	}
 
 	@Modified
@@ -478,11 +460,6 @@ public class FreeMarkerManager extends BaseTemplateManager {
 
 			ThreadLocalUtil._clearThreadLocals(threadLocals);
 		}
-	}
-
-	@Reference(unbind = "-")
-	protected void setSingleVMPool(SingleVMPool singleVMPool) {
-		_singleVMPool = singleVMPool;
 	}
 
 	private String _getMacroLibrary() {
@@ -616,12 +593,25 @@ public class FreeMarkerManager extends BaseTemplateManager {
 	private volatile BeansWrapper _restrictedBeansWrapper;
 	private volatile ServiceRegistration<PortalExecutorConfig>
 		_serviceRegistration;
+
+	@Reference
 	private SingleVMPool _singleVMPool;
+
 	private final Map<String, String> _taglibMappings =
 		new ConcurrentHashMap<>();
+
+	@Reference
 	private TemplateClassResolver _templateClassResolver;
+
+	@Reference(service = FreeMarkerTemplateContextHelper.class)
+	private TemplateContextHelper _templateContextHelper;
+
 	private final Map<String, TemplateModel> _templateModels =
 		new ConcurrentHashMap<>();
+
+	@Reference(service = FreeMarkerTemplateResourceLoader.class)
+	private TemplateResourceLoader _templateResourceLoader;
+
 	private volatile Map<String, AtomicInteger> _timeoutTemplateCounters;
 
 	private static class ThreadLocalUtil {

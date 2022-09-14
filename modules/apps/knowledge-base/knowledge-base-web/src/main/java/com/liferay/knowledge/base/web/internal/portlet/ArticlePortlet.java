@@ -75,7 +75,8 @@ import org.osgi.service.component.annotations.Reference;
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=administrator,guest,power-user,user",
 		"javax.portlet.supported-public-render-parameter=categoryId",
-		"javax.portlet.supported-public-render-parameter=tag"
+		"javax.portlet.supported-public-render-parameter=tag",
+		"javax.portlet.version=3.0"
 	},
 	service = Portlet.class
 )
@@ -197,13 +198,6 @@ public class ArticlePortlet extends BaseKBPortlet {
 		return defaultValue;
 	}
 
-	@Reference(
-		target = "(&(release.bundle.symbolic.name=com.liferay.knowledge.base.web)(&(release.schema.version>=1.2.0)(!(release.schema.version>=2.0.0))))",
-		unbind = "-"
-	)
-	protected void setRelease(Release release) {
-	}
-
 	private long _getResourcePrimKeyFromUrlTitle(RenderRequest renderRequest)
 		throws PortalException {
 
@@ -247,5 +241,10 @@ public class ArticlePortlet extends BaseKBPortlet {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference(
+		target = "(&(release.bundle.symbolic.name=com.liferay.knowledge.base.web)(&(release.schema.version>=1.2.0)(!(release.schema.version>=2.0.0))))"
+	)
+	private Release _release;
 
 }

@@ -103,7 +103,7 @@ public class JSONBatchEngineExportTaskItemWriterImplTest
 		try (JSONBatchEngineExportTaskItemWriterImpl
 				jsonBatchEngineExportTaskItemWriterImpl =
 					new JSONBatchEngineExportTaskItemWriterImpl(
-						fieldMap.keySet(), fieldNames,
+						fieldsMap.keySet(), fieldNames,
 						unsyncByteArrayOutputStream)) {
 
 			for (Item[] items : getItemGroups()) {

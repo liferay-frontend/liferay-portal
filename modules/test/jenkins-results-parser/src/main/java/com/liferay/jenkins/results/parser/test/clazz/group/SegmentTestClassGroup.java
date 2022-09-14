@@ -139,6 +139,16 @@ public class SegmentTestClassGroup extends BaseTestClassGroup {
 			sb.append("\n");
 		}
 
+		Job job = getJob();
+
+		String companyDefaultLocale = job.getCompanyDefaultLocale();
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(companyDefaultLocale)) {
+			sb.append("TEST_COMPANY_DEFAULT_LOCALE=");
+			sb.append(companyDefaultLocale);
+			sb.append("\n");
+		}
+
 		return sb.toString();
 	}
 

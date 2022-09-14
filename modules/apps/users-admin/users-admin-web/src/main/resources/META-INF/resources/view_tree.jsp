@@ -149,11 +149,14 @@ if (organization != null) {
 
 					<%
 					Organization curOrganization = null;
+					OrganizationActionDropdownItems organizationActionDropdownItems = null;
 					Map<String, Object> rowData = new HashMap<String, Object>();
 					User user2 = null;
 
 					if (result instanceof Organization) {
 						curOrganization = (Organization)result;
+
+						organizationActionDropdownItems = new OrganizationActionDropdownItems(curOrganization, renderRequest, renderResponse);
 
 						rowData.put("actions", StringUtil.merge(viewTreeManagementToolbarDisplayContext.getAvailableActions(curOrganization)));
 					}
@@ -239,24 +242,4 @@ if (organization != null) {
 			url: '<%= removeOrganizationsAndUsersURL.toString() %>',
 		});
 	}
-
-	var selectUsers = function (organizationId) {
-		<portlet:namespace />openSelectUsersDialog(organizationId);
-	};
-
-	var ACTIONS = {
-		selectUsers: selectUsers,
-	};
-
-	Liferay.componentReady('viewTreeManagementToolbar').then(
-		(managementToolbar) => {
-			managementToolbar.on('creationMenuItemClicked', (event) => {
-				var itemData = event.data.item.data;
-
-				if (itemData && itemData.action && ACTIONS[itemData.action]) {
-					ACTIONS[itemData.action](itemData.organizationId);
-				}
-			});
-		}
-	);
 </aui:script>

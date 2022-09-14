@@ -189,8 +189,6 @@ definition {
 	@description = "This is a test for LPS-153367. The page creator could preview current experience in a new tab."
 	@priority = "4"
 	test PreviewCurrentExperienceInANewTab {
-		property custom.properties = "feature.flag.LPS-153452=true";
-
 		task ("Given a page creator has a Heading fragment on a content page with a new experience") {
 			JSONLayout.addPublicLayout(
 				groupName = "Test Site Name",
@@ -637,27 +635,27 @@ definition {
 				pageName = "Test Page Name",
 				siteName = "Test Site Name");
 
-			ContentPages.openExperienceMenu();
-
-			MenuItem.viewPresent(menuItem = "New Experience");
+			ContentPages.changeExperience(experienceName = "New Experience");
 		}
 
 		task ("Open the preview modal and View the new experience shown in experience selector") {
 			ContentPages.gotoPageEditor();
 
-			PageEditor.openPreviewMode();
+			PageEditor.previewInANewTab();
 
-			SelectFrame.selectFrameNoLoading(locator1 = "WCPreview#PREVIEW_TITLE");
+			ContentPages.viewFragmentText(
+				fragmentName = "button",
+				id = "link",
+				text = "Go Somewhere");
 
-			Click(
-				key_fieldLabel = "Experience",
-				locator1 = "Select#GENERIC_SELECT_FIELD");
-
-			MenuItem.viewPresent(menuItem = "New Experience");
+			ContentPages.viewFragmentText(
+				fragmentName = "heading",
+				id = "element-text",
+				text = "Heading Example");
 		}
 
 		task ("Back to view page mode and view the new experience still shown in experience selector") {
-			IFrame.closeFrame();
+			Close.closeWindow();
 
 			PageEditor.clickBack();
 
@@ -736,13 +734,23 @@ definition {
 		task ("Open the preview modal and View the new experience selected in experience selector") {
 			ContentPages.gotoPageEditor();
 
-			PageEditor.openPreviewMode();
+			PageEditor.previewInANewTab();
 
-			ContentPages.viewCurrentExperience(experienceName = "New Experience");
+			ContentPages.viewFragmentText(
+				fragmentName = "button",
+				id = "link",
+				text = "Go Somewhere");
+
+			ContentPages.viewFragmentText(
+				fragmentName = "heading",
+				id = "element-text",
+				text = "Edited Heading Example");
 		}
 
 		task ("Back to view page mode and view the new experience still selected in experience selector") {
-			Click.mouseDownMouseUp(locator1 = "Modal#CLOSE_BUTTON");
+			Close.closeWindow();
+
+			SelectWindow.selectPopUp(locator1 = "null");
 
 			PageEditor.clickBack();
 
@@ -795,9 +803,7 @@ definition {
 		}
 
 		task ("Select the Inline Text as content filter in Page Content panel") {
-			PageEditor.gotoTab(tabName = "Browser");
-
-			Navigator.gotoNavTab(navTab = "Page Content");
+			PageEditor.gotoTab(tabName = "Page Content");
 
 			PageEditor.selectContentFilter(filter = "Inline Text");
 		}

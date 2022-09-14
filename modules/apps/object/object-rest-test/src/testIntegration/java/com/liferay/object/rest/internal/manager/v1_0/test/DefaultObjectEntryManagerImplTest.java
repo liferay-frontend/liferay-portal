@@ -125,10 +125,10 @@ public class DefaultObjectEntryManagerImplTest {
 				new TextObjectFieldBuilder().labelMap(
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString())
-				).objectFieldSettings(
-					Collections.emptyList()
 				).name(
 					"textObjectFieldName"
+				).objectFieldSettings(
+					Collections.emptyList()
 				).build()));
 
 		_setUpDTOConverterContext();
@@ -154,33 +154,35 @@ public class DefaultObjectEntryManagerImplTest {
 							"fileSource", "documentsAndMedia"),
 						_createObjectFieldSetting("maximumFileSize", "100"))
 				).build(),
-				new PicklistObjectFieldBuilder().labelMap(
+				new PicklistObjectFieldBuilder().indexed(
+					true
+				).labelMap(
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString())
 				).listTypeDefinitionId(
 					_listTypeDefinition.getListTypeDefinitionId()
-				).indexed(
-					true
-				).objectFieldSettings(
-					Collections.emptyList()
 				).name(
 					"picklistObjectFieldName"
+				).objectFieldSettings(
+					Collections.emptyList()
 				).build(),
 				new RichTextObjectFieldBuilder().labelMap(
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString())
-				).objectFieldSettings(
-					Collections.emptyList()
 				).name(
 					"richTextObjectFieldName"
-				).build(),
-				new TextObjectFieldBuilder().labelMap(
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString())
 				).objectFieldSettings(
 					Collections.emptyList()
+				).build(),
+				new TextObjectFieldBuilder().indexed(
+					true
+				).labelMap(
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString())
 				).name(
 					"textObjectFieldName"
+				).objectFieldSettings(
+					Collections.emptyList()
 				).build()));
 
 		_objectRelationshipLocalService.addObjectRelationship(
@@ -327,6 +329,24 @@ public class DefaultObjectEntryManagerImplTest {
 			objectEntry2);
 		_testGetObjectEntries(
 			HashMapBuilder.put(
+				"filter",
+				_buildEqualsExpressionFilterString(
+					"picklistObjectFieldName", picklistObjectFieldValue1)
+			).put(
+				"search", "aa"
+			).build(),
+			objectEntry1);
+		_testGetObjectEntries(
+			HashMapBuilder.put(
+				"filter",
+				_buildEqualsExpressionFilterString(
+					"picklistObjectFieldName", picklistObjectFieldValue2)
+			).put(
+				"search", "aa"
+			).build(),
+			objectEntry2);
+		_testGetObjectEntries(
+			HashMapBuilder.put(
 				"search", picklistObjectFieldValue1
 			).build(),
 			objectEntry1);
@@ -335,6 +355,11 @@ public class DefaultObjectEntryManagerImplTest {
 				"search", picklistObjectFieldValue2
 			).build(),
 			objectEntry2);
+		_testGetObjectEntries(
+			HashMapBuilder.put(
+				"search", "aa"
+			).build(),
+			objectEntry1, objectEntry2);
 		_testGetObjectEntries(
 			HashMapBuilder.put(
 				"sort", "createDate:asc"
@@ -468,6 +493,12 @@ public class DefaultObjectEntryManagerImplTest {
 					actualObjectEntryProperties.get(expectedEntry.getKey()));
 			}
 		}
+	}
+
+	private String _buildEqualsExpressionFilterString(
+		String fieldName, String value) {
+
+		return StringBundler.concat("( ", fieldName, " eq '", value, "')");
 	}
 
 	private String _buildInExpressionFilterString(

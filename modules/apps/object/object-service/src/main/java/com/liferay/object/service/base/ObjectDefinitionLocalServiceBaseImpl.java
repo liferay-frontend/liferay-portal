@@ -38,6 +38,8 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
 import com.liferay.portal.kernel.search.Indexable;
@@ -274,6 +276,50 @@ public abstract class ObjectDefinitionLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the object definition with the matching external reference code and company.
+	 *
+	 * @param companyId the primary key of the company
+	 * @param externalReferenceCode the object definition's external reference code
+	 * @return the matching object definition, or <code>null</code> if a matching object definition could not be found
+	 */
+	@Override
+	public ObjectDefinition fetchObjectDefinitionByExternalReferenceCode(
+		long companyId, String externalReferenceCode) {
+
+		return objectDefinitionPersistence.fetchByC_ERC(
+			companyId, externalReferenceCode);
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #fetchObjectDefinitionByExternalReferenceCode(long, String)}
+	 */
+	@Deprecated
+	@Override
+	public ObjectDefinition fetchObjectDefinitionByReferenceCode(
+		long companyId, String externalReferenceCode) {
+
+		return fetchObjectDefinitionByExternalReferenceCode(
+			companyId, externalReferenceCode);
+	}
+
+	/**
+	 * Returns the object definition with the matching external reference code and company.
+	 *
+	 * @param companyId the primary key of the company
+	 * @param externalReferenceCode the object definition's external reference code
+	 * @return the matching object definition
+	 * @throws PortalException if a matching object definition could not be found
+	 */
+	@Override
+	public ObjectDefinition getObjectDefinitionByExternalReferenceCode(
+			long companyId, String externalReferenceCode)
+		throws PortalException {
+
+		return objectDefinitionPersistence.findByC_ERC(
+			companyId, externalReferenceCode);
+	}
+
+	/**
 	 * Returns the object definition with the primary key.
 	 *
 	 * @param objectDefinitionId the primary key of the object definition
@@ -414,6 +460,11 @@ public abstract class ObjectDefinitionLocalServiceBaseImpl
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
+
+		if (_log.isWarnEnabled()) {
+			_log.warn(
+				"Implement ObjectDefinitionLocalServiceImpl#deleteObjectDefinition(ObjectDefinition) to avoid orphaned data");
+		}
 
 		return objectDefinitionLocalService.deleteObjectDefinition(
 			(ObjectDefinition)persistedModel);
@@ -582,5 +633,8 @@ public abstract class ObjectDefinitionLocalServiceBaseImpl
 	@Reference
 	protected com.liferay.counter.kernel.service.CounterLocalService
 		counterLocalService;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ObjectDefinitionLocalServiceBaseImpl.class);
 
 }

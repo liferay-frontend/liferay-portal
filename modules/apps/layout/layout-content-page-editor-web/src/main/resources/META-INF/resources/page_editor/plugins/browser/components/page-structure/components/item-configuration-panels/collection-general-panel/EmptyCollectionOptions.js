@@ -21,9 +21,9 @@ import React, {useState} from 'react';
 import {useSelector} from '../../../../../../../app/contexts/StoreContext';
 import selectLanguageId from '../../../../../../../app/selectors/selectLanguageId';
 import {getEditableLocalizedValue} from '../../../../../../../app/utils/getEditableLocalizedValue';
-import {useId} from '../../../../../../../app/utils/useId';
 import CurrentLanguageFlag from '../../../../../../../common/components/CurrentLanguageFlag';
 import useControlledState from '../../../../../../../core/hooks/useControlledState';
+import {useId} from '../../../../../../../core/hooks/useId';
 
 export function EmptyCollectionOptions({
 	collectionEmptyCollectionMessageId,
@@ -55,7 +55,7 @@ export function EmptyCollectionOptions({
 
 	return (
 		<>
-			{Liferay.FeatureFlags['LPS-160243'] && (
+			{
 				<div className="align-items-center d-flex mb-2 pt-1">
 					<div>
 						<ClayCheckbox
@@ -70,9 +70,9 @@ export function EmptyCollectionOptions({
 
 					<EmptyCollectionHelp />
 				</div>
-			)}
+			}
 
-			{Liferay.FeatureFlags['LPS-160789'] && displayMessage && (
+			{displayMessage && (
 				<ClayForm.Group small>
 					<label htmlFor={collectionEmptyCollectionMessageId}>
 						{Liferay.Language.get('empty-collection-alert')}

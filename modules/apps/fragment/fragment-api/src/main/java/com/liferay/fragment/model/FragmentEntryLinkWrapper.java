@@ -66,6 +66,7 @@ public class FragmentEntryLinkWrapper
 		attributes.put("html", getHtml());
 		attributes.put("js", getJs());
 		attributes.put("configuration", getConfiguration());
+		attributes.put("deleted", isDeleted());
 		attributes.put("editableValues", getEditableValues());
 		attributes.put("namespace", getNamespace());
 		attributes.put("position", getPosition());
@@ -201,6 +202,12 @@ public class FragmentEntryLinkWrapper
 			setConfiguration(configuration);
 		}
 
+		Boolean deleted = (Boolean)attributes.get("deleted");
+
+		if (deleted != null) {
+			setDeleted(deleted);
+		}
+
 		String editableValues = (String)attributes.get("editableValues");
 
 		if (editableValues != null) {
@@ -327,6 +334,16 @@ public class FragmentEntryLinkWrapper
 	@Override
 	public long getCtCollectionId() {
 		return model.getCtCollectionId();
+	}
+
+	/**
+	 * Returns the deleted of this fragment entry link.
+	 *
+	 * @return the deleted of this fragment entry link
+	 */
+	@Override
+	public boolean getDeleted() {
+		return model.getDeleted();
 	}
 
 	/**
@@ -554,6 +571,16 @@ public class FragmentEntryLinkWrapper
 		return model.isCacheable();
 	}
 
+	/**
+	 * Returns <code>true</code> if this fragment entry link is deleted.
+	 *
+	 * @return <code>true</code> if this fragment entry link is deleted; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isDeleted() {
+		return model.isDeleted();
+	}
+
 	@Override
 	public boolean isLatestVersion()
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -671,6 +698,16 @@ public class FragmentEntryLinkWrapper
 	@Override
 	public void setCtCollectionId(long ctCollectionId) {
 		model.setCtCollectionId(ctCollectionId);
+	}
+
+	/**
+	 * Sets whether this fragment entry link is deleted.
+	 *
+	 * @param deleted the deleted of this fragment entry link
+	 */
+	@Override
+	public void setDeleted(boolean deleted) {
+		model.setDeleted(deleted);
 	}
 
 	/**

@@ -70,6 +70,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -263,8 +264,9 @@ public class LayoutLocalServiceHelper implements IdentifiableOSGiService {
 
 	public void validate(
 			long groupId, boolean privateLayout, long layoutId,
-			long parentLayoutId, String name, String type, boolean hidden,
-			Map<Locale, String> friendlyURLMap, ServiceContext serviceContext)
+			long parentLayoutId, long classNameId, long classPK, String name,
+			String type, Map<Locale, String> friendlyURLMap,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		validateName(name);
@@ -300,6 +302,7 @@ public class LayoutLocalServiceHelper implements IdentifiableOSGiService {
 
 			if (((layout == null) ||
 				 Validator.isNull(layout.getSourcePrototypeLayoutUuid())) &&
+				!_isDraftLayout(classNameId, classPK, type) &&
 				!SitesUtil.isLayoutSortable(parentLayout)) {
 
 				throw new LayoutParentLayoutIdException(
@@ -711,6 +714,26 @@ public class LayoutLocalServiceHelper implements IdentifiableOSGiService {
 
 	@BeanReference(type = ResourcePermissionLocalService.class)
 	protected ResourcePermissionLocalService resourcePermissionLocalService;
+
+	private boolean _isDraftLayout(
+		long classNameId, long classPK, String type) {
+
+		if (!Objects.equals(type, LayoutConstants.TYPE_ASSET_DISPLAY) &&
+			!Objects.equals(type, LayoutConstants.TYPE_COLLECTION) &&
+			!Objects.equals(type, LayoutConstants.TYPE_CONTENT)) {
+
+			return false;
+		}
+
+		if ((classPK > 0) &&
+			(classNameId == PortalUtil.getClassNameId(
+				Layout.class.getName()))) {
+
+			return true;
+		}
+
+		return false;
+	}
 
 	private static final String _FRIENDLY_URL_SEPARATOR_HEAD =
 		Portal.FRIENDLY_URL_SEPARATOR.substring(

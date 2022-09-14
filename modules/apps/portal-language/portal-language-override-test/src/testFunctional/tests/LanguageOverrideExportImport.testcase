@@ -185,9 +185,10 @@ this-is-a-language-key=This is a language key''',
 		task ("Then the translation is imported successfully") {
 			Search.searchCP(searchTerm = "hello-world");
 
-			AssertElementPresent(
-				key_languageKey = "hello-world",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "Hello world",
+				languageKey = "hello-world",
+				selectedLanguage = "en_US");
 		}
 	}
 
@@ -218,18 +219,10 @@ this-is-a-language-key=This is a language key''',
 
 			Search.searchCP(searchTerm = "this-is-a-new-language-key");
 
-			AssertElementPresent(
-				key_languageKey = "this-is-a-new-language-key",
-				locator1 = "LanguageOverride#VIEW_PAGE_LANGUAGE_KEY");
-
-			LexiconList.viewListEntrySubtitle(
-				listEntry = "this-is-a-new-language-key",
-				listEntrySubtitle = "esta es una nueva clave de idioma");
-
-			AssertElementPresent(
-				key_language = "pt_BR",
-				key_languageKey = "this-is-a-new-language-key",
-				locator1 = "LanguageOverride#BOLD_LANGUAGE_WITH_OVERRIDE");
+			LanguageOverride.assertSelectedLanguageInListView(
+				currentTranslationOverride = "esta es una nueva clave de idioma",
+				languageKey = "this-is-a-new-language-key",
+				selectedLanguage = "pt_BR");
 		}
 	}
 

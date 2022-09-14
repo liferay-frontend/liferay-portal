@@ -19,8 +19,8 @@ import React, {useEffect, useRef, useState} from 'react';
 
 import {useGlobalContext} from '../../app/contexts/GlobalContext';
 import isValidStyleValue from '../../app/utils/isValidStyleValue';
-import {useId} from '../../app/utils/useId';
 import {LengthField} from '../../common/components/LengthField';
+import {useId} from '../../core/hooks/useId';
 import {useStyleBook} from '../../plugins/page-design-options/hooks/useStyleBook';
 import {Tooltip} from './Tooltip';
 
@@ -201,10 +201,7 @@ function SpacingSelectorButton({
 					aria-expanded={active}
 					aria-haspopup={true}
 					aria-label={field?.label}
-					className={classNames(
-						`${BUTTON_CLASSNAME} b-0 flex-grow-1 mb-0 text-center`,
-						{'text-secondary': !active}
-					)}
+					className={`${BUTTON_CLASSNAME} b-0 flex-grow-1 mb-0 text-center`}
 					data-position={position}
 					data-type={type}
 					disabled={disabled}

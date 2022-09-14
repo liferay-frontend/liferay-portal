@@ -78,7 +78,7 @@ public class FragmentEntryLinkCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(57);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -120,6 +120,8 @@ public class FragmentEntryLinkCacheModel
 		sb.append(js);
 		sb.append(", configuration=");
 		sb.append(configuration);
+		sb.append(", deleted=");
+		sb.append(deleted);
 		sb.append(", editableValues=");
 		sb.append(editableValues);
 		sb.append(", namespace=");
@@ -216,6 +218,8 @@ public class FragmentEntryLinkCacheModel
 			fragmentEntryLinkImpl.setConfiguration(configuration);
 		}
 
+		fragmentEntryLinkImpl.setDeleted(deleted);
+
 		if (editableValues == null) {
 			fragmentEntryLinkImpl.setEditableValues("");
 		}
@@ -296,6 +300,8 @@ public class FragmentEntryLinkCacheModel
 		html = (String)objectInput.readObject();
 		js = (String)objectInput.readObject();
 		configuration = (String)objectInput.readObject();
+
+		deleted = objectInput.readBoolean();
 		editableValues = (String)objectInput.readObject();
 		namespace = objectInput.readUTF();
 
@@ -378,6 +384,8 @@ public class FragmentEntryLinkCacheModel
 			objectOutput.writeObject(configuration);
 		}
 
+		objectOutput.writeBoolean(deleted);
+
 		if (editableValues == null) {
 			objectOutput.writeObject("");
 		}
@@ -426,6 +434,7 @@ public class FragmentEntryLinkCacheModel
 	public String html;
 	public String js;
 	public String configuration;
+	public boolean deleted;
 	public String editableValues;
 	public String namespace;
 	public int position;

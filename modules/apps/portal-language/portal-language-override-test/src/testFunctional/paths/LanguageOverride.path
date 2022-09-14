@@ -16,52 +16,21 @@
 	<td></td>
 </tr>
 
-<!--VIEW_PAGE-->
+<!--FILTER_BY_OVERRIDE-->
 
 <tr>
-	<td>VIEW_PAGE_LANGUAGE_KEY</td>
-	<td>//h5/strong[contains(.,'${key_languageKey}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>VIEW_PAGE_LANGUAGE_KEY_TRANSLATION</td>
-	<td>//h6[contains(@class,'text-default') and contains (.,'${key_translation}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>BOLD_LANGUAGE_WITH_OVERRIDE</td>
+	<td>FILTER_BY_OVERRIDE_BOLD_LANGUAGE_WITH_OVERRIDE</td>
 	<td>//dd[contains(.,'${key_languageKey}')]//h6/strong[contains (.,'${key_language}')]</td>
 	<td></td>
 </tr>
 <tr>
-	<td></td>
-	<td></td>
-	<td></td>
-</tr>
-
-<!--FILTER_BY_ANY_LANGUAGE-->
-
-<tr>
-	<td>FILTER_BY_ANY_LANGUAGE_FILTER_LABEL</td>
-	<td>//li[contains(@class,'tbar-item-expand')]//span[contains(@class,'label-item-expand')][starts-with(.,'Any Language')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>FILTER_BY_ANY_LANGUAGE_REMOVE_ANY_LANGUAGE_FILTER</td>
-	<td>//span[contains(.,'Any Language')]//following-sibling::span/button[contains(@class,'close')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td></td>
-	<td></td>
-	<td></td>
-</tr>
-
-<!--LIST_VIEW-->
-
-<tr>
-	<td>LANGUAGE_KEY_OVERRIDDEN_LABEL</td>
+	<td>FILTER_BY_OVERRIDE_LANGUAGES_WITH_OVERRIDE</td>
 	<td>//div[contains(@class,'autofit-col-expand')]//h6[contains (.,'Languages With Override:')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FILTER_BY_OVERRIDE_REMOVE_FILTER_SCOPE</td>
+	<td>//span/button[contains(@class,'close')]</td>
 	<td></td>
 </tr>
 <tr>

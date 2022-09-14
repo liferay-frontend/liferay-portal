@@ -238,6 +238,7 @@
 		<column name="html" type="String" />
 		<column name="js" type="String" />
 		<column name="configuration" type="String" />
+		<column name="deleted" type="boolean" />
 		<column name="editableValues" type="String" />
 		<column name="namespace" type="String" />
 		<column name="position" type="int" />

@@ -43,7 +43,7 @@
 			<#if (messageListItemsJSONArray.iterator())?has_content>
 				<@liferay.language key="consider-that-the-following-data-would-not-have-been-published-either" />
 			<#else>
-				<@liferay.language key="the-following-data-has-not-been-published" />
+				<@liferay.language key="the-following-data-was-not-published" />
 			</#if>
 		</span>
 

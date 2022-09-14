@@ -84,22 +84,9 @@ public class ApplicationsMenuApplicationMenuProductNavigationControlMenuEntry
 		return false;
 	}
 
-	@Reference(
-		target = "(panel.category.key=" + PanelCategoryKeys.HIDDEN + ")",
-		unbind = "-"
-	)
-	public void setPanelCategory(PanelCategory panelCategory) {
-	}
-
 	@Override
-	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.product.navigation.applications.menu.web)",
-		unbind = "-"
-	)
-	public void setServletContext(ServletContext servletContext) {
-		_servletContext = servletContext;
-
-		super.setServletContext(servletContext);
+	protected ServletContext getServletContext() {
+		return _servletContext;
 	}
 
 	@Reference
@@ -108,9 +95,15 @@ public class ApplicationsMenuApplicationMenuProductNavigationControlMenuEntry
 	@Reference
 	private PanelAppRegistry _panelAppRegistry;
 
+	@Reference(target = "(panel.category.key=" + PanelCategoryKeys.HIDDEN + ")")
+	private PanelCategory _panelCategory;
+
 	@Reference
 	private PanelCategoryRegistry _panelCategoryRegistry;
 
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.product.navigation.applications.menu.web)"
+	)
 	private ServletContext _servletContext;
 
 }

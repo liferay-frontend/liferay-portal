@@ -68,7 +68,6 @@ import com.liferay.portal.change.tracking.store.CTStoreFactory;
 import com.liferay.portal.configuration.upgrade.PrefsPropsToConfigurationUpgradeHelper;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBProcessContext;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
@@ -93,7 +92,6 @@ import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
-import com.liferay.portal.kernel.upgrade.UpgradeStep;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portlet.documentlibrary.store.StoreFactory;
@@ -147,20 +145,15 @@ public class JournalServiceUpgradeStepRegistrator
 			new UpgradeJournalDisplayPreferences(),
 			new UpgradeLastPublishDate(),
 			new UpgradePortletSettings(_settingsFactory),
-			new UpgradeStep() {
-
-				@Override
-				public void upgrade(DBProcessContext dbProcessContext) {
-					try {
-						_deleteTempImages();
-					}
-					catch (Exception exception) {
-						exception.printStackTrace(
-							new PrintWriter(
-								dbProcessContext.getOutputStream(), true));
-					}
+			dbProcessContext -> {
+				try {
+					_deleteTempImages();
 				}
-
+				catch (Exception exception) {
+					exception.printStackTrace(
+						new PrintWriter(
+							dbProcessContext.getOutputStream(), true));
+				}
 			});
 
 		registry.register(
@@ -339,14 +332,6 @@ public class JournalServiceUpgradeStepRegistrator
 				_groupLocalService));
 	}
 
-	@Reference(unbind = "-")
-	protected void setPortalCapabilityLocator(
-		PortalCapabilityLocator portalCapabilityLocator) {
-
-		// See LPS-82746
-
-	}
-
 	private void _deleteTempImages() throws Exception {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Delete temporary images");
@@ -438,6 +423,11 @@ public class JournalServiceUpgradeStepRegistrator
 
 	@Reference
 	private Portal _portal;
+
+	// See LPS-82746
+
+	@Reference
+	private PortalCapabilityLocator _portalCapabilityLocator;
 
 	@Reference
 	private PortletFileRepository _portletFileRepository;

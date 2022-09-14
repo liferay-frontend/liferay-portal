@@ -1298,6 +1298,8 @@ public class ObjectEntryLocalServiceImpl
 			return predicate;
 		}
 
+		Predicate searchPredicate = null;
+
 		List<ObjectField> objectFields =
 			_objectFieldPersistence.findByODI_DBT_I(
 				objectDefinitionId, "String", true);
@@ -1311,15 +1313,23 @@ public class ObjectEntryLocalServiceImpl
 
 			Predicate likePredicate = column.like("%" + search + "%");
 
-			if (predicate == null) {
-				predicate = likePredicate;
+			if (searchPredicate == null) {
+				searchPredicate = likePredicate;
 			}
 			else {
-				predicate = predicate.and(likePredicate);
+				searchPredicate = searchPredicate.or(likePredicate);
 			}
 		}
 
-		return predicate;
+		if (searchPredicate == null) {
+			return predicate;
+		}
+
+		if (predicate == null) {
+			return searchPredicate;
+		}
+
+		return predicate.and(searchPredicate.withParentheses());
 	}
 
 	private DLFolder _getDLFolder(

@@ -15,13 +15,13 @@
 package com.liferay.layout.content.page.editor.web.internal.sidebar.panel;
 
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
+import com.liferay.layout.security.permission.resource.LayoutContentModelResourcePermission;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.permission.LayoutPermission;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.Locale;
@@ -63,13 +63,11 @@ public class PageContentPageEditorSidebarPanel
 	public boolean isVisible(
 		PermissionChecker permissionChecker, long plid, int layoutType) {
 
-		if (!GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-153452"))) {
-			return false;
-		}
-
 		try {
 			if (_layoutPermission.containsLayoutUpdatePermission(
-					permissionChecker, plid)) {
+					permissionChecker, plid) ||
+				_modelResourcePermission.contains(
+					permissionChecker, plid, ActionKeys.UPDATE)) {
 
 				return true;
 			}
@@ -91,5 +89,8 @@ public class PageContentPageEditorSidebarPanel
 
 	@Reference
 	private LayoutPermission _layoutPermission;
+
+	@Reference
+	private LayoutContentModelResourcePermission _modelResourcePermission;
 
 }

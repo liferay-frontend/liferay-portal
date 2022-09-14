@@ -299,47 +299,4 @@ else {
 				});
 			});
 	}
-
-	function <portlet:namespace />showUsers(status) {
-
-		<%
-		PortletURL showUsersURL = PortletURLBuilder.createRenderURL(
-			renderResponse
-		).setMVCRenderCommandName(
-			"/users_admin/view"
-		).setParameter(
-			"toolbarItem", toolbarItem
-		).setParameter(
-			"usersListView", usersListView
-		).buildPortletURL();
-
-		organizationId = ParamUtil.getLong(request, "organizationId", OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
-
-		if (organizationId != OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID) {
-			showUsersURL.setParameter("organizationId", String.valueOf(organizationId));
-		}
-
-		if (Validator.isNotNull(viewUsersRedirect)) {
-			showUsersURL.setParameter("viewUsersRedirect", viewUsersRedirect);
-		}
-		%>
-
-		location.href = Liferay.Util.addParams(
-			'<portlet:namespace />status=' + status.value,
-			'<%= HtmlUtil.escapeJS(showUsersURL.toString()) %>'
-		);
-	}
-</aui:script>
-
-<aui:script require='<%= npmResolvedPackageName + "/js/actions.es as actions" %>'>
-	window['<portlet:namespace />openSelectUsersDialog'] = function (
-		organizationId
-	) {
-		actions.ACTIONS.selectUsers({
-			basePortletURL:
-				'<%= String.valueOf(renderResponse.createRenderURL()) %>',
-			organizationId,
-			portletNamespace: '<portlet:namespace />',
-		});
-	};
 </aui:script>

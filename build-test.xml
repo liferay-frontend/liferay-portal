@@ -1091,13 +1091,13 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 								</then>
 							</elseif>
 							<else>
-								<fail message="${network.interface} must be set if running get-mac-address locally" />
+								<fail message="${network.interface} must be set if running get-mac-address locally." />
 							</else>
 						</if>
 					</then>
 				</elseif>
 				<else>
-					<fail message="Support for running get-mac-address on Windows not yet added" />
+					<fail message="Support for running get-mac-address on Windows not yet added." />
 				</else>
 			</if>
 		</sequential>
@@ -11279,6 +11279,15 @@ include-and-override=${liferay.home}/portal-setup-wizard.properties</echo>
 		</if>
 
 		<if>
+			<isset property="test.company.default.locale" />
+			<then>
+				<echo append="true" file="portal-impl/src/portal-ext.properties">
+					company.default.locale=${test.company.default.locale}
+				</echo>
+			</then>
+		</if>
+
+		<if>
 			<isset property="test.set.default.portal.properties" />
 			<then>
 				<echo file="portal-impl/src/portal-ext.properties">liferay.home=${liferay.home}</echo>
@@ -12125,6 +12134,15 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			<then>
 				<echo append="true" file="${test.ext.properties.file}">
 					test.base.dir.name=${test.base.dir.name}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="test.company.default.locale" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					test.company.default.locale=${test.company.default.locale}
 				</echo>
 			</then>
 		</if>
@@ -15750,5 +15768,38 @@ diff -y -B -W250 upgraded.sql fresh.sql | expand | grep -E -C40 '^.{123} [|>]( |
 				<isset property="app.server.shutdown.timeout" />
 			</condition>
 		</fail>
+
+		<if>
+			<or>
+				<equals arg1="${app.server.type}" arg2="weblogic" />
+				<equals arg1="${app.server.type}" arg2="websphere" />
+			</or>
+			<then>
+				<if>
+					<equals arg1="${app.server.type}" arg2="weblogic" />
+					<then>
+						<var name="admin.server.path" value="8080/console" />
+					</then>
+					<elseif>
+						<equals arg1="${app.server.type}" arg2="websphere" />
+						<then>
+							<var name="admin.server.path" value="9060" />
+						</then>
+					</elseif>
+				</if>
+
+				<waitfor checkevery="5" checkeveryunit="second" maxwait="5" maxwaitunit="minute" timeoutproperty="admin.server.shutdown.timeout">
+					<not>
+						<http url="http://localhost:${admin.server.path}" />
+					</not>
+				</waitfor>
+
+				<fail message="Admin Server is still available at localhost:${admin.server.path}.">
+					<condition>
+						<isset property="admin.server.shutdown.timeout" />
+					</condition>
+				</fail>
+			</then>
+		</if>
 	</target>
 </project>
