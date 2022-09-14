@@ -22,7 +22,7 @@ EditClientExtensionEntryDisplayContext editClientExtensionEntryDisplayContext = 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(editClientExtensionEntryDisplayContext.getRedirect());
 
-renderResponse.setTitle(LanguageUtil.get(request, "new") + " " + portletDisplay.getTitle());
+renderResponse.setTitle(editClientExtensionEntryDisplayContext.getPortletTitle());
 %>
 
 <portlet:actionURL name="/client_extension_admin/edit_client_extension_entry" var="editClientExtensionEntryURL" />

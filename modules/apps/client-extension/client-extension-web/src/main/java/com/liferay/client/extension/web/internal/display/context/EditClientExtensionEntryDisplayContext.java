@@ -76,6 +76,10 @@ public class EditClientExtensionEntryDisplayContext {
 			_clientExtensionEntry, _portletRequest, "name");
 	}
 
+	public String getPortletTitle() {
+		return LanguageUtil.get(_getHttpServletRequest(), "new-remote-app");
+	}
+
 	public String getProperties() {
 		return BeanParamUtil.getString(
 			_clientExtensionEntry, _portletRequest, "properties");
