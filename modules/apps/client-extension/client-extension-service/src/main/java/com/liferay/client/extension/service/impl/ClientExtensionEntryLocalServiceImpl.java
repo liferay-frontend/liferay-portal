@@ -14,6 +14,7 @@
 
 package com.liferay.client.extension.service.impl;
 
+import com.liferay.client.extension.exception.ClientExtensionEntryTypeSettingsException;
 import com.liferay.client.extension.exception.DuplicateClientExtensionEntryExternalReferenceCodeException;
 import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
@@ -47,6 +48,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
@@ -97,6 +99,8 @@ public class ClientExtensionEntryLocalServiceImpl
 
 		_validateExternalReferenceCode(
 			user.getCompanyId(), externalReferenceCode);
+
+		_validateName(nameMap);
 
 		_validateTypeSettings(typeSettings, null, type);
 
@@ -481,6 +485,15 @@ public class ClientExtensionEntryLocalServiceImpl
 
 		if (clientExtensionEntry != null) {
 			throw new DuplicateClientExtensionEntryExternalReferenceCodeException();
+		}
+	}
+
+	private void _validateName(Map<Locale, String> nameMap)
+		throws ClientExtensionEntryTypeSettingsException {
+
+		if (Validator.isBlank(nameMap.get(LocaleUtil.getDefault()))) {
+			throw new ClientExtensionEntryTypeSettingsException(
+				"name-is-required");
 		}
 	}
 
