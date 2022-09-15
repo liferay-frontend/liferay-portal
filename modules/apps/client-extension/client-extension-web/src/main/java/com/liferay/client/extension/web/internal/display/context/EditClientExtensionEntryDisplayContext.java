@@ -66,9 +66,11 @@ public class EditClientExtensionEntryDisplayContext {
 	}
 
 	public String getHelpLabel() {
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
 		return LanguageUtil.get(
 			_getHttpServletRequest(),
-			CETLabelUtil.getHelpLabel(_getHttpServletRequest(), getType()));
+			CETLabelUtil.getHelpLabel(themeDisplay.getLocale(), getType()));
 	}
 
 	public String getName() {
