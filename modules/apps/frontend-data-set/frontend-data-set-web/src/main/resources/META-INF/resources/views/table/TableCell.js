@@ -74,6 +74,7 @@ function TableCell({
 	value,
 	valuePath,
 	view,
+	...otherProps
 }) {
 	const {customDataRenderers, inlineEditingSettings} = useContext(
 		FrontendDataSetContext
@@ -123,7 +124,10 @@ function TableCell({
 		(itemInlineChanges || inlineEditingSettings?.alwaysOn)
 	) {
 		return (
-			<DndTableCell columnName={String(options.fieldName)}>
+			<DndTableCell
+				columnName={String(options.fieldName)}
+				{...otherProps}
+			>
 				<InlineEditInputRenderer
 					actions={actions}
 					itemData={itemData}
@@ -139,7 +143,7 @@ function TableCell({
 	}
 
 	return (
-		<DndTableCell columnName={String(options.fieldName)}>
+		<DndTableCell columnName={String(options.fieldName)} {...otherProps}>
 			{DataRenderer && !loading ? (
 				<DataRenderer
 					actions={actions}

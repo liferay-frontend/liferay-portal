@@ -63,9 +63,12 @@ function TableHead({
 					</DndTable.Cell>
 				)}
 
-				{fields.map((field) => (
+				{fields.map((field, index) => (
 					<TableHeadCell
 						{...field}
+						className={
+							index === fields.length - 1 ? 'expand-full' : null
+						}
 						expandableColumns={expandableColumns}
 						key={field.label}
 					/>

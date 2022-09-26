@@ -34,7 +34,7 @@ function getItemFields(
 	itemsActions,
 	itemInlineChanges = null
 ) {
-	return fields.map((field) => {
+	return fields.map((field, index) => {
 		const {actionDropdownItems} = item;
 		const {rootPropertyName, value, valuePath} = field.fieldName
 			? getValueDetailsFromItem(item, field.fieldName)
@@ -43,6 +43,7 @@ function getItemFields(
 		return (
 			<TableCell
 				actions={itemsActions || actionDropdownItems}
+				className={index === fields.length - 1 ? 'expand-full' : null}
 				inlineEditSettings={field.inlineEditSettings}
 				itemData={item}
 				itemId={itemId}

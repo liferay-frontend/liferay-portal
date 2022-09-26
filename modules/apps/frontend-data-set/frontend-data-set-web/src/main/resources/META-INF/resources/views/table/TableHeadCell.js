@@ -30,6 +30,7 @@ function TableHeadCell({
 	label,
 	sortable,
 	sortingKey: sortingKeyProp,
+	...otherProps
 }) {
 	const [{sorting}, viewsDispatch] = useContext(ViewsContext);
 
@@ -85,6 +86,7 @@ function TableHeadCell({
 			expand={expand}
 			heading
 			resizable
+			{...otherProps}
 		>
 			{sortable ? (
 				<ClayButton
