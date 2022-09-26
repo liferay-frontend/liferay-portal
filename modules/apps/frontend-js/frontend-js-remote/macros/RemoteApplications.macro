@@ -1,0 +1,21 @@
+definition {
+
+	macro AddiFrame {
+		Button.clickAdd();
+
+		Click.clickAt(locator1 = "RemoteAppliactions#ADD_IFRAME");
+	}
+
+	macro iFrameName {
+		Type(
+			key_text = "Test Name",
+			locator1 = "RemoteApplications#IFRAME_NAME");
+	}
+
+	macro iFrameURL {
+		Type(
+			key_text = "testurl",
+			locator1 = "RemoteApplications#IFRAME_URL");
+	}
+
+}
