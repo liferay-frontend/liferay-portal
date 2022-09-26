@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>RemoteApplications</title>
+</head>
+
+<body>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr><td rowspan="1" colspan="3">A11yTool</td></tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>ADD_IFRAME</td>
+	<td>//button[contains(@class,'dropdown-item') and contains(., 'Add IFrame')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>THIS_FIELD_IS_REQUIRED</td>
+	<td>//div[contains(@class,'required') and contains(., 'This field is required.')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>IFRAME_NAME</td>
+	<td>//input[contains(@class,'form-control language-value')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>IFRAME_URL</td>
+	<td>//input[contains(@class,'field form-control error-field')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PLEASE_ENTER_VALID_URL</td>
+	<td>//div[contains(@class,'alert alert-dismissible alert-danger')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
