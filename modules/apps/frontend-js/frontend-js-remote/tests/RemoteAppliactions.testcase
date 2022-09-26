@@ -1,0 +1,82 @@
+@component-name = "portal-frontend-infrastructure"
+definition {
+
+	property osgi.modules.includes = "frontend-js-components-sample-web";
+	property portal.acceptance = "true";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Remote Applications";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		PortalInstances.tearDownCP();
+	}
+
+	@description = "LPS-163527. Assert iFrame is not add and warnings appear."
+	@priority = "4"
+	test AssertErrorMessegeAppearsWhenIFrameFieldsEmpty {
+		task ("Given Add IFrame Remote Apps admin page") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Custom Apps",
+				panel = "Applications",
+				portlet = "Remote Apps");
+
+			RemoteApplications.AddiFrame();
+		}
+
+		task ("When required fields Name and URL are blank and When attempt to save remote app") {
+			Button.clickPublish();
+		}
+
+		task ("And when error message "field is required" appears under URL") {
+			AssertTextEquals(
+				locator1 = "RemoteApplications#THIS_FIELD_IS_REQUIRED",
+				value1 = "This field is required.");
+		}
+
+		task ("Then Remote App is not added	") {
+			Navigator.gotoBack();
+
+			AssertTextEquals(
+				locator1 = "Message#EMPTY_STATE_INFO",
+				value1 = "No Results Found");
+		}
+	}
+
+	@description = "LPS-163527. Assert error messege appears when invaild url is entered."
+	@priority = "4"
+	test AssertErrorMessegeAppearsWhenInvaildURL {
+		task ("Given Add IFrame Remote Apps") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Custom Apps",
+				panel = "Applications",
+				portlet = "Remote Apps");
+
+			RemoteApplications.AddiFrame();
+		}
+
+		task ("When type testurl in URL field and a valid name is entered") {
+			RemoteApplications.iFrameName();
+
+			RemoteApplications.iFrameURL();
+		}
+
+		task ("And When attempt to save the remote app") {
+			Button.clickPublish();
+		}
+
+		task ("Then error message "Please enter a valid URL" appears at the top of the paged") {
+			Navigator.gotoBack();
+
+			AssertElementPresent(locator1 = "RemoteApplications#PLEASE_ENTER_VALID_URL");
+		}
+	}
+
+}
