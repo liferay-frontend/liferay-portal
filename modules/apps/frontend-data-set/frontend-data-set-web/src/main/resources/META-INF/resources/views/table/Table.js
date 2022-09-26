@@ -43,7 +43,7 @@ function getItemFields(
 		return (
 			<TableCell
 				actions={itemsActions || actionDropdownItems}
-				className={index === fields.length - 1 ? 'expand-full' : null}
+				className={index === fields.length - 1 && 'flex-md-grow-1'}
 				inlineEditSettings={field.inlineEditSettings}
 				itemData={item}
 				itemId={itemId}

@@ -67,7 +67,7 @@ function TableHead({
 					<TableHeadCell
 						{...field}
 						className={
-							index === fields.length - 1 ? 'expand-full' : null
+							index === fields.length - 1 && 'flex-md-grow-1'
 						}
 						expandableColumns={expandableColumns}
 						key={field.label}
