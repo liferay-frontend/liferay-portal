@@ -14,6 +14,7 @@
 
 package com.liferay.frontend.css.cadmin.web.internal.servlet.taglib;
 
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
@@ -48,7 +49,7 @@ public class CadminTopHeadDynamicInclude extends BaseDynamicInclude {
 			HttpServletResponse httpServletResponse, String key)
 		throws IOException {
 
-		if (!_isSignedIn()) {
+		if (!_isSignedIn() && !FeatureFlagManagerUtil.isEnabled("LPS-151202")) {
 			return;
 		}
 
