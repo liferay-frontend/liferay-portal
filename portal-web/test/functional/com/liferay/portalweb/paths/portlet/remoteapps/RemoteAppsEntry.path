@@ -65,11 +65,6 @@
 	<td>//div[label[contains(.,'Portlet Category Name')]]/select</td>
 	<td></td>
 </tr>
-<tr>
-	<td>REMOTE_APPS_ERROR_WITH_MESSAGE</td>
-	<td>//div[contains(@class, 'alert alert-dismissible alert-danger') and contains(.,'${value1}')]</td>
-	<td></td>
-</tr>
 </tbody>
 </table>
 </body>
