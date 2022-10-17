@@ -174,6 +174,7 @@ export default function ActionBuilder({
 
 	const isValidField = ({businessType, system}: ObjectField) =>
 		businessType !== 'Aggregation' &&
+		businessType !== 'Formula' &&
 		businessType !== 'Relationship' &&
 		!system;
 
