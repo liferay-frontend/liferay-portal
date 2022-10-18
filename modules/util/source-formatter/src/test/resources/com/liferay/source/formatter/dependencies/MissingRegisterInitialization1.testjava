@@ -15,36 +15,16 @@
 package com.liferay.source.formatter.dependencies;
 
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
-import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
-import org.osgi.service.component.annotations.Component;
-
 /**
- * @author Kevin Lee
+ * @author Qi Zhang
  */
-@Component(immediate = true, service = UpgradeStepRegistrator.class)
-public class DummyUpgradeStepVersion implements UpgradeStepRegistrator {
+public class MissingRegisterInitialization1 implements UpgradeStepRegistrator {
 
 	@Override
 	public void register(Registry registry) {
-		registry.register("0.0.0", "1.0.0", new DummyUpgradeStep());
-
-		registry.register(
-			"1.0.0", "1.1.0",
-			new UpgradeProcess() {
-
-				@Override
-				protected void doUpgrade() throws Exception {
-					alter(
-						DummyUpgradeStepVersion.class,
-						new AlterTableAddColumn("test LONG"));
-				}
-
-			});
-
-		registry.register(
-			"1.1.0", "1.1.1", new DummyUpgradeStep(), new DummyUpgradeStep());
+		registry.register("0.0.1", "0.0.2", new DummyUpgradeStep());
 	}
 
 }

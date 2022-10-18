@@ -12,21 +12,18 @@
  * details.
  */
 
-package com.liferay.portal.kernel.search.messaging;
+package com.liferay.source.formatter.dependencies;
 
-import com.liferay.portal.kernel.messaging.proxy.ProxyMessageListener;
-import com.liferay.portal.kernel.search.SearchEngine;
+import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 /**
- * @author Michael C. Han
+ * @author Qi Zhang
  */
-public abstract class BaseSearchEngineMessageListener
-	extends ProxyMessageListener {
+public class MissingRegisterInitialization3 implements UpgradeStepRegistrator {
 
-	public void setSearchEngine(SearchEngine searchEngine) {
-		this.searchEngine = searchEngine;
+	@Override
+	public void register(Registry registry) {
+		registry.register("0.0.0", "0.0.2", new TestClass());
 	}
-
-	protected SearchEngine searchEngine;
 
 }

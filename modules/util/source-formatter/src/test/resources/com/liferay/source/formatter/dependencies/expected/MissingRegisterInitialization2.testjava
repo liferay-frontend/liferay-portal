@@ -12,16 +12,21 @@
  * details.
  */
 
-package com.liferay.portal.kernel.search.messaging;
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
+import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 /**
- * @author Bruno Farache
+ * @author Qi Zhang
  */
-public class SearchWriterMessageListener
-	extends BaseSearchEngineMessageListener {
+public class MissingRegisterInitialization2 implements UpgradeStepRegistrator {
 
-	public void afterPropertiesSet() {
-		setManager(searchEngine.getIndexWriter());
+	@Override
+	public void register(Registry registry) {
+		registry.registerInitialization();
+
+		registry.register("0.0.1", "0.0.2", new DummyUpgradeStep());
 	}
 
 }
