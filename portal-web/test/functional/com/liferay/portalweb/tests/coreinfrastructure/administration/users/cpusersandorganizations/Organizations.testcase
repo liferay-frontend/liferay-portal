@@ -64,6 +64,8 @@ definition {
 
 			UsersAndOrganizationsNavigator.gotoOrganizations();
 
+			LexiconEntry.gotoEntry(rowEntry = "Organization Name 1");
+
 			Organization.viewParentOrganizationCP(
 				orgName = "Suborganization Name ${count}",
 				parentOrgName = "Organization Name 1",
@@ -134,10 +136,11 @@ definition {
 			orgName = "Organization Name",
 			orgType = "Organization");
 
-		Organization.addCommentCP(
-			orgComment = "This is a test comment!",
-			orgName = "Organization Name",
-			orgType = "Organization");
+		Organization.addComment(orgComment = "This is a test comment!");
+
+		AssertTextEquals(
+			locator1 = "TextArea#COMMENTS",
+			value1 = "This is a test comment!");
 	}
 
 	@priority = "3"
@@ -295,12 +298,7 @@ definition {
 			orgName = "Organization Name",
 			orgType = "Organization");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
+		Organization.openOrganizationsAdmin();
 
 		Organization.addSiteCP(orgName = "Organization Name");
 
@@ -344,12 +342,7 @@ definition {
 			orgName = "Organization Name",
 			orgType = "Organization");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
+		Organization.openOrganizationsAdmin();
 
 		Organization.addSiteCP(orgName = "Organization Name");
 
@@ -385,12 +378,7 @@ definition {
 			orgName = "Organization Name",
 			orgType = "Organization");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
+		Organization.openOrganizationsAdmin();
 
 		Organization.addSiteCP(orgName = "Organization Name");
 
@@ -479,6 +467,8 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
+		LexiconEntry.gotoEntry(rowEntry = "Organization Name");
+
 		Suborganization.viewCP(
 			orgName = "Organization Name",
 			orgType = "Organization",
@@ -532,14 +522,7 @@ definition {
 			uploadFrom = "dependencies");
 
 		for (var suborgName : list "Accounting,Business Administration,College of Agricultural Science,College of Business,College of Engineering") {
-			Navigator.openURL();
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Users and Organizations");
-
-			UsersAndOrganizationsNavigator.gotoOrganizations();
+			Organization.openOrganizationsAdmin();
 
 			Organization.addSiteCP(
 				orgName = "${suborgName}",
@@ -796,7 +779,7 @@ definition {
 
 		Organization.openOrganizationsAdmin();
 
-		Organization.editOrganizationCP(orgName = "Organization Name");
+		Organization.gotoEdit(orgName = "Organization Name");
 
 		Click(
 			key_vocabularyName = "Vocabulary Name 1",
@@ -808,7 +791,7 @@ definition {
 
 		Organization.openOrganizationsAdmin();
 
-		Organization.editOrganizationCP(orgName = "Organization Name");
+		Organization.gotoEdit(orgName = "Organization Name");
 
 		AssetCategorization.viewCategory(categoryName = "Category Name 1");
 
@@ -902,9 +885,9 @@ definition {
 
 		Organization.openOrganizationsAdmin();
 
-		Organization.gotoActionsCmd(orgName = "Organization Name");
-
-		MenuItem.clickNoError(menuItem = "Delete");
+		LexiconEntry.gotoEntryMenuItemNoError(
+			menuItem = "Delete",
+			rowEntry = "Organization Name");
 
 		AssertConfirm(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
 
@@ -920,7 +903,7 @@ definition {
 
 		Organization.openOrganizationsAdmin();
 
-		Organization.deleteCP(orgName = "Organization Name");
+		Organization.delete(orgName = "Organization Name");
 	}
 
 	@description = "This sets Order By Name and asserts descending and ascending order"
@@ -983,18 +966,11 @@ definition {
 
 		Search.clearSearchResult();
 
-		Navigator.openURL();
+		Organization.openOrganizationsAdmin();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
-
-		Organization.gotoActionsCmd(orgName = "Organization Name");
-
-		MenuItem.click(menuItem = "Assign Organization Roles");
+		LexiconEntry.gotoEntryMenuItemNoError(
+			menuItem = "Assign Organization Roles",
+			rowEntry = "Organization Name");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
@@ -1010,18 +986,11 @@ definition {
 
 		Search.clearSearchResult();
 
-		Navigator.openURL();
+		Organization.openOrganizationsAdmin();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
-
-		Organization.gotoActionsCmd(orgName = "Organization Name");
-
-		MenuItem.click(menuItem = "Assign Users");
+		LexiconEntry.gotoEntryMenuItemNoError(
+			menuItem = "Assign Users",
+			rowEntry = "Organization Name");
 
 		AssertElementPresent.assertVisible(locator1 = "Button#DONE");
 
@@ -1052,7 +1021,7 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.deleteCP(orgName = "Organization Name");
+		Organization.delete(orgName = "Organization Name");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -1061,7 +1030,9 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.viewNoOrganizationsFoundCP();
+		AssertTextEquals(
+			locator1 = "Message#EMPTY_INFO",
+			value1 = "No organizations were found.");
 	}
 
 	@priority = "4"
@@ -1075,12 +1046,7 @@ definition {
 			orgName = "Organization Name",
 			orgType = "Organization");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
+		Organization.openOrganizationsAdmin();
 
 		Organization.addSiteCP(orgName = "Organization Name");
 
@@ -1116,12 +1082,7 @@ definition {
 			orgName = "Organization Name",
 			orgType = "Organization");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
+		Organization.openOrganizationsAdmin();
 
 		Organization.addSiteCP(orgName = "Organization Name");
 
@@ -1142,9 +1103,13 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.editSiteCP(
+		Organization.edit(
 			orgName = "Organization Name",
 			orgNameEdit = "Organization Name Edit");
+
+		AssertTextEquals(
+			locator1 = "TextInput#NAME",
+			value1 = "Organization Name Edit");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -1184,12 +1149,7 @@ definition {
 			orgName = "Organization Name",
 			orgType = "Organization");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
+		Organization.openOrganizationsAdmin();
 
 		Organization.addSiteCP(orgName = "Organization Name");
 
@@ -1344,7 +1304,7 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.assignOrgRoleCP(
+		Organization.assignOrgRole(
 			orgName = "Organization Name",
 			roleTitle = "Organization Administrator",
 			userFirstName = "userfn1",
@@ -1384,9 +1344,21 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.deactivateMemberCP(
-			orgName = "Organization Name",
-			userFirstName = "userfn2");
+		LexiconEntry.gotoEntry(rowEntry = "Organization Name");
+
+		LexiconEntry.gotoEntryMenuItemNoError(
+			menuItem = "Deactivate",
+			rowEntry = "userfn2");
+
+		AssertConfirm(value1 = "Are you sure you want to deactivate this?");
+
+		Alert.viewSuccessMessage();
+
+		AssertTextEquals(
+			key_columnName = "status",
+			key_tableEntry = "userfn2",
+			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
+			value1 = "Inactive");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -1395,9 +1367,19 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.activateMemberCP(
-			orgName = "Organization Name",
-			userFirstName = "userfn2");
+		LexiconEntry.gotoEntry(rowEntry = "Organization Name");
+
+		LexiconEntry.gotoEntryMenuItem(
+			menuItem = "Activate",
+			rowEntry = "userfn2");
+
+		Alert.viewSuccessMessage();
+
+		AssertTextEquals(
+			key_columnName = "status",
+			key_tableEntry = "userfn2",
+			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
+			value1 = "Active");
 
 		User.logoutPG();
 
@@ -1464,12 +1446,7 @@ definition {
 			orgName = "Organization Site Bravo",
 			orgType = "Organization");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
+		Organization.openOrganizationsAdmin();
 
 		Organization.addSiteCP(orgName = "Organization Site Bravo");
 
@@ -1517,7 +1494,7 @@ definition {
 			orgName = "Organization Name",
 			orgType = "Organization");
 
-		Organization.gotoContact();
+		Navigator.gotoNavTab(navTab = "Contact");
 
 		Organization.addContactInformation(
 			addressType = "Billing",
@@ -1549,16 +1526,15 @@ definition {
 			mondayClose = "18:00",
 			mondayOpen = "08:00");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
+		Organization.openOrganizationsAdmin();
 
-		Organization.editOrganizationCP(orgName = "Organization Name");
+		Organization.gotoEdit(orgName = "Organization Name");
 
-		Organization.addCommentCP(
-			orgComment = "This is a test organization.",
-			orgName = "Organization Name");
+		Organization.addComment(orgComment = "This is a test organization.");
+
+		AssertTextEquals(
+			locator1 = "TextArea#COMMENTS",
+			value1 = "This is a test organization.");
 
 		Navigator.gotoNavNested(navNested = "Security Questions");
 
@@ -1609,9 +1585,9 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.removeMemberCP(
-			orgName = "Organization Name",
-			userFullName = "userfn userln");
+		LexiconEntry.gotoEntry(rowEntry = "Organization Name");
+
+		Organization.removeAssignee(userFullName = "userfn userln");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -1620,9 +1596,9 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.viewRemoveMemberCP(
-			orgName = "Organization Name",
-			userFirstName = "userfn");
+		LexiconEntry.gotoEntry(rowEntry = "Organization Name");
+
+		LexiconTable.viewTableEntryNotPresent(tableEntry = "userfn");
 	}
 
 	@priority = "3"
@@ -1666,29 +1642,33 @@ definition {
 			orgName = "Organization Name 1",
 			orgType = "Organization");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
+		Organization.openOrganizationsAdmin();
 
-		Organization.editOrganizationCP(orgName = "Organization Name 1");
+		Organization.gotoEdit(orgName = "Organization Name 1");
 
-		Organization.addCategorizationCP(
-			orgName = "Organization Name 1",
-			tagName = "alpha");
+		AssetCategorization.addTag(tagName = "alpha");
+
+		PortletEntry.save();
+
+		AssertTextEquals(
+			key_tagName = "alpha",
+			locator1 = "AssetCategorization#TAG",
+			value1 = "alpha");
 
 		JSONOrganization.addOrganization(organizationName = "Organization Name 2");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
+		Organization.openOrganizationsAdmin();
 
-		Organization.editOrganizationCP(orgName = "Organization Name 2");
+		Organization.gotoEdit(orgName = "Organization Name 2");
 
-		Organization.addCategorizationCP(
-			orgName = "Organization Name 2",
-			tagName = "bravo");
+		AssetCategorization.addTag(tagName = "bravo");
+
+		PortletEntry.save();
+
+		AssertTextEquals(
+			key_tagName = "bravo",
+			locator1 = "AssetCategorization#TAG",
+			value1 = "bravo");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -1769,7 +1749,9 @@ definition {
 
 		User.searchCP(searchTerm = "test");
 
-		Organization.viewMembersNotFoundCP();
+		AssertTextEquals(
+			locator1 = "Message#EMPTY_INFO",
+			value1 = "No results were found.");
 	}
 
 	@priority = "3"
@@ -1864,23 +1846,13 @@ definition {
 			organizationName = "Canada",
 			organizationType = "Location");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
+		Organization.openOrganizationsAdmin();
 
 		Organization.addSiteCP(
 			orgName = "United States",
 			siteTemplateName = "Site Template Name");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
+		Organization.openOrganizationsAdmin();
 
 		Organization.addSiteCP(
 			orgName = "Canada",
@@ -1995,12 +1967,7 @@ definition {
 			orgName = "Organization Name 1",
 			orgType = "Organization");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
+		Organization.openOrganizationsAdmin();
 
 		Organization.addSiteCP(orgName = "Organization Name 1");
 

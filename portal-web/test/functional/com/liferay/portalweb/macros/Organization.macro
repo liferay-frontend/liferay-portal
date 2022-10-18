@@ -2,47 +2,12 @@ definition {
 
 	var orgName = "Organization Name";
 
-	macro activateMemberCP {
-		Organization.gotoMemberActionsCmd(
-			memberName = "${userFirstName}",
-			orgName = "${orgName}");
-
-		MenuItem.clickNoError(menuItem = "Activate");
-
-		Alert.viewSuccessMessage();
-
-		var key_userFirstName = "${userFirstName}";
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#USER_TABLE_STATUS",
-			value1 = "Active");
-	}
-
-	macro addCategorizationCP {
-		AssetCategorization.addTag(tagName = "${tagName}");
-
-		PortletEntry.save();
-
-		UsersAndOrganizationsNavigator.gotoMenuBarInformation();
-
-		AssertTextEquals(
-			key_tagName = "${tagName}",
-			locator1 = "AssetCategorization#TAG",
-			value1 = "${tagName}");
-	}
-
-	macro addCommentCP {
-		AssertElementPresent(locator1 = "TextArea#COMMENTS");
-
+	macro addComment {
 		Type(
 			locator1 = "TextArea#COMMENTS",
 			value1 = "${orgComment}");
 
 		PortletEntry.save();
-
-		AssertTextEquals(
-			locator1 = "TextArea#COMMENTS",
-			value1 = "${orgComment}");
 	}
 
 	macro addContactInformation {
@@ -230,7 +195,7 @@ definition {
 	}
 
 	macro addSiteCP {
-		Organization.editOrganizationCP(orgName = "${orgName}");
+		Organization.gotoEdit(orgName = "${orgName}");
 
 		UsersAndOrganizationsNavigator.gotoMenuBarOrganizationSite();
 
@@ -242,31 +207,6 @@ definition {
 			Select(
 				locator1 = "UserGroupsEditUserGroup#PUBLIC_PAGES_SELECT",
 				value1 = "${siteTemplateName}");
-
-			if ("${checkEnablePropagationCheckbox}" == "true") {
-				AssertChecked(locator1 = "UserGroupsEditUserGroup#ENABLE_PROPAGATION_PUBLIC_PAGE_CHECKBOX");
-			}
-			else {
-				Uncheck(locator1 = "UserGroupsEditUserGroup#ENABLE_PROPAGATION_PUBLIC_PAGE_CHECKBOX");
-			}
-		}
-
-		PortletEntry.save();
-	}
-
-	macro addSitePG {
-		Organization.editOrganizationPG(orgName = "${orgName}");
-
-		UsersAndOrganizationsNavigator.gotoMenuBarOrganizationSite();
-
-		Check.checkToggleSwitch(
-			key_toggleSwitchLabel = "Create Site",
-			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
-
-		if (("${organizationSite}" == "Community Site") || ("${organizationSite}" == "Intranet Site")) {
-			Select(
-				locator1 = "UserGroupsEditUserGroup#PUBLIC_PAGES_SELECT",
-				value1 = "${organizationSite}");
 
 			if ("${checkEnablePropagationCheckbox}" == "true") {
 				AssertChecked(locator1 = "UserGroupsEditUserGroup#ENABLE_PROPAGATION_PUBLIC_PAGE_CHECKBOX");
@@ -380,25 +320,16 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-	macro assignOrgRoleCP {
-		Organization.gotoActionsCmd(orgName = "${orgName}");
-
-		Pause(locator1 = "3000");
-
-		MenuItem.click(menuItem = "Assign Organization Roles");
+	macro assignOrgRole {
+		LexiconEntry.gotoEntryMenuItem(
+			menuItem = "Assign Organization Roles",
+			rowEntry = "${orgName}");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
 		LexiconTable.clickTableEntryTitle(tableEntry = "${roleTitle}");
 
 		Navigator.gotoNavItem(navItem = "Available");
-
-		Search.searchCP(searchTerm = "${userScreenName}");
-
-		AssertTextEquals(
-			key_userScreenName = "${userScreenName}",
-			locator1 = "UserGroupsAssignUsers#USER_TABLE_SCREEN_NAME",
-			value1 = "${userScreenName}");
 
 		Check(
 			key_userScreenName = "${userScreenName}",
@@ -454,122 +385,24 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-	macro deactivateMemberCP {
-		Organization.gotoMemberActionsCmd(
-			memberName = "${userFirstName}",
-			orgName = "${orgName}");
-
-		MenuItem.clickNoError(menuItem = "Deactivate");
-
-		AssertConfirm(value1 = "Are you sure you want to deactivate this?");
-
-		Alert.viewSuccessMessage();
-
-		var key_userFirstName = "${userFirstName}";
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#USER_TABLE_STATUS",
-			value1 = "Inactive");
-	}
-
-	macro deleteCP {
-		Organization.gotoActionsCmd(orgName = "${orgName}");
-
-		var key_orgName = "${orgName}";
-
-		MenuItem.clickNoError(menuItem = "Delete");
+	macro delete {
+		LexiconEntry.gotoEntryMenuItemNoError(
+			menuItem = "Delete",
+			rowEntry = "${orgName}");
 
 		AssertConfirm(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
 
 		Alert.viewSuccessMessage();
-
-		AssertElementNotPresent(locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_NAME");
 	}
 
-	macro deletePG {
-		var key_orgName = "${orgName}";
-
-		Search.searchPG(
-			portletName = "My Organizations",
-			searchTerm = "${orgName}");
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_NAME",
-			value1 = "${orgName}");
-
-		LexiconEntry.openEntryMenu(rowEntry = "${orgName}");
-
-		MenuItem.clickNoError(menuItem = "Delete");
-
-		AssertConfirm(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
-
-		Alert.viewSuccessMessage();
-
-		AssertElementNotPresent(locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_NAME");
-	}
-
-	macro editOrganizationCP {
-		UsersAndOrganizationsNavigator.gotoOrganizations();
-
-		Organization.gotoActionsCmd(orgName = "${orgName}");
-
-		var key_orgName = "${orgName}";
-
-		MenuItem.click(menuItem = "Edit");
-	}
-
-	macro editOrganizationPG {
-		var key_orgName = "${orgName}";
-
-		Search.searchPG(
-			portletName = "My Organizations",
-			searchTerm = "${orgName}");
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_NAME",
-			value1 = "${orgName}");
-
-		LexiconEntry.openEntryMenu(rowEntry = "${orgName}");
-
-		MenuItem.clickNoError(menuItem = "Edit");
-	}
-
-	macro editSiteCP {
-		Organization.gotoActionsCmd(orgName = "${orgName}");
-
-		var key_orgName = "${orgName}";
-
-		MenuItem.click(menuItem = "Edit");
+	macro edit {
+		Organization.gotoEdit(orgName = "${orgName}");
 
 		Type(
 			locator1 = "TextInput#NAME",
 			value1 = "${orgNameEdit}");
 
 		PortletEntry.save();
-
-		AssertTextEquals(
-			locator1 = "TextInput#NAME",
-			value1 = "${orgNameEdit}");
-	}
-
-	macro gotoActionsCmd {
-		Pause(locator1 = "1000");
-
-		Search.searchCP(searchTerm = "${orgName}");
-
-		AssertVisible(locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_NAME_GENERIC");
-
-		var key_orgName = "${orgName}";
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_NAME",
-			value1 = "${orgName}");
-
-		LexiconEntry.openEntryMenu(rowEntry = "${orgName}");
-	}
-
-	macro gotoContact {
-		Navigator.gotoNavTab(navTab = "Contact");
 	}
 
 	macro gotoCP {
@@ -588,14 +421,10 @@ definition {
 		Breadcrumb.viewActiveEntry(breadcrumbName = "${orgName}");
 	}
 
-	macro gotoMemberActionsCmd {
-		Organization.gotoCP(
-			orgName = "${orgName}",
-			searchToken = "${orgName}");
-
-		Search.searchCP(searchTerm = "${memberName}");
-
-		LexiconEntry.openEntryMenu(rowEntry = "${memberName}");
+	macro gotoEdit {
+		LexiconEntry.gotoEntryMenuItem(
+			menuItem = "Edit",
+			rowEntry = "${orgName}");
 	}
 
 	macro openOrganizationsAdmin {
@@ -604,18 +433,12 @@ definition {
 			urlAppend = "group/control_panel/manage?p_p_id=com_liferay_users_admin_web_portlet_UsersAdminPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&_com_liferay_users_admin_web_portlet_UsersAdminPortlet_toolbarItem=view-all-organizations&_com_liferay_users_admin_web_portlet_UsersAdminPortlet_usersListView=flat-organizations");
 	}
 
-	macro removeMemberCP {
-		Organization.gotoMemberActionsCmd(
-			memberName = "${userFullName}",
-			orgName = "${orgName}");
-
-		MenuItem.click(menuItem = "Remove");
+	macro removeAssignee {
+		LexiconEntry.gotoEntryMenuItemNoError(
+			menuItem = "Remove",
+			rowEntry = "${userFullName}");
 
 		Alert.viewSuccessMessage();
-
-		AssertTextEquals(
-			locator1 = "Message#EMPTY_INFO",
-			value1 = "No results were found.");
 	}
 
 	macro searchCP {
@@ -704,14 +527,16 @@ definition {
 	}
 
 	macro viewCP {
-		var key_orgName = "${orgName}";
-
 		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_NAME",
+			key_columnName = "name",
+			key_tableEntry = "${orgName}",
+			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
 			value1 = "${orgName}");
 
 		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_TYPE",
+			key_columnName = "type",
+			key_tableEntry = "${orgType}",
+			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
 			value1 = "${orgType}");
 
 		LexiconEntry.openEntryMenu(rowEntry = "${orgName}");
@@ -749,24 +574,8 @@ definition {
 			value1 = "${countryName}");
 	}
 
-	macro viewMembersNotFoundCP {
-		AssertTextEquals(
-			locator1 = "Message#EMPTY_INFO",
-			value1 = "No results were found.");
-	}
-
-	macro viewNoOrganizationsFoundCP {
-		AssertTextEquals(
-			locator1 = "Message#EMPTY_INFO",
-			value1 = "No organizations were found.");
-	}
-
 	macro viewParentOrganizationCP {
-		Organization.gotoActionsCmd(orgName = "${orgName}");
-
-		var key_orgName = "${orgName}";
-
-		MenuItem.click(menuItem = "Edit");
+		Organization.gotoEdit(orgName = "${orgName}");
 
 		if (isSet(parentOrgName)) {
 			var key_orgName = "${subOrgName}";
@@ -780,11 +589,15 @@ definition {
 				locator1 = "IFrame#MODAL_ANY");
 
 			AssertTextEquals(
-				locator1 = "ContentRow#ORGANIZATION_TABLE_NAME",
+				key_columnName = "name",
+				key_rowEntry = "${subOrgName}",
+				locator1 = "ContentRow#ENTRY_CONTENT_ROW_NUMBER_TD",
 				value1 = "${subOrgName}");
 
 			AssertTextEquals(
-				locator1 = "ContentRow#ORGANIZATION_TABLE_NAME_SECOND_COLUMN",
+				key_columnName = "parent-organization",
+				key_rowEntry = "${subOrgName}",
+				locator1 = "ContentRow#ENTRY_CONTENT_ROW_NUMBER_TD",
 				value1 = "${parentOrgName}");
 		}
 		else {
@@ -797,57 +610,19 @@ definition {
 				locator1 = "IFrame#MODAL_ANY");
 
 			AssertTextEquals(
-				locator1 = "ContentRow#ORGANIZATION_TABLE_NAME",
-				value1 = "${orgName}");
+				key_columnName = "name",
+				key_rowEntry = "${subOrgName}",
+				locator1 = "ContentRow#ENTRY_CONTENT_ROW_NUMBER_TD",
+				value1 = "${subOrgName}");
 
 			AssertTextEquals(
-				locator1 = "ContentRow#ORGANIZATION_TABLE_NAME_SECOND_COLUMN",
+				key_columnName = "parent-organization",
+				key_rowEntry = "${subOrgName}",
+				locator1 = "ContentRow#ENTRY_CONTENT_ROW_NUMBER_TD",
 				value1 = "");
 		}
 
 		IFrame.closeFrame();
-	}
-
-	macro viewRemoveMemberCP {
-		Search.searchCP(searchTerm = "${orgName}");
-
-		var key_orgName = "${orgName}";
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_NAME",
-			value1 = "${orgName}");
-
-		AssertClick(
-			locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_NAME",
-			value1 = "${orgName}");
-
-		AssertTextNotPresent(value1 = "${userFirstName}");
-	}
-
-	macro viewSubOrganizationCP {
-		var key_orgName = "${orgName}";
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_TYPE",
-			value1 = "${orgType}");
-
-		AssertClick(
-			locator1 = "UsersAndOrganizations#ORGANIZATION_TABLE_NAME",
-			value1 = "${orgName}");
-
-		var key_suborgName = "${suborgName}";
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizationsOrganization#SUBORGANIZATION_TABLE_NAME",
-			value1 = "${suborgName}");
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizationsOrganization#SUBORGANIZATION_TABLE_TYPE",
-			value1 = "${suborgType}");
-
-		AssertVisible(
-			key_tableEntry = "${suborgName}",
-			locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 	}
 
 }

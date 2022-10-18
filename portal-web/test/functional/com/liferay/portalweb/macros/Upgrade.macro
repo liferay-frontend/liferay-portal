@@ -621,11 +621,13 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.viewSubOrganizationCP(
-			orgName = "Organization1",
-			orgType = "Organization",
-			suborgName = "Sub-organization-Pre",
-			suborgType = "Organization");
+		LexiconEntry.gotoEntry(rowEntry = "Organization1");
+
+		Organization.viewCP(
+			orgName = "Sub-organization-Pre",
+			orgType = "Organization");
+
+		Organization.openOrganizationsAdmin();
 
 		Organization.gotoCP(
 			orgName = "Sub-organization-Pre",
@@ -644,10 +646,14 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.editSiteCP(
+		Organization.edit(
 			orgName = "Organization1",
 			orgNameEdit = "Organization1 Edit");
 
+		AssertTextEquals(
+			locator1 = "TextInput#NAME",
+			value1 = "Organization1 Edit");
+
 		Navigator.openURL();
 
 		ApplicationsMenu.gotoPortlet(
@@ -657,20 +663,15 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.editSiteCP(
+		LexiconEntry.gotoEntry(rowEntry = "Organization1 Edit");
+
+		Organization.edit(
 			orgName = "Sub-organization1",
 			orgNameEdit = "Sub-organization1 Edit");
 
-		Navigator.openURL();
-
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
-
-		Organization.deleteCP(orgName = "Sub-organization2");
+		AssertTextEquals(
+			locator1 = "TextInput#NAME",
+			value1 = "Sub-organization1 Edit");
 
 		Navigator.openURL();
 
@@ -681,7 +682,9 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.deleteCP(orgName = "Organization2");
+		LexiconEntry.gotoEntry(rowEntry = "Organization2");
+
+		Organization.delete(orgName = "Sub-organization2");
 
 		Navigator.openURL();
 
@@ -692,9 +695,7 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.removeMemberCP(
-			orgName = "Sub-organization1 Edit",
-			userFullName = "user2 user2");
+		Organization.delete(orgName = "Organization2");
 
 		Navigator.openURL();
 
@@ -705,7 +706,24 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.deleteCP(orgName = "Sub-organization1 Edit");
+		LexiconEntry.gotoEntry(rowEntry = "Organization1 Edit");
+
+		LexiconEntry.gotoEntry(rowEntry = "Sub-organization1 Edit");
+
+		Organization.removeAssignee(userFullName = "user2 user2");
+
+		Navigator.openURL();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		UsersAndOrganizationsNavigator.gotoOrganizations();
+
+		LexiconEntry.gotoEntry(rowEntry = "Organization1 Edit");
+
+		Organization.delete(orgName = "Sub-organization1 Edit");
 
 		Navigator.openURL();
 
@@ -3949,7 +3967,7 @@ definition {
 
 		UsersAndOrganizationsNavigator.gotoOrganizations();
 
-		Organization.deleteCP(orgName = "Organization1");
+		Organization.delete(orgName = "Organization1");
 	}
 
 	macro viewAssetPublisher {

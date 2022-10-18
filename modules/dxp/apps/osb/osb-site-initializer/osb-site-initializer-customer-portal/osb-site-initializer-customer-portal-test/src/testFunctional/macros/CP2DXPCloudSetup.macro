@@ -22,13 +22,11 @@ definition {
 	}
 
 	macro clearAndDeleteDXPCloudEntries {
-		CustomerPortal.clearActivationStatus(status = "${status}");
-
-		ApplicationsMenu.gotoSite(key_site = "Customer Portal Site");
-
 		CP2DXPCloudSetup.deleteEntryCloudEnvironments(
 			entry = "ERC-001",
 			portlet = "DXP Cloud Environments");
+
+		CustomerPortal.clearActivationStatus(status = "${status}");
 	}
 
 	macro clickOnAddAnotherAdminButton {
@@ -78,11 +76,11 @@ definition {
 	macro deleteEntryCloudEnvironments {
 		var key_status = "${entry}";
 
-		if (IsElementPresent(locator1 = "CustomerPortalSite#DND_TABLE_ELEMENT")) {
-			ProductMenu.gotoPortlet(
-				category = "Content & Data",
-				portlet = "${portlet}");
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "${portlet}");
 
+		if (IsElementPresent(locator1 = "CustomerPortalSite#DND_TABLE_ELEMENT")) {
 			ObjectPortlet.deleteEntry(entry = "${entry}");
 		}
 	}

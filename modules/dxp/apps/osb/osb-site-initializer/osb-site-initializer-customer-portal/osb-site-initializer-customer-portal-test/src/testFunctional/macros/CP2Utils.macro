@@ -6,6 +6,43 @@ definition {
 			locator1 = "CP2Utils#ROLE");
 	}
 
+	macro assertDropdownList {
+		for (var options : list "${optionList}") {
+			var key_option = "${options}";
+
+			AssertVisible(locator1 = "CP2Utils#DROPDOWN_OPTIONS");
+		}
+	}
+
+	macro assertDropdownSubscriptionTermsList {
+		Click(locator1 = "CP2Subscription#SUBSCRIPTION_TERM_DROPDOWN_BUTTON");
+
+		AssertVisible(
+			key_number = "0",
+			key_options = "Jul 25, 2021 - Jul 24, 2022",
+			locator1 = "CP2Subscription#DROPDOWN_OPTIONS");
+
+		AssertVisible(
+			key_number = "1",
+			key_options = "Jul 25, 2022 - Jul 24, 2023",
+			locator1 = "CP2Subscription#DROPDOWN_OPTIONS");
+
+		AssertVisible(
+			key_number = "2",
+			key_options = "Jul 25, 2023 - Jul 24, 2024",
+			locator1 = "CP2Subscription#DROPDOWN_OPTIONS");
+
+		AssertVisible(
+			key_number = "3",
+			key_options = "Jul 25, 2024 - Jul 24, 2025",
+			locator1 = "CP2Subscription#DROPDOWN_OPTIONS");
+
+		AssertVisible(
+			key_number = "4",
+			key_options = "Jul 25, 2025 - Jul 24, 2026",
+			locator1 = "CP2Subscription#DROPDOWN_OPTIONS");
+	}
+
 	macro assertNotChangeRole {
 		AssertVisible(
 			key_role = "${role}",
