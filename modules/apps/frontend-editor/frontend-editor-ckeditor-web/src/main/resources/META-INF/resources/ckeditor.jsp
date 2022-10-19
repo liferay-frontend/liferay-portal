@@ -287,30 +287,6 @@ name = HtmlUtil.escapeJS(name);
 				);
 			},
 		</c:if>
-
-		setHTML: function (value) {
-			var ckEditorInstance = CKEDITOR.instances['<%= name %>'];
-
-			var win = window['<%= name %>'];
-
-			var setHTML = function (data) {
-				if (instanceDataReady) {
-					ckEditorInstance.setData(data);
-				}
-				else {
-					instancePendingData = data;
-				}
-
-				win._setStyles();
-			};
-
-			if (win.instanceReady) {
-				setHTML(value);
-			}
-			else {
-				instancePendingData = value;
-			}
-		},
 	};
 
 	var addAUIClass = function (iframe) {
