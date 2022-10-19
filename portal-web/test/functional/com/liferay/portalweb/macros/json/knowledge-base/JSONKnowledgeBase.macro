@@ -122,6 +122,17 @@ definition {
 			var urlTitle = "";
 		}
 
+		if (!(isSet(expirationDate)) || !(isSet(reviewDate))) {
+			var displayDateYear = DateUtil.getCurrentYear();
+
+			var displayDateYear = ${displayDateYear} + 1;
+
+			var reviewDate = "${displayDateYear}-01-01T01:01:00Z";
+			var displayDateYear = ${displayDateYear} + 1;
+
+			var expirationDate = "${displayDateYear}-01-01T01:01:00Z";
+		}
+
 		var parentResourceClassNameId = JSONClassname._getClassNameId(value = "com.liferay.knowledge.base.model.KBFolder");
 
 		var curl = '''
@@ -135,8 +146,10 @@ definition {
 				-d urlTitle=${urlTitle} \
 				-d content=<p>${kbArticleContent}</p> \
 				-d description= \
-				-d sourceURL= \
 				-d sections= \
+				-d sourceURL= \
+				-d expirationDate=${expirationDate} \
+				-d reviewDate=${reviewDate} \
 				-d selectedFileNames= \
 				-d serviceContext=${serviceContext}
 		''';
@@ -167,6 +180,17 @@ definition {
 				kbArticleTitle = "${kbArticleTitle}");
 		}
 
+		if (!(isSet(expirationDate)) || !(isSet(reviewDate))) {
+			var displayDateYear = DateUtil.getCurrentYear();
+
+			var displayDateYear = ${displayDateYear} + 1;
+
+			var reviewDate = "${displayDateYear}-01-01T01:01:00Z";
+			var displayDateYear = ${displayDateYear} + 1;
+
+			var expirationDate = "${displayDateYear}-01-01T01:01:00Z";
+		}
+
 		var curl = '''
 			${portalURL}/api/jsonws/kb.kbarticle/add-kb-article \
 				-u test@liferay.com:test \
@@ -178,9 +202,11 @@ definition {
 				-d urlTitle= \
 				-d content=<p>${kbChildArticleContent}</p> \
 				-d description= \
-				-d sourceURL= \
 				-d sections= \
-				-d selectedFileNames=
+				-d sourceURL= \
+				-d expirationDate=${expirationDate} \
+				-d reviewDate=${reviewDate}
+				-d selectedFileNames= \
 		''';
 
 		echo("## Adding a 'KBChildArticle' with the following info using JSONWS:");
@@ -259,6 +285,17 @@ definition {
 				kbChildArticleTitle = "${kbChildArticleTitle}");
 		}
 
+		if (!(isSet(expirationDate)) || !(isSet(reviewDate))) {
+			var displayDateYear = DateUtil.getCurrentYear();
+
+			var displayDateYear = ${displayDateYear} + 1;
+
+			var reviewDate = "${displayDateYear}-01-01T01:01:00Z";
+			var displayDateYear = ${displayDateYear} + 1;
+
+			var expirationDate = "${displayDateYear}-01-01T01:01:00Z";
+		}
+
 		var curl = '''
 			${portalURL}/api/jsonws/kb.kbarticle/add-kb-article \
 				-u test@liferay.com:test \
@@ -270,9 +307,11 @@ definition {
 				-d urlTitle= \
 				-d content=<p>${kbGrandchildArticleContent}</p> \
 				-d description= \
-				-d sourceURL= \
 				-d sections= \
-				-d selectedFileNames=
+				-d sourceURL= \
+				-d expirationDate=${expirationDate} \
+				-d reviewDate=${reviewDate}
+				-d selectedFileNames= \
 		''';
 
 		echo("## Adding a 'KBGrandchildArticle' with the following info using JSONWS:");
@@ -363,6 +402,17 @@ definition {
 				groupName = "${groupName}");
 		}
 
+		if (!(isSet(expirationDate)) || !(isSet(reviewDate))) {
+			var displayDateYear = DateUtil.getCurrentYear();
+
+			var displayDateYear = ${displayDateYear} + 1;
+
+			var reviewDate = "${displayDateYear}-01-01T01:01:00Z";
+			var displayDateYear = ${displayDateYear} + 1;
+
+			var expirationDate = "${displayDateYear}-01-01T01:01:00Z";
+		}
+
 		var curl = '''
 			${portalURL}/api/jsonws/kb.kbarticle/update-kb-article \
 				-u test@liferay.com:test \
@@ -370,8 +420,10 @@ definition {
 				-d title=${newKbArticleTitle} \
 				-d content=<p>${newKbArticleContent}</p> \
 				-d description= \
-				-d sourceURL= \
 				-d sections= \
+				-d sourceURL= \
+				-d expirationDate=${expirationDate} \
+				-d reviewDate=${reviewDate} \
 				-d selectedFileNames= \
 				-d removeFileEntryIds= \
 				-d serviceContext=${serviceContext}

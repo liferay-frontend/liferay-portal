@@ -1076,6 +1076,64 @@ public interface LayoutUtilityPageEntryPersistence
 		long groupId, boolean defaultLayoutUtilityPageEntry, int type);
 
 	/**
+	 * Returns the layout utility page entry where groupId = &#63; and name = &#63; and type = &#63; or throws a <code>NoSuchLayoutUtilityPageEntryException</code> if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param type the type
+	 * @return the matching layout utility page entry
+	 * @throws NoSuchLayoutUtilityPageEntryException if a matching layout utility page entry could not be found
+	 */
+	public LayoutUtilityPageEntry findByG_N_T(
+			long groupId, String name, int type)
+		throws NoSuchLayoutUtilityPageEntryException;
+
+	/**
+	 * Returns the layout utility page entry where groupId = &#63; and name = &#63; and type = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param type the type
+	 * @return the matching layout utility page entry, or <code>null</code> if a matching layout utility page entry could not be found
+	 */
+	public LayoutUtilityPageEntry fetchByG_N_T(
+		long groupId, String name, int type);
+
+	/**
+	 * Returns the layout utility page entry where groupId = &#63; and name = &#63; and type = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param type the type
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching layout utility page entry, or <code>null</code> if a matching layout utility page entry could not be found
+	 */
+	public LayoutUtilityPageEntry fetchByG_N_T(
+		long groupId, String name, int type, boolean useFinderCache);
+
+	/**
+	 * Removes the layout utility page entry where groupId = &#63; and name = &#63; and type = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param type the type
+	 * @return the layout utility page entry that was removed
+	 */
+	public LayoutUtilityPageEntry removeByG_N_T(
+			long groupId, String name, int type)
+		throws NoSuchLayoutUtilityPageEntryException;
+
+	/**
+	 * Returns the number of layout utility page entries where groupId = &#63; and name = &#63; and type = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param type the type
+	 * @return the number of matching layout utility page entries
+	 */
+	public int countByG_N_T(long groupId, String name, int type);
+
+	/**
 	 * Returns the layout utility page entry where groupId = &#63; and externalReferenceCode = &#63; or throws a <code>NoSuchLayoutUtilityPageEntryException</code> if it could not be found.
 	 *
 	 * @param groupId the group ID

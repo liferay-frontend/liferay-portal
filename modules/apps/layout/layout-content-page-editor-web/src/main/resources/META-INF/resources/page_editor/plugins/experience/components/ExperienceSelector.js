@@ -15,6 +15,7 @@
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import ClayLink from '@clayui/link';
 import {useModal} from '@clayui/modal';
@@ -119,6 +120,11 @@ const ExperienceSelector = ({
 	);
 	const modalExperienceStateRef = useRef(modalExperienceState);
 	modalExperienceStateRef.current = modalExperienceState;
+
+	const isSelectedExperienceActive = experiences.find(
+		({segmentsExperienceId}) =>
+			segmentsExperienceId === selectedExperience.segmentsExperienceId
+	)?.active;
 
 	const {observer: modalObserver, onClose: onModalClose} = useModal({
 		onClose: () => {
@@ -447,6 +453,20 @@ const ExperienceSelector = ({
 						</span>
 					</ClayLayout.ContentCol>
 
+					{experiences.length > 1 && (
+						<ClayLayout.ContentCol>
+							{isSelectedExperienceActive ? (
+								<ClayLabel displayType="success">
+									{Liferay.Language.get('active')}
+								</ClayLabel>
+							) : (
+								<ClayLabel displayType="secondary">
+									{Liferay.Language.get('inactive')}
+								</ClayLabel>
+							)}
+						</ClayLayout.ContentCol>
+					)}
+
 					<ClayLayout.ContentCol>
 						{selectedExperience.hasLockedSegmentsExperiment && (
 							<ClayIcon symbol="lock" />
@@ -471,7 +491,6 @@ const ExperienceSelector = ({
 						<ExperiencesSelectorHeader
 							canCreateExperiences={canUpdateExperiences}
 							onNewExperience={handleOnNewExperienceClick}
-							showEmptyStateMessage={experiences.length <= 1}
 						/>
 
 						{experiences.length > 1 && (
@@ -516,11 +535,7 @@ const ExperienceSelector = ({
 	);
 };
 
-const ExperiencesSelectorHeader = ({
-	canCreateExperiences,
-	onNewExperience,
-	showEmptyStateMessage,
-}) => {
+const ExperiencesSelectorHeader = ({canCreateExperiences, onNewExperience}) => {
 	const [dismissAlert, setDismissAlert] = useState(false);
 
 	return (
@@ -547,15 +562,26 @@ const ExperiencesSelectorHeader = ({
 			</ClayLayout.ContentRow>
 
 			{canCreateExperiences && (
-				<p className="text-secondary">
-					{showEmptyStateMessage
-						? Liferay.Language.get(
-								'experience-help-message-empty-state'
-						  )
-						: Liferay.Language.get(
-								'experience-help-message-started-state'
-						  )}
-				</p>
+				<>
+					<p className="text-secondary">
+						{Liferay.Language.get('experience-help-message')}
+					</p>
+					<p className="text-secondary">
+						{`${Liferay.Language.get(
+							'experience-help-message-more-info-see'
+						)} `}
+
+						<a
+							href={config.contentPagePersonalizationLearnURL}
+							target="_blank"
+						>
+							{Liferay.Language.get(
+								'content-page-personalization'
+							)}
+							.
+						</a>
+					</p>
+				</>
 			)}
 
 			{!config.isSegmentationEnabled && !dismissAlert ? (

@@ -36,6 +36,55 @@ definition {
 		}
 	}
 
+	@description = "This is a use case for LPP-8122. Verify that when remote publishing, the child pages are not published when they are unselected."
+	@priority = "3"
+	test AssertCannotPublishChildPageWhenUnselected {
+		property test.name.skip.portal.instance = "RemoteStaging#AssertCannotPublishChildPageWhenUnselected";
+
+		task ("Given: Add two children pages for Staging Test Page") {
+			for (var i : list "1,2") {
+				JSONLayout.addPublicLayout(
+					groupName = "Site Name",
+					layoutName = "Test Child Page ${i}",
+					parentLayoutName = "Staging Test Page");
+			}
+		}
+
+		task ("When: Publish only the Parent Page and not the child pages to remote live") {
+			Navigator.gotoSitePage(
+				pageName = "Staging Test Page",
+				siteName = "Site Name");
+
+			Staging.gotoPublishToLive();
+
+			Staging.configurePublishToLive(
+				uncheckChildPages = "true",
+				uncheckChildPagesNameList = "Test Child Page 1,Test Child Page 2");
+
+			Staging.publishToLive(remoteStaging = "true");
+		}
+
+		task ("Then: Assert that child pages aren't published on the remote site") {
+			User.logoutPG();
+
+			User.firstLoginUI(
+				password = "test",
+				specificURL = "http://localhost:9080",
+				userEmailAddress = "test@liferay.com");
+
+			Navigator.gotoSitePage(
+				baseURL = "http://localhost:9080",
+				pageName = "Staging Test Page",
+				siteName = "Remote Site");
+
+			PagesAdmin.viewPageItemPresent(pageName = "Staging Test Page");
+
+			PagesAdmin.viewPageItemNotPresent(pageName = "Test Child Page 1");
+
+			PagesAdmin.viewPageItemNotPresent(pageName = "Test Child Page 2");
+		}
+	}
+
 	@description = "This is a use case for LPS-154557 TC-1: Verify detailed error message should show up with default configuration."
 	@priority = "4"
 	test AssertDetailedErrorMessageWithDefaultConfiguration {
@@ -172,6 +221,50 @@ definition {
 			failureExpected = "true",
 			remoteStaging = "true",
 			validateErrorMessage = "An unexpected error occurred with the publish process. Please check your portal and publishing configuration.");
+	}
+
+	@description = "This is a use case for LPS-52285. Verify that remote staging can be disabled after shutting down the remote site."
+	@priority = "4"
+	test CanDisableRemoteStagingAfterShuttingDownRemoteSite {
+		property test.name.skip.portal.instance = "RemoteStaging#CanDisableRemoteStagingAfterShuttingDownRemoteSite";
+
+		task ("When: Shut down the remote live environment and attempt to disable staging settings") {
+			Clustering.shutdownSpecificServer(nodePort = "9080");
+
+			Staging.openStagingAdmin(siteURLKey = "site-name");
+
+			LexiconEntry.gotoHeaderMenuItem(menuItem = "Staging Configuration");
+
+			Check.checkHiddenToggleSwitch(locator1 = "SiteSettingsStaging#NONE_RADIO");
+
+			AssertClickNoError(
+				locator1 = "Button#SAVE",
+				value1 = "Save");
+
+			AssertConfirm(value1 = "Are you sure you want to deactivate staging for Site Name?");
+
+			AssertElementPresent(
+				locator1 = "Message#ERROR",
+				value1 = "Your request failed to complete.");
+		}
+
+		task ("Then: Assert there is an option to forcibly disable the remote staging in UI") {
+			Alert.viewErrorMessage(errorMessage = "You can also forcibly disable remote staging.");
+		}
+
+		task ("When: Click on forcibly disable") {
+			AssertClickNoError(
+				locator1 = "Message#ERROR_DISMISSIBLE_LINK",
+				value1 = "forcibly disable");
+		}
+
+		task ("Then: Assert the remote staging is disabled") {
+			AssertConfirm(value1 = "Are you sure you want to deactivate staging for Site Name?");
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#SUCCESS",
+				value1 = "Staging is successfully disabled.");
+		}
 	}
 
 	@description = "This is a use case for LPS-146399. In the publish summary of a remote staging site only the previously published pages should be present."

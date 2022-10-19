@@ -14,18 +14,16 @@
 
 package com.liferay.dynamic.data.mapping.util;
 
-import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapperFactory;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.component.annotations.Deactivate;
 
 /**
  * @author Eduardo García
@@ -34,45 +32,30 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 public class DDMDisplayRegistry {
 
 	public DDMDisplay getDDMDisplay(String portletId) {
-		return _getDDMDisplay(portletId);
-	}
-
-	public List<DDMDisplay> getDDMDisplays() {
-		return _getDDMDisplays();
+		return _serviceTrackerMap.getService(portletId);
 	}
 
 	public String[] getPortletIds() {
-		return _getPortletIds();
-	}
-
-	@Reference(
-		cardinality = ReferenceCardinality.MULTIPLE,
-		policy = ReferencePolicy.DYNAMIC,
-		policyOption = ReferencePolicyOption.GREEDY
-	)
-	protected void setDDMDisplay(DDMDisplay ddmDisplay) {
-		_ddmDisplays.put(ddmDisplay.getPortletId(), ddmDisplay);
-	}
-
-	protected void unsetDDMDisplay(DDMDisplay ddmDisplay) {
-		_ddmDisplays.remove(ddmDisplay.getPortletId());
-	}
-
-	private DDMDisplay _getDDMDisplay(String portletId) {
-		return _ddmDisplays.get(portletId);
-	}
-
-	private List<DDMDisplay> _getDDMDisplays() {
-		return ListUtil.fromMapValues(_ddmDisplays);
-	}
-
-	private String[] _getPortletIds() {
-		Set<String> portletIds = _ddmDisplays.keySet();
+		Set<String> portletIds = _serviceTrackerMap.keySet();
 
 		return portletIds.toArray(new String[0]);
 	}
 
-	private final Map<String, DDMDisplay> _ddmDisplays =
-		new ConcurrentHashMap<>();
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, DDMDisplay.class, null,
+			ServiceReferenceMapperFactory.create(
+				bundleContext,
+				(ddmDisplay, emitter) -> emitter.emit(
+					ddmDisplay.getPortletId())));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceTrackerMap.close();
+	}
+
+	private ServiceTrackerMap<String, DDMDisplay> _serviceTrackerMap;
 
 }

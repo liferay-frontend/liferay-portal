@@ -60,6 +60,7 @@ public class LayoutUtilityPageEntryWrapper
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("plid", getPlid());
+		attributes.put("previewFileEntryId", getPreviewFileEntryId());
 		attributes.put(
 			"defaultLayoutUtilityPageEntry", isDefaultLayoutUtilityPageEntry());
 		attributes.put("name", getName());
@@ -143,6 +144,12 @@ public class LayoutUtilityPageEntryWrapper
 
 		if (plid != null) {
 			setPlid(plid);
+		}
+
+		Long previewFileEntryId = (Long)attributes.get("previewFileEntryId");
+
+		if (previewFileEntryId != null) {
+			setPreviewFileEntryId(previewFileEntryId);
 		}
 
 		Boolean defaultLayoutUtilityPageEntry = (Boolean)attributes.get(
@@ -294,6 +301,16 @@ public class LayoutUtilityPageEntryWrapper
 	@Override
 	public long getPlid() {
 		return model.getPlid();
+	}
+
+	/**
+	 * Returns the preview file entry ID of this layout utility page entry.
+	 *
+	 * @return the preview file entry ID of this layout utility page entry
+	 */
+	@Override
+	public long getPreviewFileEntryId() {
+		return model.getPreviewFileEntryId();
 	}
 
 	/**
@@ -491,6 +508,16 @@ public class LayoutUtilityPageEntryWrapper
 	@Override
 	public void setPlid(long plid) {
 		model.setPlid(plid);
+	}
+
+	/**
+	 * Sets the preview file entry ID of this layout utility page entry.
+	 *
+	 * @param previewFileEntryId the preview file entry ID of this layout utility page entry
+	 */
+	@Override
+	public void setPreviewFileEntryId(long previewFileEntryId) {
+		model.setPreviewFileEntryId(previewFileEntryId);
 	}
 
 	/**

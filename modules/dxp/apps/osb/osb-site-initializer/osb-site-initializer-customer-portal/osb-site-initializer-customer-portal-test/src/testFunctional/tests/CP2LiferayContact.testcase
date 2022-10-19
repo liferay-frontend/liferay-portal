@@ -45,8 +45,12 @@ definition {
 	@description = "Automation ID: LPS-143375 | Test Summary: Verify if Liferay Contact displays Liferay Contact's email"
 	@priority = "4"
 	test IsContactEmailDisplayed {
-		task ("Go to CP2.0 and join a project") {
+		task ("Go to Customer Portal 2.0") {
 			ApplicationsMenu.gotoSite(key_site = "${testSiteName}");
+		}
+
+		task ("Given I go to the test account") {
+			CustomerPortal.search(searchItem = "${testAccount}");
 
 			CustomerPortal.enterOnProject(title = "${testAccount}");
 		}
@@ -62,8 +66,12 @@ definition {
 	@description = "Automation ID: LPS-143373 | Test Summary: Verify if Liferay Contact displays Liferay Contact's name"
 	@priority = "4"
 	test IsContactNameDisplayed {
-		task ("Go to CP2.0 and join a project") {
+		task ("Go to Customer Portal 2.0") {
 			ApplicationsMenu.gotoSite(key_site = "${testSiteName}");
+		}
+
+		task ("Given I go to the test account") {
+			CustomerPortal.search(searchItem = "${testAccount}");
 
 			CustomerPortal.enterOnProject(title = "${testAccount}");
 		}
@@ -79,8 +87,12 @@ definition {
 	@description = "Automation ID: LPS-143374 | Test Summary: Verify if Liferay Contact displays Liferay Contact's role"
 	@priority = "3"
 	test IsContactRoleDisplayed {
-		task ("Go to CP2.0 and join a project") {
+		task ("Go to Customer Portal 2.0") {
 			ApplicationsMenu.gotoSite(key_site = "${testSiteName}");
+		}
+
+		task ("Given I go to the test account") {
+			CustomerPortal.search(searchItem = "${testAccount}");
 
 			CustomerPortal.enterOnProject(title = "${testAccount}");
 		}

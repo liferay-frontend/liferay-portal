@@ -246,6 +246,12 @@ export default function ObjectRelationship({
 		if (active) {
 			document.addEventListener('mousedown', handleClick);
 		}
+		else {
+			setState((prevState) => ({
+				...prevState,
+				searchTerm: '',
+			}));
+		}
 
 		return () => {
 			document.removeEventListener('mousedown', handleClick);
@@ -282,12 +288,12 @@ export default function ObjectRelationship({
 
 							if (selected) {
 								state.selected = selected;
-								delete state.searchTerm;
 							}
 							else {
-								state.searchTerm = value;
 								delete state.selected;
 							}
+
+							state.searchTerm = value;
 
 							return state;
 						});

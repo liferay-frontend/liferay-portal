@@ -12,7 +12,6 @@
  * details.
  */
 
-import ClayAlert from '@clayui/alert';
 import ClayForm, {ClayToggle} from '@clayui/form';
 import {
 	API,
@@ -91,9 +90,6 @@ export default function ObjectFieldFormBase({
 		return businessTypeMap;
 	}, [objectFieldTypes]);
 
-	const [picklistDefaultValue, setPicklistDefaultValue] = useState<
-		ObjectState
-	>();
 	const [picklistDefaultValueQuery, setPicklistDefaultValueQuery] = useState<
 		string
 	>('');
@@ -116,8 +112,6 @@ export default function ObjectFieldFormBase({
 			if (!defaultPicklistValue && defaultValue) {
 				setValues({defaultValue: undefined});
 			}
-
-			setPicklistDefaultValue(defaultPicklistValue);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [values.defaultValue]);
@@ -141,7 +135,7 @@ export default function ObjectFieldFormBase({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [values.businessType, values.listTypeDefinitionId]);
 
-	const filteredPicklistItens = useMemo(() => {
+	const filteredPicklistItems = useMemo(() => {
 		return pickListItems.filter(({name}) => {
 			return name
 				.toLowerCase()
@@ -354,7 +348,7 @@ export default function ObjectFieldFormBase({
 				<AutoComplete
 					emptyStateMessage={Liferay.Language.get('option-not-found')}
 					error={errors.defaultValue}
-					items={filteredPicklistItens}
+					items={filteredPicklistItems}
 					label={Liferay.Language.get('default-value')}
 					onChangeQuery={setPicklistDefaultValueQuery}
 					onSelectItem={(item) => {
@@ -365,7 +359,11 @@ export default function ObjectFieldFormBase({
 					placeholder={Liferay.Language.get('choose-an-option')}
 					query={picklistDefaultValueQuery}
 					required
-					value={values.defaultValue}
+					value={
+						filteredPicklistItems.find(
+							({key}) => key === values.defaultValue
+						)?.name
+					}
 				>
 					{({name}) => (
 						<div className="d-flex justify-content-between">
@@ -374,20 +372,6 @@ export default function ObjectFieldFormBase({
 					)}
 				</AutoComplete>
 			)}
-
-			{values.businessType === 'Picklist' &&
-				values.state &&
-				!picklistDefaultValue && (
-					<div className="c-mt-1">
-						<ClayAlert
-							displayType="danger"
-							title={Liferay.Language.get(
-								'missing-picklist-default-value'
-							)}
-							variant="feedback"
-						/>
-					</div>
-				)}
 		</>
 	);
 }

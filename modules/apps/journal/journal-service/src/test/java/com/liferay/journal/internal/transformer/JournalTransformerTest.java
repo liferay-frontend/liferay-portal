@@ -72,6 +72,58 @@ public class JournalTransformerTest {
 	}
 
 	@Test
+	public void testIncludeBackwardsCompatibilityTemplateNodesNestedImageFieldSet() {
+		JournalTransformer journalTransformer = new JournalTransformer();
+
+		List<TemplateNode> templateNodes = new ArrayList<>();
+
+		TemplateNode logoTitleFieldSetTemplateNode = _createTemplateNode(
+			"logoTitleFieldSet", DDMFormFieldTypeConstants.FIELDSET);
+
+		TemplateNode logoTitleTextTemplateNode = _createTemplateNode(
+			"logoTitleText", DDMFormFieldTypeConstants.TEXT);
+
+		TemplateNode logoFieldSetTemplateNode = _createTemplateNode(
+			"logoFieldSet", DDMFormFieldTypeConstants.FIELDSET);
+
+		TemplateNode logoFieldTemplateNode = _createTemplateNode(
+			"logoField", DDMFormFieldTypeConstants.IMAGE);
+
+		logoFieldTemplateNode.put("data", _IMAGE_FIELD_DATA);
+
+		logoFieldSetTemplateNode.appendChild(logoFieldTemplateNode);
+
+		TemplateNode linkLogoFieldTemplateNode = _createTemplateNode(
+			"linkLogoField", DDMFormFieldTypeConstants.TEXT);
+
+		logoFieldTemplateNode.appendSibling(linkLogoFieldTemplateNode);
+
+		logoFieldSetTemplateNode.appendChild(linkLogoFieldTemplateNode);
+
+		logoTitleTextTemplateNode.appendSibling(logoFieldSetTemplateNode);
+
+		logoTitleFieldSetTemplateNode.appendChild(logoTitleTextTemplateNode);
+
+		logoTitleFieldSetTemplateNode.appendChild(logoFieldSetTemplateNode);
+
+		templateNodes.add(logoTitleFieldSetTemplateNode);
+
+		List<TemplateNode> includeBackwardsCompatibilityTemplateNodes =
+			journalTransformer.includeBackwardsCompatibilityTemplateNodes(
+				templateNodes, 0);
+
+		TemplateNode templateNode =
+			includeBackwardsCompatibilityTemplateNodes.get(0);
+
+		List<TemplateNode> childrenTemplateNodes = templateNode.getChildren();
+
+		TemplateNode firstChildTemplateNode = childrenTemplateNodes.get(0);
+
+		Assert.assertEquals(
+			firstChildTemplateNode.get("data"), _IMAGE_FIELD_DATA);
+	}
+
+	@Test
 	public void testIncludeBackwardsCompatibilityTemplateNodesParentStructureWithFieldSet() {
 		JournalTransformer journalTransformer = new JournalTransformer();
 
@@ -89,7 +141,7 @@ public class JournalTransformerTest {
 		JournalTransformer journalTransformer = new JournalTransformer();
 
 		List<TemplateNode> nestedRepeatableFieldsTemplateNodes =
-			_getInitNestedRepeatableFieldsTemplateNode();
+			_getNestedRepeatableFieldsTemplateNodes();
 
 		TemplateNode templateNode = nestedRepeatableFieldsTemplateNodes.get(0);
 
@@ -103,7 +155,7 @@ public class JournalTransformerTest {
 		int firstChildTemplateNodeSiblingsSize =
 			firstChildTemplateNodeSiblings.size();
 
-		List<TemplateNode> backwardsCompatibilityTemplateNodes =
+		List<TemplateNode> includeBackwardsCompatibilityTemplateNodes =
 			journalTransformer.includeBackwardsCompatibilityTemplateNodes(
 				nestedRepeatableFieldsTemplateNodes, 0);
 
@@ -116,17 +168,17 @@ public class JournalTransformerTest {
 
 		Assert.assertEquals(
 			nestedRepeatableFieldsTemplateNodes,
-			_getInitNestedRepeatableFieldsTemplateNode());
+			_getNestedRepeatableFieldsTemplateNodes());
 
 		TemplateNode expectedNestedRepeatableFieldsTemplateNode =
 			_getExpectedNestedRepeatableFieldsTemplateNode();
 
-		TemplateNode backwardsCompatibilityTemplateNode =
-			backwardsCompatibilityTemplateNodes.get(0);
+		TemplateNode firstIncludeBackwardsCompatibilityTemplateNode =
+			includeBackwardsCompatibilityTemplateNodes.get(0);
 
 		Assert.assertEquals(
 			expectedNestedRepeatableFieldsTemplateNode.getSiblings(),
-			backwardsCompatibilityTemplateNode.getSiblings());
+			firstIncludeBackwardsCompatibilityTemplateNode.getSiblings());
 	}
 
 	@Test
@@ -140,11 +192,11 @@ public class JournalTransformerTest {
 		TemplateNode separatorTemplateNode =
 			includeBackwardsCompatibilityTemplateNodes.get(0);
 
-		List<TemplateNode> separatorChildTemplateNode =
+		List<TemplateNode> separatorChildrenTemplateNodes =
 			separatorTemplateNode.getChildren();
 
 		TemplateNode bookmarksTitleTemplateNode =
-			separatorChildTemplateNode.get(0);
+			separatorChildrenTemplateNodes.get(0);
 
 		List<TemplateNode> bookmarksTitleSiblingsTemplateNodes =
 			bookmarksTitleTemplateNode.getSiblings();
@@ -169,20 +221,19 @@ public class JournalTransformerTest {
 	}
 
 	private TemplateNode _getExpectedNestedRepeatableFieldsTemplateNode() {
-		TemplateNode group1Field1 = _createTemplateNode(
+		TemplateNode templateNode = _createTemplateNode(
 			"Group 1 Field 1", DDMFormFieldTypeConstants.TEXT);
 
-		TemplateNode group1Field2 = _createTemplateNode(
-			"Group 1 Field 2", DDMFormFieldTypeConstants.TEXT);
+		templateNode.appendSibling(templateNode);
 
-		TemplateNode group2Field1 = _createTemplateNode(
-			"Group 2 Field 1", DDMFormFieldTypeConstants.TEXT);
+		templateNode.appendSibling(
+			_createTemplateNode(
+				"Group 1 Field 2", DDMFormFieldTypeConstants.TEXT));
+		templateNode.appendSibling(
+			_createTemplateNode(
+				"Group 2 Field 1", DDMFormFieldTypeConstants.TEXT));
 
-		group1Field1.appendSibling(group1Field1);
-		group1Field1.appendSibling(group1Field2);
-		group1Field1.appendSibling(group2Field1);
-
-		return group1Field1;
+		return templateNode;
 	}
 
 	private List<TemplateNode>
@@ -323,48 +374,6 @@ public class JournalTransformerTest {
 		textTemplateNode1.appendSibling(textTemplateNode2);
 
 		return ListUtil.fromArray(repeatableTextTemplateNode1);
-	}
-
-	private List<TemplateNode> _getInitNestedRepeatableFieldsTemplateNode() {
-		List<TemplateNode> templateNodes = new ArrayList<>();
-
-		TemplateNode group1 = _createTemplateNode(
-			"Group 1", DDMFormFieldTypeConstants.FIELDSET);
-
-		TemplateNode group1Field1 = _createTemplateNode(
-			"Group 1 Field 1", DDMFormFieldTypeConstants.TEXT);
-
-		TemplateNode group1Field2 = _createTemplateNode(
-			"Group 1 Field 2", DDMFormFieldTypeConstants.TEXT);
-
-		group1.appendChild(group1Field1);
-
-		group1.appendSibling(group1);
-
-		group1Field1.appendSibling(group1Field1);
-
-		group1Field1.appendSibling(group1Field2);
-
-		TemplateNode group2 = _createTemplateNode(
-			"Group 2", DDMFormFieldTypeConstants.FIELDSET);
-
-		TemplateNode group2Field1 = _createTemplateNode(
-			"Group 2 Field 1", DDMFormFieldTypeConstants.TEXT);
-
-		TemplateNode group2Field2 = _createTemplateNode(
-			"Group 2 Field 2", DDMFormFieldTypeConstants.TEXT);
-
-		group2.appendChild(group2Field1);
-
-		group2Field1.appendSibling(group2Field1);
-
-		group2Field1.appendSibling(group2Field2);
-
-		group1.appendSibling(group2);
-
-		templateNodes.add(group1);
-
-		return templateNodes;
 	}
 
 	private List<TemplateNode> _getInitTemplateNodes() {
@@ -592,6 +601,47 @@ public class JournalTransformerTest {
 
 		return templateNodes;
 	}
+
+	private List<TemplateNode> _getNestedRepeatableFieldsTemplateNodes() {
+		List<TemplateNode> templateNodes = new ArrayList<>();
+
+		TemplateNode group1TemplateNode = _createTemplateNode(
+			"Group 1", DDMFormFieldTypeConstants.FIELDSET);
+
+		TemplateNode group1Field1TemplateNode = _createTemplateNode(
+			"Group 1 Field 1", DDMFormFieldTypeConstants.TEXT);
+
+		group1Field1TemplateNode.appendSibling(group1Field1TemplateNode);
+		group1Field1TemplateNode.appendSibling(
+			_createTemplateNode(
+				"Group 1 Field 2", DDMFormFieldTypeConstants.TEXT));
+
+		group1TemplateNode.appendChild(group1Field1TemplateNode);
+
+		group1TemplateNode.appendSibling(group1TemplateNode);
+
+		TemplateNode group2TemplateNode = _createTemplateNode(
+			"Group 2", DDMFormFieldTypeConstants.FIELDSET);
+
+		TemplateNode group2Field1TemplateNode = _createTemplateNode(
+			"Group 2 Field 1", DDMFormFieldTypeConstants.TEXT);
+
+		group2Field1TemplateNode.appendSibling(group2Field1TemplateNode);
+		group2Field1TemplateNode.appendSibling(
+			_createTemplateNode(
+				"Group 2 Field 2", DDMFormFieldTypeConstants.TEXT));
+
+		group2TemplateNode.appendChild(group2Field1TemplateNode);
+
+		group1TemplateNode.appendSibling(group2TemplateNode);
+
+		templateNodes.add(group1TemplateNode);
+
+		return templateNodes;
+	}
+
+	private static final String _IMAGE_FIELD_DATA =
+		"{\"url\": \"/documents/d/site/logo-jpg?download=true\"}";
 
 	private static final String _REPEATABLE_TEXT_FIELD_NAME =
 		"RepeatableTextField";

@@ -329,8 +329,9 @@ function StructureTreeNodeContent({
 			<div
 				aria-label={sub(Liferay.Language.get('select-x'), [node.name])}
 				className="lfr-portal-tooltip page-editor__page-structure__tree-node__mask"
+				data-item-id={node.id}
 				data-title={node.tooltipTitle}
-				data-tooltip-align="left"
+				data-tooltip-align="right"
 				onClick={() => {
 					const itemId = getFirstControlsId({
 						item: node,
@@ -374,6 +375,8 @@ function StructureTreeNodeContent({
 						'page-editor__page-structure__tree-node__buttons--hidden':
 							node.hidden || node.hiddenAncestor,
 					})}
+					onFocus={(event) => event.stopPropagation()}
+					onKeyDown={(event) => event.stopPropagation()}
 				>
 					{(node.hidable || node.hidden) && (
 						<VisibilityButton

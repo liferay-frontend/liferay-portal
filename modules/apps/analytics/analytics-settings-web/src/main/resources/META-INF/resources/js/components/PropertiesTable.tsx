@@ -14,15 +14,19 @@
 
 import ClayButton from '@clayui/button';
 import {ClayToggle} from '@clayui/form';
+import {useModal} from '@clayui/modal';
 import ClayTable from '@clayui/table';
-import React from 'react';
+import React, {useState} from 'react';
 
-type TDataSource = {
+import AssignModal from '../components/AssignModal';
+
+export type TDataSource = {
 	dataSourceId: string;
 	siteIds: Array<number>;
 };
 
-type TProperty = {
+export type TProperty = {
+	channelId: string;
 	dataSources: Array<TDataSource>;
 	name: string;
 };
@@ -32,6 +36,9 @@ interface IPropertiesTable {
 }
 
 const PropertiesTable: React.FC<IPropertiesTable> = ({properties}) => {
+	const {observer, onOpenChange, open} = useModal();
+	const [property, setProperty] = useState<TProperty>(properties[0]);
+
 	return (
 		<ClayTable className="mt-4">
 			<ClayTable.Head>
@@ -57,61 +64,70 @@ const PropertiesTable: React.FC<IPropertiesTable> = ({properties}) => {
 			<ClayTable.Body>
 				{properties.map((property, index) => {
 					return (
-						<ClayTable.Row key={index}>
-							<ClayTable.Cell className="table-cell-expand">
-								{property.name}
-							</ClayTable.Cell>
+						<>
+							<ClayTable.Row key={index}>
+								<ClayTable.Cell className="table-cell-expand">
+									{property.name}
+								</ClayTable.Cell>
 
-							<ClayTable.Cell
-								className="mr-2"
-								columnTextAlignment="end"
-							>
-								{/* TODO: When backend for commerce is completed, display the channels linked*/}
-								-
-							</ClayTable.Cell>
+								<ClayTable.Cell
+									className="mr-2"
+									columnTextAlignment="end"
+								>
+									{/* TODO: When backend for commerce is completed, display the channels linked*/}
+									-
+								</ClayTable.Cell>
 
-							<ClayTable.Cell
-								className="mr-2"
-								columnTextAlignment="end"
-							>
-								{property.dataSources.length >= 1
-									? property.dataSources[0]?.siteIds.length
-									: property.dataSources.length}
-							</ClayTable.Cell>
+								<ClayTable.Cell
+									className="mr-2"
+									columnTextAlignment="end"
+								>
+									{property.dataSources.length >= 1
+										? property.dataSources[0]?.siteIds
+												.length
+										: property.dataSources.length}
+								</ClayTable.Cell>
 
-							<ClayTable.Cell
-								className="mr-2"
-								columnTextAlignment="end"
-							>
-								{/* TODO: When backend for commerce is completed,
+								<ClayTable.Cell
+									className="mr-2"
+									columnTextAlignment="end"
+								>
+									{/* TODO: When backend for commerce is completed,
 								create function to connect to commerce */}
 
-								<ClayToggle
-									toggled
+									<ClayToggle
+										toggled
 
-									// onToggle={() => setActiveCommerce(!active)}
+										// onToggle={() => setActiveCommerce(!active)}
 
-								/>
-							</ClayTable.Cell>
+									/>
+								</ClayTable.Cell>
 
-							<ClayTable.Cell columnTextAlignment="end">
-								{/* TODO: Link the button when LRAC-11981 ia
-								merged */}
-
-								<ClayButton
-
-									// onClick={()=> openModalAssignToProperty()}
-
-									displayType="secondary"
-									type="button"
-								>
-									{Liferay.Language.get('assign')}
-								</ClayButton>
-							</ClayTable.Cell>
-						</ClayTable.Row>
+								<ClayTable.Cell columnTextAlignment="end">
+									<ClayButton
+										displayType="secondary"
+										onClick={() => {
+											onOpenChange(true);
+											setProperty(property);
+										}}
+										type="button"
+									>
+										{Liferay.Language.get('assign')}
+									</ClayButton>
+								</ClayTable.Cell>
+							</ClayTable.Row>
+						</>
 					);
 				})}
 			</ClayTable.Body>
+
+			{open && (
+				<AssignModal
+					observer={observer}
+					onCloseModal={() => onOpenChange(false)}
+					property={property}
+				/>
+			)}
 		</ClayTable>
 	);
 };

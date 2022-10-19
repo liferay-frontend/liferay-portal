@@ -54,8 +54,9 @@ public class KBArticleServiceHttp {
 			HttpPrincipal httpPrincipal, String externalReferenceCode,
 			String portletId, long parentResourceClassNameId,
 			long parentResourcePrimKey, String title, String urlTitle,
-			String content, String description, String sourceURL,
-			String[] sections, String[] selectedFileNames,
+			String content, String description, String[] sections,
+			String sourceURL, java.util.Date expirationDate,
+			java.util.Date reviewDate, String[] selectedFileNames,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -67,8 +68,8 @@ public class KBArticleServiceHttp {
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, portletId,
 				parentResourceClassNameId, parentResourcePrimKey, title,
-				urlTitle, content, description, sourceURL, sections,
-				selectedFileNames, serviceContext);
+				urlTitle, content, description, sections, sourceURL,
+				expirationDate, reviewDate, selectedFileNames, serviceContext);
 
 			Object returnObj = null;
 
@@ -1584,8 +1585,9 @@ public class KBArticleServiceHttp {
 
 	public static com.liferay.knowledge.base.model.KBArticle updateKBArticle(
 			HttpPrincipal httpPrincipal, long resourcePrimKey, String title,
-			String content, String description, String sourceURL,
-			String[] sections, String[] selectedFileNames,
+			String content, String description, String[] sections,
+			String sourceURL, java.util.Date expirationDate,
+			java.util.Date reviewDate, String[] selectedFileNames,
 			long[] removeFileEntryIds,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -1597,8 +1599,8 @@ public class KBArticleServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, resourcePrimKey, title, content, description,
-				sourceURL, sections, selectedFileNames, removeFileEntryIds,
-				serviceContext);
+				sections, sourceURL, expirationDate, reviewDate,
+				selectedFileNames, removeFileEntryIds, serviceContext);
 
 			Object returnObj = null;
 
@@ -1669,8 +1671,9 @@ public class KBArticleServiceHttp {
 
 	private static final Class<?>[] _addKBArticleParameterTypes0 = new Class[] {
 		String.class, String.class, long.class, long.class, String.class,
-		String.class, String.class, String.class, String.class, String[].class,
-		String[].class, com.liferay.portal.kernel.service.ServiceContext.class
+		String.class, String.class, String.class, String[].class, String.class,
+		java.util.Date.class, java.util.Date.class, String[].class,
+		com.liferay.portal.kernel.service.ServiceContext.class
 	};
 	private static final Class<?>[] _addKBArticlesMarkdownParameterTypes1 =
 		new Class[] {
@@ -1805,8 +1808,9 @@ public class KBArticleServiceHttp {
 		new Class[] {long.class};
 	private static final Class<?>[] _updateKBArticleParameterTypes39 =
 		new Class[] {
-			long.class, String.class, String.class, String.class, String.class,
-			String[].class, String[].class, long[].class,
+			long.class, String.class, String.class, String.class,
+			String[].class, String.class, java.util.Date.class,
+			java.util.Date.class, String[].class, long[].class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]

@@ -24,10 +24,8 @@ import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.template.model.TemplateEntry;
-import com.liferay.template.service.TemplateEntryLocalService;
 
 import java.util.List;
 import java.util.Map;
@@ -171,15 +169,9 @@ public class TemplateEntryStagedModelDataHandler
 	@Reference
 	private DDMTemplateLocalService _ddmTemplateLocalService;
 
-	@Reference
-	private Portal _portal;
-
 	@Reference(
 		target = "(model.class.name=com.liferay.template.model.TemplateEntry)"
 	)
 	private StagedModelRepository<TemplateEntry> _stagedModelRepository;
-
-	@Reference
-	private TemplateEntryLocalService _templateEntryLocalService;
 
 }

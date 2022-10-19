@@ -31,29 +31,29 @@ definition {
 		var portalURL = PropsUtil.get("portal.url");
 
 		JSONKnowledgeBase.addkBArticle(
-			groupName = "Test Site Name",
+			groupName = "Guest",
 			kbArticleContent = "Content",
 			kbArticleTitle = "KB parent article");
 
 		JSONKnowledgeBase.addkBChildArticle(
-			groupName = "Test Site Name",
+			groupName = "Guest",
 			kbArticleTitle = "KB parent article",
 			kbChildArticleContent = "Content",
 			kbChildArticleTitle = "2nd tier article");
 
 		JSONKnowledgeBase.addkBGrandchildArticle(
-			groupName = "Test Site Name",
+			groupName = "Guest",
 			kbArticleTitle = "KB parent article",
 			kbChildArticleTitle = "2nd tier article",
-			kbGrandchildArticleContent = "Content",
+			kbGrandchildArticleContent = "Grandchild Content",
 			kbGrandchildArticleTitle = "3rd tier article");
 
 		JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
 			contentType = "Knowledge Base Article",
 			displayPageTemplateEntryName = "Display Page Name",
-			groupName = "Test Site Name");
+			groupName = "Guest");
 
-		DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
+		DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "guest");
 
 		DisplayPageTemplatesAdmin.gotoDisplayPage(displayPageName = "Display Page Name");
 
@@ -67,23 +67,19 @@ definition {
 
 		DisplayPageTemplatesAdmin.markDisplayPageAsDefault(displayPageName = "Display Page Name");
 
-		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/k/3rd-tier-article");
+		Navigator.openSpecificURL(url = "${portalURL}/web/guest/k/3rd-tier-article");
 
 		AssertElementPresent(
 			key_kbArticleTitle = "KB parent article",
-			locator1 = "KNOWLEDGE_BASE_FRAGMENT_NAVIGATION_TOP_LEVEL_HIERARCHY");
+			locator1 = "Fragment#KNOWLEDGE_BASE_FRAGMENT_NAVIGATION_TOP_LEVEL_HIERARCHY");
 
 		AssertElementPresent(
 			key_kbArticleTitle = "2nd tier article",
-			locator1 = "KNOWLEDGE_BASE_FRAGMENT_NAVIGATION_SECOND_LEVEL_HIERARCHY");
+			locator1 = "Fragment#KNOWLEDGE_BASE_FRAGMENT_NAVIGATION_SECOND_LEVEL_HIERARCHY");
 
 		AssertElementPresent(
 			key_kbArticleTitle = "3rd tier article",
-			locator1 = "KNOWLEDGE_BASE_FRAGMENT_NAVIGATION_SELECTED_SECOND_LEVEL_HIERARCHY");
-
-		AssertElementNotPresent(
-			key_kbArticleTitle = "3rd tier article",
-			locator1 = "KNOWLEDGE_BASE_FRAGMENT_NAVIGATION_SELECTED_THIRD_LEVEL_HIERARCHY");
+			locator1 = "Fragment#KNOWLEDGE_BASE_FRAGMENT_NAVIGATION_SELECTED_SECOND_LEVEL_HIERARCHY");
 	}
 
 	@description = "This test ensures that a KB article is displayed with the default template when accessing the KB display page URL."

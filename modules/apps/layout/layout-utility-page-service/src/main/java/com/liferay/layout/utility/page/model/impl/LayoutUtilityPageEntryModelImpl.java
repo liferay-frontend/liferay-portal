@@ -80,6 +80,7 @@ public class LayoutUtilityPageEntryModelImpl
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"modifiedDate", Types.TIMESTAMP}, {"plid", Types.BIGINT},
+		{"previewFileEntryId", Types.BIGINT},
 		{"defaultLayoutUtilityPageEntry", Types.BOOLEAN},
 		{"name", Types.VARCHAR}, {"type_", Types.INTEGER},
 		{"lastPublishDate", Types.TIMESTAMP}
@@ -101,6 +102,7 @@ public class LayoutUtilityPageEntryModelImpl
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("plid", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("previewFileEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("defaultLayoutUtilityPageEntry", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
@@ -108,7 +110,7 @@ public class LayoutUtilityPageEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table LayoutUtilityPageEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,LayoutUtilityPageEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,plid LONG,defaultLayoutUtilityPageEntry BOOLEAN,name VARCHAR(75) null,type_ INTEGER,lastPublishDate DATE null,primary key (LayoutUtilityPageEntryId, ctCollectionId))";
+		"create table LayoutUtilityPageEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,LayoutUtilityPageEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,plid LONG,previewFileEntryId LONG,defaultLayoutUtilityPageEntry BOOLEAN,name VARCHAR(75) null,type_ INTEGER,lastPublishDate DATE null,primary key (LayoutUtilityPageEntryId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table LayoutUtilityPageEntry";
@@ -153,20 +155,19 @@ public class LayoutUtilityPageEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TYPE_COLUMN_BITMASK = 16L;
+	public static final long NAME_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long TYPE_COLUMN_BITMASK = 32L;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *		#getColumnBitmask(String)}
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long NAME_COLUMN_BITMASK = 64L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -355,6 +356,13 @@ public class LayoutUtilityPageEntryModelImpl
 			"plid",
 			(BiConsumer<LayoutUtilityPageEntry, Long>)
 				LayoutUtilityPageEntry::setPlid);
+		attributeGetterFunctions.put(
+			"previewFileEntryId",
+			LayoutUtilityPageEntry::getPreviewFileEntryId);
+		attributeSetterBiConsumers.put(
+			"previewFileEntryId",
+			(BiConsumer<LayoutUtilityPageEntry, Long>)
+				LayoutUtilityPageEntry::setPreviewFileEntryId);
 		attributeGetterFunctions.put(
 			"defaultLayoutUtilityPageEntry",
 			LayoutUtilityPageEntry::getDefaultLayoutUtilityPageEntry);
@@ -641,6 +649,21 @@ public class LayoutUtilityPageEntryModelImpl
 
 	@JSON
 	@Override
+	public long getPreviewFileEntryId() {
+		return _previewFileEntryId;
+	}
+
+	@Override
+	public void setPreviewFileEntryId(long previewFileEntryId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_previewFileEntryId = previewFileEntryId;
+	}
+
+	@JSON
+	@Override
 	public boolean getDefaultLayoutUtilityPageEntry() {
 		return _defaultLayoutUtilityPageEntry;
 	}
@@ -691,6 +714,15 @@ public class LayoutUtilityPageEntryModelImpl
 		}
 
 		_name = name;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalName() {
+		return getColumnOriginalValue("name");
 	}
 
 	@JSON
@@ -811,6 +843,8 @@ public class LayoutUtilityPageEntryModelImpl
 		layoutUtilityPageEntryImpl.setCreateDate(getCreateDate());
 		layoutUtilityPageEntryImpl.setModifiedDate(getModifiedDate());
 		layoutUtilityPageEntryImpl.setPlid(getPlid());
+		layoutUtilityPageEntryImpl.setPreviewFileEntryId(
+			getPreviewFileEntryId());
 		layoutUtilityPageEntryImpl.setDefaultLayoutUtilityPageEntry(
 			isDefaultLayoutUtilityPageEntry());
 		layoutUtilityPageEntryImpl.setName(getName());
@@ -851,6 +885,8 @@ public class LayoutUtilityPageEntryModelImpl
 			this.<Date>getColumnOriginalValue("modifiedDate"));
 		layoutUtilityPageEntryImpl.setPlid(
 			this.<Long>getColumnOriginalValue("plid"));
+		layoutUtilityPageEntryImpl.setPreviewFileEntryId(
+			this.<Long>getColumnOriginalValue("previewFileEntryId"));
 		layoutUtilityPageEntryImpl.setDefaultLayoutUtilityPageEntry(
 			this.<Boolean>getColumnOriginalValue(
 				"defaultLayoutUtilityPageEntry"));
@@ -999,6 +1035,9 @@ public class LayoutUtilityPageEntryModelImpl
 
 		layoutUtilityPageEntryCacheModel.plid = getPlid();
 
+		layoutUtilityPageEntryCacheModel.previewFileEntryId =
+			getPreviewFileEntryId();
+
 		layoutUtilityPageEntryCacheModel.defaultLayoutUtilityPageEntry =
 			isDefaultLayoutUtilityPageEntry();
 
@@ -1097,6 +1136,7 @@ public class LayoutUtilityPageEntryModelImpl
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private long _plid;
+	private long _previewFileEntryId;
 	private boolean _defaultLayoutUtilityPageEntry;
 	private String _name;
 	private int _type;
@@ -1145,6 +1185,7 @@ public class LayoutUtilityPageEntryModelImpl
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
 		_columnOriginalValues.put("plid", _plid);
+		_columnOriginalValues.put("previewFileEntryId", _previewFileEntryId);
 		_columnOriginalValues.put(
 			"defaultLayoutUtilityPageEntry", _defaultLayoutUtilityPageEntry);
 		_columnOriginalValues.put("name", _name);
@@ -1198,13 +1239,15 @@ public class LayoutUtilityPageEntryModelImpl
 
 		columnBitmasks.put("plid", 2048L);
 
-		columnBitmasks.put("defaultLayoutUtilityPageEntry", 4096L);
+		columnBitmasks.put("previewFileEntryId", 4096L);
 
-		columnBitmasks.put("name", 8192L);
+		columnBitmasks.put("defaultLayoutUtilityPageEntry", 8192L);
 
-		columnBitmasks.put("type_", 16384L);
+		columnBitmasks.put("name", 16384L);
 
-		columnBitmasks.put("lastPublishDate", 32768L);
+		columnBitmasks.put("type_", 32768L);
+
+		columnBitmasks.put("lastPublishDate", 65536L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

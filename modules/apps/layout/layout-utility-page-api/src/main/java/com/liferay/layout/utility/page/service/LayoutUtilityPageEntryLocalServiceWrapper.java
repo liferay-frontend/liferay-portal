@@ -70,6 +70,16 @@ public class LayoutUtilityPageEntryLocalServiceWrapper
 			masterLayoutPlid);
 	}
 
+	@Override
+	public LayoutUtilityPageEntry copyLayoutUtilityPageEntry(
+			long userId, long groupId, long layoutUtilityPageEntryId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _layoutUtilityPageEntryLocalService.copyLayoutUtilityPageEntry(
+			userId, groupId, layoutUtilityPageEntryId, serviceContext);
+	}
+
 	/**
 	 * Creates a new layout utility page entry with the primary key. Does not add the layout utility page entry to the database.
 	 *

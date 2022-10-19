@@ -15,6 +15,4 @@
 export declare function fetchConnection(token: string): Promise<Response>;
 export declare function deleteConnection(): Promise<Response>;
 export declare function fetchProperties(): Promise<any>;
-export declare function fetchConnectionModal(
-	propertyName: string
-): Promise<unknown>;
+export declare function createProperty(name: string): Promise<Response>;

@@ -27,6 +27,7 @@ interface IStepProps extends TGenericComponent {}
 
 const Step: React.FC<IStepProps> = ({onChangeStep}) => {
 	const [properties, setProperties] = useState([]);
+	const {observer, onOpenChange, open} = useModal();
 
 	useEffect(() => {
 		const request = async () => {
@@ -35,7 +36,6 @@ const Step: React.FC<IStepProps> = ({onChangeStep}) => {
 		};
 		request();
 	}, []);
-	const {observer, onOpenChange, open} = useModal();
 
 	return (
 		<BasePage
@@ -80,7 +80,19 @@ const Step: React.FC<IStepProps> = ({onChangeStep}) => {
 				</div>
 			)}
 
-			{open && <CreatePropertyModal observer={observer} />}
+			{open && (
+				<CreatePropertyModal
+					observer={observer}
+					onCloseModal={() => {
+						const request = async () => {
+							const response = await fetchProperties();
+							setProperties(response.items);
+						};
+						request();
+						onOpenChange(false);
+					}}
+				/>
+			)}
 
 			<BasePage.Footer>
 				<ClayButton.Group spaced>

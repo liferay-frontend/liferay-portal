@@ -269,6 +269,20 @@ public interface LayoutUtilityPageEntryModel
 	public void setPlid(long plid);
 
 	/**
+	 * Returns the preview file entry ID of this layout utility page entry.
+	 *
+	 * @return the preview file entry ID of this layout utility page entry
+	 */
+	public long getPreviewFileEntryId();
+
+	/**
+	 * Sets the preview file entry ID of this layout utility page entry.
+	 *
+	 * @param previewFileEntryId the preview file entry ID of this layout utility page entry
+	 */
+	public void setPreviewFileEntryId(long previewFileEntryId);
+
+	/**
 	 * Returns the default layout utility page entry of this layout utility page entry.
 	 *
 	 * @return the default layout utility page entry of this layout utility page entry

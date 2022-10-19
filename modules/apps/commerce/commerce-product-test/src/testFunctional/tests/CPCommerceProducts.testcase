@@ -377,6 +377,8 @@ definition {
 			portlet = "Products");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Any Product",
 			productCatalog = "Master",
 			productName = "Any Product",
@@ -397,19 +399,11 @@ definition {
 			productName = "Simple T-Shirt",
 			productType = "Simple");
 
-		Click(
-			key_itemName = "",
-			locator1 = "CommerceEntry#SPECIFIC_MENU_ITEM");
-
-		Click(
-			key_optionValue = "Duplicate",
-			locator1 = "CommerceFrontStore#FS_PRODUCT_OPTION");
-
-		CommerceEntry.addProductsEntry(
+		CommerceProducts.duplicateProduct(
+			checkProductFields = "true",
+			compileDescription = "false",
 			productCatalog = "Master",
-			productFullDescription = "",
-			productName = "Copy of Simple T-Shirt",
-			productShortDescription = "",
+			productName = "Simple T-Shirt",
 			publishProduct = "false");
 
 		AssertElementPresent(
@@ -477,6 +471,8 @@ definition {
 			portlet = "Products");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Approved Product",
 			productCatalog = "Master",
 			productName = "Approved Product",
@@ -569,6 +565,8 @@ definition {
 		Click(locator1 = "Icon#BACK");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Simple T-Shirt",
 			productCatalog = "Minium",
 			productName = "Simple T-Shirt",
@@ -596,6 +594,8 @@ definition {
 			portlet = "Products");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Denied Product",
 			productCatalog = "Master",
 			productName = "Denied Product",
@@ -618,19 +618,11 @@ definition {
 			productType = "Simple",
 			publishProduct = "false");
 
-		Click(
-			key_itemName = "",
-			locator1 = "CommerceEntry#SPECIFIC_MENU_ITEM");
-
-		Click(
-			key_optionValue = "Duplicate",
-			locator1 = "CommerceFrontStore#FS_PRODUCT_OPTION");
-
-		CommerceEntry.addProductsEntry(
+		CommerceProducts.duplicateProduct(
+			checkProductFields = "true",
+			compileDescription = "false",
 			productCatalog = "Master",
-			productFullDescription = "",
-			productName = "Copy of Simple T-Shirt",
-			productShortDescription = "",
+			productName = "Simple T-Shirt",
 			publishProduct = "false");
 
 		AssertElementPresent(
@@ -850,6 +842,8 @@ definition {
 			portlet = "Products");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Draft Product",
 			productCatalog = "Master",
 			productName = "Draft Product",
@@ -908,6 +902,8 @@ definition {
 		Click(locator1 = "Icon#BACK");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Simple T-Shirt",
 			productCatalog = "Minium",
 			productName = "Simple T-Shirt",
@@ -935,6 +931,8 @@ definition {
 			portlet = "Products");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Expired Product",
 			productCatalog = "Master",
 			productName = "Expired Product",
@@ -956,6 +954,8 @@ definition {
 			portlet = "Products");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Inactive Product",
 			productCatalog = "Master",
 			productName = "Inactive Product",
@@ -977,6 +977,8 @@ definition {
 			portlet = "Products");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Incomplete Product",
 			productCatalog = "Master",
 			productName = "Incomplete Product",
@@ -998,6 +1000,8 @@ definition {
 			portlet = "Products");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "In Recycle Bin Product",
 			productCatalog = "Master",
 			productName = "In Recycle Bin Product",
@@ -1019,6 +1023,8 @@ definition {
 			portlet = "Products");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Pending Product",
 			productCatalog = "Master",
 			productName = "Pending Product",
@@ -1114,6 +1120,8 @@ definition {
 		Click(locator1 = "Icon#BACK");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Simple T-Shirt",
 			productCatalog = "Minium",
 			productName = "Simple T-Shirt",
@@ -1156,6 +1164,8 @@ definition {
 			portlet = "Products");
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
+			checkProductFields = "true",
+			compileDescription = "false",
 			entryName = "Scheduled Product",
 			productCatalog = "Master",
 			productName = "Scheduled Product",
@@ -1584,21 +1594,12 @@ definition {
 
 			CommerceNavigator.gotoEntry(entryName = "ABS Sensor");
 
-			Click(
-				key_itemName = "",
-				locator1 = "CommerceEntry#SPECIFIC_MENU_ITEM");
-
-			Click(
-				key_optionValue = "Duplicate",
-				locator1 = "CommerceFrontStore#FS_PRODUCT_OPTION");
-
-			CommerceEntry.addProductsEntry(
+			CommerceProducts.duplicateProduct(
+				checkProductFields = "true",
+				compileDescription = "false",
 				productCatalog = "Minium",
-				productFullDescription = "",
-				productName = "Copy of ABS Sensor",
-				productShortDescription = "");
-
-			Button.clickPublish();
+				productName = "ABS Sensor",
+				publishProduct = "true");
 		}
 
 		task ("And if I change the SKU price of the original product") {

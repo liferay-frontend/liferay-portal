@@ -24,6 +24,7 @@
 		<!-- Other fields -->
 
 		<column name="plid" type="long" />
+		<column name="previewFileEntryId" type="long" />
 		<column name="defaultLayoutUtilityPageEntry" type="boolean" />
 		<column name="name" type="String" />
 		<column name="type" type="int" />
@@ -47,6 +48,11 @@
 		<finder name="G_D_T" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="defaultLayoutUtilityPageEntry" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="G_N_T" return-type="LayoutUtilityPageEntry" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="name" />
 			<finder-column name="type" />
 		</finder>
 	</entity>

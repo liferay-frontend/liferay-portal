@@ -45,8 +45,12 @@ definition {
 	@description = "Automtion ID: LPS-144412 | Test Summary: Verify if the user can open the drop-down filter and select Active Status"
 	@priority = "4"
 	test CanUserSelectActiveStatus {
-		task ("Go to CP2.0 and join a project") {
+		task ("Go to Customer Portal 2.0") {
 			ApplicationsMenu.gotoSite(key_site = "${testSiteName}");
+		}
+
+		task ("Given I go to the test account") {
+			CustomerPortal.search(searchItem = "${testAccount}");
 
 			CustomerPortal.enterOnProject(title = "${testAccount}");
 		}
@@ -65,8 +69,12 @@ definition {
 	@description = "Automation ID: LPS-144413 | Test Summary: Verify if the user can open the drop-down filter and select Expired Status"
 	@priority = "4"
 	test CanUserSelectExpiredStatus {
-		task ("Go to CP2.0 and join a project") {
+		task ("Go to Customer Portal 2.0") {
 			ApplicationsMenu.gotoSite(key_site = "${testSiteName}");
+		}
+
+		task ("Given I go to the test account") {
+			CustomerPortal.search(searchItem = "${testAccount}");
 
 			CustomerPortal.enterOnProject(title = "${testAccount}");
 		}
@@ -85,8 +93,12 @@ definition {
 	@description = "Automation ID: LPS-144414 | Test Summary: Verify if the user can open the drop-down filter and select Future Status"
 	@priority = "4"
 	test CanUserSelectFutureStatus {
-		task ("Go to CP2.0 and join a project") {
+		task ("Go to Customer Portal 2.0") {
 			ApplicationsMenu.gotoSite(key_site = "${testSiteName}");
+		}
+
+		task ("Given I go to the test account") {
+			CustomerPortal.search(searchItem = "${testAccount}");
 
 			CustomerPortal.enterOnProject(title = "${testAccount}");
 		}
@@ -105,8 +117,12 @@ definition {
 	@description = "Automation ID: LPS-144416 | Test Summary: Verify if the user can open the drop-down filter and select three statuses"
 	@priority = "3"
 	test CanUserSelectThreeStatuses {
-		task ("Go to CP2.0 and join a project") {
+		task ("Go to Customer Portal 2.0") {
 			ApplicationsMenu.gotoSite(key_site = "${testSiteName}");
+		}
+
+		task ("Given I go to the test account") {
+			CustomerPortal.search(searchItem = "${testAccount}");
 
 			CustomerPortal.enterOnProject(title = "${testAccount}");
 		}
@@ -121,8 +137,12 @@ definition {
 	@description = "Automation ID: LPS-144419 | Test Summary: Verify if the value of the filter when transitioning between subscription types is kept and only reset when the user leaves the page"
 	@priority = "4"
 	test ValueIsKeptOnTransition {
-		task ("Go to CP2.0 and join a project") {
+		task ("Go to Customer Portal 2.0") {
 			ApplicationsMenu.gotoSite(key_site = "${testSiteName}");
+		}
+
+		task ("Given I go to the test account") {
+			CustomerPortal.search(searchItem = "${testAccount}");
 
 			CustomerPortal.enterOnProject(title = "${testAccount}");
 		}

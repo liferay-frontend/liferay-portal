@@ -146,6 +146,7 @@ public class ObjectFieldResourceImpl
 
 		return _toObjectField(
 			_objectFieldService.addCustomObjectField(
+				objectField.getExternalReferenceCode(),
 				objectField.getListTypeDefinitionId(), objectDefinitionId,
 				objectField.getBusinessTypeAsString(),
 				ObjectFieldUtil.getDBType(
@@ -173,7 +174,7 @@ public class ObjectFieldResourceImpl
 
 		return _toObjectField(
 			_objectFieldService.updateObjectField(
-				objectFieldId, objectField.getExternalReferenceCode(),
+				objectField.getExternalReferenceCode(), objectFieldId,
 				objectField.getListTypeDefinitionId(),
 				objectField.getBusinessTypeAsString(),
 				ObjectFieldUtil.getDBType(

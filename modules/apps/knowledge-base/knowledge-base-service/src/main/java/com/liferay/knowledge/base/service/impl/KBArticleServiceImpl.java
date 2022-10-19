@@ -88,7 +88,8 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 			String externalReferenceCode, String portletId,
 			long parentResourceClassNameId, long parentResourcePrimKey,
 			String title, String urlTitle, String content, String description,
-			String sourceURL, String[] sections, String[] selectedFileNames,
+			String[] sections, String sourceURL, Date expirationDate,
+			Date reviewDate, String[] selectedFileNames,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -97,7 +98,8 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		return kbArticleLocalService.addKBArticle(
 			externalReferenceCode, getUserId(), parentResourceClassNameId,
 			parentResourcePrimKey, title, urlTitle, content, description,
-			sourceURL, sections, selectedFileNames, null, null, serviceContext);
+			sections, sourceURL, expirationDate, reviewDate, selectedFileNames,
+			serviceContext);
 	}
 
 	@Override
@@ -775,18 +777,18 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 	@Override
 	public KBArticle updateKBArticle(
 			long resourcePrimKey, String title, String content,
-			String description, String sourceURL, String[] sections,
-			String[] selectedFileNames, long[] removeFileEntryIds,
-			ServiceContext serviceContext)
+			String description, String[] sections, String sourceURL,
+			Date expirationDate, Date reviewDate, String[] selectedFileNames,
+			long[] removeFileEntryIds, ServiceContext serviceContext)
 		throws PortalException {
 
 		_kbArticleModelResourcePermission.check(
 			getPermissionChecker(), resourcePrimKey, KBActionKeys.UPDATE);
 
 		return kbArticleLocalService.updateKBArticle(
-			getUserId(), resourcePrimKey, title, content, description,
-			sourceURL, sections, selectedFileNames, removeFileEntryIds, null,
-			null, serviceContext);
+			getUserId(), resourcePrimKey, title, content, description, sections,
+			sourceURL, expirationDate, reviewDate, selectedFileNames,
+			removeFileEntryIds, serviceContext);
 	}
 
 	@Override

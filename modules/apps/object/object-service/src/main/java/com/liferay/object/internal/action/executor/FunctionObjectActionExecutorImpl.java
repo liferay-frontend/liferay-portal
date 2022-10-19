@@ -87,21 +87,21 @@ public class FunctionObjectActionExecutorImpl implements ObjectActionExecutor {
 			ObjectActionExecutorConstants.KEY_FUNCTION, StringPool.POUND,
 			_getExternalReferenceCode(properties));
 
-		Company company = _getCompany(properties);
-
 		FunctionObjectActionExecutorImplConfiguration
 			functionObjectActionExecutorImplConfiguration =
 				ConfigurableUtil.createConfigurable(
 					FunctionObjectActionExecutorImplConfiguration.class,
 					properties);
+		Company company = _getCompany(properties);
 
-		_location = _getLocation(functionObjectActionExecutorImplConfiguration);
-		_oAuth2Application =
+		_location = _getLocation(
+			functionObjectActionExecutorImplConfiguration,
 			_oAuth2ApplicationLocalService.
-				fetchOAuth2ApplicationByExternalReferenceCode(
+				getOAuth2ApplicationByExternalReferenceCode(
 					company.getCompanyId(),
 					functionObjectActionExecutorImplConfiguration.
-						oAuth2ApplicationExternalReferenceCode());
+						oAuth2ApplicationExternalReferenceCode()));
+
 		_timeout = functionObjectActionExecutorImplConfiguration.timeout();
 	}
 
@@ -145,7 +145,8 @@ public class FunctionObjectActionExecutorImpl implements ObjectActionExecutor {
 
 	private String _getLocation(
 		FunctionObjectActionExecutorImplConfiguration
-			functionObjectActionExecutorImplConfiguration) {
+			functionObjectActionExecutorImplConfiguration,
+		OAuth2Application oAuth2Application) {
 
 		String resourcePath =
 			functionObjectActionExecutorImplConfiguration.resourcePath();
@@ -154,7 +155,7 @@ public class FunctionObjectActionExecutorImpl implements ObjectActionExecutor {
 			return resourcePath;
 		}
 
-		String homePageURL = _oAuth2Application.getHomePageURL();
+		String homePageURL = oAuth2Application.getHomePageURL();
 
 		if (homePageURL.endsWith(StringPool.SLASH)) {
 			homePageURL = homePageURL.substring(0, homePageURL.length() - 1);
@@ -176,7 +177,6 @@ public class FunctionObjectActionExecutorImpl implements ObjectActionExecutor {
 
 	private String _key;
 	private String _location;
-	private OAuth2Application _oAuth2Application;
 
 	@Reference
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;

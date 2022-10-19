@@ -771,8 +771,8 @@ public class KBFolderLocalServiceTest {
 			null, _user.getUserId(),
 			PortalUtil.getClassNameId(KBArticleConstants.getClassName()),
 			kbArticle.getResourcePrimKey(), title, title,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
-			new String[0], new String[0], null, null,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new String[0], null, null, null, new String[0],
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
 	}
@@ -792,8 +792,8 @@ public class KBFolderLocalServiceTest {
 			null, _user.getUserId(),
 			PortalUtil.getClassNameId(KBFolderConstants.getClassName()),
 			parentKbFolderId, title, title, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), null, new String[0], new String[0],
-			null, null, serviceContext);
+			RandomTestUtil.randomString(), new String[0], null, null, null,
+			new String[0], serviceContext);
 	}
 
 	protected KBArticle addKBArticle(long parentKbFolderId, String title)
@@ -803,8 +803,8 @@ public class KBFolderLocalServiceTest {
 			null, _user.getUserId(),
 			PortalUtil.getClassNameId(KBFolderConstants.getClassName()),
 			parentKbFolderId, title, title, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), null, new String[0], new String[0],
-			null, null,
+			RandomTestUtil.randomString(), new String[0], null, null, null,
+			new String[0],
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
 	}
@@ -826,9 +826,9 @@ public class KBFolderLocalServiceTest {
 
 		return _kbArticleLocalService.updateKBArticle(
 			kbArticle.getUserId(), kbArticle.getResourcePrimKey(), title,
-			kbArticle.getContent(), kbArticle.getDescription(),
-			kbArticle.getSourceURL(), null, new String[0], new long[0],
-			kbArticle.getExpirationDate(), kbArticle.getReviewDate(),
+			kbArticle.getContent(), kbArticle.getDescription(), null,
+			kbArticle.getSourceURL(), kbArticle.getExpirationDate(),
+			kbArticle.getReviewDate(), new String[0], new long[0],
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
 	}

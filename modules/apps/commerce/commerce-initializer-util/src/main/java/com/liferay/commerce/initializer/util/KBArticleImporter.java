@@ -20,7 +20,7 @@ import com.liferay.knowledge.base.service.KBArticleLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -62,7 +62,7 @@ public class KBArticleImporter {
 		throws PortalException {
 
 		if (jsonArray == null) {
-			jsonArray = JSONFactoryUtil.createJSONArray(
+			jsonArray = _jsonFactory.createJSONArray(
 				"[{\"actionIds\": [\"VIEW\"], \"roleName\": \"Site Member\"," +
 					"\"scope\": 4}]");
 		}
@@ -110,7 +110,7 @@ public class KBArticleImporter {
 		KBArticle kbArticle = _kbArticleLocalService.addKBArticle(
 			null, userId, folderClassNameId,
 			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID, title, null, content,
-			StringPool.BLANK, null, sections, selectedFileNames, null, null,
+			StringPool.BLANK, sections, null, null, null, selectedFileNames,
 			serviceContext);
 
 		JSONArray tagsJSONArray = jsonObject.getJSONArray("tags");
@@ -144,6 +144,9 @@ public class KBArticleImporter {
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private KBArticleLocalService _kbArticleLocalService;
