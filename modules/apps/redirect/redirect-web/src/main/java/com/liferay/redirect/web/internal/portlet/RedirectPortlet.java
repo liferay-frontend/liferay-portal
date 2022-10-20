@@ -17,6 +17,7 @@ package com.liferay.redirect.web.internal.portlet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.redirect.configuration.RedirectConfiguration;
+import com.liferay.redirect.configuration.RedirectPatternConfigurationProvider;
 import com.liferay.redirect.service.RedirectEntryLocalService;
 import com.liferay.redirect.service.RedirectEntryService;
 import com.liferay.redirect.service.RedirectNotFoundEntryLocalService;
@@ -24,6 +25,7 @@ import com.liferay.redirect.web.internal.constants.RedirectPortletKeys;
 import com.liferay.redirect.web.internal.display.context.RedirectDisplayContext;
 import com.liferay.redirect.web.internal.display.context.RedirectEntriesDisplayContext;
 import com.liferay.redirect.web.internal.display.context.RedirectNotFoundEntriesDisplayContext;
+import com.liferay.redirect.web.internal.display.context.RedirectPatternConfigurationDisplayContext;
 import com.liferay.staging.StagingGroupHelper;
 
 import java.io.IOException;
@@ -82,7 +84,7 @@ public class RedirectPortlet extends MVCPortlet {
 					_portal.getLiferayPortletResponse(renderResponse),
 					_redirectNotFoundEntryLocalService));
 		}
-		else {
+		else if (redirectDisplayContext.isShowRedirectEntries()) {
 			renderRequest.setAttribute(
 				RedirectEntriesDisplayContext.class.getName(),
 				new RedirectEntriesDisplayContext(
@@ -91,6 +93,14 @@ public class RedirectPortlet extends MVCPortlet {
 					_portal.getLiferayPortletResponse(renderResponse),
 					_redirectEntryLocalService, _redirectEntryService,
 					_stagingGroupHelper));
+		}
+		else {
+			renderRequest.setAttribute(
+				RedirectPatternConfigurationDisplayContext.class.getName(),
+				new RedirectPatternConfigurationDisplayContext(
+					_portal.getHttpServletRequest(renderRequest),
+					_portal.getLiferayPortletResponse(renderResponse),
+					_redirectPatternConfigurationProvider));
 		}
 
 		super.render(renderRequest, renderResponse);
@@ -111,6 +121,10 @@ public class RedirectPortlet extends MVCPortlet {
 	@Reference
 	private RedirectNotFoundEntryLocalService
 		_redirectNotFoundEntryLocalService;
+
+	@Reference
+	private RedirectPatternConfigurationProvider
+		_redirectPatternConfigurationProvider;
 
 	@Reference
 	private StagingGroupHelper _stagingGroupHelper;

@@ -14,7 +14,7 @@
 
 // AC Version
 
-export const ANALYTICS_CLIENT_VERSION = '1.0.8';
+export const ANALYTICS_CLIENT_VERSION = '1.1.0';
 
 // Application ID
 
@@ -49,6 +49,8 @@ export const QUEUE_PRIORITY_DEFAULT = 1;
 export const QUEUE_PRIORITY_IDENTITY = 10;
 
 // Local Storage keys
+
+export const STORAGE_KEY_CHANNEL_ID = 'ac_client_channel_id';
 
 export const STORAGE_KEY_CONTEXTS = 'ac_client_context';
 

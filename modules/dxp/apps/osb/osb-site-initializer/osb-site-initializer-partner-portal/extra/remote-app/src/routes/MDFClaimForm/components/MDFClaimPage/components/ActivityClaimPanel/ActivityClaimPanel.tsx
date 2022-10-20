@@ -171,6 +171,18 @@ const ActivityClaimPanel = ({
 							</Link>
 						</div>
 					</div>
+
+					<PRMFormik.Field
+						component={PRMForm.DragAndDrop}
+						description="Drag and drop your files here to upload."
+						label="All Contents"
+						onAccept={(value: File[]) =>
+							setFieldValue(
+								`activities[${activityIndex}].contents`,
+								value
+							)
+						}
+					/>
 				</PanelBody>
 			</ClayPanel>
 		</>

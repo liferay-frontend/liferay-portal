@@ -613,6 +613,73 @@ definition {
 		AssertElementNotPresent(locator1 = "Modal#MODAL");
 	}
 
+	@priority = "3"
+	test CanOrderFolderFacetTerms {
+		for (var folder : list "Product,Engineering,2021,2022") {
+			JSONFolder.addFolder(
+				dmFolderName = "${folder}",
+				groupName = "Guest");
+		}
+
+		task ("Populate the folders with files") {
+			JSONDocument.addFile(
+				dmDocumentTitle = "DM Document Title 1",
+				folderName = "Product",
+				groupName = "Guest");
+
+			for (var count : list "1,2") {
+				JSONDocument.addFile(
+					dmDocumentTitle = "DM Document Title ${count}",
+					folderName = "Engineering",
+					groupName = "Guest");
+			}
+
+			for (var count : list "1,2,3") {
+				JSONDocument.addFile(
+					dmDocumentTitle = "DM Document Title ${count}",
+					folderName = "2021",
+					groupName = "Guest");
+			}
+
+			for (var count : list "1,2,3,4") {
+				JSONDocument.addFile(
+					dmDocumentTitle = "DM Document Title ${count}",
+					folderName = "2022",
+					groupName = "Guest");
+			}
+		}
+
+		SearchPortlets.searchEmbedded(searchTerm = "test");
+
+		task ("Assert that the Folder facet sorts by term frequency descending by default") {
+			SearchFacetPortlet.viewFacetItemsSpecificOrder(facetList = "2022,2021,Engineering,Product");
+		}
+
+		task ("Assert that the Folder facet values are correct when sorted by term frequency ascending") {
+			SearchFacetPortlet.configureFolderFacet(sortOption = "Term Frequency Ascending");
+
+			Refresh();
+
+			SearchFacetPortlet.viewFacetItemsSpecificOrder(facetList = "Product,Engineering,2021,2022");
+		}
+
+		task ("Assert that the Folder facet values are correct when sorted by term value ascending") {
+			SearchFacetPortlet.configureFolderFacet(sortOption = "Term Value Ascending");
+
+			Refresh();
+
+			SearchFacetPortlet.viewFacetItemsSpecificOrder(facetList = "2021,2022,Engineering,Product");
+		}
+
+		task ("Assert that the Folder facet values are correct when sorted by term value descending") {
+			SearchFacetPortlet.configureFolderFacet(sortOption = "Term Value Descending");
+
+			Refresh();
+
+			SearchFacetPortlet.viewFacetItemsSpecificOrder(facetList = "Product,Engineering,2022,2021");
+		}
+	}
+
 	@priority = "4"
 	test CanViewTermsOfUseWhenEnterpriseSearchIsEnabled {
 		property custom.properties = "enterprise.product.notification.enabled=true";
@@ -1818,7 +1885,7 @@ definition {
 			searchAssetTitle = "Potato Blog",
 			searchAssetType = "Blogs Entry");
 
-		SearchPortlets.gotoWidgetOptions(portletOption = "Configuration");
+		SearchPortlets.gotoSearchBarWidgetOptions(portletOption = "Configuration");
 
 		SelectFrame(locator1 = "IFrame#CONFIGURATION");
 
@@ -2424,6 +2491,104 @@ definition {
 			searchAssetSummary = "Wiki Page Content",
 			searchAssetTitle = "Wiki Page Title",
 			searchAssetType = "Wiki Page");
+	}
+
+	@description = "This is a use case for LPS-156862."
+	@priority = "4"
+	test SearchWithCategoryFacet {
+		property osgi.module.configuration.file.names = "com.liferay.portal.search.configuration.CategoryFacetFieldConfiguration.config";
+		property osgi.module.configurations = "categoryFacetField=&quot;assetVocabularyCategoryIds&quot;";
+
+		for (var count : list "1,2") {
+			JSONCategory.addVocabulary(
+				groupName = "Guest",
+				title = "Vocabulary Name ${count}");
+		}
+
+		var categoryId1 = JSONCategory.addCategory(
+			groupName = "Guest",
+			title = "Category Name 1",
+			vocabularyName = "Vocabulary Name 1");
+		var categoryId2 = JSONCategory.addCategory(
+			groupName = "Guest",
+			title = "Category Name 2",
+			vocabularyName = "Vocabulary Name 2");
+		var categoryId3 = JSONCategory.addCategory(
+			groupName = "Guest",
+			title = "Category Name 3",
+			vocabularyName = "Vocabulary Name 1");
+		var categoryId4 = JSONCategory.addCategory(
+			groupName = "Guest",
+			title = "Category Name 4",
+			vocabularyName = "Vocabulary Name 2");
+
+		JSONWebcontent.addWebContent(
+			assetCategoryIds = "${categoryId1},${categoryId2}",
+			content = "WC Content",
+			groupName = "Guest",
+			title = "WC Title 1");
+
+		JSONWebcontent.addWebContent(
+			assetCategoryIds = "${categoryId2},${categoryId3}",
+			content = "WC Content",
+			groupName = "Guest",
+			title = "WC Title 2");
+
+		JSONWebcontent.addWebContent(
+			assetCategoryIds = "${categoryId3},${categoryId4}",
+			content = "WC Content",
+			groupName = "Guest",
+			title = "WC Title 3");
+
+		JSONLayout.addPublicLayout(
+			groupName = "Guest",
+			layoutName = "Search Page");
+
+		Navigator.gotoPage(pageName = "Search Page");
+
+		SearchPortlets.addWidgets(searchPortletList = "Search Bar,Search Results,Category Facet,Category Facet");
+
+		SearchPortlets.configureCategoryFacet(
+			groupName = "Guest",
+			index = "1",
+			vocabularyName = "Vocabulary Name 1",
+			vocabularyScope = "Select Vocabularies");
+
+		SearchPortlets.configureCategoryFacet(
+			groupName = "Guest",
+			index = "2",
+			vocabularyName = "Vocabulary Name 2",
+			vocabularyScope = "Select Vocabularies");
+
+		SearchPortlets.searchWidget(searchTerm = "WC Title");
+
+		SearchResultPortlet.viewMultipleSearchResults(
+			resultsList = "WC Title 1/Web Content Article,WC Title 2/Web Content Article,WC Title 3/Web Content Article",
+			searchTerm = "WC Title");
+
+		SearchFacetPortlet.checkFacet(facetValueName = "Category Name 2");
+
+		SearchResultPortlet.viewMultipleSearchResults(
+			resultsList = "WC Title 1/Web Content Article,WC Title 2/Web Content Article",
+			searchTerm = "WC Title");
+
+		SearchFacetPortlet.clearFacet();
+
+		SearchFacetPortlet.checkFacet(facetValueName = "Category Name 3");
+
+		SearchResultPortlet.viewMultipleSearchResults(
+			resultsList = "WC Title 2/Web Content Article,WC Title 3/Web Content Article",
+			searchTerm = "WC Title");
+
+		SearchFacetPortlet.clearFacet();
+
+		SearchFacetPortlet.checkFacet(facetValueName = "Category Name 2");
+
+		SearchFacetPortlet.checkFacet(facetValueName = "Category Name 3");
+
+		SearchResultPortlet.viewSearchResults(
+			searchAssetTitle = "WC Title 2",
+			searchAssetType = "Web Content Article");
 	}
 
 	@priority = "4"

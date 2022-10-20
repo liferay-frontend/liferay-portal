@@ -148,6 +148,11 @@ const SelectionControls = ({
 		<>
 			<ManagementToolbar.Item>
 				<ClayCheckbox
+					aria-label={
+						checkboxStatus === 'checked'
+							? Liferay.Language.get('clear-selection')
+							: Liferay.Language.get('select-items')
+					}
 					checked={checkboxStatus !== 'unchecked'}
 					disabled={disabled}
 					indeterminate={checkboxStatus === 'indeterminate'}

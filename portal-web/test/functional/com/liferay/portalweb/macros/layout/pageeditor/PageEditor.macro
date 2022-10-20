@@ -1094,7 +1094,9 @@ definition {
 	macro changeExperience {
 		var key_experienceName = "${newExperience}";
 
-		Click(locator1 = "PageEditor#EXPERIENCE_LABEL");
+		Click(
+			ariaLabel = "Experience",
+			locator1 = "Button#ANY_WITH_ARIA_LABEL");
 
 		Click(locator1 = "PageEditor#EXPERIENCE_SELECT_ITEM");
 
@@ -1235,10 +1237,12 @@ definition {
 		}
 
 		if (isSet(borderRadius)) {
-			Select(
-				key_text = "corner-radius",
-				locator1 = "Select#GENERIC_SELECT_FIELD_WITH_ICON",
-				value1 = "${borderRadius}");
+			Click(
+				key_fieldLabel = "Border Radius",
+				key_text = "theme",
+				locator1 = "Icon#ANY_ITEM_SELECTOR");
+
+			MenuItem.click(menuItem = "${borderRadius}");
 
 			PageEditor.waitForAutoSave();
 		}
@@ -1248,7 +1252,7 @@ definition {
 				key_fieldLabel = "${fieldLabel}",
 				locator1 = "Dropdown#DROPDOWN_TOGGLE_BUTTON_WITH_LABEL");
 
-			MenuItem.click(menuItem = "${unit}");
+			DropdownMenuItem.click(menuItem = "${unit}");
 		}
 
 		if (isSet(borderWidth)) {
@@ -1274,10 +1278,12 @@ definition {
 		}
 
 		if (isSet(boxShadow)) {
-			Select(
-				key_text = "shadow",
-				locator1 = "Select#GENERIC_SELECT_FIELD_WITH_ICON",
-				value1 = "${boxShadow}");
+			Click(
+				key_fieldLabel = "Shadow",
+				key_text = "theme",
+				locator1 = "Icon#ANY_ITEM_SELECTOR");
+
+			MenuItem.click(menuItem = "${boxShadow}");
 
 			PageEditor.waitForAutoSave();
 		}
@@ -1480,8 +1486,8 @@ definition {
 
 		if (isSet(opacity)) {
 			Type(
-				key_fieldLabel = "Opacity",
-				locator1 = "FormFields#NUMBER_FIELD",
+				ariaLabel = "Opacity",
+				locator1 = "TextInput#ANY_WITH_AIRA_LABEL",
 				value1 = "${opacity}");
 
 			Click(
@@ -3070,10 +3076,12 @@ definition {
 			}
 
 			if (isSet(borderRadius)) {
-				Select(
-					key_text = "corner-radius",
-					locator1 = "Select#GENERIC_SELECT_FIELD_WITH_ICON",
-					value1 = "${borderRadius}");
+				Click(
+					key_fieldLabel = "Border Radius",
+					key_text = "theme",
+					locator1 = "Icon#ANY_ITEM_SELECTOR");
+
+				MenuItem.click(menuItem = "${borderRadius}");
 
 				PageEditor.waitForAutoSave();
 			}
@@ -3088,10 +3096,12 @@ definition {
 			}
 
 			if (isSet(boxShadow)) {
-				Select(
-					key_text = "shadow",
-					locator1 = "Select#GENERIC_SELECT_FIELD_WITH_ICON",
-					value1 = "${boxShadow}");
+				Click(
+					key_fieldLabel = "Shadow",
+					key_text = "theme",
+					locator1 = "Icon#ANY_ITEM_SELECTOR");
+
+				MenuItem.click(menuItem = "${boxShadow}");
 
 				PageEditor.waitForAutoSave();
 			}
@@ -3108,8 +3118,8 @@ definition {
 
 			if (isSet(opacity)) {
 				Type(
-					key_fieldLabel = "Opacity",
-					locator1 = "FormFields#NUMBER_FIELD",
+					ariaLabel = "Opacity",
+					locator1 = "TextInput#ANY_WITH_AIRA_LABEL",
 					value1 = "${opacity}");
 
 				Click(
@@ -3119,8 +3129,8 @@ definition {
 				PageEditor.waitForAutoSave();
 
 				AssertTextEquals(
-					key_fieldLabel = "Opacity",
-					locator1 = "FormFields#NUMBER_FIELD",
+					ariaLabel = "Opacity",
+					locator1 = "TextInput#ANY_WITH_AIRA_LABEL",
 					value1 = "${opacity}");
 			}
 		}
@@ -3419,10 +3429,12 @@ definition {
 			}
 
 			if (isSet(borderRadius)) {
-				Select(
-					key_text = "corner-radius",
-					locator1 = "Select#GENERIC_SELECT_FIELD_WITH_ICON",
-					value1 = "${borderRadius}");
+				Click(
+					key_fieldLabel = "Border Radius",
+					key_text = "theme",
+					locator1 = "Icon#ANY_ITEM_SELECTOR");
+
+				MenuItem.click(menuItem = "${borderRadius}");
 
 				PageEditor.waitForAutoSave();
 			}
@@ -3437,10 +3449,12 @@ definition {
 			}
 
 			if (isSet(boxShadow)) {
-				Select(
-					key_text = "shadow",
-					locator1 = "Select#GENERIC_SELECT_FIELD_WITH_ICON",
-					value1 = "${boxShadow}");
+				Click(
+					key_fieldLabel = "Shadow",
+					key_text = "theme",
+					locator1 = "Icon#ANY_ITEM_SELECTOR");
+
+				MenuItem.click(menuItem = "${boxShadow}");
 
 				PageEditor.waitForAutoSave();
 			}
@@ -3457,8 +3471,8 @@ definition {
 
 			if (isSet(opacity)) {
 				Type(
-					key_fieldLabel = "Opacity",
-					locator1 = "FormFields#NUMBER_FIELD",
+					ariaLabel = "Opacity",
+					locator1 = "TextInput#ANY_WITH_AIRA_LABEL",
 					value1 = "${opacity}");
 
 				Click(
@@ -3468,8 +3482,8 @@ definition {
 				PageEditor.waitForAutoSave();
 
 				AssertTextEquals(
-					key_fieldLabel = "Opacity",
-					locator1 = "FormFields#NUMBER_FIELD",
+					ariaLabel = "Opacity",
+					locator1 = "TextInput#ANY_WITH_AIRA_LABEL",
 					value1 = "${opacity}");
 			}
 		}
@@ -4048,7 +4062,9 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 
 	macro openExperienceMenu {
 		if (IsElementNotPresent(locator1 = "PageEditor#EXPERIENCE_MENU")) {
-			Click(locator1 = "PageEditor#EXPERIENCE_MENU_BUTTON");
+			Click(
+				ariaLabel = "Experience",
+				locator1 = "Button#ANY_WITH_ARIA_LABEL");
 		}
 	}
 
@@ -4261,9 +4277,17 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 	}
 
 	macro selectColorSwatchItem {
-		Click(
-			key_fieldLabel = "${fieldLabel}",
-			locator1 = "Button#COLOR_PICKER");
+		if (IsElementPresent(key_fieldLabel = "${fieldLabel}", key_text = "theme", locator1 = "Icon#ANY_ITEM_SELECTOR")) {
+			Click(
+				key_fieldLabel = "${fieldLabel}",
+				key_text = "theme",
+				locator1 = "Icon#ANY_ITEM_SELECTOR");
+		}
+		else {
+			Click(
+				key_fieldLabel = "${fieldLabel}",
+				locator1 = "Button#COLOR_PICKER");
+		}
 
 		Click(
 			key_colorSwatchItem = "${colorSwatchItem}",

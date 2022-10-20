@@ -322,6 +322,38 @@ public class LayoutSetPrototypePropagationTest
 	}
 
 	@Test
+	public void testLayoutPropagationWithMasterLayout() throws Exception {
+		Layout siteTemplateMasterLayout = LayoutTestUtil.addTypeContentLayout(
+			_layoutSetPrototypeGroup, true, false);
+
+		LayoutTestUtil.addTypeContentLayout(
+			_layoutSetPrototypeGroup, true, false,
+			siteTemplateMasterLayout.getPlid());
+
+		propagateChanges(group);
+
+		LayoutTestUtil.addTypeContentLayout(
+			_layoutSetPrototypeGroup, true, false,
+			siteTemplateMasterLayout.getPlid());
+
+		propagateChanges(group);
+
+		Assert.assertEquals(
+			0,
+			LayoutLocalServiceUtil.getMasterLayoutsCount(
+				group.getGroupId(), siteTemplateMasterLayout.getPlid()));
+
+		Layout siteMasterLayout = LayoutLocalServiceUtil.getFriendlyURLLayout(
+			group.getGroupId(), false,
+			siteTemplateMasterLayout.getFriendlyURL());
+
+		Assert.assertEquals(
+			4,
+			LayoutLocalServiceUtil.getMasterLayoutsCount(
+				group.getGroupId(), siteMasterLayout.getPlid()));
+	}
+
+	@Test
 	public void testPortletDataPropagationWithLinkDisabled() throws Exception {
 		doTestPortletDataPropagation(false);
 	}

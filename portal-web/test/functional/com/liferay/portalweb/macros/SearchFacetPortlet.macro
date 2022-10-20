@@ -92,6 +92,23 @@ definition {
 		IFrame.closeFrame();
 	}
 
+	macro configureFolderFacet {
+		Portlet.gotoPortletOptions(
+			portletName = "Folder Facet",
+			portletOption = "Configuration");
+
+		SelectFrame(locator1 = "IFrame#CONFIGURATION");
+
+		Select(
+			key_fieldLabel = "Order Terms By",
+			locator1 = "Select#GENERIC_SELECT_FIELD",
+			value1 = "${sortOption}");
+
+		PortletEntry.save();
+
+		IFrame.closeFrame();
+	}
+
 	macro generateFacetCheckedURL {
 		if (!(isSet(searchURL))) {
 			var searchURL = SearchPortlets.getSearchTermURL(
@@ -292,6 +309,19 @@ definition {
 		PortletEntry.save();
 
 		IFrame.closeFrame();
+	}
+
+	macro viewFacetItemsSpecificOrder {
+		var resultOrder = "0";
+
+		for (var facetItem : list "${facetList}") {
+			var resultOrder = ${resultOrder} + 1;
+
+			AssertElementPresent(
+				key_facetItem = "${facetItem}",
+				key_resultOrder = "${resultOrder}",
+				locator1 = "SearchResults#FACET_PORTLET_ITEMS_SPECIFIC_ORDER");
+		}
 	}
 
 }

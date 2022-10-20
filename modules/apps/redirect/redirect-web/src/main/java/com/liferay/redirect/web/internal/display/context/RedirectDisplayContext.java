@@ -45,10 +45,19 @@ public class RedirectDisplayContext {
 	public List<NavigationItem> getNavigationItems() {
 		return NavigationItemListBuilder.add(
 			navigationItem -> {
-				navigationItem.setActive(!isShowRedirectNotFoundEntries());
+				navigationItem.setActive(isShowRedirectEntries());
 				navigationItem.setHref(_renderResponse.createRenderURL());
 				navigationItem.setLabel(
-					LanguageUtil.get(_httpServletRequest, "redirects"));
+					LanguageUtil.get(_httpServletRequest, "aliases"));
+			}
+		).add(
+			navigationItem -> {
+				navigationItem.setActive(_isShowRedirectPatterns());
+				navigationItem.setHref(
+					_renderResponse.createRenderURL(), "navigation",
+					"patterns");
+				navigationItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "patterns"));
 			}
 		).add(
 			_redirectConfiguration::isRedirectNotFoundEnabled,
@@ -65,11 +74,35 @@ public class RedirectDisplayContext {
 		).build();
 	}
 
-	public boolean isShowRedirectNotFoundEntries() {
-		String navigation = ParamUtil.getString(
-			_httpServletRequest, "navigation", "redirects");
+	public boolean isShowRedirectEntries() {
+		if (_isShowNavigationPanel("aliases")) {
+			return true;
+		}
 
-		if (navigation.equals("404-urls")) {
+		return false;
+	}
+
+	public boolean isShowRedirectNotFoundEntries() {
+		if (_isShowNavigationPanel("404-urls")) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isShowNavigationPanel(String name) {
+		String navigation = ParamUtil.getString(
+			_httpServletRequest, "navigation", "aliases");
+
+		if (navigation.equals(name)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isShowRedirectPatterns() {
+		if (_isShowNavigationPanel("patterns")) {
 			return true;
 		}
 

@@ -490,6 +490,7 @@ public class FragmentEntryLinkManager {
 	@Reference
 	private JSONFactory _jsonFactory;
 
+	@Reference
 	private Portal _portal;
 
 }

@@ -22,7 +22,6 @@ import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
-import com.liferay.info.display.contributor.field.InfoDisplayContributorFieldTracker;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.type.DateInfoFieldType;
@@ -50,7 +49,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -409,10 +407,6 @@ public class LayoutDisplayPageObjectProviderAnalyticsReportsInfoItemImpl
 	private GroupLocalService _groupLocalService;
 
 	@Reference
-	private InfoDisplayContributorFieldTracker
-		_infoDisplayContributorFieldTracker;
-
-	@Reference
 	private InfoItemServiceTracker _infoItemServiceTracker;
 
 	@Reference
@@ -426,8 +420,5 @@ public class LayoutDisplayPageObjectProviderAnalyticsReportsInfoItemImpl
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }
