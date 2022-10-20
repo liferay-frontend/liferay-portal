@@ -20,8 +20,8 @@ import com.liferay.portal.kernel.template.TemplateHandler;
 import com.liferay.portal.kernel.template.TemplateVariableGroup;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.search.web.internal.facet.display.context.BucketDisplayContext;
 import com.liferay.portal.search.web.internal.facet.display.context.FolderSearchFacetDisplayContext;
-import com.liferay.portal.search.web.internal.facet.display.context.FolderSearchFacetTermDisplayContext;
 import com.liferay.portal.search.web.internal.folder.facet.constants.FolderFacetPortletKeys;
 import com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants;
 
@@ -48,7 +48,7 @@ public class FolderFacetPortletDisplayTemplateHandler
 
 	@Override
 	public String getClassName() {
-		return FolderSearchFacetTermDisplayContext.class.getName();
+		return FolderSearchFacetDisplayContext.class.getName();
 	}
 
 	@Override
@@ -90,11 +90,11 @@ public class FolderFacetPortletDisplayTemplateHandler
 			PortletDisplayTemplateConstants.ENTRY, "getFrequency()");
 		templateVariableGroup.addVariable(
 			"term-name", String.class, PortletDisplayTemplateConstants.ENTRY,
-			"getDisplayName()");
+			"getBucketText()");
 		templateVariableGroup.addCollectionVariable(
 			"terms", List.class, PortletDisplayTemplateConstants.ENTRIES,
-			"term", FolderSearchFacetTermDisplayContext.class,
-			PortletDisplayTemplateConstants.ENTRY, "getDisplayName()");
+			"term", BucketDisplayContext.class,
+			PortletDisplayTemplateConstants.ENTRY, "getBucketText()");
 
 		TemplateVariableGroup categoriesServicesTemplateVariableGroup =
 			new TemplateVariableGroup(

@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.layout.page.template.admin.web.internal.exporter;
+package com.liferay.layout.internal.exporter;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -27,10 +27,12 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.delivery.dto.v1_0.PageDefinition;
-import com.liferay.layout.page.template.admin.web.internal.headless.delivery.dto.v1_0.converter.DisplayPageTemplateDTOConverter;
-import com.liferay.layout.page.template.admin.web.internal.headless.delivery.dto.v1_0.converter.MasterPageDTOConverter;
-import com.liferay.layout.page.template.admin.web.internal.headless.delivery.dto.v1_0.converter.PageTemplateCollectionDTOConverter;
-import com.liferay.layout.page.template.admin.web.internal.headless.delivery.dto.v1_0.converter.PageTemplateDTOConverter;
+import com.liferay.layout.exporter.LayoutsExporter;
+import com.liferay.layout.internal.headless.delivery.dto.v1_0.converter.DisplayPageTemplateDTOConverter;
+import com.liferay.layout.internal.headless.delivery.dto.v1_0.converter.MasterPageDTOConverter;
+import com.liferay.layout.internal.headless.delivery.dto.v1_0.converter.PageTemplateCollectionDTOConverter;
+import com.liferay.layout.internal.headless.delivery.dto.v1_0.converter.PageTemplateDTOConverter;
+import com.liferay.layout.internal.headless.delivery.dto.v1_0.converter.UtilityPageTemplateDTOConverter;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateExportImportConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
@@ -40,6 +42,9 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLoca
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
+import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
+import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -57,11 +62,7 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
 import java.io.File;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.portlet.PortletException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -69,46 +70,11 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Rubén Pulido
  */
-@Component(immediate = true, service = LayoutPageTemplatesExporter.class)
-public class LayoutPageTemplatesExporter {
+@Component(immediate = true, service = LayoutsExporter.class)
+public class LayoutsExporterImpl implements LayoutsExporter {
 
-	public File exportDisplayPages(
-			List<LayoutPageTemplateEntry> layoutPageTemplateEntries)
-		throws PortletException {
-
-		DTOConverter<LayoutStructure, PageDefinition>
-			pageDefinitionDTOConverter = _getPageDefinitionDTOConverter();
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
-
-		try {
-			for (LayoutPageTemplateEntry layoutPageTemplateEntry :
-					layoutPageTemplateEntries) {
-
-				if (layoutPageTemplateEntry.isDraft() ||
-					(layoutPageTemplateEntry.getType() !=
-						LayoutPageTemplateEntryTypeConstants.
-							TYPE_DISPLAY_PAGE)) {
-
-					continue;
-				}
-
-				_populateDisplayPagesZipWriter(
-					layoutPageTemplateEntry, pageDefinitionDTOConverter,
-					zipWriter);
-			}
-
-			return zipWriter.getFile();
-		}
-		catch (Exception exception) {
-			throw new PortletException(exception);
-		}
-	}
-
-	public File exportGroupLayoutPageTemplates(long groupId)
-		throws PortletException {
-
-		Map<Long, LayoutPageTemplateCollection>
-			layoutPageTemplateCollectionKeyMap = new HashMap<>();
+	@Override
+	public File exportLayoutPageTemplateEntries(long groupId) throws Exception {
 		DTOConverter<LayoutStructure, PageDefinition>
 			pageDefinitionDTOConverter = _getPageDefinitionDTOConverter();
 		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
@@ -117,118 +83,99 @@ public class LayoutPageTemplatesExporter {
 			_layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntries(
 				groupId);
 
-		try {
-			for (LayoutPageTemplateEntry layoutPageTemplateEntry :
-					layoutPageTemplateEntries) {
+		for (LayoutPageTemplateEntry layoutPageTemplateEntry :
+				layoutPageTemplateEntries) {
 
-				if (layoutPageTemplateEntry.isDraft()) {
-					continue;
-				}
-
-				if (layoutPageTemplateEntry.getType() ==
-						LayoutPageTemplateEntryTypeConstants.TYPE_BASIC) {
-
-					_populateLayoutPageTemplateCollectionKeyMap(
-						layoutPageTemplateCollectionKeyMap,
-						layoutPageTemplateEntry);
-
-					_populatePageTemplatesZipWriter(
-						layoutPageTemplateEntry,
-						layoutPageTemplateCollectionKeyMap,
-						pageDefinitionDTOConverter, zipWriter);
-				}
-				else if (layoutPageTemplateEntry.getType() ==
-							LayoutPageTemplateEntryTypeConstants.
-								TYPE_DISPLAY_PAGE) {
-
-					_populateDisplayPagesZipWriter(
-						layoutPageTemplateEntry, pageDefinitionDTOConverter,
-						zipWriter);
-				}
-				else if (layoutPageTemplateEntry.getType() ==
-							LayoutPageTemplateEntryTypeConstants.
-								TYPE_MASTER_LAYOUT) {
-
-					_populateMasterLayoutsZipWriter(
-						layoutPageTemplateEntry, pageDefinitionDTOConverter,
-						zipWriter);
-				}
+			if (layoutPageTemplateEntry.isDraft()) {
+				continue;
 			}
 
-			return zipWriter.getFile();
-		}
-		catch (Exception exception) {
-			throw new PortletException(exception);
-		}
-	}
+			if (layoutPageTemplateEntry.getType() ==
+					LayoutPageTemplateEntryTypeConstants.TYPE_BASIC) {
 
-	public File exportMasterLayouts(
-			List<LayoutPageTemplateEntry> layoutPageTemplateEntries)
-		throws PortletException {
-
-		DTOConverter<LayoutStructure, PageDefinition>
-			pageDefinitionDTOConverter = _getPageDefinitionDTOConverter();
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
-
-		try {
-			for (LayoutPageTemplateEntry layoutPageTemplateEntry :
-					layoutPageTemplateEntries) {
-
-				if (layoutPageTemplateEntry.isDraft() ||
-					(layoutPageTemplateEntry.getType() !=
+				_populatePageTemplatesZipWriter(
+					layoutPageTemplateEntry, pageDefinitionDTOConverter,
+					zipWriter);
+			}
+			else if (layoutPageTemplateEntry.getType() ==
 						LayoutPageTemplateEntryTypeConstants.
-							TYPE_MASTER_LAYOUT)) {
+							TYPE_DISPLAY_PAGE) {
 
-					continue;
-				}
+				_populateDisplayPagesZipWriter(
+					layoutPageTemplateEntry, pageDefinitionDTOConverter,
+					zipWriter);
+			}
+			else if (layoutPageTemplateEntry.getType() ==
+						LayoutPageTemplateEntryTypeConstants.
+							TYPE_MASTER_LAYOUT) {
 
 				_populateMasterLayoutsZipWriter(
 					layoutPageTemplateEntry, pageDefinitionDTOConverter,
 					zipWriter);
 			}
+		}
 
-			return zipWriter.getFile();
-		}
-		catch (Exception exception) {
-			throw new PortletException(exception);
-		}
+		return zipWriter.getFile();
 	}
 
-	public File exportPageTemplates(
-			List<LayoutPageTemplateEntry> layoutPageTemplateEntries)
-		throws PortletException {
+	@Override
+	public File exportLayoutPageTemplateEntries(
+			long[] layoutPageTemplateEntryIds, int type)
+		throws Exception {
 
-		Map<Long, LayoutPageTemplateCollection>
-			layoutPageTemplateCollectionKeyMap = new HashMap<>();
+		return _exportLayoutPageTemplateEntries(
+			layoutPageTemplateEntryIds, type,
+			this::_populateDisplayPagesZipWriter);
+	}
+
+	@Override
+	public File exportLayoutUtilityPageEntries(long[] layoutUtilityPageEntryIds)
+		throws Exception {
+
 		DTOConverter<LayoutStructure, PageDefinition>
 			pageDefinitionDTOConverter = _getPageDefinitionDTOConverter();
 		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
 
-		try {
-			for (LayoutPageTemplateEntry layoutPageTemplateEntry :
-					layoutPageTemplateEntries) {
+		for (long layoutUtilityPageEntryId : layoutUtilityPageEntryIds) {
+			LayoutUtilityPageEntry layoutUtilityPageEntry =
+				_layoutUtilityPageEntryLocalService.fetchLayoutUtilityPageEntry(
+					layoutUtilityPageEntryId);
 
-				if (layoutPageTemplateEntry.isDraft() ||
-					(layoutPageTemplateEntry.getType() !=
-						LayoutPageTemplateEntryTypeConstants.TYPE_BASIC)) {
+			_populateLayoutUtilityPageEntriesZipWriter(
+				layoutUtilityPageEntry, pageDefinitionDTOConverter, zipWriter);
+		}
 
-					continue;
-				}
+		return zipWriter.getFile();
+	}
 
-				_populateLayoutPageTemplateCollectionKeyMap(
-					layoutPageTemplateCollectionKeyMap,
-					layoutPageTemplateEntry);
+	private File _exportLayoutPageTemplateEntries(
+			long[] layoutPageTemplateEntryIds, int type,
+			UnsafeTriConsumer
+				<LayoutPageTemplateEntry,
+				 DTOConverter<LayoutStructure, PageDefinition>, ZipWriter,
+				 Exception> unsafeConsumer)
+		throws Exception {
 
-				_populatePageTemplatesZipWriter(
-					layoutPageTemplateEntry, layoutPageTemplateCollectionKeyMap,
-					pageDefinitionDTOConverter, zipWriter);
+		DTOConverter<LayoutStructure, PageDefinition>
+			pageDefinitionDTOConverter = _getPageDefinitionDTOConverter();
+		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+
+		for (long layoutPageTemplateEntryId : layoutPageTemplateEntryIds) {
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				_layoutPageTemplateEntryLocalService.
+					fetchLayoutPageTemplateEntry(layoutPageTemplateEntryId);
+
+			if (layoutPageTemplateEntry.isDraft() ||
+				(layoutPageTemplateEntry.getType() != type)) {
+
+				continue;
 			}
 
-			return zipWriter.getFile();
+			unsafeConsumer.accept(
+				layoutPageTemplateEntry, pageDefinitionDTOConverter, zipWriter);
 		}
-		catch (Exception exception) {
-			throw new PortletException(exception);
-		}
+
+		return zipWriter.getFile();
 	}
 
 	private DTOConverterContext _getDTOConverterContext(
@@ -332,26 +279,53 @@ public class LayoutPageTemplatesExporter {
 		}
 	}
 
-	private void _populateLayoutPageTemplateCollectionKeyMap(
-			Map<Long, LayoutPageTemplateCollection>
-				layoutPageTemplateCollectionKeyMap,
-			LayoutPageTemplateEntry layoutPageTemplateEntry)
-		throws PortalException {
+	private void _populateLayoutUtilityPageEntriesZipWriter(
+			LayoutUtilityPageEntry layoutUtilityPageEntry,
+			DTOConverter<LayoutStructure, PageDefinition>
+				pageDefinitionDTOConverter,
+			ZipWriter zipWriter)
+		throws Exception {
 
-		long layoutPageTemplateCollectionId =
-			layoutPageTemplateEntry.getLayoutPageTemplateCollectionId();
+		String layoutUtilityPageEntryPath =
+			"layout-utility-page-template/" +
+				layoutUtilityPageEntry.getExternalReferenceCode();
 
-		if (layoutPageTemplateCollectionKeyMap.containsKey(
-				layoutPageTemplateCollectionId)) {
+		SimpleFilterProvider simpleFilterProvider = new SimpleFilterProvider();
 
-			return;
+		FilterProvider filterProvider = simpleFilterProvider.addFilter(
+			"Liferay.Vulcan", SimpleBeanPropertyFilter.serializeAll());
+
+		ObjectWriter objectWriter = _objectMapper.writer(filterProvider);
+
+		zipWriter.addEntry(
+			layoutUtilityPageEntryPath + "/utility-page.json",
+			objectWriter.writeValueAsString(
+				UtilityPageTemplateDTOConverter.toDTO(layoutUtilityPageEntry)));
+
+		Layout layout = _layoutLocalService.fetchLayout(
+			layoutUtilityPageEntry.getPlid());
+
+		if (layout != null) {
+			LayoutStructure layoutStructure = _getLayoutStructure(layout);
+
+			PageDefinition pageDefinition = pageDefinitionDTOConverter.toDTO(
+				_getDTOConverterContext(layout, layoutStructure),
+				layoutStructure);
+
+			zipWriter.addEntry(
+				layoutUtilityPageEntryPath + "/page-definition.json",
+				objectWriter.writeValueAsString(pageDefinition));
 		}
 
-		layoutPageTemplateCollectionKeyMap.put(
-			layoutPageTemplateCollectionId,
-			_layoutPageTemplateCollectionLocalService.
-				getLayoutPageTemplateCollection(
-					layoutPageTemplateCollectionId));
+		FileEntry previewFileEntry = _getPreviewFileEntry(
+			layoutUtilityPageEntry.getPreviewFileEntryId());
+
+		if (previewFileEntry != null) {
+			zipWriter.addEntry(
+				layoutUtilityPageEntryPath + "/thumbnail." +
+					previewFileEntry.getExtension(),
+				previewFileEntry.getContentStream());
+		}
 	}
 
 	private void _populateMasterLayoutsZipWriter(
@@ -406,16 +380,16 @@ public class LayoutPageTemplatesExporter {
 
 	private void _populatePageTemplatesZipWriter(
 			LayoutPageTemplateEntry layoutPageTemplateEntry,
-			Map<Long, LayoutPageTemplateCollection>
-				layoutPageTemplateCollectionKeyMap,
 			DTOConverter<LayoutStructure, PageDefinition>
 				pageDefinitionDTOConverter,
 			ZipWriter zipWriter)
 		throws Exception {
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			layoutPageTemplateCollectionKeyMap.get(
-				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId());
+			_layoutPageTemplateCollectionLocalService.
+				getLayoutPageTemplateCollection(
+					layoutPageTemplateEntry.
+						getLayoutPageTemplateCollectionId());
 
 		String layoutPageTemplateCollectionKey =
 			layoutPageTemplateCollection.getLayoutPageTemplateCollectionKey();
@@ -475,7 +449,7 @@ public class LayoutPageTemplatesExporter {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutPageTemplatesExporter.class);
+		LayoutsExporterImpl.class);
 
 	private static final ObjectMapper _objectMapper = new ObjectMapper() {
 		{
@@ -508,6 +482,10 @@ public class LayoutPageTemplatesExporter {
 	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private LayoutUtilityPageEntryLocalService
+		_layoutUtilityPageEntryLocalService;
 
 	@Reference
 	private ZipWriterFactory _zipWriterFactory;

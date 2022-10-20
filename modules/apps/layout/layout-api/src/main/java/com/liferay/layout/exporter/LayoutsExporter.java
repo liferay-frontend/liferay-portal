@@ -12,24 +12,22 @@
  * details.
  */
 
-package com.liferay.layout.admin.web.internal.headless.delivery.dto.v1_0;
+package com.liferay.layout.exporter;
 
-import com.liferay.headless.delivery.dto.v1_0.UtilityPageTemplate;
-import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
+import java.io.File;
 
 /**
- * @author Bárbara Cabrera
+ * @author Eudaldo Alonso
  */
-public class UtilityPageTemplateDTOConverter {
+public interface LayoutsExporter {
 
-	public static UtilityPageTemplate toDTO(
-		LayoutUtilityPageEntry layoutUtilityPageEntry) {
+	public File exportLayoutPageTemplateEntries(long groupId) throws Exception;
 
-		return new UtilityPageTemplate() {
-			{
-				name = layoutUtilityPageEntry.getName();
-			}
-		};
-	}
+	public File exportLayoutPageTemplateEntries(
+			long[] layoutPageTemplateEntryIds, int type)
+		throws Exception;
+
+	public File exportLayoutUtilityPageEntries(long[] layoutUtilityPageEntryIds)
+		throws Exception;
 
 }

@@ -26,8 +26,8 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.WebKeys" %><%@
+page import="com.liferay.portal.search.web.internal.facet.display.context.BucketDisplayContext" %><%@
 page import="com.liferay.portal.search.web.internal.facet.display.context.FolderSearchFacetDisplayContext" %><%@
-page import="com.liferay.portal.search.web.internal.facet.display.context.FolderSearchFacetTermDisplayContext" %><%@
 page import="com.liferay.portal.search.web.internal.folder.facet.configuration.FolderFacetPortletInstanceConfiguration" %>
 
 <portlet:defineObjects />
@@ -53,7 +53,7 @@ FolderFacetPortletInstanceConfiguration folderFacetPortletInstanceConfiguration 
 			<aui:input cssClass="start-parameter-name" name="start-parameter-name" type="hidden" value="<%= folderSearchFacetDisplayContext.getPaginationStartParameterName() %>" />
 
 			<liferay-ddm:template-renderer
-				className="<%= FolderSearchFacetTermDisplayContext.class.getName() %>"
+				className="<%= FolderSearchFacetDisplayContext.class.getName() %>"
 				contextObjects='<%=
 					HashMapBuilder.<String, Object>put(
 						"folderSearchFacetDisplayContext", folderSearchFacetDisplayContext
@@ -63,7 +63,7 @@ FolderFacetPortletInstanceConfiguration folderFacetPortletInstanceConfiguration 
 				%>'
 				displayStyle="<%= folderFacetPortletInstanceConfiguration.displayStyle() %>"
 				displayStyleGroupId="<%= folderSearchFacetDisplayContext.getDisplayStyleGroupId() %>"
-				entries="<%= folderSearchFacetDisplayContext.getFolderSearchFacetTermDisplayContexts() %>"
+				entries="<%= folderSearchFacetDisplayContext.getBucketDisplayContexts() %>"
 			>
 				<liferay-ui:panel-container
 					extended="<%= true %>"
@@ -85,7 +85,7 @@ FolderFacetPortletInstanceConfiguration folderFacetPortletInstanceConfiguration 
 								<%
 								int i = 0;
 
-								for (FolderSearchFacetTermDisplayContext folderSearchFacetTermDisplayContext : folderSearchFacetDisplayContext.getFolderSearchFacetTermDisplayContexts()) {
+								for (BucketDisplayContext bucketDisplayContext : folderSearchFacetDisplayContext.getBucketDisplayContexts()) {
 									i++;
 								%>
 
@@ -94,23 +94,23 @@ FolderFacetPortletInstanceConfiguration folderFacetPortletInstanceConfiguration 
 											<label class="facet-checkbox-label" for="<portlet:namespace />term_<%= i %>">
 												<input
 													class="custom-control-input facet-term"
-													data-term-id="<%= folderSearchFacetTermDisplayContext.getFolderId() %>"
+													data-term-id="<%= bucketDisplayContext.getFilterValue() %>"
 													disabled
 													id="<portlet:namespace />term_<%= i %>"
 													name="<portlet:namespace />term_<%= i %>"
 													onChange="Liferay.Search.FacetUtil.changeSelection(event);"
-													type="checkbox" <%= folderSearchFacetTermDisplayContext.isSelected() ? "checked" : StringPool.BLANK %>
+													type="checkbox" <%= bucketDisplayContext.isSelected() ? "checked" : StringPool.BLANK %>
 												/>
 
-												<span class="custom-control-label term-name <%= folderSearchFacetTermDisplayContext.isSelected() ? "facet-term-selected" : "facet-term-unselected" %>">
+												<span class="custom-control-label term-name <%= bucketDisplayContext.isSelected() ? "facet-term-selected" : "facet-term-unselected" %>">
 													<span class="custom-control-label-text">
-														<%= HtmlUtil.escape(folderSearchFacetTermDisplayContext.getDisplayName()) %>
+														<%= HtmlUtil.escape(bucketDisplayContext.getBucketText()) %>
 													</span>
 												</span>
 
-												<c:if test="<%= folderSearchFacetTermDisplayContext.isFrequencyVisible() %>">
+												<c:if test="<%= bucketDisplayContext.isFrequencyVisible() %>">
 													<small class="term-count">
-														(<%= folderSearchFacetTermDisplayContext.getFrequency() %>)
+														(<%= bucketDisplayContext.getFrequency() %>)
 													</small>
 												</c:if>
 											</label>
