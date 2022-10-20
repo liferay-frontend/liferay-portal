@@ -103,6 +103,45 @@ definition {
 		}
 	}
 
+	@description = "LPS-160159. Assert that it's possible to select a new custom view and selected the default view"
+	@priority = "4"
+	test CanBeSelected {
+		task ("Given FDS sample portlet deployed and given customized tab active") {
+			AssertElementPresent(
+				key_tabName = "Customized",
+				locater1 = "StagingPublishToLive#ACTIVE_TAB_NAME");
+		}
+
+		task ("When open menu to select created custom view") {
+			FDSFilters.editFilters(
+				key_disableFilters = "Blue,Green,Yellow",
+				key_enableFilters = "Red",
+				key_filter = "Color");
+
+			FDSCustomView.createNewView(key_nameView = "Custom Test");
+
+			Click(locator1 = "FrontendDataSet#SELECT_CUSTOM_VIEW");
+
+			Click(
+				key_itemName = "Save View",
+				locator1 = "FrontendDataSet#SELECT_OPTION");
+		}
+
+		task ("Then option to select default view is available") {
+			Click(locator1 = "FrontendDataSet#SELECT_CUSTOM_VIEW");
+
+			AssertElementPresent(
+				key_itemName = "Default View",
+				locater1 = "FrontendDataSet#SELECT_OPTION");
+		}
+
+		task ("And Then option to select created custom view is available") {
+			AssertElementPresent(
+				key_itemName = "Custom Test",
+				locater1 = "FrontendDataSet#SELECT_OPTION");
+		}
+	}
+
 	@description = "LPS-164618. Assert that it's possible can edit a new instance was previously created"
 	@priority = "4"
 	test CanCreateMultiple {
