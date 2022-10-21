@@ -61,3 +61,14 @@ renderResponse.setTitle(objectDefinition.getLabel(locale, true));
 		%>'
 	/>
 </div>
+
+<div>
+	<react:component
+		module="js/components/ExpressionBuilderModal"
+		props='<%=
+			HashMapBuilder.<String, Object>put(
+				"sidebarElements", objectDefinitionsFieldsDisplayContext.getObjectFieldCodeEditorElements()
+			).build()
+		%>'
+	/>
+</div>

@@ -144,6 +144,11 @@
 <!--GENERATE_NEW_KEY-->
 
 <tr>
+	<td>CLUSTER_NODES</td>
+	<td>//select[contains(@name, 'maxClusterNodes')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ENABLED_PRODUCT</td>
 	<td>//*[contains(.,'Product')]//*[contains(@class, 'cp-select-card')]</td>
 	<td></td>
@@ -151,6 +156,16 @@
 <tr>
 	<td>GENERATE_KEY_FORM</td>
 	<td>//div[contains(@class, 'cp-generateKey')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GENERATE_KEY_BUTTON_DISABLED</td>
+	<td>//button[contains(@class, 'btn btn-primary') and @disabled]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GENERATE_KEY_BUTTON_ENABLED</td>
+	<td>//button[contains(@class, 'btn btn-primary') and contains(., 'Generate Cluster (${key_number} Keys)')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -192,6 +207,11 @@
 <!--ACTIVATION_KEY_DETAILS_MODAL -->
 
 <tr>
+	<td>ENVIRONMENT_DETAILS</td>
+	<td>//div[contains(@class, 'cp-input-generate-label')]//*[contains(@name, '${key_environmentDetails}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>KEY_DETAILS_MODAL</td>
 	<td>//div[contains(@class, 'modal-content') and contains(.,'Activation Key Details') and contains (.,'${key_environmentName}')]</td>
 	<td></td>
@@ -199,6 +219,11 @@
 <tr>
 	<td>KEY_DETAILS_ELEMENT_VALUES</td>
 	<td>//div[contains(@class, 'modal-content')]//div[contains(.,'${key_group}')]//*[contains(.,'${key_label}') and contains(.,'${key_value}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INFO_NEW_KEY_CARD</td>
+	<td>//*[contains(@class, 'text-truncate')]//*[contains(., '${key_label}') and contains(., '${key_value}')]</td>
 	<td></td>
 </tr>
 <tr>

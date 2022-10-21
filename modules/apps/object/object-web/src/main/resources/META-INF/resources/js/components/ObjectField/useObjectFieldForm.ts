@@ -167,9 +167,18 @@ export function useObjectFieldForm({
 				}
 			}
 		}
+		else if (field.businessType === 'Formula') {
+			if (invalidateRequired(settings.output as string)) {
+				errors.output = REQUIRED_MSG;
+			}
+
+			if (invalidateRequired(settings.script as string)) {
+				errors.script = REQUIRED_MSG;
+			}
+		}
 		else if (
-			field.businessType === 'Text' ||
-			field.businessType === 'LongText'
+			field.businessType === 'LongText' ||
+			field.businessType === 'Text'
 		) {
 			if (settings.showCounter && !settings.maxLength) {
 				errors.maxLength = REQUIRED_MSG;

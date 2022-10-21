@@ -187,6 +187,8 @@ public class AssetTagIndexerIndexedFieldsTest {
 			String.valueOf(assetTag.getAssetCount())
 		).put(
 			"name_String_sortable", assetTag.getName()
+		).put(
+			"subscribed", "false"
 		).build();
 
 		_indexedFieldsFixture.populateUID(assetTag, map);

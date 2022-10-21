@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -303,6 +304,14 @@ public class AddGroupMVCActionCommand extends BaseMVCActionCommand {
 				typeSettingsUnicodeProperties.setProperty(
 					Sites.ANALYTICS_PREFIX + analyticsType, analyticsScript);
 			}
+		}
+
+		if (GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-165482"))) {
+			String siteInitializerKey = ParamUtil.getString(
+				actionRequest, "siteInitializerKey");
+
+			typeSettingsUnicodeProperties.setProperty(
+				"siteInitializerKey", siteInitializerKey);
 		}
 
 		boolean trashEnabled = ParamUtil.getBoolean(

@@ -81,7 +81,12 @@ function EditSXPBlueprintForm({
 	initialTitle = {},
 	sxpBlueprintId,
 }) {
-	const {isCompanyAdmin, locale, redirectURL} = useContext(ThemeContext);
+	const {
+		featureFlagLps153813,
+		isCompanyAdmin,
+		locale,
+		redirectURL,
+	} = useContext(ThemeContext);
 
 	const formRef = useRef();
 	const sxpElementIdCounterRef = useRef(
@@ -392,7 +397,9 @@ function EditSXPBlueprintForm({
 				null,
 				'\t'
 			),
-			indexConfig: initialConfiguration.indexConfiguration || '',
+			indexConfig: initialConfiguration.indexConfiguration || {
+				indexName: '',
+			},
 			parameterConfig: JSON.stringify(
 				initialConfiguration.parameterConfiguration,
 				null,
@@ -412,27 +419,51 @@ function EditSXPBlueprintForm({
 	useShouldConfirmBeforeNavigate(formik.dirty && !formik.isSubmitting);
 
 	useEffect(() => {
+
+		// Example response:
+		// {
+		// 	actions: {},
+		// 	facets: [],
+		// 	items: [
+		// 		{
+		// 			languageIdPosition: -1,
+		// 			name: 'ddmTemplateKey',
+		// 			type: 'keyword',
+		// 		}
+		// 	],
+		// 	lastPage: 1,
+		// 	page: 1,
+		// 	pageSize: 218,
+		// 	totalCount: 218,
+		// }
+
 		fetchData(`/o/search-experiences-rest/v1.0/field-mapping-infos`)
 			.then((responseContent) => setIndexFields(responseContent.items))
 			.catch(() => setIndexFields([]));
 
-		if (isCompanyAdmin) {
+		if (featureFlagLps153813 && isCompanyAdmin) {
 
-			// TODO: Create API for search indexes (LPS-163750). The list should not
-			// include the company index, in order to avoid confusion with the
-			// "Default Company Index" selection.
+			// Example response:
+			// {
+			// 	actions: {},
+			// 	facets: [],
+			// 	items: [
+			// 		{
+			// 			name: 'liferay-20097-commerce-ml-forecast',
+			// 			suffix: '20097-commerce-ml-forecast',
+			// 		}
+			// 	],
+			// 	lastPage: 1,
+			// 	page: 1,
+			// 	pageSize: 14,
+			// 	totalCount: 14,
+			// }
 
-			setSearchIndexes([]);
-
-			/*
 			fetchData(`/o/search-experiences-rest/v1.0/search-indexes`)
 				.then((responseContent) =>
-					setSearchIndexes(
-						responseContent?.items.map(({fullName}) => fullName)
-					)
+					setSearchIndexes(responseContent?.items || [])
 				)
 				.catch(() => setSearchIndexes([]));
-			*/
 		}
 		else {
 			setSearchIndexes([]);
@@ -477,8 +508,8 @@ function EditSXPBlueprintForm({
 			sortConfiguration: sortConfig ? JSON.parse(sortConfig) : {},
 		};
 
-		if (indexConfig) {
-			configuration.indexConfiguration = indexConfig;
+		if (featureFlagLps153813) {
+			configuration.indexConfiguration = indexConfig || {};
 		}
 
 		return configuration;
@@ -810,6 +841,10 @@ function EditSXPBlueprintForm({
 		setOpenSidebar(openSidebar === type ? '' : type);
 	};
 
+	const _isIndexCompany = () => {
+		return formik.values.indexConfig.indexName === '';
+	};
+
 	const _renderTabContent = () => {
 		switch (tab) {
 			case 'configuration':
@@ -832,7 +867,7 @@ function EditSXPBlueprintForm({
 				return (
 					<>
 						<AddSXPElementSidebar
-							isIndexCompany={!formik.values.indexConfig}
+							isIndexCompany={_isIndexCompany()}
 							onAddSXPElement={_handleAddSXPElement}
 							onClose={_handleCloseSidebar}
 							visible={openSidebar === SIDEBARS.ADD_SXP_ELEMENT}
@@ -914,7 +949,7 @@ function EditSXPBlueprintForm({
 								errors={formik.errors.elementInstances}
 								frameworkConfig={formik.values.frameworkConfig}
 								indexFields={indexFields}
-								isIndexCompany={!formik.values.indexConfig}
+								isIndexCompany={_isIndexCompany()}
 								isSubmitting={
 									formik.isSubmitting || previewInfo.loading
 								}

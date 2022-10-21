@@ -218,6 +218,8 @@ type ObjectFieldSettingName =
 	| 'maximumFileSize'
 	| 'objectFieldName'
 	| 'objectRelationshipName'
+	| 'output'
+	| 'script'
 	| 'showCounter'
 	| 'showFilesInDocumentsAndMedia'
 	| 'stateFlow'

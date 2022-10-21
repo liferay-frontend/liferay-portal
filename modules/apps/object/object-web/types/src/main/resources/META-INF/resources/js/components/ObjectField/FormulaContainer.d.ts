@@ -12,16 +12,17 @@
  * details.
  */
 
-import {
-	ExpressionBuilderModal as Modal,
-	SidebarCategory,
-} from '@liferay/object-js-components-web';
-import React from 'react';
+/// <reference types="react" />
 
-export default function ExpressionBuilderModal({sidebarElements}: IProps) {
-	return <Modal sidebarElements={sidebarElements} />;
+import {ObjectFieldErrors} from './ObjectFieldFormBase';
+interface FormulaContainerProps {
+	errors: ObjectFieldErrors;
+	objectFieldSettings: ObjectFieldSetting[];
+	setValues: (values: Partial<ObjectField>) => void;
 }
-
-interface IProps {
-	sidebarElements: SidebarCategory[];
-}
+export declare function FormulaContainer({
+	errors,
+	objectFieldSettings,
+	setValues,
+}: FormulaContainerProps): JSX.Element;
+export {};

@@ -46,8 +46,30 @@ function ConfigurationTab({
 }) {
 	const {featureFlagLps153813, isCompanyAdmin} = useContext(ThemeContext);
 
-	const _handleIndexConfigRadioChange = (value) => {
-		setFieldValue('indexConfig', value ? '' : searchIndexes[0]);
+	/**
+	 * Called when the Index Configuration radio selection is changed.
+	 * @param {boolean} value
+	 * 	true = 'Default Company Index',
+	 * 	false = 'Configure a Different Index'
+	 */
+	const _handleIndexConfigurationRadioChange = (value) => {
+		setFieldValue(
+			'indexConfig',
+			value ? {indexName: ''} : {indexName: searchIndexes[0].suffix}
+		);
+	};
+
+	/**
+	 * Called when the Index Configuration "Configure a Different Index"
+	 * selector is changed.
+	 * @param {string} event.target.value
+	 */
+	const _handleIndexConfigurationSelectChange = (event) => {
+		setFieldValue('indexConfig', {indexName: event.target.value});
+	};
+
+	const _isCompanyIndex = () => {
+		return indexConfig.indexName === '';
 	};
 
 	const _renderEditor = (configName, configValue) => (
@@ -200,12 +222,12 @@ function ConfigurationTab({
 							</div>
 
 							<ClayRadioGroup
-								onChange={_handleIndexConfigRadioChange}
-								value={!indexConfig}
+								onChange={_handleIndexConfigurationRadioChange}
+								value={_isCompanyIndex()}
 							>
 								<ClayRadio
 									label={Liferay.Language.get(
-										'default-company-index'
+										'company-index'
 									)}
 									value={true}
 								/>
@@ -219,24 +241,21 @@ function ConfigurationTab({
 								/>
 							</ClayRadioGroup>
 
-							{!!indexConfig && (
+							{!_isCompanyIndex() && (
 								<ClaySelect
 									aria-label={Liferay.Language.get(
 										'index-configuration'
 									)}
-									onChange={(event) =>
-										setFieldValue(
-											'indexConfig',
-											event.target.value
-										)
+									onChange={
+										_handleIndexConfigurationSelectChange
 									}
-									value={indexConfig}
+									value={indexConfig.indexName}
 								>
-									{searchIndexes.map((index) => (
+									{searchIndexes.map((searchIndex) => (
 										<ClaySelect.Option
-											key={index}
-											label={index}
-											value={index}
+											key={searchIndex.suffix}
+											label={searchIndex.name}
+											value={searchIndex.suffix}
 										/>
 									))}
 								</ClaySelect>

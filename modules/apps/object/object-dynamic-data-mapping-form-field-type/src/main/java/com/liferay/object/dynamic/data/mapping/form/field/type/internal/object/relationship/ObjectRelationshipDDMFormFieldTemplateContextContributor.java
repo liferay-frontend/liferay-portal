@@ -206,7 +206,14 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributor
 				objectDefinition.getTitleObjectFieldId());
 
 			if (objectField != null) {
-				return objectField.getName();
+				String objectFieldName = objectField.getName();
+
+				objectFieldName = StringUtil.replace(
+					objectFieldName, "createDate", "dateCreated");
+				objectFieldName = StringUtil.replace(
+					objectFieldName, "modifiedDate", "dateModified");
+
+				return objectFieldName;
 			}
 		}
 

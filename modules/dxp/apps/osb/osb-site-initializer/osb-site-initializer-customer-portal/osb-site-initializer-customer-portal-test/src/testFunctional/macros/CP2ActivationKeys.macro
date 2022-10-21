@@ -32,6 +32,50 @@ definition {
 		AssertVisible(locator1 = "CP2ActivationKeys#DROPDOWN");
 	}
 
+	macro assertInfoNewKeyCard {
+		if (isSet(product)) {
+			var key_label = "Product";
+			var key_value = "${product}";
+
+			AssertElementPresent(locator1 = "CP2ActivationKeys#INFO_NEW_KEY_CARD");
+		}
+
+		if (isSet(version)) {
+			var key_label = "Version";
+			var key_value = "${version}";
+
+			AssertElementPresent(locator1 = "CP2ActivationKeys#INFO_NEW_KEY_CARD");
+		}
+
+		if (isSet(licenseType)) {
+			var key_label = "License Type";
+			var key_value = "${licenseType}";
+
+			AssertElementPresent(locator1 = "CP2ActivationKeys#INFO_NEW_KEY_CARD");
+		}
+
+		if (isSet(subscription)) {
+			var key_label = "Subscription";
+			var key_value = "${subscription}";
+
+			AssertElementPresent(locator1 = "CP2ActivationKeys#INFO_NEW_KEY_CARD");
+		}
+
+		if (isSet(activationsAvailable)) {
+			var key_label = "Key Activations Available";
+			var key_value = "${activationsAvailable}";
+
+			AssertElementPresent(locator1 = "CP2ActivationKeys#INFO_NEW_KEY_CARD");
+		}
+
+		if (isSet(instanceSize)) {
+			var key_label = "Instance Size";
+			var key_value = "${instanceSize}";
+
+			AssertElementPresent(locator1 = "CP2ActivationKeys#INFO_NEW_KEY_CARD");
+		}
+	}
+
 	macro assertInstructionsTable {
 		for (var text : list "${textList}") {
 			var key_text = "${text}";
@@ -172,6 +216,12 @@ definition {
 			value1 = "${text}");
 	}
 
+	macro assertTextButton {
+		var key_text = "${text}";
+
+		AssertVisible(locator1 = "CustomerPortalSite#BUTTON");
+	}
+
 	macro assertTooltipIsVisible {
 		var key_text = "${text}";
 
@@ -234,10 +284,22 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-	macro exportAllKeyDetails {
-		CustomerPortal.clickAtButton(text = "Actions");
+	macro environmentDetails {
+		var key_environmentDetails = "${environmentDetails}";
 
-		CP2ActivationKeys.clickAtDropdownItem(dropdownItem = "Export All Key Details (csv)");
+		Type(
+			locator1 = "CP2ActivationKeys#ENVIRONMENT_DETAILS",
+			value1 = "${value}");
+	}
+
+	macro exportAllKeyDetails {
+		Click(
+			key_text = "Actions",
+			locator1 = "Button#ANY");
+
+		Click(
+			key_action = "Export All Key Details (csv)",
+			locator1 = "CP2ActivationKeys#ACTIONS_DROPDOWN");
 
 		Alert.viewSuccessMessage();
 
@@ -427,6 +489,12 @@ definition {
 		Check(locator1 = "CP2ActivationKeys#KEY_CHECKBOX_ALL");
 	}
 
+	macro selectClusterNodes {
+		Select(
+			locator1 = "CP2ActivationKeys#CLUSTER_NODES",
+			value1 = "${key_option}");
+	}
+
 	macro selectFistActiveSubscriptionInput {
 		var key_index = "1";
 
@@ -476,6 +544,28 @@ definition {
 		Click(
 			key_position = "${position}",
 			locator1 = "CP2ActivationKeys#SUBSCRIPTION_CHOICE");
+	}
+
+	macro typeEnvironmentDetailsFields {
+		CP2ActivationKeys.environmentDetails(
+			environmentDetails = "name",
+			value = "Liferay Test");
+
+		CP2ActivationKeys.environmentDetails(
+			environmentDetails = "description",
+			value = "Liferay Dev Environmet");
+
+		CP2ActivationKeys.environmentDetails(
+			environmentDetails = "host",
+			value = "Host Name");
+
+		CP2ActivationKeys.environmentDetails(
+			environmentDetails = "ipAddresses",
+			value = "1.1.1.1");
+
+		CP2ActivationKeys.environmentDetails(
+			environmentDetails = "macAddresses",
+			value = "20-20-20-20-20-20");
 	}
 
 	macro viewActivationKeyDetails {

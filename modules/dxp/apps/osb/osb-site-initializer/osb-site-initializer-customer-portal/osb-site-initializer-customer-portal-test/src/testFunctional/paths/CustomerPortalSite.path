@@ -16,6 +16,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>BODY</td>
+	<td>//body</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PAGE_TITLE</td>
 	<td>//h1[text()='${key_title}']</td>
 	<td></td>
@@ -363,6 +368,21 @@
 <tr>
 	<td>ID_CONFIRMATION</td>
 	<td>//input[@id='basicInputText']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>VERSION_DROPDOWN</td>
+	<td>//*[contains(text(), 'Developer Keys')]/following-sibling::div//select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DEPLOY_ARTICLE_PAGE</td>
+	<td>//*[contains(text(), ' Liferay Portal instance, please read the')]/*[contains(@href, 'Deploying-Activation-Keys')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DEPLOY_ACTIVATION_PAGE</td>
+	<td>//*//h1[contains(text(), 'Deploying Activation Keys')]</td>
 	<td></td>
 </tr>
 </tbody>
