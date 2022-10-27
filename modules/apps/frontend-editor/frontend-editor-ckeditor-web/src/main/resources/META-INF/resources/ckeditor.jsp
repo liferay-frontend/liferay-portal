@@ -566,7 +566,7 @@ name = HtmlUtil.escapeJS(name);
 									}
 								}
 							}
-						}, 250)
+						}, 1000)
 					)
 				);
 			</c:if>
