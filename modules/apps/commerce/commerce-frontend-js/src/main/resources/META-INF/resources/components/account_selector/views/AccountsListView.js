@@ -134,7 +134,11 @@ export default function AccountsListView({
 			</ClayDropDown.Section>
 
 			{modalVisible && (
-				<AccountCreationModal accountTypes={accountEntryAllowedTypes} />
+				<AccountCreationModal
+					accountTypes={accountEntryAllowedTypes}
+					closeModal={() => setModalVisible(false)}
+					handleAccountChange={changeAccount}
+				/>
 			)}
 		</ClayDropDown.ItemList>
 	);

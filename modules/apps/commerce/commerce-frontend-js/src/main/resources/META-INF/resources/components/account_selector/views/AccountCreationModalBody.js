@@ -14,84 +14,58 @@
 
 import ClayForm, {ClayInput, ClaySelect} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import ClayModal from '@clayui/modal';
 import ClayMultiSelect from '@clayui/multi-select';
 import {fetch} from 'frontend-js-web';
-import React, {useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 const ORGANIZATIONS_ROOT_ENDPOINT = '/o/headless-admin-user/v1.0/organizations';
-const ACCOUNTS_ROOT_ENDPOINT = '/o/headless-admin-user/v1.0/accounts';
 
 const orgUrl = new URL(
 	`${themeDisplay.getPathContext()}${ORGANIZATIONS_ROOT_ENDPOINT}`,
 	themeDisplay.getPortalURL()
 );
 
-fetch(orgUrl.toString())
-	.then((response) => response.json())
-	.then((data) => {
-		organizationData = data.items;
-	});
-
-function capitalizeWord(word) {
-	return word[0].toUpperCase() + word.substr(1).toLowerCase();
-}
-
-let organizationData;
-
-const filterOrganizations = (organizations, accountOrganizations) => {
-	if (!accountOrganizations.length) {
-		return organizations;
-	}
-
-	const accountValues = accountOrganizations.map((item) => item.value);
-
-	return organizations.filter((org) => !accountValues.includes(org.value));
-};
-
-export default function AccountCreationModalBody({accountTypes}) {
+export default function AccountCreationModalBody({
+	accountData,
+	accountTypes,
+	setAccountData,
+}) {
 	const [organizationQuery, setOrganizationQuery] = useState('');
-	const [accountOrganizations, setAccountOrganizations] = useState([]);
-	const [accountDescription, setAccountDescription] = useState('');
-	const [accountName, setAccountName] = useState('');
-	const [accountType, setAccountType] = useState(accountTypes[0]);
-	const [accountTaxId, setAccountTaxId] = useState('');
-	const [accountERC, setAccountERC] = useState('');
+	const [organizationData, setOrganizationData] = useState([]);
 
-	const organizations = organizationData.map(({id, name}) => {
-		return {label: name, value: id};
-	});
+	useEffect(() => {
+		async function fetchData() {
+			await fetch(orgUrl.toString())
+				.then((response) => response.json())
+				.then((data) => setOrganizationData(data.items));
+		}
 
-	const createAccount = (event) => {
-		event.preventDefault();
+		fetchData();
+	}, []);
 
-		const organizationIds = accountOrganizations.map(({value}) =>
-			Number.parseInt(value, 10)
-		);
-
-		fetch(ACCOUNTS_ROOT_ENDPOINT, {
-			body: JSON.stringify({
-				description: accountDescription,
-				externalReferenceCode: accountERC,
-				id: accountTaxId,
-				name: accountName,
-				organizationIds,
-				type: accountType,
+	const organizations = useMemo(
+		() =>
+			organizationData.map(({id, name}) => {
+				return {label: name, value: id};
 			}),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			method: 'POST',
-		})
-			.then((response) => response.json())
-			.catch((error) => {
-				console.error(error);
+		[organizationData]
+	);
 
-				throw error;
-			});
+	const filterOrganizations = (organizations, accountOrganizations) => {
+		if (!accountOrganizations.length) {
+			return organizations;
+		}
+
+		const accountValues = accountOrganizations.map((item) => item.value);
+
+		return organizations.filter(
+			(org) => !accountValues.includes(org.value)
+		);
 	};
 
 	return (
-		<ClayForm onSubmit={createAccount}>
+		<ClayModal.Body>
 			<ClayForm.Group>
 				<label htmlFor="accountName">
 					{Liferay.Language.get('account-name')}
@@ -107,10 +81,15 @@ export default function AccountCreationModalBody({accountTypes}) {
 
 				<ClayInput
 					name="accountName"
-					onChange={(event) => setAccountName(event.target.value)}
+					onChange={(event) =>
+						setAccountData({
+							...accountData,
+							name: event.target.value,
+						})
+					}
 					required
 					type="text"
-					value={accountName}
+					value={accountData.name}
 				/>
 			</ClayForm.Group>
 
@@ -121,15 +100,18 @@ export default function AccountCreationModalBody({accountTypes}) {
 
 				<ClayMultiSelect
 					closeButtonAriaLabel={Liferay.Language.get('remove')}
-					inputName="accountOrganizations"
-					items={accountOrganizations}
+					items={accountData.organizations}
+					name="accountOrganizations"
 					onChange={setOrganizationQuery}
 					onItemsChange={(newItems) => {
-						setAccountOrganizations(newItems);
+						setAccountData({
+							...accountData,
+							organizations: newItems,
+						});
 					}}
 					sourceItems={filterOrganizations(
 						organizations,
-						accountOrganizations
+						accountData.organizations
 					)}
 					value={organizationQuery}
 				/>
@@ -144,11 +126,16 @@ export default function AccountCreationModalBody({accountTypes}) {
 					{accountTypes.map((type) => (
 						<ClaySelect.Option
 							key={type}
-							label={capitalizeWord(type)}
+							label={`${type[0].toUpperCase()}${type
+								.substr(1)
+								.toLowerCase()}`}
 							onChange={(event) =>
-								setAccountType(event.target.value)
+								setAccountData({
+									...accountData,
+									type: event.target.value,
+								})
 							}
-							value={accountType}
+							value={accountData.type}
 						/>
 					))}
 				</ClaySelect>
@@ -169,9 +156,14 @@ export default function AccountCreationModalBody({accountTypes}) {
 
 				<ClayInput
 					name="accountTaxId"
-					onChange={(event) => setAccountTaxId(event.target.value)}
+					onChange={(event) =>
+						setAccountData({
+							...accountData,
+							taxId: event.target.value,
+						})
+					}
 					type="text"
-					value={accountTaxId}
+					value={accountData.taxId}
 				/>
 			</ClayForm.Group>
 
@@ -182,9 +174,14 @@ export default function AccountCreationModalBody({accountTypes}) {
 
 				<ClayInput
 					name="accountERC"
-					onChange={(event) => setAccountERC(event.target.value)}
+					onChange={(event) =>
+						setAccountData({
+							...accountData,
+							externalReferenceCode: event.target.value,
+						})
+					}
 					type="text"
-					value={accountERC}
+					value={accountData.externalReferenceCode}
 				/>
 			</ClayForm.Group>
 
@@ -197,12 +194,15 @@ export default function AccountCreationModalBody({accountTypes}) {
 					component="textarea"
 					name="accountDescription"
 					onChange={(event) =>
-						setAccountDescription(event.target.value)
+						setAccountData({
+							...accountData,
+							description: event.target.value,
+						})
 					}
 					type="text"
-					value={accountDescription}
+					value={accountData.description}
 				/>
 			</ClayForm.Group>
-		</ClayForm>
+		</ClayModal.Body>
 	);
 }

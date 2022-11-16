@@ -12,32 +12,87 @@
  * details.
  */
 
-import {Modal} from 'frontend-js-web';
-import React from 'react';
+import ClayButton from '@clayui/button';
+import ClayForm from '@clayui/form';
+import ClayModal, {useModal} from '@clayui/modal';
+import {fetch} from 'frontend-js-web';
+import React, {useState} from 'react';
 
 import AccountCreationModalBody from './AccountCreationModalBody';
+const ACCOUNTS_ROOT_ENDPOINT = '/o/headless-admin-user/v1.0/accounts';
 
-export default function AccountCreationModal({accountTypes}) {
+export default function AccountCreationModal({
+	accountTypes,
+	closeModal,
+	handleAccountChange,
+}) {
+	const {observer} = useModal();
+
+	const [accountData, setAccountData] = useState({
+		description: '',
+		externalReferenceCode: '',
+		name: '',
+		organizations: [],
+		taxId: '',
+		type: accountTypes[0],
+	});
+
+	const createAccount = (event) => {
+		event.preventDefault();
+
+		const organizationIds = accountData.organizations.map(
+			({value}) => value
+		);
+
+		fetch(ACCOUNTS_ROOT_ENDPOINT, {
+			body: JSON.stringify({
+				description: accountData.description,
+				externalReferenceCode: accountData.externalReferenceCode,
+				id: accountData.taxId,
+				name: accountData.name,
+				organizationIds,
+				type: accountData.type,
+			}),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			method: 'POST',
+		})
+			.then((response) => response.json())
+			.then((response) => {
+				handleAccountChange(response);
+
+				closeModal();
+			});
+	};
+
 	return (
-		<Modal
-			bodyComponent={() => (
-				<AccountCreationModalBody accountTypes={accountTypes} />
-			)}
-			buttons={[
-				{
-					displayType: 'secondary',
-					label: Liferay.Language.get('cancel'),
-					type: 'cancel',
-				},
-				{
-					label: Liferay.Language.get('create'),
-					onClick: ({processClose}) => processClose(),
-					type: 'submit',
-				},
-			]}
-			center={true}
-			id="createAccountModal"
-			title={Liferay.Language.get('create-new-account')}
-		/>
+		<ClayModal center className="commerce-modal" observer={observer}>
+			<ClayModal.Header>
+				{Liferay.Language.get('create-new-account')}
+			</ClayModal.Header>
+
+			<ClayForm onSubmit={createAccount}>
+				<AccountCreationModalBody
+					accountData={accountData}
+					accountTypes={accountTypes}
+					setAccountData={setAccountData}
+				/>
+
+				<ClayModal.Footer
+					last={
+						<ClayButton.Group spaced>
+							<ClayButton displayType="secondary" type="cancel">
+								{Liferay.Language.get('cancel')}
+							</ClayButton>
+
+							<ClayButton type="submit">
+								{Liferay.Language.get('create')}
+							</ClayButton>
+						</ClayButton.Group>
+					}
+				/>
+			</ClayForm>
+		</ClayModal>
 	);
 }
