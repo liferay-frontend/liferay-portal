@@ -224,7 +224,7 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 
 								selectEventName:
 									'<%= HtmlUtil.escapeJS(selectUsersDisplayContext.getEventName()) %>',
-								title: '<liferay-ui:message key="users" />',
+								title: '<liferay-ui:message escape="<%= true %>" key="users" />',
 								url:
 									'<%= HtmlUtil.escapeJS(String.valueOf(selectUsersDisplayContext.getPortletURL())) %>',
 							});

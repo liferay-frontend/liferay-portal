@@ -150,7 +150,8 @@ IGConfigurationDisplayContext igConfigurationDisplayContext = (IGConfigurationDi
 
 					rootFolderNotFoundWarning.classList.add('hide');
 				},
-				title: '<liferay-ui:message arguments="folder" key="select-x" />',
+				title:
+					'<liferay-ui:message arguments="folder" escape="<%= true %>" key="select-x" />',
 				url:
 					'<%= HtmlUtil.escapeJS(String.valueOf(igConfigurationDisplayContext.getSelectFolderURL())) %>',
 			});

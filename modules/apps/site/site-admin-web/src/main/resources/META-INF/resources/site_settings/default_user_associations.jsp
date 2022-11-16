@@ -239,7 +239,8 @@ for (long defaultTeamId : defaultTeamIds) {
 		searchContainer: Liferay.SearchContainer.get(
 			'<portlet:namespace />siteRolesSearchContainer'
 		),
-		title: '<liferay-ui:message arguments="site-role" key="select-x" />',
+		title:
+			'<liferay-ui:message arguments="site-role" escape="<%= true %>" key="select-x" />',
 		titleAttr: 'roletitle',
 		uri: '<%= selectSiteRoleURL.toString() %>',
 		urlParam:
@@ -271,7 +272,8 @@ for (long defaultTeamId : defaultTeamIds) {
 		searchContainer: Liferay.SearchContainer.get(
 			'<portlet:namespace />teamsSearchContainer'
 		),
-		title: '<liferay-ui:message arguments="team" key="select-x" />',
+		title:
+			'<liferay-ui:message arguments="team" escape="<%= true %>" key="select-x" />',
 		titleAttr: 'teamname',
 		uri: '<%= selectTeamURL.toString() %>',
 		urlParam:

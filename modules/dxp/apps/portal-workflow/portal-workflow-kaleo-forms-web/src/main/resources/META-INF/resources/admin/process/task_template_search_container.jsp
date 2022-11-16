@@ -139,7 +139,7 @@ KaleoFormsTaskTemplateSearchDisplayContext kaleoFormsTaskTemplateSearchDisplayCo
 				},
 				id: A.guid(),
 				refreshWindow: WIN,
-				title: '<liferay-ui:message key="forms" />',
+				title: '<liferay-ui:message escape="<%= true %>" key="forms" />',
 				uri: uri,
 			});
 		},

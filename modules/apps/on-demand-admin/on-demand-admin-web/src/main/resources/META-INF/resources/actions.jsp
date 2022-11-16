@@ -52,7 +52,8 @@ Company rowObjectCompany = (Company)row.getObject();
 			id: '<portlet:namespace />requestAdminAccessDialog',
 			iframeBodyCssClass: '',
 			size: 'md',
-			title: '<liferay-ui:message key="request-administrator-access" />',
+			title:
+				'<liferay-ui:message escape="<%= true %>" key="request-administrator-access" />',
 			url: event.currentTarget.href,
 		});
 	}

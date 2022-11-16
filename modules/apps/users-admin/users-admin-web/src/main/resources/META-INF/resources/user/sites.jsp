@@ -194,7 +194,8 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 
 					selectEventName: '<%= eventName %>',
 					selectedData: [searchContainerData],
-					title: '<liferay-ui:message arguments="site" key="select-x" />',
+					title:
+						'<liferay-ui:message arguments="site" escape="<%= true %>" key="select-x" />',
 
 					<%
 					PortletURL groupSelectorURL = PortletURLBuilder.create(

@@ -40,6 +40,6 @@ page import="com.liferay.portal.kernel.util.PortalUtil" %>
 			},
 		],
 		size: 'lg',
-		title: '<liferay-ui:message key="terms-of-use" />',
+		title: '<liferay-ui:message escape="<%= true %>" key="terms-of-use" />',
 	});
 </aui:script>

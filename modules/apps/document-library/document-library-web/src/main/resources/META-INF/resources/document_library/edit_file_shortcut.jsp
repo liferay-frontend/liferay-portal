@@ -97,7 +97,8 @@ renderResponse.setTitle(dlEditFileShortcutDisplayContext.getTitle());
 				}
 			},
 			selectEventName: '<portlet:namespace />toFileEntrySelectedItem',
-			title: '<liferay-ui:message arguments="file" key="select-x" />',
+			title:
+				'<liferay-ui:message arguments="file" escape="<%= true %>" key="select-x" />',
 			url: '<%= dlEditFileShortcutDisplayContext.getItemSelectorURL() %>',
 		});
 	});

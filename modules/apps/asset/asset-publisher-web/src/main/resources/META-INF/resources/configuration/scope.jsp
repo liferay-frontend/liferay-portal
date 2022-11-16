@@ -180,7 +180,7 @@ PortletURL itemSelectorURL = PortletURLBuilder.create(
 					});
 				},
 				selectEventName: '<%= eventName %>',
-				title: '<liferay-ui:message key="scopes" />',
+				title: '<liferay-ui:message escape="<%= true %>" key="scopes" />',
 				url: '<%= itemSelectorURL.toString() %>',
 			});
 		});

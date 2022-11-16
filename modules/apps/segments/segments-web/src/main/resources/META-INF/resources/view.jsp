@@ -196,7 +196,8 @@ request.setAttribute("view.jsp-eventName", eventName);
 						Liferay.Util.postForm(form, {data: data});
 					}
 				},
-				title: '<liferay-ui:message key="assign-site-roles" />',
+				title:
+					'<liferay-ui:message escape="<%= true %>" key="assign-site-roles" />',
 				url: itemSelectorURL,
 			});
 		}

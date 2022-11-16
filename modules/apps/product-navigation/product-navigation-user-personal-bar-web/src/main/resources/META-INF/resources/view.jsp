@@ -159,7 +159,7 @@
 							}
 						},
 						size: 'md',
-						title: '<liferay-ui:message key="sign-in" />',
+						title: '<liferay-ui:message escape="<%= true %>" key="sign-in" />',
 					});
 				});
 			}

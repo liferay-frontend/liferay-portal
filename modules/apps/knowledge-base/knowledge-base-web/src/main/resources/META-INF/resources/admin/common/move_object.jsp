@@ -133,7 +133,8 @@ if (portletTitleBasedNavigation) {
 					Liferay.Util.selectFolder(folderData, '<portlet:namespace />');
 				},
 				selectEventName: '<portlet:namespace />selectKBObject',
-				title: '<liferay-ui:message key="select-parent" />',
+				title:
+					'<liferay-ui:message escape="<%= true %>" key="select-parent" />',
 
 				<liferay-portlet:renderURL var="selectKBObjectURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 					<portlet:param name="mvcPath" value="/admin/common/select_parent.jsp" />

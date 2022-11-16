@@ -35,7 +35,8 @@ CollectionItemsDetailDisplayContext collectionItemsDetailDisplayContext = (Colle
 		Liferay.Util.openModal({
 			id:
 				'<%= collectionItemsDetailDisplayContext.getNamespace() %>viewCollectionItemsDialog',
-			title: '<liferay-ui:message key="collection-items" />',
+			title:
+				'<liferay-ui:message escape="<%= true %>" key="collection-items" />',
 			url:
 				'<%= collectionItemsDetailDisplayContext.getViewCollectionItemsURL() %>',
 		});

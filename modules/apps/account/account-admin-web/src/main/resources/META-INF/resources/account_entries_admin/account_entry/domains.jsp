@@ -184,7 +184,8 @@ boolean allowUpdateDomains = AccountEntryPermission.contains(permissionChecker, 
 					],
 					id: '<%= liferayPortletResponse.getNamespace() %>addDomains',
 					iframeBodyCssClass: '',
-					title: '<liferay-ui:message key="add-domain" />',
+					title:
+						'<liferay-ui:message escape="<%= true %>" key="add-domain" />',
 					url:
 						'<%=
 							PortletURLBuilder.createRenderURL(

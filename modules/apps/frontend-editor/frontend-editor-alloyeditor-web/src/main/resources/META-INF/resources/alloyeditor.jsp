@@ -168,7 +168,7 @@ name = HtmlUtil.escapeJS(name);
 				}
 			},
 			selectEventName: editor.name + 'selectDocument',
-			title: '<liferay-ui:message key="select-item" />',
+			title: '<liferay-ui:message escape="<%= true %>" key="select-item" />',
 			url: linkHref,
 		});
 	};

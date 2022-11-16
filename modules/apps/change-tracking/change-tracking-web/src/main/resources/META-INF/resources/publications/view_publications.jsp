@@ -170,7 +170,7 @@ if (MultiSessionErrors.contains(liferayPortletRequest, CTLocalizedException.clas
 			autoClose: 10000,
 			message:
 				'<%= HtmlUtil.escapeJS(ctLocalizedException.formatMessage(resourceBundle)) %>',
-			title: '<liferay-ui:message key="error" />:',
+			title: '<liferay-ui:message escape="<%= true %>" key="error" />:',
 			type: 'danger',
 		});
 	</aui:script>

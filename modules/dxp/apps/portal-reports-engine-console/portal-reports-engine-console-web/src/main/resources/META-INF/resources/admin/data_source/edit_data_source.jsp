@@ -140,7 +140,8 @@ renderResponse.setTitle((source != null) ? LanguageUtil.format(request, "edit-x"
 							},
 						],
 						id: id,
-						title: '<liferay-ui:message key="source" />',
+						title:
+							'<liferay-ui:message escape="<%= true %>" key="source" />',
 					});
 				})
 				.catch((error) => {

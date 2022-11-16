@@ -257,7 +257,8 @@ else {
 				destroyOnHide: true,
 			},
 			id: 'pagesVariationsDialog',
-			title: '<liferay-ui:message key="page-variations" />',
+			title:
+				'<liferay-ui:message escape="<%= true %>" key="page-variations" />',
 
 			<liferay-portlet:renderURL var="layoutBranchesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 				<portlet:param name="mvcRenderCommandName" value="/staging_bar/view_layout_branches" />
@@ -279,7 +280,8 @@ else {
 				destroyOnHide: true,
 			},
 			id: 'sitePagesVariationDialog',
-			title: '<liferay-ui:message key="site-pages-variation" />',
+			title:
+				'<liferay-ui:message escape="<%= true %>" key="site-pages-variation" />',
 
 			<liferay-portlet:renderURL var="layoutSetBranchesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 				<portlet:param name="mvcRenderCommandName" value="/staging_bar/view_layout_set_branches" />

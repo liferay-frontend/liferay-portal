@@ -177,7 +177,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 				height: '60vh',
 				id: '<portlet:namespace />addLayoutDialog',
 				size: 'md',
-				title: '<liferay-ui:message key="add-page" />',
+				title: '<liferay-ui:message escape="<%= true %>" key="add-page" />',
 				url: event.delegateTarget.dataset.addLayoutUrl,
 			});
 		}

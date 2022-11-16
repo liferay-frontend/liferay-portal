@@ -103,7 +103,8 @@ catch (Exception exception) {
 					}
 				},
 				selectEventName: '<portlet:namespace />selectCategory',
-				title: '<liferay-ui:message arguments="category" key="select-x" />',
+				title:
+					'<liferay-ui:message arguments="category" escape="<%= true %>" key="select-x" />',
 
 				<%
 				PortletURL selectMBCategoryURL = PortletURLBuilder.create(

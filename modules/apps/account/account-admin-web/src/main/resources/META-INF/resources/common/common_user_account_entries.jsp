@@ -187,7 +187,8 @@ boolean singleSelect = ParamUtil.getBoolean(request, "singleSelect", true);
 					selectEventName: '<portlet:namespace />selectAccountEntry',
 					selectedData: searchContainer.getData(true),
 					selectedDataCheckboxesDisabled: true,
-					title: '<liferay-ui:message arguments="account" key="select-x" />',
+					title:
+						'<liferay-ui:message arguments="account" escape="<%= true %>" key="select-x" />',
 					url: '<%= selectAccountEntryURL %>',
 				});
 			});

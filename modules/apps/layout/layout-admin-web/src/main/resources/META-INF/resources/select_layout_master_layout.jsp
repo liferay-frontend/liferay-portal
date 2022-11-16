@@ -79,7 +79,8 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 				height: '60vh',
 				id: '<portlet:namespace />addLayoutDialog',
 				size: 'md',
-				title: '<liferay-ui:message key="add-collection-page" />',
+				title:
+					'<liferay-ui:message escape="<%= true %>" key="add-collection-page" />',
 				url: event.delegateTarget.dataset.addLayoutUrl,
 			});
 		}

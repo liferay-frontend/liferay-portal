@@ -64,7 +64,8 @@
 								modal: true,
 							},
 							refreshWindow: window,
-							title: '<liferay-ui:message key="add-calendar" />',
+							title:
+								'<liferay-ui:message escape="<%= true %>" key="add-calendar" />',
 
 							<portlet:renderURL var="editCalendarURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 								<portlet:param name="mvcPath" value="/edit_calendar.jsp" />
@@ -128,7 +129,8 @@
 							bodyCssClass: 'dialog-with-footer',
 						},
 						refreshWindow: window,
-						title: '<liferay-ui:message key="permissions" />',
+						title:
+							'<liferay-ui:message escape="<%= true %>" key="permissions" />',
 						uri: decodeURIComponent('<%= permissionsURL %>'),
 					});
 				},
@@ -188,7 +190,8 @@
 							modal: true,
 						},
 						refreshWindow: window,
-						title: '<liferay-ui:message key="new-calendar-booking" />',
+						title:
+							'<liferay-ui:message escape="<%= true %>" key="new-calendar-booking" />',
 						uri: Liferay.CalendarUtil.fillURLParameters(
 							decodeURIComponent('<%= addCalendarBookingURL %>'),
 							{
@@ -263,7 +266,8 @@
 							modal: true,
 						},
 						refreshWindow: window,
-						title: '<liferay-ui:message key="calendar-settings" />',
+						title:
+							'<liferay-ui:message escape="<%= true %>" key="calendar-settings" />',
 
 						<portlet:renderURL var="editCalendarURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 							<portlet:param name="mvcPath" value="/edit_calendar.jsp" />
@@ -306,7 +310,8 @@
 							bodyCssClass: 'dialog-with-footer',
 						},
 						refreshWindow: window,
-						title: '<liferay-ui:message key="permissions" />',
+						title:
+							'<liferay-ui:message escape="<%= true %>" key="permissions" />',
 
 						<liferay-security:permissionsURL
 							modelResource="<%= Calendar.class.getName() %>"

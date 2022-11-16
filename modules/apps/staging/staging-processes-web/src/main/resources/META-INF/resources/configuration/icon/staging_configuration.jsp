@@ -45,7 +45,8 @@ PortletURL portletURL = PortalUtil.getControlPanelPortletURL(request, liveGroup,
 				},
 			},
 			id: 'stagingConfiguration',
-			title: '<liferay-ui:message key="staging-configuration" />',
+			title:
+				'<liferay-ui:message escape="<%= true %>" key="staging-configuration" />',
 			uri:
 				'<%= HtmlUtil.escapeJS(stagingConfigurationPortletURL.toString()) %>',
 		});

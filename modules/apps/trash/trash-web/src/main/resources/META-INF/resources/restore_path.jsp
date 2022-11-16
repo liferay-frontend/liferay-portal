@@ -130,7 +130,7 @@
 				}
 			},
 			selectEventName: '<portlet:namespace />selectContainer',
-			title: '<liferay-ui:message key="warning" />',
+			title: '<liferay-ui:message escape="<%= true %>" key="warning" />',
 			url: uri,
 		});
 	}

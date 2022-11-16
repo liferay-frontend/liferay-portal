@@ -120,7 +120,7 @@
 				width: 600,
 			},
 			uri: event.currentTarget.href,
-			title: '<liferay-ui:message key="members" />',
+			title: '<liferay-ui:message escape="<%= true %>" key="members" />',
 		});
 	}
 </aui:script>

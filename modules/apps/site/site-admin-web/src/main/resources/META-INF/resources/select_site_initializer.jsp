@@ -71,7 +71,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-site-template"));
 					id: '<portlet:namespace />addSiteDialog',
 					iframeBodyCssClass: '',
 					size: 'md',
-					title: '<liferay-ui:message key="add-site" />',
+					title: '<liferay-ui:message escape="<%= true %>" key="add-site" />',
 					url: data.addSiteUrl,
 				});
 			}

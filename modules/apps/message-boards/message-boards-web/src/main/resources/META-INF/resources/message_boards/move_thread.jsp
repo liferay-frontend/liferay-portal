@@ -154,7 +154,8 @@ if (portletTitleBasedNavigation) {
 					});
 				},
 				selectEventName: '<portlet:namespace />selectCategory',
-				title: '<liferay-ui:message arguments="category" key="select-x" />',
+				title:
+					'<liferay-ui:message arguments="category" escape="<%= true %>" key="select-x" />',
 
 				<portlet:renderURL var="selectCategoryURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 					<portlet:param name="mvcRenderCommandName" value="/message_boards/select_category" />

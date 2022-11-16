@@ -190,7 +190,8 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 				},
 				selectedData: searchContainer.getData(true),
 				selectEventName: '<portlet:namespace />selectUserGroup',
-				title: '<liferay-ui:message arguments="user-group" key="select-x" />',
+				title:
+					'<liferay-ui:message arguments="user-group" escape="<%= true %>" key="select-x" />',
 
 				<%
 				PortletURL selectUserGroupURL = PortletURLBuilder.create(

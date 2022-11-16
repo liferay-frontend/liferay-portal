@@ -162,7 +162,8 @@ PortletURL redirectURL = PortletURLBuilder.createRenderURL(
 				bodyCssClass: 'task-dialog',
 			},
 			id: '<portlet:namespace />assignToDialog',
-			title: '<liferay-ui:message key="assign-to-..." />',
+			title:
+				'<liferay-ui:message escape="<%= true %>" key="assign-to-..." />',
 			uri: uri,
 		});
 	}
@@ -179,7 +180,7 @@ PortletURL redirectURL = PortletURLBuilder.createRenderURL(
 				bodyCssClass: 'task-dialog',
 			},
 			id: '<portlet:namespace />assignToDialog',
-			title: '<liferay-ui:message key="assign-to-me" />',
+			title: '<liferay-ui:message escape="<%= true %>" key="assign-to-me" />',
 			uri: uri,
 		});
 	}
@@ -196,7 +197,8 @@ PortletURL redirectURL = PortletURLBuilder.createRenderURL(
 				bodyCssClass: 'task-dialog',
 			},
 			id: '<portlet:namespace />updateDialog',
-			title: '<liferay-ui:message key="update-due-date" />',
+			title:
+				'<liferay-ui:message escape="<%= true %>" key="update-due-date" />',
 			uri: uri,
 		});
 	}

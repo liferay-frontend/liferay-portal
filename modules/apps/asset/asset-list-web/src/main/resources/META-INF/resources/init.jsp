@@ -56,7 +56,6 @@ page import="com.liferay.asset.list.web.internal.frontend.taglib.clay.servlet.ta
 page import="com.liferay.asset.list.web.internal.servlet.taglib.util.AssetListEntryVariationActionDropdownItemsProvider" %><%@
 page import="com.liferay.asset.list.web.internal.servlet.taglib.util.InfoCollectionProviderActionDropdownItems" %><%@
 page import="com.liferay.asset.list.web.internal.servlet.taglib.util.ListItemsActionDropdownItems" %><%@
-page import="com.liferay.asset.list.web.internal.servlet.taglib.util.ScopeActionDropdownItemsProvider" %><%@
 page import="com.liferay.asset.list.web.internal.util.comparator.ClassTypeNameComparator" %><%@
 page import="com.liferay.asset.util.comparator.AssetRendererFactoryTypeNameComparator" %><%@
 page import="com.liferay.dynamic.data.mapping.model.DDMStructure" %><%@

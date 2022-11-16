@@ -88,7 +88,8 @@ LayoutClassedModelUsagesDisplayContext layoutClassedModelUsagesDisplayContext = 
 			(event) => {
 				Liferay.Util.openModal({
 					iframeBodyCssClass: 'article-preview',
-					title: '<liferay-ui:message key="preview" />',
+					title:
+						'<liferay-ui:message escape="<%= true %>" key="preview" />',
 					url: event.delegateTarget.getAttribute('data-href'),
 				});
 			}

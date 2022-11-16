@@ -87,7 +87,7 @@ portletDisplay.setURLBack(backURL);
 						}
 					},
 					selectEventName: '<portlet:namespace />selectRelatedModalEntry',
-					title: '<liferay-ui:message key="select" />',
+					title: '<liferay-ui:message escape="<%= true %>" key="select" />',
 					url:
 						'<%= objectEntryDisplayContext.getRelatedObjectEntryItemSelectorURL() %>',
 				});

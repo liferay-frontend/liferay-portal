@@ -131,7 +131,8 @@ List<KBArticle> kbArticles = KBArticleServiceUtil.getKBArticleVersions(scopeGrou
 				Liferay.Util.navigate(uri);
 			},
 			selectEventName: '<portlet:namespace />selectVersionFm',
-			title: '<liferay-ui:message key="compare-versions" />',
+			title:
+				'<liferay-ui:message escape="<%= true %>" key="compare-versions" />',
 			url: selectVersionUrl,
 		});
 	}

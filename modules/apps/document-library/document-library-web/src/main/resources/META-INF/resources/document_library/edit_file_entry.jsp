@@ -333,7 +333,8 @@ renderResponse.setTitle(headerTitle);
 
 												Liferay.Util.selectFolder(folderData, '<portlet:namespace />');
 											},
-											title: '<liferay-ui:message arguments="folder" key="select-x" />',
+											title:
+												'<liferay-ui:message arguments="folder" escape="<%= true %>" key="select-x" />',
 
 											<%
 											ItemSelector itemSelector = (ItemSelector)request.getAttribute(ItemSelector.class.getName());

@@ -132,7 +132,7 @@
 			},
 			selectEventName:
 				'<%= selectAssetDisplayPageDisplayContext.getEventName() %>',
-			title: '<liferay-ui:message key="select-page" />',
+			title: '<liferay-ui:message escape="<%= true %>" key="select-page" />',
 			url:
 				'<%= selectAssetDisplayPageDisplayContext.getAssetDisplayPageItemSelectorURL() %>',
 		});
@@ -145,7 +145,7 @@
 	if (previewDefaultDisplayPageButton) {
 		previewDefaultDisplayPageButton.addEventListener('click', (event) => {
 			Liferay.Util.openModal({
-				title: '<liferay-ui:message key="preview" />',
+				title: '<liferay-ui:message escape="<%= true %>" key="preview" />',
 				url:
 					'<%= selectAssetDisplayPageDisplayContext.getURLViewInContext() %>',
 			});
@@ -155,7 +155,7 @@
 	if (previewSpecificDisplayPageButton) {
 		previewSpecificDisplayPageButton.addEventListener('click', (event) => {
 			Liferay.Util.openModal({
-				title: '<liferay-ui:message key="preview" />',
+				title: '<liferay-ui:message escape="<%= true %>" key="preview" />',
 				url:
 					'<%= selectAssetDisplayPageDisplayContext.getURLViewInContext() %>',
 			});

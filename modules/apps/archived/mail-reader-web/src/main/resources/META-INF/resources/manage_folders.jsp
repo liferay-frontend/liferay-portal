@@ -157,7 +157,8 @@ long accountId = ParamUtil.getLong(request, "accountId");
 						modal: true,
 						width: 600,
 					},
-					title: '<liferay-ui:message key="rename-folder" />',
+					title:
+						'<liferay-ui:message escape="<%= true %>" key="rename-folder" />',
 				})
 					.plug(A.Plugin.IO, {
 						data: Liferay.Util.ns('<portlet:namespace />', {
