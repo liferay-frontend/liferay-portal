@@ -35,13 +35,9 @@ export default function AccountCreationModalBody({
 	const [organizationData, setOrganizationData] = useState([]);
 
 	useEffect(() => {
-		async function fetchData() {
-			await fetch(orgUrl.toString())
-				.then((response) => response.json())
-				.then((data) => setOrganizationData(data.items));
-		}
-
-		fetchData();
+		fetch(orgUrl.toString())
+			.then((response) => response.json())
+			.then((data) => setOrganizationData(data.items));
 	}, []);
 
 	const organizations = useMemo(

@@ -19,6 +19,7 @@ import {fetch} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 import AccountCreationModalBody from './AccountCreationModalBody';
+
 const ACCOUNTS_ROOT_ENDPOINT = '/o/headless-admin-user/v1.0/accounts';
 
 export default function AccountCreationModal({

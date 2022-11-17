@@ -62,7 +62,6 @@ export {default as PortletBase} from './liferay/PortletBase.es';
 // Modal API
 
 export {
-	Modal,
 	openModal,
 	openPortletModal,
 	openPortletWindow,
