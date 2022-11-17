@@ -103,9 +103,10 @@ describe('AccountSelector', () => {
 			const accountsList = renderedComponent.baseElement.querySelectorAll(
 				'.accounts-list li'
 			);
+
 			const accountsListItem = accountsList[0];
 
-			expect(accountsList.length).toBe(10);
+			expect(accountsList.length).toBe(11);
 
 			expect(accountsListItem.querySelector('img').src).toContain(
 				'/test-logo-folder/test.jpg'
