@@ -76,6 +76,7 @@ export default function AccountCreationModalBody({
 				</label>
 
 				<ClayInput
+					maxLength={100}
 					name="accountName"
 					onChange={(event) =>
 						setAccountData({
