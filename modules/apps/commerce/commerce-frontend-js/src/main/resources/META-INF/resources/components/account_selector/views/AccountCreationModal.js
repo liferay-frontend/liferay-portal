@@ -14,7 +14,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayForm from '@clayui/form';
-import ClayModal, {useModal} from '@clayui/modal';
+import ClayModal from '@clayui/modal';
 import {fetch} from 'frontend-js-web';
 import React, {useState} from 'react';
 
@@ -26,9 +26,8 @@ export default function AccountCreationModal({
 	accountTypes,
 	closeModal,
 	handleAccountChange,
+	observer,
 }) {
-	const {observer} = useModal();
-
 	const [accountData, setAccountData] = useState({
 		description: '',
 		externalReferenceCode: '',
@@ -83,7 +82,10 @@ export default function AccountCreationModal({
 				<ClayModal.Footer
 					last={
 						<ClayButton.Group spaced>
-							<ClayButton displayType="secondary" type="cancel">
+							<ClayButton
+								displayType="secondary"
+								onClick={closeModal}
+							>
 								{Liferay.Language.get('cancel')}
 							</ClayButton>
 

@@ -65,13 +65,6 @@
 			justify-content: center;
 			position: relative;
 			text-transform: capitalize;
-
-			.btn {
-				height: 100%;
-				left: 0.5rem;
-				position: absolute;
-				top: 0;
-			}
 		}
 
 		.accounts-list-container {
@@ -81,6 +74,11 @@
 
 			.accounts-list {
 				flex-grow: 1;
+			}
+
+			.btn-primary {
+				margin-top: 0.5rem;
+				width: 100%;
 			}
 
 			.dropdown-item {
@@ -94,13 +92,8 @@
 			}
 
 			.item-list-head .btn {
-				left: auto;
+				position: absolute;
 				right: 0.5rem;
-			}
-
-			.btn {
-				margin-top: 0.5rem;
-				width: 100%;
 			}
 		}
 
@@ -119,6 +112,11 @@
 					font-size: 0.8rem;
 					height: auto !important;
 				}
+			}
+
+			.item-list-head .btn {
+				left: 0.5rem;
+				position: absolute;
 			}
 		}
 	}

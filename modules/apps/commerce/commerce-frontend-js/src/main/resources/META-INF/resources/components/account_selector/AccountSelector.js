@@ -13,6 +13,7 @@
  */
 
 import ClayDropDown from '@clayui/drop-down';
+import {fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
 
@@ -26,6 +27,8 @@ import {VIEWS} from './util/constants';
 import {selectAccount} from './util/index';
 import AccountsListView from './views/AccountsListView';
 import OrdersListView from './views/OrdersListView';
+
+const USER_RESOURCE_ENDPOINT = '/o/headless-admin-user/v1.0/accounts';
 
 function AccountSelector({
 	accountEntryAllowedTypes,
@@ -48,6 +51,18 @@ function AccountSelector({
 	const [currentView, setCurrentView] = useState(
 		account ? VIEWS.ORDERS_LIST : VIEWS.ACCOUNTS_LIST
 	);
+	const [currentUser, setCurrentUser] = useState({});
+
+	const accountsApi = new URL(
+		`${themeDisplay.getPathContext()}${USER_RESOURCE_ENDPOINT}`,
+		themeDisplay.getPortalURL()
+	);
+
+	useEffect(() => {
+		fetch(accountsApi.toString())
+			.then((response) => response.json())
+			.then((response) => setCurrentUser(response));
+	});
 
 	const changeAccount = (account) => {
 		selectAccount(account.id, setCurrentAccountURL)
@@ -107,6 +122,7 @@ function AccountSelector({
 					}
 					changeAccount={changeAccount}
 					currentAccount={currentAccount}
+					currentUser={currentUser}
 					disabled={!active}
 					setCurrentView={setCurrentView}
 				/>

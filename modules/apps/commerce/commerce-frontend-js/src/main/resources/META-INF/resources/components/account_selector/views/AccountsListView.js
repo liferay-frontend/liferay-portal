@@ -14,6 +14,7 @@
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
+import {useModal} from '@clayui/modal';
 import React, {useRef, useState} from 'react';
 
 import ServiceProvider from '../../../ServiceProvider/index';
@@ -31,10 +32,15 @@ export default function AccountsListView({
 	accountEntryAllowedTypes,
 	changeAccount,
 	currentAccount,
+	currentUser,
 	disabled,
 	setCurrentView,
 }) {
 	const [modalVisible, setModalVisible] = useState(false);
+
+	const {observer, onClose} = useModal({
+		onClose: () => setModalVisible(false),
+	});
 
 	const accountsListRef = useRef();
 
@@ -127,17 +133,20 @@ export default function AccountsListView({
 				</ClayDropDown.Section>
 			</ClayDropDown.ItemList>
 
-			<ClayDropDown.Section>
-				<ClayButton onClick={() => setModalVisible(true)}>
-					{Liferay.Language.get('create-new-account')}
-				</ClayButton>
-			</ClayDropDown.Section>
+			{!!currentUser.actions?.create && (
+				<ClayDropDown.Section>
+					<ClayButton onClick={() => setModalVisible(true)}>
+						{Liferay.Language.get('create-new-account')}
+					</ClayButton>
+				</ClayDropDown.Section>
+			)}
 
 			{modalVisible && (
 				<AccountCreationModal
 					accountTypes={accountEntryAllowedTypes}
-					closeModal={() => setModalVisible(false)}
+					closeModal={onClose}
 					handleAccountChange={changeAccount}
+					observer={observer}
 				/>
 			)}
 		</ClayDropDown.ItemList>
