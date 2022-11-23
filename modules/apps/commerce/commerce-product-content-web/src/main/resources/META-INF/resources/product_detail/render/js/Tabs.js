@@ -47,20 +47,25 @@ export default function ({
 
 	useEffect(() => {
 		tabs = document.getElementsByClassName(namespace + 'tab-element');
-		if (hasDescription) {
-			display(navDescriptionId);
+
+		if (hasReplacements) {
+			display(navReplacementsId);
+
 			setActiveTabKeyValue(0);
+		}
+		else if (hasDescription) {
+			display(navDescriptionId);
+
+			setActiveTabKeyValue(1);
 		}
 		else if (hasCPDefinitionSpecificationOptionValues) {
 			display(navSpecificationsId);
-			setActiveTabKeyValue(1);
+
+			setActiveTabKeyValue(2);
 		}
 		else if (hasCPMedia) {
 			display(navCPMediaId);
-			setActiveTabKeyValue(2);
-		}
-		else if (hasReplacements) {
-			display(navReplacementsId);
+
 			setActiveTabKeyValue(3);
 		}
 	}, [
@@ -78,15 +83,34 @@ export default function ({
 	return (
 		<>
 			<ClayTabs className="nav-left" modern>
-				{hasDescription ? (
+				{hasReplacements ? (
 					<ClayTabs.Item
 						active={activeTabKeyValue === 0}
+						innerProps={{
+							'aria-controls': 'tabpanel-4',
+						}}
+						onClick={() => {
+							display(navReplacementsId);
+
+							setActiveTabKeyValue(0);
+						}}
+					>
+						{Liferay.Language.get('replacements')}
+					</ClayTabs.Item>
+				) : (
+					<></>
+				)}
+
+				{hasDescription ? (
+					<ClayTabs.Item
+						active={activeTabKeyValue === 1}
 						innerProps={{
 							'aria-controls': 'tabpanel-1',
 						}}
 						onClick={() => {
 							display(navDescriptionId);
-							setActiveTabKeyValue(0);
+
+							setActiveTabKeyValue(1);
 						}}
 					>
 						{Liferay.Language.get('full-description')}
@@ -97,13 +121,14 @@ export default function ({
 
 				{hasCPDefinitionSpecificationOptionValues ? (
 					<ClayTabs.Item
-						active={activeTabKeyValue === 1}
+						active={activeTabKeyValue === 2}
 						innerProps={{
 							'aria-controls': 'tabpanel-2',
 						}}
 						onClick={() => {
 							display(navSpecificationsId);
-							setActiveTabKeyValue(1);
+
+							setActiveTabKeyValue(2);
 						}}
 					>
 						{Liferay.Language.get('specifications')}
@@ -114,33 +139,17 @@ export default function ({
 
 				{hasCPMedia ? (
 					<ClayTabs.Item
-						active={activeTabKeyValue === 2}
+						active={activeTabKeyValue === 3}
 						innerProps={{
 							'aria-controls': 'tabpanel-3',
 						}}
 						onClick={() => {
 							display(navCPMediaId);
-							setActiveTabKeyValue(2);
-						}}
-					>
-						{Liferay.Language.get('attachments')}
-					</ClayTabs.Item>
-				) : (
-					<></>
-				)}
 
-				{hasReplacements ? (
-					<ClayTabs.Item
-						active={activeTabKeyValue === 3}
-						innerProps={{
-							'aria-controls': 'tabpanel-4',
-						}}
-						onClick={() => {
-							display(navReplacementsId);
 							setActiveTabKeyValue(3);
 						}}
 					>
-						{Liferay.Language.get('replacements')}
+						{Liferay.Language.get('attachments')}
 					</ClayTabs.Item>
 				) : (
 					<></>

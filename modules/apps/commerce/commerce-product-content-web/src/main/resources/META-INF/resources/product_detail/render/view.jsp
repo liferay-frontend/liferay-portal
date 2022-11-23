@@ -285,6 +285,30 @@ String navSpecificationsId = liferayPortletResponse.getNamespace() + "navSpecifi
 </div>
 
 <div class="tab-content">
+	<c:if test="<%= hasDirectReplacement %>">
+		<div aria-labelledby="navUnderlineReplacementsTab" class="fade <portlet:namespace />tab-element tab-pane" id="<%= navReplacementsId %>" role="tabpanel">
+			<frontend-data-set:classic-display
+				contextParams='<%=
+					HashMapBuilder.<String, String>put(
+						"commerceAccountId", (commerceAccount == null) ? "0" : String.valueOf(commerceAccount.getCommerceAccountId())
+					).put(
+						"commerceChannelGroupId", String.valueOf(commerceContext.getCommerceChannelGroupId())
+					).put(
+						"commerceOrderId", (commerceOrder == null) ? "0" : String.valueOf(commerceOrder.getCommerceOrderId())
+					).put(
+						"cpInstanceUuid", cpSku.getCPInstanceUuid()
+					).put(
+						"cProductId", String.valueOf(cpCatalogEntry.getCProductId())
+					).build()
+				%>'
+				dataProviderKey="<%= CPContentFDSNames.REPLACEMENT_CP_INSTANCES %>"
+				id="<%= CPContentFDSNames.REPLACEMENT_CP_INSTANCES %>"
+				itemsPerPage="<%= 10 %>"
+				style="stacked"
+			/>
+		</div>
+	</c:if>
+
 	<c:if test="<%= hasDescription %>">
 		<div aria-labelledby="navUnderlineFieldsTab" class="fade <portlet:namespace />tab-element tab-pane" id="<%= navDescriptionId %>" role="tabpanel">
 			<div class="p-4">
@@ -393,30 +417,6 @@ String navSpecificationsId = liferayPortletResponse.getNamespace() + "navSpecifi
 				%>
 
 			</ul>
-		</div>
-	</c:if>
-
-	<c:if test="<%= hasDirectReplacement %>">
-		<div aria-labelledby="navUnderlineReplacementsTab" class="fade <portlet:namespace />tab-element tab-pane" id="<%= navReplacementsId %>" role="tabpanel">
-			<frontend-data-set:classic-display
-				contextParams='<%=
-					HashMapBuilder.<String, String>put(
-						"commerceAccountId", (commerceAccount == null) ? "0" : String.valueOf(commerceAccount.getCommerceAccountId())
-					).put(
-						"commerceChannelGroupId", String.valueOf(commerceContext.getCommerceChannelGroupId())
-					).put(
-						"commerceOrderId", (commerceOrder == null) ? "0" : String.valueOf(commerceOrder.getCommerceOrderId())
-					).put(
-						"cpInstanceUuid", cpSku.getCPInstanceUuid()
-					).put(
-						"cProductId", String.valueOf(cpCatalogEntry.getCProductId())
-					).build()
-				%>'
-				dataProviderKey="<%= CPContentFDSNames.REPLACEMENT_CP_INSTANCES %>"
-				id="<%= CPContentFDSNames.REPLACEMENT_CP_INSTANCES %>"
-				itemsPerPage="<%= 10 %>"
-				style="stacked"
-			/>
 		</div>
 	</c:if>
 </div>
