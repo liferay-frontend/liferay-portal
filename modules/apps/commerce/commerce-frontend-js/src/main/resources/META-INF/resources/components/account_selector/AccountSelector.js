@@ -30,6 +30,11 @@ import OrdersListView from './views/OrdersListView';
 
 const USER_RESOURCE_ENDPOINT = '/o/headless-admin-user/v1.0/accounts';
 
+const accountsApi = new URL(
+	`${themeDisplay.getPathContext()}${USER_RESOURCE_ENDPOINT}`,
+	themeDisplay.getPortalURL()
+);
+
 function AccountSelector({
 	accountEntryAllowedTypes,
 	alignmentPosition,
@@ -53,16 +58,12 @@ function AccountSelector({
 	);
 	const [currentUser, setCurrentUser] = useState({});
 
-	const accountsApi = new URL(
-		`${themeDisplay.getPathContext()}${USER_RESOURCE_ENDPOINT}`,
-		themeDisplay.getPortalURL()
-	);
-
 	useEffect(() => {
 		fetch(accountsApi.toString())
 			.then((response) => response.json())
-			.then((response) => setCurrentUser(response));
-	});
+			.then((response) => setCurrentUser(response))
+			.catch((error) => showErrorNotification(error.message));
+	}, []);
 
 	const changeAccount = (account) => {
 		selectAccount(account.id, setCurrentAccountURL)

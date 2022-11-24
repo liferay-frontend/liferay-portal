@@ -36,23 +36,30 @@ import {getOrders} from '../../tests_utilities/fake_data/orders';
 const ACCOUNTS_HEADLESS_API_ENDPOINT = ServiceProvider.AdminAccountAPI('v1')
 	.baseURL;
 
+const USERS_HEADLESS_API_ENDPOINT = '/o/headless-admin-user/v1.0/accounts';
+
 describe('AccountSelector', () => {
 	beforeEach(() => {
 		const accountsEndpointRegexp = new RegExp(
 			ACCOUNTS_HEADLESS_API_ENDPOINT
 		);
+
 		const ordersEndpointRegexp = new RegExp(
 			`${ServiceProvider.DeliveryCartAPI(
 				'v1'
 			).cartsByAccountIdAndChannelIdURL(42332, 24324)}`
 		);
 
+		const usersEndpointRegexp = new RegExp(USERS_HEADLESS_API_ENDPOINT);
+
 		fetchMock.mock(accountsEndpointRegexp, (url) => getAccounts(url));
 		fetchMock.mock(ordersEndpointRegexp, (url) => getOrders(url));
+		fetchMock.mock(usersEndpointRegexp, () => Promise.resolve());
 	});
 
 	afterEach(() => {
 		fetchMock.restore();
+
 		cleanup();
 	});
 
