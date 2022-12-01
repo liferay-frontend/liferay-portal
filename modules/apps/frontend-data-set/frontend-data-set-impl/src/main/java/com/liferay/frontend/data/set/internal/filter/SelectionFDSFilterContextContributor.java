@@ -80,6 +80,8 @@ public class SelectionFDSFilterContextContributor
 		}
 
 		return HashMapBuilder.<String, Object>put(
+			"autocomplete", baseSelectionFDSFilter.getAutocomplete()
+		).put(
 			"items", jsonArray
 		).put(
 			"multiple", baseSelectionFDSFilter.isMultiple()

@@ -25,6 +25,8 @@ import java.util.ResourceBundle;
  */
 public abstract class BaseSelectionFDSFilter implements FDSFilter {
 
+	public Boolean getAutocomplete() { return false; }
+
 	public ResourceBundle getResourceBundle(Locale locale) {
 		return ResourceBundleUtil.getBundle(
 			"content.Language", locale, getClass());
