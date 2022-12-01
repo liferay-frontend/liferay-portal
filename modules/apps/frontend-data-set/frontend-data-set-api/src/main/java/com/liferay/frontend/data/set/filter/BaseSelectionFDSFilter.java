@@ -16,6 +16,7 @@ package com.liferay.frontend.data.set.filter;
 
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -27,13 +28,25 @@ public abstract class BaseSelectionFDSFilter implements FDSFilter {
 
 	public Boolean getAutocomplete() { return false; }
 
+	public String getAPIURL() {
+		return null;
+	};
+
 	public ResourceBundle getResourceBundle(Locale locale) {
 		return ResourceBundleUtil.getBundle(
 			"content.Language", locale, getClass());
 	}
 
-	public abstract List<SelectionFDSFilterItem> getSelectionFDSFilterItems(
-		Locale locale);
+	public String getItemKey() { return null; };
+
+	public String getItemLabel() { return null; };
+
+	public String getPlaceholder() { return "search"; }
+
+	public List<SelectionFDSFilterItem> getSelectionFDSFilterItems(
+		Locale locale) {
+		return Collections.emptyList();
+	};
 
 	@Override
 	public String getType() {

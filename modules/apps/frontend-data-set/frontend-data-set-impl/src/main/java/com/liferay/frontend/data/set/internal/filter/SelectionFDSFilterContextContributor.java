@@ -79,13 +79,28 @@ public class SelectionFDSFilterContextContributor
 				));
 		}
 
-		return HashMapBuilder.<String, Object>put(
+		HashMapBuilder.HashMapWrapper<String, Object> builder = HashMapBuilder.<String, Object>put(
 			"autocomplete", baseSelectionFDSFilter.getAutocomplete()
 		).put(
 			"items", jsonArray
 		).put(
 			"multiple", baseSelectionFDSFilter.isMultiple()
-		).build();
+		);
+
+		if (baseSelectionFDSFilter.getAutocomplete()) {
+			builder.put(
+				"apiURL", baseSelectionFDSFilter.getAPIURL()
+			).put(
+				"inputPlaceholder",
+				_language.get(locale, baseSelectionFDSFilter.getPlaceholder())
+			).put(
+				"itemKey", baseSelectionFDSFilter.getItemKey()
+			).put(
+				"itemLabel", baseSelectionFDSFilter.getItemLabel()
+			);
+		}
+
+		return builder.build();
 	}
 
 	@Reference
