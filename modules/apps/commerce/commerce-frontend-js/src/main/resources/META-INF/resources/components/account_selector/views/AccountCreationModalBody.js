@@ -33,6 +33,7 @@ export default function AccountCreationModalBody({
 }) {
 	const [organizationQuery, setOrganizationQuery] = useState('');
 	const [organizationData, setOrganizationData] = useState([]);
+	const [organizationError, setOrganizationError] = useState(false);
 
 	useEffect(() => {
 		fetch(orgUrl.toString())
@@ -90,9 +91,17 @@ export default function AccountCreationModalBody({
 				/>
 			</ClayForm.Group>
 
-			<ClayForm.Group>
+			<ClayForm.Group className={organizationError && 'has-error'}>
 				<label htmlFor="accountOrganizations">
 					{Liferay.Language.get('organizations')}
+
+					<span className="inline-item inline-item-after reference-mark">
+						<ClayIcon symbol="asterisk" />
+
+						<span className="hide-accessible sr-only">
+							{Liferay.Language.get('required')}
+						</span>
+					</span>
 				</label>
 
 				<ClayMultiSelect
@@ -101,9 +110,26 @@ export default function AccountCreationModalBody({
 					name="accountOrganizations"
 					onChange={setOrganizationQuery}
 					onItemsChange={(newItems) => {
+						const validItems = [];
+
+						newItems.map((item) => {
+							if (
+								organizationData.find(
+									(organization) =>
+										organization.name.toLowerCase() ===
+										item.label.toLowerCase()
+								)
+							) {
+								validItems.push(item);
+							}
+							else {
+								setOrganizationError(true);
+							}
+						});
+
 						setAccountData({
 							...accountData,
-							organizations: newItems,
+							organizations: validItems,
 						});
 					}}
 					sourceItems={filterOrganizations(
@@ -112,6 +138,16 @@ export default function AccountCreationModalBody({
 					)}
 					value={organizationQuery}
 				/>
+
+				{organizationError && (
+					<ClayForm.FeedbackGroup>
+						<ClayForm.FeedbackItem>
+							<ClayForm.FeedbackIndicator symbol="info-circle" />
+
+							{Liferay.Language.get('select-from-list')}
+						</ClayForm.FeedbackItem>
+					</ClayForm.FeedbackGroup>
+				)}
 			</ClayForm.Group>
 
 			<ClayForm.Group>

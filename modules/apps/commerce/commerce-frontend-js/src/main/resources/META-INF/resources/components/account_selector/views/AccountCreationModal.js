@@ -18,6 +18,7 @@ import ClayModal from '@clayui/modal';
 import {fetch} from 'frontend-js-web';
 import React, {useState} from 'react';
 
+import {showErrorNotification} from '../../../utilities/notifications';
 import AccountCreationModalBody from './AccountCreationModalBody';
 
 const ACCOUNTS_ROOT_ENDPOINT = '/o/headless-admin-user/v1.0/accounts';
@@ -44,26 +45,34 @@ export default function AccountCreationModal({
 			({value}) => value
 		);
 
-		fetch(ACCOUNTS_ROOT_ENDPOINT, {
-			body: JSON.stringify({
-				description: accountData.description,
-				externalReferenceCode: accountData.externalReferenceCode,
-				id: accountData.taxId,
-				name: accountData.name,
-				organizationIds,
-				type: accountData.type,
-			}),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			method: 'POST',
-		})
-			.then((response) => response.json())
-			.then((response) => {
-				handleAccountChange(response);
+		if (organizationIds.length) {
+			fetch(ACCOUNTS_ROOT_ENDPOINT, {
+				body: JSON.stringify({
+					description: accountData.description,
+					externalReferenceCode: accountData.externalReferenceCode,
+					id: accountData.taxId,
+					name: accountData.name,
+					organizationIds,
+					type: accountData.type,
+				}),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'POST',
+			})
+				.then((response) => response.json())
+				.then((response) => {
+					handleAccountChange(response);
 
-				closeModal();
-			});
+					closeModal();
+				})
+				.catch((error) => console.error(error));
+		}
+		else {
+			showErrorNotification(
+				Liferay.Language.get('please-enter-a-valid-organization')
+			);
+		}
 	};
 
 	return (
