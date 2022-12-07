@@ -94,14 +94,6 @@ export default function AccountCreationModalBody({
 			<ClayForm.Group className={organizationError && 'has-error'}>
 				<label htmlFor="accountOrganizations">
 					{Liferay.Language.get('organizations')}
-
-					<span className="inline-item inline-item-after reference-mark">
-						<ClayIcon symbol="asterisk" />
-
-						<span className="hide-accessible sr-only">
-							{Liferay.Language.get('required')}
-						</span>
-					</span>
 				</label>
 
 				<ClayMultiSelect
@@ -110,6 +102,8 @@ export default function AccountCreationModalBody({
 					name="accountOrganizations"
 					onChange={setOrganizationQuery}
 					onItemsChange={(newItems) => {
+						setOrganizationError(false);
+
 						const validItems = [];
 
 						newItems.map((item) => {
