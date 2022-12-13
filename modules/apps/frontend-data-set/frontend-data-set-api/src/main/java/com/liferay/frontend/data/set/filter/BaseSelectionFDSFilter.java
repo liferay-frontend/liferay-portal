@@ -26,25 +26,34 @@ import java.util.ResourceBundle;
  */
 public abstract class BaseSelectionFDSFilter implements FDSFilter {
 
-	public Boolean getAutocomplete() { return false; }
-
 	public String getAPIURL() {
 		return null;
 	};
+
+	public Boolean getAutocomplete() {
+		return false;
+	}
+
+	public String getItemKey() {
+		return null;
+};
+
+	public String getItemLabel() {
+		return null;
+};
+
+	public String getPlaceholder() {
+		return "search";
+	}
 
 	public ResourceBundle getResourceBundle(Locale locale) {
 		return ResourceBundleUtil.getBundle(
 			"content.Language", locale, getClass());
 	}
 
-	public String getItemKey() { return null; };
-
-	public String getItemLabel() { return null; };
-
-	public String getPlaceholder() { return "search"; }
-
 	public List<SelectionFDSFilterItem> getSelectionFDSFilterItems(
 		Locale locale) {
+
 		return Collections.emptyList();
 	};
 

@@ -79,13 +79,14 @@ public class SelectionFDSFilterContextContributor
 				));
 		}
 
-		HashMapBuilder.HashMapWrapper<String, Object> builder = HashMapBuilder.<String, Object>put(
-			"autocomplete", baseSelectionFDSFilter.getAutocomplete()
-		).put(
-			"items", jsonArray
-		).put(
-			"multiple", baseSelectionFDSFilter.isMultiple()
-		);
+		HashMapBuilder.HashMapWrapper<String, Object> builder =
+			HashMapBuilder.<String, Object>put(
+				"autocomplete", baseSelectionFDSFilter.getAutocomplete()
+			).put(
+				"items", jsonArray
+			).put(
+				"multiple", baseSelectionFDSFilter.isMultiple()
+			);
 
 		if (baseSelectionFDSFilter.getAutocomplete()) {
 			builder.put(
