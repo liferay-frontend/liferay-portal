@@ -120,6 +120,10 @@ module.exports = {
 					'frontend-js-components-web': {
 						'/': '*',
 					},
+					'frontend-js-date-fns-web': {
+						'/': '*',
+						'date-fns': '*',
+					},
 					'frontend-js-metal-web': {
 						'incremental-dom': '*',
 						'incremental-dom-string': '*',
@@ -407,6 +411,7 @@ module.exports = {
 			],
 			'@liferay/frontend-js-state-web': [],
 			'frontend-js-components-web': [],
+			'frontend-js-date-fns-web': ['date-fns'],
 			'frontend-js-metal-web': [
 				'incremental-dom',
 				'incremental-dom-string',

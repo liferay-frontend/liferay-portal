@@ -1,7 +1,7 @@
 {
 	"devDependencies": {
 		"@liferay/eslint-plugin": "1.4.0",
-		"@liferay/npm-scripts": "47.10.2",
+		"@liferay/npm-scripts": "47.11.0",
 		"acorn": "7.1.0",
 		"alloy-ui": "^3.1.0-deprecated.40",
 		"babel-plugin-incremental-dom": "3.4.0",
@@ -15,6 +15,7 @@
 	"resolutions": {
 		"@liferay/eslint-plugin": "1.4.0",
 		"@types/html-minifier-terser": "5.1.0",
+		"date-fns": "2.29.3",
 		"html-webpack-plugin": "5.5.0",
 		"ua-parser-js": "^0.7.30",
 		"webpack": "5.70.0"

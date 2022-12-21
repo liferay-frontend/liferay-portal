@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Frontend JS Date Fns Web
+Bundle-SymbolicName: com.liferay.frontend.js.date.fns.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /frontend-js-date-fns-web

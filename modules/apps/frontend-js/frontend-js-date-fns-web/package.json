@@ -1,0 +1,13 @@
+{
+	"dependencies": {
+		"date-fns": "2.29.3"
+	},
+	"name": "frontend-js-date-fns-web",
+	"private": true,
+	"scripts": {
+		"build": "liferay-npm-scripts build",
+		"checkFormat": "liferay-npm-scripts check",
+		"format": "liferay-npm-scripts fix"
+	},
+	"version": "1.0.0"
+}
