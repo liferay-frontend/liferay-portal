@@ -24,7 +24,7 @@ import {propertyGroupShape} from '../../utils/types.es';
 import {jsDatetoYYYYMMDD} from '../../utils/utils.es';
 import CriteriaSidebarItem from './CriteriaSidebarItem.es';
 
-const INPUT_DATE_FORMAT = 'YYYY-MM-DD';
+const INPUT_DATE_FORMAT = 'yyyy-MM-dd';
 
 /**
  * Returns a default value for a property provided.

@@ -12,7 +12,7 @@
  * details.
  */
 
-import dateFns from 'date-fns';
+import {format, isValid} from 'date-fns';
 
 import {CONJUNCTIONS} from './constants.es';
 
@@ -207,7 +207,15 @@ export function dateToInternationalHuman(
  * @returns {string}
  */
 export function jsDatetoYYYYMMDD(dateJsObject) {
-	const DATE_FORMAT = 'YYYY-MM-DD';
+	const DATE_FORMAT = 'yyyy-MM-dd';
 
-	return dateFns.format(dateJsObject, DATE_FORMAT);
+	if (!dateJsObject) {
+		dateJsObject = new Date();
+	}
+
+	if (dateJsObject && !isValid(dateJsObject)) {
+		dateJsObject = new Date(dateJsObject);
+	}
+
+	return format(dateJsObject, DATE_FORMAT);
 }
