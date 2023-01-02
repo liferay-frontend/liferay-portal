@@ -12,25 +12,12 @@
  * details.
  */
 
-import moment from 'moment/min/moment-with-locales';
-
-const getLanguage = () => {
-	const language = Liferay.ThemeDisplay.getBCP47LanguageId();
-
-	const languages = {
-		'zh-Hans-CN': 'zh-CN',
-	};
-
-	return languages[language] || language;
-};
-
-const toDateFromUTC = (date) =>
-	moment(moment.utc(date).toISOString()).locale(getLanguage());
+import {format, formatRelative} from 'date-fns';
 
 export function toDateFromNow(date) {
-	return toDateFromUTC(date).fromNow();
+	return formatRelative(new Date(date), new Date());
 }
 
 export function toLocalDateTimeFormatted(date) {
-	return toDateFromUTC(date).format('l LT');
+	return format(new Date(date), 'P p');
 }
