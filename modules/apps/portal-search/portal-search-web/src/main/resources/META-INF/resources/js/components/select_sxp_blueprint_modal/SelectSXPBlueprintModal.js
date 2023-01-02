@@ -19,7 +19,7 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import ClayTable from '@clayui/table';
-import moment from 'moment';
+import {format, parse} from 'date-fns';
 import React, {useEffect, useState} from 'react';
 
 import ManagementToolbar from './ManagementToolbar';
@@ -28,9 +28,7 @@ const DELTAS = [10, 20, 30, 50];
 const TRUNCATE_LENGTH = 200;
 
 function formatDate(value) {
-	return moment(moment(value, 'YYYYMMDDHHmmss'))
-		.locale(Liferay.ThemeDisplay.getBCP47LanguageId() || 'en-US')
-		.format('lll');
+	return format(parse(value, 'yyyyMMddHHmmss', new Date()), 'PPp');
 }
 
 function truncateString(value) {
