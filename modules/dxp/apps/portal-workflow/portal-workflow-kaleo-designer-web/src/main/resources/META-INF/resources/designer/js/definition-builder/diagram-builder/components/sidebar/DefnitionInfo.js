@@ -11,7 +11,7 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayTabs from '@clayui/tabs';
-import moment from 'moment/min/moment-with-locales';
+import {format} from 'date-fns';
 import React, {useContext, useState} from 'react';
 
 import {DefinitionBuilderContext} from '../../../DefinitionBuilderContext';
@@ -22,20 +22,20 @@ import {
 } from '../../../util/fetchUtil';
 import lang from '../../../util/lang';
 
-moment.locale(Liferay.ThemeDisplay.getBCP47LanguageId());
-
 const Details = ({definitionInfo}) => {
 	const titleCreated = Liferay.Language.get('created');
 	const titleLastModified = Liferay.Language.get('last-modified');
 	const titleTotalModifications = Liferay.Language.get('total-modifications');
 
-	const dateCreated = moment
-		.utc(definitionInfo.dateCreated)
-		.format(Liferay.Language.get('mmm-dd-yyyy-lt'));
+	const dateCreated = format(
+		new Date(definitionInfo.dateCreated),
+		'MMM dd, yyyy, p'
+	);
 
-	const dateModified = moment
-		.utc(definitionInfo.dateModified)
-		.format(Liferay.Language.get('mmm-dd-yyyy-lt'));
+	const dateModified = format(
+		new Date(definitionInfo.dateModified),
+		'MMM dd, yyyy, p'
+	);
 
 	const totalModifications = definitionInfo.totalModifications;
 
