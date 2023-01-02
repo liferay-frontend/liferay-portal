@@ -40,11 +40,11 @@ interface IProps {
 	onChange: (value: LocalizedValue<string>, locale: InputLocale) => void;
 	placeholder?: string;
 	required?: boolean;
-	selectedLocale?: Locale;
+	selectedLocale?: LiferayLocale;
 	translations: LocalizedValue<string>;
 }
 interface InputLocale {
-	label: Locale;
+	label: LiferayLocale;
 	symbol: string;
 }
 export {};

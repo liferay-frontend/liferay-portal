@@ -27,12 +27,12 @@ interface CodeEditorLocalizedProps {
 	onSelectedLocaleChange: (val: IItem) => void;
 	onTranslationsChange: (val: LocalizedValue<string>) => void;
 	placeholder?: string;
-	selectedLocale: Locale;
+	selectedLocale: LiferayLocale;
 	sidebarElements: SidebarCategory[];
 	translations: LocalizedValue<string>;
 }
 interface IItem {
-	label: Locale;
+	label: LiferayLocale;
 	symbol: string;
 }
 export declare function CodeEditorLocalized({

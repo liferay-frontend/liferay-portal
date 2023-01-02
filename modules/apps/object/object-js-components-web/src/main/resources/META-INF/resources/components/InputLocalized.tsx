@@ -25,7 +25,7 @@ const defaultLanguageId = Liferay.ThemeDisplay.getDefaultLanguageId();
 const availableLocales = Object.keys(Liferay.Language.available)
 	.sort((languageId) => (languageId === defaultLanguageId ? -1 : 1))
 	.map((language) => ({
-		label: language as Locale,
+		label: language as LiferayLocale,
 		symbol: language.replace('_', '-').toLowerCase(),
 	}));
 
@@ -104,11 +104,11 @@ interface IProps {
 	onChange: (value: LocalizedValue<string>, locale: InputLocale) => void;
 	placeholder?: string;
 	required?: boolean;
-	selectedLocale?: Locale;
+	selectedLocale?: LiferayLocale;
 	translations: LocalizedValue<string>;
 }
 
 interface InputLocale {
-	label: Locale;
+	label: LiferayLocale;
 	symbol: string;
 }

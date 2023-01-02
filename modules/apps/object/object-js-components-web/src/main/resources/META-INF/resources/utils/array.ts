@@ -37,7 +37,7 @@ export function filterArrayByQuery<T>(
 
 			if (!label) {
 				label = localizedLabels[
-					item.defaultLanguageId as Locale
+					item.defaultLanguageId as LiferayLocale
 				] as string;
 			}
 

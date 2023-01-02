@@ -12,7 +12,7 @@
  * details.
  */
 
-type Locale = Liferay.Language.Locale;
+type LiferayLocale = Liferay.Language.Locale;
 type LocalizedValue<T> = Liferay.Language.LocalizedValue<T>;
 
 type NotificationTemplate = {
@@ -88,7 +88,7 @@ interface ObjectField {
 	id: number;
 	indexed: boolean;
 	indexedAsKeyword: boolean;
-	indexedLanguageId: Locale | null;
+	indexedLanguageId: LiferayLocale | null;
 	label: LocalizedValue<string>;
 	listTypeDefinitionExternalReferenceCode: string;
 	listTypeDefinitionId?: number;
