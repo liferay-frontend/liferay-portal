@@ -109,7 +109,7 @@ describe('The SingleUpdateDueDateModal component should', () => {
 		const commentInput = getByPlaceholderText('write-a-note');
 		const dateInput = getByPlaceholderText('MM/DD/YYYY');
 		const doneBtn = getByText('done');
-		const timeInput = getByPlaceholderText('HH:mm am/pm');
+		const timeInput = getByPlaceholderText('hh:mm am/pm');
 
 		expect(dateInput.value).toBe('02/01/2020');
 		expect(timeInput.value).toBe('10:00 AM');

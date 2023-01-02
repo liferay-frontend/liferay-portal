@@ -41,6 +41,7 @@ export default function CustomTimeRangeForm({
 		setDateStart,
 		validate,
 	} = useCustomTimeRange(prefixKey, withoutRouteParams);
+
 	const wrapperRef = useRef();
 
 	const dateMask = getMaskByDateFormat(dateFormat);
@@ -83,6 +84,8 @@ export default function CustomTimeRangeForm({
 		return () => removeClickOutsideListener(onClickOutside);
 	}, [setFormVisible]);
 
+	const dateFormatUppercase = dateFormat.toUpperCase();
+
 	return (
 		<div className="custom-range-wrapper" ref={wrapperRef}>
 			<ClayForm className="custom-range-form">
@@ -90,7 +93,7 @@ export default function CustomTimeRangeForm({
 
 				<span className="form-text mb-3 text-semi-bold">
 					{sub(Liferay.Language.get('default-date-format-is-x'), [
-						dateFormat,
+						dateFormatUppercase,
 					])}
 				</span>
 
@@ -107,7 +110,7 @@ export default function CustomTimeRangeForm({
 							name="dateStart"
 							onBlur={onBlur}
 							onChange={onChange(setDateStart)}
-							placeholder={dateFormat}
+							placeholder={dateFormatUppercase}
 						/>
 					</FormGroupItem>
 
@@ -123,7 +126,7 @@ export default function CustomTimeRangeForm({
 							name="dateEnd"
 							onBlur={onBlur}
 							onChange={onChange(setDateEnd)}
-							placeholder={dateFormat}
+							placeholder={dateFormatUppercase}
 						/>
 					</FormGroupItem>
 				</ClayForm.Group>

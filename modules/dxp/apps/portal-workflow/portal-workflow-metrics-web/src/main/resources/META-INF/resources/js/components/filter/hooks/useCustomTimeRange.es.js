@@ -9,17 +9,17 @@
  * distribution rights of the Software.
  */
 
+import {isAfter, isBefore, isValid} from 'date-fns';
 import {useState} from 'react';
 
 import {getCapitalizedFilterKey} from '../../../shared/components/filter/util/filterUtil.es';
 import {useFilter} from '../../../shared/hooks/useFilter.es';
 import {useRouterParams} from '../../../shared/hooks/useRouterParams.es';
 import {getLocaleDateFormat} from '../../../shared/util/date.es';
-import moment from '../../../shared/util/moment.es';
 import {
 	convertQueryDate,
 	formatDateTime,
-	parseDateMoment,
+	parseDate,
 } from '../util/timeRangeUtil.es';
 
 const updateErrors = (errors, fieldName, message) => ({
@@ -27,11 +27,11 @@ const updateErrors = (errors, fieldName, message) => ({
 	[fieldName]: message,
 });
 
-const validateDate = (dateEndMoment, dateStartMoment) => {
-	const dateNow = moment.utc();
+const validateDate = (dateEnd, dateStart) => {
+	const dateNow = new Date();
 	let errors;
 
-	if (!dateEndMoment.isValid() || dateEndMoment.isAfter(dateNow)) {
+	if (!isValid(dateEnd) || isAfter(dateEnd, dateNow)) {
 		errors = updateErrors(
 			errors,
 			'dateEnd',
@@ -39,7 +39,7 @@ const validateDate = (dateEndMoment, dateStartMoment) => {
 		);
 	}
 
-	if (!dateStartMoment.isValid() || dateStartMoment.isAfter(dateNow)) {
+	if (!isValid(dateStart) || isAfter(dateStart, dateNow)) {
 		errors = updateErrors(
 			errors,
 			'dateStart',
@@ -50,11 +50,11 @@ const validateDate = (dateEndMoment, dateStartMoment) => {
 	return errors;
 };
 
-const validateEarlierDate = (dateEndMoment, dateStartMoment) => {
-	const earlierDate = moment.utc([1970, 0, 1, 0]);
+const validateEarlierDate = (dateEnd, dateStart) => {
+	const earlierDate = new Date(1970, 0, 1);
 	let errors;
 
-	if (dateEndMoment.isBefore(earlierDate)) {
+	if (isBefore(dateEnd, earlierDate)) {
 		errors = updateErrors(
 			errors,
 			'dateEnd',
@@ -62,7 +62,7 @@ const validateEarlierDate = (dateEndMoment, dateStartMoment) => {
 		);
 	}
 
-	if (dateStartMoment.isBefore(earlierDate)) {
+	if (isBefore(dateStart, earlierDate)) {
 		errors = updateErrors(
 			errors,
 			'dateStart',
@@ -73,10 +73,10 @@ const validateEarlierDate = (dateEndMoment, dateStartMoment) => {
 	return errors;
 };
 
-const validateRangeConsistency = (dateEndMoment, dateStartMoment) => {
+const validateRangeConsistency = (dateEnd, dateStart) => {
 	let errors;
 
-	if (dateEndMoment.isBefore(dateStartMoment)) {
+	if (isBefore(dateEnd, dateStart)) {
 		errors = updateErrors(
 			errors,
 			'dateEnd',
@@ -86,7 +86,7 @@ const validateRangeConsistency = (dateEndMoment, dateStartMoment) => {
 		);
 	}
 
-	if (dateStartMoment.isAfter(dateEndMoment)) {
+	if (isAfter(dateStart, dateEnd)) {
 		errors = updateErrors(
 			errors,
 			'dateStart',
@@ -132,13 +132,13 @@ const useCustomTimeRange = (prefixKey, withoutRouteParams) => {
 	};
 
 	const validate = () => {
-		const dateEndMoment = parseDateMoment(dateEnd, dateFormat);
-		const dateStartMoment = parseDateMoment(dateStart, dateFormat);
+		const dateEndParsed = parseDate(dateEnd, dateFormat);
+		const dateStartParsed = parseDate(dateStart, dateFormat);
 
 		const errors = {
-			...validateDate(dateEndMoment, dateStartMoment),
-			...validateEarlierDate(dateEndMoment, dateStartMoment),
-			...validateRangeConsistency(dateEndMoment, dateStartMoment),
+			...validateDate(dateEndParsed, dateStartParsed),
+			...validateEarlierDate(dateEndParsed, dateStartParsed),
+			...validateRangeConsistency(dateEndParsed, dateStartParsed),
 		};
 
 		setErrors(errors);

@@ -10,14 +10,14 @@
  */
 
 import ClayLayout from '@clayui/layout';
+import {format} from 'date-fns';
 import React from 'react';
 
 import {sub} from '../../util/lang.es';
-import moment from '../../util/moment.es';
 
 export default function MetricsCalculatedInfo({dateModified}) {
 	const date = dateModified
-		? moment.utc(dateModified).format(Liferay.Language.get('mmm-dd-lt'))
+		? format(new Date(dateModified), "MMM dd',' p")
 		: null;
 
 	const infoLabel = sub(Liferay.Language.get('sla-metrics-calculated'), [

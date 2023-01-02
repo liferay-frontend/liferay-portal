@@ -18,12 +18,12 @@ const languageMap = {
 	'decimal-delimiter': '.',
 	'hours-abbreviation': 'h',
 	'minutes-abbreviation': 'min',
-	'mmm-dd': 'MMM DD',
-	'mmm-dd-hh-mm': 'MMM DD, HH:mm',
-	'mmm-dd-hh-mm-a': 'MMM DD, hh:mm A',
-	'mmm-dd-lt': 'MMM DD, LT',
-	'mmm-dd-yyyy': 'MMM DD, YYYY',
-	'mmm-dd-yyyy-lt': 'MMM DD, YYYY, LT',
+	'mmm-dd': 'MMM dd',
+	'mmm-dd-hh-mm': 'MMM dd, HH:mm',
+	'mmm-dd-hh-mm-a': 'MMM dd, hh:mm A',
+	'mmm-dd-lt': 'MMM dd, p',
+	'mmm-dd-yyyy': 'MMM dd, yyyy',
+	'mmm-dd-yyyy-lt': 'MMM dd, yyyy, p',
 	'thousand-abbreviation': 'K',
 };
 

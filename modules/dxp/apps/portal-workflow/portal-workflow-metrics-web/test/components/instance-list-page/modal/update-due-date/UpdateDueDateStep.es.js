@@ -32,14 +32,14 @@ describe('The UpdateDueDateStep component should be rendered with TimePickerInpu
 
 	test('Render with error state and select any option', () => {
 		const {getAllByRole, getByPlaceholderText} = render(
-			<AppContext.Provider value={{isAmPm: true, timeFormat: 'H:mm a'}}>
+			<AppContext.Provider value={{isAmPm: true, timeFormat: 'h:mm a'}}>
 				<MockModalContext>
 					<UpdateDueDateStep />
 				</MockModalContext>
 			</AppContext.Provider>
 		);
 
-		const timeInput = getByPlaceholderText('HH:mm am/pm');
+		const timeInput = getByPlaceholderText('hh:mm am/pm');
 
 		fireEvent.focus(timeInput);
 

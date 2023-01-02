@@ -10,17 +10,15 @@
  */
 
 import {render} from '@testing-library/react';
+import {format} from 'date-fns';
 import React from 'react';
 
 import MetricsCalculatedInfo from '../../../../src/main/resources/META-INF/resources/js/shared/components/last-updated-info/MetricsCalculatedInfo.es';
-import moment from '../../../../src/main/resources/META-INF/resources/js/shared/util/moment.es';
 import {MockRouter} from '../../../../test/mock/MockRouter.es';
 
 describe('MetricsCalculatedInfo', () => {
 	test.skip('will be correctly rendered', async () => {
-		const date = moment
-			.utc(new Date())
-			.format(Liferay.Language.get('mmm-dd-hh-mm-a'));
+		const date = format(new Date(), "MMM dd',' hh':'mm a");
 
 		fetch.mockResolvedValueOnce({
 			json: () => Promise.resolve(date),

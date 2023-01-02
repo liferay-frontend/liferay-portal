@@ -18,12 +18,12 @@ import ClayModal, {useModal} from '@clayui/modal';
 import ClayPopover from '@clayui/popover';
 import ClayTable from '@clayui/table';
 import WorkflowInstanceTracker from '@liferay/portal-workflow-instance-tracker-web/js/components/WorkflowInstanceTracker';
+import {format} from 'date-fns';
 import React, {useContext, useState} from 'react';
 
 import useDebounceCallback from '../../hooks/useDebounceCallback.es';
 import QuickActionKebab from '../../shared/components/quick-action-kebab/QuickActionKebab.es';
 import {remainingTimeFormat} from '../../shared/util/duration.es';
-import moment from '../../shared/util/moment.es';
 import {capitalize, getSLAStatusIconInfo} from '../../shared/util/util.es';
 import {AppContext} from '../AppContext.es';
 import {InstanceListContext} from './InstanceListPageProvider.es';
@@ -168,9 +168,7 @@ function Item({isAdmin, totalCount, ...instance}) {
 			</ClayTable.Cell>
 
 			<ClayTable.Cell>
-				{moment
-					.utc(dateCreated)
-					.format(Liferay.Language.get('mmm-dd-yyyy-lt'))}
+				{format(new Date(dateCreated), "MMM dd',' yyyy',' p")}
 			</ClayTable.Cell>
 
 			<ClayTable.Cell style={{paddingRight: '0rem'}}>
@@ -289,23 +287,19 @@ function DueDateSLAResults({slaResults, slaStatusIconInfo}) {
 			return '';
 		}
 
-		let format = '';
+		let formatPattern = '';
 
 		const sameYear =
 			dateOverdue.split('-')[0] === new Date().getFullYear().toString();
 
 		if (sameYear) {
-			format = fullDatetime
-				? Liferay.Language.get('mmm-dd-lt')
-				: Liferay.Language.get('mmm-dd');
+			formatPattern = fullDatetime ? "MMM dd',' p" : 'MMM dd';
 		}
 		else {
-			format = fullDatetime
-				? Liferay.Language.get('mmm-dd-yyyy-lt')
-				: Liferay.Language.get('mmm-dd-yyyy');
+			formatPattern = fullDatetime ? "MMM dd',' yyyy',' p" : 'PP';
 		}
 
-		return moment.utc(dateOverdue).format(format);
+		return format(new Date(dateOverdue), formatPattern);
 	};
 
 	const instanceSlaResults = slaResults.slice(0, 2).map((slaResult) => {

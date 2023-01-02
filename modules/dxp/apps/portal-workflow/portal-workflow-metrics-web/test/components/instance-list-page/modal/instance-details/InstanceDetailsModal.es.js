@@ -118,7 +118,7 @@ describe('The InstanceDetailsModal component should', () => {
 
 			expect(getByText('OPEN (1)')).toBeTruthy();
 			expect(resultStatus[0]).toHaveTextContent(
-				'Jan 24, 2020, 10:08 AM (0d 03h 43min overdue)'
+				'Jan 24, 2020, 2:08 PM (0d 3h 43min overdue)'
 			);
 			expect(resultIcons[1].children[0].classList).toContain(
 				'lexicon-icon-exclamation-circle'
@@ -137,12 +137,12 @@ describe('The InstanceDetailsModal component should', () => {
 			expect(instanceDetailsRows[0]).toHaveTextContent('completed');
 			expect(instanceDetailsRows[1]).toHaveTextContent('Test Test');
 			expect(instanceDetailsRows[2]).toHaveTextContent(
-				'Jan 20, 2020, 11:08 AM'
+				'Jan 20, 2020, 3:08 PM'
 			);
 			expect(instanceDetailsRows[3]).toHaveTextContent('Blogs Entry');
 			expect(instanceDetailsRows[4]).toHaveTextContent('Blog 01');
 			expect(instanceDetailsRows[5]).toHaveTextContent(
-				'Jan 21, 2020, 10:08 AM'
+				'Jan 21, 2020, 2:08 PM'
 			);
 		});
 
@@ -208,7 +208,7 @@ describe('The InstanceDetailsModal component should', () => {
 			expect(instanceDetailsRows[0]).toHaveTextContent('pending');
 			expect(instanceDetailsRows[1]).toHaveTextContent('Test Test');
 			expect(instanceDetailsRows[2]).toHaveTextContent(
-				'Jan 20, 2020, 11:08 AM'
+				'Jan 20, 2020, 3:08 PM'
 			);
 			expect(instanceDetailsRows[3]).toHaveTextContent('Blogs Entry');
 			expect(instanceDetailsRows[4]).toHaveTextContent('Blog 01');

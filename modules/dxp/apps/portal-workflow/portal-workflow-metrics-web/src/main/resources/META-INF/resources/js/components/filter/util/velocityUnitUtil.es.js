@@ -10,7 +10,9 @@
  * distribution rights of the Software.
  */
 
-import moment from 'moment';
+import {differenceInCalendarDays, isLeapYear, isValid, parse} from 'date-fns';
+
+import {defaultDateFormat} from '../../../shared/util/date.es';
 
 const asDefault = (velocityUnit) => {
 	return {
@@ -60,12 +62,16 @@ const getVelocityUnits = (timeRange) => {
 		return [];
 	}
 
-	const dateEnd = moment.utc(timeRange.dateEnd);
-	const dateStart = moment.utc(timeRange.dateStart);
+	const dateEnd = isValid(timeRange.dateEnd)
+		? timeRange.dateEnd
+		: parse(timeRange.dateEnd, defaultDateFormat, new Date());
+	const dateStart = isValid(timeRange.dateStart)
+		? timeRange.dateStart
+		: parse(timeRange.dateStart, defaultDateFormat, new Date());
 
-	let daysDiff = dateEnd.diff(dateStart, 'days');
+	let daysDiff = differenceInCalendarDays(dateEnd, dateStart);
 
-	if (daysDiff === 366 && (dateEnd.isLeapYear() || dateStart.isLeapYear())) {
+	if (daysDiff === 366 && (isLeapYear(dateEnd) || isLeapYear(dateStart))) {
 		--daysDiff;
 	}
 

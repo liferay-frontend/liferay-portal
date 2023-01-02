@@ -12,13 +12,14 @@
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayTable from '@clayui/table';
+import {format} from 'date-fns';
+
 import React, {useCallback, useContext} from 'react';
 
 import QuickActionKebab from '../../../shared/components/quick-action-kebab/QuickActionKebab.es';
 import ChildLink from '../../../shared/components/router/ChildLink.es';
 import {useRouter} from '../../../shared/hooks/useRouter.es';
 import {formatDuration} from '../../../shared/util/duration.es';
-import moment from '../../../shared/util/moment.es';
 import {SLAListPageContext} from './SLAListPage.es';
 
 const SPACE = ' ';
@@ -95,9 +96,7 @@ export default function Item({
 			<ClayTable.Cell>{durationString}</ClayTable.Cell>
 
 			<ClayTable.Cell>
-				{moment
-					.utc(dateModified)
-					.format(Liferay.Language.get('mmm-dd'))}
+				{format(new Date(dateModified), 'MMM dd')}
 			</ClayTable.Cell>
 
 			<ClayTable.Cell className="actions">

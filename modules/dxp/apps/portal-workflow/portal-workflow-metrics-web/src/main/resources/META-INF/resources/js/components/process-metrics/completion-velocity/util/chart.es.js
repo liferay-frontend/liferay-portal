@@ -10,7 +10,22 @@
  * distribution rights of the Software.
  */
 
-import moment from '../../../../shared/util/moment.es';
+import {
+	differenceInDays,
+	differenceInMonths,
+	endOfMonth,
+	endOfWeek,
+	endOfYear,
+	format,
+	isSameDay,
+	isSameMonth,
+	isSameWeek,
+	isSameYear,
+	startOfMonth,
+	startOfWeek,
+	startOfYear,
+} from 'date-fns';
+
 import {
 	DAYS,
 	HOURS,
@@ -27,104 +42,110 @@ import {
 } from './chartConstants.es';
 
 export function formatMonthDate(date, timeRange) {
-	const currentDate = moment.utc(date);
-	const dateEnd = moment.utc(timeRange.dateEnd);
-	const dateStart = moment.utc(timeRange.dateStart);
+	const currentDate = new Date(date);
+	const dateEnd = new Date(timeRange.dateEnd);
+	const dateStart = new Date(timeRange.dateStart);
 
-	let firstDayOfMonth = currentDate.clone().startOf('month');
-	let lastDayOfMonth = currentDate.clone().endOf('month');
+	let firstDayOfMonth = startOfMonth(currentDate);
+	let lastDayOfMonth = endOfMonth(currentDate);
 
-	if (currentDate.isSame(dateStart, 'month')) {
-		firstDayOfMonth = currentDate.clone();
+	if (isSameMonth(currentDate, dateStart)) {
+		firstDayOfMonth = currentDate;
 	}
-	else if (currentDate.isSame(dateEnd, 'month')) {
-		lastDayOfMonth = dateEnd.clone();
-	}
-
-	if (firstDayOfMonth.isSame(lastDayOfMonth, 'day')) {
-		return firstDayOfMonth.format(Liferay.Language.get('mmm-dd-yyyy'));
+	else if (isSameMonth(currentDate, dateEnd)) {
+		lastDayOfMonth = dateEnd;
 	}
 
-	return `${firstDayOfMonth.format(
-		Liferay.Language.get('mmm-dd')
-	)}-${lastDayOfMonth.format(Liferay.Language.get('dd-yyyy'))}`;
+	if (isSameMonth(firstDayOfMonth, lastDayOfMonth)) {
+		return format(firstDayOfMonth, "MMM dd',' yyyy");
+	}
+
+	return `${format(firstDayOfMonth, 'MMM dd')}-${format(
+		lastDayOfMonth,
+		"dd',' yyyy"
+	)}`;
 }
 
 export function formatWeekDate(date, timeRange) {
-	const currentDate = moment.utc(date);
-	const dateEnd = moment.utc(timeRange.dateEnd);
-	const dateStart = moment.utc(timeRange.dateStart);
+	const currentDate = new Date(date);
+	const dateEnd = new Date(timeRange.dateEnd);
+	const dateStart = new Date(timeRange.dateStart);
 
-	let firstDayOfWeek = currentDate.clone().startOf('week');
-	let lastDayOfWeek = currentDate.clone().endOf('week');
+	let firstDayOfWeek = startOfWeek(currentDate);
+	let lastDayOfWeek = endOfWeek(currentDate);
 
-	if (currentDate.isSame(dateStart, 'week')) {
-		firstDayOfWeek = currentDate.clone();
+	if (isSameWeek(currentDate, dateStart)) {
+		firstDayOfWeek = currentDate;
 	}
-	else if (currentDate.isSame(dateEnd, 'week')) {
-		lastDayOfWeek = dateEnd.clone();
+	else if (isSameWeek(currentDate, dateEnd)) {
+		lastDayOfWeek = dateEnd;
 	}
-	const firstMonth = firstDayOfWeek.format('MMM');
-	const lastMonth = lastDayOfWeek.format('MMM');
+	const firstMonth = format(firstDayOfWeek, 'MMM');
+	const lastMonth = format(lastDayOfWeek, 'MMM');
 
-	if (firstDayOfWeek.isSame(lastDayOfWeek, 'day')) {
-		return firstDayOfWeek.format(Liferay.Language.get('mmm-dd'));
+	if (isSameDay(firstDayOfWeek, lastDayOfWeek)) {
+		return format(firstDayOfWeek, 'MMM dd');
 	}
 	else if (firstMonth === lastMonth) {
-		return `${firstDayOfWeek.format(
-			Liferay.Language.get('mmm-dd')
-		)}-${lastDayOfWeek.format('DD')}`;
+		return `${format(firstDayOfWeek, 'MMM dd')}-${format(
+			lastDayOfWeek,
+			'DD'
+		)}`;
 	}
 
-	return `${firstDayOfWeek.format(
-		Liferay.Language.get('mmm-dd')
-	)}-${lastDayOfWeek.format(Liferay.Language.get('mmm-dd'))}`;
+	return `${format(firstDayOfWeek, 'MMM dd')}-${format(
+		lastDayOfWeek,
+		'MMM dd'
+	)}`;
 }
 
 export function formatWeekDateWithYear(date, timeRange) {
-	const currentDate = moment.utc(date);
-	const dateEnd = moment.utc(timeRange.dateEnd);
-	const dateStart = moment.utc(timeRange.dateStart);
+	const currentDate = new Date(date);
+	const dateEnd = new Date(timeRange.dateEnd);
+	const dateStart = new Date(timeRange.dateStart);
 
-	let firstDayOfWeek = currentDate.clone().startOf('week');
-	let lastDayOfWeek = currentDate.clone().endOf('week');
+	let firstDayOfWeek = startOfWeek(currentDate);
+	let lastDayOfWeek = endOfWeek(currentDate);
 
-	if (currentDate.isSame(dateStart, 'week')) {
-		firstDayOfWeek = currentDate.clone();
+	if (isSameWeek(currentDate, dateStart)) {
+		firstDayOfWeek = currentDate;
 	}
-	else if (currentDate.isSame(dateEnd, 'week')) {
-		lastDayOfWeek = dateEnd.clone();
+	else if (isSameWeek(currentDate, dateEnd)) {
+		lastDayOfWeek = dateEnd;
 	}
-	const firstMonth = firstDayOfWeek.format('MMM');
-	const lastMonth = lastDayOfWeek.format('MMM');
+	const firstMonth = format(firstDayOfWeek, 'MMM');
+	const lastMonth = format(lastDayOfWeek, 'MMM');
 
-	const firstYear = firstDayOfWeek.format('YYYY');
-	const lastYear = lastDayOfWeek.format('YYYY');
+	const firstYear = format(firstDayOfWeek, 'yyyy');
+	const lastYear = format(lastDayOfWeek, 'yyyy');
 
-	if (firstDayOfWeek.isSame(lastDayOfWeek, 'day')) {
-		return firstDayOfWeek.format(Liferay.Language.get('mmm-dd-yyyy'));
+	if (isSameDay(firstDayOfWeek, lastDayOfWeek)) {
+		return format(firstDayOfWeek, "MMM dd',' yyyy");
 	}
 	else if (firstYear !== lastYear) {
-		return `${firstDayOfWeek.format(
-			Liferay.Language.get('mmm-dd-yyyy')
-		)} - ${lastDayOfWeek.format(Liferay.Language.get('mmm-dd-yyyy'))}`;
+		return `${format(firstDayOfWeek, "MMM dd',' yyyy")} - ${format(
+			lastDayOfWeek,
+			"MMM dd',' yyyy"
+		)}`;
 	}
 	else if (firstMonth !== lastMonth) {
-		return `${firstDayOfWeek.format(
-			Liferay.Language.get('mmm-dd')
-		)} - ${lastDayOfWeek.format(Liferay.Language.get('mmm-dd-yyyy'))}`;
+		return `${format(firstDayOfWeek, 'MMM dd')} - ${format(
+			lastDayOfWeek,
+			"MMM dd',' yyyy"
+		)}`;
 	}
 
-	return `${firstDayOfWeek.format(
-		Liferay.Language.get('mmm-dd')
-	)} - ${lastDayOfWeek.format(Liferay.Language.get('dd-yyyy'))}`;
+	return `${format(firstDayOfWeek, 'MMM dd')} - ${format(
+		lastDayOfWeek,
+		"dd',' yyyy"
+	)}`;
 }
 
 export function getRangeKey(timeRange) {
-	const endDate = moment.utc(timeRange.dateEnd);
-	const startDate = moment.utc(timeRange.dateStart);
+	const endDate = new Date(timeRange.dateEnd);
+	const startDate = new Date(timeRange.dateStart);
 
-	const diff = parseInt(moment.duration(endDate.diff(startDate)).asDays());
+	const diff = differenceInDays(startDate, endDate);
 
 	const diffList = [
 		TODAY,
@@ -145,59 +166,60 @@ export function getRangeKey(timeRange) {
 }
 
 export function formatXAxisDate(date, isAmPm, timeRangeKey, timeRange) {
-	const currentDate = moment.utc(date);
+	const currentDate = new Date(date);
 	const rangeUnit = getRangeKey(timeRange);
 
 	if (timeRangeKey === HOURS) {
-		let datetPattern = Liferay.Language.get('hh-mm');
+		let datetPattern = "HH':'mm";
 
 		if (isAmPm) {
-			datetPattern = Liferay.Language.get('hh-mm-a');
+			datetPattern = "hh':'mm a";
 		}
 
-		return currentDate.format(datetPattern);
+		return format(currentDate, datetPattern);
 	}
 	else if (timeRangeKey === YEARS) {
-		return currentDate.format('YYYY');
+		return format(currentDate, 'yyyy');
 	}
 	else if (
 		[LAST_YEAR, LAST_180_DAYS].includes(rangeUnit) &&
 		MONTHS === timeRangeKey
 	) {
-		return currentDate.format(Liferay.Language.get('mmm-yyyy'));
+		return format(currentDate, 'MMM yyyy');
 	}
 	else if (timeRangeKey === MONTHS) {
-		return currentDate.format('MMM');
+		return format(currentDate, 'MMM');
 	}
 	else if (timeRangeKey === WEEKS) {
 		return formatWeekDate(date, timeRange);
 	}
 
-	return currentDate.format(Liferay.Language.get('mmm-dd'));
+	return format(currentDate, 'MMM dd');
 }
 
 export function formatYearDate(date, timeRange) {
-	const currentDate = moment.utc(date);
-	const dateEnd = moment.utc(timeRange.dateEnd);
-	const dateStart = moment.utc(timeRange.dateStart);
+	const currentDate = new Date(date);
+	const dateEnd = new Date(timeRange.dateEnd);
+	const dateStart = new Date(timeRange.dateStart);
 
-	let firstDayOfYear = currentDate.clone().startOf('year');
-	let lastDayOfYear = currentDate.clone().endOf('year');
+	let firstDayOfYear = startOfYear(currentDate);
+	let lastDayOfYear = endOfYear(currentDate);
 
-	if (currentDate.isSame(dateStart, 'year')) {
-		firstDayOfYear = currentDate.clone();
+	if (isSameYear(currentDate, dateStart)) {
+		firstDayOfYear = currentDate;
 	}
-	else if (currentDate.isSame(dateEnd, 'year')) {
-		lastDayOfYear = dateEnd.clone();
-	}
-
-	if (firstDayOfYear.isSame(lastDayOfYear, 'day')) {
-		return firstDayOfYear.format(Liferay.Language.get('mmm-dd-yyyy'));
+	else if (isSameYear(currentDate, dateEnd)) {
+		lastDayOfYear = dateEnd;
 	}
 
-	return `${firstDayOfYear.format(
-		Liferay.Language.get('mmm-dd')
-	)}-${lastDayOfYear.format(Liferay.Language.get('mmm-dd-yyyy'))}`;
+	if (isSameDay(firstDayOfYear, lastDayOfYear)) {
+		return format(firstDayOfYear, "MMM dd',' yyyy");
+	}
+
+	return `${format(firstDayOfYear, 'MMM dd')}-${format(
+		lastDayOfYear,
+		"MMM dd',' yyyy"
+	)}`;
 }
 
 export function getAxisMeasures(value) {
@@ -251,24 +273,19 @@ export function getAxisMeasuresFromData(data) {
 }
 
 export function getXAxisIntervals(timeRange, keys, type) {
-	const endDate = moment.utc(timeRange.dateEnd);
+	const endDate = new Date(timeRange.dateEnd);
+	const secondDate = new Date(keys[1]);
+	const startDate = new Date(timeRange.dateStart);
+
 	const lengthKeys = keys.length;
-	const secondDate = moment.utc(keys[1]);
-	const startDate = moment.utc(timeRange.dateStart);
 
-	const diffLeftDays = parseInt(
-		moment.duration(secondDate.diff(startDate)).asDays()
-	);
+	const diffLeftDays = differenceInDays(startDate, secondDate);
 
-	const diffLeftMonths = parseInt(
-		moment.duration(secondDate.diff(startDate)).asMonths()
-	);
+	const diffLeftMonths = differenceInMonths(startDate, secondDate);
 
-	const nextToLastDay = moment.utc(keys[lengthKeys - 2]);
+	const nextToLastDay = new Date(keys[lengthKeys - 2]);
 
-	const diffRightDays = parseInt(
-		moment.duration(endDate.diff(nextToLastDay)).asDays()
-	);
+	const diffRightDays = differenceInDays(endDate, nextToLastDay);
 
 	const diffMap = {
 		[TODAY]: () => {

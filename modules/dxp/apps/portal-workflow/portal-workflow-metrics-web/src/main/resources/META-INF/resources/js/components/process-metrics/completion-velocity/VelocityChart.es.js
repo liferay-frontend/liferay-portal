@@ -9,6 +9,7 @@
  * distribution rights of the Software.
  */
 
+import {format} from 'date-fns';
 import React, {useContext} from 'react';
 import {
 	CartesianGrid,
@@ -20,7 +21,6 @@ import {
 	YAxis,
 } from 'recharts';
 
-import moment from '../../../shared/util/moment.es';
 import {AppContext} from '../../AppContext.es';
 import {
 	formatMonthDate,
@@ -43,8 +43,12 @@ function VelocityChart({timeRange, velocityData = {}, velocityUnit}) {
 	const {intervals, maxValue} = getAxisMeasuresFromData(dataValues);
 
 	const dataChart = histograms.map((data) => {
-		const date = moment.utc(data.key).toDate();
-		data.name = formatXAxisDate(date, isAmPm, unitKey, timeRange);
+		data.name = formatXAxisDate(
+			new Date(data.key),
+			isAmPm,
+			unitKey,
+			timeRange
+		);
 
 		return data;
 	});
@@ -100,19 +104,17 @@ const CLASSNAME = 'workflow-tooltip-chart';
 
 const CustomTooltip = ({active, isAmPm, payload, timeRange, unit, unitKey}) => {
 	const formatTooltipDate = (date, isAmPm, timeRange, unitKey) => {
-		let datePattern = Liferay.Language.get('ddd-mmm-d');
-
-		const dateUTC = moment.utc(date);
+		let datePattern = "ddd',' MMM d";
 
 		if (unitKey === HOURS) {
 			if (isAmPm) {
-				datePattern = Liferay.Language.get('mmm-dd-hh-mm-a');
+				datePattern = "MMM dd',' hh':'mm a";
 			}
 			else {
-				datePattern = Liferay.Language.get('mmm-dd-hh-mm');
+				datePattern = "MMM dd',' HH':'mm";
 			}
 
-			return dateUTC.format(datePattern);
+			return format(new Date(date), datePattern);
 		}
 		else if (unitKey === WEEKS) {
 			return formatWeekDateWithYear(date, timeRange);
@@ -124,7 +126,7 @@ const CustomTooltip = ({active, isAmPm, payload, timeRange, unit, unitKey}) => {
 			return formatYearDate(date, timeRange);
 		}
 
-		return dateUTC.format(datePattern);
+		return format(new Date(date), datePattern);
 	};
 
 	const getDateTitle = (date, isAmPm, timeRange, unitKey) => {

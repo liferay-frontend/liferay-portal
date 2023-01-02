@@ -9,35 +9,50 @@
  * distribution rights of the Software.
  */
 
-import moment from './moment.es';
+import {format, getDefaultOptions, isDate, isValid, parse} from 'date-fns';
+import {enUS} from 'date-fns/locale';
 
-const defaultDateFormat = 'YYYY-MM-DD\\THH:mm:ss\\Z';
+const defaultDateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-const formatDate = (date, format = 'L', fromFormat = null) => {
-	return moment.utc(date, fromFormat).format(format);
+const formatDate = (
+	date = new Date(),
+	formatString = 'P',
+	fromFormat = null
+) => {
+	if (!isDate(date) && fromFormat) {
+		date = parse(date, fromFormat, new Date());
+	}
+
+	if (!isDate(date)) {
+		date = new Date(date);
+	}
+
+	return format(date, formatString);
 };
 
-const getLocaleDateFormat = (format = 'L') => {
-	return moment.localeData().longDateFormat(format);
+const getLocaleDateFormat = (width = 'short') => {
+	const {locale = enUS} = getDefaultOptions();
+
+	return locale.formatLong.date({width});
 };
 
-const getMaskByDateFormat = (format) => {
+const getMaskByDateFormat = (formatString) => {
 	const mask = [];
 
-	for (let i = 0; i < format.length; i++) {
-		if (/[a-z]/i.test(format[i])) {
+	for (let i = 0; i < formatString.length; i++) {
+		if (/[a-z]/i.test(formatString[i])) {
 			mask.push(/\d/);
 		}
 		else {
-			mask.push(`${format[i]}`);
+			mask.push(`${formatString[i]}`);
 		}
 	}
 
 	return mask;
 };
 
-const isValidDate = (date, format = 'L') => {
-	return moment.utc(date, format, true).isValid();
+const isValidDate = (date, formatString = 'P') => {
+	return isValid(parse(date, formatString, new Date()));
 };
 
 export {

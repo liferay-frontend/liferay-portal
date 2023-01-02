@@ -84,8 +84,8 @@ const ContainerMock = ({children}) => {
 describe('The instance list item should', () => {
 	afterEach(cleanup);
 
-	it('Be rendered with "User 1", "Jan 01, 2019, 12:00 AM", and "Review, Update" columns', () => {
-		const {queryByText} = render(
+	it('Be rendered with "User 1", "Jan 01, 2019, 4:00 AM", and "Review, Update" columns', () => {
+		const {getByText, queryByText} = render(
 			<table>
 				<tbody>
 					<Table.Item {...instance} />
@@ -97,7 +97,7 @@ describe('The instance list item should', () => {
 		);
 
 		const creatorCell = queryByText('User 1');
-		const dateCreatedCell = queryByText('Jan 01, 2019, 12:00 AM');
+		const dateCreatedCell = getByText('Jan 01, 2019, 4:00 AM');
 		const taskNamesCell = queryByText('Review, Update');
 
 		expect(creatorCell).toBeTruthy();
@@ -222,7 +222,7 @@ describe('The instance list item should', () => {
 		expect(slaNamePopoverText).toBeTruthy();
 
 		const slaDateTimeRemaingTime = queryByText(
-			'Apr 16, 2021, 12:44 PM (1d 03h 46min left)'
+			'Apr 16, 2021, 4:44 PM (1d 3h 46min left)'
 		);
 
 		expect(slaDateTimeRemaingTime).toBeTruthy();
@@ -286,7 +286,7 @@ describe('The instance list item should', () => {
 		expect(slaNamePopoverText).toBeTruthy();
 
 		const slaDateTimeRemaingTime = queryByText(
-			'Apr 16, 2021, 12:44 PM (1d 03h 46min overdue)'
+			'Apr 16, 2021, 4:44 PM (1d 3h 46min overdue)'
 		);
 
 		expect(slaDateTimeRemaingTime).toBeTruthy();
@@ -363,7 +363,7 @@ describe('The instance list item should', () => {
 		expect(popoverElement).toBeTruthy();
 
 		const slaDateTimeRemaingTime = queryByText(
-			'Apr 16, 2021, 12:44 PM (10sec left)'
+			'Apr 16, 2021, 4:44 PM (10sec left)'
 		);
 
 		expect(slaDateTimeRemaingTime).toBeTruthy();

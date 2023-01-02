@@ -17,12 +17,12 @@ import ClayLink from '@clayui/link';
 import ClayModal, {useModal} from '@clayui/modal';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import WorkflowInstanceTracker from '@liferay/portal-workflow-instance-tracker-web/js/components/WorkflowInstanceTracker';
+import {format} from 'date-fns';
 import React, {useState} from 'react';
 
 import ContentView from '../../../../shared/components/content-view/ContentView.es';
 import RetryButton from '../../../../shared/components/list/RetryButton.es';
 import {remainingTimeFormat} from '../../../../shared/util/duration.es';
-import moment from '../../../../shared/util/moment.es';
 
 function Body({
 	assetTitle,
@@ -176,9 +176,10 @@ function Body({
 					{dateCreated && (
 						<Body.SectionAttribute
 							description={Liferay.Language.get('creation-date')}
-							detail={moment
-								.utc(dateCreated)
-								.format(Liferay.Language.get('mmm-dd-yyyy-lt'))}
+							detail={format(
+								new Date(dateCreated),
+								"MMM dd',' yyyy',' p"
+							)}
 						/>
 					)}
 
@@ -202,9 +203,10 @@ function Body({
 					{completed && dateCompletion && (
 						<Body.SectionAttribute
 							description={Liferay.Language.get('end-date')}
-							detail={moment
-								.utc(dateCompletion)
-								.format(Liferay.Language.get('mmm-dd-yyyy-lt'))}
+							detail={format(
+								new Date(dateCompletion),
+								"MMM dd',' yyyy',' p"
+							)}
 						/>
 					)}
 
@@ -316,11 +318,10 @@ function SLAResultItem({dateOverdue, name, onTime, remainingTime, status}) {
 					remainingTime
 				);
 
-				return `${moment
-					.utc(dateOverdue)
-					.format(
-						Liferay.Language.get('mmm-dd-yyyy-lt')
-					)} (${durationText} ${onTimeText})`;
+				return `${format(
+					new Date(dateOverdue),
+					"MMM dd',' yyyy',' p"
+				)} (${durationText} ${onTimeText})`;
 			}
 			default: {
 				if (status === 'STOPPED' && onTime) {
