@@ -1,5 +1,7 @@
 {
 	"dependencies": {
+		"@clayui/date-picker": "*",
+		"date-fns": "*"
 	},
 	"main": "js/App.es",
 	"name": "frontend-js-clay-sample-web",
