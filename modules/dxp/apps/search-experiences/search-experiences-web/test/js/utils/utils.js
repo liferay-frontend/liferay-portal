@@ -809,7 +809,7 @@ describe('utils', () => {
 												name: 'start_date',
 												type: 'date',
 												typeOptions: {
-													format: 'YYYYMMDD',
+													format: 'yyyyMMdd',
 												},
 											},
 										],

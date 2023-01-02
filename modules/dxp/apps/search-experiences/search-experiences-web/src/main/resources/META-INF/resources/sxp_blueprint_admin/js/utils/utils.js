@@ -9,7 +9,7 @@
  * distribution rights of the Software.
  */
 
-import moment from 'moment';
+import {format, getUnixTime, isValid, parse} from 'date-fns';
 
 import {CONFIG_PREFIX, DEFAULT_ERROR} from './constants';
 import {INPUT_TYPES} from './inputTypes';
@@ -323,16 +323,15 @@ export function getConfigurationEntry({sxpElement, uiConfigurationValues}) {
 					);
 				}
 				else if (config.type === INPUT_TYPES.DATE) {
-					configValue = initialConfigValue
-						? JSON.parse(
-								moment
-									.unix(initialConfigValue)
-									.format(
-										config.typeOptions?.format ||
-											'YYYYMMDDHHMMSS'
-									)
-						  )
-						: '';
+					configValue = JSON.parse(
+						initialConfigValue
+							? format(
+									new Date(initialConfigValue * 1000),
+									config.typeOptions?.format ||
+										'yyyyMMddHHMMSS'
+							  )
+							: ''
+					);
 				}
 				else if (config.type === INPUT_TYPES.ITEM_SELECTOR) {
 					configValue = JSON.stringify(
@@ -513,12 +512,19 @@ export function getDefaultValue(item) {
 	const itemValue = item.defaultValue;
 
 	switch (item.type) {
-		case INPUT_TYPES.DATE:
+		case INPUT_TYPES.DATE: {
+			let date = parse(itemValue, 'MM-dd-yyyy', new Date());
+
+			if (!isValid(date)) {
+				date = parse(itemValue, 'yyyy-MM-dd', new Date());
+			}
+
 			return typeof itemValue === 'number'
 				? itemValue
-				: moment(itemValue, ['MM-DD-YYYY', 'YYYY-MM-DD']).isValid()
-				? moment(itemValue, ['MM-DD-YYYY', 'YYYY-MM-DD']).unix()
+				: isValid(date)
+				? getUnixTime(date)
 				: '';
+		}
 		case INPUT_TYPES.FIELD_MAPPING:
 			return typeof itemValue === 'object' && itemValue.field
 				? itemValue

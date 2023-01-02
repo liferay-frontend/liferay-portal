@@ -14,7 +14,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayList from '@clayui/list';
 import getCN from 'classnames';
-import moment from 'moment';
+import {format, parse} from 'date-fns';
 import React, {useContext, useState} from 'react';
 
 import {PreviewModalWithCopyDownload} from '../../shared/PreviewModal';
@@ -39,9 +39,7 @@ const sxpBlueprintFieldPrefixRegex = new RegExp(
 
 function localizeDate(property, value) {
 	if (DATE_KEYS.includes(property)) {
-		return moment(moment(value, 'YYYYMMDDHHmmss'))
-			.locale(Liferay.ThemeDisplay.getBCP47LanguageId() || 'en-US')
-			.format('lll');
+		return format(parse(value, 'yyyyMMddHHmmss', new Date()), 'PPp');
 	}
 
 	return value;
