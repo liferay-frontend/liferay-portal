@@ -12,7 +12,7 @@
  * details.
  */
 
-import moment from 'moment/min/moment-with-locales';
+import {formatRelative} from 'date-fns';
 
 const getLanguage = () => {
 	const language = Liferay.ThemeDisplay.getBCP47LanguageId();
@@ -36,6 +36,6 @@ const getDateFormatted = (date, language = getLanguage()) => {
 	}
 };
 
-const fromNow = (date) => moment(date).locale(getLanguage()).fromNow();
+const fromNow = (date) => formatRelative(date, new Date());
 
 export {fromNow, getDateFormatted};
