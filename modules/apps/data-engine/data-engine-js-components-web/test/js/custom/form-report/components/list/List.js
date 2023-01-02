@@ -13,6 +13,8 @@
  */
 
 import {render} from '@testing-library/react';
+import {setDefaultOptions} from 'date-fns';
+import {enUS, ja, ptBR} from 'date-fns/locale';
 import React from 'react';
 
 import List from '../../../../../../src/main/resources/META-INF/resources/js/custom/form-report/components/list/List';
@@ -62,21 +64,15 @@ describe('List', () => {
 	});
 
 	it('renders dates in the english US format', () => {
-		const originalThemeDisplay = themeDisplay;
-		themeDisplay = {getLanguageId: () => 'en_US'};
-
 		const {getByText} = render(
 			<List {...props} data={['2020-12-20']} type="date" />
 		);
 
 		expect(getByText('12/20/2020')).toBeTruthy();
-
-		themeDisplay = originalThemeDisplay;
 	});
 
 	it('renders dates in the portuguese BR format', () => {
-		const originalThemeDisplay = themeDisplay;
-		themeDisplay = {getLanguageId: () => 'pt_BR'};
+		setDefaultOptions({locale: ptBR}); // These get set globally in portal via frontend-js-date-fns-web
 
 		const {getByText} = render(
 			<List {...props} data={['2020-12-20']} type="date" />
@@ -84,25 +80,19 @@ describe('List', () => {
 
 		expect(getByText('20/12/2020')).toBeTruthy();
 
-		themeDisplay = originalThemeDisplay;
+		setDefaultOptions({locale: enUS});
 	});
 
 	it('renders dates and time in the english US format', () => {
-		const originalThemeDisplay = themeDisplay;
-		themeDisplay = {getLanguageId: () => 'en_US'};
-
 		const {getByText} = render(
 			<List {...props} data={['2020-12-20 14:48']} type="date_time" />
 		);
 
 		expect(getByText('12/20/2020 2:48 PM')).toBeTruthy();
-
-		themeDisplay = originalThemeDisplay;
 	});
 
 	it('renders dates and time in the japanese format', () => {
-		const originalThemeDisplay = themeDisplay;
-		themeDisplay = {getLanguageId: () => 'ja_JP'};
+		setDefaultOptions({locale: ja}); // These get set globally in portal via frontend-js-date-fns-web
 
 		const {getByText} = render(
 			<List {...props} data={['2020-12-20 14:48']} type="date_time" />
@@ -110,6 +100,6 @@ describe('List', () => {
 
 		expect(getByText('2020/12/20 14:48')).toBeTruthy();
 
-		themeDisplay = originalThemeDisplay;
+		setDefaultOptions({locale: enUS});
 	});
 });

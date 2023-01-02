@@ -13,7 +13,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import moment from 'moment/min/moment-with-locales';
+import {format} from 'date-fns';
 import React, {useContext} from 'react';
 
 import {removeEmptyValues} from '../../utils/data';
@@ -24,14 +24,13 @@ export default function List({data, field, summary, totalEntries, type}) {
 	const {portletNamespace, toggleSidebar} = useContext(SidebarContext);
 
 	const formatDate = (field, isDateTime) => {
-		const locale = themeDisplay.getLanguageId().split('_', 1).join('');
-		const date = moment(field).locale(locale).format('L');
+		const date = format(new Date(field), 'P');
 
 		if (!isDateTime) {
 			return date;
 		}
 
-		const time = moment(field).locale(locale).format('LT');
+		const time = format(new Date(field), 'p');
 
 		return `${date} ${time}`;
 	};

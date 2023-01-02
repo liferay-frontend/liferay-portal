@@ -12,16 +12,12 @@
  * details.
  */
 
-import moment from 'moment/min/moment-with-locales';
+import {format, parse} from 'date-fns';
 
 export function formatDate(date, locale) {
-	const dateFormat = moment.localeData(locale).longDateFormat('L');
-
-	return moment(date).format(dateFormat);
+	return format(new Date(date), 'PPP');
 }
 
 export function parseDate(locale, value) {
-	const dateFormat = moment.localeData(locale).longDateFormat('L');
-
-	return moment(value, dateFormat).toDate();
+	return parse(value, 'PPP', new Date());
 }
