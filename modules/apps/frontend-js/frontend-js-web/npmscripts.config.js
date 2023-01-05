@@ -19,7 +19,6 @@ module.exports = {
 		'lodash.isequal',
 		'lodash.unescape',
 		'svg4everybody',
-		'uuid',
 	],
 	build: {
 		customBridges: {
