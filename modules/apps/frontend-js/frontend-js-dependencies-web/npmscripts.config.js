@@ -14,6 +14,22 @@
 
 module.exports = {
 	build: {
-		exports: ['uuid'],
+		exports: [
+			'clipboard',
+			'dagre',
+			'date-fns',
+			{
+				format: 'esm',
+				name: 'dom-align',
+				symbols: ['alignElement', 'alignPoint'],
+			},
+			'fuzzy',
+			'qrcode',
+			'react-router-dom',
+			'react-flow-renderer',
+			'react-transition-group',
+			'text-mask-core',
+			'uuid',
+		],
 	},
 };

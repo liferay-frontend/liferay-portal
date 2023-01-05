@@ -58,6 +58,15 @@ module.exports = {
 					},
 					'@liferay/frontend-js-dependencies-web': {
 						'/': '*',
+						'clipboard': '*',
+						'dagre': '*',
+						'dom-align': '*',
+						'fuzzy': '*',
+						'qrcode': '*',
+						'react-flow-renderer': '*',
+						'react-router-dom': '*',
+						'react-transition-group': '*',
+						'text-mask-core': '*',
 						'uuid': '*',
 					},
 					'@liferay/frontend-js-react-web': {
@@ -400,7 +409,18 @@ module.exports = {
 			'dynamic-data-mapping-form-renderer',
 		],
 		imports: {
-			'@liferay/frontend-js-dependencies-web': ['uuid'],
+			'@liferay/frontend-js-dependencies-web': [
+				'clipboard',
+				'dagre',
+				'dom-align',
+				'fuzzy',
+				'qrcode',
+				'react-flow-renderer',
+				'react-router-dom',
+				'react-transition-group',
+				'text-mask-core',
+				'uuid',
+			],
 			'@liferay/frontend-js-react-web': [
 				'classnames',
 				'formik',
