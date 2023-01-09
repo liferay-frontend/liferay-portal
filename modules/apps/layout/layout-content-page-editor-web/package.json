@@ -15,9 +15,6 @@
 	},
 	"main": "js/index.js",
 	"name": "@liferay/layout-content-page-editor-web",
-	"optionalDependencies": {
-		"fsevents": "^1.2.7"
-	},
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

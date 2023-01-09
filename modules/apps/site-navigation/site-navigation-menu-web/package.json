@@ -1,8 +1,5 @@
 {
 	"name": "site-navigation-menu-web",
-	"optionalDependencies": {
-		"fsevents": "^1.2.7"
-	},
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",
