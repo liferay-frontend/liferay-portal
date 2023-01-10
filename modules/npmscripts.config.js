@@ -127,6 +127,10 @@ module.exports = {
 					'dynamic-data-mapping-form-web': {
 						'/': '*',
 					},
+					'frontend-editor-alloyeditor-web': {
+						'/': '*',
+						'alloyeditor': '*',
+					},
 					'frontend-editor-ckeditor-web': {
 						'/': '*',
 					},
