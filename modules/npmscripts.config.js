@@ -81,6 +81,7 @@ module.exports = {
 						'react-dnd': '*',
 						'react-dnd-html5-backend': '*',
 						'react-dom': '*',
+						'react-helmet': '*',
 					},
 					'@liferay/frontend-js-state-web': {
 						'/': '*',

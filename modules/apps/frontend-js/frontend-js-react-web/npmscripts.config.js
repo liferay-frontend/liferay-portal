@@ -22,6 +22,7 @@ module.exports = {
 			{name: 'react-dnd', symbols: 'auto'},
 			'react-dnd-html5-backend',
 			{name: 'react-dom', symbols: 'auto'},
+			'react-helmet',
 		],
 		main: 'src/main/resources/META-INF/resources/js/index.ts',
 	},
