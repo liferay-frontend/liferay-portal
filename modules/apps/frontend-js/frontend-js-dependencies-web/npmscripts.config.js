@@ -16,6 +16,7 @@ module.exports = {
 	build: {
 		exports: [
 			'clipboard',
+			'cropperjs',
 			'dagre',
 			'date-fns',
 			{
@@ -24,13 +25,16 @@ module.exports = {
 				symbols: ['alignElement', 'alignPoint'],
 			},
 			'fuzzy',
+			'highlight.js',
 			'image-promise',
-			'qs',
-			'text-mask-addons',
+			'path-to-regexp',
 			'qrcode',
-			'react-router-dom',
+			'qs',
 			'react-flow-renderer',
+			'react-router-dom',
+			'react-text-mask',
 			'react-transition-group',
+			'text-mask-addons',
 			'text-mask-core',
 			'uuid',
 		],
