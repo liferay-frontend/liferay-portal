@@ -1,7 +1,6 @@
 {
 	"dependencies": {
 		"clipboard": "2.0.4",
-		"cropperjs": "1.5.11",
 		"dagre": "0.8.2",
 		"date-fns": "2.14.0",
 		"dom-align": "1.12.2",

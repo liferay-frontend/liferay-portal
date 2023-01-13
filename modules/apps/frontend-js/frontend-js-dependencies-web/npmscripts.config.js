@@ -16,7 +16,6 @@ module.exports = {
 	build: {
 		exports: [
 			'clipboard',
-			'cropperjs',
 			'dagre',
 			'date-fns',
 			{
