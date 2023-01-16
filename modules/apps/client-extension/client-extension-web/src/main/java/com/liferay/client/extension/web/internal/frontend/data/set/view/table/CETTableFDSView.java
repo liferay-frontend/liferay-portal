@@ -47,13 +47,19 @@ public class CETTableFDSView extends BaseTableFDSView {
 		).add(
 			"type", "type"
 		).add(
-			"configuredFrom", "configured-from",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"configuredFromContentRenderer")
+			"configuredFrom", "configured-from"
 		).add(
 			"status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"status")
+		).add(
+			"modifiedDate", "modified-date",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"date")
+		).add(
+			"createDate", "create-date",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"date")
 		).build();
 	}
 
