@@ -527,9 +527,7 @@ module.exports = {
 			],
 		},
 	},
-	federation: {
-		mode: 'disabled',
-	},
+	federation: {mode: 'disabled'},
 	global: {
 		check: CHECK_AND_FIX_GLOBS,
 		fix: CHECK_AND_FIX_GLOBS,
