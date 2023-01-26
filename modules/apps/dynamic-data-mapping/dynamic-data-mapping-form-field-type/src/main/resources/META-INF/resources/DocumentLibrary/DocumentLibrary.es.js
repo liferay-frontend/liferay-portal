@@ -17,7 +17,6 @@ import ClayCard from '@clayui/card';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayProgressBar from '@clayui/progress-bar';
-import axios from 'axios';
 import {
 	PagesVisitor,
 	convertToFormData,
@@ -497,9 +496,11 @@ const Main = ({
 			[`${portletNamespace}file`]: file,
 		};
 
-		axios
-			.post(guestUploadURL, convertToFormData(data), {
-				onUploadProgress: (event) => {
+		const xhr = new XMLHttpRequest();
+
+		const uploadPromise = new Promise((resolve) => {
+			xhr.upload.addEventListener('progress', (event) => {
+				if (event.lengthComputable) {
 					const progress = Math.round(
 						(event.loaded * 100) / event.total
 					);
@@ -509,8 +510,19 @@ const Main = ({
 					setProgress(progress);
 
 					disableSubmitButton();
-				},
-			})
+				}
+			});
+
+			xhr.onload = (response) => resolve(response);
+			xhr.setRequestHeader(
+				'Content-Type',
+				'application/x-www-form-urlencoded'
+			);
+			xhr.open('POST', guestUploadURL, true);
+			xhr.send(convertToFormData(data));
+		});
+
+		uploadPromise
 			.then((response) => {
 				const {error, file} = response.data;
 

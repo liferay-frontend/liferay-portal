@@ -2,7 +2,6 @@
 	"dependencies": {
 		"@liferay/map-google-maps": "*",
 		"@liferay/map-openstreetmap": "*",
-		"axios": "0.24.0",
 		"clay-icon": "2.24.1",
 		"data-engine-js-components-web": "*",
 		"frontend-js-web": "*",
