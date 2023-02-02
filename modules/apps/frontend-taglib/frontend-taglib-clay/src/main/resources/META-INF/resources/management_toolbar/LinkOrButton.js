@@ -47,6 +47,7 @@ const LinkOrButton = ({
 				})}
 				disabled={disabled}
 				href={href}
+				role="button"
 				{...otherProps}
 				title={symbol && title}
 			>
