@@ -78,5 +78,24 @@ definition {
 			AssertConfirm.assertConfirmationNoError(value1 = "Hello Sample3!");
 		}
 	}
-
+	@description = "LPS-174054: Display a list of headless resources in new FDS View modal"
+	@priority = "5"
+	test DisplayHeadlessResourcesForFDSView {
+		task("Given access Datasets admin page"){
+			ApplicationsMenu.gotoPortlet(
+			category = "Object",
+			panel = "Control Panel",
+			portlet = "Datasets");
+		}
+		task("When go to add Datasets"){
+			LexiconEntry.gotoAdd();
+		}
+		task("Then displays list of headless resources"){
+			Click(locator1="CreateObject#OBJECT_LABEL");
+			
+			AssertElementPresent(
+			key_item = "Liferay Headless Delivery",
+			locator1 = "ManagementBar#ACTIVE_DROPDOWN_ITEM");
+		}
+	}
 }
