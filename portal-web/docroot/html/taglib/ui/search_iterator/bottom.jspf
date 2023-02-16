@@ -157,6 +157,62 @@
 
 		searchContainer.updateDataStore(<%= primaryKeysJSONArray.toString() %>);
 
+		if (!Liferay.SPA && searchContainer.select){
+			var searchContainerId = searchContainer.get('id');
+
+			if (sessionStorage.getItem(searchContainerId + Liferay.ThemeDisplay.getUserId() + "_selections")) {
+				var TPL_HIDDEN_INPUT_CHECKED = '<input class="hide" name="{name}" value="{value}" type="checkbox" checked />';
+				var TPL_INPUT_SELECTOR = 'input[type="checkbox"][value="{value}"]';
+				var STR_CHECKBOX_SELECTOR = 'input[type="checkbox"]';
+				var STR_ROW_SELECTOR = 'dd[data-selectable="true"],li[data-selectable="true"],tr[data-selectable="true"]';
+				
+				var container = A.one(searchContainer._getNodeToParse());
+				var selections = sessionStorage.getItem(searchContainerId + Liferay.ThemeDisplay.getUserId() + "_selections").split(',');
+				var itemName = searchContainer.get('contentBox').one(STR_CHECKBOX_SELECTOR)?.get('name');
+				var offScreenElementsHtml = '';
+
+				selections.map( (item) => {
+					var input = container.one(
+						A.Lang.sub(TPL_INPUT_SELECTOR, {value:item})
+					);
+
+					if (input) {
+						input.attr('checked', true);
+						input
+							.ancestor(STR_ROW_SELECTOR)
+							.addClass('active');
+					}
+					else {
+						offScreenElementsHtml += A.Lang.sub(
+							TPL_HIDDEN_INPUT_CHECKED,
+							{value:item, name:itemName}
+						);
+					}
+				});
+
+				container.append(offScreenElementsHtml);
+			}
+
+			searchContainer.on('rowToggled', (event) => {
+				var selectedItems = [];
+
+				if (event.elements.allSelectedElements.size() > 0) {
+					selectedItems = event.elements.allSelectedElements.val();
+				}
+
+				if(sessionStorage.getItem(searchContainerId + Liferay.ThemeDisplay.getUserId() + "_selections")) {
+					if (selectedItems.length > 0) {
+						sessionStorage.setItem(searchContainerId + Liferay.ThemeDisplay.getUserId() + "_selections", selectedItems)
+					} else {
+						sessionStorage.removeItem(searchContainerId + Liferay.ThemeDisplay.getUserId() + "_selections");
+					}
+
+				} else if(selectedItems.length > 0) {
+					sessionStorage.setItem(searchContainerId + Liferay.ThemeDisplay.getUserId() + "_selections", selectedItems);
+				}
+			});
+		}
+
 		var destroySearchContainer = function(event) {
 			if (event.portletId === '<%= portletDisplay.getRootPortletId() %>') {
 				searchContainer.destroy();

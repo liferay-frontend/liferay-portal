@@ -433,6 +433,23 @@ const openSelectionModal = ({
 
 						const allSelectedNodes = allSelectedElements.getDOMNodes();
 
+						const searchContainerId = searchContainer.get('id');
+
+						if (
+							!Liferay.SPA &&
+							sessionStorage.getItem(
+								searchContainerId +
+									Liferay.ThemeDisplay.getUserId() +
+									'_selections'
+							)
+						) {
+							sessionStorage.removeItem(
+								searchContainerId +
+									Liferay.ThemeDisplay.getUserId() +
+									'_selections'
+							);
+						}
+
 						onSelect(
 							allSelectedNodes.map((node) => {
 								let item = {};
@@ -495,6 +512,25 @@ const openSelectionModal = ({
 
 			eventHandlers.splice(0, eventHandlers.length);
 
+			if (!Liferay.SPA) {
+				const searchContainerId = iframeWindowObj.document.querySelector(
+					'.searchcontainer'
+				).id;
+
+				if (
+					sessionStorage.getItem(
+						searchContainerId +
+							Liferay.ThemeDisplay.getUserId() +
+							'_selections'
+					)
+				) {
+					sessionStorage.removeItem(
+						searchContainerId +
+							Liferay.ThemeDisplay.getUserId() +
+							'_selections'
+					);
+				}
+			}
 			if (onClose) {
 				onClose();
 			}

@@ -85,6 +85,15 @@ const ActionControls = ({
 									displayType="unstyled"
 									href={item.href}
 									onClick={(event) => {
+										if (!Liferay.SPA) {
+											sessionStorage.removeItem(
+												document.querySelector(
+													'.searchcontainer'
+												)?.id +
+													Liferay.ThemeDisplay.getUserId() +
+													'_selections'
+											);
+										}
 										onActionButtonClick(event, {
 											item,
 										});
@@ -100,6 +109,15 @@ const ActionControls = ({
 										displayType="unstyled"
 										href={item.href}
 										onClick={(event) => {
+											if (!Liferay.SPA) {
+												sessionStorage.removeItem(
+													document.querySelector(
+														'.searchcontainer'
+													)?.id +
+														Liferay.ThemeDisplay.getUserId() +
+														'_selections'
+												);
+											}
 											onActionButtonClick(event, {
 												item,
 											});
