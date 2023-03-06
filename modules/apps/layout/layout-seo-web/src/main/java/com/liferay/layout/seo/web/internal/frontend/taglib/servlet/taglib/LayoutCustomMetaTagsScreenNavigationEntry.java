@@ -36,6 +36,11 @@ public class LayoutCustomMetaTagsScreenNavigationEntry
 	}
 
 	@Override
+	public String getPageSubtitle() {
+		return "Manage - Custom Meta Tags";
+	}
+
+	@Override
 	protected String getJspPath() {
 		return "/layout/screen/navigation/entries/custom_meta_tags.jsp";
 	}

@@ -69,6 +69,10 @@ public abstract class BaseLayoutScreenNavigationEntry
 		return LanguageUtil.get(_getResourceBundle(locale), getEntryKey());
 	}
 
+	public String getPageSubtitle() {
+		return "";
+	}
+
 	@Override
 	public String getScreenNavigationKey() {
 		return LayoutScreenNavigationEntryConstants.
@@ -105,6 +109,8 @@ public abstract class BaseLayoutScreenNavigationEntry
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws IOException {
+
+		portal.addPageSubtitle(getPageSubtitle(), httpServletRequest);
 
 		httpServletRequest.setAttribute(
 			LayoutSEOWebKeys.LAYOUT_PAGE_LAYOUT_SEO_DISPLAY_CONTEXT,

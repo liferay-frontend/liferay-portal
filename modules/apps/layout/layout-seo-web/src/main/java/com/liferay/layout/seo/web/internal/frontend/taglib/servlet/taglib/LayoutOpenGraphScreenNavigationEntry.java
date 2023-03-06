@@ -42,6 +42,11 @@ public class LayoutOpenGraphScreenNavigationEntry
 	}
 
 	@Override
+	public String getPageSubtitle() {
+		return "Manage - Open Graph";
+	}
+
+	@Override
 	public boolean isVisible(User user, Layout layout) {
 		try {
 			if (!_openGraphConfiguration.isOpenGraphEnabled(

@@ -96,6 +96,8 @@ public class LayoutGeneralScreenNavigationEntry
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
+		_portal.addPageSubtitle("Manage - General", httpServletRequest);
+
 		_jspRenderer.renderJSP(
 			httpServletRequest, httpServletResponse,
 			"/layout/screen/navigation/entries/general.jsp");

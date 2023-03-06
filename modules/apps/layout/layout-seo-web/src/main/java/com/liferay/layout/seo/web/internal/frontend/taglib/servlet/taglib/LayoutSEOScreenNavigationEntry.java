@@ -37,6 +37,11 @@ public class LayoutSEOScreenNavigationEntry
 	}
 
 	@Override
+	public String getPageSubtitle() {
+		return "Manage - SEO";
+	}
+
+	@Override
 	public boolean isVisible(User user, Layout layout) {
 		if (layout.isTypeAssetDisplay()) {
 			return true;
