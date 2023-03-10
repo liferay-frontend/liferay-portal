@@ -153,7 +153,9 @@ export function DefinitionOfTerms({
 									fields: [
 										{
 											fieldName: 'termLabel',
-											label: Liferay.Language.get('label'),
+											label: Liferay.Language.get(
+												'label'
+											),
 										},
 										{
 											fieldName: 'termName',
