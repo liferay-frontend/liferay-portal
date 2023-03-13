@@ -8,6 +8,8 @@ definition {
 
 	setUp {
 		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
 	}
 
 	tearDown {
@@ -28,8 +30,6 @@ definition {
 	@refactordone
 	test CanBeAppliedToPage {
 		property test.name.skip.portal.instance = "Theme#CanBeAppliedToPage";
-
-		User.firstLoginPG();
 
 		ApplicationsMenu.gotoPortlet(
 			category = "System",
@@ -92,8 +92,6 @@ definition {
 		property test.name.skip.portal.instance = "Theme#CanBeDeactivatedAndReactivated";
 
 		var appName = "test-theme";
-
-		User.firstLoginPG();
 
 		FileInstall.deployFileOnServer(jarFile = "${appName}.war");
 
@@ -167,8 +165,6 @@ definition {
 		property test.name.skip.portal.instance = "Theme#CanBeUnInstalledAndRedeployed";
 
 		var appName = "test-theme";
-
-		User.firstLoginPG();
 
 		FileInstall.deployFileOnServer(jarFile = "${appName}.war");
 
