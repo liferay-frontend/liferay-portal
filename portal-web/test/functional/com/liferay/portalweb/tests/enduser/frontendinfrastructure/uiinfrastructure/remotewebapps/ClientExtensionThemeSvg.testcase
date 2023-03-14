@@ -71,7 +71,9 @@ definition {
 		}
 
 		task ("Then: new SVG spritemap is applied on the page") {
-			AssertElementPresent(locator1 = "ControlMenu#APPLICATIONS_MENU_ICON");
+			AssertNotVisible(locator1 = "//ul[@class='control-menu-nav']//span[@id='uvlz____']//*[contains(@href,'webdav/guest/document_library/spritemap_example.svg#pencil')]");
+
+			AssertNotVisible(locator1 = "//ul[@class='control-menu-nav']//span[@id='ored____']//*[contains(@href,'webdav/guest/document_library/spritemap_example.svg#cog')]");
 		}
 	}
 
