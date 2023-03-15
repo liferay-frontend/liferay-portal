@@ -32,11 +32,18 @@ const persistedTab = (function () {
 
 	return {
 		getId() {
-			return Number(sessionStorage.getItem(persistedTabKey));
+			return Number(
+				Liferay.Util.SessionStorage.getItem(persistedTabKey),
+				Liferay.Util.COOKIE_TYPES.PERSONALIZATION
+			);
 		},
 
 		setId(id) {
-			sessionStorage.setItem(persistedTabKey, id);
+			Liferay.Util.SessionStorage.setItem(
+				persistedTabKey,
+				id,
+				Liferay.Util.COOKIE_TYPES.PERSONALIZATION
+			);
 		},
 	};
 })();
