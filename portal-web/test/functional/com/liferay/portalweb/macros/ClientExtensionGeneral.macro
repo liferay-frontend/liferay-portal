@@ -81,6 +81,10 @@ definition {
 			entryName = ${entryName},
 			entryURL = ${entryURL});
 
+		if (${entryName} == "external_url_theme") {
+			Check.checkToggleSwitch(locator1 = "ClientExtension#ENABLE_SVG_CROSS_DOMAIN_SUPPORT");
+		}
+
 		PortletEntry.publish();
 	}
 
@@ -268,9 +272,9 @@ definition {
 			key_text = ${entryName},
 			locator1 = "ClientExtension#SELECT_THEME_SPRITEMAP_CLIENT_EXTENSION");
 
-		PortletEntry.save();
-
 		SelectFrame(value1 = "relative=top");
+
+		PortletEntry.save();
 	}
 
 	macro deleteRemoteApp {
