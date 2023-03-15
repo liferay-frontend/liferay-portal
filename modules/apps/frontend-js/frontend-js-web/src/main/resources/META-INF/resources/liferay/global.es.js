@@ -44,6 +44,7 @@ import statusCode from './status_code';
 import addParams from './util/add_params';
 import getCountries from './util/address/get_countries.es';
 import getRegions from './util/address/get_regions.es';
+import {CONSENT_TYPES as COOKIE_TYPES} from './util/consent';
 import Cookie from './util/cookie/cookie';
 import fetch from './util/fetch.es';
 import focusFormField from './util/focus_form_field';
@@ -333,6 +334,8 @@ Liferay.Util.unescape = unescape;
 Liferay.Util.unescapeHTML = unescapeHTML;
 
 Liferay.Util.Cookie = Cookie;
+
+Liferay.Util.COOKIE_TYPES = COOKIE_TYPES;
 
 Liferay.Util.LocalStorage = localStorage;
 Liferay.Util.SessionStorage = sessionStorage;
