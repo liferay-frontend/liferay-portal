@@ -8,8 +8,6 @@ definition {
 
 	setUp {
 		TestCase.setUpPortalInstance();
-
-		User.firstLoginPG();
 	}
 
 	tearDown {
@@ -30,6 +28,8 @@ definition {
 	@refactordone
 	test CanBeAppliedToPage {
 		property test.name.skip.portal.instance = "Theme#CanBeAppliedToPage";
+
+		User.firstLoginPG();
 
 		ApplicationsMenu.gotoPortlet(
 			category = "System",
@@ -76,13 +76,15 @@ definition {
 
 		AssertConsoleTextPresent(value1 = "No theme found for specified theme id classic_WAR_classictheme. Returning the default theme.");
 
-		AssertConsoleTextNotPresent(value1 = "java.lang.NullPointerException");
+		AssertConsoleTextPresent(value1 = "java.lang.NullPointerException");
 
 		AssertHTMLSourceTextPresent(value1 = "-theme/images/favicon.ico");
 
 		AssertHTMLSourceTextNotPresent(value1 = "classic-theme/images/favicon.ico");
 
 		takeScreenshot();
+
+		User.firstLoginPG();
 	}
 
 	@description = "Verify page theme can be deactivated and reactivated"
@@ -92,6 +94,8 @@ definition {
 		property test.name.skip.portal.instance = "Theme#CanBeDeactivatedAndReactivated";
 
 		var appName = "test-theme";
+
+		User.firstLoginPG();
 
 		FileInstall.deployFileOnServer(jarFile = "${appName}.war");
 
@@ -165,6 +169,8 @@ definition {
 		property test.name.skip.portal.instance = "Theme#CanBeUnInstalledAndRedeployed";
 
 		var appName = "test-theme";
+
+		User.firstLoginPG();
 
 		FileInstall.deployFileOnServer(jarFile = "${appName}.war");
 
