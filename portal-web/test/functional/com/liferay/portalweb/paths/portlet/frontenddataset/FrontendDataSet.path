@@ -144,6 +144,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PROVIDER_SEARCH_FIELD</td>
+	<td>//div[contains(@class,'input-group-sm')]//div[@class='input-group-item']//*[contains(@class,'form-control input-group-inset input-group-inset-after')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FILTER_SEARCH_BUTTON</td>
 	<td>//div[@class='dropdown-menu show']//*[@type='button']//*[contains(@class,'lexicon-icon-search')]</td>
 	<td></td>
