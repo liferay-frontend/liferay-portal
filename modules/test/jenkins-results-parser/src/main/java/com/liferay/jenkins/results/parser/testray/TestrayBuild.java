@@ -45,7 +45,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		_testrayServer = testrayRoutine.getTestrayServer();
 
 		_testrayProductVersion = _testrayProject.getTestrayProductVersionByID(
-			_jsonObject.getLong("testrayProductVersionId"));
+			jsonObject.getLong("testrayProductVersionId"));
 	}
 
 	@Override

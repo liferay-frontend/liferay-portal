@@ -465,6 +465,15 @@ public class ObjectRelationshipLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static void
+		registerObjectRelationshipsRelatedInfoCollectionProviders(
+			com.liferay.object.model.ObjectDefinition objectDefinition1,
+			ObjectDefinitionLocalService objectDefinitionLocalService) {
+
+		getService().registerObjectRelationshipsRelatedInfoCollectionProviders(
+			objectDefinition1, objectDefinitionLocalService);
+	}
+
 	public static ObjectRelationship updateObjectRelationship(
 			long objectRelationshipId, long parameterObjectFieldId,
 			String deletionType, Map<java.util.Locale, String> labelMap)

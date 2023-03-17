@@ -75,6 +75,12 @@ export default function previousPage({
 				page: activePageUpdated,
 				title,
 			});
+
+			const formPagination = document.getElementsByClassName(
+				'ddm-form-pagination'
+			)[0];
+
+			formPagination.scrollIntoView();
 		});
 	};
 }

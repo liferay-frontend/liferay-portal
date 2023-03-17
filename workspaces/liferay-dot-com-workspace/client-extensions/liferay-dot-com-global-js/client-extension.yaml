@@ -1,8 +1,0 @@
-assemble:
-    - from: build
-      include: "*.js"
-      into: static
-liferay-dot-com-global-js:
-    name: Liferay Dot Com Global JS
-    type: globalJS
-    url: .*.js

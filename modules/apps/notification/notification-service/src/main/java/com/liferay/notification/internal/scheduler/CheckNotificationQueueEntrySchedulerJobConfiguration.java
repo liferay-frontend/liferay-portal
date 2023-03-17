@@ -15,24 +15,20 @@
 package com.liferay.notification.internal.scheduler;
 
 import com.liferay.notification.constants.NotificationConstants;
+import com.liferay.notification.constants.NotificationQueueEntryConstants;
 import com.liferay.notification.internal.configuration.NotificationQueueConfiguration;
 import com.liferay.notification.service.NotificationQueueEntryLocalService;
 import com.liferay.notification.type.NotificationType;
 import com.liferay.notification.type.NotificationTypeServiceTracker;
-import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeRunnable;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Time;
 
 import java.util.Date;
-import java.util.Map;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -40,61 +36,43 @@ import org.osgi.service.component.annotations.Reference;
  * @author Gustavo Lima
  */
 @Component(
-	factory = "com.liferay.notification.internal.scheduler.CheckNotificationQueueEntrySchedulerJobConfiguration",
+	configurationPid = "com.liferay.notification.internal.configuration.NotificationQueueConfiguration",
 	service = SchedulerJobConfiguration.class
 )
 public class CheckNotificationQueueEntrySchedulerJobConfiguration
 	implements SchedulerJobConfiguration {
 
 	@Override
-	public UnsafeConsumer<Long, Exception>
-		getCompanyJobExecutorUnsafeConsumer() {
-
-		return companyId -> {
+	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
+		return () -> {
 			NotificationType notificationType =
 				_notificationTypeServiceTracker.getNotificationType(
 					NotificationConstants.TYPE_EMAIL);
 
-			notificationType.sendUnsentNotifications(companyId);
+			notificationType.resendNotifications(
+				NotificationQueueEntryConstants.STATUS_FAILED,
+				NotificationConstants.TYPE_EMAIL);
+
+			NotificationQueueConfiguration notificationQueueConfiguration =
+				_configurationProvider.getSystemConfiguration(
+					NotificationQueueConfiguration.class);
 
 			long deleteInterval =
-				_notificationQueueConfiguration.deleteInterval() * Time.MINUTE;
+				notificationQueueConfiguration.deleteInterval() * Time.MINUTE;
 
 			_notificationQueueEntryLocalService.deleteNotificationQueueEntries(
-				companyId,
 				new Date(System.currentTimeMillis() - deleteInterval));
 		};
 	}
 
 	@Override
-	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getName() {
-		Class<?> clazz = getClass();
-
-		return StringBundler.concat(
-			clazz.getName(), StringPool.POUND, _companyId);
-	}
-
-	@Override
 	public TriggerConfiguration getTriggerConfiguration() {
 		return TriggerConfiguration.createTriggerConfiguration(
-			_notificationQueueConfiguration.checkInterval(), TimeUnit.MINUTE);
+			15, TimeUnit.MINUTE);
 	}
 
-	@Activate
-	protected void activate(Map<String, Object> properties) {
-		_companyId = GetterUtil.getLong(properties.get("companyId"));
-
-		_notificationQueueConfiguration =
-			(NotificationQueueConfiguration)properties.get("configuration");
-	}
-
-	private long _companyId;
-	private NotificationQueueConfiguration _notificationQueueConfiguration;
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private NotificationQueueEntryLocalService

@@ -96,13 +96,12 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 		sb.append("data-qa-id=\"headerTitle\"><h1 class=\"");
 		sb.append("lfr-portal-tooltip h4 mb-0\" title=\"");
 
-		String headerTitle = HtmlUtil.escapeAttribute(
-			_getHeaderTitle(httpServletRequest));
+		String headerTitle = _getHeaderTitle(httpServletRequest);
 
-		sb.append(headerTitle);
+		sb.append(HtmlUtil.escapeAttribute(headerTitle));
 
 		sb.append("\">");
-		sb.append(headerTitle);
+		sb.append(HtmlUtil.escape(headerTitle));
 
 		if (_hasDraftLayout(httpServletRequest) &&
 			_hasEditPermission(httpServletRequest)) {
@@ -222,20 +221,16 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 					infoItemFieldValues.getInfoFieldValue("title");
 
 				if (titleInfoFieldValue != null) {
-					return HtmlUtil.escape(
-						String.valueOf(
-							titleInfoFieldValue.getValue(
-								themeDisplay.getLocale())));
+					return String.valueOf(
+						titleInfoFieldValue.getValue(themeDisplay.getLocale()));
 				}
 
 				InfoFieldValue<Object> nameInfoFieldValue =
 					infoItemFieldValues.getInfoFieldValue("name");
 
 				if (nameInfoFieldValue != null) {
-					return HtmlUtil.escape(
-						String.valueOf(
-							nameInfoFieldValue.getValue(
-								themeDisplay.getLocale())));
+					return String.valueOf(
+						nameInfoFieldValue.getValue(themeDisplay.getLocale()));
 				}
 			}
 
@@ -243,12 +238,11 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 				WebKeys.LAYOUT_ASSET_ENTRY);
 
 			if (assetEntry != null) {
-				return HtmlUtil.escape(
-					assetEntry.getTitle(themeDisplay.getLanguageId()));
+				return assetEntry.getTitle(themeDisplay.getLanguageId());
 			}
 		}
 
-		return HtmlUtil.escape(layout.getName(themeDisplay.getLocale()));
+		return layout.getName(themeDisplay.getLocale());
 	}
 
 	private boolean _hasDraftLayout(HttpServletRequest httpServletRequest) {

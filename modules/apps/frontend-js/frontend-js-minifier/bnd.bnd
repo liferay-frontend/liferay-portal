@@ -1,13 +1,16 @@
 Bundle-Name: Liferay Frontend JS Minifier
 Bundle-SymbolicName: com.liferay.frontend.js.minifier
-Bundle-Version: 9.0.5
+Bundle-Version: 9.0.6
 Import-Package:\
+	!com.google.javascript.jscomp.jarjar.*,\
 	!com.google.javascript.refactoring,\
 	\
 	!org.apache.tools.ant,\
 	!org.apache.tools.ant.types,\
 	!org.apache.tools.ant.types.resources,\
 	!org.apache.xmlbeans,\
+	\
+	!org.checkerframework.checker.nullness.*,\
 	\
 	!org.w3c.dom,\
 	\

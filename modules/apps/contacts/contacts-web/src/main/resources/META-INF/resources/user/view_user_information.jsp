@@ -37,13 +37,19 @@ if (assetTags.isEmpty() || Validator.isNull(user2.getComments())) {
 		PortletURL editCommentsURL = PortletURLFactoryUtil.create(request, PortletKeys.MY_ACCOUNT, embeddedPersonalApplicationLayout, PortletRequest.RENDER_PHASE);
 		%>
 
-		<liferay-ui:icon
+		<clay:link
+			borderless="<%= true %>"
+			cssClass="edit-button lfr-portal-tooltip"
+			displayType="secondary"
+			href="<%= editCommentsURL.toString() %>"
 			icon="pencil"
-			markupView="lexicon"
-			url="<%= editCommentsURL.toString() %>"
+			monospaced="<%= true %>"
+			small="<%= true %>"
+			title='<%= LanguageUtil.format(request, "edit-x", LanguageUtil.get(request, "information"), false) %>'
+			type="button"
 		/>
 
-		<h3><liferay-ui:message key="introduction" />:</h3>
+		<span class="h3"><liferay-ui:message key="introduction" />:</span>
 
 		<ul class="property-list">
 			<li>
@@ -74,13 +80,19 @@ if (phones.isEmpty()) {
 		).buildPortletURL();
 		%>
 
-		<liferay-ui:icon
+		<clay:link
+			borderless="<%= true %>"
+			cssClass="edit-button lfr-portal-tooltip"
+			displayType="secondary"
+			href="<%= editPhonesURL.toString() %>"
 			icon="pencil"
-			markupView="lexicon"
-			url="<%= editPhonesURL.toString() %>"
+			monospaced="<%= true %>"
+			small="<%= true %>"
+			title='<%= LanguageUtil.format(request, "edit-x", LanguageUtil.get(request, "contact-information"), false) %>'
+			type="button"
 		/>
 
-		<h3><liferay-ui:message key="phones" />:</h3>
+		<span class="h3"><liferay-ui:message key="phones" />:</span>
 
 		<ul class="property-list">
 
@@ -123,13 +135,19 @@ if (emailAddresses.isEmpty()) {
 		).buildPortletURL();
 		%>
 
-		<liferay-ui:icon
+		<clay:link
+			borderless="<%= true %>"
+			cssClass="edit-button lfr-portal-tooltip"
+			displayType="secondary"
+			href="<%= editAdditionalEmailAddressesURL.toString() %>"
 			icon="pencil"
-			markupView="lexicon"
-			url="<%= editAdditionalEmailAddressesURL.toString() %>"
+			monospaced="<%= true %>"
+			small="<%= true %>"
+			title='<%= LanguageUtil.format(request, "edit-x", LanguageUtil.get(request, "contact-information"), false) %>'
+			type="button"
 		/>
 
-		<h3><liferay-ui:message key="additional-email-addresses" />:</h3>
+		<span class="h3"><liferay-ui:message key="additional-email-addresses" />:</span>
 
 		<ul class="property-list">
 
@@ -142,7 +160,7 @@ if (emailAddresses.isEmpty()) {
 
 				<li class="<%= emailAddress.isPrimary() ? "primary" : "" %>">
 					<span class="property-type"><liferay-ui:message key="<%= listType.getName() %>" /></span>
-					<span class="property"><a href="mailto:<%= emailAddress.getAddress() %>"><%= emailAddress.getAddress() %></a></span>
+					<span class="property"><a class="text-decoration-underline" href="mailto:<%= emailAddress.getAddress() %>"><%= emailAddress.getAddress() %></a></span>
 				</li>
 
 			<%
@@ -164,10 +182,11 @@ if (Validator.isNull(jabberSn) && Validator.isNull(skypeSn)) {
 
 <c:if test="<%= showInstantMessenger && (Validator.isNotNull(jabberSn) || Validator.isNotNull(skypeSn)) %>">
 	<div class="lfr-field-group section" data-title="<%= LanguageUtil.get(request, "instant-messenger") %>">
-		<liferay-ui:icon
-			icon="pencil"
-			markupView="lexicon"
-			url='<%=
+		<clay:link
+			borderless="<%= true %>"
+			cssClass="edit-button lfr-portal-tooltip"
+			displayType="secondary"
+			href='<%=
 				PortletURLBuilder.create(
 					PortletURLFactoryUtil.create(request, PortletKeys.MY_ACCOUNT, embeddedPersonalApplicationLayout, PortletRequest.RENDER_PHASE)
 				).setParameter(
@@ -176,9 +195,14 @@ if (Validator.isNull(jabberSn) && Validator.isNull(skypeSn)) {
 					"screenNavigationEntryKey", "contact-information"
 				).buildString()
 			%>'
+			icon="pencil"
+			monospaced="<%= true %>"
+			small="<%= true %>"
+			title='<%= LanguageUtil.format(request, "edit-x", LanguageUtil.get(request, "contact-information"), false) %>'
+			type="button"
 		/>
 
-		<h3><liferay-ui:message key="instant-messenger" />:</h3>
+		<span class="h3"><liferay-ui:message key="instant-messenger" />:</span>
 
 		<ul class="property-list">
 			<c:if test="<%= Validator.isNotNull(jabberSn) %>">
@@ -219,13 +243,19 @@ if (addresses.isEmpty()) {
 		).buildPortletURL();
 		%>
 
-		<liferay-ui:icon
+		<clay:link
+			borderless="<%= true %>"
+			cssClass="edit-button lfr-portal-tooltip"
+			displayType="secondary"
+			href="<%= editAddressesURL.toString() %>"
 			icon="pencil"
-			markupView="lexicon"
-			url="<%= editAddressesURL.toString() %>"
+			monospaced="<%= true %>"
+			small="<%= true %>"
+			title='<%= LanguageUtil.format(request, "edit-x", LanguageUtil.get(request, "addresses"), false) %>'
+			type="button"
 		/>
 
-		<h3><liferay-ui:message key="addresses" />:</h3>
+		<span class="h3"><liferay-ui:message key="addresses" />:</span>
 
 		<ul class="property-list">
 
@@ -273,13 +303,19 @@ if (websites.isEmpty()) {
 		).buildPortletURL();
 		%>
 
-		<liferay-ui:icon
+		<clay:link
+			borderless="<%= true %>"
+			cssClass="edit-button lfr-portal-tooltip"
+			displayType="secondary"
+			href="<%= editWebsitesURL.toString() %>"
 			icon="pencil"
-			markupView="lexicon"
-			url="<%= editWebsitesURL.toString() %>"
+			monospaced="<%= true %>"
+			small="<%= true %>"
+			title='<%= LanguageUtil.format(request, "edit-x", LanguageUtil.get(request, "contact-information"), false) %>'
+			type="button"
 		/>
 
-		<h3><liferay-ui:message key="websites" />:</h3>
+		<span class="h3"><liferay-ui:message key="websites" />:</span>
 
 		<ul class="property-list">
 
@@ -291,7 +327,7 @@ if (websites.isEmpty()) {
 				<li class="<%= website.isPrimary() ? "primary" : "" %>">
 					<span class="property-type"><liferay-ui:message key="<%= website.getListType().getName() %>" /></span>
 
-					<span class="property"><a href="<%= website.getUrl() %>"><%= website.getUrl() %></a></span>
+					<span class="property"><a class="text-decoration-underline" href="<%= website.getUrl() %>"><%= website.getUrl() %></a></span>
 				</li>
 
 			<%
@@ -324,13 +360,19 @@ if (Validator.isNull(facebook) && Validator.isNull(twitter)) {
 		).buildPortletURL();
 		%>
 
-		<liferay-ui:icon
+		<clay:link
+			borderless="<%= true %>"
+			cssClass="edit-button lfr-portal-tooltip"
+			displayType="secondary"
+			href="<%= editSocialNetworkURL.toString() %>"
 			icon="pencil"
-			markupView="lexicon"
-			url="<%= editSocialNetworkURL.toString() %>"
+			monospaced="<%= true %>"
+			small="<%= true %>"
+			title='<%= LanguageUtil.format(request, "edit-x", LanguageUtil.get(request, "contact-information"), false) %>'
+			type="button"
 		/>
 
-		<h3><liferay-ui:message key="social-network" />:</h3>
+		<span class="h3"><liferay-ui:message key="social-network" />:</span>
 
 		<ul class="property-list">
 			<c:if test="<%= Validator.isNotNull(facebook) %>">
@@ -371,13 +413,19 @@ if (Validator.isNull(contact2.getSmsSn())) {
 		).buildPortletURL();
 		%>
 
-		<liferay-ui:icon
+		<clay:link
+			borderless="<%= true %>"
+			cssClass="edit-button lfr-portal-tooltip"
+			displayType="secondary"
+			href="<%= editSmsURL.toString() %>"
 			icon="pencil"
-			markupView="lexicon"
-			url="<%= editSmsURL.toString() %>"
+			monospaced="<%= true %>"
+			small="<%= true %>"
+			title='<%= LanguageUtil.format(request, "edit-x", LanguageUtil.get(request, "contact-information"), false) %>'
+			type="button"
 		/>
 
-		<h3><liferay-ui:message key="sms" />:</h3>
+		<span class="h3"><liferay-ui:message key="sms" />:</span>
 
 		<ul class="property-list">
 			<li class="property">

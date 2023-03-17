@@ -945,7 +945,7 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 				<dirset
 					dir="${project.dir}/workspaces"
 				>
-					<include name="sample-workspace" />
+					<include name="liferay-sample-workspace" />
 				</dirset>
 			</path>
 			<sequential>

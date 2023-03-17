@@ -23,7 +23,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  */
 @ExtendedObjectClassDefinition(
 	category = "notifications",
-	scope = ExtendedObjectClassDefinition.Scope.COMPANY, strictScope = true
+	scope = ExtendedObjectClassDefinition.Scope.SYSTEM
 )
 @Meta.OCD(
 	description = "notification-queue-configuration-description",
@@ -32,14 +32,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	name = "notification-queue-configuration-name"
 )
 public interface NotificationQueueConfiguration {
-
-	@Meta.AD(
-		deflt = "15",
-		description = "notification-queue-check-interval-description",
-		min = "1", name = "notification-queue-entry-check-interval",
-		required = false, type = Meta.Type.Integer
-	)
-	public int checkInterval();
 
 	@Meta.AD(
 		deflt = "43200",

@@ -67,17 +67,11 @@ $section-header-bg: #cce6f7;
 			margin-left: 10px;
 		}
 
-		.lfr-contact-thumb {
-			float: left;
-		}
-
 		.lfr-contact-thumb img {
 			width: 100px;
 		}
 
 		.lfr-contact-info {
-			margin-left: 100px;
-
 			&.no-icon {
 				margin-left: 0;
 			}
@@ -97,14 +91,6 @@ $section-header-bg: #cce6f7;
 					margin-right: 10px;
 				}
 			}
-		}
-
-		.lfr-contact-extra,
-		.lfr-contact-job-title,
-		.lfr-contact-name {
-			overflow-x: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
 		}
 	}
 
@@ -240,9 +226,6 @@ $section-header-bg: #cce6f7;
 
 		.lfr-contact-name {
 			font-size: 2em;
-			line-height: 1em;
-			overflow: hidden;
-			text-overflow: ellipsis;
 		}
 
 		.lfr-contact-name a {
@@ -267,8 +250,8 @@ $section-header-bg: #cce6f7;
 			display: none;
 		}
 
-		.lfr-field-group .lexicon-icon-pencil {
-			display: none;
+		.lfr-field-group .edit-button {
+			opacity: 0;
 		}
 	}
 
@@ -367,7 +350,7 @@ $section-header-bg: #cce6f7;
 			display: block;
 		}
 
-		h3 {
+		.h3 {
 			color: #b4bec8;
 			float: left;
 			font-size: 1em;
@@ -538,7 +521,7 @@ $section-header-bg: #cce6f7;
 			width: initial;
 		}
 
-		.lexicon-icon-pencil {
+		.edit-button {
 			position: absolute;
 			right: 5px;
 			top: 5px;
@@ -546,8 +529,8 @@ $section-header-bg: #cce6f7;
 
 		&:focus-within,
 		&:hover {
-			.lexicon-icon-pencil {
-				display: block;
+			.edit-button {
+				opacity: 1;
 			}
 		}
 

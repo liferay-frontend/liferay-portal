@@ -14,17 +14,14 @@
 
 /// <reference types="react" />
 
-interface DateRange {
-	end: string;
-	start: string;
-}
+import {DateValue} from '../../../types/Date';
 interface Props {
 	disabled?: boolean;
-	onChange: (payload: {type: string; value: DateRange | string}) => void;
+	onChange: (payload: {type: string; value: DateValue}) => void;
 	propertyLabel: string;
 	propertyType: string;
 	range?: boolean;
-	value?: DateRange | string;
+	value?: DateValue;
 }
 declare function DateTimeInput({
 	disabled,

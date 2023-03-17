@@ -65,7 +65,7 @@ definition {
 
 	}
 
-	@description = "Confirm the error message that appears when the user tries to create a data set view without the filled name"
+	@description = "LPS-178775 - Confirm the error message that appears when the user tries to create a data set view without the filled name"
 	@priority = 3
 	test ErrorAppearsWhenNameBlank {
 		task ("When the user goes to add Datasets") {

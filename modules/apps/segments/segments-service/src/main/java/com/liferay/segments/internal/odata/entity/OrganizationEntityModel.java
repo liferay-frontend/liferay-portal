@@ -14,29 +14,37 @@
 
 package com.liferay.segments.internal.odata.entity;
 
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.odata.entity.ComplexEntityField;
 import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.IdEntityField;
 import com.liferay.portal.odata.entity.StringEntityField;
 
-import java.util.List;
-import java.util.Map;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Provides the entity data model from the Organization.
  *
  * @author David Arques
  */
-public class OrganizationEntityModel implements EntityModel {
+@Component(
+	property = "entity.model.name=" + OrganizationEntityModel.NAME,
+	service = EntityModel.class
+)
+public class OrganizationEntityModel extends BaseExpandoEntityModel {
 
 	public static final String NAME = "Organization";
 
-	public OrganizationEntityModel(List<EntityField> customEntityFields) {
-		_entityFieldsMap = EntityModel.toEntityFieldsMap(
-			new ComplexEntityField("customField", customEntityFields),
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+	@Override
+	protected EntityField[] getEntityFields() {
+		return new EntityField[] {
 			new DateTimeEntityField(
 				"dateModified",
 				locale -> Field.getSortableFieldName(Field.MODIFIED_DATE),
@@ -61,19 +69,13 @@ public class OrganizationEntityModel implements EntityModel {
 				locale -> Field.getSortableFieldName("nameTreePath_String")),
 			new StringEntityField(
 				"region", locale -> Field.getSortableFieldName("region")),
-			new StringEntityField("type", locale -> Field.TYPE));
+			new StringEntityField("type", locale -> Field.TYPE)
+		};
 	}
 
 	@Override
-	public Map<String, EntityField> getEntityFieldsMap() {
-		return _entityFieldsMap;
+	protected String getModelClassName() {
+		return Organization.class.getName();
 	}
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	private final Map<String, EntityField> _entityFieldsMap;
 
 }

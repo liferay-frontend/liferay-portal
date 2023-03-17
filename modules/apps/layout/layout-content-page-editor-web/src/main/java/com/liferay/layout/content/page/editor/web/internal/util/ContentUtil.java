@@ -35,12 +35,17 @@ import com.liferay.layout.content.page.editor.web.internal.util.layout.structure
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
+import com.liferay.layout.list.permission.provider.LayoutListPermissionProvider;
 import com.liferay.layout.list.permission.provider.LayoutListPermissionProviderRegistry;
+import com.liferay.layout.list.retriever.LayoutListRetriever;
 import com.liferay.layout.list.retriever.LayoutListRetrieverRegistry;
+import com.liferay.layout.list.retriever.ListObjectReference;
+import com.liferay.layout.list.retriever.ListObjectReferenceFactory;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactoryRegistry;
 import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.security.permission.resource.LayoutContentModelResourcePermission;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
+import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
@@ -141,6 +146,25 @@ public class ContentUtil {
 	public static JSONArray getPageContentsJSONArray(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long plid,
+			List<String> restrictedItemIds, long segmentsExperienceId)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		LayoutStructure layoutStructure =
+			LayoutStructureUtil.getLayoutStructure(
+				themeDisplay.getScopeGroupId(), plid, segmentsExperienceId);
+
+		return _getPageContentsJSONArray(
+			httpServletRequest, httpServletResponse, plid, segmentsExperienceId,
+			layoutStructure, restrictedItemIds);
+	}
+
+	public static JSONArray getPageContentsJSONArray(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse, long plid,
 			long segmentsExperienceId)
 		throws PortalException {
 
@@ -152,16 +176,106 @@ public class ContentUtil {
 			LayoutStructureUtil.getLayoutStructure(
 				themeDisplay.getScopeGroupId(), plid, segmentsExperienceId);
 
-		List<String> hiddenItemIds = _getHiddenItemIds(
+		List<String> restrictedItemIds = getRestrictedItemIds(
 			layoutStructure, themeDisplay);
 
-		return JSONUtil.concat(
-			_getLayoutClassedModelPageContentsJSONArray(
-				httpServletRequest, layoutStructure, plid, hiddenItemIds,
-				segmentsExperienceId),
-			AssetListEntryUsagesUtil.getPageContentsJSONArray(
-				httpServletRequest, httpServletResponse, layoutStructure, plid,
-				hiddenItemIds));
+		return _getPageContentsJSONArray(
+			httpServletRequest, httpServletResponse, plid, segmentsExperienceId,
+			layoutStructure, restrictedItemIds);
+	}
+
+	public static List<String> getRestrictedItemIds(
+		LayoutStructure layoutStructure, ThemeDisplay themeDisplay) {
+
+		List<String> restrictedItemIds = new ArrayList<>();
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-169923")) {
+			return restrictedItemIds;
+		}
+
+		for (FormStyledLayoutStructureItem formStyledLayoutStructureItem :
+				layoutStructure.getFormStyledLayoutStructureItems()) {
+
+			if (layoutStructure.isItemMarkedForDeletion(
+					formStyledLayoutStructureItem.getItemId()) ||
+				(formStyledLayoutStructureItem.getClassNameId() <= 0)) {
+
+				continue;
+			}
+
+			InfoPermissionProvider infoPermissionProvider =
+				_infoItemServiceRegistry.getFirstInfoItemService(
+					InfoPermissionProvider.class,
+					_portal.getClassName(
+						formStyledLayoutStructureItem.getClassNameId()));
+
+			if ((infoPermissionProvider == null) ||
+				infoPermissionProvider.hasViewPermission(
+					themeDisplay.getPermissionChecker())) {
+
+				continue;
+			}
+
+			restrictedItemIds.add(formStyledLayoutStructureItem.getItemId());
+		}
+
+		for (CollectionStyledLayoutStructureItem
+				collectionStyledLayoutStructureItem :
+					layoutStructure.getCollectionStyledLayoutStructureItems()) {
+
+			JSONObject collectionJSONObject =
+				collectionStyledLayoutStructureItem.getCollectionJSONObject();
+
+			if ((collectionJSONObject == null) ||
+				(collectionJSONObject.length() <= 0)) {
+
+				continue;
+			}
+
+			String type = collectionJSONObject.getString("type");
+
+			LayoutListRetriever<?, ?> layoutListRetriever =
+				_layoutListRetrieverRegistry.getLayoutListRetriever(type);
+
+			if (layoutListRetriever == null) {
+				continue;
+			}
+
+			ListObjectReferenceFactory<?> listObjectReferenceFactory =
+				_listObjectReferenceFactoryRegistry.getListObjectReference(
+					type);
+
+			if (listObjectReferenceFactory == null) {
+				continue;
+			}
+
+			ListObjectReference listObjectReference =
+				listObjectReferenceFactory.getListObjectReference(
+					collectionJSONObject);
+
+			Class<? extends ListObjectReference> listObjectReferenceClass =
+				listObjectReference.getClass();
+
+			LayoutListPermissionProvider<ListObjectReference>
+				layoutListPermissionProvider =
+					(LayoutListPermissionProvider<ListObjectReference>)
+						_layoutListPermissionProviderRegistry.
+							getLayoutListPermissionProvider(
+								listObjectReferenceClass.getName());
+
+			if ((layoutListPermissionProvider == null) ||
+				layoutListPermissionProvider.hasPermission(
+					themeDisplay.getPermissionChecker(), listObjectReference,
+					ActionKeys.VIEW)) {
+
+				continue;
+			}
+
+			restrictedItemIds.add(
+				collectionStyledLayoutStructureItem.getItemId());
+		}
+
+		return restrictedItemIds;
 	}
 
 	@Reference(unbind = "-")
@@ -416,10 +530,16 @@ public class ContentUtil {
 	}
 
 	private static List<String> _getChildrenItemIds(
-		LayoutStructure layoutStructure,
-		LayoutStructureItem layoutStructureItem) {
+		String itemId, LayoutStructure layoutStructure) {
 
 		List<String> childrenItemIds = new ArrayList<>();
+
+		LayoutStructureItem layoutStructureItem =
+			layoutStructure.getLayoutStructureItem(itemId);
+
+		if (layoutStructureItem == null) {
+			return childrenItemIds;
+		}
 
 		for (String childItemId : layoutStructureItem.getChildrenItemIds()) {
 			childrenItemIds.add(childItemId);
@@ -428,7 +548,8 @@ public class ContentUtil {
 				layoutStructure.getLayoutStructureItem(childItemId);
 
 			childrenItemIds.addAll(
-				_getChildrenItemIds(layoutStructure, childLayoutStructureItem));
+				_getChildrenItemIds(
+					childLayoutStructureItem.getItemId(), layoutStructure));
 		}
 
 		return childrenItemIds;
@@ -574,40 +695,13 @@ public class ContentUtil {
 	}
 
 	private static List<String> _getHiddenItemIds(
-		LayoutStructure layoutStructure, ThemeDisplay themeDisplay) {
+		LayoutStructure layoutStructure, List<String> restrictedItemIds) {
 
 		List<String> hiddenItemIds = new ArrayList<>();
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-169923")) {
-			return hiddenItemIds;
-		}
-
-		for (FormStyledLayoutStructureItem formStyledLayoutStructureItem :
-				layoutStructure.getFormStyledLayoutStructureItems()) {
-
-			if (layoutStructure.isItemMarkedForDeletion(
-					formStyledLayoutStructureItem.getItemId()) ||
-				(formStyledLayoutStructureItem.getClassNameId() <= 0)) {
-
-				continue;
-			}
-
-			InfoPermissionProvider<?> infoPermissionProvider =
-				_infoItemServiceRegistry.getFirstInfoItemService(
-					InfoPermissionProvider.class,
-					_portal.getClassName(
-						formStyledLayoutStructureItem.getClassNameId()));
-
-			if ((infoPermissionProvider == null) ||
-				infoPermissionProvider.hasViewPermission(
-					themeDisplay.getPermissionChecker())) {
-
-				continue;
-			}
-
+		for (String restrictedItemId : restrictedItemIds) {
 			hiddenItemIds.addAll(
-				_getChildrenItemIds(
-					layoutStructure, formStyledLayoutStructureItem));
+				_getChildrenItemIds(restrictedItemId, layoutStructure));
 		}
 
 		return hiddenItemIds;
@@ -920,6 +1014,8 @@ public class ContentUtil {
 				layoutClassedModelUsage.getClassName(),
 				layoutClassedModelUsage.getClassPK())
 		).put(
+			"isRestricted", false
+		).put(
 			"status", _getStatusJSONObject(layoutClassedModelUsage)
 		).put(
 			"subtype",
@@ -942,6 +1038,25 @@ public class ContentUtil {
 					layoutClassedModelUsage.getClassNameId(),
 					layoutClassedModelUsage.getClassPK())
 		);
+	}
+
+	private static JSONArray _getPageContentsJSONArray(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse, long plid,
+			long segmentsExperienceId, LayoutStructure layoutStructure,
+			List<String> restrictedItemIds)
+		throws PortalException {
+
+		List<String> hiddenItemIds = _getHiddenItemIds(
+			layoutStructure, restrictedItemIds);
+
+		return JSONUtil.concat(
+			_getLayoutClassedModelPageContentsJSONArray(
+				httpServletRequest, layoutStructure, plid, hiddenItemIds,
+				segmentsExperienceId),
+			AssetListEntryUsagesUtil.getPageContentsJSONArray(
+				hiddenItemIds, httpServletRequest, httpServletResponse,
+				layoutStructure, plid, restrictedItemIds));
 	}
 
 	private static long _getPortletClassNameId() {

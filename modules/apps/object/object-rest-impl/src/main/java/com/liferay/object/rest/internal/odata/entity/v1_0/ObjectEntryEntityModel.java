@@ -55,38 +55,34 @@ import javax.ws.rs.BadRequestException;
 public class ObjectEntryEntityModel implements EntityModel {
 
 	public ObjectEntryEntityModel(List<ObjectField> objectFields) {
-		_entityFieldsMap = _getStringEntityFieldMap(objectFields);
+		_entityFieldsMap = _getStringEntityFieldsMap(objectFields);
 	}
 
 	public ObjectEntryEntityModel(
-			ObjectDefinition objectDefinition, List<ObjectField> objectFields)
+			long objectDefinitionId, List<ObjectField> objectFields)
 		throws Exception {
 
-		_entityFieldsMap = _getStringEntityFieldMap(objectFields);
+		_entityFieldsMap = _getStringEntityFieldsMap(objectFields);
 
 		if (!FeatureFlagManagerUtil.isEnabled("LPS-154672")) {
 			return;
 		}
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.getObjectDefinition(
+				objectDefinitionId);
 
 		List<ObjectRelationship> objectRelationships =
 			ObjectRelationshipLocalServiceUtil.getAllObjectRelationships(
 				objectDefinition.getObjectDefinitionId());
 
 		for (ObjectRelationship objectRelationship : objectRelationships) {
-			ObjectDefinition relatedObjectDefinition =
-				_getRelatedObjectDefinition(
-					objectDefinition, objectRelationship);
-
-			Map<String, EntityField> relatedEntityFieldsMap =
-				_getStringEntityFieldMap(
-					ObjectFieldLocalServiceUtil.getObjectFields(
-						relatedObjectDefinition.getObjectDefinitionId()));
-
 			_entityFieldsMap.put(
 				objectRelationship.getName(),
 				new ComplexEntityField(
 					objectRelationship.getName(),
-					new ArrayList<>(relatedEntityFieldsMap.values())));
+					_getRelatedObjectDefinitionEntityFields(
+						objectRelationship, objectDefinition)));
 		}
 	}
 
@@ -174,7 +170,53 @@ public class ObjectEntryEntityModel implements EntityModel {
 			objectRelationship.getObjectDefinitionId2());
 	}
 
-	private Map<String, EntityField> _getStringEntityFieldMap(
+	private List<EntityField> _getRelatedObjectDefinitionEntityFields(
+			ObjectRelationship objectRelationship,
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		_relatedObjectRelationships.add(
+			objectRelationship.getObjectRelationshipId());
+
+		ObjectDefinition relatedObjectDefinition = _getRelatedObjectDefinition(
+			objectDefinition, objectRelationship);
+
+		Map<String, EntityField> relatedObjectDefinitionEntityFieldsMap =
+			_getStringEntityFieldsMap(
+				ObjectFieldLocalServiceUtil.getObjectFields(
+					relatedObjectDefinition.getObjectDefinitionId()));
+
+		List<EntityField> relatedObjectDefinitionEntityFields = new ArrayList<>(
+			relatedObjectDefinitionEntityFieldsMap.values());
+
+		List<ObjectRelationship> relatedObjectDefinitionObjectRelationships =
+			ObjectRelationshipLocalServiceUtil.getAllObjectRelationships(
+				relatedObjectDefinition.getObjectDefinitionId());
+
+		for (ObjectRelationship relatedObjectRelationship :
+				relatedObjectDefinitionObjectRelationships) {
+
+			if ((relatedObjectRelationship.getObjectRelationshipId() ==
+					objectRelationship.getObjectRelationshipId()) ||
+				_relatedObjectRelationships.contains(
+					relatedObjectRelationship.getObjectRelationshipId())) {
+
+				continue;
+			}
+
+			relatedObjectDefinitionEntityFields.add(
+				new ComplexEntityField(
+					relatedObjectRelationship.getName(),
+					new ArrayList<>(
+						_getRelatedObjectDefinitionEntityFields(
+							relatedObjectRelationship,
+							relatedObjectDefinition))));
+		}
+
+		return relatedObjectDefinitionEntityFields;
+	}
+
+	private Map<String, EntityField> _getStringEntityFieldsMap(
 		List<ObjectField> objectFields) {
 
 		Map<String, EntityField> entityFieldsMap =
@@ -279,6 +321,7 @@ public class ObjectEntryEntityModel implements EntityModel {
 	}
 
 	private final Map<String, EntityField> _entityFieldsMap;
+	private final List<Long> _relatedObjectRelationships = new ArrayList<>();
 	private final Set<String> _unsupportedBusinessTypes = SetUtil.fromArray(
 		ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION,
 		ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,

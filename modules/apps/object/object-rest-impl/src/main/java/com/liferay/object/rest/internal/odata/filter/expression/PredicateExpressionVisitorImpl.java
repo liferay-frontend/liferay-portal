@@ -48,6 +48,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -71,12 +73,15 @@ import java.text.DateFormat;
 import java.text.Format;
 import java.text.ParseException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.ws.rs.ServerErrorException;
 
 /**
  * @author Marco Leo
@@ -373,8 +378,7 @@ public class PredicateExpressionVisitorImpl
 	private EntityModel _createEntityModel(long objectDefinitionId) {
 		try {
 			return new ObjectEntryEntityModel(
-				ObjectDefinitionLocalServiceUtil.getObjectDefinition(
-					objectDefinitionId),
+				objectDefinitionId,
 				_objectFieldLocalService.getObjectFields(objectDefinitionId));
 		}
 		catch (Exception exception) {
@@ -387,13 +391,12 @@ public class PredicateExpressionVisitorImpl
 	}
 
 	private ObjectRelationship _fetchObjectRelationship(
-		String relationshipName) {
+		long objectDefinitionId, String objectRelationshipName) {
 
 		try {
 			return ObjectRelationshipLocalServiceUtil.
 				getObjectRelationshipByObjectDefinitionId(
-					_objectDefinitionId,
-					GetterUtil.getString(relationshipName));
+					objectDefinitionId, objectRelationshipName);
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -519,44 +522,14 @@ public class PredicateExpressionVisitorImpl
 	}
 
 	private Predicate _getObjectRelationshipPredicate(
-		Object left,
-		UnsafeBiFunction<String, Long, Predicate, Exception> unsafeBiFunction) {
-
-		String leftString = (String)left;
-
-		String[] leftStringParts = leftString.split(StringPool.SLASH);
-
-		String relationshipName = leftStringParts[0];
-
-		ObjectRelationship objectRelationship = _fetchObjectRelationship(
-			relationshipName);
-
-		if (objectRelationship != null) {
-			String objectFieldName = leftStringParts[1];
-
-			try {
-				return _getObjectRelationshipPredicate(
-					objectRelationship,
-					unsafeBiFunction.apply(
-						objectFieldName,
-						_getRelatedObjectDefinitionId(
-							_objectDefinitionId, objectRelationship)));
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		}
-
-		return null;
-	}
-
-	private Predicate _getObjectRelationshipPredicate(
+			long objectDefinitionId,
+			List<ObjectValuePair<ObjectRelationship, Long>> objectValuePairs,
 			ObjectRelationship objectRelationship, Predicate predicate)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.getObjectDefinition(
-				_objectDefinitionId);
+				objectDefinitionId);
 
 		ObjectRelatedModelsPredicateProvider
 			objectRelatedModelsPredicateProvider =
@@ -565,8 +538,87 @@ public class PredicateExpressionVisitorImpl
 						objectDefinition.getClassName(),
 						objectRelationship.getType());
 
-		return objectRelatedModelsPredicateProvider.getPredicate(
-			objectRelationship, predicate);
+		if (objectValuePairs.isEmpty()) {
+			return objectRelatedModelsPredicateProvider.getPredicate(
+				objectRelationship, predicate);
+		}
+
+		ObjectValuePair<ObjectRelationship, Long> objectValuePair =
+			objectValuePairs.remove(0);
+
+		return _getObjectRelationshipPredicate(
+			objectValuePair.getValue(), objectValuePairs,
+			objectValuePair.getKey(),
+			objectRelatedModelsPredicateProvider.getPredicate(
+				objectRelationship, predicate));
+	}
+
+	private Predicate _getObjectRelationshipPredicate(
+		Object left,
+		UnsafeBiFunction<String, Long, Predicate, Exception> unsafeBiFunction) {
+
+		List<String> leftParts = ListUtil.fromString(
+			(String)left, StringPool.SLASH);
+
+		List<String> objectRelationshipNames = new ArrayList<>(
+			leftParts.subList(0, leftParts.size() - 1));
+
+		List<ObjectValuePair<ObjectRelationship, Long>> objectValuePairs =
+			_getObjectValuePairs(_objectDefinitionId, objectRelationshipNames);
+
+		ObjectValuePair<ObjectRelationship, Long> objectValuePair =
+			objectValuePairs.remove(0);
+
+		try {
+			return _getObjectRelationshipPredicate(
+				objectValuePair.getValue(), objectValuePairs,
+				objectValuePair.getKey(),
+				unsafeBiFunction.apply(
+					leftParts.get(leftParts.size() - 1),
+					_getRelatedObjectDefinitionId(
+						objectValuePair.getValue(), objectValuePair.getKey())));
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+
+	private List<ObjectValuePair<ObjectRelationship, Long>>
+		_getObjectValuePairs(
+			long objectDefinitionId, List<String> objectRelationshipNames) {
+
+		List<ObjectValuePair<ObjectRelationship, Long>> objectValuePairs =
+			new ArrayList<>();
+
+		for (String objectRelationshipName : objectRelationshipNames) {
+			ObjectRelationship objectRelationship = _fetchObjectRelationship(
+				objectDefinitionId, objectRelationshipName);
+
+			if (objectRelationship == null) {
+				continue;
+			}
+
+			objectValuePairs.add(
+				new ObjectValuePair<>(objectRelationship, objectDefinitionId));
+
+			objectDefinitionId = _getRelatedObjectDefinitionId(
+				objectDefinitionId, objectRelationship);
+		}
+
+		if (objectValuePairs.isEmpty()) {
+			throw new ServerErrorException(
+				500,
+				new Exception(
+					StringBundler.concat(
+						"Unable to get object value pairs for object ",
+						"definition ", objectDefinitionId,
+						" and object relationship: ",
+						StringUtil.merge(objectRelationshipNames))));
+		}
+
+		Collections.reverse(objectValuePairs);
+
+		return objectValuePairs;
 	}
 
 	private Predicate _getPredicate(

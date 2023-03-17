@@ -21,20 +21,32 @@ import {CONTRIBUTOR_TYPES} from './types/contributorTypes';
  * are not supported.
  * @param {string} suggestionsContributorConfiguration Stringified array of
  * suggestion contributor configurations.
+ * @param {boolean} isDXP
  * @param {boolean} isSearchExperiencesSupported
  * @return {Array} The cleaned up list of suggestion contributor configurations.
  */
 export default function cleanSuggestionsContributorConfiguration(
 	suggestionsContributorConfiguration,
+	isDXP,
 	isSearchExperiencesSupported = false
 ) {
 	return parseJSONString(suggestionsContributorConfiguration).filter(
 		(item) => {
-			if (isSearchExperiencesSupported) {
-				return true;
+			if (
+				!isSearchExperiencesSupported &&
+				item.contributorName === CONTRIBUTOR_TYPES.SXP_BLUEPRINT
+			) {
+				return false;
 			}
 
-			if (item.contributorName === CONTRIBUTOR_TYPES.SXP_BLUEPRINT) {
+			if (
+				!isDXP &&
+				(item.contributorName === CONTRIBUTOR_TYPES.SXP_BLUEPRINT ||
+					item.contributorName ===
+						CONTRIBUTOR_TYPES.ASAH_RECENT_SEARCH_KEYWORDS ||
+					item.contributorName ===
+						CONTRIBUTOR_TYPES.ASAH_TOP_SEARCH_KEYWORDS)
+			) {
 				return false;
 			}
 

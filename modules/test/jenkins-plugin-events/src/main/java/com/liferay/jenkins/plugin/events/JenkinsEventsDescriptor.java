@@ -21,7 +21,6 @@ import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,8 +33,6 @@ public class JenkinsEventsDescriptor
 
 	public JenkinsEventsDescriptor() {
 		super(JenkinsEventsDescriptor.class);
-
-		jenkinsPublishers = new ArrayList<>();
 
 		load();
 	}

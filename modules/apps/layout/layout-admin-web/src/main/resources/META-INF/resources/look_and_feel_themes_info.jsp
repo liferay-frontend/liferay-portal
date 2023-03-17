@@ -34,38 +34,52 @@ else if (selLayout == null) {
 PluginPackage selPluginPackage = selTheme.getPluginPackage();
 %>
 
-<p class="h4 mb-3 mt-3"><liferay-ui:message key="current-theme" /></p>
+<p class="h4 mb-3 mt-4"><liferay-ui:message key="current-theme" /></p>
 
 <clay:row>
 	<clay:col
 		size="6"
-		sm="4"
+		sm="5"
 	>
-		<div class="card card-type-asset image-card">
-			<div class="aspect-ratio card-item-first card-item-last">
-				<img alt="" class="aspect-ratio-item aspect-ratio-item-center-middle aspect-ratio-item-fluid" src="<%= themeDisplay.getCDNBaseURL() %><%= HtmlUtil.escapeAttribute(selTheme.getStaticResourcePath()) %><%= HtmlUtil.escapeAttribute(selTheme.getImagesPath()) %>/thumbnail.png" />
-			</div>
-		</div>
+		<clay:image-card
+			imageSrc='<%= themeDisplay.getCDNBaseURL() + HtmlUtil.escapeAttribute(selTheme.getStaticResourcePath()) + HtmlUtil.escapeAttribute(selTheme.getImagesPath()) + "/thumbnail.png" %>'
+			subtitle='<%= ((selPluginPackage != null) && Validator.isNotNull(selPluginPackage.getAuthor())) ? HtmlUtil.escape(selPluginPackage.getAuthor()) : "" %>'
+			title='<%= Validator.isNotNull(selTheme.getName()) ? HtmlUtil.escapeAttribute(selTheme.getName()) : "" %>'
+		/>
 	</clay:col>
 
 	<clay:col
+		cssClass="pl-4 pt-3"
 		size="6"
-		sm="8"
+		sm="7"
 	>
-		<c:if test="<%= Validator.isNotNull(selTheme.getName()) %>">
-			<h2 class="h4"><liferay-ui:message key="name" /></h2>
 
-			<p class="text-default">
-				<%= HtmlUtil.escape(selTheme.getName()) %>
-			</p>
-		</c:if>
+		<%
+		Map<String, ThemeSetting> configurableSettings = selTheme.getConfigurableSettings();
+		%>
 
-		<c:if test="<%= (selPluginPackage != null) && Validator.isNotNull(selPluginPackage.getAuthor()) %>">
-			<h2 class="h4"><liferay-ui:message key="author" /></h2>
+		<c:if test="<%= !configurableSettings.isEmpty() %>">
 
-			<p class="text-default">
-				<aui:a href="<%= HtmlUtil.escapeHREF(selPluginPackage.getPageURL()) %>" target="_blank"><%= HtmlUtil.escape(selPluginPackage.getAuthor()) %></aui:a>
-			</p>
+			<%
+			LayoutSet selLayoutSet = layoutsAdminDisplayContext.getSelLayoutSet();
+
+			for (String name : configurableSettings.keySet()) {
+				String value = selLayoutSet.getThemeSetting(name, "regular");
+			%>
+
+				<div class="mb-3">
+					<clay:checkbox
+						checked='<%= value.equals("true") %>'
+						disabled="<%= true %>"
+						label="<%= LanguageUtil.get(request, HtmlUtil.escape(name)) %>"
+						name="<%= LanguageUtil.get(request, HtmlUtil.escape(name)) %>"
+					/>
+				</div>
+
+			<%
+			}
+			%>
+
 		</c:if>
 	</clay:col>
 </clay:row>
@@ -108,26 +122,4 @@ List<ColorScheme> colorSchemes = selTheme.getColorSchemes();
 			</div>
 		</clay:col>
 	</clay:row>
-</c:if>
-
-<%
-Map<String, ThemeSetting> configurableSettings = selTheme.getConfigurableSettings();
-%>
-
-<c:if test="<%= !configurableSettings.isEmpty() %>">
-	<h2 class="h4"><liferay-ui:message key="settings" /></h2>
-
-	<%
-	LayoutSet selLayoutSet = layoutsAdminDisplayContext.getSelLayoutSet();
-
-	for (String name : configurableSettings.keySet()) {
-		String value = selLayoutSet.getThemeSetting(name, "regular");
-	%>
-
-		<p class="text-default"><liferay-ui:message key="<%= HtmlUtil.escape(name) %>" />: <%= HtmlUtil.escape(LanguageUtil.get(request, value)) %></p>
-
-	<%
-	}
-	%>
-
 </c:if>
