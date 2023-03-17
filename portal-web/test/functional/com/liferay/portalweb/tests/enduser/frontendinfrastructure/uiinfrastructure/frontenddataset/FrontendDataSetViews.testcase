@@ -66,17 +66,8 @@ definition {
 	}
 
 	@description = "LPS-178778. Confirm the error message that appears when the user tries to create a data set view without the filled name"
-	@ignore = "Test Stub"
 	@priority = 3
 	test ErrorAppearsWhenNameBlank {
-
-		// TODO ErrorAppearsWhenNameBlank pending implementation JQuery enabled
-
-	}
-
-	@description = "LPS-178775. Confirm the error message that appears when the user tries to create a Data Set without the filled provider"
-	@priority = 3
-	test ErrorAppearsWhenProviderBlank {
 		task ("When the user goes to add Datasets") {
 			LexiconEntry.gotoAdd();
 		}
@@ -94,6 +85,15 @@ definition {
 				locator1 = "Message#WARNING_FEEDBACK",
 				value1 = "This field is required.");
 		}
+	}
+
+	@description = "LPS-178775. Confirm the error message that appears when the user tries to create a Data Set without the filled provider"
+	@ignore = "Test Stub"
+	@priority = 3
+	test ErrorAppearsWhenProviderBlank {
+
+		// TODO ErrorAppearsWhenProviderBlank pending implementation JQuery enabled
+
 	}
 
 	@description = "Confirm that the user can cancel the creation of a data set view"
