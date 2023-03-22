@@ -14,22 +14,9 @@
 
 /// <reference types="react" />
 
-import '../css/FDSEntries.scss';
-declare type RESTApplicationType = {
-	label: string;
-	path: string;
-	version: string;
-};
-interface FDSEntriesInterface {
-	fdsEntriesAPIURL: string;
-	fdsViewsURL: string;
-	namespace: string;
-	restApplications: Array<RESTApplicationType>;
-}
-declare const FDSEntries: ({
-	fdsEntriesAPIURL,
-	fdsViewsURL,
-	namespace,
-	restApplications,
-}: FDSEntriesInterface) => JSX.Element;
-export default FDSEntries;
+declare const ValidationFeedback: ({
+	message,
+}: {
+	message?: string | undefined;
+}) => JSX.Element;
+export default ValidationFeedback;

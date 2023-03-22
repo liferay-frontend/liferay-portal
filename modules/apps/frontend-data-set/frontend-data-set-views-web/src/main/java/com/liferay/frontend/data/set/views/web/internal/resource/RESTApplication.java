@@ -17,37 +17,28 @@ package com.liferay.frontend.data.set.views.web.internal.resource;
 /**
  * @author Marko Cikos
  */
-public class FDSHeadlessResource {
+public class RESTApplication {
 
-	public FDSHeadlessResource(
-		String bundleLabel, String entityClassName, String name,
-		String version) {
-
-		_bundleLabel = bundleLabel;
-		_entityClassName = entityClassName;
-		_name = name;
+	public RESTApplication(String label, String path, String version) {
+		_label = label;
+		_path = path;
 		_version = version;
 	}
 
-	public String getBundleLabel() {
-		return _bundleLabel;
+	public String getLabel() {
+		return _label;
 	}
 
-	public String getEntityClassName() {
-		return _entityClassName;
-	}
-
-	public String getName() {
-		return _name;
+	public String getPath() {
+		return _path;
 	}
 
 	public String getVersion() {
 		return _version;
 	}
 
-	private final String _bundleLabel;
-	private final String _entityClassName;
-	private final String _name;
+	private final String _label;
+	private final String _path;
 	private final String _version;
 
 }

@@ -12,24 +12,21 @@
  * details.
  */
 
-/// <reference types="react" />
+import ClayForm from '@clayui/form';
+import React from 'react';
 
-import '../css/FDSEntries.scss';
-declare type RESTApplicationType = {
-	label: string;
-	path: string;
-	version: string;
-};
-interface FDSEntriesInterface {
-	fdsEntriesAPIURL: string;
-	fdsViewsURL: string;
-	namespace: string;
-	restApplications: Array<RESTApplicationType>;
-}
-declare const FDSEntries: ({
-	fdsEntriesAPIURL,
-	fdsViewsURL,
-	namespace,
-	restApplications,
-}: FDSEntriesInterface) => JSX.Element;
-export default FDSEntries;
+const ValidationFeedback = ({
+	message = Liferay.Language.get('this-field-is-required'),
+}: {
+	message?: string;
+}) => (
+	<ClayForm.FeedbackGroup>
+		<ClayForm.FeedbackItem>
+			<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
+			{message}
+		</ClayForm.FeedbackItem>
+	</ClayForm.FeedbackGroup>
+);
+
+export default ValidationFeedback;

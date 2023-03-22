@@ -24,9 +24,9 @@
 		).put(
 			"fdsViewsURL", fdsViewsDisplayContext.getFDSViewsURL()
 		).put(
-			"headlessResources", fdsViewsDisplayContext.getHeadlessResourcesJSONArray()
-		).put(
 			"namespace", liferayPortletResponse.getNamespace()
+		).put(
+			"restApplications", fdsViewsDisplayContext.getRESTApplicationsJSONArray()
 		).build()
 	%>'
 />
