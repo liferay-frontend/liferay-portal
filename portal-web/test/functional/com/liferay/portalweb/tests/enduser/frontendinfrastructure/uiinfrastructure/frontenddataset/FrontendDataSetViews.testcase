@@ -32,36 +32,58 @@ definition {
 	@description = "Confirm that the user can change the pagination on the dataset admin page"
 	@priority = 4
 	test CanChangePaginationInAdminPage {
-        task("Given create 6 data sets"){
-			for (var listDataSets : list "1,2,3,4,5,6") {
-				LexiconEntry.gotoAdd();
+		task ("Given create 6 data sets") {
+			FrontendDataSetAdmin.createDataSet(
+				key_type = "Channel",
+				key_name = "Test Dataset 1");
 
-				PortletEntry.inputName(name = "Test Dataset");
+			FrontendDataSetAdmin.createDataSet(
+				key_type = "Account",
+				key_name = "Test Dataset 2");
 
-				FrontendDataSetAdmin.selectProvider(key_type = "Channel");
+			FrontendDataSetAdmin.createDataSet(
+				key_type = "Cart",
+				key_name = "Test Dataset 3");
 
-				PortletEntry.save();
-		    }
-			task("When changing the page to 4 entries"){
-				ObjectPortlet.changePagination(itemsPerPage = "4 items");
-			}
+			FrontendDataSetAdmin.createDataSet(
+				key_type = "DataLayout",
+				key_name = "Test Dataset 4");
 
-			task("Then confirm that only 4 entries are displayed "){
-				VerifyElementPresent(
-				locator1 = "FrontendDataSet#SELECT_CUSTOM_VIEW",
-				value1 = "Test Dataset");
-			}
+			FrontendDataSetAdmin.createDataSet(
+				key_type = "Diagram",
+				key_name = "Test Dataset 5");
 
-            task("When to switch to page 2 "){
-		        ObjectPortlet.checkAnyPage(pageNumber = 2);
-			}
-			
-			task(""){
-				VerifyElementPresent(
-				locator1 = "FrontendDataSet#SELECT_CUSTOM_VIEW",
-				value1 = "Test Dataset");
-			}
+			FrontendDataSetAdmin.createDataSet(
+				key_type = "Form",
+				key_name = "Test Dataset 6");
 		}
+
+		task ("When changing the page to 4 entries") {
+			FrontendDataSetAdmin.changePagination(itemsPerPage = "4 items");
+		}
+
+		task ("Then confirm that only 4 entries are displayed") {
+			for (var num : list "1,2,3,4") {
+			AssertElementPresent(
+				locator1 = "FrontendDataSetAdmin#TABLE_CELL",
+				key_itemName = "Test Dataset ${num}");
+		}
+			Pagination.viewResults(results = "Showing 1 to 4 of 6");
+		}
+
+		task ("When to switch to page 2") {
+			Click(locator1 = "Pagination#NEXT_LINK");
+		}
+
+		task ("Then 2 entries are displayed") {
+			for (var num : list "5,6") {
+			AssertElementPresent(
+				locator1 = "FrontendDataSetAdmin#TABLE_CELL",
+				key_itemName = "Test Dataset ${num}");
+		}
+		Pagination.viewResults(results = "Showing 5 to 6 of 6");
+		}
+		
 	}
 
 	@description = "Confirm that the user can create a data set view"
