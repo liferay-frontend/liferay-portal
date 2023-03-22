@@ -1,5 +1,17 @@
 definition {
 
+	macro createDataSet {
+		LexiconEntry.gotoAdd();
+
+		Type(
+			locator1 = "TextInput#NAME",
+			value1 = ${key_name});
+
+		FrontendDataSetAdmin.selectProvider(key_type = "${key_type}");
+
+		PortletEntry.save();
+	}
+
 	macro searchProvider {
 		Click(
 			dropdownLabel = "Choose an Option",
@@ -18,6 +30,12 @@ definition {
 		Click(
 			locator1 = "FrontendDataSet#SELECT_TYPE_PROVIDER",
 			value1 = ${key_type});
+	}
+
+	macro changePagination {
+		Click(locator1 = "FrontendDataSetAdmin#ITEMS_PER_PAGE_SELECT");
+
+		MenuItem.click(menuItem = ${itemsPerPage});
 	}
 
 }
