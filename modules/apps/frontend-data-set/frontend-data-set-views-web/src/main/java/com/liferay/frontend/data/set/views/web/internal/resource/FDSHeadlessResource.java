@@ -20,12 +20,12 @@ package com.liferay.frontend.data.set.views.web.internal.resource;
 public class FDSHeadlessResource {
 
 	public FDSHeadlessResource(
-		String bundleLabel, String entityClassName, String name,
+		String bundleLabel, String osgiJaxrsApplicationSelect, String schema,
 		String version) {
 
 		_bundleLabel = bundleLabel;
-		_entityClassName = entityClassName;
-		_name = name;
+		_osgiJaxrsApplicationSelect = osgiJaxrsApplicationSelect;
+		_schema = schema;
 		_version = version;
 	}
 
@@ -33,12 +33,12 @@ public class FDSHeadlessResource {
 		return _bundleLabel;
 	}
 
-	public String getEntityClassName() {
-		return _entityClassName;
+	public String getOsgiJaxrsApplicationSelect() {
+		return _osgiJaxrsApplicationSelect;
 	}
 
-	public String getName() {
-		return _name;
+	public String getSchema() {
+		return _schema;
 	}
 
 	public String getVersion() {
@@ -46,8 +46,8 @@ public class FDSHeadlessResource {
 	}
 
 	private final String _bundleLabel;
-	private final String _entityClassName;
-	private final String _name;
+	private final String _osgiJaxrsApplicationSelect;
+	private final String _schema;
 	private final String _version;
 
 }

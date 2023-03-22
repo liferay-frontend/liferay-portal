@@ -17,8 +17,9 @@
 import '../css/FDSEntries.scss';
 declare type THeadlessResource = {
 	bundleLabel: string;
-	entityClassName: string;
-	name: string;
+	objectResource: boolean;
+	openapiResourcePath: string;
+	schema: string;
 	version: string;
 };
 interface IFDSEntriesProps {

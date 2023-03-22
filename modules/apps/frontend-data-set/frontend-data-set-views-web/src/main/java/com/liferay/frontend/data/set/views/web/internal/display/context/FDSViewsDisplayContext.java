@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.PortletRequest;
 
@@ -35,10 +36,11 @@ import javax.portlet.PortletRequest;
 public class FDSViewsDisplayContext {
 
 	public FDSViewsDisplayContext(
-		PortletRequest portletRequest,
+		PortletRequest portletRequest, Map<String, String> openapiResourcePaths,
 		ServiceTrackerList<FDSHeadlessResource> serviceTrackerList) {
 
 		_portletRequest = portletRequest;
+		_openapiResourcePaths = openapiResourcePaths;
 		_serviceTrackerList = serviceTrackerList;
 	}
 
@@ -104,16 +106,24 @@ public class FDSViewsDisplayContext {
 			Comparator.comparing(FDSHeadlessResource::getBundleLabel));
 
 		fdsHeadlessResources.sort(
-			Comparator.comparing(FDSHeadlessResource::getName));
+			Comparator.comparing(FDSHeadlessResource::getSchema));
 
 		for (FDSHeadlessResource fdsHeadlessResource : fdsHeadlessResources) {
+			String schema = fdsHeadlessResource.getSchema();
+
+			boolean objectResource = schema.startsWith("ObjectEntry");
+
 			jsonArray.put(
 				JSONUtil.put(
 					"bundleLabel", fdsHeadlessResource.getBundleLabel()
 				).put(
-					"entityClassName", fdsHeadlessResource.getEntityClassName()
+					"objectResource", objectResource
 				).put(
-					"name", _getName(fdsHeadlessResource)
+					"openapiResourcePath",
+					_openapiResourcePaths.get(
+						fdsHeadlessResource.getOsgiJaxrsApplicationSelect())
+				).put(
+					"schema", _getSchema(fdsHeadlessResource, objectResource)
 				).put(
 					"version", fdsHeadlessResource.getVersion()
 				));
@@ -122,20 +132,23 @@ public class FDSViewsDisplayContext {
 		return jsonArray;
 	}
 
-	private String _getName(FDSHeadlessResource fdsHeadlessResource) {
-		String name = fdsHeadlessResource.getName();
+	private String _getSchema(
+		FDSHeadlessResource fdsHeadlessResource, boolean objectResource) {
 
-		if (name.startsWith("ObjectEntry")) {
-			String[] nameParts = StringUtil.split(name, "#C_");
+		String schema = fdsHeadlessResource.getSchema();
 
-			if (nameParts.length == 2) {
-				return nameParts[1];
+		if (objectResource) {
+			String[] schemaParts = StringUtil.split(schema, "#C_");
+
+			if (schemaParts.length == 2) {
+				return schemaParts[1];
 			}
 		}
 
-		return name;
+		return schema;
 	}
 
+	private final Map<String, String> _openapiResourcePaths;
 	private final PortletRequest _portletRequest;
 	private final ServiceTrackerList<FDSHeadlessResource> _serviceTrackerList;
 

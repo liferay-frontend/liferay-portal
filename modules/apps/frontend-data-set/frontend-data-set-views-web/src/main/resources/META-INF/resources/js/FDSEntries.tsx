@@ -41,15 +41,17 @@ type TFDSEntry = {
 			method: string;
 		};
 	};
-	entityClassName: string;
 	id: string;
 	label: string;
+	restContextPath: string;
+	schema: string;
 };
 
 type THeadlessResource = {
 	bundleLabel: string;
-	entityClassName: string;
-	name: string;
+	objectResource: boolean;
+	openapiResourcePath: string;
+	schema: string;
 	version: string;
 };
 
@@ -62,9 +64,9 @@ const HeadlessResourceItem = ({
 	headlessResource,
 	query,
 }: IHeadlessResourceItemProps) => {
-	const fuzzyNameMatch = fuzzy.match(
+	const fuzzySchemaMatch = fuzzy.match(
 		query,
-		headlessResource.name,
+		headlessResource.schema,
 		FUZZY_OPTIONS
 	);
 
@@ -76,14 +78,14 @@ const HeadlessResourceItem = ({
 
 	return (
 		<ClayLayout.ContentRow className="headless-resource">
-			{fuzzyNameMatch ? (
+			{fuzzySchemaMatch ? (
 				<span
 					dangerouslySetInnerHTML={{
-						__html: fuzzyNameMatch.rendered,
+						__html: fuzzySchemaMatch.rendered,
 					}}
 				/>
 			) : (
-				<span>{headlessResource.name}</span>
+				<span>{headlessResource.schema}</span>
 			)}
 
 			<span className="context">
@@ -100,24 +102,6 @@ const HeadlessResourceItem = ({
 				{` ${headlessResource.version}`}
 			</span>
 		</ClayLayout.ContentRow>
-	);
-};
-
-interface IProviderRendererProps {
-	headlessResourcesMap: Map<String, THeadlessResource>;
-	itemData: TFDSEntry;
-}
-
-const ProviderRenderer: React.FC<IProviderRendererProps> = ({
-	headlessResourcesMap,
-	itemData,
-}: IProviderRendererProps) => {
-	const headlessResource = headlessResourcesMap.get(itemData.entityClassName);
-
-	return (
-		<>
-			{`${headlessResource?.name} (${headlessResource?.bundleLabel} ${headlessResource?.version})`}
-		</>
 	);
 };
 
@@ -159,9 +143,10 @@ const DropdownMenu = ({
 		setHeadlessResources(
 			query
 				? initialHeadlessResources.filter(
-						({bundleLabel, name}: THeadlessResource) => {
+						({bundleLabel, schema}: THeadlessResource) => {
 							return (
-								bundleLabel.match(regexp) || name.match(regexp)
+								bundleLabel.match(regexp) ||
+								schema.match(regexp)
 							);
 						}
 				  ) || []
@@ -180,7 +165,7 @@ const DropdownMenu = ({
 			<ClayDropDown.ItemList items={headlessResources} role="listbox">
 				{(item: THeadlessResource) => (
 					<ClayDropDown.Item
-						key={item.entityClassName}
+						key={`${item.openapiResourcePath}${item.version}${item.schema}`}
 						onClick={() => {
 							setSelectedHeadlessResource(item);
 
@@ -226,9 +211,35 @@ const AddFDSEntryModalContent = ({
 	const fdsEntryLabelRef = useRef<HTMLInputElement>(null);
 
 	const addFDSEntry = async () => {
+		if (!selectedHeadlessResource) {
+			return;
+		}
+
+		const {
+			bundleLabel,
+			objectResource,
+			openapiResourcePath,
+			schema,
+			version,
+		} = selectedHeadlessResource;
+
+		let path = `/o${openapiResourcePath}`;
+
+		if (!objectResource) {
+			const schemaParts = schema.split(/(?=[A-Z])/);
+
+			const lowerCaseSchemaParts = schemaParts.map((schemaPart) =>
+				schemaPart.toLowerCase()
+			);
+
+			path = `${path}/${version}/${lowerCaseSchemaParts.join('-')}s`;
+		}
+
 		const body = {
-			entityClassName: selectedHeadlessResource?.entityClassName,
 			label: fdsEntryLabelRef.current?.value,
+			provider: `${schema} (${bundleLabel} ${version})`,
+			restContextPath: path,
+			schema,
 		};
 
 		const response = await fetch(fdsEntriesAPIURL, {
@@ -422,15 +433,6 @@ const FDSEntries = ({
 	headlessResources,
 	namespace,
 }: IFDSEntriesProps) => {
-	const headlessResourcesMapRef = useRef<Map<string, THeadlessResource>>(
-		new Map(
-			headlessResources.map((headlessResource) => [
-				headlessResource.entityClassName,
-				headlessResource,
-			])
-		)
-	);
-
 	const creationMenu = {
 		primaryItems: [
 			{
@@ -526,7 +528,6 @@ const FDSEntries = ({
 				fields: [
 					{fieldName: 'label', label: Liferay.Language.get('name')},
 					{
-						contentRenderer: 'provider',
 						fieldName: 'provider',
 						label: Liferay.Language.get('provider'),
 					},
@@ -551,14 +552,6 @@ const FDSEntries = ({
 				apiURL={`${fdsEntriesAPIURL}?nestedFields=${OBJECT_RELATIONSHIP.FDS_ENTRY_FDS_VIEW}`}
 				creationMenu={creationMenu}
 				customDataRenderers={{
-					provider: ({itemData}: {itemData: TFDSEntry}) => (
-						<ProviderRenderer
-							headlessResourcesMap={
-								headlessResourcesMapRef.current
-							}
-							itemData={itemData}
-						/>
-					),
 					viewsCount: ViewsCountRenderer,
 				}}
 				id={`${namespace}FDSEntries`}

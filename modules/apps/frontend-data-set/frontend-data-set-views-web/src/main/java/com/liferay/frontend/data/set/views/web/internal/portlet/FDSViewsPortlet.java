@@ -32,17 +32,24 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
@@ -109,7 +116,8 @@ public class FDSViewsPortlet extends MVCPortlet {
 
 		renderRequest.setAttribute(
 			FDSViewsWebKeys.FDS_VIEWS_DISPLAY_CONTEXT,
-			new FDSViewsDisplayContext(renderRequest, _serviceTrackerList));
+			new FDSViewsDisplayContext(
+				renderRequest, _openapiResourcePaths, _serviceTrackerList));
 
 		super.doDispatch(renderRequest, renderResponse);
 	}
@@ -141,7 +149,15 @@ public class FDSViewsPortlet extends MVCPortlet {
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 						ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
-						"entityClassName", "entityClassName", true)));
+						_language.get(locale, "provider"), "provider", false),
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
+						"restContextPath", "restContextPath", true),
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
+						"schema", "schema", true)));
 
 		_objectDefinitionLocalService.publishCustomObjectDefinition(
 			userId, fdsEntryObjectDefinition.getObjectDefinitionId());
@@ -184,6 +200,9 @@ public class FDSViewsPortlet extends MVCPortlet {
 		FDSViewsPortlet.class);
 
 	@Reference
+	private CompanyLocalService _companyLocalService;
+
+	@Reference
 	private Language _language;
 
 	@Reference
@@ -192,6 +211,7 @@ public class FDSViewsPortlet extends MVCPortlet {
 	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
+	private final Map<String, String> _openapiResourcePaths = new HashMap<>();
 	private ServiceTrackerList<FDSHeadlessResource> _serviceTrackerList;
 
 	private class FDSHeadlessResourceServiceTrackerCustomizer
@@ -201,8 +221,49 @@ public class FDSViewsPortlet extends MVCPortlet {
 		public FDSHeadlessResource addingService(
 			ServiceReference<Object> serviceReference) {
 
+			String osgiJaxrsApplicationSelect =
+				(String)serviceReference.getProperty(
+					"osgi.jaxrs.application.select");
+
+			if (osgiJaxrsApplicationSelect == null) {
+				return null;
+			}
+
+			String openapiResourcePath = (String)serviceReference.getProperty(
+				"openapi.resource.path");
+
+			if (openapiResourcePath != null) {
+				_openapiResourcePaths.put(
+					osgiJaxrsApplicationSelect, openapiResourcePath);
+
+				return null;
+			}
+
+			String[] objectClass = (String[])serviceReference.getProperty(
+				"objectClass");
+
 			String entityClassName = (String)serviceReference.getProperty(
 				"entity.class.name");
+
+			if ((objectClass != null) && (objectClass.length == 1)) {
+				String objectClassName = objectClass[0];
+
+				if (objectClassName.endsWith("ObjectEntryResource")) {
+					String[] entityClassNameParts = StringUtil.split(
+						entityClassName, "#");
+
+					_openapiResourcePaths.put(
+						osgiJaxrsApplicationSelect,
+						_getObjectEntryRESTContextPath(
+							entityClassNameParts[1]));
+				}
+
+				if (objectClassName.endsWith(
+						"ObjectEntryRelatedObjectsResourceImpl")) {
+
+					return null;
+				}
+			}
 
 			if (entityClassName != null) {
 				String[] entityClassNameParts = StringUtil.split(
@@ -211,7 +272,8 @@ public class FDSViewsPortlet extends MVCPortlet {
 				Object object = _bundleContext.getService(serviceReference);
 
 				return new FDSHeadlessResource(
-					_getFDSHeadlessResourceBundleLabel(object), entityClassName,
+					_getFDSHeadlessResourceBundleLabel(object),
+					osgiJaxrsApplicationSelect,
 					entityClassNameParts[entityClassNameParts.length - 1],
 					entityClassNameParts[entityClassNameParts.length - 2].
 						replaceAll(StringPool.UNDERLINE, StringPool.PERIOD));
@@ -251,6 +313,25 @@ public class FDSViewsPortlet extends MVCPortlet {
 
 			return bundleName.substring(
 				0, bundleName.lastIndexOf(StringPool.SPACE));
+		}
+
+		private String _getObjectEntryRESTContextPath(String name) {
+			List<ObjectDefinition> objectDefinitions = new ArrayList<>();
+
+			_companyLocalService.forEachCompanyId(
+				companyId -> objectDefinitions.addAll(
+					_objectDefinitionLocalService.getObjectDefinitions(
+						companyId, true, WorkflowConstants.STATUS_APPROVED)));
+
+			for (ObjectDefinition objectDefinition : objectDefinitions) {
+				String objectDefinitionName = objectDefinition.getName();
+
+				if (Objects.equals(objectDefinitionName, name)) {
+					return objectDefinition.getRESTContextPath();
+				}
+			}
+
+			return null;
 		}
 
 		private final BundleContext _bundleContext;
