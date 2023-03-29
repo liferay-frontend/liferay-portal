@@ -429,6 +429,10 @@ definition {
 				value1 = "Edit");
 		}
 
+		WaitForVisible(
+			locator1 = "WorkflowConfiguration#RESOURCE_TABLE_SELECT",
+			value1 = ${workflowDefinition});
+
 		Select(
 			locator1 = "WorkflowConfiguration#RESOURCE_TABLE_SELECT",
 			value1 = ${workflowDefinition});
