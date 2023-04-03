@@ -15,6 +15,7 @@
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {useIsMounted, useThunk} from '@liferay/frontend-js-react-web';
+import classnames from 'classnames';
 import {fetch, openToast} from 'frontend-js-web';
 import React, {
 	useCallback,
@@ -57,7 +58,59 @@ import getViewComponent from './views/getViewComponent';
 import {VIEWS_ACTION_TYPES, viewsReducer} from './views/viewsReducer';
 
 const DEFAULT_PAGINATION_DELTA = 20;
-const DEFAULT_PAGINATION_PAGE_NUMBER = 1;
+const DEFAULT_PAGINATION_DELTAS = [
+	{label: 4},
+	{label: 8},
+	{label: 20},
+	{label: 40},
+	{label: 60},
+];
+
+const Pagination = ({
+	active,
+	activeDelta,
+	deltas,
+	items,
+	onActiveChange,
+	onDeltaChange,
+	showPagination,
+	totalItems,
+}) => {
+	if (!showPagination || !items.length || !totalItems) {
+		return null;
+	}
+
+	console.log(
+		'active = ' +
+			active +
+			', activeDelta = ' +
+			activeDelta +
+			', totalItems = ' +
+			totalItems
+	);
+	console.log(deltas);
+
+	return (
+		<div className="data-set-pagination-wrapper">
+			<ClayPaginationBarWithBasicItems
+				active={active}
+				activeDelta={activeDelta}
+				deltas={deltas}
+				ellipsisBuffer={3}
+				labels={{
+					paginationResults: Liferay.Language.get(
+						'showing-x-to-x-of-x-entries'
+					),
+					perPageItems: Liferay.Language.get('x-items'),
+					selectPerPageItems: Liferay.Language.get('x-items'),
+				}}
+				onActiveChange={onActiveChange}
+				onDeltaChange={onDeltaChange}
+				totalItems={totalItems}
+			/>
+		</div>
+	);
+};
 
 const FrontendDataSet = ({
 	actionParameterName,
@@ -109,10 +162,6 @@ const FrontendDataSet = ({
 	const [highlightedItemsValue, setHighlightedItemsValue] = useState([]);
 	const [items, setItems] = useState(itemsProp || []);
 	const [itemsChanges, setItemsChanges] = useState({});
-	const [pageNumber, setPageNumber] = useState(
-		showPagination &&
-			(pagination?.initialPageNumber || DEFAULT_PAGINATION_PAGE_NUMBER)
-	);
 	const [searchParam, setSearchParam] = useState('');
 	const [selectedItemsValue, setSelectedItemsValue] = useState(
 		initialSelectedItemsValues || []
@@ -166,8 +215,7 @@ const FrontendDataSet = ({
 		});
 
 		const paginationDelta =
-			showPagination &&
-			(pagination?.initialDelta || DEFAULT_PAGINATION_DELTA);
+			pagination?.initialDelta || DEFAULT_PAGINATION_DELTA;
 
 		return {
 			activeView,
@@ -177,12 +225,14 @@ const FrontendDataSet = ({
 				activeView,
 				filters,
 				paginationDelta,
+				paginationPageNumber: 1,
 				sorting: sortingProp,
 				visibleFieldNames: initialVisibleFieldNames,
 			},
 			filters,
 			modifiedFields: {},
 			paginationDelta,
+			paginationPageNumber: 1,
 			sorting: sortingProp,
 			views,
 			visibleFieldNames: initialVisibleFieldNames,
@@ -193,7 +243,13 @@ const FrontendDataSet = ({
 		useReducer(viewsReducer, getInitialViewsState())
 	);
 
-	const {activeView, filters, paginationDelta, sorting} = viewsState;
+	const {
+		activeView,
+		filters,
+		paginationDelta,
+		paginationPageNumber,
+		sorting,
+	} = viewsState;
 
 	const {
 		component: View,
@@ -217,15 +273,15 @@ const FrontendDataSet = ({
 			activeFiltersOdataStrings,
 			searchParam,
 			paginationDelta,
-			pageNumber,
+			paginationPageNumber,
 			sorting
 		);
 	}, [
 		apiURL,
 		currentURL,
-		paginationDelta,
 		filters,
-		pageNumber,
+		paginationDelta,
+		paginationPageNumber,
 		searchParam,
 		sorting,
 	]);
@@ -502,35 +558,6 @@ const FrontendDataSet = ({
 			<ClayLoadingIndicator className="my-7" />
 		);
 
-	const paginationComponent =
-		showPagination && pagination && items?.length && total ? (
-			<div className="data-set-pagination-wrapper">
-				<ClayPaginationBarWithBasicItems
-					activeDelta={paginationDelta}
-					activePage={pageNumber}
-					deltas={pagination?.deltas}
-					ellipsisBuffer={3}
-					labels={{
-						paginationResults: Liferay.Language.get(
-							'showing-x-to-x-of-x-entries'
-						),
-						perPageItems: Liferay.Language.get('x-items'),
-						selectPerPageItems: Liferay.Language.get('x-items'),
-					}}
-					onDeltaChange={(delta) => {
-						setPageNumber(1);
-
-						viewsDispatch({
-							type: VIEWS_ACTION_TYPES.UPDATE_PAGINATION_DELTA,
-							value: delta,
-						});
-					}}
-					onPageChange={setPageNumber}
-					totalItems={total}
-				/>
-			</div>
-		) : null;
-
 	function executeAsyncItemAction({
 		errorMessage,
 		method = 'GET',
@@ -735,6 +762,27 @@ const FrontendDataSet = ({
 			});
 	}
 
+	const paginationProps = {
+		active: paginationPageNumber,
+		activeDelta: paginationDelta,
+		deltas: pagination?.deltas || DEFAULT_PAGINATION_DELTAS,
+		items,
+		onActiveChange: (active) => {
+			viewsDispatch({
+				type: VIEWS_ACTION_TYPES.UPDATE_PAGINATION_PAGE_NUMBER,
+				value: active,
+			});
+		},
+		onDeltaChange: (delta) => {
+			viewsDispatch({
+				type: VIEWS_ACTION_TYPES.UPDATE_PAGINATION_DELTA,
+				value: delta,
+			});
+		},
+		showPagination,
+		totalItems: total,
+	};
+
 	return (
 		<FrontendDataSetContext.Provider
 			value={{
@@ -795,37 +843,29 @@ const FrontendDataSet = ({
 					)}
 
 					<div className="data-set-wrapper" ref={wrapperRef}>
-						{style === 'default' && (
-							<div className="data-set data-set-inline">
-								{managementBar}
+						<div
+							className={classnames('data-set', {
+								'data-set-fluid': style === 'fluid',
+								'data-set-inline': style === 'default',
+								'data-set-stacked': style === 'stacked',
+							})}
+						>
+							{managementBar}
 
-								{view}
-
-								{paginationComponent}
-							</div>
-						)}
-
-						{style === 'stacked' && (
-							<div className="data-set data-set-stacked">
-								{managementBar}
-
-								{view}
-
-								{paginationComponent}
-							</div>
-						)}
-
-						{style === 'fluid' && (
-							<div className="data-set data-set-fluid">
-								{managementBar}
-
+							{style === 'fluid' ? (
 								<div className="container-fluid container-xl mt-3">
 									{view}
 
-									{paginationComponent}
+									<Pagination {...paginationProps} />
 								</div>
-							</div>
-						)}
+							) : (
+								<>
+									{view}
+
+									<Pagination {...paginationProps} />
+								</>
+							)}
+						</div>
 					</div>
 				</div>
 			</ViewsContext.Provider>

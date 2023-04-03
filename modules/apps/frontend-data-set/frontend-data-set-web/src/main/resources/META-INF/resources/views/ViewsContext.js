@@ -22,6 +22,7 @@ export default React.createContext({
 	filters: [],
 	modifiedFields: {},
 	paginationDelta: null,
+	paginationPageNumber: 1,
 	sorting: [],
 	views: [],
 	visibleFieldNames: {},

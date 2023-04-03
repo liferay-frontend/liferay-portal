@@ -102,7 +102,6 @@ const fluidDataSetProps = {
 			},
 		],
 		initialDelta: 10,
-		initialPageNumber: 1,
 		initialTotalItems: 40,
 	},
 	showPagination: true,

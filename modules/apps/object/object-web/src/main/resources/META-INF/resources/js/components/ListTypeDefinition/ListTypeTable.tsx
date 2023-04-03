@@ -200,7 +200,6 @@ function getDataSetProps(
 				},
 			],
 			initialDelta: 8,
-			initialPageNumber: 0,
 		},
 		portletId:
 			'com_liferay_object_web_internal_list_type_portlet_portlet_ListTypeDefinitionsPortlet',

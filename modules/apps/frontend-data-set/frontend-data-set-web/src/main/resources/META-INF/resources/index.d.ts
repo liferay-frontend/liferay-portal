@@ -126,7 +126,6 @@ interface IFrontendDataSetProps {
 	pagination?: {
 		deltas?: TDelta[];
 		initialDelta?: number;
-		initialPageNumber?: number;
 	};
 	portletId?: string;
 	selectedItemsKey?: string;

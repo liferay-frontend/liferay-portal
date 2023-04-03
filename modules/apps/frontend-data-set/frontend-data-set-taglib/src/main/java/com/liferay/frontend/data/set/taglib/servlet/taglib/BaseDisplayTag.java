@@ -240,8 +240,6 @@ public class BaseDisplayTag extends AttributesTagSupport {
 				"deltas", _fdsPaginationEntries
 			).put(
 				"initialDelta", _itemsPerPage
-			).put(
-				"initialPageNumber", _pageNumber
 			).build()
 		).put(
 			"selectedItems", _selectedItems

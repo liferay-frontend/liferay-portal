@@ -24,6 +24,7 @@ export const VIEWS_ACTION_TYPES = {
 	UPDATE_FIELD: 'UPDATE_FIELD',
 	UPDATE_FILTERS: 'UPDATE_FILTERS',
 	UPDATE_PAGINATION_DELTA: 'UPDATE_PAGINATION_DELTA',
+	UPDATE_PAGINATION_PAGE_NUMBER: 'UPDATE_PAGINATION_PAGE_NUMBER',
 	UPDATE_SORTING: 'UPDATE_SORTING',
 	UPDATE_VIEW_COMPONENT: 'UPDATE_VIEW_COMPONENT',
 	UPDATE_VISIBLE_FIELD_NAMES: 'UPDATE_VISIBLE_FIELD_NAMES',
@@ -146,7 +147,14 @@ export function viewsReducer(state, {type, value}) {
 		return {
 			...state,
 			paginationDelta: value,
+			paginationPageNumber: 1,
 			viewUpdated: true,
+		};
+	}
+	else if (type === VIEWS_ACTION_TYPES.UPDATE_PAGINATION_PAGE_NUMBER) {
+		return {
+			...state,
+			paginationPageNumber: value,
 		};
 	}
 	else if (type === VIEWS_ACTION_TYPES.UPDATE_SORTING) {
