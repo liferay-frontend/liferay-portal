@@ -964,13 +964,13 @@
     classnames "^2.2.6"
     warning "^4.0.3"
 
-"@clayui/card@3.90.0":
-  version "3.90.0"
-  resolved "https://registry.yarnpkg.com/@clayui/card/-/card-3.90.0.tgz#6140e9d901b751d315deea47995d826f0b3d23b6"
-  integrity sha512-gDubJtRX2kuR04we46h73HYJlgvncsPpm0YVbnrI+gGHgitZtkB+9vChLvkWroZapiYORb0GjjOyErnFWsXq4A==
+"@clayui/card@3.91.1":
+  version "3.91.1"
+  resolved "https://registry.yarnpkg.com/@clayui/card/-/card-3.91.1.tgz#951fc1939e1174214e56d42741d3df84a7f9914c"
+  integrity sha512-gdo1ezN6hsgcF1a0Ul++PWfvoSvrSVf9xmMEKU6y0RUTB5oottIavPKGSgvce5sgffdr3l0LcoZgG/RBS3205g==
   dependencies:
     "@clayui/button" "^3.83.0"
-    "@clayui/drop-down" "^3.90.0"
+    "@clayui/drop-down" "^3.91.1"
     "@clayui/form" "^3.89.0"
     "@clayui/icon" "^3.56.0"
     "@clayui/label" "^3.88.0"
@@ -989,10 +989,10 @@
     classnames "^2.2.6"
     d3 "^5.9.2"
 
-"@clayui/core@^3.90.0":
-  version "3.90.0"
-  resolved "https://registry.yarnpkg.com/@clayui/core/-/core-3.90.0.tgz#907461ad42e9cf2a1fe539d842cb95c894ce80a6"
-  integrity sha512-vG0TkVIdTzFBBIJWoPyuyBi+InXfmX0Ry/yvuvvLcfDVM6/JKeAZj2w0RD5CmyY6UvIyy0r44srps/CdRvxOlw==
+"@clayui/core@^3.91.1":
+  version "3.91.1"
+  resolved "https://registry.yarnpkg.com/@clayui/core/-/core-3.91.1.tgz#a2f726d1e06f8e42e8e0bb971385013d0ebed9fc"
+  integrity sha512-1g1xTci1Gz8EeVYs9YJXmKNCs5s5E8upyPWgIQIMadNuESdA3gj0OQ3bCdsxm6Hyw/zLGtHOucdWl42gWxwy3w==
   dependencies:
     "@clayui/button" "^3.83.0"
     "@clayui/icon" "^3.56.0"
@@ -1009,13 +1009,13 @@
     react-dnd-html5-backend "^11.1.1"
     react-transition-group "^4.4.1"
 
-"@clayui/drop-down@^3.90.0":
-  version "3.90.0"
-  resolved "https://registry.yarnpkg.com/@clayui/drop-down/-/drop-down-3.90.0.tgz#f91a0a7f311adefde5de5ea48cabfed85fdc97ae"
-  integrity sha512-qRn9J+Ej2HX2DoBGHJxwiOQ6TiJKssMOcmhs4qolOF+2NswosJpJKV5Eox+PXmrCoQrvHhjWgTmXR0Je0wLZFw==
+"@clayui/drop-down@^3.91.1":
+  version "3.91.1"
+  resolved "https://registry.yarnpkg.com/@clayui/drop-down/-/drop-down-3.91.1.tgz#8a69f6bdb4bd70254be524fab7ff0c1db31d8574"
+  integrity sha512-eJ6cdGOedDGGYEtglN24YGjKtaESzwQOLMGuYOgxwtYecTNuGi6IWv/fPyRlJ7L11EqjeKd4W98FXr9KHTkvLg==
   dependencies:
     "@clayui/button" "^3.83.0"
-    "@clayui/core" "^3.90.0"
+    "@clayui/core" "^3.91.1"
     "@clayui/form" "^3.89.0"
     "@clayui/icon" "^3.56.0"
     "@clayui/link" "^3.88.0"
