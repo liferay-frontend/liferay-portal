@@ -27,13 +27,8 @@ definition {
 		if (${testPortalInstance} == "true") {
 			PortalInstances.tearDownCP();
 		}
-		else if (IsElementPresent(locator1 = "FrontendDataSet#TABLE_BODY")) {
-			FrontendDataSetAdmin.tearDownCP();
-		}
 		else {
-			AssertElementPresent(
-				locator1 = "Message#EMPTY_STATE_INFO",
-				value1 = "No Results Found");
+			FrontendDataSetViewsJSON.deleteAllDataSetEntriesViaAPI();
 		}
 	}
 
@@ -115,15 +110,6 @@ definition {
 				key_itemName = "Channel (Liferay Analytics Settings REST v1.0)",
 				locator1 = "FrontendDataSetAdmin#TABLE_CELL");
 		}
-	}
-
-	@description = "Confirm that the user can create a dataset view via API"
-	@ignore = "Test Stub"
-	@priority = 5
-	test CanCreateDataSetViaAPI {
-
-		// TODO CanCreateDataSetViaAPI pending implementation JQuery enabled
-
 	}
 
 	@description = "LPS-179521. Confirm that the dataset can be delete"
