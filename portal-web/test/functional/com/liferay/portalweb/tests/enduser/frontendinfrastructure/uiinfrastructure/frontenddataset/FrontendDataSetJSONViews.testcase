@@ -1,0 +1,58 @@
+@component-name = "portal-frontend-infrastructure"
+definition {
+
+	property custom.properties = "feature.flag.LPS-164563=true";
+	property portal.acceptance = "true";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.component.names = "Frontend Dataset";
+	property testray.main.component.name = "User Interface";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if (${testPortalInstance} == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else if (IsElementPresent(locator1 = "FrontendDataSet#TABLE_BODY")) {
+			FrontendDataSetAdmin.tearDownCP();
+		}
+		else {
+			AssertElementPresent(
+				locator1 = "Message#EMPTY_STATE_INFO",
+				value1 = "No Results Found");
+		}
+	}
+
+	@description = "Confirm that the user can create a dataset view via API"
+	@priority = 5
+	test CanCreateDataSetViaAPI {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.addDataSetViaAPI(
+				dataSetName = "Test Dataset",
+				dataSetPath = "Liferay Headless Admin User",
+				provider = "Account",
+				version = "v1.0");
+		}
+
+		task ("and given access Datasets admin page") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Object",
+				panel = "Control Panel",
+				portlet = "Datasets");
+		}
+
+		task ("Then the data set is shown in the list") {
+			AssertElementPresent(
+				key_itemName = "Test Dataset",
+				locator1 = "FrontendDataSetAdmin#TABLE_CELL");
+		}
+	}
+
+}
