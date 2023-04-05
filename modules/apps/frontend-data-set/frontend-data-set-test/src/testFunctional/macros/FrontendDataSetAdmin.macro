@@ -32,6 +32,15 @@ definition {
 		Button.clickDelete();
 	}
 
+	macro getDataSetId {
+		var userEmailAddress = ${userEmailAddress};
+		var userPassword = ${userPassword};
+		var dataSetName = ${dataSetName};
+		var entityClassName = ${entityClassName};
+		var version = ${version};
+		var type = ${type};
+	}
+
 	macro searchProvider {
 		Click(
 			dropdownLabel = "Choose an Option",
