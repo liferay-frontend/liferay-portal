@@ -18,6 +18,26 @@ definition {
 		PortletEntry.save();
 	}
 
+	macro createDataSetView {
+		Click(
+			key_entry = ${dataSetName},
+			locator1 = "ObjectPortlet#ENTRY_KEBAB_MENU");
+
+		Click(locator1 = "FrontendDataSetAdmin#VIEW_ENTRY_BUTTON");
+
+		LexiconEntry.gotoAdd();
+
+		Type(
+			locator1 = "TextInput#NAME",
+			value1 = ${key_name});
+
+		Type(
+			locator1 = "FrontendDataSetAdmin#NEW_DATA_SET_VIEW_DESCRIPTION",
+			value1 = ${description});
+
+		PortletEntry.save();
+	}
+
 	macro deleteDataSet {
 		Click(
 			key_entry = ${entry},
