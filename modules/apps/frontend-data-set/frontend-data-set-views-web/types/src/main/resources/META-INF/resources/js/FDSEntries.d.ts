@@ -12,8 +12,6 @@
  * details.
  */
 
-/// <reference types="react" />
-
 import '../css/FDSEntries.scss';
 declare type THeadlessResource = {
 	bundleLabel: string;
