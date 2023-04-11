@@ -14,25 +14,9 @@
 
 /// <reference types="react" />
 
-import {OBJECT_RELATIONSHIP} from './Constants';
-import {FDSEntryType} from './FDSEntries';
-declare type FDSViewType = {
-	[OBJECT_RELATIONSHIP.FDS_ENTRY_FDS_VIEW]: FDSEntryType;
-	description: string;
-	id: string;
-	label: string;
-};
-interface FDSViewsInterface {
-	fdsEntryId: string;
-	fdsEntryLabel: string;
-	fdsViewURL: string;
-	namespace: string;
-}
-declare const FDSViews: ({
-	fdsEntryId,
-	fdsEntryLabel,
-	fdsViewURL,
+import {FDSViewSectionInterface} from '../FDSView';
+declare const Fields: ({
+	fdsView,
 	namespace,
-}: FDSViewsInterface) => JSX.Element;
-export {FDSViewType};
-export default FDSViews;
+}: FDSViewSectionInterface) => JSX.Element;
+export default Fields;

@@ -14,16 +14,22 @@
 
 /// <reference types="react" />
 
-interface IFDSViewProps {
+import '../css/FDSView.scss';
+import {FDSViewType} from './FDSViews';
+interface FDSViewSectionInterface {
+	fdsView: FDSViewType;
+	fdsViewsURL: string;
+	namespace: string;
+}
+interface FDSViewInterface {
 	fdsViewId: string;
-	fdsViewsAPIURL: string;
 	fdsViewsURL: string;
 	namespace: string;
 }
 declare const FDSView: ({
 	fdsViewId,
-	fdsViewsAPIURL,
 	fdsViewsURL,
 	namespace,
-}: IFDSViewProps) => JSX.Element;
+}: FDSViewInterface) => JSX.Element;
+export {FDSViewSectionInterface};
 export default FDSView;
