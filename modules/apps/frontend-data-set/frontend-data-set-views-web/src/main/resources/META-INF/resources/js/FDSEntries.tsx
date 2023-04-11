@@ -110,7 +110,11 @@ const RESTApplicationItem = ({
 };
 
 const RestApplicationRenderer = ({itemData}: {itemData: FDSEntryType}) => {
-	return `${itemData.restApplicationLabel} ${itemData.restApplicationVersion}`;
+	return `${itemData.restApplicationLabel}${
+		itemData.restApplicationVersion
+			? ` ${itemData.restApplicationVersion}`
+			: ''
+	}`;
 };
 
 const ViewsCountRenderer = ({itemData}: {itemData: FDSEntryType}) => {
