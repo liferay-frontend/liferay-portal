@@ -62,13 +62,13 @@ String fullName = namespace + HtmlUtil.escapeJS(name);
 				}
 		%>
 
-				config.fieldRules.push({
-					body: <%= validatorTag.getBody() %>,
-					custom: <%= validatorTag.isCustom() %>,
-					errorMessage: '<%= errorMessage %>',
-					fieldName: '<%= namespace + HtmlUtil.escapeJS(fieldName) %>',
-					validatorName: '<%= validatorTag.getName() %>',
-				});
+						config.fieldRules.push({
+							body: <%= validatorTag.getBody() %>,
+							custom: <%= validatorTag.isCustom() %>,
+							errorMessage: '<%= errorMessage %>',
+							fieldName: '<%= namespace + HtmlUtil.escapeJS(fieldName) %>',
+							validatorName: '<%= validatorTag.getName() %>',
+						});
 
 		<%
 				i++;

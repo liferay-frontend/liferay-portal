@@ -17,6 +17,19 @@ import React from 'react';
 
 import '../css/main.scss';
 
+import axeCore from 'axe-core'
+
+import graphql from 'graphql'
+
+import rDrop from 'react-dropzone'
+
+
+console.log({
+	axeCore,
+graphql,
+rDrop,
+})
+
 export default function App() {
 	return (
 		<div>

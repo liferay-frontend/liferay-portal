@@ -164,8 +164,8 @@
 			if (defaultLocale != null) {
 			%>
 
-				ddmFormDefinition.defaultLanguageId =
-					'<%= LocaleUtil.toLanguageId(defaultLocale) %>';
+					ddmFormDefinition.defaultLanguageId =
+						'<%= LocaleUtil.toLanguageId(defaultLocale) %>';
 
 			<%
 			}

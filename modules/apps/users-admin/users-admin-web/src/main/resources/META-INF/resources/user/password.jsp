@@ -208,12 +208,12 @@ else {
 						for (String question : PrefsPropsUtil.getStringArray(company.getCompanyId(), PropsKeys.USERS_REMINDER_QUERIES_QUESTIONS, StringPool.COMMA)) {
 						%>
 
-							if (
-								reminderQueryCustomQuestionInput.value ===
-								'<%= UnicodeFormatter.toString(question) %>'
-							) {
-								reminderQueryCustomQuestionInput.value = '';
-							}
+								if (
+									reminderQueryCustomQuestionInput.value ===
+									'<%= UnicodeFormatter.toString(question) %>'
+								) {
+									reminderQueryCustomQuestionInput.value = '';
+								}
 
 						<%
 						}

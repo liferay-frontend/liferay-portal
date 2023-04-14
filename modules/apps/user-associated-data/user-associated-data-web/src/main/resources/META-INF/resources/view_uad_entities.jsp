@@ -228,30 +228,30 @@ long[] groupIds = viewUADEntitiesDisplay.getGroupIds();
 						String primaryKeysVar = "primaryKeys" + typeClass.getSimpleName();
 					%>
 
-						var <%= primaryKeysVar %> = form.querySelector(
-							'#<portlet:namespace />primaryKeys__<%= typeClass.getSimpleName() %>'
-						);
-
-						if (<%= primaryKeysVar %>) {
-							var primaryKeys = Liferay.Util.getCheckedCheckboxes(
-								form,
-								'<portlet:namespace />allRowIds',
-								'<portlet:namespace />rowIds<%= typeClass.getSimpleName() %>'
+							var <%= primaryKeysVar %> = form.querySelector(
+								'#<portlet:namespace />primaryKeys__<%= typeClass.getSimpleName() %>'
 							);
 
-							<%= primaryKeysVar %>.setAttribute('value', primaryKeys);
+							if (<%= primaryKeysVar %>) {
+								var primaryKeys = Liferay.Util.getCheckedCheckboxes(
+									form,
+									'<portlet:namespace />allRowIds',
+									'<portlet:namespace />rowIds<%= typeClass.getSimpleName() %>'
+								);
 
-							var primaryKeyArray = primaryKeys.split(',');
+								<%= primaryKeysVar %>.setAttribute('value', primaryKeys);
 
-							for (var i = 0; i < primaryKeyArray.length; i++) {
-								if (
-									primaryKeyArray[i] != '' &&
-									!userOwnedPrimaryKeyArray.includes(primaryKeyArray[i])
-								) {
-									message = hierarchyMessage;
+								var primaryKeyArray = primaryKeys.split(',');
+
+								for (var i = 0; i < primaryKeyArray.length; i++) {
+									if (
+										primaryKeyArray[i] != '' &&
+										!userOwnedPrimaryKeyArray.includes(primaryKeyArray[i])
+									) {
+										message = hierarchyMessage;
+									}
 								}
 							}
-						}
 
 					<%
 					}

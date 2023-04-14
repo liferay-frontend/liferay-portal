@@ -137,10 +137,10 @@ PortletURL redirectURL = PortletURLBuilder.createRenderURL(
 		for (String transitionName : workflowTaskDisplayContext.getTransitionNames(workflowTask)) {
 		%>
 
-			Liferay.delegateClick(
-				'<portlet:namespace /><%= randomId + HtmlUtil.escapeJS(transitionName) %>taskChangeStatusLink',
-				onTaskClickFn
-			);
+				Liferay.delegateClick(
+					'<portlet:namespace /><%= randomId + HtmlUtil.escapeJS(transitionName) %>taskChangeStatusLink',
+					onTaskClickFn
+				);
 
 		<%
 		}

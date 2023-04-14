@@ -40,11 +40,11 @@ List<CPCatalogEntry> cpCatalogEntries = cpCompareContentHelper.getCPCatalogEntri
 			for (CPCatalogEntry cpCatalogEntry : cpCatalogEntries) {
 			%>
 
-				{
-					id: '<%= cpCatalogEntry.getCPDefinitionId() %>',
-					thumbnail:
-						'<%= cpCompareContentHelper.getDefaultImageFileURL(commerceAccountId, cpCatalogEntry.getCPDefinitionId()) %>',
-				},
+					{
+						id: '<%= cpCatalogEntry.getCPDefinitionId() %>',
+						thumbnail:
+							'<%= cpCompareContentHelper.getDefaultImageFileURL(commerceAccountId, cpCatalogEntry.getCPDefinitionId()) %>',
+					},
 
 			<%
 			}

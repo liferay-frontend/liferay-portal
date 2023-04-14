@@ -67,51 +67,51 @@ long cpDefinitionId = cpDefinitionLinkDisplayContext.getCPDefinitionId();
 		for (String type : cpDefinitionLinkDisplayContext.getCPDefinitionLinkTypes()) {
 		%>
 
-			eventHandler = Liferay.on(
-				'<portlet:namespace />addCommerceProductDefinitionLink<%= type %>',
-				() => {
-					Liferay.Util.openSelectionModal({
-						multiple: true,
-						onSelect: (selectedItems) => {
-							if (!selectedItems || !selectedItems.length) {
-								return;
-							}
+				eventHandler = Liferay.on(
+					'<portlet:namespace />addCommerceProductDefinitionLink<%= type %>',
+					() => {
+						Liferay.Util.openSelectionModal({
+							multiple: true,
+							onSelect: (selectedItems) => {
+								if (!selectedItems || !selectedItems.length) {
+									return;
+								}
 
-							const cpDefinitionIdsInput = document.getElementById(
-								'<portlet:namespace />cpDefinitionIds'
-							);
+								const cpDefinitionIdsInput = document.getElementById(
+									'<portlet:namespace />cpDefinitionIds'
+								);
 
-							if (cpDefinitionIdsInput) {
-								const values = selectedItems.map((item) => item.value);
+								if (cpDefinitionIdsInput) {
+									const values = selectedItems.map((item) => item.value);
 
-								cpDefinitionIdsInput.value = values.join(',');
-							}
+									cpDefinitionIdsInput.value = values.join(',');
+								}
 
-							const typeInput = document.getElementById(
-								'<portlet:namespace />type'
-							);
+								const typeInput = document.getElementById(
+									'<portlet:namespace />type'
+								);
 
-							if (typeInput) {
-								typeInput.value = '<%= type %>';
-							}
+								if (typeInput) {
+									typeInput.value = '<%= type %>';
+								}
 
-							const form = document.getElementById(
-								'<portlet:namespace />addCPDefinitionLinkFm'
-							);
+								const form = document.getElementById(
+									'<portlet:namespace />addCPDefinitionLinkFm'
+								);
 
-							if (form) {
-								submitForm(form);
-							}
-						},
-						title:
-							'<liferay-ui:message arguments="<%= HtmlUtil.escapeJS(cpDefinition.getName(languageId)) %>" key="add-new-product-to-x" />',
-						url:
-							'<%= cpDefinitionLinkDisplayContext.getItemSelectorUrl(type) %>',
-					});
-				}
-			);
+								if (form) {
+									submitForm(form);
+								}
+							},
+							title:
+								'<liferay-ui:message arguments="<%= HtmlUtil.escapeJS(cpDefinition.getName(languageId)) %>" key="add-new-product-to-x" />',
+							url:
+								'<%= cpDefinitionLinkDisplayContext.getItemSelectorUrl(type) %>',
+						});
+					}
+				);
 
-			eventHandlers.push(eventHandler);
+				eventHandlers.push(eventHandler);
 
 		<%
 		}

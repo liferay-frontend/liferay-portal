@@ -157,16 +157,16 @@ if (organization != null) {
 					for (String curType : organizationsTypes) {
 					%>
 
-						if (event.currentTarget.value === '<%= curType %>') {
-							if (
-								!<%= OrganizationLocalServiceUtil.isCountryEnabled(curType) %>
-							) {
-								countryDiv.classList.add('hide');
+							if (event.currentTarget.value === '<%= curType %>') {
+								if (
+									!<%= OrganizationLocalServiceUtil.isCountryEnabled(curType) %>
+								) {
+									countryDiv.classList.add('hide');
+								}
+								else {
+									countryDiv.classList.remove('hide');
+								}
 							}
-							else {
-								countryDiv.classList.remove('hide');
-							}
-						}
 
 					<%
 					}

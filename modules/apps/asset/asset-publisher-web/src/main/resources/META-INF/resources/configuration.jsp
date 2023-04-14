@@ -73,14 +73,14 @@ List<AssetRendererFactory<?>> classTypesAssetRendererFactories = new ArrayList<>
 			String className = assetPublisherWebHelper.getClassName(curAssetRendererFactory);
 		%>
 
-			Liferay.Util.setFormValues(form, {
-				classTypeIds<%= className %>: Liferay.Util.getSelectedOptionValues(
-					Liferay.Util.getFormElement(
-						form,
-						'<%= className %>currentClassTypeIds'
-					)
-				),
-			});
+				Liferay.Util.setFormValues(form, {
+					classTypeIds<%= className %>: Liferay.Util.getSelectedOptionValues(
+						Liferay.Util.getFormElement(
+							form,
+							'<%= className %>currentClassTypeIds'
+						)
+					),
+				});
 
 		<%
 		}

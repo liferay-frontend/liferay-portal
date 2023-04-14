@@ -49,30 +49,30 @@
 			if (!cartViews.isEmpty()) {
 			%>
 
-				initialProps.cartViews = {};
+					initialProps.cartViews = {};
 
-				<%
-				for (Map.Entry<String, String> cartView : cartViews.entrySet()) {
-				%>
+					<%
+					for (Map.Entry<String, String> cartView : cartViews.entrySet()) {
+					%>
 
-					initialProps.cartViews['<%= cartView.getKey() %>'] = {
-						contentRendererModuleUrl: '<%= cartView.getValue() %>',
-					};
+							initialProps.cartViews['<%= cartView.getKey() %>'] = {
+								contentRendererModuleUrl: '<%= cartView.getValue() %>',
+							};
 
-				<%
+					<%
+						}
 					}
-				}
 
-				if (!labels.isEmpty()) {
-				%>
+					if (!labels.isEmpty()) {
+					%>
 
-				initialProps.labels = {};
+					initialProps.labels = {};
 
-				<%
-				for (Map.Entry<String, String> label : labels.entrySet()) {
-				%>
+					<%
+					for (Map.Entry<String, String> label : labels.entrySet()) {
+					%>
 
-					initialProps.labels['<%= label.getKey() %>'] = '<%= label.getValue() %>';
+							initialProps.labels['<%= label.getKey() %>'] = '<%= label.getValue() %>';
 
 			<%
 				}

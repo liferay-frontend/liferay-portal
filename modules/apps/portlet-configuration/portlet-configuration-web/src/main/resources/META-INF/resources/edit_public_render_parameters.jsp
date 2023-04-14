@@ -141,20 +141,20 @@ Set<PublicRenderParameter> publicRenderParameters = (Set<PublicRenderParameter>)
 	for (PublicRenderParameterConfiguration publicRenderParameterConfiguration : publicRenderParameterConfigurations) {
 	%>
 
-		var ignoreInput = document.getElementById(
-			'<portlet:namespace /><%= PublicRenderParameterConfiguration.IGNORE_PREFIX + HtmlUtil.escapeJS(publicRenderParameterConfiguration.getPublicRenderParameterName()) %>'
-		);
-		var mappingInput = document.getElementById(
-			'<portlet:namespace /><%= PublicRenderParameterConfiguration.MAPPING_PREFIX + HtmlUtil.escapeJS(publicRenderParameterConfiguration.getPublicRenderParameterName()) %>'
-		);
+			var ignoreInput = document.getElementById(
+				'<portlet:namespace /><%= PublicRenderParameterConfiguration.IGNORE_PREFIX + HtmlUtil.escapeJS(publicRenderParameterConfiguration.getPublicRenderParameterName()) %>'
+			);
+			var mappingInput = document.getElementById(
+				'<portlet:namespace /><%= PublicRenderParameterConfiguration.MAPPING_PREFIX + HtmlUtil.escapeJS(publicRenderParameterConfiguration.getPublicRenderParameterName()) %>'
+			);
 
-		if (ignoreInput && mappingInput) {
-			mappingInput.disabled = ignoreInput.checked;
+			if (ignoreInput && mappingInput) {
+				mappingInput.disabled = ignoreInput.checked;
 
-			ignoreInput.addEventListener('click', () => {
-				Liferay.Util.toggleDisabled(mappingInput, !mappingInput.disabled);
-			});
-		}
+				ignoreInput.addEventListener('click', () => {
+					Liferay.Util.toggleDisabled(mappingInput, !mappingInput.disabled);
+				});
+			}
 
 	<%
 	}

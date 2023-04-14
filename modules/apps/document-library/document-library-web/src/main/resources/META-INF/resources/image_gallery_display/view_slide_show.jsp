@@ -88,8 +88,8 @@ int defaultSpeed = 3000;
 		FileEntry fileEntry = fileEntries.get(i);
 	%>
 
-		<portlet:namespace />imgArray[<%= i %>] =
-			'<%= DLURLHelperUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), themeDisplay, StringPool.BLANK) %>';
+			<portlet:namespace />imgArray[<%= i %>] =
+				'<%= DLURLHelperUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), themeDisplay, StringPool.BLANK) %>';
 
 	<%
 	}
