@@ -18,40 +18,50 @@ import ClayNavigationBar from '@clayui/navigation-bar';
 import {fetch, openToast} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import {TFDSView} from './FDSViews';
+import '../css/FDSView.scss';
+import {API_URL, OBJECT_RELATIONSHIP} from './Constants';
+import {FDSViewType} from './FDSViews';
 import Details from './fds_view/Details';
+import Fields from './fds_view/Fields';
 
 const NAVIGATION_BAR_ITEMS = [
 	{
 		Component: Details,
 		label: Liferay.Language.get('details'),
 	},
+	{
+		Component: Fields,
+		label: Liferay.Language.get('fields'),
+	},
 ];
 
-interface IFDSViewProps {
-	fdsViewId: string;
-	fdsViewsAPIURL: string;
+interface FDSViewSectionInterface {
+	fdsView: FDSViewType;
 	fdsViewsURL: string;
 	namespace: string;
 }
 
-const FDSView = ({
-	fdsViewId,
-	fdsViewsAPIURL,
-	fdsViewsURL,
-	namespace,
-}: IFDSViewProps) => {
+interface FDSViewInterface {
+	fdsViewId: string;
+	fdsViewsURL: string;
+	namespace: string;
+}
+
+const FDSView = ({fdsViewId, fdsViewsURL, namespace}: FDSViewInterface) => {
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [fdsView, setFDSView] = useState<TFDSView>();
+	const [fdsView, setFDSView] = useState<FDSViewType>();
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const getFDSView = async () => {
-			const response = await fetch(`${fdsViewsAPIURL}/${fdsViewId}`, {
-				headers: {
-					Accept: 'application/json',
-				},
-			});
+			const response = await fetch(
+				`${API_URL.FDS_VIEWS}/${fdsViewId}?nestedFields=${OBJECT_RELATIONSHIP.FDS_ENTRY_FDS_VIEW}`,
+				{
+					headers: {
+						Accept: 'application/json',
+					},
+				}
+			);
 
 			const responseJSON = await response.json();
 
@@ -71,7 +81,7 @@ const FDSView = ({
 		};
 
 		getFDSView();
-	}, [fdsViewId, fdsViewsAPIURL]);
+	}, [fdsViewId]);
 
 	const Content = NAVIGATION_BAR_ITEMS[activeIndex].Component;
 
@@ -98,7 +108,6 @@ const FDSView = ({
 				fdsView && (
 					<Content
 						fdsView={fdsView}
-						fdsViewsAPIURL={fdsViewsAPIURL}
 						fdsViewsURL={fdsViewsURL}
 						namespace={namespace}
 					/>
@@ -108,4 +117,5 @@ const FDSView = ({
 	);
 };
 
+export {FDSViewSectionInterface};
 export default FDSView;
