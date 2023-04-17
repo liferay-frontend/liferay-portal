@@ -12,12 +12,17 @@
  * details.
  */
 
-package com.liferay.frontend.js.react.web.internal.importmap;
+package com.liferay.frontend.taglib.clay.internal.importmap;
 
 import com.liferay.frontend.js.importmaps.extender.JSImportmapsContributor;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.StringUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.ServletContext;
 
@@ -29,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Iván Zaera Avellón
  */
 @Component(service = JSImportmapsContributor.class)
-public class FrontendJSReactWebJSImportmapsContributor
+public class FrontendTaglibClayJSImportmapsContributor
 	implements JSImportmapsContributor {
 
 	@Override
@@ -38,20 +43,39 @@ public class FrontendJSReactWebJSImportmapsContributor
 	}
 
 	@Activate
-	protected void activate() {
+	protected void activate() throws IOException, JSONException {
 		_importmapsJSONObject = _jsonFactory.createJSONObject();
+
+		JSONObject packageJSONObject = _getPackageJSONObject();
+
+		JSONObject dependenciesJSONObject = packageJSONObject.getJSONObject(
+			"dependencies");
 
 		String contextPath = _servletContext.getContextPath();
 
-		for (String moduleName : _MODULE_NAMES) {
+		for (String moduleName : dependenciesJSONObject.keySet()) {
+			if (!moduleName.startsWith("@clayui/")) {
+				continue;
+			}
+
 			_importmapsJSONObject.put(
 				moduleName,
 				StringBundler.concat(
-					contextPath, "/__liferay__/exports/", moduleName, ".js"));
+					contextPath, "/__liferay__/exports/",
+					moduleName.replaceAll("\\/", "\\$"), ".js"));
 		}
 	}
 
-	private static final String[] _MODULE_NAMES = {"react", "react-dom"};
+	private JSONObject _getPackageJSONObject()
+		throws IOException, JSONException {
+
+		try (InputStream inputStream =
+				FrontendTaglibClayJSImportmapsContributor.class.
+					getResourceAsStream("dependencies/package.json")) {
+
+			return _jsonFactory.createJSONObject(StringUtil.read(inputStream));
+		}
+	}
 
 	private JSONObject _importmapsJSONObject;
 
@@ -59,7 +83,7 @@ public class FrontendJSReactWebJSImportmapsContributor
 	private JSONFactory _jsonFactory;
 
 	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.frontend.js.react.web)",
+		target = "(osgi.web.symbolicname=com.liferay.frontend.taglib.clay)",
 		unbind = "-"
 	)
 	private ServletContext _servletContext;
