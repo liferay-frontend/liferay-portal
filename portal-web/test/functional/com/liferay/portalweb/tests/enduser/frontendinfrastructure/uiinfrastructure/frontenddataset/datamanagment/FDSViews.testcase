@@ -140,4 +140,38 @@ definition {
 		}
 	}
 
+	@description = "LPS-181344. Assert that the user can edit or delet view"
+	@priority = 5
+	test CanEditOrDeleteView {
+		task ("And Add a Dataset") {
+			FrontendDataSetAdmin.createDataSet(
+				key_name = "Test Dataset",
+				key_type = "/c/fdsentries");
+		}
+
+		task ("When go to the View page of the dataset created, and click save button") {
+			FrontendDataSetAdmin.goToViews(dataSetName = "Test Dataset");
+
+			FrontendDataSetAdmin.createDataSetView(
+				description = "Description Test",
+				key_name = "View Test");
+		}
+
+		task ("And Clicking the ellipsis button") {
+			Click(
+				key_name = "View Test",
+				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_KEBAB_MENU");
+		}
+
+		task ("Then confirm the options Edit and Delete are visible") {
+			AssertElementPresent(
+				key_name = "View",
+				locator1 = "FrontendDataSetAdmin#OPTIONS_IN_VIEW_ELLIPSIS");
+
+			AssertElementPresent(
+				key_name = "Delete",
+				locator1 = "FrontendDataSetAdmin#OPTIONS_IN_VIEW_ELLIPSIS");
+		}
+	}
+
 }
