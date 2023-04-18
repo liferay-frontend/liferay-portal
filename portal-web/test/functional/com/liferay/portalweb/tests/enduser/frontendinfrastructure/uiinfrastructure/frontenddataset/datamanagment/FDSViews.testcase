@@ -34,6 +34,40 @@ definition {
 		}
 	}
 
+	@description = "LPS-181340. Confirm that the name field is required for creating a view"
+	@priority = 5
+	test CanAssertNameIsRequired {
+		task ("And Add a Dataset") {
+			FrontendDataSetAdmin.createDataSet(
+				key_name = "Dataset Test",
+				key_type = "/c/fdsentries");
+		}
+
+		task ("When going to the Dataset View page of the dataset created.") {
+			FrontendDataSetAdmin.goToViews(dataSetName = "Dataset Test");
+		}
+
+		task ("And Clicking add button") {
+			LexiconEntry.gotoAdd();
+		}
+
+		task ("And Filling the description field with 'Test Description'") {
+			Type(
+				locator1 = "FrontendDataSetAdmin#NEW_DATA_SET_VIEW_DESCRIPTION",
+				value1 = "Test Description");
+		}
+
+		task ("And When Click the Save button") {
+			PortletEntry.save();
+		}
+
+		task ("Then Confirm that 'This field is required' alert messages are present in the provider field") {
+			AssertTextPresent(
+				locator1 = "Message#ERROR",
+				value1 = "This field is required.");
+		}
+	}
+
 	@description = "LPS-180898. Confirm that the user can cancel deletion when clicking close (X) button"
 	@priority = 3
 	test CanCancelDeletionOnCloseButton {
