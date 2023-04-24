@@ -60,7 +60,7 @@
 </tr>
 <tr>
 	<td>DATA_SET_VIEW_ENTRY_NAME</td>
-	<td>//li[contains(@class,'list-group-item')]//div[contains(@class,'justify-content-center')]//p[(@class="list-group-title") and contains (.,'${entryName}')]</td>
+	<td>//div[contains(@class,"container-fluid container-xl mt-3")and contains (.,'')]//div[@class="justify-content-center autofit-col autofit-col-expand"]//p[1]</td>
 	<td></td>
 </tr>
 <tr>
