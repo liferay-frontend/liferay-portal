@@ -32,6 +32,30 @@ definition {
 		}
 	}
 
+	@description = "LPS-181349. Confirm that description field is trunked if exceed 100 characters"
+	@priority = 4
+	test AssertNumberOfCharactersInDescriptionField {
+		task ("And Add a Dataset") {
+			FrontendDataSetAdmin.createDataSet(
+				key_name = "Test Dataset",
+				key_type = "/c/fdsentries");
+		}
+
+		task ("And go to add View with name View Test and description with 150 characters") {
+			FrontendDataSetAdmin.goToViews(dataSetName = "Test Dataset");
+
+			FrontendDataSetAdmin.createDataSetView(
+				description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor accumsan luctus. Praesent feugiat nibh a lectus hendrerit lobortis. Donec blandit.",
+				key_name = "View Test");
+		}
+
+		task ("Then confirm the description value will be trunked") {
+			AssertElementPresent(
+				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_DESCRIPTION",
+				viewDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor accumsan luctus. Praesent feugiat nibh a lectus hendrerit lobortis. Donec blandit.");
+		}
+	}
+
 	@description = "LPS-180896 Confirm that the dataset view deletion is recoverable"
 	@priority = 5
 	test CanCancelDeletionOnCancelButton {
@@ -63,30 +87,6 @@ definition {
 			AssertElementPresent(
 				key_itemName = "View Test",
 				locator1 = "FrontendDataSetAdmin#NAME_OF_VIEWS");
-		}
-	}
-
-	@description = "LPS-181349. Confirm that description field is trunked if exceed 100 characters"
-	@priority = 4
-	test AssertNumberOfCharactersInDescriptionField {
-		task ("And Add a Dataset") {
-			FrontendDataSetAdmin.createDataSet(
-				key_name = "Test Dataset",
-				key_type = "/c/fdsentries");
-		}
-
-		task ("And go to add View with name View Test and description with 150 characters") {
-			FrontendDataSetAdmin.goToViews(dataSetName = "Test Dataset");
-
-			FrontendDataSetAdmin.createDataSetView(
-				description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor accumsan luctus. Praesent feugiat nibh a lectus hendrerit lobortis. Donec blandit.",
-				key_name = "View Test");
-		}
-
-		task ("Then confirm the description value will be trunked") {
-			AssertElementPresent(
-				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_DESCRIPTION",
-				viewDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor accumsan luctus. Praesent feugiat nibh a lectus hendrerit lobortis. Donec blandit.");
 		}
 	}
 
