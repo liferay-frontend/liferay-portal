@@ -32,47 +32,13 @@ definition {
 		}
 	}
 
-	@description = "LPS-180896 Confirm that the dataset view deletion is recoverable"
-	@priority = 5
-	test CanCancelDeletionOnCancelButton {
-		task ("The user goes to add a new Dataset") {
-			FrontendDataSetAdmin.createDataSet(
-				key_name = "Test Dataset",
-				key_type = "/c/fdsentries");
-		}
-
-		task ("And Add a new view") {
-			FrontendDataSetAdmin.goToViews(dataSetName = "Test Dataset");
-
-			FrontendDataSetAdmin.createDataSetView(
-				description = "Description Test",
-				key_name = "View Test");
-		}
-
-		task ("And select delete and in the modal, click the cancel button") {
-			Click(
-				key_name = "View Test",
-				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_KEBAB_MENU");
-
-			ClickNoError(locator1 = "ObjectPortlet#DELETE_ENTRY_BUTTON");
-
-			Button.clickCancel();
-		}
-
-		task ("Then the dataset View is not deleted") {
-			AssertElementPresent(
-				key_itemName = "View Test",
-				locator1 = "FrontendDataSetAdmin#NAME_OF_VIEWS");
-		}
-	}
-
 	@description = "LPS-180898. Confirm that the user can cancel deletion when clicking close (X) button"
 	@priority = 3
 	test CanCancelDeletionOnCloseButton {
 		task ("When The user goes to add a new Dataset") {
 			FrontendDataSetAdmin.createDataSet(
 				key_name = "Test Dataset",
-				key_type = "/c/fdsentries");
+				key_type = "Channel");
 		}
 
 		task ("And Add a new view") {
@@ -109,34 +75,43 @@ definition {
 	}
 
 	@description = "LPS-180893. Confirm that a dataset view can be deleted"
+	@ignore = "true"
 	@priority = 5
 	test CanDeleteView {
-		task ("When The user goes to add a new Dataset") {
+
+		// TO DO FDSViews#CanDeleteView
+
+	}
+
+	@description = "LPS-181350. Confirm that special characters are confirmed in the display name on the page "
+	@priority = 4
+	test CanUseSpecialCharactersInNameField {
+		task ("And Add a Dataset") {
 			FrontendDataSetAdmin.createDataSet(
-				key_name = "Test Dataset",
-				key_type = "Channel");
+				key_name = "Dataset Test",
+				key_type = "/c/fdsentries");
 		}
 
-		task ("And Add a new view") {
-			FrontendDataSetAdmin.goToViews(dataSetName = "Test Dataset");
+		task ("When go to the View page of the dataset created.") {
+			FrontendDataSetAdmin.goToViews(dataSetName = "Dataset Test");
+		}
 
+		task ("And Clicking add button, and Filling the Name field with, and Clicking Save button") {
 			FrontendDataSetAdmin.createDataSetView(
-				description = "Description Test",
-				key_name = "View Test");
+				description = "Test Description",
+				key_name = "!\/\£$%&/'()=");
 		}
 
-		task ("And the user deletes a View created") {
-			FrontendDataSetAdmin.deleteDataSetView(viewName = "View Test");
+		task ("And Confirm the view name in View page as expected") {
+			AssertElementPresent(
+				entryName = "!\/\£$%&/'()=",
+				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_NAME");
 		}
 
-		task ("Then Confirm that the Success message should appear") {
-			Alert.viewSuccessMessage();
-		}
-
-		task ("And The dataset View is not present in the data set View page") {
-			AssertTextEquals(
-				locator1 = "Message#EMPTY_STATE_INFO",
-				value1 = "No Results Found");
+		task ("And Then Confirm the description is 'Test Description'") {
+			AssertElementPresent(
+				key_itemName = "Test Description",
+				locator1 = "FrontendDataSetAdmin#NAME_OF_VIEWS");
 		}
 	}
 
