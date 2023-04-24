@@ -68,6 +68,11 @@
 	<td>//div[contains(@class,"justify-content-center autofit-col autofit-col-expand") and contains(.,'${key_itemName}')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>OPTIONS_IN_VIEW_ELLIPSIS</td>
+	<td>//ul[contains(@class,"list-unstyled")]//button[contains(@class,"dropdown-item") and contains(.,'${key_name}')]//span[contains(@class,"pr-2")]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
