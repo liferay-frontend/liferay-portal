@@ -70,6 +70,30 @@ definition {
 		}
 	}
 
+	@description = "LPS-181349. Confirm that description field is trunked if exceed 100 characters"
+	@priority = 4
+	test AssertNumberOfCharactersInDescriptionField {
+		task ("And Add a Dataset") {
+			FrontendDataSetAdmin.createDataSet(
+				key_name = "Test Dataset",
+				key_type = "/c/fdsentries");
+		}
+
+		task ("And go to add View with name View Test and description with 150 characters") {
+			FrontendDataSetAdmin.goToViews(dataSetName = "Test Dataset");
+
+			FrontendDataSetAdmin.createDataSetView(
+				description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor accumsan luctus. Praesent feugiat nibh a lectus hendrerit lobortis. Donec blandit.",
+				key_name = "View Test");
+		}
+
+		task ("Then confirm the description value will be trunked") {
+			AssertElementPresent(
+				key_itemName = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor accumsan luctus. Praesent feugiat nibh a lectus hendrerit lobortis. Donec blandit.",
+				locator1 = "FrontendDataSetAdmin#NAME_OF_VIEWS");
+		}
+	}
+
 	@description = "LPS-181346. Confirm that pagination works right on views page"
 	@priority = 3
 	test CanAssertPaginationOnFDSViewsPage {
@@ -220,6 +244,40 @@ definition {
 		}
 	}
 
+	@description = "LPS-181354. Confirm that the user can create more than one view"
+	@priority = 4
+	test CanCreateMultipleViews {
+		task ("And Add a Dataset") {
+			FrontendDataSetAdmin.createDataSet(
+				key_name = "Test Dataset",
+				key_type = "/c/fdsentries");
+		}
+
+		task ("And Adding a new view called "View Test" and the description field with "Test Description"") {
+			FrontendDataSetAdmin.goToViews(dataSetName = "Test Dataset");
+
+			FrontendDataSetAdmin.createDataSetView(
+				description = "Test Description",
+				key_name = "View Test");
+		}
+
+		task ("And Adding a new view called "Bob Test" and the description field with "Bob Description"") {
+			FrontendDataSetAdmin.createDataSetView(
+				description = "Bob Description",
+				key_name = "Bob Test");
+		}
+
+		task ("Then Assert that the 2 views are created") {
+			AssertElementPresent(
+				entryName = "View Test",
+				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_NAME");
+
+			AssertElementPresent(
+				entryName = "Bob Test",
+				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_NAME");
+		}
+	}
+
 	@description = "LPS-181341. Confirm that The user can create a view with no description"
 	@priority = 4
 	test CanCreateViewWithNoDescription {
@@ -307,6 +365,85 @@ definition {
 			AssertTextEquals(
 				locator1 = "Message#EMPTY_STATE_INFO",
 				value1 = "No Results Found");
+		}
+	}
+
+	@description = "LPS-181344. Assert that the user can edit or delet view"
+	@priority = 5
+	test CanEditOrDeleteView {
+		task ("And Add a Dataset") {
+			FrontendDataSetAdmin.createDataSet(
+				key_name = "Test Dataset",
+				key_type = "/c/fdsentries");
+		}
+
+		task ("When go to the View page of the dataset created, and click save button") {
+			FrontendDataSetAdmin.goToViews(dataSetName = "Test Dataset");
+
+			FrontendDataSetAdmin.createDataSetView(
+				description = "Description Test",
+				key_name = "View Test");
+		}
+
+		task ("And Clicking the ellipsis button") {
+			Click(
+				key_name = "View Test",
+				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_KEBAB_MENU");
+		}
+
+		task ("Then confirm the options Edit and Delete are visible") {
+			AssertElementPresent(
+				key_name = "View",
+				locator1 = "FrontendDataSetAdmin#OPTIONS_IN_VIEW_ELLIPSIS");
+
+			AssertElementPresent(
+				key_name = "Delete",
+				locator1 = "FrontendDataSetAdmin#OPTIONS_IN_VIEW_ELLIPSIS");
+		}
+	}
+
+	@description = "LPS-181343. Confirm that the user can edit a view"
+	@ignore = "true"
+	@priority = 5
+	test CanEditView {
+		task ("And Add a Dataset") {
+			FrontendDataSetAdmin.createDataSet(
+				key_name = "Test Dataset",
+				key_type = "/c/fdsentries");
+		}
+
+		task ("When go to the View page of the dataset created, and click save button") {
+			FrontendDataSetAdmin.goToViews(dataSetName = "Test Dataset");
+
+			FrontendDataSetAdmin.createDataSetView(
+				description = "Description Test",
+				key_name = "View Test");
+		}
+
+		task ("And Clicking the ellipsis button") {
+			FrontendDataSetAdmin.goToEllipsis();
+		}
+
+		task ("When go to the View page of the dataset created, and click save button") {
+			FrontendDataSetAdmin.editView(
+				key_type = "Name",
+				key_value = "View Test edited");
+
+			FrontendDataSetAdmin.editView(
+				key_type = "Description",
+				key_value = "Test Description edited");
+
+			Navigator.gotoBack();
+		}
+
+		task ("Then The dataset is present in the data set Admin page") {
+			AssertElementPresent(
+				entryName = "View Test edited",
+				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_NAME");
+
+			AssertElementPresent(
+				key_itemName = "Test Description edited",
+				locator1 = "FrontendDataSetAdmin#NAME_OF_VIEWS");
 		}
 	}
 
