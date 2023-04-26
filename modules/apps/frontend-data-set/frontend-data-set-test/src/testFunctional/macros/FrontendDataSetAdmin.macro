@@ -108,6 +108,25 @@ definition {
 		Button.clickDelete();
 	}
 
+	macro editView {
+		Type(
+			key_type = ${key_type},
+			locator1 = "FrontendDataSetAdmin#EDIT_DATA_SET_VIEW",
+			value1 = ${key_value});
+
+		PortletEntry.save();
+	}
+
+	macro goToEllipsis {
+		Click(
+			key_name = "View Test",
+			locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_KEBAB_MENU");
+
+		Click(
+			key_name = "View",
+			locator1 = "FrontendDataSetAdmin#OPTIONS_IN_VIEW_ELLIPSIS");
+	}
+
 	macro goToDatasetAdminPage {
 		Navigator.openWithAppendToBaseURL(urlAppend = "group/control_panel/manage?p_p_id=com_liferay_frontend_data_set_views_web_internal_portlet_FDSViewsPortlet");
 	}
