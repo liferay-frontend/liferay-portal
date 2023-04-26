@@ -117,6 +117,10 @@ definition {
 		PortletEntry.save();
 	}
 
+	macro goToDatasetAdminPage {
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/control_panel/manage?p_p_id=com_liferay_frontend_data_set_views_web_internal_portlet_FDSViewsPortlet");
+	}
+
 	macro goToEllipsis {
 		Click(
 			key_name = "View Test",
@@ -125,10 +129,6 @@ definition {
 		Click(
 			key_name = "View",
 			locator1 = "FrontendDataSetAdmin#OPTIONS_IN_VIEW_ELLIPSIS");
-	}
-
-	macro goToDatasetAdminPage {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/control_panel/manage?p_p_id=com_liferay_frontend_data_set_views_web_internal_portlet_FDSViewsPortlet");
 	}
 
 	macro goToViews {
