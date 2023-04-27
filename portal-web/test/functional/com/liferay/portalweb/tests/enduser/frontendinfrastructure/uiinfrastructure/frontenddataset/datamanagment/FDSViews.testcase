@@ -290,7 +290,7 @@ definition {
 		task ("And Confirm the description is 'Test Description'") {
 			AssertElementPresent(
 				locator1 = "FrontendDataSetAdmin#NAME_OF_VIEWS",
-				viewDescription = "Test Description");
+				key_itemName = "Test Description");
 		}
 	}
 
