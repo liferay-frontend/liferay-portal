@@ -32,6 +32,33 @@ definition {
 		}
 	}
 
+	@description = "LPS-180899. Confirm that pagination works right"
+	@ignore = "true"
+	@priority = 5
+	test CanAssertPagination {
+
+		// TO DO FDSEntries#CanAssertPagination
+
+	}
+
+	@description = "LPS-180896. Confirm that the user can cancel deletion on cancel button"
+	@ignore = "true"
+	@priority = 4
+	test CanCancelDeletionOnCancelButton {
+
+		// TO DO FDSEntries#CanCancelDeletionOnCancelButton
+
+	}
+
+	@description = "LPS-180898. Confirm that the user can cancel deletion on close button"
+	@ignore = "true"
+	@priority = 3
+	test CanCancelDeletionOnCloseButton {
+
+		// TO DO FDSEntries#CanCancelDeletionOnCloseButton
+
+	}
+
 	@description = "Confirm that the user can change the pagination on the dataset admin page"
 	@priority = 4
 	test CanChangePaginationInAdminPage {
@@ -156,6 +183,15 @@ definition {
 				locator1 = "Message#ERROR",
 				value1 = "Your request failed to complete.");
 		}
+	}
+
+	@description = "LPS-180895. Confirm that a dataset view can be updated"
+	@ignore = "true"
+	@priority = 5
+	test CanUpdateNumberOfViews {
+
+		// TO DO FDSEntries#CanUpdateNumberOfViews
+
 	}
 
 	@description = "LPS-179768. Confirm that the options view and Delete is present and is visible after clicking the ellipsis button."

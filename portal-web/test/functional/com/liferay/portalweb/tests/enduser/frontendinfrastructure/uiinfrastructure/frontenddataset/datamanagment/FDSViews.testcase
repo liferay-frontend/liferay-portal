@@ -70,6 +70,33 @@ definition {
 		}
 	}
 
+	@description = "LPS-181349. Confirm that description field is trunked if exceed 100 characters"
+	@ignore = "true"
+	@priority = 4
+	test AssertNumberOfCharactersInDescriptionField {
+
+		// TO DO FDSViews#AssertNumberOfCharactersInDescriptionField
+
+	}
+
+	@description = "LPS-181347. Confirm that field is trunked if exceed 100 characters"
+	@ignore = "true"
+	@priority = 4
+	test CanAssertNameFieldIsTrunkedIfExceedCharacters {
+
+		// TO DO FDSViews#CanAssertNameFieldIsTrunkedIfExceedCharacters
+
+	}
+
+	@description = "LPS-181340. Confirm that the name field is required for creating a view"
+	@ignore = "true"
+	@priority = 5
+	test CanAssertNameIsRequired {
+
+		// TO DO FDSViews#CanAssertNameIsRequired
+
+	}
+
 	@description = "LPS-180899 Confirm that when adding several views, pagination is displayed correctly when placing as 4 items"
 	@priority = 5
 	test CanAssertPagination {
@@ -262,6 +289,15 @@ definition {
 		}
 	}
 
+	@description = "LPS-181354. Confirm that the user can create more than one view"
+	@ignore = "true"
+	@priority = 4
+	test CanCreateMultipleViews {
+
+		// TO DO FDSViews#CanCreateMultipleViews
+
+	}
+
 	@description = "LPS-181339. Confirm that the user can create a view"
 	@priority = 5
 	test CanCreateView {
@@ -292,6 +328,15 @@ definition {
 				locator1 = "FrontendDataSetAdmin#NAME_OF_VIEWS",
 				viewDescription = "Test Description");
 		}
+	}
+
+	@description = "LPS-181355. Confirm that views can be created through API"
+	@ignore = "true"
+	@priority = 4
+	test CanCreateViewsThroughAPI {
+
+		// TO DO FDSViews#CanCreateViewsThroughAPI
+
 	}
 
 	@description = "LPS-181341. Confirm that The user can create a view with no description"
@@ -350,6 +395,33 @@ definition {
 				locator1 = "Message#EMPTY_STATE_INFO",
 				value1 = "No Results Found");
 		}
+	}
+
+	@description = "LPS-181344. Assert that the user can edit or delet view"
+	@ignore = "true"
+	@priority = 5
+	test CanEditOrDeleteView {
+
+		// TO DO FDSViews#CanEditOrDeleteView
+
+	}
+
+	@description = "LPS-181343. Confirm that the user can edit a view"
+	@ignore = "true"
+	@priority = 5
+	test CanEditView {
+
+		// TO DO FDSViews#CanEditView
+
+	}
+
+	@description = "LPS-181353. Confirm that the user can search a view by its description"
+	@ignore = "true"
+	@priority = 4
+	test CanSearchViewByDescription {
+
+		// TO DO FDSViews#CanSearchViewByDescription
+
 	}
 
 	@description = "LPS-181351. Confirm that the user can search a view by its name"
@@ -436,6 +508,15 @@ definition {
 				locator1 = "FrontendDataSetAdmin#NUMBER_OF_VIEWS",
 				numberOfViews = 0);
 		}
+	}
+
+	@description = "LPS-181348. Confirm that special characters can be used in name field"
+	@ignore = "true"
+	@priority = 4
+	test CanUseSpecialCharactersInNameField {
+
+		// TO DO FDSViews#CanUseSpecialCharactersInNameField
+
 	}
 
 }
