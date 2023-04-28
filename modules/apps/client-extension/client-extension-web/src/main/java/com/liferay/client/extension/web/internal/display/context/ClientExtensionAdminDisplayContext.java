@@ -18,11 +18,18 @@ import com.liferay.client.extension.type.factory.CETFactory;
 import com.liferay.client.extension.web.internal.display.context.util.CETLabelUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
+import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import javax.portlet.ActionURL;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,12 +39,17 @@ import javax.servlet.http.HttpServletRequest;
 public class ClientExtensionAdminDisplayContext {
 
 	public ClientExtensionAdminDisplayContext(
-		CETFactory cetFactory, RenderRequest renderRequest,
-		RenderResponse renderResponse) {
+		AbsolutePortalURLBuilderFactory absolutePortalURLBuilderFactory,
+		CETFactory cetFactory, PortletRequest portletRequest,
+		PortletResponse portletResponse) {
 
+		_absolutePortalURLBuilderFactory = absolutePortalURLBuilderFactory;
 		_cetFactory = cetFactory;
-		_renderRequest = renderRequest;
-		_renderResponse = renderResponse;
+
+		_liferayPortletRequest = PortalUtil.getLiferayPortletRequest(
+			portletRequest);
+		_liferayPortletResponse = PortalUtil.getLiferayPortletResponse(
+			portletResponse);
 	}
 
 	public CreationMenu getCreationMenu() {
@@ -54,7 +66,7 @@ public class ClientExtensionAdminDisplayContext {
 				dropdownItem -> {
 					dropdownItem.setHref(
 						PortletURLBuilder.createRenderURL(
-							_renderResponse
+							_liferayPortletResponse
 						).setMVCRenderCommandName(
 							"/client_extension_admin" +
 								"/edit_client_extension_entry"
@@ -65,23 +77,59 @@ public class ClientExtensionAdminDisplayContext {
 						).buildPortletURL());
 					dropdownItem.setLabel(
 						CETLabelUtil.getAddLabel(
-							_renderRequest.getLocale(), type));
+							_liferayPortletRequest.getLocale(), type));
 				});
 		}
 
 		return creationMenu;
 	}
 
+	public String getExportURL() {
+		AbsolutePortalURLBuilder absolutePortalURLBuilder =
+			_absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
+				_getHttpServletRequest());
+
+		return absolutePortalURLBuilder.forServlet(
+			"/export-client-extensions-entries"
+		).build();
+	}
+
+	public ActionURL getImportActionURL() {
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/client_extension_admin/import"
+		).setRedirect(
+			_getRedirect()
+		).buildActionURL();
+	}
+
+	public PortletURL getImportURL() {
+		return PortletURLBuilder.createRenderURL(
+			_liferayPortletResponse
+		).setMVCRenderCommandName(
+			"/client_extension_admin/import"
+		).setRedirect(
+			_getRedirect()
+		).buildPortletURL();
+	}
+
+	public String getRedirect() {
+		return ParamUtil.getString(_liferayPortletRequest, "redirect");
+	}
+
 	private HttpServletRequest _getHttpServletRequest() {
-		return PortalUtil.getHttpServletRequest(_renderRequest);
+		return PortalUtil.getHttpServletRequest(_liferayPortletRequest);
 	}
 
 	private String _getRedirect() {
 		return PortalUtil.getCurrentURL(_getHttpServletRequest());
 	}
 
+	private final AbsolutePortalURLBuilderFactory
+		_absolutePortalURLBuilderFactory;
 	private final CETFactory _cetFactory;
-	private final RenderRequest _renderRequest;
-	private final RenderResponse _renderResponse;
+	private final LiferayPortletRequest _liferayPortletRequest;
+	private final LiferayPortletResponse _liferayPortletResponse;
 
 }

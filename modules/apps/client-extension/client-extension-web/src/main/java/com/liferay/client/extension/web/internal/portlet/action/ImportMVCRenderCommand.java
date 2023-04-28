@@ -34,11 +34,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"javax.portlet.name=" + ClientExtensionAdminPortletKeys.CLIENT_EXTENSION_ADMIN,
-		"mvc.command.name=/"
+		"mvc.command.name=/client_extension_admin/import"
 	},
 	service = MVCRenderCommand.class
 )
-public class ViewMVCRenderCommand implements MVCRenderCommand {
+public class ImportMVCRenderCommand implements MVCRenderCommand {
 
 	@Override
 	public String render(
@@ -51,7 +51,7 @@ public class ViewMVCRenderCommand implements MVCRenderCommand {
 				_absolutePortalURLBuilderFactory, _cetFactory, renderRequest,
 				renderResponse));
 
-		return "/admin/view.jsp";
+		return "/admin/import.jsp";
 	}
 
 	@Reference

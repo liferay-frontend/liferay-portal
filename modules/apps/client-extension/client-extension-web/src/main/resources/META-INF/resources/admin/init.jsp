@@ -37,6 +37,7 @@ page import="com.liferay.client.extension.web.internal.constants.ClientExtension
 page import="com.liferay.client.extension.web.internal.display.context.ClientExtensionAdminDisplayContext" %><%@
 page import="com.liferay.client.extension.web.internal.display.context.EditClientExtensionEntryDisplayContext" %><%@
 page import="com.liferay.client.extension.web.internal.display.context.ViewClientExtensionEntryDisplayContext" %><%@
+page import="com.liferay.portal.kernel.json.JSONException" %><%@
 page import="com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil" %>
 
 <%@ page import="java.lang.reflect.Method" %>

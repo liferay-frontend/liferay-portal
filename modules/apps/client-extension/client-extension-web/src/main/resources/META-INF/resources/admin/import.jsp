@@ -20,21 +20,15 @@
 ClientExtensionAdminDisplayContext clientExtensionAdminDisplayContext = (ClientExtensionAdminDisplayContext)renderRequest.getAttribute(ClientExtensionAdminWebKeys.CLIENT_EXTENSION_ADMIN_DISPLAY_CONTEXT);
 %>
 
-<a href="<%= clientExtensionAdminDisplayContext.getExportURL() %>" target="_blank">
-	Export
-</a>
-||
-<a href="<%= clientExtensionAdminDisplayContext.getImportURL() %>">
-	Import
-</a>
+<liferay-frontend:edit-form
+	action="<%= clientExtensionAdminDisplayContext.getImportActionURL() %>"
+	method="post"
+>
+	<aui:input name="redirect" type="hidden" value="<%= clientExtensionAdminDisplayContext.getRedirect() %>" />
 
-<frontend-data-set:classic-display
-	actionParameterName="externalReferenceCode"
-	creationMenu="<%= clientExtensionAdminDisplayContext.getCreationMenu() %>"
-	dataProviderKey="<%= ClientExtensionAdminFDSNames.CLIENT_EXTENSION_TYPES %>"
-	id="<%= ClientExtensionAdminFDSNames.CLIENT_EXTENSION_TYPES %>"
-	itemsPerPage="<%= 10 %>"
-	selectedItemsKey="externalReferenceCode"
-	style="fluid"
-	uniformActionsDisplay="<%= true %>"
-/>
+	<liferay-ui:error exception="<%= JSONException.class %>" message="import-file-format-is-not-valid-or-has-and-unsupported-version-number" />
+
+	<aui:input name="file" type="file" />
+
+	<aui:button type="submit" value="import" />
+</liferay-frontend:edit-form>
