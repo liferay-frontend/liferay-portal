@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -101,6 +102,15 @@ public class ClientExtensionEntryServiceImpl
 		}
 
 		return clientExtensionEntry;
+	}
+
+	@Override
+	public List<ClientExtensionEntry> getClientExtensionEntries(
+			long companyId, int start, int end)
+		throws PortalException {
+
+		return clientExtensionEntryLocalService.getClientExtensionEntries(
+			companyId, start, end);
 	}
 
 	@Override
