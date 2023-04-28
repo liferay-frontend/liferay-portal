@@ -229,6 +229,52 @@ public class ClientExtensionEntryServiceHttp {
 		}
 	}
 
+	public static java.util.List
+		<com.liferay.client.extension.model.ClientExtensionEntry>
+				getClientExtensionEntries(
+					HttpPrincipal httpPrincipal, long companyId, int start,
+					int end)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				ClientExtensionEntryServiceUtil.class,
+				"getClientExtensionEntries",
+				_getClientExtensionEntriesParameterTypes4);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, start, end);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List
+				<com.liferay.client.extension.model.ClientExtensionEntry>)
+					returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.client.extension.model.ClientExtensionEntry
 			getClientExtensionEntry(
 				HttpPrincipal httpPrincipal, long clientExtensionEntryId)
@@ -238,7 +284,7 @@ public class ClientExtensionEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				ClientExtensionEntryServiceUtil.class,
 				"getClientExtensionEntry",
-				_getClientExtensionEntryParameterTypes4);
+				_getClientExtensionEntryParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, clientExtensionEntryId);
@@ -284,7 +330,7 @@ public class ClientExtensionEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				ClientExtensionEntryServiceUtil.class,
 				"updateClientExtensionEntry",
-				_updateClientExtensionEntryParameterTypes5);
+				_updateClientExtensionEntryParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, clientExtensionEntryId, description, nameMap,
@@ -335,9 +381,11 @@ public class ClientExtensionEntryServiceHttp {
 	private static final Class<?>[]
 		_fetchClientExtensionEntryByExternalReferenceCodeParameterTypes3 =
 			new Class[] {long.class, String.class};
-	private static final Class<?>[] _getClientExtensionEntryParameterTypes4 =
+	private static final Class<?>[] _getClientExtensionEntriesParameterTypes4 =
+		new Class[] {long.class, int.class, int.class};
+	private static final Class<?>[] _getClientExtensionEntryParameterTypes5 =
 		new Class[] {long.class};
-	private static final Class<?>[] _updateClientExtensionEntryParameterTypes5 =
+	private static final Class<?>[] _updateClientExtensionEntryParameterTypes6 =
 		new Class[] {
 			long.class, String.class, java.util.Map.class, String.class,
 			String.class, String.class

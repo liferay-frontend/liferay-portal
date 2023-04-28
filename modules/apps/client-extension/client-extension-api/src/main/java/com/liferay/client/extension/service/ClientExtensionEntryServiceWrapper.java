@@ -82,6 +82,15 @@ public class ClientExtensionEntryServiceWrapper
 	}
 
 	@Override
+	public java.util.List<ClientExtensionEntry> getClientExtensionEntries(
+			long companyId, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _clientExtensionEntryService.getClientExtensionEntries(
+			companyId, start, end);
+	}
+
+	@Override
 	public ClientExtensionEntry getClientExtensionEntry(
 			long clientExtensionEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {

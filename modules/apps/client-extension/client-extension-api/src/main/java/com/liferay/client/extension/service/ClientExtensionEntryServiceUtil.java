@@ -17,6 +17,7 @@ package com.liferay.client.extension.service;
 import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,6 +73,13 @@ public class ClientExtensionEntryServiceUtil {
 
 		return getService().fetchClientExtensionEntryByExternalReferenceCode(
 			companyId, externalReferenceCode);
+	}
+
+	public static List<ClientExtensionEntry> getClientExtensionEntries(
+			long companyId, int start, int end)
+		throws PortalException {
+
+		return getService().getClientExtensionEntries(companyId, start, end);
 	}
 
 	public static ClientExtensionEntry getClientExtensionEntry(
