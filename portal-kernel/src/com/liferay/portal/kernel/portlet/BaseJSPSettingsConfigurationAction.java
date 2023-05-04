@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -71,6 +72,7 @@ public class BaseJSPSettingsConfigurationAction
 		throws Exception {
 
 		PortletBag portletBag = PortletBagPool.get(
+			PortalUtil.getCompanyId(httpServletRequest),
 			PortletIdCodec.decodePortletName(
 				ParamUtil.getString(httpServletRequest, "portletResource")));
 

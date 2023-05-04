@@ -24,6 +24,8 @@ import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.FileAvailabilityUtil;
 import com.liferay.portal.kernel.servlet.taglib.TagDynamicIdFactory;
@@ -138,7 +140,11 @@ public class IncludeTag extends AttributesTagSupport {
 		if (Validator.isNotNull(portletId)) {
 			String rootPortletId = PortletIdCodec.decodePortletName(portletId);
 
-			PortletBag portletBag = PortletBagPool.get(rootPortletId);
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			PortletBag portletBag = PortletBagPool.get(
+				serviceContext.getCompanyId(), rootPortletId);
 
 			setServletContext(portletBag.getServletContext());
 		}

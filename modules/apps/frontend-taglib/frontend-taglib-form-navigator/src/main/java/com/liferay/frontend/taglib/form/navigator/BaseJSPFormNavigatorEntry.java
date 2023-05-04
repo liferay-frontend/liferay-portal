@@ -74,7 +74,9 @@ public abstract class BaseJSPFormNavigatorEntry<T>
 		if (Validator.isNotNull(portletId)) {
 			String rootPortletId = PortletIdCodec.decodePortletName(portletId);
 
-			PortletBag portletBag = PortletBagPool.get(rootPortletId);
+			PortletBag portletBag = PortletBagPool.get(
+				PortalUtil.getCompanyId(httpServletRequest),
+				rootPortletId);
 
 			return portletBag.getServletContext();
 		}

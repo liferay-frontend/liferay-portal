@@ -85,7 +85,9 @@ public class JSPRenderer {
 		if (Validator.isNotNull(portletId)) {
 			String rootPortletId = PortletIdCodec.decodePortletName(portletId);
 
-			PortletBag portletBag = PortletBagPool.get(rootPortletId);
+			PortletBag portletBag = PortletBagPool.get(
+				_portal.getCompanyId(httpServletRequest),
+				rootPortletId);
 
 			return portletBag.getServletContext();
 		}

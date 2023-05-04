@@ -613,7 +613,8 @@ public class PortletImpl extends PortletBaseImpl {
 			return null;
 		}
 
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(
+			getCompanyId(), getRootPortletId());
 
 		return portletBag.getAssetRendererFactoryInstances();
 	}
@@ -662,7 +663,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public ConfigurationAction getConfigurationActionInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		if (portletBag == null) {
 			return null;
@@ -735,7 +736,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public ControlPanelEntry getControlPanelEntryInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		if (portletBag == null) {
 			return _controlPanelEntry;
@@ -794,7 +795,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public List<CustomAttributesDisplay> getCustomAttributesDisplayInstances() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		return portletBag.getCustomAttributesDisplayInstances();
 	}
@@ -908,7 +909,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public FriendlyURLMapper getFriendlyURLMapperInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		if (portletBag == null) {
 			return null;
@@ -1078,7 +1079,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public List<Indexer<?>> getIndexerInstances() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		return portletBag.getIndexerInstances();
 	}
@@ -1207,7 +1208,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public OpenSearch getOpenSearchInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		List<OpenSearch> openSearchInstances =
 			portletBag.getOpenSearchInstances();
@@ -1246,7 +1247,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public PermissionPropagator getPermissionPropagatorInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		List<PermissionPropagator> permissionPropagatorInstances =
 			portletBag.getPermissionPropagatorInstances();
@@ -1305,7 +1306,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public MessageListener getPopMessageListenerInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		List<MessageListener> popMessageListenerInstances =
 			portletBag.getPopMessageListenerInstances();
@@ -1358,7 +1359,7 @@ public class PortletImpl extends PortletBaseImpl {
 	public PortletConfigurationListener
 		getPortletConfigurationListenerInstance() {
 
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		if (portletBag == null) {
 			return null;
@@ -1392,7 +1393,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public PortletDataHandler getPortletDataHandlerInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		if (portletBag == null) {
 			_log.error("No portlet bag for " + toString());
@@ -1457,7 +1458,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public PortletLayoutListener getPortletLayoutListenerInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		if (portletBag == null) {
 			return null;
@@ -1814,7 +1815,7 @@ public class PortletImpl extends PortletBaseImpl {
 			return null;
 		}
 
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		return portletBag.getSocialActivityInterpreterInstances();
 	}
@@ -1838,7 +1839,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public SocialRequestInterpreter getSocialRequestInterpreterInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		List<SocialRequestInterpreter> socialRequestInterpreterInstances =
 			portletBag.getSocialRequestInterpreterInstances();
@@ -1875,7 +1876,7 @@ public class PortletImpl extends PortletBaseImpl {
 			return null;
 		}
 
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		return portletBag.getStagedModelDataHandlerInstances();
 	}
@@ -1989,7 +1990,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public TemplateHandler getTemplateHandlerInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		List<TemplateHandler> templateHandlerInstances =
 			portletBag.getTemplateHandlerInstances();
@@ -2041,7 +2042,7 @@ public class PortletImpl extends PortletBaseImpl {
 			return null;
 		}
 
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		return portletBag.getTrashHandlerInstances();
 	}
@@ -2084,7 +2085,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public URLEncoder getURLEncoderInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		if (portletBag == null) {
 			return null;
@@ -2156,7 +2157,7 @@ public class PortletImpl extends PortletBaseImpl {
 			return null;
 		}
 
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		return portletBag.getUserNotificationHandlerInstances();
 	}
@@ -2198,7 +2199,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public WebDAVStorage getWebDAVStorageInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		if (portletBag == null) {
 			return null;
@@ -2257,7 +2258,7 @@ public class PortletImpl extends PortletBaseImpl {
 			return null;
 		}
 
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		return portletBag.getWorkflowHandlerInstances();
 	}
@@ -2279,7 +2280,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public Method getXmlRpcMethodInstance() {
-		PortletBag portletBag = PortletBagPool.get(getRootPortletId());
+		PortletBag portletBag = PortletBagPool.get(getCompanyId(), getRootPortletId());
 
 		List<Method> xmlRpcMethodInstances =
 			portletBag.getXmlRpcMethodInstances();

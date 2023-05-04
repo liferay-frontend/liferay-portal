@@ -206,7 +206,8 @@ public class PortletBagFactory {
 			portlet.getResourceBundle(), friendlyURLMapperTracker,
 			serviceRegistrations);
 
-		PortletBagPool.put(portlet.getRootPortletId(), portletBag);
+		PortletBagPool.put(
+			portlet.getCompanyId(), portlet.getRootPortletId(), portletBag);
 
 		try {
 			PortletInstanceFactoryUtil.create(

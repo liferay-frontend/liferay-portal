@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.portlet.PortletBagPool;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.servlet.ServletContextClassLoaderPool;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -57,6 +58,7 @@ public class NPMResolvedPackageNameUtil {
 
 		if (Validator.isNotNull(portletResource)) {
 			PortletBag portletBag = PortletBagPool.get(
+				PortalUtil.getCompanyId(httpServletRequest),
 				PortletIdCodec.decodePortletName(portletResource));
 
 			if (portletBag != null) {

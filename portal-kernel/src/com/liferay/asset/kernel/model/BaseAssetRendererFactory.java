@@ -26,6 +26,8 @@ import com.liferay.portal.kernel.portlet.PortletBagPool;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -123,7 +125,11 @@ public abstract class BaseAssetRendererFactory<T>
 		String portletId = getPortletId();
 
 		if ((value == null) && (portletId != null)) {
-			PortletBag portletBag = PortletBagPool.get(portletId);
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			PortletBag portletBag = PortletBagPool.get(
+				serviceContext.getCompanyId(), portletId);
 
 			ResourceBundle resourceBundle = portletBag.getResourceBundle(
 				locale);

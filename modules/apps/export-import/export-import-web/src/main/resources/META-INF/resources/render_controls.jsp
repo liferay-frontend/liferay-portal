@@ -27,7 +27,7 @@ String portletId = (String)request.getAttribute("render_controls.jsp-portletId")
 String rootControlId = (String)request.getAttribute("render_controls.jsp-rootControlId");
 
 if (Validator.isNotNull(portletId)) {
-	PortletBag portletBag = PortletBagPool.get(portletId);
+	PortletBag portletBag = PortletBagPool.get(PortalUtil.getCompanyId(request), portletId);
 
 	ResourceBundle portletResourceBundle = portletBag.getResourceBundle(locale);
 

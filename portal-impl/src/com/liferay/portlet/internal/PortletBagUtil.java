@@ -37,7 +37,8 @@ public class PortletBagUtil {
 			String rootPortletId)
 		throws PortletException {
 
-		PortletBag portletBag = PortletBagPool.get(rootPortletId);
+		PortletBag portletBag = PortletBagPool.get(
+			portletModel.getCompanyId(), rootPortletId);
 
 		// Portlet bag should never be null unless the portlet has been
 		// undeployed

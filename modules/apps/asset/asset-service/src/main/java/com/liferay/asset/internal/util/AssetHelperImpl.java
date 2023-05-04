@@ -389,7 +389,7 @@ public class AssetHelperImpl implements AssetHelper {
 			}
 
 			PortletBag portletBag = PortletBagPool.get(
-				portlet.getRootPortletId());
+				portlet.getCompanyId(),	portlet.getRootPortletId());
 
 			if (portletBag == null) {
 				continue;

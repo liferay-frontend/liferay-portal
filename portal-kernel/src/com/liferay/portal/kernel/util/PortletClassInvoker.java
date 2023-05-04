@@ -14,6 +14,7 @@
 
 package com.liferay.portal.kernel.util;
 
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
 
@@ -33,7 +34,10 @@ public class PortletClassInvoker {
 
 		ClassLoader portletClassLoader = PortalClassLoaderUtil.getClassLoader();
 
-		PortletBag portletBag = PortletBagPool.get(portletId);
+		// TODO: this class is not used any more; can be removed
+
+		PortletBag portletBag = PortletBagPool.get(
+			CompanyConstants.SYSTEM, portletId);
 
 		if (portletBag != null) {
 			ServletContext servletContext = portletBag.getServletContext();
