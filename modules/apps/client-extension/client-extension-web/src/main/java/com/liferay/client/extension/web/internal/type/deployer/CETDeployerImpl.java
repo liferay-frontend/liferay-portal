@@ -163,8 +163,7 @@ public class CETDeployerImpl implements CETDeployer {
 	private String _getPortletId(CET cet) {
 		return StringBundler.concat(
 			"com_liferay_client_extension_web_internal_portlet_",
-			"ClientExtensionEntryPortlet_", cet.getCompanyId(),
-			StringPool.UNDERLINE,
+			"ClientExtensionEntryPortlet_",
 			CETUtil.normalizeExternalReferenceCodeForPortletId(
 				cet.getExternalReferenceCode()));
 	}

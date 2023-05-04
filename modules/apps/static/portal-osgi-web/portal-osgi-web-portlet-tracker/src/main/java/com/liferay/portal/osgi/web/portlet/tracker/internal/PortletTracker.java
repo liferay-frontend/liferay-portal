@@ -50,6 +50,8 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DelegateProxyFactory;
@@ -161,11 +163,15 @@ public class PortletTracker
 			return null;
 		}
 
-		com.liferay.portal.kernel.model.Portlet portletModel =
-			_portletLocalService.getPortletById(portletId);
+		long companyId = GetterUtil.getLong(
+			serviceReference.getProperty("com.liferay.portlet.company"),
+				CompanyConstants.SYSTEM);
 
-		if (portletModel != null) {
-			_log.error("Portlet id " + portletId + " is already in use");
+		if (_portletLocalService.hasPortlet(companyId, portletId)) {
+			_log.error(
+				StringBundler.concat(
+					"Portlet id ", portletId, " in company ", companyId,
+						" is already in use"));
 
 			_bundleContext.ungetService(serviceReference);
 
@@ -176,7 +182,7 @@ public class PortletTracker
 			_log.info("Adding " + serviceReference);
 		}
 
-		portletModel = _addingPortlet(
+		com.liferay.portal.kernel.model.Portlet portletModel = _addingPortlet(
 			serviceReference, portlet, portletName, portletId);
 
 		if (portletModel == null) {
