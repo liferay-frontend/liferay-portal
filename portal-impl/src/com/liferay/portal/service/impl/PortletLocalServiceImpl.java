@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.model.portlet.PortletDependencyFactoryUtil;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.plugin.PluginPackage;
+import com.liferay.portal.kernel.portlet.CompanyPortletMap;
 import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -65,6 +66,7 @@ import com.liferay.portal.kernel.portlet.PortletQNameUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerEntryImpl;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -223,7 +225,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	@Override
 	@Transactional(enabled = false)
 	public void clearPortletsMap() {
-		_portletsMaps.clear();
+		_runningPortlets.clear();
 	}
 
 	@Override
@@ -320,7 +322,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 		portletBagFactory.create(portlet, true);
 
-		_portletsMap.put(portlet.getRootPortletId(), portlet);
+		_putKnownPortlet(portlet);
 
 		clearCache();
 	}
@@ -331,7 +333,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			boolean eagerDestroy, boolean clearCache)
 		throws PortalException {
 
-		_portletsMap.put(portlet.getRootPortletId(), portlet);
+		_putKnownPortlet(portlet);
 
 		if (eagerDestroy) {
 			PortletInstanceFactoryUtil.clear(portlet, false);
@@ -392,7 +394,8 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	@Override
 	@Transactional(enabled = false)
 	public void destroyPortlet(Portlet portlet) {
-		_portletsMap.remove(portlet.getRootPortletId());
+		_knownPortlets.remove(
+			portlet.getCompanyId(), portlet.getRootPortletId());
 
 		PortletApp portletApp = portlet.getPortletApp();
 
@@ -484,7 +487,9 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			friendlyURLMapperRootPortletIds.length);
 
 		for (String rootPortletId : friendlyURLMapperRootPortletIds) {
-			Portlet portlet = _portletsMap.get(rootPortletId);
+			Portlet portlet = _knownPortlets.get(
+				_inferCompanyId("used from PortalImpl; most probably companyId should be valid"),
+				rootPortletId);
 
 			if ((portlet == null) || !portlet.isActive() ||
 				!portlet.isInclude() || !portlet.isReady() ||
@@ -497,6 +502,28 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		}
 
 		return portlets;
+	}
+
+	private long _inferCompanyId(String todoMessage) {
+		long companyId = 0;
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext != null) {
+			companyId = serviceContext.getCompanyId();
+		}
+		else {
+			companyId = CompanyThreadLocal.getCompanyId();
+
+			if (companyId == 0 && _log.isWarnEnabled()) {
+				_log.warn(
+					new Exception(
+						"ServiceContext is null and CompanyThreadLocal returned 0"));
+			}
+		}
+
+		return companyId;
 	}
 
 	@Override
@@ -545,7 +572,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			return portlet;
 		}
 
-		if (_portletsMap.isEmpty()) {
+		if (_knownPortlets.isEmpty()) {
 			if (_log.isDebugEnabled()) {
 				_log.debug("No portlets are installed");
 			}
@@ -600,7 +627,9 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	@Override
 	@Transactional(enabled = false)
 	public Portlet getPortletById(String portletId) {
-		return _portletsMap.get(PortletIdCodec.decodePortletName(portletId));
+		return _knownPortlets.get(
+			_inferCompanyId("used all over portal; need to check thoroughly"),
+			PortletIdCodec.decodePortletName(portletId));
 	}
 
 	@Override
@@ -618,7 +647,10 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	@Override
 	@Transactional(enabled = false)
 	public List<Portlet> getPortlets() {
-		return ListUtil.fromMapValues(_portletsMap);
+		return ListUtil.fromCollection(
+			_knownPortlets.values(
+				_inferCompanyId(
+					"used from core but also from import/export!")));
 	}
 
 	@Override
@@ -667,7 +699,9 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	@Override
 	@Transactional(enabled = false)
 	public List<Portlet> getScopablePortlets() {
-		List<Portlet> portlets = ListUtil.fromMapValues(_portletsMap);
+		List<Portlet> portlets = ListUtil.fromCollection(
+			_knownPortlets.values(
+				_inferCompanyId("apparently not used any more")));
 
 		Iterator<Portlet> iterator = portlets.iterator();
 
@@ -731,7 +765,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		portletLocalService.clearPortletsMap();
 
 		_portletApps.clear();
-		_portletsMap.clear();
+		_knownPortlets.clear();
 
 		try {
 			PortletApp portletApp = getPortletApp(StringPool.BLANK);
@@ -752,7 +786,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 					servletURLPatterns, pluginPackage));
 
 			for (Map.Entry<String, Portlet> entry : portletsMap.entrySet()) {
-				_portletsMap.put(entry.getKey(), entry.getValue());
+				_putKnownPortlet(entry.getValue());
 			}
 
 			Map<String, String> portletIdsByStrutsPath =
@@ -801,18 +835,12 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 			// Remove portlets that should not be included
 
-			Set<Map.Entry<String, Portlet>> entrySet = _portletsMap.entrySet();
-
-			Iterator<Map.Entry<String, Portlet>> iterator = entrySet.iterator();
-
-			while (iterator.hasNext()) {
-				Map.Entry<String, Portlet> entry = iterator.next();
-
-				Portlet portletModel = entry.getValue();
+			for (Portlet portletModel :
+				_knownPortlets.values(CompanyConstants.SYSTEM)) {
 
 				if (!Objects.equals(
-						portletModel.getPortletId(),
-						PortletKeys.SERVER_ADMIN) &&
+					portletModel.getPortletId(),
+					PortletKeys.SERVER_ADMIN) &&
 					!portletModel.isInclude() &&
 					!Objects.equals(
 						portletModel.getPortletId(),
@@ -820,7 +848,9 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 							PortalMyAccountApplicationType.MyAccount.CLASS_NAME,
 							PortletProvider.Action.VIEW))) {
 
-					iterator.remove();
+					_knownPortlets.remove(
+						portletModel.getCompanyId(),
+						portletModel.getRootPortletId());
 				}
 			}
 		}
@@ -912,7 +942,10 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 		try {
 			for (Map.Entry<String, Portlet> entry : portletsMap.entrySet()) {
-				Portlet portlet = _portletsMap.remove(entry.getKey());
+				Portlet portlet = entry.getValue();
+
+				portlet = _knownPortlets.remove(
+					portlet.getCompanyId(), entry.getKey());
 
 				if (portlet != null) {
 					PortletInstanceFactoryUtil.clear(portlet);
@@ -925,7 +958,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 				portletBagFactory.create(portlet, true);
 
-				_portletsMap.put(entry.getKey(), portlet);
+				_putKnownPortlet(portlet);
 			}
 
 			return ListUtil.fromMapValues(portletsMap);
@@ -936,7 +969,10 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			// Clean up portlets added prior to error
 
 			for (Map.Entry<String, Portlet> entry : portletsMap.entrySet()) {
-				Portlet portlet = _portletsMap.remove(entry.getKey());
+				Portlet portlet = entry.getValue();
+
+				portlet = _knownPortlets.remove(
+					portlet.getCompanyId(), entry.getKey());
 
 				if (portlet != null) {
 					PortletInstanceFactoryUtil.clear(portlet);
@@ -957,7 +993,8 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	public Map<String, Portlet> loadGetPortletsMap(long companyId) {
 		Map<String, Portlet> portletsMap = new ConcurrentHashMap<>();
 
-		for (Portlet portlet : _portletsMap.values()) {
+		for (Portlet portlet : _knownPortlets.values(companyId)) {
+			// TODO: the following if can be removed since it's redundant
 			if ((portlet.getCompanyId() != CompanyConstants.SYSTEM) &&
 				(portlet.getCompanyId() != companyId)) {
 
@@ -995,7 +1032,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	@Override
 	@Transactional(enabled = false)
 	public void removeCompanyPortletsPool(long companyId) {
-		_portletsMaps.remove(companyId);
+		_runningPortlets.removeCompanyMap(companyId);
 	}
 
 	@Override
@@ -1041,14 +1078,17 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		if (portletIdsByStrutsPath == null) {
 			portletIdsByStrutsPath = new ConcurrentHashMap<>();
 
-			for (Portlet portlet : _portletsMap.values()) {
+			for (Portlet portlet :
+					_knownPortlets.values(CompanyConstants.SYSTEM)) {
+
 				String strutsPath = portlet.getStrutsPath();
 
 				String oldPortletId = portletIdsByStrutsPath.put(
 					strutsPath, portlet.getPortletId());
 
 				if ((oldPortletId != null) && _log.isWarnEnabled()) {
-					Portlet oldPortlet = _portletsMap.get(oldPortletId);
+					Portlet oldPortlet = _knownPortlets.get(
+						CompanyConstants.SYSTEM, oldPortletId);
 
 					String oldPortletContextName = oldPortlet.getContextName();
 
@@ -1155,12 +1195,14 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	}
 
 	protected Map<String, Portlet> getPortletsMap(long companyId) {
-		Map<String, Portlet> portletsMap = _portletsMaps.get(companyId);
+		Map<String, Portlet> portletsMap = _runningPortlets.getCompanyMap(
+			companyId);
 
 		if (portletsMap == null) {
 			portletsMap = portletLocalService.loadGetPortletsMap(companyId);
 
-			_portletsMaps.put(companyId, portletsMap);
+			_runningPortlets.putCompanyMap(
+				companyId, new ConcurrentHashMap<>(portletsMap));
 		}
 
 		return portletsMap;
@@ -1304,7 +1346,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 		Set<String> undefinedPortletIds = new HashSet<>();
 
-		for (Portlet portlet : _portletsMap.values()) {
+		for (Portlet portlet : _knownPortlets.values(CompanyConstants.SYSTEM)) {
 			String portletId = portlet.getPortletId();
 
 			PortletApp portletApp = portlet.getPortletApp();
@@ -2033,7 +2075,8 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			_log.debug("Reading portlet " + portletId);
 		}
 
-		Portlet portletModel = _portletsMap.get(portletId);
+		Portlet portletModel = _knownPortlets.get(
+			CompanyConstants.SYSTEM, portletId);
 
 		if (portletModel == null) {
 			portletModel = new PortletImpl(CompanyConstants.SYSTEM, portletId);
@@ -2729,6 +2772,11 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		return PortalUtil.isCustomPortletMode(new PortletMode(portletModeName));
 	}
 
+	private void _putKnownPortlet(Portlet portlet) {
+		_knownPortlets.put(
+			portlet.getCompanyId(), portlet.getRootPortletId(), portlet);
+	}
+
 	private void _readWebXML(String xml, String servletContextName)
 		throws Exception {
 
@@ -2767,10 +2815,10 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	private static final Map<String, PortletApp> _portletApps =
 		new ConcurrentHashMap<>();
 	private static volatile Map<String, String> _portletIdsByStrutsPath;
-	private static final Map<String, Portlet> _portletsMap =
-		new ConcurrentHashMap<>();
-	private static final Map<Long, Map<String, Portlet>> _portletsMaps =
-		new ConcurrentHashMap<>();
+	private static final CompanyPortletMap<Portlet> _knownPortlets =
+		new CompanyPortletMap<>();
+	private static final CompanyPortletMap<Portlet> _runningPortlets =
+		new CompanyPortletMap<>();
 
 	@BeanReference(type = CompanyLocalService.class)
 	private CompanyLocalService _companyLocalService;

@@ -16,6 +16,7 @@ package com.liferay.portlet.internal;
 
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletApp;
+import com.liferay.portal.kernel.portlet.CompanyPortletMap;
 import com.liferay.portal.kernel.portlet.LiferayPortletContext;
 import com.liferay.portal.kernel.portlet.PortletContextFactory;
 
@@ -36,12 +37,14 @@ public class PortletContextFactoryImpl implements PortletContextFactory {
 		Portlet portlet, ServletContext servletContext) {
 
 		Map<String, PortletContext> portletContexts = _pool.get(
-			portlet.getRootPortletId());
+			portlet.getCompanyId(), portlet.getRootPortletId());
 
 		if (portletContexts == null) {
 			portletContexts = new ConcurrentHashMap<>();
 
-			_pool.put(portlet.getRootPortletId(), portletContexts);
+			_pool.put(
+				portlet.getCompanyId(), portlet.getRootPortletId(),
+				portletContexts);
 		}
 
 		PortletContext portletContext = portletContexts.get(
@@ -75,7 +78,7 @@ public class PortletContextFactoryImpl implements PortletContextFactory {
 
 	@Override
 	public void destroy(Portlet portlet) {
-		_pool.remove(portlet.getRootPortletId());
+		_pool.remove(portlet.getCompanyId(), portlet.getRootPortletId());
 	}
 
 	private boolean _isSamePortletDeployedStatus(
@@ -96,7 +99,7 @@ public class PortletContextFactoryImpl implements PortletContextFactory {
 		return false;
 	}
 
-	private final Map<String, Map<String, PortletContext>> _pool =
-		new ConcurrentHashMap<>();
+	private final CompanyPortletMap<Map<String, PortletContext>> _pool =
+		new CompanyPortletMap<>();
 
 }

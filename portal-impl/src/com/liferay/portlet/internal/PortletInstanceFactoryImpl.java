@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.module.util.ServiceTrackerFieldUpdaterCustomizer;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.portlet.CompanyPortletMap;
 import com.liferay.portal.kernel.portlet.InvokerFilterContainer;
 import com.liferay.portal.kernel.portlet.InvokerPortlet;
 import com.liferay.portal.kernel.portlet.InvokerPortletFactory;
@@ -81,12 +82,12 @@ public class PortletInstanceFactoryImpl implements PortletInstanceFactory {
 	public void clear(Portlet portlet, boolean resetRemotePortletBag) {
 		String rootPortletId = portlet.getRootPortletId();
 
-		Map<String, InvokerPortlet> portletInstances = _pool.remove(
-			rootPortletId);
+		Map<String, InvokerPortlet> portletInstances =
+			_pool.remove(portlet.getCompanyId(), rootPortletId);
 
 		if (portletInstances != null) {
-			InvokerPortlet rootInvokerPortletInstance = portletInstances.remove(
-				rootPortletId);
+			InvokerPortlet rootInvokerPortletInstance =
+				portletInstances.remove(rootPortletId);
 
 			if (rootInvokerPortletInstance != null) {
 				rootInvokerPortletInstance.destroy();
@@ -98,7 +99,8 @@ public class PortletInstanceFactoryImpl implements PortletInstanceFactory {
 		PortletApp portletApp = portlet.getPortletApp();
 
 		if (resetRemotePortletBag && portletApp.isWARFile()) {
-			PortletBag portletBag = PortletBagPool.remove(rootPortletId);
+			PortletBag portletBag = PortletBagPool.remove(
+				portlet.getCompanyId(), rootPortletId);
 
 			if (portletBag != null) {
 				portletBag.destroy();
@@ -140,12 +142,13 @@ public class PortletInstanceFactoryImpl implements PortletInstanceFactory {
 		Map<String, InvokerPortlet> portletInstances = null;
 
 		if (deployed) {
-			portletInstances = _pool.get(rootPortletId);
+			portletInstances = _pool.get(portlet.getCompanyId(), rootPortletId);
 
 			if (portletInstances == null) {
 				portletInstances = new ConcurrentHashMap<>();
 
-				_pool.put(rootPortletId, portletInstances);
+				_pool.put(
+					portlet.getCompanyId(), rootPortletId, portletInstances);
 			}
 			else {
 				if (instanceable) {
@@ -217,8 +220,8 @@ public class PortletInstanceFactoryImpl implements PortletInstanceFactory {
 	@Override
 	public void delete(Portlet portlet) {
 		if (PortletIdCodec.hasInstanceId(portlet.getPortletId())) {
-			Map<String, InvokerPortlet> portletInstances = _pool.get(
-				portlet.getRootPortletId());
+			Map<String, InvokerPortlet> portletInstances =
+				_pool.get(portlet.getCompanyId(), portlet.getRootPortletId());
 
 			if (portletInstances != null) {
 				portletInstances.remove(portlet.getPortletId());
@@ -280,8 +283,8 @@ public class PortletInstanceFactoryImpl implements PortletInstanceFactory {
 
 	private InvokerPortletFactory _defaultInvokerPortletFactory;
 	private volatile InvokerPortletFactory _invokerPortletFactory;
-	private final Map<String, Map<String, InvokerPortlet>> _pool =
-		new ConcurrentHashMap<>();
+	private final CompanyPortletMap<Map<String, InvokerPortlet>> _pool =
+		new CompanyPortletMap<>();
 	private ServiceTracker<InvokerPortletFactory, InvokerPortletFactory>
 		_serviceTracker;
 

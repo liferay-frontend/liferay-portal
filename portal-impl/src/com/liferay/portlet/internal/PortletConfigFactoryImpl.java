@@ -14,11 +14,18 @@
 
 package com.liferay.portlet.internal;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.CompanyPortletMap;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.PortletConfigFactory;
 import com.liferay.portal.kernel.portlet.PortletContextFactory;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.service.impl.PortletLocalServiceImpl;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,12 +45,14 @@ public class PortletConfigFactoryImpl implements PortletConfigFactory {
 		Portlet portlet, ServletContext servletContext) {
 
 		Map<String, PortletConfig> portletConfigs = _pool.get(
-			portlet.getRootPortletId());
+			portlet.getCompanyId(), portlet.getRootPortletId());
 
 		if (portletConfigs == null) {
 			portletConfigs = new ConcurrentHashMap<>();
 
-			_pool.put(portlet.getRootPortletId(), portletConfigs);
+			_pool.put(
+				portlet.getCompanyId(), portlet.getRootPortletId(),
+				portletConfigs);
 		}
 
 		PortletConfig portletConfig = portletConfigs.get(
@@ -65,7 +74,7 @@ public class PortletConfigFactoryImpl implements PortletConfigFactory {
 
 	@Override
 	public void destroy(Portlet portlet) {
-		_pool.remove(portlet.getRootPortletId());
+		_pool.remove(portlet.getCompanyId(), portlet.getRootPortletId());
 	}
 
 	@Override
@@ -77,7 +86,9 @@ public class PortletConfigFactoryImpl implements PortletConfigFactory {
 	public PortletConfig get(String portletId) {
 		String rootPortletId = PortletIdCodec.decodePortletName(portletId);
 
-		Map<String, PortletConfig> portletConfigs = _pool.get(rootPortletId);
+		Map<String, PortletConfig> portletConfigs = _pool.get(
+			_inferCompanyId("used in many places, indirectly"),
+				rootPortletId);
 
 		if (portletConfigs == null) {
 			return null;
@@ -95,7 +106,7 @@ public class PortletConfigFactoryImpl implements PortletConfigFactory {
 	@Override
 	public PortletConfig update(Portlet portlet) {
 		Map<String, PortletConfig> portletConfigs = _pool.get(
-			portlet.getRootPortletId());
+			portlet.getCompanyId(),	portlet.getRootPortletId());
 
 		if (portletConfigs == null) {
 			return null;
@@ -110,6 +121,28 @@ public class PortletConfigFactoryImpl implements PortletConfigFactory {
 		portletConfigs.put(portlet.getPortletId(), portletConfig);
 
 		return portletConfig;
+	}
+
+	private long _inferCompanyId(String todoMessage) {
+		long companyId = 0;
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext != null) {
+			companyId = serviceContext.getCompanyId();
+		}
+		else {
+			companyId = CompanyThreadLocal.getCompanyId();
+
+			if (companyId == 0 && _log.isWarnEnabled()) {
+				_log.warn(
+					new Exception(
+						"ServiceContext is null and CompanyThreadLocal returned 0"));
+			}
+		}
+
+		return companyId;
 	}
 
 	private boolean _isSamePortletDeployedStatus(
@@ -130,8 +163,12 @@ public class PortletConfigFactoryImpl implements PortletConfigFactory {
 		return false;
 	}
 
-	private final Map<String, Map<String, PortletConfig>> _pool =
-		new ConcurrentHashMap<>();
+	private static final Log _log = LogFactoryUtil.getLog(
+		PortletConfigFactoryImpl.class);
+
+
+	private final CompanyPortletMap<Map<String, PortletConfig>> _pool =
+		new CompanyPortletMap<>();
 	private PortletContextFactory _portletContextFactory;
 
 }
