@@ -19,12 +19,14 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
 import com.liferay.portal.kernel.portlet.FriendlyURLMapperTracker;
 import com.liferay.portal.kernel.portlet.Route;
 import com.liferay.portal.kernel.portlet.Router;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -184,6 +186,19 @@ public class FriendlyURLMapperTrackerImpl implements FriendlyURLMapperTracker {
 
 			FriendlyURLMapper friendlyURLMapper = _bundleContext.getService(
 				serviceReference);
+
+			long companyId =
+				GetterUtil.getLong(
+					serviceReference.getProperty("com.liferay.portlet.company"),
+					CompanyConstants.SYSTEM);
+
+			if (companyId != _portlet.getCompanyId()) {
+				System.err.println(
+					"      IGNORED: " + companyId + " != " +
+						_portlet.getCompanyId());
+
+				return null;
+			}
 
 			try {
 				friendlyURLMapper.setMapping(

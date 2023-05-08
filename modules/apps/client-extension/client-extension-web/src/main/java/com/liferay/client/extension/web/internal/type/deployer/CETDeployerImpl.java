@@ -106,7 +106,8 @@ public class CETDeployerImpl implements CETDeployer {
 				_register(
 					FriendlyURLMapper.class,
 					new CETPortletFriendlyURLMapper(
-						friendlyURLMapping, portletId)));
+						customElementCET.getCompanyId(), friendlyURLMapping,
+							portletId)));
 		}
 
 		serviceRegistrations.add(
@@ -138,7 +139,8 @@ public class CETDeployerImpl implements CETDeployer {
 				_register(
 					FriendlyURLMapper.class,
 					new CETPortletFriendlyURLMapper(
-						friendlyURLMapping, portletId)));
+						iFrameCET.getCompanyId(), friendlyURLMapping,
+							portletId)));
 		}
 
 		serviceRegistrations.add(

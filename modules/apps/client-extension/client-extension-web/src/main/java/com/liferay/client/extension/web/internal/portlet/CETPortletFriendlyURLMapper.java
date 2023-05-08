@@ -37,7 +37,10 @@ import javax.portlet.WindowState;
 public class CETPortletFriendlyURLMapper
 	extends DefaultFriendlyURLMapper implements FriendlyURLMapper, Registrable {
 
-	public CETPortletFriendlyURLMapper(String mapping, String portletId) {
+	public CETPortletFriendlyURLMapper(
+		long companyId, String mapping, String portletId) {
+
+		_companyId = companyId;
 		_mapping = mapping;
 		_portletId = portletId;
 
@@ -72,6 +75,8 @@ public class CETPortletFriendlyURLMapper
 	@Override
 	public Dictionary<String, Object> getDictionary() {
 		return HashMapDictionaryBuilder.<String, Object>put(
+			"com.liferay.portlet.company", _companyId
+		).put(
 			"javax.portlet.name", _portletId
 		).build();
 	}
@@ -85,6 +90,7 @@ public class CETPortletFriendlyURLMapper
 	public void setRouter(Router router) {
 	}
 
+	private final long _companyId;
 	private final String _mapping;
 	private final String _portletId;
 
