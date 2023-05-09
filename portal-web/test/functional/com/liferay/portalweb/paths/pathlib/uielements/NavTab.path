@@ -22,7 +22,7 @@
 </tr>
 <tr>
 	<td>TAB_LINK</td>
-	<td>//*[contains(@class,'nav-link') and normalize-space()='${key_tab}'][not(contains(@id,'ProductMenu') or contains(@href,'site_administration'))]</td>
+	<td>//button[contains(@class,'nav-link') and normalize-space()='${key_tab}'][not(contains(@id,'ProductMenu') or contains(@href,'site_administration'))]</td>
 	<td></td>
 </tr>
 </tbody>
