@@ -320,7 +320,7 @@ const OrderableTable = ({
 										fields={fields}
 										index={index}
 										item={item}
-										key={index}
+										key={item.id || index}
 										onOrderChange={handleOnOrderChange}
 										query={query}
 									/>
