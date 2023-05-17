@@ -110,6 +110,10 @@ String modelName = (String)request.getAttribute("liferay-ui:input-permissions:mo
 					<option <%= inputPermissionsViewRole.equals(RoleConstants.OWNER) ? "selected=\"selected\"" : "" %> value="<%= RoleConstants.OWNER %>"><liferay-ui:message key="owner" /></option>
 				</select>
 
+				<c:if test='<%= GetterUtil.getBoolean(request.getAttribute("liferay-ui:input-permissions:documentMedia")) %>'>
+					<aui:input label="set-permissions-for-documents-and-folders-uploaded-to-this-folder" labelCssClass="font-weight-normal" name="allowedPropagation" type="checkbox" />
+				</c:if>
+
 				<button aria-controls="<%= uniqueNamespace %>inputPermissionsTable" aria-expanded="<%= inputPermissionsShowOptions %>" class="btn btn-secondary btn-sm <%= inputPermissionsShowOptions ? "mb-1 mt-3" : "mb-5 mt-3" %>" id="<%= uniqueNamespace %>inputPermissionsOptionsButton" onclick="<%= uniqueNamespace %>inputPermissionsToggle();" type="button">
 					<%= inputPermissionsShowOptions ? LanguageUtil.get(request, "hide-options") : LanguageUtil.get(request, "more-options") %>
 				</button>
