@@ -77,11 +77,11 @@ type Cart = {
 	billingAddress: BillingAddress;
 	cartItems: CartItem[];
 	currencyCode: string;
+	orderTypeExternalReferenceCode: string;
+	orderTypeId: number;
 	paymentMethod: string;
 	purchaseOrderNumber?: string;
 	shippingAddress: BillingAddress;
-	orderTypeExternalReferenceCode: string;
-	orderTypeId: number;
 };
 
 type CartItem = {
@@ -133,8 +133,8 @@ type Channel = {
 
 interface CommerceAccount extends Omit<Account, 'description'> {
 	active: boolean;
-	taxId: string;
 	logoURL: string;
+	taxId: string;
 }
 
 type CommerceOption = {
@@ -263,33 +263,33 @@ interface PostCheckoutCartResponse extends PostCartResponse {
 interface Product {
 	active: boolean;
 	attachments: ProductAttachment[];
-	categories: ProductCategories[];
 	catalogId: number;
+	categories: ProductCategories[];
 	description: {[key: string]: string};
-	name: {[key: string]: string};
 	externalReferenceCode: string;
 	id: number;
 	images: ProductImages[];
+	modifiedDate: string;
+	name: {[key: string]: string};
 	productId: number;
 	productStatus: number;
 	productType: string;
+	thumbnail: string;
 	version: number;
 	workflowStatusInfo: {
 		code: number;
 		label: string;
 		label_i18n: string;
 	};
-	thumbnail: string;
-	modifiedDate: string;
 }
 
 interface ProductAttachment {
 	customFields?: CustomField[];
-	title: {[key: string]: string};
-	src: string;
-	priority: number;
-	id: number;
 	externalReferenceCode: string;
+	id: number;
+	priority: number;
+	src: string;
+	title: {[key: string]: string};
 }
 
 type ProductCategories = {
@@ -314,8 +314,8 @@ type RoleBrief = {
 };
 
 type SKU = {
-	customFields?: CustomField[];
 	cost: number;
+	customFields?: CustomField[];
 	externalReferenceCode: string;
 	id: number;
 	price: number;
