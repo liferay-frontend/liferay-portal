@@ -30,3 +30,9 @@ export declare function getCellRendererByURL(
 	url: string,
 	type: 'clientExtension' | 'internal'
 ): Promise<CellRenderer>;
+export interface InternalRenderer extends Renderer {
+	component: React.ComponentType<any>;
+	label: string;
+	name: string;
+	type: 'internal';
+}
