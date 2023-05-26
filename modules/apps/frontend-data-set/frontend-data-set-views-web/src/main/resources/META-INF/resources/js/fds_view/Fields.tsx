@@ -423,7 +423,7 @@ const EditFDSFieldModalContent = ({
 		namespace: string;
 		onItemClick: Function;
 	}) => {
-		const cellRendererERCs = fdsClientExtensionCellRenderers.map(
+		const fdsClientExtensionCellRenderersERCs = fdsClientExtensionCellRenderers.map(
 			(cellRendererCET) => cellRendererCET.erc
 		);
 
@@ -455,7 +455,9 @@ const EditFDSFieldModalContent = ({
 						>
 							{cellRenderer.label}
 
-							{cellRendererERCs.includes(cellRenderer.value) && (
+							{fdsClientExtensionCellRenderersERCs.includes(
+								cellRenderer.value
+							) && (
 								<ClayLabel displayType="info">
 									{Liferay.Language.get('cell-renderer')}
 								</ClayLabel>
