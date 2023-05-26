@@ -30,7 +30,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import {API_URL, OBJECT_RELATIONSHIP} from '../Constants';
 import {IFDSViewSectionInterface} from '../FDSView';
 import {FDSViewType} from '../FDSViews';
-import {IFDSCellRendererCET, getFields} from '../api';
+import {
+	IClientExtensionCellRenderer as FDSClientExtensionCellRenderer,
+	getFields,
+} from '../api';
 import OrderableTable from '../components/OrderableTable';
 
 import '../../css/FDSEntries.scss';
@@ -316,16 +319,16 @@ const SaveFDSFieldsModalContent = ({
 };
 
 interface IEditFDSFieldModalContentProps {
-	cellRendererCETs: IFDSCellRendererCET[];
 	closeModal: Function;
+	fdsClientExtensionCellRenderers: FDSClientExtensionCellRenderer[];
 	fdsField: IFDSField;
 	namespace: string;
 	onSave: Function;
 }
 
 const EditFDSFieldModalContent = ({
-	cellRendererCETs,
 	closeModal,
+	fdsClientExtensionCellRenderers,
 	fdsField,
 	namespace,
 	onSave,
@@ -343,15 +346,15 @@ const EditFDSFieldModalContent = ({
 		(cellRenderer) => cellRenderer.label
 	);
 
-	const clientExtensionField = !fdsInternalCellRendererLabels.includes(
-		selectedFDSFieldRenderer
-	);
-
 	const editFDSField = async () => {
 		const body = {
 			label: fdsFieldLabelRef.current?.value,
 			renderer: selectedFDSFieldRenderer,
-			rendererType: clientExtensionField ? 'clientExtension' : 'default',
+			rendererType: !fdsInternalCellRendererLabels.includes(
+				selectedFDSFieldRenderer
+			)
+				? 'clientExtension'
+				: 'internal',
 			sortable: fdsFieldSortable,
 		};
 
@@ -402,9 +405,9 @@ const EditFDSFieldModalContent = ({
 	);
 
 	options.push(
-		...cellRendererCETs.map((item) => ({
-			label: item.name,
-			value: item.erc,
+		...fdsClientExtensionCellRenderers.map((item) => ({
+			label: item.name!,
+			value: item.erc!,
 		}))
 	);
 
@@ -420,7 +423,7 @@ const EditFDSFieldModalContent = ({
 		namespace: string;
 		onItemClick: Function;
 	}) => {
-		const cellRendererERCs = cellRendererCETs.map(
+		const cellRendererERCs = fdsClientExtensionCellRenderers.map(
 			(cellRendererCET) => cellRendererCET.erc
 		);
 
@@ -501,10 +504,7 @@ const EditFDSFieldModalContent = ({
 				</ClayForm.Group>
 
 				<ClayForm.Group>
-					<label
-						htmlFor={fdsFieldRendererSelectId}
-						id={`${namespace}cellRendererLabel`}
-					>
+					<label htmlFor={fdsFieldRendererSelectId}>
 						{Liferay.Language.get('cell-renderer')}
 					</label>
 
@@ -549,7 +549,7 @@ const EditFDSFieldModalContent = ({
 };
 
 const Fields = ({
-	cellRendererCETs,
+	fdsClientExtensionCellRenderers,
 	fdsView,
 	fdsViewsURL,
 	namespace,
@@ -807,8 +807,10 @@ const Fields = ({
 										closeModal: Function;
 									}) => (
 										<EditFDSFieldModalContent
-											cellRendererCETs={cellRendererCETs}
 											closeModal={closeModal}
+											fdsClientExtensionCellRenderers={
+												fdsClientExtensionCellRenderers
+											}
 											fdsField={item}
 											namespace={namespace}
 											onSave={onEditFDSField}
