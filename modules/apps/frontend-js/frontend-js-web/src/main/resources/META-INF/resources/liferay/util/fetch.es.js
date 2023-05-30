@@ -64,7 +64,7 @@ export default function defaultFetch(resource, init = {}) {
 				resource = resourceLocation;
 			}
 			else {
-				resource = {...resource, url: resourceLocation};
+				resource.url = resourceLocation;
 			}
 		}
 	}
