@@ -165,6 +165,17 @@ public class StyleBookVerticalCard
 	}
 
 	@Override
+	public String getTitleAriaLabel() {
+		if (_styleBookEntry.isDefaultStyleBookEntry()) {
+			return LanguageUtil.format(
+				_themeDisplay.getLocale(), "x-marked-as-default",
+				_styleBookEntry.getName());
+		}
+
+		return null;
+	}
+
+	@Override
 	public boolean isSelectable() {
 		if (_styleBookEntry.getStyleBookEntryId() > 0) {
 			return true;
