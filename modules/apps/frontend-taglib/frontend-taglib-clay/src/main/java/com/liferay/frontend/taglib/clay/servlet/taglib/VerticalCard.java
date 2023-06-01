@@ -86,6 +86,10 @@ public interface VerticalCard extends BaseClayCard {
 
 	public String getTitle();
 
+	public default String getTitleAriaLabel() {
+		return null;
+	}
+
 	public default Boolean isFlushHorizontal() {
 		return null;
 	}

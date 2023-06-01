@@ -53,6 +53,7 @@ export default function VerticalCard({
 	stickerTitle,
 	symbol,
 	title,
+	titleAriaLabel,
 	...otherProps
 }) {
 	const normalizedActions = useMemo(() => normalizeDropdownItems(actions), [
@@ -118,6 +119,7 @@ export default function VerticalCard({
 	return (
 		<ClayCardWithInfo
 			actions={normalizedActions}
+			aria-label={titleAriaLabel}
 			checkboxProps={{
 				name: inputName ?? '',
 				value: inputValue ?? '',

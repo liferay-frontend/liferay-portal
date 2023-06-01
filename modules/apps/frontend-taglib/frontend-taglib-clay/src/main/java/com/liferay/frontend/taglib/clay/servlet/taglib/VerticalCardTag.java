@@ -209,6 +209,16 @@ public class VerticalCardTag extends BaseCardTag {
 			TagResourceBundleUtil.getResourceBundle(pageContext), _title);
 	}
 
+	public String getTitleAriaLabel() {
+		VerticalCard verticalCard = getVerticalCard();
+
+		if ((_titleAriaLabel == null) && (verticalCard != null)) {
+			return verticalCard.getTitleAriaLabel();
+		}
+
+		return _titleAriaLabel;
+	}
+
 	public VerticalCard getVerticalCard() {
 		return (VerticalCard)getCardModel();
 	}
@@ -334,6 +344,10 @@ public class VerticalCardTag extends BaseCardTag {
 		_title = title;
 	}
 
+	public void setTitleAriaLabel(String titleAriaLabel) {
+		_titleAriaLabel = titleAriaLabel;
+	}
+
 	public void setVerticalCard(VerticalCard verticalCard) {
 		setCardModel(verticalCard);
 	}
@@ -359,6 +373,7 @@ public class VerticalCardTag extends BaseCardTag {
 		_stickerTitle = null;
 		_subtitle = null;
 		_title = null;
+		_titleAriaLabel = null;
 	}
 
 	@Override
@@ -385,6 +400,7 @@ public class VerticalCardTag extends BaseCardTag {
 		props.put("stickerStyle", getStickerStyle());
 		props.put("stickerTitle", getStickerTitle());
 		props.put("title", getTitle());
+		props.put("titleAriaLabel", getTitleAriaLabel());
 
 		return super.prepareProps(props);
 	}
@@ -685,5 +701,6 @@ public class VerticalCardTag extends BaseCardTag {
 	private String _stickerTitle;
 	private String _subtitle;
 	private String _title;
+	private String _titleAriaLabel;
 
 }
