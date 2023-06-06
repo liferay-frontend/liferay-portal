@@ -26,18 +26,13 @@ const PanelItem = ({children}) => {
 };
 
 export default function Panel({
-	additionalProps: _additionalProps,
 	children,
 	collapsable,
 	collapseClassNames,
-	componentId: _componentId,
 	cssClass,
 	displayTitle,
 	displayType,
 	expanded,
-	locale: _locale,
-	portletId: _portletId,
-	portletNamespace: _portletNamespace,
 	showCollapseIcon,
 	...otherProps
 }) {

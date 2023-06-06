@@ -26,17 +26,12 @@ const PanelGroupItem = ({children}) => {
 };
 
 export default function PanelGroup({
-	additionalProps: _additionalProps,
 	children,
-	componentId: _componentId,
 	cssClass,
 	fluid,
 	fluidFirst,
 	fluidLast,
 	flush,
-	locale: _locale,
-	portletId: _portletId,
-	portletNamespace: _portletNamespace,
 	small,
 	...otherProps
 }) {
