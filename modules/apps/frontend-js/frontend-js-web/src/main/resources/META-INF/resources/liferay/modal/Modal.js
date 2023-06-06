@@ -56,7 +56,11 @@ const Modal = ({
 	const [loading, setLoading] = useState(true);
 
 	const {observer, onOpenChange, open} = useModal({
-		onClose: () => processClose(),
+		onClose: () => {
+			if (open) {
+				processClose();
+			}
+		},
 	});
 
 	useEffect(() => {
