@@ -672,8 +672,8 @@ definition {
 
 	@description = "Story ID: LPS-173524 | Test Summary: Verify if as an Administrator I should not see case results that don't exist when I try filtering for them"
 	@priority = 3
-	test CanNotFilterForNonexistant {
-		property test.name.skip.portal.instance = "TestrayFiltersCasesResultsAdministrator#CanNotFilterForNonexistant";
+	test CanNotFilterForNonexistent {
+		property test.name.skip.portal.instance = "TestrayFiltersCasesResultsAdministrator#CanNotFilterForNonexistent";
 
 		task ("Given that the user filter a case result existent") {
 			TestrayFilter.clickFilter();

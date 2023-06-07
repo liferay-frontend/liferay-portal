@@ -269,12 +269,14 @@ public class DefaultObjectEntryManagerImpl
 					objectRelationship.getObjectRelationshipId(), primaryKey,
 					-1, -1)) {
 
-			com.liferay.object.model.ObjectEntry relatedServiceBuilderObjectEntry =
-				(com.liferay.object.model.ObjectEntry)relatedModel;
+			com.liferay.object.model.ObjectEntry
+				relatedServiceBuilderObjectEntry =
+					(com.liferay.object.model.ObjectEntry)relatedModel;
 
 			objectRelatedModelsProvider.disassociateRelatedModels(
 				userId, objectRelationship.getObjectRelationshipId(),
-				primaryKey, relatedServiceBuilderObjectEntry.getObjectEntryId());
+				primaryKey,
+				relatedServiceBuilderObjectEntry.getObjectEntryId());
 		}
 	}
 

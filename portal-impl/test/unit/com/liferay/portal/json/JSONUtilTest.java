@@ -128,7 +128,7 @@ public class JSONUtilTest {
 	}
 
 	@Test
-	public void testGetValueAsJSONArray() throws Exception {
+	public void testGetValueAsJSONArray() throws JSONException {
 		Assert.assertNull(
 			JSONUtil.getValueAsJSONArray(
 				_createJSONObject(), "JSONArray/able"));
@@ -147,8 +147,7 @@ public class JSONUtilTest {
 
 		Assert.assertNotNull(jsonArray);
 		Assert.assertEquals(1, jsonArray.length());
-		Assert.assertEquals(
-			"0", jsonArray.getString(0));
+		Assert.assertEquals("0", jsonArray.getString(0));
 
 		jsonArray = JSONUtil.getValueAsJSONArray(
 			_createJSONObject("{\"able\": [0, 1, 2, 3]}"), "JSONArray/able");

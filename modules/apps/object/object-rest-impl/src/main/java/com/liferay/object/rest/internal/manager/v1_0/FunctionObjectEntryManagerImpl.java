@@ -22,6 +22,8 @@ import com.liferay.object.rest.internal.configuration.FunctionObjectEntryManager
 import com.liferay.object.rest.manager.v1_0.BaseObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.osgi.util.configuration.ConfigurationFactoryUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.catapult.PortalCatapult;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -34,6 +36,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -73,16 +76,16 @@ public class FunctionObjectEntryManagerImpl
 
 		return _toObjectEntry(
 			_launch(
+				Http.Method.POST,
 				_toJSONObject(
 					dtoConverterContext, scopeKey
 				).put(
-					"objectDefinitionExternalReferenceCode",
-					objectDefinition.getExternalReferenceCode()
-				).put(
 					"objectEntry", _toJSONObject(objectEntry)
 				),
-				_functionObjectEntryManagerConfiguration.
-					postObjectEntryResourcePath(),
+				StringBundler.concat(
+					_functionObjectEntryManagerConfiguration.resourcePath(),
+					StringPool.SLASH,
+					objectDefinition.getExternalReferenceCode()),
 				dtoConverterContext.getUserId()),
 			objectDefinition, scopeKey, dtoConverterContext.getUser());
 	}
@@ -99,16 +102,11 @@ public class FunctionObjectEntryManagerImpl
 			dtoConverterContext.getUser());
 
 		_launch(
-			_toJSONObject(
-				dtoConverterContext, scopeKey
-			).put(
-				"externalReferenceCode", externalReferenceCode
-			).put(
-				"objectDefinitionExternalReferenceCode",
-				objectDefinition.getExternalReferenceCode()
-			),
-			_functionObjectEntryManagerConfiguration.
-				deleteObjectEntryResourcePath(),
+			Http.Method.DELETE, _toJSONObject(dtoConverterContext, scopeKey),
+			StringBundler.concat(
+				_functionObjectEntryManagerConfiguration.resourcePath(),
+				StringPool.SLASH, objectDefinition.getExternalReferenceCode(),
+				StringPool.SLASH, externalReferenceCode),
 			dtoConverterContext.getUserId());
 	}
 
@@ -126,6 +124,7 @@ public class FunctionObjectEntryManagerImpl
 
 		return _toObjectEntries(
 			_launch(
+				Http.Method.GET,
 				_toJSONObject(
 					dtoConverterContext, scopeKey
 				).put(
@@ -133,17 +132,16 @@ public class FunctionObjectEntryManagerImpl
 				).put(
 					"filter", filterString
 				).put(
-					"objectDefinitionExternalReferenceCode",
-					objectDefinition.getExternalReferenceCode()
-				).put(
 					"pagination", pagination
 				).put(
 					"search", search
 				).put(
 					"sorts", sorts
 				),
-				_functionObjectEntryManagerConfiguration.
-					getObjectEntriesResourcePath(),
+				StringBundler.concat(
+					_functionObjectEntryManagerConfiguration.resourcePath(),
+					StringPool.SLASH,
+					objectDefinition.getExternalReferenceCode()),
 				dtoConverterContext.getUserId()),
 			objectDefinition, pagination, scopeKey,
 			dtoConverterContext.getUser());
@@ -166,16 +164,12 @@ public class FunctionObjectEntryManagerImpl
 
 		return _toObjectEntry(
 			_launch(
-				_toJSONObject(
-					dtoConverterContext, scopeKey
-				).put(
-					"externalReferenceCode", externalReferenceCode
-				).put(
-					"objectDefinitionExternalReferenceCode",
-					objectDefinition.getExternalReferenceCode()
-				),
-				_functionObjectEntryManagerConfiguration.
-					getObjectEntryResourcePath(),
+				Http.Method.GET, _toJSONObject(dtoConverterContext, scopeKey),
+				StringBundler.concat(
+					_functionObjectEntryManagerConfiguration.resourcePath(),
+					StringPool.SLASH,
+					objectDefinition.getExternalReferenceCode(),
+					StringPool.SLASH, externalReferenceCode),
 				dtoConverterContext.getUserId()),
 			objectDefinition, scopeKey, dtoConverterContext.getUser());
 	}
@@ -212,18 +206,17 @@ public class FunctionObjectEntryManagerImpl
 
 		return _toObjectEntry(
 			_launch(
+				Http.Method.PUT,
 				_toJSONObject(
 					dtoConverterContext, scopeKey
 				).put(
-					"externalReferenceCode", externalReferenceCode
-				).put(
-					"objectDefinitionExternalReferenceCode",
-					objectDefinition.getExternalReferenceCode()
-				).put(
 					"objectEntry", _toJSONObject(objectEntry)
 				),
-				_functionObjectEntryManagerConfiguration.
-					putObjectEntryResourcePath(),
+				StringBundler.concat(
+					_functionObjectEntryManagerConfiguration.resourcePath(),
+					StringPool.SLASH,
+					objectDefinition.getExternalReferenceCode(),
+					StringPool.SLASH, externalReferenceCode),
 				dtoConverterContext.getUserId()),
 			objectDefinition, scopeKey, dtoConverterContext.getUser());
 	}
@@ -240,11 +233,12 @@ public class FunctionObjectEntryManagerImpl
 	}
 
 	private byte[] _launch(
-			JSONObject payloadJSONObject, String resourcePath, long userId)
+			Http.Method method, JSONObject payloadJSONObject,
+			String resourcePath, long userId)
 		throws Exception {
 
 		return _portalCatapult.launch(
-			_companyId,
+			_companyId, method,
 			_functionObjectEntryManagerConfiguration.
 				oAuth2ApplicationExternalReferenceCode(),
 			payloadJSONObject, resourcePath, userId);

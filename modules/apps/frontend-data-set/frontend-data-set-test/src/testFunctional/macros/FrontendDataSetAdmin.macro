@@ -59,6 +59,14 @@ definition {
 			locator1 = "FrontendDataSetAdmin#FIELDS_TABLE");
 	}
 
+	macro assertSearchFilters {
+		for (var key_filterType : list ${key_filterList}) {
+			AssertElementPresent(
+				locator1 = "FrontendDataSetAdmin#FILTER_BY_SELECT",
+				value1 = ${key_filterList});
+		}
+	}
+
 	macro changePagination {
 		Click(locator1 = "FrontendDataSetAdmin#ITEMS_PER_PAGE_SELECT");
 
@@ -156,6 +164,20 @@ definition {
 				datasetName = ${datasetName},
 				dataSetViewDescription = ${dataSetViewDescription},
 				dataSetViewName = ${key_dataSetViewName});
+		}
+	}
+
+	macro createFilters {
+		for (var key_filterType : list ${key_filterList}) {
+			LexiconEntry.gotoAdd();
+
+			Select(
+				locator1 = "FrontendDataSetAdmin#FILTER_BY_SELECT",
+				value1 = ${key_filterType});
+
+			Click(
+				key_text = "Save",
+				locator1 = "CP2ActivationKeys#KEY_DEACTIVATION_TERMS");
 		}
 	}
 
@@ -336,6 +358,12 @@ definition {
 		Type(
 			locator1 = "MenuItem#SEARCH_FIELD",
 			value1 = ${searchTerm});
+	}
+
+	macro selectFilters {
+		Select(
+			locator1 = "FrontendDataSetAdmin#FILTER_BY_SELECT",
+			value1 = ${filterType});
 	}
 
 	macro selectProvider {

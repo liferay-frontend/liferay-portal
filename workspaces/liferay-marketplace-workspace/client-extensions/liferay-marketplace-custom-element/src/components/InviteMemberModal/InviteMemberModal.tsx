@@ -15,21 +15,21 @@
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayCheckbox, ClayInput} from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 
 import './inviteMemberModal.scss';
+import {Liferay} from '../../liferay/liferay';
+import {getMyUserAccount} from '../../utils/api';
+import {createPassword} from '../../utils/createPassword';
 import {
-  addAdditionalInfo,
-  addExistentUserIntoAccount,
-  callRolesApi,
-  createNewUser,
-  getAccountRolesOnAPI,
-  getSiteURL,
+	addAdditionalInfo,
+	addExistentUserIntoAccount,
+	callRolesApi,
+	createNewUser,
+	getAccountRolesOnAPI,
+	getSiteURL,
 	getUserByEmail,
 } from './services';
-import { getMyUserAccount } from '../../utils/api';
-import { createPassword } from '../../utils/createPassword';
-import { Liferay } from '../../liferay/liferay';
 
 interface InviteMemberModalProps {
 	handleClose: () => void;
@@ -40,6 +40,8 @@ interface CheckboxRole {
 	isChecked: boolean;
 	roleName: string;
 }
+
+const listOfRoles = ['Account Administrator', 'App Editor'];
 
 export function InviteMemberModal({
 	handleClose,
@@ -57,90 +59,110 @@ export function InviteMemberModal({
 	const [checkboxRoles, setCheckboxRoles] = useState<CheckboxRole[]>([]);
 	const [formValid, setFormValid] = useState<boolean>(false);
 
-  const [accountRoles, setAccountRoles] = useState<AccountRole[]>();
-  const [userPassword, setUserPassword] = useState<string>('');
+	const [accountRoles, setAccountRoles] = useState<AccountRole[]>();
+	const [userPassword, setUserPassword] = useState<string>('');
 
-	const listOfRoles = ['Account Administrator', 'App Editor'];
+	const getAccountRoles = useCallback(async () => {
+		const roles = await getAccountRolesOnAPI(selectedAccount.id);
 
-  useEffect(() => {
-    const mapRoles = listOfRoles.map((role) => {
-      return { roleName: role, isChecked: false };
-    });
-    setCheckboxRoles(mapRoles);
-    getAccountRoles();
-    setUserPassword(createPassword());
-  }, []);
+		setAccountRoles(roles);
+	}, [selectedAccount.id]);
 
-  const jsonBody = {
-    alternateName: formFields.email.replace('@', '-'),
-    emailAddress: formFields.email,
-    familyName: formFields.lastName,
-    givenName: formFields.firstName,
-    password: userPassword,
-  };
+	useEffect(() => {
+		const mapRoles = listOfRoles.map((role) => {
+			return {isChecked: false, roleName: role};
+		});
+		setCheckboxRoles(mapRoles);
+		getAccountRoles();
+		setUserPassword(createPassword());
+	}, [getAccountRoles]);
 
-  const getCheckedRoles = () => {
-    let checkedRole = '';
-    for (const checkboxRole of checkboxRoles) {
-      if (checkboxRole.isChecked) {
-        checkedRole = checkedRole + checkboxRole.roleName + '/';
-      }
-    }
-    return checkedRole;
-  };
+	const jsonBody = useMemo(
+		() => ({
+			alternateName: formFields.email.replace('@', '-'),
+			emailAddress: formFields.email,
+			familyName: formFields.lastName,
+			givenName: formFields.firstName,
+			password: userPassword,
+		}),
+		[
+			formFields.email,
+			formFields.firstName,
+			formFields.lastName,
+			userPassword,
+		]
+	);
 
-  const getAccountRoles = async () => {
-    const roles = await getAccountRolesOnAPI(selectedAccount.id);
-    setAccountRoles(roles);
-  };
+	const getCheckedRoles = () => {
+		let checkedRole = '';
 
-  const addAccountRolesToUser = async (user: UserAccount) => {
-    for (const checkboxRole of checkboxRoles) {
-      if (checkboxRole.isChecked) {
-        const matchingAccountRole = accountRoles?.find(
-          (accountRole: AccountRole) => accountRole.name == 'Invited Member'
-        );
-        if (matchingAccountRole) {
-          await callRolesApi(
-            selectedAccount.id,
-            matchingAccountRole.id,
-            user.id
-          );
-        }
-      }
-    }
-  };
+		for (const checkboxRole of checkboxRoles) {
+			if (checkboxRole.isChecked) {
+				checkedRole = checkedRole + checkboxRole.roleName + '/';
+			}
+		}
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    let form = event.target as HTMLFormElement;
-    let user: UserAccount;
-    if (formValid) {
-      user = await getUserByEmail(formFields.email);
-      if (!user) {
-        await createNewUser(jsonBody);
-      }
-      user = await getUserByEmail(formFields.email);
-      await addExistentUserIntoAccount(selectedAccount.id, formFields.email);
-      const myUser = await getMyUserAccount();
-      await addAccountRolesToUser(user);
-      await addAdditionalInfo(
-        false,
-        user.id,
-        selectedAccount.name,
-        selectedAccount.id,
-        formFields.email,
-        userPassword,
-        formFields.firstName,
-        myUser.givenName,
-        Liferay.ThemeDisplay.getPortalURL() +
-          '/c/login?redirect=' +
-          getSiteURL(),
-        getCheckedRoles()
-      );
-      onClose()
-    }
-  };
+		return checkedRole;
+	};
+
+	const addAccountRolesToUser = async (user: UserAccount) => {
+		for (const checkboxRole of checkboxRoles) {
+			if (checkboxRole.isChecked) {
+				const matchingAccountRole = accountRoles?.find(
+					(accountRole: AccountRole) =>
+						accountRole.name === 'Invited Member'
+				);
+
+				if (matchingAccountRole) {
+					await callRolesApi(
+						selectedAccount.id,
+						matchingAccountRole.id,
+						user.id
+					);
+				}
+			}
+		}
+	};
+
+	const handleSubmit = async (event: React.FormEvent) => {
+		event.preventDefault();
+
+		let user: UserAccount;
+
+		if (formValid) {
+			user = await getUserByEmail(formFields.email);
+			if (!user) {
+				await createNewUser(jsonBody);
+			}
+
+			user = await getUserByEmail(formFields.email);
+
+			const myUser = await getMyUserAccount();
+
+			await addExistentUserIntoAccount(
+				selectedAccount.id,
+				formFields.email
+			);
+			await addAccountRolesToUser(user);
+			await addAdditionalInfo(
+				false,
+				user.id,
+				selectedAccount.name,
+				selectedAccount.id,
+				formFields.email,
+				userPassword,
+				formFields.firstName,
+				myUser.givenName,
+				Liferay.ThemeDisplay.getPortalURL() +
+					'/c/login?redirect=' +
+					getSiteURL() +
+					'/loadingpagevalidation',
+				getCheckedRoles()
+			);
+
+			onClose();
+		}
+	};
 
 	const validateForm = (checkboxValues: CheckboxRole[]) => {
 		const isValid = checkboxValues.some(
@@ -160,7 +182,8 @@ export function InviteMemberModal({
 
 			return role;
 		}, []);
-    setCheckboxRoles(rolesChecked);
+
+		setCheckboxRoles(rolesChecked);
 		validateForm(rolesChecked);
 	};
 
@@ -190,7 +213,7 @@ export function InviteMemberModal({
 
 								<ClayInput
 									id="firstName"
-									onChange={(event) => {
+									onChange={(event: any) => {
 										setFormFields({
 											...formFields,
 											firstName: event.target.value,
@@ -211,7 +234,7 @@ export function InviteMemberModal({
 
 								<ClayInput
 									id="lastName"
-									onChange={(event) => {
+									onChange={(event: any) => {
 										setFormFields({
 											...formFields,
 											lastName: event.target.value,
@@ -233,7 +256,7 @@ export function InviteMemberModal({
 
 							<ClayInput
 								id="emailAddress"
-								onChange={(event) => {
+								onChange={(event: any) => {
 									setFormFields({
 										...formFields,
 										email: event.target.value,
@@ -245,45 +268,48 @@ export function InviteMemberModal({
 						</div>
 					</ClayForm.Group>
 
-          <ClayForm.Group>
-            <div className="pt-4">
-              <ClayModal.TitleSection>
-                <ClayModal.Title className="control-label">
-                  Role
-                </ClayModal.Title>
-              </ClayModal.TitleSection>
-              <hr className="solid"></hr>
-            </div>
-            <div>
-              {listOfRoles.map((role, index) => {
-                return (
-                  <ClayCheckbox
-                    label={role}
-                    checked={checkboxRoles[index]?.isChecked}
-                    value={role}
-                    onChange={() => handleCheck(role)}
-                    required={!formValid}
-                  />
-                );
-              })}
-            </div>
-          </ClayForm.Group>
-          <ClayButton.Group
-            className="d-flex justify-content-between justify-content-lg-end modal-footer"
-            spaced
-          >
-            <ClayButton
-              className="cancelButton"
-              outline={true}
-              type="button"
-              onClick={() => onClose()}
-            >
-              Cancel
-            </ClayButton>
-            <ClayButton type="submit">Send Invite</ClayButton>
-          </ClayButton.Group>
-        </ClayForm>
-      </ClayModal.Body>
-    </ClayModal>
-  );
+					<ClayForm.Group>
+						<div className="pt-4">
+							<ClayModal.TitleSection>
+								<ClayModal.Title className="control-label">
+									Role
+								</ClayModal.Title>
+							</ClayModal.TitleSection>
+
+							<hr className="solid"></hr>
+						</div>
+
+						<div>
+							{listOfRoles.map((role, index) => (
+								<ClayCheckbox
+									checked={checkboxRoles[index]?.isChecked}
+									key={index}
+									label={role}
+									onChange={() => handleCheck(role)}
+									required={!formValid}
+									value={role}
+								/>
+							))}
+						</div>
+					</ClayForm.Group>
+
+					<ClayButton.Group
+						className="d-flex justify-content-between justify-content-lg-end modal-footer"
+						spaced
+					>
+						<ClayButton
+							className="cancelButton"
+							onClick={() => onClose()}
+							outline={true}
+							type="button"
+						>
+							Cancel
+						</ClayButton>
+
+						<ClayButton type="submit">Send Invite</ClayButton>
+					</ClayButton.Group>
+				</ClayForm>
+			</ClayModal.Body>
+		</ClayModal>
+	);
 }
