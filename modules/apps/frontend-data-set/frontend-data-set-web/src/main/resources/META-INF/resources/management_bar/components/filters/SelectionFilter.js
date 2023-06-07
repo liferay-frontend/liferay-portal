@@ -103,7 +103,12 @@ function SelectionFilter({
 	const [selectedItems, setSelectedItems] = useState(
 		selectedData?.selectedItems || []
 	);
+	const [requestURL, setRequestURL] = useState(apiURL);
 	const [items, setItems] = useState(apiURL ? null : initialItems);
+	const [localItems, setLocalItems] = useState(
+		initialItems.length ? initialItems : null
+	);
+	const [firstRequest, setFirstRequest] = useState(true);
 	const [loading, setLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [total, setTotal] = useState(apiURL ? 0 : initialItems?.length);
@@ -113,7 +118,7 @@ function SelectionFilter({
 	const [infiniteLoaderRendered, setInfiniteLoaderRendered] = useState(false);
 	const [exclude, setExclude] = useState(!!selectedData?.exclude);
 
-	const loaderVisible = items?.length < total;
+	const loaderVisible = !localItems?.length && items?.length < total;
 
 	useEffect(() => {
 		setSelectedItems(selectedData?.selectedItems || []);
@@ -124,18 +129,25 @@ function SelectionFilter({
 			return;
 		}
 
-		setCurrentPage(1);
+		if (localItems.length) {
+			setRequestURL(null);
+		}
+		else {
+			setRequestURL(apiURL);
+			setCurrentPage(1);
+		}
 
 		setSearch(query);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [query, search]);
 
 	const isMounted = useIsMounted();
 
 	useEffect(() => {
-		if (apiURL) {
+		if (requestURL) {
 			setLoading(true);
 
-			fetchData(apiURL, search, currentPage)
+			fetchData(requestURL, search, currentPage)
 				.then((data) => {
 					if (!isMounted()) {
 						return;
@@ -150,7 +162,12 @@ function SelectionFilter({
 						setItems((items) => [...items, ...data.items]);
 					}
 
+					if (firstRequest && data.totalCount <= DEFAULT_PAGE_SIZE) {
+						setLocalItems(data.items);
+					}
+
 					setTotal(data.totalCount);
+					setFirstRequest(false);
 				})
 				.catch(() => {
 					if (isMounted()) {
@@ -158,7 +175,24 @@ function SelectionFilter({
 					}
 				});
 		}
-	}, [autocompleteEnabled, currentPage, isMounted, search, apiURL]);
+		else {
+			setLoading(false);
+			setItems(
+				localItems.filter(({name}) =>
+					name.toLowerCase().match(search.toLowerCase())
+				)
+			);
+		}
+		// // localItems
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		autocompleteEnabled,
+		currentPage,
+		firstRequest,
+		isMounted,
+		search,
+		requestURL
+	]);
 
 	const setScrollingArea = useCallback((node) => {
 		scrollingAreaRef.current = node;
