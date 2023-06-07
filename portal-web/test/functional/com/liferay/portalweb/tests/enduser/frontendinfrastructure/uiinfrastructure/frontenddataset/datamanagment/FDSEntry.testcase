@@ -103,7 +103,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-175990. Confirm the error message that appears when the user tries to create a dataset entry with more than 280 characters in the name field"
+	@description = "Needs refactor after LPS-183512 is fixed | LPS-175990. Confirm the error message that appears when the user tries to create a dataset entry with more than 280 characters in the name field"
 	@priority = 3
 	test CannotExceed280Characters {
 		task ("When the user goes to add Datasets") {
@@ -287,8 +287,7 @@ definition {
 		}
 	}
 
-	@description = "Ignored due to LPS-183512 | LPS-175990. Confirm that the user can create a data set entry with special chatacters"
-	@ignore = "true"
+	@description = "Needs refactor after LPS-183512 is fixed | LPS-175990. Confirm that the user can create a data set entry with special chatacters"
 	@priority = 5
 	test WithSpecialCharacters {
 		task ("When Create a DataSet") {
