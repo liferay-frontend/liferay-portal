@@ -19,7 +19,9 @@ import './PublishedAppsDashboardTableRow.scss';
 import { useAppContext } from '../../manage-app-state/AppManageState';
 import { MemberProps } from '../../pages/PublishedAppsDashboardPage/PublishedDashboardPageUtil';
 import { Avatar } from '../Avatar/Avatar';
+
 import './DashboardMemberTableRow.scss';
+
 import classNames from 'classnames';
 
 interface DashboardMemberTableRowProps {
