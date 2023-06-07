@@ -139,8 +139,7 @@ function SelectionFilter({
 		}
 
 		setSearch(query);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [query, search]);
+	}, [apiURL, query, search, localItems]);
 
 	const debouncedQuery = debounce((value) => {
 		setQuery(value);
@@ -192,16 +191,8 @@ function SelectionFilter({
 				)
 			);
 		}
-		// // localItems
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [
-		autocompleteEnabled,
-		currentPage,
-		firstRequest,
-		isMounted,
-		search,
-		requestURL
-	]);
+	}, [autocompleteEnabled, currentPage, isMounted, search, requestURL]);
 
 	const setScrollingArea = useCallback((node) => {
 		scrollingAreaRef.current = node;
