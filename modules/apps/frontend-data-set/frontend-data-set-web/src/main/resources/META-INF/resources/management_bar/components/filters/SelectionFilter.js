@@ -19,12 +19,13 @@ import {ClayCheckbox, ClayRadio, ClayToggle} from '@clayui/form';
 import ClayLabel from '@clayui/label';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
-import {fetch} from 'frontend-js-web';
+import {debounce, fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {getValueFromItem, isValuesArrayChanged} from '../../../utils/index';
 
+const DEFAULT_DEBOUNCE_DELAY = 300;
 const DEFAULT_PAGE_SIZE = 10;
 
 function fetchData(apiURL, searchParam, currentPage = 1) {
@@ -129,7 +130,7 @@ function SelectionFilter({
 			return;
 		}
 
-		if (localItems.length) {
+		if (localItems?.length) {
 			setRequestURL(null);
 		}
 		else {
@@ -140,6 +141,14 @@ function SelectionFilter({
 		setSearch(query);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [query, search]);
+
+	const debouncedQuery = debounce((value) => {
+		setQuery(value);
+	}, DEFAULT_DEBOUNCE_DELAY);
+
+	const handleAutocompleteQuery = (query) => {
+		debouncedQuery(query);
+	};
 
 	const isMounted = useIsMounted();
 
@@ -275,7 +284,7 @@ function SelectionFilter({
 						<ClayAutocomplete>
 							<ClayAutocomplete.Input
 								onChange={(event) =>
-									setQuery(event.target.value)
+									handleAutocompleteQuery(event.target.value)
 								}
 								placeholder={inputPlaceholder}
 							/>
