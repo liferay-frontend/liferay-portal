@@ -38,7 +38,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181348. Confirm that a dataset view can be deleted"
+	@description = "LPS-172396. Confirm that a dataset view can be deleted"
 	@priority = 5
 	test AssertNumberOfCharactersExceededInNameField {
 		task ("And Clicking add button") {
@@ -66,7 +66,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181349. Confirm that description field is trunked if exceed 100 characters"
+	@description = "LPS-172396. Confirm that description field is trunked if exceed 100 characters"
 	@priority = 4
 	test AssertNumberOfCharactersInDescriptionField {
 		task ("When go to add View with name View Test and description with 150 characters") {
@@ -80,7 +80,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181347. Confirm that field is trunked if exceed 100 characters"
+	@description = "LPS-172396. Confirm that field is trunked if exceed 100 characters"
 	@priority = 4
 	test CanAssertNameFieldIsTrunkedIfExceedCharacters {
 		task ("When Clicking add button, and a user types a name that is more than 100 characters until 280 characters, and Filling the description field with 'Test Description', and Clicking Save button") {
@@ -94,7 +94,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181340. Confirm that the name field is required for creating a view"
+	@description = "LPS-172396. Confirm that the name field is required for creating a view"
 	@priority = 5
 	test CanAssertNameIsRequired {
 		task ("When Clicking add button") {
@@ -118,7 +118,7 @@ definition {
 		}
 	}
 
-	@description = "Ignored due to LPS-183521 | LPS-180899 Confirm that when adding several views, pagination is displayed correctly when placing as 4 items"
+	@description = "Ignored due to LPS-183521 | LPS-176189. Confirm that when adding several views, pagination is displayed correctly when placing as 4 items"
 	@ignore = "true"
 	@priority = 5
 	test CanAssertPagination {
@@ -151,7 +151,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181346. Confirm that pagination works right on views page"
+	@description = "LPS-172396. Confirm that pagination works right on views page"
 	@priority = 3
 	test CanAssertPaginationOnFDSViewsPage {
 		task ("When Adding a 6 view called 'View Test 1', 'View Test 2'... and Filling the description field with 'Test Description'") {
@@ -181,7 +181,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-180896 Confirm that the dataset view deletion is recoverable"
+	@description = "LPS-176189. Confirm that the dataset view deletion is recoverable"
 	@priority = 5
 	test CanCancelDeletionOnCancelButton {
 		task ("When Add a new view") {
@@ -207,7 +207,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-180898. Confirm that the user can cancel deletion when clicking close (X) button"
+	@description = "LPS-176189. Confirm that the user can cancel deletion when clicking close (X) button"
 	@priority = 3
 	test CanCancelDeletionOnCloseButton {
 		task ("When Add a new view") {
@@ -239,7 +239,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181342. Confirm that the user can cancel a view criation by clicking on cancel button"
+	@description = "LPS-172396. Confirm that the user can cancel a view criation by clicking on cancel button"
 	@priority = 5
 	test CanCancelViewCreationOnCancelButton {
 		task ("When Add a view with the name 'View Test") {
@@ -265,7 +265,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181354. Confirm that the user can create more than one view"
+	@description = "LPS-172396. Confirm that the user can create more than one view"
 	@priority = 4
 	test CanCreateMultipleViews {
 		task ("When Adding a new view called "View Test" and the description field with "Test Description"") {
@@ -287,7 +287,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181339. Confirm that the user can create a view"
+	@description = "LPS-172396. Confirm that the user can create a view"
 	@priority = 5
 	test CanCreateView {
 		task ("When Filling the name with 'View Test' And Clicking Save button") {
@@ -305,7 +305,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181341. Confirm that The user can create a view with no description"
+	@description = "LPS-172396. Confirm that The user can create a view with no description"
 	@priority = 4
 	test CanCreateViewWithNoDescription {
 		task ("When Clicking add button, And Filling the name with 'View Test', And Clicking the Save button") {
@@ -319,7 +319,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-180893. Confirm that a dataset view can be deleted"
+	@description = "LPS-176189. Confirm that a dataset view can be deleted"
 	@priority = 5
 	test CanDeleteView {
 		task ("When Add a new view") {
@@ -343,7 +343,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181344. Assert that the user can edit or delet view"
+	@description = "LPS-172396. Assert that the user can edit or delet view"
 	@priority = 5
 	test CanEditOrDeleteView {
 		task ("When go to the View page of the dataset created, and click save button") {
@@ -365,7 +365,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181343. Confirm that the user can edit a view"
+	@description = "LPS-172396. Confirm that the user can edit a view"
 	@priority = 5
 	test CanEditView {
 		task ("When go to the View page of the dataset created, and click save button") {
@@ -388,7 +388,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181353. Confirm that the user can search a view by its description"
+	@description = "LPS-172396. Confirm that the user can search a view by its description"
 	@priority = 4
 	test CanSearchViewByDescription {
 		task ("When Adding a new view called 'View Test' and the description field with 'Test Description', And Clicking Save button") {
@@ -412,7 +412,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-181351. Confirm that the user can search a view by its name"
+	@description = "LPS-172396. Confirm that the user can search a view by its name"
 	@priority = 4
 	test CanSearchViewByName {
 		task ("When Adding a new view called 'View Test' and the description field with 'Test Description'") {
@@ -438,7 +438,7 @@ definition {
 		}
 	}
 
-	@description = "Ignored due to LPS-183521 | LPS-180895  Confirm that the view was really deleted"
+	@description = "Ignored due to LPS-183521 | LPS-176189  Confirm that the view was really deleted"
 	@ignore = "true"
 	@priority = 5
 	test CanUpdateNumberOfViews {
@@ -481,7 +481,7 @@ definition {
 		}
 	}
 
-	@description = "Ignored due to LPS-183521 and LPS-183512 | LPS-181350. Confirm that special characters are confirmed in the display name on the page "
+	@description = "Ignored due to LPS-183521 and LPS-183512 | LPS-172396. Confirm that special characters are confirmed in the display name on the page "
 	@ignore = "true"
 	@priority = 4
 	test CanUseSpecialCharactersInNameField {
