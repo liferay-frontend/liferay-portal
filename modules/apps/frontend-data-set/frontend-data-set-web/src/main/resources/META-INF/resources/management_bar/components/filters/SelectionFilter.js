@@ -186,8 +186,8 @@ function SelectionFilter({
 		else {
 			setLoading(false);
 			setItems(
-				localItems.filter(({name}) =>
-					name.toLowerCase().match(search.toLowerCase())
+				localItems.filter(({label}) =>
+					label.toLowerCase().match(search.toLowerCase())
 				)
 			);
 		}
