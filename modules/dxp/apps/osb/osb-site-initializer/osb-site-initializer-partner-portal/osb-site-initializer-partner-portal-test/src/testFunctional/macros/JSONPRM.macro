@@ -16,7 +16,8 @@ definition {
 		JSONPRMAPI.changeClaimStatus(
 			claimId = ${claimId},
 			claimStatus = ${claimStatus},
-			statusKey = ${statusKey});
+			statusKey = ${statusKey},
+			userEmailAddress = ${userEmailAddress});
 	}
 
 	macro changeMDFStatus {
@@ -34,7 +35,7 @@ definition {
 		var totalCostOfExpense = 0;
 
 		if (!(isSet(userEmailAddress))) {
-			var userEmailAddress = "test@liferay.com";
+			var userEmailAddress = "pmu@partner.com";
 		}
 
 		if (!(isSet(accountEntryName))) {
@@ -123,7 +124,8 @@ definition {
 			targetMarketOptions = ${targetMarketOptions},
 			targetRolesOptions = ${targetRolesOptions},
 			totalCostOfExpense = ${totalCostOfExpense},
-			totalMDFRequestAmount = ${totalMDFRequestAmount});
+			totalMDFRequestAmount = ${totalMDFRequestAmount},
+			userEmailAddress = ${userEmailAddress});
 
 		var requestId = JSONPRMAPI.addMDF(
 			accountEntryName = ${accountEntryName},
@@ -216,6 +218,14 @@ definition {
 		}
 
 		return ${requestId};
+	}
+
+	macro updateAccount {
+		if (!(isSet(accountName))) {
+			var accountName = "Company Name 1";
+		}
+
+		JSONPRMAPI.updateAccount(accountName = ${accountName});
 	}
 
 }

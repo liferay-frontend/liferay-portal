@@ -6,7 +6,7 @@ import InterestsQuery from 'shared/queries/InterestsQuery';
 import React from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {compositionListColumns} from 'shared/util/table-columns';
-import {CompositionTypes} from 'shared/util/constants';
+import {CompositionTypes, RangeKeyTimeRanges} from 'shared/util/constants';
 import {
 	getMapResultToProps,
 	mapCardPropsToOptions
@@ -63,11 +63,16 @@ const TableWithData = withTableData(withData, {
 const InterestsCard = () => {
 	const {channelId, groupId} = useParams();
 
+	const {Last7Days, Last30Days, Last90Days, Yesterday} = RangeKeyTimeRanges;
+
+	const rangeKeys = [Yesterday, Last7Days, Last30Days, Last90Days];
+
 	return (
 		<CardWithRangeKey
 			className='interests-card-root'
 			label={Liferay.Language.get('interests')}
 			legacyDropdownRangeKey={false}
+			rangeKeys={rangeKeys}
 		>
 			{({rangeSelectors}) => (
 				<>
@@ -79,7 +84,10 @@ const InterestsCard = () => {
 
 					<Card.Footer>
 						<ClayLink
+							borderless
+							button
 							className='button-root'
+							displayType='secondary'
 							href={setUriQueryValues(
 								rangeSelectors,
 								toRoute(Routes.SITES_INTERESTS, {
@@ -87,12 +95,13 @@ const InterestsCard = () => {
 									groupId
 								})
 							)}
+							small
 						>
 							{Liferay.Language.get('all-interests')}
 
 							<ClayIcon
 								className='icon-root ml-2'
-								symbol='angle-right'
+								symbol='angle-right-small'
 							/>
 						</ClayLink>
 					</Card.Footer>

@@ -1,7 +1,7 @@
 @component-name = "portal-solutions"
 definition {
 
-	property custom.properties = "feature.flag.LPS-163118=true";
+	property custom.properties = "feature.flag.LPS-163118=true${line.separator}feature.flag.LPS-154672=true";
 	property osgi.modules.includes = "site-initializer-testray";
 	property portal.release = "false";
 	property portal.upstream = "true";
@@ -16,15 +16,20 @@ definition {
 	var testSiteName = "Testray 2";
 
 	setUp {
-		task ("Login and create a Testray Site") {
+		task ("Set up instance and sign in") {
 			TestCase.setUpPortalInstance();
 
 			User.firstLoginPG();
-
-			Testray.addTestraySite(siteName = ${testSiteName});
 		}
 
-		task ("create all objects: projects, teams, components, cases, requirements") {
+		task ("Create a new Testray Site") {
+			HeadlessSite.addSite(
+				siteName = ${testSiteName},
+				templateName = "Testray",
+				templateType = "Site Initializer");
+		}
+
+		task ("create project, team, component, case, requirement via API") {
 			JSONTestray.addProject(
 				projectDescription = "Project Description 1",
 				projectName = ${projectName});
@@ -63,7 +68,7 @@ definition {
 				requirementName = "Requirement 2");
 		}
 
-		task ("Go to the Requirements page") {
+		task ("Go to the Requirements tab") {
 			ApplicationsMenu.gotoSite(site = ${testSiteName});
 
 			Testray.changePagination(
@@ -93,15 +98,17 @@ definition {
 	}
 
 	tearDown {
+		task ("Delete case type and project via API, Testray Site and Client Extensions") {
+			JSONTestrayAPI.deleteObjectViaAPI(
+				object = "casetypes",
+				objectName = ${caseType});
+
+			JSONTestrayAPI.deleteProject(projectName = ${projectName});
+
+			Testray.testrayApisTearDown();
+		}
+
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
-
-		JSONTestrayAPI.deleteObjectViaAPI(
-			object = "casetypes",
-			objectName = ${caseType});
-
-		JSONTestrayAPI.deleteProject(projectName = ${projectName});
-
-		Testray.testrayApisTearDown();
 
 		if (${testPortalInstance} == "true") {
 			PortalInstances.tearDownCP();
@@ -111,6 +118,8 @@ definition {
 	@description = "Story ID: LPS-173530 | Test Summary: Verify if as an Administrator I should be able to filter case requirements by link"
 	@priority = 3
 	test AdminCanFilterCaseRequirementsByLink {
+		property test.name.skip.portal.instance = "TestrayCaseRequirementsFilters#AdminCanFilterCaseRequirementsByLink";
+
 		task ("When the user filter a case requirement by link") {
 			TestrayFilter.clickFilter();
 
@@ -136,6 +145,8 @@ definition {
 	@description = "Story ID: LPS-173530 | Test Summary: Verify if as an Administrator I should be able to filter case requirements by summary"
 	@priority = 3
 	test AdminCanFilterCaseRequirementsBySummary {
+		property test.name.skip.portal.instance = "TestrayCaseRequirementsFilters#AdminCanFilterCaseRequirementsBySummary";
+
 		task ("When the user filter a case requirement by summary") {
 			TestrayFilter.clickFilter();
 
@@ -157,6 +168,8 @@ definition {
 	@description = "Story ID: LPS-173530 | Test Summary: Verify if as an Administrator I should be able to filter case requirements using multiple filtering options"
 	@priority = 4
 	test AdminCanFilterCaseRequirementsWithMultipleOptions {
+		property test.name.skip.portal.instance = "TestrayCaseRequirementsFilters#AdminCanFilterCaseRequirementsWithMultipleOptions";
+
 		task ("When the user filter a case requirement with multiple options") {
 			TestrayFilter.clickFilter();
 
@@ -187,6 +200,8 @@ definition {
 	@description = "Story ID: LPS-173530 | Test Summary: Verify if as an Administrator I should not see case requirements that don't exist when I try filtering for them"
 	@priority = 3
 	test AdminCanFilterForNonexistantCaseRequirements {
+		property test.name.skip.portal.instance = "TestrayCaseRequirementsFilters#AdminCanFilterForNonexistantCaseRequirements";
+
 		task ("When the user filters a case requirement by its non-existent name") {
 			TestrayFilter.clickFilter();
 
@@ -206,6 +221,8 @@ definition {
 	@description = "Story ID: LPS-173530 | Test Summary: Verify if as an Administrator I should be able to filter the filter options"
 	@priority = 2
 	test AdminCanFilterOptionsToFilter {
+		property test.name.skip.portal.instance = "TestrayCaseRequirementsFilters#AdminCanFilterOptionsToFilter";
+
 		task ("When the user search field called link") {
 			TestrayFilter.clickFilter();
 

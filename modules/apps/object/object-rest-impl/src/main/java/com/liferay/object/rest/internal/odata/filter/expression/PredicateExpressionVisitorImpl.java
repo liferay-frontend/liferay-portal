@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -52,6 +53,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.odata.filter.InvalidFilterException;
 import com.liferay.portal.odata.filter.expression.BinaryExpression;
 import com.liferay.portal.odata.filter.expression.CollectionPropertyExpression;
 import com.liferay.portal.odata.filter.expression.ComplexPropertyExpression;
@@ -544,6 +546,9 @@ public class PredicateExpressionVisitorImpl
 					_getRelatedObjectDefinitionId(
 						objectValuePair.getValue(), objectValuePair.getKey())));
 		}
+		catch (InvalidFilterException invalidFilterException) {
+			throw invalidFilterException;
+		}
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
@@ -688,7 +693,8 @@ public class PredicateExpressionVisitorImpl
 					objectField.getBusinessType());
 
 			Object value = objectFieldBusinessType.getValue(
-				objectField, Collections.singletonMap(entityFieldName, right));
+				objectField, PrincipalThreadLocal.getUserId(),
+				Collections.singletonMap(entityFieldName, right));
 
 			if (value == null) {
 				return right;

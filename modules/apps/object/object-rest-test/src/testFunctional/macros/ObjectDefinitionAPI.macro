@@ -60,7 +60,7 @@ definition {
 	}
 
 	macro _createObjectDefinition {
-		Variables.assertDefined(parameterList = "${en_US_label},${name},${requiredStringFieldName},${en_US_plural_label}");
+		Variables.assertDefined(parameterList = "${name},${en_US_plural_label}");
 
 		if (isSet(virtualHost)) {
 			if (!(isSet(port))) {
@@ -75,6 +75,14 @@ definition {
 
 		if (!(isSet(scope))) {
 			var scope = "company";
+		}
+
+		if (!(isSet(en_US_label))) {
+			var en_US_label = ${name};
+		}
+
+		if (!(isSet(requiredStringFieldName))) {
+			var requiredStringFieldName = "name";
 		}
 
 		var curl = '''
@@ -677,6 +685,47 @@ definition {
 		return ${managerId};
 	}
 
+	macro createObjectDefinitionWithAllKindsOfFieldTypes {
+		var objectDefinitionId = ObjectDefinitionAPI.createAndPublishObjectDefinition(
+			en_US_label = ${en_US_label},
+			en_US_plural_label = ${en_US_plural_label},
+			name = ${objectDefinitionName},
+			requiredStringFieldName = ${requiredStringFieldName});
+
+		if (isSet(picklistId)) {
+			ObjectDefinitionAPI.postObjectDefinitionObjectField(
+				businessType = "Picklist",
+				dBType = "String",
+				listTypeDefinitionId = ${picklistId},
+				name = "customPicklist",
+				objectDefinitionName = ${objectDefinitionName});
+		}
+
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldBusinessType = "Attachment",
+			fieldLabelName = "customAttachment",
+			fieldName = "customAttachment",
+			fieldType = "Long",
+			fileSource = "userComputer",
+			isRequired = "false",
+			objectName = ${objectDefinitionName});
+
+		ObjectFieldAPI.createObjectFieldByObjectDefinitionId(
+			dbType = "BigDecimal",
+			name = "customPrecisionDecimal",
+			objectDefinitionId = ${objectDefinitionId});
+
+		ObjectFieldAPI.createObjectFieldByObjectDefinitionId(
+			dbType = "Boolean",
+			name = "customBoolean",
+			objectDefinitionId = ${objectDefinitionId});
+
+		ObjectFieldAPI.createObjectFieldByObjectDefinitionId(
+			dbType = "Clob",
+			name = "customLongText",
+			objectDefinitionId = ${objectDefinitionId});
+	}
+
 	macro createObjectEntryWithName {
 		var objectId = ObjectDefinitionAPI._createObjectEntryWithName(
 			en_US_plural_label = ${en_US_plural_label},
@@ -724,10 +773,14 @@ definition {
 	}
 
 	macro createRelationshipWithObjectDefinitionNames {
-		Variables.assertDefined(parameterList = "${childObjectName},${deletionType},${name},${parentObjectName},${type}");
+		Variables.assertDefined(parameterList = "${childObjectName},${name},${parentObjectName},${type}");
 
 		if (!(isSet(en_US_label))) {
 			var en_US_label = ${name};
+		}
+
+		if (!(isSet(deletionType))) {
+			var deletionType = "cascade";
 		}
 
 		var childObjectId = ObjectDefinitionAPI.getObjectDefinitionIdByName(name = ${childObjectName});

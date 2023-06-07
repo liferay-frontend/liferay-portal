@@ -32,7 +32,7 @@ exports[`Salesforce should render 1`] = `
       </li>
     </ol>
     <div
-      class="content-header has-page-actions"
+      class="content-header"
     >
       <div
         class="header-text"
@@ -60,14 +60,7 @@ exports[`Salesforce should render 1`] = `
       </div>
       <div
         class="page-actions-container"
-      >
-        <button
-          class="button-root btn btn-secondary"
-          type="button"
-        >
-          Delete Data Source
-        </button>
-      </div>
+      />
     </div>
     <div>
       <div
@@ -274,6 +267,7 @@ exports[`Salesforce should render 1`] = `
                           class="input-group-inset-item input-group-inset-item-after"
                         >
                           <button
+                            aria-label="Watch"
                             class="button-root btn btn-unstyled"
                             disabled=""
                             type="button"

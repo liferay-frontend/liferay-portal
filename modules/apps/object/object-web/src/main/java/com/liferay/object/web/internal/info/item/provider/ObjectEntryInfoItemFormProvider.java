@@ -19,6 +19,7 @@ import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.InfoFieldSetEntry;
 import com.liferay.info.field.type.FileInfoFieldType;
+import com.liferay.info.field.type.LongTextInfoFieldType;
 import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.field.type.NumberInfoFieldType;
 import com.liferay.info.field.type.RelationshipInfoFieldType;
@@ -220,10 +221,8 @@ public class ObjectEntryInfoItemFormProvider
 					ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT)) {
 
 			finalStep.attribute(
-				TextInfoFieldType.MAX_LENGTH, _getMaxLength(objectField, 65000)
-			).attribute(
-				TextInfoFieldType.MULTILINE, true
-			);
+				LongTextInfoFieldType.MAX_LENGTH,
+				_getMaxLength(objectField, 65000));
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
@@ -677,12 +676,13 @@ public class ObjectEntryInfoItemFormProvider
 	}
 
 	private List<InfoFieldSetEntry> _getParentsInfoFieldSets(
-			long objectDefinitionId2)
-		throws NoSuchFormVariationException {
+		long objectDefinitionId2) {
 
 		List<InfoFieldSetEntry> infoFieldSetEntries = new ArrayList<>();
 
-		if (objectDefinitionId2 == 0) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-176083") ||
+			(objectDefinitionId2 == 0)) {
+
 			return infoFieldSetEntries;
 		}
 

@@ -39,6 +39,8 @@ public class CommerceOrderActionKeys {
 	public static final String DELETE_COMMERCE_ORDERS =
 		"DELETE_COMMERCE_ORDERS";
 
+	public static final String MANAGE_ALL_ACCOUNTS = "MANAGE_ALL_ACCOUNTS";
+
 	public static final String MANAGE_COMMERCE_ORDER_DELIVERY_TERMS =
 		"MANAGE_COMMERCE_ORDER_DELIVERY_TERMS";
 
@@ -59,6 +61,8 @@ public class CommerceOrderActionKeys {
 
 	public static final String MANAGE_COMMERCE_ORDERS =
 		"MANAGE_COMMERCE_ORDERS";
+
+	public static final String MANAGE_QUOTES = "MANAGE_QUOTES";
 
 	public static final String VIEW_BILLING_ADDRESS = "VIEW_BILLING_ADDRESS";
 

@@ -39,16 +39,29 @@ definition {
 				locator1 = "Button#BUTTON_ID");
 		}
 		else {
-			ScrollWebElementIntoView(
-				buttonId = ${statusButton},
-				locator1 = "PRMMDFRequest#STATUS_BUTTON");
+			ScrollWebElementIntoView(locator1 = "PRMMDFRequest#STATUS_DROPDOWN");
+
+			ClickNoError(locator1 = "PRMMDFRequest#STATUS_DROPDOWN");
 
 			ClickNoError(
-				buttonId = ${statusButton},
-				locator1 = "PRMMDFRequest#STATUS_BUTTON");
+				key_statusButton = ${statusButton},
+				locator1 = "PRMMDFRequest#STATUS_OPTION_DROPDOWN");
 		}
 
-		Confirm.acceptAlert();
+		if ((${statusButton} == "Request More Info") || (${statusButton} == "Marketing Director Review") || (${statusButton} == "Reject")) {
+			if (!(isSet(statusChangeMotivation))) {
+				var statusChangeMotivation = "Status Change Motivation";
+			}
+
+			Type(
+				key_fieldId = "descriptionTextArea",
+				locator1 = "TextArea#ANY_ID",
+				value1 = ${statusChangeMotivation});
+
+			Button.click(button = ${statusButton});
+
+			SelectFrameTop();
+		}
 	}
 
 	@summary = "Add a new MDF Request filling the goals and activity pages"
@@ -225,13 +238,6 @@ definition {
 				key_fieldName = "company",
 				locator1 = "PRMMDFRequest#SELECT",
 				value1 = ${accountName});
-		}
-
-		if (isSet(countryName)) {
-			Select(
-				key_fieldName = "country",
-				locator1 = "PRMMDFRequest#SELECT",
-				value1 = ${countryName});
 		}
 
 		if (isSet(campaignName)) {
@@ -575,6 +581,15 @@ definition {
 			locator1 = "PRMMDFRequest#SUMMARY_FIELD");
 	}
 
+	@summary = "View activity status on the MDF request detail page"
+	macro viewActivityStatus {
+		AssertElementPresent(
+			key_activityName = ${activityName},
+			key_statusType = ${statusType},
+			key_statusValue = ${statusValue},
+			locator1 = "PRMMDFRequest#ACTIVITY_STATUS");
+	}
+
 	@summary = "Assert the Total Cost value of the budget, inside the activities page of the MDF Request"
 	macro viewBudgetValue {
 		AssertTextEquals(
@@ -814,6 +829,13 @@ definition {
 		AssertElementPresent(
 			key_value = ${key_status},
 			locator1 = "PRMMDFRequest#STATUS_INFO");
+	}
+
+	@summary = "Verify that the error message is not displayed"
+	macro viewNoErrorMessage {
+		AssertElementNotPresent(
+			key_errorMessage = ${errorMessage},
+			locator1 = "PRMMDFRequest#ERROR_MESSAGE");
 	}
 
 	@summary = "Verify that the state manager is present on MDF Request detail page"

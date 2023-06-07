@@ -37,138 +37,133 @@ String emailFromName = ParamUtil.getString(request, "preferences--emailFromName-
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
 
-	<%
-	String tabs1Names = "email-from,web-content-added-email,web-content-expired-email,web-content-moved-from-folder-email,web-content-moved-to-folder-email,web-content-review-email,web-content-updated-email";
-
-	if (JournalUtil.hasWorkflowDefinitionsLinks(themeDisplay)) {
-		tabs1Names = tabs1Names.concat(",web-content-approval-denied-email,web-content-approval-granted-email,web-content-approval-requested-email");
-	}
-	%>
+	<liferay-ui:error key="emailFromAddress" message="please-enter-a-valid-email-address" />
+	<liferay-ui:error key="emailFromName" message="please-enter-a-valid-name" />
+	<liferay-ui:error key="emailArticleAddedBody" message="please-enter-a-valid-body" />
+	<liferay-ui:error key="emailArticleAddedSubject" message="please-enter-a-valid-subject" />
+	<liferay-ui:error key="emailArticleApprovalDeniedBody" message="please-enter-a-valid-body" />
+	<liferay-ui:error key="emailArticleApprovalDeniedSubject" message="please-enter-a-valid-subject" />
+	<liferay-ui:error key="emailArticleApprovalGrantedBody" message="please-enter-a-valid-body" />
+	<liferay-ui:error key="emailArticleApprovalGrantedSubject" message="please-enter-a-valid-subject" />
+	<liferay-ui:error key="emailArticleApprovalRequestedBody" message="please-enter-a-valid-body" />
+	<liferay-ui:error key="emailArticleApprovalRequestedSubject" message="please-enter-a-valid-subject" />
+	<liferay-ui:error key="emailArticleExpiredBody" message="please-enter-a-valid-body" />
+	<liferay-ui:error key="emailArticleExpiredSubject" message="please-enter-a-valid-subject" />
+	<liferay-ui:error key="emailArticleReviewBody" message="please-enter-a-valid-body" />
+	<liferay-ui:error key="emailArticleReviewSubject" message="please-enter-a-valid-subject" />
+	<liferay-ui:error key="emailArticleUpdatedBody" message="please-enter-a-valid-body" />
+	<liferay-ui:error key="emailArticleUpdatedSubject" message="please-enter-a-valid-subject" />
 
 	<liferay-frontend:edit-form-body>
-		<liferay-ui:tabs
-			names="<%= tabs1Names %>"
-			refresh="<%= false %>"
-		>
-			<liferay-ui:error key="emailFromAddress" message="please-enter-a-valid-email-address" />
-			<liferay-ui:error key="emailFromName" message="please-enter-a-valid-name" />
-			<liferay-ui:error key="emailArticleAddedBody" message="please-enter-a-valid-body" />
-			<liferay-ui:error key="emailArticleAddedSubject" message="please-enter-a-valid-subject" />
-			<liferay-ui:error key="emailArticleApprovalDeniedBody" message="please-enter-a-valid-body" />
-			<liferay-ui:error key="emailArticleApprovalDeniedSubject" message="please-enter-a-valid-subject" />
-			<liferay-ui:error key="emailArticleApprovalGrantedBody" message="please-enter-a-valid-body" />
-			<liferay-ui:error key="emailArticleApprovalGrantedSubject" message="please-enter-a-valid-subject" />
-			<liferay-ui:error key="emailArticleApprovalRequestedBody" message="please-enter-a-valid-body" />
-			<liferay-ui:error key="emailArticleApprovalRequestedSubject" message="please-enter-a-valid-subject" />
-			<liferay-ui:error key="emailArticleExpiredBody" message="please-enter-a-valid-body" />
-			<liferay-ui:error key="emailArticleExpiredSubject" message="please-enter-a-valid-subject" />
-			<liferay-ui:error key="emailArticleReviewBody" message="please-enter-a-valid-body" />
-			<liferay-ui:error key="emailArticleReviewSubject" message="please-enter-a-valid-subject" />
-			<liferay-ui:error key="emailArticleUpdatedBody" message="please-enter-a-valid-body" />
-			<liferay-ui:error key="emailArticleUpdatedSubject" message="please-enter-a-valid-subject" />
+		<div class="sheet-row">
+			<clay:tabs
+				tabsItems="<%= journalDisplayContext.getConfigurationTabsItems() %>"
+			>
+				<clay:tabs-panel>
+					<liferay-frontend:fieldset>
+						<aui:input cssClass="lfr-input-text-container" label="name" name="preferences--emailFromName--" type="text" value="<%= emailFromName %>" />
 
-			<liferay-ui:section>
-				<liferay-frontend:fieldset>
-					<aui:input cssClass="lfr-input-text-container" label="name" name="preferences--emailFromName--" type="text" value="<%= emailFromName %>" />
+						<aui:input cssClass="lfr-input-text-container" label="address" name="preferences--emailFromAddress--" type="text" value="<%= emailFromAddress %>" />
+					</liferay-frontend:fieldset>
+				</clay:tabs-panel>
 
-					<aui:input cssClass="lfr-input-text-container" label="address" name="preferences--emailFromAddress--" type="text" value="<%= emailFromAddress %>" />
-				</liferay-frontend:fieldset>
-			</liferay-ui:section>
+				<%
+				Map<String, String> emailDefinitionTerms = JournalUtil.getEmailDefinitionTerms(renderRequest, emailFromAddress, emailFromName);
+				%>
 
-			<%
-			Map<String, String> emailDefinitionTerms = JournalUtil.getEmailDefinitionTerms(renderRequest, emailFromAddress, emailFromName);
-			%>
-
-			<liferay-ui:section>
-				<liferay-frontend:email-notification-settings
-					emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleAddedBody() %>"
-					emailDefinitionTerms="<%= emailDefinitionTerms %>"
-					emailEnabled="<%= journalGroupServiceConfiguration.emailArticleAddedEnabled() %>"
-					emailParam="emailArticleAdded"
-					emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleAddedSubject() %>"
-				/>
-			</liferay-ui:section>
-
-			<liferay-ui:section>
-				<liferay-frontend:email-notification-settings
-					emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleExpiredBody() %>"
-					emailDefinitionTerms="<%= emailDefinitionTerms %>"
-					emailEnabled="<%= journalGroupServiceConfiguration.emailArticleExpiredEnabled() %>"
-					emailParam="emailArticleExpired"
-					emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleExpiredSubject() %>"
-				/>
-			</liferay-ui:section>
-
-			<liferay-ui:section>
-				<liferay-frontend:email-notification-settings
-					emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleMovedFromFolderBody() %>"
-					emailDefinitionTerms="<%= emailDefinitionTerms %>"
-					emailEnabled="<%= journalGroupServiceConfiguration.emailArticleMovedFromFolderEnabled() %>"
-					emailParam="emailArticleMovedFromFolder"
-					emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleMovedFromFolderSubject() %>"
-				/>
-			</liferay-ui:section>
-
-			<liferay-ui:section>
-				<liferay-frontend:email-notification-settings
-					emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleMovedToFolderBody() %>"
-					emailDefinitionTerms="<%= emailDefinitionTerms %>"
-					emailEnabled="<%= journalGroupServiceConfiguration.emailArticleMovedToFolderEnabled() %>"
-					emailParam="emailArticleMovedToFolder"
-					emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleMovedToFolderSubject() %>"
-				/>
-			</liferay-ui:section>
-
-			<liferay-ui:section>
-				<liferay-frontend:email-notification-settings
-					emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleReviewBody() %>"
-					emailDefinitionTerms="<%= emailDefinitionTerms %>"
-					emailEnabled="<%= journalGroupServiceConfiguration.emailArticleReviewEnabled() %>"
-					emailParam="emailArticleReview"
-					emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleReviewSubject() %>"
-				/>
-			</liferay-ui:section>
-
-			<liferay-ui:section>
-				<liferay-frontend:email-notification-settings
-					emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleUpdatedBody() %>"
-					emailDefinitionTerms="<%= emailDefinitionTerms %>"
-					emailEnabled="<%= journalGroupServiceConfiguration.emailArticleUpdatedEnabled() %>"
-					emailParam="emailArticleUpdated"
-					emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleUpdatedSubject() %>"
-				/>
-			</liferay-ui:section>
-
-			<c:if test="<%= JournalUtil.hasWorkflowDefinitionsLinks(themeDisplay) %>">
-				<liferay-ui:section>
+				<clay:tabs-panel>
 					<liferay-frontend:email-notification-settings
-						emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalDeniedBody() %>"
+						emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleAddedBody() %>"
 						emailDefinitionTerms="<%= emailDefinitionTerms %>"
-						emailEnabled="<%= journalGroupServiceConfiguration.emailArticleApprovalDeniedEnabled() %>"
-						emailParam="emailArticleApprovalDenied"
-						emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalDeniedSubject() %>"
+						emailEnabled="<%= journalGroupServiceConfiguration.emailArticleAddedEnabled() %>"
+						emailParam="emailArticleAdded"
+						emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleAddedSubject() %>"
 					/>
-				</liferay-ui:section>
+				</clay:tabs-panel>
 
-				<liferay-ui:section>
+				<clay:tabs-panel>
 					<liferay-frontend:email-notification-settings
-						emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalGrantedBody() %>"
+						emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleExpiredBody() %>"
 						emailDefinitionTerms="<%= emailDefinitionTerms %>"
-						emailEnabled="<%= journalGroupServiceConfiguration.emailArticleApprovalGrantedEnabled() %>"
-						emailParam="emailArticleApprovalGranted"
-						emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalGrantedSubject() %>"
+						emailEnabled="<%= journalGroupServiceConfiguration.emailArticleExpiredEnabled() %>"
+						emailParam="emailArticleExpired"
+						emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleExpiredSubject() %>"
 					/>
-				</liferay-ui:section>
+				</clay:tabs-panel>
 
-				<liferay-ui:section>
+				<clay:tabs-panel>
 					<liferay-frontend:email-notification-settings
-						emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalRequestedBody() %>"
-						emailDefinitionTerms='<%= JournalUtil.getEmailDefinitionTerms(renderRequest, emailFromAddress, emailFromName, "requested") %>'
-						emailEnabled="<%= journalGroupServiceConfiguration.emailArticleApprovalRequestedEnabled() %>"
-						emailParam="emailArticleApprovalRequested"
-						emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalRequestedSubject() %>"
+						emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleMovedFromFolderBody() %>"
+						emailDefinitionTerms="<%= emailDefinitionTerms %>"
+						emailEnabled="<%= journalGroupServiceConfiguration.emailArticleMovedFromFolderEnabled() %>"
+						emailParam="emailArticleMovedFromFolder"
+						emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleMovedFromFolderSubject() %>"
 					/>
-				</liferay-ui:section> </c:if> </liferay-ui:tabs>
+				</clay:tabs-panel>
+
+				<clay:tabs-panel>
+					<liferay-frontend:email-notification-settings
+						emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleMovedToFolderBody() %>"
+						emailDefinitionTerms="<%= emailDefinitionTerms %>"
+						emailEnabled="<%= journalGroupServiceConfiguration.emailArticleMovedToFolderEnabled() %>"
+						emailParam="emailArticleMovedToFolder"
+						emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleMovedToFolderSubject() %>"
+					/>
+				</clay:tabs-panel>
+
+				<clay:tabs-panel>
+					<liferay-frontend:email-notification-settings
+						emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleReviewBody() %>"
+						emailDefinitionTerms="<%= emailDefinitionTerms %>"
+						emailEnabled="<%= journalGroupServiceConfiguration.emailArticleReviewEnabled() %>"
+						emailParam="emailArticleReview"
+						emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleReviewSubject() %>"
+					/>
+				</clay:tabs-panel>
+
+				<clay:tabs-panel>
+					<liferay-frontend:email-notification-settings
+						emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleUpdatedBody() %>"
+						emailDefinitionTerms="<%= emailDefinitionTerms %>"
+						emailEnabled="<%= journalGroupServiceConfiguration.emailArticleUpdatedEnabled() %>"
+						emailParam="emailArticleUpdated"
+						emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleUpdatedSubject() %>"
+					/>
+				</clay:tabs-panel>
+
+				<c:if test="<%= JournalUtil.hasWorkflowDefinitionsLinks(themeDisplay) %>">
+					<clay:tabs-panel>
+						<liferay-frontend:email-notification-settings
+							emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalDeniedBody() %>"
+							emailDefinitionTerms="<%= emailDefinitionTerms %>"
+							emailEnabled="<%= journalGroupServiceConfiguration.emailArticleApprovalDeniedEnabled() %>"
+							emailParam="emailArticleApprovalDenied"
+							emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalDeniedSubject() %>"
+						/>
+					</clay:tabs-panel>
+
+					<clay:tabs-panel>
+						<liferay-frontend:email-notification-settings
+							emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalGrantedBody() %>"
+							emailDefinitionTerms="<%= emailDefinitionTerms %>"
+							emailEnabled="<%= journalGroupServiceConfiguration.emailArticleApprovalGrantedEnabled() %>"
+							emailParam="emailArticleApprovalGranted"
+							emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalGrantedSubject() %>"
+						/>
+					</clay:tabs-panel>
+
+					<clay:tabs-panel>
+						<liferay-frontend:email-notification-settings
+							emailBodyLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalRequestedBody() %>"
+							emailDefinitionTerms='<%= JournalUtil.getEmailDefinitionTerms(renderRequest, emailFromAddress, emailFromName, "requested") %>'
+							emailEnabled="<%= journalGroupServiceConfiguration.emailArticleApprovalRequestedEnabled() %>"
+							emailParam="emailArticleApprovalRequested"
+							emailSubjectLocalizedValuesMap="<%= journalGroupServiceConfiguration.emailArticleApprovalRequestedSubject() %>"
+						/>
+					</clay:tabs-panel>
+				</c:if>
+			</clay:tabs>
+		</div>
 	</liferay-frontend:edit-form-body>
 
 	<liferay-frontend:edit-form-footer>

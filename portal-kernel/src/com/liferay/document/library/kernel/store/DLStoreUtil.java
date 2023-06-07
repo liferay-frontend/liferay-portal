@@ -166,25 +166,6 @@ public class DLStoreUtil {
 	}
 
 	/**
-	 * Returns the file as a byte array.
-	 *
-	 * @param  companyId the primary key of the company
-	 * @param  repositoryId the primary key of the data repository (optionally
-	 *         {@link com.liferay.portal.kernel.model.CompanyConstants#SYSTEM})
-	 * @param  fileName the file's name
-	 * @param  versionLabel the file's version label
-	 * @return Returns the byte array with the file's name
-	 */
-	public static byte[] getFileAsBytes(
-			long companyId, long repositoryId, String fileName,
-			String versionLabel)
-		throws PortalException {
-
-		return _store.getFileAsBytes(
-			companyId, repositoryId, fileName, versionLabel);
-	}
-
-	/**
 	 * Returns the file as an {@link InputStream} object.
 	 *
 	 * <p>
@@ -336,54 +317,6 @@ public class DLStoreUtil {
 		throws PortalException {
 
 		_store.updateFile(companyId, repositoryId, newRepositoryId, fileName);
-	}
-
-	/**
-	 * Updates a file based on a {@link File} object.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param repositoryId the primary key of the data repository (optionally
-	 *        {@link com.liferay.portal.kernel.model.CompanyConstants#SYSTEM})
-	 * @param fileName the file name
-	 * @param fileExtension the file's extension
-	 * @param validateFileExtension whether to validate the file's extension
-	 * @param versionLabel the file's new version label
-	 * @param sourceFileName the new file's original name
-	 * @param file Name the file name
-	 */
-	public static void updateFile(
-			long companyId, long repositoryId, String fileName,
-			String fileExtension, boolean validateFileExtension,
-			String versionLabel, String sourceFileName, File file)
-		throws PortalException {
-
-		_store.updateFile(
-			companyId, repositoryId, fileName, fileExtension,
-			validateFileExtension, versionLabel, sourceFileName, file);
-	}
-
-	/**
-	 * Updates a file based on a {@link InputStream} object.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param repositoryId the primary key of the data repository (optionally
-	 *        {@link com.liferay.portal.kernel.model.CompanyConstants#SYSTEM})
-	 * @param fileName the file name
-	 * @param fileExtension the file's extension
-	 * @param validateFileExtension whether to validate the file's extension
-	 * @param versionLabel the file's new version label
-	 * @param sourceFileName the new file's original name
-	 * @param inputStream the new file's data
-	 */
-	public static void updateFile(
-			long companyId, long repositoryId, String fileName,
-			String fileExtension, boolean validateFileExtension,
-			String versionLabel, String sourceFileName, InputStream inputStream)
-		throws PortalException {
-
-		_store.updateFile(
-			companyId, repositoryId, fileName, fileExtension,
-			validateFileExtension, versionLabel, sourceFileName, inputStream);
 	}
 
 	/**

@@ -48,7 +48,11 @@ definition {
 
 		Navigator.openSpecificURL(url = "${portalURL}/web/guest/asset-publisher-page");
 
-		Portlet.addPG(portletName = "Asset Publisher");
+		JSONLayout.addWidgetToPublicLayout(
+			column = 1,
+			groupName = "Guest",
+			layoutName = "Asset Publisher Page",
+			widgetName = "Asset Publisher");
 
 		var companyId = JSONCompany.getCompanyId();
 		var port = Elasticsearch.getServerPort();
@@ -60,7 +64,7 @@ definition {
 				-d '{
 					"query": {
 						"match": {
-							"_type": "LiferayDocumentType"
+							"_type": "_doc"
 						}
 					}
 				}'
@@ -72,9 +76,7 @@ definition {
 
 		var newProperty = "index.on.startup=true";
 
-		AntCommand(
-			locator1 = "build-test.xml",
-			value1 = "portal-ext-properties-update -Dadd.new.properties=true -Dupdate.properties=${newProperty}");
+		AntCommands.runCommand("build-test.xml", "portal-ext-properties-update -Dadd.new.properties=true -Dupdate.properties=${newProperty}");
 
 		Portlet.startServer(deleteLiferayHome = "false");
 
@@ -177,9 +179,13 @@ definition {
 			groupName = "Guest",
 			title = "apple");
 
-		Search.openSearchPage();
+		JSONLayout.addWidgetToPublicLayout(
+			column = 1,
+			groupName = "Guest",
+			layoutName = "Search",
+			widgetName = "Search Insights");
 
-		SearchPortlets.addWidgets(searchPortletList = "Search Insights");
+		Search.openSearchPage();
 
 		Portlet.gotoPortletOptions(
 			portletName = "Search Insights",
@@ -325,24 +331,17 @@ definition {
 
 		Navigator.openURL();
 
-		ProductMenu.gotoPortlet(
-			category = "Content & Data",
-			portlet = "Message Boards");
-
-		MessageboardsThread.addCP(
+		JSONMBMessage.addMessage(
+			groupName = "Guest",
 			threadBody = "Orange",
 			threadSubject = "Apple");
 
-		Navigator.openURL();
-
-		ProductMenu.gotoPortlet(
-			category = "Content & Data",
-			portlet = "Documents and Media");
-
-		DMDocument.addCP(
+		JSONDocument.addFileWithUploadedFile(
 			dmDocumentDescription = "Orange",
-			dmDocumentFile = "Document_1.txt",
-			dmDocumentTitle = "Apple");
+			dmDocumentTitle = "Apple",
+			groupName = "Guest",
+			mimeType = "text/plain",
+			sourceFileName = "Document_1.txt");
 
 		Navigator.openURL();
 
@@ -532,9 +531,7 @@ definition {
 
 		Navigator.openSpecificURL(url = "http://${portalHostname}:9201");
 
-		AntCommand(
-			locator1 = "build-test-elasticsearch7.xml",
-			value1 = "add-boston-dataset-index -Dbackup.index=boston311 -Delasticsearch.port=9201");
+		AntCommands.runCommand("build-test-elasticsearch7.xml", "add-boston-dataset-index -Dbackup.index=boston311 -Delasticsearch.port=9201");
 
 		Navigator.openURL();
 
@@ -544,11 +541,17 @@ definition {
 			groupName = "Guest",
 			layoutName = "Search Page");
 
+		for (var portlet : list "Custom Filter,Low Level Search Options,Search Results,Search Bar") {
+			JSONLayout.addWidgetToPublicLayout(
+				column = 1,
+				groupName = "Guest",
+				layoutName = "Search Page",
+				widgetName = ${portlet});
+		}
+
 		var portalURL = PropsUtil.get("portal.url");
 
 		Navigator.openSpecificURL(url = "${portalURL}/web/guest/search-page");
-
-		SearchPortlets.addWidgets(searchPortletList = "Custom Filter,Low Level Search Options,Search Results,Search Bar");
 
 		SearchPortlets.configureCustomFilter(
 			customParameterName = "q",
@@ -597,9 +600,7 @@ definition {
 			categoryLevel = "INFO",
 			categoryName = "com.liferay.portal.search.elasticsearch7.internal.connection");
 
-		AntCommand(
-			locator1 = "build-test-elasticsearch7.xml",
-			value1 = "start-elasticsearch");
+		AntCommands.runCommand("build-test-elasticsearch7.xml", "start-elasticsearch");
 
 		WaitForConsoleTextPresent(value1 = "Stopping sidecar Elasticsearch");
 
@@ -648,9 +649,7 @@ definition {
 			searchAssetTitle = "WC WebContent Title",
 			searchAssetType = "Web Content Article");
 
-		AntCommand(
-			locator1 = "build-test-elasticsearch7.xml",
-			value1 = "stop-elasticsearch");
+		AntCommands.runCommand("build-test-elasticsearch7.xml", "stop-elasticsearch");
 	}
 
 	@description = "This is a use case for LPS-57894."

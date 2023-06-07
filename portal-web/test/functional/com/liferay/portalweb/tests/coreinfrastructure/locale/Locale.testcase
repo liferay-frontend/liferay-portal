@@ -132,6 +132,8 @@ definition {
 
 		User.firstLoginPG();
 
+		HeadlessSite.addSite(siteName = "Test Site Name");
+
 		JSONLayout.addPublicLayout(
 			groupName = "Test Site Name",
 			layoutName = "Navigation Menu Page");
@@ -176,6 +178,60 @@ definition {
 		AssertTextEquals(
 			locator1 = "Home#ERROR_MESSAGE_ALERT_ERROR",
 			value1 = "Non trouvé");
+	}
+
+	@description = "This is a use case for LPS-113225. Verify a group can be updated when available languages differ between instances"
+	@priority = 3
+	test CanUpdateGroupSettingsWithDifferentAvailableLanguages {
+		property test.assert.warning.exceptions = "true";
+		property test.name.skip.portal.instance = "Locale#CanUpdateGroupSettingsWithDifferentAvailableLanguages";
+
+		task ("Given a virtual instance") {
+			User.firstLoginPG();
+
+			HeadlessPortalInstanceAPI.addPortalInstance(
+				domain = "www.able.com",
+				portalInstanceId = "www.able.com",
+				virtualHost = "www.able.com");
+		}
+
+		task ("And given available languages differ between instances") {
+			PortalSettings.gotoConfiguration(
+				configurationCategory = "Localization",
+				configurationName = "Language",
+				configurationScope = "Virtual Instance Scope");
+
+			PortalSettings.configureCurrentLanguagesCP(currentPortalLanguages = "English (United States)");
+
+			User.firstLoginUI(
+				password = "test",
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			ProductMenu.changeDefaultLanguage(defaultPortalLanguage = "English (United States)");
+		}
+
+		task ("Then the user can update the type settings of the default group in the virtual instance from the default instance") {
+			User.firstLoginPG();
+
+			var companyId = JSONCompany.getCompanyId(portalInstanceName = "www.able.com");
+
+			var script = '''
+				import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+
+				group =  GroupLocalServiceUtil.getGroup(${companyId}, "Guest");
+				groupId = group.getGroupId();
+				typeSettings = group.getTypeSettings();
+
+				GroupLocalServiceUtil.updateGroup(groupId,typeSettings);
+		''';
+
+			ServerAdministration.openServerAdmin();
+
+			ServerAdministration.executeScript(
+				language = "Groovy",
+				script = ${script});
+		}
 	}
 
 	@priority = 4
@@ -242,6 +298,8 @@ definition {
 
 		User.firstLoginPG();
 
+		HeadlessSite.addSite(siteName = "Test Site Name");
+
 		AssertLocation(value1 = "http://localhost:8080/fr/web/guest?SM_USER=test@liferay.com");
 
 		ApplicationsMenu.gotoSite(key_site = "Test Site Name");
@@ -256,6 +314,8 @@ definition {
 		property test.name.skip.portal.instance = "Locale#EnableRedirectToDefaultLocale";
 
 		User.firstLoginPG();
+
+		HeadlessSite.addSite(siteName = "Test Site Name");
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -337,9 +397,7 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommand(
-			locator1 = "build-test.xml",
-			value1 = "portal-ext-properties-update -Dadd.new.properties=true -Dupdate.properties=company.default.locale=es_ES");
+		AntCommands.runCommand("build-test.xml", "portal-ext-properties-update -Dadd.new.properties=true -Dupdate.properties=company.default.locale=es_ES");
 
 		Portlet.startServer(deleteLiferayHome = "false");
 
@@ -431,9 +489,7 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommand(
-			locator1 = "build-test.xml",
-			value1 = "portal-ext-properties-update -Dupdate.properties=locale.prepend.friendly.url.style=0 -Dupdate.properties.original=locale.prepend.friendly.url.style=3");
+		AntCommands.runCommand("build-test.xml", "portal-ext-properties-update -Dupdate.properties=locale.prepend.friendly.url.style=0 -Dupdate.properties.original=locale.prepend.friendly.url.style=3");
 
 		Portlet.startServer(deleteLiferayHome = "false");
 
@@ -449,9 +505,7 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommand(
-			locator1 = "build-test.xml",
-			value1 = "portal-ext-properties-update -Dupdate.properties=locale.prepend.friendly.url.style=1 -Dupdate.properties.original=locale.prepend.friendly.url.style=0");
+		AntCommands.runCommand("build-test.xml", "portal-ext-properties-update -Dupdate.properties=locale.prepend.friendly.url.style=1 -Dupdate.properties.original=locale.prepend.friendly.url.style=0");
 
 		Portlet.startServer(deleteLiferayHome = "false");
 
@@ -473,9 +527,7 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommand(
-			locator1 = "build-test.xml",
-			value1 = "portal-ext-properties-update -Dupdate.properties=locale.prepend.friendly.url.style=2 -Dupdate.properties.original=locale.prepend.friendly.url.style=1");
+		AntCommands.runCommand("build-test.xml", "portal-ext-properties-update -Dupdate.properties=locale.prepend.friendly.url.style=2 -Dupdate.properties.original=locale.prepend.friendly.url.style=1");
 
 		Portlet.startServer(deleteLiferayHome = "false");
 
@@ -496,12 +548,47 @@ definition {
 		AssertLocation(value1 = "${portalURL}/en/web/test-site-name/test-page");
 	}
 
+	@description = "This is a use case for LPS-153713. Verify users can reorder pages with prependended locale."
+	@priority = 3
+	test ReorderPagesWithPrependedLocale {
+		property custom.properties = "locale.prepend.friendly.url.style=2";
+		property test.name.skip.portal.instance = "Locale#ReorderPagesWithPrependedLocale";
+
+		User.firstLoginPG();
+
+		for (var number : list "1,2") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "Test Page ${number}");
+		}
+
+		PagesAdmin.openPagesAdmin(siteURLKey = "guest");
+
+		AssertLocation.assertPartialLocation(value1 = "en/group/guest");
+
+		PagesAdmin.movePageItemUp(
+			pageName = "Test Page 2",
+			pageNameTo = "Test Page 1");
+
+		PagesAdmin.viewPagesOrder(
+			depth = 1,
+			pageNameList = "Home,Search,Test Page 2,Test Page 1");
+
+		Refresh();
+
+		PagesAdmin.viewPagesOrder(
+			depth = 1,
+			pageNameList = "Home,Search,Test Page 2,Test Page 1");
+	}
+
 	@priority = 4
 	test RestrictAvailableLocales {
 		property custom.properties = "locales=ca_ES,zh_CN,nl_NL,en_AU,en_GB,en_US,fi_FI,fr_FR,de_DE,it_IT,iw_IL,hu_HU,ja_JP,pt_BR,es_ES";
 		property test.name.skip.portal.instance = "Locale#RestrictAvailableLocales";
 
 		User.firstLoginPG();
+
+		HeadlessSite.addSite(siteName = "Test Site Name");
 
 		PortalSettings.gotoConfiguration(
 			configurationCategory = "Localization",
@@ -664,6 +751,8 @@ definition {
 	test UseDefaultPortetTitleWithoutTranslation {
 		task ("Given a page with language selector widget and a portlet") {
 			User.firstLoginPG();
+
+			HeadlessSite.addSite(siteName = "Test Site Name");
 
 			JSONLayout.addPublicLayout(
 				groupName = "Test Site Name",

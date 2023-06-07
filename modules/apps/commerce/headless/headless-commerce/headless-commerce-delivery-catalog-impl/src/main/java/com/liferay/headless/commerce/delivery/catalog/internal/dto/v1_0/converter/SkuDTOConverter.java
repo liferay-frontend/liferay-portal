@@ -36,7 +36,7 @@ import com.liferay.commerce.product.option.CommerceOptionValueHelper;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.util.CPInstanceHelper;
-import com.liferay.commerce.product.util.JsonHelper;
+import com.liferay.commerce.product.util.CPJSONUtil;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Availability;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.DDMOption;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Price;
@@ -88,7 +88,7 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		CPInstance cpInstance = _cpInstanceLocalService.getCPInstance(
 			(Long)cpSkuDTOConverterConvertContext.getId());
 
-		JSONArray jsonArray = _jsonHelper.toJSONArray(
+		JSONArray jsonArray = CPJSONUtil.toJSONArray(
 			_cpDefinitionOptionRelLocalService.
 				getCPDefinitionOptionRelKeysCPDefinitionOptionValueRelKeys(
 					cpInstance.getCPInstanceId()));
@@ -312,21 +312,32 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		CommerceMoney unitPromoPriceCommerceMoney =
 			commerceProductPrice.getUnitPromoPrice();
 
-		BigDecimal unitPromoPrice = unitPromoPriceCommerceMoney.getPrice();
-
-		BigDecimal unitPrice = unitPriceCommerceMoney.getPrice();
+		BigDecimal unitPrice = _getUnitPrice(
+			unitPriceCommerceMoney, unitPromoPriceCommerceMoney);
 
 		Price price = new Price() {
 			{
 				currency = commerceCurrency.getName(locale);
 				price = unitPrice.doubleValue();
-				priceFormatted = unitPriceCommerceMoney.format(locale);
+				priceOnApplication =
+					commerceProductPrice.isPriceOnApplication();
+
+				setPriceFormatted(
+					() -> {
+						if (unitPriceCommerceMoney.isPriceOnApplication()) {
+							return unitPromoPriceCommerceMoney.format(locale);
+						}
+
+						return unitPriceCommerceMoney.format(locale);
+					});
 			}
 		};
 
+		BigDecimal unitPromoPrice = unitPromoPriceCommerceMoney.getPrice();
+
 		if ((unitPromoPrice != null) &&
 			(unitPromoPrice.compareTo(BigDecimal.ZERO) > 0) &&
-			(unitPromoPrice.compareTo(unitPriceCommerceMoney.getPrice()) < 0)) {
+			(unitPromoPrice.compareTo(unitPrice) < 0)) {
 
 			price.setPromoPrice(unitPromoPrice.doubleValue());
 			price.setPromoPriceFormatted(
@@ -351,6 +362,19 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 				_getFormattedDiscountPercentages(
 					discountValue.getPercentages(), locale));
 			price.setFinalPrice(finalPriceCommerceMoney.format(locale));
+		}
+
+		return price;
+	}
+
+	private BigDecimal _getUnitPrice(
+		CommerceMoney unitPriceCommerceMoney,
+		CommerceMoney unitPromoPriceCommerceMoney) {
+
+		BigDecimal price = unitPriceCommerceMoney.getPrice();
+
+		if (unitPriceCommerceMoney.isPriceOnApplication()) {
+			price = unitPromoPriceCommerceMoney.getPrice();
 		}
 
 		return price;
@@ -386,9 +410,6 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 
 	@Reference
 	private CPInstanceLocalService _cpInstanceLocalService;
-
-	@Reference
-	private JsonHelper _jsonHelper;
 
 	@Reference
 	private Language _language;

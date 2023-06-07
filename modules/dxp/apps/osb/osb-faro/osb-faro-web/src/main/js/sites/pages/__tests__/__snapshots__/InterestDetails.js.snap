@@ -19,11 +19,11 @@ exports[`Sites Dashboard InterestDetails render 1`] = `
             href="/workspace/123/456/sites/interests?rangeKey=30"
           >
             <svg
-              class="lexicon-icon lexicon-icon-angle-left icon-root mr-2"
+              class="lexicon-icon lexicon-icon-angle-left-small icon-root mr-2"
               role="presentation"
             >
               <use
-                xlink:href="#angle-left"
+                xlink:href="#angle-left-small"
               />
             </svg>
             Back to Interests
@@ -81,6 +81,7 @@ exports[`Sites Dashboard InterestDetails render 1`] = `
                           class="input-group-inset-item input-group-inset-item-after"
                         >
                           <button
+                            aria-label="Search"
                             class="button-root btn btn-unstyled"
                             type="button"
                           >
@@ -97,23 +98,17 @@ exports[`Sites Dashboard InterestDetails render 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div
-                    class="spinner-root spinner-inline"
-                  >
-                    <span
-                      class="loading-animation loading-animation-dotted"
-                    />
-                  </div>
+                  <span
+                    aria-hidden="true"
+                    class="spinner-root spinner-inline loading-animation"
+                  />
                 </div>
               </nav>
             </div>
-            <div
-              class="spinner-root spinner-center spinner-spacer"
-            >
-              <span
-                class="loading-animation loading-animation-dotted"
-              />
-            </div>
+            <span
+              aria-hidden="true"
+              class="spinner-root spinner-center spinner-spacer loading-animation"
+            />
           </div>
         </div>
       </div>

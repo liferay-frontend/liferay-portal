@@ -24,6 +24,26 @@
 				</then>
 			</if>
 
+			<if>
+				<contains string="${test.class}" substring="Test.test" />
+				<then>
+					<propertyregex
+						input="${test.class}"
+						property="test.method.name"
+						regexp="([^\.]+$)"
+						select="\1"
+					/>
+
+					<propertyregex
+						input="${test.class}"
+						override="true"
+						property="test.class"
+						regexp=".*(?=\.)"
+						select="\0"
+					/>
+				</then>
+			</if>
+
 			<propertyregex
 				global="true"
 				input="${test.class}"
@@ -50,10 +70,20 @@
 
 			<propertyregex
 				input="${test.class}"
-				property="test.class.name"
+				property="test.class.base.name"
 				regexp="([^\.]+$)"
 				select="\1"
 			/>
+
+			<if>
+				<isset property="test.method.name" />
+				<then>
+					<property name="test.class.name" value="${test.class.base.name}.${test.method.name}" />
+				</then>
+				<else>
+					<property name="test.class.name" value="${test.class.base.name}" />
+				</else>
+			</if>
 		</sequential>
 	</macrodef>
 
@@ -186,7 +216,18 @@ local.bundles.backup.file=${liferay.home.parent.dir}/bundles-master-${git.commit
 			</then>
 		</if>
 
+		<if>
+			<available file="${app.server.parent.dir}/license" type="dir" />
+			<then>
+				<var name="test.bundle.type" value="portal-release" />
+			</then>
+			<else>
+				<var name="test.bundle.type" value="default" />
+			</else>
+		</if>
+
 		<ant antfile="build-test-tomcat-${database.type}.xml" target="run-selenium-tomcat-${database.type}">
+			<property name="env.CI_TEST_SUITE" value="${test.bundle.type}" />
 			<property name="test.class" value="${test.class}" />
 		</ant>
 	</target>
@@ -335,7 +376,7 @@ local.bundles.backup.file=${liferay.home.parent.dir}/bundles-master-${git.commit
 
 		<copy
 			file="${local.bundles.release.license.file}"
-			todir="${app.server.parent.dir}/deploy/"
+			tofile="${app.server.parent.dir}/deploy/license.xml"
 			verbose="true"
 		/>
 
@@ -754,9 +795,16 @@ database.type=postgresql
 			<then>
 				<var name="database.sqlserver.docker.image" value="mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04" />
 			</then>
-			<else>
+			<elseif>
+				<equals arg1="${database.version}" arg2="2019" />
 				<var name="database.sqlserver.docker.image" value="mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04" />
-			</else>
+			</elseif>
+			<elseif>
+				<equals arg1="${database.version}" arg2="2022" />
+				<then>
+					<var name="database.sqlserver.docker.image" value="mcr.microsoft.com/mssql/server:2022-RTM-CU2-ubuntu-20.04" />
+				</then>
+			</elseif>
 		</if>
 
 		<touch file="test.${user.name}.properties" />

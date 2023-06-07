@@ -132,39 +132,30 @@ JournalEditArticleDisplayContext journalEditArticleDisplayContext = new JournalE
 	</nav>
 
 	<div aria-label="<%= LanguageUtil.get(request, "configuration-panel") %>" class="contextual-sidebar edit-article-sidebar sidebar-light sidebar-sm" id="<portlet:namespace />contextualSidebarContainer" role="tabpanel" tabindex="-1">
-		<div class="sidebar-body">
-
-			<%
-			String tabs1Names = "properties,usages";
-
-			if ((article == null) || (journalEditArticleDisplayContext.getClassNameId() != JournalArticleConstants.CLASS_NAME_ID_DEFAULT)) {
-				tabs1Names = "properties";
-			}
-			%>
-
-			<liferay-ui:tabs
-				names="<%= tabs1Names %>"
-				param="tabs1"
-				refresh="<%= false %>"
-			>
-				<liferay-ui:section>
-					<liferay-frontend:form-navigator
-						fieldSetCssClass="panel-group-flush"
-						formModelBean="<%= article %>"
-						id="<%= FormNavigatorConstants.FORM_NAVIGATOR_ID_JOURNAL %>"
-						showButtons="<%= false %>"
-					/>
-				</liferay-ui:section>
-
-				<c:if test="<%= (article != null) && (journalEditArticleDisplayContext.getClassNameId() == JournalArticleConstants.CLASS_NAME_ID_DEFAULT) %>">
-					<liferay-ui:section>
-						<liferay-layout:layout-classed-model-usages-view
-							className="<%= JournalArticle.class.getName() %>"
-							classPK="<%= article.getResourcePrimKey() %>"
+		<div class="overflow-hidden sidebar-body">
+			<div class="sheet-row">
+				<clay:tabs
+					tabsItems="<%= journalEditArticleDisplayContext.getTabsItems() %>"
+				>
+					<clay:tabs-panel>
+						<liferay-frontend:form-navigator
+							fieldSetCssClass="panel-group-flush"
+							formModelBean="<%= article %>"
+							id="<%= FormNavigatorConstants.FORM_NAVIGATOR_ID_JOURNAL %>"
+							showButtons="<%= false %>"
 						/>
-					</liferay-ui:section>
-				</c:if>
-			</liferay-ui:tabs>
+					</clay:tabs-panel>
+
+					<c:if test="<%= (article != null) && (journalEditArticleDisplayContext.getClassNameId() == JournalArticleConstants.CLASS_NAME_ID_DEFAULT) %>">
+						<clay:tabs-panel>
+							<liferay-layout:layout-classed-model-usages-view
+								className="<%= JournalArticle.class.getName() %>"
+								classPK="<%= article.getResourcePrimKey() %>"
+							/>
+						</clay:tabs-panel>
+					</c:if>
+				</clay:tabs>
+			</div>
 		</div>
 	</div>
 

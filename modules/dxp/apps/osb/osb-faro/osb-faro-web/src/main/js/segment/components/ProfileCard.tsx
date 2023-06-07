@@ -35,12 +35,6 @@ const SegmentProfileCard: React.FC<ISegmentProfileCardProps> = ({
 			<Card.Title>
 				{Liferay.Language.get('segment-membership')}
 			</Card.Title>
-
-			<div className='subtitle-segment'>
-				{Liferay.Language.get(
-					'segment-membership-processes-daily-and-does-not-include-todays-activities'
-				)}
-			</div>
 		</Card.Header>
 
 		<Card.Body>
@@ -57,6 +51,8 @@ const SegmentProfileCard: React.FC<ISegmentProfileCardProps> = ({
 
 		<Card.Footer>
 			<ClayLink
+				borderless
+				button
 				className='button-root'
 				displayType='secondary'
 				href={toRoute(Routes.CONTACTS_SEGMENT_MEMBERSHIP, {
@@ -64,10 +60,14 @@ const SegmentProfileCard: React.FC<ISegmentProfileCardProps> = ({
 					groupId,
 					id
 				})}
+				small
 			>
 				{Liferay.Language.get('view-members')}
 
-				<ClayIcon className='icon-root ml-2' symbol='angle-right' />
+				<ClayIcon
+					className='icon-root ml-2'
+					symbol='angle-right-small'
+				/>
 			</ClayLink>
 		</Card.Footer>
 	</Card>

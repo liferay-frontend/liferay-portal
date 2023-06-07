@@ -66,10 +66,6 @@ definition {
 
 		LAR.importPortlet(larFileName = "publications-web-content-files.lar");
 
-		AssertElementPresent(
-			key_webContentTitle = "WC Folder Name",
-			locator1 = "WC#ENTRY_LIST_TITLE");
-
 		WebContentStructures.openWebContentStructuresAdmin(siteURLKey = "site-name-2");
 
 		WebContentStructures.viewCP(

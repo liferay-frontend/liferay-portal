@@ -885,6 +885,10 @@ public class PropsValues {
 	public static final int GZIP_COMPRESSION_LEVEL = GetterUtil.getInteger(
 		PropsUtil.get(PropsKeys.GZIP_COMPRESSION_LEVEL));
 
+	public static final boolean HEALTH_CHECK_DATA_SOURCE_ENABLED =
+		GetterUtil.getBoolean(
+			PropsUtil.get(PropsKeys.HEALTH_CHECK_DATA_SOURCE_ENABLED));
+
 	public static final String HIBERNATE_DIALECT = PropsUtil.get(
 		PropsKeys.HIBERNATE_DIALECT);
 
@@ -1491,9 +1495,9 @@ public class PropsValues {
 	public static final String NETVIBES_SERVLET_MAPPING = PropsUtil.get(
 		PropsKeys.NETVIBES_SERVLET_MAPPING);
 
-	public static final boolean NOTIFICATION_EMAIL_TEMPLATE_RESTRICTED =
+	public static final boolean NOTIFICATION_EMAIL_TEMPLATE_ENABLED =
 		GetterUtil.getBoolean(
-			PropsUtil.get(PropsKeys.NOTIFICATION_EMAIL_TEMPLATE_RESTRICTED));
+			PropsUtil.get(PropsKeys.NOTIFICATION_EMAIL_TEMPLATE_ENABLED));
 
 	public static final int NOTIFICATIONS_MAX_EVENTS = GetterUtil.getInteger(
 		PropsUtil.get(PropsKeys.NOTIFICATIONS_MAX_EVENTS));

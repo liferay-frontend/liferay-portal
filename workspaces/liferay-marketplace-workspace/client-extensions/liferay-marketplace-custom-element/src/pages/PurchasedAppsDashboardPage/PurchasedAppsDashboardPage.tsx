@@ -1,6 +1,24 @@
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {useEffect, useState} from 'react';
 
+import solutionsIcon from '../../assets/icons/analytics_icon.svg';
+import appsIcon from '../../assets/icons/apps_fill_icon.svg';
+import membersIcon from '../../assets/icons/person_fill_icon.svg';
 import {DashboardNavigation} from '../../components/DashboardNavigation/DashboardNavigation';
 import {DashboardMemberTableRow} from '../../components/DashboardTable/DashboardMemberTableRow';
 import {DashboardTable} from '../../components/DashboardTable/DashboardTable';
@@ -8,12 +26,14 @@ import {PurchasedAppsDashboardTableRow} from '../../components/DashboardTable/Pu
 import {MemberProfile} from '../../components/MemberProfile/MemberProfile';
 import {getCompanyId} from '../../liferay/constants';
 import {
+	baseURL,
 	getAccountInfoFromCommerce,
 	getAccounts,
 	getChannels,
+	getCustomFieldExpandoValue,
 	getMyUserAccount,
 	getPlacedOrders,
-	getSKUCustomFieldExpandoValue,
+	getProductAttachments,
 	getUserAccounts,
 } from '../../utils/api';
 import {showAccountImage} from '../../utils/util';
@@ -23,25 +43,26 @@ import {
 	MemberProps,
 	UserAccountProps,
 	customerRoles,
+	getRolesList,
 	publisherRoles,
 } from '../PublishedAppsDashboardPage/PublishedDashboardPageUtil';
-
-import './PurchasedAppsDashboardPage.scss';
 import {
 	initialAccountState,
 	initialDashboardNavigationItems,
+	memberTableHeaders,
+	tableHeaders,
 } from './PurchasedDashboardPageUtil';
 
 import './PurchasedAppsDashboardPage.scss';
 
 export interface PurchasedAppProps {
-	image: string;
 	name: string;
 	orderId: number;
 	project?: string;
 	provisioning: string;
 	purchasedBy: string;
 	purchasedDate: string;
+	thumbnail: string;
 	type: string;
 	version: string;
 }
@@ -51,41 +72,6 @@ interface PurchasedAppTable {
 	pageSize: number;
 	totalCount: number;
 }
-
-const tableHeaders = [
-	{
-		title: 'Name',
-		style: {width: '2%'},
-	},
-	{
-		title: 'Purchased By',
-	},
-	{
-		title: 'Type',
-	},
-	{
-		title: 'Order ID',
-	},
-	{
-		title: 'Provisioning',
-	},
-	{
-		title: 'Installation',
-	},
-];
-
-const memberTableHeaders = [
-	{
-		iconSymbol: 'order-arrow',
-		title: 'Name',
-	},
-	{
-		title: 'Email',
-	},
-	{
-		title: 'Role',
-	},
-];
 
 const appMessages = {
 	description: 'Manage apps purchase from the Marketplace',
@@ -136,6 +122,7 @@ export function PurchasedAppsDashboardPage() {
 	const [selectedMember, setSelectedMember] = useState<MemberProps>();
 	const [selectedNavigationItem, setSelectedNavigationItem] =
 		useState('My Apps');
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		const makeFetch = async () => {
@@ -160,100 +147,139 @@ export function PurchasedAppsDashboardPage() {
 
 	useEffect(() => {
 		const makeFetch = async () => {
-			const channels = await getChannels();
+			if (selectedAccount.id !== 0) {
+				setLoading(true);
 
-			const channel =
-				channels.find(
-					(channel) => channel.name === 'Marketplace Channel'
-				) || channels[0];
+				const channels = await getChannels();
 
-			const placedOrders = await getPlacedOrders(
-				selectedAccount?.id || 50307,
-				channel.id,
-				page,
-				purchasedAppTable.pageSize
-			);
+				const channel =
+					channels.find(
+						(channel) => channel.name === 'Marketplace Channel'
+					) || channels[0];
 
-			const commerceAccountResponse = await getAccountInfoFromCommerce(
-				selectedAccount.id
-			);
+				const placedOrders = await getPlacedOrders(
+					selectedAccount?.id || 50307,
+					channel.id,
+					page,
+					purchasedAppTable.pageSize
+				);
 
-			setCommerceAccount(commerceAccountResponse);
+				const commerceAccountResponse =
+					await getAccountInfoFromCommerce(selectedAccount.id);
 
-			const filteredAppOrders = placedOrders.items.filter(
-				({orderTypeExternalReferenceCode}) =>
-					orderTypeExternalReferenceCode === 'CLOUDAPP' ||
-					orderTypeExternalReferenceCode === 'DXPAPP'
-			);
+				setCommerceAccount(commerceAccountResponse);
 
-			const filteredSolutionsOrders = placedOrders.items.filter(
-				({orderTypeExternalReferenceCode}) =>
-					orderTypeExternalReferenceCode === 'SOLUTION30'
-			);
+				const filteredAppOrders = placedOrders.items.filter(
+					({orderTypeExternalReferenceCode}) =>
+						orderTypeExternalReferenceCode === 'CLOUDAPP' ||
+						orderTypeExternalReferenceCode === 'DXPAPP'
+				);
 
-			const newAppOrderItems = await Promise.all(
-				filteredAppOrders.map(async (order) => {
-					const [placeOrderItem] = order.placedOrderItems;
+				const filteredSolutionsOrders = placedOrders.items.filter(
+					({orderTypeExternalReferenceCode}) =>
+						orderTypeExternalReferenceCode === 'SOLUTION30'
+				);
 
-					const date = new Date(order.createDate);
-					const options: Intl.DateTimeFormatOptions = {
-						day: 'numeric',
-						month: 'short',
-						year: 'numeric',
-					};
-					const formattedDate = date.toLocaleDateString(
-						'en-US',
-						options
-					);
+				const newAppOrderItems = await Promise.all(
+					filteredAppOrders.map(async (order) => {
+						const [placeOrderItem] = order.placedOrderItems;
 
-					const version = await getSKUCustomFieldExpandoValue({
-						companyId: Number(getCompanyId()),
-						customFieldName: 'version',
-						skuId: placeOrderItem.skuId,
-					});
+						const date = new Date(order.createDate);
+						const options: Intl.DateTimeFormatOptions = {
+							day: 'numeric',
+							month: 'short',
+							year: 'numeric',
+						};
+						const formattedDate = date.toLocaleDateString(
+							'en-US',
+							options
+						);
 
+						const version = await getCustomFieldExpandoValue({
+							className:
+								'com.liferay.commerce.product.model.CPInstance',
+							classPK: placeOrderItem.skuId,
+							columnName: 'version',
+							companyId: Number(getCompanyId()),
+							tableName: 'CUSTOM_FIELDS',
+						});
+
+						const attachments = await getProductAttachments(
+							selectedAccount.id,
+							channel.id as number,
+							placeOrderItem.productId
+						);
+
+						let orderThumbnail;
+
+						if (attachments) {
+							orderThumbnail = await (async () => {
+								const promises = attachments.map(
+									async (currentAttachment) => {
+										const attachmentsCustomField =
+											await getCustomFieldExpandoValue({
+												className:
+													'com.liferay.commerce.product.model.CPAttachmentFileEntry',
+												classPK: currentAttachment.id,
+												columnName: 'App Icon',
+												companyId: Number(
+													getCompanyId()
+												),
+												tableName: 'CUSTOM_FIELDS',
+											});
+
+										if (
+											attachmentsCustomField[0] === 'Yes'
+										) {
+											return currentAttachment;
+										}
+										else {
+											return null;
+										}
+									}
+								);
+
+								const results = await Promise.all(promises);
+
+								return results.find(
+									(attachment) => attachment !== null
+								);
+							})();
+						}
+
+						return {
+							name: placeOrderItem.name,
+							orderId: order.id,
+							provisioning: order.orderStatusInfo.label_i18n,
+							purchasedBy: order.author,
+							purchasedDate: formattedDate,
+							thumbnail: orderThumbnail?.src as string,
+							type: placeOrderItem.subscription
+								? 'Subscription'
+								: 'Perpetual',
+							version: !Object.keys(version).length
+								? ''
+								: version,
+						};
+					})
+				);
+
+				setSolutionsItems(filteredSolutionsOrders);
+
+				setPurchasedAppTable((previousPurchasedAppTable) => {
 					return {
-						image: placeOrderItem.thumbnail,
-						name: placeOrderItem.name,
-						orderId: order.id,
-						provisioning: order.orderStatusInfo.label_i18n,
-						purchasedBy: order.author,
-						purchasedDate: formattedDate,
-						type: placeOrderItem.subscription
-							? 'Subscription'
-							: 'Perpetual',
-						version: !Object.keys(version).length ? '' : version,
+						...previousPurchasedAppTable,
+						items: newAppOrderItems,
+						totalCount: placedOrders.totalCount,
 					};
-				})
-			);
+				});
 
-			setSolutionsItems(filteredSolutionsOrders);
-
-			setPurchasedAppTable((previousPurchasedAppTable) => {
-				return {
-					...previousPurchasedAppTable,
-					items: newAppOrderItems,
-					totalCount: placedOrders.totalCount,
-				};
-			});
+				setLoading(false);
+			}
 		};
 
 		makeFetch();
 	}, [page, purchasedAppTable.pageSize, selectedAccount]);
-
-	function getRolesList(accountBriefs: AccountBrief[]) {
-		const rolesList: string[] = [];
-
-		const accountBrief = accountBriefs.find(
-			(accountBrief) => accountBrief.name === selectedAccount.name
-		);
-
-		accountBrief?.roleBriefs.forEach((role) => {
-			rolesList.push(role.name);
-		});
-
-		return rolesList.join(', ');
-	}
 
 	useEffect(() => {
 		const clickedNavigationItem =
@@ -270,8 +296,10 @@ export function PurchasedAppsDashboardPage() {
 	}, [dashboardNavigationItems]);
 
 	useEffect(() => {
-		(async () => {
+		const makeFetch = async () => {
 			if (selectedNavigationItem === 'Members') {
+				setLoading(true);
+
 				const currentUserAccountResponse = await getMyUserAccount();
 
 				const currentUserAccount = {
@@ -323,7 +351,10 @@ export function PurchasedAppsDashboardPage() {
 							isPublisherAccount: false,
 							lastLoginDate: member.lastLoginDate,
 							name: member.name,
-							role: getRolesList(member.accountBriefs),
+							role: getRolesList(
+								member.accountBriefs,
+								selectedAccount.id
+							),
 							userId: member.id,
 						} as MemberProps;
 					}
@@ -365,8 +396,11 @@ export function PurchasedAppsDashboardPage() {
 				);
 
 				setMembers(filteredMembersList);
+				setLoading(false);
 			}
-		})();
+		};
+
+		makeFetch();
 	}, [selectedAccount, selectedNavigationItem]);
 
 	return (
@@ -381,15 +415,25 @@ export function PurchasedAppsDashboardPage() {
 				setSelectedAccount={setSelectedAccount}
 			/>
 
-			{selectedNavigationItem === 'My Apps' && (
+			{loading && (
+				<ClayLoadingIndicator
+					className="purchased-apps-dashboard-page-loading-indicator"
+					displayType="primary"
+					shape="circle"
+					size="md"
+				/>
+			)}
+
+			{!loading && selectedNavigationItem === 'My Apps' && (
 				<DashboardPage
-					buttonHref="https://marketplace.liferay.com/"
+					buttonHref={baseURL + '/web/marketplace/'}
 					buttonMessage="Add Apps"
 					dashboardNavigationItems={dashboardNavigationItems}
 					messages={appMessages}
 				>
 					<DashboardTable<PurchasedAppProps>
 						emptyStateMessage={appMessages.emptyStateMessage}
+						icon={appsIcon}
 						items={purchasedAppTable.items}
 						tableHeaders={tableHeaders}
 					>
@@ -421,22 +465,23 @@ export function PurchasedAppsDashboardPage() {
 				</DashboardPage>
 			)}
 
-			{selectedNavigationItem === 'Solutions' && (
+			{!loading && selectedNavigationItem === 'Solutions' && (
 				<DashboardPage
 					dashboardNavigationItems={dashboardNavigationItems}
 					messages={solutionMessages}
 				>
 					<DashboardTable
 						emptyStateMessage={solutionMessages.emptyStateMessage}
+						icon={solutionsIcon}
 						items={solutionsItems}
 						tableHeaders={[]}
 					>
-						{(item) => <></>}
+						{() => <></>}
 					</DashboardTable>
 				</DashboardPage>
 			)}
 
-			{selectedNavigationItem === 'Members' && (
+			{!loading && selectedNavigationItem === 'Members' && (
 				<DashboardPage
 					dashboardNavigationItems={dashboardNavigationItems}
 					messages={memberMessages}
@@ -449,6 +494,7 @@ export function PurchasedAppsDashboardPage() {
 					) : (
 						<DashboardTable<MemberProps>
 							emptyStateMessage={memberMessages.emptyStateMessage}
+							icon={membersIcon}
 							items={members}
 							tableHeaders={memberTableHeaders}
 						>

@@ -1,7 +1,7 @@
 @component-name = "portal-solutions"
 definition {
 
-	property custom.properties = "feature.flag.LPS-163118=true";
+	property custom.properties = "feature.flag.LPS-163118=true${line.separator}feature.flag.LPS-154672=true";
 	property osgi.modules.includes = "site-initializer-testray";
 	property portal.release = "false";
 	property portal.upstream = "true";
@@ -21,15 +21,20 @@ definition {
 	var testSiteName = "Testray 2";
 
 	setUp {
-		task ("Login and create a Testray Site") {
+		task ("Set up instance and sign in") {
 			TestCase.setUpPortalInstance();
 
 			User.firstLoginPG();
-
-			Testray.addTestraySite(siteName = ${testSiteName});
 		}
 
-		task ("Given that I create all the necessary objects") {
+		task ("Create a new Testray Site") {
+			HeadlessSite.addSite(
+				siteName = ${testSiteName},
+				templateName = "Testray",
+				templateType = "Site Initializer");
+		}
+
+		task ("create project, team, component, routine, case, case type, enviroment factor via API") {
 			JSONTestray.addProject(
 				projectDescription = "Project Description 1",
 				projectName = ${projectName});
@@ -72,19 +77,21 @@ definition {
 	}
 
 	tearDown {
+		task ("Delete case type, factor categorie and project via API, Testray Site and Client Extensions") {
+			JSONTestrayAPI.deleteObjectViaAPI(
+				object = "casetypes",
+				objectName = ${caseType});
+
+			JSONTestrayAPI.deleteObjectViaAPI(
+				object = "factorcategories",
+				objectName = "Category 1");
+
+			JSONTestrayAPI.deleteProject(projectName = ${projectName});
+
+			Testray.testrayApisTearDown();
+		}
+
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
-
-		JSONTestrayAPI.deleteObjectViaAPI(
-			object = "casetypes",
-			objectName = ${caseType});
-
-		JSONTestrayAPI.deleteObjectViaAPI(
-			object = "factorcategories",
-			objectName = "Category 1");
-
-		JSONTestrayAPI.deleteProject(projectName = ${projectName});
-
-		Testray.testrayApisTearDown();
 
 		if (${testPortalInstance} == "true") {
 			PortalInstances.tearDownCP();
@@ -94,6 +101,8 @@ definition {
 	@description = "Story ID: LPS-158466 | Test Summary: Verify if as an Administrator can Add a Build"
 	@priority = 5
 	test AdminCanAddBuild {
+		property test.name.skip.portal.instance = "TestrayBuildAdministrator#AdminCanAddBuild";
+
 		task ("Given that the user add a new build") {
 			JSONTestray.addBuild(
 				buildName = ${buildName},
@@ -114,6 +123,8 @@ definition {
 	@description = "Story ID: LPS-158466 | Test Summary: Verify if as an administrator can add a build with multiple options(Suite, Case, Option and Select Stacks)"
 	@priority = 4
 	test AdminCanAddBuildWithMultipleOptions {
+		property test.name.skip.portal.instance = "TestrayBuildAdministrator#AdminCanAddBuildWithMultipleOptions";
+
 		task ("Given that the user add a new build") {
 			JSONTestray.addSuite(suiteName = ${suiteName});
 
@@ -161,6 +172,8 @@ definition {
 	@description = "Story ID: LPS-158466 | Test Summary: Verify if as an Administrator I can delete Builds"
 	@priority = 5
 	test AdminCanDeleteBuild {
+		property test.name.skip.portal.instance = "TestrayBuildAdministrator#AdminCanDeleteBuild";
+
 		task ("Then I create a build") {
 			JSONTestray.addBuild(
 				buildName = ${buildName},
@@ -191,6 +204,8 @@ definition {
 	@description = "Story ID: LPS-158466 | Test Summary: Verify if as an Administrator I should be able to delete a build that contains runs"
 	@priority = 4
 	test AdminCanDeleteBuildContainsRuns {
+		property test.name.skip.portal.instance = "TestrayBuildAdministrator#AdminCanDeleteBuildContainsRuns";
+
 		task ("Given that the user add a new build with Environments Factors") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -234,6 +249,8 @@ definition {
 	@description = "Story ID: LPS-158466 | Test Summary: Verify if as an Administrator I am able to edit Builds"
 	@priority = 5
 	test AdminCanEditBuild {
+		property test.name.skip.portal.instance = "TestrayBuildAdministrator#AdminCanEditBuild";
+
 		task ("Given that the user add a new build") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -268,17 +285,18 @@ definition {
 	@description = "Story ID: LPS-158466 | Test Summary: Verify if as an Administrator I should not be able to add a duplicate build"
 	@priority = 3
 	test AdminCanNotAddDuplicateBuild {
+		property test.name.skip.portal.instance = "TestrayBuildAdministrator#AdminCanNotAddDuplicateBuild";
+
 		task ("Given that the user add a new build") {
+			JSONTestray.addBuild(
+				buildName = ${buildName},
+				productVersion = ${productVersion},
+				projectName = ${projectName},
+				routineName = ${routineName});
+
 			Testray.goToProjectPage(projectName = ${projectName});
 
 			TestrayRoutines.goToRoutine(routineName = ${routineName});
-
-			TestrayBuild.addBuildViaUI(
-				buildFieldName = ${buildName},
-				caseName = ${caseName},
-				dropdownItem = "New Build",
-				productVersionOption = ${productVersion},
-				routine = ${routineName});
 		}
 
 		task ("When add a build with duplicated name") {
@@ -316,6 +334,8 @@ definition {
 	@description = "Story ID: LPS-158466 | Test Summary: Verify if as an Administrator I should be able to promote a build"
 	@priority = 3
 	test AdminCanPromoteBuild {
+		property test.name.skip.portal.instance = "TestrayBuildAdministrator#AdminCanPromoteBuild";
+
 		task ("Given that the user add a new build") {
 			Testray.goToProjectPage(projectName = ${projectName});
 

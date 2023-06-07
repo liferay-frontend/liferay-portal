@@ -29,7 +29,8 @@ import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.exception.ObjectDefinitionStatusException;
 import com.liferay.object.exception.ObjectDefinitionVersionException;
 import com.liferay.object.exception.ObjectFieldRelationshipTypeException;
-import com.liferay.object.field.builder.ObjectFieldBuilder;
+import com.liferay.object.field.builder.DateObjectFieldBuilder;
+import com.liferay.object.field.builder.LongIntegerObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
@@ -43,9 +44,9 @@ import com.liferay.object.service.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.system.BaseSystemObjectDefinitionManager;
 import com.liferay.object.system.JaxRsApplicationDescriptor;
 import com.liferay.petra.function.UnsafeConsumer;
-import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.Table;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
@@ -59,6 +60,7 @@ import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.model.UserNotificationEventTable;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -104,14 +106,14 @@ public class ObjectDefinitionLocalServiceTest {
 
 		// Label is null
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionLabelException.class,
 			"Label is null for locale " + LocaleUtil.US.getDisplayName(),
 			() -> _addCustomObjectDefinition("", "Test", "Tests"));
 
 		// Name is null
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class, "Name is null",
 			() -> _addCustomObjectDefinition("Test", "", "Tests"));
 
@@ -120,19 +122,19 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_addCustomObjectDefinition(" Test "));
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class,
 			"Name must only contain letters and digits",
 			() -> _addCustomObjectDefinition("Tes t"));
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class,
 			"Name must only contain letters and digits",
 			() -> _addCustomObjectDefinition("Tes-t"));
 
 		// The first character of a name must be an upper case letter
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class,
 			"The first character of a name must be an upper case letter",
 			() -> _addCustomObjectDefinition("test"));
@@ -143,7 +145,7 @@ public class ObjectDefinitionLocalServiceTest {
 			_addCustomObjectDefinition(
 				"A123456789a123456789a123456789a1234567891"));
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class,
 			"Name must be less than 41 characters",
 			() -> _addCustomObjectDefinition(
@@ -170,7 +172,7 @@ public class ObjectDefinitionLocalServiceTest {
 				TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId());
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class, "Duplicate name C_Test",
 			() -> _addCustomObjectDefinition("Test"));
 
@@ -178,14 +180,14 @@ public class ObjectDefinitionLocalServiceTest {
 
 		// Plural label is null
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionPluralLabelException.class,
 			"Plural label is null for locale " + LocaleUtil.US.getDisplayName(),
 			() -> _addCustomObjectDefinition("Test", "Test", ""));
 
 		// Scope is null
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionScopeException.class, "Scope is null",
 			() -> _objectDefinitionLocalService.addCustomObjectDefinition(
 				TestPropsValues.getUserId(), false, false,
@@ -204,7 +206,7 @@ public class ObjectDefinitionLocalServiceTest {
 
 		String scope = RandomTestUtil.randomString();
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionScopeException.class,
 			"No object scope provider found with key " + scope,
 			() -> _objectDefinitionLocalService.addCustomObjectDefinition(
@@ -213,6 +215,26 @@ public class ObjectDefinitionLocalServiceTest {
 				"Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				scope, ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+				Arrays.asList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						RandomTestUtil.randomString(),
+						StringUtil.randomId()))));
+
+		AssertUtils.assertFailure(
+			ObjectDefinitionScopeException.class,
+			StringBundler.concat(
+				"Scope \"", ObjectDefinitionConstants.SCOPE_SITE,
+				"\" cannot be associated with storage type \"",
+				ObjectDefinitionConstants.STORAGE_TYPE_SALESFORCE),
+			() -> _objectDefinitionLocalService.addCustomObjectDefinition(
+				TestPropsValues.getUserId(), false, false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				"Test", null, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionConstants.SCOPE_SITE,
+				ObjectDefinitionConstants.STORAGE_TYPE_SALESFORCE,
 				Arrays.asList(
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -240,13 +262,19 @@ public class ObjectDefinitionLocalServiceTest {
 						ObjectFieldConstants.DB_TYPE_STRING, "Baker", "baker",
 						false)));
 
-		_objectFieldLocalService.addCustomObjectField(
-			null, TestPropsValues.getUserId(), 0,
-			objectDefinition.getObjectDefinitionId(),
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, false, false, null,
-			LocalizedMapUtil.getLocalizedMap("Charlie"), false, "charlie", true,
-			false, Collections.emptyList());
+		ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).userId(
+				TestPropsValues.getUserId()
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap("Charlie")
+			).name(
+				"charlie"
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).required(
+				true
+			).build());
 
 		// Custom object definition names are automatically prepended with
 		// with "C_"
@@ -293,13 +321,19 @@ public class ObjectDefinitionLocalServiceTest {
 				TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId());
 
-		_objectFieldLocalService.addCustomObjectField(
-			null, TestPropsValues.getUserId(), 0,
-			objectDefinition.getObjectDefinitionId(),
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, false, false, null,
-			LocalizedMapUtil.getLocalizedMap("Dog"), false, "dog", true, false,
-			Collections.emptyList());
+		ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).userId(
+				TestPropsValues.getUserId()
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap("Dog")
+			).name(
+				"dog"
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).required(
+				true
+			).build());
 
 		// After publish, database table
 
@@ -691,7 +725,7 @@ public class ObjectDefinitionLocalServiceTest {
 
 		// Label is null
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionLabelException.class,
 			"Label is null for locale " + LocaleUtil.US.getDisplayName(),
 			() -> _addSystemObjectDefinition(
@@ -699,18 +733,18 @@ public class ObjectDefinitionLocalServiceTest {
 
 		// Name is null
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class, "Name is null",
 			() -> _addSystemObjectDefinition(""));
 
 		// Name must not start with "C_"
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class,
 			"System object definition names must not start with \"C_\"",
 			() -> _addSystemObjectDefinition("C_Test"));
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class,
 			"System object definition names must not start with \"C_\"",
 			() -> _addSystemObjectDefinition("c_Test"));
@@ -720,19 +754,19 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_addSystemObjectDefinition(" Test "));
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class,
 			"Name must only contain letters and digits",
 			() -> _addSystemObjectDefinition("Tes t"));
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class,
 			"Name must only contain letters and digits",
 			() -> _addSystemObjectDefinition("Tes-t"));
 
 		// The first character of a name must be an upper case letter
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class,
 			"The first character of a name must be an upper case letter",
 			() -> _addSystemObjectDefinition("test"));
@@ -743,7 +777,7 @@ public class ObjectDefinitionLocalServiceTest {
 			_addSystemObjectDefinition(
 				"A123456789a123456789a123456789a1234567891"));
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class,
 			"Name must be less than 41 characters",
 			() -> _addSystemObjectDefinition(
@@ -753,7 +787,7 @@ public class ObjectDefinitionLocalServiceTest {
 
 		ObjectDefinition objectDefinition = _addSystemObjectDefinition("Test");
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionNameException.class, "Duplicate name Test",
 			() -> _addSystemObjectDefinition("Test"));
 
@@ -761,7 +795,7 @@ public class ObjectDefinitionLocalServiceTest {
 
 		// Plural label is null
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionPluralLabelException.class,
 			"Plural label is null for locale " + LocaleUtil.US.getDisplayName(),
 			() -> _addSystemObjectDefinition(
@@ -769,7 +803,7 @@ public class ObjectDefinitionLocalServiceTest {
 
 		// Scope is null
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionScopeException.class, "Scope is null",
 			() ->
 				ObjectDefinitionTestUtil.addUnmodifiableSystemObjectDefinition(
@@ -786,7 +820,7 @@ public class ObjectDefinitionLocalServiceTest {
 
 		String scope = RandomTestUtil.randomString();
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionScopeException.class,
 			"No object scope provider found with key " + scope,
 			() ->
@@ -802,7 +836,7 @@ public class ObjectDefinitionLocalServiceTest {
 
 		// Version must greater than 0
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionVersionException.class,
 			"System object definition versions must greater than 0",
 			() ->
@@ -817,7 +851,7 @@ public class ObjectDefinitionLocalServiceTest {
 					_objectDefinitionLocalService,
 					Collections.<ObjectField>emptyList()));
 
-		_assertFailure(
+		AssertUtils.assertFailure(
 			ObjectDefinitionVersionException.class,
 			"System object definition versions must greater than 0",
 			() ->
@@ -844,13 +878,19 @@ public class ObjectDefinitionLocalServiceTest {
 				_objectDefinitionLocalService,
 				Collections.<ObjectField>emptyList());
 
-		_objectFieldLocalService.addCustomObjectField(
-			null, TestPropsValues.getUserId(), 0,
-			objectDefinition.getObjectDefinitionId(),
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, false, false, null,
-			LocalizedMapUtil.getLocalizedMap("Able"), false, "able", true,
-			false, Collections.emptyList());
+		ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).userId(
+				TestPropsValues.getUserId()
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap("Able")
+			).name(
+				"able"
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).required(
+				true
+			).build());
 
 		// Database table
 
@@ -1192,13 +1232,19 @@ public class ObjectDefinitionLocalServiceTest {
 			Assert.assertNotNull(noSuchObjectFieldException);
 		}
 
-		ObjectField objectField = _objectFieldLocalService.addCustomObjectField(
-			null, TestPropsValues.getUserId(), 0,
-			objectDefinition.getObjectDefinitionId(),
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, false, false, null,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			false, StringUtil.randomId(), true, false, Collections.emptyList());
+		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).userId(
+				TestPropsValues.getUserId()
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				StringUtil.randomId()
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).required(
+				true
+			).build());
 
 		objectDefinition =
 			_objectDefinitionLocalService.updateCustomObjectDefinition(
@@ -1387,13 +1433,19 @@ public class ObjectDefinitionLocalServiceTest {
 				_objectDefinitionLocalService,
 				Collections.<ObjectField>emptyList());
 
-		ObjectField objectField = _objectFieldLocalService.addCustomObjectField(
-			null, TestPropsValues.getUserId(), 0,
-			objectDefinition.getObjectDefinitionId(),
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, false, false, null,
-			LocalizedMapUtil.getLocalizedMap("Able"), false, "able", true,
-			false, Collections.emptyList());
+		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).userId(
+				TestPropsValues.getUserId()
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap("Able")
+			).name(
+				"able"
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).required(
+				true
+			).build());
 
 		String externalReferenceCode = RandomTestUtil.randomString();
 
@@ -1430,13 +1482,19 @@ public class ObjectDefinitionLocalServiceTest {
 			Assert.assertNotNull(noSuchObjectFieldException);
 		}
 
-		ObjectField objectField = _objectFieldLocalService.addCustomObjectField(
-			null, TestPropsValues.getUserId(), 0,
-			objectDefinition.getObjectDefinitionId(),
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, false, false, null,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			false, StringUtil.randomId(), true, false, Collections.emptyList());
+		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).userId(
+				TestPropsValues.getUserId()
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				StringUtil.randomId()
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).required(
+				true
+			).build());
 
 		objectDefinition =
 			_objectDefinitionLocalService.updateTitleObjectFieldId(
@@ -1497,8 +1555,6 @@ public class ObjectDefinitionLocalServiceTest {
 						RandomTestUtil.randomString())
 				).name(
 					StringUtil.randomId()
-				).objectFieldSettings(
-					Collections.emptyList()
 				).build()));
 	}
 
@@ -1508,21 +1564,6 @@ public class ObjectDefinitionLocalServiceTest {
 
 		try {
 			unsafeConsumer.accept(objectDefinition.getObjectDefinitionId());
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Assert.assertTrue(clazz.isInstance(exception));
-			Assert.assertEquals(exception.getMessage(), message);
-		}
-	}
-
-	private void _assertFailure(
-		Class<?> clazz, String message,
-		UnsafeSupplier<Object, Exception> unsafeSupplier) {
-
-		try {
-			unsafeSupplier.get();
 
 			Assert.fail();
 		}
@@ -1627,15 +1668,11 @@ public class ObjectDefinitionLocalServiceTest {
 		}
 
 		_assertSystemObjectFields(
-			new ObjectFieldBuilder(
-			).businessType(
-				ObjectFieldConstants.BUSINESS_TYPE_DATE
+			new DateObjectFieldBuilder(
 			).dbColumnName(
 				objectEntryTable.createDate.getName()
 			).dbTableName(
 				dbTableName
-			).dbType(
-				ObjectFieldConstants.DB_TYPE_DATE
 			).labelMap(
 				LocalizedMapUtil.getLocalizedMap(
 					LanguageUtil.get(LocaleUtil.getDefault(), "create-date"))
@@ -1647,15 +1684,11 @@ public class ObjectDefinitionLocalServiceTest {
 		Assert.assertTrue(iterator.hasNext());
 
 		_assertSystemObjectFields(
-			new ObjectFieldBuilder(
-			).businessType(
-				ObjectFieldConstants.BUSINESS_TYPE_TEXT
+			new TextObjectFieldBuilder(
 			).dbColumnName(
 				objectEntryTable.userName.getName()
 			).dbTableName(
 				dbTableName
-			).dbType(
-				ObjectFieldConstants.DB_TYPE_STRING
 			).labelMap(
 				LocalizedMapUtil.getLocalizedMap(
 					LanguageUtil.get(LocaleUtil.getDefault(), "author"))
@@ -1667,15 +1700,11 @@ public class ObjectDefinitionLocalServiceTest {
 		Assert.assertTrue(iterator.hasNext());
 
 		_assertSystemObjectFields(
-			new ObjectFieldBuilder(
-			).businessType(
-				ObjectFieldConstants.BUSINESS_TYPE_TEXT
+			new TextObjectFieldBuilder(
 			).dbColumnName(
 				objectEntryTable.externalReferenceCode.getName()
 			).dbTableName(
 				dbTableName
-			).dbType(
-				ObjectFieldConstants.DB_TYPE_STRING
 			).labelMap(
 				LocalizedMapUtil.getLocalizedMap(
 					LanguageUtil.get(
@@ -1688,15 +1717,11 @@ public class ObjectDefinitionLocalServiceTest {
 		Assert.assertTrue(iterator.hasNext());
 
 		_assertSystemObjectFields(
-			new ObjectFieldBuilder(
-			).businessType(
-				ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER
+			new LongIntegerObjectFieldBuilder(
 			).dbColumnName(
 				dbColumnName
 			).dbTableName(
 				dbTableName
-			).dbType(
-				ObjectFieldConstants.DB_TYPE_LONG
 			).indexed(
 				Boolean.TRUE
 			).indexedAsKeyword(
@@ -1712,15 +1737,11 @@ public class ObjectDefinitionLocalServiceTest {
 		Assert.assertTrue(iterator.hasNext());
 
 		_assertSystemObjectFields(
-			new ObjectFieldBuilder(
-			).businessType(
-				ObjectFieldConstants.BUSINESS_TYPE_DATE
+			new DateObjectFieldBuilder(
 			).dbColumnName(
 				objectEntryTable.modifiedDate.getName()
 			).dbTableName(
 				dbTableName
-			).dbType(
-				ObjectFieldConstants.DB_TYPE_DATE
 			).labelMap(
 				LocalizedMapUtil.getLocalizedMap(
 					LanguageUtil.get(LocaleUtil.getDefault(), "modified-date"))
@@ -1732,15 +1753,11 @@ public class ObjectDefinitionLocalServiceTest {
 		Assert.assertTrue(iterator.hasNext());
 
 		_assertSystemObjectFields(
-			new ObjectFieldBuilder(
-			).businessType(
-				ObjectFieldConstants.BUSINESS_TYPE_TEXT
+			new TextObjectFieldBuilder(
 			).dbColumnName(
 				objectEntryTable.status.getName()
 			).dbTableName(
 				dbTableName
-			).dbType(
-				ObjectFieldConstants.DB_TYPE_STRING
 			).labelMap(
 				LocalizedMapUtil.getLocalizedMap(
 					LanguageUtil.get(LocaleUtil.getDefault(), "status"))

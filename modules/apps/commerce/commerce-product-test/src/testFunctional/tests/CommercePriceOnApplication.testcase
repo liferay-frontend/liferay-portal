@@ -29,6 +29,181 @@ definition {
 		CommerceConfiguration.commerceTearDown();
 	}
 
+	@description = "COMMERCE-11551 | As a buyer user, I want to be able to add to cart a 'Price on Application' sku via Quick Add to Cart"
+	@priority = 5
+	test CanAddPriceOnApplicationSkuViaQuickAdd {
+		property portal.acceptance = "true";
+
+		task ("Given the admin navigates to a product's sku details") {
+			CommerceProducts.openProductsAdmin();
+
+			CommerceProducts.searchAndGoToProductEntry(entryProductName = "U-Joint");
+
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoTableListEntry(entryName = "MIN55861");
+		}
+
+		task ("And the admin marks the sku as 'Price on Application'") {
+			CommerceSKUs.editSkuPricing(priceOnApplication = "true");
+		}
+
+		task ("When the buyer adds the 'Price on Application' product via Quick Add to Cart") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
+
+			CommerceNavigator.gotoMiniCart();
+
+			FrontStore.quickAddToCartSearchAndSelectItem(orderItemSku = "MIN55861");
+
+			Click(locator1 = "CommerceAccelerators#QUICK_ADD_TO_CART_BUTTON");
+		}
+
+		task ("Then the product is successfully added to the cart") {
+			AssertElementPresent(
+				key_cartItemName = "U-Joint",
+				locator1 = "CommerceAccelerators#MINI_CART_ITEM_NAME");
+
+			// Add assertions for the pricing following COMMERCE-11276
+
+		}
+	}
+
+	@description = "COMMERCE-11507. As an admin user with permission to manage quotes, I want to be able to mark a quote as processed in the order's admin page"
+	@priority = 5
+	test CanAdminUsersWithManageQuotePermissionProcessQuote {
+		property portal.acceptance = "true";
+
+		task ("Given 'Allow Request a Quote on a Fully Priced Cart' is enabled for the site") {
+			CommerceChannels.openChannelsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+
+			Check.checkToggleSwitch(
+				key_toggleSwitchLabel = "Request a Quote",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+			Button.clickSave();
+		}
+
+		task ("And an Operations Manager user is created Manage Quotes permission") {
+			JSONUser.addUserWithRole(
+				roleTitle = "Operations Manager",
+				userEmailAddress = "om@liferay.com",
+				userFirstName = "Operations",
+				userLastName = "Manager",
+				userScreenName = "operationsmanager");
+		}
+
+		task ("And the buyer user requests a quote for an order") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "U-Joint",
+				productQuantity = 1);
+
+			var orderId = selenium.getText("CommerceEntry#ACTIVE_ORDER_ID");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+			Click(
+				key_orderAuthor = "Buyer User",
+				locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");
+
+			CommerceOrders.createQuoteRequest(
+				quoteRequestValue = "I kindly request a quote for this product.",
+				requestAQuoteInOpenOrdersPage = "true");
+		}
+
+		task ("When the operations manager navigate to the order's admin page") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "om@liferay.com",
+				userLoginFullName = "Operations Manager");
+
+			CommerceOrders.openOrdersAdmin();
+
+			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Quote Requested");
+		}
+
+		task ("Then the user is not able to mark a quote as processed") {
+			AssertElementNotPresent(
+				key_index = "Quote Processed",
+				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
+		}
+
+		task ("And the step tracker shows 'Quote Requested' as active step") {
+			AssertElementPresent(
+				key_stepLabel = "Quote Requested",
+				locator1 = "CommerceOrders#STEP_TRACKER_ACTIVE_STEP");
+
+			AssertElementPresent(
+				key_stepLabel = "Quote Processed",
+				locator1 = "CommerceOrders#STEP_TRACKER_INACTIVE_STEP");
+		}
+
+		task ("When the Operations Manager role is given the Manage Quotes permission") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "MANAGE_QUOTES",
+				resourceName = "com.liferay.commerce.order",
+				roleTitle = "Operations Manager");
+		}
+
+		task ("Then the user is able to mark a quote as processed") {
+			Refresh();
+
+			AssertElementPresent(
+				key_index = "Quote Processed",
+				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
+
+			Click(
+				key_index = "Quote Processed",
+				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
+		}
+
+		task ("And the step tracker shows 'Quote Processed' as active step") {
+			for (var status : list "Quote Requested,Quote Processed") {
+				AssertElementPresent(
+					key_stepLabel = ${status},
+					locator1 = "CommerceOrders#STEP_TRACKER_COMPLETED_STEP");
+			}
+		}
+
+		task ("And the buyer can see the 'Quote Processed' status on the order") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
+
+			AssertElementPresent(
+				key_entry = ${orderId},
+				key_status = "Quote Processed",
+				locator1 = "CommerceOrders#PLACED_ORDERS_LIST_STATUS");
+
+			Click(
+				key_orderAuthor = "Buyer User",
+				locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");
+
+			AssertElementPresent(
+				key_status = "Quote Processed",
+				locator1 = "CommerceOrders#PLACED_ORDERS_DETAILS_STATUS");
+		}
+	}
+
 	@description = "COMMERCE-11030. Verify that the Request a Quote button is visible in the Mini Cart and in the Order's Details Page."
 	@priority = 5
 	test CanAssertRequestAQuoteButtonIsVisible {
@@ -148,6 +323,331 @@ definition {
 			AssertTextNotPresent(
 				locator1 = "CommerceAccelerators#PORTLET_CONTENT",
 				value1 = "Edit");
+		}
+	}
+
+	@description = "COMMERCE-11548 | As an admin user, I want to be able to mark/unmark a sku as 'Price on Application'"
+	@priority = 5
+	test CanMarkSkuAsPriceOnApplication {
+		property portal.acceptance = "true";
+
+		task ("Given the admin navigates to a product's sku details") {
+			CommerceProducts.openProductsAdmin();
+
+			CommerceProducts.searchAndGoToProductEntry(entryProductName = "U-Joint");
+
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoTableListEntry(entryName = "MIN55861");
+		}
+
+		task ("When the admin marks the sku as 'Price on Application'") {
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			MouseOver(
+				key_label = "Price on Application",
+				locator1 = "CommerceEntry#LABEL_TOOLTIP_ICON");
+
+			VerifyElementPresent(
+				key_label = "Price on Application",
+				key_text = "Do not set a base price for this product and instead require that buyers request a quote.",
+				locator1 = "CommerceEntry#LABEL_TOOLTIP_TEXT");
+
+			CommerceSKUs.setSkuPricing(priceOnApplication = "true");
+
+			Button.clickPublish();
+		}
+
+		task ("Then the pricing fields are greyed out") {
+			for (var text : list "Base Price,Promotion Price,Cost") {
+				AssertElementPresent(
+					key_text = ${text},
+					locator1 = "CommerceEntry#ANY_TEXT_INPUT_DISABLED");
+			}
+
+			Click(locator1 = "Icon#CLOSE");
+
+			SelectFrame.selectFrameTop();
+		}
+
+		task ("And 'Price on Application' is shown as the active price") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			AssertElementPresent(
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE_ON_APPLICATION");
+		}
+
+		task ("When the admin unmarks the sku as 'Price on Application'") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "test@liferay.com",
+				userLoginFullName = "Test Test");
+
+			CommerceProducts.openProductsAdmin();
+
+			CommerceProducts.searchAndGoToProductEntry(entryProductName = "U-Joint");
+
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoTableListEntry(entryName = "MIN55861");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceSKUs.setSkuPricing(priceOnApplication = "false");
+
+			Button.clickPublish();
+		}
+
+		task ("Then the pricing fields are not greyed out") {
+			for (var text : list "Base Price,Promotion Price,Cost") {
+				AssertElementPresent(
+					key_text = ${text},
+					locator1 = "TextInput#ANY");
+			}
+
+			Click(locator1 = "Icon#CLOSE");
+
+			SelectFrame.selectFrameTop();
+		}
+
+		task ("And the base price is shown as the active price") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			AssertElementNotPresent(
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE_ON_APPLICATION");
+
+			AssertTextEquals.assertPartialText(
+				key_productName = "U-Joint",
+				locator1 = "CommerceEntry#PRODUCT_CARD_LIST_PRICE",
+				value1 = "$ 24.00");
+		}
+	}
+
+	@description = "COMMERCE-11549 | As an admin user, I want to be able to override 'Price on Application' set for the sku using a Price List"
+	@priority = 5
+	test CanPriceListPriceOverridePriceOnApplicationSet {
+		property portal.acceptance = "true";
+
+		task ("Given the admin navigates to a product's sku details") {
+			CommerceProducts.openProductsAdmin();
+
+			CommerceProducts.searchAndGoToProductEntry(entryProductName = "U-Joint");
+
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoTableListEntry(entryName = "MIN55861");
+		}
+
+		task ("And the admin marks the sku as 'Price on Application'") {
+			CommerceSKUs.editSkuPricing(priceOnApplication = "true");
+		}
+
+		task ("When a new price list is created") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
+				catalogName = "Minium",
+				currencyCode = "USD",
+				priceListName = "Test Price List");
+		}
+
+		task ("And a price list entry is created for the same sku") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPriceListEntry(
+				entryPrice = 20,
+				priceListName = "Test Price List",
+				productSKU = "MIN55861");
+		}
+
+		task ("Then the price list entry's price is shown as the active price") {
+			var key_productName = "U-Joint";
+
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			AssertElementNotPresent(locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE_ON_APPLICATION");
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "CommerceEntry#PRODUCT_CARD_LIST_PRICE",
+				value1 = "$ 20.00");
+		}
+
+		task ("When the price list is removed") {
+			CommerceJSONPriceListsAndPromotionsAPI._deleteCommercePriceList(priceListName = "Test Price List");
+		}
+
+		task ("Then 'Price on Application' is shown as the active price") {
+			Refresh();
+
+			AssertElementPresent(locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE_ON_APPLICATION");
+
+			var key_price = "20.00";
+
+			AssertElementNotPresent(locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE_FIELD");
+		}
+	}
+
+	@description = "COMMERCE-11550 | As an admin user, I want to be able to override 'Price on Application' set for the sku using a Promotion"
+	@ignore = "true"
+	@priority = 5
+	test CanPromotionPriceOverridePriceOnApplicationSet {
+		property portal.acceptance = "true";
+
+		// This test needs to be readapted and ignore tag should be removed with COMMERCE-11276
+
+		task ("Given the admin navigates to a product's sku details") {
+			CommerceProducts.openProductsAdmin();
+
+			CommerceProducts.searchAndGoToProductEntry(entryProductName = "U-Joint");
+
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoTableListEntry(entryName = "MIN55861");
+		}
+
+		task ("And the admin marks the sku as 'Price on Application'") {
+			CommerceSKUs.editSkuPricing(priceOnApplication = "true");
+		}
+
+		task ("When a new promotion is created") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
+				catalogName = "Minium",
+				currencyCode = "USD",
+				promotionName = "Test Promotion");
+		}
+
+		task ("And a promotion entry is created for the same sku") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPromotionEntry(
+				entryPrice = 20,
+				productSKU = "MIN55861",
+				promotionName = "Test Promotion");
+		}
+
+		task ("Then the promotion entry's price is shown as the active price") {
+			var key_productName = "U-Joint";
+
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			AssertElementNotPresent(locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE_ON_APPLICATION");
+
+			// Update price assertion following COMMERCE-11276
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "CommerceFrontStore#FS_PRODUCT_VALUE_PROMO_PRICE",
+				value1 = "20.00");
+		}
+
+		task ("When the promotion is removed") {
+			CommerceJSONPriceListsAndPromotionsAPI._deleteCommercePriceList(priceListName = "Test Promotion");
+		}
+
+		task ("Then 'Price on Application' is shown as the active price") {
+			Refresh();
+
+			AssertElementPresent(locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE_ON_APPLICATION");
+
+			// Update price assertion following COMMERCE-11276
+
+			var key_element = " price-value-promo";
+			var key_price = "20.00";
+
+			AssertElementNotPresent(locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE_FIELD");
+		}
+	}
+
+	@description = "COMMERCE-11619. As a buyer user, I can verify that the Price on Application label is visible on the storefront for a product SKU marked as Price on Application."
+	@priority = 5
+	test CanViewPriceOnApplicationLabelOnStoreFront {
+		property portal.acceptance = "true";
+
+		task ("Given the admin navigates to a product's sku details") {
+			CommerceProducts.openProductsAdmin();
+
+			CommerceProducts.searchAndGoToProductEntry(entryProductName = "U-Joint");
+
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoTableListEntry(entryName = "MIN55861");
+		}
+
+		task ("When the admin marks the sku as 'Price on Application'") {
+			CommerceSKUs.editSkuPricing(priceOnApplication = "true");
+		}
+
+		task ("Then 'Price on Application' is shown as the active price both on the product card and product details page") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			AssertElementPresent(
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE_ON_APPLICATION");
+
+			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
+
+			AssertElementPresent(locator1 = "CommerceAccelerators#PRODUCT_DETAILS_PRICE_ON_APPLICATION");
+		}
+
+		task ("When the buyer adds a product with a base price and the one marked as 'Price on Application' to the cart") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/catalog");
+
+			for (var productName : list "U-Joint,Transmission Cooler Line Assembly") {
+				FrontStore.addInitializerProductToCart(
+					productName = ${productName},
+					productQuantity = 1);
+			}
+		}
+
+		task ("Then 'Price on Application' label is shown in the Mini Cart for the specific product with an info alert and Submit button is disabled") {
+			CommerceNavigator.gotoMiniCart();
+
+			AssertElementPresent(
+				key_cartItemSku = "MIN55861",
+				locator1 = "CommerceAccelerators#MINI_CART_ITEM_PRICE_ON_APPLICATION");
+
+			AssertElementPresent(
+				key_infoMessage = "Your cart has products that require a quote to complete the checkout.",
+				locator1 = "Message#INFO_SPECIFIC");
+
+			AssertElementPresent(
+				key_text = "Submit",
+				locator1 = "Button#ANY_DISABLED");
+		}
+
+		task ("When the buyer clicks Request A Quote button navigating directly to the Open Order's Details Page") {
+			Button.click(button = "Request a Quote");
+		}
+
+		task ("Then 'Price on Application' label is shown for the order item on the Open Order's Details Page") {
+			AssertTextEquals(
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#ORDER_DETAILS_UNIT_PRICE",
+				value1 = "Price on Application");
+
+			AssertTextEquals(
+				key_productName = "Transmission Cooler Line Assembly",
+				locator1 = "CommerceAccelerators#ORDER_DETAILS_UNIT_PRICE",
+				value1 = "$ 15.00");
 		}
 	}
 

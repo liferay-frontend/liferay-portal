@@ -7,7 +7,10 @@ definition {
 
 		var key_fieldFieldLabel = ${fieldFieldLabel};
 		var key_fieldName = ${fieldName};
-		var fieldReference = StringUtil.replace(${fieldFieldLabel}, " ", "");
+
+		if (!(isSet(fieldReference))) {
+			var fieldReference = StringUtil.replace(${fieldFieldLabel}, " ", "");
+		}
 
 		if (isSet(fieldLocation)) {
 			DragAndDrop.javaScriptDragAndDropToObject(
@@ -703,6 +706,13 @@ definition {
 				locator1 = "DataEngineBuilder#OPTIONS_CHECKBOX_INDEXED",
 				optionIndex = ${optionIndex});
 		}
+	}
+
+	macro assertFieldInFieldsGroupRepeated {
+		AssertElementPresent(
+			key_fieldName = ${fieldName},
+			key_index = ${index},
+			locator1 = "WCEditWebContent#REPEATED_FIELD_IN_FIELDS_GROUP");
 	}
 
 	macro assertFieldNotPresent {

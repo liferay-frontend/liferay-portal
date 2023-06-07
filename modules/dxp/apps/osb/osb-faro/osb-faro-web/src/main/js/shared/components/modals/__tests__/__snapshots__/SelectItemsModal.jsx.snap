@@ -39,6 +39,7 @@ exports[`SelectItemsModal should render 1`] = `
           Select Fields
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -70,6 +71,7 @@ exports[`SelectItemsModal should render 1`] = `
                 role="presentation"
               >
                 <button
+                  aria-label="Ascending"
                   class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                   type="button"
                 >
@@ -103,6 +105,7 @@ exports[`SelectItemsModal should render 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Clear"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -125,13 +128,10 @@ exports[`SelectItemsModal should render 1`] = `
       <div
         class="scroll-container"
       >
-        <div
-          class="spinner-root spinner-spacer"
-        >
-          <span
-            class="loading-animation loading-animation-dotted"
-          />
-        </div>
+        <span
+          aria-hidden="true"
+          class="spinner-root spinner-spacer loading-animation"
+        />
       </div>
       <div
         class="modal-footer"
@@ -178,6 +178,7 @@ exports[`SelectItemsModal should render items as an entity list 1`] = `
           Select Fields
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -209,6 +210,7 @@ exports[`SelectItemsModal should render items as an entity list 1`] = `
                 role="presentation"
               >
                 <button
+                  aria-label="Ascending"
                   class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                   type="button"
                 >
@@ -242,6 +244,7 @@ exports[`SelectItemsModal should render items as an entity list 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Clear"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -264,13 +267,10 @@ exports[`SelectItemsModal should render items as an entity list 1`] = `
       <div
         class="scroll-container"
       >
-        <div
-          class="spinner-root spinner-spacer"
-        >
-          <span
-            class="loading-animation loading-animation-dotted"
-          />
-        </div>
+        <span
+          aria-hidden="true"
+          class="spinner-root spinner-spacer loading-animation"
+        />
       </div>
       <div
         class="modal-footer"
@@ -317,6 +317,7 @@ exports[`SelectItemsModal should render with a blank submit 1`] = `
           Select Fields
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -348,6 +349,7 @@ exports[`SelectItemsModal should render with a blank submit 1`] = `
                 role="presentation"
               >
                 <button
+                  aria-label="Ascending"
                   class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                   type="button"
                 >
@@ -381,6 +383,7 @@ exports[`SelectItemsModal should render with a blank submit 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Clear"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -465,6 +468,7 @@ exports[`SelectItemsModal should render with a custom submit message 1`] = `
           Select Fields
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -496,6 +500,7 @@ exports[`SelectItemsModal should render with a custom submit message 1`] = `
                 role="presentation"
               >
                 <button
+                  aria-label="Ascending"
                   class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                   type="button"
                 >
@@ -529,6 +534,7 @@ exports[`SelectItemsModal should render with a custom submit message 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Clear"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -551,13 +557,10 @@ exports[`SelectItemsModal should render with a custom submit message 1`] = `
       <div
         class="scroll-container"
       >
-        <div
-          class="spinner-root spinner-spacer"
-        >
-          <span
-            class="loading-animation loading-animation-dotted"
-          />
-        </div>
+        <span
+          aria-hidden="true"
+          class="spinner-root spinner-spacer loading-animation"
+        />
       </div>
       <div
         class="modal-footer"
@@ -604,6 +607,7 @@ exports[`SelectItemsModal should render with a custom title 1`] = `
           Custom Title
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -635,6 +639,7 @@ exports[`SelectItemsModal should render with a custom title 1`] = `
                 role="presentation"
               >
                 <button
+                  aria-label="Ascending"
                   class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                   type="button"
                 >
@@ -668,6 +673,7 @@ exports[`SelectItemsModal should render with a custom title 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Clear"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -690,13 +696,10 @@ exports[`SelectItemsModal should render with a custom title 1`] = `
       <div
         class="scroll-container"
       >
-        <div
-          class="spinner-root spinner-spacer"
-        >
-          <span
-            class="loading-animation loading-animation-dotted"
-          />
-        </div>
+        <span
+          aria-hidden="true"
+          class="spinner-root spinner-spacer loading-animation"
+        />
       </div>
       <div
         class="modal-footer"
@@ -743,6 +746,7 @@ exports[`SelectItemsModal should render with a successful submit 1`] = `
           Select Fields
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -774,6 +778,7 @@ exports[`SelectItemsModal should render with a successful submit 1`] = `
                 role="presentation"
               >
                 <button
+                  aria-label="Ascending"
                   class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                   type="button"
                 >
@@ -807,6 +812,7 @@ exports[`SelectItemsModal should render with a successful submit 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Clear"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -887,6 +893,7 @@ exports[`SelectItemsModal should render with an unsuccessful submit 1`] = `
           Select Fields
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -918,6 +925,7 @@ exports[`SelectItemsModal should render with an unsuccessful submit 1`] = `
                 role="presentation"
               >
                 <button
+                  aria-label="Ascending"
                   class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                   type="button"
                 >
@@ -951,6 +959,7 @@ exports[`SelectItemsModal should render with an unsuccessful submit 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Clear"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -1035,6 +1044,7 @@ exports[`SelectItemsModal should render with selectedItems 1`] = `
           Select Fields
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -1066,6 +1076,7 @@ exports[`SelectItemsModal should render with selectedItems 1`] = `
                 role="presentation"
               >
                 <button
+                  aria-label="Ascending"
                   class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                   type="button"
                 >
@@ -1099,6 +1110,7 @@ exports[`SelectItemsModal should render with selectedItems 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Clear"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -1121,13 +1133,10 @@ exports[`SelectItemsModal should render with selectedItems 1`] = `
       <div
         class="scroll-container"
       >
-        <div
-          class="spinner-root spinner-spacer"
-        >
-          <span
-            class="loading-animation loading-animation-dotted"
-          />
-        </div>
+        <span
+          aria-hidden="true"
+          class="spinner-root spinner-spacer loading-animation"
+        />
       </div>
       <div
         class="modal-footer"
@@ -1174,6 +1183,7 @@ exports[`SelectItemsModal should render with selectedItems with the disable sele
           Select Fields
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -1205,6 +1215,7 @@ exports[`SelectItemsModal should render with selectedItems with the disable sele
                 role="presentation"
               >
                 <button
+                  aria-label="Ascending"
                   class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                   type="button"
                 >
@@ -1238,6 +1249,7 @@ exports[`SelectItemsModal should render with selectedItems with the disable sele
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Clear"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -1319,6 +1331,7 @@ exports[`SelectItemsModal should render without a toolbar 1`] = `
           Select Fields
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -1335,13 +1348,10 @@ exports[`SelectItemsModal should render without a toolbar 1`] = `
       <div
         class="scroll-container"
       >
-        <div
-          class="spinner-root spinner-spacer"
-        >
-          <span
-            class="loading-animation loading-animation-dotted"
-          />
-        </div>
+        <span
+          aria-hidden="true"
+          class="spinner-root spinner-spacer loading-animation"
+        />
       </div>
       <div
         class="modal-footer"
@@ -1388,6 +1398,7 @@ exports[`SelectItemsModal should render without the sort button 1`] = `
           Select Fields
         </h4>
         <button
+          aria-label="Close"
           class="button-root close btn btn-secondary"
           type="button"
         >
@@ -1433,6 +1444,7 @@ exports[`SelectItemsModal should render without the sort button 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Clear"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -1455,13 +1467,10 @@ exports[`SelectItemsModal should render without the sort button 1`] = `
       <div
         class="scroll-container"
       >
-        <div
-          class="spinner-root spinner-spacer"
-        >
-          <span
-            class="loading-animation loading-animation-dotted"
-          />
-        </div>
+        <span
+          aria-hidden="true"
+          class="spinner-root spinner-spacer loading-animation"
+        />
       </div>
       <div
         class="modal-footer"

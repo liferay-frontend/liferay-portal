@@ -121,13 +121,10 @@ exports[`SegmentEditor should render 1`] = `
                     <div
                       class="total-members-count"
                     >
-                      <div
-                        class="spinner-root"
-                      >
-                        <span
-                          class="loading-animation loading-animation-dotted loading-animation-sm"
-                        />
-                      </div>
+                      <span
+                        aria-hidden="true"
+                        class="spinner-root loading-animation loading-animation-sm"
+                      />
                     </div>
                   </div>
                 </div>
@@ -135,6 +132,7 @@ exports[`SegmentEditor should render 1`] = `
                   class="btn-group-item"
                 >
                   <button
+                    aria-label="View Members"
                     class="button-root preview-criteria btn btn-outline-borderless btn-sm btn-outline-secondary"
                     data-testid="preview-criteria-button"
                     data-tooltip="true"

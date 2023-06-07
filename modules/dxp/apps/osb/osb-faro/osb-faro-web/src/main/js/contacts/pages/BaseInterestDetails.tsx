@@ -185,10 +185,11 @@ const BaseInterestDetails: React.FC<IBaseInterestDetailsProps> = ({
 						id,
 						type
 					})}
+					small
 				>
 					<ClayIcon
 						className='icon-root icon-size-sm mr-2'
-						symbol='angle-left'
+						symbol='angle-left-small'
 					/>
 
 					{Liferay.Language.get('back-to-interests')}
@@ -234,7 +235,9 @@ const BaseInterestDetails: React.FC<IBaseInterestDetailsProps> = ({
 									),
 									[
 										interestName,
-										formatUTCDateFromUnix(Date.now())
+										formatUTCDateFromUnix(
+											Date.now() - 24 * 60 * 60 * 1000
+										)
 									]
 							  )
 							: sub(

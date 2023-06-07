@@ -17,6 +17,7 @@ exports[`CriteriaRow should render 1`] = `
         aria-hidden="true"
         class="drag-icon"
         data-aria-hidden="true"
+        draggable="true"
       >
         <svg
           class="lexicon-icon lexicon-icon-drag icon-root"
@@ -149,6 +150,7 @@ exports[`CriteriaRow should render 1`] = `
                   class="input-group-inset-item input-group-inset-item-after"
                 >
                   <button
+                    aria-label="Choose a date"
                     class="button-root btn btn-unstyled"
                     type="button"
                   >
@@ -179,6 +181,7 @@ exports[`CriteriaRow should render 1`] = `
             aria-controls="clay-dropdown-menu-1"
             aria-expanded="false"
             aria-haspopup="true"
+            aria-label="Menu"
             class="dropdown-toggle component-action btn btn-unstyled"
             type="button"
           >

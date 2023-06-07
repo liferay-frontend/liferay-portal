@@ -14,8 +14,9 @@ import {Routes, toRoute} from 'shared/util/router';
 
 const ITEMS_PER_CARD = 6;
 
-function fetchInterestData({groupId, id}) {
+function fetchInterestData({channelId, groupId, id}) {
 	return API.interests.search({
+		channelId,
 		contactsEntityId: id,
 		delta: ITEMS_PER_CARD,
 		groupId,
@@ -55,7 +56,11 @@ export const InterestsList = ({channelId, groupId, id, interests}) => (
 const ListWithInterests = compose(
 	withRequest(
 		fetchInterestData,
-		data => ({interests: data.items, total: data.total}),
+		data => ({
+			channelId: data.channelId,
+			interests: data.items,
+			total: data.total
+		}),
 		{
 			page: false
 		}
@@ -118,18 +123,22 @@ export default class InterestsCard extends React.PureComponent {
 
 				<Card.Footer>
 					<ClayLink
+						borderless
+						button
 						className='button-root'
+						displayType='secondary'
 						href={toRoute(Routes.CONTACTS_INDIVIDUAL_INTERESTS, {
 							channelId,
 							groupId,
 							id
 						})}
+						small
 					>
 						{Liferay.Language.get('view-all-interests')}
 
 						<ClayIcon
 							className='icon-root ml-2'
-							symbol='angle-right'
+							symbol='angle-right-small'
 						/>
 					</ClayLink>
 				</Card.Footer>

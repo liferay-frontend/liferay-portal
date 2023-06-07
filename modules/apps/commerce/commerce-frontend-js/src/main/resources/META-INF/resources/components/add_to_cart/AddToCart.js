@@ -50,6 +50,8 @@ function AddToCart({
 	cpInstance: initialCpInstance,
 	disabled: initialDisabled,
 	settings,
+	showOrderTypeModal,
+	showOrderTypeModalURL,
 }) {
 	const account = useCommerceAccount({id: initialAccountId});
 	const cart = useCommerceCart(
@@ -203,10 +205,12 @@ function AddToCart({
 						: (event) => {
 								event.preventDefault();
 
-								inputRef.current.focus();
+								inputRef.current?.focus();
 						  }
 				}
 				settings={settings}
+				showOrderTypeModal={showOrderTypeModal}
+				showOrderTypeModalURL={showOrderTypeModalURL}
 			/>
 		</div>
 	);
@@ -233,6 +237,8 @@ AddToCart.propTypes = {
 		}),
 		size: PropTypes.oneOf(['lg', 'md', 'sm']),
 	}),
+	showOrderTypeModal: PropTypes.bool,
+	showOrderTypeModalURL: PropTypes.string,
 };
 
 export default AddToCart;

@@ -716,6 +716,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ELIGIBILITY_RELATION_FIELD_CLEAR_BUTTON</td>
+	<td>//div[h4[contains(.,'${key_eligibilityCardTitle}')]]//input[@type='text']/..//span[contains(@class,'input-group-inset-item')]//button[contains(@class,'btn')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TABLE_ENTRY_ROW_NUMBER</td>
 	<td>//div[@class='dnd-tbody']/div[contains(@class,'dnd-tr')][${key_rowNumber}]//a</td>
 	<td></td>
@@ -758,6 +763,11 @@
 <tr>
 	<td>TABLE_CELL_BY_COLUMN_ORDER</td>
 	<td>//div[contains(@class,'title')]//*[text()='${key_entryName}']/../../../div[@class='dnd-td'][${key_columnNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TABLE_CELL_BY_COLUMN_ORDER_NO_TITLE</td>
+	<td>//div[(@class="dnd-td") and contains(string(), '${key_cellName1}')]//..//div[(@class="dnd-td") and contains(string(), '${key_cellName2}')]//..//div[(@class="dnd-td")][${key_columnNumber}]</td>
 	<td></td>
 </tr>
 <tr>
@@ -808,6 +818,21 @@
 <tr>
 	<td>ANY_FRAGMENT_DROP_TARGET_N</td>
 	<td>//div[@aria-label='${key_targetFragmentName}'][${key_index}]/div[contains(@class,'page-editor__topper__content')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LABEL_TOOLTIP_ICON</td>
+	<td>//label[(contains(.,'${key_label}')) or (contains(@for,'${key_label}'))]//span[contains(@class,'lfr-portal-tooltip')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LABEL_TOOLTIP_TEXT</td>
+	<td>//label[(contains(.,'${key_label}')) or (contains(@for,'${key_label}'))]//span[(contains(@class,'lfr-portal-tooltip')) and (@data-restore-title='${key_text}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ANY_TEXT_INPUT_DISABLED</td>
+	<td>//div[label[contains(.,'${key_text}')]]//input[not(contains(@type,'checkbox'))][@disabled]</td>
 	<td></td>
 </tr>
 
@@ -1267,6 +1292,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>VALUE_PRODUCT_STATUS</td>
+	<td>//a[contains(text(),'${key_productName}')]/../../..//div[contains(@class,'dnd-td') and (text()='${key_productRelation}')]/..//*[contains(text(),'${key_productStatus}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ENTRY_SUBSCRIPTIONS</td>
 	<td>//h4[contains(text(),'${key_entryName}')]</td>
 	<td></td>
@@ -1336,6 +1366,36 @@
 <!--SITEMAP-->
 
 <tr>
+	<td>CATEGORY_SITEMAP_URL</td>
+	<td>//*[text()='${key_basePortalURL}/web/minium/g/${key_categoryName}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_SITEMAP_URL_HREF_HREFLANG</td>
+	<td>//*[text()='${key_basePortalURL}/web/minium/g/${key_categoryURLName}']/following-sibling::*[@href = '${key_basePortalURL}/web/minium/g/${key_categoryName}'][@hreflang='${key_categoryNameLang}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_LANGUAGE_SITEMAP_URL</td>
+	<td>//*[text()='${key_basePortalURL}/${key_language}/web/minium/g/${key_categoryName}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_LANGUAGE_SITEMAP_URL_HREF_HREFLANG</td>
+	<td>//*[text()='${key_basePortalURL}${key_languageLoc}/web/minium/g/${key_categoryURLName}']/following-sibling::*[@href = '${key_basePortalURL}${key_languageHref}/web/minium/g/${key_categoryName}'][@hreflang='${key_categoryNameLang}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_LANGUAGE_DETAIL_SITEMAP_URL</td>
+	<td>//*[text()='${key_basePortalURL}/${key_language}/web/minium/p/${key_productName}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_LANGUAGE_DETAIL_SITEMAP_URL_HREF_HREFLANG</td>
+	<td>//*[text()='${key_basePortalURL}${key_languageLoc}/web/minium/p/${key_productURLName}']/following-sibling::*[@href = '${key_basePortalURL}${key_languageHref}/web/minium/p/${key_productName}'][@hreflang='${key_productNameLang}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PRODUCT_DETAIL_SITEMAP_URL</td>
 	<td>//*[text()='${key_basePortalURL}/web/minium/p/${key_productName}']</td>
 	<td></td>
@@ -1345,7 +1405,11 @@
 	<td>//*[text()='${key_basePortalURL}/web/minium/p/${key_productURLName}']/following-sibling::*[@href = '${key_basePortalURL}/web/minium/p/${key_productName}'][@hreflang='${key_productNameLang}']</td>
 	<td></td>
 </tr>
-
+<tr>
+	<td>CURRENT_LANGUAGE</td>
+	<td>//label[contains(.,'Current')]/..//select/option[contains(.,'${key_language}')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>

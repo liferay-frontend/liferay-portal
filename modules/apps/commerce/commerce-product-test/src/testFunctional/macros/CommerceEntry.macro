@@ -1029,6 +1029,7 @@ definition {
 		CommerceSKUs.setSkuPricing(
 			basePrice = ${basePrice},
 			cost = ${cost},
+			priceOnApplication = ${priceOnApplication},
 			promoPrice = ${promoPrice});
 
 		if (isSet(publish)) {
@@ -1320,6 +1321,7 @@ definition {
 				for (var paymentTerm : list ${paymentTermsEligibility}) {
 					CommerceRelations.assignSingleRelationToEligibility(
 						entryName = ${paymentTerm},
+						key_eligibilityCardTitle = ${title},
 						title = ${title});
 
 					Click(
@@ -1354,6 +1356,7 @@ definition {
 				for (var deliveryTerm : list ${deliveryTermsEligibility}) {
 					CommerceRelations.assignSingleRelationToEligibility(
 						entryName = ${deliveryTerm},
+						key_eligibilityCardTitle = ${title},
 						title = ${title});
 
 					Click(
@@ -1384,6 +1387,7 @@ definition {
 				for (var orderType : list ${orderTypesEligibility}) {
 					CommerceRelations.assignSingleRelationToEligibility(
 						entryName = ${orderType},
+						key_eligibilityCardTitle = ${title},
 						title = ${title});
 
 					Click(

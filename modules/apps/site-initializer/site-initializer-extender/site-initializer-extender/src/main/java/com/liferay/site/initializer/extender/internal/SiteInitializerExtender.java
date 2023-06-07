@@ -74,6 +74,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalService;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.segments.service.SegmentsEntryLocalService;
@@ -94,6 +95,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
+
+import org.apache.felix.dm.DependencyManager;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -134,7 +137,7 @@ public class SiteInitializerExtender
 				_assetListEntryLocalService, bundle,
 				_clientExtensionEntryLocalService, _configurationProvider,
 				_ddmStructureLocalService, _ddmTemplateLocalService,
-				_defaultDDMStructureHelper, _dlURLHelper,
+				_defaultDDMStructureHelper, _dependencyManager, _dlURLHelper,
 				_documentFolderResourceFactory, _documentResourceFactory,
 				_fragmentsImporter, _groupLocalService,
 				_journalArticleLocalService, _jsonFactory,
@@ -154,7 +157,7 @@ public class SiteInitializerExtender
 				_objectFieldLocalService, _objectFieldResourceFactory,
 				_objectRelationshipLocalService,
 				_objectRelationshipResourceFactory, _organizationLocalService,
-				_organizationResourceFactory, _portal,
+				_organizationResourceFactory, _ploEntryLocalService, _portal,
 				_resourceActionLocalService, _resourcePermissionLocalService,
 				_roleLocalService, _sapEntryLocalService,
 				_segmentsEntryLocalService, _segmentsExperienceLocalService,
@@ -195,6 +198,8 @@ public class SiteInitializerExtender
 	@Activate
 	protected void activate(BundleContext bundleContext) throws Exception {
 		_bundleContext = bundleContext;
+
+		_dependencyManager = new DependencyManager(bundleContext);
 
 		_bundleTracker = new BundleTracker<>(
 			bundleContext, Bundle.ACTIVE, this);
@@ -249,7 +254,7 @@ public class SiteInitializerExtender
 					null),
 				_clientExtensionEntryLocalService, _configurationProvider,
 				_ddmStructureLocalService, _ddmTemplateLocalService,
-				_defaultDDMStructureHelper, _dlURLHelper,
+				_defaultDDMStructureHelper, _dependencyManager, _dlURLHelper,
 				_documentFolderResourceFactory, _documentResourceFactory,
 				_fragmentsImporter, _groupLocalService,
 				_journalArticleLocalService, _jsonFactory,
@@ -269,7 +274,7 @@ public class SiteInitializerExtender
 				_objectFieldLocalService, _objectFieldResourceFactory,
 				_objectRelationshipLocalService,
 				_objectRelationshipResourceFactory, _organizationLocalService,
-				_organizationResourceFactory, _portal,
+				_organizationResourceFactory, _ploEntryLocalService, _portal,
 				_resourceActionLocalService, _resourcePermissionLocalService,
 				_roleLocalService, _sapEntryLocalService,
 				_segmentsEntryLocalService, _segmentsExperienceLocalService,
@@ -326,6 +331,8 @@ public class SiteInitializerExtender
 
 	@Reference
 	private DefaultDDMStructureHelper _defaultDDMStructureHelper;
+
+	private DependencyManager _dependencyManager;
 
 	@Reference
 	private DLURLHelper _dlURLHelper;
@@ -444,6 +451,9 @@ public class SiteInitializerExtender
 
 	@Reference
 	private OrganizationResource.Factory _organizationResourceFactory;
+
+	@Reference
+	private PLOEntryLocalService _ploEntryLocalService;
 
 	@Reference
 	private Portal _portal;

@@ -22,7 +22,7 @@
 </tr>
 <tr>
 	<td>CATEGORY_FACET_EXPAND_VOCABULARIES</td>
-	<td>xpath=(//span[*[name()='svg'][contains(@class,'lexicon-icon-angle-right component-expanded-d-none')]])[2]</td>
+	<td>//span[*[name()='svg'][contains(@class,'lexicon-icon-angle-right component-expanded-d-none')]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -38,6 +38,11 @@
 <tr>
 	<td>CATEGORY_FACET_VOCABULARY_SCOPE_RADIO</td>
 	<td>//span[contains(.,'${vocabularyScope}')]/preceding-sibling::input[@role='radio']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CUSTOM_FILTER_WIDGET_VALUE_INPUT</td>
+	<td>//div[contains(@class,'input-text-wrapper')]//input[contains(@name,'${key_name}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -248,6 +253,11 @@
 <tr>
 	<td>SORT_WIDGET_CONFIGURATION_OPTION_DRAG_HANDLE</td>
 	<td>//div[contains(@class,'form-group')][.//input[@value='${key_displayLabel}']]//button[contains(@class,'drag-handle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SORT_WIDGET_CONFIGURATION_ORDER_DROPDOWN</td>
+	<td>//div[contains(@class,'form-group')][.//input[@value='${key_displayLabel}']]//select</td>
 	<td></td>
 </tr>
 <tr>

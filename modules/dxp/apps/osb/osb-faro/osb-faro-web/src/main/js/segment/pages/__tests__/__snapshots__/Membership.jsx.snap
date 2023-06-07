@@ -13,11 +13,6 @@ exports[`Membership should render 1`] = `
       >
         Segment Membership
       </h5>
-      <div
-        class="subtitle-segment"
-      >
-        Segment membership processes daily and does not include today's activities.
-      </div>
     </div>
     <div
       class="card-body segment-growth-root no-padding"
@@ -66,6 +61,7 @@ exports[`Membership should render 1`] = `
                   role="presentation"
                 >
                   <button
+                    aria-label="Ascending"
                     class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                     type="button"
                   >
@@ -99,6 +95,7 @@ exports[`Membership should render 1`] = `
                       class="input-group-inset-item input-group-inset-item-after"
                     >
                       <button
+                        aria-label="Search"
                         class="button-root btn btn-unstyled"
                         type="button"
                       >
@@ -160,11 +157,6 @@ exports[`Membership should render 1`] = `
                 <th
                   class="table-head-title"
                 >
-                  Account Names
-                </th>
-                <th
-                  class="table-head-title"
-                >
                   <button
                     class="inline-item text-truncate-inline btn btn-unstyled"
                     type="button"
@@ -201,15 +193,6 @@ exports[`Membership should render 1`] = `
                 </td>
                 <td>
                   -
-                </td>
-                <td
-                  class="name-cell-root"
-                >
-                  <div
-                    class="text-truncate"
-                  >
-                    -
-                  </div>
                 </td>
                 <td>
                   Jul 8, 2018
@@ -262,11 +245,11 @@ exports[`Membership should render 1`] = `
                   href=""
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-angle-left icon-root"
+                    class="lexicon-icon lexicon-icon-angle-left-small icon-root"
                     role="presentation"
                   >
                     <use
-                      xlink:href="#angle-left"
+                      xlink:href="#angle-left-small"
                     />
                   </svg>
                 </a>
@@ -290,11 +273,11 @@ exports[`Membership should render 1`] = `
                   href=""
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-angle-right icon-root"
+                    class="lexicon-icon lexicon-icon-angle-right-small icon-root"
                     role="presentation"
                   >
                     <use
-                      xlink:href="#angle-right"
+                      xlink:href="#angle-right-small"
                     />
                   </svg>
                 </a>
@@ -357,6 +340,7 @@ exports[`MembershipChart should render 1`] = `
                 role="presentation"
               >
                 <button
+                  aria-label="Ascending"
                   class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                   type="button"
                 >
@@ -390,6 +374,7 @@ exports[`MembershipChart should render 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
+                      aria-label="Search"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
@@ -451,11 +436,6 @@ exports[`MembershipChart should render 1`] = `
               <th
                 class="table-head-title"
               >
-                Account Names
-              </th>
-              <th
-                class="table-head-title"
-              >
                 <button
                   class="inline-item text-truncate-inline btn btn-unstyled"
                   type="button"
@@ -492,15 +472,6 @@ exports[`MembershipChart should render 1`] = `
               </td>
               <td>
                 -
-              </td>
-              <td
-                class="name-cell-root"
-              >
-                <div
-                  class="text-truncate"
-                >
-                  -
-                </div>
               </td>
               <td>
                 Jul 8, 2018
@@ -553,11 +524,11 @@ exports[`MembershipChart should render 1`] = `
                 href=""
               >
                 <svg
-                  class="lexicon-icon lexicon-icon-angle-left icon-root"
+                  class="lexicon-icon lexicon-icon-angle-left-small icon-root"
                   role="presentation"
                 >
                   <use
-                    xlink:href="#angle-left"
+                    xlink:href="#angle-left-small"
                   />
                 </svg>
               </a>
@@ -581,11 +552,11 @@ exports[`MembershipChart should render 1`] = `
                 href=""
               >
                 <svg
-                  class="lexicon-icon lexicon-icon-angle-right icon-root"
+                  class="lexicon-icon lexicon-icon-angle-right-small icon-root"
                   role="presentation"
                 >
                   <use
-                    xlink:href="#angle-right"
+                    xlink:href="#angle-right-small"
                   />
                 </svg>
               </a>

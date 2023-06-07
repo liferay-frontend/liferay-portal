@@ -334,6 +334,11 @@ components:
             type: object
         Catalog:
             properties:
+                accountId:
+                    example: 30130
+                    format: int64
+                    minimum: 0
+                    type: integer
                 actions:
                     additionalProperties:
                         additionalProperties:
@@ -1383,6 +1388,32 @@ components:
             type: object
         ProductSubscriptionConfiguration:
             properties:
+                deliverySubscriptionEnable:
+                    example: true
+                    type: boolean
+                deliverySubscriptionLength:
+                    example: 2
+                    format: int32
+                    type: integer
+                deliverySubscriptionNumberOfLength:
+                    example: 12
+                    format: int64
+                    type: integer
+                deliverySubscriptionType:
+                    enum:
+                        - daily
+                        - monthly
+                        - weekly
+                        - yearly
+                    example: monthly
+                    type: string
+                deliverySubscriptionTypeSettings:
+                    additionalProperties:
+                        type: string
+                    example:
+                        deliveryMonthDay: "1"
+                        deliveryMonthlyMode: "0"
+                    type: object
                 enable:
                     example: true
                     type: boolean
@@ -1457,7 +1488,7 @@ components:
                         URL to download the sample file
                     readOnly: true
                     type: string
-                sampleUrl:
+                sampleURL:
                     description:
                         URL of the sample file
                     type: string
@@ -1757,7 +1788,7 @@ components:
                         URL to download the sample file
                     readOnly: true
                     type: string
-                sampleUrl:
+                sampleURL:
                     description:
                         URL of the sample file
                     type: string
@@ -1866,7 +1897,7 @@ info:
         name: Commerce Team
     description:
         "Liferay Commerce Admin Catalog API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.admin.catalog.client', and version '4.0.37'."
+        artifact ID 'com.liferay.headless.commerce.admin.catalog.client', and version '4.0.39'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"

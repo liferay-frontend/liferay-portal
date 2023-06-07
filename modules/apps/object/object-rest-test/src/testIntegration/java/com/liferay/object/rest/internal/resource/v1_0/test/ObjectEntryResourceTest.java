@@ -39,7 +39,6 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
-import com.liferay.object.rest.internal.resource.v1_0.test.util.HTTPTestUtil;
 import com.liferay.object.rest.internal.resource.v1_0.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.rest.internal.resource.v1_0.test.util.ObjectEntryTestUtil;
 import com.liferay.object.rest.internal.resource.v1_0.test.util.ObjectFieldTestUtil;
@@ -76,6 +75,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -221,6 +221,21 @@ public class ObjectEntryResourceTest {
 		_objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
 			_objectDefinition3, _OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3);
 
+		_objectDefinition4 = ObjectDefinitionTestUtil.publishObjectDefinition(
+			Arrays.asList(
+				ObjectFieldUtil.createObjectField(
+					"Text", "String", true, true, null,
+					RandomTestUtil.randomString(), _OBJECT_FIELD_NAME_4, false),
+				ObjectFieldUtil.createObjectField(
+					_listTypeDefinition.getListTypeDefinitionId(),
+					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST,
+					null, ObjectFieldConstants.DB_TYPE_STRING, true, false,
+					null, RandomTestUtil.randomString(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, false, false)));
+
+		_objectEntry4 = ObjectEntryTestUtil.addObjectEntry(
+			_objectDefinition4, _OBJECT_FIELD_NAME_4, _OBJECT_FIELD_VALUE_4);
+
 		_siteScopedObjectDefinition1 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(
@@ -272,12 +287,24 @@ public class ObjectEntryResourceTest {
 				_objectRelationship3);
 		}
 
+		if (_objectRelationship4 != null) {
+			_objectRelationshipLocalService.deleteObjectRelationship(
+				_objectRelationship4);
+		}
+
+		if (_objectRelationship5 != null) {
+			_objectRelationshipLocalService.deleteObjectRelationship(
+				_objectRelationship5);
+		}
+
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_objectDefinition1);
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_objectDefinition2);
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_objectDefinition3);
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			_objectDefinition4);
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_siteScopedObjectDefinition1);
 
@@ -288,192 +315,6 @@ public class ObjectEntryResourceTest {
 	@Test
 	public void testFilterByComparisonOperatorsObjectEntriesByRelatesObjectEntriesFields()
 		throws Exception {
-
-		// 1 to many relationship, custom object field
-
-		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s eq '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s ge '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s gt '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2 - 1)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s le '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s lt '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2 + 1)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s ne '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2 - 1)),
-			_objectDefinition1);
-
-		// 1 to many relationship, system object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/id eq '%s'", _objectRelationship1.getName(),
-					_objectEntry2.getObjectEntryId())),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/id ge '%s'", _objectRelationship1.getName(),
-					_objectEntry2.getObjectEntryId())),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/id gt '%s'", _objectRelationship1.getName(),
-					_objectEntry2.getObjectEntryId() - 1)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/id le '%s'", _objectRelationship1.getName(),
-					_objectEntry2.getObjectEntryId())),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/id lt '%s'", _objectRelationship1.getName(),
-					_objectEntry2.getObjectEntryId() + 1)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/id ne '%s'", _objectRelationship1.getName(),
-					_objectEntry2.getObjectEntryId() - 1)),
-			_objectDefinition1);
-
-		// 1 to many relationship (other side), custom object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s eq '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s ge '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s gt '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1 - 1)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s le '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s lt '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1 + 1)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s ne '%s'", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1 - 1)),
-			_objectDefinition2);
-
-		// 1 to many relationship (other side), system object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/id eq '%s'", _objectRelationship1.getName(),
-					_objectEntry1.getObjectEntryId())),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/id ge '%s'", _objectRelationship1.getName(),
-					_objectEntry1.getObjectEntryId())),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/id gt '%s'", _objectRelationship1.getName(),
-					_objectEntry1.getObjectEntryId() - 1)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/id le '%s'", _objectRelationship1.getName(),
-					_objectEntry1.getObjectEntryId())),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/id lt '%s'", _objectRelationship1.getName(),
-					_objectEntry1.getObjectEntryId() + 1)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/id ne '%s'", _objectRelationship1.getName(),
-					_objectEntry1.getObjectEntryId() - 1)),
-			_objectDefinition2);
-
-		_objectRelationshipLocalService.deleteObjectRelationship(
-			_objectRelationship1);
 
 		// Many to many relationship, custom object field
 
@@ -657,23 +498,209 @@ public class ObjectEntryResourceTest {
 					"%s/id ne '%s'", _objectRelationship1.getName(),
 					_objectEntry1.getObjectEntryId() - 1)),
 			_objectDefinition2);
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship1);
+
+		// One to many relationship, custom object field
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s eq '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s ge '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s gt '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2 - 1)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s le '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s lt '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2 + 1)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s ne '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2 - 1)),
+			_objectDefinition1);
+
+		// One to many relationship, system object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/id eq '%s'", _objectRelationship1.getName(),
+					_objectEntry2.getObjectEntryId())),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/id ge '%s'", _objectRelationship1.getName(),
+					_objectEntry2.getObjectEntryId())),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/id gt '%s'", _objectRelationship1.getName(),
+					_objectEntry2.getObjectEntryId() - 1)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/id le '%s'", _objectRelationship1.getName(),
+					_objectEntry2.getObjectEntryId())),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/id lt '%s'", _objectRelationship1.getName(),
+					_objectEntry2.getObjectEntryId() + 1)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/id ne '%s'", _objectRelationship1.getName(),
+					_objectEntry2.getObjectEntryId() - 1)),
+			_objectDefinition1);
+
+		// One to many relationship (other side), custom object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s eq '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s ge '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s gt '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1 - 1)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s le '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s lt '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1 + 1)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s ne '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1 - 1)),
+			_objectDefinition2);
+
+		// One to many relationship (other side), system object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/id eq '%s'", _objectRelationship1.getName(),
+					_objectEntry1.getObjectEntryId())),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/id ge '%s'", _objectRelationship1.getName(),
+					_objectEntry1.getObjectEntryId())),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/id gt '%s'", _objectRelationship1.getName(),
+					_objectEntry1.getObjectEntryId() - 1)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/id le '%s'", _objectRelationship1.getName(),
+					_objectEntry1.getObjectEntryId())),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/id lt '%s'", _objectRelationship1.getName(),
+					_objectEntry1.getObjectEntryId() + 1)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/id ne '%s'", _objectRelationship1.getName(),
+					_objectEntry1.getObjectEntryId() - 1)),
+			_objectDefinition2);
 	}
 
 	@Test
 	public void testFilterByComparisonOperatorsObjectEntriesByRelatesObjectEntriesFieldsThroughMultipleRelationships()
 		throws Exception {
 
-		// 1 to many relationship, custom object field
+		// Many to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition1, _objectDefinition2,
 			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition2, _objectDefinition3,
 			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -724,7 +751,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_3 - 1)),
 			_objectDefinition1);
 
-		// 1 to many relationship, system object field
+		// Many to many relationship, system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -775,7 +802,7 @@ public class ObjectEntryResourceTest {
 					_objectEntry3.getObjectEntryId() - 1)),
 			_objectDefinition1);
 
-		// 1 to many relationship (other side), custom object field
+		// Many to many relationship (other side), custom object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -826,7 +853,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_1 - 1)),
 			_objectDefinition3);
 
-		// 1 to many relationship (other side), system object field
+		// Many to many relationship (other side), system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -882,17 +909,17 @@ public class ObjectEntryResourceTest {
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			_objectRelationship2);
 
-		// Many to many relationship, custom object field
+		// One to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition1, _objectDefinition2,
 			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition2, _objectDefinition3,
 			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -943,7 +970,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_3 - 1)),
 			_objectDefinition1);
 
-		// Many to many relationship, system object field
+		// One to many relationship, system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -994,7 +1021,7 @@ public class ObjectEntryResourceTest {
 					_objectEntry3.getObjectEntryId() - 1)),
 			_objectDefinition1);
 
-		// Many to many relationship (other side), custom object field
+		// One to many relationship (other side), custom object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -1045,7 +1072,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_1 - 1)),
 			_objectDefinition3);
 
-		// Many to many relationship (other side), system object field
+		// One to many relationship (other side), system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -1101,62 +1128,6 @@ public class ObjectEntryResourceTest {
 	public void testFilterByGroupingOperatorsObjectEntriesByRelatesObjectEntriesFields()
 		throws Exception {
 
-		// 1 to many relationship, custom object field
-
-		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"(%s/%s le '%s') and (%s/%s gt '%s')",
-					_objectRelationship1.getName(), _OBJECT_FIELD_NAME_2,
-					_OBJECT_FIELD_VALUE_2, _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2 - 1)),
-			_objectDefinition1);
-
-		// 1 to many relationship, system object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"(%s/id le '%s') and (%s/id gt '%s')",
-					_objectRelationship1.getName(),
-					_objectEntry2.getObjectEntryId(),
-					_objectRelationship1.getName(),
-					_objectEntry2.getObjectEntryId() - 1)),
-			_objectDefinition1);
-
-		// 1 to many relationship (other side), custom object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"(%s/%s le '%s') and (%s/%s gt '%s')",
-					_objectRelationship1.getName(), _OBJECT_FIELD_NAME_1,
-					_OBJECT_FIELD_VALUE_1, _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1 - 1)),
-			_objectDefinition2);
-
-		// 1 to many relationship (other side), system object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"(%s/id le '%s') and (%s/id gt '%s')",
-					_objectRelationship1.getName(),
-					_objectEntry1.getObjectEntryId(),
-					_objectRelationship1.getName(),
-					_objectEntry1.getObjectEntryId() - 1)),
-			_objectDefinition2);
-
-		_objectRelationshipLocalService.deleteObjectRelationship(
-			_objectRelationship1);
-
 		// Many to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
@@ -1209,23 +1180,79 @@ public class ObjectEntryResourceTest {
 					_objectRelationship1.getName(),
 					_objectEntry1.getObjectEntryId() - 1)),
 			_objectDefinition2);
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship1);
+
+		// One to many relationship, custom object field
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"(%s/%s le '%s') and (%s/%s gt '%s')",
+					_objectRelationship1.getName(), _OBJECT_FIELD_NAME_2,
+					_OBJECT_FIELD_VALUE_2, _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2 - 1)),
+			_objectDefinition1);
+
+		// One to many relationship, system object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"(%s/id le '%s') and (%s/id gt '%s')",
+					_objectRelationship1.getName(),
+					_objectEntry2.getObjectEntryId(),
+					_objectRelationship1.getName(),
+					_objectEntry2.getObjectEntryId() - 1)),
+			_objectDefinition1);
+
+		// One to many relationship (other side), custom object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"(%s/%s le '%s') and (%s/%s gt '%s')",
+					_objectRelationship1.getName(), _OBJECT_FIELD_NAME_1,
+					_OBJECT_FIELD_VALUE_1, _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1 - 1)),
+			_objectDefinition2);
+
+		// One to many relationship (other side), system object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"(%s/id le '%s') and (%s/id gt '%s')",
+					_objectRelationship1.getName(),
+					_objectEntry1.getObjectEntryId(),
+					_objectRelationship1.getName(),
+					_objectEntry1.getObjectEntryId() - 1)),
+			_objectDefinition2);
 	}
 
 	@Test
 	public void testFilterByGroupingOperatorsObjectEntriesByRelatesObjectEntriesFieldsThroughMultipleRelationships()
 		throws Exception {
 
-		// 1 to many relationship, custom object field
+		// Many to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition1, _objectDefinition2,
 			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition2, _objectDefinition3,
 			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -1239,7 +1266,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_3 - 1)),
 			_objectDefinition1);
 
-		// 1 to many relationship, system object field
+		// Many to many relationship, system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -1254,7 +1281,7 @@ public class ObjectEntryResourceTest {
 					_objectEntry3.getObjectEntryId() - 1)),
 			_objectDefinition1);
 
-		// 1 to many relationship (other side), custom object field
+		// Many to many relationship (other side), custom object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -1268,7 +1295,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_1 - 1)),
 			_objectDefinition3);
 
-		// 1 to many relationship (other side), system object field
+		// Many to many relationship (other side), system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -1288,17 +1315,17 @@ public class ObjectEntryResourceTest {
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			_objectRelationship2);
 
-		// Many to many relationship, custom object field
+		// One to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition1, _objectDefinition2,
 			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition2, _objectDefinition3,
 			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -1312,7 +1339,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_3 - 1)),
 			_objectDefinition1);
 
-		// Many to many relationship, system object field
+		// One to many relationship, system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -1327,7 +1354,7 @@ public class ObjectEntryResourceTest {
 					_objectEntry3.getObjectEntryId() - 1)),
 			_objectDefinition1);
 
-		// Many to many relationship (other side), custom object field
+		// One to many relationship (other side), custom object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -1341,7 +1368,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_1 - 1)),
 			_objectDefinition3);
 
-		// Many to many relationship (other side), system object field
+		// One to many relationship (other side), system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -1361,8 +1388,6 @@ public class ObjectEntryResourceTest {
 	public void testFilterByLambdaOperatorsObjectEntriesByRelatesObjectEntriesFields()
 		throws Exception {
 
-		// 1 to many relationship, custom object field
-
 		_objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			_objectDefinition1,
 			HashMapBuilder.<String, Serializable>put(
@@ -1379,6 +1404,156 @@ public class ObjectEntryResourceTest {
 				_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, _LIST_TYPE_ENTRY_KEY
 			).build(),
 			_TAG_1);
+
+		// Many to many relationship, custom object field
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition1, _objectDefinition2,
+			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/any(k:contains(k,'%s'))",
+					_objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/any(k:k eq '%s')", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/any(k:k in ('%s', '%s'))",
+					_objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY, RandomTestUtil.randomString())),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/any(k:startswith(k,'%s'))",
+					_objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition1);
+
+		// Many to many relationship, system object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/keywords/any(k:contains(k,'%s'))",
+					_objectRelationship1.getName(), _TAG_1.substring(1))),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/keywords/any(k:k eq '%s')",
+					_objectRelationship1.getName(), _TAG_1)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/keywords/any(k:k in ('%s', '%s'))",
+					_objectRelationship1.getName(), _TAG_1,
+					RandomTestUtil.randomString())),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/keywords/any(k:startswith(k,'%s'))",
+					_objectRelationship1.getName(), _TAG_1.substring(0, 2))),
+			_objectDefinition1);
+
+		// Many to many relationship (other side), custom object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s/any(k:contains(k,'%s'))",
+					_objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s/any(k:k eq '%s')", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s/any(k:k in ('%s', '%s'))",
+					_objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY, RandomTestUtil.randomString())),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s/any(k:startswith(k,'%s'))",
+					_objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition2);
+
+		// Many to many relationship (other side), system object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/keywords/any(k:contains(k,'%s'))",
+					_objectRelationship1.getName(), _TAG_1.substring(1))),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/keywords/any(k:k eq '%s')",
+					_objectRelationship1.getName(), _TAG_1)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/keywords/any(k:k in ('%s', '%s'))",
+					_objectRelationship1.getName(), _TAG_1,
+					RandomTestUtil.randomString())),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/keywords/any(k:startswith(k,'%s'))",
+					_objectRelationship1.getName(), _TAG_1.substring(0, 2))),
+			_objectDefinition2);
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship1);
+
+		// One to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition1, _objectDefinition2,
@@ -1421,7 +1596,7 @@ public class ObjectEntryResourceTest {
 					_LIST_TYPE_ENTRY_KEY)),
 			_objectDefinition1);
 
-		// 1 to many relationship, system object field
+		// One to many relationship, system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -1453,7 +1628,7 @@ public class ObjectEntryResourceTest {
 					_objectRelationship1.getName(), _TAG_1.substring(0, 2))),
 			_objectDefinition1);
 
-		// 1 to many relationship (other side), custom object field
+		// One to many relationship (other side), custom object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
@@ -1491,155 +1666,7 @@ public class ObjectEntryResourceTest {
 					_LIST_TYPE_ENTRY_KEY)),
 			_objectDefinition2);
 
-		// 1 to many relationship (other side), system object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/keywords/any(k:contains(k,'%s'))",
-					_objectRelationship1.getName(), _TAG_1.substring(1))),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/keywords/any(k:k eq '%s')",
-					_objectRelationship1.getName(), _TAG_1)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/keywords/any(k:k in ('%s', '%s'))",
-					_objectRelationship1.getName(), _TAG_1,
-					RandomTestUtil.randomString())),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/keywords/any(k:startswith(k,'%s'))",
-					_objectRelationship1.getName(), _TAG_1.substring(0, 2))),
-			_objectDefinition2);
-
-		_objectRelationshipLocalService.deleteObjectRelationship(
-			_objectRelationship1);
-
-		// Many to many relationship, custom object field
-
-		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
-			_objectDefinition1, _objectDefinition2,
-			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/any(k:contains(k,'%s'))",
-					_objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/any(k:k eq '%s')", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/any(k:k in ('%s', '%s'))",
-					_objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY, RandomTestUtil.randomString())),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/any(k:startswith(k,'%s'))",
-					_objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition1);
-
-		// Many to many relationship, system object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/keywords/any(k:contains(k,'%s'))",
-					_objectRelationship1.getName(), _TAG_1.substring(1))),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/keywords/any(k:k eq '%s')",
-					_objectRelationship1.getName(), _TAG_1)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/keywords/any(k:k in ('%s', '%s'))",
-					_objectRelationship1.getName(), _TAG_1,
-					RandomTestUtil.randomString())),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/keywords/any(k:startswith(k,'%s'))",
-					_objectRelationship1.getName(), _TAG_1.substring(0, 2))),
-			_objectDefinition1);
-
-		// Many to many relationship (other side), custom object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s/any(k:contains(k,'%s'))",
-					_objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s/any(k:k eq '%s')", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s/any(k:k in ('%s', '%s'))",
-					_objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY, RandomTestUtil.randomString())),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s/any(k:startswith(k,'%s'))",
-					_objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition2);
-
-		// Many to many relationship (other side), system object field
+		// One to many relationship (other side), system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
@@ -1703,189 +1730,6 @@ public class ObjectEntryResourceTest {
 			).build(),
 			_TAG_1);
 
-		// 1 to many relationship, custom object field
-
-		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
-			_objectDefinition1, _objectDefinition2,
-			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
-			_objectDefinition2, _objectDefinition3,
-			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/%s/any(k:k eq '%s')", _objectRelationship1.getName(),
-					_objectRelationship2.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition1);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/%s/any(k:contains(k,'%s'))",
-					_objectRelationship1.getName(),
-					_objectRelationship2.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition1);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/%s/any(k:startswith(k,'%s'))",
-					_objectRelationship1.getName(),
-					_objectRelationship2.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition1);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/%s/any(k:k in ('%s', '%s'))",
-					_objectRelationship1.getName(),
-					_objectRelationship2.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY, RandomTestUtil.randomString())),
-			_objectDefinition1);
-
-		// 1 to many relationship, system object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/keywords/any(k:k eq '%s')",
-					_objectRelationship1.getName(),
-					_objectRelationship2.getName(), _TAG_1)),
-			_objectDefinition1);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/keywords/any(k:contains(k,'%s'))",
-					_objectRelationship1.getName(),
-					_objectRelationship2.getName(), _TAG_1.substring(1))),
-			_objectDefinition1);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/keywords/any(k:startswith(k,'%s'))",
-					_objectRelationship1.getName(),
-					_objectRelationship2.getName(), _TAG_1.substring(0, 2))),
-			_objectDefinition1);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s/keywords/any(k:k in ('%s', '%s'))",
-					_objectRelationship1.getName(),
-					_objectRelationship2.getName(), _TAG_1,
-					RandomTestUtil.randomString())),
-			_objectDefinition1);
-
-		// 1 to many relationship (other side), custom object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
-			_escape(
-				String.format(
-					"%s/%s/%s/any(k:k eq '%s')", _objectRelationship2.getName(),
-					_objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition3);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
-			_escape(
-				String.format(
-					"%s/%s/%s/any(k:contains(k,'%s'))",
-					_objectRelationship2.getName(),
-					_objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition3);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
-			_escape(
-				String.format(
-					"%s/%s/%s/any(k:startswith(k,'%s'))",
-					_objectRelationship2.getName(),
-					_objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY)),
-			_objectDefinition3);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
-			_escape(
-				String.format(
-					"%s/%s/%s/any(k:k in ('%s', '%s'))",
-					_objectRelationship2.getName(),
-					_objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					_LIST_TYPE_ENTRY_KEY, RandomTestUtil.randomString())),
-			_objectDefinition3);
-
-		// 1 to many relationship (other side), system object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
-			_escape(
-				String.format(
-					"%s/%s/keywords/any(k:k eq '%s')",
-					_objectRelationship2.getName(),
-					_objectRelationship1.getName(), _TAG_1)),
-			_objectDefinition3);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
-			_escape(
-				String.format(
-					"%s/%s/keywords/any(k:contains(k,'%s'))",
-					_objectRelationship2.getName(),
-					_objectRelationship1.getName(), _TAG_1.substring(1))),
-			_objectDefinition3);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
-			_escape(
-				String.format(
-					"%s/%s/keywords/any(k:startswith(k,'%s'))",
-					_objectRelationship2.getName(),
-					_objectRelationship1.getName(), _TAG_1.substring(0, 2))),
-			_objectDefinition3);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
-			_escape(
-				String.format(
-					"%s/%s/keywords/any(k:k in ('%s', '%s'))",
-					_objectRelationship2.getName(),
-					_objectRelationship1.getName(), _TAG_1,
-					RandomTestUtil.randomString())),
-			_objectDefinition3);
-
-		_objectRelationshipLocalService.deleteObjectRelationship(
-			_objectRelationship1);
-		_objectRelationshipLocalService.deleteObjectRelationship(
-			_objectRelationship2);
-
 		// Many to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
@@ -2026,6 +1870,189 @@ public class ObjectEntryResourceTest {
 			_objectDefinition3);
 
 		// Many to many relationship (other side), system object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
+			_escape(
+				String.format(
+					"%s/%s/keywords/any(k:k eq '%s')",
+					_objectRelationship2.getName(),
+					_objectRelationship1.getName(), _TAG_1)),
+			_objectDefinition3);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
+			_escape(
+				String.format(
+					"%s/%s/keywords/any(k:contains(k,'%s'))",
+					_objectRelationship2.getName(),
+					_objectRelationship1.getName(), _TAG_1.substring(1))),
+			_objectDefinition3);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
+			_escape(
+				String.format(
+					"%s/%s/keywords/any(k:startswith(k,'%s'))",
+					_objectRelationship2.getName(),
+					_objectRelationship1.getName(), _TAG_1.substring(0, 2))),
+			_objectDefinition3);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
+			_escape(
+				String.format(
+					"%s/%s/keywords/any(k:k in ('%s', '%s'))",
+					_objectRelationship2.getName(),
+					_objectRelationship1.getName(), _TAG_1,
+					RandomTestUtil.randomString())),
+			_objectDefinition3);
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship1);
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship2);
+
+		// One to many relationship, custom object field
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition1, _objectDefinition2,
+			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition2, _objectDefinition3,
+			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/%s/any(k:k eq '%s')", _objectRelationship1.getName(),
+					_objectRelationship2.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition1);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/%s/any(k:contains(k,'%s'))",
+					_objectRelationship1.getName(),
+					_objectRelationship2.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition1);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/%s/any(k:startswith(k,'%s'))",
+					_objectRelationship1.getName(),
+					_objectRelationship2.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition1);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/%s/any(k:k in ('%s', '%s'))",
+					_objectRelationship1.getName(),
+					_objectRelationship2.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY, RandomTestUtil.randomString())),
+			_objectDefinition1);
+
+		// One to many relationship, system object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/keywords/any(k:k eq '%s')",
+					_objectRelationship1.getName(),
+					_objectRelationship2.getName(), _TAG_1)),
+			_objectDefinition1);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/keywords/any(k:contains(k,'%s'))",
+					_objectRelationship1.getName(),
+					_objectRelationship2.getName(), _TAG_1.substring(1))),
+			_objectDefinition1);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/keywords/any(k:startswith(k,'%s'))",
+					_objectRelationship1.getName(),
+					_objectRelationship2.getName(), _TAG_1.substring(0, 2))),
+			_objectDefinition1);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s/keywords/any(k:k in ('%s', '%s'))",
+					_objectRelationship1.getName(),
+					_objectRelationship2.getName(), _TAG_1,
+					RandomTestUtil.randomString())),
+			_objectDefinition1);
+
+		// One to many relationship (other side), custom object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
+			_escape(
+				String.format(
+					"%s/%s/%s/any(k:k eq '%s')", _objectRelationship2.getName(),
+					_objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition3);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
+			_escape(
+				String.format(
+					"%s/%s/%s/any(k:contains(k,'%s'))",
+					_objectRelationship2.getName(),
+					_objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition3);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
+			_escape(
+				String.format(
+					"%s/%s/%s/any(k:startswith(k,'%s'))",
+					_objectRelationship2.getName(),
+					_objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY)),
+			_objectDefinition3);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
+			_escape(
+				String.format(
+					"%s/%s/%s/any(k:k in ('%s', '%s'))",
+					_objectRelationship2.getName(),
+					_objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+					_LIST_TYPE_ENTRY_KEY, RandomTestUtil.randomString())),
+			_objectDefinition3);
+
+		// One to many relationship (other side), system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -2069,56 +2096,6 @@ public class ObjectEntryResourceTest {
 	public void testFilterByListOperatorsObjectEntriesByRelatesObjectEntriesFields()
 		throws Exception {
 
-		// 1 to many relationship, custom object field
-
-		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/%s in ('%s', '%s')", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-					RandomTestUtil.randomInt())),
-			_objectDefinition1);
-
-		// 1 to many relationship, system object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			_escape(
-				String.format(
-					"%s/id in ('%s', '%s')", _objectRelationship1.getName(),
-					_objectEntry2.getObjectEntryId(),
-					RandomTestUtil.randomInt())),
-			_objectDefinition1);
-
-		// 1 to many relationship (other side), custom object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/%s in ('%s', '%s')", _objectRelationship1.getName(),
-					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-					RandomTestUtil.randomInt())),
-			_objectDefinition2);
-
-		// 1 to many relationship (other side), system object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			_escape(
-				String.format(
-					"%s/id in ('%s', '%s')", _objectRelationship1.getName(),
-					_objectEntry1.getObjectEntryId(),
-					RandomTestUtil.randomInt())),
-			_objectDefinition2);
-
-		_objectRelationshipLocalService.deleteObjectRelationship(
-			_objectRelationship1);
-
 		// Many to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
@@ -2165,16 +2142,66 @@ public class ObjectEntryResourceTest {
 					_objectEntry1.getObjectEntryId(),
 					RandomTestUtil.randomInt())),
 			_objectDefinition2);
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship1);
+
+		// One to many relationship, custom object field
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/%s in ('%s', '%s')", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+					RandomTestUtil.randomInt())),
+			_objectDefinition1);
+
+		// One to many relationship, system object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			_escape(
+				String.format(
+					"%s/id in ('%s', '%s')", _objectRelationship1.getName(),
+					_objectEntry2.getObjectEntryId(),
+					RandomTestUtil.randomInt())),
+			_objectDefinition1);
+
+		// One to many relationship (other side), custom object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/%s in ('%s', '%s')", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+					RandomTestUtil.randomInt())),
+			_objectDefinition2);
+
+		// One to many relationship (other side), system object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			_escape(
+				String.format(
+					"%s/id in ('%s', '%s')", _objectRelationship1.getName(),
+					_objectEntry1.getObjectEntryId(),
+					RandomTestUtil.randomInt())),
+			_objectDefinition2);
 	}
 
 	@Test
 	public void testFilterByLogicalOperatorsObjectEntriesByRelatesObjectEntriesFields()
 		throws Exception {
 
-		// 1 to many relationship, custom object field
+		// Many to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -2202,7 +2229,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2 + 1)),
 			_objectDefinition1);
 
-		// 1 to many relationship, system object field
+		// Many to many relationship, system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -2231,7 +2258,7 @@ public class ObjectEntryResourceTest {
 					_objectEntry2.getObjectEntryId() + 1)),
 			_objectDefinition1);
 
-		// 1 to many relationship (other side), custom object field
+		// Many to many relationship (other side), custom object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
@@ -2259,7 +2286,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1 + 1)),
 			_objectDefinition2);
 
-		// 1 to many relationship (other side), system object field
+		// Many to many relationship (other side), system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
@@ -2291,10 +2318,10 @@ public class ObjectEntryResourceTest {
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			_objectRelationship1);
 
-		// Many to many relationship, custom object field
+		// One to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -2322,7 +2349,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2 + 1)),
 			_objectDefinition1);
 
-		// Many to many relationship, system object field
+		// One to many relationship, system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -2351,7 +2378,7 @@ public class ObjectEntryResourceTest {
 					_objectEntry2.getObjectEntryId() + 1)),
 			_objectDefinition1);
 
-		// Many to many relationship (other side), custom object field
+		// One to many relationship (other side), custom object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
@@ -2379,7 +2406,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1 + 1)),
 			_objectDefinition2);
 
-		// Many to many relationship (other side), system object field
+		// One to many relationship (other side), system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
@@ -2413,17 +2440,17 @@ public class ObjectEntryResourceTest {
 	public void testFilterByLogicalOperatorsObjectEntriesByRelatesObjectEntriesFieldsThroughMultipleRelationships()
 		throws Exception {
 
+		// Many to many relationship, custom object field
+
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition1, _objectDefinition2,
 			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition2, _objectDefinition3,
 			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		// 1 to many relationship, custom object field
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -2458,7 +2485,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_3 + 1)),
 			_objectDefinition1);
 
-		// 1 to many relationship, system object field
+		// Many to many relationship, system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -2495,7 +2522,7 @@ public class ObjectEntryResourceTest {
 					_objectEntry3.getObjectEntryId() + 1)),
 			_objectDefinition1);
 
-		// 1 to many relationship (other side), custom object field
+		// Many to many relationship (other side), custom object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -2530,7 +2557,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_1 + 1)),
 			_objectDefinition3);
 
-		// 1 to many relationship (other side), system object field
+		// Many to many relationship (other side), system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -2572,17 +2599,17 @@ public class ObjectEntryResourceTest {
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			_objectRelationship2);
 
-		// Many to many relationship, custom object field
+		// One to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition1, _objectDefinition2,
 			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition2, _objectDefinition3,
 			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -2617,7 +2644,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_3 + 1)),
 			_objectDefinition1);
 
-		// Many to many relationship, system object field
+		// One to many relationship, system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
@@ -2654,7 +2681,7 @@ public class ObjectEntryResourceTest {
 					_objectEntry3.getObjectEntryId() + 1)),
 			_objectDefinition1);
 
-		// Many to many relationship (other side), custom object field
+		// One to many relationship (other side), custom object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -2689,7 +2716,7 @@ public class ObjectEntryResourceTest {
 					_OBJECT_FIELD_VALUE_1 + 1)),
 			_objectDefinition3);
 
-		// Many to many relationship (other side), system object field
+		// One to many relationship (other side), system object field
 
 		_assertFilterString(
 			_OBJECT_FIELD_NAME_3, _OBJECT_FIELD_VALUE_3,
@@ -2731,8 +2758,6 @@ public class ObjectEntryResourceTest {
 	public void testFilterByStringOperatorsObjectEntriesByRelatesObjectEntriesFields()
 		throws Exception {
 
-		// 1 to many relationship, custom object field
-
 		String objectFieldValue1 = String.valueOf(_OBJECT_FIELD_VALUE_1);
 
 		_objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
@@ -2742,80 +2767,6 @@ public class ObjectEntryResourceTest {
 
 		_objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			_objectDefinition2, _OBJECT_FIELD_NAME_2, objectFieldValue2);
-
-		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			String.format(
-				"contains(%s/%s,'%s')", _objectRelationship1.getName(),
-				_OBJECT_FIELD_NAME_2, objectFieldValue2.substring(1)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			String.format(
-				"startswith(%s/%s,'%s')", _objectRelationship1.getName(),
-				_OBJECT_FIELD_NAME_2, objectFieldValue2.substring(0, 2)),
-			_objectDefinition1);
-
-		// 1 to many relationship, system object field
-
-		String objectEntry2ExternalReferenceCode =
-			_objectEntry2.getExternalReferenceCode();
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			String.format(
-				"contains(%s/externalReferenceCode,'%s')",
-				_objectRelationship1.getName(),
-				objectEntry2ExternalReferenceCode.substring(1)),
-			_objectDefinition1);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
-			String.format(
-				"startswith(%s/externalReferenceCode,'%s')",
-				_objectRelationship1.getName(),
-				objectEntry2ExternalReferenceCode.substring(0, 2)),
-			_objectDefinition1);
-
-		// 1 to many relationship (other side), custom object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			String.format(
-				"contains(%s/%s,'%s')", _objectRelationship1.getName(),
-				_OBJECT_FIELD_NAME_1, objectFieldValue1.substring(1)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			String.format(
-				"startswith(%s/%s,'%s')", _objectRelationship1.getName(),
-				_OBJECT_FIELD_NAME_1, objectFieldValue1.substring(0, 2)),
-			_objectDefinition2);
-
-		// 1 to many relationship (other side), system object field
-
-		String objectEntry1ExternalReferenceCode =
-			_objectEntry1.getExternalReferenceCode();
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			String.format(
-				"contains(%s/externalReferenceCode,'%s')",
-				_objectRelationship1.getName(),
-				objectEntry1ExternalReferenceCode.substring(1)),
-			_objectDefinition2);
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
-			String.format(
-				"startswith(%s/externalReferenceCode,'%s')",
-				_objectRelationship1.getName(),
-				objectEntry1ExternalReferenceCode.substring(0, 2)),
-			_objectDefinition2);
-
-		_objectRelationshipLocalService.deleteObjectRelationship(
-			_objectRelationship1);
 
 		// Many to many relationship, custom object field
 
@@ -2837,7 +2788,7 @@ public class ObjectEntryResourceTest {
 
 		// Many to many relationship, system object field
 
-		objectEntry2ExternalReferenceCode =
+		String objectEntry2ExternalReferenceCode =
 			_objectEntry2.getExternalReferenceCode();
 
 		_assertFilterString(
@@ -2871,6 +2822,82 @@ public class ObjectEntryResourceTest {
 			_objectDefinition2);
 
 		// Many to many relationship (other side), system object field
+
+		String objectEntry1ExternalReferenceCode =
+			_objectEntry1.getExternalReferenceCode();
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			String.format(
+				"contains(%s/externalReferenceCode,'%s')",
+				_objectRelationship1.getName(),
+				objectEntry1ExternalReferenceCode.substring(1)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			String.format(
+				"startswith(%s/externalReferenceCode,'%s')",
+				_objectRelationship1.getName(),
+				objectEntry1ExternalReferenceCode.substring(0, 2)),
+			_objectDefinition2);
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship1);
+
+		// One to many relationship, custom object field
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			String.format(
+				"contains(%s/%s,'%s')", _objectRelationship1.getName(),
+				_OBJECT_FIELD_NAME_2, objectFieldValue2.substring(1)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			String.format(
+				"startswith(%s/%s,'%s')", _objectRelationship1.getName(),
+				_OBJECT_FIELD_NAME_2, objectFieldValue2.substring(0, 2)),
+			_objectDefinition1);
+
+		// One to many relationship, system object field
+
+		objectEntry2ExternalReferenceCode =
+			_objectEntry2.getExternalReferenceCode();
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			String.format(
+				"contains(%s/externalReferenceCode,'%s')",
+				_objectRelationship1.getName(),
+				objectEntry2ExternalReferenceCode.substring(1)),
+			_objectDefinition1);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1,
+			String.format(
+				"startswith(%s/externalReferenceCode,'%s')",
+				_objectRelationship1.getName(),
+				objectEntry2ExternalReferenceCode.substring(0, 2)),
+			_objectDefinition1);
+
+		// One to many relationship (other side), custom object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			String.format(
+				"contains(%s/%s,'%s')", _objectRelationship1.getName(),
+				_OBJECT_FIELD_NAME_1, objectFieldValue1.substring(1)),
+			_objectDefinition2);
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2,
+			String.format(
+				"startswith(%s/%s,'%s')", _objectRelationship1.getName(),
+				_OBJECT_FIELD_NAME_1, objectFieldValue1.substring(0, 2)),
+			_objectDefinition2);
+
+		// One to many relationship (other side), system object field
 
 		objectEntry1ExternalReferenceCode =
 			_objectEntry1.getExternalReferenceCode();
@@ -2908,111 +2935,6 @@ public class ObjectEntryResourceTest {
 		_objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
 			_objectDefinition3, _OBJECT_FIELD_NAME_3, objectFieldValue3);
 
-		// 1 to many relationship, custom object field
-
-		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
-			_objectDefinition1, _objectDefinition2,
-			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
-			_objectDefinition2, _objectDefinition3,
-			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, objectFieldValue1,
-			_escape(
-				String.format(
-					"contains(%s/%s/%s,'%s')", _objectRelationship1.getName(),
-					_objectRelationship2.getName(), _OBJECT_FIELD_NAME_3,
-					objectFieldValue3.substring(1))),
-			_objectDefinition1);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, objectFieldValue1,
-			_escape(
-				String.format(
-					"startswith(%s/%s/%s,'%s')", _objectRelationship1.getName(),
-					_objectRelationship2.getName(), _OBJECT_FIELD_NAME_3,
-					objectFieldValue3.substring(0, 2))),
-			_objectDefinition1);
-
-		// 1 to many relationship, system object field
-
-		String objectEntry3ExternalReferenceCode =
-			_objectEntry3.getExternalReferenceCode();
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, objectFieldValue1,
-			_escape(
-				String.format(
-					"contains(%s/%s/externalReferenceCode,'%s')",
-					_objectRelationship1.getName(),
-					_objectRelationship2.getName(),
-					objectEntry3ExternalReferenceCode.substring(1))),
-			_objectDefinition1);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_1, objectFieldValue1,
-			_escape(
-				String.format(
-					"startswith(%s/%s/externalReferenceCode,'%s')",
-					_objectRelationship1.getName(),
-					_objectRelationship2.getName(),
-					objectEntry3ExternalReferenceCode.substring(0, 2))),
-			_objectDefinition1);
-
-		// 1 to many relationship (other side), custom object field
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, objectFieldValue3,
-			_escape(
-				String.format(
-					"contains(%s/%s/%s,'%s')", _objectRelationship2.getName(),
-					_objectRelationship1.getName(), _OBJECT_FIELD_NAME_1,
-					objectFieldValue1.substring(1))),
-			_objectDefinition3);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, objectFieldValue3,
-			_escape(
-				String.format(
-					"startswith(%s/%s/%s,'%s')", _objectRelationship2.getName(),
-					_objectRelationship1.getName(), _OBJECT_FIELD_NAME_1,
-					objectFieldValue1.substring(0, 2))),
-			_objectDefinition3);
-
-		// 1 to many relationship (other side), system object field
-
-		String objectEntry1ExternalReferenceCode =
-			_objectEntry1.getExternalReferenceCode();
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, objectFieldValue3,
-			_escape(
-				String.format(
-					"contains(%s/%s/externalReferenceCode,'%s')",
-					_objectRelationship2.getName(),
-					_objectRelationship1.getName(),
-					objectEntry1ExternalReferenceCode.substring(1))),
-			_objectDefinition3);
-
-		_assertFilterString(
-			_OBJECT_FIELD_NAME_3, objectFieldValue3,
-			_escape(
-				String.format(
-					"startswith(%s/%s/externalReferenceCode,'%s')",
-					_objectRelationship2.getName(),
-					_objectRelationship1.getName(),
-					objectEntry1ExternalReferenceCode.substring(0, 2))),
-			_objectDefinition3);
-
-		_objectRelationshipLocalService.deleteObjectRelationship(
-			_objectRelationship1);
-		_objectRelationshipLocalService.deleteObjectRelationship(
-			_objectRelationship2);
-
 		// Many to many relationship, custom object field
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
@@ -3045,7 +2967,7 @@ public class ObjectEntryResourceTest {
 
 		// Many to many relationship, system object field
 
-		objectEntry3ExternalReferenceCode =
+		String objectEntry3ExternalReferenceCode =
 			_objectEntry3.getExternalReferenceCode();
 
 		_assertFilterString(
@@ -3090,6 +3012,111 @@ public class ObjectEntryResourceTest {
 
 		// Many to many relationship (other side), system object field
 
+		String objectEntry1ExternalReferenceCode =
+			_objectEntry1.getExternalReferenceCode();
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, objectFieldValue3,
+			_escape(
+				String.format(
+					"contains(%s/%s/externalReferenceCode,'%s')",
+					_objectRelationship2.getName(),
+					_objectRelationship1.getName(),
+					objectEntry1ExternalReferenceCode.substring(1))),
+			_objectDefinition3);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, objectFieldValue3,
+			_escape(
+				String.format(
+					"startswith(%s/%s/externalReferenceCode,'%s')",
+					_objectRelationship2.getName(),
+					_objectRelationship1.getName(),
+					objectEntry1ExternalReferenceCode.substring(0, 2))),
+			_objectDefinition3);
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship1);
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship2);
+
+		// One to many relationship, custom object field
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition1, _objectDefinition2,
+			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition2, _objectDefinition3,
+			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, objectFieldValue1,
+			_escape(
+				String.format(
+					"contains(%s/%s/%s,'%s')", _objectRelationship1.getName(),
+					_objectRelationship2.getName(), _OBJECT_FIELD_NAME_3,
+					objectFieldValue3.substring(1))),
+			_objectDefinition1);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, objectFieldValue1,
+			_escape(
+				String.format(
+					"startswith(%s/%s/%s,'%s')", _objectRelationship1.getName(),
+					_objectRelationship2.getName(), _OBJECT_FIELD_NAME_3,
+					objectFieldValue3.substring(0, 2))),
+			_objectDefinition1);
+
+		// One to many relationship, system object field
+
+		objectEntry3ExternalReferenceCode =
+			_objectEntry3.getExternalReferenceCode();
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, objectFieldValue1,
+			_escape(
+				String.format(
+					"contains(%s/%s/externalReferenceCode,'%s')",
+					_objectRelationship1.getName(),
+					_objectRelationship2.getName(),
+					objectEntry3ExternalReferenceCode.substring(1))),
+			_objectDefinition1);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_1, objectFieldValue1,
+			_escape(
+				String.format(
+					"startswith(%s/%s/externalReferenceCode,'%s')",
+					_objectRelationship1.getName(),
+					_objectRelationship2.getName(),
+					objectEntry3ExternalReferenceCode.substring(0, 2))),
+			_objectDefinition1);
+
+		// One to many relationship (other side), custom object field
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, objectFieldValue3,
+			_escape(
+				String.format(
+					"contains(%s/%s/%s,'%s')", _objectRelationship2.getName(),
+					_objectRelationship1.getName(), _OBJECT_FIELD_NAME_1,
+					objectFieldValue1.substring(1))),
+			_objectDefinition3);
+
+		_assertFilterString(
+			_OBJECT_FIELD_NAME_3, objectFieldValue3,
+			_escape(
+				String.format(
+					"startswith(%s/%s/%s,'%s')", _objectRelationship2.getName(),
+					_objectRelationship1.getName(), _OBJECT_FIELD_NAME_1,
+					objectFieldValue1.substring(0, 2))),
+			_objectDefinition3);
+
+		// One to many relationship (other side), system object field
+
 		objectEntry1ExternalReferenceCode =
 			_objectEntry1.getExternalReferenceCode();
 
@@ -3115,63 +3142,46 @@ public class ObjectEntryResourceTest {
 	}
 
 	@Test
+	public void testFilterObjectEntriesByRelatesSystemObjectEntriesFields()
+		throws Exception {
+
+		// Many to many relationship
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition1, _userSystemObjectDefinition,
+			_objectEntry1.getPrimaryKey(), _userAccountJSONObject.getLong("id"),
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		_testFilterObjectEntriesByRelatesSystemObjectEntriesFields(
+			_escape(
+				String.format(
+					"%s/%s eq '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2)),
+			_objectDefinition1);
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship1);
+
+		// One to many relationship
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition1, _userSystemObjectDefinition,
+			_objectEntry1.getPrimaryKey(), _userAccountJSONObject.getLong("id"),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_testFilterObjectEntriesByRelatesSystemObjectEntriesFields(
+			_escape(
+				String.format(
+					"%s/%s eq '%s'", _objectRelationship1.getName(),
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2)),
+			_objectDefinition1);
+	}
+
+	@Test
 	public void testGetNestedFieldDetailsInRelationshipsWithCustomObjectDefinition()
 		throws Exception {
 
-		// 1 to many with custom object definition
-
-		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
-			_objectDefinition1, _objectDefinition2,
-			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship1.getName(),
-			new String[][] {
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
-			},
-			null, _objectRelationship1.getName(), _objectDefinition1,
-			Type.ONE_TO_MANY);
-
-		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship1.getName(),
-			new String[][] {
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
-			},
-			3, _objectRelationship1.getName(), _objectDefinition1,
-			Type.ONE_TO_MANY);
-
-		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship1.getName(),
-			new String[][] {
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
-			},
-			5, _objectRelationship1.getName(), _objectDefinition1,
-			Type.ONE_TO_MANY);
-
-		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship1.getName(),
-			new String[][] {
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
-			},
-			6, _objectRelationship1.getName(), _objectDefinition1,
-			Type.ONE_TO_MANY);
-
-		// Many to many with custom object definition
+		// Many to many relationship
 
 		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition1, _objectDefinition2,
@@ -3179,27 +3189,28 @@ public class ObjectEntryResourceTest {
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship2.getName(),
+			_objectRelationship2.getName(), null,
+			_objectRelationship2.getName(), _objectDefinition1,
 			new String[][] {
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
 			},
-			null, _objectRelationship2.getName(), _objectDefinition1,
 			Type.MANY_TO_MANY);
 
 		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship2.getName(),
+			_objectRelationship2.getName(), 3, _objectRelationship2.getName(),
+			_objectDefinition1,
 			new String[][] {
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
 			},
-			3, _objectRelationship2.getName(), _objectDefinition1,
 			Type.MANY_TO_MANY);
 
 		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship2.getName(),
+			_objectRelationship2.getName(), 5, _objectRelationship2.getName(),
+			_objectDefinition1,
 			new String[][] {
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
@@ -3208,11 +3219,11 @@ public class ObjectEntryResourceTest {
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
 			},
-			5, _objectRelationship2.getName(), _objectDefinition1,
 			Type.MANY_TO_MANY);
 
 		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship2.getName(),
+			_objectRelationship2.getName(), 6, _objectRelationship2.getName(),
+			_objectDefinition1,
 			new String[][] {
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
@@ -3221,10 +3232,9 @@ public class ObjectEntryResourceTest {
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
 			},
-			6, _objectRelationship2.getName(), _objectDefinition1,
 			Type.MANY_TO_MANY);
 
-		// Many to one with custom object definition
+		// Many to one relationship
 
 		_objectRelationship3 = _addObjectRelationshipAndRelateObjectEntries(
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
@@ -3237,12 +3247,13 @@ public class ObjectEntryResourceTest {
 			relationshipFieldName, "Id");
 
 		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName,
+			relationshipFieldNameNestedFieldName, null, relationshipFieldName,
+			_objectDefinition2,
 			new String[][] {
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)}
 			},
-			null, relationshipFieldName, _objectDefinition2, Type.MANY_TO_ONE);
+			Type.MANY_TO_ONE);
 
 		String relatedObjectDefinitionName = StringUtil.removeFirst(
 			StringUtil.removeLast(
@@ -3250,49 +3261,104 @@ public class ObjectEntryResourceTest {
 			"c_");
 
 		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName,
+			relationshipFieldNameNestedFieldName, null,
+			StringUtil.removeLast(relationshipFieldName, "Id"),
+			_objectDefinition2,
 			new String[][] {
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)}
 			},
-			null, StringUtil.removeLast(relationshipFieldName, "Id"),
-			_objectDefinition2, Type.MANY_TO_ONE);
-
-		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName,
-			new String[][] {
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)}
-			},
-			null, relatedObjectDefinitionName, _objectDefinition2,
 			Type.MANY_TO_ONE);
 
 		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName,
+			relationshipFieldNameNestedFieldName, null,
+			relatedObjectDefinitionName, _objectDefinition2,
 			new String[][] {
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)}
 			},
-			null, RandomTestUtil.randomString() + relatedObjectDefinitionName,
-			_objectDefinition2, Type.MANY_TO_ONE);
-
-		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName,
-			new String[][] {
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)}
-			},
-			null, _objectRelationship3.getName(), _objectDefinition2,
 			Type.MANY_TO_ONE);
 
 		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship3.getName(),
+			relationshipFieldNameNestedFieldName, null,
+			RandomTestUtil.randomString() + relatedObjectDefinitionName,
+			_objectDefinition2,
 			new String[][] {
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)}
 			},
-			null, _objectRelationship3.getName(), _objectDefinition2,
 			Type.MANY_TO_ONE);
+
+		_testGetNestedFieldDetailsInRelationships(
+			relationshipFieldNameNestedFieldName, null,
+			_objectRelationship3.getName(), _objectDefinition2,
+			new String[][] {
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)}
+			},
+			Type.MANY_TO_ONE);
+
+		_testGetNestedFieldDetailsInRelationships(
+			_objectRelationship3.getName(), null,
+			_objectRelationship3.getName(), _objectDefinition2,
+			new String[][] {
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)}
+			},
+			Type.MANY_TO_ONE);
+
+		// One to many relationship
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition1, _objectDefinition2,
+			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_testGetNestedFieldDetailsInRelationships(
+			_objectRelationship1.getName(), null,
+			_objectRelationship1.getName(), _objectDefinition1,
+			new String[][] {
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
+			},
+			Type.ONE_TO_MANY);
+
+		_testGetNestedFieldDetailsInRelationships(
+			_objectRelationship1.getName(), 3, _objectRelationship1.getName(),
+			_objectDefinition1,
+			new String[][] {
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
+			},
+			Type.ONE_TO_MANY);
+
+		_testGetNestedFieldDetailsInRelationships(
+			_objectRelationship1.getName(), 5, _objectRelationship1.getName(),
+			_objectDefinition1,
+			new String[][] {
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
+			},
+			Type.ONE_TO_MANY);
+
+		_testGetNestedFieldDetailsInRelationships(
+			_objectRelationship1.getName(), 6, _objectRelationship1.getName(),
+			_objectDefinition1,
+			new String[][] {
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
+			},
+			Type.ONE_TO_MANY);
 	}
 
 	@FeatureFlags("LPS-165819")
@@ -3300,74 +3366,132 @@ public class ObjectEntryResourceTest {
 	public void testGetNestedFieldDetailsInRelationshipsWithSystemObjectDefinition()
 		throws Exception {
 
-		// 1 to many with system object definition
+		// TODO LPS-17875 and LPS-185883
+
+		// With fields, many to many and one to many relationships
 
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition1, _userSystemObjectDefinition,
 			_objectEntry1.getPrimaryKey(), _userAccountJSONObject.getLong("id"),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship1.getName(),
-			new String[][] {
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
-			},
-			null, _objectRelationship1.getName(), _objectDefinition1,
-			Type.ONE_TO_MANY);
-
-		// Many to many with system object definition
-
 		_objectRelationship2 = _addObjectRelationshipAndRelateObjectEntries(
-			_objectDefinition1, _userSystemObjectDefinition,
-			_objectEntry1.getPrimaryKey(), _userAccountJSONObject.getLong("id"),
+			_userSystemObjectDefinition, _objectDefinition2,
+			_userAccountJSONObject.getLong("id"), _objectEntry2.getPrimaryKey(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		_objectRelationship3 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition2, _objectDefinition3,
+			_objectEntry2.getPrimaryKey(), _objectEntry3.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_objectRelationship4 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition3, _userSystemObjectDefinition,
+			_objectEntry3.getPrimaryKey(), _userAccountJSONObject.getLong("id"),
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		_objectRelationship5 = _addObjectRelationshipAndRelateObjectEntries(
+			_userSystemObjectDefinition, _objectDefinition4,
+			_userAccountJSONObject.getLong("id"), _objectEntry4.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		int nestedFieldDepth = 5;
+
+		String endpoint = StringBundler.concat(
+			_objectDefinition1.getRESTContextPath(), "?fields=",
+			_objectRelationship1.getName(), ".", _objectRelationship2.getName(),
+			".", _objectRelationship3.getName(), ".",
+			_objectRelationship4.getName(), ".", _objectRelationship5.getName(),
+			".", _OBJECT_FIELD_NAME_4, "&nestedFields=",
+			_objectRelationship1.getName(), ",", _objectRelationship2.getName(),
+			",", _objectRelationship3.getName(), ",",
+			_objectRelationship4.getName(), ",", _objectRelationship5.getName(),
+			"&nestedFieldsDepth=", nestedFieldDepth);
+
+		JSONObject jsonObject = HTTPTestUtil.invoke(
+			null, endpoint, Http.Method.GET);
+
+		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
+
+		Assert.assertEquals(1, itemsJSONArray.length());
+
+		_assertNestedFieldsFieldsInRelationships(
+			0, nestedFieldDepth, itemsJSONArray.getJSONObject(0),
+			new String[] {
+				_objectRelationship1.getName(), _objectRelationship2.getName(),
+				_objectRelationship3.getName(), _objectRelationship4.getName(),
+				_objectRelationship5.getName()
+			},
+			new String[][] {
+				{"", "", Boolean.TRUE.toString()},
+				{"", "", Boolean.TRUE.toString()},
+				{"", "", Boolean.TRUE.toString()},
+				{"", "", Boolean.TRUE.toString()},
+				{"", "", Boolean.TRUE.toString()},
+				{
+					_OBJECT_FIELD_NAME_4, String.valueOf(_OBJECT_FIELD_VALUE_4),
+					Boolean.TRUE.toString()
+				}
+			},
+			new Type[] {
+				Type.ONE_TO_MANY, Type.MANY_TO_MANY, Type.ONE_TO_MANY,
+				Type.MANY_TO_MANY, Type.ONE_TO_MANY
+			});
+
+		// Without fields, many to many relationship
 
 		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship2.getName(),
+			_objectRelationship4.getName(), null,
+			_objectRelationship4.getName(), _objectDefinition3,
+			new String[][] {
+				{_OBJECT_FIELD_NAME_3, String.valueOf(_OBJECT_FIELD_VALUE_3)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
+			},
+			Type.MANY_TO_MANY);
+
+		_testGetNestedFieldDetailsInRelationships(
+			_objectRelationship4.getName(), 3, _objectRelationship4.getName(),
+			_objectDefinition3,
+			new String[][] {
+				{_OBJECT_FIELD_NAME_3, String.valueOf(_OBJECT_FIELD_VALUE_3)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_3, String.valueOf(_OBJECT_FIELD_VALUE_3)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
+			},
+			Type.MANY_TO_MANY);
+
+		_testGetNestedFieldDetailsInRelationships(
+			_objectRelationship4.getName(), 5, _objectRelationship4.getName(),
+			_objectDefinition3,
+			new String[][] {
+				{_OBJECT_FIELD_NAME_3, String.valueOf(_OBJECT_FIELD_VALUE_3)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_3, String.valueOf(_OBJECT_FIELD_VALUE_3)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_3, String.valueOf(_OBJECT_FIELD_VALUE_3)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
+			},
+			Type.MANY_TO_MANY);
+
+		_testGetNestedFieldDetailsInRelationships(
+			_objectRelationship4.getName(), 6, _objectRelationship4.getName(),
+			_objectDefinition3,
+			new String[][] {
+				{_OBJECT_FIELD_NAME_3, String.valueOf(_OBJECT_FIELD_VALUE_3)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_3, String.valueOf(_OBJECT_FIELD_VALUE_3)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
+				{_OBJECT_FIELD_NAME_3, String.valueOf(_OBJECT_FIELD_VALUE_3)},
+				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
+			},
+			Type.MANY_TO_MANY);
+
+		// Without fields, one to many relationship
+
+		_testGetNestedFieldDetailsInRelationships(
+			_objectRelationship1.getName(), null,
+			_objectRelationship1.getName(), _objectDefinition1,
 			new String[][] {
 				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
 				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
 			},
-			null, _objectRelationship2.getName(), _objectDefinition1,
-			Type.MANY_TO_MANY);
-
-		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship2.getName(),
-			new String[][] {
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
-			},
-			3, _objectRelationship2.getName(), _objectDefinition1,
-			Type.MANY_TO_MANY);
-
-		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship2.getName(),
-			new String[][] {
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
-			},
-			5, _objectRelationship2.getName(), _objectDefinition1,
-			Type.MANY_TO_MANY);
-
-		_testGetNestedFieldDetailsInRelationships(
-			_objectRelationship2.getName(),
-			new String[][] {
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)},
-				{_OBJECT_FIELD_NAME_1, String.valueOf(_OBJECT_FIELD_VALUE_1)},
-				{_OBJECT_FIELD_NAME_2, String.valueOf(_OBJECT_FIELD_VALUE_2)}
-			},
-			6, _objectRelationship2.getName(), _objectDefinition1,
-			Type.MANY_TO_MANY);
+			Type.ONE_TO_MANY);
 	}
 
 	@Test
@@ -4882,9 +5006,57 @@ public class ObjectEntryResourceTest {
 			String.valueOf(itemJSONObject.get(expectedObjectFieldName)));
 	}
 
+	private void _assertNestedFieldsFieldsInRelationships(
+		int currentDepth, int depth, JSONObject jsonObject,
+		String[] nestedFieldNames,
+		String[][] objectFieldNamesAndObjectFieldValues, Type[] types) {
+
+		if (objectFieldNamesAndObjectFieldValues[currentDepth][0] == null) {
+			Assert.assertNull(jsonObject);
+		}
+		else {
+			String notPresent;
+
+			if (objectFieldNamesAndObjectFieldValues[currentDepth][1].equals(
+					jsonObject.getString(
+						objectFieldNamesAndObjectFieldValues[currentDepth]
+							[0]))) {
+
+				notPresent = "true";
+			}
+			else {
+				notPresent = "false";
+			}
+
+			Assert.assertEquals(
+				"Incorrect presence of field " +
+					objectFieldNamesAndObjectFieldValues[currentDepth][0],
+				objectFieldNamesAndObjectFieldValues[currentDepth][2],
+				notPresent);
+		}
+
+		if ((currentDepth == depth) ||
+			(currentDepth ==
+				PropsValues.OBJECT_NESTED_FIELDS_MAX_QUERY_DEPTH)) {
+
+			Assert.assertEquals(
+				Arrays.toString(objectFieldNamesAndObjectFieldValues),
+				currentDepth + 1, objectFieldNamesAndObjectFieldValues.length);
+
+			return;
+		}
+
+		_assertNestedFieldsFieldsInRelationships(
+			currentDepth + 1, depth,
+			_getRelatedJSONObject(
+				jsonObject, nestedFieldNames[currentDepth],
+				types[currentDepth]),
+			nestedFieldNames, objectFieldNamesAndObjectFieldValues, types);
+	}
+
 	private void _assertNestedFieldsInRelationships(
 		int currentDepth, int depth, JSONObject jsonObject,
-		String[][] objectFieldNamesAndObjectFieldValues, String nestedFieldName,
+		String nestedFieldName, String[][] objectFieldNamesAndObjectFieldValues,
 		Type type) {
 
 		if (objectFieldNamesAndObjectFieldValues[currentDepth][0] == null) {
@@ -4912,7 +5084,7 @@ public class ObjectEntryResourceTest {
 		_assertNestedFieldsInRelationships(
 			currentDepth + 1, depth,
 			_getRelatedJSONObject(jsonObject, nestedFieldName, type),
-			objectFieldNamesAndObjectFieldValues, nestedFieldName,
+			nestedFieldName, objectFieldNamesAndObjectFieldValues,
 			_getReverseType(type));
 	}
 
@@ -4926,6 +5098,7 @@ public class ObjectEntryResourceTest {
 			objectEntryId);
 
 		Assert.assertEquals(
+			"_assertObjectEntryField",
 			MapUtil.getString(objectEntry.getValues(), objectFieldName),
 			objectFieldValue);
 	}
@@ -5074,11 +5247,25 @@ public class ObjectEntryResourceTest {
 			_objectDefinition1.getRESTContextPath(), Http.Method.POST);
 	}
 
+	private void _testFilterObjectEntriesByRelatesSystemObjectEntriesFields(
+			String filterString, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		JSONObject jsonObject = HTTPTestUtil.invoke(
+			null,
+			objectDefinition.getRESTContextPath() + "?filter=" + filterString,
+			Http.Method.GET);
+
+		Assert.assertEquals(
+			"Filtering is not supported for system objects",
+			jsonObject.getString("title"));
+		Assert.assertEquals("BAD_REQUEST", jsonObject.getString("status"));
+	}
+
 	private void _testGetNestedFieldDetailsInRelationships(
-			String expectedFieldName,
-			String[][] objectFieldNamesAndObjectFieldValues,
-			Integer nestedFieldDepth, String nestedFieldName,
-			ObjectDefinition objectDefinition, Type type)
+			String expectedFieldName, Integer nestedFieldDepth,
+			String nestedFieldName, ObjectDefinition objectDefinition,
+			String[][] objectFieldNamesAndObjectFieldValues, Type type)
 		throws Exception {
 
 		String endpoint = StringBundler.concat(
@@ -5100,7 +5287,7 @@ public class ObjectEntryResourceTest {
 
 		_assertNestedFieldsInRelationships(
 			0, GetterUtil.getInteger(nestedFieldDepth, 1), itemJSONObject,
-			objectFieldNamesAndObjectFieldValues, expectedFieldName, type);
+			expectedFieldName, objectFieldNamesAndObjectFieldValues, type);
 	}
 
 	private void
@@ -5202,6 +5389,9 @@ public class ObjectEntryResourceTest {
 	private static final String _OBJECT_FIELD_NAME_3 =
 		"x" + RandomTestUtil.randomString();
 
+	private static final String _OBJECT_FIELD_NAME_4 =
+		"x" + RandomTestUtil.randomString();
+
 	private static final String _OBJECT_FIELD_NAME_MULTISELECT_PICKLIST =
 		"x" + RandomTestUtil.randomString();
 
@@ -5210,6 +5400,8 @@ public class ObjectEntryResourceTest {
 	private static final int _OBJECT_FIELD_VALUE_2 = RandomTestUtil.randomInt();
 
 	private static final int _OBJECT_FIELD_VALUE_3 = RandomTestUtil.randomInt();
+
+	private static final int _OBJECT_FIELD_VALUE_4 = RandomTestUtil.randomInt();
 
 	private static final String _TAG_1 = StringUtil.toLowerCase(
 		RandomTestUtil.randomString());
@@ -5231,6 +5423,7 @@ public class ObjectEntryResourceTest {
 	private ObjectDefinition _objectDefinition1;
 	private ObjectDefinition _objectDefinition2;
 	private ObjectDefinition _objectDefinition3;
+	private ObjectDefinition _objectDefinition4;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
@@ -5238,6 +5431,7 @@ public class ObjectEntryResourceTest {
 	private ObjectEntry _objectEntry1;
 	private ObjectEntry _objectEntry2;
 	private ObjectEntry _objectEntry3;
+	private ObjectEntry _objectEntry4;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
@@ -5245,6 +5439,8 @@ public class ObjectEntryResourceTest {
 	private ObjectRelationship _objectRelationship1;
 	private ObjectRelationship _objectRelationship2;
 	private ObjectRelationship _objectRelationship3;
+	private ObjectRelationship _objectRelationship4;
+	private ObjectRelationship _objectRelationship5;
 
 	@Inject
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;

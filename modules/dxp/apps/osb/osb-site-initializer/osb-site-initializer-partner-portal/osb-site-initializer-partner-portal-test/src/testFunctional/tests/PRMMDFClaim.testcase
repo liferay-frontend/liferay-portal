@@ -21,59 +21,28 @@ definition {
 			PRMUtils.connectWithSalesforce();
 		}
 
-		task ("Add a Partner user") {
-			JSONUser.addUser(
-				userEmailAddress = "partner@liferay.com",
-				userFirstName = "partner",
-				userLastName = "partner",
-				userScreenName = "partner");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "partner@liferay.com");
-		}
-
-		task ("Add a Manager user") {
-			JSONUser.addUserWithRole(
-				roleTitle = "Channel General Manager",
-				userEmailAddress = "manager@liferay.com",
-				userFirstName = "manager",
-				userLastName = "manager",
-				userScreenName = "manager");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "manager@liferay.com");
-		}
-
-		task ("Add a new account and assign the created users to the account") {
-			JSONPRM.addAccount();
-
-			JSONAccountEntryUser.addExistUsertoAccount(
-				accountEntryName = "Company Name 1",
-				userEmailAddress = "partner@liferay.com");
-
-			JSONAccountEntryUser.addExistUsertoAccount(
-				accountEntryName = "Company Name 1",
-				userEmailAddress = "manager@liferay.com");
+		task ("Update the account with Salesforce fields") {
+			JSONPRM.updateAccount();
 		}
 
 		task ("Login with the Partner user and go to Partner Portal") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "partner@liferay.com",
-				userLoginFullName = "partner");
+				userLoginEmailAddress = "pmu@partner.com",
+				userLoginFullName = "Partner Marketing User");
 
 			PRMUtils.gotoPRM();
 		}
 
 		task ("Add a new MDF Request") {
-			JSONPRM.createMDFRequest(
+			var requestId = JSONPRM.createMDFRequest(
 				accountEntryName = "Company Name 1",
 				secondActivityName = "Activity Name 2",
 				secondBudgetValueList = 1000,
-				userEmailAddress = "partner@liferay.com");
+				userEmailAddress = "pmu@partner.com");
+
+			JSONPRM.changeMDFStatus(
+				mdfStatus = "Approved",
+				requestId = ${requestId});
 		}
 	}
 
@@ -98,8 +67,8 @@ definition {
 
 		task ("Given that the Manager user is logged in and goes to MDF listing page") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "manager@liferay.com",
-				userLoginFullName = "manager");
+				userLoginEmailAddress = "cmm@liferaytest.com",
+				userLoginFullName = "Channel Marketing Manager");
 
 			PRMNavigator.openSitePage(pageName = "MDF Requests");
 		}
@@ -112,8 +81,8 @@ definition {
 
 		task ("And the partner logs in and go to Partner Portal") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "partner@liferay.com",
-				userLoginFullName = "partner");
+				userLoginEmailAddress = "pmu@partner.com",
+				userLoginFullName = "Partner Marketing User");
 
 			PRMNavigator.openSitePage(pageName = "MDF Requests");
 		}
@@ -135,10 +104,10 @@ definition {
 
 		task ("When the manager logs in and go to Partner Portal") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "manager@liferay.com",
-				userLoginFullName = "manager");
+				userLoginEmailAddress = "cmm@liferaytest.com",
+				userLoginFullName = "Channel Marketing Manager");
 
-			PRMNavigator.openSitePage(pageName = "MDF Claim");
+			PRMNavigator.openSitePage(pageName = "MDF Claims");
 		}
 
 		task ("And export all visible Claims") {
@@ -167,11 +136,11 @@ definition {
 
 			JSONAccountEntryUser.addExistUsertoAccount(
 				accountEntryName = "Company Name 2",
-				userEmailAddress = "partner@liferay.com");
+				userEmailAddress = "pmu@partner.com");
 
 			JSONAccountEntryUser.addExistUsertoAccount(
 				accountEntryName = "Company Name 2",
-				userEmailAddress = "manager@liferay.com");
+				userEmailAddress = "cmm@liferaytest.com");
 		}
 
 		task ("And a new MDF is created with a different account") {
@@ -185,8 +154,8 @@ definition {
 
 		task ("And the Manager user is logged in and goes to MDF listing page") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "manager@liferay.com",
-				userLoginFullName = "manager");
+				userLoginEmailAddress = "cmm@liferaytest.com",
+				userLoginFullName = "Channel Marketing Manager");
 
 			PRMNavigator.openSitePage(pageName = "MDF Requests");
 		}
@@ -205,8 +174,8 @@ definition {
 
 		task ("And the partner logs in and go to Partner Portal") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "partner@liferay.com",
-				userLoginFullName = "partner");
+				userLoginEmailAddress = "pmu@partner.com",
+				userLoginFullName = "Partner Marketing User");
 
 			PRMNavigator.openSitePage(pageName = "MDF Requests");
 		}
@@ -247,10 +216,10 @@ definition {
 
 		task ("And the Manager user is logged in and goes to Claim listing page") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "manager@liferay.com",
-				userLoginFullName = "manager");
+				userLoginEmailAddress = "cmm@liferaytest.com",
+				userLoginFullName = "Channel Marketing Manager");
 
-			PRMNavigator.openSitePage(pageName = "MDF Claim");
+			PRMNavigator.openSitePage(pageName = "MDF Claims");
 		}
 
 		task ("When the manager filters the Claims by account 'Company Name 1'") {
@@ -300,8 +269,8 @@ definition {
 
 		task ("Given that the Manager user is logged in and goes to MDF listing page") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "manager@liferay.com",
-				userLoginFullName = "manager");
+				userLoginEmailAddress = "cmm@liferaytest.com",
+				userLoginFullName = "Channel Marketing Manager");
 
 			PRMNavigator.openSitePage(pageName = "MDF Requests");
 		}
@@ -314,8 +283,8 @@ definition {
 
 		task ("And the partner logs in and go to Partner Portal") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "partner@liferay.com",
-				userLoginFullName = "partner");
+				userLoginEmailAddress = "pmu@partner.com",
+				userLoginFullName = "Partner Marketing User");
 
 			PRMNavigator.openSitePage(pageName = "MDF Requests");
 		}
@@ -337,10 +306,10 @@ definition {
 
 		task ("When the manager logs in and go to Partner Portal") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "manager@liferay.com",
-				userLoginFullName = "manager");
+				userLoginEmailAddress = "cmm@liferaytest.com",
+				userLoginFullName = "Channel Marketing Manager");
 
-			PRMNavigator.openSitePage(pageName = "MDF Claim");
+			PRMNavigator.openSitePage(pageName = "MDF Claims");
 		}
 
 		task ("And get the Claim IDs") {
@@ -387,8 +356,8 @@ definition {
 
 		task ("Given that the manager user is logged in and goes to MDF listing page") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "manager@liferay.com",
-				userLoginFullName = "manager");
+				userLoginEmailAddress = "cmm@liferaytest.com",
+				userLoginFullName = "Channel Marketing Manager");
 
 			PRMNavigator.openSitePage(pageName = "MDF Requests");
 		}
@@ -401,8 +370,8 @@ definition {
 
 		task ("And the partner logs in") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "partner@liferay.com",
-				userLoginFullName = "partner");
+				userLoginEmailAddress = "pmu@partner.com",
+				userLoginFullName = "Partner Marketing User");
 		}
 
 		task ("And go to the approved MDF") {
@@ -434,8 +403,8 @@ definition {
 
 		task ("Given that the manager user is logged in and goes to MDF listing page") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "manager@liferay.com",
-				userLoginFullName = "manager");
+				userLoginEmailAddress = "cmm@liferaytest.com",
+				userLoginFullName = "Channel Marketing Manager");
 
 			PRMNavigator.openSitePage(pageName = "MDF Requests");
 		}
@@ -448,8 +417,8 @@ definition {
 
 		task ("And the partner logs in") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "partner@liferay.com",
-				userLoginFullName = "partner");
+				userLoginEmailAddress = "pmu@partner.com",
+				userLoginFullName = "Partner Marketing User");
 		}
 
 		task ("And go to the approved MDF") {
@@ -470,6 +439,134 @@ definition {
 		}
 	}
 
+	@description = "This is a test for LPS-185927. Verify that when the MDF Claim is 'In Finance Review' status, the CFM can change to 'Claim Paid' status"
+	@priority = 5
+	test CFMCanChangeStatusToClaimPaid {
+		property solutions.acceptance = "true";
+		property test.name.skip.portal.instance = "PRMMDFClaim#CFMCanChangeStatusToClaimPaid";
+
+		task ("Given that a new claim is created and approved") {
+			PRMNavigator.gotoMDF(requestId = ${staticRequestId});
+
+			PRMMDFClaim.createNewClaim(
+				listLeads = "Document_1.xlsx",
+				reimbursementInvoice = "Document_1.png",
+				thirdInvoice = "Document_1.png");
+
+			PRMMDFClaim.getClaimIdOnDetailPage(index = 1);
+		}
+
+		task ("And the CMM changes the claim status to 'In Finance Review'") {
+			JSONPRM.changeClaimStatus(
+				claimId = ${staticClaimId1},
+				claimStatus = "In Finance Review",
+				userEmailAddress = "cmm@liferaytest.com");
+		}
+
+		task ("And the CFM goes to the created claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "cfm@liferaytest.com",
+				userLoginFullName = "Channel Finnance Manager");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+		}
+
+		task ("When the CFM click on State Manager") {
+			PRMMDFClaim.clickOnStateManager();
+		}
+
+		task ("Then the 'Claim Paid' option will be visible") {
+			PRMMDFClaim.viewStatusOptionVisible(statusButton = "Claim Paid");
+		}
+
+		task ("And when the CFM change the status to 'Claim Paid'") {
+			PRMMDFClaim.changeClaimStatus(
+				amountReceived = 500,
+				checkNumber = 001,
+				statusButton = "Claim Paid");
+		}
+
+		task ("Then the claim summary will be updated with the added information") {
+			PRMMDFClaim.viewClaimSummary(
+				checkId = 001,
+				paymentReceived = 500);
+		}
+	}
+
+	@description = "This is a test for LPS-185929. Verify that when the MDF Claim is 'In Finance Review' status, the CMD can't change to 'Claim Paid' status"
+	@priority = 5
+	test CMDCannotChangeStatusToClaimPaid {
+		property test.name.skip.portal.instance = "PRMMDFClaim#CMDCannotChangeStatusToClaimPaid";
+
+		task ("Given that a new claim is created and approved") {
+			PRMNavigator.gotoMDF(requestId = ${staticRequestId});
+
+			PRMMDFClaim.createNewClaim(
+				listLeads = "Document_1.xlsx",
+				reimbursementInvoice = "Document_1.png",
+				thirdInvoice = "Document_1.png");
+
+			PRMMDFClaim.getClaimIdOnDetailPage(index = 1);
+		}
+
+		task ("And the CFM goes to the created claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "cmd@liferaytest.com",
+				userLoginFullName = "Channel Marketing Director");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+		}
+
+		task ("And change the status to 'In Finance Review'") {
+			PRMMDFClaim.changeClaimStatus(statusButton = "In Finance Review");
+		}
+
+		task ("When the CMD clicks again on the State Manager") {
+			PRMMDFClaim.clickOnStateManager();
+		}
+
+		task ("Then the 'Claim Paid' option will be not visible") {
+			PRMMDFClaim.viewStatusOptionNotVisible(statusButton = "Claim Paid");
+		}
+	}
+
+	@description = "This is a test for LPS-185928. Verify that when the MDF Claim is 'In Finance Review' status, the CMM can't change to 'Claim Paid' status"
+	@priority = 5
+	test CMMCannotChangeStatusToClaimPaid {
+		property test.name.skip.portal.instance = "PRMMDFClaim#CMMCannotChangeStatusToClaimPaid";
+
+		task ("Given that a new claim is created and approved") {
+			PRMNavigator.gotoMDF(requestId = ${staticRequestId});
+
+			PRMMDFClaim.createNewClaim(
+				listLeads = "Document_1.xlsx",
+				reimbursementInvoice = "Document_1.png",
+				thirdInvoice = "Document_1.png");
+
+			PRMMDFClaim.getClaimIdOnDetailPage(index = 1);
+		}
+
+		task ("And the CMM goes to the created claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "cmm@liferaytest.com",
+				userLoginFullName = "Channel Marketing Manager");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+		}
+
+		task ("And change the status to 'In Finance Review'") {
+			PRMMDFClaim.changeClaimStatus(statusButton = "In Finance Review");
+		}
+
+		task ("When the CMM clicks again on the State Manager") {
+			PRMMDFClaim.clickOnStateManager();
+		}
+
+		task ("Then the 'Claim Paid' option will be not visible") {
+			PRMMDFClaim.viewStatusOptionNotVisible(statusButton = "Claim Paid");
+		}
+	}
+
 	@description = "This is a test for LPS-179371. Verify that the Total Claim Amount reflects the value claimed per budget"
 	@priority = 5
 	test TotalClaimAmountReflectsBudgetValue {
@@ -479,8 +576,8 @@ definition {
 
 		task ("Given that the manager goes to the created MDF and approve it") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "manager@liferay.com",
-				userLoginFullName = "manager");
+				userLoginEmailAddress = "cmm@liferaytest.com",
+				userLoginFullName = "Channel Marketing Manager");
 
 			PRMNavigator.openSitePage(pageName = "MDF Requests");
 

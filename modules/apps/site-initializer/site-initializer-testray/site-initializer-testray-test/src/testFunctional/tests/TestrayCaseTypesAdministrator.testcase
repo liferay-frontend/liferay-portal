@@ -1,7 +1,7 @@
 @component-name = "portal-solutions"
 definition {
 
-	property custom.properties = "feature.flag.LPS-163118=true";
+	property custom.properties = "feature.flag.LPS-163118=true${line.separator}feature.flag.LPS-154672=true";
 	property osgi.modules.includes = "site-initializer-testray";
 	property portal.release = "false";
 	property portal.upstream = "true";
@@ -12,19 +12,26 @@ definition {
 	var testSiteName = "Testray 2";
 
 	setUp {
-		task ("Login and create a Testray Site") {
+		task ("Set up instance and sign in") {
 			TestCase.setUpPortalInstance();
 
 			User.firstLoginPG();
+		}
 
-			Testray.addTestraySite(siteName = ${testSiteName});
+		task ("Create a new Testray Site") {
+			HeadlessSite.addSite(
+				siteName = ${testSiteName},
+				templateName = "Testray",
+				templateType = "Site Initializer");
 		}
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		task ("Delete Testray Site and Client Extensions") {
+			Testray.testrayApisTearDown();
+		}
 
-		Testray.testrayApisTearDown();
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
 		if (${testPortalInstance} == "true") {
 			PortalInstances.tearDownCP();
@@ -34,6 +41,8 @@ definition {
 	@description = "Story ID: LPS-146938 | Test Summary: Verify if the Administrator can Add Case Types"
 	@priority = 5
 	test AdminCanAddCaseTypes {
+		property test.name.skip.portal.instance = "TestrayCaseTypesAdministrator#AdminCanAddCaseTypes";
+
 		task ("When I create a Case Type") {
 			ApplicationsMenu.gotoSite(site = ${testSiteName});
 
@@ -58,6 +67,8 @@ definition {
 	@description = "Story ID: LPS-146938 | Test Summary: Verify that as an Administrator I can delete Case Types"
 	@priority = 5
 	test AdminCanDeleteCaseTypes {
+		property test.name.skip.portal.instance = "TestrayCaseTypesAdministrator#AdminCanDeleteCaseTypes";
+
 		task ("Given that I create a 'Case Type' via API") {
 			JSONTestray.addCaseType(caseType = ${caseType});
 		}
@@ -88,6 +99,8 @@ definition {
 	@description = "Story ID: LPS-146938 | Test Summary: Verify if the Administrator can Edit Case Types"
 	@priority = 5
 	test AdminCanEditCaseTypes {
+		property test.name.skip.portal.instance = "TestrayCaseTypesAdministrator#AdminCanEditCaseTypes";
+
 		task ("Given that I create a 'Case Type' via API") {
 			JSONTestray.addCaseType(caseType = ${caseType});
 		}
@@ -126,6 +139,8 @@ definition {
 	@description = "Story ID: LPS-165582 | Test Summary: Verify if as an Administrator I should not be able to add a duplicate cases types"
 	@priority = 3
 	test AdminCanNotAddDuplicateCasesTypes {
+		property test.name.skip.portal.instance = "TestrayCaseTypesAdministrator#AdminCanNotAddDuplicateCasesTypes";
+
 		task ("Given that I create a 'Case Type' via API") {
 			JSONTestray.addCaseType(caseType = ${caseType});
 		}
@@ -156,6 +171,8 @@ definition {
 	@description = "Story ID: LPS-146938 | Test Summary: Verify that the user can not create a case type if all the required fields are not filled in"
 	@priority = 2
 	test AdminCanViewRequiredField {
+		property test.name.skip.portal.instance = "TestrayCaseTypesAdministrator#AdminCanViewRequiredField";
+
 		task ("When I go to the manage menu") {
 			ApplicationsMenu.gotoSite(site = ${testSiteName});
 

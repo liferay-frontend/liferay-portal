@@ -50,6 +50,7 @@ exports[`EntityDetailsList should render 1`] = `
                   role="presentation"
                 >
                   <button
+                    aria-label="Ascending"
                     class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                     type="button"
                   >
@@ -83,6 +84,7 @@ exports[`EntityDetailsList should render 1`] = `
                       class="input-group-inset-item input-group-inset-item-after"
                     >
                       <button
+                        aria-label="Search"
                         class="button-root btn btn-unstyled"
                         type="button"
                       >
@@ -211,13 +213,10 @@ exports[`EntityDetailsList should render 1`] = `
               </tr>
             </thead>
           </table>
-          <div
-            class="spinner-root spinner-overlay"
-          >
-            <span
-              class="loading-animation loading-animation-dotted"
-            />
-          </div>
+          <span
+            aria-hidden="true"
+            class="spinner-overlay spinner-root loading-animation"
+          />
         </div>
       </div>
     </div>
@@ -275,6 +274,7 @@ exports[`EntityDetailsList should render with items 1`] = `
                   role="presentation"
                 >
                   <button
+                    aria-label="Ascending"
                     class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
                     type="button"
                   >
@@ -308,6 +308,7 @@ exports[`EntityDetailsList should render with items 1`] = `
                       class="input-group-inset-item input-group-inset-item-after"
                     >
                       <button
+                        aria-label="Search"
                         class="button-root btn btn-unstyled"
                         type="button"
                       >

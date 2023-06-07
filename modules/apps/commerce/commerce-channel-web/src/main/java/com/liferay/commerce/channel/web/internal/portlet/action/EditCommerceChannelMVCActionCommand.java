@@ -14,9 +14,9 @@
 
 package com.liferay.commerce.channel.web.internal.portlet.action;
 
+import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.settings.AccountEntryGroupSettings;
-import com.liferay.commerce.account.configuration.CommerceAccountGroupServiceConfiguration;
-import com.liferay.commerce.account.constants.CommerceAccountConstants;
+import com.liferay.commerce.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.model.CommerceOrder;
@@ -154,7 +154,7 @@ public class EditCommerceChannelMVCActionCommand
 					CommerceAccountGroupServiceConfiguration.class,
 					new GroupServiceSettingsLocator(
 						commerceChannelGroupId,
-						CommerceAccountConstants.SERVICE_NAME));
+						CommerceConstants.SERVICE_NAME_COMMERCE_ACCOUNT));
 
 		return AccountEntryAllowedTypesUtil.getAllowedTypes(
 			commerceAccountGroupServiceConfiguration.commerceSiteType());
@@ -181,7 +181,8 @@ public class EditCommerceChannelMVCActionCommand
 			_commerceChannelService.getCommerceChannel(commerceChannelId);
 
 		commerceChannel = _commerceChannelService.updateCommerceChannel(
-			commerceChannel.getCommerceChannelId(), siteGroupId,
+			commerceChannel.getCommerceChannelId(),
+			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT, siteGroupId,
 			commerceChannel.getName(), commerceChannel.getType(),
 			commerceChannel.getTypeSettingsUnicodeProperties(),
 			commerceChannel.getCommerceCurrencyCode());
@@ -323,7 +324,7 @@ public class EditCommerceChannelMVCActionCommand
 		Settings settings = _settingsFactory.getSettings(
 			new GroupServiceSettingsLocator(
 				commerceChannel.getGroupId(),
-				CommerceAccountConstants.SERVICE_NAME));
+				CommerceConstants.SERVICE_NAME_COMMERCE_ACCOUNT));
 
 		ModifiableSettings modifiableSettings =
 			settings.getModifiableSettings();

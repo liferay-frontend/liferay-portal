@@ -275,6 +275,7 @@ definition {
 	@description = "When the user clicks on the Flip axes button, the vocabularies will be exchanged, the vocabulary represented in the X (the first in the list in the "In use" box) is sent to the Y, and the other way around"
 	@priority = 5
 	test AuditGraphFlipAxes {
+		property ci.retries.disabled = "true";
 		property portal.acceptance = "true";
 
 		task ("Add a Web Content using categories via JSONWS") {
@@ -408,13 +409,6 @@ definition {
 	test AuditGraphNoContentsForStage {
 		property portal.acceptance = "true";
 
-		task ("Delete Stage category") {
-			JSONCategory.deleteCategory(
-				categoryName = "Stage 1",
-				groupName = "Global",
-				vocabularyName = "Stage");
-		}
-
 		task ("Add a Web Content using audience category via JSONWS") {
 			JSONWebcontent.addWebContent(
 				assetCategoryIds = ${audienceId1},
@@ -443,12 +437,12 @@ definition {
 
 			AssertElementPresent(
 				locator1 = "ContentDashboard#X_AXIS_VOCABULARY_NAME",
-				xAxisCategoryName = "Stage 1");
+				xAxisCategoryName = "Audience 1");
 
 			AssertTextEquals(
-				auditGraphTitle = "Content per Stage",
+				auditGraphTitle = "Content per Audience",
 				locator1 = "ContentDashboard#AUDIT_GRAPH_TITLE",
-				value1 = "Content per Stage");
+				value1 = "Content per Audience");
 		}
 	}
 

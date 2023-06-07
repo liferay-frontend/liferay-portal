@@ -95,27 +95,39 @@ public class ObjectDefinitionsFieldsDisplayContext
 		return creationMenu;
 	}
 
+	public String getEditObjectFieldURL() throws Exception {
+		return PortletURLBuilder.create(
+			getPortletURL()
+		).setMVCRenderCommandName(
+			"/object_definitions/edit_object_field"
+		).setParameter(
+			"objectFieldId", "{id}"
+		).setWindowState(
+			LiferayWindowState.POP_UP
+		).buildString();
+	}
+
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems()
 		throws Exception {
 
+		FDSActionDropdownItem fdsActionDropdownItem = new FDSActionDropdownItem(
+			null, "trash", "deleteObjectField",
+			LanguageUtil.get(objectRequestHelper.getRequest(), "delete"),
+			"delete", "delete", null);
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-179803")) {
+			fdsActionDropdownItem.setHref(
+				"/o/object-admin/v1.0/object-fields/{id}");
+			fdsActionDropdownItem.setId("delete");
+			fdsActionDropdownItem.setTarget("async");
+		}
+
 		return Arrays.asList(
 			new FDSActionDropdownItem(
-				PortletURLBuilder.create(
-					getPortletURL()
-				).setMVCRenderCommandName(
-					"/object_definitions/edit_object_field"
-				).setParameter(
-					"objectFieldId", "{id}"
-				).setWindowState(
-					LiferayWindowState.POP_UP
-				).buildString(),
-				"view", "view",
+				getEditObjectFieldURL(), "view", "view",
 				LanguageUtil.get(objectRequestHelper.getRequest(), "view"),
 				"get", null, "sidePanel"),
-			new FDSActionDropdownItem(
-				"/o/object-admin/v1.0/object-fields/{id}", "trash", "delete",
-				LanguageUtil.get(objectRequestHelper.getRequest(), "delete"),
-				"delete", "delete", "async"));
+			fdsActionDropdownItem);
 	}
 
 	public String[] getForbiddenLastCharacters() {

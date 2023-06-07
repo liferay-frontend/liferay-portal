@@ -457,15 +457,15 @@ export function ModalAddFilter({
 			<ClayModal.Body>
 				{!editingFilter && (
 					<AutoComplete<ObjectField>
-						creationLanguageId={
-							creationLanguageId as Liferay.Language.Locale
-						}
 						emptyStateMessage={Liferay.Language.get(
 							'there-are-no-columns-available'
 						)}
 						error={errors.selectedFilterBy}
 						items={filteredAvailableFields}
 						label={Liferay.Language.get('filter-by')}
+						onActive={(item) =>
+							item.name === selectedFilterBy?.name
+						}
 						onChangeQuery={setQuery}
 						onSelectItem={(item) => {
 							const userRelationship = !!item.objectFieldSettings?.find(
@@ -593,6 +593,7 @@ export function ModalAddFilter({
 										setFilterStartDate(value);
 									}}
 									required
+									type="Date"
 									value={filterStartDate}
 								/>
 							</div>
@@ -615,6 +616,7 @@ export function ModalAddFilter({
 										setFilterEndDate(value);
 									}}
 									required
+									type="Date"
 									value={filterEndDate}
 								/>
 							</div>

@@ -222,24 +222,6 @@ public class AntivirusAsyncDLStore implements DLStore {
 	}
 
 	@Override
-	public byte[] getFileAsBytes(
-			long companyId, long repositoryId, String fileName,
-			String versionLabel)
-		throws PortalException {
-
-		validate(fileName, false, versionLabel);
-
-		try {
-			return StreamUtil.toByteArray(
-				_store.getFileAsStream(
-					companyId, repositoryId, fileName, versionLabel));
-		}
-		catch (IOException ioException) {
-			throw new SystemException(ioException);
-		}
-	}
-
-	@Override
 	public InputStream getFileAsStream(
 			long companyId, long repositoryId, String fileName)
 		throws PortalException {
@@ -373,50 +355,6 @@ public class AntivirusAsyncDLStore implements DLStore {
 
 			_store.deleteFile(companyId, repositoryId, fileName, versionLabel);
 		}
-	}
-
-	@Override
-	public void updateFile(
-			long companyId, long repositoryId, String fileName,
-			String fileExtension, boolean validateFileExtension,
-			String versionLabel, String sourceFileName, File file)
-		throws PortalException {
-
-		updateFile(
-			DLStoreRequest.builder(
-				companyId, repositoryId, fileName
-			).fileExtension(
-				fileExtension
-			).validateFileExtension(
-				validateFileExtension
-			).versionLabel(
-				versionLabel
-			).sourceFileName(
-				sourceFileName
-			).build(),
-			file);
-	}
-
-	@Override
-	public void updateFile(
-			long companyId, long repositoryId, String fileName,
-			String fileExtension, boolean validateFileExtension,
-			String versionLabel, String sourceFileName, InputStream inputStream)
-		throws PortalException {
-
-		updateFile(
-			DLStoreRequest.builder(
-				companyId, repositoryId, fileName
-			).fileExtension(
-				fileExtension
-			).validateFileExtension(
-				validateFileExtension
-			).versionLabel(
-				versionLabel
-			).sourceFileName(
-				sourceFileName
-			).build(),
-			inputStream);
 	}
 
 	@Override

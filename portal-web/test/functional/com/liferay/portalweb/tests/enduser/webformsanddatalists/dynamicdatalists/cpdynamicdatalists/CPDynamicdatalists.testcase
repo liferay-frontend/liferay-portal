@@ -148,7 +148,7 @@ definition {
 			Click.mouseOverClick(locator1 = "DDMEditStructure#FORM_FIELD_DELETE_BUTTON_2");
 
 			AssertTextEquals(
-				locator1 = "IFrame#DIALOG_BOX",
+				locator1 = "Modal#HEADER",
 				value1 = "Boolean");
 
 			AssertTextEquals(
@@ -557,8 +557,8 @@ definition {
 
 	@priority = 5
 	test AddListAndRecordWithToDoPredefinedDataDefinition {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "CPDynamicdatalists#AddListAndRecordWithToDoPredefinedDataDefinition";
 
 		DDLList.openDynamicDataListsAdmin(siteURLKey = "guest");
@@ -1122,7 +1122,6 @@ definition {
 	}
 
 	@description = "This is a use case for LPS-65726"
-	@ignore = "true"
 	@priority = 5
 	test AddListRecordWithLinkToPageField {
 		ProductMenu.gotoPortlet(
@@ -1188,11 +1187,12 @@ definition {
 			fieldName = "LinkToPage",
 			pagePrivacy = "Public");
 
-		DDLRecord.viewSelectedLinkToPage(
-			ddlRecordFieldData = "Test Page",
-			fieldName = "LinkToPage");
+		Click(
+			key_indexNumber = 1,
+			key_text = "Publish",
+			locator1 = "Button#ANY_N");
 
-		PortletEntry.publish();
+		Alert.viewSuccessMessage();
 
 		Navigator.openURL();
 

@@ -17,6 +17,7 @@ package com.liferay.osb.faro.web.internal.controller.main;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
 import com.liferay.osb.faro.web.internal.controller.FaroController;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
@@ -71,21 +72,18 @@ public class IssueController extends BaseFaroController {
 			new MailMessage(
 				new InternetAddress(
 					"actrial@liferay.com", "AC Trial Support Request"),
-				new InternetAddress(_ISSUES_EMAIL_ADDRESS, null),
+				new InternetAddress(FaroPropsValues.ISSUES_EMAIL_ADDRESS, null),
 				faroProject.getName() + " - " + title,
 				StringBundler.concat(
 					"Account Name: ", faroProject.getAccountName(), "\n",
 					"Current URL: ", currentURL, "\n", "Data Center Region: ",
 					faroProject.getServerLocation(), "\n", "Issue Title: ",
-					title, "\n", "Submission Date: ", submissionDate.toString(),
-					"\n", "User Email: ", user.getEmailAddress(), "\n",
-					"User Name: ", user.getFullName(), "\n", "Workspace Name: ",
+					title, "\n", "Submission Date: ", submissionDate, "\n",
+					"User Email: ", user.getEmailAddress(), "\n", "User Name: ",
+					user.getFullName(), "\n", "Workspace Name: ",
 					faroProject.getName(), "\n", "Description: ", description),
 				false));
 	}
-
-	private static final String _ISSUES_EMAIL_ADDRESS = System.getenv(
-		"ISSUES_EMAIL_ADDRESS");
 
 	@Reference
 	private MailService _mailService;

@@ -15,8 +15,8 @@
 package com.liferay.osb.faro.engine.client.util;
 
 import com.liferay.osb.faro.engine.client.constants.FilterConstants;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -67,6 +67,13 @@ public class FilterBuilder implements Cloneable {
 		String fieldName, String operator, Object value, boolean negate,
 		boolean required) {
 
+		addFilter(fieldName, operator, value, negate, required, false);
+	}
+
+	public void addFilter(
+		String fieldName, String operator, Object value, boolean negate,
+		boolean required, boolean useDoubleApostrophe) {
+
 		if (Validator.isNull(fieldName) || Validator.isNull(operator) ||
 			Validator.isNull(value)) {
 
@@ -77,7 +84,8 @@ public class FilterBuilder implements Cloneable {
 			value = getValue(operator, value);
 		}
 
-		String filterString = FilterUtil.getFilter(fieldName, operator, value);
+		String filterString = FilterUtil.getFilter(
+			fieldName, operator, useDoubleApostrophe, value);
 
 		if (negate) {
 			filterString = FilterUtil.negate(filterString);

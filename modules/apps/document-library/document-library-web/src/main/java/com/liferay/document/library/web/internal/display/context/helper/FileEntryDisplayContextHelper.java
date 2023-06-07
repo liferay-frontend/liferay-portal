@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.util.RepositoryUtil;
 
 /**
  * @author Iván Zaera
@@ -117,6 +118,15 @@ public class FileEntryDisplayContextHelper {
 		return _hasUpdatePermission;
 	}
 
+	public boolean hasViewPermission() throws PortalException {
+		if (_hasViewPermission == null) {
+			_hasViewPermission = DLFileEntryPermission.contains(
+				_permissionChecker, _fileEntry, ActionKeys.VIEW);
+		}
+
+		return _hasViewPermission;
+	}
+
 	public boolean isCancelCheckoutDocumentActionAvailable()
 		throws PortalException {
 
@@ -164,6 +174,16 @@ public class FileEntryDisplayContextHelper {
 
 	public boolean isCheckoutDocumentActionAvailable() throws PortalException {
 		if (hasUpdatePermission() && !isCheckedOut() && isSupportsLocking()) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isCopyActionAvailable() throws PortalException {
+		if (hasViewPermission() && hasDownloadPermission() &&
+			!_isExternalRepository()) {
+
 			return true;
 		}
 
@@ -247,6 +267,16 @@ public class FileEntryDisplayContextHelper {
 		return false;
 	}
 
+	private boolean _isExternalRepository() {
+		if ((_fileEntry != null) &&
+			RepositoryUtil.isExternalRepository(_fileEntry.getRepositoryId())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _setValuesForNullFileEntry() {
 		_checkedOut = false;
 		_dlFileEntry = true;
@@ -270,6 +300,7 @@ public class FileEntryDisplayContextHelper {
 	private Boolean _hasOverrideCheckoutPermission;
 	private Boolean _hasPermissionsPermission;
 	private Boolean _hasUpdatePermission;
+	private Boolean _hasViewPermission;
 	private final PermissionChecker _permissionChecker;
 	private Boolean _supportsLocking;
 

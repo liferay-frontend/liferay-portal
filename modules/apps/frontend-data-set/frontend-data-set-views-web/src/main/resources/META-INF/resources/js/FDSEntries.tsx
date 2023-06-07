@@ -732,13 +732,17 @@ const FDSEntries = ({
 		],
 	};
 
-	const onViewClick = ({itemData}: {itemData: FDSEntryType}) => {
+	const getViewURL = (itemData: FDSEntryType) => {
 		const url = new URL(fdsViewsURL);
 
 		url.searchParams.set(`${namespace}fdsEntryId`, itemData.id);
 		url.searchParams.set(`${namespace}fdsEntryLabel`, itemData.label);
 
-		navigate(url);
+		return url;
+	};
+
+	const onViewClick = ({itemData}: {itemData: FDSEntryType}) => {
+		navigate(getViewURL(itemData));
 	};
 
 	const onDeleteClick = ({
@@ -800,7 +804,12 @@ const FDSEntries = ({
 			name: 'table',
 			schema: {
 				fields: [
-					{fieldName: 'label', label: Liferay.Language.get('name')},
+					{
+						actionId: 'view',
+						contentRenderer: 'actionLink',
+						fieldName: 'label',
+						label: Liferay.Language.get('name'),
+					},
 					{
 						fieldName: 'restApplication',
 						label: Liferay.Language.get('rest-application'),
@@ -839,6 +848,9 @@ const FDSEntries = ({
 				id={`${namespace}FDSEntries`}
 				itemsActions={[
 					{
+						data: {
+							id: 'view',
+						},
 						icon: 'view',
 						label: Liferay.Language.get('view'),
 						onClick: onViewClick,

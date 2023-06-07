@@ -17,8 +17,8 @@ package com.liferay.osb.faro.engine.client.util;
 import com.liferay.osb.faro.engine.client.constants.FilterConstants;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -47,7 +47,8 @@ public class FilterUtil {
 	}
 
 	public static String getFilter(
-		String fieldName, String operator, Object value) {
+		String fieldName, String operator, boolean useDoubleApostrophe,
+		Object value) {
 
 		if (value == null) {
 			return null;
@@ -73,7 +74,13 @@ public class FilterUtil {
 				return null;
 			}
 
-			value = StringUtil.quote(valueString, StringPool.APOSTROPHE);
+			if (useDoubleApostrophe) {
+				value = StringUtil.quote(
+					valueString, StringPool.DOUBLE_APOSTROPHE);
+			}
+			else {
+				value = StringUtil.quote(valueString, StringPool.APOSTROPHE);
+			}
 		}
 
 		if (FilterConstants.isStringFunction(operator)) {
@@ -99,6 +106,12 @@ public class FilterUtil {
 	}
 
 	public static String getFilter(
+		String fieldName, String operator, Object value) {
+
+		return getFilter(fieldName, operator, false, value);
+	}
+
+	public static String getFilter(
 		String fieldName, String fieldNameContext, String operator,
 		String value) {
 
@@ -120,9 +133,11 @@ public class FilterUtil {
 		FilterBuilder filterBuilder = new FilterBuilder();
 
 		filterBuilder.addFilter(
-			"name", FilterConstants.COMPARISON_OPERATOR_EQUALS, interestName);
+			"name", FilterConstants.COMPARISON_OPERATOR_EQUALS, interestName,
+			false, true, true);
 		filterBuilder.addFilter(
-			"score", FilterConstants.COMPARISON_OPERATOR_EQUALS, interested);
+			"score", FilterConstants.COMPARISON_OPERATOR_EQUALS, interested,
+			false, true, true);
 
 		sb.append(filterBuilder.build());
 

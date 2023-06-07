@@ -29,6 +29,7 @@ exports[`Event Analysis Editor render 1`] = `
               aria-controls="clay-dropdown-menu-1"
               aria-expanded="false"
               aria-haspopup="true"
+              aria-label="Add"
               class="dropdown-toggle button-root add-event-button btn btn-sm btn-primary"
               type="button"
             >
@@ -141,13 +142,10 @@ exports[`Event Analysis Editor render 1`] = `
             </span>
           </label>
         </div>
-        <div
-          class="spinner-root spinner-inline"
-        >
-          <span
-            class="loading-animation loading-animation-dotted"
-          />
-        </div>
+        <span
+          aria-hidden="true"
+          class="spinner-root spinner-inline loading-animation"
+        />
       </div>
     </div>
     <div

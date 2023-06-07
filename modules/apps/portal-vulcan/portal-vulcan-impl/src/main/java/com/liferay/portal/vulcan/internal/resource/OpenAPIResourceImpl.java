@@ -25,10 +25,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
@@ -78,6 +76,9 @@ import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.tags.Tag;
 
 import java.net.URI;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -539,13 +540,8 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 			return UriInfoUtil.getBasePath(uriInfo);
 		}
 
-		UriBuilder uriBuilder = UriInfoUtil.getBaseUriBuilder(uriInfo);
-
-		uriBuilder.host(_portal.getForwardedHost(httpServletRequest));
-
-		if (_portal.isSecure(httpServletRequest)) {
-			uriBuilder.scheme(Http.HTTPS);
-		}
+		UriBuilder uriBuilder = UriInfoUtil.getBaseUriBuilder(
+			httpServletRequest, uriInfo);
 
 		return String.valueOf(uriBuilder.build());
 	}
@@ -1143,6 +1139,23 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 					schema.setFormat("date");
 					schema.setType("string");
 				}
+				else if (type.equals("DateTime")) {
+					schema.setFormat("date-time");
+					schema.setType("string");
+
+					if (StringUtil.equals(
+							MapUtil.getString(
+								dtoProperty.getExtensions(), "x-timeStorage"),
+							"useInputAsEntered")) {
+
+						LocalDateTime localDateTime = LocalDateTime.now();
+
+						schema.setExample(
+							localDateTime.format(
+								DateTimeFormatter.ofPattern(
+									"yyyy-MM-dd'T'HH:mm:ss.SSS")));
+					}
+				}
 				else if (type.equals("Double")) {
 					schema.setFormat("double");
 					schema.setType("number");
@@ -1424,9 +1437,6 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 
 	@Reference
 	private ExtensionProviderRegistry _extensionProviderRegistry;
-
-	@Reference
-	private Portal _portal;
 
 	private ServiceTrackerList<OpenAPIContributor> _trackedOpenAPIContributors;
 

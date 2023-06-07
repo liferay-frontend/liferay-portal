@@ -46,16 +46,14 @@ const RequiredInformation = ({
 }) => {
 	const {
 		client,
-		featureFlag,
+		featureFlags,
 		provisioningServerAPI,
 	} = useAppPropertiesContext();
 
 	const [baseButtonDisabled, setBaseButtonDisabled] = useState(true);
 	const [addButtonDisabled, setAddButtonDisabled] = useState(false);
 	const [showKeyEmptyError, setShowKeyEmptyError] = useState(false);
-	const [isLoadingUserInvitation, setIsLoadingUserInvitation] = useState(
-		false
-	);
+	const [isLoadingGenerateKey, setIsLoadingGenerateKey] = useState(false);
 	const [availableKeys, setAvailableKeys] = useState(1);
 	const [checkedBoxSubscription, setCheckedBoxSubscription] = useState(false);
 	const navigate = useNavigate();
@@ -77,12 +75,24 @@ const RequiredInformation = ({
 	const newUsedKeys = usedKeysCount + values?.keys?.length;
 	const hasReachedMaximumKeys = newUsedKeys === avaliableKeysMaximumCount;
 
-	useEffect(() => {
-		const verificationDisabledType = infoSelectedKey.hasNotPermanentLicence
-			? !values.name || !values.maxClusterNodes
-			: !hasFilledAtLeastOneField || hasError;
+	const isOemOrEnterprise =
+		infoSelectedKey?.licenseEntryType.includes('OEM') ||
+		infoSelectedKey?.licenseEntryType.includes('Enterprise');
 
-		setBaseButtonDisabled(verificationDisabledType);
+	useEffect(() => {
+		const getVerificationDisabledType = () => {
+			if (infoSelectedKey.hasNotPermanentLicence) {
+				if (isOemOrEnterprise) {
+					return !values.name;
+				}
+
+				return !values.name || !values.maxClusterNodes;
+			}
+
+			return !hasFilledAtLeastOneField || hasError;
+		};
+
+		setBaseButtonDisabled(getVerificationDisabledType());
 
 		setAddButtonDisabled(
 			hasReachedMaximumKeys || !hasFilledAtLeastOneField
@@ -92,6 +102,7 @@ const RequiredInformation = ({
 		hasFilledAtLeastOneField,
 		hasReachedMaximumKeys,
 		infoSelectedKey.hasNotPermanentLicence,
+		isOemOrEnterprise,
 		values.maxClusterNodes,
 		values.name,
 	]);
@@ -138,11 +149,23 @@ const RequiredInformation = ({
 			infoSelectedKey?.selectedSubscription?.instanceSize || 1
 		}`;
 
-		const isVirtualClusterOrProduction = infoSelectedKey?.licenseEntryType?.includes(
-			'Virtual Cluster'
-		)
-			? 'virtual-cluster'
-			: 'production';
+		const getLicenseEntryTypeSelected = () => {
+			if (
+				infoSelectedKey?.licenseEntryType?.includes('Virtual Cluster')
+			) {
+				return 'virtual-cluster';
+			}
+
+			if (infoSelectedKey?.licenseEntryType.includes('OEM')) {
+				return 'oem';
+			}
+
+			if (infoSelectedKey?.licenseEntryType.includes('Enterprise')) {
+				return 'enterprise';
+			}
+
+			return 'production';
+		};
 
 		const subscriptionStartDate = new Date(
 			infoSelectedKey.selectedSubscription.startDate
@@ -165,7 +188,7 @@ const RequiredInformation = ({
 			expirationDate: hasExpirationDate
 				? infoSelectedKey?.selectedSubscription.endDate
 				: permanentLicenseKeys,
-			licenseEntryType: isVirtualClusterOrProduction,
+			licenseEntryType: getLicenseEntryTypeSelected(),
 			maxClusterNodes: values?.maxClusterNodes || 0,
 			name: values?.name,
 			productKey: infoSelectedKey?.selectedSubscription.productKey,
@@ -182,19 +205,18 @@ const RequiredInformation = ({
 		};
 
 		if (infoSelectedKey.hasNotPermanentLicence) {
-			setIsLoadingUserInvitation(true);
+			setIsLoadingGenerateKey(true);
 
-			const results = await createNewGenerateKey(
+			await createNewGenerateKey(
 				accountKey,
 				provisioningServerAPI,
 				sessionId,
 				licenseKey
 			);
 
-			await saveSubscriptionKey(results[0].items[0].id);
-			setIsLoadingUserInvitation(false);
+			setIsLoadingGenerateKey(false);
 		} else {
-			setIsLoadingUserInvitation(true);
+			setIsLoadingGenerateKey(true);
 
 			const results = await Promise.all(
 				values?.keys?.map(({hostName, ipAddresses, macAddresses}) => {
@@ -211,8 +233,10 @@ const RequiredInformation = ({
 				})
 			);
 
-			await saveSubscriptionKey(results[0].items[0].id);
-			setIsLoadingUserInvitation(false);
+			if (checkedBoxSubscription) {
+				await saveSubscriptionKey(results[0].items[0].id);
+			}
+			setIsLoadingGenerateKey(false);
 		}
 
 		await client.mutate({
@@ -238,6 +262,24 @@ const RequiredInformation = ({
 		});
 
 		navigate(urlPreviousPage, {state: {newKeyGeneratedAlert: true}});
+	};
+
+	const ClusterNodesOption = () => {
+		if (isOemOrEnterprise) {
+			return null;
+		}
+
+		return (
+			<div className="cp-input-generate-label px-6">
+				<KeySelect
+					avaliableKeysMaximumCount={avaliableKeysMaximumCount}
+					minAvaliableKeysCount={
+						avaliableKeysMaximumCount - usedKeysCount
+					}
+					selectedClusterNodes={values.maxClusterNodes}
+				/>
+			</div>
+		);
 	};
 
 	return (
@@ -267,11 +309,10 @@ const RequiredInformation = ({
 
 							<Button
 								disabled={
-									baseButtonDisabled ||
-									isLoadingUserInvitation
+									baseButtonDisabled || isLoadingGenerateKey
 								}
 								displayType="primary"
-								isLoading={isLoadingUserInvitation}
+								isLoading={isLoadingGenerateKey}
 								onClick={() => submitKey()}
 							>
 								{infoSelectedKey.hasNotPermanentLicence
@@ -454,7 +495,7 @@ const RequiredInformation = ({
 										</Button>
 									</ClayTooltipProvider>
 
-									{featureFlag.includes('LPS-153478') && (
+									{featureFlags.includes('LPS-180001') && (
 										<>
 											<div className="d-flex">
 												<div className="pr-2 pt-1">
@@ -487,20 +528,7 @@ const RequiredInformation = ({
 									)}
 								</div>
 							) : (
-								<div className="cp-input-generate-label px-6">
-									<KeySelect
-										avaliableKeysMaximumCount={
-											avaliableKeysMaximumCount
-										}
-										minAvaliableKeysCount={
-											avaliableKeysMaximumCount -
-											usedKeysCount
-										}
-										selectedClusterNodes={
-											values.maxClusterNodes
-										}
-									/>
-								</div>
+								<ClusterNodesOption />
 							)}
 						</>
 					)}

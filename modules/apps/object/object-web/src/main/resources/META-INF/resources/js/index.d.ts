@@ -65,6 +65,7 @@ type ObjectFieldBusinessType =
 	| 'Aggregation'
 	| 'Attachment'
 	| 'Date'
+	| 'DateTime'
 	| 'Decimal'
 	| 'Encrypted'
 	| 'Formula'
@@ -99,6 +100,8 @@ interface ObjectField {
 	localized: boolean;
 	name: string;
 	objectFieldSettings?: ObjectFieldSetting[];
+	readOnly: ReadOnlyFieldValue;
+	readOnlyConditionExpression: string;
 	relationshipId?: number;
 	relationshipType?: unknown;
 	required: boolean;
@@ -152,6 +155,8 @@ interface ObjectDefinition {
 	titleObjectFieldId: number | string;
 	titleObjectFieldName: string;
 }
+
+type ReadOnlyFieldValue = '' | 'conditional' | 'false' | 'true';
 
 type ObjectFieldSettingValue =
 	| LocalizedValue<string>
@@ -248,13 +253,12 @@ type ObjectFieldSettingName =
 	| 'objectFieldName'
 	| 'objectRelationshipName'
 	| 'output'
-	| 'readOnly'
-	| 'readOnlyScript'
 	| 'script'
 	| 'showCounter'
 	| 'showFilesInDocumentsAndMedia'
 	| 'stateFlow'
 	| 'storageDLFolderPath'
+	| 'timeStorage'
 	| 'uniqueValues'
 	| 'uniqueValuesErrorMessage';
 
@@ -331,6 +335,7 @@ interface HTTPMethod {
 }
 
 interface PredefinedValue {
+	businessType: ObjectFieldBusinessType;
 	inputAsValue: boolean;
 	label: LocalizedValue<string>;
 	name: string;

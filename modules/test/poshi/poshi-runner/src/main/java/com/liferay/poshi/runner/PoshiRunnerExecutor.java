@@ -21,7 +21,7 @@ import com.liferay.poshi.core.PoshiVariablesContext;
 import com.liferay.poshi.core.selenium.LiferaySelenium;
 import com.liferay.poshi.core.selenium.LiferaySeleniumMethod;
 import com.liferay.poshi.core.util.GetterUtil;
-import com.liferay.poshi.core.util.PropsValues;
+import com.liferay.poshi.core.util.PoshiProperties;
 import com.liferay.poshi.core.util.Validator;
 import com.liferay.poshi.runner.exception.PoshiRunnerWarningException;
 import com.liferay.poshi.runner.logger.PoshiLogger;
@@ -70,6 +70,7 @@ public class PoshiRunnerExecutor {
 		_testNamespacedClassCommandName =
 			poshiLogger.getTestNamespacedClassCommandName();
 
+		_poshiProperties = PoshiProperties.getPoshiProperties();
 		_poshiStackTrace = PoshiStackTrace.getPoshiStackTrace(
 			_testNamespacedClassCommandName);
 		_poshiVariablesContext = PoshiVariablesContext.getPoshiVariablesContext(
@@ -755,7 +756,9 @@ public class PoshiRunnerExecutor {
 			"macro", className, namespace);
 
 		for (Element rootVarElement : rootVarElements) {
-			_poshiVariablesContext.pushCommandMap();
+			if (Validator.isNotNull(rootVarElement.attributeValue("static"))) {
+				_poshiVariablesContext.pushStaticVarsIntoCommandMap();
+			}
 
 			runRootVarElement(rootVarElement, true);
 		}
@@ -1069,7 +1072,9 @@ public class PoshiRunnerExecutor {
 			"test-case", className, namespace);
 
 		for (Element rootVarElement : rootVarElements) {
-			_poshiVariablesContext.pushCommandMap();
+			if (Validator.isNotNull(rootVarElement.attributeValue("static"))) {
+				_poshiVariablesContext.pushStaticVarsIntoCommandMap();
+			}
 
 			runRootVarElement(rootVarElement, false);
 		}
@@ -1167,7 +1172,7 @@ public class PoshiRunnerExecutor {
 			return future.get(timeoutSeconds, TimeUnit.SECONDS);
 		}
 		catch (ExecutionException executionException) {
-			if (PropsValues.DEBUG_STACKTRACE) {
+			if (_poshiProperties.debugStacktrace) {
 				throw executionException;
 			}
 
@@ -1287,7 +1292,7 @@ public class PoshiRunnerExecutor {
 						sb.append("\nElement turned stale while running ");
 						sb.append(methodName);
 						sb.append(". Retrying in ");
-						sb.append(PropsValues.TEST_RETRY_COMMAND_WAIT_TIME);
+						sb.append(_poshiProperties.testRetryCommandWaitTime);
 						sb.append("seconds.");
 
 						System.out.println(sb.toString());
@@ -1295,7 +1300,7 @@ public class PoshiRunnerExecutor {
 						continue;
 					}
 
-					if (PropsValues.DEBUG_STACKTRACE) {
+					if (_poshiProperties.debugStacktrace) {
 						throw exception;
 					}
 
@@ -1312,7 +1317,7 @@ public class PoshiRunnerExecutor {
 			}
 		};
 
-		Long timeout = Long.valueOf(PropsValues.TIMEOUT_EXPLICIT_WAIT) + 60L;
+		Long timeout = Long.valueOf(_poshiProperties.timeoutExplicitWait) + 60L;
 
 		if (methodName.equals("antCommand") | methodName.equals("pause")) {
 			timeout = 3600L;
@@ -1426,6 +1431,7 @@ public class PoshiRunnerExecutor {
 	private boolean _inLoop;
 	private Object _macroReturnValue;
 	private final PoshiLogger _poshiLogger;
+	private final PoshiProperties _poshiProperties;
 	private final PoshiStackTrace _poshiStackTrace;
 	private final PoshiVariablesContext _poshiVariablesContext;
 	private Object _returnObject;

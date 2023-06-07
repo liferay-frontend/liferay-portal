@@ -1,7 +1,7 @@
 @component-name = "portal-solutions"
 definition {
 
-	property custom.properties = "feature.flag.LPS-163118=true";
+	property custom.properties = "feature.flag.LPS-163118=true${line.separator}feature.flag.LPS-154672=true";
 	property osgi.modules.includes = "site-initializer-testray";
 	property portal.release = "false";
 	property portal.upstream = "true";
@@ -21,7 +21,10 @@ definition {
 		}
 
 		task ("Create a new Testray Site") {
-			Testray.addTestraySite(siteName = ${testSiteName});
+			HeadlessSite.addSite(
+				siteName = ${testSiteName},
+				templateName = "Testray",
+				templateType = "Site Initializer");
 		}
 
 		task ("Create a Project, team and component via API") {
@@ -41,23 +44,19 @@ definition {
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
-
 		task ("Logout And Login with test user") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "test@liferay.com",
 				userLoginFullName = "test test");
 		}
 
-		task ("Delete all objects, Testray Site and Client Extensions") {
+		task ("Delete project via API, Testray Site and Client Extensions") {
 			JSONTestrayAPI.deleteProject(projectName = ${projectName});
 
-			Testray.tearDownCP();
-
-			ClientExtensionGeneral.goToRemoteAppsPortlet();
-
-			ClientExtensionGeneral.deleteRemoteApp(tableEntry = "Testray");
+			Testray.testrayApisTearDown();
 		}
+
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
 		if (${testPortalInstance} == "true") {
 			PortalInstances.tearDownCP();
@@ -67,6 +66,8 @@ definition {
 	@description = "Story ID: LPS-178259 | Test Summary: Verify that the User with the 'Testray Analyst' role should not be able to create/edit/delete the component but can view"
 	@priority = 3
 	test AnalystRoleCanNotCreateEditAndDelete {
+		property test.name.skip.portal.instance = "TestrayComponentPermissions#AnalystRoleCanNotCreateEditAndDelete";
+
 		task ("Given that the user login with the Testray Analyst role") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "analyst@testray.com",
@@ -117,6 +118,8 @@ definition {
 	@description = "Story ID: LPS-178259 | Test Summary: Verify that the User with the 'Testray Lead' role should not be able to create/edit/delete the component but can view"
 	@priority = 3
 	test LeadRoleCanNotCreateEditAndDelete {
+		property test.name.skip.portal.instance = "TestrayComponentPermissions#LeadRoleCanNotCreateEditAndDelete";
+
 		task ("Given that the user login with the Testray Lead role") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "lead@testray.com",
@@ -167,6 +170,8 @@ definition {
 	@description = "Story ID: LPS-178259 | Test Summary: Verify that the User with the 'Testray User' role should not be able to create/edit/delete the component but can view"
 	@priority = 3
 	test UserRoleCanNotCreateEditAndDelete {
+		property test.name.skip.portal.instance = "TestrayComponentPermissions#UserRoleCanNotCreateEditAndDelete";
+
 		task ("Given that the user login with the Testray User role") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "user@testray.com",

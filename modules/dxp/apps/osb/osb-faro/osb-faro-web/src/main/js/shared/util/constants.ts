@@ -12,9 +12,19 @@ export const ENABLE_ACCOUNTS = false;
 
 export const ENABLE_ASSET_CARD = false;
 
+// LRAC-13649 Hide the keywords blocklist screen from Settings>Definitions
+
+export const ENABLE_BLOCKLIST_KEYWORDS = false;
+
 // LRAC-11651 Disable temporarily CSV File
 
 export const ENABLE_CSVFILE = false;
+
+// LRAC-13389 Disable temporarily Delete Property and Delete Data Source buttons
+
+export const ENABLE_DELETE_DATA_SOURCE_BUTTON = false;
+
+export const ENABLE_DELETE_PROPERTY_BUTTON = false;
 
 // LRAC-11650 Hide Form Abandonment Card
 
@@ -27,6 +37,10 @@ export const ENABLE_GLOBAL_FILTER = false;
 // LRAC-11571 Disable temporarily Salesforce
 
 export const ENABLE_SALESFORCE = false;
+
+// LRAC-13620 Hide Suppressed Users line from Data Control & Privacy screen
+
+export const ENABLE_SUPPRESSED_USERS = false;
 
 /**
  * Languages
@@ -236,6 +250,15 @@ export const TIME_RANGE_LABELS = {
 	[RangeKeyTimeRanges.LastYear]: Liferay.Language.get('last-year'),
 	[RangeKeyTimeRanges.Yesterday]: Liferay.Language.get('yesterday')
 };
+
+/**
+ * Conjunctions
+ */
+
+export enum ConjunctionKey {
+	And = 'and',
+	Or = 'or'
+}
 
 /**
  * Sprite

@@ -42,17 +42,17 @@ definition {
 			groupName = "Guest",
 			title = "WC WebContent2 Title");
 
-		JSONWiki.addWikiPage(
-			groupName = "Guest",
-			wikiNodeName = "Main",
-			wikiPageContent = "Wiki Page1 Content",
-			wikiPageName = "Wiki Page1 Title");
+		WikiNavigator.openWikiAdmin(siteURLKey = "guest");
 
-		JSONWiki.addWikiPage(
-			groupName = "Guest",
-			wikiNodeName = "Main",
+		WikiNavigator.gotoNode(wikiNodeName = "Main");
+
+		WikiPage.addCP(
+			wikiPageContent = "Wiki Page1 Content",
+			wikiPageTitle = "Wiki Page1 Title");
+
+		WikiPage.addCP(
 			wikiPageContent = "Wiki Page2 AssetContent",
-			wikiPageName = "Wiki Page2 Title");
+			wikiPageTitle = "Wiki Page2 Title");
 
 		JSONDocument.addFileWithUploadedFile(
 			dmDocumentDescription = "DM Document AssetContent Description ",
@@ -60,6 +60,8 @@ definition {
 			groupName = "Guest",
 			mimeType = "application/msword",
 			sourceFileName = "Document_1.doc");
+
+		Navigator.openURL();
 
 		ClassicSearch.search(searchTerm = '''"AssetContent"''');
 
@@ -103,8 +105,6 @@ definition {
 
 	@priority = 4
 	test SearchByPermission {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-
 		JSONWebcontent.addWebContent(
 			content = "WC Content",
 			groupName = "Guest",
@@ -116,21 +116,13 @@ definition {
 			userLastName = "userln",
 			userScreenName = "usersn");
 
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			newPassword = "password",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
 		Site.openSiteMembershipsAdmin(siteURLKey = "guest");
 
 		Site.addAllMembersCP();
 
-		User.logoutPG();
-
-		User.loginUserPG(
-			password = "test",
-			userEmailAddress = "userea@liferay.com");
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea@liferay.com",
+			userLoginFullName = "userfn userln");
 
 		ClassicSearch.search(searchTerm = "WC Title");
 
@@ -162,11 +154,9 @@ definition {
 			entryContent = "Blogs Super Admin Entry Content",
 			entryTitle = "Blogs Super Admin Entry Title");
 
-		User.logoutPG();
-
-		User.firstLoginPG(
-			password = "test",
-			userEmailAddress = "userea@liferay.com");
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea@liferay.com",
+			userLoginFullName = "userfn userln");
 
 		JSONBlog.addEntry(
 			entryContent = "Blogs User Entry Content",

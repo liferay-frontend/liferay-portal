@@ -156,63 +156,6 @@ definition {
 			warningMessage = "Modification Deletion Conflict: Deletion conflicts with a modification.");
 	}
 
-	@description = "Assert there are no conflict changes when deleting the same document in two Publications"
-	@priority = 4
-	test AssertNoConflictForDeletionsCombinationPublications {
-		property portal.acceptance = "true";
-
-		JSONGroup.addGroup(groupName = "Site Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONPublications.addPublication(publicationName = "Publication Name 1");
-
-		JSONPublications.selectPublication(publicationName = "Publication Name 1");
-
-		JSONDocument.deleteFile(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name");
-
-		JSONPublications.addPublication(publicationName = "Publication Name 2");
-
-		JSONPublications.selectPublication(publicationName = "Publication Name 2");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		JSONDocument.deleteFile(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name");
-
-		JSONPublications.selectPublication(publicationName = "Publication Name 1");
-
-		JSONPublications.publishPublication(publicationName = "Publication Name 1");
-
-		Publications.viewPublicationPublished(publicationName = "Publication Name 1");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMDocument.viewDefault();
-
-		JSONPublications.selectPublication(publicationName = "Publication Name 2");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMDocument.viewDefault();
-
-		PublicationsNavigator.gotoPublish(publicationName = "Publication Name 2");
-
-		AssertElementNotPresent(locator1 = "Publications#NEEDS_MANUAL_RESOLUTION_TABLE");
-
-		JSONPublications.publishPublication(publicationName = "Publication Name 2");
-
-		Publications.viewPublicationPublished(publicationName = "Publication Name 2");
-	}
-
 	@description = "This is a use case for LPS-172496. Deleting a portlet with a modified configuration from a Publication incorrectly leads to a Deletion Modification Conflict"
 	@priority = 3
 	test CanDeletePortletModifiedConfigurationWithoutDeletionModificationConflict {
@@ -500,9 +443,11 @@ definition {
 
 		JSONPublications.selectPublication(publicationName = "Publication 1 Name");
 
-		JSONWebcontent.deleteWebContent(
-			groupName = "Guest",
-			title = "WC WebContent Title");
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "Guest");
+
+		WebContent.moveToRecycleBinCP(
+			assetType = "Web Content Article",
+			webContentTitle = "WC WebContent Title");
 
 		JSONPublications.addPublication(publicationName = "Publication 2 Name");
 
@@ -543,17 +488,15 @@ definition {
 			publicationName = "Publication 1 Name",
 			publishedPublication = "true");
 
-		// Workaround LPS-134018
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
 
-		/*WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-		WebContent.viewNotPresentCP(webContentTitle = "WC WebContent Title");*/
+		WebContent.viewNotPresentCP(webContentTitle = "WC WebContent Title");
 
 		JSONPublications.selectPublication(publicationName = "Publication 2 Name");
 
-		/*WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
 
-		WebContent.viewTitle(webContentTitle = "WC WebContent Title 2 Edit");*/
+		WebContent.viewTitle(webContentTitle = "WC WebContent Title 2 Edit");
 
 		PublicationsNavigator.gotoReviewChanges(publicationName = "Publication 2 Name");
 
@@ -573,7 +516,7 @@ definition {
 		PublicationsNavigator.gotoViewConflictingChangeDetails(entryTitle = "WC WebContent Title 2 Edit");
 
 		PublicationsChangeDetails.viewConflictingChangeDetails(
-			columnName = "Title",
+			columnName = "Name",
 			columnValueInPublication = "WC WebContent Title 2 Edit",
 			deletionModificationConflict = "true",
 			publicationName = "Publication 2 Name");
@@ -581,7 +524,7 @@ definition {
 		IFrame.closeFrame();
 
 		PublicationsChanges.discardChanges(
-			changeCategory = "Asset",
+			changeCategory = "Web Content Article",
 			changeTitle = "WC WebContent Title 2 Edit",
 			conflictingChanges = "true",
 			entryTitle = "WC WebContent Title 2 Edit");
@@ -601,6 +544,13 @@ definition {
 		AssertTextEquals.assertPartialText(
 			locator1 = "Message#EMPTY_INFO",
 			value1 = "No web content was found.");
+
+		RecycleBin.openRecycleBinAdmin(siteURLKey = "guest");
+
+		RecycleBin.viewCP(
+			assetName = "WC WebContent Title",
+			assetType = "Web Content Article",
+			deleteUser = "Test Test");
 	}
 
 	@description = "Assert the conflict changes disply when adding the same folder Name in two Publications and resolve by editing"

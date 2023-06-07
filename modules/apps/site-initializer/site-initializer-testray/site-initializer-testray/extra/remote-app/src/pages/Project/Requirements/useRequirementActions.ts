@@ -18,7 +18,10 @@ import useFormModal from '~/hooks/useFormModal';
 
 import useMutate from '../../../hooks/useMutate';
 import i18n from '../../../i18n';
-import {TestrayRequirement, deleteResource} from '../../../services/rest';
+import {
+	TestrayRequirement,
+	testrayRequirementsImpl,
+} from '../../../services/rest';
 import {Action, ActionsHookParameter} from '../../../types';
 
 const useRequirementActions = ({
@@ -52,9 +55,15 @@ const useRequirementActions = ({
 		},
 		{
 			action: ({id}, mutate) =>
-				deleteResource(`/requirements/${id}`)
+				testrayRequirementsImpl
+					.removeResource(id)
 					?.then(() => removeItemFromList(mutate, id))
 					.then(onSave)
+					.then(() => {
+						if (isHeaderActions) {
+							navigate('../');
+						}
+					})
 					.catch(onError),
 			icon: 'trash',
 			name: i18n.translate(

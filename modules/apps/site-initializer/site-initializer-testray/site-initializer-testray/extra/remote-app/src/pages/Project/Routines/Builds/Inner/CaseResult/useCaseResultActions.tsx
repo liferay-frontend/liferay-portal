@@ -13,13 +13,14 @@
  */
 
 import {useRef} from 'react';
+import {useNavigate} from 'react-router-dom';
 
 import useFormActions from '../../../../../../hooks/useFormActions';
 import useMutate from '../../../../../../hooks/useMutate';
 import i18n from '../../../../../../i18n';
 import {
 	TestrayCaseResult,
-	deleteResource,
+	testrayCaseResultImpl,
 } from '../../../../../../services/rest';
 import {Action, ActionsHookParameter} from '../../../../../../types';
 
@@ -28,12 +29,19 @@ const useCaseResultActions = (
 ) => {
 	const {form} = useFormActions();
 	const {removeItemFromList} = useMutate();
+	const navigate = useNavigate();
 	const actionsRef = useRef([
 		{
 			action: ({id}, mutate) =>
-				deleteResource(`/caseresults/${id}`)
+				testrayCaseResultImpl
+					.removeResource(id)
 					?.then(() => removeItemFromList(mutate, id))
 					.then(form.onSave)
+					.then(() => {
+						if (isHeaderActions) {
+							navigate('../');
+						}
+					})
 					.catch(form.onError),
 			icon: 'trash',
 			name: i18n.translate(

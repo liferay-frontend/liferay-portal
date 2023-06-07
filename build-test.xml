@@ -381,6 +381,7 @@ typeSettings=&#91;&quot;friendlyURLMapping=perico&quot;,&quot;instanceable=false
 			<local name="path" />
 
 			<propertyregex
+				defaultValue="${env.PATH}"
 				global="true"
 				input="${env.PATH}"
 				property="path"
@@ -2381,14 +2382,12 @@ war.path=${app.server.portal.dir}/</echo>
 	<macrodef name="prepare-aws-s3-configuration">
 		<sequential>
 			<echo file="${liferay.home}/osgi/configs/com.liferay.portal.store.s3.configuration.S3StoreConfiguration.config">
-cacheDirCleanUpExpunge=&quot;7&quot;
 ntlmProxyDomain=&quot;&quot;
 proxyAuthType=&quot;none&quot;
 httpClientMaxConnections=&quot;50&quot;
 secretKey=&quot;${aws.s3.secret.access.key}&quot;
 httpClientMaxErrorRetry=&quot;5&quot;
 accessKey=&quot;${aws.s3.access.key.id}&quot;
-cacheDirCleanUpFrequency=&quot;100&quot;
 connectionTimeout=&quot;10000&quot;
 multipartUploadThreshold=&quot;10485760&quot;
 bucketName=&quot;lfr-qa-poshi-test-${s3.bucket.id}&quot;
@@ -2939,6 +2938,17 @@ include-and-override=portal-liferay-online-limit.properties</echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="prepare-ms-exchange-configuration">
+		<sequential>
+			<echo file="${liferay.home}/osgi/configs/com.liferay.mail.outlook.auth.connector.provider.internal.configuration.MailOutlookAuthConnectorCompanyConfiguration.config">
+clientId=&quot;${ms.exchange.client.id}&quot;
+clientSecret=&quot;${ms.exchange.client.secret}&quot;
+pop3ConnectionEnabled=B"true"
+smtpConnectionEnabled=B"true"
+tenantId=&quot;${ms.exchange.tenant.id}&quot;</echo>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="prepare-patching-tool">
 		<attribute default="${app.server.parent.dir}/patching-tool" name="patching.tool.dir" />
 
@@ -3035,12 +3045,6 @@ include-and-override=portal-liferay-online-limit.properties</echo>
 	<macrodef name="prepare-portal-search-osgi-configuration">
 		<sequential>
 			<echo file="${liferay.home}/osgi/configs/com.liferay.portal.search.internal.index.configuration.IndexStatusManagerInternalConfiguration.config">suppressIndexReadOnly=B"true"</echo>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="prepare-portal-security-audit-osgi-configuration">
-		<sequential>
-			<echo file="${liferay.home}/osgi/configs/com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration.config">enabled=B"true"</echo>
 		</sequential>
 	</macrodef>
 
@@ -4081,6 +4085,55 @@ tell application "Safari" to quit
 		<sequential>
 			<echo file="${liferay.home}/osgi/configs/com.liferay.portal.security.sso.token.configuration.TokenConfiguration.config" force="true">enabled="true"
 	tokenLocation="REQUEST"</echo>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="prepare-selenium-object-storage-salesforce-properties">
+		<sequential>
+			<if>
+				<isset property="object.storage.salesforce.consumer.key" />
+				<then>
+					<echo append="true" file="${test.ext.properties.file}">
+						object.storage.salesforce.consumer.key=${object.storage.salesforce.consumer.key}
+					</echo>
+				</then>
+			</if>
+
+			<if>
+				<isset property="object.storage.salesforce.consumer.secret" />
+				<then>
+					<echo append="true" file="${test.ext.properties.file}">
+						object.storage.salesforce.consumer.secret=${object.storage.salesforce.consumer.secret}
+					</echo>
+				</then>
+			</if>
+
+			<if>
+				<isset property="object.storage.salesforce.login.url" />
+				<then>
+					<echo append="true" file="${test.ext.properties.file}">
+						object.storage.salesforce.login.url=${object.storage.salesforce.login.url}
+					</echo>
+				</then>
+			</if>
+
+			<if>
+				<isset property="object.storage.salesforce.password" />
+				<then>
+					<echo append="true" file="${test.ext.properties.file}">
+						object.storage.salesforce.password=${object.storage.salesforce.password}
+					</echo>
+				</then>
+			</if>
+
+			<if>
+				<isset property="object.storage.salesforce.username" />
+				<then>
+					<echo append="true" file="${test.ext.properties.file}">
+						object.storage.salesforce.username=${object.storage.salesforce.username}
+					</echo>
+				</then>
+			</if>
 		</sequential>
 	</macrodef>
 
@@ -6556,8 +6609,20 @@ go</echo>
 						<var name="app.server.tomcat.version" value="9.0.71" />
 					</then>
 				</elseif>
+				<elseif>
+					<or>
+						<equals arg1="@{liferay.portal.bundle}" arg2="7.4.13.u75" />
+						<equals arg1="@{liferay.portal.bundle}" arg2="7.4.13.u76" />
+						<equals arg1="@{liferay.portal.bundle}" arg2="7.4.13.u77" />
+						<equals arg1="@{liferay.portal.bundle}" arg2="7.4.13.u78" />
+						<equals arg1="@{liferay.portal.bundle}" arg2="7.4.13.u79" />
+					</or>
+					<then>
+						<var name="app.server.tomcat.version" value="9.0.73" />
+					</then>
+				</elseif>
 				<else>
-					<var name="app.server.tomcat.version" value="9.0.73" />
+					<var name="app.server.tomcat.version" value="9.0.75" />
 				</else>
 			</if>
 
@@ -7019,12 +7084,12 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 				${browser.docker.run.options} \
 				${docker.add.host.hostname.arg} \
 				${docker.add.host.node.name.arg} \
-				--add-host www.able.com:${ip.address} \
-				--add-host www.baker.com:${ip.address} \
-				--add-host www.charlie.com:${ip.address} \
-				--add-host www.dog.com:${ip.address} \
-				--add-host www.easy.com:${ip.address} \
-				--add-host www.fox.com:${ip.address} \
+				--add-host www.able.com:127.0.0.1 \
+				--add-host www.baker.com:127.0.0.1 \
+				--add-host www.charlie.com:127.0.0.1 \
+				--add-host www.dog.com:127.0.0.1 \
+				--add-host www.easy.com:127.0.0.1 \
+				--add-host www.fox.com:127.0.0.1 \
 				--mount type=bind,source=${host.git.dir}/${portal.dir.name},target=${portal.dir} \
 			</start-docker-container>
 
@@ -9269,10 +9334,21 @@ org.apache.catalina.tribes.level = FINE]]>
 						/>
 					</delete>
 
-					<mirrors-get
-						dest="${todir}"
-						src="${test.jdbc.drivers.url}/sqlserver/${database.version}/${jdbc.sqlserver.driver}"
-					/>
+					<if>
+						<equals arg1="${database.version}" arg2="2022" />
+						<then>
+							<mirrors-get
+								dest="${todir}"
+								src="${test.jdbc.drivers.url}/sqlserver/2019/${jdbc.sqlserver.driver}"
+							/>
+						</then>
+						<else>
+							<mirrors-get
+								dest="${todir}"
+								src="${test.jdbc.drivers.url}/sqlserver/${database.version}/${jdbc.sqlserver.driver}"
+							/>
+						</else>
+					</if>
 				</then>
 			</elseif>
 			<elseif>
@@ -9452,6 +9528,10 @@ org.apache.catalina.tribes.level = FINE]]>
 				zip -d '${liferayHome}/osgi/marketplace/Liferay Static - Impl.lpkg' com.liferay.portal.license.enterprise.app.jar
 			]]>
 		</execute>
+	</target>
+
+	<target name="delete-symbolic-link">
+		<symlink action="delete" link="${symbolic.link}" />
 	</target>
 
 	<target name="deploy-commerce-license-xml">
@@ -10820,21 +10900,44 @@ send_user $expect_out(buffer)]]></echo>
 	</target>
 
 	<target name="move-file">
-		<fail message="Please set the property ${file}." unless="file" />
-		<fail message="Please set the property ${tofile}." unless="tofile" />
-
 		<if>
-			<available file="${file}" />
+			<isset property="file" />
 			<then>
-				<move
-					file="${file}"
-					tofile="${tofile}"
-				/>
+				<fail message="Please set the property ${tofile}." unless="tofile" />
 
-				<echo>Moved file ${file} to ${tofile}.</echo>
+				<if>
+					<available file="${file}" />
+					<then>
+						<move
+							file="${file}"
+							tofile="${tofile}"
+						/>
+
+						<echo>Moved file ${file} to ${tofile}.</echo>
+					</then>
+					<else>
+						<echo>File ${file} does not exist.</echo>
+					</else>
+				</if>
 			</then>
+			<elseif>
+				<isset property="fileRegex" />
+				<then>
+					<fail message="Please set the property ${fromDir}." unless="fromDir" />
+					<fail message="Please set the property ${toDir}." unless="toDir" />
+
+					<move
+						todir="${toDir}"
+					>
+						<fileset
+							dir="${fromDir}"
+							includes="${fileRegex}"
+						/>
+					</move>
+				</then>
+			</elseif>
 			<else>
-				<echo>File ${file} does not exist.</echo>
+				<fail message="Please set the property ${file} or ${fileRegex}." />
 			</else>
 		</if>
 	</target>
@@ -11113,6 +11216,10 @@ ${update.properties}</echo>
 </Configuration>]]></echo>
 	</target>
 
+	<target name="prepare-ms-exchange-configuration">
+		<prepare-ms-exchange-configuration />
+	</target>
+
 	<target name="prepare-osgi-module-configurations">
 		<get-testcase-property property.name="custom.element.client.extension.created" />
 
@@ -11166,18 +11273,6 @@ ${update.properties}</echo>
 			</then>
 		</if>
 
-		<get-testcase-property property.name="testray.main.component.name" />
-
-		<if>
-			<or>
-				<equals arg1="${testray.main.component.name}" arg2="Audit" />
-				<equals arg1="${testray.main.component.name}" arg2="Multi Factor Authentication" />
-			</or>
-			<then>
-				<prepare-portal-security-audit-osgi-configuration />
-			</then>
-		</if>
-
 		<prepare-portal-template-freemarker-osgi-configuration />
 
 		<prepare-selenium-login-config />
@@ -11214,58 +11309,34 @@ ${update.properties}</echo>
 liferay.home=${liferay.home}
 
 jdbc.default.jndi.name=
-
 jdbc.default.driverClassName=${database.driver}
 jdbc.default.url=${database.url}
 jdbc.default.username=${database.username}
 jdbc.default.password=${database.password}
 
-enterprise.product.notification.enabled=false
+// HikariCP
 
-company.security.strangers.verify=false
-
-default.admin.password=test
-
-browser.launcher.url=
-
-setup.wizard.enabled=false
-
-passwords.default.policy.change.required=false
-
-mail.send.blacklist=
-
-mail.session.jndi.name=
-
-memory.scheduler.org.quartz.threadPool.threadCount=1
-
-persisted.scheduler.org.quartz.threadPool.threadCount=1
-
-virtual.hosts.default.site.name=
-
-com.liferay.portal.servlet.filters.strip.StripFilter=true
-
-web.server.http.port=8080
+jdbc.default.connectionTimeout=600000
+jdbc.default.maximumPoolSize=30
+jdbc.default.minimumIdle=0
 
 admin.email.from.address=test@liferay.com
-
 announcements.email.to.address=noreply@liferay.com
-
-login.secure.forgot.password=false</echo>
-
-		<if>
-			<isset property="env.JENKINS_HOME" />
-			<then>
-				<echo append="true" file="portal-impl/src/portal-ext.properties">
-
-					// HikariCP
-
-					jdbc.default.connectionTimeout=600000
-					jdbc.default.maximumPoolSize=30
-					jdbc.default.minimumIdle=0
-
-					initial.system.check.enabled=true</echo>
-			</then>
-		</if>
+browser.launcher.url=
+com.liferay.portal.servlet.filters.strip.StripFilter=true
+company.security.strangers.verify=false
+default.admin.password=test
+enterprise.product.notification.enabled=false
+initial.system.check.enabled=true
+login.secure.forgot.password=false
+mail.send.blacklist=
+mail.session.jndi.name=
+memory.scheduler.org.quartz.threadPool.threadCount=1
+passwords.default.policy.change.required=false
+persisted.scheduler.org.quartz.threadPool.threadCount=1
+setup.wizard.enabled=false
+virtual.hosts.default.site.name=
+web.server.http.port=8080</echo>
 
 		<if>
 			<equals arg1="${database.type}" arg2="oracle" />
@@ -11453,6 +11524,38 @@ company.default.web.id=www.able.com</echo>
 			</or>
 			<then>
 				<get-testcase-property property.name="ibm.store.enabled" />
+			</then>
+		</if>
+
+		<if>
+			<or>
+				<equals arg1="ms.exchange.enabled" arg2="" />
+				<not>
+					<isset property="ms.exchange.enabled" />
+				</not>
+			</or>
+			<then>
+				<get-testcase-property property.name="ms.exchange.enabled" />
+			</then>
+		</if>
+
+		<if>
+			<equals arg1="${ms.exchange.enabled}" arg2="true" />
+
+			<then>
+				<echo append="true" file="portal-impl/src/portal-ext.properties">
+mail.session.mail=true
+mail.session.mail.pop3.host=outlook.office365.com
+mail.session.mail.pop3.port=995
+mail.session.mail.pop3.user=qa-exchange-pop-test@liferay.onmicrosoft.com
+mail.session.mail.smtp.host=smtp.office365.com
+mail.session.mail.smtp.port=587
+mail.session.mail.smtp.user=qa-exchange-pop-test@liferay.onmicrosoft.com
+mail.session.mail.store.protocol=pop3s
+
+pop.server.subdomain=
+pop.server.notifications.enabled=true
+				</echo>
 			</then>
 		</if>
 
@@ -12027,6 +12130,8 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			app.server.temp.dir=${app.server.tomcat.temp.dir}
 			app.server.type=${app.server.type}
 			component.names=${component.names}
+			custom.super.admin.user.email=${custom.super.admin.user.email}
+			custom.super.admin.user.password=${custom.super.admin.user.password}
 			custom.default.user.password=${custom.default.user.password}
 			custom.default.user.email=${custom.default.user.email}
 			get.location.max.retries=${test.get.location.max.retries}
@@ -12211,6 +12316,51 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			<then>
 				<echo append="true" file="${test.ext.properties.file}">
 					digital.signature.rsa.private.key=${digital.signature.rsa.private.key}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="object.storage.salesforce.consumer.key" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					object.storage.salesforce.consumer.key=${object.storage.salesforce.consumer.key}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="object.storage.salesforce.consumer.secret" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					object.storage.salesforce.consumer.secret=${object.storage.salesforce.consumer.secret}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="object.storage.salesforce.login.url" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					object.storage.salesforce.login.url=${object.storage.salesforce.login.url}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="object.storage.salesforce.password" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					object.storage.salesforce.password=${object.storage.salesforce.password}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="object.storage.salesforce.username" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					object.storage.salesforce.username=${object.storage.salesforce.username}
 				</echo>
 			</then>
 		</if>
@@ -12482,6 +12632,17 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 		</if>
 
 		<if>
+			<equals arg1="${test.run.type}" arg2="parallel" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					test.run.type=${test.run.type}
+					test.run.thread.pool.size=3
+					thread.portal.url=http://www.able.com:8080,http://www.baker.com:8080,http://www.charlie.com:8080
+				</echo>
+			</then>
+		</if>
+
+		<if>
 			<contains string="${test.class}" substring="," />
 			<then>
 				<echo append="true" file="${test.ext.properties.file}">
@@ -12547,6 +12708,7 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 		<prepare-selenium-google-cloud-autotagging-properties />
 		<prepare-selenium-google-cloud-translation-properties />
 		<prepare-selenium-google-properties />
+		<prepare-selenium-object-storage-salesforce-properties />
 		<prepare-selenium-onedrive-properties />
 		<prepare-selenium-openid-properties />
 		<prepare-selenium-recaptcha-properties />
@@ -12606,6 +12768,12 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 						<isset property="portal.proxy.path" />
 						<then>
 							<property name="default.portal.url" value="http://localhost:88/${portal.proxy.path}" />
+						</then>
+					</elseif>
+					<elseif>
+						<isset property="default.portal.url" />
+						<then>
+							<property name="default.portal.url" value="${default.portal.url}" />
 						</then>
 					</elseif>
 					<else>
@@ -15226,6 +15394,15 @@ mail.send.blacklist=</echo>
 				<ant antfile="build-test-openam.xml" target="delete-openam-config" />
 
 				<ant antfile="build-test-openam.xml" target="setup-openam" />
+			</then>
+		</if>
+
+		<get-testcase-property property.name="ms.exchange.enabled" />
+
+		<if>
+			<equals arg1="${ms.exchange.enabled}" arg2="true" />
+			<then>
+				<prepare-ms-exchange-configuration />
 			</then>
 		</if>
 

@@ -63,11 +63,6 @@ public interface DLStore {
 			long companyId, long repositoryId, String fileName)
 		throws PortalException;
 
-	public byte[] getFileAsBytes(
-			long companyId, long repositoryId, String fileName,
-			String versionLabel)
-		throws PortalException;
-
 	public InputStream getFileAsStream(
 			long companyId, long repositoryId, String fileName)
 		throws PortalException;
@@ -92,44 +87,16 @@ public interface DLStore {
 			String versionLabel)
 		throws PortalException;
 
-	public default void updateFile(DLStoreRequest dlStoreRequest, File file)
-		throws PortalException {
+	public void updateFile(DLStoreRequest dlStoreRequest, File file)
+		throws PortalException;
 
-		updateFile(
-			dlStoreRequest.getCompanyId(), dlStoreRequest.getRepositoryId(),
-			dlStoreRequest.getFileName(), dlStoreRequest.getFileExtension(),
-			dlStoreRequest.isValidateFileExtension(),
-			dlStoreRequest.getVersionLabel(),
-			dlStoreRequest.getSourceFileName(), file);
-	}
-
-	public default void updateFile(
+	public void updateFile(
 			DLStoreRequest dlStoreRequest, InputStream inputStream)
-		throws PortalException {
-
-		updateFile(
-			dlStoreRequest.getCompanyId(), dlStoreRequest.getRepositoryId(),
-			dlStoreRequest.getFileName(), dlStoreRequest.getFileExtension(),
-			dlStoreRequest.isValidateFileExtension(),
-			dlStoreRequest.getVersionLabel(),
-			dlStoreRequest.getSourceFileName(), inputStream);
-	}
+		throws PortalException;
 
 	public void updateFile(
 			long companyId, long repositoryId, long newRepositoryId,
 			String fileName)
-		throws PortalException;
-
-	public void updateFile(
-			long companyId, long repositoryId, String fileName,
-			String fileExtension, boolean validateFileExtension,
-			String versionLabel, String sourceFileName, File file)
-		throws PortalException;
-
-	public void updateFile(
-			long companyId, long repositoryId, String fileName,
-			String fileExtension, boolean validateFileExtension,
-			String versionLabel, String sourceFileName, InputStream inputStream)
 		throws PortalException;
 
 	public void updateFileVersion(

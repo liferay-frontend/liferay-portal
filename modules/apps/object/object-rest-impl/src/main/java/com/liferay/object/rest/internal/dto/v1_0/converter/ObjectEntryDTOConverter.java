@@ -89,6 +89,10 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
+import java.sql.Timestamp;
+
+import java.text.SimpleDateFormat;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -200,7 +204,7 @@ public class ObjectEntryDTOConverter
 							objectRelationship.getObjectDefinitionId1());
 
 					if (objectDefinition.isUnmodifiableSystemObject()) {
-						if (FeatureFlagManagerUtil.isEnabled("LPS-172094")) {
+						if (FeatureFlagManagerUtil.isEnabled("LPS-183882")) {
 							SystemObjectDefinitionManager
 								systemObjectDefinitionManager =
 									_systemObjectDefinitionManagerRegistry.
@@ -440,7 +444,7 @@ public class ObjectEntryDTOConverter
 
 				return TransformUtil.transformToArray(
 					_auditEventLocalService.getAuditEvents(
-						0, 0, null, null, null, null, null,
+						0, 0, 0, null, null, null, null, null,
 						String.valueOf(objectEntry.getObjectEntryId()), null,
 						null, null, 0, null, false, QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS),
@@ -609,46 +613,20 @@ public class ObjectEntryDTOConverter
 				objectDefinition.getObjectDefinitionId(), false);
 
 		for (ObjectField objectField : objectFields) {
+			if (FeatureFlagManagerUtil.isEnabled("LPS-172017") &&
+				objectField.isLocalized()) {
+
+				map.put(
+					objectField.getI18nObjectFieldName(),
+					values.get(objectField.getI18nObjectFieldName()));
+			}
+
 			String objectFieldName = objectField.getName();
 
 			Serializable serializable = values.get(objectFieldName);
 
-			if (StringUtil.equals(
-					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
-
-				if (objectField.getListTypeDefinitionId() == 0) {
-					continue;
-				}
-
-				map.put(
-					objectFieldName,
-					TransformUtil.transformToList(
-						StringUtil.split(
-							(String)serializable, StringPool.COMMA_AND_SPACE),
-						key -> _getListEntry(
-							dtoConverterContext, key,
-							objectField.getListTypeDefinitionId())));
-			}
-			else if (StringUtil.equals(
-						objectField.getBusinessType(),
-						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
-
-				if (objectField.getListTypeDefinitionId() == 0) {
-					continue;
-				}
-
-				ListEntry listEntry = _getListEntry(
-					dtoConverterContext, (String)serializable,
-					objectField.getListTypeDefinitionId());
-
-				if (listEntry != null) {
-					map.put(objectFieldName, listEntry);
-				}
-			}
-			else if (Objects.equals(
-						objectField.getBusinessType(),
-						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+			if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
 				long fileEntryId = GetterUtil.getLong(
 					values.get(objectField.getName()));
@@ -674,8 +652,64 @@ public class ObjectEntryDTOConverter
 
 				map.put(objectFieldName, fileEntry);
 			}
-			else if (Objects.equals(
-						objectField.getBusinessType(),
+			else if (objectField.compareBusinessType(
+						ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME)) {
+
+				Timestamp timestamp = (Timestamp)serializable;
+
+				if (timestamp == null) {
+					continue;
+				}
+
+				String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+				if (StringUtil.equals(
+						ObjectFieldSettingUtil.getValue(
+							ObjectFieldSettingConstants.NAME_TIME_STORAGE,
+							objectField),
+						ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC)) {
+
+					pattern += "'Z'";
+				}
+
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+					pattern);
+
+				map.put(objectFieldName, simpleDateFormat.format(timestamp));
+			}
+			else if (objectField.compareBusinessType(
+						ObjectFieldConstants.
+							BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
+
+				if (objectField.getListTypeDefinitionId() == 0) {
+					continue;
+				}
+
+				map.put(
+					objectFieldName,
+					TransformUtil.transformToList(
+						StringUtil.split(
+							(String)serializable, StringPool.COMMA_AND_SPACE),
+						key -> _getListEntry(
+							dtoConverterContext, key,
+							objectField.getListTypeDefinitionId())));
+			}
+			else if (objectField.compareBusinessType(
+						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+
+				if (objectField.getListTypeDefinitionId() == 0) {
+					continue;
+				}
+
+				ListEntry listEntry = _getListEntry(
+					dtoConverterContext, (String)serializable,
+					objectField.getListTypeDefinitionId());
+
+				if (listEntry != null) {
+					map.put(objectFieldName, listEntry);
+				}
+			}
+			else if (objectField.compareBusinessType(
 						ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
 
 				map.put(objectFieldName, serializable);

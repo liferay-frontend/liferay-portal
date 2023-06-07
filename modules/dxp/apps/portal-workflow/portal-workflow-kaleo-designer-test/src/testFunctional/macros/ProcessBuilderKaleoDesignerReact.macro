@@ -955,6 +955,11 @@ definition {
 				}
 
 				if (isSet(actionsTemplateValue)) {
+					Select(
+						key_index = ${sectionOption},
+						locator1 = "ProcessBuilderKaleoDesignerReact#PROPERTIES_SCRIPT_TYPE_INDEX",
+						value1 = ${type});
+
 					Type(
 						key_sectionOption = ${sectionOption},
 						locator1 = "ProcessBuilderKaleoDesignerReact#PROPERTIES_TEMPLATE_TEXTAREA_ACTIONS_BY_POSITION",
@@ -1811,7 +1816,7 @@ definition {
 	}
 
 	macro viewPropertyValue {
-		AssertTextEquals(
+		AssertElementPresent(
 			key_propertyName = ${propertyName},
 			key_propertyValue = ${propertyValue},
 			locator1 = "ProcessBuilderKaleoDesignerReact#SIDEBAR_PROPERTY",

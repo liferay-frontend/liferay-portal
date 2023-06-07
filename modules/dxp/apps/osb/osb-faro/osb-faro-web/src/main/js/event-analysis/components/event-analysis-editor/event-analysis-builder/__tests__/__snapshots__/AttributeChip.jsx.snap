@@ -10,6 +10,7 @@ exports[`AttributeChip render 1`] = `
     >
       <div
         class="drag-handle"
+        draggable="true"
       >
         <svg
           class="lexicon-icon lexicon-icon-drag icon-root"
@@ -50,6 +51,7 @@ exports[`AttributeChip render 1`] = `
         </div>
       </button>
       <button
+        aria-label="Close"
         class="button-root remove-button btn btn-unstyled"
         type="button"
       >

@@ -17,7 +17,7 @@
 </tr>
 <tr>
 	<td>TABLE_CELL</td>
-	<td>//div[contains(@class,'dnd-table')]//div[normalize-space(text())='${key_itemName}']</td>
+	<td>//div[contains(@class,'dnd-tr')]//*[normalize-space(text())='${key_itemName}']</td>
 	<td></td>
 </tr>
 <tr>
@@ -29,7 +29,7 @@
 	<td>DELETE_ENTRY_BUTTON</td>
 	<td>//div[contains(@class,'show')]//button[contains(.,'Delete')]</td>
 	<td></td>
-	</tr>
+</tr>
 <tr>
 	<td>DELETE_DATA_SET_MODAL_BODY</td>
 	<td>//div[@class='liferay-modal-body'][contains(text(),'${key_modalText}')]</td>
@@ -50,7 +50,7 @@
 </tr>
 <tr>
 	<td>NUMBER_OF_VIEWS</td>
-	<td>//div[contains(@class,'dnd-table')]//div[normalize-space(text())='Views']/../../../..//span[contains(@class,'badge') and contains(.,'${numberOfViews}')]</td>
+	<td>//div[contains(@class,'dnd-table')]//div[normalize-space(text())='Views']/../../../..//span[contains(@class,'badge') and (text()='${numberOfViews}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -60,7 +60,7 @@
 </tr>
 <tr>
 	<td>DATA_SET_VIEW_ENTRY_NAME</td>
-	<td>//li[contains(@class,'list-group-item')]//div[contains(@class,'justify-content-center')]//p[(@class="list-group-title") and contains (.,'${entryName}')]</td>
+	<td>//li[contains(@class,'list-group-item')]//div[contains(@class,'justify-content-center')]//*[(@class="table-list-title") and contains (.,'${entryName}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -92,8 +92,28 @@
 	<td></td>
 </tr>
 <tr>
+	<td>FIELDS_TABLE</td>
+	<td>//table[contains(@class,'table-list')]//tr[@class='orderable-table-row'][${key_position}]//*[contains(.,'${keyName}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>MODAL_SEARCH</td>
 	<td>//div[contains(@class,'modal')]//*[contains(@class, 'input-group-item')]//*[@placeholder="Search"]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIELDS_TAB_SEARCH</td>
+	<td>//li[contains(@class,'nav-item')]//*[contains(@class, 'input-group-item')]//*[@placeholder="Search"]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIELDS_DRAG_DOTS_ICON</td>
+	<td>//table[contains(@class,'table-list')]//tr[@class='orderable-table-row']//td[@class="drag-handle-cell"]//button[@aria-label="Drag ${key_nameField}"]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>VERTICAL_ELLIPSIS_BY_FIELDS_NAME</td>
+	<td>//tr[contains(.,'${key_fieldName}')]//button[contains(@class,'dropdown-toggle')]//*[contains(@class,'lexicon-icon-ellipsis-v')]</td>
 	<td></td>
 </tr>
 
@@ -112,6 +132,87 @@
 <tr>
 	<td>PAGINATION_DEFAULT_ITEMS</td>
 	<td>//div[contains(@class,'form-group')]//input[contains(@id,'ViewDefaultItemsPerPage')]</td>
+	<td></td>
+</tr>
+
+<!-- DATA SET DEFAULT SORT -->
+
+<tr>
+	<td>FIELD_SELECT</td>
+	<td>//div[label[contains(.,'Field')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SORTING_SELECT</td>
+	<td>//div[label[contains(.,'Sorting')]]/select</td>
+	<td></td>
+</tr>
+
+<!-- DATA SET FILTERS -->
+
+<tr>
+	<td>FILTER_BY_DROPDOWN</td>
+	<td>//select[contains(@title, 'Filter By')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEW_FILTER_NAME</td>
+	<td>//input[contains(@name, 'FDSViewsPortlet_Name')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEW_FILTER_SELECT_OPTION</td>
+	<td>//select[contains(@name, 'FDSViewsPortlet_SelectedField')]//option[contains(@value, '${key_option}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LABEL</td>
+	<td>//label[contains(., '${key_label}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DATE_FIELD_PLACEHOLDER</td>
+	<td>//*[contains(@class, 'form-group-item') and contains(., '${key_dateField}')]//input[contains(@placeholder, '${key_placeholderText}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DATEPICKER_BUTTON</td>
+	<td>//*[contains(@class, 'form-group-item') and contains(., '${key_dateField}')]//button[contains(@class, 'date-picker-dropdown-toggle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DATEPICKER_MENU</td>
+	<td>//*[contains(@class, 'date-picker-dropdown-menu show')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHOOSE_DATE_DATEPICKER_MENU</td>
+	<td>//*[contains(@class, 'date-picker-dropdown-menu show')]//button[contains(text(), '${key_dateNumber}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEW_FILTER_SAVE_BUTTON</td>
+	<td>//button[contains(@form, 'FDSViewsPortlet_Form') and contains(text(), 'Save')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEW_FILTER_CANCEL_BUTTON</td>
+	<td>//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Cancel')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CREATE_FILTER_BUTTON</td>
+	<td>//button[contains(text(), 'Create Filter')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FILTERS_ENTRY</td>
+	<td>//span[contains(text(), '${key_entryName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEW_FILTER_INVALID_DATE</td>
+	<td>//*[contains(text(), 'Date range is invalid. "From" must be before "to"')]</td>
 	<td></td>
 </tr>
 </tbody>

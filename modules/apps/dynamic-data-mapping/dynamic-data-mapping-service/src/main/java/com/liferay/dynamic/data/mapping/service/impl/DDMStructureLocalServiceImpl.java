@@ -44,6 +44,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMFormRule;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
+import com.liferay.dynamic.data.mapping.model.DDMStructureTable;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.security.permission.DDMPermissionSupport;
@@ -64,12 +65,18 @@ import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidator;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.Table;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.language.Language;
@@ -1063,9 +1070,9 @@ public class DDMStructureLocalServiceImpl
 		long companyId, long[] groupIds, long classNameId, int start, int end,
 		OrderByComparator<DDMStructure> orderByComparator) {
 
-		return ddmStructureFinder.findByC_G_C_S(
-			companyId, groupIds, classNameId, WorkflowConstants.STATUS_ANY,
-			start, end, orderByComparator);
+		return getStructures(
+			companyId, groupIds, classNameId, StringPool.BLANK,
+			WorkflowConstants.STATUS_ANY, start, end, orderByComparator);
 	}
 
 	@Override
@@ -1074,9 +1081,30 @@ public class DDMStructureLocalServiceImpl
 		int status, int start, int end,
 		OrderByComparator<DDMStructure> orderByComparator) {
 
-		return ddmStructureFinder.findByKeywords(
-			companyId, groupIds, classNameId, keywords, status, start, end,
-			orderByComparator);
+		Table<?> tempDDMStructureTable = DSLQueryFactoryUtil.selectDistinct(
+			DDMStructureTable.INSTANCE.structureId
+		).from(
+			DDMStructureTable.INSTANCE
+		).where(
+			_getPredicate(companyId, groupIds, classNameId, keywords)
+		).as(
+			"tempDDMStructure", DDMStructureTable.INSTANCE
+		);
+
+		return ddmStructurePersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				DDMStructureTable.INSTANCE
+			).from(
+				tempDDMStructureTable
+			).innerJoinON(
+				DDMStructureTable.INSTANCE,
+				DDMStructureTable.INSTANCE.structureId.eq(
+					tempDDMStructureTable.getColumn("structureId", Long.class))
+			).orderBy(
+				DDMStructureTable.INSTANCE, orderByComparator
+			).limit(
+				start, end
+			));
 	}
 
 	@Override
@@ -1214,8 +1242,14 @@ public class DDMStructureLocalServiceImpl
 		long companyId, long[] groupIds, long classNameId, String keywords,
 		int status) {
 
-		return ddmStructureFinder.countByKeywords(
-			companyId, groupIds, classNameId, keywords, status);
+		return ddmStructurePersistence.dslQueryCount(
+			DSLQueryFactoryUtil.countDistinct(
+				DDMStructureTable.INSTANCE.structureId
+			).from(
+				DDMStructureTable.INSTANCE
+			).where(
+				_getPredicate(companyId, groupIds, classNameId, keywords)
+			));
 	}
 
 	/**
@@ -1530,8 +1564,9 @@ public class DDMStructureLocalServiceImpl
 	@Override
 	public DDMStructure updateStructure(
 			long userId, long structureId, long parentStructureId,
-			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			String definition, ServiceContext serviceContext)
+			String structureKey, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, String definition,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		DDMStructure structure = ddmStructurePersistence.findByPrimaryKey(
@@ -1541,6 +1576,18 @@ public class DDMStructureLocalServiceImpl
 
 		structure.setUserId(userId);
 		structure.setParentStructureId(parentStructureId);
+
+		if (FeatureFlagManagerUtil.isEnabled("LPS-184255") &&
+			Validator.isNotNull(structureKey)) {
+
+			structureKey = StringUtil.toUpperCase(structureKey.trim());
+
+			_validateStructureKey(
+				structureId, structure.getGroupId(), structure.getClassNameId(),
+				structureKey);
+
+			structure.setStructureKey(structureKey);
+		}
 
 		DDMStructureVersion latestStructureVersion =
 			_ddmStructureVersionLocalService.getLatestStructureVersion(
@@ -1851,6 +1898,70 @@ public class DDMStructureLocalServiceImpl
 		}
 
 		return parentStructure.getFullHierarchyDDMForm();
+	}
+
+	private Predicate _getPredicate(
+		long companyId, long[] groupIds, long classNameId, String keywords) {
+
+		Predicate predicate = DDMStructureTable.INSTANCE.companyId.eq(
+			companyId
+		).and(
+			DDMStructureTable.INSTANCE.classNameId.eq(classNameId)
+		).and(
+			DDMStructureTable.INSTANCE.type.eq(0)
+		);
+
+		Predicate groupIdsPredicate = null;
+
+		for (long groupId : groupIds) {
+			Predicate groupIdPredicate = DDMStructureTable.INSTANCE.groupId.eq(
+				groupId);
+
+			if (groupIdsPredicate == null) {
+				groupIdsPredicate = groupIdPredicate;
+			}
+			else {
+				groupIdsPredicate = groupIdsPredicate.or(groupIdPredicate);
+			}
+		}
+
+		if (groupIdsPredicate != null) {
+			predicate = predicate.and(groupIdsPredicate.withParentheses());
+		}
+
+		Predicate keywordsPredicate = null;
+
+		for (String keyword : _customSQL.keywords(keywords, true)) {
+			if (keyword == null) {
+				continue;
+			}
+
+			Predicate keywordPredicate = DSLFunctionFactoryUtil.lower(
+				DSLFunctionFactoryUtil.castText(DDMStructureTable.INSTANCE.name)
+			).like(
+				keyword
+			).or(
+				DSLFunctionFactoryUtil.lower(
+					DSLFunctionFactoryUtil.castClobText(
+						DDMStructureTable.INSTANCE.description)
+				).like(
+					keyword
+				)
+			);
+
+			if (keywordsPredicate == null) {
+				keywordsPredicate = keywordPredicate;
+			}
+			else {
+				keywordsPredicate = keywordsPredicate.or(keywordPredicate);
+			}
+		}
+
+		if (keywordsPredicate != null) {
+			predicate = predicate.and(keywordsPredicate.withParentheses());
+		}
+
+		return predicate;
 	}
 
 	private String _getStructureKey(String structureKey) {
@@ -2181,6 +2292,30 @@ public class DDMStructureLocalServiceImpl
 		}
 	}
 
+	private void _validateStructureKey(
+			long structureId, long groupId, long classNameId,
+			String structureKey)
+		throws PortalException {
+
+		DDMStructure structure = ddmStructurePersistence.fetchByG_C_S(
+			groupId, classNameId, structureKey);
+
+		if ((structure == null) ||
+			(structure.getStructureId() == structureId)) {
+
+			return;
+		}
+
+		StructureDuplicateStructureKeyException
+			structureDuplicateStructureKeyException =
+				new StructureDuplicateStructureKeyException();
+
+		structureDuplicateStructureKeyException.setStructureKey(
+			structure.getStructureKey());
+
+		throw structureDuplicateStructureKeyException;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMStructureLocalServiceImpl.class);
 
@@ -2190,6 +2325,9 @@ public class DDMStructureLocalServiceImpl
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private CustomSQL _customSQL;
 
 	@Reference
 	private DDM _ddm;

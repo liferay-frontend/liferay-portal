@@ -39,13 +39,13 @@ import com.liferay.info.search.InfoSearchClassMapperRegistryUtil;
 import com.liferay.layout.constants.LayoutWebKeys;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
-import com.liferay.layout.helper.CollectionPaginationHelper;
 import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.responsive.ResponsiveLayoutStructureUtil;
 import com.liferay.layout.taglib.internal.display.context.RenderCollectionLayoutStructureItemDisplayContext;
 import com.liferay.layout.taglib.internal.display.context.RenderLayoutStructureDisplayContext;
 import com.liferay.layout.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.layout.taglib.internal.util.SegmentsExperienceUtil;
+import com.liferay.layout.util.CollectionPaginationUtil;
 import com.liferay.layout.util.constants.LayoutStructureConstants;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
@@ -76,6 +76,7 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -85,6 +86,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.taglib.util.IncludeTag;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -491,7 +493,7 @@ public class RenderLayoutStructureTag extends IncludeTag {
 
 		if (Objects.equals(
 				collectionStyledLayoutStructureItem.getPaginationType(),
-				CollectionPaginationHelper.PAGINATION_TYPE_NUMERIC)) {
+				CollectionPaginationUtil.PAGINATION_TYPE_NUMERIC)) {
 
 			PaginationBarTag paginationBarTag = new PaginationBarTag();
 
@@ -502,8 +504,9 @@ public class RenderLayoutStructureTag extends IncludeTag {
 				renderCollectionLayoutStructureItemDisplayContext.
 					getActivePage());
 			paginationBarTag.setAdditionalProps(
-				renderCollectionLayoutStructureItemDisplayContext.
-					getNumericCollectionPaginationAdditionalProps());
+				Collections.singletonMap(
+					"collectionId",
+					collectionStyledLayoutStructureItem.getItemId()));
 			paginationBarTag.setCssClass("pb-2 pt-3");
 			paginationBarTag.setPropsTransformer(
 				"render_layout_structure/js" +
@@ -518,7 +521,7 @@ public class RenderLayoutStructureTag extends IncludeTag {
 
 		if (Objects.equals(
 				collectionStyledLayoutStructureItem.getPaginationType(),
-				CollectionPaginationHelper.PAGINATION_TYPE_SIMPLE)) {
+				CollectionPaginationUtil.PAGINATION_TYPE_SIMPLE)) {
 
 			jspWriter.write("<div class=\"d-flex flex-grow-1 h-100 ");
 			jspWriter.write("justify-content-center py-3\" ");
@@ -572,8 +575,14 @@ public class RenderLayoutStructureTag extends IncludeTag {
 				"paginationComponent" +
 					collectionStyledLayoutStructureItem.getItemId());
 			componentTag.setContext(
-				renderCollectionLayoutStructureItemDisplayContext.
-					getSimpleCollectionPaginationContext());
+				HashMapBuilder.<String, Object>put(
+					"activePage",
+					renderCollectionLayoutStructureItemDisplayContext.
+						getActivePage()
+				).put(
+					"collectionId",
+					collectionStyledLayoutStructureItem.getItemId()
+				).build());
 			componentTag.setModule(
 				"render_layout_structure/js/SimpleCollectionPagination");
 

@@ -18,7 +18,7 @@ import {useNavigate} from 'react-router-dom';
 import useFormActions from '../../../hooks/useFormActions';
 import useMutate from '../../../hooks/useMutate';
 import i18n from '../../../i18n';
-import {TestraySuite, deleteResource} from '../../../services/rest';
+import {TestraySuite, testraySuiteImpl} from '../../../services/rest';
 import {Action, ActionsHookParameter} from '../../../types';
 
 const useSuiteActions = ({isHeaderActions}: ActionsHookParameter = {}) => {
@@ -38,9 +38,15 @@ const useSuiteActions = ({isHeaderActions}: ActionsHookParameter = {}) => {
 		},
 		{
 			action: ({id}, mutate) =>
-				deleteResource(`/suites/${id}`)
+				testraySuiteImpl
+					.removeResource(id)
 					?.then(() => removeItemFromList(mutate, id))
 					.then(form.onSuccess)
+					.then(() => {
+						if (isHeaderActions) {
+							navigate('../');
+						}
+					})
 					.catch(form.onError),
 			icon: 'trash',
 			name: isHeaderActions

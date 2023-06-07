@@ -1,7 +1,7 @@
 @component-name = "portal-solutions"
 definition {
 
-	property custom.properties = "feature.flag.LPS-163118=true";
+	property custom.properties = "feature.flag.LPS-163118=true${line.separator}feature.flag.LPS-154672=true";
 	property osgi.modules.includes = "site-initializer-testray";
 	property portal.release = "false";
 	property portal.upstream = "true";
@@ -10,28 +10,32 @@ definition {
 
 	var buildName = "Build 1";
 	var caseName = "Case 1";
+	var caseResultName = "case result 1";
 	var caseType = "Case Type 1";
 	var componentName = "Component 1";
 	var environmentFactorsName = "Environment Factors 1";
 	var productVersion = "1.2";
 	var projectName = "Project 1";
 	var routineName = "Routine 1";
-	var suiteName = "Suite 1";
 	var teamName = "Team 1";
 	var runName = "Option 1";
-	var caseResultName = "case result 1";
 	var testSiteName = "Testray 2";
 
 	setUp {
-		task ("Login and create a Testray Site") {
+		task ("Set up instance and sign in") {
 			TestCase.setUpPortalInstance();
 
 			User.firstLoginPG();
-
-			Testray.addTestraySite(siteName = ${testSiteName});
 		}
 
-		task ("Setup for case results") {
+		task ("Create a new Testray Site") {
+			HeadlessSite.addSite(
+				siteName = ${testSiteName},
+				templateName = "Testray",
+				templateType = "Site Initializer");
+		}
+
+		task ("create project, routine, team, component, case, case type, enviroment factor, build, category, option, run and case result via API") {
 			JSONTestray.addProject(
 				projectDescription = "Project Description 1",
 				projectName = ${projectName});
@@ -91,19 +95,21 @@ definition {
 	}
 
 	tearDown {
+		task ("Delete case type, factor category and project via API, Testray Site and Client Extensions") {
+			JSONTestrayAPI.deleteObjectViaAPI(
+				object = "casetypes",
+				objectName = ${caseType});
+
+			JSONTestrayAPI.deleteObjectViaAPI(
+				object = "factorcategories",
+				objectName = "Category 1");
+
+			JSONTestrayAPI.deleteProject(projectName = ${projectName});
+
+			Testray.testrayApisTearDown();
+		}
+
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
-
-		JSONTestrayAPI.deleteObjectViaAPI(
-			object = "casetypes",
-			objectName = ${caseType});
-
-		JSONTestrayAPI.deleteObjectViaAPI(
-			object = "factorcategories",
-			objectName = "Category 1");
-
-		JSONTestrayAPI.deleteProject(projectName = ${projectName});
-
-		Testray.testrayApisTearDown();
 
 		if (${testPortalInstance} == "true") {
 			PortalInstances.tearDownCP();
@@ -113,6 +119,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to Assign Tests directly to me through the context menu"
 	@priority = 3
 	test AdminCanAssignTestsDirectlyThroughTheContextMenu {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanAssignTestsDirectlyThroughTheContextMenu";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -135,6 +143,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to Delete Results"
 	@priority = 5
 	test AdminCanDeleteResults {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanDeleteResults";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -147,6 +157,8 @@ definition {
 			TestrayContextMenu.clickContextMenuProjects(name = ${caseName});
 
 			TestrayContextMenu.selectItemFromProjectsContextMenu(item = "Delete");
+
+			AssertConfirm(value1 = "Are you sure you want to delete this item?");
 		}
 
 		task ("Then the Case Results should not be displayed anymore") {
@@ -157,6 +169,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to execute Tests and mark them as Failed"
 	@priority = 4
 	test AdminCanExecuteTestsAndMarkThemAsFailed {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanExecuteTestsAndMarkThemAsFailed";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -195,6 +209,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to Quick Edit Tests"
 	@priority = 4
 	test AdminCanQuickEditTests {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanQuickEditTests";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -230,6 +246,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to Reopen Tests"
 	@priority = 3
 	test AdminCanReopenTests {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanReopenTests";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -275,6 +293,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to reset Tests"
 	@priority = 4
 	test AdminCanResetTests {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanResetTests";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -307,6 +327,8 @@ definition {
 	@description = "Story ID: LPS-170820 | Test Summary: Verify that, as an Administrator, I should be able to see all the Problem Lists in the tables"
 	@priority = 4
 	test AdminCanSeeIssuesInAllTables {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanSeeIssuesInAllTables";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -379,6 +401,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to Unassign Tests"
 	@priority = 3
 	test AdminCanUnassignTests {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanUnassignTests";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -413,6 +437,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to Unassign Tests through the context menu"
 	@priority = 2
 	test AdminCanUnassignTestsThroughTheContextMenu {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanUnassignTestsThroughTheContextMenu";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -441,6 +467,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to verify the accuracy of the Case Result Metrics Card"
 	@priority = 4
 	test AdminCanVerifyTheAccuracyOfTheCaseResultMetricsCard {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanVerifyTheAccuracyOfTheCaseResultMetricsCard";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -457,6 +485,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to view Results grouped by Component"
 	@priority = 3
 	test AdminCanViewResultsGroupedByComponent {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanViewResultsGroupedByComponent";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 
@@ -483,6 +513,8 @@ definition {
 	@description = "Story ID: LPS-157164 | Test Summary: Verify if as an Administrator I am able to view Results grouped by Team"
 	@priority = 3
 	test AdminCanViewResultsGroupedByTeam {
+		property test.name.skip.portal.instance = "TestrayResultsAdministrator#AdminCanViewResultsGroupedByTeam";
+
 		task ("Given that the user go to case results") {
 			Testray.goToProjectPage(projectName = ${projectName});
 

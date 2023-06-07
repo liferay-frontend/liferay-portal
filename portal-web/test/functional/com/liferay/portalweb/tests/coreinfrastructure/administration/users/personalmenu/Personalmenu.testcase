@@ -283,6 +283,8 @@ definition {
 	@description = "This is a use case for LPS-120825."
 	@priority = 4
 	test UpdateUserInformation {
+		property test.name.skip.portal.instance = "Personalmenu#UpdateUserInformation";
+
 		UserBar.viewUserDefaultIcon();
 
 		Navigator.gotoAccountSettings();
@@ -324,6 +326,8 @@ definition {
 	@description = "LPS-182444 TC-1-8. Verify back Navigation icon present and can return to the previous page from the personal menu page."
 	@priority = 5
 	test VerifyBackNavigationLinkOfPersonalMenuPages {
+		property portal.release = "false";
+
 		for (var menuItem : list "Shared Content,My Submissions,My Workflow Tasks,Account Settings,My Connected Applications,My Organizations,My Subscriptions") {
 			Navigator.openURL();
 

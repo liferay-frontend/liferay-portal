@@ -44,23 +44,22 @@ public class SegmentsExperimentFinderImpl
 	extends SegmentsExperimentFinderBaseImpl
 	implements SegmentsExperimentFinder {
 
-	public static final String COUNT_BY_S_C_C_S =
-		SegmentsExperimentFinder.class.getName() + ".countByS_C_C_S";
+	public static final String COUNT_BY_S_P_S =
+		SegmentsExperimentFinder.class.getName() + ".countByS_P_S";
 
-	public static final String FIND_BY_S_C_C_S =
-		SegmentsExperimentFinder.class.getName() + ".findByS_C_C_S";
+	public static final String FIND_BY_S_P_S =
+		SegmentsExperimentFinder.class.getName() + ".findByS_P_S";
 
 	@Override
-	public int countByS_C_C_S(
-		long segmentsExperienceId, long classNameId, long classPK,
-		int[] statuses) {
+	public int countByS_P_S(
+		long segmentsExperienceId, long plid, int[] statuses) {
 
 		Session session = null;
 
 		try {
 			session = openSession();
 
-			String sql = _customSQL.get(getClass(), COUNT_BY_S_C_C_S);
+			String sql = _customSQL.get(getClass(), COUNT_BY_S_P_S);
 
 			sql = StringUtil.replace(
 				sql, "[$STATUSES$]", getStatusesSQL(statuses));
@@ -72,8 +71,7 @@ public class SegmentsExperimentFinderImpl
 			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
 
 			queryPos.add(segmentsExperienceId);
-			queryPos.add(classNameId);
-			queryPos.add(classPK);
+			queryPos.add(plid);
 
 			Iterator<Long> iterator = sqlQuery.iterate();
 
@@ -96,17 +94,16 @@ public class SegmentsExperimentFinderImpl
 	}
 
 	@Override
-	public List<SegmentsExperiment> findByS_C_C_S(
-		long segmentsExperienceId, long classNameId, long classPK,
-		int[] statuses, int start, int end,
-		OrderByComparator<SegmentsExperiment> orderByComparator) {
+	public List<SegmentsExperiment> findByS_P_S(
+		long segmentsExperienceId, long plid, int[] statuses, int start,
+		int end, OrderByComparator<SegmentsExperiment> orderByComparator) {
 
 		Session session = null;
 
 		try {
 			session = openSession();
 
-			String sql = _customSQL.get(getClass(), FIND_BY_S_C_C_S);
+			String sql = _customSQL.get(getClass(), FIND_BY_S_P_S);
 
 			sql = StringUtil.replace(
 				sql, "[$STATUSES$]", getStatusesSQL(statuses));
@@ -121,8 +118,7 @@ public class SegmentsExperimentFinderImpl
 			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
 
 			queryPos.add(segmentsExperienceId);
-			queryPos.add(classNameId);
-			queryPos.add(classPK);
+			queryPos.add(plid);
 
 			return (List<SegmentsExperiment>)QueryUtil.list(
 				sqlQuery, getDialect(), start, end);

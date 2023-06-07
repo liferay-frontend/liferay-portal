@@ -16,6 +16,7 @@ package com.liferay.commerce.product.internal.layout.admin.util;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
 import com.liferay.commerce.product.constants.CPPortletKeys;
@@ -25,6 +26,7 @@ import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -40,6 +42,8 @@ import com.liferay.site.util.Sitemap;
 import com.liferay.site.util.SitemapURLProvider;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -79,23 +83,23 @@ public class AssetCategorySitemapURLProvider implements SitemapURLProvider {
 
 			List<AssetVocabulary> assetVocabularies =
 				_assetVocabularyService.getGroupVocabularies(
-					company.getGroupId(),
-					group.getName(themeDisplay.getLocale()), QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS, null);
+					company.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null);
 
-			if (assetVocabularies.size() == 1) {
-				AssetVocabulary assetVocabulary = assetVocabularies.get(0);
+			for (AssetVocabulary assetVocabulary : assetVocabularies) {
+				if (assetVocabulary.getVisibilityType() !=
+						AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL) {
 
-				List<AssetCategory> assetCategories =
-					_assetCategoryService.getVocabularyRootCategories(
-						assetVocabulary.getGroupId(),
-						assetVocabulary.getVocabularyId(), QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS, null);
+					List<AssetCategory> assetCategories =
+						_assetCategoryService.getVocabularyCategories(
+							assetVocabulary.getVocabularyId(),
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
-				for (AssetCategory assetCategory : assetCategories) {
-					visitLayout(
-						element, layout, assetCategory.getCategoryId(),
-						themeDisplay);
+					for (AssetCategory assetCategory : assetCategories) {
+						visitLayout(
+							element, layout, assetCategory.getCategoryId(),
+							themeDisplay);
+					}
 				}
 			}
 		}
@@ -137,13 +141,23 @@ public class AssetCategorySitemapURLProvider implements SitemapURLProvider {
 			_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
 				_portal.getClassNameId(AssetCategory.class), assetCategoryId);
 
-		String categoryFriendlyURL =
-			currentSiteURL + urlSeparator +
-				friendlyURLEntry.getUrlTitle(themeDisplay.getLanguageId());
+		Map<Locale, String> alternateFriendlyURLs =
+			SitemapURLProviderUtil.getAlternateFriendlyURLs(
+				_portal.getAlternateURLs(
+					currentSiteURL, themeDisplay, layout,
+					_language.getAvailableLocales(layout.getGroupId())),
+				friendlyURLEntry.getFriendlyURLEntryId(),
+				_friendlyURLEntryLocalService, urlSeparator);
 
-		_sitemap.addURLElement(
-			element, categoryFriendlyURL, typeSettingsUnicodeProperties,
-			layout.getModifiedDate(), categoryFriendlyURL, null);
+		String categoryFriendlyURL = alternateFriendlyURLs.get(
+			_portal.getLocale(themeDisplay.getRequest()));
+
+		for (String alternateFriendlyURL : alternateFriendlyURLs.values()) {
+			_sitemap.addURLElement(
+				element, alternateFriendlyURL, typeSettingsUnicodeProperties,
+				layout.getModifiedDate(), categoryFriendlyURL,
+				alternateFriendlyURLs);
+		}
 	}
 
 	@Reference
@@ -160,6 +174,9 @@ public class AssetCategorySitemapURLProvider implements SitemapURLProvider {
 
 	@Reference
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

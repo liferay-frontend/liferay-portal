@@ -21,11 +21,11 @@ import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSe
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingFileEntryIdException;
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingSampleException;
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingSampleFileEntryIdException;
-import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingSampleUrlException;
+import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingSampleURLException;
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingTermsOfUseArticleResourcePKException;
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingTermsOfUseContentException;
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingTermsOfUseException;
-import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingUrlException;
+import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingURLException;
 import com.liferay.commerce.product.type.virtual.exception.NoSuchCPDefinitionVirtualSettingException;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingService;
@@ -87,14 +87,14 @@ public class EditCPDefinitionVirtualSettingMVCActionCommand
 				exception instanceof
 					CPDefinitionVirtualSettingSampleFileEntryIdException ||
 				exception instanceof
-					CPDefinitionVirtualSettingSampleUrlException ||
+					CPDefinitionVirtualSettingSampleURLException ||
 				exception instanceof
 					CPDefinitionVirtualSettingTermsOfUseArticleResourcePKException ||
 				exception instanceof
 					CPDefinitionVirtualSettingTermsOfUseContentException ||
 				exception instanceof
 					CPDefinitionVirtualSettingTermsOfUseException ||
-				exception instanceof CPDefinitionVirtualSettingUrlException ||
+				exception instanceof CPDefinitionVirtualSettingURLException ||
 				exception instanceof
 					NoSuchCPDefinitionVirtualSettingException ||
 				exception instanceof PrincipalException) {
@@ -147,6 +147,8 @@ public class EditCPDefinitionVirtualSettingMVCActionCommand
 		long cpDefinitionVirtualSettingId = ParamUtil.getLong(
 			actionRequest, "cpDefinitionVirtualSettingId");
 
+		String className = ParamUtil.getString(actionRequest, "className");
+		long classPK = ParamUtil.getLong(actionRequest, "classPK");
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 		String url = ParamUtil.getString(actionRequest, "url");
 		int activationStatus = ParamUtil.getInteger(
@@ -156,7 +158,7 @@ public class EditCPDefinitionVirtualSettingMVCActionCommand
 		boolean useSample = ParamUtil.getBoolean(actionRequest, "useSample");
 		long sampleFileEntryId = ParamUtil.getLong(
 			actionRequest, "sampleFileEntryId");
-		String sampleUrl = ParamUtil.getString(actionRequest, "sampleUrl");
+		String sampleURL = ParamUtil.getString(actionRequest, "sampleURL");
 		boolean termsOfUseRequired = ParamUtil.getBoolean(
 			actionRequest, "termsOfUseRequired");
 		Map<Locale, String> termsOfUseContentMap =
@@ -164,7 +166,8 @@ public class EditCPDefinitionVirtualSettingMVCActionCommand
 				actionRequest, "termsOfUseContent");
 		long termsOfUseJournalArticleResourcePrimKey = ParamUtil.getLong(
 			actionRequest, "termsOfUseJournalArticleResourcePrimKey");
-		boolean override = ParamUtil.getBoolean(actionRequest, "override");
+		boolean override = ParamUtil.getBoolean(
+			actionRequest, "override", true);
 
 		long duration = TimeUnit.DAYS.toMillis(durationDays);
 
@@ -177,31 +180,35 @@ public class EditCPDefinitionVirtualSettingMVCActionCommand
 
 			// Add commerce product definition virtual setting
 
-			String className = ParamUtil.getString(actionRequest, "className");
-			long classPK = ParamUtil.getLong(actionRequest, "classPK");
-
 			cpDefinitionVirtualSetting =
 				_cpDefinitionVirtualSettingService.
 					addCPDefinitionVirtualSetting(
 						className, classPK, fileEntryId, url, activationStatus,
 						duration, maxUsages, useSample, sampleFileEntryId,
-						sampleUrl, termsOfUseRequired, termsOfUseContentMap,
+						sampleURL, termsOfUseRequired, termsOfUseContentMap,
 						termsOfUseJournalArticleResourcePrimKey, override,
 						serviceContext);
 		}
 		else {
+			if (!override) {
+				cpDefinitionVirtualSetting =
+					_cpDefinitionVirtualSettingService.
+						deleteCPDefinitionVirtualSetting(className, classPK);
+			}
+			else {
 
-			// Update commerce product definition virtual setting
+				// Update commerce product definition virtual setting
 
-			cpDefinitionVirtualSetting =
-				_cpDefinitionVirtualSettingService.
-					updateCPDefinitionVirtualSetting(
-						cpDefinitionVirtualSettingId, fileEntryId, url,
-						activationStatus, duration, maxUsages, useSample,
-						sampleFileEntryId, sampleUrl, termsOfUseRequired,
-						termsOfUseContentMap,
-						termsOfUseJournalArticleResourcePrimKey, override,
-						serviceContext);
+				cpDefinitionVirtualSetting =
+					_cpDefinitionVirtualSettingService.
+						updateCPDefinitionVirtualSetting(
+							cpDefinitionVirtualSettingId, fileEntryId, url,
+							activationStatus, duration, maxUsages, useSample,
+							sampleFileEntryId, sampleURL, termsOfUseRequired,
+							termsOfUseContentMap,
+							termsOfUseJournalArticleResourcePrimKey, override,
+							serviceContext);
+			}
 		}
 
 		return cpDefinitionVirtualSetting;

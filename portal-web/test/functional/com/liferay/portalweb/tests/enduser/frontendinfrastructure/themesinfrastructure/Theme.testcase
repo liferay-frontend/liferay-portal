@@ -61,9 +61,7 @@ definition {
 		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "Theme#CanBeAppliedToPageWhenClassicThemeNotAvailable";
 
-		AntCommand(
-			locator1 = "build-test.xml",
-			value1 = "delete-portal-theme -Dtheme-name=classic-theme");
+		AntCommands.runCommand("build-test.xml", "delete-portal-theme -Dtheme-name=classic-theme");
 
 		FileInstall.deployFileOnServer(jarFile = "test-theme.war");
 
@@ -218,7 +216,7 @@ definition {
 
 		Click(
 			key_text = "Change Current Theme",
-			locator1 = "Button#ANY");
+			locator1 = "Button#ANY_ENABLED");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
@@ -242,7 +240,7 @@ definition {
 
 		Click(
 			key_text = "Change Current Theme",
-			locator1 = "Button#ANY");
+			locator1 = "Button#ANY_ENABLED");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 

@@ -92,6 +92,7 @@ exports[`View Channel should render 1`] = `
             Email Reports: 
             Disabled
             <button
+              aria-label="Configure Email Reports"
               class="button-root btn btn-outline-borderless btn-sm btn-outline-unstyled"
               disabled=""
               type="button"
@@ -122,12 +123,6 @@ exports[`View Channel should render 1`] = `
             >
               Clear Data
             </button>
-            <button
-              class="button-root btn btn-secondary"
-              type="button"
-            >
-              Delete
-            </button>
           </span>
         </div>
       </div>
@@ -141,13 +136,10 @@ exports[`View Channel should render 1`] = `
             class="title d-flex align-items-center"
           >
             Sites Synced: 
-            <div
-              class="spinner-root"
-            >
-              <span
-                class="loading-animation loading-animation-light loading-animation-dotted loading-animation-sm"
-              />
-            </div>
+            <span
+              aria-hidden="true"
+              class="spinner-root loading-animation loading-animation-light loading-animation-sm"
+            />
           </div>
           <div>
             Manage sites synced to this property by going to 

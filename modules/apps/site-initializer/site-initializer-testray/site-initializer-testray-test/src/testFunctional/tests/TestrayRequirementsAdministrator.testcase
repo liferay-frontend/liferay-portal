@@ -1,7 +1,7 @@
 @component-name = "portal-solutions"
 definition {
 
-	property custom.properties = "feature.flag.LPS-163118=true";
+	property custom.properties = "feature.flag.LPS-163118=true${line.separator}feature.flag.LPS-154672=true";
 	property osgi.modules.includes = "site-initializer-testray";
 	property portal.release = "false";
 	property portal.upstream = "true";
@@ -17,15 +17,20 @@ definition {
 	var testSiteName = "Testray 2";
 
 	setUp {
-		task ("Login and create a Testray Site") {
+		task ("Set up instance and sign in") {
 			TestCase.setUpPortalInstance();
 
 			User.firstLoginPG();
-
-			Testray.addTestraySite(siteName = ${testSiteName});
 		}
 
-		task ("Given that I create all the necessary objects") {
+		task ("Create a new Testray Site") {
+			HeadlessSite.addSite(
+				siteName = ${testSiteName},
+				templateName = "Testray",
+				templateType = "Site Initializer");
+		}
+
+		task ("Create project, team, component and case type via API") {
 			JSONTestray.addProject(
 				projectDescription = "Project Description 1",
 				projectName = ${projectName});
@@ -44,15 +49,17 @@ definition {
 	}
 
 	tearDown {
+		task ("Delete case type and project via API, Testray Site and Client Extensions") {
+			JSONTestrayAPI.deleteObjectViaAPI(
+				object = "casetypes",
+				objectName = ${caseType});
+
+			JSONTestrayAPI.deleteProject(projectName = ${projectName});
+
+			Testray.testrayApisTearDown();
+		}
+
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
-
-		JSONTestrayAPI.deleteObjectViaAPI(
-			object = "casetypes",
-			objectName = ${caseType});
-
-		JSONTestrayAPI.deleteProject(projectName = ${projectName});
-
-		Testray.testrayApisTearDown();
 
 		if (${testPortalInstance} == "true") {
 			PortalInstances.tearDownCP();
@@ -62,6 +69,8 @@ definition {
 	@description = "Story ID: LPS-160751 | Test Summary: Verify if as an Administrator, I should be able to delete Requirements"
 	@priority = 5
 	test AdminCanDeleteRequirements {
+		property test.name.skip.portal.instance = "TestrayRequirementsAdministrator#AdminCanDeleteRequirements";
+
 		task ("Given that I create a new 'Requirement' via API") {
 			JSONTestray.addRequirement(
 				componentName = ${componentName},
@@ -98,6 +107,8 @@ definition {
 	@description = "Story ID: LPS-160751 | Test Summary: Verify if as an Administrator, I should be able to edit Requirements"
 	@priority = 5
 	test AdminCanEditRequirements {
+		property test.name.skip.portal.instance = "TestrayRequirementsAdministrator#AdminCanEditRequirements";
+
 		task ("Given that a team, component and requirement are created via API") {
 			JSONTestray.addTeam(
 				projectName = ${projectName},
@@ -151,6 +162,8 @@ definition {
 	@description = "Story ID: LPS-160751 | Test Summary: Verify if as an Administrator, I should be able to link and unlink a Case to a Requirement"
 	@priority = 3
 	test AdminCanLinkAndUnlinkCaseToRequirement {
+		property test.name.skip.portal.instance = "TestrayRequirementsAdministrator#AdminCanLinkAndUnlinkCaseToRequirement";
+
 		task ("Given that a case, case type and requirement are created via API") {
 			JSONTestray.addCases(
 				caseName = ${caseName},
@@ -206,6 +219,8 @@ definition {
 	@description = "Story ID: LPS-160751 | Test Summary: Verify that the user can not create a requirement if all the required fields are not filled in"
 	@priority = 2
 	test AdminCanViewRequiredField {
+		property test.name.skip.portal.instance = "TestrayRequirementsAdministrator#AdminCanViewRequiredField";
+
 		task ("Given that I go to the requirement page") {
 			ApplicationsMenu.gotoSite(site = ${testSiteName});
 

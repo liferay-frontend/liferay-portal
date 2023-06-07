@@ -4,9 +4,6 @@ apply plugin: "com.liferay.patcher"
 
 task patch(type: PatchTask)
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
-
 dependencies {
 	compileOnly group: "org.eclipse.platform", name: "org.eclipse.osgi", transitive: false, version: "3.13.0"
 }
@@ -18,6 +15,7 @@ patch {
 
 	fileNames "org/apache/felix/resolver/ResolverImpl.java"
 	fileNames "org/eclipse/osgi/container/ModuleDatabase.java"
+	fileNames "org/eclipse/osgi/container/ModuleRevisions.java"
 	fileNames "org/eclipse/osgi/framework/util/CaseInsensitiveDictionaryMap.java"
 	fileNames "org/eclipse/osgi/internal/framework/EquinoxConfiguration.java"
 	fileNames "org/eclipse/osgi/internal/framework/EquinoxContainerAdaptor.java"

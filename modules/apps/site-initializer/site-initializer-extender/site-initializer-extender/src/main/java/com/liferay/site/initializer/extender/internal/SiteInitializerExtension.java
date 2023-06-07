@@ -72,6 +72,7 @@ import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.settings.SettingsFactory;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalService;
 import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
@@ -106,7 +107,7 @@ public class SiteInitializerExtension {
 		DDMStructureLocalService ddmStructureLocalService,
 		DDMTemplateLocalService ddmTemplateLocalService,
 		DefaultDDMStructureHelper defaultDDMStructureHelper,
-		DLURLHelper dlURLHelper,
+		DependencyManager dependencyManager, DLURLHelper dlURLHelper,
 		DocumentFolderResource.Factory documentFolderResourceFactory,
 		DocumentResource.Factory documentResourceFactory,
 		FragmentsImporter fragmentsImporter,
@@ -144,7 +145,8 @@ public class SiteInitializerExtension {
 		ObjectRelationshipLocalService objectRelationshipLocalService,
 		ObjectRelationshipResource.Factory objectRelationshipResourceFactory,
 		OrganizationLocalService organizationLocalService,
-		OrganizationResource.Factory organizationResourceFactory, Portal portal,
+		OrganizationResource.Factory organizationResourceFactory,
+		PLOEntryLocalService ploEntryLocalService, Portal portal,
 		ResourceActionLocalService resourceActionLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		RoleLocalService roleLocalService,
@@ -168,9 +170,9 @@ public class SiteInitializerExtension {
 		WorkflowDefinitionLinkLocalService workflowDefinitionLinkLocalService,
 		WorkflowDefinitionResource.Factory workflowDefinitionResourceFactory) {
 
-		_dependencyManager = new DependencyManager(bundle.getBundleContext());
+		_dependencyManager = dependencyManager;
 
-		_component = _dependencyManager.createComponent();
+		_component = dependencyManager.createComponent();
 
 		BundleSiteInitializer bundleSiteInitializer = new BundleSiteInitializer(
 			accountResourceFactory, accountRoleLocalService,
@@ -195,9 +197,9 @@ public class SiteInitializerExtension {
 			objectEntryManager, objectFieldLocalService,
 			objectFieldResourceFactory, objectRelationshipLocalService,
 			objectRelationshipResourceFactory, organizationLocalService,
-			organizationResourceFactory, portal, resourceActionLocalService,
-			resourcePermissionLocalService, roleLocalService,
-			sapEntryLocalService, segmentsEntryLocalService,
+			organizationResourceFactory, ploEntryLocalService, portal,
+			resourceActionLocalService, resourcePermissionLocalService,
+			roleLocalService, sapEntryLocalService, segmentsEntryLocalService,
 			segmentsExperienceLocalService, settingsFactory,
 			siteNavigationMenuItemLocalService,
 			siteNavigationMenuItemTypeRegistry, siteNavigationMenuLocalService,

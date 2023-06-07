@@ -115,18 +115,17 @@ public class ModifiedFacetPortlet extends MVCPortlet {
 				portletSharedSearchResponse.getPortletPreferences(
 					renderRequest));
 
-		String parameterName =
-			modifiedFacetPortletPreferences.getParameterName();
-
-		SearchOptionalUtil.copy(
-			() -> portletSharedSearchResponse.getParameter(
-				parameterName + "From", renderRequest),
-			modifiedFacetDisplayContextBuilder::setFromParameterValue);
-
 		modifiedFacetDisplayContextBuilder.setFrequenciesVisible(
 			modifiedFacetPortletPreferences.isFrequenciesVisible());
 		modifiedFacetDisplayContextBuilder.setFrequencyThreshold(
 			modifiedFacetPortletPreferences.getFrequencyThreshold());
+
+		String parameterName =
+			modifiedFacetPortletPreferences.getParameterName();
+
+		modifiedFacetDisplayContextBuilder.setFromParameterValue(
+			portletSharedSearchResponse.getParameter(
+				parameterName + "From", renderRequest));
 
 		ThemeDisplay themeDisplay = _getThemeDisplay(renderRequest);
 
@@ -146,10 +145,9 @@ public class ModifiedFacetPortlet extends MVCPortlet {
 		modifiedFacetDisplayContextBuilder.setTimeZone(
 			themeDisplay.getTimeZone());
 
-		SearchOptionalUtil.copy(
-			() -> portletSharedSearchResponse.getParameter(
-				parameterName + "To", renderRequest),
-			modifiedFacetDisplayContextBuilder::setToParameterValue);
+		modifiedFacetDisplayContextBuilder.setToParameterValue(
+			portletSharedSearchResponse.getParameter(
+				parameterName + "To", renderRequest));
 
 		SearchResponse searchResponse =
 			portletSharedSearchResponse.getSearchResponse();

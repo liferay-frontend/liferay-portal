@@ -59,6 +59,7 @@ exports[`CriteriaSidebar should render 1`] = `
                 class="input-group-inset-item input-group-inset-item-after"
               >
                 <button
+                  aria-label="Search"
                   class="button-root btn btn-unstyled"
                   type="button"
                 >
@@ -90,6 +91,7 @@ exports[`CriteriaSidebar should render 1`] = `
           >
             <li
               class="criteria-sidebar-item-root color--"
+              draggable="true"
             >
               <span
                 class="inline-item"
@@ -134,6 +136,7 @@ exports[`CriteriaSidebar should render 1`] = `
           >
             <li
               class="criteria-sidebar-item-root color--"
+              draggable="true"
             >
               <span
                 class="inline-item"
