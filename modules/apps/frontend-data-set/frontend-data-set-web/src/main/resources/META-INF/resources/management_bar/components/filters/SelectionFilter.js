@@ -384,7 +384,7 @@ function SelectionFilter({
 						{loaderVisible && (
 							<ClayLoadingIndicator
 								ref={setInfiniteLoader}
-								sieze="sm"
+								size="sm"
 							/>
 						)}
 					</ul>
