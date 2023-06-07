@@ -384,7 +384,7 @@ function SelectionFilter({
 						{loaderVisible && (
 							<ClayLoadingIndicator
 								ref={setInfiniteLoader}
-								small
+								sieze="sm"
 							/>
 						)}
 					</ul>
@@ -426,7 +426,7 @@ function SelectionFilter({
 							});
 						}
 					}}
-					small
+					size="sm"
 				>
 					{actionType === 'add' && Liferay.Language.get('add-filter')}
 
