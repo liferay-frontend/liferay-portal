@@ -138,18 +138,7 @@ function SelectionFilter({
 		setSelectedItems(selectedData?.selectedItems || []);
 	}, [selectedData]);
 
-	const debouncedQuery = debounce((value) => {
-		setCurrentPage(1);
-		setSearch(value);
-	}, DEFAULT_DEBOUNCE_DELAY);
-
-	const handleAutocompleteQuery = (query) => {
-		debouncedQuery(query);
-	};
-
-	const isMounted = useIsMounted();
-
-	useEffect(() => {
+	const loadSelectionItems = function () {
 		if (apiURL && !localItems?.length) {
 			setLoading(true);
 
@@ -160,6 +149,7 @@ function SelectionFilter({
 						itemLabelProp,
 						itemKey
 					);
+
 					if (!isMounted()) {
 						return;
 					}
@@ -197,8 +187,22 @@ function SelectionFilter({
 				)
 			);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [apiURL, autocompleteEnabled, currentPage, isMounted, search]);
+	}
+
+	const debouncedQuery = debounce((value) => {
+		setCurrentPage(1);
+		setSearch(value);
+	}, DEFAULT_DEBOUNCE_DELAY);
+
+	const handleAutocompleteQuery = (query) => {
+		debouncedQuery(query);
+	};
+
+	const isMounted = useIsMounted();
+
+	useEffect(() => {
+		loadSelectionItems();
+	}, [search, currentPage]);
 
 	const setScrollingArea = useCallback((node) => {
 		scrollingAreaRef.current = node;
