@@ -38,7 +38,7 @@ export default function defaultFetch(resource, init = {}) {
 				resource = resourceLocation;
 			}
 			else {
-				resource = {...resource, url: resourceLocation};
+				Object.assign(resource, {url: resourceLocation});
 			}
 		}
 
@@ -64,7 +64,7 @@ export default function defaultFetch(resource, init = {}) {
 				resource = resourceLocation;
 			}
 			else {
-				resource = {...resource, url: resourceLocation};
+				Object.assign(resource, {url: resourceLocation});
 			}
 		}
 	}
