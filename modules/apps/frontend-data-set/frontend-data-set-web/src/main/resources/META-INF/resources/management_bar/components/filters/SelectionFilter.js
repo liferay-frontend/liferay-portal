@@ -182,9 +182,9 @@ function SelectionFilter({
 		}
 		else if (localItems?.length && autocompleteEnabled) {
 			setItems(
-				localItems?.filter(({label}) =>
+				search ? localItems?.filter(({label}) =>
 					label.toLowerCase().match(search.toLowerCase())
-				)
+				) : localItems
 			);
 		}
 	}
