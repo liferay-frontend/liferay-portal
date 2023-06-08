@@ -45,6 +45,21 @@ function fetchData(apiURL, searchParam, currentPage = 1) {
 	}).then((response) => response.json());
 }
 
+const mapResponseData = (data, itemLabelProp, itemKey) => {
+	return {
+		...data,
+		items: data.items.map((item) => {
+			const option = {label: undefined, value: undefined};
+			option.label = itemLabelProp
+				? getValueFromItem(item, itemLabelProp)
+				: item.label;
+			option.value = itemKey ? item[itemKey] : item.value;
+
+			return option;
+		}),
+	};
+};
+
 const getSelectedItemsLabel = ({selectedData}) => {
 	const {exclude, selectedItems} = selectedData;
 
@@ -138,8 +153,13 @@ function SelectionFilter({
 		if (apiURL && !localItems?.length) {
 			setLoading(true);
 
-			fetchData(requestURL, search, currentPage)
-				.then((data) => {
+			fetchData(apiURL, search, currentPage)
+				.then((response) => {
+					const data = mapResponseData(
+						response,
+						itemLabelProp,
+						itemKey
+					);
 					if (!isMounted()) {
 						return;
 					}
@@ -322,47 +342,40 @@ function SelectionFilter({
 						className="inline-scroller mx-n2 px-2"
 						ref={setScrollingArea}
 					>
-						{items.map((item) => {
-							const itemValue = itemKey
-								? item[itemKey]
-								: item.value;
-							const itemLabel = itemLabelProp
-								? getValueFromItem(item, itemLabelProp)
-								: item.label;
+						{items.map(({label, value}) => {
 							const newValue = {
-								label: itemLabel,
-								value: itemValue,
+								label,
+								value,
 							};
 
 							return (
 								<Item
-									aria-label={itemLabel}
+									aria-label={label}
 									checked={Boolean(
 										selectedItems.find(
-											(element) =>
-												element.value === itemValue
+											(element) => element.value === value
 										)
 									)}
-									key={itemValue}
-									label={itemLabel}
+									key={value}
+									label={label}
 									multiple={multiple}
 									onChange={() => {
 										setSelectedItems(
 											selectedItems.find(
 												(element) =>
-													element.value === itemValue
+													element.value === value
 											)
 												? selectedItems.filter(
 														(element) =>
 															element.value !==
-															itemValue
+															value
 												  )
 												: multiple
 												? [...selectedItems, newValue]
 												: [newValue]
 										);
 									}}
-									value={itemValue}
+									value={value}
 								/>
 							);
 						})}
