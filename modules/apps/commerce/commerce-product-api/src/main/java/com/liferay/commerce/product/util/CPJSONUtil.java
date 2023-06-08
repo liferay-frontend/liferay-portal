@@ -21,9 +21,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Igor Beslic
@@ -47,6 +49,16 @@ public class CPJSONUtil {
 		}
 
 		return jsonArray;
+	}
+
+	public static boolean isEmpty(String json) {
+		if (Validator.isNull(json) || Objects.equals(json, "[]") ||
+			Objects.equals(json, "{}")) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public static JSONArray toJSONArray(

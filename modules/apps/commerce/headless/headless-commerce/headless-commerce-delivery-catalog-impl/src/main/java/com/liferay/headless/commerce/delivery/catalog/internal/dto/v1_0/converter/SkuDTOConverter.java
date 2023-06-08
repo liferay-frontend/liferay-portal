@@ -44,12 +44,12 @@ import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Sku;
 import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.SkuOptionUtil;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.settings.SystemSettingsLocator;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -132,7 +132,11 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 				price = _getPrice(
 					cpSkuDTOConverterConvertContext.getCommerceContext(),
 					cpInstance,
-					ArrayUtil.toString(ddmOptions, StringPool.BLANK),
+					JSONUtil.toString(
+						JSONUtil.toJSONArray(
+							ddmOptions,
+							ddmOption -> _jsonFactory.createJSONObject(
+								ddmOption.toString()))),
 					cpSkuDTOConverterConvertContext.getLocale(),
 					cpSkuDTOConverterConvertContext.getQuantity());
 				published = cpInstance.isPublished();
@@ -410,6 +414,9 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 
 	@Reference
 	private CPInstanceLocalService _cpInstanceLocalService;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Language _language;

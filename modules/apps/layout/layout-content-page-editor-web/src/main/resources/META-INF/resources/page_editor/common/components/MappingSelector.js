@@ -64,6 +64,9 @@ function filterFields(fields, fieldType, filterLinkTypes) {
 			) {
 				return field.type === EDITABLE_TYPES.image;
 			}
+			else if (fieldType === EDITABLE_TYPES.action) {
+				return field.type === EDITABLE_TYPES.action;
+			}
 			else {
 				return field.type !== EDITABLE_TYPES.image;
 			}
@@ -121,6 +124,7 @@ function loadMappingFields({dispatch, item, sourceType}) {
 }
 
 export default function MappingSelectorWrapper({
+	fieldSelectorLabel,
 	fieldType,
 	filterLinkTypes = false,
 	mappedItem,
@@ -219,6 +223,7 @@ export default function MappingSelectorWrapper({
 			<MappingFieldSelector
 				fieldType={fieldType}
 				fields={collectionFields}
+				label={fieldSelectorLabel}
 				onValueSelect={(event) => {
 					if (event.target.value === UNMAPPED_OPTION.value) {
 						onMappingSelect({collectionFieldId: ''});
@@ -234,6 +239,7 @@ export default function MappingSelectorWrapper({
 		</>
 	) : (
 		<MappingSelector
+			fieldSelectorLabel={fieldSelectorLabel}
 			fieldType={fieldType}
 			filterLinkTypes={filterLinkTypes}
 			mappedItem={mappedItem}
@@ -243,6 +249,7 @@ export default function MappingSelectorWrapper({
 }
 
 function MappingSelector({
+	fieldSelectorLabel,
 	fieldType,
 	filterLinkTypes,
 	mappedItem,
@@ -464,6 +471,7 @@ function MappingSelector({
 				<MappingFieldSelector
 					fieldType={fieldType}
 					fields={itemFields}
+					label={fieldSelectorLabel}
 					onValueSelect={onFieldSelect}
 					value={selectedItem.mappedField || selectedItem.fieldId}
 				/>

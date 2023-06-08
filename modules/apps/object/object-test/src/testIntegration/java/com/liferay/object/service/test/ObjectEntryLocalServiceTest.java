@@ -412,6 +412,18 @@ public class ObjectEntryLocalServiceTest {
 
 		_assertCount(4);
 
+		_addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"emailAddressRequired", "john@liferay.com"
+			).put(
+				"listTypeEntryKeyRequired", "listTypeEntryKey1"
+			).put(
+				"multipleListTypeEntriesKey",
+				"multipleListTypeEntryKey1, multipleListTypeEntryKey2"
+			).build());
+
+		_assertCount(5);
+
 		AssertUtils.assertFailure(
 			ObjectEntryValuesException.ExceedsIntegerSize.class,
 			"Object entry value exceeds integer field allowed size",
@@ -548,6 +560,20 @@ public class ObjectEntryLocalServiceTest {
 					"emailAddressRequired", "john@liferay.com"
 				).put(
 					"listTypeEntryKeyRequired", RandomTestUtil.randomString()
+				).build()));
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.ListTypeEntry.class,
+			"Object field name \"multipleListTypeEntriesKey\" is not mapped " +
+				"to a valid list type entry",
+			() -> _addObjectEntry(
+				HashMapBuilder.<String, Serializable>put(
+					"emailAddressRequired", "john@liferay.com"
+				).put(
+					"multipleListTypeEntriesKey",
+					(Serializable)Arrays.asList(
+						"multipleListTypeEntryKey1",
+						RandomTestUtil.randomString())
 				).build()));
 
 		AssertUtils.assertFailure(
