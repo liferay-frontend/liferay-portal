@@ -595,8 +595,6 @@ public class ObjectEntryInfoItemFormProvider
 			return Collections.emptyList();
 		}
 
-		List<InfoFieldSetEntry> infoFieldSetEntries = new ArrayList<>();
-
 		InfoFieldSet.Builder infoFieldSetBuilder = InfoFieldSet.builder(
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
@@ -605,33 +603,28 @@ public class ObjectEntryInfoItemFormProvider
 			_objectDefinition.getName()
 		);
 
-		for (ObjectAction objectAction :
-				_objectActionLocalService.getObjectActions(
-					_objectDefinition.getObjectDefinitionId(),
-					ObjectActionTriggerConstants.KEY_STANDALONE)) {
-
-			infoFieldSetEntries.add(
-				infoFieldSetBuilder.infoFieldSetEntry(
-					InfoField.builder(
-					).infoFieldType(
-						ActionInfoFieldType.INSTANCE
-					).namespace(
-						ObjectAction.class.getSimpleName()
-					).name(
-						objectAction.getName()
-					).labelInfoLocalizedValue(
-						InfoLocalizedValue.<String>builder(
-						).defaultLocale(
-							LocaleUtil.fromLanguageId(
-								objectAction.getDefaultLanguageId())
-						).values(
-							objectAction.getLabelMap()
-						).build()
+		return TransformUtil.transform(
+			_objectActionLocalService.getObjectActions(
+				_objectDefinition.getObjectDefinitionId(),
+				ObjectActionTriggerConstants.KEY_STANDALONE),
+			objectAction -> infoFieldSetBuilder.infoFieldSetEntry(
+				InfoField.builder(
+				).infoFieldType(
+					ActionInfoFieldType.INSTANCE
+				).namespace(
+					ObjectAction.class.getSimpleName()
+				).name(
+					objectAction.getName()
+				).labelInfoLocalizedValue(
+					InfoLocalizedValue.<String>builder(
+					).defaultLocale(
+						LocaleUtil.fromLanguageId(
+							objectAction.getDefaultLanguageId())
+					).values(
+						objectAction.getLabelMap()
 					).build()
-				).build());
-		}
-
-		return infoFieldSetEntries;
+				).build()
+			).build());
 	}
 
 	private InfoFieldSet _getObjectDefinitionInfoFieldSet(

@@ -48,6 +48,7 @@ import {
 	getRolesList,
 	initialAccountsState,
 	initialDashboardNavigationItems,
+	publisherPermissionDescriptions,
 	publisherRoles,
 } from './PublishedDashboardPageUtil';
 
@@ -310,6 +311,7 @@ export function PublishedAppsDashboardPage() {
 							dateCreated: member.dateCreated,
 							email: member.emailAddress,
 							image: member.image,
+							isInvitedMember:false,
 							isCustomerAccount: false,
 							isPublisherAccount: false,
 							lastLoginDate: member.lastLoginDate,
@@ -464,6 +466,8 @@ export function PublishedAppsDashboardPage() {
 				<MembersPage
 					dashboardNavigationItems={dashboardNavigationItems}
 					icon={membersIcon}
+					listOfRoles={publisherRoles}
+					rolesPermissionDescription={publisherPermissionDescriptions}
 					selectedAccount={selectedAccount}
 					setShowDashboardNavigation={setShowDashboardNavigation}
 				/>

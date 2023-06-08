@@ -12,22 +12,13 @@
  * details.
  */
 
-package com.liferay.jenkins.results.parser;
+package com.liferay.segments.item.selector.criterion;
+
+import com.liferay.item.selector.BaseItemSelectorCriterion;
 
 /**
- * @author Peter Yoo
+ * @author Eudaldo Alonso
  */
-public class JDKFactory {
-
-	public static JDK getJDK(String jdkName) {
-		if (jdkName.contains("jdk7")) {
-			return _jdk7;
-		}
-
-		return _jdk8;
-	}
-
-	private static final JDK _jdk7 = new JDK7();
-	private static final JDK _jdk8 = new JDK8();
-
+public class SegmentsExperienceItemSelectorCriterion
+	extends BaseItemSelectorCriterion {
 }

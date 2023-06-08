@@ -12,22 +12,14 @@
  * details.
  */
 
-package com.liferay.jenkins.results.parser;
+package com.liferay.layout.reports.web.internal.constants;
 
 /**
- * @author Peter Yoo
+ * @author Renan Vasconcelos
  */
-public class JDKFactory {
+public class ProductNavigationControlMenuEntryConstants {
 
-	public static JDK getJDK(String jdkName) {
-		if (jdkName.contains("jdk7")) {
-			return _jdk7;
-		}
-
-		return _jdk8;
-	}
-
-	private static final JDK _jdk7 = new JDK7();
-	private static final JDK _jdk8 = new JDK8();
+	public static final String SESSION_CLICKS_KEY =
+		"com.liferay.layout.reports.web_layoutReportsPanelState";
 
 }
