@@ -99,12 +99,10 @@ function SelectionFilter({
 	selectedData,
 	setFilter,
 }) {
-	const [query, setQuery] = useState('');
 	const [search, setSearch] = useState('');
 	const [selectedItems, setSelectedItems] = useState(
 		selectedData?.selectedItems || []
 	);
-	const [requestURL, setRequestURL] = useState(apiURL);
 	const [items, setItems] = useState(apiURL ? null : initialItems);
 	const [localItems, setLocalItems] = useState(
 		initialItems.length ? initialItems : null
@@ -125,24 +123,9 @@ function SelectionFilter({
 		setSelectedItems(selectedData?.selectedItems || []);
 	}, [selectedData]);
 
-	useEffect(() => {
-		if (query === search) {
-			return;
-		}
-
-		if (localItems?.length) {
-			setRequestURL(null);
-		}
-		else {
-			setRequestURL(apiURL);
-			setCurrentPage(1);
-		}
-
-		setSearch(query);
-	}, [apiURL, query, search, localItems]);
-
 	const debouncedQuery = debounce((value) => {
-		setQuery(value);
+		setCurrentPage(1);
+		setSearch(value);
 	}, DEFAULT_DEBOUNCE_DELAY);
 
 	const handleAutocompleteQuery = (query) => {
@@ -152,7 +135,7 @@ function SelectionFilter({
 	const isMounted = useIsMounted();
 
 	useEffect(() => {
-		if (requestURL) {
+		if (apiURL && !localItems?.length) {
 			setLoading(true);
 
 			fetchData(requestURL, search, currentPage)
@@ -170,7 +153,11 @@ function SelectionFilter({
 						setItems((items) => [...items, ...data.items]);
 					}
 
-					if (firstRequest && data.totalCount <= DEFAULT_PAGE_SIZE) {
+					if (
+						firstRequest &&
+						data.totalCount <= DEFAULT_PAGE_SIZE &&
+						autocompleteEnabled
+					) {
 						setLocalItems(data.items);
 					}
 
@@ -183,16 +170,15 @@ function SelectionFilter({
 					}
 				});
 		}
-		else {
-			setLoading(false);
+		else if (localItems?.length && autocompleteEnabled) {
 			setItems(
-				localItems.filter(({label}) =>
+				localItems?.filter(({label}) =>
 					label.toLowerCase().match(search.toLowerCase())
 				)
 			);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [autocompleteEnabled, currentPage, isMounted, search, requestURL]);
+	}, [apiURL, autocompleteEnabled, currentPage, isMounted, search]);
 
 	const setScrollingArea = useCallback((node) => {
 		scrollingAreaRef.current = node;
