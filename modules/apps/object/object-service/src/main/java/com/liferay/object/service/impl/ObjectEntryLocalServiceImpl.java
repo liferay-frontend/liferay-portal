@@ -49,6 +49,7 @@ import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.internal.action.util.ObjectActionThreadLocal;
+import com.liferay.object.internal.entry.util.ObjectEntrySearchUtil;
 import com.liferay.object.internal.filter.parser.ObjectFilterParser;
 import com.liferay.object.internal.filter.parser.ObjectFilterParserServiceRegistry;
 import com.liferay.object.internal.petra.sql.dsl.DynamicObjectDefinitionLocalizationTableFactory;
@@ -661,12 +662,12 @@ public class ObjectEntryLocalServiceImpl
 	@Override
 	public List<ObjectEntry> getManyToManyObjectEntries(
 			long groupId, long objectRelationshipId, long primaryKey,
-			boolean related, boolean reverse, int start, int end)
+			boolean related, boolean reverse, String search, int start, int end)
 		throws PortalException {
 
 		DSLQuery dslQuery = _getManyToManyObjectEntriesGroupByStep(
-			groupId, objectRelationshipId, primaryKey, related, reverse,
-			DSLQueryFactoryUtil.selectDistinct(ObjectEntryTable.INSTANCE)
+			DSLQueryFactoryUtil.selectDistinct(ObjectEntryTable.INSTANCE),
+			groupId, objectRelationshipId, primaryKey, related, reverse, search
 		).limit(
 			start, end
 		);
@@ -681,13 +682,14 @@ public class ObjectEntryLocalServiceImpl
 	@Override
 	public int getManyToManyObjectEntriesCount(
 			long groupId, long objectRelationshipId, long primaryKey,
-			boolean related, boolean reverse)
+			boolean related, boolean reverse, String search)
 		throws PortalException {
 
 		DSLQuery dslQuery = _getManyToManyObjectEntriesGroupByStep(
-			groupId, objectRelationshipId, primaryKey, related, reverse,
 			DSLQueryFactoryUtil.countDistinct(
-				ObjectEntryTable.INSTANCE.objectEntryId));
+				ObjectEntryTable.INSTANCE.objectEntryId),
+			groupId, objectRelationshipId, primaryKey, related, reverse,
+			search);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(
@@ -742,12 +744,12 @@ public class ObjectEntryLocalServiceImpl
 
 	public List<ObjectEntry> getOneToManyObjectEntries(
 			long groupId, long objectRelationshipId, long primaryKey,
-			boolean related, int start, int end)
+			boolean related, String search, int start, int end)
 		throws PortalException {
 
 		DSLQuery dslQuery = _getOneToManyObjectEntriesGroupByStep(
-			groupId, objectRelationshipId, primaryKey, related,
-			DSLQueryFactoryUtil.selectDistinct(ObjectEntryTable.INSTANCE)
+			DSLQueryFactoryUtil.selectDistinct(ObjectEntryTable.INSTANCE),
+			groupId, objectRelationshipId, primaryKey, related, search
 		).limit(
 			start, end
 		);
@@ -762,13 +764,13 @@ public class ObjectEntryLocalServiceImpl
 	@Override
 	public int getOneToManyObjectEntriesCount(
 			long groupId, long objectRelationshipId, long primaryKey,
-			boolean related)
+			boolean related, String search)
 		throws PortalException {
 
 		DSLQuery dslQuery = _getOneToManyObjectEntriesGroupByStep(
-			groupId, objectRelationshipId, primaryKey, related,
 			DSLQueryFactoryUtil.countDistinct(
-				ObjectEntryTable.INSTANCE.objectEntryId));
+				ObjectEntryTable.INSTANCE.objectEntryId),
+			groupId, objectRelationshipId, primaryKey, related, search);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(
@@ -1686,40 +1688,6 @@ public class ObjectEntryLocalServiceImpl
 		}
 	}
 
-	private Predicate _fillObjectFieldPredicate(
-		Column<?, Object> column, String dbType, String search) {
-
-		if (StringUtil.equals(
-				dbType, ObjectFieldConstants.DB_TYPE_BIG_DECIMAL) ||
-			dbType.equals(ObjectFieldConstants.DB_TYPE_DOUBLE)) {
-
-			BigDecimal searchBigDecimal = BigDecimal.valueOf(
-				GetterUtil.getDouble(search));
-
-			if (searchBigDecimal.compareTo(BigDecimal.ZERO) != 0) {
-				return column.eq(searchBigDecimal);
-			}
-		}
-		else if (StringUtil.equals(dbType, ObjectFieldConstants.DB_TYPE_CLOB) ||
-				 StringUtil.equals(
-					 dbType, ObjectFieldConstants.DB_TYPE_STRING)) {
-
-			return column.like("%" + search + "%");
-		}
-		else if (StringUtil.equals(
-					dbType, ObjectFieldConstants.DB_TYPE_INTEGER) ||
-				 StringUtil.equals(dbType, ObjectFieldConstants.DB_TYPE_LONG)) {
-
-			long searchLong = GetterUtil.getLong(search);
-
-			if (searchLong != 0L) {
-				return column.eq(searchLong);
-			}
-		}
-
-		return null;
-	}
-
 	private Predicate _fillPredicate(
 			long objectDefinitionId, Predicate predicate, String search)
 		throws PortalException {
@@ -1748,8 +1716,9 @@ public class ObjectEntryLocalServiceImpl
 				continue;
 			}
 
-			Predicate objectFieldPredicate = _fillObjectFieldPredicate(
-				(Column<?, Object>)column, objectField.getDBType(), search);
+			Predicate objectFieldPredicate =
+				ObjectEntrySearchUtil.getObjectFieldPredicate(
+					(Column<?, Object>)column, objectField.getDBType(), search);
 
 			if (searchPredicate == null) {
 				searchPredicate = objectFieldPredicate;
@@ -2111,8 +2080,8 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	private GroupByStep _getManyToManyObjectEntriesGroupByStep(
-			long groupId, long objectRelationshipId, long primaryKey,
-			boolean related, boolean reverse, FromStep fromStep)
+			FromStep fromStep, long groupId, long objectRelationshipId,
+			long primaryKey, boolean related, boolean reverse, String search)
 		throws PortalException {
 
 		ObjectRelationship objectRelationship =
@@ -2230,6 +2199,10 @@ public class ObjectEntryLocalServiceImpl
 
 					return null;
 				}
+			).and(
+				ObjectEntrySearchUtil.getRelatedModelsPredicate(
+					dynamicObjectDefinitionTable, objectDefinition2,
+					_objectFieldLocalService, search)
 			)
 		);
 	}
@@ -2300,8 +2273,8 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	private GroupByStep _getOneToManyObjectEntriesGroupByStep(
-			long groupId, long objectRelationshipId, long primaryKey,
-			boolean related, FromStep fromStep)
+			FromStep fromStep, long groupId, long objectRelationshipId,
+			long primaryKey, boolean related, String search)
 		throws PortalException {
 
 		ObjectRelationship objectRelationship =
@@ -2399,6 +2372,12 @@ public class ObjectEntryLocalServiceImpl
 					return _inlineSQLHelper.getPermissionWherePredicate(
 						objectDefinition2.getClassName(), primaryKeyColumn);
 				}
+			).and(
+				ObjectEntrySearchUtil.getRelatedModelsPredicate(
+					dynamicObjectDefinitionTable,
+					_objectDefinitionPersistence.fetchByPrimaryKey(
+						objectRelationship.getObjectDefinitionId2()),
+					_objectFieldLocalService, search)
 			)
 		);
 	}
