@@ -1,5 +1,4 @@
 @component-name = "portal-document-library-store"
-@ignore = "true"
 definition {
 
 	property aws.store.enabled = "true";
@@ -40,6 +39,10 @@ definition {
 		var groupId = JSONGroupAPI._getGroupIdByName(
 			groupName = "Test Site Name",
 			site = "true");
+
+		JSONLayoututilitypage.deleteLayoutUtilityPage(
+			groupName = "Test Site Name",
+			layoutUtilityPageName = "404 Error");
 
 		AntCommands.runCommand("build-test-s3-store.xml", "assert-no-document-in-bucket -DcompanyId=${companyId} -DgroupId=${groupId} -Ds3.bucket.id=${bucketID}");
 
