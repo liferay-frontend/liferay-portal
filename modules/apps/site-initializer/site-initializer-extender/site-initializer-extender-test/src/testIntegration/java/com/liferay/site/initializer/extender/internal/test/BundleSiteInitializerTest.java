@@ -14,6 +14,7 @@
 
 package com.liferay.site.initializer.extender.internal.test;
 
+import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetEntry;
@@ -75,6 +76,8 @@ import com.liferay.headless.admin.user.resource.v1_0.OrganizationResource;
 import com.liferay.headless.admin.user.resource.v1_0.UserAccountResource;
 import com.liferay.headless.admin.workflow.dto.v1_0.WorkflowDefinition;
 import com.liferay.headless.admin.workflow.resource.v1_0.WorkflowDefinitionResource;
+import com.liferay.headless.commerce.admin.account.dto.v1_0.AdminAccountGroup;
+import com.liferay.headless.commerce.admin.account.resource.v1_0.AdminAccountGroupResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductSpecificationResource;
 import com.liferay.headless.commerce.admin.order.dto.v1_0.OrderType;
 import com.liferay.headless.commerce.admin.order.resource.v1_0.OrderTypeResource;
@@ -357,6 +360,99 @@ public class BundleSiteInitializerTest {
 			FileUtil.deltree(tempDir1);
 			FileUtil.deltree(tempDir2);
 		}
+	}
+
+	private void _assertAccountGroupAssignments(
+		AdminAccountGroup accountGroup, int accountGroupAssignmentsCount) {
+
+		Assert.assertEquals(
+			accountGroupAssignmentsCount,
+			_accountGroupRelLocalService.
+				getAccountGroupRelsCountByAccountGroupId(accountGroup.getId()));
+	}
+
+	private void _assertAccountGroups1() throws Exception {
+		AdminAccountGroupResource.Builder accountGroupResourceBuilder =
+			_adminAccountGroupResourcefactory.create();
+
+		AdminAccountGroupResource accountGroupResource =
+			accountGroupResourceBuilder.user(
+				_serviceContext.fetchUser()
+			).build();
+
+		AdminAccountGroup accountGroup =
+			accountGroupResource.getAccountGroupByExternalReferenceCode(
+				"TESTACCOUNTGROUP1");
+
+		Assert.assertNotNull(accountGroup);
+		Assert.assertEquals("Test Account Group 1", accountGroup.getName());
+
+		_assertAccountGroupAssignments(accountGroup, 1);
+
+		accountGroup =
+			accountGroupResource.getAccountGroupByExternalReferenceCode(
+				"TESTACCOUNTGROUP2");
+
+		Assert.assertNotNull(accountGroup);
+		Assert.assertEquals("Test Account Group 2", accountGroup.getName());
+
+		_assertAccountGroupAssignments(accountGroup, 1);
+
+		accountGroup =
+			accountGroupResource.getAccountGroupByExternalReferenceCode(
+				"TESTACCOUNTGROUP3");
+
+		Assert.assertNotNull(accountGroup);
+		Assert.assertEquals("Test Account Group 3", accountGroup.getName());
+
+		_assertAccountGroupAssignments(accountGroup, 0);
+	}
+
+	private void _assertAccountGroups2() throws Exception {
+		AdminAccountGroupResource.Builder accountGroupResourceBuilder =
+			_adminAccountGroupResourcefactory.create();
+
+		AdminAccountGroupResource accountGroupResource =
+			accountGroupResourceBuilder.user(
+				_serviceContext.fetchUser()
+			).build();
+
+		AdminAccountGroup accountGroup =
+			accountGroupResource.getAccountGroupByExternalReferenceCode(
+				"TESTACCOUNTGROUP1");
+
+		Assert.assertNotNull(accountGroup);
+		Assert.assertEquals("Test Account Group 1", accountGroup.getName());
+
+		_assertAccountGroupAssignments(accountGroup, 1);
+
+		accountGroup =
+			accountGroupResource.getAccountGroupByExternalReferenceCode(
+				"TESTACCOUNTGROUP2");
+
+		Assert.assertNotNull(accountGroup);
+		Assert.assertEquals(
+			"Test Account Group 2 Update", accountGroup.getName());
+
+		_assertAccountGroupAssignments(accountGroup, 1);
+
+		accountGroup =
+			accountGroupResource.getAccountGroupByExternalReferenceCode(
+				"TESTACCOUNTGROUP3");
+
+		Assert.assertNotNull(accountGroup);
+		Assert.assertEquals("Test Account Group 3", accountGroup.getName());
+
+		_assertAccountGroupAssignments(accountGroup, 2);
+
+		accountGroup =
+			accountGroupResource.getAccountGroupByExternalReferenceCode(
+				"TESTACCOUNTGROUP4");
+
+		Assert.assertNotNull(accountGroup);
+		Assert.assertEquals("Test Account Group 4", accountGroup.getName());
+
+		_assertAccountGroupAssignments(accountGroup, 0);
 	}
 
 	private void _assertAccounts1() throws Exception {
@@ -3230,6 +3326,7 @@ public class BundleSiteInitializerTest {
 	private void _test1(SiteInitializer siteInitializer) throws Exception {
 		siteInitializer.initialize(_group.getGroupId());
 
+		_assertAccountGroups1();
 		_assertAccounts1();
 		_assertAssetListEntries();
 		_assertAssetVocabularies();
@@ -3275,6 +3372,7 @@ public class BundleSiteInitializerTest {
 	private void _test2(SiteInitializer siteInitializer) throws Exception {
 		siteInitializer.initialize(_group.getGroupId());
 
+		_assertAccountGroups2();
 		_assertAccounts2();
 		_assertCommerceCatalogs2();
 		_assertCommerceChannel2();
@@ -3298,7 +3396,13 @@ public class BundleSiteInitializerTest {
 	private static PLOEntryLocalService _ploEntryLocalService;
 
 	@Inject
+	private AccountGroupRelLocalService _accountGroupRelLocalService;
+
+	@Inject
 	private AccountResource.Factory _accountResourceFactory;
+
+	@Inject
+	private AdminAccountGroupResource.Factory _adminAccountGroupResourcefactory;
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;

@@ -19,6 +19,7 @@ import com.liferay.poshi.core.script.PoshiScriptParserException;
 import com.liferay.poshi.core.script.PoshiScriptParserUtil;
 import com.liferay.poshi.core.util.Dom4JUtil;
 import com.liferay.poshi.core.util.NaturalOrderStringComparator;
+import com.liferay.poshi.core.util.PoshiProperties;
 import com.liferay.poshi.core.util.RegexUtil;
 import com.liferay.poshi.core.util.StringPool;
 import com.liferay.poshi.core.util.StringUtil;
@@ -313,6 +314,21 @@ public abstract class PoshiElement
 		String blockName = getBlockName();
 
 		sb.append(blockName);
+
+		PoshiProperties poshiProperties = PoshiProperties.getPoshiProperties();
+
+		if (poshiProperties.generateCommandSignature &&
+			(blockName.startsWith("function") ||
+			 blockName.startsWith("macro"))) {
+
+			sb.append("(");
+
+			if (Validator.isNotNull(attributeValue("arguments"))) {
+				sb.append(attributeValue("arguments"));
+			}
+
+			sb.append(")");
+		}
 
 		sb.append(" {");
 

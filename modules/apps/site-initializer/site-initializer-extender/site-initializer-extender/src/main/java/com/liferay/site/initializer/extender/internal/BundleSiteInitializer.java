@@ -17,6 +17,12 @@ package com.liferay.site.initializer.extender.internal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.model.AccountEntryModel;
+import com.liferay.account.model.AccountGroup;
+import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountGroupLocalService;
+import com.liferay.account.service.AccountGroupRelService;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetCategory;
@@ -58,6 +64,8 @@ import com.liferay.headless.admin.user.resource.v1_0.OrganizationResource;
 import com.liferay.headless.admin.user.resource.v1_0.UserAccountResource;
 import com.liferay.headless.admin.workflow.dto.v1_0.WorkflowDefinition;
 import com.liferay.headless.admin.workflow.resource.v1_0.WorkflowDefinitionResource;
+import com.liferay.headless.commerce.admin.account.dto.v1_0.AdminAccountGroup;
+import com.liferay.headless.commerce.admin.account.resource.v1_0.AdminAccountGroupResource;
 import com.liferay.headless.delivery.dto.v1_0.Document;
 import com.liferay.headless.delivery.dto.v1_0.DocumentFolder;
 import com.liferay.headless.delivery.dto.v1_0.KnowledgeBaseArticle;
@@ -227,9 +235,13 @@ import org.osgi.framework.wiring.BundleWiring;
 public class BundleSiteInitializer implements SiteInitializer {
 
 	public BundleSiteInitializer(
+		AccountEntryLocalService accountEntryLocalService,
+		AccountGroupLocalService accountGroupLocalService,
+		AccountGroupRelService accountGroupRelService,
 		AccountResource.Factory accountResourceFactory,
 		AccountRoleLocalService accountRoleLocalService,
 		AccountRoleResource.Factory accountRoleResourceFactory,
+		AdminAccountGroupResource.Factory adminAccountGroupResourceFactory,
 		AssetCategoryLocalService assetCategoryLocalService,
 		AssetListEntryLocalService assetListEntryLocalService, Bundle bundle,
 		ClientExtensionEntryLocalService clientExtensionEntryLocalService,
@@ -300,9 +312,13 @@ public class BundleSiteInitializer implements SiteInitializer {
 		WorkflowDefinitionLinkLocalService workflowDefinitionLinkLocalService,
 		WorkflowDefinitionResource.Factory workflowDefinitionResourceFactory) {
 
+		_accountEntryLocalService = accountEntryLocalService;
+		_accountGroupLocalService = accountGroupLocalService;
+		_accountGroupRelService = accountGroupRelService;
 		_accountResourceFactory = accountResourceFactory;
 		_accountRoleLocalService = accountRoleLocalService;
 		_accountRoleResourceFactory = accountRoleResourceFactory;
+		_adminAccountGroupResourceFactory = adminAccountGroupResourceFactory;
 		_assetCategoryLocalService = assetCategoryLocalService;
 		_assetListEntryLocalService = assetListEntryLocalService;
 		_bundle = bundle;
@@ -455,7 +471,10 @@ public class BundleSiteInitializer implements SiteInitializer {
 				siteNavigationMenuItemSettingsBuilder =
 					new SiteNavigationMenuItemSettingsBuilder();
 
+			_invoke(() -> _addAccountGroups(serviceContext));
 			_invoke(() -> _addAccounts(serviceContext));
+
+			_invoke(() -> _addAccountGroupAssignments(serviceContext));
 
 			Map<String, String> ddmStructureEntryIdsStringUtilReplaceValues =
 				_invoke(() -> _addOrUpdateDDMStructures(serviceContext));
@@ -643,6 +662,94 @@ public class BundleSiteInitializer implements SiteInitializer {
 		_servletContext = servletContext;
 	}
 
+	private void _addAccountGroupAssignments(ServiceContext serviceContext)
+		throws Exception {
+
+		String json = SiteInitializerUtil.read(
+			"/site-initializer/account-group-assignments.json",
+			_servletContext);
+
+		if (json == null) {
+			return;
+		}
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+			JSONArray accountsJSONArray = jsonObject.getJSONArray("accounts");
+
+			if (JSONUtil.isEmpty(accountsJSONArray)) {
+				continue;
+			}
+
+			List<AccountEntry> accountEntries = new ArrayList<>();
+
+			for (int j = 0; j < accountsJSONArray.length(); j++) {
+				accountEntries.add(
+					_accountEntryLocalService.
+						getAccountEntryByExternalReferenceCode(
+							accountsJSONArray.getString(j),
+							serviceContext.getCompanyId()));
+			}
+
+			if (ListUtil.isEmpty(accountEntries)) {
+				continue;
+			}
+
+			AccountGroup accountGroup =
+				_accountGroupLocalService.
+					fetchAccountGroupByExternalReferenceCode(
+						jsonObject.getString(
+							"accountGroupExternalReferenceCode"),
+						serviceContext.getCompanyId());
+
+			if (accountGroup == null) {
+				continue;
+			}
+
+			_accountGroupRelService.addAccountGroupRels(
+				accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
+				ListUtil.toLongArray(
+					accountEntries, AccountEntryModel::getAccountEntryId));
+		}
+	}
+
+	private void _addAccountGroups(ServiceContext serviceContext)
+		throws Exception {
+
+		String json = SiteInitializerUtil.read(
+			"/site-initializer/account-groups.json", _servletContext);
+
+		if (json == null) {
+			return;
+		}
+
+		AdminAccountGroupResource.Builder builder =
+			_adminAccountGroupResourceFactory.create();
+
+		AdminAccountGroupResource adminAccountGroupResource = builder.user(
+			serviceContext.fetchUser()
+		).build();
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			AdminAccountGroup accountGroup = AdminAccountGroup.toDTO(
+				String.valueOf(jsonArray.getJSONObject(i)));
+
+			if (accountGroup == null) {
+				_log.error(
+					"Unable to transform account group from JSON: " + json);
+
+				continue;
+			}
+
+			adminAccountGroupResource.postAccountGroup(accountGroup);
+		}
+	}
+
 	private void _addAccounts(ServiceContext serviceContext) throws Exception {
 		String json = SiteInitializerUtil.read(
 			"/site-initializer/accounts.json", _servletContext);
@@ -662,6 +769,12 @@ public class BundleSiteInitializer implements SiteInitializer {
 		for (int i = 0; i < jsonArray.length(); i++) {
 			Account account = Account.toDTO(
 				String.valueOf(jsonArray.getJSONObject(i)));
+
+			if (account == null) {
+				_log.error("Unable to transform account from JSON: " + json);
+
+				continue;
+			}
 
 			accountResource.putAccountByExternalReferenceCode(
 				account.getExternalReferenceCode(), account);
@@ -4889,9 +5002,14 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 	private static final ObjectMapper _objectMapper = new ObjectMapper();
 
+	private final AccountEntryLocalService _accountEntryLocalService;
+	private final AccountGroupLocalService _accountGroupLocalService;
+	private final AccountGroupRelService _accountGroupRelService;
 	private final AccountResource.Factory _accountResourceFactory;
 	private final AccountRoleLocalService _accountRoleLocalService;
 	private final AccountRoleResource.Factory _accountRoleResourceFactory;
+	private final AdminAccountGroupResource.Factory
+		_adminAccountGroupResourceFactory;
 	private final AssetCategoryLocalService _assetCategoryLocalService;
 	private final AssetListEntryLocalService _assetListEntryLocalService;
 	private final Bundle _bundle;
