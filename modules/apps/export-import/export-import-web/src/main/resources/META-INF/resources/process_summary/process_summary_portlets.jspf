@@ -89,34 +89,32 @@
 
 				String controlClass = control.getClassName();
 
-				if (modelAdditionCounters != null) {
-					if (modelAdditionCounters.containsKey(controlClass)) {
-						LongWrapper modelAdditionCounter = modelAdditionCounters.get(controlClass);
-
-						Long value = modelAdditionCounter.getValue();
-
-						currentAdditions.put(controlLabel, value);
-
-						totalAdditions += value;
-					}
-				}
-				else {
+				if (modelAdditionCounters == null) {
 					continue;
 				}
 
-				if (modelDeletionCounters != null) {
-					if (modelDeletionCounters.containsKey(controlClass)) {
-						LongWrapper modelDeletionCounter = modelDeletionCounters.get(controlClass);
+				if (modelAdditionCounters.containsKey(controlClass)) {
+					LongWrapper modelAdditionCounter = modelAdditionCounters.get(controlClass);
 
-						Long value = modelDeletionCounter.getValue();
+					Long value = modelAdditionCounter.getValue();
 
-						currentDeletions.put(controlLabel, value);
+					currentAdditions.put(controlLabel, value);
 
-						totalDeletions += value;
-					}
+					totalAdditions += value;
 				}
-				else {
+
+				if (modelDeletionCounters == null) {
 					continue;
+				}
+
+				if (modelDeletionCounters.containsKey(controlClass)) {
+					LongWrapper modelDeletionCounter = modelDeletionCounters.get(controlClass);
+
+					Long value = modelDeletionCounter.getValue();
+
+					currentDeletions.put(controlLabel, value);
+
+					totalDeletions += value;
 				}
 			}
 
