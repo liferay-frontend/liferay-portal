@@ -44,7 +44,6 @@ public class CommerceCatalogTableFDSView extends BaseTableFDSView {
 			"name", "name",
 			fdsTableSchemaField -> {
 				fdsTableSchemaField.setContentRenderer("actionLink");
-				fdsTableSchemaField.setExpand(true);
 			}
 		).add(
 			"defaultLanguageId", "default-language"

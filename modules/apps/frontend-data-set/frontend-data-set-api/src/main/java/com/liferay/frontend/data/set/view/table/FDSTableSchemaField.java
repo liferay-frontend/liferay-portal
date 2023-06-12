@@ -92,12 +92,6 @@ public class FDSTableSchemaField {
 		return this;
 	}
 
-	public FDSTableSchemaField setExpand(boolean expand) {
-		_expand = expand;
-
-		return this;
-	}
-
 	public FDSTableSchemaField setFieldName(String fieldName) {
 		_fieldName = fieldName;
 
