@@ -67,6 +67,20 @@ export default function defaultFetch(resource, init = {}) {
 				resource = {...resource, url: resourceLocation};
 			}
 		}
+
+		const doAsGroupId = Liferay.ThemeDisplay.getScopeGroupId();
+
+		if (doAsGroupId) {
+			resourceURL.searchParams.set('doAsGroupId', doAsGroupId);
+			resourceLocation = resourceURL.toString();
+
+			if (typeof resource === 'string') {
+				resource = resourceLocation;
+			}
+			else {
+				resource = {...resource, url: resourceLocation};
+			}
+		}
 	}
 
 	new Headers(init.headers || {}).forEach((value, key) => {
