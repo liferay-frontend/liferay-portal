@@ -52,10 +52,6 @@ public class FDSTableSchemaField {
 		return _contentRendererClientExtension;
 	}
 
-	public boolean isExpand() {
-		return _expand;
-	}
-
 	public boolean isLocalizeLabel() {
 		return _localizeLabel;
 	}
@@ -132,8 +128,6 @@ public class FDSTableSchemaField {
 		).put(
 			"contentRendererModuleURL", getContentRendererModuleURL()
 		).put(
-			"expand", isExpand()
-		).put(
 			"fieldName",
 			() -> {
 				String fieldName = getFieldName();
@@ -173,7 +167,6 @@ public class FDSTableSchemaField {
 	private String _contentRenderer;
 	private boolean _contentRendererClientExtension;
 	private String _contentRendererModuleURL;
-	private boolean _expand;
 	private String _fieldName;
 	private String _label;
 	private boolean _localizeLabel = true;
