@@ -23,7 +23,7 @@ import { DisplayType } from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
 
 import { Liferay } from '../../liferay/liferay';
-import { getMyUserAccount } from '../../utils/api';
+import { getAccountGroup, getMyUserAccount } from "../../utils/api";
 import { createPassword } from '../../utils/createPassword';
 import {
   addAdditionalInfo,
@@ -138,23 +138,36 @@ export function InviteMemberModal({
       return;
     }
 
+    const accountGroups = await getAccountGroup(selectedAccount.id);
+    const accountGroupERC = accountGroups && accountGroups[0]?.externalReferenceCode;
+
+    if(!accountGroupERC){
+      renderToast(
+        "To invite a member, the account must be associated with an accountGroup",
+        '',
+        'danger'
+      );
+
+      return onClose();
+    }
+
     // eslint-disable-next-line prefer-const
     let [user, myUser] = await Promise.all([
       getUserByEmail(formFields.email),
       getMyUserAccount(),
     ]);
 
-    if (user) {
-      if (checkIfUserIsInvited(user, selectedAccount.id)) {
-        renderToast(
-          "There's already a user with this email invited to this account",
-          '',
-          'danger'
-        );
-
-        return onClose();
-      }
-    } else {
+    if (user && checkIfUserIsInvited(user, selectedAccount.id)) {
+      renderToast(
+        "There's already a user with this email invited to this account",
+        '',
+        'danger'
+      );
+  
+      return onClose();
+    }
+  
+    if (!user) {
       user = await createNewUser(jsonBody);
     }
 
@@ -163,15 +176,16 @@ export function InviteMemberModal({
 
     await addAdditionalInfo({
       acceptInviteStatus: false,
+      accountGroupERC,
       accountName: selectedAccount.name,
       emailOfMember: formFields.email,
       inviteURL:
         Liferay.ThemeDisplay.getPortalURL() +
         '/c/login?redirect=' +
-        getSiteURL(),
+        getSiteURL() + '/loading',
       inviterName: myUser.givenName,
       mothersName: userPassword,
-      r_accountToUserAdditionalInfos_accountEntryId: selectedAccount.id,
+      r_accountEntryToUserAdditionalInfo_accountEntryId: selectedAccount.id,
       r_userToUserAddInfo_userId: user.id,
       roles: getCheckedRoles(),
       userFirstName: formFields.firstName,

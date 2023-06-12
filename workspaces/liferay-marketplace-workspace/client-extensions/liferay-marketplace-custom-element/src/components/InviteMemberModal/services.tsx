@@ -146,12 +146,13 @@ export async function callRolesApi(
 
 type AdditionalInfoBody = {
   acceptInviteStatus: boolean;
+  accountGroupERC: string;
   accountName: string;
   emailOfMember: string;
   inviteURL: string;
   inviterName: string;
   mothersName: string;
-  r_accountToUserAdditionalInfos_accountEntryId: number;
+  r_accountEntryToUserAdditionalInfo_accountEntryId: number;
   r_userToUserAddInfo_userId: string;
   roles: string;
   userFirstName: string;

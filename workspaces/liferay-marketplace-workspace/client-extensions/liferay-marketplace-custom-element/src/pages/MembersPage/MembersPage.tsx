@@ -12,7 +12,7 @@
  * details.
  */
 
-import { DisplayType } from '@clayui/alert';
+import ClayAlert, { DisplayType } from '@clayui/alert';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -262,6 +262,21 @@ export function MembersPage({
           selectedAccount={selectedAccount}
         ></InviteMemberModal>
       )}
+       <ClayAlert.ToastContainer>
+        {toastItems?.map((alert, index) => (
+          <ClayAlert
+            autoClose={5000}
+            displayType={alert.type}
+            key={index}
+            onClose={() => {
+              setToastItems((prevItems) =>
+                prevItems.filter((item) => item !== alert)
+              );
+            }}
+            title={alert.title}
+          >{alert.message}</ClayAlert>
+        ))}
+      </ClayAlert.ToastContainer>
     </>
   );
 }
