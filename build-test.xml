@@ -6757,7 +6757,7 @@ go</echo>
 				<then>
 					<echo append="true" file="${app.server.tomcat.dir}/bin/setenv.sh">
 						<![CDATA[
-if [ "$1" = "aspectj" ]
+if [ "${1}" = "aspectj" ]
 then
 	CATALINA_OPTS="${CATALINA_OPTS} ${aspectj.agent} -Dorg.aspectj.weaver.loadtime.configuration=${aspectj.configuration}"
 
