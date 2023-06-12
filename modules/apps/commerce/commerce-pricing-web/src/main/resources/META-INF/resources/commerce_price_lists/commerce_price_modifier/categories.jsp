@@ -96,7 +96,7 @@ long commercePriceModifierId = commercePriceListDisplayContext.getCommercePriceM
 				title='<%= LanguageUtil.get(request, "categories") %>'
 			>
 				<frontend-data-set:headless-display
-					apiURL="<%= commercePriceListDisplayContext.getPriceModifierCategoriesApiUrl() %>"
+					apiURL="<%= commercePriceListDisplayContext.getPriceModifierCategoriesAPIURL() %>"
 					fdsActionDropdownItems="<%= commercePriceListDisplayContext.getPriceModifierCategoryFDSActionDropdownItems() %>"
 					formName="fm"
 					id="<%= CommercePricingFDSNames.PRICE_MODIFIER_CATEGORIES %>"

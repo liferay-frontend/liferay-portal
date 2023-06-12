@@ -20,9 +20,11 @@ import com.liferay.headless.admin.taxonomy.client.dto.v1_0.TaxonomyVocabulary;
 import com.liferay.headless.admin.taxonomy.client.pagination.Page;
 import com.liferay.headless.admin.taxonomy.client.pagination.Pagination;
 import com.liferay.headless.admin.taxonomy.client.problem.Problem;
+import com.liferay.headless.admin.taxonomy.client.resource.v1_0.TaxonomyVocabularyResource;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Map;
@@ -76,9 +78,10 @@ public class TaxonomyVocabularyResourceTest
 	public void testGetAssetLibraryTaxonomyVocabulariesPage() throws Exception {
 		super.testGetAssetLibraryTaxonomyVocabulariesPage();
 
-		testGetAssetLibraryTaxonomyVocabulariesPage_addTaxonomyVocabulary(
-			testGetAssetLibraryTaxonomyVocabulariesPage_getAssetLibraryId(),
-			randomTaxonomyVocabulary());
+		TaxonomyVocabulary taxonomyVocabulary =
+			testGetAssetLibraryTaxonomyVocabulariesPage_addTaxonomyVocabulary(
+				testGetAssetLibraryTaxonomyVocabulariesPage_getAssetLibraryId(),
+				randomTaxonomyVocabulary());
 
 		Page<TaxonomyVocabulary> page =
 			taxonomyVocabularyResource.getAssetLibraryTaxonomyVocabulariesPage(
@@ -132,6 +135,35 @@ public class TaxonomyVocabularyResourceTest
 					"method", "PUT"
 				).build()
 			).build());
+
+		taxonomyVocabularyResource = TaxonomyVocabularyResource.builder(
+		).authentication(
+			"test@liferay.com", "test"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"restrictFields",
+			"actions,assetLibraryKey,assetTypes,availableLanguages,creator," +
+				"dateCreated,dateModified,description,externalReferenceCode," +
+					"id,numberOfTaxonomyCategories"
+		).build();
+
+		page =
+			taxonomyVocabularyResource.getAssetLibraryTaxonomyVocabulariesPage(
+				testDepotEntry.getDepotEntryId(), null, null, null,
+				Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		assertEquals(
+			new TaxonomyVocabulary() {
+				{
+					name = taxonomyVocabulary.getName();
+				}
+			},
+			page.fetchFirstItem());
+
+		assertValid(page);
 	}
 
 	@Override
