@@ -12,19 +12,22 @@
  * details.
  */
 
-export {
-	default as LearnMessage,
-	LearnResourcesContext,
-} from './learn_message/LearnMessage';
+package com.liferay.source.formatter.dependencies.upgrade;
 
-export {default as Treeview} from './treeview/Treeview';
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
-export {default as ManagementToolbar} from './management_toolbar/ManagementToolbar';
+/**
+ * @author Tamyris Bernardo
+ */
+public class UpgradeJavaServiceReferenceAnnotationCheck {
 
-export {
-	activeLanguageIdsAtom,
-	selectedLanguageIdAtom,
-} from './translation_manager/state';
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.ResourceLocalService.class
+	)
+	protected com.liferay.portal.kernel.service.ResourceLocalService
+		resourceLocalService;
 
-export {default as TranslationAdminModal} from './translation_manager/TranslationAdminModal';
-export {default as TranslationAdminSelector} from './translation_manager/TranslationAdminSelector';
+	@ServiceReference(type = FavoriteLocalService.class)
+	private FavoriteLocalService _favoriteLocalService;
+
+}

@@ -12,19 +12,20 @@
  * details.
  */
 
-export {
-	default as LearnMessage,
-	LearnResourcesContext,
-} from './learn_message/LearnMessage';
+package com.liferay.source.formatter.dependencies.upgrade;
 
-export {default as Treeview} from './treeview/Treeview';
+import org.osgi.service.component.annotations.Reference;
 
-export {default as ManagementToolbar} from './management_toolbar/ManagementToolbar';
+/**
+ * @author Tamyris Bernardo
+ */
+public class UpgradeJavaServiceReferenceAnnotationCheck {
 
-export {
-	activeLanguageIdsAtom,
-	selectedLanguageIdAtom,
-} from './translation_manager/state';
+	@Reference
+	protected com.liferay.portal.kernel.service.ResourceLocalService
+		resourceLocalService;
 
-export {default as TranslationAdminModal} from './translation_manager/TranslationAdminModal';
-export {default as TranslationAdminSelector} from './translation_manager/TranslationAdminSelector';
+	@Reference
+	private FavoriteLocalService _favoriteLocalService;
+
+}
