@@ -45,13 +45,13 @@ function fetchData(apiURL, searchParam, currentPage = 1) {
 	}).then((response) => response.json());
 }
 
-const mapResponseData = (data, itemLabelProp, itemKey) => {
+const mapResponseData = (data, itemLabel, itemKey) => {
 	return {
 		...data,
 		items: data.items.map((item) => {
 			const option = {label: undefined, value: undefined};
-			option.label = itemLabelProp
-				? getValueFromItem(item, itemLabelProp)
+			option.label = itemLabel
+				? getValueFromItem(item, itemLabel)
 				: item.label;
 			option.value = itemKey ? item[itemKey] : item.value;
 
@@ -108,7 +108,7 @@ function SelectionFilter({
 	id,
 	inputPlaceholder,
 	itemKey,
-	itemLabel: itemLabelProp,
+	itemLabel,
 	items: initialItems,
 	multiple,
 	selectedData,
@@ -146,7 +146,7 @@ function SelectionFilter({
 				.then((response) => {
 					const data = mapResponseData(
 						response,
-						itemLabelProp,
+						itemLabel,
 						itemKey
 					);
 
