@@ -644,7 +644,8 @@ public class ObjectFieldLocalServiceImpl
 			businessType, dbType, indexed, indexedAsKeyword, indexedLanguageId);
 		_validateLabel(labelMap, newObjectField);
 		_validateLocalized(
-			businessType, localized, oldObjectField.getObjectDefinition());
+			businessType, localized, oldObjectField.getObjectDefinition(),
+			required);
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionPersistence.findByPrimaryKey(
@@ -785,7 +786,7 @@ public class ObjectFieldLocalServiceImpl
 		_validateIndexed(
 			businessType, dbType, indexed, indexedAsKeyword, indexedLanguageId);
 		_validateLabel(labelMap, null);
-		_validateLocalized(businessType, localized, objectDefinition);
+		_validateLocalized(businessType, localized, objectDefinition, required);
 		_validateName(0, objectDefinition, name, system);
 		_validateReadOnlyAndReadOnlyConditionExpression(
 			businessType, readOnly, readOnlyConditionExpression);
@@ -1262,7 +1263,7 @@ public class ObjectFieldLocalServiceImpl
 
 	private void _validateLocalized(
 			String businessType, boolean localized,
-			ObjectDefinition objectDefinition)
+			ObjectDefinition objectDefinition, boolean required)
 		throws PortalException {
 
 		if (!localized) {
@@ -1286,6 +1287,11 @@ public class ObjectFieldLocalServiceImpl
 
 		if (!objectDefinition.isEnableLocalization()) {
 			throw new ObjectDefinitionEnableLocalizationException();
+		}
+
+		if (required) {
+			throw new ObjectFieldLocalizedException(
+				"Localized object fields must not be required");
 		}
 	}
 
