@@ -79,7 +79,7 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 				</clay:content-row>
 			</h2>
 
-			<div class="audit-graph">
+			<div class="audit-graph position-relative">
 				<div class="audit-graph-loading c-my-5 c-p-5 inline-item w-100">
 					<span aria-hidden="true" class="loading-animation"></span>
 				</div>
@@ -111,7 +111,6 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 			</div>
 
 			<clay:management-toolbar
-				cssClass="content-dashboard-management-toolbar"
 				managementToolbarDisplayContext="<%= (ContentDashboardAdminManagementToolbarDisplayContext)request.getAttribute(ContentDashboardAdminManagementToolbarDisplayContext.class.getName()) %>"
 				propsTransformer="js/ContentDashboardManagementToolbarPropsTransformer"
 			/>
