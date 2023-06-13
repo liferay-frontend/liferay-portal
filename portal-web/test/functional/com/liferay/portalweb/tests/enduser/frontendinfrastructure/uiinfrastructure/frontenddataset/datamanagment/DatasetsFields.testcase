@@ -169,6 +169,48 @@ definition {
 		}
 	}
 
+	@description = "LPS-176051. Confirm that the user can cancel changes when clicks on Cancel button"
+	@priority = 4
+	test CanCancelChangesOnCancelButton {
+		task ("And add new fields") {
+			FrontendDataSetAdmin.addFields(key_fieldList = "id,label");
+		}
+
+		task ("And clicks on Edit option") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "FrontendDataSetAdmin#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("And choose another client extension option") {
+			Click(
+				dropdownLabel = "Cell Renderer",
+				locator1 = "ObjectField#ANY_DROPDOWN_LABEL");
+		}
+
+		task ("And clicks on Cancel button") {
+			Button.click(button = "Cancel");
+		}
+
+		task ("Then the Edit field modal is closed") {
+			AssertElementNotPresent(
+				locator1 = "Portlet#MODAL_TITLE",
+				value1 = "Edit id");
+		}
+
+		task ("And the changes are not applied") {
+			FrontendDataSetAdmin.assertFieldsOnTable(
+				key_position = 1,
+				keyName = "id");
+
+			FrontendDataSetAdmin.assertFieldsOnTable(
+				key_position = 1,
+				keyName = "default");
+		}
+	}
+
 	@description = "LPS-185500. Confirm that can cancel field deletion on cancel button."
 	@priority = 4
 	test CanCancelFieldDeletion {
@@ -381,6 +423,56 @@ definition {
 		}
 	}
 
+	@description = "LPS-176051. Confirm that the user can save changes when clicks on Save button"
+	@priority = 5
+	test CanSaveChangesOnSaveButton {
+		task ("And add new fields") {
+			FrontendDataSetAdmin.addFields(key_fieldList = "id,label");
+		}
+
+		task ("And clicks on Edit option") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "FrontendDataSetAdmin#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("And choose another client extension option") {
+			Click(
+				dropdownLabel = "Cell Renderer",
+				locator1 = "ObjectField#ANY_DROPDOWN_LABEL");
+
+			MenuItem.click(menuItem = "Date and Time");
+		}
+
+		task ("And clicks on Save button") {
+			Click(
+				key_text = "Save",
+				locator1 = "CP2ActivationKeys#KEY_DEACTIVATION_TERMS");
+		}
+
+		task ("Then the Edit field modal is closed") {
+			AssertElementNotPresent(
+				locator1 = "Portlet#MODAL_TITLE",
+				value1 = "Edit id");
+		}
+
+		task ("And a successful message appears") {
+			Alert.viewSuccessMessage();
+		}
+
+		task ("And the changes are applied") {
+			FrontendDataSetAdmin.assertFieldsOnTable(
+				key_position = 1,
+				keyName = "id");
+
+			FrontendDataSetAdmin.assertFieldsOnTable(
+				key_position = 1,
+				keyName = "Date and Time");
+		}
+	}
+
 	@description = "LPS-179282. Confirm that the search bar returns works as expected"
 	@priority = 4
 	test CanSearchField {
@@ -439,6 +531,45 @@ definition {
 		}
 	}
 
+	@description = "LPS-176051. Blocked by :LPS-186987. Confirm that Cell Renderer option can be selected on Cell Renderer Field."
+	@ignore = "true"
+	@priority = 3
+	test CanSelectCellRendererOption {
+
+		// TODO LPS-185794 CanSelectCellRendererOption pending implementation
+
+	}
+
+	@description = "LPS-176051. Confirm that the user can select options of dropdown on Edit"
+	@priority = 5
+	test CanSelectDropdownOptions {
+		task ("And add new fields") {
+			FrontendDataSetAdmin.addFields(key_fieldList = "id,label");
+		}
+
+		task ("And clicks on Edit option") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "FrontendDataSetAdmin#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("When the user clicks on Cell Renderer field") {
+			Click(
+				dropdownLabel = "Cell Renderer",
+				locator1 = "ObjectField#ANY_DROPDOWN_LABEL");
+		}
+
+		task ("Then a dropdown is displayed") {
+			AssertVisible(locator1 = "ObjectCustomViews#VIEW_DROPDOWN_MENU_ON_MODAL_DEFAULT_SORT");
+		}
+
+		task ("And the options present in the dropdown can be selected") {
+			MenuItem.click(menuItem = "Date and Time");
+		}
+	}
+
 	@description = "LPS-185503. Confirm that fields are not updated when saving changes."
 	@priority = 4
 	test CanUpdateFieldsWhenSave {
@@ -470,6 +601,46 @@ definition {
 			FrontendDataSetAdmin.assertFieldsOnTable(
 				key_position = 1,
 				keyName = "label");
+		}
+	}
+
+	@description = "LPS-176051. Confirm that the user can view Edit icon modal"
+	@priority = 5
+	test CanViewEditModal {
+		task ("And add new fields") {
+			FrontendDataSetAdmin.addFields(key_fieldList = "id,label");
+		}
+
+		task ("And clicks on Edit option") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "FrontendDataSetAdmin#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("Then the Edit field modal is displayed") {
+			AssertVisible(
+				locator1 = "Portlet#MODAL_TITLE",
+				value1 = "Edit id");
+		}
+	}
+
+	@description = "LPS-176051. Confirm that the user can view Edit icon of fields"
+	@priority = 5
+	test CanViewEditOption {
+		task ("And add new fields") {
+			FrontendDataSetAdmin.addFields(key_fieldList = "id,label");
+		}
+
+		task ("When the user clicks on 3 dots icon") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "FrontendDataSetAdmin#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+		}
+
+		task ("Then the Edit option appears") {
+			MenuItem.viewVisible(menuItem = "Edit");
 		}
 	}
 
