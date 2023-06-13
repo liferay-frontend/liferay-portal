@@ -269,14 +269,21 @@ public class DefaultObjectEntryManagerImpl
 					objectRelationship.getObjectRelationshipId(), primaryKey,
 					null, -1, -1)) {
 
-			com.liferay.object.model.ObjectEntry
-				relatedServiceBuilderObjectEntry =
+			if (relatedObjectDefinition.isUnmodifiableSystemObject()) {
+				BaseModel<?> relatedObjectEntry = (BaseModel<?>)relatedModel;
+
+				objectRelatedModelsProvider.disassociateRelatedModels(
+					userId, objectRelationship.getObjectRelationshipId(),
+					primaryKey, (long)relatedObjectEntry.getPrimaryKeyObj());
+			}
+			else {
+				com.liferay.object.model.ObjectEntry relatedObjectEntry =
 					(com.liferay.object.model.ObjectEntry)relatedModel;
 
-			objectRelatedModelsProvider.disassociateRelatedModels(
-				userId, objectRelationship.getObjectRelationshipId(),
-				primaryKey,
-				relatedServiceBuilderObjectEntry.getObjectEntryId());
+				objectRelatedModelsProvider.disassociateRelatedModels(
+					userId, objectRelationship.getObjectRelationshipId(),
+					primaryKey, relatedObjectEntry.getObjectEntryId());
+			}
 		}
 	}
 
@@ -735,15 +742,24 @@ public class DefaultObjectEntryManagerImpl
 
 		serviceContext.setCompanyId(companyId);
 
-		return _toObjectEntry(
-			dtoConverterContext, objectDefinition,
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
 			_objectEntryService.addOrUpdateObjectEntry(
 				externalReferenceCode, groupId,
 				objectDefinition.getObjectDefinitionId(),
 				_toObjectValues(
 					dtoConverterContext.getUserId(), objectDefinition,
 					objectEntry, dtoConverterContext.getLocale()),
-				serviceContext));
+				serviceContext);
+
+		if (FeatureFlagManagerUtil.isEnabled("LPS-153117")) {
+			serviceBuilderObjectEntry = _addOrUpdateNestedObjectEntries(
+				dtoConverterContext, objectDefinition, objectEntry,
+				_getObjectRelationships(objectDefinition, objectEntry),
+				serviceBuilderObjectEntry.getPrimaryKey());
+		}
+
+		return _toObjectEntry(
+			dtoConverterContext, objectDefinition, serviceBuilderObjectEntry);
 	}
 
 	private Map<String, String> _addAction(
@@ -809,6 +825,13 @@ public class DefaultObjectEntryManagerImpl
 					objectRelationshipElementsParser.parse(
 						objectRelationship, properties.get(entry.getKey()));
 
+				if (!nestedObjectEntries.isEmpty()) {
+					disassociateRelatedModels(
+						objectDefinition, objectRelationship, primaryKey,
+						relatedObjectDefinition,
+						dtoConverterContext.getUserId());
+				}
+
 				for (Map<String, Object> nestedObjectEntry :
 						nestedObjectEntries) {
 
@@ -829,6 +852,13 @@ public class DefaultObjectEntryManagerImpl
 				List<ObjectEntry> nestedObjectEntries =
 					objectRelationshipElementsParser.parse(
 						objectRelationship, properties.get(entry.getKey()));
+
+				if (!nestedObjectEntries.isEmpty()) {
+					disassociateRelatedModels(
+						objectDefinition, objectRelationship, primaryKey,
+						relatedObjectDefinition,
+						dtoConverterContext.getUserId());
+				}
 
 				for (ObjectEntry nestedObjectEntry : nestedObjectEntries) {
 					nestedObjectEntry = objectEntryManager.updateObjectEntry(
@@ -975,7 +1005,8 @@ public class DefaultObjectEntryManagerImpl
 	}
 
 	private Map<String, ObjectRelationship> _getObjectRelationships(
-		ObjectDefinition objectDefinition, ObjectEntry objectEntry) {
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
+		throws Exception {
 
 		Map<String, ObjectRelationship> objectRelationships = new HashMap<>();
 
