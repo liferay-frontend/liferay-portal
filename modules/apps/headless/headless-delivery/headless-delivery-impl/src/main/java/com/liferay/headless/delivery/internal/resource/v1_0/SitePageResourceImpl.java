@@ -475,6 +475,8 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 		_importPageDefinition(
 			layout, sitePage.getPageDefinition(), serviceContext);
 
+		layout = _layoutLocalService.getLayout(layout.getPlid());
+
 		layout = _updateLayoutSettings(layout, sitePage.getPageDefinition());
 
 		Layout draftLayout = _updateDraftLayout(layout);

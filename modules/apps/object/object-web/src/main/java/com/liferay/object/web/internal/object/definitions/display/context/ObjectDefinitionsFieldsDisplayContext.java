@@ -164,6 +164,17 @@ public class ObjectDefinitionsFieldsDisplayContext
 					 includeRelationshipObjectFieldBusinessType)));
 	}
 
+	public List<Map<String, Object>> getObjectFieldCodeEditorElements() {
+		return ObjectCodeEditorUtil.getCodeEditorElements(
+			ddmExpressionFunction ->
+				!ObjectCodeEditorUtil.DDMExpressionFunction.OLD_VALUE.equals(
+					ddmExpressionFunction),
+			ddmExpressionOperator -> true, true,
+			objectRequestHelper.getLocale(), getObjectDefinitionId(),
+			objectField -> !objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION));
+	}
+
 	public List<Map<String, Object>> getObjectFieldCodeEditorElements(
 		String businessType) {
 
@@ -172,10 +183,11 @@ public class ObjectDefinitionsFieldsDisplayContext
 			FeatureFlagManagerUtil.isEnabled("LPS-164948")) {
 
 			return ObjectCodeEditorUtil.getCodeEditorElements(
+				ddmExpressionFunction -> false,
 				ddmExpressionOperator ->
 					_filterableDDMExpressionOperators.contains(
 						ddmExpressionOperator),
-				objectRequestHelper.getLocale(), getObjectDefinitionId(),
+				false, objectRequestHelper.getLocale(), getObjectDefinitionId(),
 				objectField -> _filterableObjectFieldBusinessTypes.contains(
 					objectField.getBusinessType()));
 		}
