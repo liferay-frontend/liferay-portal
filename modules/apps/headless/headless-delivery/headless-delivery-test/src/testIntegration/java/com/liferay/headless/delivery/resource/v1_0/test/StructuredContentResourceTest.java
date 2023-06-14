@@ -145,6 +145,61 @@ public class StructuredContentResourceTest
 
 	@Override
 	@Test
+	public void testDeleteAssetLibraryStructuredContentByExternalReferenceCode()
+		throws Exception {
+
+		_useDepotDDMStructureStructureId = true;
+
+		super.testDeleteAssetLibraryStructuredContentByExternalReferenceCode();
+
+		StructuredContent randomStructuredContent = randomStructuredContent();
+
+		randomStructuredContent.setExternalReferenceCode("");
+
+		StructuredContent postStructuredContent =
+			structuredContentResource.postAssetLibraryStructuredContent(
+				testDeleteAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId(),
+				randomStructuredContent);
+
+		assertHttpResponseStatusCode(
+			204,
+			structuredContentResource.
+				deleteAssetLibraryStructuredContentByExternalReferenceCodeHttpResponse(
+					testDeleteAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId(),
+					postStructuredContent.getUuid()));
+		assertHttpResponseStatusCode(
+			404,
+			structuredContentResource.
+				getAssetLibraryStructuredContentByExternalReferenceCodeHttpResponse(
+					testDeleteAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId(),
+					postStructuredContent.getExternalReferenceCode()));
+
+		String externalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		try {
+			structuredContentResource.
+				deleteAssetLibraryStructuredContentByExternalReferenceCode(
+					testDeleteAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId(),
+					externalReferenceCode);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+			Assert.assertEquals(
+				StringBundler.concat(
+					"No JournalArticle exists with the key {groupId=",
+					testDepotEntry.getGroupId(), ", externalReferenceCode=",
+					externalReferenceCode, "}"),
+				problem.getTitle());
+		}
+	}
+
+	@Override
+	@Test
 	public void testDeleteStructuredContentMyRating() throws Exception {
 		super.testDeleteStructuredContentMyRating();
 

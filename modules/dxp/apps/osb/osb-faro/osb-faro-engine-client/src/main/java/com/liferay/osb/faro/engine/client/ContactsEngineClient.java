@@ -365,6 +365,9 @@ public interface ContactsEngineClient {
 	public long getIndividualsCount(
 		FaroProject faroProject, boolean includeAnonymousUsers);
 
+	public long getIndividualsCreatedSinceCount(
+		FaroProject faroProject, Date startDate);
+
 	public Results<Distribution> getIndividualsDistribution(
 		FaroProject faroProject, String channelId, String fieldMappingFieldName,
 		String individualSegmentId, int count, int numberOfBins,
