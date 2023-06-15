@@ -50,6 +50,9 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 
 	@Override
 	public String getExtensionDBTableName() {
+
+		// See DBInspector.java#isObjectTable
+
 		if (isUnmodifiableSystemObject()) {
 			String extensionDBTableName = getDBTableName();
 

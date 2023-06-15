@@ -1171,6 +1171,8 @@ public class ObjectDefinitionLocalServiceImpl
 			return name;
 		}
 
+		// See DBInspector.java#isObjectTable
+
 		String prefix = "O_";
 
 		if (modifiable && system) {
