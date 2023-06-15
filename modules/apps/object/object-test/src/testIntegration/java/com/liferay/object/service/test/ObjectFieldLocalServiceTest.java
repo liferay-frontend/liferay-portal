@@ -201,7 +201,8 @@ public class ObjectFieldLocalServiceTest {
 
 		for (String reservedName : reservedNames) {
 			AssertUtils.assertFailure(
-				ObjectFieldNameException.class, "Reserved name " + reservedName,
+				ObjectFieldNameException.MustNotBeReserved.class,
+				"Reserved name " + reservedName,
 				() -> ObjectDefinitionTestUtil.addObjectDefinition(
 					false, _objectDefinitionLocalService,
 					Arrays.asList(
@@ -561,6 +562,15 @@ public class ObjectFieldLocalServiceTest {
 			() -> _addUnmodifiableSystemObjectDefinition(
 				ObjectFieldUtil.createObjectField(
 					"businessType", StringPool.BLANK, "Able", "able")));
+
+		for (String dbType :
+				_objectFieldBusinessTypeRegistry.getObjectFieldDBTypes()) {
+
+			_addUnmodifiableSystemObjectDefinition(
+				ObjectFieldUtil.createObjectField(
+					StringPool.BLANK, dbType, "Able", "able"));
+		}
+
 		AssertUtils.assertFailure(
 			ObjectFieldDBTypeException.class, "Blob type is not indexable",
 			() -> _addUnmodifiableSystemObjectDefinition(
@@ -596,20 +606,11 @@ public class ObjectFieldLocalServiceTest {
 					"", 0, "able", Collections.emptyList(),
 					ObjectFieldConstants.READ_ONLY_FALSE, null, false, true)));
 
-		for (String dbType :
-				_objectFieldBusinessTypeRegistry.getObjectFieldDBTypes()) {
-
-			_addUnmodifiableSystemObjectDefinition(
-				ObjectFieldUtil.createObjectField(
-					StringPool.BLANK, dbType, "Able", "able"));
-		}
-
 		AssertUtils.assertFailure(
 			ObjectFieldDBTypeException.class, "Invalid DB type STRING",
 			() -> _addUnmodifiableSystemObjectDefinition(
 				ObjectFieldUtil.createObjectField(
 					StringPool.BLANK, "STRING", "Able", "able")));
-
 		AssertUtils.assertFailure(
 			ObjectFieldLabelException.class,
 			"Label is null for locale " + LocaleUtil.US.getDisplayName(),
@@ -617,6 +618,16 @@ public class ObjectFieldLocalServiceTest {
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 					ObjectFieldConstants.DB_TYPE_STRING, "", "able")));
+
+		_addUnmodifiableSystemObjectDefinition(
+			ObjectFieldUtil.createObjectField(
+				ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+				ObjectFieldConstants.DB_TYPE_STRING, " able "));
+		_addUnmodifiableSystemObjectDefinition(
+			ObjectFieldUtil.createObjectField(
+				ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+				ObjectFieldConstants.DB_TYPE_STRING,
+				"a123456789a123456789a123456789a1234567891"));
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.addObjectDefinition(
@@ -627,7 +638,37 @@ public class ObjectFieldLocalServiceTest {
 						ObjectFieldConstants.DB_TYPE_STRING, "Able", "able")));
 
 		AssertUtils.assertFailure(
-			ObjectFieldNameException.class, "Duplicate name able",
+			ObjectFieldNameException.MustBeLessThan41Characters.class,
+			"Name must be less than 41 characters",
+			() -> _addUnmodifiableSystemObjectDefinition(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING,
+					"a123456789a123456789a123456789a12345678912")));
+		AssertUtils.assertFailure(
+			ObjectFieldNameException.MustBeginWithLowerCaseLetter.class,
+			"The first character of a name must be a lower case letter",
+			() -> _addUnmodifiableSystemObjectDefinition(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "Able")));
+		AssertUtils.assertFailure(
+			ObjectFieldNameException.MustOnlyContainLettersAndDigits.class,
+			"Name must only contain letters and digits",
+			() -> _addUnmodifiableSystemObjectDefinition(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "abl e")));
+		AssertUtils.assertFailure(
+			ObjectFieldNameException.MustOnlyContainLettersAndDigits.class,
+			"Name must only contain letters and digits",
+			() -> _addUnmodifiableSystemObjectDefinition(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "abl-e")));
+		AssertUtils.assertFailure(
+			ObjectFieldNameException.MustNotBeDuplicate.class,
+			"Duplicate name able",
 			() -> _objectFieldLocalService.addSystemObjectField(
 				TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId(),
@@ -636,48 +677,12 @@ public class ObjectFieldLocalServiceTest {
 				ObjectFieldConstants.DB_TYPE_STRING, false, true, "",
 				LocalizedMapUtil.getLocalizedMap("Able"), "able", false,
 				false));
-
 		AssertUtils.assertFailure(
-			ObjectFieldNameException.class, "Name is null",
+			ObjectFieldNameException.MustNotBeNull.class, "Name is null",
 			() -> _addUnmodifiableSystemObjectDefinition(
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 					ObjectFieldConstants.DB_TYPE_STRING, "Able", "")));
-
-		_addUnmodifiableSystemObjectDefinition(
-			ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-				ObjectFieldConstants.DB_TYPE_STRING,
-				"a123456789a123456789a123456789a1234567891"));
-
-		AssertUtils.assertFailure(
-			ObjectFieldNameException.class,
-			"Name must be less than 41 characters",
-			() -> _addUnmodifiableSystemObjectDefinition(
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING,
-					"a123456789a123456789a123456789a12345678912")));
-
-		_addUnmodifiableSystemObjectDefinition(
-			ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-				ObjectFieldConstants.DB_TYPE_STRING, " able "));
-
-		AssertUtils.assertFailure(
-			ObjectFieldNameException.class,
-			"Name must only contain letters and digits",
-			() -> _addUnmodifiableSystemObjectDefinition(
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING, "abl e")));
-		AssertUtils.assertFailure(
-			ObjectFieldNameException.class,
-			"Name must only contain letters and digits",
-			() -> _addUnmodifiableSystemObjectDefinition(
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING, "abl-e")));
 
 		String objectDefinitionName = "A" + RandomTestUtil.randomString();
 
@@ -685,21 +690,13 @@ public class ObjectFieldLocalServiceTest {
 			objectDefinitionName + "Id", TextFormatter.I);
 
 		AssertUtils.assertFailure(
-			ObjectFieldNameException.class,
+			ObjectFieldNameException.MustNotBeReserved.class,
 			"Reserved name " + pkObjectFieldName,
 			() -> _addUnmodifiableSystemObjectDefinition(
 				objectDefinitionName,
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 					ObjectFieldConstants.DB_TYPE_STRING, pkObjectFieldName)));
-
-		AssertUtils.assertFailure(
-			ObjectFieldNameException.class,
-			"The first character of a name must be a lower case letter",
-			() -> _addUnmodifiableSystemObjectDefinition(
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING, "Able")));
 	}
 
 	@Test

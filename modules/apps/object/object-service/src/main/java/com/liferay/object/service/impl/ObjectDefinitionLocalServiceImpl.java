@@ -46,6 +46,7 @@ import com.liferay.object.exception.ObjectFieldRelationshipTypeException;
 import com.liferay.object.exception.RequiredObjectDefinitionException;
 import com.liferay.object.exception.RequiredObjectFieldException;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
+import com.liferay.object.internal.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.internal.deployer.ObjectDefinitionDeployerImpl;
 import com.liferay.object.internal.petra.sql.dsl.DynamicObjectDefinitionLocalizationTableFactory;
 import com.liferay.object.model.ObjectDefinition;
@@ -890,7 +891,7 @@ public class ObjectDefinitionLocalServiceImpl
 
 		User user = _userLocalService.getUser(userId);
 
-		name = _getName(name, modifiable, system);
+		name = _getName(name, system);
 
 		String shortName = ObjectDefinitionImpl.getShortName(name);
 
@@ -1170,14 +1171,20 @@ public class ObjectDefinitionLocalServiceImpl
 			return name;
 		}
 
+		String prefix = "O_";
+
+		if (modifiable && system) {
+			prefix = "MSOD_";
+		}
+
 		return StringBundler.concat(
-			"O_", companyId, StringPool.UNDERLINE, shortName);
+			prefix, companyId, StringPool.UNDERLINE, shortName);
 	}
 
-	private String _getName(String name, boolean modifiable, boolean system) {
+	private String _getName(String name, boolean system) {
 		name = StringUtil.trim(name);
 
-		if (modifiable || !system) {
+		if (!system) {
 			name = "C_" + name;
 		}
 
@@ -1428,8 +1435,7 @@ public class ObjectDefinitionLocalServiceImpl
 			return objectDefinitionPersistence.update(objectDefinition);
 		}
 
-		name = _getName(
-			name, objectDefinition.isModifiable(), objectDefinition.isSystem());
+		name = _getName(name, objectDefinition.isSystem());
 
 		String shortName = ObjectDefinitionImpl.getShortName(name);
 
@@ -1650,6 +1656,14 @@ public class ObjectDefinitionLocalServiceImpl
 			long objectDefinitionId, long companyId, boolean modifiable,
 			String name, boolean system)
 		throws PortalException {
+
+		if (modifiable && system &&
+			!ObjectDefinitionUtil.isAllowedModifiableSystemObjectDefinitionName(
+				name)) {
+
+			throw new ObjectDefinitionNameException.
+				ForbiddenModifiableSystemObjectDefinitionName(name);
+		}
 
 		if (Validator.isNull(name) || (!system && name.equals("C_"))) {
 			throw new ObjectDefinitionNameException.MustNotBeNull();

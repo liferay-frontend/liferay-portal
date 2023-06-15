@@ -111,47 +111,23 @@ public class ObjectDefinitionLocalServiceTest {
 			"Label is null for locale " + LocaleUtil.US.getDisplayName(),
 			() -> _addCustomObjectDefinition("", "Test", "Tests"));
 
-		// Name is null
-
-		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class, "Name is null",
-			() -> _addCustomObjectDefinition("Test", "", "Tests"));
-
-		// Name must only contain letters and digits
+		// Name
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_addCustomObjectDefinition(" Test "));
-
-		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class,
-			"Name must only contain letters and digits",
-			() -> _addCustomObjectDefinition("Tes t"));
-
-		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class,
-			"Name must only contain letters and digits",
-			() -> _addCustomObjectDefinition("Tes-t"));
-
-		// The first character of a name must be an upper case letter
-
-		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class,
-			"The first character of a name must be an upper case letter",
-			() -> _addCustomObjectDefinition("test"));
-
-		// Name must be less than 41 characters
-
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_addCustomObjectDefinition(
 				"A123456789a123456789a123456789a1234567891"));
 
 		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class,
+			ObjectDefinitionNameException.MustBeLessThan41Characters.class,
 			"Name must be less than 41 characters",
 			() -> _addCustomObjectDefinition(
 				"A123456789a123456789a123456789a12345678912"));
-
-		// Duplicate name
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.MustBeginWithUpperCaseLetter.class,
+			"The first character of a name must be an upper case letter",
+			() -> _addCustomObjectDefinition("test"));
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
@@ -173,10 +149,22 @@ public class ObjectDefinitionLocalServiceTest {
 				objectDefinition.getObjectDefinitionId());
 
 		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class, "Duplicate name C_Test",
-			() -> _addCustomObjectDefinition("Test"));
+			ObjectDefinitionNameException.MustNotBeDuplicate.class,
+			"Duplicate name C_Test", () -> _addCustomObjectDefinition("Test"));
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.MustNotBeNull.class, "Name is null",
+			() -> _addCustomObjectDefinition("Test", "", "Tests"));
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.MustOnlyContainLettersAndDigits.class,
+			"Name must only contain letters and digits",
+			() -> _addCustomObjectDefinition("Tes t"));
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.MustOnlyContainLettersAndDigits.class,
+			"Name must only contain letters and digits",
+			() -> _addCustomObjectDefinition("Tes-t"));
 
 		// Plural label is null
 
@@ -731,67 +719,70 @@ public class ObjectDefinitionLocalServiceTest {
 			() -> _addSystemObjectDefinition(
 				"", "Test", RandomTestUtil.randomString()));
 
-		// Name is null
-
-		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class, "Name is null",
-			() -> _addSystemObjectDefinition(""));
-
-		// Name must not start with "C_"
-
-		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class,
-			"System object definition names must not start with \"C_\"",
-			() -> _addSystemObjectDefinition("C_Test"));
-
-		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class,
-			"System object definition names must not start with \"C_\"",
-			() -> _addSystemObjectDefinition("c_Test"));
-
-		// Name must only contain letters and digits
+		// Name
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_addSystemObjectDefinition(" Test "));
-
-		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class,
-			"Name must only contain letters and digits",
-			() -> _addSystemObjectDefinition("Tes t"));
-
-		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class,
-			"Name must only contain letters and digits",
-			() -> _addSystemObjectDefinition("Tes-t"));
-
-		// The first character of a name must be an upper case letter
-
-		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class,
-			"The first character of a name must be an upper case letter",
-			() -> _addSystemObjectDefinition("test"));
-
-		// Name must be less than 41 characters
-
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_addSystemObjectDefinition(
 				"A123456789a123456789a123456789a1234567891"));
 
 		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class,
+			ObjectDefinitionNameException.
+				ForbiddenModifiableSystemObjectDefinitionName.class,
+			"Forbidden modifiable system object definition name Invalid Test",
+			() -> ObjectDefinitionTestUtil.addModifiableSystemObjectDefinition(
+				TestPropsValues.getUserId(), null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				"Invalid Test", null, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionConstants.SCOPE_SITE, null, 1,
+				_objectDefinitionLocalService,
+				Arrays.asList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						RandomTestUtil.randomString(),
+						StringUtil.randomId()))));
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.MustBeLessThan41Characters.class,
 			"Name must be less than 41 characters",
 			() -> _addSystemObjectDefinition(
 				"A123456789a123456789a123456789a12345678912"));
-
-		// Duplicate name
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.MustBeginWithUpperCaseLetter.class,
+			"The first character of a name must be an upper case letter",
+			() -> _addSystemObjectDefinition("test"));
 
 		ObjectDefinition objectDefinition = _addSystemObjectDefinition("Test");
 
 		AssertUtils.assertFailure(
-			ObjectDefinitionNameException.class, "Duplicate name Test",
-			() -> _addSystemObjectDefinition("Test"));
+			ObjectDefinitionNameException.MustNotBeDuplicate.class,
+			"Duplicate name Test", () -> _addSystemObjectDefinition("Test"));
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.MustNotBeNull.class, "Name is null",
+			() -> _addSystemObjectDefinition(""));
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.
+				MustNotStartWithCAndUnderscoreForSystemObject.class,
+			"System object definition names must not start with \"C_\"",
+			() -> _addSystemObjectDefinition("C_Test"));
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.
+				MustNotStartWithCAndUnderscoreForSystemObject.class,
+			"System object definition names must not start with \"C_\"",
+			() -> _addSystemObjectDefinition("c_Test"));
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.MustOnlyContainLettersAndDigits.class,
+			"Name must only contain letters and digits",
+			() -> _addSystemObjectDefinition("Tes t"));
+		AssertUtils.assertFailure(
+			ObjectDefinitionNameException.MustOnlyContainLettersAndDigits.class,
+			"Name must only contain letters and digits",
+			() -> _addSystemObjectDefinition("Tes-t"));
 
 		// Plural label is null
 
@@ -969,6 +960,9 @@ public class ObjectDefinitionLocalServiceTest {
 				TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId());
 
+		Assert.assertTrue(
+			StringUtil.startsWith(objectDefinition.getDBTableName(), "MSOD_"));
+		Assert.assertEquals("/test", objectDefinition.getRESTContextPath());
 		Assert.assertTrue(objectDefinition.isApproved());
 		Assert.assertTrue(objectDefinition.isEnableCategorization());
 		Assert.assertTrue(objectDefinition.isModifiable());
@@ -1413,7 +1407,7 @@ public class ObjectDefinitionLocalServiceTest {
 		Assert.assertEquals(
 			LocalizedMapUtil.getLocalizedMap("Charlie"),
 			objectDefinition.getLabelMap());
-		Assert.assertEquals("C_Test", objectDefinition.getName());
+		Assert.assertEquals("Test", objectDefinition.getName());
 		Assert.assertEquals(
 			LocalizedMapUtil.getLocalizedMap("Charlies"),
 			objectDefinition.getPluralLabelMap());
