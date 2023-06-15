@@ -15,9 +15,9 @@
 package com.liferay.document.library.internal.configuration;
 
 import com.liferay.document.library.configuration.DLFileOrderConfigurationProvider;
-import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.document.library.internal.configuration.admin.service.DLFileOrderManagedServiceFactory;
 
+import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -28,61 +28,72 @@ import org.osgi.service.component.annotations.Reference;
 public class DLFileOrderConfigurationProviderImpl
 	implements DLFileOrderConfigurationProvider {
 
-	public String getCompanyOrderByColumn(long companyId)
-		throws ConfigurationException {
+	@Override
+	public String getCompanyOrderByColumn(long companyId) {
+		if (_dlFileOrderManagedServiceFactory == null) {
+			_dlFileOrderManagedServiceFactory =
+				(DLFileOrderManagedServiceFactory)_managedServiceFactory;
+		}
 
-		DLFileOrderConfiguration dlFileOrderConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				DLFileOrderConfiguration.class, companyId);
-
-		return dlFileOrderConfiguration.orderByColumn();
+		return _dlFileOrderManagedServiceFactory.getCompanyOrderByColumn(
+			companyId);
 	}
 
-	public String getCompanySortBy(long companyId)
-		throws ConfigurationException {
+	@Override
+	public String getCompanySortBy(long companyId) {
+		if (_dlFileOrderManagedServiceFactory == null) {
+			_dlFileOrderManagedServiceFactory =
+				(DLFileOrderManagedServiceFactory)_managedServiceFactory;
+		}
 
-		DLFileOrderConfiguration dlFileOrderConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				DLFileOrderConfiguration.class, companyId);
-
-		return dlFileOrderConfiguration.sortBy();
+		return _dlFileOrderManagedServiceFactory.getCompanySortBy(companyId);
 	}
 
-	public String getGroupOrderByColumn(long groupId)
-		throws ConfigurationException {
+	@Override
+	public String getGroupOrderByColumn(long groupId) {
+		if (_dlFileOrderManagedServiceFactory == null) {
+			_dlFileOrderManagedServiceFactory =
+				(DLFileOrderManagedServiceFactory)_managedServiceFactory;
+		}
 
-		DLFileOrderConfiguration dlFileOrderConfiguration =
-			_configurationProvider.getGroupConfiguration(
-				DLFileOrderConfiguration.class, groupId);
-
-		return dlFileOrderConfiguration.orderByColumn();
+		return _dlFileOrderManagedServiceFactory.getGroupOrderByColumn(groupId);
 	}
 
-	public String getGroupSortBy(long groupId) throws ConfigurationException {
-		DLFileOrderConfiguration dlFileOrderConfiguration =
-			_configurationProvider.getGroupConfiguration(
-				DLFileOrderConfiguration.class, groupId);
+	@Override
+	public String getGroupSortBy(long groupId) {
+		if (_dlFileOrderManagedServiceFactory == null) {
+			_dlFileOrderManagedServiceFactory =
+				(DLFileOrderManagedServiceFactory)_managedServiceFactory;
+		}
 
-		return dlFileOrderConfiguration.sortBy();
+		return _dlFileOrderManagedServiceFactory.getGroupSortBy(groupId);
 	}
 
-	public String getSystemOrderByColumn() throws ConfigurationException {
-		DLFileOrderConfiguration dlFileOrderConfiguration =
-			_configurationProvider.getSystemConfiguration(
-				DLFileOrderConfiguration.class);
+	@Override
+	public String getSystemOrderByColumn() {
+		if (_dlFileOrderManagedServiceFactory == null) {
+			_dlFileOrderManagedServiceFactory =
+				(DLFileOrderManagedServiceFactory)_managedServiceFactory;
+		}
 
-		return dlFileOrderConfiguration.orderByColumn();
+		return _dlFileOrderManagedServiceFactory.getSystemOrderByColumn();
 	}
 
-	public String getSystemSortBy() throws ConfigurationException {
-		DLFileOrderConfiguration dlFileOrderConfiguration =
-			_configurationProvider.getSystemConfiguration(
-				DLFileOrderConfiguration.class);
+	@Override
+	public String getSystemSortBy() {
+		if (_dlFileOrderManagedServiceFactory == null) {
+			_dlFileOrderManagedServiceFactory =
+				(DLFileOrderManagedServiceFactory)_managedServiceFactory;
+		}
 
-		return dlFileOrderConfiguration.sortBy();
+		return _dlFileOrderManagedServiceFactory.getSystemSortBy();
 	}
 
-	@Reference
-	private ConfigurationProvider _configurationProvider;
+	private DLFileOrderManagedServiceFactory _dlFileOrderManagedServiceFactory;
+
+	@Reference(
+		target = "(component.name=com.liferay.document.library.internal.configuration.admin.service.DLFileOrderManagedServiceFactory)"
+	)
+	private ManagedServiceFactory _managedServiceFactory;
 
 }

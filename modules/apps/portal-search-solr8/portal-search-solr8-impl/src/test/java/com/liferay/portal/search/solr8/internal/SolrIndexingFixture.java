@@ -121,6 +121,9 @@ public class SolrIndexingFixture implements IndexingFixture {
 		SearchEngineAdapter searchEngineAdapter =
 			_solrSearchEngineAdapterFixture.getSearchEngineAdapter();
 
+		_serviceRegistration = _bundleContext.registerService(
+			NGramHolderBuilderImpl.class, new NGramHolderBuilderImpl(), null);
+
 		_indexSearcher = createIndexSearcher(
 			searchEngineAdapter, solrClientManager);
 		_indexWriter = createIndexWriter(searchEngineAdapter);
@@ -310,9 +313,6 @@ public class SolrIndexingFixture implements IndexingFixture {
 			}
 		};
 
-		_serviceRegistration = _bundleContext.registerService(
-			NGramHolderBuilderImpl.class, new NGramHolderBuilderImpl(), null);
-
 		ReflectionTestUtil.setFieldValue(
 			solrQuerySuggester, "_nGramQueryBuilder",
 			new NGramQueryBuilderImpl());
@@ -329,7 +329,6 @@ public class SolrIndexingFixture implements IndexingFixture {
 			new SolrSpellCheckIndexWriter() {
 				{
 					digester = createDigester();
-					nGramHolderBuilder = new NGramHolderBuilderImpl();
 
 					activate(_properties);
 				}
