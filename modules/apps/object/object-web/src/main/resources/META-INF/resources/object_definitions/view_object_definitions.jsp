@@ -24,6 +24,7 @@ ViewObjectDefinitionsDisplayContext viewObjectDefinitionsDisplayContext = (ViewO
 	apiURL="<%= viewObjectDefinitionsDisplayContext.getAPIURL() %>"
 	creationMenu="<%= viewObjectDefinitionsDisplayContext.getCreationMenu() %>"
 	fdsActionDropdownItems="<%= viewObjectDefinitionsDisplayContext.getFDSActionDropdownItems() %>"
+	fdsSortItemList="<%= viewObjectDefinitionsDisplayContext.getFDSSortItemList() %>"
 	formName="fm"
 	id="<%= ObjectDefinitionsFDSNames.OBJECT_DEFINITIONS %>"
 	propsTransformer="js/components/FDSPropsTransformer/ObjectDefinitionFDSPropsTransformer"
