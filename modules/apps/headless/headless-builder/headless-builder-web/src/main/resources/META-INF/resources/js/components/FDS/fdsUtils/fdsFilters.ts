@@ -12,15 +12,29 @@
  * details.
  */
 
-import React from 'react';
-
-import APIApplications from './APIApplications';
-
-interface AppProps {
-	apiURL: string;
-	portletId: string;
-}
-
-export default function App({apiURL, portletId}: AppProps) {
-	return <APIApplications apiURL={apiURL} portletId={portletId} />;
+export function getAPIApplicationsFDSFilters() {
+	return [
+		{
+			autocompleteEnabled: false,
+			id: 'applicationStatus',
+			items: [
+				{
+					label: 'Unpublished',
+					value: 'unpublished',
+				},
+				{
+					label: 'Published',
+					value: 'published',
+				},
+			],
+			label: Liferay.Language.get('status'),
+			multiple: false,
+			type: 'selection',
+		},
+		{
+			id: 'dateModified',
+			label: Liferay.Language.get('last-updated'),
+			type: 'dateRange',
+		},
+	];
 }

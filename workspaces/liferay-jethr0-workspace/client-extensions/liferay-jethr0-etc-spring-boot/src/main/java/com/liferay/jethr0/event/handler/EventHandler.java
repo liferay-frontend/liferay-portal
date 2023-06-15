@@ -12,15 +12,21 @@
  * details.
  */
 
-import React from 'react';
+package com.liferay.jethr0.event.handler;
 
-import APIApplications from './APIApplications';
+/**
+ * @author Michael Hashimoto
+ */
+public interface EventHandler {
 
-interface AppProps {
-	apiURL: string;
-	portletId: string;
-}
+	public String process(String message) throws Exception;
 
-export default function App({apiURL, portletId}: AppProps) {
-	return <APIApplications apiURL={apiURL} portletId={portletId} />;
+	public enum EventType {
+
+		BUILD_COMPLETED, BUILD_STARTED, COMPUTER_BUSY, COMPUTER_IDLE,
+		COMPUTER_OFFLINE, COMPUTER_ONLINE, COMPUTER_TEMPORARILY_OFFLINE,
+		COMPUTER_TEMPORARILY_ONLINE, CREATE_BUILD, CREATE_PROJECT, QUEUE_PROJECT
+
+	}
+
 }

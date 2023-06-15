@@ -14,13 +14,22 @@
 
 import React from 'react';
 
-import APIApplications from './APIApplications';
+import StatusLabel from '../../StatusLabel';
 
-interface AppProps {
-	apiURL: string;
-	portletId: string;
+export function itemPathRenderer({itemData}: FDSItem) {
+	let path = itemData.baseURL;
+
+	if (Array.from(path)[0] !== '/') {
+		path = '/' + path;
+	}
+
+	if (path.slice(-1) !== '/') {
+		path = path + '/';
+	}
+
+	return path;
 }
 
-export default function App({apiURL, portletId}: AppProps) {
-	return <APIApplications apiURL={apiURL} portletId={portletId} />;
+export function itemStatusRenderer({itemData}: FDSItem) {
+	return <StatusLabel statusKey={itemData.applicationStatus.key} />;
 }

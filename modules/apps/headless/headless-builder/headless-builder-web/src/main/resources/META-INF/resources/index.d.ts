@@ -12,15 +12,20 @@
  * details.
  */
 
-import React from 'react';
-
-import APIApplications from './APIApplications';
-
-interface AppProps {
-	apiURL: string;
-	portletId: string;
+interface ItemData {
+	applicationStatus: {key: string; name: string};
+	baseURL: string;
+	createDate: string;
+	dateModified: string;
+	description: string;
+	externalReferenceCode: string;
+	id: number;
+	title: string;
+	version: string;
 }
 
-export default function App({apiURL, portletId}: AppProps) {
-	return <APIApplications apiURL={apiURL} portletId={portletId} />;
+interface FDSItem {
+	action: {id: string};
+	itemData: ItemData;
+	value: string;
 }

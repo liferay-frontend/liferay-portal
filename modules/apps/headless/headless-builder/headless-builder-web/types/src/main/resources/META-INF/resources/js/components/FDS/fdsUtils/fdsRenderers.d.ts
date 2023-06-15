@@ -12,15 +12,7 @@
  * details.
  */
 
-import React from 'react';
+/// <reference types="react" />
 
-import APIApplications from './APIApplications';
-
-interface AppProps {
-	apiURL: string;
-	portletId: string;
-}
-
-export default function App({apiURL, portletId}: AppProps) {
-	return <APIApplications apiURL={apiURL} portletId={portletId} />;
-}
+export declare function itemPathRenderer({itemData}: FDSItem): string;
+export declare function itemStatusRenderer({itemData}: FDSItem): JSX.Element;

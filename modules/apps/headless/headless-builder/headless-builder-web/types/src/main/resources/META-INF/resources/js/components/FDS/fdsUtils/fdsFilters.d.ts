@@ -12,15 +12,24 @@
  * details.
  */
 
-import React from 'react';
-
-import APIApplications from './APIApplications';
-
-interface AppProps {
-	apiURL: string;
-	portletId: string;
-}
-
-export default function App({apiURL, portletId}: AppProps) {
-	return <APIApplications apiURL={apiURL} portletId={portletId} />;
-}
+export declare function getAPIApplicationsFDSFilters(): (
+	| {
+			autocompleteEnabled: boolean;
+			id: string;
+			items: {
+				label: string;
+				value: string;
+			}[];
+			label: string;
+			multiple: boolean;
+			type: string;
+	  }
+	| {
+			id: string;
+			label: string;
+			type: string;
+			autocompleteEnabled?: undefined;
+			items?: undefined;
+			multiple?: undefined;
+	  }
+)[];

@@ -12,15 +12,10 @@
  * details.
  */
 
-import React from 'react';
+/// <reference types="react" />
 
-import APIApplications from './APIApplications';
-
-interface AppProps {
-	apiURL: string;
-	portletId: string;
+interface StatusLabelProps {
+	statusKey: string;
 }
-
-export default function App({apiURL, portletId}: AppProps) {
-	return <APIApplications apiURL={apiURL} portletId={portletId} />;
-}
+export default function StatusLabel({statusKey}: StatusLabelProps): JSX.Element;
+export {};
