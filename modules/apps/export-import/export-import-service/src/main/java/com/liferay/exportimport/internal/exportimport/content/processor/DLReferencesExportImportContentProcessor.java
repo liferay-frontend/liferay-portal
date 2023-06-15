@@ -753,7 +753,8 @@ public class DLReferencesExportImportContentProcessor
 
 				boolean relativePortalURL = false;
 
-				if (content.regionMatches(
+				if (((beginPos == 0) && (endPos == content.length())) ||
+					content.regionMatches(
 						true, beginPos - _OFFSET_HREF_ATTRIBUTE, "href=", 0,
 						5) ||
 					content.regionMatches(
@@ -796,13 +797,19 @@ public class DLReferencesExportImportContentProcessor
 					for (String hostName : hostNames) {
 						int curBeginPos = beginPos - hostName.length();
 
+						if (curBeginPos < 0) {
+							continue;
+						}
+
 						String substring = content.substring(
 							curBeginPos, endPos);
 
 						if (substring.startsWith(hostName) &&
-							(content.regionMatches(
-								true, curBeginPos - _OFFSET_HREF_ATTRIBUTE,
-								"href=", 0, 5) ||
+							(((curBeginPos == 0) &&
+							  (endPos == content.length())) ||
+							 content.regionMatches(
+								 true, curBeginPos - _OFFSET_HREF_ATTRIBUTE,
+								 "href=", 0, 5) ||
 							 content.regionMatches(
 								 true, curBeginPos - _OFFSET_SRC_ATTRIBUTE,
 								 "src=", 0, 4))) {

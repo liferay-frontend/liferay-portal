@@ -78,13 +78,8 @@ definition {
 	}
 
 	@description = "Feature ID: Legacy | Automation ID: LRAC-9183 | Test Summary: Current AC plan is collapsible."
-	@ignore = "true"
 	@priority = 3
 	test CollapseCurrentPlan {
-
-		// AC Bug: Current plans card is missing
-		// AC Bug ticket: LRAC-14001
-
 		task ("Sign in AC") {
 			ACUtils.launchAC();
 		}
@@ -345,8 +340,13 @@ definition {
 	}
 
 	@description = "Feature ID: Legacy | Automation ID: LRAC-9182 | Test Summary: Page views limit corresponds correctly with the plan and add-ons purchased."
+	@ignore = "true"
 	@priority = 3
 	test PageViewsCardShowCurrentPlanLimitAndAddOnInfo {
+
+		// AC Refactor: Data doesn't appear on time
+		// AC Refactor ticket: LRAC-13994
+
 		task ("Sign in AC") {
 			ACUtils.launchAC();
 		}
