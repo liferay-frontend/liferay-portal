@@ -813,12 +813,14 @@ const RenameFDSEntryModalContent = ({
 interface IFDSEntriesInterface {
 	fdsViewsURL: string;
 	namespace: string;
+	permissionsURL: string;
 	restApplications: Array<string>;
 }
 
 const FDSEntries = ({
 	fdsViewsURL,
 	namespace,
+	permissionsURL,
 	restApplications,
 }: IFDSEntriesInterface) => {
 	const creationMenu = {
@@ -1002,6 +1004,11 @@ const FDSEntries = ({
 						icon: 'trash',
 						label: Liferay.Language.get('delete'),
 						onClick: onDeleteClick,
+					},
+					{
+						href: permissionsURL,
+						label: Liferay.Language.get('permissions'),
+						target: 'modal-permissions',
 					},
 				]}
 				sorting={[{direction: 'desc', key: 'dateCreated'}]}

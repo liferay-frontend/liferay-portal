@@ -24,6 +24,8 @@
 		).put(
 			"namespace", liferayPortletResponse.getNamespace()
 		).put(
+			"permissionsURL", fdsViewsDisplayContext.getPermissionsURL()
+		).put(
 			"restApplications", fdsViewsDisplayContext.getRESTApplicationsJSONArray()
 		).build()
 	%>'
