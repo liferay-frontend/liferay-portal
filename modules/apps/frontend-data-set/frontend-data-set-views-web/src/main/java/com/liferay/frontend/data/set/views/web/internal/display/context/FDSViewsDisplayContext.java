@@ -16,7 +16,9 @@ package com.liferay.frontend.data.set.views.web.internal.display.context;
 
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.frontend.data.set.views.web.internal.constants.FDSViewsActionKeys;
 import com.liferay.frontend.data.set.views.web.internal.constants.FDSViewsPortletKeys;
+import com.liferay.frontend.data.set.views.web.internal.security.permissions.resource.FDSViewsPermission;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
@@ -171,6 +173,18 @@ public class FDSViewsDisplayContext {
 		resourceURL.setResourceID("/frontend_data_set_views/save_fds_fields");
 
 		return resourceURL.toString();
+	}
+
+	public Boolean isShowCreationMenu() {
+		if (FDSViewsPermission.contains(
+				_themeDisplay.getPermissionChecker(),
+				_themeDisplay.getScopeGroupId(),
+				FDSViewsActionKeys.MANAGE_FDS_VIEWS_ENTRIES)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private final CETManager _cetManager;
