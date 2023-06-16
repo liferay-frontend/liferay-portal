@@ -91,7 +91,14 @@ type TItemsActions = {
 	id?: string;
 	label?: string;
 	onClick?: Function;
-	target?: 'async' | 'headless' | 'link' | 'modal' | 'sidePanel' | 'event';
+	target?:
+		| 'async'
+		| 'headless'
+		| 'link'
+		| 'modal'
+		| 'modal-permissions'
+		| 'sidePanel'
+		| 'event';
 };
 
 type TSorting = {
