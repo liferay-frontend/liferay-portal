@@ -339,6 +339,214 @@ definition {
 		}
 	}
 
+	@description = "This is a test for LPS-177667. The site designer could cancel reorder navigation menu items via keyboard. The screen reader should announce relevant info when the site designer activates the movement."
+	@priority = 4
+	test CancelReorderNavigationMenuItemsViaKeyboard {
+		task ("Given a navigation menu creator has a navigation menu with items") {
+			JSONLayout.addPublicLayout(
+				groupName = ${randomSiteName},
+				layoutName = "Test Page Name");
+
+			JSONWebcontent.addWebContent(
+				content = "Web Content Content",
+				groupName = ${randomSiteName},
+				title = "Web Content Title");
+
+			JSONSitenavigation.addSiteNavigationMenu(
+				groupName = ${randomSiteName},
+				siteNavigationMenuName = "Navigation Menu Name");
+
+			JSONSitenavigation.addSiteNavigationMenuItem(
+				groupName = ${randomSiteName},
+				privateLayout = "false",
+				siteNavigationMenuItemName = "Test Page Name",
+				siteNavigationMenuName = "Navigation Menu Name",
+				type = "layout");
+
+			JSONSitenavigation.addSiteNavigationMenuItem(
+				groupName = ${randomSiteName},
+				siteNavigationMenuItemName = "Liferay",
+				siteNavigationMenuName = "Navigation Menu Name",
+				type = "url",
+				url = "https://www.liferay.com",
+				useNewTab = "false");
+
+			NavigationMenusAdmin.openNavigationMenusAdmin(siteURLKey = ${siteURLKey});
+
+			NavigationMenusAdmin.editMenu(navigationMenuName = "Navigation Menu Name");
+
+			NavigationMenusAdmin.addItem(
+				assetTitle = "Web Content Title",
+				item = "Web Content Article");
+		}
+
+		task ("When the navigation menu creator reorders items via keyboard") {
+			KeyPress(
+				key_text = "cog",
+				locator1 = "Icon#ANY",
+				value1 = "\TAB");
+
+			KeyPress(
+				locator1 = "//div[contains(@aria-label,'Test Page Name')]",
+				value1 = "\DOWN");
+
+			KeyPress(
+				locator1 = "//div[contains(@aria-label,'Liferay')]",
+				value1 = "\TAB");
+
+			KeyPress(
+				key_sourceItemName = "Liferay",
+				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
+				value1 = "\ENTER");
+
+			AssertElementPresent(locator1 = "//div[contains(@class,'menu_editor')]//span[contains(@class,'sr-only')][contains(.,'Use up and down arrows to move Liferay (URL) and press enter to place it in desired position.')]");
+
+			AssertTextEquals(
+				locator1 = "SiteNavigationMenu#DRAG_PREVIEW_LABEL",
+				value1 = "Liferay");
+
+			AssertCssValue(
+				locator1 = "SiteNavigationMenu#DRAG_PREVIEW_BORDER",
+				locator2 = "border-top-color",
+				value1 = "rgba(128, 172, 255, 1)");
+
+			KeyPress(
+				key_sourceItemName = "Liferay",
+				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
+				value1 = "\DOWN");
+
+			KeyPress(
+				key_sourceItemName = "Liferay",
+				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
+				value1 = "\DOWN");
+
+			AssertCssValue(
+				locator1 = "SiteNavigationMenu#DRAG_PREVIEW_BORDER",
+				locator2 = "border-top-color",
+				value1 = "rgba(128, 172, 255, 1)");
+		}
+
+		task ("Then the navigation menu creator could cancel reorder via ESCAPE key") {
+			KeyPress(
+				locator1 = "//body",
+				value1 = "\ESCAPE");
+
+			AssertElementNotPresent(locator1 = "SiteNavigationMenu#DRAG_PREVIEW_LABEL");
+
+			var i = 1;
+
+			for (var itemName : list "Test Page Name,Liferay,Web Content Title") {
+				NavigationMenusAdmin.viewItemOrder(
+					index = ${i},
+					itemName = ${itemName});
+
+				var i = ${i} + 1;
+			}
+		}
+	}
+
+	@description = "This is a test for LPS-177667. The site designer could reorder navigation menu items with child via keyboard."
+	@priority = 4
+	test ReorderNavigationMenuItemsWithChildViaKeyboard {
+		task ("Given a navigation menu creator has a navigation menu with items") {
+			JSONLayout.addPublicLayout(
+				groupName = ${randomSiteName},
+				layoutName = "Test Page Name");
+
+			JSONWebcontent.addWebContent(
+				content = "Web Content Content",
+				groupName = ${randomSiteName},
+				title = "Web Content Title");
+
+			JSONSitenavigation.addSiteNavigationMenu(
+				groupName = ${randomSiteName},
+				siteNavigationMenuName = "Navigation Menu Name");
+
+			JSONSitenavigation.addSiteNavigationMenuItem(
+				groupName = ${randomSiteName},
+				privateLayout = "false",
+				siteNavigationMenuItemName = "Test Page Name",
+				siteNavigationMenuName = "Navigation Menu Name",
+				type = "layout");
+
+			JSONSitenavigation.addSiteNavigationMenuItem(
+				groupName = ${randomSiteName},
+				siteNavigationMenuItemName = "Liferay",
+				siteNavigationMenuName = "Navigation Menu Name",
+				type = "url",
+				url = "https://www.liferay.com",
+				useNewTab = "false");
+		}
+
+		task ("When the navigation menu creator adds a child item") {
+			NavigationMenusAdmin.openNavigationMenusAdmin(siteURLKey = ${siteURLKey});
+
+			NavigationMenusAdmin.editMenu(navigationMenuName = "Navigation Menu Name");
+
+			NavigationMenusAdmin.addChildItem(
+				assetTitle = "Web Content Title",
+				item = "Web Content Article",
+				itemName = "Test Page Name");
+		}
+
+		task ("Then the navigation menu creator reorders items with child via keyboard") {
+			KeyPress(
+				key_text = "cog",
+				locator1 = "Icon#ANY",
+				value1 = "\TAB");
+
+			KeyPress(
+				locator1 = "//div[contains(@aria-label,'Test Page Name')]",
+				value1 = "\TAB");
+
+			KeyPress(
+				key_sourceItemName = "Test Page Name",
+				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
+				value1 = "\ENTER");
+
+			AssertTextEquals(
+				locator1 = "SiteNavigationMenu#DRAG_PREVIEW_LABEL",
+				value1 = "Test Page Name and 1 Child");
+
+			KeyPress(
+				key_sourceItemName = "Test Page Name",
+				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
+				value1 = "\DOWN");
+
+			KeyPress(
+				key_sourceItemName = "Test Page Name",
+				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
+				value1 = "\DOWN");
+
+			KeyPress(
+				key_sourceItemName = "Test Page Name",
+				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
+				value1 = "\DOWN");
+
+			KeyPress(
+				key_sourceItemName = "Test Page Name",
+				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
+				value1 = "\ENTER");
+
+			var i = 1;
+
+			for (var itemName : list "Liferay,Test Page Name") {
+				NavigationMenusAdmin.viewItemOrder(
+					index = ${i},
+					itemName = ${itemName});
+
+				var i = ${i} + 1;
+			}
+
+			NavigationMenusAdmin.viewItemNested(
+				groupName = ${randomSiteName},
+				itemNameList = "Web Content Title",
+				parentItemNameList = "Test Page Name",
+				site = "true",
+				siteNavigationMenuName = "Navigation Menu Name");
+		}
+	}
+
 	@description = "This is a test for LPS-171044. The site designer could select or deselect a parent node and all its child items via keyboard and mouse."
 	@priority = 3
 	test SelectOrDeselectParentNodeAndChildItemsViaKeyboardAndMouse {

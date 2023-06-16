@@ -75,11 +75,13 @@ LayoutRevision layoutRevision = LayoutStagingUtil.getLayoutRevision(selLayout);
 	<h2 class="c-mb-4 text-7"><liferay-ui:message key="design" /></h2>
 
 	<liferay-frontend:edit-form-body>
-		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPS-153951") %>'>
+		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPS-153951") && layoutsAdminDisplayContext.isShowPublishedConfigurationMessage() %>'>
 			<clay:alert
 				cssClass="ml-0 sheet-lg"
 				displayType="info"
 			>
+				<liferay-ui:message key="these-design-configurations-are-now-saved-in-a-draft-.to-fully-apply-them,-the-page-needs-to-be-published" />
+
 				<clay:link
 					href="<%= layoutsAdminDisplayContext.getPreviewCurrentDesignURL() %>"
 					label='<%= LanguageUtil.get(request, "see-current-published-configuration-here") %>'
