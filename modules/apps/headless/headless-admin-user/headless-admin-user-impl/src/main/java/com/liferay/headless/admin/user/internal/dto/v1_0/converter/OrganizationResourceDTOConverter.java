@@ -185,7 +185,7 @@ public class OrganizationResourceDTOConverter
 				name = organization.getName();
 				numberOfAccounts =
 					_accountEntryOrganizationRelLocalService.
-						getAccountEntryOrganizationRelsByOrganizationIdCount(
+						getAccountEntryOrganizationRelsCountByOrganizationId(
 							organization.getOrganizationId());
 				numberOfOrganizations =
 					_organizationService.getOrganizationsCount(

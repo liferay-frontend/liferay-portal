@@ -19,10 +19,19 @@ import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Locale;
 
 import org.jsoup.nodes.Element;
 
@@ -95,7 +104,119 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 		element.attr("data-lfr-class-name-id", classNameId);
 		element.attr("data-lfr-class-pk", classPK);
 		element.attr("data-lfr-field-id", fieldId);
+
+		_addDataAtributes(
+			element, configJSONObject.getJSONObject("onError"), "error");
+		_addDataAtributes(
+			element, configJSONObject.getJSONObject("onSuccess"), "success");
 	}
+
+	private void _addDataAtributes(
+			Element element, JSONObject jsonObject, String resultType)
+		throws PortalException {
+
+		if (jsonObject == null) {
+			return;
+		}
+
+		String interaction = jsonObject.getString("interaction");
+
+		if (Validator.isNull(interaction)) {
+			interaction = _INTERACTION_NONE;
+		}
+
+		element.attr("data-lfr-on-" + resultType + "-interaction", interaction);
+
+		if ((interaction.equals(_INTERACTION_NONE) ||
+			 interaction.equals(_INTERACTION_NOTIFICATION)) &&
+			jsonObject.getBoolean("reload")) {
+
+			element.attr(
+				"data-lfr-on-" + resultType + "-reload", StringPool.TRUE);
+		}
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext == null) {
+			return;
+		}
+
+		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+		if (themeDisplay == null) {
+			return;
+		}
+
+		if (interaction.equals(_INTERACTION_NOTIFICATION)) {
+			JSONObject textJSONObject = jsonObject.getJSONObject("text");
+
+			if (textJSONObject == null) {
+				return;
+			}
+
+			String text = textJSONObject.getString(
+				themeDisplay.getLanguageId());
+
+			if (Validator.isNull(text)) {
+				return;
+			}
+
+			element.attr("data-lfr-on-" + resultType + "-text", text);
+		}
+		else if (interaction.equals(_INTERACTION_PAGE)) {
+			JSONObject pageJSONObject = jsonObject.getJSONObject("page");
+
+			if (pageJSONObject == null) {
+				return;
+			}
+
+			Layout layout = _layoutLocalService.fetchLayout(
+				pageJSONObject.getLong("groupId"),
+				pageJSONObject.getBoolean("privateLayout"),
+				pageJSONObject.getLong("layoutId"));
+
+			if (layout == null) {
+				return;
+			}
+
+			element.attr(
+				"data-lfr-on-" + resultType + "-page-url",
+				_portal.getLayoutURL(layout, themeDisplay));
+		}
+		else if (interaction.equals(_INTERACTION_URL)) {
+			JSONObject urlJSONObject = jsonObject.getJSONObject("url");
+
+			if (urlJSONObject == null) {
+				return;
+			}
+
+			String url = urlJSONObject.getString(themeDisplay.getLanguageId());
+
+			if (Validator.isNull(url)) {
+				Locale locale = LocaleUtil.getSiteDefault();
+
+				url = urlJSONObject.getString(locale.getLanguage());
+			}
+
+			if (Validator.isNull(url)) {
+				return;
+			}
+
+			element.attr("data-lfr-on-" + resultType + "-page-url", url);
+		}
+	}
+
+	private static final String _INTERACTION_NONE = "none";
+
+	private static final String _INTERACTION_NOTIFICATION = "notification";
+
+	private static final String _INTERACTION_PAGE = "page";
+
+	private static final String _INTERACTION_URL = "url";
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private Portal _portal;

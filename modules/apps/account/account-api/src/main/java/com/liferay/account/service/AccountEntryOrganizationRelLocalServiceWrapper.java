@@ -394,15 +394,6 @@ public class AccountEntryOrganizationRelLocalServiceWrapper
 				organizationId, start, end);
 	}
 
-	@Override
-	public int getAccountEntryOrganizationRelsByOrganizationIdCount(
-		long organizationId) {
-
-		return _accountEntryOrganizationRelLocalService.
-			getAccountEntryOrganizationRelsByOrganizationIdCount(
-				organizationId);
-	}
-
 	/**
 	 * Returns the number of account entry organization rels.
 	 *
@@ -418,6 +409,15 @@ public class AccountEntryOrganizationRelLocalServiceWrapper
 	public int getAccountEntryOrganizationRelsCount(long accountEntryId) {
 		return _accountEntryOrganizationRelLocalService.
 			getAccountEntryOrganizationRelsCount(accountEntryId);
+	}
+
+	@Override
+	public int getAccountEntryOrganizationRelsCountByOrganizationId(
+		long organizationId) {
+
+		return _accountEntryOrganizationRelLocalService.
+			getAccountEntryOrganizationRelsCountByOrganizationId(
+				organizationId);
 	}
 
 	@Override
