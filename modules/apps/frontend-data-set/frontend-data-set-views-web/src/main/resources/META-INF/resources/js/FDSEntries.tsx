@@ -823,30 +823,6 @@ const FDSEntries = ({
 	permissionsURL,
 	restApplications,
 }: IFDSEntriesInterface) => {
-	const creationMenu = {
-		primaryItems: [
-			{
-				label: Liferay.Language.get('new-data-set'),
-				onClick: ({loadData}: {loadData: Function}) => {
-					openModal({
-						contentComponent: ({
-							closeModal,
-						}: {
-							closeModal: Function;
-						}) => (
-							<AddFDSEntryModalContent
-								closeModal={closeModal}
-								loadData={loadData}
-								namespace={namespace}
-								restApplications={restApplications}
-							/>
-						),
-					});
-				},
-			},
-		],
-	};
-
 	const getViewURL = (itemData: FDSEntryType) => {
 		const url = new URL(fdsViewsURL);
 
@@ -854,10 +830,6 @@ const FDSEntries = ({
 		url.searchParams.set(`${namespace}fdsEntryLabel`, itemData.label);
 
 		return url;
-	};
-
-	const onViewClick = ({itemData}: {itemData: FDSEntryType}) => {
-		navigate(getViewURL(itemData));
 	};
 
 	const onDeleteClick = ({
@@ -930,6 +902,34 @@ const FDSEntries = ({
 				/>
 			),
 		});
+	};
+
+	const onViewClick = ({itemData}: {itemData: FDSEntryType}) => {
+		navigate(getViewURL(itemData));
+	};
+
+	const creationMenu = {
+		primaryItems: [
+			{
+				label: Liferay.Language.get('new-data-set'),
+				onClick: ({loadData}: {loadData: Function}) => {
+					openModal({
+						contentComponent: ({
+							closeModal,
+						}: {
+							closeModal: Function;
+						}) => (
+							<AddFDSEntryModalContent
+								closeModal={closeModal}
+								loadData={loadData}
+								namespace={namespace}
+								restApplications={restApplications}
+							/>
+						),
+					});
+				},
+			},
+		],
 	};
 
 	const views = [
