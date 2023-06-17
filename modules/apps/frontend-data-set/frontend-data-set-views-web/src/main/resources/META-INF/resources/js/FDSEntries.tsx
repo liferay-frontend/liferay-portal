@@ -815,6 +815,7 @@ interface IFDSEntriesInterface {
 	namespace: string;
 	permissionsURL: string;
 	restApplications: Array<string>;
+	showCreationMenu: boolean;
 }
 
 const FDSEntries = ({
@@ -822,6 +823,7 @@ const FDSEntries = ({
 	namespace,
 	permissionsURL,
 	restApplications,
+	showCreationMenu,
 }: IFDSEntriesInterface) => {
 	const getViewURL = (itemData: FDSEntryType) => {
 		const url = new URL(fdsViewsURL);
@@ -981,7 +983,7 @@ const FDSEntries = ({
 			<FrontendDataSet
 				{...FDS_DEFAULT_PROPS}
 				apiURL={`${API_URL.FDS_ENTRIES}?nestedFields=${OBJECT_RELATIONSHIP.FDS_ENTRY_FDS_VIEW}`}
-				creationMenu={creationMenu}
+				creationMenu={showCreationMenu ? creationMenu : {}}
 				customDataRenderers={{
 					viewsCount: ViewsCountRenderer,
 				}}

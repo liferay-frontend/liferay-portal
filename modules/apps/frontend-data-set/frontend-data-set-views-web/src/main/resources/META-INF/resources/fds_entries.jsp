@@ -27,6 +27,8 @@
 			"permissionsURL", fdsViewsDisplayContext.getPermissionsURL()
 		).put(
 			"restApplications", fdsViewsDisplayContext.getRESTApplicationsJSONArray()
+		).put(
+			"showCreationMenu", fdsViewsDisplayContext.isShowCreationMenu()
 		).build()
 	%>'
 />
