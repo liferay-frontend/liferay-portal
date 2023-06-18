@@ -12,7 +12,7 @@ Here are some of the types of changes documented in this file:
 * Execution requirements: Java version, J2EE Version, browser versions, etc.
 * Deprecations or end of support: For example, warning that a certain feature or API will be dropped in an upcoming version.
 
-*This document has been reviewed through the breaking change entry at commit `82b63e085ae8430b70a483d841b830501918ee96`.*
+*This document has been reviewed through the breaking change entry at commit `90a08686f0a880cebbedbfb27328fea50b2f9991`.*
 
 Each change must have a brief descriptive title and contain the following information:
 
@@ -1389,21 +1389,21 @@ These methods were added in 7.2 for forward compatibility: see [LPS-101007](http
 
 ### What changed?
 
-`S3FileCache` was removed. `cacheDirCleanUpExpunge` and `cacheDirCleanUpFrequency` were removed from `com.liferay.portal.store.s3.configuration.S3StoreConfiguration`.
+`S3FileCache` was removed. In addition, `cacheDirCleanUpExpunge` and `cacheDirCleanUpFrequency` were removed from `com.liferay.portal.store.s3.configuration.S3StoreConfiguration`.
 
 ### Who is affected?
 
-This affects anyone using the S3 file store. When downloading files from S3, the data from S3 will be directly forwarded to the client, and no longer cached on Liferay server.
+This affects anyone using the S3 file store. When downloading files from S3, the data is directly forwarded to the client, and no longer cached on the Liferay server.
 
 ### How should I update my code?
 
 No code changes are necessary.
 
-Remove `cacheDirCleanUpExpunge` and `cacheDirCleanUpFrequency` from `com.liferay.portal.store.s3.configuration.S3StoreConfiguration.config`.
+If using a `com.liferay.portal.store.s3.configuration.S3StoreConfiguration.config` file to configure S3 in Liferay, remove the properties `cacheDirCleanUpExpunge` and `cacheDirCleanUpFrequency`.
 
 ### Why was this change made?
 
-`S3FileCache` has various design flaws, and all other cloud-based store implementations in Liferay do not provide any caching mechanism.
+`S3FileCache` has various design flaws, and no other cloud-based store implementation in Liferay provides caching.
 
 ---------------------------------------
 
@@ -1413,15 +1413,15 @@ Remove `cacheDirCleanUpExpunge` and `cacheDirCleanUpFrequency` from `com.liferay
 
 ### What changed?
 
-`beanshell`, `javascript`, `python` and `ruby` scripting language types are removed, and cannot use `XML` file containing these scripting language types in the `liferay workflow`.
+These scripting languages are removed: `beanshell`, `javascript`, `python` and `ruby`. Workflow XML files cannot contain these scripting language types.
 
 ### Who is affected?
 
-This affects anyone using `XML` file containing `beanshell`, `javascript`, `python` or `ruby` scripting language type in the `liferay workflow`.
+This affects anyone with workflow definitions containing `beanshell`, `javascript`, `python` or `ruby` scripting language types.
 
 ### How should I update my code?
 
-Use the `drl`, `groovy` or `java` scripting language type in the `XML` file, and rewrite the script logic.
+Use `drl`, `groovy` or `java` as the scripting language type, and rewrite the script logic in your workflow definition XML files.
 
 ### Why was this change made?
 
