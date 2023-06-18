@@ -67,6 +67,9 @@ public class CommerceAccountRoleHelperImpl
 			serviceContext);
 
 		if (FeatureFlagManagerUtil.isEnabled("COMMERCE-10890")) {
+			_checkAccountRole(
+				AccountRoleConstants.ROLE_NAME_ACCOUNT_SUPPLIER,
+				serviceContext);
 			_checkRole(AccountRoleConstants.ROLE_NAME_SUPPLIER, serviceContext);
 		}
 	}
