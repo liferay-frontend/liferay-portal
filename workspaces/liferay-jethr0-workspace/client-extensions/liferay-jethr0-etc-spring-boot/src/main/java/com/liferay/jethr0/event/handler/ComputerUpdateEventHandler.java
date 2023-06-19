@@ -14,23 +14,26 @@
 
 package com.liferay.jethr0.event.handler;
 
+import com.liferay.jethr0.jenkins.node.JenkinsNode;
+
+import org.json.JSONObject;
+
 /**
  * @author Michael Hashimoto
  */
-public interface EventHandler {
+public class ComputerUpdateEventHandler extends BaseJenkinsEventHandler {
 
-	public String process() throws Exception;
+	public ComputerUpdateEventHandler(
+		EventHandlerContext eventHandlerContext, JSONObject messageJSONObject) {
 
-	public enum EventType {
+		super(eventHandlerContext, messageJSONObject);
+	}
 
-		BUILD_COMPLETED, BUILD_STARTED, COMPUTER_BUSY, COMPUTER_IDLE,
-		COMPUTER_OFFLINE, COMPUTER_ONLINE, COMPUTER_TEMPORARILY_OFFLINE,
-		COMPUTER_TEMPORARILY_ONLINE, CREATE_BUILD, CREATE_PROJECT,
-		QUEUE_ITEM_ENTER_BLOCKED, QUEUE_ITEM_ENTER_BUILDABLE,
-		QUEUE_ITEM_ENTER_WAITING, QUEUE_ITEM_LEAVE_BLOCKED,
-		QUEUE_ITEM_LEAVE_BUILDABLE, QUEUE_ITEM_LEAVE_WAITING, QUEUE_ITEM_LEFT,
-		QUEUE_PROJECT
+	@Override
+	public String process() throws Exception {
+		JenkinsNode jenkinsNode = updateJenkinsNode();
 
+		return jenkinsNode.toString();
 	}
 
 }

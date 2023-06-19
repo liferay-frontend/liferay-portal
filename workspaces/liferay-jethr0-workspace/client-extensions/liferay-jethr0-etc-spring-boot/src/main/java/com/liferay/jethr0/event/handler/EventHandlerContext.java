@@ -17,7 +17,10 @@ package com.liferay.jethr0.event.handler;
 import com.liferay.jethr0.build.queue.BuildQueue;
 import com.liferay.jethr0.build.repository.BuildParameterRepository;
 import com.liferay.jethr0.build.repository.BuildRepository;
+import com.liferay.jethr0.build.repository.BuildRunRepository;
 import com.liferay.jethr0.jenkins.JenkinsQueue;
+import com.liferay.jethr0.jenkins.repository.JenkinsNodeRepository;
+import com.liferay.jethr0.jms.JMSEventHandler;
 import com.liferay.jethr0.project.repository.ProjectRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +44,28 @@ public class EventHandlerContext {
 		return _buildRepository;
 	}
 
+	public BuildRunRepository getBuildRunRepository() {
+		return _buildRunRepository;
+	}
+
+	public JenkinsNodeRepository getJenkinsNodeRepository() {
+		return _jenkinsNodeRepository;
+	}
+
 	public JenkinsQueue getJenkinsQueue() {
 		return _jenkinsQueue;
 	}
 
+	public JMSEventHandler getJMSEventHandler() {
+		return _jmsEventHandler;
+	}
+
 	public ProjectRepository getProjectRepository() {
 		return _projectRepository;
+	}
+
+	public void setJMSEventHandler(JMSEventHandler jmsEventHandler) {
+		_jmsEventHandler = jmsEventHandler;
 	}
 
 	@Autowired
@@ -59,7 +78,15 @@ public class EventHandlerContext {
 	private BuildRepository _buildRepository;
 
 	@Autowired
+	private BuildRunRepository _buildRunRepository;
+
+	@Autowired
+	private JenkinsNodeRepository _jenkinsNodeRepository;
+
+	@Autowired
 	private JenkinsQueue _jenkinsQueue;
+
+	private JMSEventHandler _jmsEventHandler;
 
 	@Autowired
 	private ProjectRepository _projectRepository;

@@ -28,21 +28,19 @@ import org.json.JSONObject;
 /**
  * @author Michael Hashimoto
  */
-public class CreateBuildEventHandler extends BaseEventHandler {
+public class CreateBuildEventHandler extends BaseObjectEventHandler {
 
 	@Override
-	public String process(String body) throws Exception {
-		JSONObject bodyJSONObject = new JSONObject(body);
+	public String process() throws Exception {
+		JSONObject messageJSONObject = getMessageJSONObject();
 
-		Project project = getProject(bodyJSONObject.optJSONObject("project"));
+		Project project = getProject(
+			messageJSONObject.optJSONObject("project"));
 
-		EventHandlerContext eventHandlerContext = getEventHandlerContext();
-
-		BuildRepository buildRepository =
-			eventHandlerContext.getBuildRepository();
+		BuildRepository buildRepository = getBuildRepository();
 
 		JSONObject buildJSONObject = validateBuildJSONObject(
-			bodyJSONObject.optJSONObject("build"));
+			messageJSONObject.optJSONObject("build"));
 
 		Build build = buildRepository.add(project, buildJSONObject);
 
@@ -51,7 +49,7 @@ public class CreateBuildEventHandler extends BaseEventHandler {
 
 		if ((parametersJSONObject != null) && !parametersJSONObject.isEmpty()) {
 			BuildParameterRepository buildParameterRepository =
-				eventHandlerContext.getBuildParameterRepository();
+				getBuildParameterRepository();
 
 			for (String key : parametersJSONObject.keySet()) {
 				BuildParameter buildParameter = buildParameterRepository.add(
@@ -66,25 +64,26 @@ public class CreateBuildEventHandler extends BaseEventHandler {
 		if (project.getState() == Project.State.COMPLETED) {
 			project.setState(Project.State.QUEUED);
 
-			ProjectRepository projectRepository =
-				eventHandlerContext.getProjectRepository();
+			ProjectRepository projectRepository = getProjectRepository();
 
 			projectRepository.update(project);
-
-			BuildQueue buildQueue = eventHandlerContext.getBuildQueue();
-
-			buildQueue.addProject(project);
-
-			JenkinsQueue jenkinsQueue = eventHandlerContext.getJenkinsQueue();
-
-			jenkinsQueue.invoke();
 		}
+
+		BuildQueue buildQueue = getBuildQueue();
+
+		buildQueue.addProject(project);
+
+		JenkinsQueue jenkinsQueue = getJenkinsQueue();
+
+		jenkinsQueue.invoke();
 
 		return project.toString();
 	}
 
-	protected CreateBuildEventHandler(EventHandlerContext eventHandlerContext) {
-		super(eventHandlerContext);
+	protected CreateBuildEventHandler(
+		EventHandlerContext eventHandlerContext, JSONObject messageJSONObject) {
+
+		super(eventHandlerContext, messageJSONObject);
 	}
 
 }

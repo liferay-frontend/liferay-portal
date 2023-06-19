@@ -24,28 +24,26 @@ import org.json.JSONObject;
 /**
  * @author Michael Hashimoto
  */
-public class QueueProjectEventHandler extends BaseEventHandler {
+public class QueueProjectEventHandler extends BaseObjectEventHandler {
 
 	@Override
-	public String process(String body) throws Exception {
-		JSONObject bodyJSONObject = new JSONObject(body);
+	public String process() throws Exception {
+		JSONObject messageJSONObject = getMessageJSONObject();
 
-		Project project = getProject(bodyJSONObject.optJSONObject("project"));
+		Project project = getProject(
+			messageJSONObject.optJSONObject("project"));
 
 		project.setState(Project.State.QUEUED);
 
-		EventHandlerContext eventHandlerContext = getEventHandlerContext();
-
-		ProjectRepository projectRepository =
-			eventHandlerContext.getProjectRepository();
+		ProjectRepository projectRepository = getProjectRepository();
 
 		projectRepository.update(project);
 
-		BuildQueue buildQueue = eventHandlerContext.getBuildQueue();
+		BuildQueue buildQueue = getBuildQueue();
 
 		buildQueue.addProject(project);
 
-		JenkinsQueue jenkinsQueue = eventHandlerContext.getJenkinsQueue();
+		JenkinsQueue jenkinsQueue = getJenkinsQueue();
 
 		jenkinsQueue.invoke();
 
@@ -53,9 +51,9 @@ public class QueueProjectEventHandler extends BaseEventHandler {
 	}
 
 	protected QueueProjectEventHandler(
-		EventHandlerContext eventHandlerContext) {
+		EventHandlerContext eventHandlerContext, JSONObject messageJSONObject) {
 
-		super(eventHandlerContext);
+		super(eventHandlerContext, messageJSONObject);
 	}
 
 }

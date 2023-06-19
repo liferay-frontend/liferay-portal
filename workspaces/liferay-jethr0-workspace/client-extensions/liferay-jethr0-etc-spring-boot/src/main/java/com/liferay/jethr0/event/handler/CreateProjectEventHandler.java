@@ -26,29 +26,23 @@ import org.json.JSONObject;
 /**
  * @author Michael Hashimoto
  */
-public class CreateProjectEventHandler extends BaseEventHandler {
+public class CreateProjectEventHandler extends BaseObjectEventHandler {
 
 	@Override
-	public String process(String body) throws Exception {
-		JSONObject bodyJSONObject = new JSONObject(body);
+	public String process() throws Exception {
+		JSONObject messageJSONObject = getMessageJSONObject();
 
 		JSONObject projectJSONObject = validateProjectJSONObject(
-			bodyJSONObject.optJSONObject("project"));
+			messageJSONObject.optJSONObject("project"));
 
-		EventHandlerContext eventHandlerContext = getEventHandlerContext();
-
-		ProjectRepository projectRepository =
-			eventHandlerContext.getProjectRepository();
-
-		Project project = projectRepository.add(projectJSONObject);
+		Project project = _createProject(projectJSONObject);
 
 		JSONArray buildsJSONArray = projectJSONObject.optJSONArray("builds");
 
 		if ((buildsJSONArray != null) && !buildsJSONArray.isEmpty()) {
 			BuildParameterRepository buildParameterRepository =
-				eventHandlerContext.getBuildParameterRepository();
-			BuildRepository buildRepository =
-				eventHandlerContext.getBuildRepository();
+				getBuildParameterRepository();
+			BuildRepository buildRepository = getBuildRepository();
 
 			for (int i = 0; i < buildsJSONArray.length(); i++) {
 				JSONObject buildJSONObject = buildsJSONArray.getJSONObject(i);
@@ -71,9 +65,15 @@ public class CreateProjectEventHandler extends BaseEventHandler {
 	}
 
 	protected CreateProjectEventHandler(
-		EventHandlerContext eventHandlerContext) {
+		EventHandlerContext eventHandlerContext, JSONObject messageJSONObject) {
 
-		super(eventHandlerContext);
+		super(eventHandlerContext, messageJSONObject);
+	}
+
+	private Project _createProject(JSONObject projectJSONObject) {
+		ProjectRepository projectRepository = getProjectRepository();
+
+		return projectRepository.add(projectJSONObject);
 	}
 
 }

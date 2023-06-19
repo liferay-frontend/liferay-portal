@@ -14,12 +14,15 @@
 
 package com.liferay.jethr0.event.handler;
 
-import com.liferay.jethr0.build.Build;
+import com.liferay.jethr0.build.queue.BuildQueue;
+import com.liferay.jethr0.build.repository.BuildParameterRepository;
 import com.liferay.jethr0.build.repository.BuildRepository;
-import com.liferay.jethr0.project.Project;
+import com.liferay.jethr0.build.repository.BuildRunRepository;
+import com.liferay.jethr0.jenkins.JenkinsQueue;
+import com.liferay.jethr0.jenkins.repository.JenkinsNodeRepository;
+import com.liferay.jethr0.jms.JMSEventHandler;
 import com.liferay.jethr0.project.repository.ProjectRepository;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -27,151 +30,50 @@ import org.json.JSONObject;
  */
 public abstract class BaseEventHandler implements EventHandler {
 
-	protected BaseEventHandler(EventHandlerContext eventHandlerContext) {
+	protected BaseEventHandler(
+		EventHandlerContext eventHandlerContext, JSONObject messageJSONObject) {
+
 		_eventHandlerContext = eventHandlerContext;
+		_messageJSONObject = messageJSONObject;
 	}
 
-	protected EventHandlerContext getEventHandlerContext() {
-		return _eventHandlerContext;
+	protected BuildParameterRepository getBuildParameterRepository() {
+		return _eventHandlerContext.getBuildParameterRepository();
 	}
 
-	protected Project getProject(JSONObject projectJSONObject)
-		throws Exception {
-
-		if (projectJSONObject == null) {
-			throw new Exception("Invalid project JSON object");
-		}
-
-		projectJSONObject = validateProjectJSONObject(projectJSONObject);
-
-		EventHandlerContext eventHandlerContext = getEventHandlerContext();
-
-		ProjectRepository projectRepository =
-			eventHandlerContext.getProjectRepository();
-
-		Project project = projectRepository.getById(
-			projectJSONObject.getLong("id"));
-
-		BuildRepository buildRepository =
-			eventHandlerContext.getBuildRepository();
-
-		buildRepository.getAll(project);
-
-		return project;
+	protected BuildQueue getBuildQueue() {
+		return _eventHandlerContext.getBuildQueue();
 	}
 
-	protected JSONObject validateBuildJSONObject(JSONObject buildJSONObject)
-		throws Exception {
-
-		if (buildJSONObject == null) {
-			throw new Exception("Invalid build JSON object");
-		}
-
-		String buildName = buildJSONObject.optString("buildName");
-
-		if (buildName.isEmpty()) {
-			throw new Exception("Invalid build name");
-		}
-
-		String jobName = buildJSONObject.optString("jobName");
-
-		if (jobName.isEmpty()) {
-			throw new Exception("Invalid job name");
-		}
-
-		Build.State state = Build.State.getByKey(
-			buildJSONObject.optString("state"));
-
-		if (state == null) {
-			state = Build.State.OPENED;
-		}
-
-		JSONObject jsonObject = new JSONObject();
-
-		jsonObject.put(
-			"buildName", buildName
-		).put(
-			"jobName", jobName
-		).put(
-			"parameters", buildJSONObject.optJSONObject("parameters")
-		).put(
-			"state", state.getJSONObject()
-		);
-
-		return jsonObject;
+	protected BuildRepository getBuildRepository() {
+		return _eventHandlerContext.getBuildRepository();
 	}
 
-	protected JSONArray validateBuildsJSONArray(JSONArray buildsJSONArray)
-		throws Exception {
-
-		JSONArray jsonArray = new JSONArray();
-
-		if ((buildsJSONArray != null) && !buildsJSONArray.isEmpty()) {
-			for (int i = 0; i < buildsJSONArray.length(); i++) {
-				jsonArray.put(
-					validateBuildJSONObject(buildsJSONArray.optJSONObject(i)));
-			}
-		}
-
-		return jsonArray;
+	protected BuildRunRepository getBuildRunRepository() {
+		return _eventHandlerContext.getBuildRunRepository();
 	}
 
-	protected JSONObject validateProjectJSONObject(JSONObject projectJSONObject)
-		throws Exception {
+	protected JenkinsNodeRepository getJenkinsNodeRepository() {
+		return _eventHandlerContext.getJenkinsNodeRepository();
+	}
 
-		if (projectJSONObject == null) {
-			throw new Exception("Invalid project JSON object");
-		}
+	protected JenkinsQueue getJenkinsQueue() {
+		return _eventHandlerContext.getJenkinsQueue();
+	}
 
-		if (projectJSONObject.has("id")) {
-			return projectJSONObject;
-		}
+	protected JMSEventHandler getJMSEventHandler() {
+		return _eventHandlerContext.getJMSEventHandler();
+	}
 
-		String name = projectJSONObject.optString("name");
+	protected JSONObject getMessageJSONObject() {
+		return _messageJSONObject;
+	}
 
-		if (name.isEmpty()) {
-			throw new Exception("Invalid name");
-		}
-
-		int priority = projectJSONObject.optInt("priority");
-
-		if (priority <= 0) {
-			throw new Exception("Invalid priority");
-		}
-
-		Project.State state = Project.State.getByKey(
-			projectJSONObject.optString("state"));
-
-		if (state == null) {
-			state = Project.State.OPENED;
-		}
-
-		Project.Type type = Project.Type.getByKey(
-			projectJSONObject.optString("type"));
-
-		if (type == null) {
-			throw new Exception(
-				"Project type does not match: " + Project.Type.getKeys());
-		}
-
-		JSONObject jsonObject = new JSONObject();
-
-		jsonObject.put(
-			"builds",
-			validateBuildsJSONArray(projectJSONObject.optJSONArray("builds"))
-		).put(
-			"name", name
-		).put(
-			"priority", priority
-		).put(
-			"state", state.getJSONObject()
-		).put(
-			"type", type.getJSONObject()
-		);
-
-		return jsonObject;
+	protected ProjectRepository getProjectRepository() {
+		return _eventHandlerContext.getProjectRepository();
 	}
 
 	private final EventHandlerContext _eventHandlerContext;
+	private final JSONObject _messageJSONObject;
 
 }
