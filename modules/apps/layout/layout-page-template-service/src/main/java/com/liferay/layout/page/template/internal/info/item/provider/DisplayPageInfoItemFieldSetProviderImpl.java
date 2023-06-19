@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -148,8 +149,15 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 				itemClassName, itemClassPK, themeDisplay);
 		}
 
-		return assetRenderer.getURLViewInContext(
+		String viewInContextURL = assetRenderer.getURLViewInContext(
 			themeDisplay, StringPool.BLANK);
+
+		if (Validator.isNotNull(viewInContextURL)) {
+			return viewInContextURL;
+		}
+
+		return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+			itemClassName, itemClassPK, themeDisplay);
 	}
 
 	private InfoField<URLInfoFieldType> _getDefaultDisplayPageURLInfoField(
