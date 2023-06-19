@@ -41,12 +41,14 @@ interface IFDSEntriesInterface {
 	namespace: string;
 	permissionsURL: string;
 	restApplications: Array<string>;
+	showCreationMenu: boolean;
 }
 declare const FDSEntries: ({
 	fdsViewsURL,
 	namespace,
 	permissionsURL,
 	restApplications,
+	showCreationMenu,
 }: IFDSEntriesInterface) => JSX.Element;
 export {FDSEntryType};
 export default FDSEntries;
