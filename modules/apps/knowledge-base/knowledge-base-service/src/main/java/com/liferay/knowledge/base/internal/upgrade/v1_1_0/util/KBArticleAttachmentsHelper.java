@@ -14,8 +14,7 @@
 
 package com.liferay.knowledge.base.internal.upgrade.v1_1_0.util;
 
-import com.liferay.document.library.kernel.store.DLStoreRequest;
-import com.liferay.document.library.kernel.store.DLStoreUtil;
+import com.liferay.document.library.kernel.store.Store;
 import com.liferay.knowledge.base.model.KBArticle;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
@@ -24,14 +23,20 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.FileUtil;
 
+import java.io.InputStream;
+
 /**
  * @author Peter Shin
  */
-public class KBArticleAttachmentsUtil {
+public class KBArticleAttachmentsHelper {
 
-	public static void deleteAttachmentsDirectory(long companyId) {
+	public KBArticleAttachmentsHelper(Store store) {
+		_store = store;
+	}
+
+	public void deleteAttachmentsDirectory(long companyId) {
 		try {
-			String[] fileNames = DLStoreUtil.getFileNames(
+			String[] fileNames = _store.getFileNames(
 				companyId, CompanyConstants.SYSTEM, "knowledgebase/articles");
 
 			if (fileNames.length > 0) {
@@ -42,7 +47,7 @@ public class KBArticleAttachmentsUtil {
 				return;
 			}
 
-			DLStoreUtil.deleteDirectory(
+			_store.deleteDirectory(
 				companyId, CompanyConstants.SYSTEM, "knowledgebase/articles");
 		}
 		catch (Exception exception) {
@@ -50,7 +55,7 @@ public class KBArticleAttachmentsUtil {
 		}
 	}
 
-	public static void updateAttachments(KBArticle kbArticle) {
+	public void updateAttachments(KBArticle kbArticle) {
 		try {
 			long folderId = kbArticle.getClassPK();
 
@@ -58,7 +63,7 @@ public class KBArticleAttachmentsUtil {
 
 			String newDirName = "knowledgebase/kbarticles/" + folderId;
 
-			String[] fileNames = DLStoreUtil.getFileNames(
+			String[] fileNames = _store.getFileNames(
 				kbArticle.getCompanyId(), CompanyConstants.SYSTEM, oldDirName);
 
 			ServiceContext serviceContext = new ServiceContext();
@@ -68,23 +73,19 @@ public class KBArticleAttachmentsUtil {
 
 			for (String fileName : fileNames) {
 				String shortFileName = FileUtil.getShortFileName(fileName);
-				byte[] bytes = DLStoreUtil.getFileAsBytes(
-					kbArticle.getCompanyId(), CompanyConstants.SYSTEM,
-					fileName);
 
-				DLStoreUtil.addFile(
-					DLStoreRequest.builder(
+				try (InputStream inputStream = _store.getFileAsStream(
 						kbArticle.getCompanyId(), CompanyConstants.SYSTEM,
-						newDirName + StringPool.SLASH + shortFileName
-					).className(
-						KBArticleAttachmentsUtil.class.getName()
-					).size(
-						bytes.length
-					).build(),
-					bytes);
+						fileName, StringPool.BLANK)) {
+
+					_store.addFile(
+						kbArticle.getCompanyId(), CompanyConstants.SYSTEM,
+						newDirName + StringPool.SLASH + shortFileName,
+						Store.VERSION_DEFAULT, inputStream);
+				}
 			}
 
-			DLStoreUtil.deleteDirectory(
+			_store.deleteDirectory(
 				kbArticle.getCompanyId(), CompanyConstants.SYSTEM, oldDirName);
 
 			if (_log.isInfoEnabled()) {
@@ -97,6 +98,8 @@ public class KBArticleAttachmentsUtil {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		KBArticleAttachmentsUtil.class);
+		KBArticleAttachmentsHelper.class);
+
+	private final Store _store;
 
 }
