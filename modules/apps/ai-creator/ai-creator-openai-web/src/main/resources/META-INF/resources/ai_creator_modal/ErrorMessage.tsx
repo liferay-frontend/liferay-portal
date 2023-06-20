@@ -20,9 +20,10 @@ import React from 'react';
 
 interface Props {
 	message: string;
+	showRetryMessage: boolean;
 }
 
-export function ErrorMessage({message}: Props) {
+export function ErrorMessage({message, showRetryMessage}: Props) {
 	return (
 		<div
 			className="alert alert-danger alert-dismissible alert-fluid c-mb-1"
@@ -35,14 +36,20 @@ export function ErrorMessage({message}: Props) {
 				<strong className="lead">
 					{Liferay.Language.get('error')}
 				</strong>{' '}
-				<span className="d-inline-block">{message}</span>{' '}
-				<ClayButton
-					className="btn-link text-underline"
-					displayType="unstyled"
-					type="submit"
-				>
-					{Liferay.Language.get('retry-your-request')}
-				</ClayButton>
+				{showRetryMessage ? (
+					<>
+						<span className="d-inline-block">{message}</span>{' '}
+						<ClayButton
+							className="btn-link text-underline"
+							displayType="unstyled"
+							type="submit"
+						>
+							{Liferay.Language.get('retry-your-request')}
+						</ClayButton>
+					</>
+				) : (
+					<span className="d-inline-block">{message}</span>
+				)}
 			</div>
 		</div>
 	);

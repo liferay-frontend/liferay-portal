@@ -19,10 +19,9 @@ import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.web.internal.object.definitions.constants.ObjectDefinitionsScreenNavigationEntryConstants;
 import com.liferay.object.web.internal.object.definitions.display.context.ObjectDefinitionsDetailsDisplayContext;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -64,16 +63,16 @@ public class DetailsObjectDefinitionsScreenNavigationEntry
 		httpServletRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
 			new ObjectDefinitionsDetailsDisplayContext(
-				httpServletRequest, _objectDefinitionLocalService,
+				_configurationProvider, httpServletRequest,
 				_objectDefinitionModelResourcePermission,
-				_objectEntryManagerRegistry, _objectRelationshipLocalService,
-				_objectScopeProviderRegistry, _panelCategoryRegistry));
+				_objectEntryManagerRegistry, _objectScopeProviderRegistry,
+				_panelCategoryRegistry));
 
 		super.render(httpServletRequest, httpServletResponse);
 	}
 
 	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.object.model.ObjectDefinition)"
@@ -83,9 +82,6 @@ public class DetailsObjectDefinitionsScreenNavigationEntry
 
 	@Reference
 	private ObjectEntryManagerRegistry _objectEntryManagerRegistry;
-
-	@Reference
-	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference
 	private ObjectScopeProviderRegistry _objectScopeProviderRegistry;

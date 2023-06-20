@@ -14,6 +14,7 @@
 
 /// <reference types="react" />
 
+import '../../css/main.scss';
 interface AppProps {
 	apiURL: string;
 	portletId: string;

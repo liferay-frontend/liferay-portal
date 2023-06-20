@@ -37,6 +37,8 @@ import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Alexander Chow
@@ -104,6 +106,21 @@ public class SQLServerDB extends BaseDB {
 			new String[] {"\\", "''", "\"", "\n", "\r"});
 
 		return template;
+	}
+
+	@Override
+	public String getDefaultValue(String columnDef) {
+		Matcher matcher = _defaultValuePattern.matcher(columnDef);
+
+		if (matcher.find()) {
+			if (matcher.group(1) == null) {
+				return matcher.group(2);
+			}
+
+			return matcher.group(1);
+		}
+
+		return columnDef;
 	}
 
 	@Override
@@ -350,5 +367,8 @@ public class SQLServerDB extends BaseDB {
 	};
 
 	private static final boolean _SUPPORTS_NEW_UUID_FUNCTION = true;
+
+	private static final Pattern _defaultValuePattern = Pattern.compile(
+		"^\\('(.*)'\\)|\\(\\((\\d*)\\)\\)", Pattern.CASE_INSENSITIVE);
 
 }

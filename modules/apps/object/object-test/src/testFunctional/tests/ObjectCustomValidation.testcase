@@ -2141,86 +2141,77 @@ definition {
 		property ci.retries.disabled = "true";
 		property test.name.skip.portal.instance = "ObjectCustomValidation#CanUserDefineValidationActiveOrInactive";
 
-		ObjectAdmin.addObjectViaAPI(
-			labelName = "Custom Object 153552",
-			objectName = "CustomObject153552",
-			pluralLabelName = "Custom Objects 153552");
+		task ("Given a custom object with a text field") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object 153552",
+				objectName = "CustomObject153552",
+				pluralLabelName = "Custom Objects 153552");
 
-		ObjectAdmin.addObjectFieldViaAPI(
-			fieldBusinessType = "Integer",
-			fieldLabelName = "Custom Field",
-			fieldName = "customField",
-			fieldType = "Integer",
-			isRequired = "false",
-			objectName = "CustomObject153552");
+			ObjectAdmin.addObjectFieldViaAPI(
+				fieldBusinessType = "Integer",
+				fieldLabelName = "Custom Field",
+				fieldName = "customField",
+				fieldType = "Integer",
+				isRequired = "false",
+				objectName = "CustomObject153552");
 
-		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject153552");
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject153552");
+		}
 
-		ObjectAdmin.openObjectAdmin();
+		task ("And given a deactivated custom validation that prevents entries which have a value greater than 2500") {
+			ObjectAdmin.openObjectAdmin();
 
-		ObjectPortlet.selectCustomObject(label = "Custom Object 153552");
+			ObjectPortlet.selectCustomObject(label = "Custom Object 153552");
 
-		ObjectAdmin.goToValidationsTab();
+			ObjectAdmin.goToValidationsTab();
 
-		ObjectCustomValidation.addObjectValidation(
-			validationName = "Custom Validation",
-			validationType = "Groovy");
+			ObjectCustomValidation.addObjectValidation(
+				validationName = "Custom Validation",
+				validationType = "Groovy");
 
-		ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
+			ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
 
-		ObjectCustomValidation.activeValidation();
+			ObjectCustomValidation.gotoTab(tabName = "Conditions");
 
-		ObjectCustomValidation.gotoTab(tabName = "Conditions");
+			ObjectCustomValidation.insertScriptOnValidation(scriptValidation = "invalidFields = (customField > 2500)");
 
-		ObjectCustomValidation.insertScriptOnValidation(scriptValidation = "invalidFields = (customField < 18)");
+			ObjectCustomValidation.addErrorMessage(errorMessage = "This entry is not possible.");
 
-		ObjectCustomValidation.addErrorMessage(errorMessage = "This entry is not possible.");
+			PortletEntry.save();
+		}
 
-		PortletEntry.save();
+		task ("And given a custom object entry with a value greater than 2500") {
+			ObjectAdmin.addObjectSingleFieldEntryViaAPI(
+				fieldName = "customField",
+				objectName = "CustomObject153552",
+				value = 4500);
+		}
 
-		Refresh();
+		task ("When the custom validation is activated and the user attempts to add an entry with a value greater than 2500") {
+			ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
 
-		ObjectCustomValidation.assertValidationPresent(
-			validationActive = "Yes",
-			validationName = "Custom Validation",
-			validationType = "Groovy");
+			ObjectCustomValidation.activeValidation();
 
-		ObjectAdmin.addObjectSingleFieldEntryViaAPI(
-			fieldName = "customField",
-			objectName = "CustomObject153552",
-			value = 10);
+			PortletEntry.save();
 
-		ObjectAdmin.goToCustomObject(objectName = "CustomObject153552");
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject153552");
 
-		ObjectPortlet.assertEntryNotPresent(entry = 10);
+			LexiconEntry.gotoAdd();
 
-		ObjectAdmin.openObjectAdmin();
+			ObjectPortlet.typeCustomField(
+				customField = "Custom Field",
+				entry = 3500);
 
-		ObjectPortlet.selectCustomObject(label = "Custom Object 153552");
+			Button.clickSave();
+		}
 
-		ObjectAdmin.goToValidationsTab();
+		task ("Then the entry isn't created and the previously added entry is present on the table") {
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject153552");
 
-		ObjectCustomValidation.gotoCustomValidation(validationName = "Custom Validation");
+			ObjectPortlet.assertEntryNotPresent(entry = 3500);
 
-		ObjectCustomValidation.desactiveValidation();
-
-		PortletEntry.save();
-
-		Refresh();
-
-		ObjectCustomValidation.assertValidationPresent(
-			validationActive = "No",
-			validationName = "Custom Validation",
-			validationType = "Groovy");
-
-		ObjectAdmin.addObjectSingleFieldEntryViaAPI(
-			fieldName = "customField",
-			objectName = "CustomObject153552",
-			value = 10);
-
-		ObjectAdmin.goToCustomObject(objectName = "CustomObject153552");
-
-		ObjectPortlet.viewEntry(entry = 10);
+			ObjectPortlet.viewEntry(entry = 4500);
+		}
 	}
 
 	@description = "LPS-144474 - Verify that, when managing an Object validation, the user can see Basic Info tab"

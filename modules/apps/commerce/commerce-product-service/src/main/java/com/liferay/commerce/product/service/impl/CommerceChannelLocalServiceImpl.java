@@ -15,6 +15,7 @@
 package com.liferay.commerce.product.service.impl;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.exception.AccountEntryStatusException;
 import com.liferay.account.exception.AccountEntryTypeException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
@@ -65,6 +66,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -194,7 +196,9 @@ public class CommerceChannelLocalServiceImpl
 
 		return commerceChannelLocalService.updateCommerceChannel(
 			commerceChannel.getCommerceChannelId(), accountEntryId, siteGroupId,
-			name, type, typeSettingsUnicodeProperties, commerceCurrencyCode);
+			name, type, typeSettingsUnicodeProperties, commerceCurrencyCode,
+			commerceChannel.getPriceDisplayType(),
+			commerceChannel.isDiscountsTargetNetPrice());
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -360,6 +364,13 @@ public class CommerceChannelLocalServiceImpl
 	}
 
 	@Override
+	public List<CommerceChannel> getCommerceChannelsByAccountEntryId(
+		long accountEntryId) {
+
+		return commerceChannelPersistence.findByAccountEntryId(accountEntryId);
+	}
+
+	@Override
 	public int getCommerceChannelsCount(long companyId, String keywords)
 		throws PortalException {
 
@@ -411,7 +422,8 @@ public class CommerceChannelLocalServiceImpl
 			long commerceChannelId, long accountEntryId, long siteGroupId,
 			String name, String type,
 			UnicodeProperties typeSettingsUnicodeProperties,
-			String commerceCurrencyCode)
+			String commerceCurrencyCode, String priceDisplayType,
+			boolean discountsTargetNetPrice)
 		throws PortalException {
 
 		_validateAccountEntry(accountEntryId);
@@ -423,40 +435,6 @@ public class CommerceChannelLocalServiceImpl
 		long oldSiteGroupId = commerceChannel.getSiteGroupId();
 
 		commerceChannel.setAccountEntryId(accountEntryId);
-		commerceChannel.setSiteGroupId(siteGroupId);
-		commerceChannel.setName(name);
-		commerceChannel.setType(type);
-		commerceChannel.setTypeSettingsUnicodeProperties(
-			typeSettingsUnicodeProperties);
-		commerceChannel.setCommerceCurrencyCode(commerceCurrencyCode);
-
-		commerceChannel = commerceChannelPersistence.update(commerceChannel);
-
-		if (CommerceChannelConstants.CHANNEL_TYPE_SITE.equals(type) &&
-			(siteGroupId != oldSiteGroupId)) {
-
-			_updateGroupTypeSettings(commerceChannel.getGroup(), siteGroupId);
-		}
-
-		return commerceChannel;
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public CommerceChannel updateCommerceChannel(
-			long commerceChannelId, long siteGroupId, String name, String type,
-			UnicodeProperties typeSettingsUnicodeProperties,
-			String commerceCurrencyCode, String priceDisplayType,
-			boolean discountsTargetNetPrice)
-		throws PortalException {
-
-		_validateType(type);
-
-		CommerceChannel commerceChannel =
-			commerceChannelPersistence.findByPrimaryKey(commerceChannelId);
-
-		long oldSiteGroupId = commerceChannel.getSiteGroupId();
-
 		commerceChannel.setSiteGroupId(siteGroupId);
 		commerceChannel.setName(name);
 		commerceChannel.setType(type);
@@ -629,6 +607,11 @@ public class CommerceChannelLocalServiceImpl
 			throw new AccountEntryTypeException(
 				"Channel can only be assigned with an account entry type:" +
 					AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER);
+		}
+
+		if (accountEntry.getStatus() != WorkflowConstants.STATUS_APPROVED) {
+			throw new AccountEntryStatusException(
+				"Channel can only be assigned with an approved account entry");
 		}
 	}
 

@@ -66,8 +66,10 @@ public class GetCompletionMVCResourceCommand extends BaseMVCResourceCommand {
 						_language.get(
 							themeDisplay.getLocale(),
 							"openai-is-disabled.-enable-openai-from-the-" +
-								"settings-page-or-contact-your-" +
-									"administrator"))));
+								"settings-page-or-contact-your-administrator")
+					).put(
+						"retry", false
+					)));
 
 			return;
 		}
@@ -87,7 +89,10 @@ public class GetCompletionMVCResourceCommand extends BaseMVCResourceCommand {
 							themeDisplay.getLocale(),
 							"api-authentication-is-needed-to-use-this-" +
 								"feature.-add-an-api-key-from-the-settings-" +
-									"page-or-contact-your-administrator"))));
+									"page-or-contact-your-administrator")
+					).put(
+						"retry", false
+					)));
 
 			return;
 		}
@@ -103,7 +108,10 @@ public class GetCompletionMVCResourceCommand extends BaseMVCResourceCommand {
 						"message",
 						_language.format(
 							themeDisplay.getLocale(), "the-x-is-required",
-							"content"))));
+							"content")
+					).put(
+						"retry", false
+					)));
 
 			return;
 		}
@@ -126,8 +134,18 @@ public class GetCompletionMVCResourceCommand extends BaseMVCResourceCommand {
 				resourceRequest, resourceResponse,
 				JSONUtil.put(
 					"error",
-					aiCreatorOpenAIClientException.getLocalizedMessage(
-						themeDisplay.getLocale())));
+					JSONUtil.put(
+						"message",
+						aiCreatorOpenAIClientException.
+							getCompletionLocalizedMessage(
+								themeDisplay.getLocale())
+					).put(
+						"retry",
+						(aiCreatorOpenAIClientException.getResponseCode() ==
+							429) ||
+						(aiCreatorOpenAIClientException.getResponseCode() ==
+							500)
+					)));
 		}
 	}
 

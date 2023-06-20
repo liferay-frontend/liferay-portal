@@ -336,6 +336,10 @@ public interface CommerceChannelLocalService
 			long companyId, String keywords, int start, int end)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceChannel> getCommerceChannelsByAccountEntryId(
+		long accountEntryId);
+
 	/**
 	 * Returns the number of commerce channels.
 	 *
@@ -400,13 +404,6 @@ public interface CommerceChannelLocalService
 	public CommerceChannel updateCommerceChannel(
 			long commerceChannelId, long accountEntryId, long siteGroupId,
 			String name, String type,
-			UnicodeProperties typeSettingsUnicodeProperties,
-			String commerceCurrencyCode)
-		throws PortalException;
-
-	@Indexable(type = IndexableType.REINDEX)
-	public CommerceChannel updateCommerceChannel(
-			long commerceChannelId, long siteGroupId, String name, String type,
 			UnicodeProperties typeSettingsUnicodeProperties,
 			String commerceCurrencyCode, String priceDisplayType,
 			boolean discountsTargetNetPrice)

@@ -17,6 +17,7 @@ package com.liferay.object.web.internal.object.definitions.display.context;
 import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.PanelCategoryRegistry;
 import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectWebKeys;
 import com.liferay.object.model.ObjectDefinition;
@@ -24,12 +25,11 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.web.internal.display.context.helper.ObjectRequestHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -52,20 +52,18 @@ public class ObjectDefinitionsDetailsDisplayContext
 	extends BaseObjectDefinitionsDisplayContext {
 
 	public ObjectDefinitionsDetailsDisplayContext(
+		ConfigurationProvider configurationProvider,
 		HttpServletRequest httpServletRequest,
-		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ModelResourcePermission<ObjectDefinition>
 			objectDefinitionModelResourcePermission,
 		ObjectEntryManagerRegistry objectEntryManagerRegistry,
-		ObjectRelationshipLocalService objectRelationshipLocalService,
 		ObjectScopeProviderRegistry objectScopeProviderRegistry,
 		PanelCategoryRegistry panelCategoryRegistry) {
 
 		super(httpServletRequest, objectDefinitionModelResourcePermission);
 
-		_objectDefinitionLocalService = objectDefinitionLocalService;
+		_configurationProvider = configurationProvider;
 		_objectEntryManagerRegistry = objectEntryManagerRegistry;
-		_objectRelationshipLocalService = objectRelationshipLocalService;
 		_objectScopeProviderRegistry = objectScopeProviderRegistry;
 		_panelCategoryRegistry = panelCategoryRegistry;
 
@@ -176,10 +174,17 @@ public class ObjectDefinitionsDetailsDisplayContext
 			ObjectActionKeys.PUBLISH_OBJECT_DEFINITION);
 	}
 
-	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
+	public boolean isChangeTrackingEnabled() throws Exception {
+		CTSettingsConfiguration ctSettingsConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				CTSettingsConfiguration.class,
+				_objectRequestHelper.getCompanyId());
+
+		return ctSettingsConfiguration.enabled();
+	}
+
+	private final ConfigurationProvider _configurationProvider;
 	private final ObjectEntryManagerRegistry _objectEntryManagerRegistry;
-	private final ObjectRelationshipLocalService
-		_objectRelationshipLocalService;
 	private final ObjectRequestHelper _objectRequestHelper;
 	private final ObjectScopeProviderRegistry _objectScopeProviderRegistry;
 	private final PanelCategoryRegistry _panelCategoryRegistry;

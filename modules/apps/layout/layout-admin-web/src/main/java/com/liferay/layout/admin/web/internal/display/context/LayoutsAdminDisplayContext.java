@@ -920,7 +920,6 @@ public class LayoutsAdminDisplayContext {
 		BreadcrumbEntry breadcrumbEntry = new BreadcrumbEntry();
 
 		breadcrumbEntry.setTitle(LanguageUtil.get(httpServletRequest, "pages"));
-
 		breadcrumbEntry.setURL(
 			PortletURLBuilder.createRenderURL(
 				_liferayPortletResponse
@@ -1480,7 +1479,6 @@ public class LayoutsAdminDisplayContext {
 		portletURL.setParameter("collectionPK", collectionPK);
 		portletURL.setParameter("collectionType", collectionType);
 		portletURL.setParameter("showActions", String.valueOf(Boolean.TRUE));
-
 		portletURL.setWindowState(LiferayWindowState.POP_UP);
 
 		return portletURL.toString();
@@ -1902,6 +1900,34 @@ public class LayoutsAdminDisplayContext {
 		return true;
 	}
 
+	public boolean isURLAdvancedSettingsVisible() {
+		Layout layout = getSelLayout();
+
+		if (layout.isTypeAssetDisplay()) {
+			return false;
+		}
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryLocalServiceUtil.
+				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
+
+		if (layoutPageTemplateEntry == null) {
+			layoutPageTemplateEntry =
+				LayoutPageTemplateEntryLocalServiceUtil.
+					fetchLayoutPageTemplateEntryByPlid(layout.getClassPK());
+		}
+
+		if ((layoutPageTemplateEntry != null) &&
+			Objects.equals(
+				layoutPageTemplateEntry.getType(),
+				LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT)) {
+
+			return false;
+		}
+
+		return true;
+	}
+
 	protected long getActiveLayoutSetBranchId() throws PortalException {
 		if (_activeLayoutSetBranchId != null) {
 			return _activeLayoutSetBranchId;
@@ -2008,7 +2034,6 @@ public class LayoutsAdminDisplayContext {
 		BreadcrumbEntry breadcrumbEntry = new BreadcrumbEntry();
 
 		breadcrumbEntry.setTitle(title);
-
 		breadcrumbEntry.setURL(
 			PortletURLBuilder.create(
 				getPortletURL()
