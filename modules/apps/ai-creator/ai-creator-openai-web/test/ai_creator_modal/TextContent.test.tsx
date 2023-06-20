@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,15 +11,26 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%
-EditRolePermissionsNavigationDisplayContext editRolePermissionsNavigationDisplayContext = new EditRolePermissionsNavigationDisplayContext(request, renderResponse, role, roleDisplayContext.isAccountRoleGroupScope());
-%>
+import {render, screen} from '@testing-library/react';
+import React from 'react';
 
-<div data-qa-id="editRolePermissionsNavigation">
-	<react:component
-		module="js/EditRolePermissionsNavigation.es"
-		props="<%= editRolePermissionsNavigationDisplayContext.getData() %>"
-	/>
-</div>
+import '@testing-library/jest-dom/extend-expect';
+
+import {TextContent} from '../../src/main/resources/META-INF/resources/ai_creator_modal/TextContent';
+
+describe('TextContent', () => {
+	it('shows the given content inside a readonly input', () => {
+		render(
+			<TextContent
+				content="Sample content"
+				portletNamespace="namespace"
+			/>
+		);
+
+		const input = screen.getByLabelText('content');
+
+		expect(input).toHaveAttribute('readonly');
+		expect(input).toHaveValue('Sample content');
+	});
+});
