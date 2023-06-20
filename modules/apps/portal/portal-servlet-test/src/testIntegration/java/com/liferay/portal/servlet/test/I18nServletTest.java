@@ -119,7 +119,7 @@ public class I18nServletTest extends I18nServlet {
 
 		_group.setTypeSettingsProperties(typeSettingsUnicodeProperties);
 
-		_groupLocalService.updateGroup(_group);
+		_group = _groupLocalService.updateGroup(_group);
 	}
 
 	@After
