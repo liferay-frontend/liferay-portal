@@ -84,6 +84,8 @@ For `liferay-sample-etc-cron` and `liferay-sample-etc-spring-boot` the third typ
 
 - *liferay-sample-fds-cell-renderer*
 
+- *liferay-sample-fds-filter*
+
 - *liferay-sample-global-css*
 
 	Serve global CSS on a page.
