@@ -40,6 +40,7 @@ public class CTProcessModelDocumentContributor
 
 	@Override
 	public void contribute(Document document, CTProcess ctProcess) {
+		document.addKeyword(Field.COMPANY_ID, ctProcess.getCompanyId());
 		document.addDate(Field.CREATE_DATE, ctProcess.getCreateDate());
 
 		CTCollection ctCollection = _ctCollectionLocalService.fetchCTCollection(
