@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.headless.builder.publisher.test;
+package com.liferay.headless.builder.application.publisher.test;
 
 import com.liferay.headless.builder.application.APIApplication;
 import com.liferay.headless.builder.application.provider.APIApplicationProvider;
@@ -45,7 +45,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Luis Miguel Barcos
  */
-@FeatureFlags({"LPS-186757", "LPS-184413", "LPS-167253", "LPS-153117"})
+@FeatureFlags({"LPS-186757", "LPS-153117", "LPS-167253", "LPS-184413"})
 public class APIApplicationPublisherTest extends BaseTestCase {
 
 	@Test

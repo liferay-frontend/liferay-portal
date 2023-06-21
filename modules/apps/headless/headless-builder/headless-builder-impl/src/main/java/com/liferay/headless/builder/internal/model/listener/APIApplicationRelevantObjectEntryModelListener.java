@@ -14,29 +14,31 @@
 
 package com.liferay.headless.builder.internal.model.listener;
 
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
 
 import java.io.Serializable;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Sergio Jiménez del Coso
  */
-@Component(service = ModelListener.class)
-public class APIApplicationObjectEntryModelListener
-	extends BaseModelListener<ObjectEntry> {
+@Component(service = RelevantObjectEntryModelListener.class)
+public class APIApplicationRelevantObjectEntryModelListener
+	extends BaseModelListener<ObjectEntry>
+	implements RelevantObjectEntryModelListener {
+
+	@Override
+	public String getObjectDefinitionExternalReferenceCode() {
+		return "MSOD_API_APPLICATION";
+	}
 
 	@Override
 	public void onBeforeCreate(ObjectEntry objectEntry)
@@ -58,9 +60,9 @@ public class APIApplicationObjectEntryModelListener
 		// APIApplication is defined in headless-builder.json and has a required
 		// object field called "baseURL".
 
-		Map<String, Serializable> objectEntryValues = objectEntry.getValues();
+		Map<String, Serializable> values = objectEntry.getValues();
 
-		String baseURL = (String)objectEntryValues.get("baseURL");
+		String baseURL = (String)values.get("baseURL");
 
 		if (baseURL == null) {
 			return;
@@ -69,17 +71,6 @@ public class APIApplicationObjectEntryModelListener
 		// Just because you have an object field called "baseURL" does not mean
 		// you are an APIApplication. My mom is a woman, but not every woman is
 		// my mom.
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				objectEntry.getObjectDefinitionId());
-
-		if (!Objects.equals(
-				objectDefinition.getExternalReferenceCode(),
-				"MSOD_API_APPLICATION")) {
-
-			return;
-		}
 
 		try {
 			Matcher matcher = _baseURLPattern.matcher(baseURL);
@@ -97,8 +88,5 @@ public class APIApplicationObjectEntryModelListener
 
 	private static final Pattern _baseURLPattern = Pattern.compile(
 		"[a-zA-Z0-9-]{1,255}");
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 }

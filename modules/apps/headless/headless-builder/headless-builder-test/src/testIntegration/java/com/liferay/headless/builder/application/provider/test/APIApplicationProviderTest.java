@@ -34,7 +34,7 @@ import org.junit.Test;
 /**
  * @author Alejandro Tardín
  */
-@FeatureFlags({"LPS-184413", "LPS-167253", "LPS-153117"})
+@FeatureFlags({"LPS-153117", "LPS-167253", "LPS-184413"})
 public class APIApplicationProviderTest extends BaseTestCase {
 
 	@Test
@@ -140,7 +140,8 @@ public class APIApplicationProviderTest extends BaseTestCase {
 
 		Assert.assertEquals("description", property.getDescription());
 		Assert.assertEquals("name", property.getName());
-		Assert.assertEquals("Picklist", property.getType());
+		Assert.assertEquals(
+			APIApplication.Property.Type.PICKLIST, property.getType());
 	}
 
 	private static final String _API_APPLICATION_ERC =
