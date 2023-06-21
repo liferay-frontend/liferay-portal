@@ -26,6 +26,7 @@ export function FieldTypeSelector({
 	onChangeFieldTypes,
 	portletNamespace,
 	readOnly,
+	showFragmentConfigurationLink,
 	small,
 	title,
 }) {
@@ -97,13 +98,18 @@ export function FieldTypeSelector({
 					</>
 				)}
 
-				<div className="mt-4">
-					<ClayLink href={fragmentConfigurationURL}>
-						{Liferay.Language.get(
-							'define-the-default-form-fragments-for-this-site'
-						)}
-					</ClayLink>
-				</div>
+				{showFragmentConfigurationLink && (
+					<div className="mt-4">
+						<ClayLink
+							href={fragmentConfigurationURL}
+							target="_blank"
+						>
+							{Liferay.Language.get(
+								'define-the-default-form-fragments-for-this-site'
+							)}
+						</ClayLink>
+					</div>
+				)}
 			</div>
 		</ClayForm.Group>
 	);

@@ -60,6 +60,7 @@ const FragmentEditor = ({
 		propagationEnabled,
 		readOnly,
 		showFieldTypes,
+		status,
 		urls,
 	},
 }) => {
@@ -390,6 +391,9 @@ const FragmentEditor = ({
 										}
 										onChangeFieldTypes={setFieldTypes}
 										readOnly={readOnly}
+										showFragmentConfigurationLink={
+											status !== allowedStatus.draft
+										}
 										title={Liferay.Language.get(
 											'field-types'
 										)}
