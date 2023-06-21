@@ -12,17 +12,16 @@
  * details.
  */
 
-package com.liferay.portal.scripting;
+/// <reference types="react" />
 
-import org.osgi.annotation.versioning.ProviderType;
-import org.osgi.framework.Bundle;
-
-/**
- * @author Michael C. Han
- */
-@ProviderType
-public interface ScriptBundleProvider {
-
-	public Bundle getBundle();
-
+interface DeleteAPIApplicationModal {
+	closeModal: voidReturn;
+	itemData: ItemData;
+	loadData: voidReturn;
 }
+export declare function DeleteAPIApplicationModalContent({
+	closeModal,
+	itemData,
+	loadData,
+}: DeleteAPIApplicationModal): JSX.Element;
+export {};

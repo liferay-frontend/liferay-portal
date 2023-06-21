@@ -17,16 +17,17 @@ import {openModal} from 'frontend-js-web';
 import React from 'react';
 
 import {CreateAPIApplicationModalContent} from '../modals/CreateAPIApplicationModalContent';
+import {DeleteAPIApplicationModalContent} from '../modals/DeleteAPIApplicationModalContent';
 import {getAPIApplicationsFDSProps} from './fdsUtils/fdsProps';
 
 interface APIApplicationsTableProps {
-	apiURL: string;
+	apiURLPaths: APIURLPaths;
 	portletId: string;
 	readOnly: boolean;
 }
 
 export default function APIApplicationsTable({
-	apiURL,
+	apiURLPaths,
 	portletId,
 	readOnly,
 }: APIApplicationsTableProps) {
@@ -36,7 +37,7 @@ export default function APIApplicationsTable({
 				center: true,
 				contentComponent: ({closeModal}: {closeModal: voidReturn}) =>
 					CreateAPIApplicationModalContent({
-						apiURL,
+						apiApplicationsURLPath: apiURLPaths.applications,
 						closeModal,
 						loadData,
 					}),
@@ -46,12 +47,34 @@ export default function APIApplicationsTable({
 		},
 	};
 
+	const deleteAPIApplication = (itemData: ItemData, loadData: voidReturn) => {
+		openModal({
+			center: true,
+			contentComponent: ({closeModal}: {closeModal: voidReturn}) =>
+				DeleteAPIApplicationModalContent({
+					closeModal,
+					itemData,
+					loadData,
+				}),
+			id: 'deleteAPIApplicationModal',
+			size: 'md',
+			status: 'danger',
+		});
+	};
+
+	function onActionDropdownItemClick({action, itemData, loadData}: FDSItem) {
+		if (action.id === 'deleteAPIApplication') {
+			deleteAPIApplication(itemData, loadData);
+		}
+	}
+
 	return (
 		<FrontendDataSet
-			{...getAPIApplicationsFDSProps(apiURL, portletId)}
+			{...getAPIApplicationsFDSProps(apiURLPaths.applications, portletId)}
 			creationMenu={{
 				primaryItems: readOnly ? [] : ([createAPIApplication] as any),
 			}}
+			onActionDropdownItemClick={onActionDropdownItemClick}
 		/>
 	);
 }

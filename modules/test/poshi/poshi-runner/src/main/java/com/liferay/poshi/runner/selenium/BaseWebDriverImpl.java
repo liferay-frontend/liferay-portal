@@ -1010,6 +1010,11 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 	}
 
 	@Override
+	public void executeCDPCommand(
+		String commandName, Map<String, Object> commandParameters) {
+	}
+
+	@Override
 	public void executeJavaScript(
 		String javaScript, String argument1, String argument2) {
 
@@ -4260,6 +4265,10 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 			}
 
 		};
+	}
+
+	protected WebDriver getWebDriver() {
+		return _webDriver;
 	}
 
 	protected WebElement getWebElement(String locator) {

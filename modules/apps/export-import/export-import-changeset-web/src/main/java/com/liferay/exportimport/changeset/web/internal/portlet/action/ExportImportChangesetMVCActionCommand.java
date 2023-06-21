@@ -113,7 +113,7 @@ public class ExportImportChangesetMVCActionCommand
 		}
 
 		Map<String, String[]> parameterMap =
-			_exportImportConfigurationParameterMapFactory.buildParameterMap();
+			exportImportConfigurationParameterMapFactory.buildParameterMap();
 
 		parameterMap.put(
 			PortletDataHandlerKeys.DELETIONS,
@@ -135,31 +135,31 @@ public class ExportImportChangesetMVCActionCommand
 		long backgroundTaskId = 0;
 
 		if (cmd.equals(Constants.EXPORT)) {
-			Portlet portlet = _portletLocalService.getPortletById(portletId);
+			Portlet portlet = portletLocalService.getPortletById(portletId);
 
 			Map<String, Serializable> settingsMap =
-				_exportImportConfigurationSettingsMapFactory.
+				exportImportConfigurationSettingsMapFactory.
 					buildExportPortletSettingsMap(
 						themeDisplay.getUser(), themeDisplay.getPlid(),
 						themeDisplay.getScopeGroupId(),
 						ChangesetPortletKeys.CHANGESET, parameterMap,
-						_exportImportHelper.getPortletExportFileName(portlet));
+						exportImportHelper.getPortletExportFileName(portlet));
 
 			ExportImportConfiguration exportImportConfiguration =
-				_exportImportConfigurationLocalService.
+				exportImportConfigurationLocalService.
 					addDraftExportImportConfiguration(
 						themeDisplay.getUserId(), portletId,
 						ExportImportConfigurationConstants.TYPE_EXPORT_PORTLET,
 						settingsMap);
 
 			backgroundTaskId =
-				_exportImportLocalService.exportPortletInfoAsFileInBackground(
+				exportImportLocalService.exportPortletInfoAsFileInBackground(
 					themeDisplay.getUserId(), exportImportConfiguration);
 		}
 		else if (cmd.equals(Constants.PUBLISH) ||
 				 cmd.equals(ChangesetConstants.PUBLISH_CHANGESET)) {
 
-			Group scopeGroup = _groupLocalService.fetchGroup(
+			Group scopeGroup = groupLocalService.fetchGroup(
 				ParamUtil.getLong(actionRequest, "groupId"));
 
 			if (scopeGroup == null) {
@@ -216,7 +216,7 @@ public class ExportImportChangesetMVCActionCommand
 				}
 
 				HttpPrincipal httpPrincipal = new HttpPrincipal(
-					_stagingURLHelper.buildRemoteURL(
+					stagingURLHelper.buildRemoteURL(
 						stagingGroup.getTypeSettingsProperties()),
 					user.getLogin(), user.getPassword(),
 					user.isPasswordEncrypted());
@@ -239,23 +239,56 @@ public class ExportImportChangesetMVCActionCommand
 			}
 
 			Map<String, Serializable> settingsMap =
-				_exportImportConfigurationSettingsMapFactory.
+				exportImportConfigurationSettingsMapFactory.
 					buildPublishPortletSettingsMap(
 						themeDisplay.getUser(), scopeGroup.getGroupId(),
 						themeDisplay.getPlid(), liveGroupId, targetPlid,
 						ChangesetPortletKeys.CHANGESET, parameterMap);
 
 			ExportImportConfiguration exportImportConfiguration =
-				_exportImportConfigurationLocalService.
+				exportImportConfigurationLocalService.
 					addDraftExportImportConfiguration(
 						themeDisplay.getUserId(), portletId, type, settingsMap);
 
-			backgroundTaskId = _staging.publishPortlet(
+			backgroundTaskId = staging.publishPortlet(
 				themeDisplay.getUserId(), exportImportConfiguration);
 		}
 
 		_sendRedirect(actionRequest, actionResponse, backgroundTaskId);
 	}
+
+	@Reference
+	protected ExportImportConfigurationLocalService
+		exportImportConfigurationLocalService;
+
+	@Reference
+	protected ExportImportConfigurationParameterMapFactory
+		exportImportConfigurationParameterMapFactory;
+
+	@Reference
+	protected ExportImportConfigurationSettingsMapFactory
+		exportImportConfigurationSettingsMapFactory;
+
+	@Reference
+	protected ExportImportHelper exportImportHelper;
+
+	@Reference
+	protected ExportImportLocalService exportImportLocalService;
+
+	@Reference
+	protected GroupLocalService groupLocalService;
+
+	@Reference
+	protected Portal portal;
+
+	@Reference
+	protected PortletLocalService portletLocalService;
+
+	@Reference
+	protected Staging staging;
+
+	@Reference
+	protected StagingURLHelper stagingURLHelper;
 
 	private void _sendRedirect(
 			ActionRequest actionRequest, ActionResponse actionResponse,
@@ -265,7 +298,7 @@ public class ExportImportChangesetMVCActionCommand
 		actionRequest.setAttribute(
 			WebKeys.REDIRECT,
 			PortletURLBuilder.createRenderURL(
-				_portal.getLiferayPortletResponse(actionResponse),
+				portal.getLiferayPortletResponse(actionResponse),
 				ExportImportPortletKeys.EXPORT_IMPORT
 			).setMVCPath(
 				"/view_export_import.jsp"
@@ -279,38 +312,5 @@ public class ExportImportChangesetMVCActionCommand
 
 		sendRedirect(actionRequest, actionResponse);
 	}
-
-	@Reference
-	private ExportImportConfigurationLocalService
-		_exportImportConfigurationLocalService;
-
-	@Reference
-	private ExportImportConfigurationParameterMapFactory
-		_exportImportConfigurationParameterMapFactory;
-
-	@Reference
-	private ExportImportConfigurationSettingsMapFactory
-		_exportImportConfigurationSettingsMapFactory;
-
-	@Reference
-	private ExportImportHelper _exportImportHelper;
-
-	@Reference
-	private ExportImportLocalService _exportImportLocalService;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
-
-	@Reference
-	private Portal _portal;
-
-	@Reference
-	private PortletLocalService _portletLocalService;
-
-	@Reference
-	private Staging _staging;
-
-	@Reference
-	private StagingURLHelper _stagingURLHelper;
 
 }

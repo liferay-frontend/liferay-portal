@@ -37,7 +37,7 @@ type DataError = {
 };
 
 interface HandleCreateInModal {
-	apiURL: string;
+	apiApplicationsURLPath: string;
 	closeModal: voidReturn;
 	loadData: voidReturn;
 }
@@ -49,7 +49,7 @@ const headers = new Headers({
 });
 
 export function CreateAPIApplicationModalContent({
-	apiURL,
+	apiApplicationsURLPath,
 	closeModal,
 	loadData,
 }: HandleCreateInModal) {
@@ -72,7 +72,7 @@ export function CreateAPIApplicationModalContent({
 	}, [data]);
 
 	async function postData() {
-		fetch(apiURL, {
+		fetch(apiApplicationsURLPath, {
 			body: JSON.stringify({
 				...data,
 				applicationStatus: {key: 'unpublished'},
@@ -108,17 +108,19 @@ export function CreateAPIApplicationModalContent({
 
 	function validateData() {
 		let isDataValid = true;
+		const mandatoryFields = ['baseURL', 'title'];
 
 		if (!Object.keys(data).length) {
-			setDisplayError({
-				baseURL: true,
-				title: true,
-			});
+			const errors = mandatoryFields.reduce(
+				(errors, field) => ({...errors, [field]: true}),
+				{}
+			);
+			setDisplayError(errors as DataError);
 
 			isDataValid = false;
 		}
 		else {
-			for (const field in data) {
+			mandatoryFields.forEach((field) => {
 				if (data[field as keyof Data]) {
 					setDisplayError((previousErrors) => ({
 						...previousErrors,
@@ -130,10 +132,9 @@ export function CreateAPIApplicationModalContent({
 						...previousErrors,
 						[field]: true,
 					}));
-
 					isDataValid = false;
 				}
-			}
+			});
 		}
 
 		return isDataValid;
