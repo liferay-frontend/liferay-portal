@@ -14,6 +14,8 @@
 
 package com.liferay.partner;
 
+import com.liferay.petra.string.StringBundler;
+
 import java.net.URI;
 
 import java.time.ZonedDateTime;
@@ -106,6 +108,95 @@ public class PartnerCommandLineRunner implements CommandLineRunner {
 
 			_put(itemsJSONArray.toString(), "/o/c/activities/batch");
 		}
+
+		responseJSONObject = _get(
+			uriBuilder -> uriBuilder.path(
+				"/o/c/activities"
+			).queryParam(
+				"filter",
+				StringBundler.concat(
+					"submitted eq true and activityStatus eq 'active' and ",
+					"endDate le ", _toString(zonedDateTime.minusDays(15)),
+					" and mdfReqToActs/mdfRequestStatus eq 'approved'")
+			).queryParam(
+				"nestedFields", "actToMDFClmActs"
+			).queryParam(
+				"page", "1"
+			).queryParam(
+				"pageSize", "-1"
+			).build());
+
+		if (responseJSONObject.getInt("totalCount") > 0) {
+			JSONArray itemsJSONArray = responseJSONObject.getJSONArray("items");
+
+			for (int i = 0; i < itemsJSONArray.length(); i++) {
+				JSONObject itemJSONObject = itemsJSONArray.getJSONObject(i);
+
+				long activityId = itemJSONObject.getLong("id");
+
+				ZonedDateTime zonedActivityEndDate = ZonedDateTime.parse(
+					itemJSONObject.getString("endDate"));
+
+				ZonedDateTime zonedActivityExpirationDate =
+					zonedActivityEndDate.plusDays(30);
+
+				JSONArray mdfClaimActivitiesJSONArray =
+					itemJSONObject.getJSONArray("actToMDFClmActs");
+
+				JSONArray claimedMdfClaimActivityJSONArray = new JSONArray();
+
+				if (mdfClaimActivitiesJSONArray.length() == 0) {
+					_sendNotification(
+						activityId, zonedActivityExpirationDate, zonedDateTime);
+				}
+				else {
+					for (int j = 0; j < mdfClaimActivitiesJSONArray.length();
+						 j++) {
+
+						JSONObject mdfClaimActivityJSONObject =
+							mdfClaimActivitiesJSONArray.getJSONObject(j);
+
+						Boolean selectedActivity =
+							mdfClaimActivityJSONObject.getBoolean("selected");
+
+						if (selectedActivity) {
+							long mdfClaimId =
+								mdfClaimActivityJSONObject.getLong(
+									"r_mdfClmToMDFClmActs_c_mdfClaimId");
+
+							responseJSONObject = _get(
+								uriBuilder -> uriBuilder.path(
+									"/o/c/mdfclaims/" + mdfClaimId
+								).build());
+
+							JSONObject mdfClaimStatusJSONObject =
+								responseJSONObject.getJSONObject(
+									"mdfClaimStatus");
+
+							String mdfClaimStatusKey =
+								mdfClaimStatusJSONObject.getString("key");
+
+							if (!mdfClaimStatusKey.equals("draft") &&
+								!mdfClaimStatusKey.equals(
+									"moreInfoRequested") &&
+								!mdfClaimStatusKey.equals("cancel") &&
+								!mdfClaimStatusKey.equals("rejected")) {
+
+								claimedMdfClaimActivityJSONArray.put(
+									mdfClaimActivityJSONObject);
+
+								break;
+							}
+						}
+					}
+				}
+
+				if (claimedMdfClaimActivityJSONArray.length() == 0) {
+					_sendNotification(
+						activityId, zonedActivityExpirationDate, zonedDateTime);
+				}
+			}
+		}
 	}
 
 	private JSONObject _get(Function<UriBuilder, URI> uriFunction) {
@@ -145,6 +236,48 @@ public class PartnerCommandLineRunner implements CommandLineRunner {
 		).bodyToMono(
 			Void.class
 		).block();
+	}
+
+	private void _sendNotification(
+		long activityId, ZonedDateTime zonedActivityExpirationDate,
+		ZonedDateTime zonedDateTime) {
+
+		if (zonedActivityExpirationDate.toLocalDate(
+			).isEqual(
+				zonedDateTime.plusDays(
+					15
+				).toLocalDate()
+			)) {
+
+			_put(
+				"",
+				"/o/c/activities/" + activityId +
+					"/object-actions/notificationDueDate15DaysTemplateAction");
+		}
+		else if (zonedActivityExpirationDate.toLocalDate(
+				).isEqual(
+					zonedDateTime.plusDays(
+						5
+					).toLocalDate()
+				)) {
+
+			_put(
+				"",
+				"/o/c/activities/" + activityId +
+					"/object-actions/notificationDueDate5DaysTemplateAction");
+		}
+		else if (zonedActivityExpirationDate.toLocalDate(
+				).isEqual(
+					zonedDateTime.plusDays(
+						1
+					).toLocalDate()
+				)) {
+
+			_put(
+				"",
+				"/o/c/activities/" + activityId +
+					"/object-actions/notificationDueDate1DayTemplateAction");
+		}
 	}
 
 	private String _toString(ZonedDateTime zonedDateTime) {
