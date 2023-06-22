@@ -362,6 +362,24 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {sXPElementByExternalReferenceCode(externalReferenceCode: ___){actions, createDate, description, description_i18n, elementDefinition, externalReferenceCode, hidden, id, modifiedDate, readOnly, schemaVersion, title, title_i18n, type, userName, version}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public SXPElement sXPElementByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_sxpElementResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			sxpElementResource ->
+				sxpElementResource.getSXPElementByExternalReferenceCode(
+					externalReferenceCode));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {sXPElement(sxpElementId: ___){actions, createDate, description, description_i18n, elementDefinition, externalReferenceCode, hidden, id, modifiedDate, readOnly, schemaVersion, title, title_i18n, type, userName, version}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
@@ -458,6 +476,29 @@ public class Query {
 						getSearchableAssetNameLanguagePage(languageId)));
 	}
 
+	@GraphQLTypeExtension(SXPBlueprint.class)
+	public class GetSXPElementByExternalReferenceCodeTypeExtension {
+
+		public GetSXPElementByExternalReferenceCodeTypeExtension(
+			SXPBlueprint sXPBlueprint) {
+
+			_sXPBlueprint = sXPBlueprint;
+		}
+
+		@GraphQLField
+		public SXPElement sXPElementByExternalReferenceCode() throws Exception {
+			return _applyComponentServiceObjects(
+				_sxpElementResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				sxpElementResource ->
+					sxpElementResource.getSXPElementByExternalReferenceCode(
+						_sXPBlueprint.getExternalReferenceCode()));
+		}
+
+		private SXPBlueprint _sXPBlueprint;
+
+	}
+
 	@GraphQLTypeExtension(SXPElement.class)
 	public class GetSXPElementExportTypeExtension {
 
@@ -495,6 +536,31 @@ public class Query {
 		}
 
 		private ElementInstance _elementInstance;
+
+	}
+
+	@GraphQLTypeExtension(SXPElement.class)
+	public class GetSXPBlueprintByExternalReferenceCodeTypeExtension {
+
+		public GetSXPBlueprintByExternalReferenceCodeTypeExtension(
+			SXPElement sXPElement) {
+
+			_sXPElement = sXPElement;
+		}
+
+		@GraphQLField
+		public SXPBlueprint sXPBlueprintByExternalReferenceCode()
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_sxpBlueprintResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				sxpBlueprintResource ->
+					sxpBlueprintResource.getSXPBlueprintByExternalReferenceCode(
+						_sXPElement.getExternalReferenceCode()));
+		}
+
+		private SXPElement _sXPElement;
 
 	}
 

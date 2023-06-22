@@ -236,6 +236,11 @@ public class ServletDataImpl implements ServletData {
 							SXPElementResourceImpl.class,
 							"postSXPElementBatch"));
 					put(
+						"mutation#updateSXPElementByExternalReferenceCode",
+						new ObjectValuePair<>(
+							SXPElementResourceImpl.class,
+							"putSXPElementByExternalReferenceCode"));
+					put(
 						"mutation#createSXPElementPreview",
 						new ObjectValuePair<>(
 							SXPElementResourceImpl.class,
@@ -333,6 +338,11 @@ public class ServletDataImpl implements ServletData {
 							SXPElementResourceImpl.class,
 							"getSXPElementsPage"));
 					put(
+						"query#sXPElementByExternalReferenceCode",
+						new ObjectValuePair<>(
+							SXPElementResourceImpl.class,
+							"getSXPElementByExternalReferenceCode"));
+					put(
 						"query#sXPElement",
 						new ObjectValuePair<>(
 							SXPElementResourceImpl.class, "getSXPElement"));
@@ -363,6 +373,11 @@ public class ServletDataImpl implements ServletData {
 							"getSearchableAssetNameLanguagePage"));
 
 					put(
+						"query#SXPBlueprint.sXPElementByExternalReferenceCode",
+						new ObjectValuePair<>(
+							SXPElementResourceImpl.class,
+							"getSXPElementByExternalReferenceCode"));
+					put(
 						"query#SXPElement.export",
 						new ObjectValuePair<>(
 							SXPElementResourceImpl.class,
@@ -371,6 +386,11 @@ public class ServletDataImpl implements ServletData {
 						"query#ElementInstance.sXPElement",
 						new ObjectValuePair<>(
 							SXPElementResourceImpl.class, "getSXPElement"));
+					put(
+						"query#SXPElement.sXPBlueprintByExternalReferenceCode",
+						new ObjectValuePair<>(
+							SXPBlueprintResourceImpl.class,
+							"getSXPBlueprintByExternalReferenceCode"));
 					put(
 						"query#SXPBlueprint.export",
 						new ObjectValuePair<>(

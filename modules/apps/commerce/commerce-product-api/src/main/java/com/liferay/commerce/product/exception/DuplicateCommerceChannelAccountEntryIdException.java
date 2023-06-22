@@ -12,19 +12,33 @@
  * details.
  */
 
-package com.liferay.portal.relationship;
+package com.liferay.commerce.product.exception;
 
-import java.util.Collection;
+import com.liferay.portal.kernel.exception.PortalException;
 
 /**
- * @author Máté Thurzó
- *
- * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+ * @author Marco Leo
  */
-@Deprecated
-@FunctionalInterface
-public interface MultiRelationshipFunction<T, U> {
+public class DuplicateCommerceChannelAccountEntryIdException
+	extends PortalException {
 
-	public Collection<U> apply(T model);
+	public DuplicateCommerceChannelAccountEntryIdException() {
+	}
+
+	public DuplicateCommerceChannelAccountEntryIdException(String msg) {
+		super(msg);
+	}
+
+	public DuplicateCommerceChannelAccountEntryIdException(
+		String msg, Throwable throwable) {
+
+		super(msg, throwable);
+	}
+
+	public DuplicateCommerceChannelAccountEntryIdException(
+		Throwable throwable) {
+
+		super(throwable);
+	}
 
 }

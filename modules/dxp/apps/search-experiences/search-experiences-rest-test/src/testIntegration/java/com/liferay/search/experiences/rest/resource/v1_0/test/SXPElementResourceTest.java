@@ -107,6 +107,20 @@ public class SXPElementResourceTest extends BaseSXPElementResourceTestCase {
 	@Ignore
 	@Override
 	@Test
+	public void testGraphQLGetSXPElementByExternalReferenceCode()
+		throws Exception {
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetSXPElementByExternalReferenceCodeNotFound()
+		throws Exception {
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testGraphQLGetSXPElementNotFound() throws Exception {
 	}
 
@@ -233,6 +247,14 @@ public class SXPElementResourceTest extends BaseSXPElementResourceTestCase {
 	}
 
 	@Override
+	protected SXPElement
+			testGetSXPElementByExternalReferenceCode_addSXPElement()
+		throws Exception {
+
+		return _addSXPElement(randomSXPElement());
+	}
+
+	@Override
 	protected SXPElement testGetSXPElementsPage_addSXPElement(
 			SXPElement sxpElement)
 		throws Exception {
@@ -273,6 +295,22 @@ public class SXPElementResourceTest extends BaseSXPElementResourceTestCase {
 		throws Exception {
 
 		return sxpElementResource.postSXPElementPreview(sxpElement);
+	}
+
+	@Override
+	protected SXPElement
+			testPutSXPElementByExternalReferenceCode_addSXPElement()
+		throws Exception {
+
+		return _addSXPElement(randomSXPElement());
+	}
+
+	@Override
+	protected SXPElement
+			testPutSXPElementByExternalReferenceCode_createSXPElement()
+		throws Exception {
+
+		return _addSXPElement(randomSXPElement());
 	}
 
 	private SXPElement _addSXPElement(SXPElement sxpElement) throws Exception {

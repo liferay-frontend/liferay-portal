@@ -229,6 +229,40 @@ definition {
 		}
 	}
 
+	@description = "LPS-178736. Confirm that the user can cancel changes when clicks on Cancel button"
+	@priority = 3
+	test CanCancelChangesOnEdit {
+		task ("And add an id Field") {
+			DataSetAdmin.addFields(key_fieldList = "id");
+		}
+
+		task ("When the user clicks on the edit option from the id Field") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "DataSet#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("And change the label to "Id Edited"") {
+			Type(
+				key_text = "Label",
+				locator1 = "TextInput#ANY",
+				value1 = "Id Edited");
+		}
+
+		task ("And clicks on the cancel button") {
+			Button.clickCancel();
+		}
+
+		task ("Then assert the "Id" is present from the column label") {
+			AssertElementPresent(
+				key_tableColumn = "Label",
+				key_tableRow = "id",
+				locator1 = "DataSet#FIELDS_TABLE_AND_ROW");
+		}
+	}
+
 	@description = "LPS-179151. Confirm the cancellation of the field edit by clicking on the Cancel button."
 	@ignore = "true"
 	@priority = 5
@@ -276,6 +310,48 @@ definition {
 			DataSetAdmin.assertFieldsOnTable(
 				key_position = 1,
 				keyName = "id");
+		}
+	}
+
+	@description = "LPS-178736. Confirm that the user can change the Cell Renderer type on Edit"
+	@priority = 5
+	test CanChangeCellRenderer {
+		task ("And add an id Field") {
+			DataSetAdmin.addFields(key_fieldList = "id");
+		}
+
+		task ("Then assert the "Default" is present from the column Cell Renderer") {
+			AssertElementPresent(
+				key_tableColumn = "Cell Renderer",
+				key_tableRow = "default",
+				locator1 = "DataSet#FIELDS_TABLE_AND_ROW");
+		}
+
+		task ("When the user clicks on the edit option from the id Field") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "DataSet#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("And change the Cell Renderer to "Label"") {
+			Click(
+				dropdownLabel = "Cell Renderer",
+				locator1 = "ObjectField#ANY_DROPDOWN_LABEL");
+
+			MenuItem.click(menuItem = "Label");
+
+			Click(
+				key_text = "Save",
+				locator1 = "CP2ActivationKeys#KEY_DEACTIVATION_TERMS");
+		}
+
+		task ("Then assert the "Label" is present from the column Cell Renderer") {
+			AssertElementPresent(
+				key_tableColumn = "Cell Renderer",
+				key_tableRow = "Label",
+				locator1 = "DataSet#FIELDS_TABLE_AND_ROW");
 		}
 	}
 
@@ -370,6 +446,40 @@ definition {
 		}
 	}
 
+	@description = "LPS-178736. Confirm that the user can edit Label field on Edit"
+	@priority = 5
+	test CanEditLabelFieldOnEdit {
+		task ("And add an id Field") {
+			DataSetAdmin.addFields(key_fieldList = "id");
+		}
+
+		task ("When the user clicks on the edit option from the id Field") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "DataSet#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("And change the label to "Id Edited"") {
+			Type(
+				key_text = "Label",
+				locator1 = "TextInput#ANY",
+				value1 = "Id Edited");
+
+			Click(
+				key_text = "Save",
+				locator1 = "CP2ActivationKeys#KEY_DEACTIVATION_TERMS");
+		}
+
+		task ("Then assert the "Id Edited" is present from the column label") {
+			AssertElementPresent(
+				key_tableColumn = "Label",
+				key_tableRow = "Id Edited",
+				locator1 = "DataSet#FIELDS_TABLE_AND_ROW");
+		}
+	}
+
 	@description = "LPS-185228. Confirm that a field is not added after checking and unchecking it."
 	@priority = 5
 	test CannotAddFieldAfterUncheckingIt {
@@ -400,6 +510,34 @@ definition {
 				key_position = 1,
 				keyName = "id",
 				locator1 = "DataSet#FIELDS_TABLE");
+		}
+	}
+
+	@description = "LPS-178736. Confirm that the Name field on Edit is not editable"
+	@priority = 4
+	test CannotEditNameFieldOnEdit {
+		task ("And add an id Field") {
+			DataSetAdmin.addFields(key_fieldList = "id");
+		}
+
+		task ("When the user clicks on the edit option from the id Field") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "DataSet#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("Then the Edit Field modal is displayed") {
+			AssertElementPresent(
+				locator1 = "Portlet#MODAL_TITLE",
+				value1 = "Edit id");
+		}
+
+		task ("And asserts the name field is not editable") {
+			AssertElementPresent(
+				key_fieldLabel = "Name",
+				locator1 = "FormFields#FIELD_DISABLED");
 		}
 	}
 
