@@ -24,6 +24,7 @@ import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.formatter.InfoCollectionTextFormatter;
 import com.liferay.info.formatter.InfoTextFormatter;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
@@ -116,11 +117,20 @@ public class FragmentEntryProcessorHelperImpl
 			className = _portal.getClassName(
 				editableValueJSONObject.getLong("classNameId"));
 			classPK = editableValueJSONObject.getLong("classPK");
+			String externalReferenceCode = editableValueJSONObject.getString(
+				"externalReferenceCode");
 
 			fieldName = editableValueJSONObject.getString("fieldId");
 
-			InfoItemIdentifier infoItemIdentifier =
-				new ClassPKInfoItemIdentifier(classPK);
+			InfoItemIdentifier infoItemIdentifier = null;
+
+			if (Validator.isNotNull(externalReferenceCode)) {
+				infoItemIdentifier = new ERCInfoItemIdentifier(
+					externalReferenceCode);
+			}
+			else {
+				infoItemIdentifier = new ClassPKInfoItemIdentifier(classPK);
+			}
 
 			if (fragmentEntryProcessorContext.getPreviewClassPK() > 0) {
 				infoItemIdentifier = new ClassPKInfoItemIdentifier(
@@ -202,8 +212,8 @@ public class FragmentEntryProcessorHelperImpl
 		}
 
 		return _getMappedInfoItemFieldValue(
-			editableValueJSONObject, fieldName, infoItemFieldValuesProvider,
-			fragmentEntryProcessorContext.getLocale(), object);
+			editableValueJSONObject, fieldName, infoItemFieldValues,
+			fragmentEntryProcessorContext.getLocale());
 	}
 
 	@Override
@@ -285,9 +295,12 @@ public class FragmentEntryProcessorHelperImpl
 	public boolean isMapped(JSONObject jsonObject) {
 		long classNameId = jsonObject.getLong("classNameId");
 		long classPK = jsonObject.getLong("classPK");
+		String externalReferenceCode = jsonObject.getString(
+			"externalReferenceCode");
 		String fieldId = jsonObject.getString("fieldId");
 
-		if ((classNameId > 0) && (classPK > 0) &&
+		if ((classNameId > 0) &&
+			((classPK > 0) || Validator.isNotNull(externalReferenceCode)) &&
 			Validator.isNotNull(fieldId)) {
 
 			return true;
@@ -460,6 +473,10 @@ public class FragmentEntryProcessorHelperImpl
 				InfoItemObjectProvider.class, className,
 				infoItemIdentifier.getInfoItemServiceFilter());
 
+		if (infoItemObjectProvider == null) {
+			return null;
+		}
+
 		try {
 			return infoItemObjectProvider.getInfoItem(infoItemIdentifier);
 		}
@@ -496,11 +513,10 @@ public class FragmentEntryProcessorHelperImpl
 
 	private Object _getMappedInfoItemFieldValue(
 		JSONObject editableValueJSONObject, String fieldName,
-		InfoItemFieldValuesProvider infoItemFieldValuesProvider, Locale locale,
-		Object object) {
+		InfoItemFieldValues infoItemFieldValues, Locale locale) {
 
 		InfoFieldValue<Object> infoFieldValue =
-			infoItemFieldValuesProvider.getInfoFieldValue(object, fieldName);
+			infoItemFieldValues.getInfoFieldValue(fieldName);
 
 		if (infoFieldValue == null) {
 			return null;

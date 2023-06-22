@@ -175,13 +175,14 @@ public class ObjectDefinitionLocalServiceImpl
 			long userId, boolean enableComments, boolean enableLocalization,
 			Map<Locale, String> labelMap, String name, String panelAppOrder,
 			String panelCategoryKey, Map<Locale, String> pluralLabelMap,
-			String scope, String storageType, List<ObjectField> objectFields)
+			boolean portlet, String scope, String storageType,
+			List<ObjectField> objectFields)
 		throws PortalException {
 
 		return _addObjectDefinition(
 			userId, null, null, enableComments, enableLocalization, labelMap,
 			true, name, panelAppOrder, panelCategoryKey, null, null,
-			pluralLabelMap, scope, storageType, false, null, 0,
+			pluralLabelMap, portlet, scope, storageType, false, null, 0,
 			WorkflowConstants.STATUS_DRAFT, objectFields);
 	}
 
@@ -332,8 +333,8 @@ public class ObjectDefinitionLocalServiceImpl
 		return _addObjectDefinition(
 			userId, className, dbTableName, enableComments, false, labelMap,
 			modifiable, name, panelAppOrder, panelCategoryKey,
-			pkObjectFieldDBColumnName, pkObjectFieldName, pluralLabelMap, scope,
-			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT, true,
+			pkObjectFieldDBColumnName, pkObjectFieldName, pluralLabelMap, false,
+			scope, ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT, true,
 			titleObjectFieldName, version, status, objectFields);
 	}
 
@@ -884,7 +885,7 @@ public class ObjectDefinitionLocalServiceImpl
 			Map<Locale, String> labelMap, boolean modifiable, String name,
 			String panelAppOrder, String panelCategoryKey,
 			String pkObjectFieldDBColumnName, String pkObjectFieldName,
-			Map<Locale, String> pluralLabelMap, String scope,
+			Map<Locale, String> pluralLabelMap, boolean portlet, String scope,
 			String storageType, boolean system, String titleObjectFieldName,
 			int version, int status, List<ObjectField> objectFields)
 		throws PortalException {
@@ -945,6 +946,7 @@ public class ObjectDefinitionLocalServiceImpl
 			pkObjectFieldDBColumnName);
 		objectDefinition.setPKObjectFieldName(pkObjectFieldName);
 		objectDefinition.setPluralLabelMap(pluralLabelMap);
+		objectDefinition.setPortlet(portlet);
 		objectDefinition.setScope(scope);
 		objectDefinition.setStorageType(
 			Validator.isNotNull(storageType) ? storageType :

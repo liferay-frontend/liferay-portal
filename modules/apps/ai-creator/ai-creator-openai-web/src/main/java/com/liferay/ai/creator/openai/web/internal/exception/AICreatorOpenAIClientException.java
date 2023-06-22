@@ -43,36 +43,47 @@ public class AICreatorOpenAIClientException extends RuntimeException {
 		super(throwable.getMessage(), throwable);
 	}
 
+	public String getCode() {
+		return _code;
+	}
+
 	public String getCompletionLocalizedMessage(Locale locale) {
 		if ((_responseCode == 429) || (_responseCode == 500)) {
 			return LanguageUtil.get(
-				locale, "openai-is-experiencing-issues-on-their-servers");
+				locale, MESSAGE_KEY_OPENAI_IS_EXPERIENCING_ISSUES);
 		}
 
 		return LanguageUtil.get(
-			locale,
-			"an-unexpected-error-occurred-while-generating-your-content.-" +
-				"please-ensure-your-api-key-is-correct");
+			locale, MESSAGE_KEY_AN_UNEXPECTED_ERROR_COMPLETION);
 	}
 
 	public String getLocalizedMessage(Locale locale) {
 		if ((_responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) ||
 			Objects.equals(_code, "invalid_api_key")) {
 
-			return LanguageUtil.get(
-				locale,
-				"incorrect-api-key-provided.-ensure-the-api-key-used-is-" +
-					"correct,-clear-your-browser-cache,-or-generate-a-new-key");
+			return LanguageUtil.get(locale, MESSAGE_KEY_INCORRECT_API_KEY);
 		}
 
-		return LanguageUtil.get(
-			locale,
-			"an-unexpected-error-occurred-while-validating-the-api-key");
+		return LanguageUtil.get(locale, MESSAGE_KEY_AN_UNEXPECTED_ERROR);
 	}
 
 	public int getResponseCode() {
 		return _responseCode;
 	}
+
+	protected static final String MESSAGE_KEY_AN_UNEXPECTED_ERROR =
+		"an-unexpected-error-occurred-while-validating-the-api-key";
+
+	protected static final String MESSAGE_KEY_AN_UNEXPECTED_ERROR_COMPLETION =
+		"an-unexpected-error-occurred-while-generating-your-content.-please-" +
+			"ensure-your-api-key-is-correct";
+
+	protected static final String MESSAGE_KEY_INCORRECT_API_KEY =
+		"incorrect-api-key-provided.-ensure-the-api-key-used-is-correct,-" +
+			"clear-your-browser-cache,-or-generate-a-new-key";
+
+	protected static final String MESSAGE_KEY_OPENAI_IS_EXPERIENCING_ISSUES =
+		"openai-is-experiencing-issues-on-their-servers";
 
 	private String _code = "unexpected_error";
 	private int _responseCode;

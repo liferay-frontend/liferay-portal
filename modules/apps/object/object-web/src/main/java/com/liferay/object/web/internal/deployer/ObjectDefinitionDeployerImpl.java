@@ -246,14 +246,19 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				).build()),
 			_bundleContext.registerService(
 				InfoItemObjectProvider.class,
-				new ObjectEntryInfoItemObjectProvider(_objectEntryLocalService),
+				new ObjectEntryInfoItemObjectProvider(
+					objectDefinition, _objectEntryLocalService,
+					_objectEntryManagerRegistry),
 				HashMapDictionaryBuilder.<String, Object>put(
 					Constants.SERVICE_RANKING, 100
 				).put(
 					"company.id", objectDefinition.getCompanyId()
 				).put(
 					"info.item.identifier",
-					"com.liferay.info.item.ClassPKInfoItemIdentifier"
+					new String[] {
+						"com.liferay.info.item.ClassPKInfoItemIdentifier",
+						"com.liferay.info.item.ERCInfoItemIdentifier"
+					}
 				).put(
 					"item.class.name", objectDefinition.getClassName()
 				).build()),

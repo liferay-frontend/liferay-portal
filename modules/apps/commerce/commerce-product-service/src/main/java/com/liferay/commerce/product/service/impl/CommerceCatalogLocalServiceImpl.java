@@ -15,6 +15,7 @@
 package com.liferay.commerce.product.service.impl;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.exception.AccountEntryStatusException;
 import com.liferay.account.exception.AccountEntryTypeException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
@@ -482,8 +483,14 @@ public class CommerceCatalogLocalServiceImpl
 				AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER)) {
 
 			throw new AccountEntryTypeException(
-				"Commerce Catalog can only be assigned with an account entry " +
+				"Commerce catalogs can only be assigned with an account entry " +
 					"type:" + AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER);
+		}
+
+		if (accountEntry.getStatus() != WorkflowConstants.STATUS_APPROVED) {
+			throw new AccountEntryStatusException(
+				"Commerce catalogs can only be assigned with an approved " +
+					"account entry");
 		}
 	}
 
