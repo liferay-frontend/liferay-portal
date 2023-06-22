@@ -21,6 +21,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -189,30 +190,31 @@ public class CommerceChannelServiceImpl extends CommerceChannelServiceBaseImpl {
 			long commerceChannelId, long accountEntryId, long siteGroupId,
 			String name, String type,
 			UnicodeProperties typeSettingsUnicodeProperties,
-			String commerceCurrencyCode)
-		throws PortalException {
-
-		_commerceChannelModelResourcePermission.check(
-			getPermissionChecker(), commerceChannelId, ActionKeys.UPDATE);
-
-		return commerceChannelLocalService.updateCommerceChannel(
-			commerceChannelId, accountEntryId, siteGroupId, name, type,
-			typeSettingsUnicodeProperties, commerceCurrencyCode);
-	}
-
-	@Override
-	public CommerceChannel updateCommerceChannel(
-			long commerceChannelId, long siteGroupId, String name, String type,
-			UnicodeProperties typeSettingsUnicodeProperties,
 			String commerceCurrencyCode, String priceDisplayType,
 			boolean discountsTargetNetPrice)
 		throws PortalException {
 
+		PermissionChecker permissionChecker = getPermissionChecker();
+
 		_commerceChannelModelResourcePermission.check(
-			getPermissionChecker(), commerceChannelId, ActionKeys.UPDATE);
+			permissionChecker, commerceChannelId, ActionKeys.UPDATE);
+
+		PortletResourcePermission portletResourcePermission =
+			_commerceChannelModelResourcePermission.
+				getPortletResourcePermission();
+
+		if (!portletResourcePermission.contains(
+				permissionChecker, null, CPActionKeys.VIEW_COMMERCE_CHANNELS)) {
+
+			CommerceChannel commerceChannel =
+				commerceChannelLocalService.getCommerceChannel(
+					commerceChannelId);
+
+			accountEntryId = commerceChannel.getAccountEntryId();
+		}
 
 		return commerceChannelLocalService.updateCommerceChannel(
-			commerceChannelId, siteGroupId, name, type,
+			commerceChannelId, accountEntryId, siteGroupId, name, type,
 			typeSettingsUnicodeProperties, commerceCurrencyCode,
 			priceDisplayType, discountsTargetNetPrice);
 	}

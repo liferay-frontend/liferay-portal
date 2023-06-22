@@ -56,6 +56,7 @@ import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -861,15 +862,35 @@ public class DefaultObjectEntryManagerImpl
 				}
 
 				for (ObjectEntry nestedObjectEntry : nestedObjectEntries) {
+					if (_isFromManySide(
+							objectDefinition, objectRelationship,
+							relatedObjectDefinition)) {
+
+						Map<String, Object> nestedObjectEntryProperties =
+							nestedObjectEntry.getProperties();
+
+						String objectRelationshipName = StringBundler.concat(
+							"r_", objectRelationship.getName(), "_",
+							objectDefinition.getPKObjectFieldName());
+
+						nestedObjectEntryProperties.put(
+							objectRelationshipName, primaryKey);
+					}
+
 					nestedObjectEntry = objectEntryManager.updateObjectEntry(
 						objectDefinition.getCompanyId(), dtoConverterContext,
 						nestedObjectEntry.getExternalReferenceCode(),
 						relatedObjectDefinition, nestedObjectEntry,
 						relatedObjectDefinition.getScope());
 
-					_relateNestedObjectEntry(
-						objectDefinition, objectRelationship, primaryKey,
-						nestedObjectEntry.getId());
+					if (!_isFromManySide(
+							objectDefinition, objectRelationship,
+							relatedObjectDefinition)) {
+
+						_relateNestedObjectEntry(
+							objectDefinition, objectRelationship, primaryKey,
+							nestedObjectEntry.getId());
+					}
 				}
 			}
 
@@ -1158,6 +1179,25 @@ public class DefaultObjectEntryManagerImpl
 			if (count > 0) {
 				return true;
 			}
+		}
+
+		return false;
+	}
+
+	private boolean _isFromManySide(
+		ObjectDefinition objectDefinition,
+		ObjectRelationship objectRelationship,
+		ObjectDefinition relatedObjectDefinition) {
+
+		if (Objects.equals(
+				objectRelationship.getType(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY) &&
+			(objectRelationship.getObjectDefinitionId1() ==
+				objectDefinition.getObjectDefinitionId()) &&
+			(objectRelationship.getObjectDefinitionId2() ==
+				relatedObjectDefinition.getObjectDefinitionId())) {
+
+			return true;
 		}
 
 		return false;

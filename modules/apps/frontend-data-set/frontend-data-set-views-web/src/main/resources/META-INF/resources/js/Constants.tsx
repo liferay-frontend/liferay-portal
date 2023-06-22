@@ -41,13 +41,15 @@ const OBJECT_RELATIONSHIP = {
 	FDS_VIEW_FDS_SORT_ID: 'r_fdsViewFDSSortRelationship_c_fdsViewId',
 } as const;
 
-const PAGINATION_PROPS = {
+const FDS_DEFAULT_PROPS = {
 	pagination: {
 		deltas: [{label: 4}, {label: 8}, {label: 20}, {label: 40}, {label: 60}],
 		initialDelta: 8,
 	},
+	style: 'fluid' as const,
 };
+
 
 const ALLOWED_ENDPOINTS_PARAMETERS = ['scopeKey', 'siteId', 'userId'];
 
-export {API_URL, FUZZY_OPTIONS, OBJECT_RELATIONSHIP, PAGINATION_PROPS, ALLOWED_ENDPOINTS_PARAMETERS};
+export {API_URL, FDS_DEFAULT_PROPS, FUZZY_OPTIONS, OBJECT_RELATIONSHIP, ALLOWED_ENDPOINTS_PARAMETERS};

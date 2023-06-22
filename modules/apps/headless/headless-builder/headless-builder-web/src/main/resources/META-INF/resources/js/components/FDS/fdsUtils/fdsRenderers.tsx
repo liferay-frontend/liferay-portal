@@ -15,21 +15,12 @@
 import React from 'react';
 
 import StatusLabel from '../../StatusLabel';
+import {wrapStringInForwardSlashes} from '../../utils/string';
 
 export function itemPathRenderer({itemData}: FDSItem) {
-	let path = itemData.baseURL;
-
-	if (Array.from(path)[0] !== '/') {
-		path = '/' + path;
-	}
-
-	if (path.slice(-1) !== '/') {
-		path = path + '/';
-	}
-
-	return path;
+	return wrapStringInForwardSlashes(itemData.baseURL);
 }
 
 export function itemStatusRenderer({itemData}: FDSItem) {
-	return <StatusLabel statusKey={itemData.applicationStatus.key} />;
+	return <StatusLabel statusKey={itemData.applicationStatus?.key} />;
 }

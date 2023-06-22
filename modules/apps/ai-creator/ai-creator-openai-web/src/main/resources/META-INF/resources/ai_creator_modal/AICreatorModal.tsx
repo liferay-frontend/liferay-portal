@@ -17,7 +17,7 @@ import {Container} from '@clayui/layout';
 import ClayLink from '@clayui/link';
 import classNames from 'classnames';
 import {fetch} from 'frontend-js-web';
-import React, {FormEvent, useState} from 'react';
+import React, {FormEvent, useEffect, useRef, useState} from 'react';
 
 import {ErrorMessage} from './ErrorMessage';
 import {FormContent} from './FormContent';
@@ -33,7 +33,7 @@ interface Props {
 type RequestStatus =
 	| {type: 'idle'}
 	| {type: 'loading'}
-	| {errorMessage: string; type: 'error'};
+	| {errorMessage: string; showRetryMessage: boolean; type: 'error'};
 
 export default function AICreatorModal({
 	getCompletionURL,
@@ -45,6 +45,7 @@ export default function AICreatorModal({
 		opener.Liferay.fire('closeModal');
 	};
 
+	const modalContentRef = useRef<HTMLDivElement>(null);
 	const [status, setStatus] = useState<RequestStatus>({type: 'idle'});
 	const [text, setText] = useState<string | null>(null);
 
@@ -61,10 +62,12 @@ export default function AICreatorModal({
 		setStatus({type: 'loading'});
 
 		const setErrorStatus = (
-			errorMessage = Liferay.Language.get('an-unexpected-error-occurred')
+			errorMessage = Liferay.Language.get('an-unexpected-error-occurred'),
+			showRetryMessage = false
 		) => {
 			setStatus({
 				errorMessage,
+				showRetryMessage,
 				type: 'error',
 			});
 		};
@@ -76,7 +79,7 @@ export default function AICreatorModal({
 			.then((response) => response.json())
 			.then((json) => {
 				if (json.error) {
-					setErrorStatus(json.error.message);
+					setErrorStatus(json.error.message, json.error.retry);
 				}
 				else if (json.completion?.content) {
 					setText(json.completion.content);
@@ -95,8 +98,12 @@ export default function AICreatorModal({
 			});
 	};
 
+	useEffect(() => {
+		modalContentRef.current?.focus();
+	});
+
 	return (
-		<>
+		<div className="h-100" ref={modalContentRef} tabIndex={-1}>
 			{status.type === 'loading' ? <LoadingMessage /> : null}
 
 			<ClayForm
@@ -110,7 +117,10 @@ export default function AICreatorModal({
 					disabled={status.type === 'loading'}
 				>
 					{status.type === 'error' ? (
-						<ErrorMessage message={status.errorMessage} />
+						<ErrorMessage
+							message={status.errorMessage}
+							showRetryMessage={status.showRetryMessage}
+						/>
 					) : null}
 
 					<Container
@@ -146,6 +156,6 @@ export default function AICreatorModal({
 					</div>
 				</fieldset>
 			</ClayForm>
-		</>
+		</div>
 	);
 }

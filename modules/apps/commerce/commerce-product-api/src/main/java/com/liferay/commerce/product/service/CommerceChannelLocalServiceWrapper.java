@@ -447,6 +447,14 @@ public class CommerceChannelLocalServiceWrapper
 			companyId, keywords, start, end);
 	}
 
+	@Override
+	public java.util.List<CommerceChannel> getCommerceChannelsByAccountEntryId(
+		long accountEntryId) {
+
+		return _commerceChannelLocalService.getCommerceChannelsByAccountEntryId(
+			accountEntryId);
+	}
+
 	/**
 	 * Returns the number of commerce channels.
 	 *
@@ -553,25 +561,12 @@ public class CommerceChannelLocalServiceWrapper
 			String name, String type,
 			com.liferay.portal.kernel.util.UnicodeProperties
 				typeSettingsUnicodeProperties,
-			String commerceCurrencyCode)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceChannelLocalService.updateCommerceChannel(
-			commerceChannelId, accountEntryId, siteGroupId, name, type,
-			typeSettingsUnicodeProperties, commerceCurrencyCode);
-	}
-
-	@Override
-	public CommerceChannel updateCommerceChannel(
-			long commerceChannelId, long siteGroupId, String name, String type,
-			com.liferay.portal.kernel.util.UnicodeProperties
-				typeSettingsUnicodeProperties,
 			String commerceCurrencyCode, String priceDisplayType,
 			boolean discountsTargetNetPrice)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceChannelLocalService.updateCommerceChannel(
-			commerceChannelId, siteGroupId, name, type,
+			commerceChannelId, accountEntryId, siteGroupId, name, type,
 			typeSettingsUnicodeProperties, commerceCurrencyCode,
 			priceDisplayType, discountsTargetNetPrice);
 	}

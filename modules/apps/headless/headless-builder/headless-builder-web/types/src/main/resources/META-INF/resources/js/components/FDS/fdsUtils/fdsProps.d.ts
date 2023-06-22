@@ -14,7 +14,6 @@
 
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
 export declare function getAPIApplicationsFDSProps(
-	apiURL: string,
-	portletId: string,
-	readOnly: boolean
+	apiApplicationsURLPath: string,
+	portletId: string
 ): IFrontendDataSetProps;

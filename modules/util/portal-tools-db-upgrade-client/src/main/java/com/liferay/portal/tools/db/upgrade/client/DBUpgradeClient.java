@@ -59,9 +59,9 @@ import org.apache.commons.cli.ParseException;
 public class DBUpgradeClient {
 
 	public static void main(String[] args) {
-		try {
-			Options options = _getOptions();
+		Options options = _getOptions();
 
+		try {
 			CommandLineParser commandLineParser = new DefaultParser();
 
 			CommandLine commandLine = commandLineParser.parse(options, args);
@@ -130,12 +130,17 @@ public class DBUpgradeClient {
 			dbUpgradeClient.upgrade();
 		}
 		catch (ParseException parseException) {
-			System.err.println("Unable to parse command line properties");
+			System.err.println("Unable to parse command line properties:");
 
 			parseException.printStackTrace();
+
+			HelpFormatter helpFormatter = new HelpFormatter();
+
+			helpFormatter.printHelp(
+				"Liferay Portal Tools Database Upgrade Client", options);
 		}
 		catch (Exception exception) {
-			System.err.println("Error running upgrade");
+			System.err.println("Error running upgrade:");
 
 			exception.printStackTrace();
 		}
@@ -294,9 +299,9 @@ public class DBUpgradeClient {
 		Options options = new Options();
 
 		options.addOption(
-			new Option("d", "debug", false, "Debug the upgrade jvm."));
+			new Option("d", "debug", false, "Debug the upgrade JVM."));
 		options.addOption(
-			new Option("h", "help", false, "Print this message."));
+			new Option("h", "help", false, "Print help message."));
 		options.addOption(
 			new Option(
 				"j", "jvm-opts", true,

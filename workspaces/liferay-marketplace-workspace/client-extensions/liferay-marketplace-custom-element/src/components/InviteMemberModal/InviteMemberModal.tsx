@@ -23,10 +23,11 @@ import { DisplayType } from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
 
 import { Liferay } from '../../liferay/liferay';
-import { getAccountGroup, getMyUserAccount } from "../../utils/api";
+import { getAccountGroup, getMyUserAccount } from '../../utils/api';
 import { createPassword } from '../../utils/createPassword';
 import {
   addAdditionalInfo,
+  addAdminRegularRole,
   addExistentUserIntoAccount,
   callRolesApi,
   createNewUser,
@@ -139,11 +140,12 @@ export function InviteMemberModal({
     }
 
     const accountGroups = await getAccountGroup(selectedAccount.id);
-    const accountGroupERC = accountGroups && accountGroups[0]?.externalReferenceCode;
+    const accountGroupERC =
+      accountGroups && accountGroups[0]?.externalReferenceCode;
 
-    if(!accountGroupERC){
+    if (!accountGroupERC) {
       renderToast(
-        "To invite a member, the account must be associated with an accountGroup",
+        'To invite a member, the account must be associated with an accountGroup',
         '',
         'danger'
       );
@@ -163,12 +165,19 @@ export function InviteMemberModal({
         '',
         'danger'
       );
-  
+
       return onClose();
     }
-  
+
     if (!user) {
       user = await createNewUser(jsonBody);
+    }
+    if (
+      checkboxRoles.some(
+        (role) => role.roleName === 'Account Administrator' && role.isChecked
+      )
+    ) {
+      await addAdminRegularRole(user.id);
     }
 
     await addExistentUserIntoAccount(selectedAccount.id, formFields.email);
@@ -182,7 +191,8 @@ export function InviteMemberModal({
       inviteURL:
         Liferay.ThemeDisplay.getPortalURL() +
         '/c/login?redirect=' +
-        getSiteURL() + '/loading',
+        getSiteURL() +
+        '/loading',
       inviterName: myUser.givenName,
       mothersName: userPassword,
       r_accountEntryToUserAdditionalInfo_accountEntryId: selectedAccount.id,

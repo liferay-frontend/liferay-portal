@@ -47,6 +47,7 @@ import com.liferay.portal.test.rule.Inject;
 import java.io.InputStream;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -93,36 +94,17 @@ public class StructuredContentResourceTest
 	public void testGetSiteStructuredContentsPage() throws Exception {
 		super.testGetSiteStructuredContentsPage();
 
-		Locale locale = LocaleUtil.getDefault();
-
-		StructuredContent irrelevantStructuredContent =
-			_randomStructuredContent(locale);
-
-		com.liferay.headless.admin.content.client.resource.v1_0.
-			StructuredContentResource irrelevantStructuredContentResource =
-				_buildStructureContentResource(locale);
-
-		irrelevantStructuredContentResource.postSiteStructuredContentDraft(
+		_addDraftStructuredContent(
 			testGetSiteStructuredContentsPage_getSiteId(),
-			irrelevantStructuredContent);
+			RandomTestUtil.randomDouble());
 
-		StructuredContent structuredContent = _randomStructuredContent(locale);
-
-		structuredContent.setPriority(Double.valueOf(1));
-
-		com.liferay.headless.admin.content.client.resource.v1_0.
-			StructuredContentResource structuredContentResource =
-				_buildStructureContentResource(locale);
-
-		StructuredContent postStructuredContent =
-			structuredContentResource.postSiteStructuredContentDraft(
-				testGetSiteStructuredContentsPage_getSiteId(),
-				structuredContent);
+		StructuredContent structuredContent = _addDraftStructuredContent(
+			testGetSiteStructuredContentsPage_getSiteId(), Double.valueOf(1));
 
 		com.liferay.headless.delivery.client.dto.v1_0.StructuredContent
 			patchStructuredContent =
 				_structuredContentResource.patchStructuredContent(
-					postStructuredContent.getId(),
+					structuredContent.getId(),
 					new com.liferay.headless.delivery.client.dto.v1_0.
 						StructuredContent() {
 
@@ -140,6 +122,89 @@ public class StructuredContentResourceTest
 
 		assertEqualsIgnoringOrder(
 			Arrays.asList(_toStructuredContent(patchStructuredContent)),
+			(List<StructuredContent>)page.getItems());
+
+		assertValid(page);
+
+		page = structuredContentResource.getSiteStructuredContentsPage(
+			testGroup.getGroupId(), true, null, null, null,
+			Pagination.of(1, 10), null);
+
+		List<StructuredContent> structuredContents =
+			(List<StructuredContent>)page.getItems();
+
+		Iterator<StructuredContent> iterator = structuredContents.iterator();
+
+		while (iterator.hasNext()) {
+			_structuredContentResource.deleteStructuredContent(
+				iterator.next(
+				).getId());
+		}
+
+		StructuredContent draftStructuredContent1 = _addDraftStructuredContent(
+			testGetSiteStructuredContentsPage_getSiteId(),
+			Double.valueOf(0.99));
+
+		StructuredContent draftStructuredContent2 = _addDraftStructuredContent(
+			testGetSiteStructuredContentsPage_getSiteId(), Double.valueOf(1));
+
+		StructuredContent draftStructuredContent3 = _addDraftStructuredContent(
+			testGetSiteStructuredContentsPage_getSiteId(), Double.valueOf(1.1));
+
+		StructuredContent draftStructuredContent4 = _addDraftStructuredContent(
+			testGetSiteStructuredContentsPage_getSiteId(),
+			Double.valueOf(2.99));
+
+		page = structuredContentResource.getSiteStructuredContentsPage(
+			testGroup.getGroupId(), true, null, null, "priority ne 1.0",
+			Pagination.of(1, 10), "priority:asc");
+
+		Assert.assertEquals(3, page.getTotalCount());
+
+		assertEquals(
+			Arrays.asList(
+				draftStructuredContent1, draftStructuredContent3,
+				draftStructuredContent4),
+			(List<StructuredContent>)page.getItems());
+
+		assertValid(page);
+
+		page = structuredContentResource.getSiteStructuredContentsPage(
+			testGroup.getGroupId(), true, null, null, "priority gt 0.99",
+			Pagination.of(1, 10), "priority:desc");
+
+		Assert.assertEquals(3, page.getTotalCount());
+
+		assertEquals(
+			Arrays.asList(
+				draftStructuredContent4, draftStructuredContent3,
+				draftStructuredContent2),
+			(List<StructuredContent>)page.getItems());
+
+		assertValid(page);
+
+		page = structuredContentResource.getSiteStructuredContentsPage(
+			testGroup.getGroupId(), true, null, null, "priority ge 0.99",
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(4, page.getTotalCount());
+
+		assertEqualsIgnoringOrder(
+			Arrays.asList(
+				draftStructuredContent1, draftStructuredContent2,
+				draftStructuredContent3, draftStructuredContent4),
+			(List<StructuredContent>)page.getItems());
+
+		assertValid(page);
+
+		page = structuredContentResource.getSiteStructuredContentsPage(
+			testGroup.getGroupId(), true, null, null, "priority gt 1.0",
+			Pagination.of(1, 10), "priority");
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		assertEquals(
+			Arrays.asList(draftStructuredContent3, draftStructuredContent4),
 			(List<StructuredContent>)page.getItems());
 
 		assertValid(page);
@@ -399,6 +464,24 @@ public class StructuredContentResourceTest
 			PortalUtil.getClassNameId(JournalArticle.class),
 			TemplateConstants.LANG_TYPE_VM,
 			_read("test-structured-content-template.vm"), LocaleUtil.US);
+	}
+
+	private StructuredContent _addDraftStructuredContent(
+			Long siteId, Double priority)
+		throws Exception {
+
+		Locale locale = LocaleUtil.getDefault();
+
+		StructuredContent structuredContent = _randomStructuredContent(locale);
+
+		structuredContent.setPriority(priority);
+
+		com.liferay.headless.admin.content.client.resource.v1_0.
+			StructuredContentResource structuredContentResource =
+				_buildStructureContentResource(locale);
+
+		return structuredContentResource.postSiteStructuredContentDraft(
+			siteId, structuredContent);
 	}
 
 	private void _assertLocalizedValue(

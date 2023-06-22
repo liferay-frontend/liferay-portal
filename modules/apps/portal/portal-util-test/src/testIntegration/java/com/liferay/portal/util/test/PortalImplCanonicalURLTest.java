@@ -290,7 +290,7 @@ public class PortalImplCanonicalURLTest {
 			StringPool.SLASH + _layout1.getLayoutId() +
 				RandomTestUtil.randomString());
 
-		_groupLocalService.updateGroup(_group);
+		_group = _groupLocalService.updateGroup(_group);
 
 		testCanonicalURLWithFriendlyURL();
 	}

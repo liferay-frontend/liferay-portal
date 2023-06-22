@@ -89,7 +89,6 @@ public class LayoutActionsDisplayContext {
 							dropdownItem.setLabel(
 								LanguageUtil.get(
 									_httpServletRequest, "configure"));
-
 							dropdownItem.setTarget("_blank");
 						}
 					).add(
@@ -116,7 +115,6 @@ public class LayoutActionsDisplayContext {
 						dropdownItem -> {
 							dropdownItem.putData(
 								"action", "convertToPageTemplate");
-
 							dropdownItem.setIcon("page-template");
 							dropdownItem.setLabel(
 								LanguageUtil.get(

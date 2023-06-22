@@ -276,6 +276,13 @@ public class SourceLocalServiceWrapper
 	}
 
 	@Override
+	public String[] getAttachmentsFileNames(
+		com.liferay.portal.reports.engine.console.model.Source source) {
+
+		return _sourceLocalService.getAttachmentsFileNames(source);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext

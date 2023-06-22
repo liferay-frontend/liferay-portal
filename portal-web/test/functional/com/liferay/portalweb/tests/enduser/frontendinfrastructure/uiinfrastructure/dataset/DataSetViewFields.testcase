@@ -101,6 +101,15 @@ definition {
 		}
 	}
 
+	@description = "LPS-179151. Confirm the change in the field label field."
+	@ignore = "true"
+	@priority = 5
+	test CanAssertChangeInTheLabelField {
+
+		// TODO LPS-179151 CanAssertChangeInTheLabelField pending implementation
+
+	}
+
 	@description = "LPS-185498. Confirm that when trying to delete field, modal appears."
 	@priority = 4
 	test CanAssertModalWhenDeleteField {
@@ -121,6 +130,15 @@ definition {
 				key_modalText = "Are you sure you want to delete this field? It will be removed immediately. Fragments using it will be affected. This action cannot be undone.",
 				locator1 = "DataSet#DELETE_DATA_SET_MODAL_BODY");
 		}
+	}
+
+	@description = "LPS-179151. Confirm that the Checkbox in the Field edit modal is displayed."
+	@ignore = "true"
+	@priority = 5
+	test CanAssertTheSortableCheckbox {
+
+		// TODO LPS-179151 CanAssertTheSortableCheckbox pending implementation
+
 	}
 
 	@description = "LPS-185230. Confirm that the user can cancel adding a field by clicking on cancel button."
@@ -211,6 +229,58 @@ definition {
 		}
 	}
 
+	@description = "LPS-178736. Confirm that the user can cancel changes when clicks on Cancel button"
+	@priority = 3
+	test CanCancelChangesOnEdit {
+		task ("And add an id Field") {
+			DataSetAdmin.addFields(key_fieldList = "id");
+		}
+
+		task ("When the user clicks on the edit option from the id Field") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "DataSet#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("And change the label to "Id Edited"") {
+			Type(
+				key_text = "Label",
+				locator1 = "TextInput#ANY",
+				value1 = "Id Edited");
+		}
+
+		task ("And clicks on the cancel button") {
+			Button.clickCancel();
+		}
+
+		task ("Then assert the "Id" is present from the column label") {
+			AssertElementPresent(
+				key_tableColumn = "Label",
+				key_tableRow = "id",
+				locator1 = "DataSet#FIELDS_TABLE_AND_ROW");
+		}
+	}
+
+	@description = "LPS-179151. Confirm the cancellation of the field edit by clicking on the Cancel button."
+	@ignore = "true"
+	@priority = 5
+	test CanCancelEditOnCancelButton {
+
+		// TODO LPS-179151 CanCancelEditOnCancelButton pending implementation
+
+	}
+
+	@description = "LPS-179151. Confirm the cancellation of the field edit by clicking on the Close button."
+	@ignore = "true"
+	@priority = 5
+	test CanCancelEditOnCloseButton {
+
+		// TODO LPS-179151 CanCancelEditOnCloseButton pending implementation
+
+	}
+
 	@description = "LPS-185500. Confirm that can cancel field deletion on cancel button."
 	@priority = 4
 	test CanCancelFieldDeletion {
@@ -240,6 +310,48 @@ definition {
 			DataSetAdmin.assertFieldsOnTable(
 				key_position = 1,
 				keyName = "id");
+		}
+	}
+
+	@description = "LPS-178736. Confirm that the user can change the Cell Renderer type on Edit"
+	@priority = 5
+	test CanChangeCellRenderer {
+		task ("And add an id Field") {
+			DataSetAdmin.addFields(key_fieldList = "id");
+		}
+
+		task ("Then assert the "Default" is present from the column Cell Renderer") {
+			AssertElementPresent(
+				key_tableColumn = "Cell Renderer",
+				key_tableRow = "default",
+				locator1 = "DataSet#FIELDS_TABLE_AND_ROW");
+		}
+
+		task ("When the user clicks on the edit option from the id Field") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "DataSet#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("And change the Cell Renderer to "Label"") {
+			Click(
+				dropdownLabel = "Cell Renderer",
+				locator1 = "ObjectField#ANY_DROPDOWN_LABEL");
+
+			MenuItem.click(menuItem = "Label");
+
+			Click(
+				key_text = "Save",
+				locator1 = "CP2ActivationKeys#KEY_DEACTIVATION_TERMS");
+		}
+
+		task ("Then assert the "Label" is present from the column Cell Renderer") {
+			AssertElementPresent(
+				key_tableColumn = "Cell Renderer",
+				key_tableRow = "Label",
+				locator1 = "DataSet#FIELDS_TABLE_AND_ROW");
 		}
 	}
 
@@ -298,6 +410,24 @@ definition {
 		}
 	}
 
+	@description = "LPS-179151. Confirm that the checkbox in the field edit modal is checked."
+	@ignore = "true"
+	@priority = 5
+	test CanConfirmCheckedSortableCheckbox {
+
+		// TODO LPS-179151 CanConfirmCheckedSortableCheckbox pending implementation
+
+	}
+
+	@description = "LPS-179151. Confirm that the checkbox in the field edit modal is unchecked."
+	@ignore = "true"
+	@priority = 5
+	test CanConfirmUncheckedSortableCheckbox {
+
+		// TODO LPS-179151 CanConfirmUncheckedSortableCheckbox pending implementation
+
+	}
+
 	@description = "LPS-185499. Confirm that field can be deleted."
 	@priority = 4
 	test CanDeleteField {
@@ -313,6 +443,40 @@ definition {
 			AssertElementPresent(
 				key_text = "Add Fields",
 				locator1 = "Button#ANY");
+		}
+	}
+
+	@description = "LPS-178736. Confirm that the user can edit Label field on Edit"
+	@priority = 5
+	test CanEditLabelFieldOnEdit {
+		task ("And add an id Field") {
+			DataSetAdmin.addFields(key_fieldList = "id");
+		}
+
+		task ("When the user clicks on the edit option from the id Field") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "DataSet#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("And change the label to "Id Edited"") {
+			Type(
+				key_text = "Label",
+				locator1 = "TextInput#ANY",
+				value1 = "Id Edited");
+
+			Click(
+				key_text = "Save",
+				locator1 = "CP2ActivationKeys#KEY_DEACTIVATION_TERMS");
+		}
+
+		task ("Then assert the "Id Edited" is present from the column label") {
+			AssertElementPresent(
+				key_tableColumn = "Label",
+				key_tableRow = "Id Edited",
+				locator1 = "DataSet#FIELDS_TABLE_AND_ROW");
 		}
 	}
 
@@ -346,6 +510,34 @@ definition {
 				key_position = 1,
 				keyName = "id",
 				locator1 = "DataSet#FIELDS_TABLE");
+		}
+	}
+
+	@description = "LPS-178736. Confirm that the Name field on Edit is not editable"
+	@priority = 4
+	test CannotEditNameFieldOnEdit {
+		task ("And add an id Field") {
+			DataSetAdmin.addFields(key_fieldList = "id");
+		}
+
+		task ("When the user clicks on the edit option from the id Field") {
+			Click(
+				key_fieldName = "id",
+				locator1 = "DataSet#VERTICAL_ELLIPSIS_BY_FIELDS_NAME");
+
+			MenuItem.click(menuItem = "Edit");
+		}
+
+		task ("Then the Edit Field modal is displayed") {
+			AssertElementPresent(
+				locator1 = "Portlet#MODAL_TITLE",
+				value1 = "Edit id");
+		}
+
+		task ("And asserts the name field is not editable") {
+			AssertElementPresent(
+				key_fieldLabel = "Name",
+				locator1 = "FormFields#FIELD_DISABLED");
 		}
 	}
 
@@ -666,6 +858,15 @@ definition {
 		task ("Then Confirm that the fields are unchecked ") {
 			DataSetAdmin.assertFieldsNotChecked(key_fieldList = "creator,id,name");
 		}
+	}
+
+	@description = "LPS-179151. Confirm that the Field Edit modal is displayed."
+	@ignore = "true"
+	@priority = 5
+	test TheEditFieldModalIsDisplayed {
+
+		// TODO LPS-179151 TheEditFieldModalIsDisplayed pending implementation
+
 	}
 
 }

@@ -174,6 +174,14 @@ public class DBInspector {
 				return false;
 			}
 
+			if (!expectedColumnNullable) {
+				return StringUtil.equals(
+					_getColumnDefaultValue(columnType),
+					_getColumnDefaultValue(
+						resultSet.getString("COLUMN_DEF"),
+						DB::getDefaultValue));
+			}
+
 			return true;
 		}
 	}
@@ -317,6 +325,26 @@ public class DBInspector {
 		return biFunction.apply(DBManagerUtil.getDB(), matcher.group(1));
 	}
 
+	private String _getColumnDefaultValue(String columnType) {
+		Matcher matcher = _columnDefaultClausePattern.matcher(columnType);
+
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+
+		return null;
+	}
+
+	private String _getColumnDefaultValue(
+		String columnDef, BiFunction<DB, String, String> biFunction) {
+
+		if (Validator.isNull(columnDef)) {
+			return columnDef;
+		}
+
+		return biFunction.apply(DBManagerUtil.getDB(), columnDef);
+	}
+
 	private int _getColumnSize(String columnType) throws Exception {
 		Matcher matcher = _columnSizePattern.matcher(columnType);
 
@@ -377,6 +405,8 @@ public class DBInspector {
 
 	private static final Log _log = LogFactoryUtil.getLog(DBInspector.class);
 
+	private static final Pattern _columnDefaultClausePattern = Pattern.compile(
+		".*DEFAULT '?(.*[^'])'? NOT NULL", Pattern.CASE_INSENSITIVE);
 	private static final Pattern _columnSizePattern = Pattern.compile(
 		"^\\w+(?:\\((\\d+)\\))?.*", Pattern.CASE_INSENSITIVE);
 	private static final Pattern _columnTypePattern = Pattern.compile(

@@ -18,24 +18,11 @@ import {getAPIApplicationsFDSFilters} from './fdsFilters';
 import {itemPathRenderer, itemStatusRenderer} from './fdsRenderers';
 
 export function getAPIApplicationsFDSProps(
-	apiURL: string,
-	portletId: string,
-	readOnly: boolean
+	apiApplicationsURLPath: string,
+	portletId: string
 ): IFrontendDataSetProps {
-	const addButton = {
-		href: 'handleAddItems',
-		label: Liferay.Language.get('add-item'),
-		target: 'event',
-		type: 'item',
-	};
-
-	const addItemMenu = readOnly ? [] : [addButton];
-
 	return {
-		apiURL,
-		creationMenu: {
-			primaryItems: addItemMenu,
-		},
+		apiURL: apiApplicationsURLPath,
 		currentURL: window.location.pathname + window.location.search,
 		customDataRenderers: {
 			itemPathRenderer,
@@ -46,21 +33,18 @@ export function getAPIApplicationsFDSProps(
 		itemsActions: [
 			{
 				icon: 'view',
-				id: 'editApiApplication',
+				id: 'editAPIApplication',
 				label: Liferay.Language.get('view'),
 			},
 			{
 				data: {
-					confirmationMessage: Liferay.Language.get(
-						'this-action-cannot-be-undone'
-					),
 					id: 'delete',
 					method: 'delete',
 					permissionKey: 'delete',
 				},
 				icon: 'trash',
+				id: 'deleteAPIApplication',
 				label: Liferay.Language.get('delete'),
-				target: 'headless',
 			},
 		],
 		pagination: {

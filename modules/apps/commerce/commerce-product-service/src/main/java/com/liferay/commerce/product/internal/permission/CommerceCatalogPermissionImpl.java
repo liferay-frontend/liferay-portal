@@ -14,13 +14,23 @@
 
 package com.liferay.commerce.product.internal.permission;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountRoleConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.permission.CommerceCatalogPermission;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -124,12 +134,41 @@ public class CommerceCatalogPermissionImpl
 			return true;
 		}
 
+		if ((commerceCatalog.getAccountEntryId() > 0) &&
+			(actionId.equals(ActionKeys.UPDATE) ||
+			 actionId.equals(ActionKeys.VIEW))) {
+
+			List<AccountEntry> accountEntries =
+				_accountEntryLocalService.getUserAccountEntries(
+					permissionChecker.getUserId(), 0L, StringPool.BLANK,
+					new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER},
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			for (AccountEntry accountEntry : accountEntries) {
+				if ((commerceCatalog.getAccountEntryId() ==
+						accountEntry.getAccountEntryId()) &&
+					_roleLocalService.hasUserRole(
+						permissionChecker.getUserId(),
+						permissionChecker.getCompanyId(),
+						AccountRoleConstants.ROLE_NAME_SUPPLIER, true)) {
+
+					return true;
+				}
+			}
+		}
+
 		return permissionChecker.hasPermission(
 			commerceCatalog.getGroupId(), CommerceCatalog.class.getName(),
 			commerceCatalog.getCommerceCatalogId(), actionId);
 	}
 
 	@Reference
+	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }

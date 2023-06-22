@@ -119,6 +119,7 @@ definition {
 			outputOption = ${outputOption},
 			picklistName = ${picklistName},
 			showFilesInDocumentsAndMedia = ${showFilesInDocumentsAndMedia},
+			timeStorageOption = ${timeStorageOption},
 			userEmailAddress = ${userEmailAddress},
 			userPassword = ${userPassword});
 	}
@@ -138,6 +139,16 @@ definition {
 
 		if (isSet(fieldType)) {
 			ObjectField.selectType(fieldType = ${fieldType});
+
+			if (${fieldType} == "Date and Time") {
+				Click(
+					key_sorting = ${sorting},
+					locator1 = "ObjectCustomViews#EDIT_SORTING");
+
+				Click(
+					key_fieldType = ${fieldTimeStorage},
+					locator1 = "ObjectField#TYPE_OPTION");
+			}
 
 			if (${fieldType} == "Attachment") {
 				Click(locator1 = "ObjectField#REQUEST_FILES_INPUT");
@@ -1501,6 +1512,71 @@ definition {
 
 			AssertElementPresent(locator1 = "ObjectAdmin#SIDE_PANEL_TITLE");
 		}
+	}
+
+	macro viewObjectAction {
+		ObjectAdmin.goToActionDetails(viewEntry = ${viewEntry});
+
+		ObjectAdmin.viewDetails();
+
+		SelectFrame.selectFrameNoLoading(locator1 = "ObjectAction#IFRAME_SIDE_PANEL");
+
+		if (isSet(actionLabel)) {
+			AssertElementPresent(
+				locator1 = "ObjectAdmin#ACTION_LABEL_FIELD",
+				value1 = ${actionLabel});
+		}
+
+		if (isSet(actionName)) {
+			AssertElementPresent(
+				locator1 = "ObjectAdmin#ACTION_NAME_FIELD",
+				value1 = ${actionName});
+		}
+
+		if (isSet(actionDescription)) {
+			AssertElementPresent(
+				locator1 = "ObjectAdmin#ACTION_DESCRIPTION_FIELD",
+				value1 = ${actionDescription});
+		}
+
+		if (isSet(active)) {
+			if (${active} == "true") {
+				CreateObject.checkToggleActive();
+			}
+			else if (${active} == "false") {
+				CreateObject.checkToggleInactive();
+			}
+		}
+
+		Click(
+			key_tabName = "Action Builder",
+			locator1 = "ObjectAction#TAB_GENERIC");
+
+		if (isSet(whenAction)) {
+			WaitForElementPresent(
+				locator1 = "ObjectAction#SELECT_TRIGGER_VALUE",
+				value1 = ${whenAction});
+		}
+
+		if (isSet(inputExpression)) {
+			WaitForElementPresent(
+				locator1 = "ObjectAction#INPUT_EXPRESSION_VALUE",
+				value1 = ${inputExpression});
+		}
+
+		if (isSet(thenAction)) {
+			WaitForElementPresent(
+				locator1 = "ObjectAction#SELECT_ACTION_TYPE_VALUE",
+				value1 = ${thenAction});
+		}
+
+		if (${thenAction} == "Notification") {
+			WaitForElementPresent(
+				locator1 = "ObjectAction#SELECT_OPTION_TYPE_VALUE",
+				value1 = ${notificationName});
+		}
+
+		Button.clickSave();
 	}
 
 	macro viewObjectPresentOnSite {
