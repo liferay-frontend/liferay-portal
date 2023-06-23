@@ -24,7 +24,6 @@ import com.liferay.document.library.kernel.store.StoreArea;
 import com.liferay.document.library.kernel.store.StoreAreaAwareStoreWrapper;
 import com.liferay.document.library.kernel.store.StoreAreaProcessor;
 import com.liferay.document.library.kernel.util.DLValidatorUtil;
-import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
@@ -33,8 +32,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.io.ByteArrayFileInputStream;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.GroupThreadLocal;
-import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.ServiceProxyFactory;
 import com.liferay.portal.util.PropsValues;
 
@@ -66,9 +63,9 @@ public class DLStoreImpl implements DLStore {
 		try (DLStoreFileProvider dlStoreFileProvider = new DLStoreFileProvider(
 				bytes)) {
 
-			validate(
-				dlStoreRequest.getFileName(),
-				dlStoreRequest.isValidateFileExtension());
+			_validate(
+				dlStoreRequest.getFileName(), null, null,
+				dlStoreRequest.isValidateFileExtension(), null);
 
 			_addFile(dlStoreRequest, dlStoreFileProvider);
 		}
@@ -81,9 +78,9 @@ public class DLStoreImpl implements DLStore {
 		try (DLStoreFileProvider dlStoreFileProvider = new DLStoreFileProvider(
 				file)) {
 
-			validate(
-				dlStoreRequest.getFileName(),
-				dlStoreRequest.isValidateFileExtension());
+			_validate(
+				dlStoreRequest.getFileName(), null, null,
+				dlStoreRequest.isValidateFileExtension(), null);
 
 			_addFile(dlStoreRequest, dlStoreFileProvider);
 		}
@@ -96,9 +93,9 @@ public class DLStoreImpl implements DLStore {
 		try (DLStoreFileProvider dlStoreFileProvider = new DLStoreFileProvider(
 				inputStream)) {
 
-			validate(
-				dlStoreRequest.getFileName(),
-				dlStoreRequest.isValidateFileExtension());
+			_validate(
+				dlStoreRequest.getFileName(), null, null,
+				dlStoreRequest.isValidateFileExtension(), null);
 
 			_addFile(dlStoreRequest, dlStoreFileProvider);
 		}
@@ -137,27 +134,12 @@ public class DLStoreImpl implements DLStore {
 	}
 
 	@Override
-	public void deleteFile(long companyId, long repositoryId, String fileName)
-		throws PortalException {
-
-		validate(fileName, false);
-
-		for (String versionLabel :
-				_wrappedStore.getFileVersions(
-					companyId, repositoryId, fileName)) {
-
-			_wrappedStore.deleteFile(
-				companyId, repositoryId, fileName, versionLabel);
-		}
-	}
-
-	@Override
 	public void deleteFile(
 			long companyId, long repositoryId, String fileName,
 			String versionLabel)
 		throws PortalException {
 
-		validate(fileName, false, versionLabel);
+		_validate(fileName, null, null, false, versionLabel);
 
 		try {
 			_wrappedStore.deleteFile(
@@ -169,40 +151,12 @@ public class DLStoreImpl implements DLStore {
 	}
 
 	@Override
-	public byte[] getFileAsBytes(
-			long companyId, long repositoryId, String fileName)
-		throws PortalException {
-
-		validate(fileName, false);
-
-		try {
-			return StreamUtil.toByteArray(
-				_wrappedStore.getFileAsStream(
-					companyId, repositoryId, fileName, StringPool.BLANK));
-		}
-		catch (IOException ioException) {
-			throw new SystemException(ioException);
-		}
-	}
-
-	@Override
-	public InputStream getFileAsStream(
-			long companyId, long repositoryId, String fileName)
-		throws PortalException {
-
-		validate(fileName, false);
-
-		return _wrappedStore.getFileAsStream(
-			companyId, repositoryId, fileName, StringPool.BLANK);
-	}
-
-	@Override
 	public InputStream getFileAsStream(
 			long companyId, long repositoryId, String fileName,
 			String versionLabel)
 		throws PortalException {
 
-		validate(fileName, false, versionLabel);
+		_validate(fileName, null, null, false, versionLabel);
 
 		return _wrappedStore.getFileAsStream(
 			companyId, repositoryId, fileName, versionLabel);
@@ -224,20 +178,10 @@ public class DLStoreImpl implements DLStore {
 	public long getFileSize(long companyId, long repositoryId, String fileName)
 		throws PortalException {
 
-		validate(fileName, false);
+		_validate(fileName, null, null, false, null);
 
 		return _wrappedStore.getFileSize(
 			companyId, repositoryId, fileName, StringPool.BLANK);
-	}
-
-	@Override
-	public boolean hasFile(long companyId, long repositoryId, String fileName)
-		throws PortalException {
-
-		validate(fileName, false);
-
-		return _wrappedStore.hasFile(
-			companyId, repositoryId, fileName, Store.VERSION_DEFAULT);
 	}
 
 	@Override
@@ -246,7 +190,7 @@ public class DLStoreImpl implements DLStore {
 			String versionLabel)
 		throws PortalException {
 
-		validate(fileName, false, versionLabel);
+		_validate(fileName, null, null, false, versionLabel);
 
 		return _wrappedStore.hasFile(
 			companyId, repositoryId, fileName, versionLabel);
@@ -259,12 +203,11 @@ public class DLStoreImpl implements DLStore {
 		try (DLStoreFileProvider dlStoreFileProvider = new DLStoreFileProvider(
 				file)) {
 
-			validate(
+			_validate(
 				dlStoreRequest.getFileName(), dlStoreRequest.getFileExtension(),
 				dlStoreRequest.getSourceFileName(),
-				dlStoreRequest.isValidateFileExtension());
-
-			_validateVersionLabel(dlStoreRequest.getVersionLabel());
+				dlStoreRequest.isValidateFileExtension(),
+				dlStoreRequest.getVersionLabel());
 
 			_addFile(dlStoreRequest, dlStoreFileProvider);
 		}
@@ -278,12 +221,11 @@ public class DLStoreImpl implements DLStore {
 		try (DLStoreFileProvider dlStoreFileProvider = new DLStoreFileProvider(
 				inputStream)) {
 
-			validate(
+			_validate(
 				dlStoreRequest.getFileName(), dlStoreRequest.getFileExtension(),
 				dlStoreRequest.getSourceFileName(),
-				dlStoreRequest.isValidateFileExtension());
-
-			_validateVersionLabel(dlStoreRequest.getVersionLabel());
+				dlStoreRequest.isValidateFileExtension(),
+				dlStoreRequest.getVersionLabel());
 
 			_addFile(dlStoreRequest, dlStoreFileProvider);
 		}
@@ -348,128 +290,6 @@ public class DLStoreImpl implements DLStore {
 			companyId, repositoryId, fileName, fromVersionLabel);
 	}
 
-	@Override
-	public void validate(String fileName, boolean validateFileExtension)
-		throws PortalException {
-
-		DLValidatorUtil.validateFileName(fileName);
-
-		if (validateFileExtension) {
-			DLValidatorUtil.validateFileExtension(fileName);
-		}
-	}
-
-	@Override
-	public void validate(
-			String fileName, boolean validateFileExtension, byte[] bytes)
-		throws PortalException {
-
-		validate(fileName, validateFileExtension);
-
-		DLValidatorUtil.validateFileSize(
-			GroupThreadLocal.getGroupId(), fileName,
-			MimeTypesUtil.getContentType(fileName), bytes);
-	}
-
-	@Override
-	public void validate(
-			String fileName, boolean validateFileExtension, File file)
-		throws PortalException {
-
-		validate(fileName, validateFileExtension);
-
-		DLValidatorUtil.validateFileSize(
-			GroupThreadLocal.getGroupId(), fileName,
-			MimeTypesUtil.getContentType(fileName), file);
-	}
-
-	@Override
-	public void validate(
-			String fileName, boolean validateFileExtension,
-			InputStream inputStream)
-		throws PortalException {
-
-		validate(fileName, validateFileExtension);
-
-		DLValidatorUtil.validateFileSize(
-			GroupThreadLocal.getGroupId(), fileName,
-			MimeTypesUtil.getContentType(fileName), inputStream);
-	}
-
-	@Override
-	public void validate(
-			String fileName, String fileExtension, String sourceFileName,
-			boolean validateFileExtension)
-		throws PortalException {
-
-		validate(fileName, validateFileExtension);
-
-		DLValidatorUtil.validateSourceFileExtension(
-			fileExtension, sourceFileName);
-	}
-
-	@Override
-	public void validate(
-			String fileName, String fileExtension, String sourceFileName,
-			boolean validateFileExtension, File file)
-		throws PortalException {
-
-		validate(
-			fileName, fileExtension, sourceFileName, validateFileExtension);
-
-		DLValidatorUtil.validateFileSize(
-			GroupThreadLocal.getGroupId(), fileName,
-			MimeTypesUtil.getContentType(fileName), file);
-	}
-
-	@Override
-	public void validate(
-			String fileName, String fileExtension, String sourceFileName,
-			boolean validateFileExtension, InputStream inputStream)
-		throws PortalException {
-
-		validate(
-			fileName, fileExtension, sourceFileName, validateFileExtension);
-
-		DLValidatorUtil.validateFileSize(
-			GroupThreadLocal.getGroupId(), fileName,
-			MimeTypesUtil.getContentType(fileName), inputStream);
-	}
-
-	protected void validate(
-			String fileName, boolean validateFileExtension, String versionLabel)
-		throws PortalException {
-
-		validate(fileName, validateFileExtension);
-
-		_validateVersionLabel(versionLabel);
-	}
-
-	protected void validate(
-			String fileName, String fileExtension, String sourceFileName,
-			boolean validateFileExtension, File file, String versionLabel)
-		throws PortalException {
-
-		validate(
-			fileName, fileExtension, sourceFileName, validateFileExtension,
-			file);
-
-		_validateVersionLabel(versionLabel);
-	}
-
-	protected void validate(
-			String fileName, String fileExtension, String sourceFileName,
-			boolean validateFileExtension, InputStream inputStream,
-			String versionLabel)
-		throws PortalException {
-
-		validate(
-			fileName, fileExtension, sourceFileName, validateFileExtension,
-			inputStream);
-
-		_validateVersionLabel(versionLabel);
-	}
-
 	private void _addFile(
 			DLStoreRequest dlStoreRequest,
 			DLStoreFileProvider dlStoreFileProvider)
@@ -510,8 +330,19 @@ public class DLStoreImpl implements DLStore {
 		return inputStream;
 	}
 
-	private void _validateVersionLabel(String versionLabel)
+	private void _validate(
+			String fileName, String fileExtension, String sourceFileName,
+			boolean validateFileExtension, String versionLabel)
 		throws PortalException {
+
+		DLValidatorUtil.validateFileName(fileName);
+
+		if (validateFileExtension) {
+			DLValidatorUtil.validateFileExtension(fileName);
+		}
+
+		DLValidatorUtil.validateSourceFileExtension(
+			fileExtension, sourceFileName);
 
 		DLValidatorUtil.validateVersionLabel(versionLabel);
 	}

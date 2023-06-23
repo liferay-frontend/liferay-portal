@@ -89,7 +89,7 @@ public class SocialActivityExtenderBundleActivator implements BundleActivator {
 		extends BundleTracker<Void> {
 
 		@Override
-		public Void addingBundle(Bundle bundle, BundleEvent event) {
+		public Void addingBundle(Bundle bundle, BundleEvent bundleEvent) {
 			try {
 				_readSocialActivity(
 					bundle, "META-INF/social/liferay-social.xml");
