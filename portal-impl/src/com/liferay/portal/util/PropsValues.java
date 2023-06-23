@@ -1139,6 +1139,10 @@ public class PropsValues {
 	public static boolean LAYOUT_TEMPLATE_CACHE_ENABLED = GetterUtil.getBoolean(
 		PropsUtil.get(PropsKeys.LAYOUT_TEMPLATE_CACHE_ENABLED));
 
+	public static boolean LAYOUT_USER_ACCESS_VIA_PLID_ENABLED =
+		GetterUtil.getBoolean(
+			PropsUtil.get(PropsKeys.LAYOUT_USER_ACCESS_VIA_PLID_ENABLED));
+
 	public static boolean LAYOUT_USER_PRIVATE_LAYOUTS_AUTO_CREATE =
 		GetterUtil.getBoolean(
 			PropsUtil.get(PropsKeys.LAYOUT_USER_PRIVATE_LAYOUTS_AUTO_CREATE));

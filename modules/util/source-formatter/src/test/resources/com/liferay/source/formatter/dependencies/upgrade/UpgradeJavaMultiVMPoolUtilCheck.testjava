@@ -14,10 +14,12 @@
 
 package com.liferay.source.formatter.dependencies.upgrade;
 
-import com.liferay.portal.kernel.util.HtmlParser;
+import com.liferay.portal.kernel.cache.MultiVMPoolUtil;
+import com.liferay.portal.kernel.cache.PortalCache;
 
-import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.Localization;
+import com.test.CalledParameterClassTest;
+
+import java.io.Serializable;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -26,32 +28,25 @@ import org.osgi.service.component.annotations.Reference;
  * @author Nícolas Moura
  */
 @Component(
-	property = "indexer.class.name=com.liferay.source.formatter.dependencies.upgrade.UpgradeJavaExtractTextMethodCheck",
-	service = UpgradeJavaExtractTextMethodCheck.class
+	property = "indexer.class.name=com.liferay.source.formatter.dependencies.upgrade.UpgradeJavaMultiVMPoolUtilCheck",
+	service = UpgradeJavaMultiVMPoolUtilCheck.class
 )
-public class UpgradeJavaExtractTextMethodCheck {
+public class UpgradeJavaMultiVMPoolUtilCheck {
 
 	public void method() {
 
-		// Tests direct method call
+		// Tests type recovery by the variable declaration
 
-		_htmlParser.extractText(testEntry.getContent());
+		PortalCache<String, Serializable> portalCache =
+			MultiVMPoolUtil.getPortalCache("TEST_GET_PORTAL_CACHE");
 
-		if (true) {
+		// Test scenario when it is not possible to retrieve types for cast
 
-			// Test method with variable declaration with a larger tabulation
-			// and a line break
-
-			String contentVariableLineBreak = _htmlParser.extractText(
-				testEntry.getContent());
-		}
+		_calledParameterClassTest.anotherMethod(
+			MultiVMPoolUtil.getPortalCache("TEST_GET_PORTAL_CACHE"));
 	}
 
 	@Reference
-	private Localization _localization;
+	private CalledParameterClassTest _calledParameterClassTest;
 
-	// Tests adding the new reference after the end of the file
-
-	@Reference
-	private HtmlParser _htmlParser;
 }

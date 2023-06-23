@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.headless.builder.application.publisher.test;
+package com.liferay.headless.builder.application.resource.test;
 
 import com.liferay.headless.builder.application.APIApplication;
 import com.liferay.headless.builder.application.provider.APIApplicationProvider;
@@ -21,65 +21,40 @@ import com.liferay.headless.builder.application.publisher.test.util.APIApplicati
 import com.liferay.headless.builder.test.BaseTestCase;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import javax.ws.rs.core.Application;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import java.nio.charset.StandardCharsets;
+
+import javax.ws.rs.core.HttpHeaders;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Luis Miguel Barcos
  */
-@FeatureFlags({"LPS-153117", "LPS-167253", "LPS-184413", "LPS-186757"})
-public class APIApplicationPublisherTest extends BaseTestCase {
+@FeatureFlags({"LPS-186757", "LPS-184413", "LPS-167253", "LPS-153117"})
+public class HeadlessBuilderResourceTest extends BaseTestCase {
 
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-
-		// TODO Delete the bundle deployment when the FF LPS-188073 is removed
-
-		Bundle testBundle = FrameworkUtil.getBundle(
-			APIApplicationPublisherTest.class);
-
-		BundleContext bundleContext = testBundle.getBundleContext();
-
-		_serviceTracker = new ServiceTracker<Application, Application>(
-			bundleContext, Application.class, null) {
-
-			@Override
-			public Application addingService(
-				ServiceReference<Application> serviceReference) {
-
-				if (GetterUtil.getBoolean(
-						serviceReference.getProperty(
-							"liferay.headless.builder.application"))) {
-
-					return super.addingService(serviceReference);
-				}
-
-				return null;
-			}
-
-		};
-
-		_serviceTracker.open();
-	}
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
 
 	@After
 	public void tearDown() throws Exception {
@@ -88,23 +63,59 @@ public class APIApplicationPublisherTest extends BaseTestCase {
 	}
 
 	@Test
-	public void testPublish() throws Exception {
+	public void test() throws Exception {
 		APIApplication apiApplication1 = _addAPIApplication(
 			_API_APPLICATION_ERC_1);
 		APIApplication apiApplication2 = _addAPIApplication(
 			_API_APPLICATION_ERC_2);
 
-		Assert.assertEquals(0, _serviceTracker.size());
+		HttpURLConnection httpURLConnection = _createHttpURLConnection(
+			apiApplication1.getBaseURL(), Http.Method.GET);
+
+		httpURLConnection.connect();
+
+		Assert.assertEquals(404, httpURLConnection.getResponseCode());
+
+		httpURLConnection = _createHttpURLConnection(
+			apiApplication2.getBaseURL(), Http.Method.GET);
+
+		httpURLConnection.connect();
+
+		Assert.assertEquals(404, httpURLConnection.getResponseCode());
 
 		APIApplicationPublisherUtil.publishApplications(
 			_apiApplicationPublisher, apiApplication1, apiApplication2);
 
-		Assert.assertEquals(2, _serviceTracker.size());
+		httpURLConnection = _createHttpURLConnection(
+			apiApplication1.getBaseURL(), Http.Method.GET);
+
+		httpURLConnection.connect();
+
+		Assert.assertEquals(200, httpURLConnection.getResponseCode());
+
+		httpURLConnection = _createHttpURLConnection(
+			apiApplication2.getBaseURL(), Http.Method.GET);
+
+		httpURLConnection.connect();
+
+		Assert.assertEquals(200, httpURLConnection.getResponseCode());
 
 		APIApplicationPublisherUtil.unpublishApplications(
-			_apiApplicationPublisher, apiApplication1, apiApplication2);
+			_apiApplicationPublisher, apiApplication1);
 
-		Assert.assertEquals(0, _serviceTracker.size());
+		httpURLConnection = _createHttpURLConnection(
+			apiApplication1.getBaseURL(), Http.Method.GET);
+
+		httpURLConnection.connect();
+
+		Assert.assertEquals(404, httpURLConnection.getResponseCode());
+
+		httpURLConnection = _createHttpURLConnection(
+			apiApplication2.getBaseURL(), Http.Method.GET);
+
+		httpURLConnection.connect();
+
+		Assert.assertEquals(200, httpURLConnection.getResponseCode());
 	}
 
 	private APIApplication _addAPIApplication(String externalReferenceCode)
@@ -186,6 +197,29 @@ public class APIApplicationPublisherTest extends BaseTestCase {
 			baseURL, TestPropsValues.getCompanyId());
 	}
 
+	private HttpURLConnection _createHttpURLConnection(
+			String endpoint, Http.Method method)
+		throws Exception {
+
+		URL url = new URL("http://localhost:8080/o/" + endpoint);
+
+		HttpURLConnection httpURLConnection =
+			(HttpURLConnection)url.openConnection();
+
+		httpURLConnection.setRequestMethod(method.toString());
+		httpURLConnection.setRequestProperty(HttpHeaders.ACCEPT, "*/*");
+		httpURLConnection.setRequestProperty(
+			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
+
+		String encodedUserNameAndPassword = Base64.encode(
+			"test@liferay.com:test".getBytes(StandardCharsets.UTF_8));
+
+		httpURLConnection.setRequestProperty(
+			"Authorization", "Basic " + encodedUserNameAndPassword);
+
+		return httpURLConnection;
+	}
+
 	private static final String _API_APPLICATION_ERC_1 =
 		RandomTestUtil.randomString();
 
@@ -197,7 +231,5 @@ public class APIApplicationPublisherTest extends BaseTestCase {
 
 	@Inject
 	private APIApplicationPublisher _apiApplicationPublisher;
-
-	private ServiceTracker<Application, Application> _serviceTracker;
 
 }

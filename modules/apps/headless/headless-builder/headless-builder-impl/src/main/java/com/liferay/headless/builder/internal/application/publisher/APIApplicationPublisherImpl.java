@@ -16,15 +16,20 @@ package com.liferay.headless.builder.internal.application.publisher;
 
 import com.liferay.headless.builder.application.APIApplication;
 import com.liferay.headless.builder.application.publisher.APIApplicationPublisher;
+import com.liferay.headless.builder.internal.application.resource.HeadlessBuilderResourceImpl;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.Application;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.PrototypeServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -43,9 +48,16 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 				"APIApplicationPublisher not available");
 		}
 
-		_headlessBuilderApplicationServiceRegistrationMap.computeIfAbsent(
+		_headlessBuilderApplicationServiceRegistrationsMap.computeIfAbsent(
 			apiApplication.getOSGiJaxRsName(),
-			key -> _registerHeadlessBuilderApplication(apiApplication));
+			key -> new ArrayList<ServiceRegistration<?>>() {
+				{
+					add(_registerHeadlessBuilderApplication(apiApplication));
+					add(
+						_registerHeadlessBuilderApplicationResource(
+							apiApplication));
+				}
+			});
 	}
 
 	@Override
@@ -55,12 +67,12 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 				"APIApplicationPublisher not available");
 		}
 
-		ServiceRegistration<Application> applicationServiceRegistration =
-			_headlessBuilderApplicationServiceRegistrationMap.remove(
+		List<ServiceRegistration<?>> serviceRegistrations =
+			_headlessBuilderApplicationServiceRegistrationsMap.remove(
 				apiApplication.getOSGiJaxRsName());
 
-		if (applicationServiceRegistration != null) {
-			_unregisterServiceRegistration(applicationServiceRegistration);
+		if (serviceRegistrations != null) {
+			_unregisterServiceRegistrations(serviceRegistrations);
 		}
 	}
 
@@ -71,13 +83,13 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 
 	@Deactivate
 	protected void deactivate() {
-		for (ServiceRegistration<Application> serviceRegistration :
-				_headlessBuilderApplicationServiceRegistrationMap.values()) {
+		for (List<ServiceRegistration<?>> serviceRegistrations :
+				_headlessBuilderApplicationServiceRegistrationsMap.values()) {
 
-			_unregisterServiceRegistration(serviceRegistration);
+			_unregisterServiceRegistrations(serviceRegistrations);
 		}
 
-		_headlessBuilderApplicationServiceRegistrationMap.clear();
+		_headlessBuilderApplicationServiceRegistrationsMap.clear();
 	}
 
 	private ServiceRegistration<Application>
@@ -103,17 +115,57 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 			).build());
 	}
 
-	private void _unregisterServiceRegistration(
-		ServiceRegistration<?> serviceRegistration) {
+	private ServiceRegistration<HeadlessBuilderResourceImpl>
+		_registerHeadlessBuilderApplicationResource(
+			APIApplication apiApplication) {
 
-		if (serviceRegistration != null) {
-			serviceRegistration.unregister();
+		return _bundleContext.registerService(
+			HeadlessBuilderResourceImpl.class,
+			new PrototypeServiceFactory<HeadlessBuilderResourceImpl>() {
+
+				@Override
+				public HeadlessBuilderResourceImpl getService(
+					Bundle bundle,
+					ServiceRegistration<HeadlessBuilderResourceImpl>
+						serviceRegistration) {
+
+					return new HeadlessBuilderResourceImpl();
+				}
+
+				@Override
+				public void ungetService(
+					Bundle bundle,
+					ServiceRegistration<HeadlessBuilderResourceImpl>
+						serviceRegistration,
+					HeadlessBuilderResourceImpl headlessBuilderResourceImpl) {
+				}
+
+			},
+			HashMapDictionaryBuilder.<String, Object>put(
+				"api.version", "v1.0"
+			).put(
+				"osgi.jaxrs.application.select",
+				"(osgi.jaxrs.name=" + apiApplication.getOSGiJaxRsName() + ")"
+			).put(
+				"osgi.jaxrs.resource", "true"
+			).build());
+	}
+
+	private void _unregisterServiceRegistrations(
+		List<ServiceRegistration<?>> serviceRegistrations) {
+
+		for (ServiceRegistration<?> serviceRegistration :
+				serviceRegistrations) {
+
+			if (serviceRegistration != null) {
+				serviceRegistration.unregister();
+			}
 		}
 	}
 
 	private static BundleContext _bundleContext;
 
-	private final Map<String, ServiceRegistration<Application>>
-		_headlessBuilderApplicationServiceRegistrationMap = new HashMap<>();
+	private final Map<String, List<ServiceRegistration<?>>>
+		_headlessBuilderApplicationServiceRegistrationsMap = new HashMap<>();
 
 }
