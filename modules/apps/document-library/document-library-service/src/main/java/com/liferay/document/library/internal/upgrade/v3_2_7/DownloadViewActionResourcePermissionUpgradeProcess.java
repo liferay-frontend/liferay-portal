@@ -12,13 +12,25 @@
  * details.
  */
 
-package com.liferay.commerce.util;
+package com.liferay.document.library.internal.upgrade.v3_2_7;
+
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.upgrade.BaseViewActionResourcePermissionUpgradeProcess;
 
 /**
- * @author Crescenzo Rega
+ * @author Adolfo Pérez
  */
-public interface SplitCommerceOrderHelper {
+public class DownloadViewActionResourcePermissionUpgradeProcess
+	extends BaseViewActionResourcePermissionUpgradeProcess {
 
-	public void splitByCatalog(long commerceOrderId) throws Exception;
+	@Override
+	protected String getActionId() {
+		return ActionKeys.DOWNLOAD;
+	}
+
+	@Override
+	protected String getClassName() {
+		return "com.liferay.document.library.kernel.model.DLFileEntry";
+	}
 
 }

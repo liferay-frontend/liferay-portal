@@ -14,6 +14,8 @@
 
 package com.liferay.frontend.data.set.views.web.internal.fragment.renderer;
 
+import com.liferay.client.extension.type.FDSCellRendererCET;
+import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
@@ -50,6 +52,7 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -210,7 +213,19 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 				"style", "fluid"
 			).put(
 				"views",
-				_getViewsJSONArray(fdsViewObjectDefinition, fdsViewObjectEntry)
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"contentRenderer", "table"
+					).put(
+						"name", "table"
+					).put(
+						"schema",
+						JSONUtil.put(
+							"fields",
+							_getFieldsJSONArray(
+								fragmentEntryLink, fdsViewObjectDefinition,
+								fdsViewObjectEntry))
+					))
 			).build(),
 			httpServletRequest, writer);
 
@@ -234,6 +249,50 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 		sb.append(String.valueOf(properties.get("restEndpoint")));
 
 		return sb.toString();
+	}
+
+	private JSONArray _getFieldsJSONArray(
+			FragmentEntryLink fragmentEntryLink,
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
+		throws Exception {
+
+		return JSONUtil.toJSONArray(
+			_getRelatedObjectEntries(
+				objectDefinition, objectEntry, "fdsViewFDSFieldRelationship"),
+			(ObjectEntry fdsField) -> {
+				Map<String, Object> fdsFieldProperties =
+					fdsField.getProperties();
+
+				JSONObject jsonObject = JSONUtil.put(
+					"contentRenderer",
+					String.valueOf(fdsFieldProperties.get("renderer"))
+				).put(
+					"fieldName", String.valueOf(fdsFieldProperties.get("name"))
+				).put(
+					"label", String.valueOf(fdsFieldProperties.get("label"))
+				).put(
+					"sortable", (boolean)fdsFieldProperties.get("sortable")
+				);
+
+				String rendererType = String.valueOf(
+					fdsFieldProperties.get("rendererType"));
+
+				if (!Objects.equals(rendererType, "clientExtension")) {
+					return jsonObject;
+				}
+
+				FDSCellRendererCET fdsCellRendererCET =
+					(FDSCellRendererCET)_cetManager.getCET(
+						fragmentEntryLink.getCompanyId(),
+						String.valueOf(fdsFieldProperties.get("renderer")));
+
+				return jsonObject.put(
+					"contentRendererClientExtension", true
+				).put(
+					"contentRendererModuleURL",
+					"default from " + fdsCellRendererCET.getURL()
+				);
+			});
 	}
 
 	private ObjectEntry _getObjectEntry(
@@ -299,46 +358,8 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 		return relatedObjectEntriesPage.getItems();
 	}
 
-	private JSONArray _getViewsJSONArray(
-			ObjectDefinition fdsViewObjectDefinition, ObjectEntry objectEntry)
-		throws Exception {
-
-		Collection<ObjectEntry> fdsFields = _getRelatedObjectEntries(
-			fdsViewObjectDefinition, objectEntry,
-			"fdsViewFDSFieldRelationship");
-
-		return JSONUtil.putAll(
-			JSONUtil.put(
-				"contentRenderer", "table"
-			).put(
-				"name", "table"
-			).put(
-				"schema",
-				JSONUtil.put(
-					"fields",
-					JSONUtil.toJSONArray(
-						fdsFields,
-						(ObjectEntry fdsField) -> {
-							Map<String, Object> fdsFieldProperties =
-								fdsField.getProperties();
-
-							return JSONUtil.put(
-								"contentRenderer",
-								String.valueOf(
-									fdsFieldProperties.get("renderer"))
-							).put(
-								"fieldName",
-								String.valueOf(fdsFieldProperties.get("name"))
-							).put(
-								"label",
-								String.valueOf(fdsFieldProperties.get("label"))
-							).put(
-								"sortable",
-								(boolean)fdsFieldProperties.get("sortable")
-							);
-						}))
-			));
-	}
+	@Reference
+	private CETManager _cetManager;
 
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;

@@ -25,9 +25,10 @@ import {
 } from '@liferay/frontend-data-set-web';
 import {ManagementToolbar} from 'frontend-js-components-web';
 import {fetch, navigate, openModal, openToast} from 'frontend-js-web';
+import fuzzy from 'fuzzy';
 import React, {useEffect, useRef, useState} from 'react';
 
-import {API_URL, OBJECT_RELATIONSHIP} from '../Constants';
+import {API_URL, FUZZY_OPTIONS, OBJECT_RELATIONSHIP} from '../Constants';
 import {IFDSViewSectionInterface} from '../FDSView';
 import {FDSViewType} from '../FDSViews';
 import {
@@ -44,6 +45,7 @@ interface IFDSField {
 	label: string;
 	name: string;
 	renderer: string;
+	rendererLabel?: string;
 	sortable: boolean;
 	type: string;
 }
@@ -64,6 +66,72 @@ interface ISaveFDSFieldsModalContentProps {
 	onSave: Function;
 	saveFDSFieldsURL: string;
 }
+
+const getRendererLabel = ({
+	cetRenderers = [],
+	rendererName,
+}: {
+	cetRenderers?: FDSClientExtensionCellRenderer[];
+	rendererName: string;
+}): string => {
+	let clientExtensionRenderer;
+
+	const internalRenderer = FDS_INTERNAL_CELL_RENDERERS.find(
+		(renderer: FDSInternalCellRenderer) => {
+			return renderer.name === rendererName;
+		}
+	);
+
+	if (internalRenderer?.label) {
+		return internalRenderer.label;
+	}
+	else {
+		clientExtensionRenderer = cetRenderers.find(
+			(renderer: FDSClientExtensionCellRenderer) => {
+				return renderer.erc === rendererName;
+			}
+		);
+
+		if (clientExtensionRenderer?.name) {
+			return clientExtensionRenderer.name;
+		}
+
+		return rendererName;
+	}
+};
+
+interface IRendererLabelCellRendererComponentProps {
+	cetRenderers?: FDSClientExtensionCellRenderer[];
+	item: IFDSField;
+	query: string;
+}
+
+const RendererLabelCellRendererComponent = ({
+	cetRenderers = [],
+	item,
+	query,
+}: IRendererLabelCellRendererComponentProps) => {
+	const itemFieldValue = getRendererLabel({
+		cetRenderers,
+		rendererName: item.renderer,
+	});
+
+	const fuzzyMatch = fuzzy.match(query, itemFieldValue, FUZZY_OPTIONS);
+
+	return (
+		<span>
+			{fuzzyMatch ? (
+				<span
+					dangerouslySetInnerHTML={{
+						__html: fuzzyMatch.rendered,
+					}}
+				/>
+			) : (
+				<span>{itemFieldValue}</span>
+			)}
+		</span>
+	);
+};
 
 const SaveFDSFieldsModalContent = ({
 	closeModal,
@@ -345,15 +413,15 @@ const EditFDSFieldModalContent = ({
 
 	const fdsFieldLabelRef = useRef<HTMLInputElement>(null);
 
-	const fdsInternalCellRendererLabels = FDS_INTERNAL_CELL_RENDERERS.map(
-		(cellRenderer) => cellRenderer.label
+	const fdsInternalCellRendererNames = FDS_INTERNAL_CELL_RENDERERS.map(
+		(cellRenderer) => cellRenderer.name
 	);
 
 	const editFDSField = async () => {
 		const body = {
 			label: fdsFieldLabelRef.current?.value,
 			renderer: selectedFDSFieldRenderer,
-			rendererType: !fdsInternalCellRendererLabels.includes(
+			rendererType: !fdsInternalCellRendererNames.includes(
 				selectedFDSFieldRenderer
 			)
 				? 'clientExtension'
@@ -443,7 +511,10 @@ const EditFDSFieldModalContent = ({
 						id={fdsFieldRendererSelectId}
 					>
 						{selectedFDSFieldRenderer
-							? selectedFDSFieldRenderer
+							? getRendererLabel({
+									cetRenderers: fdsClientExtensionCellRenderers,
+									rendererName: selectedFDSFieldRenderer,
+							  })
 							: Liferay.Language.get('choose-an-option')}
 					</ClayButton>
 				}
@@ -453,7 +524,7 @@ const EditFDSFieldModalContent = ({
 						<ClayDropDown.Item
 							className="align-items-center d-flex justify-content-between"
 							key={cellRenderer.value}
-							onClick={() => onItemClick(cellRenderer.label)}
+							onClick={() => onItemClick(cellRenderer.value)}
 							roleItem="option"
 						>
 							{cellRenderer.label}
@@ -846,6 +917,22 @@ const Fields = ({
 							name: 'type',
 						},
 						{
+							contentRenderer: {
+								component: ({item, query}) => (
+									<RendererLabelCellRendererComponent
+										cetRenderers={
+											fdsClientExtensionCellRenderers
+										}
+										item={item}
+										query={query}
+									/>
+								),
+								textMatch: (item: IFDSField) =>
+									getRendererLabel({
+										cetRenderers: fdsClientExtensionCellRenderers,
+										rendererName: item.renderer,
+									}),
+							},
 							label: Liferay.Language.get('cell-renderer'),
 							name: 'renderer',
 						},
