@@ -12,24 +12,17 @@
  * details.
  */
 
-package com.liferay.segments.item.selector.criterion;
-
-import com.liferay.item.selector.BaseItemSelectorCriterion;
+package com.liferay.portal.workflow.kaleo.runtime.constants;
 
 /**
- * @author Eudaldo Alonso
+ * @author Jiaxu Wei
  */
-public class SegmentsExperienceItemSelectorCriterion
-	extends BaseItemSelectorCriterion {
+public class AssigneeConstants {
 
-	public long getPlid() {
-		return _plid;
-	}
+	public static final String ROLES = "roles";
 
-	public void setPlid(long plid) {
-		_plid = plid;
-	}
+	public static final String USER = "user";
 
-	private long _plid;
+	public static final String USERS = "users";
 
 }

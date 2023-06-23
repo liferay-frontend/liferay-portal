@@ -12,24 +12,22 @@
  * details.
  */
 
-package com.liferay.segments.item.selector.criterion;
+package com.liferay.portal.workflow.kaleo.runtime.assignment;
 
-import com.liferay.item.selector.BaseItemSelectorCriterion;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
+import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
+
+import java.util.Map;
 
 /**
- * @author Eudaldo Alonso
+ * @author Jiaxu Wei
  */
-public class SegmentsExperienceItemSelectorCriterion
-	extends BaseItemSelectorCriterion {
+public interface ScriptingAssigneeSelector {
 
-	public long getPlid() {
-		return _plid;
-	}
-
-	public void setPlid(long plid) {
-		_plid = plid;
-	}
-
-	private long _plid;
+	public Map<String, ?> getAssignees(
+			ExecutionContext executionContext,
+			KaleoTaskAssignment kaleoTaskAssignment)
+		throws PortalException;
 
 }

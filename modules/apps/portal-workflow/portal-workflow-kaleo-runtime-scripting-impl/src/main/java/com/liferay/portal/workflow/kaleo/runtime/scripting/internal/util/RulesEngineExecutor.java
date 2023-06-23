@@ -12,58 +12,38 @@
  * details.
  */
 
-package com.liferay.portal.workflow.kaleo.runtime.scripting.internal.assignment;
+package com.liferay.portal.workflow.kaleo.runtime.scripting.internal.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.resource.StringResourceRetriever;
-import com.liferay.portal.rules.engine.Fact;
 import com.liferay.portal.rules.engine.Query;
 import com.liferay.portal.rules.engine.RulesEngine;
 import com.liferay.portal.rules.engine.RulesResourceRetriever;
-import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
-import com.liferay.portal.workflow.kaleo.runtime.assignment.BaseKaleoTaskAssignmentSelector;
-import com.liferay.portal.workflow.kaleo.runtime.assignment.KaleoTaskAssignmentSelector;
 import com.liferay.portal.workflow.kaleo.runtime.util.RulesContextBuilder;
 import com.liferay.portal.workflow.kaleo.runtime.util.WorkflowContextUtil;
 
 import java.io.Serializable;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Michael C. Han
+ * @author Jiaxu Wei
  */
-@Component(
-	enabled = false, property = "scripting.language=drl",
-	service = KaleoTaskAssignmentSelector.class
-)
-public class DRLScriptingKaleoTaskAssignmentSelector
-	extends BaseKaleoTaskAssignmentSelector {
+@Component(enabled = false, service = RulesEngineExecutor.class)
+public class RulesEngineExecutor {
 
-	@Override
-	public Collection<KaleoTaskAssignment> getKaleoTaskAssignments(
-			KaleoTaskAssignment kaleoTaskAssignment,
-			ExecutionContext executionContext)
+	public Map<String, ?> executeAndMergeWorkflowContexts(
+			ExecutionContext executionContext, String resource)
 		throws PortalException {
 
-		List<Fact<?>> facts = _rulesContextBuilder.buildRulesContext(
-			executionContext);
-
-		RulesResourceRetriever rulesResourceRetriever =
-			new RulesResourceRetriever(
-				new StringResourceRetriever(
-					kaleoTaskAssignment.getAssigneeScript()));
-
-		Query query = Query.createStandardQuery();
-
 		Map<String, ?> results = _rulesEngine.execute(
-			rulesResourceRetriever, facts, query);
+			new RulesResourceRetriever(new StringResourceRetriever(resource)),
+			_rulesContextBuilder.buildRulesContext(executionContext),
+			Query.createStandardQuery());
 
 		Map<String, Serializable> resultsWorkflowContext =
 			(Map<String, Serializable>)results.get(
@@ -72,7 +52,7 @@ public class DRLScriptingKaleoTaskAssignmentSelector
 		WorkflowContextUtil.mergeWorkflowContexts(
 			executionContext, resultsWorkflowContext);
 
-		return getKaleoTaskAssignments(results);
+		return results;
 	}
 
 	@Reference

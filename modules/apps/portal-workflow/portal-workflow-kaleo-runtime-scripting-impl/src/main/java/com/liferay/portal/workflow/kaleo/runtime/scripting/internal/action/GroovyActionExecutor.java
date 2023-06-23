@@ -31,9 +31,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Michael C. Han
  */
 @Component(service = ActionExecutor.class)
-public class ScriptActionExecutor implements ActionExecutor {
+public class GroovyActionExecutor implements ActionExecutor {
 
-	public ScriptActionExecutor() {
+	public GroovyActionExecutor() {
 		_outputObjects.add(WorkflowContextUtil.WORKFLOW_CONTEXT_NAME);
 	}
 
@@ -51,8 +51,8 @@ public class ScriptActionExecutor implements ActionExecutor {
 	}
 
 	@Override
-	public String[] getActionExecutorKeys() {
-		return _ACTION_EXECUTOR_KEYS;
+	public String getActionExecutorKey() {
+		return "groovy";
 	}
 
 	public void setOutputObjects(Set<String> outputObjects) {
@@ -67,10 +67,6 @@ public class ScriptActionExecutor implements ActionExecutor {
 			executionContext, _outputObjects, kaleoAction.getScriptLanguage(),
 			kaleoAction.getScript());
 	}
-
-	private static final String[] _ACTION_EXECUTOR_KEYS = {
-		"beanshell", "groovy", "javascript", "python", "ruby"
-	};
 
 	@Reference
 	private KaleoScriptingEvaluator _kaleoScriptingEvaluator;

@@ -12,12 +12,12 @@
  * details.
  */
 
-package com.liferay.portal.workflow.kaleo.runtime.scripting.internal.condition;
+package com.liferay.portal.workflow.kaleo.runtime.scripting.internal.assignment;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.workflow.kaleo.model.KaleoCondition;
+import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
-import com.liferay.portal.workflow.kaleo.runtime.condition.ConditionEvaluator;
+import com.liferay.portal.workflow.kaleo.runtime.assignment.ScriptingAssigneeSelector;
 import com.liferay.portal.workflow.kaleo.runtime.scripting.internal.util.RulesEngineExecutor;
 
 import java.util.Map;
@@ -30,31 +30,19 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	enabled = false, property = "scripting.language=drl",
-	service = ConditionEvaluator.class
+	service = ScriptingAssigneeSelector.class
 )
-public class DRLConditionEvaluator implements ConditionEvaluator {
+public class DRLScriptingAssigneeSelector implements ScriptingAssigneeSelector {
 
 	@Override
-	public String evaluate(
-			KaleoCondition kaleoCondition, ExecutionContext executionContext)
+	public Map<String, ?> getAssignees(
+			ExecutionContext executionContext,
+			KaleoTaskAssignment kaleoTaskAssignment)
 		throws PortalException {
 
-		Map<String, ?> results =
-			_rulesEngineExecutor.executeAndMergeWorkflowContexts(
-				executionContext, kaleoCondition.getScript());
-
-		String returnValue = (String)results.get(_RETURN_VALUE);
-
-		if (returnValue != null) {
-			return returnValue;
-		}
-
-		throw new IllegalStateException(
-			"Conditional did not return value for script " +
-				kaleoCondition.getScript());
+		return _rulesEngineExecutor.executeAndMergeWorkflowContexts(
+			executionContext, kaleoTaskAssignment.getAssigneeScript());
 	}
-
-	private static final String _RETURN_VALUE = "returnValue";
 
 	@Reference
 	private RulesEngineExecutor _rulesEngineExecutor;
