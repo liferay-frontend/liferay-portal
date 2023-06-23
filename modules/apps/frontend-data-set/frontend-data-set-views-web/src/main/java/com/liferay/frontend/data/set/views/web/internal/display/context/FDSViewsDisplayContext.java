@@ -16,10 +16,10 @@ package com.liferay.frontend.data.set.views.web.internal.display.context;
 
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.type.manager.CETManager;
-import com.liferay.frontend.data.set.views.web.internal.constants.FDSViewsActionKeys;
 import com.liferay.frontend.data.set.views.web.internal.constants.FDSViewsPortletKeys;
-import com.liferay.frontend.data.set.views.web.internal.security.permissions.resource.FDSViewsPermission;
+import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -30,6 +30,9 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -176,10 +179,21 @@ public class FDSViewsDisplayContext {
 	}
 
 	public Boolean isShowCreationMenu() {
-		if (FDSViewsPermission.contains(
+		ObjectDefinition fdsEntryObjectDefinition =
+			ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
+				_themeDisplay.getCompanyId(), "C_FDSEntry");
+
+		ModelResourcePermission<ObjectEntry> modelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				fdsEntryObjectDefinition.getClassName());
+
+		PortletResourcePermission portletResourcePermission =
+			modelResourcePermission.getPortletResourcePermission();
+
+		if (portletResourcePermission.contains(
 				_themeDisplay.getPermissionChecker(),
 				_themeDisplay.getScopeGroupId(),
-				FDSViewsActionKeys.MANAGE_FDS_VIEWS_ENTRIES)) {
+				ObjectActionKeys.ADD_OBJECT_ENTRY)) {
 
 			return true;
 		}
