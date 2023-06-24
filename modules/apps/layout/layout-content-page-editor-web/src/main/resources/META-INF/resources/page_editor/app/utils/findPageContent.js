@@ -12,12 +12,18 @@
  * details.
  */
 
-export default function getMappingFieldsKey(item) {
-	if (item.type?.id) {
-		return `${item.type.id}-${item.subtype.id || 0}`;
-	}
+export default function findPageContent(pageContents, item) {
+	return pageContents?.find(
+		({classNameId, classPK, externalReferenceCode}) => {
+			if (classNameId !== item.classNameId) {
+				return false;
+			}
 
-	return `${item.classNameId}-${
-		item.classTypeId || item.classPK || item.externalReferenceCode
-	}`;
+			return (
+				(classPK && classPK === item.classPK) ||
+				(externalReferenceCode &&
+					externalReferenceCode === item.externalReferenceCode)
+			);
+		}
+	);
 }

@@ -56,6 +56,7 @@ import canActivateEditable from '../../../../../app/utils/canActivateEditable';
 import {DragAndDropContextProvider} from '../../../../../app/utils/drag_and_drop/useDragAndDrop';
 import isMapped from '../../../../../app/utils/editable_value/isMapped';
 import isMappedToCollection from '../../../../../app/utils/editable_value/isMappedToCollection';
+import findPageContent from '../../../../../app/utils/findPageContent';
 import {formIsMapped} from '../../../../../app/utils/formIsMapped';
 import {formIsRestricted} from '../../../../../app/utils/formIsRestricted';
 import getMappingFieldsKey from '../../../../../app/utils/getMappingFieldsKey';
@@ -464,26 +465,20 @@ function getDocumentFragment(content) {
 function getKey({collectionConfig, editable, infoItem, selectedMappingTypes}) {
 	if (collectionConfig) {
 		if (collectionConfig.classNameId) {
-			return getMappingFieldsKey(
-				collectionConfig.classNameId,
-				collectionConfig.classPK
-			);
+			return getMappingFieldsKey(collectionConfig);
 		}
 		else {
 			return collectionConfig.key;
 		}
 	}
 	else if (editable.mappedField) {
-		return getMappingFieldsKey(
-			selectedMappingTypes.type.id,
-			selectedMappingTypes.subtype.id || 0
-		);
+		return getMappingFieldsKey(selectedMappingTypes);
 	}
 	else if (!infoItem) {
 		return null;
 	}
 
-	return getMappingFieldsKey(infoItem.classNameId, infoItem.classTypeId);
+	return getMappingFieldsKey(infoItem);
 }
 
 function getMappedFieldLabel(
@@ -492,10 +487,7 @@ function getMappedFieldLabel(
 	pageContents,
 	mappingFields
 ) {
-	const infoItem = pageContents.find(
-		({classNameId, classPK}) =>
-			editable.classNameId === classNameId && editable.classPK === classPK
-	);
+	const infoItem = findPageContent(pageContents, editable);
 
 	const {selectedMappingTypes} = config;
 

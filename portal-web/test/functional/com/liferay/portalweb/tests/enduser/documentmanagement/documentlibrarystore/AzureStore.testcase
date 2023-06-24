@@ -110,7 +110,7 @@ definition {
 		task ("When the user adds the configuration") {
 			AntCommands.runCommand("build-test.xml", "prepare-azure-store-configuration -Dazure.container.id=${containerId}");
 
-			while (IsElementNotPresent(locator1 = "Select#SELECT_VALUE_ID", option = "com.liferay.portal.store.azure.AzureStore", selectFieldId = "dl-store-impl")) {
+			while ((IsElementNotPresent(locator1 = "Select#SELECT_VALUE_ID", option = "com.liferay.portal.store.azure.AzureStore", selectFieldId = "dl-store-impl")) && (maxIterations = "2")) {
 				OSGiConfig.waitForOSGiConfig();
 
 				Refresh();

@@ -21,6 +21,10 @@ import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.field.business.type.ObjectFieldBusinessType;
+import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
+import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
@@ -46,6 +50,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -62,7 +67,6 @@ import java.text.SimpleDateFormat;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -96,7 +100,7 @@ public class SalesforceObjectEntryManagerImpl
 			objectDefinition.getCompanyId(),
 			getGroupId(objectDefinition, scopeKey),
 			"sobjects/" + objectDefinition.getExternalReferenceCode(),
-			_toJSONObject(objectDefinition, objectEntry));
+			_toJSONObject(dtoConverterContext, objectDefinition, objectEntry));
 
 		return getObjectEntry(
 			objectDefinition.getCompanyId(), dtoConverterContext,
@@ -190,7 +194,7 @@ public class SalesforceObjectEntryManagerImpl
 			StringBundler.concat(
 				"sobjects/", objectDefinition.getExternalReferenceCode(), "/",
 				externalReferenceCode),
-			_toJSONObject(objectDefinition, objectEntry));
+			_toJSONObject(dtoConverterContext, objectDefinition, objectEntry));
 
 		return getObjectEntry(
 			companyId, dtoConverterContext, externalReferenceCode,
@@ -231,6 +235,45 @@ public class SalesforceObjectEntryManagerImpl
 
 	private DateFormat _getDateFormat() {
 		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	}
+
+	private ListEntry _getListEntry(
+		DTOConverterContext dtoConverterContext, String externalReferenceCode,
+		ObjectDefinition objectDefinition, ObjectField objectField) {
+
+		ListTypeEntry listTypeEntry =
+			_listTypeEntryLocalService.
+				fetchListTypeEntryByExternalReferenceCode(
+					externalReferenceCode, objectDefinition.getCompanyId(),
+					objectField.getListTypeDefinitionId());
+
+		if (listTypeEntry == null) {
+			return null;
+		}
+
+		return new ListEntry() {
+			{
+				key = listTypeEntry.getKey();
+				name = listTypeEntry.getName(dtoConverterContext.getLocale());
+				name_i18n = LocalizedMapUtil.getI18nMap(
+					dtoConverterContext.isAcceptAllLanguages(),
+					listTypeEntry.getNameMap());
+			}
+		};
+	}
+
+	private String _getListTypeEntryExternalReferenceCode(
+		long listTypeDefinitionId, String listTypeEntryKey) {
+
+		ListTypeEntry listTypeEntry =
+			_listTypeEntryLocalService.fetchListTypeEntry(
+				listTypeDefinitionId, listTypeEntryKey);
+
+		if (listTypeEntry == null) {
+			return null;
+		}
+
+		return listTypeEntry.getExternalReferenceCode();
 	}
 
 	private String _getLocation(
@@ -416,6 +459,7 @@ public class SalesforceObjectEntryManagerImpl
 	}
 
 	private JSONObject _toJSONObject(
+			DTOConverterContext dtoConverterContext,
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
 		throws Exception {
 
@@ -427,33 +471,70 @@ public class SalesforceObjectEntryManagerImpl
 
 		Map<String, Object> properties = objectEntry.getProperties();
 
-		for (Map.Entry<String, Object> entry : properties.entrySet()) {
-			ObjectField objectField = _getObjectFieldByName(
-				entry.getKey(), objectFields);
+		for (String key : properties.keySet()) {
+			ObjectField objectField = _getObjectFieldByName(key, objectFields);
 
 			if (objectField == null) {
 				continue;
 			}
 
-			Object value = entry.getValue();
+			ObjectFieldBusinessType objectFieldBusinessType =
+				_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+					objectField.getBusinessType());
+
+			Object value = objectFieldBusinessType.getValue(
+				objectField, dtoConverterContext.getUserId(), properties);
 
 			if (objectField.compareBusinessType(
-					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
 
-				String valueString = GetterUtil.getString(value);
+				StringBundler sb = new StringBundler();
+
+				List<String> listTypeEntryKeys = null;
+
+				if (value instanceof List) {
+					listTypeEntryKeys = (List<String>)value;
+				}
+				else {
+					listTypeEntryKeys = ListUtil.fromString(
+						GetterUtil.getString(value),
+						StringPool.COMMA_AND_SPACE);
+				}
+
+				for (String listTypeEntryKey : listTypeEntryKeys) {
+					String listTypeEntryExternalReferenceCode =
+						_getListTypeEntryExternalReferenceCode(
+							objectField.getListTypeDefinitionId(),
+							listTypeEntryKey);
+
+					if (Validator.isNull(listTypeEntryExternalReferenceCode)) {
+						continue;
+					}
+
+					sb.append(listTypeEntryExternalReferenceCode);
+					sb.append(StringPool.SEMICOLON);
+				}
+
+				if (sb.index() > 1) {
+					sb.setIndex(sb.index() - 1);
+				}
+
+				value = sb.toString();
+			}
+			else if (objectField.compareBusinessType(
+						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+
+				String listTypeEntryKey = GetterUtil.getString(value);
 
 				if (value instanceof Map) {
 					Map<String, String> valueMap =
 						(HashMap<String, String>)value;
 
-					valueString = valueMap.get("key");
+					listTypeEntryKey = valueMap.get("key");
 				}
 
-				ListTypeEntry listTypeEntry =
-					_listTypeEntryLocalService.getListTypeEntry(
-						objectField.getListTypeDefinitionId(), valueString);
-
-				value = listTypeEntry.getExternalReferenceCode();
+				value = _getListTypeEntryExternalReferenceCode(
+					objectField.getListTypeDefinitionId(), listTypeEntryKey);
 			}
 
 			map.put(
@@ -494,7 +575,7 @@ public class SalesforceObjectEntryManagerImpl
 			ObjectDefinition objectDefinition)
 		throws Exception {
 
-		ObjectEntry objectEntry = new ObjectEntry() {
+		return new ObjectEntry() {
 			{
 				actions = HashMapBuilder.put(
 					"delete",
@@ -511,6 +592,10 @@ public class SalesforceObjectEntryManagerImpl
 				dateModified = dateFormat.parse(
 					jsonObject.getString("LastModifiedDate"));
 				externalReferenceCode = jsonObject.getString("Id");
+				properties = _toProperties(
+					dtoConverterContext, jsonObject, objectDefinition,
+					_objectFieldLocalService.getObjectFields(
+						objectDefinition.getObjectDefinitionId()));
 				status = new Status() {
 					{
 						code = 0;
@@ -520,24 +605,22 @@ public class SalesforceObjectEntryManagerImpl
 				};
 			}
 		};
+	}
 
-		List<ObjectField> objectFields =
-			_objectFieldLocalService.getObjectFields(
-				objectDefinition.getObjectDefinitionId());
+	private Map<String, Object> _toProperties(
+			DTOConverterContext dtoConverterContext, JSONObject jsonObject,
+			ObjectDefinition objectDefinition, List<ObjectField> objectFields)
+		throws Exception {
 
-		Iterator<String> iterator = jsonObject.keys();
+		Map<String, Object> properties = new HashMap<>();
 
-		while (iterator.hasNext()) {
-			String key = iterator.next();
-
+		for (String key : jsonObject.keySet()) {
 			ObjectField objectField = _getObjectFieldByExternalReferenceCode(
 				key, objectFields);
 
 			if (objectField == null) {
 				continue;
 			}
-
-			Map<String, Object> properties = objectEntry.getProperties();
 
 			if (jsonObject.isNull(key)) {
 				properties.put(objectField.getName(), null);
@@ -547,12 +630,30 @@ public class SalesforceObjectEntryManagerImpl
 
 			Object value = jsonObject.get(key);
 
-			if (Objects.equals(
-					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_INTEGER) ||
-				Objects.equals(
-					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER)) {
+			if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME)) {
+
+				String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+				if (StringUtil.equals(
+						ObjectFieldSettingUtil.getValue(
+							ObjectFieldSettingConstants.NAME_TIME_STORAGE,
+							objectField),
+						ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC)) {
+
+					pattern += "Z";
+				}
+
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+					pattern);
+
+				value = simpleDateFormat.format(
+					simpleDateFormat.parse(GetterUtil.getString(value)));
+			}
+			else if (objectField.compareBusinessType(
+						ObjectFieldConstants.BUSINESS_TYPE_INTEGER) ||
+					 objectField.compareBusinessType(
+						 ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER)) {
 
 				if (value instanceof BigDecimal) {
 					BigDecimal bigDecimalValue = (BigDecimal)value;
@@ -560,36 +661,29 @@ public class SalesforceObjectEntryManagerImpl
 					value = bigDecimalValue.toBigInteger();
 				}
 			}
-			else if (Objects.equals(
-						objectField.getBusinessType(),
+			else if (objectField.compareBusinessType(
+						ObjectFieldConstants.
+							BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
+
+				value = TransformUtil.transformToList(
+					StringUtil.split(
+						GetterUtil.getString(value), StringPool.SEMICOLON),
+					listTypeEntryExternalReferenceCode -> _getListEntry(
+						dtoConverterContext, listTypeEntryExternalReferenceCode,
+						objectDefinition, objectField));
+			}
+			else if (objectField.compareBusinessType(
 						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
 
-				ListTypeEntry listTypeEntry =
-					_listTypeEntryLocalService.
-						fetchListTypeEntryByExternalReferenceCode(
-							(String)value, objectDefinition.getCompanyId(),
-							objectField.getListTypeDefinitionId());
-
-				if (listTypeEntry == null) {
-					continue;
-				}
-
-				value = new ListEntry() {
-					{
-						key = listTypeEntry.getKey();
-						name = listTypeEntry.getName(
-							dtoConverterContext.getLocale());
-						name_i18n = LocalizedMapUtil.getI18nMap(
-							dtoConverterContext.isAcceptAllLanguages(),
-							listTypeEntry.getNameMap());
-					}
-				};
+				value = _getListEntry(
+					dtoConverterContext, GetterUtil.getString(value),
+					objectDefinition, objectField);
 			}
 
 			properties.put(objectField.getName(), value);
 		}
 
-		return objectEntry;
+		return properties;
 	}
 
 	private static final String _CUSTOM_OBJECT_SUFFIX = "__c";
@@ -620,6 +714,9 @@ public class SalesforceObjectEntryManagerImpl
 
 	@Reference
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
+
+	@Reference
+	private ObjectFieldBusinessTypeRegistry _objectFieldBusinessTypeRegistry;
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;

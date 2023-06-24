@@ -12,12 +12,8 @@
  * details.
  */
 
-export default function getMappingFieldsKey(item) {
-	if (item.type?.id) {
-		return `${item.type.id}-${item.subtype.id || 0}`;
-	}
-
-	return `${item.classNameId}-${
-		item.classTypeId || item.classPK || item.externalReferenceCode
+export default function getEditableId(editable) {
+	return `${editable.classNameId}-${
+		editable.classPK || editable.externalReferenceCode
 	}`;
 }
