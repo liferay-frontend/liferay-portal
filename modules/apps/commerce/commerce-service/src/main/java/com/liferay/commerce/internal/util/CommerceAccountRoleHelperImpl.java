@@ -22,6 +22,7 @@ import com.liferay.account.model.AccountRole;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.notification.constants.CommerceNotificationActionKeys;
+import com.liferay.commerce.price.list.constants.CommercePriceListActionKeys;
 import com.liferay.commerce.pricing.constants.CommercePricingPortletKeys;
 import com.liferay.commerce.product.constants.CPActionKeys;
 import com.liferay.commerce.product.constants.CPPortletKeys;
@@ -233,6 +234,14 @@ public class CommerceAccountRoleHelperImpl
 					CommerceNotificationActionKeys.
 						ADD_COMMERCE_NOTIFICATION_TEMPLATE
 				});
+			companyResourceActionIds.put(
+				"com.liferay.commerce.price.list",
+				new String[] {
+					CommercePriceListActionKeys.ADD_COMMERCE_PRICE_LIST
+				});
+			companyResourceActionIds.put(
+				"com.liferay.commerce.pricing.model.CommercePricingClass",
+				new String[] {ActionKeys.VIEW});
 			companyResourceActionIds.put(
 				"com.liferay.commerce.tax",
 				new String[] {

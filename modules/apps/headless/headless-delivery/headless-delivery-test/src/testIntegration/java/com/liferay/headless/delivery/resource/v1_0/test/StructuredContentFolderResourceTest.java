@@ -16,11 +16,16 @@ package com.liferay.headless.delivery.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.delivery.client.dto.v1_0.StructuredContentFolder;
+import com.liferay.headless.delivery.client.http.HttpInvoker;
 import com.liferay.headless.delivery.client.pagination.Page;
 import com.liferay.headless.delivery.client.pagination.Pagination;
+import com.liferay.headless.delivery.client.problem.Problem;
 import com.liferay.headless.delivery.client.resource.v1_0.StructuredContentFolderResource;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -35,6 +40,61 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class StructuredContentFolderResourceTest
 	extends BaseStructuredContentFolderResourceTestCase {
+
+	@Override
+	@Test
+	public void testDeleteAssetLibraryStructuredContentFolderByExternalReferenceCode()
+		throws Exception {
+
+		super.
+			testDeleteAssetLibraryStructuredContentFolderByExternalReferenceCode();
+
+		String externalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		try {
+			structuredContentFolderResource.
+				deleteAssetLibraryStructuredContentFolderByExternalReferenceCode(
+					testDeleteAssetLibraryStructuredContentFolderByExternalReferenceCode_getAssetLibraryId(),
+					externalReferenceCode);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+			Assert.assertEquals(
+				StringBundler.concat(
+					"No JournalFolder exists with the key {",
+					"externalReferenceCode=", externalReferenceCode,
+					", groupId=", testDepotEntry.getGroupId(), "}"),
+				problem.getTitle());
+		}
+
+		StructuredContentFolder parentStructuredContentFolder =
+			testPostAssetLibraryStructuredContentFolder_addStructuredContentFolder(
+				_randomStructuredContentFolder());
+
+		StructuredContentFolder postStructuredContentFolder =
+			structuredContentFolderResource.
+				postStructuredContentFolderStructuredContentFolder(
+					parentStructuredContentFolder.getId(),
+					_randomStructuredContentFolder());
+
+		assertHttpResponseStatusCode(
+			204,
+			structuredContentFolderResource.
+				deleteAssetLibraryStructuredContentFolderByExternalReferenceCodeHttpResponse(
+					testDeleteAssetLibraryStructuredContentFolderByExternalReferenceCode_getAssetLibraryId(),
+					postStructuredContentFolder.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			structuredContentFolderResource.
+				getAssetLibraryStructuredContentFolderByExternalReferenceCodeHttpResponse(
+					testDeleteAssetLibraryStructuredContentFolderByExternalReferenceCode_getAssetLibraryId(),
+					postStructuredContentFolder.getExternalReferenceCode()));
+	}
 
 	@Override
 	@Test
@@ -79,6 +139,121 @@ public class StructuredContentFolderResourceTest
 			).getProfileURL());
 
 		assertValid(page);
+	}
+
+	@Override
+	@Test
+	public void testPostAssetLibraryStructuredContentFolder() throws Exception {
+		super.testPostAssetLibraryStructuredContentFolder();
+
+		_assertStructuredContentFolder(
+			structuredContentFolder ->
+				testPostAssetLibraryStructuredContentFolder_addStructuredContentFolder(
+					structuredContentFolder));
+
+		StructuredContentFolder postStructuredContentFolder =
+			testPostAssetLibraryStructuredContentFolder_addStructuredContentFolder(
+				_randomStructuredContentFolder());
+
+		StructuredContentFolder randomStructuredContentFolder =
+			_randomStructuredContentFolder();
+
+		randomStructuredContentFolder.setExternalReferenceCode(
+			postStructuredContentFolder.getExternalReferenceCode());
+
+		HttpInvoker.HttpResponse httpResponse =
+			structuredContentFolderResource.
+				postAssetLibraryStructuredContentFolderHttpResponse(
+					testDepotEntry.getDepotEntryId(),
+					randomStructuredContentFolder);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"Duplicate journal folder external reference code ",
+				postStructuredContentFolder.getExternalReferenceCode(),
+				" in group ", testDepotEntry.getGroupId()),
+			httpResponse.getContent());
+	}
+
+	@Override
+	@Test
+	public void testPostStructuredContentFolderStructuredContentFolder()
+		throws Exception {
+
+		super.testPostStructuredContentFolderStructuredContentFolder();
+
+		StructuredContentFolder parentStructuredContentFolder =
+			testPostAssetLibraryStructuredContentFolder_addStructuredContentFolder(
+				_randomStructuredContentFolder());
+
+		_assertStructuredContentFolder(
+			structuredContentFolder ->
+				structuredContentFolderResource.
+					postStructuredContentFolderStructuredContentFolder(
+						parentStructuredContentFolder.getId(),
+						structuredContentFolder));
+	}
+
+	@Override
+	@Test
+	public void testPutAssetLibraryStructuredContentFolderByExternalReferenceCode()
+		throws Exception {
+
+		super.
+			testPutAssetLibraryStructuredContentFolderByExternalReferenceCode();
+
+		StructuredContentFolder parentStructuredContentFolder =
+			testPostAssetLibraryStructuredContentFolder_addStructuredContentFolder(
+				_randomStructuredContentFolder());
+
+		StructuredContentFolder postStructuredContentFolder =
+			structuredContentFolderResource.
+				postStructuredContentFolderStructuredContentFolder(
+					parentStructuredContentFolder.getId(),
+					_randomStructuredContentFolder());
+
+		StructuredContentFolder randomStructuredContentFolder1 =
+			new StructuredContentFolder() {
+				{
+					name = postStructuredContentFolder.getName();
+				}
+			};
+
+		StructuredContentFolder putStructuredContentFolder1 =
+			structuredContentFolderResource.
+				putAssetLibraryStructuredContentFolderByExternalReferenceCode(
+					testDepotEntry.getDepotEntryId(),
+					StringUtil.toLowerCase(RandomTestUtil.randomString()),
+					randomStructuredContentFolder1);
+
+		Assert.assertEquals(
+			postStructuredContentFolder.getName(),
+			putStructuredContentFolder1.getName());
+		Assert.assertNotEquals(
+			postStructuredContentFolder.getExternalReferenceCode(),
+			putStructuredContentFolder1.getExternalReferenceCode());
+
+		assertValid(putStructuredContentFolder1);
+
+		StructuredContentFolder randomStructuredContentFolder2 =
+			_randomStructuredContentFolder();
+
+		StructuredContentFolder structuredContentFolder =
+			testPostAssetLibraryStructuredContentFolder_addStructuredContentFolder(
+				randomStructuredContentFolder2);
+
+		randomStructuredContentFolder2.setExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+
+		StructuredContentFolder putStructuredContentFolder2 =
+			structuredContentFolderResource.
+				putAssetLibraryStructuredContentFolderByExternalReferenceCode(
+					testDepotEntry.getDepotEntryId(),
+					structuredContentFolder.getExternalReferenceCode(),
+					randomStructuredContentFolder2);
+
+		assertEquals(putStructuredContentFolder2, structuredContentFolder);
+		assertValid(putStructuredContentFolder2);
 	}
 
 	@Override
@@ -194,6 +369,31 @@ public class StructuredContentFolderResourceTest
 		throws Exception {
 
 		return _randomStructuredContentFolder();
+	}
+
+	private void _assertStructuredContentFolder(
+			UnsafeFunction
+				<StructuredContentFolder, StructuredContentFolder, Exception>
+					postStructuredContentFolderUnsafeFunction)
+		throws Exception {
+
+		StructuredContentFolder randomStructuredContentFolder =
+			_randomStructuredContentFolder();
+
+		randomStructuredContentFolder.setExternalReferenceCode("");
+
+		StructuredContentFolder postStructuredContentFolder =
+			postStructuredContentFolderUnsafeFunction.apply(
+				randomStructuredContentFolder);
+
+		JournalFolder journalFolder = JournalFolderLocalServiceUtil.getFolder(
+			postStructuredContentFolder.getId());
+
+		Assert.assertEquals(
+			postStructuredContentFolder.getExternalReferenceCode(),
+			journalFolder.getUuid());
+
+		assertValid(postStructuredContentFolder);
 	}
 
 	private StructuredContentFolder _randomStructuredContentFolder()
