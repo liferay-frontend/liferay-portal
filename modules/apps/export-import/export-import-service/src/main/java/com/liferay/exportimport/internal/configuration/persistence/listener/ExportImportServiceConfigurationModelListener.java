@@ -16,6 +16,7 @@ package com.liferay.exportimport.internal.configuration.persistence.listener;
 
 import com.liferay.exportimport.configuration.ExportImportServiceConfiguration;
 import com.liferay.exportimport.configuration.ExportImportServiceConfigurationWhitelistedURLPatternsHelper;
+import com.liferay.osgi.util.service.Snapshot;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -32,7 +33,6 @@ import java.util.Dictionary;
 import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Michael Bowerman
@@ -46,7 +46,12 @@ public class ExportImportServiceConfigurationModelListener
 
 	@Override
 	public void onAfterDelete(String pid) {
-		_exportImportServiceConfigurationWhitelistedURLPatternsHelper.
+		ExportImportServiceConfigurationWhitelistedURLPatternsHelper
+			exportImportServiceConfigurationWhitelistedURLPatternsHelper =
+				_exportImportServiceConfigurationWhitelistedURLPatternsHelperSnapshot.
+					get();
+
+		exportImportServiceConfigurationWhitelistedURLPatternsHelper.
 			rebuildURLPatternMappers();
 	}
 
@@ -55,11 +60,16 @@ public class ExportImportServiceConfigurationModelListener
 		throws ConfigurationModelListenerException {
 
 		try {
+			ExportImportServiceConfigurationWhitelistedURLPatternsHelper
+				exportImportServiceConfigurationWhitelistedURLPatternsHelper =
+					_exportImportServiceConfigurationWhitelistedURLPatternsHelperSnapshot.
+						get();
+
 			ExportImportServiceConfiguration exportImportServiceConfiguration =
 				ConfigurableUtil.createConfigurable(
 					ExportImportServiceConfiguration.class, properties);
 
-			_exportImportServiceConfigurationWhitelistedURLPatternsHelper.
+			exportImportServiceConfigurationWhitelistedURLPatternsHelper.
 				rebuildURLPatternMapper(
 					GetterUtil.getLong(properties.get("companyId")),
 					exportImportServiceConfiguration);
@@ -161,8 +171,11 @@ public class ExportImportServiceConfigurationModelListener
 	private static final Log _log = LogFactoryUtil.getLog(
 		ExportImportServiceConfigurationModelListener.class);
 
-	@Reference
-	private ExportImportServiceConfigurationWhitelistedURLPatternsHelper
-		_exportImportServiceConfigurationWhitelistedURLPatternsHelper;
+	private final Snapshot
+		<ExportImportServiceConfigurationWhitelistedURLPatternsHelper>
+			_exportImportServiceConfigurationWhitelistedURLPatternsHelperSnapshot =
+				new Snapshot<>(
+					ExportImportServiceConfigurationModelListener.class,
+					ExportImportServiceConfigurationWhitelistedURLPatternsHelper.class);
 
 }

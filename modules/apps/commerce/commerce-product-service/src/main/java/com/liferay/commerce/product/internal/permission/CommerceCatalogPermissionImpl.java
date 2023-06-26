@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
 import java.util.List;
@@ -134,32 +134,46 @@ public class CommerceCatalogPermissionImpl
 			return true;
 		}
 
-		if ((commerceCatalog.getAccountEntryId() > 0) &&
-			(actionId.equals(ActionKeys.UPDATE) ||
-			 actionId.equals(ActionKeys.VIEW))) {
+		if ((actionId.equals(ActionKeys.UPDATE) ||
+			 actionId.equals(ActionKeys.VIEW)) &&
+			_hasRoleAccountSupplier(permissionChecker, commerceCatalog)) {
 
-			List<AccountEntry> accountEntries =
-				_accountEntryLocalService.getUserAccountEntries(
-					permissionChecker.getUserId(), 0L, StringPool.BLANK,
-					new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER},
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-			for (AccountEntry accountEntry : accountEntries) {
-				if ((commerceCatalog.getAccountEntryId() ==
-						accountEntry.getAccountEntryId()) &&
-					_roleLocalService.hasUserRole(
-						permissionChecker.getUserId(),
-						permissionChecker.getCompanyId(),
-						AccountRoleConstants.ROLE_NAME_SUPPLIER, true)) {
-
-					return true;
-				}
-			}
+			return true;
 		}
 
 		return permissionChecker.hasPermission(
 			commerceCatalog.getGroupId(), CommerceCatalog.class.getName(),
 			commerceCatalog.getCommerceCatalogId(), actionId);
+	}
+
+	private boolean _hasRoleAccountSupplier(
+			PermissionChecker permissionChecker,
+			CommerceCatalog commerceCatalog)
+		throws PortalException {
+
+		if (commerceCatalog.getAccountEntryId() == 0) {
+			return false;
+		}
+
+		List<AccountEntry> accountEntries =
+			_accountEntryLocalService.getUserAccountEntries(
+				permissionChecker.getUserId(), 0L, StringPool.BLANK,
+				new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER},
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		for (AccountEntry accountEntry : accountEntries) {
+			if ((commerceCatalog.getAccountEntryId() ==
+					accountEntry.getAccountEntryId()) &&
+				_userGroupRoleLocalService.hasUserGroupRole(
+					permissionChecker.getUserId(),
+					accountEntry.getAccountEntryGroupId(),
+					AccountRoleConstants.ROLE_NAME_ACCOUNT_SUPPLIER)) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Reference
@@ -169,6 +183,6 @@ public class CommerceCatalogPermissionImpl
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
 	@Reference
-	private RoleLocalService _roleLocalService;
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 }
