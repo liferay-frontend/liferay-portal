@@ -16,7 +16,7 @@ package com.liferay.commerce.channel.web.internal.portlet;
 
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.channel.web.internal.display.context.CommerceChannelDisplayContext;
-import com.liferay.commerce.currency.service.CommerceCurrencyService;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.product.channel.CommerceChannelHealthStatusRegistry;
 import com.liferay.commerce.product.channel.CommerceChannelTypeRegistry;
 import com.liferay.commerce.product.constants.CPPortletKeys;
@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
+import com.liferay.portal.kernel.service.permission.GroupPermission;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowDefinitionManager;
@@ -79,10 +80,10 @@ public class CommerceChannelsPortlet extends MVCPortlet {
 				_accountEntryService, _commerceChannelHealthStatusRegistry,
 				_commerceChannelModelResourcePermission,
 				_commerceChannelService, _commerceChannelTypeRegistry,
-				_commerceCurrencyService, _configurationProvider,
+				_commerceCurrencyLocalService, _configurationProvider,
 				_cpTaxCategoryLocalService, _dlAppLocalService,
-				_portal.getHttpServletRequest(renderRequest), _itemSelector,
-				_portal, _workflowDefinitionLinkLocalService,
+				_groupPermission, _portal.getHttpServletRequest(renderRequest),
+				_itemSelector, _portal, _workflowDefinitionLinkLocalService,
 				_workflowDefinitionManager);
 
 		renderRequest.setAttribute(
@@ -111,7 +112,7 @@ public class CommerceChannelsPortlet extends MVCPortlet {
 	private CommerceChannelTypeRegistry _commerceChannelTypeRegistry;
 
 	@Reference
-	private CommerceCurrencyService _commerceCurrencyService;
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
@@ -121,6 +122,9 @@ public class CommerceChannelsPortlet extends MVCPortlet {
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private GroupPermission _groupPermission;
 
 	@Reference
 	private ItemSelector _itemSelector;

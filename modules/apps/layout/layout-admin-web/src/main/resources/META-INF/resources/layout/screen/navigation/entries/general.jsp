@@ -41,7 +41,7 @@ LayoutType selLayoutType = selLayout.getLayoutType();
 </portlet:actionURL>
 
 <liferay-frontend:edit-form
-	action='<%= HttpComponentsUtil.addParameter(editLayoutURL, "refererPlid", plid) %>'
+	action="<%= editLayoutURL %>"
 	cssClass="c-pt-0"
 	enctype="multipart/form-data"
 	method="post"
@@ -57,10 +57,9 @@ LayoutType selLayoutType = selLayout.getLayoutType();
 	<aui:input name="stagingGroupId" type="hidden" value="<%= layoutsAdminDisplayContext.getStagingGroupId() %>" />
 	<aui:input name="selPlid" type="hidden" value="<%= layoutsAdminDisplayContext.getSelPlid() %>" />
 	<aui:input name="type" type="hidden" value="<%= selLayout.getType() %>" />
-	<aui:input name="<%= PortletDataHandlerKeys.SELECTED_LAYOUTS %>" type="hidden" />
 
 	<c:if test="<%= group.isLayoutPrototype() || !(selLayoutType.isURLFriendliable() && !layoutsAdminDisplayContext.isDraft() && !selLayout.isSystem()) %>">
-		<aui:input name="friendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
+		<aui:input name="friendlyURL" type="hidden" value="<%= HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) %>" />
 	</c:if>
 
 	<%
@@ -177,39 +176,7 @@ LayoutType selLayoutType = selLayout.getLayoutType();
 		</c:if>
 
 		<c:if test="<%= !group.isLayoutPrototype() %>">
-			<c:if test="<%= selGroup.hasLocalOrRemoteStagingGroup() && !selGroup.isStagingGroup() %>">
-				<div class="alert alert-warning">
-					<liferay-ui:message key="changes-are-immediately-available-to-end-users" />
-				</div>
-			</c:if>
-
-			<%
-			Group selLayoutGroup = selLayout.getGroup();
-			%>
-
-			<c:choose>
-				<c:when test="<%= !SitesUtil.isLayoutUpdateable(selLayout) %>">
-					<div class="alert alert-warning">
-						<liferay-ui:message key="this-page-cannot-be-modified-because-it-is-associated-with-a-site-template-does-not-allow-modifications-to-it" />
-					</div>
-				</c:when>
-				<c:when test="<%= !SitesUtil.isLayoutDeleteable(selLayout) %>">
-					<div class="alert alert-warning">
-						<liferay-ui:message key="this-page-cannot-be-deleted-and-cannot-have-child-pages-because-it-is-associated-with-a-site-template" />
-					</div>
-				</c:when>
-			</c:choose>
-
-			<c:if test="<%= (selLayout.getGroupId() != layoutsAdminDisplayContext.getGroupId()) && selLayoutGroup.isUserGroup() %>">
-
-				<%
-				UserGroup userGroup = UserGroupLocalServiceUtil.getUserGroup(selLayoutGroup.getClassPK());
-				%>
-
-				<div class="alert alert-warning">
-					<liferay-ui:message arguments="<%= HtmlUtil.escape(userGroup.getName()) %>" key="this-page-cannot-be-modified-because-it-belongs-to-the-user-group-x" translateArguments="<%= false %>" />
-				</div>
-			</c:if>
+			<%@ include file="/error_layout_prototype_exception.jspf" %>
 		</c:if>
 
 		<liferay-frontend:form-navigator

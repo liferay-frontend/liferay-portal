@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.DigesterImpl;
+import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 
 import org.junit.Assert;
@@ -84,6 +85,19 @@ public class CompositePasswordEncryptorTest {
 		bundleContext.registerService(
 			PasswordEncryptor.class, new SSHAPasswordEncryptor(),
 			MapUtil.singletonDictionary("type", PasswordEncryptor.TYPE_SSHA));
+		bundleContext.registerService(
+			PasswordEncryptor.class, new TestCustomPasswordEncryptor(),
+			MapUtil.singletonDictionary(
+				"type", _TYPE_CUSTOM_PASSWORD_ENCRYPTOR));
+	}
+
+	@Test
+	public void testCustomPasswordEncryptorWithParameters() throws Exception {
+		PropsUtil.set("feature.flag.LPS-177326", "true");
+
+		runTests(
+			_TYPE_CUSTOM_PASSWORD_ENCRYPTOR + "/ARGUMENT", "password",
+			"password:ARGUMENT", _TYPE_CUSTOM_PASSWORD_ENCRYPTOR);
 	}
 
 	@Test
@@ -305,6 +319,28 @@ public class CompositePasswordEncryptorTest {
 			PropsValues.PASSWORDS_ENCRYPTION_ALGORITHM_LEGACY =
 				originalLegacyAlgorithm;
 		}
+	}
+
+	private static final String _TYPE_CUSTOM_PASSWORD_ENCRYPTOR =
+		"CUSTOM_PASSWORD_ENCRYPTOR";
+
+	private static class TestCustomPasswordEncryptor
+		extends BasePasswordEncryptor {
+
+		@Override
+		public String encrypt(
+			String algorithm, String plainTextPassword,
+			String encryptedPassword, boolean upgradeHashSecurity) {
+
+			if (encryptedPassword != null) {
+				return plainTextPassword +
+					encryptedPassword.substring(encryptedPassword.indexOf(':'));
+			}
+
+			return plainTextPassword + ':' +
+				algorithm.substring(algorithm.indexOf('/') + 1);
+		}
+
 	}
 
 }

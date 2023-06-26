@@ -29,6 +29,7 @@ import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.related.models.ManyToOneObjectRelatedModelsProvider;
 import com.liferay.object.related.models.ObjectRelatedModelsProvider;
 import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
@@ -334,6 +335,46 @@ public class DefaultObjectEntryManagerImpl
 
 		return _toObjectEntry(
 			dtoConverterContext, objectDefinition, serviceBuilderObjectEntry);
+	}
+
+	@Override
+	public ObjectEntry fetchRelatedManyToOneObjectEntry(
+			DTOConverterContext dtoConverterContext,
+			ObjectDefinition objectDefinition, Long objectEntryId,
+			String objectRelationshipName)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.
+				getObjectRelationshipByObjectDefinitionId(
+					objectDefinition.getObjectDefinitionId(),
+					objectRelationshipName);
+
+		ObjectDefinition relatedObjectDefinition = _getRelatedObjectDefinition(
+			objectDefinition, objectRelationship);
+
+		ManyToOneObjectRelatedModelsProvider objectRelatedModelsProvider =
+			(ManyToOneObjectRelatedModelsProvider)
+				_objectRelatedModelsProviderRegistry.
+					getObjectRelatedModelsProvider(
+						relatedObjectDefinition.getClassName(),
+						relatedObjectDefinition.getCompanyId(),
+						objectRelationship.getType());
+
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
+			(com.liferay.object.model.ObjectEntry)
+				objectRelatedModelsProvider.fetchRelatedModel(
+					GroupThreadLocal.getGroupId(),
+					objectRelationship.getObjectRelationshipId(),
+					objectEntryId);
+
+		if (serviceBuilderObjectEntry == null) {
+			return null;
+		}
+
+		return _toObjectEntry(
+			dtoConverterContext, relatedObjectDefinition,
+			serviceBuilderObjectEntry);
 	}
 
 	@Override
@@ -862,7 +903,7 @@ public class DefaultObjectEntryManagerImpl
 				}
 
 				for (ObjectEntry nestedObjectEntry : nestedObjectEntries) {
-					if (_isFromManySide(
+					if (_isManyToOneObjectRelationship(
 							objectDefinition, objectRelationship,
 							relatedObjectDefinition)) {
 
@@ -883,7 +924,7 @@ public class DefaultObjectEntryManagerImpl
 						relatedObjectDefinition, nestedObjectEntry,
 						relatedObjectDefinition.getScope());
 
-					if (!_isFromManySide(
+					if (!_isManyToOneObjectRelationship(
 							objectDefinition, objectRelationship,
 							relatedObjectDefinition)) {
 
@@ -1184,7 +1225,7 @@ public class DefaultObjectEntryManagerImpl
 		return false;
 	}
 
-	private boolean _isFromManySide(
+	private boolean _isManyToOneObjectRelationship(
 		ObjectDefinition objectDefinition,
 		ObjectRelationship objectRelationship,
 		ObjectDefinition relatedObjectDefinition) {

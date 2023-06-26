@@ -20,6 +20,10 @@ import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.headless.commerce.admin.order.dto.v1_0.Order;
 import com.liferay.headless.commerce.admin.order.resource.v1_0.OrderResource;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.field.builder.IntegerObjectFieldBuilder;
+import com.liferay.object.field.builder.LongIntegerObjectFieldBuilder;
+import com.liferay.object.field.builder.PrecisionDecimalObjectFieldBuilder;
+import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.system.BaseSystemObjectDefinitionManager;
 import com.liferay.object.system.JaxRsApplicationDescriptor;
@@ -120,25 +124,76 @@ public class CommerceOrderSystemObjectDefinitionManager
 	@Override
 	public List<ObjectField> getObjectFields() {
 		return Arrays.asList(
-			createObjectField(
-				"LongInteger", "Long", "account-id", "accountId", true, true),
-			createObjectField(
-				"LongInteger", "Long", "channel-id", "channelId", true, true),
-			createObjectField(
-				"Text", "String", "currency-code", "currencyCode", true, true),
-			createObjectField(
-				"Integer", "Integer", "order-status", "orderStatus", true,
-				true),
-			createObjectField(
-				"Text", "orderTypeExternalReferenceCode", "String",
-				"orderTypeExternalReferenceCode",
-				"orderTypeExternalReferenceCode", false, true),
-			createObjectField(
-				"LongInteger", "orderTypeId", "Long", "order-type-id",
-				"orderTypeId", false, true),
-			createObjectField(
-				"PrecisionDecimal", "BigDecimal", "shipping-amount",
-				"shippingAmount", true, true));
+			new LongIntegerObjectFieldBuilder(
+			).labelMap(
+				createLabelMap("account-id")
+			).name(
+				"accountId"
+			).required(
+				true
+			).system(
+				true
+			).build(),
+			new LongIntegerObjectFieldBuilder(
+			).labelMap(
+				createLabelMap("channel-id")
+			).name(
+				"channelId"
+			).required(
+				true
+			).system(
+				true
+			).build(),
+			new TextObjectFieldBuilder(
+			).labelMap(
+				createLabelMap("currency-code")
+			).name(
+				"currencyCode"
+			).required(
+				true
+			).system(
+				true
+			).build(),
+			new IntegerObjectFieldBuilder(
+			).labelMap(
+				createLabelMap("order-status")
+			).name(
+				"orderStatus"
+			).required(
+				true
+			).system(
+				true
+			).build(),
+			new TextObjectFieldBuilder(
+			).dbColumnName(
+				"orderTypeExternalReferenceCode"
+			).labelMap(
+				createLabelMap("orderTypeExternalReferenceCode")
+			).name(
+				"orderTypeExternalReferenceCode"
+			).system(
+				true
+			).build(),
+			new LongIntegerObjectFieldBuilder(
+			).dbColumnName(
+				"orderTypeId"
+			).labelMap(
+				createLabelMap("order-type-id")
+			).name(
+				"orderTypeId"
+			).system(
+				true
+			).build(),
+			new PrecisionDecimalObjectFieldBuilder(
+			).labelMap(
+				createLabelMap("shipping-amount")
+			).name(
+				"shippingAmount"
+			).required(
+				true
+			).system(
+				true
+			).build());
 	}
 
 	@Override
