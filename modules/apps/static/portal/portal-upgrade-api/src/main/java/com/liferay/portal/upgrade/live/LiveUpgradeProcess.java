@@ -20,6 +20,8 @@ package com.liferay.portal.upgrade.live;
 @FunctionalInterface
 public interface LiveUpgradeProcess {
 
-	public void upgrade(String tableName) throws Exception;
+	public void upgrade(
+			String tableName, LiveUpgradeSchemaDiff liveUpgradeSchemaDiff)
+		throws Exception;
 
 }

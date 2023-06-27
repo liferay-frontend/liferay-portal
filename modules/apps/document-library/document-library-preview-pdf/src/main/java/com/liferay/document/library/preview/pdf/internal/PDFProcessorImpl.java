@@ -22,6 +22,7 @@ import com.liferay.document.library.kernel.util.DLPreviewableProcessor;
 import com.liferay.document.library.kernel.util.DLProcessor;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.kernel.util.PDFProcessor;
+import com.liferay.document.library.preview.pdf.internal.background.task.PDFPreviewBackgroundTaskExecutor;
 import com.liferay.document.library.preview.pdf.internal.configuration.admin.service.PDFPreviewManagedServiceFactory;
 import com.liferay.document.library.preview.pdf.internal.util.ProcessConfigUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
@@ -32,13 +33,20 @@ import com.liferay.petra.process.ProcessExecutor;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
+import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskContextMapConstants;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.image.Ghostscript;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.repository.event.FileVersionPreviewEventListener;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -46,6 +54,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.SystemEnv;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUID;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
@@ -53,6 +62,7 @@ import com.liferay.portal.util.PropsValues;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -118,6 +128,34 @@ public class PDFProcessorImpl
 
 		_generateImages(
 			sourceFileVersion, destinationFileVersion, maxNumberOfPages);
+	}
+
+	@Override
+	public void generatePreviews() {
+		_companyLocalService.forEachCompanyId(
+			companyId -> {
+				try {
+					String jobName = "generatePreviews-".concat(
+						_portalUUID.generate());
+
+					_backgroundTaskManager.addBackgroundTask(
+						UserConstants.USER_ID_DEFAULT, CompanyConstants.SYSTEM,
+						jobName,
+						PDFPreviewBackgroundTaskExecutor.class.getName(),
+						HashMapBuilder.<String, Serializable>put(
+							BackgroundTaskContextMapConstants.DELETE_ON_SUCCESS,
+							true
+						).put(
+							"companyId", companyId
+						).build(),
+						new ServiceContext());
+				}
+				catch (PortalException portalException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(portalException);
+					}
+				}
+			});
 	}
 
 	@Override
@@ -1073,6 +1111,12 @@ public class PDFProcessorImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		PDFProcessorImpl.class);
 
+	@Reference
+	private BackgroundTaskManager _backgroundTaskManager;
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
+
 	private final List<Long> _fileVersionIds = new Vector<>();
 
 	@Reference
@@ -1085,6 +1129,9 @@ public class PDFProcessorImpl
 
 	@Reference
 	private PDFPreviewManagedServiceFactory _pdfPreviewManagedServiceFactory;
+
+	@Reference
+	private PortalUUID _portalUUID;
 
 	@Reference
 	private ProcessExecutor _processExecutor;

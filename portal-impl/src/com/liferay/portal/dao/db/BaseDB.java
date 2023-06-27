@@ -200,24 +200,43 @@ public abstract class BaseDB implements DB {
 	@Override
 	public void copyTableRows(
 			Connection connection, String sourceTableName,
-			String targetTableName)
+			String targetTableName, Map<String, String> columnNamesMap)
 		throws Exception {
 
-		String[] primaryKeyColumnNames = getPrimaryKeyColumnNames(
-			connection, sourceTableName);
-
-		StringBundler sb = new StringBundler(
-			14 + (((primaryKeyColumnNames.length - 1) * 8) + 7));
+		StringBundler sb = new StringBundler();
 
 		sb.append("insert into ");
 		sb.append(targetTableName);
-		sb.append(" select ");
-		sb.append(sourceTableName);
-		sb.append(".* from ");
+		sb.append(" (");
+
+		String[] sourceColumnNames = ArrayUtil.toStringArray(
+			columnNamesMap.keySet());
+
+		String[] targetColumnNames = TransformUtil.transform(
+			sourceColumnNames, columnNamesMap::get, String.class);
+
+		sb.append(StringUtil.merge(targetColumnNames, ", "));
+
+		sb.append(") select ");
+
+		for (int i = 0; i < sourceColumnNames.length; i++) {
+			if (i > 0) {
+				sb.append(", ");
+			}
+
+			sb.append(sourceTableName);
+			sb.append(".");
+			sb.append(sourceColumnNames[i]);
+		}
+
+		sb.append(" from ");
 		sb.append(sourceTableName);
 		sb.append(" left join ");
 		sb.append(targetTableName);
 		sb.append(" on ");
+
+		String[] primaryKeyColumnNames = getPrimaryKeyColumnNames(
+			connection, sourceTableName);
 
 		for (int i = 0; i < primaryKeyColumnNames.length; i++) {
 			String primaryKeyColumnName = primaryKeyColumnNames[i];

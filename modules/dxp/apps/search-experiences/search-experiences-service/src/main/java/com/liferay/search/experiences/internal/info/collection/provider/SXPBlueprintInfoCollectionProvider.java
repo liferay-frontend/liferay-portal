@@ -17,22 +17,35 @@ package com.liferay.search.experiences.internal.info.collection.provider;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.util.AssetHelper;
 import com.liferay.info.collection.provider.CollectionQuery;
+import com.liferay.info.collection.provider.ConfigurableInfoCollectionProvider;
 import com.liferay.info.collection.provider.FilteredInfoCollectionProvider;
 import com.liferay.info.collection.provider.SingleFormVariationInfoCollectionProvider;
+import com.liferay.info.field.InfoField;
+import com.liferay.info.field.type.SelectInfoFieldType;
 import com.liferay.info.filter.CategoriesInfoFilter;
 import com.liferay.info.filter.InfoFilter;
 import com.liferay.info.filter.KeywordsInfoFilter;
 import com.liferay.info.filter.TagsInfoFilter;
+import com.liferay.info.form.InfoForm;
+import com.liferay.info.localized.InfoLocalizedValue;
+import com.liferay.info.localized.bundle.ResourceBundleInfoLocalizedValue;
 import com.liferay.info.pagination.InfoPage;
 import com.liferay.info.pagination.Pagination;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
@@ -43,21 +56,25 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Tibor Lipusz
  * @author Gustavo Lima
  */
 public class SXPBlueprintInfoCollectionProvider
-	implements FilteredInfoCollectionProvider<AssetEntry>,
+	implements ConfigurableInfoCollectionProvider<AssetEntry>,
+			   FilteredInfoCollectionProvider<AssetEntry>,
 			   SingleFormVariationInfoCollectionProvider<AssetEntry> {
 
 	public SXPBlueprintInfoCollectionProvider(
-		AssetHelper assetHelper, Searcher searcher,
+		AssetHelper assetHelper, GroupLocalService groupLocalService,
+		Searcher searcher,
 		SearchRequestBuilderFactory searchRequestBuilderFactory,
 		SXPBlueprint sxpBlueprint) {
 
 		_assetHelper = assetHelper;
+		_groupLocalService = groupLocalService;
 		_searcher = searcher;
 		_searchRequestBuilderFactory = searchRequestBuilderFactory;
 		_sxpBlueprint = sxpBlueprint;
@@ -85,6 +102,31 @@ public class SXPBlueprintInfoCollectionProvider
 
 		return InfoPage.of(
 			Collections.emptyList(), collectionQuery.getPagination(), 0);
+	}
+
+	@Override
+	public InfoForm getConfigurationInfoForm() {
+		return InfoForm.builder(
+		).infoFieldSetEntry(
+			InfoField.builder(
+			).infoFieldType(
+				SelectInfoFieldType.INSTANCE
+			).namespace(
+				StringPool.BLANK
+			).name(
+				"scope"
+			).attribute(
+				SelectInfoFieldType.OPTIONS, _getOptions()
+			).attribute(
+				SelectInfoFieldType.MULTIPLE, true
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(getClass(), "Scope")
+			).localizable(
+				false
+			).build()
+		).name(
+			"search-experiences"
+		).build();
 	}
 
 	@Override
@@ -117,15 +159,79 @@ public class SXPBlueprintInfoCollectionProvider
 		return FeatureFlagManagerUtil.isEnabled("LPS-129412");
 	}
 
+	private List<SelectInfoFieldType.Option> _getOptions() {
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		List<SelectInfoFieldType.Option> options = ListUtil.fromArray(
+			new SelectInfoFieldType.Option(
+				true,
+				new ResourceBundleInfoLocalizedValue(getClass(), "This Site"),
+				String.valueOf(serviceContext.getScopeGroupId())));
+
+		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+		List<Group> groups = _groupLocalService.getActiveGroups(
+			themeDisplay.getCompanyId(), true);
+
+		for (Group group : groups) {
+			if ((group == null) || group.isGuest() || !group.isSite()) {
+				continue;
+			}
+
+			User user = themeDisplay.getUser();
+
+			try {
+				List<Group> siteGroups = user.getSiteGroups();
+
+				if (!ArrayUtil.contains(
+						siteGroups.toArray(new Group[0]), group)) {
+
+					continue;
+				}
+			}
+			catch (PortalException portalException) {
+				_log.error(portalException);
+			}
+
+			options.add(
+				new SelectInfoFieldType.Option(
+					new ResourceBundleInfoLocalizedValue(
+						getClass(), group.getNameCurrentValue()),
+					String.valueOf(group.getGroupId())));
+		}
+
+		return options;
+	}
+
 	private SearchRequestBuilder _getSearchRequestBuilder(
 		CollectionQuery collectionQuery, Pagination pagination) {
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
+		Map<String, String[]> configuration =
+			collectionQuery.getConfiguration();
+
+		if (configuration == null) {
+			configuration = Collections.emptyMap();
+		}
+
+		String[] scopes = configuration.get("scope");
+
+		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+		if (scopes == null) {
+			scopes = new String[] {
+				String.valueOf(themeDisplay.getScopeGroupId())
+			};
+		}
+
 		return _searchRequestBuilderFactory.builder(
 		).companyId(
 			serviceContext.getCompanyId()
+		).groupIds(
+			ListUtil.toLongArray(Arrays.asList(scopes), GetterUtil::getLong)
 		).from(
 			pagination.getStart()
 		).emptySearchEnabled(
@@ -168,9 +274,6 @@ public class SXPBlueprintInfoCollectionProvider
 				searchContext.setAttribute(
 					"search.experiences.ip.address",
 					serviceContext.getRemoteAddr());
-
-				ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
-
 				searchContext.setAttribute(
 					"search.experiences.scope.group.id",
 					themeDisplay.getScopeGroupId());
@@ -193,6 +296,7 @@ public class SXPBlueprintInfoCollectionProvider
 		SXPBlueprintInfoCollectionProvider.class);
 
 	private final AssetHelper _assetHelper;
+	private final GroupLocalService _groupLocalService;
 	private final Searcher _searcher;
 	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
 	private final SXPBlueprint _sxpBlueprint;
