@@ -89,7 +89,7 @@ definition {
 	@priority = 5
 	test AddFolderSiteRoleDefinePermission {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CPRolesCPWebcontent#AddFolderSiteRoleDefinePermission";
+		property test.liferay.virtual.instance = "false";
 
 		Permissions.definePermissionsViaJSONAPI(
 			resourceNameActionList = "com.liferay.journal,ADD_FOLDER,VIEW:com.liferay.portal.kernel.model.Group,VIEW_SITE_ADMINISTRATION:com_liferay_journal_web_portlet_JournalPortlet,ACCESS_IN_CONTROL_PANEL",
@@ -104,7 +104,8 @@ definition {
 		JSONWebcontent.addFolder(
 			folderDescription = "WC Folder Description",
 			folderName = "WC Folder Name 1",
-			groupName = ${randomSiteName});
+			groupName = ${randomSiteName},
+			userEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
 
 		User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
 
@@ -146,7 +147,7 @@ definition {
 		Permissions.removePermissionViaAPI(
 			resourceAction = "ADD_FOLDER",
 			resourceName = "com.liferay.journal",
-			roleTitle = "Roles Siterole Name",
+			roleTitle = ${randomRoleKey},
 			roleType = "site");
 
 		User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
@@ -184,7 +185,7 @@ definition {
 	@priority = 5
 	test AddStructureSiteRoleDefinePermission {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CPRolesCPWebcontent#AddStructureSiteRoleDefinePermission";
+		property test.liferay.virtual.instance = "false";
 
 		Permissions.definePermissionsViaJSONAPI(
 			resourceNameActionList = "com.liferay.journal,ADD_STRUCTURE,VIEW:com.liferay.portal.kernel.model.Group,VIEW_SITE_ADMINISTRATION:com_liferay_journal_web_portlet_JournalPortlet,ACCESS_IN_CONTROL_PANEL",
@@ -223,7 +224,7 @@ definition {
 		Permissions.removePermissionViaAPI(
 			resourceAction = "ADD_STRUCTURE",
 			resourceName = "com.liferay.journal",
-			roleTitle = "Roles Siterole Name",
+			roleTitle = ${randomRoleKey},
 			roleType = "site");
 
 		User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
@@ -238,7 +239,7 @@ definition {
 	@priority = 5
 	test AddTemplateSiteRoleDefaultPermission {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CPRolesCPWebcontent#AddTemplateSiteRoleDefaultPermission";
+		property test.liferay.virtual.instance = "false";
 
 		Permissions.definePermissionsViaJSONAPI(
 			resourceNameActionList = "com.liferay.journal,VIEW:com.liferay.portal.kernel.model.Group,VIEW_SITE_ADMINISTRATION:com_liferay_journal_web_portlet_JournalPortlet,ACCESS_IN_CONTROL_PANEL",
@@ -262,7 +263,7 @@ definition {
 	@priority = 5
 	test AddTemplateSiteRoleDefinePermission {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CPRolesCPWebcontent#AddTemplateSiteRoleDefinePermission";
+		property test.liferay.virtual.instance = "false";
 
 		Permissions.definePermissionsViaJSONAPI(
 			resourceNameActionList = "com.liferay.journal,ADD_TEMPLATE,VIEW:com.liferay.portal.kernel.model.Group,VIEW_SITE_ADMINISTRATION:com_liferay_journal_web_portlet_JournalPortlet,ACCESS_IN_CONTROL_PANEL",
@@ -295,7 +296,7 @@ definition {
 		Permissions.removePermissionViaAPI(
 			resourceAction = "ADD_TEMPLATE",
 			resourceName = "com.liferay.journal",
-			roleTitle = "Roles Siterole Name",
+			roleTitle = ${randomRoleKey},
 			roleType = "site");
 
 		User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
@@ -333,7 +334,7 @@ definition {
 	@priority = 5
 	test AddWebContentSiteRoleDefinePermission {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CPRolesCPWebcontent#AddWebContentSiteRoleDefinePermission";
+		property test.liferay.virtual.instance = "false";
 
 		Permissions.definePermissionsViaJSONAPI(
 			resourceNameActionList = "com.liferay.journal,ADD_ARTICLE,VIEW:com.liferay.portal.kernel.model.Group,VIEW_SITE_ADMINISTRATION:com_liferay_journal_web_portlet_JournalPortlet,ACCESS_IN_CONTROL_PANEL",
@@ -370,7 +371,7 @@ definition {
 		Permissions.removePermissionViaAPI(
 			resourceAction = "ADD_ARTICLE",
 			resourceName = "com.liferay.journal",
-			roleTitle = "Roles Siterole Name",
+			roleTitle = ${randomRoleKey},
 			roleType = "site");
 
 		User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));

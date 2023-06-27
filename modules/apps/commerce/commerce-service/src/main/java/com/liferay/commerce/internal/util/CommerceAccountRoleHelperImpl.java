@@ -228,6 +228,9 @@ public class CommerceAccountRoleHelperImpl
 				PortletKeys.PORTAL,
 				new String[] {ActionKeys.VIEW_CONTROL_PANEL});
 			companyResourceActionIds.put(
+				"com.liferay.commerce.catalog",
+				new String[] {CPActionKeys.ADD_COMMERCE_CATALOG});
+			companyResourceActionIds.put(
 				"com.liferay.commerce.channel",
 				new String[] {
 					CommerceNotificationActionKeys.
@@ -278,12 +281,10 @@ public class CommerceAccountRoleHelperImpl
 
 	private static final String[] _SUPPLIER_CONTROL_PANEL_PORTLET_IDS = {
 		CommercePortletKeys.COMMERCE_ORDER,
-		CommercePricingPortletKeys.COMMERCE_DISCOUNT,
 		CommercePricingPortletKeys.COMMERCE_PRICE_LIST,
 		CommercePricingPortletKeys.COMMERCE_PROMOTION,
 		CPPortletKeys.COMMERCE_CATALOGS, CPPortletKeys.COMMERCE_CHANNELS,
-		CPPortletKeys.COMMERCE_INVENTORY,
-		CPPortletKeys.COMMERCE_INVENTORY_WAREHOUSE, CPPortletKeys.CP_DEFINITIONS
+		CPPortletKeys.CP_DEFINITIONS
 	};
 
 	@Reference

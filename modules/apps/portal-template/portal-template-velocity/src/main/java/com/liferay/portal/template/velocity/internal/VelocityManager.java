@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.template.engine.BaseTemplateManager;
 import com.liferay.portal.template.engine.TemplateContextHelper;
 import com.liferay.portal.template.velocity.configuration.VelocityEngineConfiguration;
-import com.liferay.portal.template.velocity.internal.helper.VelocityTemplateContextHelper;
 
 import java.util.Map;
 
@@ -251,10 +250,14 @@ public class VelocityManager extends BaseTemplateManager {
 	private static volatile VelocityEngineConfiguration
 		_velocityEngineConfiguration;
 
-	@Reference(service = VelocityTemplateContextHelper.class)
+	@Reference(
+		target = "(component.name=com.liferay.portal.template.velocity.internal.helper.VelocityTemplateContextHelper)"
+	)
 	private TemplateContextHelper _templateContextHelper;
 
-	@Reference(service = VelocityTemplateResourceLoader.class)
+	@Reference(
+		target = "(component.name=com.liferay.portal.template.velocity.internal.VelocityTemplateResourceLoader)"
+	)
 	private TemplateResourceLoader _templateResourceLoader;
 
 	private VelocityEngine _velocityEngine;

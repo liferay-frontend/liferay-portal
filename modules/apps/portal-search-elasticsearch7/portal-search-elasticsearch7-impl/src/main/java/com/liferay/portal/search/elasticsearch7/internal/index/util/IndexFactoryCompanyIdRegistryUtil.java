@@ -12,21 +12,28 @@
  * details.
  */
 
-package com.liferay.portal.search.elasticsearch7.internal.filter;
+package com.liferay.portal.search.elasticsearch7.internal.index.util;
 
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.filter.Filter;
-import com.liferay.portal.kernel.search.filter.FilterTranslator;
-
-import org.elasticsearch.index.query.QueryBuilder;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * @author André de Oliveira
+ * @author Joao Victor Alves
  */
-public interface FilterToQueryBuilderTranslator
-	extends FilterTranslator<QueryBuilder> {
+public class IndexFactoryCompanyIdRegistryUtil {
 
-	@Override
-	public QueryBuilder translate(Filter filter, SearchContext searchContext);
+	public static Set<Long> getCompanyIds() {
+		return _companyIds;
+	}
+
+	public static synchronized void registerCompanyId(long companyId) {
+		_companyIds.add(companyId);
+	}
+
+	public static synchronized void unregisterCompanyId(long companyId) {
+		_companyIds.remove(companyId);
+	}
+
+	private static final Set<Long> _companyIds = new HashSet<>();
 
 }
