@@ -295,7 +295,8 @@
 											{
 												"definition": {
 													"cssClasses": [
-														"evp-table-border"
+														"evp-table-border",
+														"evp-table-header"
 													],
 													"fragmentStyle": {
 														"backgroundColor": "colorNeutral0",
@@ -617,7 +618,8 @@
 															{
 																"definition": {
 																	"cssClasses": [
-																		"evp-table-border"
+																		"evp-table-border",
+																		"evp-request-row"
 																	],
 																	"customCSS": ".evp-table-border {\nborder-bottom: 1px solid var(--color-neutral-4) !important;\n}",
 																	"fragmentStyle": {
@@ -950,7 +952,8 @@
 											{
 												"definition": {
 													"cssClasses": [
-														"evp-table-border"
+														"evp-table-border",
+														"evp-table-header"
 													],
 													"fragmentStyle": {
 														"backgroundColor": "colorNeutral0",
@@ -973,9 +976,9 @@
 															"fragmentStyle": {
 																"borderColor": "colorNeutral4",
 																"height": "65px",
-																"maxWidth": "18%",
+																"maxWidth": "20%",
 																"paddingLeft": "2",
-																"width": "18%"
+																"width": "20%"
 															},
 															"indexed": true,
 															"layout": {
@@ -1221,7 +1224,8 @@
 															{
 																"definition": {
 																	"cssClasses": [
-																		"evp-table-border"
+																		"evp-table-border",
+																		"evp-request-row"
 																	],
 																	"customCSS": ".evp-table-border {\nborder-bottom: 1px solid var(--color-neutral-4) !important;\n}",
 																	"fragmentStyle": {
@@ -1488,6 +1492,20 @@
 								"type": "FragmentDropZone"
 							}
 						],
+						"type": "Fragment"
+					},
+					{
+						"definition": {
+							"fragment": {
+								"key": "evp-request-filter",
+								"siteKey": "[$GROUP_KEY$]"
+							},
+							"fragmentConfig": {
+							},
+							"fragmentFields": [
+							],
+							"indexed": true
+						},
 						"type": "Fragment"
 					}
 				],
