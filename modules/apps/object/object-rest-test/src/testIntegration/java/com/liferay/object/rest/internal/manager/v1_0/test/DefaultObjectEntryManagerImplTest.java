@@ -38,6 +38,8 @@ import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectFilterConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.exception.NoSuchObjectEntryException;
+import com.liferay.object.exception.ObjectDefinitionAccountEntryRestrictedException;
+import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.exception.ObjectRelationshipDeletionTypeException;
 import com.liferay.object.exception.RequiredObjectRelationshipException;
 import com.liferay.object.field.builder.AggregationObjectFieldBuilder;
@@ -79,6 +81,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -823,100 +826,105 @@ public class DefaultObjectEntryManagerImplTest {
 	@Test
 	public void testAddObjectEntryAccountEntryRestriction() throws Exception {
 
-		// Account entry scope
+		// Account entry restricted scope
 
 		AccountEntry accountEntry1 = _addAccountEntry();
 		_user = _addUser();
 
-		_accountEntryUserRelLocalService.addAccountEntryUserRel(
-			accountEntry1.getAccountEntryId(), _user.getUserId());
+		_assignAccountEntryRole(accountEntry1, _buyerRole, _user);
 
-		AssertUtils.assertFailure(
-			StringBundler.concat(
-				"User ", _user.getUserId(),
-				" must have ADD_OBJECT_ENTRY permission for ",
-				_objectDefinition3.getResourceName(), StringPool.SPACE),
-			() -> _addObjectEntry(accountEntry1));
-
-		_addResourcePermission("ADD_OBJECT_ENTRY", _buyerRole);
-
-		_userGroupRoleLocalService.addUserGroupRole(
-			_user.getUserId(), accountEntry1.getAccountEntryGroupId(),
-			_buyerRole.getRoleId());
-
-		Assert.assertNotNull(_addObjectEntry(accountEntry1));
+		_addResourcePermission(ObjectActionKeys.ADD_OBJECT_ENTRY, _buyerRole);
 
 		AccountEntry accountEntry2 = _addAccountEntry();
 
 		AssertUtils.assertFailure(
+			ObjectDefinitionAccountEntryRestrictedException.class,
 			StringBundler.concat(
 				"User ", _user.getUserId(),
 				" does not have access to account entry ",
 				accountEntry2.getAccountEntryId()),
 			() -> _addObjectEntry(accountEntry2));
 
-		_accountEntryUserRelLocalService.addAccountEntryUserRel(
-			accountEntry2.getAccountEntryId(), _user.getUserId());
-
-		AssertUtils.assertFailure(
-			StringBundler.concat(
-				"User ", _user.getUserId(),
-				" must have ADD_OBJECT_ENTRY permission for ",
-				_objectDefinition3.getResourceName(), StringPool.SPACE),
-			() -> _addObjectEntry(accountEntry2));
-
-		_userGroupRoleLocalService.addUserGroupRole(
-			_user.getUserId(), accountEntry2.getAccountEntryGroupId(),
-			_buyerRole.getRoleId());
-
-		Assert.assertNotNull(_addObjectEntry(accountEntry1));
-
-		// Organization scope
+		// Account entry restricted with organization scope
 
 		Organization organization1 = OrganizationTestUtil.addOrganization();
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry1.getAccountEntryId(),
-			organization1.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry1, organization1);
+
+		_user = _addUser();
+
+		_assignOrganizationRole(organization1, _accountManagerRole, _user);
+
+		_addResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY, _accountManagerRole);
+
+		AssertUtils.assertFailure(
+			ObjectDefinitionAccountEntryRestrictedException.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(),
+				" does not have access to account entry ",
+				accountEntry2.getAccountEntryId()),
+			() -> _addObjectEntry(accountEntry2));
+
+		_deleteAccountEntryOrganizationRel(accountEntry1, organization1);
+
+		// Account entry restricted with suborganization scope
+
+		Organization suborganization1 = OrganizationTestUtil.addOrganization(
+			organization1.getOrganizationId(), RandomTestUtil.randomString(),
+			false);
+
+		_addAccountEntryOrganizationRel(accountEntry1, suborganization1);
 
 		_user = _addUser();
 
 		_assignOrganizationRole(organization1, _accountManagerRole, _user);
 
 		AssertUtils.assertFailure(
-			StringBundler.concat(
-				"User ", _user.getUserId(),
-				" must have ADD_OBJECT_ENTRY permission for ",
-				_objectDefinition3.getResourceName(), StringPool.SPACE),
-			() -> _addObjectEntry(accountEntry1));
-
-		_addResourcePermission("ADD_OBJECT_ENTRY", _accountManagerRole);
-
-		_addObjectEntry(accountEntry1);
-
-		AssertUtils.assertFailure(
+			ObjectDefinitionAccountEntryRestrictedException.class,
 			StringBundler.concat(
 				"User ", _user.getUserId(),
 				" does not have access to account entry ",
 				accountEntry2.getAccountEntryId()),
 			() -> _addObjectEntry(accountEntry2));
 
-		_removeResourcePermission("ADD_OBJECT_ENTRY", _accountManagerRole);
+		_deleteAccountEntryOrganizationRel(accountEntry1, suborganization1);
 
-		// Suborganization scope
+		_removeResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY, _accountManagerRole);
 
-		_accountEntryOrganizationRelLocalService.
-			deleteAccountEntryOrganizationRel(
-				accountEntry1.getAccountEntryId(),
-				organization1.getOrganizationId());
+		// Check account entry permission
 
-		Organization suborganization1 = OrganizationTestUtil.addOrganization(
-			organization1.getOrganizationId(), RandomTestUtil.randomString(),
-			false);
+		_user = _addUser();
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry1.getAccountEntryId(),
-			suborganization1.getOrganizationId());
+		_testAddObjectEntryAccountEntryRestriction(accountEntry1);
+		_testAddObjectEntryAccountEntryRestriction(accountEntry2);
+
+		// Check account entry permission with organization
+
+		_addAccountEntryOrganizationRel(accountEntry1, organization1);
+
+		_user = _addUser();
+
+		_assignOrganizationRole(organization1, _accountManagerRole, _user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(),
+				" must have ADD_OBJECT_ENTRY permission for ",
+				_objectDefinition3.getResourceName(), StringPool.SPACE),
+			() -> _addObjectEntry(accountEntry1));
+
+		_addResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY, _accountManagerRole);
+
+		Assert.assertNotNull(_addObjectEntry(accountEntry1));
+
+		_removeResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY, _accountManagerRole);
+
+		// Check account entry permission with suborganization
 
 		Organization organization2 = OrganizationTestUtil.addOrganization();
 
@@ -924,31 +932,24 @@ public class DefaultObjectEntryManagerImplTest {
 			organization2.getOrganizationId(), RandomTestUtil.randomString(),
 			false);
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry2.getAccountEntryId(),
-			suborganization2.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry2, suborganization2);
 
 		_user = _addUser();
 
 		_assignOrganizationRole(organization1, _accountManagerRole, _user);
 
 		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
 			StringBundler.concat(
 				"User ", _user.getUserId(),
 				" must have ADD_OBJECT_ENTRY permission for ",
 				_objectDefinition3.getResourceName(), StringPool.SPACE),
 			() -> _addObjectEntry(accountEntry1));
 
-		_addResourcePermission("ADD_OBJECT_ENTRY", _accountManagerRole);
+		_addResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY, _accountManagerRole);
 
-		_addObjectEntry(accountEntry1);
-
-		AssertUtils.assertFailure(
-			StringBundler.concat(
-				"User ", _user.getUserId(),
-				" does not have access to account entry ",
-				accountEntry2.getAccountEntryId()),
-			() -> _addObjectEntry(accountEntry2));
+		Assert.assertNotNull(_addObjectEntry(accountEntry1));
 	}
 
 	@Test
@@ -1085,15 +1086,11 @@ public class DefaultObjectEntryManagerImplTest {
 
 		_assignOrganizationRole(organization1, _accountManagerRole, _user);
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry1.getAccountEntryId(),
-			organization1.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry1, organization1);
 
 		Organization organization2 = OrganizationTestUtil.addOrganization();
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry2.getAccountEntryId(),
-			organization2.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry2, organization2);
 
 		_assertObjectEntriesSize(1);
 
@@ -1121,15 +1118,8 @@ public class DefaultObjectEntryManagerImplTest {
 
 		_assertObjectEntriesSize(0);
 
-		_accountEntryOrganizationRelLocalService.
-			deleteAccountEntryOrganizationRel(
-				accountEntry1.getAccountEntryId(),
-				organization1.getOrganizationId());
-
-		_accountEntryOrganizationRelLocalService.
-			deleteAccountEntryOrganizationRel(
-				accountEntry2.getAccountEntryId(),
-				organization2.getOrganizationId());
+		_deleteAccountEntryOrganizationRel(accountEntry1, organization1);
+		_deleteAccountEntryOrganizationRel(accountEntry2, organization2);
 
 		// Suborganization scope
 
@@ -1148,17 +1138,13 @@ public class DefaultObjectEntryManagerImplTest {
 			organization1.getOrganizationId(), RandomTestUtil.randomString(),
 			false);
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry1.getAccountEntryId(),
-			suborganization1.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry1, suborganization1);
 
 		Organization suborganization2 = OrganizationTestUtil.addOrganization(
 			organization2.getOrganizationId(), RandomTestUtil.randomString(),
 			false);
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry2.getAccountEntryId(),
-			suborganization2.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry2, suborganization2);
 
 		_assertObjectEntriesSize(1);
 
@@ -1769,12 +1755,8 @@ public class DefaultObjectEntryManagerImplTest {
 
 		Organization organization1 = OrganizationTestUtil.addOrganization();
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry1.getAccountEntryId(),
-			organization1.getOrganizationId());
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry2.getAccountEntryId(),
-			organization1.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry1, organization1);
+		_addAccountEntryOrganizationRel(accountEntry2, organization1);
 
 		_user = _addUser();
 
@@ -1783,10 +1765,7 @@ public class DefaultObjectEntryManagerImplTest {
 
 		_assertObjectEntriesSize(2);
 
-		_accountEntryOrganizationRelLocalService.
-			deleteAccountEntryOrganizationRel(
-				accountEntry2.getAccountEntryId(),
-				organization1.getOrganizationId());
+		_deleteAccountEntryOrganizationRel(accountEntry2, organization1);
 
 		_assertObjectEntriesSize(1);
 
@@ -1795,10 +1774,7 @@ public class DefaultObjectEntryManagerImplTest {
 
 		_assertObjectEntriesSize(0);
 
-		_accountEntryOrganizationRelLocalService.
-			deleteAccountEntryOrganizationRel(
-				accountEntry1.getAccountEntryId(),
-				organization1.getOrganizationId());
+		_deleteAccountEntryOrganizationRel(accountEntry1, organization1);
 
 		// Check suborganizations
 
@@ -1806,9 +1782,7 @@ public class DefaultObjectEntryManagerImplTest {
 			organization1.getOrganizationId(), RandomTestUtil.randomString(),
 			false);
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry1.getAccountEntryId(),
-			suborganization1.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry1, suborganization1);
 
 		Organization organization2 = OrganizationTestUtil.addOrganization();
 
@@ -1816,9 +1790,7 @@ public class DefaultObjectEntryManagerImplTest {
 			organization2.getOrganizationId(), RandomTestUtil.randomString(),
 			false);
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry2.getAccountEntryId(),
-			suborganization2.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry2, suborganization2);
 
 		_user = _addUser();
 
@@ -2083,6 +2055,15 @@ public class DefaultObjectEntryManagerImplTest {
 			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW},
 			_objectDefinition3, _user);
 
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.UnmodifiableAccountEntryObjectField.
+				class,
+			"The object field r_oneToManyRelationshipName_accountEntryId is " +
+				"unmodifiable because it is the account entry restrictor",
+			() -> _defaultObjectEntryManager.updateObjectEntry(
+				_simpleDTOConverterContext, _objectDefinition3,
+				objectEntry1.getId(), objectEntry2));
+
 		_defaultObjectEntryManager.updateObjectEntry(
 			_simpleDTOConverterContext, _objectDefinition3,
 			objectEntry1.getId(), objectEntry1);
@@ -2093,6 +2074,7 @@ public class DefaultObjectEntryManagerImplTest {
 			role.getRoleId(), ActionKeys.UPDATE);
 
 		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
 			StringBundler.concat(
 				"User ", _user.getUserId(), " must have UPDATE permission for ",
 				_objectDefinition3.getClassName(), StringPool.SPACE,
@@ -2135,6 +2117,7 @@ public class DefaultObjectEntryManagerImplTest {
 			objectEntry1.getId(), objectEntry1);
 
 		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
 			StringBundler.concat(
 				"User ", _user.getUserId(), " must have UPDATE permission for ",
 				_objectDefinition3.getClassName(), StringPool.SPACE,
@@ -2153,17 +2136,14 @@ public class DefaultObjectEntryManagerImplTest {
 
 		_assignOrganizationRole(organization1, _accountManagerRole, _user);
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry1.getAccountEntryId(),
-			organization1.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry1, organization1);
 
 		Organization organization2 = OrganizationTestUtil.addOrganization();
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry2.getAccountEntryId(),
-			organization2.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry2, organization2);
 
 		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
 			StringBundler.concat(
 				"User ", _user.getUserId(), " must have UPDATE permission for ",
 				_objectDefinition3.getClassName(), StringPool.SPACE,
@@ -2186,17 +2166,13 @@ public class DefaultObjectEntryManagerImplTest {
 			organization1.getOrganizationId(), RandomTestUtil.randomString(),
 			false);
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry1.getAccountEntryId(),
-			suborganization1.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry1, suborganization1);
 
 		Organization suborganization2 = OrganizationTestUtil.addOrganization(
 			organization2.getOrganizationId(), RandomTestUtil.randomString(),
 			false);
 
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			accountEntry2.getAccountEntryId(),
-			suborganization2.getOrganizationId());
+		_addAccountEntryOrganizationRel(accountEntry2, suborganization2);
 
 		_user = _addUser();
 
@@ -2205,6 +2181,7 @@ public class DefaultObjectEntryManagerImplTest {
 		_assertObjectEntriesSize(1);
 
 		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
 			StringBundler.concat(
 				"User ", _user.getUserId(), " must have UPDATE permission for ",
 				_objectDefinition3.getClassName(), StringPool.SPACE,
@@ -2218,21 +2195,6 @@ public class DefaultObjectEntryManagerImplTest {
 		_defaultObjectEntryManager.updateObjectEntry(
 			_simpleDTOConverterContext, _objectDefinition3,
 			objectEntry1.getId(), objectEntry1);
-
-		AssertUtils.assertFailure(
-			"The object field r_oneToManyRelationshipName_accountEntryId is " +
-				"unmodifiable because it is the account entry restrictor",
-			() -> _defaultObjectEntryManager.updateObjectEntry(
-				_simpleDTOConverterContext, _objectDefinition3,
-				objectEntry1.getId(),
-				new ObjectEntry() {
-					{
-						properties = HashMapBuilder.<String, Object>put(
-							"r_oneToManyRelationshipName_accountEntryId",
-							accountEntry2.getAccountEntryId()
-						).build();
-					}
-				}));
 	}
 
 	private AccountEntry _addAccountEntry() throws Exception {
@@ -2243,6 +2205,14 @@ public class DefaultObjectEntryManagerImplTest {
 			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
 			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private void _addAccountEntryOrganizationRel(
+			AccountEntry accountEntry, Organization organization)
+		throws Exception {
+
+		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
+			accountEntry.getAccountEntryId(), organization.getOrganizationId());
 	}
 
 	private void _addAggregationObjectField(
@@ -2736,6 +2706,16 @@ public class DefaultObjectEntryManagerImplTest {
 		return objectFieldSetting;
 	}
 
+	private void _deleteAccountEntryOrganizationRel(
+			AccountEntry accountEntry, Organization organization)
+		throws Exception {
+
+		_accountEntryOrganizationRelLocalService.
+			deleteAccountEntryOrganizationRel(
+				accountEntry.getAccountEntryId(),
+				organization.getOrganizationId());
+	}
+
 	private Long _getAttachmentObjectFieldValue() throws Exception {
 		byte[] bytes = TestDataConstants.TEST_BYTE_ARRAY;
 
@@ -2767,6 +2747,36 @@ public class DefaultObjectEntryManagerImplTest {
 		_resourcePermissionLocalService.removeResourcePermission(
 			_companyId, name, ResourceConstants.SCOPE_GROUP_TEMPLATE, "0",
 			role.getRoleId(), actionId);
+	}
+
+	private void _testAddObjectEntryAccountEntryRestriction(
+			AccountEntry accountEntry)
+		throws Exception {
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			accountEntry.getAccountEntryId(), _user.getUserId());
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(),
+				" must have ADD_OBJECT_ENTRY permission for ",
+				_objectDefinition3.getResourceName(), StringPool.SPACE),
+			() -> _addObjectEntry(accountEntry));
+
+		_addResourcePermission(ObjectActionKeys.ADD_OBJECT_ENTRY, _buyerRole);
+
+		_userGroupRoleLocalService.addUserGroupRole(
+			_user.getUserId(), accountEntry.getAccountEntryGroupId(),
+			_buyerRole.getRoleId());
+
+		Assert.assertNotNull(_addObjectEntry(accountEntry));
+
+		_userGroupRoleLocalService.deleteUserGroupRolesByUserId(
+			_user.getUserId());
+
+		_removeResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY, _buyerRole);
 	}
 
 	private void _testGetObjectEntries(
