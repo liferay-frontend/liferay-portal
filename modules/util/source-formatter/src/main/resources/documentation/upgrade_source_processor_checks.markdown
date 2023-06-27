@@ -1,4 +1,4 @@
-# Checks for .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm
+# Checks for .bnd, .gradle, .java or .vm
 
 Check | Category | Description
 ----- | -------- | -----------

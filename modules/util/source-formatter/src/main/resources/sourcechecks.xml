@@ -1393,6 +1393,11 @@
 			<category name="Bug Prevention" />
 			<description name="Checks that there is no HTML markup in language keys." />
 		</check>
+		<check name="PropertiesLanguageKeysContextCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks if the language keys include a word of context to indicate specific meaning." />
+			<property name="enabled" value="false" />
+		</check>
 		<check name="PropertiesLanguageKeysOrderCheck">
 			<category name="Styling" />
 			<description name="Sort language keys in `Language.properties` file." />
