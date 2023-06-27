@@ -29,11 +29,11 @@ import {
 	addAdditionalInfo,
 	addAdminRegularRole,
 	addExistentUserIntoAccount,
-	callRolesApi,
 	createNewUser,
 	getAccountRolesOnAPI,
 	getSiteURL,
 	getUserByEmail,
+	sendRoleAccountUser,
 } from './services';
 
 interface InviteMemberModalProps {
@@ -42,11 +42,6 @@ interface InviteMemberModalProps {
 	renderToast: (message: string, title: string, type: DisplayType) => void;
 	rolesPermissionDescription: PermissionDescription[];
 	selectedAccount: Account;
-}
-
-interface CheckboxRole {
-	isChecked: boolean;
-	roleName: string;
 }
 
 export function InviteMemberModal({
@@ -130,7 +125,7 @@ export function InviteMemberModal({
 				);
 
 				if (matchingAccountRole) {
-					await callRolesApi(
+					await sendRoleAccountUser(
 						selectedAccount.id,
 						matchingAccountRole.id,
 						user.id
@@ -208,6 +203,7 @@ export function InviteMemberModal({
 				selectedAccount.id,
 			r_userToUserAddInfo_userId: user.id,
 			roles: getCheckedRoles(),
+			sendType: {key: 'shipping', name: 'Shipping'},
 			userFirstName: formFields.firstName,
 		});
 

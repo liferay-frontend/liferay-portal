@@ -48,7 +48,7 @@ const getMyUserAccount = () =>
 
 const getMyUserAditionalInfos = async () => {
 	const userAdditionalInfos = await fetcher(
-		`/o/c/useradditionalinfos?filter=r_userToUserAddInfo_userId eq '${myUserId}' and acceptInviteStatus eq false&nestedFields=user`
+		`/o/c/useradditionalinfos?filter=r_userToUserAddInfo_userId eq '${myUserId}' and contains(sendType,'shipping') and acceptInviteStatus eq false&nestedFields=user`
 	);
 
 	return userAdditionalInfos?.items ?? [];

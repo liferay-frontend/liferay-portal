@@ -344,17 +344,24 @@ export const createAndAssociateUserAccountWithAccountAndAccountRole = gql`
 	}
 `;
 
+export const associateUserAccountWithAccount = gql`
+	mutation associateUserAccountWithAccount(
+		$emailAddress: String!
+		$accountKey: String!
+	) {
+		createAccountUserAccountByExternalReferenceCodeByEmailAddress(
+			externalReferenceCode: $accountKey
+			emailAddress: $emailAddress
+		)
+	}
+`;
+
 export const associateUserAccountWithAccountAndAccountRole = gql`
 	mutation associateUserAccountWithAccountAndAccountRole(
 		$emailAddress: String!
 		$accountKey: String!
 		$accountRoleId: Long!
 	) {
-		createAccountUserAccountByExternalReferenceCodeByEmailAddress(
-			externalReferenceCode: $accountKey
-			emailAddress: $emailAddress
-		)
-
 		createAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress(
 			accountRoleId: $accountRoleId
 			emailAddress: $emailAddress
@@ -367,10 +374,30 @@ export const getUserAccountByEmail = gql`
 	query GetUserAccounts($filter: String) {
 		userAccounts(filter: $filter) {
 			items {
-				name
+				alternateName
 				emailAddress
+				familyName
+				givenName
 				id
+				name
 			}
+		}
+	}
+`;
+
+export const patchUserAccount = gql`
+	mutation patchUserAccount(
+		$userAccountId: Long!
+		$userAccount: InputUserAccount!
+	) {
+		patchUserAccount(
+			userAccountId: $userAccountId
+			userAccount: $userAccount
+		) {
+			alternateName
+			familyName
+			givenName
+			id
 		}
 	}
 `;

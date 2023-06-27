@@ -390,3 +390,19 @@ type UserAccount = {
 	isPublisherAccount: boolean;
 	password: string;
 };
+
+type RequestBody = {
+	[keys: string]: string;
+};
+
+interface CheckboxRole {
+	isChecked: boolean;
+	roleName: string;
+}
+
+type UserLogged = {
+	accountBriefs: AccountBrief[];
+	isAdminAccount: boolean;
+	isCustomerAccount: boolean;
+	isPublisherAccount: boolean;
+};

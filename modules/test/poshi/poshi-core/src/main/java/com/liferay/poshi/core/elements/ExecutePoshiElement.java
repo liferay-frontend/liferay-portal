@@ -21,6 +21,7 @@ import com.liferay.poshi.core.selenium.LiferaySeleniumMethod;
 import com.liferay.poshi.core.util.CharPool;
 import com.liferay.poshi.core.util.ListUtil;
 import com.liferay.poshi.core.util.NaturalOrderStringComparator;
+import com.liferay.poshi.core.util.PoshiProperties;
 import com.liferay.poshi.core.util.RegexUtil;
 import com.liferay.poshi.core.util.StringUtil;
 import com.liferay.poshi.core.util.Validator;
@@ -88,10 +89,13 @@ public class ExecutePoshiElement extends PoshiElement {
 			List<String> methodParameterValues =
 				PoshiScriptParserUtil.getMethodParameterValues(
 					poshiScriptParentheticalContent, this);
+			PoshiProperties poshiProperties =
+				PoshiProperties.getPoshiProperties();
 
 			if (!(liferaySeleniumMethod == null) &&
 				(liferaySeleniumMethod.getParameterCount() !=
-					methodParameterValues.size())) {
+					methodParameterValues.size()) &&
+				poshiProperties.generateCommandSignature) {
 
 				List<String> parameterNames =
 					liferaySeleniumMethod.getParameterNames();

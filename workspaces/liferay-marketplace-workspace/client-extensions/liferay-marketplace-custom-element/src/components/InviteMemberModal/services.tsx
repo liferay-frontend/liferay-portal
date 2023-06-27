@@ -17,14 +17,6 @@ import ClayAlert from '@clayui/alert';
 
 import {Liferay} from '../../liferay/liferay';
 
-type requestBody = {
-	alternateName: string;
-	emailAddress: string;
-	familyName: string;
-	givenName: string;
-	password: string;
-};
-
 const getSiteURL = () => {
 	const layoutRelativeURL = Liferay.ThemeDisplay.getLayoutRelativeURL();
 
@@ -52,7 +44,7 @@ export async function getAccountRolesOnAPI(accountId: number) {
 	}
 }
 
-export async function createNewUser(requestBody: requestBody) {
+export async function createNewUser(requestBody: RequestBody) {
 	try {
 		const response = await fetch(
 			`/o/headless-admin-user/v1.0/user-accounts`,
@@ -133,7 +125,7 @@ export async function getUserByEmail(userEmail: String) {
 	}
 }
 
-export async function callRolesApi(
+export async function sendRoleAccountUser(
 	accountId: number,
 	roleId: number,
 	userId: number
@@ -162,6 +154,7 @@ type AdditionalInfoBody = {
 	r_accountEntryToUserAdditionalInfo_accountEntryId: number;
 	r_userToUserAddInfo_userId: string;
 	roles: string;
+	sendType: {key: string; name: string};
 	userFirstName: string;
 };
 

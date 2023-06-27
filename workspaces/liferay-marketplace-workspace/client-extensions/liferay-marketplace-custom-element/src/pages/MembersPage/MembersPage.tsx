@@ -89,6 +89,7 @@ export function MembersPage({
 	const renderToast = (message: string, title: string, type: DisplayType) => {
 		setToastItems([...toastItems, {message, title, type}]);
 	};
+	const [userLogged, setUserLogged] = useState<UserLogged>();
 
 	const getRolesList = useCallback(
 		(accountBriefs: AccountBrief[]) => {
@@ -213,6 +214,8 @@ export function MembersPage({
 				);
 			});
 
+			setUserLogged(currentUserAccount);
+
 			setMembers(filteredMembersList);
 		})();
 	}, [visible, selectedAccount, getRolesList]);
@@ -235,9 +238,11 @@ export function MembersPage({
 				>
 					{selectedMember ? (
 						<MemberProfile
-							member={selectedMember}
+							memberUser={selectedMember}
+							renderToast={renderToast}
 							setSelectedMember={setSelectedMember}
-						></MemberProfile>
+							userLogged={userLogged}
+						/>
 					) : (
 						<DashboardTable<MemberProps>
 							emptyStateMessage={memberMessages.emptyStateMessage}
