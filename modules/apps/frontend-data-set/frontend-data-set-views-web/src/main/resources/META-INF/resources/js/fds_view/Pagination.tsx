@@ -132,7 +132,6 @@ function Pagination({
 				),
 				type: 'success',
 			});
-			setListOfItemsPerPage(itemsPerPage);
 			updateFDSTabHandler(responseJSON);
 		}
 		else {
