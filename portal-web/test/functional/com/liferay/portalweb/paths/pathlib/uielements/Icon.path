@@ -31,6 +31,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ANY_N</td>
+	<td>xpath=(//*[*[name()='svg'][contains(@class,'lexicon-icon-${key_text}')]])[${key_indexNumber}]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ANY_ENABLED</td>
 	<td>//*[*[name()='svg'][contains(@class,'lexicon-icon-${key_text}')]][not(@disabled='')]</td>
 	<td></td>

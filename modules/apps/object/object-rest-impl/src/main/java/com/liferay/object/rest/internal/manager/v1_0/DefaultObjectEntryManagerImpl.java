@@ -14,8 +14,6 @@
 
 package com.liferay.object.rest.internal.manager.v1_0;
 
-import com.liferay.account.service.AccountEntryLocalService;
-import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.object.action.engine.ObjectActionEngine;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectConstants;
@@ -48,9 +46,7 @@ import com.liferay.object.rest.manager.v1_0.ObjectRelationshipElementsParserRegi
 import com.liferay.object.rest.petra.sql.dsl.expression.FilterPredicateFactory;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectRelationshipService;
 import com.liferay.object.system.SystemObjectDefinitionManager;
@@ -143,6 +139,8 @@ public class DefaultObjectEntryManagerImpl
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
 			String scopeKey)
 		throws Exception {
+
+		validateReadOnlyObjectFields(null, objectDefinition, objectEntry);
 
 		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
 			_objectEntryService.addObjectEntry(
@@ -314,7 +312,7 @@ public class DefaultObjectEntryManagerImpl
 
 		_executeObjectAction(
 			dtoConverterContext, objectActionName, objectDefinition,
-			_objectEntryLocalService.getObjectEntry(objectEntryId));
+			objectEntryLocalService.getObjectEntry(objectEntryId));
 	}
 
 	@Override
@@ -326,7 +324,7 @@ public class DefaultObjectEntryManagerImpl
 
 		_executeObjectAction(
 			dtoConverterContext, objectActionName, objectDefinition,
-			_objectEntryLocalService.getObjectEntry(
+			objectEntryLocalService.getObjectEntry(
 				externalReferenceCode, companyId,
 				getGroupId(objectDefinition, scopeKey)));
 	}
@@ -499,7 +497,7 @@ public class DefaultObjectEntryManagerImpl
 				List<Facet.FacetValue> facetValues = new ArrayList<>();
 
 				Map<Object, Long> aggregationCounts =
-					_objectEntryLocalService.getAggregationCounts(
+					objectEntryLocalService.getAggregationCounts(
 						groupId, objectDefinition.getObjectDefinitionId(),
 						entry1.getKey(), predicate, start, end);
 
@@ -562,17 +560,17 @@ public class DefaultObjectEntryManagerImpl
 			).build(),
 			facets,
 			TransformUtil.transform(
-				_objectEntryLocalService.getValuesList(
+				objectEntryLocalService.getValuesList(
 					groupId, companyId, dtoConverterContext.getUserId(),
 					objectDefinition.getObjectDefinitionId(), predicate, search,
 					start, end,
 					OrderByExpressionUtil.getOrderByExpressions(
 						objectDefinition.getObjectDefinitionId(),
-						_objectFieldLocalService, sorts)),
+						objectFieldLocalService, sorts)),
 				values -> _getObjectEntry(
 					dtoConverterContext, objectDefinition, values)),
 			pagination,
-			_objectEntryLocalService.getValuesListCount(
+			objectEntryLocalService.getValuesListCount(
 				groupId, companyId, dtoConverterContext.getUserId(),
 				objectDefinition.getObjectDefinitionId(), predicate, search));
 	}
@@ -751,7 +749,7 @@ public class DefaultObjectEntryManagerImpl
 				dtoConverterContext.getUser());
 		}
 
-		return _objectEntryLocalService.getSystemModelAttributes(
+		return objectEntryLocalService.getSystemModelAttributes(
 			objectDefinition, primaryKey);
 	}
 
@@ -767,6 +765,10 @@ public class DefaultObjectEntryManagerImpl
 
 		_checkObjectEntryObjectDefinitionId(
 			objectDefinition, serviceBuilderObjectEntry);
+
+		validateReadOnlyObjectFields(
+			serviceBuilderObjectEntry.getExternalReferenceCode(),
+			objectDefinition, objectEntry);
 
 		serviceBuilderObjectEntry = _objectEntryService.updateObjectEntry(
 			objectEntryId,
@@ -793,6 +795,9 @@ public class DefaultObjectEntryManagerImpl
 			String externalReferenceCode, ObjectDefinition objectDefinition,
 			ObjectEntry objectEntry, String scopeKey)
 		throws Exception {
+
+		validateReadOnlyObjectFields(
+			externalReferenceCode, objectDefinition, objectEntry);
 
 		long groupId = getGroupId(objectDefinition, scopeKey);
 
@@ -957,7 +962,7 @@ public class DefaultObjectEntryManagerImpl
 			}
 		}
 
-		return _objectEntryLocalService.getObjectEntry(primaryKey);
+		return objectEntryLocalService.getObjectEntry(primaryKey);
 	}
 
 	private void _checkObjectEntryObjectDefinitionId(
@@ -1464,11 +1469,11 @@ public class DefaultObjectEntryManagerImpl
 		Map<String, Serializable> values = new HashMap<>();
 
 		for (ObjectField objectField :
-				_objectFieldLocalService.getObjectFields(
+				objectFieldLocalService.getObjectFields(
 					objectDefinition.getObjectDefinitionId())) {
 
 			Object value = ObjectEntryValuesUtil.getValue(
-				_objectDefinitionLocalService, _objectEntryLocalService,
+				_objectDefinitionLocalService, objectEntryLocalService,
 				objectField, _objectFieldBusinessTypeRegistry, userId,
 				objectEntry.getProperties());
 
@@ -1538,13 +1543,7 @@ public class DefaultObjectEntryManagerImpl
 		DefaultObjectEntryManagerImpl.class);
 
 	@Reference
-	private AccountEntryLocalService _accountEntryLocalService;
-
-	@Reference
 	private Aggregations _aggregations;
-
-	@Reference
-	private AssetEntryLocalService _assetEntryLocalService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
@@ -1571,9 +1570,6 @@ public class DefaultObjectEntryManagerImpl
 		_objectEntryDTOConverter;
 
 	@Reference
-	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference
 	private ObjectEntryManagerRegistry _objectEntryManagerRegistry;
 
 	@Reference
@@ -1581,9 +1577,6 @@ public class DefaultObjectEntryManagerImpl
 
 	@Reference
 	private ObjectFieldBusinessTypeRegistry _objectFieldBusinessTypeRegistry;
-
-	@Reference
-	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
 	private ObjectRelatedModelsProviderRegistry

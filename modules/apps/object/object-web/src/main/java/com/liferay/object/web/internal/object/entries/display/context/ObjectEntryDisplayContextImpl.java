@@ -14,6 +14,9 @@
 
 package com.liferay.object.web.internal.object.entries.display.context;
 
+import com.liferay.dynamic.data.mapping.expression.CreateExpressionRequest;
+import com.liferay.dynamic.data.mapping.expression.DDMExpression;
+import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
@@ -43,6 +46,7 @@ import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.constants.ObjectWebKeys;
 import com.liferay.object.display.context.ObjectEntryDisplayContext;
+import com.liferay.object.dynamic.data.mapping.expression.ObjectEntryDDMExpressionFieldAccessor;
 import com.liferay.object.exception.NoSuchObjectLayoutException;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
@@ -68,6 +72,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectEntryServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectFieldSettingLocalServiceUtil;
 import com.liferay.object.service.ObjectLayoutLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.web.internal.display.context.helper.ObjectRequestHelper;
@@ -131,6 +136,7 @@ public class ObjectEntryDisplayContextImpl
 	implements ObjectEntryDisplayContext {
 
 	public ObjectEntryDisplayContextImpl(
+		DDMExpressionFactory ddmExpressionFactory,
 		DDMFormRenderer ddmFormRenderer, HttpServletRequest httpServletRequest,
 		ItemSelector itemSelector,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
@@ -143,6 +149,7 @@ public class ObjectEntryDisplayContextImpl
 		ObjectRelationshipLocalService objectRelationshipLocalService,
 		ObjectScopeProviderRegistry objectScopeProviderRegistry) {
 
+		_ddmExpressionFactory = ddmExpressionFactory;
 		_ddmFormRenderer = ddmFormRenderer;
 		_itemSelector = itemSelector;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
@@ -674,6 +681,13 @@ public class ObjectEntryDisplayContextImpl
 					continue;
 				}
 
+				if (FeatureFlagManagerUtil.isEnabled("LPS-170122")) {
+					ddmForm.addDDMFormField(
+						_getDDMFormField(objectEntry, objectField, readOnly));
+
+					continue;
+				}
+
 				if (objectField.compareBusinessType(
 						ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION) ||
 					objectField.compareBusinessType(
@@ -784,7 +798,13 @@ public class ObjectEntryDisplayContextImpl
 			ddmFormField.setReadOnly(true);
 		}
 		else {
-			ddmFormField.setReadOnly(readOnly);
+			if (FeatureFlagManagerUtil.isEnabled("LPS-170122")) {
+				ddmFormField.setReadOnly(
+					_isReadOnly(objectEntry, objectField, readOnly));
+			}
+			else {
+				ddmFormField.setReadOnly(readOnly);
+			}
 		}
 
 		ddmFormField.setRequired(objectField.isRequired());
@@ -997,6 +1017,14 @@ public class ObjectEntryDisplayContextImpl
 					objectLayoutColumn.getObjectFieldId(),
 					currentObjectField.getName());
 
+				if (FeatureFlagManagerUtil.isEnabled("LPS-170122")) {
+					nestedDDMFormFields.add(
+						_getDDMFormField(
+							objectEntry, currentObjectField, readOnly));
+
+					continue;
+				}
+
 				if (currentObjectField.compareBusinessType(
 						ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION) ||
 					currentObjectField.compareBusinessType(
@@ -1069,6 +1097,71 @@ public class ObjectEntryDisplayContextImpl
 		}
 
 		return _objectEntry;
+	}
+
+	private boolean _isReadOnly(
+			ObjectEntry objectEntry, ObjectField objectField, boolean readOnly)
+		throws PortalException {
+
+		if (readOnly) {
+			return true;
+		}
+
+		if (Objects.equals(
+				objectField.getReadOnly(),
+				ObjectFieldConstants.READ_ONLY_FALSE)) {
+
+			return false;
+		}
+
+		if (Objects.equals(
+				objectField.getReadOnly(),
+				ObjectFieldConstants.READ_ONLY_TRUE)) {
+
+			return true;
+		}
+
+		Map<String, Object> existingValues = new HashMap<>();
+
+		if (objectEntry == null) {
+			for (ObjectField objectField1 :
+					_objectFieldLocalService.getObjectFields(
+						objectField.getObjectDefinitionId())) {
+
+				existingValues.put(
+					objectField1.getName(),
+					ObjectFieldSettingUtil.getDefaultValueAsString(
+						null, objectField.getObjectFieldId(),
+						ObjectFieldSettingLocalServiceUtil.getService(), null));
+			}
+		}
+		else {
+			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
+				_objectEntryLocalService.getObjectEntry(objectEntry.getId());
+
+			existingValues.putAll(
+				_objectEntryLocalService.getSystemValues(
+					serviceBuilderObjectEntry));
+			existingValues.putAll(
+				_objectEntryLocalService.getValues(serviceBuilderObjectEntry));
+			existingValues.put("currentUserId", _themeDisplay.getUserId());
+		}
+
+		DDMExpression<Boolean> ddmExpression =
+			_ddmExpressionFactory.createExpression(
+				CreateExpressionRequest.Builder.newBuilder(
+					objectField.getReadOnlyConditionExpression()
+				).withDDMExpressionFieldAccessor(
+					new ObjectEntryDDMExpressionFieldAccessor(existingValues)
+				).build());
+
+		ddmExpression.setVariables(existingValues);
+
+		if (ddmExpression.evaluate()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private String _getRows(ObjectLayoutBox objectLayoutBox) {
@@ -1242,6 +1335,7 @@ public class ObjectEntryDisplayContextImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryDisplayContextImpl.class);
 
+	private final DDMExpressionFactory _ddmExpressionFactory;
 	private final DDMFormRenderer _ddmFormRenderer;
 	private final ItemSelector _itemSelector;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
