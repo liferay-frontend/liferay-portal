@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.servlet;
+package com.liferay.portal.servlet.filters.healthcheckdatasource;
 
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 
