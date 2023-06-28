@@ -607,6 +607,10 @@ public class DataFactory {
 		return sb.toString();
 	}
 
+	public int getMaxAccountEntryCommerceOrderCount() {
+		return BenchmarksPropsValues.MAX_ACCOUNT_ENTRY_COMMERCE_ORDER_COUNT;
+	}
+
 	public int getMaxAssetPublisherPageCount() {
 		return BenchmarksPropsValues.MAX_ASSETPUBLISHER_PAGE_COUNT;
 	}
@@ -772,6 +776,39 @@ public class DataFactory {
 		_journalArticleContent = new String(chars);
 	}
 
+	public List<CommerceOrderModel> newAccountEntryCommerceOrderModels(
+		long groupId, long accountEntryId, long commerceCurrencyId,
+		long billingAddressId, long shippingAddressId,
+		long commerceShippingMethodId, String commerceShippingOptionName,
+		int orderStatus) {
+
+		List<CommerceOrderModel> commerceOrderModels = new ArrayList<>(
+			BenchmarksPropsValues.MAX_ACCOUNT_ENTRY_COMMERCE_ORDER_COUNT);
+
+		for (int i = 1;
+			 i <= BenchmarksPropsValues.MAX_ACCOUNT_ENTRY_COMMERCE_ORDER_COUNT;
+			 i++) {
+
+			commerceOrderModels.add(
+				newCommerceOrderModel(
+					groupId, accountEntryId, commerceCurrencyId,
+					billingAddressId, shippingAddressId,
+					commerceShippingMethodId, commerceShippingOptionName,
+					orderStatus));
+		}
+
+		return commerceOrderModels;
+	}
+
+	public GroupModel newAccountEntryGroupModel(
+		AccountEntryModel accountEntryModel) {
+
+		return newGroupModel(
+			_counter.get(), getClassNameId(AccountEntry.class),
+			accountEntryModel.getAccountEntryId(), accountEntryModel.getName(),
+			GroupConstants.TYPE_SITE_PRIVATE, false);
+	}
+
 	public AccountEntryModel newAccountEntryModel(String type, int index) {
 		AccountEntryModel accountEntryModel = new AccountEntryModelImpl();
 
@@ -810,6 +847,19 @@ public class DataFactory {
 		accountEntryModel.setExternalReferenceCode(uuid);
 
 		return accountEntryModel;
+	}
+
+	public List<AccountEntryModel> newAccountEntryModels() {
+		List<AccountEntryModel> accountEntryModels = new ArrayList<>(
+			BenchmarksPropsValues.MAX_ACCOUNT_ENTRY_COUNT);
+
+		for (int i = 1; i <= BenchmarksPropsValues.MAX_ACCOUNT_ENTRY_COUNT;
+			 i++) {
+
+			accountEntryModels.add(newAccountEntryModel("business", i));
+		}
+
+		return accountEntryModels;
 	}
 
 	public AccountEntryUserRelModel newAccountEntryUserRelModel(
@@ -867,6 +917,10 @@ public class DataFactory {
 
 		addressModel.setUuid(uuid);
 		addressModel.setExternalReferenceCode(uuid);
+
+		if (_firstAddressModel == null) {
+			_firstAddressModel = addressModel;
+		}
 
 		return addressModel;
 	}
@@ -1206,28 +1260,6 @@ public class DataFactory {
 		}
 
 		return blogEntryModels;
-	}
-
-	public GroupModel newCommerceAccountEntryGroupModel(
-		AccountEntryModel accountEntryModel) {
-
-		return newGroupModel(
-			_counter.get(), getClassNameId(AccountEntry.class),
-			accountEntryModel.getAccountEntryId(), accountEntryModel.getName(),
-			GroupConstants.TYPE_SITE_PRIVATE, false);
-	}
-
-	public List<AccountEntryModel> newCommerceAccountEntryModels() {
-		List<AccountEntryModel> accountEntryModels = new ArrayList<>(
-			BenchmarksPropsValues.MAX_COMMERCE_ACCOUNT_ENTRY_COUNT);
-
-		for (int i = 1;
-			 i <= BenchmarksPropsValues.MAX_COMMERCE_ACCOUNT_ENTRY_COUNT; i++) {
-
-			accountEntryModels.add(newAccountEntryModel("business", i));
-		}
-
-		return accountEntryModels;
 	}
 
 	public PortletPreferencesModel
@@ -1848,7 +1880,18 @@ public class DataFactory {
 	}
 
 	public List<CommerceOrderModel> newCommerceOrderModels(
-		long groupId, long commerceAccountId, long commerceCurrencyId,
+		long groupId, long accountEntryId, long commerceCurrencyId,
+		long commerceShippingMethodId, int orderStatus) {
+
+		return newCommerceOrderModels(
+			groupId, accountEntryId, commerceCurrencyId,
+			_firstAddressModel.getAddressId(),
+			_firstAddressModel.getAddressId(), commerceShippingMethodId,
+			"Standard Delivery", orderStatus);
+	}
+
+	public List<CommerceOrderModel> newCommerceOrderModels(
+		long groupId, long accountEntryId, long commerceCurrencyId,
 		long billingAddressId, long shippingAddressId,
 		long commerceShippingMethodId, String commerceShippingOptionName,
 		int orderStatus) {
@@ -1886,7 +1929,7 @@ public class DataFactory {
 		for (int i = 1; i <= maxCommerceOrderCount; i++) {
 			commerceOrderModels.add(
 				newCommerceOrderModel(
-					groupId, commerceAccountId, commerceCurrencyId,
+					groupId, accountEntryId, commerceCurrencyId,
 					billingAddressId, shippingAddressId,
 					commerceShippingMethodId, commerceShippingOptionName,
 					orderStatus));
@@ -2106,6 +2149,20 @@ public class DataFactory {
 		commerceShippingMethodModel.setActive(true);
 
 		return commerceShippingMethodModel;
+	}
+
+	public List<CommerceShippingMethodModel> newCommerceShippingMethodModels(
+		List<GroupModel> groupModels) {
+
+		List<CommerceShippingMethodModel> commerceShippingMethodModels =
+			new ArrayList<>();
+
+		for (GroupModel groupModel : groupModels) {
+			commerceShippingMethodModels.add(
+				newCommerceShippingMethodModel(groupModel.getGroupId()));
+		}
+
+		return commerceShippingMethodModels;
 	}
 
 	public List<DDMTemplateModel>
@@ -7454,6 +7511,7 @@ public class DataFactory {
 	private final String _dlDDMStructureContent;
 	private final String _dlDDMStructureLayoutContent;
 	private final SimpleCounter _dlFileEntryIdCounter;
+	private AddressModel _firstAddressModel;
 	private final List<String> _firstNames;
 	private final FriendlyURLNormalizer _friendlyURLNormalizer;
 	private final SimpleCounter _futureDateCounter;

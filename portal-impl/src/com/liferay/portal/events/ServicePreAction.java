@@ -129,6 +129,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.time.StopWatch;
 
 /**
@@ -178,6 +179,8 @@ public class ServicePreAction extends Action {
 		if (themeDisplay == null) {
 			return;
 		}
+
+		_trackThemeDisplay(httpServletResponse, themeDisplay);
 
 		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
@@ -1980,6 +1983,29 @@ public class ServicePreAction extends Action {
 		}
 	}
 
+	private void _trackThemeDisplay(
+		HttpServletResponse httpServletResponse, ThemeDisplay themeDisplay) {
+
+		if (!_TRACK_THEME_DISPLAY) {
+			return;
+		}
+
+		httpServletResponse.setHeader(
+			"X-Liferay-Request-Company",
+			String.valueOf(themeDisplay.getCompanyId()));
+		httpServletResponse.setHeader(
+			"X-Liferay-Request-Group",
+			String.valueOf(themeDisplay.getScopeGroupId()));
+
+		User user = themeDisplay.getUser();
+
+		httpServletResponse.setHeader(
+			"X-Liferay-Request-Guest-User", String.valueOf(user.isGuestUser()));
+		httpServletResponse.setHeader(
+			"X-Liferay-Request-User",
+			DigestUtils.md5Hex(String.valueOf(user.getUserId())));
+	}
+
 	private void _updateUserLayouts(User user) throws Exception {
 		Boolean hasPowerUserRole = null;
 
@@ -2121,6 +2147,9 @@ public class ServicePreAction extends Action {
 	private static final String _PATH_PORTAL_LOGOUT = "/portal/logout";
 
 	private static final String _PATH_PROXY;
+
+	private static final boolean _TRACK_THEME_DISPLAY = GetterUtil.getBoolean(
+		PropsUtil.get("service.pre.action.track.theme.display"));
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ServicePreAction.class);

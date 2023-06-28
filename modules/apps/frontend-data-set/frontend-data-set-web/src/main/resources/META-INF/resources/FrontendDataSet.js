@@ -30,6 +30,7 @@ import ClayEmptyState from '@clayui/empty-state';
 
 import FrontendDataSetContext from './FrontendDataSetContext';
 import ManagementBar from './management_bar/ManagementBar';
+import CreationMenu from './management_bar/components/CreationMenu';
 import {
 	getFilterSelectedItemsLabel,
 	getOdataFilterString,
@@ -63,6 +64,7 @@ const FrontendDataSet = ({
 	customDataRenderers,
 	customViews,
 	customViewsEnabled,
+	emptyState,
 	filters: initialFilters,
 	formId,
 	formName,
@@ -488,12 +490,23 @@ const FrontendDataSet = ({
 					/>
 				) : (
 					<ClayEmptyState
-						description={Liferay.Language.get(
-							'sorry,-no-results-were-found'
+						description={
+							emptyState?.description ??
+							Liferay.Language.get('sorry,-no-results-were-found')
+						}
+						imgSrc={
+							themeDisplay.getPathThemeImages() +
+							(emptyState?.image ?? '/states/search_state.gif')
+						}
+						title={
+							emptyState?.title ??
+							Liferay.Language.get('no-results-found')
+						}
+					>
+						{creationMenu && (
+							<CreationMenu {...creationMenu} inEmptyState />
 						)}
-						imgSrc={`${themeDisplay.getPathThemeImages()}/states/search_state.gif`}
-						title={Liferay.Language.get('no-results-found')}
-					/>
+					</ClayEmptyState>
 				)}
 			</div>
 		) : (

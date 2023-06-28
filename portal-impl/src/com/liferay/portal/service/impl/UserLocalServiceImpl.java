@@ -1558,7 +1558,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		}
 
 		handleAuthenticationFailure(
-			login, authType, user, Collections.<String, String[]>emptyMap(),
+			companyId, authType, login, user,
+			Collections.<String, String[]>emptyMap(),
 			Collections.<String, String[]>emptyMap());
 
 		return 0;
@@ -1637,7 +1638,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		Company company = _companyPersistence.findByPrimaryKey(companyId);
 
 		handleAuthenticationFailure(
-			userName, company.getAuthType(), user,
+			companyId, company.getAuthType(), userName, user,
 			new HashMap<String, String[]>(), new HashMap<String, String[]>());
 
 		return 0;
@@ -5680,6 +5681,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				PwdAuthenticator.pretendToAuthenticate();
 			}
 
+			try {
+				AuthPipeline.onDoesNotExist(
+					companyId, authType, login, headerMap, parameterMap);
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+			}
+
 			return Authenticator.DNE;
 		}
 
@@ -5743,7 +5752,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			}
 			catch (PortalException portalException) {
 				handleAuthenticationFailure(
-					login, authType, user, headerMap, parameterMap);
+					companyId, authType, login, user, headerMap, parameterMap);
 
 				throw portalException;
 			}
@@ -5774,7 +5783,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		if (authResult == Authenticator.FAILURE) {
 			authResult = handleAuthenticationFailure(
-				login, authType, user, headerMap, parameterMap);
+				companyId, authType, login, user, headerMap, parameterMap);
 
 			user = userPersistence.fetchByPrimaryKey(user.getUserId());
 		}
@@ -6013,41 +6022,55 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	protected int handleAuthenticationFailure(
-		String login, String authType, User user,
+		long companyId, String authType, String login, User user,
 		Map<String, String[]> headerMap, Map<String, String[]> parameterMap) {
 
 		if (user == null) {
+			try {
+				AuthPipeline.onDoesNotExist(
+					companyId, authType, login, headerMap, parameterMap);
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+			}
+
 			return Authenticator.DNE;
 		}
 
 		try {
 			if (authType.equals(CompanyConstants.AUTH_TYPE_EA)) {
 				AuthPipeline.onFailureByEmailAddress(
-					PropsKeys.AUTH_FAILURE, user.getCompanyId(),
-					user.getEmailAddress(), headerMap, parameterMap);
+					PropsKeys.AUTH_FAILURE, companyId, user.getEmailAddress(),
+					headerMap, parameterMap);
 			}
 			else if (authType.equals(CompanyConstants.AUTH_TYPE_SN)) {
 				AuthPipeline.onFailureByScreenName(
-					PropsKeys.AUTH_FAILURE, user.getCompanyId(),
-					user.getScreenName(), headerMap, parameterMap);
+					PropsKeys.AUTH_FAILURE, companyId, user.getScreenName(),
+					headerMap, parameterMap);
 			}
 			else if (authType.equals(CompanyConstants.AUTH_TYPE_ID)) {
 				AuthPipeline.onFailureByUserId(
-					PropsKeys.AUTH_FAILURE, user.getCompanyId(),
-					user.getUserId(), headerMap, parameterMap);
+					PropsKeys.AUTH_FAILURE, companyId, user.getUserId(),
+					headerMap, parameterMap);
 			}
 
 			user = userPersistence.fetchByPrimaryKey(user.getUserId());
 
 			if (user == null) {
+				try {
+					AuthPipeline.onDoesNotExist(
+						companyId, authType, login, headerMap, parameterMap);
+				}
+				catch (Exception exception) {
+					_log.error(exception);
+				}
+
 				return Authenticator.DNE;
 			}
 
 			// Let LDAP handle max failure event
 
-			if (!LDAPSettingsUtil.isPasswordPolicyEnabled(
-					user.getCompanyId())) {
-
+			if (!LDAPSettingsUtil.isPasswordPolicyEnabled(companyId)) {
 				PasswordPolicy passwordPolicy = user.getPasswordPolicy();
 
 				user = userPersistence.fetchByPrimaryKey(user.getUserId());
@@ -6061,17 +6084,17 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 					if (authType.equals(CompanyConstants.AUTH_TYPE_EA)) {
 						AuthPipeline.onMaxFailuresByEmailAddress(
-							PropsKeys.AUTH_MAX_FAILURES, user.getCompanyId(),
+							PropsKeys.AUTH_MAX_FAILURES, companyId,
 							user.getEmailAddress(), headerMap, parameterMap);
 					}
 					else if (authType.equals(CompanyConstants.AUTH_TYPE_SN)) {
 						AuthPipeline.onMaxFailuresByScreenName(
-							PropsKeys.AUTH_MAX_FAILURES, user.getCompanyId(),
+							PropsKeys.AUTH_MAX_FAILURES, companyId,
 							user.getScreenName(), headerMap, parameterMap);
 					}
 					else if (authType.equals(CompanyConstants.AUTH_TYPE_ID)) {
 						AuthPipeline.onMaxFailuresByUserId(
-							PropsKeys.AUTH_MAX_FAILURES, user.getCompanyId(),
+							PropsKeys.AUTH_MAX_FAILURES, companyId,
 							user.getUserId(), headerMap, parameterMap);
 					}
 				}
