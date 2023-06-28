@@ -27,6 +27,7 @@ import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.entry.util.ObjectEntryDTOConverterUtil;
 import com.liferay.object.entry.util.ObjectEntryValuesUtil;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectDefinition;
@@ -44,7 +45,6 @@ import com.liferay.object.rest.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.object.rest.dto.v1_0.util.CreatorUtil;
 import com.liferay.object.rest.dto.v1_0.util.LinkUtil;
 import com.liferay.object.rest.internal.dto.v1_0.util.TaxonomyCategoryBriefUtil;
-import com.liferay.object.rest.internal.util.DTOConverterUtil;
 import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -211,18 +211,40 @@ public class ObjectEntryDTOConverter
 										getSystemObjectDefinitionManager(
 											objectDefinition.getName());
 
-							relatedObjectEntryAtomicReference.set(
-								(Serializable)DTOConverterUtil.toDTO(
-									systemObjectDefinitionManager.
-										getBaseModelByExternalReferenceCode(
-											systemObjectDefinitionManager.
-												getExternalReferenceCode(
-													primaryKey),
-											objectDefinition.getCompanyId()),
+							BaseModel<?> baseModel =
+								systemObjectDefinitionManager.
+									getBaseModelByExternalReferenceCode(
+										systemObjectDefinitionManager.
+											getExternalReferenceCode(
+												primaryKey),
+										objectDefinition.getCompanyId());
+
+							Map<String, Object> values =
+								ObjectEntryDTOConverterUtil.toValues(
+									baseModel,
 									dtoConverterContext.
 										getDTOConverterRegistry(),
-									systemObjectDefinitionManager,
-									dtoConverterContext.getUser()));
+									objectDefinition.getName(),
+									_systemObjectDefinitionManagerRegistry,
+									dtoConverterContext.getUser());
+
+							if (values != null) {
+								ObjectField objectField =
+									_objectFieldLocalService.fetchObjectField(
+										objectDefinition.
+											getTitleObjectFieldId());
+
+								values.put(
+									objectField.getName(),
+									ObjectEntryValuesUtil.getTitleFieldValue(
+										objectField.getBusinessType(),
+										baseModel.getModelAttributes(),
+										objectField,
+										dtoConverterContext.getUser(), values));
+							}
+
+							relatedObjectEntryAtomicReference.set(
+								(Serializable)values);
 						}
 						else {
 							relatedObjectEntryAtomicReference.set(
@@ -570,11 +592,11 @@ public class ObjectEntryDTOConverter
 		throws Exception {
 
 		DTOConverter<BaseModel<?>, ?> dtoConverter =
-			DTOConverterUtil.getDTOConverter(
+			ObjectEntryDTOConverterUtil.getDTOConverter(
 				dtoConverterContext.getDTOConverterRegistry(),
 				systemObjectDefinitionManager);
 
-		Object dto = DTOConverterUtil.toDTO(
+		Object dto = ObjectEntryDTOConverterUtil.toDTO(
 			baseModel, dtoConverterContext.getDTOConverterRegistry(),
 			systemObjectDefinitionManager, dtoConverterContext.getUser());
 

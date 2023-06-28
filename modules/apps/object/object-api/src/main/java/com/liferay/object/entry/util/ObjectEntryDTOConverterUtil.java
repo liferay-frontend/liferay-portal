@@ -12,25 +12,30 @@
  * details.
  */
 
-package com.liferay.object.rest.internal.util;
+package com.liferay.object.entry.util;
 
 import com.liferay.object.system.JaxRsApplicationDescriptor;
 import com.liferay.object.system.SystemObjectDefinitionManager;
+import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.ws.rs.InternalServerErrorException;
 
 /**
  * @author Carolina Barbosa
  */
-public class DTOConverterUtil {
+public class ObjectEntryDTOConverterUtil {
 
 	public static DTOConverter<BaseModel<?>, ?> getDTOConverter(
 			DTOConverterRegistry dtoConverterRegistry,
@@ -77,5 +82,35 @@ public class DTOConverterUtil {
 
 		return dtoConverter.toDTO(defaultDTOConverterContext);
 	}
+
+	public static Map<String, Object> toValues(
+		BaseModel<?> baseModel, DTOConverterRegistry dtoConverterRegistry,
+		String objectDefinitionName,
+		SystemObjectDefinitionManagerRegistry
+			systemObjectDefinitionManagerRegistry,
+		User user) {
+
+		try {
+			Object dto = toDTO(
+				baseModel, dtoConverterRegistry,
+				systemObjectDefinitionManagerRegistry.
+					getSystemObjectDefinitionManager(objectDefinitionName),
+				user);
+
+			if (dto == null) {
+				return Collections.emptyMap();
+			}
+
+			return ObjectMapperUtil.readValue(Map.class, dto.toString());
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+
+		return Collections.emptyMap();
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ObjectEntryDTOConverterUtil.class);
 
 }

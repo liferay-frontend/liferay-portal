@@ -20,6 +20,7 @@ import com.liferay.object.constants.ObjectConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.entry.util.ObjectEntryDTOConverterUtil;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
@@ -35,7 +36,6 @@ import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.internal.petra.sql.dsl.expression.OrderByExpressionUtil;
 import com.liferay.object.rest.internal.resource.v1_0.ObjectEntryRelatedObjectsResourceImpl;
 import com.liferay.object.rest.internal.resource.v1_0.ObjectEntryResourceImpl;
-import com.liferay.object.rest.internal.util.DTOConverterUtil;
 import com.liferay.object.rest.internal.util.ObjectEntryValuesUtil;
 import com.liferay.object.rest.manager.v1_0.BaseObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
@@ -739,7 +739,7 @@ public class DefaultObjectEntryManagerImpl
 					getSystemObjectDefinitionManager(
 						objectDefinition.getName());
 
-			return DTOConverterUtil.toDTO(
+			return ObjectEntryDTOConverterUtil.toDTO(
 				systemObjectDefinitionManager.
 					getBaseModelByExternalReferenceCode(
 						systemObjectDefinitionManager.getExternalReferenceCode(
@@ -1355,7 +1355,7 @@ public class DefaultObjectEntryManagerImpl
 			SystemObjectDefinitionManager systemObjectDefinitionManager)
 		throws Exception {
 
-		return DTOConverterUtil.toDTO(
+		return ObjectEntryDTOConverterUtil.toDTO(
 			baseModel, _dtoConverterRegistry, systemObjectDefinitionManager,
 			_userLocalService.getUser(serviceBuilderObjectEntry.getUserId()));
 	}

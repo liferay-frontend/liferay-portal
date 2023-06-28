@@ -85,8 +85,12 @@ public class CPDefinitionSystemObjectDefinitionManager
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		return _cProductLocalService.getCProductByExternalReferenceCode(
-			externalReferenceCode, companyId);
+		CProduct cProduct =
+			_cProductLocalService.getCProductByExternalReferenceCode(
+				externalReferenceCode, companyId);
+
+		return _cpDefinitionLocalService.getCProductCPDefinition(
+			cProduct.getCProductId(), cProduct.getLatestVersion());
 	}
 
 	@Override
