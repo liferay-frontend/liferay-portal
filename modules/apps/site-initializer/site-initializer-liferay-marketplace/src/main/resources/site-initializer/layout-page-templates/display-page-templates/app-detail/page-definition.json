@@ -281,7 +281,11 @@
 																		{
 																			"id": "element-html",
 																			"value": {
-																				"html": {
+																				"fragmentLink": {
+																				},
+																				"text": {
+																					"mapping": {
+																					}
 																				}
 																			}
 																		}
@@ -1053,6 +1057,14 @@
 																					"id": "element-text",
 																					"value": {
 																						"fragmentLink": {
+																						},
+																						"text": {
+																							"mapping": {
+																								"fieldKey": "AssetVocabulary_[$TAXONOMY_VOCABULARY_ID:Marketplace Liferay Platform Offering$]",
+																								"itemReference": {
+																									"contextSource": "DisplayPageItem"
+																								}
+																							}
 																						}
 																					}
 																				}
@@ -1136,6 +1148,14 @@
 																					"id": "element-text",
 																					"value": {
 																						"fragmentLink": {
+																						},
+																						"text": {
+																							"mapping": {
+																								"fieldKey": "AssetVocabulary_[$TAXONOMY_VOCABULARY_ID:Marketplace Liferay Version$]",
+																								"itemReference": {
+																									"contextSource": "DisplayPageItem"
+																								}
+																							}
 																						}
 																					}
 																				}
@@ -1222,6 +1242,14 @@
 																					"id": "element-text",
 																					"value": {
 																						"fragmentLink": {
+																						},
+																						"text": {
+																							"mapping": {
+																								"fieldKey": "AssetVocabulary_[$TAXONOMY_VOCABULARY_ID:Marketplace Edition$]",
+																								"itemReference": {
+																									"contextSource": "DisplayPageItem"
+																								}
+																							}
 																						}
 																					}
 																				}
