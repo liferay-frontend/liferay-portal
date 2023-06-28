@@ -19,15 +19,12 @@ import com.liferay.commerce.inventory.exception.MVCCException;
 import com.liferay.commerce.inventory.exception.NoSuchInventoryBookedQuantityException;
 import com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity;
 import com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantityTable;
-import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
-import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseTable;
 import com.liferay.commerce.inventory.service.CommerceInventoryAuditLocalService;
 import com.liferay.commerce.inventory.service.base.CommerceInventoryBookedQuantityLocalServiceBaseImpl;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditType;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeRegistry;
 import com.liferay.commerce.model.CommerceOrderItemTable;
 import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.model.CommerceChannelRelTable;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.aop.AopService;
@@ -155,32 +152,16 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 			).innerJoinON(
 				GroupTable.INSTANCE,
 				CommerceOrderItemTable.INSTANCE.groupId.eq(
-					GroupTable.INSTANCE.groupId)
-			).innerJoinON(
-				CommerceChannelRelTable.INSTANCE,
-				GroupTable.INSTANCE.classNameId.eq(
-					_portal.getClassNameId(CommerceChannel.class.getName())
+					GroupTable.INSTANCE.groupId
 				).and(
-					CommerceChannelRelTable.INSTANCE.commerceChannelId.eq(
-						GroupTable.INSTANCE.classPK)
-				)
-			).innerJoinON(
-				CommerceInventoryWarehouseTable.INSTANCE,
-				CommerceChannelRelTable.INSTANCE.classNameId.eq(
-					_portal.getClassNameId(
-						CommerceInventoryWarehouse.class.getName())
-				).and(
-					CommerceChannelRelTable.INSTANCE.classPK.eq(
-						CommerceInventoryWarehouseTable.INSTANCE.
-							commerceInventoryWarehouseId)
+					GroupTable.INSTANCE.classNameId.eq(
+						_portal.getClassNameId(CommerceChannel.class.getName()))
 				)
 			).where(
 				CommerceInventoryBookedQuantityTable.INSTANCE.companyId.eq(
 					companyId
 				).and(
 					CommerceInventoryBookedQuantityTable.INSTANCE.sku.eq(sku)
-				).and(
-					CommerceInventoryWarehouseTable.INSTANCE.active.eq(true)
 				).and(
 					GroupTable.INSTANCE.groupId.eq(commerceChannelGroupId)
 				)
