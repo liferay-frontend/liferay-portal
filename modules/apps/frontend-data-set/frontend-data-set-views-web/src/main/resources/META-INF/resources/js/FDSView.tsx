@@ -58,6 +58,7 @@ interface IFDSViewSectionInterface {
 	fdsViewsURL: string;
 	namespace: string;
 	saveFDSFieldsURL: string;
+	updateFDSTabHandler: (data: FDSViewType) => void;
 }
 
 interface IFDSViewInterface {
@@ -78,6 +79,10 @@ const FDSView = ({
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [fdsView, setFDSView] = useState<FDSViewType>();
 	const [loading, setLoading] = useState(true);
+
+	const handleTabUpdate = (updatedViewData: FDSViewType): void => {
+		setFDSView({...fdsView, ...updatedViewData});
+	};
 
 	useEffect(() => {
 		const getFDSView = async () => {
@@ -141,6 +146,7 @@ const FDSView = ({
 						fdsViewsURL={fdsViewsURL}
 						namespace={namespace}
 						saveFDSFieldsURL={saveFDSFieldsURL}
+						updateFDSTabHandler={handleTabUpdate}
 					/>
 				)
 			)}

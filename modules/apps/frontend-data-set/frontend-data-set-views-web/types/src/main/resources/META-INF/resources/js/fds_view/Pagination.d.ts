@@ -19,5 +19,6 @@ declare function Pagination({
 	fdsView,
 	fdsViewsURL,
 	namespace,
+	updateFDSTabHandler,
 }: IFDSViewSectionInterface): JSX.Element;
 export default Pagination;

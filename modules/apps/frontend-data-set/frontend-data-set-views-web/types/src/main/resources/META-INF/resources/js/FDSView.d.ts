@@ -23,6 +23,7 @@ interface IFDSViewSectionInterface {
 	fdsViewsURL: string;
 	namespace: string;
 	saveFDSFieldsURL: string;
+	updateFDSTabHandler: (data: FDSViewType) => void;
 }
 interface IFDSViewInterface {
 	fdsClientExtensionCellRenderers: IClientExtensionCellRenderer[];

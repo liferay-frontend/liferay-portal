@@ -19,5 +19,6 @@ declare const Details: ({
 	fdsView,
 	fdsViewsURL,
 	namespace,
+	updateFDSTabHandler,
 }: IFDSViewSectionInterface) => JSX.Element;
 export default Details;
