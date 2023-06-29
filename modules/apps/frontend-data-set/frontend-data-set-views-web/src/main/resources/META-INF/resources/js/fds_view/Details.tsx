@@ -27,7 +27,7 @@ const Details = ({
 	fdsView,
 	fdsViewsURL,
 	namespace,
-	onUpdateFDSView,
+	onFDSViewUpdate,
 }: IFDSViewSectionInterface) => {
 	const [labelValidationError, setLabelValidationError] = useState(false);
 
@@ -72,7 +72,7 @@ const Details = ({
 				);
 			}
 
-			onUpdateFDSView(responseJSON);
+			onFDSViewUpdate(responseJSON);
 		}
 		else {
 			openToast({

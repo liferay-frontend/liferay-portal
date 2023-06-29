@@ -57,7 +57,7 @@ interface IFDSViewSectionInterface {
 	fdsView: FDSViewType;
 	fdsViewsURL: string;
 	namespace: string;
-	onUpdateFDSView: (data: FDSViewType) => void;
+	onFDSViewUpdate: (data: FDSViewType) => void;
 	saveFDSFieldsURL: string;
 }
 
@@ -141,7 +141,7 @@ const FDSView = ({
 						fdsView={fdsView}
 						fdsViewsURL={fdsViewsURL}
 						namespace={namespace}
-						onUpdateFDSView={(
+						onFDSViewUpdate={(
 							updatedViewData: FDSViewType
 						): void => {
 							setFDSView({...fdsView, ...updatedViewData});

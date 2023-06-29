@@ -19,6 +19,6 @@ declare const Details: ({
 	fdsView,
 	fdsViewsURL,
 	namespace,
-	onUpdateFDSView,
+	onFDSViewUpdate,
 }: IFDSViewSectionInterface) => JSX.Element;
 export default Details;
