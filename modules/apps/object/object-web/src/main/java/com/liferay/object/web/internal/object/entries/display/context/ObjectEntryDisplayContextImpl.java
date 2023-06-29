@@ -77,6 +77,7 @@ import com.liferay.object.service.ObjectLayoutLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.web.internal.display.context.helper.ObjectRequestHelper;
 import com.liferay.object.web.internal.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
+import com.liferay.object.web.internal.util.ObjectEntryUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -1099,71 +1100,6 @@ public class ObjectEntryDisplayContextImpl
 		return _objectEntry;
 	}
 
-	private boolean _isReadOnly(
-			ObjectEntry objectEntry, ObjectField objectField, boolean readOnly)
-		throws PortalException {
-
-		if (readOnly) {
-			return true;
-		}
-
-		if (Objects.equals(
-				objectField.getReadOnly(),
-				ObjectFieldConstants.READ_ONLY_FALSE)) {
-
-			return false;
-		}
-
-		if (Objects.equals(
-				objectField.getReadOnly(),
-				ObjectFieldConstants.READ_ONLY_TRUE)) {
-
-			return true;
-		}
-
-		Map<String, Object> existingValues = new HashMap<>();
-
-		if (objectEntry == null) {
-			for (ObjectField objectField1 :
-					_objectFieldLocalService.getObjectFields(
-						objectField.getObjectDefinitionId())) {
-
-				existingValues.put(
-					objectField1.getName(),
-					ObjectFieldSettingUtil.getDefaultValueAsString(
-						null, objectField.getObjectFieldId(),
-						ObjectFieldSettingLocalServiceUtil.getService(), null));
-			}
-		}
-		else {
-			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
-				_objectEntryLocalService.getObjectEntry(objectEntry.getId());
-
-			existingValues.putAll(
-				_objectEntryLocalService.getSystemValues(
-					serviceBuilderObjectEntry));
-			existingValues.putAll(
-				_objectEntryLocalService.getValues(serviceBuilderObjectEntry));
-			existingValues.put("currentUserId", _themeDisplay.getUserId());
-		}
-
-		DDMExpression<Boolean> ddmExpression =
-			_ddmExpressionFactory.createExpression(
-				CreateExpressionRequest.Builder.newBuilder(
-					objectField.getReadOnlyConditionExpression()
-				).withDDMExpressionFieldAccessor(
-					new ObjectEntryDDMExpressionFieldAccessor(existingValues)
-				).build());
-
-		ddmExpression.setVariables(existingValues);
-
-		if (ddmExpression.evaluate()) {
-			return true;
-		}
-
-		return false;
-	}
-
 	private String _getRows(ObjectLayoutBox objectLayoutBox) {
 		JSONArray rowsJSONArray = JSONFactoryUtil.createJSONArray();
 
@@ -1243,6 +1179,74 @@ public class ObjectEntryDisplayContextImpl
 		return relatedObjectDefinition.isActive();
 	}
 
+	private boolean _isReadOnly(
+			ObjectEntry objectEntry, ObjectField objectField, boolean readOnly)
+		throws PortalException {
+
+		if (readOnly) {
+			return true;
+		}
+
+		if (Objects.equals(
+				objectField.getReadOnly(),
+				ObjectFieldConstants.READ_ONLY_FALSE)) {
+
+			return false;
+		}
+
+		if (Objects.equals(
+				objectField.getReadOnly(),
+				ObjectFieldConstants.READ_ONLY_TRUE)) {
+
+			return true;
+		}
+
+		Map<String, Object> existingValues = new HashMap<>();
+
+		if (objectEntry == null) {
+			for (ObjectField objectField1 :
+					_objectFieldLocalService.getObjectFields(
+						objectField.getObjectDefinitionId())) {
+
+				existingValues.put(
+					objectField1.getName(),
+					ObjectFieldSettingUtil.getDefaultValueAsString(
+						null, objectField.getObjectFieldId(),
+						ObjectFieldSettingLocalServiceUtil.getService(), null));
+			}
+		}
+		else {
+			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
+				_objectEntryLocalService.getObjectEntry(
+					objectEntry.getExternalReferenceCode(),
+					objectField.getObjectDefinitionId());
+
+			existingValues.putAll(
+				_objectEntryLocalService.getSystemValues(
+					serviceBuilderObjectEntry));
+			existingValues.putAll(
+				_objectEntryLocalService.getValues(serviceBuilderObjectEntry));
+
+			existingValues.put("currentUserId", _themeDisplay.getUserId());
+		}
+
+		DDMExpression<Boolean> ddmExpression =
+			_ddmExpressionFactory.createExpression(
+				CreateExpressionRequest.Builder.newBuilder(
+					objectField.getReadOnlyConditionExpression()
+				).withDDMExpressionFieldAccessor(
+					new ObjectEntryDDMExpressionFieldAccessor(existingValues)
+				).build());
+
+		ddmExpression.setVariables(existingValues);
+
+		if (ddmExpression.evaluate()) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _setDDMFormFieldValueValue(
 		DDMFormField ddmFormField, DDMFormFieldValue ddmFormFieldValue,
 		Map<String, Object> values) {
@@ -1319,17 +1323,8 @@ public class ObjectEntryDisplayContextImpl
 
 		ObjectDefinition objectDefinition = getObjectDefinition1();
 
-		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
-			_objectEntryLocalService.createObjectEntry(0L);
-
-		serviceBuilderObjectEntry.setExternalReferenceCode(
-			objectEntry.getExternalReferenceCode());
-		serviceBuilderObjectEntry.setObjectEntryId(
-			GetterUtil.getLong(objectEntry.getId()));
-		serviceBuilderObjectEntry.setObjectDefinitionId(
-			objectDefinition.getObjectDefinitionId());
-
-		return serviceBuilderObjectEntry;
+		return ObjectEntryUtil.toObjectEntry(
+			objectDefinition.getObjectDefinitionId(), objectEntry);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

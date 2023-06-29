@@ -80,6 +80,8 @@ import com.liferay.portal.kernel.servlet.PortalWebResourcesUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ColorSchemeFactoryUtil;
+import com.liferay.portal.kernel.util.Digester;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -129,7 +131,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.time.StopWatch;
 
 /**
@@ -2003,7 +2004,8 @@ public class ServicePreAction extends Action {
 			"X-Liferay-Request-Guest-User", String.valueOf(user.isGuestUser()));
 		httpServletResponse.setHeader(
 			"X-Liferay-Request-User",
-			DigestUtils.md5Hex(String.valueOf(user.getUserId())));
+			DigesterUtil.digestHex(
+				Digester.MD5, String.valueOf(user.getUserId())));
 	}
 
 	private void _updateUserLayouts(User user) throws Exception {

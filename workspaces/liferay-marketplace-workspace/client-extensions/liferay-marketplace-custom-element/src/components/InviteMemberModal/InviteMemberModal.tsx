@@ -44,6 +44,11 @@ interface InviteMemberModalProps {
 	selectedAccount: Account;
 }
 
+const finalPathUrl = {
+	'customer-dashboard': 'customer-gate',
+	'publisher-dashboard': 'loading',
+};
+
 export function InviteMemberModal({
 	handleClose,
 	listOfRoles,
@@ -66,6 +71,11 @@ export function InviteMemberModal({
 
 	const [accountRoles, setAccountRoles] = useState<AccountRole[]>();
 	const [userPassword, setUserPassword] = useState<string>('');
+
+	const paths = Liferay.ThemeDisplay.getLayoutURL().split('/');
+
+	const finalPath =
+		finalPathUrl[paths[paths.length - 1] as keyof typeof finalPathUrl];
 
 	const getAccountRoles = useCallback(async () => {
 		const roles = await getAccountRolesOnAPI(selectedAccount.id);
@@ -192,11 +202,7 @@ export function InviteMemberModal({
 			accountGroupERC,
 			accountName: selectedAccount.name,
 			emailOfMember: formFields.email,
-			inviteURL:
-				Liferay.ThemeDisplay.getPortalURL() +
-				'/c/login?redirect=' +
-				getSiteURL() +
-				'/loading',
+			inviteURL: `${Liferay.ThemeDisplay.getPortalURL()}/c/login?redirect=${getSiteURL()}/${finalPath}`,
 			inviterName: myUser.givenName,
 			mothersName: userPassword,
 			r_accountEntryToUserAdditionalInfo_accountEntryId:

@@ -2,8 +2,6 @@ assemble:
     - from: build/vite
       into: static
 liferay-marketplace-custom-element-create-app:
-    cssURLs:
-        - "**/*.css"
     friendlyURLMapping: liferay-marketplace-custom-element-create-app
     htmlElementName: liferay-marketplace-custom-element
     instanceable: false
@@ -15,9 +13,21 @@ liferay-marketplace-custom-element-create-app:
     urls:
         - "*.js"
     useESM: true
-liferay-marketplace-custom-element-get-app:
+liferay-marketplace-custom-element-customer-gate:
     cssURLs:
         - "**/*.css"
+    friendlyURLMapping: liferay-marketplace-custom-element-customer-gate
+    htmlElementName: liferay-marketplace-custom-element
+    instanceable: false
+    name: Liferay Marketplace Customer Gate
+    portletCategoryName: category.client-extensions
+    properties:
+        route: customer-gate
+    type: customElement
+    urls:
+        - "*.js"
+    useESM: true
+liferay-marketplace-custom-element-get-app:
     friendlyURLMapping: liferay-marketplace-custom-element-get-app
     htmlElementName: liferay-marketplace-custom-element
     instanceable: false
@@ -30,8 +40,6 @@ liferay-marketplace-custom-element-get-app:
         - "*.js"
     useESM: true
 liferay-marketplace-custom-element-next-steps:
-    cssURLs:
-        - "**/*.css"
     friendlyURLMapping: liferay-marketplace-custom-element-next-steps
     htmlElementName: liferay-marketplace-custom-element
     instanceable: false
@@ -44,8 +52,6 @@ liferay-marketplace-custom-element-next-steps:
         - "*.js"
     useESM: true
 liferay-marketplace-custom-element-published-apps:
-    cssURLs:
-        - "**/*.css"
     friendlyURLMapping: liferay-marketplace-custom-element-published-apps
     htmlElementName: liferay-marketplace-custom-element
     instanceable: false
@@ -58,8 +64,6 @@ liferay-marketplace-custom-element-published-apps:
         - "*.js"
     useESM: true
 liferay-marketplace-custom-element-purchased-apps:
-    cssURLs:
-        - "**/*.css"
     friendlyURLMapping: liferay-marketplace-custom-element-purchased-apps
     htmlElementName: liferay-marketplace-custom-element
     instanceable: false

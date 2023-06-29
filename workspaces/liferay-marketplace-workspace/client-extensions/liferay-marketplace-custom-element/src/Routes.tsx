@@ -14,6 +14,7 @@
 
 import {Liferay} from './liferay/liferay';
 import {AppCreationFlow} from './pages/AppCreationFlow/AppCreationFlow';
+import {CustomerGatePage} from './pages/CustomerGatePage/CustomerGatePage';
 import GetAppPage from './pages/GetAppPage/GetAppPage';
 import {NextStepPage} from './pages/NextStepPage/NextStepPage';
 import {PublishedAppsDashboardPage} from './pages/PublishedAppsDashboardPage/PublishedAppsDashboardPage';
@@ -39,6 +40,9 @@ export default function AppRoutes({route}: AppRoutesProps) {
 		}
 		else if (route === 'published-apps') {
 			return <PublishedAppsDashboardPage />;
+		}
+		else if (route === 'customer-gate') {
+			return <CustomerGatePage />;
 		}
 	}
 

@@ -12,12 +12,17 @@
  * details.
  */
 
+import {z} from 'zod';
+
 import {Liferay} from '../liferay/liferay';
+import zodSchema from '../schema/zod';
 
 const headers = {
 	'Content-Type': 'application/json',
 	'X-CSRF-Token': Liferay.authToken,
 };
+
+type UserForm = z.infer<typeof zodSchema.newCustomer>;
 
 export const baseURL =
 	window.location.origin + Liferay.ThemeDisplay.getPathContext();
@@ -369,7 +374,7 @@ export async function getDeliveryProduct({
 	return await response.json();
 }
 
-export async function getMyUserAccount() {
+export async function getMyUserAccount(): Promise<UserAccount> {
 	const response = await fetch(
 		`${baseURL}/o/headless-admin-user/v1.0/my-user-account`,
 		{
@@ -978,4 +983,60 @@ export async function updateUserPassword(password: string, id: number) {
 	);
 
 	return response.json();
+}
+
+export async function sendRoleAccountUser(
+	accountId: number,
+	roleId: number,
+	userId: number
+) {
+	await fetch(
+		`/o/headless-admin-user/v1.0/accounts/${accountId}/account-roles/${roleId}/user-accounts/${userId}`,
+		{
+			headers: {
+				...headers,
+				accept: 'application/json',
+			},
+			method: 'POST',
+		}
+	);
+}
+
+export async function updateUserImage(userId: number, formData: FormData) {
+	await fetch(
+		`${baseURL}/o/headless-admin-user/v1.0/user-accounts/${userId}/image`,
+		{
+			body: formData,
+			headers: {
+				'X-CSRF-Token': headers['X-CSRF-Token'],
+			},
+			method: 'POST',
+		}
+	);
+}
+
+export async function updateMyUserAccount(
+	userId: number,
+	formData: UserForm
+): Promise<UserAccount> {
+	const response = await fetch(
+		`${baseURL}/o/headless-admin-user/v1.0/user-accounts/${userId}`,
+		{
+			body: JSON.stringify(formData),
+			headers,
+			method: 'PATCH',
+		}
+	);
+
+	const accountBriefs = formData.accountBriefs || [];
+
+	for (const account of accountBriefs) {
+		account.roleBriefs.forEach(async (roleBrief: RoleBrief) => {
+			if (roleBrief.name === 'Invited Member') {
+				await sendRoleAccountUser(account.id, roleBrief.id, userId);
+			}
+		});
+	}
+
+	return await response.json();
 }

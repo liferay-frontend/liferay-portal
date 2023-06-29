@@ -89,6 +89,7 @@
 			"VIEW"
 		],
 		"resourceName": "com.liferay.list.type.model.ListTypeDefinition",
-		"roleName": "User"
+		"roleName": "User",
+		"scope": "1"
 	}
 ]

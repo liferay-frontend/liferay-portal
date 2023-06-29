@@ -20,6 +20,7 @@ interface ILiferay {
 		getCompanyId: () => string;
 		getLanguageId: () => string;
 		getLayoutRelativeURL: () => string;
+		getLayoutURL: () => string;
 		getPathContext: () => string;
 		getPathThemeImages: () => string;
 		getPortalURL: () => string;
@@ -45,6 +46,7 @@ export const Liferay = window.Liferay || {
 		getCompanyId: () => '',
 		getLanguageId: () => '',
 		getLayoutRelativeURL: () => '',
+		getLayoutURL: () => '',
 		getPathContext: () => '',
 		getPathThemeImages: () => '',
 		getPortalURL: () => '',

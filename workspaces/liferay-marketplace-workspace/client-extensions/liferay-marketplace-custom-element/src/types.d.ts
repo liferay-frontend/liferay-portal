@@ -386,8 +386,10 @@ type UserAccount = {
 	familyName: string;
 	givenName: string;
 	id: number;
+	image: string;
 	isCustomerAccount: boolean;
 	isPublisherAccount: boolean;
+	newsSubscription: boolean;
 	password: string;
 };
 

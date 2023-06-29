@@ -17,13 +17,16 @@ package com.liferay.headless.builder.internal.application.publisher;
 import com.liferay.headless.builder.application.APIApplication;
 import com.liferay.headless.builder.application.publisher.APIApplicationPublisher;
 import com.liferay.headless.builder.internal.application.resource.HeadlessBuilderResourceImpl;
+import com.liferay.headless.builder.internal.application.resource.OpenAPIResourceImpl;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.ws.rs.core.Application;
 
@@ -34,6 +37,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Luis Miguel Barcos
@@ -54,8 +58,13 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 				{
 					add(_registerHeadlessBuilderApplication(apiApplication));
 					add(
-						_registerHeadlessBuilderApplicationResource(
-							apiApplication));
+						_registerResource(
+							apiApplication, HeadlessBuilderResourceImpl.class,
+							() -> new HeadlessBuilderResourceImpl()));
+					add(
+						_registerResource(
+							apiApplication, OpenAPIResourceImpl.class,
+							() -> new OpenAPIResourceImpl(_openAPIResource)));
 				}
 			});
 	}
@@ -115,29 +124,25 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 			).build());
 	}
 
-	private ServiceRegistration<HeadlessBuilderResourceImpl>
-		_registerHeadlessBuilderApplicationResource(
-			APIApplication apiApplication) {
+	private <T> ServiceRegistration<T> _registerResource(
+		APIApplication apiApplication, Class<T> resourceClass,
+		Supplier<T> resourceSupplier) {
 
 		return _bundleContext.registerService(
-			HeadlessBuilderResourceImpl.class,
-			new PrototypeServiceFactory<HeadlessBuilderResourceImpl>() {
+			resourceClass,
+			new PrototypeServiceFactory<T>() {
 
 				@Override
-				public HeadlessBuilderResourceImpl getService(
-					Bundle bundle,
-					ServiceRegistration<HeadlessBuilderResourceImpl>
-						serviceRegistration) {
+				public T getService(
+					Bundle bundle, ServiceRegistration<T> serviceRegistration) {
 
-					return new HeadlessBuilderResourceImpl();
+					return resourceSupplier.get();
 				}
 
 				@Override
 				public void ungetService(
-					Bundle bundle,
-					ServiceRegistration<HeadlessBuilderResourceImpl>
-						serviceRegistration,
-					HeadlessBuilderResourceImpl headlessBuilderResourceImpl) {
+					Bundle bundle, ServiceRegistration<T> serviceRegistration,
+					T t) {
 				}
 
 			},
@@ -167,5 +172,8 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 
 	private final Map<String, List<ServiceRegistration<?>>>
 		_headlessBuilderApplicationServiceRegistrationsMap = new HashMap<>();
+
+	@Reference
+	private OpenAPIResource _openAPIResource;
 
 }

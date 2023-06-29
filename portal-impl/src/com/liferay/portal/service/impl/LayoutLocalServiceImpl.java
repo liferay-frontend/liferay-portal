@@ -2732,18 +2732,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		Layout layout = layoutPersistence.findByG_P_L(
 			groupId, privateLayout, layoutId);
 
-		// See LPS-183421. The method layoutPersistence#findByG_P_L may return a
-		// wrapped cache or an instance managed by Hibernate. Calling
-		// layout#setModifiedDate (or another database column setter) on the
-		// layout instance will update the Hibernate session with your
-		// modifications. These modifications will persist to the database when
-		// Hibernate automatically flushes the session even before
-		// layoutPersisten#update is called. A future fix will ensure that
-		// layoutPersistence always returns a wrapped cache so that this
-		// workaround will not be needed.
-
-		layout.setExpandoBridgeAttributes(serviceContext);
-
 		String name = nameMap.get(LocaleUtil.getSiteDefault());
 
 		if (Validator.isNull(name)) {
@@ -2839,6 +2827,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 					groupId, privateLayout, layoutId);
 			}
 		}
+
+		layout.setExpandoBridgeAttributes(serviceContext);
 
 		layout = layoutLocalService.updateLayout(layout);
 
