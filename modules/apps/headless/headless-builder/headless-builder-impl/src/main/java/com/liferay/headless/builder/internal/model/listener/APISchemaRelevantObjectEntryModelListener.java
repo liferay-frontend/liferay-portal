@@ -36,7 +36,7 @@ public class APISchemaRelevantObjectEntryModelListener
 
 	@Override
 	public String getObjectDefinitionExternalReferenceCode() {
-		return "MSOD_API_SCHEMA";
+		return "L_API_SCHEMA";
 	}
 
 	@Override

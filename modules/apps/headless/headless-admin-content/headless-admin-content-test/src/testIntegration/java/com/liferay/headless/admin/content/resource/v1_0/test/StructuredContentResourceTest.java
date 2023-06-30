@@ -33,6 +33,9 @@ import com.liferay.headless.admin.content.client.pagination.Pagination;
 import com.liferay.headless.admin.content.client.serdes.v1_0.StructuredContentSerDes;
 import com.liferay.headless.delivery.client.resource.v1_0.StructuredContentResource;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.template.TemplateConstants;
@@ -115,7 +118,7 @@ public class StructuredContentResourceTest
 
 		Page<StructuredContent> page =
 			structuredContentResource.getSiteStructuredContentsPage(
-				testGroup.getGroupId(), true, null, null, "priority eq 3.0",
+				testGroup.getGroupId(), null, null, null, "priority eq 3.0",
 				Pagination.of(1, 10), null);
 
 		Assert.assertEquals(1, page.getTotalCount());
@@ -127,7 +130,7 @@ public class StructuredContentResourceTest
 		assertValid(page);
 
 		page = structuredContentResource.getSiteStructuredContentsPage(
-			testGroup.getGroupId(), true, null, null, null,
+			testGroup.getGroupId(), null, null, null, null,
 			Pagination.of(1, 10), null);
 
 		List<StructuredContent> structuredContents =
@@ -156,7 +159,7 @@ public class StructuredContentResourceTest
 			Double.valueOf(2.99));
 
 		page = structuredContentResource.getSiteStructuredContentsPage(
-			testGroup.getGroupId(), true, null, null, "priority ne 1.0",
+			testGroup.getGroupId(), null, null, null, "priority ne 1.0",
 			Pagination.of(1, 10), "priority:asc");
 
 		Assert.assertEquals(3, page.getTotalCount());
@@ -170,7 +173,7 @@ public class StructuredContentResourceTest
 		assertValid(page);
 
 		page = structuredContentResource.getSiteStructuredContentsPage(
-			testGroup.getGroupId(), true, null, null, "priority gt 0.99",
+			testGroup.getGroupId(), null, null, null, "priority gt 0.99",
 			Pagination.of(1, 10), "priority:desc");
 
 		Assert.assertEquals(3, page.getTotalCount());
@@ -184,7 +187,7 @@ public class StructuredContentResourceTest
 		assertValid(page);
 
 		page = structuredContentResource.getSiteStructuredContentsPage(
-			testGroup.getGroupId(), true, null, null, "priority ge 0.99",
+			testGroup.getGroupId(), null, null, null, "priority ge 0.99",
 			Pagination.of(1, 10), null);
 
 		Assert.assertEquals(4, page.getTotalCount());
@@ -198,7 +201,7 @@ public class StructuredContentResourceTest
 		assertValid(page);
 
 		page = structuredContentResource.getSiteStructuredContentsPage(
-			testGroup.getGroupId(), true, null, null, "priority gt 1.0",
+			testGroup.getGroupId(), null, null, null, "priority gt 1.0",
 			Pagination.of(1, 10), "priority");
 
 		Assert.assertEquals(2, page.getTotalCount());
@@ -226,18 +229,72 @@ public class StructuredContentResourceTest
 			StructuredContentResource structuredContentResource =
 				_buildStructureContentResource(locale);
 
-		StructuredContent postStructuredContent =
+		StructuredContent postStructuredContent1 =
 			structuredContentResource.postSiteStructuredContentDraft(
 				testGetSiteStructuredContentsPage_getSiteId(),
 				randomStructuredContent);
 
 		StructuredContent getStructuredContent =
 			structuredContentResource.getStructuredContentByVersion(
-				postStructuredContent.getId(), 1.0);
+				postStructuredContent1.getId(), 1.0);
 
-		assertEquals(postStructuredContent, getStructuredContent);
+		assertEquals(postStructuredContent1, getStructuredContent);
 		Assert.assertEquals(
 			Double.valueOf(1.0), getStructuredContent.getPriority());
+
+		StructuredContent postStructuredContent2 =
+			structuredContentResource.postSiteStructuredContentDraft(
+				testGetSiteStructuredContentsPage_getSiteId(),
+				randomStructuredContent);
+
+		structuredContentResource =
+			com.liferay.headless.admin.content.client.resource.v1_0.
+				StructuredContentResource.builder(
+				).authentication(
+					"test@liferay.com", "test"
+				).locale(
+					LocaleUtil.getDefault()
+				).parameters(
+					"restrictFields",
+					StringBundler.concat(
+						"actions,availableLanguages,contentFields,",
+						"contentStructureId,creator,customFields,",
+						"dateCreated,dateModified,datePublished,",
+						"description,externalReferenceCode,friendlyUrlPath,",
+						"id,key,keywords,numberOfComments,priority,",
+						"relatedContents,renderedContents,siteId,",
+						"structuredContentFolderId,subscribed,",
+						"taxonomyCategoryBriefs,uuid,version")
+				).build();
+
+		assertEquals(
+			new StructuredContent() {
+				{
+					title = postStructuredContent2.getTitle();
+				}
+			},
+			structuredContentResource.getStructuredContentByVersion(
+				postStructuredContent2.getId(), 1.0));
+
+		structuredContentResource =
+			com.liferay.headless.admin.content.client.resource.v1_0.
+				StructuredContentResource.builder(
+				).authentication(
+					"test@liferay.com", "test"
+				).locale(
+					LocaleUtil.getDefault()
+				).parameters(
+					"fields", "id"
+				).build();
+
+		assertEquals(
+			new StructuredContent() {
+				{
+					id = postStructuredContent2.getId();
+				}
+			},
+			structuredContentResource.getStructuredContentByVersion(
+				postStructuredContent2.getId(), 1.0));
 	}
 
 	@Override
@@ -253,13 +310,158 @@ public class StructuredContentResourceTest
 
 		Assert.assertEquals(1L, structuredContentsVersionsPage.getTotalCount());
 
-		_structuredContentResource.putStructuredContent(
-			id, _toStructuredContent(structuredContent));
+		com.liferay.headless.delivery.client.dto.v1_0.StructuredContent
+			putStructuredContent =
+				_structuredContentResource.putStructuredContent(
+					id, _toStructuredContent(structuredContent));
 
 		structuredContentsVersionsPage =
 			structuredContentResource.getStructuredContentsVersionsPage(id);
 
 		Assert.assertEquals(2L, structuredContentsVersionsPage.getTotalCount());
+
+		structuredContentResource =
+			com.liferay.headless.admin.content.client.resource.v1_0.
+				StructuredContentResource.builder(
+				).authentication(
+					"test@liferay.com", "test"
+				).locale(
+					LocaleUtil.getDefault()
+				).parameters(
+					"fields", "id"
+				).build();
+
+		structuredContentsVersionsPage =
+			structuredContentResource.getStructuredContentsVersionsPage(id);
+
+		Assert.assertEquals(2L, structuredContentsVersionsPage.getTotalCount());
+
+		assertEqualsIgnoringOrder(
+			Arrays.asList(
+				new StructuredContent() {
+					{
+						id = structuredContent.getId();
+					}
+				},
+				new StructuredContent() {
+					{
+						id = putStructuredContent.getId();
+					}
+				}),
+			(List<StructuredContent>)structuredContentsVersionsPage.getItems());
+	}
+
+	@Test
+	public void testGraphQLGetSiteStructuredContentsPage() throws Exception {
+		super.testGraphQLGetSiteStructuredContentsPage();
+
+		Page<StructuredContent> page =
+			structuredContentResource.getSiteStructuredContentsPage(
+				testGroup.getGroupId(), null, null, null, null,
+				Pagination.of(1, 10), null);
+
+		for (StructuredContent structuredContent : page.getItems()) {
+			_structuredContentResource.deleteStructuredContent(
+				structuredContent.getId());
+		}
+
+		StructuredContent structuredContent1 = _postSiteStructuredContent(
+			testGroup.getGroupId(), randomStructuredContent());
+		StructuredContent structuredContent2 = _postSiteStructuredContent(
+			testGroup.getGroupId(), randomStructuredContent());
+
+		GraphQLField graphQLField = new GraphQLField(
+			"structuredContents",
+			HashMapBuilder.<String, Object>put(
+				"aggregation", "[\"id\"]"
+			).put(
+				"siteKey",
+				StringBundler.concat(
+					StringPool.QUOTE, testGroup.getGroupId(), StringPool.QUOTE)
+			).build(),
+			new GraphQLField(
+				"facets", new GraphQLField("facetCriteria"),
+				new GraphQLField(
+					"facetValues", new GraphQLField("numberOfOccurrences"),
+					new GraphQLField("term"))),
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("totalCount"));
+
+		JSONObject structuredContentsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/structuredContents");
+
+		Assert.assertEquals(
+			2, structuredContentsJSONObject.getLong("totalCount"));
+		Assert.assertEquals(
+			"id",
+			structuredContentsJSONObject.getJSONArray(
+				"facets"
+			).getJSONObject(
+				0
+			).getString(
+				"facetCriteria"
+			));
+		Assert.assertEquals(
+			1,
+			structuredContentsJSONObject.getJSONArray(
+				"facets"
+			).getJSONObject(
+				0
+			).getJSONArray(
+				"facetValues"
+			).getJSONObject(
+				0
+			).getInt(
+				"numberOfOccurrences"
+			));
+		Assert.assertEquals(
+			structuredContent1.getId(),
+			Long.valueOf(
+				structuredContentsJSONObject.getJSONArray(
+					"facets"
+				).getJSONObject(
+					0
+				).getJSONArray(
+					"facetValues"
+				).getJSONObject(
+					0
+				).getString(
+					"term"
+				)));
+		Assert.assertEquals(
+			1,
+			structuredContentsJSONObject.getJSONArray(
+				"facets"
+			).getJSONObject(
+				0
+			).getJSONArray(
+				"facetValues"
+			).getJSONObject(
+				1
+			).getInt(
+				"numberOfOccurrences"
+			));
+		Assert.assertEquals(
+			structuredContent2.getId(),
+			Long.valueOf(
+				structuredContentsJSONObject.getJSONArray(
+					"facets"
+				).getJSONObject(
+					0
+				).getJSONArray(
+					"facetValues"
+				).getJSONObject(
+					1
+				).getString(
+					"term"
+				)));
+
+		assertEqualsIgnoringOrder(
+			Arrays.asList(structuredContent1, structuredContent2),
+			Arrays.asList(
+				StructuredContentSerDes.toDTOs(
+					structuredContentsJSONObject.getString("items"))));
 	}
 
 	@Override

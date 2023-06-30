@@ -26,6 +26,7 @@ import com.liferay.client.extension.type.item.selector.CETItemSelectorReturnType
 import com.liferay.client.extension.type.item.selector.criterion.CETItemSelectorCriterion;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.exportimport.kernel.staging.LayoutStagingUtil;
+import com.liferay.frontend.taglib.clay.servlet.taglib.LinkTag;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
@@ -40,6 +41,7 @@ import com.liferay.layout.admin.web.internal.util.FaviconUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
+import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
 import com.liferay.layout.theme.item.selector.criterion.LayoutThemeItemSelectorCriterion;
 import com.liferay.layout.util.LayoutCopyHelper;
 import com.liferay.layout.util.comparator.LayoutCreateDateComparator;
@@ -69,6 +71,7 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.SearchDisplayStyleUtil;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
@@ -125,6 +128,7 @@ import javax.portlet.PortletURL;
 import javax.portlet.WindowStateException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 
 /**
  * @author Eudaldo Alonso
@@ -134,12 +138,14 @@ public class LayoutsAdminDisplayContext {
 	public LayoutsAdminDisplayContext(
 		ItemSelector itemSelector, LayoutActionsHelper layoutActionsHelper,
 		LayoutCopyHelper layoutCopyHelper,
+		LayoutSetPrototypeHelper layoutSetPrototypeHelper,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
 		_itemSelector = itemSelector;
 		_layoutActionsHelper = layoutActionsHelper;
 		_layoutCopyHelper = layoutCopyHelper;
+		_layoutSetPrototypeHelper = layoutSetPrototypeHelper;
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
 
@@ -650,6 +656,62 @@ public class LayoutsAdminDisplayContext {
 		return friendlyURLBase.toString();
 	}
 
+	public String getFriendlyURLWarningMessage() throws PortalException {
+		if (_warningMessage != null) {
+			return _warningMessage;
+		}
+
+		Layout layout = getSelLayout();
+
+		Group group = layout.getGroup();
+		LayoutSet layoutSet = layout.getLayoutSet();
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-174417") ||
+			(!group.isLayoutSetPrototype() &&
+			 !layoutSet.isLayoutSetPrototypeLinkActive())) {
+
+			_warningMessage = StringPool.BLANK;
+
+			return _warningMessage;
+		}
+
+		List<Layout> layouts =
+			_layoutSetPrototypeHelper.getDuplicatedFriendlyURLLayouts(layout);
+
+		if (layouts.isEmpty()) {
+			_warningMessage = StringPool.BLANK;
+
+			return _warningMessage;
+		}
+
+		String heading;
+
+		if (group.isLayoutSetPrototype()) {
+			heading = LanguageUtil.get(
+				themeDisplay.getLocale(),
+				"the-site-template-page-friendly-url-is-conflicting-with-the-" +
+					"page-friendly-url-in-some-of-the-sites-created-from-" +
+						"this-template");
+		}
+		else {
+			heading = LanguageUtil.get(
+				themeDisplay.getLocale(),
+				"the-friendly-url-of-this-page-is-conflicting-with-a-" +
+					"friendly-url-of-a-page-in-the-site-template,-from-which-" +
+						"this-site-was-created");
+		}
+
+		List<String> layoutMessages = new ArrayList<>();
+
+		for (Layout duplicatedFriendlyURLLayout : layouts) {
+			layoutMessages.add(_getLayoutMessage(duplicatedFriendlyURLLayout));
+		}
+
+		_warningMessage = _getWarningMessageHTML(heading, layoutMessages);
+
+		return _warningMessage;
+	}
+
 	public Group getGroup() {
 		return _groupDisplayContextHelper.getGroup();
 	}
@@ -1029,6 +1091,14 @@ public class LayoutsAdminDisplayContext {
 	public String getPreviewDraftURL(Layout layout) throws PortalException {
 		return PortalUtil.getLayoutFriendlyURL(
 			layout.fetchDraftLayout(), themeDisplay);
+	}
+
+	public Map<String, Object> getProps() {
+		return HashMapBuilder.<String, Object>put(
+			"getFriendlyURLWarningURL", () -> _getFriendlyURLWarningURL()
+		).put(
+			"shouldCheckFriendlyURL", () -> _isShouldCheckFriendlyURL()
+		).build();
 	}
 
 	public String getRedirect() {
@@ -1836,6 +1906,14 @@ public class LayoutsAdminDisplayContext {
 		return true;
 	}
 
+	public boolean isShowFriendlyURLWarningMessage() throws PortalException {
+		if (Validator.isNotNull(getFriendlyURLWarningMessage())) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public boolean isShowPublicLayouts() {
 		Group selGroup = getSelGroup();
 
@@ -2124,6 +2202,20 @@ public class LayoutsAdminDisplayContext {
 			layoutFullURL, "p_l_mode", Constants.EDIT);
 	}
 
+	private String _getFriendlyURLWarningURL() {
+		return ResourceURLBuilder.createResourceURL(
+			_liferayPortletResponse
+		).setParameter(
+			"groupId", getGroupId()
+		).setParameter(
+			"plid", getSelPlid()
+		).setParameter(
+			"privateLayout", isPrivateLayout()
+		).setResourceID(
+			"/layout_admin/get_friendly_url_warning"
+		).buildString();
+	}
+
 	private long[] _getGroupIds() {
 		try {
 			return PortalUtil.getCurrentAndAncestorSiteGroupIds(
@@ -2136,6 +2228,53 @@ public class LayoutsAdminDisplayContext {
 		}
 
 		return new long[0];
+	}
+
+	private String _getLayoutMessage(Layout layout) throws PortalException {
+		if (LayoutPermissionUtil.containsLayoutUpdatePermission(
+				themeDisplay.getPermissionChecker(), layout)) {
+
+			LinkTag linkTag = new LinkTag();
+
+			linkTag.setCssClass("alert-link");
+			linkTag.setHref(getConfigureLayoutURL(layout));
+			linkTag.setLabel(
+				HtmlUtil.escape(layout.getName(themeDisplay.getLocale())));
+
+			try {
+				String link = linkTag.doTagAsString(
+					httpServletRequest,
+					PortalUtil.getHttpServletResponse(_liferayPortletResponse));
+
+				Group group = layout.getGroup();
+
+				return LanguageUtil.format(
+					themeDisplay.getLocale(), "page-x-of-x",
+					new String[] {
+						link.trim(), group.getName(themeDisplay.getLocale())
+					},
+					false);
+			}
+			catch (JspException jspException) {
+				_log.error(jspException);
+			}
+		}
+
+		Group group = layout.getGroup();
+
+		return com.liferay.portal.kernel.util.StringUtil.
+			appendParentheticalSuffix(
+				LanguageUtil.format(
+					themeDisplay.getLocale(), "page-x-of-x",
+					new String[] {
+						layout.getName(themeDisplay.getLocale()),
+						group.getName(themeDisplay.getLocale())
+					},
+					false),
+				LanguageUtil.get(
+					themeDisplay.getLocale(),
+					"please-contact-the-administrator-to-resolve-this-" +
+						"friendly-url-conflict"));
 	}
 
 	private int _getLayoutsCount(boolean privateLayouts) {
@@ -2307,6 +2446,45 @@ public class LayoutsAdminDisplayContext {
 		return _types;
 	}
 
+	private String _getWarningMessageHTML(
+		String heading, List<String> layoutMessages) {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(heading);
+		sb.append("<ul>");
+
+		for (String layoutMessage : layoutMessages) {
+			sb.append("<li>");
+			sb.append(layoutMessage);
+			sb.append("</li>");
+		}
+
+		sb.append("</ul>");
+
+		return sb.toString();
+	}
+
+	private boolean _isShouldCheckFriendlyURL() {
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-174417")) {
+			return false;
+		}
+
+		Group group = getGroup();
+
+		if (group.isLayoutSetPrototype()) {
+			return true;
+		}
+
+		LayoutSet layoutSet = getSelLayoutSet();
+
+		if (layoutSet.isLayoutSetPrototypeLinkEnabled()) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private boolean _matchesHostname(
 		StringBuilder friendlyURLBase,
 		TreeMap<String, String> virtualHostnames) {
@@ -2336,6 +2514,7 @@ public class LayoutsAdminDisplayContext {
 	private final LayoutActionsHelper _layoutActionsHelper;
 	private final LayoutCopyHelper _layoutCopyHelper;
 	private Long _layoutId;
+	private final LayoutSetPrototypeHelper _layoutSetPrototypeHelper;
 	private SearchContainer<Layout> _layoutsSearchContainer;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
@@ -2352,5 +2531,6 @@ public class LayoutsAdminDisplayContext {
 	private String _tabs1;
 	private String _themeId;
 	private String[] _types;
+	private String _warningMessage;
 
 }

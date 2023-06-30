@@ -51,7 +51,7 @@ public class APIApplicationProviderImpl implements APIApplicationProvider {
 		throws Exception {
 
 		ObjectEntry objectEntry = _objectEntryHelper.getObjectEntry(
-			companyId, "baseURL eq '" + baseURL + "'", "MSOD_API_APPLICATION");
+			companyId, "baseURL eq '" + baseURL + "'", "L_API_APPLICATION");
 
 		if (objectEntry == null) {
 			return null;
@@ -120,7 +120,7 @@ public class APIApplicationProviderImpl implements APIApplicationProvider {
 				companyId,
 				"apiApplicationToAPIEndpoints/externalReferenceCode eq '" +
 					apiApplicationExternalReferenceCode + "'",
-				"MSOD_API_ENDPOINT"),
+				"L_API_ENDPOINT"),
 			objectEntry -> {
 				Map<String, Object> properties = objectEntry.getProperties();
 
@@ -256,7 +256,7 @@ public class APIApplicationProviderImpl implements APIApplicationProvider {
 				companyId,
 				"apiApplicationToAPISchemas/externalReferenceCode eq '" +
 					apiApplicationObjectEntry.getExternalReferenceCode() + "'",
-				Arrays.asList("apiSchemaToAPIProperties"), "MSOD_API_SCHEMA"),
+				Arrays.asList("apiSchemaToAPIProperties"), "L_API_SCHEMA"),
 			objectEntry -> {
 				Map<String, Object> properties = objectEntry.getProperties();
 

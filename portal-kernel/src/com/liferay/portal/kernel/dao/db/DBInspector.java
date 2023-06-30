@@ -51,7 +51,7 @@ public class DBInspector {
 			// ObjectDefinitionLocalServiceImpl#_getDBTableName
 
 			if (tableName.endsWith("_x_" + companyId) ||
-				tableName.startsWith("MSOD_" + companyId + "_") ||
+				tableName.startsWith("L_" + companyId + "_") ||
 				tableName.startsWith("O_" + companyId + "_")) {
 
 				return true;

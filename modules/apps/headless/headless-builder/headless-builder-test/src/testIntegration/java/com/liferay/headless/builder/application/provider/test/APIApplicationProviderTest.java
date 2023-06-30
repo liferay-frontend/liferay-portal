@@ -74,7 +74,7 @@ public class APIApplicationProviderTest extends BaseTestCase {
 					).put(
 						"externalReferenceCode", _API_SCHEMA_ERC
 					).put(
-						"mainObjectDefinitionERC", "MSOD_API_APPLICATION"
+						"mainObjectDefinitionERC", "L_API_APPLICATION"
 					).put(
 						"name", "name"
 					))

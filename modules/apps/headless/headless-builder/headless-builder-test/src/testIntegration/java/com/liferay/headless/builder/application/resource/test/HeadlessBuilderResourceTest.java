@@ -137,7 +137,7 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 					).put(
 						"externalReferenceCode", apiSchemaExternalReferenceCode
 					).put(
-						"mainObjectDefinitionERC", "MSOD_API_APPLICATION"
+						"mainObjectDefinitionERC", "L_API_APPLICATION"
 					).put(
 						"name", "name"
 					))

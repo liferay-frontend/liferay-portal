@@ -16,6 +16,7 @@ package com.liferay.portal.spring.hibernate;
 
 import com.liferay.portal.dao.orm.hibernate.event.ResetOriginalValuesLoadEventListener;
 import com.liferay.portal.dao.orm.hibernate.event.ResetOriginalValuesPostLoadEventListener;
+import com.liferay.portal.db.partition.DBPartitionUtil;
 
 import org.hibernate.boot.Metadata;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -46,6 +47,8 @@ public class GlobalEventListenerIntegrator implements Integrator {
 		EventListenerRegistry eventListenerRegistry =
 			sessionFactoryServiceRegistry.getService(
 				EventListenerRegistry.class);
+
+		DBPartitionUtil.registerEventListeners(eventListenerRegistry);
 
 		eventListenerRegistry.setListeners(
 			EventType.LOAD, ResetOriginalValuesLoadEventListener.INSTANCE);

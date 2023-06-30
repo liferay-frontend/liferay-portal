@@ -44,7 +44,7 @@ public class APIApplicationRelevantObjectEntryModelListener
 
 	@Override
 	public String getObjectDefinitionExternalReferenceCode() {
-		return "MSOD_API_APPLICATION";
+		return "L_API_APPLICATION";
 	}
 
 	@Override

@@ -52,7 +52,7 @@ public class APIEndpointRelevantObjectEntryModelListener
 
 	@Override
 	public String getObjectDefinitionExternalReferenceCode() {
-		return "MSOD_API_ENDPOINT";
+		return "L_API_ENDPOINT";
 	}
 
 	@Override
