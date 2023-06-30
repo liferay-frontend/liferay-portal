@@ -965,11 +965,7 @@ export async function getMyUserAditionalInfos(userId: number) {
 		{headers}
 	);
 
-	const response = await userAdditionalInfos.json();
-
-	if (!response.acceptInviteStatus) {
-		return response;
-	}
+	return await userAdditionalInfos.json();
 }
 
 export async function updateUserPassword(password: string, id: number) {

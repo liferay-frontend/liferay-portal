@@ -12,17 +12,26 @@
  * details.
  */
 
-package com.liferay.admin.kernel.util;
+package com.liferay.journal.internal.security.permission;
 
-import com.liferay.portal.kernel.model.User;
+import com.liferay.dynamic.data.mapping.util.DDMStructurePermissionSupport;
+import com.liferay.journal.constants.JournalConstants;
+
+import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Michael C. Han
+ * @author Marcellus Tavares
  */
-public interface Omniadmin {
+@Component(
+	property = "model.class.name=com.liferay.journal.model.JournalArticle",
+	service = DDMStructurePermissionSupport.class
+)
+public class JournalDDMStructurePermissionSupport
+	implements DDMStructurePermissionSupport {
 
-	public boolean isOmniadmin(long userId);
-
-	public boolean isOmniadmin(User user);
+	@Override
+	public String getResourceName() {
+		return JournalConstants.RESOURCE_NAME;
+	}
 
 }

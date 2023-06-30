@@ -3058,7 +3058,19 @@
 		<body-content>empty</body-content>
 		<attribute>
 			<description></description>
+			<name>active</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description></description>
 			<name>decorated</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>defaultExpandedKeys</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
