@@ -237,7 +237,10 @@ const SelectSubscription = ({
 				),
 				middleButton: (
 					<Button
-						disabled={!selectedSubscription}
+						disabled={
+							!selectedSubscription ||
+							!Object.keys(selectedSubscription).length
+						}
 						displayType="primary"
 						onClick={() => {
 							setInfoSelectedKey((previousInfoSelectedKey) => ({
@@ -299,9 +302,10 @@ const SelectSubscription = ({
 						<div className="position-relative">
 							<ClaySelect
 								className="mr-2"
-								onChange={({target}) =>
-									setSelectedVersion(target.value)
-								}
+								onChange={({target}) => {
+									setSelectedVersion(target.value);
+									setSelectedSubscription({});
+								}}
 								value={selectedVersion}
 							>
 								{productVersions?.map((version) => (
@@ -328,9 +332,10 @@ const SelectSubscription = ({
 					<div className="position-relative">
 						<ClaySelect
 							className="mr-2 pr-6 w-100"
-							onChange={({target}) =>
-								setSelectedKeyType(target.value)
-							}
+							onChange={({target}) => {
+								setSelectedKeyType(target.value);
+								setSelectedSubscription({});
+							}}
 							value={selectedKeyType}
 						>
 							{productKeyTypes &&
