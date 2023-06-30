@@ -24,6 +24,7 @@ import com.liferay.info.field.type.ImageInfoFieldType;
 import com.liferay.info.field.type.LongTextInfoFieldType;
 import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.field.type.NumberInfoFieldType;
+import com.liferay.info.field.type.OptionInfoFieldType;
 import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
@@ -34,7 +35,6 @@ import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.info.localized.bundle.FunctionInfoLocalizedValue;
 import com.liferay.layout.page.template.info.item.provider.DisplayPageInfoItemFieldSetProvider;
-import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
@@ -248,7 +248,7 @@ public class ObjectEntryInfoItemFormProvider
 				TransformUtil.transform(
 					_listTypeEntryLocalService.getListTypeEntries(
 						objectField.getListTypeDefinitionId()),
-					listTypeEntry -> new MultiselectInfoFieldType.Option(
+					listTypeEntry -> new OptionInfoFieldType(
 						Objects.equals(
 							ObjectFieldSettingUtil.getDefaultValueAsString(
 								null, objectField.getObjectFieldId(),
@@ -262,13 +262,18 @@ public class ObjectEntryInfoItemFormProvider
 					objectField.getBusinessType(),
 					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
 
-			finalStep.attribute(
-				SelectInfoFieldType.MULTIPLE,
-				objectField.compareBusinessType(
-					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)
-			).attribute(
-				SelectInfoFieldType.OPTIONS, _getOptions(objectField)
-			);
+			if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
+
+				finalStep.attribute(
+					MultiselectInfoFieldType.OPTIONS,
+					_getOptionInfoFieldTypes(objectField));
+			}
+			else {
+				finalStep.attribute(
+					SelectInfoFieldType.OPTIONS,
+					_getOptionInfoFieldTypes(objectField));
+			}
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
@@ -723,28 +728,20 @@ public class ObjectEntryInfoItemFormProvider
 		).build();
 	}
 
-	private List<SelectInfoFieldType.Option> _getOptions(
+	private List<OptionInfoFieldType> _getOptionInfoFieldTypes(
 		ObjectField objectField) {
 
-		List<SelectInfoFieldType.Option> options = new ArrayList<>();
-
-		List<ListTypeEntry> listTypeEntries =
+		return TransformUtil.transform(
 			_listTypeEntryLocalService.getListTypeEntries(
-				objectField.getListTypeDefinitionId());
-
-		for (ListTypeEntry listTypeEntry : listTypeEntries) {
-			options.add(
-				new SelectInfoFieldType.Option(
-					Objects.equals(
-						ObjectFieldSettingUtil.getDefaultValueAsString(
-							null, objectField.getObjectFieldId(),
-							_objectFieldSettingLocalService, null),
-						listTypeEntry.getKey()),
-					new FunctionInfoLocalizedValue<>(listTypeEntry::getName),
-					listTypeEntry.getKey()));
-		}
-
-		return options;
+				objectField.getListTypeDefinitionId()),
+			listTypeEntry -> new OptionInfoFieldType(
+				Objects.equals(
+					ObjectFieldSettingUtil.getDefaultValueAsString(
+						null, objectField.getObjectFieldId(),
+						_objectFieldSettingLocalService, null),
+					listTypeEntry.getKey()),
+				new FunctionInfoLocalizedValue<>(listTypeEntry::getName),
+				listTypeEntry.getKey()));
 	}
 
 	private List<InfoFieldSetEntry> _getParentsInfoFieldSets(

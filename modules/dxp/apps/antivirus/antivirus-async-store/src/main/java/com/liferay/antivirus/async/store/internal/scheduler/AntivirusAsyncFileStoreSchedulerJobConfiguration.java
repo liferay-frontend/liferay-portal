@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.antivirus.async.store.internal.messaging;
+package com.liferay.antivirus.async.store.internal.scheduler;
 
 import com.liferay.antivirus.async.store.configuration.AntivirusAsyncConfiguration;
 import com.liferay.antivirus.async.store.constants.AntivirusAsyncConstants;
@@ -20,6 +20,8 @@ import com.liferay.antivirus.async.store.constants.AntivirusAsyncDestinationName
 import com.liferay.antivirus.async.store.internal.event.AntivirusAsyncEventListenerManager;
 import com.liferay.antivirus.async.store.util.AntivirusAsyncUtil;
 import com.liferay.document.library.kernel.store.Store;
+import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
@@ -27,23 +29,14 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Destination;
-import com.liferay.portal.kernel.messaging.DestinationConfiguration;
-import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
-import com.liferay.portal.kernel.messaging.MessageListener;
-import com.liferay.portal.kernel.messaging.MessageListenerException;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
-import com.liferay.portal.kernel.scheduler.SchedulerException;
-import com.liferay.portal.kernel.scheduler.StorageType;
-import com.liferay.portal.kernel.scheduler.Trigger;
-import com.liferay.portal.kernel.scheduler.TriggerFactory;
-import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
+import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
+import com.liferay.portal.kernel.scheduler.TimeUnit;
+import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
+import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.MapUtil;
 
-import java.io.File;
 import java.io.IOException;
 
 import java.nio.file.FileVisitResult;
@@ -53,18 +46,13 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import java.time.Instant;
-
 import java.util.Date;
 import java.util.Map;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -73,17 +61,37 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	configurationPid = "com.liferay.antivirus.async.store.configuration.AntivirusAsyncConfiguration",
 	configurationPolicy = ConfigurationPolicy.REQUIRE,
-	property = {
-		"destination.name=" + AntivirusAsyncDestinationNames.ANTIVIRUS_BATCH,
-		"osgi.command.function=scan", "osgi.command.scope=antivirus"
-	},
-	service = MessageListener.class
+	property = {"osgi.command.function=scan", "osgi.command.scope=antivirus"},
+	service = SchedulerJobConfiguration.class
 )
-public class AntivirusAsyncFileStoreMessageListener implements MessageListener {
+public class AntivirusAsyncFileStoreSchedulerJobConfiguration
+	implements SchedulerJobConfiguration {
+
+	public String getDestinationName() {
+		return AntivirusAsyncDestinationNames.ANTIVIRUS_BATCH;
+	}
 
 	@Override
-	public void receive(Message message) throws MessageListenerException {
-		scan((String)message.getPayload());
+	public UnsafeConsumer<Message, Exception> getJobExecutorUnsafeConsumer() {
+		return message -> scan((String)message.getPayload());
+	}
+
+	@Override
+	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public TriggerConfiguration getTriggerConfiguration() {
+		TriggerConfiguration triggerConfiguration =
+			TriggerConfiguration.createTriggerConfiguration(
+				_antivirusAsyncConfiguration.retryCronExpression());
+
+		triggerConfiguration.setStartDate(
+			new Date(
+				System.currentTimeMillis() + TimeUnit.SECOND.toMillis(30)));
+
+		return triggerConfiguration;
 	}
 
 	public void scan(String rootDirAbsolutePathString) {
@@ -96,75 +104,9 @@ public class AntivirusAsyncFileStoreMessageListener implements MessageListener {
 	}
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
-		AntivirusAsyncConfiguration antivirusAsyncConfiguration =
-			ConfigurableUtil.createConfigurable(
-				AntivirusAsyncConfiguration.class, properties);
-
-		_batchCronExpression =
-			antivirusAsyncConfiguration.batchScanCronExpression();
-
-		DestinationConfiguration destinationConfiguration =
-			DestinationConfiguration.createSerialDestinationConfiguration(
-				AntivirusAsyncDestinationNames.ANTIVIRUS_BATCH);
-
-		destinationConfiguration.setMaximumQueueSize(1);
-
-		Destination destination = _destinationFactory.createDestination(
-			destinationConfiguration);
-
-		_serviceRegistration = bundleContext.registerService(
-			Destination.class, destination,
-			MapUtil.singletonDictionary(
-				"destination.name", destination.getName()));
-
-		try {
-			_init((File)_storeServiceReference.getProperty("rootDir"));
-		}
-		catch (SchedulerException schedulerException) {
-			ReflectionUtil.throwException(schedulerException);
-		}
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_serviceRegistration.unregister();
-	}
-
-	private Trigger _createTrigger(String jobName) {
-		Instant instant = Instant.now();
-
-		return _triggerFactory.createTrigger(
-			jobName,
-			AntivirusAsyncConstants.SCHEDULER_GROUP_NAME_ANTIVIRUS_BATCH,
-			Date.from(instant.plusSeconds(30)), null, _batchCronExpression);
-	}
-
-	private void _init(File rootDir) throws SchedulerException {
-		if (_log.isDebugEnabled()) {
-			_log.debug("Initializing " + rootDir.getAbsolutePath());
-		}
-
-		SchedulerResponse schedulerResponse =
-			_schedulerEngineHelper.getScheduledJob(
-				rootDir.getAbsolutePath(),
-				AntivirusAsyncConstants.SCHEDULER_GROUP_NAME_ANTIVIRUS_BATCH,
-				StorageType.PERSISTED);
-
-		if (schedulerResponse != null) {
-			_schedulerEngineHelper.delete(
-				rootDir.getAbsolutePath(), schedulerResponse.getGroupName(),
-				schedulerResponse.getStorageType());
-		}
-
-		Trigger trigger = _createTrigger(rootDir.getAbsolutePath());
-
-		_schedulerEngineHelper.schedule(
-			trigger, StorageType.PERSISTED, null,
-			AntivirusAsyncDestinationNames.ANTIVIRUS_BATCH,
-			rootDir.getAbsolutePath());
+	protected void activate(Map<String, Object> properties) {
+		_antivirusAsyncConfiguration = ConfigurableUtil.createConfigurable(
+			AntivirusAsyncConfiguration.class, properties);
 	}
 
 	private void _scan(String rootDirAbsolutePathString) throws IOException {
@@ -321,32 +263,21 @@ public class AntivirusAsyncFileStoreMessageListener implements MessageListener {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		AntivirusAsyncFileStoreMessageListener.class);
+		AntivirusAsyncFileStoreSchedulerJobConfiguration.class);
+
+	private AntivirusAsyncConfiguration _antivirusAsyncConfiguration;
 
 	@Reference
 	private AntivirusAsyncEventListenerManager
 		_antivirusAsyncEventListenerManager;
 
-	private String _batchCronExpression;
-
 	@Reference
-	private DestinationFactory _destinationFactory;
-
-	@Reference
-	private com.liferay.portal.kernel.util.File _file;
+	private File _file;
 
 	@Reference
 	private MessageBus _messageBus;
 
-	@Reference
-	private SchedulerEngineHelper _schedulerEngineHelper;
-
-	private ServiceRegistration<Destination> _serviceRegistration;
-
 	@Reference(target = "(rootDir=*)")
 	private ServiceReference<Store> _storeServiceReference;
-
-	@Reference
-	private TriggerFactory _triggerFactory;
 
 }

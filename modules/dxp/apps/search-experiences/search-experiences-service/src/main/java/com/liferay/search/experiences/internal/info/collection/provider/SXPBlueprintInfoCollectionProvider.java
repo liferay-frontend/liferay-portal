@@ -21,7 +21,8 @@ import com.liferay.info.collection.provider.ConfigurableInfoCollectionProvider;
 import com.liferay.info.collection.provider.FilteredInfoCollectionProvider;
 import com.liferay.info.collection.provider.SingleFormVariationInfoCollectionProvider;
 import com.liferay.info.field.InfoField;
-import com.liferay.info.field.type.SelectInfoFieldType;
+import com.liferay.info.field.type.MultiselectInfoFieldType;
+import com.liferay.info.field.type.OptionInfoFieldType;
 import com.liferay.info.filter.CategoriesInfoFilter;
 import com.liferay.info.filter.InfoFilter;
 import com.liferay.info.filter.KeywordsInfoFilter;
@@ -31,6 +32,7 @@ import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.info.localized.bundle.ResourceBundleInfoLocalizedValue;
 import com.liferay.info.pagination.InfoPage;
 import com.liferay.info.pagination.Pagination;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -85,10 +87,9 @@ public class SXPBlueprintInfoCollectionProvider
 		CollectionQuery collectionQuery) {
 
 		try {
-			Pagination pagination = collectionQuery.getPagination();
-
 			SearchRequestBuilder searchRequestBuilder =
-				_getSearchRequestBuilder(collectionQuery, pagination);
+				_getSearchRequestBuilder(
+					collectionQuery, collectionQuery.getPagination());
 
 			SearchResponse searchResponse = _searcher.search(
 				searchRequestBuilder.build());
@@ -110,17 +111,15 @@ public class SXPBlueprintInfoCollectionProvider
 		).infoFieldSetEntry(
 			InfoField.builder(
 			).infoFieldType(
-				SelectInfoFieldType.INSTANCE
+				MultiselectInfoFieldType.INSTANCE
 			).namespace(
 				StringPool.BLANK
 			).name(
 				"scope"
 			).attribute(
-				SelectInfoFieldType.OPTIONS, _getOptions()
-			).attribute(
-				SelectInfoFieldType.MULTIPLE, true
+				MultiselectInfoFieldType.OPTIONS, _getOptionInfoFieldTypes()
 			).labelInfoLocalizedValue(
-				InfoLocalizedValue.localize(getClass(), "Scope")
+				InfoLocalizedValue.localize(getClass(), "scope")
 			).localizable(
 				false
 			).build()
@@ -159,49 +158,51 @@ public class SXPBlueprintInfoCollectionProvider
 		return FeatureFlagManagerUtil.isEnabled("LPS-129412");
 	}
 
-	private List<SelectInfoFieldType.Option> _getOptions() {
+	private List<OptionInfoFieldType> _getOptionInfoFieldTypes() {
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		List<SelectInfoFieldType.Option> options = ListUtil.fromArray(
-			new SelectInfoFieldType.Option(
-				true,
-				new ResourceBundleInfoLocalizedValue(getClass(), "This Site"),
-				String.valueOf(serviceContext.getScopeGroupId())));
-
 		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
 
-		List<Group> groups = _groupLocalService.getActiveGroups(
-			themeDisplay.getCompanyId(), true);
+		List<Group> siteGroups = null;
 
-		for (Group group : groups) {
-			if ((group == null) || group.isGuest() || !group.isSite()) {
-				continue;
-			}
+		User user = themeDisplay.getUser();
 
-			User user = themeDisplay.getUser();
-
-			try {
-				List<Group> siteGroups = user.getSiteGroups();
-
-				if (!ArrayUtil.contains(
-						siteGroups.toArray(new Group[0]), group)) {
-
-					continue;
-				}
-			}
-			catch (PortalException portalException) {
-				_log.error(portalException);
-			}
-
-			options.add(
-				new SelectInfoFieldType.Option(
-					new ResourceBundleInfoLocalizedValue(
-						getClass(), group.getNameCurrentValue()),
-					String.valueOf(group.getGroupId())));
+		try {
+			siteGroups = user.getSiteGroups();
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
 		}
 
-		return options;
+		List<Group> finalSiteGroups = siteGroups;
+
+		List<OptionInfoFieldType> optionInfoFieldTypes =
+			TransformUtil.transform(
+				_groupLocalService.getActiveGroups(
+					themeDisplay.getCompanyId(), true),
+				group -> {
+					if ((group == null) || group.isGuest() || !group.isSite() ||
+						((finalSiteGroups != null) &&
+						 !finalSiteGroups.contains(group))) {
+
+						return null;
+					}
+
+					return new OptionInfoFieldType(
+						new ResourceBundleInfoLocalizedValue(
+							getClass(), group.getNameCurrentValue()),
+						String.valueOf(group.getGroupId()));
+				});
+
+		optionInfoFieldTypes.add(
+			0,
+			new OptionInfoFieldType(
+				true,
+				new ResourceBundleInfoLocalizedValue(getClass(), "this-site"),
+				String.valueOf(serviceContext.getScopeGroupId())));
+
+		return optionInfoFieldTypes;
 	}
 
 	private SearchRequestBuilder _getSearchRequestBuilder(
