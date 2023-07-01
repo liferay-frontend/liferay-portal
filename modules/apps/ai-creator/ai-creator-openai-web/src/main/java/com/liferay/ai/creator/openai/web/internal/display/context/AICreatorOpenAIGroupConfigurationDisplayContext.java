@@ -17,24 +17,27 @@ package com.liferay.ai.creator.openai.web.internal.display.context;
 import com.liferay.ai.creator.openai.configuration.manager.AICreatorOpenAIConfigurationManager;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Lourdes Fernández Besada
  */
-public class AICreatorOpenAIGroupConfigurationDisplayContext {
+public class AICreatorOpenAIGroupConfigurationDisplayContext
+	extends BaseAICreatorOpenAIConfigurationDisplayContext {
 
 	public AICreatorOpenAIGroupConfigurationDisplayContext(
 		AICreatorOpenAIConfigurationManager aiCreatorOpenAIConfigurationManager,
-		ThemeDisplay themeDisplay) {
+		HttpServletRequest httpServletRequest) {
+
+		super(httpServletRequest);
 
 		_aiCreatorOpenAIConfigurationManager =
 			aiCreatorOpenAIConfigurationManager;
-		_themeDisplay = themeDisplay;
-	}
 
-	public String getAPIKey() throws ConfigurationException {
-		return _aiCreatorOpenAIConfigurationManager.
-			getAICreatorOpenAIGroupAPIKey(_themeDisplay.getScopeGroupId());
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	public boolean isCompanyEnabled() throws ConfigurationException {
@@ -42,7 +45,14 @@ public class AICreatorOpenAIGroupConfigurationDisplayContext {
 			isAICreatorOpenAICompanyEnabled(_themeDisplay.getCompanyId());
 	}
 
-	public boolean isEnabled() throws ConfigurationException {
+	@Override
+	protected String getAICreatorOpenAIAPIKey() throws ConfigurationException {
+		return _aiCreatorOpenAIConfigurationManager.
+			getAICreatorOpenAIGroupAPIKey(_themeDisplay.getScopeGroupId());
+	}
+
+	@Override
+	protected boolean isAICreatorOpenAIEnabled() throws ConfigurationException {
 		return _aiCreatorOpenAIConfigurationManager.
 			isAICreatorOpenAIGroupEnabled(
 				_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId());

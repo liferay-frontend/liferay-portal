@@ -29,7 +29,7 @@ import Filters from './fds_view/Filters';
 import Pagination from './fds_view/Pagination';
 import Sorting from './fds_view/Sorting';
 
-const NAVIGATION_BAR_ITEMS = [
+let NAVIGATION_BAR_ITEMS = [
 	{
 		Component: Details,
 		label: Liferay.Language.get('details'),
@@ -43,20 +43,31 @@ const NAVIGATION_BAR_ITEMS = [
 		label: Liferay.Language.get('sorting'),
 	},
 	{
-		Component: Filters,
-		label: Liferay.Language.get('filters'),
-	},
-	{
 		Component: Pagination,
 		label: Liferay.Language.get('pagination'),
 	},
 ];
+
+if (Liferay.FeatureFlags['LPS-188645']) {
+	NAVIGATION_BAR_ITEMS = [
+		...NAVIGATION_BAR_ITEMS,
+		{
+			Component: Filters,
+			label: Liferay.Language.get('filters'),
+		},
+		{
+			Component: Sorting,
+			label: Liferay.Language.get('sorting'),
+		},
+	];
+}
 
 interface IFDSViewSectionInterface {
 	fdsClientExtensionCellRenderers: IClientExtensionCellRenderer[];
 	fdsView: FDSViewType;
 	fdsViewsURL: string;
 	namespace: string;
+	onFDSViewUpdate: (data: FDSViewType) => void;
 	saveFDSFieldsURL: string;
 }
 
@@ -140,6 +151,9 @@ const FDSView = ({
 						fdsView={fdsView}
 						fdsViewsURL={fdsViewsURL}
 						namespace={namespace}
+						onFDSViewUpdate={(updatedFdsViewData) => {
+							setFDSView({...fdsView, ...updatedFdsViewData});
+						}}
 						saveFDSFieldsURL={saveFDSFieldsURL}
 					/>
 				)

@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -1011,6 +1012,16 @@ public class PoshiRunnerExecutor {
 			else {
 				argument = _poshiVariablesContext.getReplacedCommandVarsObject(
 					(String)argument);
+			}
+
+			Class<?> parameterTypeClass =
+				liferaySeleniumMethod.getParameterTypes()[i];
+
+			if (Objects.equals(
+					parameterTypeClass.getName(), "java.lang.String") &&
+				Validator.isNotNull(argument)) {
+
+				argument = argument.toString();
 			}
 
 			arguments.add(argument);

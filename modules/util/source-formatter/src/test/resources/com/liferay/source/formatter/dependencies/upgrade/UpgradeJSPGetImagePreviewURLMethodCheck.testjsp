@@ -1,3 +1,4 @@
+<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -11,14 +12,9 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+--%>
 
-/// <reference types="react" />
+<%@ include file="/repository_entry_browser/init.jsp" %>
 
-import {IFDSViewSectionInterface} from '../FDSView';
-declare function Pagination({
-	fdsView,
-	fdsViewsURL,
-	namespace,
-	onFDSViewUpdate,
-}: IFDSViewSectionInterface): JSX.Element;
-export default Pagination;
+<div class="item-preview" data-href="<%= Validator.isNotNull(thumbnailSrc) ? HtmlUtil.escapeHREF(DLUtil.getImagePreviewURL(fileEntry, themeDisplay)) : themeDisplay.getPathThemeImages() + "/file_system/large/default.png" %>">
+</div>

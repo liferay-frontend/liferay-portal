@@ -73,11 +73,6 @@ definition {
 			id = "element-text",
 			text = "Welcome to Liferay");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "Instance Settings");
-
 		PortalSettings.gotoConfiguration(
 			configurationCategory = "Localization",
 			configurationName = "Language",
@@ -256,10 +251,7 @@ definition {
 			userLastName = "userln",
 			userScreenName = "usersn");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
+		User.openUsersAdmin();
 
 		UserNavigator.gotoUser(userScreenName = "usersn");
 
@@ -276,10 +268,7 @@ definition {
 
 		PortalSettings.configureTimeZone(timeZone = "(UTC) Coordinated Universal Time");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
+		User.openUsersAdmin();
 
 		UserNavigator.gotoUser(userScreenName = "usersn");
 
@@ -406,10 +395,7 @@ definition {
 			portalInstanceId = "www.able.com",
 			virtualHost = "www.able.com");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
-			panel = "Control Panel",
-			portlet = "Virtual Instances");
+		PortalInstances.openVirtualInstancesAdmin();
 
 		PortalInstances.viewCP(virtualHost = "www.able.com");
 
@@ -698,12 +684,7 @@ definition {
 
 		User.firstLoginPG();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "Instance Settings");
-
-		SystemSettings.gotoConfiguration(
+		PortalSettings.gotoConfiguration(
 			configurationCategory = "Localization",
 			configurationName = "Time Zone",
 			configurationScope = "Virtual Instance Scope");
@@ -724,10 +705,7 @@ definition {
 			}
 		}
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
+		User.openUsersAdmin();
 
 		UserNavigator.gotoUser(userScreenName = "test");
 
@@ -842,14 +820,11 @@ definition {
 				userScreenName = "usersn");
 
 			JSONUser.setFirstPassword(
-				newPassword = "test",
+				agreeToTermsAndAnswerReminderQuery = "true",
 				requireReset = "false",
 				userEmailAddress = "userea@liferay.com");
 
-			ApplicationsMenu.gotoPortlet(
-				category = "Security",
-				panel = "Control Panel",
-				portlet = "Password Policies");
+			PasswordPolicies.openPasswordPoliciesAdmin();
 
 			PasswordPolicies.enableLockout(
 				lockoutDuration = "5 Minutes",
@@ -902,10 +877,7 @@ definition {
 			}
 		}
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
+		User.openUsersAdmin();
 
 		UserNavigator.gotoUser(userScreenName = "test");
 
@@ -973,10 +945,7 @@ definition {
 			portalInstanceId = "www.able.com",
 			virtualHost = "www.able.com");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
-			panel = "Control Panel",
-			portlet = "Virtual Instances");
+		PortalInstances.openVirtualInstancesAdmin();
 
 		PortalInstances.viewCP(virtualHost = "www.able.com");
 
@@ -1065,6 +1034,7 @@ definition {
 
 	@priority = 5
 	test ViewUserPreferredLocale {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
 
 		User.firstLoginPG();
@@ -1079,11 +1049,9 @@ definition {
 
 		Site.configureCurrentLanguagesCP(defaultSiteLanguage = "Spanish (Spain)");
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
-
-		PagesAdmin.addPage(pageName = "Test Page");
+		JSONLayout.addPublicLayout(
+			groupName = "Site Name",
+			layoutName = "Test Page");
 
 		JSONUser.addUser(
 			userEmailAddress = "userea@liferay.com",
@@ -1091,23 +1059,16 @@ definition {
 			userLastName = "userln",
 			userScreenName = "usersn");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		User.editPasswordCP(
-			userEmailAddress = "userea@liferay.com",
-			userScreenName = "usersn");
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "userea@liferay.com");
 
 		JSONUser.addUserToSite(
 			groupName = "Site Name",
 			userEmailAddress = "userea@liferay.com");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
+		User.openUsersAdmin();
 
 		User.editDisplaySettingsCP(
 			languageName = "中文 (中国)",

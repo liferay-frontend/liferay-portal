@@ -12,13 +12,18 @@
  * details.
  */
 
-/// <reference types="react" />
+package com.liferay.source.formatter.dependencies.upgrade;
 
-import {IFDSViewSectionInterface} from '../FDSView';
-declare function Pagination({
-	fdsView,
-	fdsViewsURL,
-	namespace,
-	onFDSViewUpdate,
-}: IFDSViewSectionInterface): JSX.Element;
-export default Pagination;
+import com.liferay.document.library.kernel.util.DLUtil;
+
+/**
+ * @author Tamyris Bernardo
+ */
+public class UpgradeJavaGetImagePreviewURLMethodCheck {
+
+	public void method() {
+		imagePreviewURL = DLUtil.getImagePreviewURL(
+			fileEntry, fileEntry.getFileVersion(), null);
+	}
+
+}
