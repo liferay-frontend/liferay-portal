@@ -12,10 +12,26 @@
  * details.
  */
 
-package com.liferay.portal.kernel.portlet;
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import com.liferay.frontend.data.set.provider.FDSActionProvider;
 
 /**
- * @author Eudaldo Alonso
+ * @author Michael Cavalcanti
  */
-public interface AddPortletProvider extends PortletProvider {
+public class UpgradeJavaFDSActionProviderCheck implements FDSActionProvider {
+
+	@Override
+	public List<DropdownItem> getDropdownItems(
+			HttpServletRequest httpServletRequest, long groupId, Object model)
+		throws PortalException {
+
+		Object originalModel = buildOriginalModel(model);
+
+		return _fdsActionProvider.getDropdownItems(
+			httpServletRequest, groupId, originalModel);
+	}
+
+	private final FDSActionProvider _fdsActionProvider;
+
 }

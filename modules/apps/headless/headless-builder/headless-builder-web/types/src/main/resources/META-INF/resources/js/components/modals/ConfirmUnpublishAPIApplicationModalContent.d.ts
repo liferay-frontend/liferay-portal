@@ -12,10 +12,12 @@
  * details.
  */
 
-package com.liferay.portal.kernel.portlet;
+/// <reference types="react" />
 
-/**
- * @author Eudaldo Alonso
- */
-public interface ViewPortletProvider extends PortletProvider {
-}
+export declare function ConfirmUnpublishAPIApplicationModalContent({
+	closeModal,
+	handlePublish,
+}: {
+	closeModal: voidReturn;
+	handlePublish: voidReturn;
+}): JSX.Element;

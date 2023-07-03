@@ -239,6 +239,7 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 			layoutClassedModelUsage.getGroupId(),
 			layoutClassedModelUsage.getClassNameId(),
 			layoutClassedModelUsage.getClassPK(),
+			layoutClassedModelUsage.getClassedModelExternalReferenceCode(),
 			layoutClassedModelUsage.getContainerKey(),
 			layoutClassedModelUsage.getContainerType(),
 			layoutRevision.getLayoutRevisionId(),

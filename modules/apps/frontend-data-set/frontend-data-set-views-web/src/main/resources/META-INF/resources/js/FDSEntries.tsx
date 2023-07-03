@@ -26,6 +26,7 @@ import React, {useState} from 'react';
 
 import '../css/FDSEntries.scss';
 import {
+	ALLOWED_ENDPOINTS_PARAMETERS,
 	API_URL,
 	FDS_DEFAULT_PROPS,
 	FUZZY_OPTIONS,
@@ -387,6 +388,22 @@ const AddFDSEntryModalContent = ({
 		}
 	};
 
+	const isPathValid = (
+		path: string,
+		allowedParameters: string[]
+	): boolean => {
+		const paramsMatcher = RegExp('{(.*?)}', 'g');
+		let matches;
+
+		while ((matches = paramsMatcher.exec(path)) !== null) {
+			if (!allowedParameters.includes(matches[1])) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
 	const getRESTSchemas = async (restApplication: string) => {
 		if (!restApplication) {
 			return;
@@ -406,7 +423,7 @@ const AddFDSEntryModalContent = ({
 
 			schemaNames.forEach((schemaName) => {
 				paths.forEach((path: string) => {
-					if (path.includes('{')) {
+					if (!isPathValid(path, ALLOWED_ENDPOINTS_PARAMETERS)) {
 						return;
 					}
 

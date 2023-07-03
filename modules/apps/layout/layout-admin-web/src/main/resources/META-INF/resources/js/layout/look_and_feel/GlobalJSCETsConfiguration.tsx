@@ -238,7 +238,7 @@ export default function GlobalJSCETsConfiguration({
 											'client-extensions-inherited-from-master-will-always-be-loaded-first'
 										),
 										Liferay.Language.get(
-											'also-head-insertions-will-be-loaded-before-body-bottom-ones'
+											'also,-head-insertions-will-be-loaded-before-body-bottom-ones'
 										),
 									].join(' ')}
 								</GlobalCETOrderHelpIcon>
