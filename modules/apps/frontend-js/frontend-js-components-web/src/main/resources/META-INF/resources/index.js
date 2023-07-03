@@ -12,6 +12,8 @@
  * details.
  */
 
+export {default as BetaBadge} from './beta_badge/BetaBadge';
+
 export {
 	default as LearnMessage,
 	LearnResourcesContext,
