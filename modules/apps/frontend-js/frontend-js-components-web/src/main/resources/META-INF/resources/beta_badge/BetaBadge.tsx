@@ -14,20 +14,24 @@
 
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
-import ClayPopover from '@clayui/popover';
+import ClayPopover, {ALIGN_POSITIONS} from '@clayui/popover';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import React from 'react';
 
-export default function BetaBadge() {
+interface IProps {
+	tooltipAlign: typeof ALIGN_POSITIONS[number];
+}
+
+export default function BetaBadge({tooltipAlign = 'top'}: IProps) {
 	return (
 		<ClayTooltipProvider>
 			<div
 				className="tooltip-container"
-				data-tooltip-align="top"
+				data-tooltip-align={tooltipAlign}
 				title={Liferay.Language.get('open-beta-definition')}
 			>
 				<ClayPopover
-					alignPosition="top"
+					alignPosition={tooltipAlign}
 					disableScroll
 					header={Liferay.Language.get('beta-feature')}
 					trigger={
