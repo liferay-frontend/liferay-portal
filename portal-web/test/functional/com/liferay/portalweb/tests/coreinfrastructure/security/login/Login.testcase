@@ -401,6 +401,7 @@ definition {
 	@priority = 3
 	test ViewInstanceSettingsAuthentication {
 		property osgi.app.includes = "portal-security-sso-openid";
+		property test.liferay.virtual.instance = "false";
 
 		task ("Login and view General CP authentication settings") {
 			User.firstLoginPG();

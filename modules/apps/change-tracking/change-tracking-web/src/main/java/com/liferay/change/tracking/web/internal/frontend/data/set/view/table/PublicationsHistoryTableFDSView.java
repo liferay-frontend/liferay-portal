@@ -28,13 +28,13 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author David Truong
+ * @author Pei-Jung Lan
  */
 @Component(
-	property = "frontend.data.set.name=" + PublicationsFDSNames.PUBLICATIONS_ONGOING,
+	property = "frontend.data.set.name=" + PublicationsFDSNames.PUBLICATIONS_HISTORY,
 	service = FDSView.class
 )
-public class PublicationsOngoingTableFDSView extends BaseTableFDSView {
+public class PublicationsHistoryTableFDSView extends BaseTableFDSView {
 
 	@Override
 	public FDSTableSchema getFDSTableSchema(Locale locale) {
@@ -51,29 +51,20 @@ public class PublicationsOngoingTableFDSView extends BaseTableFDSView {
 				true
 			)
 		).add(
-			"description", "description"
-		).add(
-			"dateModified", "last-modified",
+			"datePublished", "published-date",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"dateTime"
 			).setSortable(
 				true
 			)
 		).add(
-			"dateCreated", "create-date",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"dateTime"
-			).setSortable(
-				true
-			)
+			"ownerName", "published-by"
 		).add(
 			"status", "status",
 			fdsTableSchemaField ->
 				fdsTableSchemaField.setContentRendererModuleURL(
 					_npmResolver.resolveModuleName("change-tracking-web") +
 						"/publications/js/components/StatusRenderer")
-		).add(
-			"ownerName", "owner"
 		).build();
 	}
 

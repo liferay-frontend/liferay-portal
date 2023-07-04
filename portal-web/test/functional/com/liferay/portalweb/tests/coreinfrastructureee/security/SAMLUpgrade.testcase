@@ -233,6 +233,7 @@ definition {
 	test CanProvisionNewSPUserAfterUpgrade71103 {
 		property data.archive.type = "data-archive-saml-broken-mapping";
 		property portal.version = "7.1.10.3";
+		property test.liferay.virtual.instance = "false";
 
 		task ("Assert portal can provision a new SP user after successfully authenticating on the IDP") {
 			User.logoutPG();
@@ -255,6 +256,7 @@ definition {
 	test CanProvisionNewSPUserAfterUpgrade72101 {
 		property data.archive.type = "data-archive-saml-broken-mapping";
 		property portal.version = "7.2.10.1";
+		property test.liferay.virtual.instance = "false";
 
 		task ("Assert portal can provision a new SP user after successfully authenticating on the IDP") {
 			User.logoutPG();
@@ -277,6 +279,7 @@ definition {
 	test CanProvisionNewSPUserAfterUpgrade73101 {
 		property data.archive.type = "data-archive-saml-broken-mapping";
 		property portal.version = "7.3.10.1";
+		property test.liferay.virtual.instance = "false";
 
 		task ("Assert portal can provision a new SP user after successfully authenticating on the IDP") {
 			User.logoutPG();
@@ -299,6 +302,7 @@ definition {
 	test CanProvisionNewSPUserAfterUpgrade701016 {
 		property data.archive.type = "data-archive-saml-broken-mapping";
 		property portal.version = "7.0.10.16";
+		property test.liferay.virtual.instance = "false";
 
 		task ("Assert portal can provision a new SP user after successfully authenticating on the IDP") {
 			User.logoutPG();

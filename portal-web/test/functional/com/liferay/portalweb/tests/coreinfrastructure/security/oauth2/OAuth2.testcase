@@ -887,6 +887,7 @@ definition {
 		property oauth2.application.enabled = "true";
 		property osgi.module.configuration.file.names = "com.liferay.oauth2.provider.rest.internal.spi.bearer.token.provider.configuration.DefaultBearerTokenProviderConfiguration.config:com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration.config";
 		property osgi.module.configurations = "access.token.expires.in=\"30\"${line.separator}refresh.token.expires.in=\"60\":oauth2.expired.authorizations.afterlife.duration=\"30\"${line.separator}oauth2.expired.authorizations.check.interval=\"30\"";
+		property test.liferay.virtual.instance = "false";
 
 		task ("Add the OSGI configuration file") {
 			OAuth2.deployInstanceConfigFile(osgiConfigFileName = "com.liferay.portal.remote.cors.configuration.PortalCORSConfiguration~allow~headless~admin~user.config");
