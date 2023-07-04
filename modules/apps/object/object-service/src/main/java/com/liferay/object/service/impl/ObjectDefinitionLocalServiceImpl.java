@@ -546,6 +546,38 @@ public class ObjectDefinitionLocalServiceImpl
 	}
 
 	@Override
+	public ObjectDefinition
+			enableAccountEntryRestrictedForNondefaultStorageType(
+				ObjectField objectField)
+		throws PortalException {
+
+		if (!objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_INTEGER) &&
+			!objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER) &&
+			!objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
+
+			throw new ObjectDefinitionAccountEntryRestrictedException(
+				"Custom object definitions can only be restricted by an " +
+					"integer, long integer, or text field");
+		}
+
+		ObjectDefinition objectDefinition = getObjectDefinition(
+			objectField.getObjectDefinitionId());
+
+		if (objectDefinition.isDefaultStorageType()) {
+			throw new UnsupportedOperationException();
+		}
+
+		objectDefinition.setAccountEntryRestricted(true);
+		objectDefinition.setAccountEntryRestrictedObjectFieldId(
+			objectField.getObjectFieldId());
+
+		return objectDefinitionPersistence.update(objectDefinition);
+	}
+
+	@Override
 	public ObjectDefinition fetchObjectDefinition(long companyId, String name) {
 		return objectDefinitionPersistence.fetchByC_N(companyId, name);
 	}

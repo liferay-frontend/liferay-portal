@@ -1439,6 +1439,11 @@ public class BundleSiteInitializer implements SiteInitializer {
 			() -> _addOrUpdateObjectRelationships(
 				objectDefinitionIdsStringUtilReplaceValues, serviceContext));
 
+		_invoke(
+			() -> _addOrUpdateObjectFields(
+				listTypeDefinitionIdsStringUtilReplaceValues,
+				objectDefinitionIdsStringUtilReplaceValues, serviceContext));
+
 		for (Map.Entry<String, ObjectDefinition> entry :
 				accountEntryRestrictedObjectDefinitions.entrySet()) {
 
@@ -1447,18 +1452,24 @@ public class BundleSiteInitializer implements SiteInitializer {
 					_objectDefinitionLocalService.fetchObjectDefinition(
 						serviceContext.getCompanyId(), "C_" + entry.getKey());
 
-			_objectDefinitionLocalService.enableAccountEntryRestricted(
-				_objectRelationshipLocalService.
-					getObjectRelationshipByObjectDefinitionId(
-						serviceBuilderObjectDefinition.getObjectDefinitionId(),
-						"accountEntryTo" +
-							serviceBuilderObjectDefinition.getShortName()));
-		}
+			com.liferay.object.model.ObjectField serviceBuilderObjectField =
+				_objectFieldLocalService.fetchObjectField(
+					serviceBuilderObjectDefinition.getObjectDefinitionId(),
+					entry.getValue(
+					).getAccountEntryRestrictedObjectFieldName());
 
-		_invoke(
-			() -> _addOrUpdateObjectFields(
-				listTypeDefinitionIdsStringUtilReplaceValues,
-				objectDefinitionIdsStringUtilReplaceValues, serviceContext));
+			if (serviceBuilderObjectDefinition.isDefaultStorageType()) {
+				_objectDefinitionLocalService.enableAccountEntryRestricted(
+					_objectRelationshipLocalService.
+						fetchObjectRelationshipByObjectFieldId2(
+							serviceBuilderObjectField.getObjectFieldId()));
+			}
+			else {
+				_objectDefinitionLocalService.
+					enableAccountEntryRestrictedForNondefaultStorageType(
+						serviceBuilderObjectField);
+			}
+		}
 
 		Map<String, String> objectEntryIdsStringUtilReplaceValues = _invoke(
 			() -> _addOrUpdateObjectEntries(

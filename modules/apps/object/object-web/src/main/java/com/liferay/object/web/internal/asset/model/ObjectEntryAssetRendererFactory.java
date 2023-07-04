@@ -60,6 +60,10 @@ public class ObjectEntryAssetRendererFactory
 	public AssetRenderer<ObjectEntry> getAssetRenderer(long classPK, int type)
 		throws PortalException {
 
+		if (!_objectDefinition.isDefaultStorageType()) {
+			return null;
+		}
+
 		ObjectEntryAssetRenderer objectEntryAssetRenderer =
 			new ObjectEntryAssetRenderer(
 				_assetDisplayPageFriendlyURLProvider, _objectDefinition,

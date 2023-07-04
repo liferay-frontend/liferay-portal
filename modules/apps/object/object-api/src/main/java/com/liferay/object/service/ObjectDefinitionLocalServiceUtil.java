@@ -286,6 +286,15 @@ public class ObjectDefinitionLocalServiceUtil {
 		return getService().enableAccountEntryRestricted(objectRelationship);
 	}
 
+	public static ObjectDefinition
+			enableAccountEntryRestrictedForNondefaultStorageType(
+				com.liferay.object.model.ObjectField objectField)
+		throws PortalException {
+
+		return getService().
+			enableAccountEntryRestrictedForNondefaultStorageType(objectField);
+	}
+
 	public static ObjectDefinition fetchObjectDefinition(
 		long objectDefinitionId) {
 

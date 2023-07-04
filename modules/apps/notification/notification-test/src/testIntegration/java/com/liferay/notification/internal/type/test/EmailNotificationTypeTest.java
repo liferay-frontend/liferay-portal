@@ -30,6 +30,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -100,8 +101,8 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 
 		objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			childObjectDefinition.getObjectDefinitionId(), true,
+			StringPool.BLANK, RandomTestUtil.randomString(),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),
@@ -112,11 +113,26 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 				notificationTemplate.getNotificationTemplateId()
 			).build());
 
-		objectEntryManager.addObjectEntry(
-			dtoConverterContext, objectDefinition,
+		ObjectEntry objectEntry = objectEntryManager.addObjectEntry(
+			dtoConverterContext, parentObjectDefinition,
 			new ObjectEntry() {
 				{
-					setProperties(randomObjectEntryValues);
+					setProperties(parentObjectEntryValues);
+				}
+			},
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		objectEntryManager.addObjectEntry(
+			dtoConverterContext, childObjectDefinition,
+			new ObjectEntry() {
+				{
+					setProperties(
+						HashMapBuilder.putAll(
+							childObjectEntryValues
+						).put(
+							getObjectRelationshipObjectField2Name(),
+							objectEntry.getId()
+						).build());
 				}
 			},
 			ObjectDefinitionConstants.SCOPE_COMPANY);
