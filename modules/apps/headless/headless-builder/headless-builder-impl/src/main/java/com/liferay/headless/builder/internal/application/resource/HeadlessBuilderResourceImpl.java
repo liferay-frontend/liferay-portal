@@ -14,6 +14,13 @@
 
 package com.liferay.headless.builder.internal.application.resource;
 
+import com.liferay.headless.builder.application.APIApplication;
+import com.liferay.headless.builder.internal.util.PathUtil;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
+import com.liferay.portal.kernel.util.StringUtil;
+
+import java.util.Objects;
+
 import javax.ws.rs.core.Response;
 
 /**
@@ -24,8 +31,24 @@ public class HeadlessBuilderResourceImpl
 
 	@Override
 	public Response get() throws Exception {
-		return Response.ok(
-		).build();
+		String endpointPath = StringUtil.removeSubstring(
+			PathUtil.sanitize(contextHttpServletRequest.getRequestURI()),
+			contextAPIApplication.getBaseURL());
+
+		for (APIApplication.Endpoint endpoint :
+				contextAPIApplication.getEndpoints()) {
+
+			if (Objects.equals(endpoint.getPath(), endpointPath)) {
+				return Response.ok(
+					endpoint.getPath()
+				).build();
+			}
+		}
+
+		throw new NoSuchModelException(
+			String.format(
+				"Endpoint %s does not exist for %s", endpointPath,
+				contextAPIApplication.getTitle()));
 	}
 
 }

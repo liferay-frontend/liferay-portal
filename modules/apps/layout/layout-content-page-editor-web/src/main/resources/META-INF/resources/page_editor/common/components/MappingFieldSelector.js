@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
+import {EDITABLE_TYPE_LABELS} from '../../app/config/constants/editableTypeLabels';
 import {EDITABLE_TYPES} from '../../app/config/constants/editableTypes';
 import getSelectedField from '../../app/utils/getSelectedField';
 import {useId} from '../hooks/useId';
@@ -27,12 +28,15 @@ const UNMAPPED_OPTION = {
 };
 
 export default function MappingFieldSelector({
+	className,
 	fieldType,
 	fields,
 	label = Liferay.Language.get('field'),
+	defaultLabel,
 	onValueSelect,
 	value,
 }) {
+	const fieldTypeId = useId();
 	const mappingSelectorFieldSelectId = useId();
 
 	const hasWarnings = fields && !fields.length;
@@ -41,12 +45,15 @@ export default function MappingFieldSelector({
 
 	return (
 		<ClayForm.Group
-			className={classNames('mb-2 mt-3', {'has-warning': hasWarnings})}
+			className={classNames('mb-2 mt-3', className, {
+				'has-warning': hasWarnings,
+			})}
 			small
 		>
 			<label htmlFor={mappingSelectorFieldSelectId}>{label}</label>
 
 			<ClaySelect
+				aria-describedby={fieldTypeId}
 				disabled={!(fields && !!fields.length)}
 				id={mappingSelectorFieldSelectId}
 				onChange={onValueSelect}
@@ -55,7 +62,7 @@ export default function MappingFieldSelector({
 				{fields && !!fields.length && (
 					<>
 						<ClaySelect.Option
-							label={UNMAPPED_OPTION.label}
+							label={defaultLabel || UNMAPPED_OPTION.label}
 							value={UNMAPPED_OPTION.value}
 						/>
 
@@ -63,7 +70,7 @@ export default function MappingFieldSelector({
 							const key = `${fieldSet.label || ''}${index}`;
 
 							const Wrapper = ({children, ...props}) =>
-								fieldSet.label ? (
+								fieldSet.label && fields.length > 1 ? (
 									<ClaySelect.OptGroup {...props}>
 										{children}
 									</ClaySelect.OptGroup>
@@ -89,23 +96,39 @@ export default function MappingFieldSelector({
 				)}
 			</ClaySelect>
 
+			{selectedField && (
+				<p className="mt-2 text-3" id={fieldTypeId}>
+					<b>{Liferay.Language.get('field-type')}: </b>
+
+					{` ${selectedField.typeLabel}`}
+				</p>
+			)}
+
 			{hasWarnings && (
 				<ClayForm.FeedbackGroup>
 					<ClayForm.FeedbackItem>
-						{sub(
-							Liferay.Language.get(
-								'no-fields-are-available-for-x-editable'
-							),
-							[
-								EDITABLE_TYPES.backgroundImage,
-								EDITABLE_TYPES.image,
-							].includes(fieldType)
-								? Liferay.Language.get('image')
-								: Liferay.Language.get('text')
-						)}
+						{getWarningText(fieldType)}
 					</ClayForm.FeedbackItem>
 				</ClayForm.FeedbackGroup>
 			)}
 		</ClayForm.Group>
 	);
+}
+
+function getWarningText(fieldType) {
+	const fieldLabel = [
+		EDITABLE_TYPES.backgroundImage,
+		EDITABLE_TYPES.image,
+	].includes(fieldType)
+		? EDITABLE_TYPE_LABELS[EDITABLE_TYPES.image]
+		: EDITABLE_TYPES[fieldType];
+
+	if (fieldLabel) {
+		return sub(
+			Liferay.Language.get('no-fields-are-available-for-x-editable'),
+			fieldLabel
+		);
+	}
+
+	return Liferay.Language.get('no-fields-are-available-for-this-type');
 }

@@ -15,11 +15,14 @@
 package com.liferay.headless.builder.internal.application.publisher;
 
 import com.liferay.headless.builder.application.APIApplication;
+import com.liferay.headless.builder.application.provider.APIApplicationProvider;
 import com.liferay.headless.builder.application.publisher.APIApplicationPublisher;
 import com.liferay.headless.builder.internal.application.resource.HeadlessBuilderResourceImpl;
 import com.liferay.headless.builder.internal.application.resource.OpenAPIResourceImpl;
+import com.liferay.headless.builder.internal.jaxrs.context.provider.APIApplicationContextProvider;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import java.util.ArrayList;
@@ -29,6 +32,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import javax.ws.rs.core.Application;
+
+import org.apache.cxf.jaxrs.ext.ContextProvider;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -56,7 +61,8 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 			apiApplication.getOSGiJaxRsName(),
 			key -> new ArrayList<ServiceRegistration<?>>() {
 				{
-					add(_registerHeadlessBuilderApplication(apiApplication));
+					add(_registerApplication(apiApplication));
+					add(_registerContextProvider(apiApplication));
 					add(
 						_registerResource(
 							apiApplication, HeadlessBuilderResourceImpl.class,
@@ -101,8 +107,8 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 		_headlessBuilderApplicationServiceRegistrationsMap.clear();
 	}
 
-	private ServiceRegistration<Application>
-		_registerHeadlessBuilderApplication(APIApplication apiApplication) {
+	private ServiceRegistration<Application> _registerApplication(
+		APIApplication apiApplication) {
 
 		return _bundleContext.registerService(
 			Application.class, new Application(),
@@ -121,6 +127,24 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 				"(osgi.jaxrs.name=Liferay.Vulcan)"
 			).put(
 				"osgi.jaxrs.name", apiApplication.getOSGiJaxRsName()
+			).build());
+	}
+
+	private ServiceRegistration<?> _registerContextProvider(
+		APIApplication apiApplication) {
+
+		return _bundleContext.registerService(
+			ContextProvider.class,
+			new APIApplicationContextProvider(_apiApplicationProvider, _portal),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"osgi.jaxrs.application.select",
+				"(osgi.jaxrs.name=" + apiApplication.getOSGiJaxRsName() + ")"
+			).put(
+				"osgi.jaxrs.extension", "true"
+			).put(
+				"osgi.jaxrs.name",
+				apiApplication.getOSGiJaxRsName() +
+					"APIApplicationContextProvider"
 			).build());
 	}
 
@@ -170,10 +194,16 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 
 	private static BundleContext _bundleContext;
 
+	@Reference
+	private APIApplicationProvider _apiApplicationProvider;
+
 	private final Map<String, List<ServiceRegistration<?>>>
 		_headlessBuilderApplicationServiceRegistrationsMap = new HashMap<>();
 
 	@Reference
 	private OpenAPIResource _openAPIResource;
+
+	@Reference
+	private Portal _portal;
 
 }

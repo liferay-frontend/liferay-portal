@@ -1015,6 +1015,16 @@ public class RenderLayoutStructureTag extends IncludeTag {
 			"\"><input name=\"classTypeId\" type=\"hidden\" value=\"");
 		jspWriter.write(
 			String.valueOf(formStyledLayoutStructureItem.getClassTypeId()));
+
+		if (FeatureFlagManagerUtil.isEnabled("LPS-183498")) {
+			jspWriter.write(
+				"\"><input name=\"displayPage\" type=\"hidden\" value=\"");
+			jspWriter.write(
+				renderLayoutStructureDisplayContext.
+					getFormStyledLayoutStructureItemSuccessMessageDisplayPage(
+						formStyledLayoutStructureItem));
+		}
+
 		jspWriter.write(
 			"\"><input name=\"formItemId\" type=\"hidden\" value=\"");
 		jspWriter.write(formStyledLayoutStructureItem.getItemId());

@@ -22,6 +22,8 @@ import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.InfoFieldSetEntry;
 import com.liferay.info.field.InfoFieldValue;
+import com.liferay.info.field.type.DisplayPageInfoFieldType;
+import com.liferay.info.field.type.InfoFieldType;
 import com.liferay.info.field.type.URLInfoFieldType;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
@@ -186,18 +188,26 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 			infoItemReference, themeDisplay);
 	}
 
-	private InfoField<URLInfoFieldType> _getDefaultDisplayPageURLInfoField(
+	private InfoField<InfoFieldType> _getDefaultDisplayPageURLInfoField(
 		String className) {
 
 		return InfoField.builder(
 			className
 		).infoFieldType(
-			URLInfoFieldType.INSTANCE
+			_getDisplayPageInfoFieldType()
 		).name(
 			"displayPageURL"
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(getClass(), "default")
 		).build();
+	}
+
+	private InfoFieldType _getDisplayPageInfoFieldType() {
+		if (FeatureFlagManagerUtil.isEnabled("LPS-183498")) {
+			return DisplayPageInfoFieldType.INSTANCE;
+		}
+
+		return URLInfoFieldType.INSTANCE;
 	}
 
 	private List<InfoFieldSetEntry> _getInfoFieldSetEntries(
@@ -221,7 +231,7 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 			infoFieldSetEntries.add(
 				InfoField.builder(
 				).infoFieldType(
-					URLInfoFieldType.INSTANCE
+					_getDisplayPageInfoFieldType()
 				).uniqueId(
 					_getUniqueId(
 						layoutPageTemplateEntry.getLayoutPageTemplateEntryKey())
