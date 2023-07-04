@@ -303,8 +303,12 @@ const SelectSubscription = ({
 							<ClaySelect
 								className="mr-2"
 								onChange={({target}) => {
+									setInfoSelectedKey({
+										licenseEntryType: selectedKeyType,
+										productType: productGroupName,
+										productVersion: target.value,
+									});
 									setSelectedVersion(target.value);
-									setSelectedSubscription({});
 								}}
 								value={selectedVersion}
 							>

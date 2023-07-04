@@ -1665,11 +1665,24 @@ definition {
 		}
 
 		task ("Change the order of the second parent page item and third parent page item") {
-			DragAndDrop.javaScriptDragAndDropToObject(
+			DragAndDrop.javaScriptDragAndDropUpperLeftCorner(
 				key_itemName = "Test Page Name 2",
 				key_sourceItemName = "Test Page Name 3",
 				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
-				locator2 = "SiteNavigationMenu#ITEM_ENTRY");
+				locator2 = "SiteNavigationMenu#ITEM_ENTRY_BODY");
+
+			NavigationMenusAdmin.viewItemNested(
+				groupName = ${randomSiteName},
+				itemNameList = "Test Page Name 3",
+				parentItemNameList = "Test Page Name 2",
+				site = "true",
+				siteNavigationMenuName = "Navigation Menu Name");
+
+			DragAndDrop.javaScriptDragAndDropUpperLeftCorner(
+				key_itemName = "Child Page 1",
+				key_sourceItemName = "Test Page Name 3",
+				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
+				locator2 = "SiteNavigationMenu#ITEM_ENTRY_BODY");
 		}
 
 		task ("View the hierachy of page items") {
@@ -1684,11 +1697,24 @@ definition {
 		}
 
 		task ("Change back to the original order of the second parent page item and third parent page item") {
-			DragAndDrop.javaScriptDragAndDropToObject(
+			DragAndDrop.javaScriptDragAndDropUpperLeftCorner(
 				key_itemName = "Test Page Name 3",
 				key_sourceItemName = "Test Page Name 2",
 				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
-				locator2 = "SiteNavigationMenu#ITEM_ENTRY");
+				locator2 = "SiteNavigationMenu#ITEM_ENTRY_BODY");
+
+			NavigationMenusAdmin.viewItemNested(
+				groupName = ${randomSiteName},
+				itemNameList = "Test Page Name 2",
+				parentItemNameList = "Test Page Name 3",
+				site = "true",
+				siteNavigationMenuName = "Navigation Menu Name");
+
+			DragAndDrop.javaScriptDragAndDropUpperLeftCorner(
+				key_itemName = "Child Page 1",
+				key_sourceItemName = "Test Page Name 2",
+				locator1 = "SiteNavigationMenu#ITEM_ENTRY_DRAG_ICON",
+				locator2 = "SiteNavigationMenu#ITEM_ENTRY_BODY");
 		}
 
 		task ("View the hierachy of page items") {

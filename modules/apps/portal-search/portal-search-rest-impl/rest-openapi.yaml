@@ -114,6 +114,9 @@ openapi: 3.0.1
 paths:
     "/search":
         post:
+            description:
+                "Search the company index for matching content. This endpoint is in development and requires setting the
+                portal property 'feature.flag.LPS-179669' to true."
             operationId: postSearchPage
             parameters:
                 - in: query
