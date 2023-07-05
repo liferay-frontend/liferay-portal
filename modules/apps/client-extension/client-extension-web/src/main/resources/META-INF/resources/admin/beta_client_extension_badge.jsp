@@ -21,6 +21,8 @@
 		module="{BetaBadge} from frontend-js-components-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
+				"closeOnClickOutside", true
+			).put(
 				"tooltipAlign", "bottom"
 			).build()
 		%>'

@@ -32,11 +32,12 @@ export default function BetaBadge({tooltipAlign = 'top'}: IProps) {
 			>
 				<ClayPopover
 					alignPosition={tooltipAlign}
+					closeOnClickOutside
 					disableScroll
 					header={Liferay.Language.get('beta-feature')}
 					trigger={
 						<ClayButton
-							className="rounded-circle"
+							className="ml-2 rounded-circle"
 							displayType="beta"
 							size="xs"
 						>

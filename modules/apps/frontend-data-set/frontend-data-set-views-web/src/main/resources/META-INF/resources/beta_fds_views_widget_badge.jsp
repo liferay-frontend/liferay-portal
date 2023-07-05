@@ -16,7 +16,7 @@
 
 <%@ include file="/init.jsp" %>
 
-<div>
+<div class="ml-2">
 	<react:component
 		module="{BetaBadge} from frontend-js-components-web"
 		props='<%=
