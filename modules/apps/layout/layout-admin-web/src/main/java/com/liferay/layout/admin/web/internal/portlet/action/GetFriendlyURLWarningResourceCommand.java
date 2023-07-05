@@ -16,6 +16,7 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -24,7 +25,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
-import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
@@ -71,14 +71,14 @@ public class GetFriendlyURLWarningResourceCommand
 			return;
 		}
 
-		long plid = ParamUtil.getLong(
-			resourceRequest, "plid", LayoutConstants.DEFAULT_PLID);
+		String friendlyURL = ParamUtil.getString(
+			resourceRequest, "friendlyURL");
 
-		if (plid != LayoutConstants.DEFAULT_PLID) {
-			String friendlyURL = ParamUtil.getString(
-				resourceRequest, "friendlyURL");
+		if (Validator.isNotNull(friendlyURL)) {
+			long plid = ParamUtil.getLong(
+				resourceRequest, "plid", LayoutConstants.DEFAULT_PLID);
 
-			if (Validator.isNull(friendlyURL)) {
+			if (plid == LayoutConstants.DEFAULT_PLID) {
 				JSONPortletResponseUtil.writeJSON(
 					resourceRequest, resourceResponse,
 					JSONUtil.put("hasWarnings", false));
@@ -111,8 +111,7 @@ public class GetFriendlyURLWarningResourceCommand
 								WebKeys.THEME_DISPLAY);
 
 						return _getWarningMessage(
-							layout.getGroup(), themeDisplay.getLocale(),
-							layout.isPrivateLayout());
+							layout.getGroup(), themeDisplay.getLocale());
 					}
 				));
 
@@ -133,7 +132,7 @@ public class GetFriendlyURLWarningResourceCommand
 		boolean privateLayout = ParamUtil.getBoolean(
 			resourceRequest, "privateLayout");
 
-		String friendlyURL = StringPool.SLASH.concat(
+		friendlyURL = StringPool.SLASH.concat(
 			_layoutLocalServiceHelper.getFriendlyURL(name));
 
 		if (!_layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
@@ -159,30 +158,32 @@ public class GetFriendlyURLWarningResourceCommand
 
 					return _getWarningMessage(
 						_groupLocalService.getGroup(groupId),
-						themeDisplay.getLocale(), privateLayout);
+						themeDisplay.getLocale());
 				}
 			));
 	}
 
-	private String _getWarningMessage(
-			Group group, Locale locale, boolean privateLayout)
+	private String _getWarningMessage(Group group, Locale locale)
 		throws PortalException {
 
-		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
-			group.getGroupId(), privateLayout);
-
-		if (group.isLayoutSetPrototype() ||
-			layoutSet.isLayoutSetPrototypeLinkEnabled()) {
-
+		if (group.isLayoutSetPrototype()) {
 			return _language.get(
 				locale,
-				"the-friendly-url-of-the-site-template-page-you-are-trying-" +
-					"to-save-conflicts");
+				StringBundler.concat(
+					"the-friendly-url-of-the-site-template-page-you-are-",
+					"trying-to-save-conflicts-with-some-of-the-own-pages-of-",
+					"the-sites-created-from-this-site-template.-are-you-sure-",
+					"you-want-to-configure-the-site-template-page-with-this-",
+					"friendly-url"));
 		}
 
 		return _language.get(
 			locale,
-			"the-friendly-url-of-the-page-you-are-trying-to-save-conflicts");
+			StringBundler.concat(
+				"the-friendly-url-of-the-page-you-are-trying-to-save-",
+				"conflicts-with-a-friendly-url-of-a-page-in-the-site-",
+				"template,-from-which-this-site-was-created.-are-you-sure-you-",
+				"want-to-configure-the-page-with-this-friendly-url"));
 	}
 
 	@Reference

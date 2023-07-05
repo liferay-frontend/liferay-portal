@@ -31,6 +31,8 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemListBuilder;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
@@ -40,8 +42,11 @@ import com.liferay.layout.admin.constants.LayoutScreenNavigationEntryConstants;
 import com.liferay.layout.admin.web.internal.helper.LayoutActionsHelper;
 import com.liferay.layout.admin.web.internal.util.FaviconUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
 import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
 import com.liferay.layout.theme.item.selector.criterion.LayoutThemeItemSelectorCriterion;
 import com.liferay.layout.util.LayoutCopyHelper;
@@ -1531,6 +1536,91 @@ public class LayoutsAdminDisplayContext {
 		}
 
 		return LanguageUtil.get(httpServletRequest, title);
+	}
+
+	public VerticalNavItemList getVerticalNavItemList(
+		SelectLayoutPageTemplateEntryDisplayContext
+			selectLayoutPageTemplateEntryDisplayContext) {
+
+		VerticalNavItemList verticalNavItemList =
+			VerticalNavItemListBuilder.add(
+				verticalNavItem -> {
+					verticalNavItem.setActive(
+						selectLayoutPageTemplateEntryDisplayContext.
+							isBasicTemplates());
+					verticalNavItem.setHref(
+						getSelectLayoutPageTemplateEntryURL(
+							0, getSelPlid(), "basic-templates",
+							isPrivateLayout()));
+
+					String name = LanguageUtil.get(
+						httpServletRequest, "basic-templates");
+
+					verticalNavItem.setId(name);
+					verticalNavItem.setLabel(name);
+				}
+			).add(
+				verticalNavItem -> {
+					verticalNavItem.setActive(
+						selectLayoutPageTemplateEntryDisplayContext.
+							isGlobalTemplates());
+					verticalNavItem.setHref(
+						getSelectLayoutPageTemplateEntryURL(
+							0, getSelPlid(), "global-templates",
+							isPrivateLayout()));
+
+					String name = LanguageUtil.get(
+						httpServletRequest, "global-templates");
+
+					verticalNavItem.setId(name);
+					verticalNavItem.setLabel(name);
+				}
+			).build();
+
+		for (LayoutPageTemplateCollection layoutPageTemplateCollection :
+				LayoutPageTemplateCollectionServiceUtil.
+					getLayoutPageTemplateCollections(
+						themeDisplay.getScopeGroupId())) {
+
+			int layoutPageTemplateEntriesCount =
+				LayoutPageTemplateEntryServiceUtil.
+					getLayoutPageTemplateEntriesCount(
+						themeDisplay.getScopeGroupId(),
+						layoutPageTemplateCollection.
+							getLayoutPageTemplateCollectionId(),
+						WorkflowConstants.STATUS_APPROVED);
+
+			if (layoutPageTemplateEntriesCount <= 0) {
+				continue;
+			}
+
+			String name = HtmlUtil.escape(
+				layoutPageTemplateCollection.getName());
+
+			verticalNavItemList.add(
+				verticalNavItem -> {
+					long layoutPageTemplateCollectionId =
+						selectLayoutPageTemplateEntryDisplayContext.
+							getLayoutPageTemplateCollectionId();
+
+					if (layoutPageTemplateCollectionId ==
+							layoutPageTemplateCollection.
+								getLayoutPageTemplateCollectionId()) {
+
+						verticalNavItem.setActive(true);
+					}
+
+					verticalNavItem.setHref(
+						getSelectLayoutPageTemplateEntryURL(
+							layoutPageTemplateCollection.
+								getLayoutPageTemplateCollectionId(),
+							getSelPlid(), isPrivateLayout()));
+					verticalNavItem.setId(name);
+					verticalNavItem.setLabel(name);
+				});
+		}
+
+		return verticalNavItemList;
 	}
 
 	public String getViewCollectionItemsURL(Layout layout)
