@@ -23,7 +23,7 @@ import {DisplayType} from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
 
 import {Liferay} from '../../liferay/liferay';
-import {getAccountGroup, getMyUserAccount} from '../../utils/api';
+import {getMyUserAccount} from '../../utils/api';
 import {createPassword} from '../../utils/createPassword';
 import {
 	addAdditionalInfo,
@@ -37,6 +37,7 @@ import {
 } from './services';
 
 interface InviteMemberModalProps {
+	dashboardType: false | 'customer-dashboard' | 'publisher-dashboard';
 	handleClose: () => void;
 	listOfRoles: string[];
 	renderToast: (message: string, title: string, type: DisplayType) => void;
@@ -44,12 +45,8 @@ interface InviteMemberModalProps {
 	selectedAccount: Account;
 }
 
-const finalPathUrl = {
-	'customer-dashboard': 'customer-gate',
-	'publisher-dashboard': 'loading',
-};
-
 export function InviteMemberModal({
+	dashboardType,
 	handleClose,
 	listOfRoles,
 	renderToast,
@@ -72,11 +69,6 @@ export function InviteMemberModal({
 	const [accountRoles, setAccountRoles] = useState<AccountRole[]>();
 	const [userPassword, setUserPassword] = useState<string>('');
 
-	const paths = Liferay.ThemeDisplay.getLayoutURL().split('/');
-
-	const finalPath =
-		finalPathUrl[paths[paths.length - 1] as keyof typeof finalPathUrl];
-
 	const getAccountRoles = useCallback(async () => {
 		const roles = await getAccountRolesOnAPI(selectedAccount.id);
 
@@ -92,6 +84,15 @@ export function InviteMemberModal({
 		getAccountRoles();
 		setUserPassword(createPassword());
 	}, [getAccountRoles, listOfRoles]);
+
+	const finalPathUrl = {
+		'customer-dashboard': 'customer-gate',
+		'publisher-dashboard': 'loading',
+	};
+
+	const emailInviteURL = `${Liferay.ThemeDisplay.getPortalURL()}/c/login?redirect=${getSiteURL()}/${
+		finalPathUrl[dashboardType as keyof typeof finalPathUrl]
+	}`;
 
 	const jsonBody = useMemo(
 		() => ({
@@ -152,20 +153,6 @@ export function InviteMemberModal({
 			return;
 		}
 
-		const accountGroups = await getAccountGroup(selectedAccount.id);
-		const accountGroupERC =
-			accountGroups && accountGroups[0]?.externalReferenceCode;
-
-		if (!accountGroupERC) {
-			renderToast(
-				'To invite a member, the account must be associated with an accountGroup',
-				'',
-				'danger'
-			);
-
-			return onClose();
-		}
-
 		// eslint-disable-next-line prefer-const
 		let [user, myUser] = await Promise.all([
 			getUserByEmail(formFields.email),
@@ -199,10 +186,9 @@ export function InviteMemberModal({
 
 		await addAdditionalInfo({
 			acceptInviteStatus: false,
-			accountGroupERC,
 			accountName: selectedAccount.name,
 			emailOfMember: formFields.email,
-			inviteURL: `${Liferay.ThemeDisplay.getPortalURL()}/c/login?redirect=${getSiteURL()}/${finalPath}`,
+			inviteURL: emailInviteURL,
 			inviterName: myUser.givenName,
 			mothersName: userPassword,
 			r_accountEntryToUserAdditionalInfo_accountEntryId:

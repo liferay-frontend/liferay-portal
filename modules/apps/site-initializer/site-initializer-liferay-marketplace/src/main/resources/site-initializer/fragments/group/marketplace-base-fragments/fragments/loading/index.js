@@ -15,10 +15,6 @@
 
 const baseURL = Liferay.ThemeDisplay.getPortalURL();
 const myUserId = Liferay.ThemeDisplay.getUserId();
-const accountGroups = {
-	'MKP-CUSTOMERS-GROUP': 'customer-dashboard',
-	'MKP-PUBLISHERS-GROUP': 'publisher-dashboard',
-};
 
 const fetcher = async (url, {method = 'GET', ...options} = {}) => {
 	const response = await fetch(`${baseURL}${url}`, {
@@ -99,6 +95,37 @@ const getSiteURL = () => {
 	return '';
 };
 
+const inviteRoles = {
+	Admin: ['Account Administrator'],
+	Customer: ['Account Buyer', 'Account Member'],
+	Publisher: ['App Editor'],
+};
+
+function checkAccountTypeByRole(userRoles) {
+	const hasCustomerRoles = userRoles.some((value) =>
+		isRoleMatch(value, ['Customer'] || ['Customer', 'Admin'])
+	);
+
+	const hasPublisherRoles = userRoles.some((value) =>
+		isRoleMatch(value, ['Publisher'] || ['Publisher', 'Admin'])
+	);
+
+	return hasCustomerRoles
+		? 'customer-dashboard'
+		: hasPublisherRoles
+		? 'publisher-dashboard'
+		: 'home';
+}
+
+function isRoleMatch(value, roles) {
+	return roles.some((role) =>
+		inviteRoles[role].some(
+			(roleValue) =>
+				roleValue.trim().toLowerCase() === value.trim().toLowerCase()
+		)
+	);
+}
+
 const main = async () => {
 	const userAccountContainer = document.querySelector(
 		'#loading-fragment strong'
@@ -112,6 +139,7 @@ const main = async () => {
 		}
 
 		const userRoles = userAdditionalInfo.roles.split('/').filter(Boolean);
+		const finalURL = checkAccountTypeByRole(userRoles);
 
 		const myUserAccount = await getMyUserAccount();
 
@@ -141,10 +169,7 @@ const main = async () => {
 						})
 					);
 
-					window.location.href = `${Liferay.ThemeDisplay.getPortalURL()}${getSiteURL()}/${
-						accountGroups[userAdditionalInfo.accountGroupERC] ??
-						'home'
-					}`;
+					window.location.href = `${Liferay.ThemeDisplay.getPortalURL()}${getSiteURL()}/${finalURL}`;
 				}
 			}
 		}

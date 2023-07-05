@@ -122,7 +122,6 @@ export function MemberProfile({
 
 				const newInvite = await addAdditionalInfo({
 					acceptInviteStatus: false,
-					accountGroupERC: updatedUserInfos.accountGroupERC,
 					accountName: updatedUserInfos.accountName,
 					emailOfMember: updatedUserInfos.emailOfMember,
 					id: updatedUserInfos.id,

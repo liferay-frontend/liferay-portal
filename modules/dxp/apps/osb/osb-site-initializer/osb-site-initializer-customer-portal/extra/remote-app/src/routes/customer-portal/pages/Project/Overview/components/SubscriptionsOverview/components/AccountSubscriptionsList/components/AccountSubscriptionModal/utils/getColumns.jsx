@@ -9,9 +9,10 @@
  * distribution rights of the Software.
  */
 
+import PopoverIconButton from '~/routes/customer-portal/components/PopoverIconButton';
 import i18n from '../../../../../../../../../../../../common/I18n';
 
-const columns = [
+const getInitialColumns = (articleWhatIsMyInstanceSizingValueURL) => [
 	{
 		accessor: 'start-end-date',
 		align: 'center',
@@ -38,7 +39,20 @@ const columns = [
 		align: 'center',
 		bodyClass: 'border-0',
 		header: {
-			name: i18n.translate('instance-size'),
+			name: (
+				<div className="align-items-center d-flex justify-content-center">
+					<p className="m-0">{i18n.translate('instance-size')}</p>
+
+					<PopoverIconButton
+						popoverLink={{
+							textLink: i18n.translate(
+								'learn-more-about-the-instance-sizing'
+							),
+							url: articleWhatIsMyInstanceSizingValueURL,
+						}}
+					/>
+				</div>
+			),
 			styles:
 				'bg-neutral-1 font-weight-bold text-neutral-8 table-cell-expand-smaller py-3',
 		},
@@ -91,7 +105,12 @@ const displayInstanceSizeMap = {
 	],
 };
 
-export default function getColumns(title = '') {
+export default function getColumns(
+	title = '',
+	articleWhatIsMyInstanceSizingValueURL
+) {
+	const columns = getInitialColumns(articleWhatIsMyInstanceSizingValueURL);
+
 	const displayColumns = [...columns];
 
 	let displayInstanceSizeForProduct = false;

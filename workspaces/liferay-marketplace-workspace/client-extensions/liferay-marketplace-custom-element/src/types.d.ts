@@ -411,7 +411,6 @@ type UserLogged = {
 
 type AdditionalInfoBody = {
 	acceptInviteStatus: boolean;
-	accountGroupERC: string;
 	accountName: string;
 	emailOfMember: string;
 	id?: number;
