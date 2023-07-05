@@ -88,9 +88,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Rubén Pulido
  */
 @Component(
-	property = "path=/portal/add_info_item", service = StrutsAction.class
+	property = "path=/portal/edit_info_item", service = StrutsAction.class
 )
-public class AddInfoItemStrutsAction implements StrutsAction {
+public class EditInfoItemStrutsAction implements StrutsAction {
 
 	@Override
 	public String execute(
@@ -286,6 +286,10 @@ public class AddInfoItemStrutsAction implements StrutsAction {
 
 	private String _getDisplayPageURL(
 		String className, String displayPage, Object infoItem) {
+
+		if (infoItem == null) {
+			return StringPool.BLANK;
+		}
 
 		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
 			_infoItemServiceRegistry.getFirstInfoItemService(
@@ -539,7 +543,7 @@ public class AddInfoItemStrutsAction implements StrutsAction {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		AddInfoItemStrutsAction.class);
+		EditInfoItemStrutsAction.class);
 
 	@Reference
 	private DisplayPageInfoItemFieldSetProvider

@@ -108,9 +108,9 @@ public class PanelTag extends BaseContainerTag {
 	protected Map<String, Object> prepareProps(Map<String, Object> props) {
 		props.put("collapsable", _collapsable);
 		props.put("collapseClassNames", _collapseClassNames);
+		props.put("defaultExpanded", _expanded);
 		props.put("displayTitle", _displayTitle);
 		props.put("displayType", _displayType);
-		props.put("expanded", _expanded);
 		props.put("showCollapseIcon", _showCollapseIcon);
 
 		return super.prepareProps(props);

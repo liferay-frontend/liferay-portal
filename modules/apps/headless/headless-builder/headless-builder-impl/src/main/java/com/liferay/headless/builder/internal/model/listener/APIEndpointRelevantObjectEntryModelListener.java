@@ -72,6 +72,32 @@ public class APIEndpointRelevantObjectEntryModelListener
 		}
 	}
 
+	private boolean _isAPIApplication(long apiApplicationId) throws Exception {
+		if (apiApplicationId == 0) {
+			return false;
+		}
+
+		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			apiApplicationId);
+
+		if (objectEntry == null) {
+			return false;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				objectEntry.getObjectDefinitionId());
+
+		if (!Objects.equals(
+				objectDefinition.getExternalReferenceCode(),
+				"L_API_APPLICATION")) {
+
+			return false;
+		}
+
+		return true;
+	}
+
 	private boolean _isModified(
 		ObjectEntry originalObjectEntry, ObjectEntry objectEntry) {
 
@@ -147,12 +173,13 @@ public class APIEndpointRelevantObjectEntryModelListener
 					null);
 			}
 
-			if ((long)values.get(
-					"r_apiApplicationToAPIEndpoints_c_apiApplicationId") == 0) {
+			if (!_isAPIApplication(
+					(long)values.get(
+						"r_apiApplicationToAPIEndpoints_c_apiApplicationId"))) {
 
 				throw new ObjectEntryValuesException.InvalidObjectField(
-					"An API endpoint must be related to an API application",
-					"an-api-endpoint-must-be-related-to-an-api-application",
+					"An API endpoint must be related to a an API application",
+					"an-api-endpoint-must-be-related-to-a-an-api-application",
 					null);
 			}
 		}

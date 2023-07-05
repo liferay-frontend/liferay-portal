@@ -26,6 +26,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>TABLE_ENTRY_EXACT_MATCH</td>
+	<td>//tr[.//*[normalize-space(text())="${key_tableEntry}"]]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>GROUPED_TABLE_ENTRY</td>
 	<td>//tr[normalize-space()='${key_groupHeader}']//following-sibling::tr[td[normalize-space()='${key_tableEntry}']]</td>
 	<td></td>

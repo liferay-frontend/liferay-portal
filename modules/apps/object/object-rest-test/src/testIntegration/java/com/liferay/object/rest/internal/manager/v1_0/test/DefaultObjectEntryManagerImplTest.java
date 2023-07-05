@@ -147,6 +147,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -165,7 +166,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Feliphe Marinho
  */
-@FeatureFlags({"LPS-146755", "LPS-164801"})
+@FeatureFlags({"LPS-146755", "LPS-164801", "LPS-172017"})
 @RunWith(Arquillian.class)
 public class DefaultObjectEntryManagerImplTest {
 
@@ -205,7 +206,34 @@ public class DefaultObjectEntryManagerImplTest {
 		_dtoConverterContext = new DefaultDTOConverterContext(
 			false, Collections.emptyMap(), _dtoConverterRegistry, null,
 			LocaleUtil.getDefault(), null, _adminUser);
-
+		_listTypeDefinition =
+			_listTypeDefinitionLocalService.addListTypeDefinition(
+				null, _adminUser.getUserId(),
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				Collections.emptyList());
+		_localizedObjectFieldI18nValues = HashMapBuilder.<String, Object>put(
+			"localizedLongTextObjectFieldName_i18n",
+			HashMapBuilder.put(
+				"en_US", "en_US localizedLongTextObjectFieldValue"
+			).put(
+				"pt_BR", "pt_BR localizedLongTextObjectFieldValue"
+			).build()
+		).put(
+			"localizedRichTextObjectFieldName_i18n",
+			HashMapBuilder.put(
+				"en_US", "en_US <i>localizedRichTextObjectFieldValue</i>"
+			).put(
+				"pt_BR", "pt_BR <i>localizedRichTextObjectFieldValue</i>"
+			).build()
+		).put(
+			"localizedTextObjectFieldName_i18n",
+			HashMapBuilder.put(
+				"en_US", "en_US localizedTextObjectFieldValue"
+			).put(
+				"pt_BR", "pt_BR localizedTextObjectFieldValue"
+			).build()
+		).build();
 		_objectDefinition1 = _createObjectDefinition(
 			Arrays.asList(
 				new TextObjectFieldBuilder(
@@ -215,13 +243,6 @@ public class DefaultObjectEntryManagerImplTest {
 				).name(
 					"textObjectFieldName"
 				).build()));
-
-		_listTypeDefinition =
-			_listTypeDefinitionLocalService.addListTypeDefinition(
-				null, _adminUser.getUserId(),
-				Collections.singletonMap(
-					LocaleUtil.US, RandomTestUtil.randomString()),
-				Collections.emptyList());
 
 		_objectDefinition2 = _createObjectDefinition(
 			Arrays.asList(
@@ -1346,34 +1367,11 @@ public class DefaultObjectEntryManagerImplTest {
 							_objectRelationshipFieldName,
 							parentObjectEntry1.getId()
 						).put(
-							"localizedLongTextObjectFieldName_i18n",
-							HashMapBuilder.put(
-								"en_US",
-								"en_US localizedLongTextObjectFieldValue"
-							).put(
-								"pt_BR",
-								"pt_BR localizedLongTextObjectFieldValue"
-							).build()
-						).put(
-							"localizedRichTextObjectFieldName_i18n",
-							HashMapBuilder.put(
-								"en_US",
-								"en_US <i>localizedRichTextObjectFieldValue</i>"
-							).put(
-								"pt_BR",
-								"pt_BR <i>localizedRichTextObjectFieldValue</i>"
-							).build()
-						).put(
-							"localizedTextObjectFieldName_i18n",
-							HashMapBuilder.put(
-								"en_US", "en_US localizedTextObjectFieldValue"
-							).put(
-								"pt_BR", "pt_BR localizedTextObjectFieldValue"
-							).build()
-						).put(
 							"picklistObjectFieldName", picklistObjectFieldValue1
 						).put(
 							"textObjectFieldName", "aaa"
+						).putAll(
+							_localizedObjectFieldI18nValues
 						).build();
 					}
 				},
@@ -1400,6 +1398,8 @@ public class DefaultObjectEntryManagerImplTest {
 						"picklistObjectFieldName", picklistObjectFieldValue1
 					).put(
 						"textObjectFieldName", "aaa"
+					).putAll(
+						_localizedObjectFieldI18nValues
 					).build();
 				}
 			},
@@ -1882,30 +1882,7 @@ public class DefaultObjectEntryManagerImplTest {
 			_dtoConverterContext, _objectDefinition2,
 			new ObjectEntry() {
 				{
-					properties = HashMapBuilder.<String, Object>put(
-						"localizedLongTextObjectFieldName_i18n",
-						HashMapBuilder.put(
-							"en_US", "en_US localizedLongTextObjectFieldValue"
-						).put(
-							"pt_BR", "pt_BR localizedLongTextObjectFieldValue"
-						).build()
-					).put(
-						"localizedRichTextObjectFieldName_i18n",
-						HashMapBuilder.put(
-							"en_US",
-							"en_US <i>localizedRichTextObjectFieldValue</i>"
-						).put(
-							"pt_BR",
-							"pt_BR <i>localizedRichTextObjectFieldValue</i>"
-						).build()
-					).put(
-						"localizedTextObjectFieldName_i18n",
-						HashMapBuilder.put(
-							"en_US", "en_US localizedTextObjectFieldValue"
-						).put(
-							"pt_BR", "pt_BR localizedTextObjectFieldValue"
-						).build()
-					).build();
+					properties = _localizedObjectFieldI18nValues;
 				}
 			},
 			ObjectDefinitionConstants.SCOPE_COMPANY);
@@ -1930,6 +1907,8 @@ public class DefaultObjectEntryManagerImplTest {
 			).put(
 				"localizedTextObjectFieldName",
 				"en_US localizedTextObjectFieldValue"
+			).putAll(
+				_localizedObjectFieldI18nValues
 			).build(),
 			"en_US", objectEntry.getId());
 		_assertLocalizedValues(
@@ -1945,40 +1924,38 @@ public class DefaultObjectEntryManagerImplTest {
 			).put(
 				"localizedTextObjectFieldName",
 				"pt_BR localizedTextObjectFieldValue"
+			).putAll(
+				_localizedObjectFieldI18nValues
 			).build(),
 			"pt_BR", objectEntry.getId());
 
-		_defaultObjectEntryManager.updateObjectEntry(
-			_simpleDTOConverterContext, _objectDefinition2, objectEntry.getId(),
-			new ObjectEntry() {
-				{
-					properties = HashMapBuilder.<String, Object>put(
-						"localizedLongTextObjectFieldName_i18n",
-						HashMapBuilder.put(
-							"en_US", "en_US localizedLongTextObjectFieldValue"
-						).put(
-							"pt_BR", ""
-						).build()
-					).put(
-						"localizedRichTextObjectFieldName_i18n",
-						HashMapBuilder.put(
-							"ar_SA", "ar_SA localizedRichTextObjectFieldValue"
-						).put(
-							"ca_ES", "ca_ES localizedRichTextObjectFieldValue"
-						).put(
-							"en_US",
-							"en_US <i>localizedRichTextObjectFieldValue</i>"
-						).build()
-					).put(
-						"localizedTextObjectFieldName_i18n",
-						HashMapBuilder.put(
-							"en_US", "en_US localizedTextObjectFieldValue"
-						).put(
-							"pt_BR", "pt_BR localizedTextObjectFieldValue"
-						).build()
-					).build();
-				}
-			});
+		_localizedObjectFieldI18nValues = HashMapBuilder.<String, Object>put(
+			"localizedLongTextObjectFieldName_i18n",
+			HashMapBuilder.put(
+				"en_US", "en_US localizedLongTextObjectFieldValue"
+			).put(
+				"invalid_languageId", ""
+			).build()
+		).put(
+			"localizedRichTextObjectFieldName_i18n",
+			HashMapBuilder.put(
+				"ar_SA", "ar_SA localizedRichTextObjectFieldValue"
+			).build()
+		).build();
+
+		_updateLocalizedObjectEntryValues(
+			_objectDefinition2, objectEntry.getId(),
+			_localizedObjectFieldI18nValues);
+
+		_localizedObjectFieldI18nValues.putAll(
+			HashMapBuilder.<String, Object>put(
+				"localizedLongTextObjectFieldName_i18n",
+				HashMapBuilder.put(
+					"en_US", "en_US localizedLongTextObjectFieldValue"
+				).build()
+			).put(
+				"localizedTextObjectFieldName_i18n", new HashMap<>()
+			).build());
 
 		_assertLocalizedValues(
 			HashMapBuilder.<String, Object>put(
@@ -1991,6 +1968,86 @@ public class DefaultObjectEntryManagerImplTest {
 				"ar_SA localizedRichTextObjectFieldValue"
 			).put(
 				"localizedTextObjectFieldName", ""
+			).putAll(
+				_localizedObjectFieldI18nValues
+			).build(),
+			"ar_SA", objectEntry.getId());
+		_assertLocalizedValues(
+			HashMapBuilder.<String, Object>put(
+				"localizedLongTextObjectFieldName",
+				"en_US localizedLongTextObjectFieldValue"
+			).put(
+				"localizedRichTextObjectFieldName", ""
+			).put(
+				"localizedRichTextObjectFieldNameRawText", ""
+			).put(
+				"localizedTextObjectFieldName", ""
+			).putAll(
+				_localizedObjectFieldI18nValues
+			).build(),
+			"en_US", objectEntry.getId());
+		_assertLocalizedValues(
+			HashMapBuilder.<String, Object>put(
+				"localizedLongTextObjectFieldName", ""
+			).put(
+				"localizedRichTextObjectFieldName", ""
+			).put(
+				"localizedRichTextObjectFieldNameRawText", ""
+			).put(
+				"localizedTextObjectFieldName", ""
+			).putAll(
+				_localizedObjectFieldI18nValues
+			).build(),
+			"pt_BR", objectEntry.getId());
+
+		_localizedObjectFieldI18nValues = HashMapBuilder.<String, Object>put(
+			"localizedLongTextObjectFieldName_i18n",
+			HashMapBuilder.put(
+				"en_US", "en_US localizedLongTextObjectFieldValue"
+			).put(
+				"pt_BR", ""
+			).build()
+		).put(
+			"localizedRichTextObjectFieldName_i18n",
+			HashMapBuilder.put(
+				"ar_SA", "ar_SA localizedRichTextObjectFieldValue"
+			).put(
+				"ca_ES", "ca_ES localizedRichTextObjectFieldValue"
+			).put(
+				"en_US", "en_US <i>localizedRichTextObjectFieldValue</i>"
+			).build()
+		).put(
+			"localizedTextObjectFieldName_i18n",
+			HashMapBuilder.put(
+				"en_US", "en_US localizedTextObjectFieldValue"
+			).put(
+				"pt_BR", "pt_BR localizedTextObjectFieldValue"
+			).build()
+		).build();
+
+		_updateLocalizedObjectEntryValues(
+			_objectDefinition2, objectEntry.getId(),
+			_localizedObjectFieldI18nValues);
+
+		_localizedObjectFieldI18nValues.put(
+			"localizedLongTextObjectFieldName_i18n",
+			HashMapBuilder.put(
+				"en_US", "en_US localizedLongTextObjectFieldValue"
+			).build());
+
+		_assertLocalizedValues(
+			HashMapBuilder.<String, Object>put(
+				"localizedLongTextObjectFieldName", ""
+			).put(
+				"localizedRichTextObjectFieldName",
+				"ar_SA localizedRichTextObjectFieldValue"
+			).put(
+				"localizedRichTextObjectFieldNameRawText",
+				"ar_SA localizedRichTextObjectFieldValue"
+			).put(
+				"localizedTextObjectFieldName", ""
+			).putAll(
+				_localizedObjectFieldI18nValues
 			).build(),
 			"ar_SA", objectEntry.getId());
 		_assertLocalizedValues(
@@ -2004,6 +2061,8 @@ public class DefaultObjectEntryManagerImplTest {
 				"ca_ES localizedRichTextObjectFieldValue"
 			).put(
 				"localizedTextObjectFieldName", ""
+			).putAll(
+				_localizedObjectFieldI18nValues
 			).build(),
 			"ca_ES", objectEntry.getId());
 		_assertLocalizedValues(
@@ -2019,6 +2078,8 @@ public class DefaultObjectEntryManagerImplTest {
 			).put(
 				"localizedTextObjectFieldName",
 				"en_US localizedTextObjectFieldValue"
+			).putAll(
+				_localizedObjectFieldI18nValues
 			).build(),
 			"en_US", objectEntry.getId());
 		_assertLocalizedValues(
@@ -2031,6 +2092,8 @@ public class DefaultObjectEntryManagerImplTest {
 			).put(
 				"localizedTextObjectFieldName",
 				"pt_BR localizedTextObjectFieldValue"
+			).putAll(
+				_localizedObjectFieldI18nValues
 			).build(),
 			"pt_BR", objectEntry.getId());
 	}
@@ -2802,6 +2865,20 @@ public class DefaultObjectEntryManagerImplTest {
 			(List<ObjectEntry>)page.getItems());
 	}
 
+	private void _updateLocalizedObjectEntryValues(
+			ObjectDefinition objectDefinition, long objectEntryId,
+			Map<String, Object> values)
+		throws Exception {
+
+		_defaultObjectEntryManager.updateObjectEntry(
+			_simpleDTOConverterContext, objectDefinition, objectEntryId,
+			new ObjectEntry() {
+				{
+					properties = values;
+				}
+			});
+	}
+
 	private static User _adminUser;
 	private static long _companyId;
 	private static DefaultObjectEntryManager _defaultObjectEntryManager;
@@ -2857,6 +2934,8 @@ public class DefaultObjectEntryManagerImplTest {
 
 	@Inject
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
+
+	private Map<String, Object> _localizedObjectFieldI18nValues;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition1;

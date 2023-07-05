@@ -29,6 +29,9 @@ import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.info.display.url.provider.InfoEditURLProvider;
 import com.liferay.info.display.url.provider.InfoEditURLProviderRegistry;
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
+import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemPermissionProvider;
@@ -137,16 +140,19 @@ public class ContentManager {
 			getMappedLayoutDisplayPageObjectProviders(long groupId, long plid)
 		throws PortalException {
 
-		Set<Long> mappedClassPKs = new HashSet<>();
 		Set<LayoutDisplayPageObjectProvider<?>>
 			layoutDisplayPageObjectProviders = new HashSet<>();
 
+		Set<String> uniqueLayoutClassedModelUsageKeys = new HashSet<>();
+
 		_getFragmentEntryLinksMappedLayoutDisplayPageObjectProviders(
-			groupId, plid, layoutDisplayPageObjectProviders, mappedClassPKs);
+			groupId, plid, layoutDisplayPageObjectProviders,
+			uniqueLayoutClassedModelUsageKeys);
 		_getLayoutMappedLayoutDisplayPageObjectProviders(
 			LayoutStructureUtil.getLayoutStructure(
 				groupId, plid, SegmentsExperienceConstants.KEY_DEFAULT),
-			layoutDisplayPageObjectProviders, mappedClassPKs);
+			layoutDisplayPageObjectProviders,
+			uniqueLayoutClassedModelUsageKeys);
 
 		return layoutDisplayPageObjectProviders;
 	}
@@ -342,8 +348,18 @@ public class ContentManager {
 	private String _generateUniqueLayoutClassedModelUsageKey(
 		LayoutClassedModelUsage layoutClassedModelUsage) {
 
-		return layoutClassedModelUsage.getClassNameId() + StringPool.DASH +
-			layoutClassedModelUsage.getClassPK();
+		return _generateUniqueLayoutClassedModelUsageKey(
+			layoutClassedModelUsage.getClassNameId(),
+			layoutClassedModelUsage.getClassPK(),
+			layoutClassedModelUsage.getClassedModelExternalReferenceCode());
+	}
+
+	private String _generateUniqueLayoutClassedModelUsageKey(
+		long classNameId, long classPK, String externalReferenceCode) {
+
+		return StringBundler.concat(
+			classNameId, StringPool.DASH, classPK, StringPool.DASH,
+			externalReferenceCode);
 	}
 
 	private JSONObject _getActionsJSONObject(
@@ -357,8 +373,10 @@ public class ContentManager {
 			_infoItemServiceRegistry.getFirstInfoItemService(
 				InfoItemPermissionProvider.class, className);
 
-		InfoItemReference infoItemReference = new InfoItemReference(
-			className, layoutClassedModelUsage.getClassPK());
+		InfoItemReference infoItemReference = _getInfoItemIdentifier(
+			layoutClassedModelUsage.getClassName(),
+			layoutClassedModelUsage.getClassPK(),
+			layoutClassedModelUsage.getClassedModelExternalReferenceCode());
 
 		boolean hasUpdatePermission = false;
 
@@ -483,7 +501,8 @@ public class ContentManager {
 
 	private Set<LayoutDisplayPageObjectProvider<?>>
 		_getFragmentEntryLinkMappedLayoutDisplayPageObjectProviders(
-			FragmentEntryLink fragmentEntryLink, Set<Long> mappedClassPKs) {
+			FragmentEntryLink fragmentEntryLink,
+			Set<String> uniqueLayoutClassedModelUsageKeys) {
 
 		JSONObject editableValuesJSONObject = null;
 
@@ -523,7 +542,7 @@ public class ContentManager {
 
 				_getLocalizedLayoutDisplayPageObjectProviders(
 					editableJSONObject, layoutDisplayPageObjectProviders,
-					mappedClassPKs);
+					uniqueLayoutClassedModelUsageKeys);
 
 				JSONObject configJSONObject = editableJSONObject.getJSONObject(
 					"config");
@@ -533,11 +552,11 @@ public class ContentManager {
 
 					_getLayoutDisplayPageObjectProvider(
 						configJSONObject, layoutDisplayPageObjectProviders,
-						mappedClassPKs);
+						uniqueLayoutClassedModelUsageKeys);
 
 					_getLocalizedLayoutDisplayPageObjectProviders(
 						configJSONObject, layoutDisplayPageObjectProviders,
-						mappedClassPKs);
+						uniqueLayoutClassedModelUsageKeys);
 
 					JSONObject mappedActionJSONObject =
 						editableJSONObject.getJSONObject("mappedAction");
@@ -547,7 +566,8 @@ public class ContentManager {
 
 						_getLayoutDisplayPageObjectProvider(
 							mappedActionJSONObject,
-							layoutDisplayPageObjectProviders, mappedClassPKs);
+							layoutDisplayPageObjectProviders,
+							uniqueLayoutClassedModelUsageKeys);
 					}
 				}
 
@@ -559,12 +579,13 @@ public class ContentManager {
 
 					_getLayoutDisplayPageObjectProvider(
 						itemSelectorJSONObject,
-						layoutDisplayPageObjectProviders, mappedClassPKs);
+						layoutDisplayPageObjectProviders,
+						uniqueLayoutClassedModelUsageKeys);
 				}
 
 				_getLayoutDisplayPageObjectProvider(
 					editableJSONObject, layoutDisplayPageObjectProviders,
-					mappedClassPKs);
+					uniqueLayoutClassedModelUsageKeys);
 			}
 		}
 
@@ -575,7 +596,7 @@ public class ContentManager {
 		long groupId, long plid,
 		Set<LayoutDisplayPageObjectProvider<?>>
 			layoutDisplayPageObjectProviders,
-		Set<Long> mappedClassPKs) {
+		Set<String> uniqueLayoutClassedModelUsageKeys) {
 
 		List<FragmentEntryLink> fragmentEntryLinks =
 			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
@@ -584,7 +605,7 @@ public class ContentManager {
 		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
 			layoutDisplayPageObjectProviders.addAll(
 				_getFragmentEntryLinkMappedLayoutDisplayPageObjectProviders(
-					fragmentEntryLink, mappedClassPKs));
+					fragmentEntryLink, uniqueLayoutClassedModelUsageKeys));
 		}
 	}
 
@@ -618,6 +639,22 @@ public class ContentManager {
 		}
 
 		return "web-content";
+	}
+
+	private InfoItemReference _getInfoItemIdentifier(
+		String className, long classPK, String externalReferenceCode) {
+
+		InfoItemIdentifier infoItemIdentifier = null;
+
+		if (classPK > 0) {
+			infoItemIdentifier = new ClassPKInfoItemIdentifier(classPK);
+		}
+		else {
+			infoItemIdentifier = new ERCInfoItemIdentifier(
+				externalReferenceCode);
+		}
+
+		return new InfoItemReference(className, infoItemIdentifier);
 	}
 
 	private JSONArray _getLayoutClassedModelPageContentsJSONArray(
@@ -702,9 +739,11 @@ public class ContentManager {
 
 			LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
 				layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
-					new InfoItemReference(
+					_getInfoItemIdentifier(
 						layoutClassedModelUsage.getClassName(),
-						layoutClassedModelUsage.getClassPK()));
+						layoutClassedModelUsage.getClassPK(),
+						layoutClassedModelUsage.
+							getClassedModelExternalReferenceCode()));
 
 			if (layoutDisplayPageObjectProvider == null) {
 				_layoutClassedModelUsageLocalService.
@@ -730,21 +769,33 @@ public class ContentManager {
 		JSONObject jsonObject,
 		Set<LayoutDisplayPageObjectProvider<?>>
 			layoutDisplayPageObjectProviders,
-		Set<Long> mappedClassPKs) {
+		Set<String> uniqueLayoutClassedModelUsageKeys) {
 
-		if (!jsonObject.has("classNameId") || !jsonObject.has("classPK")) {
-			return;
-		}
+		if (!jsonObject.has("classNameId") ||
+			(!jsonObject.has("classPK") &&
+			 !jsonObject.has("externalReferenceCode"))) {
 
-		long classPK = jsonObject.getLong("classPK");
-
-		if ((classPK <= 0) || mappedClassPKs.contains(classPK)) {
 			return;
 		}
 
 		long classNameId = jsonObject.getLong("classNameId");
 
 		if (classNameId <= 0) {
+			return;
+		}
+
+		long classPK = jsonObject.getLong("classPK");
+		String externalReferenceCode = jsonObject.getString(
+			"externalReferenceCode");
+
+		String uniqueLayoutClassedModelUsageKey =
+			_generateUniqueLayoutClassedModelUsageKey(
+				classNameId, classPK, externalReferenceCode);
+
+		if (((classPK <= 0) && Validator.isNull(externalReferenceCode)) ||
+			uniqueLayoutClassedModelUsageKeys.contains(
+				uniqueLayoutClassedModelUsageKey)) {
+
 			return;
 		}
 
@@ -758,11 +809,12 @@ public class ContentManager {
 			return;
 		}
 
-		mappedClassPKs.add(classPK);
+		uniqueLayoutClassedModelUsageKeys.add(uniqueLayoutClassedModelUsageKey);
 
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
 			layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
-				new InfoItemReference(className, classPK));
+				_getInfoItemIdentifier(
+					className, classPK, externalReferenceCode));
 
 		if (layoutDisplayPageObjectProvider == null) {
 			return;
@@ -775,7 +827,7 @@ public class ContentManager {
 		LayoutStructure layoutStructure,
 		Set<LayoutDisplayPageObjectProvider<?>>
 			layoutDisplayPageObjectProviders,
-		Set<Long> mappedClassPKs) {
+		Set<String> uniqueLayoutClassedModelUsageKeys) {
 
 		for (LayoutStructureItem layoutStructureItem :
 				layoutStructure.getLayoutStructureItems()) {
@@ -799,7 +851,7 @@ public class ContentManager {
 			if (backgroundImageJSONObject != null) {
 				_getLayoutDisplayPageObjectProvider(
 					backgroundImageJSONObject, layoutDisplayPageObjectProviders,
-					mappedClassPKs);
+					uniqueLayoutClassedModelUsageKeys);
 			}
 
 			JSONObject linkJSONObject =
@@ -808,10 +860,10 @@ public class ContentManager {
 			if (linkJSONObject != null) {
 				_getLayoutDisplayPageObjectProvider(
 					linkJSONObject, layoutDisplayPageObjectProviders,
-					mappedClassPKs);
+					uniqueLayoutClassedModelUsageKeys);
 				_getLocalizedLayoutDisplayPageObjectProviders(
 					linkJSONObject, layoutDisplayPageObjectProviders,
-					mappedClassPKs);
+					uniqueLayoutClassedModelUsageKeys);
 			}
 		}
 	}
@@ -820,7 +872,7 @@ public class ContentManager {
 		JSONObject jsonObject,
 		Set<LayoutDisplayPageObjectProvider<?>>
 			layoutDisplayPageObjectProviders,
-		Set<Long> mappedClassPKs) {
+		Set<String> uniqueLayoutClassedModelUsageKeys) {
 
 		Set<Locale> locales = _language.getAvailableLocales();
 
@@ -836,7 +888,7 @@ public class ContentManager {
 
 			_getLayoutDisplayPageObjectProvider(
 				localizableJSONObject, layoutDisplayPageObjectProviders,
-				mappedClassPKs);
+				uniqueLayoutClassedModelUsageKeys);
 		}
 	}
 
@@ -856,6 +908,9 @@ public class ContentManager {
 				"classPK", layoutClassedModelUsage.getClassPK()
 			).put(
 				"classTypeId", layoutDisplayPageObjectProvider.getClassTypeId()
+			).put(
+				"externalReferenceCode",
+				layoutDisplayPageObjectProvider.getExternalReferenceCode()
 			).put(
 				"icon", StringPool.BLANK
 			).put(
@@ -894,6 +949,9 @@ public class ContentManager {
 			"classPK", layoutClassedModelUsage.getClassPK()
 		).put(
 			"classTypeId", layoutDisplayPageObjectProvider.getClassTypeId()
+		).put(
+			"externalReferenceCode",
+			layoutDisplayPageObjectProvider.getExternalReferenceCode()
 		).put(
 			"icon",
 			_getIcon(

@@ -87,7 +87,7 @@ const CriteriaSidebarCollapse = ({
 	const _handleClick = (key, editing) => () => onCollapseClick(key, editing);
 
 	return (
-		<ClayPanel.Group className="c-ml-1 c-mr-1 c-mt-1">
+		<ClayPanel.Group>
 			{propertyGroups.map((propertyGroup) => {
 				const key = propertyGroup.propertyKey;
 
@@ -110,7 +110,6 @@ const CriteriaSidebarCollapse = ({
 
 									{searchValue && (
 										<ClayBadge
-											className="mr-4 my-0"
 											displayType="secondary"
 											label={filteredProperties.length}
 										/>
@@ -118,6 +117,7 @@ const CriteriaSidebarCollapse = ({
 								</ClayPanel.Title>
 							</div>
 						}
+						displayType="unstyled"
 						expanded={active}
 						key={key}
 						onExpandedChange={_handleClick(key, active)}

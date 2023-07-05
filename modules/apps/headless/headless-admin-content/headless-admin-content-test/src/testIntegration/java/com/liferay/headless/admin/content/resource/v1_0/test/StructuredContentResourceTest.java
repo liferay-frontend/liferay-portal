@@ -15,6 +15,8 @@
 package com.liferay.headless.admin.content.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRequest;
@@ -33,13 +35,20 @@ import com.liferay.headless.admin.content.client.pagination.Pagination;
 import com.liferay.headless.admin.content.client.serdes.v1_0.StructuredContentSerDes;
 import com.liferay.headless.delivery.client.resource.v1_0.StructuredContentResource;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalArticleLocalService;
+import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -50,6 +59,7 @@ import com.liferay.portal.test.rule.Inject;
 import java.io.InputStream;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -81,6 +91,20 @@ public class StructuredContentResourceTest
 			irrelevantGroup, "test-ddm-structure.json");
 		_localizedDDMStructure = _addDDMStructure(
 			testGroup, "test-localized-ddm-structure.json");
+
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null,
+			new ServiceContext() {
+				{
+					setCompanyId(testGroup.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+
+		_depotDDMStructure = _addDDMStructure(
+			_depotEntry.getGroup(), "test-ddm-structure.json");
 
 		StructuredContentResource.Builder builder =
 			StructuredContentResource.builder();
@@ -220,10 +244,10 @@ public class StructuredContentResourceTest
 
 		Locale locale = LocaleUtil.getDefault();
 
-		StructuredContent randomStructuredContent = _randomStructuredContent(
+		StructuredContent randomStructuredContent1 = _randomStructuredContent(
 			locale);
 
-		randomStructuredContent.setPriority(Double.valueOf(1));
+		randomStructuredContent1.setPriority(Double.valueOf(1));
 
 		com.liferay.headless.admin.content.client.resource.v1_0.
 			StructuredContentResource structuredContentResource =
@@ -232,20 +256,20 @@ public class StructuredContentResourceTest
 		StructuredContent postStructuredContent1 =
 			structuredContentResource.postSiteStructuredContentDraft(
 				testGetSiteStructuredContentsPage_getSiteId(),
-				randomStructuredContent);
+				randomStructuredContent1);
 
-		StructuredContent getStructuredContent =
+		StructuredContent getStructuredContent1 =
 			structuredContentResource.getStructuredContentByVersion(
 				postStructuredContent1.getId(), 1.0);
 
-		assertEquals(postStructuredContent1, getStructuredContent);
+		assertEquals(postStructuredContent1, getStructuredContent1);
 		Assert.assertEquals(
-			Double.valueOf(1.0), getStructuredContent.getPriority());
+			Double.valueOf(1.0), getStructuredContent1.getPriority());
 
 		StructuredContent postStructuredContent2 =
 			structuredContentResource.postSiteStructuredContentDraft(
 				testGetSiteStructuredContentsPage_getSiteId(),
-				randomStructuredContent);
+				randomStructuredContent1);
 
 		structuredContentResource =
 			com.liferay.headless.admin.content.client.resource.v1_0.
@@ -295,15 +319,50 @@ public class StructuredContentResourceTest
 			},
 			structuredContentResource.getStructuredContentByVersion(
 				postStructuredContent2.getId(), 1.0));
+
+		JournalFolder journalFolder = JournalTestUtil.addFolder(
+			_depotEntry.getGroupId(), RandomTestUtil.randomString());
+
+		StructuredContent randomStructuredContent2 = randomStructuredContent();
+
+		randomStructuredContent2.setContentStructureId(
+			_depotDDMStructure.getStructureId());
+
+		com.liferay.headless.delivery.client.dto.v1_0.StructuredContent
+			postStructuredContent3 =
+				_structuredContentResource.
+					postStructuredContentFolderStructuredContent(
+						journalFolder.getFolderId(),
+						_toStructuredContent(randomStructuredContent2));
+
+		structuredContentResource =
+			com.liferay.headless.admin.content.client.resource.v1_0.
+				StructuredContentResource.builder(
+				).authentication(
+					"test@liferay.com", "test"
+				).locale(
+					LocaleUtil.getDefault()
+				).build();
+
+		StructuredContent getStructuredContent2 =
+			structuredContentResource.getStructuredContentByVersion(
+				postStructuredContent3.getId(), 1.0);
+
+		Assert.assertEquals(
+			postStructuredContent3.getId(), getStructuredContent2.getId());
+		Assert.assertEquals(
+			journalFolder.getFolderId(),
+			GetterUtil.getLong(
+				getStructuredContent2.getStructuredContentFolderId()));
 	}
 
 	@Override
 	@Test
 	public void testGetStructuredContentsVersionsPage() throws Exception {
-		StructuredContent structuredContent = _postSiteStructuredContent(
+		StructuredContent structuredContent1 = _postSiteStructuredContent(
 			testGroup.getGroupId(), randomStructuredContent());
 
-		Long id = structuredContent.getId();
+		Long id = structuredContent1.getId();
 
 		Page<StructuredContent> structuredContentsVersionsPage =
 			structuredContentResource.getStructuredContentsVersionsPage(id);
@@ -313,7 +372,7 @@ public class StructuredContentResourceTest
 		com.liferay.headless.delivery.client.dto.v1_0.StructuredContent
 			putStructuredContent =
 				_structuredContentResource.putStructuredContent(
-					id, _toStructuredContent(structuredContent));
+					id, _toStructuredContent(structuredContent1));
 
 		structuredContentsVersionsPage =
 			structuredContentResource.getStructuredContentsVersionsPage(id);
@@ -340,7 +399,7 @@ public class StructuredContentResourceTest
 			Arrays.asList(
 				new StructuredContent() {
 					{
-						id = structuredContent.getId();
+						id = structuredContent1.getId();
 					}
 				},
 				new StructuredContent() {
@@ -349,6 +408,91 @@ public class StructuredContentResourceTest
 					}
 				}),
 			(List<StructuredContent>)structuredContentsVersionsPage.getItems());
+
+		JournalFolder journalFolder1 = JournalTestUtil.addFolder(
+			_depotEntry.getGroupId(), RandomTestUtil.randomString());
+
+		StructuredContent randomStructuredContent1 = randomStructuredContent();
+
+		randomStructuredContent1.setContentStructureId(
+			_depotDDMStructure.getStructureId());
+
+		com.liferay.headless.delivery.client.dto.v1_0.StructuredContent
+			structuredContent2 =
+				_structuredContentResource.
+					postStructuredContentFolderStructuredContent(
+						journalFolder1.getFolderId(),
+						_toStructuredContent(randomStructuredContent1));
+
+		structuredContentResource =
+			com.liferay.headless.admin.content.client.resource.v1_0.
+				StructuredContentResource.builder(
+				).authentication(
+					"test@liferay.com", "test"
+				).locale(
+					LocaleUtil.getDefault()
+				).build();
+
+		structuredContentsVersionsPage =
+			structuredContentResource.getStructuredContentsVersionsPage(
+				structuredContent2.getId());
+
+		Assert.assertEquals(1L, structuredContentsVersionsPage.getTotalCount());
+		assertValid(structuredContentsVersionsPage);
+
+		StructuredContent getStructuredContent1 =
+			structuredContentsVersionsPage.fetchFirstItem();
+
+		Assert.assertEquals(
+			journalFolder1.getFolderId(),
+			GetterUtil.getLong(
+				getStructuredContent1.getStructuredContentFolderId()));
+
+		JournalFolder journalFolder2 = JournalTestUtil.addFolder(
+			_depotEntry.getGroupId(), RandomTestUtil.randomString());
+		JournalFolder journalFolder3 = JournalTestUtil.addFolder(
+			_depotEntry.getGroupId(), RandomTestUtil.randomString());
+
+		StructuredContent randomStructuredContent2 = randomStructuredContent();
+
+		randomStructuredContent2.setContentStructureId(
+			_depotDDMStructure.getStructureId());
+
+		com.liferay.headless.delivery.client.dto.v1_0.StructuredContent
+			structuredContent3 =
+				_structuredContentResource.
+					postStructuredContentFolderStructuredContent(
+						journalFolder2.getFolderId(),
+						_toStructuredContent(randomStructuredContent2));
+
+		structuredContentResource =
+			com.liferay.headless.admin.content.client.resource.v1_0.
+				StructuredContentResource.builder(
+				).authentication(
+					"test@liferay.com", "test"
+				).locale(
+					LocaleUtil.getDefault()
+				).build();
+
+		_journalArticleLocalService.moveArticle(
+			_depotEntry.getGroupId(), structuredContent3.getKey(),
+			journalFolder3.getFolderId(),
+			ServiceContextTestUtil.getServiceContext(_depotEntry.getGroupId()));
+
+		structuredContentsVersionsPage =
+			structuredContentResource.getStructuredContentsVersionsPage(
+				structuredContent3.getId());
+
+		Assert.assertEquals(1L, structuredContentsVersionsPage.getTotalCount());
+		assertValid(structuredContentsVersionsPage);
+
+		StructuredContent getStructuredContent2 =
+			structuredContentsVersionsPage.fetchFirstItem();
+
+		Assert.assertEquals(
+			journalFolder3.getFolderId(),
+			GetterUtil.getLong(
+				getStructuredContent2.getStructuredContentFolderId()));
 	}
 
 	@Test
@@ -922,7 +1066,17 @@ public class StructuredContentResourceTest
 	private static DDMFormDeserializer _jsonDDMFormDeserializer;
 
 	private DDMStructure _ddmStructure;
+	private DDMStructure _depotDDMStructure;
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
 	private DDMStructure _irrelevantDDMStructure;
+
+	@Inject
+	private JournalArticleLocalService _journalArticleLocalService;
+
 	private DDMStructure _localizedDDMStructure;
 	private StructuredContentResource _structuredContentResource;
 

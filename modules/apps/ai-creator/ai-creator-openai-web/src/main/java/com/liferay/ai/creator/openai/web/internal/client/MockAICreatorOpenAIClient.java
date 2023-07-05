@@ -74,21 +74,17 @@ public class MockAICreatorOpenAIClient implements AICreatorOpenAIClient {
 	private AICreatorOpenAIClientException _getAICreatorOpenAIClientException(
 		String key) {
 
-		if (Objects.equals(key, "OPENAI_API_INVALID_API_KEY")) {
-			return new AICreatorOpenAIClientException(
-				"invalid_api_key", "invalid_api_key_message",
-				HttpURLConnection.HTTP_OK);
-		}
-
 		if (Objects.equals(key, "OPENAI_API_IOEXCEPTION")) {
 			return new AICreatorOpenAIClientException(new IOException());
 		}
 
-		int responseCode = GetterUtil.getInteger(
-			StringUtils.substringBetween(key, "OPENAI_API_", "_RESPONSE_CODE"));
+		String errorMessage = StringUtils.substringBetween(
+			key, "OPENAI_API_", "_ERROR_MESSAGE");
 
-		if (responseCode > 0) {
-			return new AICreatorOpenAIClientException(responseCode);
+		if (Validator.isNotNull(errorMessage)) {
+			return new AICreatorOpenAIClientException(
+				"openai-api-error-code", errorMessage,
+				HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 
 		return new AICreatorOpenAIClientException(

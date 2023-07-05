@@ -1487,6 +1487,7 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 					import com.liferay.jenkins.results.parser.Job;
 					import com.liferay.jenkins.results.parser.JobFactory;
 					import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
+					import com.liferay.jenkins.results.parser.PortalHotfixRelease;
 					import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 					import com.liferay.jenkins.results.parser.test.clazz.group.SegmentTestClassGroup;
 					import com.liferay.jenkins.results.parser.test.clazz.group.TestClassGroupFactory;
@@ -1529,6 +1530,16 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 						}
 
 						return null;
+					}
+
+					public PortalHotfixRelease getPortalHotfixRelease() {
+						String portalHotfixURL = project.getProperty("portal.hotfix.url");
+
+						if (!JenkinsResultsParserUtil.isURL(portalHotfixURL)) {
+							return null;
+						}
+
+						return new PortalHotfixRelease(new URL(portalHotfixURL));
 					}
 
 					public String getRepositoryName() {
@@ -1583,7 +1594,7 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 						return upstreamBranchName.replace("-private", "");
 					}
 
-					Job job = JobFactory.newJob(getBuildProfile(), getJobName(), null, getPortalGitWorkingDirectory(), getUpstreamBranchName(), null, getRepositoryName(), getTestSuiteName(), getUpstreamBranchName());
+					Job job = JobFactory.newJob(getBuildProfile(), getJobName(), null, getPortalGitWorkingDirectory(), getPortalHotfixRelease(), getUpstreamBranchName(), null, getRepositoryName(), getTestSuiteName(), getUpstreamBranchName());
 
 					BatchTestClassGroup batchTestClassGroup = TestClassGroupFactory.newBatchTestClassGroup(project.getProperty("test.batch.name"), job);
 
@@ -5774,6 +5785,7 @@ tell application "Safari" to quit
 					import com.liferay.jenkins.results.parser.Job;
 					import com.liferay.jenkins.results.parser.JobFactory;
 					import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
+					import com.liferay.jenkins.results.parser.PortalHotfixRelease;
 					import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 					import com.liferay.jenkins.results.parser.test.clazz.group.JUnitBatchTestClassGroup;
 					import com.liferay.jenkins.results.parser.test.clazz.group.NPMTestBatchTestClassGroup;
@@ -5819,6 +5831,16 @@ tell application "Safari" to quit
 						return null;
 					}
 
+					public PortalHotfixRelease getPortalHotfixRelease() {
+						String portalHotfixURL = project.getProperty("portal.hotfix.url");
+
+						if (!JenkinsResultsParserUtil.isURL(portalHotfixURL)) {
+							return null;
+						}
+
+						return new PortalHotfixRelease(new URL(portalHotfixURL));
+					}
+
 					public String getRepositoryName() {
 						String upstreamBranchName = getUpstreamBranchName();
 
@@ -5854,7 +5876,7 @@ tell application "Safari" to quit
 					}
 
 					try {
-						Job job = JobFactory.newJob(getBuildProfile(), getJobName(), null, getPortalGitWorkingDirectory(), getUpstreamBranchName(), null, getRepositoryName(), getTestSuiteName(), getUpstreamBranchName());
+						Job job = JobFactory.newJob(getBuildProfile(), getJobName(), null, getPortalGitWorkingDirectory(), getPortalHotfixRelease(), getUpstreamBranchName(), null, getRepositoryName(), getTestSuiteName(), getUpstreamBranchName());
 
 						BatchTestClassGroup batchTestClassGroup = TestClassGroupFactory.newBatchTestClassGroup(project.getProperty("test.batch.name"), job);
 
@@ -11648,6 +11670,22 @@ company.default.web.id=www.able.com</echo>
 			</then>
 		</if>
 
+		<get-testcase-property property.name="dl.store.antivirus.enabled" />
+		<propertycopy from="dl.store.antivirus.enabled[${env.CI_TEST_SUITE}]" name="dl.store.antivirus.enabled" silent="true" />
+
+		<if>
+			<equals arg1="${dl.store.antivirus.enabled}" arg2="true" />
+			<then>
+				<echo append="true" file="portal-impl/src/portal-ext.properties">
+dl.store.antivirus.enabled=true</echo>
+
+				<property name="osgi.module.configuration.file.names" value="com.liferay.antivirus.clamd.scanner.internal.configuration.ClamdAntivirusScannerConfiguration.config" />
+				<property name="osgi.module.configurations" value="hostname=&quot;clamd&quot;${line.separator}port=I&quot;3310&quot;" />
+
+				<antcall target="deploy-osgi-module-configurations" />
+			</then>
+		</if>
+
 		<if>
 			<or>
 				<equals arg1="ibm.store.enabled" arg2="" />
@@ -12290,6 +12328,15 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			test.poshi.warnings.file.name=${test.poshi.warnings.file.name}
 			test.retry.command.wait.time=${test.retry.command.wait.time}
 		</echo>
+
+		<if>
+			<isset property="dl.store.antivirus.enabled" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					test.liferay.virtual.instance=false
+				</echo>
+			</then>
+		</if>
 
 		<if>
 			<isset property="s3.bucket.id" />
@@ -14562,6 +14609,7 @@ if (ppstate.equals("normal")) {
 				import com.liferay.jenkins.results.parser.Job;
 				import com.liferay.jenkins.results.parser.JobFactory;
 				import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
+				import com.liferay.jenkins.results.parser.PortalHotfixRelease;
 
 				public Job.BuildProfile getBuildProfile() {
 					String testPortalBuildProfile = project.getProperty("build.profile");
@@ -14603,6 +14651,16 @@ if (ppstate.equals("normal")) {
 					return null;
 				}
 
+				public PortalHotfixRelease getPortalHotfixRelease() {
+					String portalHotfixURL = project.getProperty("portal.hotfix.url");
+
+					if (!JenkinsResultsParserUtil.isURL(portalHotfixURL)) {
+						return null;
+					}
+
+					return new PortalHotfixRelease(new URL(portalHotfixURL));
+				}
+
 				public String getRepositoryName() {
 					String upstreamBranchName = getUpstreamBranchName();
 
@@ -14639,7 +14697,7 @@ if (ppstate.equals("normal")) {
 					return upstreamBranchName.replace("-private", "");
 				}
 
-				Job job = JobFactory.newJob(getBuildProfile(), getJobName(), null, getPortalGitWorkingDirectory(), getUpstreamBranchName(), null, getRepositoryName(), getTestSuiteName(), getUpstreamBranchName());
+				Job job = JobFactory.newJob(getBuildProfile(), getJobName(), null, getPortalGitWorkingDirectory(), getPortalHotfixRelease(), getUpstreamBranchName(), null, getRepositoryName(), getTestSuiteName(), getUpstreamBranchName());
 
 				CIJobSummaryReportUtil.writeJobSummaryReport(getSummaryDir(), job);
 

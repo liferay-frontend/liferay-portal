@@ -78,7 +78,6 @@ definition {
 		task ("When: User add a widget to the Site template") {
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Home",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			ContentPages.gotoPageEditor();
@@ -170,7 +169,6 @@ definition {
 
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Home",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			ContentPages.gotoPageEditor();
@@ -209,7 +207,6 @@ definition {
 
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Home",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			ContentPages.gotoPageEditor();
@@ -277,7 +274,6 @@ definition {
 
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Home",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 		}
 
@@ -367,12 +363,9 @@ definition {
 
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Widget Page Name",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			Portlet.addPG(portletName = "Asset Publisher");
-
-			Close.closeAndSelectWindow(locator1 = "Site Templates - ${siteName}");
 		}
 
 		task ("And: Adds a new site based on the template") {
@@ -395,7 +388,6 @@ definition {
 		task ("And: Adds a portlet on the widget page of the site template") {
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Widget Page Name",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			Portlet.addPG(portletName = "Web Content Display");
@@ -435,7 +427,6 @@ definition {
 		task ("When: User adds a portlet to the home page of the template") {
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Home",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			ContentPages.gotoPageEditor();
@@ -559,8 +550,6 @@ definition {
 				pageName = "Page B",
 				siteTemplateName = "Site Template Name");
 
-			SiteTemplatesNavigator.openSiteTemplatesAdmin();
-
 			SiteTemplates.addChildPageViaSiteTemplateCP(
 				childPageName = "Child Page A",
 				parentPageName = "Page A",
@@ -568,8 +557,6 @@ definition {
 				siteTemplateName = "Site Template Name");
 
 			PageEditor.publish();
-
-			SiteTemplatesNavigator.openSiteTemplatesAdmin();
 
 			SiteTemplates.addChildPageViaSiteTemplateCP(
 				childPageName = "Child Page B",
@@ -687,7 +674,6 @@ definition {
 		task ("When: User visits the Site Template and verifies that the page is not present on the Site via looking up the database") {
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Home",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			var sqlResults = SQL.executeMySQLStatement(mysqlStatement = ${sQLStatement});
@@ -789,8 +775,6 @@ definition {
 			SelectFrameTop();
 
 			PageEditor.publish();
-
-			SiteTemplatesNavigator.openSiteTemplatesAdmin();
 
 			SiteTemplates.addChildPageViaSiteTemplateCP(
 				childPageName = "Child Content Page",
@@ -1247,22 +1231,18 @@ definition {
 		task ("And: Adds a portlet to the page then place it on the second column") {
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Site Page Name",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			Portlet.addPG(portletName = "Asset Publisher");
 
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Site Page Name",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			Portlet.dragAndDropPortletToColumnPG(
 				columnNumberFrom = 1,
 				columnNumberTo = 2,
 				portletName = "Asset Publisher");
-
-			Close.closeAndSelectWindow(locator1 = "Site Templates - ${siteName}");
 		}
 
 		task ("And: Adds a site based on the site template") {
@@ -1359,7 +1339,6 @@ definition {
 		task ("When: Add an AP widget to home page in Site template and navigate to Site Name A for triggering the propagation") {
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Home",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			ContentPages.gotoPageEditor();
@@ -1367,8 +1346,6 @@ definition {
 			PageEditor.addWidget(portletName = "Asset Publisher");
 
 			PageEditor.publish();
-
-			Close.closeAndSelectWindow(locator1 = "Site Templates - ${siteName}");
 
 			Navigator.openSiteURL(siteName = "Site Name A");
 
@@ -1432,12 +1409,9 @@ definition {
 		task ("When: Add a WCD portlet to widget page in Site template and navigate to Site Name A for triggering the propagation") {
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Page A",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			Portlet.addPG(portletName = "Web Content Display");
-
-			Close.closeAndSelectWindow(locator1 = "Site Templates - ${siteName}");
 
 			Navigator.openSitePage(
 				pageName = "Page A",
@@ -1525,7 +1499,6 @@ definition {
 		task ("And: Disables propagation of the template") {
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Home",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			SiteTemplates.disablePropagationPG();
@@ -1537,8 +1510,6 @@ definition {
 			PageEditor.addWidget(portletName = "Asset Publisher");
 
 			PageEditor.publish();
-
-			Close.closeAndSelectWindow(locator1 = "Site Templates - ${siteName}");
 		}
 
 		task ("Then: The portlet won't appear on the new site") {
@@ -1552,7 +1523,6 @@ definition {
 		task ("When: User enables propagation of the template") {
 			SiteTemplatesNavigator.gotoSiteTemplatesPage(
 				pageName = "Home",
-				siteName = ${siteName},
 				siteTemplateName = "Site Template Name");
 
 			SiteTemplates.enablePropagationPG();
@@ -1981,7 +1951,8 @@ definition {
 		}
 
 		task ("When User adds page with Friendly URL conflicts in site template") {
-			SiteTemplates.addSitePageWithConfirmViaSiteTemplateCP(
+			SiteTemplates.addSitePageViaSiteTemplateCP(
+				conflictPage = "true",
 				pageName = "Page1",
 				siteTemplateName = "Site Template Name");
 		}
@@ -2003,7 +1974,7 @@ definition {
 		task ("When: User adds javascript code to the site") {
 			SiteTemplates.gotoSettingsCP(siteTemplateName = "Site Template Name");
 
-			SiteTemplates.AddSiteTemplateJavaScript(
+			SiteTemplates.addSiteTemplateJavaScript(
 				javaScript = ${javascript},
 				pageSet = "true");
 		}
@@ -2184,7 +2155,8 @@ definition {
 		}
 
 		task ("When User adds page with same Friendly URL conflicts in site template") {
-			SiteTemplates.addSitePageWithConfirmViaSiteTemplateCP(
+			SiteTemplates.addSitePageViaSiteTemplateCP(
+				conflictPage = "true",
 				pageName = "Page1",
 				siteTemplateName = "Site Template Name");
 
@@ -2300,7 +2272,8 @@ definition {
 		}
 
 		task ("When User adds child page with Friendly URL conflicts in site template") {
-			SiteTemplates.addSitePageWithConfirmViaSiteTemplateCP(
+			SiteTemplates.addSitePageViaSiteTemplateCP(
+				conflictPage = "true",
 				pageName = "Page1",
 				siteTemplateName = "Site Template Name");
 

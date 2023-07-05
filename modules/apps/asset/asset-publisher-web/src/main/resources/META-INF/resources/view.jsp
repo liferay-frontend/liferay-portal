@@ -122,7 +122,10 @@ if (assetPublisherDisplayContext.isEnableTagBasedNavigation() && !assetPublisher
 
 			</c:if>
 
-			<div class="alert alert-info text-center">
+			<clay:alert
+				cssClass="text-center"
+				displayType="info"
+			>
 				<c:choose>
 					<c:when test="<%= assetPublisherDisplayContext.isSelectionStyleAssetList() && (assetPublisherDisplayContext.fetchAssetListEntry() == null) && Validator.isNull(assetPublisherDisplayContext.getInfoListProviderKey()) && !portletName.equals(AssetPublisherPortletKeys.RELATED_ASSETS) %>">
 						<div>
@@ -130,7 +133,13 @@ if (assetPublisherDisplayContext.isEnableTagBasedNavigation() && !assetPublisher
 						</div>
 
 						<div>
-							<aui:a href="javascript:void(0);" onClick="<%= portletDisplay.getURLConfigurationJS() %>"><liferay-ui:message key="select-a-collection-to-make-it-visible" /></aui:a>
+							<clay:button
+								cssClass="p-0"
+								displayType="link"
+								label="select-a-collection-to-make-it-visible"
+								onClick="<%= portletDisplay.getURLConfigurationJS() %>"
+								small="<%= true %>"
+							/>
 						</div>
 					</c:when>
 					<c:when test="<%= !portletName.equals(AssetPublisherPortletKeys.RELATED_ASSETS) %>">
@@ -140,7 +149,7 @@ if (assetPublisherDisplayContext.isEnableTagBasedNavigation() && !assetPublisher
 						<liferay-ui:message key="there-are-no-related-assets" />
 					</c:otherwise>
 				</c:choose>
-			</div>
+			</clay:alert>
 		</liferay-ddm:template-renderer>
 	</c:otherwise>
 </c:choose>

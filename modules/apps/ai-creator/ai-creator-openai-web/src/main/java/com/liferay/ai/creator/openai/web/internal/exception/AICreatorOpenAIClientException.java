@@ -14,12 +14,12 @@
 
 package com.liferay.ai.creator.openai.web.internal.exception;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.LanguageUtil;
-
-import java.net.HttpURLConnection;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * @author Lourdes Fernández Besada
@@ -36,6 +36,7 @@ public class AICreatorOpenAIClientException extends RuntimeException {
 		super(message);
 
 		_code = code;
+		_message = message;
 		_responseCode = responseCode;
 	}
 
@@ -48,44 +49,45 @@ public class AICreatorOpenAIClientException extends RuntimeException {
 	}
 
 	public String getCompletionLocalizedMessage(Locale locale) {
-		if ((_responseCode == 429) || (_responseCode == 500)) {
-			return LanguageUtil.get(
-				locale, MESSAGE_KEY_OPENAI_IS_EXPERIENCING_ISSUES);
-		}
-
-		return LanguageUtil.get(
+		return _getLocalizedMessage(
 			locale, MESSAGE_KEY_AN_UNEXPECTED_ERROR_COMPLETION);
 	}
 
 	public String getLocalizedMessage(Locale locale) {
-		if ((_responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) ||
-			Objects.equals(_code, "invalid_api_key")) {
-
-			return LanguageUtil.get(locale, MESSAGE_KEY_INCORRECT_API_KEY);
-		}
-
-		return LanguageUtil.get(locale, MESSAGE_KEY_AN_UNEXPECTED_ERROR);
+		return _getLocalizedMessage(
+			locale, MESSAGE_KEY_AN_UNEXPECTED_ERROR_VALIDATION);
 	}
 
 	public int getResponseCode() {
 		return _responseCode;
 	}
 
-	protected static final String MESSAGE_KEY_AN_UNEXPECTED_ERROR =
+	protected static final String MESSAGE_KEY_AN_UNEXPECTED_ERROR_COMPLETION =
+		"an-unexpected-error-occurred";
+
+	protected static final String MESSAGE_KEY_AN_UNEXPECTED_ERROR_VALIDATION =
 		"an-unexpected-error-occurred-while-validating-the-api-key";
 
-	protected static final String MESSAGE_KEY_AN_UNEXPECTED_ERROR_COMPLETION =
-		"an-unexpected-error-occurred-while-generating-your-content.-please-" +
-			"ensure-your-api-key-is-correct";
+	protected static final String MESSAGE_KEY_OPENAI_API_ERRORS =
+		"check-this-link-for-further-information-about-openai-issues";
 
-	protected static final String MESSAGE_KEY_INCORRECT_API_KEY =
-		"incorrect-api-key-provided.-ensure-the-api-key-used-is-correct,-" +
-			"clear-your-browser-cache,-or-generate-a-new-key";
+	protected static final String OPENAI_API_ERRORS_LINK =
+		"https://platform.openai.com/docs/guides/error-codes/api-errors";
 
-	protected static final String MESSAGE_KEY_OPENAI_IS_EXPERIENCING_ISSUES =
-		"openai-is-experiencing-issues-on-their-servers";
+	private String _getLocalizedMessage(Locale locale, String defaultKey) {
+		if (Validator.isNull(_message)) {
+			return LanguageUtil.get(locale, defaultKey);
+		}
+
+		return StringBundler.concat(
+			_message, " <a href=\"", OPENAI_API_ERRORS_LINK, "\">",
+			HtmlUtil.escape(
+				LanguageUtil.get(locale, MESSAGE_KEY_OPENAI_API_ERRORS)),
+			"</a>");
+	}
 
 	private String _code = "unexpected_error";
+	private String _message;
 	private int _responseCode;
 
 }

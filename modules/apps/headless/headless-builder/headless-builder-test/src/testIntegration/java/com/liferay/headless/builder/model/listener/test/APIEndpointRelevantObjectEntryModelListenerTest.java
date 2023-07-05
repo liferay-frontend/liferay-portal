@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.test.rule.FeatureFlags;
 
@@ -158,6 +159,50 @@ public class APIEndpointRelevantObjectEntryModelListenerTest
 		Assert.assertEquals("BAD_REQUEST", jsonObject.get("status"));
 		Assert.assertEquals(
 			"There is an API endpoint with the same HTTP method and path.",
+			jsonObject.get("title"));
+
+		// API application does not exist
+
+		jsonObject = HTTPTestUtil.invoke(
+			JSONUtil.put(
+				"httpMethod", "get"
+			).put(
+				"name", RandomTestUtil.randomString()
+			).put(
+				"path", path
+			).put(
+				"r_apiApplicationToAPIEndpoints_c_apiApplicationId",
+				RandomTestUtil.randomLong()
+			).put(
+				"scope", "company"
+			).toString(),
+			"headless-builder/endpoints", Http.Method.POST);
+
+		Assert.assertEquals("BAD_REQUEST", jsonObject.get("status"));
+		Assert.assertEquals(
+			"An API endpoint must be related to an API application.",
+			jsonObject.get("title"));
+
+		// API application is not an API application
+
+		jsonObject = HTTPTestUtil.invoke(
+			JSONUtil.put(
+				"httpMethod", "get"
+			).put(
+				"name", RandomTestUtil.randomString()
+			).put(
+				"path", path
+			).put(
+				"r_apiApplicationToAPIEndpoints_c_apiApplicationId",
+				TestPropsValues.getUserId()
+			).put(
+				"scope", "company"
+			).toString(),
+			"headless-builder/endpoints", Http.Method.POST);
+
+		Assert.assertEquals("BAD_REQUEST", jsonObject.get("status"));
+		Assert.assertEquals(
+			"An API endpoint must be related to an API application.",
 			jsonObject.get("title"));
 	}
 

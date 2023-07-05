@@ -34,7 +34,9 @@ import com.liferay.taglib.aui.ScriptTag;
 import com.liferay.taglib.portletext.RuntimeTag;
 import com.liferay.taglib.util.IncludeTag;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -192,6 +194,8 @@ public class LayoutCommonTag extends IncludeTag {
 
 		StringBundler sb = new StringBundler();
 
+		List<String> keys = new ArrayList<>();
+
 		Iterator<String> iterator = SessionMessages.iterator(
 			httpServletRequest);
 
@@ -216,12 +220,20 @@ public class LayoutCommonTag extends IncludeTag {
 				}
 
 				sb.append(_getScript(message, "success"));
+
+				keys.add(key);
 			}
 			else if (key.endsWith("_requestProcessedWarning") &&
 					 Validator.isNotNull(message)) {
 
 				sb.append(_getScript(message, "warning"));
+
+				keys.add(key);
 			}
+		}
+
+		for (String key : keys) {
+			SessionMessages.remove(httpServletRequest, key);
 		}
 
 		return sb.toString();
