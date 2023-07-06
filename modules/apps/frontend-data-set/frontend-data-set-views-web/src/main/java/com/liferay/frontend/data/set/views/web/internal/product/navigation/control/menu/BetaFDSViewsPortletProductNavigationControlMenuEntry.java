@@ -52,9 +52,7 @@ public class BetaFDSViewsPortletProductNavigationControlMenuEntry
 
 		String portletId = ParamUtil.getString(httpServletRequest, "p_p_id");
 
-		if ((portletId != null) &&
-			portletId.equals(FDSViewsPortletKeys.FDS_VIEWS)) {
-
+		if (portletId.equals(FDSViewsPortletKeys.FDS_VIEWS)) {
 			return true;
 		}
 
