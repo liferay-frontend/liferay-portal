@@ -16,6 +16,17 @@ import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import React, {useState} from 'react';
 
+import SegmentEntry from '../../types/SegmentEntry';
+
+interface Props {
+	maximumDropdownEntries: number;
+	namespace: string;
+	onMoreSegmentEntriesButtonClick: () => void;
+	onSelectSegmentEntry: React.Dispatch<SegmentEntry>;
+	segmentsEntries: SegmentEntry[];
+	selectedSegmentEntry: SegmentEntry;
+}
+
 function SegmentSelector({
 	maximumDropdownEntries,
 	namespace,
@@ -23,7 +34,7 @@ function SegmentSelector({
 	onSelectSegmentEntry,
 	segmentsEntries,
 	selectedSegmentEntry,
-}) {
+}: Props) {
 	const [segmentSelectorActive, setSegmentSelectorActive] = useState(false);
 
 	const segmentEntriesShortList = segmentsEntries.slice(
@@ -89,7 +100,8 @@ function SegmentSelector({
 								maximumDropdownEntries && (
 								<ClayDropDown.Section>
 									<ClayButton
-										displayType="secondary w-100"
+										className="w-100"
+										displayType="secondary"
 										onClick={() => {
 											setSegmentSelectorActive(false);
 

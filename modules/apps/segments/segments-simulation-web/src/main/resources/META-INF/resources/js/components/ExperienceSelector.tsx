@@ -19,6 +19,17 @@ import Label from '@clayui/label';
 import Layout from '@clayui/layout';
 import React, {useState} from 'react';
 
+import SegmentExperience from '../../types/SegmentExperience';
+
+interface Props {
+	maximumDropdownEntries: number;
+	namespace: string;
+	onMoreSegmentExperiencesButtonClick: () => void;
+	onSelectSegmentExperience: React.Dispatch<SegmentExperience>;
+	segmentsExperiences: SegmentExperience[];
+	selectedSegmentsExperience: SegmentExperience;
+}
+
 function ExperienceSelector({
 	maximumDropdownEntries,
 	namespace,
@@ -26,7 +37,7 @@ function ExperienceSelector({
 	onSelectSegmentExperience,
 	segmentsExperiences,
 	selectedSegmentsExperience,
-}) {
+}: Props) {
 	const [
 		segmentExperienceSelectorActive,
 		setSegmentExperienceSelectorActive,
@@ -67,6 +78,7 @@ function ExperienceSelector({
 								className: 'cadmin',
 							},
 						}}
+						menuHeight="auto"
 						onActiveChange={setSegmentExperienceSelectorActive}
 						trigger={
 							<ClayButton
@@ -166,7 +178,8 @@ function ExperienceSelector({
 								maximumDropdownEntries && (
 								<ClayDropDown.Section>
 									<ClayButton
-										displayType="secondary w-100"
+										className="w-100"
+										displayType="secondary"
 										onClick={() => {
 											setSegmentExperienceSelectorActive(
 												false
