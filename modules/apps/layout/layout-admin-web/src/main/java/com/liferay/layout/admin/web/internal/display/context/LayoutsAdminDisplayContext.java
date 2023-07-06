@@ -752,22 +752,6 @@ public class LayoutsAdminDisplayContext {
 		).buildString();
 	}
 
-	public Long getLayoutId() {
-		if (_layoutId != null) {
-			return _layoutId;
-		}
-
-		_layoutId = LayoutConstants.DEFAULT_PARENT_LAYOUT_ID;
-
-		Layout selLayout = getSelLayout();
-
-		if (selLayout != null) {
-			_layoutId = selLayout.getLayoutId();
-		}
-
-		return _layoutId;
-	}
-
 	public PortletURL getLayoutScreenNavigationPortletURL(long plid) {
 		return PortletURLBuilder.create(
 			getPortletURL()
@@ -1091,6 +1075,17 @@ public class LayoutsAdminDisplayContext {
 			themeDisplay.getURLCurrent()
 		).setParameter(
 			"readOnly", true
+		).setParameter(
+			"selPlid",
+			() -> {
+				Layout selLayout = getSelLayout();
+
+				if (selLayout.isDraftLayout()) {
+					return selLayout.getClassPK();
+				}
+
+				return selLayout.getPlid();
+			}
 		).buildString();
 	}
 
@@ -1336,7 +1331,7 @@ public class LayoutsAdminDisplayContext {
 					httpServletRequest, "screenNavigationEntryKey"),
 				LayoutScreenNavigationEntryConstants.ENTRY_KEY_DESIGN)) {
 
-			Layout layout = LayoutLocalServiceUtil.fetchLayout(_selPlid);
+			Layout layout = LayoutLocalServiceUtil.fetchLayout(selPlid);
 
 			Layout draftLayout = layout.fetchDraftLayout();
 
@@ -2615,7 +2610,6 @@ public class LayoutsAdminDisplayContext {
 	private String _keywords;
 	private final LayoutActionsHelper _layoutActionsHelper;
 	private final LayoutCopyHelper _layoutCopyHelper;
-	private Long _layoutId;
 	private final LayoutSetPrototypeHelper _layoutSetPrototypeHelper;
 	private SearchContainer<Layout> _layoutsSearchContainer;
 	private final LiferayPortletRequest _liferayPortletRequest;

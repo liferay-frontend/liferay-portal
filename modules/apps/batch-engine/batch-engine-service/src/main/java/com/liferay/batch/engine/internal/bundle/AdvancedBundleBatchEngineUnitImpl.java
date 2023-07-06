@@ -33,13 +33,14 @@ import org.osgi.framework.Bundle;
  * @author Raymond Augé
  * @author Igor Beslic
  */
-public class AdvancedBatchEngineBundleUnitImpl implements BatchEngineUnit {
+public class AdvancedBundleBatchEngineUnitImpl implements BatchEngineUnit {
 
-	public AdvancedBatchEngineBundleUnitImpl(Bundle bundle, URL url) {
+	public AdvancedBundleBatchEngineUnitImpl(Bundle bundle, URL url) {
 		_bundle = bundle;
 		_url = url;
 	}
 
+	@Override
 	public BatchEngineUnitConfiguration getBatchEngineUnitConfiguration()
 		throws IOException {
 
@@ -68,7 +69,7 @@ public class AdvancedBatchEngineBundleUnitImpl implements BatchEngineUnit {
 			ByteArrayOutputStream byteArrayOutputStream =
 				new ByteArrayOutputStream();
 
-			AdvancedJSONReader advancedJSONReader = new AdvancedJSONReader(
+			AdvancedJSONReader<?> advancedJSONReader = new AdvancedJSONReader<>(
 				inputStream);
 
 			advancedJSONReader.transferJSONArray(
@@ -91,7 +92,7 @@ public class AdvancedBatchEngineBundleUnitImpl implements BatchEngineUnit {
 		}
 
 		try (InputStream inputStream = _url.openStream()) {
-			AdvancedJSONReader advancedJSONReader = new AdvancedJSONReader(
+			AdvancedJSONReader<?> advancedJSONReader = new AdvancedJSONReader<>(
 				inputStream);
 
 			return advancedJSONReader.hasKey("items");
@@ -105,9 +106,9 @@ public class AdvancedBatchEngineBundleUnitImpl implements BatchEngineUnit {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		AdvancedBatchEngineBundleUnitImpl.class);
+		AdvancedBundleBatchEngineUnitImpl.class);
 
 	private final Bundle _bundle;
-	private URL _url;
+	private final URL _url;
 
 }

@@ -86,7 +86,7 @@ const AccountSubscriptionModal = ({
 				</h5>
 
 				{accountSubscriptionGroupNames.includes(
-					accountSubscriptionGroup.name
+					accountSubscriptionGroup?.name
 				) && (
 					<UsageChart
 						data={

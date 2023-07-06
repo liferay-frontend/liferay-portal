@@ -14,8 +14,8 @@
 
 package com.liferay.batch.engine.internal.unit;
 
-import com.liferay.batch.engine.internal.bundle.AdvancedBatchEngineBundleUnitImpl;
-import com.liferay.batch.engine.internal.bundle.ClassicBatchEngineBundleUnitImpl;
+import com.liferay.batch.engine.internal.bundle.AdvancedBundleBatchEngineUnitImpl;
+import com.liferay.batch.engine.internal.bundle.ClassicBundleBatchEngineUnitImpl;
 import com.liferay.batch.engine.unit.BatchEngineUnit;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
 import com.liferay.petra.string.StringPool;
@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.osgi.framework.Bundle;
@@ -41,7 +40,7 @@ import org.osgi.service.component.annotations.Component;
 public class BatchEngineUnitReaderImpl implements BatchEngineUnitReader {
 
 	@Override
-	public Iterable<BatchEngineUnit> getBatchEngineUnits(Bundle bundle) {
+	public Collection<BatchEngineUnit> getBatchEngineUnits(Bundle bundle) {
 		Dictionary<String, String> headers = bundle.getHeaders(
 			StringPool.BLANK);
 
@@ -60,9 +59,7 @@ public class BatchEngineUnitReaderImpl implements BatchEngineUnitReader {
 				batchPath = batchPath.concat(StringPool.SLASH);
 			}
 
-			String finalBatchPath = batchPath;
-
-			return () -> new BatchEngineUnitIterator(bundle, finalBatchPath);
+			return _getBatchEngineBundleUnitsCollection(bundle, batchPath);
 		}
 
 		return Collections.emptyList();
@@ -114,43 +111,20 @@ public class BatchEngineUnitReaderImpl implements BatchEngineUnitReader {
 				batchEngineURLs.put(key, url);
 
 				batchEngineUnits.put(
-					key, new AdvancedBatchEngineBundleUnitImpl(bundle, url));
+					key, new AdvancedBundleBatchEngineUnitImpl(bundle, url));
 
 				continue;
 			}
 
 			batchEngineUnits.put(
 				key,
-				new ClassicBatchEngineBundleUnitImpl(
+				new ClassicBundleBatchEngineUnitImpl(
 					bundle, url, complementURL));
 
 			batchEngineURLs.remove(key);
 		}
 
 		return batchEngineUnits.values();
-	}
-
-	private class BatchEngineUnitIterator implements Iterator<BatchEngineUnit> {
-
-		public BatchEngineUnitIterator(Bundle bundle, String batchPath) {
-			Collection<BatchEngineUnit> batchEngineZipUnits =
-				_getBatchEngineBundleUnitsCollection(bundle, batchPath);
-
-			_iterator = batchEngineZipUnits.iterator();
-		}
-
-		@Override
-		public boolean hasNext() {
-			return _iterator.hasNext();
-		}
-
-		@Override
-		public BatchEngineUnit next() {
-			return _iterator.next();
-		}
-
-		private final Iterator<BatchEngineUnit> _iterator;
-
 	}
 
 }

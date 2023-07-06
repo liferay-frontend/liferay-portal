@@ -14,14 +14,14 @@
 
 package com.liferay.batch.engine.unit;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.Collection;
 
 /**
  * @author Raymond Augé
  */
 public interface BatchEngineUnitProcessor {
 
-	public CompletableFuture<Void> processBatchEngineUnits(
-		Iterable<BatchEngineUnit> batchEngineUnits);
+	public void processBatchEngineUnits(
+		Collection<BatchEngineUnit> batchEngineUnits);
 
 }
