@@ -2984,6 +2984,12 @@ definition {
 					imageFileName = ${imageFileName},
 					navTab = "Documents and Media");
 			}
+			else if (isSet(uploadFileName)) {
+				ItemSelector.uploadFile(
+					invalidFileValidation = ${invalidFileValidation},
+					navTab = ${navTab},
+					uploadFileName = ${uploadFileName});
+			}
 			else {
 				ItemSelector.selectDMImage(
 					imageFileName = ${imageFileName},
@@ -4026,6 +4032,26 @@ definition {
 
 		AssertElementPresent(
 			key_collectionName = ${collectionName},
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_COLLECTION_PANEL_EXPANDED");
+	}
+
+	macro expandWidgetCategory {
+		PageEditor.gotoTab(tabName = "Fragments and Widgets");
+
+		Navigator.gotoNavTab(navTab = "Widgets");
+
+		AssertVisible(
+			key_collectionName = ${categoryName},
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_COLLECTION_PANEL");
+
+		if (IsElementPresent(key_collectionName = ${categoryName}, locator1 = "PageEditor#FRAGMENT_SIDEBAR_COLLECTION_PANEL_COLLAPSED")) {
+			Click(
+				key_collectionName = ${categoryName},
+				locator1 = "PageEditor#FRAGMENT_SIDEBAR_COLLECTION_PANEL_COLLAPSED");
+		}
+
+		AssertElementPresent(
+			key_collectionName = ${categoryName},
 			locator1 = "PageEditor#FRAGMENT_SIDEBAR_COLLECTION_PANEL_EXPANDED");
 	}
 
