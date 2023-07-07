@@ -76,11 +76,10 @@ public class BetaClientExtensionProductNavigationControlMenuEntry
 							VIEW_CLIENT_EXTENSION_ENTRY_DISPLAY_CONTEXT);
 
 		if ((viewClientExtensionEntryDisplayContext != null) &&
-			viewClientExtensionEntryDisplayContext.getCET(
-			).getType(
-			).equals(
-				ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER
-			)) {
+			Object.equals(
+				viewClientExtensionEntryDisplayContext.getCET(
+				).getType(),
+				ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER)) {
 
 			return true;
 		}
