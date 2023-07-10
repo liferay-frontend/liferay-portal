@@ -87,6 +87,8 @@ public class ObjectDefinitionsActionsDisplayContext
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems()
 		throws Exception {
 
+		boolean hasUpdatePermission = hasUpdateObjectDefinitionPermission();
+
 		return Arrays.asList(
 			new FDSActionDropdownItem(
 				PortletURLBuilder.create(
@@ -98,8 +100,11 @@ public class ObjectDefinitionsActionsDisplayContext
 				).setWindowState(
 					LiferayWindowState.POP_UP
 				).buildString(),
-				"view", "view",
-				LanguageUtil.get(objectRequestHelper.getRequest(), "view"),
+				hasUpdatePermission ? "pencil" : "view",
+				hasUpdatePermission ? "edit" : "view",
+				LanguageUtil.get(
+					objectRequestHelper.getRequest(),
+					hasUpdatePermission ? "edit" : "view"),
 				"get", null, "sidePanel"),
 			new FDSActionDropdownItem(
 				"/o/object-admin/v1.0/object-actions/{id}", "trash", "delete",

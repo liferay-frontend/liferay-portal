@@ -24,6 +24,7 @@ import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.batch.engine.unit.BatchEngineUnit;
 import com.liferay.batch.engine.unit.BatchEngineUnitConfiguration;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
+import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.StringBundler;
@@ -46,8 +47,12 @@ import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateA
 import java.io.InputStream;
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -65,12 +70,19 @@ import org.osgi.util.tracker.ServiceTracker;
 public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 
 	@Override
-	public void processBatchEngineUnits(
+	public CompletableFuture<Void> processBatchEngineUnits(
 		Collection<BatchEngineUnit> batchEngineUnits) {
+
+		List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
 
 		for (BatchEngineUnit batchEngineUnit : batchEngineUnits) {
 			try {
-				_processBatchEngineUnit(batchEngineUnit);
+				CompletableFuture<Void> completableFuture =
+					_processBatchEngineUnit(batchEngineUnit);
+
+				if (completableFuture != null) {
+					completableFutures.add(completableFuture);
+				}
 
 				if (_log.isInfoEnabled()) {
 					_log.info(
@@ -86,6 +98,9 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 				}
 			}
 		}
+
+		return CompletableFuture.allOf(
+			completableFutures.toArray(new CompletableFuture[0]));
 	}
 
 	@Activate
@@ -93,11 +108,13 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		_bundleContext = bundleContext;
 	}
 
-	private void _execute(
+	private CompletableFuture<Void> _execute(
 			BatchEngineUnit batchEngineUnit,
 			BatchEngineUnitConfiguration batchEngineUnitConfiguration,
 			byte[] content, String contentType)
 		throws Exception {
+
+		CompletableFuture<Void> completableFuture = new CompletableFuture<>();
 
 		ServiceTracker<Object, Object> serviceTracker =
 			new ServiceTracker<Object, Object>(
@@ -125,18 +142,29 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 					Object service = _bundleContext.getService(
 						serviceReference);
 
-					try {
-						_execute(
-							batchEngineUnit, batchEngineUnitConfiguration,
-							content, contentType, service, this);
-					}
-					catch (Exception exception) {
-						if (_log.isWarnEnabled()) {
-							_log.warn(exception);
-						}
-					}
+					ExecutorService executorService =
+						_portalExecutorManager.getPortalExecutor(
+							BatchEngineUnitProcessorImpl.class.getName());
 
-					_bundleContext.ungetService(serviceReference);
+					executorService.submit(
+						() -> {
+							try {
+								_execute(
+									batchEngineUnit,
+									batchEngineUnitConfiguration, content,
+									contentType, service, this);
+							}
+							catch (Exception exception) {
+								if (_log.isWarnEnabled()) {
+									_log.warn(exception);
+								}
+							}
+							finally {
+								completableFuture.complete(null);
+							}
+
+							_bundleContext.ungetService(serviceReference);
+						});
 
 					return null;
 				}
@@ -144,6 +172,8 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 			};
 
 		serviceTracker.open();
+
+		return completableFuture;
 	}
 
 	private void _execute(
@@ -206,7 +236,8 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		return className;
 	}
 
-	private void _processBatchEngineUnit(BatchEngineUnit batchEngineUnit)
+	private CompletableFuture<Void> _processBatchEngineUnit(
+			BatchEngineUnit batchEngineUnit)
 		throws Exception {
 
 		BatchEngineUnitConfiguration batchEngineUnitConfiguration = null;
@@ -252,10 +283,10 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		if (Validator.isNotNull(featureFlag) &&
 			!FeatureFlagManagerUtil.isEnabled(featureFlag)) {
 
-			return;
+			return null;
 		}
 
-		_execute(
+		return _execute(
 			batchEngineUnit, batchEngineUnitConfiguration, content,
 			contentType);
 	}
@@ -316,6 +347,9 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 
 	@Reference
 	private File _file;
+
+	@Reference
+	private PortalExecutorManager _portalExecutorManager;
 
 	@Reference
 	private UserLocalService _userLocalService;

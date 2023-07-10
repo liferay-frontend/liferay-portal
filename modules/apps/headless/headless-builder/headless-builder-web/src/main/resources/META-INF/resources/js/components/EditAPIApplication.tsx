@@ -62,6 +62,17 @@ export default function EditAPIApplication({
 		title: false,
 	});
 
+	useEffect(() => {
+		for (const key in data) {
+			if (data[key as keyof ItemData] !== '') {
+				setDisplayError((previousErrors) => ({
+					...previousErrors,
+					[key]: false,
+				}));
+			}
+		}
+	}, [data]);
+
 	const fetchAPIApplication = () => {
 		fetchJSON<ItemData>({
 			input: apiURLPaths.applications + currentAPIApplicationID,
@@ -207,6 +218,7 @@ export default function EditAPIApplication({
 							data={data as ItemData}
 							displayError={displayError}
 							setData={setData as voidReturn}
+							urlAutoFillInitialDisable
 						/>
 					</ClayCard.Body>
 				</ClayCard>

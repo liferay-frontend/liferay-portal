@@ -1,6 +1,7 @@
 @component-name = "portal-wcm"
 definition {
 
+	property ci.retries.disabled = "true";
 	property custom.properties = "jsonws.web.service.paths.excludes=";
 	property portal.release = "true";
 	property portal.upstream = "true";
@@ -55,6 +56,121 @@ definition {
 			JSONRole.addSiteRole(
 				roleKey = ${randomRoleKey},
 				roleTitle = ${randomRoleKey});
+		}
+	}
+
+	@description = "This is a test for LPS-181272. The page marketer with Update-Limited or Update-Basic permission could access to the options on the control menu at view mode."
+	@priority = 4
+	test AccessToOptionsOnControlMenuAtViewModeAsUserWithUpdateLimitedOrUpdateBasicPermission {
+		task ("Given a page marketer with update-limited permission has a content page") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "UPDATE_LAYOUT_LIMITED",
+				resourceName = "com.liferay.portal.kernel.model.Layout",
+				roleTitle = ${randomRoleKey},
+				roleType = "site");
+
+			JSONRole.assignSiteRoleToUser(
+				groupName = ${randomSiteName},
+				roleTitle = ${randomRoleKey},
+				userEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
+
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Content Page Name",
+				siteName = ${randomSiteName});
+
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				fragmentName = "Heading");
+
+			PageEditor.publish();
+
+			User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
+		}
+
+		task ("When the page marketer accesses to the content page at view mode") {
+			ContentPagesNavigator.openViewContentPage(
+				pageName = "Test Content Page Name",
+				siteName = ${randomSiteName});
+		}
+
+		task ("Then the page marketer could accesses to the options on the control menu") {
+			ContentPages.gotoPageEditor();
+
+			AssertVisible(locator1 = "Sidebar#PANEL_OPEN");
+
+			Navigator.gotoBack();
+
+			Click(locator1 = "ControlMenu#EDIT_COG");
+
+			AssertVisible(
+				key_title = "General",
+				locator1 = "Header#H2_TITLE");
+
+			AssertVisible(
+				key_sectionTitle = "Categorization",
+				locator1 = "PagesAdmin#SECTION_TITLE");
+
+			Navigator.gotoBack();
+
+			ContentPerformance.openContentPerformance();
+
+			ABTest.openABTestPanel();
+
+			PageAudit.openPageAuditSidebar();
+
+			AssertTextPresent(value1 = "Check issues that impact on your page's accessibility and SEO.");
+		}
+
+		task ("Given a page marketer with update-basic permission has a content page") {
+			User.logoutAndLoginPG(userLoginEmailAddress = "test@liferay.com");
+
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "UPDATE_LAYOUT_BASIC",
+				resourceName = "com.liferay.portal.kernel.model.Layout",
+				roleTitle = ${randomRoleKey},
+				roleType = "site");
+
+			Permissions.removePermissionViaAPI(
+				resourceAction = "UPDATE_LAYOUT_LIMITED",
+				resourceName = "com.liferay.portal.kernel.model.Layout",
+				roleTitle = ${randomRoleKey},
+				roleType = "site");
+
+			User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
+		}
+
+		task ("When the page marketer accesses to the content page at view mode") {
+			ContentPagesNavigator.openViewContentPage(
+				pageName = "Test Content Page Name",
+				siteName = ${randomSiteName});
+		}
+
+		task ("Then the page marketer could accesses to the options on the control menu") {
+			ContentPages.gotoPageEditor();
+
+			AssertVisible(locator1 = "Sidebar#PANEL_OPEN");
+
+			Navigator.gotoBack();
+
+			Click(locator1 = "ControlMenu#EDIT_COG");
+
+			AssertVisible(
+				key_title = "General",
+				locator1 = "Header#H2_TITLE");
+
+			AssertVisible(
+				key_sectionTitle = "Categorization",
+				locator1 = "PagesAdmin#SECTION_TITLE");
+
+			Navigator.gotoBack();
+
+			ContentPerformance.openContentPerformance();
+
+			ABTest.openABTestPanel();
+
+			PageAudit.openPageAuditSidebar();
+
+			AssertTextPresent(value1 = "Check issues that impact on your page's accessibility and SEO.");
 		}
 	}
 
@@ -398,8 +514,7 @@ definition {
 	@description = "This is a test for LPS-173440. The user with Add Object Entry but without View permission for object cannot see mapped Collection Display or Content Display at view and preview mode."
 	@priority = 4
 	test CannotViewMappedCollectionDisplayOrContentDisplayWithAddObjectEntryButWithoutViewPermissionForObjectOnViewAndPreviewMode {
-		property custom.properties = "feature.flag.LPS-169923=true";
-		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property custom.properties = "feature.flag.LPS-169923=true${line.separator}jsonws.web.service.paths.excludes=";
 
 		var labelName = StringUtil.randomString(8);
 
@@ -616,8 +731,7 @@ definition {
 	@description = "This is a test for LPS-173440. The user without View permission for object cannot see mapped Collection Display or Content Display at view and preview mode."
 	@priority = 4
 	test CannotViewMappedCollectionDisplayOrContentDisplayWithoutViewPermissionForObjectOnViewAndPreviewMode {
-		property custom.properties = "feature.flag.LPS-169923=true";
-		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property custom.properties = "feature.flag.LPS-169923=true${line.separator}jsonws.web.service.paths.excludes=";
 
 		var labelName = StringUtil.randomString(8);
 
@@ -832,8 +946,7 @@ definition {
 	@description = "This is a test for LPS-173440. The user without View permission for object cannot see that object in Collection Display or Content Display selector."
 	@priority = 4
 	test CannotViewObjectInCollectionDisplayOrContentDisplayWithoutViewPermissionForObject {
-		property custom.properties = "feature.flag.LPS-169923=true";
-		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property custom.properties = "feature.flag.LPS-169923=true${line.separator}jsonws.web.service.paths.excludes=";
 
 		var labelName = StringUtil.randomString(8);
 
@@ -1000,8 +1113,7 @@ definition {
 	@description = "This is a test for LPS-173440. The user with View and Add Object Entry permissions for object can see the mapped Collection Display or Content Display."
 	@priority = 4
 	test CanViewMappedCollectionDisplayAndContentDisplayWithAddObjectDefinitionAndViewPermissionForObject {
-		property custom.properties = "feature.flag.LPS-169923=true";
-		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property custom.properties = "feature.flag.LPS-169923=true${line.separator}jsonws.web.service.paths.excludes=";
 
 		var labelName = StringUtil.randomString(8);
 
@@ -1244,6 +1356,121 @@ definition {
 
 				Close.closeWindow();
 			}
+		}
+	}
+
+	@description = "This is a test for LPS-181272. The page marketer with Update-Limited or Update-Basic permission could access to the options on the options menu in page editor."
+	@priority = 4
+	test ConfigureAndPreviewInPageEditorAsUserWithUpdateLimitedOrUpdateBasicPermission {
+		task ("Given a page marketer with update-limited permission has a content page") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "UPDATE_LAYOUT_LIMITED",
+				resourceName = "com.liferay.portal.kernel.model.Layout",
+				roleTitle = ${randomRoleKey},
+				roleType = "site");
+
+			JSONRole.assignSiteRoleToUser(
+				groupName = ${randomSiteName},
+				roleTitle = ${randomRoleKey},
+				userEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
+
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Content Page Name",
+				siteName = ${randomSiteName});
+
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				fragmentName = "Heading");
+
+			PageEditor.publish();
+
+			User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
+		}
+
+		task ("When the page marketer accesses to the page editor") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Content Page Name",
+				siteName = ${randomSiteName});
+		}
+
+		task ("Then the page marketer could configue the page via options menu") {
+			LexiconEntry.gotoHeaderMenuItem(menuItem = "Configure");
+
+			SelectWindow.selectPopUp(locator1 = "null");
+
+			AssertVisible(
+				key_title = "General",
+				locator1 = "Header#H2_TITLE");
+
+			AssertVisible(
+				key_sectionTitle = "Categorization",
+				locator1 = "PagesAdmin#SECTION_TITLE");
+		}
+
+		task ("When the page marketer goes back to the page editor") {
+			Close.closeWindow();
+		}
+
+		task ("Then the page marketer could preview changes in a new tab via options menu") {
+			PageEditor.previewInANewTab();
+
+			ContentPages.viewFragmentText(
+				fragmentName = "heading",
+				id = "element-text",
+				text = "Heading Example");
+
+			Close.closeWindow();
+		}
+
+		task ("Given a page marketer with update-basic permission has a content page") {
+			User.logoutAndLoginPG(userLoginEmailAddress = "test@liferay.com");
+
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "UPDATE_LAYOUT_BASIC",
+				resourceName = "com.liferay.portal.kernel.model.Layout",
+				roleTitle = ${randomRoleKey},
+				roleType = "site");
+
+			Permissions.removePermissionViaAPI(
+				resourceAction = "UPDATE_LAYOUT_LIMITED",
+				resourceName = "com.liferay.portal.kernel.model.Layout",
+				roleTitle = ${randomRoleKey},
+				roleType = "site");
+
+			User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
+		}
+
+		task ("When the page marketer accesses to the page editor") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Content Page Name",
+				siteName = ${randomSiteName});
+		}
+
+		task ("Then the page marketer could configue the page via options menu") {
+			LexiconEntry.gotoHeaderMenuItem(menuItem = "Configure");
+
+			SelectWindow.selectPopUp(locator1 = "null");
+
+			AssertVisible(
+				key_title = "General",
+				locator1 = "Header#H2_TITLE");
+
+			AssertVisible(
+				key_sectionTitle = "Categorization",
+				locator1 = "PagesAdmin#SECTION_TITLE");
+		}
+
+		task ("When the page marketer goes back to the page editor") {
+			Close.closeWindow();
+		}
+
+		task ("Then the page marketer could preview changes in a new tab via options menu") {
+			PageEditor.previewInANewTab();
+
+			ContentPages.viewFragmentText(
+				fragmentName = "heading",
+				id = "element-text",
+				text = "Heading Example");
 		}
 	}
 
@@ -1984,8 +2211,7 @@ definition {
 	@description = "This is a test for LPS-173440. The user without View permission for object should see alert message on mapped Collection Display or Content Display at edit mode."
 	@priority = 4
 	test ViewAlertOnMappedCollectionDisplayOrContentDisplayWithoutViewPermissionForObjectAtEditMode {
-		property custom.properties = "feature.flag.LPS-169923=true";
-		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property custom.properties = "feature.flag.LPS-169923=true${line.separator}jsonws.web.service.paths.excludes=";
 
 		var labelName = StringUtil.randomString(8);
 

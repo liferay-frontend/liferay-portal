@@ -37,16 +37,25 @@ interface BaseAPIApplicationFieldsProps {
 	data: Partial<Data>;
 	displayError: DataError;
 	setData: Dispatch<SetStateAction<Partial<Data>>>;
-	urlAutoFill?: boolean;
+	urlAutoFillInitialDisable?: boolean;
 }
 
 export default function BaseAPIApplicationFields({
 	data,
 	displayError,
 	setData,
-	urlAutoFill,
+	urlAutoFillInitialDisable,
 }: BaseAPIApplicationFieldsProps) {
-	const [userEditedURL, setUserEditedURL] = useState(false);
+	const [userEditedURL, setUserEditedURL] = useState(
+		urlAutoFillInitialDisable ?? false
+	);
+
+	const [baseURLContent, setBaseURLContent] = useState({
+		errorMessage: Liferay.Language.get(
+			'please-enter-a-title-so-we-can-create-an-url'
+		),
+		placeholder: Liferay.Language.get('automated-url'),
+	});
 
 	return (
 		<>
@@ -68,10 +77,9 @@ export default function BaseAPIApplicationFields({
 						setData((previousData) => ({
 							...previousData,
 							title: value,
-							...(urlAutoFill &&
-								!userEditedURL && {
-									baseURL: makeURLPathString(value),
-								}),
+							...(!userEditedURL && {
+								baseURL: makeURLPathString(value),
+							}),
 						}))
 					}
 					placeholder={Liferay.Language.get('enter-title')}
@@ -125,9 +133,16 @@ export default function BaseAPIApplicationFields({
 				</Text>
 
 				<ClayInput
+					autoComplete="off"
 					id="modalURLField"
 					onChange={({target: {value}}) => {
 						setUserEditedURL(true);
+						setBaseURLContent({
+							errorMessage: Liferay.Language.get(
+								'please-enter-a-valid-url'
+							),
+							placeholder: '',
+						});
 						setData((previousData) => ({
 							...previousData,
 							baseURL: limitStringInputLengh(
@@ -136,7 +151,7 @@ export default function BaseAPIApplicationFields({
 							),
 						}));
 					}}
-					placeholder={Liferay.Language.get('automated-url')}
+					placeholder={baseURLContent.placeholder}
 					value={data.baseURL}
 				/>
 
@@ -145,9 +160,7 @@ export default function BaseAPIApplicationFields({
 						<ClayForm.FeedbackItem className="mt-2">
 							<ClayForm.FeedbackIndicator symbol="exclamation-full" />
 
-							{Liferay.Language.get(
-								'please-enter-a-title-so-we-can-create-an-url'
-							)}
+							{baseURLContent.errorMessage}
 						</ClayForm.FeedbackItem>
 					) : (
 						<Text size={3} weight="lighter">

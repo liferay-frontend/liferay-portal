@@ -15,9 +15,12 @@
 package com.liferay.object.web.internal.info.item.action;
 
 import com.liferay.info.exception.InfoItemActionExecutionException;
+import com.liferay.info.field.InfoField;
+import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.action.executor.InfoItemActionExecutor;
+import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
@@ -26,7 +29,6 @@ import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectActionLocalService;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -42,10 +44,12 @@ public class ObjectEntryInfoItemActionExecutor
 	implements InfoItemActionExecutor<ObjectEntry> {
 
 	public ObjectEntryInfoItemActionExecutor(
+		InfoItemFormProvider<ObjectEntry> infoItemFormProvider,
 		ObjectActionLocalService objectActionLocalService,
 		ObjectDefinition objectDefinition,
 		ObjectEntryManagerRegistry objectEntryManagerRegistry) {
 
+		_infoItemFormProvider = infoItemFormProvider;
 		_objectActionLocalService = objectActionLocalService;
 		_objectDefinition = objectDefinition;
 		_objectEntryManagerRegistry = objectEntryManagerRegistry;
@@ -72,6 +76,18 @@ public class ObjectEntryInfoItemActionExecutor
 				throw new InfoItemActionExecutionException();
 			}
 
+			InfoForm infoForm = _infoItemFormProvider.getInfoForm();
+
+			if (infoForm == null) {
+				throw new InfoItemActionExecutionException();
+			}
+
+			InfoField<?> infoField = infoForm.getInfoField(fieldId);
+
+			if (infoField == null) {
+				throw new InfoItemActionExecutionException();
+			}
+
 			DefaultObjectEntryManager defaultObjectEntryManager =
 				DefaultObjectEntryManagerProvider.provide(
 					_objectEntryManagerRegistry.getObjectEntryManager(
@@ -84,19 +100,10 @@ public class ObjectEntryInfoItemActionExecutor
 					null, _objectDefinition.getObjectDefinitionId(),
 					themeDisplay.getLocale(), null, themeDisplay.getUser());
 
-			String objectActionName = fieldId;
-
-			String objectActionPrefix =
-				ObjectAction.class.getSimpleName() + StringPool.UNDERLINE;
-
-			if (objectActionName.startsWith(objectActionPrefix)) {
-				objectActionName = objectActionName.substring(
-					objectActionPrefix.length());
-			}
-
 			ObjectAction objectAction =
 				_objectActionLocalService.getObjectAction(
-					_objectDefinition.getObjectDefinitionId(), objectActionName,
+					_objectDefinition.getObjectDefinitionId(),
+					infoField.getName(),
 					ObjectActionTriggerConstants.KEY_STANDALONE);
 
 			errorMessage = objectAction.getErrorMessage(
@@ -106,7 +113,7 @@ public class ObjectEntryInfoItemActionExecutor
 				(ClassPKInfoItemIdentifier)infoItemIdentifier;
 
 			defaultObjectEntryManager.executeObjectAction(
-				dtoConverterContext, objectActionName, _objectDefinition,
+				dtoConverterContext, infoField.getName(), _objectDefinition,
 				classPKInfoItemIdentifier.getClassPK());
 		}
 		catch (Exception exception) {
@@ -125,6 +132,7 @@ public class ObjectEntryInfoItemActionExecutor
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryInfoItemActionExecutor.class);
 
+	private final InfoItemFormProvider<ObjectEntry> _infoItemFormProvider;
 	private final ObjectActionLocalService _objectActionLocalService;
 	private final ObjectDefinition _objectDefinition;
 	private final ObjectEntryManagerRegistry _objectEntryManagerRegistry;

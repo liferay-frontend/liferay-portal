@@ -110,6 +110,8 @@ public class ObjectDefinitionsFieldsDisplayContext
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems()
 		throws Exception {
 
+		boolean hasUpdatePermission = hasUpdateObjectDefinitionPermission();
+
 		FDSActionDropdownItem fdsActionDropdownItem = new FDSActionDropdownItem(
 			null, "trash", "deleteObjectField",
 			LanguageUtil.get(objectRequestHelper.getRequest(), "delete"),
@@ -124,8 +126,12 @@ public class ObjectDefinitionsFieldsDisplayContext
 
 		return Arrays.asList(
 			new FDSActionDropdownItem(
-				getEditObjectFieldURL(), "view", "view",
-				LanguageUtil.get(objectRequestHelper.getRequest(), "view"),
+				getEditObjectFieldURL(),
+				hasUpdatePermission ? "pencil" : "view",
+				hasUpdatePermission ? "edit" : "view",
+				LanguageUtil.get(
+					objectRequestHelper.getRequest(),
+					hasUpdatePermission ? "edit" : "view"),
 				"get", null, "sidePanel"),
 			fdsActionDropdownItem);
 	}

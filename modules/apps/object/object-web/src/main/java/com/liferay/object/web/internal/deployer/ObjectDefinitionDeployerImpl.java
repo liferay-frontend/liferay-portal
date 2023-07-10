@@ -31,6 +31,7 @@ import com.liferay.info.item.action.executor.InfoItemActionExecutor;
 import com.liferay.info.item.capability.InfoItemCapability;
 import com.liferay.info.item.creator.InfoItemCreator;
 import com.liferay.info.item.field.reader.InfoItemFieldReaderFieldSetProvider;
+import com.liferay.info.item.provider.InfoItemActionDetailsProvider;
 import com.liferay.info.item.provider.InfoItemCapabilitiesProvider;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
@@ -70,6 +71,7 @@ import com.liferay.object.web.internal.asset.model.ObjectEntryAssetRendererFacto
 import com.liferay.object.web.internal.info.collection.provider.ObjectEntrySingleFormVariationInfoCollectionProvider;
 import com.liferay.object.web.internal.info.item.action.ObjectEntryInfoItemActionExecutor;
 import com.liferay.object.web.internal.info.item.creator.ObjectEntryInfoItemCreator;
+import com.liferay.object.web.internal.info.item.provider.ObjectEntryInfoItemActionDetailsProvider;
 import com.liferay.object.web.internal.info.item.provider.ObjectEntryInfoItemCapabilitiesProvider;
 import com.liferay.object.web.internal.info.item.provider.ObjectEntryInfoItemDetailsProvider;
 import com.liferay.object.web.internal.info.item.provider.ObjectEntryInfoItemFieldValuesProvider;
@@ -200,10 +202,20 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					"item.class.name", objectDefinition.getClassName()
 				).build()),
 			_bundleContext.registerService(
+				InfoItemActionDetailsProvider.class,
+				new ObjectEntryInfoItemActionDetailsProvider(
+					infoItemFormProvider, _objectActionLocalService,
+					objectDefinition),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"company.id", objectDefinition.getCompanyId()
+				).put(
+					"item.class.name", objectDefinition.getClassName()
+				).build()),
+			_bundleContext.registerService(
 				InfoItemActionExecutor.class,
 				new ObjectEntryInfoItemActionExecutor(
-					_objectActionLocalService, objectDefinition,
-					_objectEntryManagerRegistry),
+					infoItemFormProvider, _objectActionLocalService,
+					objectDefinition, _objectEntryManagerRegistry),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"company.id", objectDefinition.getCompanyId()
 				).put(

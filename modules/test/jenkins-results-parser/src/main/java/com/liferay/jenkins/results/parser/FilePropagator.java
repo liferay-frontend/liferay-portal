@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
@@ -91,6 +92,7 @@ public class FilePropagator {
 			"File propagation starting with " + threadCount + " threads.");
 
 		try {
+			String previousString = null;
 			long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
 
 			while (!_targetSlaves.isEmpty() || !_busySlaves.isEmpty()) {
@@ -119,28 +121,44 @@ public class FilePropagator {
 				sb.append(
 					JenkinsResultsParserUtil.toDurationString(
 						getAverageThreadDuration()));
-				sb.append("ms\nBusy slaves:");
+				sb.append("\nBusy slaves:");
 				sb.append(_busySlaves.size());
 				sb.append("\nMirror slaves:");
 				sb.append(_mirrorSlaves.size());
 				sb.append("\nTarget slaves:");
 				sb.append(_targetSlaves.size());
+
+				String currentString = sb.toString();
+
+				if (Objects.equals(previousString, currentString)) {
+					continue;
+				}
+
 				sb.append("\nTotal duration: ");
+
+				long currentTime =
+					JenkinsResultsParserUtil.getCurrentTimeMillis();
+
 				sb.append(
 					JenkinsResultsParserUtil.toDurationString(
-						JenkinsResultsParserUtil.getCurrentTimeMillis() -
-							start));
+						currentTime - start));
+
 				sb.append("\n");
 
 				System.out.println(sb.toString());
 
+				previousString = currentString;
+
 				JenkinsResultsParserUtil.sleep(5000);
 			}
 
+			long duration =
+				JenkinsResultsParserUtil.getCurrentTimeMillis() - start;
+
 			System.out.println(
-				"File propagation completed in " +
-					(JenkinsResultsParserUtil.getCurrentTimeMillis() - start) +
-						"ms.");
+				JenkinsResultsParserUtil.combine(
+					"File propagation completed in ",
+					JenkinsResultsParserUtil.toDurationString(duration), "."));
 
 			if (!_errorSlaves.isEmpty()) {
 				System.out.println(
