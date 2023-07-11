@@ -23,6 +23,8 @@ import com.liferay.product.navigation.control.menu.BaseJSPProductNavigationContr
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuCategoryKeys;
 
+import java.util.Objects;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,7 +62,7 @@ public class BetaClientExtensionProductNavigationControlMenuEntry
 							EDIT_CLIENT_EXTENSION_ENTRY_DISPLAY_CONTEXT);
 
 		if ((editClientExtensionEntryDisplayContext != null) &&
-			Object.equals(
+			Objects.equals(
 				editClientExtensionEntryDisplayContext.getCET(
 				).getType(),
 				ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER)) {
@@ -76,7 +78,7 @@ public class BetaClientExtensionProductNavigationControlMenuEntry
 							VIEW_CLIENT_EXTENSION_ENTRY_DISPLAY_CONTEXT);
 
 		if ((viewClientExtensionEntryDisplayContext != null) &&
-			Object.equals(
+			Objects.equals(
 				viewClientExtensionEntryDisplayContext.getCET(
 				).getType(),
 				ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER)) {
