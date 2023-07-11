@@ -20,6 +20,7 @@ import com.liferay.change.tracking.spi.reference.builder.ParentTableReferenceInf
 import com.liferay.commerce.product.model.CPDefinitionTable;
 import com.liferay.commerce.product.model.CPInstanceOptionValueRelTable;
 import com.liferay.commerce.product.model.CPInstanceTable;
+import com.liferay.commerce.product.model.CPInstanceUnitOfMeasureTable;
 import com.liferay.commerce.product.service.persistence.CPInstancePersistence;
 import com.liferay.portal.kernel.service.persistence.BasePersistence;
 
@@ -40,7 +41,11 @@ public class CPInstanceTableReferenceDefinition
 
 		childTableReferenceInfoBuilder.singleColumnReference(
 			CPInstanceTable.INSTANCE.CPInstanceId,
-			CPInstanceOptionValueRelTable.INSTANCE.CPInstanceId);
+			CPInstanceOptionValueRelTable.INSTANCE.CPInstanceId
+		).singleColumnReference(
+			CPInstanceTable.INSTANCE.CPInstanceId,
+			CPInstanceUnitOfMeasureTable.INSTANCE.CPInstanceId
+		);
 	}
 
 	@Override

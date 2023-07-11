@@ -28,15 +28,12 @@ import org.junit.Test;
 /**
  * @author Sergio Jiménez del Coso
  */
-@FeatureFlags({"LPS-167253", "LPS-184413"})
+@FeatureFlags({"LPS-167253", "LPS-184413", "LPS-186757"})
 public class APISchemaRelevantObjectEntryModelListenerTest
 	extends BaseTestCase {
 
 	@Test
 	public void test() throws Exception {
-
-		// An API schema must be related to an API application
-
 		JSONObject jsonObject = HTTPTestUtil.invoke(
 			JSONUtil.put(
 				"mainObjectDefinitionERC", RandomTestUtil.randomString()
@@ -50,11 +47,9 @@ public class APISchemaRelevantObjectEntryModelListenerTest
 			"An API schema must be related to an API application.",
 			jsonObject.get("title"));
 
-		// Success
-
 		JSONObject apiApplicationJSONObject = HTTPTestUtil.invoke(
 			JSONUtil.put(
-				"applicationStatus", "published"
+				"applicationStatus", "unpublished"
 			).put(
 				"baseURL", RandomTestUtil.randomString()
 			).put(

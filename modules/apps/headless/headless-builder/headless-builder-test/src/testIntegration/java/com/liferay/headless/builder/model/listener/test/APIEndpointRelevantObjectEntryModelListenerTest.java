@@ -31,15 +31,12 @@ import org.junit.Test;
 /**
  * @author Sergio Jiménez del Coso
  */
-@FeatureFlags({"LPS-167253", "LPS-184413"})
+@FeatureFlags({"LPS-167253", "LPS-184413", "LPS-186757"})
 public class APIEndpointRelevantObjectEntryModelListenerTest
 	extends BaseTestCase {
 
 	@Test
 	public void test() throws Exception {
-
-		// An API endpoint must be related to an API application
-
 		JSONObject jsonObject = HTTPTestUtil.invoke(
 			JSONUtil.put(
 				"httpMethod", "get"
@@ -56,8 +53,6 @@ public class APIEndpointRelevantObjectEntryModelListenerTest
 		Assert.assertEquals(
 			"An API endpoint must be related to an API application.",
 			jsonObject.get("title"));
-
-		// Path can have a maximum of 255 alphanumeric characters
 
 		jsonObject = HTTPTestUtil.invoke(
 			JSONUtil.put(
@@ -78,8 +73,6 @@ public class APIEndpointRelevantObjectEntryModelListenerTest
 		Assert.assertEquals(
 			"Path can have a maximum of 255 alphanumeric characters.",
 			jsonObject.get("title"));
-
-		// Success
 
 		JSONObject apiApplicationJSONObject = HTTPTestUtil.invoke(
 			JSONUtil.put(
@@ -117,8 +110,6 @@ public class APIEndpointRelevantObjectEntryModelListenerTest
 			apiApplicationJSONObject.get("id"),
 			jsonObject.get(
 				"r_apiApplicationToAPIEndpoints_c_apiApplicationId"));
-
-		// There is an API endpoint with the same HTTP method and path
 
 		String path = RandomTestUtil.randomString();
 
@@ -161,8 +152,6 @@ public class APIEndpointRelevantObjectEntryModelListenerTest
 			"There is an API endpoint with the same HTTP method and path.",
 			jsonObject.get("title"));
 
-		// API application does not exist
-
 		jsonObject = HTTPTestUtil.invoke(
 			JSONUtil.put(
 				"httpMethod", "get"
@@ -182,8 +171,6 @@ public class APIEndpointRelevantObjectEntryModelListenerTest
 		Assert.assertEquals(
 			"An API endpoint must be related to an API application.",
 			jsonObject.get("title"));
-
-		// API application is not an API application
 
 		jsonObject = HTTPTestUtil.invoke(
 			JSONUtil.put(

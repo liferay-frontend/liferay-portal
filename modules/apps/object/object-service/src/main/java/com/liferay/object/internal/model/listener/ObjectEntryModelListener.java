@@ -131,6 +131,12 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			ObjectActionTriggerConstants.KEY_ON_AFTER_UPDATE,
 			originalObjectEntry, objectEntry);
 
+		_runRelevantObjectEntryModelListeners(
+			objectEntry,
+			relevantObjectEntryModelListener ->
+				relevantObjectEntryModelListener.onAfterUpdate(
+					originalObjectEntry, objectEntry));
+
 		if (StringUtil.equals(
 				originalObjectEntry.getExternalReferenceCode(),
 				objectEntry.getExternalReferenceCode())) {
@@ -145,12 +151,6 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		catch (PortalException portalException) {
 			throw new ModelListenerException(portalException);
 		}
-
-		_runRelevantObjectEntryModelListeners(
-			objectEntry,
-			relevantObjectEntryModelListener ->
-				relevantObjectEntryModelListener.onAfterUpdate(
-					originalObjectEntry, objectEntry));
 	}
 
 	@Override
