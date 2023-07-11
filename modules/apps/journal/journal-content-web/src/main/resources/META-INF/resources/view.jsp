@@ -36,20 +36,19 @@ if (journalContentDisplayContext.isShowArticle()) {
 		<c:choose>
 			<c:when test="<%= Validator.isNull(journalContentDisplayContext.getArticleId()) %>">
 				<clay:alert
-					cssClass="text-center"
-					defaultTitleDisabled="<%= true %>"
 					displayType="info"
 				>
-					<div>
+					<div class="align-items-center d-inline-flex">
 						<liferay-ui:message key="this-application-is-not-visible-to-users-yet" />
-					</div>
 
-					<clay:button
-						displayType="link"
-						label="select-web-content-to-make-it-visible"
-						onClick="<%= portletDisplay.getURLConfigurationJS() %>"
-						small="<%= true %>"
-					/>
+						<clay:button
+							cssClass="ml-1 p-0"
+							displayType="link"
+							label="select-web-content-to-make-it-visible"
+							onClick="<%= portletDisplay.getURLConfigurationJS() %>"
+							small="<%= true %>"
+						/>
+					</div>
 				</clay:alert>
 			</c:when>
 			<c:otherwise>
