@@ -13,11 +13,14 @@ import {ClayIconSpriteContext} from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {SWRConfig} from 'swr';
 import './common/styles/global.scss';
 
+import SWRCacheProvider from './SWRCacheProvider';
 import {AppPropertiesContext} from './common/contexts/AppPropertiesContext';
 import useApollo from './common/hooks/useApollo';
 import useGlobalNetworkIndicator from './common/hooks/useGlobalNetworkIndicator';
+import {Liferay} from './common/services/liferay';
 import getIconSpriteMap from './common/utils/getIconSpriteMap';
 import CustomerPortal from './routes/customer-portal';
 import Home from './routes/home';
@@ -111,6 +114,13 @@ class CustomerPortalWebComponent extends HTMLElement {
 			),
 		};
 
+		if (
+			!properties.featureFlags.includes('LPS-153478') &&
+			(Liferay.FeatureFlags as any)['LPS-153478']
+		) {
+			properties.featureFlags.push('LPS-153478');
+		}
+
 		const apis = {
 			gravatarAPI: super.getAttribute('gravatar-api'),
 			oktaSessionAPI: super.getAttribute('okta-session-api'),
@@ -123,11 +133,18 @@ class CustomerPortalWebComponent extends HTMLElement {
 
 		root.render(
 			<ClayIconSpriteContext.Provider value={getIconSpriteMap()}>
-				<CustomerPortalApp
-					{...properties}
-					apis={apis}
-					route={super.getAttribute('route') as string}
-				/>
+				<SWRConfig
+					value={{
+						provider: SWRCacheProvider,
+						revalidateOnFocus: false,
+					}}
+				>
+					<CustomerPortalApp
+						{...properties}
+						apis={apis}
+						route={super.getAttribute('route') as string}
+					/>
+				</SWRConfig>
 			</ClayIconSpriteContext.Provider>
 		);
 	}
