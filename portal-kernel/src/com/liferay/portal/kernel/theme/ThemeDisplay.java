@@ -199,8 +199,12 @@ public class ThemeDisplay
 			return _clayCSSURL;
 		}
 
+		String fileName =
+			PortalUtil.isRightToLeft(getRequest()) ? "/clay_rtl.css" :
+				"/clay.css";
+
 		return PortalUtil.getStaticResourceURL(
-			getRequest(), getPathThemeCss() + "/clay.css");
+			getRequest(), getPathThemeCss() + fileName);
 	}
 
 	public ColorScheme getColorScheme() {
@@ -566,8 +570,12 @@ public class ThemeDisplay
 			return _mainCSSURL;
 		}
 
+		String fileName =
+			PortalUtil.isRightToLeft(getRequest()) ? "/main_rtl.css" :
+				"/main.css";
+
 		return PortalUtil.getStaticResourceURL(
-			getRequest(), getPathThemeCss() + "/main.css");
+			getRequest(), getPathThemeCss() + fileName);
 	}
 
 	public String getMainJSURL() {
