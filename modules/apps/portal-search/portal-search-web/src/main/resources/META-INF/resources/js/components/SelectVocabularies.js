@@ -39,24 +39,13 @@ const SELECT_OPTIONS = {
 };
 
 /**
- * Converts a stringified list of IDs into an array of numbers. This separates
- * values by commas, filters out empty values, and parses the string into a
- * number, if possible.
+ * Converts a stringified list of IDs into an array of IDs. This separates
+ * values by commas and filters out empty values.
  * @param {string} idsString The list of IDs as a string
- * @return {Array} Array of ID numbers
+ * @return {Array} Array of IDs as strings
  */
 const convertToIDArray = (idsString) =>
-	idsString
-		.split(',')
-		.filter((id) => id !== '')
-		.map((id) => {
-			try {
-				return JSON.parse(id);
-			}
-			catch {
-				return id;
-			}
-		});
+	idsString.split(',').filter((id) => id !== '');
 
 function SiteRow({disabled, name, onSelect, vocabularies}) {
 	const _handleSelect = (select = true) => (event) => {
@@ -66,7 +55,10 @@ function SiteRow({disabled, name, onSelect, vocabularies}) {
 	};
 
 	return (
-		<div className="autofit-row">
+		<div
+			className="autofit-row"
+			style={{marginLeft: vocabularies.length ? '0' : '-24px'}}
+		>
 			<div className="autofit-col">
 				<ClayButton
 					className="component-expander"
@@ -149,7 +141,7 @@ function VocabularyTree({
 		setSelectedKeys(newList);
 	};
 
-	const _handleToggle = (id) => () => {
+	const _handleToggle = (id) => {
 		_handleSelect([{id}], !selectedKeys.has(id));
 	};
 
@@ -284,11 +276,31 @@ function SelectVocabularies({
 	const _handleFetchVocabularyTree = () => {
 		setVocabularyTreeLoading(true);
 
-		fetch('/o/headless-admin-user/v1.0/my-user-account', CONFIGURATION)
+		fetch(
+			'/o/headless-admin-user/v1.0/my-user-account/sites',
+			CONFIGURATION
+		)
 			.then((response) => response.json())
-			.then(({siteBriefs}) => {
+			.then(({items}) => {
+
+				// Check for presence of Global Site. If unavailable, add to the list.
+
+				const itemsWithGlobalSite = items.some(
+					({id}) =>
+						id.toString() ===
+						Liferay.ThemeDisplay.getCompanyGroupId().toString()
+				)
+					? items
+					: [
+							{
+								descriptiveName: Liferay.Language.get('global'),
+								id: Liferay.ThemeDisplay.getCompanyGroupId(),
+							},
+							...items,
+					  ];
+
 				Promise.all(
-					siteBriefs.map((site) =>
+					itemsWithGlobalSite.map((site) =>
 						fetch(
 							`/o/headless-admin-taxonomy/v1.0/sites/${site.id}/taxonomy-vocabularies?page=0&pageSize=0`,
 							CONFIGURATION
@@ -300,13 +312,13 @@ function SelectVocabularies({
 
 						setVocabularyTree(
 							response.map((vocabularies, index) => ({
-								...siteBriefs[index],
+								...itemsWithGlobalSite[index],
 								children: (vocabularies?.items || []).map(
 									({id, name}) => {
-										ids.push(id); // Collect IDs for _isDisplayInfoSelectedVocabulariesHidden
+										ids.push(id.toString()); // Collect IDs for _isDisplayInfoSelectedVocabulariesHidden
 
 										return {
-											id,
+											id: id.toString(),
 											name,
 										};
 									}
@@ -395,6 +407,7 @@ function SelectVocabularies({
 						)}
 
 						<LearnMessage
+							className="c-ml-1"
 							learnMessages={learnMessages}
 							resourceKey="tag-and-category-facet"
 						/>
