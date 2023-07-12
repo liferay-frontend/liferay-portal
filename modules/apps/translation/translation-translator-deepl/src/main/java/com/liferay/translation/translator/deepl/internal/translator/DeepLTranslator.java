@@ -141,24 +141,23 @@ public class DeepLTranslator implements Translator {
 
 		return JSONUtil.toList(
 			_jsonFactory.createJSONArray(
-				_invoke(deepLTranslatorConfiguration, options)),
+				_invoke(
+					deepLTranslatorConfiguration.authKey(), options,
+					deepLTranslatorConfiguration.validateLanguageURL())),
 			jsonObject -> jsonObject.getString("language"), _log);
 	}
 
-	private String _invoke(
-			DeepLTranslatorConfiguration deepLTranslatorConfiguration,
-			Http.Options options)
+	private String _invoke(String authKey, Http.Options options, String url)
 		throws PortalException {
 
 		String json = null;
 
 		options.addHeader(
-			HttpHeaders.AUTHORIZATION,
-			"DeepL-Auth-Key " + deepLTranslatorConfiguration.authKey());
+			HttpHeaders.AUTHORIZATION, "DeepL-Auth-Key " + authKey);
 		options.addHeader(
 			HttpHeaders.CONTENT_TYPE,
 			ContentTypes.APPLICATION_X_WWW_FORM_URLENCODED);
-		options.setLocation(deepLTranslatorConfiguration.validateLanguageURL());
+		options.setLocation(url);
 
 		try {
 			json = _http.URLtoString(options);
@@ -218,7 +217,9 @@ public class DeepLTranslator implements Translator {
 		options.setMethod(Http.Method.POST);
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			_invoke(deepLTranslatorConfiguration, options));
+			_invoke(
+				deepLTranslatorConfiguration.authKey(), options,
+				deepLTranslatorConfiguration.url()));
 
 		JSONArray jsonArray = jsonObject.getJSONArray("translations");
 

@@ -17,6 +17,8 @@ package com.liferay.jenkins.results.parser;
 import com.google.common.collect.Lists;
 import com.google.common.io.CountingInputStream;
 
+import com.liferay.poshi.core.pql.PQLEntityFactory;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -5019,6 +5021,16 @@ public class JenkinsResultsParserUtil {
 			"); build.@result = hudson.model.Result.", buildResult, ";");
 
 		executeJenkinsScript(masterHostname, jenkinsScript);
+	}
+
+	public static void validatePQL(String pql, File file) {
+		try {
+			PQLEntityFactory.newPQLEntity(pql);
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(
+				"Invalid PQL at " + file + ": " + pql, exception);
+		}
 	}
 
 	public static void write(File file, String content) throws IOException {
