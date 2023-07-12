@@ -653,17 +653,15 @@ public class FragmentEntryConfigurationParserImpl
 				_jsonFactory.looseSerialize(_getInfoDisplayObjectEntry(value)));
 
 			jsonObject.put(
-				"className",
-				GetterUtil.getString(
-					configurationValueJSONObject.getString("className"))
+				"className", configurationValueJSONObject.getString("className")
 			).put(
 				"classNameId",
-				GetterUtil.getString(
-					configurationValueJSONObject.getString("classNameId"))
+				configurationValueJSONObject.getLong("classNameId")
 			).put(
-				"classPK",
-				GetterUtil.getLong(
-					configurationValueJSONObject.getString("classPK"))
+				"classPK", configurationValueJSONObject.getLong("classPK")
+			).put(
+				"externalReferenceCode",
+				configurationValueJSONObject.getString("externalReferenceCode")
 			).put(
 				"template", configurationValueJSONObject.get("template")
 			).put(

@@ -63,7 +63,11 @@ public interface APIApplication {
 
 		public String getDescription();
 
+		public String getExternalReferenceCode();
+
 		public String getName();
+
+		public String getSourceFieldName();
 
 		public Type getType();
 
@@ -82,6 +86,8 @@ public interface APIApplication {
 		public String getDescription();
 
 		public String getExternalReferenceCode();
+
+		public String getMainObjectDefinitionExternalReferenceCode();
 
 		public String getName();
 

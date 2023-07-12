@@ -4405,13 +4405,11 @@ components:
                 contentType:
                     description:
                         The type of the content.
-                    readOnly: true
                     type: string
                 id:
                     description:
                         The identifier of the resource.
                     format: int64
-                    readOnly: true
                     type: integer
                 title:
                     description:
@@ -5088,7 +5086,6 @@ components:
                         A list of related contents to this structured content.
                     items:
                         $ref: "#/components/schemas/RelatedContent"
-                    readOnly: true
                     type: array
                 renderedContents:
                     description:
@@ -5108,7 +5105,6 @@ components:
                     description:
                         The ID of the folder where structured content is stored.
                     format: int64
-                    readOnly: true
                     type: integer
                 subscribed:
                     # @review
@@ -5677,7 +5673,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.delivery.client', and version '4.0.60'."
+        'com.liferay.headless.delivery.client', and version '4.0.61'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"

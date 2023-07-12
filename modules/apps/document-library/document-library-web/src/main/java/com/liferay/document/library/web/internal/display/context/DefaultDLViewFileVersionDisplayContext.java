@@ -120,7 +120,13 @@ public class DefaultDLViewFileVersionDisplayContext
 					).add(
 						_uiItemsBuilder::isEditImageActionAvailable,
 						_uiItemsBuilder.createEditImageDropdownItem()
-					).add(
+					).build());
+				dropdownGroupItem.setSeparator(true);
+			}
+		).addGroup(
+			dropdownGroupItem -> {
+				dropdownGroupItem.setDropdownItems(
+					DropdownItemListBuilder.add(
 						_uiItemsBuilder::isCheckoutActionAvailable,
 						_uiItemsBuilder.createCheckoutDropdownItem()
 					).add(
@@ -134,6 +140,9 @@ public class DefaultDLViewFileVersionDisplayContext
 							isCollectDigitalSignatureActionAvailable,
 						_uiItemsBuilder.
 							createCollectDigitalSignatureDropdownItem()
+					).add(
+						_uiItemsBuilder::isHistoryActionAvailable,
+						_uiItemsBuilder.createHistoryDropdownItem()
 					).add(
 						_uiItemsBuilder::isMoveActionAvailable,
 						_uiItemsBuilder.createMoveDropdownItem()

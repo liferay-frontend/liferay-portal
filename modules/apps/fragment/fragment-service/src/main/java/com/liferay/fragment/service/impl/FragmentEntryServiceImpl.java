@@ -16,8 +16,18 @@ package com.liferay.fragment.service.impl;
 
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.model.FragmentCompositionTable;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.model.FragmentEntryTable;
+import com.liferay.fragment.service.FragmentCompositionLocalService;
 import com.liferay.fragment.service.base.FragmentEntryServiceBaseImpl;
+import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.Table;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
+import com.liferay.petra.sql.dsl.query.GroupByStep;
+import com.liferay.petra.sql.dsl.spi.expression.Scalar;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
@@ -25,9 +35,12 @@ import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -131,11 +144,9 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 		long groupId, long fragmentCollectionId, int status, int start, int end,
 		OrderByComparator<?> orderByComparator) {
 
-		QueryDefinition<?> queryDefinition = new QueryDefinition<>(
-			status, start, end, (OrderByComparator<Object>)orderByComparator);
-
-		return fragmentEntryFinder.findFC_FE_ByG_FCI(
-			groupId, fragmentCollectionId, queryDefinition);
+		return getFragmentCompositionsAndFragmentEntries(
+			groupId, fragmentCollectionId, StringPool.BLANK, status, start, end,
+			orderByComparator);
 	}
 
 	@Override
@@ -143,11 +154,46 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 		long groupId, long fragmentCollectionId, String name, int status,
 		int start, int end, OrderByComparator<?> orderByComparator) {
 
-		QueryDefinition<?> queryDefinition = new QueryDefinition<>(
-			status, start, end, (OrderByComparator<Object>)orderByComparator);
+		List<Object> fragmentCompositionsAndFragmentEntries = new ArrayList<>();
 
-		return fragmentEntryFinder.findFC_FE_ByG_FCI_N(
-			groupId, fragmentCollectionId, name, queryDefinition);
+		Table<?> tempFragmentEntryTable = _getFragmentCompositionGroupByStep(
+			groupId, fragmentCollectionId, name, status
+		).unionAll(
+			_getFragmentEntryGroupByStep(
+				groupId, fragmentCollectionId, name, status)
+		).as(
+			"tempFragmentCompositionsAndFragmentEntriesTable"
+		);
+
+		DSLQuery dslQuery = DSLQueryFactoryUtil.select(
+			tempFragmentEntryTable
+		).from(
+			tempFragmentEntryTable
+		).orderBy(
+			tempFragmentEntryTable, orderByComparator
+		).limit(
+			start, end
+		);
+
+		for (Object[] array :
+				fragmentEntryPersistence.<List<Object[]>>dslQuery(dslQuery)) {
+
+			long fragmentCompositionId = GetterUtil.getLong(array[0]);
+
+			if (fragmentCompositionId > 0) {
+				fragmentCompositionsAndFragmentEntries.add(
+					_fragmentCompositionLocalService.fetchFragmentComposition(
+						fragmentCompositionId));
+
+				continue;
+			}
+
+			fragmentCompositionsAndFragmentEntries.add(
+				fragmentEntryLocalService.fetchFragmentEntry(
+					GetterUtil.getLong(array[1])));
+		}
+
+		return fragmentCompositionsAndFragmentEntries;
 	}
 
 	@Override
@@ -501,8 +547,112 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 			fragmentEntryId, name);
 	}
 
+	private GroupByStep _getFragmentCompositionGroupByStep(
+		long groupId, long fragmentCollectionId, String name, int status) {
+
+		return DSLQueryFactoryUtil.selectDistinct(
+			FragmentCompositionTable.INSTANCE.fragmentCompositionId.as(
+				"fragmentCompositionId"),
+			new Scalar<>(
+				0L
+			).as(
+				"fragmentEntryId"
+			),
+			FragmentCompositionTable.INSTANCE.createDate.as("createDate"),
+			FragmentCompositionTable.INSTANCE.modifiedDate.as("modifiedDate"),
+			FragmentCompositionTable.INSTANCE.name.as("name")
+		).from(
+			FragmentCompositionTable.INSTANCE
+		).where(
+			FragmentCompositionTable.INSTANCE.groupId.eq(
+				groupId
+			).and(
+				FragmentCompositionTable.INSTANCE.fragmentCollectionId.eq(
+					fragmentCollectionId)
+			).and(
+				() -> {
+					if (Validator.isNotNull(name)) {
+						return DSLFunctionFactoryUtil.lower(
+							FragmentCompositionTable.INSTANCE.name
+						).like(
+							_customSQL.keywords(
+								name, false, WildcardMode.SURROUND)[0]
+						);
+					}
+
+					return null;
+				}
+			).and(
+				() -> {
+					if (status != WorkflowConstants.STATUS_ANY) {
+						return FragmentCompositionTable.INSTANCE.status.eq(
+							status);
+					}
+
+					return null;
+				}
+			)
+		);
+	}
+
+	private GroupByStep _getFragmentEntryGroupByStep(
+		long groupId, long fragmentCollectionId, String name, int status) {
+
+		return DSLQueryFactoryUtil.selectDistinct(
+			new Scalar<>(
+				0L
+			).as(
+				"fragmentCompositionId"
+			),
+			FragmentEntryTable.INSTANCE.fragmentEntryId.as("fragmentEntryId"),
+			FragmentEntryTable.INSTANCE.createDate.as("createDate"),
+			FragmentEntryTable.INSTANCE.modifiedDate.as("modifiedDate"),
+			FragmentEntryTable.INSTANCE.name.as("name")
+		).from(
+			FragmentEntryTable.INSTANCE
+		).where(
+			FragmentEntryTable.INSTANCE.groupId.eq(
+				groupId
+			).and(
+				FragmentEntryTable.INSTANCE.fragmentCollectionId.eq(
+					fragmentCollectionId)
+			).and(
+				FragmentEntryTable.INSTANCE.head.eq(
+					true
+				).or(
+					FragmentEntryTable.INSTANCE.headId.eq(
+						FragmentEntryTable.INSTANCE.fragmentEntryId)
+				).withParentheses()
+			).and(
+				() -> {
+					if (Validator.isNotNull(name)) {
+						return DSLFunctionFactoryUtil.lower(
+							FragmentEntryTable.INSTANCE.name
+						).like(
+							_customSQL.keywords(
+								name, false, WildcardMode.SURROUND)[0]
+						);
+					}
+
+					return null;
+				}
+			).and(
+				() -> {
+					if (status != WorkflowConstants.STATUS_ANY) {
+						return FragmentEntryTable.INSTANCE.status.eq(status);
+					}
+
+					return null;
+				}
+			)
+		);
+	}
+
 	@Reference
 	private CustomSQL _customSQL;
+
+	@Reference
+	private FragmentCompositionLocalService _fragmentCompositionLocalService;
 
 	@Reference(
 		target = "(resource.name=" + FragmentConstants.RESOURCE_NAME + ")"

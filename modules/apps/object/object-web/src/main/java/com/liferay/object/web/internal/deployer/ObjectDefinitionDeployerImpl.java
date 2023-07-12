@@ -323,9 +323,12 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				new ObjectEntryRowInfoItemRenderer(
 					_assetDisplayPageFriendlyURLProvider, _dlAppService,
 					_dlFileEntryLocalService, _dlURLHelper,
-					_listTypeEntryLocalService, _objectDefinitionLocalService,
-					_objectEntryLocalService, _objectFieldLocalService,
-					_objectRelationshipLocalService, _portal, _servletContext),
+					_listTypeEntryLocalService, objectDefinition,
+					_objectEntryLocalService,
+					_objectEntryManagerRegistry.getObjectEntryManager(
+						objectDefinition.getStorageType()),
+					_objectFieldLocalService, _objectRelationshipLocalService,
+					_portal, _servletContext),
 				HashMapDictionaryBuilder.<String, Object>put(
 					Constants.SERVICE_RANKING, 100
 				).put(

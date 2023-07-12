@@ -204,8 +204,18 @@ public class APIApplicationProviderImpl implements APIApplicationProvider {
 					}
 
 					@Override
+					public String getExternalReferenceCode() {
+						return propertyObjectEntry.getExternalReferenceCode();
+					}
+
+					@Override
 					public String getName() {
 						return (String)properties.get("name");
+					}
+
+					@Override
+					public String getSourceFieldName() {
+						return objectField.getName();
 					}
 
 					@Override
@@ -270,6 +280,14 @@ public class APIApplicationProviderImpl implements APIApplicationProvider {
 					@Override
 					public String getExternalReferenceCode() {
 						return objectEntry.getExternalReferenceCode();
+					}
+
+					@Override
+					public String
+						getMainObjectDefinitionExternalReferenceCode() {
+
+						return (String)properties.get(
+							"mainObjectDefinitionERC");
 					}
 
 					@Override

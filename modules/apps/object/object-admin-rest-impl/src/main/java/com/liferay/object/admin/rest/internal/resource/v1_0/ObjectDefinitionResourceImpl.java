@@ -118,6 +118,10 @@ public class ObjectDefinitionResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		for (ObjectDefinition objectDefinition : objectDefinitions) {
+			objectDefinition.setActive(false);
+		}
+
 		super.create(objectDefinitions, parameters);
 
 		for (ObjectDefinition objectDefinition : objectDefinitions) {
@@ -235,7 +239,7 @@ public class ObjectDefinitionResourceImpl
 		throws Exception {
 
 		if (Validator.isNotNull(objectDefinition.getEnableLocalization()) &&
-			!FeatureFlagManagerUtil.isEnabled("LPS-146755")) {
+			!FeatureFlagManagerUtil.isEnabled("LPS-172017")) {
 
 			throw new ObjectDefinitionEnableLocalizationException();
 		}
@@ -893,7 +897,7 @@ public class ObjectDefinitionResourceImpl
 					objectDefinition.getEnableCategorization();
 				enableComments = objectDefinition.getEnableComments();
 
-				if (FeatureFlagManagerUtil.isEnabled("LPS-146755")) {
+				if (FeatureFlagManagerUtil.isEnabled("LPS-172017")) {
 					enableLocalization =
 						objectDefinition.getEnableLocalization();
 				}
