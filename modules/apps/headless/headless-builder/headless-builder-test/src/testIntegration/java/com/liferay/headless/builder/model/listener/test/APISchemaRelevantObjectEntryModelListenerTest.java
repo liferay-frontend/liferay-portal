@@ -47,6 +47,22 @@ public class APISchemaRelevantObjectEntryModelListenerTest
 			"An API schema must be related to an API application.",
 			jsonObject.get("title"));
 
+		jsonObject = HTTPTestUtil.invoke(
+			JSONUtil.put(
+				"mainObjectDefinitionERC", RandomTestUtil.randomString()
+			).put(
+				"name", RandomTestUtil.randomString()
+			).put(
+				"r_apiApplicationToAPISchemas_c_apiApplicationId",
+				RandomTestUtil.randomLong()
+			).toString(),
+			"headless-builder/schemas", Http.Method.POST);
+
+		Assert.assertEquals("BAD_REQUEST", jsonObject.get("status"));
+		Assert.assertEquals(
+			"An API schema must be related to an API application.",
+			jsonObject.get("title"));
+
 		JSONObject apiApplicationJSONObject = HTTPTestUtil.invoke(
 			JSONUtil.put(
 				"applicationStatus", "unpublished"
@@ -61,7 +77,7 @@ public class APISchemaRelevantObjectEntryModelListenerTest
 			JSONUtil.put(
 				"mainObjectDefinitionERC", RandomTestUtil.randomString()
 			).put(
-				"name", RandomTestUtil.randomString()
+				"name", _API_SCHEMA_NAME
 			).put(
 				"r_apiApplicationToAPISchemas_c_apiApplicationId",
 				apiApplicationJSONObject.getLong("id")
@@ -75,6 +91,25 @@ public class APISchemaRelevantObjectEntryModelListenerTest
 			).get(
 				"code"
 			));
+
+		jsonObject = HTTPTestUtil.invoke(
+			JSONUtil.put(
+				"mainObjectDefinitionERC", RandomTestUtil.randomString()
+			).put(
+				"name", _API_SCHEMA_NAME
+			).put(
+				"r_apiApplicationToAPISchemas_c_apiApplicationId",
+				apiApplicationJSONObject.getLong("id")
+			).toString(),
+			"headless-builder/schemas", Http.Method.POST);
+
+		Assert.assertEquals("BAD_REQUEST", jsonObject.get("status"));
+		Assert.assertEquals(
+			"There is an API schema with the same name in the API application.",
+			jsonObject.get("title"));
 	}
+
+	private static final String _API_SCHEMA_NAME =
+		RandomTestUtil.randomString();
 
 }

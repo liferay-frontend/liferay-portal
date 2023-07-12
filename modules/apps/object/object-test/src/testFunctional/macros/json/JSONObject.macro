@@ -156,7 +156,9 @@ definition {
 				-d values={${entryValues}}
 		''';
 
-		JSONCurlUtil.post(${curl});
+		var objectEntryId = JSONCurlUtil.post(${curl}, "$.objectEntryId");
+
+		return ${objectEntryId};
 	}
 
 	macro addObjectField {
@@ -1132,7 +1134,6 @@ definition {
 		JSONCurlUtil.patch(${curl});
 	}
 
-	@summary = "This calls the patchObjectField Headless API endpoint to update a configuration within an object field"
 	macro updateObjectField {
 		var portalURL = JSONCompany.getPortalURL();
 		var objectId = JSONObject.getObjectId(objectName = ${objectName});
