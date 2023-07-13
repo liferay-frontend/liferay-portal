@@ -2504,13 +2504,55 @@ sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
 			<get-database-property property.name="database.host" />
 			<get-database-property property.name="database.password" />
 			<get-database-property property.name="database.schema" />
+			<get-database-property property.name="database.url" />
 			<get-database-property property.name="database.username" />
 
 			<get-test-app-server-lib-portal-dir />
 
+			<propertyregex
+				input="${database.url}"
+				override="true"
+				property="database.url"
+				regexp="&amp;"
+				replace="&amp;amp;"
+			/>
+
 			<if>
 				<equals arg1="${app.server.type}" arg2="tomcat" />
 				<then>
+					<propertycopy from="jdbc.${database.type}.driver" name="jdbc.driver" />
+
+					<if>
+						<equals arg1="${database.type}" arg2="db2" />
+						<then>
+							<copy
+								todir="${app.server.lib.global.dir}"
+							>
+								<fileset
+									dir="${test.app.server.lib.portal.dir}"
+								>
+									<include name="db2*" />
+								</fileset>
+							</copy>
+						</then>
+						<else>
+							<copy
+								file="${test.app.server.lib.portal.dir}/${jdbc.driver}"
+								tofile="${app.server.lib.global.dir}/${jdbc.driver}"
+							/>
+						</else>
+					</if>
+
+					<copy
+						file="${test.app.server.lib.portal.dir}/hikaricp.jar"
+						tofile="${app.server.lib.global.dir}/hikaricp.jar"
+					/>
+
+					<copy
+						file="${test.app.server.lib.portal.dir}/slf4j-api.jar"
+						tofile="${app.server.lib.global.dir}/slf4j-api.jar"
+					/>
+
 					<if>
 						<not>
 							<resourcecontains
@@ -2541,62 +2583,30 @@ sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
 							/>
 						</not>
 						<then>
-							<if>
-								<equals arg1="${database.type}" arg2="mysql" />
-								<then>
-									<replace
-										file="${app.server.dir}/conf/server.xml"
-									>
-										<replacetoken><![CDATA[<GlobalNamingResources>]]></replacetoken>
-										<replacevalue expandproperties="true">
+							<replace
+								file="${app.server.dir}/conf/server.xml"
+							>
+								<replacetoken><![CDATA[<GlobalNamingResources>]]></replacetoken>
+								<replacevalue expandproperties="true">
 											<![CDATA[
 												<GlobalNamingResources>
 													<Resource
 														auth="Container"
+														dataSource.password="${database.password}"
+														dataSource.user="${database.username}"
 														description="Global Address Database"
 														driverClassName="${database.driver}"
+														factory="com.zaxxer.hikari.HikariJNDIFactory"
+														jdbcUrl="${database.url}"
 														maxActive="40"
 														maxIdle="20"
 														maxWait="1000"
 														name="jdbc/LiferayPool"
-														password="${database.password}"
 														type="javax.sql.DataSource"
-														url="jdbc:mysql://${database.host}/${database.schema}?useUnicode=true&amp;characterEncoding=UTF-8&amp;useFastDateParsing=false&amp;serverTimezone=GMT&amp;dontTrackOpenResources=true&amp;holdResultsOpenOverStatementClose=true"
-														username="${database.username}"
 													/>
 											]]>
-										</replacevalue>
-									</replace>
-								</then>
-								<elseif>
-									<equals arg1="${database.type}" arg2="mariadb" />
-									<then>
-										<replace
-											file="${app.server.dir}/conf/server.xml"
-										>
-											<replacetoken><![CDATA[<GlobalNamingResources>]]></replacetoken>
-											<replacevalue expandproperties="true">
-												<![CDATA[
-													<GlobalNamingResources>
-														<Resource
-															auth="Container"
-															description="Global Address Database"
-															driverClassName="${database.driver}"
-															maxActive="40"
-															maxIdle="20"
-															maxWait="1000"
-															name="jdbc/LiferayPool"
-															password="${database.password}"
-															type="javax.sql.DataSource"
-															url="jdbc:mariadb://${database.host}/${database.schema}?useUnicode=true&amp;characterEncoding=UTF-8&amp;useFastDateParsing=false"
-															username="${database.username}"
-														/>
-												]]>
-											</replacevalue>
-										</replace>
-									</then>
-								</elseif>
-							</if>
+								</replacevalue>
+							</replace>
 						</then>
 					</if>
 				</then>
@@ -2630,18 +2640,15 @@ sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
 								/>
 							</not>
 							<then>
-								<if>
-									<equals arg1="${database.type}" arg2="mysql" />
-									<then>
-										<replace
-											file="${app.server.dir}/standalone/configuration/standalone.xml"
-										>
-											<replacetoken><![CDATA[<datasources>]]></replacetoken>
-											<replacevalue expandproperties="true">
+								<replace
+									file="${app.server.dir}/standalone/configuration/standalone.xml"
+								>
+									<replacetoken><![CDATA[<datasources>]]></replacetoken>
+									<replacevalue expandproperties="true">
 												<![CDATA[
 													<datasources>
 														<datasource jndi-name="java:/jdbc/LiferayPool" pool-name="LiferayPool" enabled="true" jta="true" use-java-context="true" use-ccm="true">
-															<connection-url>jdbc:mysql://${database.host}/${database.schema}?useUnicode=true&amp;characterEncoding=UTF-8&amp;useFastDateParsing=false&amp;serverTimezone=GMT&amp;dontTrackOpenResources=true&amp;holdResultsOpenOverStatementClose=true</connection-url>
+															<connection-url>${database.url}</connection-url>
 															<driver>${database.type}</driver>
 															<security>
 																<user-name>${database.username}</user-name>
@@ -2649,33 +2656,8 @@ sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
 															</security>
 														</datasource>
 												]]>
-											</replacevalue>
-										</replace>
-									</then>
-									<elseif>
-										<equals arg1="${database.type}" arg2="mariadb" />
-										<then>
-											<replace
-												file="${app.server.dir}/standalone/configuration/standalone.xml"
-											>
-												<replacetoken><![CDATA[<datasources>]]></replacetoken>
-												<replacevalue expandproperties="true">
-													<![CDATA[
-														<datasources>
-															<datasource jndi-name="java:/jdbc/LiferayPool" pool-name="LiferayPool" enabled="true" jta="true" use-java-context="true" use-ccm="true">
-																<connection-url>jdbc:mariadb://${database.host}/${database.schema}?useUnicode=true&amp;characterEncoding=UTF-8&amp;useFastDateParsing=false</connection-url>
-																<driver>${database.type}</driver>
-																<security>
-																	<user-name>${database.username}</user-name>
-																	<password>${database.password}</password>
-																</security>
-															</datasource>
-													]]>
-												</replacevalue>
-											</replace>
-										</then>
-									</elseif>
-								</if>
+									</replacevalue>
+								</replace>
 
 								<replace
 									file="${app.server.dir}/standalone/configuration/standalone.xml"
@@ -6133,7 +6115,7 @@ tell application "Safari" to quit
 
 					<var name="app.server.bin.dir" value="${app.server.dir}/instances/liferay/bin" />
 					<var name="app.server.classes.portal.dir" value="${app.server.dir}/webapps/ROOT/WEB-INF/classes" />
-					<var name="app.server.lib.global.dir" value="${app.server.dir}/lib/ext" />
+					<var name="app.server.lib.global.dir" value="${app.server.dir}/lib" />
 					<var name="app.server.lib.portal.dir" value="${app.server.dir}/webapps/ROOT/WEB-INF/lib/" />
 					<var name="app.server.shielded-container-lib.portal.dir" value="${app.server.dir}/webapps/ROOT/WEB-INF/shielded-container-lib/" />
 					<var name="app.server.zip.url" value="http://archive.apache.org/dist/tomcat/tomcat-9/v@{app.server.version}/bin/${app.server.zip.name}" />
@@ -6665,7 +6647,7 @@ go</echo>
 			<var name="app.server.tomcat.dir" value="${app.server.parent.dir}/tomcat-${app.server.tomcat.version}" />
 			<var name="app.server.tomcat.bin.dir" value="${app.server.parent.dir}/tomcat-${app.server.tomcat.version}/bin" />
 			<var name="app.server.tomcat.classes.portal.dir" value="${app.server.parent.dir}/tomcat-${app.server.tomcat.version}/webapps/ROOT/WEB-INF/classes" />
-			<var name="app.server.tomcat.lib.global.dir" value="${app.server.parent.dir}/tomcat-${app.server.tomcat.version}/lib/ext" />
+			<var name="app.server.tomcat.lib.global.dir" value="${app.server.parent.dir}/tomcat-${app.server.tomcat.version}/lib" />
 			<var name="app.server.tomcat.lib.portal.dir" value="${app.server.parent.dir}/tomcat-${app.server.tomcat.version}/webapps/ROOT/WEB-INF/lib" />
 			<var name="app.server.tomcat.shielded-container-lib.portal.dir" value="${app.server.parent.dir}/tomcat-${app.server.tomcat.version}/webapps/ROOT/WEB-INF/shielded-container-lib" />
 			<var name="app.server.tomcat.zip.name" value="apache-tomcat-${app.server.tomcat.version}.zip" />
@@ -11484,6 +11466,13 @@ mail.session.jndi.name=
 memory.scheduler.org.quartz.threadPool.threadCount=1
 persisted.scheduler.org.quartz.threadPool.threadCount=1
 virtual.hosts.default.site.name=
+virtual.hosts.valid.hosts=\
+    localhost,\
+    127.0.0.1,\
+    [::1],\
+    [0:0:0:0:0:0:0:1],\
+    ${env.HOSTNAME}
+
 com.liferay.portal.servlet.filters.strip.StripFilter=true
 web.server.http.port=8080
 admin.email.from.address=test@liferay.com
@@ -15336,15 +15325,6 @@ mail.send.blacklist=</echo>
 
 		<antcall target="create-hidden-osgi-file" />
 
-		<get-testcase-property property.name="database.jndi.enabled" />
-
-		<if>
-			<equals arg1="${database.jndi.enabled}" arg2="true" />
-			<then>
-				<prepare-database-jndi />
-			</then>
-		</if>
-
 		<get-testcase-property property.name="portal.proxy.path" />
 		<propertycopy from="portal.proxy.path[${env.CI_TEST_SUITE}]" name="portal.proxy.path" silent="true" />
 
@@ -15458,6 +15438,15 @@ mail.send.blacklist=</echo>
 			<param name="todir" value="${test.app.server.lib.portal.dir}" />
 		</antcall>
 
+		<get-testcase-property property.name="database.jndi.enabled" />
+
+		<if>
+			<equals arg1="${database.jndi.enabled}" arg2="true" />
+			<then>
+				<prepare-database-jndi />
+			</then>
+		</if>
+
 		<get-testcase-property property.name="index.search.spell.checker.enabled" />
 
 		<if>
@@ -15482,6 +15471,19 @@ mail.send.blacklist=</echo>
 		</if>
 
 		<antcall target="prepare-log4j-ext-xml" />
+
+		<get-testcase-property property.name="osgi.module.configuration.file.names" />
+		<get-testcase-property property.name="osgi.module.configurations" />
+
+		<if>
+			<and>
+				<isset property="osgi.module.configuration.file.names" />
+				<isset property="osgi.module.configurations" />
+			</and>
+			<then>
+				<antcall target="deploy-osgi-module-configurations" />
+			</then>
+		</if>
 
 		<get-testcase-property property.name="portal.version" />
 		<get-testcase-property property.name="rebuild.staging.database" />
@@ -15805,19 +15807,6 @@ mail.send.blacklist=</echo>
 		</if>
 
 		<set-up-search-engine />
-
-		<get-testcase-property property.name="osgi.module.configuration.file.names" />
-		<get-testcase-property property.name="osgi.module.configurations" />
-
-		<if>
-			<and>
-				<isset property="osgi.module.configuration.file.names" />
-				<isset property="osgi.module.configurations" />
-			</and>
-			<then>
-				<antcall target="deploy-osgi-module-configurations" />
-			</then>
-		</if>
 
 		<get-browser-property property.name="browser.docker.image" />
 

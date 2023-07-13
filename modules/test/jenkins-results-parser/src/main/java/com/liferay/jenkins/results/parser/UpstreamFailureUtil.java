@@ -82,9 +82,11 @@ public class UpstreamFailureUtil {
 								batchName, testReport.getTestName()));
 					}
 
+					List<TestClassReport> testClassReports =
+						downstreamBuildReport.getTestClassReports();
+
 					if (testReportStatus.equals("PASSED") &&
-						(downstreamBuildReport.getTestReports(
-						).size() == 1)) {
+						(testClassReports.size() == 1)) {
 
 						upstreamFailures.add(
 							_formatUpstreamTestFailure(
