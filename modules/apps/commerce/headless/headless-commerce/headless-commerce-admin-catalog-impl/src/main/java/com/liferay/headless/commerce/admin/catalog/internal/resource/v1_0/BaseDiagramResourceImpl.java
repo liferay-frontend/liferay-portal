@@ -364,30 +364,36 @@ public abstract class BaseDiagramResourceImpl
 			Collection<Diagram> diagrams, Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeConsumer<Diagram, Exception> diagramUnsafeConsumer = null;
+		UnsafeFunction<Diagram, Diagram, Exception> diagramUnsafeFunction =
+			null;
 
 		String updateStrategy = (String)parameters.getOrDefault(
 			"updateStrategy", "UPDATE");
 
 		if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
-			diagramUnsafeConsumer = diagram -> patchDiagram(
+			diagramUnsafeFunction = diagram -> patchDiagram(
 				diagram.getId() != null ? diagram.getId() :
 					_parseLong((String)parameters.get("diagramId")),
 				diagram);
 		}
 
-		if (diagramUnsafeConsumer == null) {
+		if (diagramUnsafeFunction == null) {
 			throw new NotSupportedException(
 				"Update strategy \"" + updateStrategy +
 					"\" is not supported for Diagram");
 		}
 
-		if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(diagrams, diagramUnsafeConsumer);
+		if (contextBatchUnsafeBiConsumer != null) {
+			contextBatchUnsafeBiConsumer.accept(
+				diagrams, diagramUnsafeFunction);
+		}
+		else if (contextBatchUnsafeConsumer != null) {
+			contextBatchUnsafeConsumer.accept(
+				diagrams, diagramUnsafeFunction::apply);
 		}
 		else {
 			for (Diagram diagram : diagrams) {
-				diagramUnsafeConsumer.accept(diagram);
+				diagramUnsafeFunction.apply(diagram);
 			}
 		}
 	}
@@ -402,6 +408,14 @@ public abstract class BaseDiagramResourceImpl
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
 		this.contextAcceptLanguage = contextAcceptLanguage;
+	}
+
+	public void setContextBatchUnsafeBiConsumer(
+		UnsafeBiConsumer
+			<Collection<Diagram>, UnsafeFunction<Diagram, Diagram, Exception>,
+			 Exception> contextBatchUnsafeBiConsumer) {
+
+		this.contextBatchUnsafeBiConsumer = contextBatchUnsafeBiConsumer;
 	}
 
 	public void setContextBatchUnsafeConsumer(
@@ -662,6 +676,9 @@ public abstract class BaseDiagramResourceImpl
 	}
 
 	protected AcceptLanguage contextAcceptLanguage;
+	protected UnsafeBiConsumer
+		<Collection<Diagram>, UnsafeFunction<Diagram, Diagram, Exception>,
+		 Exception> contextBatchUnsafeBiConsumer;
 	protected UnsafeBiConsumer
 		<Collection<Diagram>, UnsafeConsumer<Diagram, Exception>, Exception>
 			contextBatchUnsafeConsumer;

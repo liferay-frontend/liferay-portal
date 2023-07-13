@@ -782,7 +782,7 @@ public class CommerceTermEntryLocalServiceImpl
 
 		return joinStep.where(
 			CommercePaymentMethodGroupRelQualifierTable.INSTANCE.
-				CommercePaymentMethodGroupRelId.eq(
+				commercePaymentMethodGroupRelId.eq(
 					commercePaymentMethodGroupRelId
 				).and(
 					() -> {

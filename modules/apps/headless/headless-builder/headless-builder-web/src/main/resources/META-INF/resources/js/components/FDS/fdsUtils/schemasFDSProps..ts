@@ -14,60 +14,35 @@
 
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
 
-import {openEditURL} from '../../utils/urlUtil';
-import {getAPIApplicationsFDSFilters} from './fdsFilters';
-import {itemPathRenderer, itemStatusRenderer} from './fdsRenderers';
+import {baseFDSProps} from './baseFDSProps';
 
-export function getAPIApplicationsFDSProps(
-	apiApplicationsURLPath: string,
-	editURL: string,
+export function getAPIApplicationsSchemasFDSProps(
+	urlPath: string,
 	portletId: string
 ): IFrontendDataSetProps {
 	return {
-		apiURL: apiApplicationsURLPath,
-		currentURL: window.location.pathname + window.location.search,
-		customDataRenderers: {
-			itemPathRenderer,
-			itemStatusRenderer,
-		},
+		...baseFDSProps,
+		apiURL: urlPath,
 		emptyState: {
 			description: '',
 			image: '/states/empty_state.gif',
-			title: Liferay.Language.get('no-api-application-found'),
+			title: Liferay.Language.get('no-api-schema-found'),
 		},
-		filters: getAPIApplicationsFDSFilters(),
 		id: portletId,
 		itemsActions: [
 			{
 				data: {
-					id: 'editAPIApplication',
+					id: 'editAPIApplicationSchema',
 				},
 				icon: 'pencil',
 				label: Liferay.Language.get('edit'),
-				onClick: ({itemData}: FDSItem) =>
-					openEditURL({editURL, id: itemData.id, portletId}),
 			},
 			{
 				icon: 'trash',
-				id: 'deleteAPIApplication',
+				id: 'deleteAPIApplicationSchema',
 				label: Liferay.Language.get('delete'),
 			},
-			{
-				icon: 'change',
-				id: 'changePublicationStatus',
-				label: Liferay.Language.get('change-publication-status'),
-			},
 		],
-		pagination: {
-			initialDelta: 20,
-			initialPageNumber: 0,
-		},
-		portletId,
-		showManagementBar: true,
-		showPagination: true,
-		showSearch: true,
-		sidePanelId: 'none',
-		style: 'fluid',
 		views: [
 			{
 				contentRenderer: 'table',
@@ -76,19 +51,12 @@ export function getAPIApplicationsFDSProps(
 				schema: {
 					fields: [
 						{
-							actionId: 'editAPIApplication',
+							actionId: 'editAPIApplicationSchema',
 							contentRenderer: 'actionLink',
-							fieldName: 'title',
-							label: Liferay.Language.get('title'),
+							fieldName: 'name',
+							label: Liferay.Language.get('name'),
 							localizeLabel: true,
 							sortable: true,
-						},
-						{
-							contentRenderer: 'itemPathRenderer',
-							expand: false,
-							fieldName: 'baseURL',
-							label: Liferay.Language.get('url'),
-							localizeLabel: true,
 						},
 						{
 							fieldName: 'description',
@@ -101,12 +69,6 @@ export function getAPIApplicationsFDSProps(
 							fieldName: 'dateModified',
 							label: Liferay.Language.get('last-updated'),
 							localizeLabel: true,
-							sortable: true,
-						},
-						{
-							contentRenderer: 'itemStatusRenderer',
-							fieldName: 'applicationStatus',
-							label: Liferay.Language.get('status'),
 							sortable: true,
 						},
 					],

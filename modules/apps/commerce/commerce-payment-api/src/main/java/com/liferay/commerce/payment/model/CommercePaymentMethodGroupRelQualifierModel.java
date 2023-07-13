@@ -242,10 +242,10 @@ public interface CommercePaymentMethodGroupRelQualifierModel
 	/**
 	 * Sets the commerce payment method group rel ID of this commerce payment method group rel qualifier.
 	 *
-	 * @param CommercePaymentMethodGroupRelId the commerce payment method group rel ID of this commerce payment method group rel qualifier
+	 * @param commercePaymentMethodGroupRelId the commerce payment method group rel ID of this commerce payment method group rel qualifier
 	 */
 	public void setCommercePaymentMethodGroupRelId(
-		long CommercePaymentMethodGroupRelId);
+		long commercePaymentMethodGroupRelId);
 
 	@Override
 	public CommercePaymentMethodGroupRelQualifier cloneWithOriginalValues();

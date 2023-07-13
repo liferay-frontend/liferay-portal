@@ -121,20 +121,20 @@ public class CommercePaymentMethodGroupRelQualifierModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
+	public static final long CLASSNAMEID_COLUMN_BITMASK = 1L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long CLASSPK_COLUMN_BITMASK = 2L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
 	public static final long COMMERCEPAYMENTMETHODGROUPRELID_COLUMN_BITMASK =
-		1L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long CLASSNAMEID_COLUMN_BITMASK = 2L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long CLASSPK_COLUMN_BITMASK = 4L;
+		4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
@@ -292,7 +292,7 @@ public class CommercePaymentMethodGroupRelQualifierModelImpl
 			attributeGetterFunctions.put(
 				"classPK", CommercePaymentMethodGroupRelQualifier::getClassPK);
 			attributeGetterFunctions.put(
-				"CommercePaymentMethodGroupRelId",
+				"commercePaymentMethodGroupRelId",
 				CommercePaymentMethodGroupRelQualifier::
 					getCommercePaymentMethodGroupRelId);
 
@@ -354,7 +354,7 @@ public class CommercePaymentMethodGroupRelQualifierModelImpl
 				(BiConsumer<CommercePaymentMethodGroupRelQualifier, Long>)
 					CommercePaymentMethodGroupRelQualifier::setClassPK);
 			attributeSetterBiConsumers.put(
-				"CommercePaymentMethodGroupRelId",
+				"commercePaymentMethodGroupRelId",
 				(BiConsumer<CommercePaymentMethodGroupRelQualifier, Long>)
 					CommercePaymentMethodGroupRelQualifier::
 						setCommercePaymentMethodGroupRelId);
@@ -572,18 +572,18 @@ public class CommercePaymentMethodGroupRelQualifierModelImpl
 	@JSON
 	@Override
 	public long getCommercePaymentMethodGroupRelId() {
-		return _CommercePaymentMethodGroupRelId;
+		return _commercePaymentMethodGroupRelId;
 	}
 
 	@Override
 	public void setCommercePaymentMethodGroupRelId(
-		long CommercePaymentMethodGroupRelId) {
+		long commercePaymentMethodGroupRelId) {
 
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_CommercePaymentMethodGroupRelId = CommercePaymentMethodGroupRelId;
+		_commercePaymentMethodGroupRelId = commercePaymentMethodGroupRelId;
 	}
 
 	/**
@@ -846,7 +846,7 @@ public class CommercePaymentMethodGroupRelQualifierModelImpl
 		commercePaymentMethodGroupRelQualifierCacheModel.classPK = getClassPK();
 
 		commercePaymentMethodGroupRelQualifierCacheModel.
-			CommercePaymentMethodGroupRelId =
+			commercePaymentMethodGroupRelId =
 				getCommercePaymentMethodGroupRelId();
 
 		return commercePaymentMethodGroupRelQualifierCacheModel;
@@ -925,7 +925,7 @@ public class CommercePaymentMethodGroupRelQualifierModelImpl
 	private boolean _setModifiedDate;
 	private long _classNameId;
 	private long _classPK;
-	private long _CommercePaymentMethodGroupRelId;
+	private long _commercePaymentMethodGroupRelId;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -969,7 +969,7 @@ public class CommercePaymentMethodGroupRelQualifierModelImpl
 		_columnOriginalValues.put("classNameId", _classNameId);
 		_columnOriginalValues.put("classPK", _classPK);
 		_columnOriginalValues.put(
-			"CPaymentMethodGroupRelId", _CommercePaymentMethodGroupRelId);
+			"CPaymentMethodGroupRelId", _commercePaymentMethodGroupRelId);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -981,7 +981,7 @@ public class CommercePaymentMethodGroupRelQualifierModelImpl
 			"CPMethodGroupRelQualifierId",
 			"commercePaymentMethodGroupRelQualifierId");
 		attributeNames.put(
-			"CPaymentMethodGroupRelId", "CommercePaymentMethodGroupRelId");
+			"CPaymentMethodGroupRelId", "commercePaymentMethodGroupRelId");
 
 		_attributeNames = Collections.unmodifiableMap(attributeNames);
 	}

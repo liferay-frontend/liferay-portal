@@ -18,7 +18,8 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import ClayMultiSelect from '@clayui/multi-select';
 import {usePrevious} from '@liferay/frontend-js-react-web';
 import {useId} from '@liferay/layout-content-page-editor-web';
-import {fetch, openSelectionModal, sub} from 'frontend-js-web';
+import {fetch, sub} from 'frontend-js-web';
+import {openItemSelectorModal} from 'item-selector-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -136,14 +137,7 @@ function AssetTagsSelector({
 	};
 
 	const handleSelectButtonClick = () => {
-		const sub = (str, object) =>
-			str.replace(/\{([^}]+)\}/g, (_, m) => object[m]);
-
-		const url = sub(decodeURIComponent(portletURL), {
-			selectedTagNames: selectedItems.map((item) => item.value).join(),
-		});
-
-		openSelectionModal({
+		openItemSelectorModal({
 			buttonAddLabel: Liferay.Language.get('done'),
 			getSelectedItemsOnly: false,
 			multiple: true,
@@ -154,13 +148,24 @@ function AssetTagsSelector({
 
 				let [newValues, removedValues] = dialogSelectedItems.reduce(
 					([checked, unchecked], item) => {
+						let selectedValue;
+
+						try {
+							const valueJSON = JSON.parse(item.value);
+
+							selectedValue = valueJSON.tagName;
+						}
+						catch {
+							selectedValue = item.value;
+						}
+
 						if (item.checked) {
 							return [
 								[
 									...checked,
 									{
-										label: item.value,
-										value: item.value,
+										label: selectedValue,
+										value: selectedValue,
 									},
 								],
 								unchecked,
@@ -172,8 +177,8 @@ function AssetTagsSelector({
 								[
 									...unchecked,
 									{
-										label: item.value,
-										value: item.value,
+										label: selectedValue,
+										value: selectedValue,
 									},
 								],
 							];
@@ -211,8 +216,13 @@ function AssetTagsSelector({
 					callGlobalCallback(removeCallback, item)
 				);
 			},
+			params: {
+				selectedTagNames: selectedItems
+					.map((item) => item.value)
+					.join(),
+			},
 			title: Liferay.Language.get('tags'),
-			url,
+			url: portletURL,
 		});
 	};
 

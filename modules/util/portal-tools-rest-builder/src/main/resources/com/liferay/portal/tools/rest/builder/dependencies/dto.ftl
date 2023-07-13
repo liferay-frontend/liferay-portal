@@ -520,4 +520,6 @@ public class ${schemaName} <#if dtoParentClassName?has_content>extends ${dtoPare
 		{"\\\\", "\\\"", "\\b", "\\f", "\\n", "\\r", "\\t"}
 	};
 
+	private Map<String, Serializable> _extendedProperties;
+
 }

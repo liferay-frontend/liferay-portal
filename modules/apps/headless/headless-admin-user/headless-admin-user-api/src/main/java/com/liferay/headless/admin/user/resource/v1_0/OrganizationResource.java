@@ -68,6 +68,10 @@ public interface OrganizationResource {
 			String externalReferenceCode, String organizationId)
 		throws Exception;
 
+	public Organization getAccountByExternalReferenceCodeOrganization(
+			String externalReferenceCode, String organizationId)
+		throws Exception;
+
 	public void postAccountByExternalReferenceCodeOrganization(
 			String externalReferenceCode, String organizationId)
 		throws Exception;
@@ -83,6 +87,10 @@ public interface OrganizationResource {
 		throws Exception;
 
 	public void deleteAccountOrganization(Long accountId, String organizationId)
+		throws Exception;
+
+	public Organization getAccountOrganization(
+			Long accountId, String organizationId)
 		throws Exception;
 
 	public void postAccountOrganization(Long accountId, String organizationId)

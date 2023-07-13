@@ -268,4 +268,6 @@ public class DataLayoutColumn implements Serializable {
 		{"\\\\", "\\\"", "\\b", "\\f", "\\n", "\\r", "\\t"}
 	};
 
+	private Map<String, Serializable> _extendedProperties;
+
 }

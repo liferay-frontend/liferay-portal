@@ -39,7 +39,7 @@ import useKeyboardNavigation from '../utils/useKeyboardNavigation';
 import {AddItemDropDown} from './AddItemDropdown';
 import MenuItemOptions from './MenuItemOptions';
 
-export function MenuItem({item, onMenuItemRemoved}) {
+export function MenuItem({item, onMenuItemRemoved, sidebarPanelRef}) {
 	const setItems = useSetItems();
 	const setSelectedMenuItemId = useSetSelectedMenuItemId();
 	const setSidebarPanelId = useSetSidebarPanelId();
@@ -251,10 +251,20 @@ export function MenuItem({item, onMenuItemRemoved}) {
 			<div
 				aria-label={
 					item.icon
-						? `${title} (${type}). ${Liferay.Language.get(
+						? `${sub(
+								Liferay.Language.get(
+									'open-x-configuration-panel'
+								),
+								`${title} (${type})`
+						  )}. ${Liferay.Language.get(
 								'this-item-does-not-have-a-display-page'
 						  )}`
-						: `${title} (${type})`
+						: sub(
+								Liferay.Language.get(
+									'open-x-configuration-panel'
+								),
+								`${title} (${type})`
+						  )
 				}
 				aria-level={itemPath.length}
 				className={classNames(
@@ -269,6 +279,7 @@ export function MenuItem({item, onMenuItemRemoved}) {
 				data-item-id={item.siteNavigationMenuItemId}
 				data-nesting-level={nestingLevel}
 				data-parent-item-id={parentItemId}
+				data-tooltip-align="top-left"
 				onBlur={onBlur}
 				onClick={(event) => {
 					if (!isKeyboardDragging && event.nativeEvent.pointerType) {
@@ -285,6 +296,8 @@ export function MenuItem({item, onMenuItemRemoved}) {
 					) {
 						setSelectedMenuItemId(siteNavigationMenuItemId);
 						setSidebarPanelId(SIDEBAR_PANEL_IDS.menuItemSettings);
+
+						sidebarPanelRef.current.focus();
 					}
 
 					onKeyDown(event);
@@ -296,17 +309,17 @@ export function MenuItem({item, onMenuItemRemoved}) {
 				role="menuitem"
 				style={itemStyle}
 				tabIndex={isTarget ? '0' : '-1'}
+				title={sub(
+					Liferay.Language.get('open-x-configuration-panel'),
+					title
+				)}
 			>
-				<ClayCard className="mb-3">
+				<ClayCard className="mb-4">
 					<ClayCard.Body className="px-0">
 						<div ref={handlerRef}>
 							<ClayCard.Row>
 								<ClayLayout.ContentCol gutters>
 									<ClayButtonWithIcon
-										aria-label={sub(
-											Liferay.Language.get('move-x'),
-											`${title} (${type})`
-										)}
 										displayType="unstyled"
 										monospaced={false}
 										onBlur={() =>
@@ -316,6 +329,10 @@ export function MenuItem({item, onMenuItemRemoved}) {
 										size="sm"
 										symbol="drag"
 										tabIndex={isTarget ? '0' : '-1'}
+										title={sub(
+											Liferay.Language.get('move-x'),
+											title
+										)}
 									/>
 								</ClayLayout.ContentCol>
 
@@ -370,12 +387,6 @@ export function MenuItem({item, onMenuItemRemoved}) {
 										}
 										trigger={
 											<ClayButtonWithIcon
-												aria-label={sub(
-													Liferay.Language.get(
-														'add-item-before-x'
-													),
-													`${title} (${type})`
-												)}
 												className="site_navigation_menu_editor_MenuItem-add-button"
 												displayType="primary"
 												onClick={(event) => {
@@ -385,8 +396,11 @@ export function MenuItem({item, onMenuItemRemoved}) {
 												size="xs"
 												symbol="plus"
 												tabIndex={isTarget ? '0' : '-1'}
-												title={Liferay.Language.get(
-													'add-item-at-the-same-level'
+												title={sub(
+													Liferay.Language.get(
+														'add-item-before-x'
+													),
+													title
 												)}
 											/>
 										}
@@ -400,12 +414,6 @@ export function MenuItem({item, onMenuItemRemoved}) {
 										}
 										trigger={
 											<ClayButtonWithIcon
-												aria-label={sub(
-													Liferay.Language.get(
-														'add-item-after-x'
-													),
-													`${title} (${type})`
-												)}
 												className="site_navigation_menu_editor_MenuItem-add-button"
 												displayType="primary"
 												onClick={(event) => {
@@ -415,8 +423,11 @@ export function MenuItem({item, onMenuItemRemoved}) {
 												size="xs"
 												symbol="plus"
 												tabIndex={isTarget ? '0' : '-1'}
-												title={Liferay.Language.get(
-													'add-item-at-the-same-level'
+												title={sub(
+													Liferay.Language.get(
+														'add-item-after-x'
+													),
+													title
 												)}
 											/>
 										}
@@ -429,7 +440,7 @@ export function MenuItem({item, onMenuItemRemoved}) {
 								>
 									<MenuItemOptions
 										isTarget={isTarget}
-										label={`${title} (${type})`}
+										label={title}
 										numberOfChildren={item.children.length}
 										onMenuItemRemoved={onMenuItemRemoved}
 										siteNavigationMenuItemId={

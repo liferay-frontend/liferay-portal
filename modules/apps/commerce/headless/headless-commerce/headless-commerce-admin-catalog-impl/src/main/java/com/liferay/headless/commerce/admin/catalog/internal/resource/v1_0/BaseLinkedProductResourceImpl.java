@@ -210,6 +210,15 @@ public abstract class BaseLinkedProductResourceImpl
 		this.contextAcceptLanguage = contextAcceptLanguage;
 	}
 
+	public void setContextBatchUnsafeBiConsumer(
+		UnsafeBiConsumer
+			<Collection<LinkedProduct>,
+			 UnsafeFunction<LinkedProduct, LinkedProduct, Exception>, Exception>
+				contextBatchUnsafeBiConsumer) {
+
+		this.contextBatchUnsafeBiConsumer = contextBatchUnsafeBiConsumer;
+	}
+
 	public void setContextBatchUnsafeConsumer(
 		UnsafeBiConsumer
 			<Collection<LinkedProduct>,
@@ -469,6 +478,10 @@ public abstract class BaseLinkedProductResourceImpl
 	}
 
 	protected AcceptLanguage contextAcceptLanguage;
+	protected UnsafeBiConsumer
+		<Collection<LinkedProduct>,
+		 UnsafeFunction<LinkedProduct, LinkedProduct, Exception>, Exception>
+			contextBatchUnsafeBiConsumer;
 	protected UnsafeBiConsumer
 		<Collection<LinkedProduct>, UnsafeConsumer<LinkedProduct, Exception>,
 		 Exception> contextBatchUnsafeConsumer;

@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import java.io.Serializable;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -58,6 +59,27 @@ public class APIApplicationPublisherObjectEntryModelListener
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws ModelListenerException {
 
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				objectEntry.getObjectDefinitionId());
+
+		if (StringUtil.equals(
+				objectDefinition.getExternalReferenceCode(),
+				"L_API_APPLICATION")) {
+
+			Map<String, Serializable> originalValues =
+				originalObjectEntry.getValues();
+			Map<String, Serializable> values = objectEntry.getValues();
+
+			if (!Objects.equals(
+					originalValues.get("baseURL"), values.get("baseURL"))) {
+
+				_apiApplicationPublisher.unpublish(
+					(String)originalValues.get("baseURL"),
+					objectEntry.getCompanyId());
+			}
+		}
+
 		_schedulePublication(objectEntry);
 	}
 
@@ -77,7 +99,7 @@ public class APIApplicationPublisherObjectEntryModelListener
 				Map<String, Serializable> values = objectEntry.getValues();
 
 				_apiApplicationPublisher.unpublish(
-					(String)values.get("title") + objectEntry.getCompanyId());
+					(String)values.get("baseURL"), objectEntry.getCompanyId());
 			}
 			else {
 				_schedulePublication(objectEntry);
@@ -180,16 +202,23 @@ public class APIApplicationPublisherObjectEntryModelListener
 					Map<String, Serializable> values =
 						apiApplicationObjectEntry.getValues();
 
-					APIApplication apiApplication =
-						_apiApplicationProvider.fetchAPIApplication(
-							(String)values.get("baseURL"),
-							apiApplicationObjectEntry.getCompanyId());
-
-					_apiApplicationPublisher.unpublish(apiApplication);
-
 					if (StringUtil.equals(
 							(String)values.get("applicationStatus"),
-							"published")) {
+							"unpublished")) {
+
+						_apiApplicationPublisher.unpublish(
+							(String)values.get("baseURL"),
+							apiApplicationObjectEntry.getCompanyId());
+					}
+					else {
+						APIApplication apiApplication =
+							_apiApplicationProvider.fetchAPIApplication(
+								(String)values.get("baseURL"),
+								apiApplicationObjectEntry.getCompanyId());
+
+						if (apiApplication == null) {
+							return null;
+						}
 
 						_apiApplicationPublisher.publish(apiApplication);
 					}

@@ -86,7 +86,10 @@ public class AccountDTOConverter
 				externalReferenceCode = accountEntry.getExternalReferenceCode();
 				id = accountEntry.getAccountEntryId();
 				logoId = accountEntry.getLogoId();
-				logoURL = _getLogoURL(accountEntry.getLogoId());
+				logoURL = StringBundler.concat(
+					"/image/organization_logo?img_id=",
+					accountEntry.getLogoId(), "&t=",
+					_webServerServletToken.getToken(accountEntry.getLogoId()));
 				name = accountEntry.getName();
 				root =
 					accountEntry.getParentAccountEntryId() ==
@@ -95,12 +98,6 @@ public class AccountDTOConverter
 				type = _toCommerceAccountType(accountEntry.getType());
 			}
 		};
-	}
-
-	private String _getLogoURL(long logoId) {
-		return StringBundler.concat(
-			"/image/organization_logo?img_id=", logoId, "&t=",
-			_webServerServletToken.getToken(logoId));
 	}
 
 	private boolean _toCommerceAccountActive(int accountEntryStatus) {

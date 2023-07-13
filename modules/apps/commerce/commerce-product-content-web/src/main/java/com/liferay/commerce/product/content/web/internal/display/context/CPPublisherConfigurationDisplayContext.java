@@ -20,6 +20,8 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
+import com.liferay.asset.tags.item.selector.AssetTagsItemSelectorReturnType;
+import com.liferay.asset.tags.item.selector.criterion.AssetTagsItemSelectorCriterion;
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
@@ -356,26 +358,25 @@ public class CPPublisherConfigurationDisplayContext
 
 	public String getTagSelectorURL() {
 		try {
-			PortletURL portletURL = PortletProviderUtil.getPortletURL(
-				cpContentRequestHelper.getRequest(), AssetTag.class.getName(),
-				PortletProvider.Action.BROWSE);
+			AssetTagsItemSelectorCriterion assetTagsItemSelectorCriterion =
+				new AssetTagsItemSelectorCriterion();
 
-			if (portletURL == null) {
-				return null;
-			}
-
-			portletURL.setParameter(
-				"eventName", _getPortletNamespace() + "selectTag");
+			assetTagsItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+				new AssetTagsItemSelectorReturnType());
 
 			Company company = cpContentRequestHelper.getCompany();
 
-			portletURL.setParameter(
-				"groupIds", String.valueOf(company.getGroupId()));
+			assetTagsItemSelectorCriterion.setGroupIds(
+				new long[] {company.getGroupId()});
 
-			portletURL.setParameter("selectedTagNames", "{selectedTagNames}");
-			portletURL.setWindowState(LiferayWindowState.POP_UP);
+			assetTagsItemSelectorCriterion.setMultiSelection(true);
 
-			return portletURL.toString();
+			return String.valueOf(
+				_itemSelector.getItemSelectorURL(
+					RequestBackedPortletURLFactoryUtil.create(
+						cpContentRequestHelper.getRequest()),
+					_getPortletNamespace() + "selectTag",
+					assetTagsItemSelectorCriterion));
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {

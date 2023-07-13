@@ -486,28 +486,33 @@ public abstract class BaseCTRemoteResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeConsumer<CTRemote, Exception> ctRemoteUnsafeConsumer = null;
+		UnsafeFunction<CTRemote, CTRemote, Exception> ctRemoteUnsafeFunction =
+			null;
 
 		String createStrategy = (String)parameters.getOrDefault(
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			ctRemoteUnsafeConsumer = ctRemote -> postCTRemote(ctRemote);
+			ctRemoteUnsafeFunction = ctRemote -> postCTRemote(ctRemote);
 		}
 
-		if (ctRemoteUnsafeConsumer == null) {
+		if (ctRemoteUnsafeFunction == null) {
 			throw new NotSupportedException(
 				"Create strategy \"" + createStrategy +
 					"\" is not supported for CtRemote");
 		}
 
-		if (contextBatchUnsafeConsumer != null) {
+		if (contextBatchUnsafeBiConsumer != null) {
+			contextBatchUnsafeBiConsumer.accept(
+				ctRemotes, ctRemoteUnsafeFunction);
+		}
+		else if (contextBatchUnsafeConsumer != null) {
 			contextBatchUnsafeConsumer.accept(
-				ctRemotes, ctRemoteUnsafeConsumer);
+				ctRemotes, ctRemoteUnsafeFunction::apply);
 		}
 		else {
 			for (CTRemote ctRemote : ctRemotes) {
-				ctRemoteUnsafeConsumer.accept(ctRemote);
+				ctRemoteUnsafeFunction.apply(ctRemote);
 			}
 		}
 	}
@@ -587,38 +592,43 @@ public abstract class BaseCTRemoteResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeConsumer<CTRemote, Exception> ctRemoteUnsafeConsumer = null;
+		UnsafeFunction<CTRemote, CTRemote, Exception> ctRemoteUnsafeFunction =
+			null;
 
 		String updateStrategy = (String)parameters.getOrDefault(
 			"updateStrategy", "UPDATE");
 
 		if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
-			ctRemoteUnsafeConsumer = ctRemote -> patchCTRemote(
+			ctRemoteUnsafeFunction = ctRemote -> patchCTRemote(
 				ctRemote.getId() != null ? ctRemote.getId() :
 					_parseLong((String)parameters.get("ctRemoteId")),
 				ctRemote);
 		}
 
 		if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
-			ctRemoteUnsafeConsumer = ctRemote -> putCTRemote(
+			ctRemoteUnsafeFunction = ctRemote -> putCTRemote(
 				ctRemote.getId() != null ? ctRemote.getId() :
 					_parseLong((String)parameters.get("ctRemoteId")),
 				ctRemote);
 		}
 
-		if (ctRemoteUnsafeConsumer == null) {
+		if (ctRemoteUnsafeFunction == null) {
 			throw new NotSupportedException(
 				"Update strategy \"" + updateStrategy +
 					"\" is not supported for CtRemote");
 		}
 
-		if (contextBatchUnsafeConsumer != null) {
+		if (contextBatchUnsafeBiConsumer != null) {
+			contextBatchUnsafeBiConsumer.accept(
+				ctRemotes, ctRemoteUnsafeFunction);
+		}
+		else if (contextBatchUnsafeConsumer != null) {
 			contextBatchUnsafeConsumer.accept(
-				ctRemotes, ctRemoteUnsafeConsumer);
+				ctRemotes, ctRemoteUnsafeFunction::apply);
 		}
 		else {
 			for (CTRemote ctRemote : ctRemotes) {
-				ctRemoteUnsafeConsumer.accept(ctRemote);
+				ctRemoteUnsafeFunction.apply(ctRemote);
 			}
 		}
 	}
@@ -633,6 +643,15 @@ public abstract class BaseCTRemoteResourceImpl
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
 		this.contextAcceptLanguage = contextAcceptLanguage;
+	}
+
+	public void setContextBatchUnsafeBiConsumer(
+		UnsafeBiConsumer
+			<Collection<CTRemote>,
+			 UnsafeFunction<CTRemote, CTRemote, Exception>, Exception>
+				contextBatchUnsafeBiConsumer) {
+
+		this.contextBatchUnsafeBiConsumer = contextBatchUnsafeBiConsumer;
 	}
 
 	public void setContextBatchUnsafeConsumer(
@@ -896,6 +915,9 @@ public abstract class BaseCTRemoteResourceImpl
 	}
 
 	protected AcceptLanguage contextAcceptLanguage;
+	protected UnsafeBiConsumer
+		<Collection<CTRemote>, UnsafeFunction<CTRemote, CTRemote, Exception>,
+		 Exception> contextBatchUnsafeBiConsumer;
 	protected UnsafeBiConsumer
 		<Collection<CTRemote>, UnsafeConsumer<CTRemote, Exception>, Exception>
 			contextBatchUnsafeConsumer;

@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -460,6 +461,28 @@ public abstract class BaseDB implements DB {
 		runSQL(
 			StringBundler.concat(
 				"alter table ", normalizedTableName, " drop primary key"));
+	}
+
+	@Override
+	public void renameTables(
+			Connection connection,
+			ObjectValuePair<String, String>... tableNameObjectValuePairs)
+		throws Exception {
+
+		if (tableNameObjectValuePairs.length == 0) {
+			return;
+		}
+
+		for (ObjectValuePair<String, String> tableNameObjectValuePair :
+				tableNameObjectValuePairs) {
+
+			if (tableNameObjectValuePair == null) {
+				throw new IllegalArgumentException(
+					"Table name object value pair is null");
+			}
+		}
+
+		doRenameTables(connection, tableNameObjectValuePairs);
 	}
 
 	@Override
@@ -952,6 +975,38 @@ public abstract class BaseDB implements DB {
 		runSQL(connection, sb.toString());
 	}
 
+	protected void doRenameTables(
+			Connection connection,
+			ObjectValuePair<String, String>... tableNameObjectValuePairs)
+		throws Exception {
+
+		boolean autoCommit = connection.getAutoCommit();
+
+		try {
+			connection.setAutoCommit(false);
+
+			for (ObjectValuePair<String, String> tableNameObjectValuePair :
+					tableNameObjectValuePairs) {
+
+				runSQL(
+					connection,
+					getRenameTableSQL(
+						tableNameObjectValuePair.getKey(),
+						tableNameObjectValuePair.getValue()));
+			}
+
+			connection.commit();
+		}
+		catch (Exception exception) {
+			connection.rollback();
+
+			throw exception;
+		}
+		finally {
+			connection.setAutoCommit(autoCommit);
+		}
+	}
+
 	protected Set<String> dropIndexes(
 			Connection connection, String tablesSQL, String indexesSQL,
 			List<Index> indexes)
@@ -1155,6 +1210,13 @@ public abstract class BaseDB implements DB {
 		}
 
 		return new ArrayList<>(indexMetadatas);
+	}
+
+	protected String getRenameTableSQL(
+		String oldTableName, String newTableName) {
+
+		return StringBundler.concat(
+			"alter table ", oldTableName, " rename to ", newTableName);
 	}
 
 	protected abstract int[] getSQLTypes();

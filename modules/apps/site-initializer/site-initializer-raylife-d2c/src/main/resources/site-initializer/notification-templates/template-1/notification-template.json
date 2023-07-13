@@ -1,7 +1,8 @@
 {
 	"description": "",
 	"editorType": "richText",
-	"name": "Quote Retrieve Notification Template",
+	"externalReferenceCode": "D2C-QUOTE-RETRIEVE-NOTIFICATION-TEMPLATE",
+	"name": "D2C Quote Retrieve Notification Template",
 	"recipientType": "email",
 	"recipients": [
 		{

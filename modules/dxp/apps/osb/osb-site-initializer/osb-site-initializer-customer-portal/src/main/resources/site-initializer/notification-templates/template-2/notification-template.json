@@ -1,7 +1,8 @@
 {
 	"description": "",
 	"editorType": "richText",
-	"name": "Team Members Invitation Notification Template",
+	"externalReferenceCode": "CP-TEAM-MEMBERS-INVITATION-NOTIFICATION-TEMPLATE",
+	"name": "CP Team Members Invitation Notification Template",
 	"recipientType": "email",
 	"recipients": [
 		{

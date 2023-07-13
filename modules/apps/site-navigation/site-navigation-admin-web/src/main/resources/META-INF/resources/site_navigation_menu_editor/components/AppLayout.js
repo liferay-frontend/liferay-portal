@@ -12,6 +12,7 @@
  * details.
  */
 
+import {useId} from '@liferay/layout-content-page-editor-web';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo, useRef} from 'react';
@@ -31,9 +32,12 @@ export function AppLayout({
 	contentChildren,
 	sidebarPanels = DEFAULT_SIDEBAR_PANELS,
 	toolbarChildren,
+	sidebarPanelRef,
+	configButtonRef,
 }) {
 	const setSidebarPanelId = useSetSidebarPanelId();
 	const sidebarPanelId = useSidebarPanelId();
+	const titleId = useId();
 
 	const {portletNamespace} = useConstants();
 
@@ -97,14 +101,22 @@ export function AppLayout({
 				{contentChildren}
 
 				<div
+					aria-labelledby={titleId}
 					className={classNames(
 						'site_navigation_menu_editor_AppLayout-sidebar',
 						{
 							'site_navigation_menu_editor_AppLayout-sidebar--visible': !!SidebarPanel,
 						}
 					)}
+					ref={sidebarPanelRef}
+					tabIndex={-1}
 				>
-					{SidebarPanel && <SidebarPanel />}
+					{SidebarPanel && (
+						<SidebarPanel
+							configButtonRef={configButtonRef}
+							titleId={titleId}
+						/>
+					)}
 				</div>
 
 				<KeyboardMovementText />

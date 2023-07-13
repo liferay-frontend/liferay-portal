@@ -26,46 +26,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface AnalyticsReportsContentDashboardItemActionProvider {
 
-	public default ContentDashboardItemAction getContentDashboardItemAction(
+	public ContentDashboardItemAction getContentDashboardItemAction(
 			HttpServletRequest httpServletRequest,
 			InfoItemReference infoItemReference)
-		throws ContentDashboardItemActionException {
-
-		return getContentDashboardItemAction(
-			infoItemReference.getClassName(), infoItemReference.getClassPK(),
-			httpServletRequest);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #getContentDashboardItemAction(
-	 *             HttpServletRequest, InfoItemReference)}
-	 */
-	@Deprecated
-	public ContentDashboardItemAction getContentDashboardItemAction(
-			String className, long classPK,
-			HttpServletRequest httpServletRequest)
 		throws ContentDashboardItemActionException;
 
-	public default boolean isShowContentDashboardItemAction(
+	public boolean isShowContentDashboardItemAction(
 			HttpServletRequest httpServletRequest,
 			InfoItemReference infoItemReference)
-		throws PortalException {
-
-		return isShowContentDashboardItemAction(
-			infoItemReference.getClassName(), infoItemReference.getClassPK(),
-			httpServletRequest);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #isShowContentDashboardItemAction(
-	 *             HttpServletRequest, InfoItemReference)}
-	 */
-	@Deprecated
-	public boolean isShowContentDashboardItemAction(
-			String className, long classPK,
-			HttpServletRequest httpServletRequest)
 		throws PortalException;
 
 }

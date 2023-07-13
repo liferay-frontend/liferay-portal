@@ -1761,7 +1761,7 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals("Test List Type Entry 6", listTypeEntry6.getName());
 	}
 
-	private void _assertNotificationTemplate() throws Exception {
+	private void _assertNotificationTemplate1() throws Exception {
 		NotificationTemplateResource.Builder
 			notificationTemplateResourceBuilder =
 				_notificationTemplateResourceFactory.create();
@@ -1771,29 +1771,137 @@ public class BundleSiteInitializerTest {
 				_serviceContext.fetchUser()
 			).build();
 
-		Page<NotificationTemplate> notificationTemplatesPage =
-			notificationTemplateResource.getNotificationTemplatesPage(
-				null, null, null, null, null);
-
-		Assert.assertEquals(
-			notificationTemplatesPage.toString(), 1,
-			notificationTemplatesPage.getTotalCount());
-
 		NotificationTemplate notificationTemplate =
-			notificationTemplatesPage.fetchFirstItem();
+			notificationTemplateResource.
+				getNotificationTemplateByExternalReferenceCode(
+					"TESTNOTIFICATIONTEMPLATE1");
+
+		Assert.assertNotNull(notificationTemplate);
+
+		Map<String, String> bodyMap = notificationTemplate.getBody();
 
 		Assert.assertEquals(
-			"Test Notification Template", notificationTemplate.getName());
+			"<p>\n\tThis is a template email for Test Notification Template " +
+				"1.\n</p>",
+			bodyMap.get("en_US"));
+
+		Assert.assertEquals(
+			"Test Notification Template 1", notificationTemplate.getName());
 
 		Map<String, String> subjectMap = notificationTemplate.getSubject();
 
-		Assert.assertNotNull(subjectMap);
+		Assert.assertTrue(
+			Objects.equals(
+				subjectMap.get("en_US"),
+				StringUtil.getTitleCase(subjectMap.get("en_US"), true, "DXP")));
 
-		String subject = subjectMap.get("en_US");
+		notificationTemplate =
+			notificationTemplateResource.
+				getNotificationTemplateByExternalReferenceCode(
+					"TESTNOTIFICATIONTEMPLATE2");
+
+		Assert.assertNotNull(notificationTemplate);
+
+		bodyMap = notificationTemplate.getBody();
+
+		Assert.assertEquals(
+			"<p>\n\tThis is a template email for Test Notification Template " +
+				"2.\n</p>",
+			bodyMap.get("en_US"));
+
+		Assert.assertEquals(
+			"Test Notification Template 2", notificationTemplate.getName());
+
+		subjectMap = notificationTemplate.getSubject();
 
 		Assert.assertTrue(
 			Objects.equals(
-				subject, StringUtil.getTitleCase(subject, true, "DXP")));
+				subjectMap.get("en_US"),
+				StringUtil.getTitleCase(subjectMap.get("en_US"), true, "DXP")));
+	}
+
+	private void _assertNotificationTemplate2() throws Exception {
+		NotificationTemplateResource.Builder
+			notificationTemplateResourceBuilder =
+				_notificationTemplateResourceFactory.create();
+
+		NotificationTemplateResource notificationTemplateResource =
+			notificationTemplateResourceBuilder.user(
+				_serviceContext.fetchUser()
+			).build();
+
+		NotificationTemplate notificationTemplate =
+			notificationTemplateResource.
+				getNotificationTemplateByExternalReferenceCode(
+					"TESTNOTIFICATIONTEMPLATE1");
+
+		Assert.assertNotNull(notificationTemplate);
+
+		Map<String, String> bodyMap = notificationTemplate.getBody();
+
+		Assert.assertEquals(
+			"<p>\n\tThis is a template email for Test Notification Template " +
+				"1.\n</p>",
+			bodyMap.get("en_US"));
+
+		Assert.assertEquals(
+			"Test Notification Template 1", notificationTemplate.getName());
+
+		Map<String, String> subjectMap = notificationTemplate.getSubject();
+
+		Assert.assertTrue(
+			Objects.equals(
+				subjectMap.get("en_US"),
+				StringUtil.getTitleCase(subjectMap.get("en_US"), true, "DXP")));
+
+		notificationTemplate =
+			notificationTemplateResource.
+				getNotificationTemplateByExternalReferenceCode(
+					"TESTNOTIFICATIONTEMPLATE2");
+
+		Assert.assertNotNull(notificationTemplate);
+
+		bodyMap = notificationTemplate.getBody();
+
+		Assert.assertEquals(
+			"<p>\n\tThis is a template email for Test Notification Template " +
+				"2 Update.\n</p>",
+			bodyMap.get("en_US"));
+
+		Assert.assertEquals(
+			"Test Notification Template 2 Update",
+			notificationTemplate.getName());
+
+		subjectMap = notificationTemplate.getSubject();
+
+		Assert.assertTrue(
+			Objects.equals(
+				subjectMap.get("en_US"),
+				StringUtil.getTitleCase(subjectMap.get("en_US"), true, "DXP")));
+
+		notificationTemplate =
+			notificationTemplateResource.
+				getNotificationTemplateByExternalReferenceCode(
+					"TESTNOTIFICATIONTEMPLATE3");
+
+		Assert.assertNotNull(notificationTemplate);
+
+		bodyMap = notificationTemplate.getBody();
+
+		Assert.assertEquals(
+			"<p>\n\tThis is a template email for Test Notification Template " +
+				"3.\n</p>",
+			bodyMap.get("en_US"));
+
+		Assert.assertEquals(
+			"Test Notification Template 3", notificationTemplate.getName());
+
+		subjectMap = notificationTemplate.getSubject();
+
+		Assert.assertTrue(
+			Objects.equals(
+				subjectMap.get("en_US"),
+				StringUtil.getTitleCase(subjectMap.get("en_US"), true, "DXP")));
 	}
 
 	private void _assertObjectActions(
@@ -1844,7 +1952,7 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			objectDefinition.getStatus(), WorkflowConstants.STATUS_APPROVED);
 
-		_assertObjectActions(3, objectDefinition);
+		_assertObjectActions(4, objectDefinition);
 		_assertObjectEntries(_group.getGroupId(), objectDefinition, 0);
 		_assertObjectFields(objectDefinition, 10);
 		_assertObjectRelationships1(objectDefinition, _serviceContext);
@@ -1896,7 +2004,7 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			objectDefinition.getStatus(), WorkflowConstants.STATUS_APPROVED);
 
-		_assertObjectActions(3, objectDefinition);
+		_assertObjectActions(4, objectDefinition);
 		_assertObjectEntries(_group.getGroupId(), objectDefinition, 0);
 		_assertObjectFields(objectDefinition, 10);
 		_assertObjectRelationships2(objectDefinition, _serviceContext);
@@ -3392,7 +3500,7 @@ public class BundleSiteInitializerTest {
 		_assertLayouts1();
 		_assertLayoutUtilityPageEntries();
 		_assertListTypeDefinitions1();
-		_assertNotificationTemplate();
+		_assertNotificationTemplate1();
 		_assertObjectDefinitions1();
 		_assertOrganizations1();
 		_assertPermissions();
@@ -3423,6 +3531,7 @@ public class BundleSiteInitializerTest {
 		_assertExpandoColumns2();
 		_assertLayouts2();
 		_assertListTypeDefinitions2();
+		_assertNotificationTemplate2();
 		_assertObjectDefinitions2();
 		_assertOrganizations2();
 		_assertPLOEntries2();

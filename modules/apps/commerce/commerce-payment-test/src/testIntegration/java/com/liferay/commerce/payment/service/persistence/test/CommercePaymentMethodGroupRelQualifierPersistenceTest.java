@@ -271,7 +271,7 @@ public class CommercePaymentMethodGroupRelQualifierPersistenceTest {
 			"commercePaymentMethodGroupRelQualifierId", true, "companyId", true,
 			"userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "classNameId", true, "classPK", true,
-			"CommercePaymentMethodGroupRelId", true);
+			"commercePaymentMethodGroupRelId", true);
 	}
 
 	@Test

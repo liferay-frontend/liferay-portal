@@ -14,5 +14,21 @@
 
 /// <reference types="react" />
 
-export declare function itemPathRenderer({itemData}: FDSItem): string;
-export declare function itemStatusRenderer({itemData}: FDSItem): JSX.Element;
+export declare function itemMethodRenderer({
+	itemData,
+}: {
+	itemData: {
+		httpMethod: {
+			name: string;
+		};
+	};
+}): JSX.Element;
+export declare function itemPathRenderer({
+	itemData,
+}: FDSItem<APIApplicationEndpointItem>): JSX.Element;
+export declare function itemStatusRenderer({
+	itemData,
+}: FDSItem<APIApplicationItem>): JSX.Element;
+export declare function itemURLRenderer({
+	itemData,
+}: FDSItem<APIApplicationItem>): string;

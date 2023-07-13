@@ -58,7 +58,7 @@ public class CommercePaymentMethodGroupRelQualifierWrapper
 		attributes.put("classNameId", getClassNameId());
 		attributes.put("classPK", getClassPK());
 		attributes.put(
-			"CommercePaymentMethodGroupRelId",
+			"commercePaymentMethodGroupRelId",
 			getCommercePaymentMethodGroupRelId());
 
 		return attributes;
@@ -122,11 +122,11 @@ public class CommercePaymentMethodGroupRelQualifierWrapper
 			setClassPK(classPK);
 		}
 
-		Long CommercePaymentMethodGroupRelId = (Long)attributes.get(
-			"CommercePaymentMethodGroupRelId");
+		Long commercePaymentMethodGroupRelId = (Long)attributes.get(
+			"commercePaymentMethodGroupRelId");
 
-		if (CommercePaymentMethodGroupRelId != null) {
-			setCommercePaymentMethodGroupRelId(CommercePaymentMethodGroupRelId);
+		if (commercePaymentMethodGroupRelId != null) {
+			setCommercePaymentMethodGroupRelId(commercePaymentMethodGroupRelId);
 		}
 	}
 
@@ -298,14 +298,14 @@ public class CommercePaymentMethodGroupRelQualifierWrapper
 	/**
 	 * Sets the commerce payment method group rel ID of this commerce payment method group rel qualifier.
 	 *
-	 * @param CommercePaymentMethodGroupRelId the commerce payment method group rel ID of this commerce payment method group rel qualifier
+	 * @param commercePaymentMethodGroupRelId the commerce payment method group rel ID of this commerce payment method group rel qualifier
 	 */
 	@Override
 	public void setCommercePaymentMethodGroupRelId(
-		long CommercePaymentMethodGroupRelId) {
+		long commercePaymentMethodGroupRelId) {
 
 		model.setCommercePaymentMethodGroupRelId(
-			CommercePaymentMethodGroupRelId);
+			commercePaymentMethodGroupRelId);
 	}
 
 	/**

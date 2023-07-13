@@ -296,7 +296,7 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceImpl
 			CommercePaymentMethodGroupRelTable.INSTANCE.
 				commercePaymentMethodGroupRelId.eq(
 					CommercePaymentMethodGroupRelQualifierTable.INSTANCE.
-						CommercePaymentMethodGroupRelId)
+						commercePaymentMethodGroupRelId)
 		).innerJoinON(
 			innerJoinTable, innerJoinPredicate
 		);
@@ -304,7 +304,7 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceImpl
 		return joinStep.where(
 			() ->
 				CommercePaymentMethodGroupRelQualifierTable.INSTANCE.
-					CommercePaymentMethodGroupRelId.eq(
+					commercePaymentMethodGroupRelId.eq(
 						commercePaymentMethodGroupRelId
 					).and(
 						CommercePaymentMethodGroupRelQualifierTable.INSTANCE.

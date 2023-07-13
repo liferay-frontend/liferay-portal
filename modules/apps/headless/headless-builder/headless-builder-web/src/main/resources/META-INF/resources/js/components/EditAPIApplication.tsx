@@ -21,10 +21,12 @@ import ClayNavigationBar from '@clayui/navigation-bar';
 import {openToast} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
+import APIApplicationsEndpointsTable from '../components/FDS/APIApplicationsEndpointsTable';
+import APIApplicationsSchemasTable from '../components/FDS/APIApplicationsSchemasTable';
 import {APIApplicationManagementToolbar} from './APIApplicationManagementToolbar';
 import BaseAPIApplicationField from './baseComponents/BaseAPIApplicationFields';
 import {fetchJSON, updateData} from './utils/fetchUtil';
-import {getCurrentURLParamValue} from './utils/urlUtil';
+import {getCurrentURLParamValue, updateHistory} from './utils/urlUtil';
 
 import '../../css/main.scss';
 
@@ -47,7 +49,7 @@ export default function EditAPIApplication({
 		portletId,
 	});
 
-	const [data, setData] = useState<ItemData>();
+	const [data, setData] = useState<APIApplicationItem>();
 	const [title, setTitle] = useState<string>('');
 	const [activeTab, setActiveTab] = useState(
 		getCurrentURLParamValue(
@@ -64,7 +66,7 @@ export default function EditAPIApplication({
 
 	useEffect(() => {
 		for (const key in data) {
-			if (data[key as keyof ItemData] !== '') {
+			if (data[key as keyof APIApplicationItem] !== '') {
 				setDisplayError((previousErrors) => ({
 					...previousErrors,
 					[key]: false,
@@ -74,7 +76,7 @@ export default function EditAPIApplication({
 	}, [data]);
 
 	const fetchAPIApplication = () => {
-		fetchJSON<ItemData>({
+		fetchJSON<APIApplicationItem>({
 			input: apiURLPaths.applications + currentAPIApplicationID,
 		}).then((response) => {
 			if (response.id.toString() === currentAPIApplicationID) {
@@ -88,6 +90,11 @@ export default function EditAPIApplication({
 		fetchAPIApplication();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	const handleNavigate = (nav: 'details' | 'endpoints' | 'schemas') => {
+		updateHistory({navState: nav, portletId});
+		setActiveTab(nav);
+	};
 
 	function validateData() {
 		let isDataValid = true;
@@ -104,7 +111,7 @@ export default function EditAPIApplication({
 		}
 		else {
 			mandatoryFields.forEach((field) => {
-				if (data![field as keyof ItemData]) {
+				if (data![field as keyof APIApplicationItem]) {
 					setDisplayError((previousErrors) => ({
 						...previousErrors,
 						[field]: false,
@@ -161,6 +168,7 @@ export default function EditAPIApplication({
 	return data ? (
 		<>
 			<APIApplicationManagementToolbar
+				hideButtons={activeTab !== 'details'}
 				itemData={data}
 				onPublish={() =>
 					handleUpdate({
@@ -182,47 +190,57 @@ export default function EditAPIApplication({
 			/>
 			<ClayNavigationBar triggerLabel={activeTab as string}>
 				<ClayNavigationBar.Item active={activeTab === 'details'}>
-					<ClayButton onClick={() => setActiveTab('details')}>
+					<ClayButton onClick={() => handleNavigate('details')}>
 						{Liferay.Language.get('details')}
 					</ClayButton>
 				</ClayNavigationBar.Item>
 
 				<ClayNavigationBar.Item active={activeTab === 'endpoints'}>
-					<ClayButton
-						disabled
-						onClick={() => setActiveTab('endpoints')}
-					>
+					<ClayButton onClick={() => handleNavigate('endpoints')}>
 						{Liferay.Language.get('endpoints')}
 					</ClayButton>
 				</ClayNavigationBar.Item>
 
 				<ClayNavigationBar.Item active={activeTab === 'schemas'}>
-					<ClayButton
-						disabled
-						onClick={() => setActiveTab('schemas')}
-					>
+					<ClayButton onClick={() => handleNavigate('schemas')}>
 						{Liferay.Language.get('schemas')}
 					</ClayButton>
 				</ClayNavigationBar.Item>
 			</ClayNavigationBar>
-			<ClayLayout.Container className="api-app-details mt-5">
-				<ClayCard className="pt-2">
-					<ClayModal.Header withTitle={false}>
-						<Heading fontSize={5} level={3} weight="semi-bold">
-							{Liferay.Language.get('details')}
-						</Heading>
-					</ClayModal.Header>
+			{activeTab === 'details' && (
+				<ClayLayout.Container className="api-app-details mt-5">
+					<ClayCard className="pt-2">
+						<ClayModal.Header withTitle={false}>
+							<Heading fontSize={5} level={3} weight="semi-bold">
+								{Liferay.Language.get('details')}
+							</Heading>
+						</ClayModal.Header>
 
-					<ClayCard.Body>
-						<BaseAPIApplicationField
-							data={data as ItemData}
-							displayError={displayError}
-							setData={setData as voidReturn}
-							urlAutoFillInitialDisable
-						/>
-					</ClayCard.Body>
-				</ClayCard>
-			</ClayLayout.Container>
+						<ClayCard.Body>
+							<BaseAPIApplicationField
+								data={data as APIApplicationItem}
+								displayError={displayError}
+								setData={setData as voidReturn}
+							/>
+						</ClayCard.Body>
+					</ClayCard>
+				</ClayLayout.Container>
+			)}
+			{activeTab === 'endpoints' && (
+				<APIApplicationsEndpointsTable
+					apiApplicationBaseURL={data.baseURL}
+					apiURLPaths={apiURLPaths}
+					portletId={portletId}
+					readOnly={false}
+				/>
+			)}
+			{activeTab === 'schemas' && (
+				<APIApplicationsSchemasTable
+					apiURLPaths={apiURLPaths}
+					portletId={portletId}
+					readOnly={false}
+				/>
+			)}
 		</>
 	) : null;
 }

@@ -86,7 +86,7 @@ public class ListTypeDefinitionResourceImpl
 
 		return _toListTypeDefinition(
 			_listTypeDefinitionService.
-				getListTypeDefinitionByExternalReferenceCode(
+				fetchListTypeDefinitionByExternalReferenceCode(
 					externalReferenceCode, contextCompany.getCompanyId()));
 	}
 
@@ -200,6 +200,10 @@ public class ListTypeDefinitionResourceImpl
 	private ListTypeDefinition _toListTypeDefinition(
 		com.liferay.list.type.model.ListTypeDefinition
 			serviceBuilderListTypeDefinition) {
+
+		if (serviceBuilderListTypeDefinition == null) {
+			return null;
+		}
 
 		Locale locale = _getLocale();
 

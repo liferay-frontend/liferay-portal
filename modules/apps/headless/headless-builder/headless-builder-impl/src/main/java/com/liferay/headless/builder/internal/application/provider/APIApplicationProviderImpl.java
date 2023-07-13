@@ -50,64 +50,21 @@ public class APIApplicationProviderImpl implements APIApplicationProvider {
 	public APIApplication fetchAPIApplication(String baseURL, long companyId)
 		throws Exception {
 
-		ObjectEntry objectEntry = _objectEntryHelper.getObjectEntry(
-			companyId, "baseURL eq '" + baseURL + "'", "L_API_APPLICATION");
+		return _toApiApplication(
+			_objectEntryHelper.getObjectEntry(
+				companyId, "baseURL eq '" + baseURL + "'", "L_API_APPLICATION"),
+			companyId);
+	}
 
-		if (objectEntry == null) {
-			return null;
-		}
+	@Override
+	public List<APIApplication> getPublishedAPIApplications(long companyId)
+		throws Exception {
 
-		List<APIApplication.Schema> schemas = _getSchemas(
-			objectEntry, companyId);
-
-		List<APIApplication.Endpoint> endpoints = _getEndpoints(
-			objectEntry.getExternalReferenceCode(), companyId, schemas);
-
-		Map<String, Object> properties = objectEntry.getProperties();
-
-		return new APIApplication() {
-
-			@Override
-			public String getBaseURL() {
-				return (String)properties.get("baseURL");
-			}
-
-			@Override
-			public long getCompanyId() {
-				return companyId;
-			}
-
-			@Override
-			public String getDescription() {
-				return (String)properties.get("description");
-			}
-
-			@Override
-			public List<Endpoint> getEndpoints() {
-				return endpoints;
-			}
-
-			@Override
-			public String getOSGiJaxRsName() {
-				return getTitle() + getCompanyId();
-			}
-
-			@Override
-			public List<Schema> getSchemas() {
-				return schemas;
-			}
-
-			@Override
-			public String getTitle() {
-				return (String)properties.get("title");
-			}
-
-			@Override
-			public String getVersion() {
-				return (String)properties.get("version");
-			}
-
-		};
+		return TransformUtil.transform(
+			_objectEntryHelper.getObjectEntries(
+				companyId, "applicationStatus eq 'published'",
+				"L_API_APPLICATION"),
+			objectEntry -> _toApiApplication(objectEntry, companyId));
 	}
 
 	private List<APIApplication.Endpoint> _getEndpoints(
@@ -270,6 +227,9 @@ public class APIApplicationProviderImpl implements APIApplicationProvider {
 			objectEntry -> {
 				Map<String, Object> properties = objectEntry.getProperties();
 
+				List<APIApplication.Property> applicationProperties =
+					_getProperties(properties, companyId);
+
 				return new APIApplication.Schema() {
 
 					@Override
@@ -297,11 +257,69 @@ public class APIApplicationProviderImpl implements APIApplicationProvider {
 
 					@Override
 					public List<APIApplication.Property> getProperties() {
-						return _getProperties(properties, companyId);
+						return applicationProperties;
 					}
 
 				};
 			});
+	}
+
+	private APIApplication _toApiApplication(
+			ObjectEntry apiApplicationObjectEntry, long companyId)
+		throws Exception {
+
+		if (apiApplicationObjectEntry == null) {
+			return null;
+		}
+
+		List<APIApplication.Schema> schemas = _getSchemas(
+			apiApplicationObjectEntry, companyId);
+
+		List<APIApplication.Endpoint> endpoints = _getEndpoints(
+			apiApplicationObjectEntry.getExternalReferenceCode(), companyId,
+			schemas);
+
+		Map<String, Object> properties =
+			apiApplicationObjectEntry.getProperties();
+
+		return new APIApplication() {
+
+			@Override
+			public String getBaseURL() {
+				return (String)properties.get("baseURL");
+			}
+
+			@Override
+			public long getCompanyId() {
+				return companyId;
+			}
+
+			@Override
+			public String getDescription() {
+				return (String)properties.get("description");
+			}
+
+			@Override
+			public List<Endpoint> getEndpoints() {
+				return endpoints;
+			}
+
+			@Override
+			public List<Schema> getSchemas() {
+				return schemas;
+			}
+
+			@Override
+			public String getTitle() {
+				return (String)properties.get("title");
+			}
+
+			@Override
+			public String getVersion() {
+				return (String)properties.get("version");
+			}
+
+		};
 	}
 
 	private static final Map<String, APIApplication.Property.Type>

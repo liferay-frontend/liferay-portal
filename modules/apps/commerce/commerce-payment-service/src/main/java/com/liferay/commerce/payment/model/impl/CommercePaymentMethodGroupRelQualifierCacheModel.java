@@ -105,8 +105,8 @@ public class CommercePaymentMethodGroupRelQualifierCacheModel
 		sb.append(classNameId);
 		sb.append(", classPK=");
 		sb.append(classPK);
-		sb.append(", CommercePaymentMethodGroupRelId=");
-		sb.append(CommercePaymentMethodGroupRelId);
+		sb.append(", commercePaymentMethodGroupRelId=");
+		sb.append(commercePaymentMethodGroupRelId);
 		sb.append("}");
 
 		return sb.toString();
@@ -151,7 +151,7 @@ public class CommercePaymentMethodGroupRelQualifierCacheModel
 		commercePaymentMethodGroupRelQualifierImpl.setClassNameId(classNameId);
 		commercePaymentMethodGroupRelQualifierImpl.setClassPK(classPK);
 		commercePaymentMethodGroupRelQualifierImpl.
-			setCommercePaymentMethodGroupRelId(CommercePaymentMethodGroupRelId);
+			setCommercePaymentMethodGroupRelId(commercePaymentMethodGroupRelId);
 
 		commercePaymentMethodGroupRelQualifierImpl.resetOriginalValues();
 
@@ -175,7 +175,7 @@ public class CommercePaymentMethodGroupRelQualifierCacheModel
 
 		classPK = objectInput.readLong();
 
-		CommercePaymentMethodGroupRelId = objectInput.readLong();
+		commercePaymentMethodGroupRelId = objectInput.readLong();
 	}
 
 	@Override
@@ -202,7 +202,7 @@ public class CommercePaymentMethodGroupRelQualifierCacheModel
 
 		objectOutput.writeLong(classPK);
 
-		objectOutput.writeLong(CommercePaymentMethodGroupRelId);
+		objectOutput.writeLong(commercePaymentMethodGroupRelId);
 	}
 
 	public long mvccVersion;
@@ -214,6 +214,6 @@ public class CommercePaymentMethodGroupRelQualifierCacheModel
 	public long modifiedDate;
 	public long classNameId;
 	public long classPK;
-	public long CommercePaymentMethodGroupRelId;
+	public long commercePaymentMethodGroupRelId;
 
 }

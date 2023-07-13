@@ -38,6 +38,7 @@ import com.liferay.object.exception.ObjectFieldStateException;
 import com.liferay.object.exception.RequiredObjectFieldException;
 import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.builder.DateObjectFieldBuilder;
+import com.liferay.object.field.builder.EncryptedObjectFieldBuilder;
 import com.liferay.object.field.builder.IntegerObjectFieldBuilder;
 import com.liferay.object.field.builder.LongIntegerObjectFieldBuilder;
 import com.liferay.object.field.builder.MultiselectPicklistObjectFieldBuilder;
@@ -59,6 +60,7 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DBInspector;
@@ -69,9 +71,11 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -87,6 +91,8 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
+import java.security.Key;
+
 import java.sql.Connection;
 
 import java.util.Arrays;
@@ -96,6 +102,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.crypto.KeyGenerator;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -145,6 +153,38 @@ public class ObjectFieldLocalServiceTest {
 					).localized(
 						true
 					).build())));
+
+		KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+
+		keyGenerator.init(128);
+
+		Key key = keyGenerator.generateKey();
+
+		AssertUtils.assertFailure(
+			ObjectFieldBusinessTypeException.class,
+			"Business type encrypted can only be used in object definitions " +
+				"with a default storage type",
+			() -> _addCustomObjectDefinitionWithEncryptedObjectField(
+				"AES", true, Base64.encode(key.getEncoded()),
+				ObjectDefinitionConstants.STORAGE_TYPE_SALESFORCE));
+
+		AssertUtils.assertFailure(
+			ObjectFieldBusinessTypeException.class,
+			"Business type encrypted is disabled",
+			() -> _addCustomObjectDefinitionWithEncryptedObjectField(
+				"", false, "", ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT));
+		AssertUtils.assertFailure(
+			ObjectFieldBusinessTypeException.class,
+			"Encryption algorithm is required for business type encrypted",
+			() -> _addCustomObjectDefinitionWithEncryptedObjectField(
+				"", true, Base64.encode(key.getEncoded()),
+				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT));
+		AssertUtils.assertFailure(
+			ObjectFieldBusinessTypeException.class,
+			"Encryption key is required for business type encrypted",
+			() -> _addCustomObjectDefinitionWithEncryptedObjectField(
+				"AES", true, "",
+				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT));
 		AssertUtils.assertFailure(
 			ObjectFieldListTypeDefinitionIdException.class,
 			"List type definition ID is 0",
@@ -1443,6 +1483,37 @@ public class ObjectFieldLocalServiceTest {
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition1);
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition2);
+	}
+
+	private void _addCustomObjectDefinitionWithEncryptedObjectField(
+			String algorithm, boolean enabled, String key, String storageType)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable1 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"OBJECT_ENCRYPTION_ALGORITHM", algorithm);
+			SafeCloseable safeCloseable2 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"OBJECT_ENCRYPTION_ENABLED", enabled);
+			SafeCloseable safeCloseable3 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"OBJECT_ENCRYPTION_KEY", key)) {
+
+			_objectDefinitionLocalService.addCustomObjectDefinition(
+				TestPropsValues.getUserId(), false, false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				"A" + RandomTestUtil.randomString(), null, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				true, ObjectDefinitionConstants.SCOPE_COMPANY, storageType,
+				Arrays.asList(
+					new EncryptedObjectFieldBuilder(
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).name(
+						"a" + RandomTestUtil.randomString()
+					).build()));
+		}
 	}
 
 	private ObjectField _addCustomObjectField(ObjectField objectField)

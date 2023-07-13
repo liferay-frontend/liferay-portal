@@ -727,61 +727,28 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 					@Test
 					public void test${javaMethodSignature.methodName?cap_first}WithFilterDoubleEquals() throws Exception {
-						List<EntityField> entityFields = getEntityFields(EntityField.Type.DOUBLE);
+						test${javaMethodSignature.methodName?cap_first}WithFilter("eq", EntityField.Type.DOUBLE);
+					}
 
-						if (entityFields.isEmpty()) {
-							return;
-						}
-
-						<#list javaMethodSignature.pathJavaMethodParameters as javaMethodParameter>
-							${javaMethodParameter.parameterType} ${javaMethodParameter.parameterName} = test${javaMethodSignature.methodName?cap_first}_get${javaMethodParameter.parameterName?cap_first}();
-						</#list>
-
-						${schemaName} ${schemaVarName}1 = test${javaMethodSignature.methodName?cap_first}_add${schemaName}(
-
-						<#list javaMethodSignature.pathJavaMethodParameters as javaMethodParameter>
-							${javaMethodParameter.parameterName},
-						</#list>
-
-						random${schemaName}());
-
-						@SuppressWarnings("PMD.UnusedLocalVariable")
-						${schemaName} ${schemaVarName}2 = test${javaMethodSignature.methodName?cap_first}_add${schemaName}(
-
-						<#list javaMethodSignature.pathJavaMethodParameters as javaMethodParameter>
-							${javaMethodParameter.parameterName},
-						</#list>
-
-						random${schemaName}());
-
-						for (EntityField entityField : entityFields) {
-							Page<${schemaName}> page = ${schemaVarName}Resource.${javaMethodSignature.methodName}(
-
-							<#list javaMethodSignature.javaMethodParameters as javaMethodParameter>
-								<#if !javaMethodParameter?is_first>
-									,
-								</#if>
-
-								<#if stringUtil.equals(javaMethodParameter.parameterName, "filter")>
-									getFilterString(entityField, "eq", ${schemaVarName}1)
-								<#elseif stringUtil.equals(javaMethodParameter.parameterName, "pagination")>
-									Pagination.of(1, 2)
-								<#elseif freeMarkerTool.isPathParameter(javaMethodParameter, javaMethodSignature.operation)>
-									${javaMethodParameter.parameterName}
-								<#else>
-									null
-								</#if>
-							</#list>
-
-							);
-
-							assertEquals(Collections.singletonList(${schemaVarName}1), (List<${schemaName}>)page.getItems());
-						}
+					@Test
+					public void test${javaMethodSignature.methodName?cap_first}WithFilterStringContains() throws Exception {
+						test${javaMethodSignature.methodName?cap_first}WithFilter("contains", EntityField.Type.STRING);
 					}
 
 					@Test
 					public void test${javaMethodSignature.methodName?cap_first}WithFilterStringEquals() throws Exception {
-						List<EntityField> entityFields = getEntityFields(EntityField.Type.STRING);
+						test${javaMethodSignature.methodName?cap_first}WithFilter("eq", EntityField.Type.STRING);
+					}
+
+					@Test
+					public void test${javaMethodSignature.methodName?cap_first}WithFilterStringStartsWith() throws Exception {
+						test${javaMethodSignature.methodName?cap_first}WithFilter("startswith", EntityField.Type.STRING);
+					}
+
+					protected void test${javaMethodSignature.methodName?cap_first}WithFilter(String operator, EntityField.Type type)
+						throws Exception {
+
+						List<EntityField> entityFields = getEntityFields(type);
 
 						if (entityFields.isEmpty()) {
 							return;
@@ -817,7 +784,7 @@ public abstract class Base${schemaName}ResourceTestCase {
 								</#if>
 
 								<#if stringUtil.equals(javaMethodParameter.parameterName, "filter")>
-									getFilterString(entityField, "eq", ${schemaVarName}1)
+									getFilterString(entityField, operator, ${schemaVarName}1)
 								<#elseif stringUtil.equals(javaMethodParameter.parameterName, "pagination")>
 									Pagination.of(1, 2)
 								<#elseif freeMarkerTool.isPathParameter(javaMethodParameter, javaMethodSignature.operation)>
@@ -2688,9 +2655,47 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 					return sb.toString();
 				<#elseif stringUtil.equals(properties[propertyName], "String")>
-					sb.append("'");
-					sb.append(String.valueOf(${schemaVarName}.get${propertyName?cap_first}()));
-					sb.append("'");
+					Object object = ${schemaVarName}.get${propertyName?cap_first}();
+
+					String value = String.valueOf(object);
+
+					if (operator.equals("contains")) {
+						sb = new StringBundler();
+
+						sb.append("contains(");
+						sb.append(entityFieldName);
+						sb.append(",'");
+
+						if ((object != null) && (value.length() > 2)) {
+							sb.append(value.substring(1, value.length() - 1));
+						}
+						else {
+							sb.append(value);
+						}
+
+						sb.append("')");
+					}
+					else if (operator.equals("startswith")) {
+						sb = new StringBundler();
+
+						sb.append("startswith(");
+						sb.append(entityFieldName);
+						sb.append(",'");
+
+						if ((object != null) && (value.length() > 1)) {
+							sb.append(value.substring(0, value.length() - 1));
+						}
+						else {
+							sb.append(value);
+						}
+
+						sb.append("')");
+					}
+					else {
+						sb.append("'");
+						sb.append(value);
+						sb.append("'");
+					}
 
 					return sb.toString();
 				<#else>

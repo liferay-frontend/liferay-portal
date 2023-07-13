@@ -63,7 +63,7 @@ public class CommercePaymentMethodGroupRelQualifierTable
 		classPK = createColumn(
 			"classPK", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<CommercePaymentMethodGroupRelQualifierTable, Long>
-		CommercePaymentMethodGroupRelId = createColumn(
+		commercePaymentMethodGroupRelId = createColumn(
 			"CPaymentMethodGroupRelId", Long.class, Types.BIGINT,
 			Column.FLAG_DEFAULT);
 

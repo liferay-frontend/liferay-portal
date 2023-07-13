@@ -15,10 +15,11 @@
 package com.liferay.document.library.web.internal.display.context;
 
 import com.liferay.asset.kernel.model.AssetCategory;
-import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
+import com.liferay.asset.tags.item.selector.AssetTagsItemSelectorReturnType;
+import com.liferay.asset.tags.item.selector.criterion.AssetTagsItemSelectorCriterion;
 import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
 import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
 import com.liferay.document.library.constants.DLPortletKeys;
@@ -103,7 +104,7 @@ public class DLAdminManagementToolbarDisplayContext
 	public DLAdminManagementToolbarDisplayContext(
 		DLAdminDisplayContext dlAdminDisplayContext,
 		DLTrashHelper dlTrashHelper, HttpServletRequest httpServletRequest,
-		LiferayPortletRequest liferayPortletRequest,
+		ItemSelector itemSelector, LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
 		super(
@@ -113,6 +114,7 @@ public class DLAdminManagementToolbarDisplayContext
 		_dlAdminDisplayContext = dlAdminDisplayContext;
 		_dlTrashHelper = dlTrashHelper;
 		_httpServletRequest = httpServletRequest;
+		_itemSelector = itemSelector;
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
 
@@ -604,25 +606,22 @@ public class DLAdminManagementToolbarDisplayContext
 	}
 
 	private String _getAssetTagSelectorURL() throws PortalException {
-		return PortletURLBuilder.create(
-			PortletProviderUtil.getPortletURL(
-				_liferayPortletRequest, AssetTag.class.getName(),
-				PortletProvider.Action.BROWSE)
-		).setParameter(
-			"eventName",
-			_liferayPortletResponse.getNamespace() + "selectedAssetTag"
-		).setParameter(
-			"groupIds",
-			StringUtil.merge(
-				PortalUtil.getCurrentAndAncestorSiteGroupIds(
-					_themeDisplay.getScopeGroupId()),
-				StringPool.COMMA)
-		).setParameter(
-			"selectedTagNames",
-			StringUtil.merge(_getAssetTagIds(), StringPool.COMMA)
-		).setWindowState(
-			LiferayWindowState.POP_UP
-		).buildString();
+		AssetTagsItemSelectorCriterion assetTagsItemSelectorCriterion =
+			new AssetTagsItemSelectorCriterion();
+
+		assetTagsItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+			new AssetTagsItemSelectorReturnType());
+		assetTagsItemSelectorCriterion.setGroupIds(
+			PortalUtil.getCurrentAndAncestorSiteGroupIds(
+				_themeDisplay.getScopeGroupId()));
+		assetTagsItemSelectorCriterion.setMultiSelection(true);
+
+		return String.valueOf(
+			_itemSelector.getItemSelectorURL(
+				RequestBackedPortletURLFactoryUtil.create(
+					_liferayPortletRequest),
+				_liferayPortletResponse.getNamespace() + "selectTag",
+				assetTagsItemSelectorCriterion));
 	}
 
 	private PortletURL _getCurrentRenderURL() {
@@ -1060,6 +1059,7 @@ public class DLAdminManagementToolbarDisplayContext
 	private List<LabelItem> _filterLabelItems;
 	private Boolean _hasValidAssetVocabularies;
 	private final HttpServletRequest _httpServletRequest;
+	private final ItemSelector _itemSelector;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private final ThemeDisplay _themeDisplay;

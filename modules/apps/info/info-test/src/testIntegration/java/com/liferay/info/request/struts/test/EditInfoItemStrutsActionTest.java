@@ -18,6 +18,13 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.info.exception.InfoFormException;
+import com.liferay.info.field.InfoField;
+import com.liferay.info.form.InfoForm;
+import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.info.item.provider.InfoItemFormProvider;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
@@ -33,7 +40,6 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.memory.DeleteFileFinalizeAction;
@@ -69,13 +75,17 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ProgressTracker;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upload.UploadPortletRequestImpl;
@@ -95,6 +105,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -146,7 +157,7 @@ public class EditInfoItemStrutsActionTest {
 	public void testEditInfoItemAttachment() throws Exception {
 		_testEditInfoItem(
 			RandomTestUtil.randomString(), null, null, null, null, null, null,
-			null, null, null, false);
+			false, null, null, null, null, null, null);
 	}
 
 	@Test
@@ -166,7 +177,7 @@ public class EditInfoItemStrutsActionTest {
 
 		_testEditInfoItem(
 			RandomTestUtil.randomString(), null, null, null, null, null, null,
-			null, null, null, false);
+			false, null, null, null, null, null, null);
 	}
 
 	@Test
@@ -202,29 +213,78 @@ public class EditInfoItemStrutsActionTest {
 	@Test
 	public void testEditInfoItemMaxValues() throws Exception {
 		_testEditInfoItem(
-			null, "99999999999999.9999999999999999", "9999999999999998",
-			"999999999", "9007199254740991", RandomTestUtil.randomString());
+			null, null, "99999999999999.9999999999999999", null,
+			"9999999999999998", "999999999", "9007199254740991",
+			RandomTestUtil.randomString(), null);
 	}
 
 	@Test
 	public void testEditInfoItemMinValues() throws Exception {
 		_testEditInfoItem(
-			null, "-99999999999999.9999999999999999", "-9999999999999998",
-			"-999999999", "-9007199254740991", RandomTestUtil.randomString());
+			null, null, "-99999999999999.9999999999999999", null,
+			"-9999999999999998", "-999999999", "-9007199254740991",
+			RandomTestUtil.randomString(), null);
 	}
 
 	@Test
 	public void testEditInfoItemRoundedBigDecimalTooLong() throws Exception {
 		_testEditInfoItem(
-			null, "99999999999999.99999999999999991",
-			"99999999999999.9999999999999999", null, null, null, null, null,
-			null, null, false);
+			null, null, "99999999999999.99999999999999991",
+			"99999999999999.9999999999999999", null, null, null, false, null,
+			null, null, null, null, null);
 	}
 
 	@Test
 	public void testEditInfoItemRoundedDoubleTooLong() throws Exception {
 		_testEditInfoItemDouble(
 			"999.99999999999991", "999.9999999999999", false);
+	}
+
+	@FeatureFlags({"LPS-183727", "LPS-187754"})
+	@Test
+	public void testEditInfoItemWithDisplayPageSuccessMessage()
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+				_group.getCreatorUserId(), _group.getGroupId(), 0,
+				_portal.getClassNameId(_objectDefinition.getClassName()), 0,
+				RandomTestUtil.randomString(),
+				LayoutPageTemplateEntryTypeConstants.TYPE_DISPLAY_PAGE, 0,
+				false, 0, 0, 0, WorkflowConstants.STATUS_APPROVED,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		InfoItemFormProvider<?> infoItemFormProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemFormProvider.class, _objectDefinition.getClassName());
+
+		InfoForm infoForm = infoItemFormProvider.getInfoForm(
+			StringPool.BLANK, _group.getGroupId());
+
+		Assert.assertNotNull(infoForm);
+
+		InfoField infoField = infoForm.getInfoField(
+			layoutPageTemplateEntry.getName());
+
+		Assert.assertNotNull(infoField);
+
+		_testEditInfoItem(
+			null, null, null, null, infoField.getUniqueId(), null, null, false,
+			"123456", "123456", null, null, null, null);
+	}
+
+	@Test
+	public void testEditInfoItemWithEmbeddedSuccessMessage() throws Exception {
+		_testEditInfoItem(
+			null, "http://localhost:8080/home", null, null, null, null, null,
+			false, "123456", "123456", null, null, null, null);
+	}
+
+	@Test
+	public void testEditInfoItemWithPageSuccessMessage() throws Exception {
+		_testEditInfoItem(
+			null, null, null, null, null, null, null, false, "123456", "123456",
+			null, null, null, "http://localhost:8080/home");
 	}
 
 	private Layout _addLayout() throws Exception {
@@ -438,7 +498,7 @@ public class EditInfoItemStrutsActionTest {
 		throws Exception {
 
 		uploadPortletRequest.setAttribute(
-			WebKeys.CURRENT_URL, "/portal/edit_info_item");
+			WebKeys.CURRENT_URL, "/portal/add_info_item");
 		uploadPortletRequest.setAttribute(WebKeys.USER, user);
 
 		EventsProcessorUtil.process(
@@ -448,22 +508,12 @@ public class EditInfoItemStrutsActionTest {
 	}
 
 	private void _testEditInfoItem(
-			String attachmentValue, String bigDecimalValue, String doubleValue,
-			String integerValue, String longValue, String stringValue)
-		throws Exception {
-
-		_testEditInfoItem(
-			attachmentValue, bigDecimalValue, bigDecimalValue, doubleValue,
-			doubleValue, integerValue, integerValue, longValue, longValue,
-			stringValue, false);
-	}
-
-	private void _testEditInfoItem(
-			String attachmentValue, String bigDecimalValueInput,
-			String bigDecimalValueExpected, String doubleValueInput,
-			String doubleValueExpected, String integerValueInput,
+			String attachmentValue, String backURL, String bigDecimalValueInput,
+			String bigDecimalValueExpected, String displayPage,
+			String doubleValueInput, String doubleValueExpected,
+			boolean errorExpected, String integerValueInput,
 			String integerValueExpected, String longValueInput,
-			String longValueExpected, String stringValue, boolean errorExpected)
+			String longValueExpected, String stringValue, String redirect)
 		throws Exception {
 
 		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
@@ -488,9 +538,27 @@ public class EditInfoItemStrutsActionTest {
 				new UploadServletRequestImpl(
 					mockMultipartHttpServletRequest, fileParameters,
 					HashMapBuilder.put(
+						"backURL",
+						() -> {
+							if (Validator.isNotNull(backURL)) {
+								return Collections.singletonList(backURL);
+							}
+
+							return null;
+						}
+					).put(
 						"classNameId", Collections.singletonList(_classNameId)
 					).put(
 						"classTypeId", Collections.singletonList("0")
+					).put(
+						"displayPage",
+						() -> {
+							if (Validator.isNotNull(displayPage)) {
+								return Collections.singletonList(displayPage);
+							}
+
+							return null;
+						}
 					).put(
 						"formItemId", Collections.singletonList(_formItemId)
 					).put(
@@ -537,6 +605,10 @@ public class EditInfoItemStrutsActionTest {
 					).put(
 						"myText", Collections.singletonList(stringValue)
 					).put(
+						"p_l_id",
+						Collections.singletonList(
+							String.valueOf(_layout.getPlid()))
+					).put(
 						"p_l_mode", Collections.singletonList(Constants.VIEW)
 					).put(
 						"plid",
@@ -544,7 +616,13 @@ public class EditInfoItemStrutsActionTest {
 							String.valueOf(_layout.getPlid()))
 					).put(
 						"redirect",
-						Collections.singletonList("https://example.com/")
+						() -> {
+							if (Validator.isNotNull(redirect)) {
+								return Collections.singletonList(redirect);
+							}
+
+							return null;
+						}
 					).put(
 						"segmentsExperienceId",
 						Collections.singletonList(
@@ -604,8 +682,21 @@ public class EditInfoItemStrutsActionTest {
 					StringPool.NEW_LINE));
 		}
 
+		if (Validator.isNotNull(backURL)) {
+			Assert.assertEquals(
+				backURL, pipingServletResponse.getHeader("Location"));
+		}
+
+		if (Validator.isNotNull(displayPage)) {
+			String locationHeader = pipingServletResponse.getHeader("Location");
+
+			Assert.assertNotNull(locationHeader);
+			Assert.assertTrue(locationHeader.contains("/display-page/custom"));
+		}
+
 		if (doubleValueInput != null) {
-			DecimalFormat decimalFormat = new DecimalFormat("0");
+			DecimalFormat decimalFormat = new DecimalFormat(
+				"0", new DecimalFormatSymbols(LocaleUtil.ENGLISH));
 
 			decimalFormat.setMaximumFractionDigits(16);
 
@@ -633,6 +724,23 @@ public class EditInfoItemStrutsActionTest {
 		if (stringValue != null) {
 			Assert.assertEquals(stringValue, values.get("myText"));
 		}
+
+		if (Validator.isNotNull(redirect)) {
+			Assert.assertEquals(
+				redirect, pipingServletResponse.getHeader("Location"));
+		}
+	}
+
+	private void _testEditInfoItem(
+			String attachmentValue, String backURL, String bigDecimalValue,
+			String displayPage, String doubleValue, String integerValue,
+			String longValue, String stringValue, String redirect)
+		throws Exception {
+
+		_testEditInfoItem(
+			attachmentValue, backURL, bigDecimalValue, bigDecimalValue,
+			displayPage, doubleValue, doubleValue, false, integerValue,
+			integerValue, longValue, longValue, stringValue, redirect);
 	}
 
 	private void _testEditInfoItemBigDecimal(
@@ -641,8 +749,8 @@ public class EditInfoItemStrutsActionTest {
 		throws Exception {
 
 		_testEditInfoItem(
-			null, bigDecimalValueInput, bigDecimalValueExpected, null, null,
-			null, null, null, null, null, errorExpected);
+			null, null, bigDecimalValueInput, bigDecimalValueExpected, null,
+			null, null, errorExpected, null, null, null, null, null, null);
 	}
 
 	private void _testEditInfoItemDouble(
@@ -651,8 +759,8 @@ public class EditInfoItemStrutsActionTest {
 		throws Exception {
 
 		_testEditInfoItem(
-			null, null, null, doubleValueInput, doubleValueExpected, null, null,
-			null, null, null, errorExpected);
+			null, null, null, null, null, doubleValueInput, doubleValueExpected,
+			errorExpected, null, null, null, null, null, null);
 	}
 
 	private void _testEditInfoItemInteger(
@@ -660,8 +768,8 @@ public class EditInfoItemStrutsActionTest {
 		throws Exception {
 
 		_testEditInfoItem(
-			null, null, null, null, null, integerValueInput, null, null, null,
-			null, errorExpected);
+			null, null, null, null, null, null, null, errorExpected,
+			integerValueInput, null, null, null, null, null);
 	}
 
 	private void _testEditInfoItemLong(
@@ -669,8 +777,8 @@ public class EditInfoItemStrutsActionTest {
 		throws Exception {
 
 		_testEditInfoItem(
-			null, null, null, null, null, null, null, longValueInput, null,
-			null, errorExpected);
+			null, null, null, null, null, null, null, errorExpected, null, null,
+			longValueInput, null, null, null);
 	}
 
 	private String _classNameId;
@@ -687,10 +795,17 @@ public class EditInfoItemStrutsActionTest {
 	@DeleteAfterTestRun
 	private Group _group;
 
+	@Inject
+	private InfoItemServiceRegistry _infoItemServiceRegistry;
+
 	private Layout _layout;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Inject
 	private LayoutPageTemplateStructureLocalService
@@ -704,9 +819,6 @@ public class EditInfoItemStrutsActionTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Inject
-	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Inject
 	private ObjectFieldSettingLocalService _objectFieldSettingLocalService;
