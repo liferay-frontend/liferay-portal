@@ -201,9 +201,8 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 				"No comment exists with comment ID " + commentId);
 		}
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
-
-		discussionPermission.checkViewPermission(
+		_discussionPermission.checkViewPermission(
+			PermissionThreadLocal.getPermissionChecker(),
 			contextCompany.getCompanyId(), comment.getGroupId(),
 			comment.getClassName(), comment.getClassPK());
 
@@ -291,9 +290,8 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 			externalReferenceCode, siteId, BlogsEntry.class.getName(),
 			blogsEntry.getEntryId());
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
-
-		discussionPermission.checkViewPermission(
+		_discussionPermission.checkViewPermission(
+			PermissionThreadLocal.getPermissionChecker(),
 			contextCompany.getCompanyId(), comment.getGroupId(),
 			comment.getClassName(), comment.getClassPK());
 
@@ -310,9 +308,8 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 		com.liferay.portal.kernel.comment.Comment comment = _getComment(
 			externalReferenceCode, parentCommentExternalReferenceCode, siteId);
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
-
-		discussionPermission.checkViewPermission(
+		_discussionPermission.checkViewPermission(
+			PermissionThreadLocal.getPermissionChecker(),
 			contextCompany.getCompanyId(), comment.getGroupId(),
 			comment.getClassName(), comment.getClassPK());
 
@@ -334,9 +331,8 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 			externalReferenceCode, siteId, DLFileEntry.class.getName(),
 			dlFileEntry.getFileEntryId());
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
-
-		discussionPermission.checkViewPermission(
+		_discussionPermission.checkViewPermission(
+			PermissionThreadLocal.getPermissionChecker(),
 			contextCompany.getCompanyId(), comment.getGroupId(),
 			comment.getClassName(), comment.getClassPK());
 
@@ -358,9 +354,8 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 			externalReferenceCode, siteId, JournalArticle.class.getName(),
 			journalArticle.getResourcePrimKey());
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
-
-		discussionPermission.checkViewPermission(
+		_discussionPermission.checkViewPermission(
+			PermissionThreadLocal.getPermissionChecker(),
 			contextCompany.getCompanyId(), comment.getGroupId(),
 			comment.getClassName(), comment.getClassPK());
 
@@ -597,9 +592,8 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 	}
 
 	private void _deleteComment(Long commentId) throws Exception {
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
-
-		discussionPermission.checkDeletePermission(commentId);
+		_discussionPermission.checkDeletePermission(
+			PermissionThreadLocal.getPermissionChecker(), commentId);
 
 		_commentManager.deleteComment(commentId);
 	}
@@ -649,9 +643,8 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 		com.liferay.portal.kernel.comment.Comment comment =
 			_commentManager.getComment(siteId, externalReferenceCode);
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
-
-		discussionPermission.checkViewPermission(
+		_discussionPermission.checkViewPermission(
+			PermissionThreadLocal.getPermissionChecker(),
 			contextCompany.getCompanyId(), comment.getGroupId(),
 			comment.getClassName(), comment.getClassPK());
 
@@ -721,11 +714,6 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 				_commentManager, _portal));
 	}
 
-	private DiscussionPermission _getDiscussionPermission() {
-		return _commentManager.getDiscussionPermission(
-			PermissionThreadLocal.getPermissionChecker());
-	}
-
 	private long _getUserId() {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
@@ -751,9 +739,8 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 			String className, long classPK, long groupId)
 		throws Exception {
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
-
-		discussionPermission.checkAddPermission(
+		_discussionPermission.checkAddPermission(
+			PermissionThreadLocal.getPermissionChecker(),
 			contextCompany.getCompanyId(), groupId, className, classPK);
 
 		try {
@@ -812,9 +799,8 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 			String text)
 		throws Exception {
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission();
-
-		discussionPermission.checkUpdatePermission(commentId);
+		_discussionPermission.checkUpdatePermission(
+			PermissionThreadLocal.getPermissionChecker(), commentId);
 
 		try {
 			_commentManager.updateComment(
@@ -838,6 +824,9 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 
 	@Reference
 	private CommentManager _commentManager;
+
+	@Reference
+	private DiscussionPermission _discussionPermission;
 
 	@Reference
 	private DLFileEntryService _dlFileEntryService;

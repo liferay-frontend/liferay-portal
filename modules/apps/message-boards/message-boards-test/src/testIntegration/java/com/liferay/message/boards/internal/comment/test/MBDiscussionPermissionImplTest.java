@@ -108,13 +108,11 @@ public class MBDiscussionPermissionImplTest {
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(_siteUser1);
 
-		DiscussionPermission discussionPermission =
-			_commentManager.getDiscussionPermission(permissionChecker);
-
 		Assert.assertFalse(
-			discussionPermission.hasAddPermission(
-				TestPropsValues.getCompanyId(), _group.getGroupId(),
-				DLFileEntry.class.getName(), _fileEntry.getFileEntryId()));
+			_discussionPermission.hasAddPermission(
+				permissionChecker, TestPropsValues.getCompanyId(),
+				_group.getGroupId(), DLFileEntry.class.getName(),
+				_fileEntry.getFileEntryId()));
 	}
 
 	@Test
@@ -127,13 +125,11 @@ public class MBDiscussionPermissionImplTest {
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(_siteUser1);
 
-		DiscussionPermission discussionPermission =
-			_commentManager.getDiscussionPermission(permissionChecker);
-
 		Assert.assertFalse(
-			discussionPermission.hasAddPermission(
-				TestPropsValues.getCompanyId(), _group.getGroupId(),
-				DLFileEntry.class.getName(), _fileEntry.getFileEntryId()));
+			_discussionPermission.hasAddPermission(
+				permissionChecker, TestPropsValues.getCompanyId(),
+				_group.getGroupId(), DLFileEntry.class.getName(),
+				_fileEntry.getFileEntryId()));
 	}
 
 	@Test
@@ -141,13 +137,11 @@ public class MBDiscussionPermissionImplTest {
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(_siteUser1);
 
-		DiscussionPermission discussionPermission =
-			_commentManager.getDiscussionPermission(permissionChecker);
-
 		Assert.assertTrue(
-			discussionPermission.hasAddPermission(
-				TestPropsValues.getCompanyId(), _group.getGroupId(),
-				DLFileEntry.class.getName(), _fileEntry.getFileEntryId()));
+			_discussionPermission.hasAddPermission(
+				permissionChecker, TestPropsValues.getCompanyId(),
+				_group.getGroupId(), DLFileEntry.class.getName(),
+				_fileEntry.getFileEntryId()));
 	}
 
 	@Test
@@ -157,10 +151,9 @@ public class MBDiscussionPermissionImplTest {
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(_siteUser1);
 
-		DiscussionPermission discussionPermission =
-			_commentManager.getDiscussionPermission(permissionChecker);
-
-		Assert.assertFalse(discussionPermission.hasUpdatePermission(commentId));
+		Assert.assertFalse(
+			_discussionPermission.hasUpdatePermission(
+				permissionChecker, commentId));
 	}
 
 	@Test
@@ -180,11 +173,9 @@ public class MBDiscussionPermissionImplTest {
 			PermissionChecker permissionChecker =
 				PermissionCheckerFactoryUtil.create(_siteUser2);
 
-			DiscussionPermission discussionPermission =
-				_commentManager.getDiscussionPermission(permissionChecker);
-
 			Assert.assertFalse(
-				discussionPermission.hasUpdatePermission(commentId));
+				_discussionPermission.hasUpdatePermission(
+					permissionChecker, commentId));
 		}
 		finally {
 			ReflectionTestUtil.setFieldValue(
@@ -209,11 +200,9 @@ public class MBDiscussionPermissionImplTest {
 			PermissionChecker permissionChecker =
 				PermissionCheckerFactoryUtil.create(_siteUser1);
 
-			DiscussionPermission discussionPermission =
-				_commentManager.getDiscussionPermission(permissionChecker);
-
 			Assert.assertTrue(
-				discussionPermission.hasUpdatePermission(commentId));
+				_discussionPermission.hasUpdatePermission(
+					permissionChecker, commentId));
 		}
 		finally {
 			ReflectionTestUtil.setFieldValue(
@@ -239,6 +228,9 @@ public class MBDiscussionPermissionImplTest {
 		filter = "component.name=com.liferay.message.boards.comment.internal.MBCommentManagerImpl"
 	)
 	private CommentManager _commentManager;
+
+	@Inject
+	private DiscussionPermission _discussionPermission;
 
 	private FileEntry _fileEntry;
 

@@ -58,9 +58,11 @@ public class CommentAssetRenderer
 
 	public CommentAssetRenderer(
 		AssetRendererFactory<WorkflowableComment> assetRendererFactory,
-		HtmlParser htmlParser, WorkflowableComment workflowableComment) {
+		DiscussionPermission discussionPermission, HtmlParser htmlParser,
+		WorkflowableComment workflowableComment) {
 
 		_assetRendererFactory = assetRendererFactory;
+		_discussionPermission = discussionPermission;
 		_htmlParser = htmlParser;
 		_workflowableComment = workflowableComment;
 	}
@@ -248,22 +250,16 @@ public class CommentAssetRenderer
 	public boolean hasEditPermission(PermissionChecker permissionChecker)
 		throws PortalException {
 
-		DiscussionPermission discussionPermission =
-			CommentManagerUtil.getDiscussionPermission(permissionChecker);
-
-		return discussionPermission.hasUpdatePermission(
-			_workflowableComment.getCommentId());
+		return _discussionPermission.hasUpdatePermission(
+			permissionChecker, _workflowableComment.getCommentId());
 	}
 
 	@Override
 	public boolean hasViewPermission(PermissionChecker permissionChecker)
 		throws PortalException {
 
-		DiscussionPermission discussionPermission =
-			CommentManagerUtil.getDiscussionPermission(permissionChecker);
-
-		return discussionPermission.hasPermission(
-			_workflowableComment, ActionKeys.VIEW);
+		return _discussionPermission.hasPermission(
+			permissionChecker, _workflowableComment, ActionKeys.VIEW);
 	}
 
 	@Override
@@ -287,6 +283,7 @@ public class CommentAssetRenderer
 
 	private final AssetRendererFactory<WorkflowableComment>
 		_assetRendererFactory;
+	private final DiscussionPermission _discussionPermission;
 	private final HtmlParser _htmlParser;
 	private final WorkflowableComment _workflowableComment;
 

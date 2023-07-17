@@ -144,27 +144,10 @@ public class EditDiscussionStrutsAction implements StrutsAction {
 
 		long commentId = ParamUtil.getLong(httpServletRequest, "commentId");
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission(
-			themeDisplay);
-
-		discussionPermission.checkDeletePermission(commentId);
+		_discussionPermission.checkDeletePermission(
+			themeDisplay.getPermissionChecker(), commentId);
 
 		_commentManager.deleteComment(commentId);
-	}
-
-	private DiscussionPermission _getDiscussionPermission(
-			ThemeDisplay themeDisplay)
-		throws Exception {
-
-		DiscussionPermission discussionPermission =
-			_commentManager.getDiscussionPermission(
-				themeDisplay.getPermissionChecker());
-
-		if (discussionPermission == null) {
-			throw new PrincipalException("Discussion permission is null");
-		}
-
-		return discussionPermission;
 	}
 
 	private void _subscribeToComments(
@@ -175,18 +158,16 @@ public class EditDiscussionStrutsAction implements StrutsAction {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		DiscussionPermission discussionPermission = _getDiscussionPermission(
-			themeDisplay);
-
 		String className = ParamUtil.getString(httpServletRequest, "className");
 		long classPK = ParamUtil.getLong(httpServletRequest, "classPK");
 
 		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
 			className, classPK);
 
-		discussionPermission.checkSubscribePermission(
-			assetEntry.getCompanyId(), assetEntry.getGroupId(),
-			assetEntry.getClassName(), assetEntry.getClassPK());
+		_discussionPermission.checkSubscribePermission(
+			themeDisplay.getPermissionChecker(), assetEntry.getCompanyId(),
+			assetEntry.getGroupId(), assetEntry.getClassName(),
+			assetEntry.getClassPK());
 
 		if (subscribe) {
 			_commentManager.subscribeDiscussion(
@@ -216,9 +197,6 @@ public class EditDiscussionStrutsAction implements StrutsAction {
 
 		Function<String, ServiceContext> serviceContextFunction =
 			new ServiceContextFunction(httpServletRequest);
-
-		DiscussionPermission discussionPermission = _getDiscussionPermission(
-			themeDisplay);
 
 		if (commentId <= 0) {
 
@@ -251,7 +229,8 @@ public class EditDiscussionStrutsAction implements StrutsAction {
 			PrincipalThreadLocal.setName(user.getUserId());
 
 			try {
-				discussionPermission.checkAddPermission(
+				_discussionPermission.checkAddPermission(
+					themeDisplay.getPermissionChecker(),
 					themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
 					className, classPK);
 
@@ -268,7 +247,8 @@ public class EditDiscussionStrutsAction implements StrutsAction {
 
 			// Update message
 
-			discussionPermission.checkUpdatePermission(commentId);
+			_discussionPermission.checkUpdatePermission(
+				themeDisplay.getPermissionChecker(), commentId);
 
 			commentId = _commentManager.updateComment(
 				themeDisplay.getUserId(), className, classPK, commentId,
@@ -302,6 +282,9 @@ public class EditDiscussionStrutsAction implements StrutsAction {
 
 	@Reference
 	private CommentManager _commentManager;
+
+	@Reference
+	private DiscussionPermission _discussionPermission;
 
 	@Reference
 	private JSONFactory _jsonFactory;
