@@ -50,7 +50,8 @@ page import="io.jsonwebtoken.security.Keys" %>
 
 <%@ page import="java.nio.charset.StandardCharsets" %>
 
-<%@ page import="java.util.Objects" %>
+<%@ page import="java.util.Date" %><%@
+page import="java.util.Objects" %>
 
 <liferay-frontend:defineObjects />
 

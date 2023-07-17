@@ -24,8 +24,17 @@
 	};
 
 	<c:if test="<%= themeDisplay.isSignedIn() %>">
-		intercomSettings.name = '<%= user.getScreenName() %>';
+
+		<%
+		Date createDate = user.getCreateDate();
+		%>
+
+		<c:if test="<%= createDate != null %>">
+			intercomSettings.created_at = '<%= createDate.getTime() %>';
+		</c:if>
+
 		intercomSettings.email = '<%= user.getEmailAddress() %>';
+		intercomSettings.name = '<%= user.getFullName() %>';
 		intercomSettings.user_id = '<%= user.getUserId() %>';
 	</c:if>
 

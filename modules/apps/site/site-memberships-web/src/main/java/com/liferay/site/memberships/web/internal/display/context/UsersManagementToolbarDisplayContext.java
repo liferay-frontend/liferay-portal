@@ -22,6 +22,8 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
+import com.liferay.item.selector.ItemSelector;
+import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -36,6 +38,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.membershippolicy.SiteMembershipPolicyUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -43,12 +46,11 @@ import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.memberships.web.internal.util.GroupUtil;
+import com.liferay.users.admin.item.selector.UserSiteMembershipItemSelectorCriterion;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -70,14 +72,13 @@ public class UsersManagementToolbarDisplayContext
 			usersDisplayContext.getUserSearchContainer());
 
 		_usersDisplayContext = usersDisplayContext;
+
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	@Override
 	public List<DropdownItem> getActionDropdownItems() {
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		return new DropdownItemList() {
 			{
 				add(
@@ -91,14 +92,13 @@ public class UsersManagementToolbarDisplayContext
 
 				try {
 					if (GroupPermissionUtil.contains(
-							themeDisplay.getPermissionChecker(),
+							_themeDisplay.getPermissionChecker(),
 							_usersDisplayContext.getGroupId(),
 							ActionKeys.ASSIGN_USER_ROLES)) {
 
 						add(
 							dropdownItem -> {
 								dropdownItem.putData("action", "selectRole");
-
 								dropdownItem.putData(
 									"editUsersRolesURL",
 									PortletURLBuilder.createActionURL(
@@ -106,7 +106,6 @@ public class UsersManagementToolbarDisplayContext
 									).setActionName(
 										"editUsersRoles"
 									).buildString());
-
 								dropdownItem.putData(
 									"selectRoleURL",
 									_getSelectorURL("/site_roles.jsp"));
@@ -123,7 +122,8 @@ public class UsersManagementToolbarDisplayContext
 						if (role != null) {
 							String label = LanguageUtil.format(
 								httpServletRequest, "remove-role-x",
-								role.getTitle(themeDisplay.getLocale()), false);
+								role.getTitle(_themeDisplay.getLocale()),
+								false);
 
 							add(
 								dropdownItem -> {
@@ -136,7 +136,7 @@ public class UsersManagementToolbarDisplayContext
 											"are-you-sure-you-want-to-remove-" +
 												"x-role-to-selected-users",
 											role.getTitle(
-												themeDisplay.getLocale())));
+												_themeDisplay.getLocale())));
 
 									dropdownItem.putData(
 										"removeUserRoleURL",
@@ -166,15 +166,11 @@ public class UsersManagementToolbarDisplayContext
 	public String getAvailableActions(User user) throws PortalException {
 		List<String> availableActions = new ArrayList<>();
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		if (GroupPermissionUtil.contains(
-				themeDisplay.getPermissionChecker(),
+				_themeDisplay.getPermissionChecker(),
 				_usersDisplayContext.getGroupId(), ActionKeys.ASSIGN_MEMBERS) &&
 			!SiteMembershipPolicyUtil.isMembershipProtected(
-				themeDisplay.getPermissionChecker(), user.getUserId(),
+				_themeDisplay.getPermissionChecker(), user.getUserId(),
 				_usersDisplayContext.getGroupId()) &&
 			!SiteMembershipPolicyUtil.isMembershipRequired(
 				user.getUserId(), _usersDisplayContext.getGroupId())) {
@@ -183,8 +179,8 @@ public class UsersManagementToolbarDisplayContext
 		}
 
 		if (GroupPermissionUtil.contains(
-				themeDisplay.getPermissionChecker(),
-				themeDisplay.getSiteGroupIdOrLiveGroupId(),
+				_themeDisplay.getPermissionChecker(),
+				_themeDisplay.getSiteGroupIdOrLiveGroupId(),
 				ActionKeys.ASSIGN_USER_ROLES)) {
 
 			availableActions.add("selectRole");
@@ -217,26 +213,13 @@ public class UsersManagementToolbarDisplayContext
 			return CreationMenuBuilder.addDropdownItem(
 				dropdownItem -> {
 					dropdownItem.putData("action", "selectUsers");
-
-					ThemeDisplay themeDisplay =
-						(ThemeDisplay)httpServletRequest.getAttribute(
-							WebKeys.THEME_DISPLAY);
-
 					dropdownItem.putData(
 						"groupTypeLabel",
 						GroupUtil.getGroupTypeLabel(
 							_usersDisplayContext.getGroupId(),
-							themeDisplay.getLocale()));
-
+							_themeDisplay.getLocale()));
 					dropdownItem.putData(
-						"selectUsersURL",
-						PortletURLBuilder.createRenderURL(
-							liferayPortletResponse
-						).setMVCPath(
-							"/select_users.jsp"
-						).setWindowState(
-							LiferayWindowState.POP_UP
-						).buildString());
+						"selectUsersURL", _getSelectUsersURL());
 					dropdownItem.setLabel(
 						LanguageUtil.get(httpServletRequest, "add"));
 				}
@@ -253,10 +236,6 @@ public class UsersManagementToolbarDisplayContext
 
 	@Override
 	public List<LabelItem> getFilterLabelItems() {
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		Role role = _usersDisplayContext.getRole();
 
 		return LabelItemListBuilder.add(
@@ -272,7 +251,7 @@ public class UsersManagementToolbarDisplayContext
 					).buildString());
 
 				labelItem.setCloseable(true);
-				labelItem.setLabel(role.getTitle(themeDisplay.getLocale()));
+				labelItem.setLabel(role.getTitle(_themeDisplay.getLocale()));
 			}
 		).build();
 	}
@@ -289,13 +268,9 @@ public class UsersManagementToolbarDisplayContext
 
 	@Override
 	public Boolean isShowCreationMenu() {
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		try {
 			if (GroupPermissionUtil.contains(
-					themeDisplay.getPermissionChecker(),
+					_themeDisplay.getPermissionChecker(),
 					_usersDisplayContext.getGroupId(),
 					ActionKeys.ASSIGN_MEMBERS)) {
 
@@ -346,11 +321,6 @@ public class UsersManagementToolbarDisplayContext
 				dropdownItem.putData("action", "selectRoles");
 				dropdownItem.putData(
 					"selectRolesURL", _getSelectorURL("/select_site_role.jsp"));
-
-				ThemeDisplay themeDisplay =
-					(ThemeDisplay)httpServletRequest.getAttribute(
-						WebKeys.THEME_DISPLAY);
-
 				dropdownItem.putData(
 					"viewRoleURL",
 					PortletURLBuilder.createRenderURL(
@@ -358,7 +328,7 @@ public class UsersManagementToolbarDisplayContext
 					).setMVCPath(
 						"/view.jsp"
 					).setRedirect(
-						themeDisplay.getURLCurrent()
+						_themeDisplay.getURLCurrent()
 					).setNavigation(
 						"roles"
 					).setTabs1(
@@ -380,34 +350,54 @@ public class UsersManagementToolbarDisplayContext
 		return new String[] {"first-name", "screen-name"};
 	}
 
-	private String _getSelectorURL(String mvcPath) throws Exception {
-		PortletURL selectURL = PortletURLBuilder.createRenderURL(
+	private String _getSelectorURL(String mvcPath) {
+		return PortletURLBuilder.createRenderURL(
 			liferayPortletResponse
 		).setMVCPath(
 			mvcPath
 		).setParameter(
 			"groupId", _usersDisplayContext.getGroupId()
-		).buildPortletURL();
+		).setParameter(
+			"roleType",
+			() -> {
+				Group scopeGroup = _themeDisplay.getScopeGroup();
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
+				if (scopeGroup.isDepot()) {
+					return String.valueOf(RoleConstants.TYPE_DEPOT);
+				}
 
-		Group scopeGroup = themeDisplay.getScopeGroup();
+				return null;
+			}
+		).setWindowState(
+			LiferayWindowState.POP_UP
+		).buildString();
+	}
 
-		if (scopeGroup.isDepot()) {
-			selectURL.setParameter(
-				"roleType", String.valueOf(RoleConstants.TYPE_DEPOT));
-		}
+	private String _getSelectUsersURL() {
+		ItemSelector itemSelector =
+			(ItemSelector)httpServletRequest.getAttribute(
+				ItemSelector.class.getName());
 
-		selectURL.setWindowState(LiferayWindowState.POP_UP);
+		UserSiteMembershipItemSelectorCriterion
+			userSiteMembershipItemSelectorCriterion =
+				new UserSiteMembershipItemSelectorCriterion();
 
-		return selectURL.toString();
+		userSiteMembershipItemSelectorCriterion.
+			setDesiredItemSelectorReturnTypes(new UUIDItemSelectorReturnType());
+		userSiteMembershipItemSelectorCriterion.setGroupId(
+			_usersDisplayContext.getGroupId());
+
+		return String.valueOf(
+			itemSelector.getItemSelectorURL(
+				RequestBackedPortletURLFactoryUtil.create(httpServletRequest),
+				liferayPortletResponse.getNamespace() + "selectUsers",
+				userSiteMembershipItemSelectorCriterion));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		UsersManagementToolbarDisplayContext.class);
 
+	private final ThemeDisplay _themeDisplay;
 	private final UsersDisplayContext _usersDisplayContext;
 
 }
