@@ -38,7 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 
 /**
@@ -55,7 +54,7 @@ public class JavaStagedModelDataHandlerCheck extends BaseJavaTermCheck {
 	protected String doProcess(
 			String fileName, String absolutePath, JavaTerm javaTerm,
 			String fileContent)
-		throws DocumentException, IOException {
+		throws IOException {
 
 		if (!Objects.equals(javaTerm.getName(), "doImportStagedModel")) {
 			return javaTerm.getContent();
@@ -137,7 +136,7 @@ public class JavaStagedModelDataHandlerCheck extends BaseJavaTermCheck {
 	private String _getKernelPrimaryKey(
 			String absolutePath, String stagedModelType,
 			List<String> importNames)
-		throws DocumentException, IOException {
+		throws IOException {
 
 		String packageName = null;
 
@@ -168,7 +167,7 @@ public class JavaStagedModelDataHandlerCheck extends BaseJavaTermCheck {
 
 	private synchronized List<String[]> _getKernelPrimarykeysList(
 			String absolutePath)
-		throws DocumentException, IOException {
+		throws IOException {
 
 		if (_kernelPrimaryKeysList != null) {
 			return _kernelPrimaryKeysList;
@@ -184,6 +183,10 @@ public class JavaStagedModelDataHandlerCheck extends BaseJavaTermCheck {
 			}
 
 			Document document = SourceUtil.readXML(content);
+
+			if (document == null) {
+				continue;
+			}
 
 			Element rootElement = document.getRootElement();
 
@@ -221,7 +224,7 @@ public class JavaStagedModelDataHandlerCheck extends BaseJavaTermCheck {
 
 	private String _getPrimaryKey(
 			String serviceXMLFileName, String stagedModelType)
-		throws DocumentException, IOException {
+		throws IOException {
 
 		File file = new File(serviceXMLFileName);
 
@@ -232,6 +235,10 @@ public class JavaStagedModelDataHandlerCheck extends BaseJavaTermCheck {
 		String content = FileUtil.read(file);
 
 		Document document = SourceUtil.readXML(content);
+
+		if (document == null) {
+			return null;
+		}
 
 		Element rootElement = document.getRootElement();
 
@@ -265,7 +272,7 @@ public class JavaStagedModelDataHandlerCheck extends BaseJavaTermCheck {
 	private String _getPrimaryKey(
 			String absolutePath, String stagedModelType,
 			List<String> importNames)
-		throws DocumentException, IOException {
+		throws IOException {
 
 		String primaryKey = null;
 

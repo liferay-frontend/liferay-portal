@@ -12,6 +12,7 @@
  * details.
  */
 
+import ClayAlert from '@clayui/alert';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
@@ -23,8 +24,11 @@ interface IPreviewProps {
 	previewRef: React.RefObject<HTMLDivElement>;
 }
 
+const SEGMENT_SIMULATION_EVENT = 'SegmentSimulation:changeSegment';
+
 export default function Preview({activeSize, previewRef}: IPreviewProps) {
 	const [visible, setVisible] = useState<boolean>(true);
+	const [segmentMessage, setSegmentMessage] = useState<string | null>(null);
 
 	useEffect(() => {
 		const wrapper = document.getElementById('wrapper');
@@ -44,11 +48,16 @@ export default function Preview({activeSize, previewRef}: IPreviewProps) {
 			}
 		};
 
+		const handleSegmentChange = ({message}: {message: string}) => {
+			setSegmentMessage(message);
+		};
+
 		Liferay.on(
 			'SimulationMenu:closeSimulationPanel',
 			onCloseSimulationPanel
 		);
 		Liferay.on('SimulationMenu:openSimulationPanel', onOpenSimulationPanel);
+		Liferay.on(SEGMENT_SIMULATION_EVENT, handleSegmentChange);
 
 		return () => {
 			Liferay.detach(
@@ -59,6 +68,7 @@ export default function Preview({activeSize, previewRef}: IPreviewProps) {
 				'SimulationMenu:openSimulationPanel',
 				onOpenSimulationPanel
 			);
+			Liferay.detach(SEGMENT_SIMULATION_EVENT);
 		};
 	}, []);
 
@@ -67,12 +77,27 @@ export default function Preview({activeSize, previewRef}: IPreviewProps) {
 	}
 
 	return (
-		<div className="align-items-center d-flex justify-content-center simulation-preview">
+		<div className="d-flex flex-column simulation-preview">
+			{Liferay.FeatureFlags['LPS-186558'] && segmentMessage && (
+				<ClayAlert
+					className="c-m-3"
+					displayType="info"
+					title={Liferay.Language.get('info')}
+				>
+					{segmentMessage}
+				</ClayAlert>
+			)}
+
 			<div
 				className={classNames(
-					'device position-absolute',
+					'device position-absolute align-self-center',
 					activeSize.cssClass,
-					{resizable: activeSize.id === SIZES.custom.id}
+					{
+						'device--with-alert':
+							Liferay.FeatureFlags['LPS-186558'] &&
+							segmentMessage,
+						'resizable': activeSize.id === SIZES.custom.id,
+					}
 				)}
 				ref={previewRef}
 				style={activeSize.screenSize}

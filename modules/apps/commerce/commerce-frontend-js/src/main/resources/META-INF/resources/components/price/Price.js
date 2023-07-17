@@ -46,6 +46,13 @@ function Price({
 	const hasPromo = isNonnull(activePrice.promoPrice);
 	const isPriceOnApplication = activePrice.priceOnApplication;
 
+	const isUnitPricePriceOnApplication = () => {
+		return (
+			activePrice.price === 'price-on-application' ||
+			(activePrice.price === 0 && hasPromo)
+		);
+	};
+
 	const updatePrice = ({cpInstance}) =>
 		setActivePrice((currentPrice) => ({
 			...currentPrice,
@@ -77,7 +84,11 @@ function Price({
 							'price-value-inactive': hasPromo || hasDiscount,
 						})}
 					>
-						{activePrice.priceFormatted}
+						{isUnitPricePriceOnApplication() ? (
+							<>{Liferay.Language.get('price-on-application')}</>
+						) : (
+							<>{activePrice.priceFormatted}</>
+						)}
 					</span>
 
 					{hasPromo && (

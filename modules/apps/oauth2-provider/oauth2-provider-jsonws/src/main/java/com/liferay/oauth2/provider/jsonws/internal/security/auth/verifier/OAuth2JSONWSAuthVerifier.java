@@ -92,6 +92,23 @@ public class OAuth2JSONWSAuthVerifier implements AuthVerifier {
 			BearerTokenProvider.AccessToken accessToken = _getAccessToken(
 				oAuth2Authorization);
 
+			OAuth2Application oAuth2Application = null;
+
+			if (accessToken != null) {
+				oAuth2Application = accessToken.getOAuth2Application();
+
+				BearerTokenProvider bearerTokenProvider =
+					_bearerTokenProviderAccessor.getBearerTokenProvider(
+						oAuth2Application.getCompanyId(),
+						oAuth2Application.getClientId());
+
+				if ((bearerTokenProvider == null) ||
+					!bearerTokenProvider.isValid(accessToken)) {
+
+					accessToken = null;
+				}
+			}
+
 			if (accessToken == null) {
 				HttpServletResponse httpServletResponse =
 					accessControlContext.getResponse();
@@ -101,21 +118,6 @@ public class OAuth2JSONWSAuthVerifier implements AuthVerifier {
 
 				authVerifierResult.setState(
 					AuthVerifierResult.State.INVALID_CREDENTIALS);
-
-				return authVerifierResult;
-			}
-
-			OAuth2Application oAuth2Application =
-				accessToken.getOAuth2Application();
-
-			long companyId = oAuth2Application.getCompanyId();
-
-			BearerTokenProvider bearerTokenProvider =
-				_bearerTokenProviderAccessor.getBearerTokenProvider(
-					companyId, oAuth2Application.getClientId());
-
-			if ((bearerTokenProvider == null) ||
-				!bearerTokenProvider.isValid(accessToken)) {
 
 				return authVerifierResult;
 			}
@@ -142,7 +144,8 @@ public class OAuth2JSONWSAuthVerifier implements AuthVerifier {
 				ServiceAccessPolicy.SERVICE_ACCESS_POLICY_NAMES,
 				TransformUtil.transform(
 					_sapEntryScopeDescriptorFinderRegistrator.
-						getRegisteredSAPEntryScopes(companyId),
+						getRegisteredSAPEntryScopes(
+							oAuth2Application.getCompanyId()),
 					sapEntryScope -> {
 						if (!scopes.contains(sapEntryScope.getScope())) {
 							return null;

@@ -16,10 +16,10 @@ package com.liferay.user.groups.admin.item.selector.web.internal;
 
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
+import com.liferay.item.selector.TableItemView;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.UserGroup;
-import com.liferay.user.groups.admin.item.selector.web.internal.display.context.UserGroupItemSelectorViewDisplayContext;
 
 /**
  * @author Eudaldo Alonso
@@ -28,16 +28,15 @@ public class UserGroupSelectorViewDescriptor
 	implements ItemSelectorViewDescriptor<UserGroup> {
 
 	public UserGroupSelectorViewDescriptor(
-		UserGroupItemSelectorViewDisplayContext
-			userGroupItemSelectorViewDisplayContext) {
+		boolean multipleSelection, SearchContainer<UserGroup> searchContainer) {
 
-		_userGroupItemSelectorViewDisplayContext =
-			userGroupItemSelectorViewDisplayContext;
+		_multipleSelection = multipleSelection;
+		_searchContainer = searchContainer;
 	}
 
 	@Override
 	public ItemDescriptor getItemDescriptor(UserGroup userGroup) {
-		return new UserGroupItemDescriptor(userGroup);
+		return new UserGroupItemDescriptor(_multipleSelection, userGroup);
 	}
 
 	@Override
@@ -47,11 +46,26 @@ public class UserGroupSelectorViewDescriptor
 
 	@Override
 	public String[] getOrderByKeys() {
-		return new String[] {"name"};
+		return new String[] {"name", "description"};
 	}
 
 	public SearchContainer<UserGroup> getSearchContainer() {
-		return _userGroupItemSelectorViewDisplayContext.getSearchContainer();
+		return _searchContainer;
+	}
+
+	@Override
+	public TableItemView getTableItemView(UserGroup userGroup) {
+		return new UserGroupTableItemView(userGroup);
+	}
+
+	@Override
+	public boolean isMultipleSelection() {
+		return _multipleSelection;
+	}
+
+	@Override
+	public boolean isShowBreadcrumb() {
+		return false;
 	}
 
 	@Override
@@ -59,7 +73,7 @@ public class UserGroupSelectorViewDescriptor
 		return true;
 	}
 
-	private final UserGroupItemSelectorViewDisplayContext
-		_userGroupItemSelectorViewDisplayContext;
+	private final boolean _multipleSelection;
+	private final SearchContainer<UserGroup> _searchContainer;
 
 }

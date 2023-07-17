@@ -31,7 +31,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 
 /**
@@ -47,7 +46,7 @@ public class XMLServiceReferenceCheck extends BaseFileCheck {
 	@Override
 	protected String doProcess(
 			String fileName, String absolutePath, String content)
-		throws DocumentException, IOException {
+		throws IOException {
 
 		if (!fileName.endsWith("/service.xml") ||
 			absolutePath.contains("/gradleTest/") ||
@@ -57,11 +56,15 @@ public class XMLServiceReferenceCheck extends BaseFileCheck {
 			return content;
 		}
 
+		Document document = SourceUtil.readXML(content);
+
+		if (document == null) {
+			return content;
+		}
+
 		int pos = absolutePath.lastIndexOf(StringPool.SLASH);
 
 		String dirName = absolutePath.substring(0, pos + 1);
-
-		Document document = SourceUtil.readXML(content);
 
 		Element rootElement = document.getRootElement();
 

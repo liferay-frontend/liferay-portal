@@ -353,6 +353,7 @@ public class ContentFieldUtil {
 								return String.valueOf(
 									JSONFactoryUtil.createJSONArray(values));
 							});
+						setValue(valueString);
 					}
 				};
 			}

@@ -15,7 +15,6 @@
 package com.liferay.jethr0;
 
 import com.liferay.client.extension.util.spring.boot.ClientExtensionUtilSpringBootComponentScan;
-import com.liferay.client.extension.util.spring.boot.LiferayOAuth2Util;
 import com.liferay.jethr0.build.queue.BuildQueue;
 import com.liferay.jethr0.entity.repository.EntityRepository;
 import com.liferay.jethr0.event.handler.EventHandlerContext;
@@ -35,9 +34,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
+import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 
 /**
  * @author Michael Hashimoto
@@ -86,6 +84,12 @@ public class Jethr0SpringBootApplication {
 			configurableApplicationContext.getBean(JMSEventHandler.class));
 
 		jenkinsQueue.initialize();
+
+		JmsListenerEndpointRegistry jmsListenerEndpointRegistry =
+			configurableApplicationContext.getBean(
+				JmsListenerEndpointRegistry.class);
+
+		jmsListenerEndpointRegistry.start();
 	}
 
 	@Bean
@@ -123,16 +127,6 @@ public class Jethr0SpringBootApplication {
 		return jmsTemplate;
 	}
 
-	@Bean
-	public OAuth2AccessToken getOAuth2AccessToken(
-		AuthorizedClientServiceOAuth2AuthorizedClientManager
-			authorizedClientServiceOAuth2AuthorizedClientManager) {
-
-		return LiferayOAuth2Util.getOAuth2AccessToken(
-			authorizedClientServiceOAuth2AuthorizedClientManager,
-			_liferayOAuthApplicationExternalReferenceCodes);
-	}
-
 	@Value("${jms.broker.url}")
 	private String _jmsBrokerURL;
 
@@ -144,8 +138,5 @@ public class Jethr0SpringBootApplication {
 
 	@Value("${jms.user.password}")
 	private String _jmsUserPassword;
-
-	@Value("${liferay.oauth.application.external.reference.codes}")
-	private String _liferayOAuthApplicationExternalReferenceCodes;
 
 }

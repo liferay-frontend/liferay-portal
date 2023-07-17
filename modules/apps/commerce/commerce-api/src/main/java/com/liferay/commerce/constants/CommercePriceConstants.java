@@ -23,4 +23,7 @@ public class CommercePriceConstants {
 
 	public static final String PRICE_VALUE_MIN = "0.0";
 
+	public static final String PRICE_VALUE_PRICE_ON_APPLICATION =
+		"price-on-application";
+
 }

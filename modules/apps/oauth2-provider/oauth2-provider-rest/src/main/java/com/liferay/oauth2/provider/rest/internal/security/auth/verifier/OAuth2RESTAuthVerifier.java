@@ -84,6 +84,22 @@ public class OAuth2RESTAuthVerifier implements AuthVerifier {
 			BearerTokenProvider.AccessToken accessToken = _getAccessToken(
 				accessTokenContent);
 
+			if (accessToken != null) {
+				OAuth2Application oAuth2Application =
+					accessToken.getOAuth2Application();
+
+				BearerTokenProvider bearerTokenProvider =
+					_bearerTokenProviderAccessor.getBearerTokenProvider(
+						oAuth2Application.getCompanyId(),
+						oAuth2Application.getClientId());
+
+				if ((bearerTokenProvider == null) ||
+					!bearerTokenProvider.isValid(accessToken)) {
+
+					accessToken = null;
+				}
+			}
+
 			if (accessToken == null) {
 				HttpServletResponse httpServletResponse =
 					accessControlContext.getResponse();
@@ -93,20 +109,6 @@ public class OAuth2RESTAuthVerifier implements AuthVerifier {
 
 				authVerifierResult.setState(
 					AuthVerifierResult.State.INVALID_CREDENTIALS);
-
-				return authVerifierResult;
-			}
-
-			OAuth2Application oAuth2Application =
-				accessToken.getOAuth2Application();
-
-			BearerTokenProvider bearerTokenProvider =
-				_bearerTokenProviderAccessor.getBearerTokenProvider(
-					oAuth2Application.getCompanyId(),
-					oAuth2Application.getClientId());
-
-			if ((bearerTokenProvider == null) ||
-				!bearerTokenProvider.isValid(accessToken)) {
 
 				return authVerifierResult;
 			}

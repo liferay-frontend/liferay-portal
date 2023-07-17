@@ -1095,7 +1095,7 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 				Predicate.withParentheses(rolesWherePredicate));
 		}
 
-		DSLQuery teamsSubquery = DSLQueryFactoryUtil.select(
+		DSLQuery teamsSubqueryDSLQuery = DSLQueryFactoryUtil.select(
 			TeamTable.INSTANCE.teamId
 		).from(
 			TeamTable.INSTANCE
@@ -1108,7 +1108,7 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 		).and(
 			RoleTable.INSTANCE.roleId.neq(excludedTeamRoleId)
 		).and(
-			RoleTable.INSTANCE.classPK.in(teamsSubquery)
+			RoleTable.INSTANCE.classPK.in(teamsSubqueryDSLQuery)
 		);
 
 		return fromStep.from(

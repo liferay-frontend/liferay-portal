@@ -14,12 +14,22 @@
 
 package com.liferay.user.groups.admin.item.selector.web.internal;
 
+import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.user.groups.admin.item.selector.web.internal.frontend.taglib.clay.servlet.taglib.UserGroupVerticalCard;
 
 import java.util.Locale;
+
+import javax.portlet.RenderRequest;
 
 /**
  * @author Eudaldo Alonso
@@ -27,7 +37,8 @@ import java.util.Locale;
 public class UserGroupItemDescriptor
 	implements ItemSelectorViewDescriptor.ItemDescriptor {
 
-	public UserGroupItemDescriptor(UserGroup userGroup) {
+	public UserGroupItemDescriptor(boolean selectable, UserGroup userGroup) {
+		_selectable = selectable;
 		_userGroup = userGroup;
 	}
 
@@ -52,7 +63,14 @@ public class UserGroupItemDescriptor
 
 	@Override
 	public String getSubtitle(Locale locale) {
-		return HtmlUtil.escape(_userGroup.getDescription());
+		int usersCount = UserLocalServiceUtil.searchCount(
+			_userGroup.getCompanyId(), StringPool.BLANK,
+			WorkflowConstants.STATUS_ANY,
+			LinkedHashMapBuilder.<String, Object>put(
+				"usersUserGroups", _userGroup.getUserGroupId()
+			).build());
+
+		return LanguageUtil.format(locale, "x-users", usersCount);
 	}
 
 	@Override
@@ -60,6 +78,15 @@ public class UserGroupItemDescriptor
 		return HtmlUtil.escape(_userGroup.getName());
 	}
 
+	@Override
+	public VerticalCard getVerticalCard(
+		RenderRequest renderRequest, RowChecker rowChecker) {
+
+		return new UserGroupVerticalCard(
+			renderRequest, rowChecker, _selectable, _userGroup);
+	}
+
+	private final boolean _selectable;
 	private final UserGroup _userGroup;
 
 }

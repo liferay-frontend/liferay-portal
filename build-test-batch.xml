@@ -5704,6 +5704,18 @@ information. Make sure to commit in all format-javadoc results.
 					</sequential>
 				</for>
 			</test-action>
+			<test-tear-down>
+				<tar destfile="${project.dir}/tmp/gradle_plugins.tar">
+					<tarfileset
+						dir="${project.dir}/modules/sdk/gradle-plugins-target-platform/build/reports"
+						prefix="gradle-plugins-target-platform"
+					/>
+					<tarfileset
+						dir="${project.dir}/modules/sdk/gradle-plugins-workspace/build/reports"
+						prefix="gradle-plugins-workspace"
+					/>
+				</tar>
+			</test-tear-down>
 		</run-batch-test>
 	</target>
 

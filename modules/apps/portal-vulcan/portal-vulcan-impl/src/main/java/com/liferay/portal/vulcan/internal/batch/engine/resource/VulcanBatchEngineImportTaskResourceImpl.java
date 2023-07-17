@@ -29,24 +29,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Javier Gamarra
  */
-@Component(service = VulcanBatchEngineImportTaskResource.class)
 public class VulcanBatchEngineImportTaskResourceImpl
 	implements VulcanBatchEngineImportTaskResource {
+
+	public VulcanBatchEngineImportTaskResourceImpl(
+		ImportTaskResource.Factory factory) {
+
+		_factory = factory;
+	}
 
 	@Override
 	public Object deleteImportTask(
 			String name, String callbackURL, Object object)
 		throws Exception {
 
-		_initializeContext();
+		ImportTaskResource importTaskResource = _getImportTaskResource();
 
-		return _importTaskResource.deleteImportTask(
+		return importTaskResource.deleteImportTask(
 			name, callbackURL, _getExternalReferenceCode(),
 			_getImportStrategy(), _getTaskItemDelegateName(), object);
 	}
@@ -56,9 +58,9 @@ public class VulcanBatchEngineImportTaskResourceImpl
 			String name, String callbackURL, String fields, Object object)
 		throws Exception {
 
-		_initializeContext();
+		ImportTaskResource importTaskResource = _getImportTaskResource();
 
-		return _importTaskResource.postImportTask(
+		return importTaskResource.postImportTask(
 			name, callbackURL, _getQueryParameterValue("createStrategy"),
 			_getExternalReferenceCode(), fields, _getImportStrategy(),
 			_getTaskItemDelegateName(), _getItemsArray(object));
@@ -68,9 +70,9 @@ public class VulcanBatchEngineImportTaskResourceImpl
 	public Object putImportTask(String name, String callbackURL, Object object)
 		throws Exception {
 
-		_initializeContext();
+		ImportTaskResource importTaskResource = _getImportTaskResource();
 
-		return _importTaskResource.putImportTask(
+		return importTaskResource.putImportTask(
 			name, callbackURL, _getExternalReferenceCode(),
 			_getImportStrategy(), _getTaskItemDelegateName(),
 			_getQueryParameterValue("updateStrategy"), object);
@@ -103,12 +105,30 @@ public class VulcanBatchEngineImportTaskResourceImpl
 		_contextUser = contextUser;
 	}
 
+	@Override
+	public void setTaskItemDelegateName(String taskItemDelegateName) {
+		_taskItemDelegateName = taskItemDelegateName;
+	}
+
 	private String _getExternalReferenceCode() {
 		return _getQueryParameterValue("externalReferenceCode");
 	}
 
 	private String _getImportStrategy() {
 		return _getQueryParameterValue("importStrategy");
+	}
+
+	private ImportTaskResource _getImportTaskResource() {
+		return _factory.create(
+		).httpServletRequest(
+			_contextHttpServletRequest
+		).preferredLocale(
+			_contextAcceptLanguage.getPreferredLocale()
+		).uriInfo(
+			_contextUriInfo
+		).user(
+			_contextUser
+		).build();
 	}
 
 	private Object _getItemsArray(Object object) {
@@ -145,16 +165,11 @@ public class VulcanBatchEngineImportTaskResourceImpl
 	}
 
 	private String _getTaskItemDelegateName() {
-		return _getQueryParameterValue("taskItemDelegateName");
-	}
+		if (_taskItemDelegateName == null) {
+			return _getQueryParameterValue("taskItemDelegateName");
+		}
 
-	private void _initializeContext() {
-		_importTaskResource.setContextAcceptLanguage(_contextAcceptLanguage);
-		_importTaskResource.setContextCompany(_contextCompany);
-		_importTaskResource.setContextHttpServletRequest(
-			_contextHttpServletRequest);
-		_importTaskResource.setContextUriInfo(_contextUriInfo);
-		_importTaskResource.setContextUser(_contextUser);
+		return _taskItemDelegateName;
 	}
 
 	private AcceptLanguage _contextAcceptLanguage;
@@ -162,8 +177,7 @@ public class VulcanBatchEngineImportTaskResourceImpl
 	private HttpServletRequest _contextHttpServletRequest;
 	private UriInfo _contextUriInfo;
 	private User _contextUser;
-
-	@Reference
-	private ImportTaskResource _importTaskResource;
+	private final ImportTaskResource.Factory _factory;
+	private String _taskItemDelegateName;
 
 }

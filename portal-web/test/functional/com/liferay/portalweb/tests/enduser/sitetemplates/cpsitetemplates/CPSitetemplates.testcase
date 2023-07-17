@@ -1354,9 +1354,11 @@ definition {
 				pageName = "Page A",
 				siteTemplateName = "Site Template Name");
 
-			Portlet.addPG(portletName = "Web Content Display");
+			Portlet.addPG(
+				defaultURL = "false",
+				portletName = "Web Content Display");
 
-			Navigator.openSitePage(
+			Navigator.gotoSitePage(
 				pageName = "Page A",
 				siteName = "Site Name A");
 
@@ -1364,7 +1366,7 @@ definition {
 		}
 
 		task ("And: Navigate to the Site Name B to trigger the propagation") {
-			Navigator.openSitePage(
+			Navigator.gotoSitePage(
 				pageName = "Page A",
 				siteName = "Site Name B");
 
@@ -1481,11 +1483,10 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-174434 TC-2. Verify there's a toast message appears when the Site's Page saved with friendly URL collision."
-	@ignore = "true"
+	@description = "This is a use case for LPS-174434 TC-1 TC-2. Verify there's a confirmation dialog and toast message appears when the Site's Page saved with friendly URL collision."
 	@priority = 4
 	test ViewAlertAfterAddSitePageWithURLCollision {
-		property custom.properties = "feature.flag.LPS-174434=true";
+		property custom.properties = "feature.flag.LPS-174417=true";
 
 		task ("Given add new site based on the new site template with poropagation false") {
 			SiteTemplates.addCP(
@@ -1525,7 +1526,7 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-174431 TC-8. Verify that the site link in the URL collision cannot be accessed when the User didn't have access to the Site made from the template Blocked by LPS-181658."
+	@description = "This is a use case for LPS-174431 TC-8. Verify that the site link in the URL collision cannot be accessed when the User didn't have access to the Site made from the template."
 	@priority = 4
 	test ViewCanNotAccesseSiteLinkInURLCollisionWithoutUserAccessSite {
 		property custom.properties = "feature.flag.LPS-174417=true";
@@ -1595,11 +1596,10 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-174434 TC-7. Verify that the site link in the URL collision cannot be accessed when the User didn't have access to the Site made from the template Blocked by LPS-181664."
-	@ignore = "true"
+	@description = "This is a use case for LPS-174434 TC-7. Verify that the site link in the URL collision cannot be accessed when the User didn't have access to the Site made from the template."
 	@priority = 4
 	test ViewCanNotAccesseSiteLinkInURLCollisionWithoutUserAccessSiteInSitePage {
-		property custom.properties = "feature.flag.LPS-174434=true";
+		property custom.properties = "feature.flag.LPS-174417=true";
 		property test.liferay.virtual.instance = "false";
 
 		task ("Given User adds pages with friendly URL collision in new site and site template") {
@@ -1639,7 +1639,9 @@ definition {
 				requireReset = "false",
 				userEmailAddress = "userea@liferay.com");
 
-			SiteTemplates.grantUserAccessToSite(userEmailAddress = "userea@liferay.com");
+			SiteTemplates.grantUserAccessToSite(
+				site = "true",
+				userEmailAddress = "userea@liferay.com");
 		}
 
 		task ("When Click the link of page in warning message in site logined as new user") {
@@ -1652,100 +1654,12 @@ definition {
 			PagesAdmin.gotoPageEllipsisMenuItem(
 				menuItem = "Configure",
 				pageName = "Page1");
-
-			Click(
-				key_text = "Page1",
-				locator1 = "Link#ANY");
-		}
-	}
-
-	@description = "This is a use case for LPS-174434 TC-8. Verify there's a confirmation dialog when a friendly URL collision exists and Administrator tries to edit an existing Site page."
-	@ignore = "true"
-	@priority = 4
-	test ViewConfirmationDialogOfEditExistingSitePageWithURLCollision {
-		property custom.properties = "feature.flag.LPS-174434=true";
-
-		task ("Given User adds page in site template, adds new site based on the new site template") {
-			SiteTemplates.addCP(
-				disablePropagation = "true",
-				siteTemplateName = "Site Template Name");
-
-			Site.openSitesAdmin();
-
-			Site.addSiteTemplateCP(
-				siteName = "Site Name",
-				siteTemplateName = "Site Template Name",
-				siteTemplateTab = "Custom Site Templates");
-
-			SiteTemplates.addSitePageViaSiteTemplateCP(
-				pageName = "Page1",
-				siteTemplateName = "Site Template Name");
 		}
 
-		task ("And User adds page in new site") {
-			PagesAdmin.openPagesAdmin(siteURLKey = "Site Name");
-
-			PagesAdmin.addPage(
-				pageName = "PageX",
-				sitePageType = "Widget Page");
-		}
-
-		task ("When User edits page with Friendly URL conflicts in site") {
-			PagesAdmin.openPagesAdmin(siteURLKey = "Site Name");
-
-			ProductMenu.gotoPortlet(
-				category = "Site Builder",
-				portlet = "Pages");
-
-			PagesAdmin.gotoPageEllipsisMenuItem(
-				menuItem = "Configure",
-				pageName = "PageX");
-
-			PagesAdmin.editFriendlyURL(
-				confirm = "true",
-				friendlyURLEdit = "/page1");
-		}
-
-		task ("Then There is javascript error window present with message") {
-			AssertConfirm.waitForConfirmation(value1 = "The friendly URL of the page you are trying to save conflicts with a friendly URL of a page in the site template, from which this site was created. Are you sure you want to configure the page with this friendly URL?");
-		}
-	}
-
-	@description = "This is a use case for LPS-174434 TC-1. Verify there's a confirmation dialog when a friendly URL collision exists and Administrator tries to add a new Site page."
-	@ignore = "true"
-	@priority = 4
-	test ViewConfirmationDialogOfNewSitePageWithURLCollision {
-		property custom.properties = "feature.flag.LPS-174434=true";
-
-		task ("Given add new site based on the new site template with poropagation false") {
-			SiteTemplates.addCP(
-				disablePropagation = "true",
-				siteTemplateName = "Site Template Name");
-
-			Site.openSitesAdmin();
-
-			Site.addSiteTemplateCP(
-				siteName = "Site Name",
-				siteTemplateName = "Site Template Name",
-				siteTemplateTab = "Custom Site Templates");
-		}
-
-		task ("And User adds page in site template") {
-			SiteTemplates.addSitePageViaSiteTemplateCP(
-				pageName = "Page1",
-				siteTemplateName = "Site Template Name");
-		}
-
-		task ("When User adds page with Friendly URL conflicts in site") {
-			PagesAdmin.openPagesAdmin(siteURLKey = "Site Name");
-
-			PagesAdmin.addPageWithConfirm(
-				pageName = "Page1",
-				sitePageType = "Widget Page");
-		}
-
-		task ("Then There is javascript error window present with message") {
-			AssertConfirm.waitForConfirmation(value1 = "The friendly URL of the page you are trying to save conflicts with a friendly URL of a page in the site template, from which this site was created. Are you sure you want to configure the page with this friendly URL?");
+		task ("Then There is warning section right below the Friendly URL field on the form") {
+			AssertTextEquals(
+				locator1 = "Message#ERROR_3",
+				value1 = "Warning:The friendly URL of this page is conflicting with a friendly URL of a page in the site template, from which this site was created: Page Page1 of Site Template Name (Please contact the administrator to resolve this friendly URL conflict.)");
 		}
 	}
 
@@ -1840,10 +1754,9 @@ definition {
 	}
 
 	@description = "This is a use case for LPS-174434 TC-3. Verify there's a warning message at Page's configuration, in case of friendly URL collision."
-	@ignore = "true"
 	@priority = 4
 	test ViewWarnignMessageOfEditExistingSitePageWithURLCollision {
-		property custom.properties = "feature.flag.LPS-174434=true";
+		property custom.properties = "feature.flag.LPS-174417=true";
 
 		task ("Given User adds page in site template, adds new site based on the new site template with page") {
 			SiteTemplates.addCP(
@@ -1893,7 +1806,7 @@ definition {
 		task ("Then There is warning section right below the Friendly URL field on the form") {
 			AssertTextEquals(
 				locator1 = "Message#ERROR_3",
-				value1 = "The friendly URL of this page is conflicting with a friendly URL of a page in the site template, from which this site was created: Page Page1 of Site Template Name");
+				value1 = "Warning:The friendly URL of this page is conflicting with a friendly URL of a page in the site template, from which this site was created: Page Page1 of Site Template Name");
 		}
 	}
 
@@ -1940,10 +1853,9 @@ definition {
 	}
 
 	@description = "This is a use case for LPS-174434 TC-6. Verify that the friendly URL collision is detected with child pages."
-	@ignore = "true"
 	@priority = 4
 	test ViewWarnignMessageWithChildSitePageURLCollision {
-		property custom.properties = "feature.flag.LPS-174434=true";
+		property custom.properties = "feature.flag.LPS-174417=true";
 
 		task ("Given User adds new site base on template with child page") {
 			SiteTemplates.addCP(
@@ -1999,7 +1911,7 @@ definition {
 
 			AssertTextEquals(
 				locator1 = "Message#ERROR_3",
-				value1 = "The friendly URL of this page is conflicting with a friendly URL of a page in the site template, from which this site was created: Page Page2 of Site Template Name");
+				value1 = "Warning:The friendly URL of this page is conflicting with a friendly URL of a page in the site template, from which this site was created: Page Page2 of Site Template Name");
 		}
 	}
 

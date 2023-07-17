@@ -26,15 +26,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Carlos Correa
  */
-@Component(service = VulcanBatchEngineExportTaskResource.class)
 public class VulcanBatchEngineExportTaskResourceImpl
 	implements VulcanBatchEngineExportTaskResource {
+
+	public VulcanBatchEngineExportTaskResourceImpl(
+		ExportTaskResource.Factory factory) {
+
+		_factory = factory;
+	}
 
 	@Override
 	public Object postExportTask(
@@ -42,18 +44,12 @@ public class VulcanBatchEngineExportTaskResourceImpl
 			String fieldNames)
 		throws Exception {
 
-		_exportTaskResource.setContextAcceptLanguage(_contextAcceptLanguage);
-		_exportTaskResource.setContextCompany(_contextCompany);
-		_exportTaskResource.setContextHttpServletRequest(
-			_contextHttpServletRequest);
-		_exportTaskResource.setContextUriInfo(_contextUriInfo);
-		_exportTaskResource.setContextUser(_contextUser);
-		_exportTaskResource.setGroupLocalService(_groupLocalService);
+		ExportTaskResource exportTaskResource = _getExportTaskResource();
 
-		return _exportTaskResource.postExportTask(
+		return exportTaskResource.postExportTask(
 			name, contentType, callbackURL,
 			_getQueryParameterValue("externalReferenceCode"), fieldNames,
-			_getQueryParameterValue("taskItemDelegateName"));
+			_getTaskItemDelegateName());
 	}
 
 	@Override
@@ -88,6 +84,24 @@ public class VulcanBatchEngineExportTaskResourceImpl
 		_groupLocalService = groupLocalService;
 	}
 
+	@Override
+	public void setTaskItemDelegateName(String taskItemDelegateName) {
+		_taskItemDelegateName = taskItemDelegateName;
+	}
+
+	private ExportTaskResource _getExportTaskResource() {
+		return _factory.create(
+		).httpServletRequest(
+			_contextHttpServletRequest
+		).preferredLocale(
+			_contextAcceptLanguage.getPreferredLocale()
+		).uriInfo(
+			_contextUriInfo
+		).user(
+			_contextUser
+		).build();
+	}
+
 	private String _getQueryParameterValue(String queryParameterName) {
 		MultivaluedMap<String, String> queryParameters =
 			_contextUriInfo.getQueryParameters();
@@ -95,15 +109,21 @@ public class VulcanBatchEngineExportTaskResourceImpl
 		return queryParameters.getFirst(queryParameterName);
 	}
 
+	private String _getTaskItemDelegateName() {
+		if (_taskItemDelegateName == null) {
+			return _getQueryParameterValue("taskItemDelegateName");
+		}
+
+		return _taskItemDelegateName;
+	}
+
 	private AcceptLanguage _contextAcceptLanguage;
 	private Company _contextCompany;
 	private HttpServletRequest _contextHttpServletRequest;
 	private UriInfo _contextUriInfo;
 	private User _contextUser;
-
-	@Reference
-	private ExportTaskResource _exportTaskResource;
-
+	private final ExportTaskResource.Factory _factory;
 	private GroupLocalService _groupLocalService;
+	private String _taskItemDelegateName;
 
 }

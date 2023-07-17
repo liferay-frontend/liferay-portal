@@ -33,6 +33,8 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.item.selector.criteria.InfoItemItemSelectorReturnType;
+import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -45,10 +47,8 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.LiferayWindowState;
-import com.liferay.portal.kernel.portlet.PortletProvider;
-import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -84,9 +84,9 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 		ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext,
 		ContentDashboardItemFilterProviderRegistry
 			contentDashboardItemFilterProviderRegistry,
-		GroupLocalService groupLocalService, ItemSelector itemSelector,
-		HttpServletRequest httpServletRequest, Language language,
-		LiferayPortletRequest liferayPortletRequest,
+		GroupLocalService groupLocalService,
+		HttpServletRequest httpServletRequest, ItemSelector itemSelector,
+		Language language, LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse, Locale locale,
 		UserLocalService userLocalService) {
 
@@ -524,40 +524,35 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 		}
 	}
 
-	private PortletURL _getAssetCategorySelectorURL() throws PortalException {
+	private String _getAssetCategorySelectorURL() throws PortalException {
+		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
+			RequestBackedPortletURLFactoryUtil.create(_liferayPortletRequest);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_liferayPortletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		InfoItemItemSelectorCriterion itemSelectorCriterion =
+			new InfoItemItemSelectorCriterion();
+
+		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+			new InfoItemItemSelectorReturnType());
+		itemSelectorCriterion.setItemType(AssetCategory.class.getName());
+		itemSelectorCriterion.setMultiSelection(true);
+
 		return PortletURLBuilder.create(
-			PortletProviderUtil.getPortletURL(
-				_liferayPortletRequest, AssetCategory.class.getName(),
-				PortletProvider.Action.BROWSE)
+			_itemSelector.getItemSelectorURL(
+				requestBackedPortletURLFactory, themeDisplay.getScopeGroup(),
+				themeDisplay.getScopeGroupId(),
+				_liferayPortletResponse.getNamespace() +
+					"selectedAssetCategory",
+				itemSelectorCriterion)
 		).setParameter(
-			"eventName",
-			_liferayPortletResponse.getNamespace() + "selectedAssetCategory"
-		).setParameter(
-			"selectedCategories",
+			"selectedCategoryIds",
 			StringUtil.merge(
 				_contentDashboardAdminDisplayContext.getAssetCategoryIds(),
 				StringPool.COMMA)
-		).setParameter(
-			"showSelectedCounter", true
-		).setParameter(
-			"singleSelect", false
-		).setParameter(
-			"vocabularyIds",
-			() -> {
-				ThemeDisplay themeDisplay =
-					(ThemeDisplay)_liferayPortletRequest.getAttribute(
-						WebKeys.THEME_DISPLAY);
-
-				return StringUtil.merge(
-					_assetVocabularyLocalService.getCompanyVocabularies(
-						themeDisplay.getCompanyId()),
-					assetVocabulary -> String.valueOf(
-						assetVocabulary.getVocabularyId()),
-					StringPool.COMMA);
-			}
-		).setWindowState(
-			LiferayWindowState.POP_UP
-		).buildPortletURL();
+		).buildString();
 	}
 
 	private PortletURL _getAssetTagSelectorURL() {
@@ -658,9 +653,7 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 				).buildString()
 			).putData(
 				"selectAuthorURL",
-				String.valueOf(
-					_contentDashboardAdminDisplayContext.
-						getAuthorItemSelectorURL())
+				_contentDashboardAdminDisplayContext.getAuthorItemSelectorURL()
 			).setActive(
 				() -> {
 					if (((authorIds.size() == 1) &&
@@ -716,8 +709,7 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 					"assetCategoryId", (String)null
 				).buildString()
 			).putData(
-				"selectAssetCategoryURL",
-				String.valueOf(_getAssetCategorySelectorURL())
+				"selectAssetCategoryURL", _getAssetCategorySelectorURL()
 			).setActive(
 				ListUtil.isNotEmpty(
 					_contentDashboardAdminDisplayContext.getAssetCategoryIds())

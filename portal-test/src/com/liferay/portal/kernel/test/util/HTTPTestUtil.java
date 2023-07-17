@@ -16,7 +16,6 @@ package com.liferay.portal.kernel.test.util;
 
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
@@ -33,16 +32,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class HTTPTestUtil {
 
-	public static JSONObject invoke(
-			String body, String endpoint, Http.Method httpMethod)
-		throws Exception {
-
-		Http.Options options = _getHttpOptions(body, endpoint, httpMethod);
-
-		return JSONFactoryUtil.createJSONObject(HttpUtil.URLtoString(options));
-	}
-
-	public static int invokeHttpCode(
+	public static int invokeToHttpCode(
 			String body, String endpoint, Http.Method httpMethod)
 		throws Exception {
 
@@ -55,13 +45,13 @@ public class HTTPTestUtil {
 		return response.getResponseCode();
 	}
 
-	public static JSONArray invokeJSONArray(
+	public static JSONObject invokeToJSONObject(
 			String body, String endpoint, Http.Method httpMethod)
 		throws Exception {
 
 		Http.Options options = _getHttpOptions(body, endpoint, httpMethod);
 
-		return JSONFactoryUtil.createJSONArray(HttpUtil.URLtoString(options));
+		return JSONFactoryUtil.createJSONObject(HttpUtil.URLtoString(options));
 	}
 
 	public static <T extends Throwable> void withCredentials(

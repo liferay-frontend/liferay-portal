@@ -67,13 +67,14 @@ import com.liferay.journal.web.internal.configuration.FFJournalAutoSaveDraftConf
 import com.liferay.journal.web.internal.configuration.JournalWebConfiguration;
 import com.liferay.journal.web.internal.helper.JournalDDMTemplateHelper;
 import com.liferay.journal.web.internal.portlet.action.ActionUtil;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Release;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -91,7 +92,6 @@ import com.liferay.trash.util.TrashWebKeys;
 
 import java.io.IOException;
 
-import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.PersistenceException;
@@ -105,21 +105,13 @@ import javax.portlet.ResourceResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eduardo García
  */
 @Component(
-	configurationPid = {
-		"com.liferay.dynamic.data.mapping.configuration.DDMWebConfiguration",
-		"com.liferay.journal.configuration.JournalFileUploadsConfiguration",
-		"com.liferay.journal.web.internal.configuration.FFJournalAutoSaveDraftConfiguration",
-		"com.liferay.journal.web.internal.configuration.JournalWebConfiguration"
-	},
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.css-class-wrapper=portlet-journal",
@@ -177,21 +169,11 @@ public class JournalPortlet extends MVCPortlet {
 			DDMFormValuesToMapConverter.class.getName(),
 			_ddmFormValuesToMapConverter);
 		renderRequest.setAttribute(
-			DDMWebConfiguration.class.getName(), _ddmWebConfiguration);
-		renderRequest.setAttribute(
-			FFJournalAutoSaveDraftConfiguration.class.getName(),
-			_ffJournalAutoSaveDraftConfiguration);
-		renderRequest.setAttribute(
 			FieldsToDDMFormValuesConverter.class.getName(),
 			_fieldsToDDMFormValuesConverter);
 		renderRequest.setAttribute(ItemSelector.class.getName(), _itemSelector);
 		renderRequest.setAttribute(
 			JournalHelper.class.getName(), _journalHelper);
-		renderRequest.setAttribute(
-			JournalFileUploadsConfiguration.class.getName(),
-			_journalFileUploadsConfiguration);
-		renderRequest.setAttribute(
-			JournalWebConfiguration.class.getName(), _journalWebConfiguration);
 		renderRequest.setAttribute(
 			JournalWebKeys.JOURNAL_CONTENT, _journalContent);
 		renderRequest.setAttribute(
@@ -200,6 +182,28 @@ public class JournalPortlet extends MVCPortlet {
 			TranslationPermission.class.getName(), _translationPermission);
 		renderRequest.setAttribute(
 			TranslationURLProvider.class.getName(), _translationURLProvider);
+
+		try {
+			renderRequest.setAttribute(
+				DDMWebConfiguration.class.getName(),
+				_configurationProvider.getSystemConfiguration(
+					DDMWebConfiguration.class));
+			renderRequest.setAttribute(
+				FFJournalAutoSaveDraftConfiguration.class.getName(),
+				_configurationProvider.getSystemConfiguration(
+					FFJournalAutoSaveDraftConfiguration.class));
+			renderRequest.setAttribute(
+				JournalFileUploadsConfiguration.class.getName(),
+				_configurationProvider.getSystemConfiguration(
+					JournalFileUploadsConfiguration.class));
+			renderRequest.setAttribute(
+				JournalWebConfiguration.class.getName(),
+				_configurationProvider.getSystemConfiguration(
+					JournalWebConfiguration.class));
+		}
+		catch (ConfigurationException configurationException) {
+			throw new PortletException(configurationException);
+		}
 
 		super.render(renderRequest, renderResponse);
 	}
@@ -215,35 +219,30 @@ public class JournalPortlet extends MVCPortlet {
 		resourceRequest.setAttribute(
 			DDMTemplateHelper.class.getName(), _ddmTemplateHelper);
 		resourceRequest.setAttribute(
-			FFJournalAutoSaveDraftConfiguration.class.getName(),
-			_ffJournalAutoSaveDraftConfiguration);
-		resourceRequest.setAttribute(
 			ItemSelector.class.getName(), _itemSelector);
 		resourceRequest.setAttribute(
 			JournalHelper.class.getName(), _journalHelper);
-		resourceRequest.setAttribute(
-			JournalWebConfiguration.class.getName(), _journalWebConfiguration);
 		resourceRequest.setAttribute(
 			TranslationPermission.class.getName(), _translationPermission);
 		resourceRequest.setAttribute(
 			TranslationURLProvider.class.getName(), _translationURLProvider);
 		resourceRequest.setAttribute(TrashWebKeys.TRASH_HELPER, _trashHelper);
 
-		super.serveResource(resourceRequest, resourceResponse);
-	}
+		try {
+			resourceRequest.setAttribute(
+				FFJournalAutoSaveDraftConfiguration.class.getName(),
+				_configurationProvider.getSystemConfiguration(
+					FFJournalAutoSaveDraftConfiguration.class));
+			resourceRequest.setAttribute(
+				JournalWebConfiguration.class.getName(),
+				_configurationProvider.getSystemConfiguration(
+					JournalWebConfiguration.class));
+		}
+		catch (ConfigurationException configurationException) {
+			throw new PortletException(configurationException);
+		}
 
-	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) {
-		_ddmWebConfiguration = ConfigurableUtil.createConfigurable(
-			DDMWebConfiguration.class, properties);
-		_ffJournalAutoSaveDraftConfiguration =
-			ConfigurableUtil.createConfigurable(
-				FFJournalAutoSaveDraftConfiguration.class, properties);
-		_journalFileUploadsConfiguration = ConfigurableUtil.createConfigurable(
-			JournalFileUploadsConfiguration.class, properties);
-		_journalWebConfiguration = ConfigurableUtil.createConfigurable(
-			JournalWebConfiguration.class, properties);
+		super.serveResource(resourceRequest, resourceResponse);
 	}
 
 	@Override
@@ -371,6 +370,9 @@ public class JournalPortlet extends MVCPortlet {
 		_assetDisplayPageFriendlyURLProvider;
 
 	@Reference
+	private ConfigurationProvider _configurationProvider;
+
+	@Reference
 	private DDMFormValuesFactory _ddmFormValuesFactory;
 
 	@Reference
@@ -378,10 +380,6 @@ public class JournalPortlet extends MVCPortlet {
 
 	@Reference
 	private DDMTemplateHelper _ddmTemplateHelper;
-
-	private volatile DDMWebConfiguration _ddmWebConfiguration;
-	private volatile FFJournalAutoSaveDraftConfiguration
-		_ffJournalAutoSaveDraftConfiguration;
 
 	@Reference
 	private FieldsToDDMFormValuesConverter _fieldsToDDMFormValuesConverter;
@@ -398,16 +396,11 @@ public class JournalPortlet extends MVCPortlet {
 	@Reference
 	private JournalDDMTemplateHelper _journalDDMTemplateHelper;
 
-	private volatile JournalFileUploadsConfiguration
-		_journalFileUploadsConfiguration;
-
 	@Reference
 	private JournalFolderService _journalFolderService;
 
 	@Reference
 	private JournalHelper _journalHelper;
-
-	private volatile JournalWebConfiguration _journalWebConfiguration;
 
 	@Reference
 	private Portal _portal;

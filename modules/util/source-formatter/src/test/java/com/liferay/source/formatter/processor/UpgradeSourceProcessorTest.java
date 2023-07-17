@@ -99,6 +99,11 @@ public class UpgradeSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testUpgradeJavaGetFileMethodCheck() throws Exception {
+		test("upgrade/UpgradeJavaGetFileMethodCheck.testjava");
+	}
+
+	@Test
 	public void testUpgradeJavaModelPermissionsCheck() throws Exception {
 		test("upgrade/UpgradeJavaModelPermissionsCheck.testjava");
 	}
@@ -109,6 +114,11 @@ public class UpgradeSourceProcessorTest extends BaseSourceProcessorTestCase {
 			"upgrade/UpgradeJavaMultiVMPoolUtilCheck.testjava",
 			"Could not resolve types for MultiVMPool.getPortalCache(). " +
 				"Replace 'TO_BE_REPLACED' with the correct type");
+	}
+
+	@Test
+	public void testUpgradeJavaOnAfterUpdateParameterCheck() throws Exception {
+		test("upgrade/UpgradeJavaOnAfterUpdateParameterCheck.testjava");
 	}
 
 	@Test

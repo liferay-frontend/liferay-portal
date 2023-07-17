@@ -1541,6 +1541,34 @@ public class WebServerServlet extends HttpServlet {
 			group.getGroupId(), pathArray[2]);
 	}
 
+	private void _checkCompanyAndGroup(
+			long groupId, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+
+		if (group == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("No group exists group ID " + groupId);
+			}
+
+			throw new NoSuchFileEntryException();
+		}
+
+		long companyId = PortalUtil.getCompanyId(httpServletRequest);
+
+		if (group.getCompanyId() != companyId) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Group ", groupId, " does not belong to company ",
+						companyId));
+			}
+
+			throw new NoSuchFileEntryException();
+		}
+	}
+
 	private void _checkFileEntry(
 			FileEntry fileEntry, HttpServletRequest httpServletRequest)
 		throws Exception {
@@ -1548,6 +1576,8 @@ public class WebServerServlet extends HttpServlet {
 		if (fileEntry == null) {
 			return;
 		}
+
+		_checkCompanyAndGroup(fileEntry.getGroupId(), httpServletRequest);
 
 		PermissionChecker permissionChecker = _getPermissionChecker(
 			httpServletRequest);

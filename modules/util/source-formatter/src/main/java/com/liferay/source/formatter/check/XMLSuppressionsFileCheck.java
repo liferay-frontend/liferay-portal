@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.List;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 
 /**
@@ -37,18 +36,17 @@ public class XMLSuppressionsFileCheck extends BaseFileCheck {
 
 	@Override
 	protected String doProcess(
-			String fileName, String absolutePath, String content)
-		throws DocumentException {
+		String fileName, String absolutePath, String content) {
 
 		if (!fileName.endsWith("-suppressions.xml")) {
 			return content;
 		}
 
-		int x = absolutePath.lastIndexOf(CharPool.SLASH);
-
-		String fileLocation = absolutePath.substring(0, x + 1);
-
 		Document document = SourceUtil.readXML(content);
+
+		if (document == null) {
+			return content;
+		}
 
 		Element rootElement = document.getRootElement();
 
@@ -63,6 +61,10 @@ public class XMLSuppressionsFileCheck extends BaseFileCheck {
 		checkElementOrder(
 			fileName, checkstyleElement, "suppress", "checkstyle",
 			suppressElementComparator);
+
+		int x = absolutePath.lastIndexOf(CharPool.SLASH);
+
+		String fileLocation = absolutePath.substring(0, x + 1);
 
 		content = _formatFilesPropertyValue(
 			fileName, content, fileLocation, checkstyleElement);

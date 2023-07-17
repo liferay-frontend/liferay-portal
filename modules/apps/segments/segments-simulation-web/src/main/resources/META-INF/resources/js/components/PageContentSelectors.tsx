@@ -13,7 +13,8 @@
  */
 
 import ClayAlert from '@clayui/alert';
-import {ClaySelectWithOption} from '@clayui/form';
+import ClayButton from '@clayui/button';
+import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayLink from '@clayui/link';
 import {fetch, openSelectionModal, sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -36,16 +37,19 @@ interface Props {
 	simulateSegmentsEntriesURL: string;
 }
 
+const DEFAULT_PREVIEW_OPTION = {
+	label: Liferay.Language.get('segments'),
+	value: 'segments',
+};
 const PREVIEW_OPTIONS = [
-	{
-		label: Liferay.Language.get('segments'),
-		value: 'segments',
-	},
+	DEFAULT_PREVIEW_OPTION,
 	{
 		label: Liferay.Language.get('experiences'),
 		value: 'experiences',
 	},
 ];
+
+const SEGMENT_SIMULATION_EVENT = 'SegmentSimulation:changeSegment';
 
 const MAXIMUM_DROPDOWN_ENTRIES = 8;
 
@@ -61,9 +65,13 @@ function PageContentSelectors({
 	selectSegmentsExperienceURL,
 	simulateSegmentsEntriesURL,
 }: Props) {
+	const [
+		isSegmentOrExperienceSelectorActive,
+		setIsSegmentOrExperienceSelectorActive,
+	] = useState(false);
 	const [alertVisible, setAlertVisible] = useState(!segmentationEnabled);
 	const [selectedPreviewOption, setSelectedPreviewOption] = useState(
-		'segments'
+		DEFAULT_PREVIEW_OPTION
 	);
 	const [selectedSegmentEntry, setSelectedSegmentEntry] = useState(
 		segmentsEntries?.[0]
@@ -87,6 +95,12 @@ function PageContentSelectors({
 
 	const simulateSegmentsEntries = useCallback(() => {
 		if (formRef.current) {
+			Liferay.fire(SEGMENT_SIMULATION_EVENT, {
+				message: sub(
+					Liferay.Language.get('showing-content-for-the-segment-x'),
+					selectedSegmentEntry.name
+				),
+			});
 			fetch(simulateSegmentsEntriesURL, {
 				body: new FormData(
 					formRef.current ? formRef.current : undefined
@@ -100,18 +114,30 @@ function PageContentSelectors({
 				}
 			});
 		}
-	}, [simulateSegmentsEntriesURL]);
+	}, [selectedSegmentEntry, simulateSegmentsEntriesURL]);
 
-	const simulateSegmentsExperiment = useCallback((experience) => {
-		const iframe = document.querySelector('iframe');
+	const simulateSegmentsExperiment = useCallback(
+		(experience) => {
+			const iframe = document.querySelector('iframe');
 
-		if (iframe?.contentWindow) {
-			const url = new URL(iframe.contentWindow.location.href);
+			if (iframe?.contentWindow) {
+				Liferay.fire(SEGMENT_SIMULATION_EVENT, {
+					message: sub(
+						Liferay.Language.get(
+							'showing-content-for-the-experience-x'
+						),
+						selectedSegmentsExperience.segmentsExperienceName
+					),
+				});
 
-			url.searchParams.set('segmentsExperienceId', experience);
-			iframe.src = url.toString();
-		}
-	}, []);
+				const url = new URL(iframe.contentWindow.location.href);
+
+				url.searchParams.set('segmentsExperienceId', experience);
+				iframe.src = url.toString();
+			}
+		},
+		[selectedSegmentsExperience]
+	);
 
 	const handleMoreSegmentEntriesButtonClick = () => {
 		openSelectionModal({
@@ -205,7 +231,7 @@ function PageContentSelectors({
 			return;
 		}
 
-		if (selectedPreviewOption === 'segments') {
+		if (selectedPreviewOption.value === 'segments') {
 			const url = new URL(iframe.contentWindow.location.href);
 			url.searchParams.delete('segmentsExperienceId');
 
@@ -268,17 +294,55 @@ function PageContentSelectors({
 					{Liferay.Language.get('preview-by')}
 				</label>
 
-				<ClaySelectWithOption
+				<input
 					id={`${namespace}segmentsOrExperiences`}
-					onChange={({target}) => {
-						setSelectedPreviewOption(target.value);
-					}}
-					options={PREVIEW_OPTIONS}
-					value={selectedPreviewOption}
+					name={`${namespace}segmentsOrExperiences`}
+					type="hidden"
+					value={selectedPreviewOption.value}
 				/>
+
+				<ClayDropDown
+					active={isSegmentOrExperienceSelectorActive}
+					alignmentPosition={Align.BottomLeft}
+					menuElementAttrs={{
+						containerProps: {
+							className: 'cadmin',
+						},
+					}}
+					onActiveChange={setIsSegmentOrExperienceSelectorActive}
+					trigger={
+						<ClayButton
+							className="form-control-select text-left w-100"
+							displayType="secondary"
+							size="sm"
+							type="button"
+						>
+							{selectedPreviewOption.label}
+						</ClayButton>
+					}
+				>
+					<ClayDropDown.ItemList>
+						{PREVIEW_OPTIONS.map((option) => (
+							<ClayDropDown.Item
+								active={
+									option.value === selectedPreviewOption.value
+								}
+								key={option.value}
+								onClick={() => {
+									setIsSegmentOrExperienceSelectorActive(
+										false
+									);
+									setSelectedPreviewOption(option);
+								}}
+							>
+								{option.label}
+							</ClayDropDown.Item>
+						))}
+					</ClayDropDown.ItemList>
+				</ClayDropDown>
 			</div>
 
-			{selectedPreviewOption === 'segments' && (
+			{selectedPreviewOption.value === 'segments' && (
 				<SegmentSelector
 					maximumDropdownEntries={MAXIMUM_DROPDOWN_ENTRIES}
 					namespace={namespace}
@@ -291,7 +355,7 @@ function PageContentSelectors({
 				/>
 			)}
 
-			{selectedPreviewOption === 'experiences' && (
+			{selectedPreviewOption.value === 'experiences' && (
 				<ExperienceSelector
 					maximumDropdownEntries={MAXIMUM_DROPDOWN_ENTRIES}
 					namespace={namespace}

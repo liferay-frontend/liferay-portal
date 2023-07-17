@@ -14,6 +14,10 @@
 
 package com.liferay.commerce.frontend.model;
 
+import com.liferay.commerce.constants.CommercePriceConstants;
+
+import java.util.Objects;
+
 /**
  * @author Marco Leo
  */
@@ -48,7 +52,21 @@ public class PriceModel {
 	}
 
 	public boolean isPriceOnApplication() {
-		return _priceOnApplication;
+		boolean priceOnApplication = false;
+
+		if ((_price != null) &&
+			Objects.equals(
+				_price,
+				CommercePriceConstants.PRICE_VALUE_PRICE_ON_APPLICATION)) {
+
+			priceOnApplication = true;
+		}
+
+		if (_promoPrice != null) {
+			priceOnApplication = false;
+		}
+
+		return priceOnApplication;
 	}
 
 	public void setDiscount(String discount) {
@@ -71,10 +89,6 @@ public class PriceModel {
 		_price = price;
 	}
 
-	public void setPriceOnApplication(boolean priceOnApplication) {
-		_priceOnApplication = priceOnApplication;
-	}
-
 	public void setPromoPrice(String promoPrice) {
 		_promoPrice = promoPrice;
 	}
@@ -84,7 +98,6 @@ public class PriceModel {
 	private String[] _discountPercentages;
 	private String _finalPrice;
 	private String _price;
-	private boolean _priceOnApplication;
 	private String _promoPrice;
 
 }

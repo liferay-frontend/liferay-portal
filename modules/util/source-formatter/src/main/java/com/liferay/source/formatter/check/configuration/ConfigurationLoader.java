@@ -35,15 +35,19 @@ public class ConfigurationLoader {
 			String fileName)
 		throws DocumentException, IOException {
 
-		SourceFormatterConfiguration sourceFormatterConfiguration =
-			new SourceFormatterConfiguration();
-
 		ClassLoader classLoader = ConfigurationLoader.class.getClassLoader();
 
 		String content = StringUtil.read(
 			classLoader.getResourceAsStream(fileName));
 
 		Document document = SourceUtil.readXML(content);
+
+		if (document == null) {
+			throw new DocumentException();
+		}
+
+		SourceFormatterConfiguration sourceFormatterConfiguration =
+			new SourceFormatterConfiguration();
 
 		Element rootElement = document.getRootElement();
 

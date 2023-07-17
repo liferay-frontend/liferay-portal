@@ -118,39 +118,33 @@ public class CommerceProductPriceCalculationV2Impl
 		CommerceMoney unitPriceCommerceMoney = _getUnitPrice(
 			commercePriceListId, cpInstanceId, quantity, commerceContext);
 
-		BigDecimal finalPrice = unitPriceCommerceMoney.getPrice();
-
-		CommerceMoney promoPriceCommerceMoney =
-			commerceMoneyFactory.emptyCommerceMoney();
-
 		boolean priceOnApplication =
 			unitPriceCommerceMoney.isPriceOnApplication();
 
-		if (!priceOnApplication) {
-			long commercePromoPriceListId = _getCommercePromoPriceListId(
-				cpInstanceId, commerceContext);
+		BigDecimal finalPrice = unitPriceCommerceMoney.getPrice();
 
-			promoPriceCommerceMoney = _getPromoPrice(
-				commercePromoPriceListId, cpInstanceId, quantity,
-				commerceContext);
+		long commercePromoPriceListId = _getCommercePromoPriceListId(
+			cpInstanceId, commerceContext);
 
-			if (promoPriceCommerceMoney.isPriceOnApplication() ||
-				(!promoPriceCommerceMoney.isEmpty() &&
-				 CommerceBigDecimalUtil.gt(
-					 promoPriceCommerceMoney.getPrice(), BigDecimal.ZERO) &&
-				 CommerceBigDecimalUtil.lte(
-					 promoPriceCommerceMoney.getPrice(),
-					 unitPriceCommerceMoney.getPrice()))) {
+		CommerceMoney promoPriceCommerceMoney = _getPromoPrice(
+			commercePromoPriceListId, cpInstanceId, quantity, commerceContext);
 
-				commercePriceListId = commercePromoPriceListId;
-				finalPrice = promoPriceCommerceMoney.getPrice();
-				priceOnApplication =
-					promoPriceCommerceMoney.isPriceOnApplication();
-			}
-			else {
-				promoPriceCommerceMoney =
-					commerceMoneyFactory.emptyCommerceMoney();
-			}
+		if (!promoPriceCommerceMoney.isEmpty() &&
+			CommerceBigDecimalUtil.gt(
+				promoPriceCommerceMoney.getPrice(), BigDecimal.ZERO) &&
+			(CommerceBigDecimalUtil.lt(
+				promoPriceCommerceMoney.getPrice(),
+				unitPriceCommerceMoney.getPrice()) ||
+			 unitPriceCommerceMoney.isPriceOnApplication())) {
+
+			commercePriceListId = commercePromoPriceListId;
+			finalPrice = promoPriceCommerceMoney.getPrice();
+			priceOnApplication =
+				priceOnApplication &&
+				promoPriceCommerceMoney.isPriceOnApplication();
+		}
+		else {
+			promoPriceCommerceMoney = commerceMoneyFactory.emptyCommerceMoney();
 		}
 
 		BigDecimal[] updatedPrices = getUpdatedPrices(
@@ -629,7 +623,8 @@ public class CommerceProductPriceCalculationV2Impl
 		CommerceTierPriceEntry commerceTierPriceEntry =
 			_commerceTierPriceEntryLocalService.
 				findClosestCommerceTierPriceEntry(
-					commercePriceEntry.getCommercePriceEntryId(), quantity);
+					commercePriceEntry.getCommercePriceEntryId(),
+					BigDecimal.valueOf(quantity));
 
 		if ((commerceTierPriceEntry == null) ||
 			commerceTierPriceEntry.isDiscountDiscovery()) {
@@ -722,7 +717,8 @@ public class CommerceProductPriceCalculationV2Impl
 			CommerceTierPriceEntry commerceTierPriceEntry =
 				_commerceTierPriceEntryLocalService.
 					findClosestCommerceTierPriceEntry(
-						commercePriceEntry.getCommercePriceEntryId(), quantity);
+						commercePriceEntry.getCommercePriceEntryId(),
+						BigDecimal.valueOf(quantity));
 
 			if (commerceTierPriceEntry == null) {
 				return commercePriceEntry.getPrice();
@@ -754,7 +750,8 @@ public class CommerceProductPriceCalculationV2Impl
 
 		List<CommerceTierPriceEntry> commerceTierPriceEntries =
 			_commerceTierPriceEntryLocalService.findCommerceTierPriceEntries(
-				commercePriceEntry.getCommercePriceEntryId(), quantity);
+				commercePriceEntry.getCommercePriceEntryId(),
+				BigDecimal.valueOf(quantity));
 
 		if (commerceTierPriceEntries.isEmpty()) {
 			return commercePrice;
@@ -767,8 +764,9 @@ public class CommerceProductPriceCalculationV2Impl
 
 		int totalTierCounter = 0;
 
-		int tierCounter =
-			commerceTierPriceEntry1.getMinQuantity() - totalTierCounter - 1;
+		BigDecimal minQuantity1 = commerceTierPriceEntry1.getMinQuantity();
+
+		int tierCounter = minQuantity1.intValue() - totalTierCounter - 1;
 
 		BigDecimal currentPrice = commercePriceEntry.getPrice();
 
@@ -787,8 +785,9 @@ public class CommerceProductPriceCalculationV2Impl
 			CommerceTierPriceEntry commerceTierPriceEntry3 =
 				commerceTierPriceEntries.get(i + 1);
 
-			tierCounter =
-				commerceTierPriceEntry3.getMinQuantity() - totalTierCounter - 1;
+			BigDecimal minQuantity = commerceTierPriceEntry3.getMinQuantity();
+
+			tierCounter = minQuantity.intValue() - totalTierCounter - 1;
 
 			currentPrice = currentPrice.multiply(
 				BigDecimal.valueOf(tierCounter));

@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.frontend.internal.cart;
 
+import com.liferay.commerce.constants.CommercePriceConstants;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.util.CommercePriceFormatter;
@@ -140,11 +141,25 @@ public class CommerceCartResourceUtil {
 			CommerceMoney finalPriceCommerceMoney, Locale locale)
 		throws Exception {
 
-		PriceModel priceModel = new PriceModel(
-			unitPriceCommerceMoney.format(locale));
+		PriceModel priceModel = null;
+
+		if (unitPriceCommerceMoney.isPriceOnApplication()) {
+			priceModel = new PriceModel(
+				CommercePriceConstants.PRICE_VALUE_PRICE_ON_APPLICATION);
+		}
+		else {
+			priceModel = new PriceModel(unitPriceCommerceMoney.format(locale));
+		}
 
 		if (promoPriceCommerceMoney != null) {
-			priceModel.setPromoPrice(promoPriceCommerceMoney.format(locale));
+			if (promoPriceCommerceMoney.isPriceOnApplication()) {
+				priceModel.setPromoPrice(
+					CommercePriceConstants.PRICE_VALUE_PRICE_ON_APPLICATION);
+			}
+			else {
+				priceModel.setPromoPrice(
+					promoPriceCommerceMoney.format(locale));
+			}
 		}
 
 		if (discountAmountCommerceMoney == null) {

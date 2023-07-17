@@ -15,6 +15,7 @@
 package com.liferay.commerce.frontend.internal.util;
 
 import com.liferay.commerce.constants.CPDefinitionInventoryConstants;
+import com.liferay.commerce.constants.CommercePriceConstants;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceMoney;
@@ -68,16 +69,22 @@ public class ProductHelperImpl implements ProductHelper {
 			_commerceProductPriceCalculation.getCPDefinitionMinimumPrice(
 				cpDefinitionId, commerceContext);
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", locale, getClass());
+		PriceModel priceModel = null;
 
-		PriceModel priceModel = new PriceModel(
-			_language.format(
-				resourceBundle, "from-x",
-				cpDefinitionMinimumPriceCommerceMoney.format(locale), false));
+		if (cpDefinitionMinimumPriceCommerceMoney.isPriceOnApplication()) {
+			priceModel = new PriceModel(
+				CommercePriceConstants.PRICE_VALUE_PRICE_ON_APPLICATION);
+		}
+		else {
+			ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
+				"content.Language", locale, getClass());
 
-		priceModel.setPriceOnApplication(
-			cpDefinitionMinimumPriceCommerceMoney.isPriceOnApplication());
+			priceModel = new PriceModel(
+				_language.format(
+					resourceBundle, "from-x",
+					cpDefinitionMinimumPriceCommerceMoney.format(locale),
+					false));
+		}
 
 		return priceModel;
 	}
@@ -213,28 +220,33 @@ public class ProductHelperImpl implements ProductHelper {
 			CommerceDiscountValue commerceDiscountValue, Locale locale)
 		throws PortalException {
 
-		PriceModel priceModel = new PriceModel(
-			unitPriceCommerceMoney.format(locale));
+		PriceModel priceModel = null;
 
-		boolean priceOnApplication = false;
-
-		if (unitPriceCommerceMoney.isPriceOnApplication() ||
-			unitPromoPriceCommerceMoney.isPriceOnApplication()) {
-
-			priceOnApplication = true;
+		if (unitPriceCommerceMoney.isPriceOnApplication()) {
+			priceModel = new PriceModel(
+				CommercePriceConstants.PRICE_VALUE_PRICE_ON_APPLICATION);
+		}
+		else {
+			priceModel = new PriceModel(unitPriceCommerceMoney.format(locale));
 		}
 
-		priceModel.setPriceOnApplication(priceOnApplication);
-
-		if (!unitPromoPriceCommerceMoney.isEmpty() && !priceOnApplication) {
+		if (!unitPromoPriceCommerceMoney.isEmpty()) {
 			BigDecimal unitPrice = unitPriceCommerceMoney.getPrice();
 			BigDecimal unitPromoPrice = unitPromoPriceCommerceMoney.getPrice();
 
 			if ((unitPromoPrice.compareTo(BigDecimal.ZERO) > 0) &&
-				(unitPromoPrice.compareTo(unitPrice) < 0)) {
+				((unitPromoPrice.compareTo(unitPrice) < 0) ||
+				 unitPriceCommerceMoney.isPriceOnApplication())) {
 
-				priceModel.setPromoPrice(
-					unitPromoPriceCommerceMoney.format(locale));
+				if (unitPromoPriceCommerceMoney.isPriceOnApplication()) {
+					priceModel.setPromoPrice(
+						CommercePriceConstants.
+							PRICE_VALUE_PRICE_ON_APPLICATION);
+				}
+				else {
+					priceModel.setPromoPrice(
+						unitPromoPriceCommerceMoney.format(locale));
+				}
 			}
 		}
 

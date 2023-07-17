@@ -31,13 +31,7 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcess
 	@Override
 	protected void doUpgrade() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			PreparedStatement preparedStatement1 = connection.prepareStatement(
-				StringBundler.concat(
-					"select 1 from LayoutClassedModelUsage where classNameId ",
-					"= ? and classPK = ? and containerKey = ? and ",
-					"containerType = ? and plid = ?"));
-
-			String sql = StringBundler.concat(
+			String sql1 = StringBundler.concat(
 				"select distinct ",
 				"LayoutClassedModelUsage.layoutClassedModelUsageId, ",
 				"LayoutClassedModelUsage.classNameId, ",
@@ -47,9 +41,13 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcess
 				"from LayoutClassedModelUsage inner join LayoutRevision on ",
 				"LayoutRevision.layoutRevisionId = ",
 				"LayoutClassedModelUsage.plid");
+			String sql2 = StringBundler.concat(
+				"select 1 from LayoutClassedModelUsage where classNameId = ? ",
+				"and classPK = ? and containerKey = ? and containerType = ? ",
+				"and plid = ?");
 
 			processConcurrently(
-				sql,
+				sql1,
 				"update LayoutClassedModelUsage set plid = ? where " +
 					"layoutClassedModelUsageId = ?",
 				resultSet -> new Object[] {
@@ -60,7 +58,7 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcess
 					resultSet.getLong("containerType"),
 					resultSet.getLong("plid")
 				},
-				(values, preparedStatement) -> {
+				(values, preparedStatement1) -> {
 					long layoutClassedModelUsageId = (Long)values[0];
 
 					long classNameId = (Long)values[1];
@@ -69,27 +67,31 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcess
 					long containerType = (Long)values[4];
 					long plid = (Long)values[5];
 
-					preparedStatement1.setLong(1, classNameId);
-					preparedStatement1.setLong(2, classPK);
-					preparedStatement1.setString(3, containerKey);
-					preparedStatement1.setLong(4, containerType);
-					preparedStatement1.setLong(5, plid);
+					try (PreparedStatement preparedStatement2 =
+							connection.prepareStatement(sql2)) {
 
-					try (ResultSet resultSet =
-							preparedStatement1.executeQuery()) {
+						preparedStatement2.setLong(1, classNameId);
+						preparedStatement2.setLong(2, classPK);
+						preparedStatement2.setString(3, containerKey);
+						preparedStatement2.setLong(4, containerType);
+						preparedStatement2.setLong(5, plid);
 
-						if (resultSet.next()) {
-							runSQL(
-								"delete from LayoutClassedModelUsage where " +
-									"layoutClassedModelUsageId = " +
-										layoutClassedModelUsageId);
-						}
-						else {
-							preparedStatement.setLong(1, plid);
-							preparedStatement.setLong(
-								2, layoutClassedModelUsageId);
+						try (ResultSet resultSet =
+								preparedStatement2.executeQuery()) {
 
-							preparedStatement.addBatch();
+							if (resultSet.next()) {
+								runSQL(
+									"delete from LayoutClassedModelUsage " +
+										"where layoutClassedModelUsageId = " +
+											layoutClassedModelUsageId);
+							}
+							else {
+								preparedStatement1.setLong(1, plid);
+								preparedStatement1.setLong(
+									2, layoutClassedModelUsageId);
+
+								preparedStatement1.addBatch();
+							}
 						}
 					}
 				},
