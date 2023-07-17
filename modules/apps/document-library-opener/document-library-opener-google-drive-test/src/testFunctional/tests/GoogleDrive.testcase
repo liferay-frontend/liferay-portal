@@ -1,9 +1,10 @@
 @component-name = "portal-document-management"
 definition {
 
-	property custom.properties = "default.layout.template.id=1_column";
+	property custom.properties = "default.layout.template.id=1_column${line.separator}dl.actions.visible=true";
 	property portal.release = "true";
 	property portal.upstream = "true";
+	property test.liferay.virtual.instance = "false";
 	property testray.main.component.name = "Online Editing";
 
 	var pageName = "Documents and Media Page";
@@ -28,8 +29,6 @@ definition {
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		DMDocument.enableActionsMenuOnPortlet();
-
 		LexiconEntry.changeDisplayStyle(displayStyle = "list");
 	}
 
@@ -50,11 +49,32 @@ definition {
 		}
 	}
 
+	@description = "This test ensures that a document is checked out when the Google Doc editor is being used"
+	@priority = 5
+	@refactordone
+	test CanAddGoogleDoc {
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Doc");
+
+		Google.signIn(
+			userEmailAddress = PropsUtil.get("email.address.3"),
+			userPassword = PropsUtil.get("email.password.3"),
+			windowTitle = "Documents and Media Page - Liferay");
+
+		Navigator.openURL();
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.viewCheckedoutPG(
+			dmDocumentTitle = "Untitled",
+			status = "Draft");
+	}
+
 	@description = "This test ensures that the title and the file name will be renamed when the created Google doc title duplicates the existing document file name."
 	@priority = 4
-	test AddGoogleEntryWithDuplicateFileName {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanAddGoogleEntryWithDuplicateFileName {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Sheet");
@@ -76,15 +96,9 @@ definition {
 
 		DMNavigator.gotoEditDocumentPG(dmDocumentTitle = "Untitled");
 
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled");
-
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled Edit.xlsx");
+		DMDocument.viewEntryInEdit(
+			dmDocumentFileName = "Untitled Edit.xlsx",
+			dmDocumentTitle = "Untitled");
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
@@ -96,29 +110,19 @@ definition {
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		AssertTextEquals(
-			key_dmDocumentTitle = "Untitled Edit (1)",
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE",
-			value1 = "Untitled Edit (1)");
+		DMDocument.viewDocumentTitleInListView(dmDocumentTitle = "Untitled Edit (1)");
 
 		DMNavigator.gotoEditDocumentPG(dmDocumentTitle = "Untitled Edit (1)");
 
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled Edit (1)");
-
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled Edit (1).xlsx");
+		DMDocument.viewEntryInEdit(
+			dmDocumentFileName = "Untitled Edit (1).xlsx",
+			dmDocumentTitle = "Untitled Edit (1)");
 	}
 
 	@description = "This test ensures that the title and the file name will be renamed when the created Google doc title duplicates the existing document title."
 	@priority = 4
-	test AddGoogleEntryWithDuplicateTitle {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanAddGoogleEntryWithDuplicateTitle {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Doc");
@@ -140,15 +144,9 @@ definition {
 
 		DMNavigator.gotoEditDocumentPG(dmDocumentTitle = "Untitled Edit");
 
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled Edit");
-
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled.docx");
+		DMDocument.viewEntryInEdit(
+			dmDocumentFileName = "Untitled.docx",
+			dmDocumentTitle = "Untitled Edit");
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
@@ -160,29 +158,63 @@ definition {
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		AssertTextEquals(
-			key_dmDocumentTitle = "Untitled Edit (1)",
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE",
-			value1 = "Untitled Edit (1)");
+		DMDocument.viewDocumentTitleInListView(dmDocumentTitle = "Untitled Edit (1)");
 
 		DMNavigator.gotoEditDocumentPG(dmDocumentTitle = "Untitled Edit (1)");
 
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled Edit (1)");
+		DMDocument.viewEntryInEdit(
+			dmDocumentFileName = "Untitled Edit (1).docx",
+			dmDocumentTitle = "Untitled Edit (1)");
+	}
 
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled Edit (1).docx");
+	@description = "This test ensures that a document is checked out when the Google Sheet editor is being used"
+	@priority = 5
+	@refactordone
+	test CanAddGoogleSheet {
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Sheet");
+
+		Google.signIn(
+			userEmailAddress = PropsUtil.get("email.address.2"),
+			userPassword = PropsUtil.get("email.password.2"),
+			windowTitle = "Documents and Media Page - Liferay");
+
+		Navigator.openURL();
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.viewCheckedoutPG(
+			dmDocumentTitle = "Untitled",
+			status = "Draft");
+	}
+
+	@description = "This test ensures that a document is checked out when the Google Slide editor is being used"
+	@priority = 5
+	@refactordone
+	test CanAddGoogleSlide {
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Slide");
+
+		Google.signIn(
+			userEmailAddress = PropsUtil.get("email.address.2"),
+			userPassword = PropsUtil.get("email.password.2"),
+			windowTitle = "Documents and Media Page - Liferay");
+
+		Navigator.openURL();
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.viewCheckedoutPG(
+			dmDocumentTitle = "Untitled",
+			status = "Draft");
 	}
 
 	@description = "This test ensures that a Google Doc is autotagged once checked in."
 	@priority = 4
-	test AutoTagGoogleDoc {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanAutoTagGoogleDoc {
 		AutoTagging.enableOpenNLP(
 			assetType = "Document",
 			confidenceThreshold = "0.001");
@@ -211,11 +243,10 @@ definition {
 		DMDocument.viewTagInfo(tagName = "adventures,alice");
 	}
 
-	@description = "This test ensures no document is generated if a user cancels creating a Google Doc."
+	@description = "This test ensures no document is generated if a user cancels creating a Google Doc when enabling googleD drive at instance level."
 	@priority = 5
-	test CancelGoogleDocCreation {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanCancelGoogleDocCreationWhenEnablingGoogleDriveAtInstanceLevel {
 		DMNavigator.openToConfigInSystemSettings(portlet = "Google Drive");
 
 		LexiconEntry.gotoEllipsisMenuItem(menuItem = "Reset Default Values");
@@ -238,9 +269,8 @@ definition {
 
 	@description = "This test ensures the title of a document is not changed if a user cancels editing a Google Doc."
 	@priority = 5
-	test CancelGoogleDocEdit {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanCancelGoogleDocEditing {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Doc");
@@ -264,17 +294,13 @@ definition {
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		AssertTextEquals(
-			key_dmDocumentTitle = "Untitled",
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE",
-			value1 = "Untitled");
+		DMDocument.viewDocumentTitleInListView(dmDocumentTitle = "Untitled");
 	}
 
 	@description = "This test ensures no document is generated if a user cancels creating a Google Doc."
 	@priority = 5
-	test CancelGoogleSheetCreation {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanCancelGoogleSheetCreation {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Sheet");
@@ -291,9 +317,8 @@ definition {
 
 	@description = "This test ensures the title of a document is not changed if a user cancels editing a Google Sheet."
 	@priority = 5
-	test CancelGoogleSheetEdit {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanCancelGoogleSheetEditing {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Sheet");
@@ -317,17 +342,13 @@ definition {
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		AssertTextEquals(
-			key_dmDocumentTitle = "Untitled",
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE",
-			value1 = "Untitled");
+		DMDocument.viewDocumentTitleInListView(dmDocumentTitle = "Untitled");
 	}
 
 	@description = "This test ensures no document is generated if a user cancels creating a Google Doc."
 	@priority = 5
-	test CancelGoogleSlideCreation {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanCancelGoogleSlideCreation {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Slide");
@@ -344,9 +365,8 @@ definition {
 
 	@description = "This test ensures the title of a document is not changed if a user cancels editing a Google Slide."
 	@priority = 5
-	test CancelGoogleSlideEdit {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanCancelGoogleSlideEditing {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Slide");
@@ -370,17 +390,14 @@ definition {
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		AssertTextEquals(
-			key_dmDocumentTitle = "Untitled",
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE",
-			value1 = "Untitled");
+		DMDocument.viewDocumentTitleInListView(dmDocumentTitle = "Untitled");
 	}
 
 	@description = "This ensures that a Google document can be copied from depot to site."
 	@priority = 5
+	@refactordone
 	test CanCopyGoogleDocFromDepotToSite {
 		property custom.properties = "feature.flag.LPS-182512=true";
-		property test.liferay.virtual.instance = "false";
 
 		HeadlessSite.addSite(siteName = "Site Name");
 
@@ -418,9 +435,9 @@ definition {
 
 	@description = "This test ensures that a Google Drive doc in a depot can be copied to another folder."
 	@priority = 5
+	@refactordone
 	test CanCopyGoogleDocToOtherFolderInDepot {
 		property custom.properties = "feature.flag.LPS-182512=true";
-		property test.liferay.virtual.instance = "false";
 
 		JSONDepot.addDepot(
 			depotDescription = "This is the description of a depot",
@@ -462,9 +479,9 @@ definition {
 
 	@description = "This test ensures that a Google Drive doc in a site can be copied to the other site folder."
 	@priority = 5
+	@refactordone
 	test CanCopyGoogleDocToOtherSite {
 		property custom.properties = "feature.flag.LPS-182512=true";
-		property test.liferay.virtual.instance = "false";
 
 		HeadlessSite.addSite(siteName = "Site Name");
 
@@ -495,159 +512,10 @@ definition {
 		LexiconEntry.viewEntryName(rowEntry = "Untitled");
 	}
 
-	@description = "This test covers LPS-107584. It ensures that a checked out google document cannot be edited by another user."
-	@priority = 4
-	test CheckOutGoogleDoc {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-		property test.liferay.virtual.instance = "false";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONRole.addRegularRole(roleTitle = "Regular Role");
-
-		JSONRole.assignRoleToUser(
-			roleTitle = "Regular Role",
-			userEmailAddress = "userea@liferay.com");
-
-		for (var resourceAction : list "ACCESS_IN_CONTROL_PANEL,VIEW") {
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = ${resourceAction},
-				resourceName = "com_liferay_document_library_web_portlet_DLAdminPortlet",
-				roleTitle = "Regular Role");
-		}
-
-		for (var resourceAction : list "UPDATE,VIEW,DOWNLOAD") {
-			Permissions.definePermissionViaJSONAPI(
-				resourceAction = ${resourceAction},
-				resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
-				roleTitle = "Regular Role");
-		}
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Doc");
-
-		Google.signIn(
-			userEmailAddress = PropsUtil.get("email.address.2"),
-			userPassword = PropsUtil.get("email.password.2"),
-			windowTitle = "Documents and Media Page - Liferay");
-
-		GoogleDoc.saveAndExit();
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.checkoutPG(dmDocumentTitle = "Untitled");
-
-		User.logoutPG();
-
-		User.loginUserPG(
-			password = "test",
-			userEmailAddress = "userea@liferay.com");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.selectDocuments(dmDocumentTitle = "Untitled");
-
-		AssertElementPresent(locator1 = "Icon#EDIT_TAGS_DISABLED");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.editCmdPG(
-			checkedOut = "true",
-			dmDocumentTitle = "Untitled",
-			userName = "Test Test");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		for (var menuItem : list "Edit,Edit in Google Sheets,Checkin") {
-			LexiconEntry.viewNoEntryMenuItem(
-				menuItem = ${menuItem},
-				rowEntry = "Untitled");
-		}
-	}
-
-	@description = "This test covers LPS-107161. It ensures that a checked out google sheet cannot be edited by another user."
-	@priority = 4
-	test CheckOutGoogleSheet {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-		property test.liferay.virtual.instance = "false";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONRole.assignRoleToUser(
-			roleTitle = "Administrator",
-			userEmailAddress = "userea@liferay.com");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Sheet");
-
-		Google.signIn(
-			userEmailAddress = PropsUtil.get("email.address.3"),
-			userPassword = PropsUtil.get("email.password.3"),
-			windowTitle = "Documents and Media Page - Liferay");
-
-		GoogleDoc.saveAndExit();
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.checkoutPG(dmDocumentTitle = "Untitled");
-
-		User.logoutPG();
-
-		User.loginUserPG(
-			password = "test",
-			userEmailAddress = "userea@liferay.com");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.selectDocuments(dmDocumentTitle = "Untitled");
-
-		AssertElementPresent(locator1 = "Icon#EDIT_TAGS_DISABLED");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.editCmdPG(
-			checkedOut = "true",
-			dmDocumentTitle = "Untitled",
-			userName = "Test Test");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		for (var menuItem : list "Edit,Edit in Google Sheets,Checkin") {
-			LexiconEntry.viewNoEntryMenuItem(
-				menuItem = ${menuItem},
-				rowEntry = "Untitled");
-		}
-	}
-
 	@description = "This test ensures a Google Doc title can be changed through the editor"
 	@priority = 4
-	test EditGoogleDoc {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanEditGoogleDoc {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Doc");
@@ -663,15 +531,9 @@ definition {
 
 		DMNavigator.gotoEditDocumentPG(dmDocumentTitle = "Untitled");
 
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled");
-
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled.docx");
+		DMDocument.viewEntryInEdit(
+			dmDocumentFileName = "Untitled.docx",
+			dmDocumentTitle = "Untitled");
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
@@ -685,29 +547,19 @@ definition {
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		AssertTextEquals(
-			key_dmDocumentTitle = "Edited Google Document",
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE",
-			value1 = "Edited Google Document");
+		DMDocument.viewDocumentTitleInListView(dmDocumentTitle = "Edited Google Document");
 
 		DMNavigator.gotoEditDocumentPG(dmDocumentTitle = "Edited Google Document");
 
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Edited Google Document");
-
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Edited Google Document.docx");
+		DMDocument.viewEntryInEdit(
+			dmDocumentFileName = "Edited Google Document.docx",
+			dmDocumentTitle = "Edited Google Document");
 	}
 
 	@description = "This test ensures that special characters  can be saved through the Google Doc editor"
 	@priority = 4
-	test EditGoogleDocWithSpecialCharacters {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanEditGoogleDocWithSpecialCharacters {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Doc");
@@ -735,17 +587,13 @@ definition {
 
 		var dmDocumentTitle = '''Special Characters Title 12345`~!@#$%_&_(){}[],.__/__''';
 
-		AssertTextEquals(
-			key_dmDocumentTitle = ${dmDocumentTitle},
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE",
-			value1 = ${dmDocumentTitle});
+		DMDocument.viewDocumentTitleInListView(dmDocumentTitle = ${dmDocumentTitle});
 	}
 
 	@description = "This test covers LPS-107165 and LPS-184221. It ensures that Google doc can be Edited when enabling Workflow."
 	@priority = 4
-	test EditGoogleDocWithWorkflow {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanEditGoogleDocWithWorkflow {
 		JSONFolder.addFolder(
 			dmFolderDescription = "DM Folder Description",
 			dmFolderName = "DM Folder Name",
@@ -830,9 +678,8 @@ definition {
 
 	@description = "This test ensures a Google Sheet title can be changed through the editor"
 	@priority = 4
-	test EditGoogleSheet {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanEditGoogleSheet {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Sheet");
@@ -848,15 +695,9 @@ definition {
 
 		DMNavigator.gotoEditDocumentPG(dmDocumentTitle = "Untitled");
 
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled");
-
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Untitled.xlsx");
+		DMDocument.viewEntryInEdit(
+			dmDocumentFileName = "Untitled.xlsx",
+			dmDocumentTitle = "Untitled");
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
@@ -870,29 +711,19 @@ definition {
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		AssertTextEquals(
-			key_dmDocumentTitle = "Edited Google Sheet",
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE",
-			value1 = "Edited Google Sheet");
+		DMDocument.viewDocumentTitleInListView(dmDocumentTitle = "Edited Google Sheet");
 
 		DMNavigator.gotoEditDocumentPG(dmDocumentTitle = "Edited Google Sheet");
 
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Edited Google Sheet");
-
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Edited Google Sheet.xlsx");
+		DMDocument.viewEntryInEdit(
+			dmDocumentFileName = "Edited Google Sheet.xlsx",
+			dmDocumentTitle = "Edited Google Sheet");
 	}
 
 	@description = "This test ensures a Google Slide title can be changed through the editor"
 	@priority = 4
-	test EditGoogleSlide {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanEditGoogleSlide {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Slide");
@@ -910,15 +741,9 @@ definition {
 
 		DMNavigator.gotoEditDocumentPG(dmDocumentTitle = "Google Slide");
 
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Google Slide");
-
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Google Slide.pptx");
+		DMDocument.viewEntryInEdit(
+			dmDocumentFileName = "Google Slide.pptx",
+			dmDocumentTitle = "Google Slide");
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
@@ -932,98 +757,19 @@ definition {
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
-		AssertTextEquals(
-			key_dmDocumentTitle = "Edited Google Slide",
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE",
-			value1 = "Edited Google Slide");
+		DMDocument.viewDocumentTitleInListView(dmDocumentTitle = "Edited Google Slide");
 
 		DMNavigator.gotoEditDocumentPG(dmDocumentTitle = "Edited Google Slide");
 
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Edited Google Slide");
-
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = "Edited Google Slide.pptx");
-	}
-
-	@description = "This test ensures that a document is checked out when the Google Doc editor is being used"
-	@priority = 5
-	test GoogleDocSmoke {
-		property test.liferay.virtual.instance = "false";
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Doc");
-
-		Google.signIn(
-			userEmailAddress = PropsUtil.get("email.address.3"),
-			userPassword = PropsUtil.get("email.password.3"),
-			windowTitle = "Documents and Media Page - Liferay");
-
-		Navigator.openURL();
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.viewCheckedoutPG(
-			dmDocumentTitle = "Untitled",
-			status = "Draft");
-	}
-
-	@description = "This test ensures that a document is checked out when the Google Sheet editor is being used"
-	@priority = 5
-	test GoogleSheetSmoke {
-		property test.liferay.virtual.instance = "false";
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Sheet");
-
-		Google.signIn(
-			userEmailAddress = PropsUtil.get("email.address.2"),
-			userPassword = PropsUtil.get("email.password.2"),
-			windowTitle = "Documents and Media Page - Liferay");
-
-		Navigator.openURL();
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.viewCheckedoutPG(
-			dmDocumentTitle = "Untitled",
-			status = "Draft");
-	}
-
-	@description = "This test ensures that a document is checked out when the Google Slide editor is being used"
-	@priority = 5
-	test GoogleSlideSmoke {
-		property test.liferay.virtual.instance = "false";
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Slide");
-
-		Google.signIn(
-			userEmailAddress = PropsUtil.get("email.address.2"),
-			userPassword = PropsUtil.get("email.password.2"),
-			windowTitle = "Documents and Media Page - Liferay");
-
-		Navigator.openURL();
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.viewCheckedoutPG(
-			dmDocumentTitle = "Untitled",
-			status = "Draft");
+		DMDocument.viewEntryInEdit(
+			dmDocumentFileName = "Edited Google Slide.pptx",
+			dmDocumentTitle = "Edited Google Slide");
 	}
 
 	@description = "This test covers LPS-93897. It ensures that previously entered Google credentials can be cleared."
 	@priority = 5
-	test RevokeGoogleDriveCredentials {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanRevokeGoogleDriveCredentials {
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Doc");
@@ -1061,11 +807,10 @@ definition {
 		}
 	}
 
-	@description = "This test covers LPS-91174. It ensures that a user cannot save a Google Doc in Portal after logging out."
+	@description = "This test covers LPS-91174. It ensures that a Google Doc can be saved in Portal after logging out."
 	@priority = 5
-	test SaveGoogleDocAfterLoggingOut {
-		property test.liferay.virtual.instance = "false";
-
+	@refactordone
+	test CanSaveGoogleDocAfterLoggingOut {
 		var siteName = TestCase.getSiteName(siteName = ${siteName});
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
@@ -1088,13 +833,170 @@ definition {
 		WaitForElementPresent(locator1 = "UserBar#USER_SIGN_IN");
 
 		AssertConsoleTextNotPresent(value1 = "javax.portlet.PortletException:");
+
+		User.loginUserPG(
+			password = "test",
+			userEmailAddress = "test@liferay.com");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.viewCheckedoutPG(
+			dmDocumentTitle = "Untitled",
+			status = "Draft");
+	}
+
+	@description = "This test covers LPS-107584. It ensures that a checked out google document cannot be edited by another user."
+	@priority = 4
+	@refactordone
+	test CheckedOutGoogleDocCanNotBeEditedByOtherUsers {
+		property custom.properties = "default.layout.template.id=1_column${line.separator}dl.actions.visible=true${line.separator}jsonws.web.service.paths.excludes=";
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "userea@liferay.com");
+
+		JSONRole.addRegularRole(roleTitle = "Regular Role");
+
+		JSONRole.assignRoleToUser(
+			roleTitle = "Regular Role",
+			userEmailAddress = "userea@liferay.com");
+
+		for (var resourceAction : list "ACCESS_IN_CONTROL_PANEL,VIEW") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = ${resourceAction},
+				resourceName = "com_liferay_document_library_web_portlet_DLAdminPortlet",
+				roleTitle = "Regular Role");
+		}
+
+		for (var resourceAction : list "UPDATE,VIEW,DOWNLOAD") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = ${resourceAction},
+				resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
+				roleTitle = "Regular Role");
+		}
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Doc");
+
+		Google.signIn(
+			userEmailAddress = PropsUtil.get("email.address.2"),
+			userPassword = PropsUtil.get("email.password.2"),
+			windowTitle = "Documents and Media Page - Liferay");
+
+		GoogleDoc.saveAndExit();
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.checkoutPG(dmDocumentTitle = "Untitled");
+
+		User.logoutPG();
+
+		User.loginUserPG(
+			password = "test",
+			userEmailAddress = "userea@liferay.com");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.selectDocuments(dmDocumentTitle = "Untitled");
+
+		AssertElementPresent(locator1 = "Icon#EDIT_TAGS_DISABLED");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.editCmdPG(
+			checkedOut = "true",
+			dmDocumentTitle = "Untitled",
+			userName = "Test Test");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		for (var menuItem : list "Edit,Edit in Google Sheets,Checkin") {
+			LexiconEntry.viewNoEntryMenuItem(
+				menuItem = ${menuItem},
+				rowEntry = "Untitled");
+		}
+	}
+
+	@description = "This test covers LPS-107161. It ensures that a checked out google sheet cannot be edited by another user."
+	@priority = 4
+	@refactordone
+	test CheckedOutGoogleSheetCanNotBeEditedByOtherUsers {
+		property custom.properties = "default.layout.template.id=1_column${line.separator}dl.actions.visible=true${line.separator}jsonws.web.service.paths.excludes=";
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "userea@liferay.com");
+
+		JSONRole.assignRoleToUser(
+			roleTitle = "Administrator",
+			userEmailAddress = "userea@liferay.com");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Sheet");
+
+		Google.signIn(
+			userEmailAddress = PropsUtil.get("email.address.3"),
+			userPassword = PropsUtil.get("email.password.3"),
+			windowTitle = "Documents and Media Page - Liferay");
+
+		GoogleDoc.saveAndExit();
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.checkoutPG(dmDocumentTitle = "Untitled");
+
+		User.logoutPG();
+
+		User.loginUserPG(
+			password = "test",
+			userEmailAddress = "userea@liferay.com");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.selectDocuments(dmDocumentTitle = "Untitled");
+
+		AssertElementPresent(locator1 = "Icon#EDIT_TAGS_DISABLED");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.editCmdPG(
+			checkedOut = "true",
+			dmDocumentTitle = "Untitled",
+			userName = "Test Test");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		for (var menuItem : list "Edit,Edit in Google Sheets,Checkin") {
+			LexiconEntry.viewNoEntryMenuItem(
+				menuItem = ${menuItem},
+				rowEntry = "Untitled");
+		}
 	}
 
 	@description = "This test ensures that the Google Drive file can be added with Japanese."
 	@priority = 5
+	@refactordone
 	test TitleAndFileNameCanBeDisplayedCorrectlyWithJapanese {
-		property test.liferay.virtual.instance = "false";
-
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
 		DMNavigator.gotoAddDocumentTypePG(dmDocumentTypeName = "Google Doc");
