@@ -9,7 +9,9 @@
  * distribution rights of the Software.
  */
 
-export default interface LiferayFile extends File {
+export default interface LiferayFile extends Partial<File> {
+	activityDocumentId?: number;
+	documentId?: number;
 	id?: number;
-	link: Object;
+	link?: Object;
 }

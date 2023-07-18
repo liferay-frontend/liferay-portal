@@ -10,43 +10,38 @@
  */
 
 import MDFClaimDTO from '../../../interfaces/dto/mdfClaimDTO';
-import LiferayFile from '../../../interfaces/liferayFile';
 import MDFClaim from '../../../interfaces/mdfClaim';
+import getPOPFromMDFActDocs from '../../getPOPFromMDFActDocs';
+import {getLiferayFileFromAttachment} from './getLiferayFileFromAttachment';
 
 export function getMDFClaimFromDTO(mdfClaim: MDFClaimDTO): MDFClaim {
 	return {
 		...mdfClaim,
-
 		activities:
 			mdfClaim?.mdfClmToMDFClmActs?.map((activityItem) => {
 				const {
 					currency,
+					eventProgram,
+					externalReferenceCode,
 					id,
 					listOfQualifiedLeads,
 					metrics,
 					r_actToMDFClmActs_c_activityId,
 					r_mdfClmToMDFClmActs_c_mdfClaimId,
 					selected,
+					telemarketingMetrics,
+					telemarketingScript,
 					totalCost,
+					typeActivity,
+					videoLink,
 				} = activityItem;
 
 				return {
-					allContents: activityItem.mdfClmActToMDFActDocs?.map(
-						(allContentItem) =>
-							allContentItem.allContents &&
-							({
-								...(allContentItem.allContents as Object),
-								name: allContentItem.allContents.name
-									.split('#')
-									.reverse()
-									.splice(1)
-									.join(''),
-							} as LiferayFile & number)
-					) as LiferayFile[],
 					budgets: activityItem.mdfClmActToMDFClmBgts?.map(
 						(budgetItem) => {
 							const {
 								expenseName,
+								externalReferenceCode,
 								id,
 								invoice,
 								invoiceAmount,
@@ -56,17 +51,11 @@ export function getMDFClaimFromDTO(mdfClaim: MDFClaimDTO): MDFClaim {
 
 							return {
 								expenseName,
+								externalReferenceCode,
 								id,
 								invoice:
 									invoice &&
-									({
-										...(invoice as Object),
-										name: invoice.name
-											.split('#')
-											.reverse()
-											.splice(1)
-											.join(''),
-									} as LiferayFile & number),
+									getLiferayFileFromAttachment(invoice),
 								invoiceAmount,
 								r_bgtToMDFClmBgts_c_budgetId,
 								selected,
@@ -74,34 +63,30 @@ export function getMDFClaimFromDTO(mdfClaim: MDFClaimDTO): MDFClaim {
 						}
 					),
 					currency,
+					eventProgram:
+						eventProgram &&
+						getLiferayFileFromAttachment(eventProgram),
+					externalReferenceCode,
 					id,
 					listOfQualifiedLeads:
 						listOfQualifiedLeads &&
-						({
-							...(listOfQualifiedLeads as Object),
-							name: listOfQualifiedLeads.name
-								.split('#')
-								.reverse()
-								.splice(1)
-								.join(''),
-						} as LiferayFile & number),
+						getLiferayFileFromAttachment(listOfQualifiedLeads),
 					metrics,
-
+					proofOfPerformance: getPOPFromMDFActDocs(activityItem),
 					r_actToMDFClmActs_c_activityId,
 					r_mdfClmToMDFClmActs_c_mdfClaimId,
 					selected,
+					telemarketingMetrics,
+					telemarketingScript:
+						telemarketingScript &&
+						getLiferayFileFromAttachment(telemarketingScript),
 					totalCost,
+					typeActivity,
+					videoLink,
 				};
 			}) || [],
 		reimbursementInvoice:
 			mdfClaim.reimbursementInvoice &&
-			({
-				...(mdfClaim.reimbursementInvoice as Object),
-				name: mdfClaim.reimbursementInvoice.name
-					.split('#')
-					.reverse()
-					.splice(1)
-					.join(''),
-			} as LiferayFile & number),
+			getLiferayFileFromAttachment(mdfClaim.reimbursementInvoice),
 	};
 }

@@ -20,8 +20,10 @@ import PRMFormik from '../../../../common/components/PRMFormik';
 import PRMFormikPageProps from '../../../../common/components/PRMFormik/interfaces/prmFormikPageProps';
 import ResumeCard from '../../../../common/components/ResumeCard';
 import MDFRequestDTO from '../../../../common/interfaces/dto/mdfRequestDTO';
+import LiferayFile from '../../../../common/interfaces/liferayFile';
 import MDFClaim from '../../../../common/interfaces/mdfClaim';
 import MDFClaimProps from '../../../../common/interfaces/mdfClaimProps';
+import deleteDocument from '../../../../common/services/liferay/headless-delivery/deleteDocument';
 import {Status} from '../../../../common/utils/constants/status';
 import getIntlNumberFormat from '../../../../common/utils/getIntlNumberFormat';
 import useDynamicFieldEntries from '../../../MDFClaimList/hooks/useDynamicFieldEntries';
@@ -166,10 +168,17 @@ const MDFClaimPage = ({
 						displayType="secondary"
 						label="Reimbursement Invoice"
 						name="reimbursementInvoice"
-						onAccept={(value: File) =>
-							setFieldValue('reimbursementInvoice', value)
-						}
+						onAccept={(liferayFile: LiferayFile) => {
+							if (values.reimbursementInvoice?.documentId) {
+								deleteDocument(
+									values.reimbursementInvoice.documentId
+								);
+							}
+
+							setFieldValue(`reimbursementInvoice`, liferayFile);
+						}}
 						outline
+						required
 						small
 					/>
 

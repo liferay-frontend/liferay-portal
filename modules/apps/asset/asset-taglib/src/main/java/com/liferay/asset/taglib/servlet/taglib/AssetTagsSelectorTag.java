@@ -24,8 +24,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.PortletProvider;
-import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -48,7 +46,6 @@ import java.util.Set;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
-import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -168,13 +165,6 @@ public class AssetTagsSelectorTag extends IncludeTag {
 		_tagNames = null;
 	}
 
-	protected String getEventName() {
-		String portletId = PortletProviderUtil.getPortletId(
-			AssetTag.class.getName(), PortletProvider.Action.BROWSE);
-
-		return PortalUtil.getPortletNamespace(portletId) + "selectTag";
-	}
-
 	protected long[] getGroupIds() {
 		try {
 			if (ArrayUtil.isEmpty(_groupIds)) {
@@ -215,31 +205,22 @@ public class AssetTagsSelectorTag extends IncludeTag {
 		return _PAGE;
 	}
 
-	protected PortletURL getPortletURL() {
-		try {
-			AssetTagsItemSelectorCriterion assetTagsItemSelectorCriterion =
-				new AssetTagsItemSelectorCriterion();
+	protected String getPortletURL(String eventName) {
+		AssetTagsItemSelectorCriterion assetTagsItemSelectorCriterion =
+			new AssetTagsItemSelectorCriterion();
 
-			assetTagsItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-				new AssetTagsItemSelectorReturnType());
-			assetTagsItemSelectorCriterion.setGroupIds(getGroupIds());
-			assetTagsItemSelectorCriterion.setMultiSelection(true);
+		assetTagsItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+			new AssetTagsItemSelectorReturnType());
+		assetTagsItemSelectorCriterion.setGroupIds(getGroupIds());
+		assetTagsItemSelectorCriterion.setMultiSelection(true);
 
-			return PortletURLBuilder.create(
-				ItemSelectorUtil.getItemSelector(
-				).getItemSelectorURL(
-					RequestBackedPortletURLFactoryUtil.create(getRequest()),
-					getEventName(), assetTagsItemSelectorCriterion
-				)
-			).buildPortletURL();
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
-
-		return null;
+		return PortletURLBuilder.create(
+			ItemSelectorUtil.getItemSelector(
+			).getItemSelectorURL(
+				RequestBackedPortletURLFactoryUtil.create(getRequest()),
+				eventName, assetTagsItemSelectorCriterion
+			)
+		).buildString();
 	}
 
 	protected List<String> getTagNames() {
@@ -281,6 +262,11 @@ public class AssetTagsSelectorTag extends IncludeTag {
 	}
 
 	private Map<String, Object> _getData() {
+		String randomNamespace = PortalUtil.generateRandomKey(
+			getRequest(), "taglib_asset_tag_selector");
+
+		String eventName = randomNamespace + "selectTag";
+
 		return HashMapBuilder.<String, Object>put(
 			"addCallback",
 			() -> {
@@ -291,7 +277,7 @@ public class AssetTagsSelectorTag extends IncludeTag {
 				return null;
 			}
 		).put(
-			"eventName", getEventName()
+			"eventName", eventName
 		).put(
 			"groupIds", getGroupIds()
 		).put(
@@ -299,7 +285,7 @@ public class AssetTagsSelectorTag extends IncludeTag {
 		).put(
 			"inputName", _getInputName()
 		).put(
-			"portletURL", String.valueOf(getPortletURL())
+			"portletURL", getPortletURL(eventName)
 		).put(
 			"removeCallback",
 			() -> {

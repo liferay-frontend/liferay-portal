@@ -16,15 +16,21 @@ import {FormikContextType} from 'formik';
 import {useCallback, useState} from 'react';
 
 import PRMForm from '../../../../../../common/components/PRMForm';
-import InputMultipleFilesListing from '../../../../../../common/components/PRMForm/components/fields/InputMultipleFilesListing';
 import PRMFormik from '../../../../../../common/components/PRMFormik';
+import {TypeActivityKey} from '../../../../../../common/enums/TypeActivityKey';
 import LiferayFile from '../../../../../../common/interfaces/liferayFile';
 import MDFClaim from '../../../../../../common/interfaces/mdfClaim';
 import MDFClaimActivity from '../../../../../../common/interfaces/mdfClaimActivity';
 import {Liferay} from '../../../../../../common/services/liferay';
+import deleteDocument from '../../../../../../common/services/liferay/headless-delivery/deleteDocument';
 import {Status} from '../../../../../../common/utils/constants/status';
 import getIntlNumberFormat from '../../../../../../common/utils/getIntlNumberFormat';
+import checkRequiredListOfQualifiedLeads from '../../../../utils/checkRequiredListOfQualifiedLeads';
 import BudgetClaimPanel from './components/BudgetClaimPanel';
+import ContentMarketingPopFields from './components/ContentMarketingPopFields';
+import DigitalMarketingPopFields from './components/DigitalMarketingPopFields';
+import EventPopFields from './components/EventPopFields';
+import MiscellaneousMarketingPopFields from './components/MiscellaneousMarketingPopFields';
 import PanelBody from './components/PanelBody';
 import PanelHeader from './components/PanelHeader';
 import useBudgetsAmount from './hooks/useBudgetsAmount';
@@ -34,6 +40,10 @@ interface IProps {
 	activityIndex: number;
 	overallCampaignDescription: string;
 }
+
+type TypeActivityComponent = {
+	[key in string]?: JSX.Element;
+};
 
 const ActivityStatus = {
 	ACTIVE: 'active',
@@ -63,6 +73,7 @@ const ActivityClaimPanel = ({
 	setFieldValue,
 }: IProps & Pick<FormikContextType<MDFClaim>, 'setFieldValue'>) => {
 	const [expanded, setExpanded] = useState<boolean>(!activity.selected);
+
 	const siteURL = Liferay.ThemeDisplay.getLayoutRelativeControlPanelURL().split(
 		'/'
 	)[2];
@@ -78,10 +89,47 @@ const ActivityClaimPanel = ({
 			[activityIndex, setFieldValue]
 		)
 	);
+
+	const claimableActivityByStatus =
+		(activity.activityStatus?.key === Status.APPROVED.key ||
+			activity.activityStatus?.key === Status.ACTIVE.key) &&
+		!activity.claimed;
+
+	const editableClaimActivityByStatus = activity.id && activity.selected;
+
 	const displayActivityClaimCheckbox =
-		(activity.activityStatus?.key !== Status.EXPIRED.key &&
-			!activity.claimed) ||
-		(activity.id && activity.selected);
+		claimableActivityByStatus || editableClaimActivityByStatus;
+
+	const typeActivityComponents: TypeActivityComponent = {
+		[TypeActivityKey.DIGITAL_MARKETING]: (
+			<DigitalMarketingPopFields
+				activity={activity}
+				currentActivityIndex={activityIndex}
+				setFieldValue={setFieldValue}
+			/>
+		),
+		[TypeActivityKey.CONTENT_MARKETING]: (
+			<ContentMarketingPopFields
+				activity={activity}
+				currentActivityIndex={activityIndex}
+				setFieldValue={setFieldValue}
+			/>
+		),
+		[TypeActivityKey.EVENT]: (
+			<EventPopFields
+				activity={activity}
+				currentActivityIndex={activityIndex}
+				setFieldValue={setFieldValue}
+			/>
+		),
+		[TypeActivityKey.MISCELLANEOUS_MARKETING]: (
+			<MiscellaneousMarketingPopFields
+				activity={activity}
+				currentActivityIndex={activityIndex}
+				setFieldValue={setFieldValue}
+			/>
+		),
+	};
 
 	return (
 		<>
@@ -182,13 +230,6 @@ const ActivityClaimPanel = ({
 							/>
 						))}
 
-						<PRMFormik.Field
-							component={PRMForm.InputText}
-							label="Metrics"
-							name={`activities[${activityIndex}].metrics`}
-							textArea
-						/>
-
 						<div className="align-items-center d-flex justify-content-between">
 							<PRMFormik.Field
 								component={PRMForm.InputFile}
@@ -196,17 +237,31 @@ const ActivityClaimPanel = ({
 								displayType="secondary"
 								label="List of Qualified Leads"
 								name={`activities[${activityIndex}].listOfQualifiedLeads`}
-								onAccept={(value: File) =>
+								onAccept={(liferayFile: LiferayFile) => {
+									if (
+										activity.listOfQualifiedLeads
+											?.documentId
+									) {
+										deleteDocument(
+											activity.listOfQualifiedLeads
+												?.documentId
+										);
+									}
+
 									setFieldValue(
 										`activities[${activityIndex}].listOfQualifiedLeads`,
-										value
-									)
-								}
+										liferayFile
+									);
+								}}
 								outline
+								required={checkRequiredListOfQualifiedLeads(
+									activity.selected,
+									activity.typeActivity
+								)}
 								small
 							/>
 
-							<div className="bg-neutral-0 mb-3">
+							<div className="bg-neutral-0 mb-3 ml-3">
 								<Link
 									button
 									displayType="secondary"
@@ -223,22 +278,11 @@ const ActivityClaimPanel = ({
 							</div>
 						</div>
 
-						<InputMultipleFilesListing
-							description="Drag and drop your files here to upload."
-							label="All Contents"
-							name={`activities[${activityIndex}].allContents`}
-							onAccept={(value: File[]) =>
-								setFieldValue(
-									`activities[${activityIndex}].allContents`,
-									activity.allContents
-										? activity.allContents.concat(
-												value as LiferayFile[]
-										  )
-										: value
-								)
-							}
-							value={activity.allContents}
-						/>
+						{
+							typeActivityComponents[
+								String(activity.typeActivity?.key) || ''
+							]
+						}
 					</ClayPanel.Body>
 				</PanelBody>
 			</ClayPanel>

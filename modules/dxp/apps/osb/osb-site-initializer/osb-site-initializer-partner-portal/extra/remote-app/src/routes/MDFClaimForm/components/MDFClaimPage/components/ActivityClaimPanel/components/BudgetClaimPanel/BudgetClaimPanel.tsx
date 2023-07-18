@@ -15,8 +15,10 @@ import {useState} from 'react';
 
 import PRMForm from '../../../../../../../../common/components/PRMForm';
 import PRMFormik from '../../../../../../../../common/components/PRMFormik';
+import LiferayFile from '../../../../../../../../common/interfaces/liferayFile';
 import MDFClaim from '../../../../../../../../common/interfaces/mdfClaim';
 import MDFClaimBudget from '../../../../../../../../common/interfaces/mdfClaimBudget';
+import deleteDocument from '../../../../../../../../common/services/liferay/headless-delivery/deleteDocument';
 import PanelBody from '../PanelBody';
 import PanelHeader from '../PanelHeader';
 
@@ -69,12 +71,12 @@ const BudgetClaimPanel = ({
 							description="Silver Partner can claim up to 50%"
 							label="Invoice Amount"
 							name={`${budgetFieldName}.invoiceAmount`}
-							onAccept={(value: File) =>
+							onAccept={(liferayFile: LiferayFile) => {
 								setFieldValue(
 									`${budgetFieldName}.invoiceAmount`,
-									value
-								)
-							}
+									liferayFile
+								);
+							}}
 							required={budget.selected}
 						/>
 
@@ -83,12 +85,16 @@ const BudgetClaimPanel = ({
 							displayType="secondary"
 							label="Third Party Invoice"
 							name={`${budgetFieldName}.invoice`}
-							onAccept={(value: File) =>
+							onAccept={(liferayFile: LiferayFile) => {
+								if (budget.invoice?.documentId) {
+									deleteDocument(budget.invoice?.documentId);
+								}
+
 								setFieldValue(
 									`${budgetFieldName}.invoice`,
-									value
-								)
-							}
+									liferayFile
+								);
+							}}
 							outline
 							required={budget.selected}
 							small

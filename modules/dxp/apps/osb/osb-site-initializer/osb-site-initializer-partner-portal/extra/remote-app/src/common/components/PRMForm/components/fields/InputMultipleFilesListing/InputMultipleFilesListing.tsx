@@ -10,36 +10,38 @@
  */
 
 import PRMForm from '../../..';
+import LiferayFile from '../../../../../interfaces/liferayFile';
 import PRMFormik from '../../../../PRMFormik';
-import ListFiles from './components/ListFiles';
+import PRMFormFieldProps from '../common/interfaces/prmFormFieldProps';
 
 interface IProps {
+	acceptedFilesExtensions: string;
 	description: string;
 	label: string;
 	name: string;
-	onAccept: (value: File[]) => void;
-	value?: File[] | Object[];
+	onAccept: (liferayFiles: LiferayFile[]) => void;
+	value?: LiferayFile[] | Object[];
 }
 
 const InputMultipleFilesListing = ({
+	acceptedFilesExtensions,
 	description,
 	label,
 	name,
 	onAccept,
+	required,
 	value,
-}: IProps) => (
-	<>
-		<PRMFormik.Field
-			component={PRMForm.InputMultipleFiles}
-			description={description}
-			label={label}
-			onAccept={onAccept}
-		/>
-
-		{value && (
-			<PRMFormik.Array component={ListFiles} files={value} name={name} />
-		)}
-	</>
+}: PRMFormFieldProps & IProps) => (
+	<PRMFormik.Field
+		acceptedFilesExtensions={acceptedFilesExtensions}
+		component={PRMForm.InputMultipleFiles}
+		description={description}
+		label={label}
+		name={name}
+		onAccept={onAccept}
+		required={required}
+		value={value}
+	/>
 );
 
 export default InputMultipleFilesListing;

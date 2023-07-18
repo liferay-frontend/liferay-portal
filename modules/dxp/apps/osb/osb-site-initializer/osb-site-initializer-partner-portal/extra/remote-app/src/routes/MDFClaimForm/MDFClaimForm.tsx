@@ -150,8 +150,8 @@ const MDFClaimForm = () => {
 				submitForm(
 					values,
 					formikHelpers,
-					mdfRequest,
 					claimParentFolderId,
+					mdfRequest,
 					siteURL,
 					Status.PENDING,
 					mdfClaimId
@@ -171,8 +171,8 @@ const MDFClaimForm = () => {
 					submitForm(
 						values,
 						formikHelpers,
-						mdfRequest,
 						claimParentFolderId,
+						mdfRequest,
 						siteURL,
 						Status.DRAFT,
 						mdfClaimId

@@ -309,6 +309,8 @@ definition {
 
 		var key_status = ${status};
 
+		Refresh();
+
 		Search.searchCP(searchTerm = ${key_status});
 
 		if (IsElementPresent(key_accountName = ${key_status}, locator1 = "CP2Utils#ANY_ACCOUNT_ELLIPSIS_BUTTON")) {

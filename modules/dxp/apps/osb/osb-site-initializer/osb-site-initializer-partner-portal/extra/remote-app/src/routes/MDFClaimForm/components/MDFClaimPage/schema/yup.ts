@@ -11,37 +11,15 @@
 
 import {array, boolean, mixed, number, object, string} from 'yup';
 
-const KB_TO_MB = 1024;
-const MAX_MB = KB_TO_MB * 3;
-
-const validateDocument = {
-	fileSize: {
-		maxSize: MAX_MB,
-		message: 'File Size is too large',
-	},
-	imageDocument: {
-		message:
-			'Unsupported File Format, upload a valid format *jpg *jpeg *tiff *png *pdf *doc *docx',
-		types: [
-			'image/jpg',
-			'image/jpeg',
-			'image/tiff',
-			'image/png',
-			'application/pdf',
-			'application/msword',
-			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-		],
-	},
-	listOfLeadsDocuments: {
-		message:
-			'Unsupported File Format, upload a valid format *csv *xlsx *xls',
-		types: [
-			'application/vnd.ms-excel',
-			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-			'text/csv',
-		],
-	},
-};
+import {TypeActivityKey} from '../../../../../common/enums/TypeActivityKey';
+import LiferayPicklist from '../../../../../common/interfaces/liferayPicklist';
+import checkRequiredListOfQualifiedLeads from '../../../utils/checkRequiredListOfQualifiedLeads';
+import {validateDocument} from './constants/validateDocument';
+import {allContentsFieldsValidation} from './fieldValidation/allContentsFieldsValidation';
+import {eventCollateralsValidation} from './fieldValidation/eventCollateralsValidation';
+import {eventInvitationsValidation} from './fieldValidation/eventInvitationsValidation';
+import {eventPhotosValidation} from './fieldValidation/eventPhotosValidation';
+import {imagesValidation} from './fieldValidation/imagesValidation';
 
 const claimSchema = object({
 	activities: array()
@@ -63,17 +41,17 @@ const claimSchema = object({
 												(invoice) => {
 													if (
 														invoice &&
-														!invoice.id
+														!invoice.documentId
 													) {
-														return invoice
-															? Math.ceil(
-																	invoice.size /
-																		1000
-															  ) <=
-																	validateDocument
-																		.fileSize
-																		.maxSize
-															: false;
+														return (
+															Math.ceil(
+																invoice.size /
+																	1000
+															) <=
+															validateDocument
+																.fileSize
+																.maxSize
+														);
 													}
 
 													return true;
@@ -82,24 +60,22 @@ const claimSchema = object({
 											.required()
 											.test(
 												'fileType',
-												validateDocument.imageDocument
+												validateDocument.document
 													.message,
 												(invoice) => {
 													if (
 														invoice &&
-														!invoice.id
+														!invoice.documentId
 													) {
-														return invoice
-															? validateDocument.imageDocument.types.includes(
-																	invoice.type
-															  )
-															: false;
+														return validateDocument.document.types.includes(
+															invoice.type
+														);
 													}
 
 													return true;
 												}
 											)
-											.required(),
+											.required('Required'),
 								}),
 								invoiceAmount: number().when('selected', {
 									is: (selected: boolean) => selected,
@@ -119,32 +95,190 @@ const claimSchema = object({
 															.requestAmount
 													)
 											)
-											.required(),
+											.required('Required'),
 								}),
 								requestAmount: number(),
 							})
 						),
 				}),
-				listOfQualifiedLeads: mixed().when('selected', {
+				eventProgram: mixed().when(['selected', 'typeActivity'], {
+					is: (selected: boolean, typeActivity: LiferayPicklist) =>
+						selected && typeActivity.key === TypeActivityKey.EVENT,
+					then: (schema) =>
+						schema
+							.required('Required')
+							.test(
+								'fileSize',
+								validateDocument.fileSize.message,
+								(eventProgram) => {
+									if (
+										eventProgram &&
+										!eventProgram.documentId
+									) {
+										return (
+											Math.ceil(
+												eventProgram.size / 1000
+											) <=
+											validateDocument.fileSize.maxSize
+										);
+									}
+
+									return true;
+								}
+							)
+							.test(
+								'fileType',
+								validateDocument.document.message,
+								(eventProgram) => {
+									if (
+										eventProgram &&
+										!eventProgram.documentId
+									) {
+										return validateDocument.document.types.includes(
+											eventProgram.type
+										);
+									}
+
+									return true;
+								}
+							),
+				}),
+				listOfQualifiedLeads: mixed()
+					.when('selected', {
+						is: (selected: boolean) => selected,
+						then: (schema) =>
+							schema
+								.test(
+									'fileSize',
+									validateDocument.fileSize.message,
+									(listOfQualifiedLeads) => {
+										if (
+											listOfQualifiedLeads &&
+											!listOfQualifiedLeads.documentId
+										) {
+											return (
+												Math.ceil(
+													listOfQualifiedLeads.size /
+														1000
+												) <=
+												validateDocument.fileSize
+													.maxSize
+											);
+										}
+
+										return true;
+									}
+								)
+								.test(
+									'fileType',
+									validateDocument.listOfLeadsDocuments
+										.message,
+									(listOfQualifiedLeads) => {
+										if (
+											listOfQualifiedLeads &&
+											!listOfQualifiedLeads.documentId
+										) {
+											return validateDocument.listOfLeadsDocuments.types.includes(
+												listOfQualifiedLeads.type
+											);
+										}
+
+										return true;
+									}
+								),
+					})
+					.when(['selected', 'typeActivity'], {
+						is: (
+							selected: boolean,
+							typeActivity: LiferayPicklist
+						) =>
+							checkRequiredListOfQualifiedLeads(
+								selected,
+								typeActivity
+							),
+						then: (schema) => schema.required('Required'),
+					}),
+				metrics: string().when(['selected', 'typeActivity'], {
+					is: (selected: boolean, typeActivity: LiferayPicklist) =>
+						selected &&
+						typeActivity.key === TypeActivityKey.DIGITAL_MARKETING,
+					then: (schema) =>
+						schema
+							.required('Required')
+							.max(350, 'You have exceeded the character limit'),
+				}),
+				proofOfPerformance: object().when(
+					['selected', 'typeActivity'],
+					(selected: boolean, typeActivity) => {
+						let targetFields = {};
+
+						if (selected) {
+							switch (typeActivity.key) {
+								case TypeActivityKey.EVENT:
+									targetFields = {
+										...eventInvitationsValidation,
+										...eventPhotosValidation,
+										...eventCollateralsValidation,
+									};
+									break;
+								case TypeActivityKey.DIGITAL_MARKETING:
+									targetFields = allContentsFieldsValidation;
+
+									break;
+								case TypeActivityKey.CONTENT_MARKETING:
+									targetFields = allContentsFieldsValidation;
+
+									break;
+								default:
+									targetFields = {
+										...allContentsFieldsValidation,
+										...imagesValidation,
+									};
+									break;
+							}
+						}
+
+						return object(targetFields);
+					}
+				),
+				selected: boolean(),
+				telemarketingMetrics: string().when(
+					['selected', 'typeActivity'],
+					{
+						is: (
+							selected: boolean,
+							typeActivity: LiferayPicklist
+						) =>
+							selected &&
+							typeActivity.key ===
+								TypeActivityKey.MISCELLANEOUS_MARKETING,
+						then: (schema) =>
+							schema
+								.required('Required')
+								.max(
+									350,
+									'You have exceeded the character limit'
+								),
+					}
+				),
+				telemarketingScript: mixed().when('selected', {
 					is: (selected: boolean) => selected,
 					then: (schema) =>
 						schema
 							.test(
 								'fileSize',
 								validateDocument.fileSize.message,
-								(listOfQualifiedLeads) => {
+								(telemarketingScript) => {
 									if (
-										listOfQualifiedLeads &&
-										!listOfQualifiedLeads.id
+										telemarketingScript &&
+										!telemarketingScript.documentId
 									) {
-										return listOfQualifiedLeads
-											? Math.ceil(
-													listOfQualifiedLeads.size /
-														1000
-											  ) <=
-													validateDocument.fileSize
-														.maxSize
-											: false;
+										return (
+											Math.ceil(
+												telemarketingScript.size / 1000
+											) <=
+											validateDocument.fileSize.maxSize
+										);
 									}
 
 									return true;
@@ -153,27 +287,29 @@ const claimSchema = object({
 							.test(
 								'fileType',
 								validateDocument.listOfLeadsDocuments.message,
-								(listOfQualifiedLeads) => {
+								(telemarketingScript) => {
 									if (
-										listOfQualifiedLeads &&
-										!listOfQualifiedLeads.id
+										telemarketingScript &&
+										!telemarketingScript.documentId
 									) {
-										return listOfQualifiedLeads
-											? validateDocument.listOfLeadsDocuments.types.includes(
-													listOfQualifiedLeads.type
-											  )
-											: false;
+										return validateDocument.document.types.includes(
+											telemarketingScript.type
+										);
 									}
 
 									return true;
 								}
 							),
 				}),
-				metrics: string().max(
-					350,
-					'You have exceeded the character limit'
-				),
-				selected: boolean(),
+				videoLink: string().when(['selected', 'typeActivity'], {
+					is: (selected: boolean, typeActivity: LiferayPicklist) =>
+						selected &&
+						typeActivity.key === TypeActivityKey.CONTENT_MARKETING,
+					then: (schema) =>
+						schema
+							.required('Required')
+							.max(250, 'You have exceeded the character limit'),
+				}),
 			})
 		)
 		.test(
@@ -231,11 +367,11 @@ const claimSchema = object({
 			'fileSize',
 			validateDocument.fileSize.message,
 			(reimbursementInvoice) => {
-				if (reimbursementInvoice && !reimbursementInvoice.id) {
-					return reimbursementInvoice
-						? Math.ceil(reimbursementInvoice.size / 1000) <=
-								validateDocument.fileSize.maxSize
-						: false;
+				if (reimbursementInvoice && !reimbursementInvoice.documentId) {
+					return (
+						Math.ceil(reimbursementInvoice.size / 1000) <=
+						validateDocument.fileSize.maxSize
+					);
 				}
 
 				return true;
@@ -243,14 +379,12 @@ const claimSchema = object({
 		)
 		.test(
 			'fileType',
-			validateDocument.imageDocument.message,
+			validateDocument.document.message,
 			(reimbursementInvoice) => {
-				if (reimbursementInvoice && !reimbursementInvoice.id) {
-					return reimbursementInvoice
-						? validateDocument.imageDocument.types.includes(
-								reimbursementInvoice.type
-						  )
-						: false;
+				if (reimbursementInvoice && !reimbursementInvoice.documentId) {
+					return validateDocument.document.types.includes(
+						reimbursementInvoice.type
+					);
 				}
 
 				return true;

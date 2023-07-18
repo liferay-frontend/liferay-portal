@@ -267,7 +267,7 @@
 			"objectFieldSettings": [
 				{
 					"name": "acceptedFileExtensions",
-					"value": "jpeg, jpg, pdf, png, tiff, doc, docx"
+					"value": "jpeg, jpg, pdf, png, tif, tiff, doc, docx"
 				},
 				{
 					"name": "maximumFileSize",
@@ -314,6 +314,18 @@
 			"name": "claimPaid",
 			"required": false,
 			"type": "BigDecimal"
+		},
+		{
+			"DBType": "Boolean",
+			"externalReferenceCode": "f4efd94c-c972-4255-bf12-38052b09b0ab",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Submitted"
+			},
+			"name": "submitted",
+			"required": false,
+			"type": "Boolean"
 		}
 	],
 	"objectDefinitionId": "[$OBJECT_DEFINITION_ID:MDFClaim$]"
