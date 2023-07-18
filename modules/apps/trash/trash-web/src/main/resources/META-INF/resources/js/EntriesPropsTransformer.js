@@ -27,6 +27,7 @@ const ACTIONS = {
 
 	moveEntry(itemData, portletNamespace) {
 		openSelectionModal({
+			height: '70vh',
 			onSelect: (event) => {
 				const selectContainerForm = document.getElementById(
 					`${portletNamespace}selectContainerForm`
@@ -72,7 +73,8 @@ const ACTIONS = {
 				}
 			},
 			selectEventName: `${portletNamespace}selectContainer`,
-			title: Liferay.Language.get('warning'),
+			size: 'lg',
+			title: Liferay.Language.get('select-restore-folder'),
 			url: itemData.moveEntryURL,
 		});
 	},
