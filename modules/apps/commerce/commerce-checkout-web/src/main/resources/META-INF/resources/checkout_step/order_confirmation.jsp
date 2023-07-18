@@ -65,18 +65,22 @@ if (commerceOrderPayment != null) {
 				<liferay-ui:message key="success-your-order-has-been-processed" />
 			</div>
 
-			<aui:button-row>
-				<aui:button href="<%= orderConfirmationCheckoutStepDisplayContext.getOrderDetailURL() %>" primary="<%= true %>" type="submit" value="go-to-order-details" />
-			</aui:button-row>
+			<c:if test="<%= !user.isGuestUser() %>">
+				<aui:button-row>
+					<aui:button href="<%= orderConfirmationCheckoutStepDisplayContext.getOrderDetailURL() %>" primary="<%= true %>" type="submit" value="go-to-order-details" />
+				</aui:button-row>
+			</c:if>
 		</c:when>
 		<c:otherwise>
 			<div class="success-message">
 				<liferay-ui:message key="your-order-has-been-processed-but-not-completed-yet" />
 			</div>
 
-			<aui:button-row>
-				<aui:button href="<%= orderConfirmationCheckoutStepDisplayContext.getOrderDetailURL() %>" primary="<%= true %>" type="submit" value="go-to-order-details" />
-			</aui:button-row>
+			<c:if test="<%= !user.isGuestUser() %>">
+				<aui:button-row>
+					<aui:button href="<%= orderConfirmationCheckoutStepDisplayContext.getOrderDetailURL() %>" primary="<%= true %>" type="submit" value="go-to-order-details" />
+				</aui:button-row>
+			</c:if>
 		</c:otherwise>
 	</c:choose>
 </div>

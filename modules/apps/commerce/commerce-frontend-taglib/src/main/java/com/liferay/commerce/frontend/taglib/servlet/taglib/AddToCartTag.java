@@ -15,6 +15,8 @@
 package com.liferay.commerce.frontend.taglib.servlet.taglib;
 
 import com.liferay.account.model.AccountEntry;
+import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
+import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.constants.CommerceWebKeys;
@@ -32,16 +34,19 @@ import com.liferay.commerce.product.catalog.CPSku;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.content.util.CPContentHelper;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderTypeLocalService;
 import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -166,11 +171,26 @@ public class AddToCartTag extends IncludeTag {
 							CommerceOrderActionKeys.ADD_COMMERCE_ORDER);
 				}
 				else {
+					CommerceChannel commerceChannel =
+						_commerceChannelLocalService.getCommerceChannel(
+							_commerceChannelId);
+
+					CommerceOrderCheckoutConfiguration
+						commerceOrderCheckoutConfiguration =
+							_configurationProvider.getConfiguration(
+								CommerceOrderCheckoutConfiguration.class,
+								new GroupServiceSettingsLocator(
+									commerceChannel.getGroupId(),
+									CommerceConstants.
+										SERVICE_NAME_COMMERCE_ORDER));
+
 					_disabled =
 						_disabled ||
 						(accountEntry.isGuestAccount() &&
 						 (CommerceChannelConstants.SITE_TYPE_B2B ==
-							 commerceContext.getCommerceSiteType()));
+							 commerceContext.getCommerceSiteType()) &&
+						 !commerceOrderCheckoutConfiguration.
+							 guestCheckoutEnabled());
 				}
 			}
 
@@ -291,6 +311,8 @@ public class AddToCartTag extends IncludeTag {
 
 		setServletContext(ServletContextUtil.getServletContext());
 
+		_commerceChannelLocalService =
+			ServletContextUtil.getCommerceChannelLocalService();
 		_commerceInventoryEngine =
 			ServletContextUtil.getCommerceInventoryEngine();
 		_commerceOrderHttpHelper =
@@ -301,6 +323,7 @@ public class AddToCartTag extends IncludeTag {
 			ServletContextUtil.getCommerceOrderPortletResourcePermission();
 		_commerceOrderTypeLocalService =
 			ServletContextUtil.getCommerceOrderTypeLocalService();
+		_configurationProvider = ServletContextUtil.getConfigurationProvider();
 		_cpContentHelper = ServletContextUtil.getCPContentHelper();
 		_productHelper = ServletContextUtil.getProductHelper();
 	}
@@ -321,6 +344,7 @@ public class AddToCartTag extends IncludeTag {
 		_commerceAccountId = 0;
 		_commerceChannelGroupId = 0;
 		_commerceChannelId = 0;
+		_commerceChannelLocalService = null;
 		_commerceCurrencyCode = null;
 		_commerceInventoryEngine = null;
 		_commerceOrderHttpHelper = null;
@@ -328,6 +352,7 @@ public class AddToCartTag extends IncludeTag {
 		_commerceOrderItemLocalService = null;
 		_commerceOrderPortletResourcePermission = null;
 		_commerceOrderTypeLocalService = null;
+		_configurationProvider = null;
 		_cpCatalogEntry = null;
 		_cpContentHelper = null;
 		_cpInstanceId = 0;
@@ -382,6 +407,7 @@ public class AddToCartTag extends IncludeTag {
 	private long _commerceAccountId;
 	private long _commerceChannelGroupId;
 	private long _commerceChannelId;
+	private CommerceChannelLocalService _commerceChannelLocalService;
 	private String _commerceCurrencyCode;
 	private CommerceInventoryEngine _commerceInventoryEngine;
 	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
@@ -389,6 +415,7 @@ public class AddToCartTag extends IncludeTag {
 	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
 	private PortletResourcePermission _commerceOrderPortletResourcePermission;
 	private CommerceOrderTypeLocalService _commerceOrderTypeLocalService;
+	private ConfigurationProvider _configurationProvider;
 	private CPCatalogEntry _cpCatalogEntry;
 	private CPContentHelper _cpContentHelper;
 	private long _cpInstanceId;

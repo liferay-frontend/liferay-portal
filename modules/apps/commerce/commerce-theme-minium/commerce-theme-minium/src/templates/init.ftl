@@ -123,16 +123,12 @@ group_id = theme_display.getScopeGroupId()
 	</#if>
 </#if>
 
-<#assign show_sign_in = theme_display.isShowSignInIcon() />
-
-<#if show_sign_in>
-	<#assign
+<#assign
+	show_sign_in = theme_display.isShowSignInIcon()
+	show_sign_out = theme_display.isShowSignOutIcon()
 	sign_in_text = languageUtil.get(locale, "sign-in")
 	sign_in_url = htmlUtil.escape(theme_display.getURLSignIn())
-	/>
-</#if>
-
-<#assign show_sign_out = theme_display.isShowSignOutIcon() />
+/>
 
 <#if show_sign_out>
 	<#assign

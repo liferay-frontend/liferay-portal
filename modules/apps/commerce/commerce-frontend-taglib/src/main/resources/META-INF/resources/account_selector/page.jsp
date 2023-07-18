@@ -22,7 +22,7 @@
 			<liferay-ui:message key="this-site-does-not-have-a-channel" />
 		</div>
 	</c:when>
-	<c:otherwise>
+	<c:when test="<%= !user.isGuestUser() %>">
 		<div class="account-selector-root" id="<%= accountSelectorId %>"></div>
 
 		<aui:script require="commerce-frontend-js/components/account_selector/entry as accountSelector">
@@ -44,5 +44,5 @@
 				}
 			);
 		</aui:script>
-	</c:otherwise>
+	</c:when>
 </c:choose>

@@ -253,6 +253,62 @@ definition {
 		}
 	}
 
+	macro setupB2BGuestCheckout {
+		if (isSet(siteName)) {
+			var siteName = CommerceUtilities.convertStringToKey(string = ${siteName});
+
+			CommerceConfiguration.setupB2BGuestCheckoutPages(
+				pageNameList = "Catalog,Checkout,Search",
+				siteName = ${siteName});
+		}
+
+		if (isSet(channelName)) {
+			CommerceChannels.openChannelsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = ${channelName});
+
+			Check.checkToggleSwitch(
+				key_toggleSwitchLabel = "Guest Checkout",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+			Button.clickSave();
+
+			for (var fixIsueButtonName : list "Commerce Cart,Guest Checkout Authentication") {
+				Click(
+					key_fixIssueButtonName = ${fixIsueButtonName},
+					locator1 = "CommerceEntry#FIX_ISSUE_BUTTON");
+
+				Alert.viewSuccessMessage();
+			}
+		}
+	}
+
+	macro setupB2BGuestCheckoutPages {
+		Variables.assertDefined(parameterList = "${pageNameList},${siteName}");
+
+		PagesAdmin.openPagesAdmin(siteURLKey = ${siteName});
+
+		for (var pageName : list ${pageNameList}) {
+			if (${pageName} == "Checkout") {
+				PagesAdmin.gotoPageEllipsisMenuItem(
+					menuItem = "Permissions",
+					pageName = ${pageName},
+					parentPagesHierarchy = "Pending Orders");
+			}
+			else {
+				PagesAdmin.gotoPageEllipsisMenuItem(
+					menuItem = "Permissions",
+					pageName = ${pageName});
+			}
+
+			Role.definePermissionPG(
+				permissionDefinitionKey = "CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX",
+				roleTitle = "guest");
+
+			IFrame.closeFrame();
+		}
+	}
+
 	@description = "Create a Content Page to be used as Catalog page"
 	macro setUpCatalogPage {
 		var leftColumnWidgets = "Search Bar,Search Options";

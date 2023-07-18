@@ -30,6 +30,7 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.CommerceOrderValidatorResult;
+import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
@@ -48,6 +49,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
@@ -322,6 +324,24 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 					httpServletRequest,
 					"com_liferay_login_web_portlet_LoginPortlet", layout,
 					PortletRequest.RENDER_PHASE);
+
+				CommerceContext commerceContext = _getCommerceContext(
+					httpServletRequest);
+
+				int commerceSiteType = commerceContext.getCommerceSiteType();
+
+				if (commerceSiteType ==
+						CommerceChannelConstants.SITE_TYPE_B2B) {
+
+					Group group = themeDisplay.getSiteGroup();
+
+					portletURL.setParameter(
+						"redirect", group.getDisplayURL(themeDisplay));
+				}
+				else {
+					portletURL.setParameter(
+						"redirect", checkoutPortletURL.toString());
+				}
 			}
 			else {
 				portletURL.setParameter(
@@ -344,9 +364,10 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 				CookiesManagerUtil.addCookie(
 					CookiesConstants.CONSENT_TYPE_NECESSARY, cookie,
 					httpServletRequest, themeDisplay.getResponse());
-			}
 
-			portletURL.setParameter("redirect", checkoutPortletURL.toString());
+				portletURL.setParameter(
+					"redirect", checkoutPortletURL.toString());
+			}
 		}
 
 		return portletURL;

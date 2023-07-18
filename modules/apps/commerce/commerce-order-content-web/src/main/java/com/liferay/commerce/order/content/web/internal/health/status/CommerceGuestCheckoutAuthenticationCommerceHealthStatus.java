@@ -38,14 +38,14 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Theme;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.UserService;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
@@ -102,10 +102,14 @@ public class CommerceGuestCheckoutAuthenticationCommerceHealthStatus
 			privateLayout = false;
 		}
 
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
+		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setScopeGroupId(commerceChannel.getSiteGroupId());
 		serviceContext.setTimeZone(TimeZone.getDefault());
+
+		User currentUser = _userService.getCurrentUser();
+
+		serviceContext.setUserId(currentUser.getUserId());
 
 		Layout layout = _layoutService.addLayout(
 			commerceChannel.getSiteGroupId(), privateLayout,
@@ -132,12 +136,12 @@ public class CommerceGuestCheckoutAuthenticationCommerceHealthStatus
 		layoutTypePortlet.setLayoutTemplateId(0, "2_columns_i", false);
 
 		layoutTypePortlet.addPortletId(
-			PrincipalThreadLocal.getUserId(),
+			currentUser.getUserId(),
 			"com_liferay_login_web_portlet_LoginPortlet", "column-1", 0);
 
 		String journalArticlePortletId = layoutTypePortlet.addPortletId(
-			PrincipalThreadLocal.getUserId(),
-			JournalContentPortletKeys.JOURNAL_CONTENT, "column-2", 0);
+			currentUser.getUserId(), JournalContentPortletKeys.JOURNAL_CONTENT,
+			"column-2", 0);
 
 		PortletPreferences portletPreferences =
 			_portletPreferencesFactory.getPortletSetup(
@@ -324,5 +328,8 @@ public class CommerceGuestCheckoutAuthenticationCommerceHealthStatus
 
 	@Reference
 	private PortletPreferencesFactory _portletPreferencesFactory;
+
+	@Reference
+	private UserService _userService;
 
 }
