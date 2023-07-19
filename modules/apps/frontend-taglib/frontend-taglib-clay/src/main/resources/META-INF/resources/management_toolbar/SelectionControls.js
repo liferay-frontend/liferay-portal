@@ -97,7 +97,8 @@ const SelectionControls = ({
 
 		if (selectedDocumentTypes.length > 1) {
 			setIncompatibleSelection(true);
-		} else {
+		}
+		else {
 			setIncompatibleSelection(false);
 		}
 
