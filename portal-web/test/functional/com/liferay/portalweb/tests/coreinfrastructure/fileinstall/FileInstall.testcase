@@ -110,6 +110,7 @@ definition {
 	test InstallOSGiConfigWithHiddenFile {
 		property create.osgi.hidden.file = "true";
 		property test.assert.warning.exceptions = "true";
+		property test.liferay.virtual.instance = "false";
 
 		SystemSettings.openSystemSettingsAdmin();
 
@@ -134,6 +135,8 @@ definition {
 
 		AntCommands.runCommand("build-test.xml", "create-symbolic-link -Dsymbolic.link=${symbolicLink} -Dsymbolic.link.resource=${symbolicLinkResource}");
 
+		OSGiConfig.waitForOSGiConfig();
+
 		var mysqlStatement = '''
 			SELECT COUNT(*) FROM lportal.Configuration_
 			WHERE configurationId LIKE 'com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration%';
@@ -143,7 +146,7 @@ definition {
 
 		Portlet.shutdownServer();
 
-		Portlet.startServer(keepOSGiState = "true");
+		Portlet.startServer(keepOsGiState = "true");
 
 		var actualCount = SQL.executeMySQLStatement(mysqlStatement = ${mysqlStatement});
 

@@ -268,7 +268,7 @@ public abstract class BaseTagAttributesCheck extends BaseFileCheck {
 
 			String attributeName = StringUtil.trim(s.substring(0, x));
 
-			if (!_isValidAttributName(attributeName)) {
+			if (!_isValidAttributeName(attributeName)) {
 				return null;
 			}
 
@@ -526,7 +526,7 @@ public abstract class BaseTagAttributesCheck extends BaseFileCheck {
 		return tag;
 	}
 
-	private boolean _isValidAttributName(String attributeName) {
+	private boolean _isValidAttributeName(String attributeName) {
 		if (Validator.isNull(attributeName)) {
 			return false;
 		}
@@ -537,7 +537,7 @@ public abstract class BaseTagAttributesCheck extends BaseFileCheck {
 	}
 
 	private static final Pattern _attributeNamePattern = Pattern.compile(
-		"[a-zA-Z]+[-_:a-zA-Z0-9]*");
+		"[a-zA-Z][\\.-:\\w]*");
 	private static final Pattern _incorrectLineBreakPattern = Pattern.compile(
 		"\n(\t*)(<\\w[-_:\\w]*) (.*)([\"']|%=)\n[\\s\\S]*?>\n");
 	private static final Pattern _jspTaglibPattern = Pattern.compile(

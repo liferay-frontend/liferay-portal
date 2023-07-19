@@ -144,9 +144,15 @@ public class PermissionExporter {
 				resourcePrimKey, actionIds);
 
 		for (Map.Entry<Long, Set<String>> entry : roleToActionIds.entrySet()) {
+			Set<String> availableActionIds = entry.getValue();
+
 			long roleId = entry.getKey();
 
 			Role role = RoleLocalServiceUtil.fetchRole(roleId);
+
+			if (availableActionIds.isEmpty() && !role.isSystem()) {
+				continue;
+			}
 
 			String roleName = role.getName();
 
@@ -173,8 +179,6 @@ public class PermissionExporter {
 			roleElement.addAttribute("description", role.getDescription());
 			roleElement.addAttribute("type", String.valueOf(role.getType()));
 			roleElement.addAttribute("subtype", role.getSubtype());
-
-			Set<String> availableActionIds = entry.getValue();
 
 			for (String actionId : availableActionIds) {
 				Element actionKeyElement = roleElement.addElement("action-key");

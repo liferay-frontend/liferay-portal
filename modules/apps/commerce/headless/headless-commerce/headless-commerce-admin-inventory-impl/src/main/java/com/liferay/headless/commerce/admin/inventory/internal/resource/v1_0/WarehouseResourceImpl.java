@@ -273,9 +273,12 @@ public class WarehouseResourceImpl extends BaseWarehouseResourceImpl {
 			for (WarehouseItem warehouseItem : warehouseItems) {
 				_commerceInventoryWarehouseItemService.
 					addOrUpdateCommerceInventoryWarehouseItem(
+						warehouseItem.getExternalReferenceCode(),
+						commerceInventoryWarehouse.getCompanyId(),
 						commerceInventoryWarehouse.
 							getCommerceInventoryWarehouseId(),
-						warehouseItem.getSku(), warehouseItem.getQuantity());
+						warehouseItem.getQuantity(), warehouseItem.getSku(),
+						StringPool.BLANK);
 			}
 		}
 	}

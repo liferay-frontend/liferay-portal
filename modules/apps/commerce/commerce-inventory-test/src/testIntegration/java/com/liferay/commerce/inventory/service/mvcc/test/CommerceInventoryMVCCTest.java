@@ -24,6 +24,7 @@ import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLoca
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseLocalService;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -116,10 +117,10 @@ public class CommerceInventoryMVCCTest {
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
 			_commerceInventoryWarehouseItemLocalService.
 				addCommerceInventoryWarehouseItem(
-					_user.getUserId(),
+					StringPool.BLANK, _user.getUserId(),
 					commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
-					cpInstance.getSku(), 1);
+					1, cpInstance.getSku(), StringPool.BLANK);
 
 		_commerceInventoryWarehouseItemLocalService.
 			updateCommerceInventoryWarehouseItem(

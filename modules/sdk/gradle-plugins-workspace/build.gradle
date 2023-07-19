@@ -139,7 +139,7 @@ dependencies {
 		exclude group: "biz.aQute.bnd", module: "biz.aQute.bnd"
 	}
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.source.formatter", version: "5.2.40"
-	compile group: "com.liferay", name: "com.liferay.gradle.plugins.target.platform", version: "3.0.11"
+	compile group: "com.liferay", name: "com.liferay.gradle.plugins.target.platform", version: "3.0.12"
 	compile(group: "com.liferay", name: "com.liferay.gradle.plugins.theme.builder", version: "2.0.23") {
 		exclude group: "biz.aQute.bnd", module: "biz.aQute.bnd"
 	}
@@ -223,6 +223,7 @@ processResources {
 }
 
 updateFileVersions {
+	match(/name: "com\.liferay\.gradle\.plugins\.workspace", version: "(\d.+)"/, "../../../modules/sdk/project-templates/project-templates-workspace/src/main/resources/archetype-resources/settings.gradle")
 	match(/name: "com\.liferay\.gradle\.plugins\.workspace", version: "(\d.+)"/, "../../../workspaces/liferay-sample-workspace/settings.gradle")
 	match(/name: "com\.liferay\.gradle\.plugins\.workspace", version: "(\d.+)"/, "../../../workspaces/refresh_liferay_sample_workspace.sh")
 }

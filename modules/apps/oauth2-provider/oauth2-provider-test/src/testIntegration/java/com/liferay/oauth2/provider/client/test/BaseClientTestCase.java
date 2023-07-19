@@ -14,6 +14,8 @@
 
 package com.liferay.oauth2.provider.client.test;
 
+import com.liferay.oauth2.provider.model.OAuth2Authorization;
+import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.json.JSONObjectImpl;
 import com.liferay.portal.kernel.cookies.constants.CookiesConstants;
@@ -145,6 +147,18 @@ public abstract class BaseClientTestCase {
 		Invocation.Builder invocationBuilder, String token) {
 
 		return invocationBuilder.header("Authorization", "Bearer " + token);
+	}
+
+	protected OAuth2Authorization fetchOAuth2AuthorizationByAccessTokenContent(
+		String accessTokenContent) {
+
+		OAuth2AuthorizationLocalService oAuth2AuthorizationLocalService =
+			_bundleContext.getService(
+				_bundleContext.getServiceReference(
+					OAuth2AuthorizationLocalService.class));
+
+		return oAuth2AuthorizationLocalService.
+			fetchOAuth2AuthorizationByAccessTokenContent(accessTokenContent);
 	}
 
 	protected String generateCodeChallenge(String codeVerifier) {
@@ -654,6 +668,18 @@ public abstract class BaseClientTestCase {
 
 	protected String parseTokenString(Response response) {
 		return parseJsonField(response, "access_token");
+	}
+
+	protected OAuth2Authorization updateOAuth2Authorization(
+		OAuth2Authorization oAuth2Authorization) {
+
+		OAuth2AuthorizationLocalService oAuth2AuthorizationLocalService =
+			_bundleContext.getService(
+				_bundleContext.getServiceReference(
+					OAuth2AuthorizationLocalService.class));
+
+		return oAuth2AuthorizationLocalService.updateOAuth2Authorization(
+			oAuth2Authorization);
 	}
 
 	private static Set<String> _originalRestrictedHeaderSet;

@@ -27,6 +27,7 @@ import com.liferay.commerce.model.CommerceOrderItemTable;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -70,8 +71,8 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceInventoryBookedQuantity addCommerceBookedQuantity(
-			long userId, String sku, int quantity, Date expirationDate,
-			Map<String, String> context)
+			long userId, Date expirationDate, int quantity, String sku,
+			String unitOfMeasureKey, Map<String, String> context)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
@@ -86,17 +87,19 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 		commerceInventoryBookedQuantity.setCompanyId(user.getCompanyId());
 		commerceInventoryBookedQuantity.setUserId(user.getUserId());
 		commerceInventoryBookedQuantity.setUserName(user.getFullName());
-		commerceInventoryBookedQuantity.setSku(sku);
-		commerceInventoryBookedQuantity.setQuantity(quantity);
 		commerceInventoryBookedQuantity.setExpirationDate(expirationDate);
+		commerceInventoryBookedQuantity.setQuantity(quantity);
+		commerceInventoryBookedQuantity.setSku(sku);
+		commerceInventoryBookedQuantity.setUnitOfMeasureKey(unitOfMeasureKey);
 
 		CommerceInventoryAuditType commerceInventoryAuditType =
 			_commerceInventoryAuditTypeRegistry.getCommerceInventoryAuditType(
 				CommerceInventoryConstants.AUDIT_TYPE_BOOKED_QUANTITY);
 
 		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, sku, commerceInventoryAuditType.getType(),
-			commerceInventoryAuditType.getLog(context), quantity);
+			userId, commerceInventoryAuditType.getType(),
+			commerceInventoryAuditType.getLog(context), quantity, sku,
+			StringPool.BLANK);
 
 		return commerceInventoryBookedQuantityPersistence.update(
 			commerceInventoryBookedQuantity);
@@ -247,8 +250,8 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 
 	@Override
 	public CommerceInventoryBookedQuantity resetCommerceBookedQuantity(
-			long commerceBookedQuantityId, long userId, String sku,
-			int quantity, Date expirationDate, Map<String, String> context)
+			long commerceBookedQuantityId, long userId, Date expirationDate,
+			int quantity, String sku, Map<String, String> context)
 		throws PortalException {
 
 		CommerceInventoryBookedQuantity commerceBookedQuantity =
@@ -283,8 +286,9 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 				CommerceInventoryConstants.AUDIT_TYPE_RESTORE_QUANTITY);
 
 		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, sku, commerceInventoryAuditType.getType(),
-			commerceInventoryAuditType.getLog(context), quantity);
+			userId, commerceInventoryAuditType.getType(),
+			commerceInventoryAuditType.getLog(context), quantity, sku,
+			StringPool.BLANK);
 
 		return commerceInventoryBookedQuantityPersistence.update(
 			commerceBookedQuantity);
@@ -306,10 +310,10 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 				CommerceInventoryConstants.AUDIT_TYPE_RESTOCK_QUANTITY);
 
 		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, commerceInventoryBookedQuantity.getSku(),
-			commerceInventoryAuditType.getType(),
+			userId, commerceInventoryAuditType.getType(),
 			commerceInventoryAuditType.getLog(context),
-			commerceInventoryBookedQuantity.getQuantity());
+			commerceInventoryBookedQuantity.getQuantity(),
+			commerceInventoryBookedQuantity.getSku(), StringPool.BLANK);
 
 		return commerceInventoryBookedQuantity;
 	}
@@ -375,9 +379,10 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 				CommerceInventoryConstants.AUDIT_TYPE_UPDATE_BOOKED_QUANTITY);
 
 		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, commerceInventoryBookedQuantity.getSku(),
-			commerceInventoryAuditType.getType(),
-			commerceInventoryAuditType.getLog(context), quantity);
+			userId, commerceInventoryAuditType.getType(),
+			commerceInventoryAuditType.getLog(context), quantity,
+			commerceInventoryBookedQuantity.getSku(),
+			commerceInventoryBookedQuantity.getUnitOfMeasureKey());
 
 		return commerceInventoryBookedQuantityLocalService.
 			updateCommerceInventoryBookedQuantity(

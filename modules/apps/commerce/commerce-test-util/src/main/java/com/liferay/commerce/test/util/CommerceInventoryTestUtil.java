@@ -22,6 +22,7 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPInstanceLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
@@ -135,9 +136,9 @@ public class CommerceInventoryTestUtil {
 
 		return CommerceInventoryWarehouseItemLocalServiceUtil.
 			addCommerceInventoryWarehouseItem(
-				userId,
+				StringPool.BLANK, userId,
 				commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
-				sku, quantity);
+				quantity, sku, StringPool.BLANK);
 	}
 
 	public static CommerceInventoryWarehouseItem
@@ -156,9 +157,9 @@ public class CommerceInventoryTestUtil {
 
 		return CommerceInventoryWarehouseItemLocalServiceUtil.
 			addCommerceInventoryWarehouseItem(
-				serviceContext.getUserId(),
+				StringPool.BLANK, serviceContext.getUserId(),
 				commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
-				sku, quantity);
+				quantity, sku, StringPool.BLANK);
 	}
 
 	public static CommerceInventoryWarehouse

@@ -61,6 +61,7 @@ import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.commerce.service.CommerceShippingMethodLocalService;
 import com.liferay.commerce.subscription.CommerceSubscriptionEntryHelperUtil;
 import com.liferay.commerce.util.CommerceShippingHelper;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -291,9 +292,9 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 			CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
 				_commerceInventoryBookedQuantityLocalService.
 					addCommerceBookedQuantity(
-						commerceOrderItem.getUserId(),
-						commerceOrderItem.getSku(),
-						commerceOrderItem.getQuantity(), null,
+						commerceOrderItem.getUserId(), null,
+						commerceOrderItem.getQuantity(),
+						commerceOrderItem.getSku(), StringPool.BLANK,
 						HashMapBuilder.put(
 							CommerceInventoryAuditTypeConstants.ACCOUNT_NAME,
 							accountEntry.getName()

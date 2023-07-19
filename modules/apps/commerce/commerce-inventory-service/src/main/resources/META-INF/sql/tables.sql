@@ -6,11 +6,11 @@ create table CIAudit (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	sku VARCHAR(75) null,
-	unitOfMeasureKey VARCHAR(75) null,
 	logType VARCHAR(75) null,
 	logTypeSettings TEXT null,
-	quantity INTEGER
+	quantity INTEGER,
+	sku VARCHAR(75) null,
+	unitOfMeasureKey VARCHAR(75) null
 );
 
 create table CIBookedQuantity (
@@ -21,11 +21,11 @@ create table CIBookedQuantity (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	sku VARCHAR(75) null,
-	unitOfMeasureKey VARCHAR(75) null,
 	bookedNote VARCHAR(75) null,
 	expirationDate DATE null,
-	quantity INTEGER
+	quantity INTEGER,
+	sku VARCHAR(75) null,
+	unitOfMeasureKey VARCHAR(75) null
 );
 
 create table CIReplenishmentItem (
@@ -93,10 +93,10 @@ create table CIWarehouseItem (
 	createDate DATE null,
 	modifiedDate DATE null,
 	commerceInventoryWarehouseId LONG,
-	sku VARCHAR(75) null,
-	unitOfMeasureKey VARCHAR(75) null,
 	quantity INTEGER,
-	reservedQuantity INTEGER
+	reservedQuantity INTEGER,
+	sku VARCHAR(75) null,
+	unitOfMeasureKey VARCHAR(75) null
 );
 
 create table CIWarehouseRel (

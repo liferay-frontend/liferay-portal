@@ -17,7 +17,6 @@ package com.liferay.commerce.inventory.service.impl;
 import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
 import com.liferay.commerce.inventory.exception.DuplicateCommerceInventoryWarehouseItemException;
 import com.liferay.commerce.inventory.exception.MVCCException;
-import com.liferay.commerce.inventory.exception.NoSuchInventoryWarehouseItemException;
 import com.liferay.commerce.inventory.model.CIWarehouseItem;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
@@ -63,20 +62,9 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 
 	@Override
 	public CommerceInventoryWarehouseItem addCommerceInventoryWarehouseItem(
-			long userId, long commerceInventoryWarehouseId, String sku,
-			int quantity)
-		throws PortalException {
-
-		return commerceInventoryWarehouseItemLocalService.
-			addCommerceInventoryWarehouseItem(
-				StringPool.BLANK, userId, commerceInventoryWarehouseId, sku,
-				quantity);
-	}
-
-	@Override
-	public CommerceInventoryWarehouseItem addCommerceInventoryWarehouseItem(
 			String externalReferenceCode, long userId,
-			long commerceInventoryWarehouseId, String sku, int quantity)
+			long commerceInventoryWarehouseId, int quantity, String sku,
+			String unitOfMeasureKey)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
@@ -102,8 +90,9 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 		commerceInventoryWarehouseItem.setUserName(user.getFullName());
 		commerceInventoryWarehouseItem.setCommerceInventoryWarehouseId(
 			commerceInventoryWarehouseId);
-		commerceInventoryWarehouseItem.setSku(sku);
 		commerceInventoryWarehouseItem.setQuantity(quantity);
+		commerceInventoryWarehouseItem.setSku(sku);
+		commerceInventoryWarehouseItem.setUnitOfMeasureKey(unitOfMeasureKey);
 
 		return commerceInventoryWarehouseItemPersistence.update(
 			commerceInventoryWarehouseItem);
@@ -112,58 +101,38 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 	@Override
 	public CommerceInventoryWarehouseItem
 			addOrUpdateCommerceInventoryWarehouseItem(
-				long userId, long commerceInventoryWarehouseId, String sku,
-				int quantity)
-		throws PortalException {
-
-		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-			commerceInventoryWarehouseItemPersistence.fetchByC_S(
-				commerceInventoryWarehouseId, sku);
-
-		if (commerceInventoryWarehouseItem == null) {
-			return commerceInventoryWarehouseItemLocalService.
-				addCommerceInventoryWarehouseItem(
-					userId, commerceInventoryWarehouseId, sku, quantity);
-		}
-
-		return commerceInventoryWarehouseItemLocalService.
-			updateCommerceInventoryWarehouseItem(
-				userId,
-				commerceInventoryWarehouseItem.
-					getCommerceInventoryWarehouseItemId(),
-				quantity, commerceInventoryWarehouseItem.getMvccVersion());
-	}
-
-	@Override
-	public CommerceInventoryWarehouseItem
-			addOrUpdateCommerceInventoryWarehouseItem(
 				String externalReferenceCode, long companyId, long userId,
-				long commerceInventoryWarehouseId, String sku, int quantity)
+				long commerceInventoryWarehouseId, int quantity, String sku,
+				String unitOfMeasureKey)
 		throws PortalException {
+
+		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem = null;
 
 		if (Validator.isBlank(externalReferenceCode)) {
 			externalReferenceCode = null;
+			commerceInventoryWarehouseItem =
+				commerceInventoryWarehouseItemPersistence.fetchByC_S(
+					commerceInventoryWarehouseId, sku);
 		}
 		else {
-			CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
+			commerceInventoryWarehouseItem =
 				commerceInventoryWarehouseItemPersistence.fetchByERC_C(
 					externalReferenceCode, companyId);
+		}
 
-			if (commerceInventoryWarehouseItem != null) {
-				return commerceInventoryWarehouseItemLocalService.
-					updateCommerceInventoryWarehouseItem(
-						userId,
-						commerceInventoryWarehouseItem.
-							getCommerceInventoryWarehouseItemId(),
-						quantity,
-						commerceInventoryWarehouseItem.getMvccVersion());
-			}
+		if (commerceInventoryWarehouseItem != null) {
+			return commerceInventoryWarehouseItemLocalService.
+				updateCommerceInventoryWarehouseItem(
+					userId,
+					commerceInventoryWarehouseItem.
+						getCommerceInventoryWarehouseItemId(),
+					quantity, commerceInventoryWarehouseItem.getMvccVersion());
 		}
 
 		return commerceInventoryWarehouseItemLocalService.
 			addCommerceInventoryWarehouseItem(
 				externalReferenceCode, userId, commerceInventoryWarehouseId,
-				sku, quantity);
+				quantity, sku, unitOfMeasureKey);
 	}
 
 	@Override
@@ -210,20 +179,6 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 
 		return commerceInventoryWarehouseItemPersistence.findByC_S(
 			commerceInventoryWarehouseId, sku);
-	}
-
-	@Override
-	public CommerceInventoryWarehouseItem
-			getCommerceInventoryWarehouseItemByReferenceCode(
-				String externalReferenceCode, long companyId)
-		throws PortalException {
-
-		if (Validator.isBlank(externalReferenceCode)) {
-			throw new NoSuchInventoryWarehouseItemException();
-		}
-
-		return commerceInventoryWarehouseItemPersistence.findByERC_C(
-			externalReferenceCode, companyId);
 	}
 
 	@Override
@@ -422,9 +377,10 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 				CommerceInventoryConstants.AUDIT_TYPE_INCREASE_QUANTITY);
 
 		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, commerceInventoryWarehouseItem.getSku(),
-			commerceInventoryAuditType.getType(),
-			commerceInventoryAuditType.getLog(null), quantity);
+			userId, commerceInventoryAuditType.getType(),
+			commerceInventoryAuditType.getLog(null), quantity,
+			commerceInventoryWarehouseItem.getSku(),
+			commerceInventoryWarehouseItem.getUnitOfMeasureKey());
 
 		return commerceInventoryWarehouseItem;
 	}
@@ -436,7 +392,7 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 	)
 	public void moveQuantitiesBetweenWarehouses(
 			long userId, long fromCommerceInventoryWarehouseId,
-			long toCommerceInventoryWarehouseId, String sku, int quantity)
+			long toCommerceInventoryWarehouseId, int quantity, String sku)
 		throws PortalException {
 
 		CommerceInventoryWarehouseItem fromWarehouseItem =
@@ -468,7 +424,7 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 				CommerceInventoryConstants.AUDIT_TYPE_MOVE_QUANTITY);
 
 		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, sku, commerceInventoryAuditType.getType(),
+			userId, commerceInventoryAuditType.getType(),
 			commerceInventoryAuditType.getLog(
 				HashMapBuilder.put(
 					CommerceInventoryAuditTypeConstants.FROM,
@@ -492,7 +448,7 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 							toCommerceInventoryWarehouse.getName());
 					}
 				).build()),
-			quantity);
+			quantity, sku, StringPool.BLANK);
 	}
 
 	@Override
@@ -524,8 +480,7 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 			commerceInventoryWarehouseItem.getCommerceInventoryWarehouse();
 
 		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, commerceInventoryWarehouseItem.getSku(),
-			commerceInventoryAuditType.getType(),
+			userId, commerceInventoryAuditType.getType(),
 			commerceInventoryAuditType.getLog(
 				HashMapBuilder.put(
 					CommerceInventoryAuditTypeConstants.RESERVED,
@@ -534,7 +489,8 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 					CommerceInventoryAuditTypeConstants.WAREHOUSE,
 					String.valueOf(commerceInventoryWarehouse.getName())
 				).build()),
-			quantity);
+			quantity, commerceInventoryWarehouseItem.getSku(),
+			commerceInventoryWarehouseItem.getUnitOfMeasureKey());
 
 		return commerceInventoryWarehouseItem;
 	}
@@ -567,14 +523,14 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 			commerceInventoryWarehouseItem.getCommerceInventoryWarehouse();
 
 		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, commerceInventoryWarehouseItem.getSku(),
-			commerceInventoryAuditType.getType(),
+			userId, commerceInventoryAuditType.getType(),
 			commerceInventoryAuditType.getLog(
 				HashMapBuilder.put(
 					CommerceInventoryAuditTypeConstants.WAREHOUSE,
 					String.valueOf(commerceInventoryWarehouse.getName())
 				).build()),
-			quantity);
+			quantity, commerceInventoryWarehouseItem.getSku(),
+			commerceInventoryWarehouseItem.getUnitOfMeasureKey());
 
 		return commerceInventoryWarehouseItem;
 	}

@@ -1,6 +1,7 @@
 @component-name = "portal-segmentation"
 definition {
 
+	property ci.retries.disabled = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Segmentation";
@@ -12,10 +13,9 @@ definition {
 
 		HeadlessSite.addSite(siteName = "Test Site Name");
 
-		JSONStaging.enableLocalStaging(
-			branchingPrivate = "false",
-			branchingPublic = "false",
-			groupName = "Test Site Name");
+		Staging.openStagingAdmin(siteURLKey = "test-site-name");
+
+		Staging.activateStagingCP(siteName = "Test Site Name");
 	}
 
 	tearDown {

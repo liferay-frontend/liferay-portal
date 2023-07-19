@@ -47,22 +47,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 
 	@Override
 	public CommerceInventoryWarehouseItem addCommerceInventoryWarehouseItem(
-			long commerceInventoryWarehouseId, String sku, int quantity)
-		throws PortalException {
-
-		_commerceInventoryWarehouseModelResourcePermission.check(
-			getPermissionChecker(), commerceInventoryWarehouseId,
-			ActionKeys.UPDATE);
-
-		return commerceInventoryWarehouseItemLocalService.
-			addCommerceInventoryWarehouseItem(
-				getUserId(), commerceInventoryWarehouseId, sku, quantity);
-	}
-
-	@Override
-	public CommerceInventoryWarehouseItem addCommerceInventoryWarehouseItem(
 			String externalReferenceCode, long commerceInventoryWarehouseId,
-			String sku, int quantity)
+			int quantity, String sku, String unitOfMeasureKey)
 		throws PortalException {
 
 		_commerceInventoryWarehouseModelResourcePermission.check(
@@ -72,29 +58,15 @@ public class CommerceInventoryWarehouseItemServiceImpl
 		return commerceInventoryWarehouseItemLocalService.
 			addCommerceInventoryWarehouseItem(
 				externalReferenceCode, getUserId(),
-				commerceInventoryWarehouseId, sku, quantity);
-	}
-
-	@Override
-	public CommerceInventoryWarehouseItem
-			addOrUpdateCommerceInventoryWarehouseItem(
-				long commerceInventoryWarehouseId, String sku, int quantity)
-		throws PortalException {
-
-		_commerceInventoryWarehouseModelResourcePermission.check(
-			getPermissionChecker(), commerceInventoryWarehouseId,
-			ActionKeys.UPDATE);
-
-		return commerceInventoryWarehouseItemLocalService.
-			addOrUpdateCommerceInventoryWarehouseItem(
-				getUserId(), commerceInventoryWarehouseId, sku, quantity);
+				commerceInventoryWarehouseId, quantity, sku, unitOfMeasureKey);
 	}
 
 	@Override
 	public CommerceInventoryWarehouseItem
 			addOrUpdateCommerceInventoryWarehouseItem(
 				String externalReferenceCode, long companyId,
-				long commerceInventoryWarehouseId, String sku, int quantity)
+				long commerceInventoryWarehouseId, int quantity, String sku,
+				String unitOfMeasureKey)
 		throws PortalException {
 
 		_commerceInventoryWarehouseModelResourcePermission.check(
@@ -104,7 +76,7 @@ public class CommerceInventoryWarehouseItemServiceImpl
 		return commerceInventoryWarehouseItemLocalService.
 			addOrUpdateCommerceInventoryWarehouseItem(
 				externalReferenceCode, companyId, getUserId(),
-				commerceInventoryWarehouseId, sku, quantity);
+				commerceInventoryWarehouseId, quantity, sku, unitOfMeasureKey);
 	}
 
 	@Override
@@ -210,25 +182,6 @@ public class CommerceInventoryWarehouseItemServiceImpl
 		return commerceInventoryWarehouseItemLocalService.
 			getCommerceInventoryWarehouseItem(
 				commerceInventoryWarehouseId, sku);
-	}
-
-	@Override
-	public CommerceInventoryWarehouseItem
-			getCommerceInventoryWarehouseItemByReferenceCode(
-				String externalReferenceCode, long companyId)
-		throws PortalException {
-
-		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-			commerceInventoryWarehouseItemLocalService.
-				getCommerceInventoryWarehouseItemByReferenceCode(
-					externalReferenceCode, companyId);
-
-		_commerceInventoryWarehouseModelResourcePermission.check(
-			getPermissionChecker(),
-			commerceInventoryWarehouseItem.getCommerceInventoryWarehouseId(),
-			ActionKeys.VIEW);
-
-		return commerceInventoryWarehouseItem;
 	}
 
 	@Override
@@ -426,7 +379,7 @@ public class CommerceInventoryWarehouseItemServiceImpl
 	@Override
 	public void moveQuantitiesBetweenWarehouses(
 			long fromCommerceInventoryWarehouseId,
-			long toCommerceInventoryWarehouseId, String sku, int quantity)
+			long toCommerceInventoryWarehouseId, int quantity, String sku)
 		throws PortalException {
 
 		_commerceInventoryWarehouseModelResourcePermission.check(
@@ -440,7 +393,7 @@ public class CommerceInventoryWarehouseItemServiceImpl
 		commerceInventoryWarehouseItemLocalService.
 			moveQuantitiesBetweenWarehouses(
 				getUserId(), fromCommerceInventoryWarehouseId,
-				toCommerceInventoryWarehouseId, sku, quantity);
+				toCommerceInventoryWarehouseId, quantity, sku);
 	}
 
 	@Override

@@ -81,25 +81,16 @@ public interface CommerceInventoryWarehouseItemLocalService
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem);
 
 	public CommerceInventoryWarehouseItem addCommerceInventoryWarehouseItem(
-			long userId, long commerceInventoryWarehouseId, String sku,
-			int quantity)
-		throws PortalException;
-
-	public CommerceInventoryWarehouseItem addCommerceInventoryWarehouseItem(
 			String externalReferenceCode, long userId,
-			long commerceInventoryWarehouseId, String sku, int quantity)
-		throws PortalException;
-
-	public CommerceInventoryWarehouseItem
-			addOrUpdateCommerceInventoryWarehouseItem(
-				long userId, long commerceInventoryWarehouseId, String sku,
-				int quantity)
+			long commerceInventoryWarehouseId, int quantity, String sku,
+			String unitOfMeasureKey)
 		throws PortalException;
 
 	public CommerceInventoryWarehouseItem
 			addOrUpdateCommerceInventoryWarehouseItem(
 				String externalReferenceCode, long companyId, long userId,
-				long commerceInventoryWarehouseId, String sku, int quantity)
+				long commerceInventoryWarehouseId, int quantity, String sku,
+				String unitOfMeasureKey)
 		throws PortalException;
 
 	public int countItemsByCompanyId(long companyId, String sku);
@@ -289,12 +280,6 @@ public interface CommerceInventoryWarehouseItemLocalService
 				String externalReferenceCode, long companyId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceInventoryWarehouseItem
-			getCommerceInventoryWarehouseItemByReferenceCode(
-				String externalReferenceCode, long companyId)
-		throws PortalException;
-
 	/**
 	 * Returns the commerce inventory warehouse item with the matching UUID and company.
 	 *
@@ -416,7 +401,7 @@ public interface CommerceInventoryWarehouseItemLocalService
 	)
 	public void moveQuantitiesBetweenWarehouses(
 			long userId, long fromCommerceInventoryWarehouseId,
-			long toCommerceInventoryWarehouseId, String sku, int quantity)
+			long toCommerceInventoryWarehouseId, int quantity, String sku)
 		throws PortalException;
 
 	/**
