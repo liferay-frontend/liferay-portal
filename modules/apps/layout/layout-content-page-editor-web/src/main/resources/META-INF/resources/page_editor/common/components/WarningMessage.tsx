@@ -12,10 +12,17 @@
  * details.
  */
 
-export const PAGINATION_ERROR_MESSAGES = {
-	maximumItems: Liferay.Language.get('this-collection-has-x-items'),
-	maximumItemsPerPage: Liferay.Language.get(
-		'a-maximum-of-x-items-per-page-is-allowed'
-	),
-	noItems: Liferay.Language.get('this-collection-has-no-items'),
-};
+import ClayIcon from '@clayui/icon';
+import React from 'react';
+
+export function WarningMessage({message}: {message: string}) {
+	return (
+		<div className="font-weight-bold mt-1 small text-warning" role="status">
+			<span className="mr-2">
+				<ClayIcon symbol="warning-full" />
+			</span>
+
+			{message}
+		</div>
+	);
+}

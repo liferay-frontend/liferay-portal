@@ -48,7 +48,8 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 	public CommerceInventoryReplenishmentItem
 			addCommerceInventoryReplenishmentItem(
 				String externalReferenceCode, long commerceInventoryWarehouseId,
-				String sku, Date availabilityDate, int quantity)
+				Date availabilityDate, int quantity, String sku,
+				String unitOfMeasureKey)
 		throws PortalException {
 
 		_commerceInventoryWarehouseModelResourcePermission.check(
@@ -58,7 +59,8 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 		return commerceInventoryReplenishmentItemLocalService.
 			addCommerceInventoryReplenishmentItem(
 				externalReferenceCode, getUserId(),
-				commerceInventoryWarehouseId, sku, availabilityDate, quantity);
+				commerceInventoryWarehouseId, availabilityDate, quantity, sku,
+				unitOfMeasureKey);
 	}
 
 	@Override

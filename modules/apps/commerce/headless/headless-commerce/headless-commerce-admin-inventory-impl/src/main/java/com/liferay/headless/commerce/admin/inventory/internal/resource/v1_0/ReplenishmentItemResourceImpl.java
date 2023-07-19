@@ -21,6 +21,7 @@ import com.liferay.commerce.inventory.service.CommerceInventoryReplenishmentItem
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemService;
 import com.liferay.headless.commerce.admin.inventory.dto.v1_0.ReplenishmentItem;
 import com.liferay.headless.commerce.admin.inventory.resource.v1_0.ReplenishmentItemResource;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -134,12 +135,27 @@ public class ReplenishmentItemResourceImpl
 			Long replenishmentItemId, ReplenishmentItem replenishmentItem)
 		throws Exception {
 
+		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
+			_commerceInventoryReplenishmentItemService.
+				getCommerceInventoryReplenishmentItem(replenishmentItemId);
+
 		return _toReplenishmentItem(
-			_updateCommerceInventoryReplenishmentItem(
-				replenishmentItem,
-				_commerceInventoryReplenishmentItemService.
-					getCommerceInventoryReplenishmentItem(
-						replenishmentItemId)));
+			_commerceInventoryReplenishmentItemService.
+				updateCommerceInventoryReplenishmentItem(
+					replenishmentItem.getExternalReferenceCode(),
+					commerceInventoryReplenishmentItem.
+						getCommerceInventoryReplenishmentItemId(),
+					GetterUtil.getDate(
+						replenishmentItem.getAvailabilityDate(),
+						DateFormatFactoryUtil.getDate(
+							contextAcceptLanguage.getPreferredLocale(),
+							contextUser.getTimeZone()),
+						commerceInventoryReplenishmentItem.
+							getAvailabilityDate()),
+					GetterUtil.getInteger(
+						replenishmentItem.getQuantity(),
+						commerceInventoryReplenishmentItem.getQuantity()),
+					commerceInventoryReplenishmentItem.getMvccVersion()));
 	}
 
 	@Override
@@ -147,11 +163,28 @@ public class ReplenishmentItemResourceImpl
 			String externalReferenceCode, ReplenishmentItem replenishmentItem)
 		throws Exception {
 
+		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
+			_fetchCommerceInventoryReplenishmentItemByExternalReferenceCode(
+				externalReferenceCode);
+
 		return _toReplenishmentItem(
-			_updateCommerceInventoryReplenishmentItem(
-				replenishmentItem,
-				_fetchCommerceInventoryReplenishmentItemByExternalReferenceCode(
-					externalReferenceCode)));
+			_commerceInventoryReplenishmentItemService.
+				updateCommerceInventoryReplenishmentItem(
+					commerceInventoryReplenishmentItem.
+						getExternalReferenceCode(),
+					commerceInventoryReplenishmentItem.
+						getCommerceInventoryReplenishmentItemId(),
+					GetterUtil.getDate(
+						replenishmentItem.getAvailabilityDate(),
+						DateFormatFactoryUtil.getDate(
+							contextAcceptLanguage.getPreferredLocale(),
+							contextUser.getTimeZone()),
+						commerceInventoryReplenishmentItem.
+							getAvailabilityDate()),
+					GetterUtil.getInteger(
+						replenishmentItem.getQuantity(),
+						commerceInventoryReplenishmentItem.getQuantity()),
+					commerceInventoryReplenishmentItem.getMvccVersion()));
 	}
 
 	@Override
@@ -169,13 +202,13 @@ public class ReplenishmentItemResourceImpl
 					replenishmentItem.getExternalReferenceCode(),
 					commerceInventoryWarehouseItem.
 						getCommerceInventoryWarehouseId(),
-					commerceInventoryWarehouseItem.getSku(),
 					GetterUtil.getDate(
 						replenishmentItem.getAvailabilityDate(),
 						DateFormatFactoryUtil.getDate(
 							contextAcceptLanguage.getPreferredLocale(),
 							contextUser.getTimeZone())),
-					GetterUtil.getInteger(replenishmentItem.getQuantity())));
+					GetterUtil.getInteger(replenishmentItem.getQuantity()),
+					commerceInventoryWarehouseItem.getSku(), StringPool.BLANK));
 	}
 
 	private CommerceInventoryReplenishmentItem
@@ -210,30 +243,6 @@ public class ReplenishmentItemResourceImpl
 					getCommerceInventoryReplenishmentItemId(),
 				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
 				contextUser));
-	}
-
-	private CommerceInventoryReplenishmentItem
-			_updateCommerceInventoryReplenishmentItem(
-				ReplenishmentItem replenishmentItem,
-				CommerceInventoryReplenishmentItem
-					commerceInventoryReplenishmentItem)
-		throws Exception {
-
-		return _commerceInventoryReplenishmentItemService.
-			updateCommerceInventoryReplenishmentItem(
-				replenishmentItem.getExternalReferenceCode(),
-				commerceInventoryReplenishmentItem.
-					getCommerceInventoryReplenishmentItemId(),
-				GetterUtil.getDate(
-					replenishmentItem.getAvailabilityDate(),
-					DateFormatFactoryUtil.getDate(
-						contextAcceptLanguage.getPreferredLocale(),
-						contextUser.getTimeZone()),
-					commerceInventoryReplenishmentItem.getAvailabilityDate()),
-				GetterUtil.getInteger(
-					replenishmentItem.getQuantity(),
-					commerceInventoryReplenishmentItem.getQuantity()),
-				commerceInventoryReplenishmentItem.getMvccVersion());
 	}
 
 	@Reference

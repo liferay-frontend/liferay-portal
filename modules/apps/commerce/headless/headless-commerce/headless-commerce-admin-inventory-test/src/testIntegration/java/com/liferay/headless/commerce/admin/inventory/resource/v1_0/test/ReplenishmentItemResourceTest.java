@@ -22,6 +22,7 @@ import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseLocalSer
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.headless.commerce.admin.inventory.client.dto.v1_0.ReplenishmentItem;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -100,7 +101,6 @@ public class ReplenishmentItemResourceTest
 			replenishmentItem.getExternalReferenceCode();
 
 		replenishmentItem.setAvailabilityDate(_dateFormat.parse("2022-09-24"));
-		replenishmentItem.setExternalReferenceCode("newExternalReferenceCode");
 		replenishmentItem.setQuantity(25);
 
 		replenishmentItemResource.patchReplenishmentItemByExternalReferenceCode(
@@ -180,9 +180,9 @@ public class ReplenishmentItemResourceTest
 			_commerceInventoryReplenishmentItemLocalService.
 				addCommerceInventoryReplenishmentItem(
 					replenishmentItem.getExternalReferenceCode(),
-					_user.getUserId(), _getCommerceInventoryWarehouseId(), sku,
+					_user.getUserId(), _getCommerceInventoryWarehouseId(),
 					replenishmentItem.getAvailabilityDate(),
-					replenishmentItem.getQuantity());
+					replenishmentItem.getQuantity(), sku, StringPool.BLANK);
 
 		return _toReplenishmentItem(_commerceInventoryReplenishmentItem);
 	}
@@ -209,9 +209,10 @@ public class ReplenishmentItemResourceTest
 			_commerceInventoryReplenishmentItemLocalService.
 				addCommerceInventoryReplenishmentItem(
 					replenishmentItem.getExternalReferenceCode(),
-					_user.getUserId(), warehouseId, replenishmentItem.getSku(),
+					_user.getUserId(), warehouseId,
 					replenishmentItem.getAvailabilityDate(),
-					replenishmentItem.getQuantity());
+					replenishmentItem.getQuantity(), replenishmentItem.getSku(),
+					StringPool.BLANK);
 
 		return _toReplenishmentItem(_commerceInventoryReplenishmentItem);
 	}
@@ -233,10 +234,10 @@ public class ReplenishmentItemResourceTest
 				addCommerceInventoryReplenishmentItem(
 					RandomTestUtil.randomString(), _user.getUserId(),
 					_getCommerceInventoryWarehouseId(),
-					testGetReplenishmentItemsPage_getSku(),
 					_dateFormat.parse(
 						_dateFormat.format(RandomTestUtil.nextDate())),
-					RandomTestUtil.nextInt());
+					RandomTestUtil.nextInt(),
+					testGetReplenishmentItemsPage_getSku(), StringPool.BLANK);
 
 		return _toReplenishmentItem(_commerceInventoryReplenishmentItem);
 	}
@@ -251,9 +252,9 @@ public class ReplenishmentItemResourceTest
 				addCommerceInventoryReplenishmentItem(
 					replenishmentItem.getExternalReferenceCode(),
 					_user.getUserId(), replenishmentItem.getWarehouseId(),
-					replenishmentItem.getSku(),
 					replenishmentItem.getAvailabilityDate(),
-					replenishmentItem.getQuantity());
+					replenishmentItem.getQuantity(), replenishmentItem.getSku(),
+					StringPool.BLANK);
 
 		return _toReplenishmentItem(_commerceInventoryReplenishmentItem);
 	}
@@ -295,10 +296,10 @@ public class ReplenishmentItemResourceTest
 				addCommerceInventoryReplenishmentItem(
 					RandomTestUtil.randomString(), _user.getUserId(),
 					_getCommerceInventoryWarehouseId(),
-					testGetReplenishmentItemsPage_getSku(),
 					_dateFormat.parse(
 						_dateFormat.format(RandomTestUtil.nextDate())),
-					RandomTestUtil.nextInt());
+					RandomTestUtil.nextInt(),
+					testGetReplenishmentItemsPage_getSku(), StringPool.BLANK);
 
 		return _commerceInventoryReplenishmentItem;
 	}

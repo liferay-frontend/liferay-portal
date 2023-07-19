@@ -85,7 +85,7 @@ public class CommerceInventoryMVCCTest {
 					null, _user.getUserId(),
 					commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
-					cpInstance.getSku(), new Date(), 10);
+					new Date(), 10, cpInstance.getSku(), StringPool.BLANK);
 
 		_commerceInventoryReplenishmentItemLocalService.
 			updateCommerceInventoryReplenishmentItem(

@@ -15,8 +15,10 @@
 package com.liferay.commerce.inventory.web.internal.portlet.action;
 
 import com.liferay.commerce.inventory.exception.MVCCException;
+import com.liferay.commerce.inventory.model.CommerceInventoryReplenishmentItem;
 import com.liferay.commerce.inventory.service.CommerceInventoryReplenishmentItemService;
 import com.liferay.commerce.product.constants.CPPortletKeys;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -85,12 +87,8 @@ public class EditCommerceInventoryReplenishmentItemMVCActionCommand
 			ActionRequest actionRequest)
 		throws PortalException {
 
-		String sku = ParamUtil.getString(actionRequest, "sku");
-
 		long commerceInventoryWarehouseId = ParamUtil.getLong(
 			actionRequest, "commerceInventoryWarehouseId");
-
-		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
 
 		int day = ParamUtil.getInteger(actionRequest, "dateDay");
 		int month = ParamUtil.getInteger(actionRequest, "dateMonth");
@@ -100,10 +98,13 @@ public class EditCommerceInventoryReplenishmentItemMVCActionCommand
 
 		calendar.set(year, month, day);
 
+		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
+		String sku = ParamUtil.getString(actionRequest, "sku");
+
 		_commerceInventoryReplenishmentItemService.
 			addCommerceInventoryReplenishmentItem(
-				null, commerceInventoryWarehouseId, sku, calendar.getTime(),
-				quantity);
+				null, commerceInventoryWarehouseId, calendar.getTime(),
+				quantity, sku, StringPool.BLANK);
 	}
 
 	private void _deleteCommerceInventoryReplenishmentItem(
@@ -125,21 +126,27 @@ public class EditCommerceInventoryReplenishmentItemMVCActionCommand
 		long commerceInventoryReplenishmentItemId = ParamUtil.getLong(
 			actionRequest, "commerceInventoryReplenishmentItemId");
 
+		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
+			_commerceInventoryReplenishmentItemService.
+				getCommerceInventoryReplenishmentItem(
+					commerceInventoryReplenishmentItemId);
+
 		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
 
 		int day = ParamUtil.getInteger(actionRequest, "dateDay");
 		int month = ParamUtil.getInteger(actionRequest, "dateMonth");
 		int year = ParamUtil.getInteger(actionRequest, "dateYear");
 
-		long mvccVersion = ParamUtil.getLong(actionRequest, "mvccVersion");
-
 		Calendar calendar = Calendar.getInstance();
 
 		calendar.set(year, month, day);
 
+		long mvccVersion = ParamUtil.getLong(actionRequest, "mvccVersion");
+
 		_commerceInventoryReplenishmentItemService.
 			updateCommerceInventoryReplenishmentItem(
-				null, commerceInventoryReplenishmentItemId, calendar.getTime(),
+				commerceInventoryReplenishmentItem.getExternalReferenceCode(),
+				commerceInventoryReplenishmentItemId, calendar.getTime(),
 				quantity, mvccVersion);
 	}
 
