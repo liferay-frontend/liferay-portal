@@ -114,10 +114,12 @@ public class StoreAreaAwareStoreWrapper implements Store {
 						companyId, repositoryId, fileName, versionLabel)),
 				StoreArea.LIVE, StoreArea.NEW);
 
-			StoreArea.withStoreArea(
-				storeArea,
-				() -> store.deleteFile(
-					companyId, repositoryId, fileName, versionLabel));
+			if (storeArea != null) {
+				StoreArea.withStoreArea(
+					storeArea,
+					() -> store.deleteFile(
+						companyId, repositoryId, fileName, versionLabel));
+			}
 		}
 		else {
 			store.deleteFile(companyId, repositoryId, fileName, versionLabel);
@@ -136,7 +138,8 @@ public class StoreAreaAwareStoreWrapper implements Store {
 			return StoreArea.tryGetWithStoreAreas(
 				() -> store.getFileAsStream(
 					companyId, repositoryId, fileName, versionLabel),
-				Objects::nonNull, null, StoreArea.LIVE, StoreArea.NEW);
+				Objects::nonNull, null, StoreArea.LIVE, StoreArea.NEW,
+				StoreArea.DELETED);
 		}
 
 		return store.getFileAsStream(
@@ -152,7 +155,7 @@ public class StoreAreaAwareStoreWrapper implements Store {
 		if (_isStoreAreaSupported()) {
 			String[] fileNames = StoreArea.mergeWithStoreAreas(
 				() -> store.getFileNames(companyId, repositoryId, dirName),
-				StoreArea.LIVE, StoreArea.NEW);
+				StoreArea.LIVE, StoreArea.NEW, StoreArea.DELETED);
 
 			Arrays.sort(fileNames);
 
@@ -174,7 +177,8 @@ public class StoreAreaAwareStoreWrapper implements Store {
 			return StoreArea.tryGetWithStoreAreas(
 				() -> store.getFileSize(
 					companyId, repositoryId, fileName, versionLabel),
-				Objects::nonNull, 0L, StoreArea.LIVE, StoreArea.NEW);
+				Objects::nonNull, 0L, StoreArea.LIVE, StoreArea.NEW,
+				StoreArea.DELETED);
 		}
 
 		return store.getFileSize(
@@ -190,7 +194,7 @@ public class StoreAreaAwareStoreWrapper implements Store {
 		if (_isStoreAreaSupported()) {
 			String[] fileVersions = StoreArea.mergeWithStoreAreas(
 				() -> store.getFileVersions(companyId, repositoryId, fileName),
-				StoreArea.LIVE, StoreArea.NEW);
+				StoreArea.LIVE, StoreArea.NEW, StoreArea.DELETED);
 
 			Arrays.sort(fileVersions, DLUtil::compareVersions);
 

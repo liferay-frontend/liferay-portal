@@ -29,6 +29,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.io.ByteArrayFileInputStream;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -107,14 +108,14 @@ public class DLStoreImpl implements DLStore {
 			String fromVersionLabel, String toVersionLabel)
 		throws PortalException {
 
-		if (_storeAreaProcessor != null) {
+		if (_isStoreAreaSupported()) {
 			StoreArea.tryRunWithStoreAreas(
 				sourceStoreArea -> _storeAreaProcessor.copy(
 					sourceStoreArea.getPath(
 						companyId, repositoryId, fileName, fromVersionLabel),
 					StoreArea.NEW.getPath(
 						companyId, repositoryId, fileName, toVersionLabel)),
-				StoreArea.LIVE, StoreArea.NEW);
+				StoreArea.LIVE, StoreArea.NEW, StoreArea.DELETED);
 		}
 		else {
 			_wrappedStore.addFile(
@@ -241,7 +242,7 @@ public class DLStoreImpl implements DLStore {
 				_wrappedStore.getFileVersions(
 					companyId, repositoryId, fileName)) {
 
-			if (_storeAreaProcessor != null) {
+			if (_isStoreAreaSupported()) {
 				StoreArea.tryRunWithStoreAreas(
 					sourceStoreArea -> _storeAreaProcessor.copy(
 						sourceStoreArea.getPath(
@@ -249,7 +250,7 @@ public class DLStoreImpl implements DLStore {
 						StoreArea.NEW.getPath(
 							companyId, newRepositoryId, fileName,
 							versionLabel)),
-					StoreArea.LIVE, StoreArea.NEW);
+					StoreArea.LIVE, StoreArea.NEW, StoreArea.DELETED);
 			}
 			else {
 				_wrappedStore.addFile(
@@ -269,14 +270,14 @@ public class DLStoreImpl implements DLStore {
 			String fromVersionLabel, String toVersionLabel)
 		throws PortalException {
 
-		if (_storeAreaProcessor != null) {
+		if (_isStoreAreaSupported()) {
 			StoreArea.tryRunWithStoreAreas(
 				sourceStoreArea -> _storeAreaProcessor.copy(
 					sourceStoreArea.getPath(
 						companyId, repositoryId, fileName, fromVersionLabel),
 					StoreArea.NEW.getPath(
 						companyId, repositoryId, fileName, toVersionLabel)),
-				StoreArea.LIVE, StoreArea.NEW);
+				StoreArea.LIVE, StoreArea.NEW, StoreArea.DELETED);
 		}
 		else {
 			_wrappedStore.addFile(
@@ -328,6 +329,18 @@ public class DLStoreImpl implements DLStore {
 		}
 
 		return inputStream;
+	}
+
+	private boolean _isStoreAreaSupported() {
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-174816")) {
+			return false;
+		}
+
+		if (_storeAreaProcessor != null) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _validate(
