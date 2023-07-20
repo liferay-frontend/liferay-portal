@@ -19,7 +19,10 @@ import com.liferay.jethr0.jenkins.dalo.JenkinsServerDALO;
 import com.liferay.jethr0.jenkins.server.JenkinsServer;
 import com.liferay.jethr0.util.StringUtil;
 
-import java.util.Objects;
+import java.net.URL;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.json.JSONObject;
 
@@ -35,6 +38,12 @@ public class JenkinsServerRepository
 	extends BaseEntityRepository<JenkinsServer> {
 
 	public JenkinsServer add(String url) {
+		Matcher jenkinsURLMatcher = _jenkinsURLPattern.matcher(url);
+
+		if (!jenkinsURLMatcher.find()) {
+			throw new RuntimeException("Invalid Jenkins URL: " + url);
+		}
+
 		JSONObject jsonObject = new JSONObject();
 
 		jsonObject.put(
@@ -42,17 +51,17 @@ public class JenkinsServerRepository
 		).put(
 			"jenkinsUserPassword", _jenkinsUserPassword
 		).put(
+			"name", jenkinsURLMatcher.group("name")
+		).put(
 			"url", url
 		);
 
 		return add(jsonObject);
 	}
 
-	public JenkinsServer getByURL(String url) {
+	public JenkinsServer getByURL(URL url) {
 		for (JenkinsServer jenkinsServer : getAll()) {
-			if (!Objects.equals(
-					jenkinsServer.getURL(), StringUtil.toURL(url))) {
-
+			if (!StringUtil.equals(jenkinsServer.getURL(), url)) {
 				continue;
 			}
 
@@ -66,6 +75,9 @@ public class JenkinsServerRepository
 	public JenkinsServerDALO getEntityDALO() {
 		return _jenkinsServerDALO;
 	}
+
+	private static final Pattern _jenkinsURLPattern = Pattern.compile(
+		"https?://(?<name>[^/]+)(\\.liferay\\.com)?(/.*)?");
 
 	@Autowired
 	private JenkinsServerDALO _jenkinsServerDALO;

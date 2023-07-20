@@ -12,21 +12,22 @@
  * details.
  */
 
-import PropTypes from 'prop-types';
-import React, {useEffect, useState} from 'react';
-
 import {
 	ColorPicker,
 	DEFAULT_TOKEN_LABEL,
-} from '../../../common/components/ColorPicker/ColorPicker';
+	convertRGBtoHex,
+} from '@liferay/layout-js-components-web';
+import PropTypes from 'prop-types';
+import React, {useEffect, useMemo, useState} from 'react';
+
 import {useStyleBook} from '../../../plugins/page_design_options/hooks/useStyleBook';
 import {ConfigurationFieldPropTypes} from '../../../prop_types/index';
 import {useActiveItemId} from '../../contexts/ControlsContext';
 import {useGlobalContext} from '../../contexts/GlobalContext';
 import {useSelector} from '../../contexts/StoreContext';
 import selectCanDetachTokenValues from '../../selectors/selectCanDetachTokenValues';
-import {convertRGBtoHex} from '../../utils/convertRGBtoHex';
 import getLayoutDataItemUniqueClassName from '../../utils/getLayoutDataItemUniqueClassName';
+import {getResetLabelByViewport} from '../../utils/getResetLabelByViewport';
 import {ColorPaletteField} from './ColorPaletteField';
 
 export function ColorPickerField({field, isCustomStyle, onValueSelect, value}) {
@@ -38,6 +39,11 @@ export function ColorPickerField({field, isCustomStyle, onValueSelect, value}) {
 		(state) => state.selectedViewportSize
 	);
 	const {tokenValues} = useStyleBook();
+
+	const restoreButtonLabel = useMemo(
+		() => getResetLabelByViewport(selectedViewportSize),
+		[selectedViewportSize]
+	);
 
 	useEffect(() => {
 		if (!field.cssProperty) {
@@ -71,6 +77,7 @@ export function ColorPickerField({field, isCustomStyle, onValueSelect, value}) {
 
 	return Object.keys(tokenValues).length ? (
 		<ColorPicker
+			activeItemId={activeItemId}
 			canDetachTokenValues={canDetachTokenValues}
 			defaultTokenLabel={
 				computedValue ? computedValue : DEFAULT_TOKEN_LABEL
@@ -78,6 +85,7 @@ export function ColorPickerField({field, isCustomStyle, onValueSelect, value}) {
 			defaultTokenValue={computedValue}
 			field={field}
 			onValueSelect={onValueSelect}
+			restoreButtonLabel={restoreButtonLabel}
 			selectedViewportSize={selectedViewportSize}
 			showLabel={isCustomStyle}
 			tokenValues={tokenValues}
