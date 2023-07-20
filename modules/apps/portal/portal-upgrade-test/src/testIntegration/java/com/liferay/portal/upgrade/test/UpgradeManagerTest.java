@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.util.PropsUtil;
 
 import java.lang.management.ManagementFactory;
 
@@ -55,15 +55,14 @@ public class UpgradeManagerTest {
 
 	@BeforeClass
 	public static void setUpClass() {
-		_originalUpgradeDatabaseAutoRun = ReflectionTestUtil.getFieldValue(
-			PropsValues.class, "UPGRADE_DATABASE_AUTO_RUN");
+		_originalUpgradeDatabaseAutoRun = PropsUtil.get(
+			"upgrade.database.auto.run");
 	}
 
 	@AfterClass
 	public static void tearDownClass() {
-		ReflectionTestUtil.setFieldValue(
-			PropsValues.class, "UPGRADE_DATABASE_AUTO_RUN",
-			_originalUpgradeDatabaseAutoRun);
+		PropsUtil.set(
+			"upgrade.database.auto.run", _originalUpgradeDatabaseAutoRun);
 	}
 
 	@After
@@ -153,9 +152,9 @@ public class UpgradeManagerTest {
 
 		promise.getValue();
 
-		ReflectionTestUtil.setFieldValue(
-			PropsValues.class, "UPGRADE_DATABASE_AUTO_RUN",
-			upgradeDatabaseAutoRun);
+		PropsUtil.set(
+			"upgrade.database.auto.run",
+			String.valueOf(upgradeDatabaseAutoRun));
 
 		promise = _serviceComponentRuntime.enableComponent(
 			_serviceComponentRuntime.getComponentDescriptionDTO(
@@ -186,7 +185,7 @@ public class UpgradeManagerTest {
 			_upgradeManager, methodName, new Class<?>[0], null);
 	}
 
-	private static boolean _originalUpgradeDatabaseAutoRun;
+	private static String _originalUpgradeDatabaseAutoRun;
 	private static Object _upgradeManager;
 
 	@Inject
