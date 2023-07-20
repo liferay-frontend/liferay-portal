@@ -2290,8 +2290,8 @@ public class ObjectEntryLocalServiceImpl
 						return null;
 					}
 
-					return _inlineSQLHelper.getPermissionWherePredicate(
-						objectDefinition2.getClassName(),
+					return _getPermissionWherePredicate(
+						objectDefinition2,
 						dynamicObjectDefinitionTablePrimaryKeyColumn);
 				}
 			).and(
@@ -2486,35 +2486,10 @@ public class ObjectEntryLocalServiceImpl
 						return null;
 					}
 
-					ObjectDefinition objectDefinition2 =
+					return _getPermissionWherePredicate(
 						_objectDefinitionPersistence.findByPrimaryKey(
-							objectRelationship.getObjectDefinitionId2());
-
-					long[] groupIds = new long[0];
-
-					if (objectDefinition2.isAccountEntryRestricted()) {
-						PermissionChecker permissionChecker =
-							PermissionThreadLocal.getPermissionChecker();
-
-						groupIds = ListUtil.toLongArray(
-							_accountEntryLocalService.getUserAccountEntries(
-								permissionChecker.getUserId(),
-								AccountConstants.
-									PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
-								null,
-								new String[] {
-									AccountConstants.
-										ACCOUNT_ENTRY_TYPE_BUSINESS,
-									AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON
-								},
-								WorkflowConstants.STATUS_APPROVED,
-								QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-							AccountEntry::getAccountEntryGroupId);
-					}
-
-					return _inlineSQLHelper.getPermissionWherePredicate(
-						objectDefinition2.getClassName(), primaryKeyColumn,
-						groupIds);
+							objectRelationship.getObjectDefinitionId2()),
+						primaryKeyColumn);
 				}
 			).and(
 				ObjectEntrySearchUtil.getRelatedModelsPredicate(
@@ -2573,6 +2548,34 @@ public class ObjectEntryLocalServiceImpl
 					permissionChecker.getUserId())
 			).withParentheses()
 		).withParentheses();
+	}
+
+	private Predicate _getPermissionWherePredicate(
+			ObjectDefinition objectDefinition,
+			Column<DynamicObjectDefinitionTable, Long> primaryKeyColumn)
+		throws PortalException {
+
+		long[] groupIds = new long[0];
+
+		if (objectDefinition.isAccountEntryRestricted()) {
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
+			groupIds = ListUtil.toLongArray(
+				_accountEntryLocalService.getUserAccountEntries(
+					permissionChecker.getUserId(),
+					AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT, null,
+					new String[] {
+						AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
+						AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON
+					},
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS),
+				AccountEntry::getAccountEntryGroupId);
+		}
+
+		return _inlineSQLHelper.getPermissionWherePredicate(
+			objectDefinition.getClassName(), primaryKeyColumn, groupIds);
 	}
 
 	private Object _getResult(

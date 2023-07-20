@@ -1,0 +1,20 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"description": "johndoe@example.com",
+					"label": "Publisher Email",
+					"name": "publisherEmail",
+					"type": "text"
+				},
+				{
+					"description": "11111",
+					"label": "Product Id",
+					"name": "productId",
+					"type": "text"
+				}
+			]
+		}
+	]
+}
