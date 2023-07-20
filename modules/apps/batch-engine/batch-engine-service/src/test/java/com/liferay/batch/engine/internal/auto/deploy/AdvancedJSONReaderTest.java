@@ -74,6 +74,8 @@ public class AdvancedJSONReaderTest {
 				245647, batchEngineUnitConfiguration.getUserId());
 			Assert.assertEquals(
 				"v10.0", batchEngineUnitConfiguration.getVersion());
+			Assert.assertTrue(
+				batchEngineUnitConfiguration.isCheckPermissions());
 		}
 	}
 

@@ -46,15 +46,31 @@ public interface Document extends Cloneable, Serializable {
 
 	public void addDateSortable(String name, Date[] values);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void addFile(String name, byte[] bytes, String fileExt)
 		throws IOException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void addFile(String name, File file, String fileExt)
 		throws IOException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void addFile(String name, InputStream inputStream, String fileExt)
 		throws IOException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void addFile(
 			String name, InputStream inputStream, String fileExt,
 			int maxStringLength)

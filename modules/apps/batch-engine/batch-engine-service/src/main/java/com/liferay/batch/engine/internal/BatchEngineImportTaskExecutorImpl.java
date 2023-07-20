@@ -80,13 +80,14 @@ public class BatchEngineImportTaskExecutorImpl
 				batchEngineImportTask.getClassName(),
 				batchEngineImportTask.getTaskItemDelegateName());
 
-		execute(batchEngineImportTask, batchEngineTaskItemDelegate);
+		execute(batchEngineImportTask, batchEngineTaskItemDelegate, true);
 	}
 
 	@Override
 	public void execute(
 		BatchEngineImportTask batchEngineImportTask,
-		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate) {
+		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate,
+		boolean checkPermissions) {
 
 		SafeCloseable safeCloseable = CompanyThreadLocal.setWithSafeCloseable(
 			batchEngineImportTask.getCompanyId());
@@ -110,6 +111,7 @@ public class BatchEngineImportTaskExecutorImpl
 				batchEngineImportTask);
 
 			BatchEngineTaskExecutorUtil.execute(
+				checkPermissions,
 				() -> _importItems(
 					batchEngineImportTask, batchEngineTaskItemDelegate),
 				_userLocalService.getUser(batchEngineImportTask.getUserId()));
@@ -313,7 +315,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 					processedItemsCount++;
 
-					ItemIndexThreadLocal.put(item, processedItemsCount);
+					ItemIndexThreadLocal.add(processedItemsCount);
 				}
 				catch (Exception exception) {
 					processedItemsCount++;
@@ -330,7 +332,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 					items.clear();
 
-					ItemIndexThreadLocal.remove();
+					ItemIndexThreadLocal.clear();
 				}
 			}
 

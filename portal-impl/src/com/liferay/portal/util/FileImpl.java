@@ -28,11 +28,9 @@ import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.FileComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.ServiceProxyFactory;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
-import com.liferay.portal.kernel.util.TextExtractor;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -325,17 +323,6 @@ public class FileImpl implements com.liferay.portal.kernel.util.File {
 	@Override
 	public boolean exists(String fileName) {
 		return exists(new File(fileName));
-	}
-
-	@Override
-	public String extractText(InputStream inputStream) {
-		return extractText(inputStream, -1);
-	}
-
-	@Override
-	public String extractText(InputStream inputStream, int maxStringLength) {
-		return TextExtractorHolder._textExtractor.extractText(
-			inputStream, maxStringLength);
 	}
 
 	@Override
@@ -980,14 +967,5 @@ public class FileImpl implements com.liferay.portal.kernel.util.File {
 	private static final Log _log = LogFactoryUtil.getLog(FileImpl.class);
 
 	private static final FileImpl _fileImpl = new FileImpl();
-
-	private static class TextExtractorHolder {
-
-		private static volatile TextExtractor _textExtractor =
-			ServiceProxyFactory.newServiceTrackedInstance(
-				TextExtractor.class, TextExtractorHolder.class,
-				"_textExtractor", true);
-
-	}
 
 }

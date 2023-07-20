@@ -77,7 +77,7 @@ function AssetCategories({
 	);
 
 	return (
-		<ClayForm.Group>
+		<div className="d-inline-block">
 			<label htmlFor={`${namespace}queryCategoryIds${index}`}>
 				{Liferay.Language.get('categories')}
 			</label>
@@ -85,6 +85,7 @@ function AssetCategories({
 			<AssetVocabularyCategoriesSelector
 				categoryIds={rule.queryValues ? rule.queryValues : ''}
 				eventName={`${namespace}selectCategory`}
+				formGroupClassName="mb-0"
 				groupIds={groupIds}
 				inputName={`${namespace}queryCategoryIds${index}`}
 				onSelectedItemsChange={setSelectedItems}
@@ -92,7 +93,7 @@ function AssetCategories({
 				selectedItems={selectedItems}
 				sourceItemsVocabularyIds={vocabularyIds}
 			/>
-		</ClayForm.Group>
+		</div>
 	);
 }
 
@@ -101,26 +102,26 @@ function AssetTags({groupIds, index, namespace, rule, tagSelectorURL}) {
 	const [selectedItems, setSelectedItems] = useState(rule.selectedItems);
 
 	return (
-		<ClayForm.Group>
-			<AssetTagsSelector
-				eventName={`${namespace}selectTag`}
-				groupIds={groupIds}
-				inputName={`${namespace}queryTagNames${index}`}
-				inputValue={inputValue}
-				onInputValueChange={setInputValue}
-				onSelectedItemsChange={setSelectedItems}
-				portletURL={tagSelectorURL}
-				selectedItems={selectedItems}
-				showSelectButton={true}
-				tagNames={rule.queryValues ? rule.queryValues : ''}
-			/>
-		</ClayForm.Group>
+		<AssetTagsSelector
+			eventName={`${namespace}selectTag`}
+			formGroupClassName="mb-0"
+			groupIds={groupIds}
+			inputName={`${namespace}queryTagNames${index}`}
+			inputValue={inputValue}
+			onInputValueChange={setInputValue}
+			onSelectedItemsChange={setSelectedItems}
+			portletURL={tagSelectorURL}
+			selectedItems={selectedItems}
+			showSelectButton={true}
+			showSubtitle={false}
+			tagNames={rule.queryValues ? rule.queryValues : ''}
+		/>
 	);
 }
 
 function Keywords({index, namespace, onChange, rule}) {
 	return (
-		<ClayForm.Group>
+		<div className="d-inline-block">
 			<label htmlFor={`${namespace}keywords${index}`}>
 				{Liferay.Language.get('keywords')}
 			</label>
@@ -136,7 +137,7 @@ function Keywords({index, namespace, onChange, rule}) {
 				type="text"
 				value={rule.queryValues}
 			/>
-		</ClayForm.Group>
+		</div>
 	);
 }
 
@@ -152,9 +153,9 @@ function Rule({
 	vocabularyIds,
 }) {
 	return (
-		<>
+		<div className="align-items-baseline d-flex justify-content-between">
 			<div className="panel panel-default">
-				<div className="panel-body">
+				<div className="align-items-baseline c-gap-3 d-flex mb-0 panel-body">
 					<ClayForm.Group>
 						<ClaySelectWithOption
 							aria-label={Liferay.Language.get('query-contains')}
@@ -205,55 +206,59 @@ function Rule({
 					</ClayForm.Group>
 
 					{rule.type === 'assetCategories' && (
-						<AssetCategories
-							categorySelectorURL={categorySelectorURL}
-							groupIds={groupIds}
-							index={index}
-							namespace={namespace}
-							rule={rule}
-							vocabularyIds={vocabularyIds}
-						/>
+						<ClayForm.Group>
+							<AssetCategories
+								categorySelectorURL={categorySelectorURL}
+								groupIds={groupIds}
+								index={index}
+								namespace={namespace}
+								rule={rule}
+								vocabularyIds={vocabularyIds}
+							/>
+						</ClayForm.Group>
 					)}
 
 					{rule.type === 'assetTags' && (
-						<AssetTags
-							groupIds={groupIds}
-							index={index}
-							namespace={namespace}
-							rule={rule}
-							tagSelectorURL={tagSelectorURL}
-						/>
+						<ClayForm.Group>
+							<AssetTags
+								groupIds={groupIds}
+								index={index}
+								namespace={namespace}
+								rule={rule}
+								tagSelectorURL={tagSelectorURL}
+							/>
+						</ClayForm.Group>
 					)}
 
 					{rule.type === 'keywords' && (
-						<Keywords
-							index={index}
-							namespace={namespace}
-							onChange={onRuleChange}
-							rule={rule}
-						/>
+						<ClayForm.Group>
+							<Keywords
+								index={index}
+								namespace={namespace}
+								onChange={onRuleChange}
+								rule={rule}
+							/>
+						</ClayForm.Group>
 					)}
 
-					<div className="timeline-increment">
+					<div className="ml-0 timeline-increment">
 						<span className="timeline-icon"></span>
 					</div>
 				</div>
 			</div>
 
-			<div className="container-trash">
-				<ClayButton
-					aria-label={Liferay.Language.get('delete-condition')}
-					className="condition-card-delete"
-					data-index={index}
-					monospaced
-					onClick={onDeleteRule}
-					size="sm"
-					title={Liferay.Language.get('delete-condition')}
-				>
-					<ClayIcon symbol="trash" />
-				</ClayButton>
-			</div>
-		</>
+			<ClayButton
+				aria-label={Liferay.Language.get('delete-condition')}
+				className="container-trash"
+				data-index={index}
+				monospaced
+				onClick={onDeleteRule}
+				size="sm"
+				title={Liferay.Language.get('delete-condition')}
+			>
+				<ClayIcon symbol="trash" />
+			</ClayButton>
+		</div>
 	);
 }
 
@@ -318,11 +323,11 @@ function AssetFilterBuilder({
 				<li className="timeline-item">
 					<div className="panel panel-default">
 						<div className="d-flex flex-wrap mb-0 panel-body py-2">
-							<div className="h4 panel-title">
+							<div className="c-mb-0 h4 panel-title">
 								{Liferay.Language.get('rules')}
 							</div>
 
-							<div className="timeline-increment">
+							<div className="ml-0 timeline-increment">
 								<span className="timeline-icon"></span>
 							</div>
 						</div>
@@ -330,7 +335,7 @@ function AssetFilterBuilder({
 				</li>
 
 				{currentRules.map((rule, index) => (
-					<li className="timeline-item" key={index}>
+					<li className="pt-3 timeline-item" key={index}>
 						<Rule
 							categorySelectorURL={categorySelectorURL}
 							groupIds={groupIds}
@@ -344,21 +349,20 @@ function AssetFilterBuilder({
 						/>
 					</li>
 				))}
-			</ul>
 
-			<div className="position-relative">
-				<div className="add-condition timeline-increment-icon">
-					<ClayButton
-						aria-label={Liferay.Language.get('add-condition')}
-						className="form-builder-rule-add-condition form-builder-timeline-add-item"
-						monospaced
-						onClick={handleAddRule}
-						size="sm"
-					>
-						<ClayIcon symbol="plus" />
-					</ClayButton>
-				</div>
-			</div>
+				<li className="timeline-item">
+					<div className="position-relative timeline-increment">
+						<ClayButton
+							aria-label={Liferay.Language.get('add-condition')}
+							monospaced
+							onClick={handleAddRule}
+							size="sm"
+						>
+							<ClayIcon symbol="plus" />
+						</ClayButton>
+					</div>
+				</li>
+			</ul>
 		</>
 	);
 }

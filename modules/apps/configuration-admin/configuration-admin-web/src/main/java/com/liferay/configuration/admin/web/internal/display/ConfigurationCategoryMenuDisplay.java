@@ -14,6 +14,7 @@
 
 package com.liferay.configuration.admin.web.internal.display;
 
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 
@@ -22,6 +23,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
 
 /**
  * @author Jorge Ferrer
@@ -62,6 +66,33 @@ public class ConfigurationCategoryMenuDisplay {
 		}
 
 		return null;
+	}
+
+	public VerticalNavItemList getVerticalNavItemList(
+		ConfigurationEntry configurationEntry,
+		ConfigurationScopeDisplay configurationScopeDisplay,
+		RenderRequest renderRequest, RenderResponse renderResponse) {
+
+		VerticalNavItemList verticalNavItemList = new VerticalNavItemList();
+
+		for (ConfigurationEntry curConfigurationEntry :
+				configurationScopeDisplay.getConfigurationEntries()) {
+
+			verticalNavItemList.add(
+				verticalNavItem -> {
+					String name = curConfigurationEntry.getName();
+
+					verticalNavItem.setActive(
+						configurationEntry.equals(curConfigurationEntry));
+					verticalNavItem.setHref(
+						curConfigurationEntry.getEditURL(
+							renderRequest, renderResponse));
+					verticalNavItem.setId(name);
+					verticalNavItem.setLabel(name);
+				});
+		}
+
+		return verticalNavItemList;
 	}
 
 	public boolean isEmpty() {

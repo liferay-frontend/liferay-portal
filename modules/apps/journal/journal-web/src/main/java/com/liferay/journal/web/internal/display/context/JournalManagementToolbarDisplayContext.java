@@ -231,6 +231,8 @@ public class JournalManagementToolbarDisplayContext
 				getPortletURL()
 			).setNavigation(
 				"structure"
+			).setParameter(
+				"ddmStructureId", (String)null
 			).buildString()
 		).build();
 	}
@@ -243,6 +245,8 @@ public class JournalManagementToolbarDisplayContext
 			StringPool.BLANK
 		).setNavigation(
 			StringPool.BLANK
+		).setParameter(
+			"ddmStructureId", (String)null
 		).setParameter(
 			"orderByCol", StringPool.BLANK
 		).setParameter(
@@ -281,6 +285,7 @@ public class JournalManagementToolbarDisplayContext
 					getFilterNavigationDropdownItemsLabel());
 			}
 		).addGroup(
+			_journalDisplayContext::isIndexAllArticleVersions,
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					getFilterStatusDropdownItems());
@@ -350,6 +355,8 @@ public class JournalManagementToolbarDisplayContext
 							currentURLObj, liferayPortletResponse)
 					).setNavigation(
 						(String)null
+					).setParameter(
+						"ddmStructureId", (String)null
 					).buildString());
 
 				labelItem.setCloseable(true);
@@ -471,6 +478,8 @@ public class JournalManagementToolbarDisplayContext
 				getPortletURL()
 			).setKeywords(
 				StringPool.BLANK
+			).setParameter(
+				"ddmStructureId", (String)null
 			).buildPortletURL(),
 			getNavigationParam(), getNavigation());
 
