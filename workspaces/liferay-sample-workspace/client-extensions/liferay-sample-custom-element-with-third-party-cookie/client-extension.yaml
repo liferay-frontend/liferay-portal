@@ -1,0 +1,13 @@
+assemble:
+    - from: assets
+      into: static
+liferay-sample-custom-element-with-third-party-cookie:
+    friendlyURLMapping: third-party-cookie
+    htmlElementName: third-party-cookie
+    instanceable: false
+    name: Liferay Sample Custom Element with third party cookie
+    portletCategoryName: category.client-extensions
+    type: customElement
+    urls:
+        - index.js
+    useESM: false
