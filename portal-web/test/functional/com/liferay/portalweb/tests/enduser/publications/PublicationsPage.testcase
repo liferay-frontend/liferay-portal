@@ -116,9 +116,9 @@ definition {
 		}
 
 		task ("Publish the publication and assert that it was published successfully") {
-			JSONPublications.publishPublication(publicationName = "Publication Name");
-
-			Publications.viewPublicationPublished(publicationName = "Publication Name");
+			Publications.publishPublication(
+				publicationName = "Publication Name",
+				reviewChangesPage = "true");
 		}
 	}
 
@@ -189,11 +189,9 @@ definition {
 				showAllItems = "true");
 		}
 
-		PublicationsNavigator.gotoPublish(
-			gotoPublicationsAdmin = "true",
-			publicationName = "Publication Name");
-
-		Publications.publishPublication(publicationName = "Publication Name");
+		Publications.publishPublication(
+			publicationName = "Publication Name",
+			reviewChangesPage = "true");
 	}
 
 	@description = "Add style book and apply it within Publications"
@@ -251,11 +249,9 @@ definition {
 				locator2 = "font-family",
 				value1 = "times");
 
-			PublicationsNavigator.gotoPublish(
+			Publications.publishPublication(
 				gotoPublicationsAdmin = "true",
 				publicationName = "Test Publication");
-
-			Publications.publishPublication(publicationName = "Test Publication");
 		}
 	}
 
@@ -331,9 +327,9 @@ definition {
 		}
 
 		task ("Publish the Publication and assert that it was published successfully") {
-			JSONPublications.publishPublication(publicationName = "Publication Name");
-
-			Publications.viewPublicationPublished(publicationName = "Publication Name");
+			Publications.publishPublication(
+				publicationName = "Publication Name",
+				reviewChangesPage = "true");
 		}
 	}
 
@@ -387,11 +383,9 @@ definition {
 			PageEditor.viewFragment(fragmentName = "Button");
 		}
 
-		PublicationsNavigator.gotoPublish(
+		Publications.publishPublication(
 			gotoPublicationsAdmin = "true",
 			publicationName = "Publication Name");
-
-		Publications.publishPublication(publicationName = "Publication Name");
 	}
 
 	@description = "Add custom fragments into a publication and publish"
@@ -457,11 +451,9 @@ definition {
 				text = "Example Rich Text");
 		}
 
-		PublicationsNavigator.gotoPublish(
+		Publications.publishPublication(
 			gotoPublicationsAdmin = "true",
 			publicationName = "Publication Name");
-
-		Publications.publishPublication(publicationName = "Publication Name");
 	}
 
 	@description = "Create pages through an existing page template into a publication and publish"
@@ -510,11 +502,9 @@ definition {
 			Portlet.viewSpecificPG(portletName = "Blogs");
 		}
 
-		PublicationsNavigator.gotoPublish(
+		Publications.publishPublication(
 			gotoPublicationsAdmin = "true",
 			publicationName = "Publication Name");
-
-		Publications.publishPublication(publicationName = "Publication Name");
 	}
 
 	@description = "This is a use cas for LPS-176197. As a publication admin, I would like to preview fragment before publishing"
@@ -698,9 +688,9 @@ definition {
 
 		PageEditor.publish();
 
-		JSONPublications.publishPublication(publicationName = "Publication Name 2");
-
-		Publications.viewPublicationPublished(publicationName = "Publication Name 2");
+		Publications.publishPublication(
+			gotoPublicationsAdmin = "true",
+			publicationName = "Publication Name 2");
 
 		PublicationsNavigator.gotoPublish(
 			gotoPublicationsAdmin = "true",
@@ -823,9 +813,9 @@ definition {
 			changeType = "Deleted",
 			changeUser = "Test Test");
 
-		JSONPublications.publishPublication(publicationName = "Publication Name");
-
-		Publications.viewPublicationPublished(publicationName = "Publication Name");
+		Publications.publishPublication(
+			publicationName = "Publication Name",
+			reviewChangesPage = "true");
 
 		Navigator.openSiteURL(siteName = "site-name");
 
@@ -883,9 +873,9 @@ definition {
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
 
-		JSONPublications.publishPublication(publicationName = "Publication Name");
-
-		Publications.viewPublicationPublished(publicationName = "Publication Name");
+		Publications.publishPublication(
+			gotoPublicationsAdmin = "true",
+			publicationName = "Publication Name");
 
 		Navigator.gotoPrivateSitePage(
 			pageName = "Test Page",
@@ -953,11 +943,9 @@ definition {
 		task ("Go back to the Publication, Publish and assert it was published successfully") {
 			JSONPublications.selectPublication(publicationName = "Publication Name");
 
-			PublicationsNavigator.gotoPublish(
+			Publications.publishPublication(
 				gotoPublicationsAdmin = "true",
 				publicationName = "Publication Name");
-
-			Publications.publishPublication(publicationName = "Publication Name");
 		}
 
 		task ("Assert that the Field Value from the Publication shows up") {
@@ -1019,9 +1007,9 @@ definition {
 		}
 
 		task ("Publish Publication 2 Name") {
-			JSONPublications.publishPublication(publicationName = "Publication 1 Name");
-
-			Publications.viewPublicationPublished(publicationName = "Publication 1 Name");
+			Publications.publishPublication(
+				gotoPublicationsAdmin = "true",
+				publicationName = "Publication 1 Name");
 		}
 
 		task ("Access the Home page on Publication 2 Name") {
@@ -1118,9 +1106,9 @@ definition {
 		}
 
 		task ("Publish Publication 2 and assert that the timeline for Publication 2 is shown in Production") {
-			JSONPublications.publishPublication(publicationName = "Publication Name 2");
-
-			Publications.viewPublicationPublished(publicationName = "Publication Name 2");
+			Publications.publishPublication(
+				gotoPublicationsAdmin = "true",
+				publicationName = "Publication Name 2");
 
 			Navigator.gotoSitePage(
 				pageName = "Page Name 2",
@@ -1162,9 +1150,9 @@ definition {
 			locator1 = "TextInput#ANY",
 			value1 = "/test-page");
 
-		JSONPublications.publishPublication(publicationName = "Publication Name");
-
-		Publications.viewPublicationPublished(publicationName = "Publication Name");
+		Publications.publishPublication(
+			gotoPublicationsAdmin = "true",
+			publicationName = "Publication Name");
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "site-name");
 
