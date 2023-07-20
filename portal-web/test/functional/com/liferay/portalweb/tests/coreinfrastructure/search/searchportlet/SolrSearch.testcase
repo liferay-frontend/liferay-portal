@@ -123,11 +123,13 @@ definition {
 			groupName = "Guest",
 			titleMap = "en_US:WC Title,de_DE:WC Titel");
 
-		SearchPortlets.addWidgets(searchPortletList = "Suggestions");
-
 		Search.openSearchPage();
 
-		SearchPortlets.gotoConfigureSuggestionsOptions();
+		SearchPortlets.addWidgets(searchPortletList = "Suggestions");
+
+		Refresh();
+
+		SearchPortlets.gotoConfigureSuggestionsOptions(portletOption = "Configuration");
 
 		SelectFrame(locator1 = "IFrame#CONFIGURATION");
 
