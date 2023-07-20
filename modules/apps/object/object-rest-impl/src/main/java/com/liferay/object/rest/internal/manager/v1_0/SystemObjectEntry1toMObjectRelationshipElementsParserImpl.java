@@ -17,6 +17,7 @@ package com.liferay.object.rest.internal.manager.v1_0;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +48,13 @@ public class SystemObjectEntry1toMObjectRelationshipElementsParserImpl
 		if (objectRelationship.getObjectDefinitionId1() ==
 				objectDefinition.getObjectDefinitionId()) {
 
-			return Collections.singletonList(parseOne(value));
+			Map<String, Object> systemObjectEntryMap = parseOne(value);
+
+			if (systemObjectEntryMap == null) {
+				return Collections.emptyList();
+			}
+
+			return Collections.singletonList(systemObjectEntryMap);
 		}
 
 		return parseMany(value);
@@ -57,7 +64,14 @@ public class SystemObjectEntry1toMObjectRelationshipElementsParserImpl
 	protected Map<String, Object> parseOne(Object object) {
 		validateOne(object);
 
-		return (Map<String, Object>)object;
+		Map<String, Object> nestedSystemObjectEntryProperties =
+			(Map<String, Object>)object;
+
+		if (MapUtil.isEmpty(nestedSystemObjectEntryProperties)) {
+			return null;
+		}
+
+		return nestedSystemObjectEntryProperties;
 	}
 
 }
