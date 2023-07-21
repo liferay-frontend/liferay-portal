@@ -74,10 +74,6 @@ public class FreeMarkerFragmentEntryValidator
 			return;
 		}
 
-		Template template = TemplateManagerUtil.getTemplate(
-			TemplateConstants.LANG_TYPE_FTL,
-			new StringTemplateResource("template_id", "[#ftl] " + html), true);
-
 		try {
 			HttpServletRequest httpServletRequest = null;
 			HttpServletResponse httpServletResponse = null;
@@ -90,45 +86,51 @@ public class FreeMarkerFragmentEntryValidator
 				httpServletResponse = serviceContext.getResponse();
 			}
 
+			if ((httpServletRequest == null) ||
+				(httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY) ==
+					null)) {
+
+				return;
+			}
+
 			if (httpServletResponse == null) {
 				httpServletResponse = new DummyHttpServletResponse();
 			}
 
-			if ((httpServletRequest != null) &&
-				(httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY) !=
-					null)) {
+			JSONObject configurationDefaultValuesJSONObject =
+				_fragmentEntryConfigurationParser.
+					getConfigurationDefaultValuesJSONObject(configuration);
 
-				JSONObject configurationDefaultValuesJSONObject =
-					_fragmentEntryConfigurationParser.
-						getConfigurationDefaultValuesJSONObject(configuration);
+			Template template = TemplateManagerUtil.getTemplate(
+				TemplateConstants.LANG_TYPE_FTL,
+				new StringTemplateResource("template_id", "[#ftl] " + html),
+				true);
 
-				template.putAll(
-					HashMapBuilder.<String, Object>put(
-						"configuration", configurationDefaultValuesJSONObject
-					).put(
-						"fragmentElementId", StringPool.BLANK
-					).put(
-						"fragmentEntryLinkNamespace", StringPool.BLANK
-					).put(
-						"input",
-						new InputTemplateNode(
-							StringPool.BLANK, StringPool.BLANK,
-							StringPool.BLANK, "name", false, false, false,
-							"type", "value")
-					).put(
-						"layoutMode", Constants.VIEW
-					).putAll(
-						_fragmentEntryConfigurationParser.getContextObjects(
-							configurationDefaultValuesJSONObject, configuration,
-							null, new long[0])
-					).build());
+			template.putAll(
+				HashMapBuilder.<String, Object>put(
+					"configuration", configurationDefaultValuesJSONObject
+				).put(
+					"fragmentElementId", StringPool.BLANK
+				).put(
+					"fragmentEntryLinkNamespace", StringPool.BLANK
+				).put(
+					"input",
+					new InputTemplateNode(
+						StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+						"name", false, false, false, "type", "value")
+				).put(
+					"layoutMode", Constants.VIEW
+				).putAll(
+					_fragmentEntryConfigurationParser.getContextObjects(
+						configurationDefaultValuesJSONObject, configuration,
+						null, new long[0])
+				).build());
 
-				template.prepareTaglib(httpServletRequest, httpServletResponse);
+			template.prepareTaglib(httpServletRequest, httpServletResponse);
 
-				template.prepare(httpServletRequest);
+			template.prepare(httpServletRequest);
 
-				template.processTemplate(new DummyWriter());
-			}
+			template.processTemplate(new DummyWriter());
 		}
 		catch (TemplateException templateException) {
 			throw new FragmentEntryContentException(
