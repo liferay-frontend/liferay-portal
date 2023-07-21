@@ -169,11 +169,11 @@ public class ObjectActionLocalServiceTest {
 	public void tearDown() {
 		ReflectionTestUtil.setFieldValue(
 			_objectActionExecutorRegistry.getObjectActionExecutor(
-				ObjectActionExecutorConstants.KEY_WEBHOOK),
+				0, ObjectActionExecutorConstants.KEY_WEBHOOK),
 			"_http", _originalHttp);
 		ReflectionTestUtil.setFieldValue(
 			_objectActionExecutorRegistry.getObjectActionExecutor(
-				ObjectActionExecutorConstants.KEY_GROOVY),
+				0, ObjectActionExecutorConstants.KEY_GROOVY),
 			"_objectScriptingExecutor", _originalObjectScriptingExecutor);
 	}
 
@@ -1308,7 +1308,7 @@ public class ObjectActionLocalServiceTest {
 
 		return ReflectionTestUtil.getAndSetFieldValue(
 			_objectActionExecutorRegistry.getObjectActionExecutor(
-				objectActionExecutorKey),
+				0, objectActionExecutorKey),
 			fieldName,
 			ProxyUtil.newProxyInstance(
 				clazz.getClassLoader(), new Class<?>[] {clazz},

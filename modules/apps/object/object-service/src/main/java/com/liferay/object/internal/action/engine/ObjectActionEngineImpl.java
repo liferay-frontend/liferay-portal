@@ -24,14 +24,18 @@ import com.liferay.object.constants.ObjectActionConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.dynamic.data.mapping.expression.ObjectEntryDDMExpressionFieldAccessor;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
+import com.liferay.object.exception.ObjectActionExecutorKeyException;
 import com.liferay.object.internal.action.util.ObjectActionThreadLocal;
 import com.liferay.object.internal.action.util.ObjectEntryVariablesUtil;
 import com.liferay.object.internal.dynamic.data.mapping.expression.ObjectEntryDDMExpressionParameterAccessor;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.scope.CompanyScoped;
+import com.liferay.object.scope.ObjectDefinitionScoped;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -232,10 +236,41 @@ public class ObjectActionEngineImpl implements ObjectActionEngine {
 
 			ObjectActionExecutor objectActionExecutor =
 				_objectActionExecutorRegistry.getObjectActionExecutor(
+					objectAction.getCompanyId(),
 					objectAction.getObjectActionExecutorKey());
 
-			objectActionExecutor.validate(
-				objectDefinition.getCompanyId(), objectDefinition.getName());
+			if (objectActionExecutor instanceof CompanyScoped) {
+				CompanyScoped objectActionExecutorCompanyScoped =
+					(CompanyScoped)objectActionExecutor;
+
+				if (!objectActionExecutorCompanyScoped.isAllowedCompany(
+						objectDefinition.getCompanyId())) {
+
+					throw new ObjectActionExecutorKeyException(
+						StringBundler.concat(
+							"The object action executor key ",
+							objectActionExecutor.getKey(),
+							" is not allowed for company ",
+							objectDefinition.getCompanyId()));
+				}
+			}
+
+			if (objectActionExecutor instanceof ObjectDefinitionScoped) {
+				ObjectDefinitionScoped
+					objectActionExecutorObjectDefinitionScoped =
+						(ObjectDefinitionScoped)objectActionExecutor;
+
+				if (!objectActionExecutorObjectDefinitionScoped.
+						isAllowedObjectDefinition(objectDefinition.getName())) {
+
+					throw new ObjectActionExecutorKeyException(
+						StringBundler.concat(
+							"The object action executor key ",
+							objectActionExecutor.getKey(),
+							" is not allowed for object definition ",
+							objectDefinition.getName()));
+				}
+			}
 
 			objectActionExecutor.execute(
 				objectDefinition.getCompanyId(),

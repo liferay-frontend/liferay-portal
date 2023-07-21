@@ -14,9 +14,6 @@
 
 package com.liferay.object.action.executor;
 
-import com.liferay.object.exception.ObjectActionExecutorKeyException;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 
@@ -32,34 +29,5 @@ public interface ObjectActionExecutor {
 		throws Exception;
 
 	public String getKey();
-
-	public default boolean isAllowedCompany(long companyId) {
-		return true;
-	}
-
-	public default boolean isAllowedObjectDefinition(
-		String objectDefinitionName) {
-
-		return true;
-	}
-
-	public default void validate(long companyId, String objectDefinitionName)
-		throws PortalException {
-
-		if (!isAllowedCompany(companyId)) {
-			throw new ObjectActionExecutorKeyException(
-				StringBundler.concat(
-					"The object action executor key ", getKey(),
-					" is not allowed for company ", companyId));
-		}
-
-		if (!isAllowedObjectDefinition(objectDefinitionName)) {
-			throw new ObjectActionExecutorKeyException(
-				StringBundler.concat(
-					"The object action executor key ", getKey(),
-					" is not allowed for object definition ",
-					objectDefinitionName));
-		}
-	}
 
 }

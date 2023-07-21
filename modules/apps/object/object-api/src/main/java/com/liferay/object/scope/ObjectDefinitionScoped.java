@@ -12,24 +12,28 @@
  * details.
  */
 
-package com.liferay.object.action.executor;
+package com.liferay.object.scope;
 
 import java.util.List;
 
-import org.osgi.annotation.versioning.ProviderType;
-
 /**
- * @author Marco Leo
+ * @author Feliphe Marinho
  */
-@ProviderType
-public interface ObjectActionExecutorRegistry {
+public interface ObjectDefinitionScoped {
 
-	public ObjectActionExecutor getObjectActionExecutor(
-		long companyId, String objectActionExecutorKey);
+	public List<String> getAllowedObjectDefinitionNames();
 
-	public List<ObjectActionExecutor> getObjectActionExecutors(
-		long companyId, String objectDefinitionName);
+	public default boolean isAllowedObjectDefinition(
+		String objectDefinitionName) {
 
-	public boolean hasObjectActionExecutor(String objectActionExecutorKey);
+		List<String> allowedObjectDefinitionNames =
+			getAllowedObjectDefinitionNames();
+
+		if (allowedObjectDefinitionNames.isEmpty()) {
+			return true;
+		}
+
+		return allowedObjectDefinitionNames.contains(objectDefinitionName);
+	}
 
 }

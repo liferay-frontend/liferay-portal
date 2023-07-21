@@ -27,6 +27,7 @@ import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.exception.DuplicateObjectActionExternalReferenceCodeException;
 import com.liferay.object.exception.ObjectActionConditionExpressionException;
 import com.liferay.object.exception.ObjectActionErrorMessageException;
+import com.liferay.object.exception.ObjectActionExecutorKeyException;
 import com.liferay.object.exception.ObjectActionLabelException;
 import com.liferay.object.exception.ObjectActionNameException;
 import com.liferay.object.exception.ObjectActionParametersException;
@@ -36,6 +37,8 @@ import com.liferay.object.internal.security.permission.resource.util.ObjectDefin
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.scope.CompanyScoped;
+import com.liferay.object.scope.ObjectDefinitionScoped;
 import com.liferay.object.scripting.exception.ObjectScriptingException;
 import com.liferay.object.scripting.validator.ObjectScriptingValidator;
 import com.liferay.object.service.ObjectFieldLocalService;
@@ -448,10 +451,39 @@ public class ObjectActionLocalServiceImpl
 
 		ObjectActionExecutor objectActionExecutor =
 			_objectActionExecutorRegistry.getObjectActionExecutor(
-				objectActionExecutorKey);
+				objectDefinition.getCompanyId(), objectActionExecutorKey);
 
-		objectActionExecutor.validate(
-			objectDefinition.getCompanyId(), objectDefinition.getName());
+		if (objectActionExecutor instanceof CompanyScoped) {
+			CompanyScoped objectActionExecutorCompanyScoped =
+				(CompanyScoped)objectActionExecutor;
+
+			if (!objectActionExecutorCompanyScoped.isAllowedCompany(
+					objectDefinition.getCompanyId())) {
+
+				throw new ObjectActionExecutorKeyException(
+					StringBundler.concat(
+						"The object action executor key ",
+						objectActionExecutor.getKey(),
+						" is not allowed for company ",
+						objectDefinition.getCompanyId()));
+			}
+		}
+
+		if (objectActionExecutor instanceof ObjectDefinitionScoped) {
+			ObjectDefinitionScoped objectActionExecutorObjectDefinitionScoped =
+				(ObjectDefinitionScoped)objectActionExecutor;
+
+			if (!objectActionExecutorObjectDefinitionScoped.
+					isAllowedObjectDefinition(objectDefinition.getName())) {
+
+				throw new ObjectActionExecutorKeyException(
+					StringBundler.concat(
+						"The object action executor key ",
+						objectActionExecutor.getKey(),
+						" is not allowed for object definition ",
+						objectDefinition.getName()));
+			}
+		}
 	}
 
 	private void _validateObjectActionTriggerKey(

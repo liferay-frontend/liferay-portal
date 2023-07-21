@@ -67,6 +67,7 @@ import com.liferay.portal.kernel.util.RenderLayoutContentThreadLocal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.view.count.ViewCountManagerUtil;
+import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.asset.service.base.AssetEntryLocalServiceBaseImpl;
 import com.liferay.portlet.asset.service.permission.AssetCategoryPermission;
 import com.liferay.social.kernel.model.SocialActivityConstants;
@@ -440,7 +441,9 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 	public void incrementViewCounter(long userId, AssetEntry assetEntry)
 		throws PortalException {
 
-		if (RenderLayoutContentThreadLocal.isRenderLayoutContent()) {
+		if (!PropsValues.ASSET_ENTRY_INCREMENT_VIEW_COUNTER_ENABLED ||
+			RenderLayoutContentThreadLocal.isRenderLayoutContent()) {
+
 			return;
 		}
 
@@ -462,6 +465,10 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 	public AssetEntry incrementViewCounter(
 			long companyId, long userId, String className, long classPK)
 		throws PortalException {
+
+		if (!PropsValues.ASSET_ENTRY_INCREMENT_VIEW_COUNTER_ENABLED) {
+			return getEntry(className, classPK);
+		}
 
 		User user = _userLocalService.getUser(userId);
 
@@ -485,7 +492,9 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 		long companyId, long userId, String className, long classPK,
 		int increment) {
 
-		if (ExportImportThreadLocal.isImportInProcess() || (classPK <= 0)) {
+		if (!PropsValues.ASSET_ENTRY_INCREMENT_VIEW_COUNTER_ENABLED ||
+			ExportImportThreadLocal.isImportInProcess() || (classPK <= 0)) {
+
 			return;
 		}
 

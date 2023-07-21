@@ -17,6 +17,8 @@ package com.liferay.object.internal.action.executor;
 import com.liferay.object.action.executor.ObjectActionExecutor;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.internal.configuration.FunctionObjectActionExecutorImplConfiguration;
+import com.liferay.object.scope.CompanyScoped;
+import com.liferay.object.scope.ObjectDefinitionScoped;
 import com.liferay.osgi.util.configuration.ConfigurationFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -44,7 +46,8 @@ import org.osgi.service.component.annotations.Reference;
 	configurationPolicy = ConfigurationPolicy.REQUIRE,
 	service = ObjectActionExecutor.class
 )
-public class FunctionObjectActionExecutorImpl implements ObjectActionExecutor {
+public class FunctionObjectActionExecutorImpl
+	implements CompanyScoped, ObjectActionExecutor, ObjectDefinitionScoped {
 
 	@Override
 	public void execute(
@@ -62,26 +65,18 @@ public class FunctionObjectActionExecutorImpl implements ObjectActionExecutor {
 	}
 
 	@Override
+	public long getAllowedCompanyId() {
+		return _companyId;
+	}
+
+	@Override
+	public List<String> getAllowedObjectDefinitionNames() {
+		return _allowedObjectDefinitionNames;
+	}
+
+	@Override
 	public String getKey() {
 		return _key;
-	}
-
-	@Override
-	public boolean isAllowedCompany(long companyId) {
-		if (_companyId == companyId) {
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean isAllowedObjectDefinition(String objectDefinitionName) {
-		if (_allowedObjectDefinitionNames.isEmpty()) {
-			return true;
-		}
-
-		return _allowedObjectDefinitionNames.contains(objectDefinitionName);
 	}
 
 	@Activate
