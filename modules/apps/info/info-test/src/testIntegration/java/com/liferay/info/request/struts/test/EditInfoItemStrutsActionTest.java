@@ -154,14 +154,14 @@ public class EditInfoItemStrutsActionTest {
 	}
 
 	@Test
-	public void testEditInfoItemAttachment() throws Exception {
-		_testEditInfoItem(
+	public void testAddInfoItemAttachment() throws Exception {
+		_testAddInfoItem(
 			RandomTestUtil.randomString(), null, null, null, null, null, null,
-			false, null, null, null, null, null, null);
+			null, null, null, null, null, null);
 	}
 
 	@Test
-	public void testEditInfoItemAttachmentWithGuestRole() throws Exception {
+	public void testAddInfoItemAttachmentWithGuestRole() throws Exception {
 		_user = _userLocalService.getGuestUser(_group.getCompanyId());
 
 		Role role = _roleLocalService.getRole(
@@ -175,74 +175,75 @@ public class EditInfoItemStrutsActionTest {
 
 		UserTestUtil.setUser(_user);
 
-		_testEditInfoItem(
+		_testAddInfoItem(
 			RandomTestUtil.randomString(), null, null, null, null, null, null,
-			false, null, null, null, null, null, null);
+			null, null, null, null, null, null);
 	}
 
 	@Test
-	public void testEditInfoItemInvalidBigDecimalTooBig() throws Exception {
-		_testEditInfoItemBigDecimal("100000000000000", null, true);
+	public void testAddInfoItemInvalidBigDecimalTooBig() throws Exception {
+		_testAddInfoItemWithInvalidData("100000000000000", null, null);
 	}
 
 	@Test
-	public void testEditInfoItemInvalidBigDecimalTooSmall() throws Exception {
-		_testEditInfoItemBigDecimal("-100000000000000", null, true);
+	public void testAddInfoItemInvalidBigDecimalTooSmall() throws Exception {
+		_testAddInfoItemWithInvalidData("-100000000000000", null, null);
 	}
 
 	@Test
-	public void testEditInfoItemInvalidIntegerTooBig() throws Exception {
-		_testEditInfoItemInteger("2147483648", true);
+	public void testAddInfoItemInvalidIntegerTooBig() throws Exception {
+		_testAddInfoItemWithInvalidData(null, "2147483648", null);
 	}
 
 	@Test
-	public void testEditInfoItemInvalidIntegerTooSmall() throws Exception {
-		_testEditInfoItemInteger("-2147483649", true);
+	public void testAddInfoItemInvalidIntegerTooSmall() throws Exception {
+		_testAddInfoItemWithInvalidData(null, "-2147483649", null);
 	}
 
 	@Test
-	public void testEditInfoItemInvalidLongTooBig() throws Exception {
-		_testEditInfoItemLong("9007199254740992", true);
+	public void testAddInfoItemInvalidLongTooBig() throws Exception {
+		_testAddInfoItemWithInvalidData(null, null, "9007199254740992");
 	}
 
 	@Test
-	public void testEditInfoItemInvalidLongTooSmall() throws Exception {
-		_testEditInfoItemLong("-9007199254740992", true);
+	public void testAddInfoItemInvalidLongTooSmall() throws Exception {
+		_testAddInfoItemWithInvalidData(null, null, "-9007199254740992");
 	}
 
 	@Test
-	public void testEditInfoItemMaxValues() throws Exception {
-		_testEditInfoItem(
+	public void testAddInfoItemMaxValues() throws Exception {
+		_testAddInfoItem(
 			null, null, "99999999999999.9999999999999999", null,
 			"9999999999999998", "999999999", "9007199254740991",
 			RandomTestUtil.randomString(), null);
 	}
 
 	@Test
-	public void testEditInfoItemMinValues() throws Exception {
-		_testEditInfoItem(
+	public void testAddInfoItemMinValues() throws Exception {
+		_testAddInfoItem(
 			null, null, "-99999999999999.9999999999999999", null,
 			"-9999999999999998", "-999999999", "-9007199254740991",
 			RandomTestUtil.randomString(), null);
 	}
 
 	@Test
-	public void testEditInfoItemRoundedBigDecimalTooLong() throws Exception {
-		_testEditInfoItem(
+	public void testAddInfoItemRoundedBigDecimalTooLong() throws Exception {
+		_testAddInfoItem(
 			null, null, "99999999999999.99999999999999991",
-			"99999999999999.9999999999999999", null, null, null, false, null,
-			null, null, null, null, null);
+			"99999999999999.9999999999999999", null, null, null, null, null,
+			null, null, null, null);
 	}
 
 	@Test
-	public void testEditInfoItemRoundedDoubleTooLong() throws Exception {
-		_testEditInfoItemDouble(
-			"999.99999999999991", "999.9999999999999", false);
+	public void testAddInfoItemRoundedDoubleTooLong() throws Exception {
+		_testAddInfoItem(
+			null, null, null, null, null, "999.99999999999991",
+			"999.9999999999999", null, null, null, null, null, null);
 	}
 
 	@FeatureFlags({"LPS-183727", "LPS-187754"})
 	@Test
-	public void testEditInfoItemWithDisplayPageSuccessMessage()
+	public void testAddInfoItemWithDisplayPageSuccessMessage()
 		throws Exception {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -268,23 +269,92 @@ public class EditInfoItemStrutsActionTest {
 
 		Assert.assertNotNull(infoField);
 
-		_testEditInfoItem(
-			null, null, null, null, infoField.getUniqueId(), null, null, false,
+		_testAddInfoItem(
+			null, null, null, null, infoField.getUniqueId(), null, null,
 			"123456", "123456", null, null, null, null);
 	}
 
 	@Test
-	public void testEditInfoItemWithEmbeddedSuccessMessage() throws Exception {
-		_testEditInfoItem(
+	public void testAddInfoItemWithEmbeddedSuccessMessage() throws Exception {
+		_testAddInfoItem(
 			null, "http://localhost:8080/home", null, null, null, null, null,
-			false, "123456", "123456", null, null, null, null);
+			"123456", "123456", null, null, null, null);
 	}
 
 	@Test
-	public void testEditInfoItemWithPageSuccessMessage() throws Exception {
-		_testEditInfoItem(
-			null, null, null, null, null, null, null, false, "123456", "123456",
-			null, null, null, "http://localhost:8080/home");
+	public void testAddInfoItemWithPageSuccessMessage() throws Exception {
+		_testAddInfoItem(
+			null, null, null, null, null, null, null, "123456", "123456", null,
+			null, null, "http://localhost:8080/home");
+	}
+
+	@FeatureFlags("LPS-183727")
+	@Test
+	public void testUpdateInfoItem() throws Exception {
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
+
+		PipingServletResponse pipingServletResponse = new PipingServletResponse(
+			mockHttpServletResponse, unsyncStringWriter);
+
+		UploadPortletRequest uploadPortletRequest = _getUploadPortletRequest(
+			null, null, "-99999999999999.9999999999999999", 0, null,
+			"-999.9999999999999", "-123456", "-9007199254740991", null, null);
+
+		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
+
+		_editInfoItemStrutsAction.execute(
+			uploadPortletRequest, pipingServletResponse);
+
+		mockHttpServletResponse = new MockHttpServletResponse();
+
+		unsyncStringWriter = new UnsyncStringWriter();
+
+		pipingServletResponse = new PipingServletResponse(
+			mockHttpServletResponse, unsyncStringWriter);
+
+		List<ObjectEntry> objectEntries =
+			_objectEntryLocalService.getObjectEntries(
+				0, _objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		ObjectEntry objectEntry = objectEntries.get(0);
+
+		uploadPortletRequest = _getUploadPortletRequest(
+			null, null, "99999999999999.9999999999999999",
+			objectEntry.getObjectEntryId(), null, "999.9999999999999", "123456",
+			"9007199254740991", null, null);
+
+		uploadPortletRequest.getParameterMap();
+
+		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
+
+		_editInfoItemStrutsAction.execute(
+			uploadPortletRequest, pipingServletResponse);
+
+		objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		DecimalFormat decimalFormat = new DecimalFormat(
+			"0", new DecimalFormatSymbols(LocaleUtil.ENGLISH));
+
+		decimalFormat.setMaximumFractionDigits(16);
+
+		Assert.assertEquals(
+			"999.9999999999999", decimalFormat.format(values.get("myDecimal")));
+
+		Assert.assertEquals("123456", String.valueOf(values.get("myInteger")));
+
+		Assert.assertEquals(
+			"9007199254740991", String.valueOf(values.get("myLongInteger")));
+
+		Assert.assertEquals(
+			"99999999999999.9999999999999999",
+			String.valueOf(values.get("myPrecisionDecimal")));
 	}
 
 	private Layout _addLayout() throws Exception {
@@ -492,28 +562,11 @@ public class EditInfoItemStrutsActionTest {
 		return mockMultipartHttpServletRequest;
 	}
 
-	private void _processEvents(
-			UploadPortletRequest uploadPortletRequest,
-			MockHttpServletResponse mockHttpServletResponse, User user)
-		throws Exception {
-
-		uploadPortletRequest.setAttribute(
-			WebKeys.CURRENT_URL, "/portal/add_info_item");
-		uploadPortletRequest.setAttribute(WebKeys.USER, user);
-
-		EventsProcessorUtil.process(
-			PropsKeys.SERVLET_SERVICE_EVENTS_PRE,
-			PropsValues.SERVLET_SERVICE_EVENTS_PRE, uploadPortletRequest,
-			mockHttpServletResponse);
-	}
-
-	private void _testEditInfoItem(
+	private UploadPortletRequest _getUploadPortletRequest(
 			String attachmentValue, String backURL, String bigDecimalValueInput,
-			String bigDecimalValueExpected, String displayPage,
-			String doubleValueInput, String doubleValueExpected,
-			boolean errorExpected, String integerValueInput,
-			String integerValueExpected, String longValueInput,
-			String longValueExpected, String stringValue, String redirect)
+			long classPK, String displayPage, String doubleValueInput,
+			String integerValueInput, String longValueInput, String stringValue,
+			String redirect)
 		throws Exception {
 
 		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
@@ -533,102 +586,145 @@ public class EditInfoItemStrutsActionTest {
 		mockMultipartHttpServletRequest.addHeader(
 			HttpHeaders.REFERER, "https://example.com/error");
 
-		UploadPortletRequest uploadPortletRequest =
-			new UploadPortletRequestImpl(
-				new UploadServletRequestImpl(
-					mockMultipartHttpServletRequest, fileParameters,
-					HashMapBuilder.put(
-						"backURL",
-						() -> {
-							if (Validator.isNotNull(backURL)) {
-								return Collections.singletonList(backURL);
-							}
-
-							return null;
+		return new UploadPortletRequestImpl(
+			new UploadServletRequestImpl(
+				mockMultipartHttpServletRequest, fileParameters,
+				HashMapBuilder.put(
+					"backURL",
+					() -> {
+						if (Validator.isNotNull(backURL)) {
+							return Collections.singletonList(backURL);
 						}
-					).put(
-						"classNameId", Collections.singletonList(_classNameId)
-					).put(
-						"classTypeId", Collections.singletonList("0")
-					).put(
-						"displayPage",
-						() -> {
-							if (Validator.isNotNull(displayPage)) {
-								return Collections.singletonList(displayPage);
-							}
 
-							return null;
-						}
-					).put(
-						"formItemId", Collections.singletonList(_formItemId)
-					).put(
-						"groupId",
-						Collections.singletonList(
-							String.valueOf(_group.getGroupId()))
-					).put(
-						"myDecimal",
-						() -> {
-							if (doubleValueInput == null) {
-								return null;
-							}
-
-							return Collections.singletonList(doubleValueInput);
-						}
-					).put(
-						"myInteger",
-						() -> {
-							if (integerValueInput == null) {
-								return null;
-							}
-
-							return Collections.singletonList(integerValueInput);
-						}
-					).put(
-						"myLongInteger",
-						() -> {
-							if (longValueInput == null) {
-								return null;
-							}
-
-							return Collections.singletonList(longValueInput);
-						}
-					).put(
-						"myPrecisionDecimal",
-						() -> {
-							if (bigDecimalValueInput == null) {
-								return null;
-							}
-
+						return null;
+					}
+				).put(
+					"classNameId", Collections.singletonList(_classNameId)
+				).put(
+					"classPK",
+					() -> {
+						if (classPK > 0) {
 							return Collections.singletonList(
-								bigDecimalValueInput);
+								String.valueOf(classPK));
 						}
-					).put(
-						"myText", Collections.singletonList(stringValue)
-					).put(
-						"p_l_id",
-						Collections.singletonList(
-							String.valueOf(_layout.getPlid()))
-					).put(
-						"p_l_mode", Collections.singletonList(Constants.VIEW)
-					).put(
-						"plid",
-						Collections.singletonList(
-							String.valueOf(_layout.getPlid()))
-					).put(
-						"redirect",
-						() -> {
-							if (Validator.isNotNull(redirect)) {
-								return Collections.singletonList(redirect);
-							}
 
+						return null;
+					}
+				).put(
+					"classTypeId", Collections.singletonList("0")
+				).put(
+					"displayPage",
+					() -> {
+						if (Validator.isNotNull(displayPage)) {
+							return Collections.singletonList(displayPage);
+						}
+
+						return null;
+					}
+				).put(
+					"formItemId", Collections.singletonList(_formItemId)
+				).put(
+					"groupId",
+					Collections.singletonList(
+						String.valueOf(_group.getGroupId()))
+				).put(
+					"myDecimal",
+					() -> {
+						if (doubleValueInput == null) {
 							return null;
 						}
-					).put(
-						"segmentsExperienceId",
-						Collections.singletonList(
-							String.valueOf(_defaultSegmentsExperienceId))
-					).build()),
-				null, RandomTestUtil.randomString());
+
+						return Collections.singletonList(doubleValueInput);
+					}
+				).put(
+					"myInteger",
+					() -> {
+						if (integerValueInput == null) {
+							return null;
+						}
+
+						return Collections.singletonList(integerValueInput);
+					}
+				).put(
+					"myLongInteger",
+					() -> {
+						if (longValueInput == null) {
+							return null;
+						}
+
+						return Collections.singletonList(longValueInput);
+					}
+				).put(
+					"myPrecisionDecimal",
+					() -> {
+						if (bigDecimalValueInput == null) {
+							return null;
+						}
+
+						return Collections.singletonList(bigDecimalValueInput);
+					}
+				).put(
+					"myText", Collections.singletonList(stringValue)
+				).put(
+					"p_l_id",
+					Collections.singletonList(String.valueOf(_layout.getPlid()))
+				).put(
+					"p_l_mode", Collections.singletonList(Constants.VIEW)
+				).put(
+					"plid",
+					Collections.singletonList(String.valueOf(_layout.getPlid()))
+				).put(
+					"redirect",
+					() -> {
+						if (Validator.isNotNull(redirect)) {
+							return Collections.singletonList(redirect);
+						}
+
+						return null;
+					}
+				).put(
+					"segmentsExperienceId",
+					Collections.singletonList(
+						String.valueOf(_defaultSegmentsExperienceId))
+				).build()),
+			null, RandomTestUtil.randomString());
+	}
+
+	private void _processEvents(
+			UploadPortletRequest uploadPortletRequest,
+			MockHttpServletResponse mockHttpServletResponse, User user)
+		throws Exception {
+
+		uploadPortletRequest.setAttribute(
+			WebKeys.CURRENT_URL, "/portal/edit_info_item");
+		uploadPortletRequest.setAttribute(WebKeys.USER, user);
+
+		EventsProcessorUtil.process(
+			PropsKeys.SERVLET_SERVICE_EVENTS_PRE,
+			PropsValues.SERVLET_SERVICE_EVENTS_PRE, uploadPortletRequest,
+			mockHttpServletResponse);
+	}
+
+	private void _testAddInfoItem(
+			String attachmentValue, String backURL, String bigDecimalValue,
+			String displayPage, String doubleValue, String integerValue,
+			String longValue, String stringValue, String redirect)
+		throws Exception {
+
+		_testAddInfoItem(
+			attachmentValue, backURL, bigDecimalValue, bigDecimalValue,
+			displayPage, doubleValue, doubleValue, integerValue, integerValue,
+			longValue, longValue, stringValue, redirect);
+	}
+
+	private void _testAddInfoItem(
+			String attachmentValue, String backURL, String bigDecimalValueInput,
+			String bigDecimalValueExpected, String displayPage,
+			String doubleValueInput, String doubleValueExpected,
+			String integerValueInput, String integerValueExpected,
+			String longValueInput, String longValueExpected, String stringValue,
+			String redirect)
+		throws Exception {
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
@@ -637,6 +733,11 @@ public class EditInfoItemStrutsActionTest {
 
 		PipingServletResponse pipingServletResponse = new PipingServletResponse(
 			mockHttpServletResponse, unsyncStringWriter);
+
+		UploadPortletRequest uploadPortletRequest = _getUploadPortletRequest(
+			attachmentValue, backURL, bigDecimalValueInput, 0, displayPage,
+			doubleValueInput, integerValueInput, longValueInput, stringValue,
+			redirect);
 
 		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
 
@@ -648,20 +749,7 @@ public class EditInfoItemStrutsActionTest {
 				0, _objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS);
 
-		Object object = SessionErrors.get(uploadPortletRequest, _formItemId);
-
-		if (errorExpected) {
-			Assert.assertNotNull(object);
-
-			Assert.assertTrue(object instanceof InfoFormException);
-
-			Assert.assertEquals(
-				objectEntries.toString(), 0, objectEntries.size());
-
-			return;
-		}
-
-		Assert.assertNull(object);
+		Assert.assertNull(SessionErrors.get(uploadPortletRequest, _formItemId));
 
 		Assert.assertEquals(objectEntries.toString(), 1, objectEntries.size());
 
@@ -732,54 +820,40 @@ public class EditInfoItemStrutsActionTest {
 		}
 	}
 
-	private void _testEditInfoItem(
-			String attachmentValue, String backURL, String bigDecimalValue,
-			String displayPage, String doubleValue, String integerValue,
-			String longValue, String stringValue, String redirect)
+	private void _testAddInfoItemWithInvalidData(
+			String bigDecimalValueInput, String integerValueInput,
+			String longValueInput)
 		throws Exception {
 
-		_testEditInfoItem(
-			attachmentValue, backURL, bigDecimalValue, bigDecimalValue,
-			displayPage, doubleValue, doubleValue, false, integerValue,
-			integerValue, longValue, longValue, stringValue, redirect);
-	}
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
 
-	private void _testEditInfoItemBigDecimal(
-			String bigDecimalValueInput, String bigDecimalValueExpected,
-			boolean errorExpected)
-		throws Exception {
+		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
 
-		_testEditInfoItem(
-			null, null, bigDecimalValueInput, bigDecimalValueExpected, null,
-			null, null, errorExpected, null, null, null, null, null, null);
-	}
+		PipingServletResponse pipingServletResponse = new PipingServletResponse(
+			mockHttpServletResponse, unsyncStringWriter);
 
-	private void _testEditInfoItemDouble(
-			String doubleValueInput, String doubleValueExpected,
-			boolean errorExpected)
-		throws Exception {
+		UploadPortletRequest uploadPortletRequest = _getUploadPortletRequest(
+			null, null, bigDecimalValueInput, 0, null, null, integerValueInput,
+			longValueInput, null, null);
 
-		_testEditInfoItem(
-			null, null, null, null, null, doubleValueInput, doubleValueExpected,
-			errorExpected, null, null, null, null, null, null);
-	}
+		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
 
-	private void _testEditInfoItemInteger(
-			String integerValueInput, boolean errorExpected)
-		throws Exception {
+		_editInfoItemStrutsAction.execute(
+			uploadPortletRequest, pipingServletResponse);
 
-		_testEditInfoItem(
-			null, null, null, null, null, null, null, errorExpected,
-			integerValueInput, null, null, null, null, null);
-	}
+		List<ObjectEntry> objectEntries =
+			_objectEntryLocalService.getObjectEntries(
+				0, _objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
 
-	private void _testEditInfoItemLong(
-			String longValueInput, boolean errorExpected)
-		throws Exception {
+		Object object = SessionErrors.get(uploadPortletRequest, _formItemId);
 
-		_testEditInfoItem(
-			null, null, null, null, null, null, null, errorExpected, null, null,
-			longValueInput, null, null, null);
+		Assert.assertNotNull(object);
+
+		Assert.assertTrue(object instanceof InfoFormException);
+
+		Assert.assertEquals(objectEntries.toString(), 0, objectEntries.size());
 	}
 
 	private String _classNameId;

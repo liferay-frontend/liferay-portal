@@ -435,8 +435,12 @@ public class ContentFieldUtil {
 
 				return new ContentFieldValue() {
 					{
-						data = selectedOptionLabelLocalizedValue.getString(
-							locale);
+						setData(
+							selectedOptionLabelLocalizedValue.getString(
+								locale));
+						setValue(
+							ddmFormFieldOptions.getOptionReference(
+								valueString));
 					}
 				};
 			}

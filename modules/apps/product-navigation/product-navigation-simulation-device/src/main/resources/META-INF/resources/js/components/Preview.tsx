@@ -13,11 +13,13 @@
  */
 
 import ClayAlert from '@clayui/alert';
+import {useEventListener} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
+import {debounce} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
-import {SIZES, Size} from '../constants/sizes';
+import {SIZES, ScreenSize, Size} from '../constants/sizes';
 
 interface IPreviewProps {
 	activeSize: Size;
@@ -29,6 +31,11 @@ const SEGMENT_SIMULATION_EVENT = 'SegmentSimulation:changeSegment';
 export default function Preview({activeSize, previewRef}: IPreviewProps) {
 	const [visible, setVisible] = useState<boolean>(true);
 	const [segmentMessage, setSegmentMessage] = useState<string | null>(null);
+	const [size, setSize] = useState<ScreenSize | undefined>(
+		activeSize.screenSize
+	);
+
+	const previewWrapperRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		const wrapper = document.getElementById('wrapper');
@@ -72,12 +79,47 @@ export default function Preview({activeSize, previewRef}: IPreviewProps) {
 		};
 	}, []);
 
-	if (!visible || activeSize.id === SIZES.autosize.id) {
+	const updateAutosizePreview = useCallback(() => {
+		if (!visible || !previewWrapperRef.current) {
+			return;
+		}
+
+		setSize(
+			activeSize.id === SIZES.autosize.id
+				? {
+						height:
+							previewWrapperRef.current.getBoundingClientRect()
+								.height - 6,
+						width: previewWrapperRef.current.getBoundingClientRect()
+							.width,
+				  }
+				: activeSize.screenSize
+		);
+	}, [activeSize.id, activeSize.screenSize, visible]);
+
+	useEffect(() => {
+		updateAutosizePreview();
+	}, [activeSize, updateAutosizePreview]);
+
+	const handleWindowResize = debounce(() => {
+		updateAutosizePreview();
+	}, 250);
+
+	// @ts-ignore
+
+	useEventListener('resize', handleWindowResize, false, window);
+
+	if (!visible) {
 		return null;
 	}
 
 	return (
-		<div className="d-flex flex-column simulation-preview">
+		<div
+			className={classNames('d-flex flex-column simulation-preview', {
+				'justify-content-center': !Liferay.FeatureFlags['LPS-186558'],
+			})}
+			ref={previewWrapperRef}
+		>
 			{Liferay.FeatureFlags['LPS-186558'] && segmentMessage && (
 				<ClayAlert
 					className="c-m-3"
@@ -100,7 +142,7 @@ export default function Preview({activeSize, previewRef}: IPreviewProps) {
 					}
 				)}
 				ref={previewRef}
-				style={activeSize.screenSize}
+				style={size}
 			>
 				<iframe
 					className="border-0 h-100 w-100"

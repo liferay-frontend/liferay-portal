@@ -35,8 +35,8 @@ public class DownloadViewActionResourcePermissionUpgradeProcess
 
 	@Override
 	protected String getExceptionMessage() {
-		return "Unable to assign DOWNLOAD permission to file entry with VIEW " +
-			"permission.";
+		return "Unable to assign download permission to file entry with view " +
+			"permission";
 	}
 
 }
