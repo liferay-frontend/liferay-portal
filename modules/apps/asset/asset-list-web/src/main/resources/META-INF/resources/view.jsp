@@ -46,6 +46,8 @@ AssetListManagementToolbarDisplayContext assetListManagementToolbarDisplayContex
 					row.setData(
 						HashMapBuilder.<String, Object>put(
 							"actions", assetListManagementToolbarDisplayContext.getAvailableActions(assetListEntry)
+						).put(
+							"title", assetListEntry.getTitle()
 						).build());
 
 					int assetListEntrySegmentsEntryRelsCount = assetListDisplayContext.getAssetListEntrySegmentsEntryRelsCount(assetListEntry);

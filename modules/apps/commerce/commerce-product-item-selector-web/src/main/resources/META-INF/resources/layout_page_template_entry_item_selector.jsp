@@ -39,6 +39,8 @@ String itemSelectedEventName = layoutPageTemplateEntryItemSelectorViewDisplayCon
 					"layout-page-template-entry-id", layoutPageTemplateEntry.getUuid()
 				).put(
 					"name", layoutPageTemplateEntry.getName()
+				).put(
+					"title", layoutPageTemplateEntry.getName()
 				).build());
 			%>
 

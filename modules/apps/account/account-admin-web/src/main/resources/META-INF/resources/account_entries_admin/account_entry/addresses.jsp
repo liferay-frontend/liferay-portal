@@ -42,6 +42,8 @@ renderResponse.setTitle(accountEntryDisplay.getName());
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(viewAccountEntryAddressesManagementToolbarDisplayContext.getAvailableActions(accountEntryDisplay))
+					).put(
+						"title", addressDisplay.getName()
 					).build());
 				%>
 

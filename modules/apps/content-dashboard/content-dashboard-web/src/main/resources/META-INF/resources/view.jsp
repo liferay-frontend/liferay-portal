@@ -120,7 +120,12 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 					<%
 					String rowId = String.valueOf(contentDashboardAdminDisplayContext.getClassPK(contentDashboardItem.getInfoItemReference()));
 
-					row.setData(Collections.singletonMap("rowId", rowId));
+					row.setData(
+						HashMapBuilder.<String, Object>put(
+							"rowId", rowId
+						).put(
+							"title", contentDashboardItem.getTitle(locale)
+						).build());
 					row.setRowId(rowId);
 
 					ContentDashboardItemAction contentDashboardItemAction = contentDashboardItem.getDefaultContentDashboardItemAction(request);

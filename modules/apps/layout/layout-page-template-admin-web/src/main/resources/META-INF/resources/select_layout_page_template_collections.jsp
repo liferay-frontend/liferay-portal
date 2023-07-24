@@ -25,6 +25,14 @@ LayoutPageTemplateCollectionsDisplayContext layoutPageTemplateCollectionsDisplay
 			keyProperty="layoutPageTemplateCollectionId"
 			modelVar="layoutPageTemplateCollection"
 		>
+
+			<%
+			row.setData(
+				HashMapBuilder.<String, Object>put(
+					"title", layoutPageTemplateCollection.getName()
+				).build());
+			%>
+
 			<liferay-ui:search-container-column-text
 				name="name"
 				truncate="<%= true %>"

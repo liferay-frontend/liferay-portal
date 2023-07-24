@@ -75,6 +75,8 @@ Role role = usersDisplayContext.getRole();
 						row.setData(
 							HashMapBuilder.<String, Object>put(
 								"actions", usersManagementToolbarDisplayContext.getAvailableActions(user2)
+							).put(
+								"title", user2.getScreenName()
 							).build());
 
 						Set<String> names = new TreeSet<String>();

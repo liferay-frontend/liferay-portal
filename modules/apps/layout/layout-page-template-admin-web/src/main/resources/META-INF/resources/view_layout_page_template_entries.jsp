@@ -39,6 +39,8 @@ LayoutPageTemplateManagementToolbarDisplayContext layoutPageTemplateManagementTo
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", layoutPageTemplateManagementToolbarDisplayContext.getAvailableActions(layoutPageTemplateEntry)
+				).put(
+					"title", layoutPageTemplateEntry.getName()
 				).build());
 			%>
 

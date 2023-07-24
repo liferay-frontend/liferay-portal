@@ -157,6 +157,8 @@ WikiPagesManagementToolbarDisplayContext wikiPagesManagementToolbarDisplayContex
 					row.setData(
 						HashMapBuilder.<String, Object>put(
 							"actions", StringUtil.merge(wikiPagesManagementToolbarDisplayContext.getAvailableActions(curPage))
+						).put(
+							"title", curPage.getTitle()
 						).build());
 
 					PortletURL rowURL = renderResponse.createRenderURL();

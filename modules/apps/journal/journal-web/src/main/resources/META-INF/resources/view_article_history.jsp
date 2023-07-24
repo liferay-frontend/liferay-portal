@@ -49,6 +49,8 @@ renderResponse.setTitle(article.getTitle(locale));
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", journalHistoryManagementToolbarDisplayContext.getAvailableActions(articleVersion)
+				).put(
+					"title", articleVersion.getTitle(locale)
 				).build());
 
 			row.setPrimaryKey(articleVersion.getArticleId() + JournalPortlet.VERSION_SEPARATOR + articleVersion.getVersion());

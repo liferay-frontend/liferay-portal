@@ -47,6 +47,11 @@ String displayStyle = ddlDisplayContext.getDisplayStyle();
 				</liferay-portlet:renderURL>
 
 				<%
+				row.setData(
+					HashMapBuilder.<String, Object>put(
+						"title", recordSet.getName(locale)
+					).build());
+
 				if (!DDLRecordSetPermission.contains(permissionChecker, recordSet, ActionKeys.VIEW)) {
 					rowURL = null;
 				}

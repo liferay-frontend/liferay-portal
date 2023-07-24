@@ -50,6 +50,8 @@ MasterLayoutManagementToolbarDisplayContext masterLayoutManagementToolbarDisplay
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", masterLayoutManagementToolbarDisplayContext.getAvailableActions(layoutPageTemplateEntry)
+				).put(
+					"title", layoutPageTemplateEntry.getName()
 				).build());
 			%>
 

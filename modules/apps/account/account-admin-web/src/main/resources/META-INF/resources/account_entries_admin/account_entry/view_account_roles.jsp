@@ -42,6 +42,8 @@ renderResponse.setTitle(accountEntryDisplay.getName());
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(viewAccountRolesManagementToolbarDisplayContext.getAvailableActions(accountRoleDisplay))
+					).put(
+						"title", accountRoleDisplay.getName(locale)
 					).build());
 				%>
 

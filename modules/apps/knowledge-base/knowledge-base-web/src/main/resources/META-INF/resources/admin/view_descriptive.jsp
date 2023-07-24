@@ -34,6 +34,8 @@ KBArticleViewDisplayContext kbArticleViewDisplayContext = new KBArticleViewDispl
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(kbAdminManagementToolbarDisplayContext.getAvailableActions(kbFolder))
+					).put(
+						"title", kbFolder.getName()
 					).build());
 
 				row.setPrimaryKey(String.valueOf(kbFolder.getKbFolderId()));
@@ -94,6 +96,8 @@ KBArticleViewDisplayContext kbArticleViewDisplayContext = new KBArticleViewDispl
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(kbAdminManagementToolbarDisplayContext.getAvailableActions(kbArticle))
+					).put(
+						"title", kbArticle.getTitle()
 					).build());
 
 				row.setPrimaryKey(String.valueOf(kbArticle.getResourcePrimKey()));

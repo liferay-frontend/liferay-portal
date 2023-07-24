@@ -39,6 +39,14 @@ EditSiteTeamAssignmentsUsersDisplayContext editSiteTeamAssignmentsUsersDisplayCo
 			modelVar="user2"
 			rowIdProperty="screenName"
 		>
+
+			<%
+			row.setData(
+				HashMapBuilder.<String, Object>put(
+					"title", user2.getFullName()
+				).build());
+			%>
+
 			<c:choose>
 				<c:when test='<%= Objects.equals(editSiteTeamAssignmentsUsersDisplayContext.getDisplayStyle(), "icon") %>'>
 					<liferay-ui:search-container-column-text>

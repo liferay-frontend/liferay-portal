@@ -39,6 +39,8 @@ String itemSelectedEventName = cpDefinitionItemSelectorViewDisplayContext.getIte
 					"cp-definition-id", cpDefinition.getCPDefinitionId()
 				).put(
 					"name", cpDefinition.getName(themeDisplay.getLanguageId())
+				).put(
+					"title", cpDefinition.getName(themeDisplay.getLanguageId())
 				).build());
 
 			CPType cpType = cpDefinitionItemSelectorViewDisplayContext.getCPType(cpDefinition.getProductTypeName());

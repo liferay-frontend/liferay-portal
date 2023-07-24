@@ -45,6 +45,11 @@ EditSiteTeamAssignmentsUserGroupsDisplayContext editSiteTeamAssignmentsUserGroup
 				LinkedHashMapBuilder.<String, Object>put(
 					"usersUserGroups", Long.valueOf(userGroup.getUserGroupId())
 				).build());
+
+			row.setData(
+				HashMapBuilder.<String, Object>put(
+					"title", userGroup.getName()
+				).build());
 			%>
 
 			<c:choose>

@@ -44,6 +44,8 @@ BatchPlannerPlanTemplateManagementToolbarDisplayContext batchPlannerPlanTemplate
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(batchPlannerPlanTemplateManagementToolbarDisplayContext.getAvailableActions(), StringPool.COMMA)
+					).put(
+						"title", batchPlannerPlan.getName()
 					).build());
 				%>
 

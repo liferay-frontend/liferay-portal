@@ -90,6 +90,8 @@ request.setAttribute("view.jsp-orderByType", wikiNodesManagementToolbarDisplayCo
 					row.setData(
 						HashMapBuilder.<String, Object>put(
 							"actions", StringUtil.merge(wikiNodesManagementToolbarDisplayContext.getAvailableActions(node))
+						).put(
+							"title", node.getName()
 						).build());
 
 					PortletURL rowURL = PortletURLBuilder.createRenderURL(

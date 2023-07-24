@@ -38,6 +38,14 @@ FaroAdminDisplayContext faroAdminDisplayContext = new FaroAdminDisplayContext(re
 					modelVar="faroProjectAdminDisplay"
 					rowIdProperty="faroProjectId"
 				>
+
+					<%
+					row.setData(
+						HashMapBuilder.<String, Object>put(
+							"title", faroProjectAdminDisplay.getName()
+						).build());
+					%>
+
 					<liferay-ui:search-container-column-text
 						orderable="<%= true %>"
 						property="name"

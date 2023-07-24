@@ -72,6 +72,8 @@ if (ddmStructure != null) {
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", journalDDMTemplateManagementToolbarDisplayContext.getAvailableActions(ddmTemplate)
+				).put(
+					"title", ddmTemplate.getName(locale)
 				).build());
 			%>
 

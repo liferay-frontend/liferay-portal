@@ -85,6 +85,8 @@ SearchContainer<AnnouncementsEntry> announcementsEntriesSearchContainer = announ
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(announcementsAdminViewManagementToolbarDisplayContext.getAvailableActions(entry))
+					).put(
+						"title", entry.getTitle()
 					).build());
 				%>
 

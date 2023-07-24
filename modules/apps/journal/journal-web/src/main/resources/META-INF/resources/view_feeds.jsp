@@ -64,6 +64,8 @@ renderResponse.setTitle(LanguageUtil.get(request, "feeds"));
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", journalFeedsManagementToolbarDisplayContext.getAvailableActions(feed)
+				).put(
+					"title", feed.getName()
 				).build());
 			%>
 

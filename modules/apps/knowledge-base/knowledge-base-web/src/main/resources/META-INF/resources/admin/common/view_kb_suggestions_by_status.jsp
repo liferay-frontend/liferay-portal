@@ -36,6 +36,8 @@ KBCommentResultRowSplitter resultRowSplitter = (KBCommentResultRowSplitter)reque
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(kbSuggestionListManagementToolbarDisplayContext.getAvailableActions(kbComment))
+					).put(
+						"title", StringUtil.shorten(HtmlUtil.escape(kbComment.getContent()), 100)
 					).build());
 				%>
 
