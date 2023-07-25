@@ -202,17 +202,6 @@ if (portletTitleBasedNavigation) {
 								print();
 							</aui:script>
 						</c:when>
-						<c:otherwise>
-							<aui:script>
-								function <portlet:namespace />printPage() {
-									window.open(
-										'<%= printPageURL %>',
-										'',
-										'directories=0,height=480,left=80,location=1,menubar=1,resizable=1,scrollbars=yes,status=0,toolbar=0,top=180,width=640'
-									);
-								}
-							</aui:script>
-						</c:otherwise>
 					</c:choose>
 
 					<liferay-util:include page="/wiki/top_links.jsp" servletContext="<%= application %>" />
@@ -319,7 +308,7 @@ if (portletTitleBasedNavigation) {
 								label="<%= true %>"
 								markupView="lexicon"
 								message="print"
-								url='<%= "javascript:" + liferayPortletResponse.getNamespace() + "printPage();" %>'
+								url='<%= "javascript:Liferay.Util.printPage('" + printPageURL + "')" %>'
 							/>
 						</div>
 					</c:if>
