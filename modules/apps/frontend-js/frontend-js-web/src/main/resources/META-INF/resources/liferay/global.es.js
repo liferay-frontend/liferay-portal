@@ -90,6 +90,7 @@ import createActionURL from './util/portlet_url/create_action_url.es';
 import createPortletURL from './util/portlet_url/create_portlet_url.es';
 import createRenderURL from './util/portlet_url/create_render_url.es';
 import createResourceURL from './util/portlet_url/create_resource_url.es';
+import printPage from './util/print_page';
 import removeEntitySelection from './util/remove_entity_selection';
 import selectFolder from './util/select_folder';
 import {getSessionValue, setSessionValue} from './util/session.es';
@@ -369,5 +370,7 @@ Liferay.Util.Cookie = Cookie;
 
 Liferay.Util.LocalStorage = localStorage;
 Liferay.Util.SessionStorage = sessionStorage;
+
+Liferay.Util.printPage = printPage;
 
 export {portlet};
