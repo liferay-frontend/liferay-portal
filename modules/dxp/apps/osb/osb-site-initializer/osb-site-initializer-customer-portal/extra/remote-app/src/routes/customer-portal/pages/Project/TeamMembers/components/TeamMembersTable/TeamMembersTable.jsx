@@ -1,12 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * The contents of this file are subject to the terms of the Liferay Enterprise
- * Subscription License ("License"). You may not use this file except in
- * compliance with the License. You can obtain a copy of the License by
- * contacting Liferay, Inc. See the License for the specific language governing
- * permissions and limitations under the License, including but not limited to
- * distribution rights of the Software.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 import {useModal} from '@clayui/core';
@@ -86,8 +80,8 @@ const TeamMembersTable = ({
 		userAccountsData?.accountUserAccountsByExternalReferenceCode.totalCount;
 
 	const {paginationConfig, teamMembersByStatusPaginated} = usePagination(
-            userAccounts
-    );
+		userAccounts
+	);
 
 	const {
 		data: accountRolesData,
@@ -146,11 +140,18 @@ const TeamMembersTable = ({
 		<>
 			{open && currentIndexRemoving !== undefined && (
 				<RemoveUserModal
+					modalTitle={i18n.translate('remove-user')}
 					observer={observer}
 					onClose={() => onOpenChange(false)}
 					onRemove={() => remove(userAccounts[currentIndexRemoving])}
 					removing={updating}
-				/>
+				>
+					<p className="my-0 text-neutral-10">
+						{i18n.translate(
+							'are-you-sure-you-want-to-remove-this-team-member-from-the-project'
+						)}
+					</p>
+				</RemoveUserModal>
 			)}
 
 			<TeamMembersTableHeader
@@ -176,92 +177,104 @@ const TeamMembersTable = ({
 				)}
 
 				{!!teamMembersByStatusPaginated &&
-				(totalUserAccounts || loading || searching) && (
-					<Table
-						className="border-0"
-						columns={getColumns(
-							loggedUserAccount?.selectedAccountSummary
-								.hasAdministratorRole,
-							articleAccountSupportURL
-						)}
-						hasPagination
-						isLoading={loading || searching}
-						paginationConfig={paginationConfig}
-						rows={teamMembersByStatusPaginated?.map((userAccount, index) => ({
-							email: (
-								<p className="m-0 text-truncate">
-									{userAccount.emailAddress}
-								</p>
-							),
-							name: (
-								<NameColumn
-									gravatarAPI={gravatarAPI}
-									userAccount={userAccount}
-								/>
-							),
-							options: (
-								<OptionsColumn
-									edit={index === currentIndexEditing}
-									onCancel={() => {
-										setCurrentIndexEditing();
-										setSelectedAccountRoleItem();
-									}}
-									onEdit={() => setCurrentIndexEditing(index)}
-									onRemove={() => {
-										setCurrentIndexRemoving(index);
-										onOpenChange(true);
-									}}
-									onSave={() => handleEdit()}
-									saveDisabled={
-										!selectedAccountRoleItem || updating
-									}
-								/>
-							),
-							role: (
-								<RolesColumn
-									accountRoles={availableAccountRoles}
-									availableSupportSeatsCount={
-										availableSupportSeatsCount
-									}
-									currentRoleBriefName={
-										getCurrentRoleBriefs(
-											userAccount.selectedAccountSummary
-										)?.[0]?.name || 'User'
-									}
-									edit={index === currentIndexEditing}
-									hasAccountSupportSeatRole={
-										userAccount.selectedAccountSummary
-											.hasSupportSeatRole
-									}
-									onClick={(selectedAccountRoleItem) =>
-										setSelectedAccountRoleItem(
-											selectedAccountRoleItem
-										)
-									}
-									supportSeatsCount={supportSeatsCount}
-								/>
-							),
-							status: (
-								<StatusTag
-									currentStatus={
-										userAccount.lastLoginDate ||
-										userAccount.dateCreated <= importDate
-											? STATUS_TAG_TYPES.active
-											: STATUS_TAG_TYPES.invited
-									}
-								/>
-							),
-							supportSeat: userAccount.selectedAccountSummary
-								.hasSupportSeatRole &&
-								!userAccount.isLiferayStaff && (
-									<ClayIcon
-										className="text-brand-primary-darken-2"
-										symbol="check-circle-full"
-									/>
-								),
-						}))}
-					/>
-				)}
+					(totalUserAccounts || loading || searching) && (
+						<Table
+							className="border-0"
+							columns={getColumns(
+								loggedUserAccount?.selectedAccountSummary
+									.hasAdministratorRole,
+								articleAccountSupportURL
+							)}
+							hasPagination
+							isLoading={loading || searching}
+							paginationConfig={paginationConfig}
+							rows={teamMembersByStatusPaginated?.map(
+								(userAccount, index) => ({
+									email: (
+										<p className="m-0 text-truncate">
+											{userAccount.emailAddress}
+										</p>
+									),
+									name: (
+										<NameColumn
+											gravatarAPI={gravatarAPI}
+											userAccount={userAccount}
+										/>
+									),
+									options: (
+										<OptionsColumn
+											edit={index === currentIndexEditing}
+											onCancel={() => {
+												setCurrentIndexEditing();
+												setSelectedAccountRoleItem();
+											}}
+											onEdit={() =>
+												setCurrentIndexEditing(index)
+											}
+											onRemove={() => {
+												setCurrentIndexRemoving(index);
+												onOpenChange(true);
+											}}
+											onSave={() => handleEdit()}
+											saveDisabled={
+												!selectedAccountRoleItem ||
+												updating
+											}
+										/>
+									),
+									role: (
+										<RolesColumn
+											accountRoles={availableAccountRoles}
+											availableSupportSeatsCount={
+												availableSupportSeatsCount
+											}
+											currentRoleBriefName={
+												getCurrentRoleBriefs(
+													userAccount.selectedAccountSummary
+												)?.[0]?.name || 'User'
+											}
+											edit={index === currentIndexEditing}
+											hasAccountSupportSeatRole={
+												userAccount
+													.selectedAccountSummary
+													.hasSupportSeatRole
+											}
+											onClick={(
+												selectedAccountRoleItem
+											) =>
+												setSelectedAccountRoleItem(
+													selectedAccountRoleItem
+												)
+											}
+											supportSeatsCount={
+												supportSeatsCount
+											}
+										/>
+									),
+									status: (
+										<StatusTag
+											currentStatus={
+												userAccount.lastLoginDate ||
+												userAccount.dateCreated <=
+													importDate
+													? STATUS_TAG_TYPES.active
+													: STATUS_TAG_TYPES.invited
+											}
+										/>
+									),
+									supportSeat: userAccount
+										.selectedAccountSummary
+										.hasSupportSeatRole &&
+										!userAccount.isLiferayStaff && (
+											<ClayIcon
+												className="text-brand-primary-darken-2"
+												symbol="check-circle-full"
+											/>
+										),
+								})
+							)}
+						/>
+					)}
 			</div>
 		</>
 	);

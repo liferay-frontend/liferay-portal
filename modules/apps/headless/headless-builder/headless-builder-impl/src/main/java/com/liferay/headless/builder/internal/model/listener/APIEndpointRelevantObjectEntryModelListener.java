@@ -1,25 +1,17 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.builder.internal.model.listener;
 
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
-import com.liferay.object.rest.petra.sql.dsl.expression.FilterPredicateFactory;
+import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
@@ -169,12 +161,11 @@ public class APIEndpointRelevantObjectEntryModelListener
 				"' and r_apiApplicationToAPIEndpoints_c_apiApplicationId eq '",
 				values.get("r_apiApplicationToAPIEndpoints_c_apiApplicationId"),
 				"'");
-
 			ObjectDefinition apiEndpointObjectDefinition =
 				_objectDefinitionLocalService.getObjectDefinition(
 					objectEntry.getObjectDefinitionId());
 
-			Predicate predicate = _filterPredicateFactory.create(
+			Predicate predicate = _filterFactory.create(
 				filterString,
 				apiEndpointObjectDefinition.getObjectDefinitionId());
 
@@ -182,8 +173,8 @@ public class APIEndpointRelevantObjectEntryModelListener
 				_objectEntryLocalService.getValuesList(
 					objectEntry.getGroupId(), objectEntry.getCompanyId(),
 					objectEntry.getUserId(),
-					apiEndpointObjectDefinition.getObjectDefinitionId(),
-					predicate, null, -1, -1, null);
+					objectEntry.getObjectDefinitionId(), predicate, null, -1,
+					-1, null);
 
 			if (!valuesList.isEmpty()) {
 				throw new ObjectEntryValuesException.InvalidObjectField(
@@ -232,10 +223,12 @@ public class APIEndpointRelevantObjectEntryModelListener
 	}
 
 	private static final Pattern _pathPattern = Pattern.compile(
-		"[a-zA-Z0-9-/]{1,255}");
+		"^[/][a-zA-Z0-9][a-zA-Z0-9-/]{1,255}");
 
-	@Reference
-	private FilterPredicateFactory _filterPredicateFactory;
+	@Reference(
+		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
+	)
+	private FilterFactory<Predicate> _filterFactory;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

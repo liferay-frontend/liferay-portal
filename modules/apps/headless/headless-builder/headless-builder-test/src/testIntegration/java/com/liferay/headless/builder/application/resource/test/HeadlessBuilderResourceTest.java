@@ -1,20 +1,12 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.builder.application.resource.test;
 
 import com.liferay.headless.builder.test.BaseTestCase;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -31,6 +23,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,27 +43,47 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_objectDefinitionJSONObject1 = _addObjectDefinition(
+			_OBJECT_FIELD_ERC_1, _OBJECT_FIELD_NAME_1);
+		_objectDefinitionJSONObject2 = _addObjectDefinition(
+			_OBJECT_FIELD_ERC_2, _OBJECT_FIELD_NAME_2);
+		_objectDefinitionJSONObject3 = _addObjectDefinition(
+			_OBJECT_FIELD_ERC_3, _OBJECT_FIELD_NAME_3);
+
+		_objectRelationshipJSONObject1 = _addObjectRelationship(
+			_objectDefinitionJSONObject1, _objectDefinitionJSONObject2,
+			"a" + RandomTestUtil.randomString(),
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		_objectRelationshipJSONObject2 = _addObjectRelationship(
+			_objectDefinitionJSONObject2, _objectDefinitionJSONObject3,
+			"a" + RandomTestUtil.randomString(),
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+	}
+
 	@Test
 	public void testGet() throws Exception {
-		_objectDefinitionJSONObject = _addObjectDefinition();
-
 		_addAPIApplication(
 			_API_APPLICATION_ERC_1, _API_ENDPOINT_ERC_1, _BASE_URL_1,
-			_objectDefinitionJSONObject.getString("externalReferenceCode"),
+			_objectDefinitionJSONObject1.getString("externalReferenceCode"),
 			_API_APPLICATION_PATH_1);
 		_addAPIApplication(
 			_API_APPLICATION_ERC_2, _API_ENDPOINT_ERC_2, _BASE_URL_2,
-			_objectDefinitionJSONObject.getString("externalReferenceCode"),
+			_objectDefinitionJSONObject1.getString("externalReferenceCode"),
 			_API_APPLICATION_PATH_2);
 
-		String endpointPath1 = _BASE_URL_1 + _API_APPLICATION_PATH_1;
+		String endpointPath1 = "c/" + _BASE_URL_1 + _API_APPLICATION_PATH_1;
 
 		Assert.assertEquals(
 			404,
 			HTTPTestUtil.invokeToHttpCode(
 				null, endpointPath1, Http.Method.GET));
 
-		String endpointPath2 = _BASE_URL_2 + _API_APPLICATION_PATH_2;
+		String endpointPath2 = "c/" + _BASE_URL_2 + _API_APPLICATION_PATH_2;
 
 		Assert.assertEquals(
 			404,
@@ -89,11 +102,38 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 			HTTPTestUtil.invokeToHttpCode(
 				null, endpointPath2, Http.Method.GET));
 
-		_addCustomObjectEntry(_OBJECT_FIELD_VALUE);
+		JSONObject objectFieldJSONObject1 = _addCustomObjectEntry(
+			_objectDefinitionJSONObject1, _OBJECT_FIELD_NAME_1,
+			_OBJECT_FIELD_VALUE_1);
+		JSONObject objectFieldJSONObject2 = _addCustomObjectEntry(
+			_objectDefinitionJSONObject2, _OBJECT_FIELD_NAME_2,
+			_OBJECT_FIELD_VALUE_2);
+
+		_relateObjectEntries(
+			_objectDefinitionJSONObject1, _objectRelationshipJSONObject1,
+			objectFieldJSONObject1.getString("externalReferenceCode"),
+			objectFieldJSONObject2.getString("externalReferenceCode"));
+
+		JSONObject objectFieldJSONObject3 = _addCustomObjectEntry(
+			_objectDefinitionJSONObject3, _OBJECT_FIELD_NAME_3,
+			_OBJECT_FIELD_VALUE_3);
+
+		_relateObjectEntries(
+			_objectDefinitionJSONObject2, _objectRelationshipJSONObject2,
+			objectFieldJSONObject2.getString("externalReferenceCode"),
+			objectFieldJSONObject3.getString("externalReferenceCode"));
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
-				"items", JSONUtil.put(JSONUtil.put("name", _OBJECT_FIELD_VALUE))
+				"items",
+				JSONUtil.put(
+					JSONUtil.put(
+						"name", _OBJECT_FIELD_VALUE_1
+					).put(
+						"relatedFieldName1", JSONUtil.put(_OBJECT_FIELD_VALUE_2)
+					).put(
+						"relatedFieldName2", JSONUtil.put(_OBJECT_FIELD_VALUE_3)
+					))
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
 				null, endpointPath1, Http.Method.GET
@@ -101,7 +141,15 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 			JSONCompareMode.LENIENT);
 		JSONAssert.assertEquals(
 			JSONUtil.put(
-				"items", JSONUtil.put(JSONUtil.put("name", _OBJECT_FIELD_VALUE))
+				"items",
+				JSONUtil.put(
+					JSONUtil.put(
+						"name", _OBJECT_FIELD_VALUE_1
+					).put(
+						"relatedFieldName1", JSONUtil.put(_OBJECT_FIELD_VALUE_2)
+					).put(
+						"relatedFieldName2", JSONUtil.put(_OBJECT_FIELD_VALUE_3)
+					))
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
 				null, endpointPath2, Http.Method.GET
@@ -112,13 +160,17 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 			404,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				_BASE_URL_1 + StringPool.SLASH + RandomTestUtil.randomString(),
+				StringBundler.concat(
+					"c/", _BASE_URL_1, StringPool.SLASH,
+					RandomTestUtil.randomString()),
 				Http.Method.GET));
 		Assert.assertEquals(
 			404,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				_BASE_URL_2 + StringPool.SLASH + RandomTestUtil.randomString(),
+				StringBundler.concat(
+					"c/", _BASE_URL_2, StringPool.SLASH,
+					RandomTestUtil.randomString()),
 				Http.Method.GET));
 
 		HTTPTestUtil.invokeToJSONObject(
@@ -141,23 +193,23 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 
 	@Test
 	public void testGetWithFilter() throws Exception {
-		_objectDefinitionJSONObject = _addObjectDefinition();
-
 		_addAPIApplication(
 			_API_APPLICATION_ERC_1, _API_ENDPOINT_ERC_1, _BASE_URL_1,
-			_objectDefinitionJSONObject.getString("externalReferenceCode"),
+			_objectDefinitionJSONObject1.getString("externalReferenceCode"),
 			_API_APPLICATION_PATH_1);
 
 		_addAPIFilter(
 			_API_ENDPOINT_ERC_1,
 			String.format(
-				"%s eq '5' or %s eq '7'", _OBJECT_FIELD_NAME,
-				_OBJECT_FIELD_NAME));
+				"%s eq '5' or %s eq '7'", _OBJECT_FIELD_NAME_1,
+				_OBJECT_FIELD_NAME_1));
 
 		_publishAPIApplication(_API_APPLICATION_ERC_1);
 
 		for (int i = 0; i <= 25; i++) {
-			_addCustomObjectEntry(String.valueOf(i));
+			_addCustomObjectEntry(
+				_objectDefinitionJSONObject1, _OBJECT_FIELD_NAME_1,
+				String.valueOf(i));
 		}
 
 		JSONAssert.assertEquals(
@@ -175,24 +227,25 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 				"totalCount", 2
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
-				null, _BASE_URL_1 + _API_APPLICATION_PATH_1, Http.Method.GET
+				null, "c/" + _BASE_URL_1 + _API_APPLICATION_PATH_1,
+				Http.Method.GET
 			).toString(),
 			JSONCompareMode.LENIENT);
 	}
 
 	@Test
 	public void testGetWithPagination() throws Exception {
-		_objectDefinitionJSONObject = _addObjectDefinition();
-
 		_addAPIApplication(
 			_API_APPLICATION_ERC_1, _API_ENDPOINT_ERC_1, _BASE_URL_1,
-			_objectDefinitionJSONObject.getString("externalReferenceCode"),
+			_objectDefinitionJSONObject1.getString("externalReferenceCode"),
 			_API_APPLICATION_PATH_1);
 
 		_publishAPIApplication(_API_APPLICATION_ERC_1);
 
 		for (int i = 0; i <= 25; i++) {
-			_addCustomObjectEntry(String.valueOf(i));
+			_addCustomObjectEntry(
+				_objectDefinitionJSONObject1, _OBJECT_FIELD_NAME_1,
+				String.valueOf(i));
 		}
 
 		JSONAssert.assertEquals(
@@ -215,7 +268,7 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 				null,
 				String.format(
 					"%s?page=2&pageSize=5",
-					_BASE_URL_1 + _API_APPLICATION_PATH_1),
+					"c/" + _BASE_URL_1 + _API_APPLICATION_PATH_1),
 				Http.Method.GET
 			).toString(),
 			JSONCompareMode.LENIENT);
@@ -253,13 +306,39 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 					JSONUtil.put(
 						JSONUtil.put(
 							"apiSchemaToAPIProperties",
-							JSONUtil.put(
+							JSONUtil.putAll(
 								JSONUtil.put(
 									"description", "description"
 								).put(
 									"name", "name"
 								).put(
-									"objectFieldERC", _OBJECT_FIELD_ERC
+									"objectFieldERC", _OBJECT_FIELD_ERC_1
+								),
+								JSONUtil.put(
+									"description", "description"
+								).put(
+									"name", "relatedFieldName1"
+								).put(
+									"objectFieldERC", _OBJECT_FIELD_ERC_2
+								).put(
+									"objectRelationshipNames",
+									_objectRelationshipJSONObject1.getString(
+										"name")
+								),
+								JSONUtil.put(
+									"description", "description"
+								).put(
+									"name", "relatedFieldName2"
+								).put(
+									"objectFieldERC", _OBJECT_FIELD_ERC_3
+								).put(
+									"objectRelationshipNames",
+									String.format(
+										"%s,%s",
+										_objectRelationshipJSONObject1.
+											getString("name"),
+										_objectRelationshipJSONObject2.
+											getString("name"))
 								))
 						).put(
 							"description", "description"
@@ -318,23 +397,27 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 				"headless-builder/filters", Http.Method.POST));
 	}
 
-	private void _addCustomObjectEntry(String objectFieldValue)
+	private JSONObject _addCustomObjectEntry(
+			JSONObject objectDefinitionJSONObject, String objectFieldName,
+			String objectFieldValue)
 		throws Exception {
 
-		String restContextPath = _objectDefinitionJSONObject.getString(
+		String restContextPath = objectDefinitionJSONObject.getString(
 			"restContextPath");
 
 		String endpoint = StringUtil.removeSubstring(restContextPath, "/o/");
 
-		_assertSuccessfulHttpCode(
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					_OBJECT_FIELD_NAME, objectFieldValue
-				).toString(),
-				endpoint, Http.Method.POST));
+		return HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				objectFieldName, objectFieldValue
+			).toString(),
+			endpoint, Http.Method.POST);
 	}
 
-	private JSONObject _addObjectDefinition() throws Exception {
+	private JSONObject _addObjectDefinition(
+			String objectFieldExternalReferenceCode, String objectFieldName)
+		throws Exception {
+
 		return HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				"active", true
@@ -348,7 +431,8 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 					JSONUtil.put(
 						"DBType", "String"
 					).put(
-						"externalReferenceCode", _OBJECT_FIELD_ERC
+						"externalReferenceCode",
+						objectFieldExternalReferenceCode
 					).put(
 						"indexed", true
 					).put(
@@ -360,7 +444,7 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 					).put(
 						"listTypeDefinitionId", 0
 					).put(
-						"name", _OBJECT_FIELD_NAME
+						"name", objectFieldName
 					).put(
 						"required", false
 					).put(
@@ -377,6 +461,43 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 				"status", JSONUtil.put("code", 0)
 			).toString(),
 			"object-admin/v1.0/object-definitions", Http.Method.POST);
+	}
+
+	private JSONObject _addObjectRelationship(
+			JSONObject objectDefinitionJSONObject1,
+			JSONObject objectDefinitionJSONObject2, String relationshipName,
+			String relationshipType)
+		throws Exception {
+
+		return HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"deletionType", "cascade"
+			).put(
+				"label", JSONUtil.put("en_US", RandomTestUtil.randomString())
+			).put(
+				"name", relationshipName
+			).put(
+				"objectDefinitionExternalReferenceCode1",
+				objectDefinitionJSONObject1.getString("externalReferenceCode")
+			).put(
+				"objectDefinitionExternalReferenceCode2",
+				objectDefinitionJSONObject2.getString("externalReferenceCode")
+			).put(
+				"objectDefinitionName2",
+				objectDefinitionJSONObject2.getString("name")
+			).put(
+				"parameterObjectFieldId", 0
+			).put(
+				"parameterObjectFieldName", ""
+			).put(
+				"reverse", false
+			).put(
+				"type", relationshipType
+			).toString(),
+			"object-admin/v1.0/object-definitions/by-external-reference-code/" +
+				objectDefinitionJSONObject1.getString("externalReferenceCode") +
+					"/object-relationships",
+			Http.Method.POST);
 	}
 
 	private void _assertSuccessfulHttpCode(int httpCode) {
@@ -397,6 +518,29 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 				"headless-builder/applications/by-external-reference-code/" +
 					apiApplicationExternalReferenceCode,
 				Http.Method.PATCH));
+	}
+
+	private void _relateObjectEntries(
+			JSONObject objectDefinitionJSONObject1,
+			JSONObject objectRelationshipJSONObject,
+			String objectEntry1ExternalReferenceCode,
+			String objectEntry2ExternalReferenceCode)
+		throws Exception {
+
+		String restContextPath = objectDefinitionJSONObject1.getString(
+			"restContextPath");
+
+		String basePath = StringUtil.removeSubstring(restContextPath, "/o/");
+
+		String objectRelationshipName = objectRelationshipJSONObject.getString(
+			"name");
+
+		String endpoint = String.format(
+			"%s/by-external-reference-code/%s/%s/%s", basePath,
+			objectEntry1ExternalReferenceCode, objectRelationshipName,
+			objectEntry2ExternalReferenceCode);
+
+		HTTPTestUtil.invokeToJSONObject(null, endpoint, Http.Method.PUT);
 	}
 
 	private static final String _API_APPLICATION_ERC_1 =
@@ -421,15 +565,37 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 
 	private static final String _BASE_URL_2 = RandomTestUtil.randomString();
 
-	private static final String _OBJECT_FIELD_ERC =
+	private static final String _OBJECT_FIELD_ERC_1 =
 		RandomTestUtil.randomString();
 
-	private static final String _OBJECT_FIELD_NAME =
+	private static final String _OBJECT_FIELD_ERC_2 =
+		RandomTestUtil.randomString();
+
+	private static final String _OBJECT_FIELD_ERC_3 =
+		RandomTestUtil.randomString();
+
+	private static final String _OBJECT_FIELD_NAME_1 =
 		"x" + RandomTestUtil.randomString();
 
-	private static final String _OBJECT_FIELD_VALUE =
+	private static final String _OBJECT_FIELD_NAME_2 =
+		"x" + RandomTestUtil.randomString();
+
+	private static final String _OBJECT_FIELD_NAME_3 =
+		"x" + RandomTestUtil.randomString();
+
+	private static final String _OBJECT_FIELD_VALUE_1 =
 		RandomTestUtil.randomString();
 
-	private static JSONObject _objectDefinitionJSONObject;
+	private static final String _OBJECT_FIELD_VALUE_2 =
+		RandomTestUtil.randomString();
+
+	private static final String _OBJECT_FIELD_VALUE_3 =
+		RandomTestUtil.randomString();
+
+	private static JSONObject _objectDefinitionJSONObject1;
+	private static JSONObject _objectDefinitionJSONObject2;
+	private static JSONObject _objectDefinitionJSONObject3;
+	private static JSONObject _objectRelationshipJSONObject1;
+	private static JSONObject _objectRelationshipJSONObject2;
 
 }

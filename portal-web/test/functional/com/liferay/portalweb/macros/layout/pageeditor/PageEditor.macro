@@ -2618,6 +2618,18 @@ definition {
 					text = ${assetTitle});
 			}
 
+			if (${navItemStyle} == "horizontal") {
+				AssertElementNotPresent(locator1 = "MenuBar#MENU_BAR_VERTICAL");
+
+				AssertElementPresent(
+					key_tab = ${navTab},
+					locator1 = "NavTab#TAB_LINK");
+			}
+
+			if (${navItemStyle} == "vertical") {
+				AssertElementPresent(locator1 = "MenuBar#MENU_BAR_VERTICAL");
+			}
+
 			if (isSet(knowledgeBase)) {
 				if (IsElementPresent(locator1 = "MenuBar#MENU_BAR")) {
 					MenuBar.click(menuBar = "Knowledge Base Articles");
@@ -2846,18 +2858,18 @@ definition {
 
 			if (${successMessage} == "Embedded") {
 				Select(
-					key_fieldLabel = "Success Message",
+					key_fieldLabel = "Success Interaction",
 					locator1 = "Select#GENERIC_SELECT_FIELD",
-					value1 = "Embedded");
+					value1 = "Show Embedded Message");
 
 				AssertSelectedLabel(
-					key_fieldLabel = "Success Message",
+					key_fieldLabel = "Success Interaction",
 					locator1 = "Select#GENERIC_SELECT_FIELD",
-					value1 = "Embedded");
+					value1 = "Show Embedded Message");
 
 				if (isSet(successText)) {
 					Type(
-						key_text = "Success Text",
+						key_text = "Embedded Message",
 						locator1 = "TextInput#ANY",
 						value1 = ${successText});
 
@@ -2868,7 +2880,7 @@ definition {
 
 				if (${previewSuccessState} == "true") {
 					Check.checkNotVisible(
-						checkboxName = "Preview Success State",
+						checkboxName = "Preview Embedded Message",
 						locator1 = "Checkbox#ANY_CHECKBOX");
 				}
 
@@ -2876,14 +2888,14 @@ definition {
 			}
 			else if (${successMessage} == "Page") {
 				Select(
-					key_fieldLabel = "Success Message",
+					key_fieldLabel = "Success Interaction",
 					locator1 = "Select#GENERIC_SELECT_FIELD",
-					value1 = "Page");
+					value1 = "Go to Page");
 
 				AssertSelectedLabel(
-					key_fieldLabel = "Success Message",
+					key_fieldLabel = "Success Interaction",
 					locator1 = "Select#GENERIC_SELECT_FIELD",
-					value1 = "Page");
+					value1 = "Go to Page");
 
 				if (isSet(pageName)) {
 					if (IsTextEqual(key_fieldLabel = "Page", locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT", value1 = "")) {
@@ -2927,14 +2939,14 @@ definition {
 			}
 			else if (${successMessage} == "External URL") {
 				Select(
-					key_fieldLabel = "Success Message",
+					key_fieldLabel = "Success Interaction",
 					locator1 = "Select#GENERIC_SELECT_FIELD",
-					value1 = "External URL");
+					value1 = "Go to External URL");
 
 				AssertSelectedLabel(
-					key_fieldLabel = "Success Message",
+					key_fieldLabel = "Success Interaction",
 					locator1 = "Select#GENERIC_SELECT_FIELD",
-					value1 = "External URL");
+					value1 = "Go to External URL");
 
 				if (isSet(url)) {
 					Type(
@@ -2951,12 +2963,12 @@ definition {
 			}
 			else if (${successMessage} == "Entry Display Page") {
 				Select(
-					key_fieldLabel = "Success Message",
+					key_fieldLabel = "Success Interaction",
 					locator1 = "Select#GENERIC_SELECT_FIELD",
 					value1 = "Entry Display Page");
 
 				AssertSelectedLabel(
-					key_fieldLabel = "Success Message",
+					key_fieldLabel = "Success Interaction",
 					locator1 = "Select#GENERIC_SELECT_FIELD",
 					value1 = "Entry Display Page");
 

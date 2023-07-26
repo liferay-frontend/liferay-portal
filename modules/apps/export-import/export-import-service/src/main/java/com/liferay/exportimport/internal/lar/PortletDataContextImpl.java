@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.exportimport.internal.lar;
@@ -278,13 +269,6 @@ public class PortletDataContextImpl implements PortletDataContext {
 		for (StagedModelType stagedModelType : stagedModelTypes) {
 			_deletionSystemEventModelTypes.add(stagedModelType);
 		}
-	}
-
-	@Override
-	public void addExpando(
-		Element element, String path, ClassedModel classedModel) {
-
-		addExpando(element, path, classedModel, classedModel.getModelClass());
 	}
 
 	@Override
@@ -933,11 +917,6 @@ public class PortletDataContextImpl implements PortletDataContext {
 	}
 
 	@Override
-	public Object getNewPrimaryKey(Class<?> clazz, Object newPrimaryKey) {
-		return getNewPrimaryKey(clazz.getName(), newPrimaryKey);
-	}
-
-	@Override
 	public Object getNewPrimaryKey(String className, Object newPrimaryKey) {
 		Map<?, ?> primaryKeys = getNewPrimaryKeysMap(className);
 
@@ -1074,11 +1053,6 @@ public class PortletDataContextImpl implements PortletDataContext {
 	}
 
 	@Override
-	public Element getReferenceElement(Class<?> clazz, Serializable classPK) {
-		return getReferenceElement(clazz.getName(), classPK);
-	}
-
-	@Override
 	public Element getReferenceElement(
 		Element parentElement, Class<?> clazz, long groupId, String uuid,
 		String referenceType) {
@@ -1091,13 +1065,6 @@ public class PortletDataContextImpl implements PortletDataContext {
 		}
 
 		return null;
-	}
-
-	@Override
-	public Element getReferenceElement(
-		StagedModel parentStagedModel, Class<?> clazz, Serializable classPK) {
-
-		return getReferenceElement(parentStagedModel, clazz.getName(), classPK);
 	}
 
 	@Override
@@ -1501,19 +1468,6 @@ public class PortletDataContextImpl implements PortletDataContext {
 		}
 
 		importPermissions(resourceName, getSourceGroupId(), getScopeGroupId());
-	}
-
-	@Override
-	public boolean isCompanyStagedGroupedModel(
-		StagedGroupedModel stagedGroupedModel) {
-
-		if ((stagedGroupedModel.getGroupId() == getCompanyGroupId()) &&
-			(getGroupId() != getCompanyGroupId())) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	@Override

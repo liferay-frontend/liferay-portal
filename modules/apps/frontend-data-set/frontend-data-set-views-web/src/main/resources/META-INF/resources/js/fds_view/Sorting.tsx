@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 import ClayAlert from '@clayui/alert';
@@ -120,14 +111,14 @@ const AddFDSSortModalContent = ({
 	fields,
 	onSave,
 }: IAddFDSSortModalContentInterface) => {
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const [selectedField, setSelectedField] = useState<string>();
 	const [selectedSortingDirection, setSelectedSortingDirection] = useState<
 		string
 	>(SORTING_DIRECTION.ASCENDING.value);
 
 	const handleSave = async () => {
-		setIsSubmitting(true);
+		setSaveButtonDisabled(true);
 
 		const field = fields.find(
 			(item: IField) => item.name === selectedField
@@ -153,7 +144,7 @@ const AddFDSSortModalContent = ({
 		});
 
 		if (!response.ok) {
-			setIsSubmitting(false);
+			setSaveButtonDisabled(false);
 
 			alertFailed();
 
@@ -228,17 +219,17 @@ const AddFDSSortModalContent = ({
 				last={
 					<ClayButton.Group spaced>
 						<ClayButton
+							disabled={saveButtonDisabled || !selectedField}
+							onClick={handleSave}
+						>
+							{Liferay.Language.get('save')}
+						</ClayButton>
+
+						<ClayButton
 							displayType="secondary"
 							onClick={() => closeModal()}
 						>
 							{Liferay.Language.get('cancel')}
-						</ClayButton>
-
-						<ClayButton
-							disabled={isSubmitting || !selectedField}
-							onClick={handleSave}
-						>
-							{Liferay.Language.get('save')}
 						</ClayButton>
 					</ClayButton.Group>
 				}
@@ -261,13 +252,13 @@ const EditFDSSortModalContent = ({
 	namespace,
 	onSave,
 }: IEditFDSSortModalContentProps) => {
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const [selectedSortingDirection, setSelectedSortingDirection] = useState(
 		fdsSort.sortingDirection
 	);
 
 	const handleSave = async () => {
-		setIsSubmitting(true);
+		setSaveButtonDisabled(true);
 
 		const response = await fetch(
 			`${API_URL.FDS_SORTS}/by-external-reference-code/${fdsSort.externalReferenceCode}`,
@@ -284,7 +275,7 @@ const EditFDSSortModalContent = ({
 		);
 
 		if (!response.ok) {
-			setIsSubmitting(false);
+			setSaveButtonDisabled(false);
 
 			alertFailed();
 
@@ -353,17 +344,17 @@ const EditFDSSortModalContent = ({
 				last={
 					<ClayButton.Group spaced>
 						<ClayButton
+							disabled={saveButtonDisabled}
+							onClick={handleSave}
+						>
+							{Liferay.Language.get('save')}
+						</ClayButton>
+
+						<ClayButton
 							displayType="secondary"
 							onClick={() => closeModal()}
 						>
 							{Liferay.Language.get('cancel')}
-						</ClayButton>
-
-						<ClayButton
-							disabled={isSubmitting}
-							onClick={handleSave}
-						>
-							{Liferay.Language.get('save')}
 						</ClayButton>
 					</ClayButton.Group>
 				}
@@ -457,7 +448,7 @@ const Sorting = ({
 					type: 'cancel',
 				},
 				{
-					displayType: 'warning',
+					displayType: 'danger',
 					label: Liferay.Language.get('delete'),
 					onClick: async ({
 						processClose,

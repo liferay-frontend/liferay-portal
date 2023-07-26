@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.layout.taglib.servlet.taglib.renderer;
@@ -36,6 +27,7 @@ import com.liferay.info.list.renderer.InfoListRenderer;
 import com.liferay.info.permission.provider.InfoPermissionProvider;
 import com.liferay.info.search.InfoSearchClassMapperRegistryUtil;
 import com.liferay.layout.constants.LayoutWebKeys;
+import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.layout.responsive.ResponsiveLayoutStructureUtil;
@@ -97,17 +89,22 @@ import javax.servlet.jsp.PageContext;
  */
 public class LayoutStructureRenderer {
 
-	public LayoutStructureRenderer(LayoutStructure layoutStructure) {
+	public LayoutStructureRenderer(
+		HttpServletRequest httpServletRequest,
+		LayoutStructure layoutStructure) {
+
+		_httpServletRequest = httpServletRequest;
 		_layoutStructure = layoutStructure;
+
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	public void render(
-			HttpServletRequest httpServletRequest, String mainItemId,
-			String mode, PageContext pageContext, boolean renderActionHandler,
-			boolean showPreview)
+			String mainItemId, String mode, PageContext pageContext,
+			boolean renderActionHandler, boolean showPreview)
 		throws Exception {
 
-		_httpServletRequest = httpServletRequest;
 		_pageContext = pageContext;
 
 		RenderLayoutStructureDisplayContext
@@ -160,18 +157,11 @@ public class LayoutStructureRenderer {
 			infoItemServiceRegistry.getFirstInfoItemService(
 				InfoPermissionProvider.class, className);
 
-		if (infoPermissionProvider == null) {
-			return true;
-		}
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		if ((themeDisplay != null) &&
-			infoPermissionProvider.hasAddPermission(
-				themeDisplay.getScopeGroupId(),
-				themeDisplay.getPermissionChecker())) {
+		if ((infoPermissionProvider == null) ||
+			((_themeDisplay != null) &&
+			 infoPermissionProvider.hasAddPermission(
+				 _themeDisplay.getScopeGroupId(),
+				 _themeDisplay.getPermissionChecker()))) {
 
 			return true;
 		}
@@ -687,20 +677,16 @@ public class LayoutStructureRenderer {
 				renderLayoutStructureDisplayContext)
 		throws Exception {
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		Layout layout = themeDisplay.getLayout();
+		Layout layout = _themeDisplay.getLayout();
 
 		LayoutTypePortlet layoutTypePortlet =
-			themeDisplay.getLayoutTypePortlet();
+			_themeDisplay.getLayoutTypePortlet();
 
 		String ppid = ParamUtil.getString(_httpServletRequest, "p_p_id");
 
 		if (layoutTypePortlet.hasStateMax() && Validator.isNotNull(ppid)) {
 			String templateContent = LayoutTemplateLocalServiceUtil.getContent(
-				"max", true, themeDisplay.getThemeId());
+				"max", true, _themeDisplay.getThemeId());
 
 			if (Validator.isNotNull(templateContent)) {
 				HttpServletRequest originalHttpServletRequest =
@@ -714,7 +700,7 @@ public class LayoutStructureRenderer {
 				List<String> ppids = StringUtil.split(
 					layoutTypePortlet.getStateMax());
 				String templateId =
-					themeDisplay.getThemeId() +
+					_themeDisplay.getThemeId() +
 						LayoutTemplateConstants.STANDARD_SEPARATOR + "max";
 
 				RuntimePageUtil.processTemplate(
@@ -722,15 +708,15 @@ public class LayoutStructureRenderer {
 					(HttpServletResponse)_pageContext.getResponse(),
 					ppids.get(0), templateId, templateContent,
 					LayoutTemplateLocalServiceUtil.getLangType(
-						"max", true, themeDisplay.getThemeId()));
+						"max", true, _themeDisplay.getThemeId()));
 			}
 		}
 		else if (Objects.equals(
 					layout.getType(), LayoutConstants.TYPE_PORTLET)) {
 
 			layoutTypePortlet = _getLayoutTypePortlet(
-				layout, themeDisplay.getLayoutTypePortlet(),
-				themeDisplay.getThemeId());
+				layout, _themeDisplay.getLayoutTypePortlet(),
+				_themeDisplay.getThemeId());
 
 			String layoutTemplateId = layoutTypePortlet.getLayoutTemplateId();
 
@@ -740,9 +726,9 @@ public class LayoutStructureRenderer {
 
 			LayoutTemplate layoutTemplate =
 				LayoutTemplateLocalServiceUtil.getLayoutTemplate(
-					layoutTemplateId, false, themeDisplay.getThemeId());
+					layoutTemplateId, false, _themeDisplay.getThemeId());
 
-			String themeId = themeDisplay.getThemeId();
+			String themeId = _themeDisplay.getThemeId();
 
 			if (layoutTemplate != null) {
 				themeId = layoutTemplate.getThemeId();
@@ -750,7 +736,7 @@ public class LayoutStructureRenderer {
 
 			String templateContent = LayoutTemplateLocalServiceUtil.getContent(
 				layoutTypePortlet.getLayoutTemplateId(), false,
-				themeDisplay.getThemeId());
+				_themeDisplay.getThemeId());
 
 			if (Validator.isNotNull(templateContent)) {
 				HttpServletRequest originalHttpServletRequest =
@@ -767,7 +753,7 @@ public class LayoutStructureRenderer {
 					templateId, templateContent,
 					LayoutTemplateLocalServiceUtil.getLangType(
 						layoutTypePortlet.getLayoutTemplateId(), false,
-						themeDisplay.getThemeId()));
+						_themeDisplay.getThemeId()));
 			}
 		}
 		else {
@@ -797,15 +783,11 @@ public class LayoutStructureRenderer {
 		if ((emptyCollectionOptions != null) &&
 			(emptyCollectionOptions.getMessage() != null)) {
 
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)_httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
 			Map<String, String> messageMap =
 				emptyCollectionOptions.getMessage();
 
 			String customMessage = messageMap.get(
-				String.valueOf(themeDisplay.getLocale()));
+				String.valueOf(_themeDisplay.getLocale()));
 
 			if (customMessage != null) {
 				message = customMessage;
@@ -900,13 +882,7 @@ public class LayoutStructureRenderer {
 				getFormStyledLayoutStructureItemRedirect(
 					formStyledLayoutStructureItem));
 		jspWriter.write("\"><input name=\"backURL\" type=\"hidden\" value=\"");
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		jspWriter.write(themeDisplay.getURLCurrent());
-
+		jspWriter.write(_themeDisplay.getURLCurrent());
 		jspWriter.write(
 			"\"><input name=\"classNameId\" type=\"hidden\" value=\"");
 		jspWriter.write(
@@ -915,6 +891,27 @@ public class LayoutStructureRenderer {
 			"\"><input name=\"classTypeId\" type=\"hidden\" value=\"");
 		jspWriter.write(
 			String.valueOf(formStyledLayoutStructureItem.getClassTypeId()));
+
+		if (FeatureFlagManagerUtil.isEnabled("LPS-183727")) {
+			LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
+				(LayoutDisplayPageObjectProvider<?>)
+					_httpServletRequest.getAttribute(
+						LayoutDisplayPageWebKeys.
+							LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER);
+
+			if (layoutDisplayPageObjectProvider != null) {
+				jspWriter.write(
+					"\"><input name=\"classPK\" type=\"hidden\" value=\"");
+				jspWriter.write(
+					String.valueOf(
+						layoutDisplayPageObjectProvider.getClassPK()));
+				jspWriter.write(
+					"\"><input name=\"externalReferenceCode\" type=\"hidden\"");
+				jspWriter.write(" value=\"");
+				jspWriter.write(
+					layoutDisplayPageObjectProvider.getExternalReferenceCode());
+			}
+		}
 
 		if (FeatureFlagManagerUtil.isEnabled("LPS-183498")) {
 			jspWriter.write(
@@ -929,16 +926,22 @@ public class LayoutStructureRenderer {
 			"\"><input name=\"formItemId\" type=\"hidden\" value=\"");
 		jspWriter.write(formStyledLayoutStructureItem.getItemId());
 		jspWriter.write("\"><input name=\"groupId\" type=\"hidden\" value=\"");
-		jspWriter.write(String.valueOf(themeDisplay.getScopeGroupId()));
+		jspWriter.write(String.valueOf(_themeDisplay.getScopeGroupId()));
+		jspWriter.write(
+			"\"><input name=\"notificationText\" type=\"hidden\" value=\"");
+		jspWriter.write(
+			HtmlUtil.escape(
+				renderLayoutStructureDisplayContext.getNotificationText(
+					formStyledLayoutStructureItem)));
 		jspWriter.write("\"><input name=\"p_l_id\" type=\"hidden\" value=\"");
-		jspWriter.write(String.valueOf(themeDisplay.getPlid()));
+		jspWriter.write(String.valueOf(_themeDisplay.getPlid()));
 		jspWriter.write("\"><input name=\"p_l_mode\" type=\"hidden\" value=\"");
 		jspWriter.write(
 			ParamUtil.getString(
 				PortalUtil.getOriginalServletRequest(_httpServletRequest),
 				"p_l_mode", Constants.VIEW));
 		jspWriter.write("\"><input name=\"plid\" type=\"hidden\" value=\"");
-		jspWriter.write(String.valueOf(themeDisplay.getPlid()));
+		jspWriter.write(String.valueOf(_themeDisplay.getPlid()));
 		jspWriter.write(
 			"\"><input name=\"segmentsExperienceId\" type=\"hidden\" value=\"");
 		jspWriter.write(
@@ -1011,11 +1014,7 @@ public class LayoutStructureRenderer {
 
 		JspWriter jspWriter = _pageContext.getOut();
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		Layout layout = themeDisplay.getLayout();
+		Layout layout = _themeDisplay.getLayout();
 
 		if (Objects.equals(layout.getType(), LayoutConstants.TYPE_PORTLET)) {
 			jspWriter.write("<div class=\"master-layout-fragment\">");
@@ -1316,8 +1315,9 @@ public class LayoutStructureRenderer {
 		jspWriter.write("\">");
 	}
 
-	private HttpServletRequest _httpServletRequest;
+	private final HttpServletRequest _httpServletRequest;
 	private final LayoutStructure _layoutStructure;
 	private PageContext _pageContext;
+	private final ThemeDisplay _themeDisplay;
 
 }

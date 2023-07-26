@@ -365,7 +365,7 @@
 		<check name="CopyrightCheck">
 			<category name="Styling" />
 			<description name="Validates `copyright` header." />
-			<property name="copyrightFileName" value="copyright.txt" />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="EmptyCollectionCheck">
 			<category name="Styling" />
@@ -609,6 +609,10 @@
 		<check name="JavaUpgradeOnAfterUpdateParameterCheck">
 			<category name="Upgrade" />
 			<description name="Add new parameter in method onAfterUpdate for classes extending the BaseModelListener" />
+		</check>
+		<check name="JavaUpgradeSchedulerEntryImplConstructorCheck">
+			<category name="Upgrade" />
+			<description name="Replace constructors that use the empty constructor of the SchedulerEntryImpl class." />
 		</check>
 		<check name="JavaUpgradeServiceTrackerListCheck">
 			<category name="Upgrade" />
@@ -995,7 +999,7 @@
 		<check name="CopyrightCheck">
 			<category name="Styling" />
 			<description name="Validates `copyright` header." />
-			<property name="copyrightFileName" value="copyright.txt" />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="EmptyCollectionCheck">
 			<category name="Styling" />
@@ -1649,6 +1653,10 @@
 		<check name="UpgradeJavaServiceReferenceAnnotationCheck">
 			<category name="Upgrade" />
 			<description name="Run code migration to replace '@ServiceReference' by '@Reference'" />
+		</check>
+		<check name="UpgradeRejectedExecutionHandlerCheck">
+			<category name="Upgrade" />
+			<description name="Replace Liferay's RejectedExecutionHandler with Java's RejectedExecutionHandler" />
 		</check>
 		<check name="UpgradeSetResultsSetTotalMethodCheck">
 			<category name="Upgrade" />

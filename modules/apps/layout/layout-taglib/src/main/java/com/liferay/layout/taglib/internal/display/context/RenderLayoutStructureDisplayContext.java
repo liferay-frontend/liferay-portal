@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.layout.taglib.internal.display.context;
@@ -453,6 +444,49 @@ public class RenderLayoutStructureDisplayContext {
 			layoutStructure.getLayoutStructureItem(_getMainItemId());
 
 		return layoutStructureItem.getChildrenItemIds();
+	}
+
+	public String getNotificationText(
+			FormStyledLayoutStructureItem formStyledLayoutStructureItem)
+		throws Exception {
+
+		JSONObject successMessageJSONObject =
+			formStyledLayoutStructureItem.getSuccessMessageJSONObject();
+
+		if ((successMessageJSONObject == null) ||
+			!GetterUtil.getBoolean(
+				successMessageJSONObject.getBoolean("showNotification"))) {
+
+			return StringPool.BLANK;
+		}
+
+		JSONObject textJSONObject = successMessageJSONObject.getJSONObject(
+			"notificationText");
+
+		if (textJSONObject == null) {
+			return LanguageUtil.get(
+				_themeDisplay.getLocale(),
+				"your-information-was-successfully-received");
+		}
+
+		String notificationText = textJSONObject.getString(
+			_themeDisplay.getLanguageId());
+
+		if (Validator.isNull(notificationText)) {
+			String siteDefaultLanguageId = LanguageUtil.getLanguageId(
+				PortalUtil.getSiteDefaultLocale(
+					_themeDisplay.getScopeGroupId()));
+
+			notificationText = textJSONObject.getString(siteDefaultLanguageId);
+		}
+
+		if (Validator.isNotNull(notificationText)) {
+			return notificationText;
+		}
+
+		return LanguageUtil.get(
+			_themeDisplay.getLocale(),
+			"your-information-was-successfully-received");
 	}
 
 	public String getStyle(StyledLayoutStructureItem styledLayoutStructureItem)

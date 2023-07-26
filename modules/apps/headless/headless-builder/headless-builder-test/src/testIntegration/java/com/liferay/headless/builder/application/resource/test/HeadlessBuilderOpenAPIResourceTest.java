@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.builder.application.resource.test;
@@ -47,6 +38,7 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -73,6 +65,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 /**
  * @author Carlos Correa
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @FeatureFlags({"LPS-167253", "LPS-184413", "LPS-186757"})
 @RunWith(Arquillian.class)
 public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
@@ -290,6 +283,8 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 	public void test() throws Exception {
 		_addAPIApplication();
 
+		String apiApplicationURL = "/c/" + _API_BASE_URL;
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null, "/openapi", Http.Method.GET);
 
@@ -298,7 +293,7 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 		Assert.assertEquals(
 			404,
 			HTTPTestUtil.invokeToHttpCode(
-				null, _API_BASE_URL + "/openapi.json", Http.Method.GET));
+				null, apiApplicationURL + "/openapi.json", Http.Method.GET));
 
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -313,22 +308,22 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
-				"/" + _API_BASE_URL,
+				apiApplicationURL,
 				JSONUtil.put(
-					"http://localhost:8080/o/" + _API_BASE_URL +
+					"http://localhost:8080/o/c/" + _API_BASE_URL +
 						"/openapi.yaml")
 			).toString(),
 			jsonObject.toString(), JSONCompareMode.LENIENT);
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, _API_BASE_URL + "/openapi.json", Http.Method.GET);
+			null, apiApplicationURL + "/openapi.json", Http.Method.GET);
 
 		JSONAssert.assertEquals(
 			StringUtil.replace(
 				new String(
 					FileUtil.getBytes(
 						getClass(), "dependencies/expected_openapi.json")),
-				"${BASE_URL}", _API_BASE_URL),
+				"${BASE_URL}", "c/" + _API_BASE_URL),
 			jsonObject.toString(), JSONCompareMode.STRICT);
 	}
 
@@ -346,7 +341,7 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 					).put(
 						"name", "name"
 					).put(
-						"path", "path"
+						"path", "/path"
 					).put(
 						"scope", "company"
 					))

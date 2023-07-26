@@ -282,6 +282,7 @@ JavaUpgradeEmptyLinesCheck | [Styling](styling_checks.markdown#styling-checks) |
 JavaUpgradeModelPermissionsCheck | [Upgrade](upgrade_checks.markdown#upgrade-checks) | .java | Replace setGroupPermissions and setGuestPermissions by new implementation |
 JavaUpgradeOnAfterUpdateParameterCheck | [Upgrade](upgrade_checks.markdown#upgrade-checks) | .java | Add new parameter in method onAfterUpdate for classes extending the BaseModelListener |
 JavaUpgradeProcessFactoryCheck | [Styling](styling_checks.markdown#styling-checks) | .java | Sorts and groups method calls. |
+JavaUpgradeSchedulerEntryImplConstructorCheck | [Upgrade](upgrade_checks.markdown#upgrade-checks) | .java | Replace constructors that use the empty constructor of the SchedulerEntryImpl class. |
 JavaUpgradeServiceTrackerListCheck | [Upgrade](upgrade_checks.markdown#upgrade-checks) | .java | Replace the number of generic type arguments in ServiceTrackerList |
 JavaUpgradeVersionCheck | [Bug Prevention](bug_prevention_checks.markdown#bug-prevention-checks) | .java | Verifies that the correct upgrade versions are used in classes that implement `UpgradeStepRegistrator`. |
 JavaVariableTypeCheck | [Bug Prevention](bug_prevention_checks.markdown#bug-prevention-checks) | .java | Performs several checks on the modifiers on variables. |
@@ -467,6 +468,7 @@ UpgradeJavaMultiVMPoolUtilCheck | [Upgrade](upgrade_checks.markdown#upgrade-chec
 UpgradeJavaPortletSharedSearchSettingsCheck | [Upgrade](upgrade_checks.markdown#upgrade-checks) | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replaces the Optional return type of the methods `getParameterValues` and `getPortletPreferences` of `PortletSharedSearchSettings` class |
 UpgradeJavaServiceReferenceAnnotationCheck | [Upgrade](upgrade_checks.markdown#upgrade-checks) | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Run code migration to replace '@ServiceReference' by '@Reference' |
 [UpgradeProcessCheck](check/upgrade_process_check.markdown#upgradeprocesscheck) | [Performance](performance_checks.markdown#performance-checks) | .java | Performs several checks on `*UpgradeProcess` classes. |
+UpgradeRejectedExecutionHandlerCheck | [Upgrade](upgrade_checks.markdown#upgrade-checks) | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replace Liferay's RejectedExecutionHandler with Java's RejectedExecutionHandler |
 UpgradeRemovedAPICheck | [Upgrade](upgrade_checks.markdown#upgrade-checks) | .java | Finds cases where calls are made to removed API after an upgrade. |
 UpgradeSetResultsSetTotalMethodCheck | [Upgrade](upgrade_checks.markdown#upgrade-checks) | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Run code migration of method searchContainer.setResults to the searchContainer.setResultsAndTotal and delete searchContainer.setTotal |
 UpgradeVelocityCommentMigrationCheck | [Upgrade](upgrade_checks.markdown#upgrade-checks) | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Run code migration of comments from a Velocity file to a Freemarker file with the syntax replacements |

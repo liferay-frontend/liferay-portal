@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.fragment.input.template.parser;
@@ -22,6 +13,7 @@ import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.info.exception.InfoFormValidationException;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
+import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.FileInfoFieldType;
 import com.liferay.info.field.type.InfoFieldType;
 import com.liferay.info.field.type.LongTextInfoFieldType;
@@ -62,6 +54,8 @@ import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.math.BigDecimal;
+
+import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -240,8 +234,7 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 		}
 		else {
 			value = GetterUtil.getString(
-				_getValue(httpServletRequest, infoField.getName(), locale),
-				value);
+				_getValue(httpServletRequest, infoField.getName()), value);
 		}
 
 		InputTemplateNode inputTemplateNode = new InputTemplateNode(
@@ -533,8 +526,7 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 	}
 
 	private String _getValue(
-		HttpServletRequest httpServletRequest, String infoFieldName,
-		Locale locale) {
+		HttpServletRequest httpServletRequest, String infoFieldName) {
 
 		if (httpServletRequest == null) {
 			return null;
@@ -571,7 +563,16 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 		InfoFieldValue<?> infoFieldValue =
 			infoItemFieldValues.getInfoFieldValue(infoFieldName);
 
-		return (String)infoFieldValue.getValue(locale);
+		InfoField<?> infoField = infoFieldValue.getInfoField();
+
+		if (infoField.getInfoFieldType() == DateInfoFieldType.INSTANCE) {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd");
+
+			return simpleDateFormat.format(infoFieldValue.getValue());
+		}
+
+		return String.valueOf(infoFieldValue.getValue());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

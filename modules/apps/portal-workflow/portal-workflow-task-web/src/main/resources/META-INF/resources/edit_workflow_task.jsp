@@ -1,16 +1,7 @@
 <%--
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 --%>
 
@@ -261,14 +252,14 @@ renderResponse.setTitle(workflowTaskDisplayContext.getHeaderTitle(workflowTask))
 								</c:if>
 							</div>
 
-							<h3 class="task-content-title">
+							<span class="h3 task-content-title">
 								<liferay-ui:icon
 									icon="<%= workflowHandler.getIconCssClass() %>"
 									label="<%= true %>"
 									markupView="lexicon"
 									message="<%= HtmlUtil.escape(workflowTaskDisplayContext.getAssetTitle(workflowTask)) %>"
 								/>
-							</h3>
+							</span>
 
 							<liferay-asset:asset-display
 								assetRenderer="<%= assetRenderer %>"
@@ -276,9 +267,9 @@ renderResponse.setTitle(workflowTaskDisplayContext.getHeaderTitle(workflowTask))
 							/>
 
 							<c:if test="<%= assetEntry != null %>">
-								<h4 class="task-content-author">
+								<span class="h4 task-content-author">
 									<liferay-ui:message key="author" />
-								</h4>
+								</span>
 
 								<liferay-asset:asset-metadata
 									className="<%= assetEntry.getClassName() %>"

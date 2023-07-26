@@ -1,24 +1,16 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.builder.internal.application.publisher;
 
 import com.liferay.headless.builder.application.APIApplication;
 import com.liferay.headless.builder.application.publisher.APIApplicationPublisher;
+import com.liferay.headless.builder.constants.HeadlessBuilderConstants;
 import com.liferay.headless.builder.internal.application.resource.HeadlessBuilderResourceImpl;
 import com.liferay.headless.builder.internal.application.resource.OpenAPIResourceImpl;
-import com.liferay.headless.builder.internal.helper.ObjectEntryHelper;
+import com.liferay.headless.builder.internal.helper.EndpointHelper;
 import com.liferay.headless.builder.internal.jaxrs.context.provider.APIApplicationContextProvider;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -79,7 +71,7 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 						_registerResource(
 							osgiJaxRsName, HeadlessBuilderResourceImpl.class,
 							() -> new HeadlessBuilderResourceImpl(
-								_objectEntryHelper)));
+								_endpointHelper)));
 					add(
 						_registerResource(
 							osgiJaxRsName, OpenAPIResourceImpl.class,
@@ -147,7 +139,9 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 			).put(
 				"liferay.jackson", false
 			).put(
-				"osgi.jaxrs.application.base", apiApplication.getBaseURL()
+				"osgi.jaxrs.application.base",
+				HeadlessBuilderConstants.BASE_PATH_SUFFIX +
+					apiApplication.getBaseURL()
 			).put(
 				"osgi.jaxrs.extension.select",
 				"(osgi.jaxrs.name=Liferay.Vulcan)"
@@ -228,7 +222,7 @@ public class APIApplicationPublisherImpl implements APIApplicationPublisher {
 		_apiApplicationContextProviders = new HashMap<>();
 
 	@Reference
-	private ObjectEntryHelper _objectEntryHelper;
+	private EndpointHelper _endpointHelper;
 
 	@Reference
 	private OpenAPIResource _openAPIResource;

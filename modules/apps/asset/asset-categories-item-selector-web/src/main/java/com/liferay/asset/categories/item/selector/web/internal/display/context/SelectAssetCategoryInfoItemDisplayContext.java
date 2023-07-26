@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.asset.categories.item.selector.web.internal.display.context;
@@ -32,6 +23,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -71,7 +63,7 @@ public class SelectAssetCategoryInfoItemDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"itemSelectedEventName", _itemSelectedEventName
 		).put(
-			"multiSelection", _infoItemItemSelectorCriterion.isMultiSelection()
+			"multiSelection", _isMultiSelection()
 		).put(
 			"namespace", _renderResponse.getNamespace()
 		).put(
@@ -85,6 +77,15 @@ public class SelectAssetCategoryInfoItemDisplayContext {
 
 	public List<Long> getVocabularyIds() {
 		if (_vocabularyIds != null) {
+			return _vocabularyIds;
+		}
+
+		long[] vocabularyIds = ParamUtil.getLongValues(
+			_httpServletRequest, "vocabularyIds");
+
+		if (ArrayUtil.isNotEmpty(vocabularyIds)) {
+			_vocabularyIds = ListUtil.fromArray(vocabularyIds);
+
 			return _vocabularyIds;
 		}
 
@@ -208,6 +209,16 @@ public class SelectAssetCategoryInfoItemDisplayContext {
 		}
 
 		return jsonArray;
+	}
+
+	private boolean _isMultiSelection() {
+		if (_infoItemItemSelectorCriterion.isMultiSelection() ||
+			!ParamUtil.getBoolean(_httpServletRequest, "singleSelect")) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private final HttpServletRequest _httpServletRequest;

@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.portal.cache.internal.dao.orm;
@@ -35,6 +26,7 @@ import com.liferay.portal.kernel.dao.orm.ArgumentsResolver;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
+import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
@@ -470,9 +462,6 @@ public class FinderCacheImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_dbPartitionEnabled = GetterUtil.getBoolean(
-			_props.get("database.partition.enabled"));
-
 		_valueObjectFinderCacheEnabled = GetterUtil.getBoolean(
 			_props.get(PropsKeys.VALUE_OBJECT_FINDER_CACHE_ENABLED));
 		_valueObjectFinderCacheListThreshold = GetterUtil.getInteger(
@@ -486,7 +475,7 @@ public class FinderCacheImpl
 			_props.get(
 				PropsKeys.VALUE_OBJECT_FINDER_THREAD_LOCAL_CACHE_MAX_SIZE));
 
-		if (!_dbPartitionEnabled && (localCacheMaxSize > 0)) {
+		if (!DBPartition.isPartitionEnabled() && (localCacheMaxSize > 0)) {
 			_localCache = new CentralizedThreadLocal<>(
 				FinderCacheImpl.class + "._localCache",
 				() -> new LRUMap<>(localCacheMaxSize));
@@ -609,7 +598,7 @@ public class FinderCacheImpl
 
 		boolean sharded = false;
 
-		if (_dbPartitionEnabled) {
+		if (DBPartition.isPartitionEnabled()) {
 			String modleImplClassName = className;
 
 			if (className.endsWith(".List1") || className.endsWith(".List2")) {
@@ -703,7 +692,6 @@ public class FinderCacheImpl
 	@Reference
 	private ClusterExecutor _clusterExecutor;
 
-	private boolean _dbPartitionEnabled;
 	private final Map<String, Set<String>> _dslQueryCacheNamesMap =
 		new ConcurrentHashMap<>();
 	private final Map<String, Map<String, FinderPath>> _finderPathsMap =

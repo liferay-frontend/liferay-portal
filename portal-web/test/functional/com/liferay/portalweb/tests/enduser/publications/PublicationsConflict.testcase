@@ -195,6 +195,67 @@ definition {
 		}
 	}
 
+	@description = "This is a use case for LPS-187009 - Can not publish a publication when there is a duplicate mapping conflict in a mapping table."
+	@priority = 3
+	test CanPublishWithDuplicateMappingConflictInMappingTable {
+		task ("Create a Web Content and a Tag in Production mode") {
+			JSONWebcontent.addWebContent(
+				content = "Web Content content",
+				groupName = "Guest",
+				title = "Web Content Title");
+
+			JSONAssettag.addTag(
+				groupName = "Guest",
+				tagName = "test tag");
+		}
+
+		task ("Create new Publication and edit web content adding the Tag created") {
+			JSONPublications.addPublication(publicationName = "Test Publication");
+
+			JSONPublications.selectPublication(publicationName = "Test Publication");
+
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
+
+			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
+
+			Panel.expandPanel(panel = "Categorization");
+
+			AssetCategorization.addTag(tagName = "test tag");
+
+			PortletEntry.publish();
+		}
+
+		task ("Switch to Production and edit web content adding the Tag created") {
+			Publications.workOnProduction();
+
+			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
+
+			Panel.expandPanel(panel = "Categorization");
+
+			AssetCategorization.addTag(tagName = "test tag");
+
+			PortletEntry.publish();
+		}
+
+		task ("Publish Publication and assert that the Tag show up in production") {
+			PublicationsNavigator.gotoPublish(
+				gotoPublicationsAdmin = "true",
+				publicationName = "Test Publication");
+
+			Publications.publishPublication(publicationName = "Test Publication");
+
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
+
+			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
+
+			Panel.expandPanel(panel = "Categorization");
+
+			AssertElementPresent(
+				key_tagName = "test tag",
+				locator1 = "AssetCategorization#TAG");
+		}
+	}
+
 	@description = "This is a use case for LPS-175305. As a publication admin, I would like to know log the conflicts that happened."
 	@priority = 4
 	test CanSeeConflictsInTheLog {
@@ -353,8 +414,8 @@ definition {
 			changeUser = "Test Test");
 
 		Publications.publishPublication(
-			publicationName = "Publication 1 Name",
-			reviewChangesPage = "true");
+			gotoPublicationsAdmin = "true",
+			publicationName = "Publication 1 Name");
 
 		PublicationsNavigator.gotoReviewChanges(
 			gotoPublicationsAdmin = "true",
@@ -472,8 +533,8 @@ definition {
 			changeUser = "Test Test");
 
 		Publications.publishPublication(
-			publicationName = "Publication 1 Name",
-			reviewChangesPage = "true");
+			gotoPublicationsAdmin = "true",
+			publicationName = "Publication 1 Name");
 
 		Navigator.gotoNavTab(navTab = "History");
 
@@ -526,12 +587,6 @@ definition {
 			changeTitle = "WC WebContent Title 2 Edit",
 			conflictingChanges = "true",
 			entryTitle = "WC WebContent Title 2 Edit");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-		WebContent.viewNotPresentCP(webContentTitle = "WC WebContent Title 2 Edit");
-
-		WebContent.viewNotPresentCP(webContentTitle = "WC WebContent Title");
 
 		Publications.publishPublication(publicationName = "Publication 2 Name");
 

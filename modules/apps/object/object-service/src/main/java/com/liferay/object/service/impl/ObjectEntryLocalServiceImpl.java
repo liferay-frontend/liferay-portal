@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.object.service.impl;
@@ -38,6 +29,7 @@ import com.liferay.dynamic.data.mapping.util.NumberUtil;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.configuration.ObjectConfiguration;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectFieldValidationConstants;
@@ -72,7 +64,7 @@ import com.liferay.object.petra.sql.dsl.DynamicObjectRelationshipMappingTable;
 import com.liferay.object.related.models.ObjectRelatedModelsProvider;
 import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistry;
 import com.liferay.object.relationship.util.ObjectRelationshipUtil;
-import com.liferay.object.rest.petra.sql.dsl.expression.FilterPredicateFactory;
+import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectFieldLocalService;
@@ -1769,7 +1761,7 @@ public class ObjectEntryLocalServiceImpl
 		List<ObjectField> objectFields, Map<String, Serializable> values) {
 
 		for (ObjectField objectField : objectFields) {
-			if (values.containsKey(objectField.getName())) {
+			if (values.get(objectField.getName()) != null) {
 				continue;
 			}
 
@@ -2818,7 +2810,7 @@ public class ObjectEntryLocalServiceImpl
 
 				for (String oDataFilterString : oDataFilterStrings) {
 					predicate = predicate.and(
-						_filterPredicateFactory.create(
+						_filterFactory.create(
 							oDataFilterString,
 							relatedObjectDefinition.getObjectDefinitionId()));
 				}
@@ -4336,8 +4328,10 @@ public class ObjectEntryLocalServiceImpl
 	@Reference
 	private Encryptor _encryptor;
 
-	@Reference
-	private FilterPredicateFactory _filterPredicateFactory;
+	@Reference(
+		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
+	)
+	private FilterFactory<Predicate> _filterFactory;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

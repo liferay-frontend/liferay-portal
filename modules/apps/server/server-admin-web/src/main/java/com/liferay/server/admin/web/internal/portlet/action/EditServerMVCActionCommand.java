@@ -1,22 +1,15 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.server.admin.web.internal.portlet.action;
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
+import com.liferay.document.library.kernel.util.AudioProcessor;
 import com.liferay.document.library.kernel.util.DLPreviewableProcessor;
 import com.liferay.document.library.kernel.util.PDFProcessor;
+import com.liferay.document.library.kernel.util.VideoProcessor;
 import com.liferay.mail.kernel.model.Account;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.petra.string.CharPool;
@@ -213,8 +206,14 @@ public class EditServerMVCActionCommand
 		else if (cmd.equals("dlDeletePreviews")) {
 			DLPreviewableProcessor.deleteFiles();
 		}
-		else if (cmd.equals("dlGeneratePreviews")) {
+		else if (cmd.equals("dlGenerateAudioPreviews")) {
+			_audioProcessor.generatePreviews();
+		}
+		else if (cmd.equals("dlGeneratePDFPreviews")) {
 			_pdfProcessor.generatePreviews();
+		}
+		else if (cmd.equals("dlGenerateVideoPreviews")) {
+			_videoProcessor.generatePreviews();
 		}
 		else if (cmd.equals("gc")) {
 			_gc();
@@ -877,6 +876,9 @@ public class EditServerMVCActionCommand
 		String.class);
 
 	@Reference
+	private AudioProcessor _audioProcessor;
+
+	@Reference
 	private ClusterExecutor _clusterExecutor;
 
 	@Reference
@@ -942,5 +944,8 @@ public class EditServerMVCActionCommand
 
 	@Reference
 	private UserGroupMembershipPolicyFactory _userGroupMembershipPolicyFactory;
+
+	@Reference
+	private VideoProcessor _videoProcessor;
 
 }

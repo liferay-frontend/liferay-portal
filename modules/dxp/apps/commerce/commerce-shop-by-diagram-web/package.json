@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"@liferay/frontend-data-set-web": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/frontend-js-state-web": "*",
 		"commerce-frontend-js": "*",
@@ -9,9 +10,6 @@
 		"react": "16.12.0"
 	},
 	"jest": {
-		"moduleNameMapper": {
-			"frontend-taglib-clay/data_set_display/utils/eventsDefinitions": "<rootDir>/../../../../node_modules/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/utils/eventsDefinitions.js"
-		},
 		"testPathIgnorePatterns": [
 			"<rootDir>/dev/",
 			"<rootDir>/test/utilities.js"
@@ -27,5 +25,5 @@
 		"test": "liferay-npm-scripts test --passWithNoTests",
 		"watch": "liferay-npm-scripts webpack --watch"
 	},
-	"version": "1.0.69"
+	"version": "1.0.71"
 }

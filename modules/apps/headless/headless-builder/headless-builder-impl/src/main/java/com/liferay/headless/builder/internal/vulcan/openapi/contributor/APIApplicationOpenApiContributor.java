@@ -1,29 +1,22 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.builder.internal.vulcan.openapi.contributor;
 
 import com.liferay.headless.builder.application.APIApplication;
 import com.liferay.headless.builder.application.provider.APIApplicationProvider;
+import com.liferay.headless.builder.constants.HeadlessBuilderConstants;
 import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.vulcan.openapi.OpenAPIContext;
 import com.liferay.portal.vulcan.openapi.contributor.OpenAPIContributor;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -147,8 +140,8 @@ public class APIApplicationOpenApiContributor implements OpenAPIContributor {
 
 		String path = openAPIContext.getPath();
 
-		if (path.startsWith("/o")) {
-			path = path.substring(2);
+		if (path.startsWith(HeadlessBuilderConstants.BASE_PATH)) {
+			path = path.substring(4);
 		}
 
 		if (path.startsWith("/")) {
@@ -173,10 +166,15 @@ public class APIApplicationOpenApiContributor implements OpenAPIContributor {
 
 	private String _getOperationId(APIApplication.Endpoint endpoint) {
 		Http.Method method = endpoint.getMethod();
-		APIApplication.Schema responseSchema = endpoint.getResponseSchema();
 
 		return StringUtil.toLowerCase(method.name()) +
-			TextFormatter.formatPlural(responseSchema.getName()) + "Page";
+			_toCamelCase(endpoint.getPath()) + "Page";
+	}
+
+	private String _toCamelCase(String path) {
+		path = path.replaceAll("/\\{.*\\}", StringPool.BLANK);
+
+		return CamelCaseUtil.toCamelCase(path, CharPool.SLASH);
 	}
 
 	private PathItem _toOpenAPIPathItem(APIApplication.Endpoint endpoint) {

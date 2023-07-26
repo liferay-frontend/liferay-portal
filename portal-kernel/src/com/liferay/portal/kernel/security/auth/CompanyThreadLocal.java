@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.portal.kernel.security.auth;
@@ -19,6 +10,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -26,9 +18,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.TimeZoneThreadLocal;
 
 import java.sql.Connection;
@@ -254,12 +244,10 @@ public class CompanyThreadLocal {
 	}
 
 	private static void _syncLastDBPartitionSessionState() {
-		if (_DATABASE_PARTITION_ENABLED) {
+		if (DBPartition.isPartitionEnabled()) {
 			LastSessionRecorderHelperUtil.syncLastSessionState(false);
 		}
 	}
-
-	private static final boolean _DATABASE_PARTITION_ENABLED;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CompanyThreadLocal.class);
@@ -277,9 +265,6 @@ public class CompanyThreadLocal {
 		_companyId = new CentralizedThreadLocal<>(
 			CompanyThreadLocal.class + "._companyId",
 			() -> CompanyConstants.SYSTEM);
-
-		_DATABASE_PARTITION_ENABLED = GetterUtil.getBoolean(
-			PropsUtil.get("database.partition.enabled"));
 	}
 
 }

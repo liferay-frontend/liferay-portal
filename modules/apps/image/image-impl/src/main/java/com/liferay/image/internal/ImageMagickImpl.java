@@ -1,15 +1,6 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.image.internal;
@@ -28,6 +19,9 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.PropsUtil;
 
+import java.io.File;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -198,6 +192,55 @@ public class ImageMagickImpl implements ImageMagick {
 		}
 	}
 
+	@Override
+	public byte[] scale(byte[] bytes, String mimeType, int width, int height)
+		throws Exception {
+
+		if ((width == 0) && (height == 0)) {
+			return bytes;
+		}
+
+		File imageFile = null;
+		File scaledImageFile = null;
+
+		try {
+			imageFile = _file.createTempFile(bytes);
+
+			scaledImageFile = _file.createTempFile(mimeType);
+
+			List<String> arguments = new ArrayList<>();
+
+			arguments.add(imageFile.getAbsolutePath());
+			arguments.add("-resize");
+
+			if (height == 0) {
+				height = width;
+			}
+
+			if (width == 0) {
+				width = height;
+			}
+
+			arguments.add(StringBundler.concat(width, "x", height, ">"));
+			arguments.add(scaledImageFile.getAbsolutePath());
+
+			Future<?> future = convert(arguments);
+
+			future.get();
+
+			return _file.getBytes(scaledImageFile);
+		}
+		finally {
+			if (imageFile != null) {
+				imageFile.delete();
+			}
+
+			if (scaledImageFile != null) {
+				scaledImageFile.delete();
+			}
+		}
+	}
+
 	protected LinkedList<String> getResourceLimits() {
 		LinkedList<String> resourceLimits = new LinkedList<>();
 
@@ -235,6 +278,9 @@ public class ImageMagickImpl implements ImageMagick {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ImageMagickImpl.class);
+
+	@Reference
+	private com.liferay.portal.kernel.util.File _file;
 
 	private String _globalSearchPath;
 

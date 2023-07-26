@@ -12,7 +12,7 @@
 			"deploy": false
 		}
 	},
-	"id": "liferaymarketplaceetcnode",
+	"id": "__PROJECT_ID__",
 	"kind": "Deployment",
 	"livenessProbe": {
 		"httpGet": {

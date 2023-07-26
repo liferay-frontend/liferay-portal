@@ -317,30 +317,29 @@ definition {
 	macro publishPublication {
 		var key_publicationName = ${publicationName};
 
-		if (${gotoPublicationsAdmin} == "true") {
+		if (!(IsElementPresent(key_uniqueSuccess = "No unresolved conflicts, ready to publish.", locator1 = "Message#UNIQUE_SUCCESS"))) {
 			PublicationsNavigator.gotoPublish(
-				gotoPublicationsAdmin = "true",
+				gotoPublicationsAdmin = ${gotoPublicationsAdmin},
 				publicationName = ${publicationName});
-		}
-		else if (${reviewChangesPage} == "true") {
-			Click(locator1 = "Publications#PUBLISH_NAV_BAR");
-		}
 
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#SUCCESS",
-			value1 = "No unresolved conflicts, ready to publish.");
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#SUCCESS",
+				value1 = "No unresolved conflicts, ready to publish.");
+		}
 
 		Click(locator1 = "Publications#PUBLISH_BUTTON");
 
 		Alert.viewSuccessMessage();
 
-		PublicationsNavigator.openPublicationsHistory();
+		if (!(IsElementPresent(locator1 = "//div[(@class='data-set-content-wrapper')]"))) {
+			PublicationsNavigator.openPublicationsHistory();
 
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+			LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
-		AssertTextEquals(
-			locator1 = "Publications#LIST_PUBLISHED_STATUS",
-			value1 = "Published");
+			AssertTextEquals(
+				locator1 = "Publications#LIST_PUBLISHED_STATUS",
+				value1 = "Published");
+		}
 	}
 
 	macro revertPublication {
