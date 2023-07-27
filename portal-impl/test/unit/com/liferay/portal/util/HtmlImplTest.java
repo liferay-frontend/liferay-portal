@@ -8,6 +8,7 @@ package com.liferay.portal.util;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.LinkedHashMap;
@@ -411,6 +412,14 @@ public class HtmlImplTest {
 
 		Assert.assertEquals(
 			0, _htmlImpl.stripTag(tag, "<gat>Hello World!</gat>", 0));
+	}
+
+	@Test
+	public void testTranslateAriaLabelAttribute() {
+		Assert.assertEquals(
+			"Windows is  quote better quote .",
+			_htmlImpl.translateAriaLabelAttribute(
+				"Windows is \"better\".", LocaleUtil.ENGLISH));
 	}
 
 	@Test
