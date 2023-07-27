@@ -63,10 +63,33 @@
 	}
 </style>
 
+<#function getFilterByUrlParams>
+	<#assign
+		siteURL = (themeDisplay.getURLCurrent()?keep_after("?"))!
+		urlParams = ""
+	/>
+
+	<#list siteURL?split("&") as params>
+		<#assign categoryId = params?keep_after("=") />
+		<#if categoryId?has_content>
+			<#assign urlParams = urlParams + " (params eq '" + categoryId + "') and" />
+		</#if>
+	</#list>
+
+	<#return urlParams?keep_before_last(" ")?trim />
+</#function>
+
 <#assign
 	productsList = restClient.get("/headless-commerce-admin-catalog/v1.0/products?pageSize=-1").items
 	numberFilteredProducts = 0
+	filterCategoriesByUrlParams = getFilterByUrlParams()
 />
+
+<#if filterCategoriesByUrlParams?has_content>
+	<#assign
+		productsList = restClient.get("/headless-commerce-admin-catalog/v1.0/products?filter=categoryIds/any(params:${filterCategoriesByUrlParams})&pageSize=-1").items
+	/>
+</#if>
 
 <#function filterProductsByAppCategory productsList>
 	<#return productsList.categories?filter(category -> stringUtil.equals(category.name, "App"))>

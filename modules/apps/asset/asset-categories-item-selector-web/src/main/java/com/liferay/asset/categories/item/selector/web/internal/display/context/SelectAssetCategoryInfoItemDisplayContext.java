@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2023 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -62,6 +62,9 @@ public class SelectAssetCategoryInfoItemDisplayContext {
 	public Map<String, Object> getData() throws Exception {
 		return HashMapBuilder.<String, Object>put(
 			"itemSelectedEventName", _itemSelectedEventName
+		).put(
+			"moveCategory",
+			ParamUtil.getBoolean(_httpServletRequest, "moveCategory")
 		).put(
 			"multiSelection", _isMultiSelection()
 		).put(
@@ -191,12 +194,15 @@ public class SelectAssetCategoryInfoItemDisplayContext {
 	private JSONArray _getVocabulariesJSONArray() throws Exception {
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
+		boolean allowedSelectVocabularies = ParamUtil.getBoolean(
+			_httpServletRequest, "allowedSelectVocabularies");
+
 		for (long vocabularyId : getVocabularyIds()) {
 			jsonArray.put(
 				JSONUtil.put(
 					"children", _getCategoriesJSONArray(vocabularyId, 0)
 				).put(
-					"disabled", true
+					"disabled", !allowedSelectVocabularies
 				).put(
 					"icon", "vocabulary"
 				).put(
