@@ -625,6 +625,47 @@
 			}
 		},
 		{
+			"externalReferenceCode": "JenkinsCohort",
+			"label": {
+				"en_US": "Jenkins Cohort"
+			},
+			"name": "JenkinsCohort",
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"type": "String"
+				}
+			],
+			"objectRelationships": [
+				{
+					"deletionType": "cascade",
+					"label": {
+						"en_US": "Jenkins Cohort to Jenkins Servers"
+					},
+					"name": "jenkinsCohortToJenkinsServers",
+					"objectDefinitionExternalReferenceCode1": "JenkinsCohort",
+					"objectDefinitionExternalReferenceCode2": "JenkinsServer",
+					"type": "oneToMany"
+				}
+			],
+			"panelCategoryKey": "",
+			"pluralLabel": {
+				"en_US": "Jenkins Cohorts"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0,
+				"label": "approved",
+				"label_i18n": "Approved"
+			}
+		},
+		{
 			"externalReferenceCode": "Task",
 			"label": {
 				"en_US": "Task"
@@ -863,6 +904,16 @@
 					"name": "projectsToGitBranches",
 					"objectDefinitionExternalReferenceCode1": "Project",
 					"objectDefinitionExternalReferenceCode2": "GitBranch",
+					"type": "manyToMany"
+				},
+				{
+					"deletionType": "disassociate",
+					"label": {
+						"en_US": "Projects to Jenkins Cohorts"
+					},
+					"name": "projectsToJenkinsCohorts",
+					"objectDefinitionExternalReferenceCode1": "Project",
+					"objectDefinitionExternalReferenceCode2": "JenkinsCohort",
 					"type": "manyToMany"
 				},
 				{
