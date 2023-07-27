@@ -187,7 +187,8 @@ public class EntriesChecker extends RowChecker {
 			sb.append(
 				LanguageUtil.format(
 					httpServletRequest.getLocale(), "select-x",
-					HtmlUtil.escapeAttribute(rowTitle)));
+					HtmlUtil.translateAriaLabelAttribute(
+						rowTitle, httpServletRequest.getLocale())));
 			sb.append("\" ");
 		}
 
