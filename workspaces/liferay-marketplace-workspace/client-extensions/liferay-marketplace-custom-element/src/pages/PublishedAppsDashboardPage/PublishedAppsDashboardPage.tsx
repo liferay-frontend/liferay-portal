@@ -83,17 +83,20 @@ export function PublishedAppsDashboardPage() {
 	const [catalogId, setCatalogId] = useState<number>();
 	const [commerceAccount, setCommerceAccount] = useState<CommerceAccount>();
 	const [selectedApp, setSelectedApp] = useState<AppProps>();
-	const [showDashboardNavigation, setShowDashboardNavigation] =
-		useState(true);
+	const [showDashboardNavigation, setShowDashboardNavigation] = useState(
+		true
+	);
 	const [dashboardNavigationItems, setDashboardNavigationItems] = useState(
 		initialDashboardNavigationItems
 	);
 	const [page, setPage] = useState(1);
-	const [publishedAppTable, setPublishedAppTable] =
-		useState<PublishedAppTable>({items: [], pageSize: 7, totalCount: 1});
+	const [publishedAppTable, setPublishedAppTable] = useState<
+		PublishedAppTable
+	>({items: [], pageSize: 7, totalCount: 1});
 	const [appsTotalCount, setAppTotalCount] = useState<number>(0);
-	const [selectedNavigationItem, setSelectedNavigationItem] =
-		useState('Apps');
+	const [selectedNavigationItem, setSelectedNavigationItem] = useState(
+		'Apps'
+	);
 	const [members, setMembers] = useState<MemberProps[]>(Array<MemberProps>());
 	const [_selectedMember, setSelectedMember] = useState<MemberProps>();
 	const [selectedAccount, setSelectedAccount] = useState<Account>(
@@ -112,10 +115,9 @@ export function PublishedAppsDashboardPage() {
 
 			const accountsPublisher = accountsResponse.items.filter(
 				(currentAccount) => {
-					const catalogIdCustomField =
-						currentAccount.customFields?.find(
-							(customField) => customField.name === 'CatalogId'
-						);
+					const catalogIdCustomField = currentAccount.customFields?.find(
+						(customField) => customField.name === 'CatalogId'
+					);
 
 					return catalogIdCustomField?.customValue.data !== '';
 				}
@@ -147,22 +149,20 @@ export function PublishedAppsDashboardPage() {
 						'productChannels, attachments'
 					);
 
-					const appListProductIds: number[] =
-						getAppListProductIds(productsItems);
+					const appListProductIds: number[] = getAppListProductIds(
+						productsItems
+					);
 
-					const appListProductSpecifications =
-						await getAppListProductSpecifications(
-							appListProductIds
-						);
+					const appListProductSpecifications = await getAppListProductSpecifications(
+						appListProductIds
+					);
 
 					const newAppList: AppProps[] = [];
 
 					productsItems.forEach((product, index: number) => {
-						const marketPlaceChannel =
-							!!product.productChannels.find(
-								(channel) =>
-									channel.name === 'Marketplace Channel'
-							);
+						const marketPlaceChannel = !!product.productChannels.find(
+							(channel) => channel.name === 'Marketplace Channel'
+						);
 
 						const isApp = product.categories.find(
 							(category) => category.name === 'App'
@@ -196,13 +196,14 @@ export function PublishedAppsDashboardPage() {
 						}
 					});
 
-					const commerceAccountResponse =
-						await getAccountInfoFromCommerce(selectedAccount.id);
+					const commerceAccountResponse = await getAccountInfoFromCommerce(
+						selectedAccount.id
+					);
 
 					setCommerceAccount(commerceAccountResponse);
 
-					const newDashboardNavigationItems =
-						dashboardNavigationItems.map((navigationItems) => {
+					const newDashboardNavigationItems = dashboardNavigationItems.map(
+						(navigationItems) => {
 							if (navigationItems.itemName === 'apps') {
 								return {
 									...navigationItems,
@@ -211,7 +212,8 @@ export function PublishedAppsDashboardPage() {
 							}
 
 							return navigationItems;
-						});
+						}
+					);
 
 					setDashboardNavigationItems(newDashboardNavigationItems);
 					setAppTotalCount(newAppList.length);
@@ -261,11 +263,10 @@ export function PublishedAppsDashboardPage() {
 					isPublisherAccount: false,
 				};
 
-				const currentUserAccountBriefs =
-					currentUserAccount.accountBriefs.find(
-						(accountBrief: {id: number}) =>
-							accountBrief.id === selectedAccount.id
-					);
+				const currentUserAccountBriefs = currentUserAccount.accountBriefs.find(
+					(accountBrief: {id: number}) =>
+						accountBrief.id === selectedAccount.id
+				);
 
 				if (currentUserAccountBriefs) {
 					customerRoles.forEach((customerRole) => {

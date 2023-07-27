@@ -37,8 +37,9 @@ export function AccountDetailsPage({
 	totalApps,
 	totalMembers,
 }: AccountDetailsPageProps) {
-	const [selectedAccountAddress, setSelectedAccountAddress] =
-		useState<AccountPostalAddresses[]>();
+	const [selectedAccountAddress, setSelectedAccountAddress] = useState<
+		AccountPostalAddresses[]
+	>();
 
 	const maskDigits = (str: string) => {
 		const first3Digits = str.slice(0, 3);
@@ -261,19 +262,12 @@ export function AccountDetailsPage({
 
 									<td className="account-details-body-table-description">
 										{address.streetAddressLine1}
-
 										{', '}
-
 										{address.addressLocality}
-
 										{', '}
-
 										{address.addressRegion}{' '}
-
 										{address.postalCode}
-
 										{', '}
-
 										{address.addressCountry}
 									</td>
 								</tr>
