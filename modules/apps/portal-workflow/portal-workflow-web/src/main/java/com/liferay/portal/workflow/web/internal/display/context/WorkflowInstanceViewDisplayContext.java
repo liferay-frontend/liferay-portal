@@ -36,8 +36,8 @@ import com.liferay.portal.kernel.workflow.WorkflowInstance;
 import com.liferay.portal.kernel.workflow.WorkflowInstanceManagerUtil;
 import com.liferay.portal.kernel.workflow.WorkflowLog;
 import com.liferay.portal.kernel.workflow.WorkflowLogManagerUtil;
-import com.liferay.portal.kernel.workflow.comparator.WorkflowComparatorFactoryUtil;
 import com.liferay.portal.kernel.workflow.search.WorkflowModelSearchResult;
+import com.liferay.portal.workflow.comparator.WorkflowComparatorFactory;
 import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
 import com.liferay.portal.workflow.constants.WorkflowWebKeys;
 import com.liferay.portal.workflow.web.internal.search.WorkflowInstanceSearch;
@@ -64,12 +64,15 @@ public class WorkflowInstanceViewDisplayContext
 
 	public WorkflowInstanceViewDisplayContext(
 			LiferayPortletRequest liferayPortletRequest,
-			LiferayPortletResponse liferayPortletResponse)
+			LiferayPortletResponse liferayPortletResponse,
+			WorkflowComparatorFactory workflowComparatorFactory)
 		throws PortalException {
 
 		super(liferayPortletRequest, liferayPortletResponse);
 
 		_liferayPortletRequest = liferayPortletRequest;
+
+		_workflowComparatorFactory = workflowComparatorFactory;
 	}
 
 	public String getAssetIconCssClass(WorkflowInstance workflowInstance) {
@@ -258,7 +261,8 @@ public class WorkflowInstanceViewDisplayContext
 		_searchContainer = new WorkflowInstanceSearch(
 			liferayPortletRequest,
 			PortletURLUtil.getCurrent(
-				liferayPortletRequest, liferayPortletResponse));
+				liferayPortletRequest, liferayPortletResponse),
+			_workflowComparatorFactory);
 
 		WorkflowModelSearchResult<WorkflowInstance> workflowModelSearchResult =
 			getWorkflowModelSearchResult(
@@ -521,7 +525,7 @@ public class WorkflowInstanceViewDisplayContext
 			WorkflowLogManagerUtil.getWorkflowLogsByWorkflowInstance(
 				workflowInstanceRequestHelper.getCompanyId(),
 				workflowInstance.getWorkflowInstanceId(), null, 0, 1,
-				WorkflowComparatorFactoryUtil.getLogCreateDateComparator());
+				_workflowComparatorFactory.getLogCreateDateComparator(false));
 
 		if (workflowLogs.isEmpty()) {
 			return null;
@@ -551,5 +555,6 @@ public class WorkflowInstanceViewDisplayContext
 	private String _orderByType;
 	private WorkflowInstanceSearch _searchContainer;
 	private Boolean _showExtraInfo;
+	private final WorkflowComparatorFactory _workflowComparatorFactory;
 
 }

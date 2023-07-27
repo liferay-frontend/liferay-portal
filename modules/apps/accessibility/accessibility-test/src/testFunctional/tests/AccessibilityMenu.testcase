@@ -245,19 +245,105 @@ definition {
 		}
 	}
 
+	@description = "LPS-178192. Verifies that the guest preferences extend and persist to other users"
+	@priority = 4
+	test FirstTimeSignInConfigUsesLocalStorageIfConfigNotChangedWhileSignedIn {
+		property portal.acceptance = "true";
+
+		task ("Given new created user A") {
+			JSONUser.addUser(
+				userEmailAddress = "userea@liferay.com",
+				userFirstName = "userfnA",
+				userLastName = "userlnA",
+				userScreenName = "usersnA");
+		}
+
+		task ("And new created user B") {
+			JSONUser.addUser(
+				userEmailAddress = "usereb@liferay.com",
+				userFirstName = "userfnB",
+				userLastName = "userlnB",
+				userScreenName = "usersnB");
+		}
+
+		task ("And guest user permissions") {
+			SignOut.signOut();
+		}
+
+		task ("And default show underline is set to ON") {
+			AccessibilityMenu.openAccessibilityMenu();
+
+			Check.checkToggleSwitch(
+				key_toggleSwitchLabel = "Underlined Links",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+		}
+
+		task ("When sign in as user A") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "userea@liferay.com",
+				userLoginFullName = "userfnA userlnA");
+		}
+
+		task ("And shows that guest preferences persist") {
+			AccessibilityMenu.openAccessibilityMenu();
+
+			AssertChecked.assertCheckedNotVisible(
+				key_toggleSwitchLabel = "Underlined Links",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+		}
+
+		task ("And toggle show underline to OFF") {
+			Refresh();
+
+			AccessibilityMenu.openAccessibilityMenu();
+
+			Uncheck.uncheckToggleSwitch(
+				key_toggleSwitchLabel = "Underlined Links",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+		}
+
+		task ("And sign out") {
+			SignOut.signOut();
+		}
+
+		task ("And sign in as user B") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "usereb@liferay.com",
+				userLoginFullName = "userfnB userlnB");
+		}
+
+		task ("And open accessibility menu ") {
+			AccessibilityMenu.openAccessibilityMenu();
+		}
+
+		task ("Then show underline is set to ON") {
+			AssertChecked.assertCheckedNotVisible(
+				key_toggleSwitchLabel = "Underlined Links",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+		}
+	}
+
 	@description = "LPS-178192. Verifies focus remains on current configuration toggle after toggling."
-	@ignore = "Test Stub"
 	@priority = 3
 	test FocusWillRemainOnCurrentToggleSetting {
+		property portal.acceptance = "false";
 
-		//task ("Given When Then") {
+		task ("Given Accessibility Menu") {
+			AccessibilityMenu.openAccessibilityMenu();
+		}
 
-		// // Given Accessibility Menu
-		// // When toggle a configuration with "Enter" key
-		// // Then focus stays on the current configuration toggle
+		task ("When toggle a configuration with 'Enter' key") {
+			KeyPress(
+				key_toggleSwitchLabel = "Underlined Links",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH",
+				value1 = "\ENTER");
+		}
 
-		//}
-
+		task ("Then focus stays on the current configuration toggle") {
+			AssertElementFocused(
+				checkboxName = "Underlined Links",
+				locator1 = "Checkbox#ANY_CHECKBOX");
+		}
 	}
 
 	@description = "LPS-178192. Verifies guest configured settings can persist in browser local storage."
@@ -443,24 +529,39 @@ definition {
 	}
 
 	@description = "LPS-178192. Verifies show underline effects configuration can apply an underline class to link elements in body of page."
-	@ignore = "Test Stub"
 	@priority = 5
 	test ShowUnderlineEffectsCanApplyUnderlineClassToLinksImmediately {
 		property portal.acceptance = "true";
 
-		//task ("Given When Then") {
+		task ("And underline class not applied to body element") {
+			AccessibilityMenu.openAccessibilityMenu();
 
-		// // Given home page
-		// // And underline class not applied to body element
-		// // // verify show underline config in accessibility menu is off
-		// // // verify body element does not have "c-prefers-link-underline" class present
-		// // When access Accessibility Menu
-		// // And toggle ON show underline effect in links
-		// // Then body element has underline class applied
-		// // // assert body element has "c-prefers-link-underline" class present
+			AssertNotChecked.assertNotCheckedNotVisible(
+				key_toggleSwitchLabel = "Underlined Links",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
-		//}
+			AssertElementNotPresent(
+				key_class = "c-prefers-link-underline",
+				locator1 = "AccessibilityMenu#BODY_SPECIFIC_CLASS");
+		}
 
+		task ("When access Accessibility Menu") {
+			Refresh();
+
+			AccessibilityMenu.openAccessibilityMenu();
+		}
+
+		task ("And toggle ON show underline effect in links") {
+			Check.checkToggleSwitch(
+				key_toggleSwitchLabel = "Underlined Links",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+		}
+
+		task ("Then body element has underline class applied") {
+			AssertElementPresent(
+				key_class = "c-prefers-link-underline",
+				locator1 = "AccessibilityMenu#BODY_SPECIFIC_CLASS");
+		}
 	}
 
 	@description = "LPS-178192. Verifies show underline effects in links toggle is enabled by default."

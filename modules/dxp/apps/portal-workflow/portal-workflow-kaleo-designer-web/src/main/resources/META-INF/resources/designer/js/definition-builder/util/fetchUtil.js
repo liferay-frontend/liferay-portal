@@ -32,8 +32,8 @@ function retrieveAccountRoles(accountId) {
 	});
 }
 
-function retrieveDefinitionRequest(definitionId, versionNumber) {
-	let url = `${workflowBaseURL}/workflow-definitions/by-name/${definitionId}`;
+function retrieveDefinitionRequest(definitionName, versionNumber) {
+	let url = `${workflowBaseURL}/workflow-definitions/by-name/${definitionName}`;
 
 	if (versionNumber) {
 		url = `${url}?version=${versionNumber}`;
@@ -46,10 +46,13 @@ function retrieveDefinitionRequest(definitionId, versionNumber) {
 }
 
 function retrieveRoleById(roleId) {
-	return fetch(`${window.location.origin}${userBaseURL}/roles/${roleId}`, {
-		headers,
-		method: 'GET',
-	});
+	return fetch(
+		`${window.location.origin}${contextUrl}${userBaseURL}/roles/${roleId}`,
+		{
+			headers,
+			method: 'GET',
+		}
+	);
 }
 
 function retrieveRoles() {
@@ -73,7 +76,7 @@ function retrieveUsersBy(filterType, keywords) {
 		.slice(0, -8);
 
 	const url = new URL(
-		`${window.location.origin}${userBaseURL}/user-accounts?filter=${filterParameter}`
+		`${window.location.origin}${contextUrl}${userBaseURL}/user-accounts?filter=${filterParameter}`
 	);
 
 	return fetch(url, {

@@ -39,7 +39,7 @@ export default function DiagramBuilder() {
 	const {
 		accountEntryId,
 		currentEditor,
-		definitionId,
+		definitionName,
 		deserialize,
 		elements,
 		functionActionExecutors,
@@ -49,6 +49,8 @@ export default function DiagramBuilder() {
 		setDefinitionDescription,
 		setDefinitionInfo,
 		setDefinitionName,
+		setDefinitionTitle,
+		setDefinitionTitleTranslations,
 		setDeserialize,
 		setElements,
 		setShowDefinitionInfo,
@@ -339,8 +341,8 @@ export default function DiagramBuilder() {
 	}, [currentEditor, deserialize, version]);
 
 	useEffect(() => {
-		if (definitionId && version !== 0 && !deserialize) {
-			retrieveDefinitionRequest(definitionId)
+		if (definitionName && version !== 0 && !deserialize) {
+			retrieveDefinitionRequest(definitionName)
 				.then((response) => response.json())
 				.then(
 					({
@@ -349,6 +351,9 @@ export default function DiagramBuilder() {
 						dateCreated,
 						dateModified,
 						description,
+						name,
+						title,
+						title_i18n,
 						version,
 					}) => {
 						setActive(active);
@@ -358,15 +363,13 @@ export default function DiagramBuilder() {
 							dateModified,
 							totalModifications: version,
 						});
+						setDefinitionName(name);
+						setDefinitionTitle(title);
+						setDefinitionTitleTranslations(title_i18n);
 
 						deserializeUtil.updateXMLDefinition(
 							encodeURIComponent(content)
 						);
-
-						const metadata = deserializeUtil.getMetadata();
-
-						setDefinitionDescription(metadata.description);
-						setDefinitionName(metadata.name);
 
 						const elements = deserializeUtil.getElements();
 
@@ -387,7 +390,7 @@ export default function DiagramBuilder() {
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [definitionId, version]);
+	}, [definitionName, version]);
 
 	const contextProps = {
 		collidingElements,

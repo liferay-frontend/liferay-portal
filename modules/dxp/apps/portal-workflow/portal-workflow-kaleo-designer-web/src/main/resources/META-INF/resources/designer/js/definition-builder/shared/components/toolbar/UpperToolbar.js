@@ -40,7 +40,7 @@ export default function UpperToolbar({
 		blockingErrors,
 		currentEditor,
 		definitionDescription,
-		definitionId,
+		definitionName,
 		definitionTitle,
 		definitionTitleTranslations,
 		elements,
@@ -49,7 +49,6 @@ export default function UpperToolbar({
 		setAlertType,
 		setBlockingErrors,
 		setDefinitionDescription,
-		setDefinitionId,
 		setDefinitionName,
 		setDefinitionTitle,
 		setDefinitionTitleTranslations,
@@ -66,7 +65,9 @@ export default function UpperToolbar({
 		version,
 	} = useContext(DefinitionBuilderContext);
 
-	const [translations, setTranslations] = useState({});
+	const [translations, setTranslations] = useState(
+		definitionTitleTranslations
+	);
 
 	function findEmptyElements(element, language) {
 		if (element.data.label && !(language in element.data.label)) {
@@ -140,6 +141,7 @@ export default function UpperToolbar({
 				currentDescription = definitionDescription;
 				currentElements = elements;
 			}
+
 			xmlContent = serializeDefinition(
 				xmlNamespace,
 				{
@@ -204,14 +206,14 @@ export default function UpperToolbar({
 			publishDefinitionRequest({
 				active,
 				content: getXMLContent(true),
-				name: definitionId,
+				name: definitionName,
 				title: definitionTitle,
 				title_i18n: definitionTitleTranslations,
 				version,
 			}).then((response) => {
 				if (response.ok) {
 					response.json().then(({name, version}) => {
-						setDefinitionId(name);
+						setDefinitionName(name);
 						setVersion(parseInt(version, 10));
 						if (version === '1') {
 							localStorage.setItem(
@@ -243,14 +245,14 @@ export default function UpperToolbar({
 			saveDefinitionRequest({
 				active,
 				content: getXMLContent(true),
-				name: definitionId,
+				name: definitionName,
 				title: definitionTitle,
 				title_i18n: definitionTitleTranslations,
 				version,
 			}).then((response) => {
 				if (response.ok) {
 					response.json().then(({name, version}) => {
-						setDefinitionId(name);
+						setDefinitionName(name);
 						setVersion(parseInt(version, 10));
 						if (version === '1') {
 							localStorage.setItem(
