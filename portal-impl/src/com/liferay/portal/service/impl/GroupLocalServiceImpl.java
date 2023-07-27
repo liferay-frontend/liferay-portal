@@ -3800,8 +3800,13 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		group.setParentGroupId(parentGroupId);
 		group.setTreePath(group.buildTreePath());
 		group.setGroupKey(groupKey);
-		group.setNameMap(nameMap);
-		group.setDescriptionMap(descriptionMap);
+
+		Locale defaultLocale = LocaleUtil.fromLanguageId(
+			group.getDefaultLanguageId());
+
+		group.setNameMap(nameMap, defaultLocale);
+		group.setDescriptionMap(descriptionMap, defaultLocale);
+
 		group.setType(type);
 		group.setManualMembership(manualMembership);
 		group.setMembershipRestriction(membershipRestriction);

@@ -11,6 +11,7 @@ import com.liferay.commerce.product.util.CPSubscriptionType;
 import com.liferay.commerce.product.util.CPSubscriptionTypeJSPContributor;
 import com.liferay.commerce.product.util.CPSubscriptionTypeJSPContributorRegistry;
 import com.liferay.commerce.product.util.CPSubscriptionTypeRegistry;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 
@@ -36,6 +37,13 @@ public class BaseCPDefinitionSubscriptionInfoDisplayContext
 	}
 
 	public CPSubscriptionType getCPSubscriptionType(String subscriptionType) {
+		if (Validator.isNull(subscriptionType)) {
+			List<CPSubscriptionType> cpSubscriptionTypes =
+				getCPSubscriptionTypes();
+
+			return cpSubscriptionTypes.get(0);
+		}
+
 		return _cpSubscriptionTypeRegistry.getCPSubscriptionType(
 			subscriptionType);
 	}

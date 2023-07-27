@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2023 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Diego Hu
  */
 @Component(property = "type=date-time", service = EditableElementParser.class)
-public class DateTextEditableElementParser implements EditableElementParser {
+public class DateTimeEditableElementParser implements EditableElementParser {
 
 	@Override
 	public String getValue(Element element) {

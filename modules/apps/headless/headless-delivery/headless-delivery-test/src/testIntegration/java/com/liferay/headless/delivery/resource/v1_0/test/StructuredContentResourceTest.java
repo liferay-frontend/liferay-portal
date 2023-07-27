@@ -883,6 +883,8 @@ public class StructuredContentResourceTest
 					}
 				}
 			});
+		structuredContent.setStructuredContentFolderId(
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return structuredContent;
 	}
@@ -1173,6 +1175,8 @@ public class StructuredContentResourceTest
 					}
 				}
 			});
+		structuredContent.setStructuredContentFolderId(
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return structuredContent;
 	}
@@ -1435,6 +1439,8 @@ public class StructuredContentResourceTest
 					}
 				}
 			});
+		structuredContent.setStructuredContentFolderId(
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		Map<String, String> title_i18n = HashMapBuilder.put(
 			"en-US", RandomTestUtil.randomString()

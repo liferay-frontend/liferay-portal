@@ -738,11 +738,6 @@ public class PortletDataContextImpl implements PortletDataContext {
 	}
 
 	@Override
-	public Map<String, List<ExpandoColumn>> getExpandoColumns() {
-		return _expandoColumnsMap;
-	}
-
-	@Override
 	public Element getExportDataElement(ClassedModel classedModel) {
 		return getExportDataElement(
 			classedModel,

@@ -292,7 +292,8 @@ public class EditInfoItemStrutsActionTest {
 
 		UploadPortletRequest uploadPortletRequest = _getUploadPortletRequest(
 			null, null, "-99999999999999.9999999999999999", 0, null,
-			"-999.9999999999999", "-123456", "-9007199254740991", null, null);
+			"-999.9999999999999", "-123456", "-9007199254740991",
+			"<p>TITLE</p>", null, null);
 
 		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
 
@@ -316,7 +317,7 @@ public class EditInfoItemStrutsActionTest {
 		uploadPortletRequest = _getUploadPortletRequest(
 			null, null, "99999999999999.9999999999999999",
 			objectEntry.getObjectEntryId(), null, "999.9999999999999", "123456",
-			"9007199254740991", null, null);
+			"9007199254740991", "<p>SUBTITLE</p>", null, null);
 
 		uploadPortletRequest.getParameterMap();
 
@@ -339,13 +340,13 @@ public class EditInfoItemStrutsActionTest {
 			"999.9999999999999", decimalFormat.format(values.get("myDecimal")));
 
 		Assert.assertEquals("123456", String.valueOf(values.get("myInteger")));
-
 		Assert.assertEquals(
 			"9007199254740991", String.valueOf(values.get("myLongInteger")));
-
 		Assert.assertEquals(
 			"99999999999999.9999999999999999",
 			String.valueOf(values.get("myPrecisionDecimal")));
+		Assert.assertEquals(
+			"<p>SUBTITLE</p>", String.valueOf(values.get("myRichText")));
 	}
 
 	private Layout _addLayout() throws Exception {
@@ -414,7 +415,11 @@ public class EditInfoItemStrutsActionTest {
 			ObjectFieldUtil.createObjectField(
 				ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL,
 				ObjectFieldConstants.DB_TYPE_BIG_DECIMAL,
-				RandomTestUtil.randomString(), "myPrecisionDecimal", false));
+				RandomTestUtil.randomString(), "myPrecisionDecimal", false),
+			ObjectFieldUtil.createObjectField(
+				ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT,
+				ObjectFieldConstants.DB_TYPE_STRING,
+				RandomTestUtil.randomString(), "myRichText", false));
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
@@ -522,15 +527,6 @@ public class EditInfoItemStrutsActionTest {
 		return objectFieldSetting;
 	}
 
-	private Map<String, FileItem[]> _getFileParameters(
-			byte[] bytes, String namespace)
-		throws Exception {
-
-		return HashMapBuilder.<String, FileItem[]>put(
-			namespace, new FileItem[] {_createFileItem(bytes)}
-		).build();
-	}
-
 	private MockMultipartHttpServletRequest _getMultipartHttpServletRequest(
 		byte[] bytes, String fileNameParameter) {
 
@@ -556,8 +552,8 @@ public class EditInfoItemStrutsActionTest {
 	private UploadPortletRequest _getUploadPortletRequest(
 			String attachmentValue, String backURL, String bigDecimalValueInput,
 			long classPK, String displayPage, String doubleValueInput,
-			String integerValueInput, String longValueInput, String stringValue,
-			String redirect)
+			String integerValueInput, String longValueInput,
+			String richTextValueInput, String stringValue, String redirect)
 		throws Exception {
 
 		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
@@ -568,7 +564,9 @@ public class EditInfoItemStrutsActionTest {
 		if (attachmentValue != null) {
 			byte[] bytes = attachmentValue.getBytes(StandardCharsets.UTF_8);
 
-			fileParameters = _getFileParameters(bytes, "myAttachment");
+			fileParameters = HashMapBuilder.put(
+				"myAttachment", new FileItem[] {_createFileItem(bytes)}
+			).build();
 
 			mockMultipartHttpServletRequest = _getMultipartHttpServletRequest(
 				bytes, "myAttachment");
@@ -655,6 +653,15 @@ public class EditInfoItemStrutsActionTest {
 						return Collections.singletonList(bigDecimalValueInput);
 					}
 				).put(
+					"myRichText",
+					() -> {
+						if (richTextValueInput == null) {
+							return null;
+						}
+
+						return Collections.singletonList(richTextValueInput);
+					}
+				).put(
 					"myText", Collections.singletonList(stringValue)
 				).put(
 					"p_l_id",
@@ -727,8 +734,8 @@ public class EditInfoItemStrutsActionTest {
 
 		UploadPortletRequest uploadPortletRequest = _getUploadPortletRequest(
 			attachmentValue, backURL, bigDecimalValueInput, 0, displayPage,
-			doubleValueInput, integerValueInput, longValueInput, stringValue,
-			redirect);
+			doubleValueInput, integerValueInput, longValueInput, null,
+			stringValue, redirect);
 
 		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
 
@@ -826,7 +833,7 @@ public class EditInfoItemStrutsActionTest {
 
 		UploadPortletRequest uploadPortletRequest = _getUploadPortletRequest(
 			null, null, bigDecimalValueInput, 0, null, null, integerValueInput,
-			longValueInput, null, null);
+			longValueInput, null, null, null);
 
 		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
 

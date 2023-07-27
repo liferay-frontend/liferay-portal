@@ -5,7 +5,6 @@
 
 package com.liferay.exportimport.kernel.lar;
 
-import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.portal.kernel.dao.orm.Criterion;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -177,8 +176,6 @@ public interface PortletDataContext extends Serializable {
 	public Set<StagedModelType> getDeletionSystemEventStagedModelTypes();
 
 	public Date getEndDate();
-
-	public Map<String, List<ExpandoColumn>> getExpandoColumns();
 
 	public Element getExportDataElement(ClassedModel classedModel);
 

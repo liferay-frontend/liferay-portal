@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.openapi.OpenAPIContext;
 import com.liferay.portal.vulcan.openapi.contributor.OpenAPIContributor;
@@ -40,11 +41,13 @@ import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.osgi.service.component.annotations.Component;
@@ -174,19 +177,44 @@ public class APIApplicationOpenApiContributor implements OpenAPIContributor {
 	private String _toCamelCase(String path) {
 		path = path.replaceAll("/\\{.*\\}", StringPool.BLANK);
 
+		path = path.replaceAll(StringPool.MINUS, StringPool.SLASH);
+
 		return CamelCaseUtil.toCamelCase(path, CharPool.SLASH);
 	}
 
 	private PathItem _toOpenAPIPathItem(APIApplication.Endpoint endpoint) {
+		String operationId = _getOperationId(endpoint);
+
 		Operation operation = new Operation() {
 			{
-				setOperationId(_getOperationId(endpoint));
+				setOperationId(operationId);
 			}
 		};
 
 		APIApplication.Schema responseSchema = endpoint.getResponseSchema();
 
 		if (responseSchema != null) {
+			if (Objects.equals(endpoint.getMethod(), Http.Method.GET) &&
+				operationId.endsWith("Page")) {
+
+				operation.setParameters(
+					ListUtil.fromArray(
+						new Parameter() {
+							{
+								setIn("query");
+								setName("page");
+								setSchema(new StringSchema());
+							}
+						},
+						new Parameter() {
+							{
+								setIn("query");
+								setName("pageSize");
+								setSchema(new StringSchema());
+							}
+						}));
+			}
+
 			MediaType mediaType = new MediaType() {
 				{
 					setSchema(
@@ -198,16 +226,15 @@ public class APIApplicationOpenApiContributor implements OpenAPIContributor {
 				}
 			};
 
-			Content content = new Content() {
-				{
-					put("application/json", mediaType);
-					put("application/xml", mediaType);
-				}
-			};
-
 			ApiResponse apiResponse = new ApiResponse() {
 				{
-					setContent(content);
+					setContent(
+						new Content() {
+							{
+								put("application/json", mediaType);
+								put("application/xml", mediaType);
+							}
+						});
 					setDescription("default response");
 				}
 			};

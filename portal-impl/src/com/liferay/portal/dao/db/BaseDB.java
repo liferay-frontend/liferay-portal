@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -470,6 +471,16 @@ public abstract class BaseDB implements DB {
 			if (tableNameObjectValuePair == null) {
 				throw new IllegalArgumentException(
 					"Table name object value pair is null");
+			}
+
+			if (Objects.isNull(tableNameObjectValuePair.getKey())) {
+				throw new IllegalArgumentException(
+					"Table name object value pair key is null");
+			}
+
+			if (Objects.isNull(tableNameObjectValuePair.getValue())) {
+				throw new IllegalArgumentException(
+					"Table name object value pair value is null");
 			}
 		}
 
@@ -971,30 +982,80 @@ public abstract class BaseDB implements DB {
 			ObjectValuePair<String, String>... tableNameObjectValuePairs)
 		throws Exception {
 
-		boolean autoCommit = connection.getAutoCommit();
+		if (isSupportsDDLRollback()) {
+			boolean autoCommit = connection.getAutoCommit();
 
-		try {
-			connection.setAutoCommit(false);
+			try {
+				connection.setAutoCommit(false);
 
-			for (ObjectValuePair<String, String> tableNameObjectValuePair :
-					tableNameObjectValuePairs) {
+				for (ObjectValuePair<String, String> tableNameObjectValuePair :
+						tableNameObjectValuePairs) {
 
-				runSQL(
-					connection,
-					getRenameTableSQL(
-						tableNameObjectValuePair.getKey(),
-						tableNameObjectValuePair.getValue()));
+					runSQL(
+						connection,
+						getRenameTableSQL(
+							tableNameObjectValuePair.getKey(),
+							tableNameObjectValuePair.getValue()));
+				}
+
+				connection.commit();
 			}
+			catch (Exception exception) {
+				connection.rollback();
 
-			connection.commit();
+				throw exception;
+			}
+			finally {
+				connection.setAutoCommit(autoCommit);
+			}
 		}
-		catch (Exception exception) {
-			connection.rollback();
+		else {
+			int index = 0;
+			ObjectValuePair<String, String> tableNameObjectValuePair = null;
 
-			throw exception;
-		}
-		finally {
-			connection.setAutoCommit(autoCommit);
+			try {
+				while (index < tableNameObjectValuePairs.length) {
+					tableNameObjectValuePair = tableNameObjectValuePairs[index];
+
+					runSQL(
+						connection,
+						getRenameTableSQL(
+							tableNameObjectValuePair.getKey(),
+							tableNameObjectValuePair.getValue()));
+
+					index++;
+				}
+			}
+			catch (Exception exception1) {
+				_log.error(
+					StringBundler.concat(
+						"Unable to rename table ",
+						tableNameObjectValuePair.getKey(), " to ",
+						tableNameObjectValuePair.getValue(),
+						". Attempting to rollback."));
+
+				try {
+					while (index > 0) {
+						tableNameObjectValuePair =
+							tableNameObjectValuePairs[--index];
+
+						runSQL(
+							connection,
+							getRenameTableSQL(
+								tableNameObjectValuePair.getValue(),
+								tableNameObjectValuePair.getKey()));
+					}
+
+					if (_log.isInfoEnabled()) {
+						_log.info("Successfully rolled back table renames");
+					}
+				}
+				catch (Exception exception2) {
+					_log.fatal("Unable to roll back table renames", exception2);
+				}
+
+				throw exception1;
+			}
 		}
 	}
 
@@ -1218,6 +1279,10 @@ public abstract class BaseDB implements DB {
 
 	protected abstract String[] getTemplate();
 
+	protected boolean isSupportsDDLRollback() {
+		return _SUPPORTS_DDL_ROLLBACK;
+	}
+
 	protected boolean isSupportsDuplicatedIndexName() {
 		return _SUPPORTS_DUPLICATED_INDEX_NAME;
 	}
@@ -1413,6 +1478,8 @@ public abstract class BaseDB implements DB {
 	private static final boolean _SUPPORTS_ALTER_COLUMN_NAME = true;
 
 	private static final boolean _SUPPORTS_ALTER_COLUMN_TYPE = true;
+
+	private static final boolean _SUPPORTS_DDL_ROLLBACK = true;
 
 	private static final boolean _SUPPORTS_DUPLICATED_INDEX_NAME = true;
 
