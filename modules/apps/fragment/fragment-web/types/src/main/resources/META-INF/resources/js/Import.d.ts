@@ -6,13 +6,13 @@
 /// <reference types="react" />
 
 interface Props {
-	disposeModal: () => void;
+	backURL: string;
 	importURL: string;
 	portletNamespace: string;
 }
-declare function ImportModal({
-	disposeModal,
+declare function Import({
+	backURL,
 	importURL,
 	portletNamespace,
 }: Props): JSX.Element;
-export default ImportModal;
+export default Import;
