@@ -291,9 +291,9 @@ public class EditInfoItemStrutsActionTest {
 			mockHttpServletResponse, unsyncStringWriter);
 
 		UploadPortletRequest uploadPortletRequest = _getUploadPortletRequest(
-			null, null, "-99999999999999.9999999999999999", 0, null,
-			"-999.9999999999999", "-123456", "-9007199254740991",
-			"<p>TITLE</p>", null, null);
+			null, null, "-99999999999999.9999999999999999",
+			Boolean.TRUE.toString(), 0, null, "-999.9999999999999", "-123456",
+			"-9007199254740991", "<p>TITLE</p>", null, null);
 
 		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
 
@@ -316,8 +316,9 @@ public class EditInfoItemStrutsActionTest {
 
 		uploadPortletRequest = _getUploadPortletRequest(
 			null, null, "99999999999999.9999999999999999",
-			objectEntry.getObjectEntryId(), null, "999.9999999999999", "123456",
-			"9007199254740991", "<p>SUBTITLE</p>", null, null);
+			Boolean.FALSE.toString(), objectEntry.getObjectEntryId(), null,
+			"999.9999999999999", "123456", "9007199254740991",
+			"<p>SUBTITLE</p>", null, null);
 
 		uploadPortletRequest.getParameterMap();
 
@@ -330,6 +331,9 @@ public class EditInfoItemStrutsActionTest {
 			objectEntry.getObjectEntryId());
 
 		Map<String, Serializable> values = objectEntry.getValues();
+
+		Assert.assertEquals(
+			Boolean.FALSE.toString(), String.valueOf(values.get("myBoolean")));
 
 		DecimalFormat decimalFormat = new DecimalFormat(
 			"0", new DecimalFormatSymbols(LocaleUtil.ENGLISH));
@@ -347,6 +351,95 @@ public class EditInfoItemStrutsActionTest {
 			String.valueOf(values.get("myPrecisionDecimal")));
 		Assert.assertEquals(
 			"<p>SUBTITLE</p>", String.valueOf(values.get("myRichText")));
+	}
+
+	@FeatureFlags("LPS-183727")
+	@Test
+	public void testUpdateInfoItemWithCheckboxNames() throws Exception {
+		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
+			new MockMultipartHttpServletRequest();
+
+		mockMultipartHttpServletRequest.addHeader(
+			HttpHeaders.REFERER, "https://example.com/error");
+
+		Map<String, List<String>> regularParameters =
+			HashMapBuilder.<String, List<String>>put(
+				"classNameId", Collections.singletonList(_classNameId)
+			).put(
+				"formItemId", Collections.singletonList(_formItemId)
+			).put(
+				"groupId",
+				Collections.singletonList(String.valueOf(_group.getGroupId()))
+			).put(
+				"myBoolean", Collections.singletonList(Boolean.TRUE.toString())
+			).put(
+				"p_l_id",
+				Collections.singletonList(String.valueOf(_layout.getPlid()))
+			).put(
+				"p_l_mode", Collections.singletonList(Constants.VIEW)
+			).put(
+				"plid",
+				Collections.singletonList(String.valueOf(_layout.getPlid()))
+			).put(
+				"segmentsExperienceId",
+				Collections.singletonList(
+					String.valueOf(_defaultSegmentsExperienceId))
+			).build();
+
+		UploadPortletRequest uploadPortletRequest =
+			new UploadPortletRequestImpl(
+				new UploadServletRequestImpl(
+					mockMultipartHttpServletRequest, null, regularParameters),
+				null, RandomTestUtil.randomString());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
+
+		_editInfoItemStrutsAction.execute(
+			uploadPortletRequest,
+			new PipingServletResponse(
+				mockHttpServletResponse, new UnsyncStringWriter()));
+
+		List<ObjectEntry> objectEntries =
+			_objectEntryLocalService.getObjectEntries(
+				0, _objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		ObjectEntry objectEntry = objectEntries.get(0);
+
+		regularParameters.put(
+			"checkboxNames", Collections.singletonList("myBoolean"));
+		regularParameters.put(
+			"classNameId", Collections.singletonList(_classNameId));
+		regularParameters.put(
+			"classPK",
+			Collections.singletonList(
+				String.valueOf(objectEntry.getObjectEntryId())));
+		regularParameters.remove("myBoolean");
+
+		mockHttpServletResponse = new MockHttpServletResponse();
+
+		uploadPortletRequest = new UploadPortletRequestImpl(
+			new UploadServletRequestImpl(
+				mockMultipartHttpServletRequest, null, regularParameters),
+			null, RandomTestUtil.randomString());
+
+		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
+
+		_editInfoItemStrutsAction.execute(
+			uploadPortletRequest,
+			new PipingServletResponse(
+				mockHttpServletResponse, new UnsyncStringWriter()));
+
+		objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Assert.assertEquals(
+			Boolean.FALSE.toString(), String.valueOf(values.get("myBoolean")));
 	}
 
 	private Layout _addLayout() throws Exception {
@@ -404,6 +497,10 @@ public class EditInfoItemStrutsActionTest {
 				ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
 				ObjectFieldConstants.DB_TYPE_DOUBLE,
 				RandomTestUtil.randomString(), "myDecimal", false),
+			ObjectFieldUtil.createObjectField(
+				ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
+				ObjectFieldConstants.DB_TYPE_BOOLEAN,
+				RandomTestUtil.randomString(), "myBoolean", false),
 			ObjectFieldUtil.createObjectField(
 				ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
 				ObjectFieldConstants.DB_TYPE_INTEGER,
@@ -551,9 +648,10 @@ public class EditInfoItemStrutsActionTest {
 
 	private UploadPortletRequest _getUploadPortletRequest(
 			String attachmentValue, String backURL, String bigDecimalValueInput,
-			long classPK, String displayPage, String doubleValueInput,
-			String integerValueInput, String longValueInput,
-			String richTextValueInput, String stringValue, String redirect)
+			String booleanValueInput, long classPK, String displayPage,
+			String doubleValueInput, String integerValueInput,
+			String longValueInput, String richTextValueInput,
+			String stringValue, String redirect)
 		throws Exception {
 
 		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
@@ -616,6 +714,15 @@ public class EditInfoItemStrutsActionTest {
 					"groupId",
 					Collections.singletonList(
 						String.valueOf(_group.getGroupId()))
+				).put(
+					"myBoolean",
+					() -> {
+						if (booleanValueInput == null) {
+							return null;
+						}
+
+						return Collections.singletonList(booleanValueInput);
+					}
 				).put(
 					"myDecimal",
 					() -> {
@@ -733,9 +840,9 @@ public class EditInfoItemStrutsActionTest {
 			mockHttpServletResponse, unsyncStringWriter);
 
 		UploadPortletRequest uploadPortletRequest = _getUploadPortletRequest(
-			attachmentValue, backURL, bigDecimalValueInput, 0, displayPage,
-			doubleValueInput, integerValueInput, longValueInput, null,
-			stringValue, redirect);
+			attachmentValue, backURL, bigDecimalValueInput, null, 0,
+			displayPage, doubleValueInput, integerValueInput, longValueInput,
+			null, stringValue, redirect);
 
 		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
 
@@ -832,8 +939,8 @@ public class EditInfoItemStrutsActionTest {
 			mockHttpServletResponse, unsyncStringWriter);
 
 		UploadPortletRequest uploadPortletRequest = _getUploadPortletRequest(
-			null, null, bigDecimalValueInput, 0, null, null, integerValueInput,
-			longValueInput, null, null, null);
+			null, null, bigDecimalValueInput, null, 0, null, null,
+			integerValueInput, longValueInput, null, null, null);
 
 		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
 

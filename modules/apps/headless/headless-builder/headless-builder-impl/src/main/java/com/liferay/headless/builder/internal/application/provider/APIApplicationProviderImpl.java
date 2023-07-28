@@ -174,7 +174,7 @@ public class APIApplicationProviderImpl implements APIApplicationProvider {
 				String objectRelationshipNames = (String)properties.get(
 					"objectRelationshipNames");
 
-				if (objectRelationshipNames != null) {
+				if (!Validator.isBlank(objectRelationshipNames)) {
 					objectDefinition =
 						_objectEntryHelper.getPropertyObjectDefinition(
 							objectDefinition,
