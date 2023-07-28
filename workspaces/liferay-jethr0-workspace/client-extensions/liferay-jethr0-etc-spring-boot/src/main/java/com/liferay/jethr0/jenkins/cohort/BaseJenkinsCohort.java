@@ -22,15 +22,11 @@ public abstract class BaseJenkinsCohort
 	@Override
 	public void addJenkinsServer(JenkinsServer jenkinsServer) {
 		addRelatedEntity(jenkinsServer);
-
-		jenkinsServer.setJenkinsCohort(this);
 	}
 
 	@Override
 	public void addJenkinsServers(Set<JenkinsServer> jenkinsNodes) {
-		for (JenkinsServer jenkinsServer : jenkinsNodes) {
-			addJenkinsServer(jenkinsServer);
-		}
+		addRelatedEntities(jenkinsNodes);
 	}
 
 	@Override
@@ -48,6 +44,15 @@ public abstract class BaseJenkinsCohort
 	@Override
 	public Set<JenkinsServer> getJenkinsServers() {
 		return getRelatedEntities(JenkinsServer.class);
+	}
+
+	@Override
+	public JSONObject getJSONObject() {
+		JSONObject jsonObject = super.getJSONObject();
+
+		jsonObject.put("name", getName());
+
+		return jsonObject;
 	}
 
 	@Override

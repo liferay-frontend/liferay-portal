@@ -42,11 +42,6 @@ List<NavigationItem> navigationItems = localizedItemSelectorRendering.getNavigat
 						<liferay-util:include page="/view_item_selector.jsp" servletContext="<%= application %>" />
 					</c:when>
 					<c:otherwise>
-
-						<%
-						NavigationItem activeNavigationItem = null;
-						%>
-
 						<clay:container-fluid
 							cssClass="container-view"
 						>
@@ -54,28 +49,9 @@ List<NavigationItem> navigationItems = localizedItemSelectorRendering.getNavigat
 								<clay:col
 									lg="3"
 								>
-									<nav class="menubar menubar-transparent menubar-vertical-expand-lg">
-										<ul class="mb-2 nav nav-stacked">
-
-											<%
-											for (NavigationItem navigationItem : navigationItems) {
-												if (GetterUtil.getBoolean(navigationItem.get("active"))) {
-													activeNavigationItem = navigationItem;
-												}
-											%>
-
-												<li class="nav-item">
-													<a class="d-flex nav-link <%= GetterUtil.getBoolean(navigationItem.get("active")) ? "active" : StringPool.BLANK %>" href="<%= GetterUtil.getString(navigationItem.get("href")) %>">
-														<span class="text-truncate"><%= GetterUtil.getString(navigationItem.get("label")) %></span>
-													</a>
-												</li>
-
-											<%
-											}
-											%>
-
-										</ul>
-									</nav>
+									<clay:vertical-nav
+										verticalNavItems="<%= localizedItemSelectorRendering.getVerticalNavItemList() %>"
+									/>
 								</clay:col>
 
 								<clay:col
@@ -84,6 +60,11 @@ List<NavigationItem> navigationItems = localizedItemSelectorRendering.getNavigat
 									<clay:sheet
 										size="full"
 									>
+
+										<%
+										NavigationItem activeNavigationItem = localizedItemSelectorRendering.getActiveNavigationItem();
+										%>
+
 										<c:if test="<%= activeNavigationItem != null %>">
 											<h2 class="sheet-title">
 												<clay:content-row

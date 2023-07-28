@@ -23,12 +23,13 @@ public class LayoutSetDesignScreenNavigationCategory
 
 	@Override
 	public String getCategoryKey() {
-		return "design";
+		return LayoutScreenNavigationEntryConstants.CATEGORY_KEY_DESIGN;
 	}
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "design");
+		return _language.get(
+			locale, LayoutScreenNavigationEntryConstants.CATEGORY_KEY_DESIGN);
 	}
 
 	@Override
