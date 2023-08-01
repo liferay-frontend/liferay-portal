@@ -48,6 +48,8 @@ LayoutPrototypeManagementToolbarDisplayContext layoutPrototypeManagementToolbarD
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", layoutPrototypeManagementToolbarDisplayContext.getAvailableActions(layoutPrototype)
+				).put(
+					"title", layoutPageTemplateEntry.getName()
 				).build());
 			%>
 

@@ -35,6 +35,8 @@ ViewAccountGroupsManagementToolbarDisplayContext viewAccountGroupsManagementTool
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(viewAccountGroupsManagementToolbarDisplayContext.getAvailableActions(accountGroupDisplay))
+					).put(
+						"title", accountGroupDisplay.getName()
 					).build());
 				%>
 

@@ -50,10 +50,20 @@ renderResponse.setTitle(layoutPageTemplateEntry.getName());
 			keyProperty="assetDisplayPageEntryId"
 			modelVar="assetDisplayPageEntry"
 		>
+
+			<%
+			String assetTitle = assetDisplayPageUsagesDisplayContext.getTitle(assetDisplayPageEntry, themeDisplay.getLocale());
+
+			row.setData(
+				HashMapBuilder.<String, Object>put(
+					"title", assetTitle
+				).build());
+			%>
+
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-expand table-cell-minw-200 table-title"
 				name="title"
-				value="<%= HtmlUtil.escape(assetDisplayPageUsagesDisplayContext.getTitle(assetDisplayPageEntry, themeDisplay.getLocale())) %>"
+				value="<%= HtmlUtil.escape(assetTitle) %>"
 			/>
 
 			<liferay-ui:search-container-column-text

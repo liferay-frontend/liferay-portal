@@ -20,6 +20,10 @@ MBCategoryDisplay categoryDisplay = new MBCategoryDisplay(scopeGroupId, category
 	>
 
 		<%
+		row.setData(
+			HashMapBuilder.<String, Object>put(
+				"title", curCategory.getName()
+			).build());
 		row.setPrimaryKey(String.valueOf(curCategory.getCategoryId()));
 		%>
 

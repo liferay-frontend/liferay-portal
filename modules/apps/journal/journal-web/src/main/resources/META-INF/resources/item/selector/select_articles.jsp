@@ -59,6 +59,8 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 
 					row.setData(
 						HashMapBuilder.<String, Object>put(
+							"title", curArticle.getTitle(locale, true)
+						).put(
 							"value", journalArticleItemSelectorViewDisplayContext.getPayload(curArticle)
 						).build());
 					row.setPrimaryKey(curArticle.getArticleId());
@@ -205,6 +207,11 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 					).setParameter(
 						"groupId", curFolder.getGroupId()
 					).buildPortletURL();
+
+					row.setData(
+						HashMapBuilder.<String, Object>put(
+							"title", curFolder.getName()
+						).build());
 					%>
 
 					<c:choose>

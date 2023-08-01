@@ -54,6 +54,8 @@ AssetCategoryActionDropdownItemsProvider assetCategoryActionDropdownItemsProvide
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", assetCategoriesManagementToolbarDisplayContext.getAvailableActions(curCategory)
+				).put(
+					"title", curCategory.getTitle(locale)
 				).build());
 
 			int fullCategoriesCount = AssetEntryAssetCategoryRelLocalServiceUtil.getAssetEntryAssetCategoryRelsCountByAssetCategoryId(curCategory.getCategoryId());

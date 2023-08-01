@@ -49,6 +49,8 @@ SiteTeamsManagementToolbarDisplayContext siteTeamsManagementToolbarDisplayContex
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", siteTeamsManagementToolbarDisplayContext.getAvailableActions(team)
+				).put(
+					"title", team.getName()
 				).build());
 			%>
 

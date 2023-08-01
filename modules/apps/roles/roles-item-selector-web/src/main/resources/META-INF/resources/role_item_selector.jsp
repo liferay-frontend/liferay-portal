@@ -43,6 +43,8 @@ RoleItemSelectorViewDisplayContext roleItemSelectorViewDisplayContext = (RoleIte
 					"id", role.getRoleId()
 				).put(
 					"name", role.getTitle(locale)
+				).put(
+					"title", role.getTitle(locale)
 				).build());
 			%>
 

@@ -47,6 +47,8 @@ AccountUsersAdminManagementToolbarDisplayContext accountUsersAdminManagementTool
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(accountUsersAdminManagementToolbarDisplayContext.getAvailableActions(accountUserDisplay))
+					).put(
+						"title", accountUserDisplay.getName()
 					).build());
 				%>
 

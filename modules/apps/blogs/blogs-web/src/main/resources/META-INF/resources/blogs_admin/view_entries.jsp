@@ -68,6 +68,8 @@ PortletURL portletURL = entriesSearchContainer.getIteratorURL();
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(blogsViewEntriesDisplayContext.getAvailableActions(entry))
+					).put(
+						"title", entry.getTitle()
 					).build());
 				%>
 

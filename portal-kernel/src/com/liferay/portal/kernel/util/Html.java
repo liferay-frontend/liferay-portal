@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.util;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -48,6 +49,8 @@ public interface Html {
 	public String stripHtml(String text);
 
 	public String toInputSafe(String text);
+
+	public String translateAriaLabelAttribute(String attribute, Locale locale);
 
 	public String unescape(String text);
 

@@ -35,6 +35,8 @@ ViewAccountEntriesManagementToolbarDisplayContext viewAccountEntriesManagementTo
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(viewAccountEntriesManagementToolbarDisplayContext.getAvailableActions(accountEntryDisplay))
+					).put(
+						"title", accountEntryDisplay.getName()
 					).build());
 				%>
 

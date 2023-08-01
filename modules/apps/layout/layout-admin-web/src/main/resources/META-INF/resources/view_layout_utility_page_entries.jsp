@@ -34,6 +34,8 @@ LayoutUtilityPageEntryDisplayContext layoutUtilityPageEntryDisplayContext = new 
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", layoutUtilityPageEntryDisplayContext.getAvailableActions(layoutUtilityPageEntry)
+				).put(
+					"title", layoutUtilityPageEntry.getName()
 				).build());
 			%>
 

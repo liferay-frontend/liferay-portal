@@ -35,6 +35,8 @@ SearchContainer<AccountGroup> commerceAccountGroupSearchContainer = commerceAcco
 					"commerce-account-group-id", accountGroup.getAccountGroupId()
 				).put(
 					"name", accountGroup.getName()
+				).put(
+					"title", accountGroup.getName()
 				).build());
 			%>
 

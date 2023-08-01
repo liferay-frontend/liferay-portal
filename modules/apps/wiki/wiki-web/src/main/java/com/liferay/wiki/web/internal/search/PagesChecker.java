@@ -58,7 +58,7 @@ public class PagesChecker extends EmptyOnClickRowChecker {
 	@Override
 	public String getRowCheckBox(
 		HttpServletRequest httpServletRequest, boolean checked,
-		boolean disabled, String primaryKey) {
+		boolean disabled, String primaryKey, String rowTitle) {
 
 		long pageId = GetterUtil.getLong(primaryKey);
 
@@ -117,7 +117,7 @@ public class PagesChecker extends EmptyOnClickRowChecker {
 				_liferayPortletResponse.getNamespace(), RowChecker.ROW_IDS,
 				name, ""),
 			page.getTitle(), checkBoxRowIds, "'#" + getAllRowIds() + "'",
-			StringPool.BLANK);
+			StringPool.BLANK, rowTitle);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(PagesChecker.class);

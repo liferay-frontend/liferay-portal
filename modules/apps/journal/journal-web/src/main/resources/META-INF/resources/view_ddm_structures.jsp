@@ -147,6 +147,8 @@ JournalDDMStructuresManagementToolbarDisplayContext journalDDMStructuresManageme
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", journalDDMStructuresManagementToolbarDisplayContext.getAvailableActions(ddmStructure)
+				).put(
+					"title", ddmStructure.getName(locale, true)
 				).build());
 			%>
 

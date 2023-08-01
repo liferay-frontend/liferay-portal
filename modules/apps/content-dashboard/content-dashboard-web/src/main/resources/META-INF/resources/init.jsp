@@ -32,8 +32,7 @@ page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %>
 
-<%@ page import="java.util.Collections" %><%@
-page import="java.util.List" %>
+<%@ page import="java.util.List" %>
 
 <liferay-frontend:defineObjects />
 

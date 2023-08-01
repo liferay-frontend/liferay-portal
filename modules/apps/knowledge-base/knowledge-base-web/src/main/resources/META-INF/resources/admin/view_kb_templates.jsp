@@ -40,6 +40,8 @@ ViewKBTemplatesDisplayContext viewKBTemplatesDisplayContext = (ViewKBTemplatesDi
 							row.setData(
 								HashMapBuilder.<String, Object>put(
 									"actions", StringUtil.merge(viewKBTemplatesDisplayContext.getAvailableActions(kbTemplate))
+								).put(
+									"title", kbTemplate.getTitle()
 								).build());
 							%>
 

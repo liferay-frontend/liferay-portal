@@ -45,6 +45,8 @@ SearchContainer<Country> countrySearchContainer = CountrySearchContainerFactory.
 				row.setData(
 					HashMapBuilder.<String, Object>put(
 						"actions", StringUtil.merge(availableActions)
+					).put(
+						"title", country.getTitle(locale)
 					).build());
 				%>
 

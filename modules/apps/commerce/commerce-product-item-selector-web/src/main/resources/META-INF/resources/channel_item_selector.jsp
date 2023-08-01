@@ -35,6 +35,8 @@ SearchContainer<CommerceChannel> commerceChannelSearchContainer = commerceChanne
 					"commerce-channel-id", commerceChannel.getCommerceChannelId()
 				).put(
 					"name", commerceChannel.getName()
+				).put(
+					"title", commerceChannel.getName()
 				).build());
 			%>
 

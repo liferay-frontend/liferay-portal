@@ -50,6 +50,8 @@ DisplayPageManagementToolbarDisplayContext displayPageManagementToolbarDisplayCo
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", displayPageManagementToolbarDisplayContext.getAvailableActions(layoutPageTemplateEntry)
+				).put(
+					"title", layoutPageTemplateEntry.getName()
 				).build());
 			%>
 

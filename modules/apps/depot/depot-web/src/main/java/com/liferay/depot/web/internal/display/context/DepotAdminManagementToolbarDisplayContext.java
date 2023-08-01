@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -135,8 +136,12 @@ public class DepotAdminManagementToolbarDisplayContext
 	public Map<String, Object> getRowData(DepotEntry depotEntry)
 		throws PortalException {
 
+		Group group = depotEntry.getGroup();
+
 		return HashMapBuilder.<String, Object>put(
 			"actions", StringUtil.merge(_getAvailableActions(depotEntry))
+		).put(
+			"title", group.getDescriptiveName(_themeDisplay.getLocale())
 		).build();
 	}
 

@@ -35,6 +35,8 @@ SiteNavigationAdminManagementToolbarDisplayContext siteNavigationAdminManagement
 			row.setData(
 				HashMapBuilder.<String, Object>put(
 					"actions", siteNavigationAdminManagementToolbarDisplayContext.getAvailableActions(siteNavigationMenu)
+				).put(
+					"title", siteNavigationMenu.getName()
 				).build());
 			%>
 

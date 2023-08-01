@@ -8,12 +8,14 @@ package com.liferay.portal.util;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Html;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -668,6 +670,23 @@ public class HtmlImpl implements Html {
 	public String toInputSafe(String text) {
 		return StringUtil.replace(
 			text, new char[] {'&', '\"'}, new String[] {"&amp;", "&quot;"});
+	}
+
+	@Override
+	public String translateAriaLabelAttribute(String attribute, Locale locale) {
+		if (attribute == null) {
+			return null;
+		}
+
+		if (attribute.length() == 0) {
+			return StringPool.BLANK;
+		}
+
+		attribute = unescape(attribute);
+
+		return StringUtil.replace(
+			attribute, "\"",
+			" " + LanguageUtil.get(locale, "double-quotes") + " ");
 	}
 
 	@Override

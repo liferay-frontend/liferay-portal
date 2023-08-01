@@ -32,6 +32,10 @@
 		>
 
 			<%
+			row.setData(
+				HashMapBuilder.<String, Object>put(
+					"title", tag.getName()
+				).build());
 			long fullTagsCount = assetTagsDisplayContext.getFullTagsCount(tag);
 			%>
 

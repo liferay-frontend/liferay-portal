@@ -35,6 +35,8 @@ String itemSelectedEventName = commerceAccountItemSelectorViewDisplayContext.get
 					"commerce-account-id", accountEntry.getAccountEntryId()
 				).put(
 					"name", accountEntry.getName()
+				).put(
+					"title", accountEntry.getName()
 				).build());
 			%>
 

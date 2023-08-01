@@ -40,7 +40,7 @@ public class ImageConfigurationEntriesChecker extends EmptyOnClickRowChecker {
 	@Override
 	public String getRowCheckBox(
 		HttpServletRequest httpServletRequest, boolean checked,
-		boolean disabled, String primaryKey) {
+		boolean disabled, String primaryKey, String rowTitle) {
 
 		String name = AMImageConfigurationEntry.class.getSimpleName();
 
@@ -50,7 +50,7 @@ public class ImageConfigurationEntriesChecker extends EmptyOnClickRowChecker {
 			httpServletRequest, checked, disabled,
 			_liferayPortletResponse.getNamespace() + RowChecker.ROW_IDS + name,
 			primaryKey, checkBoxRowIds, "'#" + getAllRowIds() + "'",
-			StringPool.BLANK);
+			StringPool.BLANK, rowTitle);
 	}
 
 	private String _getEntryRowIds() {

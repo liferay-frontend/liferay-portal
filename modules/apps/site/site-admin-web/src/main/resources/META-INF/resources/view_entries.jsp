@@ -28,6 +28,8 @@ SiteAdminDisplayContext siteAdminDisplayContext = (SiteAdminDisplayContext)reque
 		row.setData(
 			HashMapBuilder.<String, Object>put(
 				"actions", siteAdminManagementToolbarDisplayContext.getAvailableActions(curGroup)
+			).put(
+				"title", curGroup.getDescriptiveName(locale)
 			).build());
 
 		List<Group> childSites = curGroup.getChildren(true);
