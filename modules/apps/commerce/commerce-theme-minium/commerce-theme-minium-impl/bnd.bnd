@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Theme Minium Implementation
 Bundle-SymbolicName: com.liferay.commerce.theme.minium.impl
-Bundle-Version: 5.0.27
+Bundle-Version: 5.0.28
 Provide-Capability:\
 	soy;\
 		type="commerce-theme-minium-impl";\
