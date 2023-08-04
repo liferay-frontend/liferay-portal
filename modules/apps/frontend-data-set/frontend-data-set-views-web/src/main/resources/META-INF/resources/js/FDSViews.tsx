@@ -13,9 +13,14 @@ import {
 } from '@liferay/frontend-data-set-web';
 import classNames from 'classnames';
 import {fetch, navigate, openModal, openToast} from 'frontend-js-web';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
-import {API_URL, FDS_DEFAULT_PROPS, OBJECT_RELATIONSHIP} from './Constants';
+import {
+	API_URL,
+	FDS_DEFAULT_PROPS,
+	OBJECT_RELATIONSHIP,
+	WALKTHROUGH_CONFIGURATION,
+} from './Constants';
 import {FDSEntryType} from './FDSEntries';
 import RequiredMark from './components/RequiredMark';
 
@@ -204,6 +209,13 @@ const FDSViews = ({
 	fdsViewURL,
 	namespace,
 }: IFDSViewsInterface) => {
+	useEffect(() => {
+
+		// @ts-ignore
+
+		Liferay.Walkthrough.initialize(WALKTHROUGH_CONFIGURATION);
+	}, []);
+
 	const getViewURL = (itemData: FDSViewType) => {
 		const url = new URL(fdsViewURL);
 

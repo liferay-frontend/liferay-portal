@@ -42,10 +42,46 @@ const FDS_DEFAULT_PROPS = {
 
 const ALLOWED_ENDPOINTS_PARAMETERS = ['scopeKey', 'siteId', 'userId'];
 
+const WALKTHROUGH_CONFIGURATION = {
+	id: 'dataSetEditDescriptionV1',
+	steps: [
+		{
+			content: 'Click here to go to the view page.',
+			id: 'step1ViewPage',
+			nodeToHighlight:
+				'#portlet_com_liferay_frontend_data_set_views_web_internal_portlet_FDSViewsPortlet > div > div > div > div > div > div.container-fluid.container-xl.mt-3 > div.data-set-content-wrapper > ul > li > div.justify-content-center.autofit-col.autofit-col-expand > div > a',
+			onNext(element: HTMLElement) {
+				element.click();
+			},
+			title: 'Visit The View Page',
+		},
+		{
+			content:
+				'Enter any description and click outside of the input to continue.',
+			id: 'step2Description',
+			nodeToHighlight:
+				'#portlet_com_liferay_frontend_data_set_views_web_internal_portlet_FDSViewsPortlet > div > div > div > div:nth-child(2) > div:nth-child(2)',
+			pause: true,
+			title: 'Fill Out A Description',
+		},
+		{
+			content: 'Click here to save your changes.',
+			id: 'step3Save',
+			nodeToHighlight:
+				'#portlet_com_liferay_frontend_data_set_views_web_internal_portlet_FDSViewsPortlet > div > div > div > div.sheet-footer > div > div:nth-child(1) > button',
+			onNext(element: HTMLElement) {
+				element.click();
+			},
+			title: 'Save The View',
+		},
+	],
+};
+
 export {
 	API_URL,
 	FDS_DEFAULT_PROPS,
 	FUZZY_OPTIONS,
 	OBJECT_RELATIONSHIP,
 	ALLOWED_ENDPOINTS_PARAMETERS,
+	WALKTHROUGH_CONFIGURATION,
 };

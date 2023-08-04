@@ -10,9 +10,9 @@ import ClayLayout from '@clayui/layout';
 import ClayList from '@clayui/list';
 import classNames from 'classnames';
 import {fetch, navigate, openToast} from 'frontend-js-web';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
-import {API_URL} from '../Constants';
+import {API_URL, WALKTHROUGH_CONFIGURATION} from '../Constants';
 import {IFDSViewSectionInterface} from '../FDSView';
 import RequiredMark from '../components/RequiredMark';
 
@@ -26,6 +26,28 @@ const Details = ({
 
 	const fdsViewDescriptionRef = useRef<HTMLInputElement>(null);
 	const fdsViewLabelRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+
+		// @ts-ignore
+
+		Liferay.Walkthrough.initialize(WALKTHROUGH_CONFIGURATION);
+	}, []);
+
+	const handleDescriptionBlur = () => {
+
+		// When input has a value and blurred, show the next step.
+
+		if (fdsViewDescriptionRef.current?.value) {
+
+			// @ts-ignore
+
+			Liferay.Walkthrough.setStep(
+				'dataSetEditDescriptionV1',
+				'step3Save'
+			);
+		}
+	};
 
 	const updateFDSView = async () => {
 		const body = {
@@ -127,6 +149,7 @@ const Details = ({
 					<ClayInput
 						defaultValue={fdsView.description}
 						id={`${namespace}fdsViewDesctiptionInput`}
+						onBlur={handleDescriptionBlur}
 						ref={fdsViewDescriptionRef}
 						type="text"
 					/>
