@@ -37,10 +37,31 @@ declare const FDS_DEFAULT_PROPS: {
 	style: 'fluid';
 };
 declare const ALLOWED_ENDPOINTS_PARAMETERS: string[];
+declare const WALKTHROUGH_CONFIGURATION: {
+	id: string;
+	steps: (
+		| {
+				content: string;
+				id: string;
+				nodeToHighlight: string;
+				onNext(element: HTMLElement): void;
+				title: string;
+				pause?: undefined;
+		  }
+		| {
+				content: string;
+				id: string;
+				nodeToHighlight: string;
+				pause: boolean;
+				title: string;
+		  }
+	)[];
+};
 export {
 	API_URL,
 	FDS_DEFAULT_PROPS,
 	FUZZY_OPTIONS,
 	OBJECT_RELATIONSHIP,
 	ALLOWED_ENDPOINTS_PARAMETERS,
+	WALKTHROUGH_CONFIGURATION,
 };
