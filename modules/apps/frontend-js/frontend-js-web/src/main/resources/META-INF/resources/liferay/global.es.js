@@ -93,6 +93,7 @@ import toggleControls from './util/toggle_controls';
 import toggleDisabled from './util/toggle_disabled';
 import toggleRadio from './util/toggle_radio';
 import toggleSelectBox from './util/toggle_select_box';
+import Walkthrough from './util/walkthrough/walkthrough';
 import zIndex from './zIndex';
 
 Liferay = window.Liferay || {};
@@ -360,5 +361,7 @@ Liferay.Util.Cookie = Cookie;
 
 Liferay.Util.LocalStorage = localStorage;
 Liferay.Util.SessionStorage = sessionStorage;
+
+Liferay.Walkthrough = Walkthrough;
 
 export {portlet};
