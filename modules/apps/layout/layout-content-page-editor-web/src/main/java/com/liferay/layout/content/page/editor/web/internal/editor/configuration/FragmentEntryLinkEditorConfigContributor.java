@@ -115,7 +115,7 @@ public class FragmentEntryLinkEditorConfigContributor
 	}
 
 	protected String getRemovePluginsLists() {
-		return "contextmenu,elementspath,floatingspace,image,link,liststyle," +
+		return "contextmenu,elementspath,floatingspace,image,liststyle," +
 			"magicline,resize,tabletools,toolbar,ae_embed";
 	}
 
