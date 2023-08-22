@@ -818,6 +818,12 @@ function Filters({fdsView, fdsViewsURL, namespace}: IProps) {
 						onClick: handleDelete,
 					},
 				]}
+				creationMenuItems={[
+					{
+						label: Liferay.Language.get('new-filter'),
+						onClick: onCreationButtonClick,
+					},
+				]}
 				disableSave={!newFiltersOrder.length}
 				fields={[
 					{
@@ -842,7 +848,6 @@ function Filters({fdsView, fdsViewsURL, namespace}: IProps) {
 					'no-default-filters-were-created'
 				)}
 				onCancelButtonClick={() => navigate(fdsViewsURL)}
-				onCreationButtonClick={onCreationButtonClick}
 				onOrderChange={({orderedItems}: {orderedItems: IFilter[]}) => {
 					setNewFiltersOrder(
 						orderedItems.map((filter) => filter.id).join(',')
