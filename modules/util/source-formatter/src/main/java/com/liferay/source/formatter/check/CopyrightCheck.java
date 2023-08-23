@@ -13,6 +13,7 @@ import com.liferay.source.formatter.processor.SourceProcessor;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Hugo Huijser
@@ -67,34 +68,28 @@ public class CopyrightCheck extends BaseFileCheck {
 		SourceFormatterArgs sourceFormatterArgs =
 			sourceProcessor.getSourceFormatterArgs();
 
-		if (sourceFormatterArgs.isFormatCurrentBranch()) {
-			for (String currentBranchRenamedFileName :
-					GitUtil.getCurrentBranchRenamedFileNames(
-						sourceFormatterArgs.getBaseDirName(),
-						sourceFormatterArgs.getGitWorkingBranchName())) {
+		for (String currentBranchRenamedFileName :
+				_getCurrentBranchRenamedFileNames(sourceFormatterArgs)) {
 
-				if (absolutePath.endsWith(currentBranchRenamedFileName)) {
-					return content;
-				}
+			if (absolutePath.endsWith(currentBranchRenamedFileName)) {
+				return content;
 			}
+		}
 
-			for (String currentBranchAddedFileNames :
-					GitUtil.getCurrentBranchAddedFileNames(
-						sourceFormatterArgs.getBaseDirName(),
-						sourceFormatterArgs.getGitWorkingBranchName())) {
+		for (String currentBranchAddedFileNames :
+				_getCurrentBranchAddedFileName(sourceFormatterArgs)) {
 
-				if (absolutePath.endsWith(currentBranchAddedFileNames)) {
-					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-						"yyyy");
+			if (absolutePath.endsWith(currentBranchAddedFileNames)) {
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+					"yyyy");
 
-					String currentYear = simpleDateFormat.format(new Date());
+				String currentYear = simpleDateFormat.format(new Date());
 
-					String year = s.substring(0, 4);
+				String year = s.substring(0, 4);
 
-					if (!year.equals(currentYear)) {
-						return StringUtil.replaceFirst(
-							content, year, currentYear, x + 35);
-					}
+				if (!year.equals(currentYear)) {
+					return StringUtil.replaceFirst(
+						content, year, currentYear, x + 35);
 				}
 			}
 		}
@@ -102,7 +97,41 @@ public class CopyrightCheck extends BaseFileCheck {
 		return content;
 	}
 
+	private synchronized List<String> _getCurrentBranchAddedFileName(
+			SourceFormatterArgs sourceFormatterArgs)
+		throws Exception {
+
+		if (_currentBranchAddedFileNames != null) {
+			return _currentBranchAddedFileNames;
+		}
+
+		_currentBranchAddedFileNames = GitUtil.getCurrentBranchAddedFileNames(
+			sourceFormatterArgs.getBaseDirName(),
+			sourceFormatterArgs.getGitWorkingBranchName());
+
+		return _currentBranchAddedFileNames;
+	}
+
+	private synchronized List<String> _getCurrentBranchRenamedFileNames(
+			SourceFormatterArgs sourceFormatterArgs)
+		throws Exception {
+
+		if (_currentBranchRenamedFileNames != null) {
+			return _currentBranchRenamedFileNames;
+		}
+
+		_currentBranchRenamedFileNames =
+			GitUtil.getCurrentBranchRenamedFileNames(
+				sourceFormatterArgs.getBaseDirName(),
+				sourceFormatterArgs.getGitWorkingBranchName());
+
+		return _currentBranchRenamedFileNames;
+	}
+
 	private static final String _XML_DECLARATION =
 		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+
+	private static List<String> _currentBranchAddedFileNames;
+	private static List<String> _currentBranchRenamedFileNames;
 
 }

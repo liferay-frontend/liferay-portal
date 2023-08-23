@@ -1071,16 +1071,15 @@ public class PoshiContext {
 	}
 
 	private static boolean _isTestRunIndividually(Properties properties) {
-		if (properties.containsKey("test.liferay.virtual.instance") &&
-			!Boolean.parseBoolean(
-				(String)properties.get("test.liferay.virtual.instance"))) {
-
-			return true;
-		}
-
 		String testRunType = (String)properties.get("test.run.type");
 
 		if (Validator.isNotNull(testRunType) && testRunType.equals("single")) {
+			return true;
+		}
+
+		String testScope = (String)properties.get("test.scope");
+
+		if (Validator.isNotNull(testScope) && testScope.equals("global")) {
 			return true;
 		}
 

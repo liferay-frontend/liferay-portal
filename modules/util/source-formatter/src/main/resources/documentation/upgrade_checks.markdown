@@ -19,6 +19,7 @@ UpgradeGetClassNamesMethodCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm
 UpgradeGetImagePreviewURLMethodCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replaces the references of the method 'DLUtil.getImagePreviewURL' with the method 'getImagePreviewURL' of 'DLURLHelper' class |
 UpgradeGetPortletGroupIdMethodCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Run code migration of the method 'getPortletGroupId' to 'getScopeGroupId' |
 UpgradeGradleIncludeResourceCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replaces with `compileInclude` the configuration attribute for dependencies in `build.gradle` that are listed at `Include-Resource` property at `bnd.bnd` associated file. |
+UpgradeJavaAddAddressMethodCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Fill the new parameter of the method 'addAddress' of AddressLocalService, AddressLocalServiceUtil, AddressService and AddressServiceUtil |
 UpgradeJavaAddFDSTableSchemaFieldCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replace method addFDSTableSchemaFieldCheck by add |
 UpgradeJavaAddFolderParameterCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Fill the new parameter of the method `addFolder` of `JournalFolderService`, `JournalFolderLocalService`, and `JournalFolderLocalServiceUtil` classes |
 UpgradeJavaAssetEntryAssetCategoriesCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replaces methods referring to class `AssetEntryAssetCategory` in class `AssetCategoryLocalService` with equivalent methods in class `AssetEntryAssetCategoryRelLocalService`. |
@@ -36,9 +37,11 @@ UpgradeJavaGetFileMethodCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm |
 UpgradeJavaGetLayoutDisplayPageObjectProviderCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replace parameter type long by ItemInfoReference in the getLayoutDisplayPageObjectProvider method |
 UpgradeJavaGetLayoutDisplayPageProviderCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replace getLayoutDisplayPageProvider by getLayoutDisplayPageProviderByClassName |
 UpgradeJavaIndexerCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replace Indexer by Indexer<?> |
+UpgradeJavaLanguageUtilCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replace `ListUtil.fromArray` by `new ArrayList' when the parameter is to 'LanguageUtil.getAvailableLocales' |
 UpgradeJavaLayoutServicesCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Fill the new parameters of the method `addLayout` and `updateLayout` of `LayoutServiceUtil`, `LayoutService`, `LayoutLocalService` and `LayoutLocalServiceUtil` classes |
 UpgradeJavaMultiVMPoolUtilCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replaces the references of the MultiVMPoolUtil class and also its methods usages. |
 UpgradeJavaPhoneLocalServiceUtilCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Fill the new parameter `ServiceContext` of the method `addPhone` of class `PhoneLocalServiceUtil`. |
+UpgradeJavaPortletIdMethodCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replace the 'document.get(Field.PORTLET_ID)' by the new interface 'PortletProviderUtil.getPortletId' |
 UpgradeJavaPortletSharedSearchSettingsCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Replaces the Optional return type of the methods `getParameterValues` and `getPortletPreferences` of `PortletSharedSearchSettings` class |
 UpgradeJavaSearchVocabulariesMethodCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Fill in the new parameters of the method `searchVocabularies` of 'AssetVocabularyService' and 'AssetVocabularyLocalService' |
 UpgradeJavaServiceReferenceAnnotationCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Run code migration to replace '@ServiceReference' by '@Reference' |
@@ -55,5 +58,6 @@ UpgradeVelocityMacroDeclarationMigrationCheck | .bnd, .ftl, .gradle, .java, .jsp
 UpgradeVelocityMacroReferenceMigrationCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Run code migration of references to a custom Macro statement from a Velocity file to a Freemarker file with the syntax replacements |
 UpgradeVelocityVariableReferenceMigrationCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Run code migration of references to variables from a Velocity file to a Freemarker file with the syntax replacements |
 UpgradeVelocityVariableSetMigrationCheck | .bnd, .ftl, .gradle, .java, .jsp, .jspf or .vm | Run code migration of set variables from a Velocity file to a Freemarker file with the syntax replacements |
+XMLUpgradeCompatibilityVersionCheck | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .svg, .testcase, .toggle, .tpl, .wsdl, .xml or .xsd | Checks and upgrades the compatibility version in `*.xml` file. |
 XMLUpgradeDTDVersionCheck | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .svg, .testcase, .toggle, .tpl, .wsdl, .xml or .xsd | Checks and upgrades the DTD version in `*.xml` file. |
 XMLUpgradeRemovedDefinitionsCheck | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .svg, .testcase, .toggle, .tpl, .wsdl, .xml or .xsd | Finds removed XML definitions when upgrading. |

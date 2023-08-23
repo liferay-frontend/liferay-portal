@@ -6,7 +6,6 @@
 package com.liferay.portal.vulcan.internal.graphql.data.processor;
 
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -25,9 +24,9 @@ import com.liferay.portal.vulcan.graphql.dto.GraphQLDTOProperty;
 import com.liferay.portal.vulcan.internal.accept.language.AcceptLanguageImpl;
 import com.liferay.portal.vulcan.internal.jaxrs.context.provider.AggregationContextProvider;
 import com.liferay.portal.vulcan.internal.jaxrs.context.provider.FilterContextProvider;
-import com.liferay.portal.vulcan.internal.jaxrs.context.provider.SortContextProvider;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.util.SortUtil;
 
 import java.io.Serializable;
 
@@ -118,8 +117,10 @@ public class GraphQLDTOContributorDataFetchingProcessor {
 				acceptLanguage, graphQLDTOContributor.getEntityModel(),
 				filterString),
 			Pagination.of(page, pageSize), search,
-			_getSorts(
+			SortUtil.getSorts(
 				acceptLanguage, graphQLDTOContributor.getEntityModel(),
+				_sortParserProvider.provide(
+					graphQLDTOContributor.getEntityModel()),
 				sortsString));
 	}
 
@@ -180,17 +181,6 @@ public class GraphQLDTOContributorDataFetchingProcessor {
 
 		return filterContextProvider.createContext(
 			acceptLanguage, entityModel, filterString);
-	}
-
-	private Sort[] _getSorts(
-		AcceptLanguage acceptLanguage, EntityModel entityModel,
-		String sortsString) {
-
-		SortContextProvider sortContextProvider = new SortContextProvider(
-			_language, _portal, _sortParserProvider);
-
-		return sortContextProvider.createContext(
-			acceptLanguage, entityModel, sortsString);
 	}
 
 	@Reference

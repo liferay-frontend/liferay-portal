@@ -6,19 +6,18 @@
 package com.liferay.headless.builder.internal.resource;
 
 import com.liferay.headless.builder.application.APIApplication;
+import com.liferay.headless.builder.constants.HeadlessBuilderConstants;
 import com.liferay.headless.builder.internal.helper.EndpointHelper;
-import com.liferay.headless.builder.internal.util.PathUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Objects;
 
-import javax.servlet.http.HttpServletRequest;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -34,48 +33,75 @@ public class HeadlessBuilderResourceImpl {
 	}
 
 	@GET
-	@Path("{any: .*}")
+	@Path("/{path: .*}")
 	@Produces({"application/json", "application/xml"})
 	public Response get(
 			@QueryParam("filter") String filterString,
-			@Context Pagination pagination)
+			@Context Pagination pagination, @PathParam("path") String path,
+			@QueryParam("sort") String sortString)
 		throws Exception {
 
-		String endpointPath = StringUtil.removeSubstring(
-			PathUtil.removeBasePath(contextHttpServletRequest.getRequestURI()),
-			contextAPIApplication.getBaseURL());
+		return _get(
+			filterString, pagination, path,
+			APIApplication.Endpoint.Scope.COMPANY, null, sortString);
+	}
+
+	@GET
+	@Path(HeadlessBuilderConstants.BASE_PATH_SCOPES_SUFFIX + "/{path: .*}")
+	@Produces({"application/json", "application/xml"})
+	public Response get(
+			@QueryParam("filter") String filterString,
+			@Context Pagination pagination, @PathParam("path") String path,
+			@PathParam("scopeKey") String scopeKey,
+			@QueryParam("sort") String sortString)
+		throws Exception {
+
+		return _get(
+			filterString, pagination, path, APIApplication.Endpoint.Scope.GROUP,
+			scopeKey, sortString);
+	}
+
+	private Response _get(
+			String filterString, Pagination pagination, String path,
+			APIApplication.Endpoint.Scope scope, String scopeKey,
+			String sortString)
+		throws Exception {
 
 		for (APIApplication.Endpoint endpoint :
-				contextAPIApplication.getEndpoints()) {
+				_apiApplication.getEndpoints()) {
 
-			if (Objects.equals(endpoint.getPath(), endpointPath)) {
-				if (endpoint.getResponseSchema() == null) {
-					return Response.noContent(
-					).build();
-				}
+			if ((endpoint.getScope() != scope) ||
+				!Objects.equals(endpoint.getPath(), "/" + path)) {
 
-				return Response.ok(
-					_endpointHelper.getResponseEntityMapsPage(
-						contextCompany.getCompanyId(), endpoint, filterString,
-						pagination)
+				continue;
+			}
+
+			if (endpoint.getResponseSchema() == null) {
+				return Response.noContent(
 				).build();
 			}
+
+			return Response.ok(
+				_endpointHelper.getResponseEntityMapsPage(
+					_acceptLanguage, _company.getCompanyId(), endpoint,
+					filterString, pagination, scopeKey, sortString)
+			).build();
 		}
 
 		throw new NoSuchModelException(
 			String.format(
-				"Endpoint %s does not exist for %s", endpointPath,
-				contextAPIApplication.getTitle()));
+				"Endpoint /%s does not exist for %s", path,
+				_apiApplication.getTitle()));
 	}
 
 	@Context
-	protected APIApplication contextAPIApplication;
+	private AcceptLanguage _acceptLanguage;
 
 	@Context
-	protected Company contextCompany;
+	private APIApplication _apiApplication;
 
 	@Context
-	protected HttpServletRequest contextHttpServletRequest;
+	private Company _company;
 
 	private final EndpointHelper _endpointHelper;
 

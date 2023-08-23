@@ -8,6 +8,7 @@ package com.liferay.object.service.impl;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.dynamic.data.mapping.expression.CreateExpressionRequest;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
@@ -784,7 +785,7 @@ public class ObjectFieldLocalServiceImpl
 			objectDefinitionId);
 
 		_validateListTypeDefinitionId(listTypeDefinitionId, businessType);
-		_validateBusinessTypeEncrypted(objectDefinitionId, businessType);
+		_validateBusinessType(objectDefinition, businessType);
 		_validateIndexed(
 			businessType, dbType, indexed, indexedAsKeyword, indexedLanguageId);
 		_validateLabel(labelMap, null);
@@ -1144,6 +1145,27 @@ public class ObjectFieldLocalServiceImpl
 
 			throw new ObjectFieldDBTypeException("Invalid DB type " + dbType);
 		}
+	}
+
+	private void _validateBusinessType(
+			ObjectDefinition objectDefinition, String businessType)
+		throws PortalException {
+
+		if (Objects.equals(
+				objectDefinition.getStorageType(),
+				ObjectDefinitionConstants.STORAGE_TYPE_SALESFORCE) &&
+			(businessType.equals(
+				ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION) ||
+			 businessType.equals(
+				 ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT))) {
+
+			throw new ObjectFieldBusinessTypeException(
+				"Salesforce storage type does not aggregation and attachment " +
+					"business types");
+		}
+
+		_validateBusinessTypeEncrypted(
+			objectDefinition.getObjectDefinitionId(), businessType);
 	}
 
 	private void _validateBusinessTypeEncrypted(

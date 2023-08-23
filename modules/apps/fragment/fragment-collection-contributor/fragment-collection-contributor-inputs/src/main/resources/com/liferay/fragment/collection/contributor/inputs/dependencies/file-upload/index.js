@@ -7,7 +7,12 @@ const wrapper = fragmentElement;
 
 const fileInput = document.getElementById(`${fragmentNamespace}-file-upload`);
 const fileName = wrapper.querySelector('.forms-file-upload-file-name');
-const removeButton = wrapper.querySelector("[type='button']");
+const hiddenFileInput = document.getElementById(
+	`${fragmentNamespace}-file-upload-hidden`
+);
+const removeButton = document.getElementById(
+	`${fragmentNamespace}-file-upload-remove-button`
+);
 const selectButton = wrapper.querySelector('.btn-secondary');
 
 function showRemoveButton() {
@@ -17,6 +22,10 @@ function showRemoveButton() {
 
 function onInputChange() {
 	fileName.innerText = fileInput.files[0].name;
+	fileInput.setAttribute('name', input.name);
+
+	hiddenFileInput.setAttribute('name', '');
+	hiddenFileInput.value = '';
 
 	showRemoveButton();
 }
@@ -24,6 +33,8 @@ function onInputChange() {
 function onRemoveFile() {
 	fileInput.value = '';
 	fileName.innerText = '';
+
+	hiddenFileInput.value = '';
 
 	removeButton.classList.add('d-none');
 	removeButton.removeEventListener('click', onRemoveFile);
@@ -54,6 +65,11 @@ else {
 
 	if (input.attributes.selectFromDocumentLibrary) {
 		selectButton.addEventListener('click', onSelectFile);
+	}
+	else {
+		selectButton.addEventListener('click', () => {
+			fileInput.click();
+		});
 	}
 
 	if (fileName.innerText !== '') {

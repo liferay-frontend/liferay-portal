@@ -187,11 +187,6 @@
 			<bean class="com.liferay.portal.upgrade.util.DefaultUpgradeTableFactoryImpl" />
 		</property>
 	</bean>
-	<bean class="com.liferay.portal.kernel.upgrade.util.ValueMapperFactoryUtil" id="com.liferay.portal.kernel.upgrade.util.ValueMapperFactoryUtil">
-		<property name="valueMapperFactory">
-			<bean class="com.liferay.portal.upgrade.util.MemoryValueMapperFactoryImpl" />
-		</property>
-	</bean>
 	<bean class="com.liferay.portal.util.ColorSchemeFactoryImpl" id="com.liferay.portal.kernel.util.ColorSchemeFactory" />
 	<bean class="com.liferay.portal.kernel.util.ColorSchemeFactoryUtil" id="com.liferay.portal.kernel.util.ColorSchemeFactoryUtil">
 		<property name="colorSchemeFactory" ref="com.liferay.portal.kernel.util.ColorSchemeFactory" />
@@ -308,10 +303,6 @@
 	<bean class="com.liferay.portlet.internal.PortletContainerImpl" id="com.liferay.portlet.internal.PortletContainerImpl">
 		<property name="portletConfigurationIconMenu" ref="com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIconMenu" />
 		<property name="portletToolbar" ref="com.liferay.portal.kernel.portlet.toolbar.PortletToolbar" />
-	</bean>
-	<bean class="com.liferay.portlet.sites.util.SitesImpl" id="com.liferay.sites.kernel.util.Sites" />
-	<bean class="com.liferay.sites.kernel.util.SitesUtil" id="com.liferay.sites.kernel.util.SitesUtil">
-		<property name="sites" ref="com.liferay.sites.kernel.util.Sites" />
 	</bean>
 	<bean class="com.liferay.portlet.social.service.permission.SocialActivityPermissionImpl" id="com.liferay.social.kernel.service.permission.SocialActivityPermission" />
 	<bean class="com.liferay.social.kernel.service.permission.SocialActivityPermissionUtil" id="com.liferay.social.kernel.service.permission.SocialActivityPermissionUtil">

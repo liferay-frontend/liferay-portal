@@ -69,7 +69,8 @@ public class ViewObjectDefinitionsDisplayContext {
 				dropdownItem.setHref("addObjectDefinition");
 				dropdownItem.setLabel(
 					LanguageUtil.get(
-						_objectRequestHelper.getRequest(), "add-object"));
+						_objectRequestHelper.getRequest(),
+						"create-new-object"));
 				dropdownItem.setTarget("event");
 			});
 
@@ -83,14 +84,6 @@ public class ViewObjectDefinitionsDisplayContext {
 			"/object_definitions/edit_object_definition"
 		).setParameter(
 			"objectDefinitionId", "{id}"
-		).buildString();
-	}
-
-	public String getEditObjectFolderURL() throws Exception {
-		return PortletURLBuilder.create(
-			getPortletURL()
-		).setMVCRenderCommandName(
-			"/object_definitions/edit_object_folder"
 		).buildString();
 	}
 
@@ -138,6 +131,14 @@ public class ViewObjectDefinitionsDisplayContext {
 				"delete", "delete", null));
 
 		return fdsActionDropdownItems;
+	}
+
+	public String getModelBuilderURL() throws Exception {
+		return PortletURLBuilder.create(
+			getPortletURL()
+		).setMVCRenderCommandName(
+			"/object_definitions/view_model_builder"
+		).buildString();
 	}
 
 	public String getPermissionsURL(String modelResource) throws Exception {

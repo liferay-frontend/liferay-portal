@@ -7,6 +7,7 @@ package com.liferay.commerce.product.service.impl;
 
 import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureIncrementalOrderQuantityException;
 import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureKeyException;
+import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureNameException;
 import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureRateException;
 import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureSkuException;
 import com.liferay.commerce.product.exception.DuplicateCPInstanceUnitOfMeasureKeyException;
@@ -14,6 +15,7 @@ import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
 import com.liferay.commerce.product.service.base.CPInstanceUnitOfMeasureLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -47,9 +49,14 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 			double priority, BigDecimal rate, String sku)
 		throws PortalException {
 
+		if (!FeatureFlagManagerUtil.isEnabled("COMMERCE-11287")) {
+			throw new UnsupportedOperationException();
+		}
+
 		_validateCPInstanceUnitOfMeasureIncrementalOrderQuantity(
-			incrementalOrderQuantity);
+			incrementalOrderQuantity, precision);
 		_validateCPInstanceUnitOfMeasureKey(cpInstanceId, 0, key);
+		_validateCPInstanceUnitOfMeasureName(nameMap);
 		_validateCPInstanceUnitOfMeasureRate(rate);
 		_validateCPInstanceUnitOfMeasureSKU(sku);
 
@@ -84,6 +91,32 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 
 		return cpInstanceUnitOfMeasurePersistence.update(
 			cpInstanceUnitOfMeasure);
+	}
+
+	@Override
+	public CPInstanceUnitOfMeasure addOrUpdateCPInstanceUnitOfMeasure(
+			long userId, long cpInstanceId, boolean active,
+			BigDecimal incrementalOrderQuantity, String key,
+			Map<Locale, String> nameMap, int precision, boolean primary,
+			double priority, BigDecimal rate, String sku)
+		throws PortalException {
+
+		CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure =
+			cpInstanceUnitOfMeasureLocalService.fetchCPInstanceUnitOfMeasure(
+				cpInstanceId, key);
+
+		if (cpInstanceUnitOfMeasure == null) {
+			return cpInstanceUnitOfMeasureLocalService.
+				addCPInstanceUnitOfMeasure(
+					userId, cpInstanceId, active, incrementalOrderQuantity, key,
+					nameMap, precision, primary, priority, rate, sku);
+		}
+
+		return cpInstanceUnitOfMeasureLocalService.
+			updateCPInstanceUnitOfMeasure(
+				cpInstanceUnitOfMeasure.getCPInstanceUnitOfMeasureId(),
+				cpInstanceId, active, incrementalOrderQuantity, key, nameMap,
+				precision, primary, priority, rate, sku);
 	}
 
 	@Override
@@ -141,9 +174,10 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 				cpInstanceUnitOfMeasureId);
 
 		_validateCPInstanceUnitOfMeasureIncrementalOrderQuantity(
-			incrementalOrderQuantity);
+			incrementalOrderQuantity, precision);
 		_validateCPInstanceUnitOfMeasureKey(
 			cpInstanceId, cpInstanceUnitOfMeasureId, key);
+		_validateCPInstanceUnitOfMeasureName(nameMap);
 		_validateCPInstanceUnitOfMeasureRate(rate);
 		_validateCPInstanceUnitOfMeasureSKU(sku);
 
@@ -193,7 +227,7 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 	}
 
 	private void _validateCPInstanceUnitOfMeasureIncrementalOrderQuantity(
-			BigDecimal incrementalOrderQuantity)
+			BigDecimal incrementalOrderQuantity, int precision)
 		throws PortalException {
 
 		if (incrementalOrderQuantity == null) {
@@ -204,6 +238,11 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 		if (incrementalOrderQuantity.compareTo(BigDecimal.ZERO) < 1) {
 			throw new CPInstanceUnitOfMeasureIncrementalOrderQuantityException(
 				"Incremental order quantity must be greater than 0");
+		}
+
+		if (incrementalOrderQuantity.scale() > precision) {
+			throw new CPInstanceUnitOfMeasureIncrementalOrderQuantityException(
+				"Incremental order quantity scale is invalid");
 		}
 	}
 
@@ -225,6 +264,15 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 			throw new DuplicateCPInstanceUnitOfMeasureKeyException(
 				"There is another commerce product instance unit of measure " +
 					"with key " + key);
+		}
+	}
+
+	private void _validateCPInstanceUnitOfMeasureName(
+			Map<Locale, String> nameMap)
+		throws PortalException {
+
+		if ((nameMap == null) || nameMap.isEmpty()) {
+			throw new CPInstanceUnitOfMeasureNameException("Name is mandatory");
 		}
 	}
 

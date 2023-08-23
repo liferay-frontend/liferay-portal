@@ -14,6 +14,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Gabriel Albuquerque
@@ -48,6 +49,47 @@ public interface ObjectEntryManager {
 	public String getStorageLabel(Locale locale);
 
 	public String getStorageType();
+
+	public default ObjectEntry partialUpdateObjectEntry(
+			long companyId, DTOConverterContext dtoConverterContext,
+			String externalReferenceCode, ObjectDefinition objectDefinition,
+			ObjectEntry objectEntry, String scopeKey)
+		throws Exception {
+
+		ObjectEntry existingObjectEntry = getObjectEntry(
+			companyId, dtoConverterContext, externalReferenceCode,
+			objectDefinition, scopeKey);
+
+		if (objectEntry.getDateCreated() != null) {
+			existingObjectEntry.setDateCreated(objectEntry.getDateCreated());
+		}
+
+		if (objectEntry.getDateModified() != null) {
+			existingObjectEntry.setDateModified(objectEntry.getDateModified());
+		}
+
+		if (objectEntry.getKeywords() != null) {
+			existingObjectEntry.setKeywords(objectEntry.getKeywords());
+		}
+
+		if (objectEntry.getProperties() != null) {
+			Map<String, Object> properties =
+				existingObjectEntry.getProperties();
+
+			properties.putAll(objectEntry.getProperties());
+
+			existingObjectEntry.setProperties(properties);
+		}
+
+		if (objectEntry.getTaxonomyCategoryIds() != null) {
+			existingObjectEntry.setTaxonomyCategoryIds(
+				objectEntry.getTaxonomyCategoryIds());
+		}
+
+		return updateObjectEntry(
+			companyId, dtoConverterContext, externalReferenceCode,
+			objectDefinition, existingObjectEntry, scopeKey);
+	}
 
 	public ObjectEntry updateObjectEntry(
 			long companyId, DTOConverterContext dtoConverterContext,

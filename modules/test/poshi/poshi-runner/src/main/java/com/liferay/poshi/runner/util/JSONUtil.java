@@ -28,7 +28,54 @@ public class JSONUtil {
 		if (!equals(jsonObject1, jsonObject2)) {
 			throw new RuntimeException(
 				"JSON object \n" + jsonObject1.toString() +
-					"\n is not equal to \n" + jsonObject2);
+					"\n is not equal to \n" + jsonObject2.toString());
+		}
+	}
+
+	public static void assertJSONValue(String json, String path, String value)
+		throws Exception {
+
+		String jsonValue = getWithJSONPath(json, path);
+
+		if (!value.equals(jsonValue)) {
+			throw new RuntimeException(
+				"Expected JSON value: " + value +
+					" does not equal actual JSON value: " + jsonValue);
+		}
+	}
+
+	public static void assertNotEquals(
+			JSONObject jsonObject1, JSONObject jsonObject2)
+		throws Exception {
+
+		if (equals(jsonObject1, jsonObject2)) {
+			throw new RuntimeException(
+				"JSON object \n" + jsonObject1.toString() +
+					"\n is equal to \n" + jsonObject2.toString());
+		}
+	}
+
+	public static void assertNotJSONValue(
+			String json, String path, String value)
+		throws Exception {
+
+		String jsonValue = getWithJSONPath(json, path);
+
+		if (value.equals(jsonValue)) {
+			throw new RuntimeException(
+				"Expected JSON value: " + value +
+					" equals actual JSON value: " + jsonValue);
+		}
+	}
+
+	public static void assertNotSimilar(
+			JSONObject jsonObject1, JSONObject jsonObject2)
+		throws Exception {
+
+		if (similar(jsonObject1, jsonObject2)) {
+			throw new RuntimeException(
+				"JSON object \n" + jsonObject1.toString() +
+					"\n is similar to \n" + jsonObject2.toString());
 		}
 	}
 
@@ -39,7 +86,7 @@ public class JSONUtil {
 		if (!similar(jsonObject1, jsonObject2)) {
 			throw new RuntimeException(
 				"JSON object \n" + jsonObject1.toString() +
-					"\n is not similar to \n" + jsonObject2);
+					"\n is not similar to \n" + jsonObject2.toString());
 		}
 	}
 
@@ -103,20 +150,20 @@ public class JSONUtil {
 		return jsonObject.optString(name);
 	}
 
-	public static String getWithJSONPath(String jsonString, String jsonPath) {
-		return getWithJSONPath(jsonString, jsonPath, "true");
+	public static String getWithJSONPath(String json, String path) {
+		return getWithJSONPath(json, path, "true");
 	}
 
 	public static String getWithJSONPath(
-		String jsonString, String jsonPath, String format) {
+		String json, String path, String format) {
 
-		DocumentContext documentContext = JsonPath.parse(jsonString);
+		DocumentContext documentContext = JsonPath.parse(json);
 
-		Object object = documentContext.read(jsonPath);
+		Object object = documentContext.read(path);
 
 		if (object == null) {
 			throw new RuntimeException(
-				"Invalid JSON path " + jsonPath + " in " + jsonString);
+				"Invalid JSON path " + path + " in " + json);
 		}
 
 		if (Boolean.parseBoolean(format) && (object instanceof List)) {

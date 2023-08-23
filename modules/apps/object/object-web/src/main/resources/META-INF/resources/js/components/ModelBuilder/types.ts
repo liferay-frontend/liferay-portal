@@ -5,4 +5,19 @@
 
 export type TState = {
 	objectDefinitions: ObjectDefinition[];
+	rightSidebarType:
+		| 'objectDefinitionDetails'
+		| 'objectRelationshipDetails'
+		| 'empty';
+	selectedDefinitionNode: DefinitionNode;
+	selectedObjectRelationship: ObjectRelationship;
 };
+
+export interface FieldNode extends ObjectField {
+	selected: boolean;
+}
+
+export interface DefinitionNode extends ObjectDefinition {
+	hasUpdateObjectDefinitionPermission: boolean;
+	selected: boolean;
+}

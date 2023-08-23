@@ -15,6 +15,8 @@ public class HeadlessBuilderConstants {
 	public static final String BASE_PATH =
 		Portal.PATH_MODULE + HeadlessBuilderConstants.BASE_PATH_SUFFIX;
 
+	public static final String BASE_PATH_SCOPES_SUFFIX = "/scopes/{scopeKey}";
+
 	public static final String BASE_PATH_SUFFIX = "/c/";
 
 }

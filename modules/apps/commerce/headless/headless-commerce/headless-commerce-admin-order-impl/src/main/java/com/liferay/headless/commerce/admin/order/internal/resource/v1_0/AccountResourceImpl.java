@@ -19,7 +19,6 @@ import com.liferay.headless.commerce.admin.order.resource.v1_0.AccountResource;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
-import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,11 +29,10 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/account.properties",
-	scope = ServiceScope.PROTOTYPE,
-	service = {AccountResource.class, NestedFieldSupport.class}
+	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
+	service = AccountResource.class
 )
-public class AccountResourceImpl
-	extends BaseAccountResourceImpl implements NestedFieldSupport {
+public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 	@Override
 	public Account getOrderByExternalReferenceCodeAccount(

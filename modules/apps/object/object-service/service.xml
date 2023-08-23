@@ -81,6 +81,7 @@
 		<column db-name="accountERObjectFieldId" name="accountEntryRestrictedObjectFieldId" type="long" />
 		<column name="descriptionObjectFieldId" type="long" />
 		<column name="objectFolderId" type="long" />
+		<column name="rootObjectDefinitionId" type="long" />
 		<column name="titleObjectFieldId" type="long" />
 		<column name="accountEntryRestricted" type="boolean" />
 		<column name="active" type="boolean" />
@@ -129,6 +130,10 @@
 		<finder name="C_N" return-type="ObjectDefinition">
 			<finder-column name="companyId" />
 			<finder-column name="name" />
+		</finder>
+		<finder name="C_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="status" />
 		</finder>
 		<finder name="S_S" return-type="Collection">
 			<finder-column name="system" />
@@ -561,6 +566,7 @@
 		<column name="parameterObjectFieldId" type="long" />
 		<column name="deletionType" type="String" />
 		<column method-name="DBTableName" name="dbTableName" type="String" />
+		<column name="edge" type="boolean" />
 		<column localized="true" name="label" type="String" />
 		<column name="name" type="String" />
 		<column name="reverse" type="boolean" />
@@ -931,6 +937,7 @@
 		<exception>ObjectDefinitionModifiable</exception>
 		<exception>ObjectDefinitionName</exception>
 		<exception>ObjectDefinitionPluralLabel</exception>
+		<exception>ObjectDefinitionRootObjectDefinitionId</exception>
 		<exception>ObjectDefinitionScope</exception>
 		<exception>ObjectDefinitionStatus</exception>
 		<exception>ObjectDefinitionVersion</exception>
@@ -954,6 +961,7 @@
 		<exception>ObjectLayoutBoxCategorizationType</exception>
 		<exception>ObjectLayoutColumnSize</exception>
 		<exception>ObjectRelationshipDeletionType</exception>
+		<exception>ObjectRelationshipEdge</exception>
 		<exception>ObjectRelationshipName</exception>
 		<exception>ObjectRelationshipParameterObjectFieldId</exception>
 		<exception>ObjectRelationshipReverse</exception>

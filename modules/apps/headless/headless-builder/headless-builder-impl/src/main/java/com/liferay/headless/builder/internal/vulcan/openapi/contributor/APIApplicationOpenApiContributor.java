@@ -8,16 +8,15 @@ package com.liferay.headless.builder.internal.vulcan.openapi.contributor;
 import com.liferay.headless.builder.application.APIApplication;
 import com.liferay.headless.builder.application.provider.APIApplicationProvider;
 import com.liferay.headless.builder.constants.HeadlessBuilderConstants;
+import com.liferay.headless.builder.internal.util.OpenAPIUtil;
+import com.liferay.headless.builder.internal.util.PathUtil;
 import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.openapi.OpenAPIContext;
 import com.liferay.portal.vulcan.openapi.contributor.OpenAPIContributor;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -123,8 +122,7 @@ public class APIApplicationOpenApiContributor implements OpenAPIContributor {
 		}
 
 		for (APIApplication.Endpoint endpoint : apiApplication.getEndpoints()) {
-			paths.put(
-				_formatPath(endpoint.getPath()), _toOpenAPIPathItem(endpoint));
+			paths.put(_formatPath(endpoint), _toOpenAPIPathItem(endpoint));
 		}
 
 		openAPI.setPaths(paths);
@@ -159,39 +157,31 @@ public class APIApplicationOpenApiContributor implements OpenAPIContributor {
 			path, CompanyThreadLocal.getCompanyId());
 	}
 
-	private String _formatPath(String path) {
-		if (path.startsWith(StringPool.SLASH)) {
-			return path;
+	private String _formatPath(APIApplication.Endpoint endpoint) {
+		String path = endpoint.getPath();
+
+		if (!path.startsWith(StringPool.SLASH)) {
+			path = StringPool.SLASH + path;
 		}
 
-		return StringPool.SLASH + path;
-	}
-
-	private String _getOperationId(APIApplication.Endpoint endpoint) {
-		Http.Method method = endpoint.getMethod();
-
-		return StringUtil.toLowerCase(method.name()) +
-			_toCamelCase(endpoint.getPath()) + "Page";
-	}
-
-	private String _toCamelCase(String path) {
-		path = path.replaceAll("/\\{.*\\}", StringPool.BLANK);
-
-		path = path.replaceAll(StringPool.MINUS, StringPool.SLASH);
-
-		return CamelCaseUtil.toCamelCase(path, CharPool.SLASH);
+		return PathUtil.getPathPrefix(endpoint.getScope()) + path;
 	}
 
 	private PathItem _toOpenAPIPathItem(APIApplication.Endpoint endpoint) {
-		String operationId = _getOperationId(endpoint);
+		Operation operation = new Operation();
 
-		Operation operation = new Operation() {
-			{
-				setOperationId(operationId);
-			}
-		};
+		String schemaName = null;
 
 		APIApplication.Schema responseSchema = endpoint.getResponseSchema();
+
+		if (responseSchema != null) {
+			schemaName = responseSchema.getName();
+		}
+
+		String operationId = OpenAPIUtil.getOperationId(
+			endpoint.getMethod(), _formatPath(endpoint), schemaName);
+
+		operation.setOperationId(operationId);
 
 		if (responseSchema != null) {
 			if (Objects.equals(endpoint.getMethod(), Http.Method.GET) &&

@@ -5,4 +5,16 @@
 
 /// <reference types="react" />
 
-export default function EditObjectFolder(): JSX.Element;
+import {KeyValuePair} from '../ObjectDetails/EditObjectDetails';
+import {TDeletionType} from '../ObjectRelationship/EditRelationship';
+interface EditObjectFolder {
+	companyKeyValuePair: KeyValuePair[];
+	deletionTypes: TDeletionType[];
+	siteKeyValuePair: KeyValuePair[];
+}
+export default function EditObjectFolder({
+	companyKeyValuePair,
+	deletionTypes,
+	siteKeyValuePair,
+}: EditObjectFolder): JSX.Element;
+export {};

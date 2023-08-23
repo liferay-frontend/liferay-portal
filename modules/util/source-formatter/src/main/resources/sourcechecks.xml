@@ -1631,6 +1631,10 @@
 			<description name="Replaces with `compileInclude` the configuration attribute for dependencies in `build.gradle` that are listed at `Include-Resource` property at `bnd.bnd` associated file." />
 			<weight>2</weight>
 		</check>
+		<check name="UpgradeJavaAddAddressMethodCheck">
+			<category name="Upgrade" />
+			<description name="Fill the new parameter of the method 'addAddress' of AddressLocalService, AddressLocalServiceUtil, AddressService and AddressServiceUtil" />
+		</check>
 		<check name="UpgradeJavaAddFDSTableSchemaFieldCheck">
 			<category name="Upgrade" />
 			<description name="Replace method addFDSTableSchemaFieldCheck by add" />
@@ -1708,6 +1712,10 @@
 			<category name="Upgrade" />
 			<description name="Replace Indexer by Indexer&lt;?&gt;" />
 		</check>
+		<check name="UpgradeJavaLanguageUtilCheck">
+			<category name="Upgrade" />
+			<description name="Replace `ListUtil.fromArray` by `new ArrayList' when the parameter is to 'LanguageUtil.getAvailableLocales'" />
+		</check>
 		<check name="UpgradeJavaLayoutServicesCheck">
 			<category name="Upgrade" />
 			<description name="Fill the new parameters of the method `addLayout` and `updateLayout` of `LayoutServiceUtil`, `LayoutService`, `LayoutLocalService` and `LayoutLocalServiceUtil` classes" />
@@ -1719,6 +1727,10 @@
 		<check name="UpgradeJavaPhoneLocalServiceUtilCheck">
 			<category name="Upgrade" />
 			<description name="Fill the new parameter `ServiceContext` of the method `addPhone` of class `PhoneLocalServiceUtil`." />
+		</check>
+		<check name="UpgradeJavaPortletIdMethodCheck">
+			<category name="Upgrade" />
+			<description name="Replace the 'document.get(Field.PORTLET_ID)' by the new interface 'PortletProviderUtil.getPortletId'" />
 		</check>
 		<check name="UpgradeJavaPortletSharedSearchSettingsCheck">
 			<category name="Upgrade" />
@@ -1909,6 +1921,10 @@
 		<check name="XMLToggleFileCheck">
 			<category name="Styling" />
 			<description name="Checks the order of elements in `.toggle` file." />
+		</check>
+		<check name="XMLUpgradeCompatibilityVersionCheck">
+			<category name="Upgrade" />
+			<description name="Checks and upgrades the compatibility version in `*.xml` file." />
 		</check>
 		<check name="XMLUpgradeDTDVersionCheck">
 			<category name="Upgrade" />

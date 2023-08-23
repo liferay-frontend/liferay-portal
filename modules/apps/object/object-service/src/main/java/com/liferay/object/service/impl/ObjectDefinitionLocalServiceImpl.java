@@ -30,6 +30,7 @@ import com.liferay.object.exception.ObjectDefinitionLabelException;
 import com.liferay.object.exception.ObjectDefinitionModifiableException;
 import com.liferay.object.exception.ObjectDefinitionNameException;
 import com.liferay.object.exception.ObjectDefinitionPluralLabelException;
+import com.liferay.object.exception.ObjectDefinitionRootObjectDefinitionIdException;
 import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.exception.ObjectDefinitionStatusException;
 import com.liferay.object.exception.ObjectDefinitionVersionException;
@@ -132,7 +133,6 @@ import com.liferay.portal.search.spi.model.registrar.ModelSearchRegistrarHelper;
 import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -672,6 +672,13 @@ public class ObjectDefinitionLocalServiceImpl
 	}
 
 	@Override
+	public List<ObjectDefinition> getObjectDefinitions(
+		long companyId, int status) {
+
+		return objectDefinitionPersistence.findByC_S(companyId, status);
+	}
+
+	@Override
 	public int getObjectDefinitionsCount(long companyId)
 		throws PortalException {
 
@@ -731,7 +738,15 @@ public class ObjectDefinitionLocalServiceImpl
 	public void setAopProxy(Object aopProxy) {
 		super.setAopProxy(aopProxy);
 
-		_addingObjectDefinitionDeployer(
+		Map<Long, List<ServiceRegistration<?>>> activeServiceRegistrationsMap =
+			new ConcurrentHashMap<>();
+		InactiveObjectDefinitionDeployer inactiveObjectDefinitionDeployer =
+			new InactiveObjectDefinitionDeployerImpl(
+				_bundleContext, _objectEntryService, _objectFieldLocalService,
+				_objectRelationshipLocalService);
+		Map<Long, List<ServiceRegistration<?>>>
+			inactiveServiceRegistrationsMap = new ConcurrentHashMap<>();
+		ObjectDefinitionDeployer objectDefinitionDeployer =
 			new ObjectDefinitionDeployerImpl(
 				_accountEntryLocalService,
 				_accountEntryOrganizationRelLocalService,
@@ -747,12 +762,32 @@ public class ObjectDefinitionLocalServiceImpl
 				_portal, _portletLocalService, _resourceActions,
 				_userLocalService, _resourcePermissionLocalService,
 				_workflowStatusModelPreFilterContributor,
-				_userGroupRoleLocalService));
+				_userGroupRoleLocalService);
 
-		_addingInactiveObjectDefinitionDeployer(
-			new InactiveObjectDefinitionDeployerImpl(
-				_bundleContext, _objectEntryService, _objectFieldLocalService,
-				_objectRelationshipLocalService));
+		_companyLocalService.forEachCompanyId(
+			companyId -> {
+				for (ObjectDefinition objectDefinition :
+						objectDefinitionLocalService.getObjectDefinitions(
+							companyId, WorkflowConstants.STATUS_APPROVED)) {
+
+					if (objectDefinition.isActive()) {
+						activeServiceRegistrationsMap.put(
+							objectDefinition.getObjectDefinitionId(),
+							objectDefinitionDeployer.deploy(objectDefinition));
+					}
+					else {
+						inactiveServiceRegistrationsMap.put(
+							objectDefinition.getObjectDefinitionId(),
+							inactiveObjectDefinitionDeployer.deploy(
+								objectDefinition));
+					}
+				}
+			});
+
+		_inactiveObjectDefinitionsServiceRegistrationsMaps.put(
+			inactiveObjectDefinitionDeployer, inactiveServiceRegistrationsMap);
+		_serviceRegistrationsMaps.put(
+			objectDefinitionDeployer, activeServiceRegistrationsMap);
 
 		_objectDefinitionDeployerServiceTracker = new ServiceTracker<>(
 			_bundleContext, ObjectDefinitionDeployer.class,
@@ -779,11 +814,21 @@ public class ObjectDefinitionLocalServiceImpl
 					ServiceReference<ObjectDefinitionDeployer> serviceReference,
 					ObjectDefinitionDeployer objectDefinitionDeployer) {
 
-					for (ObjectDefinition objectDefinition :
-							_getObjectDefinitions()) {
+					_companyLocalService.forEachCompanyId(
+						companyId -> {
+							for (ObjectDefinition objectDefinition :
+									objectDefinitionLocalService.
+										getObjectDefinitions(
+											companyId,
+											WorkflowConstants.
+												STATUS_APPROVED)) {
 
-						objectDefinitionDeployer.undeploy(objectDefinition);
-					}
+								if (objectDefinition.isActive()) {
+									objectDefinitionDeployer.undeploy(
+										objectDefinition);
+								}
+							}
+						});
 
 					Map<Long, List<ServiceRegistration<?>>>
 						serviceRegistrationsMap =
@@ -909,6 +954,31 @@ public class ObjectDefinitionLocalServiceImpl
 		return objectDefinitionPersistence.update(objectDefinition);
 	}
 
+	@Override
+	public ObjectDefinition updateRootObjectDefinitionId(
+			long objectDefinitionId, long rootObjectDefinitionId)
+		throws PortalException {
+
+		ObjectDefinition objectDefinition =
+			objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
+
+		ObjectDefinition rootObjectDefinition =
+			objectDefinitionPersistence.findByPrimaryKey(
+				rootObjectDefinitionId);
+
+		if ((objectDefinitionId != rootObjectDefinitionId) &&
+			(rootObjectDefinition.getRootObjectDefinitionId() == 0)) {
+
+			throw new ObjectDefinitionRootObjectDefinitionIdException(
+				"Object definition " + rootObjectDefinitionId +
+					" is not a root object definition");
+		}
+
+		objectDefinition.setRootObjectDefinitionId(rootObjectDefinitionId);
+
+		return objectDefinitionPersistence.update(objectDefinition);
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ObjectDefinition updateSystemObjectDefinition(
@@ -964,45 +1034,25 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 	}
 
-	private void _addingInactiveObjectDefinitionDeployer(
-		InactiveObjectDefinitionDeployer inactiveObjectDefinitionDeployer) {
-
-		Map<Long, List<ServiceRegistration<?>>> serviceRegistrationsMap =
-			new ConcurrentHashMap<>();
-
-		for (ObjectDefinition objectDefinition :
-				_getInactiveObjectDefinitions()) {
-
-			try (SafeCloseable safeCloseable =
-					CompanyThreadLocal.setWithSafeCloseable(
-						objectDefinition.getCompanyId())) {
-
-				serviceRegistrationsMap.put(
-					objectDefinition.getObjectDefinitionId(),
-					inactiveObjectDefinitionDeployer.deploy(objectDefinition));
-			}
-		}
-
-		_inactiveObjectDefinitionsServiceRegistrationsMaps.put(
-			inactiveObjectDefinitionDeployer, serviceRegistrationsMap);
-	}
-
 	private ObjectDefinitionDeployer _addingObjectDefinitionDeployer(
 		ObjectDefinitionDeployer objectDefinitionDeployer) {
 
 		Map<Long, List<ServiceRegistration<?>>> serviceRegistrationsMap =
 			new ConcurrentHashMap<>();
 
-		for (ObjectDefinition objectDefinition : _getObjectDefinitions()) {
-			try (SafeCloseable safeCloseable =
-					CompanyThreadLocal.setWithSafeCloseable(
-						objectDefinition.getCompanyId())) {
+		_companyLocalService.forEachCompanyId(
+			companyId -> {
+				for (ObjectDefinition objectDefinition :
+						objectDefinitionLocalService.getObjectDefinitions(
+							companyId, WorkflowConstants.STATUS_APPROVED)) {
 
-				serviceRegistrationsMap.put(
-					objectDefinition.getObjectDefinitionId(),
-					objectDefinitionDeployer.deploy(objectDefinition));
-			}
-		}
+					if (objectDefinition.isActive()) {
+						serviceRegistrationsMap.put(
+							objectDefinition.getObjectDefinitionId(),
+							objectDefinitionDeployer.deploy(objectDefinition));
+					}
+				}
+			});
 
 		_serviceRegistrationsMaps.put(
 			objectDefinitionDeployer, serviceRegistrationsMap);
@@ -1341,17 +1391,6 @@ public class ObjectDefinitionLocalServiceImpl
 			prefix, companyId, StringPool.UNDERLINE, shortName);
 	}
 
-	private List<ObjectDefinition> _getInactiveObjectDefinitions() {
-		List<ObjectDefinition> objectDefinitions = new ArrayList<>();
-
-		_companyLocalService.forEachCompanyId(
-			companyId -> objectDefinitions.addAll(
-				objectDefinitionLocalService.getObjectDefinitions(
-					companyId, false, WorkflowConstants.STATUS_APPROVED)));
-
-		return objectDefinitions;
-	}
-
 	private String _getName(String name, boolean system) {
 		name = StringUtil.trim(name);
 
@@ -1360,17 +1399,6 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 
 		return name;
-	}
-
-	private List<ObjectDefinition> _getObjectDefinitions() {
-		List<ObjectDefinition> objectDefinitions = new ArrayList<>();
-
-		_companyLocalService.forEachCompanyId(
-			companyId -> objectDefinitions.addAll(
-				objectDefinitionLocalService.getObjectDefinitions(
-					companyId, true, WorkflowConstants.STATUS_APPROVED)));
-
-		return objectDefinitions;
 	}
 
 	private long _getObjectFolderId(long companyId, long objectFolderId)

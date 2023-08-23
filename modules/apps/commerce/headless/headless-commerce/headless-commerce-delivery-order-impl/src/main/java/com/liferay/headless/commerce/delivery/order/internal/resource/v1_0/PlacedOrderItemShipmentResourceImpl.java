@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
-import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 
 import java.util.ArrayList;
@@ -36,12 +35,11 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/placed-order-item-shipment.properties",
-	scope = ServiceScope.PROTOTYPE,
-	service = {NestedFieldSupport.class, PlacedOrderItemShipmentResource.class}
+	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
+	service = PlacedOrderItemShipmentResource.class
 )
 public class PlacedOrderItemShipmentResourceImpl
-	extends BasePlacedOrderItemShipmentResourceImpl
-	implements NestedFieldSupport {
+	extends BasePlacedOrderItemShipmentResourceImpl {
 
 	@NestedField(
 		parentClass = PlacedOrderItem.class, value = "placedOrderItemShipments"

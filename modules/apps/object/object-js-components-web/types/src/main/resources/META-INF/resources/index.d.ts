@@ -21,6 +21,7 @@ export {Input} from './components/Input';
 export {ManagementToolbar} from './components/ManagementToolbar/index';
 export {ManagementToolbarSearch} from './components/ManagementToolbar/ManagementToolbarSearch';
 export {ModalEditExternalReferenceCode} from './components/ManagementToolbar/ModalEditExternalReferenceCode';
+export {CustomVerticalBar} from './components/VerticalBar/CustomVerticalBar';
 export {PicklistEntryBaseField} from './components/BaseEntryFields/PicklistEntryBaseField';
 export {RadioField} from './components/RadioField/RadioField';
 export {RichTextLocalized} from './components/RichTextLocalized';

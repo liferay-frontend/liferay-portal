@@ -58,7 +58,8 @@ const withDragSource = dragSource(
 	(connect, monitor) => ({
 		connectDragPreview: connect.dragPreview(),
 		connectDragSource: connect.dragSource(),
-		dragging: monitor.isDragging(),
+		draggingItem: monitor.getItem(),
+		isDragging: monitor.isDragging(),
 	})
 );
 
@@ -66,11 +67,12 @@ function CriteriaGroup({
 	connectDragPreview,
 	connectDragSource,
 	criteria,
-	dragging,
+	draggingItem,
 	editing,
 	emptyContributors,
 	entityName,
 	groupId,
+	isDragging,
 	modelLabel,
 	onChange,
 	onMove,
@@ -238,12 +240,16 @@ function CriteriaGroup({
 
 	const singleRow = criteria && criteria.items && criteria.items.length === 1;
 
+	const disabled =
+		isDragging ||
+		(draggingItem && draggingItem.propertyKey !== propertyKey);
+
 	return connectDragPreview(
 		<div
 			className={classNames(
 				{
 					'criteria-group-root w-100': criteria,
-					'dnd-drag': dragging,
+					disabled,
 				},
 				`color--${propertyKey} criteria-group-item${
 					root ? '-root' : ''

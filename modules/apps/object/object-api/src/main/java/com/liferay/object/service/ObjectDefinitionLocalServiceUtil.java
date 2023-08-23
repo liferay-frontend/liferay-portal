@@ -437,6 +437,12 @@ public class ObjectDefinitionLocalServiceUtil {
 		return getService().getObjectDefinitions(companyId, active, status);
 	}
 
+	public static List<ObjectDefinition> getObjectDefinitions(
+		long companyId, int status) {
+
+		return getService().getObjectDefinitions(companyId, status);
+	}
+
 	/**
 	 * Returns the number of object definitions.
 	 *
@@ -552,6 +558,14 @@ public class ObjectDefinitionLocalServiceUtil {
 
 		return getService().updateObjectFolderId(
 			objectDefinitionId, objectFolderId);
+	}
+
+	public static ObjectDefinition updateRootObjectDefinitionId(
+			long objectDefinitionId, long rootObjectDefinitionId)
+		throws PortalException {
+
+		return getService().updateRootObjectDefinitionId(
+			objectDefinitionId, rootObjectDefinitionId);
 	}
 
 	public static ObjectDefinition updateSystemObjectDefinition(

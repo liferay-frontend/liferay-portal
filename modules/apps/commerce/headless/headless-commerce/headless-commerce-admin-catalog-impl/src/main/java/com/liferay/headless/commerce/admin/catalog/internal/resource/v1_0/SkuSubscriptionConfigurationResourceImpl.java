@@ -16,7 +16,6 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
-import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -27,14 +26,11 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/sku-subscription-configuration.properties",
-	scope = ServiceScope.PROTOTYPE,
-	service = {
-		NestedFieldSupport.class, SkuSubscriptionConfigurationResource.class
-	}
+	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
+	service = SkuSubscriptionConfigurationResource.class
 )
 public class SkuSubscriptionConfigurationResourceImpl
-	extends BaseSkuSubscriptionConfigurationResourceImpl
-	implements NestedFieldSupport {
+	extends BaseSkuSubscriptionConfigurationResourceImpl {
 
 	@Override
 	public SkuSubscriptionConfiguration

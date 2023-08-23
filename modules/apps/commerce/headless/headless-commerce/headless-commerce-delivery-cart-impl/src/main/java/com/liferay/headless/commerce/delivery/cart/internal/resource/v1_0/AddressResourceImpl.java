@@ -16,7 +16,6 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
-import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -27,11 +26,10 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/address.properties",
-	scope = ServiceScope.PROTOTYPE,
-	service = {AddressResource.class, NestedFieldSupport.class}
+	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
+	service = AddressResource.class
 )
-public class AddressResourceImpl
-	extends BaseAddressResourceImpl implements NestedFieldSupport {
+public class AddressResourceImpl extends BaseAddressResourceImpl {
 
 	@NestedField(parentClass = Cart.class, value = "billingAddress")
 	@Override

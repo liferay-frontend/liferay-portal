@@ -146,17 +146,24 @@ public class SiteNavigationMenuExportImportPortletPreferencesProcessor
 			}
 
 			if (!serviceBuilderPortletPreferencesList.isEmpty()) {
-				com.liferay.portal.kernel.model.PortletPreferences
-					serviceBuilderPortletPreferences =
-						serviceBuilderPortletPreferencesList.get(0);
+				for (com.liferay.portal.kernel.model.PortletPreferences
+						serviceBuilderPortletPreferences :
+							serviceBuilderPortletPreferencesList) {
 
-				PortletPreferences originalPortletPreferences =
-					_portletPreferenceValueLocalService.getPreferences(
-						serviceBuilderPortletPreferences);
+					if (serviceBuilderPortletPreferences.getCompanyId() !=
+							portletDataContext.getCompanyId()) {
 
-				siteNavigationMenuId = GetterUtil.getLong(
-					originalPortletPreferences.getValue(
-						"siteNavigationMenuId", "0"));
+						continue;
+					}
+
+					PortletPreferences originalPortletPreferences =
+						_portletPreferenceValueLocalService.getPreferences(
+							serviceBuilderPortletPreferences);
+
+					siteNavigationMenuId = GetterUtil.getLong(
+						originalPortletPreferences.getValue(
+							"siteNavigationMenuId", "0"));
+				}
 			}
 
 			try {

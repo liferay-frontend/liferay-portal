@@ -347,6 +347,10 @@ public interface ObjectDefinitionLocalService
 	public List<ObjectDefinition> getObjectDefinitions(
 		long companyId, boolean active, int status);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ObjectDefinition> getObjectDefinitions(
+		long companyId, int status);
+
 	/**
 	 * Returns the number of object definitions.
 	 *
@@ -423,6 +427,10 @@ public interface ObjectDefinitionLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public ObjectDefinition updateObjectFolderId(
 			long objectDefinitionId, long objectFolderId)
+		throws PortalException;
+
+	public ObjectDefinition updateRootObjectDefinitionId(
+			long objectDefinitionId, long rootObjectDefinitionId)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)

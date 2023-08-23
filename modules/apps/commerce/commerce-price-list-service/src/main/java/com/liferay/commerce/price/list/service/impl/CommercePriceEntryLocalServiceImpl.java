@@ -15,6 +15,7 @@ import com.liferay.commerce.price.list.exception.NoSuchPriceEntryException;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceEntryTable;
 import com.liferay.commerce.price.list.model.CommercePriceList;
+import com.liferay.commerce.price.list.model.CommercePriceListTable;
 import com.liferay.commerce.price.list.service.base.CommercePriceEntryLocalServiceBaseImpl;
 import com.liferay.commerce.price.list.service.persistence.CommercePriceListFinder;
 import com.liferay.commerce.price.list.service.persistence.CommercePriceListPersistence;
@@ -140,7 +141,11 @@ public class CommercePriceEntryLocalServiceImpl
 		CPInstance cpInstance = _cpInstanceLocalService.fetchCPInstance(
 			cProductId, cpInstanceUuid);
 
-		long cpInstanceId = cpInstance.getCPInstanceId();
+		long cpInstanceId = 0;
+
+		if (cpInstance != null) {
+			cpInstanceId = cpInstance.getCPInstanceId();
+		}
 
 		_validateUnitOfMeasureKey(cpInstanceId, unitOfMeasureKey);
 
@@ -202,6 +207,10 @@ public class CommercePriceEntryLocalServiceImpl
 
 		commercePriceEntry = _startWorkflowInstance(
 			user.getUserId(), commercePriceEntry, serviceContext);
+
+		if (cpInstance != null) {
+			_reindexCPDefinition(cpInstance.getCPDefinitionId());
+		}
 
 		return commercePriceEntry;
 	}
@@ -368,6 +377,14 @@ public class CommercePriceEntryLocalServiceImpl
 		_expandoRowLocalService.deleteRows(
 			commercePriceEntry.getCommercePriceEntryId());
 
+		CPInstance cpInstance = _cpInstanceLocalService.fetchCPInstance(
+			commercePriceEntry.getCProductId(),
+			commercePriceEntry.getCPInstanceUuid());
+
+		if (cpInstance != null) {
+			_reindexCPDefinition(cpInstance.getCPDefinitionId());
+		}
+
 		return commercePriceEntry;
 	}
 
@@ -520,10 +537,39 @@ public class CommercePriceEntryLocalServiceImpl
 
 	@Override
 	public CommercePriceEntry getInstanceBaseCommercePriceEntry(
-		String cpInstanceUuid, String priceListType) {
+		String cpInstanceUuid, String priceListType, String unitOfMeasureKey) {
 
-		return _commercePriceListFinder.findBasePriceEntry(
-			cpInstanceUuid, priceListType);
+		List<CommercePriceEntry> commercePriceEntries = dslQuery(
+			DSLQueryFactoryUtil.select(
+				CommercePriceEntryTable.INSTANCE
+			).from(
+				CommercePriceEntryTable.INSTANCE
+			).innerJoinON(
+				CommercePriceListTable.INSTANCE,
+				CommercePriceListTable.INSTANCE.commercePriceListId.eq(
+					CommercePriceEntryTable.INSTANCE.commercePriceListId)
+			).where(
+				CommercePriceEntryTable.INSTANCE.CPInstanceUuid.eq(
+					cpInstanceUuid
+				).and(
+					() -> {
+						if (Validator.isNull(unitOfMeasureKey)) {
+							return null;
+						}
+
+						return CommercePriceEntryTable.INSTANCE.
+							unitOfMeasureKey.eq(unitOfMeasureKey);
+					}
+				).and(
+					CommercePriceListTable.INSTANCE.type.eq(priceListType)
+				)
+			));
+
+		if (commercePriceEntries.isEmpty()) {
+			return null;
+		}
+
+		return commercePriceEntries.get(0);
 	}
 
 	@Override
@@ -654,7 +700,11 @@ public class CommercePriceEntryLocalServiceImpl
 			commercePriceEntry.getCProductId(),
 			commercePriceEntry.getCPInstanceUuid());
 
-		long cpInstanceId = cpInstance.getCPInstanceId();
+		long cpInstanceId = 0;
+
+		if (cpInstance != null) {
+			cpInstanceId = cpInstance.getCPInstanceId();
+		}
 
 		_validateUnitOfMeasureKey(cpInstanceId, unitOfMeasureKey);
 
@@ -697,6 +747,10 @@ public class CommercePriceEntryLocalServiceImpl
 
 		commercePriceEntry = _startWorkflowInstance(
 			user.getUserId(), commercePriceEntry, serviceContext);
+
+		if (cpInstance != null) {
+			_reindexCPDefinition(cpInstance.getCPDefinitionId());
+		}
 
 		return commercePriceEntry;
 	}
@@ -977,6 +1031,15 @@ public class CommercePriceEntryLocalServiceImpl
 		}
 
 		return null;
+	}
+
+	private void _reindexCPDefinition(long cpDefinitionId)
+		throws PortalException {
+
+		Indexer<CPDefinition> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			CPDefinition.class);
+
+		indexer.reindex(CPDefinition.class.getName(), cpDefinitionId);
 	}
 
 	private BaseModelSearchResult<CommercePriceEntry>

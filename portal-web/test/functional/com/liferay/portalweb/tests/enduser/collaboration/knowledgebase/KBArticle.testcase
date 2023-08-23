@@ -548,6 +548,33 @@ definition {
 			value1 = "Knowledge Base Article Title");
 	}
 
+	@description = "This test ensures that a user can move the kb entry from the Move Modal."
+	@priority = 4
+	test CanMoveArticleFromMoveModal {
+		JSONKnowledgeBase.addkBFolder(
+			groupName = "Guest",
+			kbFolderName = "KB Folder");
+
+		JSONKnowledgeBase.addkBArticle(
+			groupName = "Guest",
+			kbArticleContent = "Knowledge Base Article Content",
+			kbArticleTitle = "Knowledge Base Article Title");
+
+		KBAdmin.openKBAdmin(siteURLKey = "guest");
+
+		KBArticle.moveArticleCPViaMoveModal(
+			destinationItem = "KB Folder",
+			kbArticleTitle = "Knowledge Base Article Title");
+
+		Alert.reloadPageAfterSuccessMessage(successMessage = "Your request completed successfully.");
+
+		KBFolder.gotoCP(kbFolderName = "KB Folder");
+
+		KBArticle.viewCP(
+			kbArticleContent = "Knowledge Base Article Content",
+			kbArticleTitle = "Knowledge Base Article Title");
+	}
+
 	@description = "This test ensures that a user can move the kb entry from the navigation pane."
 	@priority = 5
 	test CanMoveArticleFromNavigationPane {
@@ -1049,6 +1076,37 @@ definition {
 			kbArticleContent = "Knowledge Base Article Content Edit",
 			kbArticleTitle = "Knowledge Base Article Title Edit",
 			kbStatus = "Draft");
+	}
+
+	@description = "This test ensures that a user can search the kb entry from the Move Modal."
+	@priority = 4
+	test CanSearchArticleInMoveModal {
+		JSONKnowledgeBase.addkBArticle(
+			groupName = "Guest",
+			kbArticleContent = "Knowledge Base Article Content",
+			kbArticleTitle = "Knowledge Base Article Title");
+
+		JSONKnowledgeBase.addkBArticle(
+			groupName = "Guest",
+			kbArticleContent = "Knowledge Base Article Content2",
+			kbArticleTitle = "Knowledge Base Article Title2");
+
+		JSONKnowledgeBase.addkBChildArticle(
+			groupName = "Guest",
+			kbArticleTitle = "Knowledge Base Article Title2",
+			kbChildArticleContent = "Child Knowledge Base Article Content",
+			kbChildArticleTitle = "apple");
+
+		KBAdmin.openKBAdmin(siteURLKey = "guest");
+
+		KBArticle.searchArticleInMoveModal(
+			kbArticleTitle = "Knowledge Base Article Title",
+			searchItem = "apple");
+
+		AssertTextEquals(
+			key_itemName = "apple",
+			locator1 = "KnowledgeBase#MOVE_MODAL_SEARCH_RESULT",
+			value1 = "apple");
 	}
 
 	@description = "This test covers LPS-128095. It validates that the articles can be sorted."

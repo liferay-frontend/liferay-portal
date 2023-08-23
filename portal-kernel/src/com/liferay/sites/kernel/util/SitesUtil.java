@@ -7,10 +7,12 @@ package com.liferay.sites.kernel.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.LayoutPrototype;
-import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.UserGroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 
 /**
  * @author Raymond Augé
@@ -19,49 +21,30 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
  */
 public class SitesUtil {
 
-	public static void applyLayoutPrototype(
-			LayoutPrototype layoutPrototype, Layout targetLayout,
-			boolean linkEnabled)
-		throws Exception {
-
-		_sites.applyLayoutPrototype(layoutPrototype, targetLayout, linkEnabled);
-	}
-
-	public static Sites getSites() {
-		return _sites;
-	}
-
-	public static boolean isLayoutSetMergeable(Group group, LayoutSet layoutSet)
-		throws PortalException {
-
-		return _sites.isLayoutSetMergeable(group, layoutSet);
-	}
-
 	public static boolean isUserGroupLayoutSetViewable(
 			PermissionChecker permissionChecker, Group userGroupGroup)
 		throws PortalException {
 
-		return _sites.isUserGroupLayoutSetViewable(
-			permissionChecker, userGroupGroup);
+		if (!userGroupGroup.isUserGroup()) {
+			return false;
+		}
+
+		if (GroupPermissionUtil.contains(
+				permissionChecker, userGroupGroup, ActionKeys.VIEW)) {
+
+			return true;
+		}
+
+		UserGroup userGroup = UserGroupLocalServiceUtil.getUserGroup(
+			userGroupGroup.getClassPK());
+
+		if (UserLocalServiceUtil.hasUserGroupUser(
+				userGroup.getUserGroupId(), permissionChecker.getUserId())) {
+
+			return true;
+		}
+
+		return false;
 	}
-
-	public static void mergeLayoutPrototypeLayout(Group group, Layout layout)
-		throws Exception {
-
-		_sites.mergeLayoutPrototypeLayout(group, layout);
-	}
-
-	public static void mergeLayoutSetPrototypeLayouts(
-			Group group, LayoutSet layoutSet)
-		throws Exception {
-
-		_sites.mergeLayoutSetPrototypeLayouts(group, layoutSet);
-	}
-
-	public void setSites(Sites sites) {
-		_sites = sites;
-	}
-
-	private static Sites _sites;
 
 }

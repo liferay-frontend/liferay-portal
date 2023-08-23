@@ -241,6 +241,48 @@ public class SalesforceObjectEntryManagerImplTest {
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 	}
 
+	@Test
+	public void testPartialUpdateObjectEntry() throws Exception {
+		DTOConverterContext dtoConverterContext = _getDTOConverterContext();
+
+		ObjectEntry objectEntry = _objectEntryManager.addObjectEntry(
+			dtoConverterContext, _objectDefinition,
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"title", RandomTestUtil.randomString()
+					).build();
+				}
+			},
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_objectEntryManager.partialUpdateObjectEntry(
+			TestPropsValues.getCompanyId(), dtoConverterContext,
+			objectEntry.getExternalReferenceCode(), _objectDefinition,
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"title", "Able"
+					).build();
+				}
+			},
+			null);
+
+		objectEntry = _objectEntryManager.getObjectEntry(
+			TestPropsValues.getCompanyId(), dtoConverterContext,
+			objectEntry.getExternalReferenceCode(), _objectDefinition,
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		Map<String, Object> properties = objectEntry.getProperties();
+
+		Assert.assertEquals("Able", properties.get("title"));
+
+		_objectEntryManager.deleteObjectEntry(
+			TestPropsValues.getCompanyId(), _getDTOConverterContext(),
+			objectEntry.getExternalReferenceCode(), _objectDefinition,
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+	}
+
 	private DTOConverterContext _getDTOConverterContext() throws Exception {
 		return new DefaultDTOConverterContext(
 			false, Collections.emptyMap(), _dtoConverterRegistry, null,

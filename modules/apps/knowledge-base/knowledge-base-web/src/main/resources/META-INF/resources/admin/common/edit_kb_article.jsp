@@ -56,16 +56,32 @@ if (editKBArticleDisplayContext.isPortletTitleBasedNavigation()) {
 							type="submit"
 						/>
 
-						<clay:button
-							cssClass="mr-3"
-							disabled="<%= editKBArticleDisplayContext.isPending() %>"
-							displayType="primary"
-							id='<%= liferayPortletResponse.getNamespace() + "publishButton" %>'
-							label="<%= editKBArticleDisplayContext.getPublishButtonLabel() %>"
-							name="publishButton"
-							small="<%= true %>"
-							type="submit"
-						/>
+						<c:choose>
+							<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPS-188060") %>'>
+								<clay:dropdown-menu
+									cssClass="c-mr-3"
+									displayType="primary"
+									dropdownItems="<%= editKBArticleDisplayContext.getEditKBArticleActionDropdownItems() %>"
+									icon="caret-bottom"
+									id='<%= liferayPortletResponse.getNamespace() + "publishDropdown" %>'
+									label="<%= editKBArticleDisplayContext.getPublishButtonLabel() %>"
+									name="publishDropdown"
+									small="<%= true %>"
+								/>
+							</c:when>
+							<c:otherwise>
+								<clay:button
+									cssClass="c-mr-3"
+									disabled="<%= editKBArticleDisplayContext.isPending() %>"
+									displayType="primary"
+									id='<%= liferayPortletResponse.getNamespace() + "publishButton" %>'
+									label="<%= editKBArticleDisplayContext.getPublishButtonLabel() %>"
+									name="publishButton"
+									small="<%= true %>"
+									type="submit"
+								/>
+							</c:otherwise>
+						</c:choose>
 
 						<clay:button
 							borderless="<%= true %>"

@@ -65,10 +65,12 @@ public class CommerceInventoryAuditFDSDataProvider
 			themeDisplay.getTimeZone());
 
 		String sku = ParamUtil.getString(httpServletRequest, "sku");
+		String unitOfMeasureKey = ParamUtil.getString(
+			httpServletRequest, "unitOfMeasureKey");
 
 		List<CommerceInventoryAudit> commerceInventoryAudits =
 			_commerceInventoryAuditService.getCommerceInventoryAudits(
-				_portal.getCompanyId(httpServletRequest), sku,
+				_portal.getCompanyId(httpServletRequest), sku, unitOfMeasureKey,
 				fdsPagination.getStartPosition(),
 				fdsPagination.getEndPosition());
 
@@ -99,8 +101,7 @@ public class CommerceInventoryAuditFDSDataProvider
 						dateTimeFormat.format(
 							commerceInventoryAudit.getCreateDate()),
 						commerceInventoryAuditType.formatQuantity(
-							commerceInventoryWarehouseItemQuantity.intValue(),
-							locale),
+							commerceInventoryWarehouseItemQuantity, locale),
 						titleSB.toString()));
 			}
 			catch (Exception exception) {
@@ -117,9 +118,11 @@ public class CommerceInventoryAuditFDSDataProvider
 		throws PortalException {
 
 		String sku = ParamUtil.getString(httpServletRequest, "sku");
+		String unitOfMeasureKey = ParamUtil.getString(
+			httpServletRequest, "sku");
 
 		return _commerceInventoryAuditService.getCommerceInventoryAuditsCount(
-			_portal.getCompanyId(httpServletRequest), sku);
+			_portal.getCompanyId(httpServletRequest), sku, unitOfMeasureKey);
 	}
 
 	@Reference

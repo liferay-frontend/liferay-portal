@@ -1,6 +1,6 @@
 buildscript {
 	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.service.builder", version: "4.0.134"
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.service.builder", version: "4.0.135"
 	}
 
 	repositories {
@@ -31,7 +31,7 @@ apply plugin: "java-library"
 task runGradleTest
 
 dependencies {
-	serviceBuilder group: "com.liferay", name: "com.liferay.portal.tools.service.builder", version: "1.0.461"
+	serviceBuilder group: "com.liferay", name: "com.liferay.portal.tools.service.builder", version: "1.0.462"
 
 	targetPlatformBoms group: "com.liferay.portal", name: "release.portal.bom", version: "7.2.1"
 }

@@ -23,7 +23,6 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
-import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -38,11 +37,11 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/order-rule-account.properties",
-	scope = ServiceScope.PROTOTYPE,
-	service = {NestedFieldSupport.class, OrderRuleAccountResource.class}
+	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
+	service = OrderRuleAccountResource.class
 )
 public class OrderRuleAccountResourceImpl
-	extends BaseOrderRuleAccountResourceImpl implements NestedFieldSupport {
+	extends BaseOrderRuleAccountResourceImpl {
 
 	@Override
 	public void deleteOrderRuleAccount(Long id) throws Exception {

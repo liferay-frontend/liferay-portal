@@ -37,6 +37,7 @@ import {ModalMoveObjectDefinition} from './ModalMoveObjectDefinition';
 
 interface ViewObjectDefinitionsProps extends IFDSTableProps {
 	baseResourceURL: string;
+	modelBuilderURL: string;
 	objectFolderPermissionsURL: string;
 	storages: LabelTypeObject[];
 }
@@ -58,8 +59,10 @@ export interface DeletedObjectDefinition extends ObjectDefinition {
 export default function ViewObjectDefinitions({
 	apiURL,
 	baseResourceURL,
+	creationMenu,
 	id,
 	items,
+	modelBuilderURL,
 	objectFolderPermissionsURL,
 	sorting,
 	storages,
@@ -119,7 +122,6 @@ export default function ViewObjectDefinitions({
 			</div>
 		);
 	}
-
 	const getURL = () => {
 		let url: string = '';
 
@@ -135,17 +137,7 @@ export default function ViewObjectDefinitions({
 	const dataSetProps = {
 		...defaultDataSetProps,
 		apiURL: Liferay.FeatureFlags['LPS-148856'] ? getURL() : apiURL,
-		creationMenu: {
-			primaryItems: [
-				{
-					href: 'addObjectDefinition',
-					id: 'addObjectDefinition',
-					label: Liferay.Language.get('create-new-object'),
-					target: 'event',
-					type: 'item',
-				},
-			],
-		},
+		creationMenu,
 		customDataRenderers: {
 			objectDefinitionLabelDataRenderer,
 			objectDefinitionModifiedDateDataRenderer,
@@ -341,6 +333,7 @@ export default function ViewObjectDefinitions({
 											) as IItem[]
 										}
 										label={selectedFolder.label}
+										modelBuilderURL={modelBuilderURL}
 									/>
 								}
 								viewMode="no-header-border"

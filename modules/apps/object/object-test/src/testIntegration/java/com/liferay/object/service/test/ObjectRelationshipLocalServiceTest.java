@@ -11,6 +11,7 @@ import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.exception.DuplicateObjectRelationshipException;
+import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.exception.ObjectRelationshipParameterObjectFieldIdException;
 import com.liferay.object.exception.ObjectRelationshipReverseException;
 import com.liferay.object.exception.ObjectRelationshipTypeException;
@@ -281,12 +282,64 @@ public class ObjectRelationshipLocalServiceTest {
 		objectRelationship1 =
 			_objectRelationshipLocalService.updateObjectRelationship(
 				objectRelationship1.getObjectRelationshipId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE, false,
 				LocalizedMapUtil.getLocalizedMap("Baker"));
 
 		Assert.assertEquals(
 			LocalizedMapUtil.getLocalizedMap("Baker"),
 			objectRelationship1.getLabelMap());
+
+		ObjectRelationship objectRelationship2 =
+			_objectRelationshipLocalService.addObjectRelationship(
+				TestPropsValues.getUserId(),
+				_objectDefinition1.getObjectDefinitionId(),
+				_objectDefinition2.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+				LocalizedMapUtil.getLocalizedMap("Able"), StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Object relationship must be one to many to be an edge of a root " +
+				"context",
+			() -> _objectRelationshipLocalService.updateObjectRelationship(
+				objectRelationship2.getObjectRelationshipId(), 0,
+				objectRelationship2.getDeletionType(), true,
+				LocalizedMapUtil.getLocalizedMap(
+					RandomTestUtil.randomString())));
+
+		ObjectRelationship objectRelationship3 =
+			_objectRelationshipLocalService.addObjectRelationship(
+				TestPropsValues.getUserId(),
+				_objectDefinition1.getObjectDefinitionId(),
+				_objectDefinition1.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+				LocalizedMapUtil.getLocalizedMap("Able"), StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Object relationship must not be a self-relationship to be an " +
+				"edge of a root context",
+			() -> _objectRelationshipLocalService.updateObjectRelationship(
+				objectRelationship3.getObjectRelationshipId(), 0,
+				objectRelationship3.getDeletionType(), true,
+				LocalizedMapUtil.getLocalizedMap(
+					RandomTestUtil.randomString())));
+
+		ObjectRelationship objectRelationship4 =
+			_addObjectRelationshipSystemObjectDefinition();
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Object relationship must not be between unmodifiable system " +
+				"object definitions to be an edge of a root context",
+			() -> _objectRelationshipLocalService.updateObjectRelationship(
+				objectRelationship4.getObjectRelationshipId(),
+				objectRelationship4.getParameterObjectFieldId(),
+				objectRelationship4.getDeletionType(), true,
+				LocalizedMapUtil.getLocalizedMap(
+					RandomTestUtil.randomString())));
 
 		ObjectRelationship reverseObjectRelationship =
 			_objectRelationshipLocalService.fetchReverseObjectRelationship(
@@ -304,11 +357,11 @@ public class ObjectRelationshipLocalServiceTest {
 			"Reverse object relationships cannot be updated",
 			() -> _objectRelationshipLocalService.updateObjectRelationship(
 				reverseObjectRelationship.getObjectRelationshipId(), 0,
-				reverseObjectRelationship.getDeletionType(),
+				reverseObjectRelationship.getDeletionType(), false,
 				LocalizedMapUtil.getLocalizedMap(
 					RandomTestUtil.randomString())));
 
-		ObjectRelationship objectRelationship2 =
+		ObjectRelationship objectRelationship5 =
 			_objectRelationshipLocalService.addObjectRelationship(
 				TestPropsValues.getUserId(),
 				_objectDefinition1.getObjectDefinitionId(),
@@ -318,21 +371,21 @@ public class ObjectRelationshipLocalServiceTest {
 				StringUtil.randomId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
-		ObjectField objectField = _objectFieldLocalService.updateRequired(
-			objectRelationship2.getObjectFieldId2(), true);
+		ObjectField objectField2 = _objectFieldLocalService.updateRequired(
+			objectRelationship5.getObjectFieldId2(), true);
 
-		Assert.assertTrue(objectField.isRequired());
+		Assert.assertTrue(objectField2.isRequired());
 
-		objectRelationship2 =
+		objectRelationship5 =
 			_objectRelationshipLocalService.updateObjectRelationship(
-				objectRelationship2.getObjectRelationshipId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
-				objectRelationship2.getLabelMap());
+				objectRelationship5.getObjectRelationshipId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE, false,
+				objectRelationship5.getLabelMap());
 
-		objectField = _objectFieldLocalService.fetchObjectField(
-			objectRelationship2.getObjectFieldId2());
+		objectField2 = _objectFieldLocalService.fetchObjectField(
+			objectRelationship5.getObjectFieldId2());
 
-		Assert.assertFalse(objectField.isRequired());
+		Assert.assertFalse(objectField2.isRequired());
 	}
 
 	private static ObjectDefinition _addSystemObjectDefinition(
@@ -367,6 +420,37 @@ public class ObjectRelationshipLocalServiceTest {
 			new HashMapDictionary<>());
 
 		return systemObjectDefinition;
+	}
+
+	private ObjectRelationship _addObjectRelationshipSystemObjectDefinition()
+		throws Exception {
+
+		String objectRelationshipName = StringUtil.randomId();
+
+		_objectRelationshipLocalService.addObjectRelationship(
+			TestPropsValues.getUserId(),
+			_objectDefinition1.getObjectDefinitionId(),
+			_objectDefinition2.getObjectDefinitionId(), 0,
+			ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			objectRelationshipName,
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			_objectDefinition2.getObjectDefinitionId(),
+			StringBundler.concat(
+				"r_", objectRelationshipName, "_",
+				_objectDefinition1.getPKObjectFieldName()));
+
+		return _objectRelationshipLocalService.addObjectRelationship(
+			TestPropsValues.getUserId(),
+			_systemObjectDefinition1.getObjectDefinitionId(),
+			_objectDefinition2.getObjectDefinitionId(),
+			objectField.getObjectFieldId(),
+			ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			StringUtil.randomId(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
 	private boolean _hasColumn(String tableName, String columnName)
@@ -686,32 +770,7 @@ public class ObjectRelationshipLocalServiceTest {
 				StringUtil.randomId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY));
 
-		String objectRelationshipName = StringUtil.randomId();
-
-		_objectRelationshipLocalService.addObjectRelationship(
-			TestPropsValues.getUserId(),
-			_objectDefinition1.getObjectDefinitionId(),
-			_objectDefinition2.getObjectDefinitionId(), 0,
-			ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			objectRelationshipName,
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		ObjectField objectField3 = _objectFieldLocalService.getObjectField(
-			_objectDefinition2.getObjectDefinitionId(),
-			StringBundler.concat(
-				"r_", objectRelationshipName, "_",
-				_objectDefinition1.getPKObjectFieldName()));
-
-		_objectRelationshipLocalService.addObjectRelationship(
-			TestPropsValues.getUserId(),
-			_systemObjectDefinition1.getObjectDefinitionId(),
-			_objectDefinition2.getObjectDefinitionId(),
-			objectField3.getObjectFieldId(),
-			ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			StringUtil.randomId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_addObjectRelationshipSystemObjectDefinition();
 	}
 
 	@Inject

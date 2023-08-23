@@ -71,6 +71,17 @@ public class UpgradeSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testUpgradeJavaAddAddressMethodCheck() throws Exception {
+		test(
+			"upgrade/UpgradeJavaAddAddressMethodCheck.testjava",
+			StringBundler.concat(
+				"Unable to format method addAddress from AddressLocalService, ",
+				"AddressLocalServiceUtil, AddressService and ",
+				"AddressServiceUtil. Fill the new parameters manually, see ",
+				"LPS-193462"));
+	}
+
+	@Test
 	public void testUpgradeJavaAddFDSTableSchemaFieldCheck() throws Exception {
 		test("upgrade/UpgradeJavaAddFDSTableSchemaFieldCheck.testjava");
 	}
@@ -182,6 +193,11 @@ public class UpgradeSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testUpgradeJavaLanguageUtilCheck() throws Exception {
+		test("upgrade/UpgradeJavaLanguageUtilCheck.testjava");
+	}
+
+	@Test
 	public void testUpgradeJavaLayoutServicesCheck() throws Exception {
 		test(
 			"upgrade/UpgradeJavaLayoutServicesCheck.testjava",
@@ -213,6 +229,11 @@ public class UpgradeSourceProcessorTest extends BaseSourceProcessorTestCase {
 	@Test
 	public void testUpgradeJavaPhoneLocalServiceUtilCheck() throws Exception {
 		test("upgrade/UpgradeJavaPhoneLocalServiceUtilCheck.testjava");
+	}
+
+	@Test
+	public void testUpgradeJavaPortletIdMethodCheck() throws Exception {
+		test("upgrade/UpgradeJavaPortletIdMethodCheck.testjava");
 	}
 
 	@Test
@@ -278,6 +299,11 @@ public class UpgradeSourceProcessorTest extends BaseSourceProcessorTestCase {
 			).setExpectedFileName(
 				"upgrade/migrated/UpgradeVelocityMigrationCheck.testftl"
 			));
+	}
+
+	@Test
+	public void testXMLUpgradeCompatibilityVersionCheck() throws Exception {
+		test("upgrade/XMLUpgradeCompatibilityVersionCheck.testxml");
 	}
 
 	@Test

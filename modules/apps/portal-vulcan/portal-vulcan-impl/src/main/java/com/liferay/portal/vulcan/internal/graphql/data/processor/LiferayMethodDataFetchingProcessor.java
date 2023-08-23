@@ -41,13 +41,13 @@ import com.liferay.portal.vulcan.internal.graphql.util.GraphQLUtil;
 import com.liferay.portal.vulcan.internal.jaxrs.context.provider.AggregationContextProvider;
 import com.liferay.portal.vulcan.internal.jaxrs.context.provider.ContextProviderUtil;
 import com.liferay.portal.vulcan.internal.jaxrs.context.provider.FilterContextProvider;
-import com.liferay.portal.vulcan.internal.jaxrs.context.provider.SortContextProvider;
 import com.liferay.portal.vulcan.internal.jaxrs.validation.ValidationUtil;
 import com.liferay.portal.vulcan.internal.multipart.MultipartUtil;
 import com.liferay.portal.vulcan.multipart.BinaryFile;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.GroupUtil;
+import com.liferay.portal.vulcan.util.SortUtil;
 
 import graphql.annotations.processor.util.NamingKit;
 import graphql.annotations.processor.util.ReflectionKit;
@@ -482,9 +482,12 @@ public class LiferayMethodDataFetchingProcessor {
 					BiFunction<Object, String, Sort[]> sortsBiFunction =
 						(resource, sortsString) -> {
 							try {
-								return _getSorts(
-									acceptLanguage,
-									_getEntityModel(resource, parameterMap),
+								EntityModel entityModel = _getEntityModel(
+									resource, parameterMap);
+
+								return SortUtil.getSorts(
+									acceptLanguage, entityModel,
+									_sortParserProvider.provide(entityModel),
 									sortsString);
 							}
 							catch (Exception exception) {
@@ -639,17 +642,6 @@ public class LiferayMethodDataFetchingProcessor {
 		}
 
 		return null;
-	}
-
-	private Sort[] _getSorts(
-		AcceptLanguage acceptLanguage, EntityModel entityModel,
-		String sortsString) {
-
-		SortContextProvider sortContextProvider = new SortContextProvider(
-			_language, _portal, _sortParserProvider);
-
-		return sortContextProvider.createContext(
-			acceptLanguage, entityModel, sortsString);
 	}
 
 	private Field _getThisField(Class<?> clazz) {

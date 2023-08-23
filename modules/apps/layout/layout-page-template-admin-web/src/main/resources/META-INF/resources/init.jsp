@@ -22,6 +22,7 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 page import="com.liferay.layout.importer.LayoutsImporterResultEntry" %><%@
 page import="com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.constants.LayoutPageTemplateAdminWebKeys" %><%@
+page import="com.liferay.layout.page.template.admin.web.internal.dao.search.LayoutPageTemplateResultRowSplitter" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.display.context.AssetDisplayPageUsagesDisplayContext" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.display.context.AssetDisplayPageUsagesManagementToolbarDisplayContext" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.display.context.DisplayPageDisplayContext" %><%@
@@ -37,6 +38,7 @@ page import="com.liferay.layout.page.template.admin.web.internal.display.context
 page import="com.liferay.layout.page.template.admin.web.internal.display.context.MasterLayoutDisplayContext" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.display.context.MasterLayoutManagementToolbarDisplayContext" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.display.context.SelectDisplayPageMasterLayoutDisplayContext" %><%@
+page import="com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay.servlet.taglib.DisplayPageTemplateCollectionHorizontalCard" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay.servlet.taglib.DisplayPageVerticalCard" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay.servlet.taglib.LayoutPageTemplateEntryVerticalCard" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay.servlet.taglib.LayoutPrototypeVerticalCard" %><%@

@@ -28,6 +28,7 @@ import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.constants.ObjectFieldValidationConstants;
 import com.liferay.object.constants.ObjectFilterConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.exception.NoSuchObjectEntryException;
@@ -1044,7 +1045,7 @@ public class DefaultObjectEntryManagerImplTest {
 		objectRelationship =
 			_objectRelationshipLocalService.updateObjectRelationship(
 				objectRelationship.getObjectRelationshipId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE, false,
 				objectRelationship.getLabelMap());
 
 		_defaultObjectEntryManager.deleteObjectEntry(
@@ -1084,7 +1085,7 @@ public class DefaultObjectEntryManagerImplTest {
 		objectRelationship =
 			_objectRelationshipLocalService.updateObjectRelationship(
 				objectRelationship.getObjectRelationshipId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
 				objectRelationship.getLabelMap());
 
 		try {
@@ -1970,6 +1971,79 @@ public class DefaultObjectEntryManagerImplTest {
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship2.getObjectRelationshipId());
+	}
+
+	@Test
+	public void testPartialUpdateObjectEntry() throws Exception {
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyy-MM-dd");
+
+		ObjectEntry objectEntry = _defaultObjectEntryManager.addObjectEntry(
+			_dtoConverterContext, _objectDefinition2,
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"dateObjectFieldName",
+						dateFormat.format(RandomTestUtil.nextDate())
+					).put(
+						"decimalObjectFieldName", RandomTestUtil.randomDouble()
+					).put(
+						"integerObjectFieldName", RandomTestUtil.randomInt()
+					).put(
+						"longIntegerObjectFieldName",
+						RandomTestUtil.randomLong(
+							ObjectFieldValidationConstants.
+								BUSINESS_TYPE_LONG_VALUE_MIN,
+							ObjectFieldValidationConstants.
+								BUSINESS_TYPE_LONG_VALUE_MAX)
+					).put(
+						"precisionDecimalObjectFieldName",
+						new BigDecimal(RandomTestUtil.randomDouble())
+					).put(
+						"richTextObjectFieldName",
+						StringBundler.concat(
+							"<i>", RandomTestUtil.randomString(), "</i>")
+					).put(
+						"textObjectFieldName", "textObjectFieldValue"
+					).build();
+				}
+			},
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		Map<String, Object> objectEntryProperties =
+			HashMapBuilder.<String, Object>put(
+				"dateObjectFieldName", "2023-08-20"
+			).put(
+				"decimalObjectFieldName", 2.7
+			).put(
+				"integerObjectFieldName", 25
+			).put(
+				"longIntegerObjectFieldName", 200L
+			).put(
+				"precisionDecimalObjectFieldName",
+				new BigDecimal(0.8755445767, MathContext.DECIMAL64)
+			).put(
+				"richTextObjectFieldName", "<i>richTextObjectFieldNameValue</i>"
+			).build();
+
+		_assertEquals(
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>putAll(
+						objectEntryProperties
+					).put(
+						"textObjectFieldName", "textObjectFieldValue"
+					).build();
+				}
+			},
+			_defaultObjectEntryManager.partialUpdateObjectEntry(
+				_simpleDTOConverterContext, _objectDefinition2,
+				objectEntry.getId(),
+				new ObjectEntry() {
+					{
+						properties = objectEntryProperties;
+					}
+				}));
 	}
 
 	@Test
