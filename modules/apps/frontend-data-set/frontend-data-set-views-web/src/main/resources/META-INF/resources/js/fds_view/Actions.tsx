@@ -162,6 +162,11 @@ const Actions = () => {
 										'no-actions-were-created'
 									)}
 									onCancelButtonClick={noop}
+									onCreationButtonClick={() =>
+										setActiveSection(
+											SECTIONS.NEW_ITEM_ACTION
+										)
+									}
 									onOrderChange={noop}
 									onSaveButtonClick={noop}
 								/>
