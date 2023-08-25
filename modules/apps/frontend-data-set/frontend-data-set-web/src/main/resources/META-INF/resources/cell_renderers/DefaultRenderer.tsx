@@ -12,10 +12,12 @@ import React from 'react';
 import TooltipTextRenderer from './TooltipTextRenderer';
 
 interface DefaultRendererOptions {
+	fieldName?: string;
 	truncate?: boolean;
 }
 
 type DefaultRendererValue =
+	| any
 	| string
 	| number
 	| boolean
@@ -51,9 +53,34 @@ const Wrapper = ({
 };
 
 const DefaultRenderer: React.FC<{
+	itemData: any;
 	options: DefaultRendererOptions;
 	value: DefaultRendererValue;
-}> = ({options, value}) => {
+}> = ({itemData, options, value}) => {
+	const languageId =
+		Liferay.ThemeDisplay.getLanguageId() ||
+		Liferay.ThemeDisplay.getBCP47LanguageId() ||
+		Liferay.ThemeDisplay.getDefaultLanguageId();
+
+	const i18nFieldName = `${options.fieldName}_i18n`;
+	const i18nRawTextFieldName = `${options.fieldName}RawText`;
+
+	if (Object.prototype.hasOwnProperty.call(itemData, i18nRawTextFieldName)) {
+		return (
+			<Wrapper options={options}>
+				{itemData[i18nRawTextFieldName]}
+			</Wrapper>
+		);
+	}
+
+	if (itemData[i18nFieldName]) {
+		return (
+			<Wrapper options={options}>
+				{itemData[i18nFieldName][languageId]}
+			</Wrapper>
+		);
+	}
+
 	if (
 		typeof value === 'number' ||
 		typeof value === 'string' ||
@@ -86,6 +113,10 @@ const DefaultRenderer: React.FC<{
 
 	if (value.label_i18n) {
 		return <Wrapper options={options}>{value.label_i18n}</Wrapper>;
+	}
+
+	if (value[languageId] as any) {
+		return <Wrapper options={options}>{value[languageId]}</Wrapper>;
 	}
 
 	if (value.label) {
