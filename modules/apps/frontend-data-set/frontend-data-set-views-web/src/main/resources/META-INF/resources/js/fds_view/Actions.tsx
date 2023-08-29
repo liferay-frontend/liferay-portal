@@ -14,6 +14,7 @@ import {InputLocalized} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
 import OrderableTable from '../components/OrderableTable';
+import RequiredMark from '../components/RequiredMark';
 
 const MESSAGE_TYPES = [
 	{
@@ -68,7 +69,7 @@ const TYPES = [
 
 const noop = () => {};
 
-const Actions = () => {
+const Actions = ({spritemap}: {spritemap: string}) => {
 	const [activeSection, setActiveSection] = useState(SECTIONS.ACTIONS);
 	const [activeTab, setActiveTab] = useState(0);
 	const [
@@ -78,9 +79,25 @@ const Actions = () => {
 	const [iconSymbol, setIconSymbol] = useState('bolt');
 	const [labelTranslations, setLabelTranslations] = useState({});
 
+	const request = new XMLHttpRequest();
+
+	request.open('GET', spritemap, false);
+
+	request.send();
+
+	const svgDoc = request.responseXML;
+
+	const availableIconSymbolElements = svgDoc?.querySelectorAll('symbol');
+
+	const symbols = Array.from(availableIconSymbolElements!).map((element) => ({
+		label: Liferay.Language.get(element.id),
+		value: element.id,
+	}));
+
 	return (
 		<ClayLayout.ContainerFluid>
 			<ClayBreadcrumb
+				className="my-2"
 				items={[
 					{
 						active: activeSection === SECTIONS.ACTIONS,
@@ -208,37 +225,38 @@ const Actions = () => {
 											placeholder={Liferay.Language.get(
 												'action-name'
 											)}
+											required
 											translations={labelTranslations}
 										/>
 									</ClayLayout.Col>
 
 									<ClayLayout.Col
 										className="align-items-center d-flex justify-content-center"
-										size={1}
+										size={4}
 									>
 										<ClayIcon
-											className="w-50"
+											className="mr-4"
 											symbol={iconSymbol}
 										/>
-									</ClayLayout.Col>
 
-									<ClayLayout.Col size={3}>
 										<ClayForm.Group>
 											<label htmlFor="iconInput">
 												{Liferay.Language.get('icon')}
 											</label>
 
-											<ClayInput
+											<ClaySelectWithOption
+												defaultValue="bolt"
 												id="iconInput"
 												onChange={(event) =>
 													setIconSymbol(
-														event?.target.value
+														event.target.value
 													)
 												}
 												placeholder={Liferay.Language.get(
 													'please-select-an-option'
 												)}
 												value={iconSymbol}
+												options={symbols}
 											/>
 										</ClayForm.Group>
 									</ClayLayout.Col>
@@ -259,6 +277,8 @@ const Actions = () => {
 										<ClayForm.Group>
 											<label htmlFor="actionTypeSelect">
 												{Liferay.Language.get('type')}
+
+												<RequiredMark />
 											</label>
 
 											<ClaySelectWithOption
@@ -278,6 +298,8 @@ const Actions = () => {
 										<ClayForm.Group>
 											<label htmlFor="urlInput">
 												{Liferay.Language.get('url')}
+
+												<RequiredMark />
 											</label>
 
 											<ClayInput
