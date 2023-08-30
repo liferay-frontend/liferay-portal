@@ -9,6 +9,8 @@ import userEvent from '@testing-library/user-event';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
 
+import {Import} from '../../../src/main/resources/META-INF/resources/js';
+
 jest.mock('frontend-js-web', () => ({
 	...jest.requireActual('frontend-js-web'),
 	navigate: jest.fn(),

@@ -24,13 +24,10 @@
 		"@clayui/tabs": "^3.58.0",
 		"@clayui/tooltip": "^3.58.0",
 		"@hookform/resolvers": "^2.8.8",
-		"@vitejs/plugin-react-swc": "*",
 		"classnames": "2.3.1",
-		"cross-fetch": "*",
-		"d3": "*",
+		"d3": "5.9.3",
 		"dayjs": "^1.11.4",
 		"jotai": "^2.0.4",
-		"msw": "*",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-hook-form": "7.30.0",
@@ -41,10 +38,7 @@
 		"remark-gfm": "^3.0.1",
 		"sass": "1.52.1",
 		"swr": "^2.0.0",
-		"vite": "*",
-		"vitest": "*",
-		"yup": "^0.32.11",
-		"~": "*"
+		"yup": "^0.32.11"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^5.16.4",

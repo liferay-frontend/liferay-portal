@@ -40,6 +40,7 @@ config = {
 				'fs',
 				'path',
 				'process',
+				'~',
 			],
 		],
 		'@liferay/no-get-data-attribute': 'off',
