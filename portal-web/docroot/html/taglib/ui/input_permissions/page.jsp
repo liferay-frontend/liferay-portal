@@ -111,7 +111,7 @@ String permissionPropagationCheckboxLabel = (String)request.getAttribute("lifera
 					<option <%= inputPermissionsViewRole.equals(RoleConstants.OWNER) ? "selected=\"selected\"" : "" %> value="<%= RoleConstants.OWNER %>"><liferay-ui:message key="owner" /></option>
 				</select>
 
-				<c:if test="<%= Validator.isNotNull(permissionPropagationCheckboxLabel) %>">
+				<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPS-87806") && Validator.isNotNull(permissionPropagationCheckboxLabel) %>'>
 					<aui:input label="<%= permissionPropagationCheckboxLabel %>" labelCssClass="font-weight-normal" name="permissionPropagationEnabled" type="checkbox" value='<%= (boolean)request.getAttribute("liferay-ui:input-permissions:permissionPropagationCheckboxValue") %>' />
 				</c:if>
 
