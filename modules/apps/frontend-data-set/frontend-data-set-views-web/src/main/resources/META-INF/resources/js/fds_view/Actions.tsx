@@ -11,7 +11,8 @@ import ClayLayout from '@clayui/layout';
 import ClayPanel from '@clayui/panel';
 import ClayTabs from '@clayui/tabs';
 import {InputLocalized} from 'frontend-js-components-web';
-import React, {useState} from 'react';
+import {fetch} from 'frontend-js-web';
+import React, {useEffect, useState} from 'react';
 
 import OrderableTable from '../components/OrderableTable';
 import RequiredMark from '../components/RequiredMark';
@@ -72,6 +73,9 @@ const noop = () => {};
 const Actions = ({spritemap}: {spritemap: string}) => {
 	const [activeSection, setActiveSection] = useState(SECTIONS.ACTIONS);
 	const [activeTab, setActiveTab] = useState(0);
+	const [availableIconSymbols, setAvailableIconSymbols] = useState<
+		Array<{label: string; value: string}>
+	>([]);
 	const [
 		confirmationMessageTranslations,
 		setConfirmationMessageTranslations,
@@ -79,20 +83,35 @@ const Actions = ({spritemap}: {spritemap: string}) => {
 	const [iconSymbol, setIconSymbol] = useState('bolt');
 	const [labelTranslations, setLabelTranslations] = useState({});
 
-	const request = new XMLHttpRequest();
+	useEffect(() => {
+		const getIcons = async () => {
+			const response = await fetch(spritemap);
 
-	request.open('GET', spritemap, false);
+			const responseText = await response.text();
 
-	request.send();
+			if (responseText.length) {
+				const XMLString = await new window.DOMParser().parseFromString(
+					responseText,
+					'text/xml'
+				);
 
-	const svgDoc = request.responseXML;
+				const availableIconSymbolElements = XMLString.querySelectorAll(
+					'symbol'
+				);
 
-	const availableIconSymbolElements = svgDoc?.querySelectorAll('symbol');
+				const iconSymbols = Array.from(
+					availableIconSymbolElements!
+				).map((element) => ({
+					label: element.id,
+					value: element.id,
+				}));
 
-	const symbols = Array.from(availableIconSymbolElements!).map((element) => ({
-		label: Liferay.Language.get(element.id),
-		value: element.id,
-	}));
+				setAvailableIconSymbols(iconSymbols);
+			}
+		};
+
+		getIcons();
+	}, [spritemap]);
 
 	return (
 		<ClayLayout.ContainerFluid>
@@ -252,11 +271,7 @@ const Actions = ({spritemap}: {spritemap: string}) => {
 														event.target.value
 													)
 												}
-												placeholder={Liferay.Language.get(
-													'please-select-an-option'
-												)}
-												value={iconSymbol}
-												options={symbols}
+												options={availableIconSymbols}
 											/>
 										</ClayForm.Group>
 									</ClayLayout.Col>
