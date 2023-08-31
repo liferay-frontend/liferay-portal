@@ -88,11 +88,42 @@ export function getValueDetailsFromItem(item, fieldName) {
 		return null;
 	}
 
+	// TODO: extract function to get same behavior as block 130-143
+	const languageId =
+		Liferay.ThemeDisplay.getLanguageId() ||
+		Liferay.ThemeDisplay.getBCP47LanguageId() ||
+		Liferay.ThemeDisplay.getDefaultLanguageId();
+
+	const rawTextFieldName = `${fieldName}RawText`;
+	const i18nFieldName = `${fieldName}_i18n`;
+
 	let rootPropertyName = fieldName;
 	const valuePath = [];
 	let navigatedValue = item;
 
-	if (Array.isArray(fieldName)) {
+	// Cover richText content value
+	// {name: '<p>...</p>', nameRawText: '...'}
+	if (
+		Object.hasOwn(item, rawTextFieldName) &&
+		Object.values(rawTextFieldName).length
+	) {
+		valuePath.push(fieldName);
+		navigatedValue = navigatedValue[rawTextFieldName];
+	}
+	// Cover _i18n fields with language keys
+	// {name: '', name_i18n: {en_US: ''}}
+	else if (Object.hasOwn(item, i18nFieldName) &&
+			Object.values(i18nFieldName).length) {
+		valuePath.push(fieldName);
+		navigatedValue = navigatedValue[i18nFieldName][languageId];
+	}
+	// Cover fields content value with language keys
+	// {name: {en_US: ''}}
+	else if (item[fieldName] && item[fieldName][languageId]) {
+		valuePath.push(fieldName);
+		navigatedValue = navigatedValue[fieldName][languageId];
+	}
+	else if (Array.isArray(fieldName)) {
 		rootPropertyName = fieldName[0];
 
 		fieldName.forEach((property) => {
