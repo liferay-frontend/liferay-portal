@@ -198,11 +198,6 @@ const Actions = ({spritemap}: {spritemap: string}) => {
 										'no-actions-were-created'
 									)}
 									onCancelButtonClick={noop}
-									onCreationButtonClick={() =>
-										setActiveSection(
-											SECTIONS.NEW_ITEM_ACTION
-										)
-									}
 									onOrderChange={noop}
 									onSaveButtonClick={noop}
 								/>
@@ -301,7 +296,7 @@ const Actions = ({spritemap}: {spritemap: string}) => {
 												id="actionTypeSelect"
 												options={TYPES}
 												placeholder={Liferay.Language.get(
-													'select-an-option'
+													'please-select-an-option'
 												)}
 											/>
 										</ClayForm.Group>
