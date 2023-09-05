@@ -5,11 +5,9 @@
 
 import React from 'react';
 interface DefaultRendererOptions {
-	fieldName?: string;
 	truncate?: boolean;
 }
 declare type DefaultRendererValue =
-	| any
 	| string
 	| number
 	| boolean
@@ -23,7 +21,6 @@ declare type DefaultRendererValue =
 			text?: string;
 	  };
 declare const DefaultRenderer: React.FC<{
-	itemData: any;
 	options: DefaultRendererOptions;
 	value: DefaultRendererValue;
 }>;
