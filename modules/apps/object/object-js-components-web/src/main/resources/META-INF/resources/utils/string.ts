@@ -12,11 +12,15 @@ const userLanguageId = Liferay.ThemeDisplay.getLanguageId();
 
 export function getLocalizableLabel(
 	creationLanguageId: Liferay.Language.Locale,
-	labels: LocalizedValue<string> | undefined,
+	labels: LocalizedValue<string> | string | undefined,
 	fallback?: string
 ) {
 	if (!labels) {
 		return fallback ?? '';
+	}
+
+	if (typeof labels === 'string') {
+		return labels;
 	}
 
 	return (
