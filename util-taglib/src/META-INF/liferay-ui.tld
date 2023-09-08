@@ -1288,12 +1288,6 @@
 		<tag-class>com.liferay.taglib.ui.InputPermissionsTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
-			<name>documentMedia</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<type>boolean</type>
-		</attribute>
-		<attribute>
 			<name>formName</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -1301,6 +1295,11 @@
 		<attribute>
 			<name>modelName</name>
 			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>permissionPropagationCheckboxLabel</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>

@@ -21,24 +21,24 @@ import javax.servlet.jsp.PageContext;
 public class InputPermissionsTag extends IncludeTag {
 
 	public static String doTag(
-			boolean documentMedia, String formName, String modelName,
-			PageContext pageContext)
+			String formName, String modelName,
+			String permissionPropagationCheckboxLabel, PageContext pageContext)
 		throws Exception {
 
 		return doTag(
-			_PAGE, documentMedia, formName, modelName, false, pageContext);
+			_PAGE, formName, modelName, permissionPropagationCheckboxLabel,
+			false, pageContext);
 	}
 
 	public static String doTag(
-			String page, boolean documentMedia, String formName,
-			String modelName, boolean reverse, PageContext pageContext)
+			String page, String formName, String modelName,
+			String permissionPropagationCheckboxLabel, boolean reverse,
+			PageContext pageContext)
 		throws Exception {
 
 		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)pageContext.getRequest();
 
-		httpServletRequest.setAttribute(
-			"liferay-ui:input-permissions:documentMedia", documentMedia);
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-permissions:formName", formName);
 		httpServletRequest.setAttribute(
@@ -54,6 +54,9 @@ public class InputPermissionsTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-permissions:modelName", modelName);
 		httpServletRequest.setAttribute(
+			"liferay-ui:input-permissions:permissionPropagationCheckboxLabel",
+			permissionPropagationCheckboxLabel);
+		httpServletRequest.setAttribute(
 			"liferay-ui:input-permissions:reverse", reverse);
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-permissions:supportedActions",
@@ -68,8 +71,8 @@ public class InputPermissionsTag extends IncludeTag {
 	public int doEndTag() throws JspException {
 		try {
 			doTag(
-				getPage(), _documentMedia, _formName, _modelName, _reverse,
-				pageContext);
+				getPage(), _formName, _modelName,
+				_permissionPropagationCheckboxLabel, _reverse, pageContext);
 
 			return EVAL_PAGE;
 		}
@@ -86,16 +89,12 @@ public class InputPermissionsTag extends IncludeTag {
 		return _modelName;
 	}
 
-	public boolean isDocumentMedia() {
-		return _documentMedia;
+	public String getPermissionPropagationCheckboxLabel() {
+		return _permissionPropagationCheckboxLabel;
 	}
 
 	public boolean isReverse() {
 		return _reverse;
-	}
-
-	public void setDocumentMedia(boolean documentMedia) {
-		_documentMedia = documentMedia;
 	}
 
 	public void setFormName(String formName) {
@@ -104,6 +103,13 @@ public class InputPermissionsTag extends IncludeTag {
 
 	public void setModelName(String modelName) {
 		_modelName = modelName;
+	}
+
+	public void setPermissionPropagationCheckboxLabel(
+		String permissionPropagationCheckboxLabel) {
+
+		_permissionPropagationCheckboxLabel =
+			permissionPropagationCheckboxLabel;
 	}
 
 	public void setReverse(boolean reverse) {
@@ -118,9 +124,9 @@ public class InputPermissionsTag extends IncludeTag {
 	private static final String _PAGE =
 		"/html/taglib/ui/input_permissions/page.jsp";
 
-	private boolean _documentMedia;
 	private String _formName = "fm";
 	private String _modelName;
+	private String _permissionPropagationCheckboxLabel;
 	private boolean _reverse;
 
 }
