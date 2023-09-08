@@ -112,7 +112,7 @@ String permissionPropagationCheckboxLabel = (String)request.getAttribute("lifera
 				</select>
 
 				<c:if test="<%= Validator.isNotNull(permissionPropagationCheckboxLabel) %>">
-					<aui:input label="<%= permissionPropagationCheckboxLabel %>" labelCssClass="font-weight-normal" name="permissionPropagationEnabled" type="checkbox" />
+					<aui:input label="<%= permissionPropagationCheckboxLabel %>" labelCssClass="font-weight-normal" name="permissionPropagationEnabled" type="checkbox" value='<%= (boolean)request.getAttribute("liferay-ui:input-permissions:permissionPropagationCheckboxValue") %>' />
 				</c:if>
 
 				<button aria-controls="<%= uniqueNamespace %>inputPermissionsTable" aria-expanded="<%= inputPermissionsShowOptions %>" class="btn btn-secondary btn-sm <%= inputPermissionsShowOptions ? "mb-1 mt-3" : "mb-5 mt-3" %>" id="<%= uniqueNamespace %>inputPermissionsOptionsButton" onclick="<%= uniqueNamespace %>inputPermissionsToggle();" type="button">

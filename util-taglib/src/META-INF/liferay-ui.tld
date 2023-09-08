@@ -1303,6 +1303,12 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>permissionPropagationCheckboxValue</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
 			<name>reverse</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
