@@ -270,6 +270,10 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 			).put(
 				"id", "FDS_" + fragmentRendererContext.getFragmentElementId()
 			).put(
+				"itemsActions",
+				_getActionsJSONArray(
+					fdsViewObjectDefinition, fdsViewObjectEntry)
+			).put(
 				"namespace", fragmentRendererContext.getFragmentElementId()
 			).put(
 				"pagination", _getPaginationJSONObject(fdsViewObjectEntry)
@@ -298,6 +302,54 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 		sb.append("</div>");
 
 		return sb.toString();
+	}
+
+	private JSONArray _getActionsJSONArray(
+			ObjectDefinition fdsViewObjectDefinition,
+			ObjectEntry fdsViewObjectEntry)
+		throws Exception {
+
+		Set<ObjectEntry> fdsActionObjectEntries = new TreeSet<>(
+			new ObjectEntryComparator(
+				ListUtil.toList(
+					ListUtil.fromString(
+						MapUtil.getString(
+							fdsViewObjectEntry.getProperties(),
+							"fdsActionsOrder"),
+						StringPool.COMMA),
+					Long::parseLong)));
+
+		fdsActionObjectEntries.addAll(
+			_getRelatedObjectEntries(
+				fdsViewObjectDefinition, fdsViewObjectEntry,
+				"fdsViewFDSActionRelationship"));
+
+		return JSONUtil.toJSONArray(
+			fdsActionObjectEntries,
+			(ObjectEntry fdsActionObjectEntry) -> {
+				Map<String, Object> properties =
+					fdsActionObjectEntry.getProperties();
+
+				return JSONUtil.put(
+					"data",
+					JSONUtil.put(
+						"confirmationMessage",
+						properties.get("confirmationMessage")
+					).put(
+						"status", properties.get("confirmationMessageType")
+					).put(
+						"title", properties.get("label")
+					)
+				).put(
+					"href", properties.get("url")
+				).put(
+					"icon", properties.get("icon")
+				).put(
+					"label", properties.get("label")
+				).put(
+					"target", properties.get("type")
+				);
+			});
 	}
 
 	private String _getAPIURL(
