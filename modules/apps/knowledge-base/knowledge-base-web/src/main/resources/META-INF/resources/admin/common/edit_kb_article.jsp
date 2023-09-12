@@ -64,11 +64,11 @@ if (editKBArticleDisplayContext.isPortletTitleBasedNavigation()) {
 									displayType="primary"
 									dropdownItems="<%= editKBArticleDisplayContext.getEditKBArticleActionDropdownItems() %>"
 									icon="caret-bottom"
-									iconRight="<%= true %>"
 									id='<%= liferayPortletResponse.getNamespace() + "publishDropdown" %>'
 									label="<%= editKBArticleDisplayContext.getPublishButtonLabel() %>"
 									name="publishDropdown"
 									small="<%= true %>"
+									swapIconSide="<%= true %>"
 								/>
 							</c:when>
 							<c:otherwise>
