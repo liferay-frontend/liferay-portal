@@ -106,7 +106,9 @@ export function formatActionURL(url, item) {
 		return '';
 	}
 
-	const replacedURL = url.replace(new RegExp('{(.*?)}', 'mg'), (matched) =>
+	let replacedURL = url.replace("{currentURL}", Liferay.currentURL);
+
+	replacedURL = replacedURL.replace(new RegExp('{(.*?)}', 'mg'), (matched) =>
 		getValueFromItem(
 			item,
 			matched.substring(1, matched.length - 1).split('.')
