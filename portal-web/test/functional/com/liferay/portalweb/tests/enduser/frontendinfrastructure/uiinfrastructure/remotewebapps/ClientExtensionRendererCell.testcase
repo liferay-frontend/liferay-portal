@@ -272,7 +272,9 @@ definition {
 		}
 
 		task ("Then an error message should be displayed ") {
-			Alert.viewSpecificRequiredField(fieldFieldLabel = "JavaScript URL");
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR",
+				value1 = "Close Error: Please enter at least one URL");
 		}
 	}
 
