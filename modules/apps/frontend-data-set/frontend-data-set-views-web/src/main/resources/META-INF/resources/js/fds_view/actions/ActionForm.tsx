@@ -149,6 +149,7 @@ const ActionForm = ({
 			permissionKey,
 			type,
 			url,
+			variant,
 		} = actionData;
 
 		const relationShip =
@@ -166,6 +167,7 @@ const ActionForm = ({
 			title_i18n: titleTranslations,
 			type,
 			url,
+			variant,
 		} as any;
 
 		if (Object.keys(confirmationMessageTranslations).length) {
