@@ -19,7 +19,7 @@ import RequiredMark from '../../components/RequiredMark';
 import ValidationFeedback from '../../components/ValidationFeedback';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
-import {IFDSAction} from '../Actions';
+import {IFDSAction, SECTIONS} from '../Actions';
 
 const ACTION_TYPE = {
 	ASYNC: 'async',
@@ -136,6 +136,7 @@ const ActionForm = ({
 		title: initialValues?.title ?? '',
 		type: initialValues?.type ?? 'link',
 		url: initialValues?.url ?? '',
+		variant: initialValues?.variant ?? '',
 	});
 
 	const saveFDSAction = async () => {

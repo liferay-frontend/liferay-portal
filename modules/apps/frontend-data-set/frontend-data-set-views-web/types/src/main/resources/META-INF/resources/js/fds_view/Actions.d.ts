@@ -44,6 +44,7 @@ interface IFDSAction {
 	};
 	type: string;
 	url: string;
+	variant?: string;
 }
 declare const Actions: ({
 	fdsView,
