@@ -276,7 +276,7 @@ const Actions = ({fdsView, namespace, spritemap}: IFDSViewSectionProps) => {
 		loadFDSActions({activeTab: 0});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [activeTab]);
 
 	if (loading) {
 		return <ClayLoadingIndicator />;
