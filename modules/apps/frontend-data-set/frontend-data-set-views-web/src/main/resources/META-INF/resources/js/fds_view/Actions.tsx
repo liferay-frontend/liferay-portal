@@ -56,7 +56,6 @@ interface IFDSAction {
 	};
 	type: string;
 	url: string;
-	variant?: string;
 }
 
 const Actions = ({fdsView, namespace, spritemap}: IFDSViewSectionProps) => {
