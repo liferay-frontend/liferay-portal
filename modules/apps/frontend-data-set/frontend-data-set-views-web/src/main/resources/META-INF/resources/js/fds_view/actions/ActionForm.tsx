@@ -44,6 +44,17 @@ const ACTION_TYPES = [
 	},
 ];
 
+const ITEM_ACTION_TYPES = [
+	{
+		label: Liferay.Language.get('async'),
+		value: ACTION_TYPE.ASYNC,
+	},
+	{
+		label: Liferay.Language.get('headless'),
+		value: ACTION_TYPE.HEADLESS,
+	},
+];
+
 const MESSAGE_TYPES = [
 	{
 		label: Liferay.Language.get('info'),
@@ -267,10 +278,6 @@ const ActionForm = ({
 
 		getIcons();
 	}, [spritemap]);
-
-	useEffect(() => {
-		validateForm();
-	});
 
 	const iconFormElementId = `${namespace}Icon`;
 	const confirmationMessageFormElementId = `${namespace}ConfirmationMessage`;
