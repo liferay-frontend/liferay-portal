@@ -22,18 +22,18 @@ public class InputPermissionsTag extends IncludeTag {
 
 	public static String doTag(
 			String formName, String modelName,
-			String permissionPropagationCheckboxLabel, PageContext pageContext)
+			String permissionPropagationLabel, PageContext pageContext)
 		throws Exception {
 
 		return doTag(
-			_PAGE, formName, modelName, permissionPropagationCheckboxLabel,
-			false, false, pageContext);
+			_PAGE, formName, modelName, permissionPropagationLabel, false,
+			false, pageContext);
 	}
 
 	public static String doTag(
 			String page, String formName, String modelName,
-			String permissionPropagationCheckboxLabel,
-			boolean permissionPropagationCheckboxValue, boolean reverse,
+			String permissionPropagationLabel,
+			boolean permissionPropagationValue, boolean reverse,
 			PageContext pageContext)
 		throws Exception {
 
@@ -55,11 +55,11 @@ public class InputPermissionsTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-permissions:modelName", modelName);
 		httpServletRequest.setAttribute(
-			"liferay-ui:input-permissions:permissionPropagationCheckboxLabel",
-			permissionPropagationCheckboxLabel);
+			"liferay-ui:input-permissions:permissionPropagationLabel",
+			permissionPropagationLabel);
 		httpServletRequest.setAttribute(
-			"liferay-ui:input-permissions:permissionPropagationCheckboxValue",
-			permissionPropagationCheckboxValue);
+			"liferay-ui:input-permissions:permissionPropagationValue",
+			permissionPropagationValue);
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-permissions:reverse", reverse);
 		httpServletRequest.setAttribute(
@@ -75,9 +75,8 @@ public class InputPermissionsTag extends IncludeTag {
 	public int doEndTag() throws JspException {
 		try {
 			doTag(
-				getPage(), _formName, _modelName,
-				_permissionPropagationCheckboxLabel,
-				_permissionPropagationCheckboxValue, _reverse, pageContext);
+				getPage(), _formName, _modelName, _permissionPropagationLabel,
+				_permissionPropagationValue, _reverse, pageContext);
 
 			return EVAL_PAGE;
 		}
@@ -94,12 +93,12 @@ public class InputPermissionsTag extends IncludeTag {
 		return _modelName;
 	}
 
-	public String getPermissionPropagationCheckboxLabel() {
-		return _permissionPropagationCheckboxLabel;
+	public String getPermissionPropagationLabel() {
+		return _permissionPropagationLabel;
 	}
 
-	public boolean isPermissionPropagationCheckboxValue() {
-		return _permissionPropagationCheckboxValue;
+	public boolean isPermissionPropagationValue() {
+		return _permissionPropagationValue;
 	}
 
 	public boolean isReverse() {
@@ -114,18 +113,16 @@ public class InputPermissionsTag extends IncludeTag {
 		_modelName = modelName;
 	}
 
-	public void setPermissionPropagationCheckboxLabel(
-		String permissionPropagationCheckboxLabel) {
+	public void setPermissionPropagationLabel(
+		String permissionPropagationLabel) {
 
-		_permissionPropagationCheckboxLabel =
-			permissionPropagationCheckboxLabel;
+		_permissionPropagationLabel = permissionPropagationLabel;
 	}
 
-	public void setPermissionPropagationCheckboxValue(
-		boolean permissionPropagationCheckboxValue) {
+	public void setPermissionPropagationValue(
+		boolean permissionPropagationValue) {
 
-		_permissionPropagationCheckboxValue =
-			permissionPropagationCheckboxValue;
+		_permissionPropagationValue = permissionPropagationValue;
 	}
 
 	public void setReverse(boolean reverse) {
@@ -142,8 +139,8 @@ public class InputPermissionsTag extends IncludeTag {
 
 	private String _formName = "fm";
 	private String _modelName;
-	private String _permissionPropagationCheckboxLabel;
-	private boolean _permissionPropagationCheckboxValue;
+	private String _permissionPropagationLabel;
+	private boolean _permissionPropagationValue;
 	private boolean _reverse;
 
 }

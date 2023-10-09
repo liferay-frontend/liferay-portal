@@ -22,7 +22,7 @@ if (!uniqueNamespace.endsWith(StringPool.UNDERLINE)) {
 }
 
 String modelName = (String)request.getAttribute("liferay-ui:input-permissions:modelName");
-String permissionPropagationCheckboxLabel = (String)request.getAttribute("liferay-ui:input-permissions:permissionPropagationCheckboxLabel");
+String permissionPropagationLabel = (String)request.getAttribute("liferay-ui:input-permissions:permissionPropagationLabel");
 %>
 
 <c:choose>
@@ -111,8 +111,8 @@ String permissionPropagationCheckboxLabel = (String)request.getAttribute("lifera
 					<option <%= inputPermissionsViewRole.equals(RoleConstants.OWNER) ? "selected=\"selected\"" : "" %> value="<%= RoleConstants.OWNER %>"><liferay-ui:message key="owner" /></option>
 				</select>
 
-				<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPS-87806") && Validator.isNotNull(permissionPropagationCheckboxLabel) %>'>
-					<aui:input label="<%= permissionPropagationCheckboxLabel %>" labelCssClass="font-weight-normal" name="permissionPropagationEnabled" type="checkbox" value='<%= (boolean)request.getAttribute("liferay-ui:input-permissions:permissionPropagationCheckboxValue") %>' />
+				<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPS-87806") && Validator.isNotNull(permissionPropagationLabel) %>'>
+					<aui:input label="<%= permissionPropagationLabel %>" labelCssClass="font-weight-normal" name="permissionPropagationEnabled" type="checkbox" value='<%= (boolean)request.getAttribute("liferay-ui:input-permissions:permissionPropagationValue") %>' />
 				</c:if>
 
 				<button aria-controls="<%= uniqueNamespace %>inputPermissionsTable" aria-expanded="<%= inputPermissionsShowOptions %>" class="btn btn-secondary btn-sm <%= inputPermissionsShowOptions ? "mb-1 mt-3" : "mb-5 mt-3" %>" id="<%= uniqueNamespace %>inputPermissionsOptionsButton" onclick="<%= uniqueNamespace %>inputPermissionsToggle();" type="button">

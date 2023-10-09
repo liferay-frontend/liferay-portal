@@ -1298,12 +1298,12 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>permissionPropagationCheckboxLabel</name>
+			<name>permissionPropagationLabel</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>permissionPropagationCheckboxValue</name>
+			<name>permissionPropagationValue</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>
