@@ -19,7 +19,7 @@ import RequiredMark from '../../components/RequiredMark';
 import ValidationFeedback from '../../components/ValidationFeedback';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
-import {IFDSAction, SECTIONS} from '../Actions';
+import {IFDSAction} from '../Actions';
 
 const ACTION_TYPE = {
 	ASYNC: 'async',
