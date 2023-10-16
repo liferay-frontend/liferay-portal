@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ReactNode} from 'react';
+import React, {ReactNode} from 'react';
 import './FieldBase.scss';
 interface FieldBaseProps {
 	children: ReactNode;
@@ -21,6 +21,7 @@ interface FieldBaseProps {
 		header?: string;
 	};
 	required?: boolean;
+	style?: React.CSSProperties;
 	tooltip?: string;
 	warningMessage?: string;
 }
@@ -35,6 +36,7 @@ export default function FieldBase({
 	label,
 	popover,
 	required,
+	style,
 	tooltip,
 	warningMessage,
 }: FieldBaseProps): JSX.Element;

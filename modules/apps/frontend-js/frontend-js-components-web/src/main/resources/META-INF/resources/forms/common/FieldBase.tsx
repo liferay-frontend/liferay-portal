@@ -30,6 +30,7 @@ interface FieldBaseProps {
 		header?: string;
 	};
 	required?: boolean;
+	style?: React.CSSProperties;
 	tooltip?: string;
 	warningMessage?: string;
 }
@@ -59,6 +60,7 @@ export default function FieldBase({
 	label,
 	popover,
 	required,
+	style,
 	tooltip,
 	warningMessage,
 }: FieldBaseProps) {
@@ -70,6 +72,7 @@ export default function FieldBase({
 				'has-error': errorMessage,
 				'has-warning': warningMessage && !errorMessage,
 			})}
+			style={style}
 		>
 			{label && (
 				<label className={classNames({disabled})} htmlFor={id}>
