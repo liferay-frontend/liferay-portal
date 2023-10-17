@@ -44,6 +44,17 @@ const ACTION_TYPES = [
 	},
 ];
 
+const ITEM_ACTION_TYPES = [
+	{
+		label: Liferay.Language.get('async'),
+		value: ACTION_TYPE.ASYNC,
+	},
+	{
+		label: Liferay.Language.get('headless'),
+		value: ACTION_TYPE.HEADLESS,
+	},
+];
+
 const MESSAGE_TYPES = [
 	{
 		label: Liferay.Language.get('info'),
@@ -393,9 +404,15 @@ const ActionForm = ({
 										})
 									}
 									options={
-										Liferay.FeatureFlags['LPS-194395']
-											? ACTION_TYPES
-											: ACTION_TYPES.slice(0, 1)
+										activeTab === 0
+											? Liferay.FeatureFlags['LPS-194395']
+												? ITEM_ACTION_TYPES.concat(
+														ACTION_TYPES
+												  )
+												: ITEM_ACTION_TYPES.concat(
+														ACTION_TYPES
+												  ).slice(2, 1)
+											: ACTION_TYPES
 									}
 									placeholder={Liferay.Language.get(
 										'please-select-an-option'
