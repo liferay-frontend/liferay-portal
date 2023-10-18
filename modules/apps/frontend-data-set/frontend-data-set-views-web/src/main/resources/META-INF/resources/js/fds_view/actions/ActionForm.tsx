@@ -47,10 +47,6 @@ const ACTION_METHODS = [
 		label: Liferay.Language.get('post'),
 		value: ACTION_METHOD.POST,
 	},
-	{
-		label: Liferay.Language.get('put'),
-		value: ACTION_METHOD.PUT,
-	},
 ];
 
 const ACTION_TYPE = {
