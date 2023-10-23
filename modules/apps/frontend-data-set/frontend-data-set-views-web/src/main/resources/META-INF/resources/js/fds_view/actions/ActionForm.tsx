@@ -188,7 +188,6 @@ const ActionForm = ({
 		title: initialValues?.title ?? '',
 		type: initialValues?.type ?? 'link',
 		url: initialValues?.url ?? '',
-		variant: initialValues?.variant ?? '',
 	});
 
 	const saveFDSAction = async () => {
@@ -202,7 +201,6 @@ const ActionForm = ({
 			permissionKey,
 			type,
 			url,
-			variant,
 		} = actionData;
 
 		const relationShip =
@@ -223,7 +221,6 @@ const ActionForm = ({
 			title_i18n: titleTranslations,
 			type,
 			url,
-			variant,
 		} as any;
 
 		if (Object.keys(confirmationMessageTranslations).length) {
