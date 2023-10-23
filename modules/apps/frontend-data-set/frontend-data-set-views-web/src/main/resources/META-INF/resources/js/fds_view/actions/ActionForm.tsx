@@ -128,11 +128,11 @@ const ActionForm = ({
 }: IFDSActionFormProps) => {
 	const ACTION_METHODS = useMemo(() => {
 		const methods = [];
-	
+
 		for (const method in ACTION_METHOD) {
 			methods.push({label: method, value: method});
 		}
-	
+
 		return methods;
 	}, []);
 
