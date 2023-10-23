@@ -12,7 +12,7 @@ import ClayTabs from '@clayui/tabs';
 import classNames from 'classnames';
 import {InputLocalized} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 import {API_URL, OBJECT_RELATIONSHIP} from '../../Constants';
 import {FDSViewType} from '../../FDSViews';
@@ -27,27 +27,7 @@ const ACTION_METHOD = {
 	GET: 'GET',
 	PATCH: 'PATCH',
 	POST: 'POST',
-	PUT: 'PUT',
 };
-
-const ACTION_METHODS = [
-	{
-		label: Liferay.Language.get('get'),
-		value: ACTION_METHOD.GET,
-	},
-	{
-		label: Liferay.Language.get('delete'),
-		value: ACTION_METHOD.DELETE,
-	},
-	{
-		label: Liferay.Language.get('patch'),
-		value: ACTION_METHOD.PATCH,
-	},
-	{
-		label: Liferay.Language.get('post'),
-		value: ACTION_METHOD.POST,
-	},
-];
 
 const ACTION_TYPE = {
 	ASYNC: 'async',
@@ -146,6 +126,16 @@ const ActionForm = ({
 	onSave,
 	spritemap,
 }: IFDSActionFormProps) => {
+	const ACTION_METHODS = useMemo(() => {
+		const methods = [];
+	
+		for (const method in ACTION_METHOD) {
+			methods.push({label: method, value: method});
+		}
+	
+		return methods;
+	}, []);
+
 	const [activeMessageTab, setActiveMessageTab] = useState(0);
 	const [availableIconSymbols, setAvailableIconSymbols] = useState<
 		Array<{label: string; value: string}>
@@ -210,14 +200,11 @@ const ActionForm = ({
 
 		const body = {
 			confirmationMessage_i18n: confirmationMessageTranslations,
-			errorMessage_i18n: errorMessageTranslations,
 			icon: iconSymbol,
 			label_i18n: labelTranslations,
-			method,
 			modalSize,
 			permissionKey,
 			[relationShip]: fdsView.id,
-			successMessage_i18n: successMessageTranslations,
 			title_i18n: titleTranslations,
 			type,
 			url,
@@ -225,6 +212,18 @@ const ActionForm = ({
 
 		if (Object.keys(confirmationMessageTranslations).length) {
 			body.confirmationMessageType = confirmationMessageType;
+		}
+
+		if (
+			actionData.type === ACTION_TYPE.ASYNC ||
+			actionData.type === ACTION_TYPE.HEADLESS
+		) {
+			body.errorMessage_i18n = errorMessageTranslations;
+			body.successMessage_i18n = successMessageTranslations;
+		}
+
+		if (actionData.type === ACTION_TYPE.ASYNC) {
+			body.method = method;
 		}
 
 		let fetchURL = API_URL.FDS_ACTIONS;
@@ -498,8 +497,7 @@ const ActionForm = ({
 							</ClayLayout.Col>
 						)}
 
-						{(actionData.type === ACTION_TYPE.ASYNC ||
-							actionData.type === ACTION_TYPE.HEADLESS) && (
+						{actionData.type === ACTION_TYPE.ASYNC && (
 							<ClayLayout.Col size={4}>
 								<ClayForm.Group>
 									<label htmlFor={methodFormElementId}>
