@@ -1830,6 +1830,435 @@ definition {
 		}
 	}
 
+	@description = "LPS-182558. Allow administrators to configure client extension filters and verify that when the user clicks Cancel, the client extension filter is not created"
+	@priority = 4
+	test ClientExtensionFilterCancelButton {
+		task ("Given a new Client Extension Frontend Data Set filter") {
+			ClientExtensionGeneral.goToRemoteAppsPortlet();
+
+			ClientExtensionGeneral.addFrontendDataSetFilter(
+				description = "New Client Extension Frontend Data Set Filter",
+				javaScriptURL = "https://liferay.github.io/liferay-frontend-projects/date-filter.js",
+				name = "Client Extension Filter Test");
+		}
+
+		task ("And a new data set entry") {
+			DataSetAdmin.goToDataSetAdminPage();
+
+			DataSetAdmin.createDataSetEntryViaAPI(
+				dataSetName = "Data Set Test",
+				restApplication = "/data-set-manager/fields",
+				restEndpoint = "/",
+				restSchema = "FDSField");
+		}
+
+		task ("And a new view") {
+			DataSetAdmin.createFDSViewViaAPI(
+				dataSetName = "Data Set Test",
+				key_dataSetViewNameList = "View Test");
+		}
+
+		task ("When the user goes to the Filter tab") {
+			DataSetAdmin.goToSpecificViewPage(
+				dataSetName = "Data Set Test",
+				key_viewName = "View Test");
+
+			DataSetAdmin.goToTab(tabName = "Filters");
+		}
+
+		task ("And creates a new client extension filter") {
+			LexiconEntry.gotoAdd();
+
+			MenuItem.click(menuItem = "Client Extension");
+
+			Type(
+				key_text = "Name",
+				locator1 = "TextInput#ANY",
+				value1 = "Liferay Sample Data Set Filter");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "name");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "Client Extension Filter Test");
+		}
+
+		task ("And cancels the new filter") {
+			Button.clickCancel();
+
+			AssertElementPresent(
+				key_text = "Liferay Sample Data Set Filter",
+				locator1 = "Button#ANY");
+		}
+	}
+
+	@description = "LPS-182558. Verifying that when there is no client extension created, the user cannot create a filter based on client extensions."
+	@priority = 5
+	test ClientExtensionFilterCannotBeCreatedWithoutClientExtension {
+		task ("Given Data Set admin page") {
+			Navigator.openURL();
+
+			DataSetAdmin.goToDataSetAdminPage();
+
+			DataSetAdmin.createDataSetEntryViaAPI(
+				dataSetName = "Dataset Test",
+				restApplication = "/data-set-manager/fields",
+				restEndpoint = "/",
+				restSchema = "FDSField");
+		}
+
+		task ("And a data set view created via api") {
+			DataSetAdmin.createFDSViewViaAPI(
+				dataSetName = "Dataset Test",
+				dataSetViewDescription = "FDSViewDescription",
+				key_dataSetViewNameList = "View Fields Test");
+
+			DataSetAdmin.goToSpecificViewPage(
+				dataSetName = "Dataset Test",
+				key_viewName = "View Fields Test");
+		}
+
+		task ("When the user goes to the Filter tab") {
+			DataSetAdmin.goToSpecificViewPage(
+				dataSetName = "Data Set Test",
+				key_viewName = "View Test");
+
+			DataSetAdmin.goToTab(tabName = "Filters");
+		}
+
+		task ("And it will automate the test") {
+			LexiconEntry.gotoAdd();
+
+			Click(
+				key_fieldName = "Client Extension",
+				locator1 = "Button#ANY_N");
+
+			Click(
+				key_class = "btn-secondary",
+				key_index = 1,
+				locator1 = "Button#ANY_WITH_CLASS_AND_INDEX");
+
+			SelectFrameTop();
+		}
+
+		task ("And save the new filter and get an error") {
+			PortletEntry.save();
+		}
+	}
+
+	@description = "LPS-182558. Allow administrators to configure client extension filters and verify that when the user clicks Close, the client extension filter is not created"
+	@priority = 3
+	test ClientExtensionFilterCloseButton {
+		task ("Given a new Client Extension Frontend Data Set filter") {
+			ClientExtensionGeneral.goToRemoteAppsPortlet();
+
+			ClientExtensionGeneral.addFrontendDataSetFilter(
+				description = "New Client Extension Frontend Data Set Filter",
+				javaScriptURL = "https://liferay.github.io/liferay-frontend-projects/date-filter.js",
+				name = "Client Extension Filter Test");
+		}
+
+		task ("And a new data set entry") {
+			DataSetAdmin.goToDataSetAdminPage();
+
+			DataSetAdmin.createDataSetEntryViaAPI(
+				dataSetName = "Data Set Test",
+				restApplication = "/data-set-manager/fields",
+				restEndpoint = "/",
+				restSchema = "FDSField");
+		}
+
+		task ("And a new view") {
+			DataSetAdmin.createFDSViewViaAPI(
+				dataSetName = "Data Set Test",
+				key_dataSetViewNameList = "View Test");
+		}
+
+		task ("When the user goes to the Filter tab") {
+			DataSetAdmin.goToSpecificViewPage(
+				dataSetName = "Data Set Test",
+				key_viewName = "View Test");
+
+			DataSetAdmin.goToTab(tabName = "Filters");
+		}
+
+		task ("And creates a new client extension filter") {
+			LexiconEntry.gotoAdd();
+
+			MenuItem.click(menuItem = "Client Extension");
+
+			Type(
+				key_text = "Name",
+				locator1 = "TextInput#ANY",
+				value1 = "Liferay Sample Data Set Filter");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "name");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "Client Extension Filter Test");
+		}
+
+		task ("And close the new filter") {
+			Click(locator1 = "Modal#CLOSE_BUTTON");
+
+			AssertElementPresent(
+				key_text = "Liferay Sample Data Set Filter",
+				locator1 = "Button#ANY");
+		}
+	}
+
+	@description = "LPS-182558. Verify that the user can create a filter using a client extension."
+	@priority = 5
+	test ClientExtensionFilterCreation {
+		task ("Given a new Client Extension Frontend Data Set filter") {
+			ClientExtensionGeneral.goToRemoteAppsPortlet();
+
+			ClientExtensionGeneral.addFrontendDataSetFilter(
+				description = "New Client Extension Frontend Data Set Filter",
+				javaScriptURL = "https://liferay.github.io/liferay-frontend-projects/date-filter.js",
+				name = "Client Extension Filter Test");
+		}
+
+		task ("And a new data set entry") {
+			DataSetAdmin.goToDataSetAdminPage();
+
+			DataSetAdmin.createDataSetEntryViaAPI(
+				dataSetName = "Data Set Test",
+				restApplication = "/data-set-manager/fields",
+				restEndpoint = "/",
+				restSchema = "FDSField");
+		}
+
+		task ("And a new view") {
+			DataSetAdmin.createFDSViewViaAPI(
+				dataSetName = "Data Set Test",
+				key_dataSetViewNameList = "View Test");
+		}
+
+		task ("When the user goes to the Filter tab") {
+			DataSetAdmin.goToSpecificViewPage(
+				dataSetName = "Data Set Test",
+				key_viewName = "View Test");
+
+			DataSetAdmin.goToTab(tabName = "Filters");
+		}
+
+		task ("And creates a new client extension filter") {
+			LexiconEntry.gotoAdd();
+
+			MenuItem.click(menuItem = "Client Extension");
+
+			Type(
+				key_text = "Name",
+				locator1 = "TextInput#ANY",
+				value1 = "Liferay Sample Data Set Filter");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "name");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "Client Extension Filter Test");
+		}
+
+		task ("And saves the new filter") {
+			PortletEntry.save();
+
+			AssertElementPresent(
+				key_text = "Liferay Sample Data Set Filter",
+				locator1 = "Button#ANY");
+		}
+	}
+
+	@description = "LPS-182558. Verifying that the user cannot create a client extension filter using a client extension already in use."
+	@priority = 4
+	test ClientExtensionFilterInUse {
+		task ("Given a new Client Extension Frontend Data Set filter") {
+			ClientExtensionGeneral.goToRemoteAppsPortlet();
+
+			ClientExtensionGeneral.addFrontendDataSetFilter(
+				description = "New Client Extension Frontend Data Set Filter",
+				javaScriptURL = "https://liferay.github.io/liferay-frontend-projects/date-filter.js",
+				name = "Client Extension Filter Test");
+		}
+
+		task ("And a new data set entry") {
+			DataSetAdmin.goToDataSetAdminPage();
+
+			DataSetAdmin.createDataSetEntryViaAPI(
+				dataSetName = "Data Set Test",
+				restApplication = "/data-set-manager/fields",
+				restEndpoint = "/",
+				restSchema = "FDSField");
+		}
+
+		task ("And a new view") {
+			DataSetAdmin.createFDSViewViaAPI(
+				dataSetName = "Data Set Test",
+				key_dataSetViewNameList = "View Test");
+		}
+
+		task ("When the user goes to the Filter tab") {
+			DataSetAdmin.goToSpecificViewPage(
+				dataSetName = "Data Set Test",
+				key_viewName = "View Test");
+
+			DataSetAdmin.goToTab(tabName = "Filters");
+		}
+
+		task ("And creates a new client extension filter") {
+			LexiconEntry.gotoAdd();
+
+			MenuItem.click(menuItem = "Client Extension");
+
+			Type(
+				key_text = "Name",
+				locator1 = "TextInput#ANY",
+				value1 = "Liferay Sample Data Set Filter");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "name");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "Client Extension Filter Test");
+
+			PortletEntry.save();
+
+			LexiconEntry.gotoAdd();
+
+			MenuItem.click(menuItem = "Client Extension");
+
+			Type(
+				key_text = "Name",
+				locator1 = "TextInput#ANY",
+				value1 = "Liferay Sample Data Set Filter");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "name");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "Client Extension Filter Test");
+		}
+
+		task ("And the failure to save because the filter is already being used") {
+			PortletEntry.save();
+
+			AssertElementPresent(
+				key_text = "Liferay Sample Data Set Filter",
+				locator1 = "Button#ANY");
+		}
+	}
+
+	@description = "LPS-182558.Verifying that the user cannot click the Save button and an error message is displayed because the client extension filter name cannot be empty"
+	@priority = 5
+	test ClientExtensionFilterNameCannotBeEmpty {
+		task ("Given a new Client Extension Frontend Data Set filter") {
+			ClientExtensionGeneral.goToRemoteAppsPortlet();
+
+			ClientExtensionGeneral.addFrontendDataSetFilter(
+				description = "New Client Extension Frontend Data Set Filter",
+				javaScriptURL = "https://liferay.github.io/liferay-frontend-projects/date-filter.js",
+				name = "Client Extension Filter Test");
+		}
+
+		task ("And a new data set entry") {
+			DataSetAdmin.goToDataSetAdminPage();
+
+			DataSetAdmin.createDataSetEntryViaAPI(
+				dataSetName = "Data Set Test",
+				restApplication = "/data-set-manager/fields",
+				restEndpoint = "/",
+				restSchema = "FDSField");
+		}
+
+		task ("And a new view") {
+			DataSetAdmin.createFDSViewViaAPI(
+				dataSetName = "Data Set Test",
+				key_dataSetViewNameList = "View Test");
+		}
+
+		task ("When the user goes to the Filter tab") {
+			DataSetAdmin.goToSpecificViewPage(
+				dataSetName = "Data Set Test",
+				key_viewName = "View Test");
+
+			DataSetAdmin.goToTab(tabName = "Filters");
+		}
+
+		task ("And creates a new client extension filter") {
+			LexiconEntry.gotoAdd();
+
+			MenuItem.click(menuItem = "Client Extension");
+
+			Type(
+				key_text = "Name",
+				locator1 = "TextInput#ANY",
+				value1 = "");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "name");
+
+			Click(
+				key_indexNumber = 1,
+				key_text = "Select",
+				locator1 = "Button#ANY_N");
+
+			MenuItem.click(menuItem = "");
+		}
+
+		task ("And save the new filter and get an error") {
+			PortletEntry.save();
+
+			AssertElementPresent(
+				key_text = "Liferay Sample Data Set Filter",
+				locator1 = "Button#ANY");
+		}
+	}
+
 	@description = "LPS-183621. Confirm that by selecting the radio button Multiple and selecting more than one item, the filter can be saved ."
 	@priority = 5
 	test MultipleAllowMoreThanOneItem {
