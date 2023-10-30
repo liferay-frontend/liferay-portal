@@ -390,6 +390,34 @@ definition {
 		}
 	}
 
+	@description = "LPS-178861 Confirm that "Views" is present at the top of the views list"
+	@priority = 3
+	test AssertViewTitleIsInTopList {
+		task ("Given a datasets entries //Name: Dataset Test //REST Application") {
+			DataSetAdmin.createDataSetEntryViaAPI(
+				dataSetName = "Data Set Test",
+				restApplication = "/data-set-manager/entries",
+				restEndpoint = "/",
+				restSchema = "FDSEntry");
+
+			Refresh();
+		}
+
+		task ("When the user create a new view") {
+			DataSetAdmin.goToViews(dataSetName = "Data Set Test");
+
+			DataSetAdmin.createDataSetView(
+				description = "Description View Test",
+				key_name = "Test View");
+		}
+
+		task ("Then the title "Views" is present at the top of the list") {
+			AssertElementPresent(
+				key_title = "Views",
+				locator1 = "Header#H2_TITLE");
+		}
+	}
+
 	@description = "LPS-178858 Confirm that the modal data set view is displayed"
 	@priority = 5
 	test CanAsserTheDataSetViewCanBeCreate {
