@@ -291,6 +291,7 @@ const SaveFDSFieldsModalContent = ({
 												}))
 											)
 										}
+										name="custom-control-input-checkbox"
 									/>
 								</ManagementToolbar.Item>
 
