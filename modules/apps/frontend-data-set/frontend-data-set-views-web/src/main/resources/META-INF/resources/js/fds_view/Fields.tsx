@@ -19,7 +19,7 @@ import {
 	openModal,
 } from 'frontend-js-web';
 import fuzzy from 'fuzzy';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 import {API_URL, FUZZY_OPTIONS, OBJECT_RELATIONSHIP} from '../Constants';
 import {IFDSViewSectionProps} from '../FDSView';
@@ -241,19 +241,24 @@ const SaveFDSFieldsModalContent = ({
 		});
 	}, [fdsFields, fdsView]);
 
-	const isSelectAllChecked = () => {
+	const visibleFields = fields?.filter((field) => field.visible) ?? [];
+
+	const isSelectAllChecked = useMemo(() => {
 		if (!fields) {
 			return false;
 		}
 
-		const selectedFields = fields.filter((field) => field.selected);
+		const isSelectAllSelectedFields = fields.filter(
+			(field) => field.selected
+		);
 
-		const selectedFieldsCount = selectedFields?.length || 0;
+		const isSelectAllSelectedFieldsCount =
+			isSelectAllSelectedFields?.length || 0;
 
-		return selectedFieldsCount === fields.length;
-	};
+		return isSelectAllSelectedFieldsCount === fields.length;
+	}, [fields]);
 
-	const isSelectAllIndeterminate = () => {
+	const isSelectAllIndeterminate = useMemo(() => {
 		if (!fields) {
 			return false;
 		}
@@ -262,16 +267,13 @@ const SaveFDSFieldsModalContent = ({
 			fields.filter((field) => field.selected)?.length || 0;
 
 		return selectedFieldsCount > 0 && selectedFieldsCount < fields.length;
-	};
-
-	const visibleFields = fields?.filter((field) => field.visible) ?? [];
+	}, [fields]);
 
 	return (
 		<>
 			<ClayModal.Header>
 				{Liferay.Language.get('add-fields')}
 			</ClayModal.Header>
-
 			<ClayModal.Body>
 				{fields === null ? (
 					<ClayLoadingIndicator />
@@ -281,8 +283,17 @@ const SaveFDSFieldsModalContent = ({
 							<ManagementToolbar.ItemList expand>
 								<ManagementToolbar.Item className="pr-2">
 									<ClayCheckbox
-										checked={isSelectAllChecked()}
-										indeterminate={isSelectAllIndeterminate()}
+										aria-label={
+											!isSelectAllChecked
+												? Liferay.Language.get(
+														'select-all'
+												  )
+												: Liferay.Language.get(
+														'deselect-all'
+												  )
+										}
+										checked={isSelectAllChecked}
+										indeterminate={isSelectAllIndeterminate}
 										onChange={({target: {checked}}) =>
 											setFields(
 												fields.map((field) => ({
