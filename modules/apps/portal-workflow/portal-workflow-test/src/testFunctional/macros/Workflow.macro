@@ -168,6 +168,8 @@ definition {
 
 		Workflow.confirmWorkflowAction();
 
+		Navigator.gotoBack();
+
 		Workflow.viewCompletedTask(
 			ddlDataDefinitionName = ${ddlDataDefinitionName},
 			workflowAssetTitle = ${workflowAssetTitle},
@@ -834,6 +836,8 @@ definition {
 
 		Workflow.confirmWorkflowAction();
 
+		Navigator.gotoBack();
+
 		Workflow.viewCompletedTask(
 			ddlDataDefinitionName = ${ddlDataDefinitionName},
 			workflowAssetTitle = ${workflowAssetTitle},
@@ -885,6 +889,8 @@ definition {
 		Button.clickDone();
 
 		Alert.viewSuccessMessage();
+
+		Navigator.gotoBack();
 
 		Workflow.viewCompletedTask(
 			ddlDataDefinitionName = ${ddlDataDefinitionName},
