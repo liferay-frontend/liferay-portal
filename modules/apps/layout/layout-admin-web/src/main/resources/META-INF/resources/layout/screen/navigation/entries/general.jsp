@@ -42,6 +42,17 @@ portletDisplay.setURLBackTitle(ParamUtil.getString(request, "backURLTitle"));
 	onSubmit="event.preventDefault();"
 	wrappedFormContent="<%= false %>"
 >
+	<aui:script sandbox="<%= true %>">
+		var groupElement = document.getElementById('<portlet:namespace />groupLabel');
+
+		if (groupElement) {
+			groupElement.setAttribute(
+				'aria-label',
+				'<%= LanguageUtil.get(request, "general") %>'
+			);
+		}
+	</aui:script>
+
 	<aui:input name="redirect" type="hidden" value="<%= String.valueOf(layoutsAdminDisplayContext.getLayoutScreenNavigationPortletURL(selLayout.getPlid())) %>" />
 	<aui:input name="backURL" type="hidden" value="<%= backURL %>" />
 	<aui:input name="portletResource" type="hidden" value="<%= portletResource %>" />
