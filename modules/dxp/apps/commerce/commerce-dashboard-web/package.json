@@ -13,5 +13,5 @@
 		"format": "liferay-npm-scripts fix"
 	},
 	"sideEffects": false,
-	"version": "4.0.42"
+	"version": "4.0.43"
 }
