@@ -5,6 +5,7 @@
 
 import {
 	addParams,
+	debounce,
 	delegate,
 	getFormElement,
 	openSelectionModal,
@@ -23,13 +24,13 @@ export default function NavigationMenuConfiguration({
 }) {
 	const form = document.getElementById(`${namespace}fm`);
 
-	const displayStyleValue = document.getElementById(
+	const displayStyle = document.getElementById(
 		`${namespace}preferences--displayStyle--`
 	);
 
 	const resetPreview = (option) => {
 		const displayDepthSelect = getFormElement(form, 'displayDepth');
-		const displayStyle = option || displayStyleValue;
+		const displayStyleValue = option || displayStyle.value;
 		const expandedLevelsSelect = getFormElement(form, 'expandedLevels');
 		const rootMenuItemIdInput = getFormElement(form, 'rootMenuItemId');
 		const rootMenuItemLevelSelect = getFormElement(
@@ -61,7 +62,7 @@ export default function NavigationMenuConfiguration({
 			siteNavigationMenuTypeInput
 		) {
 			data.displayDepth = displayDepthSelect.value;
-			data.displayStyle = displayStyle;
+			data.displayStyle = displayStyleValue;
 			data.expandedLevels = expandedLevelsSelect.value;
 			data.rootMenuItemLevel = rootMenuItemLevelSelect.value;
 			data.rootMenuItemType = rootMenuItemTypeSelect.value;
@@ -75,8 +76,10 @@ export default function NavigationMenuConfiguration({
 		Liferay.Portlet.refresh(`#p_p_id_${portletResource}_`, data);
 	};
 
-	form.addEventListener('change', resetPreview);
-	form.addEventListener('select', resetPreview);
+	const debouncedResetPreview = debounce(resetPreview, 200);
+
+	form.addEventListener('change', debouncedResetPreview);
+	form.addEventListener('select', debouncedResetPreview);
 
 	const chooseRootMenuItemButton = document.getElementById(
 		`${namespace}chooseRootMenuItem`
@@ -124,7 +127,7 @@ export default function NavigationMenuConfiguration({
 						rootMenuItemNameSpan.innerText =
 							selectedItem.selectSiteNavigationMenuItemName;
 
-						resetPreview();
+						debouncedResetPreview();
 					}
 				},
 				selectEventName: rootMenuItemEventName,
@@ -166,7 +169,7 @@ export default function NavigationMenuConfiguration({
 
 							removeSiteNavigationMenu.classList.toggle('hide');
 
-							resetPreview();
+							debouncedResetPreview();
 						}
 					},
 					selectEventName: siteNavigationMenuEventName,
@@ -196,7 +199,7 @@ export default function NavigationMenuConfiguration({
 
 				removeSiteNavigationMenu.classList.toggle('hide');
 
-				resetPreview();
+				debouncedResetPreview();
 			});
 		}
 
@@ -277,13 +280,13 @@ export default function NavigationMenuConfiguration({
 
 					removeSiteNavigationMenu.classList.add('hide');
 
-					resetPreview();
+					debouncedResetPreview();
 				}
 			);
 		}
 	}
 
 	Liferay.on('templateSelector:changedTemplate', (event) => {
-		resetPreview(event.value);
+		debouncedResetPreview(event.value);
 	});
 }
