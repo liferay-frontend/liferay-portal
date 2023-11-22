@@ -8,7 +8,7 @@ import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import {PagesVisitor, useFormState} from 'data-engine-js-components-web';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import AvailableLocaleLabel from './AvailableLocaleLabel';
 
@@ -35,9 +35,53 @@ const LocalesDropdown = ({
 	const {pages} = useFormState();
 
 	const alignElementRef = useRef(null);
-	const dropdownMenuRef = useRef(null);
+	const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
 
 	const [dropdownActive, setDropdownActive] = useState(false);
+
+	useEffect(() => {
+		const handleKeyDown = (event: React.KeyboardEvent) => {
+			if (!dropdownActive || !dropdownMenuRef.current) {
+				return;
+			}
+
+			const items = dropdownMenuRef.current.querySelectorAll(
+				'[role="menuitem"]'
+			);
+
+			if (!items || !items.length) {
+				return;
+			}
+
+			const activeElement = document.activeElement as Element;
+
+			const currentIndex = activeElement
+				? Array.from(items).indexOf(activeElement)
+				: -1;
+
+			if (event.key === 'ArrowDown') {
+				event.preventDefault();
+				const nextIndex = (currentIndex + 1) % items.length;
+				(items[nextIndex] as HTMLElement)?.focus();
+			}
+			else if (event.key === 'ArrowUp') {
+				event.preventDefault();
+				const prevIndex =
+					(currentIndex - 1 + items.length) % items.length;
+				(items[prevIndex] as HTMLElement)?.focus();
+			}
+		};
+
+		const onKeyDown = (event: KeyboardEvent) => {
+			handleKeyDown((event as unknown) as React.KeyboardEvent);
+		};
+
+		document.addEventListener('keydown', onKeyDown);
+
+		return () => {
+			document.removeEventListener('keydown', onKeyDown);
+		};
+	}, [dropdownActive]);
 
 	return (
 		<div>
