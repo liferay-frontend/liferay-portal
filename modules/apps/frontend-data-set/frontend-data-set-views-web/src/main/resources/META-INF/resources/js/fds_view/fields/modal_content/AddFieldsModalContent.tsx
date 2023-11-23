@@ -22,6 +22,7 @@ import openDefaultFailureToast from '../../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../../utils/openDefaultSuccessToast';
 import {IFDSField} from '../Fields';
 
+const FULL_OBJECT_IDENTIFIER = '.*';
 interface IFieldTreeItem extends IField {
 	children?: IFieldTreeItem[];
 	savedId?: number;
@@ -50,11 +51,15 @@ const applySavedFDSFields = ({
 
 	visit(fields, (field: IFieldTreeItem) => {
 		const savedFDSField = savedFDSFields.find(
-			(savedFDSField) => savedFDSField.name === field.name
+			(savedFDSField) =>
+				savedFDSField.name === field.name ||
+				savedFDSField.name === field.name + FULL_OBJECT_IDENTIFIER
 		);
 
 		if (savedFDSField) {
-			selectedKeys.add(savedFDSField.name);
+			selectedKeys.add(
+				savedFDSField.name.replace(FULL_OBJECT_IDENTIFIER, '')
+			);
 
 			field.savedId = savedFDSField.id;
 		}
@@ -159,7 +164,13 @@ const AddFieldsModalContent = ({
 
 		visit(initialFields || [], (field: IFieldTreeItem) => {
 			if (selectedKeys.has(field.name) && !field.savedId) {
-				creationData.push({name: field.name, type: field.type});
+				const suffix = field.children?.length
+					? FULL_OBJECT_IDENTIFIER
+					: '';
+				creationData.push({
+					name: field.name + suffix,
+					type: field.type,
+				});
 			}
 
 			if (field.savedId && !selectedKeys.has(field.name)) {
