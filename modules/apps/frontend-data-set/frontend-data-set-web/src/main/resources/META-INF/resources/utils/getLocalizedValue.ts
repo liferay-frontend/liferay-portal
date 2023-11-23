@@ -32,23 +32,54 @@ function getLanguageKey(data: any): string {
 	return languageKey;
 }
 
-function resolveField(path: string | Array<string>, item: any) {
-	const delimiter = '.';
+function resolveLocalizedObjectFields({
+	fieldName,
+	navigatedValue,
+	valuePath,
+}: {
+	fieldName: string;
+	navigatedValue: any;
+	valuePath: Array<string>;
+}) {
+	const i18nFieldName = `${fieldName}_i18n`;
 
-	if (Array.isArray(path) || !path.includes(delimiter)) {
-		const rootPropertyName = typeof path === 'string' ? path : path[0];
-
-		return {resolvedFieldname: path, resolvedItem: item, rootPropertyName};
+	if (!navigatedValue) {
+		valuePath.push(fieldName);
+	}
+	else if (
+		typeof fieldName === 'string' &&
+		navigatedValue[i18nFieldName] &&
+		Object.keys(Liferay.Language.available).includes(
+			Object.keys(navigatedValue[i18nFieldName])[0]
+		)
+	) {
+		navigatedValue =
+			navigatedValue[i18nFieldName][
+				getLanguageKey(navigatedValue[i18nFieldName])
+			];
+		valuePath.push(fieldName);
+	}
+	else if (
+		typeof fieldName === 'string' &&
+		navigatedValue[fieldName] &&
+		Object.keys(Liferay.Language.available).includes(
+			Object.keys(navigatedValue[fieldName])[0]
+		)
+	) {
+		navigatedValue =
+			navigatedValue[fieldName][
+				getLanguageKey(navigatedValue[fieldName])
+			];
+		valuePath.push(fieldName);
+	}
+	else {
+		navigatedValue = navigatedValue[fieldName];
+		valuePath.push(fieldName);
 	}
 
-	const itemPath = path.split(delimiter);
-
 	return {
-		resolvedFieldname: itemPath[itemPath.length - 1],
-		resolvedItem: itemPath
-			.slice(0, -1)
-			.reduce((prev, curr) => prev?.[curr], item),
-		rootPropertyName: itemPath[0],
+		navigatedValue,
+		valuePath,
 	};
 }
 
@@ -60,18 +91,17 @@ export function getLocalizedValue(
 		return null;
 	}
 
-	const {resolvedFieldname, resolvedItem, rootPropertyName} = resolveField(
-		fieldName,
-		item
-	);
+	const rootPropertyName =
+		typeof fieldName === 'string' ? fieldName : fieldName[0];
+	let navigatedValue = item;
+	const valuePath: Array<string> = [];
 
-	const i18nFieldName = `${resolvedFieldname}_i18n`;
+	if (Array.isArray(fieldName)) {
+		if (fieldName[fieldName.length - 1] === '*') {
+			fieldName.pop();
+		}
 
-	let navigatedValue = resolvedItem;
-	const valuePath = [];
-
-	if (Array.isArray(resolvedFieldname)) {
-		resolvedFieldname.forEach((property) => {
+		fieldName.forEach((property) => {
 			let formattedProperty = property;
 
 			if (property === 'LANG') {
@@ -84,48 +114,28 @@ export function getLocalizedValue(
 				else {
 					formattedProperty = defaultLanguageId;
 				}
+
+				valuePath.push(formattedProperty);
 			}
-
-			valuePath.push(formattedProperty);
-
-			if (navigatedValue) {
-				navigatedValue = navigatedValue[formattedProperty];
+			else {
+				const resolvedValue = resolveLocalizedObjectFields({
+					fieldName: property,
+					navigatedValue,
+					valuePath,
+				});
+				navigatedValue = resolvedValue.navigatedValue;
+				valuePath.concat(resolvedValue.valuePath);
 			}
 		});
 	}
-	else if (
-		typeof resolvedFieldname === 'string' &&
-		resolvedItem[i18nFieldName] &&
-		Object.keys(Liferay.Language.available).includes(
-			Object.keys(resolvedItem[i18nFieldName])[0]
-		)
-	) {
-		valuePath.push(resolvedFieldname);
-		navigatedValue =
-			navigatedValue[i18nFieldName][
-				getLanguageKey(resolvedItem[i18nFieldName])
-			];
-	}
-	else if (
-		typeof resolvedFieldname === 'string' &&
-		resolvedItem[resolvedFieldname] &&
-		Object.keys(Liferay.Language.available).includes(
-			Object.keys(resolvedItem[resolvedFieldname])[0]
-		)
-	) {
-		valuePath.push(resolvedFieldname);
-		navigatedValue =
-			navigatedValue[resolvedFieldname][
-				getLanguageKey(resolvedItem[resolvedFieldname])
-			];
-	}
-	else if (typeof resolvedItem[resolvedFieldname] === 'object') {
-		valuePath.push(resolvedFieldname);
-		navigatedValue = JSON.stringify(navigatedValue[resolvedFieldname]);
-	}
 	else {
-		valuePath.push(resolvedFieldname);
-		navigatedValue = navigatedValue[resolvedFieldname];
+		const resolvedValue = resolveLocalizedObjectFields({
+			fieldName,
+			navigatedValue,
+			valuePath,
+		});
+		navigatedValue = resolvedValue.navigatedValue;
+		valuePath.concat(resolvedValue.valuePath);
 	}
 
 	return {
