@@ -97,10 +97,6 @@ export function getLocalizedValue(
 	const valuePath: Array<string> = [];
 
 	if (Array.isArray(fieldName)) {
-		if (fieldName[fieldName.length - 1] === '*') {
-			fieldName.pop();
-		}
-
 		fieldName.forEach((property) => {
 			let formattedProperty = property;
 
