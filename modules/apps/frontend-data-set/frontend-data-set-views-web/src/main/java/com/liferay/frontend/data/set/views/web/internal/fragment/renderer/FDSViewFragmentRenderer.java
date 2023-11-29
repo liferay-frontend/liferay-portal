@@ -260,15 +260,15 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 			fragmentEntryLink.getCompanyId(), fdsEntryObjectEntryERC,
 			fdsEntryObjectDefinition);
 
-		JSONArray fdsFieldsJSONArray = _getFieldsJSONArray(
-			fragmentEntryLink, fdsViewObjectDefinition, fdsViewObjectEntry);
+		Set<ObjectEntry> fdsFieldsSet = _getFieldsSet(
+			fdsViewObjectDefinition, fdsViewObjectEntry);
 
 		_reactRenderer.renderReact(
 			componentDescriptor,
 			HashMapBuilder.<String, Object>put(
 				"apiURL",
 				_getAPIURL(
-					fdsEntryObjectEntry, fdsFieldsJSONArray, httpServletRequest)
+					fdsEntryObjectEntry, fdsFieldsSet, httpServletRequest)
 			).put(
 				"creationMenu",
 				_getCreationMenuJSONObject(
@@ -301,7 +301,11 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 					).put(
 						"name", "table"
 					).put(
-						"schema", JSONUtil.put("fields", fdsFieldsJSONArray)
+						"schema",
+						JSONUtil.put(
+							"fields",
+							_getFieldsJSONArray(
+								fragmentEntryLink.getCompanyId(), fdsFieldsSet))
 					))
 			).build(),
 			httpServletRequest, writer);
@@ -314,8 +318,9 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 	}
 
 	private String _getAPIURL(
-		ObjectEntry fdsEntryObjectEntry, JSONArray fdsFieldsJSONArray,
-		HttpServletRequest httpServletRequest) {
+			ObjectEntry fdsEntryObjectEntry, Set<ObjectEntry> fdsFieldsSet,
+			HttpServletRequest httpServletRequest)
+		throws Exception {
 
 		Map<String, Object> properties = fdsEntryObjectEntry.getProperties();
 
@@ -328,7 +333,7 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 				StringPool.BLANK));
 		sb.append(String.valueOf(properties.get("restEndpoint")));
 
-		String apiURL = _getNestedFields(sb.toString(), fdsFieldsJSONArray);
+		String apiURL = _getNestedFields(sb.toString(), fdsFieldsSet);
 
 		return _interpolateURL(apiURL, httpServletRequest);
 	}
@@ -422,28 +427,11 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 	}
 
 	private JSONArray _getFieldsJSONArray(
-			FragmentEntryLink fragmentEntryLink,
-			ObjectDefinition fdsViewObjectDefinition,
-			ObjectEntry fdsViewObjectEntry)
+			long companyId, Set<ObjectEntry> fdsFieldsSet)
 		throws Exception {
 
-		Set<ObjectEntry> objectEntries = new TreeSet<>(
-			new ObjectEntryComparator(
-				ListUtil.toList(
-					ListUtil.fromString(
-						MapUtil.getString(
-							fdsViewObjectEntry.getProperties(),
-							"fdsFieldsOrder"),
-						StringPool.COMMA),
-					Long::parseLong)));
-
-		objectEntries.addAll(
-			_getRelatedObjectEntries(
-				fdsViewObjectDefinition, fdsViewObjectEntry,
-				"fdsViewFDSFieldRelationship"));
-
 		return JSONUtil.toJSONArray(
-			objectEntries,
+			fdsFieldsSet,
 			(ObjectEntry objectEntry) -> {
 				Map<String, Object> properties = objectEntry.getProperties();
 
@@ -453,8 +441,11 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 				).put(
 					"fieldName",
 					() -> {
-						JSONArray jsonArray = _getFieldNameJSONArray(
-							String.valueOf(properties.get("name")));
+						String fieldName = StringUtil.replaceLast(
+							String.valueOf(properties.get("name")), ".*",
+							StringPool.BLANK);
+
+						JSONArray jsonArray = _getFieldNameJSONArray(fieldName);
 
 						if (jsonArray.length() > 1) {
 							return jsonArray;
@@ -477,8 +468,7 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 
 				FDSCellRendererCET fdsCellRendererCET =
 					(FDSCellRendererCET)_cetManager.getCET(
-						fragmentEntryLink.getCompanyId(),
-						String.valueOf(properties.get("renderer")));
+						companyId, String.valueOf(properties.get("renderer")));
 
 				return jsonObject.put(
 					"contentRendererClientExtension", true
@@ -487,6 +477,29 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 					"default from " + fdsCellRendererCET.getURL()
 				);
 			});
+	}
+
+	private Set<ObjectEntry> _getFieldsSet(
+			ObjectDefinition fdsViewObjectDefinition,
+			ObjectEntry fdsViewObjectEntry)
+		throws Exception {
+
+		Set<ObjectEntry> objectEntries = new TreeSet<>(
+			new ObjectEntryComparator(
+				ListUtil.toList(
+					ListUtil.fromString(
+						MapUtil.getString(
+							fdsViewObjectEntry.getProperties(),
+							"fdsFieldsOrder"),
+						StringPool.COMMA),
+					Long::parseLong)));
+
+		objectEntries.addAll(
+			_getRelatedObjectEntries(
+				fdsViewObjectDefinition, fdsViewObjectEntry,
+				"fdsViewFDSFieldRelationship"));
+
+		return objectEntries;
 	}
 
 	private JSONArray _getFiltersJSONArray(
@@ -716,36 +729,45 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 	}
 
 	private String _getNestedFields(
-		String apiUrl, JSONArray fdsFieldsJSONArray) {
+			String apiUrl, Set<ObjectEntry> fdsFieldsSet)
+		throws Exception {
 
-		if (fdsFieldsJSONArray == null) {
+		if (fdsFieldsSet == null) {
 			return apiUrl;
 		}
 
 		String nestedFields = StringPool.BLANK;
+
 		int nestedFieldsDepth = 1;
+
+		JSONArray fdsFieldsJSONArray = JSONUtil.toJSONArray(
+			fdsFieldsSet,
+			(ObjectEntry objectEntry) -> {
+				Map<String, Object> properties = objectEntry.getProperties();
+
+				return JSONUtil.put(
+					"fieldName", String.valueOf(properties.get("name")));
+			});
 
 		for (int i = 0; i < fdsFieldsJSONArray.length(); i++) {
 			JSONObject fdsFieldJSONObject = fdsFieldsJSONArray.getJSONObject(i);
 
-			JSONArray jsonArray = null;
+			String[] fieldNameArray = StringUtil.split(
+				fdsFieldJSONObject.getString("fieldName"), CharPool.PERIOD);
 
-			if (fdsFieldJSONObject.getJSONArray("fieldName") != null) {
-				jsonArray = fdsFieldJSONObject.getJSONArray("fieldName");
-			}
-			else {
-				String fdsFieldValue = fdsFieldJSONObject.getString(
-					"fieldName");
+			if (fieldNameArray.length > 1) {
+				String[] fieldsName = new String[fieldNameArray.length - 1];
 
-				jsonArray = _getFieldNameJSONArray(fdsFieldValue);
-			}
+				System.arraycopy(
+					fieldNameArray, 0, fieldsName, 0,
+					fieldNameArray.length - 1);
 
-			if (jsonArray.length() > 1) {
-				nestedFields = StringUtil.add(
-					nestedFields, jsonArray.getString(0));
+				for (String fieldName : fieldsName) {
+					nestedFields = StringUtil.add(nestedFields, fieldName);
+				}
 
-				if (jsonArray.length() > nestedFieldsDepth) {
-					nestedFieldsDepth = jsonArray.length() - 1;
+				if (fieldNameArray.length > nestedFieldsDepth) {
+					nestedFieldsDepth = fieldNameArray.length - 1;
 				}
 			}
 		}
