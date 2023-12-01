@@ -756,6 +756,15 @@
 	},
 	{
 		"classNames": [
+			"CommerceOrderLocalService",
+			"CommerceOrderLocalServiceUtil"
+		],
+		"from": "addCommerceOrder(long, long, long, long, long, long, long, long, String, int, int, int, int, int, int, int, String, BigDecimal, String, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal, ServiceContext)",
+		"issueKey": "LPS-198138",
+		"to": "addCommerceOrder(param#0#, param#1#, param#2#, param#3#, param#4#, param#5#, param#6#, param#7#, param#8#, param#9#, param#10#, param#11#, param#12#, param#13#, param#14#, param#15#, param#16#, param#17#, param#18#)"
+	},
+	{
+		"classNames": [
 			"AssetVocabularyLocalService",
 			"AssetVocabularyLocalServiceUtil"
 		],
@@ -764,12 +773,19 @@
 	},
 	{
 		"classNames": [
-			"CommerceOrderLocalService",
-			"CommerceOrderLocalServiceUtil"
+			"DefaultFragmentRendererContext"
 		],
-		"from": "addCommerceOrder(long, long, long, long, long, long, long, long, String, int, int, int, int, int, int, int, String, BigDecimal, String, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal, ServiceContext)",
-		"issueKey": "LPS-198138",
-		"to": "addCommerceOrder(param#0#, param#1#, param#2#, param#3#, param#4#, param#5#, param#6#, param#7#, param#8#, param#9#, param#10#, param#11#, param#12#, param#13#, param#14#, param#15#, param#16#, param#17#, param#18#)"
+		"from": "setSegmentsExperienceIds(long[])",
+		"issueKey": "LPS-198401",
+		"to": ""
+	},
+	{
+		"classNames": [
+			"DefaultFragmentRendererContext"
+		],
+		"from": "setFieldValues(Map<String, Object>)",
+		"issueKey": "LPS-198402",
+		"to": ""
 	},
 	{
 		"classNames": [
@@ -790,5 +806,26 @@
 		"from": "search(long, long[], long[], long[], long, String, long, long, boolean, int[], int, int, OrderByComparator<CalendarBooking>)",
 		"issueKey": "LPS-202779",
 		"to": "search(param#0#, param#1#, param#2#, param#3#, param#4#, param#5#, param#6#, param#7#, null, param#8#, param#9#, param#10#, param#11#, param#12#)"
+	},
+	{
+		"from": "PortletDisplayTemplateManager.DISPLAY_STYLE_PREFIX",
+		"issueKey": "LPS-202918",
+		"to": "PortletDisplayTemplateConstants.DISPLAY_STYLE_PREFIX"
+	},
+	{
+		"from": "PortletDisplayTemplateManager.ENTRIES",
+		"issueKey": "LPS-202918",
+		"to": "PortletDisplayTemplateConstants.ENTRIES"
+	},
+	{
+		"classNames": [
+			"DLAppLocalService",
+			"DLAppLocalServiceUtil",
+			"DLAppService",
+			"DLAppServiceUtil"
+		],
+		"from": "addFolder(long, long, long, String, String, ServiceContext)",
+		"issueKey": "LPS-202927",
+		"to": "addFolder(null, param#0#, param#1#, param#2#, param#3#, param#4#, param#5#)"
 	}
 ]

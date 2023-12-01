@@ -117,19 +117,18 @@ public class KBFolderLocalServiceImpl extends KBFolderLocalServiceBaseImpl {
 	}
 
 	@Override
-	public KBFolder deleteKBFolder(long kbFolderId) throws PortalException {
-		return deleteKBFolder(kbFolderId, true);
+	public KBFolder deleteKBFolder(KBFolder kbFolder) throws PortalException {
+		return deleteKBFolder(kbFolder, true);
 	}
 
 	@Override
 	public KBFolder deleteKBFolder(
-			long kbFolderId, boolean includeTrashedEntries)
+			KBFolder kbFolder, boolean includeTrashedEntries)
 		throws PortalException {
 
-		KBFolder kbFolder = kbFolderPersistence.findByPrimaryKey(kbFolderId);
-
 		_kbArticleLocalService.deleteKBArticles(
-			kbFolder.getGroupId(), kbFolder.getKbFolderId());
+			kbFolder.getGroupId(), kbFolder.getKbFolderId(),
+			includeTrashedEntries);
 
 		List<KBFolder> childKBFolders = kbFolderPersistence.findByG_P(
 			kbFolder.getGroupId(), kbFolder.getKbFolderId());
@@ -158,6 +157,21 @@ public class KBFolderLocalServiceImpl extends KBFolderLocalServiceBaseImpl {
 		}
 
 		return kbFolderPersistence.remove(kbFolder);
+	}
+
+	@Override
+	public KBFolder deleteKBFolder(long kbFolderId) throws PortalException {
+		return deleteKBFolder(kbFolderId, true);
+	}
+
+	@Override
+	public KBFolder deleteKBFolder(
+			long kbFolderId, boolean includeTrashedEntries)
+		throws PortalException {
+
+		KBFolder kbFolder = kbFolderPersistence.findByPrimaryKey(kbFolderId);
+
+		return deleteKBFolder(kbFolder, includeTrashedEntries);
 	}
 
 	@Override

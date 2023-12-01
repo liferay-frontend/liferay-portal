@@ -69,6 +69,9 @@ public class UpgradeCatchAllCheck {
 		CookiesConstants.NAME_COMMERCE_CONTINUE_AS_GUEST;
 		CookiesConstants.NAME_ID;
 		CookiesConstants.NAME_USER_UUID;
+
+		PortletDisplayTemplateConstants.DISPLAY_STYLE_PREFIX;
+		PortletDisplayTemplateConstants.ENTRIES;
 	}
 
 	public void method(
@@ -324,6 +327,18 @@ public class UpgradeCatchAllCheck {
 	}
 
 	public void method(
+		long userId, long repositoryId, long parentFolderId, String name,
+		String description, com.liferay.portal.kernel.service.ServiceContext
+		serviceContext) {
+
+		DLAppLocalServiceUtil.addFolder(null, userId, repositoryId, parentFolderId, name, description, serviceContext);
+		DLAppServiceUtil.addFolder(123, repositoryId, parentFolderId, name, description, serviceContext);
+		DLAppServiceUtil.addFolder(null, userId, repositoryId, parentFolderId, name, description, serviceContext);
+		_dlAppLocalService.addFolder(null, userId, repositoryId, parentFolderId, name, description, serviceContext);
+		_dlAppService.addFolder(null, userId, repositoryId, parentFolderId, name, description, serviceContext);
+	}
+
+	public void method(
 		long userId, long groupId, long parentFolderId, String name,
 		String description, ServiceContext serviceContext) {
 
@@ -480,6 +495,18 @@ public class UpgradeCatchAllCheck {
 		_addressService.addAddress(null, userId, className, classPK, null, null, street1, street2, street3, city, zip, regionId, countryId, typeId, mailing, primary, null, serviceContext);
 	}
 
+	public void method(long[] segmentsExperienceIds) {
+		DefaultFragmentRendererContext defaultFragmentRendererContext = new DefaultFragmentRendererContext(null);
+
+		defaultFragmentRendererContext.setSegmentsExperienceIds(new long[0]);
+	}
+
+	public void method(Map<String, Object> fieldValues) {
+		DefaultFragmentRendererContext defaultFragmentRendererContext = new DefaultFragmentRendererContext(null);
+
+		defaultFragmentRendererContext.setFieldValues(new HashMap<String, Object>());
+	}
+
 	public void method(Organization organization) {
 		organization.getStatusListTypeId();
 		organization.setStatusListTypeId();
@@ -598,6 +625,9 @@ public class UpgradeCatchAllCheck {
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private DLAppService _dlAppService;
 
 	@Reference
 	private DLFolderLocalService _dlFolderLocalService;

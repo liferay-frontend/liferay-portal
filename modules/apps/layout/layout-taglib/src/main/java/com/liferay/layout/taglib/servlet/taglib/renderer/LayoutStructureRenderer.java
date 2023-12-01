@@ -52,7 +52,12 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringWriter;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTemplate;
@@ -212,7 +217,12 @@ public class LayoutStructureRenderer {
 
 		JspWriter jspWriter = _pageContext.getOut();
 
-		jspWriter.write("<div");
+		jspWriter.write("<div class=\"");
+		jspWriter.write(
+			collectionStyledLayoutStructureItem.getUniqueCssClass());
+		jspWriter.write(StringPool.SPACE);
+		jspWriter.write(collectionStyledLayoutStructureItem.getCssClass());
+		jspWriter.write("\"");
 
 		if (FeatureFlagManagerUtil.isEnabled("LRAC-14922")) {
 			ListObjectReference listObjectReference =
@@ -220,17 +230,28 @@ public class LayoutStructureRenderer {
 					getListObjectReference();
 
 			if (listObjectReference != null) {
-				jspWriter.write(" data-analytics-targetable-collection=\"");
-				jspWriter.write(HtmlUtil.escape(listObjectReference.toJSON()));
-				jspWriter.write("\"");
+				try {
+					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+						listObjectReference.toJSON());
+
+					if (jsonObject.has("key")) {
+						jspWriter.write(
+							" id=\"analytics-targetable-collection-");
+						jspWriter.write(jsonObject.getString("key"));
+						jspWriter.write("\"");
+					}
+				}
+				catch (JSONException jsonException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							"Unable to parse JSON: " +
+								listObjectReference.toJSON(),
+							jsonException);
+					}
+				}
 			}
 		}
 
-		jspWriter.write(" class=\"");
-		jspWriter.write(
-			collectionStyledLayoutStructureItem.getUniqueCssClass());
-		jspWriter.write(StringPool.SPACE);
-		jspWriter.write(collectionStyledLayoutStructureItem.getCssClass());
 		jspWriter.write("\" style=\"");
 		jspWriter.write(
 			_renderLayoutStructureDisplayContext.getStyle(
@@ -1320,6 +1341,9 @@ public class LayoutStructureRenderer {
 				fragmentStyledLayoutStructureItem));
 		jspWriter.write("\">");
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutStructureRenderer.class);
 
 	private final HttpServletRequest _httpServletRequest;
 	private final LayoutStructure _layoutStructure;

@@ -80,7 +80,7 @@ public abstract class BaseSourceCheck implements SourceCheck {
 
 		for (int i = 0; i < parameterTypes.length; i++) {
 			String variableTypeName = getVariableTypeName(
-				content, fileContent, fileName, parameterList[i], true);
+				content, null, fileContent, fileName, parameterList[i], true);
 
 			if ((variableTypeName == null) ||
 				!parameterTypes[i].equals(variableTypeName)) {
@@ -631,15 +631,15 @@ public abstract class BaseSourceCheck implements SourceCheck {
 	}
 
 	protected String getVariableTypeName(
-		String content, String fileContent, String fileName,
+		String content, JavaTerm javaTerm, String fileContent, String fileName,
 		String variableName) {
 
 		return getVariableTypeName(
-			content, fileContent, fileName, variableName, false);
+			content, javaTerm, fileContent, fileName, variableName, false);
 	}
 
 	protected String getVariableTypeName(
-		String content, String fileContent, String fileName,
+		String content, JavaTerm javaTerm, String fileContent, String fileName,
 		String variableName, boolean includeArrayOrCollectionTypes) {
 
 		if (variableName == null) {
@@ -656,7 +656,7 @@ public abstract class BaseSourceCheck implements SourceCheck {
 		JavaClass javaClass = null;
 
 		try {
-			javaClass = JavaClassParser.parseJavaClass(fileName, fileContent);
+			javaClass = _getJavaClass(javaTerm, fileName, fileContent);
 
 			if (javaClass == null) {
 				return variableTypeName;
@@ -696,7 +696,7 @@ public abstract class BaseSourceCheck implements SourceCheck {
 		}
 
 		String variableTypeName = getVariableTypeName(
-			content, fileContent, fileName, variable.trim(), true);
+			content, null, fileContent, fileName, variable.trim(), true);
 
 		if ((variableTypeName != null) &&
 			variableTypeName.startsWith(className)) {
@@ -854,6 +854,21 @@ public abstract class BaseSourceCheck implements SourceCheck {
 
 	protected static final String RUN_OUTSIDE_PORTAL_EXCLUDES =
 		"run.outside.portal.excludes";
+
+	private JavaClass _getJavaClass(
+			JavaTerm javaTerm, String fileName, String fileContent)
+		throws Exception {
+
+		if (javaTerm == null) {
+			return JavaClassParser.parseJavaClass(fileName, fileContent);
+		}
+
+		if (javaTerm.isJavaClass()) {
+			return (JavaClass)javaTerm;
+		}
+
+		return javaTerm.getParentJavaClass();
+	}
 
 	private String _getVariableTypeName(
 		String content, String variableName,

@@ -1608,7 +1608,8 @@ app.server.type=@{app.server.type}]]></echo>
 		<attribute default="true" name="setup.proxy" />
 		<attribute default="true" name="setup.testable.jboss" />
 		<attribute default="true" name="setup.testable.tomcat" />
-		<attribute default="false" name="startup.testing" />
+		<attribute default="false" name="startup.testing.cold" />
+		<attribute default="false" name="startup.testing.warm" />
 		<attribute default="" name="test.build.fix.pack.zip.url" />
 		<attribute default="" name="test.fix.pack.base.url" />
 		<attribute default="" name="test.legacy.database.dump" />
@@ -1674,6 +1675,7 @@ app.server.type=@{app.server.type}]]></echo>
 										<ant antfile="build-test-${app.server.type}.xml" inheritAll="false" target="run-selenium-${app.server.type}">
 											<property name="app.server.start.executable.arg.line" value="${test.batch.app.server.start.executable.arg.line}" />
 											<property name="database.type" value="@{database.type}" />
+											<property name="startup.testing.warm" value="@{startup.testing.warm}" />
 											<property name="functional.test.type" value="@{functional.test.type}" />
 											<property name="liferay.portal.bundle" value="@{test.portal.bundle.version}" />
 											<property name="test.build.plugins.war.zip.url" value="@{test.plugins.war.zip.url}" />
@@ -1696,7 +1698,7 @@ app.server.type=@{app.server.type}]]></echo>
 										</if>
 
 										<if>
-											<equals arg1="@{startup.testing}" arg2="true" />
+											<equals arg1="@{startup.testing.cold}" arg2="true" />
 											<then>
 												<antcall inheritall="false" target="stop-app-server" />
 
@@ -5092,8 +5094,20 @@ information. Make sure to commit in all format-javadoc results.
 		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
 	</target>
 
-	<target name="functional-smoke-startup-tomcat90-mysql57-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="5.7" startup.testing="true" test.portal.log.assert="true" />
+	<target name="functional-smoke-startup-cold-tomcat90-hypersonic20-jdk8">
+		<run-functional-test app.server.type="tomcat" database.type="hypersonic" startup.testing.cold="true" test.portal.log.assert="true" />
+	</target>
+
+	<target name="functional-smoke-startup-cold-tomcat90-mysql57-jdk8">
+		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="5.7" startup.testing.cold="true" test.portal.log.assert="true" />
+	</target>
+
+	<target name="functional-smoke-startup-warm-tomcat90-hypersonic20-jdk8">
+		<run-functional-test app.server.type="tomcat" database.type="hypersonic" startup.testing.warm="true" test.portal.log.assert="true" />
+	</target>
+
+	<target name="functional-smoke-startup-warm-tomcat90-mysql57-jdk8">
+		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="5.7" startup.testing.warm="true" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-tcserver40-mysql57-jdk8">

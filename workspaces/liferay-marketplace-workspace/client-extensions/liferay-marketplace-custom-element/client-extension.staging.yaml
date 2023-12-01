@@ -10,6 +10,8 @@ liferay-marketplace-custom-element-next-steps:
     dxp.lxc.liferay.com.virtualInstanceId: solutions.marketplace
 liferay-marketplace-custom-element-published-apps:
     dxp.lxc.liferay.com.virtualInstanceId: solutions.marketplace
+liferay-marketplace-custom-element-publisher-gate:
+    dxp.lxc.liferay.com.virtualInstanceId: solutions.marketplace
 liferay-marketplace-custom-element-purchased-apps:
     dxp.lxc.liferay.com.virtualInstanceId: solutions.marketplace
 liferay-marketplace-custom-element-purchased-solutions:

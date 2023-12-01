@@ -43,6 +43,7 @@ import com.liferay.roles.admin.web.internal.role.type.contributor.util.RoleTypeC
 import com.liferay.segments.service.SegmentsEntryRoleLocalServiceUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -186,22 +187,30 @@ public class RoleDisplayContext {
 			PortletURL portletURL)
 		throws Exception {
 
+		Role role = _getSelectedRole();
+
+		if (role == null) {
+			return Collections.emptyList();
+		}
+
 		String tabs2 = ParamUtil.getString(
 			_httpServletRequest, "tabs2", "users");
 
 		return new NavigationItemList() {
 			{
 				for (String assigneeTypeName : _ASSIGNEE_TYPE_NAMES) {
-					add(
-						navigationItem -> {
-							navigationItem.setActive(
-								assigneeTypeName.equals(tabs2));
-							navigationItem.setHref(
-								portletURL, "tabs2", assigneeTypeName);
-							navigationItem.setLabel(
-								LanguageUtil.get(
-									_httpServletRequest, assigneeTypeName));
-						});
+					if (_isAssigneeTypeVisible(role, assigneeTypeName)) {
+						add(
+							navigationItem -> {
+								navigationItem.setActive(
+									assigneeTypeName.equals(tabs2));
+								navigationItem.setHref(
+									portletURL, "tabs2", assigneeTypeName);
+								navigationItem.setLabel(
+									LanguageUtil.get(
+										_httpServletRequest, assigneeTypeName));
+							});
+					}
 				}
 			}
 		};
@@ -367,6 +376,17 @@ public class RoleDisplayContext {
 		return false;
 	}
 
+	private Role _getSelectedRole() throws Exception {
+		if (_role != null) {
+			return _role;
+		}
+
+		_role = RoleServiceUtil.fetchRole(
+			ParamUtil.getLong(_httpServletRequest, "roleId"));
+
+		return _role;
+	}
+
 	private List<String> _getTabsNames() throws Exception {
 		List<String> tabsNames = new ArrayList<>();
 
@@ -377,9 +397,7 @@ public class RoleDisplayContext {
 		PermissionChecker permissionChecker =
 			themeDisplay.getPermissionChecker();
 
-		long roleId = ParamUtil.getLong(_httpServletRequest, "roleId");
-
-		Role role = RoleServiceUtil.fetchRole(roleId);
+		Role role = _getSelectedRole();
 
 		if (RolePermissionUtil.contains(
 				permissionChecker, role.getRoleId(), ActionKeys.UPDATE)) {
@@ -416,9 +434,7 @@ public class RoleDisplayContext {
 		String backURL = ParamUtil.getString(
 			_httpServletRequest, "backURL", redirect);
 
-		long roleId = ParamUtil.getLong(_httpServletRequest, "roleId");
-
-		Role role = RoleServiceUtil.fetchRole(roleId);
+		Role role = _getSelectedRole();
 
 		return HashMapBuilder.put(
 			"assignees",
@@ -489,6 +505,16 @@ public class RoleDisplayContext {
 		).build();
 	}
 
+	private boolean _isAssigneeTypeVisible(Role role, String assigneeTypeName) {
+		if (StringUtil.equals("segments", assigneeTypeName) &&
+			StringUtil.equals(RoleConstants.ADMINISTRATOR, role.getName())) {
+
+			return false;
+		}
+
+		return true;
+	}
+
 	private static final String[] _ASSIGNEE_TYPE_NAMES = {
 		"users", "sites", "organizations", "user-groups", "segments"
 	};
@@ -498,6 +524,7 @@ public class RoleDisplayContext {
 	private final RoleTypeContributor _currentRoleTypeContributor;
 	private final HttpServletRequest _httpServletRequest;
 	private final RenderResponse _renderResponse;
+	private Role _role;
 	private final ThemeDisplay _themeDisplay;
 
 }

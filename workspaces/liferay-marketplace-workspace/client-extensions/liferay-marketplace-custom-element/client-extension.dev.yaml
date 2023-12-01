@@ -28,6 +28,11 @@ liferay-marketplace-custom-element-published-apps:
         - http://localhost:5173/@vite/client
         - http://localhost:5173/@vite/refresh.ts
         - http://localhost:5173/src/main.tsx
+liferay-marketplace-custom-element-publisher-gate:
+    urls:
+        - http://localhost:5173/@vite/client
+        - http://localhost:5173/@vite/refresh.ts
+        - http://localhost:5173/src/main.tsx
 liferay-marketplace-custom-element-purchased-apps:
     urls:
         - http://localhost:5173/@vite/client

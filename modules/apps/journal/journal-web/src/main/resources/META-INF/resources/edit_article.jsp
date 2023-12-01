@@ -178,130 +178,85 @@ JournalEditArticleDisplayContext journalEditArticleDisplayContext = new JournalE
 			cssClass="container-view"
 		>
 			<div class="article-content-content">
-				<aui:model-context bean="<%= article %>" defaultLanguageId="<%= journalEditArticleDisplayContext.getDefaultArticleLanguageId() %>" model="<%= JournalArticle.class %>" />
+				<c:choose>
+					<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPS-114700") %>'>
+						<clay:panel
+							displayTitle='<%= LanguageUtil.get(request, "metadata") %>'
+							displayType="secondary"
+							expanded="<%= true %>"
+						>
+							<div class="c-gap-4 d-flex flex-column panel-body">
+								<div>
+									<label for="<portlet:namespace />descriptionMapAsXML" id="<portlet:namespace />Aria"><liferay-ui:message key="description" /></label>
 
-				<liferay-ui:error exception="<%= ArticleContentException.class %>" message="please-enter-valid-content" />
-				<liferay-ui:error exception="<%= ArticleContentSizeException.class %>" message="you-have-exceeded-the-maximum-web-content-size-allowed" />
-				<liferay-ui:error exception="<%= ArticleFriendlyURLException.class %>" message="you-must-define-a-friendly-url-for-the-default-language" />
-				<liferay-ui:error exception="<%= ArticleIdException.class %>" message="please-enter-a-valid-id" />
+									<liferay-ui:input-localized
+										availableLocales="<%= journalEditArticleDisplayContext.getAvailableLocales() %>"
+										defaultLanguageId="<%= journalEditArticleDisplayContext.getDefaultArticleLanguageId() %>"
+										editorName="ckeditor"
+										formName="fm"
+										ignoreRequestValue="<%= journalEditArticleDisplayContext.isChangeStructure() %>"
+										name="descriptionMapAsXML"
+										selectedLanguageId="<%= journalEditArticleDisplayContext.getSelectedLanguageId() %>"
+										type="editor"
+										xml="<%= (article != null) ? article.getDescriptionMapAsXML() : StringPool.BLANK %>"
+									/>
+								</div>
 
-				<liferay-ui:error exception="<%= ArticleTitleException.class %>">
-					<liferay-ui:message arguments="<%= LocaleUtil.toW3cLanguageId(journalEditArticleDisplayContext.getDefaultArticleLanguageId()) %>" key="please-enter-a-valid-title-for-the-default-language-x" />
-				</liferay-ui:error>
+								<c:if test="<%= !JournalUtil.isEditDefaultValues(article) %>">
+									<div>
+										<c:if test="<%= Validator.isNotNull(journalEditArticleDisplayContext.getFriendlyURLDuplicatedWarningMessage()) %>">
+											<clay:alert
+												dismissible="<%= true %>"
+												displayType="warning"
+												message="<%= journalEditArticleDisplayContext.getFriendlyURLDuplicatedWarningMessage() %>"
+											/>
+										</c:if>
 
-				<liferay-ui:error exception="<%= ArticleTitleException.MustNotExceedMaximumLength.class %>">
+										<label for="<portlet:namespace />friendlyURL">
+											<liferay-ui:message key="friendly-url" />
 
-					<%
-					int titleMaxLength = ModelHintsUtil.getMaxLength(JournalArticleLocalization.class.getName(), "title");
-					%>
+											<%
+											StringBundler sb = new StringBundler(3);
 
-					<liferay-ui:message arguments="<%= String.valueOf(titleMaxLength) %>" key="please-enter-a-title-with-fewer-than-x-characters" />
-				</liferay-ui:error>
+											sb.append(LanguageUtil.get(request, "changing-the-friendly-url-will-affect-all-web-content-article-versions-even-when-saving-it-as-a-draft"));
+											sb.append(StringPool.SPACE);
+											sb.append(LanguageUtil.get(request, "the-friendly-url-may-be-modified-to-ensure-uniqueness"));
+											%>
 
-				<liferay-ui:error exception="<%= ArticleVersionException.class %>" message="another-user-has-made-changes-since-you-started-editing" />
-				<liferay-ui:error exception="<%= DuplicateArticleIdException.class %>" message="please-enter-a-unique-id" />
-				<liferay-ui:error exception="<%= DuplicateFileEntryException.class %>" message="a-file-with-that-name-already-exists" />
+											<clay:icon
+												cssClass="lfr-portal-tooltip"
+												symbol="question-circle-full"
+												title="<%= sb.toString() %>"
+											/>
+										</label>
 
-				<liferay-ui:error exception="<%= ExportImportContentValidationException.class %>">
+										<liferay-friendly-url:input
+											className="<%= JournalArticle.class.getName() %>"
+											classPK="<%= (article == null) || (article.getPrimaryKey() == 0) ? 0 : article.getResourcePrimKey() %>"
+											inputAddon="<%= journalEditArticleDisplayContext.getFriendlyURLBase() %>"
+											name="friendlyURL"
+											showHistory="<%= false %>"
+											showLabel="<%= false %>"
+										/>
+									</div>
+								</c:if>
+							</div>
+						</clay:panel>
 
-					<%
-					ExportImportContentValidationException eicve = (ExportImportContentValidationException)errorException;
-					%>
-
-					<c:choose>
-						<c:when test="<%= eicve.getType() == ExportImportContentValidationException.ARTICLE_NOT_FOUND %>">
-							<liferay-ui:message key="unable-to-validate-referenced-web-content-article" />
-						</c:when>
-						<c:when test="<%= eicve.getType() == ExportImportContentValidationException.FILE_ENTRY_NOT_FOUND %>">
-							<liferay-ui:message arguments="<%= new String[] {MapUtil.toString(eicve.getDlReferenceParameters()), eicve.getDlReference()} %>" key="unable-to-validate-referenced-document-because-it-cannot-be-found-with-the-following-parameters-x-when-analyzing-link-x" />
-						</c:when>
-						<c:when test="<%= eicve.getType() == ExportImportContentValidationException.JOURNAL_FEED_NOT_FOUND %>">
-							<liferay-ui:message arguments="<%= eicve.getJournalArticleFeedURL() %>" key="unable-to-validate-referenced-journal-feed-because-it-cannot-be-found-with-url-x" />
-						</c:when>
-						<c:when test="<%= eicve.getType() == ExportImportContentValidationException.LAYOUT_GROUP_NOT_FOUND %>">
-							<liferay-ui:message arguments="<%= new String[] {eicve.getLayoutURL(), eicve.getGroupFriendlyURL()} %>" key="unable-to-validate-referenced-page-with-url-x-because-the-page-group-with-url-x-cannot-be-found" />
-						</c:when>
-						<c:when test="<%= eicve.getType() == ExportImportContentValidationException.LAYOUT_NOT_FOUND %>">
-							<liferay-ui:message arguments="<%= MapUtil.toString(eicve.getLayoutReferenceParameters()) %>" key="unable-to-validate-referenced-page-because-it-cannot-be-found-with-the-following-parameters-x" />
-						</c:when>
-						<c:when test="<%= eicve.getType() == ExportImportContentValidationException.LAYOUT_WITH_URL_NOT_FOUND %>">
-							<liferay-ui:message arguments="<%= eicve.getLayoutURL() %>" key="unable-to-validate-referenced-page-because-it-cannot-be-found-with-url-x" />
-						</c:when>
-						<c:otherwise>
-							<liferay-ui:message key="an-unexpected-error-occurred" />
-						</c:otherwise>
-					</c:choose>
-				</liferay-ui:error>
-
-				<liferay-ui:error exception="<%= FileSizeException.class %>">
-
-					<%
-					FileSizeException fileSizeException = (FileSizeException)errorException;
-					%>
-
-					<liferay-ui:message arguments="<%= LanguageUtil.formatStorageSize(fileSizeException.getMaxSize(), locale) %>" key="please-enter-a-file-with-a-valid-file-size-no-larger-than-x" translateArguments="<%= false %>" />
-				</liferay-ui:error>
-
-				<liferay-ui:error exception="<%= InvalidDDMStructureException.class %>" message="the-structure-you-selected-is-not-valid-for-this-folder" />
-
-				<liferay-ui:error exception="<%= LiferayFileItemException.class %>">
-					<liferay-ui:message arguments="<%= LanguageUtil.formatStorageSize(FileItem.THRESHOLD_SIZE, locale) %>" key="please-enter-valid-content-with-valid-content-size-no-larger-than-x" translateArguments="<%= false %>" />
-				</liferay-ui:error>
-
-				<liferay-ui:error exception="<%= LocaleException.class %>">
-
-					<%
-					LocaleException le = (LocaleException)errorException;
-					%>
-
-					<c:if test="<%= le.getType() == LocaleException.TYPE_CONTENT %>">
-						<liferay-ui:message arguments="<%= new String[] {StringUtil.merge(le.getSourceAvailableLanguageIds(), StringPool.COMMA_AND_SPACE), StringUtil.merge(le.getTargetAvailableLanguageIds(), StringPool.COMMA_AND_SPACE)} %>" key="the-default-language-x-does-not-match-the-portal's-available-languages-x" />
-					</c:if>
-				</liferay-ui:error>
-
-				<liferay-ui:error exception="<%= NoSuchFileEntryException.class %>" message="the-content-references-a-missing-file-entry" />
-				<liferay-ui:error exception="<%= NoSuchImageException.class %>" message="please-select-an-existing-small-image" />
-
-				<liferay-ui:error exception="<%= NoSuchLayoutException.class %>">
-
-					<%
-					NoSuchLayoutException nsle = (NoSuchLayoutException)errorException;
-
-					String message = nsle.getMessage();
-					%>
-
-					<c:choose>
-						<c:when test="<%= Objects.equals(message, JournalArticleConstants.DISPLAY_PAGE) %>">
-							<liferay-ui:message key="please-select-an-existing-display-page-template" />
-						</c:when>
-						<c:otherwise>
-							<liferay-ui:message key="the-content-references-a-missing-page" />
-						</c:otherwise>
-					</c:choose>
-				</liferay-ui:error>
-
-				<liferay-ui:error exception="<%= NoSuchStructureException.class %>" message="please-select-an-existing-structure" />
-				<liferay-ui:error exception="<%= NoSuchTemplateException.class %>" message="please-select-an-existing-template" />
-				<liferay-ui:error exception="<%= StorageFieldRequiredException.class %>" message="please-fill-out-all-required-fields" />
-
-				<liferay-data-engine:data-layout-renderer
-					containerId='<%= liferayPortletResponse.getNamespace() + "dataEngineLayoutRenderer" %>'
-					contentType="journal"
-					dataDefinitionId="<%= ddmStructure.getStructureId() %>"
-					dataRecordValues="<%= journalEditArticleDisplayContext.getValues(ddmStructure) %>"
-					defaultLanguageId="<%= journalEditArticleDisplayContext.getDefaultArticleLanguageId() %>"
-					languageId="<%= journalEditArticleDisplayContext.getSelectedLanguageId() %>"
-					namespace="<%= liferayPortletResponse.getNamespace() %>"
-					persisted="<%= article != null %>"
-					submittable="<%= false %>"
-				/>
-
-				<liferay-frontend:component
-					componentId='<%= liferayPortletResponse.getNamespace() + "DataEngineLayoutRendererLanguageProxy" %>'
-					context="<%= journalEditArticleDisplayContext.getDataEngineLayoutRendererComponentContext() %>"
-					module="js/DataEngineLayoutRendererLanguageProxy.es"
-					servletContext="<%= application %>"
-				/>
+						<clay:panel
+							displayTitle='<%= LanguageUtil.get(request, "fields") %>'
+							displayType="secondary"
+							expanded="<%= true %>"
+						>
+							<div class="panel-body">
+								<%@ include file="/article_content.jspf" %>
+							</div>
+						</clay:panel>
+					</c:when>
+					<c:otherwise>
+						<%@ include file="/article_content.jspf" %>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</clay:container-fluid>
 	</div>

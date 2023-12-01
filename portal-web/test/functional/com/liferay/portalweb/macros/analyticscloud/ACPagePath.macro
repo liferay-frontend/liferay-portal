@@ -1,0 +1,54 @@
+definition {
+
+	@summary = "Clears segment search filter"
+	macro clearSegmentSearchFilter() {
+		Type.sendKeys(
+			locator1 = "ACSettings#SEARCH_BAR",
+			value1 = "keys=CONTROL,a");
+
+		KeyPress(
+			locator1 = "ACSettings#SEARCH_BAR",
+			value1 = "\BACK_SPACE");
+	}
+
+	@summary = "Selects the segment in page filter"
+	macro clickFilterSegment(segmentName) {
+		Click(
+			key_nameList = ${segmentName},
+			locator1 = "ACUtils#PAGE_SEGMENT_FILTER");
+	}
+
+	@summary = "Removes the segment in page filter"
+	macro removeSegmentFilter() {
+		Click(locator1 = "ACSites#REMOVE_SEGMENT_FILTER");
+	}
+
+	@summary = "Asserts the total of page path"
+	macro viewPagePathTotal(pageTotal) {
+		var key_pageTotal = ${pageTotal};
+
+		AssertTextEquals(
+			locator1 = "ACSites#PAGE_PATH_TOTAL",
+			value1 = ${pageTotal});
+	}
+
+	@summary = "Asserts the dropdown segment filter"
+	macro viewSegmentDropdown(nameList) {
+		for (var name : list ${nameList}) {
+			var key_nameList = ${name};
+
+			WaitForPageLoad();
+
+			while ((IsElementNotPresent(locator1 = "ACUtils#PAGE_SEGMENT_FILTER")) && (maxIterations = "50")) {
+				ACUtils.searchBar(searchItem = ${name});
+
+				ACPagePath.clearSegmentSearchFilter();
+			}
+
+			AssertTextEquals(
+				locator1 = "ACUtils#PAGE_SEGMENT_FILTER",
+				value1 = ${name});
+		}
+	}
+
+}

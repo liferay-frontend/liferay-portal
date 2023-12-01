@@ -6,7 +6,20 @@ so the correct message on **What** section should be
 
 modules/apps/document-library/document-library-repository-external-api/src/main/java/com/liferay/document/library/repository/external/ExtRepository.java
 
-modules/apps/document-library/document-library-repository-external-api/src/main/java/com/liferay/document/library/repository/external/ExtRepository.java now includes a new method generatePDFPreviews(long userId);
+```
+LPS-197315 add new param to the addExtRepositoryFileEntry method with the fileName of the file Entry
+
+# breaking
+
+## What modules/apps/document-library/document-library-repository-external-api/src/main/java/com/liferay/document/library/repository/external/ExtRepository.java
+
+com/liferay/document/library/repository/external/ExtRepository.java has changed the method ExtRepositoryFileEntry addExtRepositoryFileEntry(String extRepositoryParentFolderKey, String mimeType, String title, String description, String changeLog, InputStream inputStream) to ExtRepositoryFileEntry addExtRepositoryFileEntry(String extRepositoryParentFolderKey, String fileName, String mimeType, String title, String description, String changeLog, InputStream inputStream) adding the new parameter fileName.
+
+## Why
+   
+this change is required to create the files on the sharepoint external repository with the file source file name.
+
+```
 
 ----
 
@@ -193,5 +206,22 @@ This interface/impl/util separation does not have any value. Merge it into singl
 AuditMessageFactoryUtil and AuditMessageFactoryImpl logic are merged into AuditMessageFactory
 ## Why
 This interface/impl/util separation does not have any value. Merge it into single class to avoid the unnecessary module.
+----
+```
+----
+
+# 258a63398ddedbdba27e1b193c83c30031509725
+
+Incorrect the format of file path line
+
+Correct message should be:
+```
+LPS-200073 Remove class AssetEntriesFacet
+
+# breaking
+## What portal-kernel/src/com/liferay/portal/kernel/search/facet/AssetEntriesFacet.java
+Class is removed.
+## Why
+This class has been deprecated since 7.1.x, its only usage in rules_user_custom_attribute_content.drl is replaced by FacetImpl.
 ----
 ```
