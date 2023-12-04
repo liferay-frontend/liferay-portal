@@ -5,13 +5,41 @@ definition {
 	property portal.upstream = "true";
 	property testray.main.component.name = "Object";
 
+	static var deleteEntry = "";
+	static var tearDownFieldName = "";
+	static var tearDownObjectName = "";
+	static var tearDownEntryValue = "";
+
 	setUp {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Feature Flags",
+			configurationName = "Beta",
+			configurationScope = "Virtual Instance Scope");
+
+		Check.checkToggleSwitch(
+			key_featureFlag = "LPS-135430",
+			locator1 = "ToggleSwitch#ENABLE_BETA_TOGGLE_SWITCH");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Third Party",
+			configurationName = "Salesforce Integration",
+			configurationScope = "Site Scope");
+
+		ObjectSalesforce.configureSalesforce();
 	}
 
 	tearDown {
+		if (${deleteEntry} == "true") {
+			JSONObject.deleteObjectEntryByERC(
+				fieldName = ${tearDownFieldName},
+				objectName = ${tearDownObjectName},
+				value = ${tearDownEntryValue});
+		}
+
 		ObjectAdmin.deleteAllCustomObjectsViaAPI();
 
 		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
@@ -26,35 +54,7 @@ definition {
 	test AssertCRUDWithCreatedCustomObject {
 		property portal.acceptance = "true";
 
-		task ("Given portal configured with Salesforce") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Feature Flags",
-				configurationName = "Beta",
-				configurationScope = "Virtual Instance Scope");
-
-			Check.checkToggleSwitch(
-				key_featureFlag = "LPS-135430",
-				locator1 = "ToggleSwitch#ENABLE_BETA_TOGGLE_SWITCH");
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Third Party",
-				configurationName = "Salesforce Integration",
-				configurationScope = "Site Scope");
-
-			ObjectSalesforce.configureSalesforce();
-		}
-
-		task ("And given a created custom object with the storage type set to Salesforce") {
+		task ("Given a created custom object with the storage type set to Salesforce") {
 			ObjectAdmin.openObjectAdmin();
 
 			ObjectAdmin.addObjectWithStorageType(
@@ -134,6 +134,11 @@ definition {
 
 			PortletEntry.save();
 
+			var deleteEntry = "true";
+			var tearDownFieldName = "title";
+			var tearDownObjectName = "PoshiTest";
+			var tearDownEntryValue = "Entry Updated LPS-162131";
+
 			Navigator.gotoBack();
 
 			AssertElementPresent(
@@ -143,6 +148,8 @@ definition {
 
 		task ("And then the user is able to delete entries") {
 			ObjectPortlet.deleteEntry(entry = "Entry Updated LPS-162131");
+
+			var deleteEntry = "";
 
 			AssertElementNotPresent(
 				key_entry = "Entry Updated LPS-162131",
@@ -155,35 +162,7 @@ definition {
 	test AssertCRUDWithCreatedStandardObject {
 		property portal.acceptance = "true";
 
-		task ("Given portal configured with Salesforce") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Feature Flags",
-				configurationName = "Beta",
-				configurationScope = "Virtual Instance Scope");
-
-			Check.checkToggleSwitch(
-				key_featureFlag = "LPS-135430",
-				locator1 = "ToggleSwitch#ENABLE_BETA_TOGGLE_SWITCH");
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Third Party",
-				configurationName = "Salesforce Integration",
-				configurationScope = "Site Scope");
-
-			ObjectSalesforce.configureSalesforce();
-		}
-
-		task ("And given a created custom object with the storage type set to Salesforce") {
+		task ("Given a created custom object with the storage type set to Salesforce") {
 			ObjectAdmin.openObjectAdmin();
 
 			ObjectAdmin.addObjectWithStorageType(
@@ -301,38 +280,45 @@ definition {
 
 			PortletEntry.inputText(
 				fieldLabel = "Last Name",
-				text = "New Entry LPS-185429");
+				text = "Last Name LPS-185429");
 
 			CreateObject.saveObject();
 
 			Navigator.gotoBack();
 
 			AssertElementPresent(
-				key_entry = "New Entry LPS-185429",
+				key_entry = "Last Name LPS-185429",
 				locator1 = "ObjectPortlet#ENTRY_VALUE");
 		}
 
 		task ("And then the user is able to update entries") {
-			ObjectPortlet.viewEntryDetails(entry = "New Entry LPS-185429");
+			ObjectPortlet.viewEntryDetails(entry = "Last Name LPS-185429");
 
 			PortletEntry.inputText(
 				fieldLabel = "Last Name",
-				text = "Entry Updated LPS-185429");
+				text = "Last Name Updated LPS-185429");
 
 			CreateObject.saveObject();
+
+			var deleteEntry = "true";
+			var tearDownFieldName = "lastName";
+			var tearDownObjectName = "contact";
+			var tearDownEntryValue = "Last Name Updated LPS-185429";
 
 			Navigator.gotoBack();
 
 			AssertElementPresent(
-				key_entry = "Entry 185429 Updated",
+				key_entry = "Last Name Updated LPS-185429",
 				locator1 = "ObjectPortlet#ENTRY_VALUE");
 		}
 
 		task ("And then the user is able to delete entries") {
-			ObjectPortlet.deleteEntry(entry = "Entry Updated LPS-185429");
+			ObjectPortlet.deleteEntry(entry = "Last Name Updated LPS-185429");
+
+			var deleteEntry = "";
 
 			AssertElementNotPresent(
-				key_entry = "Entry Updated LPS-185429",
+				key_entry = "Last Name Updated LPS-185429",
 				locator1 = "ObjectPortlet#ENTRY_VALUE");
 		}
 	}
@@ -342,35 +328,7 @@ definition {
 	test AssertCRUDWithFormContainer {
 		property portal.acceptance = "true";
 
-		task ("Given portal configured with Salesforce") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Feature Flags",
-				configurationName = "Beta",
-				configurationScope = "Virtual Instance Scope");
-
-			Check.checkToggleSwitch(
-				key_featureFlag = "LPS-135430",
-				locator1 = "ToggleSwitch#ENABLE_BETA_TOGGLE_SWITCH");
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Third Party",
-				configurationName = "Salesforce Integration",
-				configurationScope = "Site Scope");
-
-			ObjectSalesforce.configureSalesforce();
-		}
-
-		task ("And given an imported custom object with the storage type as Salesforce") {
+		task ("Given an imported custom object with the storage type as Salesforce") {
 			ObjectExportImport.importObject(
 				objectFileName = "ImportedCustomObjectWithSalesforceStorageType",
 				objectName = "PoshiTest");
@@ -411,6 +369,11 @@ definition {
 				text = "Entry added on form container");
 
 			Button.clickSubmitButton();
+
+			var deleteEntry = "true";
+			var tearDownFieldName = "title";
+			var tearDownObjectName = "PoshiTest";
+			var tearDownEntryValue = "Entry added on form container";
 		}
 
 		task ("Then the entry is created") {
@@ -421,6 +384,8 @@ definition {
 
 		task ("and When the user deletes the entry") {
 			ObjectPortlet.deleteEntry(entry = "Entry added on form container");
+
+			var deleteEntry = "";
 		}
 
 		task ("Then the entry is deleted") {
@@ -435,35 +400,7 @@ definition {
 	test AssertCRUDWithImportedCustomObject {
 		property portal.acceptance = "true";
 
-		task ("Given portal configured with Salesforce") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Feature Flags",
-				configurationName = "Beta",
-				configurationScope = "Virtual Instance Scope");
-
-			Check.checkToggleSwitch(
-				key_featureFlag = "LPS-135430",
-				locator1 = "ToggleSwitch#ENABLE_BETA_TOGGLE_SWITCH");
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Third Party",
-				configurationName = "Salesforce Integration",
-				configurationScope = "Site Scope");
-
-			ObjectSalesforce.configureSalesforce();
-		}
-
-		task ("And given an imported custom object whose external reference code matches a Salesforce custom object") {
+		task ("Given an imported custom object whose external reference code matches a Salesforce custom object") {
 			ObjectExportImport.importObject(
 				objectFileName = "ImportedCustomObjectWithSalesforceStorageType",
 				objectName = "PoshiTest");
@@ -508,6 +445,11 @@ definition {
 
 			PortletEntry.save();
 
+			var deleteEntry = "true";
+			var tearDownFieldName = "title";
+			var tearDownObjectName = "PoshiTest";
+			var tearDownEntryValue = "Entry Updated LPS-185427";
+
 			ObjectAdmin.goToCustomObject(objectName = "PoshiTest");
 
 			AssertElementPresent(
@@ -517,6 +459,8 @@ definition {
 
 		task ("And then the user is able to delete entries") {
 			ObjectPortlet.deleteEntry(entry = "Entry Updated LPS-185427");
+
+			var deleteEntry = "";
 
 			AssertElementNotPresent(
 				key_entry = "Entry Updated LPS-185427",
@@ -529,35 +473,7 @@ definition {
 	test AssertCRUDWithImportedStandardObject {
 		property portal.acceptance = "true";
 
-		task ("Given the DXP configured with Salesforce") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Feature Flags",
-				configurationName = "Beta",
-				configurationScope = "Virtual Instance Scope");
-
-			Check.checkToggleSwitch(
-				key_featureFlag = "LPS-135430",
-				locator1 = "ToggleSwitch#ENABLE_BETA_TOGGLE_SWITCH");
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Instance Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Third Party",
-				configurationName = "Salesforce Integration",
-				configurationScope = "Site Scope");
-
-			ObjectSalesforce.configureSalesforce();
-		}
-
-		task ("And given an imported standard object with storage type as Salesforce") {
+		task ("Given an imported standard object with storage type as Salesforce") {
 			ObjectExportImport.importObject(
 				objectFileName = "ImportedStandardObjectWithSalesforceStorageType",
 				objectName = "Contact");
@@ -592,38 +508,45 @@ definition {
 
 			PortletEntry.inputText(
 				fieldLabel = "Last Name",
-				text = "New Entry LPS-185428");
+				text = "Last Name LPS-185428");
 
 			CreateObject.saveObject();
 
 			Navigator.gotoBack();
 
 			AssertElementPresent(
-				key_entry = "New Entry LPS-185428",
+				key_entry = "Last Name LPS-185428",
 				locator1 = "ObjectPortlet#ENTRY_VALUE");
 		}
 
 		task ("And then the user is able to update entries") {
-			ObjectPortlet.viewEntryDetails(entry = "New Entry LPS-185428");
+			ObjectPortlet.viewEntryDetails(entry = "Last Name LPS-185428");
 
 			PortletEntry.inputText(
 				fieldLabel = "Last Name",
-				text = "Entry Updated LPS-185428");
+				text = "Last Name Updated LPS-185428");
 
 			CreateObject.saveObject();
+
+			var deleteEntry = "true";
+			var tearDownFieldName = "lastName";
+			var tearDownObjectName = "contact";
+			var tearDownEntryValue = "Last Name Updated LPS-185428";
 
 			Navigator.gotoBack();
 
 			AssertElementPresent(
-				key_entry = "Entry Updated LPS-185428",
+				key_entry = "Last Name Updated LPS-185428",
 				locator1 = "ObjectPortlet#ENTRY_VALUE");
 		}
 
 		task ("And then the user is able to delete entries") {
-			ObjectPortlet.deleteEntry(entry = "Entry Updated LPS-185428");
+			ObjectPortlet.deleteEntry(entry = "Last Name Updated LPS-185428");
+
+			var deleteEntry = "";
 
 			AssertElementNotPresent(
-				key_entry = "Entry Updated LPS-185428",
+				key_entry = "Last Name Updated LPS-185428",
 				locator1 = "ObjectPortlet#ENTRY_VALUE");
 		}
 	}

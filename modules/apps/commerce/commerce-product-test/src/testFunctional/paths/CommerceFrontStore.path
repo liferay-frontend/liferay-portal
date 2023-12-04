@@ -112,7 +112,7 @@
 </tr>
 <tr>
 	<td>FS_PRODUCT_OPTIONS_SELECT</td>
-	<td>//div/label[text()='${key_optionName}']/..//select</td>
+	<td>//div/label[text()='${key_optionName}']/..//select | //div/label[text()='${key_optionName}']/..//button</td>
 	<td></td>
 </tr>
 <tr>
@@ -233,6 +233,11 @@
 <tr>
 	<td>PRODUCT_DETAILS_OPTION_POSITION</td>
 	<td>//div[@class='product-detail-options']/form/div[${key_position}]//label[text()='${key_optionName}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_DETAILS_OPTION_VALUE</td>
+	<td>//div/label[text()='${key_optionName}']/..//select/option[@value][text()='${key_optionValue}']</td>
 	<td></td>
 </tr>
 <tr>

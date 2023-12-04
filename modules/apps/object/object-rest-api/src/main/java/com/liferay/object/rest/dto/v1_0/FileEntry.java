@@ -82,6 +82,35 @@ public class FileEntry implements Serializable {
 	protected String fileBase64;
 
 	@Schema
+	@Valid
+	public Folder getFolder() {
+		return folder;
+	}
+
+	public void setFolder(Folder folder) {
+		this.folder = folder;
+	}
+
+	@JsonIgnore
+	public void setFolder(
+		UnsafeSupplier<Folder, Exception> folderUnsafeSupplier) {
+
+		try {
+			folder = folderUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Folder folder;
+
+	@Schema
 	public Long getId() {
 		return id;
 	}
@@ -199,6 +228,16 @@ public class FileEntry implements Serializable {
 			sb.append(_escape(fileBase64));
 
 			sb.append("\"");
+		}
+
+		if (folder != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"folder\": ");
+
+			sb.append(String.valueOf(folder));
 		}
 
 		if (id != null) {

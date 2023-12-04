@@ -87,7 +87,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.PortletCategory;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -100,6 +99,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -112,12 +112,10 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.WebAppPool;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.jackson.databind.ser.VulcanPropertyFilter;
@@ -415,17 +413,6 @@ public class BatchEngineBrokerTest {
 			_group.getGroupId(), _OBJECT_ENTRY_ERC_2);
 	}
 
-	private Company _addCompany(String webId) throws Exception {
-		long companyId = _counterLocalService.increment();
-
-		WebAppPool.put(
-			companyId, WebKeys.PORTLET_CATEGORY, new PortletCategory());
-
-		return _companyLocalService.addCompany(
-			companyId, webId, webId, webId, 0, true, null, null, null, null,
-			null, null);
-	}
-
 	private DLFileEntry _addDLFileEntry(long groupId, long userId)
 		throws Exception {
 
@@ -525,7 +512,7 @@ public class BatchEngineBrokerTest {
 	private void _addObjectEntryInDifferentCompany(String name)
 		throws Exception {
 
-		_company2 = _addCompany("test.com");
+		_company2 = CompanyTestUtil.addCompany(true);
 
 		User user = UserTestUtil.getAdminUser(_company2.getCompanyId());
 

@@ -92,8 +92,10 @@ const PublishedAppsDashboardOutlet = () => {
 	}, [selectedAccount?.id]);
 
 	const {data: publishedProductTable = {}, isLoading} = useSWR(
-		`/user-published-apps/${selectedAccount?.id}`,
-		async () =>
+		catalogId
+			? `/user-published-apps/${selectedAccount?.id}/${page}`
+			: null,
+		() =>
 			HeadlessCommerceAdminCatalogImpl.getProducts(
 				new URLSearchParams({
 					filter: new SearchBuilder()
@@ -101,9 +103,9 @@ const PublishedAppsDashboardOutlet = () => {
 						.and()
 						.lambda('categoryNames', 'App')
 						.build(),
-
 					nestedFields:
 						'attachments,productChannels,productSpecifications',
+					page: page.toString(),
 				})
 			)
 	);

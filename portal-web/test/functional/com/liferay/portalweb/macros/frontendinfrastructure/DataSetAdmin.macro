@@ -1,7 +1,7 @@
 definition {
 
-	@summary = "Default summary"
-	macro addActions(messageType = null, icon = null, headlessAction = null, type = null,method = null, url = null, actionName = null,key_actionNameList = null, confirmationMessage = null, actionTab = null, successMessage = null, errorMessage = null, inputText = null, variant = null) {
+	@summary = "Add a Item or Creation Action in Data Set"
+	macro addActions(messageType = null, icon = null, headlessAction = null, type = null,method = null, url = null, actionName = null,key_actionNameList = null, confirmationMessage = null, actionTab = null, successMessage = null, errorMessage = null, title = null, variant = null) {
 		var key_actionNameList = ${actionName};
 
 		if (isSet(actionTab)) {
@@ -49,11 +49,19 @@ definition {
 					value1 = ${variant});
 			}
 
-			if (isSet(inputText)) {
-				Type(
-					key_fieldName = "add-here-the-title-of-the-modal",
-					locator1 = "DataSet#PRESELECT_VALUE_INPUT",
-					value1 = ${variant});
+			if (isSet(title)) {
+				if (IsElementPresent(key_fieldName = "add-here-the-title-of-the-modal", locator1 = "DataSet#PRESELECT_VALUE_INPUT")) {
+					Type(
+						key_fieldName = "add-here-the-title-of-the-modal",
+						locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+						value1 = ${title});
+				}
+				else {
+					Type(
+						key_fieldName = "add-here-the-title-of-the-side-panel",
+						locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+						value1 = ${title});
+				}
 			}
 
 			if (isSet(method)) {
@@ -549,7 +557,7 @@ definition {
 		Click(locator1 = "DataSet#MODAL_SAVE_BUTTON");
 	}
 
-	@summary = "Default summary"
+	@summary = "Delete a Item or Creation Action in Data Set"
 	macro deleteActionEntry(actionName = null, actionTab = null) {
 		if (isSet(actionTab)) {
 			Button.click(button = ${actionTab});
@@ -677,7 +685,7 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-	@summary = "Default summary"
+	@summary = "Edit a Item or Creation Action in Data Set"
 	macro editActions(newMessageType = null, newIcon = null, newHeadlessAction = null, newType = null,newMethod = null, newURL = null, newActionName = null,oldActionName = null, newConfirmationMessage = null, actionTab = null, newSuccessMessage = null, newErrorMessage = null) {
 		if (isSet(actionTab)) {
 			Button.click(button = ${actionTab});
@@ -724,6 +732,28 @@ definition {
 				key_fieldLabel = "Type",
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = ${newType});
+		}
+
+		if (isSet(newVariant)) {
+			Select(
+				key_fieldLabel = "Variant",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = ${newVariant});
+		}
+
+		if (isSet(newTitle)) {
+			if (IsElementPresent(key_fieldName = "add-here-the-title-of-the-modal", locator1 = "DataSet#PRESELECT_VALUE_INPUT")) {
+				Type(
+					key_fieldName = "add-here-the-title-of-the-modal",
+					locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+					value1 = ${newTitle});
+			}
+			else {
+				Type(
+					key_fieldName = "add-here-the-title-of-the-side-panel",
+					locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+					value1 = ${newTitle});
+			}
 		}
 
 		if (isSet(newMethod)) {

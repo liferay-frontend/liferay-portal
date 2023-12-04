@@ -165,7 +165,7 @@ public class CommerceOrderItemLocalServiceImpl
 			commerceOrder.getGroupId(), user, commerceOrder,
 			commerceProductPrice, cpInstance, 0, json, quantity,
 			shippedQuantity, unitOfMeasureIncrementalOrderQuantity,
-			unitOfMeasureKey, serviceContext);
+			unitOfMeasureKey, false, serviceContext);
 
 		commerceOrderItem.setReplacedCPInstanceId(replacedCPInstanceId);
 
@@ -206,7 +206,8 @@ public class CommerceOrderItemLocalServiceImpl
 				commerceOrderItem.getCommerceOrderItemId(),
 				commerceOptionValue.toJSON(), currentQuantity, BigDecimal.ZERO,
 				commerceProductPrice.getUnitOfMeasureIncrementalOrderQuantity(),
-				commerceOptionValue.getUnitOfMeasureKey(), serviceContext);
+				commerceOptionValue.getUnitOfMeasureKey(), true,
+				serviceContext);
 
 			if (!_isStaticPriceType(commerceOptionValue.getPriceType())) {
 				childCommerceOrderItem = commerceOrderItemPersistence.update(
@@ -662,7 +663,7 @@ public class CommerceOrderItemLocalServiceImpl
 			commerceOrderItem = _createCommerceOrderItem(
 				commerceOrder.getGroupId(), user, commerceOrder, null,
 				cpInstance, 0, null, quantity, shippedQuantity,
-				unitOfMeasureIncrementalOrderQuantity, unitOfMeasureKey,
+				unitOfMeasureIncrementalOrderQuantity, unitOfMeasureKey, false,
 				serviceContext);
 		}
 		else {
@@ -1372,7 +1373,8 @@ public class CommerceOrderItemLocalServiceImpl
 			long parentCommerceOrderItemId, String json, BigDecimal quantity,
 			BigDecimal shippedQuantity,
 			BigDecimal unitOfMeasureIncrementalOrderQuantity,
-			String unitOfMeasureKey, ServiceContext serviceContext)
+			String unitOfMeasureKey, boolean child,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
@@ -1380,7 +1382,7 @@ public class CommerceOrderItemLocalServiceImpl
 
 		_validate(
 			serviceContext.getLocale(), commerceOrder, cpDefinition, cpInstance,
-			quantity, unitOfMeasureKey,
+			json, quantity, unitOfMeasureKey, child,
 			GetterUtil.getBoolean(
 				serviceContext.getAttribute("validateOrder"), true));
 
@@ -2304,7 +2306,8 @@ public class CommerceOrderItemLocalServiceImpl
 
 		_validate(
 			serviceContext.getLocale(), commerceOrder, cpDefinition, cpInstance,
-			quantity, unitOfMeasureKey,
+			commerceOrderItem.getJson(), quantity, unitOfMeasureKey,
+			commerceOrderItem.hasParentCommerceOrderItem(),
 			GetterUtil.getBoolean(
 				serviceContext.getAttribute("validateOrder"), true));
 
@@ -2373,8 +2376,9 @@ public class CommerceOrderItemLocalServiceImpl
 		_validate(
 			serviceContext.getLocale(), commerceOrder,
 			commerceOrderItem.getCPDefinition(),
-			commerceOrderItem.fetchCPInstance(), quantity,
+			commerceOrderItem.fetchCPInstance(), json, quantity,
 			commerceOrderItem.getUnitOfMeasureKey(),
+			commerceOrderItem.hasParentCommerceOrderItem(),
 			GetterUtil.getBoolean(
 				serviceContext.getAttribute("validateOrder"), true));
 
@@ -2439,8 +2443,9 @@ public class CommerceOrderItemLocalServiceImpl
 		_validate(
 			serviceContext.getLocale(), commerceOrder,
 			commerceOrderItem.getCPDefinition(),
-			commerceOrderItem.fetchCPInstance(), quantity,
+			commerceOrderItem.fetchCPInstance(), json, quantity,
 			commerceOrderItem.getUnitOfMeasureKey(),
+			commerceOrderItem.hasParentCommerceOrderItem(),
 			GetterUtil.getBoolean(
 				serviceContext.getAttribute("validateOrder"), true));
 
@@ -2484,8 +2489,9 @@ public class CommerceOrderItemLocalServiceImpl
 
 	private void _validate(
 			Locale locale, CommerceOrder commerceOrder,
-			CPDefinition cpDefinition, CPInstance cpInstance,
-			BigDecimal quantity, String unitOfMeasureKey, boolean validateOrder)
+			CPDefinition cpDefinition, CPInstance cpInstance, String json,
+			BigDecimal quantity, String unitOfMeasureKey, boolean child,
+			boolean validateOrder)
 		throws PortalException {
 
 		if (commerceOrder.getUserId() == 0) {
@@ -2539,7 +2545,7 @@ public class CommerceOrderItemLocalServiceImpl
 		if (!ExportImportThreadLocal.isImportInProcess() && validateOrder) {
 			List<CommerceOrderValidatorResult> commerceCartValidatorResults =
 				_commerceOrderValidatorRegistry.validate(
-					locale, commerceOrder, cpInstance, quantity);
+					locale, commerceOrder, cpInstance, json, quantity, child);
 
 			if (!commerceCartValidatorResults.isEmpty()) {
 				throw new CommerceOrderValidatorException(
