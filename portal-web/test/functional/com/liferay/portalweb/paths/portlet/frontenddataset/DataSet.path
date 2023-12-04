@@ -514,6 +514,26 @@
 	<td>//span[contains(., '${key_optionName}')]/preceding-sibling::input</td>
 	<td></td>
 </tr>
+<tr>
+	<td>BUTTON_LOCALIZATION_N</td>
+	<td>xpath=(//button[contains(@class, 'dropdown-toggle btn btn-monospaced btn-secondary')])[${key_index}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_DRAG_OPTION</td>
+	<td>//div[@aria-labelledby="New Creation Action"]//table[contains(@class,'table-list')]//tr[contains(@class,'orderable-table-row') and contains(.,'${key_nameField}')]//td[@class="drag-handle-cell"]//button[contains(@aria-label, 'Drag')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_LABEL_ITEM</td>
+	<td>//div[@aria-labelledby="New Creation Action"]//table[contains(@class,'table-list')]//tr[@class='orderable-table-row']//span[contains(.,'${key_name}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SEARCH_BAR_N</td>
+	<td>//div[@aria-labelledby="New Creation Action"]//li[contains(@class,'nav-item')]//*[contains(@class, 'input-group-item')]//*[@placeholder="Search"]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
