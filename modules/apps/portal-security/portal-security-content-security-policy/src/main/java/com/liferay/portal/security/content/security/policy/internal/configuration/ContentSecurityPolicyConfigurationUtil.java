@@ -6,8 +6,10 @@
 package com.liferay.portal.security.content.security.policy.internal.configuration;
 
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.Portal;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,34 +21,43 @@ public class ContentSecurityPolicyConfigurationUtil {
 
 	public static ContentSecurityPolicyConfiguration
 		getContentSecurityPolicyConfiguration(
+			HttpServletRequest httpServletRequest) {
+
+		return (ContentSecurityPolicyConfiguration)
+			httpServletRequest.getAttribute(
+				ContentSecurityPolicyConfigurationUtil.class.getName());
+	}
+
+	public static ContentSecurityPolicyConfiguration
+		setContentSecurityPolicyConfiguration(
 			ConfigurationProvider configurationProvider,
 			HttpServletRequest httpServletRequest, Portal portal) {
 
-		ContentSecurityPolicyConfiguration contentSecurityPolicyConfiguration =
-			(ContentSecurityPolicyConfiguration)httpServletRequest.getAttribute(
-				ContentSecurityPolicyConfigurationUtil.class.getName());
+		ContentSecurityPolicyConfiguration contentSecurityPolicyConfiguration;
 
-		if (contentSecurityPolicyConfiguration != null) {
-			return contentSecurityPolicyConfiguration;
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-134060")) {
+			contentSecurityPolicyConfiguration =
+				_CONTENT_SECURITY_POLICY_CONFIGURATION;
 		}
+		else {
+			try {
+				long groupId = portal.getScopeGroupId(httpServletRequest);
 
-		try {
-			long groupId = portal.getScopeGroupId(httpServletRequest);
-
-			if (groupId > 0) {
-				contentSecurityPolicyConfiguration =
-					configurationProvider.getGroupConfiguration(
-						ContentSecurityPolicyConfiguration.class, groupId);
+				if (groupId > 0) {
+					contentSecurityPolicyConfiguration =
+						configurationProvider.getGroupConfiguration(
+							ContentSecurityPolicyConfiguration.class, groupId);
+				}
+				else {
+					contentSecurityPolicyConfiguration =
+						configurationProvider.getCompanyConfiguration(
+							ContentSecurityPolicyConfiguration.class,
+							portal.getCompanyId(httpServletRequest));
+				}
 			}
-			else {
-				contentSecurityPolicyConfiguration =
-					configurationProvider.getCompanyConfiguration(
-						ContentSecurityPolicyConfiguration.class,
-						portal.getCompanyId(httpServletRequest));
+			catch (PortalException portalException) {
+				return ReflectionUtil.throwException(portalException);
 			}
-		}
-		catch (PortalException portalException) {
-			return ReflectionUtil.throwException(portalException);
 		}
 
 		httpServletRequest.setAttribute(
@@ -55,5 +66,28 @@ public class ContentSecurityPolicyConfigurationUtil {
 
 		return contentSecurityPolicyConfiguration;
 	}
+
+	private static final ContentSecurityPolicyConfiguration
+		_CONTENT_SECURITY_POLICY_CONFIGURATION =
+			new ContentSecurityPolicyConfiguration() {
+
+				@Override
+				public boolean enabled() {
+					return false;
+				}
+
+				@Override
+				public String[] excludedPaths() {
+					return _excludedPaths;
+				}
+
+				@Override
+				public String policy() {
+					return StringPool.BLANK;
+				}
+
+				private final String[] _excludedPaths = {};
+
+			};
 
 }

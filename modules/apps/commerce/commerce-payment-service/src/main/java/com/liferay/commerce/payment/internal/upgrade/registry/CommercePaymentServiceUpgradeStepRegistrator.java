@@ -85,6 +85,12 @@ public class CommercePaymentServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.addColumns(
 				"CommercePaymentMethodGroupRel", "typeSettings TEXT null"));
 
+		registry.register(
+			"1.5.0", "1.6.0",
+			UpgradeProcessFactory.addColumns(
+				"CommercePaymentEntry", "cancelURL TEXT null",
+				"errorMessages TEXT null", "languageId VARCHAR(75) null"));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce payment upgrade step registrator finished");
 		}

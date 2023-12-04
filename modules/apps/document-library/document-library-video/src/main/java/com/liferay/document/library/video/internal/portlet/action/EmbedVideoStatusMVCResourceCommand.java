@@ -7,10 +7,10 @@ package com.liferay.document.library.video.internal.portlet.action;
 
 import com.liferay.document.library.constants.DLFileVersionPreviewConstants;
 import com.liferay.document.library.kernel.model.DLProcessorConstants;
+import com.liferay.document.library.kernel.processor.DLProcessor;
+import com.liferay.document.library.kernel.processor.DLProcessorHelperUtil;
+import com.liferay.document.library.kernel.processor.VideoProcessor;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.document.library.kernel.util.DLProcessor;
-import com.liferay.document.library.kernel.util.DLProcessorRegistryUtil;
-import com.liferay.document.library.kernel.util.VideoProcessor;
 import com.liferay.document.library.service.DLFileVersionPreviewLocalService;
 import com.liferay.document.library.video.internal.constants.DLVideoPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Alejandro Tardín
@@ -81,7 +80,7 @@ public class EmbedVideoStatusMVCResourceCommand extends BaseMVCResourceCommand {
 		if (_dlFileVersionPreviewLocalService.hasDLFileVersionPreview(
 				fileVersion.getFileEntryId(), fileVersion.getFileVersionId(),
 				DLFileVersionPreviewConstants.STATUS_FAILURE) ||
-			!DLProcessorRegistryUtil.isPreviewableSize(fileVersion)) {
+			!DLProcessorHelperUtil.isPreviewableSize(fileVersion)) {
 
 			return true;
 		}
@@ -98,10 +97,7 @@ public class EmbedVideoStatusMVCResourceCommand extends BaseMVCResourceCommand {
 	@Reference
 	private DLFileVersionPreviewLocalService _dlFileVersionPreviewLocalService;
 
-	@Reference(
-		policyOption = ReferencePolicyOption.GREEDY,
-		target = "(type=" + DLProcessorConstants.VIDEO_PROCESSOR + ")"
-	)
+	@Reference(target = "(type=" + DLProcessorConstants.VIDEO_PROCESSOR + ")")
 	private DLProcessor _dlProcessor;
 
 }

@@ -12,15 +12,15 @@ import com.liferay.document.library.constants.DLFileVersionPreviewConstants;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.model.DLProcessorConstants;
+import com.liferay.document.library.kernel.processor.AudioProcessor;
+import com.liferay.document.library.kernel.processor.DLProcessor;
+import com.liferay.document.library.kernel.processor.DLProcessorHelperUtil;
+import com.liferay.document.library.kernel.processor.ImageProcessor;
+import com.liferay.document.library.kernel.processor.PDFProcessor;
+import com.liferay.document.library.kernel.processor.VideoProcessor;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.document.library.kernel.store.Store;
-import com.liferay.document.library.kernel.util.AudioProcessor;
-import com.liferay.document.library.kernel.util.DLProcessor;
-import com.liferay.document.library.kernel.util.DLProcessorRegistryUtil;
-import com.liferay.document.library.kernel.util.ImageProcessor;
-import com.liferay.document.library.kernel.util.PDFProcessor;
-import com.liferay.document.library.kernel.util.VideoProcessor;
 import com.liferay.document.library.preview.DLPreviewRendererProvider;
 import com.liferay.document.library.service.DLFileVersionPreviewLocalService;
 import com.liferay.frontend.taglib.clay.servlet.taglib.LinkTag;
@@ -42,7 +42,6 @@ import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Samuel Trong Tran
@@ -145,7 +144,7 @@ public class DLFileVersionCTDisplayRenderer
 				return null;
 			}
 			else if (!pdfProcessor.hasImages(fileVersion)) {
-				if (!DLProcessorRegistryUtil.isPreviewableSize(fileVersion)) {
+				if (!DLProcessorHelperUtil.isPreviewableSize(fileVersion)) {
 					return null;
 				}
 
@@ -173,7 +172,7 @@ public class DLFileVersionCTDisplayRenderer
 		ImageProcessor imageProcessor = (ImageProcessor)_imageDLProcessor;
 
 		if (imageProcessor.isSupported(mimeType)) {
-			if (!DLProcessorRegistryUtil.isPreviewableSize(fileVersion) ||
+			if (!DLProcessorHelperUtil.isPreviewableSize(fileVersion) ||
 				!imageProcessor.hasImages(fileVersion) ||
 				_dlFileVersionPreviewLocalService.hasDLFileVersionPreview(
 					fileVersion.getFileEntryId(),
@@ -334,10 +333,7 @@ public class DLFileVersionCTDisplayRenderer
 
 	private static final String _VIDEO_PREVIEW = "VIDEO_PREVIEW";
 
-	@Reference(
-		policyOption = ReferencePolicyOption.GREEDY,
-		target = "(type=" + DLProcessorConstants.AUDIO_PROCESSOR + ")"
-	)
+	@Reference(target = "(type=" + DLProcessorConstants.AUDIO_PROCESSOR + ")")
 	private DLProcessor _audioDLProcessor;
 
 	@Reference
@@ -354,28 +350,19 @@ public class DLFileVersionCTDisplayRenderer
 	)
 	private DLPreviewRendererProvider _dlPreviewRendererProvider;
 
-	@Reference(
-		policyOption = ReferencePolicyOption.GREEDY,
-		target = "(type=" + DLProcessorConstants.IMAGE_PROCESSOR + ")"
-	)
+	@Reference(target = "(type=" + DLProcessorConstants.IMAGE_PROCESSOR + ")")
 	private DLProcessor _imageDLProcessor;
 
 	@Reference
 	private Language _language;
 
-	@Reference(
-		policyOption = ReferencePolicyOption.GREEDY,
-		target = "(type=" + DLProcessorConstants.PDF_PROCESSOR + ")"
-	)
+	@Reference(target = "(type=" + DLProcessorConstants.PDF_PROCESSOR + ")")
 	private DLProcessor _pdfDLProcessor;
 
 	@Reference(target = "(default=true)")
 	private Store _store;
 
-	@Reference(
-		policyOption = ReferencePolicyOption.GREEDY,
-		target = "(type=" + DLProcessorConstants.VIDEO_PROCESSOR + ")"
-	)
+	@Reference(target = "(type=" + DLProcessorConstants.VIDEO_PROCESSOR + ")")
 	private DLProcessor _videoDLProcessor;
 
 }

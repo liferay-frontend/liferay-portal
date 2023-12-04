@@ -7,9 +7,9 @@ package com.liferay.document.library.preview.audio.internal;
 
 import com.liferay.document.library.constants.DLFileVersionPreviewConstants;
 import com.liferay.document.library.kernel.model.DLProcessorConstants;
-import com.liferay.document.library.kernel.util.AudioProcessor;
-import com.liferay.document.library.kernel.util.DLProcessor;
-import com.liferay.document.library.kernel.util.DLProcessorRegistryUtil;
+import com.liferay.document.library.kernel.processor.AudioProcessor;
+import com.liferay.document.library.kernel.processor.DLProcessor;
+import com.liferay.document.library.kernel.processor.DLProcessorHelperUtil;
 import com.liferay.document.library.preview.DLPreviewRenderer;
 import com.liferay.document.library.preview.DLPreviewRendererProvider;
 import com.liferay.document.library.preview.audio.internal.constants.DLPreviewAudioWebKeys;
@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Alejandro Tardín
@@ -100,9 +99,9 @@ public class AudioDLPreviewRendererProvider
 		AudioProcessor audioProcessor = (AudioProcessor)_dlProcessor;
 
 		if (!audioProcessor.hasAudio(fileVersion)) {
-			if (!DLProcessorRegistryUtil.isPreviewableSize(fileVersion)) {
+			if (!DLProcessorHelperUtil.isPreviewableSize(fileVersion)) {
 				throw new DLPreviewSizeException(
-					DLProcessorRegistryUtil.getPreviewableProcessorMaxSize(
+					DLProcessorHelperUtil.getPreviewableProcessorMaxSize(
 						fileVersion.getGroupId()));
 			}
 
@@ -163,10 +162,7 @@ public class AudioDLPreviewRendererProvider
 	@Reference
 	private DLFileVersionPreviewLocalService _dlFileVersionPreviewLocalService;
 
-	@Reference(
-		policyOption = ReferencePolicyOption.GREEDY,
-		target = "(type=" + DLProcessorConstants.AUDIO_PROCESSOR + ")"
-	)
+	@Reference(target = "(type=" + DLProcessorConstants.AUDIO_PROCESSOR + ")")
 	private DLProcessor _dlProcessor;
 
 	@Reference

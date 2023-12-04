@@ -27,7 +27,7 @@
 </tr>
 <tr>
 	<td>ASSERT_FRAGMENTS_TEXT_IN_SF_N</td>
-	<td>xpath=(//h1[(contains(@class,"component-heading")) and (contains(@data-lfr-editable-id,"${key_id}"))])[${index}][contains(text(),"${key_fragmentText}")]</td>
+	<td>xpath=(//h1[(contains(@class,"component-heading")) and (contains(@data-lfr-editable-id,"${key_id}"))])[${index}][contains(text(),"${key_fragmentText}")] | (//h1[(contains(@class,"component-heading")) and (contains(@data-lfr-editable-id,"${key_id}"))])[${index}]/p[contains(text(),"${key_fragmentText}")]</td>
 	<td></td>
 </tr>
 <tr>
@@ -451,6 +451,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>RADIO_BUTTON_SPECIFIC</td>
+	<td>//label[text()='${key_radioOption}']/input[@type='radio'] | //div[contains(@class,'justify')]//p[text()='${key_radioOption}']//preceding::input[@type='radio'][1]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>RADIO_BUTTON_WITH_VALUE</td>
 	<td>//span[contains(.,'${key_fieldValue}')]/../input[contains(@type,'radio')]</td>
 	<td></td>
@@ -692,12 +697,12 @@
 </tr>
 <tr>
 	<td>BODY_VERTICAL_ELLIPSIS</td>
-	<td>//div[@class='table-list-title']/../../../*[contains(.,'${key_value}')]//*[name()='svg'][contains(@class,'icon-ellipsis')]</td>
+	<td>//div[@class='table-list-title']/*[text()='${key_value}']/../../..//*[name()='svg'][contains(@class,'icon-ellipsis')]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>BODY_VERTICAL_ELLIPSIS_ORDER</td>
-	<td>//div[contains(@class,'portlet') and contains(@class,'container')]//a[span/*[name()='svg'][contains(@class,'icon-ellipsis')]] | //*[contains(@class,'sheet-title')]//*[contains(@class,'dropdown-toggle')][.//*[name()='svg'][contains(@class,'icon-ellipsis')]]</td>
+	<td>ORDERS_ENTRY_BODY_VERTICAL_ELLIPSIS</td>
+	<td>//div[@class='table-list-title']/../../../*[contains(.,'${key_value}')]//*[name()='svg'][contains(@class,'icon-ellipsis')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -826,6 +831,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>CHECK_ELIGIBILITY_CHECKBOX</td>
+	<td>//label[contains(.,'${key_entry}')]/input[(@checked='')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ELIGIBILITY_RELATION_FIELD_CLEAR_BUTTON</td>
 	<td>//div[h4[contains(.,'${key_eligibilityCardTitle}')]]//input[@type='text']/..//span[contains(@class,'input-group-inset-item')]//button[contains(@class,'btn')]</td>
 	<td></td>
@@ -892,7 +902,7 @@
 </tr>
 <tr>
 	<td>TABLE_ENTRY_EDIT_BUTTON</td>
-	<td>//h4[contains(.,'${key_table}')]//..//div/a[contains(.,'${key_entryName}')]//..//..//../div/*[contains(.,'Edit')] | //div[contains(.,'${key_table}')]//div[@class='dnd-tr'][contains(.,'${key_entryName}')]//*[contains(text(),'Edit')]</td>
+	<td>//h4[contains(.,'${key_table}')]//..//div/a[text()='${key_entryName}']//..//..//../div/*[contains(.,'Edit')] | //div[contains(.,'${key_table}')]//div[@class='dnd-tr']//*[text()='${key_entryName}']/..//*[contains(text(),'Edit')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -994,6 +1004,11 @@
 <tr>
 	<td>PRODUCT_CARD_LIST_PRICE</td>
 	<td>//p[@title='${key_productName}']//following-sibling::p[@class='card-text']//span[@class='price-value']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHANNEL_ADDRESS_TRASH_ICON</td>
+	<td>//div[contains(.,'${key_channelEntry}')]/../../..//button[*[name()='svg'][contains(@class,'lexicon-icon-trash')]]</td>
 	<td></td>
 </tr>
 

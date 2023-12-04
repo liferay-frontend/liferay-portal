@@ -24,6 +24,7 @@ import {hasEndpointDataChanged} from './utils/dataUtils';
 import {deleteData, fetchJSON, postData, updateData} from './utils/fetchUtil';
 
 import '../../css/main.scss';
+import {HTTP_METHODS, RETRIEVE_TYPES, STR_BLANK} from './utils/constants';
 import {
 	beginStringWithForwardSlash,
 	getAllButLastParameterFromPath,
@@ -65,9 +66,11 @@ export default function EditAPIEndpoint({
 		{}
 	);
 	const [displayError, setDisplayError] = useState<EndpointDataError>({
+		httpMethod: false,
 		parameter: false,
 		path: false,
 		pathParameter: false,
+		r_requestAPISchemaToAPIEndpoints_c_apiSchemaId: false,
 		retrieveType: false,
 		scope: false,
 	});
@@ -94,15 +97,24 @@ export default function EditAPIEndpoint({
 				...(response.description && {
 					description: response.description,
 				}),
+				httpMethod: response.httpMethod,
 				parameter: getLastParameterFromPath(response.path),
 				path: getAllButLastParameterFromPath(response.path),
-				pathParameter: response.pathParameter,
-				pathParameterDescription: response.pathParameterDescription,
-				retrieveType: response.retrieveType,
+				...(response.pathParameter && {
+					pathParameter: response.pathParameter,
+				}),
+				...(response.pathParameterDescription && {
+					pathParameterDescription: response.pathParameterDescription,
+				}),
+				...(response.r_requestAPISchemaToAPIEndpoints_c_apiSchemaId && {
+					r_requestAPISchemaToAPIEndpoints_c_apiSchemaId:
+						response.r_requestAPISchemaToAPIEndpoints_c_apiSchemaId,
+				}),
 				...(response.r_responseAPISchemaToAPIEndpoints_c_apiSchemaId && {
 					r_responseAPISchemaToAPIEndpoints_c_apiSchemaId:
 						response.r_responseAPISchemaToAPIEndpoints_c_apiSchemaId,
 				}),
+				retrieveType: response.retrieveType,
 				scope: response.scope,
 			});
 		});
@@ -111,14 +123,23 @@ export default function EditAPIEndpoint({
 	function validateData() {
 		let isDataValid = true;
 
-		const mandatoryFields = ['path', 'retrieveType', 'scope'];
+		const mandatoryFields = ['httpMethod', 'path', 'retrieveType', 'scope'];
 
-		if (localUIData.retrieveType?.key === 'singleElement') {
+		if (
+			localUIData.httpMethod?.key === HTTP_METHODS.GET &&
+			localUIData.retrieveType?.key === RETRIEVE_TYPES.SINGLE_ELEMENT
+		) {
 			mandatoryFields.push('parameter');
 
 			if (localUIData.r_responseAPISchemaToAPIEndpoints_c_apiSchemaId) {
 				mandatoryFields.push('pathParameter');
 			}
+		}
+
+		if (localUIData.httpMethod?.key === HTTP_METHODS.POST) {
+			mandatoryFields.push(
+				'r_requestAPISchemaToAPIEndpoints_c_apiSchemaId'
+			);
 		}
 
 		if (!Object.keys(localUIData!).length) {
@@ -161,7 +182,10 @@ export default function EditAPIEndpoint({
 				Object.keys(localUIData).length &&
 				isDataValid
 			) {
-				if (localUIData.retrieveType?.key !== 'singleElement') {
+				if (
+					localUIData.retrieveType?.key !==
+					RETRIEVE_TYPES.SINGLE_ELEMENT
+				) {
 					handleModifyODataFields({
 						deleteSuccessMessage: Liferay.Language.get(
 							'the-filter-was-deleted'
@@ -189,9 +213,13 @@ export default function EditAPIEndpoint({
 					});
 				}
 
-				let parameter: string | undefined = '';
+				let parameter: string | undefined = STR_BLANK;
 
-				if (localUIData.retrieveType?.key === 'singleElement') {
+				if (
+					localUIData.httpMethod?.key === HTTP_METHODS.GET &&
+					localUIData.retrieveType?.key ===
+						RETRIEVE_TYPES.SINGLE_ELEMENT
+				) {
 					parameter = localUIData.parameter;
 				}
 
@@ -204,11 +232,24 @@ export default function EditAPIEndpoint({
 									beginStringWithForwardSlash(parameter)
 							),
 						}),
-						pathParameter: localUIData.pathParameter,
-						pathParameterDescription:
-							localUIData.pathParameterDescription,
-						r_responseAPISchemaToAPIEndpoints_c_apiSchemaId:
-							localUIData.r_responseAPISchemaToAPIEndpoints_c_apiSchemaId,
+						httpMethod: {
+							key: localUIData.httpMethod?.key!,
+							name: localUIData.httpMethod?.name!,
+						},
+						pathParameter: localUIData.pathParameter
+							? localUIData.pathParameter
+							: STR_BLANK,
+						pathParameterDescription: localUIData.pathParameterDescription
+							? localUIData.pathParameterDescription
+							: STR_BLANK,
+						...(localUIData.r_requestAPISchemaToAPIEndpoints_c_apiSchemaId && {
+							r_requestAPISchemaToAPIEndpoints_c_apiSchemaId:
+								localUIData.r_requestAPISchemaToAPIEndpoints_c_apiSchemaId,
+						}),
+						...(localUIData.r_responseAPISchemaToAPIEndpoints_c_apiSchemaId && {
+							r_responseAPISchemaToAPIEndpoints_c_apiSchemaId:
+								localUIData.r_responseAPISchemaToAPIEndpoints_c_apiSchemaId,
+						}),
 						retrieveType: localUIData.retrieveType,
 						scope: localUIData.scope,
 					},
@@ -579,7 +620,6 @@ export default function EditAPIEndpoint({
 										basePath={basePath}
 										data={localUIData}
 										displayError={displayError}
-										editMode={true}
 										setData={setLocalUIData}
 									/>
 								</div>

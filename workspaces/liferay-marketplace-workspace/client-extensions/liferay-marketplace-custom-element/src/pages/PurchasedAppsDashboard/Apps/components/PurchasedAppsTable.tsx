@@ -45,14 +45,15 @@ const AppsTable: React.FC<AppsTableProps> = ({items}) => {
 				{
 					key: 'name',
 					render: (name, {thumbnail}) => (
-						<div className="dashboard-table-row-name-container">
+						<div style={{width: 200}}>
 							<img
 								alt="App Image"
-								className="dashboard-table-row-name-logo"
+								height={36}
 								src={showAppImage(thumbnail)}
+								width={36}
 							/>
 
-							<span className="dashboard-table-row-name-text">
+							<span className="font-weight-semi-bold ml-2">
 								{name}
 							</span>
 						</div>
@@ -126,11 +127,16 @@ const AppsTable: React.FC<AppsTableProps> = ({items}) => {
 							id,
 							orderStatusInfo,
 							orderTypeExternalReferenceCode,
+							placedOrderItems,
 							virtualURL,
 						}
 					) => {
 						const orderStatusIsNotCompleted =
 							orderStatusInfo?.label !== OrderStatuses.COMPLETED;
+
+						const isFreeApp =
+							placedOrderItems[0]?.price?.price === 0 &&
+							placedOrderItems[0]?.sku !== 'TRIAL';
 
 						return (
 							<div onClick={(event) => event.stopPropagation()}>
@@ -150,7 +156,8 @@ const AppsTable: React.FC<AppsTableProps> = ({items}) => {
 													<DropDown.Item
 														data-tooltip-align="left"
 														disabled={
-															orderStatusIsNotCompleted
+															orderStatusIsNotCompleted ||
+															isFreeApp
 														}
 														onClick={() =>
 															navigate(
@@ -172,13 +179,16 @@ const AppsTable: React.FC<AppsTableProps> = ({items}) => {
 												</ClayTooltipProvider>
 
 												<DropDown.Item
+													disabled={isFreeApp}
 													onClick={() => {
 														navigate(
 															`order/${id}/licenses`
 														);
 													}}
 												>
-													Manage License Key(s)
+													{i18n.translate(
+														'manage-license-keys'
+													)}
 												</DropDown.Item>
 											</>
 										)}

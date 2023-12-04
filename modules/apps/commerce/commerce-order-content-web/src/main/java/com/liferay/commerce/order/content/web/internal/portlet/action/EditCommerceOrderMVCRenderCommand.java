@@ -5,12 +5,16 @@
 
 package com.liferay.commerce.order.content.web.internal.portlet.action;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.content.web.internal.display.context.CommerceOrderContentDisplayContext;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.util.CommerceAccountHelper;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -25,6 +29,8 @@ import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -59,6 +65,36 @@ public class EditCommerceOrderMVCRenderCommand implements MVCRenderCommand {
 				commerceOrderContentDisplayContext.getCommerceOrder();
 
 			if ((commerceOrder != null) && commerceOrder.isOpen()) {
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)renderRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
+
+				long commerceChannelGroupId =
+					_commerceChannelLocalService.
+						getCommerceChannelGroupIdBySiteGroupId(
+							themeDisplay.getScopeGroupId());
+
+				AccountEntry accountEntry =
+					_commerceAccountHelper.getCurrentAccountEntry(
+						commerceChannelGroupId,
+						_portal.getHttpServletRequest(renderRequest));
+
+				if (accountEntry.getAccountEntryId() !=
+						commerceOrder.getCommerceAccountId()) {
+
+					HttpServletResponse httpServletResponse =
+						_portal.getHttpServletResponse(renderResponse);
+
+					httpServletResponse.sendRedirect(
+						_portletURLFactory.create(
+							_portal.getHttpServletRequest(renderRequest),
+							CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT,
+							PortletRequest.RENDER_PHASE
+						).toString());
+
+					return "/pending_commerce_orders/view.jsp";
+				}
+
 				CommerceOrder currentCommerceOrder =
 					_commerceOrderHttpHelper.getCurrentCommerceOrder(
 						_portal.getHttpServletRequest(renderRequest));
@@ -109,9 +145,18 @@ public class EditCommerceOrderMVCRenderCommand implements MVCRenderCommand {
 	}
 
 	@Reference
+	private CommerceAccountHelper _commerceAccountHelper;
+
+	@Reference
+	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
 	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private PortletURLFactory _portletURLFactory;
 
 }

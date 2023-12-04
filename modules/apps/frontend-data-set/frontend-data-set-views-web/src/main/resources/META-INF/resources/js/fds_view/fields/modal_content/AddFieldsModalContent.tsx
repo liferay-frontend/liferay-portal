@@ -25,6 +25,7 @@ import {IFDSField} from '../Fields';
 const FULL_OBJECT_IDENTIFIER = '.*';
 interface IFieldTreeItem extends IField {
 	children?: IFieldTreeItem[];
+	query?: string;
 	savedId?: number;
 	selected?: boolean;
 }
@@ -70,11 +71,17 @@ const applySavedFDSFields = ({
 	return [selectedKeys, fields];
 };
 
-function filterFields(
-	fields: Array<IFieldTreeItem>,
-	query: string,
-	onFilter?: Function
-) {
+function filterFields({
+	fields,
+	onFilter,
+	onMatch,
+	query,
+}: {
+	fields: Array<IFieldTreeItem>;
+	onFilter?: (field: IFieldTreeItem) => void;
+	onMatch?: (field: IFieldTreeItem) => void;
+	query: string;
+}) {
 	const filteredItems: Array<IFieldTreeItem> = [];
 	const regexp = new RegExp(query, 'i');
 
@@ -82,18 +89,23 @@ function filterFields(
 		const match = field.label ? regexp.test(field.label) : false;
 
 		const filteredChildren = field.children?.length
-			? filterFields(field.children, query, onFilter)
+			? filterFields({fields: field.children, onFilter, onMatch, query})
 			: [];
 
 		if (match || (field.children?.length && filteredChildren.length)) {
 			filteredItems.push({
 				...field,
 				children: filteredChildren,
+				query,
 			});
 
 			if (onFilter) {
 				onFilter(field);
 			}
+		}
+
+		if (match && onMatch) {
+			onMatch(field);
 		}
 	});
 
@@ -106,23 +118,51 @@ function applyFilter({
 }: {fields?: Array<IFieldTreeItem>; query?: string} = {}) {
 	if (!query || !fields) {
 		return {
+			counter: 0,
 			filteredItems: fields ?? [],
 			filteredKeys: [],
 		};
 	}
 
+	let counter = 0;
 	const filteredKeys: Array<React.Key> = [];
-	const filteredItems = filterFields(fields, query, ({id}: IField) => {
-		if (id) {
-			filteredKeys.push(id);
-		}
+	const filteredItems = filterFields({
+		fields,
+		onFilter: ({id}: IFieldTreeItem) => {
+			if (id) {
+				filteredKeys.push(id);
+			}
+		},
+		onMatch: () => counter++,
+		query,
 	});
 
 	return {
+		counter,
 		filteredItems,
 		filteredKeys,
 	};
 }
+
+const Highlight = ({query, text}: {query?: string; text?: string}) => {
+	if (!query || !text) {
+		return <>{text ?? ''}</>;
+	}
+
+	const indexMatch = text.search(RegExp(query, 'i'));
+
+	return indexMatch > -1 ? (
+		<>
+			{text.substring(0, indexMatch)}
+			<mark className="bg-transparent border-0 font-weight-bold p-0 shadow-none">
+				{text.substring(indexMatch, indexMatch + query.length)}
+			</mark>
+			{text.substring(indexMatch + query.length)}
+		</>
+	) : (
+		<>{text}</>
+	);
+};
 
 const AddFieldsModalContent = ({
 	closeModal,
@@ -152,9 +192,12 @@ const AddFieldsModalContent = ({
 	const [selectedKeys, setSelectedKeys] = useState<Set<React.Key>>(
 		new Set<React.Key>()
 	);
-	const [fields, setFields] = useState<Array<IField> | null>(initialFields);
+	const [fields, setFields] = useState<Array<IFieldTreeItem> | null>(
+		initialFields
+	);
 	const [query, setQuery] = useState<string>('');
 	const [expandedKeys, setExpandedKeys] = useState<Array<React.Key>>([]);
+	const [searchCounter, setSearchCounter] = useState<number>(0);
 
 	const saveFDSFields = async () => {
 		setSaveButtonDisabled(true);
@@ -241,13 +284,14 @@ const AddFieldsModalContent = ({
 	const onSearch = (query: string) => {
 		setQuery(query);
 
-		const {filteredItems, filteredKeys} = applyFilter({
+		const {counter, filteredItems, filteredKeys} = applyFilter({
 			fields: initialFields ?? [],
 			query,
 		});
 
 		setFields(filteredItems);
 		setExpandedKeys(filteredKeys);
+		setSearchCounter(counter);
 	};
 
 	return (
@@ -273,14 +317,14 @@ const AddFieldsModalContent = ({
 									<span className="component-text text-truncate-inline">
 										<span className="text-truncate">
 											{sub(
-												fields.length === 1
+												searchCounter === 1
 													? Liferay.Language.get(
 															'x-result-for-x'
 													  )
 													: Liferay.Language.get(
 															'x-results-for-x'
 													  ),
-												fields.length,
+												searchCounter,
 												query
 											)}
 										</span>
@@ -321,22 +365,30 @@ const AddFieldsModalContent = ({
 								selectionMode="multiple"
 								showExpanderOnHover={false}
 							>
-								{({children, label}: IFieldTreeItem) => (
+								{({children, label, query}: IFieldTreeItem) => (
 									<TreeView.Item>
 										<TreeView.ItemStack>
-											<ClayCheckbox
-												checked
-												label={label}
-											/>
+											<ClayCheckbox checked>
+												<span className="font-weight-normal pl-1 text-3">
+													<Highlight
+														query={query}
+														text={label}
+													/>
+												</span>
+											</ClayCheckbox>
 										</TreeView.ItemStack>
 
 										<TreeView.Group items={children}>
 											{({label}: IFieldTreeItem) => (
 												<TreeView.Item>
-													<ClayCheckbox
-														checked
-														label={label}
-													/>
+													<ClayCheckbox checked>
+														<span className="font-weight-normal pl-1 text-3">
+															<Highlight
+																query={query}
+																text={label}
+															/>
+														</span>
+													</ClayCheckbox>
 												</TreeView.Item>
 											)}
 										</TreeView.Group>

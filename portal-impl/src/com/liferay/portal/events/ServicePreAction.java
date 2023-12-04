@@ -1785,10 +1785,6 @@ public class ServicePreAction extends Action {
 
 		themeDisplay.setURLPortal(portalURL.concat(contextPath));
 
-		if (!secure && PropsValues.COMPANY_SECURITY_AUTH_REQUIRES_HTTPS) {
-			secure = true;
-		}
-
 		String securePortalURL = PortalUtil.getPortalURL(
 			httpServletRequest, secure);
 
@@ -2060,7 +2056,8 @@ public class ServicePreAction extends Action {
 		httpServletResponse.setHeader(
 			"X-Liferay-Request-Group",
 			ListUtil.toString(
-				liferayRequestGroupHeaderValues, StringPool.SPACE));
+				liferayRequestGroupHeaderValues, (String)null,
+				StringPool.SPACE));
 
 		User user = themeDisplay.getUser();
 

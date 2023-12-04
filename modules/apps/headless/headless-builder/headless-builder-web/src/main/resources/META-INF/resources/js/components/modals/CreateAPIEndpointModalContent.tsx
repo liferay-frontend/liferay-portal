@@ -9,6 +9,7 @@ import {fetch, openToast} from 'frontend-js-web';
 import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 
 import BaseAPIEndpointFields from '../baseComponents/BaseAPIEndpointFields';
+import {HTTP_METHODS, RETRIEVE_TYPES, STR_BLANK} from '../utils/constants';
 import {headers} from '../utils/fetchUtil';
 import {beginStringWithForwardSlash} from '../utils/string';
 
@@ -35,16 +36,18 @@ export function CreateAPIEndpointModalContent({
 		{}
 	);
 	const [displayError, setDisplayError] = useState<EndpointDataError>({
+		httpMethod: false,
 		parameter: false,
 		path: false,
 		pathParameter: false,
+		r_requestAPISchemaToAPIEndpoints_c_apiSchemaId: false,
 		retrieveType: false,
 		scope: false,
 	});
 
 	useEffect(() => {
 		for (const key in localUIData) {
-			if (localUIData[key as keyof APIEndpointUIData] !== '') {
+			if (localUIData[key as keyof APIEndpointUIData] !== STR_BLANK) {
 				setDisplayError((previousErrors) => ({
 					...previousErrors,
 					[key]: false,
@@ -54,9 +57,12 @@ export function CreateAPIEndpointModalContent({
 	}, [localUIData]);
 
 	async function postData() {
-		let parameter: string | undefined = '';
+		let parameter: string | undefined = STR_BLANK;
 
-		if (localUIData.retrieveType?.key === 'singleElement') {
+		if (
+			localUIData.httpMethod?.key === HTTP_METHODS.GET &&
+			localUIData.retrieveType?.key === RETRIEVE_TYPES.SINGLE_ELEMENT
+		) {
 			parameter = localUIData.parameter;
 		}
 
@@ -64,6 +70,10 @@ export function CreateAPIEndpointModalContent({
 			body: JSON.stringify({
 				...localUIData,
 				applicationStatus: {key: 'unpublished'},
+				httpMethod: {
+					key: localUIData.httpMethod?.key!,
+					name: localUIData.httpMethod?.key!,
+				},
 				name: localUIData.path,
 				...(localUIData.path && {
 					path: beginStringWithForwardSlash(
@@ -113,9 +123,12 @@ export function CreateAPIEndpointModalContent({
 
 	function validateData() {
 		let isDataValid = true;
-		const mandatoryFields = ['scope', 'retrieveType', 'path'];
+		const mandatoryFields = ['httpMethod', 'path', 'retrieveType', 'scope'];
 
-		if (localUIData.retrieveType?.key === 'singleElement') {
+		if (
+			localUIData.httpMethod?.key === HTTP_METHODS.GET &&
+			localUIData.retrieveType?.key === RETRIEVE_TYPES.SINGLE_ELEMENT
+		) {
 			mandatoryFields.push('parameter');
 		}
 

@@ -676,6 +676,14 @@ definition {
 
 			Form.editName(formName = "Select country");
 
+			Form.addTextField(fieldPositionNumber = 0);
+
+			var fieldNameTextField = FormFields.getFieldName();
+
+			Form.editFieldLabelMetal(fieldValue = "Postal Code");
+
+			Form.closeSidebar();
+
 			Form.gotoAddField(
 				fieldPositionNumber = 0,
 				fieldType = "Select from List");
@@ -691,14 +699,6 @@ definition {
 			Form.editFieldDataProvider(
 				dataProvider = "Get Countries",
 				dataProviderOutput = "Country Names");
-
-			Form.closeSidebar();
-
-			Form.addTextField(fieldPositionNumber = 1);
-
-			var fieldNameTextField = FormFields.getFieldName();
-
-			Form.editFieldLabelMetal(fieldValue = "Postal Code");
 
 			Form.save();
 		}
@@ -749,8 +749,6 @@ definition {
 			FormPortletConfiguration.selectFormOnAPage(
 				formName = "Select country",
 				pageName = "Form Page");
-
-			Navigator.gotoPage(pageName = "Form Page");
 		}
 
 		task ("When an entry is submitted immediately") {
@@ -825,6 +823,20 @@ definition {
 
 			Form.editName(formName = "Select country");
 
+			Form.addTextField(fieldPositionNumber = 0);
+
+			var fieldNameTextField = FormFields.getFieldName();
+
+			Form.editFieldLabelMetal(fieldValue = "US Postal Code");
+
+			Form.closeSidebar();
+
+			Form.addTextField(fieldPositionNumber = 1);
+
+			Form.editFieldLabelMetal(fieldValue = "Non-US Postal Code");
+
+			Form.closeSidebar();
+
 			Form.gotoAddField(
 				fieldPositionNumber = 0,
 				fieldType = "Select from List");
@@ -840,20 +852,6 @@ definition {
 			Form.editFieldDataProvider(
 				dataProvider = "Get Countries",
 				dataProviderOutput = "Country Names");
-
-			Form.closeSidebar();
-
-			Form.addTextField(fieldPositionNumber = 1);
-
-			var fieldNameTextField = FormFields.getFieldName();
-
-			Form.editFieldLabelMetal(fieldValue = "US Postal Code");
-
-			Form.closeSidebar();
-
-			Form.addTextField(fieldPositionNumber = 2);
-
-			Form.editFieldLabelMetal(fieldValue = "Non-US Postal Code");
 
 			Form.save();
 		}
@@ -940,9 +938,9 @@ definition {
 				fieldName = ${fieldNameTextField},
 				fieldValue = 10004);
 
-			// Pause for 40 seconds for the entry to be automatically saved. See LPS-185648
+			// Pause for 60 seconds for the entry to be automatically saved. See LPS-185648
 
-			Pause(value1 = 40000);
+			Pause(value1 = 60000);
 
 			Open.openInTheNewTab(value1 = "http://localhost:8080");
 

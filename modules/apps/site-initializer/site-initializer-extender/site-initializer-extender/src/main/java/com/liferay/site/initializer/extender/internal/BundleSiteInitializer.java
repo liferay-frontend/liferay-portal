@@ -24,6 +24,9 @@ import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.util.comparator.ClassNameModelResourceComparator;
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
+import com.liferay.client.extension.type.CET;
+import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.client.extension.util.CETUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -182,6 +185,7 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.multipart.BinaryFile;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsEntryLocalService;
@@ -245,6 +249,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		AccountRoleResource.Factory accountRoleResourceFactory,
 		AssetCategoryLocalService assetCategoryLocalService,
 		AssetListEntryLocalService assetListEntryLocalService, Bundle bundle,
+		CETManager cetManager,
 		ClientExtensionEntryLocalService clientExtensionEntryLocalService,
 		ConfigurationProvider configurationProvider,
 		DDMStructureLocalService ddmStructureLocalService,
@@ -326,6 +331,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		_assetCategoryLocalService = assetCategoryLocalService;
 		_assetListEntryLocalService = assetListEntryLocalService;
 		_bundle = bundle;
+		_cetManager = cetManager;
 		_clientExtensionEntryLocalService = clientExtensionEntryLocalService;
 		_configurationProvider = configurationProvider;
 		_ddmStructureLocalService = ddmStructureLocalService;
@@ -1460,6 +1466,20 @@ public class BundleSiteInitializer implements SiteInitializer {
 			Map<String, String> stringUtilReplaceValues)
 		throws Exception {
 
+		List<CET> cets = _cetManager.getCETs(
+			serviceContext.getCompanyId(), null, null,
+			Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null);
+
+		for (CET cet : cets) {
+			stringUtilReplaceValues.put(
+				"CLIENT_EXTENSION_ENTRY_ERC:" + cet.getExternalReferenceCode(),
+				StringBundler.concat(
+					"com_liferay_client_extension_web_internal_portlet_",
+					"ClientExtensionEntryPortlet_", cet.getCompanyId(), "_",
+					CETUtil.normalizeExternalReferenceCodeForPortletId(
+						cet.getExternalReferenceCode())));
+		}
+
 		String json = SiteInitializerUtil.read(
 			"/site-initializer/client-extension-entries.json", _servletContext);
 
@@ -1524,15 +1544,14 @@ public class BundleSiteInitializer implements SiteInitializer {
 				).buildString());
 
 			stringUtilReplaceValues.put(
-				"CLIENT_EXTENSION_ENTRY_ID:" +
-					jsonObject.getString("clientExtensionEntryKey"),
-				_replace(
-					jsonObject.getString("widgetName"),
-					StringBundler.concat(
-						"[$CLIENT_EXTENSION_ENTRY_ID:",
-						jsonObject.getString("clientExtensionEntryKey"), "$]"),
-					serviceContext.getCompanyId() + StringPool.UNDERLINE +
-						jsonObject.getString("externalReferenceCode")));
+				"CLIENT_EXTENSION_ENTRY_ERC:" +
+					jsonObject.getString("externalReferenceCode"),
+				StringBundler.concat(
+					"com_liferay_client_extension_web_internal_portlet_",
+					"ClientExtensionEntryPortlet_",
+					serviceContext.getCompanyId(), "_",
+					CETUtil.normalizeExternalReferenceCodeForPortletId(
+						jsonObject.getString("externalReferenceCode"))));
 		}
 	}
 
@@ -4183,6 +4202,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 			String json = SiteInitializerUtil.read(
 				resourcePath, _servletContext);
 
+			json = _replace(
+				_replace(json, serviceContext), stringUtilReplaceValues);
+
 			TaxonomyCategory taxonomyCategory = TaxonomyCategory.toDTO(json);
 
 			if (taxonomyCategory == null) {
@@ -5044,6 +5066,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 	private final AssetCategoryLocalService _assetCategoryLocalService;
 	private final AssetListEntryLocalService _assetListEntryLocalService;
 	private final Bundle _bundle;
+	private final CETManager _cetManager;
 	private final ClassLoader _classLoader;
 	private final Map<String, String> _classNameIdStringUtilReplaceValues;
 	private final ClientExtensionEntryLocalService

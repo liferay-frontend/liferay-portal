@@ -529,6 +529,7 @@ public class ObjectRelationshipLocalServiceImpl
 			objectDefinitionId1);
 	}
 
+	@Override
 	public ObjectRelationship fetchObjectRelationshipByExternalReferenceCode(
 		String externalReferenceCode, long companyId,
 		long objectDefinitionId1) {
@@ -636,6 +637,16 @@ public class ObjectRelationshipLocalServiceImpl
 					objectDefinitionId1, name),
 				noSuchObjectRelationshipException);
 		}
+	}
+
+	@Override
+	public ObjectRelationship getObjectRelationshipByExternalReferenceCode(
+			String externalReferenceCode, long companyId,
+			long objectDefinitionId1)
+		throws PortalException {
+
+		return objectRelationshipPersistence.findByERC_C_ODI1(
+			externalReferenceCode, companyId, objectDefinitionId1);
 	}
 
 	@Override
@@ -798,15 +809,17 @@ public class ObjectRelationshipLocalServiceImpl
 			return objectRelationshipPersistence.update(objectRelationship);
 		}
 
-		if (objectRelationship.isReverse()) {
-			throw new ObjectRelationshipReverseException(
-				"Reverse object relationships cannot be updated");
-		}
-
 		_validateExternalReferenceCode(
 			externalReferenceCode, objectRelationshipId,
 			objectRelationship.getCompanyId(),
 			objectRelationship.getObjectDefinitionId1());
+
+		if (objectRelationship.isReverse()) {
+			objectRelationship.setExternalReferenceCode(externalReferenceCode);
+
+			return objectRelationshipPersistence.update(objectRelationship);
+		}
+
 		_validateParameterObjectFieldId(
 			_objectDefinitionPersistence.findByPrimaryKey(
 				objectRelationship.getObjectDefinitionId1()),

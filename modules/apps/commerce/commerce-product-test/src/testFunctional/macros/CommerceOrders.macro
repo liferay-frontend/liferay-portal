@@ -934,7 +934,7 @@ definition {
 			for (var eligiblePaymentMethod : list ${eligiblePaymentMethods}) {
 				AssertElementPresent(
 					key_radioOption = ${eligiblePaymentMethod},
-					locator1 = "CommerceEntry#RADIO_BUTTON");
+					locator1 = "CommerceEntry#RADIO_BUTTON_SPECIFIC");
 			}
 		}
 
@@ -942,13 +942,13 @@ definition {
 			for (var notEligiblePaymentMethod : list ${notEligiblePaymentMethods}) {
 				AssertElementNotPresent(
 					key_radioOption = ${notEligiblePaymentMethod},
-					locator1 = "CommerceEntry#RADIO_BUTTON");
+					locator1 = "CommerceEntry#RADIO_BUTTON_SPECIFIC");
 			}
 		}
 
 		Click.clickAtNotVisible(
 			key_radioOption = ${paymentMethod},
-			locator1 = "CommerceEntry#RADIO_BUTTON");
+			locator1 = "CommerceEntry#RADIO_BUTTON_SPECIFIC");
 
 		Click(locator1 = "Button#MODAL_IFRAME_FOOTER_SUBMIT");
 
@@ -984,7 +984,7 @@ definition {
 
 	@summary = "Default summary"
 	macro importFromOrder(productImportStatuses = null, productSkus = null, orderId = null, productTotalPrices = null, productUnitPrices = null, productNames = null, productQuantities = null, productRequestedDeliveryDates = null) {
-		Click(locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS_ORDER");
+		Click(locator1 = "CommerceFrontStore#SF_ORDER_BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Import from Orders");
 
@@ -1012,7 +1012,7 @@ definition {
 
 	@summary = "Default summary"
 	macro importOrderFromType(orderType = null) {
-		Click(locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS_ORDER");
+		Click(locator1 = "CommerceFrontStore#SF_ORDER_BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.viewPresent(menuItem = "Import from ${orderType}");
 
