@@ -252,6 +252,40 @@ definition {
 		}
 	}
 
+	@description = "LPS-186875 Confirm that the Variant modal is displayed with the correct values"
+	@priority = 3
+	test CanAssertVariantModalIsPresentOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("When the user clicks on Type field and clicks on Modal option") {
+			Select(
+				key_fieldLabel = "Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Modal");
+		}
+
+		task ("And clicks on Variant field") {
+			Click(
+				key_fieldLabel = "Variant",
+				locator1 = "Select#GENERIC_SELECT_FIELD");
+		}
+
+		task ("Then a dropdown with the options “Full Screen”, “Large” and “Small” is displayed") {
+			for (var variantOptions : list "Full Screen,Large,Small") {
+				AssertElementPresent(
+					key_fieldLabel = "Variant",
+					locator1 = "Select#GENERIC_SELECT_FIELD",
+					value1 = ${variantOptions});
+			}
+		}
+	}
+
 	@description = "LPS-194351 Confirm that a created action can be deleted, and a success message is displayed in the Creation Action"
 	@priority = 5
 	test CanBeDeletedAction {
@@ -486,6 +520,53 @@ definition {
 			AssertElementPresent(
 				key_entryName = "No actions were created.",
 				locator1 = "ObjectAdmin#VIEW_ENTRY_NAME_ON_PAGE");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that creation action changes are not saved by clicking the cancel button"
+	@priority = 3
+	test CanCancelCreationActionOnCancelButton {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And chooses the update in label field") {
+			Type(
+				key_unnamedTitle = "",
+				locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
+				value1 = "Update");
+
+			Click(locator1 = "Button#PLUS");
+
+			SelectFrameTop();
+
+			Type(
+				locator1 = "DataSet#MODAL_SEARCH",
+				value1 = "pencil");
+
+			Click.mouseOverClick(
+				key_text = "pencil",
+				locator1 = "Icon#ANY");
+
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+		}
+
+		task ("And clicks on Cancel button") {
+			Button.clickCancel();
+		}
+
+		task ("And the link action doesnt appear in the Creation Action tab table") {
+			AssertElementNotPresent(
+				key_position = 1,
+				keyName = "Update",
+				locator1 = "DataSet#FIELDS_TABLE");
 		}
 	}
 
@@ -1157,6 +1238,46 @@ definition {
 				key_position = 2,
 				keyName = "view",
 				locator1 = "DataSet#FIELDS_TABLE");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that when creating two or more actions, it is possible to rearrange the order of the list with drag and drop"
+	@priority = 3
+	test CanDragAndDropOnCreationAction {
+		task ("Given two or more creation actions") {
+			DataSetAdmin.addActions(
+				actionName = "delete",
+				actionTab = "Creation Actions",
+				icon = "trash",
+				readlessAction = "xx-ee",
+				type = "Link",
+				url = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+
+			DataSetAdmin.addActions(
+				actionName = "label",
+				actionTab = "Creation Actions",
+				icon = "pencil",
+				readlessAction = "product",
+				type = "Link",
+				url = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+		}
+
+		task ("When the user drag the last one for the first position in the table") {
+			DragAndDrop.javaScriptDragAndDropToBottom(
+				key_name = "trash",
+				key_nameField = "pencil",
+				locator1 = "DataSet#SELECT_DRAG_OPTION",
+				locator2 = "DataSet#SELECT_LABEL_ITEM");
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#SUCCESS",
+				value1 = "Your request completed successfully.");
+		}
+
+		task ("And the first creation action is in the second position") {
+			DataSetAdmin.assertFieldsOnTable(
+				key_position = 2,
+				keyName = "pencil");
 		}
 	}
 
@@ -2011,6 +2132,40 @@ definition {
 		}
 	}
 
+	@description = "LPS-186875 Confirm that when creating two or more actions, it is possible to search for a specific action in the search bar"
+	@priority = 3
+	test CanSearchActionCreatedOnCreationAction {
+		task ("Given two or more creation actions") {
+			DataSetAdmin.addActions(
+				actionName = "delete",
+				actionTab = "Creation Actions",
+				icon = "trash",
+				readlessAction = "xx-ee",
+				type = "Link",
+				url = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+
+			DataSetAdmin.addActions(
+				actionName = "label",
+				actionTab = "Creation Actions",
+				icon = "pencil",
+				readlessAction = "product",
+				type = "Link",
+				url = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+		}
+
+		task ("When the user searches the name of one of creation actions") {
+			Type(
+				locator1 = "DataSet#SEARCH_BAR_N",
+				value1 = "pencil");
+		}
+
+		task ("Then only the searched creation action is displayed in the list") {
+			DataSetAdmin.assertFieldsOnTable(
+				key_position = 1,
+				keyName = "pencil");
+		}
+	}
+
 	@description = "LPS-191485. Verify if is possible to see and hidde the text in the Section Message Section in the Item Action"
 	@priority = 3
 	test CanSeeAndHiddeTextInStatusMessageSectionOnItemAction {
@@ -2366,6 +2521,83 @@ definition {
 		}
 	}
 
+	@description = "LPS-186875 Confirm that when clicking on the collapse buttons some fields are hidden"
+	@priority = 3
+	test CollapseButtonsHideFieldsOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("When the user clicks on Display Options collapse button") {
+			Click(
+				key_componentName = "Display Options",
+				locator1 = "Panel#PANEL_TITLE");
+		}
+
+		task ("Then the Label and Icon fields are hidden") {
+			AssertNotVisible(
+				key_type = "Label",
+				locator1 = "DataSet#FILTER_SELECTION");
+
+			AssertNotVisible(
+				key_type = "Icon",
+				locator1 = "DataSet#FILTER_SELECTION");
+		}
+
+		task ("Then the options Link, Modal and Side Panel are displayed in the modal") {
+			for (var typeOptions : list "Link,Modal,Side Panel") {
+				AssertElementPresent(
+					key_fieldLabel = "Type",
+					locator1 = "Select#GENERIC_SELECT_FIELD",
+					value1 = ${typeOptions});
+			}
+		}
+
+		task ("Then clicks on Action Behavior and Type, URL and Headless Action Key fields are hidden") {
+			Click(
+				key_componentName = "Action Behavior",
+				locator1 = "Panel#PANEL_TITLE");
+
+			AssertNotVisible(
+				key_type = "Type",
+				locator1 = "DataSet#FILTER_SELECTION");
+
+			AssertNotVisible(
+				key_type = "URL",
+				locator1 = "DataSet#FILTER_SELECTION");
+
+			AssertNotVisible(
+				key_type = "Headless Action Key",
+				locator1 = "DataSet#FILTER_SELECTION");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that the tip and action creation options are displayed on the page"
+	@priority = 3
+	test CreationActionsAdminPageIsDisplayed {
+		task ("And goes to Creation Action tab") {
+			Button.click(button = "Creation Actions");
+		}
+
+		task ("Then the "New Creation Action" button is present in the page") {
+			CustomerPortal.assertButtonIsVisible(text = "New Creation Action");
+		}
+
+		task ("And the text “No actions were created. Start creating one action to interact with your data.” is displayed") {
+			AssertTextPresent(
+				locator1 = "ObjectCustomViews#VIEW_BUILDER_EMPTY_STATE_TEXT",
+				value1 = "No actions were created.");
+
+			AssertTextPresent(
+				locator1 = "ObjectCustomViews#VIEW_BUILDER_EMPTY_STATE_TEXT",
+				value1 = "Start creating an action to interact with your data.");
+		}
+	}
+
 	@description = "LPS-192149. Verify if the Headless Action Key is not mandatory and contains an tooltip Icon with an message"
 	@priority = 3
 	test HeadlessActionKeyIsNotMandatory {
@@ -2424,6 +2656,180 @@ definition {
 			AssertElementPresent(
 				key_position = 1,
 				keyName = "New Action",
+				locator1 = "DataSet#FIELDS_TABLE");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that an action creation can be saved with a different translation, and using the Side Panel type"
+	@priority = 4
+	test HeadlessFieldIsNotMandatoryInSidePanelOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And the user chooses the Side Panel option in Type field") {
+			Select(
+				key_fieldLabel = "Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Side Panel");
+		}
+
+		task ("And the user fills the fields") {
+			Type(
+				key_unnamedTitle = "",
+				locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
+				value1 = "Edit");
+
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+		}
+
+		task ("And adds a translation to the Title //PT-BR: Editar") {
+			Type(
+				key_fieldName = "add-here-the-title-of-the-side-panel",
+				locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+				value1 = "Edit");
+
+			Click(
+				key_index = 2,
+				locator1 = "DataSet#BUTTON_LOCALIZATION_N");
+
+			Click(
+				key_filter = "pt_BR",
+				locator1 = "FrontendDataSet#FILTER_OPTION");
+
+			Type(
+				key_fieldName = "add-here-the-title-of-the-side-panel",
+				locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+				value1 = "Editar");
+		}
+
+		task ("And clicks on Save button") {
+			Button.clickSave();
+		}
+
+		task ("And it appears on the Creation Action tab table") {
+			AssertElementPresent(
+				key_position = 1,
+				keyName = "Edit",
+				locator1 = "DataSet#FIELDS_TABLE");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that the Headles action key field is not mandatory"
+	@priority = 4
+	test HeadlessFieldIsNotMandatoryOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And the user chooses the Modal option in Type field") {
+			Select(
+				key_fieldLabel = "Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Modal");
+		}
+
+		task ("And the user fills Title field and URL") {
+			Type(
+				key_unnamedTitle = "",
+				locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
+				value1 = "Edit");
+
+			Type(
+				key_fieldName = "add-here-the-title-of-the-modal",
+				locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+				value1 = "Title");
+
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+
+			Type(
+				key_placeholder = "Add a value here.",
+				locator1 = "FrontendDataSet#PLACEHOLDER",
+				value1 = "Headless test");
+		}
+
+		task ("And leaves Headless action key field empty") {
+			Type(
+				key_placeholder = "Add a value here.",
+				locator1 = "FrontendDataSet#PLACEHOLDER",
+				value1 = "");
+		}
+
+		task ("Then the changes can be saved") {
+			Button.clickSave();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#SUCCESS",
+				value1 = "Your request completed successfully.");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that you can select an item in the item field"
+	@priority = 4
+	test IconCanBeSelectedOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And fills Label, icon and URL fields") {
+			Type(
+				key_unnamedTitle = "",
+				locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
+				value1 = "Update");
+
+			Click(locator1 = "Button#PLUS");
+
+			SelectFrameTop();
+
+			Type(
+				locator1 = "DataSet#MODAL_SEARCH",
+				value1 = "pencil");
+
+			Click.mouseOverClick(
+				key_text = "pencil",
+				locator1 = "Icon#ANY");
+
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+
+			Type(
+				key_placeholder = "Add a value here.",
+				locator1 = "FrontendDataSet#PLACEHOLDER",
+				value1 = "update");
+		}
+
+		task ("Then the Link Creation Action is saved") {
+			PortletEntry.save();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#SUCCESS",
+				value1 = "Your request completed successfully.");
+		}
+
+		task ("And it appears on the Creation Action tab table") {
+			AssertElementPresent(
+				key_position = 1,
+				keyName = "Update",
 				locator1 = "DataSet#FIELDS_TABLE");
 		}
 	}
@@ -2488,6 +2894,101 @@ definition {
 				key_position = 1,
 				keyName = "New Action",
 				locator1 = "DataSet#FIELDS_TABLE");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that the "Icon" field is not mandatory"
+	@priority = 3
+	test IconFieldIsNotMandatoryOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And fills label, and add a new translation pt_BR") {
+			Type(
+				key_unnamedTitle = "",
+				locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
+				value1 = "Update");
+
+			Click(locator1 = "DataSet#SELECT_LOCALIZATION_BUTTON");
+
+			Click(
+				key_dropdownItem = "pt_BR",
+				locator1 = "ObjectAdmin#SELECT_DROPDOWN_ITEM_DEFAULT_VALUE");
+
+			Type(
+				key_unnamedTitle = "",
+				locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
+				value1 = "Atualizar");
+
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+		}
+
+		task ("Then the Link Creation Action is saved") {
+			PortletEntry.save();
+		}
+
+		task ("And it appears on the Creation Action tab table") {
+			AssertElementPresent(
+				key_position = 1,
+				keyName = "Update",
+				locator1 = "DataSet#FIELDS_TABLE");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that the "Label" is mandatory to create action"
+	@priority = 3
+	test LabelFieldIsMandatoryOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And fills Icon field") {
+			Type(
+				key_unnamedTitle = "",
+				locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
+				value1 = "Edit");
+
+			Click(locator1 = "Button#PLUS");
+
+			SelectFrameTop();
+
+			Type(
+				locator1 = "DataSet#MODAL_SEARCH",
+				value1 = "pencil");
+
+			Click.mouseOverClick(
+				key_text = "pencil",
+				locator1 = "Icon#ANY");
+
+			Type(
+				key_unnamedTitle = "",
+				locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
+				value1 = "");
+
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+		}
+
+		task ("And the text “No actions were created. Start creating one action to interact with your data.” is displayed") {
+			AssertTextEquals(
+				locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
+				value1 = "This field is required.");
+
+			AssertElementPresent(locator1 = "DataSet#ANY_BUTTON_DISABLED");
 		}
 	}
 
@@ -2636,6 +3137,76 @@ definition {
 				key_position = 1,
 				keyName = "New Action",
 				locator1 = "DataSet#FIELDS_TABLE");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that when selecting the Side Panel type option, other fields are visible"
+	@priority = 3
+	test NewFieldsInSidePanelTypeOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And the user chooses the Side Panel option in Type field") {
+			Select(
+				key_fieldLabel = "Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Side Panel");
+		}
+
+		task ("Then the Title, URL and Headless Action Key fields are displayed") {
+			AssertElementPresent(
+				key_type = "Title",
+				locator1 = "DataSet#FILTER_SELECTION");
+
+			AssertElementPresent(
+				key_type = "URL",
+				locator1 = "DataSet#FILTER_SELECTION");
+
+			AssertElementPresent(
+				key_type = "Headless Action Key",
+				locator1 = "DataSet#FILTER_SELECTION");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that creation action changes are not saved by clicking the cancel button"
+	@priority = 3
+	test NewFieldsInTheModalTypeOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And the user clicks on Type field and clicks on Modal option") {
+			Select(
+				key_fieldLabel = "Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Modal");
+		}
+
+		task ("Then Title, Variant, URL and Headless Action Key fields are displayed") {
+			AssertVisible(
+				key_type = "Title",
+				locator1 = "DataSet#FILTER_SELECTION");
+
+			AssertVisible(
+				key_type = "Variant",
+				locator1 = "DataSet#FILTER_SELECTION");
+
+			AssertVisible(
+				key_type = "URL",
+				locator1 = "DataSet#FILTER_SELECTION");
+
+			AssertVisible(
+				key_type = "Headless Action Key",
+				locator1 = "DataSet#FILTER_SELECTION");
 		}
 	}
 
@@ -2809,774 +3380,203 @@ definition {
 		}
 	}
 
-    @description = "LPS-186875 Confirm that the Variant modal is displayed with the correct values"
-    @priority = 3
-    test CanAssertVariantModalIsPresentOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("When the user clicks on Type field and clicks on Modal option") {
-            Select(
-                key_fieldLabel = "Type",
-                locator1 = "Select#GENERIC_SELECT_FIELD",
-                value1 = "Modal");
-        }
-
-        task ("And clicks on Variant field") {
-            Click(
-                key_fieldLabel = "Variant",
-                locator1 = "Select#GENERIC_SELECT_FIELD");
-        }
-
-        task ("Then a dropdown with the options “Full Screen”, “Large” and “Small” is displayed") {
-            for (var variantOptions : list "Full Screen,Large,Small") {
-                AssertElementPresent(
-                    key_fieldLabel = "Variant",
-                    locator1 = "Select#GENERIC_SELECT_FIELD",
-                    value1 = ${variantOptions});
-            }
-        }
-    }
-
-    @description = "LPS-186875 Confirm that creation action changes are not saved by clicking the cancel button"
-    @priority = 3
-    test CanCancelCreationActionOnCancelButton {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And chooses the update in label field") {
-            Type(
-                key_unnamedTitle = "",
-                locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
-                value1 = "Update");
-
-            Click(locator1 = "Button#PLUS");
-
-            SelectFrameTop();
-
-            Type(
-                locator1 = "DataSet#MODAL_SEARCH",
-                value1 = "pencil");
-
-            Click.mouseOverClick(
-                key_text = "pencil",
-                locator1 = "Icon#ANY");
-
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-        }
-
-        task ("And clicks on Cancel button") {
-            Button.clickCancel();
-        }
-
-        task ("And the link action doesnt appear in the Creation Action tab table") {
-            AssertElementNotPresent(
-                key_position = 1,
-                keyName = "Update",
-                locator1 = "DataSet#FIELDS_TABLE");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that when creating two or more actions, it is possible to rearrange the order of the list with drag and drop"
-    @priority = 3
-    test CanDragAndDropOnCreationAction {
-        task ("Given two or more creation actions") {
-            DataSetAdmin.addActions(
-                actionName = "delete",
-                actionTab = "Creation Actions",
-                icon = "trash",
-                readlessAction = "xx-ee",
-                type = "Link",
-                url = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-
-            DataSetAdmin.addActions(
-                actionName = "label",
-                actionTab = "Creation Actions",
-                icon = "pencil",
-                readlessAction = "product",
-                type = "Link",
-                url = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-        }
-
-        task ("When the user drag the last one for the first position in the table") {
-            DragAndDrop.javaScriptDragAndDropToBottom(
-                key_name = "trash",
-                key_nameField = "pencil",
-                locator1 = "DataSet#SELECT_DRAG_OPTION",
-                locator2 = "DataSet#SELECT_LABEL_ITEM");
-
-            AssertTextEquals.assertPartialText(
-                locator1 = "Message#SUCCESS",
-                value1 = "Your request completed successfully.");
-        }
-
-        task ("And the first creation action is in the second position") {
-            DataSetAdmin.assertFieldsOnTable(
-                key_position = 2,
-                keyName = "pencil");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that when creating two or more actions, it is possible to search for a specific action in the search bar"
-    @priority = 3
-    test CanSearchActionCreatedOnCreationAction {
-        task ("Given two or more creation actions") {
-            DataSetAdmin.addActions(
-                actionName = "delete",
-                actionTab = "Creation Actions",
-                icon = "trash",
-                readlessAction = "xx-ee",
-                type = "Link",
-                url = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-
-            DataSetAdmin.addActions(
-                actionName = "label",
-                actionTab = "Creation Actions",
-                icon = "pencil",
-                readlessAction = "product",
-                type = "Link",
-                url = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-        }
-
-        task ("When the user searches the name of one of creation actions") {
-            Type(
-                locator1 = "DataSet#SEARCH_BAR_N",
-                value1 = "pencil");
-        }
-
-        task ("Then only the searched creation action is displayed in the list") {
-            DataSetAdmin.assertFieldsOnTable(
-                key_position = 1,
-                keyName = "pencil");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that the tip and action creation options are displayed on the page"
-    @priority = 3
-    test CreationActionsAdminPageIsDisplayed {
-        task ("And goes to Creation Action tab") {
-            Button.click(button = "Creation Actions");
-        }
-
-        task ("Then the "New Creation Action" button is present in the page") {
-            CustomerPortal.assertButtonIsVisible(text = "New Creation Action");
-        }
-
-        task ("And the text “No actions were created. Start creating one action to interact with your data.” is displayed") {
-            AssertTextPresent(
-                locator1 = "ObjectCustomViews#VIEW_BUILDER_EMPTY_STATE_TEXT",
-                value1 = "No actions were created.");
-
-            AssertTextPresent(
-                locator1 = "ObjectCustomViews#VIEW_BUILDER_EMPTY_STATE_TEXT",
-                value1 = "Start creating an action to interact with your data.");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that an action creation can be saved with a different translation, and using the Side Panel type"
-    @priority = 4
-    test HeadlessFieldIsNotMandatoryInSidePanelOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And the user chooses the Side Panel option in Type field") {
-            Select(
-                key_fieldLabel = "Type",
-                locator1 = "Select#GENERIC_SELECT_FIELD",
-                value1 = "Side Panel");
-        }
-
-        task ("And the user fills the fields") {
-            Type(
-                key_unnamedTitle = "",
-                locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
-                value1 = "Edit");
-
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-        }
-
-        task ("And adds a translation to the Title //PT-BR: Editar") {
-            Type(
-                key_fieldName = "add-here-the-title-of-the-side-panel",
-                locator1 = "DataSet#PRESELECT_VALUE_INPUT",
-                value1 = "Edit");
-
-            Click(
-                key_index = 2,
-                locator1 = "DataSet#BUTTON_LOCALIZATION_N");
-
-            Click(
-                key_filter = "pt_BR",
-                locator1 = "FrontendDataSet#FILTER_OPTION");
-
-            Type(
-                key_fieldName = "add-here-the-title-of-the-side-panel",
-                locator1 = "DataSet#PRESELECT_VALUE_INPUT",
-                value1 = "Editar");
-        }
-
-        task ("And clicks on Save button") {
-            Button.clickSave();
-        }
-
-        task ("And it appears on the Creation Action tab table") {
-            AssertElementPresent(
-                key_position = 1,
-                keyName = "Edit",
-                locator1 = "DataSet#FIELDS_TABLE");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that when selecting the Side Panel type option, other fields are visible"
-    @priority = 3
-    test NewFieldsInSidePanelTypeOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And the user chooses the Side Panel option in Type field") {
-            Select(
-                key_fieldLabel = "Type",
-                locator1 = "Select#GENERIC_SELECT_FIELD",
-                value1 = "Side Panel");
-        }
-
-        task ("Then the Title, URL and Headless Action Key fields are displayed") {
-            AssertElementPresent(
-                key_type = "Title",
-                locator1 = "DataSet#FILTER_SELECTION");
-
-            AssertElementPresent(
-                key_type = "URL",
-                locator1 = "DataSet#FILTER_SELECTION");
-
-            AssertElementPresent(
-                key_type = "Headless Action Key",
-                locator1 = "DataSet#FILTER_SELECTION");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that creation action changes are not saved by clicking the cancel button"
-    @priority = 3
-    test NewFieldsInTheModalTypeOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And the user clicks on Type field and clicks on Modal option") {
-            Select(
-                key_fieldLabel = "Type",
-                locator1 = "Select#GENERIC_SELECT_FIELD",
-                value1 = "Modal");
-        }
-
-        task ("Then Title, Variant, URL and Headless Action Key fields are displayed") {
-            AssertVisible(
-                key_type = "Title",
-                locator1 = "DataSet#FILTER_SELECTION");
-
-            AssertVisible(
-                key_type = "Variant",
-                locator1 = "DataSet#FILTER_SELECTION");
-
-            AssertVisible(
-                key_type = "URL",
-                locator1 = "DataSet#FILTER_SELECTION");
-
-            AssertVisible(
-                key_type = "Headless Action Key",
-                locator1 = "DataSet#FILTER_SELECTION");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that when clicking on the collapse buttons some fields are hidden"
-    @priority = 3
-    test CollapseButtonsHideFieldsOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("When the user clicks on Display Options collapse button") {
-            Click(
-                key_componentName = "Display Options",
-                locator1 = "Panel#PANEL_TITLE");
-        }
-
-        task ("Then the Label and Icon fields are hidden") {
-            AssertNotVisible(
-                key_type = "Label",
-                locator1 = "DataSet#FILTER_SELECTION");
-
-            AssertNotVisible(
-                key_type = "Icon",
-                locator1 = "DataSet#FILTER_SELECTION");
-        }
-
-        task ("Then the options Link, Modal and Side Panel are displayed in the modal") {
-            for (var typeOptions : list "Link,Modal,Side Panel") {
-                AssertElementPresent(
-                    key_fieldLabel = "Type",
-                    locator1 = "Select#GENERIC_SELECT_FIELD",
-                    value1 = ${typeOptions});
-            }
-        }
-
-        task ("Then clicks on Action Behavior and Type, URL and Headless Action Key fields are hidden") {
-            Click(
-                key_componentName = "Action Behavior",
-                locator1 = "Panel#PANEL_TITLE");
-
-            AssertNotVisible(
-                key_type = "Type",
-                locator1 = "DataSet#FILTER_SELECTION");
-
-            AssertNotVisible(
-                key_type = "URL",
-                locator1 = "DataSet#FILTER_SELECTION");
-
-            AssertNotVisible(
-                key_type = "Headless Action Key",
-                locator1 = "DataSet#FILTER_SELECTION");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that the Headles action key field is not mandatory"
-    @priority = 4
-    test HeadlessFieldIsNotMandatoryOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And the user chooses the Modal option in Type field") {
-            Select(
-                key_fieldLabel = "Type",
-                locator1 = "Select#GENERIC_SELECT_FIELD",
-                value1 = "Modal");
-        }
-
-        task ("And the user fills Title field and URL") {
-            Type(
-                key_unnamedTitle = "",
-                locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
-                value1 = "Edit");
-
-            Type(
-                key_fieldName = "add-here-the-title-of-the-modal",
-                locator1 = "DataSet#PRESELECT_VALUE_INPUT",
-                value1 = "Title");
-
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-
-            Type(
-                key_placeholder = "Add a value here.",
-                locator1 = "FrontendDataSet#PLACEHOLDER",
-                value1 = "Headless test");
-        }
-
-        task ("And leaves Headless action key field empty") {
-            Type(
-                key_placeholder = "Add a value here.",
-                locator1 = "FrontendDataSet#PLACEHOLDER",
-                value1 = "");
-        }
-
-        task ("Then the changes can be saved") {
-            Button.clickSave();
-
-            AssertTextEquals.assertPartialText(
-                locator1 = "Message#SUCCESS",
-                value1 = "Your request completed successfully.");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that you can select an item in the item field"
-    @priority = 4
-    test IconCanBeSelectedOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And fills Label, icon and URL fields") {
-            Type(
-                key_unnamedTitle = "",
-                locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
-                value1 = "Update");
-
-            Click(locator1 = "Button#PLUS");
-
-            SelectFrameTop();
-
-            Type(
-                locator1 = "DataSet#MODAL_SEARCH",
-                value1 = "pencil");
-
-            Click.mouseOverClick(
-                key_text = "pencil",
-                locator1 = "Icon#ANY");
-
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-
-            Type(
-                key_placeholder = "Add a value here.",
-                locator1 = "FrontendDataSet#PLACEHOLDER",
-                value1 = "update");
-        }
-
-        task ("Then the Link Creation Action is saved") {
-            PortletEntry.save();
-
-            AssertTextEquals.assertPartialText(
-                locator1 = "Message#SUCCESS",
-                value1 = "Your request completed successfully.");
-        }
-
-        task ("And it appears on the Creation Action tab table") {
-            AssertElementPresent(
-                key_position = 1,
-                keyName = "Update",
-                locator1 = "DataSet#FIELDS_TABLE");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that the "Icon" field is not mandatory"
-    @priority = 3
-    test IconFieldIsNotMandatoryOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And fills label, and add a new translation pt_BR") {
-            Type(
-                key_unnamedTitle = "",
-                locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
-                value1 = "Update");
-
-            Click(locator1 = "DataSet#SELECT_LOCALIZATION_BUTTON");
-
-            Click(
-                key_dropdownItem = "pt_BR",
-                locator1 = "ObjectAdmin#SELECT_DROPDOWN_ITEM_DEFAULT_VALUE");
-
-            Type(
-                key_unnamedTitle = "",
-                locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
-                value1 = "Atualizar");
-
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-        }
-
-        task ("Then the Link Creation Action is saved") {
-            PortletEntry.save();
-        }
-
-        task ("And it appears on the Creation Action tab table") {
-            AssertElementPresent(
-                key_position = 1,
-                keyName = "Update",
-                locator1 = "DataSet#FIELDS_TABLE");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that the "Label" is mandatory to create action"
-    @priority = 3
-    test LabelFieldIsMandatoryOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And fills Icon field") {
-            Type(
-                key_unnamedTitle = "",
-                locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
-                value1 = "Edit");
-
-            Click(locator1 = "Button#PLUS");
-
-            SelectFrameTop();
-
-            Type(
-                locator1 = "DataSet#MODAL_SEARCH",
-                value1 = "pencil");
-
-            Click.mouseOverClick(
-                key_text = "pencil",
-                locator1 = "Icon#ANY");
-
-            Type(
-                key_unnamedTitle = "",
-                locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
-                value1 = "");
-
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-        }
-
-        task ("And the text “No actions were created. Start creating one action to interact with your data.” is displayed") {
-            AssertTextEquals(
-                locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
-                value1 = "This field is required.");
-
-            AssertElementPresent(locator1 = "DataSet#ANY_BUTTON_DISABLED");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that the title field is mandatory"
-    @priority = 3
-    test TitleFieldIsMandatoryOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And the user chooses the Modal option in Type field") {
-            Select(
-                key_fieldLabel = "Type",
-                locator1 = "Select#GENERIC_SELECT_FIELD",
-                value1 = "Modal");
-        }
-
-        task ("And the user fills Title field and URL") {
-            Select(
-                key_fieldLabel = "Variant",
-                locator1 = "Select#GENERIC_SELECT_FIELD",
-                value1 = "Large");
-
-            Type(
-                key_fieldName = "add-here-the-title-of-the-modal",
-                locator1 = "DataSet#PRESELECT_VALUE_INPUT",
-                value1 = "Edit");
-
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-        }
-
-        task ("And leaves Title field empty") {
-            Type(
-                key_fieldName = "add-here-the-title-of-the-modal",
-                locator1 = "DataSet#PRESELECT_VALUE_INPUT",
-                value1 = "");
-        }
-
-        task ("Then the changes cannot be saved") {
-            AssertTextEquals(
-                locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
-                value1 = "This field is required.");
-
-            AssertElementPresent(locator1 = "DataSet#ANY_BUTTON_DISABLED");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that the URL field is mandatory"
-    @priority = 3
-    test URLFieldIsMandatoryOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And the user chooses the Modal option in Type field") {
-            Select(
-                key_fieldLabel = "Type",
-                locator1 = "Select#GENERIC_SELECT_FIELD",
-                value1 = "Modal");
-        }
-
-        task ("And the user fills Title field and URL") {
-            Type(
-                key_fieldName = "add-here-the-title-of-the-modal",
-                locator1 = "DataSet#PRESELECT_VALUE_INPUT",
-                value1 = "Title");
-
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-        }
-
-        task ("And leaves URL field empty") {
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "");
-        }
-
-        task ("Then the changes cannot be saved") {
-            AssertTextEquals(
-                locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
-                value1 = "This field is required.");
-
-            AssertElementPresent(locator1 = "DataSet#ANY_BUTTON_DISABLED");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that the Title field is mandatory in the Side Panel type"
-    @priority = 3
-    test TitleFieldIsMandatoryInSidePanelOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And the user chooses the Side Panel option in Type field") {
-            Select(
-                key_fieldLabel = "Type",
-                locator1 = "Select#GENERIC_SELECT_FIELD",
-                value1 = "Side Panel");
-        }
-
-        task ("And the user fills the fields") {
-            Type(
-                key_unnamedTitle = "",
-                locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
-                value1 = "Edit");
-
-            Type(
-                key_fieldName = "add-here-the-title-of-the-side-panel",
-                locator1 = "DataSet#PRESELECT_VALUE_INPUT",
-                value1 = "Title");
-
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-        }
-
-        task ("And leaves Title field empty") {
-            Type(
-                key_fieldName = "add-here-the-title-of-the-side-panel",
-                locator1 = "DataSet#PRESELECT_VALUE_INPUT",
-                value1 = "");
-        }
-
-        task ("Then the changes cannot be saved") {
-            AssertTextEquals(
-                locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
-                value1 = "This field is required.");
-
-            AssertElementPresent(locator1 = "DataSet#ANY_BUTTON_DISABLED");
-        }
-    }
-
-    @description = "LPS-186875 Confirm that the URL field is mandatory in the Side Panel type"
-    @priority = 3
-    test URLFieldIsMandatoryInSidePanelOnCreationAction {
-        task ("And clicks on Create Item Action button") {
-            Button.click(button = "Creation Actions");
-
-            Click(
-                key_text = "New Creation Action",
-                locator1 = "Button#ANY");
-        }
-
-        task ("And the user chooses the Side Panel option in Type field") {
-            Select(
-                key_fieldLabel = "Type",
-                locator1 = "Select#GENERIC_SELECT_FIELD",
-                value1 = "Side Panel");
-        }
-
-        task ("And the user fills the fields") {
-            Type(
-                key_unnamedTitle = "",
-                locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
-                value1 = "Edit");
-
-            Type(
-                key_fieldName = "add-here-the-title-of-the-side-panel",
-                locator1 = "DataSet#PRESELECT_VALUE_INPUT",
-                value1 = "Title");
-
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
-        }
-
-        task ("And leaves URL field empty") {
-            Type(
-                key_fieldId = "URL",
-                locator1 = "TextArea#ANY_ID",
-                value1 = "");
-        }
-
-        task ("Then the changes cannot be saved") {
-            AssertTextEquals(
-                locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
-                value1 = "This field is required.");
-
-            AssertElementPresent(locator1 = "DataSet#ANY_BUTTON_DISABLED");
-        }
-    }
+	@description = "LPS-186875 Confirm that the Title field is mandatory in the Side Panel type"
+	@priority = 3
+	test TitleFieldIsMandatoryInSidePanelOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And the user chooses the Side Panel option in Type field") {
+			Select(
+				key_fieldLabel = "Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Side Panel");
+		}
+
+		task ("And the user fills the fields") {
+			Type(
+				key_unnamedTitle = "",
+				locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
+				value1 = "Edit");
+
+			Type(
+				key_fieldName = "add-here-the-title-of-the-side-panel",
+				locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+				value1 = "Title");
+
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+		}
+
+		task ("And leaves Title field empty") {
+			Type(
+				key_fieldName = "add-here-the-title-of-the-side-panel",
+				locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+				value1 = "");
+		}
+
+		task ("Then the changes cannot be saved") {
+			AssertTextEquals(
+				locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
+				value1 = "This field is required.");
+
+			AssertElementPresent(locator1 = "DataSet#ANY_BUTTON_DISABLED");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that the title field is mandatory"
+	@priority = 3
+	test TitleFieldIsMandatoryOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And the user chooses the Modal option in Type field") {
+			Select(
+				key_fieldLabel = "Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Modal");
+		}
+
+		task ("And the user fills Title field and URL") {
+			Select(
+				key_fieldLabel = "Variant",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Large");
+
+			Type(
+				key_fieldName = "add-here-the-title-of-the-modal",
+				locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+				value1 = "Edit");
+
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+		}
+
+		task ("And leaves Title field empty") {
+			Type(
+				key_fieldName = "add-here-the-title-of-the-modal",
+				locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+				value1 = "");
+		}
+
+		task ("Then the changes cannot be saved") {
+			AssertTextEquals(
+				locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
+				value1 = "This field is required.");
+
+			AssertElementPresent(locator1 = "DataSet#ANY_BUTTON_DISABLED");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that the URL field is mandatory in the Side Panel type"
+	@priority = 3
+	test URLFieldIsMandatoryInSidePanelOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And the user chooses the Side Panel option in Type field") {
+			Select(
+				key_fieldLabel = "Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Side Panel");
+		}
+
+		task ("And the user fills the fields") {
+			Type(
+				key_unnamedTitle = "",
+				locator1 = "TextInput#DEPOT_UNNAMED_DEFAULT_TITLE",
+				value1 = "Edit");
+
+			Type(
+				key_fieldName = "add-here-the-title-of-the-side-panel",
+				locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+				value1 = "Title");
+
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+		}
+
+		task ("And leaves URL field empty") {
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "");
+		}
+
+		task ("Then the changes cannot be saved") {
+			AssertTextEquals(
+				locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
+				value1 = "This field is required.");
+
+			AssertElementPresent(locator1 = "DataSet#ANY_BUTTON_DISABLED");
+		}
+	}
+
+	@description = "LPS-186875 Confirm that the URL field is mandatory"
+	@priority = 3
+	test URLFieldIsMandatoryOnCreationAction {
+		task ("And clicks on Create Item Action button") {
+			Button.click(button = "Creation Actions");
+
+			Click(
+				key_text = "New Creation Action",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And the user chooses the Modal option in Type field") {
+			Select(
+				key_fieldLabel = "Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Modal");
+		}
+
+		task ("And the user fills Title field and URL") {
+			Type(
+				key_fieldName = "add-here-the-title-of-the-modal",
+				locator1 = "DataSet#PRESELECT_VALUE_INPUT",
+				value1 = "Title");
+
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "https://gist.github.com/deborasoliveira/40716d0b03d33ff7e636ca5d366c79c5#file-link-action-url-example");
+		}
+
+		task ("And leaves URL field empty") {
+			Type(
+				key_fieldId = "URL",
+				locator1 = "TextArea#ANY_ID",
+				value1 = "");
+		}
+
+		task ("Then the changes cannot be saved") {
+			AssertTextEquals(
+				locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
+				value1 = "This field is required.");
+
+			AssertElementPresent(locator1 = "DataSet#ANY_BUTTON_DISABLED");
+		}
+	}
 
 }
