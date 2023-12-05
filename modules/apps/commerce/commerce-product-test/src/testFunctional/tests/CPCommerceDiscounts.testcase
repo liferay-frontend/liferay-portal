@@ -29,9 +29,7 @@ definition {
 			siteName = "Minium 2",
 			siteTemplateName = "Minium");
 
-		CommerceNavigator.gotoPortlet(
-			category = "Store Management",
-			portlet = "Channels");
+		CommerceChannels.openChannelsAdmin();
 
 		AssertElementPresent(
 			key_entryName = "Minium Portal",
@@ -89,9 +87,7 @@ definition {
 			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
 			value1 = "24.00");
 
-		CommerceNavigator.gotoPortlet(
-			category = "Pricing",
-			portlet = "Discounts");
+		CommerceNavigator.goToDiscountAdmin();
 
 		Click(
 			key_value = "Test Discount",
@@ -134,9 +130,7 @@ definition {
 			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
 			value1 = "24.00");
 
-		CommerceNavigator.gotoPortlet(
-			category = "Pricing",
-			portlet = "Discounts");
+		CommerceNavigator.goToDiscountAdmin();
 
 		Click(
 			key_value = "Test Discount",
@@ -167,9 +161,7 @@ definition {
 			siteName = "Minium 2",
 			siteTemplateName = "Minium");
 
-		CommerceNavigator.gotoPortlet(
-			category = "Store Management",
-			portlet = "Channels");
+		CommerceChannels.openChannelsAdmin();
 
 		AssertElementPresent(
 			key_entryName = "Minium Portal",
@@ -179,9 +171,7 @@ definition {
 			key_entryName = "Minium 2 Portal",
 			locator1 = "CommerceNavigation#ENTRY_NAME");
 
-		CommerceNavigator.gotoPortlet(
-			category = "Pricing",
-			portlet = "Discounts");
+		CommerceNavigator.goToDiscountAdmin();
 
 		Click(locator1 = "Button#PLUS");
 
@@ -597,9 +587,7 @@ definition {
 		}
 
 		task ("When a new discount is created") {
-			CommerceNavigator.gotoPortlet(
-				category = "Pricing",
-				portlet = "Discounts");
+			CommerceNavigator.goToDiscountAdmin();
 
 			Click(locator1 = "Button#PLUS");
 
@@ -898,9 +886,7 @@ definition {
 		}
 
 		task ("Then Discounts panel is shown") {
-			CommerceNavigator.gotoPortlet(
-				category = "Pricing",
-				portlet = "Discounts");
+			CommerceNavigator.goToDiscountAdmin();
 
 			AssertTextEquals(
 				locator1 = "ControlMenu#HEADING",
@@ -940,10 +926,7 @@ definition {
 		}
 
 		task ("When the admin navigates to the discount's entry") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Pricing",
-				panel = "Commerce",
-				portlet = "Discounts");
+			CommerceNavigator.goToDiscountAdmin();
 
 			CommerceNavigator.gotoEntry(entryName = "Test Discount");
 		}
@@ -1100,10 +1083,7 @@ definition {
 		}
 
 		task ("When the admin navigates to the discount's entry") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Pricing",
-				panel = "Commerce",
-				portlet = "Discounts");
+			CommerceNavigator.goToDiscountAdmin();
 
 			CommerceNavigator.gotoEntry(entryName = "Test Discount");
 		}
@@ -1270,9 +1250,7 @@ definition {
 		}
 
 		task ("And a discount of 10% applied to ABS Sensor product") {
-			CommerceNavigator.gotoPortlet(
-				category = "Pricing",
-				portlet = "Discounts");
+			CommerceNavigator.goToDiscountAdmin();
 
 			Click(locator1 = "Button#PLUS");
 
@@ -1400,9 +1378,7 @@ definition {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
 
-		CommerceNavigator.gotoPortlet(
-			category = "Store Management",
-			portlet = "Channels");
+		CommerceChannels.openChannelsAdmin();
 
 		Click(locator1 = "Button#PLUS");
 
@@ -1412,9 +1388,7 @@ definition {
 			channelType = "Site",
 			siteName = "Guest");
 
-		CommerceNavigator.gotoPortlet(
-			category = "Pricing",
-			portlet = "Discounts");
+		CommerceNavigator.goToDiscountAdmin();
 
 		Click(locator1 = "Button#PLUS");
 
@@ -1431,9 +1405,7 @@ definition {
 
 		AssertElementPresent(locator1 = "Message#SUCCESS");
 
-		CommerceNavigator.gotoPortlet(
-			category = "Pricing",
-			portlet = "Discounts");
+		CommerceNavigator.goToDiscountAdmin();
 
 		CommerceNavigator.gotoEntry(entryName = "Test Discount");
 
@@ -1469,9 +1441,7 @@ definition {
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "account3");
 
-		CommerceNavigator.gotoPortlet(
-			category = "Pricing",
-			portlet = "Discounts");
+		CommerceNavigator.goToDiscountAdmin();
 
 		Click(locator1 = "Button#PLUS");
 
@@ -1686,9 +1656,7 @@ definition {
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "account2");
 
-		CommerceNavigator.gotoPortlet(
-			category = "Pricing",
-			portlet = "Discounts");
+		CommerceNavigator.goToDiscountAdmin();
 
 		Click(locator1 = "Button#PLUS");
 
@@ -1792,9 +1760,7 @@ definition {
 
 		CommerceUtilities.checkSuccessAlertAppearsAndDisappears();
 
-		CommerceNavigator.gotoPortlet(
-			category = "Pricing",
-			portlet = "Discounts");
+		CommerceNavigator.goToDiscountAdmin();
 
 		Click(locator1 = "Button#PLUS");
 

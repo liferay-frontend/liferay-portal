@@ -5,11 +5,12 @@
 
 import useSWR from 'swr';
 
+import {Liferay} from '../../liferay/liferay';
+import HeadlessCommerceDeliveryCatalogImpl from '../../services/rest/HeadlessCommerceDeliveryCatalog';
 import {
 	getAccountInfoFromCommerce,
 	getCart,
 	getCartItems,
-	getProductById,
 } from '../../utils/api';
 
 const useNextSteps = (orderId: string) => {
@@ -30,20 +31,26 @@ const useNextSteps = (orderId: string) => {
 	const {productId} = firstCartItem ?? {};
 
 	const {data: product, isLoading: productLoading} = useSWR(
-		productId ? `/next-steps/product/${productId}` : null,
-		() => {
-			return getProductById({
-				nestedFields: 'attachments,productSpecifications',
+		productId
+			? `/next-steps/product/${productId}_${firstCartItem.id}`
+			: null,
+		() =>
+			HeadlessCommerceDeliveryCatalogImpl.getProduct(
+				Liferay.CommerceContext.commerceChannelId,
 				productId,
-			});
-		}
+				new URLSearchParams({
+					accountId,
+					nestedFields: 'attachments,productSpecifications',
+				})
+			)
 	);
 
-	const {data: accountCommerce, isLoading: accountCommerceLoading} = useSWR(
+	const {
+		data: accountCommerce,
+		isLoading: accountCommerceLoading,
+	} = useSWR(
 		accountId ? `/next-steps/account-commerce/${accountId}` : null,
-		() => {
-			return getAccountInfoFromCommerce(accountId);
-		}
+		() => getAccountInfoFromCommerce(accountId)
 	);
 
 	return {

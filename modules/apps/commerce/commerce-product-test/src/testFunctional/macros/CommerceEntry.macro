@@ -2,10 +2,7 @@ definition {
 
 	@summary = "Default summary"
 	macro activeProductPaymentSubscription(productName = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "Product Management",
-			panel = "Commerce",
-			portlet = "Products");
+		CommerceProducts.openProductsAdmin();
 
 		CommerceNavigator.searchEntry(entryName = ${productName});
 
@@ -1129,10 +1126,7 @@ definition {
 
 	@summary = "Default summary"
 	macro createNewAccountGroup(accountCriteriaType = null, accountsEntryName = null, user = null, accountGroupsEntryName = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "Accounts",
-			panel = "Control Panel",
-			portlet = "Accounts");
+		Account.openAccountsAdmin();
 
 		Click(locator1 = "Button#PLUS");
 

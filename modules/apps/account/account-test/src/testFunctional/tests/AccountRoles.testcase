@@ -1179,10 +1179,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given: An Organization is created Logging Message Audit Message Processor and Output to Console is enabled") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Users and Organizations");
+			User.openUsersAdmin();
 
 			Organization.openOrganizationsAdmin();
 
@@ -1215,10 +1212,7 @@ definition {
 		}
 
 		task ("When: A Role is assigned to the previously created Organization, then unassign the Organization from the Role") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Roles");
+			Role.openRolesAdmin();
 
 			RoleNavigator.gotoRoleType(roleType = "Regular");
 
@@ -1251,10 +1245,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given: A Site is created Logging Message Audit Message Processor and Output to Console is enabled") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Sites",
-				panel = "Control Panel",
-				portlet = "Sites");
+			Site.openSitesAdmin();
 
 			Site.addCP(
 				siteName = "POWER SITE",
@@ -1287,10 +1278,7 @@ definition {
 		}
 
 		task ("When: A Role is assigned to the previously created Site, then unassign the Site from the Role") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Roles");
+			Role.openRolesAdmin();
 
 			RoleNavigator.gotoRoleType(roleType = "Regular");
 
@@ -1323,10 +1311,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given: A User is created Logging Message Audit Message Processor and Output to Console is enabled") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Users and Organizations");
+			User.openUsersAdmin();
 
 			User.createUser(
 				userEmailAddress = "joebloggs@liferay.com",
@@ -1361,10 +1346,7 @@ definition {
 		}
 
 		task ("When: A Role is assigned to the previously created User, then unassign the User from the Role") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Roles");
+			Role.openRolesAdmin();
 
 			RoleNavigator.gotoRoleType(roleType = "Regular");
 
@@ -1397,10 +1379,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given: A User Group is created Logging Message Audit Message Processor and Output to Console is enabled") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "User Groups");
+			UserGroup.openUserGroupsAdmin();
 
 			UserGroup.addCP(userGroupName = "User Group Name");
 
@@ -1431,10 +1410,7 @@ definition {
 		}
 
 		task ("When: A Role is assigned to the previously created User Group, then unassign the User Group from the Role") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Roles");
+			Role.openRolesAdmin();
 
 			RoleNavigator.gotoRoleType(roleType = "Regular");
 
@@ -1467,10 +1443,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given: A User is created Logging Message Audit Message Processor and Output to Console is enabled") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Users and Organizations");
+			User.openUsersAdmin();
 
 			User.createUser(
 				userEmailAddress = "joebloggs@liferay.com",
@@ -1505,10 +1478,7 @@ definition {
 		}
 
 		task ("When: A Role is assigned to the previously created User, then unassign the User from the Role and all of this happens in the User Settings Menu") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Users and Organizations");
+			User.openUsersAdmin();
 
 			User.assignRegularRoleCP(
 				roleTitle = "Power User",

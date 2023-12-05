@@ -18,10 +18,10 @@ import {
 	addExpandoValue,
 	createAppSKU,
 	createProductSpecification,
-	createSpecification,
 	deleteTrialSKU,
 	getProductSKU,
 	getSKUById,
+	getSpecification,
 	patchSKUById,
 	updateProductSpecification,
 } from '../../utils/api';
@@ -163,13 +163,8 @@ export function InformLicensingTermsPage({
 							});
 						}
 						else {
-							const dataSpecification = await createSpecification(
-								{
-									body: {
-										key: 'license-type',
-										title: {en_US: 'License Type'},
-									},
-								}
+							const dataSpecification = await getSpecification(
+								'license-type'
 							);
 
 							const {id} = await createProductSpecification({
@@ -295,7 +290,7 @@ export function InformLicensingTermsPage({
 								className:
 									'com.liferay.commerce.product.model.CPInstance',
 								classPK: skuTrialId,
-								companyId: Number(getCompanyId()),
+								companyId: getCompanyId(),
 								tableName: 'CUSTOM_FIELDS',
 							});
 						}

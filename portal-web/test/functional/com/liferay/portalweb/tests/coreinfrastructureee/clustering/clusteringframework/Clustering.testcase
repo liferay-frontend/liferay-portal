@@ -245,12 +245,7 @@ definition {
 
 		Page.assertNodePortPG(nodePort = 8080);
 
-		Navigator.openURL();
-
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
-			panel = "Control Panel",
-			portlet = "Virtual Instances");
+		PortalInstances.openVirtualInstancesAdmin();
 
 		PortalInstances.addCP(
 			mailDomain = "www.baker.com",
@@ -292,12 +287,7 @@ definition {
 
 		Page.assertNodePortPG(nodePort = 8080);
 
-		Navigator.openURL();
-
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
-			panel = "Control Panel",
-			portlet = "Virtual Instances");
+		PortalInstances.openVirtualInstancesAdmin();
 
 		PortalInstances.addCP(
 			mailDomain = "www.able.com",
@@ -448,10 +438,7 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
-			panel = "Control Panel",
-			portlet = "Server Administration");
+		ServerAdministration.openServerAdmin();
 
 		ServerAdministration.addCategoryLogLevels(
 			categoryLevel = "DEBUG",
@@ -1065,10 +1052,7 @@ definition {
 
 		Clustering.viewClusterStatusInConsole();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Monitoring");
+		UserTracker.openMonitoringAdmin();
 
 		Clustering.viewLiveSessionCount(count = 1);
 
@@ -1077,10 +1061,7 @@ definition {
 			password = "test",
 			userEmailAddress = "test@liferay.com");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Monitoring");
+		UserTracker.openMonitoringAdmin(baseURL = "http://localhost:9080");
 
 		Clustering.viewLiveSessionCount(count = 2);
 
@@ -1089,10 +1070,7 @@ definition {
 			password = "test",
 			userEmailAddress = "test@liferay.com");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Monitoring");
+		UserTracker.openMonitoringAdmin();
 
 		Clustering.viewLiveSessionCount(count = 3);
 
@@ -1103,10 +1081,7 @@ definition {
 			password = "test",
 			userEmailAddress = "test@liferay.com");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Monitoring");
+		UserTracker.openMonitoringAdmin(baseURL = "http://localhost:9080");
 
 		Clustering.viewLiveSessionCount(count = 3);
 	}

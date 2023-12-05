@@ -15,10 +15,17 @@ import com.liferay.jethr0.util.StringUtil;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -123,6 +130,8 @@ public abstract class BaseJobEntity extends BaseEntity implements JobEntity {
 		jsonObject.put(
 			"name", getName()
 		).put(
+			"parameters", String.valueOf(_getParametersJSONObject())
+		).put(
 			"priority", getPriority()
 		).put(
 			"startDate", StringUtil.toString(getStartDate())
@@ -138,6 +147,16 @@ public abstract class BaseJobEntity extends BaseEntity implements JobEntity {
 	@Override
 	public String getName() {
 		return _name;
+	}
+
+	@Override
+	public Map<String, String> getParameters() {
+		return _parameters;
+	}
+
+	@Override
+	public String getParameterValue(String name) {
+		return _parameters.get(name);
 	}
 
 	@Override
@@ -233,6 +252,11 @@ public abstract class BaseJobEntity extends BaseEntity implements JobEntity {
 	}
 
 	@Override
+	public void setParameterValue(String name, String value) {
+		_parameters.put(name, value);
+	}
+
+	@Override
 	public void setPriority(int priority) {
 		_priority = priority;
 	}
@@ -255,9 +279,48 @@ public abstract class BaseJobEntity extends BaseEntity implements JobEntity {
 		_startDate = StringUtil.toDate(jsonObject.optString("startDate"));
 		_state = State.get(jsonObject.getJSONObject("state"));
 		_type = Type.get(jsonObject.getJSONObject("type"));
+
+		String parameters = jsonObject.getString("parameters");
+
+		if (StringUtil.isNullOrEmpty(parameters)) {
+			return;
+		}
+
+		try {
+			JSONObject parametersJSONObject = new JSONObject(parameters);
+
+			for (String key : parametersJSONObject.keySet()) {
+				_parameters.put(key, parametersJSONObject.getString(key));
+			}
+		}
+		catch (JSONException jsonException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(jsonException);
+			}
+		}
 	}
 
+	private JSONObject _getParametersJSONObject() {
+		JSONObject parametersJSONObject = new JSONObject();
+
+		if (_parameters.isEmpty()) {
+			return parametersJSONObject;
+		}
+
+		Set<String> parameterNames = new TreeSet<>(_parameters.keySet());
+
+		for (String parameterName : parameterNames) {
+			parametersJSONObject.put(
+				parameterName, _parameters.get(parameterName));
+		}
+
+		return parametersJSONObject;
+	}
+
+	private static final Log _log = LogFactory.getLog(BaseJobEntity.class);
+
 	private String _name;
+	private final Map<String, String> _parameters = new HashMap<>();
 	private int _priority;
 	private Date _startDate;
 	private State _state;

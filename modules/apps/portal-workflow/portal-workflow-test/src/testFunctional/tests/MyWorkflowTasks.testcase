@@ -98,9 +98,7 @@ definition {
 
 		Alert.viewSuccessMessage();
 
-		CommerceNavigator.gotoPortlet(
-			category = "Store Management",
-			portlet = "Channels");
+		CommerceChannels.openChannelsAdmin();
 
 		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
 
@@ -149,10 +147,7 @@ definition {
 			userLoginEmailAddress = "test@liferay.com",
 			userLoginFullName = "Test Test");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Order Management",
-			panel = "Commerce",
-			portlet = "Orders");
+		CommerceOrders.openOrdersAdmin();
 
 		AssertElementPresent(
 			key_status = "Approved",
@@ -183,9 +178,7 @@ definition {
 		}
 
 		task ("And the admin enabled the 'Buyer Order Approval Workflow' for Minium Portal") {
-			CommerceNavigator.gotoPortlet(
-				category = "Store Management",
-				portlet = "Channels");
+			CommerceChannels.openChannelsAdmin();
 
 			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
 
@@ -556,9 +549,7 @@ definition {
 
 		Alert.viewSuccessMessage();
 
-		CommerceNavigator.gotoPortlet(
-			category = "Store Management",
-			portlet = "Channels");
+		CommerceChannels.openChannelsAdmin();
 
 		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
 
@@ -593,10 +584,7 @@ definition {
 
 		Navigator.openURL();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Order Management",
-			panel = "Commerce",
-			portlet = "Orders");
+		CommerceOrders.openOrdersAdmin();
 
 		AssertElementPresent(
 			key_status = "Pending",
@@ -1623,10 +1611,7 @@ definition {
 			siteName = "Minium135888",
 			siteTemplateName = "Minium");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Accounts",
-			panel = "Control Panel",
-			portlet = "Accounts");
+		Account.openAccountsAdmin();
 
 		Account.addBusinessAccount(
 			accountDescription = "Account Description",
@@ -1644,9 +1629,7 @@ definition {
 			accountRoleTitle = "Account Administrator",
 			accountUserName = "userfn userln");
 
-		CommerceNavigator.gotoPortlet(
-			category = "Store Management",
-			portlet = "Channels");
+		CommerceChannels.openChannelsAdmin();
 
 		CommerceNavigator.gotoEntry(entryName = "Minium135888 Portal");
 
@@ -1682,9 +1665,7 @@ definition {
 
 		CommerceJSONOrdersAPI._deleteAllCommerceOrders();
 
-		CommerceNavigator.gotoPortlet(
-			category = "Order Management",
-			portlet = "Orders");
+		CommerceOrders.openOrdersAdmin();
 
 		IsElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
 

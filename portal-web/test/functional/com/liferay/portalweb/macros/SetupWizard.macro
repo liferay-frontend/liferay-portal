@@ -336,10 +336,7 @@ definition {
 
 		SearchAdministration.executeReindex();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
+		User.openUsersAdmin();
 
 		Pagination.viewResults(results = "Showing 1 to 20 of 101 entries.");
 
@@ -376,10 +373,7 @@ definition {
 				locator1 = "UsersAndOrganizationsOrganization#SUBORGANIZATION_TABLE_TYPE",
 				value1 = "Organization");
 
-			ApplicationsMenu.gotoPortlet(
-				category = "Sites",
-				panel = "Control Panel",
-				portlet = "Sites");
+			Site.openSitesAdmin();
 
 			AssertTextEquals.assertPartialText(
 				key_siteName = "Liferay DXP, Inc.",
@@ -409,10 +403,7 @@ definition {
 				locator1 = "UsersAndOrganizationsOrganization#SUBORGANIZATION_TABLE_TYPE",
 				value1 = "Organization");
 
-			ApplicationsMenu.gotoPortlet(
-				category = "Sites",
-				panel = "Control Panel",
-				portlet = "Sites");
+			Site.openSitesAdmin();
 
 			AssertTextEquals.assertPartialText(
 				key_siteName = "Liferay, Inc.",

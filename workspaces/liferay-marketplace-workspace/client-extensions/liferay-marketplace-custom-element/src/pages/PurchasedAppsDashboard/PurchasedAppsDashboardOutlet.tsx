@@ -3,15 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {Outlet} from 'react-router-dom';
 
 import {DashboardNavigation} from '../../components/DashboardNavigation/DashboardNavigation';
-import {
-	getAccountInfoFromCommerce,
-	getAccounts,
-	getProductAttachments,
-} from '../../utils/api';
+import {getProductAttachments} from '../../utils/api';
 import {
 	getAccountImage,
 	getThumbnailByProductAttachment,
@@ -22,10 +18,34 @@ import './PurchasedAppsDashboard.scss';
 
 import useSWR from 'swr';
 
-import {useMarketplaceContext} from '../../context/MarketplaceContext';
+import useAccounts from '../../hooks/data/useAccounts';
 import {Liferay} from '../../liferay/liferay';
-import {useAccountCached} from '../PublishedAppsDashboard/PublishedAppsDashboardOutlet';
+import HeadlessAdminUserImpl from '../../services/rest/HeadlessAdminUser';
 import {usePurchasedOrders} from './usePurchasedOrders';
+
+const useAccountCached = (accounts: any[], accountId: string | null) => {
+	const {data: account} = useSWR(`/account/${accountId}`, async () => {
+		if (!accountId) {
+			return;
+		}
+
+		const cacheAccount = accounts?.find(
+			({id}: Account) => id === Number(accountId)
+		);
+
+		if (cacheAccount) {
+			return cacheAccount;
+		}
+
+		const account = await HeadlessAdminUserImpl.getAccount(
+			accountId as string
+		);
+
+		return account;
+	});
+
+	return account ?? accounts[0];
+};
 
 export type PurchasedAppProps = {
 	name: string;
@@ -45,40 +65,18 @@ export type PurchasedAppProps = {
 
 const PurchasedAppsDashboardOutlet = () => {
 	const {accountId} = Liferay.CommerceContext.account || {};
-	const [commerceAccount, setCommerceAccount] = useState<CommerceAccount>();
+	const channelId = Number(Liferay.CommerceContext.commerceChannelId);
 
 	const [page, setPage] = useState(1);
-	const {channel} = useMarketplaceContext();
-
-	const {data: accounts = []} = useSWR('/purchased/accounts', async () => {
-		const accounts = await getAccounts();
-
-		return accounts.items ?? [];
-	});
-
-	const selectedAccount = useAccountCached(
-		accounts ?? [],
-		accountId as string
-	);
-
-	useEffect(() => {
-		const getAccountCommerce = async () => {
-			const commerceAccountResponse = await getAccountInfoFromCommerce(
-				selectedAccount?.id
-			);
-
-			setCommerceAccount(commerceAccountResponse);
-		};
-
-		getAccountCommerce();
-	}, [selectedAccount?.id]);
+	const {data: accounts = []} = useAccounts();
+	const selectedAccount = useAccountCached(accounts, accountId as string);
 
 	const {
 		data: placedOrders = {items: [], totalCount: 0},
 		key,
 	} = usePurchasedOrders({
 		accountId: selectedAccount?.id,
-		channelId: channel?.id,
+		channelId,
 		orderTypeExternalReferenceCodes: ['CLOUDAPP', 'DXPAPP'],
 		page,
 		pageSize: 10,
@@ -89,7 +87,7 @@ const PurchasedAppsDashboardOutlet = () => {
 	} = useSWR(
 		`/${key}/with-attachments/${placedOrders.totalCount}`,
 		async () => {
-			if (!selectedAccount?.id && channel?.id) {
+			if (!selectedAccount?.id && channelId) {
 				return {items: [], totalCount: 0};
 			}
 
@@ -99,7 +97,7 @@ const PurchasedAppsDashboardOutlet = () => {
 
 					const attachments = await getProductAttachments(
 						selectedAccount.id,
-						channel.id as number,
+						channelId,
 						placeOrderItem.productId
 					);
 
@@ -127,8 +125,8 @@ const PurchasedAppsDashboardOutlet = () => {
 		<div className="purchased-apps-dashboard-page-container">
 			<DashboardNavigation
 				accountAppsNumber={placedOrdersWithAttachements.items.length}
-				accountIcon={getAccountImage(commerceAccount?.logoURL)}
-				accounts={accounts as Account[]}
+				accountIcon={getAccountImage(selectedAccount?.logoURL)}
+				accounts={(accounts as unknown) as Account[]}
 				currentAccount={selectedAccount}
 				dashboardNavigationItems={dashboardNavigationItems}
 			/>

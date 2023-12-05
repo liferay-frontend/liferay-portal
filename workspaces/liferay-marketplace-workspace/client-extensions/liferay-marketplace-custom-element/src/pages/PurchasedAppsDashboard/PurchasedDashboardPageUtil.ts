@@ -9,19 +9,6 @@ import membersIcon from '../../assets/icons/person_fill_icon.svg';
 import {DashboardListItems} from '../../components/DashboardNavigation/DashboardNavigation';
 import {AppProps} from '../../components/DashboardTable/DashboardTable';
 
-export const appList: AppProps[] = [];
-
-export const initialAccountState: Account[] = [
-	{
-		description: '',
-		emailAddress: '',
-		externalReferenceCode: '',
-		id: 0,
-		name: '',
-		type: '',
-	},
-];
-
 export const initialAppState: AppProps = {
 	attachments: [
 		{
@@ -106,7 +93,7 @@ export const initialDashboardNavigationItems: DashboardListItems[] = [
 		itemIcon: appsIcon,
 		itemName: 'myApps',
 		itemTitle: 'My Apps',
-		items: appList,
+		items: [],
 		path: '/',
 	},
 	{

@@ -7,6 +7,7 @@ package com.liferay.object.internal.action.executor;
 
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.object.action.executor.ObjectActionExecutor;
+import com.liferay.object.action.util.ObjectActionThreadLocal;
 import com.liferay.object.constants.ObjectActionConstants;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
@@ -102,6 +103,7 @@ public class UpdateObjectEntryObjectActionExecutorImpl
 			ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission();
 
 		try {
+			ObjectActionThreadLocal.setClearObjectEntryIdsMap(false);
 			ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(true);
 			ObjectEntryThreadLocal.setSkipReadOnlyObjectFieldsValidation(true);
 
@@ -144,6 +146,7 @@ public class UpdateObjectEntryObjectActionExecutorImpl
 			throw exception;
 		}
 		finally {
+			ObjectActionThreadLocal.setClearObjectEntryIdsMap(true);
 			ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(
 				skipObjectEntryResourcePermission);
 			ObjectEntryThreadLocal.setSkipReadOnlyObjectFieldsValidation(false);

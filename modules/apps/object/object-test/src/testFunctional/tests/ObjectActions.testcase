@@ -386,10 +386,7 @@ definition {
 		}
 
 		task ("When the user creates a Commerce Product entry") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Product Management",
-				panel = "Commerce",
-				portlet = "Products");
+			CommerceProducts.openProductsAdmin();
 
 			CPCommerceCatalog.newProductsEntry(
 				productCatalog = "Master",
@@ -398,10 +395,7 @@ definition {
 		}
 
 		task ("Then the action is triggered and a user is added") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Users and Organizations");
+			User.openUsersAdmin();
 
 			LexiconEntry.viewEntryName(rowEntry = "newusertest");
 		}
@@ -565,9 +559,7 @@ definition {
 		}
 
 		task ("When The user changes the order status.") {
-			CommerceNavigator.gotoPortlet(
-				category = "Order Management",
-				portlet = "Orders");
+			CommerceOrders.openOrdersAdmin();
 
 			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
 
@@ -756,9 +748,7 @@ definition {
 		}
 
 		task ("And when the order status is updated") {
-			CommerceNavigator.gotoPortlet(
-				category = "Order Management",
-				portlet = "Orders");
+			CommerceOrders.openOrdersAdmin();
 
 			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
 
@@ -945,9 +935,7 @@ definition {
 		}
 
 		task ("Then the action is triggered and the order status is updated") {
-			CommerceNavigator.gotoPortlet(
-				category = "Order Management",
-				portlet = "Orders");
+			CommerceOrders.openOrdersAdmin();
 
 			AssertElementPresent(
 				key_value = "On Hold",
@@ -1095,7 +1083,9 @@ definition {
 		}
 
 		task ("When the user changes the order status") {
-			CommerceOrders.openOrdersAdmin();
+			CommerceNavigator.gotoPortlet(
+				category = "Order Management",
+				portlet = "Orders");
 
 			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
 
@@ -3158,10 +3148,7 @@ definition {
 		}
 
 		task ("When check the object entries in define permissions tab of a regular role") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Roles");
+			Role.openRolesAdmin();
 
 			RoleNavigator.gotoDefineRolePermissions(roleTitle = "Portal Content Reviewer");
 
@@ -3215,10 +3202,7 @@ definition {
 		property portal.acceptance = "true";
 
 		task ("Given a object system") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Object",
-				panel = "Control Panel",
-				portlet = "Objects");
+			ObjectAdmin.openObjectAdmin();
 
 			ObjectPortlet.selectSystemObject(label = "Commerce Order");
 		}

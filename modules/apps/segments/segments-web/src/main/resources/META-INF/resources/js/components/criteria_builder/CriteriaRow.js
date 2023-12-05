@@ -12,11 +12,13 @@ import {DropTarget as dropTarget} from 'react-dnd';
 
 import ThemeContext from '../../ThemeContext.es';
 import {
-	PROPERTY_TYPES,
-	SUPPORTED_OPERATORS,
-	SUPPORTED_PROPERTY_TYPES,
-} from '../../utils/constants';
-import {DragTypes} from '../../utils/drag-types';
+	POSITIONS,
+	useMovementSource,
+	useMovementTarget,
+} from '../../contexts/KeyboardMovementContext';
+import {PROPERTY_TYPES, SUPPORTED_OPERATORS} from '../../utils/constants';
+import {DragTypes} from '../../utils/dragTypes';
+import getDropZoneElementClassname from '../../utils/getDropZoneElementClassName';
 import {
 	createNewGroup,
 	getSupportedOperatorsFromType,
@@ -89,11 +91,7 @@ function drop(props, monitor) {
 
 	const droppedCriterionValue = value || defaultValue;
 
-	const operators = getSupportedOperatorsFromType(
-		SUPPORTED_OPERATORS,
-		SUPPORTED_PROPERTY_TYPES,
-		type
-	);
+	const operators = getSupportedOperatorsFromType(type);
 
 	const newCriterion = {
 		displayValue,
@@ -313,16 +311,36 @@ function CriteriaRow({
 		});
 	}
 
+	const movementSource = useMovementSource();
+	const movementTarget = useMovementTarget();
+
+	const isKeyboardTarget =
+		movementSource?.propertyKey === propertyKey &&
+		movementTarget?.groupId === groupId &&
+		movementTarget?.index === index &&
+		movementTarget.position === POSITIONS.middle;
+
+	const dropZoneClassName = getDropZoneElementClassname(
+		propertyKey,
+		groupId,
+		index,
+		POSITIONS.middle
+	);
+
 	return (
 		<>
 			{connectDropTarget(
 				<div
-					className={classNames('criterion-row-root', {
-						'criterion-row-root-error': error,
-						'criterion-row-root-warning': warning,
-						'dnd-drag': dragging,
-						'dnd-hover': hover && canDrop,
-					})}
+					className={classNames(
+						'criterion-row-root',
+						dropZoneClassName,
+						{
+							'criterion-row-root-error': error,
+							'criterion-row-root-warning': warning,
+							'dnd-drag': dragging,
+							'dnd-hover': (hover && canDrop) || isKeyboardTarget,
+						}
+					)}
 				>
 					{editing ? (
 						<CriteriaRowEditable

@@ -18,10 +18,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Crescenzo Rega
  */
 @Component(
-	property = "dto.class.name=SkuSubscriptionConfiguration",
-	service = {
-		DTOConverter.class, SkuSubscriptionConfigurationDTOConverter.class
-	}
+	property = "dto.class.name=com.liferay.commerce.product.model.CPInstance",
+	service = DTOConverter.class
 )
 public class SkuSubscriptionConfigurationDTOConverter
 	implements DTOConverter<CPInstance, SkuSubscriptionConfiguration> {

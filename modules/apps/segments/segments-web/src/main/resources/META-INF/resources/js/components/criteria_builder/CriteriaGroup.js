@@ -9,12 +9,8 @@ import {PropTypes} from 'prop-types';
 import React, {Fragment} from 'react';
 
 import useDragSource from '../../hooks/useDragSource';
-import {
-	CONJUNCTIONS,
-	SUPPORTED_OPERATORS,
-	SUPPORTED_PROPERTY_TYPES,
-} from '../../utils/constants';
-import {DragTypes} from '../../utils/drag-types';
+import {CONJUNCTIONS} from '../../utils/constants';
+import {DragTypes} from '../../utils/dragTypes';
 import {
 	generateGroupId,
 	getChildGroupIds,
@@ -80,11 +76,7 @@ export default function CriteriaGroup({
 
 		const criterionValue = value || defaultValue;
 
-		const operators = getSupportedOperatorsFromType(
-			SUPPORTED_OPERATORS,
-			SUPPORTED_PROPERTY_TYPES,
-			type
-		);
+		const operators = getSupportedOperatorsFromType(type);
 
 		const newCriterion = {
 			operatorName: operatorName ? operatorName : operators[0].name,
@@ -129,14 +121,6 @@ export default function CriteriaGroup({
 	const _renderConjunction = (index) => {
 		return (
 			<>
-				<DropZone
-					dropIndex={index}
-					groupId={groupId}
-					onCriterionAdd={_handleCriterionAdd}
-					onMove={onMove}
-					propertyKey={propertyKey}
-				/>
-
 				<Conjunction
 					conjunctionName={criteria.conjunctionName}
 					editing={editing}
@@ -145,8 +129,8 @@ export default function CriteriaGroup({
 
 				<DropZone
 					before
-					dropIndex={index}
 					groupId={groupId}
+					index={index}
 					onCriterionAdd={_handleCriterionAdd}
 					onMove={onMove}
 					propertyKey={propertyKey}
@@ -197,8 +181,8 @@ export default function CriteriaGroup({
 				)}
 
 				<DropZone
-					dropIndex={index + 1}
 					groupId={groupId}
+					index={index}
 					onCriterionAdd={_handleCriterionAdd}
 					onMove={onMove}
 					propertyKey={propertyKey}
@@ -217,7 +201,7 @@ export default function CriteriaGroup({
 		<div
 			className={classNames(
 				{
-					'criteria-group-root w-100': criteria,
+					'criteria-group-root my-2 p-2 w-100': criteria,
 					disabled,
 				},
 				`color--${propertyKey} criteria-group-item${
@@ -235,8 +219,8 @@ export default function CriteriaGroup({
 				<>
 					<DropZone
 						before
-						dropIndex={0}
 						groupId={groupId}
+						index={0}
 						onCriterionAdd={_handleCriterionAdd}
 						onMove={onMove}
 						propertyKey={propertyKey}

@@ -2108,10 +2108,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Add custom field in User") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "Custom Fields");
+			CustomFields.openCustomFieldAdmin();
 
 			CustomFields.addCP(
 				customFieldName = "Business Unit",
@@ -2128,10 +2125,7 @@ definition {
 				userLastName = "userln",
 				userScreenName = "usersn");
 
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Users and Organizations");
+			User.openUsersAdmin();
 
 			UserNavigator.gotoUser(userScreenName = "usersn");
 

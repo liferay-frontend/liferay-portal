@@ -72,10 +72,7 @@ definition {
 
 	@summary = "Add CP Object"
 	macro addCPObject(title = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "Object",
-			panel = "Control Panel",
-			portlet = "Objects");
+		ObjectAdmin.openObjectAdmin();
 
 		ObjectPortlet.selectObject(label = ${title});
 
@@ -293,10 +290,7 @@ definition {
 
 	@summary = "Change User Role"
 	macro changeUserRole(accountName = null,accountUserName = null,accountRoleTitle = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "Accounts",
-			panel = "Control Panel",
-			portlet = "Accounts");
+		Account.openAccountsAdmin();
 
 		Click(
 			key_accountName = ${accountName},
@@ -460,7 +454,7 @@ definition {
 
 		CommerceJSONChannelsAPI._deleteAllCommerceChannels();
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/control_panel/manage?p_p_id=com_liferay_client_extension_web_internal_portlet_ClientExtensionAdminPortlet");
+		ClientExtension.openClientExtensionsAdmin();
 
 		ClientExtensionGeneral.deleteRemoteApp(tableEntry = "Customer Portal");
 	}
@@ -481,10 +475,7 @@ definition {
 			CustomerPortal.customerPortalApisTearDown();
 		}
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Sites",
-			panel = "Control Panel",
-			portlet = "Sites");
+		Site.openSitesAdmin();
 
 		Refresh();
 
@@ -517,10 +508,7 @@ definition {
 
 	@summary = "Delete CP Object"
 	macro deleteCPObject(title = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "Object",
-			panel = "Control Panel",
-			portlet = "Objects");
+		ObjectAdmin.openObjectAdmin();
 
 		ObjectPortlet.selectObject(label = ${title});
 
@@ -798,10 +786,7 @@ definition {
 
 	@summary = "Show CP Object"
 	macro showCPObject(title = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "Object",
-			panel = "Control Panel",
-			portlet = "Objects");
+		ObjectAdmin.openObjectAdmin();
 
 		ObjectPortlet.selectObject(label = ${title});
 

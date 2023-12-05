@@ -23,6 +23,7 @@ import com.liferay.object.exception.ObjectDefinitionAccountEntryRestrictedObject
 import com.liferay.object.exception.ObjectDefinitionActiveException;
 import com.liferay.object.exception.ObjectDefinitionEnableCategorizationException;
 import com.liferay.object.exception.ObjectDefinitionEnableCommentsException;
+import com.liferay.object.exception.ObjectDefinitionEnableLocalizationException;
 import com.liferay.object.exception.ObjectDefinitionEnableObjectEntryHistoryException;
 import com.liferay.object.exception.ObjectDefinitionExternalReferenceCodeException;
 import com.liferay.object.exception.ObjectDefinitionLabelException;
@@ -48,6 +49,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectFieldModel;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.model.impl.ObjectDefinitionImpl;
@@ -1774,10 +1776,24 @@ public class ObjectDefinitionLocalServiceImpl
 				"the-object-definition-is-already-published");
 		}
 
+		List<ObjectField> objectFields =
+			_objectFieldPersistence.findByObjectDefinitionId(
+				objectDefinition.getObjectDefinitionId());
+
+		if (!objectDefinition.isEnableLocalization() &&
+			ListUtil.exists(objectFields, ObjectFieldModel::isLocalized)) {
+
+			throw new ObjectDefinitionEnableLocalizationException(
+				"You cannot disable entry translation for the object " +
+					"definition because translation is enabled for custom " +
+						"fields",
+				"you-cannot-disable-entry-translation-for-the-object-" +
+					"definition-because-translation-is-enabled-for-custom-" +
+						"fields");
+		}
+
 		if (!ListUtil.exists(
-				_objectFieldPersistence.findByObjectDefinitionId(
-					objectDefinition.getObjectDefinitionId()),
-				objectField -> !objectField.isMetadata())) {
+				objectFields, objectField -> !objectField.isMetadata())) {
 
 			throw new ObjectDefinitionStatusException(
 				"At least one object field must be added when publishing the " +

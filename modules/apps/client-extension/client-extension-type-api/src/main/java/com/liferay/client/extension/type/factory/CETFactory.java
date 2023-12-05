@@ -28,14 +28,14 @@ public interface CETFactory {
 
 	public CET create(
 			CETConfiguration cetConfiguration, long companyId,
-			String externalReferenceCode)
+			String externalReferenceCode, boolean replaceVariables)
 		throws PortalException;
 
-	public CET create(ClientExtensionEntry clientExtensionEntry)
+	public CET create(
+			ClientExtensionEntry clientExtensionEntry, boolean replaceVariables)
 		throws PortalException;
 
-	public CET create(PortletRequest portletRequest, String type)
-		throws PortalException;
+	public CET create(PortletRequest portletRequest) throws PortalException;
 
 	public Collection<String> getTypes();
 

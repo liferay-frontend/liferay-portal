@@ -5,13 +5,15 @@
 
 import {useCallback, useEffect, useState} from 'react';
 
-import {getProductById} from '../../../utils/api';
+import {useMarketplaceContext} from '../../../context/MarketplaceContext';
+import HeadlessCommerceDeliveryCatalogImpl from '../../../services/rest/HeadlessCommerceDeliveryCatalog';
 import {getUrlParam} from '../../../utils/getUrlParam';
 
 const useGetProduct = (
-	selectedProduct: Product | undefined,
-	setProduct: (value: Product) => void
+	selectedProduct: DeliveryProduct | undefined,
+	setProduct: (value: DeliveryProduct) => void
 ) => {
+	const {channel} = useMarketplaceContext();
 	const [productId, setProductId] = useState<number | string | null>();
 
 	const getProductInformation = useCallback(async () => {
@@ -19,14 +21,17 @@ const useGetProduct = (
 		setProductId(selectedProduct?.productId || urlProductId);
 
 		if (productId) {
-			const fetchProduct = await getProductById({
-				nestedFields: 'attachments,productSpecifications,skus,catalog',
+			const fetchProduct = await HeadlessCommerceDeliveryCatalogImpl.getProduct(
+				channel.id,
 				productId,
-			});
+				new URLSearchParams({
+					nestedFields: 'attachments,productSpecifications,skus',
+				})
+			);
 
 			setProduct(fetchProduct);
 		}
-	}, [productId, selectedProduct?.productId, setProduct]);
+	}, [channel?.id, productId, selectedProduct?.productId, setProduct]);
 
 	useEffect(() => {
 		getProductInformation();

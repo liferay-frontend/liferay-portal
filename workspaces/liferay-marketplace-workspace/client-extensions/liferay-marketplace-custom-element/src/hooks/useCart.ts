@@ -32,7 +32,6 @@ const useCart = ({
 				accountId,
 				channelId: Number(channelId),
 				orderTypeExternalReferenceCode: orderType?.externalReferenceCode as string,
-				orderTypeId: Number(orderType?.id),
 			});
 
 			setCart(response);

@@ -30,7 +30,9 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleServiceUtil;
 import com.liferay.portal.kernel.service.permission.RolePermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -45,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
@@ -197,7 +200,9 @@ public class RoleDisplayContext {
 
 		return new NavigationItemList() {
 			{
-				for (String assigneeTypeName : _ASSIGNEE_TYPE_NAMES) {
+				for (String assigneeTypeName :
+						_getAssigneeTypeNamesByRoleId(portletURL)) {
+
 					if (_isAssigneeTypeVisible(role, assigneeTypeName)) {
 						add(
 							navigationItem -> {
@@ -355,6 +360,31 @@ public class RoleDisplayContext {
 		}
 
 		return false;
+	}
+
+	private String[] _getAssigneeTypeNamesByRoleId(PortletURL portletURL)
+		throws Exception {
+
+		String[] assigneeTypeNames = _ASSIGNEE_TYPE_NAMES;
+
+		Map<String, String[]> parameterMap = portletURL.getParameterMap();
+
+		String[] roleIds = parameterMap.get("roleId");
+
+		if (roleIds.length > 0) {
+			long roleId = GetterUtil.getLong(roleIds[0]);
+
+			Role role = RoleServiceUtil.fetchRole(roleId);
+
+			if ((role != null) &&
+				Objects.equals(RoleConstants.ADMINISTRATOR, role.getName())) {
+
+				assigneeTypeNames = ArrayUtil.filter(
+					assigneeTypeNames, name -> !name.equals("segments"));
+			}
+		}
+
+		return assigneeTypeNames;
 	}
 
 	private Role _getSelectedRole() throws Exception {
