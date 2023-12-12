@@ -57,6 +57,16 @@ public class CookiesManagerUtil {
 			secure);
 	}
 
+	public static void addNecessaryCookies(
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
+		CookiesManager cookiesManager = _cookiesManagerSnapshot.get();
+
+		cookiesManager.addNecessaryCookies(
+			httpServletRequest, httpServletResponse);
+	}
+
 	public static boolean addSupportCookie(
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
