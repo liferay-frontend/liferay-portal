@@ -577,21 +577,23 @@ public class CookiesManagerImpl implements CookiesManager {
 			getCookieValue(
 				CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
 				httpServletRequest));
+
+		// NOTE: could remove previous, as we don't want to remove necessary
+		// cookies just the one that reminds if the user had used the
+		// configuration modal
+
 		boolean hasUserConsentConfiguredCookie = Validator.isNotNull(
 			getCookieValue(
 				CookiesConstants.NAME_USER_CONSENT_CONFIGURED,
 				httpServletRequest));
 
-		if (hasConsentTypeFunctionalCookie || hasConsentTypePerformanceCookie ||
-			hasConsentTypePersonalizationCookie ||
-			hasUserConsentConfiguredCookie) {
-
+		if (hasUserConsentConfiguredCookie) {
 			return deleteCookies(
 				getDomain(httpServletRequest), httpServletRequest,
 				httpServletResponse,
-				CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL,
-				CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
-				CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
+				// CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL,
+				// CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
+				// CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
 				CookiesConstants.NAME_USER_CONSENT_CONFIGURED);
 		}
 
