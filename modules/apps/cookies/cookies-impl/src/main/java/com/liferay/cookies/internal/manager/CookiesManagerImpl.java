@@ -203,6 +203,115 @@ public class CookiesManagerImpl implements CookiesManager {
 	}
 
 	@Override
+	public void addNecessaryCookies(
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
+		CookiesPreferenceHandlingConfiguration
+			cookiesPreferenceHandlingConfiguration =
+				_getCookiesPreferenceHandlingConfiguration(httpServletRequest);
+
+		// Get Preference handling checkbox state
+
+		boolean cookiesHandlingEnabled =
+			cookiesPreferenceHandlingConfiguration.enabled();
+
+		// Remove cookie that stores information about the cookies banner configuration
+
+		if (!cookiesHandlingEnabled) {
+			_deleteCookieConsentCookies(
+				httpServletRequest, httpServletResponse);
+		}
+
+		// Get Explicit consent mode checkbox state
+
+		boolean explicitConsentMode =
+			cookiesPreferenceHandlingConfiguration.explicitConsentMode();
+
+		boolean functionalConsentCookie = Validator.isNotNull(
+			_getCookieValue(
+				CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL,
+				httpServletRequest, true));
+		boolean necessaryConsentCookie = Validator.isNotNull(
+			_getCookieValue(
+				CookiesConstants.NAME_CONSENT_TYPE_NECESSARY,
+				httpServletRequest, true));
+		boolean performanceConsentCookie = Validator.isNotNull(
+			_getCookieValue(
+				CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
+				httpServletRequest, true));
+		boolean personalizationConsentCookie = Validator.isNotNull(
+			_getCookieValue(
+				CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
+				httpServletRequest, true));
+
+		// NOTE: for each necessary cookie, create the placeholder: cookie value = false
+		// except for the NAME_CONSENT_TYPE_NECESSARY one
+
+		if (!necessaryConsentCookie) {
+
+			// NOTE: Need to manually create the cookie to avoid duplication due to
+			// different paths
+
+			Cookie necessaryCookie = new Cookie(
+				CookiesConstants.NAME_CONSENT_TYPE_NECESSARY, "true");
+
+			necessaryCookie.setPath(StringPool.SLASH);
+
+			addCookie(
+				CookiesConstants.CONSENT_TYPE_NECESSARY, necessaryCookie,
+				httpServletRequest, httpServletResponse);
+		}
+
+		String cookieValue = "false";
+
+		// NOTE: for each necessary cookie, create the placeholder (value = false)
+		// Control the case that configuration modal is disabled & explicit mode enabled to reset
+		// Otherwise, keep cookie information if there is any
+		// This will help us, reopen configuration modal with store information
+
+		if (!functionalConsentCookie ||
+			(!cookiesHandlingEnabled && explicitConsentMode)) {
+
+			Cookie functionalCookie = new Cookie(
+				CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL, cookieValue);
+
+			functionalCookie.setPath(StringPool.SLASH);
+
+			addCookie(
+				CookiesConstants.CONSENT_TYPE_NECESSARY, functionalCookie,
+				httpServletRequest, httpServletResponse);
+		}
+
+		if (!performanceConsentCookie ||
+			(!cookiesHandlingEnabled && explicitConsentMode)) {
+
+			Cookie performanceCookie = new Cookie(
+				CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE, cookieValue);
+
+			performanceCookie.setPath(StringPool.SLASH);
+
+			addCookie(
+				CookiesConstants.CONSENT_TYPE_NECESSARY, performanceCookie,
+				httpServletRequest, httpServletResponse);
+		}
+
+		if (!personalizationConsentCookie ||
+			(!cookiesHandlingEnabled && explicitConsentMode)) {
+
+			Cookie personalizationCookie = new Cookie(
+				CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
+				cookieValue);
+
+			personalizationCookie.setPath(StringPool.SLASH);
+
+			addCookie(
+				CookiesConstants.CONSENT_TYPE_NECESSARY, personalizationCookie,
+				httpServletRequest, httpServletResponse);
+		}
+	}
+
+	@Override
 	public boolean addSupportCookie(
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {

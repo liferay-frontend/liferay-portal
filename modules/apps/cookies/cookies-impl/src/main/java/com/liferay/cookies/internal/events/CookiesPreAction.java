@@ -95,6 +95,9 @@ public class CookiesPreAction extends Action {
 				httpServletRequest, httpServletResponse,
 				CookiesConstants.NAME_USER_CONSENT_CONFIGURED);
 		}
+
+		CookiesManagerUtil.addNecessaryCookies(
+			httpServletRequest, httpServletResponse);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
