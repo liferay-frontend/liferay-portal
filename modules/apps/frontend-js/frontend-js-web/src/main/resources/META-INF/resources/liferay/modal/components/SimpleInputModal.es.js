@@ -5,7 +5,7 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
-import {ClayCheckbox, ClayInput} from '@clayui/form';
+import ClayForm, {ClayCheckbox, ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayModal, {useModal} from '@clayui/modal';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
@@ -60,12 +60,32 @@ const SimpleInputModal = ({
 		}
 	};
 
+	const validateInput = () => {
+		let error = '';
+
+		if (!inputValue) {
+			error = Liferay.Language.get('this-field-is-required');
+		}
+
+		return error;
+	};
+
 	const _handleSubmit = (event) => {
 		event.preventDefault();
 
 		const formData = new FormData(
 			document.querySelector(`#${namespace}form`)
 		);
+
+		const error = validateInput(formData);
+
+		if (error) {
+			setErrorMessage(error);
+
+			return;
+		}
+
+		setLoadingResponse(true);
 
 		fetch(formSubmitURL, {
 			body: formData,
@@ -102,8 +122,6 @@ const SimpleInputModal = ({
 			.catch((response) => {
 				handleFormError(response);
 			});
-
-		setLoadingResponse(true);
 	};
 
 	const {observer, onClose} = useModal({
@@ -119,7 +137,11 @@ const SimpleInputModal = ({
 			<ClayModal center={center} observer={observer} size={size}>
 				<ClayModal.Header>{dialogTitle}</ClayModal.Header>
 
-				<form id={`${namespace}form`} onSubmit={_handleSubmit}>
+				<ClayForm
+					id={`${namespace}form`}
+					noValidate
+					onSubmit={_handleSubmit}
+				>
 					<ClayModal.Body>
 						{alert && alert.message && alert.title && (
 							<ClayAlert
@@ -228,7 +250,7 @@ const SimpleInputModal = ({
 							</ClayButton.Group>
 						}
 					/>
-				</form>
+				</ClayForm>
 			</ClayModal>
 		)
 	);
