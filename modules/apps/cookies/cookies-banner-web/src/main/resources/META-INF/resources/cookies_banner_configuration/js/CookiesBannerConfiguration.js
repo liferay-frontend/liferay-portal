@@ -36,17 +36,7 @@ export default function ({
 
 		toggleSwitch.addEventListener('click', notifyCookiePreferenceUpdate);
 
-		// NOTE: this check prevents loading stored cookie information
-		// when check/uncheck the Preference handling (Enable) checkbox
-
-		// if (getCookie(userConfigCookieName)) {
-
 		toggleSwitch.checked = getCookie(cookieKey) === 'true';
-
-		// }
-		// else {
-		// 	toggleSwitch.checked = toggleSwitch.dataset.prechecked === 'true';
-		// }
 
 		notifyCookiePreferenceUpdate();
 

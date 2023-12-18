@@ -136,23 +136,11 @@ public class CookiesManagerImpl implements CookiesManager {
 		int consentType, Cookie cookie, HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse, boolean secure) {
 
-		if (!_SESSION_ENABLE_PERSISTENT_COOKIES) {
+		if (!_SESSION_ENABLE_PERSISTENT_COOKIES ||
+			((cookie.getMaxAge() != 0) &&
+			 !hasConsentType(consentType, httpServletRequest))) {
+
 			return false;
-		}
-
-		if (cookie.getMaxAge() != 0) {
-			CookiesPreferenceHandlingConfiguration
-				cookiesPreferenceHandlingConfiguration =
-					_getCookiesPreferenceHandlingConfiguration(
-						httpServletRequest);
-
-			if (!cookiesPreferenceHandlingConfiguration.enabled()) {
-				_deleteCookieConsentCookies(
-					httpServletRequest, httpServletResponse);
-			}
-			else if (!hasConsentType(consentType, httpServletRequest)) {
-				return false;
-			}
 		}
 
 		// LEP-5175
@@ -211,19 +199,10 @@ public class CookiesManagerImpl implements CookiesManager {
 			cookiesPreferenceHandlingConfiguration =
 				_getCookiesPreferenceHandlingConfiguration(httpServletRequest);
 
-		// Get Preference handling checkbox state
-
-		boolean cookiesHandlingEnabled =
-			cookiesPreferenceHandlingConfiguration.enabled();
-
-		// Remove cookie that stores information about the cookies banner configuration
-
-		if (!cookiesHandlingEnabled) {
+		if (!cookiesPreferenceHandlingConfiguration.enabled()) {
 			_deleteCookieConsentCookies(
 				httpServletRequest, httpServletResponse);
 		}
-
-		// Get Explicit consent mode checkbox state
 
 		boolean explicitConsentMode =
 			cookiesPreferenceHandlingConfiguration.explicitConsentMode();
@@ -245,14 +224,7 @@ public class CookiesManagerImpl implements CookiesManager {
 				CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
 				httpServletRequest, true));
 
-		// NOTE: for each necessary cookie, create the placeholder: cookie value = false
-		// except for the NAME_CONSENT_TYPE_NECESSARY one
-
 		if (!necessaryConsentCookie) {
-
-			// NOTE: Need to manually create the cookie to avoid duplication due to
-			// different paths
-
 			Cookie necessaryCookie = new Cookie(
 				CookiesConstants.NAME_CONSENT_TYPE_NECESSARY, "true");
 
@@ -264,11 +236,6 @@ public class CookiesManagerImpl implements CookiesManager {
 		}
 
 		String cookieValue = "false";
-
-		// NOTE: for each necessary cookie, create the placeholder (value = false)
-		// Control the case that configuration modal is disabled & explicit mode enabled to reset
-		// Otherwise, keep cookie information if there is any
-		// This will help us, reopen configuration modal with store information
 
 		if (!functionalConsentCookie ||
 			(!cookiesHandlingEnabled && explicitConsentMode)) {
@@ -565,23 +532,6 @@ public class CookiesManagerImpl implements CookiesManager {
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
-		boolean hasConsentTypeFunctionalCookie = Validator.isNotNull(
-			getCookieValue(
-				CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL,
-				httpServletRequest));
-		boolean hasConsentTypePerformanceCookie = Validator.isNotNull(
-			getCookieValue(
-				CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
-				httpServletRequest));
-		boolean hasConsentTypePersonalizationCookie = Validator.isNotNull(
-			getCookieValue(
-				CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
-				httpServletRequest));
-
-		// NOTE: could remove previous, as we don't want to remove necessary
-		// cookies just the one that reminds if the user had used the
-		// configuration modal
-
 		boolean hasUserConsentConfiguredCookie = Validator.isNotNull(
 			getCookieValue(
 				CookiesConstants.NAME_USER_CONSENT_CONFIGURED,
@@ -591,9 +541,6 @@ public class CookiesManagerImpl implements CookiesManager {
 			return deleteCookies(
 				getDomain(httpServletRequest), httpServletRequest,
 				httpServletResponse,
-				// CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL,
-				// CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
-				// CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
 				CookiesConstants.NAME_USER_CONSENT_CONFIGURED);
 		}
 
