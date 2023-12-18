@@ -199,7 +199,10 @@ public class CookiesManagerImpl implements CookiesManager {
 			cookiesPreferenceHandlingConfiguration =
 				_getCookiesPreferenceHandlingConfiguration(httpServletRequest);
 
-		if (!cookiesPreferenceHandlingConfiguration.enabled()) {
+		boolean cookiesHandlingEnabled =
+			cookiesPreferenceHandlingConfiguration.enabled();
+
+		if (!cookiesHandlingEnabled) {
 			_deleteCookieConsentCookies(
 				httpServletRequest, httpServletResponse);
 		}
