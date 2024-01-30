@@ -14,19 +14,19 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Helmet} from 'react-helmet';
 import {Redirect, withRouter} from 'react-router-dom';
 
-import {AppContext} from '../../AppContext.es';
-import Alert from '../../components/Alert.es';
-import Link from '../../components/Link.es';
-import NewTopicModal from '../../components/NewTopicModal.es';
+import {AppContext} from '../../AppContext';
+import Alert from '../../components/Alert';
+import Link from '../../components/Link';
+import NewTopicModal from '../../components/NewTopicModal';
 import {
 	getSectionBySectionTitleQuery,
 	getSectionsQuery,
-} from '../../utils/client.es';
-import lang from '../../utils/lang.es';
+} from '../../utils/client';
+import lang from '../../utils/lang';
 import {
 	getBasePathWithHistoryRouter,
 	historyPushWithSlug,
-} from '../../utils/utils.es';
+} from '../../utils/utils';
 
 export default withRouter(({history, isHomePath}) => {
 	const context = useContext(AppContext);

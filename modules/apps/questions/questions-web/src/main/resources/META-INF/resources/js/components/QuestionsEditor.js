@@ -8,7 +8,7 @@ import {Editor} from 'frontend-editor-ckeditor-web';
 import {isPhone, isTablet} from 'frontend-js-web';
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 
-import {AppContext} from '../AppContext.es';
+import {AppContext} from '../AppContext';
 
 const getToolbarSet = (toolbarSet) => {
 	if (isPhone()) {

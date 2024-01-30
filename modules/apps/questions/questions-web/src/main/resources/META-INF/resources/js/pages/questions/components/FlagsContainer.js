@@ -6,7 +6,7 @@
 import Flags from '@liferay/flags-taglib';
 import React from 'react';
 
-import useFlagsContainer from '../hooks/useFlagsContainer.es';
+import useFlagsContainer from '../hooks/useFlagsContainer';
 
 const FlagsContainer = ({
 	btnProps = {
