@@ -107,8 +107,8 @@ public class DDMFormRendererImpl implements DDMFormRenderer {
 		writer.append("\">");
 
 		_reactRenderer.renderReact(
-			new ComponentDescriptor("{FormView} from " +
-				"data-engine-js-components-web"),
+			new ComponentDescriptor(
+				"{FormView} from data-engine-js-components-web"),
 			getDDMFormTemplateContext(
 				ddmForm, ddmFormLayout, ddmFormRenderingContext),
 			ddmFormRenderingContext.getHttpServletRequest(), writer);
