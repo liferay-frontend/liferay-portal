@@ -5,12 +5,14 @@
 
 import React from 'react';
 
-import App from './App.es';
+import App from './App';
 
-export default function (props) {
+function Questions(props) {
 	return (
 		<div className="questions-root">
 			<App {...props} />
 		</div>
 	);
 }
+
+export {App, Questions};
