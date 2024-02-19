@@ -35,6 +35,7 @@ const ACTIONS = {
 	updateLayoutPageTemplateCollection(
 		{
 			dialogTitle,
+			layoutPageTemplateCollectionDescription,
 			layoutPageTemplateCollectionName,
 			updateLayoutPageTemplateCollectionURL,
 		},
@@ -47,7 +48,13 @@ const ACTIONS = {
 			mainFieldName: 'name',
 			mainFieldPlaceholder: Liferay.Language.get('name'),
 			mainFieldValue: layoutPageTemplateCollectionName,
+			maxlength: 400,
 			namespace: portletNamespace,
+			secondaryFieldComponent: 'textarea',
+			secondaryFieldLabel: Liferay.Language.get('description'),
+			secondaryFieldName: 'description',
+			secondaryFieldPlaceholder: Liferay.Language.get('description'),
+			secondaryFieldValue: layoutPageTemplateCollectionDescription,
 		});
 	},
 };

@@ -54,6 +54,12 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 					mainFieldName: 'name',
 					mainFieldPlaceholder: Liferay.Language.get('name'),
 					namespace: portletNamespace,
+					secondaryFieldComponent: 'textarea',
+					secondaryFieldLabel: Liferay.Language.get('description'),
+					secondaryFieldName: 'description',
+					secondaryFieldPlaceholder: Liferay.Language.get(
+						'description'
+					),
 				});
 			}
 		},
