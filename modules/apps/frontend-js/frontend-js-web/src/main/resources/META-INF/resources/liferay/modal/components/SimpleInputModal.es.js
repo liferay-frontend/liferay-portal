@@ -33,12 +33,18 @@ const SimpleInputModal = ({
 	mainFieldComponent,
 	mainFieldLabel,
 	mainFieldName,
+	mainFieldPlaceholder,
 	mainFieldValue = '',
+	maxlength,
 	method = 'POST',
 	namespace,
 	onFormSuccess,
-	placeholder,
 	required = true,
+	secondaryFieldComponent,
+	secondaryFieldLabel,
+	secondaryFieldName,
+	secondaryFieldValue = '',
+	secondaryFieldPlaceholder,
 	size = 'md',
 }) => {
 	const isMounted = useIsMounted();
@@ -48,6 +54,9 @@ const SimpleInputModal = ({
 	const [visible, setVisible] = useState(initialVisible);
 	const [inputValue, setInputValue] = useState(mainFieldValue);
 	const [isChecked, setChecked] = useState(checkboxFieldValue);
+	const [secondaryInputValue, setSecondaryInputValue] = useState(
+		secondaryFieldValue
+	);
 
 	const handleFormError = (responseContent) => {
 		setErrorMessage(responseContent.error || '');
@@ -188,7 +197,7 @@ const SimpleInputModal = ({
 
 									setInputValue(event.target.value);
 								}}
-								placeholder={placeholder}
+								placeholder={mainFieldPlaceholder}
 								ref={handleMainFieldRef}
 								required={required}
 								type="text"
@@ -223,6 +232,32 @@ const SimpleInputModal = ({
 								/>
 							</div>
 						)}
+
+						{
+							<>
+								<label
+									className="control-label"
+									htmlFor={`${namespace}${secondaryFieldName}`}
+								>
+									{secondaryFieldLabel}
+								</label>
+
+								<ClayInput
+									component={secondaryFieldComponent}
+									id={`${namespace}${secondaryFieldName}`}
+									maxLength={maxlength}
+									name={`${namespace}${secondaryFieldName}`}
+									onChange={(event) => {
+										setSecondaryInputValue(
+											event.target.value
+										);
+									}}
+									placeholder={secondaryFieldPlaceholder}
+									type="text"
+									value={secondaryInputValue}
+								/>
+							</>
+						}
 					</ClayModal.Body>
 
 					<ClayModal.Footer
