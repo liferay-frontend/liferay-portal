@@ -229,12 +229,10 @@ function ManagementToolbar({
 										<LinkOrButton
 											className="nav-btn"
 											displayType="primary"
+											label={Liferay.Language.get('new')}
 											onClick={onCreateButtonClick}
 											symbol="plus"
-											wide
-										>
-											{Liferay.Language.get('new')}
-										</LinkOrButton>
+										/>
 									)}
 								</FrontendManagementToolbar.Item>
 							)}

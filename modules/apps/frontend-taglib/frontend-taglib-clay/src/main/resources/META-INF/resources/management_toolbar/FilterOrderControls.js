@@ -185,7 +185,11 @@ const FilterOrderControls = ({
 			{sortingURL && !showOrderToggle && (
 				<ManagementToolbar.Item>
 					<LinkOrButton
-						aria-label={sub(
+						className="nav-link nav-link-monospaced"
+						disabled={disabled}
+						displayType="unstyled"
+						href={sortingURL}
+						label={sub(
 							Liferay.Language.get(
 								'reverse-order-direction-currently-x'
 							),
@@ -193,10 +197,6 @@ const FilterOrderControls = ({
 								? Liferay.Language.get('descending')
 								: Liferay.Language.get('ascending')
 						)}
-						className="nav-link nav-link-monospaced"
-						disabled={disabled}
-						displayType="unstyled"
-						href={sortingURL}
 						role="button"
 						symbol={classNames({
 							'order-list-down': sortingOrder === 'desc',

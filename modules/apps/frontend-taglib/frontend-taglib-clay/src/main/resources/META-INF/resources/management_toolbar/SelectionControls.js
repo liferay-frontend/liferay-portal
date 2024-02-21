@@ -250,10 +250,10 @@ const SelectionControls = ({
 					<>
 						<ManagementToolbar.Item className="nav-item-shrink">
 							<LinkOrButton
-								aria-label={Liferay.Language.get('clear')}
 								className="nav-link"
 								displayType="unstyled"
 								href={clearSelectionURL}
+								label={Liferay.Language.get('clear')}
 								onClick={(event) => {
 									searchContainerRef.current?.select?.toggleAllRows(
 										false,
@@ -267,14 +267,7 @@ const SelectionControls = ({
 									onClearButtonClick(event);
 								}}
 								symbol="times-circle"
-								title={Liferay.Language.get('clear')}
-							>
-								<span className="text-truncate-inline">
-									<span className="text-truncate">
-										{Liferay.Language.get('clear')}
-									</span>
-								</span>
-							</LinkOrButton>
+							/>
 						</ManagementToolbar.Item>
 
 						{selectAllButtonVisible && (
@@ -283,6 +276,7 @@ const SelectionControls = ({
 									className="nav-link"
 									displayType="unstyled"
 									href={selectAllURL}
+									label={Liferay.Language.get('select-all')}
 									onClick={(event) => {
 										searchContainerRef.current?.select?.toggleAllRows(
 											true,
@@ -295,13 +289,7 @@ const SelectionControls = ({
 
 										onSelectAllButtonClick(event);
 									}}
-								>
-									<span className="text-truncate-inline">
-										<span className="text-truncate">
-											{Liferay.Language.get('select-all')}
-										</span>
-									</span>
-								</LinkOrButton>
+								/>
 							</ManagementToolbar.Item>
 						)}
 					</>

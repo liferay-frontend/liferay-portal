@@ -5,7 +5,6 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
 import {ManagementToolbar} from 'frontend-js-components-web';
 import React, {useMemo} from 'react';
 
@@ -83,19 +82,14 @@ const ActionControls = ({
 									disabled={disabled || item.disabled}
 									displayType="unstyled"
 									href={item.href}
+									label={item.label}
 									onClick={(event) => {
 										onActionButtonClick(event, {
 											item,
 										});
 									}}
-									title={item.label}
-								>
-									<span className="inline-item inline-item-before">
-										<ClayIcon symbol={item.icon} />
-									</span>
-
-									<span>{item.label}</span>
-								</LinkOrButton>
+									symbol={item.icon}
+								/>
 							</ManagementToolbar.Item>
 						))}
 

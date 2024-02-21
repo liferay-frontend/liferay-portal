@@ -1,0 +1,9 @@
+@import 'cadmin-variables';
+
+.link-or-button {
+	--breakpoint-md: #{map-get($cadmin-grid-breakpoints, md)};
+
+	&--with-label {
+		min-width: 9ch;
+	}
+}

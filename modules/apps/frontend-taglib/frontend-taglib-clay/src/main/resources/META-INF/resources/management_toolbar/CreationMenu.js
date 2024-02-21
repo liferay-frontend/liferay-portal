@@ -3,9 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import {sub, unescapeHTML} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
@@ -172,21 +170,12 @@ const CreationMenu = ({
 					className="creation-menu"
 					onActiveChange={setActive}
 					trigger={
-						<ClayButton
-							aria-label={getPlusIconLabel()}
+						<LinkOrButton
 							className="nav-btn"
 							data-qa-id="creationMenuNewButton"
-							title={getPlusIconLabel()}
-						>
-							<ClayIcon
-								className="d-md-none dropdown-icon"
-								symbol="plus"
-							/>
-
-							<span className="d-md-block d-none pl-3 pr-3">
-								{getPlusIconLabel()}
-							</span>
-						</ClayButton>
+							label={getPlusIconLabel()}
+							symbol="plus"
+						/>
 					}
 				>
 					{visibleItemsCount < totalItemsCountRef.current ? (
@@ -212,9 +201,9 @@ const CreationMenu = ({
 
 							<div className="dropdown-section">
 								<LinkOrButton
-									button={{block: true}}
 									displayType="secondary"
 									href={viewMoreURL}
+									label={Liferay.Language.get('more')}
 									onClick={() => {
 										if (onShowMoreButtonClick) {
 											onShowMoreButtonClick();
@@ -226,9 +215,7 @@ const CreationMenu = ({
 											totalItemsCountRef.current
 										);
 									}}
-								>
-									{Liferay.Language.get('more')}
-								</LinkOrButton>
+								/>
 							</div>
 						</>
 					) : (
@@ -241,26 +228,19 @@ const CreationMenu = ({
 					)}
 				</ClayDropDown>
 			) : (
-				<>
-					<LinkOrButton
-						aria-label={getPlusIconLabel()}
-						button={true}
-						className="nav-btn"
-						data-qa-id="creationMenuNewButton"
-						displayType="primary"
-						href={firstItemRef.current.href}
-						onClick={(event) => {
-							onCreateButtonClick(event, {
-								item: firstItemRef.current,
-							});
-						}}
-						symbol="plus"
-						title={getPlusIconLabel()}
-						wide
-					>
-						{Liferay.Language.get('new')}
-					</LinkOrButton>
-				</>
+				<LinkOrButton
+					className="nav-btn"
+					data-qa-id="creationMenuNewButton"
+					displayType="primary"
+					href={firstItemRef.current.href}
+					label={getPlusIconLabel()}
+					onClick={(event) => {
+						onCreateButtonClick(event, {
+							item: firstItemRef.current,
+						});
+					}}
+					symbol="plus"
+				/>
 			)}
 		</>
 	);
