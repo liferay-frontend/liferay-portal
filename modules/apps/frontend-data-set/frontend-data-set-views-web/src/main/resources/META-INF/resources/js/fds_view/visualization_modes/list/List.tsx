@@ -96,7 +96,7 @@ export default function List(props: IFDSViewSectionProps) {
 		listSection,
 	}: {
 		closeModal: Function;
-		field: IField;
+		field: IField | null;
 		listSection: IListSection;
 	}) => {
 		setSaveButtonDisabled(true);
@@ -112,7 +112,7 @@ export default function List(props: IFDSViewSectionProps) {
 		const response = await fetch(url, {
 			body: JSON.stringify({
 				[OBJECT_RELATIONSHIP.FDS_VIEW_FDS_LIST_SECTION_ID]: fdsView.id,
-				fieldName: field.name,
+				fieldName: field ? field.name : '',
 				name: listSection.name,
 			}),
 			headers: {
@@ -220,7 +220,7 @@ interface IListSectionProps {
 		selectedField,
 	}: {
 		closeModal: Function;
-		selectedField: IField;
+		selectedField: IField | null;
 	}) => void;
 	saveButtonDisabled: boolean;
 }
