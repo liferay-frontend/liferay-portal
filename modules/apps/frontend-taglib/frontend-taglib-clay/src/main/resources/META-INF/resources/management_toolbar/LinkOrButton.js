@@ -41,21 +41,15 @@ function LinkOrButton(
 	},
 	ref
 ) {
-	const [element, setElement] = useState(null);
+	const showLabel = useMediaQuery(`(min-width: ${DEFAULT_BREAKPOINT_MD})`);
 	const TagName = href && !disabled ? ClayLink : ClayButton;
-
-	const breakpointMd = element
-		? window.getComputedStyle(element).getPropertyValue('--breakpoint-md')
-		: DEFAULT_BREAKPOINT_MD;
-
-	const showLabel = useMediaQuery(`(min-width: ${breakpointMd})`);
 
 	const buttonProps = {
 		...otherProps,
 		className: 'link-or-button',
 		disabled,
 		href,
-		ref: mergeRefs(setElement, ref),
+		ref,
 	};
 
 	if (showLabel || !symbol) {
@@ -88,19 +82,6 @@ function LinkOrButton(
 			<ClayIcon symbol={symbol} />
 		</TagName>
 	);
-}
-
-function mergeRefs(...refs) {
-	return (element) => {
-		refs.forEach((ref) => {
-			if (typeof ref === 'function') {
-				ref(element);
-			}
-			else if (ref) {
-				ref.current = element;
-			}
-		});
-	};
 }
 
 function useMediaQuery(query) {
