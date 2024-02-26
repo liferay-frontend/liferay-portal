@@ -231,8 +231,7 @@ public class FDSViewsPortlet extends MVCPortlet {
 
 		ObjectDefinition fdsCardsSectionObjectDefinition =
 			_objectDefinitionLocalService.addSystemObjectDefinition(
-				"FDSCardsSection", userId, 0, "FDSCardsSection",
-				"FDSCardsSection", false,
+				"FDSCardsSection", userId, 0, "FDSCardsSection", null, false,
 				LocalizedMapUtil.getLocalizedMap("FDS Cards Section"), true,
 				"FDSCardsSection", null, null, null, null,
 				LocalizedMapUtil.getLocalizedMap("FDS Cards Sections"),
@@ -519,9 +518,9 @@ public class FDSViewsPortlet extends MVCPortlet {
 
 		ObjectDefinition fdsListSectionObjectDefinition =
 			_objectDefinitionLocalService.addSystemObjectDefinition(
-				"FDSListSection", userId, 0, "FDSListSection", "FDSListSection",
-				false, LocalizedMapUtil.getLocalizedMap("FDS List Section"),
-				true, "FDSListSection", null, null, null, null,
+				"FDSListSection", userId, 0, "FDSListSection", null, false,
+				LocalizedMapUtil.getLocalizedMap("FDS List Section"), true,
+				"FDSListSection", null, null, null, null,
 				LocalizedMapUtil.getLocalizedMap("FDS List Sections"),
 				ObjectDefinitionConstants.SCOPE_COMPANY, null, 1,
 				WorkflowConstants.STATUS_DRAFT,
