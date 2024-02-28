@@ -93,13 +93,45 @@ export default function List(props: IFDSViewSectionProps) {
 		);
 	};
 
+	const clearFDSListSection = async (listSection: IListSection) => {
+		setSaveButtonDisabled(true);
+
+		const response = await fetch(
+			`${API_URL.FDS_LIST_SECTIONS}/by-external-reference-code/${listSection.externalReferenceCode}`,
+			{method: 'DELETE'}
+		);
+
+		setSaveButtonDisabled(false);
+
+		if (!response.ok) {
+			openDefaultFailureToast();
+
+			return;
+		}
+
+		setListSections(
+			listSections.map((section) => {
+				if (section.name !== listSection.name) {
+					return section;
+				}
+
+				const nextListSection = {...listSection};
+
+				delete nextListSection.externalReferenceCode;
+				delete nextListSection.field;
+
+				return nextListSection;
+			})
+		);
+	};
+
 	const saveFDSListSection = async ({
 		closeModal,
 		field,
 		listSection,
 	}: {
 		closeModal: Function;
-		field: IField | null;
+		field: IField;
 		listSection: IListSection;
 	}) => {
 		setSaveButtonDisabled(true);
@@ -115,7 +147,7 @@ export default function List(props: IFDSViewSectionProps) {
 		const response = await fetch(url, {
 			body: JSON.stringify({
 				[OBJECT_RELATIONSHIP.FDS_VIEW_FDS_LIST_SECTION_ID]: fdsView.id,
-				fieldName: field ? field.name : '',
+				fieldName: field.name,
 				name: listSection.name,
 			}),
 			headers: {
@@ -199,6 +231,9 @@ export default function List(props: IFDSViewSectionProps) {
 							key={listSection.name}
 							listSection={listSection}
 							modalProps={props}
+							onClearSelection={() => {
+								clearFDSListSection(listSection);
+							}}
 							onSelect={({closeModal, selectedField}) => {
 								saveFDSListSection({
 									closeModal,
@@ -218,12 +253,13 @@ export default function List(props: IFDSViewSectionProps) {
 interface IListSectionProps {
 	listSection: IListSection;
 	modalProps: IFDSViewSectionProps;
+	onClearSelection: () => void;
 	onSelect: ({
 		closeModal,
 		selectedField,
 	}: {
 		closeModal: Function;
-		selectedField: IField | null;
+		selectedField: IField;
 	}) => void;
 	saveButtonDisabled: boolean;
 }
@@ -231,17 +267,11 @@ interface IListSectionProps {
 function ListSection({
 	listSection,
 	modalProps,
+	onClearSelection,
 	onSelect,
 	saveButtonDisabled,
 }: IListSectionProps) {
 	const {field, label} = listSection;
-
-	const clearSeletedField = () => {
-		onSelect({
-			closeModal: () => {},
-			selectedField: null,
-		});
-	};
 
 	const openSelectFieldModal = () => {
 		openModal({
@@ -287,7 +317,7 @@ function ListSection({
 			},
 			{
 				label: Liferay.Language.get('clear-assignment'),
-				onClick: clearSeletedField,
+				onClick: onClearSelection,
 				symbolLeft: 'times-circle',
 			},
 		];
