@@ -9,10 +9,13 @@ import {ClayInput} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import ClayTable from '@clayui/table';
 import classNames from 'classnames';
-import {fetch, openModal} from 'frontend-js-web';
-import React, {useEffect, useState} from 'react';
+import {fetch, openModal, sub} from 'frontend-js-web';
+import React, {ComponentProps, useEffect, useState} from 'react';
 
 import '../../../../css/CardsVisualizationMode.scss';
+
+import {ClayDropDownWithItems} from '@clayui/drop-down';
+
 import {IFDSViewSectionProps} from '../../../FDSView';
 import FieldSelectModalContent from '../../../components/FieldSelectModalContent';
 import {API_URL, OBJECT_RELATIONSHIP} from '../../../utils/constants';
@@ -88,6 +91,38 @@ export default function Cards(props: IFDSViewSectionProps) {
 						name: fdsCardsSection.fieldName,
 					},
 				};
+			})
+		);
+	};
+
+	const clearFDSCardsSection = async (cardsSection: ICardsSection) => {
+		setSaveButtonDisabled(true);
+
+		const response = await fetch(
+			`${API_URL.FDS_CARDS_SECTIONS}/by-external-reference-code/${cardsSection.externalReferenceCode}`,
+			{method: 'DELETE'}
+		);
+
+		setSaveButtonDisabled(false);
+
+		if (!response.ok) {
+			openDefaultFailureToast();
+
+			return;
+		}
+
+		setCardsSections(
+			cardsSections.map((section) => {
+				if (section.name !== cardsSection.name) {
+					return section;
+				}
+
+				const nextCardsSection = {...cardsSection};
+
+				delete nextCardsSection.externalReferenceCode;
+				delete nextCardsSection.field;
+
+				return nextCardsSection;
 			})
 		);
 	};
@@ -199,6 +234,9 @@ export default function Cards(props: IFDSViewSectionProps) {
 							cardsSection={cardsSection}
 							key={cardsSection.name}
 							modalProps={props}
+							onClearSelection={() => {
+								clearFDSCardsSection(cardsSection);
+							}}
 							onSelect={({closeModal, selectedField}) => {
 								saveFDSCardsSection({
 									cardsSection,
@@ -218,6 +256,7 @@ export default function Cards(props: IFDSViewSectionProps) {
 interface ICardsSectionProps {
 	cardsSection: ICardsSection;
 	modalProps: IFDSViewSectionProps;
+	onClearSelection: () => void;
 	onSelect: ({
 		closeModal,
 		selectedField,
@@ -231,12 +270,13 @@ interface ICardsSectionProps {
 function CardsSection({
 	cardsSection,
 	modalProps,
+	onClearSelection,
 	onSelect,
 	saveButtonDisabled,
 }: ICardsSectionProps) {
 	const {field, label} = cardsSection;
 
-	const onClick = () => {
+	const openSelectFieldModal = () => {
 		openModal({
 			contentComponent: ({closeModal}: {closeModal: Function}) => (
 				<FieldSelectModalContent
@@ -259,6 +299,48 @@ function CardsSection({
 		});
 	};
 
+	let updateButton = (
+		<ClayButtonWithIcon
+			aria-label={Liferay.Language.get('assign-field')}
+			displayType="secondary"
+			onClick={openSelectFieldModal}
+			symbol="plus"
+			title={Liferay.Language.get('assign-field')}
+		/>
+	);
+
+	if (field) {
+		const buttonLabel = sub(Liferay.Language.get('view-x-options'), label);
+
+		const items: ComponentProps<typeof ClayDropDownWithItems>['items'] = [
+			{
+				label: Liferay.Language.get('change-assignment'),
+				onClick: openSelectFieldModal,
+				symbolLeft: 'change',
+			},
+			{
+				label: Liferay.Language.get('clear-assignment'),
+				onClick: onClearSelection,
+				symbolLeft: 'times-circle',
+			},
+		];
+
+		updateButton = (
+			<ClayDropDownWithItems
+				items={items}
+				trigger={
+					<ClayButtonWithIcon
+						aria-label={buttonLabel}
+						displayType="secondary"
+						size="sm"
+						symbol="ellipsis-v"
+						title={buttonLabel}
+					/>
+				}
+			/>
+		);
+	}
+
 	return (
 		<ClayTable.Row>
 			<ClayTable.Cell className="cards-visualization-mode-label-cell">
@@ -280,13 +362,7 @@ function CardsSection({
 					</ClayInput.GroupItem>
 
 					<ClayInput.GroupItem shrink>
-						<ClayButtonWithIcon
-							aria-label={Liferay.Language.get('assign-field')}
-							displayType="secondary"
-							onClick={onClick}
-							symbol="plus"
-							title={Liferay.Language.get('assign-field')}
-						/>
+						{updateButton}
 					</ClayInput.GroupItem>
 				</ClayInput.Group>
 			</ClayTable.Cell>
