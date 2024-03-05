@@ -5,7 +5,9 @@
 
 import ClayAlert from '@clayui/alert';
 import {ClayButtonWithIcon} from '@clayui/button';
+import ClayDropDown from '@clayui/drop-down';
 import {ClayInput} from '@clayui/form';
+import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayTable from '@clayui/table';
 import classNames from 'classnames';
@@ -77,7 +79,7 @@ export default function Cards(props: IFDSViewSectionProps) {
 				);
 
 				if (!fdsCardsSection) {
-					return cardsSection;
+					return {label: cardsSection.label, name: cardsSection.name};
 				}
 
 				return {
@@ -90,6 +92,31 @@ export default function Cards(props: IFDSViewSectionProps) {
 				};
 			})
 		);
+	};
+
+	const clearFDSCardsSectionAssignment = async (
+		cardsSection: ICardsSection
+	) => {
+		const method = 'DELETE';
+		const url = `${API_URL.FDS_CARDS_SECTIONS}/by-external-reference-code/${cardsSection.externalReferenceCode}`;
+
+		const response = await fetch(url, {
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			method,
+		});
+
+		if (!response.ok) {
+			openDefaultFailureToast();
+
+			return;
+		}
+
+		getFDSCardsSections();
+
+		openDefaultSuccessToast();
 	};
 
 	const saveFDSCardsSection = async ({
@@ -133,26 +160,9 @@ export default function Cards(props: IFDSViewSectionProps) {
 			return;
 		}
 
-		const fdsCardsSection: IFDSCardsSection = await response.json();
-
 		closeModal();
 
-		setCardsSections(
-			cardsSections.map((cardsSection) => {
-				if (cardsSection.name !== fdsCardsSection.name) {
-					return cardsSection;
-				}
-
-				return {
-					...cardsSection,
-					externalReferenceCode:
-						fdsCardsSection.externalReferenceCode,
-					field: {
-						name: fdsCardsSection.fieldName,
-					},
-				};
-			})
-		);
+		getFDSCardsSections();
 
 		openDefaultSuccessToast();
 	};
@@ -197,6 +207,9 @@ export default function Cards(props: IFDSViewSectionProps) {
 							cardsSection={cardsSection}
 							key={cardsSection.name}
 							modalProps={props}
+							onClear={() =>
+								clearFDSCardsSectionAssignment(cardsSection)
+							}
 							onSelect={({closeModal, selectedField}) => {
 								saveFDSCardsSection({
 									cardsSection,
@@ -216,6 +229,7 @@ export default function Cards(props: IFDSViewSectionProps) {
 interface ICardsSectionProps {
 	cardsSection: ICardsSection;
 	modalProps: IFDSViewSectionProps;
+	onClear: (cardsSection: ICardsSection) => void;
 	onSelect: ({
 		closeModal,
 		selectedField,
@@ -229,12 +243,13 @@ interface ICardsSectionProps {
 function CardsSection({
 	cardsSection,
 	modalProps,
+	onClear,
 	onSelect,
 	saveButtonDisabled,
 }: ICardsSectionProps) {
 	const {field, label} = cardsSection;
 
-	const onClick = () => {
+	const onClickAssign = () => {
 		openModal({
 			contentComponent: ({closeModal}: {closeModal: Function}) => (
 				<FieldSelectModalContent
@@ -255,6 +270,10 @@ function CardsSection({
 				/>
 			),
 		});
+	};
+
+	const onClickClear = () => {
+		onClear(cardsSection);
 	};
 
 	return (
@@ -278,13 +297,55 @@ function CardsSection({
 					</ClayInput.GroupItem>
 
 					<ClayInput.GroupItem shrink>
-						<ClayButtonWithIcon
-							aria-label={Liferay.Language.get('assign-field')}
-							displayType="secondary"
-							onClick={onClick}
-							symbol="plus"
-							title={Liferay.Language.get('assign-field')}
-						/>
+						{field?.name ? (
+							<ClayDropDown
+								trigger={
+									<ClayButtonWithIcon
+										aria-label={Liferay.Language.get(
+											'change-assignment'
+										)}
+										displayType="secondary"
+										size="sm"
+										symbol="ellipsis-v"
+										title={Liferay.Language.get(
+											'change-assignment'
+										)}
+									/>
+								}
+							>
+								<ClayDropDown.ItemList>
+									<ClayDropDown.Item onClick={onClickAssign}>
+										<span className="pr-2">
+											<ClayIcon symbol="change" />
+										</span>
+
+										{Liferay.Language.get(
+											'change-assignment'
+										)}
+									</ClayDropDown.Item>
+
+									<ClayDropDown.Item onClick={onClickClear}>
+										<span className="pr-2">
+											<ClayIcon symbol="times-circle" />
+										</span>
+
+										{Liferay.Language.get(
+											'clear-assignment'
+										)}
+									</ClayDropDown.Item>
+								</ClayDropDown.ItemList>
+							</ClayDropDown>
+						) : (
+							<ClayButtonWithIcon
+								aria-label={Liferay.Language.get(
+									'assign-field'
+								)}
+								displayType="secondary"
+								onClick={onClickAssign}
+								symbol="plus"
+								title={Liferay.Language.get('assign-field')}
+							/>
+						)}
 					</ClayInput.GroupItem>
 				</ClayInput.Group>
 			</ClayTable.Cell>
