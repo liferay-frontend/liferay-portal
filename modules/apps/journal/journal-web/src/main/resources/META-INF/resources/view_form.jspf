@@ -61,7 +61,7 @@
 
 				<c:if test='<%= !FeatureFlagManagerUtil.isEnabled("LPS-196768") || (FeatureFlagManagerUtil.isEnabled("LPS-196768") && journalDisplayContext.isSearch()) %>'>
 					<react:component
-						module="js/SearchOptions"
+						module="{SearchOptions} from journal-web"
 						props="<%= journalDisplayContext.getSearchProps() %>"
 					/>
 				</c:if>
