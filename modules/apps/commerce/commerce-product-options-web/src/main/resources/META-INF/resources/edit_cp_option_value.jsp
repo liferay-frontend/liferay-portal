@@ -72,7 +72,7 @@ if (cpOptionValue != null) {
 			</c:if>
 
 			<liferay-frontend:component
-				module="js/edit_cp_option_and_value"
+				module="{editCpOptionAndValue} from commerce-product-options-web"
 			/>
 		</commerce-ui:panel>
 
