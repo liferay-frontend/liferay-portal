@@ -22,7 +22,7 @@
 				"spritemap", themeDisplay.getPathThemeSpritemap()
 			).build()
 		%>'
-		module="js/channels"
+		module="{channels} from commerce-order-web"
 	/>
 
 	<commerce-ui:panel
