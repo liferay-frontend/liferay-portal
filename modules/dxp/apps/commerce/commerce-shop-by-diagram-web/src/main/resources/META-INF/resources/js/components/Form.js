@@ -4,7 +4,7 @@
  */
 
 import ClayForm, {ClayInput} from '@clayui/form';
-import Autocomplete from 'commerce-frontend-js/components/autocomplete/Autocomplete';
+import {Autocomplete} from 'commerce-frontend-js';
 import React from 'react';
 
 export function LinkedToCatalogProductFormGroup({updateValue, value}) {
