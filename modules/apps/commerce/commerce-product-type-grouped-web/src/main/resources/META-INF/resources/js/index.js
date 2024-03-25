@@ -5,7 +5,10 @@
 
 import {openConfirmModal, openSelectionModal} from 'frontend-js-web';
 
-export default function propsTransformer({portletNamespace, ...props}) {
+export function CPDefinitionGroupedManagementToolbarPropsTransformer({
+	portletNamespace,
+	...props
+}) {
 	return {
 		...props,
 		onActionButtonClick(event, {item}) {
@@ -48,9 +51,10 @@ export default function propsTransformer({portletNamespace, ...props}) {
 							);
 						}
 
-						const addCPDefinitionGroupedEntryFm = document.getElementById(
-							`${portletNamespace}addCPDefinitionGroupedEntryFm`
-						);
+						const addCPDefinitionGroupedEntryFm =
+							document.getElementById(
+								`${portletNamespace}addCPDefinitionGroupedEntryFm`
+							);
 
 						if (addCPDefinitionGroupedEntryFm) {
 							submitForm(addCPDefinitionGroupedEntryFm);
