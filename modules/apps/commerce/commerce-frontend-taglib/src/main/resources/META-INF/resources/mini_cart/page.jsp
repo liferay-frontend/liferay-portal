@@ -16,63 +16,62 @@
 	<c:otherwise>
 		<div class="cart-root" id="<%= miniCartId %>"></div>
 
-		<aui:script require="commerce-frontend-js/components/mini_cart/entry as Cart">
-			var initialProps = {
-				accountId: <%= accountEntryId %>,
-				cartActionURLs: {
-					checkoutURL: '<%= HtmlUtil.escapeJS(checkoutURL) %>',
-					orderDetailURL: '<%= HtmlUtil.escapeJS(orderDetailURL) %>',
-					productURLSeparator: '<%= HtmlUtil.escapeJS(productURLSeparator) %>',
-					siteDefaultURL: '<%= HtmlUtil.escapeJS(siteDefaultURL) %>',
-				},
-				channel: {
-					currencyCode: '<%= commerceCurrencyCode %>',
-					groupId: <%= commerceChannelGroupId %>,
-					id: <%= commerceChannelId %>,
-				},
-				displayDiscountLevels: <%= displayDiscountLevels %>,
-				displayTotalItemsQuantity: <%= displayTotalItemsQuantity %>,
-				itemsQuantity: <%= itemsQuantity %>,
-				orderId: <%= orderId %>,
-				requestQuoteEnabled: <%= requestCodeEnabled %>,
-				toggleable: <%= toggleable %>,
-			};
+		<%
+		HashMapBuilder.HashMapWrapper<String, Object> cartViewsHashMapWrapper = new HashMapBuilder.HashMapWrapper<>();
+		HashMapBuilder.HashMapWrapper<String, Object> labelsHashMapWrapper = new HashMapBuilder.HashMapWrapper<>();
 
-			<%
-			if (!cartViews.isEmpty()) {
-			%>
-
-				initialProps.cartViews = {};
-
-				<%
-				for (Map.Entry<String, String> cartView : cartViews.entrySet()) {
-				%>
-
-					initialProps.cartViews['<%= cartView.getKey() %>'] = {
-						contentRendererModuleUrl: '<%= cartView.getValue() %>',
-					};
-
-				<%
-					}
-				}
-
-				if (!labels.isEmpty()) {
-				%>
-
-				initialProps.labels = {};
-
-				<%
-				for (Map.Entry<String, String> label : labels.entrySet()) {
-				%>
-
-					initialProps.labels['<%= label.getKey() %>'] = '<%= label.getValue() %>';
-
-			<%
-				}
+		if (!cartViews.isEmpty()) {
+			for (Map.Entry<String, String> cartView : cartViews.entrySet()) {
+				cartViewsHashMapWrapper.put(cartView.getKey(), cartView.getValue());
 			}
-			%>
+		}
 
-			Cart.default('<%= miniCartId %>', '<%= miniCartId %>', initialProps);
-		</aui:script>
+		if (!labels.isEmpty()) {
+			for (Map.Entry<String, String> label : labels.entrySet()) {
+				labelsHashMapWrapper.put(label.getKey(), label.getValue());
+			}
+		}
+		%>
+
+		<liferay-frontend:component
+			context='<%=
+				HashMapBuilder.<String, Object>put(
+					"accountId", accountEntryId
+				).put(
+					"cartViews", cartViewsHashMapWrapper.build()
+				).put(
+					"checkoutURL", HtmlUtil.escapeJS(checkoutURL)
+				).put(
+					"currencyCode", commerceCurrencyCode
+				).put(
+					"displayDiscountLevels", displayDiscountLevels
+				).put(
+					"displayTotalItemsQuantity", displayTotalItemsQuantity
+				).put(
+					"groupId", commerceChannelGroupId
+				).put(
+					"id", commerceChannelId
+				).put(
+					"itemsQuantity", itemsQuantity
+				).put(
+					"labels", labelsHashMapWrapper.build()
+				).put(
+					"miniCartId", miniCartId
+				).put(
+					"orderDetailURL", HtmlUtil.escapeJS(orderDetailURL)
+				).put(
+					"orderId", orderId
+				).put(
+					"productURLSeparator", HtmlUtil.escapeJS(productURLSeparator)
+				).put(
+					"requestQuoteEnabled", requestCodeEnabled
+				).put(
+					"siteDefaultURL", HtmlUtil.escapeJS(siteDefaultURL)
+				).put(
+					"toggleable", toggleable
+				).build()
+			%>'
+			module="{cart} from commerce-frontend-taglib"
+		/>
 	</c:otherwise>
 </c:choose>

@@ -44,73 +44,77 @@ if (alignment.equals("full-width")) {
 	</div>
 </div>
 
-<aui:script require="commerce-frontend-js/components/add_to_cart/entry as AddToCart">
-	<c:if test="<%= productSettingsModel != null %>">
+<%
+JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
+%>
 
-		<%
-		JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
-		%>
-
-		const productConfiguration = <%= jsonSerializer.serializeDeep(productSettingsModel) %>;
-
-	</c:if>
-
-	const props = {
-		accountId: <%= commerceAccountId %>,
-		cartId: <%= commerceOrderId %>,
-		channel: {
-			currencyCode: '<%= commerceCurrencyCode %>',
-			groupId: <%= commerceChannelGroupId %>,
-			id: <%= commerceChannelId %>,
-		},
-		cpInstance: {
-			availability: {
-				stockQuantity: <%= stockQuantity %>,
-			},
-			backOrderAllowed: productConfiguration
-				? productConfiguration.backOrders
-				: null,
-			inCart: <%= inCart %>,
-			published: <%= published %>,
-			purchasable: <%= purchasable %>,
-			skuId: <%= cpInstanceId %>,
-			skuOptions: <%= skuOptions %> || [],
-			stockQuantity: <%= stockQuantity %>,
-			<c:if test="<%= cpInstanceUnitOfMeasure != null %>">
-				skuUnitOfMeasure: {
-					incrementalOrderQuantity: <%= cpInstanceUnitOfMeasure.getIncrementalOrderQuantity() %>,
-					key: '<%= HtmlUtil.escapeJS(cpInstanceUnitOfMeasure.getKey()) %>',
-					name: '<%= HtmlUtil.escapeJS(cpInstanceUnitOfMeasure.getName()) %>',
-					precision: <%= cpInstanceUnitOfMeasure.getPrecision() %>,
-					primary: <%= cpInstanceUnitOfMeasure.isPrimary() %>,
-					priority: <%= cpInstanceUnitOfMeasure.getPriority() %>,
-					rate: <%= cpInstanceUnitOfMeasure.getRate() %>,
-				},
-			</c:if>
-		},
-		disabled: <%= disabled %>,
-		productId: <%= productId %>,
-		settings: {
-			alignment: '<%= alignment %>',
-			iconOnly: <%= iconOnly %>,
-			inline: <%= inline %>,
-			namespace: '<%= namespace %>',
-			showUnitOfMeasureSelector: <%= showUnitOfMeasureSelector %>,
-			size: '<%= size %>',
-		},
-		showOrderTypeModal: <%= showOrderTypeModal %>,
-		showOrderTypeModalURL: '<%= showOrderTypeModalURL %>',
-	};
-
-	<c:if test="<%= productSettingsModel != null %>">
-		props.settings.productConfiguration = {
-			allowBackOrder: productConfiguration.backOrders,
-			allowedOrderQuantities: productConfiguration.allowedQuantities,
-			maxOrderQuantity: productConfiguration.maxQuantity,
-			minOrderQuantity: productConfiguration.minQuantity,
-			multipleOrderQuantity: productConfiguration.multipleQuantity,
-		};
-	</c:if>
-
-	AddToCart.default('<%= addToCartId %>', '<%= addToCartId %>', props);
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"accountId", commerceAccountId
+		).put(
+			"addToCartId", addToCartId
+		).put(
+			"cartId", commerceOrderId
+		).put(
+			"channelCurrencyCode", commerceCurrencyCode
+		).put(
+			"channelGroupId", commerceChannelGroupId
+		).put(
+			"channelId", commerceChannelId
+		).put(
+			"cpInstanceIncrementalOrderQuantity", cpInstanceUnitOfMeasure.getIncrementalOrderQuantity()
+		).put(
+			"cpInstanceKey", HtmlUtil.escapeJS(cpInstanceUnitOfMeasure.getKey())
+		).put(
+			"cpInstanceName", HtmlUtil.escapeJS(cpInstanceUnitOfMeasure.getName())
+		).put(
+			"cpInstancePrecision", cpInstanceUnitOfMeasure.getPrecision()
+		).put(
+			"cpInstancePrimary", cpInstanceUnitOfMeasure.isPrimary()
+		).put(
+			"cpInstancePriority", cpInstanceUnitOfMeasure.getPriority()
+		).put(
+			"cpInstanceRate", cpInstanceUnitOfMeasure.getRate()
+		).put(
+			"cpInstanceUnitOfMeasure", cpInstanceUnitOfMeasure
+		).put(
+			"disabled", disabled
+		).put(
+			"inCart", inCart
+		).put(
+			"productConfiguration", jsonSerializer.serializeDeep(productSettingsModel)
+		).put(
+			"productId", productId
+		).put(
+			"productSettingsModel", productSettingsModel != null
+		).put(
+			"published", published
+		).put(
+			"purchasable", purchasable
+		).put(
+			"settingsAlignment", alignment
+		).put(
+			"settingsIconOnly", iconOnly
+		).put(
+			"settingsInline", inline
+		).put(
+			"settingsNamespace", namespace
+		).put(
+			"settingsShowUnitOfMeasureSelector", showUnitOfMeasureSelector
+		).put(
+			"settingsSize", size
+		).put(
+			"showOrderTypeModal", showOrderTypeModal
+		).put(
+			"showOrderTypeModalURL", showOrderTypeModalURL
+		).put(
+			"skuId", cpInstanceId
+		).put(
+			"skuOptions", skuOptions
+		).put(
+			"stockQuantity", stockQuantity
+		).build()
+	%>'
+	module="{addToCart} from commerce-frontend-taglib"
+/>
