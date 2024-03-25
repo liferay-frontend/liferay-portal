@@ -17,5 +17,5 @@
 			"namespace", namespace
 		).build()
 	%>'
-	module="discontinued_label/js/DiscontinuedLabelCPInstanceChangeHandler"
+	module="{DiscontinuedLabelCPInstanceChangeHandler} from commerce-frontend-taglib"
 />

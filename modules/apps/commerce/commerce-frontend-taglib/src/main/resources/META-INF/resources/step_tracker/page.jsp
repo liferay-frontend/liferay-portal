@@ -9,10 +9,17 @@
 
 <div class="step-tracker-root" id="<%= stepTrackerId %>"></div>
 
-<aui:script require="commerce-frontend-js/components/step_tracker/entry as stepTracker">
-	stepTracker.default('<%= stepTrackerId %>', '<%= stepTrackerId %>', {
-		portletId: '<%= portletDisplay.getRootPortletId() %>',
-		spritemap: '<%= HtmlUtil.escapeJS(spritemap) %>',
-		steps: <%= jsonSerializer.serializeDeep(steps) %>,
-	});
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"portletId", portletDisplay.getRootPortletId()
+		).put(
+			"spritemap", HtmlUtil.escapeJS(spritemap)
+		).put(
+			"steps", jsonSerializer.serializeDeep(steps)
+		).put(
+			"stepTrackerId", stepTrackerId
+		).build()
+	%>'
+	module="{stepTrackerMain} from commerce-frontend-taglib"
+/>
