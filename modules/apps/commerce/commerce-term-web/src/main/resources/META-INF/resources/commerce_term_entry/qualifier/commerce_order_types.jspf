@@ -20,7 +20,7 @@
 				"termId", commerceTermEntryId
 			).build()
 		%>'
-		module="js/commerce_order_types"
+		module="{commerceOrderTypes} from commerce-term-web"
 	/>
 
 	<commerce-ui:panel
