@@ -6,7 +6,7 @@
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayCheckbox} from '@clayui/form';
 import ClayTable from '@clayui/table';
-import QuantitySelector from 'commerce-frontend-js/components/quantity_selector/QuantitySelector';
+import {QuantitySelector} from 'commerce-frontend-js';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
