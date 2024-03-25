@@ -22,7 +22,7 @@
 				"warehouseExternalReferenceCode", HtmlUtil.escapeJS(commerceInventoryWarehouse.getExternalReferenceCode())
 			).build()
 		%>'
-		module="js/channels"
+		module="{channels} from commerce-warehouse-web"
 	/>
 
 	<commerce-ui:panel
