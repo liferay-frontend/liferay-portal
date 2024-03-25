@@ -7,12 +7,11 @@ import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayForm, {ClayInput, ClaySelectWithOption} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
-import ServiceProvider from 'commerce-frontend-js/ServiceProvider/index';
-import {FDS_UPDATE_DISPLAY} from 'commerce-frontend-js/utilities/eventsDefinitions';
+import {ServiceProvider, commerceEvents} from 'commerce-frontend-js';
 import PropTypes from 'prop-types';
 import React, {useMemo, useRef, useState} from 'react';
 
-import './../../../css/main.scss';
+import '../css/main.scss';
 
 function AddPriceEntryForm({
 	basePrice,
@@ -46,9 +45,12 @@ function AddPriceEntryForm({
 		openerWindow.Liferay.fire('closeModal', modalConfig);
 
 		if (dataSetId && openerWindow.originalOpenerLiferay) {
-			openerWindow.originalOpenerLiferay.fire(FDS_UPDATE_DISPLAY, {
-				id: dataSetId,
-			});
+			openerWindow.originalOpenerLiferay.fire(
+				commerceEvents.FDS_UPDATE_DISPLAY,
+				{
+					id: dataSetId,
+				}
+			);
 
 			delete openerWindow.originalOpenerLiferay;
 		}
