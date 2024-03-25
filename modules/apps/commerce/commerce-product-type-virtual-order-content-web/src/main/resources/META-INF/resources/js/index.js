@@ -5,7 +5,7 @@
 
 import {openModal} from 'frontend-js-web';
 
-export default function propsTransformer({
+export function OpenTermsOfUseModalPropsTransformer({
 	additionalProps: {
 		commerceVirtualOrderItemFileEntryId,
 		commerceVirtualOrderItemId,
@@ -35,9 +35,8 @@ export default function propsTransformer({
 
 							const formName = `#${portletNamespace}${commerceVirtualOrderItemId}-${commerceVirtualOrderItemFileEntryId}Fm`;
 
-							const form = window.document.querySelector(
-								formName
-							);
+							const form =
+								window.document.querySelector(formName);
 
 							submitForm(form);
 						},
