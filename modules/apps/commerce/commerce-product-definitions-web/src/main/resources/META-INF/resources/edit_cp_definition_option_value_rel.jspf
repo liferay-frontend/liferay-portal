@@ -98,69 +98,30 @@ long cpDefinitionOptionValueRelId = cpDefinitionOptionValueRelDisplayContext.get
 		}
 		%>
 
-		<aui:script require="commerce-frontend-js/components/autocomplete/entry as autocomplete, commerce-frontend-js/utilities/eventsDefinitions as events">
-			var deleteButton = document.getElementById('remove-sku-button');
-			var quantityInput = document.getElementById(
-				'<%= liferayPortletResponse.getNamespace() %>quantity'
-			);
-
-			if (!quantityInput.value || quantityInput.value === '0') {
-				quantityInput.value = 1;
-			}
-
-			autocomplete.default('autocomplete', 'autocomplete-root', {
-				apiUrl:
-					'/o/headless-commerce-admin-catalog/v1.0/unit-of-measure-skus?filter=(hasChildCPDefinitions eq false)',
-				initialLabel: '<%= cpInstanceLabel %>',
-				initialValue: '<%= cpInstanceId %>',
-				inputId: 'skuId',
-				inputName: '<%= liferayPortletResponse.getNamespace() %>cpInstanceId',
-				itemsKey: 'unitOfMeasureSkuId',
-				itemsLabel: 'sku',
-				onValueUpdated: function (value) {
-					if (value) {
-						quantityInput.disabled = false;
-						deleteButton.disabled = false;
-					}
-					else {
-						quantityInput.disabled = true;
-						deleteButton.disabled = true;
-					}
-				},
-				secondaryItemsLabel: 'unitOfMeasureKey',
-			});
-
-			Liferay.provide(window, '<portlet:namespace />removeSku', () => {
-				var url = new URL(
-					'<%= cpDefinitionOptionValueRelDisplayContext.getRemoveSkuUrl(currentURL) %>'
-				);
-
-				if (Liferay.SPA) {
-					Liferay.SPA.app.navigate(url.toString());
-				}
-				else {
-					window.location.href = url.toString();
-				}
-			});
-		</aui:script>
+	<liferay-frontend:component
+		context='<%=
+			HashMapBuilder.<String, Object>put(
+				"initialLabel", cpInstanceLabel
+			).put(
+				"initialValue", cpInstanceId
+			).put(
+				"namespace", liferayPortletResponse.getNamespace()
+			).put(
+				"skuURL", cpDefinitionOptionValueRelDisplayContext.getRemoveSkuUrl(currentURL)
+			).build()
+		%>'
+		module="{editCpDefinitionOptionValueAutocomplete} from commerce-product-definitions-web"
+	/>
 	</c:if>
 </c:if>
 
 <c:if test="<%= cpDefinitionOptionValueRel == null %>">
-	<aui:script require="frontend-js-web/index as frontendJsWeb, commerce-frontend-js/utilities/slugify as slugify">
-		var {debounce} = frontendJsWeb;
-
-		var form = document.getElementById(
-			'<portlet:namespace />cpDefinitionOptionValueRelfm'
-		);
-
-		var keyInput = form.querySelector('#<portlet:namespace />key');
-		var nameInput = form.querySelector('#<portlet:namespace />optionValueName');
-
-		var handleOnNameInput = function () {
-			keyInput.value = slugify.default(nameInput.value);
-		};
-
-		nameInput.addEventListener('input', debounce(handleOnNameInput, 200));
-	</aui:script>
+	<liferay-frontend:component
+		context='<%=
+			HashMapBuilder.<String, Object>put(
+				"namespace", liferayPortletResponse.getNamespace()
+			).build()
+		%>'
+		module="{debounceEditCpDefinitionOptionValue} from commerce-product-definitions-web"
+	/>
 </c:if>
