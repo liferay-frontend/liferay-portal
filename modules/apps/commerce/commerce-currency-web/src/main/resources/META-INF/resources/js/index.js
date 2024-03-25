@@ -5,7 +5,10 @@
 
 import {openConfirmModal} from 'frontend-js-web';
 
-export default function propsTransformer({portletNamespace, ...props}) {
+export function CommerceCurrenciesManagementToolbarPropsTransformer({
+	portletNamespace,
+	...props
+}) {
 	return {
 		...props,
 		onActionButtonClick(event, {item}) {
@@ -36,8 +39,7 @@ export default function propsTransformer({portletNamespace, ...props}) {
 						}
 					},
 				});
-			}
-			else if (item?.data?.action === 'updateExchangeRates') {
+			} else if (item?.data?.action === 'updateExchangeRates') {
 				openConfirmModal({
 					message: Liferay.Language.get(
 						'are-you-sure-you-want-to-update-the-exchange-rate-of-the-selected-currencies'
