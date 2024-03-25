@@ -39,7 +39,8 @@ export function CommerceCurrenciesManagementToolbarPropsTransformer({
 						}
 					},
 				});
-			} else if (item?.data?.action === 'updateExchangeRates') {
+			}
+			else if (item?.data?.action === 'updateExchangeRates') {
 				openConfirmModal({
 					message: Liferay.Language.get(
 						'are-you-sure-you-want-to-update-the-exchange-rate-of-the-selected-currencies'
