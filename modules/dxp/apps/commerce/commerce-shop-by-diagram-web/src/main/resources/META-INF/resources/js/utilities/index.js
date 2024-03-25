@@ -28,7 +28,8 @@ export function calculateTooltipStyleFromTarget(target) {
 
 	if (targetLeft + targetWidth / 2 < window.innerWidth / 2) {
 		style.left = targetLeft + targetWidth + TOOLTIP_DISTANCE_FROM_TARGET;
-	} else {
+	}
+	else {
 		style.right = targetRight + targetWidth + TOOLTIP_DISTANCE_FROM_TARGET;
 	}
 

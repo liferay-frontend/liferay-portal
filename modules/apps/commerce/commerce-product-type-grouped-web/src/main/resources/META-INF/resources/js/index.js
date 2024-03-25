@@ -51,10 +51,9 @@ export function CPDefinitionGroupedManagementToolbarPropsTransformer({
 							);
 						}
 
-						const addCPDefinitionGroupedEntryFm =
-							document.getElementById(
-								`${portletNamespace}addCPDefinitionGroupedEntryFm`
-							);
+						const addCPDefinitionGroupedEntryFm = document.getElementById(
+							`${portletNamespace}addCPDefinitionGroupedEntryFm`
+						);
 
 						if (addCPDefinitionGroupedEntryFm) {
 							submitForm(addCPDefinitionGroupedEntryFm);

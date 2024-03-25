@@ -79,17 +79,18 @@ function ManagementBar({onSearchSelected}) {
 											return;
 										}
 
-										searchSelectedItemRef.current =
-											selectedItem;
+										searchSelectedItemRef.current = selectedItem;
 
 										if ('accountBriefs' in selectedItem) {
 											type = MODEL_TYPE_MAP.user;
-										} else if (
+										}
+										else if (
 											'numberOfOrganizations' in
 											selectedItem
 										) {
 											type = MODEL_TYPE_MAP.organization;
-										} else if (
+										}
+										else if (
 											'parentAccountId' in selectedItem
 										) {
 											type = MODEL_TYPE_MAP.account;
@@ -100,7 +101,8 @@ function ManagementBar({onSearchSelected}) {
 											selectedItem.name,
 											type
 										);
-									} else {
+									}
+									else {
 										onSearchSelected(null, null, null);
 									}
 								}}
@@ -136,9 +138,11 @@ function CustomAutocompleteRenderer({items, updateActive, updateSelectedItem}) {
 		.map((item) => {
 			if ('accountBriefs' in item) {
 				item.localizedType = Liferay.Language.get('user');
-			} else if ('numberOfOrganizations' in item) {
+			}
+			else if ('numberOfOrganizations' in item) {
 				item.localizedType = Liferay.Language.get('organization');
-			} else if ('parentAccountId' in item) {
+			}
+			else if ('parentAccountId' in item) {
 				item.localizedType = Liferay.Language.get('account');
 			}
 

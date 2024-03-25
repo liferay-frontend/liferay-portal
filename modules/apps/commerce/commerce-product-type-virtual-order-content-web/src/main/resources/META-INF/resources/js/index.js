@@ -35,8 +35,9 @@ export function OpenTermsOfUseModalPropsTransformer({
 
 							const formName = `#${portletNamespace}${commerceVirtualOrderItemId}-${commerceVirtualOrderItemFileEntryId}Fm`;
 
-							const form =
-								window.document.querySelector(formName);
+							const form = window.document.querySelector(
+								formName
+							);
 
 							submitForm(form);
 						},

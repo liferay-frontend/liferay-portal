@@ -82,7 +82,8 @@ function Diagram({
 	useEffect(() => {
 		if (pinsRadiusInitializedRef.current) {
 			debouncedUpdatePinsRadius(diagramId, pinsRadius, namespace);
-		} else {
+		}
+		else {
 			pinsRadiusInitializedRef.current = true;
 		}
 	}, [pinsRadius, diagramId, namespace]);
