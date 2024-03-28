@@ -144,6 +144,8 @@ boolean viewOnly = !commerceCatalogDisplayContext.hasModelResourcePermission(com
 									"itemsKey", "id"
 								).put(
 									"itemsLabel", "name"
+								).put(
+									"namespace", liferayPortletResponse.getNamespace()
 								).build()
 							%>'
 							module="{detailsAutocompleteBasePromotion} from commerce-catalog-web"

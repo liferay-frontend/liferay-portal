@@ -107,7 +107,7 @@ long cpDefinitionOptionValueRelId = cpDefinitionOptionValueRelDisplayContext.get
 			).put(
 				"namespace", liferayPortletResponse.getNamespace()
 			).put(
-				"skuURL", cpDefinitionOptionValueRelDisplayContext.getRemoveSkuUrl(currentURL)
+				"skuURL", String.valueOf(cpDefinitionOptionValueRelDisplayContext.getRemoveSkuUrl(currentURL))
 			).build()
 		%>'
 		module="{editCpDefinitionOptionValueAutocomplete} from commerce-product-definitions-web"

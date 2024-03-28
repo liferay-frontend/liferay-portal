@@ -21,8 +21,7 @@ export function formatCartItem(
 			...skuOption,
 			skuId: skuOption.skuId ? String(skuOption.skuId) : null,
 		}));
-	}
-	else if (optionsJSON.length) {
+	} else if (optionsJSON.length) {
 		optionsJSON = optionsJSON.map((optionJSON) => ({
 			...optionJSON,
 			key: optionJSON.skuOptionKey || optionJSON.key,
@@ -129,8 +128,7 @@ export async function addToCart(
 					cpInstance.skuUnitOfMeasure?.precision || 0
 				)
 			);
-		}
-		else {
+		} else {
 			updatedCartItems.push(
 				formatCartItem(
 					cpInstance,

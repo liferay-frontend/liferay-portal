@@ -9,6 +9,8 @@
 
 <%
 CommerceDiscountDisplayContext commerceDiscountDisplayContext = (CommerceDiscountDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+
+PortletURL editCommerceDiscountPortletURL = commerceDiscountDisplayContext.getEditCommerceDiscountRenderURL();
 %>
 
 <portlet:actionURL name="/commerce_discount/edit_commerce_discount" var="editCommerceDiscountActionURL" />
@@ -51,7 +53,7 @@ CommerceDiscountDisplayContext commerceDiscountDisplayContext = (CommerceDiscoun
 	<liferay-frontend:component
 		context='<%=
 			HashMapBuilder.<String, Object>put(
-				"editCommerceDiscountRenderURL", commerceDiscountDisplayContext.getEditCommerceDiscountRenderURL()
+				"editCommerceDiscountRenderURL", String.valueOf(editCommerceDiscountPortletURL)
 			).put(
 				"level", CommerceDiscountConstants.LEVEL_L1
 			).put(

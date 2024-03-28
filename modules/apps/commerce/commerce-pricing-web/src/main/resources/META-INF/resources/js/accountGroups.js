@@ -4,8 +4,8 @@
  */
 
 import {
+	CommerceServiceProvider,
 	ItemFinder,
-	ServiceProvider,
 	commerceEvents,
 } from 'commerce-frontend-js';
 
@@ -16,9 +16,8 @@ export default function ({
 	pricingName,
 	spritemap,
 }) {
-	const CommerceDiscountAccountGroupsResource = ServiceProvider.AdminPricingAPI(
-		'v2'
-	);
+	const CommerceDiscountAccountGroupsResource =
+		CommerceServiceProvider.AdminPricingAPI('v2');
 	const id = commerceDiscountId;
 
 	function selectItem(accountGroup) {

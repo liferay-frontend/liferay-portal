@@ -22,6 +22,8 @@ long commercePriceModifierId = commercePriceListDisplayContext.getCommercePriceM
 			<liferay-frontend:component
 				context='<%=
 					HashMapBuilder.<String, Object>put(
+						"catalogId", commercePriceListDisplayContext.getCommerceCatalogId()
+					).put(
 						"commercePriceModifierId", commercePriceModifierId
 					).put(
 						"namespace", liferayPortletResponse.getNamespace()

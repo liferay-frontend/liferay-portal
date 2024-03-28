@@ -9,6 +9,6 @@
 
 <div id="search-bar">
 	<react:component
-		module="{SearchBar} from commerce-frontend-taglib"
+		module="{searchBar} from commerce-frontend-taglib"
 	/>
 </div>

@@ -22,8 +22,6 @@ page import="com.liferay.commerce.frontend.model.HeaderActionModel" %><%@
 page import="com.liferay.commerce.frontend.util.HeaderHelperUtil" %><%@
 page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
-page import="com.liferay.portal.kernel.json.JSONFactoryUtil" %><%@
-page import="com.liferay.portal.kernel.json.JSONSerializer" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.model.BaseModel" %><%@
 page import="com.liferay.portal.kernel.model.GroupedModel" %><%@
@@ -76,6 +74,4 @@ if (displayBeanId == 0) {
 }
 
 WorkflowTask reviewWorkflowTask = HeaderHelperUtil.getReviewWorkflowTask(themeDisplay.getCompanyId(), themeDisplay.getUserId(), beanId, model.getName());
-
-JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
 %>

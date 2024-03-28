@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ItemFinder, commerceEvents, utilities} from 'commerce-frontend-js';
+import {ItemFinder, commerceEvents, fetchParams} from 'commerce-frontend-js';
 
 export default function ({
 	portletId,
@@ -12,7 +12,7 @@ export default function ({
 	productId,
 	spritemap,
 }) {
-	const headers = utilities.fetchParams.headers;
+	const headers = fetchParams.headers;
 
 	function selectItem(productPricingClass) {
 		return Liferay.Util.fetch(

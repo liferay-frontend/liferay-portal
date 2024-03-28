@@ -14,12 +14,12 @@
 		HashMapBuilder.<String, Object>put(
 			"portletId", portletDisplay.getRootPortletId()
 		).put(
-			"spritemap", HtmlUtil.escapeJS(spritemap)
+			"spritemap", spritemap
 		).put(
-			"steps", jsonSerializer.serializeDeep(steps)
+			"steps", steps
 		).put(
 			"stepTrackerId", stepTrackerId
 		).build()
 	%>'
-	module="{stepTrackerMain} from commerce-frontend-taglib"
+	module="{stepTracker} from commerce-frontend-taglib"
 />

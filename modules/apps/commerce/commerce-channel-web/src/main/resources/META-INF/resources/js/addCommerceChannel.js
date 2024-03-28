@@ -6,8 +6,8 @@
 import {FormUtils, commerceEvents} from 'commerce-frontend-js';
 import {createPortletURL} from 'frontend-js-web';
 
-export default function main({getEditCommerceChannelRenderURL}) {
-	Liferay.provide(window, '<portlet:namespace />apiSubmit', (form) => {
+export default function main({getEditCommerceChannelRenderURL, namespace}) {
+	Liferay.provide(window, `${namespace}apiSubmit`, (form) => {
 		const API_URL = '/o/headless-commerce-admin-channel/v1.0/channels';
 
 		window.parent.Liferay.fire(commerceEvents.IS_LOADING_MODAL, {
@@ -39,7 +39,7 @@ export default function main({getEditCommerceChannelRenderURL}) {
 					isLoading: false,
 				});
 
-				new Liferay.Notification({
+				Liferay.Util.openToast({
 					closeable: true,
 					delay: {
 						hide: 5000,

@@ -59,11 +59,11 @@ if (Validator.isNotNull(namespace) || (Validator.isNull(namespace) && !compact))
 			).put(
 				"netPrice", netPrice
 			).put(
-				"price", jsonSerializer.serializeDeep(priceModel)
+				"price", priceModel
 			).put(
 				"standalone", true
 			).build()
 		%>'
-		module="{Price} from commerce-frontend-taglib"
+		module="{price} from commerce-frontend-taglib"
 	/>
 </c:if>

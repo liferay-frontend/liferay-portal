@@ -12,11 +12,8 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ page import="com.liferay.commerce.frontend.model.ProductSettingsModel" %><%@
 page import="com.liferay.commerce.product.model.CPInstanceUnitOfMeasure" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
-page import="com.liferay.portal.kernel.json.JSONFactoryUtil" %><%@
-page import="com.liferay.portal.kernel.json.JSONSerializer" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
-page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.PortalUtil" %>
 
 <liferay-frontend:defineObjects />
@@ -25,28 +22,28 @@ page import="com.liferay.portal.kernel.util.PortalUtil" %>
 
 <%
 String alignment = (String)request.getAttribute("liferay-commerce:add-to-cart:alignment");
-String disabled = (String)request.getAttribute("liferay-commerce:add-to-cart:disabled");
-String commerceAccountId = (String)request.getAttribute("liferay-commerce:add-to-cart:commerceAccountId");
-String commerceChannelGroupId = (String)request.getAttribute("liferay-commerce:add-to-cart:commerceChannelGroupId");
-String commerceChannelId = (String)request.getAttribute("liferay-commerce:add-to-cart:commerceChannelId");
+boolean disabled = (boolean)request.getAttribute("liferay-commerce:add-to-cart:disabled");
+long commerceAccountId = (long)request.getAttribute("liferay-commerce:add-to-cart:commerceAccountId");
+long commerceChannelGroupId = (long)request.getAttribute("liferay-commerce:add-to-cart:commerceChannelGroupId");
+long commerceChannelId = (long)request.getAttribute("liferay-commerce:add-to-cart:commerceChannelId");
 String commerceCurrencyCode = (String)request.getAttribute("liferay-commerce:add-to-cart:commerceCurrencyCode");
-String commerceOrderId = (String)request.getAttribute("liferay-commerce:add-to-cart:commerceOrderId");
-String cpInstanceId = (String)request.getAttribute("liferay-commerce:add-to-cart:cpInstanceId");
+long commerceOrderId = (long)request.getAttribute("liferay-commerce:add-to-cart:commerceOrderId");
+long cpInstanceId = (long)request.getAttribute("liferay-commerce:add-to-cart:cpInstanceId");
 CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure = (CPInstanceUnitOfMeasure)request.getAttribute("liferay-commerce:add-to-cart:cpInstanceUnitOfMeasure");
-String iconOnly = (String)request.getAttribute("liferay-commerce:add-to-cart:iconOnly");
-String inCart = (String)request.getAttribute("liferay-commerce:add-to-cart:inCart");
-String inline = (String)request.getAttribute("liferay-commerce:add-to-cart:inline");
+boolean iconOnly = (boolean)request.getAttribute("liferay-commerce:add-to-cart:iconOnly");
+boolean inCart = (boolean)request.getAttribute("liferay-commerce:add-to-cart:inCart");
+boolean inline = (boolean)request.getAttribute("liferay-commerce:add-to-cart:inline");
 String namespace = (String)request.getAttribute("liferay-commerce:add-to-cart:namespace");
-String productId = (String)request.getAttribute("liferay-commerce:add-to-cart:productId");
-String published = (String)request.getAttribute("liferay-commerce:add-to-cart:published");
-String purchasable = (String)request.getAttribute("liferay-commerce:add-to-cart:purchasable");
+long productId = (long)request.getAttribute("liferay-commerce:add-to-cart:productId");
+boolean published = (boolean)request.getAttribute("liferay-commerce:add-to-cart:published");
+boolean purchasable = (boolean)request.getAttribute("liferay-commerce:add-to-cart:purchasable");
 ProductSettingsModel productSettingsModel = (ProductSettingsModel)request.getAttribute("liferay-commerce:add-to-cart:productSettingsModel");
 String size = (String)request.getAttribute("liferay-commerce:add-to-cart:size");
-String showOrderTypeModal = (String)request.getAttribute("liferay-commerce:add-to-cart:showOrderTypeModal");
+boolean showOrderTypeModal = (boolean)request.getAttribute("liferay-commerce:add-to-cart:showOrderTypeModal");
 String showOrderTypeModalURL = (String)request.getAttribute("liferay-commerce:add-to-cart:showOrderTypeModalURL");
-String showUnitOfMeasureSelector = (String)request.getAttribute("liferay-commerce:add-to-cart:showUnitOfMeasureSelector");
+boolean showUnitOfMeasureSelector = (boolean)request.getAttribute("liferay-commerce:add-to-cart:showUnitOfMeasureSelector");
 String skuOptions = (String)request.getAttribute("liferay-commerce:add-to-cart:skuOptions");
-String stockQuantity = (String)request.getAttribute("liferay-commerce:add-to-cart:stockQuantity");
+int stockQuantity = (int)request.getAttribute("liferay-commerce:add-to-cart:stockQuantity");
 
 String randomNamespace = PortalUtil.generateRandomKey(request, "taglib") + StringPool.UNDERLINE;
 

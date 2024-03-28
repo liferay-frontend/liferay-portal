@@ -3,24 +3,28 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {events} from 'commerce-frontend-js';
+import {commerceEvents} from 'commerce-frontend-js';
 
 const COMPONENT_NAME = 'discontinued-label';
 
 export default function ({namespace}) {
-	Liferay.on(`${namespace}${events.CP_INSTANCE_CHANGED}`, ({cpInstance}) => {
-		const elementClassName = `${namespace}${COMPONENT_NAME}`;
+	Liferay.on(
+		`${namespace}${commerceEvents.CP_INSTANCE_CHANGED}`,
+		({cpInstance}) => {
+			const elementClassName = `${namespace}${COMPONENT_NAME}`;
 
-		const componentElement = document.querySelector(`.${elementClassName}`);
+			const componentElement = document.querySelector(
+				`.${elementClassName}`
+			);
 
-		if (componentElement) {
-			componentElement.querySelector(
-				'.label-item'
-			).innerHTML = Liferay.Language.get('discontinued');
+			if (componentElement) {
+				componentElement.querySelector('.label-item').innerHTML =
+					Liferay.Language.get('discontinued');
 
-			componentElement.className = `label ${
-				cpInstance.discontinued ? 'label-danger' : 'invisible'
-			} m-0 ${elementClassName}`;
+				componentElement.className = `label ${
+					cpInstance.discontinued ? 'label-danger' : 'invisible'
+				} m-0 ${elementClassName}`;
+			}
 		}
-	});
+	);
 }

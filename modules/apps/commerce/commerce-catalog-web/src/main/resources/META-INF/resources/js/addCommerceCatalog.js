@@ -6,8 +6,8 @@
 import {FormUtils, commerceEvents} from 'commerce-frontend-js';
 import {createPortletURL} from 'frontend-js-web';
 
-export default function addCommerceCatalog({editCatalogPortletURL}) {
-	Liferay.provide(window, '<portlet:namespace />apiSubmit', (form) => {
+export default function addCommerceCatalog({editCatalogPortletURL, namespace}) {
+	Liferay.provide(window, `${namespace}apiSubmit`, (form) => {
 		const API_URL = '/o/headless-commerce-admin-catalog/v1.0/catalogs';
 
 		window.parent.Liferay.fire(commerceEvents.IS_LOADING_MODAL, {

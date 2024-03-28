@@ -13,7 +13,7 @@ export default function ({namespace}) {
 	const nameInput = form.querySelector(`#${namespace}name`);
 
 	const handleOnNameInput = function () {
-		keyInput.value = slugify.default(nameInput.value);
+		keyInput.value = slugify(nameInput.value);
 	};
 
 	nameInput.addEventListener('input', debounce(handleOnNameInput, 200));

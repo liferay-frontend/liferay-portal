@@ -44,10 +44,6 @@ if (alignment.equals("full-width")) {
 	</div>
 </div>
 
-<%
-JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
-%>
-
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
@@ -57,63 +53,105 @@ JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
 		).put(
 			"cartId", commerceOrderId
 		).put(
-			"channelCurrencyCode", commerceCurrencyCode
+			"channel",
+			HashMapBuilder.<String, Object>put(
+				"currencyCode", commerceCurrencyCode
+			).put(
+				"groupId", commerceChannelGroupId
+			).put(
+				"id", commerceChannelId
+			).build()
 		).put(
-			"channelGroupId", commerceChannelGroupId
-		).put(
-			"channelId", commerceChannelId
-		).put(
-			"cpInstanceIncrementalOrderQuantity", cpInstanceUnitOfMeasure.getIncrementalOrderQuantity()
-		).put(
-			"cpInstanceKey", HtmlUtil.escapeJS(cpInstanceUnitOfMeasure.getKey())
-		).put(
-			"cpInstanceName", HtmlUtil.escapeJS(cpInstanceUnitOfMeasure.getName())
-		).put(
-			"cpInstancePrecision", cpInstanceUnitOfMeasure.getPrecision()
-		).put(
-			"cpInstancePrimary", cpInstanceUnitOfMeasure.isPrimary()
-		).put(
-			"cpInstancePriority", cpInstanceUnitOfMeasure.getPriority()
-		).put(
-			"cpInstanceRate", cpInstanceUnitOfMeasure.getRate()
-		).put(
-			"cpInstanceUnitOfMeasure", cpInstanceUnitOfMeasure
+			"cpInstance",
+			HashMapBuilder.<String, Object>put(
+				"availability",
+				HashMapBuilder.<String, Object>put(
+					"stockQuantity", stockQuantity
+				).build()
+			).put(
+				"backOrderAllowed", (productSettingsModel != null) ? productSettingsModel.isBackOrders() : null
+			).put(
+				"inCart", inCart
+			).put(
+				"published", published
+			).put(
+				"purchasable", purchasable
+			).put(
+				"skuId", cpInstanceId
+			).put(
+				"skuOptions", skuOptions
+			).put(
+				"skuUnitOfMeasure",
+				() -> {
+					if (cpInstanceUnitOfMeasure == null) {
+						return null;
+					}
+					else {
+						return HashMapBuilder.<String, Object>put(
+							"incrementalOrderQuantity", cpInstanceUnitOfMeasure.getIncrementalOrderQuantity()
+						).put(
+							"key", cpInstanceUnitOfMeasure.getKey()
+						).put(
+							"name", cpInstanceUnitOfMeasure.getName()
+						).put(
+							"precision", cpInstanceUnitOfMeasure.getPrecision()
+						).put(
+							"primary", cpInstanceUnitOfMeasure.isPrimary()
+						).put(
+							"priority", cpInstanceUnitOfMeasure.getPriority()
+						).put(
+							"rate", cpInstanceUnitOfMeasure.getRate()
+						).build();
+					}
+				}
+			).put(
+				"stockQuantity", stockQuantity
+			).build()
 		).put(
 			"disabled", disabled
 		).put(
-			"inCart", inCart
-		).put(
-			"productConfiguration", jsonSerializer.serializeDeep(productSettingsModel)
-		).put(
 			"productId", productId
 		).put(
-			"productSettingsModel", productSettingsModel != null
-		).put(
-			"published", published
-		).put(
-			"purchasable", purchasable
-		).put(
-			"settingsAlignment", alignment
-		).put(
-			"settingsIconOnly", iconOnly
-		).put(
-			"settingsInline", inline
-		).put(
-			"settingsNamespace", namespace
-		).put(
-			"settingsShowUnitOfMeasureSelector", showUnitOfMeasureSelector
-		).put(
-			"settingsSize", size
+			"settings",
+			HashMapBuilder.<String, Object>put(
+				"alignment", alignment
+			).put(
+				"iconOnly", iconOnly
+			).put(
+				"inline", inline
+			).put(
+				"namespace", namespace
+			).put(
+				"productConfiguration",
+				() -> {
+					if (productSettingsModel == null) {
+						return null;
+					}
+					else {
+						return HashMapBuilder.<String, Object>put(
+							"alignment", alignment
+						).put(
+							"allowBackOrder", productSettingsModel.isBackOrders()
+						).put(
+							"allowedOrderQuantities", productSettingsModel.getAllowedQuantities()
+						).put(
+							"maxOrderQuantity", productSettingsModel.getMaxQuantity()
+						).put(
+							"minOrderQuantity", productSettingsModel.getMinQuantity()
+						).put(
+							"multipleOrderQuantity", productSettingsModel.getMultipleQuantity()
+						).build();
+					}
+				}
+			).put(
+				"showUnitOfMeasureSelector", showUnitOfMeasureSelector
+			).put(
+				"size", size
+			).build()
 		).put(
 			"showOrderTypeModal", showOrderTypeModal
 		).put(
 			"showOrderTypeModalURL", showOrderTypeModalURL
-		).put(
-			"skuId", cpInstanceId
-		).put(
-			"skuOptions", skuOptions
-		).put(
-			"stockQuantity", stockQuantity
 		).build()
 	%>'
 	module="{addToCart} from commerce-frontend-taglib"

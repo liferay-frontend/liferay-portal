@@ -4,8 +4,8 @@
  */
 
 import {
+	CommerceServiceProvider,
 	ItemFinder,
-	ServiceProvider,
 	commerceEvents,
 } from 'commerce-frontend-js';
 
@@ -17,7 +17,8 @@ export default function ({
 	priceListExternalReferenceCode,
 	spritemap,
 }) {
-	const CommercePriceEntriesResource = ServiceProvider.AdminPricingAPI('v2');
+	const CommercePriceEntriesResource =
+		CommerceServiceProvider.AdminPricingAPI('v2');
 
 	const id = commercePriceListId;
 

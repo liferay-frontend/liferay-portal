@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ServiceProvider, commerceEvents} from 'commerce-frontend-js';
+import {CommerceServiceProvider, commerceEvents} from 'commerce-frontend-js';
 
 export default function ({commerceDiscountId, namespace}) {
-	const CommerceDiscountRuleResource = ServiceProvider.AdminPricingAPI('v2');
+	const CommerceDiscountRuleResource =
+		CommerceServiceProvider.AdminPricingAPI('v2');
 
 	Liferay.provide(window, `${namespace}apiSubmit`, () => {
 		const discountRuleData = {

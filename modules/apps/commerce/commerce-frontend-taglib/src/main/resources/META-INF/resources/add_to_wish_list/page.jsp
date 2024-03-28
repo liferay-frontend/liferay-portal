@@ -27,5 +27,5 @@
 			"skuId", skuId
 		).build()
 	%>'
-	module="{AddToWishList} from commerce-frontend-taglib"
+	module="{addToListWish} from commerce-frontend-taglib"
 />

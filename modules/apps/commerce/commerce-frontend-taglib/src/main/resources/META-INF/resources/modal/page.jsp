@@ -18,19 +18,19 @@ String containerId = randomNamespace + "modal-root";
 		HashMapBuilder.<String, Object>put(
 			"containerId", containerId
 		).put(
-			"id", HtmlUtil.escapeJS(id)
+			"id", id
 		).put(
 			"portletId", portletDisplay.getRootPortletId()
 		).put(
 			"refreshPageOnClose", refreshPageOnClose
 		).put(
-			"size", HtmlUtil.escapeJS(size)
+			"size", size
 		).put(
-			"spritemap", HtmlUtil.escapeJS(spritemap)
+			"spritemap", spritemap
 		).put(
-			"title", HtmlUtil.escapeJS(title)
+			"title", title
 		).put(
-			"url", HtmlUtil.escapeJS(url)
+			"url", url
 		).build()
 	%>'
 	module="{modal} from commerce-frontend-taglib"

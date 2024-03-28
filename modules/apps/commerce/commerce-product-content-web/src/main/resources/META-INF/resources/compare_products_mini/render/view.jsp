@@ -38,9 +38,9 @@ for (CPCatalogEntry cpCatalogEntry : cpCatalogEntries) {
 		HashMapBuilder.<String, Object>put(
 			"commerceChannelGroupId", commerceContext.getCommerceChannelGroupId()
 		).put(
-			"compareProductsURL", cpCompareContentHelper.getCompareProductsURL(themeDisplay)
+			"compareProductsURL", String.valueOf(cpCompareContentHelper.getCompareProductsURL(themeDisplay))
 		).put(
-			"items", jsonSerializer.serialize(itemsList)
+			"items", jsonSerializer.serializeDeep(itemsList)
 		).put(
 			"itemsLimit", cpCompareContentHelper.getProductsLimit(portletDisplay)
 		).put(

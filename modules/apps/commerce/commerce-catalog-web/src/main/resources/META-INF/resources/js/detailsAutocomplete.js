@@ -26,10 +26,9 @@ export function detailsAutocompleteBasePrice({
 		onValueUpdated(value, priceListData) {
 			if (value) {
 				window.document.querySelector(
-					'#<portlet:namespace />baseCommercePriceListId'
+					`#${namespace}baseCommercePriceListId`
 				).value = priceListData.id;
-			}
-			else {
+			} else {
 				window.document.querySelector(
 					`#${namespace}baseCommercePriceListId`
 				).value = 0;
@@ -62,8 +61,7 @@ export function detailsAutocompleteBasePromotion({
 				window.document.querySelector(
 					`#${namespace}basePromotionCommercePriceListId`
 				).value = priceListData.id;
-			}
-			else {
+			} else {
 				window.document.querySelector(
 					`#${namespace}basePromotionCommercePriceListId`
 				).value = 0;

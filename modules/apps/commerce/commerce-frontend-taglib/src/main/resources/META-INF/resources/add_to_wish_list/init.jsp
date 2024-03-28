@@ -21,11 +21,11 @@ page import="com.liferay.portal.kernel.util.PortalUtil" %>
 <liferay-theme:defineObjects />
 
 <%
-String commerceAccountId = (String)request.getAttribute("liferay-commerce:add-to-wish-list:commerceAccountId");
+long commerceAccountId = (long)request.getAttribute("liferay-commerce:add-to-wish-list:commerceAccountId");
 CPCatalogEntry cpCatalogEntry = (CPCatalogEntry)request.getAttribute("liferay-commerce:add-to-wish-list:cpCatalogEntry");
-String large = (String)request.getAttribute("liferay-commerce:add-to-wish-list:large");
-String inWishList = (String)request.getAttribute("liferay-commerce:add-to-wish-list:inWishList");
-String skuId = (String)request.getAttribute("liferay-commerce:add-to-wish-list:skuId");
+boolean large = (boolean)request.getAttribute("liferay-commerce:add-to-wish-list:large");
+boolean inWishList = (boolean)request.getAttribute("liferay-commerce:add-to-wish-list:inWishList");
+long skuId = (long)request.getAttribute("liferay-commerce:add-to-wish-list:skuId");
 
 String randomNamespace = PortalUtil.generateRandomKey(request, "taglib") + StringPool.UNDERLINE;
 

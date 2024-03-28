@@ -15,8 +15,6 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 <%@ page import="com.liferay.commerce.constants.CommercePriceConstants" %><%@
 page import="com.liferay.commerce.frontend.model.PriceModel" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
-page import="com.liferay.portal.kernel.json.JSONFactoryUtil" %><%@
-page import="com.liferay.portal.kernel.json.JSONSerializer" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %>
 
@@ -32,6 +30,4 @@ boolean displayDiscountLevels = (boolean)request.getAttribute("commerce-ui:price
 String namespace = (String)request.getAttribute("commerce-ui:price:namespace");
 boolean netPrice = (boolean)request.getAttribute("commerce-ui:price:netPrice");
 PriceModel priceModel = (PriceModel)request.getAttribute("commerce-ui:price:priceModel");
-
-JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
 %>

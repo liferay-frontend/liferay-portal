@@ -219,8 +219,7 @@ export default function CartQuickAdd() {
 				});
 
 			setSelectedSKUs([]);
-		}
-		else {
+		} else {
 			setQuickAddToCartError(true);
 
 			setQuantityError(true);
@@ -325,8 +324,7 @@ export default function CartQuickAdd() {
 							newSKUs = newSKUs.filter((item) => {
 								if (item.id) {
 									return item;
-								}
-								else {
+								} else {
 									setQuickAddToCartError(true);
 								}
 							});
@@ -334,9 +332,8 @@ export default function CartQuickAdd() {
 							setSelectedSKUs(newSKUs);
 						}}
 						onPaste={(event) => {
-							const pastedText = event.clipboardData.getData(
-								'Text'
-							);
+							const pastedText =
+								event.clipboardData.getData('Text');
 
 							event.preventDefault();
 

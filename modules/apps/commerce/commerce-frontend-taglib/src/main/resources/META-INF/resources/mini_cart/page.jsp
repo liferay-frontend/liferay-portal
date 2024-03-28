@@ -16,31 +16,14 @@
 	<c:otherwise>
 		<div class="cart-root" id="<%= miniCartId %>"></div>
 
-		<%
-		HashMapBuilder.HashMapWrapper<String, Object> cartViewsHashMapWrapper = new HashMapBuilder.HashMapWrapper<>();
-		HashMapBuilder.HashMapWrapper<String, Object> labelsHashMapWrapper = new HashMapBuilder.HashMapWrapper<>();
-
-		if (!cartViews.isEmpty()) {
-			for (Map.Entry<String, String> cartView : cartViews.entrySet()) {
-				cartViewsHashMapWrapper.put(cartView.getKey(), cartView.getValue());
-			}
-		}
-
-		if (!labels.isEmpty()) {
-			for (Map.Entry<String, String> label : labels.entrySet()) {
-				labelsHashMapWrapper.put(label.getKey(), label.getValue());
-			}
-		}
-		%>
-
 		<liferay-frontend:component
 			context='<%=
 				HashMapBuilder.<String, Object>put(
 					"accountId", accountEntryId
 				).put(
-					"cartViews", cartViewsHashMapWrapper.build()
+					"cartViews", cartViews
 				).put(
-					"checkoutURL", HtmlUtil.escapeJS(checkoutURL)
+					"checkoutURL", checkoutURL
 				).put(
 					"currencyCode", commerceCurrencyCode
 				).put(
@@ -54,19 +37,19 @@
 				).put(
 					"itemsQuantity", itemsQuantity
 				).put(
-					"labels", labelsHashMapWrapper.build()
+					"labels", labels
 				).put(
 					"miniCartId", miniCartId
 				).put(
-					"orderDetailURL", HtmlUtil.escapeJS(orderDetailURL)
+					"orderDetailURL", orderDetailURL
 				).put(
 					"orderId", orderId
 				).put(
-					"productURLSeparator", HtmlUtil.escapeJS(productURLSeparator)
+					"productURLSeparator", productURLSeparator
 				).put(
 					"requestQuoteEnabled", requestCodeEnabled
 				).put(
-					"siteDefaultURL", HtmlUtil.escapeJS(siteDefaultURL)
+					"siteDefaultURL", siteDefaultURL
 				).put(
 					"toggleable", toggleable
 				).build()

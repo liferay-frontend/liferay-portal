@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ServiceProvider, commerceEvents} from 'commerce-frontend-js';
+import {CommerceServiceProvider, commerceEvents} from 'commerce-frontend-js';
 import {createPortletURL} from 'frontend-js-web';
 
 export default function ({
 	defaultLanguageId,
-	editPricingClassPortletURL,
+	editPricingClassPortletURL = '',
 	namespace,
 }) {
-	const CommerceProductGroupsResource = ServiceProvider.AdminCatalogAPI('v1');
+	const CommerceProductGroupsResource =
+		CommerceServiceProvider.AdminCatalogAPI('v1');
 
 	Liferay.provide(window, `${namespace}apiSubmit`, () => {
 		const description = document.getElementById('description').value;

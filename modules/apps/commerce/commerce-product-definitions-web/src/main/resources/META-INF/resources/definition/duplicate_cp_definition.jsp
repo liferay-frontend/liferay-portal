@@ -35,6 +35,8 @@ CPDefinition cpDefinition = cpDefinitionsDisplayContext.getCPDefinition();
 			).put(
 				"namespace", liferayPortletResponse.getNamespace()
 			).put(
+				"namespace", liferayPortletResponse.getNamespace()
+			).put(
 				"ppState", LiferayWindowState.MAXIMIZED.toString()
 			).put(
 				"productId", cpDefinition.getCProductId()

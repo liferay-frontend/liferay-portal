@@ -20,7 +20,7 @@ export default function ({
 		productType,
 	};
 
-	Liferay.provide(window, '<portlet:namespace />apiSubmit', (form) => {
+	Liferay.provide(window, `${namespace}apiSubmit`, (form) => {
 		const API_URL = `/o/headless-commerce-admin-catalog/v1.0/products/${productId}/clone?catalogId=${product.catalogId}`;
 
 		FormUtils.apiSubmit(form, API_URL)
@@ -45,7 +45,7 @@ export default function ({
 					isLoading: false,
 				});
 
-				new Liferay.Notification({
+				Liferay.Util.openToast({
 					closeable: true,
 					delay: {
 						hide: 5000,

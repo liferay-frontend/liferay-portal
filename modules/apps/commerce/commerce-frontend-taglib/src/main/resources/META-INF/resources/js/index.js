@@ -6,19 +6,19 @@
 import {
 	AddToCart,
 	AddToWishList,
-	Cart,
+	DropdownMenu,
+	MiniCart,
 	Modal,
 	Price,
 	RequestQuote,
+	StepTracker,
 	accountSelector,
 	compareCheckbox,
-	dropdown,
-	stepTracker,
 } from 'commerce-frontend-js';
 
-export {default as SearchBar} from './search_bar/SearchBar';
-export {default as SearchResults} from './search_results/SearchResults';
-export {default as DiscontinuedLabelCPInstanceChangeHandler} from './discontinued_label/DiscontinuedLabelCPInstanceChangeHandler';
+export {default as searchBar} from './search_bar/SearchBar';
+export {default as searchResults} from './search_results/SearchResults';
+export {default as discontinuedLabelCPInstanceChangeHandler} from './discontinued_label/DiscontinuedLabelCPInstanceChangeHandler';
 
 export function accountSelectorTag({
 	accountEntryAllowedTypes,
@@ -55,11 +55,11 @@ export function addToListWish({
 	skuId,
 }) {
 	AddToWishList(addToWishListId, addToWishListId, {
-		accountId,
-		cpDefinitionId,
+		accountId: Number(accountId),
+		cpDefinitionId: Number(cpDefinitionId),
 		isInWishList,
 		large,
-		skuId,
+		skuId: Number(skuId),
 	});
 }
 
@@ -74,7 +74,7 @@ export function compareCheckboxTag({
 	rootId,
 }) {
 	compareCheckbox(rootId, rootId, {
-		commerceChannelGroupId,
+		commerceChannelGroupId: Number(commerceChannelGroupId),
 		disabled,
 		inCompare,
 		itemId,
@@ -85,7 +85,7 @@ export function compareCheckboxTag({
 }
 
 export function dropdownMain({items, spritemap}) {
-	dropdown('dropdown-header', 'dropdown-header-container', {
+	DropdownMenu('dropdown-header', 'dropdown-header-container', {
 		items,
 		spritemap,
 	});
@@ -116,8 +116,8 @@ export function modal({
 	});
 }
 
-export function stepTrackerMain({portletId, spritemap, stepTrackerId, steps}) {
-	stepTracker(stepTrackerId, stepTrackerId, {
+export function stepTracker({portletId, spritemap, stepTrackerId, steps}) {
+	StepTracker(stepTrackerId, stepTrackerId, {
 		portletId,
 		spritemap,
 		steps,
@@ -129,14 +129,14 @@ export function price({
 	displayDiscountLevels,
 	namespace,
 	netPrice,
-	price,
+	price: priceProp,
 	standalone,
 }) {
 	Price(containerId, containerId, {
 		displayDiscountLevels,
 		namespace,
 		netPrice,
-		price,
+		price: priceProp,
 		standalone,
 	});
 }
@@ -145,95 +145,22 @@ export function addToCart({
 	accountId,
 	addToCartId,
 	cartId,
-	channelCurrencyCode,
-	channelGroupId,
-	channelId,
-	cpInstanceIncrementalOrderQuantity,
-	cpInstanceKey,
-	cpInstanceName,
-	cpInstancePrecision,
-	cpInstancePrimary,
-	cpInstancePriority,
-	cpInstanceRate,
-	cpInstanceUnitOfMeasure,
-	disabled,
-	inCart,
-	productConfiguration,
+	cpInstance,
 	productId,
-	productSettingsModel,
-	published,
-	purchasable,
-	settingsAlignment,
-	settingsIconOnly,
-	settingsInline,
-	settingsNamespace,
-	settingsShowUnitOfMeasureSelector,
-	settingsSize,
-	showOrderTypeModal,
-	showOrderTypeModalURL,
-	skuId,
-	skuOptions = [],
-	stockQuantity,
+	skuOptions,
+	...otherProps
 }) {
-	const props = {
-		accountId,
-		cartId,
-		channel: {
-			currencyCode: channelCurrencyCode,
-			groupId: channelGroupId,
-			id: channelId,
-		},
-		cpInstance: {
-			availability: {
-				stockQuantity,
-			},
-			backOrderAllowed: productConfiguration
-				? productConfiguration.backOrders
-				: null,
-			inCart,
-			published,
-			purchasable,
-			skuId,
-			skuOptions,
-			stockQuantity,
-		},
-		disabled,
-		productId,
-		settings: {
-			alignment: settingsAlignment,
-			iconOnly: settingsIconOnly,
-			inline: settingsInline,
-			namespace: settingsNamespace,
-			showUnitOfMeasureSelector: settingsShowUnitOfMeasureSelector,
-			size: settingsSize,
-		},
-		showOrderTypeModal,
-		showOrderTypeModalURL,
-	};
+	cpInstance.skuOptions =
+		cpInstance.skuOptions && JSON.parse(cpInstance.skuOptions);
 
-	if (cpInstanceUnitOfMeasure) {
-		props.cpInstance.skuUnitOfMeasure = {
-			incrementalOrderQuantity: cpInstanceIncrementalOrderQuantity,
-			key: cpInstanceKey,
-			name: cpInstanceName,
-			precision: cpInstancePrecision,
-			primary: cpInstancePrimary,
-			priority: cpInstancePriority,
-			rate: cpInstanceRate,
-		};
-	}
-
-	if (productSettingsModel) {
-		props.settings.productConfiguration = {
-			allowBackOrder: productConfiguration.backOrders,
-			allowedOrderQuantities: productConfiguration.allowedQuantities,
-			maxOrderQuantity: productConfiguration.maxQuantity,
-			minOrderQuantity: productConfiguration.minQuantity,
-			multipleOrderQuantity: productConfiguration.multipleQuantity,
-		};
-	}
-
-	AddToCart(addToCartId, addToCartId, props);
+	AddToCart(addToCartId, addToCartId, {
+		...otherProps,
+		accountId: Number(accountId),
+		cartId: Number(cartId),
+		cpInstance,
+		productId: Number(productId),
+		skuOptions: skuOptions && JSON.parse(skuOptions),
+	});
 }
 
 export function requestQuote({
@@ -247,7 +174,7 @@ export function requestQuote({
 	requestQuoteElementId,
 }) {
 	RequestQuote(requestQuoteElementId, requestQuoteElementId, {
-		accountId,
+		accountId: Number(accountId),
 		channel,
 		cpDefinitionId,
 		cpInstance,
@@ -276,8 +203,8 @@ export function cart({
 	siteDefaultURL,
 	toggleable,
 }) {
-	Cart(miniCartId, miniCartId, {
-		accountId,
+	MiniCart(miniCartId, miniCartId, {
+		accountId: Number(accountId),
 		cartActionURLs: {
 			checkoutURL,
 			orderDetailURL,
@@ -292,9 +219,9 @@ export function cart({
 		},
 		displayDiscountLevels,
 		displayTotalItemsQuantity,
-		itemsQuantity,
+		itemsQuantity: Number(itemsQuantity),
 		labels,
-		orderId,
+		orderId: Number(orderId),
 		requestQuoteEnabled,
 		toggleable,
 	});

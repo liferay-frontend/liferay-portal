@@ -119,8 +119,7 @@ function MiniCart({
 				});
 
 				onAddToCart(latestActionURLs, latestCartState);
-			}
-			catch (error) {
+			} catch (error) {
 				showErrorNotification(error);
 			}
 		},

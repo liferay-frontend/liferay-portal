@@ -6,7 +6,7 @@
 import {
 	Autocomplete,
 	CommerceServiceProvider,
-	ModalUtils,
+	modalUtils,
 } from 'commerce-frontend-js';
 import {createPortletURL} from 'frontend-js-web';
 
@@ -25,12 +25,10 @@ export default function main({
 		productType: productTypeName,
 	};
 
-	const AdminCatalogResource = CommerceServiceProvider.default.AdminCatalogAPI(
-		'v1'
-	);
+	const AdminCatalogResource = CommerceServiceProvider.AdminCatalogAPI('v1');
 
 	Liferay.provide(window, `${namespace}apiSubmit`, () => {
-		ModalUtils.isSubmitting();
+		modalUtils.isSubmitting();
 
 		const formattedData = {...productData, defaultSku, name: {}};
 
@@ -45,9 +43,9 @@ export default function main({
 					p_p_state: ppState,
 				});
 
-				ModalUtils.closeAndRedirect(redirectURL);
+				modalUtils.closeAndRedirect(redirectURL);
 			})
-			.catch(ModalUtils.onSubmitFail);
+			.catch(modalUtils.onSubmitFail);
 	});
 
 	Autocomplete('autocomplete', 'autocomplete-root', {

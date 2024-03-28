@@ -19,6 +19,7 @@ export {default as skus} from './skus';
 export {default as pricingEntries} from './pricingEntries';
 export {default as detailsAutocomplete} from './detailsAutocomplete';
 export {default as commercePriceListsModifierCategories} from './commercePriceListsModifierCategories';
+export {default as pricingClasses} from './pricingClasses';
 export {default as priceModifierPricingClasses} from './priceModifierPricingClasses';
 export {default as qualifierAccountGroups} from './qualifierAccountGroups';
 export {default as priceModifierProducts} from './priceModifierProducts';

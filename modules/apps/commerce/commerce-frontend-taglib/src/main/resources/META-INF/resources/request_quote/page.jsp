@@ -21,7 +21,7 @@
 			).put(
 				"channel",
 				HashMapBuilder.<String, Object>put(
-					"currencyCode", HtmlUtil.escapeJS(commerceCurrencyCode)
+					"currencyCode", commerceCurrencyCode
 				).put(
 					"id", commerceChannelId
 				).put(
@@ -48,6 +48,6 @@
 				"requestQuoteElementId", requestQuoteElementId
 			).build()
 		%>'
-		module="{RequestQuote} from commerce-frontend-taglib"
+		module="{requestQuote} from commerce-frontend-taglib"
 	/>
 </c:if>

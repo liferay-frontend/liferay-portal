@@ -19,7 +19,7 @@
 		<liferay-frontend:component
 			context='<%=
 				HashMapBuilder.<String, Object>put(
-					"accountEntryAllowedTypes", jsonSerializer.serializeDeep(accountEntryAllowedTypes)
+					"accountEntryAllowedTypes", accountEntryAllowedTypes
 				).put(
 					"accountSelectorId", accountSelectorId
 				).put(
@@ -27,9 +27,9 @@
 				).put(
 					"createNewOrderURL", createNewOrderURL
 				).put(
-					"currentCommerceAccount", Validator.isNotNull(currentCommerceAccount) ? jsonSerializer.serializeDeep(currentCommerceAccount) : null
+					"currentCommerceAccount", currentCommerceAccount
 				).put(
-					"currentCommerceOrder", Validator.isNotNull(currentCommerceOrder) ? jsonSerializer.serializeDeep(currentCommerceOrder) : null
+					"currentCommerceOrder", currentCommerceOrder
 				).put(
 					"refreshPageOnAccountSelected", true
 				).put(

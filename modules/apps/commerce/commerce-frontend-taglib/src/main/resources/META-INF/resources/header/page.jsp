@@ -316,7 +316,7 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 						<liferay-frontend:component
 							context='<%=
 								HashMapBuilder.<String, Object>put(
-									"items", jsonSerializer.serializeDeep(dropdownItems)
+									"items", dropdownItems
 								).put(
 									"spritemap", themeDisplay.getPathThemeSpritemap()
 								).build()

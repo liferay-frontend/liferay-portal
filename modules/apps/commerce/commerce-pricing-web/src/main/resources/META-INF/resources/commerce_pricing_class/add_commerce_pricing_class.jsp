@@ -33,7 +33,7 @@ String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);
 			HashMapBuilder.<String, Object>put(
 				"defaultLanguageId", defaultLanguageId
 			).put(
-				"editPricingClassPortletURL", editPricingClassPortletURL
+				"editPricingClassPortletURL", String.valueOf(editPricingClassPortletURL)
 			).put(
 				"namespace", liferayPortletResponse.getNamespace()
 			).build()

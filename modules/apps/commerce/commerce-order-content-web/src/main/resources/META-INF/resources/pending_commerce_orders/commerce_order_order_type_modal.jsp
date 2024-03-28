@@ -59,6 +59,8 @@ CommerceChannel commerceChannel = commerceOrderContentDisplayContext.fetchCommer
 		).put(
 			"currencyCode", commerceChannel.getCommerceCurrencyCode()
 		).put(
+			"namespace", liferayPortletResponse.getNamespace()
+		).put(
 			"ppState", LiferayWindowState.MAXIMIZED.toString()
 		).build()
 	%>'

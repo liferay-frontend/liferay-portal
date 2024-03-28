@@ -6,8 +6,8 @@
 import {
 	ItemFinder,
 	commerceEvents,
+	fetchParams,
 	slugify,
-	utilities,
 } from 'commerce-frontend-js';
 
 export default function main({
@@ -16,7 +16,7 @@ export default function main({
 	productOptions,
 	spritemap,
 }) {
-	const headers = utilities.fetchParams.headers;
+	const headers = fetchParams.headers;
 
 	function selectItem(option) {
 		return Liferay.Util.fetch(
@@ -72,7 +72,7 @@ export default function main({
 			{
 				body: JSON.stringify({
 					fieldType: 'select',
-					key: slugify.default(name),
+					key: slugify(name),
 					name: nameDefinition,
 				}),
 				headers,

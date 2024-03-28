@@ -16,7 +16,7 @@ export default function main({namespace}) {
 	);
 
 	const handleOnNameInput = function () {
-		const slug = slugify.default(nameInput.value);
+		const slug = slugify(nameInput.value);
 		urlInput.value = slug;
 
 		urlTitleInputLocalized.updateInputLanguage(slug);

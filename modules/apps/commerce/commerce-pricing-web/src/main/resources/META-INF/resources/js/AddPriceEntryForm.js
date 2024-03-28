@@ -7,7 +7,7 @@ import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayForm, {ClayInput, ClaySelectWithOption} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
-import {ServiceProvider, commerceEvents} from 'commerce-frontend-js';
+import {CommerceServiceProvider, commerceEvents} from 'commerce-frontend-js';
 import PropTypes from 'prop-types';
 import React, {useMemo, useRef, useState} from 'react';
 
@@ -35,7 +35,7 @@ function AddPriceEntryForm({
 	const hasUnitOfMeasuresRef = useRef(!!(unitOfMeasures || []).length);
 
 	const AdminPricingResource = useMemo(
-		() => ServiceProvider.AdminPricingAPI('v2'),
+		() => CommerceServiceProvider.AdminPricingAPI('v2'),
 		[]
 	);
 
@@ -133,8 +133,7 @@ function AddPriceEntryForm({
 				closeModal({
 					id: `${namespace}addPriceEntryDialog`,
 				});
-			}
-			else {
+			} else {
 				validResults.forEach((result) => {
 					removeInputGroup(result.inputGroupId);
 				});

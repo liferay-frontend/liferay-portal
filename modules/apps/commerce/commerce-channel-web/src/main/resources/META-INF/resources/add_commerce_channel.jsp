@@ -72,7 +72,9 @@ if (commerceChannel != null) {
 	<liferay-frontend:component
 		context='<%=
 			HashMapBuilder.<String, Object>put(
-				"getEditCommerceChannelRenderURL", commerceChannelDisplayContext.getEditCommerceChannelRenderURL()
+				"getEditCommerceChannelRenderURL", String.valueOf(commerceChannelDisplayContext.getEditCommerceChannelRenderURL())
+			).put(
+				"namespace", liferayPortletResponse.getNamespace()
 			).build()
 		%>'
 		module="{addCommerceChannel} from commerce-channel-web"

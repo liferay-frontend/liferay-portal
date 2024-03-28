@@ -10,17 +10,18 @@ export default function main({
 	addToCart,
 	commerceChannelId,
 	currencyCode,
+	namespace,
 	ppState,
 }) {
-	Liferay.provide(window, '<portlet:namespace />addOrder', () => {
+	Liferay.provide(window, `${namespace}addOrder`, () => {
 		window.parent.Liferay.fire(commerceEvents.IS_LOADING_MODAL, {
 			isLoading: true,
 		});
 
-		const form = document.getElementById('<portlet:namespace />fm');
+		const form = document.getElementById(`${namespace}fm`);
 
 		const orderTypeId = form.querySelector(
-			'#<portlet:namespace />commerceOrderTypeId'
+			`#${namespace}commerceOrderTypeId`
 		).value;
 
 		if (addToCart) {
@@ -36,11 +37,8 @@ export default function main({
 					showSuccessNotification: true,
 				},
 			});
-		}
-		else {
-			const CartResource = CommerceServiceProvider.default.DeliveryCartAPI(
-				'v1'
-			);
+		} else {
+			const CartResource = CommerceServiceProvider.DeliveryCartAPI('v1');
 
 			CartResource.createCartByChannelId(commerceChannelId, {
 				accountId,
@@ -52,14 +50,15 @@ export default function main({
 						...order,
 					});
 
-					const redirectURL = new Liferay.Util.PortletURL.createPortletURL(
-						'<%= editCommerceOrderRenderURL.toString() %>',
-						{
-							commerceOrderId: order.id,
-							p_auth: Liferay.authToken,
-							p_p_state: ppState,
-						}
-					);
+					const redirectURL =
+						new Liferay.Util.PortletURL.createPortletURL(
+							'<%= editCommerceOrderRenderURL.toString() %>',
+							{
+								commerceOrderId: order.id,
+								p_auth: Liferay.authToken,
+								p_p_state: ppState,
+							}
+						);
 					window.parent.Liferay.fire(commerceEvents.CLOSE_MODAL, {
 						redirectURL: redirectURL.toString(),
 						successNotification: {
