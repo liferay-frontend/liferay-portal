@@ -27,7 +27,6 @@ export const test = mergeTests(
 		'LPD-10735': false,
 		'LPS-164563': true,
 		'LPS-178052': true,
-		'LPS-186871': true,
 	}),
 	loginTest(),
 	dataSetManagerSetupTest
