@@ -11,6 +11,10 @@ import ActionsLinkRenderer from './ActionLinkRenderer';
 
 // @ts-ignore
 
+import ArrayRenderer from './ArrayRenderer';
+
+// @ts-ignore
+
 import BooleanRenderer from './BooleanRenderer';
 
 // @ts-ignore
@@ -47,6 +51,12 @@ export const INTERNAL_CELL_RENDERERS: Array<IInternalRenderer> = [
 		component: ActionsLinkRenderer,
 		label: Liferay.Language.get('action-link'),
 		name: 'actionLink',
+		type: 'internal',
+	},
+	{
+		component: ArrayRenderer,
+		label: Liferay.Language.get('array'),
+		name: 'array',
 		type: 'internal',
 	},
 	{
