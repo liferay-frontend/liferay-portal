@@ -22,7 +22,7 @@
 </aui:select>
 
 <aui:script>
-	import('/o/users-admin-web/__liferay__/index.js').then(
+	import(themeDisplay.getPathContext() + '/o/users-admin-web/__liferay__/index.js').then(
 		({UserNameFields}) => {
 			Liferay.component(
 				'<portlet:namespace />UserNameFields',
