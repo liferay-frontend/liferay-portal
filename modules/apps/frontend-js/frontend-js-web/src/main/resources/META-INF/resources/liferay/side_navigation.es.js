@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import loadModule from '../utils/client_extensions/loadModule';
 import EventEmitter from './events/EventEmitter';
 import throttle from './throttle.es';
 import fetch from './util/fetch.es';
@@ -811,7 +812,9 @@ SideNavigation.prototype = {
 	_subscribeReducedMotion() {
 		const instance = this;
 
-		Liferay.Loader.require('frontend-js-web/index', ({isReducedMotion}) => {
+		loadModule(
+			'{isReducedMotion} from /o/frontend-js-web/__liferay__/exports/index.js'
+		).then((isReducedMotion) => {
 			instance.isReducedMotion = isReducedMotion;
 		});
 	},
