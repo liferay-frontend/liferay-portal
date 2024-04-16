@@ -85,7 +85,7 @@ NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 
 		<c:if test="<%= deltaConfigurable %>">
 			<div class="dropdown pagination-items-per-page" id="<%= ariaPagination %>">
-				<button aria-describedby="<%= ariaPaginationResults %>" aria-expanded="false" aria-controls="<%= ariaPaginationPicker %>" aria-haspopup="listbox" class="dropdown-toggle page-link" data-attribute="<%= delta %>" data-toggle="liferay-dropdown" role="combobox">
+				<button aria-describedby="<%= ariaPaginationResults %>" aria-expanded="false" aria-controls="<%= ariaPaginationPicker %>" aria-haspopup="listbox" aria-label="<%= LanguageUtil.get(request, "items-per-page") %>" class="dropdown-toggle page-link" data-attribute="<%= delta %>" data-toggle="liferay-dropdown" role="combobox">
 					<liferay-ui:message arguments="<%= delta %>" key="x-entries" /><span class="sr-only"><%= StringPool.NBSP %><liferay-ui:message key="per-page" /></span>
 
 					<aui:icon image="caret-double-l" markupView="lexicon" />
