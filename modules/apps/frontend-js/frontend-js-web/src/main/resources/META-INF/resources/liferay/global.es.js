@@ -163,13 +163,17 @@ Liferay.Portlet.minimize = minimizePortlet;
 
 Liferay.Portlet.openModal = (...args) => {
 	import(
-		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/exports/index.js'
+		// eslint-disable-next-line lines-around-comment
+		/* webpackIgnore: true */
+		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/index.js'
 	).then(({openPortletModal}) => openPortletModal(...args));
 };
 
 Liferay.Portlet.openWindow = (...args) => {
 	import(
-		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/exports/index.js'
+		// eslint-disable-next-line lines-around-comment
+		/* webpackIgnore: true */
+		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/index.js'
 	).then(({openPortletWindow}) => openPortletWindow(...args));
 };
 
@@ -186,13 +190,17 @@ Liferay.Util.addParams = addParams;
 
 Liferay.Util.openAlertModal = (...args) => {
 	import(
-		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/exports/index.js'
+		// eslint-disable-next-line lines-around-comment
+		/* webpackIgnore: true */
+		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/index.js'
 	).then(({openAlertModal}) => openAlertModal(...args));
 };
 
 Liferay.Util.openSimpleInputModal = (...args) => {
 	import(
-		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/exports/index.js'
+		// eslint-disable-next-line lines-around-comment
+		/* webpackIgnore: true */
+		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/index.js'
 	).then(({openSimpleInputModal}) => openSimpleInputModal(...args));
 };
 
@@ -320,25 +328,33 @@ Liferay.Util.toggleDisabled = toggleDisabled;
 
 Liferay.Util.openConfirmModal = (...args) => {
 	import(
-		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/exports/index.js'
+		// eslint-disable-next-line lines-around-comment
+		/* webpackIgnore: true */
+		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/index.js'
 	).then(({openConfirmModal}) => openConfirmModal(...args));
 };
 
 Liferay.Util.openModal = (...args) => {
 	import(
-		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/exports/index.js'
+		// eslint-disable-next-line lines-around-comment
+		/* webpackIgnore: true */
+		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/index.js'
 	).then(({openModal}) => openModal(...args));
 };
 
 Liferay.Util.openSelectionModal = (...args) => {
 	import(
-		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/exports/index.js'
+		// eslint-disable-next-line lines-around-comment
+		/* webpackIgnore: true */
+		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/index.js'
 	).then(({openSelectionModal}) => openSelectionModal(...args));
 };
 
 Liferay.Util.openToast = (...args) => {
 	import(
-		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/exports/index.js'
+		// eslint-disable-next-line lines-around-comment
+		/* webpackIgnore: true */
+		PATH_CONTEXT + '/o/frontend-js-web/__liferay__/index.js'
 	).then(({openToast}) => openToast(...args));
 };
 
