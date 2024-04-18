@@ -23,7 +23,7 @@
 			'/aui/',
 		combine: COMBINE,
 		comboBase: LiferayAUI.getComboPath(),
-		filter: process.env.NODE_ENV === 'development' ? 'raw' : 'min',
+		filter: 'min', // If you need to debug this file, replace this with 'raw'
 		groups: {
 			editor: {
 				base: PATH_EDITOR_CKEDITOR,
@@ -165,8 +165,7 @@
 						plugins: {
 							'liferay-navigation-interaction-touch': {
 								condition: {
-									name:
-										'liferay-navigation-interaction-touch',
+									name: 'liferay-navigation-interaction-touch',
 									test(A) {
 										return A.UA.touchEnabled;
 									},
