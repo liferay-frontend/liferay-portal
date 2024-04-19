@@ -195,6 +195,14 @@ Liferay.Util.openAlertModal = (...args) => {
 	});
 };
 
+Liferay.Util.openSimpleInputModal = (...args) => {
+	loadModule(
+		'{openSimpleInputModal} from /o/frontend-js-web/__liferay__/exports/index.js'
+	).then((openSimpleInputModal) => {
+		openSimpleInputModal(...args);
+	});
+};
+
 /**
  * Utils added to global namespace to be consumed by portal-web
  */
