@@ -165,7 +165,8 @@
 						plugins: {
 							'liferay-navigation-interaction-touch': {
 								condition: {
-									name: 'liferay-navigation-interaction-touch',
+									name:
+										'liferay-navigation-interaction-touch',
 									test(A) {
 										return A.UA.touchEnabled;
 									},

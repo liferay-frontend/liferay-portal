@@ -104,7 +104,10 @@
 			iframeContent.style.marginBottom = iframeFooter.offsetHeight + 'px';
 		}
 
-		var debouncedAdjustBottomSpace = Liferay.Util.debounce(adjustBottomSpace, 300);
+		var debouncedAdjustBottomSpace = Liferay.Util.debounce(
+			adjustBottomSpace,
+			300
+		);
 
 		adjustBottomSpace();
 
