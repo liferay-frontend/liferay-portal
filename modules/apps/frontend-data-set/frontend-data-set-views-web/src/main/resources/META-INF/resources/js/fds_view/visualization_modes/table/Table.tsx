@@ -125,7 +125,7 @@ const EditFDSFieldModalContent = ({
 	);
 
 	const [fdsFieldSortable, setFSDFieldSortable] = useState<boolean>(
-		fdsField.sortable ?? fdsField.type !== EFieldType.OBJECT
+		fdsField.sortable
 	);
 
 	const fdsInternalCellRendererNames = FDS_INTERNAL_CELL_RENDERERS.map(
@@ -306,7 +306,7 @@ const EditFDSFieldModalContent = ({
 				<ClayForm.Group>
 					<ClayCheckbox
 						checked={fdsFieldSortable}
-						disabled={fdsField.type === EFieldType.OBJECT}
+						disabled={!fdsFieldSortable}
 						inline
 						label={Liferay.Language.get('sortable')}
 						onChange={({target: {checked}}) =>

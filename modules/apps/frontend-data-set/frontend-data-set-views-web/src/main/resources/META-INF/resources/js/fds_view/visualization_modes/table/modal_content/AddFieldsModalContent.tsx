@@ -198,13 +198,18 @@ const AddFieldsModalContent = ({
 	const saveFDSFields = async () => {
 		setSaveButtonDisabled(true);
 
-		const creationData: Array<{name: string; type: string}> = [];
+		const creationData: Array<{
+			name: string;
+			sortable: boolean;
+			type: string;
+		}> = [];
 		const deletionIds: Array<number> = [];
 
 		visit(initialFields || [], (field: IFieldTreeItem) => {
 			if (selectedKeys.has(field.name) && !field.savedId) {
 				creationData.push({
 					name: field.name,
+					sortable: !!field.sortable,
 					type: field.type || 'string',
 				});
 			}

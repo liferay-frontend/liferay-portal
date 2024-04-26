@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.Serializable;
@@ -87,7 +86,7 @@ public class SaveFDSFieldsMVCResourceCommand
 				).put(
 					"renderer", "default"
 				).put(
-					"sortable", !StringUtil.equals(type, "object")
+					"sortable", (Boolean)creationDataJSONObject.get("sortable")
 				).put(
 					"type", type
 				).build(),
