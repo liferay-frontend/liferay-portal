@@ -43,7 +43,7 @@ export class VisualizationModesPage {
 	}
 
 	async addChildField(path: string[], field: string) {
-		this.openParentField(path);
+		await this.openParentField(path);
 
 		await this.page
 			.locator(`[data-id$="${path.join('.')}.${field}"]`)
@@ -166,6 +166,27 @@ export class VisualizationModesPage {
 				await expandButton.click();
 			}
 		});
+	}
+
+	async searchAndSelecteField(path: string) {
+		const fieldSearch = await this.page
+			.getByRole('dialog', {name: 'Add Fields'})
+			.getByPlaceholder('Search');
+
+		const FDS_NESTED_FIELD_NAME_DELIMITER = '.';
+
+		const itemPath = path
+			.replace(/\[\]/g, '.')
+			.split(FDS_NESTED_FIELD_NAME_DELIMITER)
+			.filter((item) => item !== '*');
+
+		const selectedFieldName = itemPath[itemPath.length - 1];
+		await fieldSearch.fill(selectedFieldName);
+
+		await this.page
+			.locator(`[data-id$=",${path}"]`)
+			.getByText(selectedFieldName, {exact: true})
+			.check();
 	}
 
 	async selectTab(tabLabel: string) {
