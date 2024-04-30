@@ -15,21 +15,13 @@ import {fetch} from 'frontend-js-web';
 import React, {ComponentProps, useEffect, useState} from 'react';
 
 import {FDSViewType} from '../../../../FDSViews';
-import {getFields} from '../../../../api';
 import AutoSearch from '../../../../components/AutoSearch';
 import SearchResultsMessage from '../../../../components/SearchResultsMessage';
 import openDefaultFailureToast from '../../../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../../../utils/openDefaultSuccessToast';
-import {IFDSField, IField} from '../../../../utils/types';
+import {IFDSField, IField, IFieldTreeItem} from '../../../../utils/types';
 
-interface IFieldTreeItem extends IField {
-	children?: IFieldTreeItem[];
-	query?: string;
-	savedId?: number;
-	selected?: boolean;
-}
-
-function visit(fields: Array<IFieldTreeItem>, callback: Function) {
+export function visit(fields: Array<IFieldTreeItem>, callback: Function) {
 	fields.forEach((field) => {
 		callback(field);
 
@@ -167,6 +159,7 @@ const AddFieldsModalContent = ({
 	saveFDSFieldsURL,
 	savedFDSFields,
 	selectionMode = 'multiple',
+	treeItems,
 }: {
 	closeModal: Function;
 	fdsView: FDSViewType;
@@ -181,10 +174,11 @@ const AddFieldsModalContent = ({
 	saveFDSFieldsURL: string;
 	savedFDSFields: Array<IFDSField>;
 	selectionMode?: ComponentProps<typeof TreeView>['selectionMode'];
+	treeItems: Array<IFieldTreeItem> | null;
 }) => {
 	const [initialFields, setInitialFields] = useState<Array<
 		IFieldTreeItem
-	> | null>(null);
+	> | null>(treeItems);
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const [selectedKeys, setSelectedKeys] = useState<Set<React.Key>>(
 		new Set<React.Key>()
@@ -209,7 +203,7 @@ const AddFieldsModalContent = ({
 			if (selectedKeys.has(field.name) && !field.savedId) {
 				creationData.push({
 					name: field.name,
-					sortable: !!field.sortable,
+					sortable: field.sortable || false,
 					type: field.type || 'string',
 				});
 			}
@@ -261,23 +255,18 @@ const AddFieldsModalContent = ({
 	};
 
 	useEffect(() => {
-		getFields(fdsView).then((fields) => {
-			if (fields) {
-				const [
-					initialSelectedKeys,
-					updatedFields,
-				] = applySavedFDSFields({
-					fields,
-					savedFDSFields,
-				});
+		if (treeItems) {
+			const [initialSelectedKeys, updatedFields] = applySavedFDSFields({
+				fields: treeItems,
+				savedFDSFields,
+			});
 
-				setSelectedKeys(initialSelectedKeys);
+			setSelectedKeys(initialSelectedKeys);
 
-				setInitialFields(updatedFields);
-				setFields(updatedFields);
-			}
-		});
-	}, [savedFDSFields, fdsView]);
+			setInitialFields(updatedFields);
+			setFields(updatedFields);
+		}
+	}, [savedFDSFields, treeItems]);
 
 	const onSearch = (query: string) => {
 		setQuery(query);

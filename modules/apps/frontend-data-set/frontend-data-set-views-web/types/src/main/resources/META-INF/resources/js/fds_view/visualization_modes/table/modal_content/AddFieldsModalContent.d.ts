@@ -6,7 +6,11 @@
 import {TreeView} from '@clayui/core';
 import {ComponentProps} from 'react';
 import {FDSViewType} from '../../../../FDSViews';
-import {IFDSField} from '../../../../utils/types';
+import {IFDSField, IFieldTreeItem} from '../../../../utils/types';
+export declare function visit(
+	fields: Array<IFieldTreeItem>,
+	callback: Function
+): void;
 declare const AddFieldsModalContent: ({
 	closeModal,
 	fdsView,
@@ -15,6 +19,7 @@ declare const AddFieldsModalContent: ({
 	saveFDSFieldsURL,
 	savedFDSFields,
 	selectionMode,
+	treeItems,
 }: {
 	closeModal: Function;
 	fdsView: FDSViewType;
@@ -29,5 +34,6 @@ declare const AddFieldsModalContent: ({
 	saveFDSFieldsURL: string;
 	savedFDSFields: Array<IFDSField>;
 	selectionMode?: ComponentProps<typeof TreeView>['selectionMode'];
+	treeItems: Array<IFieldTreeItem> | null;
 }) => JSX.Element;
 export default AddFieldsModalContent;

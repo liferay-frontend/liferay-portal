@@ -35,8 +35,11 @@ import '../../../../css/TableVisualizationMode.scss';
 import ClayAlert from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
 
-import {EFieldType, IFDSField} from '../../../utils/types';
-import AddFieldsModalContent from './modal_content/AddFieldsModalContent';
+import {getFields} from '../../../api';
+import {EFieldType, IFDSField, IFieldTreeItem} from '../../../utils/types';
+import AddFieldsModalContent, {
+	visit,
+} from './modal_content/AddFieldsModalContent';
 
 const defaultLanguageId = Liferay.ThemeDisplay.getDefaultLanguageId();
 
@@ -111,6 +114,7 @@ interface IEditFDSFieldModalContentProps {
 	fdsField: IFDSField;
 	namespace: string;
 	onSave: Function;
+	sortable: boolean;
 }
 
 const EditFDSFieldModalContent = ({
@@ -119,12 +123,13 @@ const EditFDSFieldModalContent = ({
 	fdsField,
 	namespace,
 	onSave,
+	sortable,
 }: IEditFDSFieldModalContentProps) => {
 	const [selectedFDSFieldRenderer, setSelectedFDSFieldRenderer] = useState(
 		fdsField.renderer ?? 'default'
 	);
 
-	const [fdsFieldSortable, setFSDFieldSortable] = useState<boolean>(
+	const [fdsFieldSortable, setFDSFieldSortable] = useState<boolean>(
 		fdsField.sortable
 	);
 
@@ -306,11 +311,11 @@ const EditFDSFieldModalContent = ({
 				<ClayForm.Group>
 					<ClayCheckbox
 						checked={fdsFieldSortable}
-						disabled={!fdsFieldSortable}
+						disabled={!sortable}
 						inline
 						label={Liferay.Language.get('sortable')}
 						onChange={({target: {checked}}) =>
-							setFSDFieldSortable(checked)
+							setFDSFieldSortable(checked)
 						}
 					/>
 
@@ -355,6 +360,7 @@ function Table({
 	title,
 }: IFDSViewSectionProps & {title?: string}) {
 	const [fdsFields, setFDSFields] = useState<Array<IFDSField> | null>(null);
+	const [treeItems, setTreeItems] = useState<Array<IFieldTreeItem>>([]);
 
 	const reorderFDSFields = ({
 		fdsFieldsOrder,
@@ -526,6 +532,12 @@ function Table({
 	};
 
 	useEffect(() => {
+		getFields(fdsView).then((fields) => {
+			setTreeItems(fields);
+		});
+	}, [fdsView]);
+
+	useEffect(() => {
 		getFDSFields();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -561,6 +573,7 @@ function Table({
 					}}
 					saveFDSFieldsURL={saveFDSFieldsURL}
 					savedFDSFields={fdsFields || []}
+					treeItems={treeItems}
 				/>
 			),
 			size: 'full-screen',
@@ -612,6 +625,7 @@ function Table({
 										fdsField={item}
 										namespace={namespace}
 										onSave={onEditFDSField}
+										sortable={isSortable(treeItems, item)}
 									/>
 								),
 							});
@@ -684,6 +698,22 @@ function Table({
 	) : (
 		<ClayLoadingIndicator />
 	);
+}
+
+function isSortable(
+	treeItems: Array<IFieldTreeItem>,
+	selectedItem: IFDSField
+): boolean {
+	let isSortable = false;
+	visit(treeItems, (treeItem: IFieldTreeItem) => {
+		if (treeItem.name === selectedItem.name) {
+			isSortable = treeItem.sortable || false;
+
+			return;
+		}
+	});
+
+	return isSortable;
 }
 
 export function Fields(props: IFDSViewSectionProps) {
