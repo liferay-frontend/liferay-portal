@@ -34,10 +34,10 @@ export interface IField {
 	children?: Array<IField>;
 	format?: EFieldFormat;
 	id?: string;
-	sortable?: boolean;
 	label?: string;
 	name: string;
 	selected?: boolean;
+	sortable?: boolean;
 	type?: string;
 	visible?: boolean;
 }
