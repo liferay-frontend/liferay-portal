@@ -69,8 +69,6 @@ public class SaveFDSFieldsMVCResourceCommand
 			JSONObject creationDataJSONObject =
 				creationDataJSONArray.getJSONObject(i);
 
-			String type = String.valueOf(creationDataJSONObject.get("type"));
-
 			ObjectEntry objectEntry = _objectEntryService.addObjectEntry(
 				0, objectDefinition.getObjectDefinitionId(),
 				HashMapBuilder.<String, Serializable>put(
@@ -88,7 +86,7 @@ public class SaveFDSFieldsMVCResourceCommand
 				).put(
 					"sortable", (Boolean)creationDataJSONObject.get("sortable")
 				).put(
-					"type", type
+					"type", String.valueOf(creationDataJSONObject.get("type"))
 				).build(),
 				new ServiceContext());
 
