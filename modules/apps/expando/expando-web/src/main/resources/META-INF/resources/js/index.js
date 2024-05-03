@@ -4,4 +4,4 @@
  */
 
 export {default as ExpandoManagementToolbarPropsTransformer} from './ExpandoManagementToolbarPropsTransformer';
-export {default as GeoLocationField} from './GeoLocationField';
+export {GeoLocationField} from './GeoLocationField';

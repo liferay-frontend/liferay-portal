@@ -309,7 +309,7 @@ ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(company.
 										"mapName", portletDisplay.getNamespace() + "ExpandoAttribute--" + mapDisplayName + "--"
 									).build()
 								%>'
-								module="{default as GeoLocationField} from expando-taglib"
+								module="{GeoLocationField} from expando-taglib"
 							/>
 
 							<aui:input name='<%= "ExpandoAttribute--" + HtmlUtil.escapeAttribute(name) + "--" %>' type="hidden" value="<%= HtmlUtil.escape(value.toString()) %>" />
@@ -789,7 +789,7 @@ ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(company.
 									"mapName", portletDisplay.getNamespace() + "ExpandoAttribute--" + mapDisplayName + "--"
 								).build()
 							%>'
-							module="{default as GeoLocationField} from expando-taglib"
+							module="{GeoLocationField} from expando-taglib"
 						/>
 					</div>
 				</c:if>
