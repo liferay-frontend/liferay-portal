@@ -2172,7 +2172,7 @@ definition {
 				dropdownLabel = "Select",
 				locator1 = "Dropdown#ANY_DROPDOWN_LABEL");
 
-			DropdownMenuItem.viewDisabledItem(itemList = "creator,externalReferenceCode,status");
+			DropdownMenuItem.viewDisabledItem(itemList = "externalReferenceCode,fieldName,label");
 		}
 	}
 
