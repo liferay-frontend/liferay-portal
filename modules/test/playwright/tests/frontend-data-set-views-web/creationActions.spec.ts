@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
+import {commercePagesTest} from '../../fixtures/commercePagesTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedLayoutTest} from '../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../fixtures/loginTest';
@@ -207,6 +208,7 @@ test.describe('Creation Actions in the Data Set Manager', () => {
 
 export const fragmentTest = mergeTests(
 	apiHelpersTest,
+	commercePagesTest,
 	dataSetManagerApiHelpersTest,
 	featureFlagsTest({
 		'LPS-164563': true,
@@ -451,7 +453,12 @@ fragmentTest.describe('Creation Actions in the fragment', () => {
 
 	fragmentTest(
 		'Creation Actions of type Modal in the fragment',
-		async ({dataSetManagerApiHelpers, fdsFragmentPage, layout}) => {
+		async ({
+			commerceAdminProductPage,
+			dataSetManagerApiHelpers,
+			fdsFragmentPage,
+			layout,
+		}) => {
 			await fragmentTest.step('Create table field', async () => {
 				await dataSetManagerApiHelpers.createDataSetField({
 					label_i18n: {en_US: 'Id'},
@@ -618,6 +625,53 @@ fragmentTest.describe('Creation Actions in the fragment', () => {
 
 				await expect(dialog).not.toBeInViewport();
 			});
+
+			await fragmentTest.step(
+				'Creation Action of type "modal" with custom header (Commerce) does not duplicate the title',
+				async () => {
+					await commerceAdminProductPage.goto();
+
+					await commerceAdminProductPage.page
+						.getByRole('heading', {name: 'Products'})
+						.waitFor({state: 'visible'});
+					await commerceAdminProductPage.page
+						.getByTestId('fdsCreationActionButton')
+						.waitFor({state: 'visible'});
+
+					await commerceAdminProductPage.page
+						.getByTestId('fdsCreationActionButton')
+						.click();
+
+					await commerceAdminProductPage.page
+						.getByRole('menuitem', {name: 'Simple'})
+						.click();
+
+					await commerceAdminProductPage.page
+						.getByRole('dialog')
+						.waitFor();
+
+					const dialog =
+						await commerceAdminProductPage.page.getByRole('dialog');
+
+					await expect(dialog).toBeInViewport();
+
+					const iframeElement = await dialog
+						.locator('iframe')
+						.elementHandle();
+
+					const frame = await iframeElement.contentFrame();
+
+					// Verify that iframe title exists
+
+					await expect(
+						frame.getByText('Create New Product')
+					).toHaveCount(1);
+
+					await frame.getByLabel('close').first().click();
+
+					await expect(dialog).not.toBeInViewport();
+				}
+			);
 		}
 	);
 
@@ -720,83 +774,93 @@ fragmentTest.describe('Creation Actions in the fragment', () => {
 				}
 			);
 
-			await test.step('Creation Action of type "side panel" opens a side panel with one title', async () => {
-				await fdsFragmentPage.creationMenuButton.first().click();
+			await fragmentTest.step(
+				'Creation Action of type "side panel" opens a side panel with one title',
+				async () => {
+					await fdsFragmentPage.creationMenuButton.first().click();
 
-				await fdsFragmentPage.page
-					.locator(`#${actionDropdownMenuId}`)
-					.getByRole('menuitem', {
-						exact: true,
-						name: secondActionLabel,
-					})
-					.click();
+					await fdsFragmentPage.page
+						.locator(`#${actionDropdownMenuId}`)
+						.getByRole('menuitem', {
+							exact: true,
+							name: secondActionLabel,
+						})
+						.click();
 
-				await fdsFragmentPage.page.getByRole('tabpanel').waitFor();
+					await fdsFragmentPage.page.getByRole('tabpanel').waitFor();
 
-				const sidePanel = await fdsFragmentPage.page.getByRole(
-					'tabpanel'
-				);
+					const sidePanel = await fdsFragmentPage.page.getByRole(
+						'tabpanel'
+					);
 
-				await expect(sidePanel).toBeInViewport();
+					await expect(sidePanel).toBeInViewport();
 
-				const iframeElement = await sidePanel
-					.locator('iframe')
-					.elementHandle();
+					const iframeElement = await sidePanel
+						.locator('iframe')
+						.elementHandle();
 
-				const frame = await iframeElement.contentFrame();
+					const frame = await iframeElement.contentFrame();
 
-				// Verify that iframe title exists
+					// Verify that iframe title exists
 
-				await frame.getByText(sidePanelTitle).waitFor();
-				await expect(frame.getByText(sidePanelTitle)).toHaveCount(1);
+					await frame.getByText(sidePanelTitle).waitFor();
+					await expect(frame.getByText(sidePanelTitle)).toHaveCount(
+						1
+					);
 
-				await fdsFragmentPage.page.keyboard.press('Escape');
+					await fdsFragmentPage.page.keyboard.press('Escape');
 
-				await expect(sidePanel).not.toBeInViewport();
-			});
+					await expect(sidePanel).not.toBeInViewport();
+				}
+			);
 
-			await test.step('Creation Action of type "side panel" opens a side panel with duplicated title', async () => {
-				await fdsFragmentPage.creationMenuButton.first().click();
+			await fragmentTest.step(
+				'Creation Action of type "side panel" opens a side panel with duplicated title',
+				async () => {
+					await fdsFragmentPage.creationMenuButton.first().click();
 
-				await fdsFragmentPage.page
-					.locator(`#${actionDropdownMenuId}`)
-					.getByRole('menuitem', {
-						exact: true,
-						name: firstActionLabel,
-					})
-					.click();
+					await fdsFragmentPage.page
+						.locator(`#${actionDropdownMenuId}`)
+						.getByRole('menuitem', {
+							exact: true,
+							name: firstActionLabel,
+						})
+						.click();
 
-				await fdsFragmentPage.page.getByRole('tabpanel').waitFor();
+					await fdsFragmentPage.page.getByRole('tabpanel').waitFor();
 
-				const sidePanel = await fdsFragmentPage.page.getByRole(
-					'tabpanel'
-				);
+					const sidePanel = await fdsFragmentPage.page.getByRole(
+						'tabpanel'
+					);
 
-				await expect(sidePanel).toBeInViewport();
+					await expect(sidePanel).toBeInViewport();
 
-				await expect(
-					fdsFragmentPage.page.getByRole('heading', {
-						name: sidePanelTitle,
-					})
-				).toBeVisible();
+					await expect(
+						fdsFragmentPage.page.getByRole('heading', {
+							name: sidePanelTitle,
+						})
+					).toBeVisible();
 
-				const iframeElement = await sidePanel
-					.locator('iframe')
-					.elementHandle();
+					const iframeElement = await sidePanel
+						.locator('iframe')
+						.elementHandle();
 
-				const frame = await iframeElement.contentFrame();
+					const frame = await iframeElement.contentFrame();
 
-				// Verify that iframe title exists
+					// Verify that iframe title exists
 
-				await frame.getByText(sidePanelTitle).waitFor();
-				await expect(frame.getByText(sidePanelTitle)).toHaveCount(1);
+					await frame.getByText(sidePanelTitle).waitFor();
+					await expect(frame.getByText(sidePanelTitle)).toHaveCount(
+						1
+					);
 
-				await fdsFragmentPage.page.keyboard.press('Escape');
+					await fdsFragmentPage.page.keyboard.press('Escape');
 
-				await expect(sidePanel).not.toBeInViewport();
+					await expect(sidePanel).not.toBeInViewport();
 
-				await fdsFragmentPage.page.reload();
-			});
+					await fdsFragmentPage.page.reload();
+				}
+			);
 		}
 	);
 });
