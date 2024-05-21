@@ -6,22 +6,23 @@
 
 /* eslint-disable no-undef */
 
-const fs = require('fs');
 const path = require('path');
+
+const COMMAND_DESCRIPTIONS = {
+	'build': '',
+	'check:tsc': '[...tsc arguments]',
+	'generate:tsconfig': '',
+};
 
 const command = process.argv[2];
 
-if (!command) {
+if (!COMMAND_DESCRIPTIONS[command]) {
 	showHelpAndExit();
 }
 
 const commandPath = command.split(':');
 
 const modulePath = path.join(__dirname, ...commandPath, 'index.mjs');
-
-if (!fs.existsSync(modulePath)) {
-	showHelpAndExit();
-}
 
 const mainPromise = import(modulePath);
 
@@ -38,12 +39,13 @@ function showHelpAndExit() {
 Usage: node-scripts <command>
 
 Available commands:
-
-	check:tsc [...tsc arguments]
-	build
-	generate:tsconfig
-
 `);
+
+	for (const [command, description] of Object.entries(COMMAND_DESCRIPTIONS)) {
+		console.error(`    ${command} ${description}`);
+	}
+
+	console.error('');
 
 	process.exit(2);
 }
