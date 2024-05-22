@@ -29,6 +29,18 @@ public class NavigationItem extends HashMap<String, Object> {
 		data.put(key, value);
 	}
 
+	public void putData(String key, Boolean value) {
+		Map<String, Object> data = (Map<String, Object>)get("data");
+
+		if (data == null) {
+			data = new HashMap<>();
+
+			put("data", data);
+		}
+
+		data.put(key, value);
+	}
+
 	public void setActive(boolean active) {
 		put("active", active);
 	}
