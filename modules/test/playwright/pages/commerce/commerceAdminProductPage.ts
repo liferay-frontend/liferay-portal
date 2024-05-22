@@ -32,7 +32,6 @@ export class CommerceAdminProductPage {
 		});
 		this.productsTableRowLink = (productName: string) =>
 			page.getByRole('link', {exact: true, name: productName});
-		this.page = page;
 	}
 
 	async generateSkus() {
