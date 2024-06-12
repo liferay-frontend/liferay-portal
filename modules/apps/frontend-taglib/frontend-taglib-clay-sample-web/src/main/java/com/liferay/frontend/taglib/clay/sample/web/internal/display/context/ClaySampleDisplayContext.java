@@ -98,6 +98,11 @@ public class ClaySampleDisplayContext {
 			}
 		).add(
 			tabsItem -> {
+				tabsItem.setLabel("Table");
+				tabsItem.setPanelId("table");
+			}
+		).add(
+			tabsItem -> {
 				tabsItem.setLabel("Tabs");
 				tabsItem.setPanelId("tabs");
 			}

@@ -5,6 +5,7 @@
 
 export {default as ClaySampleTreeViewWithCheckbox} from './ClaySampleTreeViewWithCheckbox';
 export {default as ClaySampleToastAlert} from './ClaySampleToastAlert';
+export {default as ClaySampleTable} from './ClaySampleTable';
 export {default as ClaySampleNavigationCardPropsTransformer} from './ClaySampleNavigationCardPropsTransformer';
 export {default as ClaySampleMultiselectPropsTransformer} from './ClaySampleMultiselectPropsTransformer';
 export {default as ClaySampleManagementToolbarPropsTransformer} from './ClaySampleManagementToolbarPropsTransformer';
