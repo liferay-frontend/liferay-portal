@@ -5,7 +5,12 @@
 
 package com.liferay.portal.html.parser.internal;
 
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -40,6 +45,25 @@ public class HtmlParserImplTest {
 			"onclick removal",
 			_htmlParserImpl.extractText(
 				"<div onclick=\"honk()\">onclick removal</div>"));
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.html.parser.internal" + "HtmlParserImpl",
+				LoggerTestUtil.ERROR)) {
+
+			_htmlParserImpl.extractText(
+				"<div name=\"test\" class=\"test\">Okay</div>");
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.isEmpty());
+
+			_htmlParserImpl.extractText(
+				"<div name=\"test\"class=\"test\">Error</div>");
+
+			logEntries = logCapture.getLogEntries();
+
+			Assert.assertFalse(logEntries.isEmpty());
+		}
 	}
 
 	private final HtmlParserImpl _htmlParserImpl = new HtmlParserImpl();
