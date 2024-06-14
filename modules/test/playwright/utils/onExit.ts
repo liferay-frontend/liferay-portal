@@ -34,7 +34,7 @@ function handleSignal(signal: number): void {
 	}
 
 	if (signal !== -1) {
-		process.exit(128 + SIGNALS[signal]);
+		process.exit(128 + Object.values(SIGNALS)[signal]);
 	}
 }
 
