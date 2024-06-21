@@ -56,7 +56,7 @@ const tableSectionsDataSetConfig = {
 	name: getRandomString(),
 	restApplication: '/data-set-manager/table-sections',
 	restEndpoint: '/',
-	restSchema: 'FDSField',
+	restSchema: 'DataSetTableSection',
 };
 
 async function assertTableActionLabels(page) {

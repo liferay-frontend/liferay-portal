@@ -58,40 +58,35 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 	await dataSetManagerApiHelpers.deleteDataSet({erc: dataSetERC});
 });
 
-test.describe('Item Actions in Data Set Manager', () => {
-	test('There is a message if there are no Item Actions', async ({
-		actionsPage,
-	}) => {
-		await test.step('Assert no Item Actions are created', async () => {
-			await expect(actionsPage.noActionsWereCreatedMessage).toContainText(
-				'No actions were created.'
-			);
+test('There is a message if there are no Item Actions', async ({
+	actionsPage,
+}) => {
+	await test.step('Assert no Item Actions are created', async () => {
+		await expect(actionsPage.noActionsWereCreatedMessage).toContainText(
+			'No actions were created.'
+		);
+	});
+});
+
+test('Can create an Item Action of type Link', async ({actionsPage, page}) => {
+	await test.step('Create an item action', async () => {
+		await actionsPage.createItemAction({
+			icon: 'arrow-right-full',
+			name: LINK_ITEM_ACTION_NAME,
+			type: 'link',
+			url: liferayConfig.environment.baseUrl,
 		});
 	});
 
-	test('Can create an Item Action of type Link', async ({
-		actionsPage,
-		page,
-	}) => {
-		await test.step('Create an item action', async () => {
-			await actionsPage.createItemAction({
-				icon: 'arrow-right-full',
+	await test.step('Check that the item action is in the list', async () => {
+		await expect(actionsPage.itemActionsTab).toBeInViewport();
+
+		await expect(
+			page.getByRole('cell', {
+				exact: true,
 				name: LINK_ITEM_ACTION_NAME,
-				type: 'link',
-				url: liferayConfig.environment.baseUrl,
-			});
-		});
-
-		await test.step('Check that the item action is in the list', async () => {
-			await expect(actionsPage.itemActionsTab).toBeInViewport();
-
-			await expect(
-				page.getByRole('cell', {
-					exact: true,
-					name: LINK_ITEM_ACTION_NAME,
-				})
-			).toBeVisible();
-		});
+			})
+		).toBeVisible();
 	});
 
 	test('Can cancel creating an Item Action', async ({actionsPage}) => {

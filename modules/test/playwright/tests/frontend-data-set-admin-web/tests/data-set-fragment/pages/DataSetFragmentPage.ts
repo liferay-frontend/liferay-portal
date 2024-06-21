@@ -9,52 +9,54 @@ import {ApiHelpers} from '../../../../../helpers/ApiHelpers';
 import {DEFAULT_LABEL} from '../../../utils/constants';
 import {VisualizationMode} from '../../../utils/types';
 
-export class FDSFragmentPage {
+export class DataSetFragmentPage {
+	readonly activeViewSelector: Locator;
+	readonly addFilterButton: Locator;
 	readonly apiHelpers: ApiHelpers;
+	readonly cardsWrapper: Locator;
 	readonly creationMenuButton: Locator;
 	readonly editPageButton: Locator;
 	readonly emptyStateTitle: Locator;
-	readonly fdsActiveViewSelector: Locator;
-	readonly fdsAddFilterButton: Locator;
-	readonly fdsCardsWrapper: Locator;
-	readonly fdsFilterButton: Locator;
-	fdsFilterItem: Locator;
-	readonly fdsFilterResumeButton: Locator;
-	readonly fdsListWrapper: Locator;
-	readonly fdsPaginationResults: Locator;
-	readonly fdsPaginationWrapper: Locator;
-	readonly fdsResetFilterButton: Locator;
-	readonly fdsTableWrapper: Locator;
+	readonly filterButton: Locator;
+	readonly filterResumeButton: Locator;
 	readonly fragmentWidgetSearchInput: Locator;
+	readonly listWrapper: Locator;
 	readonly loadingIndicator: Locator;
 	readonly page: Page;
+	readonly paginationResults: Locator;
+	readonly paginationWrapper: Locator;
 	readonly publishPageButton: Locator;
+	readonly resetFilterButton: Locator;
+	readonly tableWrapper: Locator;
+
+	fdsFilterItem: Locator;
 
 	constructor(page: Page) {
+		this.activeViewSelector = page.getByLabel('Show View Options');
 		this.apiHelpers = new ApiHelpers(page);
+
 		this.creationMenuButton = page.getByRole('button', {name: 'New'});
 		this.emptyStateTitle = page.getByText('No Results Found');
-		this.fdsActiveViewSelector = page.getByLabel('Show View Options');
-		this.fdsAddFilterButton = page.getByRole('button', {
+
+		this.addFilterButton = page.getByRole('button', {
 			exact: true,
 			name: 'Add Filter',
 		});
-		this.fdsCardsWrapper = page.locator('.cards-container');
-		this.fdsFilterButton = page.getByRole('button', {
+		this.filterButton = page.getByRole('button', {
 			exact: true,
 			name: 'Filter',
 		});
-		this.fdsFilterResumeButton = page.locator('.filter-resume');
-		this.fdsListWrapper = page.locator('.list-sheet');
-		this.fdsPaginationWrapper = page.locator(
-			'.data-set-pagination-wrapper'
-		);
-		this.fdsPaginationResults = page.locator('.pagination-results');
-		this.fdsResetFilterButton = page.getByRole('button', {
+		this.filterResumeButton = page.locator('.filter-resume');
+		this.resetFilterButton = page.getByRole('button', {
 			exact: true,
 			name: 'Reset Filters',
 		});
-		this.fdsTableWrapper = page.locator('.dnd-table');
+
+		this.cardsWrapper = page.locator('.cards-container');
+		this.listWrapper = page.locator('.list-sheet');
+		this.paginationWrapper = page.locator('.data-set-pagination-wrapper');
+		this.paginationResults = page.locator('.pagination-results');
+		this.tableWrapper = page.locator('.dnd-table');
 		this.fragmentWidgetSearchInput = page.getByLabel(
 			'Search Fragments and Widgets'
 		);
@@ -70,11 +72,11 @@ export class FDSFragmentPage {
 	}
 
 	async selectFilter(filterLabel) {
-		await this.fdsFilterButton.waitFor({state: 'visible'});
-		const filterDropdownId = await this.fdsFilterButton.evaluate((node) =>
+		await this.filterButton.waitFor({state: 'visible'});
+		const filterDropdownId = await this.filterButton.evaluate((node) =>
 			node.getAttribute('aria-controls')
 		);
-		await this.fdsFilterButton.click();
+		await this.filterButton.click();
 		await this.page
 			.locator(`#${filterDropdownId}`)
 			.waitFor({state: 'visible'});
@@ -87,10 +89,10 @@ export class FDSFragmentPage {
 	}
 
 	async changeVisualizationMode(visualizationMode: VisualizationMode) {
-		await this.fdsActiveViewSelector.waitFor({
+		await this.activeViewSelector.waitFor({
 			state: 'visible',
 		});
-		await this.fdsActiveViewSelector.click();
+		await this.activeViewSelector.click();
 
 		await this.page
 			.getByRole('listbox')

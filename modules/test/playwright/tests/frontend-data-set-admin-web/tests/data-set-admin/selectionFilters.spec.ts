@@ -72,8 +72,7 @@ test.afterEach(async ({dataSetManagerApiHelpers, picklistApiHelpers}) => {
 	await picklistApiHelpers.deletePicklist(picklistName);
 });
 
-test.describe('Filters in Data Set Manager', () => {
-	test('Can create a selection filter from picklist source', async ({
+test('Can create a selection filter from picklist source', async ({
 		filtersPage,
 		page,
 	}) => {
@@ -91,28 +90,28 @@ test.describe('Filters in Data Set Manager', () => {
 			await filtersPage.cancelAddFilterModal();
 		});
 
-		await test.step('Create a selection filter from picklist source', async () => {
-			await filtersPage.createSelectionFilterPicklist({
-				filterBy: 'externalReferenceCode',
-				filterMode: 'Include',
-				name: SELECTION_PICKLIST_FILTER_NAME,
-				preselectedValues: [PICKLIST_VALUE_NAME],
-				selectionType: 'Single',
-				source: picklistName,
-				sourceType: 'Object Picklist',
-			});
+	await test.step('Create a selection filter from picklist source', async () => {
+		await filtersPage.createSelectionFilterPicklist({
+			filterBy: 'externalReferenceCode',
+			filterMode: 'Include',
+			name: SELECTION_PICKLIST_FILTER_NAME,
+			preselectedValues: [PICKLIST_VALUE_NAME],
+			selectionType: 'Single',
+			source: picklistName,
+			sourceType: 'Object Picklist',
+		});
 
 			await filtersPage.saveAddFilterModal();
-		});
+	});
 
-		await test.step('Check that the selection filter is in the list', async () => {
-			await expect(
-				page.getByRole('cell', {
-					exact: true,
-					name: SELECTION_PICKLIST_FILTER_NAME,
-				})
-			).toBeVisible();
-		});
+	await test.step('Check that the selection filter is in the list', async () => {
+		await expect(
+			page.getByRole('cell', {
+				exact: true,
+				name: SELECTION_PICKLIST_FILTER_NAME,
+			})
+		).toBeVisible();
+	});
 
 		await test.step('Create a selection filter from picklist source without preselected values', async () => {
 			await filtersPage.createSelectionFilterPicklist({
@@ -135,38 +134,37 @@ test.describe('Filters in Data Set Manager', () => {
 				})
 			).toBeVisible();
 		});
-	});
+});
 
-	test('Can create a selection filter with API Headless source', async ({
-		filtersPage,
-		page,
-	}) => {
-		await test.step('Create a selection filter from API Headless source', async () => {
-			await filtersPage.createSelectionFilterApiHeadless({
-				filterBy: 'externalReferenceCode',
-				filterMode: 'Include',
-				itemKey: 'id',
-				itemLabel: 'label',
-				name: SELECTION_API_HEADLESS_FILTER_NAME,
-				preselectedValues: [dataSetLabel],
-				restApplication: '/data-set-manager/data-sets',
-				restEndpoint: '/',
-				restSchema: 'FDSView',
-				selectionType: 'Single',
-				sourceType: 'API REST Application',
-			});
+test('Can create a selection filter with API Headless source', async ({
+	filtersPage,
+	page,
+}) => {
+	await test.step('Create a selection filter from API Headless source', async () => {
+		await filtersPage.createSelectionFilterApiHeadless({
+			filterBy: 'externalReferenceCode',
+			filterMode: 'Include',
+			itemKey: 'id',
+			itemLabel: 'label',
+			name: SELECTION_API_HEADLESS_FILTER_NAME,
+			preselectedValues: [dataSetLabel],
+			restApplication: '/data-set-manager/data-sets',
+			restEndpoint: '/',
+			restSchema: 'DataSet',
+			selectionType: 'Single',
+			sourceType: 'API REST Application',
+		});
 
 			await filtersPage.saveAddFilterModal();
-		});
+	});
 
-		await test.step('Check that the selection filter is in the list', async () => {
-			await expect(
-				page.getByRole('cell', {
-					exact: true,
-					name: SELECTION_API_HEADLESS_FILTER_NAME,
-				})
-			).toBeVisible();
-		});
+	await test.step('Check that the selection filter is in the list', async () => {
+		await expect(
+			page.getByRole('cell', {
+				exact: true,
+				name: SELECTION_API_HEADLESS_FILTER_NAME,
+			})
+		).toBeVisible();
 	});
 
 	test('Preselected filter values are checked in the multiSelect', async ({

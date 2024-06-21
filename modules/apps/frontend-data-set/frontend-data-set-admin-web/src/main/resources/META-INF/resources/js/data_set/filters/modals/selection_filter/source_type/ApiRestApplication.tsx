@@ -644,7 +644,7 @@ function ApiRestApplication({
 							</label>
 
 							<ClayDropDown
-								className="dsm-filter-item-key"
+								className="filter-item-key"
 								menuElementAttrs={{
 									className: 'rest-selection-dropdown-menu',
 								}}
@@ -703,7 +703,7 @@ function ApiRestApplication({
 							</label>
 
 							<ClayDropDown
-								className="dsm-filter-item-label"
+								className="filter-item-label"
 								menuElementAttrs={{
 									className: 'rest-selection-dropdown-menu',
 								}}

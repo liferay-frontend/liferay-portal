@@ -10,7 +10,7 @@ import {isolatedLayoutTest} from '../../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
-import {fdsFragmentPageTest} from './fixtures/fdsFragmentPageTest';
+import {dataSetFragmentPageTest} from './fixtures/dataSetFragmentPageTest';
 
 export const test = mergeTests(
 	dataSetManagerApiHelpersTest,
@@ -20,7 +20,7 @@ export const test = mergeTests(
 	}),
 	isolatedLayoutTest({publish: false}),
 	loginTest(),
-	fdsFragmentPageTest
+	dataSetFragmentPageTest
 );
 
 let dataSetERC: string;
@@ -42,8 +42,8 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 
 test.describe('Sorting Dropdown in Data Set Fragment', () => {
 	test('When sorting is configured with at least 1 sort, the dropdown is displayed in the fragment @LPD-19503', async ({
+		dataSetFragmentPage,
 		dataSetManagerApiHelpers,
-		fdsFragmentPage,
 		layout,
 		page,
 	}) => {
@@ -85,7 +85,7 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 		});
 
 		await test.step('Configure Data Set fragment', async () => {
-			await fdsFragmentPage.configureDataSetFragment({
+			await dataSetFragmentPage.configureDataSetFragment({
 				dataSetLabel,
 				layout,
 			});
@@ -98,11 +98,11 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 		});
 
 		await test.step('Check that default sorting is applied', async () => {
-			const firstIDText = await fdsFragmentPage.fdsTableWrapper
+			const firstIDText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:first-child .dnd-td:first-child')
 				.textContent();
 
-			const lastIDText = await fdsFragmentPage.fdsTableWrapper
+			const lastIDText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:last-child .dnd-td:first-child')
 				.textContent();
 
@@ -125,11 +125,11 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 		});
 
 		await test.step('Check that the first ID is greater than the last ID in the table', async () => {
-			const firstIDText = await fdsFragmentPage.fdsTableWrapper
+			const firstIDText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:first-child .dnd-td:first-child')
 				.textContent();
 
-			const lastIDText = await fdsFragmentPage.fdsTableWrapper
+			const lastIDText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:last-child .dnd-td:first-child')
 				.textContent();
 
@@ -140,11 +140,11 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 			await page.getByRole('button', {name: 'Order'}).click();
 			await page.getByRole('menuitem', {name: 'Name'}).click();
 
-			const firstNameText = await fdsFragmentPage.fdsTableWrapper
+			const firstNameText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:first-child .dnd-td:nth-child(2)')
 				.textContent();
 
-			const lastNameText = await fdsFragmentPage.fdsTableWrapper
+			const lastNameText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:last-child .dnd-td:nth-child(2)')
 				.textContent();
 
@@ -153,11 +153,14 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 			await page.getByRole('button', {name: 'Order'}).click();
 			await page.getByRole('menuitem', {name: 'Ascending'}).click();
 
-			const firstNameTextAscending = await fdsFragmentPage.fdsTableWrapper
-				.locator('.dnd-tbody .dnd-tr:first-child .dnd-td:nth-child(2)')
-				.textContent();
+			const firstNameTextAscending =
+				await dataSetFragmentPage.tableWrapper
+					.locator(
+						'.dnd-tbody .dnd-tr:first-child .dnd-td:nth-child(2)'
+					)
+					.textContent();
 
-			const lastNameTextAscending = await fdsFragmentPage.fdsTableWrapper
+			const lastNameTextAscending = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:last-child .dnd-td:nth-child(2)')
 				.textContent();
 

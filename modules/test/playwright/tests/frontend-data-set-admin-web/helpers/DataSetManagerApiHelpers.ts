@@ -6,16 +6,16 @@
 import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {liferayConfig} from '../../../liferay.config';
 import {
-	CARDS_SECTION_DATA_SET_RELATIONSHIP,
-	CLIENT_EXTENSION_FILTER_DATA_SET_RELATIONSHIP,
-	CREATION_ACTION_DATA_SET_RELATIONSHIP,
-	DATE_FILTER_DATA_SET_RELATIONSHIP,
+	DATA_SET_CARDS_SECTIONS_RELATIONSHIP,
+	DATA_SET_CLIENT_EXTENSION_FILTER_RELATIONSHIP,
+	DATA_SET_CREATION_ACTIONS_RELATIONSHIP,
+	DATA_SET_DATE_FILTERS_RELATIONSHIP,
+	DATA_SET_ITEM_ACTIONS_RELATIONSHIP,
+	DATA_SET_LIST_SECTIONS_RELATIONSHIP,
+	DATA_SET_SELECTION_FILTERS_RELATIONSHIP,
+	DATA_SET_SORTS_RELATIONSHIP,
+	DATA_SET_TABLE_SECTIONS_RELATIONSHIP,
 	DEFAULT_LABEL,
-	ITEM_ACTION_DATA_SET_RELATIONSHIP,
-	LIST_SECTION_DATA_SET_RELATIONSHIP,
-	SELECTION_FILTER_DATA_SET_RELATIONSHIP,
-	SORT_DATA_SET_RELATIONSHIP,
-	TABLE_SECTION_DATA_SET_RELATIONSHIP,
 } from '../utils/constants';
 import {
 	AsyncActionMethod,
@@ -35,7 +35,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		listOfItemsPerPage = '4, 8, 20, 40, 60',
 		restApplication = '/data-set-manager/table-sections',
 		restEndpoint = '/',
-		restSchema = 'FDSField',
+		restSchema = 'DataSetTableSection',
 	}: {
 		defaultItemsPerPage?: number;
 		defaultVisualizationMode?: string;
@@ -76,7 +76,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		const url = `${this.baseUrl}data-set-manager/cards-sections`;
 
 		const data = {
-			[CARDS_SECTION_DATA_SET_RELATIONSHIP]: dataSetERC,
+			[DATA_SET_CARDS_SECTIONS_RELATIONSHIP]: dataSetERC,
 			fieldName,
 			name,
 		};
@@ -129,7 +129,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		const endpointUrl = `${this.baseUrl}data-set-manager/actions`;
 
 		const data = {
-			[CREATION_ACTION_DATA_SET_RELATIONSHIP]: dataSetERC,
+			[DATA_SET_CREATION_ACTIONS_RELATIONSHIP]: dataSetERC,
 			icon,
 			label_i18n,
 			modalSize,
@@ -164,7 +164,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		const url = `${this.baseUrl}data-set-manager/table-sections`;
 
 		const data = {
-			[TABLE_SECTION_DATA_SET_RELATIONSHIP]: dataSetERC,
+			[DATA_SET_TABLE_SECTIONS_RELATIONSHIP]: dataSetERC,
 			label_i18n,
 			name,
 			renderer,
@@ -195,7 +195,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		const url = `${this.baseUrl}data-set-manager/date-filters`;
 
 		const data = {
-			[DATE_FILTER_DATA_SET_RELATIONSHIP]: dataSetERC,
+			[DATA_SET_DATE_FILTERS_RELATIONSHIP]: dataSetERC,
 			fieldName,
 			from,
 			label_i18n,
@@ -232,7 +232,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		const url = `${this.baseUrl}data-set-manager/selection-filters`;
 
 		const data = {
-			[SELECTION_FILTER_DATA_SET_RELATIONSHIP]: dataSetERC,
+			[DATA_SET_SELECTION_FILTERS_RELATIONSHIP]: dataSetERC,
 			fieldName,
 			include,
 			itemKey,
@@ -279,7 +279,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		const endpointUrl = `${this.baseUrl}data-set-manager/actions`;
 
 		const data = {
-			[ITEM_ACTION_DATA_SET_RELATIONSHIP]: dataSetERC,
+			[DATA_SET_ITEM_ACTIONS_RELATIONSHIP]: dataSetERC,
 			confirmationMessage_i18n,
 			confirmationMessageType,
 			errorMessage_i18n,
@@ -313,7 +313,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		const url = `${this.baseUrl}data-set-manager/sorts`;
 
 		const data = {
-			[SORT_DATA_SET_RELATIONSHIP]: dataSetERC,
+			[DATA_SET_SORTS_RELATIONSHIP]: dataSetERC,
 			default: defaultValue,
 			fieldName,
 			label: label_i18n[Object.keys(label_i18n)[0]],
@@ -332,12 +332,11 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		dataSetERC?: string;
 		fieldName?: string;
 		name?: string;
-		r_fdsViewFDSListSectionRelationship_c_fdsViewERC?: string;
 	}) {
 		const url = `${this.baseUrl}data-set-manager/list-sections`;
 
 		const data = {
-			[LIST_SECTION_DATA_SET_RELATIONSHIP]: dataSetERC,
+			[DATA_SET_LIST_SECTIONS_RELATIONSHIP]: dataSetERC,
 			fieldName,
 			name,
 		};

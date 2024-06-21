@@ -61,92 +61,90 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 	await dataSetManagerApiHelpers.deleteDataSet({erc: dataSetERC});
 });
 
-test.describe('Creation Actions in Data Set Manager', () => {
-	test('There is a message if no Creation Action has been created', async ({
-		actionsPage,
-	}) => {
-		await test.step('Assert no Creation Actions are created', async () => {
-			await expect(actionsPage.noActionsWereCreatedMessage).toContainText(
-				'No actions were created.'
-			);
+test('There is a message if no Creation Action has been created', async ({
+	actionsPage,
+}) => {
+	await test.step('Assert no Creation Actions are created', async () => {
+		await expect(actionsPage.noActionsWereCreatedMessage).toContainText(
+			'No actions were created.'
+		);
+	});
+});
+
+test('Can create a Creation Action of type Link', async ({
+	actionsPage,
+	page,
+}) => {
+	await test.step('Create a creation action', async () => {
+		await actionsPage.createCreationAction({
+			icon: 'arrow-right-full',
+			name: LINK_CREATION_ACTION_NAME,
+			type: 'link',
+			url: liferayConfig.environment.baseUrl,
 		});
 	});
 
-	test('Can create a Creation Action of type Link', async ({
-		actionsPage,
-		page,
-	}) => {
-		await test.step('Create a creation action', async () => {
-			await actionsPage.createCreationAction({
-				icon: 'arrow-right-full',
+	await test.step('Check that the creation action is in the list', async () => {
+		await expect(actionsPage.creationActionsTab).toBeInViewport();
+
+		await expect(
+			page.getByRole('cell', {
+				exact: true,
 				name: LINK_CREATION_ACTION_NAME,
-				type: 'link',
-				url: liferayConfig.environment.baseUrl,
-			});
-		});
+			})
+		).toBeVisible();
+	});
+});
 
-		await test.step('Check that the creation action is in the list', async () => {
-			await expect(actionsPage.creationActionsTab).toBeInViewport();
-
-			await expect(
-				page.getByRole('cell', {
-					exact: true,
-					name: LINK_CREATION_ACTION_NAME,
-				})
-			).toBeVisible();
+test('Can create a Creation Action of type Modal', async ({
+	actionsPage,
+	page,
+}) => {
+	await test.step('Create a creation action', async () => {
+		await actionsPage.createCreationAction({
+			icon: 'arrow-right-full',
+			name: MODAL_CREATION_ACTION_NAME,
+			title: MODAL_CREATION_ACTION_TITLE,
+			type: 'modal',
+			url: liferayConfig.environment.baseUrl,
+			variant: 'sm',
 		});
 	});
 
-	test('Can create a Creation Action of type Modal', async ({
-		actionsPage,
-		page,
-	}) => {
-		await test.step('Create a creation action', async () => {
-			await actionsPage.createCreationAction({
-				icon: 'arrow-right-full',
+	await test.step('Check that the creation action is in the list', async () => {
+		await expect(actionsPage.creationActionsTab).toBeInViewport();
+
+		await expect(
+			page.getByRole('cell', {
+				exact: true,
 				name: MODAL_CREATION_ACTION_NAME,
-				title: MODAL_CREATION_ACTION_TITLE,
-				type: 'modal',
-				url: liferayConfig.environment.baseUrl,
-				variant: 'sm',
-			});
-		});
+			})
+		).toBeVisible();
+	});
+});
 
-		await test.step('Check that the creation action is in the list', async () => {
-			await expect(actionsPage.creationActionsTab).toBeInViewport();
-
-			await expect(
-				page.getByRole('cell', {
-					exact: true,
-					name: MODAL_CREATION_ACTION_NAME,
-				})
-			).toBeVisible();
+test('Can create a Creation Action of type Side Panel', async ({
+	actionsPage,
+	page,
+}) => {
+	await test.step('Create a creation action', async () => {
+		await actionsPage.createCreationAction({
+			icon: 'arrow-right-full',
+			name: SIDE_PANEL_CREATION_ACTION_NAME,
+			title: SIDE_PANEL_CREATION_ACTION_TITLE,
+			type: 'sidePanel',
+			url: liferayConfig.environment.baseUrl,
 		});
 	});
 
-	test('Can create a Creation Action of type Side Panel', async ({
-		actionsPage,
-		page,
-	}) => {
-		await test.step('Create a creation action', async () => {
-			await actionsPage.createCreationAction({
-				icon: 'arrow-right-full',
+	await test.step('Check that the creation action is in the list', async () => {
+		await expect(actionsPage.creationActionsTab).toBeInViewport();
+
+		await expect(
+			page.getByRole('cell', {
+				exact: true,
 				name: SIDE_PANEL_CREATION_ACTION_NAME,
-				title: SIDE_PANEL_CREATION_ACTION_TITLE,
-				type: 'sidePanel',
-				url: liferayConfig.environment.baseUrl,
-			});
-		});
-
-		await test.step('Check that the creation action is in the list', async () => {
-			await expect(actionsPage.creationActionsTab).toBeInViewport();
-
-			await expect(
-				page.getByRole('cell', {
-					exact: true,
-					name: SIDE_PANEL_CREATION_ACTION_NAME,
-				})
-			).toBeVisible();
-		});
+			})
+		).toBeVisible();
 	});
 });

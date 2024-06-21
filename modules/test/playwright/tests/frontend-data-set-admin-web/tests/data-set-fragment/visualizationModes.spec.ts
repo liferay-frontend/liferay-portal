@@ -10,7 +10,7 @@ import {isolatedLayoutTest} from '../../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
-import {fdsFragmentPageTest} from './fixtures/fdsFragmentPageTest';
+import {dataSetFragmentPageTest} from './fixtures/dataSetFragmentPageTest';
 
 export const test = mergeTests(
 	dataSetManagerApiHelpersTest,
@@ -18,7 +18,7 @@ export const test = mergeTests(
 		'LPS-178052': true,
 	}),
 	loginTest(),
-	fdsFragmentPageTest,
+	dataSetFragmentPageTest,
 	isolatedLayoutTest({publish: false})
 );
 
@@ -43,13 +43,13 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 
 test.describe('Visualization Modes in Data Set fragment', () => {
 	test('Show mapped fields in the fragment', async ({
+		dataSetFragmentPage,
 		dataSetManagerApiHelpers,
-		fdsFragmentPage,
 		layout,
 		page,
 	}) => {
 		const SAMPLE_SCALAR_FIELD = 'id';
-		const SAMPLE_OBJECT_FIELD = 'fdsViewFDSFieldRelationship';
+		const SAMPLE_OBJECT_FIELD = 'dataSetTableSections';
 		const SAMPLE_OBJECT_CHILD_FIELD = 'label';
 
 		await test.step('Create table fields', async () => {
@@ -94,22 +94,22 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 		});
 
 		await test.step('Configure Data Set in the page', async () => {
-			await fdsFragmentPage.configureDataSetFragment({
+			await dataSetFragmentPage.configureDataSetFragment({
 				dataSetLabel,
 				layout,
 			});
 		});
 
 		await test.step('Check Data Set Cards are present', async () => {
-			await fdsFragmentPage.fdsCardsWrapper.waitFor({
+			await dataSetFragmentPage.cardsWrapper.waitFor({
 				state: 'visible',
 			});
 
-			await expect(fdsFragmentPage.fdsCardsWrapper).toBeInViewport();
+			await expect(dataSetFragmentPage.cardsWrapper).toBeInViewport();
 
-			await fdsFragmentPage.page.locator('.card').first().waitFor();
+			await dataSetFragmentPage.page.locator('.card').first().waitFor();
 
-			const firstCard = fdsFragmentPage.page.locator('.card').first();
+			const firstCard = dataSetFragmentPage.page.locator('.card').first();
 
 			await expect(firstCard.locator('.card-title')).toContainText(
 				dataSetLabel
@@ -119,22 +119,22 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 		});
 
 		await test.step('Change visualization mode to List', async () => {
-			await fdsFragmentPage.changeVisualizationMode('List');
+			await dataSetFragmentPage.changeVisualizationMode('List');
 		});
 
 		await test.step('Check Data Set List is present', async () => {
-			await fdsFragmentPage.fdsListWrapper.waitFor({
+			await dataSetFragmentPage.listWrapper.waitFor({
 				state: 'visible',
 			});
 
-			await expect(fdsFragmentPage.fdsListWrapper).toBeInViewport();
+			await expect(dataSetFragmentPage.listWrapper).toBeInViewport();
 
-			await fdsFragmentPage.page
+			await dataSetFragmentPage.page
 				.locator('.list-group-item')
 				.first()
 				.waitFor();
 
-			const firstListItem = fdsFragmentPage.page
+			const firstListItem = dataSetFragmentPage.page
 				.locator('.list-group-item')
 				.first();
 
@@ -148,16 +148,16 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 		});
 
 		await test.step('Change visualization mode to Table', async () => {
-			await fdsFragmentPage.changeVisualizationMode('Table');
+			await dataSetFragmentPage.changeVisualizationMode('Table');
 		});
 
 		await test.step('Data Set Table is in the page', async () => {
-			await fdsFragmentPage.fdsTableWrapper.waitFor({
+			await dataSetFragmentPage.tableWrapper.waitFor({
 				state: 'visible',
 			});
 
 			await expect(
-				await fdsFragmentPage.fdsTableWrapper
+				await dataSetFragmentPage.tableWrapper
 			).toBeInViewport();
 
 			expect(
@@ -171,8 +171,8 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 	});
 
 	test('Show mapped scalar array field in the fragment @LPD-11769', async ({
+		dataSetFragmentPage,
 		dataSetManagerApiHelpers,
-		fdsFragmentPage,
 		layout,
 		page,
 	}) => {
@@ -192,18 +192,18 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 		});
 
 		await test.step('Configure Data Set in the page', async () => {
-			await fdsFragmentPage.configureDataSetFragment({
+			await dataSetFragmentPage.configureDataSetFragment({
 				dataSetLabel,
 				layout,
 			});
 		});
 
 		await test.step('Data Set Table is in the page', async () => {
-			await fdsFragmentPage.fdsTableWrapper.waitFor({
+			await dataSetFragmentPage.tableWrapper.waitFor({
 				state: 'visible',
 			});
 
-			await expect(fdsFragmentPage.fdsTableWrapper).toBeInViewport();
+			await expect(dataSetFragmentPage.tableWrapper).toBeInViewport();
 
 			expect(
 				await page
