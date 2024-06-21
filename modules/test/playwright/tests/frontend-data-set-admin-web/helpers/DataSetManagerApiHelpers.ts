@@ -316,7 +316,6 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			[DATA_SET_SORTS_RELATIONSHIP]: dataSetERC,
 			default: defaultValue,
 			fieldName,
-			label: label_i18n[Object.keys(label_i18n)[0]],
 			label_i18n,
 			orderType,
 		};
