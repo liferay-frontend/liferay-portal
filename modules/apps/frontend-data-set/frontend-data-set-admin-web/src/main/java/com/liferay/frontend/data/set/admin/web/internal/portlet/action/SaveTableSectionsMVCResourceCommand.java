@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -36,11 +36,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"javax.portlet.name=" + FDSAdminPortletKeys.FDS_ADMIN,
-		"mvc.command.name=/frontend_data_set_admin/save_fds_fields"
+		"mvc.command.name=/frontend_data_set_admin/save_table_sections"
 	},
 	service = MVCResourceCommand.class
 )
-public class SaveFDSFieldsMVCResourceCommand
+public class SaveTableSectionsMVCResourceCommand
 	extends BaseTransactionalMVCResourceCommand {
 
 	@Override
@@ -55,7 +55,7 @@ public class SaveFDSFieldsMVCResourceCommand
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinition(
-				themeDisplay.getCompanyId(), "FDSField");
+				themeDisplay.getCompanyId(), "DataSetTableSection");
 
 		String dataSetId = ParamUtil.getString(resourceRequest, "dataSetId");
 
@@ -72,15 +72,16 @@ public class SaveFDSFieldsMVCResourceCommand
 			ObjectEntry objectEntry = _objectEntryService.addObjectEntry(
 				0, objectDefinition.getObjectDefinitionId(),
 				HashMapBuilder.<String, Serializable>put(
+					"fieldName",
+					String.valueOf(creationDataJSONObject.get("fieldName"))
+				).put(
 					"label_i18n",
 					HashMapBuilder.put(
 						themeDisplay.getLanguageId(),
-						String.valueOf(creationDataJSONObject.get("name"))
+						String.valueOf(creationDataJSONObject.get("fieldName"))
 					).build()
 				).put(
-					"name", String.valueOf(creationDataJSONObject.get("name"))
-				).put(
-					"r_fdsViewFDSFieldRelationship_c_fdsViewId", dataSetId
+					"r_dataSetToDataSetTableSections_c_dataSetId", dataSetId
 				).put(
 					"renderer", "default"
 				).put(

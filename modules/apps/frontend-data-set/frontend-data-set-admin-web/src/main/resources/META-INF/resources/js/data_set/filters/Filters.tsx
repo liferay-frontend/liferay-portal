@@ -10,7 +10,11 @@ import {fetch, openModal, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import OrderableTable from '../../components/OrderableTable';
-import {API_URL, OBJECT_RELATIONSHIP} from '../../utils/constants';
+import {
+	API_URL,
+	EObjectRelationship,
+	EObjectRelationshipID,
+} from '../../utils/constants';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
 import {
@@ -22,45 +26,46 @@ import {
 	IFilter,
 } from '../../utils/types';
 import {IDataSetSectionProps} from '../DataSet';
-import ClientExtensionFilterModalContent from './modals/ClientExtensionFilter';
-import DateRangeFilterModalContent from './modals/DateRangeFilter';
-import SelectionFilterModalContent from './modals/selection_filter/SelectionFilter';
+import ClientExtensionFilterModal from './modals/ClientExtensionFilter';
+import DateRangeFilterModal from './modals/DateRangeFilter';
+import SelectionFilterModal from './modals/selection_filter/SelectionFilter';
 
 import '../../../css/Filters.scss';
 import {IDataSet} from '../../DataSets';
-import {FDSViewType} from '../../FDSViews';
 import sortItems from '../../utils/sortItems';
+
+const FILTERS_ORDER_OBJECT_FIELD_NAME = 'filtersOrder';
 
 const FILTER_TYPES = {
 	[EFilterType.CLIENT_EXTENSION]: {
-		Component: ClientExtensionFilterModalContent,
+		Component: ClientExtensionFilterModal,
 		availableFieldsFilter: (item: IField) => !!item,
+		dataSetRelationship:
+			EObjectRelationship.DATA_SET_CLIENT_EXTENSION_FILTERS,
+		dataSetRelationshipId:
+			EObjectRelationshipID.DATA_SET_CLIENT_EXTENSION_FILTERS,
 		displayType: Liferay.Language.get('client-extension-filter'),
-		fdsViewRelationship:
-			OBJECT_RELATIONSHIP.DATA_SET_CLIENT_EXTENSION_FILTER,
-		fdsViewRelationshipId:
-			OBJECT_RELATIONSHIP.DATA_SET_CLIENT_EXTENSION_FILTER_ID,
 		label: Liferay.Language.get('client-extension'),
 		url: API_URL.CLIENT_EXTENSION_FILTERS,
 	},
 	[EFilterType.DATE_RANGE]: {
-		Component: DateRangeFilterModalContent,
+		Component: DateRangeFilterModal,
 		availableFieldsFilter: (item: IField) =>
 			item.format === EFieldFormat.DATE ||
 			item.format === EFieldFormat.DATE_TIME,
+		dataSetRelationship: EObjectRelationship.DATA_SET_DATE_FILTERS,
+		dataSetRelationshipId: EObjectRelationshipID.DATA_SET_DATE_FILTERS,
 		displayType: Liferay.Language.get('date-filter'),
-		fdsViewRelationship: OBJECT_RELATIONSHIP.DATA_SET_DATE_FILTER,
-		fdsViewRelationshipId: OBJECT_RELATIONSHIP.DATA_SET_DATE_FILTER_ID,
 		label: Liferay.Language.get('date-range'),
 		url: API_URL.DATE_FILTERS,
 	},
 	[EFilterType.SELECTION]: {
-		Component: SelectionFilterModalContent,
+		Component: SelectionFilterModal,
 		availableFieldsFilter: (item: IField) =>
 			item.type === EFieldType.STRING && !item.format,
+		dataSetRelationship: EObjectRelationship.DATA_SET_SELECTION_FILTERS,
+		dataSetRelationshipId: EObjectRelationshipID.DATA_SET_SELECTION_FILTERS,
 		displayType: Liferay.Language.get('dynamic-filter'),
-		fdsViewRelationship: OBJECT_RELATIONSHIP.DATA_SET_SELECTION_FILTER,
-		fdsViewRelationshipId: OBJECT_RELATIONSHIP.DATA_SET_SELECTION_FILTER_ID,
 		label: Liferay.Language.get('selection'),
 		url: API_URL.SELECTION_FILTERS,
 	},
@@ -68,38 +73,47 @@ const FILTER_TYPES = {
 
 type FilterCollection = Array<IFilter>;
 
-interface IPropsAddFDSFilterModalContent {
+export interface IFilterModal {
 	closeModal: Function;
-	dataSet: IDataSet | FDSViewType;
-	fdsFilterClientExtensions?: IClientExtensionRenderer[];
 	fieldNames?: string[];
 	fields: IField[];
 	filter?: IFilter;
-	filterType?: EFilterType;
+	filterClientExtensions: IClientExtensionRenderer[];
 	namespace: string;
-	onSave: (newFilter: IFilter) => void;
-	restApplications: string[];
+	onSave: Function;
+	restApplications?: string[];
 }
 
-function AddFDSFilterModalContent({
+function NewFilterModalContent({
 	closeModal,
 	dataSet,
-	fdsFilterClientExtensions = [],
 	fieldNames,
 	fields,
 	filter,
+	filterClientExtensions = [],
 	filterType,
 	namespace,
 	onSave,
 	restApplications,
-}: IPropsAddFDSFilterModalContent) {
-	const {Component, displayType, fdsViewRelationshipId} =
+}: {
+	closeModal: Function;
+	dataSet: IDataSet;
+	fieldNames?: string[];
+	fields: IField[];
+	filter?: IFilter;
+	filterClientExtensions?: IClientExtensionRenderer[];
+	filterType?: EFilterType;
+	namespace: string;
+	onSave: (newFilter: IFilter) => void;
+	restApplications: string[];
+}) {
+	const {Component, dataSetRelationshipId, displayType} =
 		FILTER_TYPES[filterType as EFilterType];
 
-	const saveFDSFilter = async (formData: any) => {
+	const saveFilter = async (formData: any) => {
 		formData = {
 			...formData,
-			[fdsViewRelationshipId]: dataSet.id,
+			[dataSetRelationshipId]: dataSet.id,
 		};
 
 		let url = FILTER_TYPES[filterType as EFilterType].url;
@@ -145,12 +159,12 @@ function AddFDSFilterModalContent({
 
 			<Component.Body
 				closeModal={closeModal}
-				fdsFilterClientExtensions={fdsFilterClientExtensions}
 				fieldNames={fieldNames}
 				fields={fields}
 				filter={filter}
+				filterClientExtensions={filterClientExtensions}
 				namespace={namespace}
-				onSave={(formData: any) => saveFDSFilter(formData)}
+				onSave={(formData: any) => saveFilter(formData)}
 				restApplications={restApplications}
 			/>
 		</>
@@ -159,8 +173,8 @@ function AddFDSFilterModalContent({
 
 function Filters({
 	dataSet,
-	fdsFilterClientExtensions,
 	fieldTreeItems: fields,
+	filterClientExtensions,
 	namespace,
 	restApplications,
 }: IDataSetSectionProps) {
@@ -171,7 +185,7 @@ function Filters({
 				`${API_URL.DATA_SETS}/${
 					dataSet.id
 				}?nestedFields=${Object.values(FILTER_TYPES)
-					.map((filter) => filter.fdsViewRelationship)
+					.map((filter) => filter.dataSetRelationship)
 					.join(',')}`
 			);
 
@@ -182,7 +196,7 @@ function Filters({
 			Object.keys(FILTER_TYPES).forEach((type) => {
 				const filtersArray =
 					responseJSON[
-						FILTER_TYPES[type as EFilterType].fdsViewRelationship
+						FILTER_TYPES[type as EFilterType].dataSetRelationship
 					];
 
 				filtersArray.forEach((filter: any) => {
@@ -197,7 +211,7 @@ function Filters({
 
 			filtersOrdered = sortItems(
 				filtersOrdered,
-				responseJSON.fdsFiltersOrder,
+				responseJSON[FILTERS_ORDER_OBJECT_FIELD_NAME],
 				true
 			) as FilterCollection;
 
@@ -214,16 +228,16 @@ function Filters({
 		getFilters();
 	}, [dataSet]);
 
-	const updateFDSFiltersOrder = async ({
-		fdsFiltersOrder,
+	const updateFiltersOrder = async ({
+		filtersOrder,
 	}: {
-		fdsFiltersOrder: string;
+		filtersOrder: string;
 	}) => {
 		const response = await fetch(
 			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}`,
 			{
 				body: JSON.stringify({
-					fdsFiltersOrder,
+					[FILTERS_ORDER_OBJECT_FIELD_NAME]: filtersOrder,
 				}),
 				headers: {
 					'Accept': 'application/json',
@@ -241,19 +255,16 @@ function Filters({
 
 		const responseJSON = await response.json();
 
-		const storedFDSFiltersOrder = responseJSON?.fdsFiltersOrder;
+		const storedFiltersOrder =
+			responseJSON[FILTERS_ORDER_OBJECT_FIELD_NAME];
 
 		if (
 			filters &&
-			storedFDSFiltersOrder &&
-			storedFDSFiltersOrder === fdsFiltersOrder
+			storedFiltersOrder &&
+			storedFiltersOrder === filtersOrder
 		) {
 			setFilters(
-				sortItems(
-					filters,
-					storedFDSFiltersOrder,
-					true
-				) as FilterCollection
+				sortItems(filters, storedFiltersOrder, true) as FilterCollection
 			);
 
 			openDefaultSuccessToast();
@@ -291,12 +302,12 @@ function Filters({
 			openModal({
 				className: 'overflow-auto',
 				contentComponent: ({closeModal}: {closeModal: Function}) => (
-					<AddFDSFilterModalContent
+					<NewFilterModalContent
 						closeModal={closeModal}
 						dataSet={dataSet}
-						fdsFilterClientExtensions={fdsFilterClientExtensions}
 						fieldNames={filters.map((filter) => filter.fieldName)}
 						fields={availableFields}
+						filterClientExtensions={filterClientExtensions}
 						filterType={filterType}
 						namespace={namespace}
 						onSave={(newfilter) => {
@@ -318,13 +329,13 @@ function Filters({
 		openModal({
 			className: 'overflow-auto',
 			contentComponent: ({closeModal}: {closeModal: Function}) => (
-				<AddFDSFilterModalContent
+				<NewFilterModalContent
 					closeModal={closeModal}
 					dataSet={dataSet}
-					fdsFilterClientExtensions={fdsFilterClientExtensions}
 					fieldNames={filters.map((filter) => filter.fieldName)}
 					fields={fields}
 					filter={item}
+					filterClientExtensions={filterClientExtensions}
 					filterType={item.filterType}
 					namespace={namespace}
 					onSave={(newfilter) => {
@@ -442,7 +453,7 @@ function Filters({
 					'no-default-filters-were-created'
 				)}
 				onOrderChange={({order}: {order: string}) => {
-					updateFDSFiltersOrder({fdsFiltersOrder: order});
+					updateFiltersOrder({filtersOrder: order});
 				}}
 				title={Liferay.Language.get('filters')}
 			/>

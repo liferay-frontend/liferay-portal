@@ -13,7 +13,7 @@ import React, {useEffect, useState} from 'react';
 
 import '../../../../css/CardsVisualizationMode.scss';
 import FieldSelectModalContent from '../../../components/FieldSelectModalContent';
-import {API_URL, OBJECT_RELATIONSHIP} from '../../../utils/constants';
+import {API_URL, EObjectRelationshipERC} from '../../../utils/constants';
 import openDefaultFailureToast from '../../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../../utils/openDefaultSuccessToast';
 import {IField, IFieldTreeItem} from '../../../utils/types';
@@ -51,7 +51,7 @@ export default function Cards(props: IDataSetSectionProps) {
 
 	const getFDSCardsSections = async () => {
 		const response = await fetch(
-			`${API_URL.CARDS_SECTIONS}?filter=(${OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTION_ERC} eq '${dataSet.externalReferenceCode}')`
+			`${API_URL.CARDS_SECTIONS}?filter=(${EObjectRelationshipERC.DATA_SET_CARDS_SECTIONS} eq '${dataSet.externalReferenceCode}')`
 		);
 
 		if (!response.ok) {
@@ -170,7 +170,7 @@ export default function Cards(props: IDataSetSectionProps) {
 
 		const response = await fetch(url, {
 			body: JSON.stringify({
-				[OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTION_ERC]:
+				[EObjectRelationshipERC.DATA_SET_CARDS_SECTIONS]:
 					dataSet.externalReferenceCode,
 				fieldName: field.name,
 				name: cardsSection.name,

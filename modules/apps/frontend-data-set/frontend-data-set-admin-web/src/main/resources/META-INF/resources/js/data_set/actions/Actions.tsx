@@ -10,7 +10,11 @@ import ClayTabs from '@clayui/tabs';
 import {fetch, openModal} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import {API_URL, OBJECT_RELATIONSHIP} from '../../utils/constants';
+import {
+	API_URL,
+	EObjectRelationship,
+	EObjectRelationshipID,
+} from '../../utils/constants';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
 import {IDataSetSectionProps} from '../DataSet';
@@ -20,6 +24,9 @@ import ActionList from './components/ActionList';
 import '../../../css/Actions.scss';
 import sortItems from '../../utils/sortItems';
 import {IOrderable} from '../../utils/types';
+
+const CREATION_ACTIONS_ORDER_OBJECT_FIELD_NAME = 'creationActionsOrder';
+const ITEM_ACTIONS_ORDER_OBJECT_FIELD_NAME = 'itemActionsOrder';
 
 const SECTIONS = {
 	CREATION_ACTIONS: 'creation-actions',
@@ -31,8 +38,8 @@ const SECTIONS = {
 };
 
 interface IAction extends IOrderable {
-	[OBJECT_RELATIONSHIP.DATA_SET_CREATION_ACTION]?: any;
-	[OBJECT_RELATIONSHIP.DATA_SET_ITEM_ACTION]?: any;
+	[EObjectRelationship.DATA_SET_CREATION_ACTIONS]?: any;
+	[EObjectRelationship.DATA_SET_ITEM_ACTIONS]?: any;
 	actions: {
 		delete: {
 			href: string;
@@ -127,16 +134,16 @@ const Actions = ({dataSet, namespace, spritemap}: IDataSetSectionProps) => {
 	const loadActions = async ({activeTab}: {activeTab: number}) => {
 		setLoading(true);
 
-		const relationShip =
+		const relationship =
 			activeTab === 0
-				? OBJECT_RELATIONSHIP.DATA_SET_ITEM_ACTION
-				: OBJECT_RELATIONSHIP.DATA_SET_CREATION_ACTION;
+				? EObjectRelationship.DATA_SET_ITEM_ACTIONS
+				: EObjectRelationship.DATA_SET_CREATION_ACTIONS;
 		const relationshipID =
 			activeTab === 0
-				? OBJECT_RELATIONSHIP.DATA_SET_ITEM_ACTION_ID
-				: OBJECT_RELATIONSHIP.DATA_SET_CREATION_ACTION_ID;
+				? EObjectRelationshipID.DATA_SET_ITEM_ACTIONS
+				: EObjectRelationshipID.DATA_SET_CREATION_ACTIONS;
 
-		const url = `${API_URL.ACTIONS}?filter=(${relationshipID} eq '${dataSet.id}')&nestedFields=${relationShip}&sort=dateCreated:asc`;
+		const url = `${API_URL.ACTIONS}?filter=(${relationshipID} eq '${dataSet.id}')&nestedFields=${relationship}&sort=dateCreated:asc`;
 
 		if (activeTab === 0) {
 			setActiveSection(SECTIONS.ITEM_ACTIONS);
@@ -159,13 +166,15 @@ const Actions = ({dataSet, namespace, spritemap}: IDataSetSectionProps) => {
 
 		const storedActions: IAction[] = responseJSON.items;
 
-		const actionTypeOrder =
-			activeTab === 0 ? 'fdsItemActionsOrder' : 'fdsCreationActionsOrder';
+		const actionsOrderObjectsFieldName =
+			activeTab === 0
+				? ITEM_ACTIONS_ORDER_OBJECT_FIELD_NAME
+				: CREATION_ACTIONS_ORDER_OBJECT_FIELD_NAME;
 
-		const fdsActionsOrder =
-			storedActions?.[0]?.[relationShip]?.[actionTypeOrder];
+		const actionsOrder =
+			storedActions?.[0]?.[relationship]?.[actionsOrderObjectsFieldName];
 
-		setActions(sortItems(storedActions, fdsActionsOrder) as IAction[]);
+		setActions(sortItems(storedActions, actionsOrder) as IAction[]);
 
 		setLoading(false);
 	};
@@ -226,23 +235,16 @@ const Actions = ({dataSet, namespace, spritemap}: IDataSetSectionProps) => {
 	};
 
 	const updateActionsOrder = async ({order}: {order: string}) => {
-		let actionTypeOrder =
-			activeTab === 0 ? 'fdsItemActionsOrder' : 'fdsCreationActionsOrder';
-
-		let apiURL = API_URL.DATA_SETS;
-
-		if (Liferay.FeatureFlags['LPD-15729']) {
-			actionTypeOrder =
-				activeTab === 0 ? 'itemActionsOrder' : 'creationActionsOrder';
-
-			apiURL = API_URL.DATA_SETS;
-		}
+		const actionsOrderObjectFieldName =
+			activeTab === 0
+				? ITEM_ACTIONS_ORDER_OBJECT_FIELD_NAME
+				: CREATION_ACTIONS_ORDER_OBJECT_FIELD_NAME;
 
 		const response = await fetch(
-			`${apiURL}/by-external-reference-code/${dataSet.externalReferenceCode}`,
+			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}`,
 			{
 				body: JSON.stringify({
-					[actionTypeOrder]: order,
+					[actionsOrderObjectFieldName]: order,
 				}),
 				headers: {
 					'Accept': 'application/json',
@@ -260,7 +262,7 @@ const Actions = ({dataSet, namespace, spritemap}: IDataSetSectionProps) => {
 
 		const responseJSON = await response.json();
 
-		const storedActionsOrder = responseJSON?.[actionTypeOrder];
+		const storedActionsOrder = responseJSON?.[actionsOrderObjectFieldName];
 
 		if (actions && storedActionsOrder && storedActionsOrder === order) {
 			setActions(sortItems(actions, storedActionsOrder) as IAction[]);

@@ -14,13 +14,13 @@ import fuzzy from 'fuzzy';
 import React, {useEffect, useState} from 'react';
 
 import {IDataSet} from '../../DataSets';
-import {FDSViewType} from '../../FDSViews';
 import OrderableTable from '../../components/OrderableTable';
 import RequiredMark from '../../components/RequiredMark';
 import {
 	API_URL,
+	EObjectRelationship,
+	EObjectRelationshipID,
 	FUZZY_OPTIONS,
-	OBJECT_RELATIONSHIP,
 } from '../../utils/constants';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
@@ -28,12 +28,15 @@ import sortItems from '../../utils/sortItems';
 import {IField, IOrderable} from '../../utils/types';
 import {IDataSetSectionProps} from '../DataSet';
 
+const SORTS_ORDER_OBJECT_FIELD_NAME = 'sortsOrder';
+
 interface IContentRendererProps {
-	item: IFDSSort;
+	item: ISort;
 	query: string;
 }
 
-interface IFDSSort extends IOrderable {
+interface ISort extends IOrderable {
+	[EObjectRelationship.DATA_SET_SORTS]?: any;
 	externalReferenceCode: string;
 	fieldName: string;
 	sortingDirection: string;
@@ -55,7 +58,7 @@ const SORTING_OPTIONS = [
 	SORTING_DIRECTION.DESCENDING,
 ];
 
-const sortingDirectionTextMatch = (item: IFDSSort) => {
+const sortingDirectionTextMatch = (item: ISort) => {
 	return item.sortingDirection === SORTING_DIRECTION.ASCENDING.value
 		? SORTING_DIRECTION.ASCENDING.label
 		: SORTING_DIRECTION.DESCENDING.label;
@@ -91,9 +94,9 @@ const AddFDSSortModalContent = ({
 	onSave,
 }: {
 	closeModal: Function;
-	dataSet: IDataSet | FDSViewType;
+	dataSet: IDataSet;
 	fields: IField[];
-	onSave: (newSort: IFDSSort) => void;
+	onSave: (newSort: ISort) => void;
 }) => {
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const [selectedField, setSelectedField] = useState<string>();
@@ -115,7 +118,7 @@ const AddFDSSortModalContent = ({
 
 		const response = await fetch(API_URL.SORTS, {
 			body: JSON.stringify({
-				[OBJECT_RELATIONSHIP.DATA_SET_SORT_ID]: dataSet.id,
+				[EObjectRelationshipID.DATA_SET_SORTS]: dataSet.id,
 				fieldName: selectedField,
 				sortingDirection: selectedSortingDirection,
 			}),
@@ -223,7 +226,7 @@ const AddFDSSortModalContent = ({
 
 interface IEditFDSSortModalContentProps {
 	closeModal: Function;
-	fdsSort: IFDSSort;
+	fdsSort: ISort;
 	fields: IField[];
 	namespace: string;
 	onSave: Function;
@@ -352,28 +355,26 @@ const SortingDeprecated = ({
 	namespace,
 }: IDataSetSectionProps) => {
 	const fields = fieldTreeItems.filter((field) => field.sortable);
-	const [fdsSorts, setFDSSorts] = useState<Array<IFDSSort>>([]);
+	const [fdsSorts, setFDSSorts] = useState<Array<ISort>>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const getFDSSort = async () => {
 			const response = await fetch(
-				`${API_URL.SORTS}?filter=(${OBJECT_RELATIONSHIP.DATA_SET_SORT_ID} eq '${dataSet.id}')&nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_SORT}&sort=dateCreated:asc`
+				`${API_URL.SORTS}?filter=(${EObjectRelationship.DATA_SET_SORTS} eq '${dataSet.id}')&nestedFields=${EObjectRelationship.DATA_SET_SORTS}&sort=dateCreated:asc`
 			);
 
 			const responseJSON = await response.json();
 
-			const storedFDSSorts: IFDSSort[] = responseJSON.items;
+			const storedFDSSorts: ISort[] = responseJSON.items;
 
 			setFDSSorts(
 				sortItems(
 					storedFDSSorts,
-
-					// @ts-ignore
-
-					storedFDSSorts?.[0]?.[OBJECT_RELATIONSHIP.DATA_SET_SORT]
-						?.fdsSortsOrder as string
-				) as IFDSSort[]
+					storedFDSSorts?.[0]?.[EObjectRelationship.DATA_SET_SORTS]?.[
+						SORTS_ORDER_OBJECT_FIELD_NAME
+					] as string
+				) as ISort[]
 			);
 			setLoading(false);
 		};
@@ -393,7 +394,7 @@ const SortingDeprecated = ({
 			),
 		});
 
-	const handleDelete = ({item}: {item: IFDSSort}) => {
+	const handleDelete = ({item}: {item: ISort}) => {
 		openModal({
 			bodyHTML: Liferay.Language.get(
 				'are-you-sure-you-want-to-delete-this-sorting?-fragments-using-it-will-be-affected'
@@ -431,7 +432,7 @@ const SortingDeprecated = ({
 
 						setFDSSorts(
 							fdsSorts?.filter(
-								(fdsSort: IFDSSort) => fdsSort.id !== item.id
+								(fdsSort: ISort) => fdsSort.id !== item.id
 							) || []
 						);
 					},
@@ -442,7 +443,7 @@ const SortingDeprecated = ({
 		});
 	};
 
-	const handleEdit = ({item}: {item: IFDSSort}) => {
+	const handleEdit = ({item}: {item: ISort}) => {
 		openModal({
 			contentComponent: ({closeModal}: {closeModal: Function}) => (
 				<EditFDSSortModalContent
@@ -450,7 +451,7 @@ const SortingDeprecated = ({
 					fdsSort={item}
 					fields={fields}
 					namespace={namespace}
-					onSave={({editedFDSSort}: {editedFDSSort: IFDSSort}) => {
+					onSave={({editedFDSSort}: {editedFDSSort: ISort}) => {
 						setFDSSorts(
 							fdsSorts?.map((fdsSort) => {
 								if (fdsSort.id === editedFDSSort.id) {
@@ -466,16 +467,12 @@ const SortingDeprecated = ({
 		});
 	};
 
-	const updateFDSSortsOrder = async ({
-		fdsSortsOrder,
-	}: {
-		fdsSortsOrder: string;
-	}) => {
+	const updateSortsOrder = async ({sortsOrder}: {sortsOrder: string}) => {
 		const response = await fetch(
 			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}`,
 			{
 				body: JSON.stringify({
-					fdsSortsOrder,
+					[SORTS_ORDER_OBJECT_FIELD_NAME]: sortsOrder,
 				}),
 				headers: {
 					'Accept': 'application/json',
@@ -493,14 +490,15 @@ const SortingDeprecated = ({
 
 		const responseJSON = await response.json();
 
-		const storedFDSSortsOrder = responseJSON?.fdsSortsOrder;
+		const storedFDSSortsOrder =
+			responseJSON?.[SORTS_ORDER_OBJECT_FIELD_NAME];
 
 		if (
 			fdsSorts &&
 			storedFDSSortsOrder &&
-			storedFDSSortsOrder === fdsSortsOrder
+			storedFDSSortsOrder === sortsOrder
 		) {
-			setFDSSorts(sortItems(fdsSorts, storedFDSSortsOrder) as IFDSSort[]);
+			setFDSSorts(sortItems(fdsSorts, storedFDSSortsOrder) as ISort[]);
 
 			openDefaultSuccessToast();
 		}
@@ -568,7 +566,7 @@ const SortingDeprecated = ({
 							'no-default-sort-created-yet'
 						)}
 						onOrderChange={({order}: {order: string}) => {
-							updateFDSSortsOrder({fdsSortsOrder: order});
+							updateSortsOrder({sortsOrder: order});
 						}}
 						title={Liferay.Language.get('sorting')}
 					/>

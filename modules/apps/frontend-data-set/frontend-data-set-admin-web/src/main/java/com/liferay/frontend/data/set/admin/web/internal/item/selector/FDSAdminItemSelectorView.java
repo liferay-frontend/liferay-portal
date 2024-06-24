@@ -44,7 +44,7 @@ public class FDSAdminItemSelectorView
 
 	@Override
 	public String getClassName() {
-		return "FDSView";
+		return "DataSet";
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class FDSAdminItemSelectorView
 
 	@Override
 	public String getTitle(Locale locale) {
-		return _language.get(locale, "data-set-views");
+		return _language.get(locale, "data-sets");
 	}
 
 	@Override

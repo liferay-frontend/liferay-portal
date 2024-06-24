@@ -28,7 +28,7 @@ public class FDSAdminItemSelectorDisplayContext {
 	public String getClassName() {
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
-				_themeDisplay.getCompanyId(), "FDSView");
+				_themeDisplay.getCompanyId(), "DataSet");
 
 		if (objectDefinition != null) {
 			return objectDefinition.getClassName();

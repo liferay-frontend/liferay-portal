@@ -16,7 +16,7 @@ import React, {useEffect, useState} from 'react';
 import {
 	API_URL,
 	DEFAULT_VISUALIZATION_MODES,
-	OBJECT_RELATIONSHIP,
+	EObjectRelationship,
 } from '../../utils/constants';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
@@ -46,9 +46,9 @@ const Settings = ({
 
 	const getActiveVisualizationModes = async () => {
 		const fields = [
-			OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTION,
-			OBJECT_RELATIONSHIP.DATA_SET_LIST_SECTION,
-			OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTION,
+			EObjectRelationship.DATA_SET_CARDS_SECTIONS,
+			EObjectRelationship.DATA_SET_LIST_SECTIONS,
+			EObjectRelationship.DATA_SET_TABLE_SECTIONS,
 		].join(',');
 
 		const response = await fetch(
@@ -68,9 +68,9 @@ const Settings = ({
 		const responseJSON = await response.json();
 
 		const {
-			fdsViewFDSCardsSectionRelationship: cards,
-			fdsViewFDSFieldRelationship: table,
-			fdsViewFDSListSectionRelationship: list,
+			[EObjectRelationship.DATA_SET_CARDS_SECTIONS]: cards,
+			[EObjectRelationship.DATA_SET_LIST_SECTIONS]: list,
+			[EObjectRelationship.DATA_SET_TABLE_SECTIONS]: table,
 		} = responseJSON;
 
 		const activeViews: Array<TVisualizationMode> = [];
@@ -110,7 +110,7 @@ const Settings = ({
 		setLoading(false);
 	};
 
-	const updateFDSViewSettings = async () => {
+	const updateDataSet = async () => {
 		const body = {
 			defaultVisualizationMode,
 		};
@@ -285,7 +285,7 @@ const Settings = ({
 
 			<ClayLayout.SheetFooter>
 				<ClayButton.Group spaced>
-					<ClayButton onClick={updateFDSViewSettings}>
+					<ClayButton onClick={updateDataSet}>
 						{Liferay.Language.get('save')}
 					</ClayButton>
 

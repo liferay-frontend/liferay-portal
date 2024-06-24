@@ -13,9 +13,8 @@ import {fetch, navigate} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
 
 import {IDataSet} from '../../DataSets';
-import {FDSViewType} from '../../FDSViews';
 import RequiredMark from '../../components/RequiredMark';
-import {API_URL, OBJECT_RELATIONSHIP} from '../../utils/constants';
+import {API_URL} from '../../utils/constants';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
 import {IDataSetSectionProps} from '../DataSet';
@@ -31,7 +30,7 @@ const Details = ({
 	const descriptionRef = useRef<HTMLInputElement>(null);
 	const labelRef = useRef<HTMLInputElement>(null);
 
-	const updateFDSView = async () => {
+	const updateDataSet = async () => {
 		const body = {
 			description: descriptionRef.current?.value,
 			label: labelRef.current?.value,
@@ -76,13 +75,8 @@ const Details = ({
 		}
 	};
 
-	const {restApplication, restEndpoint, restSchema} = Liferay.FeatureFlags[
-		'LPD-15729'
-	]
-		? (dataSet as unknown as IDataSet)
-		: (dataSet as unknown as FDSViewType)[
-				OBJECT_RELATIONSHIP.FDS_ENTRY_FDS_VIEW
-			];
+	const {restApplication, restEndpoint, restSchema} =
+		dataSet as unknown as IDataSet;
 
 	return (
 		<ClayLayout.Sheet className="mt-3" size="lg">
@@ -195,7 +189,7 @@ const Details = ({
 
 			<ClayLayout.SheetFooter>
 				<ClayButton.Group spaced>
-					<ClayButton onClick={updateFDSView}>
+					<ClayButton onClick={updateDataSet}>
 						{Liferay.Language.get('save')}
 					</ClayButton>
 

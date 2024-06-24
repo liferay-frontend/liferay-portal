@@ -14,33 +14,26 @@ import React, {useState} from 'react';
 
 import RequiredMark from '../../../components/RequiredMark';
 import ValidationFeedback from '../../../components/ValidationFeedback';
-import {IClientExtensionFilter, IField, IFilter} from '../../../utils/types';
+import {IClientExtensionFilter, IField} from '../../../utils/types';
+import {IFilterModal} from '../Filters';
 import Configuration from './Configuration';
 import Footer from './Footer';
+
+const CLIENT_EXTENSION_ERC_OBJECT_FIELD_NAME = 'clientExtensionERC';
 
 function Header() {
 	return <>{Liferay.Language.get('new-client-extension-filter')}</>;
 }
 
-interface IBodyProps {
-	closeModal: Function;
-	fdsFilterClientExtensions: IClientExtensionRenderer[];
-	fieldNames?: string[];
-	fields: IField[];
-	filter?: IFilter;
-	namespace: string;
-	onSave: Function;
-}
-
 function Body({
 	closeModal,
-	fdsFilterClientExtensions,
 	fieldNames,
 	fields,
 	filter,
+	filterClientExtensions,
 	namespace,
 	onSave,
-}: IBodyProps) {
+}: IFilterModal) {
 	const [clientExtensionValidationError, setClientExtensionValidationError] =
 		useState<boolean>(false);
 	const [fieldInUseValidationError, setFieldInUseValidationError] =
@@ -56,17 +49,15 @@ function Body({
 		IClientExtensionRenderer | undefined
 	>(
 		filter
-			? fdsFilterClientExtensions.find(
+			? filterClientExtensions.find(
 					(clientExtensionRenderer: IClientExtensionRenderer) =>
 						clientExtensionRenderer.externalReferenceCode ===
-						(filter as IClientExtensionFilter)
-							.fdsFilterClientExtensionERC
+						(filter as IClientExtensionFilter).clientExtensionERC
 				)
 			: undefined
 	);
-	const fdsFilterLabelTranslations = filter?.label_i18n ?? {};
 	const [i18nFilterLabels, setI18nFilterLabels] = useState(
-		fdsFilterLabelTranslations
+		filter?.label_i18n ?? {}
 	);
 	const inUseFields: (string | undefined)[] = fields.map((item) =>
 		fieldNames?.includes(item.name) ? item.name : undefined
@@ -74,7 +65,7 @@ function Body({
 	const [selectedField, setSelectedField] = useState<IField | undefined>(
 		fields.find((item) => item.name === filter?.fieldName)
 	);
-	const fdsFilterClientExtensionFormElementId = `${namespace}fdsFilterClientExtensionERC`;
+	const clientExtensionFormElementId = `${namespace}clientExtensionERC`;
 
 	const isi18nFilterLabelsValid = (
 		i18nFilterLabels: Partial<Liferay.Language.FullyLocalizedValue<string>>
@@ -134,7 +125,7 @@ function Body({
 
 		if (success) {
 			const formData = {
-				fdsFilterClientExtensionERC:
+				[CLIENT_EXTENSION_ERC_OBJECT_FIELD_NAME]:
 					selectedClientExtension?.externalReferenceCode,
 				fieldName: selectedField?.name,
 				label_i18n: i18nFilterLabels,
@@ -147,7 +138,7 @@ function Body({
 		}
 	};
 
-	if (!fdsFilterClientExtensions.length) {
+	if (!filterClientExtensions.length) {
 		return (
 			<ClayAlert displayType="info" title="Info">
 				{Liferay.Language.get(
@@ -194,9 +185,7 @@ function Body({
 						})}
 					>
 						<div className={classNames('form-group-item')}>
-							<label
-								htmlFor={fdsFilterClientExtensionFormElementId}
-							>
+							<label htmlFor={clientExtensionFormElementId}>
 								{Liferay.Language.get('client-extension')}
 
 								<RequiredMark />
@@ -213,9 +202,7 @@ function Body({
 										aria-labelledby={`${namespace}cellRenderersLabel`}
 										className="form-control form-control-select form-control-select-secondary"
 										displayType="secondary"
-										name={
-											fdsFilterClientExtensionFormElementId
-										}
+										name={clientExtensionFormElementId}
 									>
 										{selectedClientExtension
 											? selectedClientExtension.name
@@ -224,10 +211,10 @@ function Body({
 								}
 							>
 								<ClayDropDown.ItemList
-									items={fdsFilterClientExtensions}
+									items={filterClientExtensions}
 									role="listbox"
 								>
-									{fdsFilterClientExtensions.map(
+									{filterClientExtensions.map(
 										(
 											filterClientExtension: IClientExtensionRenderer
 										) => (

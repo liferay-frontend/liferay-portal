@@ -15,11 +15,10 @@ import {fetch, openModal} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import {IDataSet} from '../../../DataSets';
-import {FDSViewType} from '../../../FDSViews';
 import RequiredMark from '../../../components/RequiredMark';
 import Search from '../../../components/Search';
 import ValidationFeedback from '../../../components/ValidationFeedback';
-import {API_URL, OBJECT_RELATIONSHIP} from '../../../utils/constants';
+import {API_URL, EObjectRelationshipID} from '../../../utils/constants';
 import openDefaultFailureToast from '../../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../../utils/openDefaultSuccessToast';
 import {IAction} from '../Actions';
@@ -128,7 +127,7 @@ const ActionForm = ({
 	spritemap,
 }: {
 	activeTab: number;
-	dataSet: IDataSet | FDSViewType;
+	dataSet: IDataSet;
 	editing?: boolean;
 	initialValues?: IAction;
 	namespace: string;
@@ -201,8 +200,8 @@ const ActionForm = ({
 
 		const relationship: string =
 			activeTab === 0
-				? OBJECT_RELATIONSHIP.DATA_SET_ITEM_ACTION_ID
-				: OBJECT_RELATIONSHIP.DATA_SET_CREATION_ACTION_ID;
+				? EObjectRelationshipID.DATA_SET_ITEM_ACTIONS
+				: EObjectRelationshipID.DATA_SET_CREATION_ACTIONS;
 
 		const body = {
 			confirmationMessage_i18n: confirmationMessageTranslations,

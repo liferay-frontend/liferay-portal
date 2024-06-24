@@ -48,19 +48,13 @@ public class FDSAdminDisplayContext {
 			serviceTrackerList) {
 
 		_cetManager = cetManager;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
 		_serviceTrackerList = serviceTrackerList;
 
 		_themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
-
-		_fdsEntryObjectDefinition =
-			objectDefinitionLocalService.fetchObjectDefinition(
-				_themeDisplay.getCompanyId(), "FDSEntry");
-		_fdsViewObjectDefinition =
-			objectDefinitionLocalService.fetchObjectDefinition(
-				_themeDisplay.getCompanyId(), "FDSView");
 	}
 
 	public String getEditDataSetURL() {
@@ -92,39 +86,6 @@ public class FDSAdminDisplayContext {
 			));
 	}
 
-	public String getFDSEntriesURL() {
-		return PortletURLBuilder.create(
-			PortletURLFactoryUtil.create(
-				_renderRequest, FDSAdminPortletKeys.FDS_ADMIN,
-				RenderRequest.RENDER_PHASE)
-		).setMVCPath(
-			"/data_sets.jsp"
-		).buildString();
-	}
-
-	public String getFDSEntryPermissionsURL() {
-		return PortletURLBuilder.create(
-			PortalUtil.getControlPanelPortletURL(
-				_renderRequest,
-				"com_liferay_portlet_configuration_web_portlet_" +
-					"PortletConfigurationPortlet",
-				ActionRequest.RENDER_PHASE)
-		).setMVCPath(
-			"/edit_permissions.jsp"
-		).setRedirect(
-			PortletURLUtil.getCurrent(_renderRequest, _renderResponse)
-		).setParameter(
-			"modelResource", _fdsEntryObjectDefinition.getClassName()
-		).setParameter(
-			"modelResourceDescription",
-			_fdsEntryObjectDefinition.getLabel(_themeDisplay.getLocale())
-		).setParameter(
-			"resourcePrimKey", "{id}"
-		).setWindowState(
-			LiferayWindowState.POP_UP
-		).buildString();
-	}
-
 	public JSONArray getFDSFilterCETsJSONArray() throws Exception {
 		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -141,7 +102,11 @@ public class FDSAdminDisplayContext {
 			));
 	}
 
-	public String getFDSViewPermissionsURL() {
+	public String getPermissionsURL() {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				_themeDisplay.getCompanyId(), "DataSet");
+
 		return PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
 				_renderRequest,
@@ -153,48 +118,14 @@ public class FDSAdminDisplayContext {
 		).setRedirect(
 			PortletURLUtil.getCurrent(_renderRequest, _renderResponse)
 		).setParameter(
-			"modelResource", _fdsViewObjectDefinition.getClassName()
+			"modelResource", objectDefinition.getClassName()
 		).setParameter(
 			"modelResourceDescription",
-			_fdsViewObjectDefinition.getLabel(_themeDisplay.getLocale())
+			objectDefinition.getLabel(_themeDisplay.getLocale())
 		).setParameter(
 			"resourcePrimKey", "{id}"
 		).setWindowState(
 			LiferayWindowState.POP_UP
-		).buildString();
-	}
-
-	public String getFDSViewsURL() {
-		return PortletURLBuilder.create(
-			PortletURLFactoryUtil.create(
-				_renderRequest, FDSAdminPortletKeys.FDS_ADMIN,
-				RenderRequest.RENDER_PHASE)
-		).setMVCPath(
-			"/fds_views.jsp"
-		).buildString();
-	}
-
-	public String getFDSViewsURL(String fdsEntryId, String fdsEntryLabel) {
-		return PortletURLBuilder.create(
-			PortletURLFactoryUtil.create(
-				_renderRequest, FDSAdminPortletKeys.FDS_ADMIN,
-				RenderRequest.RENDER_PHASE)
-		).setMVCPath(
-			"/fds_views.jsp"
-		).setParameter(
-			"fdsEntryId", fdsEntryId
-		).setParameter(
-			"fdsEntryLabel", fdsEntryLabel
-		).buildString();
-	}
-
-	public String getFDSViewURL() {
-		return PortletURLBuilder.create(
-			PortletURLFactoryUtil.create(
-				_renderRequest, FDSAdminPortletKeys.FDS_ADMIN,
-				RenderRequest.RENDER_PHASE)
-		).setMVCPath(
-			"/fds_view.jsp"
 		).buildString();
 	}
 
@@ -230,21 +161,21 @@ public class FDSAdminDisplayContext {
 		return jsonArray;
 	}
 
-	public String getSaveFDSFieldsURL() {
+	public String getSaveTableSectionsURL() {
 		ResourceURL resourceURL =
 			(ResourceURL)PortalUtil.getControlPanelPortletURL(
 				_renderRequest, _themeDisplay.getScopeGroup(),
 				FDSAdminPortletKeys.FDS_ADMIN, 0, 0,
 				RenderRequest.RESOURCE_PHASE);
 
-		resourceURL.setResourceID("/frontend_data_set_admin/save_fds_fields");
+		resourceURL.setResourceID(
+			"/frontend_data_set_admin/save_table_sections");
 
 		return resourceURL.toString();
 	}
 
 	private final CETManager _cetManager;
-	private final ObjectDefinition _fdsEntryObjectDefinition;
-	private final ObjectDefinition _fdsViewObjectDefinition;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private final ServiceTrackerList
