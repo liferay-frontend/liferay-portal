@@ -10,8 +10,8 @@ import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedLayoutTest} from '../../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
-import {fdsFragmentPageTest} from './fixtures/fdsFragmentPageTest';
+import {dataSetAdminApiHelpersTest} from '../../fixtures/dataSetAdminApiHelpersTest';
+import {dataSetFragmentPageTest} from './fixtures/dataSetFragmentPageTest';
 
 let dataSetERC: string;
 let dataSetLabel: string;
@@ -19,34 +19,34 @@ const DATE_FIELD_NAME = 'dateCreated';
 
 export const test = mergeTests(
 	apiHelpersTest,
-	dataSetManagerApiHelpersTest,
+	dataSetAdminApiHelpersTest,
 	featureFlagsTest({
 		'LPS-178052': true,
 	}),
 	isolatedLayoutTest({publish: false}),
 	loginTest(),
-	fdsFragmentPageTest
+	dataSetFragmentPageTest
 );
 
-test.beforeEach(async ({dataSetManagerApiHelpers}) => {
+test.beforeEach(async ({dataSetAdminApiHelpers}) => {
 	dataSetERC = getRandomString();
 	dataSetLabel = getRandomString();
 
 	await test.step('Create a data set', async () => {
-		await dataSetManagerApiHelpers.createDataSet({
+		await dataSetAdminApiHelpers.createDataSet({
 			erc: dataSetERC,
 			label: dataSetLabel,
 		});
 	});
 });
 
-test.afterEach(async ({dataSetManagerApiHelpers}) => {
-	await dataSetManagerApiHelpers.deleteDataSet({erc: dataSetERC});
+test.afterEach(async ({dataSetAdminApiHelpers}) => {
+	await dataSetAdminApiHelpers.deleteDataSet({erc: dataSetERC});
 });
 
 test('Date-time filter is displayed in fragment, and applied to data @LPD-10754', async ({
-	dataSetManagerApiHelpers,
-	fdsFragmentPage,
+	dataSetAdminApiHelpers,
+	dataSetFragmentPage,
 	layout,
 }) => {
 	const fieldLabel = getRandomString();
@@ -56,39 +56,39 @@ test('Date-time filter is displayed in fragment, and applied to data @LPD-10754'
 	async function assertDataIsFetched() {
 		await test.step('Assert that the data entry is fetched', async () => {
 			await expect(
-				fdsFragmentPage.page.getByText(fieldLabel).first()
+				dataSetFragmentPage.page.getByText(fieldLabel).first()
 			).toBeVisible();
 		});
 	}
 
 	await test.step('Create a new date-time filter', async () => {
-		await dataSetManagerApiHelpers.createDataSetDateFilter({
+		await dataSetAdminApiHelpers.createDataSetDateFilter({
 			dataSetERC,
 			fieldName: DATE_FIELD_NAME,
-			from: '2020-01-01',
+			fromDate: '2020-01-01',
 			label_i18n: {en_US: filterLabel},
-			to: '3020-01-02',
+			toDate: '3020-01-02',
 			type: 'date-time',
 		});
 	});
 
 	await test.step('Add a field, so FDS has something to show', async () => {
-		await dataSetManagerApiHelpers.createDataSetField({
+		await dataSetAdminApiHelpers.createDataSetTableSection({
 			dataSetERC,
+			fieldName: 'rendererType',
 			label_i18n: {en_US: fieldLabel},
-			name: 'rendererType',
 			type: 'string',
 		});
 	});
 
 	await test.step('Configure Data Set fragment', async () => {
-		await fdsFragmentPage.configureDataSetFragment({
+		await dataSetFragmentPage.configureDataSetFragment({
 			dataSetLabel,
 			layout,
 		});
 	});
 
-	const activeFilterButton = fdsFragmentPage.page.getByRole('button', {
+	const activeFilterButton = dataSetFragmentPage.page.getByRole('button', {
 		name: `${filterLabel}:`,
 	});
 
@@ -101,7 +101,7 @@ test('Date-time filter is displayed in fragment, and applied to data @LPD-10754'
 	await test.step('Set an impossible date range', async () => {
 		await activeFilterButton.click();
 
-		const toInput = fdsFragmentPage.page.getByLabel('To', {
+		const toInput = dataSetFragmentPage.page.getByLabel('To', {
 			exact: true,
 		});
 
@@ -111,7 +111,7 @@ test('Date-time filter is displayed in fragment, and applied to data @LPD-10754'
 
 		await toInput.fill('2020-01-02');
 
-		const editButton = fdsFragmentPage.page.getByRole('button', {
+		const editButton = dataSetFragmentPage.page.getByRole('button', {
 			name: 'Edit Filter',
 		});
 
@@ -121,12 +121,12 @@ test('Date-time filter is displayed in fragment, and applied to data @LPD-10754'
 	});
 
 	await test.step('Assert that the data entry is not fetched', async () => {
-		await expect(fdsFragmentPage.emptyStateTitle).toBeVisible();
+		await expect(dataSetFragmentPage.emptyStateTitle).toBeVisible();
 	});
 
 	await test.step('Remove the filter @LPS-191295', async () => {
 		const removeFilterButton =
-			fdsFragmentPage.page.getByLabel('Remove Filter');
+			dataSetFragmentPage.page.getByLabel('Remove Filter');
 
 		await expect(removeFilterButton).toBeVisible();
 

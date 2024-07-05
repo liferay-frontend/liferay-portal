@@ -180,11 +180,11 @@ export class VisualizationModesPage {
 			.getByRole('dialog', {name: 'Select Field'})
 			.getByPlaceholder('Search');
 
-		const FDS_NESTED_FIELD_NAME_DELIMITER = '.';
+		const NESTED_FIELD_NAME_DELIMITER = '.';
 
 		const itemPath = path
 			.replace(/\[\]/g, '.')
-			.split(FDS_NESTED_FIELD_NAME_DELIMITER)
+			.split(NESTED_FIELD_NAME_DELIMITER)
 			.filter((item) => item !== '*');
 
 		const selectedFieldName = itemPath[itemPath.length - 1];

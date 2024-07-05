@@ -8,13 +8,14 @@ import {expect, mergeTests} from '@playwright/test';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
+import {dataSetAdminApiHelpersTest} from '../../fixtures/dataSetAdminApiHelpersTest';
+import {EObjectRelationship} from '../../utils/constants';
 import saveFromModal from '../../utils/saveFromModal';
 import {dataSetManagerSetupTest} from './fixtures/dataSetManagerSetupTest';
 import {visualizationModesPageTest} from './fixtures/visualizationModesPageTest';
 
 export const test = mergeTests(
-	dataSetManagerApiHelpersTest,
+	dataSetAdminApiHelpersTest,
 	featureFlagsTest({
 		'LPS-164563': true,
 	}),
@@ -27,17 +28,17 @@ let dataSetERC: string;
 
 const dataSetLabel: string = getRandomString();
 
-test.beforeEach(async ({dataSetManagerApiHelpers}) => {
+test.beforeEach(async ({dataSetAdminApiHelpers}) => {
 	dataSetERC = getRandomString();
 
-	await dataSetManagerApiHelpers.createDataSet({
+	await dataSetAdminApiHelpers.createDataSet({
 		erc: dataSetERC,
 		label: dataSetLabel,
 	});
 });
 
-test.afterEach(async ({dataSetManagerApiHelpers}) => {
-	await dataSetManagerApiHelpers.deleteDataSet({
+test.afterEach(async ({dataSetAdminApiHelpers}) => {
+	await dataSetAdminApiHelpers.deleteDataSet({
 		erc: dataSetERC,
 	});
 });
@@ -61,643 +62,639 @@ const clickActionInRow = async ({
 	await actionButton.click();
 };
 
-test.describe('Visualization Modes in Data Set Manager', () => {
-	test('Configure cards visualization mode @LPD-10735', async ({
-		page,
-		visualizationModesPage,
-	}) => {
-		await test.step('Navigate to cards visualization mode page', async () => {
-			await visualizationModesPage.goto({
-				dataSetLabel,
-			});
-
-			await visualizationModesPage.selectTab('Cards');
-
-			await expect(
-				visualizationModesPage.cardsVisualizationModeContainer
-			).toBeVisible();
+test('Configure cards visualization mode @LPD-10735', async ({
+	page,
+	visualizationModesPage,
+}) => {
+	await test.step('Navigate to cards visualization mode page', async () => {
+		await visualizationModesPage.goto({
+			dataSetLabel,
 		});
 
-		await test.step('Check if cards sections are correct', async () => {
-			await expect(
-				visualizationModesPage.cardsVisualizationModeContainer.locator(
-					'.cards-section-label'
+		await visualizationModesPage.selectTab('Cards');
+
+		await expect(
+			visualizationModesPage.cardsVisualizationModeContainer
+		).toBeVisible();
+	});
+
+	await test.step('Check if cards sections are correct', async () => {
+		await expect(
+			visualizationModesPage.cardsVisualizationModeContainer.locator(
+				'.cards-section-label'
+			)
+		).toHaveText([
+			'Card Element',
+			'Title',
+			'Description',
+			'Image',
+			'Symbol',
+		]);
+	});
+
+	await test.step('Assign a field to title section', async () => {
+		const fieldName = 'fieldName';
+		const sectionLabel = 'Title';
+
+		const container =
+			visualizationModesPage.cardsVisualizationModeContainer;
+
+		await visualizationModesPage.openAssignFieldModal({
+			container,
+			sectionLabel,
+		});
+
+		await visualizationModesPage.selectField({fieldName});
+
+		await saveFromModal({
+			page,
+		});
+
+		const assignedFieldLocator =
+			await visualizationModesPage.getAssignedFieldLocator({
+				container,
+				sectionLabel,
+			});
+
+		await expect(assignedFieldLocator).toHaveText(fieldName);
+	});
+
+	await test.step('Edit field to title section', async () => {
+		const newFieldName = 'rendererType';
+		const oldFieldName = 'fieldName';
+		const sectionLabel = 'Title';
+
+		const container =
+			visualizationModesPage.cardsVisualizationModeContainer;
+
+		await visualizationModesPage.openChangeFieldModal({
+			container,
+			sectionLabel,
+		});
+
+		const oldCheckbox =
+			visualizationModesPage.getFieldCheckboxByLabel(oldFieldName);
+
+		await expect(oldCheckbox).toBeChecked();
+
+		await visualizationModesPage.selectField({fieldName: newFieldName});
+
+		await expect(oldCheckbox).not.toBeChecked();
+
+		await saveFromModal({
+			page,
+		});
+
+		const assignedFieldLocator =
+			await visualizationModesPage.getAssignedFieldLocator({
+				container,
+				sectionLabel,
+			});
+
+		await expect(assignedFieldLocator).toHaveText(newFieldName);
+	});
+});
+
+test('Configure list visualization mode @LPD-10735', async ({
+	page,
+	visualizationModesPage,
+}) => {
+	await test.step('Navigate to list visualization mode page', async () => {
+		await visualizationModesPage.goto({
+			dataSetLabel,
+		});
+
+		await visualizationModesPage.selectTab('List');
+
+		await expect(
+			visualizationModesPage.listVisualizationModeContainer
+		).toBeVisible();
+	});
+
+	await test.step('Check if list sections are correct', async () => {
+		await expect(
+			visualizationModesPage.listVisualizationModeContainer.locator(
+				'.list-section-label'
+			)
+		).toHaveText([
+			'List Element',
+			'Title',
+			'Description',
+			'Image',
+			'Symbol',
+		]);
+	});
+
+	await test.step('Assign a field to title section', async () => {
+		const fieldName = 'fieldName';
+		const sectionLabel = 'Title';
+
+		const container = visualizationModesPage.listVisualizationModeContainer;
+
+		await visualizationModesPage.openAssignFieldModal({
+			container,
+			sectionLabel,
+		});
+
+		await visualizationModesPage.selectField({fieldName});
+
+		await saveFromModal({
+			page,
+		});
+
+		const assignedFieldLocator =
+			await visualizationModesPage.getAssignedFieldLocator({
+				container,
+				sectionLabel,
+			});
+
+		await expect(assignedFieldLocator).toHaveText(fieldName);
+	});
+
+	await test.step('Edit field to title section', async () => {
+		const newFieldName = 'rendererType';
+		const oldFieldName = 'fieldName';
+		const sectionLabel = 'Title';
+
+		const container = visualizationModesPage.listVisualizationModeContainer;
+
+		await visualizationModesPage.openChangeFieldModal({
+			container,
+			sectionLabel,
+		});
+
+		const oldCheckbox =
+			visualizationModesPage.getFieldCheckboxByLabel(oldFieldName);
+
+		await expect(oldCheckbox).toBeChecked();
+
+		await visualizationModesPage.selectField({fieldName: newFieldName});
+
+		await expect(oldCheckbox).not.toBeChecked();
+
+		await saveFromModal({
+			page,
+		});
+
+		const assignedFieldLocator =
+			await visualizationModesPage.getAssignedFieldLocator({
+				container,
+				sectionLabel,
+			});
+
+		await expect(assignedFieldLocator).toHaveText(newFieldName);
+	});
+});
+
+test('Configure table visualization mode @LPD-11049', async ({
+	page,
+	visualizationModesPage,
+}) => {
+	const SAMPLE_SCALAR_FIELD = 'id';
+	const SAMPLE_OBJECT_FIELD = EObjectRelationship.DATA_SET_TABLE_SECTIONS;
+	const SAMPLE_OBJECT_CHILD_FIELD = 'id';
+	const SORTABLE_COLUMN_INDEX = 5;
+
+	await test.step('Navigate to table visualization mode page', async () => {
+		await visualizationModesPage.goto({
+			dataSetLabel,
+		});
+
+		await visualizationModesPage.selectTab('Table');
+
+		await expect(
+			visualizationModesPage.page.getByPlaceholder('Search')
+		).toBeVisible();
+	});
+
+	await test.step('Add fields', async () => {
+		await visualizationModesPage.openAddFieldsModal();
+
+		await visualizationModesPage.selectField({
+			fieldName: SAMPLE_SCALAR_FIELD,
+		});
+
+		await visualizationModesPage.selectField({
+			dataId: `${SAMPLE_OBJECT_FIELD}.*`,
+			fieldName: SAMPLE_OBJECT_FIELD,
+		});
+
+		await visualizationModesPage.selectField({
+			dataId: `${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`,
+			fieldName: SAMPLE_OBJECT_CHILD_FIELD,
+		});
+
+		await saveFromModal({
+			page,
+		});
+	});
+
+	await test.step('Check if field defaults are correct', async () => {
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_SCALAR_FIELD)
+				.locator('td')
+				.nth(SORTABLE_COLUMN_INDEX)
+		).toHaveText('true');
+
+		await expect(
+			visualizationModesPage
+				.getRowByText(`${SAMPLE_OBJECT_FIELD}.*`)
+				.locator('td')
+				.nth(SORTABLE_COLUMN_INDEX)
+		).toHaveText('false');
+
+		await expect(
+			visualizationModesPage
+				.getRowByText(
+					`${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`
 				)
-			).toHaveText([
-				'Card Element',
-				'Title',
-				'Description',
-				'Image',
-				'Symbol',
-			]);
+				.locator('td')
+				.nth(SORTABLE_COLUMN_INDEX)
+		).toHaveText('false');
+	});
+
+	await test.step('Edit a field', async () => {
+		await clickActionInRow({
+			actionName: 'Edit',
+			rowName: SAMPLE_SCALAR_FIELD,
+			visualizationModesPage,
 		});
 
-		await test.step('Assign a field to title section', async () => {
-			const fieldName = 'name';
-			const sectionLabel = 'Title';
+		const sortableInput =
+			visualizationModesPage.page.getByLabel('Sortable');
 
-			const container =
-				visualizationModesPage.cardsVisualizationModeContainer;
+		await expect(sortableInput).toBeInViewport();
+		await expect(sortableInput).toBeEnabled();
+		await expect(sortableInput).toBeChecked();
 
-			await visualizationModesPage.openAssignFieldModal({
-				container,
-				sectionLabel,
-			});
+		await sortableInput.click();
 
-			await visualizationModesPage.selectField({fieldName});
+		await expect(sortableInput).not.toBeChecked();
 
-			await saveFromModal({
-				page,
-			});
-
-			const assignedFieldLocator =
-				await visualizationModesPage.getAssignedFieldLocator({
-					container,
-					sectionLabel,
-				});
-
-			await expect(assignedFieldLocator).toHaveText(fieldName);
+		await saveFromModal({
+			page,
 		});
 
-		await test.step('Edit field to title section', async () => {
-			const newFieldName = 'rendererType';
-			const oldFieldName = 'name';
-			const sectionLabel = 'Title';
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_SCALAR_FIELD)
+				.locator('td')
+				.nth(SORTABLE_COLUMN_INDEX)
+		).toHaveText('false');
+	});
 
-			const container =
-				visualizationModesPage.cardsVisualizationModeContainer;
+	await test.step('Check if object field has disabled sortable option', async () => {
+		await clickActionInRow({
+			actionName: 'Edit',
+			rowName: `${SAMPLE_OBJECT_FIELD}.*`,
+			visualizationModesPage,
+		});
 
-			await visualizationModesPage.openChangeFieldModal({
-				container,
-				sectionLabel,
-			});
+		const sortableLabel =
+			visualizationModesPage.page.getByLabel('Sortable');
 
-			const oldCheckbox =
-				visualizationModesPage.getFieldCheckboxByLabel(oldFieldName);
+		await expect(sortableLabel).toBeInViewport();
 
-			await expect(oldCheckbox).toBeChecked();
+		await expect(sortableLabel).toBeDisabled();
 
-			await visualizationModesPage.selectField({fieldName: newFieldName});
+		await visualizationModesPage.cancelAddFieldsModal();
+	});
+});
 
-			await expect(oldCheckbox).not.toBeChecked();
+test('Add a field and assert its added to the last position in the table and assert fields can be reordered using a keyboard', async ({
+	page,
+	visualizationModesPage,
+}) => {
+	const SAMPLE_FIELD = 'fieldName';
+	const SAMPLE_SCALAR_FIELD = 'id';
+	const SAMPLE_OBJECT_FIELD = EObjectRelationship.DATA_SET_TABLE_SECTIONS;
+	const SAMPLE_OBJECT_CHILD_FIELD = 'id';
 
-			await saveFromModal({
-				page,
-			});
+	await test.step('Navigate to table visualization mode page', async () => {
+		await visualizationModesPage.goto({
+			dataSetLabel,
+		});
 
-			const assignedFieldLocator =
-				await visualizationModesPage.getAssignedFieldLocator({
-					container,
-					sectionLabel,
-				});
+		await visualizationModesPage.selectTab('Table');
 
-			await expect(assignedFieldLocator).toHaveText(newFieldName);
+		await expect(
+			visualizationModesPage.page.getByPlaceholder('Search')
+		).toBeVisible();
+	});
+
+	await test.step('Add fields', async () => {
+		await visualizationModesPage.openAddFieldsModal();
+
+		await visualizationModesPage.selectField({
+			fieldName: SAMPLE_SCALAR_FIELD,
+		});
+
+		await visualizationModesPage.selectField({
+			dataId: `${SAMPLE_OBJECT_FIELD}.*`,
+			fieldName: SAMPLE_OBJECT_FIELD,
+		});
+
+		await visualizationModesPage.selectField({
+			dataId: `${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`,
+			fieldName: SAMPLE_OBJECT_CHILD_FIELD,
+		});
+
+		await saveFromModal({
+			page,
 		});
 	});
 
-	test('Configure list visualization mode @LPD-10735', async ({
-		page,
-		visualizationModesPage,
-	}) => {
-		await test.step('Navigate to list visualization mode page', async () => {
-			await visualizationModesPage.goto({
-				dataSetLabel,
-			});
+	await test.step('Add a new field', async () => {
+		await visualizationModesPage.openAddFieldsModal();
 
-			await visualizationModesPage.selectTab('List');
-
-			await expect(
-				visualizationModesPage.listVisualizationModeContainer
-			).toBeVisible();
+		await visualizationModesPage.selectField({
+			fieldName: SAMPLE_FIELD,
 		});
 
-		await test.step('Check if list sections are correct', async () => {
-			await expect(
-				visualizationModesPage.listVisualizationModeContainer.locator(
-					'.list-section-label'
-				)
-			).toHaveText([
-				'List Element',
-				'Title',
-				'Description',
-				'Image',
-				'Symbol',
-			]);
-		});
-
-		await test.step('Assign a field to title section', async () => {
-			const fieldName = 'name';
-			const sectionLabel = 'Title';
-
-			const container =
-				visualizationModesPage.listVisualizationModeContainer;
-
-			await visualizationModesPage.openAssignFieldModal({
-				container,
-				sectionLabel,
-			});
-
-			await visualizationModesPage.selectField({fieldName});
-
-			await saveFromModal({
-				page,
-			});
-
-			const assignedFieldLocator =
-				await visualizationModesPage.getAssignedFieldLocator({
-					container,
-					sectionLabel,
-				});
-
-			await expect(assignedFieldLocator).toHaveText(fieldName);
-		});
-
-		await test.step('Edit field to title section', async () => {
-			const newFieldName = 'rendererType';
-			const oldFieldName = 'name';
-			const sectionLabel = 'Title';
-
-			const container =
-				visualizationModesPage.listVisualizationModeContainer;
-
-			await visualizationModesPage.openChangeFieldModal({
-				container,
-				sectionLabel,
-			});
-
-			const oldCheckbox =
-				visualizationModesPage.getFieldCheckboxByLabel(oldFieldName);
-
-			await expect(oldCheckbox).toBeChecked();
-
-			await visualizationModesPage.selectField({fieldName: newFieldName});
-
-			await expect(oldCheckbox).not.toBeChecked();
-
-			await saveFromModal({
-				page,
-			});
-
-			const assignedFieldLocator =
-				await visualizationModesPage.getAssignedFieldLocator({
-					container,
-					sectionLabel,
-				});
-
-			await expect(assignedFieldLocator).toHaveText(newFieldName);
+		await saveFromModal({
+			page,
 		});
 	});
 
-	test('Configure table visualization mode @LPD-11049', async ({
-		page,
-		visualizationModesPage,
-	}) => {
-		const SAMPLE_SCALAR_FIELD = 'id';
-		const SAMPLE_OBJECT_FIELD = 'fdsViewFDSFieldRelationship';
-		const SAMPLE_OBJECT_CHILD_FIELD = 'id';
-		const SORTABLE_COLUMN_INDEX = 5;
+	await test.step('Check if field is added to the last position', async () => {
+		const lastTableRow = visualizationModesPage.page.locator(
+			'table.orderable-table > tbody tr:last-child'
+		);
 
-		await test.step('Navigate to table visualization mode page', async () => {
-			await visualizationModesPage.goto({
-				dataSetLabel,
-			});
+		await expect(lastTableRow.locator('td').nth(1)).toHaveText(
+			SAMPLE_FIELD
+		);
 
-			await visualizationModesPage.selectTab('Table');
+		await visualizationModesPage.assertTableFieldRowCount(4);
+	});
 
-			await expect(
-				visualizationModesPage.page.getByPlaceholder('Search')
-			).toBeVisible();
+	await test.step('Focus the last field', async () => {
+		const lastTableRow = visualizationModesPage.page.locator(
+			'table.orderable-table > tbody tr:last-child'
+		);
+
+		await expect(lastTableRow).toBeVisible();
+
+		const firstCell = lastTableRow.locator('td > button').first();
+
+		await expect(firstCell).toBeVisible();
+
+		await firstCell.focus();
+
+		await expect(firstCell).toBeFocused();
+	});
+
+	await test.step('Move the field one place up', async () => {
+		await page.keyboard.press('Enter');
+
+		await page.keyboard.press('ArrowUp');
+
+		await page.keyboard.press('Enter');
+	});
+
+	await test.step('Assert that the field has moved one place up', async () => {
+		const tableRows = visualizationModesPage.page.locator(
+			'table.orderable-table > tbody tr'
+		);
+
+		const tableRowsCount = await tableRows.count();
+
+		expect(tableRowsCount).toEqual(4);
+
+		const expectedTexts = [
+			SAMPLE_SCALAR_FIELD,
+			`${SAMPLE_OBJECT_FIELD}.*`,
+			SAMPLE_FIELD,
+			`${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`,
+		];
+
+		for (let i = 0; i < expectedTexts.length; i++) {
+			const row = tableRows.nth(i);
+
+			await expect(row).toBeVisible();
+
+			const secondColumn = row.locator('td').nth(1);
+
+			await expect(secondColumn).toBeVisible();
+
+			const text = await secondColumn.innerText();
+
+			expect(text).toBe(expectedTexts[i]);
+		}
+	});
+});
+
+test('Configure table visualization mode with array fields @LPD-11769', async ({
+	page,
+	visualizationModesPage,
+}) => {
+	const SAMPLE_COMPLEX_ARRAY_FIELD = 'auditEvents[]*';
+	const SAMPLE_COMPLEX_ARRAY_CHILD_FIELD = 'auditEvents[]creator.name';
+	const SAMPLE_SCALAR_ARRAY_FIELD = 'keywords';
+	const SAMPLE_FULL_COMPLEX_FIELD = 'creator.*';
+	const SAMPLE_COMPLEX_OBJECT_CHILD_FIELD = 'creator.givenName';
+	const SORTABLE_COLUMN_INDEX = 5;
+	const TYPE_COLUMN_INDEX = 3;
+
+	await test.step('Navigate to table visualization mode page', async () => {
+		await visualizationModesPage.goto({
+			dataSetLabel,
 		});
 
-		await test.step('Add fields', async () => {
-			await visualizationModesPage.openAddFieldsModal();
+		await visualizationModesPage.selectTab('Table');
 
-			await visualizationModesPage.selectField({
-				fieldName: SAMPLE_SCALAR_FIELD,
-			});
+		await expect(
+			visualizationModesPage.page.getByPlaceholder('Search')
+		).toBeVisible();
+	});
 
-			await visualizationModesPage.selectField({
-				dataId: `${SAMPLE_OBJECT_FIELD}.*`,
-				fieldName: SAMPLE_OBJECT_FIELD,
-			});
+	await test.step('Add scalar array field', async () => {
+		await visualizationModesPage.openAddFieldsModal();
 
-			await visualizationModesPage.selectField({
-				dataId: `${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`,
-				fieldName: SAMPLE_OBJECT_CHILD_FIELD,
-			});
+		await visualizationModesPage.searchAndSelecteField(
+			SAMPLE_SCALAR_ARRAY_FIELD
+		);
+		await visualizationModesPage.searchAndSelecteField(
+			SAMPLE_COMPLEX_ARRAY_FIELD
+		);
+		await visualizationModesPage.searchAndSelecteField(
+			SAMPLE_COMPLEX_ARRAY_CHILD_FIELD
+		);
+		await visualizationModesPage.searchAndSelecteField(
+			SAMPLE_COMPLEX_OBJECT_CHILD_FIELD
+		);
+		await visualizationModesPage.searchAndSelecteField(
+			SAMPLE_FULL_COMPLEX_FIELD
+		);
 
-			await saveFromModal({
-				page,
-			});
-		});
-
-		await test.step('Check if field defaults are correct', async () => {
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_SCALAR_FIELD)
-					.locator('td')
-					.nth(SORTABLE_COLUMN_INDEX)
-			).toHaveText('true');
-
-			await expect(
-				visualizationModesPage
-					.getRowByText(`${SAMPLE_OBJECT_FIELD}.*`)
-					.locator('td')
-					.nth(SORTABLE_COLUMN_INDEX)
-			).toHaveText('false');
-
-			await expect(
-				visualizationModesPage
-					.getRowByText(
-						`${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`
-					)
-					.locator('td')
-					.nth(SORTABLE_COLUMN_INDEX)
-			).toHaveText('false');
-		});
-
-		await test.step('Edit a field', async () => {
-			await clickActionInRow({
-				actionName: 'Edit',
-				rowName: SAMPLE_SCALAR_FIELD,
-				visualizationModesPage,
-			});
-
-			const sortableInput =
-				visualizationModesPage.page.getByLabel('Sortable');
-
-			await expect(sortableInput).toBeInViewport();
-			await expect(sortableInput).toBeEnabled();
-			await expect(sortableInput).toBeChecked();
-
-			await sortableInput.click();
-
-			await expect(sortableInput).not.toBeChecked();
-
-			await saveFromModal({
-				page,
-			});
-
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_SCALAR_FIELD)
-					.locator('td')
-					.nth(SORTABLE_COLUMN_INDEX)
-			).toHaveText('false');
-		});
-
-		await test.step('Check if object field has disabled sortable option', async () => {
-			await clickActionInRow({
-				actionName: 'Edit',
-				rowName: `${SAMPLE_OBJECT_FIELD}.*`,
-				visualizationModesPage,
-			});
-
-			const sortableLabel =
-				visualizationModesPage.page.getByLabel('Sortable');
-
-			await expect(sortableLabel).toBeInViewport();
-
-			await expect(sortableLabel).toBeDisabled();
-
-			await visualizationModesPage.cancelAddFieldsModal();
+		await saveFromModal({
+			page,
 		});
 	});
 
-	test('Add a field and assert its added to the last position in the table and assert fields can be reordered using a keyboard', async ({
-		page,
-		visualizationModesPage,
-	}) => {
-		const SAMPLE_FIELD = 'name';
-		const SAMPLE_SCALAR_FIELD = 'id';
-		const SAMPLE_OBJECT_FIELD = 'fdsViewFDSFieldRelationship';
-		const SAMPLE_OBJECT_CHILD_FIELD = 'id';
+	await test.step('Check if fields show the correct type', async () => {
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_SCALAR_ARRAY_FIELD)
+				.locator('td')
+				.nth(TYPE_COLUMN_INDEX)
+		).toHaveText('array');
 
-		await test.step('Navigate to table visualization mode page', async () => {
-			await visualizationModesPage.goto({
-				dataSetLabel,
-			});
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_SCALAR_ARRAY_FIELD)
+				.locator('td')
+				.nth(SORTABLE_COLUMN_INDEX)
+		).toHaveText('false');
 
-			await visualizationModesPage.selectTab('Table');
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_COMPLEX_ARRAY_FIELD)
+				.locator('td')
+				.nth(TYPE_COLUMN_INDEX)
+		).toHaveText('array');
 
-			await expect(
-				visualizationModesPage.page.getByPlaceholder('Search')
-			).toBeVisible();
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_COMPLEX_ARRAY_FIELD)
+				.locator('td')
+				.nth(SORTABLE_COLUMN_INDEX)
+		).toHaveText('false');
+
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_COMPLEX_OBJECT_CHILD_FIELD)
+				.locator('td')
+				.nth(TYPE_COLUMN_INDEX)
+		).toHaveText('string');
+
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_FULL_COMPLEX_FIELD)
+				.locator('td')
+				.nth(TYPE_COLUMN_INDEX)
+		).toHaveText('object');
+	});
+});
+
+test('Check cancel in table visualization mode', async ({
+	page,
+	visualizationModesPage,
+}) => {
+	const SAMPLE_SCALAR_FIELD = 'id';
+	const SAMPLE_OBJECT_FIELD = EObjectRelationship.DATA_SET_TABLE_SECTIONS;
+	const LABEL_COLUMN_INDEX = 2;
+
+	await test.step('Navigate to table visualization mode page', async () => {
+		await visualizationModesPage.goto({
+			dataSetLabel,
 		});
 
-		await test.step('Add fields', async () => {
-			await visualizationModesPage.openAddFieldsModal();
+		await visualizationModesPage.selectTab('Table');
 
-			await visualizationModesPage.selectField({
-				fieldName: SAMPLE_SCALAR_FIELD,
-			});
+		await expect(
+			visualizationModesPage.page.getByPlaceholder('Search')
+		).toBeVisible();
+	});
 
-			await visualizationModesPage.selectField({
-				dataId: `${SAMPLE_OBJECT_FIELD}.*`,
-				fieldName: SAMPLE_OBJECT_FIELD,
-			});
+	await test.step('Add one field, but cancel the operation @LPS-185230', async () => {
+		await visualizationModesPage.openAddFieldsModal();
 
-			await visualizationModesPage.selectField({
-				dataId: `${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`,
-				fieldName: SAMPLE_OBJECT_CHILD_FIELD,
-			});
-
-			await saveFromModal({
-				page,
-			});
+		await visualizationModesPage.selectField({
+			fieldName: SAMPLE_SCALAR_FIELD,
 		});
 
-		await test.step('Add a new field', async () => {
-			await visualizationModesPage.openAddFieldsModal();
+		await visualizationModesPage.cancelAddFieldsModal();
 
-			await visualizationModesPage.selectField({
-				fieldName: SAMPLE_FIELD,
-			});
+		await visualizationModesPage.assertTableFieldRowCount(0);
+	});
 
-			await saveFromModal({
-				page,
-			});
+	await test.step('Add one field, save', async () => {
+		await visualizationModesPage.openAddFieldsModal();
+
+		await visualizationModesPage.selectField({
+			fieldName: SAMPLE_SCALAR_FIELD,
 		});
 
-		await test.step('Check if field is added to the last position', async () => {
-			const lastTableRow = visualizationModesPage.page.locator(
-				'table.orderable-table > tbody tr:last-child'
-			);
-
-			await expect(lastTableRow.locator('td').nth(1)).toHaveText(
-				SAMPLE_FIELD
-			);
-
-			await visualizationModesPage.assertTableFieldRowCount(4);
-		});
-
-		await test.step('Focus the last field', async () => {
-			const lastTableRow = visualizationModesPage.page.locator(
-				'table.orderable-table > tbody tr:last-child'
-			);
-
-			await expect(lastTableRow).toBeVisible();
-
-			const firstCell = lastTableRow.locator('td > button').first();
-
-			await expect(firstCell).toBeVisible();
-
-			await firstCell.focus();
-
-			await expect(firstCell).toBeFocused();
-		});
-
-		await test.step('Move the field one place up', async () => {
-			await page.keyboard.press('Enter');
-
-			await page.keyboard.press('ArrowUp');
-
-			await page.keyboard.press('Enter');
-		});
-
-		await test.step('Assert that the field has moved one place up', async () => {
-			const tableRows = visualizationModesPage.page.locator(
-				'table.orderable-table > tbody tr'
-			);
-
-			const tableRowsCount = await tableRows.count();
-
-			expect(tableRowsCount).toEqual(4);
-
-			const expectedTexts = [
-				SAMPLE_SCALAR_FIELD,
-				`${SAMPLE_OBJECT_FIELD}.*`,
-				SAMPLE_FIELD,
-				`${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`,
-			];
-
-			for (let i = 0; i < expectedTexts.length; i++) {
-				const row = tableRows.nth(i);
-
-				await expect(row).toBeVisible();
-
-				const secondColumn = row.locator('td').nth(1);
-
-				await expect(secondColumn).toBeVisible();
-
-				const text = await secondColumn.innerText();
-
-				expect(text).toBe(expectedTexts[i]);
-			}
+		await saveFromModal({
+			page,
 		});
 	});
 
-	test('Configure table visualization mode with array fields @LPD-11769', async ({
-		page,
-		visualizationModesPage,
-	}) => {
-		const SAMPLE_COMPLEX_ARRAY_FIELD = 'auditEvents[]*';
-		const SAMPLE_COMPLEX_ARRAY_CHILD_FIELD = 'auditEvents[]creator.name';
-		const SAMPLE_SCALAR_ARRAY_FIELD = 'keywords';
-		const SAMPLE_FULL_COMPLEX_FIELD = 'creator.*';
-		const SAMPLE_COMPLEX_OBJECT_CHILD_FIELD = 'creator.givenName';
-		const SORTABLE_COLUMN_INDEX = 5;
-		const TYPE_COLUMN_INDEX = 3;
+	await test.step('Unselect selected field. Select another. Cancel @LPS-185230', async () => {
+		await visualizationModesPage.openAddFieldsModal();
 
-		await test.step('Navigate to table visualization mode page', async () => {
-			await visualizationModesPage.goto({
-				dataSetLabel,
-			});
-
-			await visualizationModesPage.selectTab('Table');
-
-			await expect(
-				visualizationModesPage.page.getByPlaceholder('Search')
-			).toBeVisible();
+		await visualizationModesPage.unSelectField({
+			fieldName: SAMPLE_SCALAR_FIELD,
 		});
 
-		await test.step('Add scalar array field', async () => {
-			await visualizationModesPage.openAddFieldsModal();
-
-			await visualizationModesPage.searchAndSelecteField(
-				SAMPLE_SCALAR_ARRAY_FIELD
-			);
-			await visualizationModesPage.searchAndSelecteField(
-				SAMPLE_COMPLEX_ARRAY_FIELD
-			);
-			await visualizationModesPage.searchAndSelecteField(
-				SAMPLE_COMPLEX_ARRAY_CHILD_FIELD
-			);
-			await visualizationModesPage.searchAndSelecteField(
-				SAMPLE_COMPLEX_OBJECT_CHILD_FIELD
-			);
-			await visualizationModesPage.searchAndSelecteField(
-				SAMPLE_FULL_COMPLEX_FIELD
-			);
-
-			await saveFromModal({
-				page,
-			});
+		await visualizationModesPage.selectField({
+			dataId: `${SAMPLE_OBJECT_FIELD}.*`,
+			fieldName: SAMPLE_OBJECT_FIELD,
 		});
 
-		await test.step('Check if fields show the correct type', async () => {
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_SCALAR_ARRAY_FIELD)
-					.locator('td')
-					.nth(TYPE_COLUMN_INDEX)
-			).toHaveText('array');
-
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_SCALAR_ARRAY_FIELD)
-					.locator('td')
-					.nth(SORTABLE_COLUMN_INDEX)
-			).toHaveText('false');
-
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_COMPLEX_ARRAY_FIELD)
-					.locator('td')
-					.nth(TYPE_COLUMN_INDEX)
-			).toHaveText('array');
-
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_COMPLEX_ARRAY_FIELD)
-					.locator('td')
-					.nth(SORTABLE_COLUMN_INDEX)
-			).toHaveText('false');
-
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_COMPLEX_OBJECT_CHILD_FIELD)
-					.locator('td')
-					.nth(TYPE_COLUMN_INDEX)
-			).toHaveText('string');
-
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_FULL_COMPLEX_FIELD)
-					.locator('td')
-					.nth(TYPE_COLUMN_INDEX)
-			).toHaveText('object');
-		});
+		await visualizationModesPage.cancelAddFieldsModal();
 	});
 
-	test('Check cancel in table visualization mode', async ({
-		page,
-		visualizationModesPage,
-	}) => {
-		const SAMPLE_SCALAR_FIELD = 'id';
-		const SAMPLE_OBJECT_FIELD = 'fdsViewFDSFieldRelationship';
-		const LABEL_COLUMN_INDEX = 2;
+	await test.step('Check there is one field and is the one just added', async () => {
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_SCALAR_FIELD)
+				.locator('td')
+				.nth(LABEL_COLUMN_INDEX)
+		).toHaveText(SAMPLE_SCALAR_FIELD);
 
-		await test.step('Navigate to table visualization mode page', async () => {
-			await visualizationModesPage.goto({
-				dataSetLabel,
-			});
+		await visualizationModesPage.assertTableFieldRowCount(1);
+	});
 
-			await visualizationModesPage.selectTab('Table');
-
-			await expect(
-				visualizationModesPage.page.getByPlaceholder('Search')
-			).toBeVisible();
+	await test.step('Edit a field, change its label, cancel @LPS-176051 @LPS-178736 @LPS-179151', async () => {
+		await clickActionInRow({
+			actionName: 'Edit',
+			rowName: SAMPLE_SCALAR_FIELD,
+			visualizationModesPage,
 		});
 
-		await test.step('Add one field, but cancel the operation @LPS-185230', async () => {
-			await visualizationModesPage.openAddFieldsModal();
+		const labelInput = visualizationModesPage.page.getByLabel('Label');
 
-			await visualizationModesPage.selectField({
-				fieldName: SAMPLE_SCALAR_FIELD,
-			});
+		await expect(labelInput).toBeInViewport();
 
-			await visualizationModesPage.cancelAddFieldsModal();
+		await expect(labelInput).toBeEnabled();
 
-			await visualizationModesPage.assertTableFieldRowCount(0);
+		await labelInput.fill('New label for field');
+
+		await visualizationModesPage.cancelAddFieldsModal();
+	});
+
+	await test.step('Check there is one field and is the one just added', async () => {
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_SCALAR_FIELD)
+				.locator('td')
+				.nth(LABEL_COLUMN_INDEX)
+		).toHaveText(SAMPLE_SCALAR_FIELD);
+
+		await visualizationModesPage.assertTableFieldRowCount(1);
+	});
+
+	await test.step('Delete a field, cancel @LPS-185500', async () => {
+		await clickActionInRow({
+			actionName: 'Delete',
+			rowName: SAMPLE_SCALAR_FIELD,
+			visualizationModesPage,
 		});
 
-		await test.step('Add one field, save', async () => {
-			await visualizationModesPage.openAddFieldsModal();
+		await visualizationModesPage.cancelAddFieldsModal();
+	});
 
-			await visualizationModesPage.selectField({
-				fieldName: SAMPLE_SCALAR_FIELD,
-			});
+	await test.step('Check there is one field and is the one just added', async () => {
+		await expect(
+			visualizationModesPage
+				.getRowByText(SAMPLE_SCALAR_FIELD)
+				.locator('td')
+				.nth(LABEL_COLUMN_INDEX)
+		).toHaveText(SAMPLE_SCALAR_FIELD);
 
-			await saveFromModal({
-				page,
-			});
-		});
-
-		await test.step('Unselect selected field. Select another. Cancel @LPS-185230', async () => {
-			await visualizationModesPage.openAddFieldsModal();
-
-			await visualizationModesPage.unSelectField({
-				fieldName: SAMPLE_SCALAR_FIELD,
-			});
-
-			await visualizationModesPage.selectField({
-				dataId: `${SAMPLE_OBJECT_FIELD}.*`,
-				fieldName: SAMPLE_OBJECT_FIELD,
-			});
-
-			await visualizationModesPage.cancelAddFieldsModal();
-		});
-
-		await test.step('Check there is one field and is the one just added', async () => {
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_SCALAR_FIELD)
-					.locator('td')
-					.nth(LABEL_COLUMN_INDEX)
-			).toHaveText(SAMPLE_SCALAR_FIELD);
-
-			await visualizationModesPage.assertTableFieldRowCount(1);
-		});
-
-		await test.step('Edit a field, change its label, cancel @LPS-176051 @LPS-178736 @LPS-179151', async () => {
-			await clickActionInRow({
-				actionName: 'Edit',
-				rowName: SAMPLE_SCALAR_FIELD,
-				visualizationModesPage,
-			});
-
-			const labelInput = visualizationModesPage.page.getByLabel('Label');
-
-			await expect(labelInput).toBeInViewport();
-
-			await expect(labelInput).toBeEnabled();
-
-			await labelInput.fill('New label for field');
-
-			await visualizationModesPage.cancelAddFieldsModal();
-		});
-
-		await test.step('Check there is one field and is the one just added', async () => {
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_SCALAR_FIELD)
-					.locator('td')
-					.nth(LABEL_COLUMN_INDEX)
-			).toHaveText(SAMPLE_SCALAR_FIELD);
-
-			await visualizationModesPage.assertTableFieldRowCount(1);
-		});
-
-		await test.step('Delete a field, cancel @LPS-185500', async () => {
-			await clickActionInRow({
-				actionName: 'Delete',
-				rowName: SAMPLE_SCALAR_FIELD,
-				visualizationModesPage,
-			});
-
-			await visualizationModesPage.cancelAddFieldsModal();
-		});
-
-		await test.step('Check there is one field and is the one just added', async () => {
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_SCALAR_FIELD)
-					.locator('td')
-					.nth(LABEL_COLUMN_INDEX)
-			).toHaveText(SAMPLE_SCALAR_FIELD);
-
-			await visualizationModesPage.assertTableFieldRowCount(1);
-		});
+		await visualizationModesPage.assertTableFieldRowCount(1);
 	});
 });

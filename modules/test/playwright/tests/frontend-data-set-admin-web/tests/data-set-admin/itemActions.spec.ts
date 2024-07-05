@@ -9,7 +9,7 @@ import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {liferayConfig} from '../../../../liferay.config';
 import getRandomString from '../../../../utils/getRandomString';
-import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
+import {dataSetAdminApiHelpersTest} from '../../fixtures/dataSetAdminApiHelpersTest';
 import {actionsPageTest} from './fixtures/actionsPageTest';
 import {dataSetManagerSetupTest} from './fixtures/dataSetManagerSetupTest';
 
@@ -17,7 +17,7 @@ const LINK_ITEM_ACTION_NAME = 'Link item action';
 
 export const test = mergeTests(
 	actionsPageTest,
-	dataSetManagerApiHelpersTest,
+	dataSetAdminApiHelpersTest,
 	featureFlagsTest({
 		'LPS-164563': true,
 		'LPS-178052': true,
@@ -29,12 +29,12 @@ export const test = mergeTests(
 let dataSetERC: string;
 let dataSetLabel: string;
 
-test.beforeEach(async ({actionsPage, dataSetManagerApiHelpers}) => {
+test.beforeEach(async ({actionsPage, dataSetAdminApiHelpers}) => {
 	dataSetERC = getRandomString();
 	dataSetLabel = getRandomString();
 
 	await test.step('Create data set', async () => {
-		await dataSetManagerApiHelpers.createDataSet({
+		await dataSetAdminApiHelpers.createDataSet({
 			erc: dataSetERC,
 			label: dataSetLabel,
 		});
@@ -54,43 +54,38 @@ test.beforeEach(async ({actionsPage, dataSetManagerApiHelpers}) => {
 	});
 });
 
-test.afterEach(async ({dataSetManagerApiHelpers}) => {
-	await dataSetManagerApiHelpers.deleteDataSet({erc: dataSetERC});
+test.afterEach(async ({dataSetAdminApiHelpers}) => {
+	await dataSetAdminApiHelpers.deleteDataSet({erc: dataSetERC});
 });
 
-test.describe('Item Actions in Data Set Manager', () => {
-	test('There is a message if there are no Item Actions', async ({
-		actionsPage,
-	}) => {
-		await test.step('Assert no Item Actions are created', async () => {
-			await expect(actionsPage.noActionsWereCreatedMessage).toContainText(
-				'No actions were created.'
-			);
+test('There is a message if there are no Item Actions', async ({
+	actionsPage,
+}) => {
+	await test.step('Assert no Item Actions are created', async () => {
+		await expect(actionsPage.noActionsWereCreatedMessage).toContainText(
+			'No actions were created.'
+		);
+	});
+});
+
+test('Can create an Item Action of type Link', async ({actionsPage, page}) => {
+	await test.step('Create an item action', async () => {
+		await actionsPage.createItemAction({
+			icon: 'arrow-right-full',
+			name: LINK_ITEM_ACTION_NAME,
+			type: 'link',
+			url: liferayConfig.environment.baseUrl,
 		});
 	});
 
-	test('Can create an Item Action of type Link', async ({
-		actionsPage,
-		page,
-	}) => {
-		await test.step('Create an item action', async () => {
-			await actionsPage.createItemAction({
-				icon: 'arrow-right-full',
+	await test.step('Check that the item action is in the list', async () => {
+		await expect(actionsPage.itemActionsTab).toBeInViewport();
+
+		await expect(
+			page.getByRole('cell', {
+				exact: true,
 				name: LINK_ITEM_ACTION_NAME,
-				type: 'link',
-				url: liferayConfig.environment.baseUrl,
-			});
-		});
-
-		await test.step('Check that the item action is in the list', async () => {
-			await expect(actionsPage.itemActionsTab).toBeInViewport();
-
-			await expect(
-				page.getByRole('cell', {
-					exact: true,
-					name: LINK_ITEM_ACTION_NAME,
-				})
-			).toBeVisible();
-		});
+			})
+		).toBeVisible();
 	});
 });

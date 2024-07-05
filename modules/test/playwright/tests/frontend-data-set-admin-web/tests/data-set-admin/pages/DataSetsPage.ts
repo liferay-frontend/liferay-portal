@@ -7,7 +7,7 @@ import {Locator, Page} from '@playwright/test';
 
 import {ApiHelpers} from '../../../../../helpers/ApiHelpers';
 import {ApplicationsMenuPage} from '../../../../../pages/product-navigation-applications-menu/ApplicationsMenuPage';
-import {DEFAULT_LABEL} from '../../../utils/constants';
+import {DEFAULT_LABEL, ERESTApplication} from '../../../utils/constants';
 
 export class DataSetsPage {
 	readonly apiHelpers: ApiHelpers;
@@ -40,15 +40,15 @@ export class DataSetsPage {
 			nameInput: page.getByLabel('NameRequired'),
 			restApplicationField: page.getByLabel('REST ApplicationRequired'),
 			restApplicationOptions: page
-				.locator('.fds-entries-dropdown-menu')
+				.locator('.rest-selection-dropdown-menu')
 				.first(),
 			restEndpointField: page.getByLabel('REST EndpointRequired'),
 			restEndpointOptions: page
-				.locator('.fds-entries-dropdown-menu')
+				.locator('.rest-selection-dropdown-menu')
 				.locator('nth=2'),
 			restSchemaField: page.getByLabel('REST SchemaRequired'),
 			restSchemaOptions: page
-				.locator('.fds-entries-dropdown-menu')
+				.locator('.rest-selection-dropdown-menu')
 				.locator('nth=1'),
 			saveButton: page.getByRole('button', {name: 'Save'}),
 		};
@@ -58,9 +58,9 @@ export class DataSetsPage {
 
 	async createDataSet({
 		name = DEFAULT_LABEL.DATA_SET,
-		restApplication = '/data-set-manager/table-sections',
+		restApplication = ERESTApplication.TABLE_SECTIONS,
 		restEndpoint = '/',
-		restSchema = 'FDSField',
+		restSchema = 'DataSetTableSection',
 	}: {
 		name?: string;
 		restApplication?: string;
@@ -99,9 +99,9 @@ export class DataSetsPage {
 			.click();
 		await this.newDataSetModal.restEndpointField.click();
 
-		await this.newDataSetModal.saveButton.click();
-
 		await this.newDataSetModal.saveButton.isEnabled();
+
+		await this.newDataSetModal.saveButton.click();
 
 		await this.newDataSetModal.heading.isHidden();
 	}
@@ -121,7 +121,7 @@ export class DataSetsPage {
 	async deleteDataSet(name = DEFAULT_LABEL.DATA_SET) {
 		await this.goto();
 
-		const datasetTestRow = await this.page
+		const datasetTestRow = this.page
 			.locator('.data-set-content-wrapper .dnd-tbody .dnd-tr')
 			.filter({hasText: name});
 
@@ -132,7 +132,7 @@ export class DataSetsPage {
 
 		await this.page.getByRole('menuitem', {name: 'Delete'}).click();
 
-		const deleteModal = await this.page.getByRole('dialog');
+		const deleteModal = this.page.getByRole('dialog');
 
 		await deleteModal.getByRole('button', {name: 'Delete'}).click();
 	}

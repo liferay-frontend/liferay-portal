@@ -9,46 +9,46 @@ import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedLayoutTest} from '../../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
-import {fdsFragmentPageTest} from './fixtures/fdsFragmentPageTest';
+import {dataSetAdminApiHelpersTest} from '../../fixtures/dataSetAdminApiHelpersTest';
+import {dataSetFragmentPageTest} from './fixtures/dataSetFragmentPageTest';
 
 export const test = mergeTests(
-	dataSetManagerApiHelpersTest,
+	dataSetAdminApiHelpersTest,
 	featureFlagsTest({
 		'LPD-19465': true,
 		'LPS-178052': true,
 	}),
 	isolatedLayoutTest({publish: false}),
 	loginTest(),
-	fdsFragmentPageTest
+	dataSetFragmentPageTest
 );
 
 let dataSetERC: string;
 let dataSetLabel: string;
 
-test.beforeEach(async ({dataSetManagerApiHelpers}) => {
+test.beforeEach(async ({dataSetAdminApiHelpers}) => {
 	dataSetERC = getRandomString();
 	dataSetLabel = getRandomString();
 
-	await dataSetManagerApiHelpers.createDataSet({
+	await dataSetAdminApiHelpers.createDataSet({
 		erc: dataSetERC,
 		label: dataSetLabel,
 	});
 });
 
-test.afterEach(async ({dataSetManagerApiHelpers}) => {
-	await dataSetManagerApiHelpers.deleteDataSet({erc: dataSetERC});
+test.afterEach(async ({dataSetAdminApiHelpers}) => {
+	await dataSetAdminApiHelpers.deleteDataSet({erc: dataSetERC});
 });
 
 test.describe('Sorting Dropdown in Data Set Fragment', () => {
 	test('When sorting is configured with at least 1 sort, the dropdown is displayed in the fragment @LPD-19503', async ({
-		dataSetManagerApiHelpers,
-		fdsFragmentPage,
+		dataSetAdminApiHelpers,
+		dataSetFragmentPage,
 		layout,
 		page,
 	}) => {
 		await test.step('Create sorting', async () => {
-			await dataSetManagerApiHelpers.createDataSetSort({
+			await dataSetAdminApiHelpers.createDataSetSort({
 				dataSetERC,
 				defaultValue: true,
 				fieldName: 'id',
@@ -56,36 +56,36 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 				orderType: 'asc',
 			});
 
-			await dataSetManagerApiHelpers.createDataSetSort({
+			await dataSetAdminApiHelpers.createDataSetSort({
 				dataSetERC,
 				defaultValue: false,
-				fieldName: 'name',
-				label_i18n: {en_US: 'Name'},
+				fieldName: 'fieldName',
+				label_i18n: {en_US: 'Field Name'},
 			});
 		});
 
 		await test.step('Add fields, so data is displayed', async () => {
-			await dataSetManagerApiHelpers.createDataSetField({
+			await dataSetAdminApiHelpers.createDataSetTableSection({
 				dataSetERC,
+				fieldName: 'id',
 				label_i18n: {
 					en_US: 'ID',
 				},
-				name: 'id',
 				sortable: true,
 				type: 'string',
 			});
 
-			await dataSetManagerApiHelpers.createDataSetField({
+			await dataSetAdminApiHelpers.createDataSetTableSection({
 				dataSetERC,
-				label_i18n: {en_US: 'Name'},
-				name: 'name',
+				fieldName: 'fieldName',
+				label_i18n: {en_US: 'Field Name'},
 				sortable: true,
 				type: 'string',
 			});
 		});
 
 		await test.step('Configure Data Set fragment', async () => {
-			await fdsFragmentPage.configureDataSetFragment({
+			await dataSetFragmentPage.configureDataSetFragment({
 				dataSetLabel,
 				layout,
 			});
@@ -98,11 +98,11 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 		});
 
 		await test.step('Check that default sorting is applied', async () => {
-			const firstIDText = await fdsFragmentPage.fdsTableWrapper
+			const firstIDText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:first-child .dnd-td:first-child')
 				.textContent();
 
-			const lastIDText = await fdsFragmentPage.fdsTableWrapper
+			const lastIDText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:last-child .dnd-td:first-child')
 				.textContent();
 
@@ -116,7 +116,7 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 				page.getByRole('menuitem', {name: 'ID'})
 			).toBeVisible();
 			await expect(
-				page.getByRole('menuitem', {name: 'Name'})
+				page.getByRole('menuitem', {name: 'Field Name'})
 			).toBeVisible();
 		});
 
@@ -125,11 +125,11 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 		});
 
 		await test.step('Check that the first ID is greater than the last ID in the table', async () => {
-			const firstIDText = await fdsFragmentPage.fdsTableWrapper
+			const firstIDText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:first-child .dnd-td:first-child')
 				.textContent();
 
-			const lastIDText = await fdsFragmentPage.fdsTableWrapper
+			const lastIDText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:last-child .dnd-td:first-child')
 				.textContent();
 
@@ -138,13 +138,13 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 
 		await test.step('Check that a different sort "Name" can be used', async () => {
 			await page.getByRole('button', {name: 'Order'}).click();
-			await page.getByRole('menuitem', {name: 'Name'}).click();
+			await page.getByRole('menuitem', {name: 'Field Name'}).click();
 
-			const firstNameText = await fdsFragmentPage.fdsTableWrapper
+			const firstNameText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:first-child .dnd-td:nth-child(2)')
 				.textContent();
 
-			const lastNameText = await fdsFragmentPage.fdsTableWrapper
+			const lastNameText = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:last-child .dnd-td:nth-child(2)')
 				.textContent();
 
@@ -153,11 +153,14 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 			await page.getByRole('button', {name: 'Order'}).click();
 			await page.getByRole('menuitem', {name: 'Ascending'}).click();
 
-			const firstNameTextAscending = await fdsFragmentPage.fdsTableWrapper
-				.locator('.dnd-tbody .dnd-tr:first-child .dnd-td:nth-child(2)')
-				.textContent();
+			const firstNameTextAscending =
+				await dataSetFragmentPage.tableWrapper
+					.locator(
+						'.dnd-tbody .dnd-tr:first-child .dnd-td:nth-child(2)'
+					)
+					.textContent();
 
-			const lastNameTextAscending = await fdsFragmentPage.fdsTableWrapper
+			const lastNameTextAscending = await dataSetFragmentPage.tableWrapper
 				.locator('.dnd-tbody .dnd-tr:last-child .dnd-td:nth-child(2)')
 				.textContent();
 

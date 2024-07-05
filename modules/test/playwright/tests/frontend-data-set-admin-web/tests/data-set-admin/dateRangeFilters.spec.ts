@@ -8,12 +8,12 @@ import {expect, mergeTests} from '@playwright/test';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
+import {dataSetAdminApiHelpersTest} from '../../fixtures/dataSetAdminApiHelpersTest';
 import {dataSetsPageTest} from './fixtures/dataSetsPageTest';
 import {filtersPageTest} from './fixtures/filtersPageTest';
 
 export const test = mergeTests(
-	dataSetManagerApiHelpersTest,
+	dataSetAdminApiHelpersTest,
 	dataSetsPageTest,
 	featureFlagsTest({
 		'LPS-178052': true,
@@ -28,12 +28,12 @@ test.describe('Date range filter creation, edition and cancel', () => {
 	const DATE_FIELD_NAME = 'dateCreated';
 	const NAME_COLUMN_INDEX = 1;
 
-	test.beforeEach(async ({dataSetManagerApiHelpers, filtersPage}) => {
+	test.beforeEach(async ({dataSetAdminApiHelpers, filtersPage}) => {
 		dataSetERC = getRandomString();
 		dataSetLabel = getRandomString();
 
 		await test.step('Create a data set', async () => {
-			await dataSetManagerApiHelpers.createDataSet({
+			await dataSetAdminApiHelpers.createDataSet({
 				erc: dataSetERC,
 				label: dataSetLabel,
 			});
@@ -46,8 +46,8 @@ test.describe('Date range filter creation, edition and cancel', () => {
 		});
 	});
 
-	test.afterEach(async ({dataSetManagerApiHelpers}) => {
-		await dataSetManagerApiHelpers.deleteDataSet({erc: dataSetERC});
+	test.afterEach(async ({dataSetAdminApiHelpers}) => {
+		await dataSetAdminApiHelpers.deleteDataSet({erc: dataSetERC});
 	});
 
 	test('When creating a new filter in DSM, date-time field is available for selection @LPD-10754', async ({
@@ -228,14 +228,14 @@ test.describe('Date range filter creation, edition and cancel', () => {
 });
 
 test('No date filters can be created if schema has no date fields', async ({
-	dataSetManagerApiHelpers,
+	dataSetAdminApiHelpers,
 	filtersPage,
 }) => {
 	const dataSetERC = getRandomString();
 	const dataSetLabel = 'No date dataset';
 
 	await test.step('Create Data Set with no date fields', async () => {
-		await dataSetManagerApiHelpers.createDataSet({
+		await dataSetAdminApiHelpers.createDataSet({
 			erc: dataSetERC,
 			label: dataSetLabel,
 			restApplication: '/headless-delivery/v1.0',
@@ -266,7 +266,7 @@ test('No date filters can be created if schema has no date fields', async ({
 
 		await filtersPage.newDateRangeFilterModal.closeButton.click();
 
-		await dataSetManagerApiHelpers.deleteDataSet({
+		await dataSetAdminApiHelpers.deleteDataSet({
 			erc: dataSetERC,
 		});
 	});

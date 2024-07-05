@@ -8,12 +8,13 @@ import {expect, mergeTests} from '@playwright/test';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
+import {dataSetAdminApiHelpersTest} from '../../fixtures/dataSetAdminApiHelpersTest';
+import {ERESTApplication} from '../../utils/constants';
 import {dataSetManagerSetupTest} from './fixtures/dataSetManagerSetupTest';
 import {dataSetsPageTest} from './fixtures/dataSetsPageTest';
 
 export const test = mergeTests(
-	dataSetManagerApiHelpersTest,
+	dataSetAdminApiHelpersTest,
 	dataSetsPageTest,
 	featureFlagsTest({
 		'LPS-164563': true,
@@ -31,9 +32,9 @@ const blogPostsDataSetConfig = {
 
 const tableSectionsDataSetConfig = {
 	name: getRandomString(),
-	restApplication: '/data-set-manager/table-sections',
+	restApplication: ERESTApplication.TABLE_SECTIONS,
 	restEndpoint: '/',
-	restSchema: 'FDSField',
+	restSchema: 'DataSetTableSection',
 };
 
 async function assertTableActionLabels(page) {
@@ -148,14 +149,14 @@ test('Create parameterized data set via UI', async ({dataSetsPage, page}) => {
 });
 
 test('Create data set via API', async ({
-	dataSetManagerApiHelpers,
+	dataSetAdminApiHelpers,
 	dataSetsPage,
 	page,
 }) => {
 	const DEFAULT_DATA_SET_ERC = getRandomString();
 
 	await test.step('Create Data Set', async () => {
-		await dataSetManagerApiHelpers.createDataSet({
+		await dataSetAdminApiHelpers.createDataSet({
 			...tableSectionsDataSetConfig,
 			erc: DEFAULT_DATA_SET_ERC,
 			label: tableSectionsDataSetConfig.name,
@@ -173,14 +174,14 @@ test('Create data set via API', async ({
 	await assertTableActionLabels(page);
 
 	await test.step('Delete Data Set', async () => {
-		await dataSetManagerApiHelpers.deleteDataSet({
+		await dataSetAdminApiHelpers.deleteDataSet({
 			erc: DEFAULT_DATA_SET_ERC,
 		});
 	});
 });
 
 test('Can paginate created Data Sets', async ({
-	dataSetManagerApiHelpers,
+	dataSetAdminApiHelpers,
 	dataSetsPage,
 	page,
 }) => {
@@ -190,7 +191,7 @@ test('Can paginate created Data Sets', async ({
 
 	await test.step('Create collection of Data Sets', async () => {
 		for (const DATA_SET_ERC of dataSetERCs) {
-			await dataSetManagerApiHelpers.createDataSet({
+			await dataSetAdminApiHelpers.createDataSet({
 				...tableSectionsDataSetConfig,
 				erc: DATA_SET_ERC,
 				label: tableSectionsDataSetConfig.name,
@@ -264,7 +265,7 @@ test('Can paginate created Data Sets', async ({
 
 	await test.step('Delete Data Set collection', async () => {
 		for (const DATA_SET_ERC of dataSetERCs) {
-			await dataSetManagerApiHelpers.deleteDataSet({
+			await dataSetAdminApiHelpers.deleteDataSet({
 				erc: DATA_SET_ERC,
 			});
 		}

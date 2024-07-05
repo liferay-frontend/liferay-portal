@@ -8,13 +8,13 @@ import {expect, mergeTests} from '@playwright/test';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
+import {dataSetAdminApiHelpersTest} from '../../fixtures/dataSetAdminApiHelpersTest';
 import saveFromModal from '../../utils/saveFromModal';
 import {dataSetsPageTest} from './fixtures/dataSetsPageTest';
 import {sortingPageTest} from './fixtures/sortingPageTest';
 
 export const test = mergeTests(
-	dataSetManagerApiHelpersTest,
+	dataSetAdminApiHelpersTest,
 	dataSetsPageTest,
 	featureFlagsTest({
 		'LPS-164563': true,
@@ -27,18 +27,18 @@ export const test = mergeTests(
 let dataSetERC: string;
 let dataSetLabel: string;
 
-test.beforeEach(async ({dataSetManagerApiHelpers}) => {
+test.beforeEach(async ({dataSetAdminApiHelpers}) => {
 	dataSetERC = getRandomString();
 	dataSetLabel = getRandomString();
 
-	await dataSetManagerApiHelpers.createDataSet({
+	await dataSetAdminApiHelpers.createDataSet({
 		erc: dataSetERC,
 		label: dataSetLabel,
 	});
 });
 
-test.afterEach(async ({dataSetManagerApiHelpers}) => {
-	await dataSetManagerApiHelpers.deleteDataSet({erc: dataSetERC});
+test.afterEach(async ({dataSetAdminApiHelpers}) => {
+	await dataSetAdminApiHelpers.deleteDataSet({erc: dataSetERC});
 });
 
 test.describe('Sorting in Data Set Manager', () => {
@@ -148,7 +148,7 @@ test.describe('Sorting in Data Set Manager', () => {
 });
 
 export const applicationPageTest = mergeTests(
-	dataSetManagerApiHelpersTest,
+	dataSetAdminApiHelpersTest,
 	dataSetsPageTest,
 	featureFlagsTest({
 		'LPS-164563': true,

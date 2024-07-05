@@ -9,16 +9,16 @@ import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedLayoutTest} from '../../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
-import {fdsFragmentPageTest} from './fixtures/fdsFragmentPageTest';
+import {dataSetAdminApiHelpersTest} from '../../fixtures/dataSetAdminApiHelpersTest';
+import {dataSetFragmentPageTest} from './fixtures/dataSetFragmentPageTest';
 
 export const test = mergeTests(
-	dataSetManagerApiHelpersTest,
+	dataSetAdminApiHelpersTest,
 	featureFlagsTest({
 		'LPS-178052': true,
 	}),
 	loginTest(),
-	fdsFragmentPageTest,
+	dataSetFragmentPageTest,
 	isolatedLayoutTest({publish: false})
 );
 
@@ -26,54 +26,54 @@ let dataSetERC: string;
 
 const dataSetLabel: string = getRandomString();
 
-test.beforeEach(async ({dataSetManagerApiHelpers}) => {
+test.beforeEach(async ({dataSetAdminApiHelpers}) => {
 	dataSetERC = getRandomString();
 
-	await dataSetManagerApiHelpers.createDataSet({
+	await dataSetAdminApiHelpers.createDataSet({
 		erc: dataSetERC,
 		label: dataSetLabel,
 	});
 });
 
-test.afterEach(async ({dataSetManagerApiHelpers}) => {
-	await dataSetManagerApiHelpers.deleteDataSet({
+test.afterEach(async ({dataSetAdminApiHelpers}) => {
+	await dataSetAdminApiHelpers.deleteDataSet({
 		erc: dataSetERC,
 	});
 });
 
 test.describe('Visualization Modes in Data Set fragment', () => {
 	test('Show mapped fields in the fragment', async ({
-		dataSetManagerApiHelpers,
-		fdsFragmentPage,
+		dataSetAdminApiHelpers,
+		dataSetFragmentPage,
 		layout,
 		page,
 	}) => {
 		const SAMPLE_SCALAR_FIELD = 'id';
-		const SAMPLE_OBJECT_FIELD = 'fdsViewFDSFieldRelationship';
+		const SAMPLE_OBJECT_FIELD = 'dataSetTableSections';
 		const SAMPLE_OBJECT_CHILD_FIELD = 'label';
 
 		await test.step('Create table fields', async () => {
-			await dataSetManagerApiHelpers.createDataSetField({
+			await dataSetAdminApiHelpers.createDataSetTableSection({
 				dataSetERC,
+				fieldName: `${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`,
 				label_i18n: {en_US: 'Label'},
-				name: `${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`,
 				type: 'string',
 			});
-			await dataSetManagerApiHelpers.createDataSetField({
+			await dataSetAdminApiHelpers.createDataSetTableSection({
 				dataSetERC,
+				fieldName: `${SAMPLE_SCALAR_FIELD}`,
 				label_i18n: {en_US: 'Id'},
-				name: `${SAMPLE_SCALAR_FIELD}`,
 				type: 'string',
 			});
 		});
 
 		await test.step('Create cards section fields', async () => {
-			await dataSetManagerApiHelpers.createDataSetCardsSection({
+			await dataSetAdminApiHelpers.createDataSetCardsSection({
 				dataSetERC,
 				fieldName: `${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`,
 				name: 'title',
 			});
-			await dataSetManagerApiHelpers.createDataSetCardsSection({
+			await dataSetAdminApiHelpers.createDataSetCardsSection({
 				dataSetERC,
 				fieldName: `${SAMPLE_SCALAR_FIELD}`,
 				name: 'description',
@@ -81,12 +81,12 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 		});
 
 		await test.step('Create list section fields', async () => {
-			await dataSetManagerApiHelpers.createDataSetListSection({
+			await dataSetAdminApiHelpers.createDataSetListSection({
 				dataSetERC,
 				fieldName: `${SAMPLE_OBJECT_FIELD}.${SAMPLE_OBJECT_CHILD_FIELD}`,
 				name: 'title',
 			});
-			await dataSetManagerApiHelpers.createDataSetListSection({
+			await dataSetAdminApiHelpers.createDataSetListSection({
 				dataSetERC,
 				fieldName: `${SAMPLE_SCALAR_FIELD}`,
 				name: 'description',
@@ -94,22 +94,22 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 		});
 
 		await test.step('Configure Data Set in the page', async () => {
-			await fdsFragmentPage.configureDataSetFragment({
+			await dataSetFragmentPage.configureDataSetFragment({
 				dataSetLabel,
 				layout,
 			});
 		});
 
 		await test.step('Check Data Set Cards are present', async () => {
-			await fdsFragmentPage.fdsCardsWrapper.waitFor({
+			await dataSetFragmentPage.cardsWrapper.waitFor({
 				state: 'visible',
 			});
 
-			await expect(fdsFragmentPage.fdsCardsWrapper).toBeInViewport();
+			await expect(dataSetFragmentPage.cardsWrapper).toBeInViewport();
 
-			await fdsFragmentPage.page.locator('.card').first().waitFor();
+			await dataSetFragmentPage.page.locator('.card').first().waitFor();
 
-			const firstCard = fdsFragmentPage.page.locator('.card').first();
+			const firstCard = dataSetFragmentPage.page.locator('.card').first();
 
 			await expect(firstCard.locator('.card-title')).toContainText(
 				dataSetLabel
@@ -119,22 +119,22 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 		});
 
 		await test.step('Change visualization mode to List', async () => {
-			await fdsFragmentPage.changeVisualizationMode('List');
+			await dataSetFragmentPage.changeVisualizationMode('List');
 		});
 
 		await test.step('Check Data Set List is present', async () => {
-			await fdsFragmentPage.fdsListWrapper.waitFor({
+			await dataSetFragmentPage.listWrapper.waitFor({
 				state: 'visible',
 			});
 
-			await expect(fdsFragmentPage.fdsListWrapper).toBeInViewport();
+			await expect(dataSetFragmentPage.listWrapper).toBeInViewport();
 
-			await fdsFragmentPage.page
+			await dataSetFragmentPage.page
 				.locator('.list-group-item')
 				.first()
 				.waitFor();
 
-			const firstListItem = fdsFragmentPage.page
+			const firstListItem = dataSetFragmentPage.page
 				.locator('.list-group-item')
 				.first();
 
@@ -148,16 +148,16 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 		});
 
 		await test.step('Change visualization mode to Table', async () => {
-			await fdsFragmentPage.changeVisualizationMode('Table');
+			await dataSetFragmentPage.changeVisualizationMode('Table');
 		});
 
 		await test.step('Data Set Table is in the page', async () => {
-			await fdsFragmentPage.fdsTableWrapper.waitFor({
+			await dataSetFragmentPage.tableWrapper.waitFor({
 				state: 'visible',
 			});
 
 			await expect(
-				await fdsFragmentPage.fdsTableWrapper
+				await dataSetFragmentPage.tableWrapper
 			).toBeInViewport();
 
 			expect(
@@ -171,8 +171,8 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 	});
 
 	test('Show mapped scalar array field in the fragment @LPD-11769', async ({
-		dataSetManagerApiHelpers,
-		fdsFragmentPage,
+		dataSetAdminApiHelpers,
+		dataSetFragmentPage,
 		layout,
 		page,
 	}) => {
@@ -180,30 +180,30 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 		const SAMPLE_SCALAR_ARRAY_CONTENT = ['one', 'two', 'three'];
 
 		await test.step('Create table fields', async () => {
-			await dataSetManagerApiHelpers.createDataSetField({
+			await dataSetAdminApiHelpers.createDataSetTableSection({
 				dataSetERC,
 				extraBodyParams: {
 					keywords: SAMPLE_SCALAR_ARRAY_CONTENT,
 				},
+				fieldName: SAMPLE_SCALAR_ARRAY_FIELD,
 				label_i18n: {en_US: SAMPLE_SCALAR_ARRAY_FIELD},
-				name: SAMPLE_SCALAR_ARRAY_FIELD,
 				type: 'array',
 			});
 		});
 
 		await test.step('Configure Data Set in the page', async () => {
-			await fdsFragmentPage.configureDataSetFragment({
+			await dataSetFragmentPage.configureDataSetFragment({
 				dataSetLabel,
 				layout,
 			});
 		});
 
 		await test.step('Data Set Table is in the page', async () => {
-			await fdsFragmentPage.fdsTableWrapper.waitFor({
+			await dataSetFragmentPage.tableWrapper.waitFor({
 				state: 'visible',
 			});
 
-			await expect(fdsFragmentPage.fdsTableWrapper).toBeInViewport();
+			await expect(dataSetFragmentPage.tableWrapper).toBeInViewport();
 
 			expect(
 				await page
