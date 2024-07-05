@@ -1048,7 +1048,7 @@ public class FDSAdminPortlet extends MVCPortlet {
 	private void _publishSystemObjectDefinitions(long companyId, long userId)
 		throws PortalException {
 
-		for (String objectDefinitionERC : OBJECT_DEFINITIONS_ERC) {
+		for (String objectDefinitionERC : _OBJECT_DEFINITIONS_ERC) {
 			ObjectDefinition objectDefinition =
 				_objectDefinitionLocalService.
 					fetchObjectDefinitionByExternalReferenceCode(
@@ -1063,7 +1063,7 @@ public class FDSAdminPortlet extends MVCPortlet {
 		}
 	}
 
-	private static final String[] OBJECT_DEFINITIONS_ERC = {
+	private static final String[] _OBJECT_DEFINITIONS_ERC = {
 		"L_DATA_SET", "L_DATA_SET_ACTION", "L_DATA_SET_CARDS_SECTION",
 		"L_DATA_SET_CLIENT_EXTENSION_FILTER", "L_DATA_SET_DATE_FILTER",
 		"L_DATA_SET_LIST_SECTION", "L_DATA_SET_SELECTION_FILTER",
