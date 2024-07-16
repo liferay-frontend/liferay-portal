@@ -11,7 +11,7 @@ import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import {InputLocalized} from 'frontend-js-components-web';
-import {fetch, openModal} from 'frontend-js-web';
+import {fetch, openModal, openToast, sub} from 'frontend-js-web';
 import fuzzy from 'fuzzy';
 import React, {useEffect, useState} from 'react';
 
@@ -109,15 +109,23 @@ const labelTextMatch = (item: ISort) => {
 const AddFDSSortModalContent = ({
 	closeModal,
 	dataSet,
+	fdsSorts,
 	fields,
 	namespace,
 	onSave,
 }: {
 	closeModal: Function;
 	dataSet: IDataSet | FDSViewType;
+	fdsSorts: ISort[];
 	fields: IField[];
 	namespace: string;
-	onSave: (newSort: ISort) => void;
+	onSave: ({
+		newFDSSort,
+		previousDefaultFDSSort,
+	}: {
+		newFDSSort: ISort;
+		previousDefaultFDSSort?: ISort;
+	}) => void;
 }) => {
 	const [labelI18n, setLabelI18n] = useState<
 		Liferay.Language.LocalizedValue<string>
@@ -132,17 +140,9 @@ const AddFDSSortModalContent = ({
 	const handleSave = async () => {
 		setSaveButtonDisabled(true);
 
-		const field = fields.find(
-			(item: IField) => item.name === selectedFieldName
-		);
+		// Add new sorting.
 
-		if (!field) {
-			openDefaultFailureToast();
-
-			return;
-		}
-
-		const response = await fetch(API_URL.SORTS, {
+		const addFDSSortResponse = await fetch(API_URL.SORTS, {
 			body: JSON.stringify({
 				[OBJECT_RELATIONSHIP.DATA_SET_SORT_ID]: dataSet.id,
 				default: useAsDefaultSorting,
@@ -157,7 +157,7 @@ const AddFDSSortModalContent = ({
 			method: 'POST',
 		});
 
-		if (!response.ok) {
+		if (!addFDSSortResponse.ok) {
 			setSaveButtonDisabled(false);
 
 			openDefaultFailureToast();
@@ -165,11 +165,60 @@ const AddFDSSortModalContent = ({
 			return;
 		}
 
-		const responseJSON = await response.json();
+		const newFDSSort = await addFDSSortResponse.json();
 
-		openDefaultSuccessToast();
+		// If an existing default sorting exists, change its default to false.
 
-		onSave(responseJSON);
+		const defaultFDSSort = fdsSorts.find(
+			(fdsSort) => fdsSort.default
+		) as ISort;
+
+		if (useAsDefaultSorting && defaultFDSSort) {
+			const updateDefaultFDSSortResponse = await fetch(
+				`${API_URL.SORTS}/by-external-reference-code/${defaultFDSSort.externalReferenceCode}`,
+				{
+					body: JSON.stringify({
+						default: false,
+					}),
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					},
+					method: 'PATCH',
+				}
+			);
+
+			if (!updateDefaultFDSSortResponse.ok) {
+				openToast({
+					message: sub(
+						Liferay.Language.get(
+							'an-unexpected-error-occurred-and-the-existing-default-sorting-was-not-removed.please-edit-the-x-sorting-and-uncheck-the-default-option'
+						),
+						[
+							defaultFDSSort.label ||
+								defaultFDSSort.label_i18n[
+									Liferay.ThemeDisplay.getDefaultLanguageId()
+								] ||
+								'',
+						]
+					),
+					type: 'danger',
+				});
+			}
+
+			const previousDefaultFDSSort =
+				await updateDefaultFDSSortResponse.json();
+
+			onSave({newFDSSort, previousDefaultFDSSort});
+		}
+		else {
+			onSave({newFDSSort});
+		}
+
+		openToast({
+			message: Liferay.Language.get('sorting-was-successfully-added'),
+			type: 'success',
+		});
 
 		closeModal();
 	};
@@ -296,6 +345,7 @@ const AddFDSSortModalContent = ({
 interface IEditFDSSortModalContentProps {
 	closeModal: Function;
 	fdsSort: ISort;
+	fdsSorts: ISort[];
 	fields: IField[];
 	namespace: string;
 	onSave: Function;
@@ -304,6 +354,7 @@ interface IEditFDSSortModalContentProps {
 const EditFDSSortModalContent = ({
 	closeModal,
 	fdsSort,
+	fdsSorts,
 	fields,
 	namespace,
 	onSave,
@@ -325,7 +376,9 @@ const EditFDSSortModalContent = ({
 	const handleSave = async () => {
 		setSaveButtonDisabled(true);
 
-		const response = await fetch(
+		// Edit the sorting.
+
+		const editFDSSortResponse = await fetch(
 			`${API_URL.SORTS}/by-external-reference-code/${fdsSort.externalReferenceCode}`,
 			{
 				body: JSON.stringify({
@@ -342,7 +395,7 @@ const EditFDSSortModalContent = ({
 			}
 		);
 
-		if (!response.ok) {
+		if (!editFDSSortResponse.ok) {
 			setSaveButtonDisabled(false);
 
 			openDefaultFailureToast();
@@ -350,13 +403,62 @@ const EditFDSSortModalContent = ({
 			return;
 		}
 
-		const editedFDSSort = await response.json();
+		const editedFDSSort = await editFDSSortResponse.json();
+
+		// If an existing default sorting exists, change its default to false.
+
+		const defaultFDSSort = fdsSorts.find(
+			(fdsSort) => fdsSort.default
+		) as ISort;
+
+		if (useAsDefaultSorting && defaultFDSSort) {
+			const updateDefaultFDSSortResponse = await fetch(
+				`${API_URL.SORTS}/by-external-reference-code/${defaultFDSSort.externalReferenceCode}`,
+				{
+					body: JSON.stringify({
+						default: false,
+					}),
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					},
+					method: 'PATCH',
+				}
+			);
+
+			if (!updateDefaultFDSSortResponse.ok) {
+				openToast({
+					message: sub(
+						Liferay.Language.get(
+							'an-unexpected-error-occurred-and-the-existing-default-sorting-was-not-removed.please-edit-the-x-sorting-and-uncheck-the-default-option'
+						),
+						[
+							defaultFDSSort.label ||
+								defaultFDSSort.label_i18n[
+									Liferay.ThemeDisplay.getDefaultLanguageId()
+								] ||
+								'',
+						]
+					),
+					type: 'danger',
+				});
+			}
+
+			const previousDefaultFDSSort =
+				await updateDefaultFDSSortResponse.json();
+
+			onSave({editedFDSSort, previousDefaultFDSSort});
+		}
+		else {
+			onSave({editedFDSSort});
+		}
+
+		openToast({
+			message: Liferay.Language.get('sorting-was-successfully-edited'),
+			type: 'success',
+		});
 
 		closeModal();
-
-		openDefaultSuccessToast();
-
-		onSave({editedFDSSort});
 	};
 
 	const fdsSortLabelInput = `${namespace}fdsSortLabelInput`;
@@ -529,9 +631,32 @@ const Sorting = ({
 				<AddFDSSortModalContent
 					closeModal={closeModal}
 					dataSet={dataSet}
+					fdsSorts={fdsSorts}
 					fields={fields}
 					namespace={namespace}
-					onSave={(newSort) => setFDSSorts([...fdsSorts, newSort])}
+					onSave={({
+						newFDSSort,
+						previousDefaultFDSSort,
+					}: {
+						newFDSSort: ISort;
+						previousDefaultFDSSort?: ISort;
+					}) =>
+						setFDSSorts([
+							...(previousDefaultFDSSort
+								? fdsSorts?.map((fdsSort) => {
+										if (
+											fdsSort.id ===
+											previousDefaultFDSSort.id
+										) {
+											return previousDefaultFDSSort;
+										}
+
+										return fdsSort;
+									}) || []
+								: fdsSorts),
+							newFDSSort,
+						])
+					}
 				/>
 			),
 		});
@@ -591,13 +716,27 @@ const Sorting = ({
 				<EditFDSSortModalContent
 					closeModal={closeModal}
 					fdsSort={item}
+					fdsSorts={fdsSorts}
 					fields={fields}
 					namespace={namespace}
-					onSave={({editedFDSSort}: {editedFDSSort: ISort}) => {
+					onSave={({
+						editedFDSSort,
+						previousDefaultFDSSort,
+					}: {
+						editedFDSSort: ISort;
+						previousDefaultFDSSort?: ISort;
+					}) => {
 						setFDSSorts(
 							fdsSorts?.map((fdsSort) => {
 								if (fdsSort.id === editedFDSSort.id) {
 									return editedFDSSort;
+								}
+
+								if (
+									previousDefaultFDSSort &&
+									fdsSort.id === previousDefaultFDSSort.id
+								) {
+									return previousDefaultFDSSort;
 								}
 
 								return fdsSort;
