@@ -137,8 +137,8 @@ test.afterEach(
 
 test.describe('Selection filters in Data Set fragment', () => {
 	test('Picklist filter is displayed in fragment, and applied to data @LPD-10754', async ({
-		dataSetManagerApiHelpers,
 		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
 		layout,
 		page,
 		picklistApiHelpers,
@@ -240,14 +240,16 @@ test.describe('Selection filters in Data Set fragment', () => {
 			).toHaveText(['boolean', 'No', '']);
 
 			await expect(
-				dataSetFragmentPage.page.getByText('Showing 1 to 1 of 1 entries.')
+				dataSetFragmentPage.page.getByText(
+					'Showing 1 to 1 of 1 entries.'
+				)
 			).toBeVisible();
 		});
 	});
 
 	test('Picklist filter can be configured to use single or multiple selection', async ({
-		dataSetManagerApiHelpers,
 		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
 		layout,
 		page,
 		picklistApiHelpers,
@@ -347,7 +349,9 @@ test.describe('Selection filters in Data Set fragment', () => {
 			).toHaveText(['boolean', 'No', '']);
 
 			await expect(
-				dataSetFragmentPage.page.getByText('Showing 1 to 1 of 1 entries.')
+				dataSetFragmentPage.page.getByText(
+					'Showing 1 to 1 of 1 entries.'
+				)
 			).toBeVisible();
 		});
 
@@ -411,8 +415,8 @@ test.describe('Selection filters in Data Set fragment', () => {
 	});
 
 	test('Picklist filter can be configured to include or exclude selected values', async ({
-		dataSetManagerApiHelpers,
 		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
 		layout,
 		page,
 		picklistApiHelpers,
@@ -461,10 +465,12 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('Check current filter is applied in the Frontend Data Set', async () => {
-			await expect(dataSetFragmentPage.fdsFilterResumeButton).toBeVisible();
-			await expect(dataSetFragmentPage.fdsFilterResumeButton).toContainText(
-				`${filterLabel}: ${picklistDefaultOptionLabel}`
-			);
+			await expect(
+				dataSetFragmentPage.fdsFilterResumeButton
+			).toBeVisible();
+			await expect(
+				dataSetFragmentPage.fdsFilterResumeButton
+			).toContainText(`${filterLabel}: ${picklistDefaultOptionLabel}`);
 			await dataSetFragmentPage.fdsPaginationResults.scrollIntoViewIfNeeded();
 
 			await expect(
@@ -492,10 +498,12 @@ test.describe('Selection filters in Data Set fragment', () => {
 
 		await test.step('Check current items in the Frontend Data Set', async () => {
 			await page.reload();
-			await expect(dataSetFragmentPage.fdsFilterResumeButton).toBeVisible();
-			await expect(dataSetFragmentPage.fdsFilterResumeButton).toContainText(
-				`${filterLabel}: ${picklistBooleanOptionLabel}`
-			);
+			await expect(
+				dataSetFragmentPage.fdsFilterResumeButton
+			).toBeVisible();
+			await expect(
+				dataSetFragmentPage.fdsFilterResumeButton
+			).toContainText(`${filterLabel}: ${picklistBooleanOptionLabel}`);
 			await dataSetFragmentPage.fdsPaginationResults.scrollIntoViewIfNeeded();
 
 			await expect(
@@ -531,8 +539,8 @@ test.describe('Selection filters in Data Set fragment', () => {
 	});
 
 	test('API Headless filter is displayed in fragment, and applied to data @LPD-10754', async ({
-		dataSetManagerApiHelpers,
 		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
 		layout,
 	}) => {
 		const filterLabel = getRandomString();
@@ -657,7 +665,9 @@ test.describe('Selection filters in Data Set fragment', () => {
 			).toHaveText(['integer']);
 
 			await expect(
-				dataSetFragmentPage.page.getByText('Showing 1 to 1 of 1 entries.')
+				dataSetFragmentPage.page.getByText(
+					'Showing 1 to 1 of 1 entries.'
+				)
 			).toBeVisible();
 		});
 
@@ -706,7 +716,9 @@ test.describe('Selection filters in Data Set fragment', () => {
 			).toHaveText(['boolean']);
 
 			await expect(
-				dataSetFragmentPage.page.getByText('Showing 1 to 2 of 2 entries.')
+				dataSetFragmentPage.page.getByText(
+					'Showing 1 to 2 of 2 entries.'
+				)
 			).toBeVisible();
 		});
 

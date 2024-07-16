@@ -73,22 +73,20 @@ test.afterEach(async ({dataSetManagerApiHelpers, picklistApiHelpers}) => {
 });
 
 test('Can create a selection filter from picklist source', async ({
-		filtersPage,
-		page,
-	}) => {
-		await test.step('Can not create a selection filter without filling mandatory fields', async () => {
-			await filtersPage.openNewFilterModal({
-				dropdownItemLabel: 'Selection',
-			});
-
-			await filtersPage.saveAddFilterModal();
-
-			await expect(page.getByText('This field is required.')).toHaveCount(
-				3
-			);
-
-			await filtersPage.cancelAddFilterModal();
+	filtersPage,
+	page,
+}) => {
+	await test.step('Can not create a selection filter without filling mandatory fields', async () => {
+		await filtersPage.openNewFilterModal({
+			dropdownItemLabel: 'Selection',
 		});
+
+		await filtersPage.saveAddFilterModal();
+
+		await expect(page.getByText('This field is required.')).toHaveCount(3);
+
+		await filtersPage.cancelAddFilterModal();
+	});
 
 	await test.step('Create a selection filter from picklist source', async () => {
 		await filtersPage.createSelectionFilterPicklist({
@@ -101,7 +99,7 @@ test('Can create a selection filter from picklist source', async ({
 			sourceType: 'Object Picklist',
 		});
 
-			await filtersPage.saveAddFilterModal();
+		await filtersPage.saveAddFilterModal();
 	});
 
 	await test.step('Check that the selection filter is in the list', async () => {
@@ -113,27 +111,27 @@ test('Can create a selection filter from picklist source', async ({
 		).toBeVisible();
 	});
 
-		await test.step('Create a selection filter from picklist source without preselected values', async () => {
-			await filtersPage.createSelectionFilterPicklist({
-				filterBy: 'name',
+	await test.step('Create a selection filter from picklist source without preselected values', async () => {
+		await filtersPage.createSelectionFilterPicklist({
+			filterBy: 'name',
+			name: SELECTION_PICKLIST_NO_PRESELECTED_VALUES_FILTER_NAME,
+			preselectedValues: [],
+			selectionType: 'Single',
+			source: picklistName,
+			sourceType: 'Object Picklist',
+		});
+
+		await filtersPage.saveAddFilterModal();
+	});
+
+	await test.step('Check that the selection filter is also the list', async () => {
+		await expect(
+			page.getByRole('cell', {
+				exact: true,
 				name: SELECTION_PICKLIST_NO_PRESELECTED_VALUES_FILTER_NAME,
-				preselectedValues: [],
-				selectionType: 'Single',
-				source: picklistName,
-				sourceType: 'Object Picklist',
-			});
-
-			await filtersPage.saveAddFilterModal();
-		});
-
-		await test.step('Check that the selection filter is also the list', async () => {
-			await expect(
-				page.getByRole('cell', {
-					exact: true,
-					name: SELECTION_PICKLIST_NO_PRESELECTED_VALUES_FILTER_NAME,
-				})
-			).toBeVisible();
-		});
+			})
+		).toBeVisible();
+	});
 });
 
 test('Can create a selection filter with API Headless source', async ({
@@ -155,7 +153,7 @@ test('Can create a selection filter with API Headless source', async ({
 			sourceType: 'API REST Application',
 		});
 
-			await filtersPage.saveAddFilterModal();
+		await filtersPage.saveAddFilterModal();
 	});
 
 	await test.step('Check that the selection filter is in the list', async () => {

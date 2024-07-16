@@ -98,7 +98,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		const url = `${this.baseUrl}data-set-manager/client-extension-filters`;
 
 		const data = {
-			[CLIENT_EXTENSION_FILTER_DATA_SET_RELATIONSHIP]: dataSetId,
+			[DATA_SET_CLIENT_EXTENSION_FILTER_RELATIONSHIP]: dataSetId,
 			fdsFilterClientExtensionERC,
 			fieldName,
 			label_i18n,
