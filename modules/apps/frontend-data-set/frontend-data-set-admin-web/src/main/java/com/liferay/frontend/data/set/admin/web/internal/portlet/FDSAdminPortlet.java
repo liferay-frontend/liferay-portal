@@ -181,8 +181,7 @@ public class FDSAdminPortlet extends MVCPortlet {
 		String name = "FDSAction";
 		String creationActionRelationshipName =
 			"fdsViewFDSCreationActionRelationship";
-		String itemActionRelationshipName =
-			"fdsViewFDSItemActionRelationship";
+		String itemActionRelationshipName = "fdsViewFDSItemActionRelationship";
 
 		if (FeatureFlagManagerUtil.isEnabled("LPD-15729")) {
 			erc = "L_DATA_SET_ACTION";
