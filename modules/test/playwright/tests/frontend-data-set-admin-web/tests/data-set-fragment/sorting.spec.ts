@@ -172,8 +172,8 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 
 	test('When the current page language is changed, the current translation is used and fallbacks to the site default language @LPD-25464', async ({
 		accountSettingsPage,
+		dataSetFragmentPage,
 		dataSetManagerApiHelpers,
-		fdsFragmentPage,
 		layout,
 		page,
 	}) => {
@@ -218,7 +218,7 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 			});
 
 			await test.step('Configure Data Set fragment', async () => {
-				await fdsFragmentPage.configureDataSetFragment({
+				await dataSetFragmentPage.configureDataSetFragment({
 					dataSetLabel,
 					layout,
 				});
@@ -239,7 +239,7 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 			});
 
 			await test.step('Go to Data Set fragment page', async () => {
-				await fdsFragmentPage.goToPage({layout});
+				await dataSetFragmentPage.goToPage({layout});
 
 				await page
 					.locator('.data-set-content-wrapper')

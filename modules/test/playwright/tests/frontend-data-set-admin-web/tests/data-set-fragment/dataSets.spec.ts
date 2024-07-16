@@ -11,7 +11,7 @@ import {isolatedLayoutTest} from '../../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
-import {fdsFragmentPageTest} from './fixtures/fdsFragmentPageTest';
+import {dataSetFragmentPageTest} from './fixtures/dataSetFragmentPageTest';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -22,7 +22,7 @@ export const test = mergeTests(
 	}),
 	isolatedLayoutTest({publish: false}),
 	loginTest(),
-	fdsFragmentPageTest
+	dataSetFragmentPageTest
 );
 
 let dataSetERC: string;
@@ -45,7 +45,7 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 test.describe('Data Set Fragment', () => {
 	test('Data Set can be added to the fragment', async ({
 		dataSetManagerApiHelpers,
-		fdsFragmentPage,
+		dataSetFragmentPage,
 		layout,
 		page,
 	}) => {
@@ -70,19 +70,19 @@ test.describe('Data Set Fragment', () => {
 		});
 
 		await test.step('Configure Data Set fragment', async () => {
-			await fdsFragmentPage.configureDataSetFragment({
+			await dataSetFragmentPage.configureDataSetFragment({
 				dataSetLabel,
 				layout,
 			});
 		});
 
 		await test.step('Assert that the Data Set is available on the page', async () => {
-			await fdsFragmentPage.fdsTableWrapper.waitFor({
+			await dataSetFragmentPage.tableWrapper.waitFor({
 				state: 'visible',
 			});
 
 			await expect(
-				await fdsFragmentPage.fdsTableWrapper
+				await dataSetFragmentPage.tableWrapper
 			).toBeInViewport();
 
 			expect(
@@ -97,7 +97,7 @@ test.describe('Data Set Fragment', () => {
 
 	test('Data Set selection modal shows a "No results found" message when there are no Data Sets created', async ({
 		dataSetManagerApiHelpers,
-		fdsFragmentPage,
+		dataSetFragmentPage,
 		layout,
 	}) => {
 		test.step('Remove Data Set', async () => {
@@ -105,14 +105,14 @@ test.describe('Data Set Fragment', () => {
 		});
 
 		await test.step('Configure Data Set fragment', async () => {
-			await fdsFragmentPage.configureEmptyDataSetFragment({
+			await dataSetFragmentPage.configureEmptyDataSetFragment({
 				layout,
 			});
 		});
 
 		test.step('Assert that there are no Data Sets available to select', async () => {
 			await expect(
-				fdsFragmentPage.page
+				dataSetFragmentPage.page
 					.frameLocator('iframe[title="Select"]')
 					.locator('.c-empty-state-title')
 			).toContainText('No Results Found');
