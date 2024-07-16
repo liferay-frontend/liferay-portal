@@ -164,84 +164,83 @@ test('Can create a selection filter with API Headless source', async ({
 			})
 		).toBeVisible();
 	});
+});
 
-	test('Preselected filter values are checked in the multiSelect', async ({
-		filtersPage,
-		page,
-		picklistApiHelpers,
-	}) => {
-		await test.step('Create a selection filter', async () => {
-			await filtersPage.createSelectionFilterPicklist({
-				filterBy: 'externalReferenceCode',
-				filterMode: 'Include',
-				name: 'Selection Filter',
-				preselectedValues: [PICKLIST_VALUE_NAME],
-				selectionType: 'Single',
-				source: picklistName,
-				sourceType: 'Object Picklist',
-			});
-
-			await filtersPage.saveAddFilterModal();
+test('Preselected filter values are checked in the multiSelect', async ({
+	filtersPage,
+	page,
+	picklistApiHelpers,
+}) => {
+	await test.step('Create a selection filter', async () => {
+		await filtersPage.createSelectionFilterPicklist({
+			filterBy: 'externalReferenceCode',
+			filterMode: 'Include',
+			name: 'Selection Filter',
+			preselectedValues: [PICKLIST_VALUE_NAME],
+			selectionType: 'Single',
+			source: picklistName,
+			sourceType: 'Object Picklist',
 		});
 
-		await test.step('Open the edit filter modal', async () => {
-			await filtersPage.goto({
-				dataSetLabel,
-			});
+		await filtersPage.saveAddFilterModal();
+	});
 
-			const filterActionsButton = page
-				.getByRole('cell', {name: 'Actions'})
-				.getByRole('button');
-
-			await expect(filterActionsButton).toBeVisible();
-
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-				target: page.getByRole('menuitem', {name: 'Edit'}),
-				trigger: filterActionsButton,
-			});
-
-			const dialogFilterSourceSubtitle = page.getByRole('heading', {
-				name: 'Filter Source',
-			});
-
-			await expect(dialogFilterSourceSubtitle).toBeVisible();
-
-			const dialogFilterOptionsSubtitle = page.getByRole('heading', {
-				name: 'Filter Options',
-			});
-
-			await expect(dialogFilterOptionsSubtitle).toBeVisible();
+	await test.step('Open the edit filter modal', async () => {
+		await filtersPage.goto({
+			dataSetLabel,
 		});
 
-		await test.step('Check that the preselected value is checked', async () => {
-			const picklist = await picklistApiHelpers.getPicklist(picklistName);
+		const filterActionsButton = page
+			.getByRole('cell', {name: 'Actions'})
+			.getByRole('button');
 
-			const preselectedValuesMultiSelect = page.locator(
-				'.form-control.form-control-tag-group.input-group'
-			);
+		await expect(filterActionsButton).toBeVisible();
 
-			await expect(preselectedValuesMultiSelect).toBeVisible();
-
-			await expect(preselectedValuesMultiSelect).toContainText(
-				picklist.listTypeEntries[0].name
-			);
-
-			const preselectedValueOption = page.getByRole('option', {
-				name: 'Sample Value',
-			});
-
-			await clickAndExpectToBeVisible({
-				target: preselectedValueOption,
-				trigger: preselectedValuesMultiSelect,
-			});
-
-			const preselectedValueOptionCheckbox =
-				preselectedValueOption.locator(
-					'.custom-control-input.invisible'
-				);
-
-			await expect(preselectedValueOptionCheckbox).toBeChecked();
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Edit'}),
+			trigger: filterActionsButton,
 		});
+
+		const dialogFilterSourceSubtitle = page.getByRole('heading', {
+			name: 'Filter Source',
+		});
+
+		await expect(dialogFilterSourceSubtitle).toBeVisible();
+
+		const dialogFilterOptionsSubtitle = page.getByRole('heading', {
+			name: 'Filter Options',
+		});
+
+		await expect(dialogFilterOptionsSubtitle).toBeVisible();
+	});
+
+	await test.step('Check that the preselected value is checked', async () => {
+		const picklist = await picklistApiHelpers.getPicklist(picklistName);
+
+		const preselectedValuesMultiSelect = page.locator(
+			'.form-control.form-control-tag-group.input-group'
+		);
+
+		await expect(preselectedValuesMultiSelect).toBeVisible();
+
+		await expect(preselectedValuesMultiSelect).toContainText(
+			picklist.listTypeEntries[0].name
+		);
+
+		const preselectedValueOption = page.getByRole('option', {
+			name: 'Sample Value',
+		});
+
+		await clickAndExpectToBeVisible({
+			target: preselectedValueOption,
+			trigger: preselectedValuesMultiSelect,
+		});
+
+		const preselectedValueOptionCheckbox = preselectedValueOption.locator(
+			'.custom-control-input.invisible'
+		);
+
+		await expect(preselectedValueOptionCheckbox).toBeChecked();
 	});
 });

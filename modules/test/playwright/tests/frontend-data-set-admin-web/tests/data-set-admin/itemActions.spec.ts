@@ -88,25 +88,25 @@ test('Can create an Item Action of type Link', async ({actionsPage, page}) => {
 			})
 		).toBeVisible();
 	});
+});
 
-	test('Can cancel creating an Item Action', async ({actionsPage}) => {
-		await test.step('Click on the New Item Action button', async () => {
-			await actionsPage.newItemActionButton.click();
-		});
+test('Can cancel creating an Item Action', async ({actionsPage}) => {
+	await test.step('Click on the New Item Action button', async () => {
+		await actionsPage.newItemActionButton.click();
+	});
 
-		await test.step('Add some information in the fields', async () => {
-			await actionsPage.newActionForm.nameInput.fill('Test Item Action');
-			await actionsPage.newActionForm.typeSelect.selectOption('link');
-		});
+	await test.step('Add some information in the fields', async () => {
+		await actionsPage.newActionForm.nameInput.fill('Test Item Action');
+		await actionsPage.newActionForm.typeSelect.selectOption('link');
+	});
 
-		await test.step('Cancel the creation of the Item Action', async () => {
-			await actionsPage.newActionForm.cancelButton.click();
-		});
+	await test.step('Cancel the creation of the Item Action', async () => {
+		await actionsPage.newActionForm.cancelButton.click();
+	});
 
-		await test.step('Check that the Item Action was not created', async () => {
-			await expect(actionsPage.noActionsWereCreatedMessage).toContainText(
-				'No actions were created.'
-			);
-		});
+	await test.step('Check that the Item Action was not created', async () => {
+		await expect(actionsPage.noActionsWereCreatedMessage).toContainText(
+			'No actions were created.'
+		);
 	});
 });
