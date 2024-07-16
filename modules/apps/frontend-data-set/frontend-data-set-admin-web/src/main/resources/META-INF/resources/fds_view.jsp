@@ -32,7 +32,7 @@ renderResponse.setTitle(ParamUtil.getString(request, "fdsViewLabel"));
 		).put(
 			"restApplications", fdsAdminDisplayContext.getRESTApplicationsJSONArray()
 		).put(
-			"saveFDSFieldsURL", fdsAdminDisplayContext.getSaveFDSFieldsURL()
+			"saveFDSFieldsURL", fdsAdminDisplayContext.getSaveTableSectionsURL()
 		).put(
 			"spritemap", themeDisplay.getPathThemeSpritemap()
 		).build()
