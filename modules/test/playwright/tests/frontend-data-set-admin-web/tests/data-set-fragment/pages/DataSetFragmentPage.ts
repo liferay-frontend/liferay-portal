@@ -176,16 +176,15 @@ export class DataSetFragmentPage {
 			this.page.getByText('Place fragments or widgets here')
 		);
 
-		const fragmentSelectionArea = this.page.getByText(
-			'Select a data set view'
-		);
+		const fragmentSelectionArea = this.page.getByText('Select a data set');
 
 		await expect(fragmentSelectionArea).toBeVisible();
 
 		await fragmentSelectionArea.click();
 
 		await this.page
-			.getByRole('button', {name: 'Select Data Set View'})
+			.getByLabel('Configuration Panel')
+			.getByRole('button', {exact: true, name: 'Select Data Set'})
 			.click();
 
 		await this.page.getByRole('dialog').isVisible();
