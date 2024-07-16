@@ -168,7 +168,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('There are no filters in the Frontend Data Set', async () => {
-			await expect(dataSetFragmentPage.fdsFilterButton).not.toBeVisible();
+			await expect(dataSetFragmentPage.filterButton).not.toBeVisible();
 		});
 
 		await test.step('Create a new selection filter', async () => {
@@ -185,10 +185,10 @@ test.describe('Selection filters in Data Set fragment', () => {
 
 		await test.step('Check current items in the Frontend Data Set', async () => {
 			await page.reload();
-			await dataSetFragmentPage.fdsPaginationResults.scrollIntoViewIfNeeded();
+			await dataSetFragmentPage.paginationResults.scrollIntoViewIfNeeded();
 
 			await expect(
-				dataSetFragmentPage.fdsPaginationResults.getByText(
+				dataSetFragmentPage.paginationResults.getByText(
 					'Showing 1 to 2 of 2 entries.'
 				)
 			).toBeVisible();
@@ -214,7 +214,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 				.getByRole('radio', {name: picklistBooleanOptionLabel})
 				.check();
 
-			await dataSetFragmentPage.fdsAddFilterButton.click();
+			await dataSetFragmentPage.addFilterButton.click();
 
 			// Close filter
 
@@ -222,7 +222,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('Check that the filter works', async () => {
-			await dataSetFragmentPage.fdsFilterResumeButton.waitFor({
+			await dataSetFragmentPage.filterResumeButton.waitFor({
 				state: 'visible',
 			});
 
@@ -323,7 +323,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 				.getByRole('radio', {name: picklistBooleanOptionLabel})
 				.check();
 
-			await dataSetFragmentPage.fdsAddFilterButton.click();
+			await dataSetFragmentPage.addFilterButton.click();
 
 			// Close filter
 
@@ -331,7 +331,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('Check that the filter works', async () => {
-			await dataSetFragmentPage.fdsFilterResumeButton.waitFor({
+			await dataSetFragmentPage.filterResumeButton.waitFor({
 				state: 'visible',
 			});
 
@@ -364,10 +364,10 @@ test.describe('Selection filters in Data Set fragment', () => {
 
 		await test.step('Check current items in the Frontend Data Set', async () => {
 			await page.reload();
-			await dataSetFragmentPage.fdsPaginationResults.scrollIntoViewIfNeeded();
+			await dataSetFragmentPage.paginationResults.scrollIntoViewIfNeeded();
 
 			await expect(
-				dataSetFragmentPage.fdsPaginationResults.getByText(
+				dataSetFragmentPage.paginationResults.getByText(
 					'Showing 1 to 2 of 2 entries.'
 				)
 			).toBeVisible();
@@ -396,7 +396,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 				.getByRole('checkbox', {name: picklistBooleanOptionLabel})
 				.check();
 
-			await dataSetFragmentPage.fdsAddFilterButton.click();
+			await dataSetFragmentPage.addFilterButton.click();
 
 			// Close filter
 
@@ -404,10 +404,10 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('Check that the filter works', async () => {
-			await dataSetFragmentPage.fdsPaginationResults.scrollIntoViewIfNeeded();
+			await dataSetFragmentPage.paginationResults.scrollIntoViewIfNeeded();
 
 			await expect(
-				dataSetFragmentPage.fdsPaginationResults.getByText(
+				dataSetFragmentPage.paginationResults.getByText(
 					'Showing 1 to 2 of 2 entries.'
 				)
 			).toBeVisible();
@@ -465,13 +465,11 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('Check current filter is applied in the Frontend Data Set', async () => {
-			await expect(
-				dataSetFragmentPage.fdsFilterResumeButton
-			).toBeVisible();
-			await expect(
-				dataSetFragmentPage.fdsFilterResumeButton
-			).toContainText(`${filterLabel}: ${picklistDefaultOptionLabel}`);
-			await dataSetFragmentPage.fdsPaginationResults.scrollIntoViewIfNeeded();
+			await expect(dataSetFragmentPage.filterResumeButton).toBeVisible();
+			await expect(dataSetFragmentPage.filterResumeButton).toContainText(
+				`${filterLabel}: ${picklistDefaultOptionLabel}`
+			);
+			await dataSetFragmentPage.paginationResults.scrollIntoViewIfNeeded();
 
 			await expect(
 				dataSetFragmentPage.page
@@ -481,7 +479,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 			).toHaveText(['default', 'No', '']);
 
 			await expect(
-				dataSetFragmentPage.fdsPaginationResults.getByText(
+				dataSetFragmentPage.paginationResults.getByText(
 					'Showing 1 to 1 of 1 entries.'
 				)
 			).toBeVisible();
@@ -498,13 +496,11 @@ test.describe('Selection filters in Data Set fragment', () => {
 
 		await test.step('Check current items in the Frontend Data Set', async () => {
 			await page.reload();
-			await expect(
-				dataSetFragmentPage.fdsFilterResumeButton
-			).toBeVisible();
-			await expect(
-				dataSetFragmentPage.fdsFilterResumeButton
-			).toContainText(`${filterLabel}: ${picklistBooleanOptionLabel}`);
-			await dataSetFragmentPage.fdsPaginationResults.scrollIntoViewIfNeeded();
+			await expect(dataSetFragmentPage.filterResumeButton).toBeVisible();
+			await expect(dataSetFragmentPage.filterResumeButton).toContainText(
+				`${filterLabel}: ${picklistBooleanOptionLabel}`
+			);
+			await dataSetFragmentPage.paginationResults.scrollIntoViewIfNeeded();
 
 			await expect(
 				dataSetFragmentPage.page
@@ -514,7 +510,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 			).toHaveText(['boolean', 'No', '']);
 
 			await expect(
-				dataSetFragmentPage.fdsPaginationResults.getByText(
+				dataSetFragmentPage.paginationResults.getByText(
 					'Showing 1 to 1 of 1 entries.'
 				)
 			).toBeVisible();
@@ -525,13 +521,13 @@ test.describe('Selection filters in Data Set fragment', () => {
 				.getByRole('button', {exact: true, name: 'Remove Filter'})
 				.click();
 			await expect(
-				dataSetFragmentPage.fdsFilterResumeButton
+				dataSetFragmentPage.filterResumeButton
 			).not.toBeVisible();
 
-			await dataSetFragmentPage.fdsPaginationResults.scrollIntoViewIfNeeded();
+			await dataSetFragmentPage.paginationResults.scrollIntoViewIfNeeded();
 
 			await expect(
-				dataSetFragmentPage.fdsPaginationResults.getByText(
+				dataSetFragmentPage.paginationResults.getByText(
 					'Showing 1 to 2 of 2 entries.'
 				)
 			).toBeVisible();
@@ -589,10 +585,10 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('Check current items in the Frontend Data Set', async () => {
-			await dataSetFragmentPage.fdsPaginationResults.scrollIntoViewIfNeeded();
+			await dataSetFragmentPage.paginationResults.scrollIntoViewIfNeeded();
 
 			await expect(
-				dataSetFragmentPage.fdsPaginationResults.getByText(
+				dataSetFragmentPage.paginationResults.getByText(
 					'Showing 1 to 3 of 3 entries.'
 				)
 			).toBeVisible();
@@ -642,7 +638,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('Check that the filter works', async () => {
-			await dataSetFragmentPage.fdsFilterResumeButton.waitFor({
+			await dataSetFragmentPage.filterResumeButton.waitFor({
 				state: 'visible',
 			});
 
@@ -672,7 +668,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('Open filters component', async () => {
-			await dataSetFragmentPage.fdsFilterButton.click();
+			await dataSetFragmentPage.filterButton.click();
 		});
 
 		await test.step('Select filter', async () => {
@@ -685,7 +681,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 			await dataSetFragmentPage.fdsFilterItem
 				.getByRole('checkbox', {name: 'boolean'})
 				.check();
-			await dataSetFragmentPage.fdsAddFilterButton.click();
+			await dataSetFragmentPage.addFilterButton.click();
 
 			// Close filter
 
@@ -693,7 +689,7 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('Check that the filter works', async () => {
-			await dataSetFragmentPage.fdsFilterResumeButton.waitFor({
+			await dataSetFragmentPage.filterResumeButton.waitFor({
 				state: 'visible',
 			});
 
@@ -723,14 +719,14 @@ test.describe('Selection filters in Data Set fragment', () => {
 		});
 
 		await test.step('Can reset applied filters', async () => {
-			await dataSetFragmentPage.fdsResetFilterButton.click();
+			await dataSetFragmentPage.resetFilterButton.click();
 		});
 
 		await test.step('Check initial items in the Frontend Data Set', async () => {
-			await dataSetFragmentPage.fdsPaginationResults.scrollIntoViewIfNeeded();
+			await dataSetFragmentPage.paginationResults.scrollIntoViewIfNeeded();
 
 			await expect(
-				dataSetFragmentPage.fdsPaginationResults.getByText(
+				dataSetFragmentPage.paginationResults.getByText(
 					'Showing 1 to 3 of 3 entries.'
 				)
 			).toBeVisible();

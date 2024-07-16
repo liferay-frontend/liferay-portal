@@ -44,8 +44,8 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 
 test.describe('Data Set Fragment', () => {
 	test('Data Set can be added to the fragment', async ({
-		dataSetManagerApiHelpers,
 		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
 		layout,
 		page,
 	}) => {
@@ -96,8 +96,8 @@ test.describe('Data Set Fragment', () => {
 	});
 
 	test('Data Set selection modal shows a "No results found" message when there are no Data Sets created', async ({
-		dataSetManagerApiHelpers,
 		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
 		layout,
 	}) => {
 		test.step('Remove Data Set', async () => {

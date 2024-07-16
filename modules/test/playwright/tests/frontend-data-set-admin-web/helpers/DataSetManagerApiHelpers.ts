@@ -7,7 +7,7 @@ import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {liferayConfig} from '../../../liferay.config';
 import {
 	DATA_SET_CARDS_SECTIONS_RELATIONSHIP,
-	DATA_SET_CLIENT_EXTENSION_FILTER_RELATIONSHIP,
+	DATA_SET_CLIENT_EXTENSION_FILTERS_RELATIONSHIP,
 	DATA_SET_CREATION_ACTIONS_RELATIONSHIP,
 	DATA_SET_DATE_FILTERS_RELATIONSHIP,
 	DATA_SET_ITEM_ACTIONS_RELATIONSHIP,
@@ -98,7 +98,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		const url = `${this.baseUrl}data-set-manager/client-extension-filters`;
 
 		const data = {
-			[DATA_SET_CLIENT_EXTENSION_FILTER_RELATIONSHIP]: dataSetId,
+			[DATA_SET_CLIENT_EXTENSION_FILTERS_RELATIONSHIP]: dataSetId,
 			fdsFilterClientExtensionERC,
 			fieldName,
 			label_i18n,
