@@ -12,6 +12,7 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import {InputLocalized} from 'frontend-js-components-web';
 import {fetch, openModal} from 'frontend-js-web';
+import fuzzy from 'fuzzy';
 import React, {useEffect, useState} from 'react';
 
 import {IDataSet} from '../../DataSets';
@@ -20,6 +21,7 @@ import OrderableTable from '../../components/OrderableTable';
 import RequiredMark from '../../components/RequiredMark';
 import {
 	API_URL,
+	FUZZY_OPTIONS,
 	OBJECT_RELATIONSHIP,
 	OBJECT_RELATIONSHIP_LEGACY,
 	OBJECT_RELATIONSHIP_NEW,
@@ -70,6 +72,37 @@ const DefaultComponent = ({item}: IContentRendererProps) => {
 				? Liferay.Language.get('yes')
 				: Liferay.Language.get('no')}
 		</ClayLabel>
+	);
+};
+
+const LabelComponent = ({item, query}: IContentRendererProps) => {
+	const label =
+		item.label ||
+		item.label_i18n[Liferay.ThemeDisplay.getDefaultLanguageId()] ||
+		'';
+
+	const fuzzyMatch = fuzzy.match(query, label, FUZZY_OPTIONS);
+
+	return (
+		<span className="table-list-title">
+			{fuzzyMatch ? (
+				<span
+					dangerouslySetInnerHTML={{
+						__html: fuzzyMatch.rendered,
+					}}
+				/>
+			) : (
+				<span>{label}</span>
+			)}
+		</span>
+	);
+};
+
+const labelTextMatch = (item: ISort) => {
+	return (
+		item.label ||
+		item.label_i18n[Liferay.ThemeDisplay.getDefaultLanguageId()] ||
+		''
 	);
 };
 
@@ -649,7 +682,10 @@ const Sorting = ({
 						]}
 						fields={[
 							{
-								headingTitle: true,
+								contentRenderer: {
+									component: LabelComponent,
+									textMatch: labelTextMatch,
+								},
 								label: Liferay.Language.get('label'),
 								name: 'label',
 							},
