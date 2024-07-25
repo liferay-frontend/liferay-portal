@@ -18,10 +18,20 @@ export async function getUpstreamCommitHash() {
 		commitHash = stdout;
 	}
 	catch (error) {
-		const {stdout} =
-			await $`git rev-parse ${await getUpstreamRemoteName()}/${LIFERAY_WORKING_BRANCH}`;
+		const remoteBranch = `${await getUpstreamRemoteName()}/${LIFERAY_WORKING_BRANCH}`;
 
-		commitHash = stdout;
+		console.log(
+			`ℹ️ Remote branch '${upstreamBranch}' not found. Using '${remoteBranch}' instead.`
+		);
+
+		try {
+			const {stdout} = await $`git rev-parse ${remoteBranch}`;
+
+			commitHash = stdout;
+		}
+		catch (error) {
+			throw new Error(`Could not find remote branch '${remoteBranch}'.`);
+		}
 	}
 
 	return commitHash;
