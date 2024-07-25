@@ -45,7 +45,7 @@ export async function getGitModifiedFiles(commit = undefined) {
 	}
 
 	if (!cachedGitModifiedFiles[commit]) {
-		const {stdout} = await $`git diff --name-only ${commit} HEAD`;
+		const {stdout} = await $`git diff --name-only ${commit}`;
 
 		cachedGitModifiedFiles[commit] = stdout.split('\n');
 	}
