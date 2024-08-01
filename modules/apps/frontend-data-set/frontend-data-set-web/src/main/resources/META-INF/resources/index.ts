@@ -36,6 +36,7 @@ export declare function FrontendDataSet({
 	overrideEmptyResultView,
 	pagination,
 	portletId,
+	selectedItems,
 	selectedItemsKey,
 	selectionType,
 	showManagementBar,
@@ -201,6 +202,7 @@ export interface IFrontendDataSetProps {
 		initialPageNumber?: number;
 	};
 	portletId?: string;
+	selectedItems?: any;
 	selectedItemsKey?: string;
 	selectionType?: 'single' | 'multiple';
 	showManagementBar?: boolean;

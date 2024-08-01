@@ -11,6 +11,7 @@ export function openItemSelector({
 	itemSelectorURL,
 	destroyedCallback = null,
 	modalProps = {},
+	selectedData,
 	transformValueCallback,
 }) {
 	openSelectionModal({
@@ -53,5 +54,6 @@ export function openItemSelector({
 		title: Liferay.Language.get('select'),
 		url: itemSelectorURL,
 		...modalProps,
+		containerProps: selectedData
 	});
 }

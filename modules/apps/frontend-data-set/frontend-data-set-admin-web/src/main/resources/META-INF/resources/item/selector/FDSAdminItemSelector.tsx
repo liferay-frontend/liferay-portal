@@ -30,16 +30,34 @@ const views = [
 	},
 ];
 
-const FDSAdminItemSelector = ({
+const FDSAdminItemSelector = (
+	{
 	className,
 	classNameId,
+	classPK,
 	namespace,
 }: {
-	className: String;
-	classNameId: String;
-	namespace: String;
-}) => {
-	const [selectedItem, setSelectedItem] = useState<ISelectedItem>();
+	className: string;
+	classNameId: string;
+	classPK: string;
+	namespace: string;
+}
+) => {
+	const selectedId = window.frameElement && window.frameElement?.getAttribute('classPK');
+
+	const preselectedItem = {
+		externalReferenceCode: window.frameElement?.getAttribute('externalReferenceCode') || '',
+		id: selectedId || '',
+		label: window.frameElement?.getAttribute('label') || '',
+	};
+	const [selectedItem, setSelectedItem] = useState<ISelectedItem>(preselectedItem);
+
+	console.log(
+		className,
+		classNameId,
+		classPK,
+		namespace
+	);
 
 	return (
 		<div className="fds-admin-item-selector">
@@ -61,6 +79,7 @@ const FDSAdminItemSelector = ({
 						});
 					}}
 					selectedItemsKey="id"
+					selectedItems={[selectedId]}
 					selectionType="single"
 					views={views}
 				/>
@@ -81,7 +100,7 @@ const FDSAdminItemSelector = ({
 							data-value={`{
 								"className": "${className}",
 								"classNameId": "${classNameId}",
-								"classPK": "${selectedItem?.id}",
+								"classPK": "${selectedItem?.id || selectedId}",
 								"externalReferenceCode": "${selectedItem?.externalReferenceCode}",
 								"title": "${selectedItem?.label}"}`}
 						>

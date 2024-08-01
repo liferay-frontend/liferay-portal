@@ -259,6 +259,7 @@ const Modal = ({
 													(id && `${id}_iframe_`) ||
 													'modalIframe',
 												...iframeProps,
+												...containerProps
 											}}
 											onOpen={onOpen}
 											processClose={processClose}

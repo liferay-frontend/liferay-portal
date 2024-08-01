@@ -92,7 +92,9 @@ public class FDSAdminItemSelectorView
 		servletRequest.setAttribute(
 			FDSAdminWebKeys.FDS_ADMIN_ITEM_SELECTOR_DISPLAY_CONTEXT,
 			new FDSAdminItemSelectorDisplayContext(
-				(HttpServletRequest)servletRequest));
+				(HttpServletRequest)servletRequest,
+				itemSelectedEventName,
+				infoItemItemSelectorCriterion));
 
 		RequestDispatcher requestDispatcher =
 			servletContext.getRequestDispatcher(

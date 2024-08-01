@@ -56,13 +56,21 @@ export default function ItemSelector({
 		if (defaultPrevented) {
 			return;
 		}
-
+		console.log({
+			callback: onItemSelect,
+			eventName: eventName || `${config.portletNamespace}selectInfoItem`,
+			itemSelectorURL: itemSelectorURL || config.infoItemSelectorURL,
+			modalProps,
+			transformValueCallback,
+			selectedItem,
+		});
 		openItemSelector({
 			callback: onItemSelect,
 			eventName: eventName || `${config.portletNamespace}selectInfoItem`,
 			itemSelectorURL: itemSelectorURL || config.infoItemSelectorURL,
 			modalProps,
 			transformValueCallback,
+			selectedData: selectedItem,
 		});
 	}, [
 		eventName,

@@ -15,6 +15,10 @@
 		).put(
 			"classNameId", fdsAdminItemSelectorDisplayContext.getClassNameId()
 		).put(
+			"itemSelectedEventName", fdsAdminItemSelectorDisplayContext.getItemSelectedEventName()
+		).put(
+			"classPK", fdsAdminItemSelectorDisplayContext.getClassPK()
+		).put(
 			"namespace", liferayPortletResponse.getNamespace()
 		).build()
 	%>'
