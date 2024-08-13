@@ -16,7 +16,7 @@ RenderLayoutUtilityPageEntryDisplayContext renderLayoutUtilityPageEntryDisplayCo
 %>
 
 <c:if test="<%= layoutStructure != null %>">
-	<link data-senna-track="temporary" href="<%= renderLayoutUtilityPageEntryDisplayContext.getHref() %>" rel="stylesheet" type="text/css" />
+	<aui:link data-senna-track="temporary" href="<%= renderLayoutUtilityPageEntryDisplayContext.getHref() %>" rel="stylesheet" type="text/css" />
 
 	<%
 	try {
