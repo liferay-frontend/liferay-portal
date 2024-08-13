@@ -24,6 +24,7 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -127,7 +128,11 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 				httpServletRequest, httpServletResponse,
 				pageContext -> {
 					try {
-						writer.write("<link href=\"");
+						writer.write("<link");
+						writer.write(
+							ContentSecurityPolicyNonceProviderUtil.getNonce(
+								httpServletRequest));
+						writer.write(" href=\"");
 						writer.write(
 							_portal.getStaticResourceURL(
 								httpServletRequest,
