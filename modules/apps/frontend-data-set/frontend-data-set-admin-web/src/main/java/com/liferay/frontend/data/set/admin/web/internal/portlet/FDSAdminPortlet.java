@@ -809,7 +809,7 @@ public class FDSAdminPortlet extends MVCPortlet {
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 						ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
-						_language.get(locale, "parameters"), "parameters",
+						_language.get(locale, "query-string"), "queryString",
 						false),
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -888,7 +888,7 @@ public class FDSAdminPortlet extends MVCPortlet {
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 						ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
-						_language.get(locale, "parameters"), "parameters",
+						_language.get(locale, "queryString"), "queryString",
 						false),
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
