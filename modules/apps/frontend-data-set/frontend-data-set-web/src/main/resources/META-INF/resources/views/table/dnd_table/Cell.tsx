@@ -118,7 +118,11 @@ const Cell = ({
 
 	return (
 		<div
-			className={classNames(heading ? 'dnd-th' : 'dnd-td', className)}
+			className={classNames(
+				heading ? 'dnd-th' : 'dnd-td',
+				`cell-${columnName}`,
+				className
+			)}
 			ref={cellRef}
 			style={{
 				width: width ?? defaultWidth,
