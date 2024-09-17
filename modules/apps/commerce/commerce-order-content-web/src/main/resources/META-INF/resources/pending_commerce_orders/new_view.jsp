@@ -353,7 +353,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 		</commerce-ui:panel>
 	</div>
 
-	<div class="col-12 <%= CommerceOrderFDSNames.PENDING_ORDER_ITEMS %>">
+	<div class="col-12">
 		<commerce-ui:panel
 			bodyClasses="p-0"
 			title='<%= LanguageUtil.get(request, "items") %>'
