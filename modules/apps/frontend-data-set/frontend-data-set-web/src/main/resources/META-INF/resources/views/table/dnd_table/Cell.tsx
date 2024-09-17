@@ -11,10 +11,11 @@ import ViewsContext, {
 	IViewsContext,
 	TViewsContextDispatch,
 } from '../../ViewsContext';
+import getCellColumnClassName from '../../utils/getCellColumnClassName';
+import {VIEWS_ACTION_TYPES} from '../../viewsReducer';
 
 // @ts-ignore
 
-import {VIEWS_ACTION_TYPES} from '../../viewsReducer';
 import TableContext from './TableContext';
 
 const Cell = ({
@@ -120,7 +121,7 @@ const Cell = ({
 		<div
 			className={classNames(
 				heading ? 'dnd-th' : 'dnd-td',
-				`cell-${columnName}`,
+				getCellColumnClassName(columnName),
 				className
 			)}
 			ref={cellRef}
