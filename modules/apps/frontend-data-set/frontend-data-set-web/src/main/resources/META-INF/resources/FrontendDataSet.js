@@ -567,7 +567,7 @@ const FrontendDataSet = ({
 
 	const view =
 		!dataLoading && !componentLoading ? (
-			<div className="data-set-content-wrapper" data-id={id}>
+			<div className="data-set-content-wrapper">
 				<input
 					hidden
 					name={`${namespace || id + '_'}${
