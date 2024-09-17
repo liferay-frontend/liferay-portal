@@ -10,6 +10,8 @@ import {applicationsMenuPageTest} from '../../fixtures/applicationsMenuPageTest'
 import {commercePagesTest} from '../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../fixtures/loginTest';
+import getRandomString from '../../utils/getRandomString';
+import {ApiHelpers} from '../../helpers/ApiHelpers';
 
 const test = mergeTests(
 	apiHelpersTest,
@@ -18,6 +20,21 @@ const test = mergeTests(
 	dataApiHelpersTest,
 	loginTest()
 );
+
+let account;
+
+test.beforeEach(async ({apiHelpers}) => {
+	await test.step('Create account', async () => {
+		account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
+	});
+});
+
+test.afterEach(async ({apiHelpers}) => {
+	await apiHelpers.headlessAdminUser.deleteAccount(account.id);
+});
 
 test('LPD-31378 Width of columns with very small header text is increased', async ({
 	apiHelpers,
@@ -36,30 +53,10 @@ test('LPD-31378 Width of columns with very small header text is increased', asyn
 		await applicationsMenuPage.goToSite('Minium');
 	});
 
-	await test.step('Create account', async () => {
-		const accountButton = page.getByRole('button', {
-			name: 'Select Account & Order',
-		});
-
-		await accountButton.waitFor({state: 'visible'});
-		await accountButton.click();
-
-		const newAccountButton = page.getByRole('button', {
-			name: 'Create New Account',
-		});
-
-		await newAccountButton.waitFor({state: 'visible'});
-		await newAccountButton.click();
-
-		const accountNameField = page.locator('input[name="accountName"]');
-
-		await accountNameField.waitFor({state: 'visible'});
-		await accountNameField.fill('test');
-
-		await page.getByRole('button', {exact: true, name: 'Create'}).click();
-	});
-
 	await test.step('Add transmission to shopping cart', async () => {
+		const accountNameField = page.getByText('There is no order selected.');
+		await accountNameField.waitFor({state: 'visible'});
+
 		const transmissionButton = page
 			.locator('#wwxc_column_2d_2_1_add_to_cart')
 			.getByRole('button', {name: 'Add to Cart'});
@@ -73,7 +70,7 @@ test('LPD-31378 Width of columns with very small header text is increased', asyn
 		await cartButton.click();
 	});
 
-	await test.step('Check SKU width length', async () => {
+	await test.step('Check Name and SKU headers width', async () => {
 		const viewDetailsButton = page.getByRole('button', {
 			name: 'View Details',
 		});
@@ -81,16 +78,17 @@ test('LPD-31378 Width of columns with very small header text is increased', asyn
 		await viewDetailsButton.waitFor({state: 'visible'});
 		await viewDetailsButton.click();
 
-		const skuTableHeader = page
-			.getByTestId('visualization-mode-table')
-			.getByText('SKU');
+		const nameTableHeader = page.locator('.dnd-th.cell-name');
+		await nameTableHeader.waitFor({state: 'visible'});
+		const nameTableHeaderBoundingBox = await nameTableHeader.boundingBox();
+		const nameTableHeaderWidth = nameTableHeaderBoundingBox.width;
 
-		await skuTableHeader.waitFor({state: 'visible'});
+		expect(nameTableHeaderWidth).toEqual(150);
 
+		const skuTableHeader = page.locator('.dnd-th.cell-sku');
 		const skuTableHeaderBoundingBox = await skuTableHeader.boundingBox();
-
 		const skuTableHeaderWidth = skuTableHeaderBoundingBox.width;
 
-		expect(skuTableHeaderWidth).toEqual(140);
+		expect(skuTableHeaderWidth).toEqual(100);
 	});
 });
