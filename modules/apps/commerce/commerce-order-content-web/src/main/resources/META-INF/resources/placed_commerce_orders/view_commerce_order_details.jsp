@@ -345,7 +345,7 @@ if (commerceOrder != null) {
 </div>
 
 <div class="row">
-	<div class="col-md-12">
+	<div class="col-md-12 <%= CommerceOrderFDSNames.PLACED_ORDER_ITEMS %>">
 
 		<%
 		java.util.Map<String, String> contextParams = new java.util.HashMap<>();

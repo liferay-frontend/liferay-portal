@@ -445,7 +445,7 @@ List<String> errorMessages = (List<String>)request.getAttribute(CommerceWebKeys.
 </aui:form>
 
 <div class="row">
-	<div class="col-md-9">
+	<div class="col-md-9 <%= CommerceOrderFDSNames.PENDING_ORDER_ITEMS %>">
 
 		<%
 		java.util.Map<String, String> contextParams = new java.util.HashMap<>();

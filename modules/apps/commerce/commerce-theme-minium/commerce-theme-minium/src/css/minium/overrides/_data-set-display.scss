@@ -89,46 +89,50 @@
 	}
 
 	/* ---------- Custom minium table cell customization ---------- */
-
-	div[data-id='com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet-placedOrderItems'] {
+	.dnd-table {
 		.dnd-td,
 		.dnd-th {
-			&.cell-sku {
-				min-width: 100px;
+			&.cell-externalReferenceCode {
+				min-width: 150px;
 			}
 
-			&.cell-shippedQuantity {
-				max-width: 150px;
+			&.cell-name {
+				min-width: 150px;
 			}
 
 			&.cell-promoPrice {
 				max-width: 132px;
 			}
 
-			&.cell-name {
-				min-width: 150px;
+			&.cell-purchaseOrderNumber {
+				max-width: 175px;
+			}
+
+			&.cell-shippedQuantity {
+				max-width: 150px;
+			}
+
+			&.cell-sku {
+				min-width: 90px;
 			}
 		}
 	}
+}
 
-	div[data-id$='Orders'],
-	div[data-id$='OrderItems'] {
-		.dnd-td,
-		.dnd-th {
-			&.cell-sku {
-				min-width: 100px;
-			}
+/* ---------- Custom minium table cell customization via portlet reference ---------- */
+div[class$='OrderItems'],
+div[class$='Orders'] {
+	.data-set {
+		.dnd-table {
+			.dnd-td,
+			.dnd-th {
+				&.cell-sku {
+					min-width: 120px;
+				}
 
-			&.cell-name {
-				min-width: 150px;
-			}
-
-			&.cell-externalReferenceCode {
-				min-width: 150px;
-			}
-
-			&.cell-purchaseOrderNumber {
-				max-width: 175px;
+				&.cell-name {
+					min-width: 130px;
+				}
 			}
 		}
 	}
