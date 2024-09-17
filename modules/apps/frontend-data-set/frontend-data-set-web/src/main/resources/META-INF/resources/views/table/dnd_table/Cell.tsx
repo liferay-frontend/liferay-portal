@@ -12,10 +12,10 @@ import ViewsContext, {
 	TViewsContextDispatch,
 } from '../../ViewsContext';
 import getCellColumnClassName from '../../utils/getCellColumnClassName';
-import {VIEWS_ACTION_TYPES} from '../../viewsReducer';
 
 // @ts-ignore
 
+import {VIEWS_ACTION_TYPES} from '../../viewsReducer';
 import TableContext from './TableContext';
 
 const Cell = ({

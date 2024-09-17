@@ -11,7 +11,6 @@ import {commercePagesTest} from '../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../fixtures/loginTest';
 import getRandomString from '../../utils/getRandomString';
-import {ApiHelpers} from '../../helpers/ApiHelpers';
 
 const test = mergeTests(
 	apiHelpersTest,
@@ -21,7 +20,7 @@ const test = mergeTests(
 	loginTest()
 );
 
-let account;
+let account: any;
 
 test.beforeEach(async ({apiHelpers}) => {
 	await test.step('Create account', async () => {
