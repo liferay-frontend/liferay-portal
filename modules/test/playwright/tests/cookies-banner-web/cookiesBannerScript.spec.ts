@@ -24,6 +24,8 @@ test('@LPD-25701 Cookie Banner Script', async ({
 	await test.step('Go to page and click edit', async () => {
 		await page.goto(layout.friendlyURL);
 
+		await page.locator('#content').waitFor({state: 'visible'});
+
 		const editButton = page.getByRole('link', {name: 'Edit'});
 
 		await editButton.waitFor({state: 'visible'});
@@ -50,7 +52,6 @@ test('@LPD-25701 Cookie Banner Script', async ({
 		const htmlExample = page.getByText('HTML Example');
 
 		await htmlExample.waitFor({state: 'visible'});
-		await htmlExample.click();
 		await htmlExample.click();
 		await htmlExample.click();
 
@@ -118,7 +119,10 @@ test('@LPD-25701 Cookie Banner Script', async ({
 			await updateButton.click();
 		}
 
-		await waitForAlert(page);
+		await waitForAlert(
+			page,
+			`Success:Your request completed successfully.`
+		);
 	});
 
 	await test.step('Accept Cookies', async () => {
