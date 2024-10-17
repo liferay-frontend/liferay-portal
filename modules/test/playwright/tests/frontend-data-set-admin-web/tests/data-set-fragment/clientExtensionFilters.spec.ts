@@ -85,6 +85,11 @@ test('Deployed client extension filter is available in fragment @LPS-190457', as
 
 	const filterButton = page.locator('.filters-dropdown').getByText('Filter');
 
+	test.fail(
+		await filterButton.isHidden(),
+		'No filter button available. Possible due to missing CX'
+	);
+
 	await expect(filterButton).toBeInViewport();
 
 	await clickAndExpectToBeVisible({

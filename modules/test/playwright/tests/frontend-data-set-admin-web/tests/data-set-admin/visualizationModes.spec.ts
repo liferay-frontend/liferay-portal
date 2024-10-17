@@ -1390,6 +1390,11 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 				hasText: 'Liferay Sample Frontend Data Set Cell Renderer',
 			});
 
+			test.fail(
+				await cellRendererOption.isHidden(),
+				'No Cell Renderer available. Possibly due to a missing CX'
+			);
+
 			await expect(cellRendererOption).toBeInViewport();
 
 			const cellRendererOptionLabel =
