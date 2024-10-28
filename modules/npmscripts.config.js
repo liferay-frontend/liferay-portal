@@ -382,6 +382,9 @@ module.exports = {
 			'@liferay/flags-taglib': [],
 			'@liferay/fragment-renderer-collection-filter-impl': [],
 			'@liferay/frontend-data-set-web': [],
+			'@liferay/frontend-editor-ckeditor-web': [
+				'ckeditor5/ckeditor5.css',
+			],
 			'@liferay/frontend-icons-web': [],
 			'@liferay/frontend-js-codemirror-web': [
 				'codemirror/addon/fold/foldgutter.css',
