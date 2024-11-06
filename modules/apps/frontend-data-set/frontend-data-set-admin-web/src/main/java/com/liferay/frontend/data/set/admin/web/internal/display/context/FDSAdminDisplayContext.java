@@ -11,6 +11,8 @@ import com.liferay.frontend.data.set.admin.web.internal.constants.FDSAdminPortle
 import com.liferay.frontend.data.set.admin.web.internal.portlet.FDSAdminPortlet;
 import com.liferay.frontend.data.set.resolver.FDSAPIURLResolver;
 import com.liferay.frontend.data.set.resolver.FDSAPIURLResolverRegistry;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
@@ -18,6 +20,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
@@ -37,6 +40,8 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceURL;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author Marko Cikos
  */
@@ -55,6 +60,8 @@ public class FDSAdminDisplayContext {
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
 		_serviceTrackerList = serviceTrackerList;
+
+		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
 
 		_themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -81,6 +88,18 @@ public class FDSAdminDisplayContext {
 			).put(
 				"name", fdsCellRendererCET.getName(themeDisplay.getLocale())
 			));
+	}
+
+	public String getCustomDataSetsURL() {
+		return PortletURLBuilder.create(
+			PortletURLFactoryUtil.create(
+				_renderRequest, FDSAdminPortletKeys.FDS_ADMIN,
+				RenderRequest.RENDER_PHASE)
+		).setMVCPath(
+			"/custom_data_sets.jsp"
+		).setParameter(
+			"currentTab", "custom-data-sets"
+		).buildString();
 	}
 
 	public String getDataSetPermissionsURL() {
@@ -118,16 +137,6 @@ public class FDSAdminDisplayContext {
 		).buildString();
 	}
 
-	public String getFDSEntriesURL() {
-		return PortletURLBuilder.create(
-			PortletURLFactoryUtil.create(
-				_renderRequest, FDSAdminPortletKeys.FDS_ADMIN,
-				RenderRequest.RENDER_PHASE)
-		).setMVCPath(
-			"/data_sets.jsp"
-		).buildString();
-	}
-
 	public JSONArray getFDSFilterCETsJSONArray() throws Exception {
 		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -142,6 +151,26 @@ public class FDSAdminDisplayContext {
 			).put(
 				"name", fdsFilterCET.getName(themeDisplay.getLocale())
 			));
+	}
+
+	public List<NavigationItem> getNavigationItems(String currentTab) {
+		return NavigationItemListBuilder.add(
+			navigationItem -> {
+				navigationItem.setActive(currentTab.equals("custom-data-sets"));
+				navigationItem.setHref(getCustomDataSetsURL());
+				navigationItem.setLabel(
+					LanguageUtil.get(
+						_themeDisplay.getLocale(), "custom-data-sets"));
+			}
+		).add(
+			navigationItem -> {
+				navigationItem.setActive(currentTab.equals("system-data-sets"));
+				navigationItem.setHref(getSystemDataSetsURL());
+				navigationItem.setLabel(
+					LanguageUtil.get(
+						_themeDisplay.getLocale(), "system-data-sets"));
+			}
+		).build();
 	}
 
 	public JSONArray getRESTApplicationResolvedSchemasJSONArray() {
@@ -215,9 +244,22 @@ public class FDSAdminDisplayContext {
 		return resourceURL.toString();
 	}
 
+	public String getSystemDataSetsURL() {
+		return PortletURLBuilder.create(
+			PortletURLFactoryUtil.create(
+				_renderRequest, FDSAdminPortletKeys.FDS_ADMIN,
+				RenderRequest.RENDER_PHASE)
+		).setMVCPath(
+			"/system_data_sets.jsp"
+		).setParameter(
+			"currentTab", "system-data-sets"
+		).buildString();
+	}
+
 	private final CETManager _cetManager;
 	private final ObjectDefinition _dataSetObjectDefinition;
 	private final FDSAPIURLResolverRegistry _fdsAPIURLResolverRegistry;
+	private final HttpServletRequest _httpServletRequest;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private final ServiceTrackerList
