@@ -16,10 +16,8 @@ portletDisplay.setBeta(true);
 		<clay:navigation-bar
 			navigationItems='<%= fdsAdminDisplayContext.getNavigationItems("custom-data-sets") %>'
 		/>
-
-		<liferay-util:include page="/custom_data_sets.jsp" />
 	</c:when>
 	<c:otherwise>
-		<liferay-util:include page="/custom_data_sets.jsp" />
+		<liferay-util:include page="/custom_data_sets.jsp" servletContext="<%= application %>" />
 	</c:otherwise>
 </c:choose>

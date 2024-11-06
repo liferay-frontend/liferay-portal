@@ -11,10 +11,6 @@
 portletDisplay.setBeta(true);
 %>
 
-<clay:navigation-bar
-	navigationItems='<%= fdsAdminDisplayContext.getNavigationItems("system-data-sets") %>'
-/>
-
 <react:component
 	module="{SystemDataSets} from frontend-data-set-admin-web"
 	props='<%=
