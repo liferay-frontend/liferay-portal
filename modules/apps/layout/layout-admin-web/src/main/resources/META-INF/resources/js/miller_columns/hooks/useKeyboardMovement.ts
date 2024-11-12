@@ -37,7 +37,7 @@ export function useKeyboardMovement({
 		columnIndex === target?.columnIndex && itemIndex === target?.itemIndex;
 
 	const enableMovement = useCallback(
-		(sources) => {
+		(sources: any) => {
 			const initialTarget: MovementTarget = {
 				columnIndex,
 				itemIndex,
