@@ -725,6 +725,175 @@ test(
 	}
 );
 
+test('A user with "View" and "Permissions" permission', async ({
+	dataSetManagerApiHelpers,
+	dataSetsPage,
+	page,
+}) => {
+
+	// @TODO Create user with "Permissions" permission and login as that user.
+
+	await test.step('Create a data set', async () => {
+		const blogPostDataSetERC = getRandomString();
+		dataSetERCs.push(blogPostDataSetERC);
+
+		await dataSetManagerApiHelpers.createDataSet({
+			...blogPostsDataSetConfig,
+			erc: blogPostDataSetERC,
+			label: blogPostsDataSetConfig.name,
+		});
+	});
+
+	await test.step('Go to Data Sets', async () => {
+		await dataSetsPage.goto();
+	});
+
+	await test.step('Open actions dropdown', async () => {
+		const dataSetRows = await page
+			.locator('.data-set-content-wrapper .dnd-tbody .dnd-tr')
+			.filter({
+				hasText: blogPostsDataSetConfig.name,
+			});
+
+		await dataSetRows
+			.first()
+			.getByRole('button', {name: 'Actions'})
+			.click();
+	});
+
+	await test.step('Check that "Permissions" is visible', async () => {
+		await expect(
+			page.getByRole('menuitem', {name: 'Permissions'})
+		).toBeVisible();
+	});
+
+	await test.step('Open Permissions modal', async () => {
+		await page.getByRole('menuitem', {name: 'Permissions'}).click();
+	});
+
+	await test.step('Enable "View" permission for "User" role', async () => {
+		await page
+			.frameLocator('iframe[title="Permissions"]')
+			.locator('#user_ACTION_VIEW')
+			.setChecked(true);
+	});
+
+	await test.step('Save Permissions modal', async () => {
+		await page
+			.frameLocator('iframe[title="Permissions"]')
+			.getByRole('button', {name: 'Save'})
+			.click();
+	});
+
+	await test.step('Click "Cancel" in the Permissions modal', async () => {
+		await page
+			.frameLocator('iframe[title="Permissions"]')
+			.getByRole('button', {name: 'Cancel'})
+			.click();
+	});
+	await test.step('Check that the Permissions modal is closed', async () => {
+		await expect(
+			page.getByRole('heading', {name: 'Permissions'})
+		).not.toBeVisible();
+	});
+
+	await test.step('Open actions dropdown', async () => {
+		const dataSetRows = await page
+			.locator('.data-set-content-wrapper .dnd-tbody .dnd-tr')
+			.filter({
+				hasText: blogPostsDataSetConfig.name,
+			});
+
+		await dataSetRows
+			.first()
+			.getByRole('button', {name: 'Actions'})
+			.click();
+	});
+
+	await test.step('Open Permissions modal', async () => {
+		await page.getByRole('menuitem', {name: 'Permissions'}).click();
+	});
+
+	await test.step('Confirm "View" permission is persisted', async () => {
+		await expect(
+			page
+				.frameLocator('iframe[title="Permissions"]')
+				.locator('#user_ACTION_VIEW')
+		).toBeChecked();
+	});
+});
+
+test('A user with only "View" permission', async ({
+	dataSetManagerApiHelpers,
+	dataSetsPage,
+	page,
+}) => {
+
+	// @TODO Create user with only "View" permission and login as that user.
+
+	await test.step('Create a data set', async () => {
+		const blogPostDataSetERC = getRandomString();
+		dataSetERCs.push(blogPostDataSetERC);
+
+		await dataSetManagerApiHelpers.createDataSet({
+			...blogPostsDataSetConfig,
+			erc: blogPostDataSetERC,
+			label: blogPostsDataSetConfig.name,
+		});
+	});
+
+	await test.step('Go to Data Sets', async () => {
+		await dataSetsPage.goto();
+	});
+
+	await test.step('Open actions dropdown', async () => {
+		const dataSetRows = await page
+			.locator('.data-set-content-wrapper .dnd-tbody .dnd-tr')
+			.filter({
+				hasText: blogPostsDataSetConfig.name,
+			});
+
+		await dataSetRows
+			.first()
+			.getByRole('button', {name: 'Actions'})
+			.click();
+	});
+
+	await test.step('Check that "Permissions" is not visible', async () => {
+		await expect(
+			page.getByRole('menuitem', {name: 'Permissions'})
+		).not.toBeVisible();
+	});
+});
+
+test('A user without "View" permission on Data Set items', async ({
+	dataSetManagerApiHelpers,
+	dataSetsPage,
+	page,
+}) => {
+
+	// @TODO Create user without "View" permission and login as that user.
+
+	await test.step('Create a data set', async () => {
+		const blogPostDataSetERC = getRandomString();
+		dataSetERCs.push(blogPostDataSetERC);
+
+		await dataSetManagerApiHelpers.createDataSet({
+			...blogPostsDataSetConfig,
+			erc: blogPostDataSetERC,
+			label: blogPostsDataSetConfig.name,
+		});
+	});
+
+	await test.step('Go to Data Sets', async () => {
+		await dataSetsPage.goto();
+	});
+
+	await test.step('Assert that no data sets appear on the table', async () => {
+		assertTableRowsCount(page, 0);
+	});
+});
+
 dataSetsTabsTest(
 	'Check that there are two different tabs to navigate between Custom and System Data Sets',
 	{tag: '@LPD-37431'},
