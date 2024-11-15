@@ -843,7 +843,7 @@ test('A user with only "View" permission', async ({
 	});
 
 	await test.step('Go to Data Sets', async () => {
-		await dataSetsPage.goto();
+		await dataSetsPage.goto({checkTabVisibility: false});
 	});
 
 	await test.step('Open actions dropdown', async () => {
@@ -886,7 +886,7 @@ test('A user without "View" permission on Data Set items', async ({
 	});
 
 	await test.step('Go to Data Sets', async () => {
-		await dataSetsPage.goto();
+		await dataSetsPage.goto({checkTabVisibility: false});
 	});
 
 	await test.step('Assert that no data sets appear on the table', async () => {
@@ -923,7 +923,7 @@ dataSetsTabsTest(
 		});
 
 		await test.step('Navigate to System Data Sets tab', async () => {
-			await dataSetsPage.goto('System Data Sets');
+			await dataSetsPage.goto({dataSetsType: 'System Data Sets'});
 
 			await expect(
 				dataSetsPage.dataSetsEmptyState.locator('.c-empty-state-title')
