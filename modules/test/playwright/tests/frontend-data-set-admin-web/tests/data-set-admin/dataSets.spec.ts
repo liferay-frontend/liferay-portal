@@ -3,22 +3,35 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Page, expect, mergeTests} from '@playwright/test';
 
+import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {rolesPagesTest} from '../../../../fixtures/rolesPagesTest';
+import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
+import {RoleDefinePermissionsPage} from '../../../../pages/roles-admin-web/RoleDefinePermissionsPage';
+import {RolePage} from '../../../../pages/roles-admin-web/RolePage';
+import {RolesPage} from '../../../../pages/roles-admin-web/RolesPage';
 import getRandomString from '../../../../utils/getRandomString';
+import performLogin, {
+	performLogout,
+	userData,
+} from '../../../../utils/performLogin';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
 import {API_ENDPOINT_PATH} from '../../utils/constants';
 import {dataSetsPageTest} from './fixtures/dataSetsPageTest';
 
 export const test = mergeTests(
+	dataApiHelpersTest,
 	dataSetManagerApiHelpersTest,
 	dataSetsPageTest,
 	featureFlagsTest({
 		'LPD-37531': false,
 		'LPS-164563': true,
 	}),
+	rolesPagesTest,
 	loginTest()
 );
 
@@ -147,6 +160,131 @@ async function assertTableRowsCount(page, rowsCount) {
 		const rows = await page.locator('.dnd-table > .dnd-tbody > .dnd-tr');
 
 		expect(rows).toHaveCount(rowsCount);
+	});
+}
+
+async function setupUserRoleAndLoginAsUser({
+	apiHelpers,
+	dataSetResourcePermissions,
+	page,
+	roleDefinePermissionsPage,
+	rolePage,
+	rolesPage,
+}: {
+	apiHelpers: DataApiHelpers;
+	dataSetResourcePermissions?: {
+		actions: string[];
+		name: string;
+	}[];
+	page: Page;
+	roleDefinePermissionsPage: RoleDefinePermissionsPage;
+	rolePage: RolePage;
+	rolesPage: RolesPage;
+}) {
+	const roleName = `ds_user_${getRandomString()}`;
+
+	let dataSetUserRole;
+	let userAccount: TUserAccount;
+
+	await test.step('Create Data Set user role', async () => {
+		const companyId = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getCompanyId();
+		});
+
+		dataSetUserRole = await apiHelpers.headlessAdminUser.postRole({
+			name: roleName,
+			rolePermissions: [
+				{
+					actionIds: ['VIEW_CONTROL_PANEL'],
+					primaryKey: companyId,
+					resourceName: '90',
+					scope: 1,
+				},
+				{
+					actionIds: ['ACCESS_IN_CONTROL_PANEL', 'VIEW'],
+					primaryKey: companyId,
+					resourceName:
+						'com_liferay_frontend_data_set_admin_web_internal_portlet_FDSAdminPortlet',
+					scope: 1,
+				},
+			],
+			roleType: 'regular',
+		});
+	});
+
+	await test.step('Create a new user', async () => {
+		userAccount = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		userData[userAccount.alternateName] = {
+			name: userAccount.givenName,
+			password: 'test',
+			surname: userAccount.familyName,
+		};
+	});
+
+	await test.step('Assign new role to user', async () => {
+		await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
+			dataSetUserRole.id,
+			Number(userAccount.id)
+		);
+
+		apiHelpers.data.push({
+			id: `${dataSetUserRole.id}_${userAccount.id}`,
+			type: 'roleUserAccountAssociation',
+		});
+	});
+
+	// Enable Data Set roles through the UI since the Data Set Object created
+	// is given a random resource name (For example: com.liferay.object.model.ObjectDefinition#E0X3).
+
+	if (dataSetResourcePermissions) {
+		await test.step('Go to roles admin page', async () => {
+			await rolesPage.goto();
+		});
+
+		await test.step('Navigate to role edit page', async () => {
+			await page.getByRole('link', {exact: true, name: roleName}).click();
+		});
+
+		await test.step('Navigate to "Define Permissions" > "Data Set" section', async () => {
+			await rolePage.definePermissionsLink.click();
+			await roleDefinePermissionsPage.searchInput.click();
+			await roleDefinePermissionsPage.searchInput.fill('Data Set');
+
+			await page
+				.getByRole('menuitem', {exact: true, name: 'Data Set'})
+				.click();
+		});
+
+		for (const dataSetResourcePermission of dataSetResourcePermissions) {
+			await test.step('Enable role checkboxes', async () => {
+				const dataSetRolesTable = page
+					.locator('.sheet-tertiary-title')
+					.getByText(dataSetResourcePermission.name, {exact: true})
+					.locator('~ .lfr-search-container');
+
+				for (const action of dataSetResourcePermission.actions) {
+					await dataSetRolesTable
+						.getByRole('row', {name: action})
+						.getByRole('checkbox')
+						.setChecked(true);
+				}
+			});
+		}
+
+		await test.step('Save roles', async () => {
+			await page.getByRole('button', {name: 'Save'}).click();
+
+			await waitForAlert(
+				page,
+				'Success:The role permissions were updated.'
+			);
+		});
+	}
+
+	await test.step('Do login with the new user', async () => {
+		await performLogout(page);
+		await performLogin(page, userAccount.alternateName);
 	});
 }
 
@@ -726,13 +864,14 @@ test(
 );
 
 test('A user with "View" and "Permissions" permission', async ({
+	apiHelpers,
 	dataSetManagerApiHelpers,
 	dataSetsPage,
 	page,
+	roleDefinePermissionsPage,
+	rolePage,
+	rolesPage,
 }) => {
-
-	// @TODO Create user with "Permissions" permission and login as that user.
-
 	await test.step('Create a data set', async () => {
 		const blogPostDataSetERC = getRandomString();
 		dataSetERCs.push(blogPostDataSetERC);
@@ -744,8 +883,24 @@ test('A user with "View" and "Permissions" permission', async ({
 		});
 	});
 
+	await test.step('Setup user role and login as user', async () => {
+		await setupUserRoleAndLoginAsUser({
+			apiHelpers,
+			dataSetResourcePermissions: [
+				{
+					actions: ['Permissions', 'View'],
+					name: 'Data Set',
+				},
+			],
+			page,
+			roleDefinePermissionsPage,
+			rolePage,
+			rolesPage,
+		});
+	});
+
 	await test.step('Go to Data Sets', async () => {
-		await dataSetsPage.goto();
+		await dataSetsPage.goto({checkTabVisibility: false});
 	});
 
 	await test.step('Open actions dropdown', async () => {
@@ -824,13 +979,14 @@ test('A user with "View" and "Permissions" permission', async ({
 });
 
 test('A user with only "View" permission', async ({
+	apiHelpers,
 	dataSetManagerApiHelpers,
 	dataSetsPage,
 	page,
+	roleDefinePermissionsPage,
+	rolePage,
+	rolesPage,
 }) => {
-
-	// @TODO Create user with only "View" permission and login as that user.
-
 	await test.step('Create a data set', async () => {
 		const blogPostDataSetERC = getRandomString();
 		dataSetERCs.push(blogPostDataSetERC);
@@ -839,6 +995,22 @@ test('A user with only "View" permission', async ({
 			...blogPostsDataSetConfig,
 			erc: blogPostDataSetERC,
 			label: blogPostsDataSetConfig.name,
+		});
+	});
+
+	await test.step('Setup user role and login as user', async () => {
+		await setupUserRoleAndLoginAsUser({
+			apiHelpers,
+			dataSetResourcePermissions: [
+				{
+					actions: ['View'],
+					name: 'Data Set',
+				},
+			],
+			page,
+			roleDefinePermissionsPage,
+			rolePage,
+			rolesPage,
 		});
 	});
 
@@ -867,13 +1039,14 @@ test('A user with only "View" permission', async ({
 });
 
 test('A user without "View" permission on Data Set items', async ({
+	apiHelpers,
 	dataSetManagerApiHelpers,
 	dataSetsPage,
 	page,
+	roleDefinePermissionsPage,
+	rolePage,
+	rolesPage,
 }) => {
-
-	// @TODO Create user without "View" permission and login as that user.
-
 	await test.step('Create a data set', async () => {
 		const blogPostDataSetERC = getRandomString();
 		dataSetERCs.push(blogPostDataSetERC);
@@ -882,6 +1055,16 @@ test('A user without "View" permission on Data Set items', async ({
 			...blogPostsDataSetConfig,
 			erc: blogPostDataSetERC,
 			label: blogPostsDataSetConfig.name,
+		});
+	});
+
+	await test.step('Setup user role and login as user', async () => {
+		await setupUserRoleAndLoginAsUser({
+			apiHelpers,
+			page,
+			roleDefinePermissionsPage,
+			rolePage,
+			rolesPage,
 		});
 	});
 
