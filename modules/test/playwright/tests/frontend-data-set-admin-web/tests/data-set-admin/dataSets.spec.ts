@@ -919,6 +919,66 @@ test(
 	}
 );
 
+test('A user with "Delete" permission', async ({
+	apiHelpers,
+	dataSetManagerApiHelpers,
+	dataSetsPage,
+	page,
+	roleDefinePermissionsPage,
+	rolePage,
+	rolesPage,
+}) => {
+	await test.step('Create a data set', async () => {
+		const blogPostDataSetERC = getRandomString();
+		dataSetERCs.push(blogPostDataSetERC);
+
+		await dataSetManagerApiHelpers.createDataSet({
+			...blogPostsDataSetConfig,
+			erc: blogPostDataSetERC,
+			label: blogPostsDataSetConfig.name,
+		});
+	});
+
+	await test.step('Setup user role and login as user', async () => {
+		await setupUserRoleAndLoginAsUser({
+			apiHelpers,
+			dataSetResourcePermissions: [
+				{
+					actions: ['Delete'],
+					name: 'Data Set',
+				},
+			],
+			page,
+			roleDefinePermissionsPage,
+			rolePage,
+			rolesPage,
+		});
+	});
+
+	await test.step('Go to Data Sets', async () => {
+		await dataSetsPage.goto({checkTabVisibility: false});
+	});
+
+	await test.step('Open actions dropdown', async () => {
+		const dataSetRows = await page
+			.locator('.data-set-content-wrapper .dnd-tbody .dnd-tr')
+			.filter({
+				hasText: blogPostsDataSetConfig.name,
+			});
+
+		await dataSetRows
+			.first()
+			.getByRole('button', {name: 'Actions'})
+			.click();
+	});
+
+	await test.step('Check that "Delete" is visible', async () => {
+		await expect(
+			page.getByRole('menuitem', {name: 'Delete'})
+		).toBeVisible();
+	});
+});
+
 test('A user with "View" and "Permissions" permission', async ({
 	apiHelpers,
 	dataSetManagerApiHelpers,
