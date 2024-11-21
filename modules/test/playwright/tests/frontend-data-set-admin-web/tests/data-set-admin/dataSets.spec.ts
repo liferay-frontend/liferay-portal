@@ -42,7 +42,11 @@ const dataSetsTabsTest = mergeTests(
 	})
 );
 
+const createdRoleIds = [];
+const createdUserIds = [];
 const dataSetERCs = [];
+
+let loggedInAsAdmin = true;
 
 const blogPostsDataSetConfig = {
 	name: 'BlogPosting',
@@ -210,6 +214,8 @@ async function setupUserRoleAndLoginAsUser({
 			],
 			roleType: 'regular',
 		});
+
+		createdRoleIds.push(dataSetUserRole.id);
 	});
 
 	await test.step('Create a new user', async () => {
@@ -220,6 +226,8 @@ async function setupUserRoleAndLoginAsUser({
 			password: 'test',
 			surname: userAccount.familyName,
 		};
+
+		createdUserIds.push(userAccount.id);
 	});
 
 	await test.step('Assign new role to user', async () => {
@@ -285,10 +293,17 @@ async function setupUserRoleAndLoginAsUser({
 	await test.step('Do login with the new user', async () => {
 		await performLogout(page);
 		await performLogin(page, userAccount.alternateName);
+
+		loggedInAsAdmin = false;
 	});
 }
 
-test.afterEach(async ({dataSetManagerApiHelpers}) => {
+test.afterEach(async ({apiHelpers, dataSetManagerApiHelpers, page}) => {
+	if (!loggedInAsAdmin) {
+		await performLogout(page);
+		await performLogin(page, 'test');
+	}
+
 	for (const erc of dataSetERCs) {
 		await dataSetManagerApiHelpers.deleteDataSet({
 			erc,
@@ -296,6 +311,18 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 	}
 
 	dataSetERCs.length = 0;
+
+	for (const id of createdRoleIds) {
+		await apiHelpers.headlessAdminUser.deleteRole(id);
+	}
+
+	createdRoleIds.length = 0;
+
+	for (const id of createdUserIds) {
+		await apiHelpers.headlessAdminUser.deleteUserAccount(id);
+	}
+
+	createdUserIds.length = 0;
 });
 
 test(
