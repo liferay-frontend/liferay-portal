@@ -42,9 +42,9 @@ const dataSetsTabsTest = mergeTests(
 	})
 );
 
+const createdDataSetERCs = [];
 const createdRoleIds = [];
 const createdUserIds = [];
-const dataSetERCs = [];
 
 let loggedInAsAdmin = true;
 
@@ -304,13 +304,13 @@ test.afterEach(async ({apiHelpers, dataSetManagerApiHelpers, page}) => {
 		await performLogin(page, 'test');
 	}
 
-	for (const erc of dataSetERCs) {
+	for (const erc of createdDataSetERCs) {
 		await dataSetManagerApiHelpers.deleteDataSet({
 			erc,
 		});
 	}
 
-	dataSetERCs.length = 0;
+	createdDataSetERCs.length = 0;
 
 	for (const id of createdRoleIds) {
 		await apiHelpers.headlessAdminUser.deleteRole(id);
@@ -433,7 +433,7 @@ test('Can paginate created Data Sets', async ({
 
 	await test.step('Create collection of Data Sets', async () => {
 		for (const DATA_SET_ERC of testDataSetERCs) {
-			dataSetERCs.push(DATA_SET_ERC);
+			createdDataSetERCs.push(DATA_SET_ERC);
 			await dataSetManagerApiHelpers.createDataSet({
 				...tableSectionsDataSetConfig,
 				erc: DATA_SET_ERC,
@@ -516,7 +516,7 @@ test('Sort data sets by different columns', async ({
 
 	await test.step('Create collection of Data Sets', async () => {
 		const blogPostDataSetERC = getRandomString();
-		dataSetERCs.push(blogPostDataSetERC);
+		createdDataSetERCs.push(blogPostDataSetERC);
 
 		await dataSetManagerApiHelpers.createDataSet({
 			...blogPostsDataSetConfig,
@@ -525,7 +525,7 @@ test('Sort data sets by different columns', async ({
 		});
 
 		const catalogsDataSetERC = getRandomString();
-		dataSetERCs.push(catalogsDataSetERC);
+		createdDataSetERCs.push(catalogsDataSetERC);
 
 		await dataSetManagerApiHelpers.createDataSet({
 			...catalogsDataSetConfig,
@@ -533,7 +533,7 @@ test('Sort data sets by different columns', async ({
 			label: catalogsDataSetConfig.name,
 		});
 
-		dataSetERCs.push(productsDataSetERC);
+		createdDataSetERCs.push(productsDataSetERC);
 
 		await dataSetManagerApiHelpers.createDataSet({
 			...productsDataSetConfig,
@@ -542,7 +542,7 @@ test('Sort data sets by different columns', async ({
 		});
 
 		const skuDataSetERC = getRandomString();
-		dataSetERCs.push(skuDataSetERC);
+		createdDataSetERCs.push(skuDataSetERC);
 
 		await dataSetManagerApiHelpers.createDataSet({
 			...skusDataSetConfig,
@@ -901,7 +901,7 @@ test('A user with "View" and "Permissions" permission', async ({
 }) => {
 	await test.step('Create a data set', async () => {
 		const blogPostDataSetERC = getRandomString();
-		dataSetERCs.push(blogPostDataSetERC);
+		createdDataSetERCs.push(blogPostDataSetERC);
 
 		await dataSetManagerApiHelpers.createDataSet({
 			...blogPostsDataSetConfig,
@@ -1016,7 +1016,7 @@ test('A user with only "View" permission', async ({
 }) => {
 	await test.step('Create a data set', async () => {
 		const blogPostDataSetERC = getRandomString();
-		dataSetERCs.push(blogPostDataSetERC);
+		createdDataSetERCs.push(blogPostDataSetERC);
 
 		await dataSetManagerApiHelpers.createDataSet({
 			...blogPostsDataSetConfig,
@@ -1076,7 +1076,7 @@ test('A user without "View" permission on Data Set items', async ({
 }) => {
 	await test.step('Create a data set', async () => {
 		const blogPostDataSetERC = getRandomString();
-		dataSetERCs.push(blogPostDataSetERC);
+		createdDataSetERCs.push(blogPostDataSetERC);
 
 		await dataSetManagerApiHelpers.createDataSet({
 			...blogPostsDataSetConfig,
