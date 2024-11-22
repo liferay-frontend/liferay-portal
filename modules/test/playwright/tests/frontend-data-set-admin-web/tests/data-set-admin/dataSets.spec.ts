@@ -951,13 +951,25 @@ test('A user with "View" and "Permissions" permission', async ({
 
 	await test.step('Open Permissions modal', async () => {
 		await page.getByRole('menuitem', {name: 'Permissions'}).click();
+
+		await expect(
+			page
+				.frameLocator('iframe[title="Permissions"]')
+				.locator('#guest_ACTION_VIEW')
+		).not.toBeChecked();
 	});
 
 	await test.step('Enable "View" permission for "User" role', async () => {
 		await page
 			.frameLocator('iframe[title="Permissions"]')
-			.locator('#user_ACTION_VIEW')
+			.locator('#guest_ACTION_VIEW')
 			.setChecked(true);
+
+		await expect(
+			page
+				.frameLocator('iframe[title="Permissions"]')
+				.locator('#guest_ACTION_VIEW')
+		).toBeChecked();
 	});
 
 	await test.step('Save Permissions modal', async () => {
@@ -965,6 +977,8 @@ test('A user with "View" and "Permissions" permission', async ({
 			.frameLocator('iframe[title="Permissions"]')
 			.getByRole('button', {name: 'Save'})
 			.click();
+
+		await waitForAlert(page.frameLocator('iframe[title="Permissions"]'));
 	});
 
 	await test.step('Click "Cancel" in the Permissions modal', async () => {
@@ -973,6 +987,7 @@ test('A user with "View" and "Permissions" permission', async ({
 			.getByRole('button', {name: 'Cancel'})
 			.click();
 	});
+
 	await test.step('Check that the Permissions modal is closed', async () => {
 		await expect(
 			page.getByRole('heading', {name: 'Permissions'})
@@ -1000,7 +1015,7 @@ test('A user with "View" and "Permissions" permission', async ({
 		await expect(
 			page
 				.frameLocator('iframe[title="Permissions"]')
-				.locator('#user_ACTION_VIEW')
+				.locator('#guest_ACTION_VIEW')
 		).toBeChecked();
 	});
 });
