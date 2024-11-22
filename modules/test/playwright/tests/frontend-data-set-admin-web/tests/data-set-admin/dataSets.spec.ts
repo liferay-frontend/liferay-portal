@@ -1167,6 +1167,12 @@ test('A user with only "View" permission', async ({
 			page.getByRole('menuitem', {name: 'Permissions'})
 		).not.toBeVisible();
 	});
+
+	await test.step('Check that "Delete" is not visible', async () => {
+		await expect(
+			page.getByRole('menuitem', {name: 'Permissions'})
+		).not.toBeVisible();
+	});
 });
 
 test('A user without "View" permission on Data Set items', async ({
