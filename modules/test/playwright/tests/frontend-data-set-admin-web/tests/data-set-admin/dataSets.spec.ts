@@ -39,7 +39,8 @@ const dataSetsTabsTest = mergeTests(
 	test,
 	featureFlagsTest({
 		'LPD-37531': true,
-	})
+	}),
+	loginTest()
 );
 
 const createdDataSetERCs = [];
@@ -298,9 +299,37 @@ async function setupUserRoleAndLoginAsUser({
 	});
 }
 
+test.beforeEach(async ({page}) => {
+
+	// Unsure why this happens, but sometimes this can start off as not
+	// signed in, so this attempts to log in again or else the headless
+	// requests will fail.
+
+	if (
+		await page
+			.getByRole('button', {
+				name: 'Sign In',
+			})
+			.isVisible()
+	) {
+		await test.step('Sign in as admin', async () => {
+			await performLogin(page, 'test');
+		});
+	}
+});
+
 test.afterEach(async ({apiHelpers, dataSetManagerApiHelpers, page}) => {
 	if (!loggedInAsAdmin) {
-		await performLogout(page);
+		if (
+			!(await page
+				.getByRole('button', {
+					name: 'Sign In',
+				})
+				.isVisible())
+		) {
+			await performLogout(page);
+		}
+
 		await performLogin(page, 'test');
 	}
 
