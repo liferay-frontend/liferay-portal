@@ -930,7 +930,7 @@ test('A user with "Delete" permission', async ({
 }) => {
 	await test.step('Create a data set', async () => {
 		const blogPostDataSetERC = getRandomString();
-		dataSetERCs.push(blogPostDataSetERC);
+		createdDataSetERCs.push(blogPostDataSetERC);
 
 		await dataSetManagerApiHelpers.createDataSet({
 			...blogPostsDataSetConfig,
