@@ -1458,7 +1458,7 @@ definition {
 
 		ObjectPortlet.viewEntryDetails(entry = "Entry A");
 
-		CreateObject.deleteEntryInRelationshipTab(labelName = "Entry B");
+		CreateObject.deleteEntryInRelationshipTab(labelName = "Entry A");
 
 		ObjectPortlet.assertEntryNotPresent(entry = "Entry B");
 
@@ -3757,7 +3757,7 @@ definition {
 
 		ObjectAdmin.openObjectAdmin();
 
-		ObjectPortlet.selectCustomObject(label = "Custom Object 93");
+		ObjectPortlet.selectCustomObject(label = "Update Custom Object 93");
 
 		AssertTextEquals(
 			locator1 = "CreateObject#OBJECT_LABEL",
