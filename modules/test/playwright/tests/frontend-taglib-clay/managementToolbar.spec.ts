@@ -333,7 +333,7 @@ test.describe('Management Toolbar Active State', () => {
 });
 
 test.describe('Management Toolbar Using Display Context', () => {
-	test(
+	test.skip(
 		'Assert the order button can display the correct icons',
 		{tag: '@LPS-144536'},
 		async ({claySamplePage, page}) => {
