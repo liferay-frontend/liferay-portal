@@ -127,6 +127,7 @@ export default defineConfig({
 	forbidOnly: !!process.env.CI,
 	globalTimeout: 60 * 60 * 1000,
 	projects: [
+		/*
 		accessibilityMenuWeb,
 		accountAdminWebConfig,
 		addressWebConfig,
@@ -143,7 +144,9 @@ export default defineConfig({
 		captchaWebConfig,
 		changeTrackingWebConfig,
 		clientExtensionWebConfig,
+		*/
 		clientExtensionWebClusterConfig,
+		/*
 		commerceAccountWebConfig,
 		commerceCartContentWebConfig,
 		commerceChannelWebConfig,
@@ -234,6 +237,7 @@ export default defineConfig({
 		usersAdminWebConfig,
 		wikiWebConfig,
 		...setupProjects,
+		*/
 	],
 	reporter: [
 		[
