@@ -86,7 +86,7 @@ function KeyboardMovementProvider({
 	const [target, setTarget] = useState<MovementTarget>(null);
 	const screenReaderAnnouncerRef = useRef<any>();
 
-	const setText = useCallback((text) => {
+	const setText = useCallback((text: any) => {
 		const ref = screenReaderAnnouncerRef;
 
 		if (ref.current) {
