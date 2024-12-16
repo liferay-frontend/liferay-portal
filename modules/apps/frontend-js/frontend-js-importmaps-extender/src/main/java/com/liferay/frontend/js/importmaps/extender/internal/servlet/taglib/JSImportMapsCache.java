@@ -39,16 +39,30 @@ public class JSImportMapsCache {
 
 			value = value.substring(1, value.length() - 1);
 
-			globalImportMapsValues.put(globalId, value);
+			synchronized (_globalImportMapsValuesMap) {
+				globalImportMapsValues.put(globalId, value);
+			}
 
-			return () -> globalImportMapsValues.remove(globalId);
+			return () -> {
+				synchronized (_globalImportMapsValuesMap) {
+					globalImportMapsValues.remove(globalId);
+
+					if (globalImportMapsValues.isEmpty()) {
+						_globalImportMapsValuesMap.remove(companyId);
+					}
+				}
+			};
 		}
 
 		ConcurrentMap<String, String> scopedImportMapsValues =
 			_getScopedImportMapsValues(companyId);
 
-		String value = scopedImportMapsValues.putIfAbsent(
-			scope, jsonObject.toString());
+		String value;
+
+		synchronized (_scopedImportMapsValuesMap) {
+			value = scopedImportMapsValues.putIfAbsent(
+				scope, jsonObject.toString());
+		}
 
 		if (value != null) {
 			_log.error(
@@ -61,7 +75,15 @@ public class JSImportMapsCache {
 			};
 		}
 
-		return () -> scopedImportMapsValues.remove(scope);
+		return () -> {
+			synchronized (_scopedImportMapsValuesMap) {
+				scopedImportMapsValues.remove(scope);
+
+				if (scopedImportMapsValues.isEmpty()) {
+					_scopedImportMapsValuesMap.remove(companyId);
+				}
+			}
+		};
 	}
 
 	public void writeImportMaps(long companyId, Writer writer)
@@ -121,8 +143,10 @@ public class JSImportMapsCache {
 			return globalImportMapsValues1;
 		}
 
-		_globalImportMapsValuesMap.putIfAbsent(
-			companyId, new ConcurrentHashMap<>());
+		synchronized (_globalImportMapsValuesMap) {
+			_globalImportMapsValuesMap.putIfAbsent(
+				companyId, new ConcurrentHashMap<>());
+		}
 
 		return _globalImportMapsValuesMap.get(companyId);
 	}
@@ -137,8 +161,10 @@ public class JSImportMapsCache {
 			return scopedImportMapsValues1;
 		}
 
-		_scopedImportMapsValuesMap.putIfAbsent(
-			companyId, new ConcurrentHashMap<>());
+		synchronized (_scopedImportMapsValuesMap) {
+			_scopedImportMapsValuesMap.putIfAbsent(
+				companyId, new ConcurrentHashMap<>());
+		}
 
 		return _scopedImportMapsValuesMap.get(companyId);
 	}
