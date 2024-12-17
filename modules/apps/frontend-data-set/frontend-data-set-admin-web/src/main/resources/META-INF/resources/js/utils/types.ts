@@ -63,6 +63,7 @@ export interface IDataSet {
 	externalReferenceCode: string;
 	filtersOrder?: string;
 	id: string;
+	inactive: boolean;
 	itemActionsOrder?: string;
 	label: string;
 	listOfItemsPerPage: string;
@@ -89,6 +90,7 @@ export interface IDataSetTableSection extends IOrderable {
 	contextPath: string;
 	externalReferenceCode: string;
 	fieldName: string;
+	inactive: boolean;
 	label: string;
 	label_i18n: LocalizedValue<string>;
 	renderer: string;
@@ -107,8 +109,10 @@ export interface IFieldTreeItem extends IField {
 }
 
 export interface IFilter extends IOrderable {
+	externalReferenceCode?: string;
 	fieldName: string;
 	filterType?: EFilterType;
+	inactive: boolean;
 	include?: boolean;
 	itemKey?: string;
 	itemLabel?: string;

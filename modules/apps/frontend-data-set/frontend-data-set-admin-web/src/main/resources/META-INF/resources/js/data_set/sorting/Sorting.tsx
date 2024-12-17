@@ -17,8 +17,10 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import OrderableTable from '../../components/OrderableTable';
 import RequiredMark from '../../components/RequiredMark';
+import ToggleStatusComponent from '../../components/ToggleStatusComponent';
 import {
 	API_URL,
+	DEFAULT_FETCH_HEADERS,
 	FUZZY_OPTIONS,
 	OBJECT_RELATIONSHIP,
 } from '../../utils/constants';
@@ -38,6 +40,7 @@ interface IDataSetSort extends IOrderable {
 	default: boolean;
 	externalReferenceCode: string;
 	fieldName: string;
+	inactive: boolean;
 	label: string;
 	label_i18n: Liferay.Language.LocalizedValue<string>;
 	orderType: string;
@@ -636,6 +639,42 @@ const Sorting = ({
 		}
 	};
 
+	const handleUpdateStatus = async (item: IDataSetSort) => {
+		const response = await fetch(
+			`${API_URL.SORTS}/by-external-reference-code/${item.externalReferenceCode}`,
+			{
+				body: JSON.stringify({inactive: !item.inactive}),
+				headers: DEFAULT_FETCH_HEADERS,
+				method: 'PATCH',
+			}
+		);
+
+		if (!response.ok) {
+			openDefaultFailureToast();
+
+			return;
+		}
+
+		const dataSetSort: IDataSetSort = await response.json();
+
+		if (dataSetSort?.id) {
+			const updatedFdsSorts = fdsSorts.map((sort) => {
+				if (sort.id === dataSetSort.id) {
+					sort = {...sort, ...dataSetSort};
+				}
+
+				return sort;
+			});
+
+			setFDSSorts(updatedFdsSorts);
+
+			openDefaultSuccessToast();
+		}
+		else {
+			openDefaultFailureToast();
+		}
+	};
+
 	return (
 		<ClayLayout.ContainerFluid>
 			{loading ? (
@@ -686,6 +725,17 @@ const Sorting = ({
 								},
 								label: Liferay.Language.get('default'),
 								name: 'default',
+							},
+							{
+								contentRenderer: {
+									component: ({item}) =>
+										ToggleStatusComponent({
+											item,
+											toggleChange: handleUpdateStatus,
+										}),
+								},
+								label: Liferay.Language.get('status'),
+								name: 'inactive',
 							},
 						]}
 						items={fdsSorts}
