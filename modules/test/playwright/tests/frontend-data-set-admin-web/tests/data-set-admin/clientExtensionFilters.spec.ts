@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Locator, expect, mergeTests} from '@playwright/test';
 
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
 import {dataSetManagerSetupTest} from './fixtures/dataSetManagerSetupTest';
 import {filtersPageTest} from './fixtures/filtersPageTest';
@@ -164,6 +165,50 @@ test.describe('Client Extension Filters in Data Set Manager', () => {
 					name: NAME_FIELD_NAME,
 				})
 			).not.toBeVisible();
+		});
+	});
+
+	test('Can deactivate and activate a Client Extension Filter in DSM', async ({
+		filtersPage,
+		page,
+	}) => {
+		const filterLabel = getRandomString();
+
+		await test.step('Create a client extension filter', async () => {
+			await filtersPage.createClientExtensionFilter({
+				clientExtension: clientExtensionName,
+				filterBy: DATE_FIELD_NAME,
+				name: filterLabel,
+			});
+
+			await filtersPage.saveAddFilterForm();
+		});
+
+		await test.step('Check that the client extension filter is in the list and it is "Active" by default', async () => {
+			await expect(
+				page.getByRole('cell', {
+					exact: true,
+					name: DATE_FIELD_NAME,
+				})
+			).toBeVisible();
+
+			await expect(filtersPage.activeToggle.first()).toBeVisible();
+		});
+
+		await test.step('Deactivate the client extension filter', async () => {
+			await filtersPage.activeToggle.first().click();
+
+			await waitForAlert(page);
+
+			await expect(filtersPage.inactiveToggle.first()).toBeVisible();
+		});
+
+		await test.step('Activate the client extension filter', async () => {
+			await filtersPage.inactiveToggle.first().click();
+
+			await waitForAlert(page);
+
+			await expect(filtersPage.activeToggle.first()).toBeVisible();
 		});
 	});
 });
