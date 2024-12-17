@@ -639,11 +639,14 @@ const Sorting = ({
 		}
 	};
 
-	const handleUpdateStatus = async (item: IDataSetSort) => {
+	const handleUpdateStatus = async (
+		item: IDataSetSort,
+		inactive: boolean
+	) => {
 		const response = await fetch(
 			`${API_URL.SORTS}/by-external-reference-code/${item.externalReferenceCode}`,
 			{
-				body: JSON.stringify({inactive: !item.inactive}),
+				body: JSON.stringify({inactive}),
 				headers: DEFAULT_FETCH_HEADERS,
 				method: 'PATCH',
 			}
@@ -732,6 +735,7 @@ const Sorting = ({
 										ToggleStatusComponent({
 											item,
 											toggleChange: handleUpdateStatus,
+											value: !item.inactive,
 										}),
 								},
 								label: Liferay.Language.get('status'),

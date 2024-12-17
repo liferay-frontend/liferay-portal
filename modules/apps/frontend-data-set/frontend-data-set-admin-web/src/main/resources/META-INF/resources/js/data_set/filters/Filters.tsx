@@ -421,7 +421,7 @@ function Filters({
 		}
 	};
 
-	const onUpdateStatus = async (item: IFilter) => {
+	const onUpdateStatus = async (item: IFilter, inactive: boolean) => {
 		const type: any =
 			item.filterType === 'DATE_RANGE'
 				? 'DATE_FILTERS'
@@ -430,7 +430,7 @@ function Filters({
 		const response = await fetch(
 			`${API_URL[type]}/by-external-reference-code/${item.externalReferenceCode}`,
 			{
-				body: JSON.stringify({inactive: !item.inactive}),
+				body: JSON.stringify({inactive}),
 				headers: DEFAULT_FETCH_HEADERS,
 				method: 'PATCH',
 			}

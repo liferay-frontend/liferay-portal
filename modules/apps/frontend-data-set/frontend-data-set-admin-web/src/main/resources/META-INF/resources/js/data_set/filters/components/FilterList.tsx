@@ -23,7 +23,7 @@ const FilterList = ({
 	editFilter: ({item}: {item: IFilter}) => void;
 	filterTypes: Record<EFilterType, IFilterTypeProps>;
 	filters: IFilter[];
-	toggleChange: (item: IFilter) => void;
+	toggleChange: (item: IFilter, value: boolean) => void;
 	updateFiltersOrder: ({filtersOrder}: {filtersOrder: string}) => void;
 }) => {
 	return (
@@ -65,6 +65,7 @@ const FilterList = ({
 							ToggleStatusComponent({
 								item,
 								toggleChange,
+								value: !item.inactive,
 							}),
 					},
 					label: Liferay.Language.get('status'),

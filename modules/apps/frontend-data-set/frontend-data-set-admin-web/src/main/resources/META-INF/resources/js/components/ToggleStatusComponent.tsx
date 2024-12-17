@@ -11,20 +11,22 @@ import '../../css/components/ToggleStatusComponent.scss';
 const ToggleStatusComponent = ({
 	item,
 	toggleChange,
+	value,
 }: {
 	item: any;
 	toggleChange: Function;
+	value: boolean;
 }) => {
-	const label = item.inactive
-		? Liferay.Language.get('inactive')
-		: Liferay.Language.get('active');
+	const label = value
+		? Liferay.Language.get('active')
+		: Liferay.Language.get('inactive');
 
 	return (
 		<ClayToggle
 			label={label}
-			onToggle={() => toggleChange(item)}
+			onToggle={() => toggleChange(item, value)}
 			sizing="sm"
-			toggled={!item.inactive}
+			toggled={value}
 		/>
 	);
 };

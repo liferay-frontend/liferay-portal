@@ -282,11 +282,11 @@ const Actions = ({dataSet, namespace, spritemap}: IDataSetSectionProps) => {
 		}
 	};
 
-	const updateStatus = async (item: IAction) => {
+	const updateStatus = async (item: IAction, inactive: boolean) => {
 		const response = await fetch(
 			`${API_URL.ACTIONS}/by-external-reference-code/${item.externalReferenceCode}`,
 			{
-				body: JSON.stringify({inactive: !item.inactive}),
+				body: JSON.stringify({inactive}),
 				headers: DEFAULT_FETCH_HEADERS,
 				method: 'PATCH',
 			}

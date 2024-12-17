@@ -25,7 +25,7 @@ const ActionList = ({
 	deleteAction: ({item}: {item: IAction}) => void;
 	editAction: ({item}: {item: IAction}) => void;
 	noItemsButtonLabel: string;
-	toggleChange: (item: IAction) => void;
+	toggleChange: (item: IAction, value: boolean) => void;
 	updateActionsOrder: ({order}: {order: string}) => void;
 }) => {
 	return (
@@ -68,6 +68,7 @@ const ActionList = ({
 							ToggleStatusComponent({
 								item,
 								toggleChange,
+								value: !item.inactive,
 							}),
 					},
 					label: Liferay.Language.get('status'),
