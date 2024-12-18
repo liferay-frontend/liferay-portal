@@ -1,5 +1,6 @@
 @import 'cadmin-variables';
 
+html#{$cadmin-selector},
 html#{$cadmin-selector} .cadmin {
 	.simple-toggle-switch.toggle-switch-sm {
 		.toggle-switch-label {

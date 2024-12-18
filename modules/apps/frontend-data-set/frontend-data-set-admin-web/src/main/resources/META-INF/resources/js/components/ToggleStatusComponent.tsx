@@ -10,10 +10,12 @@ import '../../css/components/ToggleStatusComponent.scss';
 
 const ToggleStatusComponent = ({
 	item,
+	sizing = 'sm',
 	toggleChange,
 	value,
 }: {
 	item: any;
+	sizing?: string;
 	toggleChange: Function;
 	value: boolean;
 }) => {
@@ -25,7 +27,7 @@ const ToggleStatusComponent = ({
 		<ClayToggle
 			label={label}
 			onToggle={() => toggleChange(item, value)}
-			sizing="sm"
+			sizing={sizing}
 			toggled={value}
 		/>
 	);

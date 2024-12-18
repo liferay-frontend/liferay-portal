@@ -14,6 +14,7 @@ import React, {useState} from 'react';
 
 import '../css/DataSets.scss';
 import RequiredMark from './components/RequiredMark';
+import ToggleStatusComponent from './components/ToggleStatusComponent';
 import ValidationFeedback from './components/ValidationFeedback';
 import RESTApplicationDropdownItem from './components/rest/RESTApplicationDropdownItem';
 import RESTApplicationDropdownMenu from './components/rest/RESTApplicationDropdownMenu';
@@ -585,6 +586,60 @@ const CustomDataSets = ({
 		});
 	};
 
+	const onStatusChange = async ({
+		inactive,
+		itemData,
+		loadData,
+	}: {
+		inactive: boolean;
+		itemData: IDataSet;
+		loadData: Function;
+	}) => {
+		const response = await fetch(
+			`${API_URL.DATA_SETS}/by-external-reference-code/${itemData.externalReferenceCode}`,
+			{
+				body: JSON.stringify({inactive}),
+				headers: DEFAULT_FETCH_HEADERS,
+				method: 'PATCH',
+			}
+		);
+
+		if (!response.ok) {
+			openDefaultFailureToast();
+
+			return;
+		}
+
+		const dataSet: IDataSet = await response.json();
+
+		if (dataSet?.id) {
+			openDefaultSuccessToast();
+
+			loadData();
+		}
+		else {
+			openDefaultFailureToast();
+		}
+	};
+
+	const toggleStatusRenderer = ({
+		itemData,
+		loadData,
+	}: {
+		itemData: IDataSet;
+		loadData: Function;
+	}) =>
+		ToggleStatusComponent({
+			item: itemData,
+			toggleChange: () =>
+				onStatusChange({
+					inactive: !itemData.inactive,
+					itemData,
+					loadData,
+				}),
+			value: !itemData.inactive,
+		});
+
 	const creationMenu = {
 		primaryItems: [
 			{
@@ -644,6 +699,12 @@ const CustomDataSets = ({
 						label: Liferay.Language.get('modified-date'),
 						sortable: true,
 					},
+					{
+						contentRenderer: 'toggleStatusRenderer',
+						fieldName: 'inactive',
+						label: Liferay.Language.get('status'),
+						sortable: false,
+					},
 				],
 			},
 		},
@@ -659,6 +720,7 @@ const CustomDataSets = ({
 						? creationMenu
 						: undefined
 				}
+				customDataRenderers={{toggleStatusRenderer}}
 				emptyState={{
 					description: Liferay.Language.get(
 						'start-creating-one-to-show-your-data'
