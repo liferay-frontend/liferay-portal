@@ -13,7 +13,7 @@ export class CommerceAdminProductConfigurationEntriesPage extends CommerceDNDTab
 	constructor(page: Page) {
 		super(
 			page,
-			'#portlet_com_liferay_commerce_product_definitions_web_internal_portlet_CPConfigurationListsPortlet .dnd-table'
+			'#portlet_com_liferay_commerce_product_definitions_web_internal_portlet_CPConfigurationListsPortlet .fds table'
 		);
 		this.page = page;
 	}
