@@ -4,7 +4,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayForm, {ClayInput} from '@clayui/form';
+import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayList from '@clayui/list';
@@ -55,6 +55,7 @@ const Details = ({
 	onDataSetUpdate,
 }: IDataSetSectionProps) => {
 	const [labelValidationError, setLabelValidationError] = useState(false);
+	const [status, setStatus] = useState(!dataSet.inactive);
 
 	const [urlPreview, setURLPreview] = useState(
 		getURLPreview({
@@ -80,12 +81,18 @@ const Details = ({
 		);
 	};
 
-	const updateFDSView = async () => {
-		const body = {
-			additionalAPIURLParameters: parametersRef.current?.value,
-			description: descriptionRef.current?.value,
-			label: labelRef.current?.value,
-		};
+	const updateFDSView = async (inactive?: boolean) => {
+		let body: any;
+		if (inactive !== undefined) {
+			body = {inactive};
+		}
+		else {
+			body = {
+				additionalAPIURLParameters: parametersRef.current?.value,
+				description: descriptionRef.current?.value,
+				label: labelRef.current?.value,
+			};
+		}
 
 		const response = await fetch(
 			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}`,
@@ -106,6 +113,8 @@ const Details = ({
 
 		if (responseJSON?.id) {
 			openDefaultSuccessToast();
+
+			inactive !== undefined && setStatus(!responseJSON.inactive);
 
 			const controlMenuHeaderTitles = document.getElementsByClassName(
 				'control-menu-level-1-heading'
@@ -294,9 +303,25 @@ const Details = ({
 				/>
 			</ClayLayout.SheetSection>
 
+			<ClayLayout.SheetSection className="mb-4">
+				<h3 className="sheet-subtitle">
+					{Liferay.Language.get('system-customisation')}
+				</h3>
+
+				<ClayForm.Group>
+					<ClayToggle
+						label="Deactivate this System Data Set"
+						onToggle={(value) => {
+							updateFDSView(!value);
+						}}
+						toggled={status}
+					/>
+				</ClayForm.Group>
+			</ClayLayout.SheetSection>
+
 			<ClayLayout.SheetFooter>
 				<ClayButton.Group spaced>
-					<ClayButton onClick={updateFDSView}>
+					<ClayButton onClick={() => updateFDSView()}>
 						{Liferay.Language.get('save')}
 					</ClayButton>
 
