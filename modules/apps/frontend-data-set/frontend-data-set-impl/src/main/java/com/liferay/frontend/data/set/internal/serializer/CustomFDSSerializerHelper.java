@@ -15,6 +15,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -30,6 +31,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
@@ -44,6 +46,18 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = {})
 public class CustomFDSSerializerHelper {
+
+	public Set<ObjectEntry> getCreationActionObjectEntries(
+		String externalReferenceCode, HttpServletRequest httpServletRequest) {
+
+		return _getSortedRelatedObjectEntries(
+			getDataSetObjectDefinition(httpServletRequest),
+			getDataSetObjectEntry(externalReferenceCode, httpServletRequest),
+			"creationActionsOrder",
+			(ObjectEntry objectEntry) -> Objects.equals(
+				_getType(objectEntry), "creation"),
+			"dataSetToDataSetActions");
+	}
 
 	public ObjectDefinition getDataSetObjectDefinition(
 		HttpServletRequest httpServletRequest) {
@@ -183,6 +197,12 @@ public class CustomFDSSerializerHelper {
 		}
 
 		return objectEntries;
+	}
+
+	private String _getType(ObjectEntry objectEntry) {
+		Map<String, Object> properties = objectEntry.getProperties();
+
+		return GetterUtil.getString(properties.get("type"));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
