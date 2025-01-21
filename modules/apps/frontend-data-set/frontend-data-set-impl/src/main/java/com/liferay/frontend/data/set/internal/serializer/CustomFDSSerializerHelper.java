@@ -97,6 +97,18 @@ public class CustomFDSSerializerHelper {
 			"dataSetToDataSetTableSections");
 	}
 
+	public Set<ObjectEntry> getItemActionObjectEntries(
+		String externalReferenceCode, HttpServletRequest httpServletRequest) {
+
+		return _getSortedRelatedObjectEntries(
+			getDataSetObjectDefinition(httpServletRequest),
+			getDataSetObjectEntry(externalReferenceCode, httpServletRequest),
+			"itemActionsOrder",
+			(ObjectEntry objectEntry) -> Objects.equals(
+				_getType(objectEntry), "item"),
+			"dataSetToDataSetActions");
+	}
+
 	private ObjectEntry _getObjectEntry(
 		long companyId, String externalReferenceCode,
 		ObjectDefinition dataSetObjectDefinition) {
