@@ -13,7 +13,7 @@ import java.util.Locale;
 /**
  * @author Marco Leo
  */
-public interface FDSFilterSerializer {
+public interface SystemFDSFilterSerializer {
 
 	public JSONArray serialize(
 		String fdsDisplayName, List<FDSFilter> fdsFilters, Locale locale);

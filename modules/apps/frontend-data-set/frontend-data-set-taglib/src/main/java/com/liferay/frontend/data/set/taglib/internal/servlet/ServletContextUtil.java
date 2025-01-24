@@ -5,7 +5,7 @@
 
 package com.liferay.frontend.data.set.taglib.internal.servlet;
 
-import com.liferay.frontend.data.set.filter.FDSFilterSerializer;
+import com.liferay.frontend.data.set.filter.SystemFDSFilterSerializer;
 import com.liferay.frontend.data.set.view.FDSViewSerializer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -23,10 +23,6 @@ import javax.servlet.http.HttpServletRequest;
  * @author Marko Cikos
  */
 public class ServletContextUtil {
-
-	public static FDSFilterSerializer getFDSFilterSerializer() {
-		return _fdsFilterSerializerSnapshot.get();
-	}
 
 	public static String getFDSSettingsNamespace(
 		HttpServletRequest httpServletRequest, String id) {
@@ -61,9 +57,10 @@ public class ServletContextUtil {
 		return _servletContextSnapshot.get();
 	}
 
-	private static final Snapshot<FDSFilterSerializer>
-		_fdsFilterSerializerSnapshot = new Snapshot<>(
-			ServletContextUtil.class, FDSFilterSerializer.class);
+	public static SystemFDSFilterSerializer getSystemFDSFilterSerializer() {
+		return _systemFDSFilterSerializerSnapshot.get();
+	}
+
 	private static final Snapshot<FDSViewSerializer>
 		_fdsViewSerializerSnapshot = new Snapshot<>(
 			ServletContextUtil.class, FDSViewSerializer.class);
@@ -73,5 +70,8 @@ public class ServletContextUtil {
 		new Snapshot<>(
 			ServletContextUtil.class, ServletContext.class,
 			"(osgi.web.symbolicname=com.liferay.frontend.data.set.taglib)");
+	private static final Snapshot<SystemFDSFilterSerializer>
+		_systemFDSFilterSerializerSnapshot = new Snapshot<>(
+			ServletContextUtil.class, SystemFDSFilterSerializer.class);
 
 }

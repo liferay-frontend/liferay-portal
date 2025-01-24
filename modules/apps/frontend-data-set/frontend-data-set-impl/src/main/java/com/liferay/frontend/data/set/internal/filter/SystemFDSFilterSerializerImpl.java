@@ -9,7 +9,7 @@ import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilterContextContributor;
 import com.liferay.frontend.data.set.filter.FDSFilterContextContributorRegistry;
 import com.liferay.frontend.data.set.filter.FDSFilterRegistry;
-import com.liferay.frontend.data.set.filter.FDSFilterSerializer;
+import com.liferay.frontend.data.set.filter.SystemFDSFilterSerializer;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -28,8 +28,9 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marco Leo
  */
-@Component(service = FDSFilterSerializer.class)
-public class FDSFilterSerializerImpl implements FDSFilterSerializer {
+@Component(service = SystemFDSFilterSerializer.class)
+public class SystemFDSFilterSerializerImpl
+	implements SystemFDSFilterSerializer {
 
 	@Override
 	public JSONArray serialize(
