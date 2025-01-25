@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -9,18 +9,24 @@ import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilterContextContributor;
 import com.liferay.frontend.data.set.filter.FDSFilterContextContributorRegistry;
 import com.liferay.frontend.data.set.filter.FDSFilterRegistry;
+import com.liferay.frontend.data.set.filter.FDSFilterSerializer;
 import com.liferay.frontend.data.set.filter.SystemFDSFilterSerializer;
+import com.liferay.frontend.data.set.serializer.FDSSerializer;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,20 +34,31 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marco Leo
  */
-@Component(service = SystemFDSFilterSerializer.class)
+@Component(
+	property = "frontend.data.set.serializer.type=" + FDSSerializer.SYSTEM,
+	service = {FDSFilterSerializer.class, SystemFDSFilterSerializer.class}
+)
 public class SystemFDSFilterSerializerImpl
 	implements SystemFDSFilterSerializer {
 
 	@Override
 	public JSONArray serialize(
-		String fdsDisplayName, List<FDSFilter> fdsFilters, Locale locale) {
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		return serialize(
+			fdsName, Collections.emptyList(),
+			_portal.getLocale(httpServletRequest));
+	}
+
+	@Override
+	public JSONArray serialize(
+		String fdsName, List<FDSFilter> fdsFilters, Locale locale) {
 
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
 		_serialize(fdsFilters, jsonArray, locale);
 		_serialize(
-			_fdsFilterRegistry.getFDSFilters(fdsDisplayName), jsonArray,
-			locale);
+			_fdsFilterRegistry.getFDSFilters(fdsName), jsonArray, locale);
 
 		return jsonArray;
 	}
@@ -107,5 +124,8 @@ public class SystemFDSFilterSerializerImpl
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private Portal _portal;
 
 }

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -97,6 +98,17 @@ public class BaseCustomFDSSerializer {
 			"dataSetToDataSetTableSections");
 	}
 
+	public Set<ObjectEntry> getFilterObjectEntries(
+		String externalReferenceCode, HttpServletRequest httpServletRequest) {
+
+		return _getSortedRelatedObjectEntries(
+			getDataSetObjectDefinition(httpServletRequest),
+			getDataSetObjectEntry(externalReferenceCode, httpServletRequest),
+			"filtersOrder", (Predicate)null,
+			"dataSetToDataSetClientExtensionFilters",
+			"dataSetToDataSetDateFilters", "dataSetToDataSetSelectionFilters");
+	}
+
 	public Set<ObjectEntry> getItemActionObjectEntries(
 		String externalReferenceCode, HttpServletRequest httpServletRequest) {
 
@@ -107,6 +119,20 @@ public class BaseCustomFDSSerializer {
 			(ObjectEntry objectEntry) -> Objects.equals(
 				_getType(objectEntry), "item"),
 			"dataSetToDataSetActions");
+	}
+
+	public String getLabelValue(
+		String defaultKey, String fallbackKey,
+		Map<String, Object> dataSetTableSectionProperties) {
+
+		String value = String.valueOf(
+			dataSetTableSectionProperties.get(defaultKey));
+
+		if (Validator.isNotNull(value)) {
+			return value;
+		}
+
+		return String.valueOf(dataSetTableSectionProperties.get(fallbackKey));
 	}
 
 	private ObjectEntry _getObjectEntry(

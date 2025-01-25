@@ -8,9 +8,19 @@ package com.liferay.frontend.data.set.internal;
 import com.liferay.frontend.data.set.SystemFDSEntry;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
+import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoaderUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
+
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,6 +48,38 @@ public abstract class BaseSystemFDSSerializerTestCase {
 		ReflectionTestUtil.setFieldValue(
 			systemFDSEntryRegistryImpl, "_serviceTrackerMap",
 			systemFDSEntryserviceTrackerMap);
+
+		_setUpResourceBundleUtil();
+
+		LanguageUtil languageUtil = new LanguageUtil();
+
+		languageUtil.setLanguage(language);
+
+		Mockito.when(
+			portal.getLocale(httpServletRequest)
+		).thenReturn(
+			LocaleUtil.US
+		);
+
+		Mockito.when(
+			language.get(LocaleUtil.US, null)
+		).thenReturn(
+			StringPool.BLANK
+		);
+
+		Mockito.when(
+			language.get(Mockito.eq(LocaleUtil.US), Mockito.anyString())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1, String.class)
+		);
+
+		Mockito.when(
+			language.get(
+				Mockito.eq(ResourceBundleUtil.EMPTY_RESOURCE_BUNDLE),
+				Mockito.anyString())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1, String.class)
+		);
 	}
 
 	@After
@@ -104,9 +146,26 @@ public abstract class BaseSystemFDSSerializerTestCase {
 		SystemBundleUtil.getBundleContext();
 	protected static final HttpServletRequest httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
+	protected static final Language language = Mockito.mock(Language.class);
+	protected static final Portal portal = Mockito.mock(Portal.class);
 	protected static final SystemFDSEntryRegistryImpl
 		systemFDSEntryRegistryImpl = new SystemFDSEntryRegistryImpl();
 	protected static ServiceTrackerMap<String, SystemFDSEntry>
 		systemFDSEntryserviceTrackerMap;
+
+	private void _setUpResourceBundleUtil() {
+		ResourceBundleLoader resourceBundleLoader = Mockito.mock(
+			ResourceBundleLoader.class);
+
+		ResourceBundleLoaderUtil.setPortalResourceBundleLoader(
+			resourceBundleLoader);
+
+		Mockito.when(
+			resourceBundleLoader.loadResourceBundle(
+				Mockito.nullable(Locale.class))
+		).thenReturn(
+			ResourceBundleUtil.EMPTY_RESOURCE_BUNDLE
+		);
+	}
 
 }
