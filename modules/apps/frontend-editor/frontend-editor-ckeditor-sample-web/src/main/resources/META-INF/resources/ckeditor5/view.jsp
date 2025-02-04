@@ -8,14 +8,10 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String innerNavigation = ParamUtil.getString(request, "innerNavigation", "classic");
+String innerNavigation = ParamUtil.getString(request, "innerNavigation", "react-basic");
 %>
 
-<clay:navigation-bar
-	navigationItems='<%=
-		new JSPNavigationItemList(pageContext) {
-			{
-				add(
+				<!-- add(
 					navigationItem -> {
 						navigationItem.setActive(innerNavigation.equals("classic"));
 						navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "ckeditor5");
@@ -26,6 +22,23 @@ String innerNavigation = ParamUtil.getString(request, "innerNavigation", "classi
 						navigationItem.setActive(innerNavigation.equals("react"));
 						navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "ckeditor5", "innerNavigation", "react");
 						navigationItem.setLabel("React");
+					}); -->
+
+<clay:navigation-bar
+	navigationItems='<%=
+		new JSPNavigationItemList(pageContext) {
+			{
+				add(
+					navigationItem -> {
+						navigationItem.setActive(innerNavigation.equals("react-basic"));
+						navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "ckeditor5", "innerNavigation", "react-basic");
+						navigationItem.setLabel("Basic");
+					});
+				add(
+					navigationItem -> {
+						navigationItem.setActive(innerNavigation.equals("react-advanced"));
+						navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "ckeditor5", "innerNavigation", "react-advanced");
+						navigationItem.setLabel("Advanced");
 					});
 			}
 		}
@@ -39,8 +52,14 @@ String innerNavigation = ParamUtil.getString(request, "innerNavigation", "classi
 		<c:when test='<%= StringUtil.equals(innerNavigation, "classic") %>'>
 			<liferay-util:include page="/ckeditor5/partials/classic.jsp" servletContext="<%= application %>" />
 		</c:when>
-		<c:otherwise>
+		<c:when test='<%= StringUtil.equals(innerNavigation, "react") %>'>
 			<liferay-util:include page="/ckeditor5/partials/react.jsp" servletContext="<%= application %>" />
+		</c:when>
+		<c:when test='<%= StringUtil.equals(innerNavigation, "react-basic") %>'>
+			<liferay-util:include page="/ckeditor5/partials/react-basic.jsp" servletContext="<%= application %>" />
+		</c:when>
+		<c:otherwise>
+			<liferay-util:include page="/ckeditor5/partials/react-advanced.jsp" servletContext="<%= application %>" />
 		</c:otherwise>
 	</c:choose>
 </clay:container-fluid>

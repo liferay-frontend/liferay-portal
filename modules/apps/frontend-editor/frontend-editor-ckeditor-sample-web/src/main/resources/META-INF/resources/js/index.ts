@@ -5,4 +5,6 @@
 
 export {default as CKEditor4ReactClassicEditor} from './CKEditor4ReactClassicEditor';
 
+export {default as CKEditor5ReactAdvancedEditor} from './CKEditor5ReactAdvancedEditor';
+export {default as CKEditor5ReactBasicEditor} from './CKEditor5ReactBasicEditor';
 export {default as CKEditor5ReactClassicEditor} from './CKEditor5ReactClassicEditor';

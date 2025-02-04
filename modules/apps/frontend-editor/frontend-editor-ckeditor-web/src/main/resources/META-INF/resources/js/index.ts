@@ -21,6 +21,10 @@ export {Editor} from './ckeditor4/Editor';
 
 export {InlineEditor} from './ckeditor4/InlineEditor';
 
-export {default as CKEditor5ClassicEditor} from './ckeditor5/ClassicEditor';
+export {default as AdvancedEditor} from './ckeditor5/AdvancedEditor';
+export {default as BasicEditor} from './ckeditor5/BasicEditor';
+
+// export {default as CKEditor5ClassicEditor} from './ckeditor5/ClassicEditor';
+
 export {default as AdvancedPreset} from './ckeditor5/presets/AdvancedPreset';
 export {default as BasicPreset} from './ckeditor5/presets/BasicPreset';
